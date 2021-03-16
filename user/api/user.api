@@ -1,0 +1,102 @@
+info(
+	title: "用户管理模块"
+	desc: "负责用户登录注册等功能"
+	author: "杨磊"
+	email: "603685348@qq.com"
+	version: "v1"
+)
+
+type JwtToken {
+	AccessToken  string `json:"accessToken,omitempty"`
+	AccessExpire int64  `json:"accessExpire,omitempty"`
+	RefreshAfter int64  `json:"refreshAfter,omitempty"`
+}
+
+type UserInfo {
+	Uid         int64  `json:"uid,string"`                 // 用户id
+	UserName    string `json:"userName,optional"`          //用户名(唯一)
+	NickName    string `json:"nickName,optional"`          // 用户的昵称
+	InviterUid  int64  `json:"inviterUid,string,optional"` // 邀请人用户id
+	InviterId   string `json:"inviterId,optional"`         // 邀请码
+	Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	City        string `json:"city,optional"`              // 用户所在城市
+	Country     string `json:"country,optional"`           // 用户所在国家
+	Province    string `json:"province,optional"`          // 用户所在省份
+	Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+	Headimgurl  string `json:"headimgurl,optional"`        // 用户头像
+	CreatedTime int64  `json:"createdTime,string"`
+}
+
+type GetCaptchaReq {
+	Data string `json:"data,optional"`              //短信验证时填写手机号
+	Type string `json:"type,options=sms|image"`     //验证方式:短信验证,图片验证码
+	Use  string `json:"use,options=login|register"` //用途
+}
+
+type GetCaptchaResp {
+	CodeID string `json:"codeID"`       //验证码编号
+	Url    string `json:"url,optional"` //图片验证码url
+	Expire int64  `json:"expire"`       //过期时间
+}
+
+type LoginReq {
+	UserID    string `json:"userID,optional"`                         //登录账号(支持用户名,手机号登录)
+	Pwdtype   int    `json:"pwdtype,optional"`                        //账号密码登录时需要填写.1，明文 2，md5加密 3,无密码
+	Password  string `json:"password,optional"`                       //密码，需要md5转换 短信登录方式为空
+	LoginType string `json:"loginType,options=sms|image|wxopen|wxin"` //验证类型 1 短信验证码 2 图形验证码加账号密码登录 10 微信开放平台登录 11 微信内登录
+	Code      string `json:"code,optional"`                           //验证码    微信登录填code
+	CodeID    string `json:"codeID,optional"`                         //验证码编号 微信登录填state
+}
+type LoginResp {
+	UserInfo
+	JwtToken
+}
+
+//登录信息注册,注册第一步(注册核心登录信息) 返回一个jwt用来第二步注册 第一步注册成功后就可以登录了,第二步注册是填写信息
+type RegisterCoreReq {
+	RegType string `json:"regType,options=wechat|phone"` //注册方式:	0:手机号注册 1:微信注册
+	Note    string `json:"note,optional"`                //手机号注册时填写手机号
+	Code    string `json:"code"`                         //验证码    微信登录填code
+	CodeID  string `json:"codeID"`                       //验证码编号 微信登录填state
+}
+//返回uid及token token随着注册第二步返回
+type RegisterCoreResp {
+	Uid int64 `json:"uid,string"` //用户id
+	JwtToken
+}
+
+//需要核心注册的token在头中带上
+type Register2Req {
+	UserName string `json:"username"` //账号不可重复
+	Password string `json:"password"` //明文密码
+	UserInfo
+	BusinessID int `json:"businessID"`
+}
+
+service user {
+	@handler ping
+	post /user/ping ()
+	@handler captcha
+	post /user/captcha (GetCaptchaReq) returns (GetCaptchaResp)
+	@handler login // 登录
+	post /user/login (LoginReq) returns (LoginResp)
+	@handler registerCore //注册
+	post /user/registerCore (RegisterCoreReq) returns (RegisterCoreResp)
+}
+
+@server(
+	jwt: Rej
+)
+service user {
+	@handler register2 //需要验证核心注册返回的token
+	post /user/register2 (Register2Req)
+}
+
+@server(
+	jwt: Auth
+	middleware: Usercheck
+)
+service user {
+	@handler userInfo
+	get /user/info () returns (UserInfo)
+}
