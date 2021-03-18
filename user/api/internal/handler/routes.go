@@ -4,6 +4,8 @@ package handler
 import (
 	"net/http"
 
+	state "yl/user/api/internal/handler/state"
+	user "yl/user/api/internal/handler/user"
 	"yl/user/api/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
@@ -14,23 +16,18 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/user/ping",
-				Handler: pingHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
 				Path:    "/user/captcha",
-				Handler: captchaHandler(serverCtx),
+				Handler: user.CaptchaHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/user/login",
-				Handler: loginHandler(serverCtx),
+				Handler: user.LoginHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/user/registerCore",
-				Handler: registerCoreHandler(serverCtx),
+				Handler: user.RegisterCoreHandler(serverCtx),
 			},
 		},
 	)
@@ -40,7 +37,7 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/user/register2",
-				Handler: register2Handler(serverCtx),
+				Handler: user.Register2Handler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Rej.AccessSecret),
@@ -53,10 +50,20 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodGet,
 					Path:    "/user/info",
-					Handler: userInfoHandler(serverCtx),
+					Handler: user.UserInfoHandler(serverCtx),
 				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/user/state/ping",
+				Handler: state.PingHandler(serverCtx),
+			},
+		},
 	)
 }

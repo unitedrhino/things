@@ -31,8 +31,8 @@ func NewRegisterCoreLogic(ctx context.Context, svcCtx *svc.ServiceContext) Regis
 
 func (l *RegisterCoreLogic)getRet(uc *model.UserCore)(*types.RegisterCoreResp, error){
 	now := time.Now().Unix()
-	accessExpire := l.svcCtx.Config.Auth.AccessExpire
-	jwtToken, err := getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, accessExpire, uc.Uid,"reg")
+	accessExpire := l.svcCtx.Config.Rej.AccessExpire
+	jwtToken, err := utils.GetJwtToken(l.svcCtx.Config.Rej.AccessSecret, now, accessExpire, uc.Uid)
 	if err != nil {
 		return nil, err
 	}
@@ -48,10 +48,10 @@ func (l *RegisterCoreLogic)getRet(uc *model.UserCore)(*types.RegisterCoreResp, e
 
 func (l *RegisterCoreLogic) handlePhone(req types.RegisterCoreReq) (*types.RegisterCoreResp, error){
 	if !utils.IsMobile(req.Note){
-		return nil,errorParameter
+		return nil, common.ErrorParameter
 	}
 	if req.CodeID != "6666"{
-		return nil,errorCaptcha
+		return nil, common.ErrorCaptcha
 	}
 	//ip,err:=utils.GetIP(l.r)
 	//fmt.Printf("ip=%s|err=%#v\n",ip)
@@ -61,7 +61,7 @@ func (l *RegisterCoreLogic) handlePhone(req types.RegisterCoreReq) (*types.Regis
 		if uc.Status == define.NotRegistStatus{
 			return l.getRet(uc)
 		}
-		return nil,errorDuplicateMobile
+		return nil, common.ErrorDuplicateMobile
 	case model.ErrNotFound://如果没有注册过,那么注册账号并进入下一步
 		uc := model.UserCore{
 			Uid:common.UserID.GetSnowflakeId(),
@@ -78,7 +78,7 @@ func (l *RegisterCoreLogic) handlePhone(req types.RegisterCoreReq) (*types.Regis
 	default:
 		break
 	}
-	return nil,errorSystem
+	return nil, common.ErrorSystem
 }
 func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.RegisterCoreResp, error) {
 	switch req.RegType {
@@ -87,7 +87,7 @@ func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.Regi
 	case "phone":
 		return l.handlePhone(req)
 	default:
-		return nil,errorParameter
+		return nil, common.ErrorParameter
 	}
-	return &types.RegisterCoreResp{}, errorParameter
+	return &types.RegisterCoreResp{}, common.ErrorParameter
 }

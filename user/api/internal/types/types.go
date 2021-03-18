@@ -19,7 +19,7 @@ type UserInfo struct {
 	Province    string `json:"province,optional"`          // 用户所在省份
 	Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
 	Headimgurl  string `json:"headimgurl,optional"`        // 用户头像
-	CreatedTime int64  `json:"createdTime,string"`
+	CreatedTime int64  `json:"createdTime,string,optional"`
 }
 
 type GetCaptchaReq struct {
@@ -64,5 +64,4 @@ type Register2Req struct {
 	UserName string `json:"username"` //账号不可重复
 	Password string `json:"password"` //明文密码
 	UserInfo
-	BusinessID int `json:"businessID"`
 }

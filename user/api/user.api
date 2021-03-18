@@ -24,7 +24,7 @@ type UserInfo {
 	Province    string `json:"province,optional"`          // 用户所在省份
 	Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
 	Headimgurl  string `json:"headimgurl,optional"`        // 用户头像
-	CreatedTime int64  `json:"createdTime,string"`
+	CreatedTime int64  `json:"createdTime,string,optional"`
 }
 
 type GetCaptchaReq {
@@ -70,12 +70,11 @@ type Register2Req {
 	UserName string `json:"username"` //账号不可重复
 	Password string `json:"password"` //明文密码
 	UserInfo
-	BusinessID int `json:"businessID"`
 }
-
+@server (
+	group :user
+)
 service user {
-	@handler ping
-	post /user/ping ()
 	@handler captcha
 	post /user/captcha (GetCaptchaReq) returns (GetCaptchaResp)
 	@handler login // 登录
@@ -86,6 +85,7 @@ service user {
 
 @server(
 	jwt: Rej
+	group:user
 )
 service user {
 	@handler register2 //需要验证核心注册返回的token
@@ -95,8 +95,17 @@ service user {
 @server(
 	jwt: Auth
 	middleware: Usercheck
+	group:user
 )
 service user {
 	@handler userInfo
 	get /user/info () returns (UserInfo)
+}
+
+@server (
+	group :state
+)
+service user {
+	@handler ping
+	post /user/state/ping ()
 }

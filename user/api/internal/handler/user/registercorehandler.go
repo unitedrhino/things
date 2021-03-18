@@ -3,14 +3,14 @@ package handler
 import (
 	"net/http"
 
-	"yl/user/api/internal/logic"
+	"yl/user/api/internal/logic/user"
 	"yl/user/api/internal/svc"
 	"yl/user/api/internal/types"
 
 	"github.com/tal-tech/go-zero/rest/httpx"
 )
 
-func registerCoreHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func RegisterCoreHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.RegisterCoreReq
 		if err := httpx.Parse(r, &req); err != nil {

@@ -1,6 +1,6 @@
 # api文件编译方法
 ```shell script
-goctl api go -api user.api  -dir .
+goctl api go -api api/user.api  -dir api/
 ```
 
 # 数据库文件生成

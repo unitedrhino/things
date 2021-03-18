@@ -6,6 +6,7 @@ import (
 	"time"
 	"yl/shared/define"
 	"yl/shared/utils"
+	"yl/user/common"
 	"yl/user/model"
 
 	"yl/user/api/internal/svc"
@@ -31,7 +32,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginLogic {
 func (l *LoginLogic)getRet(uc *model.UserCore)(*types.LoginResp, error){
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.Auth.AccessExpire
-	jwtToken, err := getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, accessExpire, uc.Uid,"onLine")
+	jwtToken, err := utils.GetJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, accessExpire, uc.Uid)
 	if err != nil {
 		return nil, err
 	}
@@ -77,16 +78,16 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 	case "wxin":
 		logx.Error("wxin not suppost")
 	default:
-		return nil,errorParameter
+		return nil, common.ErrorParameter
 	}
 	switch err {
 	case nil:
 		return l.getRet(uc)
 	case model.ErrNotFound:
-		return nil, errorUsernameUnRegister
+		return nil, common.ErrorUsernameUnRegister
 	default:
 		logx.Errorf("%s|FindOneByPhone|req=%#v|err=%#v",utils.FuncName(),req,err)
-		return nil, errorSystem
+		return nil, common.ErrorSystem
 	}
 	return &types.LoginResp{}, nil
 }
