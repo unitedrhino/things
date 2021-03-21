@@ -4,12 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"yl/shared/define"
+	"yl/shared/errors"
 	"yl/shared/utils"
-	"yl/user/common"
-	"yl/user/model"
+	"yl/src/user/model"
 
-	"yl/user/api/internal/svc"
-	"yl/user/api/internal/types"
+	"yl/src/user/api/internal/svc"
+	"yl/src/user/api/internal/types"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
@@ -41,14 +41,14 @@ func (l *Register2Logic)register(req types.Register2Req, uc *model.UserCore)(err
 		Language    :sql.NullString{String: req.Language,Valid: true},
 	})
 	if err != nil {
-		return common.ErrorSystem
+		return errors.ErrorSystem
 	}
 	uc.Status = define.NomalStatus
 	uc.UserName = sql.NullString{String: req.UserName,Valid: true}
 	uc.Password = sql.NullString{String: utils.MakePwd(req.Password,uc.Uid,false),Valid: true}
 	err = l.svcCtx.UserCoreModel.Update(*uc)
 	if err != nil {
-		return common.ErrorSystem
+		return errors.ErrorSystem
 	}
 	return nil
 }
@@ -60,13 +60,13 @@ func (l *Register2Logic) Register2(req types.Register2Req) error {
 	switch err{
 	case nil://如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
 		if uc.Status != define.NotRegistStatus{
-			return common.ErrorDuplicateRegister
+			return errors.ErrorDuplicateRegister
 		}
 		return l.register(req,uc)
-	case model.ErrNotFound://如果没有注册过,那么注册账号并进入下一步
-		return common.ErrorRegisterOne
+	case model.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
+		return errors.ErrorRegisterOne
 	default:
 		break
 	}
-	return common.ErrorSystem
+	return errors.ErrorSystem
 }

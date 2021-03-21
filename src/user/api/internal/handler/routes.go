@@ -4,9 +4,9 @@ package handler
 import (
 	"net/http"
 
-	state "yl/user/api/internal/handler/state"
-	user "yl/user/api/internal/handler/user"
-	"yl/user/api/internal/svc"
+	state "yl/src/user/api/internal/handler/state"
+	user "yl/src/user/api/internal/handler/user"
+	"yl/src/user/api/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
 )

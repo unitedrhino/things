@@ -3,23 +3,22 @@ package handler
 import (
 	"net/http"
 
-	"yl/user/api/internal/logic/user"
-	"yl/user/api/internal/svc"
-	"yl/user/api/internal/types"
+	"yl/src/user/api/internal/logic/user"
+	"yl/src/user/api/internal/svc"
+	"yl/src/user/api/internal/types"
 
 	"github.com/tal-tech/go-zero/rest/httpx"
 )
 
-func LoginHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func RegisterCoreHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.LoginReq
+		var req types.RegisterCoreReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
-
-		l := logic.NewLoginLogic(r.Context(), ctx)
-		resp, err := l.Login(req)
+		l := logic.NewRegisterCoreLogic(r.Context(), ctx)
+		resp, err := l.RegisterCore(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

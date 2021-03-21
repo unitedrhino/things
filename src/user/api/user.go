@@ -4,11 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"yl/shared/utils"
-	"yl/user/common"
+	"yl/src/user/common"
 
-	"yl/user/api/internal/config"
-	"yl/user/api/internal/handler"
-	"yl/user/api/internal/svc"
+	"yl/src/user/api/internal/config"
+	"yl/src/user/api/internal/handler"
+	"yl/src/user/api/internal/svc"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/rest"

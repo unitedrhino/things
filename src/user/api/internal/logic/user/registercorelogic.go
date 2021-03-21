@@ -5,12 +5,13 @@ import (
 	"database/sql"
 	"time"
 	"yl/shared/define"
+	"yl/shared/errors"
 	"yl/shared/utils"
-	"yl/user/common"
-	"yl/user/model"
+	"yl/src/user/common"
+	"yl/src/user/model"
 
-	"yl/user/api/internal/svc"
-	"yl/user/api/internal/types"
+	"yl/src/user/api/internal/svc"
+	"yl/src/user/api/internal/types"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
@@ -37,7 +38,7 @@ func (l *RegisterCoreLogic)getRet(uc *model.UserCore)(*types.RegisterCoreResp, e
 		return nil, err
 	}
 	return &types.RegisterCoreResp{
-		JwtToken :types.JwtToken{
+		JwtToken : types.JwtToken{
 			AccessToken:  jwtToken,
 			AccessExpire: now + accessExpire,
 			RefreshAfter: now + accessExpire/2,
@@ -48,10 +49,10 @@ func (l *RegisterCoreLogic)getRet(uc *model.UserCore)(*types.RegisterCoreResp, e
 
 func (l *RegisterCoreLogic) handlePhone(req types.RegisterCoreReq) (*types.RegisterCoreResp, error){
 	if !utils.IsMobile(req.Note){
-		return nil, common.ErrorParameter
+		return nil, errors.ErrorParameter
 	}
 	if req.CodeID != "6666"{
-		return nil, common.ErrorCaptcha
+		return nil, errors.ErrorCaptcha
 	}
 	//ip,err:=utils.GetIP(l.r)
 	//fmt.Printf("ip=%s|err=%#v\n",ip)
@@ -61,10 +62,10 @@ func (l *RegisterCoreLogic) handlePhone(req types.RegisterCoreReq) (*types.Regis
 		if uc.Status == define.NotRegistStatus{
 			return l.getRet(uc)
 		}
-		return nil, common.ErrorDuplicateMobile
-	case model.ErrNotFound://如果没有注册过,那么注册账号并进入下一步
+		return nil, errors.ErrorDuplicateMobile
+	case model.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
 		uc := model.UserCore{
-			Uid:common.UserID.GetSnowflakeId(),
+			Uid: common.UserID.GetSnowflakeId(),
 			Phone: sql.NullString{
 				String: req.Note,
 				Valid: true,
@@ -78,7 +79,7 @@ func (l *RegisterCoreLogic) handlePhone(req types.RegisterCoreReq) (*types.Regis
 	default:
 		break
 	}
-	return nil, common.ErrorSystem
+	return nil, errors.ErrorSystem
 }
 func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.RegisterCoreResp, error) {
 	switch req.RegType {
@@ -87,7 +88,7 @@ func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.Regi
 	case "phone":
 		return l.handlePhone(req)
 	default:
-		return nil, common.ErrorParameter
+		return nil, errors.ErrorParameter
 	}
-	return &types.RegisterCoreResp{}, common.ErrorParameter
+	return &types.RegisterCoreResp{}, errors.ErrorParameter
 }

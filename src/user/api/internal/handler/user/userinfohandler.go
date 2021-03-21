@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/tal-tech/go-zero/rest/httpx"
-	"yl/user/api/internal/logic/user"
-	"yl/user/api/internal/svc"
+	"yl/src/user/api/internal/logic/user"
+	"yl/src/user/api/internal/svc"
 )
 
 func UserInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {

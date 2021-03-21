@@ -1,4 +1,4 @@
-package define
+package errors
 
 var (
 	SysErrorTokenExpired 		= NewCodeError(9900001,"token 已经过期")

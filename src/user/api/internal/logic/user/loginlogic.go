@@ -5,12 +5,12 @@ import (
 	"database/sql"
 	"time"
 	"yl/shared/define"
+	"yl/shared/errors"
 	"yl/shared/utils"
-	"yl/user/common"
-	"yl/user/model"
+	"yl/src/user/model"
 
-	"yl/user/api/internal/svc"
-	"yl/user/api/internal/types"
+	"yl/src/user/api/internal/svc"
+	"yl/src/user/api/internal/types"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
@@ -38,7 +38,7 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*types.LoginResp, error){
 	}
 	ui,err := l.svcCtx.UserInfoModel.FindOne(uc.Uid)
 	return &types.LoginResp{
-		UserInfo:types.UserInfo{
+		UserInfo: types.UserInfo{
 			Uid         :ui.Uid,
 			UserName    :uc.UserName.String,
 			NickName    :ui.NickName.String,
@@ -78,16 +78,16 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 	case "wxin":
 		logx.Error("wxin not suppost")
 	default:
-		return nil, common.ErrorParameter
+		return nil, errors.ErrorParameter
 	}
 	switch err {
 	case nil:
 		return l.getRet(uc)
 	case model.ErrNotFound:
-		return nil, common.ErrorUsernameUnRegister
+		return nil, errors.ErrorUsernameUnRegister
 	default:
 		logx.Errorf("%s|FindOneByPhone|req=%#v|err=%#v",utils.FuncName(),req,err)
-		return nil, common.ErrorSystem
+		return nil, errors.ErrorSystem
 	}
 	return &types.LoginResp{}, nil
 }

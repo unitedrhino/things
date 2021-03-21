@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"yl/user/api/internal/logic/user"
-	"yl/user/api/internal/svc"
-	"yl/user/api/internal/types"
+	"yl/src/user/api/internal/logic/user"
+	"yl/src/user/api/internal/svc"
+	"yl/src/user/api/internal/types"
 
 	"github.com/tal-tech/go-zero/rest/httpx"
 )

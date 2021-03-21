@@ -1,14 +1,13 @@
 package handler
 
 import (
-	"net/http"
-	"yl/shared/utils"
-	"yl/user/api/internal/logic/user"
-	"yl/user/api/internal/svc"
-	"yl/user/api/internal/types"
-	"yl/user/common"
-
 	"github.com/tal-tech/go-zero/rest/httpx"
+	"net/http"
+	"yl/shared/errors"
+	"yl/shared/utils"
+	"yl/src/user/api/internal/logic/user"
+	"yl/src/user/api/internal/svc"
+	"yl/src/user/api/internal/types"
 )
 
 func Register2Handler(ctx *svc.ServiceContext) http.HandlerFunc {
@@ -25,7 +24,7 @@ func Register2Handler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 		if token.Uid != req.Uid {
-			httpx.Error(w,common.ErrorUidNotCompare)
+			httpx.Error(w, errors.ErrorUidNotCompare)
 			return
 		}
 		l := logic.NewRegister2Logic(r.Context(), ctx)

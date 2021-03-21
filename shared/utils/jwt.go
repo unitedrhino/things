@@ -3,7 +3,7 @@ package utils
 import (
 	"github.com/dgrijalva/jwt-go"
 	"time"
-	"yl/shared/define"
+	"yl/shared/errors"
 )
 
 // Custom claims structure
@@ -40,14 +40,14 @@ func ParseToken(tokenString string,secretKey string) (*CustomClaims, error) {
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				return nil, define.SysErrorTokenMalformed
+				return nil, errors.SysErrorTokenMalformed
 			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
 				// Token is expired
-				return nil, define.SysErrorTokenExpired
+				return nil, errors.SysErrorTokenExpired
 			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
-				return nil, define.SysErrorTokenNotValidYet
+				return nil, errors.SysErrorTokenNotValidYet
 			} else {
-				return nil, define.SysErrorTokenInvalid
+				return nil, errors.SysErrorTokenInvalid
 			}
 		}
 	}
@@ -55,10 +55,10 @@ func ParseToken(tokenString string,secretKey string) (*CustomClaims, error) {
 		if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 			return claims, nil
 		}
-		return nil, define.SysErrorTokenInvalid
+		return nil, errors.SysErrorTokenInvalid
 
 	} else {
-		return nil, define.SysErrorTokenInvalid
+		return nil, errors.SysErrorTokenInvalid
 	}
 
 }
@@ -79,5 +79,5 @@ func RefreshToken(tokenString string,secretKey string) (string, error) {
 		claims.StandardClaims.ExpiresAt = time.Now().Add(1 * time.Hour).Unix()
 		return CreateToken(secretKey,*claims)
 	}
-	return "", define.SysErrorTokenInvalid
+	return "", errors.SysErrorTokenInvalid
 }
