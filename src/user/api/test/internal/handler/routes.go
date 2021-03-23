@@ -4,8 +4,8 @@ package handler
 import (
 	"net/http"
 
-	user "yl/src/user/api/internal/handler/user"
-	"yl/src/user/api/internal/svc"
+	user "yl/src/user/api/test/internal/handler/user"
+	"yl/src/user/api/test/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
 )
@@ -13,6 +13,11 @@ import (
 func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 	engine.AddRoutes(
 		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/user/ping",
+				Handler: user.PingHandler(serverCtx),
+			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/user/captcha",

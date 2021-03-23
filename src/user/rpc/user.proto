@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package user;
+
+message JwtToken{
+  string accessToken = 1;
+  int64 accessExpire = 2;
+  int64 refreshAfter = 3;
+}
+
+
+
+message UserInfo{
+  int64 uid = 1;
+  string userName =2;
+  string nickName =3;
+  int64 inviterUid =4;
+  string inviterId =5;
+  int64 sex =6;
+  string city =7;
+  string country =8;
+  string province =9;
+  string language =10;
+  string headImgUrl =11;
+  int64 createTime =12;
+}
+
+message RegisterCoreReq{
+  string reqType = 1;//注册方式:	0:手机号注册 1:微信注册
+  string note = 2;//手机号注册时填写手机号
+  string code = 3;//验证码    微信登录填code
+  string codeID = 4; //验证码编号 微信登录填state
+}
+message RegisterCoreResp{
+  int64 uid = 1;//用户id
+}
+
+
+message Register2Req{
+  string userName = 1;
+  string password = 2;
+  UserInfo info = 3;
+}
+
+message  Register2Resp{
+}
+
+message GetUserInfoReq{
+  int64 uid = 1;//用户id
+}
+message GetUserInfoResp{
+  UserInfo info = 1;
+}
+
+message LoginReq{
+    string userID = 1; //登录账号(支持用户名,手机号登录)
+    int32 pwdType = 2;//账号密码登录时需要填写.1，明文 2，md5加密 3,无密码
+    string password =3;//密码，需要md5转换 短信登录方式为空
+    string loginType =4;//验证类型 sms 短信验证码 img 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录
+    string code = 5;//验证码    微信登录填code
+    string codeID = 6;//验证码编号 微信登录填state
+}
+message LoginResp{
+  UserInfo info = 1;
+  JwtToken token =2;
+}
+
+message CheckTokenReq{
+  string token = 1;
+}
+
+message CheckTokenResp{
+  string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
+  string uid = 2;
+}
+
+service User {
+  rpc login(LoginReq) returns(LoginResp);
+  rpc registerCore(RegisterCoreReq) returns(RegisterCoreResp);
+  rpc register2(Register2Req) returns(Register2Resp);
+  rpc getUserInfo(GetUserInfoReq) returns(GetUserInfoResp);
+  rpc CheckToken(CheckTokenReq) returns(CheckTokenResp);
+}

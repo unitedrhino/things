@@ -13,18 +13,18 @@ type JwtToken {
 }
 
 type UserInfo {
-	Uid         int64  `json:"uid,string"`                 // 用户id
-	UserName    string `json:"userName,optional"`          //用户名(唯一)
-	NickName    string `json:"nickName,optional"`          // 用户的昵称
-	InviterUid  int64  `json:"inviterUid,string,optional"` // 邀请人用户id
-	InviterId   string `json:"inviterId,optional"`         // 邀请码
-	Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	City        string `json:"city,optional"`              // 用户所在城市
-	Country     string `json:"country,optional"`           // 用户所在国家
-	Province    string `json:"province,optional"`          // 用户所在省份
-	Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
-	Headimgurl  string `json:"headimgurl,optional"`        // 用户头像
-	CreatedTime int64  `json:"createdTime,string,optional"`
+	Uid        int64  `json:"uid,string"`                 // 用户id
+	UserName   string `json:"userName,optional"`          //用户名(唯一)
+	NickName   string `json:"nickName,optional"`          // 用户的昵称
+	InviterUid int64  `json:"inviterUid,string,optional"` // 邀请人用户id
+	InviterId  string `json:"inviterId,optional"`         // 邀请码
+	Sex        int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	City       string `json:"city,optional"`              // 用户所在城市
+	Country    string `json:"country,optional"`           // 用户所在国家
+	Province   string `json:"province,optional"`          // 用户所在省份
+	Language   string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+	HeadImgUrl string `json:"headImgUrl,optional"`        // 用户头像
+	CreateTime int64  `json:"createTime,string,optional"`
 }
 
 type GetCaptchaReq {
@@ -40,12 +40,12 @@ type GetCaptchaResp {
 }
 
 type LoginReq {
-	UserID    string `json:"userID,optional"`                         //登录账号(支持用户名,手机号登录)
-	Pwdtype   int    `json:"pwdtype,optional"`                        //账号密码登录时需要填写.1，明文 2，md5加密 3,无密码
-	Password  string `json:"password,optional"`                       //密码，需要md5转换 短信登录方式为空
-	LoginType string `json:"loginType,options=sms|image|wxopen|wxin"` //验证类型 1 短信验证码 2 图形验证码加账号密码登录 10 微信开放平台登录 11 微信内登录
-	Code      string `json:"code,optional"`                           //验证码    微信登录填code
-	CodeID    string `json:"codeID,optional"`                         //验证码编号 微信登录填state
+	UserID    string `json:"userID,optional"`                       //登录账号(支持用户名,手机号登录)
+	PwdType   int    `json:"pwdtype,optional"`                      //账号密码登录时需要填写.1，明文 2，md5加密 3,无密码
+	Password  string `json:"password,optional"`                     //密码，需要md5转换 短信登录方式为空
+	LoginType string `json:"loginType,options=sms|img|wxopen|wxin"` //验证类型 sms 短信验证码 img 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录
+	Code      string `json:"code,optional"`                         //验证码    微信登录填code
+	CodeID    string `json:"codeID,optional"`                       //验证码编号 微信登录填state
 }
 type LoginResp {
 	UserInfo
@@ -100,12 +100,4 @@ service user {
 service user {
 	@handler userInfo
 	get /user/info () returns (UserInfo)
-}
-
-@server (
-	group :state
-)
-service user {
-	@handler ping
-	post /user/state/ping ()
 }

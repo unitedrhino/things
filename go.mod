@@ -9,6 +9,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.3 // indirect
 	github.com/go-ole/go-ole v1.2.5 // indirect
+	github.com/golang/protobuf v1.4.2
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible // indirect
 	github.com/lestrrat-go/strftime v1.0.4 // indirect
@@ -17,5 +18,8 @@ require (
 	github.com/shirou/gopsutil v3.21.2+incompatible // indirect
 	github.com/tal-tech/go-zero v1.1.5
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.22
+	github.com/tidwall/gjson v1.7.1
 	go.uber.org/zap v1.14.1
+	google.golang.org/grpc v1.29.1
+	google.golang.org/protobuf v1.25.0
 )

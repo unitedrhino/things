@@ -4,15 +4,6 @@ Port: 8888
 NodeID: 1
 Mysql:
   DataSource: root:password@tcp(127.0.0.1:3308)/pet?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
-CacheRedis:
-  - Host: 81.68.223.176:6379
-    Pass:
-    Type: node
-UserRpc:
-  Etcd:
-    Hosts:
-      - 81.68.223.176:2379
-    Key: user.rpc
 Auth:
   AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
   AccessExpire: 86400

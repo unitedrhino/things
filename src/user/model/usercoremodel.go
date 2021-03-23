@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
+	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"github.com/tal-tech/go-zero/core/stringx"
@@ -17,6 +17,12 @@ var (
 	userCoreRows                = strings.Join(userCoreFieldNames, ",")
 	userCoreRowsExpectAutoSet   = strings.Join(stringx.Remove(userCoreFieldNames, "`create_time`", "`update_time`"), ",")
 	userCoreRowsWithPlaceHolder = strings.Join(stringx.Remove(userCoreFieldNames, "`uid`", "`create_time`", "`update_time`"), "=?,") + "=?"
+
+	cacheUserCoreUidPrefix      = "cache#userCore#uid#"
+	cacheUserCoreEmailPrefix    = "cache#userCore#email#"
+	cacheUserCorePhonePrefix    = "cache#userCore#phone#"
+	cacheUserCoreUserNamePrefix = "cache#userCore#userName#"
+	cacheUserCoreWechatPrefix   = "cache#userCore#wechat#"
 )
 
 type (
@@ -32,7 +38,7 @@ type (
 	}
 
 	defaultUserCoreModel struct {
-		conn  sqlx.SqlConn
+		sqlc.CachedConn
 		table string
 	}
 
@@ -52,27 +58,32 @@ type (
 	}
 )
 
-func NewUserCoreModel(conn sqlx.SqlConn) UserCoreModel {
+func NewUserCoreModel(conn sqlx.SqlConn, c cache.CacheConf) UserCoreModel {
 	return &defaultUserCoreModel{
-		conn:  conn,
-		table: "`user_core`",
+		CachedConn: sqlc.NewConn(conn, c),
+		table:      "`user_core`",
 	}
 }
 
 func (m *defaultUserCoreModel) Insert(data UserCore) (sql.Result, error) {
-	data.CreatedTime = sql.NullTime{
-		Time: time.Now(),
-		Valid: true,
-	}
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userCoreRowsExpectAutoSet)
-	ret, err := m.conn.Exec(query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Status)
+	userCoreEmailKey := fmt.Sprintf("%s%v", cacheUserCoreEmailPrefix, data.Email)
+	userCorePhoneKey := fmt.Sprintf("%s%v", cacheUserCorePhonePrefix, data.Phone)
+	userCoreUserNameKey := fmt.Sprintf("%s%v", cacheUserCoreUserNamePrefix, data.UserName)
+	userCoreWechatKey := fmt.Sprintf("%s%v", cacheUserCoreWechatPrefix, data.Wechat)
+	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userCoreRowsExpectAutoSet)
+		return conn.Exec(query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Status)
+	}, userCoreEmailKey, userCorePhoneKey, userCoreUserNameKey, userCoreWechatKey)
 	return ret, err
 }
 
 func (m *defaultUserCoreModel) FindOne(uid int64) (*UserCore, error) {
-	query := fmt.Sprintf("select %s from %s where `uid` = ? limit 1", userCoreRows, m.table)
+	userCoreUidKey := fmt.Sprintf("%s%v", cacheUserCoreUidPrefix, uid)
 	var resp UserCore
-	err := m.conn.QueryRow(&resp, query, uid)
+	err := m.QueryRow(&resp, userCoreUidKey, func(conn sqlx.SqlConn, v interface{}) error {
+		query := fmt.Sprintf("select %s from %s where `uid` = ? limit 1", userCoreRows, m.table)
+		return conn.QueryRow(v, query, uid)
+	})
 	switch err {
 	case nil:
 		return &resp, nil
@@ -84,9 +95,15 @@ func (m *defaultUserCoreModel) FindOne(uid int64) (*UserCore, error) {
 }
 
 func (m *defaultUserCoreModel) FindOneByEmail(email sql.NullString) (*UserCore, error) {
+	userCoreEmailKey := fmt.Sprintf("%s%v", cacheUserCoreEmailPrefix, email)
 	var resp UserCore
-	query := fmt.Sprintf("select %s from %s where `email` = ? limit 1", userCoreRows, m.table)
-	err := m.conn.QueryRow(&resp, query, email)
+	err := m.QueryRowIndex(&resp, userCoreEmailKey, m.formatPrimary, func(conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+		query := fmt.Sprintf("select %s from %s where `email` = ? limit 1", userCoreRows, m.table)
+		if err := conn.QueryRow(&resp, query, email); err != nil {
+			return nil, err
+		}
+		return resp.Uid, nil
+	}, m.queryPrimary)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -98,9 +115,15 @@ func (m *defaultUserCoreModel) FindOneByEmail(email sql.NullString) (*UserCore, 
 }
 
 func (m *defaultUserCoreModel) FindOneByPhone(phone sql.NullString) (*UserCore, error) {
+	userCorePhoneKey := fmt.Sprintf("%s%v", cacheUserCorePhonePrefix, phone)
 	var resp UserCore
-	query := fmt.Sprintf("select %s from %s where `phone` = ? limit 1", userCoreRows, m.table)
-	err := m.conn.QueryRow(&resp, query, phone)
+	err := m.QueryRowIndex(&resp, userCorePhoneKey, m.formatPrimary, func(conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+		query := fmt.Sprintf("select %s from %s where `phone` = ? limit 1", userCoreRows, m.table)
+		if err := conn.QueryRow(&resp, query, phone); err != nil {
+			return nil, err
+		}
+		return resp.Uid, nil
+	}, m.queryPrimary)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -112,9 +135,15 @@ func (m *defaultUserCoreModel) FindOneByPhone(phone sql.NullString) (*UserCore, 
 }
 
 func (m *defaultUserCoreModel) FindOneByUserName(userName sql.NullString) (*UserCore, error) {
+	userCoreUserNameKey := fmt.Sprintf("%s%v", cacheUserCoreUserNamePrefix, userName)
 	var resp UserCore
-	query := fmt.Sprintf("select %s from %s where `userName` = ? limit 1", userCoreRows, m.table)
-	err := m.conn.QueryRow(&resp, query, userName)
+	err := m.QueryRowIndex(&resp, userCoreUserNameKey, m.formatPrimary, func(conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+		query := fmt.Sprintf("select %s from %s where `userName` = ? limit 1", userCoreRows, m.table)
+		if err := conn.QueryRow(&resp, query, userName); err != nil {
+			return nil, err
+		}
+		return resp.Uid, nil
+	}, m.queryPrimary)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -126,9 +155,15 @@ func (m *defaultUserCoreModel) FindOneByUserName(userName sql.NullString) (*User
 }
 
 func (m *defaultUserCoreModel) FindOneByWechat(wechat sql.NullString) (*UserCore, error) {
+	userCoreWechatKey := fmt.Sprintf("%s%v", cacheUserCoreWechatPrefix, wechat)
 	var resp UserCore
-	query := fmt.Sprintf("select %s from %s where `wechat` = ? limit 1", userCoreRows, m.table)
-	err := m.conn.QueryRow(&resp, query, wechat)
+	err := m.QueryRowIndex(&resp, userCoreWechatKey, m.formatPrimary, func(conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+		query := fmt.Sprintf("select %s from %s where `wechat` = ? limit 1", userCoreRows, m.table)
+		if err := conn.QueryRow(&resp, query, wechat); err != nil {
+			return nil, err
+		}
+		return resp.Uid, nil
+	}, m.queryPrimary)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -140,16 +175,37 @@ func (m *defaultUserCoreModel) FindOneByWechat(wechat sql.NullString) (*UserCore
 }
 
 func (m *defaultUserCoreModel) Update(data UserCore) error {
-	data.UpdatedTime = sql.NullTime{
-		Time: time.Now(),Valid: true,
-	}
-	query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, userCoreRowsWithPlaceHolder)
-	_, err := m.conn.Exec(query, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Status, data.Uid)
+	userCoreUidKey := fmt.Sprintf("%s%v", cacheUserCoreUidPrefix, data.Uid)
+	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, userCoreRowsWithPlaceHolder)
+		return conn.Exec(query, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Status, data.Uid)
+	}, userCoreUidKey)
 	return err
 }
 
 func (m *defaultUserCoreModel) Delete(uid int64) error {
-	query := fmt.Sprintf("delete from %s where `uid` = ?", m.table)
-	_, err := m.conn.Exec(query, uid)
+	data, err := m.FindOne(uid)
+	if err != nil {
+		return err
+	}
+
+	userCoreUidKey := fmt.Sprintf("%s%v", cacheUserCoreUidPrefix, uid)
+	userCoreEmailKey := fmt.Sprintf("%s%v", cacheUserCoreEmailPrefix, data.Email)
+	userCorePhoneKey := fmt.Sprintf("%s%v", cacheUserCorePhonePrefix, data.Phone)
+	userCoreUserNameKey := fmt.Sprintf("%s%v", cacheUserCoreUserNamePrefix, data.UserName)
+	userCoreWechatKey := fmt.Sprintf("%s%v", cacheUserCoreWechatPrefix, data.Wechat)
+	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("delete from %s where `uid` = ?", m.table)
+		return conn.Exec(query, uid)
+	}, userCoreUidKey, userCoreEmailKey, userCorePhoneKey, userCoreUserNameKey, userCoreWechatKey)
 	return err
+}
+
+func (m *defaultUserCoreModel) formatPrimary(primary interface{}) string {
+	return fmt.Sprintf("%s%v", cacheUserCoreUidPrefix, primary)
+}
+
+func (m *defaultUserCoreModel) queryPrimary(conn sqlx.SqlConn, v, primary interface{}) error {
+	query := fmt.Sprintf("select %s from %s where `uid` = ? limit 1", userCoreRows, m.table)
+	return conn.QueryRow(v, query, primary)
 }

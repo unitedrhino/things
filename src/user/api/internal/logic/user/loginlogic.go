@@ -48,8 +48,8 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*types.LoginResp, error){
 			Country     :ui.Country.String,
 			Province    :ui.Province.String,
 			Language    :ui.Language.String,
-			Headimgurl  :ui.Headimgurl.String,
-			CreatedTime :ui.CreatedTime.Time.Unix(),
+			HeadImgUrl  :ui.Headimgurl.String,
+			CreateTime :ui.CreatedTime.Time.Unix(),
 		},
 		JwtToken: types.JwtToken{
 			AccessToken:  jwtToken,
