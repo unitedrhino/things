@@ -25,7 +25,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	ur := userclient.NewUser(zrpc.MustNewClient(c.UserRpc))
 	return &ServiceContext{
 		Config:        c,
-		Usercheck:     middleware.NewUsercheckMiddleware().Handle,
+		Usercheck:     middleware.NewUsercheckMiddleware(ur).Handle,
 		UserInfoModel: ui,
 		UserCoreModel: uc,
 		UserRpc:ur,

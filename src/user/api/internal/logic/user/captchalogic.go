@@ -24,7 +24,7 @@ func NewCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) CaptchaLog
 
 func (l *CaptchaLogic) Captcha(req types.GetCaptchaReq) (*types.GetCaptchaResp, error) {
 	// todo: add your logic here and delete this line
-
+	l.Infof("Captcha|req=%#v",req)
 	return &types.GetCaptchaResp{
 		CodeID: "6666",
 		Expire: 10000000000000,

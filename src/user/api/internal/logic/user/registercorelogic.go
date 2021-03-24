@@ -84,7 +84,7 @@ func (l *RegisterCoreLogic) handlePhone(req types.RegisterCoreReq) (*types.Regis
 func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.RegisterCoreResp, error) {
 	switch req.RegType {
 	case "wechat":
-		logx.Error("wechat not suppot yet")
+		l.Error("wechat not suppot yet")
 	case "phone":
 		return l.handlePhone(req)
 	default:

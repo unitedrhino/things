@@ -65,7 +65,7 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 	switch req.LoginType {
 	case "sms"://暂时不验证
 		uc,err=l.svcCtx.UserCoreModel.FindOneByPhone(sql.NullString{String: req.UserID,Valid: true})
-	case "image"://暂时不验证
+	case "img"://暂时不验证
 		lt := utils.GetLoginNameType(req.UserID)
 		switch lt {
 		case define.Phone:
@@ -74,9 +74,9 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 			uc,err=l.svcCtx.UserCoreModel.FindOneByUserName(sql.NullString{String: req.UserID,Valid: true})
 		}
 	case "wxopen":
-		logx.Error("wxin not suppost")
+		l.Error("wxin not suppost")
 	case "wxin":
-		logx.Error("wxin not suppost")
+		l.Error("wxin not suppost")
 	default:
 		return nil, errors.ErrorParameter
 	}
@@ -86,7 +86,7 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 	case model.ErrNotFound:
 		return nil, errors.ErrorUsernameUnRegister
 	default:
-		logx.Errorf("%s|FindOneByPhone|req=%#v|err=%#v",utils.FuncName(),req,err)
+		l.Errorf("%s|FindOneByPhone|req=%#v|err=%#v",utils.FuncName(),req,err)
 		return nil, errors.ErrorSystem
 	}
 	return &types.LoginResp{}, nil
