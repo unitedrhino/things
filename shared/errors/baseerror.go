@@ -16,7 +16,9 @@ type CodeError struct {
 	Details []string `json:"details,omitempty"`
 }
 
-
+type rpcError interface {
+	GRPCStatus() *status.Status
+}
 
 //func TogRPCError(err *Error) error {
 //	s, _ := status.New(ToRPCCode(err.Code()), err.Msg()).WithDetails(&pb.Error{Code: int32(err.Code()), Message: err.Msg()})
@@ -57,10 +59,12 @@ func Fmt(errs error) *CodeError{
 	switch errs.(type) {
 	case *CodeError:
 		return errs.(*CodeError)
-	case interface {
-		GRPCStatus() *status.Status
-	}:
+	case rpcError://如果是grpc类型的错误
 		s, _ := status.FromError(errs)
+		if len(s.Details()) == 0 {
+			err := fmt.Sprintf("rpc err detail is nil|err=%#v",s)
+			return System.AddDetail(err)
+		}
 		if er,ok:= s.Details()[0].(*proto.Error);ok{
 			return &CodeError{Code: int(er.Code),Msg: er.Message,Details: er.Detail}
 		}
