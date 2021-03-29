@@ -1,13 +1,12 @@
 syntax = "proto3";
-
 package user;
+
 
 message JwtToken{
   string accessToken = 1;
   int64 accessExpire = 2;
   int64 refreshAfter = 3;
 }
-
 
 
 message UserInfo{
@@ -33,13 +32,15 @@ message RegisterCoreReq{
 }
 message RegisterCoreResp{
   int64 uid = 1;//用户id
+  JwtToken token = 2; //用于第二步注册的token
 }
 
 
 message Register2Req{
   string userName = 1;
   string password = 2;
-  UserInfo info = 3;
+  string token = 3; //注册用的token
+  UserInfo info = 4;
 }
 
 message  Register2Resp{
@@ -67,11 +68,12 @@ message LoginResp{
 
 message CheckTokenReq{
   string token = 1;
+  string ip = 2;
 }
 
 message CheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
-  string uid = 2;
+  int64 uid = 2;
 }
 
 service User {

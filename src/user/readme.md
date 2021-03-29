@@ -10,5 +10,5 @@ goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3308)/pet" -table
 
 # rpc文件编译方法
 ```shell script
-goctl rpc proto -src rpc/user.proto -dir rpc
+goctl rpc proto -src rpc/user.proto  -dir rpc
 ```

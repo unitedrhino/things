@@ -108,6 +108,14 @@ func FuncName()string{
 	return f.Name()
 }
 
+//func GetPos()string{
+//	pc, file, line, _ := runtime.Caller(2)
+//	f := runtime.FuncForPC(pc)
+//
+//	fmt.Sprintf("%s:%d:%s\n\n\n",file,line,f.Name())
+//	return fmt.Sprintf("%s:%d:%s",file,line,f.Name())
+//}
+
 //func HandleThrow(p interface{})  {
 //	pc := make([]uintptr,1)
 //	runtime.Callers(2,pc)

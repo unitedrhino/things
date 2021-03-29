@@ -17,14 +17,14 @@ func Register2Handler(ctx *svc.ServiceContext) http.HandlerFunc {
 			httpx.Error(w, err)
 			return
 		}
-		jwt := r.Header.Get("authorization")
+		jwt := r.Header.Get("yl-token")
 		token,err:=utils.ParseToken(jwt,ctx.Config.Rej.AccessSecret)
 		if err != nil {
 			httpx.Error(w, err)
 			return
 		}
 		if token.Uid != req.Uid {
-			httpx.Error(w, errors.ErrorUidNotCompare)
+			httpx.Error(w, errors.UidNotCompare)
 			return
 		}
 		l := logic.NewRegister2Logic(r.Context(), ctx)

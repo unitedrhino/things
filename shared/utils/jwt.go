@@ -40,14 +40,14 @@ func ParseToken(tokenString string,secretKey string) (*CustomClaims, error) {
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				return nil, errors.SysErrorTokenMalformed
+				return nil, errors.TokenMalformed
 			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
 				// Token is expired
-				return nil, errors.SysErrorTokenExpired
+				return nil, errors.TokenExpired
 			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
-				return nil, errors.SysErrorTokenNotValidYet
+				return nil, errors.TokenNotValidYet
 			} else {
-				return nil, errors.SysErrorTokenInvalid
+				return nil, errors.TokenInvalid
 			}
 		}
 	}
@@ -55,10 +55,10 @@ func ParseToken(tokenString string,secretKey string) (*CustomClaims, error) {
 		if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 			return claims, nil
 		}
-		return nil, errors.SysErrorTokenInvalid
+		return nil, errors.TokenInvalid
 
 	} else {
-		return nil, errors.SysErrorTokenInvalid
+		return nil, errors.TokenInvalid
 	}
 
 }
@@ -79,5 +79,5 @@ func RefreshToken(tokenString string,secretKey string) (string, error) {
 		claims.StandardClaims.ExpiresAt = time.Now().Add(1 * time.Hour).Unix()
 		return CreateToken(secretKey,*claims)
 	}
-	return "", errors.SysErrorTokenInvalid
+	return "", errors.TokenInvalid
 }

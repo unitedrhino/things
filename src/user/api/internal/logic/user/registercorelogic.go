@@ -2,13 +2,9 @@ package logic
 
 import (
 	"context"
-	"database/sql"
-	"time"
-	"yl/shared/define"
 	"yl/shared/errors"
 	"yl/shared/utils"
-	"yl/src/user/common"
-	"yl/src/user/model"
+	"yl/src/user/rpc/user"
 
 	"yl/src/user/api/internal/svc"
 	"yl/src/user/api/internal/types"
@@ -30,65 +26,30 @@ func NewRegisterCoreLogic(ctx context.Context, svcCtx *svc.ServiceContext) Regis
 	}
 }
 
-func (l *RegisterCoreLogic)getRet(uc *model.UserCore)(*types.RegisterCoreResp, error){
-	now := time.Now().Unix()
-	accessExpire := l.svcCtx.Config.Rej.AccessExpire
-	jwtToken, err := utils.GetJwtToken(l.svcCtx.Config.Rej.AccessSecret, now, accessExpire, uc.Uid)
-	if err != nil {
-		return nil, err
-	}
-	return &types.RegisterCoreResp{
-		JwtToken : types.JwtToken{
-			AccessToken:  jwtToken,
-			AccessExpire: now + accessExpire,
-			RefreshAfter: now + accessExpire/2,
-		},
-		Uid: uc.Uid,
-	},nil
-}
 
-func (l *RegisterCoreLogic) handlePhone(req types.RegisterCoreReq) (*types.RegisterCoreResp, error){
-	if !utils.IsMobile(req.Note){
-		return nil, errors.ErrorParameter
-	}
-	if req.CodeID != "6666"{
-		return nil, errors.ErrorCaptcha
-	}
-	//ip,err:=utils.GetIP(l.r)
-	//fmt.Printf("ip=%s|err=%#v\n",ip)
-	uc,err := l.svcCtx.UserCoreModel.FindOneByPhone(sql.NullString{String: req.Note,Valid: true})
-	switch err{
-	case nil://如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status == define.NotRegistStatus{
-			return l.getRet(uc)
-		}
-		return nil, errors.ErrorDuplicateMobile
-	case model.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
-		uc := model.UserCore{
-			Uid: common.UserID.GetSnowflakeId(),
-			Phone: sql.NullString{
-				String: req.Note,
-				Valid: true,
-			},
-		}
-		_,err := l.svcCtx.UserCoreModel.Insert(uc)
-		if err != nil {
-			break
-		}
-		return l.getRet(&uc)
-	default:
-		break
-	}
-	return nil, errors.ErrorSystem
-}
 func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.RegisterCoreResp, error) {
-	switch req.RegType {
-	case "wechat":
-		l.Error("wechat not suppot yet")
-	case "phone":
-		return l.handlePhone(req)
-	default:
-		return nil, errors.ErrorParameter
+	resp,err:=l.svcCtx.UserRpc.RegisterCore(l.ctx,&user.RegisterCoreReq{
+		ReqType: req.ReqType,
+		Note: req.Note,
+		Code: req.Code,
+		CodeID: req.CodeID,
+	})
+	if err != nil {
+		er :=errors.Fmt(err)
+		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v",utils.FuncName(),req,er)
+		return &types.RegisterCoreResp{},er
 	}
-	return &types.RegisterCoreResp{}, errors.ErrorParameter
+	if resp == nil {
+		l.Errorf("%s|rpc.RegisterCore|return nil|req=%v",utils.FuncName(),req)
+		return &types.RegisterCoreResp{},errors.System
+	}
+	l.Infof("%s|req=%v|resp=%v",utils.FuncName(),req,resp)
+	return &types.RegisterCoreResp{
+		Uid: resp.Uid,
+		JwtToken:types.JwtToken{
+			AccessToken  :resp.Token.AccessToken,
+			AccessExpire :resp.Token.AccessExpire,
+			RefreshAfter :resp.Token.RefreshAfter,
+		},
+	}, nil
 }

@@ -12,7 +12,7 @@ import (
 
 type ServiceContext struct {
 	Config        config.Config
-	Usercheck     rest.Middleware
+	CheckToken     rest.Middleware
 	UserInfoModel model.UserInfoModel
 	UserCoreModel model.UserCoreModel
 	UserRpc           userclient.User
@@ -25,7 +25,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	ur := userclient.NewUser(zrpc.MustNewClient(c.UserRpc))
 	return &ServiceContext{
 		Config:        c,
-		Usercheck:     middleware.NewUsercheckMiddleware(ur).Handle,
+		CheckToken:     middleware.NewCheckTokenMiddleware(ur).Handle,
 		UserInfoModel: ui,
 		UserCoreModel: uc,
 		UserRpc:ur,

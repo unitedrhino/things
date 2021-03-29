@@ -49,7 +49,7 @@ type LoginResp struct {
 }
 
 type RegisterCoreReq struct {
-	RegType string `json:"regType,options=wechat|phone"` //注册方式:	0:手机号注册 1:微信注册
+	ReqType string `json:"reqType,options=wechat|phone"` //注册方式:	0:手机号注册 1:微信注册
 	Note    string `json:"note,optional"`                //手机号注册时填写手机号
 	Code    string `json:"code"`                         //验证码    微信登录填code
 	CodeID  string `json:"codeID"`                       //验证码编号 微信登录填state
@@ -61,6 +61,7 @@ type RegisterCoreResp struct {
 }
 
 type Register2Req struct {
+	Token    string `json:"token"`    //注册第一步的token
 	UserName string `json:"username"` //账号不可重复
 	Password string `json:"password"` //明文密码
 	UserInfo

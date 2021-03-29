@@ -1,6 +1,22 @@
 Name: user.rpc
 ListenOn: 127.0.0.1:8080
+NodeID: 1
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: user.rpc
+Mysql:
+  DataSource: root:password@tcp(127.0.0.1:3308)/pet?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+
+
+Rej:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 600     #过期时间单位秒
+
+UserToken:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 86400

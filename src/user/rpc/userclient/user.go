@@ -14,18 +14,18 @@ import (
 )
 
 type (
-	Register2Req     = user.Register2Req
-	GetUserInfoReq   = user.GetUserInfoReq
-	LoginResp        = user.LoginResp
+	LoginReq         = user.LoginReq
 	JwtToken         = user.JwtToken
+	UserInfo         = user.UserInfo
 	RegisterCoreReq  = user.RegisterCoreReq
 	RegisterCoreResp = user.RegisterCoreResp
-	LoginReq         = user.LoginReq
-	CheckTokenReq    = user.CheckTokenReq
-	CheckTokenResp   = user.CheckTokenResp
-	UserInfo         = user.UserInfo
-	Register2Resp    = user.Register2Resp
+	Register2Req     = user.Register2Req
+	GetUserInfoReq   = user.GetUserInfoReq
 	GetUserInfoResp  = user.GetUserInfoResp
+	LoginResp        = user.LoginResp
+	CheckTokenResp   = user.CheckTokenResp
+	Register2Resp    = user.Register2Resp
+	CheckTokenReq    = user.CheckTokenReq
 
 	User interface {
 		Login(ctx context.Context, in *LoginReq) (*LoginResp, error)

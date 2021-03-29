@@ -78,16 +78,16 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 	case "wxin":
 		l.Error("wxin not suppost")
 	default:
-		return nil, errors.ErrorParameter
+		return nil, errors.Parameter
 	}
 	switch err {
 	case nil:
 		return l.getRet(uc)
 	case model.ErrNotFound:
-		return nil, errors.ErrorUsernameUnRegister
+		return nil, errors.UsernameUnRegister
 	default:
 		l.Errorf("%s|FindOneByPhone|req=%#v|err=%#v",utils.FuncName(),req,err)
-		return nil, errors.ErrorSystem
+		return nil, errors.System
 	}
 	return &types.LoginResp{}, nil
 }

@@ -54,7 +54,7 @@ type LoginResp {
 
 //登录信息注册,注册第一步(注册核心登录信息) 返回一个jwt用来第二步注册 第一步注册成功后就可以登录了,第二步注册是填写信息
 type RegisterCoreReq {
-	RegType string `json:"regType,options=wechat|phone"` //注册方式:	0:手机号注册 1:微信注册
+	ReqType string `json:"reqType,options=wechat|phone"` //注册方式:	0:手机号注册 1:微信注册
 	Note    string `json:"note,optional"`                //手机号注册时填写手机号
 	Code    string `json:"code"`                         //验证码    微信登录填code
 	CodeID  string `json:"codeID"`                       //验证码编号 微信登录填state
@@ -67,6 +67,7 @@ type RegisterCoreResp {
 
 //需要核心注册的token在头中带上
 type Register2Req {
+	Token    string `json:"token"`    //注册第一步的token
 	UserName string `json:"username"` //账号不可重复
 	Password string `json:"password"` //明文密码
 	UserInfo
@@ -84,7 +85,6 @@ service user {
 }
 
 @server(
-	jwt: Rej
 	group:user
 )
 service user {
@@ -93,8 +93,7 @@ service user {
 }
 
 @server(
-	jwt: Auth
-	middleware: Usercheck
+	middleware: CheckToken
 	group:user
 )
 service user {

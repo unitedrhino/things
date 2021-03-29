@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+
+package proto;
+
+message Pager {
+  int64 page = 1;
+  int64 page_size = 2;
+  int64 total_rows = 3;
+}
+
+message Error {
+  int32 code = 1;
+  string message = 2;
+  repeated string detail = 3;
+}
