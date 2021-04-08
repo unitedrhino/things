@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"yl/shared/utils"
+	"yl/src/user/common"
 
 	"yl/src/user/rpc/internal/config"
 	"yl/src/user/rpc/internal/server"
@@ -23,7 +25,7 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
 	srv := server.NewUserServer(ctx)
-
+	common.UserID = utils.NewSnowFlake(c.NodeID)
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		user.RegisterUserServer(grpcServer, srv)
 	})

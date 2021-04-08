@@ -32,35 +32,34 @@ message RegisterCoreReq{
 }
 message RegisterCoreResp{
   int64 uid = 1;//用户id
-  JwtToken token = 2; //用于第二步注册的token
 }
 
 
 message Register2Req{
   string userName = 1;
   string password = 2;
-  string token = 3; //注册用的token
-  UserInfo info = 4;
+  UserInfo info = 3;
 }
 
 message  Register2Resp{
 }
 
 message GetUserInfoReq{
-  int64 uid = 1;//用户id
+  repeated int64 uid = 1;//用户id
 }
 message GetUserInfoResp{
-  UserInfo info = 1;
+  repeated UserInfo info = 1;
 }
 
 message LoginReq{
-    string userID = 1; //登录账号(支持用户名,手机号登录)
-    int32 pwdType = 2;//账号密码登录时需要填写.1，明文 2，md5加密 3,无密码
-    string password =3;//密码，需要md5转换 短信登录方式为空
-    string loginType =4;//验证类型 sms 短信验证码 img 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录
+    string userID = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+    int32 pwdType = 2;//账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
+    string password =3;//密码，建议md5转换 密码登录时需要填写
+    string loginType =4;//验证类型 sms 短信验证码 img 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxmini 微信小程序
     string code = 5;//验证码    微信登录填code
     string codeID = 6;//验证码编号 微信登录填state
 }
+
 message LoginResp{
   UserInfo info = 1;
   JwtToken token =2;

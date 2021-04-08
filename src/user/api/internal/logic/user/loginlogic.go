@@ -2,12 +2,11 @@ package logic
 
 import (
 	"context"
-	"database/sql"
 	"time"
-	"yl/shared/define"
 	"yl/shared/errors"
 	"yl/shared/utils"
 	"yl/src/user/model"
+	"yl/src/user/rpc/user"
 
 	"yl/src/user/api/internal/svc"
 	"yl/src/user/api/internal/types"
@@ -40,15 +39,15 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*types.LoginResp, error){
 	return &types.LoginResp{
 		UserInfo: types.UserInfo{
 			Uid         :ui.Uid,
-			UserName    :uc.UserName.String,
-			NickName    :ui.NickName.String,
+			UserName    :uc.UserName,
+			NickName    :ui.NickName,
 			InviterUid  :ui.InviterUid,
-			InviterId   :ui.InviterId.String,
-			City        :ui.City.String,
-			Country     :ui.Country.String,
-			Province    :ui.Province.String,
-			Language    :ui.Language.String,
-			HeadImgUrl  :ui.Headimgurl.String,
+			InviterId   :ui.InviterId,
+			City        :ui.City,
+			Country     :ui.Country,
+			Province    :ui.Province,
+			Language    :ui.Language,
+			HeadImgUrl  :ui.Headimgurl,
 			CreateTime :ui.CreatedTime.Time.Unix(),
 		},
 		JwtToken: types.JwtToken{
@@ -60,34 +59,42 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*types.LoginResp, error){
 }
 
 func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
-	var uc *model.UserCore
-	var err error
-	switch req.LoginType {
-	case "sms"://暂时不验证
-		uc,err=l.svcCtx.UserCoreModel.FindOneByPhone(sql.NullString{String: req.UserID,Valid: true})
-	case "img"://暂时不验证
-		lt := utils.GetLoginNameType(req.UserID)
-		switch lt {
-		case define.Phone:
-			uc,err=l.svcCtx.UserCoreModel.FindOneByPhone(sql.NullString{String: req.UserID,Valid: true})
-		default :
-			uc,err=l.svcCtx.UserCoreModel.FindOneByUserName(sql.NullString{String: req.UserID,Valid: true})
-		}
-	case "wxopen":
-		l.Error("wxin not suppost")
-	case "wxin":
-		l.Error("wxin not suppost")
-	default:
-		return nil, errors.Parameter
+	resp, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
+		UserID    :req.UserID,
+		PwdType   :req.PwdType,
+		Password  :req.Password,
+		LoginType :req.LoginType,
+		Code      :req.Code,
+		CodeID    :req.CodeID,
+		})
+	if err != nil {
+		er :=errors.Fmt(err)
+		l.Errorf("[%s]|rpc.Login|req=%v|err=%#v",utils.FuncName(),req,er)
+		return nil,er
 	}
-	switch err {
-	case nil:
-		return l.getRet(uc)
-	case model.ErrNotFound:
-		return nil, errors.UsernameUnRegister
-	default:
-		l.Errorf("%s|FindOneByPhone|req=%#v|err=%#v",utils.FuncName(),req,err)
-		return nil, errors.System
+	if resp == nil {
+		l.Errorf("%s|rpc.RegisterCore|return nil|req=%v",utils.FuncName(),req)
+		return nil,errors.System.AddDetail("register core rpc return nil")
 	}
-	return &types.LoginResp{}, nil
+	return &types.LoginResp{
+		types.UserInfo{
+			Uid        : resp.Info.Uid,
+			UserName   : resp.Info.UserName,
+			NickName   : resp.Info.NickName,
+			InviterUid : resp.Info.InviterUid,
+			InviterId  : resp.Info.InviterId,
+			Sex        : resp.Info.Sex,
+			City       : resp.Info.City,
+			Country    : resp.Info.Country,
+			Province   : resp.Info.Province,
+			Language   : resp.Info.Language,
+			HeadImgUrl : resp.Info.HeadImgUrl,
+			CreateTime : resp.Info.CreateTime,
+		},
+		types.JwtToken{
+			AccessToken : resp.Token.AccessToken,
+			AccessExpire: resp.Token.AccessExpire,
+			RefreshAfter: resp.Token.RefreshAfter,
+		},
+	},nil
 }

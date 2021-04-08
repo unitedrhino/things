@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"time"
 	"yl/shared/errors"
 	"yl/shared/utils"
 	"yl/src/user/rpc/user"
@@ -37,19 +38,23 @@ func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.Regi
 	if err != nil {
 		er :=errors.Fmt(err)
 		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v",utils.FuncName(),req,er)
-		return &types.RegisterCoreResp{},er
+		return &types.RegisterCoreResp{},errors.System.AddDetail(er.Error())
 	}
 	if resp == nil {
 		l.Errorf("%s|rpc.RegisterCore|return nil|req=%v",utils.FuncName(),req)
-		return &types.RegisterCoreResp{},errors.System
+		return &types.RegisterCoreResp{},errors.System.AddDetail("register core rpc return nil")
 	}
-	l.Infof("%s|req=%v|resp=%v",utils.FuncName(),req,resp)
+	now := time.Now().Unix()
+	accessExpire := l.svcCtx.Config.Rej.AccessExpire
+	jwtToken, err := utils.GetJwtToken(l.svcCtx.Config.Rej.AccessSecret, now, accessExpire, resp.Uid)
+	if err != nil {
+		return nil, errors.System.AddDetail(err.Error())
+	}
 	return &types.RegisterCoreResp{
 		Uid: resp.Uid,
 		JwtToken:types.JwtToken{
-			AccessToken  :resp.Token.AccessToken,
-			AccessExpire :resp.Token.AccessExpire,
-			RefreshAfter :resp.Token.RefreshAfter,
+			AccessToken:  jwtToken,
+			AccessExpire: now + accessExpire,
 		},
 	}, nil
 }

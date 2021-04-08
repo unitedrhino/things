@@ -2,11 +2,9 @@ package logic
 
 import (
 	"context"
-	"database/sql"
-	"yl/shared/define"
 	"yl/shared/errors"
 	"yl/shared/utils"
-	"yl/src/user/model"
+	"yl/src/user/rpc/user"
 
 	"yl/src/user/api/internal/svc"
 	"yl/src/user/api/internal/types"
@@ -28,45 +26,43 @@ func NewRegister2Logic(ctx context.Context, svcCtx *svc.ServiceContext) Register
 	}
 }
 
-func (l *Register2Logic)register(req types.Register2Req, uc *model.UserCore)(error){
-	_,err :=l.svcCtx.UserInfoModel.Insert(model.UserInfo{
-		Uid         :req.Uid,
-		NickName    :sql.NullString{String: req.NickName,Valid: true},
-		InviterUid  :req.InviterUid,
-		InviterId   :sql.NullString{String: req.NickName,Valid: true},
-		Sex         :req.Sex,
-		City        :sql.NullString{String: req.City,Valid: true},
-		Country     :sql.NullString{String: req.Country,Valid: true},
-		Province    :sql.NullString{String: req.Province,Valid: true},
-		Language    :sql.NullString{String: req.Language,Valid: true},
-	})
-	if err != nil {
-		return errors.System
-	}
-	uc.Status = define.NomalStatus
-	uc.UserName = sql.NullString{String: req.UserName,Valid: true}
-	uc.Password = sql.NullString{String: utils.MakePwd(req.Password,uc.Uid,false),Valid: true}
-	err = l.svcCtx.UserCoreModel.Update(*uc)
-	if err != nil {
-		return errors.System
-	}
-	return nil
-}
-
 
 //注册完成后就需要填写用户信息,填写完成后才算注册成功(目前只有手机号注册登录需要走这步)
 func (l *Register2Logic) Register2(req types.Register2Req) error {
-	uc,err := l.svcCtx.UserCoreModel.FindOne(req.Uid)
-	switch err{
-	case nil://如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status != define.NotRegistStatus{
-			return errors.DuplicateRegister
-		}
-		return l.register(req,uc)
-	case model.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
-		return errors.RegisterOne
-	default:
-		break
+	token,err := utils.ParseToken(req.Token, l.svcCtx.Config.Rej.AccessSecret)
+	if err != nil {
+		l.Errorf("parseToken failure|token=%s|err=%v",token,err)
+		return err
 	}
-	return errors.System
+	if token.Uid != req.Uid {
+		l.Errorf("uid is invalid")
+		return errors.UidNotCompare
+	}
+	resp, err := l.svcCtx.UserRpc.Register2(l.ctx, &user.Register2Req{
+		UserName :req.UserName,
+		Password :req.Password,
+		Info     :&user.UserInfo{
+			Uid        :req.Uid,
+			UserName   :req.UserName,
+			NickName   :req.NickName,
+			InviterUid :req.InviterUid,
+			InviterId  :req.InviterId,
+			Sex        :req.Sex,
+			City       :req.City,
+			Country    :req.Country,
+			Province   :req.Province,
+			Language   :req.Language,
+			HeadImgUrl :req.HeadImgUrl,
+		},
+	})
+	if err != nil {
+		er :=errors.Fmt(err)
+		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v",utils.FuncName(),req,er)
+		return er
+	}
+	if resp == nil {
+		l.Errorf("%s|rpc.RegisterCore|return nil|req=%v",utils.FuncName(),req)
+		return errors.System.AddDetail("register core rpc return nil")
+	}
+	return nil
 }

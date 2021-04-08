@@ -5,10 +5,12 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/tal-tech/go-zero/core/logx"
 	"net"
 	"net/http"
 	"regexp"
 	"runtime"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"yl/shared/define"
@@ -116,12 +118,12 @@ func FuncName()string{
 //	return fmt.Sprintf("%s:%d:%s",file,line,f.Name())
 //}
 
-//func HandleThrow(p interface{})  {
-//	pc := make([]uintptr,1)
-//	runtime.Callers(2,pc)
-//	f := runtime.FuncForPC(pc[0])
-//	logx.Errorf("THROW_ERROR|func=%s|error=%#v|stack=%s\n",f,p,string(debug.Stack()))
-//}
+func HandleThrow(p interface{})  {
+	pc := make([]uintptr,1)
+	runtime.Callers(2,pc)
+	f := runtime.FuncForPC(pc[0])
+	logx.Errorf("THROW_ERROR|func=%s|error=%#v|stack=%s\n",f,p,string(debug.Stack()))
+}
 
 func Ip2binary(ip string) string {
 	str := strings.Split(ip, ".")

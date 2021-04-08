@@ -3,7 +3,6 @@ package errors
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tal-tech/go-zero/core/logx"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"yl/shared/proto"
@@ -25,18 +24,18 @@ type rpcError interface {
 //	return s.Err()
 //}
 
-func (c *CodeError)ToRpc() error{
+func (c CodeError)ToRpc() error{
 	s, _ := status.New(codes.Unknown, c.Msg).
 		WithDetails(&proto.Error{Code: int32(c.Code), Message: c.Msg,Detail: c.Details})
 	return s.Err()
 }
 
-func (c *CodeError)WithMsg(msg string) *CodeError{
+func (c CodeError)WithMsg(msg string) *CodeError{
 	return &CodeError{Code: c.Code, Msg: msg}
 }
-func (c *CodeError)AddDetail(msg string) *CodeError{
+func (c CodeError)AddDetail(msg string) *CodeError{
 	 c.Details = append(c.Details, msg)
-	 return c
+	 return &c
 }
 
 func NewCodeError(code int, msg string) *CodeError {
@@ -47,10 +46,9 @@ func NewDefaultError(msg string) error {
 	return Default.WithMsg(msg)
 }
 
-func (e *CodeError) Error() string {
+func (e CodeError) Error() string {
 
-	ret,er :=json.Marshal(*e)
-	logx.Errorf("err|ret=%s|er=%v|msg=%#v",string(ret),er,e)
+	ret,_ :=json.Marshal(e)
 	return string(ret)
 }
 
