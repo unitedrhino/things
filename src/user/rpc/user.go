@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/spf13/cast"
 	"yl/shared/utils"
 	"yl/src/user/common"
 
@@ -23,6 +25,8 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
+	conf,_ := json.Marshal(c)
+	fmt.Printf("config:%s\n",cast.ToString(conf))
 	ctx := svc.NewServiceContext(c)
 	srv := server.NewUserServer(ctx)
 	common.UserID = utils.NewSnowFlake(c.NodeID)

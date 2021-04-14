@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/zrpc"
+	"yl/shared/third/weixin"
 )
 
 type Config struct {
@@ -20,4 +21,5 @@ type Config struct {
 		AccessExpire int64
 	}
 	NodeID int64
+	WexinMiniprogram weixin.MiniprogramConf `json:",optional"` // 微信小程序，可选
 }

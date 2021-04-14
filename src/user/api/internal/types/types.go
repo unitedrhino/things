@@ -35,12 +35,12 @@ type GetCaptchaResp struct {
 }
 
 type LoginReq struct {
-	UserID    string `json:"userID,optional"`                              //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
-	PwdType   int32  `json:"pwdtype,optional"`                             //账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
-	Password  string `json:"password,optional"`                            //密码，建议md5转换 密码登录时需要填写
-	LoginType string `json:"loginType,options=sms|img|wxopen|wxin|wxmini"` //验证类型 sms 短信验证码 img 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxmini 微信小程序
-	Code      string `json:"code,optional"`                                //验证码    微信登录填code
-	CodeID    string `json:"codeID,optional"`                              //验证码编号 微信登录填state
+	UserID    string `json:"userID,optional"`                               //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+	PwdType   int32  `json:"pwdtype,optional"`                              //账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
+	Password  string `json:"password,optional"`                             //密码，建议md5转换 密码登录时需要填写
+	LoginType string `json:"loginType,options=sms|img|wxopen|wxin|wxminip"` //验证类型 sms 短信验证码 img 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
+	Code      string `json:"code,optional"`                                 //验证码    微信登录填code
+	CodeID    string `json:"codeID,optional"`                               //验证码编号 微信登录填state
 }
 
 type LoginResp struct {
@@ -49,10 +49,10 @@ type LoginResp struct {
 }
 
 type RegisterCoreReq struct {
-	ReqType string `json:"reqType,options=wechat|phone"` //注册方式:	0:手机号注册 1:微信注册
-	Note    string `json:"note,optional"`                //手机号注册时填写手机号
-	Code    string `json:"code"`                         //验证码    微信登录填code
-	CodeID  string `json:"codeID"`                       //验证码编号 微信登录填state
+	ReqType string `json:"reqType,options=phone|wxopen|wxin|wxminip"` //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
+	Note    string `json:"note,optional"`                             //手机号注册时填写手机号
+	Code    string `json:"code"`                                      //验证码    微信登录填code
+	CodeID  string `json:"codeID"`                                    //验证码编号 微信登录填state
 }
 
 type RegisterCoreResp struct {
