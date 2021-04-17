@@ -24,6 +24,7 @@ var (
 type (
 	UserInfoModel interface {
 		Insert(data UserInfo) (sql.Result, error)
+		InsertOrUpdate(data UserInfo) error
 		FindOne(uid int64) (*UserInfo, error)
 		Update(data UserInfo) error
 		Delete(uid int64) error
@@ -92,6 +93,18 @@ func (m *defaultUserInfoModel) Update(data UserInfo) error {
 	return err
 }
 
+func (m *defaultUserInfoModel) InsertOrUpdate(data UserInfo) error {
+	_, err := m.FindOne(data.Uid)
+	switch err {
+	case nil://如果找到了直接更新
+		err = m.Update(data)
+	case ErrNotFound://如果没找到则插入
+		_,err = m.Insert(data)
+	}
+	return err
+}
+
+
 func (m *defaultUserInfoModel) Delete(uid int64) error {
 
 	userInfoUidKey := fmt.Sprintf("%s%v", cacheUserInfoUidPrefix, uid)
@@ -110,3 +123,5 @@ func (m *defaultUserInfoModel) queryPrimary(conn sqlx.SqlConn, v, primary interf
 	query := fmt.Sprintf("select %s from %s where `uid` = ? limit 1", userInfoRows, m.table)
 	return conn.QueryRow(v, query, primary)
 }
+
+

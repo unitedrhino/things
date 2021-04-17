@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/spf13/cast"
+	"yl/shared/errors"
 	"yl/shared/utils"
 	"yl/src/user/common"
 
@@ -33,6 +34,7 @@ func main() {
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		user.RegisterUserServer(grpcServer, srv)
 	})
+	s.AddUnaryInterceptors(errors.ErrorInterceptor)
 	defer s.Stop()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)

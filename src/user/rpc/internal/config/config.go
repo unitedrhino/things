@@ -22,4 +22,9 @@ type Config struct {
 	}
 	NodeID int64
 	WexinMiniprogram weixin.MiniprogramConf `json:",optional"` // 微信小程序，可选
+	UserOpt struct{
+		NeedUserName bool	`json:default=true`	//注册是否必须填写账号密码
+		NeedPassWord bool   `json:default=true`	//注册是否必须填写账号密码
+		PassLevel	 int32	`json:default=2`	//用户密码强度级别
+	}   // 用户登录注册选项
 }

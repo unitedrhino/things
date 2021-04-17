@@ -17,6 +17,6 @@ const (
 
 type UserStatus = int64
 const (
-	NotRegistStatus UserStatus = iota
-	NomalStatus
+	NotRegistStatus UserStatus = iota   //未注册完成状态只注册了第一步
+	NomalStatus							//正常状态
 )

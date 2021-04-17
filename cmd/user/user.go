@@ -1,5 +1,5 @@
 package main
-import "yl/src/user/api"
+import "yl/src/webapi/api"
 func main() {
 	api.Run()
 }

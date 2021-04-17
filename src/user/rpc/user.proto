@@ -36,9 +36,8 @@ message RegisterCoreResp{
 
 
 message Register2Req{
-  string userName = 1;
+  UserInfo info = 1;
   string password = 2;
-  UserInfo info = 3;
 }
 
 message  Register2Resp{

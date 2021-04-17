@@ -41,8 +41,8 @@ func CheckUserName(name string) error {
 检测密码是否符合规范 需要至少8位 并且需要包含数字和字母
 */
 //密码强度必须为字⺟⼤⼩写+数字+符号，9位以上
-func CheckPasswordLever(ps string) int {
-	level := 0
+func CheckPasswordLever(ps string) int32 {
+	level := int32(0)
 	if len(ps) < 8 {
 		return 0
 	}
@@ -90,7 +90,7 @@ func MakePwd(pwd string, uid int64, isMd5 bool) string {
 		pwd = MD5V([]byte(pwd))
 	}
 	strUid := strconv.FormatInt(uid, 8)
-	return MD5V([]byte(pwd + strUid + "gin"))
+	return MD5V([]byte(pwd + strUid + "god17052709767"))
 }
 
 

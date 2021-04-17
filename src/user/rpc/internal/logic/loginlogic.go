@@ -33,12 +33,12 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*user.LoginResp, error){
 	jwtToken, err := utils.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid)
 	if err != nil {
 		l.Error(err)
-		return nil, errors.System.AddDetail(err.Error()).ToRpc()
+		return nil, errors.System.AddDetail(err.Error())
 	}
 	ui,err := l.svcCtx.UserInfoModel.FindOne(uc.Uid)
 	if err != nil {
 		l.Error(err)
-		return nil, errors.System.AddDetail(err.Error()).ToRpc()
+		return nil, errors.System.AddDetail(err.Error())
 	}
 	return &user.LoginResp{
 		Info: &user.UserInfo{
@@ -110,10 +110,10 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	case nil:
 		return l.getRet(uc)
 	case model.ErrNotFound:
-		return nil, errors.UsernameUnRegister.ToRpc()
+		return nil, errors.UnRegister
 	default:
 		l.Errorf("GetUserCore|req=%#v|err=%#v",in,err)
-		return nil,errors.ToRpc(err)
+		return nil,err
 	}
 	return &user.LoginResp{}, nil
 }

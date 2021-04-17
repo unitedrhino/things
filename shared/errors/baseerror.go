@@ -1,8 +1,10 @@
 package errors
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"yl/shared/proto"
@@ -31,6 +33,9 @@ func (c CodeError)ToRpc() error{
 }
 
 func ToRpc(err error) error {
+	if err == nil {
+		return err
+	}
 	switch err.(type) {
 	case RpcError :
 		return err
@@ -65,6 +70,9 @@ func (e CodeError) Error() string {
 
 //将普通的error及转换成json的error或error类型的转回自己的error
 func Fmt(errs error) *CodeError{
+	if errs == nil {
+		return nil
+	}
 	switch errs.(type) {
 	case *CodeError:
 		return errs.(*CodeError)
@@ -90,7 +98,8 @@ func Fmt(errs error) *CodeError{
 }
 
 
-//func FromError(err error) *status.Status {
-//	s, _ := status.FromError(err)
-//	return s
-//}
+func ErrorInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	resp, err := handler(ctx, req)
+	err = ToRpc(err)
+	return resp, err
+}

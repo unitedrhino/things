@@ -14,16 +14,16 @@ import (
 )
 
 type (
-	JwtToken         = user.JwtToken
-	RegisterCoreReq  = user.RegisterCoreReq
-	LoginResp        = user.LoginResp
-	CheckTokenReq    = user.CheckTokenReq
 	GetUserInfoReq   = user.GetUserInfoReq
-	GetUserInfoResp  = user.GetUserInfoResp
-	LoginReq         = user.LoginReq
+	CheckTokenReq    = user.CheckTokenReq
 	CheckTokenResp   = user.CheckTokenResp
+	JwtToken         = user.JwtToken
 	UserInfo         = user.UserInfo
 	RegisterCoreResp = user.RegisterCoreResp
+	GetUserInfoResp  = user.GetUserInfoResp
+	LoginReq         = user.LoginReq
+	LoginResp        = user.LoginResp
+	RegisterCoreReq  = user.RegisterCoreReq
 	Register2Req     = user.Register2Req
 	Register2Resp    = user.Register2Resp
 
