@@ -44,15 +44,15 @@ type LoginReq struct {
 }
 
 type LoginResp struct {
-	UserInfo
-	JwtToken
+	Info  UserInfo `json:"info"`  //用户信息
+	Token JwtToken `json:"token"` //用户token
 }
 
 type RegisterCoreReq struct {
 	ReqType string `json:"reqType,options=phone|wxopen|wxin|wxminip"` //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
 	Note    string `json:"note,optional"`                             //手机号注册时填写手机号
 	Code    string `json:"code"`                                      //验证码    微信登录填code
-	CodeID  string `json:"codeID"`                                    //验证码编号 微信登录填state
+	CodeID  string `json:"codeID,optional"`                           //验证码编号 微信登录填state
 }
 
 type RegisterCoreResp struct {

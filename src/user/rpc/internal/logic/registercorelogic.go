@@ -88,6 +88,7 @@ func (l *RegisterCoreLogic) handleWxminip(in *user.RegisterCoreReq) (*user.Regis
 	} else if ret.ErrCode != 0 {
 		return nil, errors.Parameter.AddDetail(ret.ErrMsg)
 	}
+
 	uc,err := l.svcCtx.UserCoreModel.FindOneByWechat(ret.UnionID)
 	switch err{
 	case nil://如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行

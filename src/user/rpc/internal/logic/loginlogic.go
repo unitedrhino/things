@@ -108,6 +108,9 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	uc,err := l.GetUserCore(in)
 	switch err {
 	case nil:
+		if uc.Status != define.NomalStatus{
+			return nil, errors.UnRegister
+		}
 		return l.getRet(uc)
 	case model.ErrNotFound:
 		return nil, errors.UnRegister

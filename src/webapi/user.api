@@ -47,9 +47,10 @@ type LoginReq {
 	Code      string `json:"code,optional"`                                 //验证码    微信登录填code
 	CodeID    string `json:"codeID,optional"`                               //验证码编号 微信登录填state
 }
+
 type LoginResp {
-	UserInfo
-	JwtToken
+	Info  UserInfo `json:"info"`  //用户信息
+	Token JwtToken `json:"token"` //用户token
 }
 
 //登录信息注册,注册第一步(注册核心登录信息) 返回一个jwt用来第二步注册 第一步注册成功后就可以登录了,第二步注册是填写信息
@@ -57,7 +58,7 @@ type RegisterCoreReq {
 	ReqType string `json:"reqType,options=phone|wxopen|wxin|wxminip"` //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
 	Note    string `json:"note,optional"`                             //手机号注册时填写手机号
 	Code    string `json:"code"`                                      //验证码    微信登录填code
-	CodeID  string `json:"codeID"`                                    //验证码编号 微信登录填state
+	CodeID  string `json:"codeID,optional"`                           //验证码编号 微信登录填state
 }
 //返回uid及token token随着注册第二步返回
 type RegisterCoreResp {

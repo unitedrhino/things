@@ -37,7 +37,7 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*types.LoginResp, error){
 	}
 	ui,err := l.svcCtx.UserInfoModel.FindOne(uc.Uid)
 	return &types.LoginResp{
-		UserInfo: types.UserInfo{
+		Info: types.UserInfo{
 			Uid         :ui.Uid,
 			UserName    :uc.UserName,
 			NickName    :ui.NickName,
@@ -50,7 +50,7 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*types.LoginResp, error){
 			HeadImgUrl  :ui.Headimgurl,
 			CreateTime :ui.CreatedTime.Time.Unix(),
 		},
-		JwtToken: types.JwtToken{
+		Token: types.JwtToken{
 			AccessToken:  jwtToken,
 			AccessExpire: now + accessExpire,
 			RefreshAfter: now + accessExpire/2,
