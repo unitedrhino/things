@@ -29,6 +29,7 @@ func NewRegister2Logic(ctx context.Context, svcCtx *svc.ServiceContext) Register
 
 //注册完成后就需要填写用户信息,填写完成后才算注册成功(目前只有手机号注册登录需要走这步)
 func (l *Register2Logic) Register2(req types.Register2Req) error {
+	l.Infof("Register2|req=%+v",req)
 	token,err := utils.ParseToken(req.Token, l.svcCtx.Config.Rej.AccessSecret)
 	if err != nil {
 		l.Errorf("parseToken failure|token=%s|err=%v",token,err)
@@ -38,7 +39,7 @@ func (l *Register2Logic) Register2(req types.Register2Req) error {
 		l.Errorf("uid is invalid")
 		return errors.UidNotCompare
 	}
-	resp, err := l.svcCtx.UserRpc.Register2(l.ctx, &user.Register2Req{
+	resp, er := l.svcCtx.UserRpc.Register2(l.ctx, &user.Register2Req{
 		Password :req.Password,
 		Info     :&user.UserInfo{
 			Uid        :req.Uid,
@@ -54,10 +55,10 @@ func (l *Register2Logic) Register2(req types.Register2Req) error {
 			HeadImgUrl :req.HeadImgUrl,
 		},
 	})
-	if err != nil {
-		er :=errors.Fmt(err)
-		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v",utils.FuncName(),req,er)
-		return er
+	if er != nil {
+		err :=errors.Fmt(er)
+		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v",utils.FuncName(),req,err)
+		return err
 	}
 	if resp == nil {
 		l.Errorf("%s|rpc.RegisterCore|return nil|req=%v",utils.FuncName(),req)

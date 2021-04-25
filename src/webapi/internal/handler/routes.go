@@ -12,38 +12,44 @@ import (
 
 func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 	engine.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/user/captcha",
-				Handler: user.CaptchaHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/user/login",
-				Handler: user.LoginHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/user/registerCore",
-				Handler: user.RegisterCoreHandler(serverCtx),
-			},
-		},
-	)
-
-	engine.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/user/register2",
-				Handler: user.Register2Handler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Record},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/captcha",
+					Handler: user.CaptchaHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/login",
+					Handler: user.LoginHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/registerCore",
+					Handler: user.RegisterCoreHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 
 	engine.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Middleware{serverCtx.Record},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/register2",
+					Handler: user.Register2Handler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	engine.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken, serverCtx.Record},
 			[]rest.Route{
 				{
 					Method:  http.MethodGet,

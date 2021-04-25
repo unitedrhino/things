@@ -8,6 +8,7 @@ import (
 	"github.com/tal-tech/go-zero/core/logx"
 	"net"
 	"net/http"
+	"os"
 	"regexp"
 	"runtime"
 	"runtime/debug"
@@ -123,6 +124,7 @@ func HandleThrow(p interface{})  {
 	runtime.Callers(2,pc)
 	f := runtime.FuncForPC(pc[0])
 	logx.Errorf("THROW_ERROR|func=%s|error=%#v|stack=%s\n",f,p,string(debug.Stack()))
+	os.Exit(-1)
 }
 
 func Ip2binary(ip string) string {

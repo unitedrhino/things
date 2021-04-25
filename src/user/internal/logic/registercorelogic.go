@@ -117,6 +117,7 @@ func (l *RegisterCoreLogic) handleWxminip(in *user.RegisterCoreReq) (*user.Regis
 }
 
 func (l *RegisterCoreLogic) RegisterCore(in *user.RegisterCoreReq) (*user.RegisterCoreResp, error) {
+	l.Infof("RegisterCore|req=%+v",in)
 	switch in.ReqType {
 	case "wxminip":
 		return l.handleWxminip(in)

@@ -33,7 +33,7 @@ func CreateToken(secretKey string,claims CustomClaims) (string, error) {
 }
 
 // 解析 token
-func ParseToken(tokenString string,secretKey string) (*CustomClaims, error) {
+func ParseToken(tokenString string,secretKey string) (*CustomClaims, *errors.CodeError) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (i interface{}, e error) {
 		return []byte(secretKey), nil
 	})

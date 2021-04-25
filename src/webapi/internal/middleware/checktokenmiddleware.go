@@ -9,6 +9,7 @@ import (
 	"yl/shared/utils"
 	"yl/src/user/user"
 	"yl/src/user/userclient"
+	"yl/src/webapi/internal/types"
 )
 
 type CheckTokenMiddleware struct {
@@ -22,9 +23,15 @@ func NewCheckTokenMiddleware(UserRpc userclient.User) *CheckTokenMiddleware {
 func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		strIP,_ := utils.GetIP(r)
-		r.Header.Set("yl-ip",strIP)
-		strToken := r.Header.Get("yl-token")
-		resp,err:=m.UserRpc.CheckToken(r.Context(),&user.CheckTokenReq{
+		r.Header.Set(types.USER_IP,strIP)
+		strToken := r.Header.Get(types.USER_TOKEN)
+		if strToken == "" {
+			logx.WithContext(r.Context()).Errorf("%s|CheckToken|ip=%s|not find token",
+				utils.FuncName(),strIP)
+			httpx.Error(w, errors.TokenMalformed)
+			return
+		}
+		resp,err := m.UserRpc.CheckToken(r.Context(),&user.CheckTokenReq{
 			Ip: strIP,
 			Token: strToken,
 		})
@@ -36,10 +43,10 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		if resp.Token != "" {
-			w.Header().Set("yl-set-token",resp.Token)
+			w.Header().Set(types.USER_SET_TOKEN,resp.Token)
 		}
 		strUid:= strconv.FormatInt(resp.Uid,10)
-		r.Header.Set("yl-uid",strUid)
+		r.Header.Set(types.USER_UID,strUid)
 		logx.WithContext(r.Context()).Infof("CheckToken|ip=%s|uid=%s|token=%s|newToken=%s",
 			strIP,strUid,strToken,resp.Token)
 		next(w, r)

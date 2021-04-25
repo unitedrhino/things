@@ -29,6 +29,7 @@ func NewRegisterCoreLogic(ctx context.Context, svcCtx *svc.ServiceContext) Regis
 
 
 func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.RegisterCoreResp, error) {
+	l.Infof("RegisterCore|req=%+v",req)
 	resp,err:=l.svcCtx.UserRpc.RegisterCore(l.ctx,&user.RegisterCoreReq{
 		ReqType: req.ReqType,
 		Note: req.Note,

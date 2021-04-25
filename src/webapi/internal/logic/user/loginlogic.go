@@ -59,6 +59,7 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*types.LoginResp, error){
 }
 
 func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
+	l.Infof("Login|req=%+v",req)
 	resp, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
 		UserID    :req.UserID,
 		PwdType   :req.PwdType,
@@ -69,11 +70,11 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 		})
 	if err != nil {
 		er :=errors.Fmt(err)
-		l.Errorf("[%s]|rpc.Login|req=%v|err=%#v",utils.FuncName(),req,er)
+		l.Errorf("[%s]|rpc.Login|req=%v|err=%+v",utils.FuncName(),req,er)
 		return nil,er
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.RegisterCore|return nil|req=%v",utils.FuncName(),req)
+		l.Errorf("%s|rpc.RegisterCore|return nil|req=%+v",utils.FuncName(),req)
 		return nil,errors.System.AddDetail("register core rpc return nil")
 	}
 	return &types.LoginResp{

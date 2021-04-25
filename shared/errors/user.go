@@ -11,4 +11,5 @@ var (
 	DuplicateRegister   = NewCodeError(100023,"重复注册")
 	NeedUserName   		= NewCodeError(100024,"需要填入用户名")
 	PasswordLevel   	= NewCodeError(100025,"密码强度不够")
+	GetInfoPartFailure  = NewCodeError(100026,"获取用户信息有失败")
 )

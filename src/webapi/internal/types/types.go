@@ -8,18 +8,18 @@ type JwtToken struct {
 }
 
 type UserInfo struct {
-	Uid        int64  `json:"uid,string"`                 // 用户id
-	UserName   string `json:"userName,optional"`          //用户名(唯一)
-	NickName   string `json:"nickName,optional"`          // 用户的昵称
-	InviterUid int64  `json:"inviterUid,string,optional"` // 邀请人用户id
-	InviterId  string `json:"inviterId,optional"`         // 邀请码
-	Sex        int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	City       string `json:"city,optional"`              // 用户所在城市
-	Country    string `json:"country,optional"`           // 用户所在国家
-	Province   string `json:"province,optional"`          // 用户所在省份
-	Language   string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
-	HeadImgUrl string `json:"headImgUrl,optional"`        // 用户头像
-	CreateTime int64  `json:"createTime,string,optional"`
+	Uid        int64  `json:"uid,string"`                           // 用户id
+	UserName   string `json:"userName,optional,omitempty"`          //用户名(唯一)
+	NickName   string `json:"nickName,optional,omitempty"`          // 用户的昵称
+	InviterUid int64  `json:"inviterUid,string,optional,omitempty"` // 邀请人用户id
+	InviterId  string `json:"inviterId,optional,omitempty"`         // 邀请码
+	Sex        int64  `json:"sex,optional,omitempty"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	City       string `json:"city,optional,omitempty"`              // 用户所在城市
+	Country    string `json:"country,optional,omitempty"`           // 用户所在国家
+	Province   string `json:"province,optional,omitempty"`          // 用户所在省份
+	Language   string `json:"language,optional,omitempty"`          // 用户的语言，简体中文为zh_CN
+	HeadImgUrl string `json:"headImgUrl,optional,omitempty"`        // 用户头像
+	CreateTime int64  `json:"createTime,string,optional,omitempty"`
 }
 
 type GetCaptchaReq struct {

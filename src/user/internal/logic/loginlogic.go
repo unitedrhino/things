@@ -37,7 +37,7 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*user.LoginResp, error){
 	}
 	ui,err := l.svcCtx.UserInfoModel.FindOne(uc.Uid)
 	if err != nil {
-		l.Error(err)
+		l.Errorf("FindOne|uc=%+v|err=%+v",uc,err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
 	return &user.LoginResp{
@@ -80,7 +80,7 @@ func (l *LoginLogic)GetUserCore(in *user.LoginReq)(uc *model.UserCore,err error)
 		auth := l.svcCtx.WxMiniProgram.GetAuth()
 		ret, err2 := auth.Code2Session(in.Code)
 		if err2 != nil {
-			l.Errorf("Code2Session|req=%#v|ret=%#v|err=%#v",in,ret,err2)
+			l.Errorf("Code2Session|req=%#v|ret=%#v|err=%+v",in,ret,err2)
 			if ret.ErrCode != 0 {
 				return nil, errors.Parameter.AddDetail(ret.ErrMsg)
 			}
@@ -88,23 +88,19 @@ func (l *LoginLogic)GetUserCore(in *user.LoginReq)(uc *model.UserCore,err error)
 		} else if ret.ErrCode != 0 {
 			return nil, errors.Parameter.AddDetail(ret.ErrMsg)
 		}
-		l.Slowf("login|wxminip|ret=%#v",ret)
+		l.Slowf("login|wxminip|ret=%+v",ret)
 		uc, err = l.svcCtx.UserCoreModel.FindOneByWechat(ret.UnionID)
 	default:
 		l.Error("LoginType=%s|not suppost",in.LoginType)
 		return nil, errors.Parameter
 	}
-	l.Slowf("login|uc=%#v|err=%#v",uc,err)
+	l.Slowf("login|uc=%#v|err=%+v",uc,err)
 	return uc, err
 }
 
 
 func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
-	defer func() {
-		if p := recover(); p != nil {
-			utils.HandleThrow(p)
-		}
-	}()
+	l.Infof("Login|req=%+v",in)
 	uc,err := l.GetUserCore(in)
 	switch err {
 	case nil:
@@ -115,7 +111,7 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	case model.ErrNotFound:
 		return nil, errors.UnRegister
 	default:
-		l.Errorf("GetUserCore|req=%#v|err=%#v",in,err)
+		l.Errorf("GetUserCore|req=%#v|err=%+v",in,err)
 		return nil,err
 	}
 	return &user.LoginResp{}, nil
