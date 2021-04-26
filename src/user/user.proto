@@ -8,6 +8,9 @@ message JwtToken{
   int64 refreshAfter = 3;
 }
 
+message NilResp{
+
+}
 
 message UserInfo{
   int64 uid = 1;
@@ -74,10 +77,16 @@ message CheckTokenResp{
   int64 uid = 2;
 }
 
+message ModifyUserInfoReq{
+  int64 uid = 1;      //修改的用户id
+  map<string, string> info = 2; //修改的属性,参看UserInfo
+}
+
 service User {
   rpc login(LoginReq) returns(LoginResp);
   rpc registerCore(RegisterCoreReq) returns(RegisterCoreResp);
   rpc register2(Register2Req) returns(Register2Resp);
   rpc getUserInfo(GetUserInfoReq) returns(GetUserInfoResp);
   rpc CheckToken(CheckTokenReq) returns(CheckTokenResp);
+  rpc ModifyUserInfo(ModifyUserInfoReq) returns(NilResp);
 }

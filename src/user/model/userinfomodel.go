@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
@@ -46,7 +47,7 @@ type (
 		Country     string       `db:"country"`    // 用户所在国家
 		Province    string       `db:"province"`   // 用户所在省份
 		Language    string       `db:"language"`   // 用户的语言，简体中文为zh_CN
-		Headimgurl  string       `db:"headimgurl"` // 用户头像
+		HeadImgUrl  string       `db:"headImgUrl"` // 用户头像
 		CreatedTime sql.NullTime `db:"createdTime"`
 		UpdatedTime sql.NullTime `db:"updatedTime"`
 		DeletedTime sql.NullTime `db:"deletedTime"`
@@ -62,7 +63,7 @@ func NewUserInfoModel(conn sqlx.SqlConn, c cache.CacheConf) UserInfoModel {
 
 func (m *defaultUserInfoModel) Insert(data UserInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userInfoRowsExpectAutoSet)
-	ret, err := m.ExecNoCache(query, data.Uid, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.Headimgurl, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+	ret, err := m.ExecNoCache(query, data.Uid, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
 
 	return ret, err
 }
@@ -85,10 +86,11 @@ func (m *defaultUserInfoModel) FindOne(uid int64) (*UserInfo, error) {
 }
 
 func (m *defaultUserInfoModel) Update(data UserInfo) error {
+	data.UpdatedTime = sql.NullTime{Valid: true,Time: time.Now()}
 	userInfoUidKey := fmt.Sprintf("%s%v", cacheUserInfoUidPrefix, data.Uid)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, userInfoRowsWithPlaceHolder)
-		return conn.Exec(query, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.Headimgurl, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Uid)
+		return conn.Exec(query, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Uid)
 	}, userInfoUidKey)
 	return err
 }

@@ -72,11 +72,21 @@ type Register2Req {
 	Password string `json:"password,optional"` //明文密码
 	UserInfo
 }
+
+type ModifyStu {
+	Type  string `json:"type"`  //修改类型
+	Value string `json:"value"` //修改的值
+}
+type ModifyUserInfoReq {
+	//Info []ModifyStu `json:"info"` //修改参数key value数组
+	Info map[string]string `json:"info"` //修改参数key value数组
+}
+
 @server (
 	group :user
 	middleware: Record
 )
-service user {
+service webapi {
 	@handler captcha
 	post /user/captcha (GetCaptchaReq) returns (GetCaptchaResp)
 	@handler login // 登录
@@ -89,7 +99,7 @@ service user {
 	group:user
 	middleware: Record
 )
-service user {
+service webapi {
 	@handler register2 //需要验证核心注册返回的token
 	post /user/register2 (Register2Req)
 }
@@ -98,7 +108,9 @@ service user {
 	middleware: CheckToken,Record
 	group:user
 )
-service user {
+service webapi {
 	@handler userInfo
 	get /user/info () returns (UserInfo)
+	@handler modifyUserInfo
+	post /user/modifyUserInfo (ModifyUserInfoReq)
 }

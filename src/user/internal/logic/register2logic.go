@@ -40,7 +40,7 @@ func (l *Register2Logic)register(in *user.Register2Req, uc *model.UserCore)(*use
 		Country     :in.Info.Country,
 		Province    :in.Info.Province,
 		Language    :in.Info.Language,
-		Headimgurl  :in.Info.HeadImgUrl,//头像之后需要进行文件的处理及校验
+		HeadImgUrl  :in.Info.HeadImgUrl,//头像之后需要进行文件的处理及校验
 		CreatedTime: sql.NullTime{Valid: true,Time: time.Now()},
 	}
 	err := l.svcCtx.UserInfoModel.InsertOrUpdate(userInfo)

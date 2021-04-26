@@ -38,9 +38,9 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*user.LoginResp, error){
 	ui,err := l.svcCtx.UserInfoModel.FindOne(uc.Uid)
 	if err != nil {
 		l.Errorf("FindOne|uc=%+v|err=%+v",uc,err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
 	}
-	return &user.LoginResp{
+	resp := &user.LoginResp{
 		Info: &user.UserInfo{
 			Uid         :ui.Uid,
 			UserName    :uc.UserName,
@@ -51,7 +51,7 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*user.LoginResp, error){
 			Country     :ui.Country,
 			Province    :ui.Province,
 			Language    :ui.Language,
-			HeadImgUrl  :ui.Headimgurl,
+			HeadImgUrl  :ui.HeadImgUrl,
 			CreateTime :ui.CreatedTime.Time.Unix(),
 		},
 		Token: &user.JwtToken{
@@ -59,7 +59,9 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*user.LoginResp, error){
 			AccessExpire: now + accessExpire,
 			RefreshAfter: now + accessExpire/2,
 		},
-	}, nil
+	}
+	l.Infof("Login|getRet=%+v",resp)
+	return resp, nil
 }
 
 

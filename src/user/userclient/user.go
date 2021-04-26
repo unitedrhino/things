@@ -14,18 +14,20 @@ import (
 )
 
 type (
-	GetUserInfoReq   = user.GetUserInfoReq
-	CheckTokenReq    = user.CheckTokenReq
-	CheckTokenResp   = user.CheckTokenResp
-	JwtToken         = user.JwtToken
-	UserInfo         = user.UserInfo
-	RegisterCoreResp = user.RegisterCoreResp
-	GetUserInfoResp  = user.GetUserInfoResp
-	LoginReq         = user.LoginReq
-	LoginResp        = user.LoginResp
-	RegisterCoreReq  = user.RegisterCoreReq
-	Register2Req     = user.Register2Req
-	Register2Resp    = user.Register2Resp
+	JwtToken          = user.JwtToken
+	Register2Req      = user.Register2Req
+	LoginReq          = user.LoginReq
+	NilResp           = user.NilResp
+	RegisterCoreReq   = user.RegisterCoreReq
+	GetUserInfoResp   = user.GetUserInfoResp
+	LoginResp         = user.LoginResp
+	CheckTokenResp    = user.CheckTokenResp
+	Register2Resp     = user.Register2Resp
+	GetUserInfoReq    = user.GetUserInfoReq
+	CheckTokenReq     = user.CheckTokenReq
+	ModifyUserInfoReq = user.ModifyUserInfoReq
+	UserInfo          = user.UserInfo
+	RegisterCoreResp  = user.RegisterCoreResp
 
 	User interface {
 		Login(ctx context.Context, in *LoginReq) (*LoginResp, error)
@@ -33,6 +35,7 @@ type (
 		Register2(ctx context.Context, in *Register2Req) (*Register2Resp, error)
 		GetUserInfo(ctx context.Context, in *GetUserInfoReq) (*GetUserInfoResp, error)
 		CheckToken(ctx context.Context, in *CheckTokenReq) (*CheckTokenResp, error)
+		ModifyUserInfo(ctx context.Context, in *ModifyUserInfoReq) (*NilResp, error)
 	}
 
 	defaultUser struct {
@@ -69,4 +72,9 @@ func (m *defaultUser) GetUserInfo(ctx context.Context, in *GetUserInfoReq) (*Get
 func (m *defaultUser) CheckToken(ctx context.Context, in *CheckTokenReq) (*CheckTokenResp, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.CheckToken(ctx, in)
+}
+
+func (m *defaultUser) ModifyUserInfo(ctx context.Context, in *ModifyUserInfoReq) (*NilResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.ModifyUserInfo(ctx, in)
 }

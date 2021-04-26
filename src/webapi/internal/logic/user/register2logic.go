@@ -32,8 +32,9 @@ func (l *Register2Logic) Register2(req types.Register2Req) error {
 	l.Infof("Register2|req=%+v",req)
 	token,err := utils.ParseToken(req.Token, l.svcCtx.Config.Rej.AccessSecret)
 	if err != nil {
-		l.Errorf("parseToken failure|token=%s|err=%v",token,err)
-		return err
+		er :=errors.Fmt(err)
+		l.Errorf("parseToken failure|token=%s|err=%v",token,er)
+		return er
 	}
 	if token.Uid != req.Uid {
 		l.Errorf("uid is invalid")

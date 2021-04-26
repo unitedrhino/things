@@ -45,3 +45,8 @@ func (s *UserServer) CheckToken(ctx context.Context, in *user.CheckTokenReq) (*u
 	l := logic.NewCheckTokenLogic(ctx, s.svcCtx)
 	return l.CheckToken(in)
 }
+
+func (s *UserServer) ModifyUserInfo(ctx context.Context, in *user.ModifyUserInfoReq) (*user.NilResp, error) {
+	l := logic.NewModifyUserInfoLogic(ctx, s.svcCtx)
+	return l.ModifyUserInfo(in)
+}

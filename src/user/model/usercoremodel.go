@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/tal-tech/go-zero/core/logx"
 	"strings"
+	"time"
 
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
@@ -177,6 +178,7 @@ func (m *defaultUserCoreModel) FindOneByWechat(wechat string) (*UserCore, error)
 }
 
 func (m *defaultUserCoreModel) Update(data UserCore) error {
+	data.UpdatedTime = sql.NullTime{Valid: true,Time: time.Now()}
 	userCoreUidKey := fmt.Sprintf("%s%v", cacheUserCoreUidPrefix, data.Uid)
 	userCoreEmailKey := fmt.Sprintf("%s%v", cacheUserCoreEmailPrefix, data.Email)
 	userCorePhoneKey := fmt.Sprintf("%s%v", cacheUserCorePhonePrefix, data.Phone)

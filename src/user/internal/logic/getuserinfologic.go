@@ -32,6 +32,9 @@ func (l *GetUserInfoLogic) GetUserInfo(in *user.GetUserInfoReq) (*user.GetUserIn
 		}
 	}()
 	l.Infof("GetUserInfo|req=%+v",in)
+	if len(in.Uid) == 0 {
+		return nil, errors.Parameter.AddDetail("uid num = 0")
+	}
 	uis := make ([]*user.UserInfo,0,len(in.Uid))
 	failUids := make([]int64,0,cap(uis)/2 + 1)
 	for _,uid := range in.Uid {
@@ -50,7 +53,7 @@ func (l *GetUserInfoLogic) GetUserInfo(in *user.GetUserInfoReq) (*user.GetUserIn
 				Country    : ui.Country,
 				Province   : ui.Province,
 				Language   : ui.Language,
-				HeadImgUrl : ui.Headimgurl,
+				HeadImgUrl : ui.HeadImgUrl,
 				CreateTime : ui.CreatedTime.Time.Unix(),
 			}))
 		}

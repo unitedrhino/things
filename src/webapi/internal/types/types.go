@@ -65,3 +65,12 @@ type Register2Req struct {
 	Password string `json:"password,optional"` //明文密码
 	UserInfo
 }
+
+type ModifyStu struct {
+	Type  string `json:"type"`  //修改类型
+	Value string `json:"value"` //修改的值
+}
+
+type ModifyUserInfoReq struct {
+	Info map[string]string `json:"info"` //修改参数key value数组
+}

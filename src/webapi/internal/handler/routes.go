@@ -56,6 +56,11 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/user/info",
 					Handler: user.UserInfoHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/user/modifyUserInfo",
+					Handler: user.ModifyUserInfoHandler(serverCtx),
+				},
 			}...,
 		),
 	)

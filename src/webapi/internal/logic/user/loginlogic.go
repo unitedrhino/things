@@ -2,10 +2,8 @@ package logic
 
 import (
 	"context"
-	"time"
 	"yl/shared/errors"
 	"yl/shared/utils"
-	"yl/src/user/model"
 	"yl/src/user/user"
 
 	"yl/src/webapi/internal/svc"
@@ -28,35 +26,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginLogic {
 	}
 }
 
-func (l *LoginLogic)getRet(uc *model.UserCore)(*types.LoginResp, error){
-	now := time.Now().Unix()
-	accessExpire := l.svcCtx.Config.Auth.AccessExpire
-	jwtToken, err := utils.GetJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, accessExpire, uc.Uid)
-	if err != nil {
-		return nil, err
-	}
-	ui,err := l.svcCtx.UserInfoModel.FindOne(uc.Uid)
-	return &types.LoginResp{
-		Info: types.UserInfo{
-			Uid         :ui.Uid,
-			UserName    :uc.UserName,
-			NickName    :ui.NickName,
-			InviterUid  :ui.InviterUid,
-			InviterId   :ui.InviterId,
-			City        :ui.City,
-			Country     :ui.Country,
-			Province    :ui.Province,
-			Language    :ui.Language,
-			HeadImgUrl  :ui.Headimgurl,
-			CreateTime :ui.CreatedTime.Time.Unix(),
-		},
-		Token: types.JwtToken{
-			AccessToken:  jwtToken,
-			AccessExpire: now + accessExpire,
-			RefreshAfter: now + accessExpire/2,
-		},
-	}, nil
-}
+
 
 func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 	l.Infof("Login|req=%+v",req)

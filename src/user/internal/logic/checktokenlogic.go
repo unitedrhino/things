@@ -41,6 +41,7 @@ func (l *CheckTokenLogic) CheckToken(in *user.CheckTokenReq) (*user.CheckTokenRe
 	if (jwt.ExpiresAt - time.Now().Unix()) * 2 < l.svcCtx.Config.UserToken.AccessExpire {
 		token,_ = utils.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
 	}
+	l.Infof("CheckToken|uid=%d",jwt.Uid)
 	return &user.CheckTokenResp{
 		Token: token,
 		Uid: jwt.Uid,

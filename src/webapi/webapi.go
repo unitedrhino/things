@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	"yl/src/webapi/internal/config"
 	"yl/src/webapi/internal/handler"
 	"yl/src/webapi/internal/svc"
@@ -11,13 +12,14 @@ import (
 	"github.com/tal-tech/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/user.yaml", "the config file")
+var configFile = flag.String("f", "etc/webapi.yaml", "the config file")
 
 func main() {
 	flag.Parse()
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
+
 	ctx := svc.NewServiceContext(c)
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
