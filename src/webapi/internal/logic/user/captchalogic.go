@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"yl/shared/errors"
+	"yl/shared/utils"
 	"yl/src/webapi/internal/svc"
 	"yl/src/webapi/internal/types"
 
@@ -23,10 +25,15 @@ func NewCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) CaptchaLog
 }
 
 func (l *CaptchaLogic) Captcha(req types.GetCaptchaReq) (*types.GetCaptchaResp, error) {
-	// todo: add your logic here and delete this line
 	l.Infof("Captcha|req=%+v",req)
+	id,url,err:= l.svcCtx.Captcha.Get()
+	if err !=nil {
+		l.Errorf("%s|get Captcha err=%+v",utils.FuncName(),err)
+		return  nil,errors.System.AddDetail(err.Error())
+	}
 	return &types.GetCaptchaResp{
-		CodeID: "6666",
-		Expire: 10000000000000,
+		CodeID: id,
+		Expire: l.svcCtx.Config.KeepTime,
+		Url: url,
 	}, nil
 }

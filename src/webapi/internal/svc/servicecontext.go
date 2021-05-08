@@ -4,6 +4,8 @@ import (
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"github.com/tal-tech/go-zero/rest"
 	"github.com/tal-tech/go-zero/zrpc"
+	"time"
+	"yl/shared/verify"
 	"yl/src/user/model"
 	"yl/src/user/userclient"
 	"yl/src/webapi/internal/config"
@@ -17,6 +19,7 @@ type ServiceContext struct {
 	UserInfoModel model.UserInfoModel
 	UserCoreModel model.UserCoreModel
 	UserRpc       userclient.User
+	Captcha 	  *verify.Captcha
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -24,6 +27,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	ui := model.NewUserInfoModel(conn,c.CacheRedis)
 	uc := model.NewUserCoreModel(conn,c.CacheRedis)
 	ur := userclient.NewUser(zrpc.MustNewClient(c.UserRpc))
+	captcha := verify.NewCaptcha(c.ImgHeight,c.ImgWidth,c.KeyLong,c.CacheRedis,time.Duration(c.KeepTime)*time.Second)
 	return &ServiceContext{
 		Config:        c,
 		CheckToken:    middleware.NewCheckTokenMiddleware(ur).Handle,
@@ -31,5 +35,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		UserInfoModel: ui,
 		UserCoreModel: uc,
 		UserRpc:       ur,
+		Captcha: captcha,
 	}
 }

@@ -30,6 +30,11 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginLogic {
 
 func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 	l.Infof("Login|req=%+v",req)
+	if req.LoginType == "img"{
+		if l.svcCtx.Captcha.Verify(req.CodeID,req.Code) == false {
+			return nil,errors.Captcha
+		}
+	}
 	resp, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
 		UserID    :req.UserID,
 		PwdType   :req.PwdType,
@@ -40,7 +45,7 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 		})
 	if err != nil {
 		er :=errors.Fmt(err)
-		l.Errorf("[%s]|rpc.Login|req=%v|err=%+v",utils.FuncName(),req,er)
+		l.Errorf("%s|rpc.Login|req=%v|err=%+v",utils.FuncName(),req,er)
 		return nil,er
 	}
 	if resp == nil {

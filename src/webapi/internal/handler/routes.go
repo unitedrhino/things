@@ -5,12 +5,23 @@ import (
 	"net/http"
 
 	user "yl/src/webapi/internal/handler/user"
+	verify "yl/src/webapi/internal/handler/verify"
 	"yl/src/webapi/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
 )
 
 func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/verify/captcha",
+				Handler: verify.CaptchaHandler(serverCtx),
+			},
+		},
+	)
+
 	engine.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.Record},

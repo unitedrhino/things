@@ -9,4 +9,6 @@ var (
 	Parameter   		= NewCodeError(9900006,"参数错误")
 	System   			= NewCodeError(9900007,"系统错误")
 	Database			= NewCodeError(9900008,"数据库错误")
+	NotFind			    = NewCodeError(9900009,"未查询到")
+
 )
