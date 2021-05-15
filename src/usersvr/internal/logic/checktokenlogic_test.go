@@ -2,7 +2,7 @@ package logic
 
 import (
 	"testing"
-	"yl/src/user/user"
+	"yl/src/usersvr/user"
 )
 
 func TestCheckToken(t *testing.T) {

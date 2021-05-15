@@ -4,7 +4,7 @@ import (
 	"context"
 	"yl/shared/errors"
 	"yl/shared/utils"
-	"yl/src/user/user"
+	"yl/src/usersvr/user"
 
 	"yl/src/webapi/internal/svc"
 	"yl/src/webapi/internal/types"

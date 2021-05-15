@@ -5,8 +5,8 @@ import (
 	"time"
 	"yl/shared/utils"
 
-	"yl/src/user/internal/svc"
-	"yl/src/user/user"
+	"yl/src/usersvr/internal/svc"
+	"yl/src/usersvr/user"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )

@@ -1,10 +1,10 @@
-Name: user.rpc
-ListenOn: 127.0.0.1:8080
+Name: usersvr.rpc
+ListenOn: 127.0.0.1:9080
 NodeID: 1
 Etcd:
   Hosts:
   - 127.0.0.1:2379
-  Key: user.rpc
+  Key: usersvr.rpc
 Mysql:
   DataSource: root:password@tcp(127.0.0.1:3308)/pet?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:

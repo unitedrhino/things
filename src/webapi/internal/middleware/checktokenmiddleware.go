@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"yl/shared/errors"
 	"yl/shared/utils"
-	"yl/src/user/user"
-	"yl/src/user/userclient"
+	"yl/src/usersvr/user"
+	"yl/src/usersvr/userclient"
 	"yl/src/webapi/internal/types"
 )
 

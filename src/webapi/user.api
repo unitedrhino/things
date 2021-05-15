@@ -76,8 +76,6 @@ type ModifyUserInfoReq {
 	middleware: Record
 )
 service webapi {
-	@handler captcha
-	post /user/captcha (GetCaptchaReq) returns (GetCaptchaResp)
 	@handler login // 登录
 	post /user/login (LoginReq) returns (LoginResp)
 	@handler registerCore //注册

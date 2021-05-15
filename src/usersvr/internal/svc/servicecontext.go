@@ -5,9 +5,9 @@ import (
 	"yl/shared/third/weixin"
 	"yl/shared/utils"
 
-	"yl/src/user/internal/config"
+	"yl/src/usersvr/internal/config"
 	//"yl/shared/third/weixin"
-	"yl/src/user/model"
+	"yl/src/usersvr/model"
 )
 
 type ServiceContext struct {

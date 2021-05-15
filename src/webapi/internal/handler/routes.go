@@ -28,11 +28,6 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/user/captcha",
-					Handler: user.CaptchaHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
 					Path:    "/user/login",
 					Handler: user.LoginHandler(serverCtx),
 				},

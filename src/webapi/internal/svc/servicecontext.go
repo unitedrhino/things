@@ -6,8 +6,8 @@ import (
 	"github.com/tal-tech/go-zero/zrpc"
 	"time"
 	"yl/shared/verify"
-	"yl/src/user/model"
-	"yl/src/user/userclient"
+	"yl/src/usersvr/model"
+	"yl/src/usersvr/userclient"
 	"yl/src/webapi/internal/config"
 	"yl/src/webapi/internal/middleware"
 )
