@@ -2,14 +2,24 @@ syntax = "proto3";
 
 package dm;
 
-message Request {
-  string ping = 1;
+message LoginAuthReq {
+  string username = 1;//用户名
+  string password = 2;//密码
+  string clientid = 3;//clientID
+  string ip = 4;//访问的ip地址
+}
+message AccessAuthReq {
+  string username = 1; //用户名
+  string topic = 2;//主题
+  string clientID = 3;//clientID
+  string access = 4;//操作
+  string ip = 5; //访问的ip地址
 }
 
 message Response {
-  string pong = 1;
 }
 
 service Dm {
-  rpc Ping(Request) returns(Response);
+  rpc loginAuth(LoginAuthReq) returns(Response);
+  rpc accessAuth(AccessAuthReq) returns(Response);
 }

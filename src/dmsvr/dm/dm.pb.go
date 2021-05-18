@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.25.0
 // 	protoc        v4.0.0
-// source: dmsvr.proto
+// source: dm.proto
 
 package dm
 
@@ -29,16 +29,19 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-type Request struct {
+type LoginAuthReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Ping string `protobuf:"bytes,1,opt,name=ping,proto3" json:"ping,omitempty"`
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"` //用户名
+	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"` //密码
+	Clientid string `protobuf:"bytes,3,opt,name=clientid,proto3" json:"clientid,omitempty"` //clientID
+	Ip       string `protobuf:"bytes,4,opt,name=ip,proto3" json:"ip,omitempty"`             //访问的ip地址
 }
 
-func (x *Request) Reset() {
-	*x = Request{}
+func (x *LoginAuthReq) Reset() {
+	*x = LoginAuthReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_dm_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -46,13 +49,13 @@ func (x *Request) Reset() {
 	}
 }
 
-func (x *Request) String() string {
+func (x *LoginAuthReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Request) ProtoMessage() {}
+func (*LoginAuthReq) ProtoMessage() {}
 
-func (x *Request) ProtoReflect() protoreflect.Message {
+func (x *LoginAuthReq) ProtoReflect() protoreflect.Message {
 	mi := &file_dm_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,14 +67,114 @@ func (x *Request) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Request.ProtoReflect.Descriptor instead.
-func (*Request) Descriptor() ([]byte, []int) {
+// Deprecated: Use LoginAuthReq.ProtoReflect.Descriptor instead.
+func (*LoginAuthReq) Descriptor() ([]byte, []int) {
 	return file_dm_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Request) GetPing() string {
+func (x *LoginAuthReq) GetUsername() string {
 	if x != nil {
-		return x.Ping
+		return x.Username
+	}
+	return ""
+}
+
+func (x *LoginAuthReq) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+func (x *LoginAuthReq) GetClientid() string {
+	if x != nil {
+		return x.Clientid
+	}
+	return ""
+}
+
+func (x *LoginAuthReq) GetIp() string {
+	if x != nil {
+		return x.Ip
+	}
+	return ""
+}
+
+type AccessAuthReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"` //用户名
+	Topic    string `protobuf:"bytes,2,opt,name=topic,proto3" json:"topic,omitempty"`       //主题
+	ClientID string `protobuf:"bytes,3,opt,name=clientID,proto3" json:"clientID,omitempty"` //clientID
+	Access   string `protobuf:"bytes,4,opt,name=access,proto3" json:"access,omitempty"`     //操作
+	Ip       string `protobuf:"bytes,5,opt,name=ip,proto3" json:"ip,omitempty"`             //访问的ip地址
+}
+
+func (x *AccessAuthReq) Reset() {
+	*x = AccessAuthReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dm_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AccessAuthReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AccessAuthReq) ProtoMessage() {}
+
+func (x *AccessAuthReq) ProtoReflect() protoreflect.Message {
+	mi := &file_dm_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AccessAuthReq.ProtoReflect.Descriptor instead.
+func (*AccessAuthReq) Descriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *AccessAuthReq) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *AccessAuthReq) GetTopic() string {
+	if x != nil {
+		return x.Topic
+	}
+	return ""
+}
+
+func (x *AccessAuthReq) GetClientID() string {
+	if x != nil {
+		return x.ClientID
+	}
+	return ""
+}
+
+func (x *AccessAuthReq) GetAccess() string {
+	if x != nil {
+		return x.Access
+	}
+	return ""
+}
+
+func (x *AccessAuthReq) GetIp() string {
+	if x != nil {
+		return x.Ip
 	}
 	return ""
 }
@@ -80,14 +183,12 @@ type Response struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Pong string `protobuf:"bytes,1,opt,name=pong,proto3" json:"pong,omitempty"`
 }
 
 func (x *Response) Reset() {
 	*x = Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dm_proto_msgTypes[1]
+		mi := &file_dm_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -100,7 +201,7 @@ func (x *Response) String() string {
 func (*Response) ProtoMessage() {}
 
 func (x *Response) ProtoReflect() protoreflect.Message {
-	mi := &file_dm_proto_msgTypes[1]
+	mi := &file_dm_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -113,27 +214,36 @@ func (x *Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Response.ProtoReflect.Descriptor instead.
 func (*Response) Descriptor() ([]byte, []int) {
-	return file_dm_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *Response) GetPong() string {
-	if x != nil {
-		return x.Pong
-	}
-	return ""
+	return file_dm_proto_rawDescGZIP(), []int{2}
 }
 
 var File_dm_proto protoreflect.FileDescriptor
 
 var file_dm_proto_rawDesc = []byte{
-	0x0a, 0x08, 0x64, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x02, 0x64, 0x6d, 0x22, 0x1d,
-	0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x69, 0x6e,
-	0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x69, 0x6e, 0x67, 0x22, 0x1e, 0x0a,
-	0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x6f, 0x6e,
-	0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x6f, 0x6e, 0x67, 0x32, 0x27, 0x0a,
-	0x02, 0x44, 0x6d, 0x12, 0x21, 0x0a, 0x04, 0x50, 0x69, 0x6e, 0x67, 0x12, 0x0b, 0x2e, 0x64, 0x6d,
-	0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x08, 0x64, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x02, 0x64, 0x6d, 0x22, 0x72,
+	0x0a, 0x0c, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x12, 0x1a,
+	0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61,
+	0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61,
+	0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74,
+	0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74,
+	0x69, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
+	0x69, 0x70, 0x22, 0x85, 0x01, 0x0a, 0x0d, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x41, 0x75, 0x74,
+	0x68, 0x52, 0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
+	0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74,
+	0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74,
+	0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x70, 0x22, 0x0a, 0x0a, 0x08, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x60, 0x0a, 0x02, 0x44, 0x6d, 0x12, 0x2b, 0x0a, 0x09,
+	0x6c, 0x6f, 0x67, 0x69, 0x6e, 0x41, 0x75, 0x74, 0x68, 0x12, 0x10, 0x2e, 0x64, 0x6d, 0x2e, 0x4c,
+	0x6f, 0x67, 0x69, 0x6e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x1a, 0x0c, 0x2e, 0x64, 0x6d,
+	0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x0a, 0x61, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x41, 0x75, 0x74, 0x68, 0x12, 0x11, 0x2e, 0x64, 0x6d, 0x2e, 0x41, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x1a, 0x0c, 0x2e, 0x64, 0x6d, 0x2e,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -148,16 +258,19 @@ func file_dm_proto_rawDescGZIP() []byte {
 	return file_dm_proto_rawDescData
 }
 
-var file_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_dm_proto_goTypes = []interface{}{
-	(*Request)(nil),  // 0: dmsvr.Request
-	(*Response)(nil), // 1: dmsvr.Response
+	(*LoginAuthReq)(nil),  // 0: dm.LoginAuthReq
+	(*AccessAuthReq)(nil), // 1: dm.AccessAuthReq
+	(*Response)(nil),      // 2: dm.Response
 }
 var file_dm_proto_depIdxs = []int32{
-	0, // 0: dmsvr.Dm.Ping:input_type -> dmsvr.Request
-	1, // 1: dmsvr.Dm.Ping:output_type -> dmsvr.Response
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	0, // 0: dm.Dm.loginAuth:input_type -> dm.LoginAuthReq
+	1, // 1: dm.Dm.accessAuth:input_type -> dm.AccessAuthReq
+	2, // 2: dm.Dm.loginAuth:output_type -> dm.Response
+	2, // 3: dm.Dm.accessAuth:output_type -> dm.Response
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -170,7 +283,7 @@ func file_dm_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_dm_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Request); i {
+			switch v := v.(*LoginAuthReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -182,6 +295,18 @@ func file_dm_proto_init() {
 			}
 		}
 		file_dm_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessAuthReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dm_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Response); i {
 			case 0:
 				return &v.state
@@ -200,7 +325,7 @@ func file_dm_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_dm_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -226,7 +351,8 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DmClient interface {
-	Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error)
+	AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
 }
 
 type dmClient struct {
@@ -237,9 +363,18 @@ func NewDmClient(cc grpc.ClientConnInterface) DmClient {
 	return &dmClient{cc}
 }
 
-func (c *dmClient) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *dmClient) LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dmsvr.Dm/Ping", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.Dm/loginAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dmClient) AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.Dm/accessAuth", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -248,48 +383,74 @@ func (c *dmClient) Ping(ctx context.Context, in *Request, opts ...grpc.CallOptio
 
 // DmServer is the server API for Dm service.
 type DmServer interface {
-	Ping(context.Context, *Request) (*Response, error)
+	LoginAuth(context.Context, *LoginAuthReq) (*Response, error)
+	AccessAuth(context.Context, *AccessAuthReq) (*Response, error)
 }
 
 // UnimplementedDmServer can be embedded to have forward compatible implementations.
 type UnimplementedDmServer struct {
 }
 
-func (*UnimplementedDmServer) Ping(context.Context, *Request) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+func (*UnimplementedDmServer) LoginAuth(context.Context, *LoginAuthReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginAuth not implemented")
+}
+func (*UnimplementedDmServer) AccessAuth(context.Context, *AccessAuthReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccessAuth not implemented")
 }
 
 func RegisterDmServer(s *grpc.Server, srv DmServer) {
 	s.RegisterService(&_Dm_serviceDesc, srv)
 }
 
-func _Dm_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+func _Dm_LoginAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginAuthReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DmServer).Ping(ctx, in)
+		return srv.(DmServer).LoginAuth(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dmsvr.Dm/Ping",
+		FullMethod: "/dm.Dm/LoginAuth",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).Ping(ctx, req.(*Request))
+		return srv.(DmServer).LoginAuth(ctx, req.(*LoginAuthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Dm_AccessAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccessAuthReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DmServer).AccessAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.Dm/AccessAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DmServer).AccessAuth(ctx, req.(*AccessAuthReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 var _Dm_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "dmsvr.Dm",
+	ServiceName: "dm.Dm",
 	HandlerType: (*DmServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Ping",
-			Handler:    _Dm_Ping_Handler,
+			MethodName: "loginAuth",
+			Handler:    _Dm_LoginAuth_Handler,
+		},
+		{
+			MethodName: "accessAuth",
+			Handler:    _Dm_AccessAuth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "dmsvr.proto",
+	Metadata: "dm.proto",
 }
