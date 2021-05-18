@@ -1,6 +1,6 @@
 package svc
 
-import "yl/src/dmsvr/internal/config"
+import "gitee.com/godLei6/things/src/dmsvr/internal/config"
 
 type ServiceContext struct {
 	Config config.Config

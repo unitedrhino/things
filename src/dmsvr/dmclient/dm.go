@@ -8,7 +8,7 @@ package dmclient
 import (
 	"context"
 
-	"yl/src/dmsvr/dm"
+	"gitee.com/godLei6/things/src/dmsvr/dm"
 
 	"github.com/tal-tech/go-zero/zrpc"
 )

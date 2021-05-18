@@ -5,11 +5,11 @@ import (
 	"github.com/tal-tech/go-zero/rest"
 	"github.com/tal-tech/go-zero/zrpc"
 	"time"
-	"yl/shared/verify"
-	"yl/src/usersvr/model"
-	"yl/src/usersvr/userclient"
-	"yl/src/webapi/internal/config"
-	"yl/src/webapi/internal/middleware"
+	"gitee.com/godLei6/things/shared/verify"
+	"gitee.com/godLei6/things/src/usersvr/model"
+	"gitee.com/godLei6/things/src/usersvr/userclient"
+	"gitee.com/godLei6/things/src/webapi/internal/config"
+	"gitee.com/godLei6/things/src/webapi/internal/middleware"
 )
 
 type ServiceContext struct {

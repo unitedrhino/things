@@ -2,12 +2,12 @@ package svc
 
 import (
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
-	"yl/shared/third/weixin"
-	"yl/shared/utils"
+	"gitee.com/godLei6/things/shared/third/weixin"
+	"gitee.com/godLei6/things/shared/utils"
 
-	"yl/src/usersvr/internal/config"
-	//"yl/shared/third/weixin"
-	"yl/src/usersvr/model"
+	"gitee.com/godLei6/things/src/usersvr/internal/config"
+	//"gitee.com/godLei6/things/shared/third/weixin"
+	"gitee.com/godLei6/things/src/usersvr/model"
 )
 
 type ServiceContext struct {

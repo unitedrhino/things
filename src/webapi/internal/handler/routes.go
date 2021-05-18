@@ -4,9 +4,9 @@ package handler
 import (
 	"net/http"
 
-	user "yl/src/webapi/internal/handler/user"
-	verify "yl/src/webapi/internal/handler/verify"
-	"yl/src/webapi/internal/svc"
+	user "gitee.com/godLei6/things/src/webapi/internal/handler/user"
+	verify "gitee.com/godLei6/things/src/webapi/internal/handler/verify"
+	"gitee.com/godLei6/things/src/webapi/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
 )

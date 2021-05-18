@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
-	"yl/shared/utils"
+	"gitee.com/godLei6/things/shared/utils"
 )
 
 

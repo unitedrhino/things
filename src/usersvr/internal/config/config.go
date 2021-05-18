@@ -3,7 +3,7 @@ package config
 import (
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/zrpc"
-	"yl/shared/third/weixin"
+	"gitee.com/godLei6/things/shared/third/weixin"
 )
 
 type Config struct {

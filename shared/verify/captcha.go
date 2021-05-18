@@ -5,7 +5,7 @@ import (
 	"github.com/mojocn/base64Captcha"
 	"github.com/tal-tech/go-zero/core/syncx"
 	"time"
-	"yl/shared/errors"
+	"gitee.com/godLei6/things/shared/errors"
 )
 
 import "github.com/tal-tech/go-zero/core/stores/cache"

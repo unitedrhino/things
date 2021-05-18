@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"yl/src/usersvr/internal/logic"
-	"yl/src/usersvr/internal/svc"
-	"yl/src/usersvr/user"
+	"gitee.com/godLei6/things/src/usersvr/internal/logic"
+	"gitee.com/godLei6/things/src/usersvr/internal/svc"
+	"gitee.com/godLei6/things/src/usersvr/user"
 )
 
 type UserServer struct {

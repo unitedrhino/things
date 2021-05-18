@@ -4,9 +4,9 @@ import (
 	"github.com/spf13/cast"
 	"net/http"
 
-	"yl/src/webapi/internal/logic/user"
-	"yl/src/webapi/internal/svc"
-	"yl/src/webapi/internal/types"
+	"gitee.com/godLei6/things/src/webapi/internal/logic/user"
+	"gitee.com/godLei6/things/src/webapi/internal/svc"
+	"gitee.com/godLei6/things/src/webapi/internal/types"
 
 	"github.com/tal-tech/go-zero/rest/httpx"
 )

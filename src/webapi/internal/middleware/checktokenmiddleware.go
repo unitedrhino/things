@@ -5,11 +5,11 @@ import (
 	"github.com/tal-tech/go-zero/rest/httpx"
 	"net/http"
 	"strconv"
-	"yl/shared/errors"
-	"yl/shared/utils"
-	"yl/src/usersvr/user"
-	"yl/src/usersvr/userclient"
-	"yl/src/webapi/internal/types"
+	"gitee.com/godLei6/things/shared/errors"
+	"gitee.com/godLei6/things/shared/utils"
+	"gitee.com/godLei6/things/src/usersvr/user"
+	"gitee.com/godLei6/things/src/usersvr/userclient"
+	"gitee.com/godLei6/things/src/webapi/internal/types"
 )
 
 type CheckTokenMiddleware struct {

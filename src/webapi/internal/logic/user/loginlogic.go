@@ -2,12 +2,12 @@ package logic
 
 import (
 	"context"
-	"yl/shared/errors"
-	"yl/shared/utils"
-	"yl/src/usersvr/user"
+	"gitee.com/godLei6/things/shared/errors"
+	"gitee.com/godLei6/things/shared/utils"
+	"gitee.com/godLei6/things/src/usersvr/user"
 
-	"yl/src/webapi/internal/svc"
-	"yl/src/webapi/internal/types"
+	"gitee.com/godLei6/things/src/webapi/internal/svc"
+	"gitee.com/godLei6/things/src/webapi/internal/types"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )

@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"yl/src/webapi/internal/config"
-	"yl/src/webapi/internal/handler"
-	"yl/src/webapi/internal/svc"
+	"gitee.com/godLei6/things/src/webapi/internal/config"
+	"gitee.com/godLei6/things/src/webapi/internal/handler"
+	"gitee.com/godLei6/things/src/webapi/internal/svc"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/rest"

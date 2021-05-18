@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"yl/src/webapi/internal/logic/verify"
-	"yl/src/webapi/internal/svc"
-	"yl/src/webapi/internal/types"
+	"gitee.com/godLei6/things/src/webapi/internal/logic/verify"
+	"gitee.com/godLei6/things/src/webapi/internal/svc"
+	"gitee.com/godLei6/things/src/webapi/internal/types"
 
 	"github.com/tal-tech/go-zero/rest/httpx"
 )

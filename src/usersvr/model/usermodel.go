@@ -6,7 +6,7 @@ import (
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
-	"yl/shared/define"
+	"gitee.com/godLei6/things/shared/define"
 )
 
 type Keys struct {

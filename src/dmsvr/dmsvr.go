@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"yl/src/dmsvr/device"
-	"yl/src/dmsvr/dm"
-	"yl/src/dmsvr/internal/config"
-	"yl/src/dmsvr/internal/server"
-	"yl/src/dmsvr/internal/svc"
+	"gitee.com/godLei6/things/src/dmsvr/device"
+	"gitee.com/godLei6/things/src/dmsvr/dm"
+	"gitee.com/godLei6/things/src/dmsvr/internal/config"
+	"gitee.com/godLei6/things/src/dmsvr/internal/server"
+	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/zrpc"

@@ -2,7 +2,7 @@ package logic
 
 import (
 	"testing"
-	"yl/src/usersvr/user"
+	"gitee.com/godLei6/things/src/usersvr/user"
 )
 
 func TestCheckToken(t *testing.T) {

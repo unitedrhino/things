@@ -14,7 +14,7 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
-	"yl/shared/define"
+	"gitee.com/godLei6/things/shared/define"
 )
 
 func MD5V(str []byte) string {

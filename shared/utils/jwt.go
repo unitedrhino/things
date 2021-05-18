@@ -3,7 +3,7 @@ package utils
 import (
 	"github.com/dgrijalva/jwt-go"
 	"time"
-	"yl/shared/errors"
+	"gitee.com/godLei6/things/shared/errors"
 )
 
 // Custom claims structure

@@ -1,4 +1,4 @@
-module yl
+module gitee.com/godLei6/things
 
 go 1.14
 

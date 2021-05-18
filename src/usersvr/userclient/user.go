@@ -8,7 +8,7 @@ package userclient
 import (
 	"context"
 
-	"yl/src/usersvr/user"
+	"gitee.com/godLei6/things/src/usersvr/user"
 
 	"github.com/tal-tech/go-zero/zrpc"
 )

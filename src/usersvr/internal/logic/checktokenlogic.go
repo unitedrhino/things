@@ -3,10 +3,10 @@ package logic
 import (
 	"context"
 	"time"
-	"yl/shared/utils"
+	"gitee.com/godLei6/things/shared/utils"
 
-	"yl/src/usersvr/internal/svc"
-	"yl/src/usersvr/user"
+	"gitee.com/godLei6/things/src/usersvr/internal/svc"
+	"gitee.com/godLei6/things/src/usersvr/user"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )

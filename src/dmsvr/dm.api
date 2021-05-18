@@ -1,0 +1,35 @@
+info(
+	title: "设备管理模块"
+	desc: "负责设备的权限控制"
+	author: "杨磊"
+	email: "603685348@qq.com"
+	version: "v1"
+)
+
+type LoginAuthReq {
+	Username string `json:"username"` //用户名
+	Password string `json:"password"` //密码
+	Clientid string `json:"clientid"` //clientID
+	IP       string `json:"ip"`       //访问的ip地址
+}
+
+type AccessAuthReq {
+	Username string `json:"username"`                      //用户名
+	Clientid string `json:"clientid"`                      //clientID
+	Topic    string `json:"topic"`                         //主题
+	Access   string `json:"access,options=sub|pub|pubsub"` //操作
+	IP       string `json:"ip"`                            //访问的ip地址
+}
+
+type Resp {
+}
+
+@server (
+	group :auth
+)
+service dm {
+	@handler accessAuth
+	post /auth/access (AccessAuthReq) returns (Resp)
+	@handler loginAuth
+	post /auth/loginAuth (LoginAuthReq) returns (Resp)
+}
