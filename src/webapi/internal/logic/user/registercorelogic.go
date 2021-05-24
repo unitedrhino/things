@@ -38,11 +38,11 @@ func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.Regi
 	})
 	if err != nil {
 		er :=errors.Fmt(err)
-		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v|rpc_err=%#v",utils.FuncName(),req,er,err)
+		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v|rpc_err=%+v",utils.FuncName(),req,er,err)
 		return &types.RegisterCoreResp{},er
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.RegisterCore|return nil|req=%v",utils.FuncName(),req)
+		l.Errorf("%s|rpc.RegisterCore|return nil|req=%+v",utils.FuncName(),req)
 		return &types.RegisterCoreResp{},errors.System.AddDetail("register core rpc return nil")
 	}
 	now := time.Now().Unix()

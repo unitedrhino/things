@@ -29,6 +29,194 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
+type OptType int32
+
+const (
+	OptType_DEFALT OptType = 0 //不能为这个参数
+	OptType_ADD    OptType = 1 //增加
+	OptType_MODIFY OptType = 2 //修改
+	OptType_DEL    OptType = 3 //删除
+)
+
+// Enum value maps for OptType.
+var (
+	OptType_name = map[int32]string{
+		0: "DEFALT",
+		1: "ADD",
+		2: "MODIFY",
+		3: "DEL",
+	}
+	OptType_value = map[string]int32{
+		"DEFALT": 0,
+		"ADD":    1,
+		"MODIFY": 2,
+		"DEL":    3,
+	}
+)
+
+func (x OptType) Enum() *OptType {
+	p := new(OptType)
+	*p = x
+	return p
+}
+
+func (x OptType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (OptType) Descriptor() protoreflect.EnumDescriptor {
+	return file_dm_proto_enumTypes[0].Descriptor()
+}
+
+func (OptType) Type() protoreflect.EnumType {
+	return &file_dm_proto_enumTypes[0]
+}
+
+func (x OptType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use OptType.Descriptor instead.
+func (OptType) EnumDescriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{0}
+}
+
+type ProductInfo_AUTH_MODE int32
+
+const (
+	ProductInfo_default    ProductInfo_AUTH_MODE = 0 //无操作
+	ProductInfo_password   ProductInfo_AUTH_MODE = 1 //账密认证
+	ProductInfo_privateKey ProductInfo_AUTH_MODE = 2 //秘钥认证
+)
+
+// Enum value maps for ProductInfo_AUTH_MODE.
+var (
+	ProductInfo_AUTH_MODE_name = map[int32]string{
+		0: "default",
+		1: "password",
+		2: "privateKey",
+	}
+	ProductInfo_AUTH_MODE_value = map[string]int32{
+		"default":    0,
+		"password":   1,
+		"privateKey": 2,
+	}
+)
+
+func (x ProductInfo_AUTH_MODE) Enum() *ProductInfo_AUTH_MODE {
+	p := new(ProductInfo_AUTH_MODE)
+	*p = x
+	return p
+}
+
+func (x ProductInfo_AUTH_MODE) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ProductInfo_AUTH_MODE) Descriptor() protoreflect.EnumDescriptor {
+	return file_dm_proto_enumTypes[1].Descriptor()
+}
+
+func (ProductInfo_AUTH_MODE) Type() protoreflect.EnumType {
+	return &file_dm_proto_enumTypes[1]
+}
+
+func (x ProductInfo_AUTH_MODE) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ProductInfo_AUTH_MODE.Descriptor instead.
+func (ProductInfo_AUTH_MODE) EnumDescriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{4, 0}
+}
+
+type Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *Response) Reset() {
+	*x = Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dm_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Response) ProtoMessage() {}
+
+func (x *Response) ProtoReflect() protoreflect.Message {
+	mi := &file_dm_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Response.ProtoReflect.Descriptor instead.
+func (*Response) Descriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{0}
+}
+
+type ManResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ID int64 `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
+}
+
+func (x *ManResp) Reset() {
+	*x = ManResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dm_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ManResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ManResp) ProtoMessage() {}
+
+func (x *ManResp) ProtoReflect() protoreflect.Message {
+	mi := &file_dm_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ManResp.ProtoReflect.Descriptor instead.
+func (*ManResp) Descriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ManResp) GetID() int64 {
+	if x != nil {
+		return x.ID
+	}
+	return 0
+}
+
+//
+//下面是设备管理模块的消息
 type LoginAuthReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -43,7 +231,7 @@ type LoginAuthReq struct {
 func (x *LoginAuthReq) Reset() {
 	*x = LoginAuthReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dm_proto_msgTypes[0]
+		mi := &file_dm_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -56,7 +244,7 @@ func (x *LoginAuthReq) String() string {
 func (*LoginAuthReq) ProtoMessage() {}
 
 func (x *LoginAuthReq) ProtoReflect() protoreflect.Message {
-	mi := &file_dm_proto_msgTypes[0]
+	mi := &file_dm_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -69,7 +257,7 @@ func (x *LoginAuthReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginAuthReq.ProtoReflect.Descriptor instead.
 func (*LoginAuthReq) Descriptor() ([]byte, []int) {
-	return file_dm_proto_rawDescGZIP(), []int{0}
+	return file_dm_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *LoginAuthReq) GetUsername() string {
@@ -115,7 +303,7 @@ type AccessAuthReq struct {
 func (x *AccessAuthReq) Reset() {
 	*x = AccessAuthReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dm_proto_msgTypes[1]
+		mi := &file_dm_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -128,7 +316,7 @@ func (x *AccessAuthReq) String() string {
 func (*AccessAuthReq) ProtoMessage() {}
 
 func (x *AccessAuthReq) ProtoReflect() protoreflect.Message {
-	mi := &file_dm_proto_msgTypes[1]
+	mi := &file_dm_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -141,7 +329,7 @@ func (x *AccessAuthReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessAuthReq.ProtoReflect.Descriptor instead.
 func (*AccessAuthReq) Descriptor() ([]byte, []int) {
-	return file_dm_proto_rawDescGZIP(), []int{1}
+	return file_dm_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AccessAuthReq) GetUsername() string {
@@ -179,29 +367,34 @@ func (x *AccessAuthReq) GetIp() string {
 	return ""
 }
 
-type Response struct {
+type ProductInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	CreatedTime int64                 `protobuf:"varint,1,opt,name=createdTime,proto3" json:"createdTime,omitempty"` //创建时间
+	ProductID   int64                 `protobuf:"varint,2,opt,name=productID,proto3" json:"productID,omitempty"`     //产品id
+	ProductName string                `protobuf:"bytes,3,opt,name=productName,proto3" json:"productName,omitempty"`  //设备名
+	AuthMode    ProductInfo_AUTH_MODE `protobuf:"varint,4,opt,name=authMode,proto3,enum=dm.ProductInfo_AUTH_MODE" json:"authMode,omitempty"`
 }
 
-func (x *Response) Reset() {
-	*x = Response{}
+func (x *ProductInfo) Reset() {
+	*x = ProductInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dm_proto_msgTypes[2]
+		mi := &file_dm_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *Response) String() string {
+func (x *ProductInfo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Response) ProtoMessage() {}
+func (*ProductInfo) ProtoMessage() {}
 
-func (x *Response) ProtoReflect() protoreflect.Message {
-	mi := &file_dm_proto_msgTypes[2]
+func (x *ProductInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_dm_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -212,38 +405,400 @@ func (x *Response) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Response.ProtoReflect.Descriptor instead.
-func (*Response) Descriptor() ([]byte, []int) {
-	return file_dm_proto_rawDescGZIP(), []int{2}
+// Deprecated: Use ProductInfo.ProtoReflect.Descriptor instead.
+func (*ProductInfo) Descriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ProductInfo) GetCreatedTime() int64 {
+	if x != nil {
+		return x.CreatedTime
+	}
+	return 0
+}
+
+func (x *ProductInfo) GetProductID() int64 {
+	if x != nil {
+		return x.ProductID
+	}
+	return 0
+}
+
+func (x *ProductInfo) GetProductName() string {
+	if x != nil {
+		return x.ProductName
+	}
+	return ""
+}
+
+func (x *ProductInfo) GetAuthMode() ProductInfo_AUTH_MODE {
+	if x != nil {
+		return x.AuthMode
+	}
+	return ProductInfo_default
+}
+
+type ManageProductReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Opt  OptType      `protobuf:"varint,1,opt,name=opt,proto3,enum=dm.OptType" json:"opt,omitempty"` //操作
+	Info *ProductInfo `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"`                //产品信息
+}
+
+func (x *ManageProductReq) Reset() {
+	*x = ManageProductReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dm_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ManageProductReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ManageProductReq) ProtoMessage() {}
+
+func (x *ManageProductReq) ProtoReflect() protoreflect.Message {
+	mi := &file_dm_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ManageProductReq.ProtoReflect.Descriptor instead.
+func (*ManageProductReq) Descriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ManageProductReq) GetOpt() OptType {
+	if x != nil {
+		return x.Opt
+	}
+	return OptType_DEFALT
+}
+
+func (x *ManageProductReq) GetInfo() *ProductInfo {
+	if x != nil {
+		return x.Info
+	}
+	return nil
+}
+
+type GetProductInfoReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ProductID int64 `protobuf:"varint,1,opt,name=productID,proto3" json:"productID,omitempty"` //产品id
+}
+
+func (x *GetProductInfoReq) Reset() {
+	*x = GetProductInfoReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dm_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetProductInfoReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetProductInfoReq) ProtoMessage() {}
+
+func (x *GetProductInfoReq) ProtoReflect() protoreflect.Message {
+	mi := &file_dm_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetProductInfoReq.ProtoReflect.Descriptor instead.
+func (*GetProductInfoReq) Descriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetProductInfoReq) GetProductID() int64 {
+	if x != nil {
+		return x.ProductID
+	}
+	return 0
+}
+
+type DeviceInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ProductID   int64  `protobuf:"varint,1,opt,name=productID,proto3" json:"productID,omitempty"`     //产品id
+	DeviceID    int64  `protobuf:"varint,2,opt,name=deviceID,proto3" json:"deviceID,omitempty"`       //设备id
+	DeviceName  string `protobuf:"bytes,3,opt,name=deviceName,proto3" json:"deviceName,omitempty"`    //设备名
+	CreatedTime int64  `protobuf:"varint,4,opt,name=createdTime,proto3" json:"createdTime,omitempty"` //创建时间
+}
+
+func (x *DeviceInfo) Reset() {
+	*x = DeviceInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dm_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeviceInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeviceInfo) ProtoMessage() {}
+
+func (x *DeviceInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_dm_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeviceInfo.ProtoReflect.Descriptor instead.
+func (*DeviceInfo) Descriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DeviceInfo) GetProductID() int64 {
+	if x != nil {
+		return x.ProductID
+	}
+	return 0
+}
+
+func (x *DeviceInfo) GetDeviceID() int64 {
+	if x != nil {
+		return x.DeviceID
+	}
+	return 0
+}
+
+func (x *DeviceInfo) GetDeviceName() string {
+	if x != nil {
+		return x.DeviceName
+	}
+	return ""
+}
+
+func (x *DeviceInfo) GetCreatedTime() int64 {
+	if x != nil {
+		return x.CreatedTime
+	}
+	return 0
+}
+
+type ManageDeviceReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Opt  OptType     `protobuf:"varint,1,opt,name=opt,proto3,enum=dm.OptType" json:"opt,omitempty"` //操作
+	Info *DeviceInfo `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"`                //设备信息
+}
+
+func (x *ManageDeviceReq) Reset() {
+	*x = ManageDeviceReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dm_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ManageDeviceReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ManageDeviceReq) ProtoMessage() {}
+
+func (x *ManageDeviceReq) ProtoReflect() protoreflect.Message {
+	mi := &file_dm_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ManageDeviceReq.ProtoReflect.Descriptor instead.
+func (*ManageDeviceReq) Descriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ManageDeviceReq) GetOpt() OptType {
+	if x != nil {
+		return x.Opt
+	}
+	return OptType_DEFALT
+}
+
+func (x *ManageDeviceReq) GetInfo() *DeviceInfo {
+	if x != nil {
+		return x.Info
+	}
+	return nil
+}
+
+type GetDeviceInfoReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	DeviceID int64 `protobuf:"varint,1,opt,name=deviceID,proto3" json:"deviceID,omitempty"` //设备id
+}
+
+func (x *GetDeviceInfoReq) Reset() {
+	*x = GetDeviceInfoReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dm_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetDeviceInfoReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDeviceInfoReq) ProtoMessage() {}
+
+func (x *GetDeviceInfoReq) ProtoReflect() protoreflect.Message {
+	mi := &file_dm_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDeviceInfoReq.ProtoReflect.Descriptor instead.
+func (*GetDeviceInfoReq) Descriptor() ([]byte, []int) {
+	return file_dm_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetDeviceInfoReq) GetDeviceID() int64 {
+	if x != nil {
+		return x.DeviceID
+	}
+	return 0
 }
 
 var File_dm_proto protoreflect.FileDescriptor
 
 var file_dm_proto_rawDesc = []byte{
-	0x0a, 0x08, 0x64, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x02, 0x64, 0x6d, 0x22, 0x72,
-	0x0a, 0x0c, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x12, 0x1a,
-	0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61,
-	0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61,
-	0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74,
-	0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74,
-	0x69, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
-	0x69, 0x70, 0x22, 0x85, 0x01, 0x0a, 0x0d, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x41, 0x75, 0x74,
-	0x68, 0x52, 0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
-	0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74,
-	0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74,
-	0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x70, 0x22, 0x0a, 0x0a, 0x08, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x60, 0x0a, 0x02, 0x44, 0x6d, 0x12, 0x2b, 0x0a, 0x09,
-	0x6c, 0x6f, 0x67, 0x69, 0x6e, 0x41, 0x75, 0x74, 0x68, 0x12, 0x10, 0x2e, 0x64, 0x6d, 0x2e, 0x4c,
-	0x6f, 0x67, 0x69, 0x6e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x1a, 0x0c, 0x2e, 0x64, 0x6d,
-	0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x0a, 0x61, 0x63, 0x63,
-	0x65, 0x73, 0x73, 0x41, 0x75, 0x74, 0x68, 0x12, 0x11, 0x2e, 0x64, 0x6d, 0x2e, 0x41, 0x63, 0x63,
-	0x65, 0x73, 0x73, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x1a, 0x0c, 0x2e, 0x64, 0x6d, 0x2e,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x08, 0x64, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x02, 0x64, 0x6d, 0x22, 0x0a,
+	0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x19, 0x0a, 0x07, 0x4d, 0x61,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x02, 0x49, 0x44, 0x22, 0x72, 0x0a, 0x0c, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x41, 0x75,
+	0x74, 0x68, 0x52, 0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12, 0x1a, 0x0a,
+	0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x69, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x70, 0x22, 0x85, 0x01, 0x0a, 0x0d, 0x41, 0x63,
+	0x63, 0x65, 0x73, 0x73, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x75,
+	0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75,
+	0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x1a, 0x0a,
+	0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x63, 0x65, 0x73,
+	0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
+	0x70, 0x22, 0xde, 0x01, 0x0a, 0x0b, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x6e, 0x66,
+	0x6f, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54,
+	0x69, 0x6d, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49,
+	0x44, 0x12, 0x20, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x4e, 0x61, 0x6d, 0x65,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x4e,
+	0x61, 0x6d, 0x65, 0x12, 0x35, 0x0a, 0x08, 0x61, 0x75, 0x74, 0x68, 0x4d, 0x6f, 0x64, 0x65, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x19, 0x2e, 0x64, 0x6d, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75,
+	0x63, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x2e, 0x41, 0x55, 0x54, 0x48, 0x5f, 0x4d, 0x4f, 0x44, 0x45,
+	0x52, 0x08, 0x61, 0x75, 0x74, 0x68, 0x4d, 0x6f, 0x64, 0x65, 0x22, 0x36, 0x0a, 0x09, 0x41, 0x55,
+	0x54, 0x48, 0x5f, 0x4d, 0x4f, 0x44, 0x45, 0x12, 0x0b, 0x0a, 0x07, 0x64, 0x65, 0x66, 0x61, 0x75,
+	0x6c, 0x74, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64,
+	0x10, 0x01, 0x12, 0x0e, 0x0a, 0x0a, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x4b, 0x65, 0x79,
+	0x10, 0x02, 0x22, 0x56, 0x0a, 0x10, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x50, 0x72, 0x6f, 0x64,
+	0x75, 0x63, 0x74, 0x52, 0x65, 0x71, 0x12, 0x1d, 0x0a, 0x03, 0x6f, 0x70, 0x74, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0e, 0x32, 0x0b, 0x2e, 0x64, 0x6d, 0x2e, 0x4f, 0x70, 0x74, 0x54, 0x79, 0x70, 0x65,
+	0x52, 0x03, 0x6f, 0x70, 0x74, 0x12, 0x23, 0x0a, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x64, 0x6d, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
+	0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x22, 0x31, 0x0a, 0x11, 0x47, 0x65,
+	0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x12,
+	0x1c, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x22, 0x88, 0x01,
+	0x0a, 0x0a, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x1c, 0x0a, 0x09,
+	0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65,
+	0x76, 0x69, 0x63, 0x65, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x64, 0x65,
+	0x76, 0x69, 0x63, 0x65, 0x49, 0x44, 0x12, 0x1e, 0x0a, 0x0a, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65,
+	0x4e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x64, 0x65, 0x76, 0x69,
+	0x63, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x64, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x63, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x54, 0x0a, 0x0f, 0x4d, 0x61, 0x6e, 0x61,
+	0x67, 0x65, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x12, 0x1d, 0x0a, 0x03, 0x6f,
+	0x70, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0b, 0x2e, 0x64, 0x6d, 0x2e, 0x4f, 0x70,
+	0x74, 0x54, 0x79, 0x70, 0x65, 0x52, 0x03, 0x6f, 0x70, 0x74, 0x12, 0x22, 0x0a, 0x04, 0x69, 0x6e,
+	0x66, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x64, 0x6d, 0x2e, 0x44, 0x65,
+	0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x22, 0x2e,
+	0x0a, 0x10, 0x47, 0x65, 0x74, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52,
+	0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x44, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x44, 0x2a, 0x33,
+	0x0a, 0x07, 0x4f, 0x70, 0x74, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0a, 0x0a, 0x06, 0x44, 0x45, 0x46,
+	0x41, 0x4c, 0x54, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x41, 0x44, 0x44, 0x10, 0x01, 0x12, 0x0a,
+	0x0a, 0x06, 0x4d, 0x4f, 0x44, 0x49, 0x46, 0x59, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x44, 0x45,
+	0x4c, 0x10, 0x03, 0x32, 0xbe, 0x02, 0x0a, 0x02, 0x44, 0x6d, 0x12, 0x2b, 0x0a, 0x09, 0x6c, 0x6f,
+	0x67, 0x69, 0x6e, 0x41, 0x75, 0x74, 0x68, 0x12, 0x10, 0x2e, 0x64, 0x6d, 0x2e, 0x4c, 0x6f, 0x67,
+	0x69, 0x6e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x1a, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x0a, 0x61, 0x63, 0x63, 0x65, 0x73,
+	0x73, 0x41, 0x75, 0x74, 0x68, 0x12, 0x11, 0x2e, 0x64, 0x6d, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73,
+	0x73, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x1a, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x33, 0x0a, 0x0c, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65,
+	0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x13, 0x2e, 0x64, 0x6d, 0x2e, 0x4d, 0x61, 0x6e, 0x61,
+	0x67, 0x65, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x0e, 0x2e, 0x64, 0x6d,
+	0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x36, 0x0a, 0x0d, 0x6d,
+	0x61, 0x6e, 0x61, 0x67, 0x65, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x12, 0x14, 0x2e, 0x64,
+	0x6d, 0x2e, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x52,
+	0x65, 0x71, 0x1a, 0x0f, 0x2e, 0x64, 0x6d, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49,
+	0x6e, 0x66, 0x6f, 0x12, 0x38, 0x0a, 0x0e, 0x67, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63,
+	0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x15, 0x2e, 0x64, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72,
+	0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x1a, 0x0f, 0x2e, 0x64,
+	0x6d, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x35, 0x0a,
+	0x0d, 0x67, 0x65, 0x74, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x14,
+	0x2e, 0x64, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x66,
+	0x6f, 0x52, 0x65, 0x71, 0x1a, 0x0e, 0x2e, 0x64, 0x6d, 0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65,
+	0x49, 0x6e, 0x66, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -258,22 +813,45 @@ func file_dm_proto_rawDescGZIP() []byte {
 	return file_dm_proto_rawDescData
 }
 
-var file_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_dm_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_dm_proto_goTypes = []interface{}{
-	(*LoginAuthReq)(nil),  // 0: dm.LoginAuthReq
-	(*AccessAuthReq)(nil), // 1: dm.AccessAuthReq
-	(*Response)(nil),      // 2: dm.Response
+	(OptType)(0),               // 0: dm.OptType
+	(ProductInfo_AUTH_MODE)(0), // 1: dm.ProductInfo.AUTH_MODE
+	(*Response)(nil),           // 2: dm.Response
+	(*ManResp)(nil),            // 3: dm.ManResp
+	(*LoginAuthReq)(nil),       // 4: dm.LoginAuthReq
+	(*AccessAuthReq)(nil),      // 5: dm.AccessAuthReq
+	(*ProductInfo)(nil),        // 6: dm.ProductInfo
+	(*ManageProductReq)(nil),   // 7: dm.ManageProductReq
+	(*GetProductInfoReq)(nil),  // 8: dm.GetProductInfoReq
+	(*DeviceInfo)(nil),         // 9: dm.DeviceInfo
+	(*ManageDeviceReq)(nil),    // 10: dm.ManageDeviceReq
+	(*GetDeviceInfoReq)(nil),   // 11: dm.GetDeviceInfoReq
 }
 var file_dm_proto_depIdxs = []int32{
-	0, // 0: dm.Dm.loginAuth:input_type -> dm.LoginAuthReq
-	1, // 1: dm.Dm.accessAuth:input_type -> dm.AccessAuthReq
-	2, // 2: dm.Dm.loginAuth:output_type -> dm.Response
-	2, // 3: dm.Dm.accessAuth:output_type -> dm.Response
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1,  // 0: dm.ProductInfo.authMode:type_name -> dm.ProductInfo.AUTH_MODE
+	0,  // 1: dm.ManageProductReq.opt:type_name -> dm.OptType
+	6,  // 2: dm.ManageProductReq.info:type_name -> dm.ProductInfo
+	0,  // 3: dm.ManageDeviceReq.opt:type_name -> dm.OptType
+	9,  // 4: dm.ManageDeviceReq.info:type_name -> dm.DeviceInfo
+	4,  // 5: dm.Dm.loginAuth:input_type -> dm.LoginAuthReq
+	5,  // 6: dm.Dm.accessAuth:input_type -> dm.AccessAuthReq
+	10, // 7: dm.Dm.manageDevice:input_type -> dm.ManageDeviceReq
+	7,  // 8: dm.Dm.manageProduct:input_type -> dm.ManageProductReq
+	8,  // 9: dm.Dm.getProductInfo:input_type -> dm.GetProductInfoReq
+	11, // 10: dm.Dm.getDeviceInfo:input_type -> dm.GetDeviceInfoReq
+	2,  // 11: dm.Dm.loginAuth:output_type -> dm.Response
+	2,  // 12: dm.Dm.accessAuth:output_type -> dm.Response
+	9,  // 13: dm.Dm.manageDevice:output_type -> dm.DeviceInfo
+	6,  // 14: dm.Dm.manageProduct:output_type -> dm.ProductInfo
+	6,  // 15: dm.Dm.getProductInfo:output_type -> dm.ProductInfo
+	9,  // 16: dm.Dm.getDeviceInfo:output_type -> dm.DeviceInfo
+	11, // [11:17] is the sub-list for method output_type
+	5,  // [5:11] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_dm_proto_init() }
@@ -283,7 +861,7 @@ func file_dm_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_dm_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginAuthReq); i {
+			switch v := v.(*Response); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -295,7 +873,7 @@ func file_dm_proto_init() {
 			}
 		}
 		file_dm_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessAuthReq); i {
+			switch v := v.(*ManResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -307,7 +885,91 @@ func file_dm_proto_init() {
 			}
 		}
 		file_dm_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Response); i {
+			switch v := v.(*LoginAuthReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dm_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessAuthReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dm_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProductInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dm_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ManageProductReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dm_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetProductInfoReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dm_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeviceInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dm_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ManageDeviceReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dm_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetDeviceInfoReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -324,13 +986,14 @@ func file_dm_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_dm_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   3,
+			NumEnums:      2,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_dm_proto_goTypes,
 		DependencyIndexes: file_dm_proto_depIdxs,
+		EnumInfos:         file_dm_proto_enumTypes,
 		MessageInfos:      file_dm_proto_msgTypes,
 	}.Build()
 	File_dm_proto = out.File
@@ -353,6 +1016,10 @@ const _ = grpc.SupportPackageIsVersion6
 type DmClient interface {
 	LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error)
 	AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
+	ManageDevice(ctx context.Context, in *ManageDeviceReq, opts ...grpc.CallOption) (*DeviceInfo, error)
+	ManageProduct(ctx context.Context, in *ManageProductReq, opts ...grpc.CallOption) (*ProductInfo, error)
+	GetProductInfo(ctx context.Context, in *GetProductInfoReq, opts ...grpc.CallOption) (*ProductInfo, error)
+	GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 }
 
 type dmClient struct {
@@ -381,10 +1048,50 @@ func (c *dmClient) AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...gr
 	return out, nil
 }
 
+func (c *dmClient) ManageDevice(ctx context.Context, in *ManageDeviceReq, opts ...grpc.CallOption) (*DeviceInfo, error) {
+	out := new(DeviceInfo)
+	err := c.cc.Invoke(ctx, "/dm.Dm/manageDevice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dmClient) ManageProduct(ctx context.Context, in *ManageProductReq, opts ...grpc.CallOption) (*ProductInfo, error) {
+	out := new(ProductInfo)
+	err := c.cc.Invoke(ctx, "/dm.Dm/manageProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dmClient) GetProductInfo(ctx context.Context, in *GetProductInfoReq, opts ...grpc.CallOption) (*ProductInfo, error) {
+	out := new(ProductInfo)
+	err := c.cc.Invoke(ctx, "/dm.Dm/getProductInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dmClient) GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq, opts ...grpc.CallOption) (*DeviceInfo, error) {
+	out := new(DeviceInfo)
+	err := c.cc.Invoke(ctx, "/dm.Dm/getDeviceInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DmServer is the server API for Dm service.
 type DmServer interface {
 	LoginAuth(context.Context, *LoginAuthReq) (*Response, error)
 	AccessAuth(context.Context, *AccessAuthReq) (*Response, error)
+	ManageDevice(context.Context, *ManageDeviceReq) (*DeviceInfo, error)
+	ManageProduct(context.Context, *ManageProductReq) (*ProductInfo, error)
+	GetProductInfo(context.Context, *GetProductInfoReq) (*ProductInfo, error)
+	GetDeviceInfo(context.Context, *GetDeviceInfoReq) (*DeviceInfo, error)
 }
 
 // UnimplementedDmServer can be embedded to have forward compatible implementations.
@@ -396,6 +1103,18 @@ func (*UnimplementedDmServer) LoginAuth(context.Context, *LoginAuthReq) (*Respon
 }
 func (*UnimplementedDmServer) AccessAuth(context.Context, *AccessAuthReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccessAuth not implemented")
+}
+func (*UnimplementedDmServer) ManageDevice(context.Context, *ManageDeviceReq) (*DeviceInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ManageDevice not implemented")
+}
+func (*UnimplementedDmServer) ManageProduct(context.Context, *ManageProductReq) (*ProductInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ManageProduct not implemented")
+}
+func (*UnimplementedDmServer) GetProductInfo(context.Context, *GetProductInfoReq) (*ProductInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProductInfo not implemented")
+}
+func (*UnimplementedDmServer) GetDeviceInfo(context.Context, *GetDeviceInfoReq) (*DeviceInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeviceInfo not implemented")
 }
 
 func RegisterDmServer(s *grpc.Server, srv DmServer) {
@@ -438,6 +1157,78 @@ func _Dm_AccessAuth_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Dm_ManageDevice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ManageDeviceReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DmServer).ManageDevice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.Dm/ManageDevice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DmServer).ManageDevice(ctx, req.(*ManageDeviceReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Dm_ManageProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ManageProductReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DmServer).ManageProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.Dm/ManageProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DmServer).ManageProduct(ctx, req.(*ManageProductReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Dm_GetProductInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DmServer).GetProductInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.Dm/GetProductInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DmServer).GetProductInfo(ctx, req.(*GetProductInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Dm_GetDeviceInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeviceInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DmServer).GetDeviceInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.Dm/GetDeviceInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DmServer).GetDeviceInfo(ctx, req.(*GetDeviceInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Dm_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "dm.Dm",
 	HandlerType: (*DmServer)(nil),
@@ -449,6 +1240,22 @@ var _Dm_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "accessAuth",
 			Handler:    _Dm_AccessAuth_Handler,
+		},
+		{
+			MethodName: "manageDevice",
+			Handler:    _Dm_ManageDevice_Handler,
+		},
+		{
+			MethodName: "manageProduct",
+			Handler:    _Dm_ManageProduct_Handler,
+		},
+		{
+			MethodName: "getProductInfo",
+			Handler:    _Dm_GetProductInfo_Handler,
+		},
+		{
+			MethodName: "getDeviceInfo",
+			Handler:    _Dm_GetDeviceInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

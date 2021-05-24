@@ -103,3 +103,13 @@ func ErrorInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	err = ToRpc(err)
 	return resp, err
 }
+
+func Cmp(err1 error,err2 error)bool{
+	if err2 == nil && err1 == nil {
+		return true
+	}
+	if err1 == nil || err2 == nil {
+		return false
+	}
+	return Fmt(err1).Code == Fmt(err2).Code
+}

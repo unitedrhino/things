@@ -1,6 +1,0 @@
-Name: dmsvr.rpc
-ListenOn: 127.0.0.1:7081
-Etcd:
-  Hosts:
-  - 127.0.0.1:2379
-  Key: dmsvr.rpc

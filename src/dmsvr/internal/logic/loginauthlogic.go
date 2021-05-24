@@ -24,7 +24,7 @@ func NewLoginAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginAu
 }
 
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
-	// todo: add your logic here and delete this line
+	l.Infof("LoginAuth|req=%+v",in)
 
 	return &dm.Response{}, nil
 }

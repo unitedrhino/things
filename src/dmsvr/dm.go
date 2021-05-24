@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gitee.com/godLei6/things/src/dmsvr/device"
+	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/config"
 	"gitee.com/godLei6/things/src/dmsvr/internal/server"
@@ -14,13 +14,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-var configFile = flag.String("f", "etc/dmsvr.yaml", "the config file")
+var configFile = flag.String("f", "etc/dm.yaml", "the config file")
 
 func main() {
-	device.Start()
-
 	flag.Parse()
-
+	//device.Start()
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
@@ -30,6 +28,8 @@ func main() {
 		dm.RegisterDmServer(grpcServer, srv)
 	})
 	defer s.Stop()
+	s.AddUnaryInterceptors(errors.ErrorInterceptor)
+
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

@@ -24,7 +24,6 @@ func NewAccessAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Access
 }
 
 func (l *AccessAuthLogic) AccessAuth(in *dm.AccessAuthReq) (*dm.Response, error) {
-	// todo: add your logic here and delete this line
-
+	l.Infof("AccessAuth|req=%+v",in)
 	return &dm.Response{}, nil
 }

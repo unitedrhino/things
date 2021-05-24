@@ -30,7 +30,7 @@ func (l *ModifyUserInfoLogic) ModifyUserInfo(req types.ModifyUserInfoReq,uid int
 	_,err := l.svcCtx.UserRpc.ModifyUserInfo(l.ctx, &user.ModifyUserInfoReq{Info: req.Info,Uid: uid})
 	if err != nil {
 		er :=errors.Fmt(err)
-		l.Errorf("ModifyUserInfo failure|err=%v",er)
+		l.Errorf("ModifyUserInfo failure|err=%+v",er)
 		return er
 	}
 	return nil

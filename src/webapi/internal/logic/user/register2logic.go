@@ -33,7 +33,7 @@ func (l *Register2Logic) Register2(req types.Register2Req) error {
 	token,err := utils.ParseToken(req.Token, l.svcCtx.Config.Rej.AccessSecret)
 	if err != nil {
 		er :=errors.Fmt(err)
-		l.Errorf("parseToken failure|token=%s|err=%v",token,er)
+		l.Errorf("parseToken failure|token=%s|err=%+v",token,er)
 		return er
 	}
 	if token.Uid != req.Uid {
@@ -58,11 +58,11 @@ func (l *Register2Logic) Register2(req types.Register2Req) error {
 	})
 	if er != nil {
 		err :=errors.Fmt(er)
-		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v",utils.FuncName(),req,err)
+		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%+v",utils.FuncName(),req,err)
 		return err
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.RegisterCore|return nil|req=%v",utils.FuncName(),req)
+		l.Errorf("%s|rpc.RegisterCore|return nil|req=%+v",utils.FuncName(),req)
 		return errors.System.AddDetail("register core rpc return nil")
 	}
 	return nil

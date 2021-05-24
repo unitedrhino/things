@@ -1,7 +1,21 @@
 syntax = "proto3";
 
 package dm;
-
+message Response {
+}
+message ManResp {
+  int64 ID = 1;
+}
+enum OptType//操作类型
+{
+  DEFALT  = 0;  //不能为这个参数
+  ADD     = 1;  //增加
+  MODIFY  = 2;  //修改
+  DEL     = 3;  //删除
+}
+/*
+下面是设备管理模块的消息
+*/
 message LoginAuthReq {
   string username = 1;//用户名
   string password = 2;//密码
@@ -16,10 +30,54 @@ message AccessAuthReq {
   string ip = 5; //访问的ip地址
 }
 
-message Response {
+message ProductInfo{
+  int64  createdTime = 1; //创建时间
+  int64 productID   = 2; //产品id
+  string productName = 3; //设备名
+  enum AUTH_MODE{
+    default     = 0;//无操作
+    password    = 1;//账密认证
+    privateKey  = 2;//秘钥认证
+  }
+  AUTH_MODE authMode = 4;
+}
+message ManageProductReq{
+    OptType opt       = 1;//操作
+    ProductInfo info  = 2;//产品信息
 }
 
-service Dm {
-  rpc loginAuth(LoginAuthReq) returns(Response);
-  rpc accessAuth(AccessAuthReq) returns(Response);
+message GetProductInfoReq{
+  int64 productID   = 1; //产品id
 }
+
+message DeviceInfo{
+  int64 productID    = 1; //产品id
+  int64 deviceID     = 2; //设备id
+  string deviceName   = 3; //设备名
+  int64  createdTime  = 4; //创建时间
+}
+message ManageDeviceReq{
+  OptType opt     = 1;//操作
+  DeviceInfo info = 2; //设备信息
+}
+message GetDeviceInfoReq{
+  int64 deviceID   = 1; //设备id
+}
+
+
+/*
+上面是设备管理模块的消息
+*/
+
+
+
+
+service Dm {
+  rpc loginAuth(LoginAuthReq)           returns (Response);//登录认证
+  rpc accessAuth(AccessAuthReq)         returns (Response);//操作认证
+  rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);//设备管理
+  rpc manageProduct(ManageProductReq)   returns (ProductInfo);//产品管理
+  rpc getProductInfo(GetProductInfoReq) returns (ProductInfo);//获取产品信息
+  rpc getDeviceInfo(GetDeviceInfoReq)   returns (DeviceInfo);//获取设备信息
+}
+
