@@ -15,5 +15,5 @@ goctl rpc proto -src rpc/user.proto  -dir rpc
 
 # 设备管理模块
 ## 
-
+goctl rpc proto -src dm.proto  -dir ./
 #接口文档生成

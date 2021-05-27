@@ -21,6 +21,7 @@ message LoginAuthReq {
   string password = 2;//密码
   string clientid = 3;//clientID
   string ip = 4;//访问的ip地址
+  bytes certificate = 5;//客户端证书
 }
 message AccessAuthReq {
   string username = 1; //用户名
