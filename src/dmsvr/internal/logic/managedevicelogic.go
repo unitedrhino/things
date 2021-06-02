@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"gitee.com/godLei6/things/shared/errors"
+	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/model"
 	"github.com/spf13/cast"
 	"time"
@@ -70,10 +71,12 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq)(*dm.DeviceInfo, er
 	}else if find == false{
 		return nil,errors.Parameter.AddDetail("not find product id:"+cast.ToString(in.Info.ProductID))
 	}
+
 	di :=  model.DeviceInfo{
 		ProductID   :in.Info.ProductID,// 产品id
 		DeviceID    :l.svcCtx.DeviceID.GetSnowflakeId(),// 设备id
 		DeviceName  :in.Info.DeviceName,// 设备名称
+		Secret: utils.GetPassword(25,1),
 		CreatedTime :time.Now(),
 	}
 	_,err = l.svcCtx.DeviceInfo.Insert(di)
@@ -146,11 +149,11 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq)(*dm.DeviceInfo, er
 func (l *ManageDeviceLogic) ManageDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
 	l.Infof("ManageDevice|req=%+v",in)
 	switch in.Opt {
-	case dm.OptType_ADD:
+	case dm.OPT_ADD:
 		return l.AddDevice(in)
-	case dm.OptType_MODIFY:
+	case dm.OPT_MODIFY:
 		return l.ModifyDevice(in)
-	case dm.OptType_DEL:
+	case dm.OPT_DEL:
 		return l.DelDevice(in)
 	default:
 		return nil,errors.Parameter.AddDetail("not suppot opt:"+string(in.Opt))

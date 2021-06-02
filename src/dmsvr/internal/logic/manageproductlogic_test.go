@@ -24,7 +24,7 @@ func TestManageProduct(t *testing.T) {
 	ctx := context.Background()
 	ProductName := "test5"
 	info,err := client.ManageProduct(ctx,&dm.ManageProductReq{
-		Opt: dm.OptType_ADD,
+		Opt: dm.OPT_ADD,
 		Info: &dm.ProductInfo{
 			ProductName: ProductName,
 		},
@@ -37,7 +37,7 @@ func TestManageProduct(t *testing.T) {
 		t.Errorf("ProductName not succ:%s",info.ProductName)
 	}
 	_,err = client.ManageProduct(ctx,&dm.ManageProductReq{
-		Opt: dm.OptType_ADD,
+		Opt: dm.OPT_ADD,
 		Info: &dm.ProductInfo{
 			ProductName: ProductName,
 		},
@@ -46,7 +46,7 @@ func TestManageProduct(t *testing.T) {
 		t.Errorf("need duplicate err")
 	}
 	info,err = client.ManageProduct(ctx,&dm.ManageProductReq{
-		Opt: dm.OptType_MODIFY,
+		Opt: dm.OPT_MODIFY,
 		Info: &dm.ProductInfo{
 			ProductID: info.ProductID,
 			ProductName: ProductName+"1",
@@ -59,13 +59,13 @@ func TestManageProduct(t *testing.T) {
 		t.Errorf("%+v", info)
 	}
 
-	info,err = client.ManageProduct(ctx,&dm.ManageProductReq{
-		Opt: dm.OptType_DEL,
-		Info: &dm.ProductInfo{
-			ProductID: info.ProductID,
-		},
-	})
-	if err != nil {
-		t.Errorf("%+v",errors.Fmt(err))
-	}
+	//info,err = client.ManageProduct(ctx,&dm.ManageProductReq{
+	//	Opt: dm.OPT_DEL,
+	//	Info: &dm.ProductInfo{
+	//		ProductID: info.ProductID,
+	//	},
+	//})
+	//if err != nil {
+	//	t.Errorf("%+v",errors.Fmt(err))
+	//}
 }

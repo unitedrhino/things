@@ -41,12 +41,12 @@ func (s *DmServer) ManageProduct(ctx context.Context, in *dm.ManageProductReq) (
 	return l.ManageProduct(in)
 }
 
-func (s *DmServer) GetProductInfo(ctx context.Context, in *dm.GetProductInfoReq) (*dm.ProductInfo, error) {
+func (s *DmServer) GetProductInfo(ctx context.Context, in *dm.GetProductInfoReq) (*dm.GetProductInfoResp, error) {
 	l := logic.NewGetProductInfoLogic(ctx, s.svcCtx)
 	return l.GetProductInfo(in)
 }
 
-func (s *DmServer) GetDeviceInfo(ctx context.Context, in *dm.GetDeviceInfoReq) (*dm.DeviceInfo, error) {
+func (s *DmServer) GetDeviceInfo(ctx context.Context, in *dm.GetDeviceInfoReq) (*dm.GetDeviceInfoResp, error) {
 	l := logic.NewGetDeviceInfoLogic(ctx, s.svcCtx)
 	return l.GetDeviceInfo(in)
 }

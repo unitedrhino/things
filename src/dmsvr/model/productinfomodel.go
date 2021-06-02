@@ -38,12 +38,19 @@ type (
 	}
 
 	ProductInfo struct {
-		ProductID   int64        `db:"productID"`   // 产品id
-		ProductName string       `db:"productName"` // 产品名称
-		AuthMode    int64        `db:"authMode"`    // 认证方式:0:账密认证,1:秘钥认证
-		CreatedTime time.Time    `db:"createdTime"`
-		UpdatedTime sql.NullTime `db:"updatedTime"`
-		DeletedTime sql.NullTime `db:"deletedTime"`
+		ProductID    int64        `db:"productID"`    // 产品id
+		ProductName  string       `db:"productName"`  // 产品名称
+		AuthMode     int64        `db:"authMode"`     // 认证方式:0:账密认证,1:秘钥认证
+		DeviceType   int64        `db:"deviceType"`   // 设备类型:0:设备,1:网关,2:子设备
+		CategoryID   int64        `db:"categoryID"`   // 产品品类
+		NetType      int64        `db:"netType"`      // 通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
+		DataProto    int64        `db:"dataProto"`    // 数据协议:0:自定义,1:数据模板
+		AutoRegister int64        `db:"autoRegister"` // 动态注册:0:关闭,1:打开,2:打开并自动创建设备
+		Secret       string       `db:"secret"`       // 动态注册产品秘钥
+		Description  string       `db:"description"`  // 描述
+		CreatedTime  time.Time    `db:"createdTime"`
+		UpdatedTime  sql.NullTime `db:"updatedTime"`
+		DeletedTime  sql.NullTime `db:"deletedTime"`
 	}
 )
 
@@ -57,8 +64,8 @@ func NewProductInfoModel(conn sqlx.SqlConn, c cache.CacheConf) ProductInfoModel 
 func (m *defaultProductInfoModel) Insert(data ProductInfo) (sql.Result, error) {
 	productInfoProductNameKey := fmt.Sprintf("%s%v", cacheProductInfoProductNamePrefix, data.ProductName)
 	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
-		return conn.Exec(query, data.ProductID, data.ProductName, data.AuthMode, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
+		return conn.Exec(query, data.ProductID, data.ProductName, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
 	}, productInfoProductNameKey)
 	return ret, err
 }
@@ -105,7 +112,7 @@ func (m *defaultProductInfoModel) Update(data ProductInfo) error {
 	productInfoProductNameKey := fmt.Sprintf("%s%v", cacheProductInfoProductNamePrefix, data.ProductName)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `productID` = ?", m.table, productInfoRowsWithPlaceHolder)
-		return conn.Exec(query, data.ProductName, data.AuthMode, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.ProductID)
+		return conn.Exec(query, data.ProductName, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.ProductID)
 	}, productInfoProductIDKey, productInfoProductNameKey)
 	return err
 }
@@ -116,8 +123,8 @@ func (m *defaultProductInfoModel) Delete(productID int64) error {
 		return err
 	}
 
-	productInfoProductIDKey := fmt.Sprintf("%s%v", cacheProductInfoProductIDPrefix, productID)
 	productInfoProductNameKey := fmt.Sprintf("%s%v", cacheProductInfoProductNamePrefix, data.ProductName)
+	productInfoProductIDKey := fmt.Sprintf("%s%v", cacheProductInfoProductIDPrefix, productID)
 	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `productID` = ?", m.table)
 		return conn.Exec(query, productID)

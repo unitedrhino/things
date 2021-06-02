@@ -41,6 +41,9 @@ type (
 		DeviceID    int64        `db:"deviceID"`   // 设备id
 		ProductID   int64        `db:"productID"`  // 产品id
 		DeviceName  string       `db:"deviceName"` // 设备名称
+		Secret      string       `db:"secret"`     // 设备秘钥
+		FirstLogin  sql.NullTime `db:"firstLogin"` // 激活时间
+		LastLogin   sql.NullTime `db:"lastLogin"`  // 最后上线时间
 		CreatedTime time.Time    `db:"createdTime"`
 		UpdatedTime sql.NullTime `db:"updatedTime"`
 		DeletedTime sql.NullTime `db:"deletedTime"`
@@ -57,8 +60,8 @@ func NewDeviceInfoModel(conn sqlx.SqlConn, c cache.CacheConf) DeviceInfoModel {
 func (m *defaultDeviceInfoModel) Insert(data DeviceInfo) (sql.Result, error) {
 	deviceInfoDeviceNameKey := fmt.Sprintf("%s%v", cacheDeviceInfoDeviceNamePrefix, data.DeviceName)
 	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
-		return conn.Exec(query, data.DeviceID, data.ProductID, data.DeviceName, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
+		return conn.Exec(query, data.DeviceID, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
 	}, deviceInfoDeviceNameKey)
 	return ret, err
 }
@@ -105,7 +108,7 @@ func (m *defaultDeviceInfoModel) Update(data DeviceInfo) error {
 	deviceInfoDeviceNameKey := fmt.Sprintf("%s%v", cacheDeviceInfoDeviceNamePrefix, data.DeviceName)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `deviceID` = ?", m.table, deviceInfoRowsWithPlaceHolder)
-		return conn.Exec(query, data.ProductID, data.DeviceName, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DeviceID)
+		return conn.Exec(query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DeviceID)
 	}, deviceInfoDeviceIDKey, deviceInfoDeviceNameKey)
 	return err
 }

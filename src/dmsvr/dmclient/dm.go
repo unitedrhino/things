@@ -14,24 +14,26 @@ import (
 )
 
 type (
-	ManResp           = dm.ManResp
-	LoginAuthReq      = dm.LoginAuthReq
-	GetProductInfoReq = dm.GetProductInfoReq
-	DeviceInfo        = dm.DeviceInfo
-	ManageDeviceReq   = dm.ManageDeviceReq
-	GetDeviceInfoReq  = dm.GetDeviceInfoReq
-	Response          = dm.Response
-	AccessAuthReq     = dm.AccessAuthReq
-	ProductInfo       = dm.ProductInfo
-	ManageProductReq  = dm.ManageProductReq
+	LoginAuthReq       = dm.LoginAuthReq
+	AccessAuthReq      = dm.AccessAuthReq
+	ProductInfo        = dm.ProductInfo
+	ManageProductReq   = dm.ManageProductReq
+	GetProductInfoReq  = dm.GetProductInfoReq
+	GetProductInfoResp = dm.GetProductInfoResp
+	DeviceInfo         = dm.DeviceInfo
+	ManResp            = dm.ManResp
+	ManageDeviceReq    = dm.ManageDeviceReq
+	GetDeviceInfoReq   = dm.GetDeviceInfoReq
+	GetDeviceInfoResp  = dm.GetDeviceInfoResp
+	Response           = dm.Response
 
 	Dm interface {
 		LoginAuth(ctx context.Context, in *LoginAuthReq) (*Response, error)
 		AccessAuth(ctx context.Context, in *AccessAuthReq) (*Response, error)
 		ManageDevice(ctx context.Context, in *ManageDeviceReq) (*DeviceInfo, error)
 		ManageProduct(ctx context.Context, in *ManageProductReq) (*ProductInfo, error)
-		GetProductInfo(ctx context.Context, in *GetProductInfoReq) (*ProductInfo, error)
-		GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq) (*DeviceInfo, error)
+		GetProductInfo(ctx context.Context, in *GetProductInfoReq) (*GetProductInfoResp, error)
+		GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq) (*GetDeviceInfoResp, error)
 	}
 
 	defaultDm struct {
@@ -65,12 +67,12 @@ func (m *defaultDm) ManageProduct(ctx context.Context, in *ManageProductReq) (*P
 	return client.ManageProduct(ctx, in)
 }
 
-func (m *defaultDm) GetProductInfo(ctx context.Context, in *GetProductInfoReq) (*ProductInfo, error) {
+func (m *defaultDm) GetProductInfo(ctx context.Context, in *GetProductInfoReq) (*GetProductInfoResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.GetProductInfo(ctx, in)
 }
 
-func (m *defaultDm) GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq) (*DeviceInfo, error) {
+func (m *defaultDm) GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq) (*GetDeviceInfoResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.GetDeviceInfo(ctx, in)
 }

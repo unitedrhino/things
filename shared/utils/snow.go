@@ -13,7 +13,7 @@ import (
  * 序列号:[11-0]12位,十进制范围[0,4095]
  * bobo
  */
-
+const epoch = int64(1609430400)                           // 设置起始时间(时间戳/毫秒)：2020-01-01 00:00:00，有效期69年
 type SnowFlake struct {
 	machineID int64      //机器 id占8位,十进制范围是[0,255]
 	sn        int64      //序列号占12位,十进制范围是[0,4095]
@@ -132,7 +132,7 @@ func (c *SnowFlake) GetSnowflakeId() (id int64) {
 	   }
 	*/
 	//机器id占用8位空间,序列号占用12位空间,所以左移20位
-	rightBinValue := curTime & 0x7FFFFFFFFFF
+	rightBinValue := (curTime - epoch) & 0x7FFFFFFFFFF
 	rightBinValue <<= 20
 	id = rightBinValue | c.machineID | sn
 

@@ -1,18 +1,20 @@
 syntax = "proto3";
 
+import "google/protobuf/wrappers.proto";
+
 package dm;
+
 message Response {
 }
 message ManResp {
   int64 ID = 1;
 }
-enum OptType//操作类型
-{
-  DEFALT  = 0;  //不能为这个参数
-  ADD     = 1;  //增加
-  MODIFY  = 2;  //修改
-  DEL     = 3;  //删除
-}
+//enum OPT//操作类型
+//{
+//  ADD     = 0;  //增加
+//  MODIFY  = 1;  //修改
+//  DEL     = 2;  //删除
+//}
 /*
 下面是设备管理模块的消息
 */
@@ -31,40 +33,97 @@ message AccessAuthReq {
   string ip = 5; //访问的ip地址
 }
 
+
+
+
+//enum AUTH//认证方式
+//{
+//  AUTH_UNKNOWN = 0; //禁止为此参数
+//  PWD   = 1;  //账密认证
+//  CERT  = 2;  //证书认证
+//}
+//enum NET//网络类型
+//{
+//  NET_UNKNOWN  = 0; //禁止为此参数
+//  OTHER   = 1;  //其他
+//  WIFI    = 2;  //wi-fi
+//  G234    = 3;  //2G/3G/4G
+//  G5      = 4;  //5G
+//  BLE     = 5;  //蓝牙
+//  LORA    = 6;  //LoRaWAN
+//}
+//
+//enum DEV//设备类型
+//{
+//  DEV_UNKNOWN  = 0; //禁止为此参数
+//  DEVICE  = 1;  //设备
+//  GATEWAY = 2;  //网关
+//  SUBSET  = 3;  //子设备
+//}
+//enum DATA//数据协议
+//{
+//  DATA_UNKNOWN = 0; //禁止为此参数
+//  CUSTOM  = 1;  //自定义
+//  TEMPLATE = 2;  //数据模板
+//}
+//
+//enum AUTO_REG//动态注册
+//{
+//  AUTO_REG_UNKNOWN = 0; //禁止为此参数
+//  CLOSE = 1;  //关闭
+//  OPEN  = 2;  //打开
+//  AUTO  = 3;  //打开并自动创建设备
+//}
+
 message ProductInfo{
-  int64  createdTime = 1; //创建时间
-  int64 productID   = 2; //产品id
-  string productName = 3; //设备名
-  enum AUTH_MODE{
-    default     = 0;//无操作
-    password    = 1;//账密认证
-    privateKey  = 2;//秘钥认证
-  }
-  AUTH_MODE authMode = 4;
+  int64   createdTime   = 1; //创建时间 只读
+  int64   productID     = 2; //产品id 只读
+  string  productName   = 3; //产品名称
+  int64   authMode      = 4;//认证方式:0:账密认证,1:秘钥认证
+  int64   deviceType    = 5;//设备类型:0:设备,1:网关,2:子设备
+  int64   categoryID    = 6;//产品品类
+  int64   netType       = 7;//通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
+  int64   dataProto     = 8;//数据协议:0:自定义,1:数据模板
+  int64   autoRegister  = 9;//动态注册:0:关闭,1:打开,2:打开并自动创建设备
+  string   secret        = 10;//动态注册产品秘钥 只读
+  google.protobuf.StringValue   description   = 11;//描述
 }
 message ManageProductReq{
-    OptType opt       = 1;//操作
-    ProductInfo info  = 2;//产品信息
+  int64 opt           = 1;//操作 0:新增 1:修改 2:删除
+  ProductInfo info  = 2;//产品信息
 }
 
+
 message GetProductInfoReq{
-  int64 productID   = 1; //产品id
+  int64 productID   = 1; //产品id  如果为0返回所有产品的信息
+}
+message GetProductInfoResp{
+  repeated ProductInfo info = 1; //产品信息
 }
 
 message DeviceInfo{
-  int64 productID    = 1; //产品id
-  int64 deviceID     = 2; //设备id
-  string deviceName   = 3; //设备名
-  int64  createdTime  = 4; //创建时间
+  int64   productID   = 1; //产品id 只读
+  int64   deviceID    = 2; //设备id 只读
+  string  deviceName  = 3; //设备名称 读写
+  int64   createdTime = 4; //创建时间 只读
+  string  secret      = 5; //设备秘钥 只读
+  int64   firstLogin  = 6; //激活时间 只读
+  int64   lastLogin   = 7; //最后上线时间 只读
 }
+
 message ManageDeviceReq{
-  OptType opt     = 1;//操作
+  int64 opt     = 1;//操作 0:新增 1:修改 2:删除
   DeviceInfo info = 2; //设备信息
 }
 message GetDeviceInfoReq{
-  int64 deviceID   = 1; //设备id
+  int64   deviceID    = 1; //设备id
+  string  deviceName  = 2; //设备名(设备id无时搜索设备名)
+  int64   productID   = 3; //产品id 获取产品id下的所有设备信息
 }
 
+message GetDeviceInfoResp{
+  repeated DeviceInfo info = 1;//设备信息
+}
 
 /*
 上面是设备管理模块的消息
@@ -78,7 +137,7 @@ service Dm {
   rpc accessAuth(AccessAuthReq)         returns (Response);//操作认证
   rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);//设备管理
   rpc manageProduct(ManageProductReq)   returns (ProductInfo);//产品管理
-  rpc getProductInfo(GetProductInfoReq) returns (ProductInfo);//获取产品信息
-  rpc getDeviceInfo(GetDeviceInfoReq)   returns (DeviceInfo);//获取设备信息
+  rpc getProductInfo(GetProductInfoReq) returns (GetProductInfoResp);//获取产品信息
+  rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);//获取设备信息
 }
 

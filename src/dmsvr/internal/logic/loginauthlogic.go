@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
@@ -63,9 +64,10 @@ rNhpjJJb53OvSJwI6OwRt5ehfIg1sRjoSYXhE6yJyEBQRIRdPLbxSAaQB20P9ZlL
 blA0kLm6HiGNSu1CTAst23i2WueGQgOHHdBQoLUU5xEBNFYB2S7OB74=
 -----END RSA PRIVATE KEY-----`
 var clientCertificate tls.Certificate
+var x509Cert *x509.Certificate
 func NewLoginAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginAuthLogic {
 	clientCertificate, _ = tls.X509KeyPair([]byte(clientCert), []byte(clientKey))
-
+	x509Cert, _ = x509.ParseCertificate(clientCertificate.Certificate[0])
 	return &LoginAuthLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -76,9 +78,11 @@ func NewLoginAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginAu
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	l.Infof("LoginAuth|req=%+v",in)
 	if len(in.Certificate) > 0 {
-		if bytes.Equal(in.Certificate,clientCertificate.Certificate[0]){
+		if bytes.Equal(in.Certificate,x509Cert.Signature){
 			l.Error("it is same")
 		}
+		l.Errorf("cert len=%d|signature len=%d",
+			len(x509Cert.Raw),len(x509Cert.Signature))
 	}
 	return &dm.Response{}, nil
 }

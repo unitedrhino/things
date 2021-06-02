@@ -23,16 +23,16 @@ func NewGetDeviceInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 	}
 }
 
-func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (*dm.DeviceInfo, error) {
+func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (*dm.GetDeviceInfoResp, error) {
 	l.Infof("GetDeviceInfo|req=%+v",in)
 	di,err := l.svcCtx.DeviceInfo.FindOne(in.DeviceID)
 	if err != nil {
 		return nil, err
 	}
-	return &dm.DeviceInfo{
+	return &dm.GetDeviceInfoResp{Info: []*dm.DeviceInfo{{
 		ProductID:di.ProductID,
 		DeviceID: di.DeviceID,
 		DeviceName: di.DeviceName,
 		CreatedTime: di.CreatedTime.Unix(),
-	}, nil
+	}}}, nil
 }

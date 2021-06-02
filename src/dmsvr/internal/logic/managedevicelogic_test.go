@@ -20,7 +20,7 @@ func TestManageDevice(t *testing.T) {
 	ctx := context.Background()
 	Name := "test7"
 	info,err := client.ManageDevice(ctx,&dm.ManageDeviceReq{
-		Opt: dm.OptType_ADD,
+		Opt: dm.OPT_ADD,
 		Info: &dm.DeviceInfo{
 			ProductID: 1700642615085502464,
 			DeviceName: Name,
@@ -34,7 +34,7 @@ func TestManageDevice(t *testing.T) {
 		t.Errorf("DeviceName not succ:%s",info.DeviceName)
 	}
 	_,err = client.ManageDevice(ctx,&dm.ManageDeviceReq{
-		Opt: dm.OptType_ADD,
+		Opt: dm.OPT_ADD,
 		Info: &dm.DeviceInfo{
 			ProductID: 123,
 			DeviceName: Name,
@@ -44,7 +44,7 @@ func TestManageDevice(t *testing.T) {
 		t.Errorf("need duplicate err")
 	}
 	info,err = client.ManageDevice(ctx,&dm.ManageDeviceReq{
-		Opt: dm.OptType_MODIFY,
+		Opt: dm.OPT_MODIFY,
 		Info: &dm.DeviceInfo{
 			DeviceID: info.DeviceID,
 			DeviceName: Name+"1",
@@ -58,7 +58,7 @@ func TestManageDevice(t *testing.T) {
 	}
 
 	info,err = client.ManageDevice(ctx,&dm.ManageDeviceReq{
-		Opt: dm.OptType_DEL,
+		Opt: dm.OPT_DEL,
 		Info: &dm.DeviceInfo{
 			DeviceID: info.DeviceID,
 		},

@@ -80,11 +80,18 @@ func UpdateProduct(old *model.ProductInfo,data *dm.ProductInfo){
 		old.ProductName = data.ProductName
 		isModify = true
 	}
-	if data.AuthMode !=  dm.ProductInfo_default {
+	if data.AuthMode != dm.UNKNOWN {
 		old.AuthMode = int64(data.AuthMode)
 		isModify = true
 	}
-
+	if data.Description != nil{
+		old.Description = data.Description.GetValue()
+		isModify = true
+	}
+	if data.AutoRegister != dm.UNKNOWN {
+		old.AutoRegister = int64(data.AutoRegister)
+		isModify = true
+	}
 }
 
 func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq)(*dm.ProductInfo, error){
@@ -129,11 +136,11 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq)(*dm.ProductInfo
 func (l *ManageProductLogic) ManageProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
 	l.Infof("ManageProduct|req=%+v",in)
 	switch in.Opt {
-	case dm.OptType_ADD:
+	case dm.OPT_ADD:
 		return l.AddProduct(in)
-	case dm.OptType_MODIFY:
+	case dm.OPT_MODIFY:
 		return l.ModifyProduct(in)
-	case dm.OptType_DEL:
+	case dm.OPT_DEL:
 		return l.DelProduct(in)
 	default:
 		return nil,errors.Parameter.AddDetail("not suppot opt:"+string(in.Opt))
