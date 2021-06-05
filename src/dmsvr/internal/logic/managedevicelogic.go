@@ -32,7 +32,7 @@ func NewManageDeviceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mana
 发现返回true 没有返回false
 */
 func (l *ManageDeviceLogic) CheckDevice(in *dm.ManageDeviceReq) (bool,error){
-	_,err :=l.svcCtx.DeviceInfo.FindOneByDeviceName(in.Info.DeviceName)
+	_,err :=l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID,in.Info.DeviceName)
 	switch err {
 	case model.ErrNotFound:
 		return false,nil
@@ -76,7 +76,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq)(*dm.DeviceInfo, er
 		ProductID   :in.Info.ProductID,// 产品id
 		DeviceID    :l.svcCtx.DeviceID.GetSnowflakeId(),// 设备id
 		DeviceName  :in.Info.DeviceName,// 设备名称
-		Secret: utils.GetPassword(25,1),
+		Secret: utils.GetPwdBase64(20),
 		CreatedTime :time.Now(),
 	}
 	_,err = l.svcCtx.DeviceInfo.Insert(di)

@@ -18,11 +18,11 @@ func TestManageDevice(t *testing.T) {
 		Key: "dm.rpc",
 	}}))
 	ctx := context.Background()
-	Name := "test7"
+	Name := "test8"
 	info,err := client.ManageDevice(ctx,&dm.ManageDeviceReq{
 		Opt: dm.OPT_ADD,
 		Info: &dm.DeviceInfo{
-			ProductID: 1700642615085502464,
+			ProductID: 1699865466064867328,
 			DeviceName: Name,
 		},
 	})
@@ -57,13 +57,13 @@ func TestManageDevice(t *testing.T) {
 		t.Errorf("%+v", info)
 	}
 
-	info,err = client.ManageDevice(ctx,&dm.ManageDeviceReq{
-		Opt: dm.OPT_DEL,
-		Info: &dm.DeviceInfo{
-			DeviceID: info.DeviceID,
-		},
-	})
-	if err != nil {
-		t.Errorf("%+v",errors.Fmt(err))
-	}
+	//info,err = client.ManageDevice(ctx,&dm.ManageDeviceReq{
+	//	Opt: dm.OPT_DEL,
+	//	Info: &dm.DeviceInfo{
+	//		DeviceID: info.DeviceID,
+	//	},
+	//})
+	//if err != nil {
+	//	t.Errorf("%+v",errors.Fmt(err))
+	//}
 }

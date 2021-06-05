@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/base64"
 	"math/rand"
 	"time"
 )
@@ -38,4 +39,14 @@ func GetPassword(length int,level int) string{
 	//	buf[i], buf[j] = buf[j], buf[i]
 	//})
 	return string(buf)
+}
+
+
+func GetPwdBase64(length int)string{
+	rand.Seed(time.Now().UnixNano())
+	buf := make([]byte, length)
+	for i := 0; i < length; i++ {
+		buf[i] = byte(rand.Intn(255))
+	}
+	return base64.StdEncoding.EncodeToString(buf)
 }

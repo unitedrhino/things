@@ -22,7 +22,7 @@ func TestManageProduct(t *testing.T) {
 	 //t.Errorf("TestCheckToken|resp=%#v|err=%#v\n",resp,err)
 	fmt.Println("TestCheckToken")
 	ctx := context.Background()
-	ProductName := "test5"
+	ProductName := "test42"
 	info,err := client.ManageProduct(ctx,&dm.ManageProductReq{
 		Opt: dm.OPT_ADD,
 		Info: &dm.ProductInfo{

@@ -5,9 +5,16 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-
+	"database/sql"
+	"encoding/base64"
+	"gitee.com/godLei6/things/shared/errors"
+	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
+	"gitee.com/godLei6/things/src/dmsvr/model"
+	"github.com/spf13/cast"
+	"strings"
+	"time"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
@@ -16,6 +23,7 @@ type LoginAuthLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	di *model.DeviceInfo
 }
 var clientCert string = `-----BEGIN CERTIFICATE-----
 MIIC3zCCAcegAwIBAgIBAjANBgkqhkiG9w0BAQsFADATMREwDwYDVQQDEwhNeVRl
@@ -75,6 +83,116 @@ func NewLoginAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginAu
 	}
 }
 
+
+/*
+username 字段的格式为：
+${productId}${deviceName};${sdkappid};${connid};${expiry}
+注意：${} 表示变量，并非特定的拼接符号。
+
+*/
+type LoginDevice struct {
+	ClientID 	string	//clientID
+	ProductID 	int64	//产品id
+	DeviceName 	string	//设备名称
+	SdkAppID   	int64	//appid 直接填 12010126
+	ConnID		string	//随机6字节字符串 帮助查bug
+	Expiry 		int64	//过期时间 unix时间戳
+}
+
+/*
+password 字段格式为：
+${token};hmac 签名方法
+其中 hmac 签名方法字段填写第三步用到的摘要算法，可选的值有 hmacsha256 和 hmacsha1。
+*/
+type PwdInfo struct {
+	token string	//userName通过加密方法后的token
+	hmac  string    //签名的加密方法,共有两种:"hmacsha256","hmacsha1"
+	HmacHandle  func(data string, secret []byte) string
+}
+const (
+	Hmacsha256 = "hmacsha256"
+	Hmacsha1   = "hmacsha1"
+)
+
+
+
+func (l *LoginAuthLogic)GetPwdInfo(password string) (*PwdInfo,error){
+	keys :=strings.Split(password,";")
+	if len(keys) != 2{
+		return nil,errors.Parameter.AddDetail("password not right")
+	}
+	var HmacHandle  func(data string, secret []byte) string
+	switch keys[1] {
+	case Hmacsha256:
+		HmacHandle = utils.HmacSha256
+	case Hmacsha1:
+		HmacHandle = utils.HmacSha1
+	default:
+		return nil,errors.Parameter.AddDetail("password not suppot encrypt method:"+keys[1])
+	}
+
+	return &PwdInfo{
+		token: keys[0],
+		hmac: keys[1],
+		HmacHandle:HmacHandle,
+	}, nil
+}
+
+func (l *LoginAuthLogic)GetLoginDevice(userName string) (*LoginDevice,error){
+	keys :=strings.Split(userName,";")
+	if len(keys) != 4 || len(keys[0]) < 11{
+		return nil,errors.Parameter.AddDetail("userName not right")
+	}
+	ProductID := dm.GetInt64ProductID(keys[0][0:11])
+	if ProductID < 0 {
+		return nil,errors.Parameter.AddDetail("product id not right")
+	}
+	DeviceName := keys[0][11:]
+	lg:= &LoginDevice{
+		ClientID	: keys[0],
+		ProductID	: ProductID,
+		DeviceName	: DeviceName,
+		SdkAppID	: cast.ToInt64(keys[1]),
+		ConnID		: keys[2],
+		Expiry		: cast.ToInt64(keys[3]),
+	}
+	l.Slowf("LoginDevice=%+v",lg)
+	return lg,nil
+}
+
+func (l *LoginAuthLogic)CmpPwd(in *dm.LoginAuthReq) error{
+	if l.di == nil {
+		panic("neet select  device info db first")
+	}
+	pwdInfo, err:= l.GetPwdInfo(in.Password)
+	if err != nil {
+		return err
+	}
+	pwd,_ := base64.StdEncoding.DecodeString(l.di.Secret)
+	passwrod := pwdInfo.HmacHandle(in.Username,pwd)
+	if passwrod != pwdInfo.token{
+		return errors.Password
+	}
+	return nil
+}
+
+func (l *LoginAuthLogic)UpdateLoginTime(){
+	if l.di == nil {
+		panic("neet select  device info db first")
+	}
+	now := sql.NullTime{
+		Valid: true,
+		Time: time.Now(),
+	}
+	if l.di.FirstLogin.Valid == false {
+		l.di.FirstLogin = now
+	}
+	l.di.UpdatedTime = now
+	l.di.LastLogin = now
+	l.svcCtx.DeviceInfo.Update(*l.di)
+}
+
+
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	l.Infof("LoginAuth|req=%+v",in)
 	if len(in.Certificate) > 0 {
@@ -84,5 +202,30 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 		l.Errorf("cert len=%d|signature len=%d",
 			len(x509Cert.Raw),len(x509Cert.Signature))
 	}
+	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
+	lg, err :=l.GetLoginDevice(in.Username)
+	if err != nil {
+		return nil, err
+	}
+	if lg.ClientID != in.Clientid {
+		return nil, errors.Parameter.AddDetail("userName'clientID not equal real client id")
+	}
+	if lg.Expiry < time.Now().Unix(){
+		return nil, errors.SignatureExpired
+	}
+	l.di,err = l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(lg.ProductID,lg.DeviceName)
+	if err!= nil {
+		if err == model.ErrNotFound{
+			return nil, errors.Password
+		}else {
+			l.Errorf("LoginAuth|FindOneByProductIDDeviceName failure|err=%+v",err)
+			return nil, errors.Database
+		}
+	}
+	err = l.CmpPwd(in)
+	if err != nil {
+		return nil, err
+	}
+	l.UpdateLoginTime()
 	return &dm.Response{}, nil
 }

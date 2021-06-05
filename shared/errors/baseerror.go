@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/godLei6/things/shared/proto"
+	"github.com/tal-tech/go-zero/core/logx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"gitee.com/godLei6/things/shared/proto"
 )
 
 
@@ -100,6 +101,9 @@ func Fmt(errs error) *CodeError{
 
 func ErrorInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	resp, err := handler(ctx, req)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("err=%s",Fmt(err).Error())
+	}
 	err = ToRpc(err)
 	return resp, err
 }
