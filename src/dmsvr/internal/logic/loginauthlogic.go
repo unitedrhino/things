@@ -12,7 +12,6 @@ import (
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"gitee.com/godLei6/things/src/dmsvr/model"
-	"github.com/spf13/cast"
 	"strings"
 	"time"
 
@@ -90,14 +89,7 @@ ${productId}${deviceName};${sdkappid};${connid};${expiry}
 注意：${} 表示变量，并非特定的拼接符号。
 
 */
-type LoginDevice struct {
-	ClientID 	string	//clientID
-	ProductID 	int64	//产品id
-	DeviceName 	string	//设备名称
-	SdkAppID   	int64	//appid 直接填 12010126
-	ConnID		string	//随机6字节字符串 帮助查bug
-	Expiry 		int64	//过期时间 unix时间戳
-}
+
 
 /*
 password 字段格式为：
@@ -138,27 +130,7 @@ func (l *LoginAuthLogic)GetPwdInfo(password string) (*PwdInfo,error){
 	}, nil
 }
 
-func (l *LoginAuthLogic)GetLoginDevice(userName string) (*LoginDevice,error){
-	keys :=strings.Split(userName,";")
-	if len(keys) != 4 || len(keys[0]) < 11{
-		return nil,errors.Parameter.AddDetail("userName not right")
-	}
-	ProductID := dm.GetInt64ProductID(keys[0][0:11])
-	if ProductID < 0 {
-		return nil,errors.Parameter.AddDetail("product id not right")
-	}
-	DeviceName := keys[0][11:]
-	lg:= &LoginDevice{
-		ClientID	: keys[0],
-		ProductID	: ProductID,
-		DeviceName	: DeviceName,
-		SdkAppID	: cast.ToInt64(keys[1]),
-		ConnID		: keys[2],
-		Expiry		: cast.ToInt64(keys[3]),
-	}
-	l.Slowf("LoginDevice=%+v",lg)
-	return lg,nil
-}
+
 
 func (l *LoginAuthLogic)CmpPwd(in *dm.LoginAuthReq) error{
 	if l.di == nil {
@@ -203,7 +175,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 			len(x509Cert.Raw),len(x509Cert.Signature))
 	}
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
-	lg, err :=l.GetLoginDevice(in.Username)
+	lg, err :=GetLoginDevice(in.Username)
 	if err != nil {
 		return nil, err
 	}

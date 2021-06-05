@@ -11,5 +11,6 @@ var (
 	Database			= NewCodeError(9900008, "数据库错误")
 	NotFind			    = NewCodeError(9900009, "未查询到")
 	Duplicate			= NewCodeError(99000010,"参数重复")
-	SignatureExpired 	= NewCodeError(9900002, "签名已经过期")
+	SignatureExpired 	= NewCodeError(99000011, "签名已经过期")
+	Permissions			= NewCodeError(99000012, "权限不足")
 )
