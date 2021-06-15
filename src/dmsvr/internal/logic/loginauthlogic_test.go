@@ -20,18 +20,18 @@ func TestLoginAuth(t *testing.T) {
 		Key: "dm.rpc",
 	}}))
 	ctx := context.Background()
-	productID := dm.GetStrProductID(1699865466064867328)
-	deviceName := "test81"
+	productID := "21CYs1k9YpG"
+	deviceName := "test8"
 	clientID := fmt.Sprintf("%s%s",productID,deviceName)
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
 	userName := fmt.Sprintf("%s;12010126;fawef;1822730956",clientID)
-	password,_ := base64.StdEncoding.DecodeString("/RNiNnEY5AYZ4CHudnYnVaskF/Y=")
+	password,_ := base64.StdEncoding.DecodeString("0f0G7gwaxXgj3/hWNz14FAZJw98=")
 
 	pwd := fmt.Sprintf("%s;hmacsha1",utils.HmacSha1(userName,password))
 	req := &dm.LoginAuthReq{
 		Username    :userName,//用户名
 		Password    :pwd,//密码
-		Clientid    :clientID,//clientID
+		ClientID    :clientID,//clientID
 		Ip          :"192.168.1.2",//访问的ip地址
 		Certificate :[]byte{}, //客户端证书
 	}
@@ -40,6 +40,4 @@ func TestLoginAuth(t *testing.T) {
 	if err != nil {
 		t.Errorf("%+v",errors.Fmt(err))
 	}
-
-
 }

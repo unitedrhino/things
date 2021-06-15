@@ -1,5 +1,9 @@
 package dm
 
+const (
+	PRODUCTID_LEN = 11
+)
+
 type OPT = int64
 const (
 	OPT_ADD    OPT = 0 //增加

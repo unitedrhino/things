@@ -179,7 +179,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	if lg.ClientID != in.Clientid {
+	if lg.ClientID != in.ClientID {
 		return nil, errors.Parameter.AddDetail("userName'clientID not equal real client id")
 	}
 	if lg.Expiry < time.Now().Unix(){

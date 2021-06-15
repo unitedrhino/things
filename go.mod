@@ -10,6 +10,7 @@ require (
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.3.1
 	github.com/tal-tech/go-zero v1.1.7
+	go.mongodb.org/mongo-driver v1.5.3
 	google.golang.org/grpc v1.29.1
 	google.golang.org/protobuf v1.25.0
 )

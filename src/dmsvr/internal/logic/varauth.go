@@ -8,8 +8,7 @@ import (
 )
 type LoginDevice struct {
 	ClientID 	string	//clientID
-	ProductID 	int64	//产品id
-	StrProductID string //产品id的字符串版
+	ProductID 	string	//产品id
 	DeviceName 	string	//设备名称
 	SdkAppID   	int64	//appid 直接填 12010126
 	ConnID		string	//随机6字节字符串 帮助查bug
@@ -32,16 +31,13 @@ func GetLoginDevice(userName string) (*LoginDevice,error){
 }
 
 func GetClientIDInfo(ClientID string)(*LoginDevice,error){
-	ProductID := dm.GetInt64ProductID(ClientID[0:11])
-	if ProductID < 0 {
-		return nil,errors.Parameter.AddDetail("product id not right")
+	if len(ClientID) < dm.PRODUCTID_LEN {
+		return nil, errors.Parameter.AddDetail("clientID length not enough")
 	}
-	DeviceName := ClientID[11:]
 	lg:= &LoginDevice{
 		ClientID	: ClientID,
-		ProductID	: ProductID,
-		DeviceName	: DeviceName,
-		StrProductID: ClientID[0:11],
+		ProductID	: ClientID[0:dm.PRODUCTID_LEN],
+		DeviceName	: ClientID[dm.PRODUCTID_LEN:],
 	}
 	return lg,nil
 }

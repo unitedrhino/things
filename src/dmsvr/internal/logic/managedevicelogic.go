@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/model"
@@ -46,7 +47,7 @@ func (l *ManageDeviceLogic) CheckDevice(in *dm.ManageDeviceReq) (bool,error){
 发现返回true 没有返回false
 */
 func (l *ManageDeviceLogic) CheckProduct(in *dm.ManageDeviceReq) (bool,error){
-	_,err :=l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
+	_,err :=l.svcCtx.ProductInfo.FindOneByProductID(in.Info.ProductID)
 	switch err {
 	case model.ErrNotFound:
 		return false,nil
@@ -74,7 +75,6 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq)(*dm.DeviceInfo, er
 
 	di :=  model.DeviceInfo{
 		ProductID   :in.Info.ProductID,// 产品id
-		DeviceID    :l.svcCtx.DeviceID.GetSnowflakeId(),// 设备id
 		DeviceName  :in.Info.DeviceName,// 设备名称
 		Secret: utils.GetPwdBase64(20),
 		CreatedTime :time.Now(),
@@ -86,7 +86,6 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq)(*dm.DeviceInfo, er
 	}
 	return &dm.DeviceInfo{
 		ProductID   :di.ProductID,     //产品id
-		DeviceID    :di.DeviceID,       //设备id
 		DeviceName  :di.DeviceName,    //设备名
 		CreatedTime :di.CreatedTime.Unix(), //创建时间
 	},nil
@@ -107,10 +106,12 @@ func ChangeDevice(old *model.DeviceInfo,data *dm.DeviceInfo){
 }
 
 func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq)(*dm.DeviceInfo, error){
-	di, err:= l.svcCtx.DeviceInfo.FindOne(in.Info.DeviceID)
+	di, err:= l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID,in.Info.DeviceName)
 	if err != nil {
 		if err == model.ErrNotFound{
-			return nil, errors.Parameter.AddDetail("not find device id:"+cast.ToString(in.Info.DeviceID))
+			return nil, errors.Parameter.AddDetail(
+				fmt.Sprintf("not find device|productid=%s|deviceName=%s",
+					in.Info.ProductID,in.Info.DeviceName))
 		}
 		return nil,errors.System.AddDetail(err.Error())
 	}
@@ -123,22 +124,23 @@ func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq)(*dm.DeviceInfo,
 	}
 	return &dm.DeviceInfo{
 		ProductID   :di.ProductID,     //产品id
-		DeviceID    :di.DeviceID,       //设备id
 		DeviceName  :di.DeviceName,    //设备名
 		CreatedTime :di.CreatedTime.Unix(), //创建时间
 	},nil
 }
 
 func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq)(*dm.DeviceInfo, error){
-	_, err:= l.svcCtx.DeviceInfo.FindOne(in.Info.DeviceID)
+	di, err:= l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID,in.Info.DeviceName)
 	if err != nil {
 		if err == model.ErrNotFound{
-			return nil, errors.Parameter.AddDetail("not find device id:"+cast.ToString(in.Info.DeviceID))
+			return nil, errors.Parameter.AddDetail(
+				fmt.Sprintf("not find device|productid=%s|deviceName=%s",
+					in.Info.ProductID,in.Info.DeviceName))
 		}
 		l.Errorf("DelDevice|DeviceInfo|FindOne|err=%+v",err)
 		return nil,errors.System.AddDetail(err.Error())
 	}
-	err = l.svcCtx.DeviceInfo.Delete(in.Info.DeviceID)
+	err = l.svcCtx.DeviceInfo.Delete(di.Id)
 	if err != nil {
 		l.Errorf("DelDevice|DeviceInfo|Delete|err=%+v",err)
 		return nil,errors.System.AddDetail(err.Error())
@@ -151,8 +153,8 @@ func (l *ManageDeviceLogic) ManageDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 	switch in.Opt {
 	case dm.OPT_ADD:
 		return l.AddDevice(in)
-	case dm.OPT_MODIFY:
-		return l.ModifyDevice(in)
+	//case dm.OPT_MODIFY:
+	//	return l.ModifyDevice(in)
 	case dm.OPT_DEL:
 		return l.DelDevice(in)
 	default:

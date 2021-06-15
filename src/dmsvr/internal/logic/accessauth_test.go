@@ -21,15 +21,15 @@ func TestAccessAuth(t *testing.T) {
 		Key: "dm.rpc",
 	}}))
 	ctx := context.Background()
-	productID := dm.GetStrProductID(1699865466064867328)
-	deviceName := "test81"
+	productID := "21CYs1k9YpG"
+	deviceName := "test8"
 	clientID := fmt.Sprintf("%s%s",productID,deviceName)
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
 	userName := fmt.Sprintf("%s;12010126;fawef;1822730956",clientID)
 
 	topics := []string{
-		"thing/up/property/%s/%s",
-		"thing/down/property/%s/%s",
+		"$thing/up/property/%s/%s",
+		//"$thing/down/property/%s/%s",
 		//"ota/report/%s/%s",
 		//"broadcast/rxd/%s/%s",
 		"%s/%s/control",
@@ -48,7 +48,4 @@ func TestAccessAuth(t *testing.T) {
 			t.Errorf("%+v",errors.Fmt(err))
 		}
 	}
-
-
-
 }

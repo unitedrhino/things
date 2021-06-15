@@ -18,7 +18,8 @@ var configFile = flag.String("f", "etc/dm.yaml", "the config file")
 
 func main() {
 	flag.Parse()
-	//device.Start()
+	//go device.NewDevice()
+	//device.TestMongo()
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)

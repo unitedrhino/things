@@ -83,11 +83,12 @@ func DbToProto(pi *model.ProductInfo)*dm.ProductInfo{
 */
 func (l *ManageProductLogic)InsertProduct(in *dm.ManageProductReq)(*model.ProductInfo){
 	info := in.Info
-
+	ProductID := l.svcCtx.ProductID.GetSnowflakeId()// 产品id
 	pi :=  &model.ProductInfo{
-		ProductID    :l.svcCtx.ProductID.GetSnowflakeId(),// 产品id
+		ProductID    :dm.GetStrProductID(ProductID),// 产品id
 		ProductName  :info.ProductName,// 产品名称
 		Description	 : info.Description.GetValue(),
+		Template: info.Template.GetValue(),
 		CreatedTime :time.Now(),
 	}
 	if info.AutoRegister != dm.UNKNOWN {
@@ -142,6 +143,10 @@ func UpdateProduct(old *model.ProductInfo,data *dm.ProductInfo){
 		old.Description = data.Description.GetValue()
 		isModify = true
 	}
+	if data.Template != nil{
+		old.Template = data.Template.GetValue()
+		isModify = true
+	}
 	if data.AutoRegister != dm.UNKNOWN {
 		old.AutoRegister = int64(data.AutoRegister)
 		isModify = true
@@ -149,7 +154,7 @@ func UpdateProduct(old *model.ProductInfo,data *dm.ProductInfo){
 }
 
 func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq)(*dm.ProductInfo, error){
-	pi, err:= l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
+	pi, err:= l.svcCtx.ProductInfo.FindOneByProductID(in.Info.ProductID)
 	if err != nil {
 		if err == model.ErrNotFound{
 			return nil, errors.Parameter.AddDetail("not find ProductID id:"+cast.ToString(in.Info.ProductID))
@@ -167,7 +172,7 @@ func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq)(*dm.ProductI
 }
 
 func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq)(*dm.ProductInfo, error){
-	_, err:= l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
+	info, err:= l.svcCtx.ProductInfo.FindOneByProductID(in.Info.ProductID)
 	if err != nil {
 		if err == model.ErrNotFound{
 			return nil, errors.Parameter.AddDetail("not find device id:"+cast.ToString(in.Info.ProductID))
@@ -175,7 +180,7 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq)(*dm.ProductInfo
 		l.Errorf("DelProduct|ProductInfo|FindOne|err=%+v",err)
 		return nil,errors.System.AddDetail(err.Error())
 	}
-	err = l.svcCtx.ProductInfo.Delete(in.Info.ProductID)
+	err = l.svcCtx.ProductInfo.Delete(info.Id)
 	if err != nil {
 		l.Errorf("DelProduct|ProductInfo|Delete|err=%+v",err)
 		return nil,errors.System.AddDetail(err.Error())

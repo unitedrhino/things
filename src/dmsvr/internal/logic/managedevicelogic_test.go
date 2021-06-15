@@ -18,11 +18,12 @@ func TestManageDevice(t *testing.T) {
 		Key: "dm.rpc",
 	}}))
 	ctx := context.Background()
-	Name := "test8"
+	Name := "test1"
+	productID := "21CYs1k9YpG"
 	info,err := client.ManageDevice(ctx,&dm.ManageDeviceReq{
 		Opt: dm.OPT_ADD,
 		Info: &dm.DeviceInfo{
-			ProductID: 1699865466064867328,
+			ProductID: productID,
 			DeviceName: Name,
 		},
 	})
@@ -36,7 +37,7 @@ func TestManageDevice(t *testing.T) {
 	_,err = client.ManageDevice(ctx,&dm.ManageDeviceReq{
 		Opt: dm.OPT_ADD,
 		Info: &dm.DeviceInfo{
-			ProductID: 123,
+			ProductID: productID,
 			DeviceName: Name,
 		},
 	})
@@ -46,7 +47,6 @@ func TestManageDevice(t *testing.T) {
 	info,err = client.ManageDevice(ctx,&dm.ManageDeviceReq{
 		Opt: dm.OPT_MODIFY,
 		Info: &dm.DeviceInfo{
-			DeviceID: info.DeviceID,
 			DeviceName: Name+"1",
 		},
 	})
