@@ -11,3 +11,7 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
+Kafka:
+  Brokers:
+    - 81.68.223.176:9092
+  Group: dm

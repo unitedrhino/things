@@ -1,10 +1,17 @@
-package main
+package msgquque
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"gitee.com/godLei6/things/shared/utils"
+	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/config"
+	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/logic"
+	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/msvc"
+	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/types"
 	"github.com/Shopify/sarama"
+	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/tal-tech/go-zero/core/trace"
 	"log"
 	"os"
 	"os/signal"
@@ -16,9 +23,10 @@ var topics = []string{"onPublish","onConnect","onDisconnect"}
 var group = "39"
 
 
+
 type Router struct {
 	Topic string
-	Handler func(msg *string)error
+	Handler func(ctx context.Context, svcCtx *msvc.ServiceContext)(logic.LogicHandle)
 }
 
 type Kafka struct {
@@ -32,13 +40,21 @@ type Kafka struct {
 	ready             chan bool
 	Group             string `json:",optional"`
 	ChannelBufferSize int `json:",default=20"`
+	serviceContext *msvc.ServiceContext
 }
 
-func NewKafka() *Kafka {
+func NewKafka(service *msvc.ServiceContext) *Kafka {
+	if service == nil {
+		panic("service is nil")
+	}
 	return &Kafka{
 		ChannelBufferSize: 2,
 		ready:             make(chan bool),
 		Version:"1.1.1",
+		serviceContext: service,
+		Routers:make(map[string]Router),
+		Group: service.Config.Group,
+		Brokers: service.Config.Brokers,
 	}
 }
 func (k *Kafka)AddRouter(router Router){
@@ -47,7 +63,7 @@ func (k *Kafka)AddRouter(router Router){
 }
 
 
-func (k *Kafka) Init() func() {
+func (k *Kafka) Start() func() {
 	log.Printf("kafka init...")
 
 	version, err := sarama.ParseKafkaVersion(k.Version)
@@ -71,7 +87,9 @@ func (k *Kafka) Init() func() {
 	go func() {
 		defer func() {
 			wg.Done()
-			//util.HandlePanic("client.Consume panic", log.StandardLogger())
+			if p := recover(); p != nil {
+				utils.HandleThrow(p)
+			}
 		}()
 		for {
 			if err := client.Consume(ctx, k.Topics, k); err != nil {
@@ -121,37 +139,49 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 	// https://github.com/Shopify/sarama/blob/master/consumer_group.go#L27-L29
 	// 具体消费消息
 	for message := range claim.Messages() {
-		msg := string(message.Value)
-		log.Printf("%s|%+v|msessage=%+v\n",utils.FuncName(), msg,string(message.Key))
-		v,ok := k.Routers[message.Topic]
-		if ok != true{
-			panic(fmt.Sprintf("get msg bug topic not have hander func:%s",message.Topic))
-		}
-		err := v.Handler(&msg)
-		if err != nil {
-			
-		}
-		//run.Run(msg)
-		// 更新位移
-		session.MarkMessage(message, "")
+		func(){
+			ctx, span := trace.StartServerSpan(session.Context(), nil, k.serviceContext.Config.Group, message.Topic)
+			defer span.Finish()
+			msg := types.Elements{}
+			err := json.Unmarshal(message.Value,&msg)
+			if err != nil {
+				logx.Errorf("%s|msg=%s|Unmarshal=%+v\n",utils.FuncName(), string(message.Value),err)
+				return
+			}
+			log.Printf("%s|%+v|msessage=%+v\n",utils.FuncName(), msg,string(message.Key))
+			v,ok := k.Routers[message.Topic]
+			if ok != true{
+				panic(fmt.Sprintf("get msg bug topic not have hander func:%s",message.Topic))
+			}
+			err = v.Handler(ctx,k.serviceContext).Handle(&msg)
+			if err != nil {
+				logx.Errorf("%s|Handler=%+v\n",utils.FuncName(),err)
+				return
+			}
+			//run.Run(msg)
+			// 更新位移
+			session.MarkMessage(message, "")
+		}()
+
 	}
 	return nil
 }
 
 
-func Start(){
-
-	k := NewKafka()
-	f := k.Init()
-
+func test(){
+	ctx := msvc.NewServiceContext(config.Config{})
+	k := NewKafka(ctx)
+	k.AddRouter(Router{
+		Topic: "onConnect",
+		Handler: logic.NewConnectLogic,
+	})
+	f := k.Start()
+	defer f()
 	sigterm := make(chan os.Signal, 1)
 	signal.Notify(sigterm, syscall.SIGINT, syscall.SIGTERM)
 	select {
 	case <-sigterm:
 		log.Printf("terminating: via signal")
 	}
-	f()
 }
-func main()  {
-	Start()
-}
+
