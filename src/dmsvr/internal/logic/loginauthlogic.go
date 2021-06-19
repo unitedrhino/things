@@ -175,7 +175,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 			len(x509Cert.Raw),len(x509Cert.Signature))
 	}
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
-	lg, err :=GetLoginDevice(in.Username)
+	lg, err := dm.GetLoginDevice(in.Username)
 	if err != nil {
 		return nil, err
 	}

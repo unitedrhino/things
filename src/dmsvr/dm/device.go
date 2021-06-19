@@ -1,8 +1,7 @@
-package logic
+package dm
 
 import (
 	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"github.com/spf13/cast"
 	"strings"
 )
@@ -31,13 +30,13 @@ func GetLoginDevice(userName string) (*LoginDevice,error){
 }
 
 func GetClientIDInfo(ClientID string)(*LoginDevice,error){
-	if len(ClientID) < dm.PRODUCTID_LEN {
+	if len(ClientID) < PRODUCTID_LEN {
 		return nil, errors.Parameter.AddDetail("clientID length not enough")
 	}
 	lg:= &LoginDevice{
 		ClientID	: ClientID,
-		ProductID	: ClientID[0:dm.PRODUCTID_LEN],
-		DeviceName	: ClientID[dm.PRODUCTID_LEN:],
+		ProductID	: ClientID[0:PRODUCTID_LEN],
+		DeviceName	: ClientID[PRODUCTID_LEN:],
 	}
 	return lg,nil
 }

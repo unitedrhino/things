@@ -23,5 +23,9 @@ func NewConnectLogic(ctx context.Context, svcCtx *msvc.ServiceContext) LogicHand
 
 func (l *ConnectLogic) Handle(msg *types.Elements) error {
 	l.Infof("ConnectLogic|req=%+v",msg)
+	err :=  l.svcCtx.LogHandle(msg)
+	if err != nil {
+		return err
+	}
 	return nil
 }
