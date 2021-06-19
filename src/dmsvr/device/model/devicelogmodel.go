@@ -33,14 +33,14 @@ type (
 	}
 
 	DeviceLog struct {
-		Id          int64        `db:"id"`
-		ProductID   string       `db:"productID"`  // 产品id
-		Action      string       `db:"action"`     // 操作类型
-		Timestamp   sql.NullTime `db:"timestamp"`  // 操作时间
-		DeviceName  string       `db:"deviceName"` // 设备名称
-		Payload     string       `db:"payload"`    // 具体信息
-		Topic       string       `db:"topic"`      // 主题
-		CreatedTime time.Time    `db:"createdTime"`
+		Id          int64     `db:"id"`
+		ProductID   string    `db:"productID"`  // 产品id
+		Action      string    `db:"action"`     // 操作类型
+		Timestamp   time.Time `db:"timestamp"`  // 操作时间
+		DeviceName  string    `db:"deviceName"` // 设备名称
+		Payload     string    `db:"payload"`    // 具体信息
+		Topic       string    `db:"topic"`      // 主题
+		CreatedTime time.Time `db:"createdTime"`
 	}
 )
 

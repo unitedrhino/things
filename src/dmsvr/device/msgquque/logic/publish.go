@@ -23,5 +23,9 @@ func NewPublishLogic(ctx context.Context, svcCtx *msvc.ServiceContext) LogicHand
 
 func (l *PublishLogic) Handle(msg *types.Elements) error {
 	l.Infof("PublishLogic|req=%+v",msg)
+	err :=  l.svcCtx.LogHandle(msg)
+	if err != nil {
+		return err
+	}
 	return nil
 }
