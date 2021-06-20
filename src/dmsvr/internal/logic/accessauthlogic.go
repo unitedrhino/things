@@ -87,7 +87,7 @@ func (l *AccessAuthLogic) CompareTopic(in *dm.AccessAuthReq)error{
 		Topic = TopicSub
 	default:
 	}
-	lg, err := GetClientIDInfo(in.ClientID)
+	lg, err := dm.GetClientIDInfo(in.ClientID)
 	if err != nil {
 		return err
 	}
