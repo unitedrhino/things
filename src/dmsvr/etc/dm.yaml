@@ -11,3 +11,9 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
+Kafka:
+  Mysql:
+    DataSource: root:password@tcp(127.0.0.1:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  Brokers:
+    - 146.56.196.176:9092
+  Group: dm
