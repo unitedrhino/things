@@ -143,13 +143,18 @@ func Ip2binary(ip string) string {
 //测试IP地址和地址端是否匹配 变量ip为字符串，例子"192.168.56.4" iprange为地址端"192.168.56.64/26"
 func MatchIP(ip, iprange string) bool {
 	ipb := Ip2binary(ip)
-	ipr := strings.Split(iprange, "/")
-	masklen, err := strconv.ParseUint(ipr[1], 10, 32)
-	if err != nil {
-		return false
+	if strings.Contains(iprange,"/"){//如果是ip段
+		ipr := strings.Split(iprange, "/")
+		masklen, err := strconv.ParseUint(ipr[1], 10, 32)
+		if err != nil {
+			return false
+		}
+		iprb := Ip2binary(ipr[0])
+		return strings.EqualFold(ipb[0:masklen], iprb[0:masklen])
+	}else {
+		return ip == iprange
 	}
-	iprb := Ip2binary(ipr[0])
-	return strings.EqualFold(ipb[0:masklen], iprb[0:masklen])
+
 }
 
 
