@@ -24,13 +24,13 @@ func NewGetProductInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetProductInfoLogic) GetProductInfo(in *dm.GetProductInfoReq) (*dm.GetProductInfoResp, error) {
-	l.Infof("GetProductInfo|req=%+v",in)
-	di,err := l.svcCtx.ProductInfo.FindOneByProductID(in.ProductID)
+	l.Infof("GetProductInfo|req=%+v", in)
+	di, err := l.svcCtx.ProductInfo.FindOneByProductID(in.ProductID)
 	if err != nil {
 		return nil, err
 	}
 	return &dm.GetProductInfoResp{Info: []*dm.ProductInfo{{
-		ProductID:di.ProductID,
+		ProductID:   di.ProductID,
 		ProductName: di.ProductName,
 		CreatedTime: di.CreatedTime.Unix(),
 	}}}, nil

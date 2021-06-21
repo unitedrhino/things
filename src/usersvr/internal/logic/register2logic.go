@@ -3,11 +3,11 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"time"
 	"gitee.com/godLei6/things/shared/define"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/usersvr/model"
+	"time"
 
 	"gitee.com/godLei6/things/src/usersvr/internal/svc"
 	"gitee.com/godLei6/things/src/usersvr/user"
@@ -29,57 +29,53 @@ func NewRegister2Logic(ctx context.Context, svcCtx *svc.ServiceContext) *Registe
 	}
 }
 
-
-func (l *Register2Logic)register(in *user.Register2Req, uc *model.UserCore)(*user.Register2Resp, error){
+func (l *Register2Logic) register(in *user.Register2Req, uc *model.UserCore) (*user.Register2Resp, error) {
 	userInfo := model.UserInfo{
-		Uid         :in.Info.Uid,
-		UserName	:in.Info.UserName,
-		NickName    :in.Info.NickName,
-		Sex         :in.Info.Sex,
-		City        :in.Info.City,
-		Country     :in.Info.Country,
-		Province    :in.Info.Province,
-		Language    :in.Info.Language,
-		HeadImgUrl  :in.Info.HeadImgUrl,//头像之后需要进行文件的处理及校验
-		CreatedTime: sql.NullTime{Valid: true,Time: time.Now()},
+		Uid:         in.Info.Uid,
+		UserName:    in.Info.UserName,
+		NickName:    in.Info.NickName,
+		Sex:         in.Info.Sex,
+		City:        in.Info.City,
+		Country:     in.Info.Country,
+		Province:    in.Info.Province,
+		Language:    in.Info.Language,
+		HeadImgUrl:  in.Info.HeadImgUrl, //头像之后需要进行文件的处理及校验
+		CreatedTime: sql.NullTime{Valid: true, Time: time.Now()},
 	}
 	err := l.svcCtx.UserInfoModel.InsertOrUpdate(userInfo)
 	if err != nil {
-		return nil,errors.Database.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
 	}
 	uc.Status = define.NomalStatus
 	uc.UserName = in.Info.UserName
-	if uc.Password != ""{
-		uc.Password = utils.MakePwd(in.Password,uc.Uid,false)
+	if uc.Password != "" {
+		uc.Password = utils.MakePwd(in.Password, uc.Uid, false)
 	}
 	err = l.svcCtx.UserCoreModel.Update(*uc)
 	if err != nil {
-		return nil,errors.Database.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
 	}
-	return &user.Register2Resp{},nil
+	return &user.Register2Resp{}, nil
 }
 
-func (l *Register2Logic) CheckUserCore(in *user.Register2Req)(*model.UserCore, error){
+func (l *Register2Logic) CheckUserCore(in *user.Register2Req) (*model.UserCore, error) {
 	uc, err := l.svcCtx.UserCoreModel.FindOne(in.Info.Uid)
-	switch err{
+	switch err {
 	case model.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
 		return nil, errors.RegisterOne
-	case nil://如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status != define.NotRegistStatus{
+	case nil: //如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
+		if uc.Status != define.NotRegistStatus {
 			return nil, errors.DuplicateRegister
 		}
 		return uc, nil
 	default:
-		l.Errorf("%s|FindOne|err=%#v",utils.FuncName(), err)
+		l.Errorf("%s|FindOne|err=%#v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
 }
 
-
-
-
-func (l *Register2Logic) CheckUserName(in *user.Register2Req) error{
-	if in.Info.UserName == ""{//如果有用户名则需要检查密码,如果不需要填用户名则需要检测用户密码
+func (l *Register2Logic) CheckUserName(in *user.Register2Req) error {
+	if in.Info.UserName == "" { //如果有用户名则需要检查密码,如果不需要填用户名则需要检测用户密码
 		if l.svcCtx.Config.UserOpt.NeedUserName {
 			return errors.NeedUserName
 		}
@@ -87,7 +83,7 @@ func (l *Register2Logic) CheckUserName(in *user.Register2Req) error{
 	}
 
 	//检查用户名是否重复
-	_,err := l.svcCtx.UserCoreModel.FindOneByUserName(in.Info.UserName)
+	_, err := l.svcCtx.UserCoreModel.FindOneByUserName(in.Info.UserName)
 	switch err {
 	case nil:
 		return errors.DuplicateUsername
@@ -99,15 +95,15 @@ func (l *Register2Logic) CheckUserName(in *user.Register2Req) error{
 	return nil
 }
 
-func (l *Register2Logic) CheckPwd(in *user.Register2Req) error{
+func (l *Register2Logic) CheckPwd(in *user.Register2Req) error {
 	if l.svcCtx.Config.UserOpt.NeedPassWord &&
-		utils.CheckPasswordLever(in.Password) < l.svcCtx.Config.UserOpt.PassLevel{
+		utils.CheckPasswordLever(in.Password) < l.svcCtx.Config.UserOpt.PassLevel {
 		return errors.PasswordLevel
 	}
 	return nil
 }
 
-func (l *Register2Logic) CheckInfo(in *user.Register2Req)(err error){
+func (l *Register2Logic) CheckInfo(in *user.Register2Req) (err error) {
 	err = l.CheckUserName(in)
 	if err != nil {
 		return err
@@ -120,14 +116,14 @@ func (l *Register2Logic) CheckInfo(in *user.Register2Req)(err error){
 }
 
 func (l *Register2Logic) Register2(in *user.Register2Req) (*user.Register2Resp, error) {
-	l.Infof("Register2|req=%+v",in)
+	l.Infof("Register2|req=%+v", in)
 	err := l.CheckInfo(in)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	uc,err := l.CheckUserCore(in)
+	uc, err := l.CheckUserCore(in)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	return l.register(in,uc)
+	return l.register(in, uc)
 }

@@ -32,7 +32,6 @@ func main() {
 	stop := k.Start()
 	defer stop()
 
-
 	//grpc服务初始化
 	ctx := svc.NewServiceContext(c)
 	srv := server.NewDmServer(ctx)

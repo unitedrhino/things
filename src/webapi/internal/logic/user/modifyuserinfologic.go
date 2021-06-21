@@ -25,12 +25,12 @@ func NewModifyUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) Mod
 	}
 }
 
-func (l *ModifyUserInfoLogic) ModifyUserInfo(req types.ModifyUserInfoReq,uid int64) error {
-	l.Infof("ModifyUserInfo|uid=%d|req=%+v",uid,req)
-	_,err := l.svcCtx.UserRpc.ModifyUserInfo(l.ctx, &user.ModifyUserInfoReq{Info: req.Info,Uid: uid})
+func (l *ModifyUserInfoLogic) ModifyUserInfo(req types.ModifyUserInfoReq, uid int64) error {
+	l.Infof("ModifyUserInfo|uid=%d|req=%+v", uid, req)
+	_, err := l.svcCtx.UserRpc.ModifyUserInfo(l.ctx, &user.ModifyUserInfoReq{Info: req.Info, Uid: uid})
 	if err != nil {
-		er :=errors.Fmt(err)
-		l.Errorf("ModifyUserInfo failure|err=%+v",er)
+		er := errors.Fmt(err)
+		l.Errorf("ModifyUserInfo failure|err=%+v", er)
 		return er
 	}
 	return nil

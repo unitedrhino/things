@@ -15,45 +15,45 @@ func TestManageDevice(t *testing.T) {
 	fmt.Println("TestManageDevice")
 	client := dmclient.NewDm(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
 		Hosts: []string{"127.0.0.1:2379"},
-		Key: "dm.rpc",
+		Key:   "dm.rpc",
 	}}))
 	ctx := context.Background()
 	Name := "test1"
 	productID := "21CYs1k9YpG"
-	info,err := client.ManageDevice(ctx,&dm.ManageDeviceReq{
+	info, err := client.ManageDevice(ctx, &dm.ManageDeviceReq{
 		Opt: dm.OPT_ADD,
 		Info: &dm.DeviceInfo{
-			ProductID: productID,
+			ProductID:  productID,
 			DeviceName: Name,
 		},
 	})
 	if err != nil {
-		t.Errorf("%+v",errors.Fmt(err))
+		t.Errorf("%+v", errors.Fmt(err))
 	}
 	fmt.Println(info)
-	if info.DeviceName != Name{
-		t.Errorf("DeviceName not succ:%s",info.DeviceName)
+	if info.DeviceName != Name {
+		t.Errorf("DeviceName not succ:%s", info.DeviceName)
 	}
-	_,err = client.ManageDevice(ctx,&dm.ManageDeviceReq{
+	_, err = client.ManageDevice(ctx, &dm.ManageDeviceReq{
 		Opt: dm.OPT_ADD,
 		Info: &dm.DeviceInfo{
-			ProductID: productID,
+			ProductID:  productID,
 			DeviceName: Name,
 		},
 	})
-	if !errors.Cmp(err,errors.Duplicate){
+	if !errors.Cmp(err, errors.Duplicate) {
 		t.Errorf("need duplicate err")
 	}
-	info,err = client.ManageDevice(ctx,&dm.ManageDeviceReq{
+	info, err = client.ManageDevice(ctx, &dm.ManageDeviceReq{
 		Opt: dm.OPT_MODIFY,
 		Info: &dm.DeviceInfo{
-			DeviceName: Name+"1",
+			DeviceName: Name + "1",
 		},
 	})
 	if err != nil {
-		t.Errorf("%+v",errors.Fmt(err))
+		t.Errorf("%+v", errors.Fmt(err))
 	}
-	if info.DeviceName != (Name+"1"){
+	if info.DeviceName != (Name + "1") {
 		t.Errorf("%+v", info)
 	}
 

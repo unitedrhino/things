@@ -12,43 +12,40 @@ import (
 	"sync"
 	"syscall"
 )
+
 var brokers = []string{"146.56.196.176:9092"}
-var topics = []string{"onPublish","onConnect","onDisconnect"}
+var topics = []string{"onPublish", "onConnect", "onDisconnect"}
 var group = "1"
 
-
-
 type Router struct {
-	Topic string
-	Handler func(ctx context.Context, svcCtx *msvc.ServiceContext)(logic.LogicHandle)
+	Topic   string
+	Handler func(ctx context.Context, svcCtx *msvc.ServiceContext) logic.LogicHandle
 }
 
 type Kafka struct {
 	Brokers []string
-	Routers map[string]Router//key是topic 对应的是处理函数
-	Topics 	[]string
+	Routers map[string]Router //key是topic 对应的是处理函数
+	Topics  []string
 	//OffsetNewest int64 = -1
 	//OffsetOldest int64 = -2
-	StartOffset       int64 `json:",optional"`
+	StartOffset       int64  `json:",optional"`
 	Version           string `json:",optional"`
 	ready             chan bool
 	Group             string `json:",optional"`
-	ChannelBufferSize int `json:",default=20"`
-	serviceContext *msvc.ServiceContext
+	ChannelBufferSize int    `json:",default=20"`
+	serviceContext    *msvc.ServiceContext
 }
 
 func NewKafka() *Kafka {
 	return &Kafka{
 		ChannelBufferSize: 2,
 		ready:             make(chan bool),
-		Version:"1.1.1",
-		Group: group,
-		Brokers: brokers,
-		Topics: topics,
+		Version:           "1.1.1",
+		Group:             group,
+		Brokers:           brokers,
+		Topics:            topics,
 	}
 }
-
-
 
 func (k *Kafka) Start() func() {
 	log.Printf("kafka init...")
@@ -60,8 +57,8 @@ func (k *Kafka) Start() func() {
 	config := sarama.NewConfig()
 	config.Version = version
 	config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRange // 分区分配策略
-	config.Consumer.Offsets.Initial = -2                    // 未找到组消费位移的时候从哪边开始消费
-	config.ChannelBufferSize = k.ChannelBufferSize // channel长度
+	config.Consumer.Offsets.Initial = -2                                   // 未找到组消费位移的时候从哪边开始消费
+	config.ChannelBufferSize = k.ChannelBufferSize                         // channel长度
 
 	ctx, cancel := context.WithCancel(context.Background())
 	client, err := sarama.NewConsumerGroup(k.Brokers, k.Group, config)
@@ -103,8 +100,6 @@ func (k *Kafka) Start() func() {
 	}
 }
 
-
-
 // Setup is run at the beginning of a new session, before ConsumeClaim
 func (k *Kafka) Setup(sarama.ConsumerGroupSession) error {
 	// Mark the consumer as ready
@@ -126,8 +121,8 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 	// https://github.com/Shopify/sarama/blob/master/consumer_group.go#L27-L29
 	// 具体消费消息
 	for message := range claim.Messages() {
-		func(){
-			log.Printf("topic=%s|message=%s\n",message.Topic, string(message.Value))
+		func() {
+			log.Printf("topic=%s|message=%s\n", message.Topic, string(message.Value))
 			//run.Run(msg)
 			// 更新位移
 			session.MarkMessage(message, "")
@@ -137,8 +132,7 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 	return nil
 }
 
-
-func main(){
+func main() {
 	k := NewKafka()
 	f := k.Start()
 	defer f()
@@ -149,4 +143,3 @@ func main(){
 		log.Printf("terminating: via signal")
 	}
 }
-

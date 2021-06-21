@@ -27,25 +27,25 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) UserInfoL
 }
 
 func (l *UserInfoLogic) UserInfo(uid int64) (*types.UserInfo, error) {
-	l.Infof("UserInfo|uid=%d",uid)
-	ui,err := l.svcCtx.UserRpc.GetUserInfo(l.ctx,&user.GetUserInfoReq{Uid:[]int64{uid}})
+	l.Infof("UserInfo|uid=%d", uid)
+	ui, err := l.svcCtx.UserRpc.GetUserInfo(l.ctx, &user.GetUserInfoReq{Uid: []int64{uid}})
 	if err != nil {
-		er :=errors.Fmt(err)
-		l.Errorf("[%s]|rpc.Login|uid=%v|err=%+v",utils.FuncName(),uid,er)
-		return nil,er
+		er := errors.Fmt(err)
+		l.Errorf("[%s]|rpc.Login|uid=%v|err=%+v", utils.FuncName(), uid, er)
+		return nil, er
 	}
 	return &types.UserInfo{
-		Uid        :ui.Info[0].Uid,
-		UserName   :ui.Info[0].UserName,
-		NickName   :ui.Info[0].NickName,
-		InviterUid :ui.Info[0].InviterUid,
-		InviterId  :ui.Info[0].InviterId,
-		Sex        :ui.Info[0].Sex,
-		City       :ui.Info[0].City,
-		Country    :ui.Info[0].Country,
-		Province   :ui.Info[0].Province,
-		Language   :ui.Info[0].Language,
-		HeadImgUrl :ui.Info[0].HeadImgUrl,
-		CreateTime :ui.Info[0].CreateTime,
+		Uid:        ui.Info[0].Uid,
+		UserName:   ui.Info[0].UserName,
+		NickName:   ui.Info[0].NickName,
+		InviterUid: ui.Info[0].InviterUid,
+		InviterId:  ui.Info[0].InviterId,
+		Sex:        ui.Info[0].Sex,
+		City:       ui.Info[0].City,
+		Country:    ui.Info[0].Country,
+		Province:   ui.Info[0].Province,
+		Language:   ui.Info[0].Language,
+		HeadImgUrl: ui.Info[0].HeadImgUrl,
+		CreateTime: ui.Info[0].CreateTime,
 	}, nil
 }

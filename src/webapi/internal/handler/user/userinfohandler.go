@@ -1,13 +1,13 @@
 package handler
 
 import (
+	"gitee.com/godLei6/things/src/webapi/internal/types"
 	"github.com/spf13/cast"
 	"net/http"
-	"gitee.com/godLei6/things/src/webapi/internal/types"
 
-	"github.com/tal-tech/go-zero/rest/httpx"
 	"gitee.com/godLei6/things/src/webapi/internal/logic/user"
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
+	"github.com/tal-tech/go-zero/rest/httpx"
 )
 
 func UserInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {

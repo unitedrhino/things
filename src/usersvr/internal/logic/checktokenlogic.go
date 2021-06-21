@@ -2,8 +2,8 @@ package logic
 
 import (
 	"context"
-	"time"
 	"gitee.com/godLei6/things/shared/utils"
+	"time"
 
 	"gitee.com/godLei6/things/src/usersvr/internal/svc"
 	"gitee.com/godLei6/things/src/usersvr/user"
@@ -31,19 +31,19 @@ func (l *CheckTokenLogic) CheckToken(in *user.CheckTokenReq) (*user.CheckTokenRe
 			utils.HandleThrow(p)
 		}
 	}()
-	l.Infof("CheckToken|req=%+v",in)
-	jwt,err := utils.ParseToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
+	l.Infof("CheckToken|req=%+v", in)
+	jwt, err := utils.ParseToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
 	if err != nil {
-		l.Errorf("CheckToken|parse token fail|err=%s",err.Error())
-		return nil,err
+		l.Errorf("CheckToken|parse token fail|err=%s", err.Error())
+		return nil, err
 	}
 	var token string
-	if (jwt.ExpiresAt - time.Now().Unix()) * 2 < l.svcCtx.Config.UserToken.AccessExpire {
-		token,_ = utils.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
+	if (jwt.ExpiresAt-time.Now().Unix())*2 < l.svcCtx.Config.UserToken.AccessExpire {
+		token, _ = utils.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
 	}
-	l.Infof("CheckToken|uid=%d",jwt.Uid)
+	l.Infof("CheckToken|uid=%d", jwt.Uid)
 	return &user.CheckTokenResp{
 		Token: token,
-		Uid: jwt.Uid,
+		Uid:   jwt.Uid,
 	}, nil
 }

@@ -2,10 +2,10 @@ package logic
 
 import (
 	"context"
-	"time"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/usersvr/user"
+	"time"
 
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 	"gitee.com/godLei6/things/src/webapi/internal/types"
@@ -27,23 +27,22 @@ func NewRegisterCoreLogic(ctx context.Context, svcCtx *svc.ServiceContext) Regis
 	}
 }
 
-
 func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.RegisterCoreResp, error) {
-	l.Infof("RegisterCore|req=%+v",req)
-	resp,err:=l.svcCtx.UserRpc.RegisterCore(l.ctx,&user.RegisterCoreReq{
+	l.Infof("RegisterCore|req=%+v", req)
+	resp, err := l.svcCtx.UserRpc.RegisterCore(l.ctx, &user.RegisterCoreReq{
 		ReqType: req.ReqType,
-		Note: req.Note,
-		Code: req.Code,
-		CodeID: req.CodeID,
+		Note:    req.Note,
+		Code:    req.Code,
+		CodeID:  req.CodeID,
 	})
 	if err != nil {
-		er :=errors.Fmt(err)
-		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v|rpc_err=%+v",utils.FuncName(),req,er,err)
-		return &types.RegisterCoreResp{},er
+		er := errors.Fmt(err)
+		l.Errorf("[%s]|rpc.RegisterCore|req=%v|err=%#v|rpc_err=%+v", utils.FuncName(), req, er, err)
+		return &types.RegisterCoreResp{}, er
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.RegisterCore|return nil|req=%+v",utils.FuncName(),req)
-		return &types.RegisterCoreResp{},errors.System.AddDetail("register core rpc return nil")
+		l.Errorf("%s|rpc.RegisterCore|return nil|req=%+v", utils.FuncName(), req)
+		return &types.RegisterCoreResp{}, errors.System.AddDetail("register core rpc return nil")
 	}
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.Rej.AccessExpire

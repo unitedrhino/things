@@ -22,7 +22,7 @@ func NewConnectLogic(ctx context.Context, svcCtx *msvc.ServiceContext) LogicHand
 }
 
 func (l *ConnectLogic) Handle(msg *types.Elements) error {
-	l.Infof("ConnectLogic|req=%+v",msg)
+	l.Infof("ConnectLogic|req=%+v", msg)
 
 	return nil
 }

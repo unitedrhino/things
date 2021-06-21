@@ -38,8 +38,8 @@ func DecimalToAny(num, n int64) string {
 	return new_num_str
 }
 
-func ToLen(src string,length int) string{
-	for len(src) < length{
+func ToLen(src string, length int) string {
+	for len(src) < length {
 		src = "0" + src
 	}
 	return src
@@ -75,13 +75,11 @@ func AnyToDecimal(num string, n int) int64 {
 	return int64(new_num)
 }
 
-
-
 //a的n次方
 //超出uint64的部分会丢失
-func pow (a,n int64) int64  {
+func pow(a, n int64) int64 {
 	result := int64(1)
-	for i := n ; i > 0; i >>= 1 {
+	for i := n; i > 0; i >>= 1 {
 		if i&1 != 0 {
 			result *= a
 		}
