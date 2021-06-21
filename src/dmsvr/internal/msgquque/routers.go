@@ -1,18 +1,18 @@
 package msgquque
 
-import "gitee.com/godLei6/things/src/dmsvr/device/msgquque/logic"
+import "gitee.com/godLei6/things/src/dmsvr/internal/msgquque/logic"
 
 func (k *Kafka) AddRouters(){
 	k.AddRouter(Router{
-		Topic: "onConnect",
+		Topic:   "onConnect",
 		Handler: logic.NewConnectLogic,
 	})
 	k.AddRouter(Router{
-		Topic: "onPublish",
+		Topic:   "onPublish",
 		Handler: logic.NewPublishLogic,
 	})
 	k.AddRouter(Router{
-		Topic: "onDisconnect",
+		Topic:   "onDisconnect",
 		Handler: logic.NewDisConnectLogic,
 	})
 }

@@ -1,9 +1,9 @@
 package logic
 
 import (
-"context"
-"gitee.com/godLei6/things/src/dmsvr/device/msgquque/msvc"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/types"
+	"context"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/msvc"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/types"
 	"github.com/tal-tech/go-zero/core/logx"
 )
 
@@ -23,9 +23,6 @@ func NewPublishLogic(ctx context.Context, svcCtx *msvc.ServiceContext) LogicHand
 
 func (l *PublishLogic) Handle(msg *types.Elements) error {
 	l.Infof("PublishLogic|req=%+v",msg)
-	err :=  l.svcCtx.LogHandle(msg)
-	if err != nil {
-		return err
-	}
+
 	return nil
 }

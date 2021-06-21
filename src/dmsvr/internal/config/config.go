@@ -1,7 +1,6 @@
 package config
 
 import (
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/config"
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/zrpc"
 )
@@ -13,6 +12,9 @@ type Config struct {
 		DataSource string
 	}
 	CacheRedis cache.ClusterConf
-	Kafka      config.Config
+	Kafka      struct{
+		Brokers		[]string	//kafka的节点
+		Group 		string		//kafka的分组
+	}
 }
 
