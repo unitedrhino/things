@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"github.com/tal-tech/go-zero/rest/httpx"
-	"net/http"
 	"gitee.com/godLei6/things/src/webapi/internal/logic/user"
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 	"gitee.com/godLei6/things/src/webapi/internal/types"
+	"github.com/tal-tech/go-zero/rest/httpx"
+	"net/http"
 )
 
 func Register2Handler(ctx *svc.ServiceContext) http.HandlerFunc {

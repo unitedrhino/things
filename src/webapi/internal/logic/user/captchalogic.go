@@ -25,15 +25,15 @@ func NewCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) CaptchaLog
 }
 
 func (l *CaptchaLogic) Captcha(req types.GetCaptchaReq) (*types.GetCaptchaResp, error) {
-	l.Infof("Captcha|req=%+v",req)
-	id,url,err:= l.svcCtx.Captcha.Get()
-	if err !=nil {
-		l.Errorf("%s|get Captcha err=%+v",utils.FuncName(),err)
-		return  nil,errors.System.AddDetail(err.Error())
+	l.Infof("Captcha|req=%+v", req)
+	id, url, err := l.svcCtx.Captcha.Get()
+	if err != nil {
+		l.Errorf("%s|get Captcha err=%+v", utils.FuncName(), err)
+		return nil, errors.System.AddDetail(err.Error())
 	}
 	return &types.GetCaptchaResp{
 		CodeID: id,
 		Expire: l.svcCtx.Config.KeepTime,
-		Url: url,
+		Url:    url,
 	}, nil
 }

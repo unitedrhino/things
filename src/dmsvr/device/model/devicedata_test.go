@@ -19,12 +19,12 @@ var (
         }                
     }
 }`,
-`{
+		`{
   "method": "unbind_device",    
   "clientToken": "20a4ccfd-****-11e9-86c6-5254008a4f10",        
   "timestamp": 1212121221                    
 }`,
-`{                    
+		`{                    
    "method": "action",            
    "clientToken": "20a4ccfd-d308-****-86c6-5254008a4f10",                
    "actionId": "openDoor",                
@@ -33,7 +33,7 @@ var (
        "userid": "323343"            
    }
 }`,
-`{
+		`{
    "method":"event_post",
    "clientToken":"123",
    "version":"1.0",
@@ -45,13 +45,13 @@ var (
        "Percent":20
    }
 }`,
-`{
+		`{
    "method": "get_status",
    "clientToken": "123",
    "type" : "report", 
    "showmeta": 0
 }`,
-`{
+		`{
    "method": "control",
    "clientToken": "123",    
    "params": {
@@ -60,7 +60,7 @@ var (
        "brightness": 66    
    }
 }`,
-`{
+		`{
    "method":"report",
    "clientToken":"123",
    "timestamp":1212121221,
@@ -78,7 +78,7 @@ var (
    "code":0,    
    "status":"some message where error"
 }`,
-`{            
+		`{            
    "method": "action_reply",        
    "clientToken": "20a4ccfd-d308-11e9-86c6-5254008a4f10",        
    "code": 0,            
@@ -87,7 +87,7 @@ var (
        "Code":  0            
    }
 }`,
-`{
+		`{
    "method": "event_reply",
    "clientToken": "123",
    "version": "1.0",
@@ -95,7 +95,7 @@ var (
    "status": "some message where error",
    "data": {}
 }`,
-`{
+		`{
    "method": "get_status_reply",
    "code": 0,
    "clientToken": "123",
@@ -108,35 +108,34 @@ var (
    }
    }
 }`,
-`{
+		`{
    "method":"control_reply",
    "clientToken":"123",
    "code":0,
    "status":"some message where error"
 }`,
-`{
+		`{
    "method":"report_reply",
    "clientToken":"123",
    "code":0,
    "status":"some message where error"
 }`,
-
 	}
 )
 
 func TestDeviceReq(t *testing.T) {
 	fmt.Println("TestDeviceReq")
-	for _,dqStr := range DeviceReqTestStr{
+	for _, dqStr := range DeviceReqTestStr {
 		dq := DeviceReq{}
-		json.Unmarshal([]byte(dqStr),&dq)
-		fmt.Printf("src=%s|ans=%+v\n",dqStr,dq)
+		json.Unmarshal([]byte(dqStr), &dq)
+		fmt.Printf("src=%s|ans=%+v\n", dqStr, dq)
 	}
 }
 func TestDeviceResp(t *testing.T) {
 	fmt.Println("TestDeviceResp")
-	for _,dqStr := range DeviceRespTestStr{
+	for _, dqStr := range DeviceRespTestStr {
 		dq := DeviceResp{}
-		json.Unmarshal([]byte(dqStr),&dq)
-		fmt.Printf("src=%s|ans=%+v\n",dqStr,dq)
+		json.Unmarshal([]byte(dqStr), &dq)
+		fmt.Printf("src=%s|ans=%+v\n", dqStr, dq)
 	}
 }

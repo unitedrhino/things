@@ -8,24 +8,24 @@ import (
 )
 
 type ServiceContext struct {
-	Config config.Config
-	DeviceInfo 		model.DeviceInfoModel
-	ProductInfo     model.ProductInfoModel
-	DeviceID		*utils.SnowFlake
-	ProductID		*utils.SnowFlake
+	Config      config.Config
+	DeviceInfo  model.DeviceInfoModel
+	ProductInfo model.ProductInfoModel
+	DeviceID    *utils.SnowFlake
+	ProductID   *utils.SnowFlake
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
-	di := model.NewDeviceInfoModel(conn,c.CacheRedis)
-	pi := model.NewProductInfoModel(conn,c.CacheRedis)
+	di := model.NewDeviceInfoModel(conn, c.CacheRedis)
+	pi := model.NewProductInfoModel(conn, c.CacheRedis)
 	DeviceID := utils.NewSnowFlake(c.NodeID)
 	ProductID := utils.NewSnowFlake(c.NodeID)
 	return &ServiceContext{
-		Config: c,
-		DeviceInfo: di,
+		Config:      c,
+		DeviceInfo:  di,
 		ProductInfo: pi,
-		DeviceID:DeviceID,
-		ProductID: ProductID,
+		DeviceID:    DeviceID,
+		ProductID:   ProductID,
 	}
 }

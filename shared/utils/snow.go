@@ -1,10 +1,11 @@
 package utils
 
 import (
-"runtime"
-"sync"
-"time"
+	"runtime"
+	"sync"
+	"time"
 )
+
 /*
  * twitter雪花算法golang实现,生成唯一趋势自增id
  * 保留位:63位
@@ -13,7 +14,7 @@ import (
  * 序列号:[11-0]12位,十进制范围[0,4095]
  * bobo
  */
-const epoch = int64(1609430400)                           // 设置起始时间(时间戳/毫秒)：2020-01-01 00:00:00，有效期69年
+const epoch = int64(1609430400) // 设置起始时间(时间戳/毫秒)：2020-01-01 00:00:00，有效期69年
 type SnowFlake struct {
 	machineID int64      //机器 id占8位,十进制范围是[0,255]
 	sn        int64      //序列号占12位,十进制范围是[0,4095]
@@ -25,7 +26,7 @@ type SnowFlake struct {
 //	lastTime: time.Now().UnixNano() / 1000000,
 //	machineID:1,
 //}
-func NewSnowFlake(mId int64) *SnowFlake{
+func NewSnowFlake(mId int64) *SnowFlake {
 	sf := SnowFlake{
 		lastTime: time.Now().UnixNano() / 1000000,
 	}

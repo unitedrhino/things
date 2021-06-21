@@ -1,4 +1,5 @@
 package types
+
 //Elements kafka publish elements
 type Elements struct {
 	ClientID  string `json:"clientid"`

@@ -2,9 +2,9 @@ package logic
 
 import (
 	"context"
-	"github.com/spf13/cast"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/usersvr/model"
+	"github.com/spf13/cast"
 
 	"gitee.com/godLei6/things/src/usersvr/internal/svc"
 	"gitee.com/godLei6/things/src/usersvr/user"
@@ -27,13 +27,12 @@ func NewModifyUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mo
 	}
 }
 
-
-func (l *ModifyUserInfoLogic)HandleUserName(value string) error{
+func (l *ModifyUserInfoLogic) HandleUserName(value string) error {
 
 	return nil
 }
 
-func (l *ModifyUserInfoLogic)Handle(key,value string) error{
+func (l *ModifyUserInfoLogic) Handle(key, value string) error {
 	switch key {
 	case "nickName":
 		l.ui.NickName = value
@@ -60,30 +59,30 @@ func (l *ModifyUserInfoLogic)Handle(key,value string) error{
 		l.ui.HeadImgUrl = value
 		return nil
 	default:
-		return errors.Parameter.AddDetail(key+"not support")
+		return errors.Parameter.AddDetail(key + "not support")
 	}
 }
 
 func (l *ModifyUserInfoLogic) ModifyUserInfo(in *user.ModifyUserInfoReq) (*user.NilResp, error) {
 	l.Infof("ModifyUserInfo|req=%+v", in)
 	var err error
-	l.ui,err = l.svcCtx.UserInfoModel.FindOne(in.Uid)
+	l.ui, err = l.svcCtx.UserInfoModel.FindOne(in.Uid)
 	if err != nil {
-		l.Errorf("ModifyUserInfo|FindOne|uid=%d|err=%+v",in.Uid,err)
+		l.Errorf("ModifyUserInfo|FindOne|uid=%d|err=%+v", in.Uid, err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	for k,v := range in.Info {
-		err := l.Handle(k,v)
+	for k, v := range in.Info {
+		err := l.Handle(k, v)
 		if err != nil {
-			l.Errorf("ModifyUserInfo|Handle|key=%s|value=%s|ui=%+v|err=%+v",k,v,l.ui,err)
+			l.Errorf("ModifyUserInfo|Handle|key=%s|value=%s|ui=%+v|err=%+v", k, v, l.ui, err)
 			return nil, err
 		}
 	}
 	err = l.svcCtx.UserInfoModel.Update(*l.ui)
 	if err != nil {
-		l.Errorf("ModifyUserInfo|Update|ui=%+v|err=%+v",l.ui,err)
+		l.Errorf("ModifyUserInfo|Update|ui=%+v|err=%+v", l.ui, err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	l.Infof("ModifyUserInfo|modifyed usersvr info = %+v",l.ui)
+	l.Infof("ModifyUserInfo|modifyed usersvr info = %+v", l.ui)
 	return &user.NilResp{}, nil
 }

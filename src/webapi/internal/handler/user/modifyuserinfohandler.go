@@ -21,7 +21,7 @@ func ModifyUserInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		strUid := r.Header.Get(types.USER_UID)
 		Uid := cast.ToInt64(strUid)
 		l := logic.NewModifyUserInfoLogic(r.Context(), ctx)
-		err := l.ModifyUserInfo(req,Uid)
+		err := l.ModifyUserInfo(req, Uid)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

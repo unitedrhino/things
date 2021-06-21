@@ -12,9 +12,9 @@ import (
 	"time"
 )
 
-const mongoUrl="mongodb://admin:password@81.68.223.176:27017"
+const mongoUrl = "mongodb://admin:password@81.68.223.176:27017"
 
-func NewMongoZero(){
+func NewMongoZero() {
 
 	//model,err:=mongo.NewModel(
 	//	mongoUrl,"test2")
@@ -40,9 +40,9 @@ func NewMongoZero(){
 	//}
 	//fmt.Printf("find:%+v\n",rst)
 }
-func TestMongo(){
+func TestMongo() {
 	clientOpt := options.Client().ApplyURI(mongoUrl)
-	client,err := mongo.Connect(context.TODO(),clientOpt)
+	client, err := mongo.Connect(context.TODO(), clientOpt)
 	if err != nil {
 		log.Fatal(err)
 		fmt.Println(err)
@@ -60,9 +60,9 @@ func TestMongo(){
 	collection := client.Database("things").Collection("test3")
 
 	//执行增删改查操作
-	insertSensor(client,collection)
+	insertSensor(client, collection)
 
-	querySensor(collection,"")
+	querySensor(collection, "")
 	// 断开客户端连接
 	err = client.Disconnect(context.TODO())
 	if err != nil {
@@ -70,6 +70,7 @@ func TestMongo(){
 	}
 	fmt.Println("Connection to MongoDB closed.")
 }
+
 type CurlInfo struct {
 	DNS float64 `json:"NAMELOOKUP_TIME"` //NAMELOOKUP_TIME
 	TCP float64 `json:"CONNECT_TIME"`    //CONNECT_TIME - DNS
@@ -88,6 +89,7 @@ type Sensor struct {
 	Clientutc int64
 	DataByAPP map[string]ConnectData
 }
+
 func insertSensor(client *mongo.Client, collection *mongo.Collection) (insertID primitive.ObjectID) {
 	apps := make(map[string]ConnectData, 0)
 	apps["app1"] = ConnectData{
@@ -138,5 +140,5 @@ func querySensor(collection *mongo.Collection, isp string) {
 	if err != nil {
 		fmt.Printf("%s\n", err.Error())
 	}
-	fmt.Printf("Found a single document,type=%T: %+v\n", original,original)
+	fmt.Printf("Found a single document,type=%T: %+v\n", original, original)
 }

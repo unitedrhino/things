@@ -7,10 +7,10 @@ import (
 )
 
 type Captcha struct {
-	KeyLong   int `json:",default=6"`
-	ImgWidth  int `json:",default=240"`
-	ImgHeight int `json:",default=80"`
-	KeepTime  int64	`json:",default=180"`
+	KeyLong   int   `json:",default=6"`
+	ImgWidth  int   `json:",default=240"`
+	ImgHeight int   `json:",default=80"`
+	KeepTime  int64 `json:",default=180"`
 }
 
 type Config struct {
@@ -20,11 +20,11 @@ type Config struct {
 	}
 	CacheRedis cache.ClusterConf
 	UserRpc    zrpc.RpcClientConf
-	Auth struct {
+	Auth       struct {
 		AccessSecret string
 		AccessExpire int64
 	}
-	Rej struct{
+	Rej struct {
 		AccessSecret string
 		AccessExpire int64
 	}

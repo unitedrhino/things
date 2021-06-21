@@ -11,10 +11,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-
 type CodeError struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
+	Code    int      `json:"code"`
+	Msg     string   `json:"msg"`
 	Details []string `json:"details,omitempty"`
 }
 
@@ -27,9 +26,9 @@ type RpcError interface {
 //	return s.Err()
 //}
 
-func (c CodeError)ToRpc() error{
+func (c CodeError) ToRpc() error {
 	s, _ := status.New(codes.Unknown, c.Msg).
-		WithDetails(&proto.Error{Code: int32(c.Code), Message: c.Msg,Detail: c.Details})
+		WithDetails(&proto.Error{Code: int32(c.Code), Message: c.Msg, Detail: c.Details})
 	return s.Err()
 }
 
@@ -38,7 +37,7 @@ func ToRpc(err error) error {
 		return err
 	}
 	switch err.(type) {
-	case RpcError :
+	case RpcError:
 		return err
 	case *CodeError:
 		return err.(*CodeError).ToRpc()
@@ -47,12 +46,12 @@ func ToRpc(err error) error {
 	}
 }
 
-func (c CodeError)WithMsg(msg string) *CodeError{
+func (c CodeError) WithMsg(msg string) *CodeError {
 	return &CodeError{Code: c.Code, Msg: msg}
 }
-func (c CodeError)AddDetail(msg string) *CodeError{
-	 c.Details = append(c.Details, msg)
-	 return &c
+func (c CodeError) AddDetail(msg string) *CodeError {
+	c.Details = append(c.Details, msg)
+	return &c
 }
 
 func NewCodeError(code int, msg string) *CodeError {
@@ -65,32 +64,32 @@ func NewDefaultError(msg string) error {
 
 func (e CodeError) Error() string {
 
-	ret,_ :=json.Marshal(e)
+	ret, _ := json.Marshal(e)
 	return string(ret)
 }
 
 //将普通的error及转换成json的error或error类型的转回自己的error
-func Fmt(errs error) *CodeError{
+func Fmt(errs error) *CodeError {
 	if errs == nil {
 		return nil
 	}
 	switch errs.(type) {
 	case *CodeError:
 		return errs.(*CodeError)
-	case RpcError://如果是grpc类型的错误
+	case RpcError: //如果是grpc类型的错误
 		s, _ := status.FromError(errs)
 		if len(s.Details()) == 0 {
-			err := fmt.Sprintf("rpc err detail is nil|err=%#v",s)
+			err := fmt.Sprintf("rpc err detail is nil|err=%#v", s)
 			return System.AddDetail(err)
 		}
-		if er,ok:= s.Details()[0].(*proto.Error);ok{
-			return &CodeError{Code: int(er.Code),Msg: er.Message,Details: er.Detail}
+		if er, ok := s.Details()[0].(*proto.Error); ok {
+			return &CodeError{Code: int(er.Code), Msg: er.Message, Details: er.Detail}
 		}
-		err := fmt.Sprintf("rpc err not suppot|err=%#v",s)
+		err := fmt.Sprintf("rpc err not suppot|err=%#v", s)
 		return System.AddDetail(err)
 	default:
 		var ce CodeError
-		err := json.Unmarshal([]byte(errs.Error()),&ce)
+		err := json.Unmarshal([]byte(errs.Error()), &ce)
 		if err != nil {
 			return System.AddDetail(errs.Error())
 		}
@@ -98,17 +97,16 @@ func Fmt(errs error) *CodeError{
 	}
 }
 
-
 func ErrorInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	resp, err := handler(ctx, req)
 	if err != nil {
-		logx.WithContext(ctx).Errorf("err=%s",Fmt(err).Error())
+		logx.WithContext(ctx).Errorf("err=%s", Fmt(err).Error())
 	}
 	err = ToRpc(err)
 	return resp, err
 }
 
-func Cmp(err1 error,err2 error)bool{
+func Cmp(err1 error, err2 error) bool {
 	if err2 == nil && err1 == nil {
 		return true
 	}

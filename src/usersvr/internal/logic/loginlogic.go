@@ -2,13 +2,13 @@ package logic
 
 import (
 	"context"
-	"time"
 	"gitee.com/godLei6/things/shared/define"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/usersvr/internal/svc"
 	"gitee.com/godLei6/things/src/usersvr/model"
 	"gitee.com/godLei6/things/src/usersvr/user"
+	"time"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
@@ -27,7 +27,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 	}
 }
 
-func (l *LoginLogic)getRet(uc *model.UserCore)(*user.LoginResp, error){
+func (l *LoginLogic) getRet(uc *model.UserCore) (*user.LoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	jwtToken, err := utils.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid)
@@ -35,24 +35,24 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*user.LoginResp, error){
 		l.Error(err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	ui,err := l.svcCtx.UserInfoModel.FindOne(uc.Uid)
+	ui, err := l.svcCtx.UserInfoModel.FindOne(uc.Uid)
 	if err != nil {
-		l.Errorf("FindOne|uc=%+v|err=%+v",uc,err)
+		l.Errorf("FindOne|uc=%+v|err=%+v", uc, err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
 	resp := &user.LoginResp{
 		Info: &user.UserInfo{
-			Uid         :ui.Uid,
-			UserName    :uc.UserName,
-			NickName    :ui.NickName,
-			InviterUid  :ui.InviterUid,
-			InviterId   :ui.InviterId,
-			City        :ui.City,
-			Country     :ui.Country,
-			Province    :ui.Province,
-			Language    :ui.Language,
-			HeadImgUrl  :ui.HeadImgUrl,
-			CreateTime :ui.CreatedTime.Time.Unix(),
+			Uid:        ui.Uid,
+			UserName:   uc.UserName,
+			NickName:   ui.NickName,
+			InviterUid: ui.InviterUid,
+			InviterId:  ui.InviterId,
+			City:       ui.City,
+			Country:    ui.Country,
+			Province:   ui.Province,
+			Language:   ui.Language,
+			HeadImgUrl: ui.HeadImgUrl,
+			CreateTime: ui.CreatedTime.Time.Unix(),
 		},
 		Token: &user.JwtToken{
 			AccessToken:  jwtToken,
@@ -60,29 +60,27 @@ func (l *LoginLogic)getRet(uc *model.UserCore)(*user.LoginResp, error){
 			RefreshAfter: now + accessExpire/2,
 		},
 	}
-	l.Infof("Login|getRet=%+v",resp)
+	l.Infof("Login|getRet=%+v", resp)
 	return resp, nil
 }
 
-
-
-func (l *LoginLogic)GetUserCore(in *user.LoginReq)(uc *model.UserCore,err error){
+func (l *LoginLogic) GetUserCore(in *user.LoginReq) (uc *model.UserCore, err error) {
 	switch in.LoginType {
-	case "sms"://暂时不验证
+	case "sms": //暂时不验证
 		uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(in.UserID)
-	case "img"://暂时不验证
+	case "img": //暂时不验证
 		lt := utils.GetLoginNameType(in.UserID)
 		switch lt {
 		case define.Phone:
 			uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(in.UserID)
-		default :
+		default:
 			uc, err = l.svcCtx.UserCoreModel.FindOneByUserName(in.UserID)
 		}
-	case "wxminip"://微信小程序登录
+	case "wxminip": //微信小程序登录
 		auth := l.svcCtx.WxMiniProgram.GetAuth()
 		ret, err2 := auth.Code2Session(in.Code)
 		if err2 != nil {
-			l.Errorf("Code2Session|req=%#v|ret=%#v|err=%+v",in,ret,err2)
+			l.Errorf("Code2Session|req=%#v|ret=%#v|err=%+v", in, ret, err2)
 			if ret.ErrCode != 0 {
 				return nil, errors.Parameter.AddDetail(ret.ErrMsg)
 			}
@@ -90,31 +88,30 @@ func (l *LoginLogic)GetUserCore(in *user.LoginReq)(uc *model.UserCore,err error)
 		} else if ret.ErrCode != 0 {
 			return nil, errors.Parameter.AddDetail(ret.ErrMsg)
 		}
-		l.Slowf("login|wxminip|ret=%+v",ret)
+		l.Slowf("login|wxminip|ret=%+v", ret)
 		uc, err = l.svcCtx.UserCoreModel.FindOneByWechat(ret.UnionID)
 	default:
-		l.Error("LoginType=%s|not suppost",in.LoginType)
+		l.Error("LoginType=%s|not suppost", in.LoginType)
 		return nil, errors.Parameter
 	}
-	l.Slowf("login|uc=%#v|err=%+v",uc,err)
+	l.Slowf("login|uc=%#v|err=%+v", uc, err)
 	return uc, err
 }
 
-
 func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
-	l.Infof("Login|req=%+v",in)
-	uc,err := l.GetUserCore(in)
+	l.Infof("Login|req=%+v", in)
+	uc, err := l.GetUserCore(in)
 	switch err {
 	case nil:
-		if uc.Status != define.NomalStatus{
+		if uc.Status != define.NomalStatus {
 			return nil, errors.UnRegister
 		}
 		return l.getRet(uc)
 	case model.ErrNotFound:
 		return nil, errors.UnRegister
 	default:
-		l.Errorf("GetUserCore|req=%#v|err=%+v",in,err)
-		return nil,err
+		l.Errorf("GetUserCore|req=%#v|err=%+v", in, err)
+		return nil, err
 	}
 	return &user.LoginResp{}, nil
 }

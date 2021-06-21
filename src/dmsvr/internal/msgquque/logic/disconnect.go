@@ -22,7 +22,7 @@ func NewDisConnectLogic(ctx context.Context, svcCtx *msvc.ServiceContext) LogicH
 }
 
 func (l *DisConnectLogic) Handle(msg *types.Elements) error {
-	l.Infof("DisConnectLogic|req=%+v",msg)
+	l.Infof("DisConnectLogic|req=%+v", msg)
 
 	return nil
 }

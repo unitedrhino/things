@@ -166,7 +166,7 @@ func (m *defaultUserCoreModel) FindOneByWechat(wechat string) (*UserCore, error)
 		}
 		return resp.Uid, nil
 	}, m.queryPrimary)
-	logx.Errorf("resp=%#v,err=%#v",resp,err)
+	logx.Errorf("resp=%#v,err=%#v", resp, err)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -178,7 +178,7 @@ func (m *defaultUserCoreModel) FindOneByWechat(wechat string) (*UserCore, error)
 }
 
 func (m *defaultUserCoreModel) Update(data UserCore) error {
-	data.UpdatedTime = sql.NullTime{Valid: true,Time: time.Now()}
+	data.UpdatedTime = sql.NullTime{Valid: true, Time: time.Now()}
 	userCoreUidKey := fmt.Sprintf("%s%v", cacheUserCoreUidPrefix, data.Uid)
 	userCoreEmailKey := fmt.Sprintf("%s%v", cacheUserCoreEmailPrefix, data.Email)
 	userCorePhoneKey := fmt.Sprintf("%s%v", cacheUserCorePhonePrefix, data.Phone)

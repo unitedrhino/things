@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"gitee.com/godLei6/things/shared/define"
 	"github.com/tal-tech/go-zero/core/logx"
 	"net"
 	"net/http"
@@ -14,7 +15,6 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
-	"gitee.com/godLei6/things/shared/define"
 )
 
 func MD5V(str []byte) string {
@@ -22,6 +22,7 @@ func MD5V(str []byte) string {
 	h.Write(str)
 	return hex.EncodeToString(h.Sum(nil))
 }
+
 /*
 检测用户名是否符合规范 只可以使用字母数字及下划线 最多30个字符
 */
@@ -29,10 +30,10 @@ func CheckUserName(name string) error {
 	if len(name) > 30 {
 		return errors.New("pwd len more than 30")
 	}
-	if IsMobile(name){
+	if IsMobile(name) {
 		return errors.New("pwd can't be phone number")
 	}
-	if IsEmail(name){
+	if IsEmail(name) {
 		return errors.New("pwd can't be email")
 	}
 	return nil
@@ -94,7 +95,6 @@ func MakePwd(pwd string, uid int64, isMd5 bool) string {
 	return MD5V([]byte(pwd + strUid + "god17052709767"))
 }
 
-
 func GetLoginNameType(userName string) define.UserInfoType {
 	if IsMobile(userName) == true {
 		return define.Phone
@@ -102,11 +102,10 @@ func GetLoginNameType(userName string) define.UserInfoType {
 	return define.UserName
 }
 
-
 // 获取正在运行的函数名
-func FuncName()string{
-	pc := make([]uintptr,1)
-	runtime.Callers(2,pc)
+func FuncName() string {
+	pc := make([]uintptr, 1)
+	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])
 	return f.Name()
 }
@@ -119,11 +118,11 @@ func FuncName()string{
 //	return fmt.Sprintf("%s:%d:%s",file,line,f.Name())
 //}
 
-func HandleThrow(p interface{})  {
-	pc := make([]uintptr,1)
-	runtime.Callers(2,pc)
+func HandleThrow(p interface{}) {
+	pc := make([]uintptr, 1)
+	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])
-	logx.Errorf("THROW_ERROR|func=%s|error=%#v|stack=%s\n",f,p,string(debug.Stack()))
+	logx.Errorf("THROW_ERROR|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
 	os.Exit(-1)
 }
 
@@ -143,7 +142,7 @@ func Ip2binary(ip string) string {
 //测试IP地址和地址端是否匹配 变量ip为字符串，例子"192.168.56.4" iprange为地址端"192.168.56.64/26"
 func MatchIP(ip, iprange string) bool {
 	ipb := Ip2binary(ip)
-	if strings.Contains(iprange,"/"){//如果是ip段
+	if strings.Contains(iprange, "/") { //如果是ip段
 		ipr := strings.Split(iprange, "/")
 		masklen, err := strconv.ParseUint(ipr[1], 10, 32)
 		if err != nil {
@@ -151,13 +150,11 @@ func MatchIP(ip, iprange string) bool {
 		}
 		iprb := Ip2binary(ipr[0])
 		return strings.EqualFold(ipb[0:masklen], iprb[0:masklen])
-	}else {
+	} else {
 		return ip == iprange
 	}
 
 }
-
-
 
 // @Summary 获取真实的源ip
 func GetIP(r *http.Request) (string, error) {

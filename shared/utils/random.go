@@ -7,29 +7,28 @@ import (
 )
 
 var (
-	digits string= "0123456789"
+	digits    string = "0123456789"
 	specials1 string = "=+=+//"
-	specials2 string= "~=+%^*/()[]{}/!@#$?|"
-	letter string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+	specials2 string = "~=+%^*/()[]{}/!@#$?|"
+	letter    string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
 		"abcdefghijklmnopqrstuvwxyz"
 	//密码强度
 	strength = map[int]string{
-		0:digits+letter,
-		1:digits+letter+specials1,
-		2:digits+specials2+letter,
-		3:digits+specials2+letter+specials2}
+		0: digits + letter,
+		1: digits + letter + specials1,
+		2: digits + specials2 + letter,
+		3: digits + specials2 + letter + specials2}
 )
-
 
 /*
 @in len 密码的长度
 @in level 密码的强度级别  0:包含数字和字母  1:包含数字字母和特殊字符
 */
-func GetPassword(length int,level int) string{
+func GetPassword(length int, level int) string {
 	rand.Seed(time.Now().UnixNano())
 	buf := make([]byte, length)
-	str,ok := strength[level]
-	if  ok != true {
+	str, ok := strength[level]
+	if ok != true {
 		panic("GetPassword not support level")
 	}
 	for i := 0; i < length; i++ {
@@ -41,8 +40,7 @@ func GetPassword(length int,level int) string{
 	return string(buf)
 }
 
-
-func GetPwdBase64(length int)string{
+func GetPwdBase64(length int) string {
 	rand.Seed(time.Now().UnixNano())
 	buf := make([]byte, length)
 	for i := 0; i < length; i++ {

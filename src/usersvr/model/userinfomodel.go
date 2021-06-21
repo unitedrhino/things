@@ -86,7 +86,7 @@ func (m *defaultUserInfoModel) FindOne(uid int64) (*UserInfo, error) {
 }
 
 func (m *defaultUserInfoModel) Update(data UserInfo) error {
-	data.UpdatedTime = sql.NullTime{Valid: true,Time: time.Now()}
+	data.UpdatedTime = sql.NullTime{Valid: true, Time: time.Now()}
 	userInfoUidKey := fmt.Sprintf("%s%v", cacheUserInfoUidPrefix, data.Uid)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, userInfoRowsWithPlaceHolder)
@@ -98,14 +98,13 @@ func (m *defaultUserInfoModel) Update(data UserInfo) error {
 func (m *defaultUserInfoModel) InsertOrUpdate(data UserInfo) error {
 	_, err := m.FindOne(data.Uid)
 	switch err {
-	case nil://如果找到了直接更新
+	case nil: //如果找到了直接更新
 		err = m.Update(data)
-	case ErrNotFound://如果没找到则插入
-		_,err = m.Insert(data)
+	case ErrNotFound: //如果没找到则插入
+		_, err = m.Insert(data)
 	}
 	return err
 }
-
 
 func (m *defaultUserInfoModel) Delete(uid int64) error {
 
@@ -125,5 +124,3 @@ func (m *defaultUserInfoModel) queryPrimary(conn sqlx.SqlConn, v, primary interf
 	query := fmt.Sprintf("select %s from %s where `uid` = ? limit 1", userInfoRows, m.table)
 	return conn.QueryRow(v, query, primary)
 }
-
-

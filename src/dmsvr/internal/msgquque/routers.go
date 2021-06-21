@@ -2,7 +2,7 @@ package msgquque
 
 import "gitee.com/godLei6/things/src/dmsvr/internal/msgquque/logic"
 
-func (k *Kafka) AddRouters(){
+func (k *Kafka) AddRouters() {
 	k.AddRouter(Router{
 		Topic:   "onConnect",
 		Handler: logic.NewConnectLogic,
