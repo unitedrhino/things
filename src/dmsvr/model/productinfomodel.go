@@ -56,6 +56,7 @@ type (
 		CreatedTime  time.Time    `db:"createdTime"`
 		UpdatedTime  sql.NullTime `db:"updatedTime"`
 		DeletedTime  sql.NullTime `db:"deletedTime"`
+		DevStatus    string       `db:"devStatus"` // 产品状态
 	}
 )
 
@@ -70,8 +71,8 @@ func (m *defaultProductInfoModel) Insert(data ProductInfo) (sql.Result, error) {
 	productInfoProductIDKey := fmt.Sprintf("%s%v", cacheProductInfoProductIDPrefix, data.ProductID)
 	productInfoProductNameKey := fmt.Sprintf("%s%v", cacheProductInfoProductNamePrefix, data.ProductName)
 	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
-		return conn.Exec(query, data.ProductID, data.Template, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
+		return conn.Exec(query, data.ProductID, data.Template, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DevStatus)
 	}, productInfoProductIDKey, productInfoProductNameKey)
 	return ret, err
 }
@@ -139,7 +140,7 @@ func (m *defaultProductInfoModel) Update(data ProductInfo) error {
 	productInfoProductNameKey := fmt.Sprintf("%s%v", cacheProductInfoProductNamePrefix, data.ProductName)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, productInfoRowsWithPlaceHolder)
-		return conn.Exec(query, data.ProductID, data.Template, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Id)
+		return conn.Exec(query, data.ProductID, data.Template, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DevStatus, data.Id)
 	}, productInfoIdKey, productInfoProductIDKey, productInfoProductNameKey)
 	return err
 }
@@ -156,7 +157,7 @@ func (m *defaultProductInfoModel) Delete(id int64) error {
 	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.Exec(query, id)
-	}, productInfoIdKey, productInfoProductIDKey, productInfoProductNameKey)
+	}, productInfoProductIDKey, productInfoProductNameKey, productInfoIdKey)
 	return err
 }
 

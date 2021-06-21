@@ -38,7 +38,7 @@ type Kafka struct {
 
 func NewKafka() *Kafka {
 	return &Kafka{
-		ChannelBufferSize: 2,
+		ChannelBufferSize: 200,
 		ready:             make(chan bool),
 		Version:           "1.1.1",
 		Group:             group,
