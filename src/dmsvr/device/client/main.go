@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/logic"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/msvc"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/logic"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/msvc"
 	"github.com/Shopify/sarama"
 	"log"
 	"os"

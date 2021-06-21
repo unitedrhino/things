@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/config"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/logic"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/msvc"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/types"
+	"gitee.com/godLei6/things/src/dmsvr/internal/config"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/logic"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/msvc"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/types"
 	"github.com/Shopify/sarama"
 	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/core/trace"
@@ -31,7 +31,7 @@ type Router struct {
 
 type Kafka struct {
 	Brokers []string
-	Routers map[string]Router//key是topic 对应的是处理函数
+	Routers map[string]Router //key是topic 对应的是处理函数
 	Topics 	[]string
 	//OffsetNewest int64 = -1
 	//OffsetOldest int64 = -2
@@ -53,8 +53,8 @@ func NewKafka(service *msvc.ServiceContext) *Kafka {
 		Version:"1.1.1",
 		serviceContext: service,
 		Routers:make(map[string]Router),
-		Group: service.Config.Group,
-		Brokers: service.Config.Brokers,
+		Group: service.Config.Kafka.Group,
+		Brokers: service.Config.Kafka.Brokers,
 	}
 }
 func (k *Kafka)AddRouter(router Router){
@@ -140,7 +140,7 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 	// 具体消费消息
 	for message := range claim.Messages() {
 		func(){
-			ctx, span := trace.StartServerSpan(session.Context(), nil, k.serviceContext.Config.Group, message.Topic)
+			ctx, span := trace.StartServerSpan(session.Context(), nil, k.serviceContext.Config.Kafka.Group, message.Topic)
 			defer span.Finish()
 			msg := types.Elements{}
 			err := json.Unmarshal(message.Value,&msg)
@@ -152,6 +152,10 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 			v,ok := k.Routers[message.Topic]
 			if ok != true{
 				panic(fmt.Sprintf("get msg bug topic not have hander func:%s",message.Topic))
+			}
+			err =  k.serviceContext.LogHandle(&msg)
+			if err != nil {
+				logx.Errorf("%s|LogHandle=%+v\n",utils.FuncName(),err)
 			}
 			err = v.Handler(ctx,k.serviceContext).Handle(&msg)
 			if err != nil {
@@ -172,7 +176,7 @@ func test(){
 	ctx := msvc.NewServiceContext(config.Config{})
 	k := NewKafka(ctx)
 	k.AddRouter(Router{
-		Topic: "onConnect",
+		Topic:   "onConnect",
 		Handler: logic.NewConnectLogic,
 	})
 	f := k.Start()

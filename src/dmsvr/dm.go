@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/msvc"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/config"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/msvc"
 	"gitee.com/godLei6/things/src/dmsvr/internal/server"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 
@@ -26,7 +26,7 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 
 	//kafka服务初始化
-	ctx1 := msvc.NewServiceContext(c.Kafka)
+	ctx1 := msvc.NewServiceContext(c)
 	k := msgquque.NewKafka(ctx1)
 	k.AddRouters()
 	stop := k.Start()

@@ -1,25 +1,28 @@
 package msvc
 
 import (
-	"gitee.com/godLei6/things/src/dmsvr/device/model"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/config"
-	"gitee.com/godLei6/things/src/dmsvr/device/msgquque/types"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
+	"gitee.com/godLei6/things/src/dmsvr/internal/config"
+	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/types"
+	"gitee.com/godLei6/things/src/dmsvr/model"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"time"
 )
 
 type ServiceContext struct {
-	Config config.Config
+	Config    config.Config
 	DeviceLog model.DeviceLogModel
+	DeviceInfo 		model.DeviceInfoModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
+	di := model.NewDeviceInfoModel(conn,c.CacheRedis)
 	dl := model.NewDeviceLogModel(conn)
 	return &ServiceContext{
 		Config: c,
 		DeviceLog:dl,
+		DeviceInfo: di,
 	}
 }
 
