@@ -88,6 +88,7 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) *model.Produ
 		ProductName: info.ProductName,              // 产品名称
 		Description: info.Description.GetValue(),
 		Template:    info.Template.GetValue(),
+		DevStatus: 	 info.DevStatus.GetValue(),
 		CreatedTime: time.Now(),
 	}
 	if info.AutoRegister != dm.UNKNOWN {
@@ -150,6 +151,10 @@ func UpdateProduct(old *model.ProductInfo, data *dm.ProductInfo) {
 		old.AutoRegister = int64(data.AutoRegister)
 		isModify = true
 	}
+	if data.DevStatus != nil {
+		old.DevStatus = data.DevStatus.GetValue()
+		isModify = true
+	}
 }
 
 func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
@@ -200,6 +205,6 @@ func (l *ManageProductLogic) ManageProduct(in *dm.ManageProductReq) (*dm.Product
 	case dm.OPT_DEL:
 		return l.DelProduct(in)
 	default:
-		return nil, errors.Parameter.AddDetail("not suppot opt:" + string(in.Opt))
+		return nil, errors.Parameter.AddDetail("not suppot opt:" + cast.ToString(in.Opt))
 	}
 }
