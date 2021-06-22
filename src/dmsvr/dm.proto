@@ -113,7 +113,6 @@ message DeviceInfo{
   google.protobuf.StringValue  version     = 8; // 固件版本  读写
   int64  logLevel       = 9; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
   string  cert          = 10;// 设备证书  只读
-  google.protobuf.StringValue  template    = 11;// 数据模板
 }
 
 message ManageDeviceReq{
