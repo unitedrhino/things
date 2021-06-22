@@ -19,9 +19,9 @@ var (
 	productInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(productInfoFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
 	productInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(productInfoFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
-	cacheProductInfoIdPrefix          = "cache#productInfo#id#"
-	cacheProductInfoProductIDPrefix   = "cache#productInfo#productID#"
-	cacheProductInfoProductNamePrefix = "cache#productInfo#productName#"
+	cacheProductInfoIdPrefix          = "cache:productInfo:id:"
+	cacheProductInfoProductIDPrefix   = "cache:productInfo:productID:"
+	cacheProductInfoProductNamePrefix = "cache:productInfo:productName:"
 )
 
 type (
@@ -141,7 +141,7 @@ func (m *defaultProductInfoModel) Update(data ProductInfo) error {
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, productInfoRowsWithPlaceHolder)
 		return conn.Exec(query, data.ProductID, data.Template, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DevStatus, data.Id)
-	}, productInfoIdKey, productInfoProductIDKey, productInfoProductNameKey)
+	}, productInfoProductNameKey, productInfoIdKey, productInfoProductIDKey)
 	return err
 }
 
@@ -151,13 +151,13 @@ func (m *defaultProductInfoModel) Delete(id int64) error {
 		return err
 	}
 
-	productInfoIdKey := fmt.Sprintf("%s%v", cacheProductInfoIdPrefix, id)
 	productInfoProductIDKey := fmt.Sprintf("%s%v", cacheProductInfoProductIDPrefix, data.ProductID)
 	productInfoProductNameKey := fmt.Sprintf("%s%v", cacheProductInfoProductNamePrefix, data.ProductName)
+	productInfoIdKey := fmt.Sprintf("%s%v", cacheProductInfoIdPrefix, id)
 	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.Exec(query, id)
-	}, productInfoProductIDKey, productInfoProductNameKey, productInfoIdKey)
+	}, productInfoProductNameKey, productInfoIdKey, productInfoProductIDKey)
 	return err
 }
 
