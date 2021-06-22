@@ -1,6 +1,6 @@
-package msgquque
+package exchange
 
-import "gitee.com/godLei6/things/src/dmsvr/internal/msgquque/logic"
+import "gitee.com/godLei6/things/src/dmsvr/internal/exchange/logic"
 
 func (k *Kafka) AddRouters() {
 	k.AddRouter(Router{
