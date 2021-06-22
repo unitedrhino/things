@@ -2,18 +2,18 @@ package logic
 
 import (
 	"context"
-	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/msvc"
-	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/types"
+	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/types"
+	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"github.com/tal-tech/go-zero/core/logx"
 )
 
 type ConnectLogic struct {
 	ctx    context.Context
-	svcCtx *msvc.ServiceContext
+	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewConnectLogic(ctx context.Context, svcCtx *msvc.ServiceContext) LogicHandle {
+func NewConnectLogic(ctx context.Context, svcCtx *svc.ServiceContext) LogicHandle {
 	return LogicHandle(&ConnectLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,

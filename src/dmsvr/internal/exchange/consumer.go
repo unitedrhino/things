@@ -1,4 +1,4 @@
-package msgquque
+package exchange
 
 import (
 	"context"
@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/internal/config"
-	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/logic"
-	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/msvc"
-	"gitee.com/godLei6/things/src/dmsvr/internal/msgquque/types"
+	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/logic"
+	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/types"
+	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"github.com/Shopify/sarama"
 	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/core/trace"
@@ -25,7 +25,7 @@ var group = "39"
 
 type Router struct {
 	Topic   string
-	Handler func(ctx context.Context, svcCtx *msvc.ServiceContext) logic.LogicHandle
+	Handler func(ctx context.Context, svcCtx *svc.ServiceContext) logic.LogicHandle
 }
 
 type Kafka struct {
@@ -39,10 +39,10 @@ type Kafka struct {
 	ready             chan bool
 	Group             string `json:",optional"`
 	ChannelBufferSize int    `json:",default=20"`
-	serviceContext    *msvc.ServiceContext
+	serviceContext    *svc.ServiceContext
 }
 
-func NewKafka(service *msvc.ServiceContext) *Kafka {
+func NewKafka(service *svc.ServiceContext) *Kafka {
 	if service == nil {
 		panic("service is nil")
 	}
@@ -168,7 +168,7 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 }
 
 func test() {
-	ctx := msvc.NewServiceContext(config.Config{})
+	ctx := svc.NewServiceContext(config.Config{})
 	k := NewKafka(ctx)
 	k.AddRouter(Router{
 		Topic:   "onConnect",

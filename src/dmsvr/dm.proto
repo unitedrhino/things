@@ -88,6 +88,7 @@ message ProductInfo{
   string   secret       = 10;//动态注册产品秘钥 只读
   google.protobuf.StringValue   template     = 11;//数据模板
   google.protobuf.StringValue   description  = 12;//描述
+  google.protobuf.StringValue   devStatus    = 13; // 产品状态
 }
 message ManageProductReq{
   int64 opt           = 1;//操作 0:新增 1:修改 2:删除
@@ -103,12 +104,16 @@ message GetProductInfoResp{
 }
 
 message DeviceInfo{
-  string   productID   = 1; //产品id 只读
-  string  deviceName  = 3; //设备名称 读写
-  int64   createdTime = 4; //创建时间 只读
-  string  secret      = 5; //设备秘钥 只读
-  int64   firstLogin  = 6; //激活时间 只读
-  int64   lastLogin   = 7; //最后上线时间 只读
+  string   productID    = 1; //产品id 只读
+  string  deviceName    = 3; //设备名称 读写
+  int64   createdTime   = 4; //创建时间 只读
+  string  secret        = 5; //设备秘钥 只读
+  int64   firstLogin    = 6; //激活时间 只读
+  int64   lastLogin     = 7; //最后上线时间 只读
+  google.protobuf.StringValue  version     = 8; // 固件版本  读写
+  int64  logLevel       = 9; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+  string  cert          = 10;// 设备证书  只读
+  google.protobuf.StringValue  template    = 11;// 数据模板
 }
 
 message ManageDeviceReq{
