@@ -79,7 +79,11 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		ProductID:   in.Info.ProductID,  // 产品id
 		DeviceName:  in.Info.DeviceName, // 设备名称
 		Secret:      utils.GetPwdBase64(20),
+		Version: in.Info.Version.GetValue(),
 		CreatedTime: time.Now(),
+	}
+	if in.Info.LogLevel != dm.UNKNOWN {
+		di.LogLevel = dm.LOG_CLOSE
 	}
 	_, err = l.svcCtx.DeviceInfo.Insert(di)
 	if err != nil {
@@ -103,6 +107,14 @@ func ChangeDevice(old *model.DeviceInfo, data *dm.DeviceInfo) {
 
 	if data.DeviceName != "" {
 		old.DeviceName = data.DeviceName
+		isModify = true
+	}
+	if data.LogLevel != dm.UNKNOWN {
+		old.LogLevel = data.LogLevel;
+		isModify = true
+	}
+	if data.Version != nil {
+		old.Version = data.Version.GetValue()
 		isModify = true
 	}
 }
