@@ -1,4 +1,4 @@
-package model
+package dict
 
 import (
 	"encoding/json"
@@ -8,6 +8,12 @@ import (
 
 var (
 	DeviceReqTestStr = [...]string{
+		`{
+   "method":"control_reply",
+   "clientToken":"123",
+   "code":0,
+   "status":"some message where error"
+}`,
 		`{                     
     "method": "report_info",            
     "clientToken": "123",                    
@@ -72,6 +78,15 @@ var (
 }`,
 	}
 	DeviceRespTestStr = [...]string{
+		`{
+   "method": "control",
+   "clientToken": "123",    
+   "params": {
+       "power_switch": 1,
+       "color": 1,
+       "brightness": 66    
+   }
+}`,
 		`{        
    "method":"report_info_reply",    
    "clientToken":"123",    

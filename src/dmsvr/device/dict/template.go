@@ -1,4 +1,4 @@
-package model
+package dict
 
 type Profile struct {
 	ProductID  string `json:"ProductId"`  //产品ID

@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql"
 	"fmt"
-	"gitee.com/godLei6/things/src/dmsvr/device/model"
 	"strings"
 	"time"
 
@@ -66,7 +65,7 @@ func (m *defaultDeviceLogModel) FindOne(id int64) (*DeviceLog, error) {
 	case nil:
 		return &resp, nil
 	case sqlc.ErrNotFound:
-		return nil, model.ErrNotFound
+		return nil, ErrNotFound
 	default:
 		return nil, err
 	}
