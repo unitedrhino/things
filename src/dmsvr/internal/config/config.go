@@ -16,4 +16,9 @@ type Config struct {
 		Brokers []string //kafka的节点
 		Group   string   //kafka的分组
 	}
+	Mqtt struct{
+		Brokers []string//mqtt服务器节点
+		User string //用户名
+		Pass string `json:",optional"`//密码
+	}
 }

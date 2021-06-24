@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/logic"
-	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/msvc"
+	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"github.com/Shopify/sarama"
 	"log"
 	"os"
@@ -19,7 +19,7 @@ var group = "1"
 
 type Router struct {
 	Topic   string
-	Handler func(ctx context.Context, svcCtx *msvc.ServiceContext) logic.LogicHandle
+	Handler func(ctx context.Context, svcCtx *svc.ServiceContext) logic.LogicHandle
 }
 
 type Kafka struct {
@@ -33,7 +33,7 @@ type Kafka struct {
 	ready             chan bool
 	Group             string `json:",optional"`
 	ChannelBufferSize int    `json:",default=20"`
-	serviceContext    *msvc.ServiceContext
+	serviceContext    *svc.ServiceContext
 }
 
 func NewKafka() *Kafka {

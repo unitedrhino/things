@@ -12,7 +12,7 @@ import (
 )
 
 type CodeError struct {
-	Code    int      `json:"code"`
+	Code    int64      `json:"code"`
 	Msg     string   `json:"msg"`
 	Details []string `json:"details,omitempty"`
 }
@@ -54,7 +54,7 @@ func (c CodeError) AddDetail(msg string) *CodeError {
 	return &c
 }
 
-func NewCodeError(code int, msg string) *CodeError {
+func NewCodeError(code int64, msg string) *CodeError {
 	return &CodeError{Code: code, Msg: msg}
 }
 
@@ -83,7 +83,7 @@ func Fmt(errs error) *CodeError {
 			return System.AddDetail(err)
 		}
 		if er, ok := s.Details()[0].(*proto.Error); ok {
-			return &CodeError{Code: int(er.Code), Msg: er.Message, Details: er.Detail}
+			return &CodeError{Code: int64(er.Code), Msg: er.Message, Details: er.Detail}
 		}
 		err := fmt.Sprintf("rpc err not suppot|err=%#v", s)
 		return System.AddDetail(err)
