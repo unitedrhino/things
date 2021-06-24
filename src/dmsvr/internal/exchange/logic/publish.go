@@ -54,23 +54,65 @@ func (l *PublishLogic) initMsg(msg *types.Elements) error {
 	return nil
 }
 
+func (l *PublishLogic) HandleProperty(msg *types.Elements) error{
+	l.Infof("PublishLogic|HandleProperty")
+	dreq := dict.DeviceReq{}
+	respTopic := fmt.Sprintf("$thing/down/property/%s/%s",l.topics[3],l.topics[4])
+	err := json.Unmarshal([]byte(msg.Payload), &dreq)
+	if err != nil {
+		return errors.Parameter.AddDetail("things topic is err:"+msg.Topic)
+	}
+	switch dreq.Method {
+	case dict.REPORT:
+		l.Infof("send topic=%s",respTopic)
+		payload,_ := json.Marshal(dict.DeviceResp{
+			Method: dict.REPORT_REPLY,
+			ClientToken:dreq.ClientToken,
+			Code: errors.OK.Code,
+			Status: errors.OK.Msg})
+		token := l.svcCtx.Mqtt.Publish(respTopic,0,false,payload)
+		token.Wait()
+	case dict.REPORT_INFO:
+	case dict.GET_STATUS:
+	default:
+		return errors.Method
+	}
+	return nil
+}
+
+func (l *PublishLogic) HandleEvent(msg *types.Elements) error{
+	l.Infof("PublishLogic|HandleEvent")
+	return nil
+}
+func (l *PublishLogic) HandleAction(msg *types.Elements) error{
+	l.Infof("PublishLogic|HandleAction")
+	return nil
+}
+
 func (l *PublishLogic) HandleThing(msg *types.Elements) error{
+	l.Infof("PublishLogic|HandleThing")
 	if len(l.topics) < 5 || l.topics[1] != "up"{
 		return errors.Parameter.AddDetail("things topic is err:"+msg.Topic)
 	}
 	switch l.topics[2] {
 	case "property"://属性上报
-
+		return l.HandleProperty(msg)
 	case "event"://事件上报
+		return l.HandleEvent(msg)
 	case "action"://设备响应行为执行结果
+		return l.HandleAction(msg)
+	default:
+		return errors.Parameter.AddDetail("things topic is err:"+msg.Topic)
 	}
 	return nil
 }
 func (l *PublishLogic) HandleOta(msg *types.Elements) error{
+	l.Infof("PublishLogic|HandleOta")
 	return nil
 }
 
 func (l *PublishLogic) HandleDefault(msg *types.Elements) error{
+	l.Infof("PublishLogic|HandleDefault")
 	return nil
 }
 

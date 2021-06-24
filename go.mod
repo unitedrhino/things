@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/Shopify/sarama v1.29.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/golang/protobuf v1.4.2
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/silenceper/wechat/v2 v2.0.5
