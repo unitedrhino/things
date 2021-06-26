@@ -13,6 +13,7 @@ import (
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/zrpc"
 	"google.golang.org/grpc"
+	_ "net/http/pprof"
 )
 
 var configFile = flag.String("f", "etc/dm.yaml", "the config file")
