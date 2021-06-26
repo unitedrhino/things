@@ -54,6 +54,13 @@ func (c CodeError) AddDetail(msg string) *CodeError {
 	return &c
 }
 
+func (c *CodeError) GetDetailMsg() string {
+	if len(c.Details) == 0 {
+		return c.Msg
+	}
+	return fmt.Sprintf("msg=%s,detail=%v",c.Msg,c.Details)
+}
+
 func NewCodeError(code int64, msg string) *CodeError {
 	return &CodeError{Code: code, Msg: msg}
 }
@@ -115,3 +122,4 @@ func Cmp(err1 error, err2 error) bool {
 	}
 	return Fmt(err1).Code == Fmt(err2).Code
 }
+

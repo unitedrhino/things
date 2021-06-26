@@ -42,9 +42,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Info("Connected")
 	}
 	mc:= mqtt.NewClient(opts)
-	if token := mc.Connect(); token.Wait() && token.Error() != nil {
-		panic(fmt.Sprintf("mqtt client connect err:%s",token.Error()))
-	}
+	mc.Connect()
+	//if token := mc.Connect(); token.Wait() && token.Error() != nil {
+	//	panic(fmt.Sprintf("mqtt client connect err:%s",token.Error()))
+	//}
 	//token := mc.Publish("21CYs1k9YpG/test8/54598", 0, false, clientID+" send msg")
 	//token.Wait()
 	//time.Sleep(time.Hour)

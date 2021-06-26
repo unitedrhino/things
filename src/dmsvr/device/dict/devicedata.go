@@ -1,5 +1,7 @@
 package dict
 
+import "gitee.com/godLei6/things/shared/errors"
+
 type (
 	DeviceReq struct {
 		Method      string                 `json:"method"`             //操作方法
@@ -25,6 +27,18 @@ type (
 		Response    map[string]interface{} `json:"response,omitempty"` //设备行为中定义的返回参数，设备行为执行成功后，向云端返回执行结果
 	}
 )
+
+func (d DeviceResp)AddStatus(err *errors.CodeError)DeviceResp  {
+	d.Code = err.Code
+	d.Status = err.GetDetailMsg()
+	return d
+}
+
+func (d DeviceReq)AddStatus(err *errors.CodeError)DeviceReq  {
+	d.Code = err.Code
+	d.Status = err.GetDetailMsg()
+	return d
+}
 
 type METHOD = string
 

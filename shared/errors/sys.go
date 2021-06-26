@@ -15,4 +15,5 @@ var (
 	SignatureExpired = NewCodeError(99000011, "签名已经过期")
 	Permissions      = NewCodeError(99000012, "权限不足")
 	Method      	 = NewCodeError(99000013, "method不支持")
+	Type      	 = NewCodeError(99000013, "参数的类型不对")
 )

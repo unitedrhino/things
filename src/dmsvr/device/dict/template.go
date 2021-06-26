@@ -75,3 +75,14 @@ type Template struct {
 	Actions    []Action  `json:"actions"`    //行为
 	Profile    Profile   `json:"profile"`    //配置信息
 }
+//数据类型
+const (
+	BOOL = "bool"
+	INT = "int"
+	STRING = "string"
+	STRUCT = "struct"
+	FLOAT = "float"
+	TIMESTAMP = "timestamp"
+	ARRAY = "array"
+	ENUM = "enum"
+)
