@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cast"
 )
 
-func (d Define) AddVal(val interface{}) (Define ,error){
+func (d *Define) AddVal(val interface{}) (*Define ,error){
 	switch d.Type {
 	case BOOL:
 		switch val.(type) {
@@ -85,7 +85,7 @@ func (d Define) AddVal(val interface{}) (Define ,error){
 		if strut,ok := val.(map[string]interface {});!ok{
 			return d, errors.Parameter.AddDetail(val)
 		}else {
-			getParam := make(map[string]Define,len(strut))
+			getParam := make(map[string]*Define,len(strut))
 			for k,v :=range strut {
 				sv,ok := d.Spec[k]
 				if ok == false {
@@ -108,7 +108,7 @@ func (d Define) AddVal(val interface{}) (Define ,error){
 			if len(arr) == 0{
 				return d, errors.NotFind
 			}
-			getParam := make([]Define,0,len(arr)+1)
+			getParam := make([]*Define,0,len(arr)+1)
 			for _,v :=range arr {
 				param,err := d.ArrayInfo.AddVal(v)
 				if err == nil {
@@ -136,11 +136,10 @@ func (t *Template)VerifyParam(param map[string]interface{},tt TEMP_TYPE)(map[str
 			if ok == false {
 				continue
 			}
-			data,err := p.Define.AddVal(v)
+			def := p.Define
+			data,err := def.AddVal(v)
 			if err == nil {
-				property := *p
-				property.Define = data
-				getParam[property.ID] = property
+				getParam[p.ID] = data
 			}else if !errors.Cmp(err,errors.NotFind) {
 				return nil,errors.Fmt(err).AddDetail(p.ID)
 			}
