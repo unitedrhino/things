@@ -7,141 +7,184 @@ import (
 	"github.com/spf13/cast"
 )
 
-func (d *Define) AddVal(val interface{}) (*Define ,error){
+type TempParam struct {
+	ID       string `json:"id"`       //标识符
+	Name     string `json:"name"`     //功能名称
+	Desc     string `json:"gesc"`     //描述
+	Mode     string `json:"mode"`     //读写乐行:rw(可读可写) r(只读)
+	Required bool   `json:"required"` //是否必须
+	Type     string `json:"type"`     //事件类型: 信息:info  告警alert  故障:fault
+	Value    struct {
+		Type   string            `json:"type"`              //参数类型:bool int string struct float timestamp array enum
+		Maping map[string]string `json:"mapping,omitempty"` //枚举及bool类型:bool enum
+		Min    string            `json:"min,omitempty"`     //数值最小值:int string float
+		Max    string            `json:"max,omitempty"`     //数值最大值:int string float
+		Start  string            `json:"start,omitempty"`   //初始值:int float
+		Step   string            `json:"step,omitempty"`    //步长:int float
+		Unit   string            `json:"unit,omitempty"`    //单位:int float
+		Value  interface{}       `json:"Value"`
+		/*
+			读到的数据  如果是是数组则类型为[]interface{}  如果是结构体类型则为map[id]TempParam
+				interface 为数据内容  					string为结构体的key value 为数据内容
+		*/
+	} `json:"Value"` //数据定义
+}
+
+func (t *TempParam) AddDefine(d *Define, val interface{}) (err error){
+	t.Value.Type = d.Type
+	t.Value.Type = d.Type
+	t.Value.Maping = make(map[string]string)
+	for k, v := range d.Maping {
+		t.Value.Maping[k] = v
+	}
+	t.Value.Maping = d.Maping
+	t.Value.Min = d.Min
+	t.Value.Max = d.Max
+	t.Value.Start = d.Start
+	t.Value.Step = d.Step
+	t.Value.Unit = d.Unit
+	//todo
+	t.Value.Value, err = d.GetVal(val)
+	return err
+}
+
+
+func (d *Define) GetVal(val interface{}) (interface{}, error) {
 	switch d.Type {
 	case BOOL:
 		switch val.(type) {
 		case bool:
-			d.Val = val.(bool)
-			return d,nil
+			return val.(bool), nil
 		case json.Number:
-			num :=val.(json.Number).String()
-			if  num == "0" {
-				d.Val = false
-				return d,nil
-			}else {
-				d.Val = true
-				return d,nil
+			num := val.(json.Number).String()
+			if num == "0" {
+				return false, nil
+			} else {
+				return true, nil
 			}
 		}
 	case INT:
-		if num,ok:=val.(json.Number);!ok{
-			return d, errors.Parameter.AddDetail(val)
-		}else {
-			ret,err := num.Int64()
+		if num, ok := val.(json.Number); !ok {
+			return nil, errors.Parameter.AddDetail(val)
+		} else {
+			ret, err := num.Int64()
 			if err != nil {
-				return d, errors.Parameter.AddDetail(val)
+				return nil, errors.Parameter.AddDetail(val)
 			}
-			d.Val = ret
-			return d,nil
+			return ret, nil
 		}
 	case FLOAT:
-		if num,ok:=val.(json.Number);!ok{
-			return d, errors.Parameter.AddDetail(val)
-		}else {
-			ret,err := num.Float64()
+		if num, ok := val.(json.Number); !ok {
+			return nil, errors.Parameter.AddDetail(val)
+		} else {
+			ret, err := num.Float64()
 			if err != nil {
-				return d, errors.Parameter.AddDetail(val)
+				return nil, errors.Parameter.AddDetail(val)
 			}
-			d.Val = ret
-			return d,nil
+			return ret, nil
 		}
 	case STRING:
-		if str,ok:=val.(string);!ok{
-			return d, errors.Parameter.AddDetail(val)
-		}else {
-			d.Val = str
-			return d,nil
+		if str, ok := val.(string); !ok {
+			return nil, errors.Parameter.AddDetail(val)
+		} else {
+			return str, nil
 		}
 	case ENUM: //枚举类型 报文中传递的是数字
-		if num,ok:=val.(json.Number);!ok{
-			return d, errors.Parameter.AddDetail(val)
-		}else {
-			ret,err := num.Int64()
+		if num, ok := val.(json.Number); !ok {
+			return nil, errors.Parameter.AddDetail(val)
+		} else {
+			ret, err := num.Int64()
 			if err != nil {
-				return d, errors.Parameter.AddDetail(val)
+				return nil, errors.Parameter.AddDetail(val)
 			}
-			d.Val = ret
-			return d,nil
+			return ret, nil
 		}
 	case TIMESTAMP:
 		switch val.(type) {
 		case json.Number:
-			ret,err := val.(json.Number).Int64()
+			ret, err := val.(json.Number).Int64()
 			if err != nil {
-				return d, errors.Parameter.AddDetail(val)
+				return nil, errors.Parameter.AddDetail(val)
 			}
-			d.Val = ret
-			return d,nil
+			return ret, nil
 		case string:
-			ret,err := cast.ToInt64E(val)
+			ret, err := cast.ToInt64E(val)
 			if err != nil {
-				return d, errors.Parameter.AddDetail(val)
+				return nil, errors.Parameter.AddDetail(val)
 			}
-			d.Val = ret
-			return d,nil
+			return ret, nil
 		}
 	case STRUCT:
-		if strut,ok := val.(map[string]interface {});!ok{
-			return d, errors.Parameter.AddDetail(val)
-		}else {
-			getParam := make(map[string]*Define,len(strut))
-			for k,v :=range strut {
-				sv,ok := d.Spec[k]
+		if strut, ok := val.(map[string]interface{}); !ok {
+			return nil, errors.Parameter.AddDetail(val)
+		} else {
+			getParam := make(map[string]TempParam, len(strut))
+			for k, v := range strut {
+				sv, ok := d.Spec[k]
 				if ok == false {
 					continue
 				}
-				param,err := sv.DataType.AddVal(v)
+				tp := TempParam{
+					ID: sv.ID,
+					Name: sv.Name,
+				}
+				err := tp.AddDefine(&sv.DataType,v)
 				if err == nil {
-					getParam[k] = param
-				}else if !errors.Cmp(err,errors.NotFind) {
-					return d,errors.Fmt(err).AddDetail(sv.ID)
+					getParam[k] = tp
+				} else if !errors.Cmp(err, errors.NotFind) {
+					return nil, errors.Fmt(err).AddDetail(sv.ID)
 				}
 			}
-			d.Val = getParam
-			return d,nil
+			return getParam, nil
 		}
 	case ARRAY:
-		if arr,ok := val.([]interface {});!ok{
-			return d, errors.Parameter.AddDetail(fmt.Sprint(val))
-		}else {
-			if len(arr) == 0{
+		if arr, ok := val.([]interface{}); !ok {
+			return nil, errors.Parameter.AddDetail(fmt.Sprint(val))
+		} else {
+			if len(arr) == 0 {
 				return d, errors.NotFind
 			}
-			getParam := make([]*Define,0,len(arr)+1)
-			for _,v :=range arr {
-				param,err := d.ArrayInfo.AddVal(v)
+			getParam := make([]interface{}, 0, len(arr)+1)
+			for _, v := range arr {
+				param, err := d.ArrayInfo.GetVal(v)
 				if err == nil {
-					getParam = append(getParam,param)
-				}else if !errors.Cmp(err,errors.NotFind) {
-					return d,errors.Fmt(err).AddDetail(fmt.Sprint(v))
+					getParam = append(getParam, param)
+				} else if !errors.Cmp(err, errors.NotFind) {
+					return nil, errors.Fmt(err).AddDetail(fmt.Sprint(v))
 				}
 			}
-			d.Val = getParam
-			return d, nil
+			return getParam, nil
 		}
 	}
-	return d, errors.Parameter.AddDetail("need param")
+	return nil, errors.Parameter.AddDetail("need param")
 }
 
-func (t *Template)VerifyParam(param map[string]interface{},tt TEMP_TYPE)(map[string]interface{} ,error){
+
+
+func (t *Template) VerifyParam(param map[string]interface{}, tt TEMP_TYPE) (map[string]interface{}, error) {
 	if len(param) == 0 {
-		return nil,errors.Parameter.AddDetail("need add params")
+		return nil, errors.Parameter.AddDetail("need add params")
 	}
-	getParam := make(map[string]interface{},len(param))
+	getParam := make(map[string]interface{}, len(param))
 	switch tt {
 	case PROPERTY:
-		for k,v := range param{
-			p,ok := t.Property[k]
+		for k, v := range param {
+			p, ok := t.Property[k]
 			if ok == false {
 				continue
 			}
-			def := p.Define
-			data,err := def.AddVal(v)
+			tp := TempParam{
+				ID: p.ID,
+				Name: p.Name,
+				Desc:p.Desc,
+				Mode:p.Mode,
+				Required:p.Required,
+			}
+			err := tp.AddDefine(&p.Define,v)
 			if err == nil {
-				getParam[p.ID] = data
-			}else if !errors.Cmp(err,errors.NotFind) {
-				return nil,errors.Fmt(err).AddDetail(p.ID)
+				getParam[k] = tp
+			} else if !errors.Cmp(err, errors.NotFind) {
+				return nil, errors.Fmt(err).AddDetail(p.ID)
 			}
 		}
 	case ACTION_INPUT:
@@ -149,6 +192,5 @@ func (t *Template)VerifyParam(param map[string]interface{},tt TEMP_TYPE)(map[str
 	case EVENT:
 
 	}
-	return getParam,nil
+	return getParam, nil
 }
-
