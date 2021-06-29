@@ -40,7 +40,7 @@ func NewMongoZero() {
 	//}
 	//fmt.Printf("find:%+v\n",rst)
 }
-func TestMongo() {
+func Test_Mongo() {
 	clientOpt := options.Client().ApplyURI(mongoUrl)
 	client, err := mongo.Connect(context.TODO(), clientOpt)
 	if err != nil {
