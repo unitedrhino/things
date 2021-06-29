@@ -1,9 +1,9 @@
-package dict_test
+package device_test
 
 import (
 	"encoding/json"
 	"fmt"
-	"gitee.com/godLei6/things/shared/device/dict"
+	"gitee.com/godLei6/things/src/dmsvr/device"
 	"testing"
 )
 
@@ -142,7 +142,7 @@ var (
 func TestDeviceReq(t *testing.T) {
 	fmt.Println("TestDeviceReq")
 	for _, dqStr := range DeviceReqTestStr {
-		dq := dict.DeviceReq{}
+		dq := device.DeviceReq{}
 		json.Unmarshal([]byte(dqStr), &dq)
 		fmt.Printf("src=%s|ans=%+v\n", dqStr, dq)
 	}
@@ -150,7 +150,7 @@ func TestDeviceReq(t *testing.T) {
 func TestDeviceResp(t *testing.T) {
 	fmt.Println("TestDeviceResp")
 	for _, dqStr := range DeviceRespTestStr {
-		dq := dict.DeviceResp{}
+		dq := device.DeviceResp{}
 		json.Unmarshal([]byte(dqStr), &dq)
 		fmt.Printf("src=%s|ans=%+v\n", dqStr, dq)
 	}

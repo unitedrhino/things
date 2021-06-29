@@ -1,4 +1,4 @@
-package dict
+package device
 
 import (
 	"encoding/json"
@@ -46,6 +46,46 @@ func (t *TempParam) AddDefine(d *Define, val interface{}) (err error){
 	//todo
 	t.Value.Value, err = d.GetVal(val)
 	return err
+}
+
+func (t *TempParam) ToVal() (interface{}){
+	if t == nil {
+		panic("TempParam is nil")
+	}
+
+	switch t.Value.Type {
+	case STRUCT:
+		v,ok := t.Value.Value.(map[string]TempParam)
+		if ok == false {
+			return nil
+		}
+		val :=  make(map[string]interface{},len(v)+1)
+		for _,tp := range v{
+			val[tp.ID] = tp.ToVal()
+		}
+		return  val
+	case ARRAY:
+		array,ok := t.Value.Value.([]interface{})
+		if ok == false {
+			return nil
+		}
+		val := make([]interface{},0,len(array)+1)
+		for _,value := range  array{
+			switch value.(type) {
+			case map[string]TempParam:
+				valMap :=  make(map[string]interface{},len(array)+1)
+				for _,tp := range value.(map[string]TempParam){
+					valMap[tp.ID] = tp.ToVal()
+				}
+				val = append(val,valMap)
+			default:
+				val = append(val,value)
+			}
+		}
+		return val
+	default:
+		return t.Value.Value
+	}
 }
 
 
@@ -161,11 +201,11 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 
 
 
-func (t *Template) VerifyParam(param map[string]interface{}, tt TEMP_TYPE) (map[string]interface{}, error) {
+func (t *Template) VerifyParam(param map[string]interface{}, tt TEMP_TYPE) (map[string]TempParam, error) {
 	if len(param) == 0 {
 		return nil, errors.Parameter.AddDetail("need add params")
 	}
-	getParam := make(map[string]interface{}, len(param))
+	getParam := make(map[string]TempParam, len(param))
 	switch tt {
 	case PROPERTY:
 		for k, v := range param {
