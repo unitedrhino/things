@@ -1,11 +1,11 @@
-package dict_test
+package device_test
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"gitee.com/godLei6/things/shared/device/dict"
 	"gitee.com/godLei6/things/shared/utils"
+	"gitee.com/godLei6/things/src/dmsvr/device"
 	"testing"
 )
 
@@ -604,24 +604,37 @@ var paramStr = [...]string  {
 
 func TestVerifyParam(t *testing.T) {
 	fmt.Println("TestVerifyParam")
-	T,err :=dict.NewTemplate([]byte(template))
+	T,err := device.NewTemplate([]byte(template))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _,v := range paramStr{
+	for _,v := range paramStr {
 		var param map[string]interface{}
 		err := utils.Unmarshal([]byte(v),&param)
 		if err != nil {
 			t.Fatal(err)
 		}
-		param,err = T.VerifyParam(param,dict.PROPERTY)
+		out,err := T.VerifyParam(param, device.PROPERTY)
 		if err != nil {
 			t.Fatal(err)
 		}
-		p,_ := json.Marshal(param)
-		var str bytes.Buffer
-		_ = json.Indent(&str, []byte(p), "", "    ")
-		fmt.Printf("getParam=%s\n",str.String())
+		{
+			p,_ := json.Marshal(out)
+			var str bytes.Buffer
+			_ = json.Indent(&str, []byte(p), "", "    ")
+			fmt.Printf("getParam=%s\n",str.String())
+		}
+		{
+			val := make(map[string]interface{},len(out))
+			for _,v := range out{
+				val[v.ID] = v.ToVal()
+			}
+			p,_ := json.Marshal(val)
+			var str bytes.Buffer
+			_ = json.Indent(&str, []byte(p), "", "    ")
+			fmt.Printf("getParamTomap=%s\n",str.String())
+		}
+
 	}
 
 

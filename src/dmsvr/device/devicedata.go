@@ -1,4 +1,4 @@
-package dict
+package device
 
 import "gitee.com/godLei6/things/shared/errors"
 
@@ -28,15 +28,17 @@ type (
 	}
 )
 
-func (d DeviceResp)AddStatus(err *errors.CodeError) DeviceResp {
-	d.Code = err.Code
-	d.Status = err.GetDetailMsg()
+func (d DeviceResp)AddStatus(err error) DeviceResp {
+	e := errors.Fmt(err)
+	d.Code = e.Code
+	d.Status = e.GetDetailMsg()
 	return d
 }
 
-func (d DeviceReq)AddStatus(err *errors.CodeError) DeviceReq {
-	d.Code = err.Code
-	d.Status = err.GetDetailMsg()
+func (d DeviceReq)AddStatus(err error) DeviceReq {
+	e := errors.Fmt(err)
+	d.Code = e.Code
+	d.Status = e.GetDetailMsg()
 	return d
 }
 

@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gitee.com/godLei6/things/shared/device/dict"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
+	"gitee.com/godLei6/things/src/dmsvr/device"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/types"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
@@ -21,7 +21,7 @@ type PublishLogic struct {
 	logx.Logger
 	ld       *dm.LoginDevice
 	pi       *model.ProductInfo
-	template dict.Template
+	template *device.Template
 	topics   []string
 }
 
@@ -43,37 +43,40 @@ func (l *PublishLogic) initMsg(msg *types.Elements) error {
 	if err != nil {
 		return err
 	}
-	err = json.Unmarshal([]byte(l.pi.Template),&l.template)
+	l.template, err = device.NewTemplate([]byte(l.pi.Template))
 	if err != nil {
 		return err
 	}
-	//var deviceData dict.DeviceReq
-	//err = json.Unmarshal([]byte(msg.Payload),&deviceData)
-	//if err != nil {
-	//	return err
-	//}
 	return nil
 }
 
-
+func(l *PublishLogic) ErrorResp(Method,clientToken string,err error){
+	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
+		l.topics[0],l.topics[2],l.topics[3],l.topics[4])
+	payload,_ := json.Marshal(device.DeviceResp{
+		Method:      Method,
+		ClientToken: clientToken}.AddStatus(err))
+	l.svcCtx.Mqtt.Publish(respTopic,0,false,payload)
+}
 
 func (l *PublishLogic) HandleProperty(msg *types.Elements) error{
-	l.Infof("PublishLogic|HandleProperty")
-	dreq := dict.DeviceReq{}
-	respTopic := fmt.Sprintf("$thing/down/property/%s/%s",l.topics[3],l.topics[4])
+	l.Slowf("PublishLogic|HandleProperty")
+	dreq := device.DeviceReq{}
 	err := utils.Unmarshal([]byte(msg.Payload), &dreq)
 	if err != nil {
 		return errors.Parameter.AddDetail("things topic is err:"+msg.Topic)
 	}
 	switch dreq.Method {
-	case dict.REPORT:
-		l.Infof("send topic=%s",respTopic)
-		payload,_ := json.Marshal(dict.DeviceResp{
-			Method:      dict.REPORT_REPLY,
-			ClientToken: dreq.ClientToken}.AddStatus(errors.OK))
-		l.svcCtx.Mqtt.Publish(respTopic,0,false,payload)
-	case dict.REPORT_INFO:
-	case dict.GET_STATUS:
+	case device.REPORT:
+		tp,err := l.template.VerifyParam(dreq.Params, device.PROPERTY)
+		if err != nil {
+			l.ErrorResp(device.REPORT_REPLY,dreq.ClientToken,err)
+		}else if len(tp) == 0 {
+			l.ErrorResp(device.REPORT_REPLY,dreq.ClientToken,errors.Parameter.AddDetail("need right param"))
+		}
+		l.Info(tp)
+	case device.REPORT_INFO:
+	case device.GET_STATUS:
 	default:
 		return errors.Method
 	}
@@ -81,16 +84,16 @@ func (l *PublishLogic) HandleProperty(msg *types.Elements) error{
 }
 
 func (l *PublishLogic) HandleEvent(msg *types.Elements) error{
-	l.Infof("PublishLogic|HandleEvent")
+	l.Slowf("PublishLogic|HandleEvent")
 	return nil
 }
 func (l *PublishLogic) HandleAction(msg *types.Elements) error{
-	l.Infof("PublishLogic|HandleAction")
+	l.Slowf("PublishLogic|HandleAction")
 	return nil
 }
 
 func (l *PublishLogic) HandleThing(msg *types.Elements) error{
-	l.Infof("PublishLogic|HandleThing")
+	l.Slowf("PublishLogic|HandleThing")
 	if len(l.topics) < 5 || l.topics[1] != "up"{
 		return errors.Parameter.AddDetail("things topic is err:"+msg.Topic)
 	}
@@ -107,12 +110,12 @@ func (l *PublishLogic) HandleThing(msg *types.Elements) error{
 	return nil
 }
 func (l *PublishLogic) HandleOta(msg *types.Elements) error{
-	l.Infof("PublishLogic|HandleOta")
+	l.Slowf("PublishLogic|HandleOta")
 	return nil
 }
 
 func (l *PublishLogic) HandleDefault(msg *types.Elements) error{
-	l.Infof("PublishLogic|HandleDefault")
+	l.Slowf("PublishLogic|HandleDefault")
 	return nil
 }
 

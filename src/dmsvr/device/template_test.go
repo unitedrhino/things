@@ -1,4 +1,4 @@
-package dict
+package device
 
 import (
 	"fmt"
