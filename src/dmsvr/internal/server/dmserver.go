@@ -50,3 +50,13 @@ func (s *DmServer) GetDeviceInfo(ctx context.Context, in *dm.GetDeviceInfoReq) (
 	l := logic.NewGetDeviceInfoLogic(ctx, s.svcCtx)
 	return l.GetDeviceInfo(in)
 }
+
+func (s *DmServer) GetDeviceData(ctx context.Context, in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
+	l := logic.NewGetDeviceDataLogic(ctx, s.svcCtx)
+	return l.GetDeviceData(in)
+}
+
+func (s *DmServer) GetDeviceLog(ctx context.Context, in *dm.GetDeviceLogReq) (*dm.GetDeviceLogResp, error) {
+	l := logic.NewGetDeviceLogLogic(ctx, s.svcCtx)
+	return l.GetDeviceLog(in)
+}

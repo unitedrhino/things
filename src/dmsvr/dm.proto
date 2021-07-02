@@ -128,10 +128,47 @@ message GetDeviceInfoResp{
   repeated DeviceInfo info = 1;//设备信息
 }
 
+
+
 /*
 上面是设备管理模块的消息
 */
 
+/*获取对应日志信息*/
+message GetDeviceLogReq{
+  string method = 1; //获取的类型   property 属性 event事件 action 操作 log 所有日志
+  string  deviceName  = 2; //设备名
+  string  productID   = 3; //产品id 获取产品id下的所有设备信息
+  string FieldName = 4;//获取的具体属性值 如果不指定则获取所有属性 一个记录一条
+  int64 timeStart = 5;//获取时间的开始
+  int64 timeEnd = 6;//时间的结束
+  int64 limit =7;//获取的长度
+}
+
+/*设备的日志数据*/
+message DeviceData{
+  int64 timestamp =1;//发生时间戳
+  string method = 2 ;//操作类型
+  string FieldName = 3;//获取的具体属性值
+  string payload = 4;//具体内容
+}
+/*获取对应日志信息*/
+message GetDeviceLogResp{
+  int64 total = 1; //总数
+  repeated DeviceData data =2;
+}
+
+/*实时获取对应信息*/
+message GetDeviceDataReq{
+  string method = 1; //获取的类型   property 属性 event事件 action 操作 log 所有日志
+  string  deviceName  = 2; //设备名
+  string  productID   = 3; //产品id 获取产品id下的所有设备信息
+  string FieldName = 4;//获取的具体属性值 如果不指定则获取所有属性 一个记录一条
+}
+/*实时获取对应信息*/
+message GetDeviceDataResp{
+  repeated DeviceData data = 1;
+}
 
 
 
@@ -142,5 +179,7 @@ service Dm {
   rpc manageProduct(ManageProductReq)   returns (ProductInfo);//产品管理
   rpc getProductInfo(GetProductInfoReq) returns (GetProductInfoResp);//获取产品信息
   rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);//获取设备信息
+  rpc getDeviceData(GetDeviceDataReq)   returns (GetDeviceDataResp);//获取设备最新数据
+  rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);//获取设备日志信息
 }
 

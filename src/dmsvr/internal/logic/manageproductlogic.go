@@ -88,7 +88,7 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) *model.Produ
 		ProductName: info.ProductName,              // 产品名称
 		Description: info.Description.GetValue(),
 		Template:    info.Template.GetValue(),
-		DevStatus: 	 info.DevStatus.GetValue(),
+		DevStatus:   info.DevStatus.GetValue(),
 		CreatedTime: time.Now(),
 	}
 	if info.AutoRegister != dm.UNKNOWN {

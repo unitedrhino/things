@@ -22,4 +22,6 @@ Mqtt:
   User: admin
   Brokers:
     - tcp://81.68.223.176:1883
-
+Mongo:
+  Url: "mongodb://admin:password@81.68.223.176:27017"
+  Database: things

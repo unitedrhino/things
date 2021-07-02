@@ -1,4 +1,4 @@
-package MongoDB
+package mongodb
 
 import (
 	"context"
@@ -40,6 +40,21 @@ func NewMongoZero() {
 	//}
 	//fmt.Printf("find:%+v\n",rst)
 }
+
+func NewMongo(mongoUrl string, database string, ctx context.Context) (*mongo.Database, error) {
+	clientOpt := options.Client().ApplyURI(mongoUrl)
+	client, err := mongo.Connect(ctx, clientOpt)
+	if err != nil {
+		return nil, err
+	}
+	// 检查连接情况
+	err = client.Ping(context.TODO(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return client.Database(database), nil
+}
+
 func Test_Mongo() {
 	clientOpt := options.Client().ApplyURI(mongoUrl)
 	client, err := mongo.Connect(context.TODO(), clientOpt)

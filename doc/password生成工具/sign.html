@@ -1,0 +1,155 @@
+<html>
+
+<head>
+    <script type="text/javascript" src="crypto-js.min.js"></script>
+    <style>
+        .content {
+            margin: 80px 0 0 150px;
+        }
+
+        .content div {
+            margin: 20px 0;
+        }
+
+        h3 {
+            margin-bottom: 60px;
+        }
+
+        label {
+            width: 200px;
+            text-align: right;
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        input,
+        select {
+            display: inline-block;
+            box-sizing: border-box;
+            vertical-align: middle;
+            height: 30px;
+            padding-left: 10px;
+            padding-right: 10px;
+            font-size: 12px;
+            border: 1px solid #ddd;
+            border-radius: 0;
+            color: #444;
+            transition: .2s ease-in-out;
+            transition-property: color, background-color, border;
+            width: 520px;
+        }
+
+        option {
+            background: #A6E1EC;
+        }
+
+        input:hover,
+        input:focus,
+        select:hover,
+        select:focus {
+            border: #006eff 1px solid;
+            outline: none;
+        }
+
+        button {
+            margin-left: 225px;
+            height: 36px;
+            padding: 0 58px;
+            background-color: #006eff;
+            color: #fff;
+            border: 1px solid #006eff;
+            line-height: 30px;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer;
+            outline: 0 none;
+            box-sizing: border-box;
+            text-decoration: none;
+            font-size: 12px;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h3>请输入设备信息：</h3>
+        <div>
+            <label for="">ProductID:</label>
+            <input type="text" id="productid" name="productid"></input>
+        </div>
+        <div>
+            <label for="">DeviceName:</label>
+            <input type="text" id="devicename" name="devicename"></input>
+        </div>
+        <div>
+            <label for="">DeviceSceret:</label>
+            <input type="text" id="devicesecret" name="devicesecret"></input>
+        </div>
+        <div>
+            <label for="">Hmac签名算法:</label>
+            <select id="signmethod" name="signmethod">
+                <option value="HMAC-SHA1">HMAC-SHA1</option>
+                <option value="HMAC-SHA256" selected>HMAC-SHA256</option>
+            </select>
+        </div>
+        <button id="submit" name="submit" onclick="onSign()">Generate</button>
+        <br />
+        <h3>结果：</h3>
+        <div>
+            <label for="">UserName:</label>
+            <input type="text" id="calculatedusername" name="calculatedusername"></input>
+        </div>
+        <div>
+            <label for="">Password:</label>
+            <input type="text" id="calculatedpassword" name="calculatedpassword"></input>
+        </div>
+    </div>
+</body>
+
+<script>
+    function randomString(len, charSet) {
+        charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var randomString = '';
+        for (var i = 0; i < len; i++) {
+            var randomPoz = Math.floor(Math.random() * charSet.length);
+            randomString += charSet.substring(randomPoz, randomPoz + 1);
+        }
+        return randomString;
+    }
+
+    function onSign() {
+
+        var productid = document.getElementById("productid").value;
+        var devicename = document.getElementById("devicename").value;
+        var devicesecret = document.getElementById("devicesecret").value;
+        var signmethod = document.getElementById("signmethod").value;
+        var calculatedusername = document.getElementById("calculatedusername");
+        var calculatedpassword = document.getElementById("calculatedpassword");
+        if (productid === '' || devicename === '' || devicesecret === '' || signmethod === '') {
+            alert("必填项不能为空");
+            return;
+        }
+        var connid = randomString(5);
+        var expiry = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
+        var clientid = productid + devicename;
+        var username = clientid + ';' + '12010126' + ';' + connid + ';' + expiry;
+        var token = '';
+        var password = '';
+
+        if (signmethod === 'HMAC-SHA1') {
+            token = CryptoJS.HmacSHA1(username, CryptoJS.enc.Base64.parse(devicesecret))
+            password = token + ';' + 'hmacsha1'
+        } else {
+            token = CryptoJS.HmacSHA256(username, CryptoJS.enc.Base64.parse(devicesecret))
+            password = token + ';' + 'hmacsha256'
+        }
+
+        calculatedusername.value = username;
+        calculatedpassword.value = password;
+
+    }
+</script>
+
+</html>

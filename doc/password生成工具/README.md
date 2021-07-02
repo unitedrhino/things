@@ -1,0 +1,1 @@
+基于 MQTT 的签名认证接入指引。参考文档https://cloud.tencent.com/document/product/634/32546

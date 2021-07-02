@@ -543,29 +543,28 @@ func TestTempate(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if len(T.Properties) != len(T.Property){
+	if len(T.Properties) != len(T.Property) {
 		t.Fail()
 	}
-	for i := 0; i < len(T.Properties); i ++{
-		if &T.Properties[i] != T.Property[T.Properties[i].ID]{
+	for i := 0; i < len(T.Properties); i++ {
+		if &T.Properties[i] != T.Property[T.Properties[i].ID] {
 			t.Fail()
 		}
 	}
-	if len(T.Events) != len(T.Event){
+	if len(T.Events) != len(T.Event) {
 		t.Fail()
 	}
-	for i := 0; i < len(T.Events); i ++{
-		if &T.Events[i] != T.Event[T.Events[i].ID]{
+	for i := 0; i < len(T.Events); i++ {
+		if &T.Events[i] != T.Event[T.Events[i].ID] {
 			t.Fail()
 		}
 	}
-	if len(T.Actions) != len(T.Action){
+	if len(T.Actions) != len(T.Action) {
 		t.Fail()
 	}
-	for i := 0; i < len(T.Actions); i ++{
-		if &T.Actions[i] != T.Action[T.Actions[i].ID]{
+	for i := 0; i < len(T.Actions); i++ {
+		if &T.Actions[i] != T.Action[T.Actions[i].ID] {
 			t.Fail()
 		}
 	}
 }
-

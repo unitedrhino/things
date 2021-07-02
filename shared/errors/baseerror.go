@@ -12,7 +12,7 @@ import (
 )
 
 type CodeError struct {
-	Code    int64      `json:"code"`
+	Code    int64    `json:"code"`
 	Msg     string   `json:"msg"`
 	Details []string `json:"details,omitempty"`
 }
@@ -58,7 +58,7 @@ func (c *CodeError) GetDetailMsg() string {
 	if len(c.Details) == 0 {
 		return c.Msg
 	}
-	return fmt.Sprintf("msg=%s,detail=%v",c.Msg,c.Details)
+	return fmt.Sprintf("msg=%s,detail=%v", c.Msg, c.Details)
 }
 
 func NewCodeError(code int64, msg string) *CodeError {
@@ -122,4 +122,3 @@ func Cmp(err1 error, err2 error) bool {
 	}
 	return Fmt(err1).Code == Fmt(err2).Code
 }
-
