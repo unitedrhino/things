@@ -13,6 +13,7 @@ import (
 	"gitee.com/godLei6/things/src/dmsvr/model"
 	"github.com/tal-tech/go-zero/core/logx"
 	"strings"
+	"time"
 )
 
 type PublishLogic struct {
@@ -39,7 +40,7 @@ func (l *PublishLogic) initMsg(msg *types.Elements) error {
 	if err != nil {
 		return err
 	}
-	l.pi,err = l.svcCtx.ProductInfo.FindOneByProductID(l.ld.ProductID)
+	l.pi, err = l.svcCtx.ProductInfo.FindOneByProductID(l.ld.ProductID)
 	if err != nil {
 		return err
 	}
@@ -50,75 +51,90 @@ func (l *PublishLogic) initMsg(msg *types.Elements) error {
 	return nil
 }
 
-func(l *PublishLogic) ErrorResp(Method,clientToken string,err error){
+func (l *PublishLogic) StatusResp(Method, clientToken string, err error) {
+	respMethod := device.GetMethod(Method)
 	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
-		l.topics[0],l.topics[2],l.topics[3],l.topics[4])
-	payload,_ := json.Marshal(device.DeviceResp{
-		Method:      Method,
+		l.topics[0], l.topics[2], l.topics[3], l.topics[4])
+	payload, _ := json.Marshal(device.DeviceResp{
+		Method:      respMethod,
 		ClientToken: clientToken}.AddStatus(err))
-	l.svcCtx.Mqtt.Publish(respTopic,0,false,payload)
+	l.svcCtx.Mqtt.Publish(respTopic, 0, false, payload)
 }
 
-func (l *PublishLogic) HandleProperty(msg *types.Elements) error{
+func (l *PublishLogic) HandleProperty(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleProperty")
 	dreq := device.DeviceReq{}
 	err := utils.Unmarshal([]byte(msg.Payload), &dreq)
 	if err != nil {
-		return errors.Parameter.AddDetail("things topic is err:"+msg.Topic)
+		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
+	dbData := device.DeviceData{}
 	switch dreq.Method {
-	case device.REPORT:
-		tp,err := l.template.VerifyParam(dreq.Params, device.PROPERTY)
+	case device.REPORT, device.REPORT_INFO:
+		tp, err := l.template.VerifyParam(dreq.Params, device.PROPERTY)
 		if err != nil {
-			l.ErrorResp(device.REPORT_REPLY,dreq.ClientToken,err)
-		}else if len(tp) == 0 {
-			l.ErrorResp(device.REPORT_REPLY,dreq.ClientToken,errors.Parameter.AddDetail("need right param"))
+			l.StatusResp(dreq.Method, dreq.ClientToken, err)
+			return err
+		} else if len(tp) == 0 {
+			err := errors.Parameter.AddDetail("need right param")
+			l.StatusResp(dreq.Method, dreq.ClientToken, err)
+			return err
 		}
-		l.Info(tp)
-	case device.REPORT_INFO:
-	case device.GET_STATUS:
+		dbData.Property = device.ToVal(tp)
+		if dreq.Timestamp != 0 {
+			dbData.TimeStamp = time.Unix(dreq.Timestamp, 0)
+		} else {
+			dbData.TimeStamp = time.Now()
+		}
+		_, err = l.svcCtx.Mongo.Collection(msg.ClientID).InsertOne(l.ctx, dbData)
+		if err != nil {
+			l.StatusResp(dreq.Method, dreq.ClientToken, errors.Database)
+			l.Errorf("InsertOne filure|err=%+v", err)
+			return err
+		}
+		l.StatusResp(dreq.Method, dreq.ClientToken, errors.OK)
+	case device.GET_STATUS_REPLY:
 	default:
 		return errors.Method
 	}
 	return nil
 }
 
-func (l *PublishLogic) HandleEvent(msg *types.Elements) error{
+func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleEvent")
 	return nil
 }
-func (l *PublishLogic) HandleAction(msg *types.Elements) error{
+func (l *PublishLogic) HandleAction(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleAction")
 	return nil
 }
 
-func (l *PublishLogic) HandleThing(msg *types.Elements) error{
+func (l *PublishLogic) HandleThing(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleThing")
-	if len(l.topics) < 5 || l.topics[1] != "up"{
-		return errors.Parameter.AddDetail("things topic is err:"+msg.Topic)
+	if len(l.topics) < 5 || l.topics[1] != "up" {
+		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
 	switch l.topics[2] {
-	case "property"://属性上报
+	case "property": //属性上报
 		return l.HandleProperty(msg)
-	case "event"://事件上报
+	case "event": //事件上报
 		return l.HandleEvent(msg)
-	case "action"://设备响应行为执行结果
+	case "action": //设备响应行为执行结果
 		return l.HandleAction(msg)
 	default:
-		return errors.Parameter.AddDetail("things topic is err:"+msg.Topic)
+		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
 	return nil
 }
-func (l *PublishLogic) HandleOta(msg *types.Elements) error{
+func (l *PublishLogic) HandleOta(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleOta")
 	return nil
 }
 
-func (l *PublishLogic) HandleDefault(msg *types.Elements) error{
+func (l *PublishLogic) HandleDefault(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleDefault")
 	return nil
 }
-
 
 func (l *PublishLogic) Handle(msg *types.Elements) error {
 	l.Infof("PublishLogic|req=%+v", msg)
@@ -136,10 +152,10 @@ func (l *PublishLogic) Handle(msg *types.Elements) error {
 		case l.pi.ProductID:
 			return l.HandleDefault(msg)
 		default:
-			return errors.Parameter.AddDetail(fmt.Sprintf("not suppot topic :%s",msg.Topic))
+			return errors.Parameter.AddDetail(fmt.Sprintf("not suppot topic :%s", msg.Topic))
 		}
 	}
 
-	fmt.Printf("template=%+v|req=%+v\n",l.template,msg.Payload)
+	fmt.Printf("template=%+v|req=%+v\n", l.template, msg.Payload)
 	return nil
 }

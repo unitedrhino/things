@@ -160,8 +160,8 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 			}
 			//run.Run(msg)
 			// 更新位移
-			session.MarkMessage(message, "")
 		}()
+		session.MarkMessage(message, "")
 
 	}
 	return nil

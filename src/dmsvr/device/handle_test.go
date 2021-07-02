@@ -541,14 +541,14 @@ var template string = `
 }
 `
 
-var paramStr = [...]string  {
+var paramStr = [...]string{
 	`{
     "GPS_Info": {
       "longtitude": 180,
       "latitude": 90
     }
   }`,
-  `
+	`
 {
     "GPS_Info": {
       "longtitude": 180,
@@ -604,38 +604,37 @@ var paramStr = [...]string  {
 
 func TestVerifyParam(t *testing.T) {
 	fmt.Println("TestVerifyParam")
-	T,err := device.NewTemplate([]byte(template))
+	T, err := device.NewTemplate([]byte(template))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _,v := range paramStr {
+	for _, v := range paramStr {
 		var param map[string]interface{}
-		err := utils.Unmarshal([]byte(v),&param)
+		err := utils.Unmarshal([]byte(v), &param)
 		if err != nil {
 			t.Fatal(err)
 		}
-		out,err := T.VerifyParam(param, device.PROPERTY)
+		out, err := T.VerifyParam(param, device.PROPERTY)
 		if err != nil {
 			t.Fatal(err)
 		}
 		{
-			p,_ := json.Marshal(out)
+			p, _ := json.Marshal(out)
 			var str bytes.Buffer
 			_ = json.Indent(&str, []byte(p), "", "    ")
-			fmt.Printf("getParam=%s\n",str.String())
+			fmt.Printf("getParam=%s\n", str.String())
 		}
 		{
-			val := make(map[string]interface{},len(out))
-			for _,v := range out{
+			val := make(map[string]interface{}, len(out))
+			for _, v := range out {
 				val[v.ID] = v.ToVal()
 			}
-			p,_ := json.Marshal(val)
+			p, _ := json.Marshal(val)
 			var str bytes.Buffer
 			_ = json.Indent(&str, []byte(p), "", "    ")
-			fmt.Printf("getParamTomap=%s\n",str.String())
+			fmt.Printf("getParamTomap=%s\n", str.String())
 		}
 
 	}
-
 
 }

@@ -1,4 +1,4 @@
-package MongoDB
+package mongodb
 
 import (
 	"context"
@@ -26,10 +26,10 @@ func TestMongo(t *testing.T) {
 	fmt.Println("Connected to MongoDB!")
 
 	//指定要操作的数据集
-	collection := client.Database("things").Collection("test3")
+	collection := client.Database("things").Collection("test4")
 
 	//执行增删改查操作
-	insertSensor(client, collection)
+	//insertSensor(client, collection)
 
 	querySensor(collection, "")
 	// 断开客户端连接

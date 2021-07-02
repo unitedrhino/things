@@ -30,7 +30,7 @@ type TempParam struct {
 	} `json:"Value"` //数据定义
 }
 
-func (t *TempParam) AddDefine(d *Define, val interface{}) (err error){
+func (t *TempParam) AddDefine(d *Define, val interface{}) (err error) {
 	t.Value.Type = d.Type
 	t.Value.Type = d.Type
 	t.Value.Maping = make(map[string]string)
@@ -48,38 +48,46 @@ func (t *TempParam) AddDefine(d *Define, val interface{}) (err error){
 	return err
 }
 
-func (t *TempParam) ToVal() (interface{}){
+func ToVal(tp map[string]TempParam) map[string]interface{} {
+	ret := make(map[string]interface{}, len(tp))
+	for k, v := range tp {
+		ret[k] = v.ToVal()
+	}
+	return ret
+}
+
+func (t *TempParam) ToVal() interface{} {
 	if t == nil {
 		panic("TempParam is nil")
 	}
 
 	switch t.Value.Type {
 	case STRUCT:
-		v,ok := t.Value.Value.(map[string]TempParam)
+		v, ok := t.Value.Value.(map[string]TempParam)
 		if ok == false {
 			return nil
 		}
-		val :=  make(map[string]interface{},len(v)+1)
-		for _,tp := range v{
+		val := make(map[string]interface{}, len(v)+1)
+		for _, tp := range v {
 			val[tp.ID] = tp.ToVal()
 		}
-		return  val
+		return val
 	case ARRAY:
-		array,ok := t.Value.Value.([]interface{})
+		array, ok := t.Value.Value.([]interface{})
 		if ok == false {
 			return nil
 		}
-		val := make([]interface{},0,len(array)+1)
-		for _,value := range  array{
+		val := make([]interface{}, 0, len(array)+1)
+		for _, value := range array {
 			switch value.(type) {
 			case map[string]TempParam:
-				valMap :=  make(map[string]interface{},len(array)+1)
-				for _,tp := range value.(map[string]TempParam){
+				valMap := make(map[string]interface{}, len(array)+1)
+				for _, tp := range value.(map[string]TempParam) {
 					valMap[tp.ID] = tp.ToVal()
 				}
-				val = append(val,valMap)
+				val = append(val, valMap)
 			default:
-				val = append(val,value)
+				val = append(val, value)
 			}
 		}
 		return val
@@ -87,7 +95,6 @@ func (t *TempParam) ToVal() (interface{}){
 		return t.Value.Value
 	}
 }
-
 
 func (d *Define) GetVal(val interface{}) (interface{}, error) {
 	switch d.Type {
@@ -111,6 +118,9 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 			if err != nil {
 				return nil, errors.Parameter.AddDetail(val)
 			}
+			if ret > cast.ToInt64(d.Max) || ret < cast.ToInt64(d.Min) {
+				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v out of range:[%s,%s]", val, d.Max, d.Min))
+			}
 			return ret, nil
 		}
 	case FLOAT:
@@ -121,12 +131,18 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 			if err != nil {
 				return nil, errors.Parameter.AddDetail(val)
 			}
+			if ret > cast.ToFloat64(d.Max) || ret < cast.ToFloat64(d.Min) {
+				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v out of range:[%s,%s]", val, d.Max, d.Min))
+			}
 			return ret, nil
 		}
 	case STRING:
 		if str, ok := val.(string); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
+			if len(str) > cast.ToInt(d.Max) {
+				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v out of range:%s", val, d.Max))
+			}
 			return str, nil
 		}
 	case ENUM: //枚举类型 报文中传递的是数字
@@ -136,6 +152,10 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 			ret, err := num.Int64()
 			if err != nil {
 				return nil, errors.Parameter.AddDetail(val)
+			}
+			_, ok := d.Maping[string(num)]
+			if !ok {
+				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v not in enum", val))
 			}
 			return ret, nil
 		}
@@ -165,10 +185,10 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 					continue
 				}
 				tp := TempParam{
-					ID: sv.ID,
+					ID:   sv.ID,
 					Name: sv.Name,
 				}
-				err := tp.AddDefine(&sv.DataType,v)
+				err := tp.AddDefine(&sv.DataType, v)
 				if err == nil {
 					getParam[k] = tp
 				} else if !errors.Cmp(err, errors.NotFind) {
@@ -199,8 +219,6 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 	return nil, errors.Parameter.AddDetail("need param")
 }
 
-
-
 func (t *Template) VerifyParam(param map[string]interface{}, tt TEMP_TYPE) (map[string]TempParam, error) {
 	if len(param) == 0 {
 		return nil, errors.Parameter.AddDetail("need add params")
@@ -214,13 +232,13 @@ func (t *Template) VerifyParam(param map[string]interface{}, tt TEMP_TYPE) (map[
 				continue
 			}
 			tp := TempParam{
-				ID: p.ID,
-				Name: p.Name,
-				Desc:p.Desc,
-				Mode:p.Mode,
-				Required:p.Required,
+				ID:       p.ID,
+				Name:     p.Name,
+				Desc:     p.Desc,
+				Mode:     p.Mode,
+				Required: p.Required,
 			}
-			err := tp.AddDefine(&p.Define,v)
+			err := tp.AddDefine(&p.Define, v)
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {

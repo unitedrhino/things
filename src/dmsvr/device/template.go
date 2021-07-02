@@ -4,14 +4,14 @@ import "encoding/json"
 
 //数据类型
 const (
-	BOOL = "bool"
-	INT = "int"
-	STRING = "string"
-	STRUCT = "struct"
-	FLOAT = "float"
+	BOOL      = "bool"
+	INT       = "int"
+	STRING    = "string"
+	STRUCT    = "struct"
+	FLOAT     = "float"
 	TIMESTAMP = "timestamp"
-	ARRAY = "array"
-	ENUM = "enum"
+	ARRAY     = "array"
+	ENUM      = "enum"
 )
 
 type TEMP_TYPE int64
@@ -27,7 +27,6 @@ type Profile struct {
 	ProductID  string `json:"ProductId"`  //产品ID
 	CategoryID string `json:"CategoryId"` //产品种类ID
 }
-
 
 /*结构体说明*/
 type Spec struct {
@@ -47,12 +46,13 @@ type Define struct {
 	Unit      string            `json:"unit,omitempty"`      //单位:int float
 	Specs     []Spec            `json:"specs,omitempty"`     //结构体:struct
 	ArrayInfo *Define           `json:"arrayInfo,omitempty"` //数组:array
-	Spec     map[string]*Spec   //内部使用,使用map加速匹配,key为id
+	Spec      map[string]*Spec  //内部使用,使用map加速匹配,key为id
 }
-func (d *Define)init()*Define {
-	if d.Specs!= nil {
-		d.Spec = make(map[string]*Spec,len(d.Specs)+1)
-		for i:=0;i < len(d.Specs);i++{
+
+func (d *Define) init() *Define {
+	if d.Specs != nil {
+		d.Spec = make(map[string]*Spec, len(d.Specs)+1)
+		for i := 0; i < len(d.Specs); i++ {
 			p := &d.Specs[i]
 			d.Spec[p.ID] = p
 		}
@@ -70,23 +70,25 @@ type Param struct {
 	Define Define `json:"define,omitempty"` //参数定义
 }
 
-func (p *Param)init()*Param {
+func (p *Param) init() *Param {
 	p.Define.init()
 	return p
 }
+
 /*事件*/
 type Event struct {
-	ID       string             `json:"id"`       //标识符
-	Name     string             `json:"name"`     //功能名称
-	Desc     string             `json:"desc"`     //描述
-	Type     string             `json:"type"`     //事件类型: 信息:info  告警alert  故障:fault
-	Params   []Param            `json:"params"`   //事件参数
-	Required bool               `json:"required"` //是否必须
-	Param     map[string]*Param `json:"-"`        //内部使用,使用map加速匹配,key为id
+	ID       string            `json:"id"`       //标识符
+	Name     string            `json:"name"`     //功能名称
+	Desc     string            `json:"desc"`     //描述
+	Type     string            `json:"type"`     //事件类型: 信息:info  告警alert  故障:fault
+	Params   []Param           `json:"params"`   //事件参数
+	Required bool              `json:"required"` //是否必须
+	Param    map[string]*Param `json:"-"`        //内部使用,使用map加速匹配,key为id
 }
-func (e *Event)init()*Event {
-	e.Param = make(map[string]*Param,len(e.Params)+1)
-	for i:=0;i < len(e.Params);i++{
+
+func (e *Event) init() *Event {
+	e.Param = make(map[string]*Param, len(e.Params)+1)
+	for i := 0; i < len(e.Params); i++ {
 		p := &e.Params[i]
 		p.init()
 		e.Param[p.ID] = p
@@ -96,24 +98,25 @@ func (e *Event)init()*Event {
 
 /*行为*/
 type Action struct {
-	ID       string           `json:"id"`       //标识符
-	Name     string           `json:"name"`     //功能名称
-	Desc     string           `json:"desc"`     //描述
-	Input    []Param          `json:"input"`    //调用参数
-	Output   []Param          `json:"output"`   //返回参数
-	Required bool             `json:"required"` //是否必须
-	In     map[string]*Param  `json:"-"`        //内部使用,使用map加速匹配,key为id
-	Out     map[string]*Param `json:"-"`        //内部使用,使用map加速匹配,key为id
+	ID       string            `json:"id"`       //标识符
+	Name     string            `json:"name"`     //功能名称
+	Desc     string            `json:"desc"`     //描述
+	Input    []Param           `json:"input"`    //调用参数
+	Output   []Param           `json:"output"`   //返回参数
+	Required bool              `json:"required"` //是否必须
+	In       map[string]*Param `json:"-"`        //内部使用,使用map加速匹配,key为id
+	Out      map[string]*Param `json:"-"`        //内部使用,使用map加速匹配,key为id
 }
-func (a *Action)init()*Action {
-	a.In = make(map[string]*Param,len(a.Input)+1)
-	a.Out = make(map[string]*Param,len(a.Output)+1)
-	for i:=0;i < len(a.Input);i++{
+
+func (a *Action) init() *Action {
+	a.In = make(map[string]*Param, len(a.Input)+1)
+	a.Out = make(map[string]*Param, len(a.Output)+1)
+	for i := 0; i < len(a.Input); i++ {
 		p := &a.Input[i]
 		a.In[p.ID] = p
 		p.init()
 	}
-	for i:=0;i < len(a.Output);i++{
+	for i := 0; i < len(a.Output); i++ {
 		p := &a.Output[i]
 		a.Out[p.ID] = p
 		p.init()
@@ -130,10 +133,12 @@ type Property struct {
 	Define   Define `json:"define"`   //数据定义
 	Required bool   `json:"required"` //是否必须
 }
-func (p *Property)init()*Property {
+
+func (p *Property) init() *Property {
 	p.Define.init()
 	return p
 }
+
 /*数据模板定义*/
 type Template struct {
 	Version    string               `json:"version"`    //版本号
@@ -146,21 +151,21 @@ type Template struct {
 	Action     map[string]*Action   `json:"-"`          //内部使用,使用map加速匹配,key为id
 }
 
-func (t *Template)init()*Template {
-	t.Property = make(map[string]*Property,len(t.Properties)+1)
-	t.Event = make(map[string]*Event,len(t.Events)+1)
-	t.Action = make(map[string]*Action,len(t.Actions)+1)
-	for i:=0;i < len(t.Properties);i++{
+func (t *Template) init() *Template {
+	t.Property = make(map[string]*Property, len(t.Properties)+1)
+	t.Event = make(map[string]*Event, len(t.Events)+1)
+	t.Action = make(map[string]*Action, len(t.Actions)+1)
+	for i := 0; i < len(t.Properties); i++ {
 		p := &t.Properties[i]
 		t.Property[p.ID] = p
 		p.init()
 	}
-	for i:=0;i < len(t.Events);i++{
+	for i := 0; i < len(t.Events); i++ {
 		p := &t.Events[i]
 		t.Event[p.ID] = p
 		p.init()
 	}
-	for i:=0;i < len(t.Actions);i++{
+	for i := 0; i < len(t.Actions); i++ {
 		p := &t.Actions[i]
 		t.Action[p.ID] = p
 		p.init()
@@ -168,13 +173,12 @@ func (t *Template)init()*Template {
 	return t
 }
 
-func NewTemplate(templateStr []byte)(*Template,error){
+func NewTemplate(templateStr []byte) (*Template, error) {
 	template := Template{}
-	err := json.Unmarshal(templateStr,&template)
+	err := json.Unmarshal(templateStr, &template)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	template.init()
 	return &template, nil
 }
-
