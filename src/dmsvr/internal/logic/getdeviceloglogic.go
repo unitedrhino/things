@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/device"
@@ -51,7 +52,6 @@ func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLog
 		return nil, errors.System
 	}
 	defer cursor.Close(ctx)
-	counter := 0
 	resp := dm.GetDeviceLogResp{}
 	for cursor.Next(ctx) {
 		err = cursor.Err()
@@ -65,12 +65,20 @@ func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLog
 			Timestamp: original.TimeStamp.Unix(),
 			Method: in.Method,
 			FieldName: in.FieldName,
-
 		}
+		var payload []byte
+		switch in.Method {
+		case "property":
+			payload,_ =json.Marshal(original.Property[in.FieldName])
+		case "event":
+			payload,_ =json.Marshal(original.Event[in.FieldName])
+		}
+		dd.Payload = string(payload)
+		resp.Data = append(resp.Data,&dd)
 		l.Infof("coursor=%+v",original)
-		counter++
 	}
-	return &dm.GetDeviceLogResp{}, nil
+	resp.Total = int64(len(resp.Data))
+	return &resp, nil
 }
 
 func (l *GetDeviceLogLogic) GetDeviceLog(in *dm.GetDeviceLogReq) (*dm.GetDeviceLogResp, error) {
