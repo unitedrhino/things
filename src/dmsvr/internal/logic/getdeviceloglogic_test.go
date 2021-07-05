@@ -9,7 +9,6 @@ import (
 	"github.com/tal-tech/go-zero/core/discov"
 	"github.com/tal-tech/go-zero/zrpc"
 	"testing"
-	"time"
 )
 
 func TestGetDeviceLog(t *testing.T) {
@@ -27,9 +26,9 @@ func TestGetDeviceLog(t *testing.T) {
 		DeviceName:    deviceName,
 		ProductID:    productID,
 		FieldName:    "GPS_Info",
-		Limit: 0,
-		TimeStart: time.Unix(1625013546,0).Unix(),
-		TimeEnd: time.Unix(1625223546,0).Unix(),
+		Limit: 1,
+		//TimeStart: time.Unix(1625013546,0).Unix(),
+		//TimeEnd: time.Unix(1625223546,0).Unix(),
 	}
 	info, err := client.GetDeviceLog(ctx, req)
 	t.Log(req, info)
