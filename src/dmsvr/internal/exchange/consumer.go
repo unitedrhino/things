@@ -149,10 +149,7 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 			if ok != true {
 				panic(fmt.Sprintf("get msg bug topic not have hander func:%s", message.Topic))
 			}
-			err = k.serviceContext.LogHandle(&msg)
-			if err != nil {
-				logx.Errorf("%s|LogHandle=%+v\n", utils.FuncName(), err)
-			}
+
 			err = v.Handler(ctx, k.serviceContext).Handle(&msg)
 			if err != nil {
 				logx.Errorf("%s|Handler=%+v\n", utils.FuncName(), err)
