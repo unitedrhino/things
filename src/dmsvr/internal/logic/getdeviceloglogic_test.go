@@ -20,19 +20,36 @@ func TestGetDeviceLog(t *testing.T) {
 	ctx := context.Background()
 	productID := "21CYs1k9YpG"
 	deviceName := "test8"
-
-	req := &dm.GetDeviceLogReq{
-		Method:    "property",
-		DeviceName:    deviceName,
-		ProductID:    productID,
-		FieldName:    "GPS_Info",
-		Limit: 1,
-		//TimeStart: time.Unix(1625013546,0).Unix(),
-		//TimeEnd: time.Unix(1625223546,0).Unix(),
+	{
+		req := &dm.GetDeviceLogReq{
+			Method:    "property",
+			DeviceName:    deviceName,
+			ProductID:    productID,
+			FieldName:    "GPS_Info",
+			Limit: 1,
+			//TimeStart: time.Unix(1625013546,0).Unix(),
+			//TimeEnd: time.Unix(1625223546,0).Unix(),
+		}
+		info, err := client.GetDeviceLog(ctx, req)
+		t.Log(req, info)
+		if err != nil {
+			t.Errorf("%+v", errors.Fmt(err))
+		}
 	}
-	info, err := client.GetDeviceLog(ctx, req)
-	t.Log(req, info)
-	if err != nil {
-		t.Errorf("%+v", errors.Fmt(err))
+	{
+		req := &dm.GetDeviceLogReq{
+			Method:    "event",
+			DeviceName:    deviceName,
+			ProductID:    productID,
+			FieldName:    "fesf",
+			Limit: 10,
+			//TimeStart: time.Unix(1625013546,0).Unix(),
+			//TimeEnd: time.Unix(1625223546,0).Unix(),
+		}
+		info, err := client.GetDeviceLog(ctx, req)
+		t.Log(req, info)
+		if err != nil {
+			t.Errorf("%+v", errors.Fmt(err))
+		}
 	}
 }

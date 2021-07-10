@@ -74,7 +74,7 @@ const (
 		设备事件上行请求 Topic： $thing/up/event/{ProductID}/{DeviceName}
 		设备事件上行响应 Topic： $thing/down/event/{ProductID}/{DeviceName}
 	*/
-	EVENT_POST  METHOD = "event_post " //表示事件上报
+	EVENT_POST  METHOD = "event_post" //表示事件上报
 	EVENT_REPLY METHOD = "event_reply" //表示是云端返回设备端的响应
 
 	/*

@@ -30,13 +30,26 @@ func NewGetDeviceLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetD
 	}
 }
 
+func GetFileName(in *dm.GetDeviceLogReq) bson.D{
+	//property 属性 event事件 action 操作 log 所有日志
+	switch in.Method {
+	case "property":
+		return bson.D{
+			//{"isp", isp},
+			{fmt.Sprintf("%s.%s",in.Method,in.FieldName),  bson.M{"$ne": primitive.Null{}}},
+		}
+
+	case "event":
+		return bson.D{
+			{fmt.Sprintf("%s.id",in.Method),  bson.M{"$eq": in.FieldName}},
+		}
+	}
+	return nil
+}
+
 func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLogResp, error) {
 	clientID := fmt.Sprintf("%s%s",in.ProductID,in.DeviceName)
-	fieldName := fmt.Sprintf("%s.%s",in.Method,in.FieldName)
-	filter := bson.D{
-		//{"isp", isp},
-		{fieldName,  bson.M{"$ne": primitive.Null{}}},
-	}
+	filter := GetFileName(in)
 	if in.TimeStart != 0 {
 		filter = append(filter,bson.E{"timestamp",bson.M{"$gte":time.Unix(in.TimeStart,0)}})
 	}
@@ -71,7 +84,7 @@ func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLog
 		case "property":
 			payload,_ =json.Marshal(original.Property[in.FieldName])
 		case "event":
-			payload,_ =json.Marshal(original.Event[in.FieldName])
+			payload,_ =json.Marshal(original.Event)
 		}
 		dd.Payload = string(payload)
 		resp.Data = append(resp.Data,&dd)
