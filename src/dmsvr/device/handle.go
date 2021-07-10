@@ -219,14 +219,14 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 	return nil, errors.Parameter.AddDetail("need param")
 }
 
-func (t *Template) VerifyParam(param map[string]interface{}, tt TEMP_TYPE) (map[string]TempParam, error) {
-	if len(param) == 0 {
+func (t *Template) VerifyParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam, error) {
+	if len(dq.Params) == 0 {
 		return nil, errors.Parameter.AddDetail("need add params")
 	}
-	getParam := make(map[string]TempParam, len(param))
+	getParam := make(map[string]TempParam, len(dq.Params))
 	switch tt {
 	case PROPERTY:
-		for k, v := range param {
+		for k, v := range dq.Params {
 			p, ok := t.Property[k]
 			if ok == false {
 				continue
@@ -245,9 +245,33 @@ func (t *Template) VerifyParam(param map[string]interface{}, tt TEMP_TYPE) (map[
 				return nil, errors.Fmt(err).AddDetail(p.ID)
 			}
 		}
+	case EVENT:
+		p, ok := t.Event[dq.EventID]
+		if ok == false {
+			return nil, errors.Parameter.AddDetail("need add eventId")
+		}
+		if dq.Type != p.Type {
+			return nil, errors.Parameter.AddDetail("err type:" + dq.Type)
+		}
+
+		for k, v := range p.Param {
+			tp := TempParam{
+				ID:   v.ID,
+				Name: v.Name,
+			}
+			param, ok := dq.Params[k]
+			if ok == false {
+				return nil, errors.Parameter.AddDetail("need param" + k)
+			}
+			err := tp.AddDefine(&v.Define, param)
+			if err == nil {
+				getParam[k] = tp
+			} else if !errors.Cmp(err, errors.NotFind) {
+				return nil, errors.Fmt(err).AddDetail(p.ID)
+			}
+		}
 	case ACTION_INPUT:
 	case ACTION_OUTPUT:
-	case EVENT:
 
 	}
 	return getParam, nil

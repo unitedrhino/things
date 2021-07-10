@@ -541,7 +541,7 @@ var template string = `
 }
 `
 
-var paramStr = [...]string{
+var propertyParamStr = [...]string{
 	`{
     "GPS_Info": {
       "longtitude": 180,
@@ -587,34 +587,60 @@ var paramStr = [...]string{
 	"Wifi_Info":[
 		{
 			"Mac":"1231321dfa",
-			"Rssi":1231231
+			"Rssi":123
 		},
 {
 			"Mac":"4524asrgst",
-			"Rssi":452435234
+			"Rssi":452
 		},
 {
 			"Mac":"1231321dfafawe",
-			"Rssi":214313
+			"Rssi":214
 		}
 	]
   }
 `,
 }
 
-func TestVerifyParam(t *testing.T) {
-	fmt.Println("TestVerifyParam")
+var eventParamStr = [...]string{
+	`{
+   "method":"event_post",
+   "clientToken":"123",
+   "version":"1.0",
+   "eventId":"fesf",
+   "type":"info",
+   "timestamp":1212121221,
+   "params":{
+       "se":true,
+       "dfa":120
+   }
+}`,
+	`{
+   "method":"event_post",
+   "clientToken":"123",
+   "version":"1.0",
+   "eventId":"gafa",
+   "type":"fault",
+   "timestamp":1212121221,
+   "params":{
+       "sera":true
+   }
+}`,
+}
+
+func TestVerifyPropertyParam(t *testing.T) {
+	fmt.Println("TestVerifyPropertyParam")
 	T, err := device.NewTemplate([]byte(template))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, v := range paramStr {
-		var param map[string]interface{}
-		err := utils.Unmarshal([]byte(v), &param)
+	for _, v := range propertyParamStr {
+		var dq device.DeviceReq
+		err := utils.Unmarshal([]byte(v), &dq.Params)
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := T.VerifyParam(param, device.PROPERTY)
+		out, err := T.VerifyParam(dq, device.PROPERTY)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -637,4 +663,40 @@ func TestVerifyParam(t *testing.T) {
 
 	}
 
+}
+
+
+func TestVerifyEventParam(t *testing.T) {
+	fmt.Println("TestVerifyEventParam")
+	T, err := device.NewTemplate([]byte(template))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, v := range eventParamStr {
+		var dq device.DeviceReq
+		err := utils.Unmarshal([]byte(v), &dq)
+		if err != nil {
+			t.Fatal(err)
+		}
+		out, err := T.VerifyParam(dq, device.EVENT)
+		if err != nil {
+			t.Fatal(err)
+		}
+		{
+			p, _ := json.Marshal(out)
+			var str bytes.Buffer
+			_ = json.Indent(&str, []byte(p), "", "    ")
+			fmt.Printf("getParam=%s\n", str.String())
+		}
+		{
+			val := make(map[string]interface{}, len(out))
+			for _, v := range out {
+				val[v.ID] = v.ToVal()
+			}
+			p, _ := json.Marshal(val)
+			var str bytes.Buffer
+			_ = json.Indent(&str, []byte(p), "", "    ")
+			fmt.Printf("getParamTomap=%s\n", str.String())
+		}
+	}
 }
