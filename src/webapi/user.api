@@ -1,5 +1,5 @@
 info(
-	title: "用户管理模块"
+title: "用户管理模块"
 	desc: "负责用户登录注册等功能"
 	author: "杨磊"
 	email: "603685348@qq.com"

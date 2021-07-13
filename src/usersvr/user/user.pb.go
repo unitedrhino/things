@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.25.0
 // 	protoc        v4.0.0
-// source: usersvr.proto
+// source: user.proto
 
 package user
 
@@ -1002,40 +1002,40 @@ func file_user_proto_rawDescGZIP() []byte {
 
 var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_user_proto_goTypes = []interface{}{
-	(*JwtToken)(nil),          // 0: usersvr.JwtToken
-	(*NilResp)(nil),           // 1: usersvr.NilResp
-	(*UserInfo)(nil),          // 2: usersvr.UserInfo
-	(*RegisterCoreReq)(nil),   // 3: usersvr.RegisterCoreReq
-	(*RegisterCoreResp)(nil),  // 4: usersvr.RegisterCoreResp
-	(*Register2Req)(nil),      // 5: usersvr.Register2Req
-	(*Register2Resp)(nil),     // 6: usersvr.Register2Resp
-	(*GetUserInfoReq)(nil),    // 7: usersvr.GetUserInfoReq
-	(*GetUserInfoResp)(nil),   // 8: usersvr.GetUserInfoResp
-	(*LoginReq)(nil),          // 9: usersvr.LoginReq
-	(*LoginResp)(nil),         // 10: usersvr.LoginResp
-	(*CheckTokenReq)(nil),     // 11: usersvr.CheckTokenReq
-	(*CheckTokenResp)(nil),    // 12: usersvr.CheckTokenResp
-	(*ModifyUserInfoReq)(nil), // 13: usersvr.ModifyUserInfoReq
-	nil,                       // 14: usersvr.ModifyUserInfoReq.InfoEntry
+	(*JwtToken)(nil),          // 0: user.JwtToken
+	(*NilResp)(nil),           // 1: user.NilResp
+	(*UserInfo)(nil),          // 2: user.UserInfo
+	(*RegisterCoreReq)(nil),   // 3: user.RegisterCoreReq
+	(*RegisterCoreResp)(nil),  // 4: user.RegisterCoreResp
+	(*Register2Req)(nil),      // 5: user.Register2Req
+	(*Register2Resp)(nil),     // 6: user.Register2Resp
+	(*GetUserInfoReq)(nil),    // 7: user.GetUserInfoReq
+	(*GetUserInfoResp)(nil),   // 8: user.GetUserInfoResp
+	(*LoginReq)(nil),          // 9: user.LoginReq
+	(*LoginResp)(nil),         // 10: user.LoginResp
+	(*CheckTokenReq)(nil),     // 11: user.CheckTokenReq
+	(*CheckTokenResp)(nil),    // 12: user.CheckTokenResp
+	(*ModifyUserInfoReq)(nil), // 13: user.ModifyUserInfoReq
+	nil,                       // 14: user.ModifyUserInfoReq.InfoEntry
 }
 var file_user_proto_depIdxs = []int32{
-	2,  // 0: usersvr.Register2Req.info:type_name -> usersvr.UserInfo
-	2,  // 1: usersvr.GetUserInfoResp.info:type_name -> usersvr.UserInfo
-	2,  // 2: usersvr.LoginResp.info:type_name -> usersvr.UserInfo
-	0,  // 3: usersvr.LoginResp.token:type_name -> usersvr.JwtToken
-	14, // 4: usersvr.ModifyUserInfoReq.info:type_name -> usersvr.ModifyUserInfoReq.InfoEntry
-	9,  // 5: usersvr.User.login:input_type -> usersvr.LoginReq
-	3,  // 6: usersvr.User.registerCore:input_type -> usersvr.RegisterCoreReq
-	5,  // 7: usersvr.User.register2:input_type -> usersvr.Register2Req
-	7,  // 8: usersvr.User.getUserInfo:input_type -> usersvr.GetUserInfoReq
-	11, // 9: usersvr.User.CheckToken:input_type -> usersvr.CheckTokenReq
-	13, // 10: usersvr.User.ModifyUserInfo:input_type -> usersvr.ModifyUserInfoReq
-	10, // 11: usersvr.User.login:output_type -> usersvr.LoginResp
-	4,  // 12: usersvr.User.registerCore:output_type -> usersvr.RegisterCoreResp
-	6,  // 13: usersvr.User.register2:output_type -> usersvr.Register2Resp
-	8,  // 14: usersvr.User.getUserInfo:output_type -> usersvr.GetUserInfoResp
-	12, // 15: usersvr.User.CheckToken:output_type -> usersvr.CheckTokenResp
-	1,  // 16: usersvr.User.ModifyUserInfo:output_type -> usersvr.NilResp
+	2,  // 0: user.Register2Req.info:type_name -> user.UserInfo
+	2,  // 1: user.GetUserInfoResp.info:type_name -> user.UserInfo
+	2,  // 2: user.LoginResp.info:type_name -> user.UserInfo
+	0,  // 3: user.LoginResp.token:type_name -> user.JwtToken
+	14, // 4: user.ModifyUserInfoReq.info:type_name -> user.ModifyUserInfoReq.InfoEntry
+	9,  // 5: user.User.login:input_type -> user.LoginReq
+	3,  // 6: user.User.registerCore:input_type -> user.RegisterCoreReq
+	5,  // 7: user.User.register2:input_type -> user.Register2Req
+	7,  // 8: user.User.getUserInfo:input_type -> user.GetUserInfoReq
+	11, // 9: user.User.CheckToken:input_type -> user.CheckTokenReq
+	13, // 10: user.User.ModifyUserInfo:input_type -> user.ModifyUserInfoReq
+	10, // 11: user.User.login:output_type -> user.LoginResp
+	4,  // 12: user.User.registerCore:output_type -> user.RegisterCoreResp
+	6,  // 13: user.User.register2:output_type -> user.Register2Resp
+	8,  // 14: user.User.getUserInfo:output_type -> user.GetUserInfoResp
+	12, // 15: user.User.CheckToken:output_type -> user.CheckTokenResp
+	1,  // 16: user.User.ModifyUserInfo:output_type -> user.NilResp
 	11, // [11:17] is the sub-list for method output_type
 	5,  // [5:11] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
@@ -1268,7 +1268,7 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 
 func (c *userClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
 	out := new(LoginResp)
-	err := c.cc.Invoke(ctx, "/usersvr.User/login", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.User/login", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1277,7 +1277,7 @@ func (c *userClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallO
 
 func (c *userClient) RegisterCore(ctx context.Context, in *RegisterCoreReq, opts ...grpc.CallOption) (*RegisterCoreResp, error) {
 	out := new(RegisterCoreResp)
-	err := c.cc.Invoke(ctx, "/usersvr.User/registerCore", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.User/registerCore", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1286,7 +1286,7 @@ func (c *userClient) RegisterCore(ctx context.Context, in *RegisterCoreReq, opts
 
 func (c *userClient) Register2(ctx context.Context, in *Register2Req, opts ...grpc.CallOption) (*Register2Resp, error) {
 	out := new(Register2Resp)
-	err := c.cc.Invoke(ctx, "/usersvr.User/register2", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.User/register2", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1295,7 +1295,7 @@ func (c *userClient) Register2(ctx context.Context, in *Register2Req, opts ...gr
 
 func (c *userClient) GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*GetUserInfoResp, error) {
 	out := new(GetUserInfoResp)
-	err := c.cc.Invoke(ctx, "/usersvr.User/getUserInfo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.User/getUserInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1304,7 +1304,7 @@ func (c *userClient) GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts .
 
 func (c *userClient) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error) {
 	out := new(CheckTokenResp)
-	err := c.cc.Invoke(ctx, "/usersvr.User/CheckToken", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.User/CheckToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1313,7 +1313,7 @@ func (c *userClient) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...
 
 func (c *userClient) ModifyUserInfo(ctx context.Context, in *ModifyUserInfoReq, opts ...grpc.CallOption) (*NilResp, error) {
 	out := new(NilResp)
-	err := c.cc.Invoke(ctx, "/usersvr.User/ModifyUserInfo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.User/ModifyUserInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1367,7 +1367,7 @@ func _User_Login_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/usersvr.User/Login",
+		FullMethod: "/user.User/Login",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).Login(ctx, req.(*LoginReq))
@@ -1385,7 +1385,7 @@ func _User_RegisterCore_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/usersvr.User/RegisterCore",
+		FullMethod: "/user.User/RegisterCore",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).RegisterCore(ctx, req.(*RegisterCoreReq))
@@ -1403,7 +1403,7 @@ func _User_Register2_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/usersvr.User/Register2",
+		FullMethod: "/user.User/Register2",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).Register2(ctx, req.(*Register2Req))
@@ -1421,7 +1421,7 @@ func _User_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/usersvr.User/GetUserInfo",
+		FullMethod: "/user.User/GetUserInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).GetUserInfo(ctx, req.(*GetUserInfoReq))
@@ -1439,7 +1439,7 @@ func _User_CheckToken_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/usersvr.User/CheckToken",
+		FullMethod: "/user.User/CheckToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).CheckToken(ctx, req.(*CheckTokenReq))
@@ -1457,7 +1457,7 @@ func _User_ModifyUserInfo_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/usersvr.User/ModifyUserInfo",
+		FullMethod: "/user.User/ModifyUserInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).ModifyUserInfo(ctx, req.(*ModifyUserInfoReq))
@@ -1466,7 +1466,7 @@ func _User_ModifyUserInfo_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 var _User_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "usersvr.User",
+	ServiceName: "user.User",
 	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -1495,5 +1495,5 @@ var _User_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "usersvr.proto",
+	Metadata: "user.proto",
 }
