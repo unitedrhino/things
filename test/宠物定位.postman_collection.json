@@ -1,0 +1,255 @@
+{
+	"info": {
+		"_postman_id": "f123649e-35cc-49e5-ab1a-3bcae0a45612",
+		"name": "宠物定位",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "登录",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userID\": \"17052709767\",                  \r\n    \"pwdtype\":2,                         \r\n    \"password\": \"yl\",                \r\n    \"loginType\":\"img\",                     \r\n    \"captcha\": \"031ByC0w3SW6DV2teW0w3qgt7U1ByC0T\",                  \r\n    \"captchaId\": \"gfhKDHHs8JgAX362kK4Y\"  \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8888/user/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "注册第一步",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reqType\":\"phone\",\r\n    \"note\":\"17052709767\",\r\n    \"code\":\"123\",\r\n    \"codeID\":\"6666\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:8888/user/registerCore",
+					"host": [
+						"{{host}}"
+					],
+					"port": "8888",
+					"path": [
+						"user",
+						"registerCore"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "注册第二步",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTQ0ODc0MzQzOTg1MzU2ODAsImV4cCI6MTYxNjU5NTg5NiwiaWF0IjoxNjE2NTk1Mjk2fQ.oaOqeHep5f2KcyieE-MBhk_58pgjMjk0pyYjQAjnFVM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYxODY1ODc5MiwiaWF0IjoxNjE4NjU4MTkyfQ.O30mcTl7l2ZPQJE4WdYQgpdEkHaCebGiIXGIe3p2DbE\",\r\n    \"username\":\"yl2\",\r\n    \"password\":\"yl\",\r\n    \"accessToken\":\"yl\",\r\n    \"businessID\":1,\r\n    \"uid\":\"1697266429861040128\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8888/user/register2",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"user",
+						"register2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取验证码",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\": \"sms\",             \r\n    \"use\":\"login\"     \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8888/user/captcha",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"user",
+						"captcha"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取用户信息",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "yl-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYyODA4MjAwMiwiaWF0IjoxNjE5NDQyMDAyfQ.T20nXd-zwgrCL2GibiutCVZ5WhNIMafbNrl08iL6ssc",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"yl\",\r\n    \"password\":\"yl\",\r\n    \"accessToken\":\"yl\",\r\n    \"businessID\":1,\r\n    \"uid\":\"1694394270701588480\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8888/user/info",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"user",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改用户信息",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "yl-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYxOTQ0MTk4NywiaWF0IjoxNjE5MzU1NTg3fQ.FshC0LavZQhF4gpG4fkxVf8o3iiY4l_qonsB5GRn9Bw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"info\":{\r\n        \"username\":\"yl\",\r\n        \"password\":\"yl\",\r\n        \"accessToken\":\"yl\",\r\n        \"businessID\":1,\r\n        \"uid\":\"1694394270701588480\"\r\n    }\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8888/user/modifyInfo",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"user",
+						"modifyInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "登录小程序",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userID\": \"admin\",                  \r\n    \"pwdtype\":2,                         \r\n    \"password\": \"\",                \r\n    \"loginType\":\"wxminip\",                     \r\n    \"code\": \"073qIgml24CeQ64MD0ol28d66I2qIgmT\",                  \r\n    \"codeID\": \"gfhKDHHs8JgAX362kK4Y\"  \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8888/user/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "注册第一步微信小程序",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reqType\":\"wxminip\",\r\n    \"note\":\"17052709767\",\r\n    \"code\":\"053ULSkl2tEhS64SgBml227raR2ULSkf\",\r\n    \"codeID\":\"6666\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8888/user/registerCore",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"user",
+						"registerCore"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
