@@ -12,9 +12,9 @@ git地址:[https://gitee.com/godLei6/things](https://gitee.com/godLei6/things)
 #### 软件架构
 
 软件架构说明  
- ![go-things架构图.jpg](./doc/assets/go-things架构图.jpg)
+ ![go-things架构图.jpg](https://gitee.com/godLei6/things/tree/master/doc/assets/go-things架构图.jpg)
 设备接入流程图  
-![设备连接流程图.jpg](./doc/assets/设备连接流程图.jpg)
+![设备连接流程图.jpg](https://gitee.com/godLei6/things/tree/master/doc/assets/设备连接流程图.jpg)
 
 
 #### 目录说明
