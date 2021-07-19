@@ -22,15 +22,23 @@ git地址:[https://gitee.com/godLei6/things](https://gitee.com/godLei6/things)
 - doc:该项目的文档都放在这里
 - shared:所有该项目及其他项目所公用的代码都放在这里
 - src:存放了所有服务的源码
-#### 
+
 #### 文档
 介绍及说明文档:[https://www.yuque.com/gothings/umcf39](https://www.yuque.com/gothings/umcf39)
 ​
 
 #### 安装教程
+##### 环境依赖安装
+在go-things中依赖mongodb,mysql,redis,etcd,kafka,zookeeper
+* 在初始目录中提供了docker-compose文件,如果安装好了docker及docker-compose可以直接
+docker-compose up 即可更新
+* 如果都没有安装则sudo ./init.sh即会安装docker及docker-compose及第三方依赖
+* 然后将db中的sql导入mysql中即可
 
-
-git clone 下来后进入src目录进入对应的服务直接go build即可
+##### 服务运行
+1. 进入src目录进入对应的服务
+2. 修改etc目录下的配置文件将对应的依赖改为本地的ip地址
+3. 直接go build即可享受
 
 #### 参与贡献
 
