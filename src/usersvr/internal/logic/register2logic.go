@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"gitee.com/godLei6/things/shared/define"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/usersvr/model"
@@ -46,7 +46,7 @@ func (l *Register2Logic) register(in *user.Register2Req, uc *model.UserCore) (*u
 	if err != nil {
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	uc.Status = define.NomalStatus
+	uc.Status = def.NomalStatus
 	uc.UserName = in.Info.UserName
 	if uc.Password != "" {
 		uc.Password = utils.MakePwd(in.Password, uc.Uid, false)
@@ -64,7 +64,7 @@ func (l *Register2Logic) CheckUserCore(in *user.Register2Req) (*model.UserCore, 
 	case model.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
 		return nil, errors.RegisterOne
 	case nil: //如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status != define.NotRegistStatus {
+		if uc.Status != def.NotRegistStatus {
 			return nil, errors.DuplicateRegister
 		}
 		return uc, nil

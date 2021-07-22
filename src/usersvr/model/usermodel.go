@@ -3,7 +3,7 @@ package model
 import (
 	"database/sql"
 	"fmt"
-	"gitee.com/godLei6/things/shared/define"
+	"gitee.com/godLei6/things/shared/def"
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
@@ -47,7 +47,7 @@ func (m *userModel) RegisterCore(data UserCore, key Keys) (result sql.Result, er
 		query := fmt.Sprintf("select %s from %s where `%s` = ?  limit 1", userCoreRows, m.userCore, key.Key)
 		err = session.QueryRow(&resp, query, key.Value)
 		if !(err == sqlc.ErrNotFound) {
-			if resp.Status == define.NomalStatus {
+			if resp.Status == def.NomalStatus {
 				return ErrDuplicate
 			}
 			isUpdate = true

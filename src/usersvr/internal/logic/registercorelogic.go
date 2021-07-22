@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"gitee.com/godLei6/things/shared/define"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/usersvr/model"
@@ -48,7 +48,7 @@ func (l *RegisterCoreLogic) handlePhone(in *user.RegisterCoreReq) (*user.Registe
 	uc, err := l.svcCtx.UserCoreModel.FindOneByPhone(in.Note)
 	switch err {
 	case nil: //如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status == define.NotRegistStatus {
+		if uc.Status == def.NotRegistStatus {
 			return l.getRet(uc)
 		}
 		return nil, errors.DuplicateMobile.AddDetail(in.Note)
@@ -90,7 +90,7 @@ func (l *RegisterCoreLogic) handleWxminip(in *user.RegisterCoreReq) (*user.Regis
 	uc, err := l.svcCtx.UserCoreModel.FindOneByWechat(ret.UnionID)
 	switch err {
 	case nil: //如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status == define.NotRegistStatus {
+		if uc.Status == def.NotRegistStatus {
 			return l.getRet(uc)
 		}
 		return nil, errors.DuplicateRegister

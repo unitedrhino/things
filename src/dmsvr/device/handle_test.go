@@ -665,7 +665,6 @@ func TestVerifyPropertyParam(t *testing.T) {
 
 }
 
-
 func TestVerifyEventParam(t *testing.T) {
 	fmt.Println("TestVerifyEventParam")
 	T, err := device.NewTemplate([]byte(template))

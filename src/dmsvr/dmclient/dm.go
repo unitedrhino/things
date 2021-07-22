@@ -14,23 +14,24 @@ import (
 )
 
 type (
+	PageInfo           = dm.PageInfo
+	LoginAuthReq       = dm.LoginAuthReq
 	GetProductInfoResp = dm.GetProductInfoResp
+	DeviceInfo         = dm.DeviceInfo
+	GetDeviceDataReq   = dm.GetDeviceDataReq
+	GetDeviceDataResp  = dm.GetDeviceDataResp
+	Response           = dm.Response
+	GetDeviceInfoReq   = dm.GetDeviceInfoReq
+	ManResp            = dm.ManResp
+	AccessAuthReq      = dm.AccessAuthReq
+	GetProductInfoReq  = dm.GetProductInfoReq
+	GetDeviceInfoResp  = dm.GetDeviceInfoResp
+	GetDeviceLogReq    = dm.GetDeviceLogReq
+	ProductInfo        = dm.ProductInfo
+	ManageProductReq   = dm.ManageProductReq
 	ManageDeviceReq    = dm.ManageDeviceReq
 	DeviceData         = dm.DeviceData
 	GetDeviceLogResp   = dm.GetDeviceLogResp
-	GetDeviceDataResp  = dm.GetDeviceDataResp
-	ProductInfo        = dm.ProductInfo
-	DeviceInfo         = dm.DeviceInfo
-	GetDeviceInfoReq   = dm.GetDeviceInfoReq
-	GetDeviceLogReq    = dm.GetDeviceLogReq
-	Response           = dm.Response
-	ManResp            = dm.ManResp
-	LoginAuthReq       = dm.LoginAuthReq
-	ManageProductReq   = dm.ManageProductReq
-	GetProductInfoReq  = dm.GetProductInfoReq
-	AccessAuthReq      = dm.AccessAuthReq
-	GetDeviceInfoResp  = dm.GetDeviceInfoResp
-	GetDeviceDataReq   = dm.GetDeviceDataReq
 
 	Dm interface {
 		LoginAuth(ctx context.Context, in *LoginAuthReq) (*Response, error)

@@ -1,4 +1,4 @@
-package define
+package def
 
 type UserInfoType uint8
 

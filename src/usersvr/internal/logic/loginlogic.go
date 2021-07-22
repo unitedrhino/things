@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	"gitee.com/godLei6/things/shared/define"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/usersvr/internal/svc"
@@ -71,7 +71,7 @@ func (l *LoginLogic) GetUserCore(in *user.LoginReq) (uc *model.UserCore, err err
 	case "img": //暂时不验证
 		lt := utils.GetLoginNameType(in.UserID)
 		switch lt {
-		case define.Phone:
+		case def.Phone:
 			uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(in.UserID)
 		default:
 			uc, err = l.svcCtx.UserCoreModel.FindOneByUserName(in.UserID)
@@ -103,7 +103,7 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	uc, err := l.GetUserCore(in)
 	switch err {
 	case nil:
-		if uc.Status != define.NomalStatus {
+		if uc.Status != def.NomalStatus {
 			return nil, errors.UnRegister
 		}
 		return l.getRet(uc)

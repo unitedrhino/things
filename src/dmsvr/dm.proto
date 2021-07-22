@@ -4,6 +4,11 @@ import "google/protobuf/wrappers.proto";
 
 package dm;
 
+message PageInfo{
+    int64 page = 1;
+    int64 pageSize = 2;
+}
+
 message Response {
 }
 message ManResp {
@@ -98,9 +103,12 @@ message ManageProductReq{
 
 message GetProductInfoReq{
   string productID   = 1; //产品id  如果为空返回所有产品的信息
+  PageInfo page     =2;//分页信息,只获取一个则不填
+
 }
 message GetProductInfoResp{
   repeated ProductInfo info = 1; //产品信息
+  int64 total               = 2;//拥有的总数(只有分页的时候会返回)
 }
 
 message DeviceInfo{
@@ -120,12 +128,14 @@ message ManageDeviceReq{
   DeviceInfo info = 2; //设备信息
 }
 message GetDeviceInfoReq{
-  string  deviceName  = 1; //设备名
-  string  productID   = 2; //产品id 获取产品id下的所有设备信息
+  string  deviceName  = 1; //设备名 为空时获取产品id下的所有设备信息
+  string  productID   = 2; //产品id
+  PageInfo page       = 3;//分页信息 只获取一个则不填
 }
 
 message GetDeviceInfoResp{
   repeated DeviceInfo info = 1;//设备信息
+  int64  total =2;//总数(只有分页的时候会返回)
 }
 
 
