@@ -22,11 +22,11 @@ func TestGetDeviceLog(t *testing.T) {
 	deviceName := "test8"
 	{
 		req := &dm.GetDeviceLogReq{
-			Method:    "property",
-			DeviceName:    deviceName,
-			ProductID:    productID,
-			FieldName:    "GPS_Info",
-			Limit: 1,
+			Method:     "property",
+			DeviceName: deviceName,
+			ProductID:  productID,
+			FieldName:  "GPS_Info",
+			Limit:      1,
 			//TimeStart: time.Unix(1625013546,0).Unix(),
 			//TimeEnd: time.Unix(1625223546,0).Unix(),
 		}
@@ -38,11 +38,11 @@ func TestGetDeviceLog(t *testing.T) {
 	}
 	{
 		req := &dm.GetDeviceLogReq{
-			Method:    "event",
-			DeviceName:    deviceName,
-			ProductID:    productID,
-			FieldName:    "fesf",
-			Limit: 10,
+			Method:     "event",
+			DeviceName: deviceName,
+			ProductID:  productID,
+			FieldName:  "fesf",
+			Limit:      10,
 			//TimeStart: time.Unix(1625013546,0).Unix(),
 			//TimeEnd: time.Unix(1625223546,0).Unix(),
 		}

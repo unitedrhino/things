@@ -19,6 +19,7 @@ type ServiceContext struct {
 	DeviceInfo  model.DeviceInfoModel
 	ProductInfo model.ProductInfoModel
 	DeviceLog   model.DeviceLogModel
+	DmDB        model.DmModel
 	DeviceID    *utils.SnowFlake
 	ProductID   *utils.SnowFlake
 	Mqtt        mqtt.Client
@@ -30,6 +31,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	di := model.NewDeviceInfoModel(conn, c.CacheRedis)
 	pi := model.NewProductInfoModel(conn, c.CacheRedis)
 	dl := model.NewDeviceLogModel(conn)
+	DmDB := model.NewDmModel(conn, c.CacheRedis)
 	DeviceID := utils.NewSnowFlake(c.NodeID)
 	ProductID := utils.NewSnowFlake(c.NodeID)
 
@@ -60,6 +62,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:      c,
 		DeviceInfo:  di,
 		ProductInfo: pi,
+		DmDB:        DmDB,
 		DeviceID:    DeviceID,
 		ProductID:   ProductID,
 		DeviceLog:   dl,
@@ -67,4 +70,3 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Mongo:       mongoDB,
 	}
 }
-

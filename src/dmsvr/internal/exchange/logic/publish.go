@@ -102,11 +102,10 @@ func (l *PublishLogic) HandleProperty(msg *types.Elements) error {
 
 func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleEvent")
-	dbData := device.DeviceData{
-	}
-	dbData.Event.ID=l.dreq.EventID
-	dbData.Event.Type= l.dreq.Type
-	if l.dreq.Method != device.EVENT_POST{
+	dbData := device.DeviceData{}
+	dbData.Event.ID = l.dreq.EventID
+	dbData.Event.Type = l.dreq.Type
+	if l.dreq.Method != device.EVENT_POST {
 		return errors.Method
 	}
 	tp, err := l.template.VerifyParam(l.dreq, device.EVENT)
@@ -127,8 +126,6 @@ func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 		return err
 	}
 	l.StatusResp(l.dreq.Method, l.dreq.ClientToken, errors.OK)
-
-
 
 	return nil
 }

@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 
@@ -23,18 +23,31 @@ func NewGetDeviceInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 	}
 }
 
-func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (*dm.GetDeviceInfoResp, error) {
+func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (resp *dm.GetDeviceInfoResp, err error) {
 	l.Infof("GetDeviceInfo|req=%+v", in)
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.ProductID, in.DeviceName)
-	if err != nil {
-		return nil, err
+	var info []*dm.DeviceInfo
+	var size int64
+	if in.Page == nil || in.Page.Page == 0 {
+		di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.ProductID, in.DeviceName)
+		if err != nil {
+			return nil, err
+		}
+		info = append(info, DBToRPCFmt(di).(*dm.DeviceInfo))
+	} else {
+		size, err = l.svcCtx.DmDB.GetCountByProductID(
+			in.ProductID)
+		if err != nil {
+			return nil, err
+		}
+		di, err := l.svcCtx.DmDB.FindByProductID(
+			in.ProductID, def.PageInfo{PageSize: in.Page.PageSize, Page: in.Page.Page})
+		if err != nil {
+			return nil, err
+		}
+		info = make([]*dm.DeviceInfo, 0, len(di))
+		for _, v := range di {
+			info = append(info, DBToRPCFmt(v).(*dm.DeviceInfo))
+		}
 	}
-	return &dm.GetDeviceInfoResp{Info: []*dm.DeviceInfo{{
-		ProductID:   di.ProductID,
-		DeviceName:  di.DeviceName,
-		CreatedTime: di.CreatedTime.Unix(),
-		FirstLogin:  di.FirstLogin.Time.Unix(),
-		LastLogin:   di.LastLogin.Time.Unix(),
-		Secret:      di.Secret,
-	}}}, nil
+	return &dm.GetDeviceInfoResp{Info: info, Total: size}, nil
 }

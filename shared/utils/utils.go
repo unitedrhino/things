@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"gitee.com/godLei6/things/shared/define"
+	"gitee.com/godLei6/things/shared/def"
 	"github.com/tal-tech/go-zero/core/logx"
 	"net"
 	"net/http"
@@ -95,11 +95,11 @@ func MakePwd(pwd string, uid int64, isMd5 bool) string {
 	return MD5V([]byte(pwd + strUid + "god17052709767"))
 }
 
-func GetLoginNameType(userName string) define.UserInfoType {
+func GetLoginNameType(userName string) def.UserInfoType {
 	if IsMobile(userName) == true {
-		return define.Phone
+		return def.Phone
 	}
-	return define.UserName
+	return def.UserName
 }
 
 // 获取正在运行的函数名
