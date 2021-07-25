@@ -2,6 +2,7 @@ package svc
 
 import (
 	"gitee.com/godLei6/things/shared/verify"
+	"gitee.com/godLei6/things/src/dmsvr/dmclient"
 	"gitee.com/godLei6/things/src/usersvr/model"
 	"gitee.com/godLei6/things/src/usersvr/userclient"
 	"gitee.com/godLei6/things/src/webapi/internal/config"
@@ -16,9 +17,11 @@ type ServiceContext struct {
 	Config        config.Config
 	CheckToken    rest.Middleware
 	Record        rest.Middleware
+	DmManage      rest.Middleware
 	UserInfoModel model.UserInfoModel
 	UserCoreModel model.UserCoreModel
 	UserRpc       userclient.User
+	DmRpc         dmclient.Dm
 	Captcha       *verify.Captcha
 }
 
@@ -27,14 +30,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	ui := model.NewUserInfoModel(conn, c.CacheRedis)
 	uc := model.NewUserCoreModel(conn, c.CacheRedis)
 	ur := userclient.NewUser(zrpc.MustNewClient(c.UserRpc))
+	dr := dmclient.NewDm(zrpc.MustNewClient(c.DmRpc))
 	captcha := verify.NewCaptcha(c.ImgHeight, c.ImgWidth, c.KeyLong, c.CacheRedis, time.Duration(c.KeepTime)*time.Second)
 	return &ServiceContext{
 		Config:        c,
 		CheckToken:    middleware.NewCheckTokenMiddleware(ur).Handle,
 		Record:        middleware.NewRecordMiddleware().Handle,
+		DmManage:      middleware.NewDmManageMiddleware().Handle,
 		UserInfoModel: ui,
 		UserCoreModel: uc,
 		UserRpc:       ur,
+		DmRpc:         dr,
 		Captcha:       captcha,
 	}
 }

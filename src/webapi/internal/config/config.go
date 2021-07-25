@@ -20,6 +20,7 @@ type Config struct {
 	}
 	CacheRedis cache.ClusterConf
 	UserRpc    zrpc.RpcClientConf
+	DmRpc      zrpc.RpcClientConf
 	Auth       struct {
 		AccessSecret string
 		AccessExpire int64
