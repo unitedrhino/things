@@ -1,6 +1,6 @@
 Name: webapi
 Host: 0.0.0.0
-Port: 8888
+Port: 7777
 NodeID: 1
 Mysql:
   DataSource: root:password@tcp(127.0.0.1:3308)/pet?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
@@ -8,6 +8,11 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
+DmRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: dm.rpc
 UserRpc:
   Etcd:
     Hosts:

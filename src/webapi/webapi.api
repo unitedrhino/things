@@ -8,3 +8,4 @@ info(
 
 import "verify.api" //校验接口
 import "user.api" //用户相关功能网关
+import "dm.api"  //设备管理模块相关功能接口

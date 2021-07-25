@@ -1,6 +1,6 @@
 # api文件编译方法
 ```shell script
-goctl api go -api webpi.api  -dir ./
+goctl api go -api webapi.api  -dir ./
 ```
 
 # 数据库文件生成

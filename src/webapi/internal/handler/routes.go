@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	dm "gitee.com/godLei6/things/src/webapi/internal/handler/dm"
 	user "gitee.com/godLei6/things/src/webapi/internal/handler/user"
 	verify "gitee.com/godLei6/things/src/webapi/internal/handler/verify"
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
@@ -66,6 +67,39 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/user/modifyUserInfo",
 					Handler: user.ModifyUserInfoHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	engine.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.DmManage},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/dm/loginAuth",
+					Handler: dm.LoginAuthHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dm/manageDevice",
+					Handler: dm.ManageDeviceHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dm/manageProduct",
+					Handler: dm.ManageProductHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dm/getProductInfo",
+					Handler: dm.GetProductInfoHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dm/getDeviceInfo",
+					Handler: dm.GetDeviceInfoHandler(serverCtx),
 				},
 			}...,
 		),

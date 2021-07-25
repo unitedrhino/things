@@ -74,3 +74,75 @@ type ModifyStu struct {
 type ModifyUserInfoReq struct {
 	Info map[string]string `json:"info"` //修改参数key value数组
 }
+
+type PageInfo struct {
+	Page     int64 `json:"page"`
+	PageSize int64 `json:"pageSize"`
+}
+
+type LoginAuthReq struct {
+	Username    string `json:"username"`              //用户名
+	Password    string `json:"password"`              //密码
+	ClientID    string `json:"clientID"`              //clientID
+	Ip          string `json:"ip"`                    //访问的ip地址
+	Certificate string `json:"certificate,omitempty"` //客户端证书 base64后传过来
+}
+
+type ProductInfo struct {
+	CreatedTime  int64  `json:"createdTime,omitempty"`  //创建时间 只读
+	ProductID    string `json:"productID,omitempty"`    //产品id 只读
+	ProductName  string `json:"productName,omitempty"`  //产品名称
+	AuthMode     int64  `json:"authMode,omitempty"`     //认证方式:0:账密认证,1:秘钥认证
+	DeviceType   int64  `json:"deviceType,omitempty"`   //设备类型:0:设备,1:网关,2:子设备
+	CategoryID   int64  `json:"categoryID,omitempty"`   //产品品类
+	NetType      int64  `json:"netType,omitempty"`      //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
+	DataProto    int64  `json:"dataProto,omitempty"`    //数据协议:0:自定义,1:数据模板
+	AutoRegister int64  `json:"autoRegister,omitempty"` //动态注册:0:关闭,1:打开,2:打开并自动创建设备
+	Secret       string `json:"secret,omitempty"`       //动态注册产品秘钥 只读
+	Template     string `json:"template,omitempty"`     //数据模板
+	Description  string `json:"description,omitempty"`  //描述
+	DevStatus    string `json:"devStatus,omitempty"`    // 产品状态
+}
+
+type ManageProductReq struct {
+	Opt  int64        `protobuf:"varint,1,opt,name=opt,proto3" json:"opt,omitempty"`  //操作 0:新增 1:修改 2:删除
+	Info *ProductInfo `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"` //产品信息
+}
+
+type GetProductInfoReq struct {
+	ProductID string    `protobuf:"bytes,1,opt,name=productID,proto3" json:"productID,omitempty"` //产品id  如果为空返回所有产品的信息
+	Page      *PageInfo `protobuf:"bytes,2,opt,name=page,proto3" json:"page,omitempty"`           //分页信息,只获取一个则不填
+}
+
+type GetProductInfoResp struct {
+	Info  []*ProductInfo `protobuf:"bytes,1,rep,name=info,proto3" json:"info,omitempty"`    //产品信息
+	Total int64          `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` //拥有的总数(只有分页的时候会返回)
+}
+
+type DeviceInfo struct {
+	ProductID   string `protobuf:"bytes,1,opt,name=productID,proto3" json:"productID,omitempty"`      //产品id 只读
+	DeviceName  string `protobuf:"bytes,3,opt,name=deviceName,proto3" json:"deviceName,omitempty"`    //设备名称 读写
+	CreatedTime int64  `protobuf:"varint,4,opt,name=createdTime,proto3" json:"createdTime,omitempty"` //创建时间 只读
+	Secret      string `protobuf:"bytes,5,opt,name=secret,proto3" json:"secret,omitempty"`            //设备秘钥 只读
+	FirstLogin  int64  `protobuf:"varint,6,opt,name=firstLogin,proto3" json:"firstLogin,omitempty"`   //激活时间 只读
+	LastLogin   int64  `protobuf:"varint,7,opt,name=lastLogin,proto3" json:"lastLogin,omitempty"`     //最后上线时间 只读
+	Version     string `protobuf:"bytes,8,opt,name=version,proto3" json:"version,omitempty"`          // 固件版本  读写
+	LogLevel    int64  `protobuf:"varint,9,opt,name=logLevel,proto3" json:"logLevel,omitempty"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Cert        string `protobuf:"bytes,10,opt,name=cert,proto3" json:"cert,omitempty"`               // 设备证书  只读
+}
+
+type ManageDeviceReq struct {
+	Opt  int64       `protobuf:"varint,1,opt,name=opt,proto3" json:"opt,omitempty"`  //操作 0:新增 1:修改 2:删除
+	Info *DeviceInfo `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"` //设备信息
+}
+
+type GetDeviceInfoReq struct {
+	DeviceName string    `protobuf:"bytes,1,opt,name=deviceName,proto3" json:"deviceName,omitempty"` //设备名 为空时获取产品id下的所有设备信息
+	ProductID  string    `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`   //产品id
+	Page       *PageInfo `protobuf:"bytes,3,opt,name=page,proto3" json:"page,omitempty"`             //分页信息 只获取一个则不填
+}
+
+type GetDeviceInfoResp struct {
+	Info  []*DeviceInfo `protobuf:"bytes,1,rep,name=info,proto3" json:"info,omitempty"`    //设备信息
+	Total int64         `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` //总数(只有分页的时候会返回)
+}
