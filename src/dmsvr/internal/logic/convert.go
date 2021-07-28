@@ -1,11 +1,19 @@
 package logic
 
 import (
+	"database/sql"
 	"fmt"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/model"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
+
+func GetNullTime(time sql.NullTime) int64 {
+	if time.Valid == false {
+		return 0
+	}
+	return time.Time.Unix()
+}
 
 func DBToRPCFmt(db interface{}) interface{} {
 	switch db.(type) {
@@ -19,8 +27,8 @@ func DBToRPCFmt(db interface{}) interface{} {
 			ProductID:   di.ProductID,
 			DeviceName:  di.DeviceName,
 			CreatedTime: di.CreatedTime.Unix(),
-			FirstLogin:  di.FirstLogin.Time.Unix(),
-			LastLogin:   di.LastLogin.Time.Unix(),
+			FirstLogin:  GetNullTime(di.FirstLogin),
+			LastLogin:   GetNullTime(di.LastLogin),
 			Secret:      di.Secret,
 		}
 	case *model.ProductInfo:
