@@ -19,7 +19,6 @@ func DBToRPCFmt(db interface{}) interface{} {
 	switch db.(type) {
 	case *model.DeviceInfo:
 		di := db.(*model.DeviceInfo)
-
 		return &dm.DeviceInfo{
 			Version:     &wrappers.StringValue{Value: di.Version},
 			LogLevel:    di.LogLevel,

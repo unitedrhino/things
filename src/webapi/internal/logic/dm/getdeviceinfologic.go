@@ -47,17 +47,7 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(req types.GetDeviceInfoReq) (*types.G
 	}
 	dis := make([]*types.DeviceInfo, 0, len(resp.Info))
 	for _, v := range resp.Info {
-		di := &types.DeviceInfo{
-			ProductID:   v.ProductID,          //产品id 只读
-			DeviceName:  v.DeviceName,         //设备名称 读写
-			CreatedTime: v.CreatedTime,        //创建时间 只读
-			Secret:      v.Secret,             //设备秘钥 只读
-			FirstLogin:  v.FirstLogin,         //激活时间 只读
-			LastLogin:   v.LastLogin,          //最后上线时间 只读
-			Version:     v.Version.GetValue(), // 固件版本  读写
-			LogLevel:    v.LogLevel,           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-			Cert:        v.Cert,               // 设备证书  只读
-		}
+		di := RPCToApiFmt(v).(*types.DeviceInfo)
 		dis = append(dis, di)
 	}
 	return &types.GetDeviceInfoResp{
