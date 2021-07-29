@@ -49,7 +49,7 @@ func ToRpc(err error) error {
 func (c CodeError) WithMsg(msg string) *CodeError {
 	return &CodeError{Code: c.Code, Msg: msg}
 }
-func (c CodeError) AddDetail(msg interface{}) *CodeError {
+func (c CodeError) AddDetail(msg ...interface{}) *CodeError {
 	c.Details = append(c.Details, fmt.Sprint(msg))
 	return &c
 }

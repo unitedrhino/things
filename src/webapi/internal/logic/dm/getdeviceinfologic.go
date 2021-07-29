@@ -31,6 +31,9 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(req types.GetDeviceInfoReq) (*types.G
 		ProductID:  req.ProductID,  //产品id
 	}
 	if req.Page != nil {
+		if req.Page.PageSize == 0 || req.Page.Page == 0 {
+			return nil, errors.Parameter.AddDetail("pageSize and page can't equal 0")
+		}
 		dmReq.Page = &dm.PageInfo{
 			Page:     req.Page.Page,
 			PageSize: req.Page.PageSize,
