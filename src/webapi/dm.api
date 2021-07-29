@@ -42,8 +42,8 @@ type ManageProductReq struct {
 }
 
 type GetProductInfoReq struct {
-	ProductID string    `protobuf:"bytes,1,opt,name=productID,proto3" json:"productID,omitempty"` //产品id  如果为空返回所有产品的信息
-	Page      *PageInfo `protobuf:"bytes,2,opt,name=page,proto3" json:"page,omitempty"`           //分页信息,只获取一个则不填
+	ProductID string    `protobuf:"bytes,1,opt,name=productID,proto3" json:"productID,optional"` //产品id  如果为空返回所有产品的信息
+	Page      *PageInfo `protobuf:"bytes,2,opt,name=page,proto3" json:"page,optional"`           //分页信息,只获取一个则不填
 }
 
 
