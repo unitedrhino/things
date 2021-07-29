@@ -81,27 +81,27 @@ type PageInfo struct {
 }
 
 type LoginAuthReq struct {
-	Username    string `json:"username"`              //用户名
-	Password    string `json:"password"`              //密码
-	ClientID    string `json:"clientID"`              //clientID
-	Ip          string `json:"ip"`                    //访问的ip地址
-	Certificate string `json:"certificate,omitempty"` //客户端证书 base64后传过来
+	Username    string `json:"username"`                       //用户名
+	Password    string `json:"password,optional"`              //密码
+	ClientID    string `json:"clientID"`                       //clientID
+	Ip          string `json:"ip"`                             //访问的ip地址
+	Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
 }
 
 type ProductInfo struct {
-	CreatedTime  int64  `json:"createdTime,string,omitempty"` //创建时间 只读
-	ProductID    string `json:"productID,omitempty"`          //产品id 只读
-	ProductName  string `json:"productName,omitempty"`        //产品名称
-	AuthMode     int64  `json:"authMode,omitempty"`           //认证方式:0:账密认证,1:秘钥认证
-	DeviceType   int64  `json:"deviceType,omitempty"`         //设备类型:0:设备,1:网关,2:子设备
-	CategoryID   int64  `json:"categoryID,omitempty"`         //产品品类
-	NetType      int64  `json:"netType,omitempty"`            //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
-	DataProto    int64  `json:"dataProto,omitempty"`          //数据协议:0:自定义,1:数据模板
-	AutoRegister int64  `json:"autoRegister,omitempty"`       //动态注册:0:关闭,1:打开,2:打开并自动创建设备
-	Secret       string `json:"secret,omitempty"`             //动态注册产品秘钥 只读
-	Template     string `json:"template,omitempty"`           //数据模板
-	Description  string `json:"description,omitempty"`        //描述
-	DevStatus    string `json:"devStatus,omitempty"`          // 产品状态
+	CreatedTime  int64   `json:"createdTime,optional,string,omitempty"` //创建时间 只读
+	ProductID    string  `json:"productID,optional,omitempty"`          //产品id 只读
+	ProductName  string  `json:"productName,optional,omitempty"`        //产品名称
+	AuthMode     int64   `json:"authMode,optional,omitempty"`           //认证方式:0:账密认证,1:秘钥认证
+	DeviceType   int64   `json:"deviceType,optional,omitempty"`         //设备类型:0:设备,1:网关,2:子设备
+	CategoryID   int64   `json:"categoryID,optional,omitempty"`         //产品品类
+	NetType      int64   `json:"netType,optional,omitempty"`            //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
+	DataProto    int64   `json:"dataProto,optional,omitempty"`          //数据协议:0:自定义,1:数据模板
+	AutoRegister int64   `json:"autoRegister,optional,omitempty"`       //动态注册:0:关闭,1:打开,2:打开并自动创建设备
+	Secret       string  `json:"secret,optional,omitempty"`             //动态注册产品秘钥 只读
+	Template     *string `json:"template,optional,omitempty"`           //数据模板
+	Description  *string `json:"description,optional,omitempty"`        //描述
+	DevStatus    *string `json:"devStatus,optional,omitempty"`          // 产品状态
 }
 
 type ManageProductReq struct {
@@ -121,15 +121,15 @@ type GetProductInfoResp struct {
 }
 
 type DeviceInfo struct {
-	ProductID   string `json:"productID,omitempty"`          //产品id 只读
-	DeviceName  string `json:"deviceName,omitempty"`         //设备名称 读写
-	CreatedTime int64  `json:"createdTime,string,omitempty"` //创建时间 只读
-	Secret      string `json:"secret,omitempty"`             //设备秘钥 只读
-	FirstLogin  int64  `json:"firstLogin,string,omitempty"`  //激活时间 只读
-	LastLogin   int64  `json:"lastLogin,string,omitempty"`   //最后上线时间 只读
-	Version     string `json:"version,omitempty"`            // 固件版本  读写
-	LogLevel    int64  `json:"logLevel,omitempty"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Cert        string `json:"cert,omitempty"`               // 设备证书  只读
+	ProductID   string  `json:"productID,omitempty"`                   //产品id 只读
+	DeviceName  string  `json:"deviceName,omitempty"`                  //设备名称 读写
+	CreatedTime int64   `json:"createdTime,optional,string,omitempty"` //创建时间 只读
+	Secret      string  `json:"secret,optional,omitempty"`             //设备秘钥 只读
+	FirstLogin  int64   `json:"firstLogin,optional,string,omitempty"`  //激活时间 只读
+	LastLogin   int64   `json:"lastLogin,optional,string,omitempty"`   //最后上线时间 只读
+	Version     *string `json:"version,optional,omitempty"`            // 固件版本  读写
+	LogLevel    int64   `json:"logLevel,optional,omitempty"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Cert        string  `json:"cert,optional,omitempty"`               // 设备证书  只读
 }
 
 type ManageDeviceReq struct {

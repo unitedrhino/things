@@ -90,11 +90,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		l.Errorf("AddDevice|DeviceInfo|Insert|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	return &dm.DeviceInfo{
-		ProductID:   di.ProductID,          //产品id
-		DeviceName:  di.DeviceName,         //设备名
-		CreatedTime: di.CreatedTime.Unix(), //创建时间
-	}, nil
+	return DBToRPCFmt(&di).(*dm.DeviceInfo), nil
 }
 
 func ChangeDevice(old *model.DeviceInfo, data *dm.DeviceInfo) {
@@ -105,10 +101,6 @@ func ChangeDevice(old *model.DeviceInfo, data *dm.DeviceInfo) {
 		}
 	}()
 
-	if data.DeviceName != "" {
-		old.DeviceName = data.DeviceName
-		isModify = true
-	}
 	if data.LogLevel != dm.UNKNOWN {
 		old.LogLevel = data.LogLevel
 		isModify = true
@@ -136,11 +128,7 @@ func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 		l.Errorf("ModifyDevice|DeviceInfo|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	return &dm.DeviceInfo{
-		ProductID:   di.ProductID,          //产品id
-		DeviceName:  di.DeviceName,         //设备名
-		CreatedTime: di.CreatedTime.Unix(), //创建时间
-	}, nil
+	return DBToRPCFmt(di).(*dm.DeviceInfo), nil
 }
 
 func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
@@ -163,12 +151,17 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 }
 
 func (l *ManageDeviceLogic) ManageDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
+	defer func() {
+		if p := recover(); p != nil {
+			utils.HandleThrow(p)
+		}
+	}()
 	l.Infof("ManageDevice|req=%+v", in)
 	switch in.Opt {
 	case dm.OPT_ADD:
 		return l.AddDevice(in)
-	//case dm.OPT_MODIFY:
-	//	return l.ModifyDevice(in)
+	case dm.OPT_MODIFY:
+		return l.ModifyDevice(in)
 	case dm.OPT_DEL:
 		return l.DelDevice(in)
 	default:
