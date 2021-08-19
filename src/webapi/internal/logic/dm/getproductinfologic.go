@@ -27,6 +27,7 @@ func NewGetProductInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) Get
 }
 
 func (l *GetProductInfoLogic) GetProductInfo(req types.GetProductInfoReq) (*types.GetProductInfoResp, error) {
+	l.Infof("GetProductInfo|req=%+v", req)
 	dmReq := &dm.GetProductInfoReq{
 		ProductID: req.ProductID, //产品id
 	}
@@ -39,7 +40,7 @@ func (l *GetProductInfoLogic) GetProductInfo(req types.GetProductInfoReq) (*type
 			PageSize: req.Page.PageSize,
 		}
 	} else if req.ProductID == "" {
-		return nil, errors.Parameter.AddDetail("need page or product")
+		return nil, errors.Parameter.AddDetail("need page or productID")
 	}
 	resp, err := l.svcCtx.DmRpc.GetProductInfo(l.ctx, dmReq)
 	if err != nil {

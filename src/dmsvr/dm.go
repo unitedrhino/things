@@ -9,6 +9,7 @@ import (
 	"gitee.com/godLei6/things/src/dmsvr/internal/exchange"
 	"gitee.com/godLei6/things/src/dmsvr/internal/server"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
+	"google.golang.org/grpc/reflection"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/zrpc"
@@ -38,6 +39,8 @@ func main() {
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		dm.RegisterDmServer(grpcServer, srv)
+		reflection.Register(grpcServer)
+
 	})
 	defer s.Stop()
 	s.AddUnaryInterceptors(errors.ErrorInterceptor)

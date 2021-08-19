@@ -92,12 +92,12 @@ type ProductInfo struct {
 	CreatedTime  int64   `json:"createdTime,optional,string,omitempty"` //创建时间 只读
 	ProductID    string  `json:"productID,optional,omitempty"`          //产品id 只读
 	ProductName  string  `json:"productName,optional,omitempty"`        //产品名称
-	AuthMode     int64   `json:"authMode,optional,omitempty"`           //认证方式:0:账密认证,1:秘钥认证
-	DeviceType   int64   `json:"deviceType,optional,omitempty"`         //设备类型:0:设备,1:网关,2:子设备
-	CategoryID   int64   `json:"categoryID,optional,omitempty"`         //产品品类
-	NetType      int64   `json:"netType,optional,omitempty"`            //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
-	DataProto    int64   `json:"dataProto,optional,omitempty"`          //数据协议:0:自定义,1:数据模板
-	AutoRegister int64   `json:"autoRegister,optional,omitempty"`       //动态注册:0:关闭,1:打开,2:打开并自动创建设备
+	AuthMode     int64   `json:"authMode,optional"`           //认证方式:0:账密认证,1:秘钥认证
+	DeviceType   int64   `json:"deviceType,optional"`         //设备类型:0:设备,1:网关,2:子设备
+	CategoryID   int64   `json:"categoryID,optional"`         //产品品类
+	NetType      int64   `json:"netType,optional"`            //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
+	DataProto    int64   `json:"dataProto,optional"`          //数据协议:0:自定义,1:数据模板
+	AutoRegister int64   `json:"autoRegister,optional"`       //动态注册:0:关闭,1:打开,2:打开并自动创建设备
 	Secret       string  `json:"secret,optional,omitempty"`             //动态注册产品秘钥 只读
 	Template     *string `json:"template,optional,omitempty"`           //数据模板
 	Description  *string `json:"description,optional,omitempty"`        //描述
