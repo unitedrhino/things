@@ -22,8 +22,14 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	ur := userclient.NewUser(zrpc.MustNewClient(c.UserRpc))
-	dr := dmclient.NewDm(zrpc.MustNewClient(c.DmRpc))
+	var dr dmclient.Dm
+	var ur userclient.User
+	if c.DmRpc.Enable {
+		dr = dmclient.NewDm(zrpc.MustNewClient(c.DmRpc.Conf))
+	}
+	if c.UserRpc.Enable {
+		ur = userclient.NewUser(zrpc.MustNewClient(c.UserRpc.Conf))
+	}
 	captcha := verify.NewCaptcha(c.ImgHeight, c.ImgWidth, c.KeyLong, c.CacheRedis, time.Duration(c.KeepTime)*time.Second)
 	return &ServiceContext{
 		Config:        c,
