@@ -92,12 +92,12 @@ type ProductInfo struct {
 	CreatedTime  int64   `json:"createdTime,optional,string,omitempty"` //创建时间 只读
 	ProductID    string  `json:"productID,optional,omitempty"`          //产品id 只读
 	ProductName  string  `json:"productName,optional,omitempty"`        //产品名称
-	AuthMode     int64   `json:"authMode,optional"`           //认证方式:0:账密认证,1:秘钥认证
-	DeviceType   int64   `json:"deviceType,optional"`         //设备类型:0:设备,1:网关,2:子设备
-	CategoryID   int64   `json:"categoryID,optional"`         //产品品类
-	NetType      int64   `json:"netType,optional"`            //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
-	DataProto    int64   `json:"dataProto,optional"`          //数据协议:0:自定义,1:数据模板
-	AutoRegister int64   `json:"autoRegister,optional"`       //动态注册:0:关闭,1:打开,2:打开并自动创建设备
+	AuthMode     int64   `json:"authMode,optional"`                     //认证方式:0:账密认证,1:秘钥认证
+	DeviceType   int64   `json:"deviceType,optional"`                   //设备类型:0:设备,1:网关,2:子设备
+	CategoryID   int64   `json:"categoryID,optional"`                   //产品品类
+	NetType      int64   `json:"netType,optional"`                      //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
+	DataProto    int64   `json:"dataProto,optional"`                    //数据协议:0:自定义,1:数据模板
+	AutoRegister int64   `json:"autoRegister,optional"`                 //动态注册:0:关闭,1:打开,2:打开并自动创建设备
 	Secret       string  `json:"secret,optional,omitempty"`             //动态注册产品秘钥 只读
 	Template     *string `json:"template,optional,omitempty"`           //数据模板
 	Description  *string `json:"description,optional,omitempty"`        //描述
@@ -121,15 +121,15 @@ type GetProductInfoResp struct {
 }
 
 type DeviceInfo struct {
-	ProductID   string  `json:"productID,omitempty"`                   //产品id 只读
-	DeviceName  string  `json:"deviceName,omitempty"`                  //设备名称 读写
-	CreatedTime int64   `json:"createdTime,optional,string,omitempty"` //创建时间 只读
-	Secret      string  `json:"secret,optional,omitempty"`             //设备秘钥 只读
-	FirstLogin  int64   `json:"firstLogin,optional,string,omitempty"`  //激活时间 只读
-	LastLogin   int64   `json:"lastLogin,optional,string,omitempty"`   //最后上线时间 只读
-	Version     *string `json:"version,optional,omitempty"`            // 固件版本  读写
-	LogLevel    int64   `json:"logLevel,optional,omitempty"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Cert        string  `json:"cert,optional,omitempty"`               // 设备证书  只读
+	ProductID   string  `json:"productID"`                   //产品id 只读
+	DeviceName  string  `json:"deviceName"`                  //设备名称 读写
+	CreatedTime int64   `json:"createdTime,optional,string"` //创建时间 只读
+	Secret      string  `json:"secret,optional"`             //设备秘钥 只读
+	FirstLogin  int64   `json:"firstLogin,optional,string"`  //激活时间 只读
+	LastLogin   int64   `json:"lastLogin,optional,string"`   //最后上线时间 只读
+	Version     *string `json:"version,optional"`            // 固件版本  读写
+	LogLevel    int64   `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Cert        string  `json:"cert,optional,omitempty"`     // 设备证书  只读
 }
 
 type ManageDeviceReq struct {

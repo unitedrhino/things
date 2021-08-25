@@ -1,9 +1,9 @@
 package config
 
 import (
+	"gitee.com/godLei6/things/shared/conf"
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/rest"
-	"github.com/tal-tech/go-zero/zrpc"
 )
 
 type Captcha struct {
@@ -19,8 +19,8 @@ type Config struct {
 		DataSource string
 	}
 	CacheRedis cache.ClusterConf
-	UserRpc    zrpc.RpcClientConf
-	DmRpc      zrpc.RpcClientConf
+	UserRpc    conf.RpcClientConf
+	DmRpc      conf.RpcClientConf
 	Auth       struct {
 		AccessSecret string
 		AccessExpire int64
