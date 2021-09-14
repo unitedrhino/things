@@ -32,7 +32,7 @@ func DBToRPCFmt(db interface{}) interface{} {
 		}
 	case *model.ProductInfo:
 		pi := db.(*model.ProductInfo)
-		return &dm.ProductInfo{
+		dpi := &dm.ProductInfo{
 			ProductID:    pi.ProductID,                                 //产品id
 			ProductName:  pi.ProductName,                               //产品名
 			AuthMode:     pi.AuthMode,                                  //认证方式:0:账密认证,1:秘钥认证
@@ -44,7 +44,9 @@ func DBToRPCFmt(db interface{}) interface{} {
 			Secret:       pi.Secret,                                    //动态注册产品秘钥 只读
 			Description:  &wrappers.StringValue{Value: pi.Description}, //描述
 			CreatedTime:  pi.CreatedTime.Unix(),                        //创建时间
+			Template: &wrappers.StringValue{Value: pi.Template}, 		//数据模板
 		}
+		return dpi
 	default:
 		panic(fmt.Sprintf("ToRPCFmt not suppot:%#v", db))
 	}
