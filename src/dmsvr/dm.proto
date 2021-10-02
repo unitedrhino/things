@@ -84,12 +84,12 @@ message ProductInfo{
   int64   createdTime   = 1; //创建时间 只读
   string   productID     = 2; //产品id 只读
   string  productName   = 3; //产品名称
-  int64   authMode      = 4;//认证方式:0:账密认证,1:秘钥认证
-  int64   deviceType    = 5;//设备类型:0:设备,1:网关,2:子设备
+  int64   authMode      = 4;//认证方式:1:账密认证,2:秘钥认证
+  int64   deviceType    = 5;//设备类型:1:设备,2:网关,3:子设备
   int64   categoryID    = 6;//产品品类
-  int64   netType       = 7;//通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
-  int64   dataProto     = 8;//数据协议:0:自定义,1:数据模板
-  int64   autoRegister  = 9;//动态注册:0:关闭,1:打开,2:打开并自动创建设备
+  int64   netType       = 7;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+  int64   dataProto     = 8;//数据协议:1:自定义,2:数据模板
+  int64   autoRegister  = 9;//动态注册:1:关闭,2:打开,3:打开并自动创建设备
   string   secret       = 10;//动态注册产品秘钥 只读
   google.protobuf.StringValue   template     = 11;//数据模板
   google.protobuf.StringValue   description  = 12;//描述
@@ -104,8 +104,8 @@ message ManageProductReq{
 message GetProductInfoReq{
   string productID   = 1; //产品id  如果为空返回所有产品的信息
   PageInfo page     =2;//分页信息,只获取一个则不填
-
 }
+
 message GetProductInfoResp{
   repeated ProductInfo info = 1; //产品信息
   int64 total               = 2;//拥有的总数(只有分页的时候会返回)

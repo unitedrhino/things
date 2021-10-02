@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"fmt"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/dmclient"
@@ -49,7 +50,7 @@ func TestManageProduct(t *testing.T) {
 	//	t.Errorf("need duplicate err")
 	//}
 	_, err := client.ManageProduct(ctx, &dm.ManageProductReq{
-		Opt: dm.OPT_MODIFY,
+		Opt: def.OPT_MODIFY,
 		Info: &dm.ProductInfo{
 			ProductID:   ProductID,
 			ProductName: ProductName + "1",

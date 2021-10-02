@@ -4,14 +4,7 @@ const (
 	PRODUCTID_LEN = 11
 )
 
-type OPT = int64
 
-const (
-	OPT_ADD    OPT = 0 //增加
-	OPT_MODIFY OPT = 1 //修改
-	OPT_DEL    OPT = 2 //删除
-)
-const UNKNOWN = 0
 
 type AUTH = int64
 

@@ -43,7 +43,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	opts.SetClientID(clientID).SetUsername(c.Mqtt.User).
 		SetPassword(c.Mqtt.Pass).SetAutoReconnect(true).SetConnectRetry(true)
 	opts.OnConnect = func(client mqtt.Client) {
-		logx.Info("Connected")
+		//logx.Info("Connected")
 	}
 	mc := mqtt.NewClient(opts)
 	mc.Connect()

@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"fmt"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/dmclient"
@@ -21,7 +22,7 @@ func TestManageDevice(t *testing.T) {
 	Name := "test1"
 	productID := "21CYs1k9YpG"
 	info, err := client.ManageDevice(ctx, &dm.ManageDeviceReq{
-		Opt: dm.OPT_ADD,
+		Opt: def.OPT_ADD,
 		Info: &dm.DeviceInfo{
 			ProductID:  productID,
 			DeviceName: Name,
@@ -35,7 +36,7 @@ func TestManageDevice(t *testing.T) {
 		t.Errorf("DeviceName not succ:%s", info.DeviceName)
 	}
 	_, err = client.ManageDevice(ctx, &dm.ManageDeviceReq{
-		Opt: dm.OPT_ADD,
+		Opt: def.OPT_ADD,
 		Info: &dm.DeviceInfo{
 			ProductID:  productID,
 			DeviceName: Name,
@@ -45,7 +46,7 @@ func TestManageDevice(t *testing.T) {
 		t.Errorf("need duplicate err")
 	}
 	info, err = client.ManageDevice(ctx, &dm.ManageDeviceReq{
-		Opt: dm.OPT_MODIFY,
+		Opt: def.OPT_MODIFY,
 		Info: &dm.DeviceInfo{
 			DeviceName: Name + "1",
 		},
