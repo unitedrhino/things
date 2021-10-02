@@ -21,3 +21,7 @@ goctl model mysql datasource -url="root:password@tcp(81.68.223.176:3308)/things"
 goctl model mysql datasource -url="root:password@tcp(81.68.223.176:3308)/things" -table="device_log" -dir ./model -c
 
 #接口文档生成
+
+# 设备交互模块
+goctl model mysql datasource -url="root:password@tcp(81.68.223.176:3308)/dcsvr" -table="*" -dir ./model -c  
+goctl rpc proto -src dc.proto  -dir ./

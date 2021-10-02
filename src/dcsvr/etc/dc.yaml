@@ -1,0 +1,12 @@
+Name: dc.rpc
+ListenOn: 127.0.0.1:9082
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: dc.rpc
+Mysql:
+  DataSource: root:password@tcp(81.68.223.176:3308)/dcsvr?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
