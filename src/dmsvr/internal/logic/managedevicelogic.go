@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/model"
@@ -82,7 +83,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		Version:     in.Info.Version.GetValue(),
 		CreatedTime: time.Now(),
 	}
-	if in.Info.LogLevel != dm.UNKNOWN {
+	if in.Info.LogLevel != def.UNKNOWN {
 		di.LogLevel = dm.LOG_CLOSE
 	}
 	_, err = l.svcCtx.DeviceInfo.Insert(di)
@@ -101,7 +102,7 @@ func ChangeDevice(old *model.DeviceInfo, data *dm.DeviceInfo) {
 		}
 	}()
 
-	if data.LogLevel != dm.UNKNOWN {
+	if data.LogLevel != def.UNKNOWN {
 		old.LogLevel = data.LogLevel
 		isModify = true
 	}
@@ -158,11 +159,11 @@ func (l *ManageDeviceLogic) ManageDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 	}()
 	l.Infof("ManageDevice|req=%+v", in)
 	switch in.Opt {
-	case dm.OPT_ADD:
+	case def.OPT_ADD:
 		return l.AddDevice(in)
-	case dm.OPT_MODIFY:
+	case def.OPT_MODIFY:
 		return l.ModifyDevice(in)
-	case dm.OPT_DEL:
+	case def.OPT_DEL:
 		return l.DelDevice(in)
 	default:
 		return nil, errors.Parameter.AddDetail("not suppot opt:" + string(in.Opt))

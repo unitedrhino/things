@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"database/sql"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/model"
 	"github.com/spf13/cast"
@@ -74,32 +75,32 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) *model.Produ
 		DevStatus:   info.DevStatus.GetValue(),
 		CreatedTime: time.Now(),
 	}
-	if info.AutoRegister != dm.UNKNOWN {
+	if info.AutoRegister != def.UNKNOWN {
 		pi.AutoRegister = info.AutoRegister
 	} else {
 		pi.AutoRegister = dm.AUTO_REG_CLOSE
 	}
-	if info.DataProto != dm.UNKNOWN {
+	if info.DataProto != def.UNKNOWN {
 		pi.DataProto = info.DataProto
 	} else {
 		pi.DataProto = dm.DATA_CUSTOM
 	}
-	if info.DeviceType != dm.UNKNOWN {
+	if info.DeviceType != def.UNKNOWN {
 		pi.DeviceType = info.DeviceType
 	} else {
 		pi.DeviceType = dm.DEV_DEVICE
 	}
-	if info.NetType != dm.UNKNOWN {
+	if info.NetType != def.UNKNOWN {
 		pi.NetType = info.NetType
 	} else {
 		pi.NetType = dm.NET_OTHER
 	}
-	if info.DeviceType != dm.UNKNOWN {
+	if info.DeviceType != def.UNKNOWN {
 		pi.DeviceType = info.DeviceType
 	} else {
 		pi.DeviceType = dm.DEV_DEVICE
 	}
-	if info.AuthMode != dm.UNKNOWN {
+	if info.AuthMode != def.UNKNOWN {
 		pi.AuthMode = info.AuthMode
 	} else {
 		pi.AuthMode = dm.AUTH_PWD
@@ -118,8 +119,8 @@ func UpdateProduct(old *model.ProductInfo, data *dm.ProductInfo) {
 		old.ProductName = data.ProductName
 		isModify = true
 	}
-	if data.AuthMode != dm.UNKNOWN {
-		old.AuthMode = int64(data.AuthMode)
+	if data.AuthMode != def.UNKNOWN {
+		old.AuthMode = data.AuthMode
 		isModify = true
 	}
 	if data.Description != nil {
@@ -130,8 +131,8 @@ func UpdateProduct(old *model.ProductInfo, data *dm.ProductInfo) {
 		old.Template = data.Template.GetValue()
 		isModify = true
 	}
-	if data.AutoRegister != dm.UNKNOWN {
-		old.AutoRegister = int64(data.AutoRegister)
+	if data.AutoRegister != def.UNKNOWN {
+		old.AutoRegister = data.AutoRegister
 		isModify = true
 	}
 	if data.DevStatus != nil {
@@ -178,14 +179,14 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInf
 func (l *ManageProductLogic) ManageProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
 	l.Infof("ManageProduct|opt=%d|req=%+v", in.Opt, in)
 	switch in.Opt {
-	case dm.OPT_ADD:
+	case def.OPT_ADD:
 		if in.Info == nil {
 			return nil, errors.Parameter.WithMsg("add opt need info")
 		}
 		return l.AddProduct(in)
-	case dm.OPT_MODIFY:
+	case def.OPT_MODIFY:
 		return l.ModifyProduct(in)
-	case dm.OPT_DEL:
+	case def.OPT_DEL:
 		return l.DelProduct(in)
 	default:
 		return nil, errors.Parameter.AddDetail("not suppot opt:" + cast.ToString(in.Opt))
