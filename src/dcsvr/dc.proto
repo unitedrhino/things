@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+package dc;
+message PageInfo{
+  int64 page = 1;
+  int64 pageSize = 2;
+}
+
+message Response {
+}
+//组信息
+message GroupInfo{
+  int64 groupID = 1;//组id
+  string name = 2;//组名
+  int64   uid =3;//管理员用户id
+  int64   createdTime   = 4; //创建时间 只读
+}
+
+message GroupMember{
+  int64 id =1;//记录主键
+  int64 groupID = 2;//组id
+  //如果是用户,则是uid的十进制字符串,
+  //如果是设备,则是productID:deviceName的组合方式
+  string memberID = 3;//成员id
+  int64   memberType =4;//成员类型:1:设备 2:用户
+  int64   createdTime   = 5; //创建时间 只读
+}
+
+message ManageGroupInfoReq {
+  int64 opt     = 1;//操作 0:新增 1:修改 2:删除
+  GroupInfo info = 2; //组信息
+}
+message ManageGroupMemberReq {
+  int64 opt     = 1;//操作 0:新增 1:修改 2:删除
+  GroupMember info = 2; //组成员
+}
+
+message GetGroupInfoReq{
+  int64 groupID   = 1; //产品id  如果为空返回所有产品的信息
+  PageInfo page     =2;//分页信息,只获取一个则不填
+}
+
+message GetGroupInfoResp{
+  repeated GroupInfo info = 1; //产品信息
+  int64 total               = 2;//拥有的总数(只有分页的时候会返回)
+}
+
+message GetGroupMemberReq{
+  int64 groupID = 1;//组id
+  string memberID = 2;//成员id
+  PageInfo page     =3;//分页信息,两个参数都填不用填分页信息,用来确认组内是否有该成员
+}
+
+message GetGroupMemberResp{
+  repeated GroupMember info = 1; //产品信息
+  int64 total               = 2;//拥有的总数(只有分页的时候会返回)
+}
+
+/*
+上面是组及组成员的获取及管理
+*/
+
+service Dc {
+  //管理组
+  rpc manageGroupInfo(ManageGroupInfoReq)    returns (GroupInfo);
+  //管理组成员
+  rpc manageGroupMember(ManageGroupMemberReq)   returns (GroupMember);
+  //获取组信息
+  rpc GetGroupInfo(GetGroupInfoReq)     returns (GetGroupInfoResp);
+  //获取组成员
+  rpc GetGroupMember(GetGroupMemberReq)   returns (GetGroupMemberResp);
+}
+

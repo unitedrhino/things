@@ -20,3 +20,12 @@ const (
 	NotRegistStatus UserStatus = iota //未注册完成状态只注册了第一步
 	NomalStatus                       //正常状态
 )
+
+type OPT = int64
+
+const (
+	OPT_ADD    OPT = 0 //增加
+	OPT_MODIFY OPT = 1 //修改
+	OPT_DEL    OPT = 2 //删除
+)
+const UNKNOWN = 0
