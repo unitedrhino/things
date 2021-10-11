@@ -119,7 +119,7 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 				return nil, errors.Parameter.AddDetail(val)
 			}
 			if ret > cast.ToInt64(d.Max) || ret < cast.ToInt64(d.Min) {
-				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v out of range:[%s,%s]", val, d.Max, d.Min))
+				return nil, errors.OutRange.AddDetailf("value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
 			return ret, nil
 		}
@@ -132,7 +132,8 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 				return nil, errors.Parameter.AddDetail(val)
 			}
 			if ret > cast.ToFloat64(d.Max) || ret < cast.ToFloat64(d.Min) {
-				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v out of range:[%s,%s]", val, d.Max, d.Min))
+				return nil, errors.OutRange.AddDetailf(
+					"value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
 			return ret, nil
 		}
@@ -141,7 +142,7 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
 			if len(str) > cast.ToInt(d.Max) {
-				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v out of range:%s", val, d.Max))
+				return nil, errors.OutRange.AddDetailf("value %v out of range:%s", val, d.Max)
 			}
 			return str, nil
 		}
@@ -155,7 +156,7 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 			}
 			_, ok := d.Maping[string(num)]
 			if !ok {
-				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v not in enum", val))
+				return nil, errors.OutRange.AddDetailf("value %v not in enum", val)
 			}
 			return ret, nil
 		}
