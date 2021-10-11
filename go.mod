@@ -9,6 +9,7 @@ require (
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2
+	github.com/hashicorp/go-uuid v1.0.2
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/silenceper/wechat/v2 v2.0.5

@@ -159,8 +159,8 @@ func (l *PublishLogic) HandleOta(msg *types.Elements) error {
 func (l *PublishLogic) HandleDefault(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleDefault")
 	return nil
-}
 
+}
 func (l *PublishLogic) Handle(msg *types.Elements) error {
 	l.Infof("PublishLogic|req=%+v", msg)
 	err := l.initMsg(msg)
@@ -177,7 +177,7 @@ func (l *PublishLogic) Handle(msg *types.Elements) error {
 		case l.pi.ProductID:
 			return l.HandleDefault(msg)
 		default:
-			return errors.Parameter.AddDetail(fmt.Sprintf("not suppot topic :%s", msg.Topic))
+			return errors.Parameter.AddDetailf("not suppot topic :%s", msg.Topic)
 		}
 	}
 
