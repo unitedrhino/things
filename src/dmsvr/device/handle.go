@@ -220,7 +220,7 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 	return nil, errors.Parameter.AddDetail("need param")
 }
 
-func (t *Template) VerifyParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam, error) {
+func (t *Template) VerifyReqParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam, error) {
 	if len(dq.Params) == 0 {
 		return nil, errors.Parameter.AddDetail("need add params")
 	}
@@ -249,7 +249,7 @@ func (t *Template) VerifyParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam
 	case EVENT:
 		p, ok := t.Event[dq.EventID]
 		if ok == false {
-			return nil, errors.Parameter.AddDetail("need add eventId")
+			return nil, errors.Parameter.AddDetail("need right eventId")
 		}
 		if dq.Type != p.Type {
 			return nil, errors.Parameter.AddDetail("err type:" + dq.Type)
@@ -262,7 +262,7 @@ func (t *Template) VerifyParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam
 			}
 			param, ok := dq.Params[k]
 			if ok == false {
-				return nil, errors.Parameter.AddDetail("need param" + k)
+				return nil, errors.Parameter.AddDetail("need param:" + k)
 			}
 			err := tp.AddDefine(&v.Define, param)
 			if err == nil {
@@ -272,8 +272,76 @@ func (t *Template) VerifyParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam
 			}
 		}
 	case ACTION_INPUT:
+		p, ok := t.Action[dq.ActionID]
+		if ok == false {
+			return nil, errors.Parameter.AddDetail("need right ActionID")
+		}
+		for k, v := range p.In {
+			tp := TempParam{
+				ID:   v.ID,
+				Name: v.Name,
+			}
+			param, ok := dq.Params[v.ID]
+			if ok == false {
+				return nil, errors.Parameter.AddDetail("need param:" + k)
+			}
+			err := tp.AddDefine(&v.Define, param)
+			if err == nil {
+				getParam[k] = tp
+			} else if !errors.Cmp(err, errors.NotFind) {
+				return nil, errors.Fmt(err).AddDetail(p.ID)
+			}
+		}
 	case ACTION_OUTPUT:
+		p, ok := t.Action[dq.ActionID]
+		if ok == false {
+			return nil, errors.Parameter.AddDetail("need right ActionID")
+		}
+		for k, v := range p.In {
+			tp := TempParam{
+				ID:   v.ID,
+				Name: v.Name,
+			}
+			param, ok := dq.Params[v.ID]
+			if ok == false {
+				return nil, errors.Parameter.AddDetail("need param:" + k)
+			}
+			err := tp.AddDefine(&v.Define, param)
+			if err == nil {
+				getParam[k] = tp
+			} else if !errors.Cmp(err, errors.NotFind) {
+				return nil, errors.Fmt(err).AddDetail(p.ID)
+			}
+		}
+	}
+	return getParam, nil
+}
 
+
+func (t *Template) VerifyRespParam(dr DeviceResp,id string, tt TEMP_TYPE) (map[string]TempParam, error) {
+	getParam := make(map[string]TempParam, len(dr.Response))
+	switch tt {
+	case ACTION_OUTPUT:
+		p, ok := t.Action[id]
+		if ok == false {
+			return nil, errors.Parameter.AddDetail("need right ActionID")
+		}
+		for k, v := range p.Out {
+			tp := TempParam{
+				ID:   v.ID,
+				Name: v.Name,
+			}
+			param, ok := dr.Response[v.ID]
+			if ok == false {
+				return nil, errors.Parameter.AddDetail("need param:" + k)
+			}
+			err := tp.AddDefine(&v.Define, param)
+			if err == nil {
+				getParam[k] = tp
+			} else if !errors.Cmp(err, errors.NotFind) {
+				return nil, errors.Fmt(err).AddDetail(p.ID)
+			}
+		}
 	}
 	return getParam, nil
 }
