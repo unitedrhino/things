@@ -11,10 +11,7 @@ import (
 	"testing"
 )
 
-const (
-	SUB = "SUB" //订阅
-	PUB = "PUB" //发布
-)
+
 
 func TestAccessAuth(t *testing.T) {
 	fmt.Println("TestLoginAuth")

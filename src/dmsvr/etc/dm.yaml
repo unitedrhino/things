@@ -5,6 +5,7 @@ Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: dm.rpc
+Timeout: 10000
 Mysql:
   DataSource: root:password@tcp(127.0.0.1:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
@@ -15,13 +16,13 @@ Kafka:
   Mysql:
     DataSource: root:password@tcp(127.0.0.1:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
   Brokers:
-    - 146.56.196.176:9092
+    - 127.0.0.1:9092
   Group: dm
 Mqtt:
   Pass: "123"
   User: admin
   Brokers:
-    - tcp://81.68.223.176:1883
+    - tcp://127.0.0.1:1883
 Mongo:
   Url: "mongodb://admin:password@81.68.223.176:27017"
   Database: things
