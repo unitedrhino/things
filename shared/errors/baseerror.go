@@ -59,6 +59,11 @@ func (c CodeError) AddDetailf(format string, a ...interface{}) *CodeError {
 	return &c
 }
 
+func (c CodeError) AddDetailf(format string, a ...interface{}) *CodeError {
+	c.Details = append(c.Details, fmt.Sprintf(format, a...))
+	return &c
+}
+
 func (c *CodeError) GetDetailMsg() string {
 	if len(c.Details) == 0 {
 		return c.Msg

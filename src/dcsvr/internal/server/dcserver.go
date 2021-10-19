@@ -44,3 +44,15 @@ func (s *DcServer) GetGroupMember(ctx context.Context, in *dc.GetGroupMemberReq)
 	l := logic.NewGetGroupMemberLogic(ctx, s.svcCtx)
 	return l.GetGroupMember(in)
 }
+
+// 同步调用设备行为
+func (s *DcServer) SendAction(ctx context.Context, in *dc.SendActionReq) (*dc.SendActionResp, error) {
+	l := logic.NewSendActionLogic(ctx, s.svcCtx)
+	return l.SendAction(in)
+}
+
+// 同步调用设备属性
+func (s *DcServer) SendProperty(ctx context.Context, in *dc.SendPropertyReq) (*dc.SendPropertyResp, error) {
+	l := logic.NewSendPropertyLogic(ctx, s.svcCtx)
+	return l.SendProperty(in)
+}

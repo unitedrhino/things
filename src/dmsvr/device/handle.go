@@ -119,7 +119,7 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 				return nil, errors.Parameter.AddDetail(val)
 			}
 			if ret > cast.ToInt64(d.Max) || ret < cast.ToInt64(d.Min) {
-				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v out of range:[%s,%s]", val, d.Max, d.Min))
+				return nil, errors.OutRange.AddDetailf("value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
 			return ret, nil
 		}
@@ -132,7 +132,8 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 				return nil, errors.Parameter.AddDetail(val)
 			}
 			if ret > cast.ToFloat64(d.Max) || ret < cast.ToFloat64(d.Min) {
-				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v out of range:[%s,%s]", val, d.Max, d.Min))
+				return nil, errors.OutRange.AddDetailf(
+					"value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
 			return ret, nil
 		}
@@ -141,7 +142,7 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
 			if len(str) > cast.ToInt(d.Max) {
-				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v out of range:%s", val, d.Max))
+				return nil, errors.OutRange.AddDetailf("value %v out of range:%s", val, d.Max)
 			}
 			return str, nil
 		}
@@ -155,7 +156,7 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 			}
 			_, ok := d.Maping[string(num)]
 			if !ok {
-				return nil, errors.OutRange.AddDetail(fmt.Sprintf("value %v not in enum", val))
+				return nil, errors.OutRange.AddDetailf("value %v not in enum", val)
 			}
 			return ret, nil
 		}
@@ -219,7 +220,7 @@ func (d *Define) GetVal(val interface{}) (interface{}, error) {
 	return nil, errors.Parameter.AddDetail("need param")
 }
 
-func (t *Template) VerifyParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam, error) {
+func (t *Template) VerifyReqParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam, error) {
 	if len(dq.Params) == 0 {
 		return nil, errors.Parameter.AddDetail("need add params")
 	}
@@ -248,7 +249,7 @@ func (t *Template) VerifyParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam
 	case EVENT:
 		p, ok := t.Event[dq.EventID]
 		if ok == false {
-			return nil, errors.Parameter.AddDetail("need add eventId")
+			return nil, errors.Parameter.AddDetail("need right eventId")
 		}
 		if dq.Type != p.Type {
 			return nil, errors.Parameter.AddDetail("err type:" + dq.Type)
@@ -261,7 +262,7 @@ func (t *Template) VerifyParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam
 			}
 			param, ok := dq.Params[k]
 			if ok == false {
-				return nil, errors.Parameter.AddDetail("need param" + k)
+				return nil, errors.Parameter.AddDetail("need param:" + k)
 			}
 			err := tp.AddDefine(&v.Define, param)
 			if err == nil {
@@ -271,8 +272,76 @@ func (t *Template) VerifyParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempParam
 			}
 		}
 	case ACTION_INPUT:
+		p, ok := t.Action[dq.ActionID]
+		if ok == false {
+			return nil, errors.Parameter.AddDetail("need right ActionID")
+		}
+		for k, v := range p.In {
+			tp := TempParam{
+				ID:   v.ID,
+				Name: v.Name,
+			}
+			param, ok := dq.Params[v.ID]
+			if ok == false {
+				return nil, errors.Parameter.AddDetail("need param:" + k)
+			}
+			err := tp.AddDefine(&v.Define, param)
+			if err == nil {
+				getParam[k] = tp
+			} else if !errors.Cmp(err, errors.NotFind) {
+				return nil, errors.Fmt(err).AddDetail(p.ID)
+			}
+		}
 	case ACTION_OUTPUT:
+		p, ok := t.Action[dq.ActionID]
+		if ok == false {
+			return nil, errors.Parameter.AddDetail("need right ActionID")
+		}
+		for k, v := range p.In {
+			tp := TempParam{
+				ID:   v.ID,
+				Name: v.Name,
+			}
+			param, ok := dq.Params[v.ID]
+			if ok == false {
+				return nil, errors.Parameter.AddDetail("need param:" + k)
+			}
+			err := tp.AddDefine(&v.Define, param)
+			if err == nil {
+				getParam[k] = tp
+			} else if !errors.Cmp(err, errors.NotFind) {
+				return nil, errors.Fmt(err).AddDetail(p.ID)
+			}
+		}
+	}
+	return getParam, nil
+}
 
+
+func (t *Template) VerifyRespParam(dr DeviceResp,id string, tt TEMP_TYPE) (map[string]TempParam, error) {
+	getParam := make(map[string]TempParam, len(dr.Response))
+	switch tt {
+	case ACTION_OUTPUT:
+		p, ok := t.Action[id]
+		if ok == false {
+			return nil, errors.Parameter.AddDetail("need right ActionID")
+		}
+		for k, v := range p.Out {
+			tp := TempParam{
+				ID:   v.ID,
+				Name: v.Name,
+			}
+			param, ok := dr.Response[v.ID]
+			if ok == false {
+				return nil, errors.Parameter.AddDetail("need param:" + k)
+			}
+			err := tp.AddDefine(&v.Define, param)
+			if err == nil {
+				getParam[k] = tp
+			} else if !errors.Cmp(err, errors.NotFind) {
+				return nil, errors.Fmt(err).AddDetail(p.ID)
+			}
+		}
 	}
 	return getParam, nil
 }

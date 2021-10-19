@@ -12,16 +12,20 @@ import (
 )
 
 type (
-	GroupMember          = dc.GroupMember
-	GetGroupInfoReq      = dc.GetGroupInfoReq
-	GetGroupInfoResp     = dc.GetGroupInfoResp
-	PageInfo             = dc.PageInfo
 	GroupInfo            = dc.GroupInfo
+	SendPropertyResp     = dc.SendPropertyResp
+	GetGroupInfoReq      = dc.GetGroupInfoReq
+	SendActionResp       = dc.SendActionResp
+	SendPropertyReq      = dc.SendPropertyReq
+	Response             = dc.Response
 	ManageGroupInfoReq   = dc.ManageGroupInfoReq
-	ManageGroupMemberReq = dc.ManageGroupMemberReq
+	GetGroupInfoResp     = dc.GetGroupInfoResp
 	GetGroupMemberReq    = dc.GetGroupMemberReq
 	GetGroupMemberResp   = dc.GetGroupMemberResp
-	Response             = dc.Response
+	PageInfo             = dc.PageInfo
+	GroupMember          = dc.GroupMember
+	ManageGroupMemberReq = dc.ManageGroupMemberReq
+	SendActionReq        = dc.SendActionReq
 
 	Dc interface {
 		// 管理组
@@ -32,6 +36,10 @@ type (
 		GetGroupInfo(ctx context.Context, in *GetGroupInfoReq) (*GetGroupInfoResp, error)
 		// 获取组成员
 		GetGroupMember(ctx context.Context, in *GetGroupMemberReq) (*GetGroupMemberResp, error)
+		// 同步调用设备行为
+		SendAction(ctx context.Context, in *SendActionReq) (*SendActionResp, error)
+		// 同步调用设备属性
+		SendProperty(ctx context.Context, in *SendPropertyReq) (*SendPropertyResp, error)
 	}
 
 	defaultDc struct {
@@ -67,4 +75,16 @@ func (m *defaultDc) GetGroupInfo(ctx context.Context, in *GetGroupInfoReq) (*Get
 func (m *defaultDc) GetGroupMember(ctx context.Context, in *GetGroupMemberReq) (*GetGroupMemberResp, error) {
 	client := dc.NewDcClient(m.cli.Conn())
 	return client.GetGroupMember(ctx, in)
+}
+
+// 同步调用设备行为
+func (m *defaultDc) SendAction(ctx context.Context, in *SendActionReq) (*SendActionResp, error) {
+	client := dc.NewDcClient(m.cli.Conn())
+	return client.SendAction(ctx, in)
+}
+
+// 同步调用设备属性
+func (m *defaultDc) SendProperty(ctx context.Context, in *SendPropertyReq) (*SendPropertyResp, error) {
+	client := dc.NewDcClient(m.cli.Conn())
+	return client.SendProperty(ctx, in)
 }

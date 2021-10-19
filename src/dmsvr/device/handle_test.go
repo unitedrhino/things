@@ -628,6 +628,53 @@ var eventParamStr = [...]string{
 }`,
 }
 
+var actionInParamStr = [...]string{
+	`{                    
+"method": "action",            
+"clientToken": "20a4ccfd-d308-****-86c6-5254008a4f10",                
+"actionId": "biaoshifu",                
+"timestamp": 1212121221,        
+"params": {                    
+    "asdfwe": "323343",
+	"ee":23
+    }
+}`,
+	`{
+"method": "action",            
+"clientToken": "20a4ccfd-d308-****-86c6-5254008a4f10",                
+"actionId": "biaoshifu",                
+"timestamp": 1212121221,    
+   "params":{
+      "asdfwe": "4831",
+	"ee":12
+   }
+}`,
+}
+
+var actionOutParamStr = [...]string{
+	`{            
+"method": "action_reply",        
+"actionId": "biaoshifu",       
+"clientToken": "20a4ccfd-d308-11e9-86c6-5254008a4f10",        
+"code": 0,            
+"status": "some message where error",        
+"response": {          
+    "se":  "afeafeag"           
+     }
+}`,
+	`{            
+"method": "action_reply",        
+"clientToken": "20a4ccfd-d308-11e9-86c6-5254008a4f10",        
+"actionId": "biaoshifu",       
+"code": 0,            
+"status": "some message where error",        
+"response": {          
+    "se":  "dfawe"            
+     }
+}`,
+}
+
+
 func TestVerifyPropertyParam(t *testing.T) {
 	fmt.Println("TestVerifyPropertyParam")
 	T, err := device.NewTemplate([]byte(template))
@@ -640,7 +687,7 @@ func TestVerifyPropertyParam(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := T.VerifyParam(dq, device.PROPERTY)
+		out, err := T.VerifyReqParam(dq, device.PROPERTY)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -677,7 +724,79 @@ func TestVerifyEventParam(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := T.VerifyParam(dq, device.EVENT)
+		out, err := T.VerifyReqParam(dq, device.EVENT)
+		if err != nil {
+			t.Fatal(err)
+		}
+		{
+			p, _ := json.Marshal(out)
+			var str bytes.Buffer
+			_ = json.Indent(&str, []byte(p), "", "    ")
+			fmt.Printf("getParam=%s\n", str.String())
+		}
+		{
+			val := make(map[string]interface{}, len(out))
+			for _, v := range out {
+				val[v.ID] = v.ToVal()
+			}
+			p, _ := json.Marshal(val)
+			var str bytes.Buffer
+			_ = json.Indent(&str, []byte(p), "", "    ")
+			fmt.Printf("getParamTomap=%s\n", str.String())
+		}
+	}
+}
+
+
+func TestVerifyActionInParam(t *testing.T) {
+	fmt.Println("TestVerifyActionInParam")
+	T, err := device.NewTemplate([]byte(template))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, v := range actionInParamStr {
+		var dq device.DeviceReq
+		err := utils.Unmarshal([]byte(v), &dq)
+		if err != nil {
+			t.Fatal(err)
+		}
+		out, err := T.VerifyReqParam(dq, device.ACTION_INPUT)
+		if err != nil {
+			t.Fatal(err)
+		}
+		{
+			p, _ := json.Marshal(out)
+			var str bytes.Buffer
+			_ = json.Indent(&str, []byte(p), "", "    ")
+			fmt.Printf("getParam=%s\n", str.String())
+		}
+		{
+			val := make(map[string]interface{}, len(out))
+			for _, v := range out {
+				val[v.ID] = v.ToVal()
+			}
+			p, _ := json.Marshal(val)
+			var str bytes.Buffer
+			_ = json.Indent(&str, []byte(p), "", "    ")
+			fmt.Printf("getParamTomap=%s\n", str.String())
+		}
+	}
+}
+
+
+func TestVerifyActionOutParam(t *testing.T) {
+	fmt.Println("TestVerifyActionOutParam")
+	T, err := device.NewTemplate([]byte(template))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, v := range actionOutParamStr {
+		var dq device.DeviceResp
+		err := utils.Unmarshal([]byte(v), &dq)
+		if err != nil {
+			t.Fatal(err)
+		}
+		out, err := T.VerifyRespParam(dq,"biaoshifu", device.ACTION_OUTPUT)
 		if err != nil {
 			t.Fatal(err)
 		}

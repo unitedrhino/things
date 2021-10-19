@@ -1,5 +1,5 @@
-create database things;
-use things;
+create database dm;
+use dm;
 
 CREATE TABLE `product_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
