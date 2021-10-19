@@ -206,15 +206,25 @@ message SendPropertyResp{
 }
 
 service Dm {
-  rpc loginAuth(LoginAuthReq)           returns (Response);//登录认证
-  rpc accessAuth(AccessAuthReq)         returns (Response);//操作认证
-  rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);//设备管理
-  rpc manageProduct(ManageProductReq)   returns (ProductInfo);//产品管理
-  rpc getProductInfo(GetProductInfoReq) returns (GetProductInfoResp);//获取产品信息
-  rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);//获取设备信息
-  rpc getDeviceData(GetDeviceDataReq)   returns (GetDeviceDataResp);//获取设备最新数据
-  rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);//获取设备日志信息
-  rpc SendAction(SendActionReq)         returns(SendActionResp);//同步调用设备行为
-  rpc SendProperty(SendPropertyReq)     returns(SendPropertyResp);//同步调用设备行为
+  //登录认证
+  rpc loginAuth(LoginAuthReq)           returns (Response);
+  //操作认证
+  rpc accessAuth(AccessAuthReq)         returns (Response);
+  //设备管理
+  rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);
+  //产品管理
+  rpc manageProduct(ManageProductReq)   returns (ProductInfo);
+  //获取产品信息
+  rpc getProductInfo(GetProductInfoReq) returns (GetProductInfoResp);
+  //获取设备信息
+  rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);
+  //获取设备最新数据
+  rpc getDeviceData(GetDeviceDataReq)   returns (GetDeviceDataResp);
+  //获取设备日志信息
+  rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);
+  //同步调用设备行为
+  rpc SendAction(SendActionReq)         returns(SendActionResp);
+  //同步调用设备属性
+  rpc SendProperty(SendPropertyReq)     returns(SendPropertyResp);
 }
 

@@ -60,7 +60,36 @@ message GetGroupMemberResp{
 
 /*
 上面是组及组成员的获取及管理
+下面是设备与人交互
 */
+message SendActionReq{
+  string memberID = 1;//成员id
+  int64   memberType =2;//成员类型:1:设备 2:用户
+  string  productID   = 3; //产品id 获取产品id下的所有设备信息
+  string  deviceName  = 4; //设备名
+  string actionId =5;//产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+  string inputParams = 6;//输入参数
+}
+message SendActionResp{
+  string clientToken = 1;//调用id
+  string outputParams =2;//输出参数 注意：此字段可能返回 null，表示取不到有效值。
+  string  status =3;//返回状态
+  int64   code =4;//设备返回状态码
+}
+
+message SendPropertyReq{
+  string memberID = 1;//成员id
+  int64   memberType =2;//成员类型:1:设备 2:用户
+  string  productID   = 3; //产品id 获取产品id下的所有设备信息
+  string  deviceName  = 4; //设备名
+  string data = 5;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+  string method = 6;//请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+}
+message SendPropertyResp{
+  string data = 1;//返回信息
+  string  status =2;//返回状态
+  int64   code =3;//设备返回状态码
+}
 
 service Dc {
   //管理组
@@ -71,5 +100,9 @@ service Dc {
   rpc GetGroupInfo(GetGroupInfoReq)     returns (GetGroupInfoResp);
   //获取组成员
   rpc GetGroupMember(GetGroupMemberReq)   returns (GetGroupMemberResp);
+  //同步调用设备行为
+  rpc SendAction(SendActionReq)         returns(SendActionResp);
+  //同步调用设备属性
+  rpc SendProperty(SendPropertyReq)     returns(SendPropertyResp);
 }
 

@@ -10,6 +10,7 @@ import (
 
 type (
 	DmModel interface {
+		CheckMemeberWithGoupID(MemberID1 string,MemberType1 int64,MemberID2 string,MemberType2 int64) (bool, error)
 		FindByGroupInfo(page def.PageInfo) ([]*GroupInfo, error)
 		FindByGroupMemberGroupID(GroupID  int64,page def.PageInfo) ([]*GroupMember, error)
 		FindByGroupMemberMemberID(MemberID string, page def.PageInfo) ([]*GroupMember, error)
@@ -32,6 +33,21 @@ func NewDcModel(conn sqlx.SqlConn, c cache.CacheConf) DmModel {
 		groupInfo: "`groupInfo`",
 		groupMember:  "groupMember",
 	}
+}
+
+
+//获取两个成员是否有在同一组
+func (m *defaultDcModel) CheckMemeberWithGoupID(MemberID1 string,MemberType1 int64,MemberID2 string,MemberType2 int64) (bool, error) {
+	query := fmt.Sprintf("select count(1) from %s  where memberId = ? and memberType = ? and " +
+		"groupID in (select groupID from %s  where memberID=? and memberType =?)",
+		m.groupMember,m.groupMember)
+	var size int64
+	err := m.CachedConn.QueryRowNoCache(&size, query, MemberID1,MemberType1,MemberID2,MemberType2)
+	if size > 0{
+		return true,err
+	}
+	return false, err
+
 }
 
 func (m *defaultDcModel) FindByGroupInfo(page def.PageInfo) ([]*GroupInfo, error) {
