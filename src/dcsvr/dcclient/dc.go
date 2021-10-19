@@ -12,20 +12,20 @@ import (
 )
 
 type (
-	GroupInfo            = dc.GroupInfo
-	SendPropertyResp     = dc.SendPropertyResp
-	GetGroupInfoReq      = dc.GetGroupInfoReq
-	SendActionResp       = dc.SendActionResp
-	SendPropertyReq      = dc.SendPropertyReq
 	Response             = dc.Response
-	ManageGroupInfoReq   = dc.ManageGroupInfoReq
+	ManageGroupMemberReq = dc.ManageGroupMemberReq
+	GetGroupInfoReq      = dc.GetGroupInfoReq
 	GetGroupInfoResp     = dc.GetGroupInfoResp
-	GetGroupMemberReq    = dc.GetGroupMemberReq
+	SendActionReq        = dc.SendActionReq
+	GroupInfo            = dc.GroupInfo
+	GroupMember          = dc.GroupMember
+	ManageGroupInfoReq   = dc.ManageGroupInfoReq
 	GetGroupMemberResp   = dc.GetGroupMemberResp
 	PageInfo             = dc.PageInfo
-	GroupMember          = dc.GroupMember
-	ManageGroupMemberReq = dc.ManageGroupMemberReq
-	SendActionReq        = dc.SendActionReq
+	GetGroupMemberReq    = dc.GetGroupMemberReq
+	SendActionResp       = dc.SendActionResp
+	SendPropertyReq      = dc.SendPropertyReq
+	SendPropertyResp     = dc.SendPropertyResp
 
 	Dc interface {
 		// 管理组
