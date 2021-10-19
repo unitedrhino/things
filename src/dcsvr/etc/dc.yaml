@@ -1,5 +1,7 @@
 Name: dc.rpc
 ListenOn: 127.0.0.1:9082
+CpuThreshold: 0
+NodeID: 1
 Etcd:
   Hosts:
   - 127.0.0.1:2379

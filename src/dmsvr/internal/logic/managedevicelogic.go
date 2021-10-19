@@ -166,6 +166,6 @@ func (l *ManageDeviceLogic) ManageDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 	case def.OPT_DEL:
 		return l.DelDevice(in)
 	default:
-		return nil, errors.Parameter.AddDetail("not suppot opt:" + string(in.Opt))
+		return nil, errors.Parameter.AddDetail("not support opt:" + string(in.Opt))
 	}
 }

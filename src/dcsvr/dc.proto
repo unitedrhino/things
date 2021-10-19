@@ -38,8 +38,8 @@ message ManageGroupMemberReq {
 }
 
 message GetGroupInfoReq{
-  int64 groupID   = 1; //产品id  如果为空返回所有产品的信息
-  PageInfo page     =2;//分页信息,只获取一个则不填
+  PageInfo page     =1;//分页信息,只获取一个则不填
+  int64 groupID   = 2; //产品id  如果为空返回所有产品的信息
 }
 
 message GetGroupInfoResp{
@@ -48,9 +48,10 @@ message GetGroupInfoResp{
 }
 
 message GetGroupMemberReq{
-  int64 groupID = 1;//组id
-  string memberID = 2;//成员id
-  PageInfo page     =3;//分页信息,两个参数都填不用填分页信息,用来确认组内是否有该成员
+  PageInfo page     =1;//分页信息,两个参数都填不用填分页信息,用来确认组内是否有该成员
+  int64 groupID = 2;//组id
+  string memberID = 3;//成员id
+  int64  memberType =4;//成员类型:1:设备 2:用户
 }
 
 message GetGroupMemberResp{
