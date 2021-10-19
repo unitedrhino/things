@@ -1,1 +1,0 @@
-这个文件是postman的http请求文档,使用postman导入该文件即可进行测试
