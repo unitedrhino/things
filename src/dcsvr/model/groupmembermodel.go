@@ -19,15 +19,15 @@ var (
 	groupMemberRowsExpectAutoSet   = strings.Join(stringx.Remove(groupMemberFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
 	groupMemberRowsWithPlaceHolder = strings.Join(stringx.Remove(groupMemberFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
-	cacheDcsvrGroupMemberIdPrefix              = "cache:dcsvr:groupMember:id:"
-	cacheDcsvrGroupMemberGroupIDMemberIDPrefix = "cache:dcsvr:groupMember:groupID:memberID:"
+	cacheDcsvrGroupMemberIdPrefix                        = "cache:dcsvr:groupMember:id:"
+	cacheDcsvrGroupMemberGroupIDMemberIDMemberTypePrefix = "cache:dcsvr:groupMember:groupID:memberID:memberType:"
 )
 
 type (
 	GroupMemberModel interface {
 		Insert(data GroupMember) (sql.Result, error)
 		FindOne(id int64) (*GroupMember, error)
-		FindOneByGroupIDMemberID(groupID int64, memberID string) (*GroupMember, error)
+		FindOneByGroupIDMemberIDMemberType(groupID int64, memberID string, memberType int64) (*GroupMember, error)
 		Update(data GroupMember) error
 		Delete(id int64) error
 	}
@@ -56,11 +56,11 @@ func NewGroupMemberModel(conn sqlx.SqlConn, c cache.CacheConf) GroupMemberModel 
 }
 
 func (m *defaultGroupMemberModel) Insert(data GroupMember) (sql.Result, error) {
-	dcsvrGroupMemberGroupIDMemberIDKey := fmt.Sprintf("%s%v:%v", cacheDcsvrGroupMemberGroupIDMemberIDPrefix, data.GroupID, data.MemberID)
+	dcsvrGroupMemberGroupIDMemberIDMemberTypeKey := fmt.Sprintf("%s%v:%v:%v", cacheDcsvrGroupMemberGroupIDMemberIDMemberTypePrefix, data.GroupID, data.MemberID, data.MemberType)
 	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, groupMemberRowsExpectAutoSet)
 		return conn.Exec(query, data.GroupID, data.MemberID, data.MemberType, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
-	}, dcsvrGroupMemberGroupIDMemberIDKey)
+	}, dcsvrGroupMemberGroupIDMemberIDMemberTypeKey)
 	return ret, err
 }
 
@@ -81,12 +81,12 @@ func (m *defaultGroupMemberModel) FindOne(id int64) (*GroupMember, error) {
 	}
 }
 
-func (m *defaultGroupMemberModel) FindOneByGroupIDMemberID(groupID int64, memberID string) (*GroupMember, error) {
-	dcsvrGroupMemberGroupIDMemberIDKey := fmt.Sprintf("%s%v:%v", cacheDcsvrGroupMemberGroupIDMemberIDPrefix, groupID, memberID)
+func (m *defaultGroupMemberModel) FindOneByGroupIDMemberIDMemberType(groupID int64, memberID string, memberType int64) (*GroupMember, error) {
+	dcsvrGroupMemberGroupIDMemberIDMemberTypeKey := fmt.Sprintf("%s%v:%v:%v", cacheDcsvrGroupMemberGroupIDMemberIDMemberTypePrefix, groupID, memberID, memberType)
 	var resp GroupMember
-	err := m.QueryRowIndex(&resp, dcsvrGroupMemberGroupIDMemberIDKey, m.formatPrimary, func(conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
-		query := fmt.Sprintf("select %s from %s where `groupID` = ? and `memberID` = ? limit 1", groupMemberRows, m.table)
-		if err := conn.QueryRow(&resp, query, groupID, memberID); err != nil {
+	err := m.QueryRowIndex(&resp, dcsvrGroupMemberGroupIDMemberIDMemberTypeKey, m.formatPrimary, func(conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+		query := fmt.Sprintf("select %s from %s where `groupID` = ? and `memberID` = ? and `memberType` = ? limit 1", groupMemberRows, m.table)
+		if err := conn.QueryRow(&resp, query, groupID, memberID, memberType); err != nil {
 			return nil, err
 		}
 		return resp.Id, nil
@@ -103,11 +103,11 @@ func (m *defaultGroupMemberModel) FindOneByGroupIDMemberID(groupID int64, member
 
 func (m *defaultGroupMemberModel) Update(data GroupMember) error {
 	dcsvrGroupMemberIdKey := fmt.Sprintf("%s%v", cacheDcsvrGroupMemberIdPrefix, data.Id)
-	dcsvrGroupMemberGroupIDMemberIDKey := fmt.Sprintf("%s%v:%v", cacheDcsvrGroupMemberGroupIDMemberIDPrefix, data.GroupID, data.MemberID)
+	dcsvrGroupMemberGroupIDMemberIDMemberTypeKey := fmt.Sprintf("%s%v:%v:%v", cacheDcsvrGroupMemberGroupIDMemberIDMemberTypePrefix, data.GroupID, data.MemberID, data.MemberType)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, groupMemberRowsWithPlaceHolder)
 		return conn.Exec(query, data.GroupID, data.MemberID, data.MemberType, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Id)
-	}, dcsvrGroupMemberIdKey, dcsvrGroupMemberGroupIDMemberIDKey)
+	}, dcsvrGroupMemberIdKey, dcsvrGroupMemberGroupIDMemberIDMemberTypeKey)
 	return err
 }
 
@@ -118,11 +118,11 @@ func (m *defaultGroupMemberModel) Delete(id int64) error {
 	}
 
 	dcsvrGroupMemberIdKey := fmt.Sprintf("%s%v", cacheDcsvrGroupMemberIdPrefix, id)
-	dcsvrGroupMemberGroupIDMemberIDKey := fmt.Sprintf("%s%v:%v", cacheDcsvrGroupMemberGroupIDMemberIDPrefix, data.GroupID, data.MemberID)
+	dcsvrGroupMemberGroupIDMemberIDMemberTypeKey := fmt.Sprintf("%s%v:%v:%v", cacheDcsvrGroupMemberGroupIDMemberIDMemberTypePrefix, data.GroupID, data.MemberID, data.MemberType)
 	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.Exec(query, id)
-	}, dcsvrGroupMemberGroupIDMemberIDKey, dcsvrGroupMemberIdKey)
+	}, dcsvrGroupMemberIdKey, dcsvrGroupMemberGroupIDMemberIDMemberTypeKey)
 	return err
 }
 

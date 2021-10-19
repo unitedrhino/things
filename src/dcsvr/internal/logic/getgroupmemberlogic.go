@@ -31,7 +31,7 @@ func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc
 	var info []*dc.GroupMember
 	var size int64
 	if (in.Page == nil || in.Page.Page == 0) && (in.GroupID == 0 && in.MemberID == ""){
-		di, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberID(in.GroupID, in.MemberID)
+		di, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberIDMemberType(in.GroupID, in.MemberID,in.MemberType)
 		if err != nil {
 			if err == model.ErrNotFound {
 				return nil, errors.NotFind

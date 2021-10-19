@@ -1,19 +1,20 @@
 Name: dm.rpc
 ListenOn: 127.0.0.1:9081
+CpuThreshold: 0
 NodeID: 1
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: dm.rpc
 Mysql:
-  DataSource: root:password@tcp(127.0.0.1:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:password@tcp(81.68.223.176:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
 Kafka:
   Mysql:
-    DataSource: root:password@tcp(127.0.0.1:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+    DataSource: root:password@tcp(81.68.223.176:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
   Brokers:
     - 146.56.196.176:9092
   Group: dm
