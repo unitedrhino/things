@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"fmt"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"strings"
 
@@ -25,11 +26,6 @@ func NewAccessAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Access
 		Logger: logx.WithContext(ctx),
 	}
 }
-
-const (
-	SUB = "SUB" //订阅
-	PUB = "PUB" //发布
-)
 
 /*
 物理型topic:
@@ -82,9 +78,9 @@ var TopicPub map[string][]string = map[string][]string{
 func (l *AccessAuthLogic) CompareTopic(in *dm.AccessAuthReq) error {
 	var Topic map[string][]string
 	switch in.Access {
-	case PUB:
+	case def.PUB:
 		Topic = TopicPub
-	case SUB:
+	case def.SUB:
 		Topic = TopicSub
 	default:
 	}

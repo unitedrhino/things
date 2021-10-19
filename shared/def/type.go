@@ -29,3 +29,9 @@ const (
 	OPT_DEL    OPT = 2 //删除
 )
 const UNKNOWN = 0
+
+const (
+	SUB = "SUB" //订阅
+	PUB = "PUB" //发布
+)
+
