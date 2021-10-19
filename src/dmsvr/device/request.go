@@ -13,7 +13,7 @@ type (
 		Timestamp   int64                  `json:"timestamp,omitempty"`
 		Showmeta    int64                  `json:"showmeta,omitempty"` //标识回复消息是否带 metadata，缺省为0表示不返回 metadata
 		Type        string                 `json:"type,omitempty"`     //	表示获取什么类型的信息。report:表示设备上报的信息 info:信息 alert:告警 fault:故障
-		Code        int64                  `json:"code"`               //状态码
+		Code        int64                  `json:"code,omitempty"`               //状态码
 		Status      string                 `json:"status,omitempty"`   //返回信息
 	}
 	DeviceResp struct {

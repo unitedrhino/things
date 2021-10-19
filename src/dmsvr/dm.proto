@@ -180,16 +180,51 @@ message GetDeviceDataResp{
   repeated DeviceData data = 1;
 }
 
+message SendActionReq{
+  string  productID   = 1; //产品id 获取产品id下的所有设备信息
+  string  deviceName  = 2; //设备名
+  string actionId =3;//产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+  string inputParams = 4;//输入参数
+}
+message SendActionResp{
+  string clientToken = 1;//调用id
+  string outputParams =2;//输出参数 注意：此字段可能返回 null，表示取不到有效值。
+  string  status =3;//返回状态
+  int64   code =4;//设备返回状态码
+}
 
+message SendPropertyReq{
+  string  productID   = 1; //产品id 获取产品id下的所有设备信息
+  string  deviceName  = 2; //设备名
+  string data =3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+  string method =4;//请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+}
+message SendPropertyResp{
+  string data = 1;//返回信息
+  string  status =2;//返回状态
+  int64   code =3;//设备返回状态码
+}
 
 service Dm {
-  rpc loginAuth(LoginAuthReq)           returns (Response);//登录认证
-  rpc accessAuth(AccessAuthReq)         returns (Response);//操作认证
-  rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);//设备管理
-  rpc manageProduct(ManageProductReq)   returns (ProductInfo);//产品管理
-  rpc getProductInfo(GetProductInfoReq) returns (GetProductInfoResp);//获取产品信息
-  rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);//获取设备信息
-  rpc getDeviceData(GetDeviceDataReq)   returns (GetDeviceDataResp);//获取设备最新数据
-  rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);//获取设备日志信息
+  //登录认证
+  rpc loginAuth(LoginAuthReq)           returns (Response);
+  //操作认证
+  rpc accessAuth(AccessAuthReq)         returns (Response);
+  //设备管理
+  rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);
+  //产品管理
+  rpc manageProduct(ManageProductReq)   returns (ProductInfo);
+  //获取产品信息
+  rpc getProductInfo(GetProductInfoReq) returns (GetProductInfoResp);
+  //获取设备信息
+  rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);
+  //获取设备最新数据
+  rpc getDeviceData(GetDeviceDataReq)   returns (GetDeviceDataResp);
+  //获取设备日志信息
+  rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);
+  //同步调用设备行为
+  rpc SendAction(SendActionReq)         returns(SendActionResp);
+  //同步调用设备属性
+  rpc SendProperty(SendPropertyReq)     returns(SendPropertyResp);
 }
 

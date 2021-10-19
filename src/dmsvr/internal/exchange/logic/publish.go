@@ -71,7 +71,7 @@ func (l *PublishLogic) HandleProperty(msg *types.Elements) error {
 	dbData := device.DeviceData{}
 	switch l.dreq.Method {
 	case device.REPORT, device.REPORT_INFO:
-		tp, err := l.template.VerifyParam(l.dreq, device.PROPERTY)
+		tp, err := l.template.VerifyReqParam(l.dreq, device.PROPERTY)
 		if err != nil {
 			l.StatusResp(l.dreq.Method, l.dreq.ClientToken, err)
 			return err
@@ -108,7 +108,7 @@ func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 	if l.dreq.Method != device.EVENT_POST {
 		return errors.Method
 	}
-	tp, err := l.template.VerifyParam(l.dreq, device.EVENT)
+	tp, err := l.template.VerifyReqParam(l.dreq, device.EVENT)
 	if err != nil {
 		l.StatusResp(l.dreq.Method, l.dreq.ClientToken, err)
 		return err
@@ -131,6 +131,16 @@ func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 }
 func (l *PublishLogic) HandleAction(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleAction")
+	resp := device.DeviceResp{}
+	err := json.Unmarshal([]byte(msg.Payload),&resp)
+	if err != nil {
+		return errors.Parameter.AddDetail(err)
+	}
+	c,ok := l.svcCtx.DeviceChan.Map.Load(resp.ClientToken)
+	if ok != true {
+		return nil
+	}
+	c.(*types.Info).Msg<- msg
 	return nil
 }
 
@@ -159,8 +169,8 @@ func (l *PublishLogic) HandleOta(msg *types.Elements) error {
 func (l *PublishLogic) HandleDefault(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleDefault")
 	return nil
-}
 
+}
 func (l *PublishLogic) Handle(msg *types.Elements) error {
 	l.Infof("PublishLogic|req=%+v", msg)
 	err := l.initMsg(msg)
@@ -177,7 +187,7 @@ func (l *PublishLogic) Handle(msg *types.Elements) error {
 		case l.pi.ProductID:
 			return l.HandleDefault(msg)
 		default:
-			return errors.Parameter.AddDetail(fmt.Sprintf("not suppot topic :%s", msg.Topic))
+			return errors.Parameter.AddDetailf("not suppot topic :%s", msg.Topic)
 		}
 	}
 

@@ -12,6 +12,7 @@ import (
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"go.mongodb.org/mongo-driver/mongo"
 	"os"
+	"time"
 )
 
 type ServiceContext struct {
@@ -24,6 +25,7 @@ type ServiceContext struct {
 	ProductID   *utils.SnowFlake
 	Mqtt        mqtt.Client
 	Mongo       *mongo.Database
+	DeviceChan			*utils.ExpMap
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -68,5 +70,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceLog:   dl,
 		Mqtt:        mc,
 		Mongo:       mongoDB,
+		DeviceChan: utils.NewExpMap(5*time.Minute),
 	}
 }

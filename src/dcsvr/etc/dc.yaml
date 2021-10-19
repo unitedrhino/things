@@ -12,3 +12,11 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
+DmRpc:
+  Enable: true
+  Conf:
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: dm.rpc
+      Timeout: 1000000

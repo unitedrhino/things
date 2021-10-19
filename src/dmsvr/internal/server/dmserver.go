@@ -60,3 +60,13 @@ func (s *DmServer) GetDeviceLog(ctx context.Context, in *dm.GetDeviceLogReq) (*d
 	l := logic.NewGetDeviceLogLogic(ctx, s.svcCtx)
 	return l.GetDeviceLog(in)
 }
+
+func (s *DmServer) SendAction(ctx context.Context, in *dm.SendActionReq) (*dm.SendActionResp, error) {
+	l := logic.NewSendActionLogic(ctx, s.svcCtx)
+	return l.SendAction(in)
+}
+
+func (s *DmServer) SendProperty(ctx context.Context, in *dm.SendPropertyReq) (*dm.SendPropertyResp, error) {
+	l := logic.NewSendPropertyLogic(ctx, s.svcCtx)
+	return l.SendProperty(in)
+}

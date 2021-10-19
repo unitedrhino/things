@@ -1,8 +1,9 @@
-package logic
+package tests
 
 import (
 	"context"
 	"fmt"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/dmclient"
@@ -11,10 +12,7 @@ import (
 	"testing"
 )
 
-const (
-	SUB = "SUB" //订阅
-	PUB = "PUB" //发布
-)
+
 
 func TestAccessAuth(t *testing.T) {
 	fmt.Println("TestLoginAuth")
@@ -40,7 +38,7 @@ func TestAccessAuth(t *testing.T) {
 		req := &dm.AccessAuthReq{
 			Username: userName, //用户名
 			Topic:    fmt.Sprintf(v, productID, deviceName),
-			Access:   PUB,
+			Access:   def.PUB,
 			ClientID: clientID,
 			Ip:       "192.168.1.2", //访问的ip地址
 		}

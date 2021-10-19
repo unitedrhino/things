@@ -1,4 +1,4 @@
-package logic
+package tests
 
 import (
 	"context"
@@ -11,52 +11,47 @@ import (
 	"testing"
 )
 
-func TestGetDeviceInfo(t *testing.T) {
-	fmt.Println("GetDeviceInfo")
+func TestGetProductInfo(t *testing.T) {
+	fmt.Println("GetProductInfo")
 	client := dmclient.NewDm(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
 		Hosts: []string{"127.0.0.1:2379"},
 		Key:   "dm.rpc",
 	}}))
 	ctx := context.Background()
 	productID := "21CYs1k9YpG"
-	deviceName := "test8"
 	{
-		req := &dm.GetDeviceInfoReq{
-			DeviceName: deviceName, //设备名 为空时获取产品id下的所有设备信息
-			ProductID:  productID,  //产品id
+		req := &dm.GetProductInfoReq{
+			ProductID: productID, //产品id
 			//Page       : productID,//分页信息 只获取一个则不填
 		}
-		info, err := client.GetDeviceInfo(ctx, req)
+		info, err := client.GetProductInfo(ctx, req)
 		t.Log(req, info)
 		if err != nil {
 			t.Errorf("%+v", errors.Fmt(err))
 		}
 	}
 	{
-		req := &dm.GetDeviceInfoReq{
-			DeviceName: "",        //设备名 为空时获取产品id下的所有设备信息
-			ProductID:  productID, //产品id
+		req := &dm.GetProductInfoReq{
 			Page: &dm.PageInfo{
 				Page:     1,
 				PageSize: 20,
 			}, //分页信息 只获取一个则不填
 		}
-		info, err := client.GetDeviceInfo(ctx, req)
+		info, err := client.GetProductInfo(ctx, req)
 		t.Log(req, info)
 		if err != nil {
 			t.Errorf("%+v", errors.Fmt(err))
 		}
 	}
 	{
-		req := &dm.GetDeviceInfoReq{
-			DeviceName: "",    //设备名 为空时获取产品id下的所有设备信息
-			ProductID:  "123", //产品id
+		req := &dm.GetProductInfoReq{
+			ProductID: "123", //产品id
 			Page: &dm.PageInfo{
 				Page:     1,
 				PageSize: 20,
 			}, //分页信息 只获取一个则不填
 		}
-		info, err := client.GetDeviceInfo(ctx, req)
+		info, err := client.GetProductInfo(ctx, req)
 		t.Log(req, info)
 		if err != nil {
 			t.Errorf("%+v", errors.Fmt(err))

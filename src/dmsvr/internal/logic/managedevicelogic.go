@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
@@ -116,9 +115,8 @@ func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID, in.Info.DeviceName)
 	if err != nil {
 		if err == model.ErrNotFound {
-			return nil, errors.Parameter.AddDetail(
-				fmt.Sprintf("not find device|productid=%s|deviceName=%s",
-					in.Info.ProductID, in.Info.DeviceName))
+			return nil, errors.Parameter.AddDetailf("not find device|productid=%s|deviceName=%s",
+					in.Info.ProductID, in.Info.DeviceName)
 		}
 		return nil, errors.System.AddDetail(err.Error())
 	}
@@ -136,9 +134,8 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID, in.Info.DeviceName)
 	if err != nil {
 		if err == model.ErrNotFound {
-			return nil, errors.Parameter.AddDetail(
-				fmt.Sprintf("not find device|productid=%s|deviceName=%s",
-					in.Info.ProductID, in.Info.DeviceName))
+			return nil, errors.Parameter.AddDetailf("not find device|productid=%s|deviceName=%s",
+					in.Info.ProductID, in.Info.DeviceName)
 		}
 		l.Errorf("DelDevice|DeviceInfo|FindOne|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
