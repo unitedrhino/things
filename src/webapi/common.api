@@ -1,0 +1,12 @@
+info(
+    title: "公共结构体定义"
+    desc: "公共结构体定义"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+type PageInfo{
+    Page 		int64 `json:"page"`
+    PageSize 	int64 `json:"pageSize"`
+}
