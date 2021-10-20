@@ -6,10 +6,6 @@ title: "设备管理模块"
 	version: "v1"
 )
 
-type PageInfo{
-	Page 		int64 `json:"page"`
-	PageSize 	int64 `json:"pageSize"`
-}
 
 type LoginAuthReq struct {
 	Username    string `json:"username"`       //用户名
@@ -37,20 +33,20 @@ type ProductInfo struct {
 
 type ManageProductReq struct {
 
-	Opt  int64        `protobuf:"varint,1,opt,name=opt,proto3" json:"opt,omitempty"`  //操作 0:新增 1:修改 2:删除
-	Info *ProductInfo `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"` //产品信息
+	Opt  int64        `json:"opt,omitempty"`  //操作 0:新增 1:修改 2:删除
+	Info *ProductInfo `json:"info,optional,omitempty"` //产品信息
 }
 
 type GetProductInfoReq struct {
-	ProductID string    `protobuf:"bytes,1,opt,name=productID,proto3" json:"productID,optional"` //产品id  如果为空返回所有产品的信息
-	Page      *PageInfo `protobuf:"bytes,2,opt,name=page,proto3" json:"page,optional"`           //分页信息,只获取一个则不填
+	ProductID string    `json:"productID,optional,optional"` //产品id  如果为空返回所有产品的信息
+	Page      *PageInfo `json:"page,optional,optional"`           //分页信息,只获取一个则不填
 }
 
 
 type GetProductInfoResp struct {
-	Info  []*ProductInfo `protobuf:"bytes,1,rep,name=info,proto3" json:"info,omitempty"`    //产品信息
-	Total int64          `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` //拥有的总数(只有分页的时候会返回)
-	Num   int64 		`json:"num,omitempty"` //返回的数量
+	Info  []*ProductInfo `json:"info,omitempty"`    //产品信息
+	Total int64          `json:"total,optional,omitempty"` //拥有的总数(只有分页的时候会返回)
+	Num   int64 		`json:"num,optional,omitempty"` //返回的数量
 }
 
 type DeviceInfo struct {
@@ -67,18 +63,18 @@ type DeviceInfo struct {
 }
 
 type ManageDeviceReq struct {
-	Opt  int64       `protobuf:"varint,1,opt,name=opt,proto3" json:"opt,omitempty"`  //操作 0:新增 1:修改 2:删除
-	Info *DeviceInfo `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"` //设备信息
+	Opt  int64       `json:"opt,omitempty"`  //操作 0:新增 1:修改 2:删除
+	Info *DeviceInfo `json:"info,omitempty"` //设备信息
 }
 
 type GetDeviceInfoReq struct {
-	DeviceName string    `protobuf:"bytes,1,opt,name=deviceName,proto3" json:"deviceName,optional"` //设备名 为空时获取产品id下的所有设备信息
-	ProductID  string    `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`   //产品id
-	Page       *PageInfo `protobuf:"bytes,3,opt,name=page,proto3" json:"page,optional"`             //分页信息 只获取一个则不填
+	DeviceName string    `json:"deviceName,optional"` //设备名 为空时获取产品id下的所有设备信息
+	ProductID  string    `json:"productID,omitempty"`   //产品id
+	Page       *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
 }
 type GetDeviceInfoResp struct {
-	Info  []*DeviceInfo `protobuf:"bytes,1,rep,name=info,proto3" json:"info,omitempty"`    //设备信息
-	Total int64         `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` //总数(只有分页的时候会返回)
+	Info  []*DeviceInfo `json:"info,omitempty"`    //设备信息
+	Total int64         `json:"total,omitempty"` //总数(只有分页的时候会返回)
 	Num   int64 		`json:"num,omitempty"` //返回的数量
 }
 

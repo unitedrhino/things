@@ -1,0 +1,111 @@
+info(
+    title: "设备交互模块"
+    desc: "负责处理设备与设备的交互及设备与人的交互及对应的权限控制"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+
+//组信息
+type GroupInfo struct {
+    GroupID     int64  `json:"groupID,omitempty"`         //组id
+    Name        string `json:"name,omitempty"`                //组名
+    Uid         int64  `json:"uid,omitempty"`                 //管理员用户id
+    CreatedTime int64  `json:"createdTime,optional,omitempty"` //创建时间 只读
+}
+
+type GroupMember struct {
+    Id      int64 `json:"id,omitempty"`           //记录主键
+    GroupID int64 `json:"groupID,omitempty"` //组id
+    //如果是用户,则是uid的十进制字符串,
+    //如果是设备,则是productID:deviceName的组合方式
+    MemberID    string `json:"memberID,omitempty"`        //成员id
+    MemberType  int64  `json:"memberType,omitempty"`   //成员类型:1:设备 2:用户
+    CreatedTime int64  `json:"createdTime,optional,omitempty"` //创建时间 只读
+}
+
+type ManageGroupInfoReq struct {
+    Opt  int64      `json:"opt,omitempty"`  //操作 0:新增 1:修改 2:删除
+    Info *GroupInfo `json:"info,optional,omitempty"` //组信息
+}
+
+type ManageGroupMemberReq struct {
+    Opt  int64        `json:"opt,omitempty"`  //操作 0:新增 1:修改 2:删除
+    Info *GroupMember `json:"info,optional,omitempty"` //组成员
+}
+
+type GetGroupInfoReq struct {
+    Page    *PageInfo `json:"page,optional,omitempty"`        //分页信息,只获取一个则不填
+    GroupID int64     `json:"groupID,optional,omitempty"` //产品id  如果为空返回所有产品的信息
+}
+
+type GetGroupInfoResp struct {
+    Info  []*GroupInfo `json:"info,omitempty"`    //产品信息
+    Num   int64 		`json:"num,omitempty"` //返回的数量
+    Total int64        `json:"total,optional,omitempty"` //拥有的总数(只有分页的时候会返回)
+}
+
+type GetGroupMemberReq struct {
+    Page       *PageInfo `json:"page,optional,omitempty"`              //分页信息,两个参数都填不用填分页信息,用来确认组内是否有该成员
+    GroupID    int64     `json:"groupID,omitempty"`       //组id
+    MemberID   string    `json:"memberID,omitempty"`      //成员id
+    MemberType int64     `json:"memberType,omitempty"` //成员类型:1:设备 2:用户
+}
+
+type GetGroupMemberResp struct {
+    Info  []*GroupMember `json:"info,omitempty"`    //产品信息
+    Num   int64 		`json:"num,optional,omitempty"` //返回的数量
+    Total int64          `json:"total,optional,omitempty"` //拥有的总数(只有分页的时候会返回)
+}
+
+//上面是组及组成员的获取及管理
+//下面是设备与人交互
+type SendActionReq struct {
+    MemberID    string `json:"memberID,omitempty"`       //成员id
+    MemberType  int64  `json:"memberType,omitempty"`  //成员类型:1:设备 2:用户
+    ProductID   string `json:"productID,omitempty"`     //产品id 获取产品id下的所有设备信息
+    DeviceName  string `json:"deviceName,omitempty"`   //设备名
+    ActionId    string `json:"actionId,omitempty"`       //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+    InputParams string `json:"inputParams,omitempty"` //输入参数
+}
+
+type SendActionResp struct {
+    ClientToken  string `json:"clientToken,omitempty"`   //调用id
+    OutputParams string `json:"outputParams,omitempty"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
+    Status       string `json:"status,omitempty"`             //返回状态
+    Code         int64  `json:"code,omitempty"`                //设备返回状态码
+}
+
+type SendPropertyReq struct {
+    MemberID   string `json:"memberID,omitempty"`      //成员id
+    MemberType int64  `json:"memberType,omitempty"` //成员类型:1:设备 2:用户
+    ProductID  string `json:"productID,omitempty"`    //产品id 获取产品id下的所有设备信息
+    DeviceName string `json:"deviceName,omitempty"`  //设备名
+    Data       string `json:"data,omitempty"`              //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+    Method     string `json:"method,omitempty"`          //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+}
+
+type SendPropertyResp struct {
+    Data   string `json:"data,omitempty"`     //返回信息
+    Status string `json:"status,omitempty"` //返回状态
+    Code   int64  `json:"code,omitempty"`    //设备返回状态码
+}
+
+@server (
+    group :dc
+)
+service webapi {
+    @handler  ManageGroupInfo//管理组
+    post /dc/ManageGroupInfo(ManageGroupInfoReq)returns (GroupInfo)
+    @handler  ManageGroupMember//管理组成员
+    post /dc/ManageGroupMember(ManageGroupMemberReq)returns (GroupMember)
+    @handler  GetGroupInfo//获取组信息
+    post /dc/GetGroupInfo(GetGroupInfoReq)returns (GetGroupInfoResp)
+    @handler  GetGroupMember//获取组成员
+    post /dc/GetGroupMember(GetGroupMemberReq)returns (GetGroupMemberResp)
+    @handler  SendAction//同步调用设备行为
+    post /dc/SendAction(SendActionReq)returns (SendActionResp)
+    @handler  SendProperty//同步调用设备属性
+    post /dc/SendProperty(SendPropertyReq)returns (SendPropertyResp)
+}

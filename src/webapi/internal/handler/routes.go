@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	dc "gitee.com/godLei6/things/src/webapi/internal/handler/dc"
 	dm "gitee.com/godLei6/things/src/webapi/internal/handler/dm"
 	user "gitee.com/godLei6/things/src/webapi/internal/handler/user"
 	verify "gitee.com/godLei6/things/src/webapi/internal/handler/verify"
@@ -103,5 +104,40 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
+	)
+
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/dc/ManageGroupInfo",
+				Handler: dc.ManageGroupInfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/dc/ManageGroupMember",
+				Handler: dc.ManageGroupMemberHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/dc/GetGroupInfo",
+				Handler: dc.GetGroupInfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/dc/GetGroupMember",
+				Handler: dc.GetGroupMemberHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/dc/SendAction",
+				Handler: dc.SendActionHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/dc/SendProperty",
+				Handler: dc.SendPropertyHandler(serverCtx),
+			},
+		},
 	)
 }
