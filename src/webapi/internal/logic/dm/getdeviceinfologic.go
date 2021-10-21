@@ -26,6 +26,7 @@ func NewGetDeviceInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) GetD
 }
 
 func (l *GetDeviceInfoLogic) GetDeviceInfo(req types.GetDeviceInfoReq) (*types.GetDeviceInfoResp, error) {
+	l.Infof("GetDeviceInfo|req=%+v", req)
 	dmReq := &dm.GetDeviceInfoReq{
 		DeviceName: req.DeviceName, //设备名 为空时获取产品id下的所有设备信息
 		ProductID:  req.ProductID,  //产品id

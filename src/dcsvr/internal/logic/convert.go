@@ -27,7 +27,6 @@ func DBToRPCFmt(db interface{}) interface{} {
 	case *model.GroupMember:
 		pi := db.(*model.GroupMember)
 		dpi := &dc.GroupMember{
-			Id:    pi.Id,                                 //产品id
 			GroupID:  pi.GroupID,                               //产品名
 			MemberID:     pi.MemberID,                                  //认证方式:0:账密认证,1:秘钥认证
 			MemberType:   pi.MemberType,                                //设备类型:0:设备,1:网关,2:子设备

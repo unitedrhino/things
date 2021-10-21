@@ -47,7 +47,6 @@ func (m *defaultDcModel) CheckMemeberWithGoupID(MemberID1 string,MemberType1 int
 		return true,err
 	}
 	return false, err
-
 }
 
 func (m *defaultDcModel) FindByGroupInfo(page def.PageInfo) ([]*GroupInfo, error) {

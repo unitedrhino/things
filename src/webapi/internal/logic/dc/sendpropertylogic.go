@@ -25,6 +25,6 @@ func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) SendP
 
 func (l *SendPropertyLogic) SendProperty(req types.SendPropertyReq) (*types.SendPropertyResp, error) {
 	// todo: add your logic here and delete this line
-
+	l.Infof("SendProperty|req=%+v", req)
 	return &types.SendPropertyResp{}, nil
 }

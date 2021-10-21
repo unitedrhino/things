@@ -110,32 +110,32 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/dc/ManageGroupInfo",
+				Path:    "/dc/manageGroupInfo",
 				Handler: dc.ManageGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/dc/ManageGroupMember",
+				Path:    "/dc/manageGroupMember",
 				Handler: dc.ManageGroupMemberHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/dc/GetGroupInfo",
+				Path:    "/dc/getGroupInfo",
 				Handler: dc.GetGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/dc/GetGroupMember",
+				Path:    "/dc/getGroupMember",
 				Handler: dc.GetGroupMemberHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/dc/SendAction",
+				Path:    "/dc/sendAction",
 				Handler: dc.SendActionHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/dc/SendProperty",
+				Path:    "/dc/sendProperty",
 				Handler: dc.SendPropertyHandler(serverCtx),
 			},
 		},

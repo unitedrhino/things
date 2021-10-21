@@ -28,11 +28,7 @@ func NewManageDeviceLogic(ctx context.Context, svcCtx *svc.ServiceContext) Manag
 }
 
 func (l *ManageDeviceLogic) ManageDevice(req types.ManageDeviceReq) (*types.DeviceInfo, error) {
-	defer func() {
-		if p := recover(); p != nil {
-			utils.HandleThrow(p)
-		}
-	}()
+	l.Infof("ManageDevice|req=%+v", req)
 	dmReq := &dm.ManageDeviceReq{
 		Opt: req.Opt,
 		Info: &dm.DeviceInfo{

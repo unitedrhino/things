@@ -150,18 +150,17 @@ type GetDeviceInfoResp struct {
 }
 
 type GroupInfo struct {
-	GroupID     int64  `json:"groupID,omitempty"`              //组id
-	Name        string `json:"name,omitempty"`                 //组名
-	Uid         int64  `json:"uid,omitempty"`                  //管理员用户id
-	CreatedTime int64  `json:"createdTime,optional,omitempty"` //创建时间 只读
+	GroupID     int64  `json:"groupID,string,omitempty"`              //组id
+	Name        string `json:"name,omitempty"`                        //组名
+	Uid         int64  `json:"uid,string,omitempty"`                  //管理员用户id
+	CreatedTime int64  `json:"createdTime,string,optional,omitempty"` //创建时间 只读
 }
 
 type GroupMember struct {
-	Id          int64  `json:"id,omitempty"`                   //记录主键
-	GroupID     int64  `json:"groupID,omitempty"`              //组id
-	MemberID    string `json:"memberID,omitempty"`             //成员id
-	MemberType  int64  `json:"memberType,omitempty"`           //成员类型:1:设备 2:用户
-	CreatedTime int64  `json:"createdTime,optional,omitempty"` //创建时间 只读
+	GroupID     int64  `json:"groupID,omitempty"`                     //组id
+	MemberID    string `json:"memberID,omitempty"`                    //成员id
+	MemberType  int64  `json:"memberType,omitempty"`                  //成员类型:1:设备 2:用户
+	CreatedTime int64  `json:"createdTime,string,optional,omitempty"` //创建时间 只读
 }
 
 type ManageGroupInfoReq struct {
@@ -175,8 +174,8 @@ type ManageGroupMemberReq struct {
 }
 
 type GetGroupInfoReq struct {
-	Page    *PageInfo `json:"page,optional,omitempty"`    //分页信息,只获取一个则不填
-	GroupID int64     `json:"groupID,optional,omitempty"` //产品id  如果为空返回所有产品的信息
+	Page    *PageInfo `json:"page,optional,omitempty"`           //分页信息,只获取一个则不填
+	GroupID int64     `json:"groupID,string,optional,omitempty"` //产品id  如果为空返回所有产品的信息
 }
 
 type GetGroupInfoResp struct {
@@ -186,10 +185,10 @@ type GetGroupInfoResp struct {
 }
 
 type GetGroupMemberReq struct {
-	Page       *PageInfo `json:"page,optional,omitempty"` //分页信息,两个参数都填不用填分页信息,用来确认组内是否有该成员
-	GroupID    int64     `json:"groupID,omitempty"`       //组id
-	MemberID   string    `json:"memberID,omitempty"`      //成员id
-	MemberType int64     `json:"memberType,omitempty"`    //成员类型:1:设备 2:用户
+	Page       *PageInfo `json:"page,optional,omitempty"`           //分页信息,两个参数都填不用填分页信息,用来确认组内是否有该成员
+	GroupID    int64     `json:"groupID,optional,string,omitempty"` //组id
+	MemberID   string    `json:"memberID,optional,omitempty"`       //成员id
+	MemberType int64     `json:"memberType,optional,omitempty"`     //成员类型:1:设备 2:用户
 }
 
 type GetGroupMemberResp struct {
@@ -211,7 +210,7 @@ type SendActionResp struct {
 	ClientToken  string `json:"clientToken,omitempty"`  //调用id
 	OutputParams string `json:"outputParams,omitempty"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
 	Status       string `json:"status,omitempty"`       //返回状态
-	Code         int64  `json:"code,omitempty"`         //设备返回状态码
+	Code         int64  `json:"code,string,omitempty"`  //设备返回状态码
 }
 
 type SendPropertyReq struct {
@@ -224,7 +223,7 @@ type SendPropertyReq struct {
 }
 
 type SendPropertyResp struct {
-	Data   string `json:"data,omitempty"`   //返回信息
-	Status string `json:"status,omitempty"` //返回状态
-	Code   int64  `json:"code,omitempty"`   //设备返回状态码
+	Data   string `json:"data,omitempty"`        //返回信息
+	Status string `json:"status,omitempty"`      //返回状态
+	Code   int64  `json:"code,string,omitempty"` //设备返回状态码
 }

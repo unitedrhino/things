@@ -28,6 +28,7 @@ func NewLoginAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginAut
 }
 
 func (l *LoginAuthLogic) LoginAuth(req types.LoginAuthReq) (err error) {
+	l.Infof("LoginAuth|req=%+v", req)
 	var cert []byte
 	if req.Certificate != "" {
 		cert, err = base64.StdEncoding.DecodeString(req.Certificate)

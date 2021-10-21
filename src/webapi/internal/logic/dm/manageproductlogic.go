@@ -28,11 +28,7 @@ func NewManageProductLogic(ctx context.Context, svcCtx *svc.ServiceContext) Mana
 }
 
 func (l *ManageProductLogic) ManageProduct(req types.ManageProductReq) (*types.ProductInfo, error) {
-	defer func() {
-		if p := recover(); p != nil {
-			utils.HandleThrow(p)
-		}
-	}()
+	l.Infof("ManageProduct|req=%+v", req)
 	dmReq := &dm.ManageProductReq{
 		Opt: req.Opt,
 		Info: &dm.ProductInfo{
