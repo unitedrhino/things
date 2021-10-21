@@ -19,13 +19,12 @@ message GroupInfo{
 }
 
 message GroupMember{
-  int64 id =1;//记录主键
-  int64 groupID = 2;//组id
+  int64 groupID = 1;//组id
   //如果是用户,则是uid的十进制字符串,
   //如果是设备,则是productID:deviceName的组合方式
-  string memberID = 3;//成员id
-  int64   memberType =4;//成员类型:1:设备 2:用户
-  int64   createdTime   = 5; //创建时间 只读
+  string memberID = 2;//成员id
+  int64   memberType =3;//成员类型:1:设备 2:用户
+  int64   createdTime   = 4; //创建时间 只读
 }
 
 message ManageGroupInfoReq {
