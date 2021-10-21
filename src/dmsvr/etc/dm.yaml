@@ -2,11 +2,11 @@ Name: dm.rpc
 ListenOn: 127.0.0.1:9081
 CpuThreshold: 0
 NodeID: 1
+Timeout: 1000000
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: dm.rpc
-Timeout: 10000
 Mysql:
   DataSource: root:password@tcp(81.68.223.176:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
