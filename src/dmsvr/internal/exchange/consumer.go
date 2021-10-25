@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/internal/config"
 	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/logic"
@@ -135,16 +136,18 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 	// https://github.com/Shopify/sarama/blob/master/consumer_group.go#L27-L29
 	// 具体消费消息
 	for message := range claim.Messages() {
+		var err error
 		func() {
 			ctx, span := trace.StartServerSpan(session.Context(), nil, k.serviceContext.Config.Kafka.Group, message.Topic)
+			l := logx.WithContext(ctx)
 			defer span.Finish()
 			msg := types.Elements{}
-			err := json.Unmarshal(message.Value, &msg)
+			err = json.Unmarshal(message.Value, &msg)
 			if err != nil {
-				logx.Errorf("%s|msg=%s|Unmarshal=%+v\n", utils.FuncName(), string(message.Value), err)
+				l.Errorf("%s|msg=%s|Unmarshal=%+v\n", utils.FuncName(), string(message.Value), err)
 				return
 			}
-			log.Printf("%s|%+v|msessage=%+v\n", utils.FuncName(), msg, string(message.Key))
+			l.Slowf("%s|%+v|msessage=%+v\n", utils.FuncName(), msg, string(message.Key))
 			v, ok := k.Routers[message.Topic]
 			if ok != true {
 				panic(fmt.Sprintf("get msg bug topic not have hander func:%s", message.Topic))
@@ -152,14 +155,16 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 
 			err = v.Handler(ctx, k.serviceContext).Handle(&msg)
 			if err != nil {
-				logx.Errorf("%s|Handler=%+v\n", utils.FuncName(), err)
+				l.Errorf("%s|Handler=%+v\n", utils.FuncName(), err)
 				return
 			}
 			//run.Run(msg)
 			// 更新位移
 		}()
-		session.MarkMessage(message, "")
-
+		if !(errors.Cmp(err,errors.System) || errors.Cmp(err,errors.Server)) {
+			//如果是系统内部错误,那么不会更新mark,会让kafka进行重试
+			session.MarkMessage(message, "")
+		}
 	}
 	return nil
 }
