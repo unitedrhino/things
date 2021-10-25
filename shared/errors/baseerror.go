@@ -9,12 +9,15 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"runtime"
+	"runtime/debug"
 )
 
 type CodeError struct {
 	Code    int64    `json:"code"`
 	Msg     string   `json:"msg"`
 	Details []string `json:"details,omitempty"`
+	Stack   []string `json:"strck,omitempty"`
 }
 
 type RpcError interface {
@@ -51,6 +54,9 @@ func (c CodeError) WithMsg(msg string) *CodeError {
 }
 func (c CodeError) AddDetail(msg ...interface{}) *CodeError {
 	c.Details = append(c.Details, fmt.Sprint(msg))
+	pc := make([]uintptr, 1)
+	runtime.Callers(2, pc)
+	c.Stack = append(c.Stack,string(debug.Stack()))
 	return &c
 }
 
@@ -105,7 +111,7 @@ func Fmt(errs error) *CodeError {
 		if err != nil {
 			return System.AddDetail(errs.Error())
 		}
-		return &ce
+		return Default.AddDetail(errs)
 	}
 }
 

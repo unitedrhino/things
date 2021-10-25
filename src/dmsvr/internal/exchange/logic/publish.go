@@ -123,7 +123,7 @@ func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 	if err != nil {
 		l.StatusResp(l.dreq.Method, l.dreq.ClientToken, errors.Database)
 		l.Errorf("InsertOne filure|err=%+v", err)
-		return err
+		return errors.Database.AddDetail(err)
 	}
 	l.StatusResp(l.dreq.Method, l.dreq.ClientToken, errors.OK)
 
@@ -138,7 +138,8 @@ func (l *PublishLogic) HandleAction(msg *types.Elements) error {
 	}
 	c,ok := l.svcCtx.DeviceChan.Map.Load(resp.ClientToken)
 	if ok != true {
-		return nil
+		//如果没有找到,说明不是这个分区处理的或者这个消息超时了,不管是超时还是不是这个分区处理,由于无法判断是否是超时,所以会将返回固定错误码,让kafka转发给其他服务去处理,这里在很多服务的时候会出现高延迟,高性能损耗,以后需要进行优化
+		return errors.Server
 	}
 	c.(*types.Info).Msg<- msg
 	return nil
