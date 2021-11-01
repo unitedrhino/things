@@ -39,4 +39,4 @@ CREATE TABLE `user_info` (
   PRIMARY KEY (`uid`) USING BTREE,
   KEY `user_inviterUid` (`inviterUid`) USING BTREE,
   KEY `user_deletedTime` (`deletedTime`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='用户详细信息表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='用户详细信息表';

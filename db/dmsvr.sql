@@ -22,7 +22,7 @@ CREATE TABLE `product_info` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `productName` (`productName`) USING BTREE,
   UNIQUE KEY `productID` (`productID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='产品信息表'
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='产品信息表';
 
 CREATE TABLE `device_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -40,4 +40,4 @@ CREATE TABLE `device_info` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `deviceName` (`productID`,`deviceName`),
   KEY `device_productID` (`productID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='设备信息表'
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='设备信息表';

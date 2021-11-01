@@ -8,7 +8,7 @@ Etcd:
   - 127.0.0.1:2379
   Key: dc.rpc
 Mysql:
-  DataSource: root:password@tcp(81.68.223.176:3308)/dcsvr?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:password@tcp(127.0.0.1:3306)/dc?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:

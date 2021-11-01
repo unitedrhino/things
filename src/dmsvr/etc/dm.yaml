@@ -8,14 +8,12 @@ Etcd:
   - 127.0.0.1:2379
   Key: dm.rpc
 Mysql:
-  DataSource: root:password@tcp(81.68.223.176:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:password@tcp(127.0.0.1:3306)/dm?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
 Kafka:
-  Mysql:
-    DataSource: root:password@tcp(81.68.223.176:3308)/things?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
   Brokers:
     - 127.0.0.1:9092
   Group: dm
@@ -25,5 +23,5 @@ Mqtt:
   Brokers:
     - tcp://127.0.0.1:1883
 Mongo:
-  Url: "mongodb://admin:password@81.68.223.176:27017"
+  Url: "mongodb://root:password@127.0.0.1:27017"
   Database: things
