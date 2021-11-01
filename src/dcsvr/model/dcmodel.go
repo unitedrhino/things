@@ -30,8 +30,8 @@ type (
 func NewDcModel(conn sqlx.SqlConn, c cache.CacheConf) DmModel {
 	return &defaultDcModel{
 		CachedConn:  sqlc.NewConn(conn, c),
-		groupInfo: "`groupInfo`",
-		groupMember:  "groupMember",
+		groupInfo: "`group_info`",
+		groupMember:  "group_member",
 	}
 }
 

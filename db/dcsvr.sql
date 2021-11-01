@@ -1,7 +1,7 @@
 create database dc;
 use dc;
 
-CREATE TABLE `groupInfo` (
+CREATE TABLE `group_info` (
      `groupID` bigint(20) unsigned NOT NULL COMMENT '组id',
      `name` varchar(128) NOT NULL COMMENT '组名',
      `uid` bigint(20) unsigned NOT NULL COMMENT '管理员用户id',
@@ -11,7 +11,7 @@ CREATE TABLE `groupInfo` (
      PRIMARY KEY (`groupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='组信息表';
 
-CREATE TABLE `groupMember` (
+CREATE TABLE `group_member` (
    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
    `groupID` bigint(20) unsigned NOT NULL COMMENT '组id',
    `memberID` varchar(50) NOT NULL COMMENT '成员id',
