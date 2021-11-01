@@ -3,11 +3,12 @@
 #### 介绍
 
 
-依照腾讯云物联网平台打造,无缝迁移,基于go-zero框架,目前支持mqtt协议,支持数据模板检验,日志记录,数据流转,实时数据反馈,低代码数据流转,用户及设备互联互通.使用了kafka,redis,mysql,MongoDB,etcd开源框架.
+依照腾讯云物联网平台打造,无缝迁移,基于go-zero框架,目前支持mqtt协议,支持数据模板检验,日志记录,数据流转,实时数据反馈,低代码数据流转,用户及设备互联互通.使用了kafka,redis,mysql,MongoDB,etcd开源框架.  
 git地址:[https://gitee.com/godLei6/things](https://gitee.com/godLei6/things)  
-我的微信:17052709767
+我的微信:17052709767  
+欢迎大家的加入  
 ![微信二维码](https://gitee.com/godLei6/things/raw/master/doc/assets/%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
-欢迎大家的加入
+
 
 
 #### 软件架构
