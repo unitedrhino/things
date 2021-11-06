@@ -22,7 +22,11 @@ type Event struct {
 }
 
 type Property struct {
-	Param map[string]interface{} `json:"property"` //属性 key为标识符
+	Param interface{} `json:"property"` //一个属性的参数
 	TimeStamp time.Time `json:"timeStamp"` //时间戳
 }
 
+type Properties struct {
+	Params map[string]interface{} `json:"properties"` //一个属性的参数
+	TimeStamp time.Time `json:"timeStamp"` //时间戳
+}
