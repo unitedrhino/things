@@ -17,11 +17,11 @@ goctl rpc proto -src user.proto  -dir rpc
 ##  rpc文件编译
 goctl rpc proto -src dm.proto  -dir ./
 ## model文件编译
-goctl model mysql datasource -url="root:password@tcp(81.68.223.176:3308)/things" -table="*" -dir ./model -c
-goctl model mysql datasource -url="root:password@tcp(81.68.223.176:3308)/things" -table="device_log" -dir ./model -c
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things" -table="*" -dir ./model -c
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things" -table="device_log" -dir ./model -c
 
 #接口文档生成
 
 # 设备交互模块
-goctl model mysql datasource -url="root:password@tcp(81.68.223.176:3308)/dcsvr" -table="*" -dir ./model -c  
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/dcsvr" -table="*" -dir ./model -c  
 goctl rpc proto -src dc.proto  -dir ./

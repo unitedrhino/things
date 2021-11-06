@@ -5,9 +5,8 @@ import (
 	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
-	"gitee.com/godLei6/things/src/dmsvr/model"
-
 	"github.com/tal-tech/go-zero/core/logx"
 )
 

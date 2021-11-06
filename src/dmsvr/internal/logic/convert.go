@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 

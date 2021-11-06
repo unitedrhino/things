@@ -26,7 +26,7 @@ DcRpc:
       Key: dc.rpc
     Timeout: 1000000
 UserRpc:
-  Enable: false
+  Enable: true
   Conf:
     Etcd:
       Hosts:

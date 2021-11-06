@@ -3,10 +3,10 @@ package svc
 import (
 	"context"
 	"fmt"
+	"gitee.com/godLei6/things/shared/db/mongodb"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/internal/config"
-	"gitee.com/godLei6/things/src/dmsvr/model"
-	"gitee.com/godLei6/things/src/dmsvr/mongodb"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"

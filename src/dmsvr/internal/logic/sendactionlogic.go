@@ -7,7 +7,7 @@ import (
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/device"
 	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/types"
-	"gitee.com/godLei6/things/src/dmsvr/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
 	"time"
 
 	"gitee.com/godLei6/things/src/dmsvr/dm"
@@ -64,7 +64,7 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 	//	return nil, errors.System.AddDetail(err)
 	//}
 	req := device.DeviceReq{
-		Method:      "action",
+		Method:      device.ACTION,
 		//ClientToken: uuid,
 		ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
 		Timestamp: time.Now().Unix(),

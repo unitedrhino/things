@@ -4,8 +4,8 @@ import (
 	"context"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/types"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
-	"gitee.com/godLei6/things/src/dmsvr/model"
 	"github.com/tal-tech/go-zero/core/logx"
 	"time"
 )
