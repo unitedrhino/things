@@ -6,7 +6,7 @@ import (
 	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/dmsvr/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
 	"github.com/spf13/cast"
 	"time"
 

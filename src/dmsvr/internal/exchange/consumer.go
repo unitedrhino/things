@@ -74,7 +74,6 @@ func (k *Kafka) Start() func() {
 	config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRange // 分区分配策略
 	config.Consumer.Offsets.Initial = -2                                   // 未找到组消费位移的时候从哪边开始消费
 	config.ChannelBufferSize = k.ChannelBufferSize                         // channel长度
-
 	ctx, cancel := context.WithCancel(context.Background())
 	client, err := sarama.NewConsumerGroup(k.Brokers, k.Group, config)
 	if err != nil {

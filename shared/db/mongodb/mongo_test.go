@@ -8,6 +8,7 @@ import (
 	"log"
 	"testing"
 )
+const mongoUrl = "mongodb://admin:password@127.0.0.1:27017"
 
 func TestMongo(t *testing.T) {
 	clientOpt := options.Client().ApplyURI(mongoUrl)

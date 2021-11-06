@@ -1,0 +1,1026 @@
+{
+	"info": {
+		"_postman_id": "f123649e-35cc-49e5-ab1a-3bcae0a45612",
+		"name": "宠物定位",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "用户管理模块",
+			"item": [
+				{
+					"name": "登录",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"17052709767\",                  \r\n    \"pwdtype\":2,                         \r\n    \"password\": \"yl\",                \r\n    \"loginType\":\"img\",                     \r\n    \"captcha\": \"031ByC0w3SW6DV2teW0w3qgt7U1ByC0T\",                  \r\n    \"captchaId\": \"Y1goJMD3qvs6jZ63QUXN\"  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8888/user/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "注册第一步",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reqType\":\"phone\",\r\n    \"note\":\"17052709767\",\r\n    \"code\":\"123\",\r\n    \"codeID\":\"6666\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/user/registerCore",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"user",
+								"registerCore"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "注册第一步,手机号注册",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"reqType\":\"phone\",\r\n    \"note\":\"17052709767\",\r\n    \"code\":\"123\",\r\n    \"codeID\":\"6666\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/user/registerCore",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"user",
+										"registerCore"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "048b92bff69918e1"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 01 Nov 2021 15:38:52 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "235"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"uid\": \"1713553226509324288\",\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE3MTM1NTMyMjY1MDkzMjQyODgsImV4cCI6MTYzNTc4MTczMiwiaWF0IjoxNjM1NzgxMTMyfQ.OmOBsTuL6uVcQ63E07qLXqIT3ywwdXuWre3Czf-I1Lo\",\n    \"accessExpire\": 1635781732\n}"
+						}
+					]
+				},
+				{
+					"name": "注册第二步",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTQ0ODc0MzQzOTg1MzU2ODAsImV4cCI6MTYxNjU5NTg5NiwiaWF0IjoxNjE2NTk1Mjk2fQ.oaOqeHep5f2KcyieE-MBhk_58pgjMjk0pyYjQAjnFVM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE3MTM1NTMyMjY1MDkzMjQyODgsImV4cCI6MTYzNTc4MTczMiwiaWF0IjoxNjM1NzgxMTMyfQ.OmOBsTuL6uVcQ63E07qLXqIT3ywwdXuWre3Czf-I1Lo\",\r\n    \"username\":\"yl2\",\r\n    \"password\":\"yl\",\r\n    \"accessToken\":\"yl\",\r\n    \"businessID\":1,\r\n    \"uid\":\"1713553226509324288\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/user/register2",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"user",
+								"register2"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "注册第二步(uid不对)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTQ0ODc0MzQzOTg1MzU2ODAsImV4cCI6MTYxNjU5NTg5NiwiaWF0IjoxNjE2NTk1Mjk2fQ.oaOqeHep5f2KcyieE-MBhk_58pgjMjk0pyYjQAjnFVM",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE3MTM1NTMyMjY1MDkzMjQyODgsImV4cCI6MTYzNTc4MTczMiwiaWF0IjoxNjM1NzgxMTMyfQ.OmOBsTuL6uVcQ63E07qLXqIT3ywwdXuWre3Czf-I1Lo\",\r\n    \"username\":\"yl2\",\r\n    \"password\":\"yl\",\r\n    \"accessToken\":\"yl\",\r\n    \"businessID\":1,\r\n    \"uid\":\"1697266429861040128\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/user/register2",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"user",
+										"register2"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain; charset=utf-8"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "0a60013df8d69dab"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 01 Nov 2021 15:41:25 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "38"
+								}
+							],
+							"cookie": [],
+							"body": "{\"code\":1000006,\"msg\":\"uid不对应\"}\n"
+						},
+						{
+							"name": "注册第二步(注册成功)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTQ0ODc0MzQzOTg1MzU2ODAsImV4cCI6MTYxNjU5NTg5NiwiaWF0IjoxNjE2NTk1Mjk2fQ.oaOqeHep5f2KcyieE-MBhk_58pgjMjk0pyYjQAjnFVM",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE3MTM1NTMyMjY1MDkzMjQyODgsImV4cCI6MTYzNTc4MTczMiwiaWF0IjoxNjM1NzgxMTMyfQ.OmOBsTuL6uVcQ63E07qLXqIT3ywwdXuWre3Czf-I1Lo\",\r\n    \"username\":\"yl2\",\r\n    \"password\":\"yl\",\r\n    \"accessToken\":\"yl\",\r\n    \"businessID\":1,\r\n    \"uid\":\"1713553226509324288\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/user/register2",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"user",
+										"register2"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Trace-Id",
+									"value": "70e99bec81d8eea5"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 01 Nov 2021 15:41:54 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "0"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "获取验证码",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"sms\",             \r\n    \"use\":\"login\"     \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/verify/captcha",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"verify",
+								"captcha"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取验证码",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"sms\",             \r\n    \"use\":\"login\"     \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/verify/captcha",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"verify",
+										"captcha"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "6d398a0dda33d7e9"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 01 Nov 2021 15:43:16 GMT"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"codeID\": \"Y1goJMD3qvs6jZ63QUXN\",\n    \"url\": \"data:image/png;base64,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\",\n    \"expire\": 180\n}"
+						}
+					]
+				},
+				{
+					"name": "获取用户信息",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "yl-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYyODA4MjAwMiwiaWF0IjoxNjE5NDQyMDAyfQ.T20nXd-zwgrCL2GibiutCVZ5WhNIMafbNrl08iL6ssc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"yl\",\r\n    \"password\":\"yl\",\r\n    \"accessToken\":\"yl\",\r\n    \"businessID\":1,\r\n    \"uid\":\"1694394270701588480\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:8888/user/info",
+							"host": [
+								"{{host}}"
+							],
+							"port": "8888",
+							"path": [
+								"user",
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改用户信息",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "yl-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYyODA4MjAwMiwiaWF0IjoxNjE5NDQyMDAyfQ.T20nXd-zwgrCL2GibiutCVZ5WhNIMafbNrl08iL6ssc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"info\":{\r\n        \"sex\":4\r\n    }\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8888/user/modifyUserInfo",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"user",
+								"modifyUserInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "登录 Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"admin\",                  \r\n    \"pwdtype\":2,                         \r\n    \"password\": \"\",                \r\n    \"loginType\":\"wxminip\",                     \r\n    \"code\": \"073qIgml24CeQ64MD0ol28d66I2qIgmT\",                  \r\n    \"codeID\": \"gfhKDHHs8JgAX362kK4Y\"  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8888/user/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "注册第一步微信小程序",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reqType\":\"wxminip\",\r\n    \"note\":\"17052709767\",\r\n    \"code\":\"053ULSkl2tEhS64SgBml227raR2ULSkf\",\r\n    \"codeID\":\"6666\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8888/user/registerCore",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"user",
+								"registerCore"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "设备管理模块",
+			"item": [
+				{
+					"name": "获取设备信息",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"productID\":\"21CYs1k9YpG\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/dm/getDeviceInfo",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"dm",
+								"getDeviceInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取产品信息",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":{\r\n        \"page\":1,\r\n        \"pageSize\":20\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/dm/getProductInfo",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"dm",
+								"getProductInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "管理设备",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"opt\": 2,\r\n    \"info\":{\"productID\":\"21CYs1k9YpG\",\r\n            \"deviceName\":\"test5\",\r\n            \"version\":\"1238\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/dm/manageDevice",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"dm",
+								"manageDevice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "设备登录认证",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"21CYs1k9YpGtest4;12010126;YQJN7;1628155774\",\r\n    \"password\": \"a2c25092c69d849bd0212705adfb04efca62a96b906a6287658128938ceac107;hmacsha256\",\r\n    \"clientID\":\"21CYs1k9YpGtest4\",\r\n    \"ip\":\"127.0.0.1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/dm/loginAuth",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"dm",
+								"loginAuth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "管理产品",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"opt\": 1,\r\n    \"info\":{\"productID\":\"21SSblcAwYU\",\r\n            \"template\": \"{\\\"version\\\":\\\"1.0\\\",\\\"properties\\\":[{\\\"id\\\":\\\"GPS_Info\\\",\\\"name\\\":\\\"GPS定位\\\",\\\"desc\\\":\\\"\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"type\\\":\\\"struct\\\",\\\"specs\\\":[{\\\"id\\\":\\\"longtitude\\\",\\\"name\\\":\\\"GPS经度\\\",\\\"dataType\\\":{\\\"type\\\":\\\"float\\\",\\\"min\\\":\\\"-180\\\",\\\"max\\\":\\\"180\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"0.001\\\",\\\"unit\\\":\\\"度\\\"}},{\\\"id\\\":\\\"latitude\\\",\\\"name\\\":\\\"GPS纬度\\\",\\\"dataType\\\":{\\\"type\\\":\\\"float\\\",\\\"min\\\":\\\"-90\\\",\\\"max\\\":\\\"90\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"0.001\\\",\\\"unit\\\":\\\"度\\\"}}]},\\\"required\\\":false},{\\\"id\\\":\\\"GPS_ExtInfo\\\",\\\"name\\\":\\\"GPS定位扩展\\\",\\\"desc\\\":\\\"\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"type\\\":\\\"struct\\\",\\\"specs\\\":[{\\\"id\\\":\\\"latitude\\\",\\\"name\\\":\\\"纬度\\\",\\\"dataType\\\":{\\\"type\\\":\\\"float\\\",\\\"min\\\":\\\"-90\\\",\\\"max\\\":\\\"90\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"0.001\\\",\\\"unit\\\":\\\"度\\\"}},{\\\"id\\\":\\\"longtitude\\\",\\\"name\\\":\\\"经度\\\",\\\"dataType\\\":{\\\"type\\\":\\\"float\\\",\\\"min\\\":\\\"-180\\\",\\\"max\\\":\\\"180\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"0.001\\\",\\\"unit\\\":\\\"度\\\"}},{\\\"id\\\":\\\"altitude\\\",\\\"name\\\":\\\"海拔\\\",\\\"dataType\\\":{\\\"type\\\":\\\"float\\\",\\\"min\\\":\\\"-5000\\\",\\\"max\\\":\\\"99999\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"0.01\\\",\\\"unit\\\":\\\"m\\\"}},{\\\"id\\\":\\\"gps_speed\\\",\\\"name\\\":\\\"GPS速度\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"1000\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"km/h\\\"}},{\\\"id\\\":\\\"direction\\\",\\\"name\\\":\\\"方向角\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"360\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"度\\\"}},{\\\"id\\\":\\\"location_state\\\",\\\"name\\\":\\\"定位状态\\\",\\\"dataType\\\":{\\\"type\\\":\\\"bool\\\",\\\"mapping\\\":{\\\"0\\\":\\\"无效\\\",\\\"1\\\":\\\"有效\\\"}}},{\\\"id\\\":\\\"satellites\\\",\\\"name\\\":\\\"卫星数\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"9999999999999\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}},{\\\"id\\\":\\\"gps_time\\\",\\\"name\\\":\\\"GPS时间\\\",\\\"dataType\\\":{\\\"type\\\":\\\"timestamp\\\"}},{\\\"id\\\":\\\"collect_time\\\",\\\"name\\\":\\\"采集时间\\\",\\\"dataType\\\":{\\\"type\\\":\\\"timestamp\\\"}}]},\\\"required\\\":false},{\\\"id\\\":\\\"Wifi_Info\\\",\\\"name\\\":\\\"wifi定位\\\",\\\"desc\\\":\\\"\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"arrayInfo\\\":{\\\"type\\\":\\\"struct\\\",\\\"specs\\\":[{\\\"id\\\":\\\"Mac\\\",\\\"name\\\":\\\"mac地址\\\",\\\"dataType\\\":{\\\"type\\\":\\\"string\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"2048\\\"}},{\\\"id\\\":\\\"Rssi\\\",\\\"name\\\":\\\"信号强度\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"-1000\\\",\\\"max\\\":\\\"1000\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}}]},\\\"type\\\":\\\"array\\\"},\\\"required\\\":false},{\\\"id\\\":\\\"Cell_Info\\\",\\\"name\\\":\\\"蜂窝定位\\\",\\\"desc\\\":\\\"LAC代码为基站小区号；cellId为基站 ID；signal为基站信号强度；采集时间为设备采集基站信息时间\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"type\\\":\\\"struct\\\",\\\"specs\\\":[{\\\"id\\\":\\\"mcc\\\",\\\"name\\\":\\\"国家代码\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"999\\\",\\\"start\\\":\\\"460\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}},{\\\"id\\\":\\\"mnc\\\",\\\"name\\\":\\\"基站网络码\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"9999999\\\",\\\"start\\\":\\\"460\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}},{\\\"id\\\":\\\"lac\\\",\\\"name\\\":\\\"LAC代码\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"9999999\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}},{\\\"id\\\":\\\"cid\\\",\\\"name\\\":\\\"cellId\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"999999999\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}},{\\\"id\\\":\\\"rss\\\",\\\"name\\\":\\\"signal\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"-99999\\\",\\\"max\\\":\\\"99999\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"dbm\\\"}},{\\\"id\\\":\\\"networkType\\\",\\\"name\\\":\\\"设备网络制式\\\",\\\"dataType\\\":{\\\"type\\\":\\\"enum\\\",\\\"mapping\\\":{\\\"1\\\":\\\"GSM\\\",\\\"2\\\":\\\"CDMA\\\",\\\"3\\\":\\\"WCDMA\\\",\\\"4\\\":\\\"TD_CDMA\\\",\\\"5\\\":\\\"LTE\\\"}}},{\\\"id\\\":\\\"collect_time\\\",\\\"name\\\":\\\"采集时间\\\",\\\"dataType\\\":{\\\"type\\\":\\\"timestamp\\\"}}]},\\\"required\\\":false},{\\\"id\\\":\\\"ipaddr\\\",\\\"name\\\":\\\"IP地址\\\",\\\"desc\\\":\\\"\\\",\\\"mode\\\":\\\"r\\\",\\\"define\\\":{\\\"type\\\":\\\"string\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"64\\\"},\\\"required\\\":false},{\\\"id\\\":\\\"rssi\\\",\\\"name\\\":\\\"信号强度\\\",\\\"desc\\\":\\\"\\\",\\\"mode\\\":\\\"r\\\",\\\"define\\\":{\\\"type\\\":\\\"string\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"8\\\"},\\\"required\\\":false},{\\\"id\\\":\\\"imageUrl\\\",\\\"name\\\":\\\"图片地址\\\",\\\"desc\\\":\\\"用于传输存储图片地址\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"type\\\":\\\"string\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"2048\\\"},\\\"required\\\":false},{\\\"id\\\":\\\"shuxing\\\",\\\"name\\\":\\\"属性\\\",\\\"desc\\\":\\\"描述\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"type\\\":\\\"string\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"2048\\\"},\\\"required\\\":false},{\\\"id\\\":\\\"biashijigou\\\",\\\"name\\\":\\\"结构体属性\\\",\\\"desc\\\":\\\"\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"type\\\":\\\"struct\\\",\\\"specs\\\":[{\\\"id\\\":\\\"fwe\\\",\\\"name\\\":\\\"dd\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"100\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}},{\\\"id\\\":\\\"ase\\\",\\\"name\\\":\\\"fe\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"100\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}}]},\\\"required\\\":false},{\\\"id\\\":\\\"awerawe\\\",\\\"name\\\":\\\"dfwef\\\",\\\"desc\\\":\\\"\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"arrayInfo\\\":{\\\"type\\\":\\\"struct\\\",\\\"specs\\\":[{\\\"id\\\":\\\"dfawe\\\",\\\"name\\\":\\\"fewf\\\",\\\"dataType\\\":{\\\"type\\\":\\\"bool\\\",\\\"mapping\\\":{\\\"0\\\":\\\"关闭\\\",\\\"1\\\":\\\"打开\\\"}}},{\\\"id\\\":\\\"afe\\\",\\\"name\\\":\\\"fwefa\\\",\\\"dataType\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"100\\\",\\\"start\\\":\\\"0\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}}]},\\\"type\\\":\\\"array\\\"},\\\"required\\\":false},{\\\"id\\\":\\\"df\\\",\\\"name\\\":\\\"dd\\\",\\\"desc\\\":\\\"e\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"arrayInfo\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"4\\\",\\\"max\\\":\\\"100\\\",\\\"start\\\":\\\"4\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"df\\\"},\\\"type\\\":\\\"array\\\"},\\\"required\\\":false},{\\\"id\\\":\\\"serfa\\\",\\\"name\\\":\\\"dfefawe\\\",\\\"desc\\\":\\\"dfawef\\\",\\\"mode\\\":\\\"rw\\\",\\\"define\\\":{\\\"type\\\":\\\"enum\\\",\\\"mapping\\\":{\\\"1\\\":\\\"fefeags\\\",\\\"4\\\":\\\"segfae\\\"}},\\\"required\\\":false}],\\\"events\\\":[{\\\"id\\\":\\\"fesf\\\",\\\"name\\\":\\\"ddd\\\",\\\"desc\\\":\\\"\\\",\\\"type\\\":\\\"info\\\",\\\"params\\\":[{\\\"id\\\":\\\"se\\\",\\\"name\\\":\\\"dfef\\\",\\\"define\\\":{\\\"type\\\":\\\"bool\\\",\\\"mapping\\\":{\\\"0\\\":\\\"关\\\",\\\"1\\\":\\\"开\\\"}}},{\\\"id\\\":\\\"dfa\\\",\\\"name\\\":\\\"awefa\\\",\\\"define\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"100\\\",\\\"max\\\":\\\"238\\\",\\\"start\\\":\\\"100\\\",\\\"step\\\":\\\"2\\\",\\\"unit\\\":\\\"\\\"}}],\\\"required\\\":false},{\\\"id\\\":\\\"dfawe\\\",\\\"name\\\":\\\"fwefa\\\",\\\"desc\\\":\\\"\\\",\\\"type\\\":\\\"alert\\\",\\\"params\\\":[{\\\"id\\\":\\\"fe\\\",\\\"name\\\":\\\"se\\\",\\\"define\\\":{\\\"type\\\":\\\"bool\\\",\\\"mapping\\\":{\\\"0\\\":\\\"关\\\",\\\"1\\\":\\\"开\\\"}}}],\\\"required\\\":false},{\\\"id\\\":\\\"gafa\\\",\\\"name\\\":\\\"dfawe\\\",\\\"desc\\\":\\\"\\\",\\\"type\\\":\\\"fault\\\",\\\"params\\\":[{\\\"id\\\":\\\"sera\\\",\\\"name\\\":\\\"fawe\\\",\\\"define\\\":{\\\"type\\\":\\\"bool\\\",\\\"mapping\\\":{\\\"0\\\":\\\"关\\\",\\\"1\\\":\\\"开\\\"}}}],\\\"required\\\":false}],\\\"actions\\\":[{\\\"id\\\":\\\"biaoshifu\\\",\\\"name\\\":\\\"功能名称\\\",\\\"desc\\\":\\\"描述\\\",\\\"input\\\":[{\\\"id\\\":\\\"asdfwe\\\",\\\"name\\\":\\\"dd\\\",\\\"define\\\":{\\\"type\\\":\\\"string\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"2048\\\"}},{\\\"id\\\":\\\"ee\\\",\\\"name\\\":\\\"ff\\\",\\\"define\\\":{\\\"type\\\":\\\"int\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"100\\\",\\\"start\\\":\\\"1\\\",\\\"step\\\":\\\"1\\\",\\\"unit\\\":\\\"\\\"}}],\\\"output\\\":[{\\\"id\\\":\\\"se\\\",\\\"name\\\":\\\"fe\\\",\\\"define\\\":{\\\"type\\\":\\\"string\\\",\\\"min\\\":\\\"0\\\",\\\"max\\\":\\\"2048\\\"}}],\\\"required\\\":false}],\\\"profile\\\":{\\\"ProductId\\\":\\\"2SNTHBM6O7\\\",\\\"CategoryId\\\":\\\"303\\\"}}\",\r\n            \"authMode\":2,\r\n            \"description\":\"1238\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/dm/manageProduct",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"dm",
+								"manageProduct"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "设备交互模块",
+			"item": [
+				{
+					"name": "获取设备及用户组信息",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"groupID\": \"1710808183929311232\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/dc/getGroupInfo",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"dc",
+								"getGroupInfo"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取设备及用户组信息",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"page\":{\r\n        \"page\":1,\r\n        \"pageSize\":20\r\n    }\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/dc/getGroupInfo",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"dc",
+										"getGroupInfo"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "c221b1347de82b98"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 21 Oct 2021 11:59:57 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "252"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"info\": [\n        {\n            \"groupID\": \"1710808183040118784\",\n            \"name\": \"测试组1修改\",\n            \"uid\": \"1699809227385606144\",\n            \"createdTime\": \"1633163255\"\n        },\n        {\n            \"groupID\": \"1710808183929311232\",\n            \"name\": \"测试组2\",\n            \"uid\": \"1699809227385606145\",\n            \"createdTime\": \"1633163256\"\n        }\n    ],\n    \"num\": 2,\n    \"total\": 2\n}"
+						},
+						{
+							"name": "获取设备及用户组信息--获取指定group信息",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"groupID\": \"1710808183929311232\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/dc/getGroupInfo",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"dc",
+										"getGroupInfo"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "e9a8a85bfcd892c8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 21 Oct 2021 12:00:31 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "127"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"info\": [\n        {\n            \"groupID\": \"1710808183929311232\",\n            \"name\": \"测试组2\",\n            \"uid\": \"1699809227385606145\",\n            \"createdTime\": \"1633163256\"\n        }\n    ],\n    \"num\": 1\n}"
+						}
+					]
+				},
+				{
+					"name": "获取设备及用户组成员信息",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"groupID\": \"1710808183040118784\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/dc/getGroupMember",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"dc",
+								"getGroupMember"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取组下的所有成员信息",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"groupID\": \"1710808183040118784\",\r\n    \"page\":{\r\n        \"page\":1,\r\n        \"pageSize\":20\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/dc/getGroupMember",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"dc",
+										"getGroupMember"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "97f45b8dc18dfb41"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 21 Oct 2021 12:09:13 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "240"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"info\": [\n        {\n            \"groupID\": 1710808183040118784,\n            \"memberID\": \"1699809227385606144\",\n            \"memberType\": 2,\n            \"createdTime\": \"1633163726\"\n        },\n        {\n            \"groupID\": 1710808183040118784,\n            \"memberID\": \"21CYs1k9YpG:test8\",\n            \"memberType\": 1,\n            \"createdTime\": \"1633163726\"\n        }\n    ],\n    \"num\": 2,\n    \"total\": 2\n}"
+						},
+						{
+							"name": "获取设备及用户组成员信息--通过成员id获取所有组信息",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"memberID\": \"1699809227385606144\",\r\n    \"page\":{\r\n        \"page\":1,\r\n        \"pageSize\":20\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/dc/getGroupMember",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"dc",
+										"getGroupMember"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "0ff832f76f231e13"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 21 Oct 2021 12:12:03 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "135"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"info\": [\n        {\n            \"groupID\": 1710808183040118784,\n            \"memberID\": \"1699809227385606144\",\n            \"memberType\": 2,\n            \"createdTime\": \"1633163726\"\n        }\n    ],\n    \"num\": 1,\n    \"total\": 1\n}"
+						}
+					]
+				},
+				{
+					"name": "同步调用设备行为",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"memberID\": \"1699809227385606144\",\r\n    \"memberType\": 2,\r\n    \"productID\": \"21CYs1k9YpG\",\r\n    \"deviceName\": \"test8\",\r\n    \"actionId\": \"whistle\",\r\n    \"inputParams\": \"{\\\"time\\\":60,\\\"switch\\\":true}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/dc/sendAction",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"dc",
+								"sendAction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "同步调用设备行为",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"memberID\": \"1699809227385606144\",\r\n    \"memberType\": 2,\r\n    \"productID\": \"21CYs1k9YpG\",\r\n    \"deviceName\": \"test8\",\r\n    \"actionId\": \"whistle\",\r\n    \"inputParams\": \"{\\\"time\\\":60,\\\"switch\\\":true}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/dc/sendAction",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"dc",
+										"sendAction"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "742d880e0e0f832e"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 21 Oct 2021 12:31:25 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "109"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"clientToken\": \"de65377c-4041-565d-0b5e-67b664a06be8\",\n    \"outputParams\": \"{\\\"code\\\":0}\",\n    \"status\": \"ok\",\n    \"code\": \"1\"\n}"
+						},
+						{
+							"name": "同步调用设备行为没有权限",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"memberID\": \"169980922738560614\",\r\n    \"memberType\": 2,\r\n    \"productID\": \"21CYs1k9YpG\",\r\n    \"deviceName\": \"test8\",\r\n    \"actionId\": \"whistle\",\r\n    \"inputParams\": \"{\\\"time\\\":60,\\\"switch\\\":true}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/dc/sendAction",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"dc",
+										"sendAction"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain; charset=utf-8"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "c4dcd81ae2accde0"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 25 Oct 2021 12:21:13 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "37"
+								}
+							],
+							"cookie": [],
+							"body": "{\"code\":100012,\"msg\":\"权限不足\"}\n"
+						}
+					]
+				}
+			]
+		}
+	]
+}

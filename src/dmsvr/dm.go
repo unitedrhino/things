@@ -9,6 +9,7 @@ import (
 	"gitee.com/godLei6/things/src/dmsvr/internal/exchange"
 	"gitee.com/godLei6/things/src/dmsvr/internal/server"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
+	"gitee.com/godLei6/things/src/dmsvr/internal/vars"
 	"google.golang.org/grpc/reflection"
 
 	"github.com/tal-tech/go-zero/core/conf"
@@ -28,6 +29,7 @@ func main() {
 
 	//kafka服务初始化
 	ctx := svc.NewServiceContext(c)
+	vars.Svrctx = ctx
 	k := exchange.NewKafka(ctx)
 	k.AddRouters()
 	stop := k.Start()

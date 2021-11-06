@@ -4,15 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/dmsvr/device"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
-
 	"github.com/tal-tech/go-zero/core/logx"
 )
 
@@ -30,68 +26,52 @@ func NewGetDeviceLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetD
 	}
 }
 
-func GetFileName(in *dm.GetDeviceLogReq) bson.D {
-	//property 属性 event事件 action 操作 log 所有日志
-	switch in.Method {
-	case "property":
-		return bson.D{
-			//{"isp", isp},
-			{fmt.Sprintf("%s.%s", in.Method, in.FieldName), bson.M{"$ne": primitive.Null{}}},
-		}
-
-	case "event":
-		return bson.D{
-			{fmt.Sprintf("%s.id", in.Method), bson.M{"$eq": in.FieldName}},
-		}
-	}
-	return nil
-}
-
 func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLogResp, error) {
 	clientID := fmt.Sprintf("%s%s", in.ProductID, in.DeviceName)
-	filter := GetFileName(in)
-	if in.TimeStart != 0 {
-		filter = append(filter, bson.E{"timestamp", bson.M{"$gte": time.Unix(in.TimeStart, 0)}})
-	}
-	if in.TimeEnd != 0 {
-		filter = append(filter, bson.E{"timestamp", bson.M{"$lte": time.Unix(in.TimeEnd, 0)}})
-	}
-	opts := options.Find().SetProjection(bson.D{{"timestamp", 1}, {in.Method, 1}}).
-		SetLimit(in.Limit).SetSort(bson.D{{"timestamp", -1}})
-	ctx, _ := context.WithTimeout(l.ctx, 5*time.Second)
-	cursor, err := l.svcCtx.Mongo.Collection(clientID).Find(ctx, filter, opts)
-	if err != nil {
-		l.Errorf("Find|err=%v", err)
-		return nil, errors.System
-	}
-	defer cursor.Close(ctx)
-	resp := dm.GetDeviceLogResp{}
-	for cursor.Next(ctx) {
-		err = cursor.Err()
+	dd := repo.NewDeviceData(l.ctx,clientID)
+	var dmDatas []*dm.DeviceData
+	switch in.Method {
+	case def.PROPERTY:
+		dds, err := dd.GetPropertyDataWithID(in.DataID,in.TimeStart,in.TimeEnd,in.Limit)
 		if err != nil {
-			l.Errorf("cursor|err=%v", err)
+			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
 			return nil, errors.System
 		}
-		var original device.DeviceData
-		cursor.Decode(&original)
-		dd := dm.DeviceData{
-			Timestamp: original.TimeStamp.Unix(),
-			Method:    in.Method,
-			FieldName: in.FieldName,
+		for _,devData := range dds {
+			dmData := dm.DeviceData{
+				Timestamp: devData.TimeStamp.Unix(),
+				Method:    in.Method,
+				DataID: in.DataID,
+			}
+			var payload []byte
+			payload, _ = json.Marshal(devData.Param[in.DataID])
+			dmData.Payload = string(payload)
+			dmDatas = append(dmDatas, &dmData)
+			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
 		}
-		var payload []byte
-		switch in.Method {
-		case "property":
-			payload, _ = json.Marshal(original.Property[in.FieldName])
-		case "event":
-			payload, _ = json.Marshal(original.Event)
+	case def.EVENT:
+		dds, err := dd.GetEventDataWithID(in.DataID,in.TimeStart,in.TimeEnd,in.Limit)
+		if err != nil {
+			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
+			return nil, errors.System
 		}
-		dd.Payload = string(payload)
-		resp.Data = append(resp.Data, &dd)
-		l.Infof("coursor=%+v", original)
+		for _,devData := range dds {
+			dmData := dm.DeviceData{
+				Timestamp: devData.TimeStamp.Unix(),
+				Method:    in.Method,
+				DataID: in.DataID,
+			}
+			var payload []byte
+			payload, _ = json.Marshal(devData)
+			dmData.Payload = string(payload)
+			dmDatas = append(dmDatas, &dmData)
+			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
+		}
 	}
-	resp.Total = int64(len(resp.Data))
-	return &resp, nil
+	return &dm.GetDeviceLogResp{
+		Total: int64(len(dmDatas)),
+		Data: dmDatas,
+	}, nil
 }
 
 func (l *GetDeviceLogLogic) GetDeviceLog(in *dm.GetDeviceLogReq) (*dm.GetDeviceLogResp, error) {
@@ -103,6 +83,5 @@ func (l *GetDeviceLogLogic) GetDeviceLog(in *dm.GetDeviceLogReq) (*dm.GetDeviceL
 	default:
 		return nil, errors.Method.AddDetail(in.Method)
 	}
-
 	return &dm.GetDeviceLogResp{}, nil
 }

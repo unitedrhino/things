@@ -1,5 +1,5 @@
 Name: user.rpc
-ListenOn: 127.0.0.1:9080
+ListenOn: 127.0.0.1:9180
 CpuThreshold: 0
 NodeID: 1
 Etcd:

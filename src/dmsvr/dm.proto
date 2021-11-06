@@ -149,7 +149,7 @@ message GetDeviceLogReq{
   string method = 1; //获取的类型   property 属性 event事件 action 操作 log 所有日志
   string  deviceName  = 2; //设备名
   string  productID   = 3; //产品id 获取产品id下的所有设备信息
-  string FieldName = 4;//获取的具体属性值 如果不指定则获取所有属性 一个记录一条
+  string dataID = 4; //获取的具体标识符的数据 如果不指定则获取所有数据 一个记录一条
   int64 timeStart = 5;//获取时间的开始
   int64 timeEnd = 6;//时间的结束
   int64 limit =7;//获取的长度
@@ -159,7 +159,7 @@ message GetDeviceLogReq{
 message DeviceData{
   int64 timestamp =1;//发生时间戳
   string method = 2 ;//操作类型
-  string FieldName = 3;//获取的具体属性值
+  string dataID = 3;//获取的具体属性值
   string payload = 4;//具体内容
 }
 /*获取对应日志信息*/
@@ -173,7 +173,7 @@ message GetDeviceDataReq{
   string method = 1; //获取的类型   property 属性 event事件 action 操作 log 所有日志
   string  deviceName  = 2; //设备名
   string  productID   = 3; //产品id 获取产品id下的所有设备信息
-  string FieldName = 4;//获取的具体属性值 如果不指定则获取所有属性 一个记录一条
+  string dataID = 4;//获取的具体属性值 如果不指定则获取所有属性 一个记录一条
 }
 /*实时获取对应信息*/
 message GetDeviceDataResp{

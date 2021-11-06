@@ -9,8 +9,9 @@ import (
 	"gitee.com/godLei6/things/src/dmsvr/device"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/types"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
-	"gitee.com/godLei6/things/src/dmsvr/model"
 	"github.com/tal-tech/go-zero/core/logx"
 	"strings"
 	"time"
@@ -25,6 +26,7 @@ type PublishLogic struct {
 	template *device.Template
 	topics   []string
 	dreq     device.DeviceReq
+	dd		 *repo.DeviceData
 }
 
 func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) LogicHandle {
@@ -53,47 +55,70 @@ func (l *PublishLogic) initMsg(msg *types.Elements) error {
 	if err != nil {
 		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
+	l.dd = repo.NewDeviceData(l.ctx,msg.ClientID)
 	return nil
 }
 
-func (l *PublishLogic) StatusResp(Method, clientToken string, err error) {
-	respMethod := device.GetMethod(Method)
+func (l *PublishLogic) StatusResp(err error) {
+	respMethod := device.GetMethod(l.dreq.Method)
 	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
 		l.topics[0], l.topics[2], l.topics[3], l.topics[4])
 	payload, _ := json.Marshal(device.DeviceResp{
 		Method:      respMethod,
-		ClientToken: clientToken}.AddStatus(err))
+		ClientToken: l.dreq.ClientToken}.AddStatus(err))
 	l.svcCtx.Mqtt.Publish(respTopic, 0, false, payload)
+}
+
+func (l *PublishLogic)DataResp(data string){
+
+}
+
+func (l *PublishLogic) HandlePropertyReport(msg *types.Elements) error {
+	dbData := model.Property{}
+	tp, err := l.template.VerifyReqParam(l.dreq, device.PROPERTY)
+	if err != nil {
+		l.StatusResp(err)
+		return err
+	} else if len(tp) == 0 {
+		err := errors.Parameter.AddDetail("need right param")
+		l.StatusResp(err)
+		return err
+	}
+	dbData.Param = device.ToVal(tp)
+	if l.dreq.Timestamp != 0 {
+		dbData.TimeStamp = time.Unix(l.dreq.Timestamp, 0)
+	} else {
+		dbData.TimeStamp = time.Now()
+	}
+	err = l.dd.InsertPropertyData(&dbData)
+	if err != nil {
+		l.StatusResp(errors.Database)
+		l.Errorf("HandlePropertyReport|InsertPropertyData|err=%+v", err)
+		return err
+	}
+	l.StatusResp(errors.OK)
+	return nil
+}
+
+func (l *PublishLogic) HandlePropertyGetStatus(msg *types.Elements) error {
+	switch l.dreq.Type{
+	case device.REPORT:
+
+	default:
+		err := errors.Parameter.AddDetailf("not suppot type :%s", l.dreq.Type)
+		l.StatusResp(err)
+		return err
+	}
+	return nil
 }
 
 func (l *PublishLogic) HandleProperty(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleProperty")
-	dbData := device.DeviceData{}
 	switch l.dreq.Method {
 	case device.REPORT, device.REPORT_INFO:
-		tp, err := l.template.VerifyReqParam(l.dreq, device.PROPERTY)
-		if err != nil {
-			l.StatusResp(l.dreq.Method, l.dreq.ClientToken, err)
-			return err
-		} else if len(tp) == 0 {
-			err := errors.Parameter.AddDetail("need right param")
-			l.StatusResp(l.dreq.Method, l.dreq.ClientToken, err)
-			return err
-		}
-		dbData.Property = device.ToVal(tp)
-		if l.dreq.Timestamp != 0 {
-			dbData.TimeStamp = time.Unix(l.dreq.Timestamp, 0)
-		} else {
-			dbData.TimeStamp = time.Now()
-		}
-		_, err = l.svcCtx.Mongo.Collection(msg.ClientID).InsertOne(l.ctx, dbData)
-		if err != nil {
-			l.StatusResp(l.dreq.Method, l.dreq.ClientToken, errors.Database)
-			l.Errorf("InsertOne filure|err=%+v", err)
-			return err
-		}
-		l.StatusResp(l.dreq.Method, l.dreq.ClientToken, errors.OK)
-	case device.GET_STATUS_REPLY:
+		return l.HandlePropertyReport(msg)
+	case device.GET_STATUS:
+		return l.HandlePropertyGetStatus(msg)
 	default:
 		return errors.Method
 	}
@@ -102,30 +127,30 @@ func (l *PublishLogic) HandleProperty(msg *types.Elements) error {
 
 func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 	l.Slowf("PublishLogic|HandleEvent")
-	dbData := device.DeviceData{}
-	dbData.Event.ID = l.dreq.EventID
-	dbData.Event.Type = l.dreq.Type
+	dbData := model.Event{}
+	dbData.ID = l.dreq.EventID
+	dbData.Type = l.dreq.Type
 	if l.dreq.Method != device.EVENT_POST {
 		return errors.Method
 	}
 	tp, err := l.template.VerifyReqParam(l.dreq, device.EVENT)
 	if err != nil {
-		l.StatusResp(l.dreq.Method, l.dreq.ClientToken, err)
+		l.StatusResp(err)
 		return err
 	}
-	dbData.Event.Params = device.ToVal(tp)
+	dbData.Params = device.ToVal(tp)
 	if l.dreq.Timestamp != 0 {
 		dbData.TimeStamp = time.Unix(l.dreq.Timestamp, 0)
 	} else {
 		dbData.TimeStamp = time.Now()
 	}
-	_, err = l.svcCtx.Mongo.Collection(msg.ClientID).InsertOne(l.ctx, dbData)
+	err = l.dd.InsertEventData(&dbData)
 	if err != nil {
-		l.StatusResp(l.dreq.Method, l.dreq.ClientToken, errors.Database)
-		l.Errorf("InsertOne filure|err=%+v", err)
+		l.StatusResp(errors.Database)
+		l.Errorf("InsertEventData|err=%+v", err)
 		return errors.Database.AddDetail(err)
 	}
-	l.StatusResp(l.dreq.Method, l.dreq.ClientToken, errors.OK)
+	l.StatusResp(errors.OK)
 
 	return nil
 }

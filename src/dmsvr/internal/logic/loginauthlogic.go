@@ -10,8 +10,8 @@ import (
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
-	"gitee.com/godLei6/things/src/dmsvr/model"
 	"strings"
 	"time"
 

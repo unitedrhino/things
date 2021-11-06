@@ -12,39 +12,49 @@ import (
 )
 
 type (
-	GetDeviceInfoReq   = dm.GetDeviceInfoReq
-	GetDeviceLogReq    = dm.GetDeviceLogReq
-	DeviceData         = dm.DeviceData
-	SendActionResp     = dm.SendActionResp
-	PageInfo           = dm.PageInfo
-	LoginAuthReq       = dm.LoginAuthReq
-	GetProductInfoResp = dm.GetProductInfoResp
-	Response           = dm.Response
-	ManResp            = dm.ManResp
-	DeviceInfo         = dm.DeviceInfo
-	ManageDeviceReq    = dm.ManageDeviceReq
+	ProductInfo        = dm.ProductInfo
 	GetDeviceInfoResp  = dm.GetDeviceInfoResp
-	GetDeviceLogResp   = dm.GetDeviceLogResp
 	GetDeviceDataReq   = dm.GetDeviceDataReq
+	SendActionReq      = dm.SendActionReq
+	SendActionResp     = dm.SendActionResp
+	ManageProductReq   = dm.ManageProductReq
+	DeviceInfo         = dm.DeviceInfo
+	GetDeviceInfoReq   = dm.GetDeviceInfoReq
+	DeviceData         = dm.DeviceData
+	GetDeviceLogResp   = dm.GetDeviceLogResp
 	AccessAuthReq      = dm.AccessAuthReq
 	GetProductInfoReq  = dm.GetProductInfoReq
-	GetDeviceDataResp  = dm.GetDeviceDataResp
-	SendActionReq      = dm.SendActionReq
+	GetProductInfoResp = dm.GetProductInfoResp
+	ManageDeviceReq    = dm.ManageDeviceReq
+	GetDeviceLogReq    = dm.GetDeviceLogReq
 	SendPropertyReq    = dm.SendPropertyReq
 	SendPropertyResp   = dm.SendPropertyResp
-	ProductInfo        = dm.ProductInfo
-	ManageProductReq   = dm.ManageProductReq
+	PageInfo           = dm.PageInfo
+	Response           = dm.Response
+	ManResp            = dm.ManResp
+	LoginAuthReq       = dm.LoginAuthReq
+	GetDeviceDataResp  = dm.GetDeviceDataResp
 
 	Dm interface {
+		// 登录认证
 		LoginAuth(ctx context.Context, in *LoginAuthReq) (*Response, error)
+		// 操作认证
 		AccessAuth(ctx context.Context, in *AccessAuthReq) (*Response, error)
+		// 设备管理
 		ManageDevice(ctx context.Context, in *ManageDeviceReq) (*DeviceInfo, error)
+		// 产品管理
 		ManageProduct(ctx context.Context, in *ManageProductReq) (*ProductInfo, error)
+		// 获取产品信息
 		GetProductInfo(ctx context.Context, in *GetProductInfoReq) (*GetProductInfoResp, error)
+		// 获取设备信息
 		GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq) (*GetDeviceInfoResp, error)
+		// 获取设备最新数据
 		GetDeviceData(ctx context.Context, in *GetDeviceDataReq) (*GetDeviceDataResp, error)
+		// 获取设备日志信息
 		GetDeviceLog(ctx context.Context, in *GetDeviceLogReq) (*GetDeviceLogResp, error)
+		// 同步调用设备行为
 		SendAction(ctx context.Context, in *SendActionReq) (*SendActionResp, error)
+		// 同步调用设备属性
 		SendProperty(ctx context.Context, in *SendPropertyReq) (*SendPropertyResp, error)
 	}
 
@@ -59,51 +69,61 @@ func NewDm(cli zrpc.Client) Dm {
 	}
 }
 
+// 登录认证
 func (m *defaultDm) LoginAuth(ctx context.Context, in *LoginAuthReq) (*Response, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.LoginAuth(ctx, in)
 }
 
+// 操作认证
 func (m *defaultDm) AccessAuth(ctx context.Context, in *AccessAuthReq) (*Response, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.AccessAuth(ctx, in)
 }
 
+// 设备管理
 func (m *defaultDm) ManageDevice(ctx context.Context, in *ManageDeviceReq) (*DeviceInfo, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.ManageDevice(ctx, in)
 }
 
+// 产品管理
 func (m *defaultDm) ManageProduct(ctx context.Context, in *ManageProductReq) (*ProductInfo, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.ManageProduct(ctx, in)
 }
 
+// 获取产品信息
 func (m *defaultDm) GetProductInfo(ctx context.Context, in *GetProductInfoReq) (*GetProductInfoResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.GetProductInfo(ctx, in)
 }
 
+// 获取设备信息
 func (m *defaultDm) GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq) (*GetDeviceInfoResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.GetDeviceInfo(ctx, in)
 }
 
+// 获取设备最新数据
 func (m *defaultDm) GetDeviceData(ctx context.Context, in *GetDeviceDataReq) (*GetDeviceDataResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.GetDeviceData(ctx, in)
 }
 
+// 获取设备日志信息
 func (m *defaultDm) GetDeviceLog(ctx context.Context, in *GetDeviceLogReq) (*GetDeviceLogResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.GetDeviceLog(ctx, in)
 }
 
+// 同步调用设备行为
 func (m *defaultDm) SendAction(ctx context.Context, in *SendActionReq) (*SendActionResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.SendAction(ctx, in)
 }
 
+// 同步调用设备属性
 func (m *defaultDm) SendProperty(ctx context.Context, in *SendPropertyReq) (*SendPropertyResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.SendProperty(ctx, in)
