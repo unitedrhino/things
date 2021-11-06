@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/device"
@@ -59,32 +60,31 @@ func (l *PublishLogic) initMsg(msg *types.Elements) error {
 	return nil
 }
 
-func (l *PublishLogic) StatusResp(err error) {
+func (l *PublishLogic) DeviceResp(err error,data map[string]interface{}) {
 	respMethod := device.GetMethod(l.dreq.Method)
 	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
 		l.topics[0], l.topics[2], l.topics[3], l.topics[4])
 	payload, _ := json.Marshal(device.DeviceResp{
 		Method:      respMethod,
-		ClientToken: l.dreq.ClientToken}.AddStatus(err))
+		ClientToken: l.dreq.ClientToken,
+		Data:data}.AddStatus(err))
+
 	l.svcCtx.Mqtt.Publish(respTopic, 0, false, payload)
 }
 
-func (l *PublishLogic)DataResp(data string){
-
-}
 
 func (l *PublishLogic) HandlePropertyReport(msg *types.Elements) error {
-	dbData := model.Property{}
+	dbData := model.Properties{}
 	tp, err := l.template.VerifyReqParam(l.dreq, device.PROPERTY)
 	if err != nil {
-		l.StatusResp(err)
+		l.DeviceResp(err,nil)
 		return err
 	} else if len(tp) == 0 {
 		err := errors.Parameter.AddDetail("need right param")
-		l.StatusResp(err)
+		l.DeviceResp(err,nil)
 		return err
 	}
-	dbData.Param = device.ToVal(tp)
+	dbData.Params = device.ToVal(tp)
 	if l.dreq.Timestamp != 0 {
 		dbData.TimeStamp = time.Unix(l.dreq.Timestamp, 0)
 	} else {
@@ -92,23 +92,37 @@ func (l *PublishLogic) HandlePropertyReport(msg *types.Elements) error {
 	}
 	err = l.dd.InsertPropertyData(&dbData)
 	if err != nil {
-		l.StatusResp(errors.Database)
+		l.DeviceResp(errors.Database,nil)
 		l.Errorf("HandlePropertyReport|InsertPropertyData|err=%+v", err)
 		return err
 	}
-	l.StatusResp(errors.OK)
+	l.DeviceResp(errors.OK,nil)
 	return nil
 }
 
 func (l *PublishLogic) HandlePropertyGetStatus(msg *types.Elements) error {
+	respData := make(map[string]interface{},len(l.template.Properties))
 	switch l.dreq.Type{
 	case device.REPORT:
-
+		for id,_ := range l.template.Property {
+			data,err := l.dd.GetPropertyDataWithID(id,0,0,1)
+			if err != nil {
+				l.Errorf("HandlePropertyGetStatus|GetPropertyDataWithID|get id:%s|err:%s",
+					id,err.Error())
+				return err
+			}
+			if len(data)==0{
+				l.Slowf("HandlePropertyGetStatus|GetPropertyDataWithID|not find id:%s",id)
+				continue
+			}
+			respData[id] = data[0].Param
+		}
 	default:
 		err := errors.Parameter.AddDetailf("not suppot type :%s", l.dreq.Type)
-		l.StatusResp(err)
+		l.DeviceResp(err,nil)
 		return err
 	}
+	l.DeviceResp(errors.OK,respData)
 	return nil
 }
 
@@ -135,7 +149,7 @@ func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 	}
 	tp, err := l.template.VerifyReqParam(l.dreq, device.EVENT)
 	if err != nil {
-		l.StatusResp(err)
+		l.DeviceResp(err,nil)
 		return err
 	}
 	dbData.Params = device.ToVal(tp)
@@ -146,11 +160,11 @@ func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 	}
 	err = l.dd.InsertEventData(&dbData)
 	if err != nil {
-		l.StatusResp(errors.Database)
+		l.DeviceResp(errors.Database,nil)
 		l.Errorf("InsertEventData|err=%+v", err)
 		return errors.Database.AddDetail(err)
 	}
-	l.StatusResp(errors.OK)
+	l.DeviceResp(errors.OK,nil)
 
 	return nil
 }
@@ -176,11 +190,11 @@ func (l *PublishLogic) HandleThing(msg *types.Elements) error {
 		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
 	switch l.topics[2] {
-	case "property": //属性上报
+	case def.PROPERTY_METHOD: //属性上报
 		return l.HandleProperty(msg)
-	case "event": //事件上报
+	case def.EVENT_METHOD: //事件上报
 		return l.HandleEvent(msg)
-	case "action": //设备响应行为执行结果
+	case def.ACTION_METHOD: //设备响应行为执行结果
 		return l.HandleAction(msg)
 	default:
 		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)

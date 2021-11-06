@@ -39,9 +39,9 @@ func (d *DeviceData)InsertEventData(event *model.Event)error{
 	_,err := vars.Svrctx.Mongo.Collection(d.DBName).InsertOne(d.ctx, dd)
 	return err
 }
-func (d *DeviceData) InsertPropertyData(property *model.Property)error{
+func (d *DeviceData) InsertPropertyData(property *model.Properties)error{
 	dd := model.DeviceData{
-		Property: property.Param,
+		Property: property.Params,
 		TimeStamp: property.TimeStamp,
 	}
 	_,err := vars.Svrctx.Mongo.Collection(d.DBName).InsertOne(d.ctx, dd)
@@ -49,18 +49,15 @@ func (d *DeviceData) InsertPropertyData(property *model.Property)error{
 }
 
 
-
-
-
 func getFileName(method,dataID string) bson.D {
 	//property 属性 event事件 action 操作 log 所有日志
 	switch method {
-	case def.PROPERTY:
+	case def.PROPERTY_METHOD:
 		return bson.D{
 			//{"isp", isp},
 			{fmt.Sprintf("%s.%s", method, dataID), bson.M{"$ne": primitive.Null{}}},
 		}
-	case def.EVENT:
+	case def.EVENT_METHOD:
 		return bson.D{
 			{fmt.Sprintf("%s.id", method), bson.M{"$eq": dataID}},
 		}
@@ -71,14 +68,14 @@ func getFileName(method,dataID string) bson.D {
 
 //通过属性的id及方法获取一段时间或最新时间的记录
 func (d *DeviceData)GetEventDataWithID(dataID string,timeStart,timeEnd int64,limit int64)(dds []*model.Event,err error) {
-	filter := getFileName(def.EVENT,dataID)
+	filter := getFileName(def.EVENT_METHOD,dataID)
 	if timeStart != 0 {
 		filter = append(filter, bson.E{"timestamp", bson.M{"$gte": time.Unix(timeStart, 0)}})
 	}
 	if timeEnd != 0 {
 		filter = append(filter, bson.E{"timestamp", bson.M{"$lte": time.Unix(timeEnd, 0)}})
 	}
-	opts := options.Find().SetProjection(bson.D{{"timestamp", 1}, {def.EVENT, 1}}).
+	opts := options.Find().SetProjection(bson.D{{"timestamp", 1}, {def.EVENT_METHOD, 1}}).
 		SetLimit(limit).SetSort(bson.D{{"timestamp", -1}})
 	cursor, err := vars.Svrctx.Mongo.Collection(d.DBName).Find(d.ctx, filter, opts)
 	if err != nil {
@@ -108,14 +105,14 @@ func (d *DeviceData)GetEventDataWithID(dataID string,timeStart,timeEnd int64,lim
 
 //通过属性的id及方法获取一段时间或最新时间的记录
 func (d *DeviceData)GetPropertyDataWithID(dataID string,timeStart,timeEnd int64,limit int64)(dds []*model.Property,err error) {
-	filter := getFileName(def.PROPERTY,dataID)
+	filter := getFileName(def.PROPERTY_METHOD,dataID)
 	if timeStart != 0 {
 		filter = append(filter, bson.E{"timestamp", bson.M{"$gte": time.Unix(timeStart, 0)}})
 	}
 	if timeEnd != 0 {
 		filter = append(filter, bson.E{"timestamp", bson.M{"$lte": time.Unix(timeEnd, 0)}})
 	}
-	opts := options.Find().SetProjection(bson.D{{"timestamp", 1}, {def.PROPERTY, 1}}).
+	opts := options.Find().SetProjection(bson.D{{"timestamp", 1}, {def.PROPERTY_METHOD, 1}}).
 		SetLimit(limit).SetSort(bson.D{{"timestamp", -1}})
 	cursor, err := vars.Svrctx.Mongo.Collection(d.DBName).Find(d.ctx, filter, opts)
 	if err != nil {
@@ -133,7 +130,7 @@ func (d *DeviceData)GetPropertyDataWithID(dataID string,timeStart,timeEnd int64,
 			return nil, err
 		}
 		dds = append(dds,&model.Property{
-			Param:     dd.Property,
+			Param:     dd.Property[dataID],
 			TimeStamp: dd.TimeStamp,
 		})
 	}

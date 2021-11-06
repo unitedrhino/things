@@ -9,7 +9,6 @@ require (
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2
-	github.com/hashicorp/go-uuid v1.0.2
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/silenceper/wechat/v2 v2.0.5
@@ -17,6 +16,9 @@ require (
 	github.com/tal-tech/go-zero v1.2.1
 	go.mongodb.org/mongo-driver v1.5.3
 	go.uber.org/automaxprocs v1.4.0 // indirect
+	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
+	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
+	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985 // indirect
 	google.golang.org/grpc v1.39.0
 	google.golang.org/protobuf v1.27.1
 )

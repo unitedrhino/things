@@ -41,3 +41,21 @@ CREATE TABLE `device_info` (
   UNIQUE KEY `deviceName` (`productID`,`deviceName`),
   KEY `device_productID` (`productID`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='设备信息表';
+
+
+
+CREATE TABLE `device_log` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `productID` varchar(20) NOT NULL COMMENT '产品id',
+    `deviceName` varchar(100) NOT NULL COMMENT '设备名称',
+    `payload` varchar(1000) DEFAULT '' COMMENT '具体信息',
+    `topic` varchar(50) DEFAULT '' COMMENT '主题',
+    `action` varchar(50) NOT NULL COMMENT '操作类型',
+    `timestamp` datetime NOT NULL COMMENT '操作时间',
+    `createdTime` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `deviceName` (`productID`,`deviceName`),
+    KEY `device_productID` (`productID`) USING BTREE,
+    KEY `device_action` (`action`) USING BTREE,
+    KEY `device_timestamp` (`timestamp`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=264 DEFAULT CHARSET=utf8 COMMENT='设备日志表';

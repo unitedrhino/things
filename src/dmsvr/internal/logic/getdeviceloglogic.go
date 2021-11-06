@@ -31,7 +31,7 @@ func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLog
 	dd := repo.NewDeviceData(l.ctx,clientID)
 	var dmDatas []*dm.DeviceData
 	switch in.Method {
-	case def.PROPERTY:
+	case def.PROPERTY_METHOD:
 		dds, err := dd.GetPropertyDataWithID(in.DataID,in.TimeStart,in.TimeEnd,in.Limit)
 		if err != nil {
 			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
@@ -44,12 +44,12 @@ func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLog
 				DataID: in.DataID,
 			}
 			var payload []byte
-			payload, _ = json.Marshal(devData.Param[in.DataID])
+			payload, _ = json.Marshal(devData.Param)
 			dmData.Payload = string(payload)
 			dmDatas = append(dmDatas, &dmData)
 			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
 		}
-	case def.EVENT:
+	case def.EVENT_METHOD:
 		dds, err := dd.GetEventDataWithID(in.DataID,in.TimeStart,in.TimeEnd,in.Limit)
 		if err != nil {
 			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
