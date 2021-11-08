@@ -74,30 +74,33 @@ type ModifyUserInfoReq {
 @server (
 	group :user
 	middleware: Record
+	prefix: /front/user
 )
 service webapi {
 	@handler login // 登录
-	post /user/login (LoginReq) returns (LoginResp)
+	post /front/user/login (LoginReq) returns (LoginResp)
 	@handler registerCore //注册
-	post /user/registerCore (RegisterCoreReq) returns (RegisterCoreResp)
+	post /front/user/registerCore (RegisterCoreReq) returns (RegisterCoreResp)
 }
 
 @server(
 	group:user
 	middleware: Record
+	prefix: /front/user
 )
 service webapi {
 	@handler register2 //需要验证核心注册返回的token
-	post /user/register2 (Register2Req)
+	post /front/user/register2 (Register2Req)
 }
 
 @server(
 	middleware: CheckToken,Record
 	group:user
+	prefix: /front/user
 )
 service webapi {
 	@handler userInfo
-	get /user/info () returns (UserInfo)
+	get /front/user/info () returns (UserInfo)
 	@handler modifyUserInfo
-	post /user/modifyUserInfo (ModifyUserInfoReq)
+	post /front/user/modifyUserInfo (ModifyUserInfoReq)
 }

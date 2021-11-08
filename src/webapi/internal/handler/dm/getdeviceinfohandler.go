@@ -1,4 +1,4 @@
-package handler
+package dm
 
 import (
 	"net/http"
@@ -18,7 +18,7 @@ func GetDeviceInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewGetDeviceInfoLogic(r.Context(), ctx)
+		l := dm.NewGetDeviceInfoLogic(r.Context(), ctx)
 		resp, err := l.GetDeviceInfo(req)
 		if err != nil {
 			httpx.Error(w, err)

@@ -2,17 +2,15 @@ package svc
 
 import (
 	"context"
-	"fmt"
 	"gitee.com/godLei6/things/shared/db/mongodb"
 	"gitee.com/godLei6/things/shared/utils"
+	"gitee.com/godLei6/things/src/dmsvr/device"
 	"gitee.com/godLei6/things/src/dmsvr/internal/config"
 	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"go.mongodb.org/mongo-driver/mongo"
 	"os"
-	"time"
 )
 
 type ServiceContext struct {
@@ -23,9 +21,8 @@ type ServiceContext struct {
 	DmDB        model.DmModel
 	DeviceID    *utils.SnowFlake
 	ProductID   *utils.SnowFlake
-	Mqtt        mqtt.Client
+	DevClient   *device.DevClient
 	Mongo       *mongo.Database
-	DeviceChan			*utils.ExpMap
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -37,18 +34,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	DeviceID := utils.NewSnowFlake(c.NodeID)
 	ProductID := utils.NewSnowFlake(c.NodeID)
 
-	opts := mqtt.NewClientOptions()
-	for _, broker := range c.Mqtt.Brokers {
-		opts.AddBroker(broker)
-	}
-	clientID := fmt.Sprintf("%s:%d", c.Name, c.NodeID)
-	opts.SetClientID(clientID).SetUsername(c.Mqtt.User).
-		SetPassword(c.Mqtt.Pass).SetAutoReconnect(true).SetConnectRetry(true)
-	opts.OnConnect = func(client mqtt.Client) {
-		//logx.Info("Connected")
-	}
-	mc := mqtt.NewClient(opts)
-	mc.Connect()
+	devClient := device.NewDevClient(c.DevClient)
 	//if token := mc.Connect(); token.Wait() && token.Error() != nil {
 	//	panic(fmt.Sprintf("mqtt client connect err:%s",token.Error()))
 	//}
@@ -68,8 +54,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceID:    DeviceID,
 		ProductID:   ProductID,
 		DeviceLog:   dl,
-		Mqtt:        mc,
+		DevClient:   devClient,
 		Mongo:       mongoDB,
-		DeviceChan: utils.NewExpMap(5*time.Minute),
 	}
 }

@@ -1,4 +1,4 @@
-package handler
+package user
 
 import (
 	"net/http"
@@ -6,7 +6,6 @@ import (
 	"gitee.com/godLei6/things/src/webapi/internal/logic/user"
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 	"gitee.com/godLei6/things/src/webapi/internal/types"
-
 	"github.com/tal-tech/go-zero/rest/httpx"
 )
 
@@ -18,7 +17,7 @@ func LoginHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewLoginLogic(r.Context(), ctx)
+		l := user.NewLoginLogic(r.Context(), ctx)
 		resp, err := l.Login(req)
 		if err != nil {
 			httpx.Error(w, err)

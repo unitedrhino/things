@@ -1,4 +1,4 @@
-package handler
+package dm
 
 import (
 	"net/http"
@@ -18,7 +18,7 @@ func ManageProductHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewManageProductLogic(r.Context(), ctx)
+		l := dm.NewManageProductLogic(r.Context(), ctx)
 		resp, err := l.ManageProduct(req)
 		if err != nil {
 			httpx.Error(w, err)

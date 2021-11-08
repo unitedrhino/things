@@ -58,7 +58,7 @@ const (
 		下发 Topic： $thing/down/property/{ProductID}/{DeviceName}
 		响应 Topic： $thing/up/property/{ProductID}/{DeviceName}
 	*/
-	// todo 尚未支持
+	//todo 尚未支持
 	CONTROL       METHOD = "control"       //表示云端向设备发起控制请求
 	CONTROL_REPLY METHOD = "control_reply" //表示设备向云端下发的控制指令的请求响应
 
@@ -67,7 +67,6 @@ const (
 		请求 Topic： $thing/up/property/{ProductID}/{DeviceName}
 		响应 Topic： $thing/down/property/{ProductID}/{DeviceName}
 	*/
-	// todo 尚未支持
 	GET_STATUS       METHOD = "get_status"       //表示获取设备最新上报的信息
 	GET_STATUS_REPLY METHOD = "get_status_reply" //表示获取设备最新上报信息的 reply 消息
 

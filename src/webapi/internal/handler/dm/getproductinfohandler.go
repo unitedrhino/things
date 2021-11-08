@@ -1,4 +1,4 @@
-package handler
+package dm
 
 import (
 	"net/http"
@@ -18,7 +18,7 @@ func GetProductInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewGetProductInfoLogic(r.Context(), ctx)
+		l := dm.NewGetProductInfoLogic(r.Context(), ctx)
 		resp, err := l.GetProductInfo(req)
 		if err != nil {
 			httpx.Error(w, err)

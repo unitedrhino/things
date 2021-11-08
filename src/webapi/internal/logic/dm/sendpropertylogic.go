@@ -1,4 +1,4 @@
-package dc
+package dm
 
 import (
 	"context"
@@ -23,8 +23,8 @@ func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) SendP
 	}
 }
 
-func (l *SendPropertyLogic) SendProperty(req types.SendDcPropertyReq) (*types.SendDcPropertyResp, error) {
+func (l *SendPropertyLogic) SendProperty(req types.SendDmPropertyReq) (*types.SendDmPropertyResp, error) {
 	// todo: add your logic here and delete this line
 
-	return &types.SendDcPropertyResp{}, nil
+	return &types.SendDmPropertyResp{}, nil
 }
