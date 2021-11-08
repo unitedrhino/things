@@ -1,4 +1,4 @@
-package logic
+package dm
 
 import (
 	"context"
@@ -56,5 +56,4 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(req types.GetDeviceInfoReq) (*types.G
 		Info:  dis,
 		Num:   int64(len(dis)),
 	}, nil
-
 }

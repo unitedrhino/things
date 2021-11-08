@@ -149,6 +149,33 @@ type GetDeviceInfoResp struct {
 	Num   int64         `json:"num,omitempty"`   //返回的数量
 }
 
+type SendDmPropertyReq struct {
+	ProductID  string `json:"productID,omitempty"`  //产品id 获取产品id下的所有设备信息
+	DeviceName string `json:"deviceName,omitempty"` //设备名
+	Data       string `json:"data,omitempty"`       //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	Method     string `json:"method,omitempty"`     //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+}
+
+type SendDmPropertyResp struct {
+	Data   string `json:"data,omitempty"`        //返回信息
+	Status string `json:"status,omitempty"`      //返回状态
+	Code   int64  `json:"code,string,omitempty"` //设备返回状态码
+}
+
+type SendDmActionReq struct {
+	ProductID   string `json:"productID,omitempty"`   //产品id 获取产品id下的所有设备信息
+	DeviceName  string `json:"deviceName,omitempty"`  //设备名
+	ActionId    string `json:"actionId,omitempty"`    //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+	InputParams string `json:"inputParams,omitempty"` //输入参数
+}
+
+type SendDmActionResp struct {
+	ClientToken  string `json:"clientToken,omitempty"`  //调用id
+	OutputParams string `json:"outputParams,omitempty"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
+	Status       string `json:"status,omitempty"`       //返回状态
+	Code         int64  `json:"code,string,omitempty"`  //设备返回状态码
+}
+
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string,omitempty"`              //组id
 	Name        string `json:"name,omitempty"`                        //组名
@@ -197,7 +224,7 @@ type GetGroupMemberResp struct {
 	Total int64          `json:"total,optional,omitempty"` //拥有的总数(只有分页的时候会返回)
 }
 
-type SendActionReq struct {
+type SendDcActionReq struct {
 	MemberID    string `json:"memberID,omitempty"`    //成员id
 	MemberType  int64  `json:"memberType,omitempty"`  //成员类型:1:设备 2:用户
 	ProductID   string `json:"productID,omitempty"`   //产品id 获取产品id下的所有设备信息
@@ -206,14 +233,14 @@ type SendActionReq struct {
 	InputParams string `json:"inputParams,omitempty"` //输入参数
 }
 
-type SendActionResp struct {
+type SendDcActionResp struct {
 	ClientToken  string `json:"clientToken,omitempty"`  //调用id
 	OutputParams string `json:"outputParams,omitempty"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
 	Status       string `json:"status,omitempty"`       //返回状态
 	Code         int64  `json:"code,string,omitempty"`  //设备返回状态码
 }
 
-type SendPropertyReq struct {
+type SendDcPropertyReq struct {
 	MemberID   string `json:"memberID,omitempty"`   //成员id
 	MemberType int64  `json:"memberType,omitempty"` //成员类型:1:设备 2:用户
 	ProductID  string `json:"productID,omitempty"`  //产品id 获取产品id下的所有设备信息
@@ -222,7 +249,7 @@ type SendPropertyReq struct {
 	Method     string `json:"method,omitempty"`     //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
 }
 
-type SendPropertyResp struct {
+type SendDcPropertyResp struct {
 	Data   string `json:"data,omitempty"`        //返回信息
 	Status string `json:"status,omitempty"`      //返回状态
 	Code   int64  `json:"code,string,omitempty"` //设备返回状态码

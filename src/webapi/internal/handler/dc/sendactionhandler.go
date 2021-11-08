@@ -11,7 +11,7 @@ import (
 
 func SendActionHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.SendActionReq
+		var req types.SendDcActionReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return

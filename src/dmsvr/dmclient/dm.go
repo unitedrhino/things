@@ -12,28 +12,28 @@ import (
 )
 
 type (
-	ProductInfo        = dm.ProductInfo
 	GetDeviceInfoResp  = dm.GetDeviceInfoResp
-	GetDeviceDataReq   = dm.GetDeviceDataReq
 	SendActionReq      = dm.SendActionReq
-	SendActionResp     = dm.SendActionResp
 	ManageProductReq   = dm.ManageProductReq
 	DeviceInfo         = dm.DeviceInfo
 	GetDeviceInfoReq   = dm.GetDeviceInfoReq
-	DeviceData         = dm.DeviceData
-	GetDeviceLogResp   = dm.GetDeviceLogResp
-	AccessAuthReq      = dm.AccessAuthReq
-	GetProductInfoReq  = dm.GetProductInfoReq
+	GetDeviceDataResp  = dm.GetDeviceDataResp
+	SendActionResp     = dm.SendActionResp
 	GetProductInfoResp = dm.GetProductInfoResp
-	ManageDeviceReq    = dm.ManageDeviceReq
 	GetDeviceLogReq    = dm.GetDeviceLogReq
+	DeviceData         = dm.DeviceData
+	GetDeviceDataReq   = dm.GetDeviceDataReq
 	SendPropertyReq    = dm.SendPropertyReq
-	SendPropertyResp   = dm.SendPropertyResp
 	PageInfo           = dm.PageInfo
 	Response           = dm.Response
 	ManResp            = dm.ManResp
+	GetProductInfoReq  = dm.GetProductInfoReq
+	ManageDeviceReq    = dm.ManageDeviceReq
+	GetDeviceLogResp   = dm.GetDeviceLogResp
+	SendPropertyResp   = dm.SendPropertyResp
 	LoginAuthReq       = dm.LoginAuthReq
-	GetDeviceDataResp  = dm.GetDeviceDataResp
+	AccessAuthReq      = dm.AccessAuthReq
+	ProductInfo        = dm.ProductInfo
 
 	Dm interface {
 		// 登录认证

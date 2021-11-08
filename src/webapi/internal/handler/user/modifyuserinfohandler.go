@@ -1,4 +1,4 @@
-package handler
+package user
 
 import (
 	"github.com/spf13/cast"
@@ -7,7 +7,6 @@ import (
 	"gitee.com/godLei6/things/src/webapi/internal/logic/user"
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 	"gitee.com/godLei6/things/src/webapi/internal/types"
-
 	"github.com/tal-tech/go-zero/rest/httpx"
 )
 
@@ -20,7 +19,7 @@ func ModifyUserInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		}
 		strUid := r.Header.Get(types.USER_UID)
 		Uid := cast.ToInt64(strUid)
-		l := logic.NewModifyUserInfoLogic(r.Context(), ctx)
+		l := user.NewModifyUserInfoLogic(r.Context(), ctx)
 		err := l.ModifyUserInfo(req, Uid)
 		if err != nil {
 			httpx.Error(w, err)

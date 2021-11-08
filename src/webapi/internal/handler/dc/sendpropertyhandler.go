@@ -11,7 +11,7 @@ import (
 
 func SendPropertyHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.SendPropertyReq
+		var req types.SendDcPropertyReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return

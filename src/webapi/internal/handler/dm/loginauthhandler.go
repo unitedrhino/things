@@ -1,4 +1,4 @@
-package handler
+package dm
 
 import (
 	"net/http"
@@ -18,7 +18,7 @@ func LoginAuthHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewLoginAuthLogic(r.Context(), ctx)
+		l := dm.NewLoginAuthLogic(r.Context(), ctx)
 		err := l.LoginAuth(req)
 		if err != nil {
 			httpx.Error(w, err)

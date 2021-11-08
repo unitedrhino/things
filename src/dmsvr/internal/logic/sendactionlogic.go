@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/device"
-	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/types"
 	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
 	"time"
 
@@ -51,8 +50,6 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 	if err != nil {
 		return nil,err
 	}
-
-
 	param := map[string]interface{}{}
 	err = json.Unmarshal([]byte(in.InputParams),&param)
 	if err != nil {
@@ -70,39 +67,21 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 		Timestamp: time.Now().Unix(),
 		Params: param}
 	l.template.VerifyReqParam(req,device.ACTION_INPUT)
-	PubTopic := fmt.Sprintf("$thing/down/action/%s/%s",in.ProductID,in.DeviceName)
-	payload, _ := json.Marshal(req)
-	l.svcCtx.Mqtt.Publish(PubTopic,1,false,payload)
+	pubTopic := fmt.Sprintf("$thing/down/action/%s/%s",in.ProductID,in.DeviceName)
+	subTopic := fmt.Sprintf("$thing/up/action/%s/%s",in.ProductID,in.DeviceName)
 
-	respInfo := types.NewInfo(time.Now().Add(5*time.Second),in.ProductID+in.DeviceName)
-	l.svcCtx.DeviceChan.Map.Store(req.ClientToken,respInfo)
-	defer l.svcCtx.DeviceChan.Map.Delete(req.ClientToken)
-
-	for {
-		select {
-		case msg:=<-respInfo.Msg:
-			l.Infof("SendAction|get msg:%v",msg)
-			resp := device.DeviceResp{}
-			json.Unmarshal([]byte(msg.Payload),&resp)
-			if resp.ClientToken != req.ClientToken{
-				continue
-			}
-			param,err := json.Marshal(resp.Response)
-			if err != nil {
-				return nil, errors.RespParam.AddDetail("SendAction|get device resp not right:",msg.Payload)
-			}
-			return &dm.SendActionResp{
-				ClientToken: resp.ClientToken,
-				Status:resp.Status,
-				Code:resp.Code,
-				OutputParams: string(param),
-			},nil
-
-
-		case <-l.ctx.Done():
-			l.Error("SendAction|timeOut")
-			return &dm.SendActionResp{}, errors.DeviceTimeOut
-		}
+	resp, err := l.svcCtx.DevClient.DeviceReq(l.ctx,req,pubTopic,subTopic)
+	if err != nil {
+		return nil, err
 	}
-	return &dm.SendActionResp{}, nil
+	respParam,err := json.Marshal(resp.Response)
+	if err != nil {
+		return nil, errors.RespParam.AddDetailf("SendAction|get device resp not right:%+v",resp.Response)
+	}
+	return &dm.SendActionResp{
+		ClientToken: resp.ClientToken,
+		Status:resp.Status,
+		Code:resp.Code,
+		OutputParams: string(respParam),
+	},nil
 }

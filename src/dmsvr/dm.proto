@@ -196,13 +196,16 @@ message SendActionResp{
 message SendPropertyReq{
   string  productID   = 1; //产品id 获取产品id下的所有设备信息
   string  deviceName  = 2; //设备名
-  string data =3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-  string method =4;//请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+  string data = 3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+  int64  dataTimestamp = 4;//上报数据UNIX时间戳, 仅对Method:reported有效
+  string method = 5;//请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
 }
 message SendPropertyResp{
-  string data = 1;//返回信息
+  int64   code =1;//设备返回状态码
   string  status =2;//返回状态
-  int64   code =3;//设备返回状态码
+  string clientToken = 3;//调用id
+  string data = 4;//返回信息
+
 }
 
 service Dm {

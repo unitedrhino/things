@@ -17,6 +17,7 @@ DmRpc:
       Hosts:
         - 127.0.0.1:2379
       Key: dm.rpc
+    Timeout: 1000000
 DcRpc:
   Enable: true
   Conf:

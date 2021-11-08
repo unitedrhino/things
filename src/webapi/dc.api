@@ -60,7 +60,7 @@ type GetGroupMemberResp struct {
 
 //上面是组及组成员的获取及管理
 //下面是设备与人交互
-type SendActionReq struct {
+type SendDcActionReq struct {
     MemberID    string `json:"memberID,omitempty"`       //成员id
     MemberType  int64  `json:"memberType,omitempty"`  //成员类型:1:设备 2:用户
     ProductID   string `json:"productID,omitempty"`     //产品id 获取产品id下的所有设备信息
@@ -69,14 +69,14 @@ type SendActionReq struct {
     InputParams string `json:"inputParams,omitempty"` //输入参数
 }
 
-type SendActionResp struct {
+type SendDcActionResp struct {
     ClientToken  string `json:"clientToken,omitempty"`   //调用id
     OutputParams string `json:"outputParams,omitempty"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
     Status       string `json:"status,omitempty"`             //返回状态
     Code         int64  `json:"code,string,omitempty"`                //设备返回状态码
 }
 
-type SendPropertyReq struct {
+type SendDcPropertyReq struct {
     MemberID   string `json:"memberID,omitempty"`      //成员id
     MemberType int64  `json:"memberType,omitempty"` //成员类型:1:设备 2:用户
     ProductID  string `json:"productID,omitempty"`    //产品id 获取产品id下的所有设备信息
@@ -85,7 +85,7 @@ type SendPropertyReq struct {
     Method     string `json:"method,omitempty"`          //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
 }
 
-type SendPropertyResp struct {
+type SendDcPropertyResp struct {
     Data   string `json:"data,omitempty"`     //返回信息
     Status string `json:"status,omitempty"` //返回状态
     Code   int64  `json:"code,string,omitempty"`    //设备返回状态码
@@ -93,18 +93,19 @@ type SendPropertyResp struct {
 
 @server (
     group :dc
+    prefix: /front/dc
 )
 service webapi {
     @handler  manageGroupInfo//管理组
-    post /dc/manageGroupInfo(ManageGroupInfoReq)returns (GroupInfo)
+    post /front/dc/manageGroupInfo(ManageGroupInfoReq)returns (GroupInfo)
     @handler  manageGroupMember//管理组成员
-    post /dc/manageGroupMember(ManageGroupMemberReq)returns (GroupMember)
+    post /front/dc/manageGroupMember(ManageGroupMemberReq)returns (GroupMember)
     @handler  getGroupInfo//获取组信息
-    post /dc/getGroupInfo(GetGroupInfoReq)returns (GetGroupInfoResp)
+    post /front/dc/getGroupInfo(GetGroupInfoReq)returns (GetGroupInfoResp)
     @handler  getGroupMember//获取组成员
-    post /dc/getGroupMember(GetGroupMemberReq)returns (GetGroupMemberResp)
+    post /front/dc/getGroupMember(GetGroupMemberReq)returns (GetGroupMemberResp)
     @handler  sendAction//同步调用设备行为
-    post /dc/sendAction(SendActionReq)returns (SendActionResp)
+    post /front/dc/sendAction(SendDcActionReq)returns (SendDcActionResp)
     @handler  sendProperty//同步调用设备属性
-    post /dc/sendProperty(SendPropertyReq)returns (SendPropertyResp)
+    post /front/dc/sendProperty(SendDcPropertyReq)returns (SendDcPropertyResp)
 }

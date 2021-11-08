@@ -1,4 +1,4 @@
-package logic
+package dm
 
 import (
 	"fmt"

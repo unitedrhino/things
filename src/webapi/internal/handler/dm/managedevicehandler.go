@@ -1,4 +1,4 @@
-package handler
+package dm
 
 import (
 	"net/http"
@@ -18,7 +18,7 @@ func ManageDeviceHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewManageDeviceLogic(r.Context(), ctx)
+		l := dm.NewManageDeviceLogic(r.Context(), ctx)
 		resp, err := l.ManageDevice(req)
 		if err != nil {
 			httpx.Error(w, err)

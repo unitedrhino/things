@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
@@ -57,19 +56,12 @@ func (l *PublishLogic) initMsg(msg *types.Elements) error {
 		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
 	l.dd = repo.NewDeviceData(l.ctx,msg.ClientID)
+	l.topics = strings.Split(msg.Topic, "/")
 	return nil
 }
 
 func (l *PublishLogic) DeviceResp(err error,data map[string]interface{}) {
-	respMethod := device.GetMethod(l.dreq.Method)
-	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
-		l.topics[0], l.topics[2], l.topics[3], l.topics[4])
-	payload, _ := json.Marshal(device.DeviceResp{
-		Method:      respMethod,
-		ClientToken: l.dreq.ClientToken,
-		Data:data}.AddStatus(err))
-
-	l.svcCtx.Mqtt.Publish(respTopic, 0, false, payload)
+	l.svcCtx.DevClient.DeviceResp(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 }
 
 
@@ -133,6 +125,8 @@ func (l *PublishLogic) HandleProperty(msg *types.Elements) error {
 		return l.HandlePropertyReport(msg)
 	case device.GET_STATUS:
 		return l.HandlePropertyGetStatus(msg)
+	case device.CONTROL_REPLY:
+		return l.HandleResp(msg)
 	default:
 		return errors.Method
 	}
@@ -168,19 +162,14 @@ func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 
 	return nil
 }
-func (l *PublishLogic) HandleAction(msg *types.Elements) error {
-	l.Slowf("PublishLogic|HandleAction")
+func (l *PublishLogic) HandleResp(msg *types.Elements) error {
+	l.Slowf("PublishLogic|HandleResp")
 	resp := device.DeviceResp{}
 	err := json.Unmarshal([]byte(msg.Payload),&resp)
 	if err != nil {
 		return errors.Parameter.AddDetail(err)
 	}
-	c,ok := l.svcCtx.DeviceChan.Map.Load(resp.ClientToken)
-	if ok != true {
-		//如果没有找到,说明不是这个分区处理的或者这个消息超时了,不管是超时还是不是这个分区处理,由于无法判断是否是超时,所以会将返回固定错误码,让kafka转发给其他服务去处理,这里在很多服务的时候会出现高延迟,高性能损耗,以后需要进行优化
-		return errors.Server
-	}
-	c.(*types.Info).Msg<- msg
+	l.svcCtx.DevClient.DeviceReqSendResp(&resp,msg.Topic)
 	return nil
 }
 
@@ -195,7 +184,7 @@ func (l *PublishLogic) HandleThing(msg *types.Elements) error {
 	case def.EVENT_METHOD: //事件上报
 		return l.HandleEvent(msg)
 	case def.ACTION_METHOD: //设备响应行为执行结果
-		return l.HandleAction(msg)
+		return l.HandleResp(msg)
 	default:
 		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
@@ -217,7 +206,6 @@ func (l *PublishLogic) Handle(msg *types.Elements) error {
 	if err != nil {
 		return err
 	}
-	l.topics = strings.Split(msg.Topic, "/")
 	if len(l.topics) > 1 {
 		switch l.topics[0] {
 		case "$thing":
@@ -230,7 +218,5 @@ func (l *PublishLogic) Handle(msg *types.Elements) error {
 			return errors.Parameter.AddDetailf("not suppot topic :%s", msg.Topic)
 		}
 	}
-
-	fmt.Printf("template=%+v|req=%+v\n", l.template, msg.Payload)
 	return nil
 }

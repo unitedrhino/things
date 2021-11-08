@@ -16,12 +16,14 @@ CacheRedis:
 Kafka:
   Brokers:
     - 127.0.0.1:9092
-  Group: dm
-Mqtt:
-  Pass: "123"
-  User: admin
-  Brokers:
-    - tcp://127.0.0.1:1883
+  Group: dm2
+DevClient:
+  Mqtt:
+    ClientID: dm.rpc:1
+    Pass: "123"
+    User: admin
+    Brokers:
+      - tcp://127.0.0.1:1883
 Mongo:
   Url: "mongodb://root:password@127.0.0.1:27017"
   Database: things
