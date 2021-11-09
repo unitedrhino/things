@@ -79,6 +79,7 @@ func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendProper
 	}
 
 	return &dm.SendPropertyResp{
+		ClientToken: resp.ClientToken,
 		Status:resp.Status,
 		Code:resp.Code,
 	},nil

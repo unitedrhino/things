@@ -205,7 +205,6 @@ message SendPropertyResp{
   string  status =2;//返回状态
   string clientToken = 3;//调用id
   string data = 4;//返回信息
-
 }
 
 service Dm {

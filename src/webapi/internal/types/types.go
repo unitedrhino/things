@@ -150,16 +150,18 @@ type GetDeviceInfoResp struct {
 }
 
 type SendDmPropertyReq struct {
-	ProductID  string `json:"productID,omitempty"`  //产品id 获取产品id下的所有设备信息
-	DeviceName string `json:"deviceName,omitempty"` //设备名
-	Data       string `json:"data,omitempty"`       //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-	Method     string `json:"method,omitempty"`     //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+	ProductID     string `json:"productID,omitempty"`                     //产品id 获取产品id下的所有设备信息
+	DeviceName    string `json:"deviceName,omitempty"`                    //设备名
+	Data          string `json:"data,omitempty"`                          //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	DataTimestamp int64  `json:"dataTimestamp,string,omitempty,optional"` //上报数据UNIX时间戳, 仅对Method:reported有效
+	Method        string `json:"method,omitempty,optional"`               //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
 }
 
 type SendDmPropertyResp struct {
-	Data   string `json:"data,omitempty"`        //返回信息
-	Status string `json:"status,omitempty"`      //返回状态
-	Code   int64  `json:"code,string,omitempty"` //设备返回状态码
+	ClientToken string `json:"clientToken,omitempty"` //调用id
+	Status      string `json:"status,omitempty"`      //返回状态
+	Code        int64  `json:"code,string,omitempty"` //设备返回状态码
+	Data        string `json:"data,omitempty"`        //返回信息
 }
 
 type SendDmActionReq struct {
@@ -241,16 +243,18 @@ type SendDcActionResp struct {
 }
 
 type SendDcPropertyReq struct {
-	MemberID   string `json:"memberID,omitempty"`   //成员id
-	MemberType int64  `json:"memberType,omitempty"` //成员类型:1:设备 2:用户
-	ProductID  string `json:"productID,omitempty"`  //产品id 获取产品id下的所有设备信息
-	DeviceName string `json:"deviceName,omitempty"` //设备名
-	Data       string `json:"data,omitempty"`       //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-	Method     string `json:"method,omitempty"`     //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+	MemberID      string `json:"memberID,omitempty"`                      //成员id
+	MemberType    int64  `json:"memberType,omitempty"`                    //成员类型:1:设备 2:用户
+	ProductID     string `json:"productID,omitempty"`                     //产品id 获取产品id下的所有设备信息
+	DeviceName    string `json:"deviceName,omitempty"`                    //设备名
+	Data          string `json:"data,omitempty"`                          //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	DataTimestamp int64  `json:"dataTimestamp,string,omitempty,optional"` //上报数据UNIX时间戳, 仅对Method:reported有效
+	Method        string `json:"method,omitempty,optional"`               //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
 }
 
 type SendDcPropertyResp struct {
-	Data   string `json:"data,omitempty"`        //返回信息
-	Status string `json:"status,omitempty"`      //返回状态
-	Code   int64  `json:"code,string,omitempty"` //设备返回状态码
+	ClientToken string `json:"clientToken,omitempty"` //调用id
+	Status      string `json:"status,omitempty"`      //返回状态
+	Code        int64  `json:"code,string,omitempty"` //设备返回状态码
+	Data        string `json:"data,omitempty"`        //返回信息
 }
