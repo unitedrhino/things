@@ -20,8 +20,9 @@ type GetCaptchaResp {
 
 @server (
 	group :verify
+	prefix: /front/verify
 )
 service webapi {
 	@handler captcha
-	post /verify/captcha (GetCaptchaReq) returns (GetCaptchaResp)
+	post /captcha (GetCaptchaReq) returns (GetCaptchaResp)
 }

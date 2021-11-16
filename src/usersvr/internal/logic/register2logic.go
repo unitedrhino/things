@@ -2,14 +2,11 @@ package logic
 
 import (
 	"context"
-	"database/sql"
 	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/usersvr/model"
-	"time"
-
 	"gitee.com/godLei6/things/src/usersvr/internal/svc"
+	"gitee.com/godLei6/things/src/usersvr/model"
 	"gitee.com/godLei6/things/src/usersvr/user"
 
 	"github.com/tal-tech/go-zero/core/logx"
@@ -30,19 +27,8 @@ func NewRegister2Logic(ctx context.Context, svcCtx *svc.ServiceContext) *Registe
 }
 
 func (l *Register2Logic) register(in *user.Register2Req, uc *model.UserCore) (*user.Register2Resp, error) {
-	userInfo := model.UserInfo{
-		Uid:         in.Info.Uid,
-		UserName:    in.Info.UserName,
-		NickName:    in.Info.NickName,
-		Sex:         in.Info.Sex,
-		City:        in.Info.City,
-		Country:     in.Info.Country,
-		Province:    in.Info.Province,
-		Language:    in.Info.Language,
-		HeadImgUrl:  in.Info.HeadImgUrl, //头像之后需要进行文件的处理及校验
-		CreatedTime: sql.NullTime{Valid: true, Time: time.Now()},
-	}
-	err := l.svcCtx.UserInfoModel.InsertOrUpdate(userInfo)
+	userInfo := UserInfoToDb(in.Info)
+	err := l.svcCtx.UserInfoModel.InsertOrUpdate(*userInfo)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err.Error())
 	}

@@ -80,7 +80,7 @@ service webapi {
 	@handler login // 登录
 	post /front/user/login (LoginReq) returns (LoginResp)
 	@handler registerCore //注册
-	post /front/user/registerCore (RegisterCoreReq) returns (RegisterCoreResp)
+	post /registerCore (RegisterCoreReq) returns (RegisterCoreResp)
 }
 
 @server(
@@ -90,7 +90,7 @@ service webapi {
 )
 service webapi {
 	@handler register2 //需要验证核心注册返回的token
-	post /front/user/register2 (Register2Req)
+	post /register2 (Register2Req)
 }
 
 @server(
@@ -100,7 +100,7 @@ service webapi {
 )
 service webapi {
 	@handler userInfo
-	get /front/user/info () returns (UserInfo)
+	get /info  returns (UserInfo)
 	@handler modifyUserInfo
-	post /front/user/modifyUserInfo (ModifyUserInfoReq)
+	post /modifyUserInfo (ModifyUserInfoReq)
 }

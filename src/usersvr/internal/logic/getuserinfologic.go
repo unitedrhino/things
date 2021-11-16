@@ -42,20 +42,7 @@ func (l *GetUserInfoLogic) GetUserInfo(in *user.GetUserInfoReq) (*user.GetUserIn
 		if err != nil {
 			failUids = append(failUids, uid)
 		} else {
-			uis = append(uis, &(user.UserInfo{
-				Uid:        ui.Uid,
-				UserName:   ui.UserName,
-				NickName:   ui.NickName,
-				InviterUid: ui.InviterUid,
-				InviterId:  ui.InviterId,
-				Sex:        ui.Sex,
-				City:       ui.City,
-				Country:    ui.Country,
-				Province:   ui.Province,
-				Language:   ui.Language,
-				HeadImgUrl: ui.HeadImgUrl,
-				CreateTime: ui.CreatedTime.Time.Unix(),
-			}))
+			uis = append(uis, UserInfoToPb(ui))
 		}
 	}
 	l.Infof("GetUserInfo|allNum=%d|getNum=%d|failNum=%d|failUin=%+v|userInfo=%+v",

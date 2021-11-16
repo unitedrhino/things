@@ -118,17 +118,17 @@ type SendDmActionResp struct {
 )
 service webapi {
 	@handler loginAuth //设备登录
-	post /backgrand/dm/loginAuth (LoginAuthReq) returns ()
+	post /loginAuth (LoginAuthReq) returns
 	@handler manageDevice //设备管理
-	post /backgrand/dm/manageDevice (ManageDeviceReq) returns (DeviceInfo)
+	post /manageDevice (ManageDeviceReq) returns (DeviceInfo)
 	@handler manageProduct //产品管理
-	post /backgrand/dm/manageProduct (ManageProductReq) returns (ProductInfo)
+	post /manageProduct (ManageProductReq) returns (ProductInfo)
 	@handler getProductInfo //获取产品信息
-	post /backgrand/dm/getProductInfo (GetProductInfoReq) returns (GetProductInfoResp)
+	post /getProductInfo (GetProductInfoReq) returns (GetProductInfoResp)
 	@handler getDeviceInfo //获取设备信息
-	post /backgrand/dm/getDeviceInfo (GetDeviceInfoReq) returns (GetDeviceInfoResp)
+	post /getDeviceInfo (GetDeviceInfoReq) returns (GetDeviceInfoResp)
 	@handler  sendAction//同步调用设备行为
-	post /backgrand/dm/sendAction(SendDmActionReq)returns (SendDmActionResp)
+	post /sendAction(SendDmActionReq)returns (SendDmActionResp)
 	@handler  sendProperty//同步调用设备属性
-	post /backgrand/dm/sendProperty(SendDmPropertyReq)returns (SendDmPropertyResp)
+	post /sendProperty(SendDmPropertyReq)returns (SendDmPropertyResp)
 }

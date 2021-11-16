@@ -158,10 +158,10 @@ type SendDmPropertyReq struct {
 }
 
 type SendDmPropertyResp struct {
-	ClientToken string `json:"clientToken,omitempty"` //调用id
-	Status      string `json:"status,omitempty"`      //返回状态
-	Code        int64  `json:"code,string,omitempty"` //设备返回状态码
-	Data        string `json:"data,omitempty"`        //返回信息
+	ClientToken string `json:"clientToken"`    //调用id
+	Status      string `json:"status"`         //返回状态
+	Code        int64  `json:"code,string"`    //设备返回状态码
+	Data        string `json:"data,omitempty"` //返回信息
 }
 
 type SendDmActionReq struct {
@@ -254,7 +254,7 @@ type SendDcPropertyReq struct {
 
 type SendDcPropertyResp struct {
 	ClientToken string `json:"clientToken,omitempty"` //调用id
-	Status      string `json:"status,omitempty"`      //返回状态
-	Code        int64  `json:"code,string,omitempty"` //设备返回状态码
+	Status      string `json:"status"`                //返回状态
+	Code        int64  `json:"code,string"`           //设备返回状态码
 	Data        string `json:"data,omitempty"`        //返回信息
 }

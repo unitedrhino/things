@@ -13,18 +13,19 @@ import (
 	"github.com/tal-tech/go-zero/rest"
 )
 
-func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
-	engine.AddRoutes(
+func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/verify/captcha",
+				Path:    "/captcha",
 				Handler: verify.CaptchaHandler(serverCtx),
 			},
 		},
+		rest.WithPrefix("/front/verify"),
 	)
 
-	engine.AddRoutes(
+	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.Record},
 			[]rest.Route{
@@ -35,119 +36,124 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/front/user/registerCore",
+					Path:    "/registerCore",
 					Handler: user.RegisterCoreHandler(serverCtx),
 				},
 			}...,
 		),
+		rest.WithPrefix("/front/user"),
 	)
 
-	engine.AddRoutes(
+	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.Record},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/front/user/register2",
+					Path:    "/register2",
 					Handler: user.Register2Handler(serverCtx),
 				},
 			}...,
 		),
+		rest.WithPrefix("/front/user"),
 	)
 
-	engine.AddRoutes(
+	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.CheckToken, serverCtx.Record},
 			[]rest.Route{
 				{
 					Method:  http.MethodGet,
-					Path:    "/front/user/info",
+					Path:    "/info",
 					Handler: user.UserInfoHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/front/user/modifyUserInfo",
+					Path:    "/modifyUserInfo",
 					Handler: user.ModifyUserInfoHandler(serverCtx),
 				},
 			}...,
 		),
+		rest.WithPrefix("/front/user"),
 	)
 
-	engine.AddRoutes(
+	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.DmManage},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/backgrand/dm/loginAuth",
+					Path:    "/loginAuth",
 					Handler: dm.LoginAuthHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/backgrand/dm/manageDevice",
+					Path:    "/manageDevice",
 					Handler: dm.ManageDeviceHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/backgrand/dm/manageProduct",
+					Path:    "/manageProduct",
 					Handler: dm.ManageProductHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/backgrand/dm/getProductInfo",
+					Path:    "/getProductInfo",
 					Handler: dm.GetProductInfoHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/backgrand/dm/getDeviceInfo",
+					Path:    "/getDeviceInfo",
 					Handler: dm.GetDeviceInfoHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/backgrand/dm/sendAction",
+					Path:    "/sendAction",
 					Handler: dm.SendActionHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/backgrand/dm/sendProperty",
+					Path:    "/sendProperty",
 					Handler: dm.SendPropertyHandler(serverCtx),
 				},
 			}...,
 		),
+		rest.WithPrefix("/backgrand/dm"),
 	)
 
-	engine.AddRoutes(
+	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/front/dc/manageGroupInfo",
+				Path:    "/manageGroupInfo",
 				Handler: dc.ManageGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/front/dc/manageGroupMember",
+				Path:    "/manageGroupMember",
 				Handler: dc.ManageGroupMemberHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/front/dc/getGroupInfo",
+				Path:    "/getGroupInfo",
 				Handler: dc.GetGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/front/dc/getGroupMember",
+				Path:    "/getGroupMember",
 				Handler: dc.GetGroupMemberHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/front/dc/sendAction",
+				Path:    "/sendAction",
 				Handler: dc.SendActionHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/front/dc/sendProperty",
+				Path:    "/sendProperty",
 				Handler: dc.SendPropertyHandler(serverCtx),
 			},
 		},
+		rest.WithPrefix("/front/dc"),
 	)
 }

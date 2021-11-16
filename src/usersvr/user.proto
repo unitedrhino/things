@@ -2,6 +2,29 @@ syntax = "proto3";
 package user;
 
 
+service User {
+
+  rpc login(LoginReq) returns(LoginResp);
+  rpc registerCore(RegisterCoreReq) returns(RegisterCoreResp);
+  rpc register2(Register2Req) returns(Register2Resp);
+  rpc getUserInfo(GetUserInfoReq) returns(GetUserInfoResp);
+  rpc getUserCore(GetUserCoreReq) returns(GetUserCoreResp);
+
+  rpc checkToken(CheckTokenReq) returns(CheckTokenResp);
+  rpc modifyUserInfo(ModifyUserInfoReq) returns(NilResp);
+  rpc getUserCoreList(GetUserCoreListReq) returns(GetUserCoreListResp);
+}
+
+
+
+
+message PageInfo{
+  int64 page = 1;
+  int64 pageSize = 2;
+  string  searchKey  = 3;//搜索的内容
+  string  searchType   = 4;//搜索的字段
+}
+
 message JwtToken{
   string accessToken = 1;
   int64 accessExpire = 2;
@@ -12,6 +35,7 @@ message NilResp{
 
 }
 
+//用户属性信息
 message UserInfo{
   int64 uid = 1;
   string userName =2;
@@ -27,12 +51,28 @@ message UserInfo{
   int64 createTime =12;
 }
 
+//用户核心信息
+message UserCore{
+  int64  uid = 1;
+  string userName = 2;
+  string password = 3;// 登录密码
+  string email = 4;    // 邮箱
+  string phone = 5;    // 手机号
+  string wechat = 6;   // 微信UnionID
+  string lastIP = 7;   // 最后登录ip
+  string regIP = 8;    // 注册ip
+  int64  createdTime = 9;//创建时间
+  int64  status = 10; // 用户状态:0为未注册状态
+}
+
 message RegisterCoreReq{
   string reqType = 1;//注册方式:	0:手机号注册 1:微信注册
   string note = 2;//手机号注册时填写手机号
   string code = 3;//验证码    微信登录填code
   string codeID = 4; //验证码编号 微信登录填state
 }
+
+
 message RegisterCoreResp{
   int64 uid = 1;//用户id
 }
@@ -49,8 +89,17 @@ message  Register2Resp{
 message GetUserInfoReq{
   repeated int64 uid = 1;//用户id
 }
+
 message GetUserInfoResp{
   repeated UserInfo info = 1;
+}
+
+message GetUserCoreReq{
+  int64 uid = 1;//用户id
+}
+
+message GetUserCoreResp{
+  UserCore info = 1;
 }
 
 message LoginReq{
@@ -82,11 +131,13 @@ message ModifyUserInfoReq{
   map<string, string> info = 2; //修改的属性,参看UserInfo
 }
 
-service User {
-  rpc login(LoginReq) returns(LoginResp);
-  rpc registerCore(RegisterCoreReq) returns(RegisterCoreResp);
-  rpc register2(Register2Req) returns(Register2Resp);
-  rpc getUserInfo(GetUserInfoReq) returns(GetUserInfoResp);
-  rpc CheckToken(CheckTokenReq) returns(CheckTokenResp);
-  rpc ModifyUserInfo(ModifyUserInfoReq) returns(NilResp);
+message GetUserCoreListReq{
+  PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: uid:用户id userName:登录用户名  email:邮箱  phone:手机号
 }
+
+
+message GetUserCoreListResp{
+  repeated UserCore info = 1;
+  int64 total = 2;
+}
+

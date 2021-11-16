@@ -111,7 +111,6 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 		return nil, errors.UnRegister
 	default:
 		l.Errorf("GetUserCore|req=%#v|err=%+v", in, err)
-		return nil, err
+		return nil, errors.Database.AddDetail(err)
 	}
-	return &user.LoginResp{}, nil
 }

@@ -41,6 +41,11 @@ func (s *UserServer) GetUserInfo(ctx context.Context, in *user.GetUserInfoReq) (
 	return l.GetUserInfo(in)
 }
 
+func (s *UserServer) GetUserCore(ctx context.Context, in *user.GetUserCoreReq) (*user.GetUserCoreResp, error) {
+	l := logic.NewGetUserCoreLogic(ctx, s.svcCtx)
+	return l.GetUserCore(in)
+}
+
 func (s *UserServer) CheckToken(ctx context.Context, in *user.CheckTokenReq) (*user.CheckTokenResp, error) {
 	l := logic.NewCheckTokenLogic(ctx, s.svcCtx)
 	return l.CheckToken(in)
@@ -49,4 +54,9 @@ func (s *UserServer) CheckToken(ctx context.Context, in *user.CheckTokenReq) (*u
 func (s *UserServer) ModifyUserInfo(ctx context.Context, in *user.ModifyUserInfoReq) (*user.NilResp, error) {
 	l := logic.NewModifyUserInfoLogic(ctx, s.svcCtx)
 	return l.ModifyUserInfo(in)
+}
+
+func (s *UserServer) GetUserCoreList(ctx context.Context, in *user.GetUserCoreListReq) (*user.GetUserCoreListResp, error) {
+	l := logic.NewGetUserCoreListLogic(ctx, s.svcCtx)
+	return l.GetUserCoreList(in)
 }

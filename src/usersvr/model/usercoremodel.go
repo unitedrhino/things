@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/tal-tech/go-zero/core/stores/builder"
 	"strings"
 	"time"
 
@@ -11,11 +12,10 @@ import (
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"github.com/tal-tech/go-zero/core/stringx"
-	"github.com/tal-tech/go-zero/tools/goctl/model/sql/builderx"
 )
 
 var (
-	userCoreFieldNames          = builderx.RawFieldNames(&UserCore{})
+	userCoreFieldNames          = builder.RawFieldNames(&UserCore{})
 	userCoreRows                = strings.Join(userCoreFieldNames, ",")
 	userCoreRowsExpectAutoSet   = strings.Join(stringx.Remove(userCoreFieldNames, "`create_time`", "`update_time`"), ",")
 	userCoreRowsWithPlaceHolder = strings.Join(stringx.Remove(userCoreFieldNames, "`uid`", "`create_time`", "`update_time`"), "=?,") + "=?"

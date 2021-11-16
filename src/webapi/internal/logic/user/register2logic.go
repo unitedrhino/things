@@ -37,7 +37,7 @@ func (l *Register2Logic) Register2(req types.Register2Req) error {
 	}
 	if token.Uid != req.Uid {
 		l.Errorf("uid is invalid")
-		return errors.UidNotCompare
+		return errors.UidNotRight
 	}
 	resp, er := l.svcCtx.UserRpc.Register2(l.ctx, &user.Register2Req{
 		Password: req.Password,
