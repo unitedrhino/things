@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"gitee.com/godLei6/things/shared/errors"
+	"google.golang.org/grpc/reflection"
 
 	"gitee.com/godLei6/things/src/usersvr/internal/config"
 	"gitee.com/godLei6/things/src/usersvr/internal/server"
@@ -26,6 +27,7 @@ func main() {
 	srv := server.NewUserServer(ctx)
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		user.RegisterUserServer(grpcServer, srv)
+		reflection.Register(grpcServer)
 	})
 	s.AddUnaryInterceptors(errors.ErrorInterceptor)
 	defer s.Stop()

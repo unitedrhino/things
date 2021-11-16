@@ -17,6 +17,7 @@ type Keys struct {
 type (
 	UserModel interface {
 		RegisterCore(data UserCore, key Keys) (sql.Result, error)
+		GetUserCoreList(page def.PageInfo) ([]*UserCore,int64, error)
 	}
 
 	userModel struct {
@@ -64,4 +65,23 @@ func (m *userModel) RegisterCore(data UserCore, key Keys) (result sql.Result, er
 	})
 	m.DelCache(userCoreUidKey, userCoreEmailKey, userCorePhoneKey, userCoreUserNameKey, userCoreWechatKey)
 	return result, err
+}
+
+//返回 usercore列表,总数及错误信息
+func (m *userModel) GetUserCoreList(page def.PageInfo) ([]*UserCore,int64, error) {
+	var resp []*UserCore
+	query := fmt.Sprintf("select %s from %s  limit %d offset %d ",
+		userCoreRows, m.userCore, page.GetLimit(), page.GetOffset())
+	err := m.CachedConn.QueryRowsNoCache(&resp, query)
+	if err != nil {
+		return nil,0, err
+	}
+
+	count := fmt.Sprintf("select count(1) from %s",m.userCore)
+	var total int64
+	err = m.CachedConn.QueryRowNoCache(&total, count)
+	if err != nil {
+		return nil,0, err
+	}
+	return resp,total, nil
 }

@@ -225,8 +225,8 @@ service Dm {
   //获取设备日志信息
   rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);
   //同步调用设备行为
-  rpc SendAction(SendActionReq)         returns(SendActionResp);
+  rpc sendAction(SendActionReq)         returns(SendActionResp);
   //同步调用设备属性
-  rpc SendProperty(SendPropertyReq)     returns(SendPropertyResp);
+  rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
 }
 

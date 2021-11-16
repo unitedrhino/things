@@ -3,23 +3,25 @@ module gitee.com/godLei6/things
 go 1.14
 
 require (
-	github.com/Shopify/sarama v1.29.0
+	github.com/Shopify/sarama v1.30.0
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/eclipse/paho.mqtt.golang v1.3.5
-	github.com/go-redis/redis v6.15.7+incompatible
-	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-uuid v1.0.2
+	github.com/jinzhu/copier v0.3.2
 	github.com/mojocn/base64Captcha v1.3.4
-	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.3.1
-	github.com/tal-tech/go-zero v1.2.1
+	github.com/tal-tech/go-zero v1.2.3
 	go.mongodb.org/mongo-driver v1.5.3
-	go.uber.org/automaxprocs v1.4.0 // indirect
-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
 	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
-	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985 // indirect
-	google.golang.org/grpc v1.39.0
+	golang.org/x/net v0.0.0-20211111083644-e5c967477495 // indirect
+	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
+	golang.org/x/sys v0.0.0-20211110154304-99a53858aa08 // indirect
+	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/genproto v0.0.0-20211104193956-4c6863e31247 // indirect
+	google.golang.org/grpc v1.42.0
 	google.golang.org/protobuf v1.27.1
 )

@@ -99,15 +99,15 @@ type SendDcPropertyResp struct {
 )
 service webapi {
     @handler  manageGroupInfo//管理组
-    post /front/dc/manageGroupInfo(ManageGroupInfoReq)returns (GroupInfo)
+    post /manageGroupInfo(ManageGroupInfoReq)returns (GroupInfo)
     @handler  manageGroupMember//管理组成员
-    post /front/dc/manageGroupMember(ManageGroupMemberReq)returns (GroupMember)
+    post /manageGroupMember(ManageGroupMemberReq)returns (GroupMember)
     @handler  getGroupInfo//获取组信息
-    post /front/dc/getGroupInfo(GetGroupInfoReq)returns (GetGroupInfoResp)
+    post /getGroupInfo(GetGroupInfoReq)returns (GetGroupInfoResp)
     @handler  getGroupMember//获取组成员
-    post /front/dc/getGroupMember(GetGroupMemberReq)returns (GetGroupMemberResp)
+    post /getGroupMember(GetGroupMemberReq)returns (GetGroupMemberResp)
     @handler  sendAction//同步调用设备行为
-    post /front/dc/sendAction(SendDcActionReq)returns (SendDcActionResp)
+    post /sendAction(SendDcActionReq)returns (SendDcActionResp)
     @handler  sendProperty//同步调用设备属性
-    post /front/dc/sendProperty(SendDcPropertyReq)returns (SendDcPropertyResp)
+    post /sendProperty(SendDcPropertyReq)returns (SendDcPropertyResp)
 }

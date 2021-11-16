@@ -12,28 +12,28 @@ import (
 )
 
 type (
-	GetDeviceInfoResp  = dm.GetDeviceInfoResp
-	SendActionReq      = dm.SendActionReq
-	ManageProductReq   = dm.ManageProductReq
-	DeviceInfo         = dm.DeviceInfo
-	GetDeviceInfoReq   = dm.GetDeviceInfoReq
-	GetDeviceDataResp  = dm.GetDeviceDataResp
-	SendActionResp     = dm.SendActionResp
+	AccessAuthReq      = dm.AccessAuthReq
 	GetProductInfoResp = dm.GetProductInfoResp
+	GetDeviceInfoReq   = dm.GetDeviceInfoReq
 	GetDeviceLogReq    = dm.GetDeviceLogReq
-	DeviceData         = dm.DeviceData
-	GetDeviceDataReq   = dm.GetDeviceDataReq
 	SendPropertyReq    = dm.SendPropertyReq
-	PageInfo           = dm.PageInfo
 	Response           = dm.Response
 	ManResp            = dm.ManResp
-	GetProductInfoReq  = dm.GetProductInfoReq
+	DeviceInfo         = dm.DeviceInfo
 	ManageDeviceReq    = dm.ManageDeviceReq
 	GetDeviceLogResp   = dm.GetDeviceLogResp
-	SendPropertyResp   = dm.SendPropertyResp
+	GetDeviceDataReq   = dm.GetDeviceDataReq
+	SendActionReq      = dm.SendActionReq
 	LoginAuthReq       = dm.LoginAuthReq
-	AccessAuthReq      = dm.AccessAuthReq
+	GetProductInfoReq  = dm.GetProductInfoReq
 	ProductInfo        = dm.ProductInfo
+	GetDeviceDataResp  = dm.GetDeviceDataResp
+	GetDeviceInfoResp  = dm.GetDeviceInfoResp
+	DeviceData         = dm.DeviceData
+	SendActionResp     = dm.SendActionResp
+	SendPropertyResp   = dm.SendPropertyResp
+	PageInfo           = dm.PageInfo
+	ManageProductReq   = dm.ManageProductReq
 
 	Dm interface {
 		// 登录认证
