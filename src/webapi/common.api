@@ -7,6 +7,8 @@ info(
 )
 
 type PageInfo{
-    Page 		int64 `json:"page"`
-    PageSize 	int64 `json:"pageSize"`
+    Page     int64 `json:"page,optional" form:"page,optional"`         // 页码
+    PageSize int64 `json:"pageSize,optional" form:"pageSize,optional"` // 每页大小
+    SearchKey string `json:"searchKey,optional" form:"searchKey,optional"` // 搜索的key
+    SearchType string `json:"searchType,optional" form:"searchType,optional"` // 搜索的类型
 }

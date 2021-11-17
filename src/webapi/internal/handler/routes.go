@@ -64,7 +64,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodGet,
-					Path:    "/info",
+					Path:    "/userInfo",
 					Handler: user.UserInfoHandler(serverCtx),
 				},
 				{
@@ -75,6 +75,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/front/user"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Record},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/userCoreList",
+					Handler: user.UserCoreListHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/backgrand/user"),
 	)
 
 	server.AddRoutes(

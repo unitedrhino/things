@@ -2,8 +2,10 @@
 package types
 
 type PageInfo struct {
-	Page     int64 `json:"page"`
-	PageSize int64 `json:"pageSize"`
+	Page       int64  `json:"page,optional" form:"page,optional"`             // 页码
+	PageSize   int64  `json:"pageSize,optional" form:"pageSize,optional"`     // 每页大小
+	SearchKey  string `json:"searchKey,optional" form:"searchKey,optional"`   // 搜索的key
+	SearchType string `json:"searchType,optional" form:"searchType,optional"` // 搜索的类型
 }
 
 type GetCaptchaReq struct {
@@ -53,6 +55,19 @@ type LoginResp struct {
 	Token JwtToken `json:"token"` //用户token
 }
 
+type UserCore struct {
+	Uid         int64  `json:"uid"`
+	UserName    string `json:"userName"`
+	Password    string `json:"password,omitempty"` // 登录密码
+	Email       string `json:"email"`              // 邮箱
+	Phone       string `json:"phone"`              // 手机号
+	Wechat      string `json:"wechat"`             // 微信UnionID
+	LastIP      string `json:"lastIP"`             // 最后登录ip
+	RegIP       string `json:"regIP"`              // 注册ip
+	CreatedTime int64  `json:"createdTime"`        //创建时间
+	Status      int64  `json:"status"`             // 用户状态:0为未注册状态
+}
+
 type RegisterCoreReq struct {
 	ReqType string `json:"reqType,options=phone|wxopen|wxin|wxminip"` //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
 	Note    string `json:"note,optional"`                             //手机号注册时填写手机号
@@ -78,6 +93,15 @@ type ModifyStu struct {
 
 type ModifyUserInfoReq struct {
 	Info map[string]string `json:"info"` //修改参数key value数组
+}
+
+type GetUserCoreListReq struct {
+	PageInfo
+}
+
+type GetUserCoreListResp struct {
+	Total int64       `json:"total"`
+	Info  []*UserCore `json:"info"`
 }
 
 type LoginAuthReq struct {

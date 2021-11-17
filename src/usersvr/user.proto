@@ -55,14 +55,14 @@ message UserInfo{
 message UserCore{
   int64  uid = 1;
   string userName = 2;
-  string password = 3;// 登录密码
-  string email = 4;    // 邮箱
-  string phone = 5;    // 手机号
-  string wechat = 6;   // 微信UnionID
-  string lastIP = 7;   // 最后登录ip
-  string regIP = 8;    // 注册ip
-  int64  createdTime = 9;//创建时间
-  int64  status = 10; // 用户状态:0为未注册状态
+  string password = 3;    // 登录密码
+  string email = 4;       // 邮箱
+  string phone = 5;       // 手机号
+  string wechat = 6;      // 微信UnionID
+  string lastIP = 7;      // 最后登录ip
+  string regIP = 8;       // 注册ip
+  int64  createdTime = 9; //创建时间
+  int64  status = 10;     // 用户状态:0为未注册状态
 }
 
 message RegisterCoreReq{
