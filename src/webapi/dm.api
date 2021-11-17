@@ -112,9 +112,9 @@ type SendDmActionResp struct {
 
 
 @server (
-	group :dm
+	group : backgrand/dm
 	middleware: DmManage
-	prefix: /backgrand/dm
+	prefix: backgrand/dm
 )
 service webapi {
 	@handler loginAuth //设备登录

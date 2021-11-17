@@ -19,8 +19,8 @@ type GetCaptchaResp {
 }
 
 @server (
-	group :verify
-	prefix: /front/verify
+	group :front/verify
+	prefix: front/verify
 )
 service webapi {
 	@handler captcha
