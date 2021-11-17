@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gitee.com/godLei6/things/shared/proto"
 	"github.com/tal-tech/go-zero/core/logx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -30,8 +29,7 @@ type RpcError interface {
 //}
 
 func (c CodeError) ToRpc() error {
-	s, _ := status.New(codes.Unknown, c.Msg).
-		WithDetails(&proto.Error{Code: int32(c.Code), Message: c.Msg, Detail: c.Details})
+	s  := status.New(codes.Unknown, c.Error())
 	return s.Err()
 }
 
@@ -80,8 +78,10 @@ func NewDefaultError(msg string) error {
 	return Default.WithMsg(msg)
 }
 
-func (e CodeError) Error() string {
 
+
+func (e CodeError) Error() string {
+	e.Stack = nil
 	ret, _ := json.Marshal(e)
 	return string(ret)
 }

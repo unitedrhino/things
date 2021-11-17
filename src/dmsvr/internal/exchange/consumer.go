@@ -12,7 +12,6 @@ import (
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"github.com/Shopify/sarama"
 	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/core/trace"
 	"log"
 	"os"
 	"os/signal"
@@ -137,9 +136,10 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 	for message := range claim.Messages() {
 		var err error
 		func() {
-			ctx, span := trace.StartServerSpan(session.Context(), nil, k.serviceContext.Config.Kafka.Group, message.Topic)
+			//ctx, span := trace.StartServerSpan(session.Context(), nil, k.serviceContext.Config.Kafka.Group, message.Topic)
+			ctx,span := context.WithCancel(context.Background())
 			l := logx.WithContext(ctx)
-			defer span.Finish()
+			defer span()
 			msg := types.Elements{}
 			err = json.Unmarshal(message.Value, &msg)
 			if err != nil {
