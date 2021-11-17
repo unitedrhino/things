@@ -94,8 +94,8 @@ type SendDcPropertyResp struct {
 }
 
 @server (
-    group :dc
-    prefix: /front/dc
+    group :front/dc
+    prefix: front/dc
 )
 service webapi {
     @handler  manageGroupInfo//管理组

@@ -4,10 +4,11 @@ package handler
 import (
 	"net/http"
 
-	dc "gitee.com/godLei6/things/src/webapi/internal/handler/dc"
-	dm "gitee.com/godLei6/things/src/webapi/internal/handler/dm"
-	user "gitee.com/godLei6/things/src/webapi/internal/handler/user"
-	verify "gitee.com/godLei6/things/src/webapi/internal/handler/verify"
+	backgranddm "gitee.com/godLei6/things/src/webapi/internal/handler/backgrand/dm"
+	backgranduser "gitee.com/godLei6/things/src/webapi/internal/handler/backgrand/user"
+	frontdc "gitee.com/godLei6/things/src/webapi/internal/handler/front/dc"
+	frontuser "gitee.com/godLei6/things/src/webapi/internal/handler/front/user"
+	frontverify "gitee.com/godLei6/things/src/webapi/internal/handler/front/verify"
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
@@ -19,7 +20,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/captcha",
-				Handler: verify.CaptchaHandler(serverCtx),
+				Handler: frontverify.CaptchaHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/front/verify"),
@@ -31,13 +32,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/front/user/login",
-					Handler: user.LoginHandler(serverCtx),
+					Path:    "/login",
+					Handler: frontuser.LoginHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/registerCore",
-					Handler: user.RegisterCoreHandler(serverCtx),
+					Handler: frontuser.RegisterCoreHandler(serverCtx),
 				},
 			}...,
 		),
@@ -51,7 +52,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/register2",
-					Handler: user.Register2Handler(serverCtx),
+					Handler: frontuser.Register2Handler(serverCtx),
 				},
 			}...,
 		),
@@ -65,12 +66,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodGet,
 					Path:    "/userInfo",
-					Handler: user.UserInfoHandler(serverCtx),
+					Handler: frontuser.UserInfoHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/modifyUserInfo",
-					Handler: user.ModifyUserInfoHandler(serverCtx),
+					Handler: frontuser.ModifyUserInfoHandler(serverCtx),
 				},
 			}...,
 		),
@@ -84,7 +85,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodGet,
 					Path:    "/userCoreList",
-					Handler: user.UserCoreListHandler(serverCtx),
+					Handler: backgranduser.UserCoreListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/userInfos",
+					Handler: backgranduser.UserInfosHandler(serverCtx),
 				},
 			}...,
 		),
@@ -98,37 +104,37 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/loginAuth",
-					Handler: dm.LoginAuthHandler(serverCtx),
+					Handler: backgranddm.LoginAuthHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/manageDevice",
-					Handler: dm.ManageDeviceHandler(serverCtx),
+					Handler: backgranddm.ManageDeviceHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/manageProduct",
-					Handler: dm.ManageProductHandler(serverCtx),
+					Handler: backgranddm.ManageProductHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/getProductInfo",
-					Handler: dm.GetProductInfoHandler(serverCtx),
+					Handler: backgranddm.GetProductInfoHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/getDeviceInfo",
-					Handler: dm.GetDeviceInfoHandler(serverCtx),
+					Handler: backgranddm.GetDeviceInfoHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/sendAction",
-					Handler: dm.SendActionHandler(serverCtx),
+					Handler: backgranddm.SendActionHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/sendProperty",
-					Handler: dm.SendPropertyHandler(serverCtx),
+					Handler: backgranddm.SendPropertyHandler(serverCtx),
 				},
 			}...,
 		),
@@ -140,32 +146,32 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/manageGroupInfo",
-				Handler: dc.ManageGroupInfoHandler(serverCtx),
+				Handler: frontdc.ManageGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/manageGroupMember",
-				Handler: dc.ManageGroupMemberHandler(serverCtx),
+				Handler: frontdc.ManageGroupMemberHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/getGroupInfo",
-				Handler: dc.GetGroupInfoHandler(serverCtx),
+				Handler: frontdc.GetGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/getGroupMember",
-				Handler: dc.GetGroupMemberHandler(serverCtx),
+				Handler: frontdc.GetGroupMemberHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/sendAction",
-				Handler: dc.SendActionHandler(serverCtx),
+				Handler: frontdc.SendActionHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/sendProperty",
-				Handler: dc.SendPropertyHandler(serverCtx),
+				Handler: frontdc.SendPropertyHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/front/dc"),

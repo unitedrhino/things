@@ -22,8 +22,8 @@ type GetCaptchaResp struct {
 
 type JwtToken struct {
 	AccessToken  string `json:"accessToken,omitempty"`
-	AccessExpire int64  `json:"accessExpire,omitempty"`
-	RefreshAfter int64  `json:"refreshAfter,omitempty"`
+	AccessExpire int64  `json:"accessExpire,string,omitempty"`
+	RefreshAfter int64  `json:"refreshAfter,string,omitempty"`
 }
 
 type UserInfo struct {
@@ -56,7 +56,7 @@ type LoginResp struct {
 }
 
 type UserCore struct {
-	Uid         int64  `json:"uid"`
+	Uid         int64  `json:"uid,string"`
 	UserName    string `json:"userName"`
 	Password    string `json:"password,omitempty"` // 登录密码
 	Email       string `json:"email"`              // 邮箱
@@ -64,7 +64,7 @@ type UserCore struct {
 	Wechat      string `json:"wechat"`             // 微信UnionID
 	LastIP      string `json:"lastIP"`             // 最后登录ip
 	RegIP       string `json:"regIP"`              // 注册ip
-	CreatedTime int64  `json:"createdTime"`        //创建时间
+	CreatedTime int64  `json:"createdTime,string"` //创建时间
 	Status      int64  `json:"status"`             // 用户状态:0为未注册状态
 }
 
@@ -102,6 +102,14 @@ type GetUserCoreListReq struct {
 type GetUserCoreListResp struct {
 	Total int64       `json:"total"`
 	Info  []*UserCore `json:"info"`
+}
+
+type GetUserInfosReq struct {
+	Uid []int64 `json:"uid,string"`
+}
+
+type GetUserInfosResp struct {
+	Info []*UserInfo `json:"info"`
 }
 
 type LoginAuthReq struct {
