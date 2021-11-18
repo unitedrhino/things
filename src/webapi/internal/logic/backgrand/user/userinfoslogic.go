@@ -5,6 +5,7 @@ import (
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/spf13/cast"
 
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 	"gitee.com/godLei6/things/src/webapi/internal/types"
@@ -28,7 +29,11 @@ func NewUserInfosLogic(ctx context.Context, svcCtx *svc.ServiceContext) UserInfo
 
 func (l *UserInfosLogic) UserInfos(req types.GetUserInfosReq) (*types.GetUserInfosResp, error) {
 	l.Infof("UserInfos|req=%d", req)
-	uis, err := l.svcCtx.UserRpc.GetUserInfo(l.ctx, &user.GetUserInfoReq{Uid: req.Uid})
+	 uids := make([]int64,0,len(req.Uid))
+	for _,uid := range req.Uid{
+		uids = append(uids,cast.ToInt64(uid))
+	}
+	uis, err := l.svcCtx.UserRpc.GetUserInfo(l.ctx, &user.GetUserInfoReq{Uid: uids})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("[%s]|rpc.Login|uid=%v|err=%+v", utils.FuncName(), req, er)

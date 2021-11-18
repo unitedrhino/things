@@ -12,6 +12,8 @@ import (
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"github.com/Shopify/sarama"
 	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/tal-tech/go-zero/core/trace"
+	"go.opentelemetry.io/otel"
 	"log"
 	"os"
 	"os/signal"
@@ -127,7 +129,7 @@ func (k *Kafka) Cleanup(sarama.ConsumerGroupSession) error {
 
 // ConsumeClaim must start a consumer loop of ConsumerGroupClaim's Messages().
 func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-
+	tracer := otel.GetTracerProvider().Tracer(trace.TraceName)
 	// NOTE:
 	// Do not move the code below to a goroutine.
 	// The `ConsumeClaim` itself is called within a goroutine, see:
@@ -137,9 +139,12 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 		var err error
 		func() {
 			//ctx, span := trace.StartServerSpan(session.Context(), nil, k.serviceContext.Config.Kafka.Group, message.Topic)
-			ctx,span := context.WithCancel(context.Background())
+			ctx, span := tracer.Start(
+				session.Context(),
+				message.Topic,
+			)
+			defer span.End()
 			l := logx.WithContext(ctx)
-			defer span()
 			msg := types.Elements{}
 			err = json.Unmarshal(message.Value, &msg)
 			if err != nil {

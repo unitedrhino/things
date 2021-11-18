@@ -105,7 +105,7 @@ type GetUserCoreListResp struct {
 }
 
 type GetUserInfosReq struct {
-	Uid []int64 `json:"uid,string"`
+	Uid []string `json:"uid,string"` //十进制数
 }
 
 type GetUserInfosResp struct {
