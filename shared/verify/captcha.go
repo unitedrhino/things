@@ -64,7 +64,8 @@ func (c *Captcha) Verify(id, answer string) bool {
 	return ans == answer
 }
 
-func (c *Captcha) Get() (string, string, error) {
+
+func (c *Captcha) Get() (string, string,string, error) {
 	driver := base64Captcha.NewDriverDigit(c.height, c.width, c.length, c.maxSkew, c.dotCount)
 	id, content, answer := driver.GenerateIdQuestionAnswer()
 	item, _ := driver.DrawCaptcha(content)
@@ -72,7 +73,7 @@ func (c *Captcha) Get() (string, string, error) {
 	key := fmt.Sprintf("%s#%s#%s", cachePrefix, c.keyPre, id)
 	err := c.cache.SetWithExpire(key, answer, c.keyExp)
 	if err != nil {
-		return "", "", err
+		return "", "","", err
 	}
-	return id, b64s, err
+	return id, b64s,answer, err
 }
