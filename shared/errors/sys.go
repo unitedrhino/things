@@ -5,9 +5,9 @@ const SYS_ERROR = 100000
 var (
 	OK               = NewCodeError(0, "成功")
 	Default          = NewCodeError(SYS_ERROR+1, "其他错误")
-	TokenExpired     = NewCodeError(SYS_ERROR+2, "token 已经过期")
+	TokenExpired     = NewCodeError(SYS_ERROR+2, "token已经过期")
 	TokenNotValidYet = NewCodeError(SYS_ERROR+3, "token还未生效")
-	TokenMalformed   = NewCodeError(SYS_ERROR+4, "这不是一个token")
+	TokenMalformed   = NewCodeError(SYS_ERROR+4, "token格式错误")
 	TokenInvalid     = NewCodeError(SYS_ERROR+5, "违法的token")
 	Parameter        = NewCodeError(SYS_ERROR+6, "参数错误")
 	System           = NewCodeError(SYS_ERROR+7, "系统错误")

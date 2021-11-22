@@ -5,7 +5,6 @@ import (
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/usersvr/user"
-
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 	"gitee.com/godLei6/things/src/webapi/internal/types"
 
@@ -26,14 +25,14 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) UserInfoL
 	}
 }
 
-func (l *UserInfoLogic) UserInfo(uid int64) (*types.UserInfo, error) {
-	l.Infof("UserInfo|uid=%d", uid)
-	ui, err := l.svcCtx.UserRpc.GetUserInfo(l.ctx, &user.GetUserInfoReq{Uid: []int64{uid}})
+func (l *UserInfoLogic) UserInfo() (*types.UserInfo, error) {
+	userCtx := types.GetUserCtx(l.ctx)
+	l.Infof("UserInfo|uid=%d", userCtx.Uid)
+	ui, err := l.svcCtx.UserRpc.GetUserInfo(l.ctx, &user.GetUserInfoReq{Uid: []int64{userCtx.Uid}})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("[%s]|rpc.Login|uid=%v|err=%+v", utils.FuncName(), uid, er)
+		l.Errorf("[%s]|rpc.Login|uid=%v|err=%+v", utils.FuncName(), userCtx.Uid, er)
 		return nil, er
 	}
-
 	return types.UserInfoToApi(ui.Info[0]), nil
 }
