@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	backgranddc "gitee.com/godLei6/things/src/webapi/internal/handler/backgrand/dc"
 	backgranddm "gitee.com/godLei6/things/src/webapi/internal/handler/backgrand/dm"
 	backgranduser "gitee.com/godLei6/things/src/webapi/internal/handler/backgrand/user"
 	frontdc "gitee.com/godLei6/things/src/webapi/internal/handler/front/dc"
@@ -98,82 +99,107 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/loginAuth",
+				Handler: backgranddm.LoginAuthHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/manageDevice",
+				Handler: backgranddm.ManageDeviceHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/manageProduct",
+				Handler: backgranddm.ManageProductHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/getProductInfo",
+				Handler: backgranddm.GetProductInfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/getDeviceInfo",
+				Handler: backgranddm.GetDeviceInfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/sendAction",
+				Handler: backgranddm.SendActionHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/sendProperty",
+				Handler: backgranddm.SendPropertyHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/backgrand/dm"),
+	)
+
+	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.DmManage},
+			[]rest.Middleware{serverCtx.CheckToken},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/loginAuth",
-					Handler: backgranddm.LoginAuthHandler(serverCtx),
+					Path:    "/manageGroupInfo",
+					Handler: frontdc.ManageGroupInfoHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/manageDevice",
-					Handler: backgranddm.ManageDeviceHandler(serverCtx),
+					Path:    "/manageGroupMember",
+					Handler: frontdc.ManageGroupMemberHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/manageProduct",
-					Handler: backgranddm.ManageProductHandler(serverCtx),
+					Path:    "/getGroupInfo",
+					Handler: frontdc.GetGroupInfoHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/getProductInfo",
-					Handler: backgranddm.GetProductInfoHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/getDeviceInfo",
-					Handler: backgranddm.GetDeviceInfoHandler(serverCtx),
+					Path:    "/getGroupMember",
+					Handler: frontdc.GetGroupMemberHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/sendAction",
-					Handler: backgranddm.SendActionHandler(serverCtx),
+					Handler: frontdc.SendActionHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/sendProperty",
-					Handler: backgranddm.SendPropertyHandler(serverCtx),
+					Handler: frontdc.SendPropertyHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/backgrand/dm"),
+		rest.WithPrefix("/front/dc"),
 	)
 
 	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/manageGroupInfo",
-				Handler: frontdc.ManageGroupInfoHandler(serverCtx),
+				Path:    "/backgrand/dc/manageGroupInfo",
+				Handler: backgranddc.BgManageGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/manageGroupMember",
-				Handler: frontdc.ManageGroupMemberHandler(serverCtx),
+				Path:    "/backgrand/dc/manageGroupMember",
+				Handler: backgranddc.BgManageGroupMemberHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/getGroupInfo",
-				Handler: frontdc.GetGroupInfoHandler(serverCtx),
+				Path:    "/backgrand/dc/getGroupInfo",
+				Handler: backgranddc.BgGetGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/getGroupMember",
-				Handler: frontdc.GetGroupMemberHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/sendAction",
-				Handler: frontdc.SendActionHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/sendProperty",
-				Handler: frontdc.SendPropertyHandler(serverCtx),
+				Path:    "/backgrand/dc/getGroupMember",
+				Handler: backgranddc.BgGetGroupMemberHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/front/dc"),
 	)
 }

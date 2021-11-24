@@ -113,7 +113,6 @@ type SendDmActionResp struct {
 
 @server (
 	group : backgrand/dm
-	middleware: DmManage
 	prefix: backgrand/dm
 )
 service webapi {

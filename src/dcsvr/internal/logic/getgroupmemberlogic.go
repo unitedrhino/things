@@ -30,7 +30,7 @@ func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc
 	l.Infof("GetGroupMember|req=%+v", in)
 	var info []*dc.GroupMember
 	var size int64
-	if (in.Page == nil || in.Page.Page == 0) && (in.GroupID == 0 && in.MemberID == ""){
+	if (in.Page == nil || in.Page.Page == 0) && (in.GroupID == 0 && in.MemberID == "") {
 		di, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberIDMemberType(in.GroupID, in.MemberID,in.MemberType)
 		if err != nil {
 			if err == model.ErrNotFound {
@@ -39,7 +39,7 @@ func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc
 			return nil, err
 		}
 		info = append(info, DBToRPCFmt(di).(*dc.GroupMember))
-	}else {
+	} else {
 		var page int64 = 1
 		var pageSize int64 = 20
 		var di []*model.GroupMember
@@ -58,7 +58,7 @@ func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc
 			if err != nil {
 				return nil, err
 			}
-		}else{
+		} else {
 			size, err = l.svcCtx.DcDB.GetCountByGroupMemberMemberID(
 				in.MemberID)
 			if err != nil {
