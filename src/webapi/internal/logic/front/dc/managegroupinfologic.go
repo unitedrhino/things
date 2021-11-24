@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/dcsvr/dc"
+	"gitee.com/godLei6/things/src/webapi/internal/dto"
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 	"gitee.com/godLei6/things/src/webapi/internal/types"
 
@@ -25,15 +25,12 @@ func NewManageGroupInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) Ma
 	}
 }
 
+//todo 这里需要添加权限管理,只有组的管理员才可以编写
 func (l *ManageGroupInfoLogic) ManageGroupInfo(req types.ManageGroupInfoReq) (*types.GroupInfo, error) {
 	l.Infof("ManageGroupInfo|req=%+v", req)
-	dcReq := &dc.ManageGroupInfoReq{
-		Opt: req.Opt,
-		Info: &dc.GroupInfo{
-			GroupID:req.Info.GroupID,     //组id
-			Name:req.Info.Name,        //组名
-			Uid:req.Info.Uid,         //管理员用户id
-		},
+	dcReq,err := dto.ManageGroupInfoReqToRpc(&req)
+	if err != nil {
+		return nil, err
 	}
 	resp, err := l.svcCtx.DcRpc.ManageGroupInfo(l.ctx, dcReq)
 	if err != nil {
@@ -41,5 +38,5 @@ func (l *ManageGroupInfoLogic) ManageGroupInfo(req types.ManageGroupInfoReq) (*t
 		l.Errorf("%s|rpc.ManageGroupInfo|req=%v|err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return RPCToApiFmt(resp).(*types.GroupInfo), nil
+	return dto.GrouInfoToApi(resp), nil
 }

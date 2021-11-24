@@ -2,6 +2,9 @@ package dc
 
 import (
 	"context"
+	"gitee.com/godLei6/things/shared/errors"
+	"gitee.com/godLei6/things/shared/utils"
+	"gitee.com/godLei6/things/src/webapi/internal/dto"
 
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 	"gitee.com/godLei6/things/src/webapi/internal/types"
@@ -24,7 +27,18 @@ func NewBgManageGroupMemberLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *BgManageGroupMemberLogic) BgManageGroupMember(req types.ManageGroupMemberReq) (*types.GroupMember, error) {
-	// todo: add your logic here and delete this line
+	l.Infof("ManageGroupMember|req=%+v", req)
+	dcReq,err := dto.ManageGroupMemberReqToRpc(&req)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := l.svcCtx.DcRpc.ManageGroupMember(l.ctx, dcReq)
+	if err != nil {
+		er := errors.Fmt(err)
+		l.Errorf("%s|rpc.ManageGroupMember|req=%v|err=%+v", utils.FuncName(), req, er)
+		return nil, er
+	}
+	return dto.GroupMemberToApi(resp), nil
 
 	return &types.GroupMember{}, nil
 }
