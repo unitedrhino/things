@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/dcsvr/dc"
+	"gitee.com/godLei6/things/src/webapi/internal/dto"
 
 	"gitee.com/godLei6/things/src/webapi/internal/svc"
 	"gitee.com/godLei6/things/src/webapi/internal/types"
@@ -26,21 +26,12 @@ func NewGetGroupMemberLogic(ctx context.Context, svcCtx *svc.ServiceContext) Get
 	}
 }
 
+//todo 这里需要添加权限管理,只有组的成员才可以获取
 func (l *GetGroupMemberLogic) GetGroupMember(req types.GetGroupMemberReq) (*types.GetGroupMemberResp, error) {
 	l.Infof("GetGroupMember|req=%+v", req)
-	dcReq := &dc.GetGroupMemberReq{
-		GroupID: req.GroupID,
-		MemberID:req.MemberID,
-		MemberType:req.MemberType,
-	}
-	if req.Page != nil {
-		if req.Page.PageSize == 0 || req.Page.Page == 0 {
-			return nil, errors.Parameter.AddDetail("pageSize and page can't equal 0")
-		}
-		dcReq.Page = &dc.PageInfo{
-			Page:     req.Page.Page,
-			PageSize: req.Page.PageSize,
-		}
+	dcReq,err := dto.GetGroupMemberReqToRpc(&req)
+	if err != nil {
+		return nil, err
 	}
 	resp, err := l.svcCtx.DcRpc.GetGroupMember(l.ctx, dcReq)
 	if err != nil {
@@ -48,14 +39,5 @@ func (l *GetGroupMemberLogic) GetGroupMember(req types.GetGroupMemberReq) (*type
 		l.Errorf("%s|rpc.GetGroupMember|req=%v|err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	gis := make([]*types.GroupMember, 0, len(resp.Info))
-	for _, v := range resp.Info {
-		gi := RPCToApiFmt(v).(*types.GroupMember)
-		gis = append(gis, gi)
-	}
-	return &types.GetGroupMemberResp{
-		Total: resp.Total,
-		Info:  gis,
-		Num:   int64(len(gis)),
-	}, nil
+	return dto.GetGroupMemberRespToApi(resp)
 }

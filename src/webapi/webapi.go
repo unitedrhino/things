@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"gitee.com/godLei6/things/src/webapi/internal/vars"
 
 	"gitee.com/godLei6/things/src/webapi/internal/config"
 	"gitee.com/godLei6/things/src/webapi/internal/handler"
@@ -21,6 +22,7 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 
 	ctx := svc.NewServiceContext(c)
+	vars.Svrctx = ctx
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
