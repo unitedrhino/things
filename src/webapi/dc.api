@@ -94,6 +94,7 @@ type SendDcPropertyResp struct {
 }
 
 @server (
+    middleware: CheckToken
     group :front/dc
     prefix: front/dc
 )
@@ -111,3 +112,19 @@ service webapi {
     @handler  sendProperty//同步调用设备属性
     post /sendProperty(SendDcPropertyReq)returns (SendDcPropertyResp)
 }
+
+
+@server (
+    group :backgrand/dc
+)
+service webapi {
+    @handler  bgManageGroupInfo//管理组
+    post /backgrand/dc/manageGroupInfo(ManageGroupInfoReq)returns (GroupInfo)
+    @handler  bgManageGroupMember//管理组成员
+    post /backgrand/dc/manageGroupMember(ManageGroupMemberReq)returns (GroupMember)
+    @handler  bgGetGroupInfo//获取组信息
+    post /backgrand/dc/getGroupInfo(GetGroupInfoReq)returns (GetGroupInfoResp)
+    @handler  bgGetGroupMember//获取组成员
+    post /backgrand/dc/getGroupMember(GetGroupMemberReq)returns (GetGroupMemberResp)
+}
+
