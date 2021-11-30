@@ -5,7 +5,7 @@ import (
 	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"github.com/tal-tech/go-zero/core/logx"
 )
@@ -31,7 +31,7 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (resp *dm.Ge
 	if (in.Page == nil || in.Page.Page == 0) && in.DeviceName != "" {
 		di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.ProductID, in.DeviceName)
 		if err != nil {
-			if err == model.ErrNotFound {
+			if err == mysql.ErrNotFound {
 				return nil, errors.NotFind
 			}
 			return nil, err

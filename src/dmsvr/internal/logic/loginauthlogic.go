@@ -10,7 +10,7 @@ import (
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"strings"
 	"time"
@@ -22,7 +22,7 @@ type LoginAuthLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	di *model.DeviceInfo
+	di *mysql.DeviceInfo
 }
 
 var clientCert string = `-----BEGIN CERTIFICATE-----
@@ -183,7 +183,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	}
 	l.di, err = l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(lg.ProductID, lg.DeviceName)
 	if err != nil {
-		if err == model.ErrNotFound {
+		if err == mysql.ErrNotFound {
 			return nil, errors.Password
 		} else {
 			l.Errorf("LoginAuth|FindOneByProductIDDeviceName failure|err=%+v", err)

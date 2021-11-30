@@ -28,6 +28,7 @@ func NewManageGroupMemberLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		Logger: logx.WithContext(ctx),
 	}
 }
+
 /*
 发现返回true 没有返回false
 */
@@ -42,12 +43,13 @@ func (l *ManageGroupMemberLogic) CheckGroup(in *dc.ManageGroupMemberReq) (bool, 
 		return false, err
 	}
 }
+
 /*
 发现返回true 没有返回false
 */
 func (l *ManageGroupMemberLogic) CheckGroupMember(in *dc.ManageGroupMemberReq) (bool, error) {
 	_, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberIDMemberType(
-		in.Info.GroupID, in.Info.MemberID,in.Info.MemberType)
+		in.Info.GroupID, in.Info.MemberID, in.Info.MemberType)
 	switch err {
 	case model.ErrNotFound:
 		return false, nil
@@ -58,15 +60,13 @@ func (l *ManageGroupMemberLogic) CheckGroupMember(in *dc.ManageGroupMemberReq) (
 	}
 }
 
-
-
 func (l *ManageGroupMemberLogic) AddGroupMember(in *dc.ManageGroupMemberReq) (*dc.GroupMember, error) {
 	find, err := l.CheckGroupMember(in)
 	if err != nil {
 		return nil, errors.System.AddDetail(err.Error())
 	} else if find == true {
 		return nil, errors.Duplicate.AddDetailf(
-			"GroupID:%v, MemberID:%v,MemberType:%v" , in.Info.GroupID, in.Info.MemberID,in.Info.MemberType)
+			"GroupID:%v, MemberID:%v,MemberType:%v", in.Info.GroupID, in.Info.MemberID, in.Info.MemberType)
 	}
 	l.Infof("find=%v|err=%v\n", find, err)
 	find, err = l.CheckGroup(in)
@@ -74,19 +74,19 @@ func (l *ManageGroupMemberLogic) AddGroupMember(in *dc.ManageGroupMemberReq) (*d
 		return nil, errors.System.AddDetail(err.Error())
 	} else if find == false {
 		return nil, errors.Parameter.AddDetail(
-			"not find GroupID:%v, MemberID:%v,MemberType:%v" ,
-			in.Info.GroupID, in.Info.MemberID,in.Info.MemberType)
+			"not find GroupID:%v, MemberID:%v,MemberType:%v",
+			in.Info.GroupID, in.Info.MemberID, in.Info.MemberType)
 	}
 
 	di := model.GroupMember{
-		GroupID     :in.Info.GroupID,    // 组id
-		MemberID    :in.Info.MemberID,   // 成员id
-		MemberType  :in.Info.MemberType, // 成员类型:1:设备 2:用户
+		GroupID:     in.Info.GroupID,    // 组id
+		MemberID:    in.Info.MemberID,   // 成员id
+		MemberType:  in.Info.MemberType, // 成员类型:1:设备 2:用户
 		CreatedTime: time.Now(),
 	}
-	if in.Info.MemberType >2 || in.Info.MemberType <1 {
+	if in.Info.MemberType > 2 || in.Info.MemberType < 1 {
 		return nil, errors.Parameter.AddDetail(
-			"MemberType not support:" ,in.Info.MemberType)
+			"MemberType not support:", in.Info.MemberType)
 	}
 	_, err = l.svcCtx.GroupMember.Insert(di)
 	if err != nil {
@@ -96,15 +96,14 @@ func (l *ManageGroupMemberLogic) AddGroupMember(in *dc.ManageGroupMemberReq) (*d
 	return DBToRPCFmt(&di).(*dc.GroupMember), nil
 }
 
-
 func (l *ManageGroupMemberLogic) DelGroupMember(in *dc.ManageGroupMemberReq) (*dc.GroupMember, error) {
 	di, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberIDMemberType(
-		in.Info.GroupID, in.Info.MemberID,in.Info.MemberType)
+		in.Info.GroupID, in.Info.MemberID, in.Info.MemberType)
 	if err != nil {
 		if err == model.ErrNotFound {
 			return nil, errors.Parameter.AddDetail(
 				fmt.Sprintf("not find GroupMember|GroupID=%v|MemberID=%sMemberType=%d",
-					in.Info.GroupID, in.Info.MemberID,in.Info.MemberType))
+					in.Info.GroupID, in.Info.MemberID, in.Info.MemberType))
 		}
 		l.Errorf("DelGroupMember|GroupMember|FindOne|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
@@ -116,8 +115,6 @@ func (l *ManageGroupMemberLogic) DelGroupMember(in *dc.ManageGroupMemberReq) (*d
 	}
 	return &dc.GroupMember{}, nil
 }
-
-
 
 // 管理组成员
 func (l *ManageGroupMemberLogic) ManageGroupMember(in *dc.ManageGroupMemberReq) (*dc.GroupMember, error) {

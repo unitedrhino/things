@@ -14,26 +14,25 @@ func GetNullVal(val *wrappers.StringValue) *string {
 	return &val.Value
 }
 
-
-func GrouInfoToApi(v *dc.GroupInfo) *types.GroupInfo{
+func GrouInfoToApi(v *dc.GroupInfo) *types.GroupInfo {
 	return &types.GroupInfo{
-		GroupID:v.GroupID,     //组id
-		Name:v.Name,        //组名
-		Uid:v.Uid,         //管理员用户id
-		CreatedTime:v.CreatedTime, //创建时间 只读
+		GroupID:     v.GroupID,     //组id
+		Name:        v.Name,        //组名
+		Uid:         v.Uid,         //管理员用户id
+		CreatedTime: v.CreatedTime, //创建时间 只读
 	}
 }
 
-func GroupMemberToApi(v *dc.GroupMember) *types.GroupMember{
+func GroupMemberToApi(v *dc.GroupMember) *types.GroupMember {
 	return &types.GroupMember{
-		GroupID     :v.GroupID,              //组id
-		MemberID    :v.MemberID,             //成员id
-		MemberType  :v.MemberType,           //成员类型:1:设备 2:用户
-		CreatedTime :v.CreatedTime, //创建时间 只读
+		GroupID:     v.GroupID,     //组id
+		MemberID:    v.MemberID,    //成员id
+		MemberType:  v.MemberType,  //成员类型:1:设备 2:用户
+		CreatedTime: v.CreatedTime, //创建时间 只读
 	}
 }
 
-func GetGroupInfoReqToRpc(req *types.GetGroupInfoReq)(*dc.GetGroupInfoReq,error){
+func GetGroupInfoReqToRpc(req *types.GetGroupInfoReq) (*dc.GetGroupInfoReq, error) {
 	dcReq := &dc.GetGroupInfoReq{
 		GroupID: req.GroupID,
 	}
@@ -46,10 +45,10 @@ func GetGroupInfoReqToRpc(req *types.GetGroupInfoReq)(*dc.GetGroupInfoReq,error)
 			PageSize: req.Page.PageSize,
 		}
 	}
-	return dcReq,nil
+	return dcReq, nil
 }
 
-func GetGroupInfoRespToApi(resp *dc.GetGroupInfoResp)(*types.GetGroupInfoResp,error){
+func GetGroupInfoRespToApi(resp *dc.GetGroupInfoResp) (*types.GetGroupInfoResp, error) {
 	gis := make([]*types.GroupInfo, 0, len(resp.Info))
 	for _, v := range resp.Info {
 		gi := GrouInfoToApi(v)
@@ -62,11 +61,11 @@ func GetGroupInfoRespToApi(resp *dc.GetGroupInfoResp)(*types.GetGroupInfoResp,er
 	}, nil
 }
 
-func GetGroupMemberReqToRpc(req *types.GetGroupMemberReq)(*dc.GetGroupMemberReq,error){
+func GetGroupMemberReqToRpc(req *types.GetGroupMemberReq) (*dc.GetGroupMemberReq, error) {
 	dcReq := &dc.GetGroupMemberReq{
-		GroupID: req.GroupID,
-		MemberID:req.MemberID,
-		MemberType:req.MemberType,
+		GroupID:    req.GroupID,
+		MemberID:   req.MemberID,
+		MemberType: req.MemberType,
 	}
 	if req.Page != nil {
 		if req.Page.PageSize == 0 || req.Page.Page == 0 {
@@ -77,11 +76,10 @@ func GetGroupMemberReqToRpc(req *types.GetGroupMemberReq)(*dc.GetGroupMemberReq,
 			PageSize: req.Page.PageSize,
 		}
 	}
-	return dcReq,nil
+	return dcReq, nil
 }
 
-
-func GetGroupMemberRespToApi(resp *dc.GetGroupMemberResp)(*types.GetGroupMemberResp,error){
+func GetGroupMemberRespToApi(resp *dc.GetGroupMemberResp) (*types.GetGroupMemberResp, error) {
 	gis := make([]*types.GroupMember, 0, len(resp.Info))
 	for _, v := range resp.Info {
 		gi := GroupMemberToApi(v)
@@ -94,26 +92,26 @@ func GetGroupMemberRespToApi(resp *dc.GetGroupMemberResp)(*types.GetGroupMemberR
 	}, nil
 }
 
-func ManageGroupInfoReqToRpc(req *types.ManageGroupInfoReq)(*dc.ManageGroupInfoReq,error){
+func ManageGroupInfoReqToRpc(req *types.ManageGroupInfoReq) (*dc.ManageGroupInfoReq, error) {
 	dcReq := &dc.ManageGroupInfoReq{
 		Opt: req.Opt,
 		Info: &dc.GroupInfo{
-			GroupID:req.Info.GroupID,     //组id
-			Name:req.Info.Name,        //组名
-			Uid:req.Info.Uid,         //管理员用户id
+			GroupID: req.Info.GroupID, //组id
+			Name:    req.Info.Name,    //组名
+			Uid:     req.Info.Uid,     //管理员用户id
 		},
 	}
-	return dcReq,nil
+	return dcReq, nil
 }
 
-func ManageGroupMemberReqToRpc(req *types.ManageGroupMemberReq)(*dc.ManageGroupMemberReq,error){
+func ManageGroupMemberReqToRpc(req *types.ManageGroupMemberReq) (*dc.ManageGroupMemberReq, error) {
 	dcReq := &dc.ManageGroupMemberReq{
 		Opt: req.Opt,
 		Info: &dc.GroupMember{
-			GroupID     :req.Info.GroupID,              //组id
-			MemberID    :req.Info.MemberID,             //成员id
-			MemberType  :req.Info.MemberType,           //成员类型:1:设备 2:用户
+			GroupID:    req.Info.GroupID,    //组id
+			MemberID:   req.Info.MemberID,   //成员id
+			MemberType: req.Info.MemberType, //成员类型:1:设备 2:用户
 		},
 	}
-	return dcReq,nil
+	return dcReq, nil
 }

@@ -29,7 +29,7 @@ func NewManageGroupMemberLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 //todo 这里需要添加权限管理,只有组的管理员才可以编写
 func (l *ManageGroupMemberLogic) ManageGroupMember(req types.ManageGroupMemberReq) (*types.GroupMember, error) {
 	l.Infof("ManageGroupMember|req=%+v", req)
-	dcReq,err := dto.ManageGroupMemberReqToRpc(&req)
+	dcReq, err := dto.ManageGroupMemberReqToRpc(&req)
 	if err != nil {
 		return nil, err
 	}

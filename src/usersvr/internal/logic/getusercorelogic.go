@@ -28,7 +28,7 @@ func (l *GetUserCoreLogic) GetUserCore(in *user.GetUserCoreReq) (*user.GetUserCo
 	uc, err := l.svcCtx.UserCoreModel.FindOne(in.Uid)
 	switch err {
 	case nil:
-		return &user.GetUserCoreResp{Info:UserCoreToPb(uc)}, nil
+		return &user.GetUserCoreResp{Info: UserCoreToPb(uc)}, nil
 	case model.ErrNotFound:
 		return nil, errors.UidNotRight
 	default:

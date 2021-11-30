@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "f123649e-35cc-49e5-ab1a-3bcae0a45612",
-		"name": "宠物定位",
+		"_postman_id": "96f7c860-1c44-4ab2-8a85-380cec3d0ebd",
+		"name": "things网关",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -23,12 +23,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8888/user/login",
+							"raw": "{{host}}:7777/front/user/login",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8888",
+							"port": "7777",
 							"path": [
+								"front",
 								"user",
 								"login"
 							]
@@ -51,12 +52,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/user/registerCore",
+							"raw": "{{host}}:7777/front/user/registerCore",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"front",
 								"user",
 								"registerCore"
 							]
@@ -136,12 +138,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/user/register2",
+							"raw": "{{host}}:7777/front/user/register2",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"front",
 								"user",
 								"register2"
 							]
@@ -258,7 +261,7 @@
 								}
 							],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -277,12 +280,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/verify/captcha",
+							"raw": "{{host}}:7777/front/verify/captcha",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"front",
 								"verify",
 								"captcha"
 							]
@@ -347,6 +351,9 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -365,14 +372,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:8888/user/info",
+							"raw": "{{host}}:7777/front/user/userInfo",
 							"host": [
 								"{{host}}"
 							],
-							"port": "8888",
+							"port": "7777",
 							"path": [
+								"front",
 								"user",
-								"info"
+								"userInfo"
 							]
 						}
 					},
@@ -399,12 +407,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8888/user/modifyUserInfo",
+							"raw": "{{host}}:7777/front/user/modifyUserInfo",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8888",
+							"port": "7777",
 							"path": [
+								"front",
 								"user",
 								"modifyUserInfo"
 							]
@@ -427,12 +436,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8888/user/login",
+							"raw": "{{host}}:7777/front/user/login",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8888",
+							"port": "7777",
 							"path": [
+								"front",
 								"user",
 								"login"
 							]
@@ -455,18 +465,324 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8888/user/registerCore",
+							"raw": "{{host}}:7777/front/user/registerCore",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8888",
+							"port": "7777",
 							"path": [
+								"front",
 								"user",
 								"registerCore"
 							]
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "获取用户核心信息列表",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "yl-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYyODA4MjAwMiwiaWF0IjoxNjE5NDQyMDAyfQ.T20nXd-zwgrCL2GibiutCVZ5WhNIMafbNrl08iL6ssc",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"yl\",\r\n    \"password\":\"yl\",\r\n    \"accessToken\":\"yl\",\r\n    \"businessID\":1,\r\n    \"uid\":\"1694394270701588480\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/backgrand/user/userCoreList?page=1&pageSize=20",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"backgrand",
+								"user",
+								"userCoreList"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取用户核心信息列表",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "yl-token",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYyODA4MjAwMiwiaWF0IjoxNjE5NDQyMDAyfQ.T20nXd-zwgrCL2GibiutCVZ5WhNIMafbNrl08iL6ssc",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"yl\",\r\n    \"password\":\"yl\",\r\n    \"accessToken\":\"yl\",\r\n    \"businessID\":1,\r\n    \"uid\":\"1694394270701588480\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/backgrand/user/userCoreList?page=1&pageSize=20",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"backgrand",
+										"user",
+										"userCoreList"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "231b71a94c5ced007aa6faf4aee2c12c"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 17 Nov 2021 13:19:59 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "166"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"total\": 1,\n    \"info\": [\n        {\n            \"uid\": 1714269068303798272,\n            \"userName\": \"\",\n            \"email\": \"\",\n            \"phone\": \"17052709767\",\n            \"wechat\": \"\",\n            \"lastIP\": \"\",\n            \"regIP\": \"\",\n            \"createdTime\": 1636463812,\n            \"status\": 1\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "批获取用户信息列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "yl-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYyODA4MjAwMiwiaWF0IjoxNjE5NDQyMDAyfQ.T20nXd-zwgrCL2GibiutCVZ5WhNIMafbNrl08iL6ssc",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uid\":[\"1714269068303798272\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/backgrand/user/userInfos",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"backgrand",
+								"user",
+								"userInfos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "20",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取用户核心信息列表",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "yl-token",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYyODA4MjAwMiwiaWF0IjoxNjE5NDQyMDAyfQ.T20nXd-zwgrCL2GibiutCVZ5WhNIMafbNrl08iL6ssc",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"yl\",\r\n    \"password\":\"yl\",\r\n    \"accessToken\":\"yl\",\r\n    \"businessID\":1,\r\n    \"uid\":\"1694394270701588480\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/backgrand/user/userCoreList?page=1&pageSize=20",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"backgrand",
+										"user",
+										"userCoreList"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "231b71a94c5ced007aa6faf4aee2c12c"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 17 Nov 2021 13:19:59 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "166"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"total\": 1,\n    \"info\": [\n        {\n            \"uid\": 1714269068303798272,\n            \"userName\": \"\",\n            \"email\": \"\",\n            \"phone\": \"17052709767\",\n            \"wechat\": \"\",\n            \"lastIP\": \"\",\n            \"regIP\": \"\",\n            \"createdTime\": 1636463812,\n            \"status\": 1\n        }\n    ]\n}"
+						},
+						{
+							"name": "批获取用户信息列表",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "yl-token",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE2OTcyNjY0Mjk4NjEwNDAxMjgsImV4cCI6MTYyODA4MjAwMiwiaWF0IjoxNjE5NDQyMDAyfQ.T20nXd-zwgrCL2GibiutCVZ5WhNIMafbNrl08iL6ssc",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"uid\":[\"1714269068303798272\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/backgrand/user/userInfos",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"backgrand",
+										"user",
+										"userInfos"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "20",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "a06406b6156628a5c69112afd9586ae2"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 18 Nov 2021 05:01:23 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "66"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"info\": [\n        {\n            \"uid\": \"1714269068303798272\",\n            \"createTime\": \"1636463844\"\n        }\n    ]\n}"
+						}
+					]
 				}
 			]
 		},
@@ -488,12 +804,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/dm/getDeviceInfo",
+							"raw": "{{host}}:7777/backgrand/dm/getDeviceInfo",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"backgrand",
 								"dm",
 								"getDeviceInfo"
 							]
@@ -516,12 +833,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/dm/getProductInfo",
+							"raw": "{{host}}:7777/backgrand/dm/getProductInfo",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"backgrand",
 								"dm",
 								"getProductInfo"
 							]
@@ -544,12 +862,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/dm/manageDevice",
+							"raw": "{{host}}:7777/backgrand/dm/manageDevice",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"backgrand",
 								"dm",
 								"manageDevice"
 							]
@@ -572,12 +891,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/dm/loginAuth",
+							"raw": "{{host}}:7777/backgrand/dm/loginAuth",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"backgrand",
 								"dm",
 								"loginAuth"
 							]
@@ -611,18 +931,180 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/dm/manageProduct",
+							"raw": "{{host}}:7777/backgrand/dm/manageProduct",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"backgrand",
 								"dm",
 								"manageProduct"
 							]
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "同步调用设备行为",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productID\": \"22BIUqIZSve\",\r\n    \"deviceName\": \"test1\",\r\n    \"actionId\": \"whistle\",\r\n    \"inputParams\": \"{\\\"time\\\":60,\\\"switch\\\":true}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/backgrand/dm/sendAction",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"backgrand",
+								"dm",
+								"sendAction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "同步调用设备行为",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"productID\": \"21CYs1k9YpG\",\r\n    \"deviceName\": \"test8\",\r\n    \"actionId\": \"whistle\",\r\n    \"inputParams\": \"{\\\"time\\\":60,\\\"switch\\\":true}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/dc/sendAction",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"dc",
+										"sendAction"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "742d880e0e0f832e"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 21 Oct 2021 12:31:25 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "109"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"clientToken\": \"de65377c-4041-565d-0b5e-67b664a06be8\",\n    \"outputParams\": \"{\\\"code\\\":0}\",\n    \"status\": \"ok\",\n    \"code\": \"1\"\n}"
+						}
+					]
+				},
+				{
+					"name": "同步控制设备属性",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"memberID\": \"1699809227385606144\",\r\n    \"memberType\": 2,\r\n    \"productID\": \"21CYs1k9YpG\",\r\n    \"deviceName\": \"test8\",\r\n    \"actionId\": \"whistle\",\r\n    \"inputParams\": \"{\\\"time\\\":60,\\\"switch\\\":true}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:7777/front/dc/sendAction",
+							"host": [
+								"{{host}}"
+							],
+							"port": "7777",
+							"path": [
+								"front",
+								"dc",
+								"sendAction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "同步控制设备属性",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"productID\": \"22BIUqIZSve\",\r\n    \"deviceName\": \"test1\",\r\n    \"data\": \"{\\\"switch\\\":true,\\\"time\\\":60}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}:7777/backgrand/dm/sendProperty",
+									"host": [
+										"{{host}}"
+									],
+									"port": "7777",
+									"path": [
+										"backgrand",
+										"dm",
+										"sendProperty"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-Trace-Id",
+									"value": "e27202aa631c4f04"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 09 Nov 2021 12:20:19 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "96"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"clientToken\": \"d5c92310-fc94-04a8-5592-235de3c39705\",\n    \"status\": \"some messfwefwfage where error\"\n}"
+						}
+					]
 				}
 			]
 		},
@@ -636,7 +1118,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"groupID\": \"1710808183929311232\"\r\n}",
+							"raw": "{\r\n    \"page\":{\r\n        \"page\":1,\r\n        \"pageSize\":20\r\n    }\r\n    \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -644,12 +1126,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/dc/getGroupInfo",
+							"raw": "{{host}}:7777/front/dc/getGroupInfo",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"front",
 								"dc",
 								"getGroupInfo"
 							]
@@ -773,12 +1256,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/dc/getGroupMember",
+							"raw": "{{host}}:7777/front/dc/getGroupMember",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"front",
 								"dc",
 								"getGroupMember"
 							]
@@ -902,12 +1386,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:7777/dc/sendAction",
+							"raw": "{{host}}:7777/front/dc/sendAction",
 							"host": [
 								"{{host}}"
 							],
 							"port": "7777",
 							"path": [
+								"front",
 								"dc",
 								"sendAction"
 							]

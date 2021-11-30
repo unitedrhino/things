@@ -10,8 +10,6 @@ import (
 	"testing"
 )
 
-
-
 func TestGetUserCore(t *testing.T) {
 	t.Log("TestGetUserCore")
 	client := userclient.NewUser(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{

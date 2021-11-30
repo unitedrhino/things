@@ -22,8 +22,8 @@ func TestManageGroupInfo(t *testing.T) {
 		req := &dcclient.ManageGroupInfoReq{
 			Opt: def.OPT_ADD,
 			Info: &dcclient.GroupInfo{
-				Name        :  "测试组1",              //组名
-				Uid        :    1699809227385606144,             //管理员用户id
+				Name: "测试组1",              //组名
+				Uid:  1699809227385606144, //管理员用户id
 			},
 		}
 		info, err := client.ManageGroupInfo(ctx, req)
@@ -35,8 +35,8 @@ func TestManageGroupInfo(t *testing.T) {
 			Opt: def.OPT_MODIFY,
 			Info: &dcclient.GroupInfo{
 				GroupID: info.GroupID,
-				Name        :  "测试组1修改",              //组名
-				Uid        :    1699809227385606144,             //管理员用户id
+				Name:    "测试组1修改",            //组名
+				Uid:     1699809227385606144, //管理员用户id
 			},
 		}
 		info, err = client.ManageGroupInfo(ctx, req)
@@ -49,8 +49,8 @@ func TestManageGroupInfo(t *testing.T) {
 		req := &dcclient.ManageGroupInfoReq{
 			Opt: def.OPT_ADD,
 			Info: &dcclient.GroupInfo{
-				Name        :  "测试组2",              //组名
-				Uid        :    1699809227385606145,             //管理员用户id
+				Name: "测试组2",              //组名
+				Uid:  1699809227385606145, //管理员用户id
 			},
 		}
 		info, err := client.ManageGroupInfo(ctx, req)

@@ -19,6 +19,6 @@ var (
 	Method           = NewCodeError(SYS_ERROR+13, "method不支持")
 	Type             = NewCodeError(SYS_ERROR+14, "参数的类型不对")
 	OutRange         = NewCodeError(SYS_ERROR+15, "参数的值超出范围")
-	TimeOut			= NewCodeError(SYS_ERROR+16, "等待超时")
-	Server			= NewCodeError(SYS_ERROR+17, "本实例处理不了该信息")
+	TimeOut          = NewCodeError(SYS_ERROR+16, "等待超时")
+	Server           = NewCodeError(SYS_ERROR+17, "本实例处理不了该信息")
 )

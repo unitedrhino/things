@@ -3,11 +3,9 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"github.com/tal-tech/go-zero/core/logx"
 )
@@ -27,21 +25,20 @@ func NewGetDeviceLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetD
 }
 
 func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLogResp, error) {
-	clientID := fmt.Sprintf("%s%s", in.ProductID, in.DeviceName)
-	dd := repo.NewDeviceData(l.ctx,clientID)
+	dd := l.svcCtx.DeviceData(l.ctx)
 	var dmDatas []*dm.DeviceData
 	switch in.Method {
 	case def.PROPERTY_METHOD:
-		dds, err := dd.GetPropertyDataWithID(in.DataID,in.TimeStart,in.TimeEnd,in.Limit)
+		dds, err := dd.GetPropertyDataWithID(in.ProductID, in.DeviceName, in.DataID, in.TimeStart, in.TimeEnd, in.Limit)
 		if err != nil {
 			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
 			return nil, errors.System
 		}
-		for _,devData := range dds {
+		for _, devData := range dds {
 			dmData := dm.DeviceData{
-				Timestamp: devData.TimeStamp.Unix(),
+				Timestamp: devData.TimeStamp.UnixMilli(),
 				Method:    in.Method,
-				DataID: in.DataID,
+				DataID:    in.DataID,
 			}
 			var payload []byte
 			payload, _ = json.Marshal(devData.Param)
@@ -50,16 +47,16 @@ func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLog
 			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
 		}
 	case def.EVENT_METHOD:
-		dds, err := dd.GetEventDataWithID(in.DataID,in.TimeStart,in.TimeEnd,in.Limit)
+		dds, err := dd.GetEventDataWithID(in.ProductID, in.DeviceName, in.DataID, in.TimeStart, in.TimeEnd, in.Limit)
 		if err != nil {
 			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
 			return nil, errors.System
 		}
-		for _,devData := range dds {
+		for _, devData := range dds {
 			dmData := dm.DeviceData{
-				Timestamp: devData.TimeStamp.Unix(),
+				Timestamp: devData.TimeStamp.UnixMilli(),
 				Method:    in.Method,
-				DataID: in.DataID,
+				DataID:    in.DataID,
 			}
 			var payload []byte
 			payload, _ = json.Marshal(devData)
@@ -70,7 +67,7 @@ func (l *GetDeviceLogLogic) HandleData(in *dm.GetDeviceLogReq) (*dm.GetDeviceLog
 	}
 	return &dm.GetDeviceLogResp{
 		Total: int64(len(dmDatas)),
-		Data: dmDatas,
+		Data:  dmDatas,
 	}, nil
 }
 

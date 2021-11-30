@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
 	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/types"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
 	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
 	"github.com/tal-tech/go-zero/core/logx"
 	"time"
@@ -30,10 +30,10 @@ func (l *DisConnectLogic) Handle(msg *types.Elements) error {
 	if err != nil {
 		return err
 	}
-	_, err = l.svcCtx.DeviceLog.Insert(model.DeviceLog{
+	_, err = l.svcCtx.DeviceLog.Insert(mysql.DeviceLog{
 		ProductID:   ld.ProductID,
 		Action:      msg.Action,
-		Timestamp:   time.Unix(msg.Timestamp, 0), // 操作时间
+		Timestamp:   time.UnixMilli(msg.Timestamp), // 操作时间
 		DeviceName:  ld.DeviceName,
 		Payload:     msg.Payload,
 		Topic:       msg.Topic,

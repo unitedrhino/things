@@ -10,8 +10,6 @@ import (
 	"testing"
 )
 
-
-
 func TestGetUserCoreList(t *testing.T) {
 	t.Log("TestGetUserCore")
 	client := userclient.NewUser(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
@@ -21,11 +19,11 @@ func TestGetUserCoreList(t *testing.T) {
 	ctx := context.Background()
 
 	req := &user.GetUserCoreListReq{
-		Page:&user.PageInfo{
-			Page:                 1,
-			PageSize:             20,
-			SearchKey:          "fwef",
-			SearchType:           "agrhgsrgr",
+		Page: &user.PageInfo{
+			Page:       1,
+			PageSize:   20,
+			SearchKey:  "fwef",
+			SearchType: "agrhgsrgr",
 		},
 	}
 	info, err := client.GetUserCoreList(ctx, req)

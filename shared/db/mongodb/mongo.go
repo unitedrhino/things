@@ -11,7 +11,6 @@ import (
 	"time"
 )
 
-
 func NewMongoZero() {
 
 	//model,err:=mongo.NewModel(
@@ -53,8 +52,6 @@ func NewMongo(mongoUrl string, database string, ctx context.Context) (*mongo.Dat
 	return client.Database(database), nil
 }
 
-
-
 type CurlInfo struct {
 	DNS float64 `json:"NAMELOOKUP_TIME"` //NAMELOOKUP_TIME
 	TCP float64 `json:"CONNECT_TIME"`    //CONNECT_TIME - DNS
@@ -64,8 +61,8 @@ type CurlInfo struct {
 type ConnectData struct {
 	Latency  float64  `json:"latency"`
 	RespCode int      `json:"respCode"`
-	Url    string   `json:"url"`
-	Detail CurlInfo `json:"details"`
+	Url      string   `json:"url"`
+	Detail   CurlInfo `json:"details"`
 }
 
 type Sensor struct {

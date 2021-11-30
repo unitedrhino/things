@@ -29,27 +29,27 @@ func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 func (l *SendPropertyLogic) SendProperty(in *dc.SendPropertyReq) (*dc.SendPropertyResp, error) {
 	l.Infof("SendProperty|req=%+v", in)
 	deviceMemberID := in.ProductID + ":" + in.DeviceName
-	ok,err := l.svcCtx.DcDB.CheckMemeberWithGoupID(in.MemberID,in.MemberType,deviceMemberID,1)
+	ok, err := l.svcCtx.DcDB.CheckMemeberWithGoupID(in.MemberID, in.MemberType, deviceMemberID, 1)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	if ok != true {//如果设备和发送者不在同一个组
-		return nil,errors.Permissions
+	if ok != true { //如果设备和发送者不在同一个组
+		return nil, errors.Permissions
 	}
-	resp,err := l.svcCtx.Dmsvr.SendProperty(l.ctx,&dm.SendPropertyReq{
-		ProductID:in.ProductID,
-		DeviceName:in.DeviceName,
-		Data:in.Data,
-		DataTimestamp:in.DataTimestamp,
-		Method:in.Method,
+	resp, err := l.svcCtx.Dmsvr.SendProperty(l.ctx, &dm.SendPropertyReq{
+		ProductID:     in.ProductID,
+		DeviceName:    in.DeviceName,
+		Data:          in.Data,
+		DataTimestamp: in.DataTimestamp,
+		Method:        in.Method,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &dc.SendPropertyResp{
-		Data:resp.Data,
-		ClientToken:resp.ClientToken,  //调用id
-		Status:resp.Status,       //返回状态
-		Code:resp.Code,  //设备返回状态码
+		Data:        resp.Data,
+		ClientToken: resp.ClientToken, //调用id
+		Status:      resp.Status,      //返回状态
+		Code:        resp.Code,        //设备返回状态码
 	}, nil
 }

@@ -18,9 +18,8 @@ type Config struct {
 		Group   string   //kafka的分组
 	}
 	DevClient device.DevClientConf
-	Mongo struct {
+	Mongo     struct {
 		Url      string //mongodb连接串
 		Database string //选择的数据库
 	}
 }
-

@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"gitee.com/godLei6/things/shared/def"
 	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
 	"github.com/spf13/cast"
 	"time"
 
@@ -35,7 +35,7 @@ func NewManageProductLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Man
 func (l *ManageProductLogic) CheckProduct(in *dm.ManageProductReq) (bool, error) {
 	_, err := l.svcCtx.ProductInfo.FindOneByProductName(in.Info.ProductName)
 	switch err {
-	case model.ErrNotFound:
+	case mysql.ErrNotFound:
 		return false, nil
 	case nil:
 		return true, nil
@@ -45,7 +45,6 @@ func (l *ManageProductLogic) CheckProduct(in *dm.ManageProductReq) (bool, error)
 }
 
 func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
-
 	find, err := l.CheckProduct(in)
 	if err != nil {
 		return nil, errors.System.AddDetail(err.Error())
@@ -64,10 +63,10 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 /*
 根据用户的输入生成对应的数据库数据
 */
-func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) *model.ProductInfo {
+func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) *mysql.ProductInfo {
 	info := in.Info
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
-	pi := &model.ProductInfo{
+	pi := &mysql.ProductInfo{
 		ProductID:   dm.GetStrProductID(ProductID), // 产品id
 		ProductName: info.ProductName,              // 产品名称
 		Description: info.Description.GetValue(),
@@ -108,7 +107,7 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) *model.Produ
 	return pi
 }
 
-func UpdateProduct(old *model.ProductInfo, data *dm.ProductInfo) {
+func UpdateProduct(old *mysql.ProductInfo, data *dm.ProductInfo) {
 	var isModify bool = false
 	defer func() {
 		if isModify {
@@ -144,7 +143,7 @@ func UpdateProduct(old *model.ProductInfo, data *dm.ProductInfo) {
 func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
 	pi, err := l.svcCtx.ProductInfo.FindOneByProductID(in.Info.ProductID)
 	if err != nil {
-		if err == model.ErrNotFound {
+		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
 		}
 		return nil, errors.System.AddDetail(err.Error())
@@ -162,7 +161,7 @@ func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.Product
 func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
 	info, err := l.svcCtx.ProductInfo.FindOneByProductID(in.Info.ProductID)
 	if err != nil {
-		if err == model.ErrNotFound {
+		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find device id:" + cast.ToString(in.Info.ProductID))
 		}
 		l.Errorf("DelProduct|ProductInfo|FindOne|err=%+v", err)

@@ -28,7 +28,7 @@ func NewBgManageGroupInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *BgManageGroupInfoLogic) BgManageGroupInfo(req types.ManageGroupInfoReq) (*types.GroupInfo, error) {
 	l.Infof("ManageGroupInfo|req=%+v", req)
-	dcReq,err := dto.ManageGroupInfoReqToRpc(&req)
+	dcReq, err := dto.ManageGroupInfoReqToRpc(&req)
 	if err != nil {
 		return nil, err
 	}

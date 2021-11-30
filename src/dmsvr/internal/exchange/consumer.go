@@ -165,7 +165,7 @@ func (k *Kafka) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.C
 			//run.Run(msg)
 			// 更新位移
 		}()
-		if !(errors.Cmp(err,errors.System) || errors.Cmp(err,errors.Server)) {
+		if !(errors.Cmp(err, errors.System) || errors.Cmp(err, errors.Server)) {
 			//如果是系统内部错误,那么不会更新mark,会让kafka进行重试
 			session.MarkMessage(message, "")
 		}

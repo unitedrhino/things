@@ -28,7 +28,7 @@ func NewManageGroupInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) Ma
 //todo 这里需要添加权限管理,只有组的管理员才可以编写
 func (l *ManageGroupInfoLogic) ManageGroupInfo(req types.ManageGroupInfoReq) (*types.GroupInfo, error) {
 	l.Infof("ManageGroupInfo|req=%+v", req)
-	dcReq,err := dto.ManageGroupInfoReqToRpc(&req)
+	dcReq, err := dto.ManageGroupInfoReqToRpc(&req)
 	if err != nil {
 		return nil, err
 	}

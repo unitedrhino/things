@@ -29,7 +29,7 @@ type RpcError interface {
 //}
 
 func (c CodeError) ToRpc() error {
-	s  := status.New(codes.Unknown, c.Error())
+	s := status.New(codes.Unknown, c.Error())
 	return s.Err()
 }
 
@@ -54,7 +54,7 @@ func (c CodeError) AddDetail(msg ...interface{}) *CodeError {
 	c.Details = append(c.Details, fmt.Sprint(msg...))
 	pc := make([]uintptr, 1)
 	runtime.Callers(2, pc)
-	c.Stack = append(c.Stack,string(debug.Stack()))
+	c.Stack = append(c.Stack, string(debug.Stack()))
 	return &c
 }
 
@@ -78,8 +78,6 @@ func NewDefaultError(msg string) error {
 	return Default.WithMsg(msg)
 }
 
-
-
 func (e CodeError) Error() string {
 	e.Stack = nil
 	ret, _ := json.Marshal(e)
@@ -96,12 +94,12 @@ func Fmt(errs error) *CodeError {
 		return errs.(*CodeError)
 	case RpcError: //如果是grpc类型的错误
 		s, _ := status.FromError(errs)
-		if s.Code() != codes.Unknown {//只有自定义的错误,grpc会返回unknown错误码
+		if s.Code() != codes.Unknown { //只有自定义的错误,grpc会返回unknown错误码
 			err := fmt.Sprintf("rpc err detail is nil|err=%#v", s)
 			return System.AddDetail(err)
 		}
 		var ret CodeError
-		err := json.Unmarshal([]byte(s.Message()),&ret)
+		err := json.Unmarshal([]byte(s.Message()), &ret)
 		if err != nil {
 			return System.AddDetail(err)
 		}

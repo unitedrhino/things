@@ -28,7 +28,7 @@ func NewBgManageGroupMemberLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 func (l *BgManageGroupMemberLogic) BgManageGroupMember(req types.ManageGroupMemberReq) (*types.GroupMember, error) {
 	l.Infof("ManageGroupMember|req=%+v", req)
-	dcReq,err := dto.ManageGroupMemberReqToRpc(&req)
+	dcReq, err := dto.ManageGroupMemberReqToRpc(&req)
 	if err != nil {
 		return nil, err
 	}

@@ -12,8 +12,6 @@ import (
 	"testing"
 )
 
-
-
 func TestAccessAuth(t *testing.T) {
 	fmt.Println("TestLoginAuth")
 	client := dmclient.NewDm(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{

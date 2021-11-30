@@ -26,12 +26,12 @@ func NewGetGroupMemberLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 // 获取组成员
-func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc.GetGroupMemberResp,err error) {
+func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc.GetGroupMemberResp, err error) {
 	l.Infof("GetGroupMember|req=%+v", in)
 	var info []*dc.GroupMember
 	var size int64
 	if (in.Page == nil || in.Page.Page == 0) && (in.GroupID == 0 && in.MemberID == "") {
-		di, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberIDMemberType(in.GroupID, in.MemberID,in.MemberType)
+		di, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberIDMemberType(in.GroupID, in.MemberID, in.MemberType)
 		if err != nil {
 			if err == model.ErrNotFound {
 				return nil, errors.NotFind

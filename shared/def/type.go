@@ -40,8 +40,8 @@ const (
 	EVENT_METHOD    = "event"
 	ACTION_METHOD   = "action"
 
-	REPORT_TYPE = "report"  //设备上报的信息
-	INFO_TYPE ="info"  //信息
-	ALTERT_TYPE ="alert"  //告警
-	FAULT_TYPE ="fault"  //故障
+	REPORT_TYPE = "report" //设备上报的信息
+	INFO_TYPE   = "info"   //信息
+	ALTERT_TYPE = "alert"  //告警
+	FAULT_TYPE  = "fault"  //故障
 )
