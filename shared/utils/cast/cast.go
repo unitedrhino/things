@@ -6,22 +6,22 @@ import (
 	"time"
 )
 
-func TimeToInt64(t *time.Time)int64{
-	if t == nil{
+func TimeToInt64(t *time.Time) int64 {
+	if t == nil {
 		return 0
 	}
 	return t.Unix()
 }
 
-func Int8Tobool(i int8)bool{
-	if i == 0{
+func Int8Tobool(i int8) bool {
+	if i == 0 {
 		return false
 	}
 	return true
 }
 
-func ToInt64(i interface{})int64{
-	switch i.(type){
+func ToInt64(i interface{}) int64 {
+	switch i.(type) {
 	case sql.NullTime:
 		t := i.(sql.NullTime)
 		if t.Valid == false {
@@ -30,7 +30,7 @@ func ToInt64(i interface{})int64{
 		return i.(sql.NullTime).Time.Unix()
 	case *time.Time:
 		t := i.(*time.Time)
-		if t == nil{
+		if t == nil {
 			return 0
 		}
 		return t.Unix()
@@ -41,9 +41,8 @@ func ToInt64(i interface{})int64{
 	}
 }
 
-
-func ToBool(i interface{})bool{
-	switch i.(type){
+func ToBool(i interface{}) bool {
+	switch i.(type) {
 	case int8:
 		if i.(int8) == 0 {
 			return false
@@ -53,7 +52,6 @@ func ToBool(i interface{})bool{
 		return cast.ToBool(i)
 	}
 }
-
 
 // ToTime casts an interface to a time.Time type.
 func ToTime(i interface{}) time.Time {
@@ -74,7 +72,6 @@ func ToFloat64(i interface{}) float64 {
 func ToFloat32(i interface{}) float32 {
 	return cast.ToFloat32(i)
 }
-
 
 // ToInt32 casts an interface to an int32 type.
 func ToInt32(i interface{}) int32 {
@@ -180,5 +177,3 @@ func ToIntSlice(i interface{}) []int {
 func ToDurationSlice(i interface{}) []time.Duration {
 	return cast.ToDurationSlice(i)
 }
-
-

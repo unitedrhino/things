@@ -10,5 +10,3 @@ type Elements struct {
 	Size      int32  `json:"size"`
 	Action    string `json:"action"`
 }
-
-

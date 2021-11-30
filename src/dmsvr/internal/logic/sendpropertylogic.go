@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"gitee.com/godLei6/things/shared/errors"
 	"gitee.com/godLei6/things/src/dmsvr/device"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
 	"github.com/hashicorp/go-uuid"
 	"time"
 
@@ -20,7 +20,7 @@ type SendPropertyLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	pi       *model.ProductInfo
+	pi       *mysql.ProductInfo
 	template *device.Template
 }
 
@@ -45,44 +45,43 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 	return nil
 }
 
-
 func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendPropertyResp, error) {
 	l.Infof("SendProperty|req=%+v", in)
 	err := l.initMsg(in.ProductID)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	param := map[string]interface{}{}
-	err = json.Unmarshal([]byte(in.Data),&param)
+	err = json.Unmarshal([]byte(in.Data), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail(
-			"SendProperty|Data not right:",in.Data)
+			"SendProperty|Data not right:", in.Data)
 	}
-	uuid,err := uuid.GenerateUUID()
-	if err != nil{
-		l.Errorf("SendProperty|GenerateUUID err:%v",err)
+	uuid, err := uuid.GenerateUUID()
+	if err != nil {
+		l.Errorf("SendProperty|GenerateUUID err:%v", err)
 		return nil, errors.System.AddDetail(err)
 	}
 	req := device.DeviceReq{
 		Method:      device.CONTROL,
 		ClientToken: uuid,
 		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
-		Timestamp: time.Now().Unix(),
-		Params: param}
-	l.template.VerifyReqParam(req,device.ACTION_INPUT)
-	pubTopic := fmt.Sprintf("$thing/down/property/%s/%s",in.ProductID,in.DeviceName)
-	subTopic := fmt.Sprintf("$thing/up/property/%s/%s",in.ProductID,in.DeviceName)
+		Timestamp: time.Now().UnixMilli(),
+		Params:    param}
+	l.template.VerifyReqParam(req, device.ACTION_INPUT)
+	pubTopic := fmt.Sprintf("$thing/down/property/%s/%s", in.ProductID, in.DeviceName)
+	subTopic := fmt.Sprintf("$thing/up/property/%s/%s", in.ProductID, in.DeviceName)
 
-	resp, err := l.svcCtx.DevClient.DeviceReq(l.ctx,req,pubTopic,subTopic)
+	resp, err := l.svcCtx.DevClient.DeviceReq(l.ctx, req, pubTopic, subTopic)
 	if err != nil {
 		return nil, err
 	}
 
 	return &dm.SendPropertyResp{
 		ClientToken: resp.ClientToken,
-		Status:resp.Status,
-		Code:resp.Code,
-	},nil
+		Status:      resp.Status,
+		Code:        resp.Code,
+	}, nil
 
 	return &dm.SendPropertyResp{}, nil
 }

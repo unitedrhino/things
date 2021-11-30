@@ -15,7 +15,7 @@ require (
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.3.1
 	github.com/tal-tech/go-zero v1.2.3
-	go.mongodb.org/mongo-driver v1.5.3
+	go.mongodb.org/mongo-driver v1.8.0
 	go.opentelemetry.io/otel v1.1.0
 	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
 	golang.org/x/net v0.0.0-20211111083644-e5c967477495 // indirect

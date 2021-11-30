@@ -6,21 +6,21 @@ import (
 )
 
 //带过期时间的sync.map
-type ExpMap struct{
+type ExpMap struct {
 	Map sync.Map
 }
 
-type CheckExp interface{
-	IsTimeOut()bool
+type CheckExp interface {
+	IsTimeOut() bool
 }
 
-func NewExpMap(checkTime time.Duration)*ExpMap{
+func NewExpMap(checkTime time.Duration) *ExpMap {
 	expMap := ExpMap{}
-	go func(){
+	go func() {
 		time.Sleep(checkTime)
-		expMap.Map.Range(func(key, value interface{}) bool{
+		expMap.Map.Range(func(key, value interface{}) bool {
 			v := value.(CheckExp)
-			if v.IsTimeOut(){
+			if v.IsTimeOut() {
 				expMap.Map.Delete(key)
 			}
 			return true

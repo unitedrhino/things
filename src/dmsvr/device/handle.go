@@ -317,8 +317,7 @@ func (t *Template) VerifyReqParam(dq DeviceReq, tt TEMP_TYPE) (map[string]TempPa
 	return getParam, nil
 }
 
-
-func (t *Template) VerifyRespParam(dr DeviceResp,id string, tt TEMP_TYPE) (map[string]TempParam, error) {
+func (t *Template) VerifyRespParam(dr DeviceResp, id string, tt TEMP_TYPE) (map[string]TempParam, error) {
 	getParam := make(map[string]TempParam, len(dr.Response))
 	switch tt {
 	case ACTION_OUTPUT:

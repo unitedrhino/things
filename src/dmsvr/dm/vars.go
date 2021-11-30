@@ -4,8 +4,6 @@ const (
 	PRODUCTID_LEN = 11
 )
 
-
-
 type AUTH = int64
 
 const (

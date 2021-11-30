@@ -23,17 +23,17 @@ func NewGetGroupInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetG
 }
 
 // 获取组信息
-func (l *GetGroupInfoLogic) GetGroupInfo(in *dc.GetGroupInfoReq) (resp *dc.GetGroupInfoResp,err error) {
+func (l *GetGroupInfoLogic) GetGroupInfo(in *dc.GetGroupInfoReq) (resp *dc.GetGroupInfoResp, err error) {
 	l.Infof("GetGroupInfo|req=%+v", in)
 	var info []*dc.GroupInfo
 	var size int64
-	if in.Page == nil || in.Page.Page == 0 {//只获取一个
-		gi,err := l.svcCtx.GroupInfo.FindOne(in.GroupID)
+	if in.Page == nil || in.Page.Page == 0 { //只获取一个
+		gi, err := l.svcCtx.GroupInfo.FindOne(in.GroupID)
 		if err != nil {
 			return nil, err
 		}
 		info = append(info, DBToRPCFmt(gi).(*dc.GroupInfo))
-	} else  {
+	} else {
 		size, err = l.svcCtx.DcDB.GetCountByGroupInfo()
 		if err != nil {
 			return nil, err
@@ -47,5 +47,5 @@ func (l *GetGroupInfoLogic) GetGroupInfo(in *dc.GetGroupInfoReq) (resp *dc.GetGr
 			info = append(info, DBToRPCFmt(v).(*dc.GroupInfo))
 		}
 	}
-	return &dc.GetGroupInfoResp{Info: info,Total: size}, nil
+	return &dc.GetGroupInfoResp{Info: info, Total: size}, nil
 }

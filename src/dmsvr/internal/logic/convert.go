@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
@@ -17,8 +17,8 @@ func GetNullTime(time sql.NullTime) int64 {
 
 func DBToRPCFmt(db interface{}) interface{} {
 	switch db.(type) {
-	case *model.DeviceInfo:
-		di := db.(*model.DeviceInfo)
+	case *mysql.DeviceInfo:
+		di := db.(*mysql.DeviceInfo)
 		return &dm.DeviceInfo{
 			Version:     &wrappers.StringValue{Value: di.Version},
 			LogLevel:    di.LogLevel,
@@ -30,8 +30,8 @@ func DBToRPCFmt(db interface{}) interface{} {
 			LastLogin:   GetNullTime(di.LastLogin),
 			Secret:      di.Secret,
 		}
-	case *model.ProductInfo:
-		pi := db.(*model.ProductInfo)
+	case *mysql.ProductInfo:
+		pi := db.(*mysql.ProductInfo)
 		dpi := &dm.ProductInfo{
 			ProductID:    pi.ProductID,                                 //产品id
 			ProductName:  pi.ProductName,                               //产品名
@@ -44,7 +44,7 @@ func DBToRPCFmt(db interface{}) interface{} {
 			Secret:       pi.Secret,                                    //动态注册产品秘钥 只读
 			Description:  &wrappers.StringValue{Value: pi.Description}, //描述
 			CreatedTime:  pi.CreatedTime.Unix(),                        //创建时间
-			Template: &wrappers.StringValue{Value: pi.Template}, 		//数据模板
+			Template:     &wrappers.StringValue{Value: pi.Template},    //数据模板
 		}
 		return dpi
 	default:

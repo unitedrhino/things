@@ -22,11 +22,11 @@ func TestManageGroupMember(t *testing.T) {
 		req := &dcclient.ManageGroupMemberReq{
 			Opt: def.OPT_ADD,
 			Info: &dcclient.GroupMember{
-				GroupID :1710808183040118784, //组id
+				GroupID: 1710808183040118784, //组id
 				//如果是用户,则是uid的十进制字符串,
 				//如果是设备,则是productID:deviceName的组合方式
-				MemberID    :"1699809227385606144",        //成员id
-				MemberType  :2,   //成员类型:1:设备 2:用户
+				MemberID:   "1699809227385606144", //成员id
+				MemberType: 2,                     //成员类型:1:设备 2:用户
 			},
 		}
 		info, err := client.ManageGroupMember(ctx, req)
@@ -39,11 +39,11 @@ func TestManageGroupMember(t *testing.T) {
 		req := &dcclient.ManageGroupMemberReq{
 			Opt: def.OPT_ADD,
 			Info: &dcclient.GroupMember{
-				GroupID :1710808183040118784, //组id
+				GroupID: 1710808183040118784, //组id
 				//如果是用户,则是uid的十进制字符串,
 				//如果是设备,则是productID:deviceName的组合方式
-				MemberID    :"21CYs1k9YpG:test8",        //成员id
-				MemberType  :1,   //成员类型:1:设备 2:用户
+				MemberID:   "21CYs1k9YpG:test8", //成员id
+				MemberType: 1,                   //成员类型:1:设备 2:用户
 			},
 		}
 		info, err := client.ManageGroupMember(ctx, req)

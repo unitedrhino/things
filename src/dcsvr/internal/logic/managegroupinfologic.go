@@ -32,12 +32,12 @@ func (l *ManageGroupInfoLogic) AddGroupInfo(in *dc.ManageGroupInfoReq) (*dc.Grou
 	info := in.Info
 	GroupID := l.svcCtx.GroupID.GetSnowflakeId()
 	gi := &model.GroupInfo{
-		GroupID     :GroupID, // 组id
-		Name        :info.Name,    // 组名
-		Uid         :info.Uid,     // 管理员用户id
-		CreatedTime :time.Now(),
+		GroupID:     GroupID,   // 组id
+		Name:        info.Name, // 组名
+		Uid:         info.Uid,  // 管理员用户id
+		CreatedTime: time.Now(),
 	}
-	_,err := l.svcCtx.GroupInfo.Insert(*gi)
+	_, err := l.svcCtx.GroupInfo.Insert(*gi)
 	if err != nil {
 		l.Errorf("AddGroupInfo|GroupInfo|Insert|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
@@ -46,15 +46,15 @@ func (l *ManageGroupInfoLogic) AddGroupInfo(in *dc.ManageGroupInfoReq) (*dc.Grou
 
 }
 func (l *ManageGroupInfoLogic) ModifyGroupInfo(in *dc.ManageGroupInfoReq) (*dc.GroupInfo, error) {
-	gi,err := l.svcCtx.GroupInfo.FindOne(in.Info.GroupID)
+	gi, err := l.svcCtx.GroupInfo.FindOne(in.Info.GroupID)
 	if err != nil {
 		if err == model.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find GroupID id:" + cast.ToString(in.Info.GroupID))
 		}
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	gi.Name=in.Info.Name
-	gi.Uid=in.Info.Uid
+	gi.Name = in.Info.Name
+	gi.Uid = in.Info.Uid
 	gi.UpdatedTime = sql.NullTime{Valid: true, Time: time.Now()}
 	err = l.svcCtx.GroupInfo.Update(*gi)
 	if err != nil {
@@ -71,6 +71,7 @@ func (l *ManageGroupInfoLogic) DelGroupInfo(in *dc.ManageGroupInfoReq) (*dc.Grou
 	}
 	return &dc.GroupInfo{}, nil
 }
+
 // 管理组
 func (l *ManageGroupInfoLogic) ManageGroupInfo(in *dc.ManageGroupInfoReq) (*dc.GroupInfo, error) {
 	l.Infof("ManageProduct|opt=%d|req=%+v", in.Opt, in)

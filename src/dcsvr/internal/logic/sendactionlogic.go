@@ -29,26 +29,26 @@ func NewSendActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendAc
 func (l *SendActionLogic) SendAction(in *dc.SendActionReq) (*dc.SendActionResp, error) {
 	l.Infof("SendAction|req=%+v", in)
 	deviceMemberID := in.ProductID + ":" + in.DeviceName
-	ok,err := l.svcCtx.DcDB.CheckMemeberWithGoupID(in.MemberID,in.MemberType,deviceMemberID,1)
+	ok, err := l.svcCtx.DcDB.CheckMemeberWithGoupID(in.MemberID, in.MemberType, deviceMemberID, 1)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	if ok != true {//如果设备和发送者不在同一个组
-		return nil,errors.Permissions
+	if ok != true { //如果设备和发送者不在同一个组
+		return nil, errors.Permissions
 	}
-	resp,err := l.svcCtx.Dmsvr.SendAction(l.ctx,&dm.SendActionReq{
-		ProductID:in.ProductID,
-		DeviceName:in.DeviceName,
-		ActionId:in.ActionId,
-		InputParams:in.InputParams,
+	resp, err := l.svcCtx.Dmsvr.SendAction(l.ctx, &dm.SendActionReq{
+		ProductID:   in.ProductID,
+		DeviceName:  in.DeviceName,
+		ActionId:    in.ActionId,
+		InputParams: in.InputParams,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &dc.SendActionResp{
-		ClientToken:resp.ClientToken,
-		OutputParams:resp.OutputParams,
-		Status:resp.Status,
-		Code:resp.Code,
+		ClientToken:  resp.ClientToken,
+		OutputParams: resp.OutputParams,
+		Status:       resp.Status,
+		Code:         resp.Code,
 	}, nil
 }

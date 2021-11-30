@@ -5,6 +5,7 @@ import (
 	"gitee.com/godLei6/things/src/usersvr/user"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
+
 func GetNullVal(val *wrappers.StringValue) *string {
 	if val == nil {
 		return nil
@@ -12,22 +13,21 @@ func GetNullVal(val *wrappers.StringValue) *string {
 	return &val.Value
 }
 
-
-func UserCoreToApi(core *user.UserCore)*UserCore {
+func UserCoreToApi(core *user.UserCore) *UserCore {
 	return &UserCore{
-		Uid:                core.Uid,
-		UserName:           core.UserName,
-		Email:              core.Email,
-		Phone:              core.Phone,
-		Wechat:             core.Wechat,
-		LastIP:             core.LastIP,
-		RegIP:              core.RegIP,
-		CreatedTime:        core.CreatedTime,
-		Status:             core.Status,
+		Uid:         core.Uid,
+		UserName:    core.UserName,
+		Email:       core.Email,
+		Phone:       core.Phone,
+		Wechat:      core.Wechat,
+		LastIP:      core.LastIP,
+		RegIP:       core.RegIP,
+		CreatedTime: core.CreatedTime,
+		Status:      core.Status,
 	}
 }
 
-func UserInfoToApi(ui *user.UserInfo)*UserInfo {
+func UserInfoToApi(ui *user.UserInfo) *UserInfo {
 	return &UserInfo{
 		Uid:        ui.Uid,
 		UserName:   ui.UserName,
@@ -44,7 +44,7 @@ func UserInfoToApi(ui *user.UserInfo)*UserInfo {
 	}
 }
 
-func DeviceInfoToApi(v *dm.DeviceInfo)*DeviceInfo{
+func DeviceInfoToApi(v *dm.DeviceInfo) *DeviceInfo {
 	return &DeviceInfo{
 		ProductID:   v.ProductID,           //产品id 只读
 		DeviceName:  v.DeviceName,          //设备名称 读写
@@ -58,7 +58,7 @@ func DeviceInfoToApi(v *dm.DeviceInfo)*DeviceInfo{
 	}
 }
 
-func ProductInfoToApi(v *dm.ProductInfo)*ProductInfo{
+func ProductInfoToApi(v *dm.ProductInfo) *ProductInfo {
 	return &ProductInfo{
 		CreatedTime:  v.CreatedTime,             //创建时间 只读
 		ProductID:    v.ProductID,               //产品id 只读

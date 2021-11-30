@@ -6,31 +6,32 @@ import (
 	"gitee.com/godLei6/things/shared/utils"
 	"gitee.com/godLei6/things/src/dmsvr/device"
 	"gitee.com/godLei6/things/src/dmsvr/internal/config"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mongorepo"
+	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
 	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
-	"go.mongodb.org/mongo-driver/mongo"
 	"os"
 )
 
 type ServiceContext struct {
 	Config      config.Config
-	DeviceInfo  model.DeviceInfoModel
-	ProductInfo model.ProductInfoModel
-	DeviceLog   model.DeviceLogModel
-	DmDB        model.DmModel
+	DeviceInfo  mysql.DeviceInfoModel
+	ProductInfo mysql.ProductInfoModel
+	DeviceLog   mysql.DeviceLogModel
+	DmDB        mysql.DmModel
 	DeviceID    *utils.SnowFlake
 	ProductID   *utils.SnowFlake
 	DevClient   *device.DevClient
-	Mongo       *mongo.Database
+	DeviceData  repo.GetDeviceDataRepo
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
-	di := model.NewDeviceInfoModel(conn, c.CacheRedis)
-	pi := model.NewProductInfoModel(conn, c.CacheRedis)
-	dl := model.NewDeviceLogModel(conn)
-	DmDB := model.NewDmModel(conn, c.CacheRedis)
+	di := mysql.NewDeviceInfoModel(conn, c.CacheRedis)
+	pi := mysql.NewProductInfoModel(conn, c.CacheRedis)
+	dl := mysql.NewDeviceLogModel(conn)
+	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
 	DeviceID := utils.NewSnowFlake(c.NodeID)
 	ProductID := utils.NewSnowFlake(c.NodeID)
 
@@ -46,6 +47,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error(err)
 		os.Exit(-1)
 	}
+	dd := mongorepo.NewDeviceDataRepo(mongoDB)
 	return &ServiceContext{
 		Config:      c,
 		DeviceInfo:  di,
@@ -55,6 +57,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ProductID:   ProductID,
 		DeviceLog:   dl,
 		DevClient:   devClient,
-		Mongo:       mongoDB,
+		DeviceData:  dd,
 	}
 }

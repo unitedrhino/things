@@ -28,18 +28,18 @@ func NewUserCoreListLogic(ctx context.Context, svcCtx *svc.ServiceContext) UserC
 func (l *UserCoreListLogic) UserCoreList(req types.GetUserCoreListReq) (*types.GetUserCoreListResp, error) {
 	l.Infof("UserCoreList|req=%+v", req)
 	var page user.PageInfo
-	copier.Copy(&page,req.Page)
-	info,err := l.svcCtx.UserRpc.GetUserCoreList(l.ctx, &user.GetUserCoreListReq{
+	copier.Copy(&page, req.Page)
+	info, err := l.svcCtx.UserRpc.GetUserCoreList(l.ctx, &user.GetUserCoreListReq{
 		Page: &page,
 	})
-	if err!= nil {
+	if err != nil {
 		return nil, err
 	}
 	resp := types.GetUserCoreListResp{
-		Total:info.Total,
+		Total: info.Total,
 	}
-	resp.Info = make([]*types.UserCore,0,len(resp.Info))
-	for _,i:= range info.Info{
+	resp.Info = make([]*types.UserCore, 0, len(resp.Info))
+	for _, i := range info.Info {
 		resp.Info = append(resp.Info, types.UserCoreToApi(i))
 	}
 	return &resp, nil

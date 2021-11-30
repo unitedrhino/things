@@ -6,4 +6,3 @@ const (
 	USER_IP        string = "yl-ip"
 	USER_UID       string = "yl-uid"
 )
-

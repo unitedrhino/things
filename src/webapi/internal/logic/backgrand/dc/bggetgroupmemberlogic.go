@@ -28,7 +28,7 @@ func NewBgGetGroupMemberLogic(ctx context.Context, svcCtx *svc.ServiceContext) B
 
 func (l *BgGetGroupMemberLogic) BgGetGroupMember(req types.GetGroupMemberReq) (*types.GetGroupMemberResp, error) {
 	l.Infof("GetGroupMember|req=%+v", req)
-	dcReq,err := dto.GetGroupMemberReqToRpc(&req)
+	dcReq, err := dto.GetGroupMemberReqToRpc(&req)
 	if err != nil {
 		return nil, err
 	}

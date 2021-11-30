@@ -674,7 +674,6 @@ var actionOutParamStr = [...]string{
 }`,
 }
 
-
 func TestVerifyPropertyParam(t *testing.T) {
 	fmt.Println("TestVerifyPropertyParam")
 	T, err := device.NewTemplate([]byte(template))
@@ -747,7 +746,6 @@ func TestVerifyEventParam(t *testing.T) {
 	}
 }
 
-
 func TestVerifyActionInParam(t *testing.T) {
 	fmt.Println("TestVerifyActionInParam")
 	T, err := device.NewTemplate([]byte(template))
@@ -783,7 +781,6 @@ func TestVerifyActionInParam(t *testing.T) {
 	}
 }
 
-
 func TestVerifyActionOutParam(t *testing.T) {
 	fmt.Println("TestVerifyActionOutParam")
 	T, err := device.NewTemplate([]byte(template))
@@ -796,7 +793,7 @@ func TestVerifyActionOutParam(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := T.VerifyRespParam(dq,"biaoshifu", device.ACTION_OUTPUT)
+		out, err := T.VerifyRespParam(dq, "biaoshifu", device.ACTION_OUTPUT)
 		if err != nil {
 			t.Fatal(err)
 		}
