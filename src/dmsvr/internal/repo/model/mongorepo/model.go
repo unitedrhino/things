@@ -127,7 +127,7 @@ func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName stri
 	}
 	opts := options.Find().SetProjection(bson.D{{TimeStampKey, 1}}).
 		SetLimit(limit).SetSort(bson.D{{TimeStampKey, -1}})
-	cursor, err := d.mongo.Collection(productID).Find(d.ctx, filter, opts)
+	cursor, err := d.mongo.Collection(productID+dbSuffixEvent).Find(d.ctx, filter, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -154,6 +154,9 @@ func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName stri
 
 //通过属性的id及方法获取一段时间或最新时间的记录
 func (d *DeviceDataContext) GetPropertyDataWithID(productID string, deviceName string, dataID string, timeStart, timeEnd int64, limit int64) (dds []*repo.Property, err error) {
+	if limit == 0{
+		limit = 20
+	}
 	filter := bson.D{
 		//{"isp", isp},
 		{fmt.Sprintf("%s.%s", PropertyMD, dataID), bson.M{"$ne": primitive.Null{}}},
@@ -165,9 +168,8 @@ func (d *DeviceDataContext) GetPropertyDataWithID(productID string, deviceName s
 	if timeEnd != 0 {
 		filter = append(filter, bson.E{TimeStampKey, bson.M{"$lte": time.UnixMilli(timeEnd)}})
 	}
-	opts := options.Find().SetProjection(bson.D{{TimeStampKey, 1}}).
-		SetLimit(limit).SetSort(bson.D{{TimeStampKey, -1}})
-	cursor, err := d.mongo.Collection(productID).Find(d.ctx, filter, opts)
+	opts := options.Find().SetLimit(limit).SetSort(bson.D{{TimeStampKey, -1}})
+	cursor, err := d.mongo.Collection(productID+dbSuffixProperty).Find(d.ctx, filter, opts)
 	if err != nil {
 		return nil, err
 	}
