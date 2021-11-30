@@ -210,6 +210,28 @@ type SendDmActionResp struct {
 	Code         int64  `json:"code,string,omitempty"`  //设备返回状态码
 }
 
+type GetDeviceLogReq struct {
+	Method     string `form:"method,omitempty"`                    //获取的类型   property 属性 event事件  log 所有日志
+	DeviceName string `form:"deviceName,omitempty"`                //设备名
+	ProductID  string `form:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
+	DataID     string `form:"dataID,omitempty"`                    //获取的具体标识符的数据
+	TimeStart  int64  `form:"timeStart,string,optional,omitempty"` //获取时间的开始
+	TimeEnd    int64  `form:"timeEnd,string,optional,omitempty"`   //时间的结束
+	Limit      int64  `form:"limit,optional,omitempty"`            //获取的长度
+}
+
+type DeviceData struct {
+	Timestamp int64  `json:"timestamp,string"` //发生时间戳
+	Method    string `json:"method"`           //操作类型
+	DataID    string `json:"dataID"`           //获取的具体属性值
+	Payload   string `json:"payload"`          //具体内容
+}
+
+type GetDeviceLogResp struct {
+	Total int64         `json:"total,string"` //总数
+	Data  []*DeviceData `json:"data"`         //总数
+}
+
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string,omitempty"`              //组id
 	Name        string `json:"name,omitempty"`                        //组名
