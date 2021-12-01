@@ -4,19 +4,19 @@
 
 
 依照腾讯云物联网平台打造,无缝迁移,基于go-zero框架,目前支持mqtt协议,支持数据模板检验,日志记录,数据流转,实时数据反馈,低代码数据流转,用户及设备互联互通.使用了kafka,redis,mysql,MongoDB,etcd开源框架.  
-git地址:[https://gitee.com/godLei6/things](https://gitee.com/godLei6/things)  
+git地址:[https://gitee.com/go-things/things](https://gitee.com/go-things/things)  
 我的微信:17052709767  
 欢迎大家的加入  
-![微信二维码](https://gitee.com/godLei6/things/raw/master/doc/assets/%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
+![微信二维码](https://gitee.com/go-things/things/raw/master/doc/assets/%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
 
 
 
 #### 软件架构
 
 软件架构说明  
- ![go-things架构图.jpg](https://gitee.com/godLei6/things/raw/master/doc/assets/go-things%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)  
+ ![go-things架构图.jpg](https://gitee.com/go-things/things/raw/master/doc/assets/go-things%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)  
 设备接入流程图  
-![设备连接流程图.jpg](https://gitee.com/godLei6/things/raw/master/doc/assets/%E8%AE%BE%E5%A4%87%E8%BF%9E%E6%8E%A5%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg)
+![设备连接流程图.jpg](https://gitee.com/go-things/things/raw/master/doc/assets/%E8%AE%BE%E5%A4%87%E8%BF%9E%E6%8E%A5%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg)
 
 
 #### 目录说明
