@@ -116,15 +116,16 @@ service webapi {
 
 @server (
     group :backgrand/dc
+    prefix: backgrand/dc
 )
 service webapi {
     @handler  bgManageGroupInfo//管理组
-    post /backgrand/dc/manageGroupInfo(ManageGroupInfoReq)returns (GroupInfo)
+    post /manageGroupInfo(ManageGroupInfoReq)returns (GroupInfo)
     @handler  bgManageGroupMember//管理组成员
-    post /backgrand/dc/manageGroupMember(ManageGroupMemberReq)returns (GroupMember)
+    post /manageGroupMember(ManageGroupMemberReq)returns (GroupMember)
     @handler  bgGetGroupInfo//获取组信息
-    post /backgrand/dc/getGroupInfo(GetGroupInfoReq)returns (GetGroupInfoResp)
+    post /getGroupInfo(GetGroupInfoReq)returns (GetGroupInfoResp)
     @handler  bgGetGroupMember//获取组成员
-    post /backgrand/dc/getGroupMember(GetGroupMemberReq)returns (GetGroupMemberResp)
+    post /getGroupMember(GetGroupMemberReq)returns (GetGroupMemberResp)
 }
 

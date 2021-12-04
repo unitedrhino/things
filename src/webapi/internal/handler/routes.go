@@ -187,24 +187,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/backgrand/dc/manageGroupInfo",
+				Path:    "/manageGroupInfo",
 				Handler: backgranddc.BgManageGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/backgrand/dc/manageGroupMember",
+				Path:    "/manageGroupMember",
 				Handler: backgranddc.BgManageGroupMemberHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/backgrand/dc/getGroupInfo",
+				Path:    "/getGroupInfo",
 				Handler: backgranddc.BgGetGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/backgrand/dc/getGroupMember",
+				Path:    "/getGroupMember",
 				Handler: backgranddc.BgGetGroupMemberHandler(serverCtx),
 			},
 		},
+		rest.WithPrefix("/backgrand/dc"),
 	)
 }
