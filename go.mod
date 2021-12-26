@@ -4,15 +4,12 @@ go 1.14
 
 require (
 	github.com/Shopify/sarama v1.30.0
-	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20211201203423-3a5f112c3295 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/eclipse/paho.mqtt.golang v1.3.5
-	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-uuid v1.0.2
 	github.com/jinzhu/copier v0.3.2
-	github.com/lib/pq v1.10.4 // indirect
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.3.1
