@@ -1,12 +1,12 @@
 package svc
 
 import (
-	"gitee.com/godLei6/things/shared/verify"
-	"gitee.com/godLei6/things/src/dcsvr/dcclient"
-	"gitee.com/godLei6/things/src/dmsvr/dmclient"
-	"gitee.com/godLei6/things/src/usersvr/userclient"
-	"gitee.com/godLei6/things/src/webapi/internal/config"
-	"gitee.com/godLei6/things/src/webapi/internal/middleware"
+	"github.com/go-things/things/shared/verify"
+	"github.com/go-things/things/src/dcsvr/dcclient"
+	"github.com/go-things/things/src/dmsvr/dmclient"
+	"github.com/go-things/things/src/usersvr/userclient"
+	"github.com/go-things/things/src/webapi/internal/config"
+	"github.com/go-things/things/src/webapi/internal/middleware"
 	"github.com/tal-tech/go-zero/rest"
 	"github.com/tal-tech/go-zero/zrpc"
 	"time"

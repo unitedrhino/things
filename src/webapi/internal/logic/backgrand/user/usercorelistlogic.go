@@ -2,11 +2,11 @@ package user
 
 import (
 	"context"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/src/usersvr/user"
 	"github.com/jinzhu/copier"
 
-	"gitee.com/godLei6/things/src/webapi/internal/svc"
-	"gitee.com/godLei6/things/src/webapi/internal/types"
+	"github.com/go-things/things/src/webapi/internal/svc"
+	"github.com/go-things/things/src/webapi/internal/types"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )

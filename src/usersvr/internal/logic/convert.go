@@ -2,9 +2,9 @@ package logic
 
 import (
 	"database/sql"
-	"gitee.com/godLei6/things/shared/utils/cast"
-	"gitee.com/godLei6/things/src/usersvr/model"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/shared/utils/cast"
+	"github.com/go-things/things/src/usersvr/model"
+	"github.com/go-things/things/src/usersvr/user"
 	"time"
 )
 

@@ -2,10 +2,10 @@ package logic
 
 import (
 	"context"
-	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/types"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
-	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
+	"github.com/go-things/things/src/dmsvr/dm"
+	"github.com/go-things/things/src/dmsvr/internal/exchange/types"
+	"github.com/go-things/things/src/dmsvr/internal/repo/model/mysql"
+	"github.com/go-things/things/src/dmsvr/internal/svc"
 	"github.com/tal-tech/go-zero/core/logx"
 	"time"
 )

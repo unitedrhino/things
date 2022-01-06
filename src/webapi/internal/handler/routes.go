@@ -4,13 +4,13 @@ package handler
 import (
 	"net/http"
 
-	backgranddc "gitee.com/godLei6/things/src/webapi/internal/handler/backgrand/dc"
-	backgranddm "gitee.com/godLei6/things/src/webapi/internal/handler/backgrand/dm"
-	backgranduser "gitee.com/godLei6/things/src/webapi/internal/handler/backgrand/user"
-	frontdc "gitee.com/godLei6/things/src/webapi/internal/handler/front/dc"
-	frontuser "gitee.com/godLei6/things/src/webapi/internal/handler/front/user"
-	frontverify "gitee.com/godLei6/things/src/webapi/internal/handler/front/verify"
-	"gitee.com/godLei6/things/src/webapi/internal/svc"
+	backgranddc "github.com/go-things/things/src/webapi/internal/handler/backgrand/dc"
+	backgranddm "github.com/go-things/things/src/webapi/internal/handler/backgrand/dm"
+	backgranduser "github.com/go-things/things/src/webapi/internal/handler/backgrand/user"
+	frontdc "github.com/go-things/things/src/webapi/internal/handler/front/dc"
+	frontuser "github.com/go-things/things/src/webapi/internal/handler/front/user"
+	frontverify "github.com/go-things/things/src/webapi/internal/handler/front/verify"
+	"github.com/go-things/things/src/webapi/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
 )

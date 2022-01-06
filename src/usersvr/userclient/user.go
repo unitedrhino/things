@@ -6,7 +6,7 @@ package userclient
 import (
 	"context"
 
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/src/usersvr/user"
 
 	"github.com/tal-tech/go-zero/zrpc"
 	"google.golang.org/grpc"

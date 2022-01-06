@@ -3,14 +3,14 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"gitee.com/godLei6/things/shared/def"
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/usersvr/model"
+	"github.com/go-things/things/shared/def"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/shared/utils"
+	"github.com/go-things/things/src/usersvr/model"
 	"time"
 
-	"gitee.com/godLei6/things/src/usersvr/internal/svc"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/src/usersvr/internal/svc"
+	"github.com/go-things/things/src/usersvr/user"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )

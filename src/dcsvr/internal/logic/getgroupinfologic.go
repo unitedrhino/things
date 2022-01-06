@@ -2,9 +2,9 @@ package logic
 
 import (
 	"context"
-	"gitee.com/godLei6/things/shared/def"
-	"gitee.com/godLei6/things/src/dcsvr/dc"
-	"gitee.com/godLei6/things/src/dcsvr/internal/svc"
+	"github.com/go-things/things/shared/def"
+	"github.com/go-things/things/src/dcsvr/dc"
+	"github.com/go-things/things/src/dcsvr/internal/svc"
 	"github.com/tal-tech/go-zero/core/logx"
 )
 

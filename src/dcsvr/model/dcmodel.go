@@ -2,7 +2,7 @@ package model
 
 import (
 	"fmt"
-	"gitee.com/godLei6/things/shared/def"
+	"github.com/go-things/things/shared/def"
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"

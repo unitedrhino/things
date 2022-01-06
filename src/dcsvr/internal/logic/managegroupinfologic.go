@@ -3,14 +3,14 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"gitee.com/godLei6/things/shared/def"
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/dcsvr/model"
+	"github.com/go-things/things/shared/def"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/src/dcsvr/model"
 	"github.com/spf13/cast"
 	"time"
 
-	"gitee.com/godLei6/things/src/dcsvr/dc"
-	"gitee.com/godLei6/things/src/dcsvr/internal/svc"
+	"github.com/go-things/things/src/dcsvr/dc"
+	"github.com/go-things/things/src/dcsvr/internal/svc"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )

@@ -1,6 +1,6 @@
 package device
 
-import "gitee.com/godLei6/things/shared/errors"
+import "github.com/go-things/things/shared/errors"
 
 type (
 	DeviceReq struct {

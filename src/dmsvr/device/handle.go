@@ -3,7 +3,7 @@ package device
 import (
 	"encoding/json"
 	"fmt"
-	"gitee.com/godLei6/things/shared/errors"
+	"github.com/go-things/things/shared/errors"
 	"github.com/spf13/cast"
 )
 

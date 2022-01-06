@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"gitee.com/godLei6/things/shared/def"
+	"github.com/go-things/things/shared/def"
 	"github.com/tal-tech/go-zero/core/logx"
 	"net"
 	"net/http"

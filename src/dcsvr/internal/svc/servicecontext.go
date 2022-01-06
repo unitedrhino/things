@@ -1,10 +1,10 @@
 package svc
 
 import (
-	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/dcsvr/internal/config"
-	"gitee.com/godLei6/things/src/dcsvr/model"
-	"gitee.com/godLei6/things/src/dmsvr/dmclient"
+	"github.com/go-things/things/shared/utils"
+	"github.com/go-things/things/src/dcsvr/internal/config"
+	"github.com/go-things/things/src/dcsvr/model"
+	"github.com/go-things/things/src/dmsvr/dmclient"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"github.com/tal-tech/go-zero/zrpc"
 )

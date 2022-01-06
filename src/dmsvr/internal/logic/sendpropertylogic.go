@@ -4,14 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/dmsvr/device"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/src/dmsvr/device"
+	"github.com/go-things/things/src/dmsvr/internal/repo/model/mysql"
 	"github.com/hashicorp/go-uuid"
 	"time"
 
-	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
+	"github.com/go-things/things/src/dmsvr/dm"
+	"github.com/go-things/things/src/dmsvr/internal/svc"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )

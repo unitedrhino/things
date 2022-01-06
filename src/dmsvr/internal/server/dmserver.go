@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/internal/logic"
-	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
+	"github.com/go-things/things/src/dmsvr/dm"
+	"github.com/go-things/things/src/dmsvr/internal/logic"
+	"github.com/go-things/things/src/dmsvr/internal/svc"
 )
 
 type DmServer struct {

@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/dmsvr/device"
+	"github.com/go-things/things/shared/utils"
+	"github.com/go-things/things/src/dmsvr/device"
 	"testing"
 )
 

@@ -6,7 +6,7 @@ package dcclient
 import (
 	"context"
 
-	"gitee.com/godLei6/things/src/dcsvr/dc"
+	"github.com/go-things/things/src/dcsvr/dc"
 
 	"github.com/tal-tech/go-zero/zrpc"
 )

@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gitee.com/godLei6/things/src/webapi/internal/vars"
+	"github.com/go-things/things/src/webapi/internal/vars"
 
-	"gitee.com/godLei6/things/src/webapi/internal/config"
-	"gitee.com/godLei6/things/src/webapi/internal/handler"
-	"gitee.com/godLei6/things/src/webapi/internal/svc"
+	"github.com/go-things/things/src/webapi/internal/config"
+	"github.com/go-things/things/src/webapi/internal/handler"
+	"github.com/go-things/things/src/webapi/internal/svc"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/rest"

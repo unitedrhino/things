@@ -1,9 +1,9 @@
 package dto
 
 import (
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/dcsvr/dc"
-	"gitee.com/godLei6/things/src/webapi/internal/types"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/src/dcsvr/dc"
+	"github.com/go-things/things/src/webapi/internal/types"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 

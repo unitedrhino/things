@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/dmsvr/internal/exchange/logic"
-	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
+	"github.com/go-things/things/shared/utils"
+	"github.com/go-things/things/src/dmsvr/internal/exchange/logic"
+	"github.com/go-things/things/src/dmsvr/internal/svc"
 	"github.com/Shopify/sarama"
 	"log"
 	"os"

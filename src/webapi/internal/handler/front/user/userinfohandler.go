@@ -1,10 +1,10 @@
 package user
 
 import (
-	"gitee.com/godLei6/things/src/webapi/internal/logic/front/user"
+	"github.com/go-things/things/src/webapi/internal/logic/front/user"
 	"net/http"
 
-	"gitee.com/godLei6/things/src/webapi/internal/svc"
+	"github.com/go-things/things/src/webapi/internal/svc"
 	"github.com/tal-tech/go-zero/rest/httpx"
 )
 

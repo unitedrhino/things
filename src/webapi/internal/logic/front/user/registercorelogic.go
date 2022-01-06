@@ -2,13 +2,13 @@ package user
 
 import (
 	"context"
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/shared/utils"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/shared/utils"
+	"github.com/go-things/things/src/usersvr/user"
 	"time"
 
-	"gitee.com/godLei6/things/src/webapi/internal/svc"
-	"gitee.com/godLei6/things/src/webapi/internal/types"
+	"github.com/go-things/things/src/webapi/internal/svc"
+	"github.com/go-things/things/src/webapi/internal/types"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )

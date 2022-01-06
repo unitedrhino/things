@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"gitee.com/godLei6/things/src/usersvr/internal/logic"
-	"gitee.com/godLei6/things/src/usersvr/internal/svc"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/src/usersvr/internal/logic"
+	"github.com/go-things/things/src/usersvr/internal/svc"
+	"github.com/go-things/things/src/usersvr/user"
 )
 
 type UserServer struct {

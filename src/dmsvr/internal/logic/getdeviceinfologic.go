@@ -2,11 +2,11 @@ package logic
 
 import (
 	"context"
-	"gitee.com/godLei6/things/shared/def"
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
-	"gitee.com/godLei6/things/src/dmsvr/internal/svc"
+	"github.com/go-things/things/shared/def"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/src/dmsvr/dm"
+	"github.com/go-things/things/src/dmsvr/internal/repo/model/mysql"
+	"github.com/go-things/things/src/dmsvr/internal/svc"
 	"github.com/tal-tech/go-zero/core/logx"
 )
 

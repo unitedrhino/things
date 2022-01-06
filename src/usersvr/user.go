@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gitee.com/godLei6/things/shared/errors"
+	"github.com/go-things/things/shared/errors"
 	"google.golang.org/grpc/reflection"
 
-	"gitee.com/godLei6/things/src/usersvr/internal/config"
-	"gitee.com/godLei6/things/src/usersvr/internal/server"
-	"gitee.com/godLei6/things/src/usersvr/internal/svc"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/src/usersvr/internal/config"
+	"github.com/go-things/things/src/usersvr/internal/server"
+	"github.com/go-things/things/src/usersvr/internal/svc"
+	"github.com/go-things/things/src/usersvr/user"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/zrpc"

@@ -3,7 +3,7 @@ package mongorepo
 import (
 	"context"
 	"fmt"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo"
+	"github.com/go-things/things/src/dmsvr/internal/repo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

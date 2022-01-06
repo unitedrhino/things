@@ -2,7 +2,7 @@ package verify
 
 import (
 	"fmt"
-	"gitee.com/godLei6/things/shared/errors"
+	"github.com/go-things/things/shared/errors"
 	"github.com/mojocn/base64Captcha"
 	"github.com/tal-tech/go-zero/core/syncx"
 	"time"

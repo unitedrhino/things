@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"gitee.com/godLei6/things/shared/errors"
+	"github.com/go-things/things/shared/errors"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )

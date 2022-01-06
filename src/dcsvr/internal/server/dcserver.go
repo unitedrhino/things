@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"gitee.com/godLei6/things/src/dcsvr/dc"
-	"gitee.com/godLei6/things/src/dcsvr/internal/logic"
-	"gitee.com/godLei6/things/src/dcsvr/internal/svc"
+	"github.com/go-things/things/src/dcsvr/dc"
+	"github.com/go-things/things/src/dcsvr/internal/logic"
+	"github.com/go-things/things/src/dcsvr/internal/svc"
 )
 
 type DcServer struct {

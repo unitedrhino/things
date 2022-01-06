@@ -2,11 +2,11 @@ package logic
 
 import (
 	"context"
-	"gitee.com/godLei6/things/shared/utils"
+	"github.com/go-things/things/shared/utils"
 	"time"
 
-	"gitee.com/godLei6/things/src/usersvr/internal/svc"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/src/usersvr/internal/svc"
+	"github.com/go-things/things/src/usersvr/user"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
