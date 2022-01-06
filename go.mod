@@ -1,4 +1,4 @@
-module gitee.com/godLei6/things
+module github.com/go-things/things
 
 go 1.14
 

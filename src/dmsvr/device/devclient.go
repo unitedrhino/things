@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/shared/utils"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/shared/utils"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"time"
 )

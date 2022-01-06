@@ -1,6 +1,6 @@
 package dm
 
-import "gitee.com/godLei6/things/shared/utils"
+import "github.com/go-things/things/shared/utils"
 
 //字符串类型的产品id有11个字节,不够的需要在前面补0
 func GetStrProductID(id int64) string {

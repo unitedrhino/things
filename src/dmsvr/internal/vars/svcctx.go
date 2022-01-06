@@ -1,5 +1,5 @@
 package vars
 
-import "gitee.com/godLei6/things/src/dmsvr/internal/svc"
+import "github.com/go-things/things/src/dmsvr/internal/svc"
 
 var Svrctx *svc.ServiceContext

@@ -1,8 +1,8 @@
 package types
 
 import (
-	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/src/dmsvr/dm"
+	"github.com/go-things/things/src/usersvr/user"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 

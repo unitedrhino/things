@@ -1,7 +1,7 @@
 package config
 
 import (
-	"gitee.com/godLei6/things/src/dmsvr/device"
+	"github.com/go-things/things/src/dmsvr/device"
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/zrpc"
 )

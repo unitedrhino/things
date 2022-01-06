@@ -3,8 +3,8 @@ package logic
 import (
 	"database/sql"
 	"fmt"
-	"gitee.com/godLei6/things/src/dmsvr/dm"
-	"gitee.com/godLei6/things/src/dmsvr/internal/repo/model/mysql"
+	"github.com/go-things/things/src/dmsvr/dm"
+	"github.com/go-things/things/src/dmsvr/internal/repo/model/mysql"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 

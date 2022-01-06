@@ -1,6 +1,6 @@
 package exchange
 
-import "gitee.com/godLei6/things/src/dmsvr/internal/exchange/logic"
+import "github.com/go-things/things/src/dmsvr/internal/exchange/logic"
 
 func (k *Kafka) AddRouters() {
 	k.AddRouter(Router{

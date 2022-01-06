@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"gitee.com/godLei6/things/src/webapi/internal/logic/front/verify"
+	"github.com/go-things/things/src/webapi/internal/logic/front/verify"
 	"net/http"
 
-	"gitee.com/godLei6/things/src/webapi/internal/svc"
-	"gitee.com/godLei6/things/src/webapi/internal/types"
+	"github.com/go-things/things/src/webapi/internal/svc"
+	"github.com/go-things/things/src/webapi/internal/types"
 
 	"github.com/tal-tech/go-zero/rest/httpx"
 )

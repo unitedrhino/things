@@ -2,12 +2,12 @@ package logic
 
 import (
 	"context"
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/usersvr/model"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/src/usersvr/model"
 	"github.com/spf13/cast"
 
-	"gitee.com/godLei6/things/src/usersvr/internal/svc"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/src/usersvr/internal/svc"
+	"github.com/go-things/things/src/usersvr/user"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )

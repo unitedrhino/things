@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"gitee.com/godLei6/things/src/dcsvr/dc"
-	"gitee.com/godLei6/things/src/dcsvr/internal/config"
-	"gitee.com/godLei6/things/src/dcsvr/internal/server"
-	"gitee.com/godLei6/things/src/dcsvr/internal/svc"
+	"github.com/go-things/things/src/dcsvr/dc"
+	"github.com/go-things/things/src/dcsvr/internal/config"
+	"github.com/go-things/things/src/dcsvr/internal/server"
+	"github.com/go-things/things/src/dcsvr/internal/svc"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/zrpc"

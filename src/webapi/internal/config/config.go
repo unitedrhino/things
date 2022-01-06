@@ -1,7 +1,7 @@
 package config
 
 import (
-	"gitee.com/godLei6/things/shared/conf"
+	"github.com/go-things/things/shared/conf"
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/rest"
 )

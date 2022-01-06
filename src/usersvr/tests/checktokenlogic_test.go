@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"gitee.com/godLei6/things/src/usersvr/internal/logic"
-	"gitee.com/godLei6/things/src/usersvr/user"
+	"github.com/go-things/things/src/usersvr/internal/logic"
+	"github.com/go-things/things/src/usersvr/user"
 	"testing"
 )
 

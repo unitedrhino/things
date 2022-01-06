@@ -3,9 +3,9 @@ package tests
 import (
 	"context"
 	"fmt"
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/src/dcsvr/dc"
-	"gitee.com/godLei6/things/src/dcsvr/dcclient"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/src/dcsvr/dc"
+	"github.com/go-things/things/src/dcsvr/dcclient"
 	"github.com/tal-tech/go-zero/core/discov"
 	"github.com/tal-tech/go-zero/zrpc"
 	"testing"

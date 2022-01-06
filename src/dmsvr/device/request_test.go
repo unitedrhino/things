@@ -3,7 +3,7 @@ package device_test
 import (
 	"encoding/json"
 	"fmt"
-	"gitee.com/godLei6/things/src/dmsvr/device"
+	"github.com/go-things/things/src/dmsvr/device"
 	"testing"
 )
 

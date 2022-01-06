@@ -2,11 +2,11 @@ package verify
 
 import (
 	"context"
-	"gitee.com/godLei6/things/shared/errors"
-	"gitee.com/godLei6/things/shared/utils"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/shared/utils"
 
-	"gitee.com/godLei6/things/src/webapi/internal/svc"
-	"gitee.com/godLei6/things/src/webapi/internal/types"
+	"github.com/go-things/things/src/webapi/internal/svc"
+	"github.com/go-things/things/src/webapi/internal/types"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
