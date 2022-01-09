@@ -18,7 +18,7 @@ import (
 type SendActionLogic struct {
 	ctx      context.Context
 	svcCtx   *svc.ServiceContext
-	pi       *mysql.ProductInfo
+	pt       *mysql.ProductTemplate
 	template *device.Template
 	logx.Logger
 }
@@ -32,11 +32,11 @@ func NewSendActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendAc
 }
 func (l *SendActionLogic) initMsg(productID string) error {
 	var err error
-	l.pi, err = l.svcCtx.ProductInfo.FindOneByProductID(productID)
+	l.pt, err = l.svcCtx.ProductTemplate.FindOne(productID)
 	if err != nil {
 		return err
 	}
-	l.template, err = device.NewTemplate([]byte(l.pi.Template))
+	l.template, err = device.NewTemplate([]byte(l.pt.Template))
 	if err != nil {
 		return err
 	}

@@ -51,6 +51,18 @@ func (s *DmServer) GetProductInfo(ctx context.Context, in *dm.GetProductInfoReq)
 	return l.GetProductInfo(in)
 }
 
+// 产品模板管理
+func (s *DmServer) ManageProductTemplate(ctx context.Context, in *dm.ManageProductTemplateReq) (*dm.ProductTemplate, error) {
+	l := logic.NewManageProductTemplateLogic(ctx, s.svcCtx)
+	return l.ManageProductTemplate(in)
+}
+
+// 获取产品信息
+func (s *DmServer) GetProductTemplate(ctx context.Context, in *dm.GetProductTemplateReq) (*dm.ProductTemplate, error) {
+	l := logic.NewGetProductTemplateLogic(ctx, s.svcCtx)
+	return l.GetProductTemplate(in)
+}
+
 // 获取设备信息
 func (s *DmServer) GetDeviceInfo(ctx context.Context, in *dm.GetDeviceInfoReq) (*dm.GetDeviceInfoResp, error) {
 	l := logic.NewGetDeviceInfoLogic(ctx, s.svcCtx)

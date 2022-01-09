@@ -3,6 +3,23 @@ syntax = "proto3";
 import "google/protobuf/wrappers.proto";
 
 package dc;
+
+service Dc {
+  //管理组
+  rpc manageGroupInfo(ManageGroupInfoReq)    returns (GroupInfo);
+  //管理组成员
+  rpc manageGroupMember(ManageGroupMemberReq)   returns (GroupMember);
+  //获取组信息
+  rpc GetGroupInfo(GetGroupInfoReq)     returns (GetGroupInfoResp);
+  //获取组成员
+  rpc GetGroupMember(GetGroupMemberReq)   returns (GetGroupMemberResp);
+  //同步调用设备行为
+  rpc SendAction(SendActionReq)         returns(SendActionResp);
+  //同步调用设备属性
+  rpc SendProperty(SendPropertyReq)     returns(SendPropertyResp);
+}
+
+
 message PageInfo{
   int64 page = 1;
   int64 pageSize = 2;
@@ -91,20 +108,5 @@ message SendPropertyResp{
   string  status =2;//返回状态
   string clientToken = 3;//调用id
   string data = 4;//返回信息
-}
-
-service Dc {
-  //管理组
-  rpc manageGroupInfo(ManageGroupInfoReq)    returns (GroupInfo);
-  //管理组成员
-  rpc manageGroupMember(ManageGroupMemberReq)   returns (GroupMember);
-  //获取组信息
-  rpc GetGroupInfo(GetGroupInfoReq)     returns (GetGroupInfoResp);
-  //获取组成员
-  rpc GetGroupMember(GetGroupMemberReq)   returns (GetGroupMemberResp);
-  //同步调用设备行为
-  rpc SendAction(SendActionReq)         returns(SendActionResp);
-  //同步调用设备属性
-  rpc SendProperty(SendPropertyReq)     returns(SendPropertyResp);
 }
 

@@ -49,7 +49,7 @@ func (l *ManageDeviceLogic) CheckDevice(in *dm.ManageDeviceReq) (bool, error) {
 发现返回true 没有返回false
 */
 func (l *ManageDeviceLogic) CheckProduct(in *dm.ManageDeviceReq) (bool, error) {
-	_, err := l.svcCtx.ProductInfo.FindOneByProductID(in.Info.ProductID)
+	_, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
 	switch err {
 	case mysql.ErrNotFound:
 		return false, nil

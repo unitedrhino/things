@@ -15,21 +15,23 @@ import (
 )
 
 type ServiceContext struct {
-	Config      config.Config
-	DeviceInfo  mysql.DeviceInfoModel
-	ProductInfo mysql.ProductInfoModel
-	DeviceLog   mysql.DeviceLogModel
-	DmDB        mysql.DmModel
-	DeviceID    *utils.SnowFlake
-	ProductID   *utils.SnowFlake
-	DevClient   *device.DevClient
-	DeviceData  repo.GetDeviceDataRepo
+	Config          config.Config
+	DeviceInfo      mysql.DeviceInfoModel
+	ProductInfo     mysql.ProductInfoModel
+	ProductTemplate mysql.ProductTemplateModel
+	DeviceLog       mysql.DeviceLogModel
+	DmDB            mysql.DmModel
+	DeviceID        *utils.SnowFlake
+	ProductID       *utils.SnowFlake
+	DevClient       *device.DevClient
+	DeviceData      repo.GetDeviceDataRepo
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	di := mysql.NewDeviceInfoModel(conn, c.CacheRedis)
 	pi := mysql.NewProductInfoModel(conn, c.CacheRedis)
+	pt := mysql.NewProductTemplateModel(conn, c.CacheRedis)
 	dl := mysql.NewDeviceLogModel(conn)
 	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
 	DeviceID := utils.NewSnowFlake(c.NodeID)
@@ -49,14 +51,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	dd := mongorepo.NewDeviceDataRepo(mongoDB)
 	return &ServiceContext{
-		Config:      c,
-		DeviceInfo:  di,
-		ProductInfo: pi,
-		DmDB:        DmDB,
-		DeviceID:    DeviceID,
-		ProductID:   ProductID,
-		DeviceLog:   dl,
-		DevClient:   devClient,
-		DeviceData:  dd,
+		Config:          c,
+		DeviceInfo:      di,
+		ProductInfo:     pi,
+		ProductTemplate: pt,
+		DmDB:            DmDB,
+		DeviceID:        DeviceID,
+		ProductID:       ProductID,
+		DeviceLog:       dl,
+		DevClient:       devClient,
+		DeviceData:      dd,
 	}
 }
