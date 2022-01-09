@@ -154,7 +154,7 @@ func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName stri
 
 //通过属性的id及方法获取一段时间或最新时间的记录
 func (d *DeviceDataContext) GetPropertyDataWithID(productID string, deviceName string, dataID string, timeStart, timeEnd int64, limit int64) (dds []*repo.Property, err error) {
-	if limit == 0{
+	if limit == 0 {
 		limit = 20
 	}
 	filter := bson.D{

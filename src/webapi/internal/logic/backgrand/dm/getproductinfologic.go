@@ -58,5 +58,4 @@ func (l *GetProductInfoLogic) GetProductInfo(req types.GetProductInfoReq) (*type
 		Info:  pis,
 		Num:   int64(len(pis)),
 	}, nil
-	return &types.GetProductInfoResp{}, nil
 }

@@ -8,55 +8,72 @@ title: "设备管理模块"
 
 
 type LoginAuthReq struct {
-	Username    string `json:"username"`       //用户名
-	Password    string `json:"password,optional"`       //密码
-	ClientID    string `json:"clientID"`       //clientID
-	Ip          string `json:"ip"`                   //访问的ip地址
+	Username string `json:"username"`                          //用户名
+	Password string `json:"password,optional"`                 //密码
+	ClientID string `json:"clientID"`                          //clientID
+	Ip string `json:"ip"`                                      //访问的ip地址
 	Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
 }
 
+type ProductTemplate struct {
+	CreatedTime int64 `json:"createdTime,optional,string,omitempty"`   //创建时间 只读
+	ProductID string `json:"productID,optional,omitempty"`             //产品id 只读
+	Template *string `json:"template,optional,omitempty"`              //数据模板
+}
+
 type ProductInfo struct {
-	CreatedTime  int64                 `json:"createdTime,optional,string,omitempty"`   //创建时间 只读
-	ProductID    string                `json:"productID,optional,omitempty"`        //产品id 只读
-	ProductName  string                `json:"productName,optional,omitempty"`    //产品名称
-	AuthMode     int64                 `json:"authMode,optional"`         //认证方式:1:账密认证,2:秘钥认证
-	DeviceType   int64                 `json:"deviceType,optional"`     //设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64                 `json:"categoryID,optional"`     //产品品类
-	NetType      int64                 `json:"netType,optional"`           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto    int64                 `json:"dataProto,optional"`       //数据协议:1:自定义,2:数据模板
+	CreatedTime int64 `json:"createdTime,optional,string,omitempty"`                  //创建时间 只读
+	ProductID string `json:"productID,optional,omitempty"`                            //产品id 只读
+	ProductName string `json:"productName,optional,omitempty"`                        //产品名称
+	AuthMode int64 `json:"authMode,optional"`                                         //认证方式:1:账密认证,2:秘钥认证
+	DeviceType int64 `json:"deviceType,optional"`                                     //设备类型:1:设备,2:网关,3:子设备
+	CategoryID int64 `json:"categoryID,optional"`                                     //产品品类
+	NetType int64 `json:"netType,optional"`                                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	DataProto int64 `json:"dataProto,optional"`                                       //数据协议:1:自定义,2:数据模板
 	AutoRegister int64                 `json:"autoRegister,optional"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret       string                `json:"secret,optional,omitempty"`             //动态注册产品秘钥 只读
-	Template     *string 				`json:"template,optional,omitempty"`         //数据模板
 	Description  *string 				`json:"description,optional,omitempty"`   //描述
 	DevStatus    *string 				`json:"devStatus,optional,omitempty"`       // 产品状态
 }
 
 type ManageProductReq struct {
 
-	Opt  int64        `json:"opt,omitempty"`  //操作 0:新增 1:修改 2:删除
+	Opt int64 `json:"opt,omitempty"`                   //操作 0:新增 1:修改 2:删除
 	Info *ProductInfo `json:"info,optional,omitempty"` //产品信息
 }
 
 type GetProductInfoReq struct {
-	ProductID string    `json:"productID,optional,optional"` //产品id  如果为空返回所有产品的信息
-	Page      *PageInfo `json:"page,optional,optional"`           //分页信息,只获取一个则不填
+	ProductID string `json:"productID,optional,optional"`    //产品id  如果为空返回所有产品的信息
+	Page *PageInfo `json:"page,optional,optional"`           //分页信息,只获取一个则不填
+}
+
+type GetProductInfoResp struct {
+	Info []*ProductInfo `json:"info,omitempty"`    //产品信息
+	Total int64 `json:"total,optional,omitempty"`  //拥有的总数(只有分页的时候会返回)
+	Num int64 `json:"num,optional,omitempty"`      //返回的数量
+}
+
+type ManageProductTemplateReq struct {
+	Info *ProductTemplate `json:"info,optional,omitempty"` //产品信息
+}
+
+type GetProductTemplateReq struct {
+	ProductID string `json:"productID"` //产品id
 }
 
 
-type GetProductInfoResp struct {
-	Info  []*ProductInfo `json:"info,omitempty"`    //产品信息
-	Total int64          `json:"total,optional,omitempty"` //拥有的总数(只有分页的时候会返回)
-	Num   int64 		`json:"num,optional,omitempty"` //返回的数量
+type GetProductTemplateResp struct {
+	Info ProductTemplate `json:"info,omitempty"`    //产品信息
 }
 
 type DeviceInfo struct {
 
-	ProductID   string                `json:"productID"`      //产品id 只读
-	DeviceName  string                `json:"deviceName"`    //设备名称 读写
-	CreatedTime int64                 `json:"createdTime,optional,string"` //创建时间 只读
-	Secret      string                `json:"secret,optional"`            //设备秘钥 只读
-	FirstLogin  int64                 `json:"firstLogin,optional,string"`   //激活时间 只读
-	LastLogin   int64                 `json:"lastLogin,optional,string"`     //最后上线时间 只读
+	ProductID string `json:"productID"`                                              //产品id 只读
+	DeviceName string `json:"deviceName"`                                            //设备名称 读写
+	CreatedTime int64 `json:"createdTime,optional,string"`                           //创建时间 只读
+	Secret string `json:"secret,optional"`                                           //设备秘钥 只读
+	FirstLogin int64 `json:"firstLogin,optional,string"`                             //激活时间 只读
+	LastLogin int64 `json:"lastLogin,optional,string"`                               //最后上线时间 只读
 	Version     *string 			  `json:"version,optional"`          // 固件版本  读写
 	LogLevel    int64                 `json:"logLevel,optional"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	Cert        string                `json:"cert,optional,omitempty"`               // 设备证书  只读
@@ -148,12 +165,16 @@ service webapi {
 	post /manageProduct (ManageProductReq) returns (ProductInfo)
 	@handler getProductInfo //获取产品信息
 	post /getProductInfo (GetProductInfoReq) returns (GetProductInfoResp)
+	@handler manageProductTemplate //产品管理
+	post /manageProductTemplate (ManageProductTemplateReq) returns (ProductTemplate)
+	@handler getProductTemplate //获取产品信息
+	post /getProductTemplate (GetProductTemplateReq) returns (ProductTemplate)
 	@handler getDeviceInfo //获取设备信息
 	post /getDeviceInfo (GetDeviceInfoReq) returns (GetDeviceInfoResp)
-	@handler  sendAction//同步调用设备行为
-	post /sendAction(SendDmActionReq)returns (SendDmActionResp)
-	@handler  sendProperty//同步调用设备属性
-	post /sendProperty(SendDmPropertyReq)returns (SendDmPropertyResp)
+	@handler sendAction//同步调用设备行为
+	post /sendAction (SendDmActionReq) returns (SendDmActionResp)
+	@handler sendProperty//同步调用设备属性
+	post /sendProperty (SendDmPropertyReq) returns (SendDmPropertyResp)
 	@handler getDeviceLog//获取设备日志信息
-	get  /getDeviceLog(GetDeviceLogReq) returns (GetDeviceLogResp)
+	get /getDeviceLog (GetDeviceLogReq) returns (GetDeviceLogResp)
 }

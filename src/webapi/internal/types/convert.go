@@ -70,8 +70,15 @@ func ProductInfoToApi(v *dm.ProductInfo) *ProductInfo {
 		DataProto:    v.DataProto,               //数据协议:0:自定义,1:数据模板
 		AutoRegister: v.AutoRegister,            //动态注册:0:关闭,1:打开,2:打开并自动创建设备
 		Secret:       v.Secret,                  //动态注册产品秘钥 只读
-		Template:     GetNullVal(v.Template),    //数据模板
 		Description:  GetNullVal(v.Description), //描述
 		DevStatus:    GetNullVal(v.DevStatus),   // 产品状态
+	}
+}
+
+func ProductTemplateToApi(v *dm.ProductTemplate) *ProductTemplate {
+	return &ProductTemplate{
+		CreatedTime: v.CreatedTime,          //创建时间 只读
+		ProductID:   v.ProductID,            //产品id 只读
+		Template:    GetNullVal(v.Template), //数据模板
 	}
 }

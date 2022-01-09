@@ -33,7 +33,7 @@ func (l *GetProductInfoLogic) GetProductInfo(in *dm.GetProductInfoReq) (resp *dm
 		if err != nil {
 			return nil, err
 		}
-		info = append(info, DBToRPCFmt(di).(*dm.ProductInfo))
+		info = append(info, ToProductInfo(di))
 	} else {
 		size, err = l.svcCtx.DmDB.GetCountByProductInfo()
 		if err != nil {
@@ -45,7 +45,7 @@ func (l *GetProductInfoLogic) GetProductInfo(in *dm.GetProductInfoReq) (resp *dm
 		}
 		info = make([]*dm.ProductInfo, 0, len(di))
 		for _, v := range di {
-			info = append(info, DBToRPCFmt(v).(*dm.ProductInfo))
+			info = append(info, ToProductInfo(v))
 		}
 	}
 	return &dm.GetProductInfoResp{Info: info, Total: size}, nil

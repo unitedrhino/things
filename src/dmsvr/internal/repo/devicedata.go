@@ -1,4 +1,4 @@
-//本文件是提供设备模型数据存储的信息
+// Package repo 本文件是提供设备模型数据存储的信息
 package repo
 
 import (

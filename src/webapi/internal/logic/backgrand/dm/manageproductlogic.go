@@ -42,11 +42,6 @@ func (l *ManageProductLogic) ManageProduct(req types.ManageProductReq) (*types.P
 			AutoRegister: req.Info.AutoRegister, //动态注册:0:关闭,1:打开,2:打开并自动创建设备
 		},
 	}
-	if req.Info.Template != nil {
-		dmReq.Info.Template = &wrappers.StringValue{
-			Value: *req.Info.Template,
-		}
-	}
 	if req.Info.Description != nil {
 		dmReq.Info.Description = &wrappers.StringValue{
 			Value: *req.Info.Description,

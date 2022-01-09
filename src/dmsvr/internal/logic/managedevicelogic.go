@@ -6,7 +6,7 @@ import (
 	"github.com/go-things/things/shared/def"
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/shared/utils"
-	mysql2 "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
+	mysql "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
 
@@ -36,7 +36,7 @@ func NewManageDeviceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mana
 func (l *ManageDeviceLogic) CheckDevice(in *dm.ManageDeviceReq) (bool, error) {
 	_, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID, in.Info.DeviceName)
 	switch err {
-	case mysql2.ErrNotFound:
+	case mysql.ErrNotFound:
 		return false, nil
 	case nil:
 		return true, nil
@@ -51,7 +51,7 @@ func (l *ManageDeviceLogic) CheckDevice(in *dm.ManageDeviceReq) (bool, error) {
 func (l *ManageDeviceLogic) CheckProduct(in *dm.ManageDeviceReq) (bool, error) {
 	_, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
 	switch err {
-	case mysql2.ErrNotFound:
+	case mysql.ErrNotFound:
 		return false, nil
 	case nil:
 		return true, nil
@@ -75,7 +75,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.Info.ProductID))
 	}
 
-	di := mysql2.DeviceInfo{
+	di := mysql.DeviceInfo{
 		ProductID:   in.Info.ProductID,  // 产品id
 		DeviceName:  in.Info.DeviceName, // 设备名称
 		Secret:      utils.GetPwdBase64(20),
@@ -90,10 +90,10 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		l.Errorf("AddDevice|DeviceInfo|Insert|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	return DBToRPCFmt(&di).(*dm.DeviceInfo), nil
+	return ToDeviceInfo(&di), nil
 }
 
-func ChangeDevice(old *mysql2.DeviceInfo, data *dm.DeviceInfo) {
+func ChangeDevice(old *mysql.DeviceInfo, data *dm.DeviceInfo) {
 	var isModify bool = false
 	defer func() {
 		if isModify {
@@ -114,7 +114,7 @@ func ChangeDevice(old *mysql2.DeviceInfo, data *dm.DeviceInfo) {
 func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
 	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID, in.Info.DeviceName)
 	if err != nil {
-		if err == mysql2.ErrNotFound {
+		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetailf("not find device|productid=%s|deviceName=%s",
 				in.Info.ProductID, in.Info.DeviceName)
 		}
@@ -127,13 +127,13 @@ func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 		l.Errorf("ModifyDevice|DeviceInfo|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	return DBToRPCFmt(di).(*dm.DeviceInfo), nil
+	return ToDeviceInfo(di), nil
 }
 
 func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
 	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID, in.Info.DeviceName)
 	if err != nil {
-		if err == mysql2.ErrNotFound {
+		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetailf("not find device|productid=%s|deviceName=%s",
 				in.Info.ProductID, in.Info.DeviceName)
 		}
