@@ -10,7 +10,7 @@ import (
 	"github.com/go-things/things/src/dmsvr/dm"
 	"github.com/go-things/things/src/dmsvr/internal/exchange/types"
 	"github.com/go-things/things/src/dmsvr/internal/repo"
-	"github.com/go-things/things/src/dmsvr/internal/repo/model/mysql"
+	"github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/go-things/things/src/dmsvr/internal/svc"
 	"github.com/tal-tech/go-zero/core/logx"
 	"strings"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/go-things/things/shared/errors"
-	"github.com/go-things/things/src/dmsvr/internal/repo/model/mysql"
+	mysql2 "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
 
@@ -28,7 +28,7 @@ func NewManageProductTemplateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 	}
 }
 
-func UpdateProductTemplate(old *mysql.ProductTemplate, data *dm.ProductTemplate) (isModify bool) {
+func UpdateProductTemplate(old *mysql2.ProductTemplate, data *dm.ProductTemplate) (isModify bool) {
 	defer func() {
 		if isModify {
 			old.UpdatedTime = sql.NullTime{Valid: true, Time: time.Now()}
@@ -41,7 +41,7 @@ func UpdateProductTemplate(old *mysql.ProductTemplate, data *dm.ProductTemplate)
 	return
 }
 
-func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, pt *mysql.ProductTemplate) (*dm.ProductTemplate, error) {
+func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, pt *mysql2.ProductTemplate) (*dm.ProductTemplate, error) {
 	UpdateProductTemplate(pt, in.Info)
 	err := l.svcCtx.ProductTemplate.Update(pt)
 	if err != nil {
@@ -54,12 +54,12 @@ func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductT
 func (l *ManageProductTemplateLogic) InsertProductTemplate(in *dm.ManageProductTemplateReq) (*dm.ProductTemplate, error) {
 	pi, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if err == mysql2.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
 		}
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	pt := &mysql.ProductTemplate{
+	pt := &mysql2.ProductTemplate{
 		ProductID:   pi.ProductID,
 		Template:    in.Info.Template.GetValue(),
 		CreatedTime: time.Now(),
@@ -76,7 +76,7 @@ func (l *ManageProductTemplateLogic) ManageProductTemplate(in *dm.ManageProductT
 	l.Infof("ManageProductTemplate|req=%+v", in)
 	pt, err := l.svcCtx.ProductTemplate.FindOne(in.Info.ProductID)
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if err == mysql2.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
 		}
 		return nil, errors.System.AddDetail(err.Error())
