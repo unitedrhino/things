@@ -52,7 +52,7 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 		return nil, errors.Duplicate.AddDetail("ProductName:" + in.Info.ProductName)
 	}
 	pi := l.InsertProduct(in)
-	_, err = l.svcCtx.ProductInfo.Insert(*pi)
+	_, err = l.svcCtx.ProductInfo.Insert(pi)
 	if err != nil {
 		l.Errorf("AddProduct|ProductInfo|Insert|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
@@ -150,7 +150,7 @@ func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.Product
 	}
 	UpdateProduct(pi, in.Info)
 
-	err = l.svcCtx.ProductInfo.Update(*pi)
+	err = l.svcCtx.ProductInfo.Update(pi)
 	if err != nil {
 		l.Errorf("ModifyProduct|ProductInfo|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())

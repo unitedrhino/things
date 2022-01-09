@@ -6,14 +6,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/tal-tech/go-zero/core/stores/builder"
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"github.com/tal-tech/go-zero/core/stringx"
-	"github.com/tal-tech/go-zero/tools/goctl/model/sql/builderx"
 )
 
 var (
-	deviceLogFieldNames          = builderx.RawFieldNames(&DeviceLog{})
+	deviceLogFieldNames          = builder.RawFieldNames(&DeviceLog{})
 	deviceLogRows                = strings.Join(deviceLogFieldNames, ",")
 	deviceLogRowsExpectAutoSet   = strings.Join(stringx.Remove(deviceLogFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
 	deviceLogRowsWithPlaceHolder = strings.Join(stringx.Remove(deviceLogFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
@@ -21,9 +21,9 @@ var (
 
 type (
 	DeviceLogModel interface {
-		Insert(data DeviceLog) (sql.Result, error)
+		Insert(data *DeviceLog) (sql.Result, error)
 		FindOne(id int64) (*DeviceLog, error)
-		Update(data DeviceLog) error
+		Update(data *DeviceLog) error
 		Delete(id int64) error
 	}
 
@@ -33,14 +33,14 @@ type (
 	}
 
 	DeviceLog struct {
-		Id          int64     `db:"id"`
-		ProductID   string    `db:"productID"`  // 产品id
-		Action      string    `db:"action"`     // 操作类型
-		Timestamp   time.Time `db:"timestamp"`  // 操作时间
-		DeviceName  string    `db:"deviceName"` // 设备名称
-		Payload     string    `db:"payload"`    // 具体信息
-		Topic       string    `db:"topic"`      // 主题
-		CreatedTime time.Time `db:"createdTime"`
+		Id          int64
+		ProductID   string    // 产品id
+		DeviceName  string    // 设备名称
+		Payload     string    // 具体信息
+		Topic       string    // 主题
+		Action      string    // 操作类型
+		Timestamp   time.Time // 操作时间
+		CreatedTime time.Time
 	}
 )
 
@@ -51,9 +51,9 @@ func NewDeviceLogModel(conn sqlx.SqlConn) DeviceLogModel {
 	}
 }
 
-func (m *defaultDeviceLogModel) Insert(data DeviceLog) (sql.Result, error) {
+func (m *defaultDeviceLogModel) Insert(data *DeviceLog) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, deviceLogRowsExpectAutoSet)
-	ret, err := m.conn.Exec(query, data.ProductID, data.Action, data.Timestamp, data.DeviceName, data.Payload, data.Topic, data.CreatedTime)
+	ret, err := m.conn.Exec(query, data.ProductID, data.DeviceName, data.Payload, data.Topic, data.Action, data.Timestamp, data.CreatedTime)
 	return ret, err
 }
 
@@ -71,9 +71,9 @@ func (m *defaultDeviceLogModel) FindOne(id int64) (*DeviceLog, error) {
 	}
 }
 
-func (m *defaultDeviceLogModel) Update(data DeviceLog) error {
+func (m *defaultDeviceLogModel) Update(data *DeviceLog) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, deviceLogRowsWithPlaceHolder)
-	_, err := m.conn.Exec(query, data.ProductID, data.Action, data.Timestamp, data.DeviceName, data.Payload, data.Topic, data.CreatedTime, data.Id)
+	_, err := m.conn.Exec(query, data.ProductID, data.DeviceName, data.Payload, data.Topic, data.Action, data.Timestamp, data.CreatedTime, data.Id)
 	return err
 }
 

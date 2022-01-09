@@ -4,7 +4,6 @@ use dm;
 CREATE TABLE `product_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `productID` varchar(20) NOT NULL COMMENT '产品id',
-  `template` varchar(8000) NOT NULL DEFAULT '' COMMENT '数据模板',
   `productName` varchar(100) NOT NULL COMMENT '产品名称',
   `productType` int(10) unsigned DEFAULT '0' COMMENT '产品状态:0:开发中,1:审核中,2:已发布',
   `authMode` int(10) unsigned DEFAULT '0' COMMENT '认证方式:0:账密认证,1:秘钥认证',
@@ -23,6 +22,17 @@ CREATE TABLE `product_info` (
   UNIQUE KEY `productName` (`productName`) USING BTREE,
   UNIQUE KEY `productID` (`productID`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='产品信息表';
+
+CREATE TABLE `product_template` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `productID` varchar(20) NOT NULL COMMENT '产品id',
+    `template`    text  COMMENT '数据模板',
+    `createdTime` datetime NOT NULL,
+    `updatedTime` datetime DEFAULT NULL,
+    `deletedTime` datetime DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `productID` (`productID`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='产品物模型表';
 
 CREATE TABLE `device_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

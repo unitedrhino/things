@@ -27,7 +27,7 @@ func NewDmModel(conn sqlx.SqlConn, c cache.CacheConf) DmModel {
 	return &defaultDmModel{
 		CachedConn:  sqlc.NewConn(conn, c),
 		productInfo: "`product_info`",
-		deviceInfo:  "device_info",
+		deviceInfo:  "`device_info`",
 	}
 }
 
