@@ -8,7 +8,7 @@ import (
 	"github.com/go-things/things/src/dmsvr/internal/config"
 	"github.com/go-things/things/src/dmsvr/internal/repo"
 	"github.com/go-things/things/src/dmsvr/internal/repo/mongorepo"
-	mysql2 "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
+	mysql "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"os"
@@ -16,11 +16,11 @@ import (
 
 type ServiceContext struct {
 	Config          config.Config
-	DeviceInfo      mysql2.DeviceInfoModel
-	ProductInfo     mysql2.ProductInfoModel
-	ProductTemplate mysql2.ProductTemplateModel
-	DeviceLog       mysql2.DeviceLogModel
-	DmDB            mysql2.DmModel
+	DeviceInfo      mysql.DeviceInfoModel
+	ProductInfo     mysql.ProductInfoModel
+	ProductTemplate mysql.ProductTemplateModel
+	DeviceLog       mysql.DeviceLogModel
+	DmDB            mysql.DmModel
 	DeviceID        *utils.SnowFlake
 	ProductID       *utils.SnowFlake
 	DevClient       *device.DevClient
@@ -29,11 +29,11 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
-	di := mysql2.NewDeviceInfoModel(conn, c.CacheRedis)
-	pi := mysql2.NewProductInfoModel(conn, c.CacheRedis)
-	pt := mysql2.NewProductTemplateModel(conn, c.CacheRedis)
-	dl := mysql2.NewDeviceLogModel(conn)
-	DmDB := mysql2.NewDmModel(conn, c.CacheRedis)
+	di := mysql.NewDeviceInfoModel(conn, c.CacheRedis)
+	pi := mysql.NewProductInfoModel(conn, c.CacheRedis)
+	pt := mysql.NewProductTemplateModel(conn, c.CacheRedis)
+	dl := mysql.NewDeviceLogModel(conn)
+	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
 	DeviceID := utils.NewSnowFlake(c.NodeID)
 	ProductID := utils.NewSnowFlake(c.NodeID)
 

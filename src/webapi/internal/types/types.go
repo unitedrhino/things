@@ -120,6 +120,12 @@ type LoginAuthReq struct {
 	Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
 }
 
+type ProductTemplate struct {
+	CreatedTime int64   `json:"createdTime,optional,string,omitempty"` //创建时间 只读
+	ProductID   string  `json:"productID,optional,omitempty"`          //产品id 只读
+	Template    *string `json:"template,optional,omitempty"`           //数据模板
+}
+
 type ProductInfo struct {
 	CreatedTime  int64   `json:"createdTime,optional,string,omitempty"` //创建时间 只读
 	ProductID    string  `json:"productID,optional,omitempty"`          //产品id 只读
@@ -131,7 +137,6 @@ type ProductInfo struct {
 	DataProto    int64   `json:"dataProto,optional"`                    //数据协议:1:自定义,2:数据模板
 	AutoRegister int64   `json:"autoRegister,optional"`                 //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret       string  `json:"secret,optional,omitempty"`             //动态注册产品秘钥 只读
-	Template     *string `json:"template,optional,omitempty"`           //数据模板
 	Description  *string `json:"description,optional,omitempty"`        //描述
 	DevStatus    *string `json:"devStatus,optional,omitempty"`          // 产品状态
 }
@@ -150,6 +155,18 @@ type GetProductInfoResp struct {
 	Info  []*ProductInfo `json:"info,omitempty"`           //产品信息
 	Total int64          `json:"total,optional,omitempty"` //拥有的总数(只有分页的时候会返回)
 	Num   int64          `json:"num,optional,omitempty"`   //返回的数量
+}
+
+type ManageProductTemplateReq struct {
+	Info *ProductTemplate `json:"info,optional,omitempty"` //产品信息
+}
+
+type GetProductTemplateReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type GetProductTemplateResp struct {
+	Info ProductTemplate `json:"info,omitempty"` //产品信息
 }
 
 type DeviceInfo struct {

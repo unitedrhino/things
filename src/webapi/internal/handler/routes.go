@@ -122,6 +122,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/manageProductTemplate",
+				Handler: backgranddm.ManageProductTemplateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/getProductTemplate",
+				Handler: backgranddm.GetProductTemplateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/getDeviceInfo",
 				Handler: backgranddm.GetDeviceInfoHandler(serverCtx),
 			},

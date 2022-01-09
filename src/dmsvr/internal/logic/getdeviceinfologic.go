@@ -36,7 +36,7 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (resp *dm.Ge
 			}
 			return nil, err
 		}
-		info = append(info, DBToRPCFmt(di).(*dm.DeviceInfo))
+		info = append(info, ToDeviceInfo(di))
 	} else {
 		var page int64 = 1
 		var pageSize int64 = 20
@@ -56,7 +56,7 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (resp *dm.Ge
 		}
 		info = make([]*dm.DeviceInfo, 0, len(di))
 		for _, v := range di {
-			info = append(info, DBToRPCFmt(v).(*dm.DeviceInfo))
+			info = append(info, ToDeviceInfo(v))
 		}
 	}
 	return &dm.GetDeviceInfoResp{Info: info, Total: size}, nil

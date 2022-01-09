@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"github.com/go-things/things/shared/def"
 	"github.com/go-things/things/shared/errors"
-	mysql2 "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
+	mysql "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
 
@@ -35,7 +35,7 @@ func NewManageProductLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Man
 func (l *ManageProductLogic) CheckProduct(in *dm.ManageProductReq) (bool, error) {
 	_, err := l.svcCtx.ProductInfo.FindOneByProductName(in.Info.ProductName)
 	switch err {
-	case mysql2.ErrNotFound:
+	case mysql.ErrNotFound:
 		return false, nil
 	case nil:
 		return true, nil
@@ -60,21 +60,21 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 	//这里失败了没有关系,可以正常使用
 	l.svcCtx.ProductTemplate.Insert(pt)
 
-	return DBToRPCFmt(pi).(*dm.ProductInfo), nil
+	return ToProductInfo(pi), nil
 }
 
 /*
 根据用户的输入生成对应的数据库数据
 */
-func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql2.ProductInfo, *mysql2.ProductTemplate) {
+func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql.ProductInfo, *mysql.ProductTemplate) {
 	info := in.Info
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
 	createTime := time.Now()
-	pt := &mysql2.ProductTemplate{
+	pt := &mysql.ProductTemplate{
 		ProductID:   dm.GetStrProductID(ProductID),
 		CreatedTime: createTime,
 	}
-	pi := &mysql2.ProductInfo{
+	pi := &mysql.ProductInfo{
 		ProductID:   dm.GetStrProductID(ProductID), // 产品id
 		ProductName: info.ProductName,              // 产品名称
 		Description: info.Description.GetValue(),
@@ -114,7 +114,7 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql2.Pro
 	return pi, pt
 }
 
-func UpdateProductInfo(old *mysql2.ProductInfo, data *dm.ProductInfo) {
+func UpdateProductInfo(old *mysql.ProductInfo, data *dm.ProductInfo) {
 	var isModify bool = false
 	defer func() {
 		if isModify {
@@ -147,7 +147,7 @@ func UpdateProductInfo(old *mysql2.ProductInfo, data *dm.ProductInfo) {
 func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
 	pi, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
 	if err != nil {
-		if err == mysql2.ErrNotFound {
+		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
 		}
 		return nil, errors.Database.AddDetail(err.Error())
@@ -159,7 +159,7 @@ func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.Product
 		l.Errorf("ModifyProduct|ProductInfo|Update|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	return DBToRPCFmt(pi).(*dm.ProductInfo), nil
+	return ToProductInfo(pi), nil
 }
 
 func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
