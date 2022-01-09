@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/go-things/things/src/dmsvr/dm"
-	"github.com/go-things/things/src/dmsvr/internal/repo/model/mysql"
+	mysql2 "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
@@ -17,8 +17,8 @@ func GetNullTime(time sql.NullTime) int64 {
 
 func DBToRPCFmt(db interface{}) interface{} {
 	switch db.(type) {
-	case *mysql.DeviceInfo:
-		di := db.(*mysql.DeviceInfo)
+	case *mysql2.DeviceInfo:
+		di := db.(*mysql2.DeviceInfo)
 		return &dm.DeviceInfo{
 			Version:     &wrappers.StringValue{Value: di.Version},
 			LogLevel:    di.LogLevel,
@@ -30,8 +30,8 @@ func DBToRPCFmt(db interface{}) interface{} {
 			LastLogin:   GetNullTime(di.LastLogin),
 			Secret:      di.Secret,
 		}
-	case *mysql.ProductInfo:
-		pi := db.(*mysql.ProductInfo)
+	case *mysql2.ProductInfo:
+		pi := db.(*mysql2.ProductInfo)
 		dpi := &dm.ProductInfo{
 			ProductID:    pi.ProductID,                                 //产品id
 			ProductName:  pi.ProductName,                               //产品名

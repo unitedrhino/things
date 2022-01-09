@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/src/dmsvr/device"
-	"github.com/go-things/things/src/dmsvr/internal/repo/model/mysql"
+	"github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/hashicorp/go-uuid"
 	"time"
 

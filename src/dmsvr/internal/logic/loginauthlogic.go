@@ -10,7 +10,7 @@ import (
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/shared/utils"
 	"github.com/go-things/things/src/dmsvr/dm"
-	"github.com/go-things/things/src/dmsvr/internal/repo/model/mysql"
+	mysql2 "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/go-things/things/src/dmsvr/internal/svc"
 	"strings"
 	"time"
@@ -22,7 +22,7 @@ type LoginAuthLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	di *mysql.DeviceInfo
+	di *mysql2.DeviceInfo
 }
 
 var clientCert string = `-----BEGIN CERTIFICATE-----
@@ -183,7 +183,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	}
 	l.di, err = l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(lg.ProductID, lg.DeviceName)
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if err == mysql2.ErrNotFound {
 			return nil, errors.Password
 		} else {
 			l.Errorf("LoginAuth|FindOneByProductIDDeviceName failure|err=%+v", err)
