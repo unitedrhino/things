@@ -85,7 +85,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 	if in.Info.LogLevel != def.UNKNOWN {
 		di.LogLevel = dm.LOG_CLOSE
 	}
-	_, err = l.svcCtx.DeviceInfo.Insert(di)
+	_, err = l.svcCtx.DeviceInfo.Insert(&di)
 	if err != nil {
 		l.Errorf("AddDevice|DeviceInfo|Insert|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
@@ -122,7 +122,7 @@ func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 	}
 	ChangeDevice(di, in.Info)
 
-	err = l.svcCtx.DeviceInfo.Update(*di)
+	err = l.svcCtx.DeviceInfo.Update(di)
 	if err != nil {
 		l.Errorf("ModifyDevice|DeviceInfo|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())

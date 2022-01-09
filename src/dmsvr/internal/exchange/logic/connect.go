@@ -30,7 +30,7 @@ func (l *ConnectLogic) Handle(msg *types.Elements) error {
 	if err != nil {
 		return err
 	}
-	_, err = l.svcCtx.DeviceLog.Insert(mysql.DeviceLog{
+	_, err = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   ld.ProductID,
 		Action:      msg.Action,
 		Timestamp:   time.UnixMilli(msg.Timestamp), // 操作时间
