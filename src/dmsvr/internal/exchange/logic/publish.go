@@ -22,7 +22,7 @@ type PublishLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	ld       *dm.LoginDevice
-	pi       *mysql.ProductInfo
+	pt       *mysql.ProductTemplate
 	template *device.Template
 	topics   []string
 	dreq     device.DeviceReq
@@ -43,11 +43,11 @@ func (l *PublishLogic) initMsg(msg *types.Elements) error {
 	if err != nil {
 		return err
 	}
-	l.pi, err = l.svcCtx.ProductInfo.FindOneByProductID(l.ld.ProductID)
+	l.pt, err = l.svcCtx.ProductTemplate.FindOne(l.ld.ProductID)
 	if err != nil {
 		return err
 	}
-	l.template, err = device.NewTemplate([]byte(l.pi.Template))
+	l.template, err = device.NewTemplate([]byte(l.pt.Template))
 	if err != nil {
 		return err
 	}
@@ -209,7 +209,7 @@ func (l *PublishLogic) Handle(msg *types.Elements) error {
 			return l.HandleThing(msg)
 		case "$ota":
 			return l.HandleOta(msg)
-		case l.pi.ProductID:
+		case l.pt.ProductID:
 			return l.HandleDefault(msg)
 		default:
 			return errors.Parameter.AddDetailf("not suppot topic :%s", msg.Topic)

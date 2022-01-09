@@ -18,16 +18,20 @@ type (
 
 	defaultDmModel struct {
 		sqlc.CachedConn
-		productInfo string
-		deviceInfo  string
+		cache.CacheConf
+		productInfo     string
+		deviceInfo      string
+		productTemplate string
 	}
 )
 
 func NewDmModel(conn sqlx.SqlConn, c cache.CacheConf) DmModel {
 	return &defaultDmModel{
-		CachedConn:  sqlc.NewConn(conn, c),
-		productInfo: "`product_info`",
-		deviceInfo:  "`device_info`",
+		CachedConn:      sqlc.NewConn(conn, c),
+		CacheConf:       c,
+		productInfo:     "`product_info`",
+		deviceInfo:      "`device_info`",
+		productTemplate: "`product_template`",
 	}
 }
 
@@ -83,3 +87,19 @@ func (m *defaultDmModel) GetCountByProductInfo() (size int64, err error) {
 		return 0, err
 	}
 }
+
+//func (m *defaultDmModel) InsertProduct(info *ProductInfo, template *ProductTemplate) (err error) {
+//	m.CachedConn.Transact(func(session sqlx.Session) error {
+//		NewProductInfoModel(session,m.CacheConf)
+//		return err
+//	})
+//	return err
+//}
+//
+//
+//func NewProductInfo(conn sqlc.CachedConn, c cache.CacheConf) ProductInfoModel {
+//	return &defaultProductInfoModel{
+//		CachedConn: sqlc.NewConn(conn, c),
+//		table:      "`product_info`",
+//	}
+//}

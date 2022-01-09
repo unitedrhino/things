@@ -43,7 +43,6 @@ func (t *TempParam) AddDefine(d *Define, val interface{}) (err error) {
 	t.Value.Start = d.Start
 	t.Value.Step = d.Step
 	t.Value.Unit = d.Unit
-	//todo
 	t.Value.Value, err = d.GetVal(val)
 	return err
 }

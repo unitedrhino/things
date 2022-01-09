@@ -44,7 +44,7 @@ func DBToRPCFmt(db interface{}) interface{} {
 			Secret:       pi.Secret,                                    //动态注册产品秘钥 只读
 			Description:  &wrappers.StringValue{Value: pi.Description}, //描述
 			CreatedTime:  pi.CreatedTime.Unix(),                        //创建时间
-			Template:     &wrappers.StringValue{Value: pi.Template},    //数据模板
+			//Template:     &wrappers.StringValue{Value: pi.Template},    //数据模板
 		}
 		return dpi
 	default:

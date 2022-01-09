@@ -51,28 +51,35 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 	} else if find == true {
 		return nil, errors.Duplicate.AddDetail("ProductName:" + in.Info.ProductName)
 	}
-	pi := l.InsertProduct(in)
+	pi, pt := l.InsertProduct(in)
 	_, err = l.svcCtx.ProductInfo.Insert(pi)
 	if err != nil {
 		l.Errorf("AddProduct|ProductInfo|Insert|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
+	//这里失败了没有关系,可以正常使用
+	l.svcCtx.ProductTemplate.Insert(pt)
+
 	return DBToRPCFmt(pi).(*dm.ProductInfo), nil
 }
 
 /*
 根据用户的输入生成对应的数据库数据
 */
-func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) *mysql.ProductInfo {
+func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql.ProductInfo, *mysql.ProductTemplate) {
 	info := in.Info
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
+	createTime := time.Now()
+	pt := &mysql.ProductTemplate{
+		ProductID:   dm.GetStrProductID(ProductID),
+		CreatedTime: createTime,
+	}
 	pi := &mysql.ProductInfo{
 		ProductID:   dm.GetStrProductID(ProductID), // 产品id
 		ProductName: info.ProductName,              // 产品名称
 		Description: info.Description.GetValue(),
-		Template:    info.Template.GetValue(),
 		DevStatus:   info.DevStatus.GetValue(),
-		CreatedTime: time.Now(),
+		CreatedTime: createTime,
 	}
 	if info.AutoRegister != def.UNKNOWN {
 		pi.AutoRegister = info.AutoRegister
@@ -104,10 +111,10 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) *mysql.Produ
 	} else {
 		pi.AuthMode = dm.AUTH_PWD
 	}
-	return pi
+	return pi, pt
 }
 
-func UpdateProduct(old *mysql.ProductInfo, data *dm.ProductInfo) {
+func UpdateProductInfo(old *mysql.ProductInfo, data *dm.ProductInfo) {
 	var isModify bool = false
 	defer func() {
 		if isModify {
@@ -126,10 +133,7 @@ func UpdateProduct(old *mysql.ProductInfo, data *dm.ProductInfo) {
 		old.Description = data.Description.GetValue()
 		isModify = true
 	}
-	if data.Template != nil {
-		old.Template = data.Template.GetValue()
-		isModify = true
-	}
+
 	if data.AutoRegister != def.UNKNOWN {
 		old.AutoRegister = data.AutoRegister
 		isModify = true
@@ -141,36 +145,34 @@ func UpdateProduct(old *mysql.ProductInfo, data *dm.ProductInfo) {
 }
 
 func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
-	pi, err := l.svcCtx.ProductInfo.FindOneByProductID(in.Info.ProductID)
+	pi, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
 		}
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
 	}
-	UpdateProduct(pi, in.Info)
+	UpdateProductInfo(pi, in.Info)
 
 	err = l.svcCtx.ProductInfo.Update(pi)
 	if err != nil {
 		l.Errorf("ModifyProduct|ProductInfo|Update|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
 	}
 	return DBToRPCFmt(pi).(*dm.ProductInfo), nil
 }
 
 func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
-	info, err := l.svcCtx.ProductInfo.FindOneByProductID(in.Info.ProductID)
-	if err != nil {
-		if err == mysql.ErrNotFound {
-			return nil, errors.Parameter.AddDetail("not find device id:" + cast.ToString(in.Info.ProductID))
-		}
-		l.Errorf("DelProduct|ProductInfo|FindOne|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
-	}
-	err = l.svcCtx.ProductInfo.Delete(info.Id)
+	err := l.svcCtx.ProductInfo.Delete(in.Info.ProductID)
 	if err != nil {
 		l.Errorf("DelProduct|ProductInfo|Delete|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
+	}
+	//todo 这里删除需要加上事务
+	err = l.svcCtx.ProductTemplate.Delete(in.Info.ProductID)
+	if err != nil {
+		l.Errorf("DelProduct|ProductInfo|Delete|err=%+v", err)
+		return nil, errors.Database.AddDetail(err.Error())
 	}
 	return &dm.ProductInfo{}, nil
 }

@@ -29,7 +29,7 @@ func (l *GetProductInfoLogic) GetProductInfo(in *dm.GetProductInfoReq) (resp *dm
 	var info []*dm.ProductInfo
 	var size int64
 	if in.Page == nil || in.Page.Page == 0 {
-		di, err := l.svcCtx.ProductInfo.FindOneByProductID(in.ProductID)
+		di, err := l.svcCtx.ProductInfo.FindOne(in.ProductID)
 		if err != nil {
 			return nil, err
 		}

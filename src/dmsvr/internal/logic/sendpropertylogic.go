@@ -20,7 +20,7 @@ type SendPropertyLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	pi       *mysql.ProductInfo
+	pt       *mysql.ProductTemplate
 	template *device.Template
 }
 
@@ -34,11 +34,11 @@ func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 
 func (l *SendPropertyLogic) initMsg(productID string) error {
 	var err error
-	l.pi, err = l.svcCtx.ProductInfo.FindOneByProductID(productID)
+	l.pt, err = l.svcCtx.ProductTemplate.FindOne(productID)
 	if err != nil {
 		return err
 	}
-	l.template, err = device.NewTemplate([]byte(l.pi.Template))
+	l.template, err = device.NewTemplate([]byte(l.pt.Template))
 	if err != nil {
 		return err
 	}

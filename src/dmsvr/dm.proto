@@ -4,9 +4,37 @@ import "google/protobuf/wrappers.proto";
 
 package dm;
 
+service Dm {
+  //登录认证
+  rpc loginAuth(LoginAuthReq)           returns (Response);
+  //操作认证
+  rpc accessAuth(AccessAuthReq)         returns (Response);
+  //设备管理
+  rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);
+  //产品管理
+  rpc manageProduct(ManageProductReq)   returns (ProductInfo);
+  //获取产品信息
+  rpc getProductInfo(GetProductInfoReq) returns (GetProductInfoResp);
+  //产品模板管理
+  rpc manageProductTemplate(ManageProductTemplateReq)   returns (ProductTemplate);
+  //获取产品信息
+  rpc getProductTemplate(GetProductTemplateReq) returns (ProductTemplate);
+  //获取设备信息
+  rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);
+  //获取设备最新数据
+  rpc getDeviceData(GetDeviceDataReq)   returns (GetDeviceDataResp);
+  //获取设备日志信息
+  rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);
+  //同步调用设备行为
+  rpc sendAction(SendActionReq)         returns(SendActionResp);
+  //同步调用设备属性
+  rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
+}
+
+
 message PageInfo{
-    int64 page = 1;
-    int64 pageSize = 2;
+  int64 page = 1;
+  int64 pageSize = 2;
 }
 
 message Response {
@@ -81,20 +109,21 @@ message AccessAuthReq {
 //}
 
 message ProductInfo{
-  int64   createdTime   = 1; //创建时间 只读
-  string   productID     = 2; //产品id 只读
-  string  productName   = 3; //产品名称
-  int64   authMode      = 4;//认证方式:1:账密认证,2:秘钥认证
-  int64   deviceType    = 5;//设备类型:1:设备,2:网关,3:子设备
-  int64   categoryID    = 6;//产品品类
-  int64   netType       = 7;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-  int64   dataProto     = 8;//数据协议:1:自定义,2:数据模板
-  int64   autoRegister  = 9;//动态注册:1:关闭,2:打开,3:打开并自动创建设备
-  string   secret       = 10;//动态注册产品秘钥 只读
-  google.protobuf.StringValue   template     = 11;//数据模板
-  google.protobuf.StringValue   description  = 12;//描述
-  google.protobuf.StringValue   devStatus    = 13; // 产品状态
+  int64   createdTime = 1; //创建时间 只读
+  string   productID = 2; //产品id 只读
+  string  productName = 3; //产品名称
+  int64   authMode = 4;//认证方式:1:账密认证,2:秘钥认证
+  int64   deviceType = 5;//设备类型:1:设备,2:网关,3:子设备
+  int64   categoryID = 6;//产品品类
+  int64   netType = 7;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+  int64   dataProto = 8;//数据协议:1:自定义,2:数据模板
+  int64   autoRegister = 9;//动态注册:1:关闭,2:打开,3:打开并自动创建设备
+  string   secret = 10;//动态注册产品秘钥 只读
+  google.protobuf.StringValue   description = 11;//描述
+  google.protobuf.StringValue   devStatus = 12; // 产品状态
 }
+
+
 message ManageProductReq{
   int64 opt           = 1;//操作 0:新增 1:修改 2:删除
   ProductInfo info  = 2;//产品信息
@@ -102,24 +131,40 @@ message ManageProductReq{
 
 
 message GetProductInfoReq{
-  string productID   = 1; //产品id  如果为空返回所有产品的信息
-  PageInfo page     =2;//分页信息,只获取一个则不填
+  string productID = 1; //产品id  如果为空返回所有产品的信息
+  PageInfo page = 2;//分页信息,只获取一个则不填
 }
 
 message GetProductInfoResp{
   repeated ProductInfo info = 1; //产品信息
-  int64 total               = 2;//拥有的总数(只有分页的时候会返回)
+  int64 total = 2;//拥有的总数(只有分页的时候会返回)
 }
 
+message ProductTemplate{
+  int64   createdTime = 1; //创建时间 只读
+  string   productID = 2; //产品id 只读
+  google.protobuf.StringValue template = 3;//数据模板
+}
+
+//只能修改
+message ManageProductTemplateReq{
+  ProductTemplate info = 1;//产品信息
+}
+
+message GetProductTemplateReq{
+  string productID = 1; //产品id  如果为空返回所有产品的信息
+}
+
+
 message DeviceInfo{
-  string   productID    = 1; //产品id 只读
-  string  deviceName    = 3; //设备名称 读写
-  int64   createdTime   = 4; //创建时间 只读
-  string  secret        = 5; //设备秘钥 只读
-  int64   firstLogin    = 6; //激活时间 只读
-  int64   lastLogin     = 7; //最后上线时间 只读
-  google.protobuf.StringValue  version     = 8; // 固件版本  读写
-  int64  logLevel       = 9; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+  string   productID = 1; //产品id 只读
+  string  deviceName = 3; //设备名称 读写
+  int64   createdTime = 4; //创建时间 只读
+  string  secret = 5; //设备秘钥 只读
+  int64   firstLogin = 6; //激活时间 只读
+  int64   lastLogin = 7; //最后上线时间 只读
+  google.protobuf.StringValue  version = 8; // 固件版本  读写
+  int64  logLevel = 9; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
   string  cert          = 10;// 设备证书  只读
 }
 
@@ -207,26 +252,5 @@ message SendPropertyResp{
   string data = 4;//返回信息
 }
 
-service Dm {
-  //登录认证
-  rpc loginAuth(LoginAuthReq)           returns (Response);
-  //操作认证
-  rpc accessAuth(AccessAuthReq)         returns (Response);
-  //设备管理
-  rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);
-  //产品管理
-  rpc manageProduct(ManageProductReq)   returns (ProductInfo);
-  //获取产品信息
-  rpc getProductInfo(GetProductInfoReq) returns (GetProductInfoResp);
-  //获取设备信息
-  rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);
-  //获取设备最新数据
-  rpc getDeviceData(GetDeviceDataReq)   returns (GetDeviceDataResp);
-  //获取设备日志信息
-  rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);
-  //同步调用设备行为
-  rpc sendAction(SendActionReq)         returns(SendActionResp);
-  //同步调用设备属性
-  rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
-}
+
 

@@ -16,10 +16,9 @@ import (
 var (
 	productInfoFieldNames          = builder.RawFieldNames(&ProductInfo{})
 	productInfoRows                = strings.Join(productInfoFieldNames, ",")
-	productInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(productInfoFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
-	productInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(productInfoFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
+	productInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(productInfoFieldNames, "`create_time`", "`update_time`"), ",")
+	productInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(productInfoFieldNames, "`productID`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
-	cacheDmProductInfoIdPrefix          = "cache:dm:productInfo:id:"
 	cacheDmProductInfoProductIDPrefix   = "cache:dm:productInfo:productID:"
 	cacheDmProductInfoProductNamePrefix = "cache:dm:productInfo:productName:"
 )
@@ -27,11 +26,10 @@ var (
 type (
 	ProductInfoModel interface {
 		Insert(data *ProductInfo) (sql.Result, error)
-		FindOne(id int64) (*ProductInfo, error)
-		FindOneByProductID(productID string) (*ProductInfo, error)
+		FindOne(productID string) (*ProductInfo, error)
 		FindOneByProductName(productName string) (*ProductInfo, error)
 		Update(data *ProductInfo) error
-		Delete(id int64) error
+		Delete(productID string) error
 	}
 
 	defaultProductInfoModel struct {
@@ -40,9 +38,7 @@ type (
 	}
 
 	ProductInfo struct {
-		Id           int64
 		ProductID    string // 产品id
-		Template     string // 数据模板
 		ProductName  string // 产品名称
 		ProductType  int64  // 产品状态:0:开发中,1:审核中,2:已发布
 		AuthMode     int64  // 认证方式:0:账密认证,1:秘钥认证
@@ -68,43 +64,22 @@ func NewProductInfoModel(conn sqlx.SqlConn, c cache.CacheConf) ProductInfoModel 
 }
 
 func (m *defaultProductInfoModel) Insert(data *ProductInfo) (sql.Result, error) {
-	dmProductInfoIdKey := fmt.Sprintf("%s%v", cacheDmProductInfoIdPrefix, data.Id)
-	dmProductInfoProductIDKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductIDPrefix, data.ProductID)
 	dmProductInfoProductNameKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductNamePrefix, data.ProductName)
+	dmProductInfoProductIDKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductIDPrefix, data.ProductID)
 	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
-		return conn.Exec(query, data.ProductID, data.Template, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DevStatus)
-	}, dmProductInfoIdKey, dmProductInfoProductIDKey, dmProductInfoProductNameKey)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
+		return conn.Exec(query, data.ProductID, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DevStatus)
+	}, dmProductInfoProductIDKey, dmProductInfoProductNameKey)
 	return ret, err
 }
 
-func (m *defaultProductInfoModel) FindOne(id int64) (*ProductInfo, error) {
-	dmProductInfoIdKey := fmt.Sprintf("%s%v", cacheDmProductInfoIdPrefix, id)
-	var resp ProductInfo
-	err := m.QueryRow(&resp, dmProductInfoIdKey, func(conn sqlx.SqlConn, v interface{}) error {
-		query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", productInfoRows, m.table)
-		return conn.QueryRow(v, query, id)
-	})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultProductInfoModel) FindOneByProductID(productID string) (*ProductInfo, error) {
+func (m *defaultProductInfoModel) FindOne(productID string) (*ProductInfo, error) {
 	dmProductInfoProductIDKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductIDPrefix, productID)
 	var resp ProductInfo
-	err := m.QueryRowIndex(&resp, dmProductInfoProductIDKey, m.formatPrimary, func(conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+	err := m.QueryRow(&resp, dmProductInfoProductIDKey, func(conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `productID` = ? limit 1", productInfoRows, m.table)
-		if err := conn.QueryRow(&resp, query, productID); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
+		return conn.QueryRow(v, query, productID)
+	})
 	switch err {
 	case nil:
 		return &resp, nil
@@ -123,7 +98,7 @@ func (m *defaultProductInfoModel) FindOneByProductName(productName string) (*Pro
 		if err := conn.QueryRow(&resp, query, productName); err != nil {
 			return nil, err
 		}
-		return resp.Id, nil
+		return resp.ProductID, nil
 	}, m.queryPrimary)
 	switch err {
 	case nil:
@@ -136,37 +111,35 @@ func (m *defaultProductInfoModel) FindOneByProductName(productName string) (*Pro
 }
 
 func (m *defaultProductInfoModel) Update(data *ProductInfo) error {
-	dmProductInfoProductNameKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductNamePrefix, data.ProductName)
-	dmProductInfoIdKey := fmt.Sprintf("%s%v", cacheDmProductInfoIdPrefix, data.Id)
 	dmProductInfoProductIDKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductIDPrefix, data.ProductID)
+	dmProductInfoProductNameKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductNamePrefix, data.ProductName)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, productInfoRowsWithPlaceHolder)
-		return conn.Exec(query, data.ProductID, data.Template, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DevStatus, data.Id)
-	}, dmProductInfoIdKey, dmProductInfoProductIDKey, dmProductInfoProductNameKey)
+		query := fmt.Sprintf("update %s set %s where `productID` = ?", m.table, productInfoRowsWithPlaceHolder)
+		return conn.Exec(query, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DevStatus, data.ProductID)
+	}, dmProductInfoProductIDKey, dmProductInfoProductNameKey)
 	return err
 }
 
-func (m *defaultProductInfoModel) Delete(id int64) error {
-	data, err := m.FindOne(id)
+func (m *defaultProductInfoModel) Delete(productID string) error {
+	data, err := m.FindOne(productID)
 	if err != nil {
 		return err
 	}
 
-	dmProductInfoIdKey := fmt.Sprintf("%s%v", cacheDmProductInfoIdPrefix, id)
-	dmProductInfoProductIDKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductIDPrefix, data.ProductID)
+	dmProductInfoProductIDKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductIDPrefix, productID)
 	dmProductInfoProductNameKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductNamePrefix, data.ProductName)
 	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
-		return conn.Exec(query, id)
-	}, dmProductInfoIdKey, dmProductInfoProductIDKey, dmProductInfoProductNameKey)
+		query := fmt.Sprintf("delete from %s where `productID` = ?", m.table)
+		return conn.Exec(query, productID)
+	}, dmProductInfoProductIDKey, dmProductInfoProductNameKey)
 	return err
 }
 
 func (m *defaultProductInfoModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheDmProductInfoIdPrefix, primary)
+	return fmt.Sprintf("%s%v", cacheDmProductInfoProductIDPrefix, primary)
 }
 
 func (m *defaultProductInfoModel) queryPrimary(conn sqlx.SqlConn, v, primary interface{}) error {
-	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", productInfoRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `productID` = ? limit 1", productInfoRows, m.table)
 	return conn.QueryRow(v, query, primary)
 }
