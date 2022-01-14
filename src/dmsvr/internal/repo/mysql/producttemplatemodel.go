@@ -36,11 +36,11 @@ type (
 	}
 
 	ProductTemplate struct {
-		ProductID   string // 产品id
-		Template    string // 数据模板
-		CreatedTime time.Time
-		UpdatedTime sql.NullTime
-		DeletedTime sql.NullTime
+		ProductID   string       `db:"productID"` // 产品id
+		Template    string       `db:"template"`  // 数据模板
+		CreatedTime time.Time    `db:"createdTime"`
+		UpdatedTime sql.NullTime `db:"updatedTime"`
+		DeletedTime sql.NullTime `db:"deletedTime"`
 	}
 )
 

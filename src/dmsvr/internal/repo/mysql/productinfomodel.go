@@ -38,21 +38,21 @@ type (
 	}
 
 	ProductInfo struct {
-		ProductID    string // 产品id
-		ProductName  string // 产品名称
-		ProductType  int64  // 产品状态:0:开发中,1:审核中,2:已发布
-		AuthMode     int64  // 认证方式:0:账密认证,1:秘钥认证
-		DeviceType   int64  // 设备类型:0:设备,1:网关,2:子设备
-		CategoryID   int64  // 产品品类
-		NetType      int64  // 通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
-		DataProto    int64  // 数据协议:0:自定义,1:数据模板
-		AutoRegister int64  // 动态注册:0:关闭,1:打开,2:打开并自动创建设备
-		Secret       string // 动态注册产品秘钥
-		Description  string // 描述
-		CreatedTime  time.Time
-		UpdatedTime  sql.NullTime
-		DeletedTime  sql.NullTime
-		DevStatus    string // 产品状态
+		ProductID    string       `db:"productID"`    // 产品id
+		ProductName  string       `db:"productName"`  // 产品名称
+		ProductType  int64        `db:"productType"`  // 产品状态:0:开发中,1:审核中,2:已发布
+		AuthMode     int64        `db:"authMode"`     // 认证方式:0:账密认证,1:秘钥认证
+		DeviceType   int64        `db:"deviceType"`   // 设备类型:0:设备,1:网关,2:子设备
+		CategoryID   int64        `db:"categoryID"`   // 产品品类
+		NetType      int64        `db:"netType"`      // 通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
+		DataProto    int64        `db:"dataProto"`    // 数据协议:0:自定义,1:数据模板
+		AutoRegister int64        `db:"autoRegister"` // 动态注册:0:关闭,1:打开,2:打开并自动创建设备
+		Secret       string       `db:"secret"`       // 动态注册产品秘钥
+		Description  string       `db:"description"`  // 描述
+		CreatedTime  time.Time    `db:"createdTime"`
+		UpdatedTime  sql.NullTime `db:"updatedTime"`
+		DeletedTime  sql.NullTime `db:"deletedTime"`
+		DevStatus    string       `db:"devStatus"` // 产品状态
 	}
 )
 
@@ -64,8 +64,8 @@ func NewProductInfoModel(conn sqlx.SqlConn, c cache.CacheConf) ProductInfoModel 
 }
 
 func (m *defaultProductInfoModel) Insert(data *ProductInfo) (sql.Result, error) {
-	dmProductInfoProductNameKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductNamePrefix, data.ProductName)
 	dmProductInfoProductIDKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductIDPrefix, data.ProductID)
+	dmProductInfoProductNameKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductNamePrefix, data.ProductName)
 	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
 		return conn.Exec(query, data.ProductID, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Description, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DevStatus)

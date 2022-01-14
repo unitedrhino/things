@@ -38,18 +38,18 @@ type (
 	}
 
 	DeviceInfo struct {
-		Id          int64
-		ProductID   string       // 产品id
-		DeviceName  string       // 设备名称
-		Secret      string       // 设备秘钥
-		FirstLogin  sql.NullTime // 激活时间
-		LastLogin   sql.NullTime // 最后上线时间
-		CreatedTime time.Time
-		UpdatedTime sql.NullTime
-		DeletedTime sql.NullTime
-		Version     string // 固件版本
-		LogLevel    int64  // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
-		Cert        string // 设备证书
+		Id          int64        `db:"id"`
+		ProductID   string       `db:"productID"`  // 产品id
+		DeviceName  string       `db:"deviceName"` // 设备名称
+		Secret      string       `db:"secret"`     // 设备秘钥
+		FirstLogin  sql.NullTime `db:"firstLogin"` // 激活时间
+		LastLogin   sql.NullTime `db:"lastLogin"`  // 最后上线时间
+		CreatedTime time.Time    `db:"createdTime"`
+		UpdatedTime sql.NullTime `db:"updatedTime"`
+		DeletedTime sql.NullTime `db:"deletedTime"`
+		Version     string       `db:"version"`  // 固件版本
+		LogLevel    int64        `db:"logLevel"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+		Cert        string       `db:"cert"`     // 设备证书
 	}
 )
 
@@ -113,7 +113,7 @@ func (m *defaultDeviceInfoModel) Update(data *DeviceInfo) error {
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, deviceInfoRowsWithPlaceHolder)
 		return conn.Exec(query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert, data.Id)
-	}, dmDeviceInfoProductIDDeviceNameKey, dmDeviceInfoIdKey)
+	}, dmDeviceInfoIdKey, dmDeviceInfoProductIDDeviceNameKey)
 	return err
 }
 
@@ -128,7 +128,7 @@ func (m *defaultDeviceInfoModel) Delete(id int64) error {
 	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.Exec(query, id)
-	}, dmDeviceInfoIdKey, dmDeviceInfoProductIDDeviceNameKey)
+	}, dmDeviceInfoProductIDDeviceNameKey, dmDeviceInfoIdKey)
 	return err
 }
 
