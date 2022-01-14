@@ -142,6 +142,36 @@ func UpdateProductInfo(old *mysql.ProductInfo, data *dm.ProductInfo) {
 		old.DevStatus = data.DevStatus.GetValue()
 		isModify = true
 	}
+
+	if data.ProductName != "" {
+		old.ProductName = data.ProductName
+		isModify = true
+	}
+	if data.AuthMode != 0 {
+		old.AuthMode = data.AuthMode
+		isModify = true
+	}
+	if data.DeviceType != 0 {
+		old.DeviceType = data.DeviceType
+		isModify = true
+	}
+	if data.CategoryID != 0 {
+		old.CategoryID = data.CategoryID
+		isModify = true
+	}
+	if data.NetType != 0 {
+		old.NetType = data.NetType
+		isModify = true
+	}
+	if data.DataProto != 0 {
+		old.DataProto = data.DataProto
+		isModify = true
+	}
+	if data.AutoRegister != 0 {
+		old.AutoRegister = data.AutoRegister
+		isModify = true
+	}
+
 }
 
 func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
@@ -168,7 +198,7 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInf
 		l.Errorf("DelProduct|ProductInfo|Delete|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	//todo 这里删除需要加上事务
+	//todo 这里删除需要加上事务 及删除其下所有设备
 	err = l.svcCtx.ProductTemplate.Delete(in.Info.ProductID)
 	if err != nil {
 		l.Errorf("DelProduct|ProductInfo|Delete|err=%+v", err)

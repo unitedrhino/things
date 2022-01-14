@@ -33,14 +33,14 @@ type (
 	}
 
 	DeviceLog struct {
-		Id          int64
-		ProductID   string    // 产品id
-		DeviceName  string    // 设备名称
-		Payload     string    // 具体信息
-		Topic       string    // 主题
-		Action      string    // 操作类型
-		Timestamp   time.Time // 操作时间
-		CreatedTime time.Time
+		Id          int64     `db:"id"`
+		ProductID   string    `db:"productID"`  // 产品id
+		DeviceName  string    `db:"deviceName"` // 设备名称
+		Payload     string    `db:"payload"`    // 具体信息
+		Topic       string    `db:"topic"`      // 主题
+		Action      string    `db:"action"`     // 操作类型
+		Timestamp   time.Time `db:"timestamp"`  // 操作时间
+		CreatedTime time.Time `db:"createdTime"`
 	}
 )
 
