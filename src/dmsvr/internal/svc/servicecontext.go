@@ -9,8 +9,8 @@ import (
 	"github.com/go-things/things/src/dmsvr/internal/repo"
 	"github.com/go-things/things/src/dmsvr/internal/repo/mongorepo"
 	mysql "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"os"
 )
 

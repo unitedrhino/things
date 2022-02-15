@@ -10,7 +10,7 @@ import (
 	"github.com/go-things/things/src/usersvr/user"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type LoginLogic struct {

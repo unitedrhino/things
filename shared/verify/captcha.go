@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/go-things/things/shared/errors"
 	"github.com/mojocn/base64Captcha"
-	"github.com/tal-tech/go-zero/core/syncx"
+	"github.com/zeromicro/go-zero/core/syncx"
 	"time"
 )
 
-import "github.com/tal-tech/go-zero/core/stores/cache"
+import "github.com/zeromicro/go-zero/core/stores/cache"
 
 //type Store interface {
 //	// Set sets the digits for the captcha id.
