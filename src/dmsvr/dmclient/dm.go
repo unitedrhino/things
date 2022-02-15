@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-things/things/src/dmsvr/dm"
 
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 

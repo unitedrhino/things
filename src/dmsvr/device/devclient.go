@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/shared/utils"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"time"
 )
 

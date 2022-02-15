@@ -3,7 +3,7 @@ package svc
 import (
 	"github.com/go-things/things/shared/third/weixin"
 	"github.com/go-things/things/shared/utils"
-	"github.com/tal-tech/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 
 	"github.com/go-things/things/src/usersvr/internal/config"
 	//"gitee.com/godLei6/things/shared/third/weixin"

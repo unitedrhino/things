@@ -3,9 +3,9 @@ package model
 import (
 	"fmt"
 	"github.com/go-things/things/shared/def"
-	"github.com/tal-tech/go-zero/core/stores/cache"
-	"github.com/tal-tech/go-zero/core/stores/sqlc"
-	"github.com/tal-tech/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 type (

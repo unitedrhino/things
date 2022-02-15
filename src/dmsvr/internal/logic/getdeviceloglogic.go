@@ -7,7 +7,7 @@ import (
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/src/dmsvr/dm"
 	"github.com/go-things/things/src/dmsvr/internal/svc"
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type GetDeviceLogLogic struct {

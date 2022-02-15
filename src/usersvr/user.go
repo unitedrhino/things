@@ -11,8 +11,8 @@ import (
 	"github.com/go-things/things/src/usersvr/internal/svc"
 	"github.com/go-things/things/src/usersvr/user"
 
-	"github.com/tal-tech/go-zero/core/conf"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
