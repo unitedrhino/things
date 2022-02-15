@@ -5,8 +5,8 @@ import (
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/src/usersvr/user"
 	"github.com/go-things/things/src/usersvr/userclient"
-	"github.com/tal-tech/go-zero/core/discov"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/zeromicro/go-zero/core/discov"
+	"github.com/zeromicro/go-zero/zrpc"
 	"testing"
 )
 

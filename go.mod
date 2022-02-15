@@ -13,16 +13,12 @@ require (
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.3.1
-	github.com/tal-tech/go-zero v1.2.5
-	github.com/tal-tech/go-zero/tools/goctl v1.2.6
+	github.com/zeromicro/go-zero v1.3.0
 	go.mongodb.org/mongo-driver v1.8.0
-	go.opentelemetry.io/otel v1.2.0
+	go.opentelemetry.io/otel v1.3.0
 	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
-	golang.org/x/net v0.0.0-20211111083644-e5c967477495 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
-	golang.org/x/sys v0.0.0-20211110154304-99a53858aa08 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20211104193956-4c6863e31247 // indirect
-	google.golang.org/grpc v1.42.0
+	google.golang.org/grpc v1.43.0
 	google.golang.org/protobuf v1.27.1
 )

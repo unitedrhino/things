@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-things/things/src/webapi/internal/svc"
 	"github.com/go-things/things/src/webapi/internal/types"
-	"github.com/tal-tech/go-zero/rest/httpx"
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func GetGroupMemberHandler(ctx *svc.ServiceContext) http.HandlerFunc {

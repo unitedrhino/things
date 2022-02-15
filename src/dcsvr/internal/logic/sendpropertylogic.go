@@ -8,7 +8,7 @@ import (
 	"github.com/go-things/things/src/dcsvr/dc"
 	"github.com/go-things/things/src/dcsvr/internal/svc"
 
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type SendPropertyLogic struct {

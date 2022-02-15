@@ -7,8 +7,8 @@ import (
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/src/dmsvr/dm"
 	"github.com/go-things/things/src/dmsvr/dmclient"
-	"github.com/tal-tech/go-zero/core/discov"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/zeromicro/go-zero/core/discov"
+	"github.com/zeromicro/go-zero/zrpc"
 	"testing"
 )
 

@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
+	"github.com/Shopify/sarama"
 	"github.com/go-things/things/shared/utils"
 	"github.com/go-things/things/src/dmsvr/internal/exchange/logic"
 	"github.com/go-things/things/src/dmsvr/internal/svc"
-	"github.com/Shopify/sarama"
 	"log"
 	"os"
 	"os/signal"

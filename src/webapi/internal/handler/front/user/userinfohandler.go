@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-things/things/src/webapi/internal/svc"
-	"github.com/tal-tech/go-zero/rest/httpx"
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func UserInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {

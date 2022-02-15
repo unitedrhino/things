@@ -5,8 +5,8 @@ import (
 	"github.com/silenceper/wechat/v2/cache"
 	"github.com/silenceper/wechat/v2/miniprogram"
 	miniConfig "github.com/silenceper/wechat/v2/miniprogram/config"
-	"github.com/tal-tech/go-zero/core/logx"
-	zeroCache "github.com/tal-tech/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/logx"
+	zeroCache "github.com/zeromicro/go-zero/core/stores/cache"
 )
 
 type MiniprogramConf struct {
