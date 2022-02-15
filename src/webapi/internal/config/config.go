@@ -2,8 +2,8 @@ package config
 
 import (
 	"github.com/go-things/things/shared/conf"
-	"github.com/tal-tech/go-zero/core/stores/cache"
-	"github.com/tal-tech/go-zero/rest"
+	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/rest"
 )
 
 type Captcha struct {

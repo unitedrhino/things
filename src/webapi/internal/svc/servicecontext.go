@@ -7,8 +7,8 @@ import (
 	"github.com/go-things/things/src/usersvr/userclient"
 	"github.com/go-things/things/src/webapi/internal/config"
 	"github.com/go-things/things/src/webapi/internal/middleware"
-	"github.com/tal-tech/go-zero/rest"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/zrpc"
 	"time"
 )
 

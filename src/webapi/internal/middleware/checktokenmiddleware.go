@@ -7,7 +7,7 @@ import (
 	"github.com/go-things/things/src/usersvr/user"
 	"github.com/go-things/things/src/usersvr/userclient"
 	"github.com/go-things/things/src/webapi/internal/types"
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 )
 

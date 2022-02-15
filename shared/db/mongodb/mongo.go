@@ -3,7 +3,7 @@ package mongodb
 import (
 	"context"
 	"fmt"
-	_ "github.com/tal-tech/go-zero/core/stores/mongo"
+	_ "github.com/zeromicro/go-zero/core/stores/mongo"
 	"go.mongodb.org/mongo-driver/bson" //BOSN解析包
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo" //MongoDB的Go驱动包
