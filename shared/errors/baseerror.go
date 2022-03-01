@@ -50,6 +50,11 @@ func ToRpc(err error) error {
 func (c CodeError) WithMsg(msg string) *CodeError {
 	return &CodeError{Code: c.Code, Msg: msg}
 }
+
+func (c CodeError) WithMsgf(format string, a ...interface{}) *CodeError {
+	return &CodeError{Code: c.Code, Msg: fmt.Sprintf(format, a...)}
+}
+
 func (c CodeError) AddDetail(msg ...interface{}) *CodeError {
 	c.Details = append(c.Details, fmt.Sprint(msg...))
 	pc := make([]uintptr, 1)
@@ -68,6 +73,13 @@ func (c *CodeError) GetDetailMsg() string {
 		return c.Msg
 	}
 	return fmt.Sprintf("msg=%s,detail=%v", c.Msg, c.Details)
+}
+
+func (c *CodeError) GetCode() int64 {
+	if c == nil {
+		return 0
+	}
+	return c.Code
 }
 
 func NewCodeError(code int64, msg string) *CodeError {

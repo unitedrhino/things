@@ -28,7 +28,7 @@ CREATE TABLE if not exists `product_info`
 CREATE TABLE if not exists `product_template`
 (
     `productID`   varchar(20) NOT NULL COMMENT '产品id',
-    `template`    text        not null COMMENT '数据模板',
+    `template`    text        not null COMMENT '物模型模板',
     `createdTime` datetime    NOT NULL,
     `updatedTime` datetime DEFAULT NULL,
     `deletedTime` datetime DEFAULT NULL,
@@ -61,16 +61,19 @@ CREATE TABLE if not exists `device_info`
 
 
 
-CREATE TABLE if not exists `device_log`
+CREATE TABLE `device_log`
 (
-    `id`          int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `productID`   varchar(20)      NOT NULL COMMENT '产品id',
-    `deviceName`  varchar(100)     NOT NULL COMMENT '设备名称',
-    `payload`     varchar(1000) DEFAULT '' COMMENT '具体信息',
-    `topic`       varchar(50)   DEFAULT '' COMMENT '主题',
-    `action`      varchar(50)      NOT NULL COMMENT '操作类型',
-    `timestamp`   datetime         NOT NULL COMMENT '操作时间',
-    `createdTime` datetime         NOT NULL,
+    `id`          int(10) unsigned    NOT NULL AUTO_INCREMENT,
+    `productID`   varchar(20)         NOT NULL COMMENT '产品id',
+    `deviceName`  varchar(100)        NOT NULL COMMENT '设备名称',
+    `content`     varchar(1000)                DEFAULT '' COMMENT '具体信息',
+    `topic`       varchar(50)                  DEFAULT '' COMMENT '主题',
+    `action`      varchar(50)         NOT NULL COMMENT '操作类型',
+    `timestamp`   datetime            NOT NULL COMMENT '操作时间',
+    `requestID`   varchar(50)         NOT NULL DEFAULT '' COMMENT '请求ID',
+    `tranceID`    varchar(50)         NOT NULL DEFAULT '' COMMENT '服务器端事务id',
+    `resultType`  bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '请求结果状态,0为成功',
+    `createdTime` datetime            NOT NULL,
     PRIMARY KEY (`id`),
     KEY `deviceName` (`productID`, `deviceName`),
     KEY `device_productID` (`productID`) USING BTREE,
@@ -79,3 +82,18 @@ CREATE TABLE if not exists `device_log`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 264
   DEFAULT CHARSET = utf8mb4 COMMENT ='设备日志表';
+
+
+CREATE TABLE if not exists `category_detail`
+(
+    `id`           int(10) unsigned NOT NULL,
+    `categoryKey`  varchar(20)      NOT NULL COMMENT '产品种类英文key',
+    `categoryName` varchar(100)     NOT NULL COMMENT '产品种类名字',
+    `parentID`     int(10) DEFAULT 0 COMMENT '父类id',
+    `isLeaf`       tinyint default 0 comment '是否是叶子节点',
+    `listOrder`    int(10) DEFAULT '' COMMENT '排序',
+    `template`     text COMMENT '物模型模板',
+    `createdTime`  datetime         NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='产品品类详情';

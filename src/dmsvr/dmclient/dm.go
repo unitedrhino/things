@@ -15,9 +15,10 @@ import (
 type (
 	AccessAuthReq            = dm.AccessAuthReq
 	DeviceData               = dm.DeviceData
+	DeviceDescribeLog        = dm.DeviceDescribeLog
 	DeviceInfo               = dm.DeviceInfo
-	GetDeviceDataReq         = dm.GetDeviceDataReq
-	GetDeviceDataResp        = dm.GetDeviceDataResp
+	GetDeviceDescribeLogReq  = dm.GetDeviceDescribeLogReq
+	GetDeviceDescribeLogResp = dm.GetDeviceDescribeLogResp
 	GetDeviceInfoReq         = dm.GetDeviceInfoReq
 	GetDeviceInfoResp        = dm.GetDeviceInfoResp
 	GetDeviceLogReq          = dm.GetDeviceLogReq
@@ -36,6 +37,8 @@ type (
 	Response                 = dm.Response
 	SendActionReq            = dm.SendActionReq
 	SendActionResp           = dm.SendActionResp
+	SendDeviceMsgReq         = dm.SendDeviceMsgReq
+	SendDeviceMsgResp        = dm.SendDeviceMsgResp
 	SendPropertyReq          = dm.SendPropertyReq
 	SendPropertyResp         = dm.SendPropertyResp
 
@@ -56,14 +59,16 @@ type (
 		GetProductTemplate(ctx context.Context, in *GetProductTemplateReq, opts ...grpc.CallOption) (*ProductTemplate, error)
 		// 获取设备信息
 		GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq, opts ...grpc.CallOption) (*GetDeviceInfoResp, error)
-		// 获取设备最新数据
-		GetDeviceData(ctx context.Context, in *GetDeviceDataReq, opts ...grpc.CallOption) (*GetDeviceDataResp, error)
+		// 获取设备调试信息记录登入登出,操作
+		GetDeviceDescribeLog(ctx context.Context, in *GetDeviceDescribeLogReq, opts ...grpc.CallOption) (*GetDeviceDescribeLogResp, error)
 		// 获取设备日志信息
 		GetDeviceLog(ctx context.Context, in *GetDeviceLogReq, opts ...grpc.CallOption) (*GetDeviceLogResp, error)
 		// 同步调用设备行为
 		SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 		// 同步调用设备属性
 		SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+		// 设备端发送信息
+		SendDeviceMsg(ctx context.Context, in *SendDeviceMsgReq, opts ...grpc.CallOption) (*SendDeviceMsgResp, error)
 	}
 
 	defaultDm struct {
@@ -125,10 +130,10 @@ func (m *defaultDm) GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq, opt
 	return client.GetDeviceInfo(ctx, in, opts...)
 }
 
-// 获取设备最新数据
-func (m *defaultDm) GetDeviceData(ctx context.Context, in *GetDeviceDataReq, opts ...grpc.CallOption) (*GetDeviceDataResp, error) {
+// 获取设备调试信息记录登入登出,操作
+func (m *defaultDm) GetDeviceDescribeLog(ctx context.Context, in *GetDeviceDescribeLogReq, opts ...grpc.CallOption) (*GetDeviceDescribeLogResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
-	return client.GetDeviceData(ctx, in, opts...)
+	return client.GetDeviceDescribeLog(ctx, in, opts...)
 }
 
 // 获取设备日志信息
@@ -147,4 +152,10 @@ func (m *defaultDm) SendAction(ctx context.Context, in *SendActionReq, opts ...g
 func (m *defaultDm) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.SendProperty(ctx, in, opts...)
+}
+
+// 设备端发送信息
+func (m *defaultDm) SendDeviceMsg(ctx context.Context, in *SendDeviceMsgReq, opts ...grpc.CallOption) (*SendDeviceMsgResp, error) {
+	client := dm.NewDmClient(m.cli.Conn())
+	return client.SendDeviceMsg(ctx, in, opts...)
 }

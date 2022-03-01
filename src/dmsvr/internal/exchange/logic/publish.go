@@ -60,32 +60,29 @@ func (l *PublishLogic) initMsg(msg *types.Elements) error {
 	return nil
 }
 
-func (l *PublishLogic) DeviceResp(err error, data map[string]interface{}) {
+func (l *PublishLogic) DeviceResp(msg *types.Elements, err error, data map[string]interface{}) {
 	l.svcCtx.DevClient.DeviceResp(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 }
 
 func (l *PublishLogic) HandlePropertyReport(msg *types.Elements) error {
 	tp, err := l.template.VerifyReqParam(l.dreq, device.PROPERTY)
 	if err != nil {
-		l.DeviceResp(err, nil)
+		l.DeviceResp(msg, err, nil)
 		return err
 	} else if len(tp) == 0 {
 		err := errors.Parameter.AddDetail("need right param")
-		l.DeviceResp(err, nil)
+		l.DeviceResp(msg, err, nil)
 		return err
 	}
 	params := device.ToVal(tp)
-	timeStamp := time.Now()
-	if l.dreq.Timestamp != 0 {
-		timeStamp = time.UnixMilli(l.dreq.Timestamp)
-	}
+	timeStamp := l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0))
 	err = l.dd.InsertPropertiesData(l.ld.ProductID, l.ld.DeviceName, params, timeStamp)
 	if err != nil {
-		l.DeviceResp(errors.Database, nil)
+		l.DeviceResp(msg, errors.Database, nil)
 		l.Errorf("HandlePropertyReport|InsertPropertyData|err=%+v", err)
 		return err
 	}
-	l.DeviceResp(errors.OK, nil)
+	l.DeviceResp(msg, errors.OK, nil)
 	return nil
 }
 
@@ -108,10 +105,10 @@ func (l *PublishLogic) HandlePropertyGetStatus(msg *types.Elements) error {
 		}
 	default:
 		err := errors.Parameter.AddDetailf("not suppot type :%s", l.dreq.Type)
-		l.DeviceResp(err, nil)
+		l.DeviceResp(msg, err, nil)
 		return err
 	}
-	l.DeviceResp(errors.OK, respData)
+	l.DeviceResp(msg, errors.OK, respData)
 	return nil
 }
 
@@ -140,22 +137,19 @@ func (l *PublishLogic) HandleEvent(msg *types.Elements) error {
 	}
 	tp, err := l.template.VerifyReqParam(l.dreq, device.EVENT)
 	if err != nil {
-		l.DeviceResp(err, nil)
+		l.DeviceResp(msg, err, nil)
 		return err
 	}
 	dbData.Params = device.ToVal(tp)
-	if l.dreq.Timestamp != 0 {
-		dbData.TimeStamp = time.UnixMilli(l.dreq.Timestamp)
-	} else {
-		dbData.TimeStamp = time.Now()
-	}
+	dbData.TimeStamp = l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0))
+
 	err = l.dd.InsertEventData(l.ld.ProductID, l.ld.DeviceName, &dbData)
 	if err != nil {
-		l.DeviceResp(errors.Database, nil)
+		l.DeviceResp(msg, errors.Database, nil)
 		l.Errorf("InsertEventData|err=%+v", err)
 		return errors.Database.AddDetail(err)
 	}
-	l.DeviceResp(errors.OK, nil)
+	l.DeviceResp(msg, errors.OK, nil)
 
 	return nil
 }
@@ -197,23 +191,37 @@ func (l *PublishLogic) HandleDefault(msg *types.Elements) error {
 	return nil
 
 }
-func (l *PublishLogic) Handle(msg *types.Elements) error {
+func (l *PublishLogic) Handle(msg *types.Elements) (err error) {
 	l.Infof("PublishLogic|req=%+v", msg)
-	err := l.initMsg(msg)
+	err = l.initMsg(msg)
 	if err != nil {
 		return err
 	}
 	if len(l.topics) > 1 {
 		switch l.topics[0] {
 		case "$thing":
-			return l.HandleThing(msg)
+			err = l.HandleThing(msg)
 		case "$ota":
-			return l.HandleOta(msg)
+			err = l.HandleOta(msg)
 		case l.pt.ProductID:
-			return l.HandleDefault(msg)
+			err = l.HandleDefault(msg)
 		default:
-			return errors.Parameter.AddDetailf("not suppot topic :%s", msg.Topic)
+			err = errors.Parameter.AddDetailf("not suppot topic :%s", msg.Topic)
 		}
+	} else {
+		err = errors.Parameter.AddDetailf("need topic :%s", msg.Topic)
 	}
-	return nil
+	l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
+		ProductID:   l.ld.ProductID,
+		Action:      "publish",
+		Timestamp:   l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0)), // 操作时间
+		DeviceName:  l.ld.DeviceName,
+		TranceID:    utils.TraceIdFromContext(l.ctx),
+		RequestID:   l.dreq.ClientToken,
+		Content:     msg.Payload,
+		Topic:       msg.Topic,
+		ResultType:  errors.Fmt(err).GetCode(),
+		CreatedTime: time.Now(),
+	})
+	return err
 }

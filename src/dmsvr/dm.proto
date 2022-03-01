@@ -21,14 +21,16 @@ service Dm {
   rpc getProductTemplate(GetProductTemplateReq) returns (ProductTemplate);
   //获取设备信息
   rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);
-  //获取设备最新数据
-  rpc getDeviceData(GetDeviceDataReq)   returns (GetDeviceDataResp);
+  //获取设备调试信息记录登入登出,操作
+  rpc getDeviceDescribeLog(GetDeviceDescribeLogReq)   returns (GetDeviceDescribeLogResp);
   //获取设备日志信息
   rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);
   //同步调用设备行为
   rpc sendAction(SendActionReq)         returns(SendActionResp);
   //同步调用设备属性
   rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
+  //设备端发送信息
+  rpc sendDeviceMsg(SendDeviceMsgReq) returns(SendDeviceMsgResp);
 }
 
 
@@ -48,6 +50,22 @@ message ManResp {
 //  MODIFY  = 1;  //修改
 //  DEL     = 2;  //删除
 //}
+
+/*
+这里是设备上报的消息
+*/
+
+message SendDeviceMsgReq{
+  string  ClientID = 1;//mqtt上的clientID
+  string  Username = 2;//mqtt上的设备名
+  string  Topic = 3;//主题
+  string  Payload = 4;//具体内容
+  int64   Timestamp = 5;//时间戳
+  string  Action = 6;//操作
+}
+message SendDeviceMsgResp{
+}
+
 /*
 下面是设备管理模块的消息
 */
@@ -192,12 +210,12 @@ message GetDeviceInfoResp{
 /*获取对应日志信息*/
 message GetDeviceLogReq{
   string method = 1; //获取的类型   property 属性 event事件 action 操作 log 所有日志
-  string  deviceName  = 2; //设备名
-  string  productID   = 3; //产品id 获取产品id下的所有设备信息
+  string deviceName = 2; //设备名
+  string productID = 3; //产品id 获取产品id下的所有设备信息
   string dataID = 4; //获取的具体标识符的数据 如果不指定则获取所有数据 一个记录一条
   int64 timeStart = 5;//获取时间的开始
   int64 timeEnd = 6;//时间的结束
-  int64 limit =7;//获取的长度
+  int64 limit = 7;//获取的长度
 }
 
 /*设备的日志数据*/
@@ -207,22 +225,36 @@ message DeviceData{
   string dataID = 3;//获取的具体属性值
   string payload = 4;//具体内容
 }
+
 /*获取对应日志信息*/
 message GetDeviceLogResp{
   int64 total = 1; //总数
-  repeated DeviceData data =2;
+  repeated DeviceData data = 2;
+}
+
+/*设备的日志数据*/
+message DeviceDescribeLog{
+  int64 timestamp = 1;//发生时间戳
+  string action = 2 ;//操作类型;显示相应的操作名称、API名称、服务的method
+  string requestID = 3;//请求ID
+  string tranceID = 4;//服务器端事务id
+  string topic = 5;//主题
+  string content = 6;//具体内容
+  string resultType = 7;//请求结果状态
 }
 
 /*实时获取对应信息*/
-message GetDeviceDataReq{
-  string method = 1; //获取的类型   property 属性 event事件 action 操作 log 所有日志
-  string  deviceName  = 2; //设备名
-  string  productID   = 3; //产品id 获取产品id下的所有设备信息
-  string dataID = 4;//获取的具体属性值 如果不指定则获取所有属性 一个记录一条
+message GetDeviceDescribeLogReq{
+  string action = 1; //操作的类型   connect 连接 disconnect 断开连接 message 消息
+  string  deviceName = 2; //设备名
+  string  productID = 3; //产品id 获取产品id下的所有设备信息
+  int64 timeStart = 4;//获取时间的开始
+  int64 timeEnd = 5;//时间的结束
+  int64 limit = 6;//获取的长度
 }
 /*实时获取对应信息*/
-message GetDeviceDataResp{
-  repeated DeviceData data = 1;
+message GetDeviceDescribeLogResp{
+  repeated DeviceDescribeLog data = 1;
 }
 
 message SendActionReq{
