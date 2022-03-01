@@ -43,6 +43,7 @@ func UpdateProductTemplate(old *mysql.ProductTemplate, data *dm.ProductTemplate)
 
 func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, pt *mysql.ProductTemplate) (*dm.ProductTemplate, error) {
 	UpdateProductTemplate(pt, in.Info)
+	//todo 这里需要添加模板的校验
 	err := l.svcCtx.ProductTemplate.Update(pt)
 	if err != nil {
 		l.Errorf("ModifyProductTemplate|ProductTemplate|Update|err=%+v", err)
@@ -99,5 +100,5 @@ func (l *ManageProductTemplateLogic) ManageProductTemplate(in *dm.ManageProductT
 		}
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	return ToProductTemplate(pt), nil
+	return l.ModifyProductTemplate(in, pt)
 }

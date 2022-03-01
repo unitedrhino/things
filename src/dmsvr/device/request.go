@@ -1,6 +1,9 @@
 package device
 
-import "github.com/go-things/things/shared/errors"
+import (
+	"github.com/go-things/things/shared/errors"
+	"time"
+)
 
 type (
 	DeviceReq struct {
@@ -40,6 +43,13 @@ func (d DeviceReq) AddStatus(err error) DeviceReq {
 	d.Code = e.Code
 	d.Status = e.GetDetailMsg()
 	return d
+}
+
+func (d *DeviceReq) GetTimeStamp(defaultTime time.Time) time.Time {
+	if d.Timestamp == 0 {
+		return defaultTime
+	}
+	return time.UnixMilli(d.Timestamp)
 }
 
 type METHOD = string

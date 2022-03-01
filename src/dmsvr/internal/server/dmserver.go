@@ -13,6 +13,7 @@ import (
 
 type DmServer struct {
 	svcCtx *svc.ServiceContext
+	dm.UnimplementedDmServer
 }
 
 func NewDmServer(svcCtx *svc.ServiceContext) *DmServer {
@@ -69,10 +70,10 @@ func (s *DmServer) GetDeviceInfo(ctx context.Context, in *dm.GetDeviceInfoReq) (
 	return l.GetDeviceInfo(in)
 }
 
-// 获取设备最新数据
-func (s *DmServer) GetDeviceData(ctx context.Context, in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
-	l := logic.NewGetDeviceDataLogic(ctx, s.svcCtx)
-	return l.GetDeviceData(in)
+// 获取设备调试信息记录登入登出,操作
+func (s *DmServer) GetDeviceDescribeLog(ctx context.Context, in *dm.GetDeviceDescribeLogReq) (*dm.GetDeviceDescribeLogResp, error) {
+	l := logic.NewGetDeviceDescribeLogLogic(ctx, s.svcCtx)
+	return l.GetDeviceDescribeLog(in)
 }
 
 // 获取设备日志信息
@@ -91,4 +92,10 @@ func (s *DmServer) SendAction(ctx context.Context, in *dm.SendActionReq) (*dm.Se
 func (s *DmServer) SendProperty(ctx context.Context, in *dm.SendPropertyReq) (*dm.SendPropertyResp, error) {
 	l := logic.NewSendPropertyLogic(ctx, s.svcCtx)
 	return l.SendProperty(in)
+}
+
+// 设备端发送信息
+func (s *DmServer) SendDeviceMsg(ctx context.Context, in *dm.SendDeviceMsgReq) (*dm.SendDeviceMsgResp, error) {
+	l := logic.NewSendDeviceMsgLogic(ctx, s.svcCtx)
+	return l.SendDeviceMsg(in)
 }

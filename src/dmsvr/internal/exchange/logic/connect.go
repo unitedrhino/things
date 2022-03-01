@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"github.com/go-things/things/shared/errors"
+	"github.com/go-things/things/shared/utils"
 	"github.com/go-things/things/src/dmsvr/dm"
 	"github.com/go-things/things/src/dmsvr/internal/exchange/types"
 	"github.com/go-things/things/src/dmsvr/internal/repo/mysql"
@@ -27,20 +29,20 @@ func NewConnectLogic(ctx context.Context, svcCtx *svc.ServiceContext) LogicHandl
 func (l *ConnectLogic) Handle(msg *types.Elements) error {
 	l.Infof("ConnectLogic|req=%+v", msg)
 	ld, err := dm.GetClientIDInfo(msg.ClientID)
-	if err != nil {
-		return err
-	}
-	_, err = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
+	_, _ = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   ld.ProductID,
 		Action:      msg.Action,
-		Timestamp:   time.UnixMilli(msg.Timestamp), // 操作时间
+		Timestamp:   time.Unix(msg.Timestamp, 0), // 操作时间
 		DeviceName:  ld.DeviceName,
-		Payload:     msg.Payload,
+		TranceID:    utils.TraceIdFromContext(l.ctx),
+		Content:     msg.Payload,
 		Topic:       msg.Topic,
+		ResultType:  errors.Fmt(err).GetCode(),
 		CreatedTime: time.Now(),
 	})
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

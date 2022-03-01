@@ -36,10 +36,13 @@ type (
 		Id          int64     `db:"id"`
 		ProductID   string    `db:"productID"`  // 产品id
 		DeviceName  string    `db:"deviceName"` // 设备名称
-		Payload     string    `db:"payload"`    // 具体信息
+		Content     string    `db:"content"`    // 具体信息
 		Topic       string    `db:"topic"`      // 主题
 		Action      string    `db:"action"`     // 操作类型
 		Timestamp   time.Time `db:"timestamp"`  // 操作时间
+		RequestID   string    `db:"requestID"`  // 请求ID
+		TranceID    string    `db:"tranceID"`   // 服务器端事务id
+		ResultType  int64     `db:"resultType"` // 请求结果状态,0为成功
 		CreatedTime time.Time `db:"createdTime"`
 	}
 )
@@ -52,8 +55,8 @@ func NewDeviceLogModel(conn sqlx.SqlConn) DeviceLogModel {
 }
 
 func (m *defaultDeviceLogModel) Insert(data *DeviceLog) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, deviceLogRowsExpectAutoSet)
-	ret, err := m.conn.Exec(query, data.ProductID, data.DeviceName, data.Payload, data.Topic, data.Action, data.Timestamp, data.CreatedTime)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceLogRowsExpectAutoSet)
+	ret, err := m.conn.Exec(query, data.ProductID, data.DeviceName, data.Content, data.Topic, data.Action, data.Timestamp, data.RequestID, data.TranceID, data.ResultType, data.CreatedTime)
 	return ret, err
 }
 
@@ -73,7 +76,7 @@ func (m *defaultDeviceLogModel) FindOne(id int64) (*DeviceLog, error) {
 
 func (m *defaultDeviceLogModel) Update(data *DeviceLog) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, deviceLogRowsWithPlaceHolder)
-	_, err := m.conn.Exec(query, data.ProductID, data.DeviceName, data.Payload, data.Topic, data.Action, data.Timestamp, data.CreatedTime, data.Id)
+	_, err := m.conn.Exec(query, data.ProductID, data.DeviceName, data.Content, data.Topic, data.Action, data.Timestamp, data.RequestID, data.TranceID, data.ResultType, data.CreatedTime, data.Id)
 	return err
 }
 
