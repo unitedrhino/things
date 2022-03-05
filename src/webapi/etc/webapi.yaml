@@ -19,7 +19,7 @@ DmRpc:
       Key: dm.rpc
     Timeout: 1000000
 DcRpc:
-  Enable: true
+  Enable: false
   Conf:
     Etcd:
       Hosts:
@@ -27,7 +27,7 @@ DcRpc:
       Key: dc.rpc
     Timeout: 1000000
 UserRpc:
-  Enable: true
+  Enable: false
   Conf:
     Etcd:
       Hosts:

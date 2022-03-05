@@ -23,8 +23,8 @@ service Dm {
   rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);
   //获取设备调试信息记录登入登出,操作
   rpc getDeviceDescribeLog(GetDeviceDescribeLogReq)   returns (GetDeviceDescribeLogResp);
-  //获取设备日志信息
-  rpc getDeviceLog(GetDeviceLogReq)     returns (GetDeviceLogResp);
+  //获取设备数据信息
+  rpc getDeviceData(GetDeviceDataReq)     returns (GetDeviceDataResp);
   //同步调用设备行为
   rpc sendAction(SendActionReq)         returns(SendActionResp);
   //同步调用设备属性
@@ -208,7 +208,7 @@ message GetDeviceInfoResp{
 */
 
 /*获取对应日志信息*/
-message GetDeviceLogReq{
+message GetDeviceDataReq{
   string method = 1; //获取的类型   property 属性 event事件 action 操作 log 所有日志
   string deviceName = 2; //设备名
   string productID = 3; //产品id 获取产品id下的所有设备信息
@@ -227,7 +227,7 @@ message DeviceData{
 }
 
 /*获取对应日志信息*/
-message GetDeviceLogResp{
+message GetDeviceDataResp{
   int64 total = 1; //总数
   repeated DeviceData data = 2;
 }
@@ -240,17 +240,16 @@ message DeviceDescribeLog{
   string tranceID = 4;//服务器端事务id
   string topic = 5;//主题
   string content = 6;//具体内容
-  string resultType = 7;//请求结果状态
+  int64 resultType = 7;//请求结果状态
 }
 
 /*实时获取对应信息*/
 message GetDeviceDescribeLogReq{
-  string action = 1; //操作的类型   connect 连接 disconnect 断开连接 message 消息
+  string  productID = 1; //产品id
   string  deviceName = 2; //设备名
-  string  productID = 3; //产品id 获取产品id下的所有设备信息
-  int64 timeStart = 4;//获取时间的开始
-  int64 timeEnd = 5;//时间的结束
-  int64 limit = 6;//获取的长度
+  int64   timeStart = 3;//获取时间的开始
+  int64   timeEnd = 4;//时间的结束
+  int64   limit = 5;//获取的长度
 }
 /*实时获取对应信息*/
 message GetDeviceDescribeLogResp{

@@ -147,8 +147,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/getDeviceLog",
-				Handler: backgranddm.GetDeviceLogHandler(serverCtx),
+				Path:    "/getDeviceData",
+				Handler: backgranddm.GetDeviceDataHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/getDeviceDescribeLog",
+				Handler: backgranddm.GetDeviceDescribeLogHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/backgrand/dm"),

@@ -76,10 +76,10 @@ func (s *DmServer) GetDeviceDescribeLog(ctx context.Context, in *dm.GetDeviceDes
 	return l.GetDeviceDescribeLog(in)
 }
 
-// 获取设备日志信息
-func (s *DmServer) GetDeviceLog(ctx context.Context, in *dm.GetDeviceLogReq) (*dm.GetDeviceLogResp, error) {
-	l := logic.NewGetDeviceLogLogic(ctx, s.svcCtx)
-	return l.GetDeviceLog(in)
+// 获取设备数据信息
+func (s *DmServer) GetDeviceData(ctx context.Context, in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
+	l := logic.NewGetDeviceDataLogic(ctx, s.svcCtx)
+	return l.GetDeviceData(in)
 }
 
 // 同步调用设备行为

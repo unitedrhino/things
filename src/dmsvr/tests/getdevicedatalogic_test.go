@@ -11,8 +11,8 @@ import (
 	"testing"
 )
 
-func TestGetDeviceLog(t *testing.T) {
-	fmt.Println("GetDeviceLog")
+func TestGetDeviceData(t *testing.T) {
+	fmt.Println("GetDeviceData")
 	client := dmclient.NewDm(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
 		Hosts: []string{"127.0.0.1:2379"},
 		Key:   "dm.rpc",
@@ -21,7 +21,7 @@ func TestGetDeviceLog(t *testing.T) {
 	productID := "21CYs1k9YpG"
 	deviceName := "test8"
 	{
-		req := &dm.GetDeviceLogReq{
+		req := &dm.GetDeviceDataReq{
 			Method:     "property",
 			DeviceName: deviceName,
 			ProductID:  productID,
@@ -30,14 +30,14 @@ func TestGetDeviceLog(t *testing.T) {
 			//TimeStart: time.Unix(1625013546,0).Unix(),
 			//TimeEnd: time.Unix(1625223546,0).Unix(),
 		}
-		info, err := client.GetDeviceLog(ctx, req)
+		info, err := client.GetDeviceData(ctx, req)
 		t.Log(req, info)
 		if err != nil {
 			t.Errorf("%+v", errors.Fmt(err))
 		}
 	}
 	{
-		req := &dm.GetDeviceLogReq{
+		req := &dm.GetDeviceDataReq{
 			Method:     "event",
 			DeviceName: deviceName,
 			ProductID:  productID,
@@ -46,7 +46,7 @@ func TestGetDeviceLog(t *testing.T) {
 			//TimeStart: time.Unix(1625013546,0).Unix(),
 			//TimeEnd: time.Unix(1625223546,0).Unix(),
 		}
-		info, err := client.GetDeviceLog(ctx, req)
+		info, err := client.GetDeviceData(ctx, req)
 		t.Log(req, info)
 		if err != nil {
 			t.Errorf("%+v", errors.Fmt(err))

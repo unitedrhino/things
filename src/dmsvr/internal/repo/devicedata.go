@@ -3,6 +3,7 @@ package repo
 
 import (
 	"context"
+	"github.com/go-things/things/shared/def"
 	"time"
 )
 
@@ -25,8 +26,8 @@ type (
 		InsertPropertyData(productID string, deviceName string, property *Property) error
 		//params key为属性的id,val为属性的值
 		InsertPropertiesData(productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error
-		GetEventDataWithID(productID string, deviceName string, dataID string, timeStart, timeEnd int64, limit int64) ([]*Event, error)
-		GetPropertyDataWithID(productID string, deviceName string, dataID string, timeStart, timeEnd int64, limit int64) ([]*Property, error)
+		GetEventDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) ([]*Event, error)
+		GetPropertyDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) ([]*Property, error)
 		CreatePropertyDB(productID string) error
 		CreateEventDB(productID string) error
 		CreateLogDB(productID string) error

@@ -17,12 +17,12 @@ type (
 	DeviceData               = dm.DeviceData
 	DeviceDescribeLog        = dm.DeviceDescribeLog
 	DeviceInfo               = dm.DeviceInfo
+	GetDeviceDataReq         = dm.GetDeviceDataReq
+	GetDeviceDataResp        = dm.GetDeviceDataResp
 	GetDeviceDescribeLogReq  = dm.GetDeviceDescribeLogReq
 	GetDeviceDescribeLogResp = dm.GetDeviceDescribeLogResp
 	GetDeviceInfoReq         = dm.GetDeviceInfoReq
 	GetDeviceInfoResp        = dm.GetDeviceInfoResp
-	GetDeviceLogReq          = dm.GetDeviceLogReq
-	GetDeviceLogResp         = dm.GetDeviceLogResp
 	GetProductInfoReq        = dm.GetProductInfoReq
 	GetProductInfoResp       = dm.GetProductInfoResp
 	GetProductTemplateReq    = dm.GetProductTemplateReq
@@ -61,8 +61,8 @@ type (
 		GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq, opts ...grpc.CallOption) (*GetDeviceInfoResp, error)
 		// 获取设备调试信息记录登入登出,操作
 		GetDeviceDescribeLog(ctx context.Context, in *GetDeviceDescribeLogReq, opts ...grpc.CallOption) (*GetDeviceDescribeLogResp, error)
-		// 获取设备日志信息
-		GetDeviceLog(ctx context.Context, in *GetDeviceLogReq, opts ...grpc.CallOption) (*GetDeviceLogResp, error)
+		// 获取设备数据信息
+		GetDeviceData(ctx context.Context, in *GetDeviceDataReq, opts ...grpc.CallOption) (*GetDeviceDataResp, error)
 		// 同步调用设备行为
 		SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 		// 同步调用设备属性
@@ -136,10 +136,10 @@ func (m *defaultDm) GetDeviceDescribeLog(ctx context.Context, in *GetDeviceDescr
 	return client.GetDeviceDescribeLog(ctx, in, opts...)
 }
 
-// 获取设备日志信息
-func (m *defaultDm) GetDeviceLog(ctx context.Context, in *GetDeviceLogReq, opts ...grpc.CallOption) (*GetDeviceLogResp, error) {
+// 获取设备数据信息
+func (m *defaultDm) GetDeviceData(ctx context.Context, in *GetDeviceDataReq, opts ...grpc.CallOption) (*GetDeviceDataResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
-	return client.GetDeviceLog(ctx, in, opts...)
+	return client.GetDeviceData(ctx, in, opts...)
 }
 
 // 同步调用设备行为

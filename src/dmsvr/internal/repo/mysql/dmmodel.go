@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"fmt"
+	sq "github.com/Masterminds/squirrel"
 	"github.com/go-things/things/shared/def"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -14,6 +15,7 @@ type (
 		FindByProductID(productID string, page def.PageInfo) ([]*DeviceInfo, error)
 		GetCountByProductID(productID string) (size int64, err error)
 		GetCountByProductInfo() (size int64, err error)
+		GetDeviceLog(productID, deviceName string, page def.PageInfo2) ([]*DeviceLog, error)
 	}
 
 	defaultDmModel struct {
@@ -22,6 +24,7 @@ type (
 		productInfo     string
 		deviceInfo      string
 		productTemplate string
+		deviceLog       string
 	}
 )
 
@@ -32,6 +35,7 @@ func NewDmModel(conn sqlx.SqlConn, c cache.CacheConf) DmModel {
 		productInfo:     "`product_info`",
 		deviceInfo:      "`device_info`",
 		productTemplate: "`product_template`",
+		deviceLog:       "`device_log`",
 	}
 }
 
@@ -87,19 +91,20 @@ func (m *defaultDmModel) GetCountByProductInfo() (size int64, err error) {
 		return 0, err
 	}
 }
-
-//func (m *defaultDmModel) InsertProduct(info *ProductInfo, template *ProductTemplate) (err error) {
-//	m.CachedConn.Transact(func(session sqlx.Session) error {
-//		NewProductInfoModel(session,m.CacheConf)
-//		return err
-//	})
-//	return err
-//}
-//
-//
-//func NewProductInfo(conn sqlc.CachedConn, c cache.CacheConf) ProductInfoModel {
-//	return &defaultProductInfoModel{
-//		CachedConn: sqlc.NewConn(conn, c),
-//		table:      "`product_info`",
-//	}
-//}
+func (m *defaultDmModel) GetDeviceLog(productID, deviceName string, page def.PageInfo2) ([]*DeviceLog, error) {
+	sql := sq.Select(deviceLogFieldNames...).From(m.deviceLog).
+		Where(sq.Eq{"productID": productID, "deviceName": deviceName}).
+		Limit(uint64(page.GetLimit())).OrderBy("CreatedTime desc")
+	if page.TimeStart != 0 {
+		sql = sql.Where(sq.GtOrEq{"timestamp": page.TimeStart})
+	}
+	if page.TimeEnd != 0 {
+		sql = sql.Where(sq.LtOrEq{"timestamp": page.TimeEnd})
+	}
+	sqlStr, value, err := sql.ToSql()
+	fmt.Println(sqlStr, value, err)
+	var resp []*DeviceLog
+	err = m.CachedConn.QueryRowsNoCache(&resp, sqlStr, value...)
+	fmt.Println(resp, err)
+	return resp, err
+}

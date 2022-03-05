@@ -91,7 +91,11 @@ func (l *PublishLogic) HandlePropertyGetStatus(msg *types.Elements) error {
 	switch l.dreq.Type {
 	case device.REPORT:
 		for id, _ := range l.template.Property {
-			data, err := l.dd.GetPropertyDataWithID(l.ld.ProductID, l.ld.DeviceName, id, 0, 0, 1)
+			data, err := l.dd.GetPropertyDataWithID(l.ld.ProductID, l.ld.DeviceName, id, def.PageInfo2{
+				TimeStart: 0,
+				TimeEnd:   0,
+				Limit:     1,
+			})
 			if err != nil {
 				l.Errorf("HandlePropertyGetStatus|GetPropertyDataWithID|get id:%s|err:%s",
 					id, err.Error())

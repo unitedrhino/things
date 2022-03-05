@@ -3,6 +3,7 @@ package mongorepo
 import (
 	"context"
 	"fmt"
+	"github.com/go-things/things/shared/def"
 	"github.com/go-things/things/src/dmsvr/internal/repo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -114,19 +115,19 @@ func (d *DeviceDataContext) CreateLogDB(productID string) error {
 }
 
 //通过属性的id及方法获取一段时间或最新时间的记录
-func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName string, dataID string, timeStart, timeEnd int64, limit int64) (dds []*repo.Event, err error) {
+func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) (dds []*repo.Event, err error) {
 	filter := bson.D{
 		{"id", bson.M{"$eq": dataID}},
 		{"deviceName", bson.M{"$eq": deviceName}},
 	}
-	if timeStart != 0 {
-		filter = append(filter, bson.E{TimeStampKey, bson.M{"$gte": time.UnixMilli(timeStart)}})
+	if page.TimeStart != 0 {
+		filter = append(filter, bson.E{TimeStampKey, bson.M{"$gte": time.UnixMilli(page.TimeStart)}})
 	}
-	if timeEnd != 0 {
-		filter = append(filter, bson.E{TimeStampKey, bson.M{"$lte": time.UnixMilli(timeEnd)}})
+	if page.TimeEnd != 0 {
+		filter = append(filter, bson.E{TimeStampKey, bson.M{"$lte": time.UnixMilli(page.TimeEnd)}})
 	}
 	opts := options.Find().SetProjection(bson.D{{TimeStampKey, 1}}).
-		SetLimit(limit).SetSort(bson.D{{TimeStampKey, -1}})
+		SetLimit(page.Limit).SetSort(bson.D{{TimeStampKey, -1}})
 	cursor, err := d.mongo.Collection(productID+dbSuffixEvent).Find(d.ctx, filter, opts)
 	if err != nil {
 		return nil, err
@@ -153,22 +154,20 @@ func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName stri
 }
 
 //通过属性的id及方法获取一段时间或最新时间的记录
-func (d *DeviceDataContext) GetPropertyDataWithID(productID string, deviceName string, dataID string, timeStart, timeEnd int64, limit int64) (dds []*repo.Property, err error) {
-	if limit == 0 {
-		limit = 20
-	}
+func (d *DeviceDataContext) GetPropertyDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) (dds []*repo.Property, err error) {
+
 	filter := bson.D{
 		//{"isp", isp},
 		{fmt.Sprintf("%s.%s", PropertyMD, dataID), bson.M{"$ne": primitive.Null{}}},
 		{"deviceName", bson.M{"$eq": deviceName}},
 	}
-	if timeStart != 0 {
-		filter = append(filter, bson.E{TimeStampKey, bson.M{"$gte": time.UnixMilli(timeStart)}})
+	if page.TimeStart != 0 {
+		filter = append(filter, bson.E{TimeStampKey, bson.M{"$gte": time.UnixMilli(page.TimeStart)}})
 	}
-	if timeEnd != 0 {
-		filter = append(filter, bson.E{TimeStampKey, bson.M{"$lte": time.UnixMilli(timeEnd)}})
+	if page.TimeEnd != 0 {
+		filter = append(filter, bson.E{TimeStampKey, bson.M{"$lte": time.UnixMilli(page.TimeEnd)}})
 	}
-	opts := options.Find().SetLimit(limit).SetSort(bson.D{{TimeStampKey, -1}})
+	opts := options.Find().SetLimit(page.GetLimit()).SetSort(bson.D{{TimeStampKey, -1}})
 	cursor, err := d.mongo.Collection(productID+dbSuffixProperty).Find(d.ctx, filter, opts)
 	if err != nil {
 		return nil, err
