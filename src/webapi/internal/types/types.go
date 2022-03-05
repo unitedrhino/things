@@ -227,7 +227,7 @@ type SendDmActionResp struct {
 	Code         int64  `json:"code,string,omitempty"`  //设备返回状态码
 }
 
-type GetDeviceLogReq struct {
+type GetDeviceDataReq struct {
 	Method     string `form:"method,omitempty"`                    //获取的类型   property 属性 event事件  log 所有日志
 	DeviceName string `form:"deviceName,omitempty"`                //设备名
 	ProductID  string `form:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
@@ -244,9 +244,31 @@ type DeviceData struct {
 	Payload   string `json:"payload"`          //具体内容
 }
 
-type GetDeviceLogResp struct {
+type GetDeviceDataResp struct {
 	Total int64         `json:"total,string"` //总数
 	Data  []*DeviceData `json:"data"`         //总数
+}
+
+type GetDeviceDescribeLogReq struct {
+	ProductID  string `form:"productID,omitempty"`
+	DeviceName string `form:"deviceName,omitempty"`
+	TimeStart  int64  `form:"timeStart,optional,string,omitempty"`
+	TimeEnd    int64  `form:"timeEnd,optional,string,omitempty"`
+	Limit      int64  `form:"limit,optional,omitempty"`
+}
+
+type GetDeviceDescribeLogResp struct {
+	Data []*DeviceDescribeLog `json:"data,omitempty"`
+}
+
+type DeviceDescribeLog struct {
+	Timestamp  int64  `json:"timestamp,string"`
+	Action     string `json:"action"`
+	RequestID  string `json:"requestID"`
+	TranceID   string `json:"tranceID"`
+	Topic      string `json:"topic"`
+	Content    string `json:"content"`
+	ResultType int64  `json:"resultType,string"`
 }
 
 type GroupInfo struct {

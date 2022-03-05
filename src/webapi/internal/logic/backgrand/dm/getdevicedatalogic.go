@@ -12,23 +12,23 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetDeviceLogLogic struct {
+type GetDeviceDataLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewGetDeviceLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) GetDeviceLogLogic {
-	return GetDeviceLogLogic{
+func NewGetDeviceDataLogic(ctx context.Context, svcCtx *svc.ServiceContext) GetDeviceDataLogic {
+	return GetDeviceDataLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *GetDeviceLogLogic) GetDeviceLog(req types.GetDeviceLogReq) (*types.GetDeviceLogResp, error) {
-	l.Infof("GetDeviceLog|req=%+v", req)
-	resp, err := l.svcCtx.DmRpc.GetDeviceLog(l.ctx, &dm.GetDeviceLogReq{
+func (l *GetDeviceDataLogic) GetDeviceData(req types.GetDeviceDataReq) (*types.GetDeviceDataResp, error) {
+	l.Infof("GetDeviceData|req=%+v", req)
+	resp, err := l.svcCtx.DmRpc.GetDeviceData(l.ctx, &dm.GetDeviceDataReq{
 		Method:     req.Method,
 		DeviceName: req.DeviceName,
 		ProductID:  req.ProductID,
@@ -39,7 +39,7 @@ func (l *GetDeviceLogLogic) GetDeviceLog(req types.GetDeviceLogReq) (*types.GetD
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.GetDeviceLog|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s|rpc.GetDeviceData|req=%v|err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	info := make([]*types.DeviceData, 0, len(resp.Data))
@@ -51,7 +51,7 @@ func (l *GetDeviceLogLogic) GetDeviceLog(req types.GetDeviceLogReq) (*types.GetD
 			Payload:   v.Payload,
 		})
 	}
-	return &types.GetDeviceLogResp{
+	return &types.GetDeviceDataResp{
 		Total: resp.Total,
 		Data:  info,
 	}, nil

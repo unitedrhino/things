@@ -127,14 +127,14 @@ type SendDmActionResp struct {
 	Code         int64  `json:"code,string,omitempty"`                //设备返回状态码
 }
 
-type GetDeviceLogReq struct {
-	Method 	string  `form:"method,omitempty"`  //获取的类型   property 属性 event事件  log 所有日志
-	DeviceName 	string  `form:"deviceName,omitempty"`  //设备名
-	ProductID 	string  `form:"productID,omitempty"`  //产品id 获取产品id下的所有设备信息
-	DataID 	string  `form:"dataID,omitempty"`  //获取的具体标识符的数据
-	TimeStart 	int64  `form:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd 	int64  `form:"timeEnd,string,optional,omitempty"` //时间的结束
-	Limit 	int64  `form:"limit,optional,omitempty"` //获取的长度
+type GetDeviceDataReq struct {
+	Method string `form:"method,omitempty"`                      //获取的类型   property 属性 event事件  log 所有日志
+	DeviceName string `form:"deviceName,omitempty"`              //设备名
+	ProductID string `form:"productID,omitempty"`                //产品id 获取产品id下的所有设备信息
+	DataID string `form:"dataID,omitempty"`                      //获取的具体标识符的数据
+	TimeStart int64 `form:"timeStart,string,optional,omitempty"` //获取时间的开始
+	TimeEnd int64 `form:"timeEnd,string,optional,omitempty"`     //时间的结束
+	Limit int64 `form:"limit,optional,omitempty"`                //获取的长度
 }
 
 //设备的日志数据
@@ -142,17 +142,39 @@ type DeviceData struct{
 	 Timestamp	int64  `json:"timestamp,string"` //发生时间戳
 	 Method	string  `json:"method"` //操作类型
 	 DataID	string  `json:"dataID"` //获取的具体属性值
-	 Payload	string  `json:"payload"` //具体内容
+	 Payload string `json:"payload"`               //具体内容
 }
 
 //获取对应日志信息
-type GetDeviceLogResp struct{
+type GetDeviceDataResp struct {
 	Total int64 `json:"total,string"`//总数
-	Data []*DeviceData `json:"data"`//总数
+	Data []*DeviceData `json:"data"` //总数
 }
 
 
-@server (
+//实时获取对应信息
+type GetDeviceDescribeLogReq struct {
+	ProductID string `form:"productID,omitempty"`
+	DeviceName string `form:"deviceName,omitempty"`
+	TimeStart int64 `form:"timeStart,optional,string,omitempty"`
+	TimeEnd int64 `form:"timeEnd,optional,string,omitempty"`
+	Limit int64 `form:"limit,optional,omitempty"`
+}
+//实时获取对应信息
+type GetDeviceDescribeLogResp struct {
+	Data []*DeviceDescribeLog `json:"data,omitempty"`
+}
+//设备的日志数据
+type DeviceDescribeLog struct {
+	Timestamp int64 `json:"timestamp,string"`
+	Action string `json:"action"`
+	RequestID string `json:"requestID"`
+	TranceID string `json:"tranceID"`
+	Topic string `json:"topic"`
+	Content string `json:"content"`
+	ResultType int64 `json:"resultType,string"`
+}
+@server(
 	group : backgrand/dm
 	prefix: backgrand/dm
 )
@@ -175,6 +197,8 @@ service webapi {
 	post /sendAction (SendDmActionReq) returns (SendDmActionResp)
 	@handler sendProperty//同步调用设备属性
 	post /sendProperty (SendDmPropertyReq) returns (SendDmPropertyResp)
-	@handler getDeviceLog//获取设备日志信息
-	get /getDeviceLog (GetDeviceLogReq) returns (GetDeviceLogResp)
+	@handler getDeviceData//获取设备日志信息
+	get /getDeviceData (GetDeviceDataReq) returns (GetDeviceDataResp)
+	@handler getDeviceDescribeLog//获取设备日志信息
+	get /getDeviceDescribeLog (GetDeviceDescribeLogReq) returns (GetDeviceDescribeLogResp)
 }

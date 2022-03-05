@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"github.com/go-things/things/shared/def"
+	"github.com/go-things/things/shared/errors"
 
 	"github.com/go-things/things/src/dmsvr/dm"
 	"github.com/go-things/things/src/dmsvr/internal/svc"
@@ -25,7 +27,18 @@ func NewGetDeviceDescribeLogLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 获取设备调试信息记录登入登出,操作
 func (l *GetDeviceDescribeLogLogic) GetDeviceDescribeLog(in *dm.GetDeviceDescribeLogReq) (*dm.GetDeviceDescribeLogResp, error) {
-	// todo: add your logic here and delete this line
+	logs, err := l.svcCtx.DmDB.GetDeviceLog(in.ProductID, in.DeviceName, def.PageInfo2{
+		TimeStart: in.TimeStart,
+		TimeEnd:   in.TimeEnd,
+		Limit:     in.Limit,
+	})
+	if err != nil {
+		return nil, errors.Database
+	}
+	data := []*dm.DeviceDescribeLog{}
+	for _, v := range logs {
+		data = append(data, ToDeviceDescribeLog(v))
+	}
 
-	return &dm.GetDeviceDescribeLogResp{}, nil
+	return &dm.GetDeviceDescribeLogResp{Data: data}, nil
 }

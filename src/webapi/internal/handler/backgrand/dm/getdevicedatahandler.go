@@ -9,16 +9,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func GetDeviceLogHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func GetDeviceDataHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetDeviceLogReq
+		var req types.GetDeviceDataReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := dm.NewGetDeviceLogLogic(r.Context(), ctx)
-		resp, err := l.GetDeviceLog(req)
+		l := dm.NewGetDeviceDataLogic(r.Context(), svcCtx)
+		resp, err := l.GetDeviceData(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

@@ -3,9 +3,11 @@ module github.com/go-things/things
 go 1.14
 
 require (
+	github.com/Masterminds/squirrel v1.5.2
 	github.com/Shopify/sarama v1.30.0
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/didi/gendry v1.7.0
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-uuid v1.0.2
