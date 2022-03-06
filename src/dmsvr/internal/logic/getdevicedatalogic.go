@@ -75,7 +75,7 @@ func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceD
 	}
 	return &dm.GetDeviceDataResp{
 		Total: int64(len(dmDatas)),
-		Data:  dmDatas,
+		List:  dmDatas,
 	}, nil
 }
 

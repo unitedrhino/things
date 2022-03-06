@@ -40,8 +40,8 @@ func (l *GetDeviceDescribeLogLogic) GetDeviceDescribeLog(req types.GetDeviceDesc
 		l.Errorf("%s|rpc.GetDeviceDescribeLog|req=%v|err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	info := make([]*types.DeviceDescribeLog, 0, len(resp.Data))
-	for _, v := range resp.Data {
+	info := make([]*types.DeviceDescribeLog, 0, len(resp.List))
+	for _, v := range resp.List {
 		info = append(info, &types.DeviceDescribeLog{
 			Timestamp:  v.Timestamp,
 			Action:     v.Action,
@@ -52,5 +52,5 @@ func (l *GetDeviceDescribeLogLogic) GetDeviceDescribeLog(req types.GetDeviceDesc
 			ResultType: v.ResultType,
 		})
 	}
-	return &types.GetDeviceDescribeLogResp{Data: info}, err
+	return &types.GetDeviceDescribeLogResp{List: info}, err
 }

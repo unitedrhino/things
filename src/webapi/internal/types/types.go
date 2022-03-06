@@ -152,7 +152,7 @@ type GetProductInfoReq struct {
 }
 
 type GetProductInfoResp struct {
-	Info  []*ProductInfo `json:"info,omitempty"`           //产品信息
+	List  []*ProductInfo `json:"list,omitempty"`           //产品信息
 	Total int64          `json:"total,optional,omitempty"` //拥有的总数(只有分页的时候会返回)
 	Num   int64          `json:"num,optional,omitempty"`   //返回的数量
 }
@@ -193,7 +193,7 @@ type GetDeviceInfoReq struct {
 }
 
 type GetDeviceInfoResp struct {
-	Info  []*DeviceInfo `json:"info,omitempty"`  //设备信息
+	List  []*DeviceInfo `json:"list,omitempty"`  //设备信息
 	Total int64         `json:"total,omitempty"` //总数(只有分页的时候会返回)
 	Num   int64         `json:"num,omitempty"`   //返回的数量
 }
@@ -246,7 +246,7 @@ type DeviceData struct {
 
 type GetDeviceDataResp struct {
 	Total int64         `json:"total,string"` //总数
-	Data  []*DeviceData `json:"data"`         //总数
+	List  []*DeviceData `json:"list"`         //总数
 }
 
 type GetDeviceDescribeLogReq struct {
@@ -258,7 +258,7 @@ type GetDeviceDescribeLogReq struct {
 }
 
 type GetDeviceDescribeLogResp struct {
-	Data []*DeviceDescribeLog `json:"data,omitempty"`
+	List []*DeviceDescribeLog `json:"list,omitempty"`
 }
 
 type DeviceDescribeLog struct {

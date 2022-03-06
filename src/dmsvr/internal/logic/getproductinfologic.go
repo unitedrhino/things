@@ -48,5 +48,5 @@ func (l *GetProductInfoLogic) GetProductInfo(in *dm.GetProductInfoReq) (resp *dm
 			info = append(info, ToProductInfo(v))
 		}
 	}
-	return &dm.GetProductInfoResp{Info: info, Total: size}, nil
+	return &dm.GetProductInfoResp{List: info, Total: size}, nil
 }

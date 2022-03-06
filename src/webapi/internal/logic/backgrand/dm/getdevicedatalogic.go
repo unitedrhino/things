@@ -42,8 +42,8 @@ func (l *GetDeviceDataLogic) GetDeviceData(req types.GetDeviceDataReq) (*types.G
 		l.Errorf("%s|rpc.GetDeviceData|req=%v|err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	info := make([]*types.DeviceData, 0, len(resp.Data))
-	for _, v := range resp.Data {
+	info := make([]*types.DeviceData, 0, len(resp.List))
+	for _, v := range resp.List {
 		info = append(info, &types.DeviceData{
 			Timestamp: v.Timestamp,
 			Method:    v.Method,
@@ -53,6 +53,6 @@ func (l *GetDeviceDataLogic) GetDeviceData(req types.GetDeviceDataReq) (*types.G
 	}
 	return &types.GetDeviceDataResp{
 		Total: resp.Total,
-		Data:  info,
+		List:  info,
 	}, nil
 }

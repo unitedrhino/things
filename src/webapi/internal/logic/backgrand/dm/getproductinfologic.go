@@ -48,14 +48,14 @@ func (l *GetProductInfoLogic) GetProductInfo(req types.GetProductInfoReq) (*type
 		l.Errorf("%s|rpc.GetDeviceInfo|req=%v|err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	pis := make([]*types.ProductInfo, 0, len(resp.Info))
-	for _, v := range resp.Info {
+	pis := make([]*types.ProductInfo, 0, len(resp.List))
+	for _, v := range resp.List {
 		pi := types.ProductInfoToApi(v)
 		pis = append(pis, pi)
 	}
 	return &types.GetProductInfoResp{
 		Total: resp.Total,
-		Info:  pis,
+		List:  pis,
 		Num:   int64(len(pis)),
 	}, nil
 }

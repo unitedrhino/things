@@ -48,7 +48,7 @@ type GetProductInfoReq struct {
 }
 
 type GetProductInfoResp struct {
-	Info []*ProductInfo `json:"info,omitempty"`    //产品信息
+	List []*ProductInfo `json:"list,omitempty"`    //产品信息
 	Total int64 `json:"total,optional,omitempty"`  //拥有的总数(只有分页的时候会返回)
 	Num int64 `json:"num,optional,omitempty"`      //返回的数量
 }
@@ -90,9 +90,9 @@ type GetDeviceInfoReq struct {
 	Page       *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
 }
 type GetDeviceInfoResp struct {
-	Info  []*DeviceInfo `json:"info,omitempty"`    //设备信息
-	Total int64         `json:"total,omitempty"` //总数(只有分页的时候会返回)
-	Num   int64 		`json:"num,omitempty"` //返回的数量
+	List []*DeviceInfo `json:"list,omitempty"`    //设备信息
+	Total int64 `json:"total,omitempty"`          //总数(只有分页的时候会返回)
+	Num int64 `json:"num,omitempty"`              //返回的数量
 }
 
 
@@ -148,7 +148,7 @@ type DeviceData struct{
 //获取对应日志信息
 type GetDeviceDataResp struct {
 	Total int64 `json:"total,string"`//总数
-	Data []*DeviceData `json:"data"` //总数
+	List []*DeviceData `json:"list"` //总数
 }
 
 
@@ -162,7 +162,7 @@ type GetDeviceDescribeLogReq struct {
 }
 //实时获取对应信息
 type GetDeviceDescribeLogResp struct {
-	Data []*DeviceDescribeLog `json:"data,omitempty"`
+	List []*DeviceDescribeLog `json:"list,omitempty"`
 }
 //设备的日志数据
 type DeviceDescribeLog struct {

@@ -59,5 +59,5 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (resp *dm.Ge
 			info = append(info, ToDeviceInfo(v))
 		}
 	}
-	return &dm.GetDeviceInfoResp{Info: info, Total: size}, nil
+	return &dm.GetDeviceInfoResp{List: info, Total: size}, nil
 }
