@@ -46,14 +46,14 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(req types.GetDeviceInfoReq) (*types.G
 		l.Errorf("%s|rpc.GetDeviceInfo|req=%v|err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	dis := make([]*types.DeviceInfo, 0, len(resp.Info))
-	for _, v := range resp.Info {
+	dis := make([]*types.DeviceInfo, 0, len(resp.List))
+	for _, v := range resp.List {
 		di := types.DeviceInfoToApi(v)
 		dis = append(dis, di)
 	}
 	return &types.GetDeviceInfoResp{
 		Total: resp.Total,
-		Info:  dis,
+		List:  dis,
 		Num:   int64(len(dis)),
 	}, nil
 }

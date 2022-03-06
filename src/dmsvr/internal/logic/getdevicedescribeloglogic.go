@@ -40,5 +40,5 @@ func (l *GetDeviceDescribeLogLogic) GetDeviceDescribeLog(in *dm.GetDeviceDescrib
 		data = append(data, ToDeviceDescribeLog(v))
 	}
 
-	return &dm.GetDeviceDescribeLogResp{Data: data}, nil
+	return &dm.GetDeviceDescribeLogResp{List: data}, nil
 }
