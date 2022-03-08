@@ -3,10 +3,8 @@ package logic
 import (
 	"context"
 	"github.com/go-things/things/shared/errors"
-	"github.com/go-things/things/src/dmsvr/internal/exchange/logic"
-	"github.com/go-things/things/src/dmsvr/internal/exchange/types"
-
 	"github.com/go-things/things/src/dmsvr/dm"
+	"github.com/go-things/things/src/dmsvr/internal/domain/deviceSend"
 	"github.com/go-things/things/src/dmsvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -41,7 +39,7 @@ const (
 
 // 设备端发送信息
 func (l *SendDeviceMsgLogic) SendDeviceMsg(in *dm.SendDeviceMsgReq) (*dm.SendDeviceMsgResp, error) {
-	msg := &types.Elements{
+	msg := &deviceSend.Elements{
 		ClientID:  in.ClientID,
 		Username:  in.Username,
 		Topic:     in.Topic,
@@ -51,11 +49,11 @@ func (l *SendDeviceMsgLogic) SendDeviceMsg(in *dm.SendDeviceMsgReq) (*dm.SendDev
 	}
 	switch in.Action {
 	case Connect:
-		return &dm.SendDeviceMsgResp{}, logic.NewConnectLogic(l.ctx, l.svcCtx).Handle(msg)
+		return &dm.SendDeviceMsgResp{}, deviceSend.NewConnectLogic(l.ctx, l.svcCtx).Handle(msg)
 	case Disconnect:
-		return &dm.SendDeviceMsgResp{}, logic.NewDisConnectLogic(l.ctx, l.svcCtx).Handle(msg)
+		return &dm.SendDeviceMsgResp{}, deviceSend.NewDisConnectLogic(l.ctx, l.svcCtx).Handle(msg)
 	case Publish:
-		return &dm.SendDeviceMsgResp{}, logic.NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
+		return &dm.SendDeviceMsgResp{}, deviceSend.NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
 	default:
 		l.Errorf("SendDeviceMsgLogic|SendDeviceMsg|action is invalid:%v", in.Action)
 		return nil, errors.Parameter.WithMsgf("action is invalid:%v", in.Action)

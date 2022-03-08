@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-things/things/shared/errors"
-	"github.com/go-things/things/src/dmsvr/device"
+	"github.com/go-things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/hashicorp/go-uuid"
 	"time"
@@ -21,7 +21,7 @@ type SendPropertyLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	pt       *mysql.ProductTemplate
-	template *device.Template
+	template *deviceTemplate.Template
 }
 
 func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendPropertyLogic {
@@ -38,7 +38,7 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 	if err != nil {
 		return err
 	}
-	l.template, err = device.NewTemplate([]byte(l.pt.Template))
+	l.template, err = deviceTemplate.NewTemplate([]byte(l.pt.Template))
 	if err != nil {
 		return err
 	}
@@ -62,13 +62,13 @@ func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendProper
 		l.Errorf("SendProperty|GenerateUUID err:%v", err)
 		return nil, errors.System.AddDetail(err)
 	}
-	req := device.DeviceReq{
-		Method:      device.CONTROL,
+	req := deviceTemplate.DeviceReq{
+		Method:      deviceTemplate.CONTROL,
 		ClientToken: uuid,
 		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
 		Timestamp: time.Now().UnixMilli(),
 		Params:    param}
-	l.template.VerifyReqParam(req, device.ACTION_INPUT)
+	l.template.VerifyReqParam(req, deviceTemplate.ACTION_INPUT)
 	pubTopic := fmt.Sprintf("$thing/down/property/%s/%s", in.ProductID, in.DeviceName)
 	subTopic := fmt.Sprintf("$thing/up/property/%s/%s", in.ProductID, in.DeviceName)
 

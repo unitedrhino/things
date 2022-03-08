@@ -6,7 +6,7 @@ import (
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/src/dmsvr/dm"
 	"github.com/go-things/things/src/dmsvr/internal/config"
-	"github.com/go-things/things/src/dmsvr/internal/exchange"
+	"github.com/go-things/things/src/dmsvr/internal/repo/event"
 	"github.com/go-things/things/src/dmsvr/internal/server"
 	"github.com/go-things/things/src/dmsvr/internal/svc"
 	"github.com/go-things/things/src/dmsvr/internal/vars"
@@ -30,7 +30,7 @@ func main() {
 	//kafka服务初始化
 	ctx := svc.NewServiceContext(c)
 	vars.Svrctx = ctx
-	k := exchange.NewKafka(ctx)
+	k := event.NewKafka(ctx)
 	k.AddRouters()
 	stop := k.Start()
 	defer stop()

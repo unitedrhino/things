@@ -4,11 +4,11 @@ import (
 	"context"
 	"github.com/go-things/things/shared/db/mongodb"
 	"github.com/go-things/things/shared/utils"
-	"github.com/go-things/things/src/dmsvr/device"
 	"github.com/go-things/things/src/dmsvr/internal/config"
 	"github.com/go-things/things/src/dmsvr/internal/repo"
 	"github.com/go-things/things/src/dmsvr/internal/repo/mongorepo"
 	mysql "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/go-things/things/src/dmsvr/internal/repo/third"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"os"
@@ -23,7 +23,7 @@ type ServiceContext struct {
 	DmDB            mysql.DmModel
 	DeviceID        *utils.SnowFlake
 	ProductID       *utils.SnowFlake
-	DevClient       *device.DevClient
+	DevClient       *third.DevClient
 	DeviceData      repo.GetDeviceDataRepo
 }
 
@@ -37,7 +37,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	DeviceID := utils.NewSnowFlake(c.NodeID)
 	ProductID := utils.NewSnowFlake(c.NodeID)
 
-	devClient := device.NewDevClient(c.DevClient)
+	devClient := third.NewDevClient(c.DevClient)
 	//if token := mc.Connect(); token.Wait() && token.Error() != nil {
 	//	panic(fmt.Sprintf("mqtt client connect err:%s",token.Error()))
 	//}

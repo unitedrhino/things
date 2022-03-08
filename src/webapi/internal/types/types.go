@@ -271,6 +271,24 @@ type DeviceDescribeLog struct {
 	ResultType int64  `json:"resultType,string"`
 }
 
+type GetDevicePropertyStatusReq struct {
+	ProductID  string `form:"productID,omitempty"`
+	DeviceName string `form:"deviceName,omitempty"`
+}
+
+type DevicePropertyStatus struct {
+	Type  string  `json:"type"`
+	Id    string  `json:"id"`
+	Name  string  `json:"name"`
+	Time  int64   `json:"time,string"`
+	Unit  string  `json:"unit"`
+	Value *string `json:"value"`
+}
+
+type GetDevicePropertyStatusResp struct {
+	List []*DevicePropertyStatus `json:"list"`
+}
+
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string,omitempty"`              //组id
 	Name        string `json:"name,omitempty"`                        //组名
