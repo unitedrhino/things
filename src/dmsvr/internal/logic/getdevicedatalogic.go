@@ -3,9 +3,11 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/go-things/things/shared/def"
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/src/dmsvr/dm"
+	"github.com/go-things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/go-things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -22,6 +24,20 @@ func NewGetDeviceDataLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
+}
+
+func (l *GetDeviceDataLogic) HandleDatas(in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
+	tempInfo, err := l.svcCtx.ProductTemplate.FindOne(in.ProductID)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
+	temp, err := deviceTemplate.NewTemplate([]byte(tempInfo.Template))
+	if err != nil {
+		return nil, errors.System.AddDetail(err)
+	}
+	//todo 后续开发获取所有属性
+	fmt.Println(temp)
+	return nil, nil
 }
 
 func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
@@ -41,12 +57,11 @@ func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceD
 		for _, devData := range dds {
 			dmData := dm.DeviceData{
 				Timestamp: devData.TimeStamp.UnixMilli(),
-				Method:    in.Method,
-				DataID:    in.DataID,
+				DataID:    devData.ID,
 			}
 			var payload []byte
 			payload, _ = json.Marshal(devData.Param)
-			dmData.Payload = string(payload)
+			dmData.GetValue = string(payload)
 			dmDatas = append(dmDatas, &dmData)
 			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
 		}
@@ -63,12 +78,12 @@ func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceD
 		for _, devData := range dds {
 			dmData := dm.DeviceData{
 				Timestamp: devData.TimeStamp.UnixMilli(),
-				Method:    in.Method,
-				DataID:    in.DataID,
+				Type:      devData.Type,
+				DataID:    devData.ID,
 			}
 			var payload []byte
 			payload, _ = json.Marshal(devData)
-			dmData.Payload = string(payload)
+			dmData.GetValue = string(payload)
 			dmDatas = append(dmDatas, &dmData)
 			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
 		}

@@ -143,8 +143,8 @@ message ProductInfo{
 
 
 message ManageProductReq{
-  int64 opt           = 1;//操作 0:新增 1:修改 2:删除
-  ProductInfo info  = 2;//产品信息
+  int64 opt = 1;//操作 0:新增 1:修改 2:删除
+  ProductInfo info = 2;//产品信息
 }
 
 
@@ -183,17 +183,17 @@ message DeviceInfo{
   int64   lastLogin = 7; //最后上线时间 只读
   google.protobuf.StringValue  version = 8; // 固件版本  读写
   int64  logLevel = 9; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-  string  cert          = 10;// 设备证书  只读
+  string  cert = 10;// 设备证书  只读
 }
 
 message ManageDeviceReq{
-  int64 opt     = 1;//操作 0:新增 1:修改 2:删除
+  int64 opt = 1;//操作 0:新增 1:修改 2:删除
   DeviceInfo info = 2; //设备信息
 }
 message GetDeviceInfoReq{
-  string  deviceName  = 1; //设备名 为空时获取产品id下的所有设备信息
-  string  productID   = 2; //产品id
-  PageInfo page       = 3;//分页信息 只获取一个则不填
+  string  deviceName = 1; //设备名 为空时获取产品id下的所有设备信息
+  string  productID = 2; //产品id
+  PageInfo page = 3;//分页信息 只获取一个则不填
 }
 
 message GetDeviceInfoResp{
@@ -209,10 +209,10 @@ message GetDeviceInfoResp{
 
 /*获取对应日志信息*/
 message GetDeviceDataReq{
-  string method = 1; //获取的类型   property 属性 event事件 action 操作 log 所有日志
-  string deviceName = 2; //设备名
-  string productID = 3; //产品id 获取产品id下的所有设备信息
-  string dataID = 4; //获取的具体标识符的数据 如果不指定则获取所有数据 一个记录一条
+  string method = 1; //获取的类型   property 属性 event事件 action 请求
+  string deviceName = 2; //设备名(必填)
+  string productID = 3; //产品id (必填)
+  string dataID = 4; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
   int64 timeStart = 5;//获取时间的开始
   int64 timeEnd = 6;//时间的结束
   int64 limit = 7;//获取的长度
@@ -220,10 +220,11 @@ message GetDeviceDataReq{
 
 /*设备的日志数据*/
 message DeviceData{
-  int64 timestamp =1;//发生时间戳
-  string method = 2 ;//操作类型
-  string dataID = 3;//获取的具体属性值
-  string payload = 4;//具体内容
+  int64 timestamp = 1;//发生时间戳
+  string type = 2 ;//类型 事件类型: 信息:info  告警alert  故障:fault
+  string dataID = 3;//属性id
+  string getValue = 4;//获取到的值
+  string sendValue = 5;//发送过去的参数(action限定)
 }
 
 /*获取对应日志信息*/
@@ -257,31 +258,29 @@ message GetDeviceDescribeLogResp{
 }
 
 message SendActionReq{
-  string  productID   = 1; //产品id 获取产品id下的所有设备信息
-  string  deviceName  = 2; //设备名
-  string actionId =3;//产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+  string  productID = 1; //产品id 获取产品id下的所有设备信息
+  string  deviceName = 2; //设备名
+  string actionId = 3;//产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
   string inputParams = 4;//输入参数
 }
 message SendActionResp{
   string clientToken = 1;//调用id
-  string outputParams =2;//输出参数 注意：此字段可能返回 null，表示取不到有效值。
-  string  status =3;//返回状态
-  int64   code =4;//设备返回状态码
+  string outputParams = 2;//输出参数 注意：此字段可能返回 null，表示取不到有效值。
+  string  status = 3;//返回状态
+  int64   code = 4;//设备返回状态码
 }
 
 message SendPropertyReq{
-  string  productID   = 1; //产品id 获取产品id下的所有设备信息
-  string  deviceName  = 2; //设备名
+  string  productID = 1; //产品id 获取产品id下的所有设备信息
+  string  deviceName = 2; //设备名
   string data = 3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
   int64  dataTimestamp = 4;//上报数据UNIX时间戳, 仅对Method:reported有效
   string method = 5;//请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
 }
 message SendPropertyResp{
-  int64   code =1;//设备返回状态码
-  string  status =2;//返回状态
+  int64   code = 1;//设备返回状态码
+  string  status = 2;//返回状态
   string clientToken = 3;//调用id
   string data = 4;//返回信息
 }
-
-
 

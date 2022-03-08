@@ -117,8 +117,10 @@ func (d *DeviceDataContext) CreateLogDB(productID string) error {
 //通过属性的id及方法获取一段时间或最新时间的记录
 func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) (dds []*repo.Event, err error) {
 	filter := bson.D{
-		{"id", bson.M{"$eq": dataID}},
 		{"deviceName", bson.M{"$eq": deviceName}},
+	}
+	if dataID != "" {
+		filter = append(filter, bson.E{Key: "id", Value: bson.M{"$eq": dataID}})
 	}
 	if page.TimeStart != 0 {
 		filter = append(filter, bson.E{TimeStampKey, bson.M{"$gte": time.UnixMilli(page.TimeStart)}})
@@ -155,7 +157,6 @@ func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName stri
 
 //通过属性的id及方法获取一段时间或最新时间的记录
 func (d *DeviceDataContext) GetPropertyDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) (dds []*repo.Property, err error) {
-
 	filter := bson.D{
 		//{"isp", isp},
 		{fmt.Sprintf("%s.%s", PropertyMD, dataID), bson.M{"$ne": primitive.Null{}}},

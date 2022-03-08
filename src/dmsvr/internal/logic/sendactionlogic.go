@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-things/things/shared/errors"
-	"github.com/go-things/things/src/dmsvr/device"
+	"github.com/go-things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
@@ -19,7 +19,7 @@ type SendActionLogic struct {
 	ctx      context.Context
 	svcCtx   *svc.ServiceContext
 	pt       *mysql.ProductTemplate
-	template *device.Template
+	template *deviceTemplate.Template
 	logx.Logger
 }
 
@@ -36,7 +36,7 @@ func (l *SendActionLogic) initMsg(productID string) error {
 	if err != nil {
 		return err
 	}
-	l.template, err = device.NewTemplate([]byte(l.pt.Template))
+	l.template, err = deviceTemplate.NewTemplate([]byte(l.pt.Template))
 	if err != nil {
 		return err
 	}
@@ -59,13 +59,13 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 	//	l.Errorf("SendAction|GenerateUUID err:%v",err)
 	//	return nil, errors.System.AddDetail(err)
 	//}
-	req := device.DeviceReq{
-		Method: device.ACTION,
+	req := deviceTemplate.DeviceReq{
+		Method: deviceTemplate.ACTION,
 		//ClientToken: uuid,
 		ClientToken: "de65377c-4041-565d-0b5e-67b664a06be8", //这个是测试代码
 		Timestamp:   time.Now().UnixMilli(),
 		Params:      param}
-	l.template.VerifyReqParam(req, device.ACTION_INPUT)
+	l.template.VerifyReqParam(req, deviceTemplate.ACTION_INPUT)
 	pubTopic := fmt.Sprintf("$thing/down/action/%s/%s", in.ProductID, in.DeviceName)
 	subTopic := fmt.Sprintf("$thing/up/action/%s/%s", in.ProductID, in.DeviceName)
 
