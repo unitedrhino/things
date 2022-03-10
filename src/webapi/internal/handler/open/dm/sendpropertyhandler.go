@@ -1,25 +1,24 @@
 package dm
 
 import (
-	"github.com/go-things/things/src/webapi/internal/logic/backgrand/dm"
 	"net/http"
 
+	"github.com/go-things/things/src/webapi/internal/logic/open/dm"
 	"github.com/go-things/things/src/webapi/internal/svc"
 	"github.com/go-things/things/src/webapi/internal/types"
-
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func GetProductInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func SendPropertyHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetProductInfoReq
+		var req types.SendDmPropertyReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := dm.NewGetProductInfoLogic(r.Context(), ctx)
-		resp, err := l.GetProductInfo(req)
+		l := dm.NewSendPropertyLogic(r.Context(), svcCtx)
+		resp, err := l.SendProperty(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

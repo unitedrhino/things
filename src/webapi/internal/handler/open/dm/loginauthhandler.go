@@ -1,28 +1,28 @@
-package dc
+package dm
 
 import (
 	"net/http"
 
-	"github.com/go-things/things/src/webapi/internal/logic/backgrand/dc"
+	"github.com/go-things/things/src/webapi/internal/logic/open/dm"
 	"github.com/go-things/things/src/webapi/internal/svc"
 	"github.com/go-things/things/src/webapi/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func BgGetGroupInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func LoginAuthHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetGroupInfoReq
+		var req types.LoginAuthReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := dc.NewBgGetGroupInfoLogic(r.Context(), ctx)
-		resp, err := l.BgGetGroupInfo(req)
+		l := dm.NewLoginAuthLogic(r.Context(), svcCtx)
+		err := l.LoginAuth(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {
-			httpx.OkJson(w, resp)
+			httpx.Ok(w)
 		}
 	}
 }

@@ -3,22 +3,22 @@ package dm
 import (
 	"net/http"
 
-	"github.com/go-things/things/src/webapi/internal/logic/backgrand/dm"
+	"github.com/go-things/things/src/webapi/internal/logic/open/dm"
 	"github.com/go-things/things/src/webapi/internal/svc"
 	"github.com/go-things/things/src/webapi/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func GetDeviceDataHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetDeviceInfoHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetDeviceDataReq
+		var req types.GetDeviceInfoReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := dm.NewGetDeviceDataLogic(r.Context(), svcCtx)
-		resp, err := l.GetDeviceData(req)
+		l := dm.NewGetDeviceInfoLogic(r.Context(), svcCtx)
+		resp, err := l.GetDeviceInfo(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

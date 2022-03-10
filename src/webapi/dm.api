@@ -193,8 +193,8 @@ type GetDevicePropertyStatusResp struct {
 }
 
 @server(
-    group : backgrand/dm
-    prefix: backgrand/dm
+    group : open/dm
+    prefix: open/dm
 )
 service webapi {
     @handler loginAuth //设备登录

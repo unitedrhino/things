@@ -114,9 +114,9 @@ service webapi {
 }
 
 
-@server (
-    group :backgrand/dc
-    prefix: backgrand/dc
+@server(
+    group : open/dc
+    prefix: open/dc
 )
 service webapi {
     @handler  bgManageGroupInfo//管理组
