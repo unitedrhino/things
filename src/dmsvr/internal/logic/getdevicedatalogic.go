@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/go-things/things/shared/def"
 	"github.com/go-things/things/shared/errors"
 	"github.com/go-things/things/src/dmsvr/dm"
@@ -27,6 +26,11 @@ func NewGetDeviceDataLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetDeviceDataLogic) HandleDatas(in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
+	var (
+		dmDatas []*dm.DeviceData
+		total   int
+	)
+
 	tempInfo, err := l.svcCtx.ProductTemplate.FindOne(in.ProductID)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
@@ -35,9 +39,37 @@ func (l *GetDeviceDataLogic) HandleDatas(in *dm.GetDeviceDataReq) (*dm.GetDevice
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	}
-	//todo 后续开发获取所有属性
-	fmt.Println(temp)
-	return nil, nil
+	dd := l.svcCtx.DeviceData(l.ctx)
+	switch in.Method {
+	case def.PROPERTY_METHOD:
+		total = len(temp.Properties)
+		for _, v := range temp.Properties {
+			dds, err := dd.GetPropertyDataWithID(in.ProductID, in.DeviceName, v.ID, def.PageInfo2{Limit: 1})
+			if err != nil {
+				l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
+				return nil, errors.System
+			}
+			if len(dds) == 0 {
+				continue
+			}
+			devData := dds[0]
+			dmData := dm.DeviceData{
+				Timestamp: devData.TimeStamp.UnixMilli(),
+				DataID:    devData.ID,
+			}
+			var payload []byte
+			payload, _ = json.Marshal(devData.Param)
+			dmData.GetValue = string(payload)
+			dmDatas = append(dmDatas, &dmData)
+			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
+		}
+	default:
+		return nil, errors.NotRealize.AddDetailf("multi method not implemt:%v", in.Method)
+	}
+	return &dm.GetDeviceDataResp{
+		Total: int64(total),
+		List:  dmDatas,
+	}, nil
 }
 
 func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
@@ -97,6 +129,9 @@ func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceD
 func (l *GetDeviceDataLogic) GetDeviceData(in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
 	switch in.Method {
 	case "property", "action", "event": //获取属性信息,获取操作信息,获取事件信息
+		if in.DataID == "" {
+			return l.HandleDatas(in)
+		}
 		return l.HandleData(in)
 	case "status": //获取设备状态信息
 	case "logs": //获取设备的调试日志

@@ -155,11 +155,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/getDeviceDescribeLog",
 				Handler: backgranddm.GetDeviceDescribeLogHandler(serverCtx),
 			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/getDevicePropertyStatus",
-				Handler: backgranddm.GetDevicePropertyStatusHandler(serverCtx),
-			},
 		},
 		rest.WithPrefix("/backgrand/dm"),
 	)

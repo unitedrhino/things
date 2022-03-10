@@ -46,9 +46,10 @@ func (l *GetDeviceDataLogic) GetDeviceData(req types.GetDeviceDataReq) (*types.G
 	for _, v := range resp.List {
 		info = append(info, &types.DeviceData{
 			Timestamp: v.Timestamp,
-			Method:    v.Method,
+			Type:      v.Type,
 			DataID:    v.DataID,
-			Payload:   v.Payload,
+			GetValue:  v.GetValue,
+			SendValue: v.SendValue,
 		})
 	}
 	return &types.GetDeviceDataResp{

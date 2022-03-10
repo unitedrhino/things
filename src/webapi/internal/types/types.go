@@ -231,17 +231,18 @@ type GetDeviceDataReq struct {
 	Method     string `form:"method,omitempty"`                    //获取的类型   property 属性 event事件  log 所有日志
 	DeviceName string `form:"deviceName,omitempty"`                //设备名
 	ProductID  string `form:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
-	DataID     string `form:"dataID,omitempty"`                    //获取的具体标识符的数据
+	DataID     string `form:"dataID,optional,omitempty"`           //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
 	TimeStart  int64  `form:"timeStart,string,optional,omitempty"` //获取时间的开始
 	TimeEnd    int64  `form:"timeEnd,string,optional,omitempty"`   //时间的结束
 	Limit      int64  `form:"limit,optional,omitempty"`            //获取的长度
 }
 
 type DeviceData struct {
-	Timestamp int64  `json:"timestamp,string"` //发生时间戳
-	Method    string `json:"method"`           //操作类型
-	DataID    string `json:"dataID"`           //获取的具体属性值
-	Payload   string `json:"payload"`          //具体内容
+	Timestamp int64  `json:"timestamp,string"`    //发生时间戳
+	Type      string `json:"type,omitempty"`      //类型 事件类型: 信息:info  告警alert  故障:fault
+	DataID    string `json:"dataID"`              //获取的具体属性值
+	GetValue  string `json:"getValue,omitempty"`  //获取到的值
+	SendValue string `json:"sendValue,omitempty"` //发送过去的参数(action限定)
 }
 
 type GetDeviceDataResp struct {
