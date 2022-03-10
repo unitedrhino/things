@@ -1,24 +1,24 @@
-package user
+package dc
 
 import (
 	"net/http"
 
-	"github.com/go-things/things/src/webapi/internal/logic/backgrand/user"
+	"github.com/go-things/things/src/webapi/internal/logic/open/dc"
 	"github.com/go-things/things/src/webapi/internal/svc"
 	"github.com/go-things/things/src/webapi/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func UserInfosHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func BgManageGroupMemberHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetUserInfosReq
+		var req types.ManageGroupMemberReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := user.NewUserInfosLogic(r.Context(), ctx)
-		resp, err := l.UserInfos(req)
+		l := dc.NewBgManageGroupMemberLogic(r.Context(), svcCtx)
+		resp, err := l.BgManageGroupMember(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

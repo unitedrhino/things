@@ -1,24 +1,24 @@
-package dm
+package user
 
 import (
-	"github.com/go-things/things/src/webapi/internal/logic/backgrand/dm"
 	"net/http"
 
+	"github.com/go-things/things/src/webapi/internal/logic/open/user"
 	"github.com/go-things/things/src/webapi/internal/svc"
 	"github.com/go-things/things/src/webapi/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func SendPropertyHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func UserInfosHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.SendDmPropertyReq
+		var req types.GetUserInfosReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := dm.NewSendPropertyLogic(r.Context(), ctx)
-		resp, err := l.SendProperty(req)
+		l := user.NewUserInfosLogic(r.Context(), svcCtx)
+		resp, err := l.UserInfos(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

@@ -4,12 +4,12 @@ package handler
 import (
 	"net/http"
 
-	backgranddc "github.com/go-things/things/src/webapi/internal/handler/backgrand/dc"
-	backgranddm "github.com/go-things/things/src/webapi/internal/handler/backgrand/dm"
-	backgranduser "github.com/go-things/things/src/webapi/internal/handler/backgrand/user"
 	frontdc "github.com/go-things/things/src/webapi/internal/handler/front/dc"
 	frontuser "github.com/go-things/things/src/webapi/internal/handler/front/user"
 	frontverify "github.com/go-things/things/src/webapi/internal/handler/front/verify"
+	opendc "github.com/go-things/things/src/webapi/internal/handler/open/dc"
+	opendm "github.com/go-things/things/src/webapi/internal/handler/open/dm"
+	openuser "github.com/go-things/things/src/webapi/internal/handler/open/user"
 	"github.com/go-things/things/src/webapi/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -86,16 +86,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodGet,
 					Path:    "/userCoreList",
-					Handler: backgranduser.UserCoreListHandler(serverCtx),
+					Handler: openuser.UserCoreListHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/userInfos",
-					Handler: backgranduser.UserInfosHandler(serverCtx),
+					Handler: openuser.UserInfosHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/backgrand/user"),
+		rest.WithPrefix("/open/user"),
 	)
 
 	server.AddRoutes(
@@ -103,60 +103,60 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/loginAuth",
-				Handler: backgranddm.LoginAuthHandler(serverCtx),
+				Handler: opendm.LoginAuthHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/manageDevice",
-				Handler: backgranddm.ManageDeviceHandler(serverCtx),
+				Handler: opendm.ManageDeviceHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/manageProduct",
-				Handler: backgranddm.ManageProductHandler(serverCtx),
+				Handler: opendm.ManageProductHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/getProductInfo",
-				Handler: backgranddm.GetProductInfoHandler(serverCtx),
+				Handler: opendm.GetProductInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/manageProductTemplate",
-				Handler: backgranddm.ManageProductTemplateHandler(serverCtx),
+				Handler: opendm.ManageProductTemplateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/getProductTemplate",
-				Handler: backgranddm.GetProductTemplateHandler(serverCtx),
+				Handler: opendm.GetProductTemplateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/getDeviceInfo",
-				Handler: backgranddm.GetDeviceInfoHandler(serverCtx),
+				Handler: opendm.GetDeviceInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/sendAction",
-				Handler: backgranddm.SendActionHandler(serverCtx),
+				Handler: opendm.SendActionHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/sendProperty",
-				Handler: backgranddm.SendPropertyHandler(serverCtx),
+				Handler: opendm.SendPropertyHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,
 				Path:    "/getDeviceData",
-				Handler: backgranddm.GetDeviceDataHandler(serverCtx),
+				Handler: opendm.GetDeviceDataHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,
 				Path:    "/getDeviceDescribeLog",
-				Handler: backgranddm.GetDeviceDescribeLogHandler(serverCtx),
+				Handler: opendm.GetDeviceDescribeLogHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/backgrand/dm"),
+		rest.WithPrefix("/open/dm"),
 	)
 
 	server.AddRoutes(
@@ -203,24 +203,24 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/manageGroupInfo",
-				Handler: backgranddc.BgManageGroupInfoHandler(serverCtx),
+				Handler: opendc.BgManageGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/manageGroupMember",
-				Handler: backgranddc.BgManageGroupMemberHandler(serverCtx),
+				Handler: opendc.BgManageGroupMemberHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/getGroupInfo",
-				Handler: backgranddc.BgGetGroupInfoHandler(serverCtx),
+				Handler: opendc.BgGetGroupInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/getGroupMember",
-				Handler: backgranddc.BgGetGroupMemberHandler(serverCtx),
+				Handler: opendc.BgGetGroupMemberHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/backgrand/dc"),
+		rest.WithPrefix("/open/dc"),
 	)
 }

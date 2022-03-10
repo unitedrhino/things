@@ -137,8 +137,8 @@ service webapi {
 
 @server(
 	middleware: Record
-	group:backgrand/user
-	prefix: backgrand/user
+	group: open/user
+	prefix: open/user
 )
 service webapi {
 	@handler userCoreList
