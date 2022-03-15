@@ -91,6 +91,7 @@ func (l *AccessAuthLogic) CompareTopic(in *dm.AccessAuthReq) error {
 	keys := strings.Split(in.Topic, "/")
 	topics, ok := Topic[keys[0]]
 	if ok != true {
+		//自定义topic
 		if keys[0] == lg.ProductID && keys[1] == lg.DeviceName { //用户自定义先不判断后续的字段 undo
 			return nil
 		}
