@@ -41,3 +41,42 @@ ${productID} 为产品id ${deviceName} 为设备id
 - ${productID}/${deviceName}/data //订阅和发布
 - ${productID}/${deviceName}/event //发布
 - ${productID}/${deviceName}/control //订阅
+
+# EMQX配置文件
+
+
+```
+
+auth.http.auth_req = http://127.0.0.1:8080/mqtt/auth
+auth.http.auth_req.method = post
+auth.http.auth_req.params = username=%u,password=%P,clientid=%c,ip=%a
+
+##--------------------------------------------------------------------
+
+auth.http.super_req = http://127.0.0.1:8080/mqtt/superuser
+auth.http.super_req.method = post
+auth.http.super_req.params = username=%u,password=%P,clientid=%c,ip=%a
+
+##--------------------------------------------------------------------
+
+auth.http.acl_req = http://127.0.0.1:8080/mqtt/acl
+auth.http.acl_req.method = get
+auth.http.acl_req.params = access=%A,username=%u,clientid=%c,ip=%a,topic=%t
+
+```
+
+参数：
+
+- %u: username
+- %c: clientid
+- %a: ipaddress
+- %r: protocol
+- %P: password
+- %A: 1 | 2, 1 = sub, 2 = pub
+- %C: common name of client TLS cert
+- %d: subject of client TLS cert
+- %m: mountpoint
+- %t: topic
+
+## HTTP API
+成功返回**200**；失败返回**400**即可
