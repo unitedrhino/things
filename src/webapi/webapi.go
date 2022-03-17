@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/go-things/things/src/webapi/internal/vars"
+	"github.com/i-Things/things/src/webapi/internal/vars"
 
-	"github.com/go-things/things/src/webapi/internal/config"
-	"github.com/go-things/things/src/webapi/internal/handler"
-	"github.com/go-things/things/src/webapi/internal/svc"
+	"github.com/i-Things/things/src/webapi/internal/config"
+	"github.com/i-Things/things/src/webapi/internal/handler"
+	"github.com/i-Things/things/src/webapi/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

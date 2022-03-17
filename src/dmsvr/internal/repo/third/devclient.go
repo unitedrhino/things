@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/go-things/things/shared/errors"
-	"github.com/go-things/things/shared/utils"
-	"github.com/go-things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"time"
 )
 

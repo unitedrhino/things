@@ -1,10 +1,10 @@
 package svc
 
 import (
-	"github.com/go-things/things/shared/utils"
-	"github.com/go-things/things/src/dcsvr/internal/config"
-	"github.com/go-things/things/src/dcsvr/model"
-	"github.com/go-things/things/src/dmsvr/dmclient"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dcsvr/internal/config"
+	"github.com/i-Things/things/src/dcsvr/model"
+	"github.com/i-Things/things/src/dmsvr/dmclient"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
 )

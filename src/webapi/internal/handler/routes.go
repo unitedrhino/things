@@ -4,13 +4,13 @@ package handler
 import (
 	"net/http"
 
-	frontdc "github.com/go-things/things/src/webapi/internal/handler/front/dc"
-	frontuser "github.com/go-things/things/src/webapi/internal/handler/front/user"
-	frontverify "github.com/go-things/things/src/webapi/internal/handler/front/verify"
-	opendc "github.com/go-things/things/src/webapi/internal/handler/open/dc"
-	opendm "github.com/go-things/things/src/webapi/internal/handler/open/dm"
-	openuser "github.com/go-things/things/src/webapi/internal/handler/open/user"
-	"github.com/go-things/things/src/webapi/internal/svc"
+	frontdc "github.com/i-Things/things/src/webapi/internal/handler/front/dc"
+	frontuser "github.com/i-Things/things/src/webapi/internal/handler/front/user"
+	frontverify "github.com/i-Things/things/src/webapi/internal/handler/front/verify"
+	opendc "github.com/i-Things/things/src/webapi/internal/handler/open/dc"
+	opendm "github.com/i-Things/things/src/webapi/internal/handler/open/dm"
+	openuser "github.com/i-Things/things/src/webapi/internal/handler/open/user"
+	"github.com/i-Things/things/src/webapi/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

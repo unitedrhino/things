@@ -3,8 +3,8 @@ package logic
 import (
 	"database/sql"
 	"fmt"
-	"github.com/go-things/things/src/dcsvr/dc"
-	"github.com/go-things/things/src/dcsvr/model"
+	"github.com/i-Things/things/src/dcsvr/dc"
+	"github.com/i-Things/things/src/dcsvr/model"
 )
 
 func GetNullTime(time sql.NullTime) int64 {

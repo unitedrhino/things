@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/go-things/things/shared/def"
+	"github.com/i-Things/things/shared/def"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net"
 	"net/http"

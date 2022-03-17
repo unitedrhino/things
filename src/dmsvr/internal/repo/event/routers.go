@@ -1,7 +1,7 @@
 package event
 
 import (
-	deviceSend "github.com/go-things/things/src/dmsvr/internal/domain/deviceSend"
+	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/deviceSend"
 )
 
 func (k *Kafka) AddRouters() {

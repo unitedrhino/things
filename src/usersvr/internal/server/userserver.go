@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"github.com/go-things/things/src/usersvr/internal/logic"
-	"github.com/go-things/things/src/usersvr/internal/svc"
-	"github.com/go-things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/internal/logic"
+	"github.com/i-Things/things/src/usersvr/internal/svc"
+	"github.com/i-Things/things/src/usersvr/user"
 )
 
 type UserServer struct {

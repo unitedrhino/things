@@ -1,11 +1,11 @@
 package dc
 
 import (
-	"github.com/go-things/things/src/webapi/internal/logic/front/dc"
+	"github.com/i-Things/things/src/webapi/internal/logic/front/dc"
 	"net/http"
 
-	"github.com/go-things/things/src/webapi/internal/svc"
-	"github.com/go-things/things/src/webapi/internal/types"
+	"github.com/i-Things/things/src/webapi/internal/svc"
+	"github.com/i-Things/things/src/webapi/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

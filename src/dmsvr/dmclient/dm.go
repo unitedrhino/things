@@ -6,7 +6,7 @@ package dmclient
 import (
 	"context"
 
-	"github.com/go-things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/dm"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

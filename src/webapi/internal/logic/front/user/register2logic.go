@@ -2,12 +2,12 @@ package user
 
 import (
 	"context"
-	"github.com/go-things/things/shared/errors"
-	"github.com/go-things/things/shared/utils"
-	"github.com/go-things/things/src/usersvr/user"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/usersvr/user"
 
-	"github.com/go-things/things/src/webapi/internal/svc"
-	"github.com/go-things/things/src/webapi/internal/types"
+	"github.com/i-Things/things/src/webapi/internal/svc"
+	"github.com/i-Things/things/src/webapi/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

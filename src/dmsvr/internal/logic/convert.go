@@ -2,9 +2,9 @@ package logic
 
 import (
 	"database/sql"
-	"github.com/go-things/things/src/dmsvr/dm"
-	mysql "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/i-Things/things/src/dmsvr/dm"
+	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 )
 
 func GetNullTime(time sql.NullTime) int64 {

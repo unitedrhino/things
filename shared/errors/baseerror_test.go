@@ -3,7 +3,7 @@ package errors_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-things/things/shared/errors"
+	"github.com/i-Things/things/shared/errors"
 	"strings"
 	"testing"
 )

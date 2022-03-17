@@ -6,7 +6,7 @@ package dcclient
 import (
 	"context"
 
-	"github.com/go-things/things/src/dcsvr/dc"
+	"github.com/i-Things/things/src/dcsvr/dc"
 
 	"github.com/zeromicro/go-zero/zrpc"
 )

@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"github.com/go-things/things/src/usersvr/internal/logic"
-	"github.com/go-things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/internal/logic"
+	"github.com/i-Things/things/src/usersvr/user"
 	"testing"
 )
 

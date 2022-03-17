@@ -3,9 +3,9 @@ package tests
 import (
 	"context"
 	"fmt"
-	"github.com/go-things/things/shared/errors"
-	"github.com/go-things/things/src/dcsvr/dc"
-	"github.com/go-things/things/src/dcsvr/dcclient"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dcsvr/dc"
+	"github.com/i-Things/things/src/dcsvr/dcclient"
 	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/zrpc"
 	"testing"

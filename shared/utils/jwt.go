@@ -2,7 +2,7 @@ package utils
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"github.com/go-things/things/shared/errors"
+	"github.com/i-Things/things/shared/errors"
 	"time"
 )
 

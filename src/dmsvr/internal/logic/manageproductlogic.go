@@ -3,14 +3,14 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"github.com/go-things/things/shared/def"
-	"github.com/go-things/things/shared/errors"
-	mysql "github.com/go-things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/errors"
+	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
 
-	"github.com/go-things/things/src/dmsvr/dm"
-	"github.com/go-things/things/src/dmsvr/internal/svc"
+	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

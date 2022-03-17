@@ -1,4 +1,4 @@
-module github.com/go-things/things
+module github.com/i-Things/things
 
 go 1.14
 

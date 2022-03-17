@@ -3,7 +3,7 @@ package mysql
 import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/go-things/things/shared/def"
+	"github.com/i-Things/things/shared/def"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"

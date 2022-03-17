@@ -3,7 +3,7 @@ package repo
 
 import (
 	"context"
-	"github.com/go-things/things/shared/def"
+	"github.com/i-Things/things/shared/def"
 	"time"
 )
 

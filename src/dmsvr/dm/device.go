@@ -1,7 +1,7 @@
 package dm
 
 import (
-	"github.com/go-things/things/shared/errors"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
 	"strings"
 )
