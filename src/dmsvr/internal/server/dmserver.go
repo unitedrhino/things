@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"github.com/go-things/things/src/dmsvr/dm"
-	"github.com/go-things/things/src/dmsvr/internal/logic"
-	"github.com/go-things/things/src/dmsvr/internal/svc"
+	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
+	"github.com/i-Things/things/src/dmsvr/internal/svc"
 )
 
 type DmServer struct {

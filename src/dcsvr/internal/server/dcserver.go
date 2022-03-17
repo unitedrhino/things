@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"github.com/go-things/things/src/dcsvr/dc"
-	"github.com/go-things/things/src/dcsvr/internal/logic"
-	"github.com/go-things/things/src/dcsvr/internal/svc"
+	"github.com/i-Things/things/src/dcsvr/dc"
+	"github.com/i-Things/things/src/dcsvr/internal/logic"
+	"github.com/i-Things/things/src/dcsvr/internal/svc"
 )
 
 type DcServer struct {

@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/go-things/things/shared/errors"
+	"github.com/i-Things/things/shared/errors"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/go-things/things/src/usersvr/internal/config"
-	"github.com/go-things/things/src/usersvr/internal/server"
-	"github.com/go-things/things/src/usersvr/internal/svc"
-	"github.com/go-things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/internal/config"
+	"github.com/i-Things/things/src/usersvr/internal/server"
+	"github.com/i-Things/things/src/usersvr/internal/svc"
+	"github.com/i-Things/things/src/usersvr/user"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/zrpc"

@@ -2,7 +2,7 @@ package verify
 
 import (
 	"fmt"
-	"github.com/go-things/things/shared/errors"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/mojocn/base64Captcha"
 	"github.com/zeromicro/go-zero/core/syncx"
 	"time"

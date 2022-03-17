@@ -1,9 +1,9 @@
 package types
 
 import (
-	"github.com/go-things/things/src/dmsvr/dm"
-	"github.com/go-things/things/src/usersvr/user"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/usersvr/user"
 )
 
 func GetNullVal(val *wrappers.StringValue) *string {

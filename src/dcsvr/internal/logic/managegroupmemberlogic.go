@@ -3,14 +3,14 @@ package logic
 import (
 	"context"
 	"fmt"
-	"github.com/go-things/things/shared/def"
-	"github.com/go-things/things/shared/errors"
-	"github.com/go-things/things/shared/utils"
-	"github.com/go-things/things/src/dcsvr/model"
+	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dcsvr/model"
 	"time"
 
-	"github.com/go-things/things/src/dcsvr/dc"
-	"github.com/go-things/things/src/dcsvr/internal/svc"
+	"github.com/i-Things/things/src/dcsvr/dc"
+	"github.com/i-Things/things/src/dcsvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

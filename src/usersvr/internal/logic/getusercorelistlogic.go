@@ -2,12 +2,12 @@ package logic
 
 import (
 	"context"
-	"github.com/go-things/things/shared/def"
-	"github.com/go-things/things/shared/errors"
+	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/jinzhu/copier"
 
-	"github.com/go-things/things/src/usersvr/internal/svc"
-	"github.com/go-things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/internal/svc"
+	"github.com/i-Things/things/src/usersvr/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

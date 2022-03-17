@@ -3,7 +3,7 @@ package deviceTemplate
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-things/things/shared/errors"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
 )
 

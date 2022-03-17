@@ -3,8 +3,8 @@ package mongorepo
 import (
 	"context"
 	"fmt"
-	"github.com/go-things/things/shared/def"
-	"github.com/go-things/things/src/dmsvr/internal/repo"
+	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/src/dmsvr/internal/repo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

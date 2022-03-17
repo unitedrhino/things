@@ -84,16 +84,16 @@ CREATE TABLE `device_log`
   DEFAULT CHARSET = utf8mb4 COMMENT ='设备日志表';
 
 
-CREATE TABLE if not exists `category_detail`
-(
-    `id`           int(10) unsigned NOT NULL,
-    `categoryKey`  varchar(20)      NOT NULL COMMENT '产品种类英文key',
-    `categoryName` varchar(100)     NOT NULL COMMENT '产品种类名字',
-    `parentID`     int(10) DEFAULT 0 COMMENT '父类id',
-    `isLeaf`       tinyint default 0 comment '是否是叶子节点',
-    `listOrder`    int(10) DEFAULT '' COMMENT '排序',
-    `template`     text COMMENT '物模型模板',
-    `createdTime`  datetime         NOT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='产品品类详情';
+# CREATE TABLE if not exists `category_detail`
+# (
+#     `id`           int(10) unsigned NOT NULL,
+#     `categoryKey`  varchar(20)      NOT NULL COMMENT '产品种类英文key',
+#     `categoryName` varchar(100)     NOT NULL COMMENT '产品种类名字',
+#     `parentID`     int(10) DEFAULT 0 COMMENT '父类id',
+#     `isLeaf`       tinyint default 0 comment '是否是叶子节点',
+#     `listOrder`    int(10) DEFAULT '' COMMENT '排序',
+#     `template`     text COMMENT '物模型模板',
+#     `createdTime`  datetime         NOT NULL,
+#     PRIMARY KEY (`id`)
+# ) ENGINE = InnoDB
+#   DEFAULT CHARSET = utf8mb4 COMMENT ='产品品类详情';

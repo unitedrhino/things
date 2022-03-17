@@ -1,10 +1,10 @@
 package dto
 
 import (
-	"github.com/go-things/things/shared/errors"
-	"github.com/go-things/things/src/dcsvr/dc"
-	"github.com/go-things/things/src/webapi/internal/types"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dcsvr/dc"
+	"github.com/i-Things/things/src/webapi/internal/types"
 )
 
 func GetNullVal(val *wrappers.StringValue) *string {

@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/go-things/things/shared/utils"
-	"github.com/go-things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"testing"
 )
 

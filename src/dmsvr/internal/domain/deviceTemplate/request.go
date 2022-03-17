@@ -1,7 +1,7 @@
 package deviceTemplate
 
 import (
-	"github.com/go-things/things/shared/errors"
+	"github.com/i-Things/things/shared/errors"
 	"time"
 )
 

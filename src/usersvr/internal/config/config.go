@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/go-things/things/shared/third/weixin"
+	"github.com/i-Things/things/shared/third/weixin"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
 )

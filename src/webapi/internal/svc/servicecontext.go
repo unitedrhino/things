@@ -1,12 +1,12 @@
 package svc
 
 import (
-	"github.com/go-things/things/shared/verify"
-	"github.com/go-things/things/src/dcsvr/dcclient"
-	"github.com/go-things/things/src/dmsvr/dmclient"
-	"github.com/go-things/things/src/usersvr/userclient"
-	"github.com/go-things/things/src/webapi/internal/config"
-	"github.com/go-things/things/src/webapi/internal/middleware"
+	"github.com/i-Things/things/shared/verify"
+	"github.com/i-Things/things/src/dcsvr/dcclient"
+	"github.com/i-Things/things/src/dmsvr/dmclient"
+	"github.com/i-Things/things/src/usersvr/userclient"
+	"github.com/i-Things/things/src/webapi/internal/config"
+	"github.com/i-Things/things/src/webapi/internal/middleware"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"time"

@@ -2,9 +2,9 @@ package logic
 
 import (
 	"database/sql"
-	"github.com/go-things/things/shared/utils/cast"
-	"github.com/go-things/things/src/usersvr/model"
-	"github.com/go-things/things/src/usersvr/user"
+	"github.com/i-Things/things/shared/utils/cast"
+	"github.com/i-Things/things/src/usersvr/model"
+	"github.com/i-Things/things/src/usersvr/user"
 	"time"
 )
 
