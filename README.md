@@ -2,23 +2,25 @@
 
 #### 介绍
 
+依照腾讯云物联网平台打造,无缝迁移,基于go-zero框架,目前支持mqtt协议,支持数据模板检验,日志记录,数据流转,实时数据反馈,低代码数据流转,用户及设备互联互通.使用了kafka,redis,mysql,MongoDB,etcd开源框架.
+> 物联网云平台地址
+> * gitee地址:[https://gitee.com/i-Things/things](https://gitee.com/i-Things/things)
+> * github地址:[https://github.com/i-Things/things](https://github.com/i-Things/things)
 
-依照腾讯云物联网平台打造,无缝迁移,基于go-zero框架,目前支持mqtt协议,支持数据模板检验,日志记录,数据流转,实时数据反馈,低代码数据流转,用户及设备互联互通.使用了kafka,redis,mysql,MongoDB,etcd开源框架.  
-gitee地址:[https://gitee.com/go-things/things](https://gitee.com/go-things/things)  
-github地址:[https://github.com/go-things/things](https://github.com/go-things/things)  
+> 物联网后台前后端
+> * gitee地址:[https://gitee.com/i-Things/things-admin](https://gitee.com/i-Things/things-admin)
+> * github地址:[https://github.com/i-Things/things-admin](https://github.com/i-Things/things-admin)
+
 我的微信:17052709767  
 欢迎大家的加入  
 things官网:[https://go-things.github.io](https://go-things.github.io)
 
-![微信二维码](https://gitee.com/go-things/things/raw/master/doc/assets/%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
-
-
+![微信二维码](https://gitee.com/i-Things/things/raw/master/doc/assets/%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
 
 #### 软件架构
 
 软件架构说明  
- ![go-things架构图.jpg](https://gitee.com/go-things/things/raw/master/doc/assets/go-things%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)  
-
+![go-things架构图.jpg](https://gitee.com/i-Things/things/raw/master/doc/assets/go-things%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
 
 #### 目录说明
 
