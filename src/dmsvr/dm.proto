@@ -5,9 +5,9 @@ import "google/protobuf/wrappers.proto";
 package dm;
 
 service Dm {
-  //登录认证
+  //设备登录认证
   rpc loginAuth(LoginAuthReq)           returns (Response);
-  //操作认证
+  //设备操作认证
   rpc accessAuth(AccessAuthReq)         returns (Response);
   //设备管理
   rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);
