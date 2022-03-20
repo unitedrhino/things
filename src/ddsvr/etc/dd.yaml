@@ -4,3 +4,15 @@ Etcd:
   Hosts:
     - 127.0.0.1:2379
   Key: dd.rpc
+InnerLink:
+  Nats:
+    Url: nats://127.0.0.1:4222
+DevLink:
+  Mode: mqtt
+  SubMode: emq
+  Mqtt:
+    ClientID: dd.rpc:1
+    Pass:
+    User:
+    Brokers:
+      - tcp://127.0.0.1:1883
