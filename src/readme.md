@@ -31,3 +31,9 @@ goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/dm" -table=
 goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/dc" -table="*" -dir ./model -c  
 goctl rpc proto -src dc.proto  -dir ./
 ```
+
+# 设备数据交互模块
+
+```shell
+goctl.exe rpc protoc  proto/dd.proto --go_out=./ --go-grpc_out=./ --zrpc_out=.
+```
