@@ -1,5 +1,11 @@
 version: '3.2'
 services:
+  nats-server:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
