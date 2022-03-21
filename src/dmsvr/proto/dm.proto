@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+option go_package = "pb/dm";
 import "google/protobuf/wrappers.proto";
 
 package dm;

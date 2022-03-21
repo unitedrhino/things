@@ -12,6 +12,7 @@ require (
 	github.com/hashicorp/go-uuid v1.0.2
 	github.com/jinzhu/copier v0.3.2
 	github.com/mojocn/base64Captcha v1.3.4
+	github.com/nats-io/nats.go v1.13.0 // indirect
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.3.1
 	github.com/zeromicro/go-zero v1.3.0

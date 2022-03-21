@@ -2,9 +2,7 @@ package logic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/dm"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -39,24 +37,25 @@ const (
 
 // 设备端发送信息
 func (l *SendDeviceMsgLogic) SendDeviceMsg(in *dm.SendDeviceMsgReq) (*dm.SendDeviceMsgResp, error) {
-	msg := &deviceSend.Elements{
-		ClientID:  in.ClientID,
-		Username:  in.Username,
-		Topic:     in.Topic,
-		Payload:   in.Payload,
-		Timestamp: in.Timestamp,
-		Action:    in.Action,
-	}
-	switch in.Action {
-	case Connect:
-		return &dm.SendDeviceMsgResp{}, deviceSend.NewConnectLogic(l.ctx, l.svcCtx).Handle(msg)
-	case Disconnect:
-		return &dm.SendDeviceMsgResp{}, deviceSend.NewDisConnectLogic(l.ctx, l.svcCtx).Handle(msg)
-	case Publish:
-		return &dm.SendDeviceMsgResp{}, deviceSend.NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
-	default:
-		l.Errorf("SendDeviceMsgLogic|SendDeviceMsg|action is invalid:%v", in.Action)
-		return nil, errors.Parameter.WithMsgf("action is invalid:%v", in.Action)
-	}
+	// todo 去除kafka后该等待实现该接口
+	//msg := &deviceSend.Elements{
+	//	ClientID:  in.ClientID,
+	//	Username:  in.Username,
+	//	Topic:     in.Topic,
+	//	Payload:   in.Payload,
+	//	Timestamp: in.Timestamp,
+	//	Action:    in.Action,
+	//}
+	//switch in.Action {
+	//case Connect:
+	//	return &dm.SendDeviceMsgResp{}, eventDevSub.NewDeviceMsgHandle(l.ctx,l.svcCtx).Logout(msg)
+	//case Disconnect:
+	//	return &dm.SendDeviceMsgResp{}, deviceSend.NewDisConnectLogic(l.ctx, l.svcCtx).Handle(msg)
+	//case Publish:
+	//	return &dm.SendDeviceMsgResp{}, deviceSend.NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
+	//default:
+	//	l.Errorf("SendDeviceMsgLogic|SendDeviceMsg|action is invalid:%v", in.Action)
+	//	return nil, errors.Parameter.WithMsgf("action is invalid:%v", in.Action)
+	//}
 	return &dm.SendDeviceMsgResp{}, nil
 }
