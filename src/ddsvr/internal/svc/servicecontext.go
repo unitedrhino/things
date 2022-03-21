@@ -2,8 +2,8 @@ package svc
 
 import (
 	"github.com/i-Things/things/src/ddsvr/internal/config"
-	"github.com/i-Things/things/src/ddsvr/internal/repo/third/devLink"
-	"github.com/i-Things/things/src/ddsvr/internal/repo/third/innerLink"
+	"github.com/i-Things/things/src/ddsvr/internal/repo/event/devLink"
+	"github.com/i-Things/things/src/ddsvr/internal/repo/event/innerLink"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 )

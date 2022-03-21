@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/third"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -22,4 +23,9 @@ type Config struct {
 		Url      string //mongodb连接串
 		Database string //选择的数据库
 	}
+	InnerLink InnerLinkConf //和things内部交互的设置
+}
+
+type InnerLinkConf struct {
+	Nats conf.NatsConf
 }

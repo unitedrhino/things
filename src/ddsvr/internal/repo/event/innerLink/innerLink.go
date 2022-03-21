@@ -9,14 +9,12 @@ import (
 
 type (
 	InnerLink interface {
-		Publish(topic string, payload []byte) error
+		Publish(ctx context.Context, topic string, payload []byte) error
 		Subscribe(handle Handle) error
 	}
 	Handle         func(ctx context.Context) InnerSubHandle
 	InnerSubHandle interface {
 		Publish(info *ddDef.InnerPublish) error
-		//Login(ctx context.Context, out *domain.LogInOut) error
-		//Logout(ctx context.Context, out *domain.LogInOut) error
 	}
 )
 

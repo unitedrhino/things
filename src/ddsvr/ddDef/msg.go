@@ -2,16 +2,17 @@ package ddDef
 
 type (
 	DevLogInOut struct {
-		UserName string `json:"username"`
-		Ts       int64  `json:"ts"`
-		Address  string `json:"addr"`
-		ClientID string `json:"clientID"`
-		Reason   string `json:"reason"`
+		UserName  string `json:"username"`
+		Timestamp int64  `json:"ts"`
+		Address   string `json:"addr"`
+		ClientID  string `json:"clientID"`
+		Reason    string `json:"reason"`
+		Action    string `json:"action"` //登录 onLogin 登出 onLogout
 	}
 	DevPublish struct {
-		Ts      int64  `json:"ts"`
-		Topic   string `json:"topic"`
-		Payload string `json:"payload"`
+		Timestamp int64  `json:"ts"`
+		Topic     string `json:"topic"`
+		Payload   string `json:"payload"`
 	}
 	InnerPublish struct {
 		Topic   string `json:"topic"`
@@ -19,6 +20,12 @@ type (
 	}
 )
 
+const (
+	ActionLogin  = "onLogin"
+	ActionLogout = "onLogout"
+)
+
+//topic 定义
 const (
 	// TopicDevPublish dd模块收到设备的发布消息后向内部推送以下topic
 	TopicDevPublish = "dd.thing.device.clients.publish"

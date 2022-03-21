@@ -10,15 +10,17 @@ import (
 type InnerSubServer struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	ctx context.Context
 }
 
 func NewInnerSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *InnerSubServer {
 	return &InnerSubServer{
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		ctx:    ctx,
 	}
 }
 
 func (s *InnerSubServer) Publish(info *ddDef.InnerPublish) error {
-	return s.svcCtx.DevLink.Publish(info.Topic, []byte(info.Payload))
+	return s.svcCtx.DevLink.Publish(s.ctx, info.Topic, []byte(info.Payload))
 }
