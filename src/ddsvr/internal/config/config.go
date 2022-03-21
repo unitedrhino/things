@@ -1,6 +1,9 @@
 package config
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"github.com/i-Things/things/shared/conf"
+	"github.com/zeromicro/go-zero/zrpc"
+)
 
 type Config struct {
 	zrpc.RpcServerConf
@@ -9,23 +12,11 @@ type Config struct {
 }
 
 type DevLinkConf struct {
-	Mode    string    `json:",default=mqtt"` //模式 默认mqtt
-	SubMode string    `json:",default=emq"`  //
-	Mqtt    *MqttConf `json:",optional"`
-}
-type MqttConf struct {
-	ClientID string   //在mqtt中的clientID
-	Brokers  []string //mqtt服务器节点
-	User     string   //用户名
-	Pass     string   `json:",optional"` //密码
+	Mode    string         `json:",default=mqtt"` //模式 默认mqtt
+	SubMode string         `json:",default=emq"`  //
+	Mqtt    *conf.MqttConf `json:",optional"`
 }
 
 type InnerLinkConf struct {
-	Nats NatsConf
-}
-type NatsConf struct {
-	Url   string `json:",default=nats://127.0.0.1:4222"` //nats的连接url
-	User  string `json:",optional"`                      //用户名
-	Pass  string `json:",optional"`                      //密码
-	Token string `json:",optional"`
+	Nats conf.NatsConf
 }

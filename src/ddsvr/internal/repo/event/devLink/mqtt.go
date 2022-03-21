@@ -6,8 +6,8 @@ import (
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/hashicorp/go-uuid"
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/src/ddsvr/ddDef"
-	"github.com/i-Things/things/src/ddsvr/internal/config"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 	"time"
@@ -26,7 +26,7 @@ type (
 	}
 )
 
-func NewEmqClient(conf *config.MqttConf) (DevLink, error) {
+func NewEmqClient(conf *conf.MqttConf) (DevLink, error) {
 	opts := mqtt.NewClientOptions()
 	for _, broker := range conf.Brokers {
 		opts.AddBroker(broker)
@@ -69,19 +69,21 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 				return
 			}
 			do := ddDef.DevLogInOut{
-				UserName: msg.UserName,
-				Ts:       msg.Ts,
-				Address:  msg.Address,
-				ClientID: msg.ClientID,
-				Reason:   msg.Reason,
+				UserName:  msg.UserName,
+				Timestamp: msg.Ts,
+				Address:   msg.Address,
+				ClientID:  msg.ClientID,
+				Reason:    msg.Reason,
 			}
 			if strings.HasSuffix(message.Topic(), "/disconnected") {
 				logx.WithContext(ctx).Info("disconnected", string(message.Payload()), message.Topic(), err)
+				do.Action = ddDef.ActionLogout
 				err = handle(ctx).Logout(&do)
 				if err != nil {
 					logx.Error(err)
 				}
 			} else {
+				do.Action = ddDef.ActionLogin
 				logx.WithContext(ctx).Info("connected", string(message.Payload()), message.Topic(), err)
 				err = handle(ctx).Login(&do)
 				if err != nil {
@@ -102,6 +104,6 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 	return err
 }
 
-func (d *MqttClient) Publish(topic string, payload []byte) error {
+func (d *MqttClient) Publish(ctx context.Context, topic string, payload []byte) error {
 	return d.client.Publish(topic, 1, true, payload).Error()
 }

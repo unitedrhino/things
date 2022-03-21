@@ -14,7 +14,7 @@ type DevClient struct {
 
 type (
 	DevLink interface {
-		Publish(topic string, payload []byte) error
+		Publish(ctx context.Context, topic string, payload []byte) error
 		SubScribe(handle Handle) error
 	}
 	Handle       func(ctx context.Context) DevSubHandle

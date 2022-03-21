@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/repo"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mongorepo"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/third"
@@ -25,6 +26,7 @@ type ServiceContext struct {
 	ProductID       *utils.SnowFlake
 	DevClient       *third.DevClient
 	DeviceData      repo.GetDeviceDataRepo
+	InnerLink       innerLink.InnerLink
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -50,6 +52,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		os.Exit(-1)
 	}
 	dd := mongorepo.NewDeviceDataRepo(mongoDB)
+	il, err := innerLink.NewInnerLink(c.InnerLink)
+	if err != nil {
+		logx.Error("NewInnerLink err", err)
+		os.Exit(-1)
+	}
 	return &ServiceContext{
 		Config:          c,
 		DeviceInfo:      di,
@@ -61,5 +68,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceLog:       dl,
 		DevClient:       devClient,
 		DeviceData:      dd,
+		InnerLink:       il,
 	}
 }

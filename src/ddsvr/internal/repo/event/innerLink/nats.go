@@ -3,15 +3,11 @@ package innerLink
 import (
 	"context"
 	"encoding/json"
+	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/src/ddsvr/ddDef"
-	"github.com/i-Things/things/src/ddsvr/internal/config"
 	"github.com/nats-io/nats.go"
 	"time"
-)
-
-var (
-	nc  *nats.Conn
-	err error
 )
 
 type (
@@ -20,7 +16,7 @@ type (
 	}
 )
 
-func NewNatsClient(conf config.NatsConf) (InnerLink, error) {
+func NewNatsClient(conf conf.NatsConf) (InnerLink, error) {
 	connectOpts := nats.Options{
 		Url:      conf.Url,
 		User:     conf.User,
@@ -34,8 +30,17 @@ func NewNatsClient(conf config.NatsConf) (InnerLink, error) {
 	return &NatsClient{client: nc}, nil
 }
 
-func (n *NatsClient) Publish(topic string, payload []byte) error {
-	return n.client.Publish(topic, payload)
+func (n *NatsClient) Publish(ctx context.Context, topic string, payload []byte) error {
+	msg := def.MsgHead{
+		Trace:     "",
+		Timestamp: time.Now().UnixMilli(),
+		Data:      payload,
+	}
+	msgBytes, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	return n.client.Publish(topic, msgBytes)
 }
 func (n *NatsClient) Subscribe(handle Handle) error {
 	n.client.QueueSubscribe(ddDef.TopicInnerPublish, ddDef.SvrName, func(msg *nats.Msg) {

@@ -11,6 +11,7 @@ import (
 
 type DeviceSubServer struct {
 	svcCtx *svc.ServiceContext
+	ctx    context.Context
 	logx.Logger
 }
 
@@ -18,6 +19,7 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 	return &DeviceSubServer{
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		ctx:    ctx,
 	}
 }
 
@@ -25,21 +27,21 @@ func (s *DeviceSubServer) Publish(topic string, payload []byte) error {
 	payloadStr := string(payload)
 	s.Info("Publish", topic, payloadStr)
 	pub := ddDef.DevPublish{
-		Ts:      time.Now().UnixMilli(),
-		Topic:   topic,
-		Payload: payloadStr,
+		Timestamp: time.Now().UnixMilli(),
+		Topic:     topic,
+		Payload:   payloadStr,
 	}
 	pubStr, _ := json.Marshal(pub)
-	return s.svcCtx.InnerLink.Publish(ddDef.TopicDevPublish, pubStr)
+	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevPublish, pubStr)
 }
 
 func (s *DeviceSubServer) Login(info *ddDef.DevLogInOut) error {
 	s.Info("Login", info)
 	str, _ := json.Marshal(info)
-	return s.svcCtx.InnerLink.Publish(ddDef.TopicDevLogin, str)
+	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevLogin, str)
 }
 func (s *DeviceSubServer) Logout(info *ddDef.DevLogInOut) error {
 	s.Info("Logout", info)
 	str, _ := json.Marshal(info)
-	return s.svcCtx.InnerLink.Publish(ddDef.TopicDevLogout, str)
+	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevLogout, str)
 }

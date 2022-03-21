@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"github.com/i-Things/things/src/dmsvr/dm"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
 type DmServer struct {
@@ -22,13 +22,13 @@ func NewDmServer(svcCtx *svc.ServiceContext) *DmServer {
 	}
 }
 
-// 登录认证
+// 设备登录认证
 func (s *DmServer) LoginAuth(ctx context.Context, in *dm.LoginAuthReq) (*dm.Response, error) {
 	l := logic.NewLoginAuthLogic(ctx, s.svcCtx)
 	return l.LoginAuth(in)
 }
 
-// 操作认证
+// 设备操作认证
 func (s *DmServer) AccessAuth(ctx context.Context, in *dm.AccessAuthReq) (*dm.Response, error) {
 	l := logic.NewAccessAuthLogic(ctx, s.svcCtx)
 	return l.AccessAuth(in)
