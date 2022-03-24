@@ -7,6 +7,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/src/ddsvr/ddDef"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -57,7 +58,7 @@ func NewEmqClient(conf *conf.MqttConf) (DevLink, error) {
 
 func (d *MqttClient) SubScribe(handle Handle) error {
 	err := d.client.Subscribe("$share/dd.rpc/$SYS/brokers/+/clients/#",
-		2, func(client mqtt.Client, message mqtt.Message) {
+		1, func(client mqtt.Client, message mqtt.Message) {
 			var (
 				msg LogInOut
 				err error
@@ -68,7 +69,7 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 				logx.Error(err)
 				return
 			}
-			do := ddDef.DevLogInOut{
+			do := ddDef.DevConn{
 				UserName:  msg.UserName,
 				Timestamp: msg.Ts,
 				Address:   msg.Address,
@@ -78,14 +79,14 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 			if strings.HasSuffix(message.Topic(), "/disconnected") {
 				logx.WithContext(ctx).Info("disconnected", string(message.Payload()), message.Topic(), err)
 				do.Action = ddDef.ActionLogout
-				err = handle(ctx).Logout(&do)
+				err = handle(ctx).Disconnected(&do)
 				if err != nil {
 					logx.Error(err)
 				}
 			} else {
 				do.Action = ddDef.ActionLogin
 				logx.WithContext(ctx).Info("connected", string(message.Payload()), message.Topic(), err)
-				err = handle(ctx).Login(&do)
+				err = handle(ctx).Connected(&do)
 				if err != nil {
 					logx.Error(err)
 				}
@@ -95,7 +96,7 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 		return err
 	}
 	err = d.client.Subscribe("$share/dd.rpc/$thing/#",
-		2, func(client mqtt.Client, message mqtt.Message) {
+		1, func(client mqtt.Client, message mqtt.Message) {
 			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 			err := handle(ctx).Publish(message.Topic(), message.Payload())
 			logx.WithContext(ctx).Info("publish", message.Topic(), string(message.Payload()), err)
@@ -105,5 +106,6 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 }
 
 func (d *MqttClient) Publish(ctx context.Context, topic string, payload []byte) error {
-	return d.client.Publish(topic, 1, true, payload).Error()
+	emsg := events.GetEventMsg(payload)
+	return d.client.Publish(topic, 1, true, emsg.GetData()).Error()
 }

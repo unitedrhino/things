@@ -55,7 +55,7 @@ func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendProper
 	err = json.Unmarshal([]byte(in.Data), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail(
-			"SendProperty|Data not right:", in.Data)
+			"SendProperty|data not right:", in.Data)
 	}
 	uuid, err := uuid.GenerateUUID()
 	if err != nil {

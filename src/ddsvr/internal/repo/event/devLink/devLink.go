@@ -20,8 +20,8 @@ type (
 	Handle       func(ctx context.Context) DevSubHandle
 	DevSubHandle interface {
 		Publish(topic string, payload []byte) error
-		Login(out *ddDef.DevLogInOut) error
-		Logout(out *ddDef.DevLogInOut) error
+		Connected(out *ddDef.DevConn) error
+		Disconnected(out *ddDef.DevConn) error
 	}
 )
 

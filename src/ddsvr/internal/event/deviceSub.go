@@ -24,24 +24,23 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 }
 
 func (s *DeviceSubServer) Publish(topic string, payload []byte) error {
-	payloadStr := string(payload)
-	s.Info("Publish", topic, payloadStr)
+	s.Info("Publish", topic, string(payload))
 	pub := ddDef.DevPublish{
 		Timestamp: time.Now().UnixMilli(),
 		Topic:     topic,
-		Payload:   payloadStr,
+		Payload:   payload,
 	}
 	pubStr, _ := json.Marshal(pub)
 	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevPublish, pubStr)
 }
 
-func (s *DeviceSubServer) Login(info *ddDef.DevLogInOut) error {
-	s.Info("Login", info)
+func (s *DeviceSubServer) Connected(info *ddDef.DevConn) error {
+	s.Info("Connected", info)
 	str, _ := json.Marshal(info)
-	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevLogin, str)
+	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevConnected, str)
 }
-func (s *DeviceSubServer) Logout(info *ddDef.DevLogInOut) error {
-	s.Info("Logout", info)
+func (s *DeviceSubServer) Disconnected(info *ddDef.DevConn) error {
+	s.Info("Disconnected", info)
 	str, _ := json.Marshal(info)
-	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevLogout, str)
+	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevDisconnected, str)
 }
