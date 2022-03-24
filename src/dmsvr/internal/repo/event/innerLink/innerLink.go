@@ -8,14 +8,14 @@ import (
 
 type (
 	InnerLink interface {
-		Publish(ctx context.Context, topic string, payload []byte) error
+		PublishToDev(ctx context.Context, topic string, payload []byte) error
 		Subscribe(handle Handle) error
 	}
 	Handle         func(ctx context.Context) InnerSubHandle
 	InnerSubHandle interface {
 		Publish(out *deviceSend.Elements) error
-		Login(out *deviceSend.Elements) error
-		Logout(out *deviceSend.Elements) error
+		Connected(out *deviceSend.Elements) error
+		Disconnected(out *deviceSend.Elements) error
 	}
 )
 

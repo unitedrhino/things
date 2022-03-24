@@ -222,7 +222,7 @@ func (l *PublishLogic) Handle(msg *deviceSend.Elements) (err error) {
 		DeviceName:  l.ld.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
 		RequestID:   l.dreq.ClientToken,
-		Content:     msg.Payload,
+		Content:     string(msg.Payload),
 		Topic:       msg.Topic,
 		ResultType:  errors.Fmt(err).GetCode(),
 		CreatedTime: time.Now(),

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/src/ddsvr/ddDef"
 	"github.com/nats-io/nats.go"
 	"time"
@@ -31,16 +31,7 @@ func NewNatsClient(conf conf.NatsConf) (InnerLink, error) {
 }
 
 func (n *NatsClient) Publish(ctx context.Context, topic string, payload []byte) error {
-	msg := def.MsgHead{
-		Trace:     "",
-		Timestamp: time.Now().UnixMilli(),
-		Data:      payload,
-	}
-	msgBytes, err := json.Marshal(msg)
-	if err != nil {
-		return err
-	}
-	return n.client.Publish(topic, msgBytes)
+	return n.client.Publish(topic, events.NewEventMsg(ctx, payload))
 }
 func (n *NatsClient) Subscribe(handle Handle) error {
 	n.client.QueueSubscribe(ddDef.TopicInnerPublish, ddDef.SvrName, func(msg *nats.Msg) {
