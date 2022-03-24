@@ -43,12 +43,12 @@ func (l *SendDeviceMsgLogic) SendDeviceMsg(in *dm.SendDeviceMsgReq) (*dm.SendDev
 	//	Username:  in.Username,
 	//	Topic:     in.Topic,
 	//	Payload:   in.Payload,
-	//	Timestamp: in.Timestamp,
+	//	timestamp: in.timestamp,
 	//	Action:    in.Action,
 	//}
 	//switch in.Action {
 	//case Connect:
-	//	return &dm.SendDeviceMsgResp{}, eventDevSub.NewDeviceMsgHandle(l.ctx,l.svcCtx).Logout(msg)
+	//	return &dm.SendDeviceMsgResp{}, eventDevSub.NewDeviceMsgHandle(l.ctx,l.svcCtx).Disconnected(msg)
 	//case Disconnect:
 	//	return &dm.SendDeviceMsgResp{}, deviceSend.NewDisConnectLogic(l.ctx, l.svcCtx).Handle(msg)
 	//case Publish:

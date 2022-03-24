@@ -170,7 +170,7 @@ type SendDeviceMsgReq struct {
 	Username  string `protobuf:"bytes,2,opt,name=Username,proto3" json:"Username,omitempty"`    //mqtt上的设备名
 	Topic     string `protobuf:"bytes,3,opt,name=Topic,proto3" json:"Topic,omitempty"`          //主题
 	Payload   string `protobuf:"bytes,4,opt,name=Payload,proto3" json:"Payload,omitempty"`      //具体内容
-	Timestamp int64  `protobuf:"varint,5,opt,name=Timestamp,proto3" json:"Timestamp,omitempty"` //时间戳
+	Timestamp int64  `protobuf:"varint,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"` //时间戳
 	Action    string `protobuf:"bytes,6,opt,name=Action,proto3" json:"Action,omitempty"`        //操作
 }
 

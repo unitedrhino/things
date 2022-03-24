@@ -31,16 +31,20 @@ func (l *DeviceMsgHandle) Publish(msg *deviceSend.Elements) error {
 	return NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Login(msg *deviceSend.Elements) error {
+func (l *DeviceMsgHandle) Connected(msg *deviceSend.Elements) error {
 	l.Infof("ConnectLogic|req=%+v", msg)
+	//todo 这里需要查询下数据库,避免数据错误
 	ld, err := dm.GetClientIDInfo(msg.ClientID)
+	if err != nil {
+		return err
+	}
 	_, _ = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   ld.ProductID,
 		Action:      msg.Action,
 		Timestamp:   time.Unix(msg.Timestamp, 0), // 操作时间
 		DeviceName:  ld.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
-		Content:     msg.Payload,
+		Content:     string(msg.Payload),
 		Topic:       msg.Topic,
 		ResultType:  errors.Fmt(err).GetCode(),
 		CreatedTime: time.Now(),
@@ -52,16 +56,19 @@ func (l *DeviceMsgHandle) Login(msg *deviceSend.Elements) error {
 	return nil
 }
 
-func (l *DeviceMsgHandle) Logout(msg *deviceSend.Elements) error {
-	l.Infof("ConnectLogic|req=%+v", msg)
+func (l *DeviceMsgHandle) Disconnected(msg *deviceSend.Elements) error {
+	l.Infof("DisconnectLogic|req=%+v", msg)
 	ld, err := dm.GetClientIDInfo(msg.ClientID)
+	if err != nil {
+		return err
+	}
 	_, _ = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   ld.ProductID,
 		Action:      msg.Action,
 		Timestamp:   time.Unix(msg.Timestamp, 0), // 操作时间
 		DeviceName:  ld.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
-		Content:     msg.Payload,
+		Content:     string(msg.Payload),
 		Topic:       msg.Topic,
 		ResultType:  errors.Fmt(err).GetCode(),
 		CreatedTime: time.Now(),

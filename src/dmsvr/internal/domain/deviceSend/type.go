@@ -7,7 +7,7 @@ type Elements struct {
 	Address  string
 
 	Topic     string
-	Payload   string
+	Payload   []byte
 	Timestamp int64
 	Action    string
 	Reason    string
