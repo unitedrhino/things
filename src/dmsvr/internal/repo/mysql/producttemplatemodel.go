@@ -14,11 +14,10 @@ import (
 )
 
 var (
-	productTemplateFieldNames          = builder.RawFieldNames(&ProductTemplate{})
-	productTemplateRows                = strings.Join(productTemplateFieldNames, ",")
-	productTemplateRowsExpectAutoSet   = strings.Join(stringx.Remove(productTemplateFieldNames, "`create_time`", "`update_time`"), ",")
-	productTemplateRowsWithPlaceHolder = strings.Join(stringx.Remove(productTemplateFieldNames, "`productID`", "`create_time`", "`update_time`"), "=?,") + "=?"
-
+	productTemplateFieldNames             = builder.RawFieldNames(&ProductTemplate{})
+	productTemplateRows                   = strings.Join(productTemplateFieldNames, ",")
+	productTemplateRowsExpectAutoSet      = strings.Join(stringx.Remove(productTemplateFieldNames, "`create_time`", "`update_time`"), ",")
+	productTemplateRowsWithPlaceHolder    = strings.Join(stringx.Remove(productTemplateFieldNames, "`productID`", "`create_time`", "`update_time`"), "=?,") + "=?"
 	cacheDmProductTemplateProductIDPrefix = "cache:dm:productTemplate:productID:"
 )
 

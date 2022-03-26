@@ -7,8 +7,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/src/ddsvr/ddDef"
+	"github.com/i-Things/things/src/ddsvr/ddExport"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 	"time"
@@ -69,7 +68,7 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 				logx.Error(err)
 				return
 			}
-			do := ddDef.DevConn{
+			do := ddExport.DevConn{
 				UserName:  msg.UserName,
 				Timestamp: msg.Ts,
 				Address:   msg.Address,
@@ -78,13 +77,13 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 			}
 			if strings.HasSuffix(message.Topic(), "/disconnected") {
 				logx.WithContext(ctx).Info("disconnected", string(message.Payload()), message.Topic(), err)
-				do.Action = ddDef.ActionLogout
+				do.Action = ddExport.ActionLogout
 				err = handle(ctx).Disconnected(&do)
 				if err != nil {
 					logx.Error(err)
 				}
 			} else {
-				do.Action = ddDef.ActionLogin
+				do.Action = ddExport.ActionLogin
 				logx.WithContext(ctx).Info("connected", string(message.Payload()), message.Topic(), err)
 				err = handle(ctx).Connected(&do)
 				if err != nil {
@@ -106,6 +105,5 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 }
 
 func (d *MqttClient) Publish(ctx context.Context, topic string, payload []byte) error {
-	emsg := events.GetEventMsg(payload)
-	return d.client.Publish(topic, 1, true, emsg.GetData()).Error()
+	return d.client.Publish(topic, 1, true, payload).Error()
 }

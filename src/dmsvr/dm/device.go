@@ -7,7 +7,6 @@ import (
 )
 
 type LoginDevice struct {
-	ClientID   string //clientID
 	ProductID  string //产品id
 	DeviceName string //设备名称
 	SdkAppID   int64  //appid 直接填 12010126
@@ -35,7 +34,6 @@ func GetClientIDInfo(ClientID string) (*LoginDevice, error) {
 		return nil, errors.Parameter.AddDetail("clientID length not enough")
 	}
 	lg := &LoginDevice{
-		ClientID:   ClientID,
 		ProductID:  ClientID[0:PRODUCTID_LEN],
 		DeviceName: ClientID[PRODUCTID_LEN:],
 	}

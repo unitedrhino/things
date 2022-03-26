@@ -2,12 +2,10 @@ package innerLink
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/src/ddsvr/ddDef"
+	"github.com/i-Things/things/src/ddsvr/ddExport"
 	"github.com/nats-io/nats.go"
-	"time"
 )
 
 type (
@@ -34,11 +32,9 @@ func (n *NatsClient) Publish(ctx context.Context, topic string, payload []byte) 
 	return n.client.Publish(topic, events.NewEventMsg(ctx, payload))
 }
 func (n *NatsClient) Subscribe(handle Handle) error {
-	n.client.QueueSubscribe(ddDef.TopicInnerPublish, ddDef.SvrName, func(msg *nats.Msg) {
-		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-		pubData := ddDef.InnerPublish{}
-		json.Unmarshal(msg.Data, &pubData)
-		handle(ctx).Publish(&pubData)
+	n.client.QueueSubscribe(ddExport.TopicInnerPublish, ddExport.SvrName, func(msg *nats.Msg) {
+		ctx, topic, payload := ddExport.GetPublish(msg.Data)
+		handle(ctx).PublishToDev(topic, payload)
 	})
 	return nil
 }

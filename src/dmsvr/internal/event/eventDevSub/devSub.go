@@ -41,7 +41,7 @@ func (l *DeviceMsgHandle) Connected(msg *deviceSend.Elements) error {
 	_, _ = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   ld.ProductID,
 		Action:      msg.Action,
-		Timestamp:   time.Unix(msg.Timestamp, 0), // 操作时间
+		Timestamp:   time.UnixMilli(msg.Timestamp), // 操作时间
 		DeviceName:  ld.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
 		Content:     string(msg.Payload),
@@ -65,7 +65,7 @@ func (l *DeviceMsgHandle) Disconnected(msg *deviceSend.Elements) error {
 	_, _ = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   ld.ProductID,
 		Action:      msg.Action,
-		Timestamp:   time.Unix(msg.Timestamp, 0), // 操作时间
+		Timestamp:   time.UnixMilli(msg.Timestamp), // 操作时间
 		DeviceName:  ld.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
 		Content:     string(msg.Payload),
@@ -76,6 +76,5 @@ func (l *DeviceMsgHandle) Disconnected(msg *deviceSend.Elements) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }

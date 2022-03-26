@@ -1,4 +1,4 @@
-package ddDef
+package ddExport
 
 const (
 	SvrName = "dd.rpc"
