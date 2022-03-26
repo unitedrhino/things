@@ -1,6 +1,8 @@
 package deviceTemplate
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"time"
 )
@@ -130,4 +132,17 @@ func GetMethod(method METHOD) METHOD {
 	default:
 		panic(method)
 	}
+}
+
+// GenThingDeviceRespData 生成物模型设备请求的回复包
+func GenThingDeviceRespData(Method, ClientToken string, topics []string, err error,
+	data map[string]interface{}) (topic string, payload []byte) {
+	respMethod := GetMethod(Method)
+	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
+		topics[0], topics[2], topics[3], topics[4])
+	respPayload, _ := json.Marshal(DeviceResp{
+		Method:      respMethod,
+		ClientToken: ClientToken,
+		Data:        data}.AddStatus(err))
+	return respTopic, respPayload
 }

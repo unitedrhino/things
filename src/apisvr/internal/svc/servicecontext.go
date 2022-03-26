@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/middleware"
 	"github.com/i-Things/things/src/dcsvr/dcclient"
-	"github.com/i-Things/things/src/dmsvr/dmclient"
+	"github.com/i-Things/things/src/dmsvr/dm"
 	"github.com/i-Things/things/src/usersvr/userclient"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -18,17 +18,17 @@ type ServiceContext struct {
 	Record     rest.Middleware
 	DmManage   rest.Middleware
 	UserRpc    userclient.User
-	DmRpc      dmclient.Dm
+	DmRpc      dm.Dm
 	DcRpc      dcclient.Dc
 	Captcha    *verify.Captcha
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	var dr dmclient.Dm
+	var dr dm.Dm
 	var ur userclient.User
 	var dc dcclient.Dc
 	if c.DmRpc.Enable {
-		dr = dmclient.NewDm(zrpc.MustNewClient(c.DmRpc.Conf))
+		dr = dm.NewDm(zrpc.MustNewClient(c.DmRpc.Conf))
 	}
 	if c.DcRpc.Enable {
 		dc = dcclient.NewDc(zrpc.MustNewClient(c.DcRpc.Conf))
