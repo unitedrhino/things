@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/src/ddsvr/ddDef"
+	"github.com/i-Things/things/src/ddsvr/ddExport"
 	"github.com/i-Things/things/src/dmsvr/dmDef"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceSend"
 	"github.com/nats-io/nats.go"
@@ -33,10 +33,10 @@ func NewNatsClient(conf conf.NatsConf) (InnerLink, error) {
 }
 
 func (n *NatsClient) PublishToDev(ctx context.Context, topic string, payload []byte) error {
-	return n.client.Publish(topic, events.NewEventMsg(ctx, payload))
+	return n.client.Publish(ddExport.TopicInnerPublish, ddExport.PublishToDev(ctx, topic, payload))
 }
 func (n *NatsClient) Subscribe(handle Handle) error {
-	n.client.QueueSubscribe(ddDef.TopicDevPublish, dmDef.SvrName, func(msg *nats.Msg) {
+	n.client.QueueSubscribe(ddExport.TopicDevPublishAll, dmDef.SvrName, func(msg *nats.Msg) {
 		emsg := events.GetEventMsg(msg.Data)
 		if emsg == nil {
 			logx.Error(msg.Subject, string(msg.Data))
@@ -49,9 +49,9 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		err = handle(ctx).Publish(ele)
-		logx.WithContext(ctx).Info(ddDef.TopicDevPublish, msg.Subject, string(msg.Data), err)
+		logx.WithContext(ctx).Info(ddExport.TopicDevPublishAll, msg.Subject, string(msg.Data), err)
 	})
-	n.client.QueueSubscribe(ddDef.TopicDevConnected, dmDef.SvrName, func(msg *nats.Msg) {
+	n.client.QueueSubscribe(ddExport.TopicDevConnected, dmDef.SvrName, func(msg *nats.Msg) {
 		emsg := events.GetEventMsg(msg.Data)
 		if emsg == nil {
 			logx.Error(msg.Subject, string(msg.Data))
@@ -64,9 +64,9 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		err = handle(ctx).Connected(ele)
-		logx.WithContext(ctx).Info(ddDef.TopicDevConnected, msg.Subject, string(msg.Data), err)
+		logx.WithContext(ctx).Info(ddExport.TopicDevConnected, msg.Subject, string(msg.Data), err)
 	})
-	n.client.QueueSubscribe(ddDef.TopicDevDisconnected, dmDef.SvrName, func(msg *nats.Msg) {
+	n.client.QueueSubscribe(ddExport.TopicDevDisconnected, dmDef.SvrName, func(msg *nats.Msg) {
 		emsg := events.GetEventMsg(msg.Data)
 		if emsg == nil {
 			logx.Error(msg.Subject, string(msg.Data))
@@ -79,27 +79,29 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		err = handle(ctx).Disconnected(ele)
-		logx.WithContext(ctx).Info(ddDef.TopicDevDisconnected, msg.Subject, string(msg.Data), err)
+		logx.WithContext(ctx).Info(ddExport.TopicDevDisconnected, msg.Subject, string(msg.Data), err)
 	})
 	return nil
 }
 func (n *NatsClient) getDevPublish(ctx context.Context, data []byte) (*deviceSend.Elements, error) {
-	pubInfo := ddDef.DevPublish{}
+	pubInfo := ddExport.DevPublish{}
 	err := json.Unmarshal(data, &pubInfo)
 	if err != nil {
 		logx.WithContext(ctx).Error("getDevPublish", string(data), err)
 		return nil, err
 	}
 	ele := deviceSend.Elements{
-		Topic:     pubInfo.Topic,
-		Payload:   pubInfo.Payload,
-		Timestamp: pubInfo.Timestamp,
+		Topic:      pubInfo.Topic,
+		Payload:    pubInfo.Payload,
+		Timestamp:  pubInfo.Timestamp,
+		ProductID:  pubInfo.ProductID,
+		DeviceName: pubInfo.DeviceName,
 	}
 	return &ele, nil
 }
 
 func (n *NatsClient) getDevConnMsg(ctx context.Context, data []byte) (*deviceSend.Elements, error) {
-	logInfo := ddDef.DevConn{}
+	logInfo := ddExport.DevConn{}
 	err := json.Unmarshal(data, &logInfo)
 	if err != nil {
 		logx.WithContext(ctx).Error("getDevConnMsg", string(data), err)

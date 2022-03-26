@@ -8,7 +8,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dm"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceSend"
-	device2 "github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -21,11 +21,11 @@ type PublishLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	ld       *dm.LoginDevice
+	ld       dm.LoginDevice
 	pt       *mysql.ProductTemplate
-	template *device2.Template
+	template *deviceTemplate.Template
 	topics   []string
-	dreq     device2.DeviceReq
+	dreq     deviceTemplate.DeviceReq
 	dd       repo.DeviceDataRepo
 }
 
@@ -39,7 +39,8 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLo
 
 func (l *PublishLogic) initMsg(msg *deviceSend.Elements) error {
 	var err error
-	l.ld, err = dm.GetClientIDInfo(msg.ClientID)
+	l.ld.ProductID = msg.ProductID
+	l.ld.DeviceName = msg.DeviceName
 	if err != nil {
 		return err
 	}
@@ -47,7 +48,7 @@ func (l *PublishLogic) initMsg(msg *deviceSend.Elements) error {
 	if err != nil {
 		return err
 	}
-	l.template, err = device2.NewTemplate([]byte(l.pt.Template))
+	l.template, err = deviceTemplate.NewTemplate([]byte(l.pt.Template))
 	if err != nil {
 		return err
 	}
@@ -61,11 +62,18 @@ func (l *PublishLogic) initMsg(msg *deviceSend.Elements) error {
 }
 
 func (l *PublishLogic) DeviceResp(msg *deviceSend.Elements, err error, data map[string]interface{}) {
-	l.svcCtx.DevClient.DeviceResp(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
+	topic, payload := deviceTemplate.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
+	er := l.svcCtx.InnerLink.PublishToDev(l.ctx, topic, payload)
+	if er != nil {
+		l.Errorf("DeviceResp|PublishToDev failure err:%v", er)
+		return
+	}
+	l.Infof("DeviceResp|topic:%v payload:%v", topic, payload)
+	//l.svcCtx.DevClient.DeviceResp(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 }
 
 func (l *PublishLogic) HandlePropertyReport(msg *deviceSend.Elements) error {
-	tp, err := l.template.VerifyReqParam(l.dreq, device2.PROPERTY)
+	tp, err := l.template.VerifyReqParam(l.dreq, deviceTemplate.PROPERTY)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
 		return err
@@ -74,7 +82,7 @@ func (l *PublishLogic) HandlePropertyReport(msg *deviceSend.Elements) error {
 		l.DeviceResp(msg, err, nil)
 		return err
 	}
-	params := device2.ToVal(tp)
+	params := deviceTemplate.ToVal(tp)
 	timeStamp := l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0))
 	err = l.dd.InsertPropertiesData(l.ld.ProductID, l.ld.DeviceName, params, timeStamp)
 	if err != nil {
@@ -89,7 +97,7 @@ func (l *PublishLogic) HandlePropertyReport(msg *deviceSend.Elements) error {
 func (l *PublishLogic) HandlePropertyGetStatus(msg *deviceSend.Elements) error {
 	respData := make(map[string]interface{}, len(l.template.Properties))
 	switch l.dreq.Type {
-	case device2.REPORT:
+	case deviceTemplate.REPORT:
 		for id, _ := range l.template.Property {
 			data, err := l.dd.GetPropertyDataWithID(l.ld.ProductID, l.ld.DeviceName, id, def.PageInfo2{
 				TimeStart: 0,
@@ -119,11 +127,11 @@ func (l *PublishLogic) HandlePropertyGetStatus(msg *deviceSend.Elements) error {
 func (l *PublishLogic) HandleProperty(msg *deviceSend.Elements) error {
 	l.Slowf("PublishLogic|HandleProperty")
 	switch l.dreq.Method {
-	case device2.REPORT, device2.REPORT_INFO:
+	case deviceTemplate.REPORT, deviceTemplate.REPORT_INFO:
 		return l.HandlePropertyReport(msg)
-	case device2.GET_STATUS:
+	case deviceTemplate.GET_STATUS:
 		return l.HandlePropertyGetStatus(msg)
-	case device2.CONTROL_REPLY:
+	case deviceTemplate.CONTROL_REPLY:
 		return l.HandleResp(msg)
 	default:
 		return errors.Method
@@ -136,15 +144,15 @@ func (l *PublishLogic) HandleEvent(msg *deviceSend.Elements) error {
 	dbData := repo.Event{}
 	dbData.ID = l.dreq.EventID
 	dbData.Type = l.dreq.Type
-	if l.dreq.Method != device2.EVENT_POST {
+	if l.dreq.Method != deviceTemplate.EVENT_POST {
 		return errors.Method
 	}
-	tp, err := l.template.VerifyReqParam(l.dreq, device2.EVENT)
+	tp, err := l.template.VerifyReqParam(l.dreq, deviceTemplate.EVENT)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
 		return err
 	}
-	dbData.Params = device2.ToVal(tp)
+	dbData.Params = deviceTemplate.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0))
 
 	err = l.dd.InsertEventData(l.ld.ProductID, l.ld.DeviceName, &dbData)
@@ -159,7 +167,7 @@ func (l *PublishLogic) HandleEvent(msg *deviceSend.Elements) error {
 }
 func (l *PublishLogic) HandleResp(msg *deviceSend.Elements) error {
 	l.Slowf("PublishLogic|HandleResp")
-	resp := device2.DeviceResp{}
+	resp := deviceTemplate.DeviceResp{}
 	err := json.Unmarshal([]byte(msg.Payload), &resp)
 	if err != nil {
 		return errors.Parameter.AddDetail(err)
@@ -218,7 +226,7 @@ func (l *PublishLogic) Handle(msg *deviceSend.Elements) (err error) {
 	l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   l.ld.ProductID,
 		Action:      "publish",
-		Timestamp:   l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0)), // 操作时间
+		Timestamp:   l.dreq.GetTimeStamp(time.UnixMilli(msg.Timestamp)), // 操作时间
 		DeviceName:  l.ld.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
 		RequestID:   l.dreq.ClientToken,

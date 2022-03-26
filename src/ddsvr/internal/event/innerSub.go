@@ -2,7 +2,6 @@ package event
 
 import (
 	"context"
-	"github.com/i-Things/things/src/ddsvr/ddDef"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -21,6 +20,6 @@ func NewInnerSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *InnerSu
 	}
 }
 
-func (s *InnerSubServer) Publish(info *ddDef.InnerPublish) error {
-	return s.svcCtx.DevLink.Publish(s.ctx, info.Topic, []byte(info.Payload))
+func (s *InnerSubServer) PublishToDev(topic string, payload []byte) error {
+	return s.svcCtx.DevLink.Publish(s.ctx, topic, payload)
 }

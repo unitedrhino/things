@@ -3,7 +3,9 @@ package event
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/src/ddsvr/ddDef"
+	"fmt"
+	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/src/ddsvr/ddExport"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -23,24 +25,31 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 	}
 }
 
+// Publish 设备发布的信息通过nats转发给内部服务
 func (s *DeviceSubServer) Publish(topic string, payload []byte) error {
-	s.Info("Publish", topic, string(payload))
-	pub := ddDef.DevPublish{
-		Timestamp: time.Now().UnixMilli(),
-		Topic:     topic,
-		Payload:   payload,
+	s.Info("DeviceSubServer", "Publish", topic, string(payload))
+	productId, deviceName, err := devices.GetDeviceInfo(topic)
+	if err != nil {
+		return err
+	}
+	pub := ddExport.DevPublish{
+		Timestamp:  time.Now().UnixMilli(),
+		Topic:      topic,
+		Payload:    payload,
+		ProductID:  productId,
+		DeviceName: deviceName,
 	}
 	pubStr, _ := json.Marshal(pub)
-	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevPublish, pubStr)
+	return s.svcCtx.InnerLink.Publish(s.ctx, fmt.Sprintf(ddExport.TopicDevPublish, productId, deviceName), pubStr)
 }
 
-func (s *DeviceSubServer) Connected(info *ddDef.DevConn) error {
+func (s *DeviceSubServer) Connected(info *ddExport.DevConn) error {
 	s.Info("Connected", info)
 	str, _ := json.Marshal(info)
-	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevConnected, str)
+	return s.svcCtx.InnerLink.Publish(s.ctx, ddExport.TopicDevConnected, str)
 }
-func (s *DeviceSubServer) Disconnected(info *ddDef.DevConn) error {
+func (s *DeviceSubServer) Disconnected(info *ddExport.DevConn) error {
 	s.Info("Disconnected", info)
 	str, _ := json.Marshal(info)
-	return s.svcCtx.InnerLink.Publish(s.ctx, ddDef.TopicDevDisconnected, str)
+	return s.svcCtx.InnerLink.Publish(s.ctx, ddExport.TopicDevDisconnected, str)
 }

@@ -1,0 +1,64 @@
+package devices
+
+import (
+	"github.com/i-Things/things/shared/errors"
+	"strings"
+)
+
+/*
+物理型topic:
+$thing/up/property/${productID}/${deviceName}	发布	属性上报
+$thing/down/property/${productID}/${deviceName}	订阅	属性下发与属性上报响应
+$thing/up/event/${productID}/${deviceName}	发布	事件上报
+$thing/down/event/${productID}/${deviceName}	订阅	事件上报响应
+$thing/up/action/${productID}/${deviceName}	发布	设备响应行为执行结果
+$thing/down/action/${productID}/${deviceName}	订阅	应用调用设备行为
+系统级topic:
+$ota/report/${productID}/${deviceName}	发布	固件升级消息上行
+$ota/update/${productID}/${deviceName}	订阅	固件升级消息下行
+$broadcast/rxd/${productID}/${deviceName}	订阅	广播消息下行
+$shadow/operation/{productID}/${deviceName}	发布	设备影子消息上行
+$shadow/operation/result/{productID}/${deviceName}	订阅	设备影子消息下行
+$rrpc/txd/{productID}/${deviceName}/${MessageId}	发布	RRPC消息上行，MessageId为RRPC消息ID
+$rrpc/rxd/{productID}/${deviceName}/+	订阅	RRPC消息下行
+$sys/operation/{productID}/${deviceName}	发布	系统topic：ntp服务消息上行
+$sys/operation/result/{productID}/${deviceName}/+	订阅	系统topic：ntp服务消息下行
+
+自定义topic:
+${productID}/${deviceName}/control	订阅	编辑删除
+${productID}/${deviceName}/data	订阅和发布	编辑删除
+${productID}/${deviceName}/event	发布
+${productID}/${deviceName}/xxxxx	订阅和发布   //自定义 暂不做支持
+*/
+
+func GetDeviceInfo(topic string) (productId, deviceName string, err error) {
+	keys := strings.Split(topic, "/")
+	return parseTopic(keys)
+}
+
+//通过topic的第一个字段来获取处理函数
+func parseTopic(topics []string) (productId, deviceName string, err error) {
+	if len(topics) < 2 {
+		return "", "", errors.Parameter.AddDetail("topic is err")
+	}
+	switch topics[0] {
+	case "$thing", "$ota", "$shadow", "$broadcast":
+		return parseLast(topics)
+	default: //自定义消息
+		return parsePose(0, topics)
+	}
+}
+
+func parsePose(productPos int, topics []string) (productId, deviceName string, err error) {
+	if len(topics) < (productPos + 2) {
+		return "", "", errors.Parameter.AddDetail("topic is err")
+	}
+	return topics[productPos], topics[productPos+1], err
+}
+
+func parseLast(topics []string) (productId, deviceName string, err error) {
+	if len(topics) < 2 {
+		return "", "", errors.Parameter.AddDetail("topic is err")
+	}
+	return topics[len(topics)-2], topics[len(topics)-1], err
+}
