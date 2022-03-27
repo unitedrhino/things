@@ -37,8 +37,6 @@ type (
 	Response                 = dm.Response
 	SendActionReq            = dm.SendActionReq
 	SendActionResp           = dm.SendActionResp
-	SendDeviceMsgReq         = dm.SendDeviceMsgReq
-	SendDeviceMsgResp        = dm.SendDeviceMsgResp
 	SendPropertyReq          = dm.SendPropertyReq
 	SendPropertyResp         = dm.SendPropertyResp
 
@@ -67,8 +65,6 @@ type (
 		SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 		// 同步调用设备属性
 		SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
-		// 设备端发送信息
-		SendDeviceMsg(ctx context.Context, in *SendDeviceMsgReq, opts ...grpc.CallOption) (*SendDeviceMsgResp, error)
 	}
 
 	defaultDm struct {
@@ -152,10 +148,4 @@ func (m *defaultDm) SendAction(ctx context.Context, in *SendActionReq, opts ...g
 func (m *defaultDm) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.SendProperty(ctx, in, opts...)
-}
-
-// 设备端发送信息
-func (m *defaultDm) SendDeviceMsg(ctx context.Context, in *SendDeviceMsgReq, opts ...grpc.CallOption) (*SendDeviceMsgResp, error) {
-	client := dm.NewDmClient(m.cli.Conn())
-	return client.SendDeviceMsg(ctx, in, opts...)
 }

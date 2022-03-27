@@ -1,5 +1,6 @@
 package eventDevSub
 
+//设备的发布,连接及断连处理
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
@@ -27,8 +28,8 @@ func NewDeviceMsgHandle(ctx context.Context, svcCtx *svc.ServiceContext) *Device
 }
 
 func (l *DeviceMsgHandle) Publish(msg *deviceSend.Elements) error {
-	l.Infof("PublishLogic|req=%+v", msg)
-	return NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
+	l.Infof("DevReqLogic|req=%+v", msg)
+	return NewDevPublishLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
 func (l *DeviceMsgHandle) Connected(msg *deviceSend.Elements) error {

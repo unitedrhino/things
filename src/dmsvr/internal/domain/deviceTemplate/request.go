@@ -22,8 +22,9 @@ type (
 		Status      string                 `json:"status,omitempty"`   //返回信息
 	}
 	DeviceResp struct {
-		Method      string                 `json:"method"`             //操作方法
-		ClientToken string                 `json:"clientToken"`        //方便排查随机数
+		Method      string                 `json:"method"`      //操作方法
+		ClientToken string                 `json:"clientToken"` //方便排查随机数
+		Timestamp   int64                  `json:"timestamp,omitempty"`
 		Version     string                 `json:"version,omitempty"`  //协议版本，默认为1.0。
 		Code        int64                  `json:"code"`               //状态码
 		Status      string                 `json:"status,omitempty"`   //返回信息
@@ -48,6 +49,13 @@ func (d DeviceReq) AddStatus(err error) DeviceReq {
 }
 
 func (d *DeviceReq) GetTimeStamp(defaultTime time.Time) time.Time {
+	if d.Timestamp == 0 {
+		return defaultTime
+	}
+	return time.UnixMilli(d.Timestamp)
+}
+
+func (d *DeviceResp) GetTimeStamp(defaultTime time.Time) time.Time {
 	if d.Timestamp == 0 {
 		return defaultTime
 	}
