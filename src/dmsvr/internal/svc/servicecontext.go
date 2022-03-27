@@ -9,7 +9,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mongorepo"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/third"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"os"
@@ -24,7 +23,6 @@ type ServiceContext struct {
 	DmDB            mysql.DmModel
 	DeviceID        *utils.SnowFlake
 	ProductID       *utils.SnowFlake
-	DevClient       *third.DevClient
 	DeviceData      repo.GetDeviceDataRepo
 	InnerLink       innerLink.InnerLink
 }
@@ -39,7 +37,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	DeviceID := utils.NewSnowFlake(c.NodeID)
 	ProductID := utils.NewSnowFlake(c.NodeID)
 
-	devClient := third.NewDevClient(c.DevClient)
 	//if token := mc.Connect(); token.Wait() && token.Error() != nil {
 	//	panic(fmt.Sprintf("mqtt client connect err:%s",token.Error()))
 	//}
@@ -66,7 +63,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceID:        DeviceID,
 		ProductID:       ProductID,
 		DeviceLog:       dl,
-		DevClient:       devClient,
 		DeviceData:      dd,
 		InnerLink:       il,
 	}

@@ -46,8 +46,6 @@ type DmClient interface {
 	SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 	//同步调用设备属性
 	SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
-	//设备端发送信息
-	SendDeviceMsg(ctx context.Context, in *SendDeviceMsgReq, opts ...grpc.CallOption) (*SendDeviceMsgResp, error)
 }
 
 type dmClient struct {
@@ -166,15 +164,6 @@ func (c *dmClient) SendProperty(ctx context.Context, in *SendPropertyReq, opts .
 	return out, nil
 }
 
-func (c *dmClient) SendDeviceMsg(ctx context.Context, in *SendDeviceMsgReq, opts ...grpc.CallOption) (*SendDeviceMsgResp, error) {
-	out := new(SendDeviceMsgResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/sendDeviceMsg", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // DmServer is the server API for Dm service.
 // All implementations must embed UnimplementedDmServer
 // for forward compatibility
@@ -203,8 +192,6 @@ type DmServer interface {
 	SendAction(context.Context, *SendActionReq) (*SendActionResp, error)
 	//同步调用设备属性
 	SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error)
-	//设备端发送信息
-	SendDeviceMsg(context.Context, *SendDeviceMsgReq) (*SendDeviceMsgResp, error)
 	mustEmbedUnimplementedDmServer()
 }
 
@@ -247,9 +234,6 @@ func (UnimplementedDmServer) SendAction(context.Context, *SendActionReq) (*SendA
 }
 func (UnimplementedDmServer) SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendProperty not implemented")
-}
-func (UnimplementedDmServer) SendDeviceMsg(context.Context, *SendDeviceMsgReq) (*SendDeviceMsgResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendDeviceMsg not implemented")
 }
 func (UnimplementedDmServer) mustEmbedUnimplementedDmServer() {}
 
@@ -480,24 +464,6 @@ func _Dm_SendProperty_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_SendDeviceMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendDeviceMsgReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).SendDeviceMsg(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/sendDeviceMsg",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).SendDeviceMsg(ctx, req.(*SendDeviceMsgReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Dm_ServiceDesc is the grpc.ServiceDesc for Dm service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -552,10 +518,6 @@ var Dm_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "sendProperty",
 			Handler:    _Dm_SendProperty_Handler,
-		},
-		{
-			MethodName: "sendDeviceMsg",
-			Handler:    _Dm_SendDeviceMsg_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

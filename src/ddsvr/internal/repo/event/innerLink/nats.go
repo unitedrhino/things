@@ -32,9 +32,9 @@ func (n *NatsClient) Publish(ctx context.Context, topic string, payload []byte) 
 	return n.client.Publish(topic, events.NewEventMsg(ctx, payload))
 }
 func (n *NatsClient) Subscribe(handle Handle) error {
-	n.client.QueueSubscribe(ddExport.TopicInnerPublish, ddExport.SvrName, func(msg *nats.Msg) {
+	_, err := n.client.QueueSubscribe(ddExport.TopicInnerPublish, ddExport.SvrName, func(msg *nats.Msg) {
 		ctx, topic, payload := ddExport.GetPublish(msg.Data)
 		handle(ctx).PublishToDev(topic, payload)
 	})
-	return nil
+	return err
 }
