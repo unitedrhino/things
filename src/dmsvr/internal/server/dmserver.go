@@ -34,6 +34,12 @@ func (s *DmServer) AccessAuth(ctx context.Context, in *dm.AccessAuthReq) (*dm.Re
 	return l.AccessAuth(in)
 }
 
+// 鉴定是否是root账号
+func (s *DmServer) RootCheck(ctx context.Context, in *dm.RootCheckReq) (*dm.Response, error) {
+	l := logic.NewRootCheckLogic(ctx, s.svcCtx)
+	return l.RootCheck(in)
+}
+
 // 设备管理
 func (s *DmServer) ManageDevice(ctx context.Context, in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
 	l := logic.NewManageDeviceLogic(ctx, s.svcCtx)

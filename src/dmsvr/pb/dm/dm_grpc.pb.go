@@ -26,6 +26,8 @@ type DmClient interface {
 	LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error)
 	//设备操作认证
 	AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
+	//鉴定是否是root账号
+	RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
 	//设备管理
 	ManageDevice(ctx context.Context, in *ManageDeviceReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 	//产品管理
@@ -68,6 +70,15 @@ func (c *dmClient) LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc
 func (c *dmClient) AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/dm.Dm/accessAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dmClient) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.Dm/rootCheck", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -172,6 +183,8 @@ type DmServer interface {
 	LoginAuth(context.Context, *LoginAuthReq) (*Response, error)
 	//设备操作认证
 	AccessAuth(context.Context, *AccessAuthReq) (*Response, error)
+	//鉴定是否是root账号
+	RootCheck(context.Context, *RootCheckReq) (*Response, error)
 	//设备管理
 	ManageDevice(context.Context, *ManageDeviceReq) (*DeviceInfo, error)
 	//产品管理
@@ -204,6 +217,9 @@ func (UnimplementedDmServer) LoginAuth(context.Context, *LoginAuthReq) (*Respons
 }
 func (UnimplementedDmServer) AccessAuth(context.Context, *AccessAuthReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccessAuth not implemented")
+}
+func (UnimplementedDmServer) RootCheck(context.Context, *RootCheckReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RootCheck not implemented")
 }
 func (UnimplementedDmServer) ManageDevice(context.Context, *ManageDeviceReq) (*DeviceInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ManageDevice not implemented")
@@ -280,6 +296,24 @@ func _Dm_AccessAuth_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).AccessAuth(ctx, req.(*AccessAuthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Dm_RootCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RootCheckReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DmServer).RootCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.Dm/rootCheck",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DmServer).RootCheck(ctx, req.(*RootCheckReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -478,6 +512,10 @@ var Dm_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "accessAuth",
 			Handler:    _Dm_AccessAuth_Handler,
+		},
+		{
+			MethodName: "rootCheck",
+			Handler:    _Dm_RootCheck_Handler,
 		},
 		{
 			MethodName: "manageDevice",
