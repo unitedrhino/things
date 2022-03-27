@@ -6,6 +6,40 @@ info(
     version: "v1"
 )
 
+@server(
+    group : open/dm
+    prefix: open/dm
+)
+service api {
+    @handler loginAuth //设备登录认证
+    post /loginAuth (LoginAuthReq) returns ()
+    @handler accessAuth //设备操作认证
+    post /accessAuth (AccessAuthReq) returns ()
+    @handler rootCheck //鉴定是否是root账号
+    post /rootCheck (RootCheckReq) returns ()
+
+    @handler manageDevice //设备管理
+    post /manageDevice (ManageDeviceReq) returns (DeviceInfo)
+    @handler manageProduct //产品管理
+    post /manageProduct (ManageProductReq) returns (ProductInfo)
+    @handler getProductInfo //获取产品信息
+    post /getProductInfo (GetProductInfoReq) returns (GetProductInfoResp)
+    @handler manageProductTemplate //产品管理
+    post /manageProductTemplate (ManageProductTemplateReq) returns (ProductTemplate)
+    @handler getProductTemplate //获取产品信息
+    post /getProductTemplate (GetProductTemplateReq) returns (ProductTemplate)
+    @handler getDeviceInfo //获取设备信息
+    post /getDeviceInfo (GetDeviceInfoReq) returns (GetDeviceInfoResp)
+    @handler sendAction//同步调用设备行为
+    post /sendAction (SendDmActionReq) returns (SendDmActionResp)
+    @handler sendProperty//同步调用设备属性
+    post /sendProperty (SendDmPropertyReq) returns (SendDmPropertyResp)
+    @handler getDeviceData//获取设备日志信息
+    get /getDeviceData (GetDeviceDataReq) returns (GetDeviceDataResp)
+    @handler getDeviceDescribeLog//获取设备日志信息
+    get /getDeviceDescribeLog (GetDeviceDescribeLogReq) returns (GetDeviceDescribeLogResp)
+}
+
 
 type LoginAuthReq struct {
     Username string `json:"username"`                          //用户名
@@ -22,6 +56,15 @@ type AccessAuthReq struct {
     Access string `json:"access,omitempty"`    //操作
     Ip string `json:"ip,omitempty"`            //访问的ip地址
 }
+
+type RootCheckReq struct {
+    Username string `json:"username,omitempty"`                //用户名
+    Password string `json:"password,optional,omitempty"`       //密码
+    ClientID string `json:"clientID,omitempty"`                //clientID
+    Ip string `json:"ip,omitempty"`                            //访问的ip地址
+    Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
+}
+
 
 type ProductTemplate struct {
     CreatedTime int64 `json:"createdTime,optional,string,omitempty"`   //创建时间 只读
@@ -200,33 +243,3 @@ type GetDevicePropertyStatusResp struct {
     List []*DevicePropertyStatus `json:"list"`
 }
 
-@server(
-    group : open/dm
-    prefix: open/dm
-)
-service api {
-    @handler loginAuth //设备登录认证
-    post /loginAuth (LoginAuthReq) returns ()
-    @handler accessAuth //设备操作认证
-    post /accessAuth (AccessAuthReq) returns ()
-    @handler manageDevice //设备管理
-    post /manageDevice (ManageDeviceReq) returns (DeviceInfo)
-    @handler manageProduct //产品管理
-    post /manageProduct (ManageProductReq) returns (ProductInfo)
-    @handler getProductInfo //获取产品信息
-    post /getProductInfo (GetProductInfoReq) returns (GetProductInfoResp)
-    @handler manageProductTemplate //产品管理
-    post /manageProductTemplate (ManageProductTemplateReq) returns (ProductTemplate)
-    @handler getProductTemplate //获取产品信息
-    post /getProductTemplate (GetProductTemplateReq) returns (ProductTemplate)
-    @handler getDeviceInfo //获取设备信息
-    post /getDeviceInfo (GetDeviceInfoReq) returns (GetDeviceInfoResp)
-    @handler sendAction//同步调用设备行为
-    post /sendAction (SendDmActionReq) returns (SendDmActionResp)
-    @handler sendProperty//同步调用设备属性
-    post /sendProperty (SendDmPropertyReq) returns (SendDmPropertyResp)
-    @handler getDeviceData//获取设备日志信息
-    get /getDeviceData (GetDeviceDataReq) returns (GetDeviceDataResp)
-    @handler getDeviceDescribeLog//获取设备日志信息
-    get /getDeviceDescribeLog (GetDeviceDescribeLogReq) returns (GetDeviceDescribeLogResp)
-}

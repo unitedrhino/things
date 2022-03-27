@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/rootAuth"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"strings"
@@ -163,6 +164,9 @@ func (l *LoginAuthLogic) UpdateLoginTime() {
 
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	l.Infof("LoginAuth|req=%+v", in)
+	if rootAuth.IsAdmin(l.svcCtx.Config.AuthWhite, in.Ip) {
+		return &dm.Response{}, nil
+	}
 	if len(in.Certificate) > 0 {
 		if bytes.Equal(in.Certificate, x509Cert.Signature) {
 			l.Error("it is same")

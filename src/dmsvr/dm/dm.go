@@ -35,6 +35,7 @@ type (
 	ProductInfo              = dm.ProductInfo
 	ProductTemplate          = dm.ProductTemplate
 	Response                 = dm.Response
+	RootCheckReq             = dm.RootCheckReq
 	SendActionReq            = dm.SendActionReq
 	SendActionResp           = dm.SendActionResp
 	SendPropertyReq          = dm.SendPropertyReq
@@ -45,6 +46,8 @@ type (
 		LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error)
 		// 设备操作认证
 		AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
+		// 鉴定是否是root账号
+		RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
 		// 设备管理
 		ManageDevice(ctx context.Context, in *ManageDeviceReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 		// 产品管理
@@ -88,6 +91,12 @@ func (m *defaultDm) LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grp
 func (m *defaultDm) AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.AccessAuth(ctx, in, opts...)
+}
+
+// 鉴定是否是root账号
+func (m *defaultDm) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewDmClient(m.cli.Conn())
+	return client.RootCheck(ctx, in, opts...)
 }
 
 // 设备管理

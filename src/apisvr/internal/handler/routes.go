@@ -107,6 +107,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/accessAuth",
+				Handler: opendm.AccessAuthHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/rootCheck",
+				Handler: opendm.RootCheckHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/manageDevice",
 				Handler: opendm.ManageDeviceHandler(serverCtx),
 			},
