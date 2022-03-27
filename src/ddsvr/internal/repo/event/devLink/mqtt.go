@@ -105,5 +105,5 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 }
 
 func (d *MqttClient) Publish(ctx context.Context, topic string, payload []byte) error {
-	return d.client.Publish(topic, 1, true, payload).Error()
+	return d.client.Publish(topic, 1, false, payload).Error()
 }

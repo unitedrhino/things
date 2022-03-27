@@ -93,9 +93,3 @@ func (s *DmServer) SendProperty(ctx context.Context, in *dm.SendPropertyReq) (*d
 	l := logic.NewSendPropertyLogic(ctx, s.svcCtx)
 	return l.SendProperty(in)
 }
-
-// 设备端发送信息
-func (s *DmServer) SendDeviceMsg(ctx context.Context, in *dm.SendDeviceMsgReq) (*dm.SendDeviceMsgResp, error) {
-	l := logic.NewSendDeviceMsgLogic(ctx, s.svcCtx)
-	return l.SendDeviceMsg(in)
-}
