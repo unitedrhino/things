@@ -120,6 +120,22 @@ type LoginAuthReq struct {
 	Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
 }
 
+type AccessAuthReq struct {
+	Username string `json:"username,omitempty"` //用户名
+	Topic    string `json:"topic,omitempty"`    //主题
+	ClientID string `json:"clientID,omitempty"` //clientID
+	Access   string `json:"access,omitempty"`   //操作
+	Ip       string `json:"ip,omitempty"`       //访问的ip地址
+}
+
+type RootCheckReq struct {
+	Username    string `json:"username,omitempty"`             //用户名
+	Password    string `json:"password,optional,omitempty"`    //密码
+	ClientID    string `json:"clientID,omitempty"`             //clientID
+	Ip          string `json:"ip,omitempty"`                   //访问的ip地址
+	Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
+}
+
 type ProductTemplate struct {
 	CreatedTime int64   `json:"createdTime,optional,string,omitempty"` //创建时间 只读
 	ProductID   string  `json:"productID,optional,omitempty"`          //产品id 只读

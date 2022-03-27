@@ -9,6 +9,8 @@ service Dm {
   rpc loginAuth(LoginAuthReq)           returns (Response);
   //设备操作认证
   rpc accessAuth(AccessAuthReq)         returns (Response);
+  //鉴定是否是root账号
+  rpc rootCheck(RootCheckReq)           returns (Response);
   //设备管理
   rpc manageDevice(ManageDeviceReq)     returns (DeviceInfo);
   //产品管理
@@ -29,8 +31,6 @@ service Dm {
   rpc sendAction(SendActionReq)         returns(SendActionResp);
   //同步调用设备属性
   rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
-  //设备端发送信息
-  rpc sendDeviceMsg(SendDeviceMsgReq) returns(SendDeviceMsgResp);
 }
 
 
@@ -51,20 +51,6 @@ message ManResp {
 //  DEL     = 2;  //删除
 //}
 
-/*
-这里是设备上报的消息
-*/
-
-message SendDeviceMsgReq{
-  string  ClientID = 1;//mqtt上的clientID
-  string  Username = 2;//mqtt上的设备名
-  string  Topic = 3;//主题
-  string  Payload = 4;//具体内容
-  int64   Timestamp = 5;//时间戳
-  string  Action = 6;//操作
-}
-message SendDeviceMsgResp{
-}
 
 /*
 下面是设备管理模块的消息
@@ -84,7 +70,13 @@ message AccessAuthReq {
   string ip = 5; //访问的ip地址
 }
 
-
+message RootCheckReq{
+  string username = 1;//用户名
+  string password = 2;//密码
+  string clientID = 3;//clientID
+  string ip = 4;//访问的ip地址
+  bytes certificate = 5;//客户端证书
+}
 
 
 //enum AUTH//认证方式

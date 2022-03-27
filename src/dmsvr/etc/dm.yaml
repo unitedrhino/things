@@ -27,3 +27,6 @@ DevClient:
 Mongo:
   Url: "mongodb://root:password@127.0.0.1:27017"
   Database: things
+AuthWhite:
+  IpRange:
+    - 127.0.0.1
