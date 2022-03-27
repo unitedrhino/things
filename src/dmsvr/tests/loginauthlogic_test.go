@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dm"
-	"github.com/i-Things/things/src/dmsvr/dmclient"
 	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/zrpc"
 	"testing"
@@ -15,7 +14,7 @@ import (
 
 func TestLoginAuth(t *testing.T) {
 	fmt.Println("TestLoginAuth")
-	client := dmclient.NewDm(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
+	client := dm.NewDm(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
 		Hosts: []string{"127.0.0.1:2379"},
 		Key:   "dm.rpc",
 	}}))
