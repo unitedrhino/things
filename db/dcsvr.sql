@@ -1,5 +1,5 @@
-create database dc;
-use dc;
+create database things_dc;
+use things_dc;
 
 CREATE TABLE if not exists `group_info`
 (
