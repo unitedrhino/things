@@ -1,5 +1,5 @@
-create database dm;
-use dm;
+create database things_dm;
+use things_dm;
 
 CREATE TABLE if not exists `product_info`
 (
