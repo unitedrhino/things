@@ -11,3 +11,4 @@ runsvr dmsvr
 runsvr usersvr
 runsvr dcsvr
 runsvr apisvr
+runsvr ddsvr
