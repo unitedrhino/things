@@ -29,7 +29,7 @@ func NewDeviceMsgHandle(ctx context.Context, svcCtx *svc.ServiceContext) *Device
 
 func (l *DeviceMsgHandle) Publish(msg *deviceSend.Elements) error {
 	l.Infof("DevReqLogic|req=%+v", msg)
-	return NewDevPublishLogic(l.ctx, l.svcCtx).Handle(msg)
+	return NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
 func (l *DeviceMsgHandle) Connected(msg *deviceSend.Elements) error {
