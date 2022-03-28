@@ -1,5 +1,5 @@
-create database user;
-use user;
+create database things_user;
+use things_user;
 CREATE TABLE if not exists `user_core`
 (
     `uid`         bigint unsigned                                         NOT NULL COMMENT '用户id',
