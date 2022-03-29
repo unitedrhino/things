@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mongorepo"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"os"
 )
@@ -25,6 +26,7 @@ type ServiceContext struct {
 	ProductID       *utils.SnowFlake
 	DeviceData      repo.GetDeviceDataRepo
 	InnerLink       innerLink.InnerLink
+	Store           kv.Store
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -34,18 +36,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	pt := mysql.NewProductTemplateModel(conn, c.CacheRedis)
 	dl := mysql.NewDeviceLogModel(conn)
 	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
-	DeviceID := utils.NewSnowFlake(c.NodeID)
-	ProductID := utils.NewSnowFlake(c.NodeID)
-
-	//if token := mc.Connect(); token.Wait() && token.Error() != nil {
-	//	panic(fmt.Sprintf("mqtt client connect err:%s",token.Error()))
-	//}
-	//token := mc.Publish("21CYs1k9YpG/test8/54598", 0, false, clientID+" send msg")
-	//token.Wait()
-	//time.Sleep(time.Hour)
+	store := kv.NewStore(c.CacheRedis)
+	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
+	DeviceID := utils.NewSnowFlake(nodeId)
+	ProductID := utils.NewSnowFlake(nodeId)
 	mongoDB, err := mongodb.NewMongo(c.Mongo.Url, c.Mongo.Database, context.TODO())
 	if err != nil {
-		logx.Error(err)
+		logx.Error("NewMongo", err)
 		os.Exit(-1)
 	}
 	dd := mongorepo.NewDeviceDataRepo(mongoDB)
@@ -65,5 +62,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceLog:       dl,
 		DeviceData:      dd,
 		InnerLink:       il,
+		Store:           store,
 	}
 }

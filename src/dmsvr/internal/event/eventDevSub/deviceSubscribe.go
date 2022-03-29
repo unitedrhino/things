@@ -5,7 +5,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -35,7 +35,7 @@ func (l *DeviceMsgHandle) Publish(msg *deviceSend.Elements) error {
 func (l *DeviceMsgHandle) Connected(msg *deviceSend.Elements) error {
 	l.Infof("ConnectLogic|req=%+v", msg)
 	//todo 这里需要查询下数据库,避免数据错误
-	ld, err := dm.GetClientIDInfo(msg.ClientID)
+	ld, err := deviceDetail.GetClientIDInfo(msg.ClientID)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (l *DeviceMsgHandle) Connected(msg *deviceSend.Elements) error {
 
 func (l *DeviceMsgHandle) Disconnected(msg *deviceSend.Elements) error {
 	l.Infof("DisconnectLogic|req=%+v", msg)
-	ld, err := dm.GetClientIDInfo(msg.ClientID)
+	ld, err := deviceDetail.GetClientIDInfo(msg.ClientID)
 	if err != nil {
 		return err
 	}

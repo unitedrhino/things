@@ -27,6 +27,7 @@ func (s *SubDev) GetMsg(timeout time.Duration) (ele *deviceSend.Elements, err er
 	if err != nil {
 		return nil, err
 	}
+	msg.Ack()
 	emsg := events.GetEventMsg(msg.Data)
 	if emsg == nil {
 		logx.Error(msg.Subject, string(msg.Data))

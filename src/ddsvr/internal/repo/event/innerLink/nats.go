@@ -33,6 +33,7 @@ func (n *NatsClient) Publish(ctx context.Context, topic string, payload []byte) 
 }
 func (n *NatsClient) Subscribe(handle Handle) error {
 	_, err := n.client.QueueSubscribe(ddExport.TopicInnerPublish, ddExport.SvrName, func(msg *nats.Msg) {
+		msg.Ack()
 		ctx, topic, payload := ddExport.GetPublish(msg.Data)
 		handle(ctx).PublishToDev(topic, payload)
 	})
