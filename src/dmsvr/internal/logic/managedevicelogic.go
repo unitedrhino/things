@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
@@ -83,7 +84,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		CreatedTime: time.Now(),
 	}
 	if in.Info.LogLevel != def.UNKNOWN {
-		di.LogLevel = dm.LOG_CLOSE
+		di.LogLevel = deviceDetail.LOG_CLOSE
 	}
 	_, err = l.svcCtx.DeviceInfo.Insert(&di)
 	if err != nil {

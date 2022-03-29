@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/rootAuth"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -175,11 +176,11 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 			len(x509Cert.Raw), len(x509Cert.Signature))
 	}
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
-	lg, err := dm.GetLoginDevice(in.Username)
+	lg, err := deviceDetail.GetLoginDevice(in.Username)
 	if err != nil {
 		return nil, err
 	}
-	inLg, err := dm.GetClientIDInfo(in.ClientID)
+	inLg, err := deviceDetail.GetClientIDInfo(in.ClientID)
 	if err != nil {
 		return nil, err
 	}

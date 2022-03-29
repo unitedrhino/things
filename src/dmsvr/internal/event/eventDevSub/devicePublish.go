@@ -5,7 +5,6 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/dm"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo"
@@ -20,7 +19,6 @@ type PublishLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	ld       dm.LoginDevice
 	pt       *mysql.ProductTemplate
 	template *deviceTemplate.Template
 	topics   []string
@@ -38,12 +36,10 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLo
 
 func (l *PublishLogic) initMsg(msg *deviceSend.Elements) error {
 	var err error
-	l.ld.ProductID = msg.ProductID
-	l.ld.DeviceName = msg.DeviceName
 	if err != nil {
 		return err
 	}
-	l.pt, err = l.svcCtx.ProductTemplate.FindOne(l.ld.ProductID)
+	l.pt, err = l.svcCtx.ProductTemplate.FindOne(msg.ProductID)
 	if err != nil {
 		return err
 	}
@@ -83,7 +79,7 @@ func (l *PublishLogic) HandlePropertyReport(msg *deviceSend.Elements) error {
 	}
 	params := deviceTemplate.ToVal(tp)
 	timeStamp := l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0))
-	err = l.dd.InsertPropertiesData(l.ld.ProductID, l.ld.DeviceName, params, timeStamp)
+	err = l.dd.InsertPropertiesData(msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 		l.DeviceResp(msg, errors.Database, nil)
 		l.Errorf("HandlePropertyReport|InsertPropertyData|err=%+v", err)
@@ -98,7 +94,7 @@ func (l *PublishLogic) HandlePropertyGetStatus(msg *deviceSend.Elements) error {
 	switch l.dreq.Type {
 	case deviceTemplate.REPORT:
 		for id, _ := range l.template.Property {
-			data, err := l.dd.GetPropertyDataWithID(l.ld.ProductID, l.ld.DeviceName, id, def.PageInfo2{
+			data, err := l.dd.GetPropertyDataWithID(msg.ProductID, msg.DeviceName, id, def.PageInfo2{
 				TimeStart: 0,
 				TimeEnd:   0,
 				Limit:     1,
@@ -154,7 +150,7 @@ func (l *PublishLogic) HandleEvent(msg *deviceSend.Elements) error {
 	dbData.Params = deviceTemplate.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0))
 
-	err = l.dd.InsertEventData(l.ld.ProductID, l.ld.DeviceName, &dbData)
+	err = l.dd.InsertEventData(msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
 		l.DeviceResp(msg, errors.Database, nil)
 		l.Errorf("InsertEventData|err=%+v", err)
@@ -218,10 +214,10 @@ func (l *PublishLogic) Handle(msg *deviceSend.Elements) (err error) {
 		err = errors.Parameter.AddDetailf("need topic :%s", msg.Topic)
 	}
 	l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
-		ProductID:   l.ld.ProductID,
+		ProductID:   msg.ProductID,
 		Action:      "publish",
 		Timestamp:   l.dreq.GetTimeStamp(time.UnixMilli(msg.Timestamp)), // 操作时间
-		DeviceName:  l.ld.DeviceName,
+		DeviceName:  msg.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
 		RequestID:   l.dreq.ClientToken,
 		Content:     string(msg.Payload),

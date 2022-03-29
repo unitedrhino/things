@@ -1,7 +1,6 @@
 Name: dc.rpc
 ListenOn: 127.0.0.1:9082
 CpuThreshold: 0
-NodeID: 1
 Timeout: 1000000
 Etcd:
   Hosts:

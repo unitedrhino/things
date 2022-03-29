@@ -1,7 +1,6 @@
 Name: dm.rpc
 ListenOn: 127.0.0.1:9081
 CpuThreshold: 0
-NodeID: 1
 Timeout: 1000000
 Etcd:
   Hosts:
@@ -13,17 +12,6 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
-Kafka:
-  Brokers:
-    - 127.0.0.1:9092
-  Group: dm2
-DevClient:
-  Mqtt:
-    ClientID: dm.rpc:1
-    Pass: "123"
-    User: admin
-    Brokers:
-      - tcp://127.0.0.1:1883
 Mongo:
   Url: "mongodb://root:password@127.0.0.1:27017"
   Database: things
