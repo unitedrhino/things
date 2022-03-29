@@ -51,6 +51,7 @@ func (n *NatsClient) SubscribeDevSync(ctx context.Context, topic string) (*SubDe
 
 func (n *NatsClient) Subscribe(handle Handle) error {
 	_, err := n.client.QueueSubscribe(ddExport.TopicDevPublishAll, dmDef.SvrName, func(msg *nats.Msg) {
+		msg.Ack()
 		emsg := events.GetEventMsg(msg.Data)
 		if emsg == nil {
 			logx.Error(msg.Subject, string(msg.Data))
@@ -69,6 +70,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		return err
 	}
 	_, err = n.client.QueueSubscribe(ddExport.TopicDevConnected, dmDef.SvrName, func(msg *nats.Msg) {
+		msg.Ack()
 		emsg := events.GetEventMsg(msg.Data)
 		if emsg == nil {
 			logx.Error(msg.Subject, string(msg.Data))
@@ -87,6 +89,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		return err
 	}
 	_, err = n.client.QueueSubscribe(ddExport.TopicDevDisconnected, dmDef.SvrName, func(msg *nats.Msg) {
+		msg.Ack()
 		emsg := events.GetEventMsg(msg.Data)
 		if emsg == nil {
 			logx.Error(msg.Subject, string(msg.Data))

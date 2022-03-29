@@ -1,9 +1,24 @@
-package dm
+package deviceDetail
 
 import (
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/spf13/cast"
 	"strings"
+)
+
+const (
+	PRODUCTID_LEN = 11
+)
+
+type LOG_LEVEL = int64
+
+const (
+	LOG_CLOSE LOG_LEVEL = 1 //关闭
+	LOG_ERROR LOG_LEVEL = 2 //错误
+	LOG_WARN  LOG_LEVEL = 3 //告警
+	LOG_INFO  LOG_LEVEL = 4 //信息
+	LOG_DEBUG LOG_LEVEL = 5 //调试
 )
 
 type LoginDevice struct {
@@ -38,4 +53,14 @@ func GetClientIDInfo(ClientID string) (*LoginDevice, error) {
 		DeviceName: ClientID[PRODUCTID_LEN:],
 	}
 	return lg, nil
+}
+
+//字符串类型的产品id有11个字节,不够的需要在前面补0
+func GetStrProductID(id int64) string {
+	str := utils.DecimalToAny(id, 62)
+	return utils.ToLen(str, 11)
+}
+
+func GetInt64ProductID(id string) int64 {
+	return utils.AnyToDecimal(id, 62)
 }

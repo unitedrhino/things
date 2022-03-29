@@ -7,19 +7,18 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-//Elements kafka publish elements
+//Elements 设备发送的所有属性
 type Elements struct {
 	ProductID  string
 	DeviceName string
 	ClientID   string
 	Username   string
 	Address    string
-
-	Topic     string
-	Payload   []byte
-	Timestamp int64
-	Action    string
-	Reason    string
+	Topic      string
+	Payload    []byte
+	Timestamp  int64
+	Action     string
+	Reason     string
 }
 
 func GetDevPublish(ctx context.Context, data []byte) (*Elements, error) {

@@ -7,7 +7,6 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"time"
 )
 

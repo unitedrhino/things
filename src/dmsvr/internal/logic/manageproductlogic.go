@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/productDetail"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
@@ -71,12 +73,12 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql.Prod
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
 	createTime := time.Now()
 	pt := &mysql.ProductTemplate{
-		ProductID:   dm.GetStrProductID(ProductID),
+		ProductID:   deviceDetail.GetStrProductID(ProductID),
 		CreatedTime: createTime,
 	}
 	pi := &mysql.ProductInfo{
-		ProductID:   dm.GetStrProductID(ProductID), // 产品id
-		ProductName: info.ProductName,              // 产品名称
+		ProductID:   deviceDetail.GetStrProductID(ProductID), // 产品id
+		ProductName: info.ProductName,                        // 产品名称
 		Description: info.Description.GetValue(),
 		DevStatus:   info.DevStatus.GetValue(),
 		CreatedTime: createTime,
@@ -84,32 +86,32 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql.Prod
 	if info.AutoRegister != def.UNKNOWN {
 		pi.AutoRegister = info.AutoRegister
 	} else {
-		pi.AutoRegister = dm.AUTO_REG_CLOSE
+		pi.AutoRegister = productDetail.AUTO_REG_CLOSE
 	}
 	if info.DataProto != def.UNKNOWN {
 		pi.DataProto = info.DataProto
 	} else {
-		pi.DataProto = dm.DATA_CUSTOM
+		pi.DataProto = productDetail.DATA_CUSTOM
 	}
 	if info.DeviceType != def.UNKNOWN {
 		pi.DeviceType = info.DeviceType
 	} else {
-		pi.DeviceType = dm.DEV_DEVICE
+		pi.DeviceType = productDetail.DEV_DEVICE
 	}
 	if info.NetType != def.UNKNOWN {
 		pi.NetType = info.NetType
 	} else {
-		pi.NetType = dm.NET_OTHER
+		pi.NetType = productDetail.NET_OTHER
 	}
 	if info.DeviceType != def.UNKNOWN {
 		pi.DeviceType = info.DeviceType
 	} else {
-		pi.DeviceType = dm.DEV_DEVICE
+		pi.DeviceType = productDetail.DEV_DEVICE
 	}
 	if info.AuthMode != def.UNKNOWN {
 		pi.AuthMode = info.AuthMode
 	} else {
-		pi.AuthMode = dm.AUTH_PWD
+		pi.AuthMode = productDetail.AUTH_PWD
 	}
 	return pi, pt
 }

@@ -23,7 +23,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	gi := model.NewGroupInfoModel(conn, c.CacheRedis)
 	gm := model.NewGroupMemberModel(conn, c.CacheRedis)
 	dc := model.NewDcModel(conn, c.CacheRedis)
-	GroupID := utils.NewSnowFlake(c.NodeID)
+	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
+	GroupID := utils.NewSnowFlake(nodeId)
 	dm := dm.NewDm(zrpc.MustNewClient(c.DmRpc.Conf))
 
 	return &ServiceContext{
