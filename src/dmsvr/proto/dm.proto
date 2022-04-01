@@ -153,7 +153,7 @@ message GetProductInfoResp{
 message ProductTemplate{
   int64   createdTime = 1; //创建时间 只读
   string   productID = 2; //产品id 只读
-  google.protobuf.StringValue template = 3;//数据模板
+  string template = 3;//数据模板
 }
 
 //只能修改

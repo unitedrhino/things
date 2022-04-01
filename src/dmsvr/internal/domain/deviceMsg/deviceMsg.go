@@ -1,4 +1,4 @@
-package deviceSend
+package deviceMsg
 
 import (
 	"context"

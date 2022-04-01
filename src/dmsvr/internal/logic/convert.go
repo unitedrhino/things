@@ -18,7 +18,7 @@ func ToProductTemplate(pt *mysql.ProductTemplate) *dm.ProductTemplate {
 	return &dm.ProductTemplate{
 		CreatedTime: pt.CreatedTime.Unix(),
 		ProductID:   pt.ProductID,
-		Template:    &wrappers.StringValue{Value: pt.Template},
+		Template:    pt.Template,
 	}
 }
 

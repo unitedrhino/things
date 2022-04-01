@@ -3,22 +3,22 @@ package innerLink
 import (
 	"context"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
+	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 )
 
 type (
 	InnerLink interface {
 		PublishToDev(ctx context.Context, topic string, payload []byte) error
 		Subscribe(handle Handle) error
-		ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *deviceTemplate.DeviceReq,
-			productID, deviceName string) (*deviceTemplate.DeviceResp, error)
+		ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *deviceSend.DeviceReq,
+			productID, deviceName string) (*deviceSend.DeviceResp, error)
 	}
 	Handle         func(ctx context.Context) InnerSubHandle
 	InnerSubHandle interface {
-		Publish(out *deviceSend.Elements) error
-		Connected(out *deviceSend.Elements) error
-		Disconnected(out *deviceSend.Elements) error
+		Publish(out *deviceMsg.Elements) error
+		Connected(out *deviceMsg.Elements) error
+		Disconnected(out *deviceMsg.Elements) error
 	}
 )
 

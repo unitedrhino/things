@@ -77,8 +77,8 @@ func ProductInfoToApi(v *dm.ProductInfo) *ProductInfo {
 
 func ProductTemplateToApi(v *dm.ProductTemplate) *ProductTemplate {
 	return &ProductTemplate{
-		CreatedTime: v.CreatedTime,          //创建时间 只读
-		ProductID:   v.ProductID,            //产品id 只读
-		Template:    GetNullVal(v.Template), //数据模板
+		CreatedTime: v.CreatedTime, //创建时间 只读
+		ProductID:   v.ProductID,   //产品id 只读
+		Template:    v.Template,    //数据模板
 	}
 }

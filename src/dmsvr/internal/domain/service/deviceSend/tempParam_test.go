@@ -1,10 +1,12 @@
-package deviceTemplate_test
+package deviceSend_test
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"testing"
 )
 
@@ -680,12 +682,12 @@ func TestVerifyPropertyParam(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, v := range propertyParamStr {
-		var dq deviceTemplate.DeviceReq
+		var dq deviceSend.DeviceReq
 		err := utils.Unmarshal([]byte(v), &dq.Params)
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := T.VerifyReqParam(dq, deviceTemplate.PROPERTY)
+		out, err := dq.VerifyReqParam(T, deviceTemplate.PROPERTY)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -717,12 +719,12 @@ func TestVerifyEventParam(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, v := range eventParamStr {
-		var dq deviceTemplate.DeviceReq
+		var dq deviceSend.DeviceReq
 		err := utils.Unmarshal([]byte(v), &dq)
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := T.VerifyReqParam(dq, deviceTemplate.EVENT)
+		out, err := dq.VerifyReqParam(T, deviceTemplate.EVENT)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -752,12 +754,12 @@ func TestVerifyActionInParam(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, v := range actionInParamStr {
-		var dq deviceTemplate.DeviceReq
+		var dq deviceSend.DeviceReq
 		err := utils.Unmarshal([]byte(v), &dq)
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := T.VerifyReqParam(dq, deviceTemplate.ACTION_INPUT)
+		out, err := dq.VerifyReqParam(T, deviceTemplate.ACTION_INPUT)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -787,12 +789,12 @@ func TestVerifyActionOutParam(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, v := range actionOutParamStr {
-		var dq deviceTemplate.DeviceResp
+		var dq deviceSend.DeviceResp
 		err := utils.Unmarshal([]byte(v), &dq)
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := T.VerifyRespParam(dq, "biaoshifu", deviceTemplate.ACTION_OUTPUT)
+		out, err := dq.VerifyRespParam(T, "biaoshifu", deviceTemplate.ACTION_OUTPUT)
 		if err != nil {
 			t.Fatal(err)
 		}
