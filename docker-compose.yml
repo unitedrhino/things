@@ -1,25 +1,11 @@
 version: '3.2'
 services:
-  zookeeper:
-    image: wurstmeister/zookeeper
-    container_name: zookeeper
+  nats-server:
+    image: nats:latest
     ports:
-      - "2181:2181"
-    restart: always
-  kafka:
-    image: wurstmeister/kafka
-    container_name: kafka
-    ports:
-      - "9092:9092"
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
   etcd:
     image: quay.io/coreos/etcd:v3.3.12
     container_name: etcd-v3
@@ -86,7 +72,7 @@ services:
     ports:
       - "6379:6379"
   tdengine:
-    image: tdengine/tdengine:2.2.0.5
+    image: tdengine/tdengine
     container_name: tdengine
     hostname: tdengine
     ports:
