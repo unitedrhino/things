@@ -2,9 +2,10 @@ package logic
 
 import (
 	"context"
-	"database/sql"
+	"fmt"
 	"github.com/i-Things/things/shared/errors"
-	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
 
@@ -28,21 +29,7 @@ func NewManageProductTemplateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 	}
 }
 
-func UpdateProductTemplate(old *mysql.ProductTemplate, data *dm.ProductTemplate) (isModify bool) {
-	defer func() {
-		if isModify {
-			old.UpdatedTime = sql.NullTime{Valid: true, Time: time.Now()}
-		}
-	}()
-	if data.Template != nil {
-		old.Template = data.Template.GetValue()
-		isModify = true
-	}
-	return
-}
-
 func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, pt *mysql.ProductTemplate) (*dm.ProductTemplate, error) {
-	UpdateProductTemplate(pt, in.Info)
 	//todo 这里需要添加模板的校验
 	err := l.svcCtx.ProductTemplate.Update(pt)
 	if err != nil {
@@ -62,9 +49,14 @@ func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemp
 	}
 	pt := &mysql.ProductTemplate{
 		ProductID:   pi.ProductID,
-		Template:    in.Info.Template.GetValue(),
+		Template:    in.Info.Template,
 		CreatedTime: time.Now(),
 	}
+	tempMode, err := deviceTemplate.NewTemplate([]byte(in.Info.Template))
+	if err != nil {
+		return nil, errors.Parameter.WithMsg("模板格式不正确").AddDetail(err)
+	}
+	fmt.Println(tempMode)
 	l.svcCtx.ProductTemplate.Insert(pt)
 
 	return ToProductTemplate(pt), nil
@@ -80,7 +72,7 @@ func (l *ManageProductTemplateLogic) InsertProductTemplate(in *dm.ManageProductT
 	}
 	pt := &mysql.ProductTemplate{
 		ProductID:   pi.ProductID,
-		Template:    in.Info.Template.GetValue(),
+		Template:    in.Info.Template,
 		CreatedTime: time.Now(),
 	}
 	_, err = l.svcCtx.ProductTemplate.Insert(pt)
@@ -96,7 +88,7 @@ func (l *ManageProductTemplateLogic) ManageProductTemplate(in *dm.ManageProductT
 	pt, err := l.svcCtx.ProductTemplate.FindOne(in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
+			l.AddProductTemplate(in)
 		}
 		return nil, errors.System.AddDetail(err.Error())
 	}

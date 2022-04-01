@@ -11,6 +11,9 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
+	TDengine struct {
+		DataSource string
+	}
 	CacheRedis cache.ClusterConf
 	Mongo      struct {
 		Url      string //mongodb连接串

@@ -1,8 +1,9 @@
-package deviceTemplate_test
+package deviceSend_test
 
 import (
 	"encoding/json"
 	"fmt"
+	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"testing"
 )
 
@@ -141,7 +142,7 @@ var (
 func TestDeviceReq(t *testing.T) {
 	fmt.Println("TestDeviceReq")
 	for _, dqStr := range DeviceReqTestStr {
-		dq := deviceTemplate.DeviceReq{}
+		dq := deviceSend.DeviceReq{}
 		json.Unmarshal([]byte(dqStr), &dq)
 		fmt.Printf("src=%s|ans=%+v\n", dqStr, dq)
 	}
@@ -149,7 +150,7 @@ func TestDeviceReq(t *testing.T) {
 func TestDeviceResp(t *testing.T) {
 	fmt.Println("TestDeviceResp")
 	for _, dqStr := range DeviceRespTestStr {
-		dq := deviceTemplate.DeviceResp{}
+		dq := deviceSend.DeviceResp{}
 		json.Unmarshal([]byte(dqStr), &dq)
 		fmt.Printf("src=%s|ans=%+v\n", dqStr, dq)
 	}
