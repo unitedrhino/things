@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
@@ -59,13 +60,16 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 	//	l.Errorf("SendAction|GenerateUUID err:%v",err)
 	//	return nil, errors.System.AddDetail(err)
 	//}
-	req := deviceTemplate.DeviceReq{
-		Method: deviceTemplate.ACTION,
+	req := deviceSend.DeviceReq{
+		Method: deviceSend.ACTION,
 		//ClientToken: uuid,
 		ClientToken: "de65377c-4041-565d-0b5e-67b664a06be8", //这个是测试代码
 		Timestamp:   time.Now().UnixMilli(),
 		Params:      param}
-	l.template.VerifyReqParam(req, deviceTemplate.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, deviceTemplate.ACTION_INPUT)
+	if err != nil {
+		return nil, err
+	}
 	pubTopic := fmt.Sprintf("$thing/down/action/%s/%s", in.ProductID, in.DeviceName)
 	subTopic := fmt.Sprintf("$thing/up/action/%s/%s", in.ProductID, in.DeviceName)
 

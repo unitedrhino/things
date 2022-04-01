@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
@@ -62,13 +63,16 @@ func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendProper
 		l.Errorf("SendProperty|GenerateUUID err:%v", err)
 		return nil, errors.System.AddDetail(err)
 	}
-	req := deviceTemplate.DeviceReq{
-		Method:      deviceTemplate.CONTROL,
+	req := deviceSend.DeviceReq{
+		Method:      deviceSend.CONTROL,
 		ClientToken: uuid,
 		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
 		Timestamp: time.Now().UnixMilli(),
 		Params:    param}
-	l.template.VerifyReqParam(req, deviceTemplate.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, deviceTemplate.ACTION_INPUT)
+	if err != nil {
+		return nil, err
+	}
 	pubTopic := fmt.Sprintf("$thing/down/property/%s/%s", in.ProductID, in.DeviceName)
 	subTopic := fmt.Sprintf("$thing/up/property/%s/%s", in.ProductID, in.DeviceName)
 

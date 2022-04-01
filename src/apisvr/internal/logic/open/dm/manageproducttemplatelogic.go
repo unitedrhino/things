@@ -2,7 +2,6 @@ package dm
 
 import (
 	"context"
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -32,13 +31,10 @@ func (l *ManageProductTemplateLogic) ManageProductTemplate(req types.ManageProdu
 	dmReq := &dm.ManageProductTemplateReq{
 		Info: &dm.ProductTemplate{
 			ProductID: req.Info.ProductID, //产品id 只读
+			Template:  req.Info.Template,
 		},
 	}
-	if req.Info.Template != nil {
-		dmReq.Info.Template = &wrappers.StringValue{
-			Value: *req.Info.Template,
-		}
-	}
+
 	dmResp, err := l.svcCtx.DmRpc.ManageProductTemplate(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)

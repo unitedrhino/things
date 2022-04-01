@@ -10,8 +10,8 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/ddsvr/ddExport"
 	"github.com/i-Things/things/src/dmsvr/dmDef"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
+	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -58,7 +58,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		ctx := emsg.GetCtx()
-		ele, err := deviceSend.GetDevPublish(ctx, emsg.GetData())
+		ele, err := deviceMsg.GetDevPublish(ctx, emsg.GetData())
 		if err != nil {
 			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
 			return
@@ -110,14 +110,14 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	return nil
 }
 
-func (n *NatsClient) getDevConnMsg(ctx context.Context, data []byte) (*deviceSend.Elements, error) {
+func (n *NatsClient) getDevConnMsg(ctx context.Context, data []byte) (*deviceMsg.Elements, error) {
 	logInfo := ddExport.DevConn{}
 	err := json.Unmarshal(data, &logInfo)
 	if err != nil {
 		logx.WithContext(ctx).Error("getDevConnMsg", string(data), err)
 		return nil, err
 	}
-	ele := deviceSend.Elements{
+	ele := deviceMsg.Elements{
 		ClientID:  logInfo.ClientID,
 		Username:  logInfo.UserName,
 		Timestamp: logInfo.Timestamp,
@@ -128,8 +128,8 @@ func (n *NatsClient) getDevConnMsg(ctx context.Context, data []byte) (*deviceSen
 	return &ele, nil
 }
 
-func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *deviceTemplate.DeviceReq,
-	productID, deviceName string) (*deviceTemplate.DeviceResp, error) {
+func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *deviceSend.DeviceReq,
+	productID, deviceName string) (*deviceSend.DeviceResp, error) {
 	payload, _ := json.Marshal(req)
 	err := n.PublishToDev(ctx, reqTopic, payload)
 	if err != nil {
@@ -154,7 +154,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic st
 		if msg.Topic != respTopic { //不是订阅的topic
 			continue
 		}
-		var dresp deviceTemplate.DeviceResp
+		var dresp deviceSend.DeviceResp
 		err = utils.Unmarshal(msg.Payload, &dresp)
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可
 			continue

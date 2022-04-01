@@ -137,9 +137,9 @@ type RootCheckReq struct {
 }
 
 type ProductTemplate struct {
-	CreatedTime int64   `json:"createdTime,optional,string,omitempty"` //创建时间 只读
-	ProductID   string  `json:"productID,optional,omitempty"`          //产品id 只读
-	Template    *string `json:"template,optional,omitempty"`           //数据模板
+	CreatedTime int64  `json:"createdTime,optional,string,omitempty"` //创建时间 只读
+	ProductID   string `json:"productID,optional,omitempty"`          //产品id 只读
+	Template    string `json:"template,optional,omitempty"`           //数据模板
 }
 
 type ProductInfo struct {
