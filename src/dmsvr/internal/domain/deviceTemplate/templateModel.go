@@ -1,15 +1,17 @@
 package deviceTemplate
 
 //数据类型
+type DataType string
+
 const (
-	BOOL      = "bool"
-	INT       = "int"
-	STRING    = "string"
-	STRUCT    = "struct"
-	FLOAT     = "float"
-	TIMESTAMP = "timestamp"
-	ARRAY     = "array"
-	ENUM      = "enum"
+	BOOL      DataType = "bool"
+	INT       DataType = "int"
+	STRING    DataType = "string"
+	STRUCT    DataType = "struct"
+	FLOAT     DataType = "float"
+	TIMESTAMP DataType = "timestamp"
+	ARRAY     DataType = "array"
+	ENUM      DataType = "enum"
 )
 
 type TEMP_TYPE int64
@@ -83,9 +85,9 @@ type (
 	}
 	/*数据类型定义*/
 	Define struct {
-		Type      string            `json:"type"`                //参数类型:bool int string struct float timestamp array enum
+		Type      DataType          `json:"type"`                //参数类型:bool int string struct float timestamp array enum
 		Maping    map[string]string `json:"mapping,omitempty"`   //枚举及bool类型:bool enum
-		Min       string            `json:"min,omitempty"`       //数值最小值:int string float
+		Min       string            `json:"min,omitempty"`       //数值最小值:int  float
 		Max       string            `json:"max,omitempty"`       //数值最大值:int string float
 		Start     string            `json:"start,omitempty"`     //初始值:int float
 		Step      string            `json:"step,omitempty"`      //步长:int float
