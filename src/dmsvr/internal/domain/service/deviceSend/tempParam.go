@@ -16,14 +16,14 @@ type TempParam struct {
 	Required bool   `json:"required"` //是否必须
 	Type     string `json:"type"`     //事件类型: 信息:info  告警alert  故障:fault
 	Value    struct {
-		Type   string            `json:"type"`              //参数类型:bool int string struct float timestamp array enum
-		Maping map[string]string `json:"mapping,omitempty"` //枚举及bool类型:bool enum
-		Min    string            `json:"min,omitempty"`     //数值最小值:int string float
-		Max    string            `json:"max,omitempty"`     //数值最大值:int string float
-		Start  string            `json:"start,omitempty"`   //初始值:int float
-		Step   string            `json:"step,omitempty"`    //步长:int float
-		Unit   string            `json:"unit,omitempty"`    //单位:int float
-		Value  interface{}       `json:"Value"`
+		Type   deviceTemplate.DataType `json:"type"`              //参数类型:bool int string struct float timestamp array enum
+		Maping map[string]string       `json:"mapping,omitempty"` //枚举及bool类型:bool enum
+		Min    string                  `json:"min,omitempty"`     //数值最小值:int string float
+		Max    string                  `json:"max,omitempty"`     //数值最大值:int string float
+		Start  string                  `json:"start,omitempty"`   //初始值:int float
+		Step   string                  `json:"step,omitempty"`    //步长:int float
+		Unit   string                  `json:"unit,omitempty"`    //单位:int float
+		Value  interface{}             `json:"Value"`
 		/*
 			读到的数据  如果是是数组则类型为[]interface{}  如果是结构体类型则为map[id]TempParam
 				interface 为数据内容  					string为结构体的key value 为数据内容
