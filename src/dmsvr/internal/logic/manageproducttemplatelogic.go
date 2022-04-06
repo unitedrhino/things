@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -30,8 +29,12 @@ func NewManageProductTemplateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, pt *mysql.ProductTemplate) (*dm.ProductTemplate, error) {
-	//todo 这里需要添加模板的校验
-	err := l.svcCtx.ProductTemplate.Update(pt)
+	newTempMode, err := deviceTemplate.ValidateWithFmt([]byte(in.Info.Template))
+	if err != nil {
+		return nil, err
+	}
+	pt.Template = string(newTempMode)
+	err = l.svcCtx.ProductTemplate.Update(pt)
 	if err != nil {
 		l.Errorf("ModifyProductTemplate|ProductTemplate|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
@@ -47,18 +50,16 @@ func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemp
 		}
 		return nil, errors.Database.AddDetail(err.Error())
 	}
+	newTempMode, err := deviceTemplate.ValidateWithFmt([]byte(in.Info.Template))
+	if err != nil {
+		return nil, err
+	}
 	pt := &mysql.ProductTemplate{
 		ProductID:   pi.ProductID,
-		Template:    in.Info.Template,
+		Template:    string(newTempMode),
 		CreatedTime: time.Now(),
 	}
-	tempMode, err := deviceTemplate.NewTemplate([]byte(in.Info.Template))
-	if err != nil {
-		return nil, errors.Parameter.WithMsg("模板格式不正确").AddDetail(err)
-	}
-	fmt.Println(tempMode)
 	l.svcCtx.ProductTemplate.Insert(pt)
-
 	return ToProductTemplate(pt), nil
 }
 
@@ -88,7 +89,7 @@ func (l *ManageProductTemplateLogic) ManageProductTemplate(in *dm.ManageProductT
 	pt, err := l.svcCtx.ProductTemplate.FindOne(in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			l.AddProductTemplate(in)
+			return l.AddProductTemplate(in)
 		}
 		return nil, errors.System.AddDetail(err.Error())
 	}
