@@ -1,6 +1,7 @@
 package deviceTemplate
 
 import (
+	"encoding/json"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
 )
@@ -8,19 +9,140 @@ import (
 const (
 	IDLen            = 32 //标识符的长度
 	NameLen          = 20 //参数名称的长度
+	DescLen          = 80 //描述的最大长度
 	DefineMappingLen = 20
 	DefineUnitLen    = 12
 	DefineIntMax     = 9999999999999
 	DefineIntMin     = -9999999999999
 	DefineStringMax  = 2048
+	DefineSpecsLen   = 10
+	ParamsLen        = 20
 )
 
-func IDValidate(id string) error {
-	if len(id) > 32 || len(id) == 0 {
-		return errors.Parameter.WithMsgf("标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过32个字符")
+func ValidateWithFmt(templateStr []byte) ([]byte, error) {
+	template := Template{}
+	err := json.Unmarshal(templateStr, &template)
+	if err != nil {
+		return nil, errors.Parameter.WithMsg("模板的json格式不对")
 	}
-	if id[0] <= '9' || id[0] >= '0' {
-		return errors.Parameter.WithMsgf("标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过32个字符")
+	err = template.ValidateWithFmt()
+	if err != nil {
+		return nil, err
+	}
+	newTemplate, err := json.Marshal(&template)
+	if err != nil {
+		return nil, errors.Parameter.WithMsg("模板的json格式不对")
+	}
+	return newTemplate, err
+}
+
+func (t *Template) ValidateWithFmt() error {
+	idMap := make(map[string]struct{}, len(t.Actions)+len(t.Events)+len(t.Properties))
+	for i := range t.Properties {
+		if _, ok := idMap[t.Properties[i].ID]; ok {
+			//如果有重复的需要返回错误
+			return errors.Parameter.WithMsgf("属性的id重复了:%v", t.Properties[i].ID)
+		}
+		idMap[t.Properties[i].ID] = struct{}{}
+		err := t.Properties[i].ValidateWithFmt()
+		if err != nil {
+			return err
+		}
+	}
+	for i := range t.Events {
+		if _, ok := idMap[t.Events[i].ID]; ok {
+			//如果有重复的需要返回错误
+			return errors.Parameter.WithMsgf("属性的id重复了:%v", t.Events[i].ID)
+		}
+		idMap[t.Events[i].ID] = struct{}{}
+		err := t.Events[i].ValidateWithFmt()
+		if err != nil {
+			return err
+		}
+	}
+	for i := range t.Actions {
+		if _, ok := idMap[t.Actions[i].ID]; ok {
+			//如果有重复的需要返回错误
+			return errors.Parameter.WithMsgf("属性的id重复了:%v", t.Actions[i].ID)
+		}
+		idMap[t.Actions[i].ID] = struct{}{}
+		err := t.Actions[i].ValidateWithFmt()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (a *Action) ValidateWithFmt() error {
+	if err := IDValidate(a.ID); err != nil {
+		return err
+	}
+	if err := NameValidate(a.Name); err != nil {
+		return err
+	}
+	if err := DescValidate(a.Desc); err != nil {
+		return err
+	}
+	if err := a.Input.ValidateWithFmt(); err != nil {
+		return err
+	}
+	return a.Output.ValidateWithFmt()
+}
+
+func (e *Event) ValidateWithFmt() error {
+	if err := IDValidate(e.ID); err != nil {
+		return err
+	}
+	if err := NameValidate(e.Name); err != nil {
+		return err
+	}
+	if err := DescValidate(e.Desc); err != nil {
+		return err
+	}
+	if e.Type != EventTypeInfo && e.Type != EventTypeAlert && e.Type != EventTypeFault {
+		return errors.Parameter.WithMsgf("事件类型类型只能为info,alert及fault,收到:%v", e.Type)
+	}
+	return e.Params.ValidateWithFmt()
+}
+
+func (p *Property) ValidateWithFmt() error {
+	if err := IDValidate(p.ID); err != nil {
+		return err
+	}
+	if err := NameValidate(p.Name); err != nil {
+		return err
+	}
+	if err := DescValidate(p.Desc); err != nil {
+		return err
+	}
+	if p.Mode != PropertyModeWR && p.Mode != PropertyModeR {
+		return errors.Parameter.WithMsgf("属性读写类型只能为wr及r,收到:%v", p.Mode)
+	}
+	return p.Define.ValidateWithFmt()
+}
+
+func IDValidate(id string) error {
+	if len(id) > IDLen || len(id) == 0 {
+		return errors.Parameter.WithMsgf(
+			"标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
+	}
+	if !(id[0] <= '9' || id[0] >= '0') {
+		return errors.Parameter.WithMsgf(
+			"标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
+	}
+	return nil
+}
+
+func NameValidate(name string) error {
+	if len(name) > NameLen {
+		return errors.Parameter.WithMsgf("名称支持中文、英文、数字、下划线的组合，最多不超过%v个字符,名称:%v", NameLen, name)
+	}
+	return nil
+}
+func DescValidate(desc string) error {
+	if len(desc) > DescLen {
+		return errors.Parameter.WithMsgf("描述最多不超过%v个字符,描述:%v", DescLen, desc)
 	}
 	return nil
 }
@@ -139,13 +261,7 @@ func (d *Define) ValidateWithFmtStruct() error {
 	d.Unit = ""
 	d.Maping = nil
 	d.ArrayInfo = nil
-	for i := range d.Specs {
-		err := d.Specs[i].ValidateWithFmt()
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	return d.Specs.ValidateWithFmt()
 }
 func (d *Define) ValidateWithFmtFloat() error {
 	max, err := cast.ToFloat64E(d.Max)
@@ -234,8 +350,54 @@ func (s *Spec) ValidateWithFmt() error {
 	if err := IDValidate(s.ID); err != nil {
 		return err
 	}
-	if len(s.Name) > NameLen {
-		return errors.Parameter.WithMsg("支持中文、英文、数字、下划线的组合，最多不超过20个字符")
+	if err := NameValidate(s.Name); err != nil {
+		return err
 	}
 	return s.DataType.ValidateWithFmt()
+}
+func (s Specs) ValidateWithFmt() error {
+	if len(s) > DefineSpecsLen {
+		return errors.Parameter.WithMsgf("结构体的参数最多只支持%v个", DefineSpecsLen)
+	}
+	specMap := make(map[string]struct{}, len(s))
+	for i := range s {
+		if _, ok := specMap[s[i].ID]; ok {
+			//如果有重复的需要返回错误
+			return errors.Parameter.WithMsgf("结构体类型中的id重复了:%v", s[i].ID)
+		}
+		specMap[s[i].ID] = struct{}{}
+		err := s[i].ValidateWithFmt()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (p *Param) ValidateWithFmt() error {
+	if err := IDValidate(p.ID); err != nil {
+		return err
+	}
+	if err := NameValidate(p.Name); err != nil {
+		return err
+	}
+	return p.Define.ValidateWithFmt()
+}
+func (p Params) ValidateWithFmt() error {
+	if len(p) > ParamsLen {
+		return errors.Parameter.WithMsgf("参数最多只支持%v个", ParamsLen)
+	}
+	paramMap := make(map[string]struct{}, len(p))
+	for i := range p {
+		if _, ok := paramMap[p[i].ID]; ok {
+			//如果有重复的需要返回错误
+			return errors.Parameter.WithMsgf("参数的id重复了:%v", p[i].ID)
+		}
+		paramMap[p[i].ID] = struct{}{}
+		err := p[i].ValidateWithFmt()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
