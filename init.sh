@@ -2,6 +2,30 @@
 CURDIR="`pwd`"/"`dirname $0`"
 #echo $CURDIR
 echo "well come to go-things,we need init docker with docker-compose first"
+
+thingsPath="/opt/things"
+confPath="/opt/things/conf"
+emqxPath="/opt/things/conf/emqx"
+mysqlPath="/opt/things/conf/mysql"
+
+if [ ! -d "$thingsPAth" ]; then
+  mkdir "$thingsPath"
+fi
+sleep 1
+if [ ! -d "$confPath" ]; then
+  mkdir "$confPath"
+fi
+sleep 1
+if [ ! -d "$emqxPath" ]; then
+  mkdir "$emqxPath"
+fi
+sleep 1
+if [ ! -d "$mysqlPath" ]; then
+  mkdir "$mysqlPath"
+fi
+sleep 1
+cp conf/emqx/emqx_auth_http.conf /opt/things/conf/emqx/emqx_auth_http.conf
+
 function init_docker(){
 	echo "init docker"
 	curl -sSL https://get.daocloud.io/docker | sh
