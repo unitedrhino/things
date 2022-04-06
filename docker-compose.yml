@@ -87,3 +87,18 @@ services:
       - /data/volume/tdengine/log:/var/log/taos:Z
     restart: always
     tty: true
+
+  emqx:
+    image: emqx/emqx
+    container_name: emqx
+    ports:
+      - "1883:1883"
+      - "8083:8083"
+      - "8883:8883"
+      - "8084:8084"
+      - "18083:18083"
+    volumes:
+      - "/opt/things/conf/emqx/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf"
+    restart: always
+    tty: true
+
