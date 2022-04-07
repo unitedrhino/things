@@ -48,6 +48,8 @@ services:
       - "/opt/things/conf/mysql/dcsvr.sql:/mysql/dcsvr.sql"
       - "/opt/things/conf/mysql/dmsvr.sql:/mysql/dmsvr.sql"
       - "/opt/things/conf/mysql/usersvr.sql:/mysql/usersvr.sql"
+      - "/var/mysql/data:/var/lib/mysql"           # 挂载数据目录
+      - "/var/mysql/config:/etc/mysql/conf.d"      # 挂载配置文件目录
 
   mongo:
     image: mongo
