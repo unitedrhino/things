@@ -18,7 +18,7 @@ function init_docker_compose(){
 }
 
 function init_conf_path(){
-  #Ô¤´´½¨ÅäÖÃËùĞèÎÄ¼ş¼Ğ
+  #é¢„åˆ›å»ºé…ç½®æ‰€éœ€æ–‡ä»¶å¤¹
   thingsPath="/opt/things"
   confPath="/opt/things/conf"
   emqxPath="/opt/things/conf/emqx"
@@ -41,7 +41,7 @@ function init_conf_path(){
   fi
   sleep 1
 
-  #½«emqxºÍmysqlËùÔÚ¹¤³ÌÄÚµÄÅäÖÃ¿½±´µ½ÎïÀí»úÄ¿±êÎ»ÖÃ
+  #å°†emqxå’Œmysqlæ‰€åœ¨å·¥ç¨‹å†…çš„é…ç½®æ‹·è´åˆ°ç‰©ç†æœºç›®æ ‡ä½ç½®
   cp conf/emqx/emqx_auth_http.conf /opt/things/conf/emqx/emqx_auth_http.conf
   cp conf/mysql/admin.sql /opt/things/conf/mysql/admin.sql
   cp conf/mysql/dcsvr.sql /opt/things/conf/mysql/dcsvr.sql
@@ -61,7 +61,7 @@ function init_mysql_db_table(){
        echo "has install mysql"
        break
    else
-       echo "not install mysql £¬ please make sure docker mysql is running"
+       echo "not install mysql ï¼Œ please make sure docker mysql is running"
        sleep 2
    fi
   done
@@ -77,5 +77,5 @@ init_conf_path
 sleep 1
 echo "start docker compose "
 docker-compose up -d
-sleep 10 #ÕâÀï±ØĞëµÈ´ı×ã¹»³¤Ê±¼ä£¬µÈÈİÆ÷ÖĞmysqlÕı³£Æô¶¯²ÅÄÜÖ´ĞĞºóĞøµ¼Èë½Å±¾ÃüÁî
+sleep 10 #è¿™é‡Œå¿…é¡»ç­‰å¾…è¶³å¤Ÿé•¿æ—¶é—´ï¼Œç­‰å®¹å™¨ä¸­mysqlæ­£å¸¸å¯åŠ¨æ‰èƒ½æ‰§è¡Œåç»­å¯¼å…¥è„šæœ¬å‘½ä»¤
 init_mysql_db_table

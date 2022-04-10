@@ -4,6 +4,18 @@ import (
 	"encoding/json"
 )
 
+var (
+	defaultTemplate = Template{
+		Version:    "",
+		Properties: []Property{},
+		Events:     []Event{},
+		Actions:    []Action{},
+		Property:   map[string]*Property{},
+		Event:      map[string]*Event{},
+		Action:     map[string]*Action{},
+	}
+)
+
 func NewTemplate(templateStr []byte) (*Template, error) {
 	template := Template{}
 	err := json.Unmarshal(templateStr, &template)

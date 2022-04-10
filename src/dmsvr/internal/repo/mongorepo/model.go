@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/src/dmsvr/internal/repo"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -51,8 +51,8 @@ const (
 	dbSuffixEvent    = "_event"
 )
 
-func NewDeviceDataRepo(Mongo *mongo.Database) repo.GetDeviceDataRepo {
-	return func(ctx context.Context) repo.DeviceDataRepo {
+func NewDeviceDataRepo(Mongo *mongo.Database) deviceTemplate.GetDeviceDataRepo {
+	return func(ctx context.Context) deviceTemplate.DeviceDataRepo {
 		return &DeviceDataContext{
 			DeviceData: DeviceData{
 				mongo: Mongo,
@@ -62,7 +62,7 @@ func NewDeviceDataRepo(Mongo *mongo.Database) repo.GetDeviceDataRepo {
 	}
 }
 
-func (d *DeviceDataContext) InsertEventData(productID string, deviceName string, event *repo.Event) error {
+func (d *DeviceDataContext) InsertEventData(productID string, deviceName string, event *deviceTemplate.EventData) error {
 	model := Event{
 		ID:         event.ID,
 		Type:       event.Type,
@@ -73,7 +73,7 @@ func (d *DeviceDataContext) InsertEventData(productID string, deviceName string,
 	_, err := d.mongo.Collection(productID+dbSuffixEvent).InsertOne(d.ctx, model)
 	return err
 }
-func (d *DeviceDataContext) InsertPropertyData(productID string, deviceName string, property *repo.Property) error {
+func (d *DeviceDataContext) InsertPropertyData(productID string, deviceName string, property *deviceTemplate.PropertyData) error {
 	dd := Properties{
 		DeviceName: deviceName,
 		TimeStamp:  time.Time{},
@@ -115,7 +115,7 @@ func (d *DeviceDataContext) CreateLogDB(productID string) error {
 }
 
 //通过属性的id及方法获取一段时间或最新时间的记录
-func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) (dds []*repo.Event, err error) {
+func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) (dds []*deviceTemplate.EventData, err error) {
 	filter := bson.D{
 		{"deviceName", bson.M{"$eq": deviceName}},
 	}
@@ -145,7 +145,7 @@ func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName stri
 		if err != nil {
 			return nil, err
 		}
-		dds = append(dds, &repo.Event{
+		dds = append(dds, &deviceTemplate.EventData{
 			ID:        dd.ID,
 			Type:      dd.Type,
 			Params:    dd.Params,
@@ -156,7 +156,7 @@ func (d *DeviceDataContext) GetEventDataWithID(productID string, deviceName stri
 }
 
 //通过属性的id及方法获取一段时间或最新时间的记录
-func (d *DeviceDataContext) GetPropertyDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) (dds []*repo.Property, err error) {
+func (d *DeviceDataContext) GetPropertyDataWithID(productID string, deviceName string, dataID string, page def.PageInfo2) (dds []*deviceTemplate.PropertyData, err error) {
 	filter := bson.D{
 		//{"isp", isp},
 		{fmt.Sprintf("%s.%s", PropertyMD, dataID), bson.M{"$ne": primitive.Null{}}},
@@ -184,7 +184,7 @@ func (d *DeviceDataContext) GetPropertyDataWithID(productID string, deviceName s
 		if err != nil {
 			return nil, err
 		}
-		dds = append(dds, &repo.Property{
+		dds = append(dds, &deviceTemplate.PropertyData{
 			ID:        dataID,
 			Param:     dd.Params[dataID],
 			TimeStamp: dd.TimeStamp,
