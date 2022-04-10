@@ -62,6 +62,7 @@ message LoginAuthReq {
   string ip = 4;//访问的ip地址
   bytes certificate = 5;//客户端证书
 }
+
 message AccessAuthReq {
   string username = 1; //用户名
   string topic = 2;//主题

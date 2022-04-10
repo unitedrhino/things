@@ -9,13 +9,13 @@ require (
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-uuid v1.0.2
+	github.com/i-Things/driver-go/v2 v2.0.4
 	github.com/jinzhu/copier v0.3.2
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/nats-io/nats-server/v2 v2.7.4 // indirect
 	github.com/nats-io/nats.go v1.13.1-0.20220308171302-2f2f6968e98d
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.3.1
-	github.com/taosdata/driver-go/v2 v2.0.1-0.20220324063052-903e5bdd86e5
 	github.com/zeromicro/go-zero v1.3.0
 	go.mongodb.org/mongo-driver v1.8.0
 	go.opentelemetry.io/otel/trace v1.3.0
