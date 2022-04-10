@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/event/eventDevSub"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/dmsvr/internal/server"
@@ -13,6 +14,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/vars"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"google.golang.org/grpc/reflection"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -31,7 +33,13 @@ func main() {
 	//kafka服务初始化
 	svcCtx := svc.NewServiceContext(c)
 	vars.Svrctx = svcCtx
-
+	svcCtx.DeviceDataRepo.InsertEventData(context.Background(), nil,
+		"23z3l66VkFG", "test5", &deviceTemplate.EventData{
+			ID:        "faw",
+			Type:      "info",
+			Params:    map[string]interface{}{"hello": 123123},
+			TimeStamp: time.Now(),
+		})
 	svcCtx.InnerLink.Subscribe(func(ctx context.Context) innerLink.InnerSubHandle {
 		return eventDevSub.NewDeviceMsgHandle(ctx, svcCtx)
 	})

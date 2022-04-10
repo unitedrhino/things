@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
@@ -64,18 +65,29 @@ func (l *ManageDeviceLogic) CheckProduct(in *dm.ManageDeviceReq) (bool, error) {
 func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
 	find, err := l.CheckDevice(in)
 	if err != nil {
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
 	} else if find == true {
 		return nil, errors.Duplicate.AddDetail("DeviceName:" + in.Info.DeviceName)
 	}
 	l.Infof("find=%v|err=%v\n", find, err)
 	find, err = l.CheckProduct(in)
 	if err != nil {
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
 	} else if find == false {
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.Info.ProductID))
 	}
-
+	pt, err := l.svcCtx.ProductTemplate.FindOne(in.Info.ProductID)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err.Error())
+	}
+	dt, err := deviceTemplate.NewTemplate([]byte(pt.Template))
+	if err != nil {
+		return nil, errors.System.AddDetail(err.Error())
+	}
+	err = l.svcCtx.DeviceDataRepo.InitDevice(l.ctx, dt, in.Info.ProductID, in.Info.DeviceName)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err.Error())
+	}
 	di := mysql.DeviceInfo{
 		ProductID:   in.Info.ProductID,  // 产品id
 		DeviceName:  in.Info.DeviceName, // 设备名称
