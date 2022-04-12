@@ -100,12 +100,12 @@ func (l *PublishLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) error 
 				Limit:     1,
 			})
 			if err != nil {
-				l.Errorf("HandlePropertyGetStatus|GetPropertyDataWithID|get id:%s|err:%s",
+				l.Errorf("HandlePropertyGetStatus|GetPropertyDataByID|get id:%s|err:%s",
 					id, err.Error())
 				return err
 			}
 			if len(data) == 0 {
-				l.Slowf("HandlePropertyGetStatus|GetPropertyDataWithID|not find id:%s", id)
+				l.Slowf("HandlePropertyGetStatus|GetPropertyDataByID|not find id:%s", id)
 				continue
 			}
 			respData[id] = data[0].Param

@@ -46,7 +46,7 @@ func (l *GetDeviceDataLogic) HandleDatas(in *dm.GetDeviceDataReq) (*dm.GetDevice
 		for _, v := range temp.Properties {
 			dds, err := dd.GetPropertyDataWithID(in.ProductID, in.DeviceName, v.ID, def.PageInfo2{Limit: 1})
 			if err != nil {
-				l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
+				l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 				return nil, errors.System
 			}
 			if len(dds) == 0 {
@@ -83,7 +83,7 @@ func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceD
 			Limit:     in.Limit,
 		})
 		if err != nil {
-			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
+			l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 			return nil, errors.System
 		}
 		for _, devData := range dds {
@@ -104,7 +104,7 @@ func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceD
 			Limit:     in.Limit,
 		})
 		if err != nil {
-			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
+			l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 			return nil, errors.System
 		}
 		for _, devData := range dds {
