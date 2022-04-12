@@ -68,7 +68,7 @@ type docker >/dev/null 2>&1 || init_docker;
 type docker-compose >/dev/null 2>&1 || init_docker_compose;
 echo "docker with docker-compose init success"
 echo "now buid and start go-things needs mirror image"
-echo "docker-compose -f $CURDIR/docker-compose.yml up -d" >> /etc/rc.d/rc.local
+echo "docker-compose -f $CURDIR/docker-compose.yml up -d" >> /etc/rc.local
 
 init_conf_path
 sleep 1
