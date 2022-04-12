@@ -17,7 +17,8 @@ type (
 	MqttClient struct {
 		client mqtt.Client
 	}
-	LogInOut struct {
+	//登录登出消息
+	ConnectMsg struct {
 		UserName string `json:"username"`
 		Ts       int64  `json:"ts"`
 		Address  string `json:"ipaddress"`
@@ -59,7 +60,7 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 	err := d.client.Subscribe("$share/dd.rpc/$SYS/brokers/+/clients/#",
 		1, func(client mqtt.Client, message mqtt.Message) {
 			var (
-				msg LogInOut
+				msg ConnectMsg
 				err error
 			)
 			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
