@@ -70,7 +70,7 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 			}
 			do := ddExport.DevConn{
 				UserName:  msg.UserName,
-				Timestamp: msg.Ts,
+				Timestamp: msg.Ts, //毫秒时间戳
 				Address:   msg.Address,
 				ClientID:  msg.ClientID,
 				Reason:    msg.Reason,

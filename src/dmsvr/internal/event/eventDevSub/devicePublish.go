@@ -34,7 +34,7 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLo
 	}
 }
 
-func (l *PublishLogic) initMsg(msg *deviceMsg.Elements) error {
+func (l *PublishLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	var err error
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func (l *PublishLogic) initMsg(msg *deviceMsg.Elements) error {
 	return nil
 }
 
-func (l *PublishLogic) DeviceResp(msg *deviceMsg.Elements, err error, data map[string]interface{}) {
+func (l *PublishLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]interface{}) {
 	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 	er := l.svcCtx.InnerLink.PublishToDev(l.ctx, topic, payload)
 	if er != nil {
@@ -67,7 +67,7 @@ func (l *PublishLogic) DeviceResp(msg *deviceMsg.Elements, err error, data map[s
 	//l.svcCtx.DevClient.DeviceResp(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 }
 
-func (l *PublishLogic) HandlePropertyReport(msg *deviceMsg.Elements) error {
+func (l *PublishLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) error {
 	tp, err := l.dreq.VerifyReqParam(l.template, deviceTemplate.PROPERTY)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
@@ -78,7 +78,7 @@ func (l *PublishLogic) HandlePropertyReport(msg *deviceMsg.Elements) error {
 		return err
 	}
 	params := deviceSend.ToVal(tp)
-	timeStamp := l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0))
+	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
 	err = l.dd.InsertPropertiesData(msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 		l.DeviceResp(msg, errors.Database, nil)
@@ -89,7 +89,7 @@ func (l *PublishLogic) HandlePropertyReport(msg *deviceMsg.Elements) error {
 	return nil
 }
 
-func (l *PublishLogic) HandlePropertyGetStatus(msg *deviceMsg.Elements) error {
+func (l *PublishLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) error {
 	respData := make(map[string]interface{}, len(l.template.Properties))
 	switch l.dreq.Type {
 	case deviceSend.REPORT:
@@ -119,7 +119,7 @@ func (l *PublishLogic) HandlePropertyGetStatus(msg *deviceMsg.Elements) error {
 	return nil
 }
 
-func (l *PublishLogic) HandleProperty(msg *deviceMsg.Elements) error {
+func (l *PublishLogic) HandleProperty(msg *deviceMsg.PublishMsg) error {
 	l.Slowf("PublishLogic|HandleProperty")
 	switch l.dreq.Method {
 	case deviceSend.REPORT, deviceSend.REPORT_INFO:
@@ -134,7 +134,7 @@ func (l *PublishLogic) HandleProperty(msg *deviceMsg.Elements) error {
 	return nil
 }
 
-func (l *PublishLogic) HandleEvent(msg *deviceMsg.Elements) error {
+func (l *PublishLogic) HandleEvent(msg *deviceMsg.PublishMsg) error {
 	l.Slowf("PublishLogic|HandleEvent")
 	dbData := deviceTemplate.EventData{}
 	dbData.ID = l.dreq.EventID
@@ -148,7 +148,7 @@ func (l *PublishLogic) HandleEvent(msg *deviceMsg.Elements) error {
 		return err
 	}
 	dbData.Params = deviceSend.ToVal(tp)
-	dbData.TimeStamp = l.dreq.GetTimeStamp(time.Unix(msg.Timestamp, 0))
+	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
 
 	err = l.dd.InsertEventData(msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
@@ -160,13 +160,13 @@ func (l *PublishLogic) HandleEvent(msg *deviceMsg.Elements) error {
 
 	return nil
 }
-func (l *PublishLogic) HandleResp(msg *deviceMsg.Elements) error {
+func (l *PublishLogic) HandleResp(msg *deviceMsg.PublishMsg) error {
 	l.Slowf("PublishLogic|HandleResp")
 	//todo 这里后续需要处理异步获取消息的情况
 	return nil
 }
 
-func (l *PublishLogic) HandleThing(msg *deviceMsg.Elements) error {
+func (l *PublishLogic) HandleThing(msg *deviceMsg.PublishMsg) error {
 	l.Slowf("PublishLogic|HandleThing")
 	if len(l.topics) < 5 || l.topics[1] != "up" {
 		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
@@ -183,17 +183,17 @@ func (l *PublishLogic) HandleThing(msg *deviceMsg.Elements) error {
 	}
 	return nil
 }
-func (l *PublishLogic) HandleOta(msg *deviceMsg.Elements) error {
+func (l *PublishLogic) HandleOta(msg *deviceMsg.PublishMsg) error {
 	l.Slowf("PublishLogic|HandleOta")
 	return nil
 }
 
-func (l *PublishLogic) HandleDefault(msg *deviceMsg.Elements) error {
+func (l *PublishLogic) HandleDefault(msg *deviceMsg.PublishMsg) error {
 	l.Slowf("PublishLogic|HandleDefault")
 	return nil
 
 }
-func (l *PublishLogic) Handle(msg *deviceMsg.Elements) (err error) {
+func (l *PublishLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
 	l.Infof("PublishLogic|req=%+v", msg)
 	err = l.initMsg(msg)
 	if err != nil {
@@ -216,7 +216,7 @@ func (l *PublishLogic) Handle(msg *deviceMsg.Elements) (err error) {
 	l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   msg.ProductID,
 		Action:      "publish",
-		Timestamp:   l.dreq.GetTimeStamp(time.UnixMilli(msg.Timestamp)), // 操作时间
+		Timestamp:   l.dreq.GetTimeStamp(msg.Timestamp), // 操作时间
 		DeviceName:  msg.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
 		RequestID:   l.dreq.ClientToken,
