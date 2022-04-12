@@ -42,11 +42,8 @@ function init_conf_path(){
   sleep 1
 
   #将emqx和mysql所在工程内的配置拷贝到物理机目标位置
-  cp conf/emqx/emqx_auth_http.conf /opt/things/conf/emqx/emqx_auth_http.conf
-  cp conf/mysql/admin.sql /opt/things/conf/mysql/admin.sql
-  cp conf/mysql/dcsvr.sql /opt/things/conf/mysql/dcsvr.sql
-  cp conf/mysql/dmsvr.sql /opt/things/conf/mysql/dmsvr.sql
-  cp conf/mysql/usersvr.sql /opt/things/conf/mysql/usersvr.sql
+  cp conf/emqx/* /opt/things/conf/emqx/
+  cp conf/mysql/* /opt/things/conf/mysql/
 }
 
 function init_mysql_db_table(){
@@ -61,7 +58,7 @@ function init_mysql_db_table(){
        echo "has install mysql"
        break
    else
-       echo "not install mysql ， please make sure docker mysql is running"
+       echo "not install mysql, please make sure docker mysql is running"
        sleep 2
    fi
   done
@@ -71,7 +68,7 @@ type docker >/dev/null 2>&1 || init_docker;
 type docker-compose >/dev/null 2>&1 || init_docker_compose;
 echo "docker with docker-compose init success"
 echo "now buid and start go-things needs mirror image"
-echo "docker-compose -f $CURDIR/docker-compose.yml up -d" >> /etc/rc.d/rc.local
+echo "docker-compose -f $CURDIR/docker-compose.yml up -d" >> /etc/rc.local
 
 init_conf_path
 sleep 1
