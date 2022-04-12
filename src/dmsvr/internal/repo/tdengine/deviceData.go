@@ -26,7 +26,7 @@ func NewDeviceDataRepo(dataSource string) *DeviceDataRepo {
 	return &DeviceDataRepo{t: td}
 }
 
-func (d *DeviceDataRepo) InsertEventData(ctx context.Context, t *deviceTemplate.Template, productID string,
+func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,
 	deviceName string, event *deviceTemplate.EventData) error {
 	param, err := json.Marshal(event.Params)
 	if err != nil {
@@ -39,22 +39,21 @@ func (d *DeviceDataRepo) InsertEventData(ctx context.Context, t *deviceTemplate.
 	return nil
 }
 
-func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, property *deviceTemplate.PropertyData) error {
+func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, productID string, deviceName string, property *deviceTemplate.PropertyData) error {
+	panic("implement me")
+}
+
+func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error {
+func (d *DeviceDataRepo) GetEventDataWithID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*deviceTemplate.EventData, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *DeviceDataRepo) GetEventDataWithID(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*deviceTemplate.EventData, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (d *DeviceDataRepo) GetPropertyDataWithID(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*deviceTemplate.PropertyData, error) {
+func (d *DeviceDataRepo) GetPropertyDataByID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*deviceTemplate.PropertyData, error) {
 	//TODO implement me
 	panic("implement me")
 }
