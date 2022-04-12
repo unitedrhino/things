@@ -27,12 +27,12 @@ func NewDeviceMsgHandle(ctx context.Context, svcCtx *svc.ServiceContext) *Device
 	}
 }
 
-func (l *DeviceMsgHandle) Publish(msg *deviceMsg.Elements) error {
+func (l *DeviceMsgHandle) Publish(msg *deviceMsg.PublishMsg) error {
 	l.Infof("DevReqLogic|req=%+v", msg)
 	return NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Connected(msg *deviceMsg.Elements) error {
+func (l *DeviceMsgHandle) Connected(msg *deviceMsg.ConnectMsg) error {
 	l.Infof("ConnectLogic|req=%+v", msg)
 	//todo 这里需要查询下数据库,避免数据错误
 	ld, err := deviceDetail.GetClientIDInfo(msg.ClientID)
@@ -42,11 +42,9 @@ func (l *DeviceMsgHandle) Connected(msg *deviceMsg.Elements) error {
 	_, _ = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   ld.ProductID,
 		Action:      msg.Action,
-		Timestamp:   time.UnixMilli(msg.Timestamp), // 操作时间
+		Timestamp:   msg.Timestamp, // 操作时间
 		DeviceName:  ld.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
-		Content:     string(msg.Payload),
-		Topic:       msg.Topic,
 		ResultType:  errors.Fmt(err).GetCode(),
 		CreatedTime: time.Now(),
 	})
@@ -57,7 +55,7 @@ func (l *DeviceMsgHandle) Connected(msg *deviceMsg.Elements) error {
 	return nil
 }
 
-func (l *DeviceMsgHandle) Disconnected(msg *deviceMsg.Elements) error {
+func (l *DeviceMsgHandle) Disconnected(msg *deviceMsg.ConnectMsg) error {
 	l.Infof("DisconnectLogic|req=%+v", msg)
 	ld, err := deviceDetail.GetClientIDInfo(msg.ClientID)
 	if err != nil {
@@ -66,11 +64,9 @@ func (l *DeviceMsgHandle) Disconnected(msg *deviceMsg.Elements) error {
 	_, _ = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
 		ProductID:   ld.ProductID,
 		Action:      msg.Action,
-		Timestamp:   time.UnixMilli(msg.Timestamp), // 操作时间
+		Timestamp:   msg.Timestamp, // 操作时间
 		DeviceName:  ld.DeviceName,
 		TranceID:    utils.TraceIdFromContext(l.ctx),
-		Content:     string(msg.Payload),
-		Topic:       msg.Topic,
 		ResultType:  errors.Fmt(err).GetCode(),
 		CreatedTime: time.Now(),
 	})

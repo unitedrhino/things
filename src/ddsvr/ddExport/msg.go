@@ -10,7 +10,7 @@ type (
 	// DevConn ddsvr 发布设备连接和断连的结构体
 	DevConn struct {
 		UserName  string `json:"username"`
-		Timestamp int64  `json:"ts"`
+		Timestamp int64  `json:"ts"` //毫秒时间戳
 		Address   string `json:"addr"`
 		ClientID  string `json:"clientID"`
 		Reason    string `json:"reason"`
