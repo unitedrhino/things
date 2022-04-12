@@ -18,7 +18,7 @@ function init_docker_compose(){
 }
 
 function init_conf_path(){
-  #Ô¤´´½¨ÅäÖÃËùÐèÎÄ¼þ¼Ð
+  #Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
   thingsPath="/opt/things"
   confPath="/opt/things/conf"
   emqxPath="/opt/things/conf/emqx"
@@ -41,7 +41,7 @@ function init_conf_path(){
   fi
   sleep 1
 
-  #½«emqxºÍmysqlËùÔÚ¹¤³ÌÄÚµÄÅäÖÃ¿½±´µ½ÎïÀí»úÄ¿±êÎ»ÖÃ
+  #ï¿½ï¿½emqxï¿½ï¿½mysqlï¿½ï¿½ï¿½Ú¹ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Î»ï¿½ï¿½
   cp conf/emqx/emqx_auth_http.conf /opt/things/conf/emqx/emqx_auth_http.conf
   cp conf/mysql/admin.sql /opt/things/conf/mysql/admin.sql
   cp conf/mysql/dcsvr.sql /opt/things/conf/mysql/dcsvr.sql
@@ -61,7 +61,7 @@ function init_mysql_db_table(){
        echo "has install mysql"
        break
    else
-       echo "not install mysql £¬ please make sure docker mysql is running"
+       echo "not install mysql ï¿½ï¿½ please make sure docker mysql is running"
        sleep 2
    fi
   done
@@ -71,11 +71,11 @@ type docker >/dev/null 2>&1 || init_docker;
 type docker-compose >/dev/null 2>&1 || init_docker_compose;
 echo "docker with docker-compose init success"
 echo "now buid and start go-things needs mirror image"
-echo "docker-compose -f $CURDIR/docker-compose.yml up -d" >> /etc/rc.d/rc.local
+echo "docker-compose -f $CURDIR/docker-compose.yml up -d" >> /etc/rc.local
 
 init_conf_path
 sleep 1
 echo "start docker compose "
 docker-compose up -d
-sleep 10 #ÕâÀï±ØÐëµÈ´ý×ã¹»³¤Ê±¼ä£¬µÈÈÝÆ÷ÖÐmysqlÕý³£Æô¶¯²ÅÄÜÖ´ÐÐºóÐøµ¼Èë½Å±¾ÃüÁî
+sleep 10 #ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½ï¿½ã¹»ï¿½ï¿½Ê±ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mysqlï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å±ï¿½ï¿½ï¿½ï¿½ï¿½
 init_mysql_db_table
