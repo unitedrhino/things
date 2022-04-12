@@ -22,7 +22,7 @@ func (s *SubDev) UnSubscribe() error {
 	return s.subscription.Unsubscribe()
 }
 
-func (s *SubDev) GetMsg(timeout time.Duration) (ele *deviceMsg.Elements, err error) {
+func (s *SubDev) GetMsg(timeout time.Duration) (ele *deviceMsg.PublishMsg, err error) {
 	msg, err := s.subscription.NextMsg(timeout)
 	if err != nil {
 		return nil, err

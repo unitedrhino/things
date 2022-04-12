@@ -16,9 +16,9 @@ type (
 	}
 	Handle         func(ctx context.Context) InnerSubHandle
 	InnerSubHandle interface {
-		Publish(out *deviceMsg.Elements) error
-		Connected(out *deviceMsg.Elements) error
-		Disconnected(out *deviceMsg.Elements) error
+		Publish(out *deviceMsg.PublishMsg) error
+		Connected(out *deviceMsg.ConnectMsg) error
+		Disconnected(out *deviceMsg.ConnectMsg) error
 	}
 )
 
