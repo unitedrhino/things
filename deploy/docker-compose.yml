@@ -100,7 +100,8 @@ services:
       - "8084:8084"
       - "18083:18083"
     volumes:
-      - "/opt/things/conf/emqx/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf"
+      - "/opt/things/conf/emqx/etc/plugins/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf"
+      - "/opt/things/conf/emqx/data/loaded_plugins:/opt/emqx/data/loaded_plugins"
     restart: always
     tty: true
 
