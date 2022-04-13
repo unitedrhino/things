@@ -5,6 +5,7 @@ echo "well come to go-things,we need init docker with docker-compose first"
 
 function init_docker(){
  echo "init docker"
+ cp -rf docker/* /etc/docker/
  curl -sSL https://get.daocloud.io/docker | sh
  sudo systemctl start docker
  docker run hello-world
@@ -20,30 +21,19 @@ function init_docker_compose(){
 function init_conf_path(){
   #预创建配置所需文件夹
   thingsPath="/opt/things"
-  confPath="/opt/things/conf"
-  emqxPath="/opt/things/conf/emqx"
-  mysqlPath="/opt/things/conf/mysql"
+  confPath="$thingsPath/conf"
+  emqxPath="$confPath/emqx"
+  mysqlPath="$confPath/mysql"
 
-  if [ ! -d "$thingsPAth" ]; then
-    mkdir "$thingsPath"
-  fi
-  sleep 1
-  if [ ! -d "$confPath" ]; then
-    mkdir "$confPath"
-  fi
-  sleep 1
   if [ ! -d "$emqxPath" ]; then
-    mkdir "$emqxPath"
+    mkdir -p "$emqxPath"
   fi
-  sleep 1
   if [ ! -d "$mysqlPath" ]; then
-    mkdir "$mysqlPath"
+    mkdir -p "$mysqlPath"
   fi
-  sleep 1
-
   #将emqx和mysql所在工程内的配置拷贝到物理机目标位置
-  cp conf/emqx/* /opt/things/conf/emqx/
-  cp conf/mysql/* /opt/things/conf/mysql/
+  cp -rf emqx/* $emqxPath
+  cp -rf mysql/* $mysqlPath
 }
 
 function init_mysql_db_table(){
