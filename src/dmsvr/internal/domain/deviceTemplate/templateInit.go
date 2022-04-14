@@ -17,6 +17,7 @@ var (
 )
 
 func NewTemplate(templateStr []byte) (*Template, error) {
+	//如果没有需要返回默认值
 	template := Template{}
 	err := json.Unmarshal(templateStr, &template)
 	if err != nil {

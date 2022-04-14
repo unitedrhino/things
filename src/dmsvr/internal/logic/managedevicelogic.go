@@ -65,13 +65,14 @@ func (l *ManageDeviceLogic) CheckProduct(in *dm.ManageDeviceReq) (bool, error) {
 func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
 	find, err := l.CheckDevice(in)
 	if err != nil {
+		l.Errorf("AddDevice|CheckDevice|in=%v\n", in)
 		return nil, errors.Database.AddDetail(err.Error())
 	} else if find == true {
 		return nil, errors.Duplicate.AddDetail("DeviceName:" + in.Info.DeviceName)
 	}
-	l.Infof("find=%v|err=%v\n", find, err)
 	find, err = l.CheckProduct(in)
 	if err != nil {
+		l.Errorf("AddDevice|CheckProduct|in=%v\n", in)
 		return nil, errors.Database.AddDetail(err.Error())
 	} else if find == false {
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.Info.ProductID))
