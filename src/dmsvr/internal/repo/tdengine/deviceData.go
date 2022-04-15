@@ -2,6 +2,7 @@ package tdengine
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
@@ -101,8 +102,19 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, productID strin
 }
 
 func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error {
-	//TODO implement me
-	panic("implement me")
+	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
+	for id, param := range params {
+		err := d.InsertPropertyData(ctx, productID, deviceName, &deviceTemplate.PropertyData{
+			ID:        id,
+			Param:     param,
+			TimeStamp: timestamp,
+		})
+		if err != nil {
+			return errors.Database.AddDetailf("DeviceDataRepo|InsertPropertiesData|InsertPropertyData id:%v param:%v err:%v",
+				id, param, err)
+		}
+	}
+	return nil
 }
 
 func (d *DeviceDataRepo) GetEventDataWithID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*deviceTemplate.EventData, error) {
@@ -111,8 +123,47 @@ func (d *DeviceDataRepo) GetEventDataWithID(ctx context.Context, productID strin
 }
 
 func (d *DeviceDataRepo) GetPropertyDataByID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*deviceTemplate.PropertyData, error) {
-	//TODO implement me
-	panic("implement me")
+	//select * from model_property_23fipsijpsk_wifi_info where device_name='test5' and ts>'2022-04-14 22:22:30'  limit 10
+	rows, err := d.t.Query("select * from model_property_23fipsijpsk_wifi_info where device_name='test5' and ts>'2022-04-14 22:22:30'  limit 10")
+	if err != nil {
+		return nil, err
+	}
+	GetRows(rows)
+	//for rows.Next() {
+	//	var params = make([]interface{}, 3)
+	//	for index, _ := range params { //为每一列初始化一个指针
+	//		var a interface{}
+	//		params[index] = &a
+	//	}
+	//	err := rows.Scan(params...)
+	//	fmt.Println(err)
+	//	columnType, err := rows.ColumnTypes()
+	//	fmt.Println(columnType, err)
+	//	columns, err := rows.Columns()
+	//	fmt.Println(columns, err)
+	//}
+	return nil, err
+}
+func GetRows(rows *sql.Rows) []map[string]interface{} {
+	defer rows.Close()
+	columns, _ := rows.Columns()
+	columnLength := len(columns)
+	cache := make([]interface{}, columnLength) //临时存储每行数据
+	for index, _ := range cache {              //为每一列初始化一个指针
+		var a interface{}
+		cache[index] = &a
+	}
+	var list []map[string]interface{} //返回的切片
+	for rows.Next() {
+		_ = rows.Scan(cache...)
+
+		item := make(map[string]interface{})
+		for i, data := range cache {
+			item[columns[i]] = *data.(*interface{}) //取实际类型
+		}
+		list = append(list, item)
+	}
+	return list
 }
 
 func getTdType(define deviceTemplate.Define) string {
