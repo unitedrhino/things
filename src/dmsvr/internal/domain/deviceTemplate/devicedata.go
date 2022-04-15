@@ -25,9 +25,9 @@ type (
 	DeviceData2Repo interface {
 		// InsertEventData 插入事件数据
 		InsertEventData(ctx context.Context, productID string, deviceName string, event *EventData) error
-		// InsertPropertyData 插入一条属性数据 todo
+		// InsertPropertyData 插入一条属性数据
 		InsertPropertyData(ctx context.Context, productID string, deviceName string, property *PropertyData) error
-		// InsertPropertiesData 插入多条属性数据 params key为属性的id,val为属性的值  todo
+		// InsertPropertiesData 插入多条属性数据 params key为属性的id,val为属性的值
 		InsertPropertiesData(ctx context.Context, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error
 		// GetEventDataWithID 根据事件id获取事件信息 todo
 		GetEventDataWithID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*EventData, error)

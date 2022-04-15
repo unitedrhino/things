@@ -30,6 +30,7 @@ func NewManageProductTemplateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, pt *mysql.ProductTemplate) (*dm.ProductTemplate, error) {
+	l.Infof("ManageProductTemplate|ModifyProductTemplate|ProductID:%v", in.Info.ProductID)
 	newTempMode, err := deviceTemplate.ValidateWithFmt([]byte(in.Info.Template))
 	if err != nil {
 		return nil, err
@@ -57,6 +58,7 @@ func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductT
 }
 
 func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemplateReq) (*dm.ProductTemplate, error) {
+	l.Infof("ManageProductTemplate|AddProductTemplate|ProductID:%v", in.Info.ProductID)
 	pi, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
