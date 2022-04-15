@@ -1,0 +1,22 @@
+FROM golang:alpine3.9
+ENV GO111MODULE=on \
+    CGO_ENABLED=1 \
+    GOPROXY="https://goproxy.cn,direct"
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk add build-base
+RUN apk --no-cache add ca-certificates
+ADD . /ddsvr/
+WORKDIR /ddsvr/
+RUN make
+
+FROM golang:alpine3.9
+LABEL name="ddsvr"
+LABEL author="wwhai"
+LABEL email="cnwwhai@gmail.com"
+LABEL homepage="https://github.com/i4de/ddsvr"
+COPY --from=0 /ddsvr/ /ddsvr/
+WORKDIR /ddsvr/
+
+EXPOSE 2580
+
+ENTRYPOINT ["./ddsvr"]
