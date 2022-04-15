@@ -50,4 +50,6 @@ docker-compose up 即可更新
 3.  提交代码
 4.  新建 Pull Request
 
-
+## 社区
+- 微信: `godLei6` (需备注“来自github”)
+- 官网:[https://i.github.io](https://ithings.github.io)
