@@ -1,4 +1,4 @@
-# 物联网云平台go-things
+# 物联网云平台ithings
 
 ## 介绍
 
@@ -18,7 +18,7 @@
 
 ## 安装
 ### 依赖安装
-在go-things中依赖mongodb,mysql,redis,etcd,kafka,zookeeper
+在ithings中依赖mongodb,mysql,redis,etcd,kafka,zookeeper
 * 在初始目录中提供了docker-compose文件,如果安装好了docker及docker-compose可以直接
 docker-compose up 即可更新
 * 如果都没有安装则sudo ./init.sh即会安装docker及docker-compose及第三方依赖
@@ -31,8 +31,8 @@ docker-compose up 即可更新
 
 ## 文档
 
-- 开发文档: https://go-things.github.io
-- 用户文档: https://go-things.github.io
+- 开发文档: https://ithings.github.io
+- 用户文档: https://ithings.github.io
 
 
 ## 贡献
@@ -44,4 +44,4 @@ docker-compose up 即可更新
 
 ## 社区
 - 微信: `godLei6` (需备注“来自github”)
-- 官网:[https://i.github.io](https://ithings.github.io)
+- 官网:[https://ithings.github.io](https://ithings.github.io)
