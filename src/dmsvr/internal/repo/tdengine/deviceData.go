@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/shared/store/TDengine"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -128,7 +129,9 @@ func (d *DeviceDataRepo) GetPropertyDataByID(ctx context.Context, productID stri
 	if err != nil {
 		return nil, err
 	}
-	GetRows(rows)
+	var datas []map[string]interface{}
+	store.Scan(rows, &datas)
+	fmt.Println(datas)
 	//for rows.Next() {
 	//	var params = make([]interface{}, 3)
 	//	for index, _ := range params { //为每一列初始化一个指针
@@ -144,6 +147,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(ctx context.Context, productID stri
 	//}
 	return nil, err
 }
+
 func GetRows(rows *sql.Rows) []map[string]interface{} {
 	defer rows.Close()
 	columns, _ := rows.Columns()
