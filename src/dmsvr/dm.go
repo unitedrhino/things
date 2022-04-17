@@ -63,7 +63,7 @@ func Test(DeviceDataRepo deviceTemplate.DeviceData2Repo) {
 			})
 		fmt.Println(err)
 	}
-	if true {
+	if false {
 		err = DeviceDataRepo.InsertPropertyData(context.Background(), "23FIPSIJPsk", "test5", &deviceTemplate.PropertyData{
 			ID:        "Wifi_Info",
 			Param:     []interface{}{map[string]interface{}{"Mac": "dqwda", "Rssi": 123}},
@@ -76,7 +76,11 @@ func Test(DeviceDataRepo deviceTemplate.DeviceData2Repo) {
 			TimeStamp: time.Now(),
 		})
 		fmt.Println(err)
-		_, err = DeviceDataRepo.GetPropertyDataByID(context.Background(), "", "", "", def.PageInfo2{})
+	}
+	if false {
+		_, err = DeviceDataRepo.GetPropertyDataByID(context.Background(), "23FIPSIJPsk", "test5", "Wifi_Info", def.PageInfo2{})
+		fmt.Println(err)
+		_, err = DeviceDataRepo.GetPropertyDataByID(context.Background(), "23FIPSIJPsk", "test5", "GPS_Info", def.PageInfo2{})
 		fmt.Println(err)
 	}
 
