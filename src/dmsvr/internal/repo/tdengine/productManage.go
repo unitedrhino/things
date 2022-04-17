@@ -6,7 +6,6 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 )
 
 func (d *DeviceDataRepo) DropProduct(ctx context.Context, t *deviceTemplate.Template, productID string) error {
@@ -24,13 +23,15 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *deviceTemplate.Temp
 		}
 	}
 	sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
-		"(ts timestamp,event_id BINARY(50),event_type BINARY(20), param BINARY(5000)) TAGS (device_name BINARY(50));",
+		"(`ts` timestamp,`event_id` BINARY(50),`event_type` BINARY(20), `param` BINARY(5000)) "+
+		"TAGS (device_name BINARY(50));",
 		getEventStableName(productID))
 	if _, err := d.t.Exec(sql); err != nil {
 		return err
 	}
-	sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
-		"(ts timestamp,action_id BINARY(50),input BINARY(5000),output BINARY(5000)) TAGS (device_name BINARY(50));", getActionStableName(productID))
+	sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`action_id` BINARY(50),"+
+		"`input` BINARY(5000),`output` BINARY(5000)) TAGS (`device_name` BINARY(50));",
+		getActionStableName(productID))
 	if _, err := d.t.Exec(sql); err != nil {
 		return err
 	}
@@ -47,25 +48,19 @@ func (d *DeviceDataRepo) createPropertyStable(
 	ctx context.Context, p deviceTemplate.Property, productID string) error {
 	var sql string
 	if p.Define.Type != deviceTemplate.STRUCT {
-		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (ts timestamp,param %s) TAGS (device_name BINARY(50));",
+		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
+			" TAGS (`device_name` BINARY(50),`"+PROPERTY_TYPE+"` BINARY(50));",
 			getPropertyStableName(productID, p.ID), getTdType(p.Define))
 		if _, err := d.t.Exec(sql); err != nil {
 			return err
 		}
 	} else {
-		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (ts timestamp, %s) TAGS (device_name BINARY(50));",
+		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
+			" TAGS (`device_name` BINARY(50),`"+PROPERTY_TYPE+"` BINARY(50));",
 			getPropertyStableName(productID, p.ID), getSpecsColumn(p.Define.Specs))
 		if _, err := d.t.Exec(sql); err != nil {
 			return err
 		}
 	}
 	return nil
-}
-
-func getSpecsColumn(s deviceTemplate.Specs) string {
-	var column []string
-	for _, v := range s {
-		column = append(column, fmt.Sprintf("%s %s", v.ID, getTdType(v.DataType)))
-	}
-	return strings.Join(column, ",")
 }

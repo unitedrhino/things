@@ -2,9 +2,9 @@ package tdengine
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"fmt"
+	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
@@ -35,7 +35,7 @@ func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,
 	if err != nil {
 		return errors.System.AddDetail("param json parse failure")
 	}
-	sql := fmt.Sprintf("insert into %s (ts,event_id,event_type, param) values (?,?,?,?);", getEventTableName(productID, deviceName))
+	sql := fmt.Sprintf("insert into %s (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);", getEventTableName(productID, deviceName))
 	if _, err := d.t.Exec(sql, event.TimeStamp, event.ID, event.Type, param); err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func (d *DeviceDataRepo) GenParams(params map[string]interface{}) (string, strin
 	//将最后一个?去除
 	paramPlaceholder = paramPlaceholder[:len(paramPlaceholder)-1]
 	for k, v := range params {
-		paramIds = append(paramIds, k)
+		paramIds = append(paramIds, "`"+k+"`")
 		if _, ok := v.([]interface{}); !ok {
 			paramValList = append(paramValList, v)
 		} else { //如果是数组类型,需要序列化为json
@@ -123,94 +123,30 @@ func (d *DeviceDataRepo) GetEventDataWithID(ctx context.Context, productID strin
 	panic("implement me")
 }
 
-func (d *DeviceDataRepo) GetPropertyDataByID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*deviceTemplate.PropertyData, error) {
-	//select * from model_property_23fipsijpsk_wifi_info where device_name='test5' and ts>'2022-04-14 22:22:30'  limit 10
-	rows, err := d.t.Query("select * from model_property_23fipsijpsk_wifi_info where device_name='test5' and ts>'2022-04-14 22:22:30'  limit 10")
+func (d *DeviceDataRepo) GetPropertyDataByID(
+	ctx context.Context,
+	productID string,
+	deviceName string,
+	dataID string,
+	page def.PageInfo2) ([]*deviceTemplate.PropertyData, error) {
+
+	sql := sq.Select("*").From(getPropertyStableName(productID, dataID)).
+		Where("`device_name`=?", deviceName)
+	sql = page.FmtSql(sql)
+	sqlStr, value, err := sql.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	rows, err := d.t.Query(sqlStr, value...)
 	if err != nil {
 		return nil, err
 	}
 	var datas []map[string]interface{}
 	store.Scan(rows, &datas)
-	fmt.Println(datas)
-	//for rows.Next() {
-	//	var params = make([]interface{}, 3)
-	//	for index, _ := range params { //为每一列初始化一个指针
-	//		var a interface{}
-	//		params[index] = &a
-	//	}
-	//	err := rows.Scan(params...)
-	//	fmt.Println(err)
-	//	columnType, err := rows.ColumnTypes()
-	//	fmt.Println(columnType, err)
-	//	columns, err := rows.Columns()
-	//	fmt.Println(columns, err)
-	//}
-	return nil, err
-}
-
-func GetRows(rows *sql.Rows) []map[string]interface{} {
-	defer rows.Close()
-	columns, _ := rows.Columns()
-	columnLength := len(columns)
-	cache := make([]interface{}, columnLength) //临时存储每行数据
-	for index, _ := range cache {              //为每一列初始化一个指针
-		var a interface{}
-		cache[index] = &a
+	retProperties := make([]*deviceTemplate.PropertyData, 0, len(datas))
+	for _, v := range datas {
+		retProperties = append(retProperties, ToPropertyData(dataID, v))
 	}
-	var list []map[string]interface{} //返回的切片
-	for rows.Next() {
-		_ = rows.Scan(cache...)
-
-		item := make(map[string]interface{})
-		for i, data := range cache {
-			item[columns[i]] = *data.(*interface{}) //取实际类型
-		}
-		list = append(list, item)
-	}
-	return list
-}
-
-func getTdType(define deviceTemplate.Define) string {
-	switch define.Type {
-	case deviceTemplate.BOOL:
-		return "BOOL"
-	case deviceTemplate.INT:
-		return "BIGINT"
-	case deviceTemplate.STRING:
-		return fmt.Sprintf("BINARY(%s)", define.Max)
-	case deviceTemplate.STRUCT:
-		return "BINARY(5000)"
-	case deviceTemplate.FLOAT:
-		return "DOUBLE"
-	case deviceTemplate.TIMESTAMP:
-		return "TIMESTAMP"
-	case deviceTemplate.ARRAY:
-		return "BINARY(5000)"
-	case deviceTemplate.ENUM:
-		return "SMALLINT"
-	default:
-		panic(fmt.Sprintf("%v not support", define.Type))
-	}
-}
-
-func getPropertyStableName(productID, id string) string {
-	return fmt.Sprintf("model_property_%s_%s", productID, id)
-}
-func getEventStableName(productID string) string {
-	return fmt.Sprintf("model_event_%s", productID)
-}
-
-func getActionStableName(productID string) string {
-	return fmt.Sprintf("model_action_%s", productID)
-}
-
-func getPropertyTableName(productID, deviceName, id string) string {
-	return fmt.Sprintf("device_property_%s_%s_%s", productID, deviceName, id)
-}
-func getEventTableName(productID, deviceName string) string {
-	return fmt.Sprintf("device_event_%s_%s", productID, deviceName)
-}
-
-func getActionTableName(productID, deviceName string) string {
-	return fmt.Sprintf("device_action_%s_%s", productID, deviceName)
+	fmt.Println(datas, retProperties)
+	return retProperties, err
 }
