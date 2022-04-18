@@ -27,14 +27,6 @@ func (d *DeviceDataRepo) InitDevice(ctx context.Context,
 			utils.FuncName(), productID, deviceName, err)
 		return err
 	}
-	sql = fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s TAGS ('%s');",
-		getActionTableName(productID, deviceName), getActionStableName(productID), deviceName)
-	if _, err := d.t.Exec(sql); err != nil {
-		logx.WithContext(ctx).Errorf(
-			"%s|ActionTable|productID:%v,deviceName:%v,err:%v",
-			utils.FuncName(), productID, deviceName, err)
-		return err
-	}
 	return nil
 }
 
@@ -43,8 +35,14 @@ func (d *DeviceDataRepo) DropDevice(
 	t *deviceTemplate.Template,
 	productID string,
 	deviceName string) error {
-	//TODO implement me
-	panic("implement me")
+	tableList := getTableNameList(t, productID, deviceName)
+	for _, v := range tableList {
+		sql := fmt.Sprintf("drop table if exists %s;", v)
+		if _, err := d.t.Exec(sql); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (d *DeviceDataRepo) createPropertyTable(
