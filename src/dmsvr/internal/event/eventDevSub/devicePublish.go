@@ -23,7 +23,7 @@ type PublishLogic struct {
 	template *deviceTemplate.Template
 	topics   []string
 	dreq     deviceSend.DeviceReq
-	dd       deviceTemplate.DeviceDataRepo
+	dd       deviceTemplate.DeviceData2Repo
 }
 
 func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLogic {
@@ -51,7 +51,7 @@ func (l *PublishLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	if err != nil {
 		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
-	l.dd = l.svcCtx.DeviceData(l.ctx)
+	l.dd = l.svcCtx.DeviceDataRepo
 	l.topics = strings.Split(msg.Topic, "/")
 	return nil
 }
@@ -79,7 +79,7 @@ func (l *PublishLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) error {
 	}
 	params := deviceSend.ToVal(tp)
 	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
-	err = l.dd.InsertPropertiesData(msg.ProductID, msg.DeviceName, params, timeStamp)
+	err = l.dd.InsertPropertiesData(l.ctx, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 		l.DeviceResp(msg, errors.Database, nil)
 		l.Errorf("HandlePropertyReport|InsertPropertyData|err=%+v", err)
@@ -94,7 +94,7 @@ func (l *PublishLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) error 
 	switch l.dreq.Type {
 	case deviceSend.REPORT:
 		for id, _ := range l.template.Property {
-			data, err := l.dd.GetPropertyDataWithID(msg.ProductID, msg.DeviceName, id, def.PageInfo2{
+			data, err := l.dd.GetPropertyDataByID(l.ctx, msg.ProductID, msg.DeviceName, id, def.PageInfo2{
 				TimeStart: 0,
 				TimeEnd:   0,
 				Limit:     1,
@@ -150,7 +150,7 @@ func (l *PublishLogic) HandleEvent(msg *deviceMsg.PublishMsg) error {
 	dbData.Params = deviceSend.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
 
-	err = l.dd.InsertEventData(msg.ProductID, msg.DeviceName, &dbData)
+	err = l.dd.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
 		l.DeviceResp(msg, errors.Database, nil)
 		l.Errorf("InsertEventData|err=%+v", err)
