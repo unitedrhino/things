@@ -15,12 +15,8 @@ type Config struct {
 		DataSource string
 	}
 	CacheRedis cache.ClusterConf
-	Mongo      struct {
-		Url      string //mongodb连接串
-		Database string //选择的数据库
-	}
-	InnerLink InnerLinkConf //和things内部交互的设置
-	AuthWhite AuthWhite     //设备登录校验将things服务连接的ip设备root权限
+	InnerLink  InnerLinkConf //和things内部交互的设置
+	AuthWhite  AuthWhite     //设备登录校验将things服务连接的ip设备root权限
 }
 
 type InnerLinkConf struct {
