@@ -38,6 +38,16 @@ func ToPropertyData(id string, db map[string]interface{}) *deviceTemplate.Proper
 		delete(db, PROPERTY_TYPE)
 		data.Param = db
 		return &data
+	case string(deviceTemplate.ARRAY):
+		paramStr := db["param"].(string)
+		var param []interface{}
+		json.Unmarshal([]byte(paramStr), &param)
+		data := deviceTemplate.PropertyData{
+			ID:        id,
+			Param:     param,
+			TimeStamp: db["ts"].(time.Time),
+		}
+		return &data
 	default:
 		data := deviceTemplate.PropertyData{
 			ID:        id,

@@ -73,11 +73,11 @@ func (l *GetDeviceDataLogic) HandleDatas(in *dm.GetDeviceDataReq) (*dm.GetDevice
 }
 
 func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
-	dd := l.svcCtx.DeviceData(l.ctx)
+	dd := l.svcCtx.DeviceDataRepo
 	var dmDatas []*dm.DeviceData
 	switch in.Method {
 	case def.PROPERTY_METHOD:
-		dds, err := dd.GetPropertyDataWithID(in.ProductID, in.DeviceName, in.DataID, def.PageInfo2{
+		dds, err := dd.GetPropertyDataByID(l.ctx, in.ProductID, in.DeviceName, in.DataID, def.PageInfo2{
 			TimeStart: in.TimeStart,
 			TimeEnd:   in.TimeEnd,
 			Limit:     in.Limit,
@@ -98,7 +98,7 @@ func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceD
 			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
 		}
 	case def.EVENT_METHOD:
-		dds, err := dd.GetEventDataWithID(in.ProductID, in.DeviceName, in.DataID, def.PageInfo2{
+		dds, err := dd.GetEventDataByID(l.ctx, in.ProductID, in.DeviceName, in.DataID, def.PageInfo2{
 			TimeStart: in.TimeStart,
 			TimeEnd:   in.TimeEnd,
 			Limit:     in.Limit,
