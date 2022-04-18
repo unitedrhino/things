@@ -1,13 +1,10 @@
 package svc
 
 import (
-	"context"
-	"github.com/i-Things/things/shared/db/mongodb"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mongorepo"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -25,7 +22,6 @@ type ServiceContext struct {
 	DmDB            mysql.DmModel
 	DeviceID        *utils.SnowFlake
 	ProductID       *utils.SnowFlake
-	DeviceData      deviceTemplate.GetDeviceDataRepo
 	InnerLink       innerLink.InnerLink
 	Store           kv.Store
 	DeviceDataRepo  deviceTemplate.DeviceData2Repo
@@ -72,12 +68,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	DeviceID := utils.NewSnowFlake(nodeId)
 	ProductID := utils.NewSnowFlake(nodeId)
-	mongoDB, err := mongodb.NewMongo(c.Mongo.Url, c.Mongo.Database, context.TODO())
-	if err != nil {
-		logx.Error("NewMongo err", err)
-		os.Exit(-1)
-	}
-	dd := mongorepo.NewDeviceDataRepo(mongoDB)
 	il, err := innerLink.NewInnerLink(c.InnerLink)
 	if err != nil {
 		logx.Error("NewInnerLink err", err)
@@ -92,7 +82,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceID:        DeviceID,
 		ProductID:       ProductID,
 		DeviceLog:       dl,
-		DeviceData:      dd,
 		InnerLink:       il,
 		Store:           store,
 		DeviceDataRepo:  deviceData,

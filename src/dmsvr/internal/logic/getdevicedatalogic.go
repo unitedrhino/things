@@ -39,12 +39,12 @@ func (l *GetDeviceDataLogic) HandleDatas(in *dm.GetDeviceDataReq) (*dm.GetDevice
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	}
-	dd := l.svcCtx.DeviceData(l.ctx)
+	dd := l.svcCtx.DeviceDataRepo
 	switch in.Method {
 	case def.PROPERTY_METHOD:
 		total = len(temp.Properties)
 		for _, v := range temp.Properties {
-			dds, err := dd.GetPropertyDataWithID(in.ProductID, in.DeviceName, v.ID, def.PageInfo2{Limit: 1})
+			dds, err := dd.GetPropertyDataByID(l.ctx, in.ProductID, in.DeviceName, v.ID, def.PageInfo2{Limit: 1})
 			if err != nil {
 				l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 				return nil, errors.System
