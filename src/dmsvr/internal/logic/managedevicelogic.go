@@ -154,6 +154,21 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		l.Errorf("DelDevice|DeviceInfo|FindOne|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
+	{ //删除时序数据库中的表数据
+		pt, err := l.svcCtx.ProductTemplate.FindOne(in.Info.ProductID)
+		if err != nil {
+			return nil, err
+		}
+		template, err := deviceTemplate.NewTemplate([]byte(pt.Template))
+		if err != nil {
+			return nil, err
+		}
+		err = l.svcCtx.DeviceDataRepo.DropDevice(l.ctx, template, in.Info.ProductID, in.Info.DeviceName)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	err = l.svcCtx.DeviceInfo.Delete(di.Id)
 	if err != nil {
 		l.Errorf("DelDevice|DeviceInfo|Delete|err=%+v", err)

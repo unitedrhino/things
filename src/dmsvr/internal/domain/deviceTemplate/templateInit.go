@@ -14,11 +14,20 @@ var (
 		Event:      map[string]*Event{},
 		Action:     map[string]*Action{},
 	}
+	DefaultTemplate string
 )
 
+func init() {
+	t, _ := json.Marshal(defaultTemplate)
+	DefaultTemplate = string(t)
+}
+
 func NewTemplate(templateStr []byte) (*Template, error) {
-	//如果没有需要返回默认值
 	template := Template{}
+	//如果没有需要返回默认值
+	if len(templateStr) == 0 {
+		return &template, nil
+	}
 	err := json.Unmarshal(templateStr, &template)
 	if err != nil {
 		return nil, err

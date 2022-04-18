@@ -16,6 +16,8 @@ type (
 		GetCountByProductID(productID string) (size int64, err error)
 		GetCountByProductInfo() (size int64, err error)
 		GetDeviceLog(productID, deviceName string, page def.PageInfo2) ([]*DeviceLog, error)
+		Insert(pi *ProductInfo, pt *ProductTemplate) error
+		Delete(productID string) error
 	}
 
 	defaultDmModel struct {
@@ -25,17 +27,19 @@ type (
 		deviceInfo      string
 		productTemplate string
 		deviceLog       string
+		ProductInfoModel
 	}
 )
 
 func NewDmModel(conn sqlx.SqlConn, c cache.CacheConf) DmModel {
 	return &defaultDmModel{
-		CachedConn:      sqlc.NewConn(conn, c),
-		CacheConf:       c,
-		productInfo:     "`product_info`",
-		deviceInfo:      "`device_info`",
-		productTemplate: "`product_template`",
-		deviceLog:       "`device_log`",
+		CachedConn:       sqlc.NewConn(conn, c),
+		CacheConf:        c,
+		productInfo:      "`product_info`",
+		deviceInfo:       "`device_info`",
+		productTemplate:  "`product_template`",
+		deviceLog:        "`device_log`",
+		ProductInfoModel: NewProductInfoModel(conn, c),
 	}
 }
 
@@ -107,4 +111,40 @@ func (m *defaultDmModel) GetDeviceLog(productID, deviceName string, page def.Pag
 	err = m.CachedConn.QueryRowsNoCache(&resp, sqlStr, value...)
 	fmt.Println(resp, err)
 	return resp, err
+}
+
+func (m *defaultDmModel) Delete(productID string) error {
+	data, err := m.FindOne(productID)
+	if err != nil {
+		return err
+	}
+	dmProductTemplateProductIDKey := fmt.Sprintf("%s%v", cacheDmProductTemplateProductIDPrefix, productID)
+	dmProductInfoProductIDKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductIDPrefix, productID)
+	dmProductInfoProductNameKey := fmt.Sprintf("%s%v", cacheDmProductInfoProductNamePrefix, data.ProductName)
+	if err := m.DelCache(dmProductTemplateProductIDKey, dmProductInfoProductIDKey, dmProductInfoProductNameKey); err != nil {
+		return err
+	}
+	return m.Transact(func(session sqlx.Session) error {
+		query := fmt.Sprintf("delete from %s where `productID` = ?", m.productInfo)
+		_, err := session.Exec(query, productID)
+		if err != nil {
+			return err
+		}
+		query = fmt.Sprintf("delete from %s where `productID` = ?", m.productTemplate)
+		_, err = session.Exec(query, productID)
+		return err
+	})
+}
+
+func (m *defaultDmModel) Insert(pi *ProductInfo, pt *ProductTemplate) error {
+	return m.Transact(func(session sqlx.Session) error {
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.productInfo, productInfoRowsExpectAutoSet)
+		_, err := session.Exec(query, pi.ProductID, pi.ProductName, pi.ProductType, pi.AuthMode, pi.DeviceType, pi.CategoryID, pi.NetType, pi.DataProto, pi.AutoRegister, pi.Secret, pi.Description, pi.CreatedTime, pi.UpdatedTime, pi.DeletedTime, pi.DevStatus)
+		if err != nil {
+			return err
+		}
+		query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.productTemplate, productTemplateRowsExpectAutoSet)
+		_, err = session.Exec(query, pt.ProductID, pt.Template, pt.CreatedTime, pt.UpdatedTime, pt.DeletedTime)
+		return err
+	})
 }

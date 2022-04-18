@@ -66,19 +66,11 @@ func getEventStableName(productID string) string {
 	return fmt.Sprintf("`model_event_%s`", productID)
 }
 
-func getActionStableName(productID string) string {
-	return fmt.Sprintf("`model_action_%s`", productID)
-}
-
 func getPropertyTableName(productID, deviceName, id string) string {
 	return fmt.Sprintf("`device_property_%s_%s_%s`", productID, deviceName, id)
 }
 func getEventTableName(productID, deviceName string) string {
 	return fmt.Sprintf("`device_event_%s_%s`", productID, deviceName)
-}
-
-func getActionTableName(productID, deviceName string) string {
-	return fmt.Sprintf("`device_action_%s_%s`", productID, deviceName)
 }
 
 // GenParams 返回占位符?,?,?,? 参数id名:aa,bbb,ccc 参数值列表
@@ -107,4 +99,25 @@ func (d *DeviceDataRepo) GenParams(params map[string]interface{}) (string, strin
 		}
 	}
 	return paramPlaceholder, strings.Join(paramIds, ","), paramValList, nil
+}
+
+func getTableNameList(
+	t *deviceTemplate.Template,
+	productID string,
+	deviceName string) (tables []string) {
+	for _, v := range t.Properties {
+		tables = append(tables, getPropertyTableName(productID, deviceName, v.ID))
+	}
+	tables = append(tables, getEventTableName(productID, deviceName))
+	return
+}
+
+func getStableNameList(
+	t *deviceTemplate.Template,
+	productID string) (tables []string) {
+	for _, v := range t.Properties {
+		tables = append(tables, getPropertyStableName(productID, v.ID))
+	}
+	tables = append(tables, getEventStableName(productID))
+	return
 }
