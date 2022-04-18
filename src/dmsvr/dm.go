@@ -48,12 +48,13 @@ func main() {
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }
+
 func Test(DeviceDataRepo deviceTemplate.DeviceData2Repo) {
 	var (
 		err error
 	)
 
-	if false {
+	if true {
 		err = DeviceDataRepo.InsertEventData(context.Background(),
 			"23FIPSIJPsk", "test5", &deviceTemplate.EventData{
 				ID:        "faw",
@@ -61,6 +62,10 @@ func Test(DeviceDataRepo deviceTemplate.DeviceData2Repo) {
 				Params:    map[string]interface{}{"hello": 123123},
 				TimeStamp: time.Now(),
 			})
+		fmt.Println(err)
+	}
+	if true {
+		_, err = DeviceDataRepo.GetEventDataWithID(context.Background(), "23FIPSIJPsk", "test5", "faw", def.PageInfo2{})
 		fmt.Println(err)
 	}
 	if false {
