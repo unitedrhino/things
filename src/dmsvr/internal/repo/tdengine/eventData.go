@@ -24,14 +24,14 @@ func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,
 	return nil
 }
 
-func (d *DeviceDataRepo) GetEventDataWithID(
+func (d *DeviceDataRepo) GetEventDataByID(
 	ctx context.Context,
 	productID string,
 	deviceName string,
 	dataID string,
 	page def.PageInfo2) ([]*deviceTemplate.EventData, error) {
 	sql := sq.Select("*").From(getEventStableName(productID)).
-		Where("`device_name`=? and `event_id`=? ", deviceName, dataID)
+		Where("`device_name`=? and `event_id`=? ", deviceName, dataID).OrderBy("`ts` desc")
 	sql = page.FmtSql(sql)
 	sqlStr, value, err := sql.ToSql()
 	if err != nil {

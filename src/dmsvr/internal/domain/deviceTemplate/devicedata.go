@@ -29,9 +29,9 @@ type (
 		InsertPropertyData(ctx context.Context, productID string, deviceName string, property *PropertyData) error
 		// InsertPropertiesData 插入多条属性数据 params key为属性的id,val为属性的值
 		InsertPropertiesData(ctx context.Context, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error
-		// GetEventDataWithID 根据事件id获取事件信息 todo
-		GetEventDataWithID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*EventData, error)
-		// GetPropertyDataByID 根据属性id获取属性信息 todo
+		// GetEventDataWithID 根据事件id获取事件信息
+		GetEventDataByID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*EventData, error)
+		// GetPropertyDataByID 根据属性id获取属性信息
 		GetPropertyDataByID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*PropertyData, error)
 		// InitProduct 初始化产品的物模型相关表及日志记录表 √
 		InitProduct(ctx context.Context, t *Template, productID string) error

@@ -68,7 +68,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	page def.PageInfo2) ([]*deviceTemplate.PropertyData, error) {
 
 	sql := sq.Select("*").From(getPropertyStableName(productID, dataID)).
-		Where("`device_name`=?", deviceName)
+		Where("`device_name`=?", deviceName).OrderBy("`ts` desc")
 	sql = page.FmtSql(sql)
 	sqlStr, value, err := sql.ToSql()
 	if err != nil {
