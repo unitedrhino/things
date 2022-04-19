@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -23,7 +24,7 @@ type PublishLogic struct {
 	template *deviceTemplate.Template
 	topics   []string
 	dreq     deviceSend.DeviceReq
-	dd       deviceTemplate.DeviceData2Repo
+	dd       deviceData.DeviceDataRepo
 }
 
 func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLogic {
@@ -136,7 +137,7 @@ func (l *PublishLogic) HandleProperty(msg *deviceMsg.PublishMsg) error {
 
 func (l *PublishLogic) HandleEvent(msg *deviceMsg.PublishMsg) error {
 	l.Slowf("PublishLogic|HandleEvent")
-	dbData := deviceTemplate.EventData{}
+	dbData := deviceData.EventData{}
 	dbData.ID = l.dreq.EventID
 	dbData.Type = l.dreq.Type
 	if l.dreq.Method != deviceSend.EVENT_POST {

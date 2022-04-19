@@ -1,4 +1,4 @@
-package tdengine
+package deviceDataRepo
 
 import (
 	"context"
@@ -9,10 +9,11 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"time"
 )
 
-func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, property *deviceTemplate.PropertyData) error {
+func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, property *deviceData.PropertyData) error {
 	switch property.Param.(type) {
 	case map[string]interface{}: //结构体类型
 		paramPlaceholder, paramIds, paramValList, err := d.GenParams(property.Param.(map[string]interface{}))
@@ -49,7 +50,7 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *deviceTempla
 func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error {
 	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
 	for id, param := range params {
-		err := d.InsertPropertyData(ctx, t, productID, deviceName, &deviceTemplate.PropertyData{
+		err := d.InsertPropertyData(ctx, t, productID, deviceName, &deviceData.PropertyData{
 			ID:        id,
 			Param:     param,
 			TimeStamp: timestamp,
@@ -67,7 +68,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	productID string,
 	deviceName string,
 	dataID string,
-	page def.PageInfo2) ([]*deviceTemplate.PropertyData, error) {
+	page def.PageInfo2) ([]*deviceData.PropertyData, error) {
 
 	sql := sq.Select("*").From(getPropertyStableName(productID, dataID)).
 		Where("`device_name`=?", deviceName).OrderBy("`ts` desc")
@@ -82,7 +83,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	}
 	var datas []map[string]interface{}
 	store.Scan(rows, &datas)
-	retProperties := make([]*deviceTemplate.PropertyData, 0, len(datas))
+	retProperties := make([]*deviceData.PropertyData, 0, len(datas))
 	for _, v := range datas {
 		retProperties = append(retProperties, ToPropertyData(dataID, v))
 	}

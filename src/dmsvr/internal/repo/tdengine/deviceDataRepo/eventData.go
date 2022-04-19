@@ -1,4 +1,4 @@
-package tdengine
+package deviceDataRepo
 
 import (
 	"context"
@@ -8,11 +8,11 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 )
 
 func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,
-	deviceName string, event *deviceTemplate.EventData) error {
+	deviceName string, event *deviceData.EventData) error {
 	param, err := json.Marshal(event.Params)
 	if err != nil {
 		return errors.System.AddDetail("param json parse failure")
@@ -29,7 +29,7 @@ func (d *DeviceDataRepo) GetEventDataByID(
 	productID string,
 	deviceName string,
 	dataID string,
-	page def.PageInfo2) ([]*deviceTemplate.EventData, error) {
+	page def.PageInfo2) ([]*deviceData.EventData, error) {
 	sql := sq.Select("*").From(getEventStableName(productID)).
 		Where("`device_name`=? and `event_id`=? ", deviceName, dataID).OrderBy("`ts` desc")
 	sql = page.FmtSql(sql)
@@ -43,7 +43,7 @@ func (d *DeviceDataRepo) GetEventDataByID(
 	}
 	var datas []map[string]interface{}
 	store.Scan(rows, &datas)
-	retEvents := make([]*deviceTemplate.EventData, 0, len(datas))
+	retEvents := make([]*deviceData.EventData, 0, len(datas))
 	for _, v := range datas {
 		retEvents = append(retEvents, ToEventData(dataID, v))
 	}
