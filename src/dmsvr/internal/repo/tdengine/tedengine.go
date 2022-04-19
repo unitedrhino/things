@@ -43,7 +43,7 @@ func getTdType(define deviceTemplate.Define) string {
 	case deviceTemplate.INT:
 		return "BIGINT"
 	case deviceTemplate.STRING:
-		return fmt.Sprintf("BINARY(%s)", define.Max)
+		return "BINARY(5000)"
 	case deviceTemplate.STRUCT:
 		return "BINARY(5000)"
 	case deviceTemplate.FLOAT:

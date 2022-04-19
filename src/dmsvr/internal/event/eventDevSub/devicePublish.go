@@ -79,7 +79,7 @@ func (l *PublishLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) error {
 	}
 	params := deviceSend.ToVal(tp)
 	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
-	err = l.dd.InsertPropertiesData(l.ctx, msg.ProductID, msg.DeviceName, params, timeStamp)
+	err = l.dd.InsertPropertiesData(l.ctx, l.template, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 		l.DeviceResp(msg, errors.Database, nil)
 		l.Errorf("HandlePropertyReport|InsertPropertyData|err=%+v", err)

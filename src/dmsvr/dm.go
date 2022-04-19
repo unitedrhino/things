@@ -4,10 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/event/eventDevSub"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/dmsvr/internal/server"
@@ -18,7 +16,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	_ "net/http/pprof"
-	"time"
 )
 
 var configFile = flag.String("f", "etc/dm.yaml", "the config file")
@@ -30,7 +27,6 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	svcCtx := svc.NewServiceContext(c)
-	Test(svcCtx.DeviceDataRepo)
 	svcCtx.InnerLink.Subscribe(func(ctx context.Context) innerLink.InnerSubHandle {
 		return eventDevSub.NewDeviceMsgHandle(ctx, svcCtx)
 	})
@@ -47,46 +43,4 @@ func main() {
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
-}
-
-func Test(DeviceDataRepo deviceTemplate.DeviceData2Repo) {
-	var (
-		err error
-	)
-
-	if true {
-		err = DeviceDataRepo.InsertEventData(context.Background(),
-			"23FIPSIJPsk", "test5", &deviceTemplate.EventData{
-				ID:        "faw",
-				Type:      "info",
-				Params:    map[string]interface{}{"hello": 123123},
-				TimeStamp: time.Now(),
-			})
-		fmt.Println(err)
-	}
-	if true {
-		_, err = DeviceDataRepo.GetEventDataWithID(context.Background(), "23FIPSIJPsk", "test5", "faw", def.PageInfo2{})
-		fmt.Println(err)
-	}
-	if false {
-		err = DeviceDataRepo.InsertPropertyData(context.Background(), "23FIPSIJPsk", "test5", &deviceTemplate.PropertyData{
-			ID:        "Wifi_Info",
-			Param:     []interface{}{map[string]interface{}{"Mac": "dqwda", "Rssi": 123}},
-			TimeStamp: time.Now(),
-		})
-		fmt.Println(err)
-		err = DeviceDataRepo.InsertPropertyData(context.Background(), "23FIPSIJPsk", "test5", &deviceTemplate.PropertyData{
-			ID:        "GPS_Info",
-			Param:     map[string]interface{}{"longtitude": 12.44, "latitude": 22.987},
-			TimeStamp: time.Now(),
-		})
-		fmt.Println(err)
-	}
-	if false {
-		_, err = DeviceDataRepo.GetPropertyDataByID(context.Background(), "23FIPSIJPsk", "test5", "Wifi_Info", def.PageInfo2{})
-		fmt.Println(err)
-		_, err = DeviceDataRepo.GetPropertyDataByID(context.Background(), "23FIPSIJPsk", "test5", "GPS_Info", def.PageInfo2{})
-		fmt.Println(err)
-	}
-
 }
