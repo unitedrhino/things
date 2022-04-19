@@ -42,7 +42,11 @@ func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductT
 	oldT, err := deviceTemplate.NewTemplate([]byte(pt.Template))
 	if err != nil {
 		l.Errorf("%s new old template failure,err:%v,old:%v", utils.FuncName(), err, pt.Template)
-
+		return nil, err
+	}
+	err = deviceTemplate.CheckModify(oldT, newT)
+	if err != nil {
+		return nil, err
 	}
 	if err := l.svcCtx.DeviceDataRepo.ModifyProduct(l.ctx, oldT, newT, in.Info.ProductID); err != nil {
 		l.Errorf("%s ModifyProduct failure,err:%v", utils.FuncName(), err)

@@ -26,22 +26,22 @@ type (
 		// InsertEventData 插入事件数据
 		InsertEventData(ctx context.Context, productID string, deviceName string, event *EventData) error
 		// InsertPropertyData 插入一条属性数据
-		InsertPropertyData(ctx context.Context, productID string, deviceName string, property *PropertyData) error
+		InsertPropertyData(ctx context.Context, t *Template, productID string, deviceName string, property *PropertyData) error
 		// InsertPropertiesData 插入多条属性数据 params key为属性的id,val为属性的值
-		InsertPropertiesData(ctx context.Context, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error
+		InsertPropertiesData(ctx context.Context, t *Template, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error
 		// GetEventDataWithID 根据事件id获取事件信息
 		GetEventDataByID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*EventData, error)
 		// GetPropertyDataByID 根据属性id获取属性信息
 		GetPropertyDataByID(ctx context.Context, productID string, deviceName string, dataID string, page def.PageInfo2) ([]*PropertyData, error)
-		// InitProduct 初始化产品的物模型相关表及日志记录表 √
+		// InitProduct 初始化产品的物模型相关表及日志记录表
 		InitProduct(ctx context.Context, t *Template, productID string) error
-		// DropProduct 删除产品时需要删除产品下的所有表 todo
+		// DropProduct 删除产品时需要删除产品下的所有表
 		DropProduct(ctx context.Context, t *Template, productID string) error
-		// InitDevice 创建设备时为设备创建单独的表 √
+		// InitDevice 创建设备时为设备创建单独的表
 		InitDevice(ctx context.Context, t *Template, productID string, deviceName string) error
-		// DropDevice 删除设备时需要删除设备的所有表 todo
+		// DropDevice 删除设备时需要删除设备的所有表
 		DropDevice(ctx context.Context, t *Template, productID string, deviceName string) error
-		// ModifyProduct 修改产品物模型 todo
+		// ModifyProduct 修改产品物模型 只支持新增和删除,不支持修改数据类型
 		ModifyProduct(ctx context.Context, oldT *Template, newt *Template, productID string) error
 	}
 

@@ -8,7 +8,7 @@ require (
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-uuid v1.0.2
-	github.com/i-Things/driver-go/v2 v2.0.4
+	github.com/i-Things/driver-go/v2 v2.0.5
 	github.com/jinzhu/copier v0.3.2
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/nats-io/nats-server/v2 v2.7.4 // indirect

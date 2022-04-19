@@ -12,15 +12,17 @@ import (
 	"time"
 )
 
-func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, productID string, deviceName string, property *deviceTemplate.PropertyData) error {
+func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, property *deviceTemplate.PropertyData) error {
 	switch property.Param.(type) {
 	case map[string]interface{}: //结构体类型
 		paramPlaceholder, paramIds, paramValList, err := d.GenParams(property.Param.(map[string]interface{}))
 		if err != nil {
 			return err
 		}
-		sql := fmt.Sprintf("insert into %s (ts, %s) values (?,%s);",
-			getPropertyTableName(productID, deviceName, property.ID), paramIds, paramPlaceholder)
+		sql := fmt.Sprintf("insert into %s using %s tags('%s','%s') (ts, %s) values (?,%s);",
+			getPropertyTableName(productID, deviceName, property.ID),
+			getPropertyStableName(productID, property.ID), deviceName, t.Property[property.ID].Define.Type,
+			paramIds, paramPlaceholder)
 		param := append([]interface{}{property.TimeStamp}, paramValList...)
 		if _, err := d.t.Exec(sql, param...); err != nil {
 			return err
@@ -44,10 +46,10 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, productID strin
 	return nil
 }
 
-func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error {
+func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error {
 	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
 	for id, param := range params {
-		err := d.InsertPropertyData(ctx, productID, deviceName, &deviceTemplate.PropertyData{
+		err := d.InsertPropertyData(ctx, t, productID, deviceName, &deviceTemplate.PropertyData{
 			ID:        id,
 			Param:     param,
 			TimeStamp: timestamp,
