@@ -43,15 +43,50 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *deviceTemplate.Temp
 	return nil
 }
 
+func (d *DeviceDataRepo) ModifyProperty(
+	oldP *deviceTemplate.Property,
+	newP *deviceTemplate.Property,
+	productID string) error {
+	if newP.Define.Type != deviceTemplate.STRUCT {
+		//不需要修改数据库
+		return nil
+	}
+	for _, newS := range newP.Define.Spec {
+		if _, ok := oldP.Define.Spec[newS.ID]; ok {
+			//如果老的物模型有这个字段则不处理
+			delete(oldP.Define.Spec, newS.ID)
+		} else {
+			//新增
+			sql := fmt.Sprintf("ALTER STABLE %s ADD COLUMN %s %s; ",
+				getPropertyStableName(productID, newP.ID), newS.ID, getTdType(newS.DataType))
+			if _, err := d.t.Exec(sql); err != nil {
+				return err
+			}
+		}
+	}
+	for _, oldS := range oldP.Define.Spec {
+		//这里是需要删除的字段
+		sql := fmt.Sprintf("ALTER STABLE %s DROP COLUMN %s; ",
+			getPropertyStableName(productID, newP.ID), oldS.ID)
+		if _, err := d.t.Exec(sql); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (d *DeviceDataRepo) ModifyProduct(
 	ctx context.Context, oldT *deviceTemplate.Template, newt *deviceTemplate.Template, productID string) error {
 	for _, p := range newt.Property {
 		if oldP, ok := oldT.Property[p.ID]; ok {
 			//这里需要走修改流程
-			logx.WithContext(ctx).Errorf("%s|old property:%v,new property:%v |modify not support yet",
-				oldP, p, utils.FuncName())
-		}
-		{ //新增流程
+			err := d.ModifyProperty(oldP, p, productID)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s|ModifyProperty|prodecutID:%v,properties:%v,err:%v",
+					utils.FuncName(), productID, p, err)
+				return err
+			}
+		} else { //新增流程
 			err := d.createPropertyStable(ctx, p, productID)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s|createPropertyStable|prodecutID:%v,properties:%v,err:%v",
@@ -66,6 +101,8 @@ func (d *DeviceDataRepo) ModifyProduct(
 	for _, p := range oldT.Property {
 		sql := fmt.Sprintf("drop stable if exists %s;", getPropertyStableName(productID, p.ID))
 		if _, err := d.t.Exec(sql); err != nil {
+			logx.WithContext(ctx).Errorf("%s|drop table|prodecutID:%v,properties:%v,err:%v",
+				utils.FuncName(), productID, p, err)
 			return err
 		}
 	}
