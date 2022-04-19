@@ -1,4 +1,4 @@
-package tdengine
+package deviceDataRepo
 
 import (
 	"context"
