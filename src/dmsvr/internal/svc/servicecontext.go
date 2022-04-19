@@ -3,10 +3,12 @@ package svc
 import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -24,7 +26,8 @@ type ServiceContext struct {
 	ProductID       *utils.SnowFlake
 	InnerLink       innerLink.InnerLink
 	Store           kv.Store
-	DeviceDataRepo  deviceTemplate.DeviceData2Repo
+	DeviceDataRepo  deviceData.DeviceDataRepo
+	DeviceLogRepo   deviceLog.DeviceLogRepo
 }
 
 //func TestTD(taos *TDengine.Td) {
@@ -56,7 +59,9 @@ type ServiceContext struct {
 //}
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	deviceData := tdengine.NewDeviceDataRepo(c.TDengine.DataSource)
+	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource)
+	deviceLog := deviceLogRepo.NewDeviceLogRepo(c.TDengine.DataSource)
+
 	//TestTD(td)
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	di := mysql.NewDeviceInfoModel(conn, c.CacheRedis)
@@ -85,5 +90,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		InnerLink:       il,
 		Store:           store,
 		DeviceDataRepo:  deviceData,
+		DeviceLogRepo:   deviceLog,
 	}
 }
