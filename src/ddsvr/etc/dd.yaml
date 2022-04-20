@@ -11,7 +11,7 @@ DevLink:
   Mode: mqtt
   SubMode: emq
   Mqtt:
-    ClientID: dd.rpc:1
+    ClientID: dd.rpc
     Pass:
     User:
     Brokers:
