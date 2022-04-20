@@ -10,7 +10,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/ddsvr/ddExport"
 	"github.com/i-Things/things/src/dmsvr/dmDef"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -58,7 +58,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		ctx := emsg.GetCtx()
-		ele, err := deviceMsg.GetDevPublish(ctx, emsg.GetData())
+		ele, err := device.GetDevPublish(ctx, emsg.GetData())
 		if err != nil {
 			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
 			return
@@ -77,7 +77,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		ctx := emsg.GetCtx()
-		ele, err := deviceMsg.GetDevConnMsg(ctx, emsg.GetData())
+		ele, err := device.GetDevConnMsg(ctx, emsg.GetData())
 		if err != nil {
 			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
 			return
@@ -96,7 +96,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		ctx := emsg.GetCtx()
-		ele, err := deviceMsg.GetDevConnMsg(ctx, emsg.GetData())
+		ele, err := device.GetDevConnMsg(ctx, emsg.GetData())
 		if err != nil {
 			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
 			return

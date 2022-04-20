@@ -1,4 +1,4 @@
-package deviceTemplate
+package templateModel
 
 //数据类型
 type DataType string

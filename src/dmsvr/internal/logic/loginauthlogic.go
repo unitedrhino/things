@@ -6,15 +6,12 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
-	"encoding/base64"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dm"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/rootAuth"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
-	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -86,67 +83,6 @@ func NewLoginAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginAu
 	}
 }
 
-/*
-username 字段的格式为：
-${productId}${deviceName};${sdkappid};${connid};${expiry}
-注意：${} 表示变量，并非特定的拼接符号。
-
-*/
-
-/*
-password 字段格式为：
-${token};hmac 签名方法
-其中 hmac 签名方法字段填写第三步用到的摘要算法，可选的值有 hmacsha256 和 hmacsha1。
-*/
-type PwdInfo struct {
-	token      string //userName通过加密方法后的token
-	hmac       string //签名的加密方法,共有两种:"hmacsha256","hmacsha1"
-	HmacHandle func(data string, secret []byte) string
-}
-
-const (
-	Hmacsha256 = "hmacsha256"
-	Hmacsha1   = "hmacsha1"
-)
-
-func (l *LoginAuthLogic) GetPwdInfo(password string) (*PwdInfo, error) {
-	keys := strings.Split(password, ";")
-	if len(keys) != 2 {
-		return nil, errors.Parameter.AddDetail("password not right")
-	}
-	var HmacHandle func(data string, secret []byte) string
-	switch keys[1] {
-	case Hmacsha256:
-		HmacHandle = utils.HmacSha256
-	case Hmacsha1:
-		HmacHandle = utils.HmacSha1
-	default:
-		return nil, errors.Parameter.AddDetail("password not suppot encrypt method:" + keys[1])
-	}
-
-	return &PwdInfo{
-		token:      keys[0],
-		hmac:       keys[1],
-		HmacHandle: HmacHandle,
-	}, nil
-}
-
-func (l *LoginAuthLogic) CmpPwd(in *dm.LoginAuthReq) error {
-	if l.di == nil {
-		panic("neet select  device info db first")
-	}
-	pwdInfo, err := l.GetPwdInfo(in.Password)
-	if err != nil {
-		return err
-	}
-	pwd, _ := base64.StdEncoding.DecodeString(l.di.Secret)
-	passwrod := pwdInfo.HmacHandle(in.Username, pwd)
-	if passwrod != pwdInfo.token {
-		return errors.Password
-	}
-	return nil
-}
-
 func (l *LoginAuthLogic) UpdateLoginTime() {
 	if l.di == nil {
 		panic("neet select  device info db first")
@@ -176,11 +112,11 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 			len(x509Cert.Raw), len(x509Cert.Signature))
 	}
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
-	lg, err := deviceDetail.GetLoginDevice(in.Username)
+	lg, err := device.GetLoginDevice(in.Username)
 	if err != nil {
 		return nil, err
 	}
-	inLg, err := deviceDetail.GetClientIDInfo(in.ClientID)
+	inLg, err := device.GetClientIDInfo(in.ClientID)
 	if err != nil {
 		return nil, err
 	}
@@ -199,7 +135,11 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 			return nil, errors.Database
 		}
 	}
-	err = l.CmpPwd(in)
+	pwd, err := device.NewPwdInfo(in.Password)
+	if err != nil {
+		return nil, err
+	}
+	err = pwd.CmpPwd(in.Username, l.di.Secret)
 	if err != nil {
 		return nil, err
 	}

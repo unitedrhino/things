@@ -8,12 +8,12 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"time"
 )
 
-func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, property *deviceData.PropertyData) error {
+func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *templateModel.Template, productID string, deviceName string, property *deviceData.PropertyData) error {
 	switch property.Param.(type) {
 	case map[string]interface{}: //结构体类型
 		paramPlaceholder, paramIds, paramValList, err := d.GenParams(property.Param.(map[string]interface{}))
@@ -47,7 +47,7 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *deviceTempla
 	return nil
 }
 
-func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *deviceTemplate.Template, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error {
+func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *templateModel.Template, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error {
 	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
 	for id, param := range params {
 		err := d.InsertPropertyData(ctx, t, productID, deviceName, &deviceData.PropertyData{
