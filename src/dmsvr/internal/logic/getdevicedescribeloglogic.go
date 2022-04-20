@@ -27,7 +27,7 @@ func NewGetDeviceDescribeLogLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 获取设备调试信息记录登入登出,操作
 func (l *GetDeviceDescribeLogLogic) GetDeviceDescribeLog(in *dm.GetDeviceDescribeLogReq) (*dm.GetDeviceDescribeLogResp, error) {
-	logs, err := l.svcCtx.DmDB.GetDeviceLog(in.ProductID, in.DeviceName, def.PageInfo2{
+	logs, err := l.svcCtx.DeviceLogRepo.GetDeviceLog(l.ctx, in.ProductID, in.DeviceName, def.PageInfo2{
 		TimeStart: in.TimeStart,
 		TimeEnd:   in.TimeEnd,
 		Limit:     in.Limit,
@@ -35,7 +35,7 @@ func (l *GetDeviceDescribeLogLogic) GetDeviceDescribeLog(in *dm.GetDeviceDescrib
 	if err != nil {
 		return nil, errors.Database
 	}
-	data := []*dm.DeviceDescribeLog{}
+	var data []*dm.DeviceDescribeLog
 	for _, v := range logs {
 		data = append(data, ToDeviceDescribeLog(v))
 	}

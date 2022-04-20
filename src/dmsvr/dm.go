@@ -10,13 +10,11 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/dmsvr/internal/server"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
-	"github.com/i-Things/things/src/dmsvr/internal/vars"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
-	"google.golang.org/grpc/reflection"
-
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	_ "net/http/pprof"
 )
 
@@ -28,10 +26,7 @@ func main() {
 	//device.TestMongo()
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
-	//kafka服务初始化
 	svcCtx := svc.NewServiceContext(c)
-	vars.Svrctx = svcCtx
-
 	svcCtx.InnerLink.Subscribe(func(ctx context.Context) innerLink.InnerSubHandle {
 		return eventDevSub.NewDeviceMsgHandle(ctx, svcCtx)
 	})

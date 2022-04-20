@@ -132,7 +132,7 @@
             return;
         }
         var connid = randomString(5);
-        var expiry = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
+        var expiry = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 127;
         var clientid = productid + devicename;
         var username = clientid + ';' + '12010126' + ';' + connid + ';' + expiry;
         var token = '';

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
@@ -20,7 +20,7 @@ type SendActionLogic struct {
 	ctx      context.Context
 	svcCtx   *svc.ServiceContext
 	pt       *mysql.ProductTemplate
-	template *deviceTemplate.Template
+	template *templateModel.Template
 	logx.Logger
 }
 
@@ -37,7 +37,7 @@ func (l *SendActionLogic) initMsg(productID string) error {
 	if err != nil {
 		return err
 	}
-	l.template, err = deviceTemplate.NewTemplate([]byte(l.pt.Template))
+	l.template, err = templateModel.NewTemplate([]byte(l.pt.Template))
 	if err != nil {
 		return err
 	}
@@ -66,7 +66,7 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 		ClientToken: "de65377c-4041-565d-0b5e-67b664a06be8", //这个是测试代码
 		Timestamp:   time.Now().UnixMilli(),
 		Params:      param}
-	_, err = req.VerifyReqParam(l.template, deviceTemplate.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, templateModel.ACTION_INPUT)
 	if err != nil {
 		return nil, err
 	}

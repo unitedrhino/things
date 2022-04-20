@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/dm"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,18 +35,18 @@ func (l *GetDeviceDataLogic) HandleDatas(in *dm.GetDeviceDataReq) (*dm.GetDevice
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	temp, err := deviceTemplate.NewTemplate([]byte(tempInfo.Template))
+	temp, err := templateModel.NewTemplate([]byte(tempInfo.Template))
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	}
-	dd := l.svcCtx.DeviceData(l.ctx)
+	dd := l.svcCtx.DeviceDataRepo
 	switch in.Method {
 	case def.PROPERTY_METHOD:
 		total = len(temp.Properties)
 		for _, v := range temp.Properties {
-			dds, err := dd.GetPropertyDataWithID(in.ProductID, in.DeviceName, v.ID, def.PageInfo2{Limit: 1})
+			dds, err := dd.GetPropertyDataByID(l.ctx, in.ProductID, in.DeviceName, v.ID, def.PageInfo2{Limit: 1})
 			if err != nil {
-				l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
+				l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 				return nil, errors.System
 			}
 			if len(dds) == 0 {
@@ -73,17 +73,17 @@ func (l *GetDeviceDataLogic) HandleDatas(in *dm.GetDeviceDataReq) (*dm.GetDevice
 }
 
 func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
-	dd := l.svcCtx.DeviceData(l.ctx)
+	dd := l.svcCtx.DeviceDataRepo
 	var dmDatas []*dm.DeviceData
 	switch in.Method {
 	case def.PROPERTY_METHOD:
-		dds, err := dd.GetPropertyDataWithID(in.ProductID, in.DeviceName, in.DataID, def.PageInfo2{
+		dds, err := dd.GetPropertyDataByID(l.ctx, in.ProductID, in.DeviceName, in.DataID, def.PageInfo2{
 			TimeStart: in.TimeStart,
 			TimeEnd:   in.TimeEnd,
 			Limit:     in.Limit,
 		})
 		if err != nil {
-			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
+			l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 			return nil, errors.System
 		}
 		for _, devData := range dds {
@@ -98,13 +98,13 @@ func (l *GetDeviceDataLogic) HandleData(in *dm.GetDeviceDataReq) (*dm.GetDeviceD
 			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
 		}
 	case def.EVENT_METHOD:
-		dds, err := dd.GetEventDataWithID(in.ProductID, in.DeviceName, in.DataID, def.PageInfo2{
+		dds, err := dd.GetEventDataByID(l.ctx, in.ProductID, in.DeviceName, in.DataID, def.PageInfo2{
 			TimeStart: in.TimeStart,
 			TimeEnd:   in.TimeEnd,
 			Limit:     in.Limit,
 		})
 		if err != nil {
-			l.Errorf("HandleData|GetPropertyDataWithID|err=%v", err)
+			l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 			return nil, errors.System
 		}
 		for _, devData := range dds {
