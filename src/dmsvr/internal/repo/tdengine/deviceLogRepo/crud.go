@@ -6,10 +6,10 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/store"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 )
 
-func (d DeviceLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) ([]*deviceLog.DeviceLog, error) {
+func (d DeviceLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) ([]*device.Log, error) {
 	sql := sq.Select("*").From(getLogStableName(productID)).
 		Where("`device_name`=?", deviceName).OrderBy("`ts` desc")
 	sql = page.FmtSql(sql)
@@ -23,14 +23,14 @@ func (d DeviceLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName s
 	}
 	var datas []map[string]interface{}
 	store.Scan(rows, &datas)
-	retLogs := make([]*deviceLog.DeviceLog, 0, len(datas))
+	retLogs := make([]*device.Log, 0, len(datas))
 	for _, v := range datas {
 		retLogs = append(retLogs, ToDeviceLog(productID, v))
 	}
 	return retLogs, nil
 }
 
-func (d DeviceLogRepo) Insert(ctx context.Context, data *deviceLog.DeviceLog) error {
+func (d DeviceLogRepo) Insert(ctx context.Context, data *device.Log) error {
 	sql := fmt.Sprintf("insert into %s using %s tags('%s')(`ts`, `content`, `topic`, `action`,"+
 		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
 		getLogTableName(data.ProductID, data.DeviceName), getLogStableName(data.ProductID), data.DeviceName)

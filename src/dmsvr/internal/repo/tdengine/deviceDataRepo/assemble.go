@@ -2,8 +2,8 @@ package deviceDataRepo
 
 import (
 	"encoding/json"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"github.com/spf13/cast"
 )
 
@@ -28,7 +28,7 @@ func ToEventData(id string, db map[string]interface{}) *deviceData.EventData {
 func ToPropertyData(id string, db map[string]interface{}) *deviceData.PropertyData {
 	propertyType := db[PROPERTY_TYPE]
 	switch propertyType {
-	case string(deviceTemplate.STRUCT):
+	case string(templateModel.STRUCT):
 		data := deviceData.PropertyData{
 			ID:        id,
 			Param:     nil,
@@ -39,7 +39,7 @@ func ToPropertyData(id string, db map[string]interface{}) *deviceData.PropertyDa
 		delete(db, PROPERTY_TYPE)
 		data.Param = db
 		return &data
-	case string(deviceTemplate.ARRAY):
+	case string(templateModel.ARRAY):
 		paramStr := cast.ToString(db["param"])
 		var param []interface{}
 		json.Unmarshal([]byte(paramStr), &param)

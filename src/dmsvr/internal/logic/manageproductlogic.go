@@ -7,9 +7,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dm"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/productDetail"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/spf13/cast"
@@ -55,7 +55,7 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 		return nil, errors.Duplicate.AddDetail("ProductName:" + in.Info.ProductName)
 	}
 	pi, pt := l.InsertProduct(in)
-	t, _ := deviceTemplate.NewTemplate([]byte(pt.Template))
+	t, _ := templateModel.NewTemplate([]byte(pt.Template))
 	if err := l.svcCtx.DeviceDataRepo.InitProduct(
 		l.ctx, t, pi.ProductID); err != nil {
 		l.Errorf("%s InitProduct failure,err:%v", utils.FuncName(), err)
@@ -77,13 +77,13 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql.Prod
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
 	createTime := time.Now()
 	pt := &mysql.ProductTemplate{
-		Template:    deviceTemplate.DefaultTemplate,
-		ProductID:   deviceDetail.GetStrProductID(ProductID),
+		Template:    templateModel.DefaultTemplate,
+		ProductID:   device.GetStrProductID(ProductID),
 		CreatedTime: createTime,
 	}
 	pi := &mysql.ProductInfo{
-		ProductID:   deviceDetail.GetStrProductID(ProductID), // 产品id
-		ProductName: info.ProductName,                        // 产品名称
+		ProductID:   device.GetStrProductID(ProductID), // 产品id
+		ProductName: info.ProductName,                  // 产品名称
 		Description: info.Description.GetValue(),
 		DevStatus:   info.DevStatus.GetValue(),
 		CreatedTime: createTime,
@@ -204,7 +204,7 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInf
 	if err != nil {
 		return nil, err
 	}
-	template, err := deviceTemplate.NewTemplate([]byte(pt.Template))
+	template, err := templateModel.NewTemplate([]byte(pt.Template))
 	if err != nil {
 		return nil, err
 	}

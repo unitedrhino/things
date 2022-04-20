@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"strings"
 
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -85,7 +85,7 @@ func (l *AccessAuthLogic) CompareTopic(in *dm.AccessAuthReq) error {
 		Topic = TopicSub
 	default:
 	}
-	lg, err := deviceDetail.GetClientIDInfo(in.ClientID)
+	lg, err := device.GetClientIDInfo(in.ClientID)
 	if err != nil {
 		return err
 	}

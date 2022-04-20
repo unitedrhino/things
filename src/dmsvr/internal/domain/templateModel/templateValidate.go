@@ -1,4 +1,4 @@
-package deviceTemplate
+package templateModel
 
 import (
 	"encoding/json"

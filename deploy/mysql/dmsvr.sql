@@ -61,28 +61,6 @@ CREATE TABLE if not exists `device_info`
 
 
 
-CREATE TABLE `device_log`
-(
-    `id`          int(10) unsigned    NOT NULL AUTO_INCREMENT,
-    `productID`   varchar(20)         NOT NULL COMMENT '产品id',
-    `deviceName`  varchar(100)        NOT NULL COMMENT '设备名称',
-    `content`     varchar(1000)                DEFAULT '' COMMENT '具体信息',
-    `topic`       varchar(50)                  DEFAULT '' COMMENT '主题',
-    `action`      varchar(50)         NOT NULL COMMENT '操作类型',
-    `timestamp`   datetime            NOT NULL COMMENT '操作时间',
-    `requestID`   varchar(50)         NOT NULL DEFAULT '' COMMENT '请求ID',
-    `tranceID`    varchar(50)         NOT NULL DEFAULT '' COMMENT '服务器端事务id',
-    `resultType`  bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '请求结果状态,0为成功',
-    `createdTime` datetime            NOT NULL,
-    PRIMARY KEY (`id`),
-    KEY `deviceName` (`productID`, `deviceName`),
-    KEY `device_productID` (`productID`) USING BTREE,
-    KEY `device_action` (`action`) USING BTREE,
-    KEY `device_timestamp` (`timestamp`) USING BTREE
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 264
-  DEFAULT CHARSET = utf8mb4 COMMENT ='设备日志表';
-
 
 # CREATE TABLE if not exists `category_detail`
 # (

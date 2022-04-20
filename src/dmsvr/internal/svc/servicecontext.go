@@ -3,7 +3,7 @@ package svc
 import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -20,14 +20,13 @@ type ServiceContext struct {
 	DeviceInfo      mysql.DeviceInfoModel
 	ProductInfo     mysql.ProductInfoModel
 	ProductTemplate mysql.ProductTemplateModel
-	DeviceLog       mysql.DeviceLogModel
 	DmDB            mysql.DmModel
 	DeviceID        *utils.SnowFlake
 	ProductID       *utils.SnowFlake
 	InnerLink       innerLink.InnerLink
 	Store           kv.Store
 	DeviceDataRepo  deviceData.DeviceDataRepo
-	DeviceLogRepo   deviceLog.DeviceLogRepo
+	DeviceLogRepo   device.LogRepo
 }
 
 //func TestTD(taos *TDengine.Td) {
@@ -67,7 +66,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	di := mysql.NewDeviceInfoModel(conn, c.CacheRedis)
 	pi := mysql.NewProductInfoModel(conn, c.CacheRedis)
 	pt := mysql.NewProductTemplateModel(conn, c.CacheRedis)
-	dl := mysql.NewDeviceLogModel(conn)
 	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
 	store := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
@@ -86,7 +84,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DmDB:            DmDB,
 		DeviceID:        DeviceID,
 		ProductID:       ProductID,
-		DeviceLog:       dl,
 		InnerLink:       il,
 		Store:           store,
 		DeviceDataRepo:  deviceData,

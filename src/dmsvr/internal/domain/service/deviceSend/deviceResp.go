@@ -2,7 +2,7 @@ package deviceSend
 
 import (
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"time"
 )
 
@@ -34,11 +34,11 @@ func (d *DeviceResp) GetTimeStamp(defaultTime time.Time) time.Time {
 	return time.UnixMilli(d.Timestamp)
 }
 
-func (d *DeviceResp) VerifyRespParam(t *deviceTemplate.Template, id string,
-	tt deviceTemplate.TEMP_TYPE) (map[string]TempParam, error) {
+func (d *DeviceResp) VerifyRespParam(t *templateModel.Template, id string,
+	tt templateModel.TEMP_TYPE) (map[string]TempParam, error) {
 	getParam := make(map[string]TempParam, len(d.Response))
 	switch tt {
-	case deviceTemplate.ACTION_OUTPUT:
+	case templateModel.ACTION_OUTPUT:
 		p, ok := t.Action[id]
 		if ok == false {
 			return nil, errors.Parameter.AddDetail("need right ActionID")

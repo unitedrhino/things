@@ -5,12 +5,9 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 type DeviceMsgHandle struct {
@@ -27,51 +24,51 @@ func NewDeviceMsgHandle(ctx context.Context, svcCtx *svc.ServiceContext) *Device
 	}
 }
 
-func (l *DeviceMsgHandle) Publish(msg *deviceMsg.PublishMsg) error {
+func (l *DeviceMsgHandle) Publish(msg *device.PublishMsg) error {
 	l.Infof("DevReqLogic|req=%+v", msg)
 	return NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Connected(msg *deviceMsg.ConnectMsg) error {
+func (l *DeviceMsgHandle) Connected(msg *device.ConnectMsg) error {
 	l.Infof("ConnectLogic|req=%+v", msg)
 	//todo 这里需要查询下数据库,避免数据错误
-	ld, err := deviceDetail.GetClientIDInfo(msg.ClientID)
+	ld, err := device.GetClientIDInfo(msg.ClientID)
 	if err != nil {
 		return err
 	}
-	_, _ = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
-		ProductID:   ld.ProductID,
-		Action:      msg.Action,
-		Timestamp:   msg.Timestamp, // 操作时间
-		DeviceName:  ld.DeviceName,
-		TranceID:    utils.TraceIdFromContext(l.ctx),
-		ResultType:  errors.Fmt(err).GetCode(),
-		CreatedTime: time.Now(),
+	err = l.svcCtx.DeviceLogRepo.Insert(l.ctx, &device.Log{
+		ProductID:  ld.ProductID,
+		Action:     msg.Action,
+		Timestamp:  msg.Timestamp, // 操作时间
+		DeviceName: ld.DeviceName,
+		TranceID:   utils.TraceIdFromContext(l.ctx),
+		ResultType: errors.Fmt(err).GetCode(),
 	})
 	if err != nil {
-		return err
+		l.Errorf("%s|LogRepo|insert|productID:%v deviceName:%v err:%v",
+			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 	}
 
 	return nil
 }
 
-func (l *DeviceMsgHandle) Disconnected(msg *deviceMsg.ConnectMsg) error {
+func (l *DeviceMsgHandle) Disconnected(msg *device.ConnectMsg) error {
 	l.Infof("DisconnectLogic|req=%+v", msg)
-	ld, err := deviceDetail.GetClientIDInfo(msg.ClientID)
+	ld, err := device.GetClientIDInfo(msg.ClientID)
 	if err != nil {
 		return err
 	}
-	_, _ = l.svcCtx.DeviceLog.Insert(&mysql.DeviceLog{
-		ProductID:   ld.ProductID,
-		Action:      msg.Action,
-		Timestamp:   msg.Timestamp, // 操作时间
-		DeviceName:  ld.DeviceName,
-		TranceID:    utils.TraceIdFromContext(l.ctx),
-		ResultType:  errors.Fmt(err).GetCode(),
-		CreatedTime: time.Now(),
+	err = l.svcCtx.DeviceLogRepo.Insert(l.ctx, &device.Log{
+		ProductID:  ld.ProductID,
+		Action:     msg.Action,
+		Timestamp:  msg.Timestamp, // 操作时间
+		DeviceName: ld.DeviceName,
+		TranceID:   utils.TraceIdFromContext(l.ctx),
+		ResultType: errors.Fmt(err).GetCode(),
 	})
 	if err != nil {
-		return err
+		l.Errorf("%s|LogRepo|insert|productID:%v deviceName:%v err:%v",
+			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 	}
 	return nil
 }
