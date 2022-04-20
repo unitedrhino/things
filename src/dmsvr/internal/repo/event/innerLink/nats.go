@@ -10,7 +10,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/ddsvr/ddExport"
 	"github.com/i-Things/things/src/dmsvr/dmDef"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -58,7 +58,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		ctx := emsg.GetCtx()
-		ele, err := deviceMsg.GetDevPublish(ctx, emsg.GetData())
+		ele, err := device.GetDevPublish(ctx, emsg.GetData())
 		if err != nil {
 			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
 			return
@@ -77,7 +77,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		ctx := emsg.GetCtx()
-		ele, err := n.getDevConnMsg(ctx, emsg.GetData())
+		ele, err := device.GetDevConnMsg(ctx, emsg.GetData())
 		if err != nil {
 			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
 			return
@@ -96,7 +96,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		ctx := emsg.GetCtx()
-		ele, err := n.getDevConnMsg(ctx, emsg.GetData())
+		ele, err := device.GetDevConnMsg(ctx, emsg.GetData())
 		if err != nil {
 			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
 			return
@@ -108,24 +108,6 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		return err
 	}
 	return nil
-}
-
-func (n *NatsClient) getDevConnMsg(ctx context.Context, data []byte) (*deviceMsg.Elements, error) {
-	logInfo := ddExport.DevConn{}
-	err := json.Unmarshal(data, &logInfo)
-	if err != nil {
-		logx.WithContext(ctx).Error("getDevConnMsg", string(data), err)
-		return nil, err
-	}
-	ele := deviceMsg.Elements{
-		ClientID:  logInfo.ClientID,
-		Username:  logInfo.UserName,
-		Timestamp: logInfo.Timestamp,
-		Address:   logInfo.Address,
-		Action:    logInfo.Action,
-		Reason:    logInfo.Reason,
-	}
-	return &ele, nil
 }
 
 func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *deviceSend.DeviceReq,

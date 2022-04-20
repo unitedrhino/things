@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
@@ -22,7 +22,7 @@ type SendPropertyLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	pt       *mysql.ProductTemplate
-	template *deviceTemplate.Template
+	template *templateModel.Template
 }
 
 func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendPropertyLogic {
@@ -39,7 +39,7 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 	if err != nil {
 		return err
 	}
-	l.template, err = deviceTemplate.NewTemplate([]byte(l.pt.Template))
+	l.template, err = templateModel.NewTemplate([]byte(l.pt.Template))
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendProper
 		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
 		Timestamp: time.Now().UnixMilli(),
 		Params:    param}
-	_, err = req.VerifyReqParam(l.template, deviceTemplate.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, templateModel.ACTION_INPUT)
 	if err != nil {
 		return nil, err
 	}
