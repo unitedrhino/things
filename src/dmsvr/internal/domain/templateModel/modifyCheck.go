@@ -1,4 +1,4 @@
-package deviceTemplate
+package templateModel
 
 import "github.com/i-Things/things/shared/errors"
 

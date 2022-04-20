@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store/TDengine"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 	"strings"
@@ -28,7 +28,7 @@ func NewDeviceDataRepo(dataSource string) *DeviceDataRepo {
 	return &DeviceDataRepo{t: td}
 }
 
-func getSpecsColumn(s deviceTemplate.Specs) string {
+func getSpecsColumn(s templateModel.Specs) string {
 	var column []string
 	for _, v := range s {
 		column = append(column, fmt.Sprintf("`%s` %s", v.ID, getTdType(v.DataType)))
@@ -36,23 +36,23 @@ func getSpecsColumn(s deviceTemplate.Specs) string {
 	return strings.Join(column, ",")
 }
 
-func getTdType(define deviceTemplate.Define) string {
+func getTdType(define templateModel.Define) string {
 	switch define.Type {
-	case deviceTemplate.BOOL:
+	case templateModel.BOOL:
 		return "BOOL"
-	case deviceTemplate.INT:
+	case templateModel.INT:
 		return "BIGINT"
-	case deviceTemplate.STRING:
+	case templateModel.STRING:
 		return "BINARY(5000)"
-	case deviceTemplate.STRUCT:
+	case templateModel.STRUCT:
 		return "BINARY(5000)"
-	case deviceTemplate.FLOAT:
+	case templateModel.FLOAT:
 		return "DOUBLE"
-	case deviceTemplate.TIMESTAMP:
+	case templateModel.TIMESTAMP:
 		return "TIMESTAMP"
-	case deviceTemplate.ARRAY:
+	case templateModel.ARRAY:
 		return "BINARY(5000)"
-	case deviceTemplate.ENUM:
+	case templateModel.ENUM:
 		return "SMALLINT"
 	default:
 		panic(fmt.Sprintf("%v not support", define.Type))
@@ -102,7 +102,7 @@ func (d *DeviceDataRepo) GenParams(params map[string]interface{}) (string, strin
 }
 
 func getTableNameList(
-	t *deviceTemplate.Template,
+	t *templateModel.Template,
 	productID string,
 	deviceName string) (tables []string) {
 	for _, v := range t.Properties {
@@ -113,7 +113,7 @@ func getTableNameList(
 }
 
 func getStableNameList(
-	t *deviceTemplate.Template,
+	t *templateModel.Template,
 	productID string) (tables []string) {
 	for _, v := range t.Properties {
 		tables = append(tables, getPropertyStableName(productID, v.ID))

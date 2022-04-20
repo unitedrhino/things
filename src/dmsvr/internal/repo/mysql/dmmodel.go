@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"fmt"
-	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -15,7 +14,6 @@ type (
 		FindByProductID(productID string, page def.PageInfo) ([]*DeviceInfo, error)
 		GetCountByProductID(productID string) (size int64, err error)
 		GetCountByProductInfo() (size int64, err error)
-		GetDeviceLog(productID, deviceName string, page def.PageInfo2) ([]*DeviceLog, error)
 		Insert(pi *ProductInfo, pt *ProductTemplate) error
 		Delete(productID string) error
 	}
@@ -94,23 +92,6 @@ func (m *defaultDmModel) GetCountByProductInfo() (size int64, err error) {
 	default:
 		return 0, err
 	}
-}
-func (m *defaultDmModel) GetDeviceLog(productID, deviceName string, page def.PageInfo2) ([]*DeviceLog, error) {
-	sql := sq.Select(deviceLogFieldNames...).From(m.deviceLog).
-		Where(sq.Eq{"productID": productID, "deviceName": deviceName}).
-		Limit(uint64(page.GetLimit())).OrderBy("CreatedTime desc")
-	if page.TimeStart != 0 {
-		sql = sql.Where(sq.GtOrEq{"timestamp": page.TimeStart})
-	}
-	if page.TimeEnd != 0 {
-		sql = sql.Where(sq.LtOrEq{"timestamp": page.TimeEnd})
-	}
-	sqlStr, value, err := sql.ToSql()
-	fmt.Println(sqlStr, value, err)
-	var resp []*DeviceLog
-	err = m.CachedConn.QueryRowsNoCache(&resp, sqlStr, value...)
-	fmt.Println(resp, err)
-	return resp, err
 }
 
 func (m *defaultDmModel) Delete(productID string) error {

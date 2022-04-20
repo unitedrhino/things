@@ -6,8 +6,8 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceDetail"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
@@ -81,7 +81,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 	if err != nil {
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	dt, err := deviceTemplate.NewTemplate([]byte(pt.Template))
+	dt, err := templateModel.NewTemplate([]byte(pt.Template))
 	if err != nil {
 		return nil, errors.System.AddDetail(err.Error())
 	}
@@ -97,7 +97,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		CreatedTime: time.Now(),
 	}
 	if in.Info.LogLevel != def.UNKNOWN {
-		di.LogLevel = deviceDetail.LOG_CLOSE
+		di.LogLevel = device.LOG_CLOSE
 	}
 	_, err = l.svcCtx.DeviceInfo.Insert(&di)
 	if err != nil {
@@ -159,7 +159,7 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		if err != nil {
 			return nil, err
 		}
-		template, err := deviceTemplate.NewTemplate([]byte(pt.Template))
+		template, err := templateModel.NewTemplate([]byte(pt.Template))
 		if err != nil {
 			return nil, err
 		}

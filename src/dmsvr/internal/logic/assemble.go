@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 )
 
@@ -54,7 +55,7 @@ func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
 	return dpi
 }
 
-func ToDeviceDescribeLog(log *mysql.DeviceLog) *dm.DeviceDescribeLog {
+func ToDeviceDescribeLog(log *device.Log) *dm.DeviceDescribeLog {
 	return &dm.DeviceDescribeLog{
 		Timestamp:  log.Timestamp.UnixMilli(),
 		Action:     log.Action,

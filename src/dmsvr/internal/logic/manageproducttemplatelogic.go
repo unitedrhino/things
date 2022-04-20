@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
@@ -31,20 +31,20 @@ func NewManageProductTemplateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, pt *mysql.ProductTemplate) (*dm.ProductTemplate, error) {
 	l.Infof("ManageProductTemplate|ModifyProductTemplate|ProductID:%v", in.Info.ProductID)
-	newTempMode, err := deviceTemplate.ValidateWithFmt([]byte(in.Info.Template))
+	newTempMode, err := templateModel.ValidateWithFmt([]byte(in.Info.Template))
 	if err != nil {
 		return nil, err
 	}
-	newT, err := deviceTemplate.NewTemplate(newTempMode)
+	newT, err := templateModel.NewTemplate(newTempMode)
 	if err != nil {
 		return nil, err
 	}
-	oldT, err := deviceTemplate.NewTemplate([]byte(pt.Template))
+	oldT, err := templateModel.NewTemplate([]byte(pt.Template))
 	if err != nil {
 		l.Errorf("%s new old template failure,err:%v,old:%v", utils.FuncName(), err, pt.Template)
 		return nil, err
 	}
-	err = deviceTemplate.CheckModify(oldT, newT)
+	err = templateModel.CheckModify(oldT, newT)
 	if err != nil {
 		return nil, err
 	}
@@ -70,11 +70,11 @@ func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemp
 		}
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	newTempMode, err := deviceTemplate.ValidateWithFmt([]byte(in.Info.Template))
+	newTempMode, err := templateModel.ValidateWithFmt([]byte(in.Info.Template))
 	if err != nil {
 		return nil, err
 	}
-	t, err := deviceTemplate.NewTemplate(newTempMode)
+	t, err := templateModel.NewTemplate(newTempMode)
 	if err != nil {
 		return nil, err
 	}
