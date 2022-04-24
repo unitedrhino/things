@@ -1,4 +1,4 @@
-package eventDevSub
+package deviceMsgEvent
 
 //设备的发布,连接及断连处理
 import (

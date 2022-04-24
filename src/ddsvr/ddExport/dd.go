@@ -1,5 +1,5 @@
 package ddExport
 
 const (
-	SvrName = "ddRpc"
+	SvrName = "dd_rpc"
 )

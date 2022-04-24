@@ -1,4 +1,4 @@
-package eventDevSub
+package deviceMsgEvent
 
 import (
 	"context"
@@ -9,7 +9,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -19,7 +18,6 @@ type PublishLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	pt       *mysql.ProductTemplate
 	template *templateModel.Template
 	topics   []string
 	dreq     deviceSend.DeviceReq
@@ -36,14 +34,7 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLo
 
 func (l *PublishLogic) initMsg(msg *device.PublishMsg) error {
 	var err error
-	if err != nil {
-		return err
-	}
-	l.pt, err = l.svcCtx.ProductTemplate.FindOne(msg.ProductID)
-	if err != nil {
-		return err
-	}
-	l.template, err = templateModel.NewTemplate([]byte(l.pt.Template))
+	l.template, err = l.svcCtx.TemplateRepo.GetTemplate(l.ctx, msg.ProductID)
 	if err != nil {
 		return err
 	}
@@ -205,7 +196,7 @@ func (l *PublishLogic) Handle(msg *device.PublishMsg) (err error) {
 			err = l.HandleThing(msg)
 		case "$ota":
 			err = l.HandleOta(msg)
-		case l.pt.ProductID:
+		case msg.ProductID:
 			err = l.HandleDefault(msg)
 		default:
 			err = errors.Parameter.AddDetailf("not suppot topic :%s", msg.Topic)

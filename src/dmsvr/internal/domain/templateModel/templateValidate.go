@@ -19,7 +19,7 @@ const (
 	ParamsLen        = 20
 )
 
-func ValidateWithFmt(templateStr []byte) ([]byte, error) {
+func ValidateWithFmt(templateStr []byte) (*Template, error) {
 	template := Template{}
 	err := json.Unmarshal(templateStr, &template)
 	if err != nil {
@@ -29,11 +29,7 @@ func ValidateWithFmt(templateStr []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	newTemplate, err := json.Marshal(&template)
-	if err != nil {
-		return nil, errors.Parameter.WithMsg("模板的json格式不对")
-	}
-	return newTemplate, err
+	return &template, err
 }
 
 func (t *Template) ValidateWithFmt() error {

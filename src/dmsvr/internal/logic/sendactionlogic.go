@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -19,7 +18,6 @@ import (
 type SendActionLogic struct {
 	ctx      context.Context
 	svcCtx   *svc.ServiceContext
-	pt       *mysql.ProductTemplate
 	template *templateModel.Template
 	logx.Logger
 }
@@ -33,13 +31,9 @@ func NewSendActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendAc
 }
 func (l *SendActionLogic) initMsg(productID string) error {
 	var err error
-	l.pt, err = l.svcCtx.ProductTemplate.FindOne(productID)
+	l.template, err = l.svcCtx.TemplateRepo.GetTemplate(l.ctx, productID)
 	if err != nil {
-		return err
-	}
-	l.template, err = templateModel.NewTemplate([]byte(l.pt.Template))
-	if err != nil {
-		return err
+		return errors.System.AddDetail(err.Error())
 	}
 	return nil
 }

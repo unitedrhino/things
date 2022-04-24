@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/Masterminds/squirrel v1.5.2
+	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/golang/protobuf v1.5.2
