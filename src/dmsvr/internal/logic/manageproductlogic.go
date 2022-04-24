@@ -200,16 +200,16 @@ func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.Product
 }
 
 func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
-	pt, err := l.svcCtx.ProductTemplate.FindOne(in.Info.ProductID)
+	pt, err := l.svcCtx.TemplateRepo.GetTemplate(l.ctx, in.Info.ProductID)
 	if err != nil {
-		return nil, err
+		return nil, errors.System.AddDetail(err.Error())
 	}
-	template, err := templateModel.NewTemplate([]byte(pt.Template))
+	err = l.svcCtx.DeviceDataRepo.DropProduct(l.ctx, pt, in.Info.ProductID)
 	if err != nil {
-		return nil, err
+		l.Errorf("DelProduct|DropProduct|err=%+v", err)
+		return nil, errors.Database.AddDetail(err.Error())
 	}
-
-	l.svcCtx.DeviceDataRepo.DropProduct(l.ctx, template, in.Info.ProductID)
+	l.svcCtx.TemplateRepo.ClearCache(l.ctx, in.Info.ProductID)
 	err = l.svcCtx.DmDB.Delete(in.Info.ProductID)
 	if err != nil {
 		l.Errorf("DelProduct|Delete|err=%+v", err)
