@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
@@ -77,15 +76,11 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 	} else if find == false {
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.Info.ProductID))
 	}
-	pt, err := l.svcCtx.ProductTemplate.FindOne(in.Info.ProductID)
-	if err != nil {
-		return nil, errors.Database.AddDetail(err.Error())
-	}
-	dt, err := templateModel.NewTemplate([]byte(pt.Template))
+	pt, err := l.svcCtx.TemplateRepo.GetTemplate(l.ctx, in.Info.ProductID)
 	if err != nil {
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	err = l.svcCtx.DeviceDataRepo.InitDevice(l.ctx, dt, in.Info.ProductID, in.Info.DeviceName)
+	err = l.svcCtx.DeviceDataRepo.InitDevice(l.ctx, pt, in.Info.ProductID, in.Info.DeviceName)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err.Error())
 	}
@@ -155,13 +150,9 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		return nil, errors.System.AddDetail(err.Error())
 	}
 	{ //删除时序数据库中的表数据
-		pt, err := l.svcCtx.ProductTemplate.FindOne(in.Info.ProductID)
+		template, err := l.svcCtx.TemplateRepo.GetTemplate(l.ctx, in.Info.ProductID)
 		if err != nil {
-			return nil, err
-		}
-		template, err := templateModel.NewTemplate([]byte(pt.Template))
-		if err != nil {
-			return nil, err
+			return nil, errors.System.AddDetail(err.Error())
 		}
 		err = l.svcCtx.DeviceDataRepo.DropDevice(l.ctx, template, in.Info.ProductID, in.Info.DeviceName)
 		if err != nil {

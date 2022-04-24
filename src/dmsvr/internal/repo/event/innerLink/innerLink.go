@@ -14,8 +14,8 @@ type (
 		ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *deviceSend.DeviceReq,
 			productID, deviceName string) (*deviceSend.DeviceResp, error)
 	}
-	Handle         func(ctx context.Context) InnerSubHandle
-	InnerSubHandle interface {
+	Handle        func(ctx context.Context) InnerSubEvent
+	InnerSubEvent interface {
 		Publish(out *device.PublishMsg) error
 		Connected(out *device.ConnectMsg) error
 		Disconnected(out *device.ConnectMsg) error
