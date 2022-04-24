@@ -38,6 +38,8 @@ const (
 
 //topic 定义
 const (
+	ThingsConsumeName = "things_consume"
+	ThingsStreamName  = "things_msg"
 	// TopicDevPublish dd模块收到设备的发布消息后向内部推送以下topic 最后两个是产品id和设备名称
 	TopicDevPublish    = "dd.thing.device.clients.publish.%s.%s"
 	TopicDevPublishAll = "dd.thing.device.clients.publish.>"

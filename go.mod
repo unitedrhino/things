@@ -12,7 +12,7 @@ require (
 	github.com/jinzhu/copier v0.3.2
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/nats-io/nats-server/v2 v2.7.4 // indirect
-	github.com/nats-io/nats.go v1.13.1-0.20220308171302-2f2f6968e98d
+	github.com/nats-io/nats.go v1.14.0
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.3.1
 	github.com/zeromicro/go-zero v1.3.2

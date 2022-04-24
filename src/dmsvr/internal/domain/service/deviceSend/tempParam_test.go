@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"testing"
 )
 
