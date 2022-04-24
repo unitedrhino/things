@@ -63,7 +63,7 @@ func (l *PublishLogic) DeviceResp(msg *device.PublishMsg, err error, data map[st
 		l.Errorf("DeviceResp|PublishToDev failure err:%v", er)
 		return
 	}
-	l.Infof("DeviceResp|topic:%v payload:%v", topic, payload)
+	l.Infof("PublishLogic|DeviceResp|topic:%v payload:%v", topic, string(payload))
 	//l.svcCtx.DevClient.DeviceResp(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 }
 

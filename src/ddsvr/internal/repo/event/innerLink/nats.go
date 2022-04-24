@@ -10,7 +10,7 @@ import (
 
 type (
 	NatsClient struct {
-		client *nats.Conn
+		client nats.JetStreamContext
 	}
 )
 
@@ -25,11 +25,36 @@ func NewNatsClient(conf conf.NatsConf) (InnerLink, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &NatsClient{client: nc}, nil
+	js, err := nc.JetStream()
+	if err != nil {
+		return nil, err
+	}
+	_, err = js.AddStream(&nats.StreamConfig{
+		Name: ddExport.ThingsStreamName,
+		Subjects: []string{
+			ddExport.TopicInnerPublish,
+			ddExport.TopicDevPublishAll,
+			ddExport.TopicDevConnected,
+			ddExport.TopicDevDisconnected,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	_, err = js.AddConsumer(ddExport.ThingsStreamName, &nats.ConsumerConfig{
+		Durable:   ddExport.ThingsConsumeName,
+		AckPolicy: nats.AckExplicitPolicy,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &NatsClient{client: js}, nil
 }
 
 func (n *NatsClient) Publish(ctx context.Context, topic string, payload []byte) error {
-	return n.client.Publish(topic, events.NewEventMsg(ctx, payload))
+
+	_, err := n.client.Publish(topic, events.NewEventMsg(ctx, payload))
+	return err
 }
 func (n *NatsClient) Subscribe(handle Handle) error {
 	_, err := n.client.QueueSubscribe(ddExport.TopicInnerPublish, ddExport.SvrName, func(msg *nats.Msg) {

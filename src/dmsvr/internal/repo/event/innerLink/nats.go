@@ -19,7 +19,7 @@ import (
 
 type (
 	NatsClient struct {
-		client *nats.Conn
+		client nats.JetStreamContext
 	}
 )
 
@@ -34,11 +34,35 @@ func NewNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &NatsClient{client: nc}, nil
+	js, err := nc.JetStream()
+	if err != nil {
+		return nil, err
+	}
+	_, err = js.AddStream(&nats.StreamConfig{
+		Name: ddExport.ThingsStreamName,
+		Subjects: []string{
+			ddExport.TopicInnerPublish,
+			ddExport.TopicDevPublishAll,
+			ddExport.TopicDevConnected,
+			ddExport.TopicDevDisconnected,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	_, err = js.AddConsumer(ddExport.ThingsStreamName, &nats.ConsumerConfig{
+		Durable:   ddExport.ThingsConsumeName,
+		AckPolicy: nats.AckExplicitPolicy,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &NatsClient{client: js}, nil
 }
 
 func (n *NatsClient) PublishToDev(ctx context.Context, topic string, payload []byte) error {
-	return n.client.Publish(ddExport.TopicInnerPublish, ddExport.PublishToDev(ctx, topic, payload))
+	_, err := n.client.Publish(ddExport.TopicInnerPublish, ddExport.PublishToDev(ctx, topic, payload))
+	return err
 }
 
 func (n *NatsClient) SubscribeDevSync(ctx context.Context, topic string) (*SubDev, error) {
@@ -64,7 +88,8 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		err = handle(ctx).Publish(ele)
-		logx.WithContext(ctx).Info(ddExport.TopicDevPublishAll, msg.Subject, string(msg.Data), err)
+		logx.WithContext(ctx).Infof("%s|topic:%v,subject:%v,data:%v,err:%v", utils.FuncName(),
+			ddExport.TopicDevPublishAll, msg.Subject, string(msg.Data), err)
 	})
 	if err != nil {
 		return err
@@ -83,7 +108,8 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		err = handle(ctx).Connected(ele)
-		logx.WithContext(ctx).Info(ddExport.TopicDevConnected, msg.Subject, string(msg.Data), err)
+		logx.WithContext(ctx).Infof("%s|topic:%v,subject:%v,data:%v,err:%v", utils.FuncName(),
+			ddExport.TopicDevConnected, msg.Subject, string(msg.Data), err)
 	})
 	if err != nil {
 		return err
@@ -102,7 +128,8 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			return
 		}
 		err = handle(ctx).Disconnected(ele)
-		logx.WithContext(ctx).Info(ddExport.TopicDevDisconnected, msg.Subject, string(msg.Data), err)
+		logx.WithContext(ctx).Infof("%s|topic:%v,subject:%v,data:%v,err:%v", utils.FuncName(),
+			ddExport.TopicDevDisconnected, msg.Subject, string(msg.Data), err)
 	})
 	if err != nil {
 		return err

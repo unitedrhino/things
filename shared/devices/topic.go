@@ -31,15 +31,29 @@ ${productID}/${deviceName}/event	发布
 ${productID}/${deviceName}/xxxxx	订阅和发布   //自定义 暂不做支持
 */
 
-func GetDeviceInfo(topic string) (productId, deviceName string, err error) {
+type DIRECTION int
+
+const (
+	UNKNOW DIRECTION = iota //未知
+	UP                      //上行
+	DOWN                    //下行
+)
+
+type TopicInfo struct {
+	ProductID  string
+	DeviceName string
+	Direction  DIRECTION
+}
+
+func GetTopicInfo(topic string) (topicInfo *TopicInfo, err error) {
 	keys := strings.Split(topic, "/")
 	return parseTopic(keys)
 }
 
 //通过topic的第一个字段来获取处理函数
-func parseTopic(topics []string) (productId, deviceName string, err error) {
+func parseTopic(topics []string) (topicInfo *TopicInfo, err error) {
 	if len(topics) < 2 {
-		return "", "", errors.Parameter.AddDetail("topic is err")
+		return nil, errors.Parameter.AddDetail("topic is err")
 	}
 	switch topics[0] {
 	case "$thing", "$ota", "$shadow", "$broadcast":
@@ -49,16 +63,34 @@ func parseTopic(topics []string) (productId, deviceName string, err error) {
 	}
 }
 
-func parsePose(productPos int, topics []string) (productId, deviceName string, err error) {
+func parsePose(productPos int, topics []string) (topicInfo *TopicInfo, err error) {
 	if len(topics) < (productPos + 2) {
-		return "", "", errors.Parameter.AddDetail("topic is err")
+		return nil, errors.Parameter.AddDetail("topic is err")
 	}
-	return topics[productPos], topics[productPos+1], err
+	return &TopicInfo{
+		ProductID:  topics[productPos],
+		DeviceName: topics[productPos+1],
+	}, err
 }
 
-func parseLast(topics []string) (productId, deviceName string, err error) {
+func parseLast(topics []string) (topicInfo *TopicInfo, err error) {
 	if len(topics) < 2 {
-		return "", "", errors.Parameter.AddDetail("topic is err")
+		return nil, errors.Parameter.AddDetail("topic is err")
 	}
-	return topics[len(topics)-2], topics[len(topics)-1], err
+	return &TopicInfo{
+		ProductID:  topics[len(topics)-2],
+		DeviceName: topics[len(topics)-1],
+		Direction:  getDirection(topics[1]),
+	}, err
+}
+
+func getDirection(dir string) DIRECTION {
+	switch dir {
+	case "up", "report", "rxd":
+		return UP
+	case "down", "update", "txd":
+		return DOWN
+	default:
+		return UNKNOW
+	}
 }
