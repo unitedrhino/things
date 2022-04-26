@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/i-Things/things/src/ddsvr/ddExport"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/src/ddsvr/internal/config"
 )
 
@@ -20,8 +20,8 @@ type (
 	Handle       func(ctx context.Context) DevSubHandle
 	DevSubHandle interface {
 		Publish(topic string, payload []byte) error
-		Connected(out *ddExport.DevConn) error
-		Disconnected(out *ddExport.DevConn) error
+		Connected(out *devices.DevConn) error
+		Disconnected(out *devices.DevConn) error
 	}
 )
 

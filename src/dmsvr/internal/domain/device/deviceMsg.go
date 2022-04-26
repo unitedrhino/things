@@ -4,7 +4,7 @@ package device
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/src/ddsvr/ddExport"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -28,7 +28,7 @@ type ConnectMsg struct {
 }
 
 func GetDevConnMsg(ctx context.Context, data []byte) (*ConnectMsg, error) {
-	logInfo := ddExport.DevConn{}
+	logInfo := devices.DevConn{}
 	err := json.Unmarshal(data, &logInfo)
 	if err != nil {
 		logx.WithContext(ctx).Error("getDevConnMsg", string(data), err)
@@ -46,7 +46,7 @@ func GetDevConnMsg(ctx context.Context, data []byte) (*ConnectMsg, error) {
 }
 
 func GetDevPublish(ctx context.Context, data []byte) (*PublishMsg, error) {
-	pubInfo := ddExport.DevPublish{}
+	pubInfo := devices.DevPublish{}
 	err := json.Unmarshal(data, &pubInfo)
 	if err != nil {
 		logx.WithContext(ctx).Error("GetDevPublish", string(data), err)
