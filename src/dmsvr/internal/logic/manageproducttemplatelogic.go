@@ -46,6 +46,10 @@ func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductT
 		l.Errorf("ModifyProductTemplate|ProductTemplate|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
+	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &templateModel.TemplateInfo{ProductID: in.Info.ProductID})
+	if err != nil {
+		return nil, err
+	}
 	pt, err := l.svcCtx.TemplateRepo.GetTemplateInfo(l.ctx, in.Info.ProductID)
 	if err != nil {
 		return nil, err
@@ -71,6 +75,10 @@ func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemp
 		return nil, errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.TemplateRepo.Insert(l.ctx, in.Info.ProductID, t)
+	if err != nil {
+		return nil, err
+	}
+	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &templateModel.TemplateInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}

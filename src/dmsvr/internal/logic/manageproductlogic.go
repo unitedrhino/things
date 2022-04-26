@@ -215,6 +215,10 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInf
 		l.Errorf("DelProduct|Delete|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
+	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &templateModel.TemplateInfo{ProductID: in.Info.ProductID})
+	if err != nil {
+		return nil, err
+	}
 	return &dm.ProductInfo{}, nil
 }
 
