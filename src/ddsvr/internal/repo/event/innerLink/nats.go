@@ -2,9 +2,12 @@ package innerLink
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/src/ddsvr/ddExport"
+	"github.com/i-Things/things/src/ddsvr/dd"
 	"github.com/nats-io/nats.go"
 )
 
@@ -12,6 +15,22 @@ type (
 	NatsClient struct {
 		client nats.JetStreamContext
 	}
+)
+
+const (
+	ThingsQueueConsumeName = "things_dd_queue_consume"
+	//topic 定义
+	ThingsStreamName = "thing_msg"
+	// TopicDevPublish dd模块收到设备的发布消息后向内部推送以下topic 最后两个是产品id和设备名称
+	TopicDevPublish = "dd.thing.device.clients.publish.%s.%s"
+
+	// TopicDevConnected dd模块收到设备的登录消息后向内部推送以下topic
+	TopicDevConnected = "dd.thing.device.clients.connected"
+	// TopicDevDisconnected dd模块收到设备的登出消息后向内部推送以下topic
+	TopicDevDisconnected = "dd.thing.device.clients.disconnected"
+	// TopicInnerPublish dd模块订阅以下topic,收到内部的发布消息后向设备推送
+	TopicInnerPublish = "dd.thing.inner.publish"
+	TopicThing        = "dd.thing.device.clients.>"
 )
 
 func NewNatsClient(conf conf.NatsConf) (InnerLink, error) {
@@ -30,20 +49,22 @@ func NewNatsClient(conf conf.NatsConf) (InnerLink, error) {
 		return nil, err
 	}
 	_, err = js.AddStream(&nats.StreamConfig{
-		Name: ddExport.ThingsStreamName,
+		Name: ThingsStreamName,
 		Subjects: []string{
-			ddExport.TopicInnerPublish,
-			ddExport.TopicDevPublishAll,
-			ddExport.TopicDevConnected,
-			ddExport.TopicDevDisconnected,
+			TopicThing,
 		},
 	})
 	if err != nil {
 		return nil, err
 	}
-	_, err = js.AddConsumer(ddExport.ThingsStreamName, &nats.ConsumerConfig{
-		Durable:   ddExport.ThingsConsumeName,
+	_, err = js.AddConsumer(ThingsStreamName, &nats.ConsumerConfig{
+		Durable:   ThingsQueueConsumeName,
 		AckPolicy: nats.AckExplicitPolicy,
+		//MaxRequestBatch:   10,
+		//MaxRequestExpires: 2 * time.Second,
+		DeliverPolicy:  nats.DeliverLastPolicy,
+		DeliverSubject: nats.NewInbox(),
+		DeliverGroup:   dd.ThingsDDDeliverGroup,
 	})
 	if err != nil {
 		return nil, err
@@ -51,15 +72,32 @@ func NewNatsClient(conf conf.NatsConf) (InnerLink, error) {
 	return &NatsClient{client: js}, nil
 }
 
-func (n *NatsClient) Publish(ctx context.Context, topic string, payload []byte) error {
+func (n *NatsClient) PubDevPublish(ctx context.Context, publishMsg devices.DevPublish) error {
+	pubStr, _ := json.Marshal(publishMsg)
+	return n.publish(ctx,
+		fmt.Sprintf(TopicDevPublish, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
+}
 
+func (n *NatsClient) PubConn(ctx context.Context, conn ConnType, info *devices.DevConn) error {
+	str, _ := json.Marshal(info)
+	switch conn {
+	case Connect:
+		return n.publish(ctx, TopicDevConnected, str)
+	case DisConnect:
+		return n.publish(ctx, TopicDevDisconnected, str)
+	default:
+		panic("not support conn type")
+	}
+}
+
+func (n *NatsClient) publish(ctx context.Context, topic string, payload []byte) error {
 	_, err := n.client.Publish(topic, events.NewEventMsg(ctx, payload))
 	return err
 }
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.QueueSubscribe(ddExport.TopicInnerPublish, ddExport.SvrName, func(msg *nats.Msg) {
+	_, err := n.client.QueueSubscribe(TopicInnerPublish, dd.ThingsDDDeliverGroup, func(msg *nats.Msg) {
 		msg.Ack()
-		ctx, topic, payload := ddExport.GetPublish(msg.Data)
+		ctx, topic, payload := devices.GetPublish(msg.Data)
 		handle(ctx).PublishToDev(topic, payload)
 	})
 	return err

@@ -5,11 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/ddsvr/ddExport"
-	"github.com/i-Things/things/src/dmsvr/dmDef"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/nats-io/nats.go"
@@ -21,6 +20,27 @@ type (
 	NatsClient struct {
 		client nats.JetStreamContext
 	}
+)
+
+//topic 定义
+const (
+	ThingsStreamName = "thing_msg"
+	// TopicDevPublish dd模块收到设备的发布消息后向内部推送以下topic 最后两个是产品id和设备名称
+	TopicDevPublish    = "dd.thing.device.clients.publish.%s.%s"
+	TopicDevPublishAll = "dd.thing.device.clients.publish.>"
+
+	// TopicDevConnected dd模块收到设备的登录消息后向内部推送以下topic
+	TopicDevConnected = "dd.thing.device.clients.connected"
+	// TopicDevDisconnected dd模块收到设备的登出消息后向内部推送以下topic
+	TopicDevDisconnected = "dd.thing.device.clients.disconnected"
+	// TopicInnerPublish dd模块订阅以下topic,收到内部的发布消息后向设备推送
+	TopicInnerPublish = "dd.thing.inner.publish"
+	TopicThing        = "dd.thing.device.clients.>"
+)
+const (
+	ThingsDeliverGroup     = "things_dm_group"
+	ThingsQueueConsumeName = "things_dm_queue_consume"
+	ThingsAllConsumeName   = "things_dm_all_consume"
 )
 
 func NewNatsClient(conf conf.NatsConf) (*NatsClient, error) {
@@ -39,20 +59,39 @@ func NewNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 		return nil, err
 	}
 	_, err = js.AddStream(&nats.StreamConfig{
-		Name: ddExport.ThingsStreamName,
+		Name: ThingsStreamName,
 		Subjects: []string{
-			ddExport.TopicInnerPublish,
-			ddExport.TopicDevPublishAll,
-			ddExport.TopicDevConnected,
-			ddExport.TopicDevDisconnected,
+			TopicThing,
 		},
 	})
 	if err != nil {
 		return nil, err
 	}
-	_, err = js.AddConsumer(ddExport.ThingsStreamName, &nats.ConsumerConfig{
-		Durable:   ddExport.ThingsConsumeName,
+	_, err = js.AddConsumer(ThingsStreamName, &nats.ConsumerConfig{
+		Durable:   ThingsQueueConsumeName,
 		AckPolicy: nats.AckExplicitPolicy,
+		//MaxRequestBatch:   10,
+		//MaxRequestExpires: 2 * time.Second,
+		DeliverPolicy:  nats.DeliverLastPolicy,
+		DeliverSubject: nats.NewInbox(),
+		DeliverGroup:   ThingsDeliverGroup,
+	})
+	_, err = js.AddConsumer(ThingsStreamName, &nats.ConsumerConfig{
+		Durable:   ThingsQueueConsumeName + "2",
+		AckPolicy: nats.AckExplicitPolicy,
+		//MaxRequestBatch:   10,
+		//MaxRequestExpires: 2 * time.Second,
+		DeliverPolicy:  nats.DeliverLastPolicy,
+		DeliverSubject: nats.NewInbox(),
+		DeliverGroup:   ThingsDeliverGroup + "2",
+	})
+	_, err = js.AddConsumer(ThingsStreamName, &nats.ConsumerConfig{
+		Durable:   ThingsAllConsumeName,
+		AckPolicy: nats.AckExplicitPolicy,
+		//MaxRequestBatch:   10,
+		//MaxRequestExpires: 2 * time.Second,
+		DeliverPolicy:  nats.DeliverNewPolicy,
+		DeliverSubject: nats.NewInbox(),
 	})
 	if err != nil {
 		return nil, err
@@ -61,12 +100,13 @@ func NewNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) PublishToDev(ctx context.Context, topic string, payload []byte) error {
-	_, err := n.client.Publish(ddExport.TopicInnerPublish, ddExport.PublishToDev(ctx, topic, payload))
+	_, err := n.client.Publish(TopicInnerPublish, devices.PublishToDev(ctx, topic, payload))
 	return err
 }
 
 func (n *NatsClient) SubscribeDevSync(ctx context.Context, topic string) (*SubDev, error) {
-	subscription, err := n.client.SubscribeSync(topic)
+	subscription, err := n.client.SubscribeSync(topic, nats.Durable(ThingsAllConsumeName),
+		nats.BindStream(ThingsStreamName))
 	if err != nil {
 		return nil, err
 	}
@@ -74,27 +114,51 @@ func (n *NatsClient) SubscribeDevSync(ctx context.Context, topic string) (*SubDe
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.QueueSubscribe(ddExport.TopicDevPublishAll, dmDef.SvrName, func(msg *nats.Msg) {
-		msg.Ack()
-		emsg := events.GetEventMsg(msg.Data)
-		if emsg == nil {
-			logx.Error(msg.Subject, string(msg.Data))
-			return
-		}
-		ctx := emsg.GetCtx()
-		ele, err := device.GetDevPublish(ctx, emsg.GetData())
-		if err != nil {
-			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
-			return
-		}
-		err = handle(ctx).Publish(ele)
-		logx.WithContext(ctx).Infof("%s|topic:%v,subject:%v,data:%v,err:%v", utils.FuncName(),
-			ddExport.TopicDevPublishAll, msg.Subject, string(msg.Data), err)
-	})
-	if err != nil {
-		return err
-	}
-	_, err = n.client.QueueSubscribe(ddExport.TopicDevConnected, dmDef.SvrName, func(msg *nats.Msg) {
+	//_, err := n.client.QueueSubscribe(TopicDevPublishAll, ThingsDeliverGroup, func(msg *nats.Msg) {
+	//	msg.Ack()
+	//	emsg := events.GetEventMsg(msg.Data)
+	//	if emsg == nil {
+	//		logx.Error(msg.Subject, string(msg.Data))
+	//		return
+	//	}
+	//	ctx := emsg.GetCtx()
+	//	ele, err := device.GetDevPublish(ctx, emsg.GetData())
+	//	if err != nil {
+	//		logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
+	//		return
+	//	}
+	//	err = handle(ctx).Publish(ele)
+	//	logx.WithContext(ctx).Infof("%s|topic:%v,subject:%v,data:%v,err:%v", utils.FuncName(),
+	//		TopicDevPublishAll, msg.Subject, string(msg.Data), err)
+	//}, nats.Durable(ThingsQueueConsumeName), nats.BindStream(ThingsStreamName))
+	//if err != nil {
+	//	return err
+	//}
+	//_, err = n.client.QueueSubscribe(TopicDevPublishAll, ThingsDeliverGroup+"2", func(msg *nats.Msg) {
+	//	err := msg.Ack()
+	//	if err != nil {
+	//		logx.Error(msg.Subject, string(msg.Data), err)
+	//		return
+	//	}
+	//	emsg := events.GetEventMsg(msg.Data)
+	//	if emsg == nil {
+	//		logx.Error(msg.Subject, string(msg.Data))
+	//		return
+	//	}
+	//	ctx := emsg.GetCtx()
+	//	ele, err := device.GetDevPublish(ctx, emsg.GetData())
+	//	if err != nil {
+	//		logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
+	//		return
+	//	}
+	//	err = handle(ctx).Publish(ele)
+	//	logx.WithContext(ctx).Infof("%s|topic:%v,subject:%v,data:%v,err:%v", utils.FuncName(),
+	//		TopicDevPublishAll, msg.Subject, string(msg.Data), err)
+	//}, nats.Durable(ThingsQueueConsumeName+"2"), nats.BindStream(ThingsStreamName))
+	//if err != nil {
+	//	return err
+	//}
+	_, err := n.client.QueueSubscribe(TopicDevConnected, ThingsDeliverGroup, func(msg *nats.Msg) {
 		msg.Ack()
 		emsg := events.GetEventMsg(msg.Data)
 		if emsg == nil {
@@ -109,12 +173,12 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		}
 		err = handle(ctx).Connected(ele)
 		logx.WithContext(ctx).Infof("%s|topic:%v,subject:%v,data:%v,err:%v", utils.FuncName(),
-			ddExport.TopicDevConnected, msg.Subject, string(msg.Data), err)
-	})
+			TopicDevConnected, msg.Subject, string(msg.Data), err)
+	}, nats.Durable(ThingsQueueConsumeName), nats.BindStream(ThingsStreamName))
 	if err != nil {
 		return err
 	}
-	_, err = n.client.QueueSubscribe(ddExport.TopicDevDisconnected, dmDef.SvrName, func(msg *nats.Msg) {
+	_, err = n.client.QueueSubscribe(TopicDevDisconnected, ThingsDeliverGroup, func(msg *nats.Msg) {
 		msg.Ack()
 		emsg := events.GetEventMsg(msg.Data)
 		if emsg == nil {
@@ -129,8 +193,8 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		}
 		err = handle(ctx).Disconnected(ele)
 		logx.WithContext(ctx).Infof("%s|topic:%v,subject:%v,data:%v,err:%v", utils.FuncName(),
-			ddExport.TopicDevDisconnected, msg.Subject, string(msg.Data), err)
-	})
+			TopicDevDisconnected, msg.Subject, string(msg.Data), err)
+	}, nats.Durable(ThingsQueueConsumeName), nats.BindStream(ThingsStreamName))
 	if err != nil {
 		return err
 	}
@@ -144,7 +208,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic st
 	if err != nil {
 		return nil, err
 	}
-	handle, err := n.SubscribeDevSync(ctx, fmt.Sprintf(ddExport.TopicDevPublish, productID, deviceName))
+	handle, err := n.SubscribeDevSync(ctx, fmt.Sprintf(TopicDevPublish, productID, deviceName))
 	if err != nil {
 		return nil, err
 	}
