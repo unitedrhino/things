@@ -70,8 +70,13 @@ func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemp
 	if err != nil {
 		return nil, err
 	}
+	if err := l.svcCtx.DeviceLogRepo.InitProduct(
+		l.ctx, in.Info.ProductID); err != nil {
+		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		return nil, errors.Database.AddDetail(err)
+	}
 	if err := l.svcCtx.DeviceDataRepo.InitProduct(l.ctx, t, in.Info.ProductID); err != nil {
-		l.Errorf("%s InitProduct failure,err:%v", utils.FuncName(), err)
+		l.Errorf("%s|DeviceDataRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.TemplateRepo.Insert(l.ctx, in.Info.ProductID, t)

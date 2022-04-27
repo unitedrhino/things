@@ -56,9 +56,14 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 	}
 	pi, pt := l.InsertProduct(in)
 	t, _ := templateModel.NewTemplate([]byte(pt.Template))
+	if err := l.svcCtx.DeviceLogRepo.InitProduct(
+		l.ctx, pi.ProductID); err != nil {
+		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		return nil, errors.Database.AddDetail(err)
+	}
 	if err := l.svcCtx.DeviceDataRepo.InitProduct(
 		l.ctx, t, pi.ProductID); err != nil {
-		l.Errorf("%s InitProduct failure,err:%v", utils.FuncName(), err)
+		l.Errorf("%s|DeviceDataRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.DmDB.Insert(pi, pt)

@@ -1,9 +1,7 @@
 package devices
 
 import (
-	"context"
 	"encoding/json"
-	"github.com/i-Things/things/shared/events"
 )
 
 type (
@@ -32,19 +30,18 @@ type (
 )
 
 //发送给设备的数据组包
-func PublishToDev(ctx context.Context, topic string, payload []byte) []byte {
+func PublishToDev(topic string, payload []byte) []byte {
 	pub := InnerPublish{
 		Topic:   topic,
 		Payload: payload,
 	}
 	data, _ := json.Marshal(pub)
-	return events.NewEventMsg(ctx, data)
+	return data
 }
 
 //收到发送给设备的数据,解包
-func GetPublish(data []byte) (ctx context.Context, topic string, payload []byte) {
+func GetPublish(data []byte) (topic string, payload []byte) {
 	pub := InnerPublish{}
-	msg := events.GetEventMsg(data)
-	_ = json.Unmarshal(msg.GetData(), &pub)
-	return msg.GetCtx(), pub.Topic, pub.Payload
+	_ = json.Unmarshal(data, &pub)
+	return pub.Topic, pub.Payload
 }
