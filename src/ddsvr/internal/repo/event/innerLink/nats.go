@@ -13,7 +13,7 @@ import (
 
 type (
 	NatsClient struct {
-		client nats.JetStreamContext
+		client *nats.Conn
 	}
 )
 
@@ -44,32 +44,7 @@ func NewNatsClient(conf conf.NatsConf) (InnerLink, error) {
 	if err != nil {
 		return nil, err
 	}
-	js, err := nc.JetStream()
-	if err != nil {
-		return nil, err
-	}
-	_, err = js.AddStream(&nats.StreamConfig{
-		Name: ThingsStreamName,
-		Subjects: []string{
-			TopicThing,
-		},
-	})
-	if err != nil {
-		return nil, err
-	}
-	_, err = js.AddConsumer(ThingsStreamName, &nats.ConsumerConfig{
-		Durable:   ThingsQueueConsumeName,
-		AckPolicy: nats.AckExplicitPolicy,
-		//MaxRequestBatch:   10,
-		//MaxRequestExpires: 2 * time.Second,
-		DeliverPolicy:  nats.DeliverLastPolicy,
-		DeliverSubject: nats.NewInbox(),
-		DeliverGroup:   dd.ThingsDDDeliverGroup,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &NatsClient{client: js}, nil
+	return &NatsClient{client: nc}, nil
 }
 
 func (n *NatsClient) PubDevPublish(ctx context.Context, publishMsg devices.DevPublish) error {
@@ -91,14 +66,14 @@ func (n *NatsClient) PubConn(ctx context.Context, conn ConnType, info *devices.D
 }
 
 func (n *NatsClient) publish(ctx context.Context, topic string, payload []byte) error {
-	_, err := n.client.Publish(topic, events.NewEventMsg(ctx, payload))
+	err := n.client.Publish(topic, events.NewEventMsg(ctx, payload))
 	return err
 }
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.QueueSubscribe(TopicInnerPublish, dd.ThingsDDDeliverGroup, func(msg *nats.Msg) {
-		msg.Ack()
-		ctx, topic, payload := devices.GetPublish(msg.Data)
-		handle(ctx).PublishToDev(topic, payload)
-	})
+	_, err := n.client.QueueSubscribe(TopicInnerPublish, dd.ThingsDDDeliverGroup,
+		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+			topic, payload := devices.GetPublish(msg)
+			return handle(ctx).PublishToDev(topic, payload)
+		}))
 	return err
 }
