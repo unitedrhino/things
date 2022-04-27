@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/ddsvr/ddExport"
-	"github.com/i-Things/things/src/dmsvr/dmDef"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -21,6 +20,23 @@ type (
 	NatsClient struct {
 		client *nats.Conn
 	}
+)
+
+//topic 定义
+const (
+	// TopicDevPublish dd模块收到设备的发布消息后向内部推送以下topic 最后两个是产品id和设备名称
+	TopicDevPublish    = "dd.thing.device.clients.publish.%s.%s"
+	TopicDevPublishAll = "dd.thing.device.clients.publish.>"
+
+	// TopicDevConnected dd模块收到设备的登录消息后向内部推送以下topic
+	TopicDevConnected = "dd.thing.device.clients.connected"
+	// TopicDevDisconnected dd模块收到设备的登出消息后向内部推送以下topic
+	TopicDevDisconnected = "dd.thing.device.clients.disconnected"
+	// TopicInnerPublish dd模块订阅以下topic,收到内部的发布消息后向设备推送
+	TopicInnerPublish = "dd.thing.inner.publish"
+)
+const (
+	ThingsDeliverGroup = "things_dm_group"
 )
 
 func NewNatsClient(conf conf.NatsConf) (*NatsClient, error) {
@@ -38,7 +54,9 @@ func NewNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) PublishToDev(ctx context.Context, topic string, payload []byte) error {
-	return n.client.Publish(ddExport.TopicInnerPublish, ddExport.PublishToDev(ctx, topic, payload))
+	msg := events.NewEventMsg(ctx, devices.PublishToDev(topic, payload))
+	err := n.client.Publish(TopicInnerPublish, msg)
+	return err
 }
 
 func (n *NatsClient) SubscribeDevSync(ctx context.Context, topic string) (*SubDev, error) {
@@ -50,60 +68,37 @@ func (n *NatsClient) SubscribeDevSync(ctx context.Context, topic string) (*SubDe
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.QueueSubscribe(ddExport.TopicDevPublishAll, dmDef.SvrName, func(msg *nats.Msg) {
-		msg.Ack()
-		emsg := events.GetEventMsg(msg.Data)
-		if emsg == nil {
-			logx.Error(msg.Subject, string(msg.Data))
-			return
-		}
-		ctx := emsg.GetCtx()
-		ele, err := device.GetDevPublish(ctx, emsg.GetData())
-		if err != nil {
-			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
-			return
-		}
-		err = handle(ctx).Publish(ele)
-		logx.WithContext(ctx).Info(ddExport.TopicDevPublishAll, msg.Subject, string(msg.Data), err)
-	})
+	_, err := n.client.QueueSubscribe(TopicDevPublishAll, ThingsDeliverGroup,
+		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+			ele, err := device.GetDevPublish(ctx, msg)
+			if err != nil {
+				return err
+			}
+			err = handle(ctx).Publish(ele)
+			return err
+		}))
 	if err != nil {
 		return err
 	}
-	_, err = n.client.QueueSubscribe(ddExport.TopicDevConnected, dmDef.SvrName, func(msg *nats.Msg) {
-		msg.Ack()
-		emsg := events.GetEventMsg(msg.Data)
-		if emsg == nil {
-			logx.Error(msg.Subject, string(msg.Data))
-			return
-		}
-		ctx := emsg.GetCtx()
-		ele, err := device.GetDevConnMsg(ctx, emsg.GetData())
-		if err != nil {
-			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
-			return
-		}
-		err = handle(ctx).Connected(ele)
-		logx.WithContext(ctx).Info(ddExport.TopicDevConnected, msg.Subject, string(msg.Data), err)
-	})
+	_, err = n.client.QueueSubscribe(TopicDevConnected, ThingsDeliverGroup,
+		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+			ele, err := device.GetDevConnMsg(ctx, msg)
+			if err != nil {
+				return err
+			}
+			return handle(ctx).Connected(ele)
+		}))
 	if err != nil {
 		return err
 	}
-	_, err = n.client.QueueSubscribe(ddExport.TopicDevDisconnected, dmDef.SvrName, func(msg *nats.Msg) {
-		msg.Ack()
-		emsg := events.GetEventMsg(msg.Data)
-		if emsg == nil {
-			logx.Error(msg.Subject, string(msg.Data))
-			return
-		}
-		ctx := emsg.GetCtx()
-		ele, err := device.GetDevConnMsg(ctx, emsg.GetData())
-		if err != nil {
-			logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
-			return
-		}
-		err = handle(ctx).Disconnected(ele)
-		logx.WithContext(ctx).Info(ddExport.TopicDevDisconnected, msg.Subject, string(msg.Data), err)
-	})
+	_, err = n.client.QueueSubscribe(TopicDevDisconnected, ThingsDeliverGroup,
+		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+			ele, err := device.GetDevConnMsg(ctx, msg)
+			if err != nil {
+				return err
+			}
+			return handle(ctx).Disconnected(ele)
+		}))
 	if err != nil {
 		return err
 	}
@@ -117,7 +112,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic st
 	if err != nil {
 		return nil, err
 	}
-	handle, err := n.SubscribeDevSync(ctx, fmt.Sprintf(ddExport.TopicDevPublish, productID, deviceName))
+	handle, err := n.SubscribeDevSync(ctx, fmt.Sprintf(TopicDevPublish, productID, deviceName))
 	if err != nil {
 		return nil, err
 	}

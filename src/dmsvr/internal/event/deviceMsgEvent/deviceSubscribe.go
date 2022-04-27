@@ -1,4 +1,4 @@
-package eventDevSub
+package deviceMsgEvent
 
 //设备的发布,连接及断连处理
 import (
@@ -25,12 +25,12 @@ func NewDeviceMsgHandle(ctx context.Context, svcCtx *svc.ServiceContext) *Device
 }
 
 func (l *DeviceMsgHandle) Publish(msg *device.PublishMsg) error {
-	l.Infof("DevReqLogic|req=%+v", msg)
+	l.Infof("DevReqLogic|req=%+v", utils.GetJson(msg))
 	return NewPublishLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
 func (l *DeviceMsgHandle) Connected(msg *device.ConnectMsg) error {
-	l.Infof("ConnectLogic|req=%+v", msg)
+	l.Infof("ConnectLogic|req=%+v", utils.GetJson(msg))
 	//todo 这里需要查询下数据库,避免数据错误
 	ld, err := device.GetClientIDInfo(msg.ClientID)
 	if err != nil {
@@ -53,7 +53,7 @@ func (l *DeviceMsgHandle) Connected(msg *device.ConnectMsg) error {
 }
 
 func (l *DeviceMsgHandle) Disconnected(msg *device.ConnectMsg) error {
-	l.Infof("DisconnectLogic|req=%+v", msg)
+	l.Infof("DisconnectLogic|req=%+v", utils.GetJson(msg))
 	ld, err := device.GetClientIDInfo(msg.ClientID)
 	if err != nil {
 		return err
