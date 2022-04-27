@@ -6,7 +6,6 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/dm"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,12 +29,7 @@ func (l *GetDeviceDataLogic) HandleDatas(in *dm.GetDeviceDataReq) (*dm.GetDevice
 		dmDatas []*dm.DeviceData
 		total   int
 	)
-
-	tempInfo, err := l.svcCtx.ProductTemplate.FindOne(in.ProductID)
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
-	}
-	temp, err := templateModel.NewTemplate([]byte(tempInfo.Template))
+	temp, err := l.svcCtx.TemplateRepo.GetTemplate(l.ctx, in.ProductID)
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	}

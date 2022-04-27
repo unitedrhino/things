@@ -14,6 +14,8 @@ services:
       - "4222:4222"
       - "6222:6222"
       - "8222:8222"
+    volumes:
+      - "/opt/things/conf/nats/nats-server.conf:/nats-server.conf"
     networks:
       ithings_net:
         aliases:
