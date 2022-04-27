@@ -8,7 +8,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -21,7 +20,6 @@ type SendPropertyLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	pt       *mysql.ProductTemplate
 	template *templateModel.Template
 }
 
@@ -35,13 +33,9 @@ func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 
 func (l *SendPropertyLogic) initMsg(productID string) error {
 	var err error
-	l.pt, err = l.svcCtx.ProductTemplate.FindOne(productID)
+	l.template, err = l.svcCtx.TemplateRepo.GetTemplate(l.ctx, productID)
 	if err != nil {
-		return err
-	}
-	l.template, err = templateModel.NewTemplate([]byte(l.pt.Template))
-	if err != nil {
-		return err
+		return errors.System.AddDetail(err.Error())
 	}
 	return nil
 }

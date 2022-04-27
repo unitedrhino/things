@@ -5,7 +5,7 @@ echo "well come to go-things,we need init docker with docker-compose first"
 
 function init_docker(){
  echo "init docker"
- cp -rf docker/* /etc/docker/
+ cp -rf $confPath/docker/* /etc/docker/
  curl -sSL https://get.daocloud.io/docker | sh
  sudo systemctl start docker
  docker run hello-world
@@ -22,18 +22,11 @@ function init_conf_path(){
   #预创建配置所需文件夹
   thingsPath="/opt/things"
   confPath="$thingsPath/conf"
-  emqxPath="$confPath/emqx"
-  mysqlPath="$confPath/mysql"
-
-  if [ ! -d "$emqxPath" ]; then
-    mkdir -p "$emqxPath"
+  if [ ! -d "$confPath" ]; then
+    mkdir -p "$confPath"
   fi
-  if [ ! -d "$mysqlPath" ]; then
-    mkdir -p "$mysqlPath"
-  fi
-  #将emqx和mysql所在工程内的配置拷贝到物理机目标位置
-  cp -rf emqx/* $emqxPath
-  cp -rf mysql/* $mysqlPath
+  #将docker映射的所在工程内的配置拷贝到物理机目标位置
+  cp -rf ./deploy/* confPath
 }
 
 function init_mysql_db_table(){
@@ -53,14 +46,12 @@ function init_mysql_db_table(){
    fi
   done
 }
-
+init_conf_path
 type docker >/dev/null 2>&1 || init_docker;
 type docker-compose >/dev/null 2>&1 || init_docker_compose;
 echo "docker with docker-compose init success"
 echo "now buid and start go-things needs mirror image"
 echo "docker-compose -f $CURDIR/docker-compose.yml up -d" >> /etc/rc.local
-
-init_conf_path
 sleep 1
 echo "start docker compose "
 docker-compose up -d

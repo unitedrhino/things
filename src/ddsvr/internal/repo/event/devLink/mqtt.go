@@ -7,7 +7,8 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/src/ddsvr/ddExport"
+	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 	"time"
@@ -25,6 +26,11 @@ type (
 		ClientID string `json:"clientid"`
 		Reason   string `json:"reason"`
 	}
+)
+
+const (
+	ActionLogin  = "onLogin"
+	ActionLogout = "onLogout"
 )
 
 func NewEmqClient(conf *conf.MqttConf) (DevLink, error) {
@@ -69,7 +75,7 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 				logx.Error(err)
 				return
 			}
-			do := ddExport.DevConn{
+			do := devices.DevConn{
 				UserName:  msg.UserName,
 				Timestamp: msg.Ts, //毫秒时间戳
 				Address:   msg.Address,
@@ -77,15 +83,17 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 				Reason:    msg.Reason,
 			}
 			if strings.HasSuffix(message.Topic(), "/disconnected") {
-				logx.WithContext(ctx).Info("disconnected", string(message.Payload()), message.Topic(), err)
-				do.Action = ddExport.ActionLogout
+				logx.WithContext(ctx).Infof("%s|disconnected|topic:%v,message:%v,err:%v",
+					utils.FuncName(), message.Topic(), string(message.Payload()), err)
+				do.Action = ActionLogout
 				err = handle(ctx).Disconnected(&do)
 				if err != nil {
 					logx.Error(err)
 				}
 			} else {
-				do.Action = ddExport.ActionLogin
-				logx.WithContext(ctx).Info("connected", string(message.Payload()), message.Topic(), err)
+				do.Action = ActionLogin
+				logx.WithContext(ctx).Infof("%s|connected|topic:%v,message:%v,err:%v",
+					utils.FuncName(), message.Topic(), string(message.Payload()), err)
 				err = handle(ctx).Connected(&do)
 				if err != nil {
 					logx.Error(err)
@@ -99,7 +107,8 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 		1, func(client mqtt.Client, message mqtt.Message) {
 			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 			err := handle(ctx).Publish(message.Topic(), message.Payload())
-			logx.WithContext(ctx).Info("publish", message.Topic(), string(message.Payload()), err)
+			logx.WithContext(ctx).Infof("%s|publish|topic:%v,message:%v,err:%v",
+				utils.FuncName(), message.Topic(), string(message.Payload()), err)
 
 		}).Error()
 	return err

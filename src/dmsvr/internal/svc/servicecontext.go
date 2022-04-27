@@ -5,6 +5,8 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/event/dataUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
@@ -16,46 +18,19 @@ import (
 )
 
 type ServiceContext struct {
-	Config          config.Config
-	DeviceInfo      mysql.DeviceInfoModel
-	ProductInfo     mysql.ProductInfoModel
-	ProductTemplate mysql.ProductTemplateModel
-	DmDB            mysql.DmModel
-	DeviceID        *utils.SnowFlake
-	ProductID       *utils.SnowFlake
-	InnerLink       innerLink.InnerLink
-	Store           kv.Store
-	DeviceDataRepo  deviceData.DeviceDataRepo
-	DeviceLogRepo   device.LogRepo
+	Config         config.Config
+	DeviceInfo     mysql.DeviceInfoModel
+	ProductInfo    mysql.ProductInfoModel
+	DmDB           mysql.DmModel
+	DeviceID       *utils.SnowFlake
+	ProductID      *utils.SnowFlake
+	InnerLink      innerLink.InnerLink
+	DataUpdate     dataUpdate.DataUpdate
+	Store          kv.Store
+	DeviceDataRepo deviceData.DeviceDataRepo
+	DeviceLogRepo  device.LogRepo
+	TemplateRepo   templateModel.TemplateRepo
 }
-
-//func TestTD(taos *TDengine.Td) {
-//	taos.Exec("create database if not exists test")
-//	taos.Exec("create table if not exists tb1 (ts timestamp, a int)")
-//	_, err := taos.Exec("insert into tb1 values(now, 0)(now+1s,1)(now+2s,2)(now+3s,3)")
-//	if err != nil {
-//		fmt.Println("failed to insert, err:", err)
-//		return
-//	}
-//	rows, err := taos.Query("select * from tb1")
-//	if err != nil {
-//		fmt.Println("failed to select from table, err:", err)
-//		return
-//	}
-//	defer rows.Close()
-//	for rows.Next() {
-//		var r struct {
-//			ts time.Time
-//			a  int
-//		}
-//		err := rows.Scan(&r.ts, &r.a)
-//		if err != nil {
-//			fmt.Println("scan error:\n", err)
-//			return
-//		}
-//		fmt.Println("get data:", r.ts, r.a)
-//	}
-//}
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource)
@@ -66,6 +41,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	di := mysql.NewDeviceInfoModel(conn, c.CacheRedis)
 	pi := mysql.NewProductInfoModel(conn, c.CacheRedis)
 	pt := mysql.NewProductTemplateModel(conn, c.CacheRedis)
+	tr := mysql.NewTemplateRepo(pt)
+
 	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
 	store := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
@@ -76,17 +53,23 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("NewInnerLink err", err)
 		os.Exit(-1)
 	}
+	du, err := dataUpdate.NewDataUpdate(c.InnerLink)
+	if err != nil {
+		logx.Error("NewDataUpdate err", err)
+		os.Exit(-1)
+	}
 	return &ServiceContext{
-		Config:          c,
-		DeviceInfo:      di,
-		ProductInfo:     pi,
-		ProductTemplate: pt,
-		DmDB:            DmDB,
-		DeviceID:        DeviceID,
-		ProductID:       ProductID,
-		InnerLink:       il,
-		Store:           store,
-		DeviceDataRepo:  deviceData,
-		DeviceLogRepo:   deviceLog,
+		Config:         c,
+		DeviceInfo:     di,
+		ProductInfo:    pi,
+		TemplateRepo:   tr,
+		DmDB:           DmDB,
+		DeviceID:       DeviceID,
+		ProductID:      ProductID,
+		InnerLink:      il,
+		DataUpdate:     du,
+		Store:          store,
+		DeviceDataRepo: deviceData,
+		DeviceLogRepo:  deviceLog,
 	}
 }
