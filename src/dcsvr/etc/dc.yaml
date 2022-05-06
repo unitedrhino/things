@@ -1,14 +1,13 @@
 Name: dc.rpc
 ListenOn: 127.0.0.1:9082
 CpuThreshold: 0
-NodeID: 1
 Timeout: 1000000
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: dc.rpc
 Mysql:
-  DataSource: root:password@tcp(127.0.0.1:3306)/dc?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:password@tcp(127.0.0.1:3306)/things_dc?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:

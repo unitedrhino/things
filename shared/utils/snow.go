@@ -1,6 +1,10 @@
 package utils
 
 import (
+	"fmt"
+	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/kv"
+	"math/rand"
 	"runtime"
 	"sync"
 	"time"
@@ -20,6 +24,15 @@ type SnowFlake struct {
 	sn        int64      //序列号占12位,十进制范围是[0,4095]
 	lastTime  int64      //上次的时间戳(毫秒级)
 	_lock     sync.Mutex //锁
+}
+
+func GetNodeID(cache cache.ClusterConf, svrName string) int64 {
+	key := fmt.Sprintf("node:id:%s", svrName)
+	nodeIdS, err := kv.NewStore(cache).Incr(key)
+	if err != nil {
+		nodeIdS = rand.NewSource(time.Now().UnixNano()).Int63()
+	}
+	return nodeIdS % 1024
 }
 
 //var Snow = &SnowFlake{

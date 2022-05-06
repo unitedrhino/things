@@ -20,7 +20,6 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	}
-	NodeID           int64
 	WexinMiniprogram weixin.MiniprogramConf `json:",optional"` // 微信小程序，可选
 	UserOpt          struct {
 		NeedUserName bool  `json:default=true` //注册是否必须填写账号密码
