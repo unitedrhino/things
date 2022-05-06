@@ -2,14 +2,13 @@ package logic
 
 import (
 	"context"
-	"database/sql"
 	"github.com/i-Things/things/shared/errors"
-	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
-	"github.com/spf13/cast"
-	"time"
-
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
+	"github.com/spf13/cast"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,75 +27,80 @@ func NewManageProductTemplateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 	}
 }
 
-func UpdateProductTemplate(old *mysql.ProductTemplate, data *dm.ProductTemplate) (isModify bool) {
-	defer func() {
-		if isModify {
-			old.UpdatedTime = sql.NullTime{Valid: true, Time: time.Now()}
-		}
-	}()
-	if data.Template != nil {
-		old.Template = data.Template.GetValue()
-		isModify = true
+func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, oldT *templateModel.Template) (*dm.ProductTemplate, error) {
+	l.Infof("ManageProductTemplate|ModifyProductTemplate|ProductID:%v", in.Info.ProductID)
+	newT, err := templateModel.ValidateWithFmt([]byte(in.Info.Template))
+	if err != nil {
+		return nil, err
 	}
-	return
-}
-
-func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, pt *mysql.ProductTemplate) (*dm.ProductTemplate, error) {
-	UpdateProductTemplate(pt, in.Info)
-	//todo 这里需要添加模板的校验
-	err := l.svcCtx.ProductTemplate.Update(pt)
+	err = templateModel.CheckModify(oldT, newT)
+	if err != nil {
+		return nil, err
+	}
+	if err := l.svcCtx.DeviceDataRepo.ModifyProduct(l.ctx, oldT, newT, in.Info.ProductID); err != nil {
+		l.Errorf("%s ModifyProduct failure,err:%v", utils.FuncName(), err)
+		return nil, errors.Database.AddDetail(err)
+	}
+	err = l.svcCtx.TemplateRepo.Update(l.ctx, in.Info.ProductID, newT)
 	if err != nil {
 		l.Errorf("ModifyProductTemplate|ProductTemplate|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
+	}
+	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &templateModel.TemplateInfo{ProductID: in.Info.ProductID})
+	if err != nil {
+		return nil, err
+	}
+	pt, err := l.svcCtx.TemplateRepo.GetTemplateInfo(l.ctx, in.Info.ProductID)
+	if err != nil {
+		return nil, err
 	}
 	return ToProductTemplate(pt), nil
 }
 
 func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemplateReq) (*dm.ProductTemplate, error) {
-	pi, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
+	l.Infof("ManageProductTemplate|AddProductTemplate|ProductID:%v", in.Info.ProductID)
+	_, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
 		}
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	pt := &mysql.ProductTemplate{
-		ProductID:   pi.ProductID,
-		Template:    in.Info.Template.GetValue(),
-		CreatedTime: time.Now(),
-	}
-	l.svcCtx.ProductTemplate.Insert(pt)
-
-	return ToProductTemplate(pt), nil
-}
-
-func (l *ManageProductTemplateLogic) InsertProductTemplate(in *dm.ManageProductTemplateReq) (*dm.ProductTemplate, error) {
-	pi, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
+	t, err := templateModel.ValidateWithFmt([]byte(in.Info.Template))
 	if err != nil {
-		if err == mysql.ErrNotFound {
-			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
-		}
-		return nil, errors.Database.AddDetail(err.Error())
+		return nil, err
 	}
-	pt := &mysql.ProductTemplate{
-		ProductID:   pi.ProductID,
-		Template:    in.Info.Template.GetValue(),
-		CreatedTime: time.Now(),
+	if err := l.svcCtx.DeviceLogRepo.InitProduct(
+		l.ctx, in.Info.ProductID); err != nil {
+		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		return nil, errors.Database.AddDetail(err)
 	}
-	_, err = l.svcCtx.ProductTemplate.Insert(pt)
+	if err := l.svcCtx.DeviceDataRepo.InitProduct(l.ctx, t, in.Info.ProductID); err != nil {
+		l.Errorf("%s|DeviceDataRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		return nil, errors.Database.AddDetail(err)
+	}
+	err = l.svcCtx.TemplateRepo.Insert(l.ctx, in.Info.ProductID, t)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err.Error())
+		return nil, err
 	}
-	return ToProductTemplate(pt), nil
+	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &templateModel.TemplateInfo{ProductID: in.Info.ProductID})
+	if err != nil {
+		return nil, err
+	}
+	pt, err := l.svcCtx.TemplateRepo.GetTemplateInfo(l.ctx, in.Info.ProductID)
+	if err != nil {
+		return nil, err
+	}
+	return ToProductTemplate(pt), err
 }
 
 // 产品模板管理
 func (l *ManageProductTemplateLogic) ManageProductTemplate(in *dm.ManageProductTemplateReq) (*dm.ProductTemplate, error) {
 	l.Infof("ManageProductTemplate|req=%+v", in)
-	pt, err := l.svcCtx.ProductTemplate.FindOne(in.Info.ProductID)
+	pt, err := l.svcCtx.TemplateRepo.GetTemplate(l.ctx, in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
+			return l.AddProductTemplate(in)
 		}
 		return nil, errors.System.AddDetail(err.Error())
 	}

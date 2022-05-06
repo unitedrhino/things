@@ -25,7 +25,7 @@ func NewGetProductTemplateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 // 获取产品信息
 func (l *GetProductTemplateLogic) GetProductTemplate(in *dm.GetProductTemplateReq) (*dm.ProductTemplate, error) {
-	pt, err := l.svcCtx.ProductTemplate.FindOne(in.ProductID)
+	pt, err := l.svcCtx.TemplateRepo.GetTemplateInfo(l.ctx, in.ProductID)
 	if err != nil {
 		return nil, err
 	}
