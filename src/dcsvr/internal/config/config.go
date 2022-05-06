@@ -8,8 +8,7 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
-	NodeID int64 //节点id
-	Mysql  struct {
+	Mysql struct {
 		DataSource string
 	}
 	CacheRedis cache.ClusterConf

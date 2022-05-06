@@ -10,4 +10,5 @@ function runsvr(){
 runsvr dmsvr
 runsvr usersvr
 runsvr dcsvr
-runsvr webapi
+runsvr apisvr
+runsvr ddsvr
