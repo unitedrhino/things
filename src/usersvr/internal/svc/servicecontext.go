@@ -25,7 +25,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	uc := model.NewUserCoreModel(conn, c.CacheRedis)
 	um := model.NewUserModel(conn, c.CacheRedis)
 	WxMiniProgram := weixin.NewWexinMiniProgram(c.WexinMiniprogram, c.CacheRedis)
-	UserID := utils.NewSnowFlake(c.NodeID)
+	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
+	UserID := utils.NewSnowFlake(nodeId)
 
 	return &ServiceContext{
 		Config:        c,

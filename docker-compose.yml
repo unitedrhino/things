@@ -1,25 +1,26 @@
 version: '3.2'
+# Network
+networks:
+  ithings_net:
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+    driver: bridge
+
 services:
-  zookeeper:
-    image: wurstmeister/zookeeper
-    container_name: zookeeper
+  nats-server:
+    image: nats:latest
     ports:
-      - "2181:2181"
-    restart: always
-  kafka:
-    image: wurstmeister/kafka
-    container_name: kafka
-    ports:
-      - "9092:9092"
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
+      - "/opt/things/conf/nats/nats-server.conf:/nats-server.conf"
+    networks:
+      ithings_net:
+        aliases:
+          - node1.nats.io
+
   etcd:
     image: quay.io/coreos/etcd:v3.3.12
     container_name: etcd-v3
@@ -48,6 +49,11 @@ services:
       - "s1=http://0.0.0.0:2380"
       - "--initial-cluster-state"
       - "new"
+    networks:
+      ithings_net:
+        aliases:
+          - node1.etcd.io
+
   mysql-db:
     container_name: mysql-docker        # 指定容器的名称
     image: mysql:5.7              # 指定镜像和版本
@@ -56,9 +62,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       TZ: Asia/Shanghai     # 指定时区
+    working_dir: /mysql/
     volumes:
+      - "/opt/things/conf/mysql/:/mysql/"
       - "/var/mysql/data:/var/lib/mysql"           # 挂载数据目录
       - "/var/mysql/config:/etc/mysql/conf.d"      # 挂载配置文件目录
+    networks:
+      ithings_net:
+        aliases:
+          - node1.mysql.io
 
   mongo:
     image: mongo
@@ -85,3 +97,87 @@ services:
       - ./redis/redis.conf:/etc/redis.conf
     ports:
       - "6379:6379"
+    networks:
+      ithings_net:
+        aliases:
+          - node1.redis.io
+
+  tdengine:
+    image: tdengine/tdengine
+    container_name: tdengine
+    hostname: tdengine
+    ports:
+      - 6030:6030
+      - 6035:6035
+      - 6041:6041
+      - 6030-6040:6030-6040/udp
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /data/volume/tdengine/lib:/var/lib/taos:Z
+      - /data/volume/tdengine/log:/var/log/taos:Z
+    restart: always
+    tty: true
+    networks:
+      ithings_net:
+        aliases:
+          - node1.tdengine.io
+
+  # Emqx
+  emqx1:
+    container_name: ithings_emqx1
+    image:  18059150204/light-emqx
+    hostname: node1.emqx.io
+    restart: always
+    ports:
+      - 1801:1883
+      - 18001:18083
+      - 18081:8080
+      - 18881:8081
+    healthcheck:
+      test: emqx ping
+      timeout: 15s
+      interval: 5s
+    environment:
+      - "EMQX_NAME=emqx"
+      - "EMQX_HOST=node1.emqx.io"
+      - "EMQX_ALLOW_ANONYMOUS=false"
+      - "EMQX_NODE__COOKIE=emqxsecretcookie"
+      - "EMQX_ENABLE_ACL_CACHE=off"
+      - "EMQX_ACL_NOMATCH=deny"
+      - "EMQX_CLUSTER__DISCOVERY=static"
+      - "EMQX_CLUSTER__STATIC__SEEDS=emqx@node1.emqx.io, emqx@node2.emqx.io"
+      - "EMQX_LOADED_PLUGINS=emqx_management,emqx_recon,emqx_retainer,emqx_coap,emqx_sn"
+    networks:
+      ithings_net:
+        aliases:
+          - node1.emqx.io
+
+  emqx2:
+    container_name: ithings_emqx2
+    image:  18059150204/light-emqx
+    hostname: node2.emqx.io
+    restart: always
+    ports:
+      - 1802:1883
+      - 18002:18083
+      - 18082:8080
+      - 18882:8081
+    healthcheck:
+      test: emqx ping
+      timeout: 15s
+      interval: 5s
+    environment:
+      - "EMQX_NAME=emqx"
+      - "EMQX_HOST=node2.emqx.io"
+      - "EMQX_ALLOW_ANONYMOUS=false"
+      - "EMQX_ENABLE_ACL_CACHE=off"
+      - "EMQX_ACL_NOMATCH=deny"
+      - "EMQX_NODE__COOKIE=emqxsecretcookie"
+      - "EMQX_CLUSTER__DISCOVERY=static"
+      - "EMQX_CLUSTER__STATIC__SEEDS=emqx@node1.emqx.io, emqx@node2.emqx.io"
+      - "EMQX_LOADED_PLUGINS=emqx_management,emqx_recon,emqx_retainer,emqx_coap,emqx_sn"
+    networks:
+      ithings_net:
+        aliases:
+          - node2.emqx.io

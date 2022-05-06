@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceTemplate"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -20,8 +20,7 @@ type SendPropertyLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	pt       *mysql.ProductTemplate
-	template *deviceTemplate.Template
+	template *templateModel.Template
 }
 
 func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendPropertyLogic {
@@ -34,13 +33,9 @@ func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 
 func (l *SendPropertyLogic) initMsg(productID string) error {
 	var err error
-	l.pt, err = l.svcCtx.ProductTemplate.FindOne(productID)
+	l.template, err = l.svcCtx.TemplateRepo.GetTemplate(l.ctx, productID)
 	if err != nil {
-		return err
-	}
-	l.template, err = deviceTemplate.NewTemplate([]byte(l.pt.Template))
-	if err != nil {
-		return err
+		return errors.System.AddDetail(err.Error())
 	}
 	return nil
 }
@@ -55,24 +50,27 @@ func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendProper
 	err = json.Unmarshal([]byte(in.Data), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail(
-			"SendProperty|Data not right:", in.Data)
+			"SendProperty|data not right:", in.Data)
 	}
 	uuid, err := uuid.GenerateUUID()
 	if err != nil {
 		l.Errorf("SendProperty|GenerateUUID err:%v", err)
 		return nil, errors.System.AddDetail(err)
 	}
-	req := deviceTemplate.DeviceReq{
-		Method:      deviceTemplate.CONTROL,
+	req := deviceSend.DeviceReq{
+		Method:      deviceSend.CONTROL,
 		ClientToken: uuid,
 		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
 		Timestamp: time.Now().UnixMilli(),
 		Params:    param}
-	l.template.VerifyReqParam(req, deviceTemplate.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, templateModel.ACTION_INPUT)
+	if err != nil {
+		return nil, err
+	}
 	pubTopic := fmt.Sprintf("$thing/down/property/%s/%s", in.ProductID, in.DeviceName)
 	subTopic := fmt.Sprintf("$thing/up/property/%s/%s", in.ProductID, in.DeviceName)
 
-	resp, err := l.svcCtx.DevClient.DeviceReq(l.ctx, req, pubTopic, subTopic)
+	resp, err := l.svcCtx.InnerLink.ReqToDeviceSync(l.ctx, pubTopic, subTopic, &req, in.ProductID, in.DeviceName)
 	if err != nil {
 		return nil, err
 	}

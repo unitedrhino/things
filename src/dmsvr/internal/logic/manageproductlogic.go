@@ -5,12 +5,15 @@ import (
 	"database/sql"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/productDetail"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/spf13/cast"
 	"time"
-
-	"github.com/i-Things/things/src/dmsvr/dm"
-	"github.com/i-Things/things/src/dmsvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -52,14 +55,22 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 		return nil, errors.Duplicate.AddDetail("ProductName:" + in.Info.ProductName)
 	}
 	pi, pt := l.InsertProduct(in)
-	_, err = l.svcCtx.ProductInfo.Insert(pi)
+	t, _ := templateModel.NewTemplate([]byte(pt.Template))
+	if err := l.svcCtx.DeviceLogRepo.InitProduct(
+		l.ctx, pi.ProductID); err != nil {
+		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		return nil, errors.Database.AddDetail(err)
+	}
+	if err := l.svcCtx.DeviceDataRepo.InitProduct(
+		l.ctx, t, pi.ProductID); err != nil {
+		l.Errorf("%s|DeviceDataRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		return nil, errors.Database.AddDetail(err)
+	}
+	err = l.svcCtx.DmDB.Insert(pi, pt)
 	if err != nil {
-		l.Errorf("AddProduct|ProductInfo|Insert|err=%+v", err)
+		l.Errorf("AddProduct|Insert|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	//这里失败了没有关系,可以正常使用
-	l.svcCtx.ProductTemplate.Insert(pt)
-
 	return ToProductInfo(pi), nil
 }
 
@@ -71,12 +82,13 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql.Prod
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
 	createTime := time.Now()
 	pt := &mysql.ProductTemplate{
-		ProductID:   dm.GetStrProductID(ProductID),
+		Template:    templateModel.DefaultTemplate,
+		ProductID:   device.GetStrProductID(ProductID),
 		CreatedTime: createTime,
 	}
 	pi := &mysql.ProductInfo{
-		ProductID:   dm.GetStrProductID(ProductID), // 产品id
-		ProductName: info.ProductName,              // 产品名称
+		ProductID:   device.GetStrProductID(ProductID), // 产品id
+		ProductName: info.ProductName,                  // 产品名称
 		Description: info.Description.GetValue(),
 		DevStatus:   info.DevStatus.GetValue(),
 		CreatedTime: createTime,
@@ -84,32 +96,32 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql.Prod
 	if info.AutoRegister != def.UNKNOWN {
 		pi.AutoRegister = info.AutoRegister
 	} else {
-		pi.AutoRegister = dm.AUTO_REG_CLOSE
+		pi.AutoRegister = productDetail.AUTO_REG_CLOSE
 	}
 	if info.DataProto != def.UNKNOWN {
 		pi.DataProto = info.DataProto
 	} else {
-		pi.DataProto = dm.DATA_CUSTOM
+		pi.DataProto = productDetail.DATA_CUSTOM
 	}
 	if info.DeviceType != def.UNKNOWN {
 		pi.DeviceType = info.DeviceType
 	} else {
-		pi.DeviceType = dm.DEV_DEVICE
+		pi.DeviceType = productDetail.DEV_DEVICE
 	}
 	if info.NetType != def.UNKNOWN {
 		pi.NetType = info.NetType
 	} else {
-		pi.NetType = dm.NET_OTHER
+		pi.NetType = productDetail.NET_OTHER
 	}
 	if info.DeviceType != def.UNKNOWN {
 		pi.DeviceType = info.DeviceType
 	} else {
-		pi.DeviceType = dm.DEV_DEVICE
+		pi.DeviceType = productDetail.DEV_DEVICE
 	}
 	if info.AuthMode != def.UNKNOWN {
 		pi.AuthMode = info.AuthMode
 	} else {
-		pi.AuthMode = dm.AUTH_PWD
+		pi.AuthMode = productDetail.AUTH_PWD
 	}
 	return pi, pt
 }
@@ -193,22 +205,30 @@ func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.Product
 }
 
 func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
-	err := l.svcCtx.ProductInfo.Delete(in.Info.ProductID)
+	pt, err := l.svcCtx.TemplateRepo.GetTemplate(l.ctx, in.Info.ProductID)
 	if err != nil {
-		l.Errorf("DelProduct|ProductInfo|Delete|err=%+v", err)
+		return nil, errors.System.AddDetail(err.Error())
+	}
+	err = l.svcCtx.DeviceDataRepo.DropProduct(l.ctx, pt, in.Info.ProductID)
+	if err != nil {
+		l.Errorf("DelProduct|DropProduct|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	//todo 这里删除需要加上事务 及删除其下所有设备
-	err = l.svcCtx.ProductTemplate.Delete(in.Info.ProductID)
+	l.svcCtx.TemplateRepo.ClearCache(l.ctx, in.Info.ProductID)
+	err = l.svcCtx.DmDB.Delete(in.Info.ProductID)
 	if err != nil {
-		l.Errorf("DelProduct|ProductInfo|Delete|err=%+v", err)
+		l.Errorf("DelProduct|Delete|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
+	}
+	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &templateModel.TemplateInfo{ProductID: in.Info.ProductID})
+	if err != nil {
+		return nil, err
 	}
 	return &dm.ProductInfo{}, nil
 }
 
 func (l *ManageProductLogic) ManageProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
-	l.Infof("ManageProduct|opt=%d|req=%+v", in.Opt, in)
+	l.Infof("ManageProduct|opt=%d|info=%+v", in.Opt, in.Info)
 	switch in.Opt {
 	case def.OPT_ADD:
 		if in.Info == nil {
