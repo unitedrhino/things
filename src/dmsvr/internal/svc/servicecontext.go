@@ -1,65 +1,75 @@
 package svc
 
 import (
-	"context"
-	"github.com/i-Things/things/shared/db/mongodb"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/repo"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mongorepo"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/event/dataUpdate"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/third"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"os"
 )
 
 type ServiceContext struct {
-	Config          config.Config
-	DeviceInfo      mysql.DeviceInfoModel
-	ProductInfo     mysql.ProductInfoModel
-	ProductTemplate mysql.ProductTemplateModel
-	DeviceLog       mysql.DeviceLogModel
-	DmDB            mysql.DmModel
-	DeviceID        *utils.SnowFlake
-	ProductID       *utils.SnowFlake
-	DevClient       *third.DevClient
-	DeviceData      repo.GetDeviceDataRepo
+	Config         config.Config
+	DeviceInfo     mysql.DeviceInfoModel
+	ProductInfo    mysql.ProductInfoModel
+	DmDB           mysql.DmModel
+	DeviceID       *utils.SnowFlake
+	ProductID      *utils.SnowFlake
+	InnerLink      innerLink.InnerLink
+	DataUpdate     dataUpdate.DataUpdate
+	Store          kv.Store
+	DeviceDataRepo deviceData.DeviceDataRepo
+	DeviceLogRepo  device.LogRepo
+	TemplateRepo   templateModel.TemplateRepo
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource)
+	deviceLog := deviceLogRepo.NewDeviceLogRepo(c.TDengine.DataSource)
+
+	//TestTD(td)
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	di := mysql.NewDeviceInfoModel(conn, c.CacheRedis)
 	pi := mysql.NewProductInfoModel(conn, c.CacheRedis)
 	pt := mysql.NewProductTemplateModel(conn, c.CacheRedis)
-	dl := mysql.NewDeviceLogModel(conn)
-	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
-	DeviceID := utils.NewSnowFlake(c.NodeID)
-	ProductID := utils.NewSnowFlake(c.NodeID)
+	tr := mysql.NewTemplateRepo(pt)
 
-	devClient := third.NewDevClient(c.DevClient)
-	//if token := mc.Connect(); token.Wait() && token.Error() != nil {
-	//	panic(fmt.Sprintf("mqtt client connect err:%s",token.Error()))
-	//}
-	//token := mc.Publish("21CYs1k9YpG/test8/54598", 0, false, clientID+" send msg")
-	//token.Wait()
-	//time.Sleep(time.Hour)
-	mongoDB, err := mongodb.NewMongo(c.Mongo.Url, c.Mongo.Database, context.TODO())
+	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
+	store := kv.NewStore(c.CacheRedis)
+	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
+	DeviceID := utils.NewSnowFlake(nodeId)
+	ProductID := utils.NewSnowFlake(nodeId)
+	il, err := innerLink.NewInnerLink(c.InnerLink)
 	if err != nil {
-		logx.Error(err)
+		logx.Error("NewInnerLink err", err)
 		os.Exit(-1)
 	}
-	dd := mongorepo.NewDeviceDataRepo(mongoDB)
+	du, err := dataUpdate.NewDataUpdate(c.InnerLink)
+	if err != nil {
+		logx.Error("NewDataUpdate err", err)
+		os.Exit(-1)
+	}
 	return &ServiceContext{
-		Config:          c,
-		DeviceInfo:      di,
-		ProductInfo:     pi,
-		ProductTemplate: pt,
-		DmDB:            DmDB,
-		DeviceID:        DeviceID,
-		ProductID:       ProductID,
-		DeviceLog:       dl,
-		DevClient:       devClient,
-		DeviceData:      dd,
+		Config:         c,
+		DeviceInfo:     di,
+		ProductInfo:    pi,
+		TemplateRepo:   tr,
+		DmDB:           DmDB,
+		DeviceID:       DeviceID,
+		ProductID:      ProductID,
+		InnerLink:      il,
+		DataUpdate:     du,
+		Store:          store,
+		DeviceDataRepo: deviceData,
+		DeviceLogRepo:  deviceLog,
 	}
 }

@@ -1,0 +1,22 @@
+FROM golang:alpine3.9
+ENV GO111MODULE=on \
+    CGO_ENABLED=1 \
+    GOPROXY="https://goproxy.cn,direct"
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk add build-base
+RUN apk --no-cache add ca-certificates
+ADD . /usersvr/
+WORKDIR /usersvr/
+RUN make
+
+FROM golang:alpine3.9
+LABEL name="usersvr"
+LABEL author="wwhai"
+LABEL email="cnwwhai@gmail.com"
+LABEL homepage="https://github.com/i4de/usersvr"
+COPY --from=0 /usersvr/ /usersvr/
+WORKDIR /usersvr/
+
+EXPOSE 2580
+
+ENTRYPOINT ["./usersvr"]

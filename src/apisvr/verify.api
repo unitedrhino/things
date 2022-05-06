@@ -1,0 +1,28 @@
+info(
+	title: "校验模块"
+	desc: "负责短信验证码,图形验证码等的校验"
+	author: "杨磊"
+	email: "603685348@qq.com"
+	version: "v1"
+)
+
+type GetCaptchaReq {
+	Data string `json:"data,optional"`              //短信验证时填写手机号
+	Type string `json:"type,options=sms|image"`     //验证方式:短信验证,图片验证码
+	Use  string `json:"use,options=login|register"` //用途
+}
+
+type GetCaptchaResp {
+	CodeID string `json:"codeID"`       //验证码编号
+	Url    string `json:"url,optional"` //图片验证码url
+	Expire int64  `json:"expire"`       //过期时间
+}
+
+@server (
+	group :front/verify
+	prefix: front/verify
+)
+service api {
+    @handler captcha
+    post /captcha (GetCaptchaReq) returns (GetCaptchaResp)
+}
