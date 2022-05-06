@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
@@ -63,18 +64,26 @@ func (l *ManageDeviceLogic) CheckProduct(in *dm.ManageDeviceReq) (bool, error) {
 func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
 	find, err := l.CheckDevice(in)
 	if err != nil {
-		return nil, errors.System.AddDetail(err.Error())
+		l.Errorf("AddDevice|CheckDevice|in=%v\n", in)
+		return nil, errors.Database.AddDetail(err.Error())
 	} else if find == true {
 		return nil, errors.Duplicate.AddDetail("DeviceName:" + in.Info.DeviceName)
 	}
-	l.Infof("find=%v|err=%v\n", find, err)
 	find, err = l.CheckProduct(in)
 	if err != nil {
-		return nil, errors.System.AddDetail(err.Error())
+		l.Errorf("AddDevice|CheckProduct|in=%v\n", in)
+		return nil, errors.Database.AddDetail(err.Error())
 	} else if find == false {
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.Info.ProductID))
 	}
-
+	pt, err := l.svcCtx.TemplateRepo.GetTemplate(l.ctx, in.Info.ProductID)
+	if err != nil {
+		return nil, errors.System.AddDetail(err.Error())
+	}
+	err = l.svcCtx.DeviceDataRepo.InitDevice(l.ctx, pt, in.Info.ProductID, in.Info.DeviceName)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err.Error())
+	}
 	di := mysql.DeviceInfo{
 		ProductID:   in.Info.ProductID,  // 产品id
 		DeviceName:  in.Info.DeviceName, // 设备名称
@@ -83,7 +92,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		CreatedTime: time.Now(),
 	}
 	if in.Info.LogLevel != def.UNKNOWN {
-		di.LogLevel = dm.LOG_CLOSE
+		di.LogLevel = device.LOG_CLOSE
 	}
 	_, err = l.svcCtx.DeviceInfo.Insert(&di)
 	if err != nil {
@@ -140,6 +149,17 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		l.Errorf("DelDevice|DeviceInfo|FindOne|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
+	{ //删除时序数据库中的表数据
+		template, err := l.svcCtx.TemplateRepo.GetTemplate(l.ctx, in.Info.ProductID)
+		if err != nil {
+			return nil, errors.System.AddDetail(err.Error())
+		}
+		err = l.svcCtx.DeviceDataRepo.DropDevice(l.ctx, template, in.Info.ProductID, in.Info.DeviceName)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	err = l.svcCtx.DeviceInfo.Delete(di.Id)
 	if err != nil {
 		l.Errorf("DelDevice|DeviceInfo|Delete|err=%+v", err)

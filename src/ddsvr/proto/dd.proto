@@ -1,0 +1,11 @@
+syntax = "proto3";
+option go_package = "pb/dd";
+
+package dd;
+
+service Dd {
+  //ping pong 测试
+  rpc ping(Empty) returns (Empty);
+}
+
+message Empty{}

@@ -1,26 +1,18 @@
-# 物联网云平台go-things
+# 物联网云平台ithings
 
-#### 介绍
+## 介绍
 
-依照腾讯云物联网平台打造,无缝迁移,基于go-zero框架,目前支持mqtt协议,支持数据模板检验,日志记录,数据流转,实时数据反馈,低代码数据流转,用户及设备互联互通.使用了kafka,redis,mysql,MongoDB,etcd开源框架.
-> 物联网云平台地址
-> * gitee地址:[https://gitee.com/i-Things/things](https://gitee.com/i-Things/things)
-> * github地址:[https://github.com/i-Things/things](https://github.com/i-Things/things)
 
-> 物联网后台前后端
-> * gitee地址:[https://gitee.com/i-Things/things-admin](https://gitee.com/i-Things/things-admin)
-> * github地址:[https://github.com/i-Things/things-admin](https://github.com/i-Things/things-admin)
-
-我的微信:17052709767  
-欢迎大家的加入  
-things官网:[https://go-things.github.io](https://go-things.github.io)
-
-![微信二维码](https://gitee.com/i-Things/things/raw/master/doc/assets/%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
-
-#### 软件架构
-
-软件架构说明  
-![go-things架构图.jpg](https://gitee.com/i-Things/things/raw/master/doc/assets/go-things%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
+iThings是一个基于golang开发的轻量级云原生微服务物联网平台.  
+  
+定位于:
+* 云原生高性能 -- 使用golang编写,使用gozero微服务框架高性能的同时保证服务的稳定性
+* 易拓展 -- 原生支持微服务部署,避免只支持集群模式后期难以拓展的尴尬
+* 易部署 -- 一键安装所有依赖,一键运行iThings
+* 
+## 架构
+下图是 iThings 平台的整体架构:
+<img src="./doc/assets/ithings架构图.png">
 
 #### 目录说明
 
@@ -28,28 +20,52 @@ things官网:[https://go-things.github.io](https://go-things.github.io)
 - shared:所有该项目及其他项目所公用的代码都放在这里
 - src:存放了所有服务的源码
 
-#### 文档
-介绍及说明文档:[https://go-things.github.io](https://go-things.github.io)  
+
+## 特征
+
+### 已完成
+1. 物模型的管理及校验初始化
+2. 物模型数据属性,事件及行为的持久化
+3. 物模型数据展示
+4. 设备操作日志记录
+5. 产品管理
+6. 设备管理及认证
+7. 设备消息回复及处理
+### 待实现
+1. 固件升级
+2. 规则引擎
+3. 网关型设备接入
+4. websocket
+5. 单机模式
+6. 低代码
 
 
-#### 安装教程
-##### 环境依赖安装
-在go-things中依赖mongodb,mysql,redis,etcd,kafka,zookeeper
-* 在初始目录中提供了docker-compose文件,如果安装好了docker及docker-compose可以直接
-docker-compose up 即可更新
-* 如果都没有安装则sudo ./init.sh即会安装docker及docker-compose及第三方依赖
-* 然后将db中的sql导入mysql中即可
-
-##### 服务运行
+## 安装
+### 依赖安装
+在ithings中依赖tdengine,mysql,redis,etcd,nats,emqx
+* sudo ./init.sh即会安装docker及docker-compose及第三方依赖及初始化数据库脚本(一定是root权限,不然可能会有问题)
+* 然后 ./run.sh 即可运行iThings所有服务
+### 服务运行
 1. 进入src目录进入对应的服务
 2. 修改etc目录下的配置文件将对应的依赖改为本地的ip地址
 3. 直接go build即可享受
 
-#### 参与贡献
+## 文档
+
+- 开发文档: [https://ithings.pages.dev/](https://ithings.pages.dev/)
+- 用户文档: [https://ithings.pages.dev/](https://ithings.pages.dev/)
+
+
+## 贡献
 
 1.  Fork 本仓库
 2.  新建 Feat_xxx 分支
 3.  提交代码
 4.  新建 Pull Request
 
+## 社区
+- 微信: `godLei6` (需备注“来自github”)
+- 官网:[https://ithings.pages.dev/](https://ithings.pages.dev/)
 
+## 收藏
+<img src="https://starchart.cc/i4de/ithings.svg">
