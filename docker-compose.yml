@@ -6,7 +6,6 @@ networks:
       config:
         - subnet: 192.168.1.0/24
     driver: bridge
-
 services:
   nats-server:
     image: nats:latest
@@ -20,7 +19,6 @@ services:
       ithings_net:
         aliases:
           - node1.nats.io
-
   etcd:
     image: quay.io/coreos/etcd:v3.3.12
     container_name: etcd-v3
@@ -53,7 +51,6 @@ services:
       ithings_net:
         aliases:
           - node1.etcd.io
-
   mysql-db:
     container_name: mysql-docker        # 指定容器的名称
     image: mysql:5.7              # 指定镜像和版本
@@ -71,18 +68,6 @@ services:
       ithings_net:
         aliases:
           - node1.mysql.io
-
-  mongo:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
-    ports:
-      - 27017:27017
-    # 数据持久化
-    volumes:
-      - /var/mongo:/data/db
   redis:
     hostname: redis
     image: redis
@@ -107,10 +92,10 @@ services:
     container_name: tdengine
     hostname: tdengine
     ports:
-      - 6030:6030
-      - 6035:6035
-      - 6041:6041
-      - 6030-6040:6030-6040/udp
+      - "6030:6030"
+      - "6035:6035"
+      - "6041:6041"
+      - "6030-6040:6030-6040/udp"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -124,60 +109,24 @@ services:
           - node1.tdengine.io
 
   # Emqx
-  emqx1:
-    container_name: ithings_emqx1
-    image:  18059150204/light-emqx
+  emqx:
+    container_name: emqx
+    image:  emqx/emqx
     hostname: node1.emqx.io
     restart: always
     ports:
-      - 1801:1883
-      - 18001:18083
-      - 18081:8080
-      - 18881:8081
-    healthcheck:
-      test: emqx ping
-      timeout: 15s
-      interval: 5s
+      - "1883:1883"
+      - "8083:8083"
+      - "8883:8883"
+      - "8084:8084"
+      - "18083:18083"
+    volumes:
+      - "/opt/things/conf/emqx/etc/plugins/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf"
+      - "/opt/things/conf/emqx/data/loaded_plugins:/opt/emqx/data/loaded_plugins"
     environment:
       - "EMQX_NAME=emqx"
       - "EMQX_HOST=node1.emqx.io"
-      - "EMQX_ALLOW_ANONYMOUS=false"
-      - "EMQX_NODE__COOKIE=emqxsecretcookie"
-      - "EMQX_ENABLE_ACL_CACHE=off"
-      - "EMQX_ACL_NOMATCH=deny"
-      - "EMQX_CLUSTER__DISCOVERY=static"
-      - "EMQX_CLUSTER__STATIC__SEEDS=emqx@node1.emqx.io, emqx@node2.emqx.io"
-      - "EMQX_LOADED_PLUGINS=emqx_management,emqx_recon,emqx_retainer,emqx_coap,emqx_sn"
     networks:
       ithings_net:
         aliases:
           - node1.emqx.io
-
-  emqx2:
-    container_name: ithings_emqx2
-    image:  18059150204/light-emqx
-    hostname: node2.emqx.io
-    restart: always
-    ports:
-      - 1802:1883
-      - 18002:18083
-      - 18082:8080
-      - 18882:8081
-    healthcheck:
-      test: emqx ping
-      timeout: 15s
-      interval: 5s
-    environment:
-      - "EMQX_NAME=emqx"
-      - "EMQX_HOST=node2.emqx.io"
-      - "EMQX_ALLOW_ANONYMOUS=false"
-      - "EMQX_ENABLE_ACL_CACHE=off"
-      - "EMQX_ACL_NOMATCH=deny"
-      - "EMQX_NODE__COOKIE=emqxsecretcookie"
-      - "EMQX_CLUSTER__DISCOVERY=static"
-      - "EMQX_CLUSTER__STATIC__SEEDS=emqx@node1.emqx.io, emqx@node2.emqx.io"
-      - "EMQX_LOADED_PLUGINS=emqx_management,emqx_recon,emqx_retainer,emqx_coap,emqx_sn"
-    networks:
-      ithings_net:
-        aliases:
-          - node2.emqx.io
