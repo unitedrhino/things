@@ -26,7 +26,7 @@ function init_conf_path(){
     mkdir -p "$confPath"
   fi
   #将docker映射的所在工程内的配置拷贝到物理机目标位置
-  cp -rf ./deploy/* confPath
+  cp -rf ./deploy/* $confPath
 }
 
 function init_mysql_db_table(){
