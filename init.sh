@@ -57,3 +57,5 @@ echo "start docker compose "
 docker-compose up -d
 sleep 10 #这里必须等待足够长时间，等容器中mysql正常启动才能执行后续导入脚本命令
 init_mysql_db_table
+# 初始化tdengine的表
+curl -u root:taosdata -d 'create database if not exists test;' 127.0.0.1:6041/rest/sql
