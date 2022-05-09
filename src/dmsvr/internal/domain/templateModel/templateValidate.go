@@ -131,13 +131,13 @@ func IDValidate(id string) error {
 }
 
 func NameValidate(name string) error {
-	if len(name) > NameLen {
+	if len([]rune(name)) > NameLen {
 		return errors.Parameter.WithMsgf("名称支持中文、英文、数字、下划线的组合，最多不超过%v个字符,名称:%v", NameLen, name)
 	}
 	return nil
 }
 func DescValidate(desc string) error {
-	if len(desc) > DescLen {
+	if len([]rune(desc)) > DescLen {
 		return errors.Parameter.WithMsgf("描述最多不超过%v个字符,描述:%v", DescLen, desc)
 	}
 	return nil
