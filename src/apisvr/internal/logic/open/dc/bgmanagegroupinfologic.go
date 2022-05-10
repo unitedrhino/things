@@ -38,6 +38,4 @@ func (l *BgManageGroupInfoLogic) BgManageGroupInfo(req types.ManageGroupInfoReq)
 		return nil, er
 	}
 	return assemble.GrouInfoToApi(resp), nil
-
-	return &types.GroupInfo{}, nil
 }
