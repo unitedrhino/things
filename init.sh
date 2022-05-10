@@ -43,10 +43,11 @@ function init_mysql_db_table(){
    else
        echo "not install mysql, please make sure docker mysql is running"
        sleep 2
+       continue
    fi
   done
 }
-sudo ./getip.sh
+sudo ./deploy/shell/getip.sh
 init_conf_path
 type docker >/dev/null 2>&1 || init_docker;
 type docker-compose >/dev/null 2>&1 || init_docker_compose;
