@@ -96,7 +96,7 @@ type (
 	Property struct {
 		ID       string `json:"id"`       //标识符
 		Name     string `json:"name"`     //功能名称
-		Desc     string `json:"gesc"`     //描述
+		Desc     string `json:"desc"`     //描述
 		Mode     string `json:"mode"`     //读写类型:rw(可读可写) r(只读)
 		Define   Define `json:"define"`   //数据定义
 		Required bool   `json:"required"` //是否必须
