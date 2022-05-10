@@ -36,8 +36,8 @@ ipad() {
   echo "IP地址是：`cat $e.txt`"
   ip=$(cat $e.txt)
   #echo "ip: $ip"
-  #replace the ip 
-  sed -i "s#GedatamgrInterfaceService_PacketGroupId_Handler#$ip#g" ip2.txt
+  #replace all of the ip 127.0.0.1 in the file emqx_auth_http.conf to the real ip of service
+  sed -i "s#127.0.0.1#$ip#g" deploy/emqx/etc/plugins/emqx_auth_http.conf
   fi
 }
 ipad $e
