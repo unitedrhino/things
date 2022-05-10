@@ -38,6 +38,4 @@ func (l *BgManageGroupMemberLogic) BgManageGroupMember(req types.ManageGroupMemb
 		return nil, er
 	}
 	return assemble.GroupMemberToApi(resp), nil
-
-	return &types.GroupMember{}, nil
 }
