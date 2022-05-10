@@ -46,6 +46,7 @@ function init_mysql_db_table(){
    fi
   done
 }
+sudo ./getip.sh
 init_conf_path
 type docker >/dev/null 2>&1 || init_docker;
 type docker-compose >/dev/null 2>&1 || init_docker_compose;
