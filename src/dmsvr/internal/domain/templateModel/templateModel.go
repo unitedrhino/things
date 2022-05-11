@@ -113,6 +113,6 @@ type (
 		Unit      string            `json:"unit,omitempty"`      //单位:int float
 		Specs     Specs             `json:"specs,omitempty"`     //结构体:struct
 		ArrayInfo *Define           `json:"arrayInfo,omitempty"` //数组:array
-		Spec      map[string]*Spec  //内部使用,使用map加速匹配,key为id
+		Spec      map[string]*Spec  `json:"-"`                   //内部使用,使用map加速匹配,key为id
 	}
 )
