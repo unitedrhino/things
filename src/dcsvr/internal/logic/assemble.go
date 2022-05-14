@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/i-Things/things/src/dcsvr/dc"
-	"github.com/i-Things/things/src/dcsvr/model"
+	"github.com/i-Things/things/src/dcsvr/internal/repo/mysql"
 )
 
 func GetNullTime(time sql.NullTime) int64 {
@@ -16,16 +16,16 @@ func GetNullTime(time sql.NullTime) int64 {
 
 func DBToRPCFmt(db interface{}) interface{} {
 	switch db.(type) {
-	case *model.GroupInfo:
-		di := db.(*model.GroupInfo)
+	case *mysql.GroupInfo:
+		di := db.(*mysql.GroupInfo)
 		return &dc.GroupInfo{
 			GroupID:     di.GroupID,
 			Name:        di.Name,
 			Uid:         di.Uid,
 			CreatedTime: di.CreatedTime.Unix(),
 		}
-	case *model.GroupMember:
-		pi := db.(*model.GroupMember)
+	case *mysql.GroupMember:
+		pi := db.(*mysql.GroupMember)
 		dpi := &dc.GroupMember{
 			GroupID:     pi.GroupID,            //产品名
 			MemberID:    pi.MemberID,           //认证方式:0:账密认证,1:秘钥认证

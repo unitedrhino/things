@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/usersvr/internal/svc"
-	"github.com/i-Things/things/src/usersvr/model"
 	"github.com/i-Things/things/src/usersvr/user"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,7 +29,7 @@ func (l *GetUserCoreLogic) GetUserCore(in *user.GetUserCoreReq) (*user.GetUserCo
 	switch err {
 	case nil:
 		return &user.GetUserCoreResp{Info: UserCoreToPb(uc)}, nil
-	case model.ErrNotFound:
+	case mysql.ErrNotFound:
 		return nil, errors.UidNotRight
 	default:
 		l.Errorf("GetUserCore|req=%#v|err=%+v", in, err)
