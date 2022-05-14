@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dcsvr/model"
+	"github.com/i-Things/things/src/dcsvr/internal/repo/mysql"
 	"time"
 
 	"github.com/i-Things/things/src/dcsvr/dc"
@@ -35,7 +35,7 @@ func NewManageGroupMemberLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 func (l *ManageGroupMemberLogic) CheckGroup(in *dc.ManageGroupMemberReq) (bool, error) {
 	_, err := l.svcCtx.GroupInfo.FindOne(in.Info.GroupID)
 	switch err {
-	case model.ErrNotFound:
+	case mysql.ErrNotFound:
 		return false, nil
 	case nil:
 		return true, nil
@@ -51,7 +51,7 @@ func (l *ManageGroupMemberLogic) CheckGroupMember(in *dc.ManageGroupMemberReq) (
 	_, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberIDMemberType(
 		in.Info.GroupID, in.Info.MemberID, in.Info.MemberType)
 	switch err {
-	case model.ErrNotFound:
+	case mysql.ErrNotFound:
 		return false, nil
 	case nil:
 		return true, nil
@@ -78,7 +78,7 @@ func (l *ManageGroupMemberLogic) AddGroupMember(in *dc.ManageGroupMemberReq) (*d
 			in.Info.GroupID, in.Info.MemberID, in.Info.MemberType)
 	}
 
-	di := model.GroupMember{
+	di := mysql.GroupMember{
 		GroupID:     in.Info.GroupID,    // 组id
 		MemberID:    in.Info.MemberID,   // 成员id
 		MemberType:  in.Info.MemberType, // 成员类型:1:设备 2:用户
@@ -100,7 +100,7 @@ func (l *ManageGroupMemberLogic) DelGroupMember(in *dc.ManageGroupMemberReq) (*d
 	di, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberIDMemberType(
 		in.Info.GroupID, in.Info.MemberID, in.Info.MemberType)
 	if err != nil {
-		if err == model.ErrNotFound {
+		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail(
 				fmt.Sprintf("not find GroupMember|GroupID=%v|MemberID=%sMemberType=%d",
 					in.Info.GroupID, in.Info.MemberID, in.Info.MemberType))
