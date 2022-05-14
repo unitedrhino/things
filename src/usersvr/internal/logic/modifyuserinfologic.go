@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/usersvr/model"
+	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 
 	"github.com/i-Things/things/src/usersvr/internal/svc"
@@ -16,7 +16,7 @@ type ModifyUserInfoLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	ui *model.UserInfo
+	ui *mysql.UserInfo
 }
 
 func NewModifyUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ModifyUserInfoLogic {

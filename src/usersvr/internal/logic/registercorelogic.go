@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/usersvr/model"
+	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 	"time"
 
 	"github.com/i-Things/things/src/usersvr/internal/svc"
@@ -29,7 +29,7 @@ func NewRegisterCoreLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Regi
 	}
 }
 
-func (l *RegisterCoreLogic) getRet(uc *model.UserCore) (*user.RegisterCoreResp, error) {
+func (l *RegisterCoreLogic) getRet(uc *mysql.UserCore) (*user.RegisterCoreResp, error) {
 	l.Infof("register_core|register one success|user_core=%#v", uc)
 	return &user.RegisterCoreResp{
 		Uid: uc.Uid,
@@ -52,15 +52,15 @@ func (l *RegisterCoreLogic) handlePhone(in *user.RegisterCoreReq) (*user.Registe
 			return l.getRet(uc)
 		}
 		return nil, errors.DuplicateMobile.AddDetail(in.Note)
-	case model.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
-		uc := model.UserCore{
+	case mysql.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
+		uc := mysql.UserCore{
 			Uid:         l.svcCtx.UserID.GetSnowflakeId(),
 			Phone:       in.Note,
 			CreatedTime: sql.NullTime{Valid: true, Time: time.Now()},
 		}
-		_, err := l.svcCtx.UserModel.RegisterCore(uc, model.Keys{Key: "phone", Value: uc.Phone})
+		_, err := l.svcCtx.UserModel.RegisterCore(uc, mysql.Keys{Key: "phone", Value: uc.Phone})
 		if err != nil { //并发情况下有可能重复所以需要再次判断一次
-			if err == model.ErrDuplicate {
+			if err == mysql.ErrDuplicate {
 				return nil, errors.DuplicateMobile.AddDetail(in.Note)
 			}
 			l.Errorf("handlePhone|Inserts|err=%#v", err)
@@ -94,15 +94,15 @@ func (l *RegisterCoreLogic) handleWxminip(in *user.RegisterCoreReq) (*user.Regis
 			return l.getRet(uc)
 		}
 		return nil, errors.DuplicateRegister
-	case model.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
-		uc := model.UserCore{
+	case mysql.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
+		uc := mysql.UserCore{
 			Uid:         l.svcCtx.UserID.GetSnowflakeId(),
 			Wechat:      ret.UnionID,
 			CreatedTime: sql.NullTime{Valid: true, Time: time.Now()},
 		}
-		_, err := l.svcCtx.UserModel.RegisterCore(uc, model.Keys{Key: "wechat", Value: uc.Wechat})
+		_, err := l.svcCtx.UserModel.RegisterCore(uc, mysql.Keys{Key: "wechat", Value: uc.Wechat})
 		if err != nil {
-			if err == model.ErrDuplicate {
+			if err == mysql.ErrDuplicate {
 				return nil, errors.DuplicateRegister.AddDetail(in.Note)
 			}
 			l.Errorf("handlePhone|Inserts|err=%#v", err)

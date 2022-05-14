@@ -5,8 +5,8 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/usersvr/internal/svc"
-	"github.com/i-Things/things/src/usersvr/model"
 	"github.com/i-Things/things/src/usersvr/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -26,7 +26,7 @@ func NewRegister2Logic(ctx context.Context, svcCtx *svc.ServiceContext) *Registe
 	}
 }
 
-func (l *Register2Logic) register(in *user.Register2Req, uc *model.UserCore) (*user.Register2Resp, error) {
+func (l *Register2Logic) register(in *user.Register2Req, uc *mysql.UserCore) (*user.Register2Resp, error) {
 	userInfo := UserInfoToDb(in.Info)
 	err := l.svcCtx.UserInfoModel.InsertOrUpdate(*userInfo)
 	if err != nil {
@@ -44,10 +44,10 @@ func (l *Register2Logic) register(in *user.Register2Req, uc *model.UserCore) (*u
 	return &user.Register2Resp{}, nil
 }
 
-func (l *Register2Logic) CheckUserCore(in *user.Register2Req) (*model.UserCore, error) {
+func (l *Register2Logic) CheckUserCore(in *user.Register2Req) (*mysql.UserCore, error) {
 	uc, err := l.svcCtx.UserCoreModel.FindOne(in.Info.Uid)
 	switch err {
-	case model.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
+	case mysql.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
 		return nil, errors.RegisterOne
 	case nil: //如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
 		if uc.Status != def.NotRegistStatus {
@@ -73,7 +73,7 @@ func (l *Register2Logic) CheckUserName(in *user.Register2Req) error {
 	switch err {
 	case nil:
 		return errors.DuplicateUsername
-	case model.ErrNotFound:
+	case mysql.ErrNotFound:
 		break
 	default:
 		return errors.Database.AddDetail(err.Error())

@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/i-Things/things/src/dcsvr/dc"
 	"github.com/i-Things/things/src/dcsvr/internal/config"
 	"github.com/i-Things/things/src/dcsvr/internal/server"
 	"github.com/i-Things/things/src/dcsvr/internal/svc"
+	"github.com/i-Things/things/src/dcsvr/pb/dc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/zrpc"
