@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dcsvr/model"
+	"github.com/i-Things/things/src/dcsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
 
@@ -31,7 +31,7 @@ func NewManageGroupInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *M
 func (l *ManageGroupInfoLogic) AddGroupInfo(in *dc.ManageGroupInfoReq) (*dc.GroupInfo, error) {
 	info := in.Info
 	GroupID := l.svcCtx.GroupID.GetSnowflakeId()
-	gi := &model.GroupInfo{
+	gi := &mysql.GroupInfo{
 		GroupID:     GroupID,   // 组id
 		Name:        info.Name, // 组名
 		Uid:         info.Uid,  // 管理员用户id
@@ -48,7 +48,7 @@ func (l *ManageGroupInfoLogic) AddGroupInfo(in *dc.ManageGroupInfoReq) (*dc.Grou
 func (l *ManageGroupInfoLogic) ModifyGroupInfo(in *dc.ManageGroupInfoReq) (*dc.GroupInfo, error) {
 	gi, err := l.svcCtx.GroupInfo.FindOne(in.Info.GroupID)
 	if err != nil {
-		if err == model.ErrNotFound {
+		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find GroupID id:" + cast.ToString(in.Info.GroupID))
 		}
 		return nil, errors.System.AddDetail(err.Error())

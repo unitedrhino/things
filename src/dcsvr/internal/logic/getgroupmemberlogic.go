@@ -5,9 +5,8 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dcsvr/dc"
+	"github.com/i-Things/things/src/dcsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dcsvr/internal/svc"
-	"github.com/i-Things/things/src/dcsvr/model"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -33,7 +32,7 @@ func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc
 	if (in.Page == nil || in.Page.Page == 0) && (in.GroupID == 0 && in.MemberID == "") {
 		di, err := l.svcCtx.GroupMember.FindOneByGroupIDMemberIDMemberType(in.GroupID, in.MemberID, in.MemberType)
 		if err != nil {
-			if err == model.ErrNotFound {
+			if err == mysql.ErrNotFound {
 				return nil, errors.NotFind
 			}
 			return nil, err
@@ -42,7 +41,7 @@ func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc
 	} else {
 		var page int64 = 1
 		var pageSize int64 = 20
-		var di []*model.GroupMember
+		var di []*mysql.GroupMember
 		if !(in.Page == nil || in.Page.Page == 0 || in.Page.PageSize == 0) {
 			page = in.Page.Page
 			pageSize = in.Page.PageSize

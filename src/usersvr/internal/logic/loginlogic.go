@@ -5,8 +5,8 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/usersvr/internal/svc"
-	"github.com/i-Things/things/src/usersvr/model"
 	"github.com/i-Things/things/src/usersvr/user"
 	"time"
 
@@ -27,7 +27,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 	}
 }
 
-func (l *LoginLogic) getRet(uc *model.UserCore) (*user.LoginResp, error) {
+func (l *LoginLogic) getRet(uc *mysql.UserCore) (*user.LoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	jwtToken, err := utils.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid)
@@ -64,7 +64,7 @@ func (l *LoginLogic) getRet(uc *model.UserCore) (*user.LoginResp, error) {
 	return resp, nil
 }
 
-func (l *LoginLogic) GetUserCore(in *user.LoginReq) (uc *model.UserCore, err error) {
+func (l *LoginLogic) GetUserCore(in *user.LoginReq) (uc *mysql.UserCore, err error) {
 	switch in.LoginType {
 	case "sms": //暂时不验证
 		uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(in.UserID)
@@ -107,7 +107,7 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 			return nil, errors.UnRegister
 		}
 		return l.getRet(uc)
-	case model.ErrNotFound:
+	case mysql.ErrNotFound:
 		return nil, errors.UnRegister
 	default:
 		l.Errorf("GetUserCore|req=%#v|err=%+v", in, err)

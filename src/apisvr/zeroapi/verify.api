@@ -5,6 +5,7 @@ info(
 	email: "603685348@qq.com"
 	version: "v1"
 )
+import "common.api"  //公共结构体定义
 
 type GetCaptchaReq {
 	Data string `json:"data,optional"`              //短信验证时填写手机号

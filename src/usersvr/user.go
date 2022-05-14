@@ -9,7 +9,7 @@ import (
 	"github.com/i-Things/things/src/usersvr/internal/config"
 	"github.com/i-Things/things/src/usersvr/internal/server"
 	"github.com/i-Things/things/src/usersvr/internal/svc"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/zrpc"
