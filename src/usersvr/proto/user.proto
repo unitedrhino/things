@@ -1,4 +1,6 @@
 syntax = "proto3";
+option go_package = "pb/user";
+
 package user;
 
 

@@ -3,7 +3,7 @@ package logic
 import (
 	"database/sql"
 	"github.com/i-Things/things/shared/utils/cast"
-	"github.com/i-Things/things/src/usersvr/model"
+	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/usersvr/user"
 	"time"
 )
@@ -11,7 +11,7 @@ import (
 func UserCoreToDb() {
 
 }
-func UserCoreToPb(core *model.UserCore) *user.UserCore {
+func UserCoreToPb(core *mysql.UserCore) *user.UserCore {
 	return &user.UserCore{
 		Uid:         core.Uid,
 		UserName:    core.UserName,
@@ -26,7 +26,7 @@ func UserCoreToPb(core *model.UserCore) *user.UserCore {
 	}
 }
 
-func UserInfoToPb(ui *model.UserInfo) *user.UserInfo {
+func UserInfoToPb(ui *mysql.UserInfo) *user.UserInfo {
 	return &user.UserInfo{
 		Uid:        ui.Uid,
 		UserName:   ui.UserName,
@@ -43,8 +43,8 @@ func UserInfoToPb(ui *model.UserInfo) *user.UserInfo {
 	}
 }
 
-func UserInfoToDb(ui *user.UserInfo) *model.UserInfo {
-	return &model.UserInfo{
+func UserInfoToDb(ui *user.UserInfo) *mysql.UserInfo {
+	return &mysql.UserInfo{
 		Uid:         ui.Uid,
 		UserName:    ui.UserName,
 		NickName:    ui.NickName,
