@@ -6,13 +6,14 @@ package server
 import (
 	"context"
 
-	"github.com/i-Things/things/src/dcsvr/dc"
 	"github.com/i-Things/things/src/dcsvr/internal/logic"
 	"github.com/i-Things/things/src/dcsvr/internal/svc"
+	"github.com/i-Things/things/src/dcsvr/pb/dc"
 )
 
 type DcServer struct {
 	svcCtx *svc.ServiceContext
+	dc.UnimplementedDcServer
 }
 
 func NewDcServer(svcCtx *svc.ServiceContext) *DcServer {
