@@ -209,9 +209,14 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInf
 	if err != nil {
 		return nil, errors.System.AddDetail(err.Error())
 	}
+	err = l.svcCtx.DeviceLogRepo.DropProduct(l.ctx, in.Info.ProductID)
+	if err != nil {
+		l.Errorf("DelProduct|DeviceLogRepo|DropProduct|err=%+v", err)
+		return nil, errors.Database.AddDetail(err.Error())
+	}
 	err = l.svcCtx.DeviceDataRepo.DropProduct(l.ctx, pt, in.Info.ProductID)
 	if err != nil {
-		l.Errorf("DelProduct|DropProduct|err=%+v", err)
+		l.Errorf("DelProduct|DeviceDataRepo|DropProduct|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
 	l.svcCtx.TemplateRepo.ClearCache(l.ctx, in.Info.ProductID)
