@@ -5,14 +5,15 @@ echo "well come to go-things,we need init docker with docker-compose first"
 
 function init_docker(){
  echo "init docker"
+ mkdir -p /etc/docker
  cp -rf $confPath/docker/* /etc/docker/
  curl -sSL https://get.daocloud.io/docker | sh
  sudo systemctl start docker
  docker run hello-world
 }
 
-function inin_curl() {
-  echo "init docker"
+function init_curl() {
+  echo "init curl"
   apt  install curl
 }
 
@@ -52,9 +53,10 @@ function init_mysql_db_table(){
    fi
   done
 }
-sudo ./deploy/shell/getip.sh
 init_conf_path
-type curl >/dev/null 2>&1 || inin_curl;
+chmod 751 ./deploy/shell/getip.sh
+sudo ./deploy/shell/getip.sh
+type curl >/dev/null 2>&1 || init_curl;
 type docker >/dev/null 2>&1 || init_docker;
 type docker-compose >/dev/null 2>&1 || init_docker_compose;
 echo "docker with docker-compose init success"

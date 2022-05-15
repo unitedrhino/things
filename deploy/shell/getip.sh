@@ -37,7 +37,7 @@ ipad() {
   ip=$(cat $e.txt)
   #echo "ip: $ip"
   #replace all of the ip 127.0.0.1 in the file emqx_auth_http.conf to the real ip of service
-  sed -i "s#127.0.0.1#$ip#g" ../emqx/etc/plugins/emqx_auth_http.conf
+  sed -i "s#127.0.0.1#$ip#g" /opt/things/conf/emqx/etc/plugins/emqx_auth_http.conf
   fi
 }
 ipad $e
