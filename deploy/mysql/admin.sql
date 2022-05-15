@@ -1079,8 +1079,8 @@ INSERT INTO `sys_base_menus`
 VALUES (21, '2022-03-28 21:39:41.333', '2022-03-28 21:39:41.333', NULL, 0, '9', 'simpleUploader', 'simpleUploader', 0,
         'view/example/simpleUploader/simpleUploader', 6, 0, 0, '断点续传（插件版）', 'upload', 0);
 INSERT INTO `sys_base_menus`
-VALUES (22, '2022-03-28 21:39:41.333', '2022-03-28 21:39:41.333', NULL, 0, '0', 'https://www.gin-vue-admin.com',
-        'https://www.gin-vue-admin.com', 0, '/', 0, 0, 0, '官方网站', 'home-filled', 0);
+VALUES (22, '2022-03-28 21:39:41.333', '2022-03-28 21:39:41.333', NULL, 0, '0', 'https://ithings.pages.dev',
+        'https://ithings.pages.dev', 0, '/', 0, 0, 0, '官方网站', 'home-filled', 0);
 INSERT INTO `sys_base_menus`
 VALUES (23, '2022-03-28 21:39:41.333', '2022-03-28 21:39:41.333', NULL, 0, '0', 'state', 'state', 0,
         'view/system/state.vue', 6, 0, 0, '服务器状态', 'cloudy', 0);
