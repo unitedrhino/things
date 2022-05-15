@@ -52,7 +52,7 @@ function init_mysql_db_table(){
   done
 }
 init_conf_path
-type curl >/dev/null 2>&1 || inin_curl
+type curl >/dev/null 2>&1 || inin_curl;
 type docker >/dev/null 2>&1 || init_docker;
 type docker-compose >/dev/null 2>&1 || init_docker_compose;
 echo "docker with docker-compose init success"
