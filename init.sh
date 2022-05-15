@@ -11,6 +11,11 @@ function init_docker(){
  docker run hello-world
 }
 
+function inin_curl() {
+  echo "init docker"
+  apt  install curl
+}
+
 function init_docker_compose(){
  echo "init docker_compose"
  curl -L https://get.daocloud.io/docker/compose/releases/download/1.12.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
@@ -47,6 +52,7 @@ function init_mysql_db_table(){
   done
 }
 init_conf_path
+type curl >/dev/null 2>&1 || inin_curl
 type docker >/dev/null 2>&1 || init_docker;
 type docker-compose >/dev/null 2>&1 || init_docker_compose;
 echo "docker with docker-compose init success"
