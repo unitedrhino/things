@@ -152,10 +152,17 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 	{ //删除时序数据库中的表数据
 		template, err := l.svcCtx.TemplateRepo.GetTemplate(l.ctx, in.Info.ProductID)
 		if err != nil {
+			l.Errorf("DelDevice|TemplateRepo|GetTemplate|err=%+v", err)
 			return nil, errors.System.AddDetail(err.Error())
+		}
+		err = l.svcCtx.DeviceLogRepo.DropDevice(l.ctx, in.Info.ProductID, in.Info.DeviceName)
+		if err != nil {
+			l.Errorf("DelDevice|DeviceLogRepo|DropDevice|err=%+v", err)
+			return nil, err
 		}
 		err = l.svcCtx.DeviceDataRepo.DropDevice(l.ctx, template, in.Info.ProductID, in.Info.DeviceName)
 		if err != nil {
+			l.Errorf("DelDevice|DeviceDataRepo|DropDevice|err=%+v", err)
 			return nil, err
 		}
 	}
