@@ -85,7 +85,7 @@ func NewLoginAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginAu
 
 func (l *LoginAuthLogic) UpdateLoginTime() {
 	if l.di == nil {
-		panic("neet select  device info db first")
+		panic("need select device info db first")
 	}
 	now := sql.NullTime{
 		Valid: true,
