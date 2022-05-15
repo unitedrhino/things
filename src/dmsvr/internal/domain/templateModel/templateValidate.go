@@ -29,7 +29,7 @@ func ValidateWithFmt(templateStr []byte) (*Template, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &template, err
+	return template.init(), err
 }
 
 func (t *Template) ValidateWithFmt() error {
