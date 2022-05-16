@@ -22,6 +22,7 @@ function init_curl() {
 function init_docker_compose(){
  echo "init docker_compose"
  curl -L https://get.daocloud.io/docker/compose/releases/download/1.12.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+ chmod 751 /usr/local/bin/docker-compose
  docker-compose version
  echo "init docker_compose end"
 }

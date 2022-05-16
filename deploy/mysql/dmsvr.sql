@@ -1,4 +1,4 @@
-create database things_dm;
+create database if not EXISTS things_dm;
 use things_dm;
 
 CREATE TABLE if not exists `product_info`
