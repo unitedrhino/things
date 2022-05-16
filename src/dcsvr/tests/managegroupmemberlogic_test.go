@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dcsvr/dcclient"
+	"github.com/i-Things/things/src/dcsvr/dc"
 	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/zrpc"
 	"testing"
@@ -13,15 +13,15 @@ import (
 
 func TestManageGroupMember(t *testing.T) {
 	fmt.Println("TestManageGroupMember")
-	client := dcclient.NewDc(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
+	client := dc.NewDc(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
 		Hosts: []string{"127.0.0.1:2379"},
 		Key:   "dc.rpc",
 	}}))
 	ctx := context.Background()
 	{
-		req := &dcclient.ManageGroupMemberReq{
+		req := &dc.ManageGroupMemberReq{
 			Opt: def.OPT_ADD,
-			Info: &dcclient.GroupMember{
+			Info: &dc.GroupMember{
 				GroupID: 1710808183040118784, //组id
 				//如果是用户,则是uid的十进制字符串,
 				//如果是设备,则是productID:deviceName的组合方式
@@ -36,9 +36,9 @@ func TestManageGroupMember(t *testing.T) {
 		}
 	}
 	{
-		req := &dcclient.ManageGroupMemberReq{
+		req := &dc.ManageGroupMemberReq{
 			Opt: def.OPT_ADD,
-			Info: &dcclient.GroupMember{
+			Info: &dc.GroupMember{
 				GroupID: 1710808183040118784, //组id
 				//如果是用户,则是uid的十进制字符串,
 				//如果是设备,则是productID:deviceName的组合方式

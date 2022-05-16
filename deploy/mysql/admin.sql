@@ -15,12 +15,9 @@
 */
 
 SET NAMES utf8mb4;
-SET
-FOREIGN_KEY_CHECKS = 0;
-create
-database if not EXISTS things_admin;
-use
-things_admin;
+SET FOREIGN_KEY_CHECKS = 0;
+create database if not EXISTS things_admin;
+use things_admin;
 -- ----------------------------
 -- Table structure for casbin_rule
 -- ----------------------------
