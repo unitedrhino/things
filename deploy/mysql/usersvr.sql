@@ -1,4 +1,4 @@
-create database things_user;
+create database if not EXISTS things_user;
 use things_user;
 CREATE TABLE if not exists `user_core`
 (

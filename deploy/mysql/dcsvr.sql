@@ -1,4 +1,4 @@
-create database things_dc;
+create database if not EXISTS things_dc;
 use things_dc;
 
 CREATE TABLE if not exists `group_info`
