@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/usersvr/user"
-	"github.com/i-Things/things/src/usersvr/userclient"
 	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/zrpc"
 	"testing"
@@ -12,7 +11,7 @@ import (
 
 func TestGetUserCore(t *testing.T) {
 	t.Log("TestGetUserCore")
-	client := userclient.NewUser(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
+	client := user.NewUser(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
 		Hosts: []string{"127.0.0.1:2379"},
 		Key:   "user.rpc",
 	}}))
