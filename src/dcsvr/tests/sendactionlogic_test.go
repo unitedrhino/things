@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dcsvr/dc"
-	"github.com/i-Things/things/src/dcsvr/dcclient"
 	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/zrpc"
 	"testing"
@@ -13,7 +12,7 @@ import (
 )
 
 func TestSendAction(t *testing.T) {
-	client := dcclient.NewDc(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
+	client := dc.NewDc(zrpc.MustNewClient(zrpc.RpcClientConf{Etcd: discov.EtcdConf{
 		Hosts: []string{"127.0.0.1:2379"},
 		Key:   "dc.rpc",
 	}, Timeout: 1000 * 1000}))
