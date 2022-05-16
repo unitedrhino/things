@@ -27,13 +27,13 @@ do
   done
 ip=''
 ipad() {
- ip add show dev $e |grep -w 'inet'|awk '{print $2}'|awk -F '/' '{print $1}' >$e.txt
- n=`wc -l $e.txt|awk '{print $1}'`
+ ip add show dev "$e" |grep -w 'inet'|awk '{print $2}'|awk -F '/' '{print $1}' >$e.txt
+ n=$(wc -l "$e".txt|awk '{print $1}')
  if [ $n -eq 0 ]
   then
   echo "无IP地址"
   else
-  echo "IP地址是：`cat $e.txt`"
+  echo "IP地址是：`cat $e.txt`
   ip=$(cat $e.txt)
   #echo "ip: $ip"
   #replace all of the ip 127.0.0.1 in the file emqx_auth_http.conf to the real ip of service
