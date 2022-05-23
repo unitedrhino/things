@@ -11,7 +11,7 @@ iThings是一个基于golang开发的轻量级云原生微服务物联网平台.
 * 易部署 -- 一键安装所有依赖,一键运行iThings
 
 ## 架构
-下图是 iThings 平台的整体架构:
+下图是 iThings 平台的整体架构:  
 <img src="./doc/assets/ithings架构图.png">
 
 #### 目录说明
