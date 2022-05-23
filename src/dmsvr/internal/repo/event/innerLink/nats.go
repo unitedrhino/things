@@ -24,9 +24,9 @@ type (
 
 //topic 定义
 const (
-	// TopicDevPublish dd模块收到设备的发布消息后向内部推送以下topic 最后两个是产品id和设备名称
-	TopicDevPublish    = "dd.thing.device.clients.publish.%s.%s"
-	TopicDevPublishAll = "dd.thing.device.clients.publish.>"
+	// TopicDevPubThing dd模块收到设备的发布消息后向内部推送以下topic 最后两个是产品id和设备名称
+	TopicDevPubThing    = "dd.thing.device.clients.publish.thing.%s.%s"
+	TopicDevPubThingAll = "dd.thing.device.clients.publish.thing.>"
 
 	// TopicDevConnected dd模块收到设备的登录消息后向内部推送以下topic
 	TopicDevConnected = "dd.thing.device.clients.connected"
@@ -68,13 +68,13 @@ func (n *NatsClient) SubscribeDevSync(ctx context.Context, topic string) (*SubDe
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.QueueSubscribe(TopicDevPublishAll, ThingsDeliverGroup,
+	_, err := n.client.QueueSubscribe(TopicDevPubThingAll, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
 			ele, err := device.GetDevPublish(ctx, msg)
 			if err != nil {
 				return err
 			}
-			err = handle(ctx).Publish(ele)
+			err = handle(ctx).Thing(ele)
 			return err
 		}))
 	if err != nil {
@@ -112,7 +112,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic st
 	if err != nil {
 		return nil, err
 	}
-	handle, err := n.SubscribeDevSync(ctx, fmt.Sprintf(TopicDevPublish, productID, deviceName))
+	handle, err := n.SubscribeDevSync(ctx, fmt.Sprintf(TopicDevPubThing, productID, deviceName))
 	if err != nil {
 		return nil, err
 	}

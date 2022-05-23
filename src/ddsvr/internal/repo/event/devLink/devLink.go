@@ -19,7 +19,10 @@ type (
 	}
 	Handle       func(ctx context.Context) DevSubHandle
 	DevSubHandle interface {
-		Publish(topic string, payload []byte) error
+		// Ota ota升级消息
+		Ota(topic string, payload []byte) error
+		// Thing 物模型消息
+		Thing(topic string, payload []byte) error
 		Connected(out *devices.DevConn) error
 		Disconnected(out *devices.DevConn) error
 	}

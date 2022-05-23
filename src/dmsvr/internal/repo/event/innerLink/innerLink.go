@@ -16,7 +16,7 @@ type (
 	}
 	Handle        func(ctx context.Context) InnerSubEvent
 	InnerSubEvent interface {
-		Publish(out *device.PublishMsg) error
+		Thing(out *device.PublishMsg) error
 		Connected(out *device.ConnectMsg) error
 		Disconnected(out *device.ConnectMsg) error
 	}
