@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-type PublishLogic struct {
+type ThingLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
@@ -24,21 +24,21 @@ type PublishLogic struct {
 	dd       deviceData.DeviceDataRepo
 }
 
-func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLogic {
-	return &PublishLogic{
+func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic {
+	return &ThingLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *PublishLogic) initMsg(msg *device.PublishMsg) error {
+func (l *ThingLogic) initMsg(msg *device.PublishMsg) error {
 	var err error
 	l.template, err = l.svcCtx.TemplateRepo.GetTemplate(l.ctx, msg.ProductID)
 	if err != nil {
 		return err
 	}
-	err = utils.Unmarshal([]byte(msg.Payload), &l.dreq)
+	err = utils.Unmarshal(msg.Payload, &l.dreq)
 	if err != nil {
 		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
@@ -47,18 +47,18 @@ func (l *PublishLogic) initMsg(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *PublishLogic) DeviceResp(msg *device.PublishMsg, err error, data map[string]interface{}) {
+func (l *ThingLogic) DeviceResp(msg *device.PublishMsg, err error, data map[string]interface{}) {
 	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 	er := l.svcCtx.InnerLink.PublishToDev(l.ctx, topic, payload)
 	if er != nil {
 		l.Errorf("DeviceResp|PublishToDev failure err:%v", er)
 		return
 	}
-	l.Infof("PublishLogic|DeviceResp|topic:%v payload:%v", topic, string(payload))
+	l.Infof("ThingLogic|DeviceResp|topic:%v payload:%v", topic, string(payload))
 	//l.svcCtx.DevClient.DeviceResp(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 }
 
-func (l *PublishLogic) HandlePropertyReport(msg *device.PublishMsg) error {
+func (l *ThingLogic) HandlePropertyReport(msg *device.PublishMsg) error {
 	tp, err := l.dreq.VerifyReqParam(l.template, templateModel.PROPERTY)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
@@ -80,7 +80,7 @@ func (l *PublishLogic) HandlePropertyReport(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *PublishLogic) HandlePropertyGetStatus(msg *device.PublishMsg) error {
+func (l *ThingLogic) HandlePropertyGetStatus(msg *device.PublishMsg) error {
 	respData := make(map[string]interface{}, len(l.template.Properties))
 	switch l.dreq.Type {
 	case deviceSend.REPORT:
@@ -110,8 +110,8 @@ func (l *PublishLogic) HandlePropertyGetStatus(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *PublishLogic) HandleProperty(msg *device.PublishMsg) error {
-	l.Slowf("PublishLogic|HandleProperty")
+func (l *ThingLogic) HandleProperty(msg *device.PublishMsg) error {
+	l.Slowf("ThingLogic|HandleProperty")
 	switch l.dreq.Method {
 	case deviceSend.REPORT, deviceSend.REPORT_INFO:
 		return l.HandlePropertyReport(msg)
@@ -125,8 +125,8 @@ func (l *PublishLogic) HandleProperty(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *PublishLogic) HandleEvent(msg *device.PublishMsg) error {
-	l.Slowf("PublishLogic|HandleEvent")
+func (l *ThingLogic) HandleEvent(msg *device.PublishMsg) error {
+	l.Slowf("ThingLogic|HandleEvent")
 	dbData := deviceData.EventData{}
 	dbData.ID = l.dreq.EventID
 	dbData.Type = l.dreq.Type
@@ -151,14 +151,14 @@ func (l *PublishLogic) HandleEvent(msg *device.PublishMsg) error {
 
 	return nil
 }
-func (l *PublishLogic) HandleResp(msg *device.PublishMsg) error {
-	l.Slowf("PublishLogic|HandleResp")
+func (l *ThingLogic) HandleResp(msg *device.PublishMsg) error {
+	l.Slowf("ThingLogic|HandleResp")
 	//todo 这里后续需要处理异步获取消息的情况
 	return nil
 }
 
-func (l *PublishLogic) HandleThing(msg *device.PublishMsg) error {
-	l.Slowf("PublishLogic|HandleThing")
+func (l *ThingLogic) HandleThing(msg *device.PublishMsg) error {
+	l.Slowf("ThingLogic|HandleThing")
 	if len(l.topics) < 5 || l.topics[1] != "up" {
 		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 	}
@@ -174,18 +174,18 @@ func (l *PublishLogic) HandleThing(msg *device.PublishMsg) error {
 	}
 	return nil
 }
-func (l *PublishLogic) HandleOta(msg *device.PublishMsg) error {
-	l.Slowf("PublishLogic|HandleOta")
+func (l *ThingLogic) HandleOta(msg *device.PublishMsg) error {
+	l.Slowf("ThingLogic|HandleOta")
 	return nil
 }
 
-func (l *PublishLogic) HandleDefault(msg *device.PublishMsg) error {
-	l.Slowf("PublishLogic|HandleDefault")
+func (l *ThingLogic) HandleDefault(msg *device.PublishMsg) error {
+	l.Slowf("ThingLogic|HandleDefault")
 	return nil
 
 }
-func (l *PublishLogic) Handle(msg *device.PublishMsg) (err error) {
-	l.Infof("PublishLogic|req=%+v", msg)
+func (l *ThingLogic) Handle(msg *device.PublishMsg) (err error) {
+	l.Infof("ThingLogic|req=%+v", msg)
 	err = l.initMsg(msg)
 	if err != nil {
 		return err
@@ -199,7 +199,7 @@ func (l *PublishLogic) Handle(msg *device.PublishMsg) (err error) {
 		case msg.ProductID:
 			err = l.HandleDefault(msg)
 		default:
-			err = errors.Parameter.AddDetailf("not suppot topic :%s", msg.Topic)
+			err = errors.Parameter.AddDetailf("not support topic :%s", msg.Topic)
 		}
 	} else {
 		err = errors.Parameter.AddDetailf("need topic :%s", msg.Topic)

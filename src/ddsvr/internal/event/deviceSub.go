@@ -3,6 +3,7 @@ package event
 import (
 	"context"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -23,9 +24,13 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 	}
 }
 
-// Publish 设备发布的信息通过nats转发给内部服务
-func (s *DeviceSubServer) Publish(topic string, payload []byte) error {
-	s.Infof("DeviceSubServer|Publish|topic:%v payload:%v", topic, string(payload))
+func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
+	return nil
+}
+
+// Thing 设备发布物模型消息的信息通过nats转发给内部服务
+func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
+	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	topicInfo, err := devices.GetTopicInfo(topic)
 	if err != nil {
 		return err
@@ -41,14 +46,14 @@ func (s *DeviceSubServer) Publish(topic string, payload []byte) error {
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,
 	}
-	return s.svcCtx.InnerLink.PubDevPublish(s.ctx, pub)
+	return s.svcCtx.InnerLink.DevPubThing(s.ctx, pub)
 }
 
 func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
-	s.Info("Connected", info)
+	s.Infof("%s|info:%v", utils.FuncName(), utils.GetJson(info))
 	return s.svcCtx.InnerLink.PubConn(s.ctx, innerLink.Connect, info)
 }
 func (s *DeviceSubServer) Disconnected(info *devices.DevConn) error {
-	s.Info("Disconnected", info)
+	s.Infof("%s|info:%v", utils.FuncName(), utils.GetJson(info))
 	return s.svcCtx.InnerLink.PubConn(s.ctx, innerLink.DisConnect, info)
 }

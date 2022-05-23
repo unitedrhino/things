@@ -106,7 +106,7 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 	err = d.client.Subscribe("$share/dd.rpc/$thing/#",
 		1, func(client mqtt.Client, message mqtt.Message) {
 			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-			err := handle(ctx).Publish(message.Topic(), message.Payload())
+			err := handle(ctx).Thing(message.Topic(), message.Payload())
 			logx.WithContext(ctx).Infof("%s|publish|topic:%v,message:%v,err:%v",
 				utils.FuncName(), message.Topic(), string(message.Payload()), err)
 
