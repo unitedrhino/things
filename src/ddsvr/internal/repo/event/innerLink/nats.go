@@ -21,8 +21,8 @@ const (
 	ThingsQueueConsumeName = "things_dd_queue_consume"
 	//topic 定义
 	ThingsStreamName = "thing_msg"
-	// TopicDevPublish dd模块收到设备的发布消息后向内部推送以下topic 最后两个是产品id和设备名称
-	TopicDevPublish = "dd.thing.device.clients.publish.%s.%s"
+	// TopicDevPubThing dd模块收到设备发布的物模型消息后向内部推送以下topic 最后两个是产品id和设备名称
+	TopicDevPubThing = "dd.thing.device.clients.publish.thing.%s.%s"
 
 	// TopicDevConnected dd模块收到设备的登录消息后向内部推送以下topic
 	TopicDevConnected = "dd.thing.device.clients.connected"
@@ -47,10 +47,10 @@ func NewNatsClient(conf conf.NatsConf) (InnerLink, error) {
 	return &NatsClient{client: nc}, nil
 }
 
-func (n *NatsClient) PubDevPublish(ctx context.Context, publishMsg devices.DevPublish) error {
+func (n *NatsClient) DevPubThing(ctx context.Context, publishMsg devices.DevPublish) error {
 	pubStr, _ := json.Marshal(publishMsg)
 	return n.publish(ctx,
-		fmt.Sprintf(TopicDevPublish, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
+		fmt.Sprintf(TopicDevPubThing, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
 }
 
 func (n *NatsClient) PubConn(ctx context.Context, conn ConnType, info *devices.DevConn) error {
