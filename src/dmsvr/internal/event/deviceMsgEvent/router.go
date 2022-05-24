@@ -28,6 +28,26 @@ func (l *DeviceMsgHandle) Thing(msg *device.PublishMsg) error {
 	return NewThingLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
+func (l *DeviceMsgHandle) Ota(msg *device.PublishMsg) error {
+	l.Infof("%s|req=%+v", utils.FuncName(), utils.GetJson(msg))
+	return NewOtaLogic(l.ctx, l.svcCtx).Handle(msg)
+}
+
+func (l *DeviceMsgHandle) Shadow(msg *device.PublishMsg) error {
+	l.Infof("%s|req=%+v", utils.FuncName(), utils.GetJson(msg))
+	return NewShadowLogic(l.ctx, l.svcCtx).Handle(msg)
+}
+
+func (l *DeviceMsgHandle) Config(msg *device.PublishMsg) error {
+	l.Infof("%s|req=%+v", utils.FuncName(), utils.GetJson(msg))
+	return NewConfigLogic(l.ctx, l.svcCtx).Handle(msg)
+}
+
+func (l *DeviceMsgHandle) Log(msg *device.PublishMsg) error {
+	l.Infof("%s|req=%+v", utils.FuncName(), utils.GetJson(msg))
+	return NewLogLogic(l.ctx, l.svcCtx).Handle(msg)
+}
+
 func (l *DeviceMsgHandle) Connected(msg *device.ConnectMsg) error {
 	l.Infof("%s|req=%+v", utils.FuncName(), utils.GetJson(msg))
 	return NewConnectedLogic(l.ctx, l.svcCtx).Handle(msg)

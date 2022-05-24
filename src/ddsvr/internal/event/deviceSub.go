@@ -24,29 +24,72 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 	}
 }
 
-func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
-	return nil
-}
-
 // Thing 设备发布物模型消息的信息通过nats转发给内部服务
 func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
-	topicInfo, err := devices.GetTopicInfo(topic)
+	pub, err := s.getDevPublish(topic, payload)
 	if err != nil {
 		return err
 	}
+	return s.svcCtx.InnerLink.DevPubThing(s.ctx, pub)
+}
+
+// Ota ota远程升级
+func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
+	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	pub, err := s.getDevPublish(topic, payload)
+	if err != nil {
+		return err
+	}
+	return s.svcCtx.InnerLink.DevPubOta(s.ctx, pub)
+}
+
+// Config 设备远程配置
+func (s *DeviceSubServer) Config(topic string, payload []byte) error {
+	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	pub, err := s.getDevPublish(topic, payload)
+	if err != nil {
+		return err
+	}
+	return s.svcCtx.InnerLink.DevPubConfig(s.ctx, pub)
+}
+
+// Shadow 设备影子
+func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
+	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	pub, err := s.getDevPublish(topic, payload)
+	if err != nil {
+		return err
+	}
+	return s.svcCtx.InnerLink.DevPubShadow(s.ctx, pub)
+}
+
+// Log 设备调试日志
+func (s *DeviceSubServer) Log(topic string, payload []byte) error {
+	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	pub, err := s.getDevPublish(topic, payload)
+	if err != nil {
+		return err
+	}
+	return s.svcCtx.InnerLink.DevPubLog(s.ctx, pub)
+}
+
+func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.DevPublish, error) {
+	topicInfo, err := devices.GetTopicInfo(topic)
+	if err != nil {
+		return nil, err
+	}
 	if topicInfo.Direction == devices.DOWN {
 		//服务器端下发的消息直接忽略
-		return nil
+		return nil, nil
 	}
-	pub := devices.DevPublish{
+	return &devices.DevPublish{
 		Timestamp:  time.Now().UnixMilli(),
 		Topic:      topic,
 		Payload:    payload,
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,
-	}
-	return s.svcCtx.InnerLink.DevPubThing(s.ctx, pub)
+	}, nil
 }
 
 func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
