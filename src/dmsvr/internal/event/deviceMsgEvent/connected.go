@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -16,7 +16,7 @@ type ConnectedLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	template *templateModel.Template
+	template *thing.Template
 	topics   []string
 	dreq     deviceSend.DeviceReq
 	dd       deviceData.DeviceDataRepo
@@ -37,7 +37,7 @@ func (l *ConnectedLogic) Handle(msg *device.ConnectMsg) error {
 	}
 	err = l.svcCtx.DeviceLogRepo.Insert(l.ctx, &device.Log{
 		ProductID:  ld.ProductID,
-		Action:     msg.Action,
+		Action:     "connected",
 		Timestamp:  msg.Timestamp, // 操作时间
 		DeviceName: ld.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),

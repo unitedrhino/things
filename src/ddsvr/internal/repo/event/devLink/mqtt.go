@@ -29,8 +29,20 @@ type (
 )
 
 const (
-	ActionLogin  = "onLogin"
-	ActionLogout = "onLogout"
+	ActionConnected    = "connected"
+	ActionDisconnected = "disconnected"
+)
+const (
+	// emqx 共享订阅前缀 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/shared-subscriptions.html
+	ShareSubTopicPrefix = "$share/dd.rpc/"
+	// emqx 客户端上下线通知 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/system-topic.html#客户端上下线事件
+	TopicConnectStatus = ShareSubTopicPrefix + "$SYS/brokers/+/clients/#"
+
+	TopicThing  = ShareSubTopicPrefix + devices.TopicHeadThing + "/#"
+	TopicOta    = ShareSubTopicPrefix + devices.TopicHeadOta + "/#"
+	TopicConfig = ShareSubTopicPrefix + devices.TopicHeadConfig + "/#"
+	TopicLog    = ShareSubTopicPrefix + devices.TopicHeadLog + "/#"
+	TopicShadow = ShareSubTopicPrefix + devices.TopicHeadShadow + "/#"
 )
 
 func NewEmqClient(conf *conf.MqttConf) (DevLink, error) {
@@ -63,55 +75,93 @@ func NewEmqClient(conf *conf.MqttConf) (DevLink, error) {
 }
 
 func (d *MqttClient) SubScribe(handle Handle) error {
-	err := d.client.Subscribe("$share/dd.rpc/$SYS/brokers/+/clients/#",
-		1, func(client mqtt.Client, message mqtt.Message) {
-			var (
-				msg ConnectMsg
-				err error
-			)
-			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-			err = json.Unmarshal(message.Payload(), &msg)
-			if err != nil {
-				logx.Error(err)
-				return
-			}
-			do := devices.DevConn{
-				UserName:  msg.UserName,
-				Timestamp: msg.Ts, //毫秒时间戳
-				Address:   msg.Address,
-				ClientID:  msg.ClientID,
-				Reason:    msg.Reason,
-			}
-			if strings.HasSuffix(message.Topic(), "/disconnected") {
-				logx.WithContext(ctx).Infof("%s|disconnected|topic:%v,message:%v,err:%v",
-					utils.FuncName(), message.Topic(), string(message.Payload()), err)
-				do.Action = ActionLogout
-				err = handle(ctx).Disconnected(&do)
-				if err != nil {
-					logx.Error(err)
-				}
-			} else {
-				do.Action = ActionLogin
-				logx.WithContext(ctx).Infof("%s|connected|topic:%v,message:%v,err:%v",
-					utils.FuncName(), message.Topic(), string(message.Payload()), err)
-				err = handle(ctx).Connected(&do)
-				if err != nil {
-					logx.Error(err)
-				}
-			}
-		}).Error()
+	err := d.subscribeWithFunc(TopicConnectStatus, d.subscribeConnectStatus(handle))
 	if err != nil {
 		return err
 	}
-	err = d.client.Subscribe("$share/dd.rpc/$thing/#",
+	err = d.subscribeWithFunc(TopicThing, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).Thing(topic, payload)
+	})
+	if err != nil {
+		return err
+	}
+	err = d.subscribeWithFunc(TopicConfig, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).Config(topic, payload)
+	})
+	if err != nil {
+		return err
+	}
+	err = d.subscribeWithFunc(TopicOta, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).Ota(topic, payload)
+	})
+	if err != nil {
+		return err
+	}
+	err = d.subscribeWithFunc(TopicLog, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).Log(topic, payload)
+	})
+	if err != nil {
+		return err
+	}
+	err = d.subscribeWithFunc(TopicShadow, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).Shadow(topic, payload)
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *MqttClient) subscribeConnectStatus(handle Handle) func(ctx context.Context, topic string, payload []byte) error {
+	return func(ctx context.Context, topic string, payload []byte) error {
+		var (
+			msg ConnectMsg
+			err error
+		)
+		err = json.Unmarshal(payload, &msg)
+		if err != nil {
+			logx.Error(err)
+			return err
+		}
+		do := devices.DevConn{
+			UserName:  msg.UserName,
+			Timestamp: msg.Ts, //毫秒时间戳
+			Address:   msg.Address,
+			ClientID:  msg.ClientID,
+			Reason:    msg.Reason,
+		}
+		if strings.HasSuffix(topic, "/disconnected") {
+			logx.WithContext(ctx).Infof("%s|disconnected|topic:%v,message:%v,err:%v",
+				utils.FuncName(), topic, string(payload), err)
+			do.Action = ActionDisconnected
+			err = handle(ctx).Disconnected(&do)
+			if err != nil {
+				logx.Error(err)
+				return err
+			}
+		} else {
+			do.Action = ActionConnected
+			logx.WithContext(ctx).Infof("%s|connected|topic:%v,message:%v,err:%v",
+				utils.FuncName(), topic, string(payload), err)
+			err = handle(ctx).Connected(&do)
+			if err != nil {
+				logx.Error(err)
+				return err
+			}
+		}
+		return nil
+	}
+
+}
+
+func (d *MqttClient) subscribeWithFunc(topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {
+	return d.client.Subscribe(topic,
 		1, func(client mqtt.Client, message mqtt.Message) {
 			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-			err := handle(ctx).Thing(message.Topic(), message.Payload())
+			err := handle(ctx, message.Topic(), message.Payload())
 			logx.WithContext(ctx).Infof("%s|publish|topic:%v,message:%v,err:%v",
 				utils.FuncName(), message.Topic(), string(message.Payload()), err)
-
 		}).Error()
-	return err
 }
 
 func (d *MqttClient) Publish(ctx context.Context, topic string, payload []byte) error {

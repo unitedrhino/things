@@ -19,8 +19,14 @@ type (
 	}
 	Handle       func(ctx context.Context) DevSubHandle
 	DevSubHandle interface {
-		// Ota ota升级消息
+		// Ota ota远程升级
 		Ota(topic string, payload []byte) error
+		// Config 设备远程配置
+		Config(topic string, payload []byte) error
+		// Shadow 设备影子
+		Shadow(topic string, payload []byte) error
+		// Log 设备调试日志
+		Log(topic string, payload []byte) error
 		// Thing 物模型消息
 		Thing(topic string, payload []byte) error
 		Connected(out *devices.DevConn) error

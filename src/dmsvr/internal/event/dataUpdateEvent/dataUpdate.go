@@ -2,7 +2,7 @@ package dataUpdateEvent
 
 import (
 	"context"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -21,7 +21,7 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdat
 	}
 }
 
-func (d DataUpdateLogic) TempModelClearCache(info *templateModel.TemplateInfo) error {
+func (d DataUpdateLogic) TempModelClearCache(info *thing.TemplateInfo) error {
 	d.Infof("DataUpdateLogic|TempModelClearCache|productID:%v", info.ProductID)
 	return d.svcCtx.TemplateRepo.ClearCache(d.ctx, info.ProductID)
 }
