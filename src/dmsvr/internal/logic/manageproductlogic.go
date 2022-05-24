@@ -9,7 +9,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/dm"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/productDetail"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/spf13/cast"
@@ -55,7 +55,7 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 		return nil, errors.Duplicate.AddDetail("ProductName:" + in.Info.ProductName)
 	}
 	pi, pt := l.InsertProduct(in)
-	t, _ := templateModel.NewTemplate([]byte(pt.Template))
+	t, _ := thing.NewTemplate([]byte(pt.Template))
 	if err := l.svcCtx.DeviceLogRepo.InitProduct(
 		l.ctx, pi.ProductID); err != nil {
 		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
@@ -82,7 +82,7 @@ func (l *ManageProductLogic) InsertProduct(in *dm.ManageProductReq) (*mysql.Prod
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
 	createTime := time.Now()
 	pt := &mysql.ProductTemplate{
-		Template:    templateModel.DefaultTemplate,
+		Template:    thing.DefaultTemplate,
 		ProductID:   device.GetStrProductID(ProductID),
 		CreatedTime: createTime,
 	}
@@ -225,7 +225,7 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInf
 		l.Errorf("DelProduct|Delete|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &templateModel.TemplateInfo{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &thing.TemplateInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}

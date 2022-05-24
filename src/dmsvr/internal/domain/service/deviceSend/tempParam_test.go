@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
 	"testing"
 )
 
@@ -677,7 +676,7 @@ var actionOutParamStr = [...]string{
 
 func TestVerifyPropertyParam(t *testing.T) {
 	fmt.Println("TestVerifyPropertyParam")
-	T, err := templateModel.NewTemplate([]byte(template))
+	T, err := thing.NewTemplate([]byte(template))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -687,7 +686,7 @@ func TestVerifyPropertyParam(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := dq.VerifyReqParam(T, templateModel.PROPERTY)
+		out, err := dq.VerifyReqParam(T, thing.PROPERTY)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -714,7 +713,7 @@ func TestVerifyPropertyParam(t *testing.T) {
 
 func TestVerifyEventParam(t *testing.T) {
 	fmt.Println("TestVerifyEventParam")
-	T, err := templateModel.NewTemplate([]byte(template))
+	T, err := thing.NewTemplate([]byte(template))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -724,7 +723,7 @@ func TestVerifyEventParam(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := dq.VerifyReqParam(T, templateModel.EVENT)
+		out, err := dq.VerifyReqParam(T, thing.EVENT)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -749,7 +748,7 @@ func TestVerifyEventParam(t *testing.T) {
 
 func TestVerifyActionInParam(t *testing.T) {
 	fmt.Println("TestVerifyActionInParam")
-	T, err := templateModel.NewTemplate([]byte(template))
+	T, err := thing.NewTemplate([]byte(template))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -759,7 +758,7 @@ func TestVerifyActionInParam(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := dq.VerifyReqParam(T, templateModel.ACTION_INPUT)
+		out, err := dq.VerifyReqParam(T, thing.ACTION_INPUT)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -784,7 +783,7 @@ func TestVerifyActionInParam(t *testing.T) {
 
 func TestVerifyActionOutParam(t *testing.T) {
 	fmt.Println("TestVerifyActionOutParam")
-	T, err := templateModel.NewTemplate([]byte(template))
+	T, err := thing.NewTemplate([]byte(template))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -794,7 +793,7 @@ func TestVerifyActionOutParam(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		out, err := dq.VerifyRespParam(T, "biaoshifu", templateModel.ACTION_OUTPUT)
+		out, err := dq.VerifyRespParam(T, "biaoshifu", thing.ACTION_OUTPUT)
 		if err != nil {
 			t.Fatal(err)
 		}

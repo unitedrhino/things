@@ -17,7 +17,11 @@ const (
 type (
 	InnerLink interface {
 		// DevPubThing 向内部发布设备发布的物模型消息
-		DevPubThing(ctx context.Context, publishMsg devices.DevPublish) error
+		DevPubThing(ctx context.Context, publishMsg *devices.DevPublish) error
+		DevPubOta(ctx context.Context, publishMsg *devices.DevPublish) error
+		DevPubShadow(ctx context.Context, publishMsg *devices.DevPublish) error
+		DevPubLog(ctx context.Context, publishMsg *devices.DevPublish) error
+		DevPubConfig(ctx context.Context, publishMsg *devices.DevPublish) error
 		// PubConn 向内部发布连接及断连消息
 		PubConn(ctx context.Context, conn ConnType, info *devices.DevConn) error
 		Subscribe(handle Handle) error

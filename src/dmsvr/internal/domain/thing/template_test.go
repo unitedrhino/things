@@ -1,4 +1,4 @@
-package templateModel
+package thing
 
 import (
 	"fmt"

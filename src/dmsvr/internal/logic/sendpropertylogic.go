@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -20,7 +20,7 @@ type SendPropertyLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	template *templateModel.Template
+	template *thing.Template
 }
 
 func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendPropertyLogic {
@@ -63,7 +63,7 @@ func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendProper
 		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
 		Timestamp: time.Now().UnixMilli(),
 		Params:    param}
-	_, err = req.VerifyReqParam(l.template, templateModel.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, thing.ACTION_INPUT)
 	if err != nil {
 		return nil, err
 	}

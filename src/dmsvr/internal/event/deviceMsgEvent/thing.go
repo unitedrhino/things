@@ -8,7 +8,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -18,7 +18,7 @@ type ThingLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	template *templateModel.Template
+	template *thing.Template
 	topics   []string
 	dreq     deviceSend.DeviceReq
 	dd       deviceData.DeviceDataRepo
@@ -55,11 +55,10 @@ func (l *ThingLogic) DeviceResp(msg *device.PublishMsg, err error, data map[stri
 		return
 	}
 	l.Infof("ThingLogic|DeviceResp|topic:%v payload:%v", topic, string(payload))
-	//l.svcCtx.DevClient.DeviceResp(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 }
 
 func (l *ThingLogic) HandlePropertyReport(msg *device.PublishMsg) error {
-	tp, err := l.dreq.VerifyReqParam(l.template, templateModel.PROPERTY)
+	tp, err := l.dreq.VerifyReqParam(l.template, thing.PROPERTY)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
 		return err
@@ -133,7 +132,7 @@ func (l *ThingLogic) HandleEvent(msg *device.PublishMsg) error {
 	if l.dreq.Method != deviceSend.EVENT_POST {
 		return errors.Method
 	}
-	tp, err := l.dreq.VerifyReqParam(l.template, templateModel.EVENT)
+	tp, err := l.dreq.VerifyReqParam(l.template, thing.EVENT)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
 		return err
@@ -157,53 +156,28 @@ func (l *ThingLogic) HandleResp(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *ThingLogic) HandleThing(msg *device.PublishMsg) error {
-	l.Slowf("ThingLogic|HandleThing")
-	if len(l.topics) < 5 || l.topics[1] != "up" {
-		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
-	}
-	switch l.topics[2] {
-	case def.PROPERTY_METHOD: //属性上报
-		return l.HandleProperty(msg)
-	case def.EVENT_METHOD: //事件上报
-		return l.HandleEvent(msg)
-	case def.ACTION_METHOD: //设备响应行为执行结果
-		return l.HandleResp(msg)
-	default:
-		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
-	}
-	return nil
-}
-func (l *ThingLogic) HandleOta(msg *device.PublishMsg) error {
-	l.Slowf("ThingLogic|HandleOta")
-	return nil
-}
-
-func (l *ThingLogic) HandleDefault(msg *device.PublishMsg) error {
-	l.Slowf("ThingLogic|HandleDefault")
-	return nil
-
-}
 func (l *ThingLogic) Handle(msg *device.PublishMsg) (err error) {
 	l.Infof("ThingLogic|req=%+v", msg)
 	err = l.initMsg(msg)
 	if err != nil {
 		return err
 	}
-	if len(l.topics) > 1 {
-		switch l.topics[0] {
-		case "$thing":
-			err = l.HandleThing(msg)
-		case "$ota":
-			err = l.HandleOta(msg)
-		case msg.ProductID:
-			err = l.HandleDefault(msg)
-		default:
-			err = errors.Parameter.AddDetailf("not support topic :%s", msg.Topic)
+	err = func() error {
+		if len(l.topics) < 5 || l.topics[1] != "up" {
+			return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
-	} else {
-		err = errors.Parameter.AddDetailf("need topic :%s", msg.Topic)
-	}
+		switch l.topics[2] {
+		case def.PROPERTY_METHOD: //属性上报
+			return l.HandleProperty(msg)
+		case def.EVENT_METHOD: //事件上报
+			return l.HandleEvent(msg)
+		case def.ACTION_METHOD: //设备响应行为执行结果
+			return l.HandleResp(msg)
+		default:
+			return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
+		}
+		return nil
+	}()
 	l.svcCtx.DeviceLogRepo.Insert(l.ctx, &device.Log{
 		ProductID:  msg.ProductID,
 		Action:     "publish",
