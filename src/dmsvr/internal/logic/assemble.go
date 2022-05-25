@@ -5,7 +5,7 @@ import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/src/dmsvr/dm"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 )
 
@@ -16,7 +16,7 @@ func GetNullTime(time sql.NullTime) int64 {
 	return time.Time.Unix()
 }
 
-func ToProductTemplate(pt *templateModel.TemplateInfo) *dm.ProductTemplate {
+func ToProductTemplate(pt *thing.TemplateInfo) *dm.ProductTemplate {
 	return &dm.ProductTemplate{
 		CreatedTime: pt.CreatedTime.Unix(),
 		ProductID:   pt.ProductID,

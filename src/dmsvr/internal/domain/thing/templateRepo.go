@@ -1,5 +1,5 @@
 // Package templateModel 这个文件定义和模板相关的接口及dto定义
-package templateModel
+package thing
 
 import (
 	"context"

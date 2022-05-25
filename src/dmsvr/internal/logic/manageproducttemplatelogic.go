@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dm"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/spf13/cast"
@@ -27,13 +27,13 @@ func NewManageProductTemplateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 	}
 }
 
-func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, oldT *templateModel.Template) (*dm.ProductTemplate, error) {
+func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductTemplateReq, oldT *thing.Template) (*dm.ProductTemplate, error) {
 	l.Infof("ManageProductTemplate|ModifyProductTemplate|ProductID:%v", in.Info.ProductID)
-	newT, err := templateModel.ValidateWithFmt([]byte(in.Info.Template))
+	newT, err := thing.ValidateWithFmt([]byte(in.Info.Template))
 	if err != nil {
 		return nil, err
 	}
-	err = templateModel.CheckModify(oldT, newT)
+	err = thing.CheckModify(oldT, newT)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductT
 		l.Errorf("ModifyProductTemplate|ProductTemplate|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &templateModel.TemplateInfo{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &thing.TemplateInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemp
 		}
 		return nil, errors.Database.AddDetail(err.Error())
 	}
-	t, err := templateModel.ValidateWithFmt([]byte(in.Info.Template))
+	t, err := thing.ValidateWithFmt([]byte(in.Info.Template))
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemp
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &templateModel.TemplateInfo{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.TempModelUpdate(l.ctx, &thing.TemplateInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}

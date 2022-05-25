@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store/TDengine"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 	"strings"
@@ -28,7 +28,7 @@ func NewDeviceDataRepo(dataSource string) *DeviceDataRepo {
 	return &DeviceDataRepo{t: td}
 }
 
-func getSpecsColumn(s templateModel.Specs) string {
+func getSpecsColumn(s thing.Specs) string {
 	var column []string
 	for _, v := range s {
 		column = append(column, fmt.Sprintf("`%s` %s", v.ID, getTdType(v.DataType)))
@@ -36,23 +36,23 @@ func getSpecsColumn(s templateModel.Specs) string {
 	return strings.Join(column, ",")
 }
 
-func getTdType(define templateModel.Define) string {
+func getTdType(define thing.Define) string {
 	switch define.Type {
-	case templateModel.BOOL:
+	case thing.BOOL:
 		return "BOOL"
-	case templateModel.INT:
+	case thing.INT:
 		return "BIGINT"
-	case templateModel.STRING:
+	case thing.STRING:
 		return "BINARY(5000)"
-	case templateModel.STRUCT:
+	case thing.STRUCT:
 		return "BINARY(5000)"
-	case templateModel.FLOAT:
+	case thing.FLOAT:
 		return "DOUBLE"
-	case templateModel.TIMESTAMP:
+	case thing.TIMESTAMP:
 		return "TIMESTAMP"
-	case templateModel.ARRAY:
+	case thing.ARRAY:
 		return "BINARY(5000)"
-	case templateModel.ENUM:
+	case thing.ENUM:
 		return "SMALLINT"
 	default:
 		panic(fmt.Sprintf("%v not support", define.Type))
@@ -102,7 +102,7 @@ func (d *DeviceDataRepo) GenParams(params map[string]interface{}) (string, strin
 }
 
 func getTableNameList(
-	t *templateModel.Template,
+	t *thing.Template,
 	productID string,
 	deviceName string) (tables []string) {
 	for _, v := range t.Properties {
@@ -113,7 +113,7 @@ func getTableNameList(
 }
 
 func getStableNameList(
-	t *templateModel.Template,
+	t *thing.Template,
 	productID string) (tables []string) {
 	for _, v := range t.Properties {
 		tables = append(tables, getPropertyStableName(productID, v.ID))

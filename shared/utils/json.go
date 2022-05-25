@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 func Unmarshal(data []byte, v interface{}) error {
@@ -14,7 +15,7 @@ func Unmarshal(data []byte, v interface{}) error {
 func GetJson(v interface{}) string {
 	js, err := json.Marshal(v)
 	if err != nil {
-		return ""
+		return fmt.Sprintf("%#v", js)
 	}
 	return string(js)
 }

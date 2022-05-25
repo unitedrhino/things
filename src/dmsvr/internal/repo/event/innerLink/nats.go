@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
@@ -22,19 +23,6 @@ type (
 	}
 )
 
-//topic 定义
-const (
-	// TopicDevPublish dd模块收到设备的发布消息后向内部推送以下topic 最后两个是产品id和设备名称
-	TopicDevPublish    = "dd.thing.device.clients.publish.%s.%s"
-	TopicDevPublishAll = "dd.thing.device.clients.publish.>"
-
-	// TopicDevConnected dd模块收到设备的登录消息后向内部推送以下topic
-	TopicDevConnected = "dd.thing.device.clients.connected"
-	// TopicDevDisconnected dd模块收到设备的登出消息后向内部推送以下topic
-	TopicDevDisconnected = "dd.thing.device.clients.disconnected"
-	// TopicInnerPublish dd模块订阅以下topic,收到内部的发布消息后向设备推送
-	TopicInnerPublish = "dd.thing.inner.publish"
-)
 const (
 	ThingsDeliverGroup = "things_dm_group"
 )
@@ -55,7 +43,7 @@ func NewNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 
 func (n *NatsClient) PublishToDev(ctx context.Context, topic string, payload []byte) error {
 	msg := events.NewEventMsg(ctx, devices.PublishToDev(topic, payload))
-	err := n.client.Publish(TopicInnerPublish, msg)
+	err := n.client.Publish(topics.DeviceDownAll, msg)
 	return err
 }
 
@@ -67,20 +55,60 @@ func (n *NatsClient) SubscribeDevSync(ctx context.Context, topic string) (*SubDe
 	return NewSubDev(subscription), nil
 }
 
-func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.QueueSubscribe(TopicDevPublishAll, ThingsDeliverGroup,
+func (n *NatsClient) QueueSubscribeDevPublish(topic string,
+	handleFunc func(ctx context.Context, msg *device.PublishMsg) error) error {
+	_, err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
 			ele, err := device.GetDevPublish(ctx, msg)
 			if err != nil {
 				return err
 			}
-			err = handle(ctx).Publish(ele)
-			return err
+			return handleFunc(ctx, ele)
 		}))
 	if err != nil {
 		return err
 	}
-	_, err = n.client.QueueSubscribe(TopicDevConnected, ThingsDeliverGroup,
+	return nil
+}
+
+func (n *NatsClient) Subscribe(handle Handle) error {
+	err := n.QueueSubscribeDevPublish(topics.DeviceUpThingAll, func(ctx context.Context, msg *device.PublishMsg) error {
+		err := handle(ctx).Thing(msg)
+		return err
+	})
+	if err != nil {
+		return err
+	}
+	err = n.QueueSubscribeDevPublish(topics.DeviceUpOtaAll, func(ctx context.Context, msg *device.PublishMsg) error {
+		err := handle(ctx).Ota(msg)
+		return err
+	})
+	if err != nil {
+		return err
+	}
+	err = n.QueueSubscribeDevPublish(topics.DeviceUpConfigAll, func(ctx context.Context, msg *device.PublishMsg) error {
+		err := handle(ctx).Config(msg)
+		return err
+	})
+	if err != nil {
+		return err
+	}
+	err = n.QueueSubscribeDevPublish(topics.DeviceUpLogAll, func(ctx context.Context, msg *device.PublishMsg) error {
+		err := handle(ctx).Log(msg)
+		return err
+	})
+	if err != nil {
+		return err
+	}
+	err = n.QueueSubscribeDevPublish(topics.DeviceUpShadowAll, func(ctx context.Context, msg *device.PublishMsg) error {
+		err := handle(ctx).Shadow(msg)
+		return err
+	})
+	if err != nil {
+		return err
+	}
+
+	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusConnected, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
 			ele, err := device.GetDevConnMsg(ctx, msg)
 			if err != nil {
@@ -88,10 +116,12 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			}
 			return handle(ctx).Connected(ele)
 		}))
+
 	if err != nil {
 		return err
 	}
-	_, err = n.client.QueueSubscribe(TopicDevDisconnected, ThingsDeliverGroup,
+
+	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusDisconnected, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
 			ele, err := device.GetDevConnMsg(ctx, msg)
 			if err != nil {
@@ -112,7 +142,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic st
 	if err != nil {
 		return nil, err
 	}
-	handle, err := n.SubscribeDevSync(ctx, fmt.Sprintf(TopicDevPublish, productID, deviceName))
+	handle, err := n.SubscribeDevSync(ctx, fmt.Sprintf(topics.DeviceUpThing, productID, deviceName))
 	if err != nil {
 		return nil, err
 	}

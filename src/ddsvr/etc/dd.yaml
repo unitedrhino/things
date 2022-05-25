@@ -1,9 +1,6 @@
-Name: dd.rpc
-ListenOn: 127.0.0.1:9083
-Etcd:
-  Hosts:
-    - 127.0.0.1:2379
-  Key: dd.rpc
+Name: dd
+Host: 0.0.0.0
+Port: 8848
 InnerLink:
   Nats:
     Url: nats://127.0.0.1:4222

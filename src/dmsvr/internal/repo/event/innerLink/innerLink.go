@@ -16,7 +16,16 @@ type (
 	}
 	Handle        func(ctx context.Context) InnerSubEvent
 	InnerSubEvent interface {
-		Publish(out *device.PublishMsg) error
+		// Thing 物模型消息
+		Thing(out *device.PublishMsg) error
+		// Log 设备调试日志
+		Log(out *device.PublishMsg) error
+		// Config 设备远程配置
+		Config(out *device.PublishMsg) error
+		// Shadow 设备影子
+		Shadow(out *device.PublishMsg) error
+		// Ota ota升级
+		Ota(out *device.PublishMsg) error
 		Connected(out *device.ConnectMsg) error
 		Disconnected(out *device.ConnectMsg) error
 	}
