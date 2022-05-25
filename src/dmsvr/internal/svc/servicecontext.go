@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/dataUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -29,7 +29,7 @@ type ServiceContext struct {
 	Store          kv.Store
 	DeviceDataRepo deviceData.DeviceDataRepo
 	DeviceLogRepo  device.LogRepo
-	TemplateRepo   templateModel.TemplateRepo
+	TemplateRepo   thing.TemplateRepo
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

@@ -6,7 +6,7 @@ protoc/protoc-gen-go/protoc-gen-grpc-go 依赖可以通过
 # api文件编译方法
 
 ```shell script
-goctl api go -api zeroapi/api.api  -dir ./
+goctl api go -api http/api.api  -dir ./
 ```
 
 # 用户管理模块-usersvr
@@ -45,5 +45,6 @@ goctl rpc protoc  proto/dc.proto --go_out=./ --go-grpc_out=./ --zrpc_out=.
 # 设备数据交互模块-ddsvr
 
 ```shell
+goctl api go -api http/dd.api  -dir ./
 goctl rpc protoc  proto/dd.proto --go_out=./ --go-grpc_out=./ --zrpc_out=.
 ```
