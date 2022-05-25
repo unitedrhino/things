@@ -34,7 +34,7 @@ var (
 	}
 )
 
-func (l *AccessAuthLogic) CompareTopic(in *dm.AccessAuthReq) error {
+func (l *AccessAuthLogic) CompareTopic(in *dm.AccessAuthReq) (err error) {
 	l.Infof("%s|in:%v", utils.FuncName(), utils.GetJson(in))
 	lg, err := device.GetClientIDInfo(in.ClientID)
 	if err != nil {
@@ -64,5 +64,9 @@ func (l *AccessAuthLogic) CompareTopic(in *dm.AccessAuthReq) error {
 
 func (l *AccessAuthLogic) AccessAuth(in *dm.AccessAuthReq) (*dm.Response, error) {
 	l.Infof("%s|req=%+v", utils.FuncName(), utils.GetJson(in))
-	return &dm.Response{}, l.CompareTopic(in)
+	err := l.CompareTopic(in)
+	if err != nil {
+		l.Infof("%s|auth failure=%v", utils.FuncName(), err)
+	}
+	return &dm.Response{}, err
 }
