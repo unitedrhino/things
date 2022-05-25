@@ -51,6 +51,7 @@ type TopicInfo struct {
 	ProductID  string
 	DeviceName string
 	Direction  DIRECTION
+	TopicHead  string
 }
 
 func GetTopicInfo(topic string) (topicInfo *TopicInfo, err error) {
@@ -72,31 +73,35 @@ func parseTopic(topics []string) (topicInfo *TopicInfo, err error) {
 }
 
 func parsePose(productPos int, topics []string) (topicInfo *TopicInfo, err error) {
-	if len(topics) < (productPos + 2) {
-		return nil, errors.Parameter.AddDetail("topic is err")
-	}
-	return &TopicInfo{
-		ProductID:  topics[productPos],
-		DeviceName: topics[productPos+1],
-	}, err
+	return nil, errors.Parameter.AddDetail("topic is err")
+	//先不考虑自定义消息
+	//if len(topics) < (productPos + 2) {
+	//	return nil, errors.Parameter.AddDetail("topic is err")
+	//}
+	//return &TopicInfo{
+	//	ProductID:  topics[productPos],
+	//	DeviceName: topics[productPos+1],
+	//	TopicHead:  topics[0],
+	//}, err
 }
 
 func parseLast(topics []string) (topicInfo *TopicInfo, err error) {
-	if len(topics) < 2 {
+	if len(topics) < 4 {
 		return nil, errors.Parameter.AddDetail("topic is err")
 	}
 	return &TopicInfo{
 		ProductID:  topics[len(topics)-2],
 		DeviceName: topics[len(topics)-1],
 		Direction:  getDirection(topics[1]),
+		TopicHead:  topics[0],
 	}, err
 }
 
 func getDirection(dir string) DIRECTION {
 	switch dir {
-	case "up", "report", "rxd":
+	case "up":
 		return UP
-	case "down", "update", "txd":
+	case "down":
 		return DOWN
 	default:
 		return UNKNOW
