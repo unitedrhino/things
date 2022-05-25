@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/spf13/cast"
 )
 
@@ -16,14 +16,14 @@ type TempParam struct {
 	Required bool   `json:"required"` //是否必须
 	Type     string `json:"type"`     //事件类型: 信息:info  告警alert  故障:fault
 	Value    struct {
-		Type   templateModel.DataType `json:"type"`              //参数类型:bool int string struct float timestamp array enum
-		Maping map[string]string      `json:"mapping,omitempty"` //枚举及bool类型:bool enum
-		Min    string                 `json:"min,omitempty"`     //数值最小值:int string float
-		Max    string                 `json:"max,omitempty"`     //数值最大值:int string float
-		Start  string                 `json:"start,omitempty"`   //初始值:int float
-		Step   string                 `json:"step,omitempty"`    //步长:int float
-		Unit   string                 `json:"unit,omitempty"`    //单位:int float
-		Value  interface{}            `json:"Value"`
+		Type   thing.DataType    `json:"type"`              //参数类型:bool int string struct float timestamp array enum
+		Maping map[string]string `json:"mapping,omitempty"` //枚举及bool类型:bool enum
+		Min    string            `json:"min,omitempty"`     //数值最小值:int string float
+		Max    string            `json:"max,omitempty"`     //数值最大值:int string float
+		Start  string            `json:"start,omitempty"`   //初始值:int float
+		Step   string            `json:"step,omitempty"`    //步长:int float
+		Unit   string            `json:"unit,omitempty"`    //单位:int float
+		Value  interface{}       `json:"Value"`
 		/*
 			读到的数据  如果是是数组则类型为[]interface{}  如果是结构体类型则为map[id]TempParam
 				interface 为数据内容  					string为结构体的key value 为数据内容
@@ -31,7 +31,7 @@ type TempParam struct {
 	} `json:"Value"` //数据定义
 }
 
-func (t *TempParam) AddDefine(d *templateModel.Define, val interface{}) (err error) {
+func (t *TempParam) AddDefine(d *thing.Define, val interface{}) (err error) {
 	t.Value.Type = d.Type
 	t.Value.Type = d.Type
 	t.Value.Maping = make(map[string]string)
@@ -62,7 +62,7 @@ func (t *TempParam) ToVal() interface{} {
 	}
 
 	switch t.Value.Type {
-	case templateModel.STRUCT:
+	case thing.STRUCT:
 		v, ok := t.Value.Value.(map[string]TempParam)
 		if ok == false {
 			return nil
@@ -72,7 +72,7 @@ func (t *TempParam) ToVal() interface{} {
 			val[tp.ID] = tp.ToVal()
 		}
 		return val
-	case templateModel.ARRAY:
+	case thing.ARRAY:
 		array, ok := t.Value.Value.([]interface{})
 		if ok == false {
 			return nil
@@ -96,9 +96,9 @@ func (t *TempParam) ToVal() interface{} {
 	}
 }
 
-func GetVal(d *templateModel.Define, val interface{}) (interface{}, error) {
+func GetVal(d *thing.Define, val interface{}) (interface{}, error) {
 	switch d.Type {
-	case templateModel.BOOL:
+	case thing.BOOL:
 		switch val.(type) {
 		case bool:
 			return val.(bool), nil
@@ -110,7 +110,7 @@ func GetVal(d *templateModel.Define, val interface{}) (interface{}, error) {
 				return true, nil
 			}
 		}
-	case templateModel.INT:
+	case thing.INT:
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -123,7 +123,7 @@ func GetVal(d *templateModel.Define, val interface{}) (interface{}, error) {
 			}
 			return ret, nil
 		}
-	case templateModel.FLOAT:
+	case thing.FLOAT:
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -137,7 +137,7 @@ func GetVal(d *templateModel.Define, val interface{}) (interface{}, error) {
 			}
 			return ret, nil
 		}
-	case templateModel.STRING:
+	case thing.STRING:
 		if str, ok := val.(string); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -146,7 +146,7 @@ func GetVal(d *templateModel.Define, val interface{}) (interface{}, error) {
 			}
 			return str, nil
 		}
-	case templateModel.ENUM: //枚举类型 报文中传递的是数字
+	case thing.ENUM: //枚举类型 报文中传递的是数字
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -160,7 +160,7 @@ func GetVal(d *templateModel.Define, val interface{}) (interface{}, error) {
 			}
 			return ret, nil
 		}
-	case templateModel.TIMESTAMP:
+	case thing.TIMESTAMP:
 		switch val.(type) {
 		case json.Number:
 			ret, err := val.(json.Number).Int64()
@@ -175,7 +175,7 @@ func GetVal(d *templateModel.Define, val interface{}) (interface{}, error) {
 			}
 			return ret, nil
 		}
-	case templateModel.STRUCT:
+	case thing.STRUCT:
 		if strut, ok := val.(map[string]interface{}); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -198,7 +198,7 @@ func GetVal(d *templateModel.Define, val interface{}) (interface{}, error) {
 			}
 			return getParam, nil
 		}
-	case templateModel.ARRAY:
+	case thing.ARRAY:
 		if arr, ok := val.([]interface{}); !ok {
 			return nil, errors.Parameter.AddDetail(fmt.Sprint(val))
 		} else {

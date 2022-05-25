@@ -1,4 +1,4 @@
-package templateModel
+package thing
 
 //数据类型
 type DataType string

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -18,7 +18,7 @@ import (
 type SendActionLogic struct {
 	ctx      context.Context
 	svcCtx   *svc.ServiceContext
-	template *templateModel.Template
+	template *thing.Template
 	logx.Logger
 }
 
@@ -60,7 +60,7 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 		ClientToken: "de65377c-4041-565d-0b5e-67b664a06be8", //这个是测试代码
 		Timestamp:   time.Now().UnixMilli(),
 		Params:      param}
-	_, err = req.VerifyReqParam(l.template, templateModel.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, thing.ACTION_INPUT)
 	if err != nil {
 		return nil, err
 	}
