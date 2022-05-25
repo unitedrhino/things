@@ -45,5 +45,6 @@ goctl rpc protoc  proto/dc.proto --go_out=./ --go-grpc_out=./ --zrpc_out=.
 # 设备数据交互模块-ddsvr
 
 ```shell
+goctl api go -api http/dd.api  -dir ./
 goctl rpc protoc  proto/dd.proto --go_out=./ --go-grpc_out=./ --zrpc_out=.
 ```
