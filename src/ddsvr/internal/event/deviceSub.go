@@ -3,6 +3,7 @@ package event
 import (
 	"context"
 	"github.com/i-Things/things/shared/devices"
+	tr "github.com/i-Things/things/shared/trace"
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -41,7 +42,13 @@ func (s *DeviceSubServer) Publish(topic string, payload []byte) error {
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,
 	}
-	return s.svcCtx.InnerLink.PubDevPublish(s.ctx, pub)
+	ctx1, span := tr.StartSpan(s.ctx, topic, "")
+
+	logx.Infof("[mqtt.SubScribe]|-------------------trace:%s, spanid:%s|topic:%s",
+		span.SpanContext().TraceID(), span.SpanContext().SpanID(), topic)
+	defer span.End()
+
+	return s.svcCtx.InnerLink.PubDevPublish(ctx1, pub)
 }
 
 func (s *DeviceSubServer) Connected(info *devices.DevConn) error {

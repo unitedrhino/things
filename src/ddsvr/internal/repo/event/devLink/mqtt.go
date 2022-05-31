@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/devices"
+	tr "github.com/i-Things/things/shared/trace"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -106,6 +107,15 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 	err = d.client.Subscribe("$share/dd.rpc/$thing/#",
 		1, func(client mqtt.Client, message mqtt.Message) {
 			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+
+			//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
+			//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
+			ctx, span := tr.StartSpan(ctx, message.Topic(), "")
+
+			logx.Infof("[mqtt.SubScribe]|-------------------trace:%s, spanid:%s|topic:%s",
+				span.SpanContext().TraceID(), span.SpanContext().SpanID(), message.Topic())
+			defer span.End()
+
 			err := handle(ctx).Publish(message.Topic(), message.Payload())
 			logx.WithContext(ctx).Infof("%s|publish|topic:%v,message:%v,err:%v",
 				utils.FuncName(), message.Topic(), string(message.Payload()), err)
