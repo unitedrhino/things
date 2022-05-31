@@ -86,7 +86,6 @@ services:
       ithings_net:
         aliases:
           - node1.redis.io
-
   tdengine:
     image: tdengine/tdengine
     container_name: tdengine
@@ -130,3 +129,21 @@ services:
       ithings_net:
         aliases:
           - node1.emqx.io
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+    restart: always
+    command: server /data
+    environment:
+      MINIO_ACCESS_KEY: root
+      MINIO_SECRET_KEY: password #大于等于8位
+    logging:
+      options:
+        max-size: "50M" # 最大文件上传限制
+        max-file: "10"
+      driver: json-file
+    volumes:
+      - /opt/things/data/minio/data:/data # 映射文件路径
