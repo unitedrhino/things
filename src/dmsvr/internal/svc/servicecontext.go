@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDebugLogRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
@@ -30,11 +31,13 @@ type ServiceContext struct {
 	DeviceDataRepo deviceData.DeviceDataRepo
 	DeviceLogRepo  device.LogRepo
 	TemplateRepo   thing.TemplateRepo
+	DebugLogRepo   device.DebugLogRepo
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource)
 	deviceLog := deviceLogRepo.NewDeviceLogRepo(c.TDengine.DataSource)
+	deviceDebugLog := deviceDebugLogRepo.NewDeviceDebugLogRepo(c.TDengine.DataSource)
 
 	//TestTD(td)
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
@@ -71,5 +74,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Store:          store,
 		DeviceDataRepo: deviceData,
 		DeviceLogRepo:  deviceLog,
+		DebugLogRepo:   deviceDebugLog,
 	}
 }
