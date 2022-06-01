@@ -1,4 +1,4 @@
-package deviceDebugLogRepo
+package sdkLogRepo
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func (d DeviceDebugLogRepo) InitProduct(ctx context.Context, productID string) error {
+func (d SDKLogRepo) InitProduct(ctx context.Context, productID string) error {
 	sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
 		"(`ts` timestamp,`content` BINARY(5000),`log_level` BINARY(100),`request_id` BINARY(100),`trance_id` BINARY(100),`result_type` BIGINT)"+
 		"TAGS (device_name BINARY(50));",
@@ -18,7 +18,7 @@ func (d DeviceDebugLogRepo) InitProduct(ctx context.Context, productID string) e
 	return nil
 }
 
-func (d DeviceDebugLogRepo) InitDevice(ctx context.Context, productID string, deviceName string) error {
+func (d SDKLogRepo) InitDevice(ctx context.Context, productID string, deviceName string) error {
 	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s TAGS ('%s');",
 		getDebugLogTableName(productID, deviceName), getDebugLogStableName(productID), deviceName)
 	if _, err := d.t.Exec(sql); err != nil {
@@ -30,7 +30,7 @@ func (d DeviceDebugLogRepo) InitDevice(ctx context.Context, productID string, de
 	return nil
 }
 
-func (d DeviceDebugLogRepo) DropProduct(ctx context.Context, productID string) error {
+func (d SDKLogRepo) DropProduct(ctx context.Context, productID string) error {
 	sql := fmt.Sprintf("drop stable if exists %s;", getDebugLogStableName(productID))
 	if _, err := d.t.Exec(sql); err != nil {
 		return err
@@ -38,7 +38,7 @@ func (d DeviceDebugLogRepo) DropProduct(ctx context.Context, productID string) e
 	return nil
 }
 
-func (d DeviceDebugLogRepo) DropDevice(ctx context.Context, productID string, deviceName string) error {
+func (d SDKLogRepo) DropDevice(ctx context.Context, productID string, deviceName string) error {
 	sql := fmt.Sprintf("drop table if exists %s;", getDebugLogTableName(productID, deviceName))
 	if _, err := d.t.Exec(sql); err != nil {
 		return err

@@ -18,8 +18,8 @@ type (
 	InnerSubEvent interface {
 		// Thing 物模型消息
 		Thing(out *device.PublishMsg) error
-		// Log 设备调试日志
-		Log(out *device.PublishMsg) error
+		// SDK Log 设备调试日志
+		SDKLog(out *device.PublishMsg) error
 		// Config 设备远程配置
 		Config(out *device.PublishMsg) error
 		// Shadow 设备影子

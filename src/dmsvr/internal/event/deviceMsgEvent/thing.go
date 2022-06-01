@@ -178,7 +178,7 @@ func (l *ThingLogic) Handle(msg *device.PublishMsg) (err error) {
 		}
 		return nil
 	}()
-	l.svcCtx.DeviceLogRepo.Insert(l.ctx, &device.Log{
+	l.svcCtx.HubLogRepo.Insert(l.ctx, &device.HubLog{
 		ProductID:  msg.ProductID,
 		Action:     "publish",
 		Timestamp:  l.dreq.GetTimeStamp(msg.Timestamp), // 操作时间
