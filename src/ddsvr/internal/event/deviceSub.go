@@ -28,7 +28,7 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub != nil {
 		return err
 	}
 	return s.svcCtx.InnerLink.DevPubThing(s.ctx, pub)
@@ -38,7 +38,7 @@ func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
 func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub != nil {
 		return err
 	}
 	return s.svcCtx.InnerLink.DevPubOta(s.ctx, pub)
@@ -48,7 +48,7 @@ func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
 func (s *DeviceSubServer) Config(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub != nil {
 		return err
 	}
 	return s.svcCtx.InnerLink.DevPubConfig(s.ctx, pub)
@@ -58,7 +58,7 @@ func (s *DeviceSubServer) Config(topic string, payload []byte) error {
 func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub != nil {
 		return err
 	}
 	return s.svcCtx.InnerLink.DevPubShadow(s.ctx, pub)
@@ -68,7 +68,7 @@ func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
 func (s *DeviceSubServer) Log(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub != nil {
 		return err
 	}
 	return s.svcCtx.InnerLink.DevPubLog(s.ctx, pub)
