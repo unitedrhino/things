@@ -3,7 +3,7 @@ package event
 import (
 	"context"
 	"github.com/i-Things/things/shared/devices"
-	tr "github.com/i-Things/things/shared/trace"
+	tr "github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"

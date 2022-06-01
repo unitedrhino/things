@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/devices"
-	tr "github.com/i-Things/things/shared/trace"
+	tr "github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"

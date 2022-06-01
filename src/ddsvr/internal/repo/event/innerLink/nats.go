@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/events"
-	my_trace "github.com/i-Things/things/shared/trace"
+	my_trace "github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/src/ddsvr/dd"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"

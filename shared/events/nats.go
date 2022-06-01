@@ -2,7 +2,7 @@ package events
 
 import (
 	"context"
-	tr "github.com/i-Things/things/shared/trace"
+	tr "github.com/i-Things/things/shared/traces"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 )
