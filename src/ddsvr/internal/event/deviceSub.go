@@ -28,7 +28,7 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub == nil {
 		return err
 	}
 	return s.svcCtx.InnerLink.DevPubThing(s.ctx, pub)
