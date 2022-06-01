@@ -1,4 +1,4 @@
-package deviceDebugLogRepo
+package sdkLogRepo
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func (d DeviceDebugLogRepo) GetDeviceDebugLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) ([]*device.DebugLog, error) {
+func (d SDKLogRepo) GetDeviceDebugLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) ([]*device.SDKLog, error) {
 	sql := sq.Select("*").From(getDebugLogStableName(productID)).
 		Where("`device_name`=?", deviceName).OrderBy("`ts` desc")
 	sql = page.FmtSql(sql)
@@ -25,14 +25,14 @@ func (d DeviceDebugLogRepo) GetDeviceDebugLog(ctx context.Context, productID, de
 	}
 	var datas []map[string]interface{}
 	store.Scan(rows, &datas)
-	retLogs := make([]*device.DebugLog, 0, len(datas))
+	retLogs := make([]*device.SDKLog, 0, len(datas))
 	for _, v := range datas {
 		retLogs = append(retLogs, ToDeviceDebugLog(productID, v))
 	}
 	return retLogs, nil
 }
 
-func (d DeviceDebugLogRepo) Insert(ctx context.Context, data *device.DebugLog) error {
+func (d SDKLogRepo) Insert(ctx context.Context, data *device.SDKLog) error {
 	sql := fmt.Sprintf("insert into %s using %s tags('%s')(`ts`, `content`,`log_level`,"+
 		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?);",
 		getDebugLogTableName(data.ProductID, data.DeviceName), getDebugLogStableName(data.ProductID), data.DeviceName)

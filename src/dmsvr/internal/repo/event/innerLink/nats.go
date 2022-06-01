@@ -94,7 +94,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		return err
 	}
 	err = n.QueueSubscribeDevPublish(topics.DeviceUpLogAll, func(ctx context.Context, msg *device.PublishMsg) error {
-		err := handle(ctx).Log(msg)
+		err := handle(ctx).SDKLog(msg)
 		return err
 	})
 	if err != nil {

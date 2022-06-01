@@ -56,7 +56,7 @@ func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
 	return dpi
 }
 
-func ToDeviceDescribeLog(log *device.Log) *dm.DeviceDescribeLog {
+func ToDeviceDescribeLog(log *device.HubLog) *dm.DeviceDescribeLog {
 	return &dm.DeviceDescribeLog{
 		Timestamp:  log.Timestamp.UnixMilli(),
 		Action:     log.Action,

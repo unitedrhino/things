@@ -8,10 +8,10 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/dataUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
-	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDebugLogRepo"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceLogRepo"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/hubLogRepo"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/sdkLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -29,15 +29,15 @@ type ServiceContext struct {
 	DataUpdate     dataUpdate.DataUpdate
 	Store          kv.Store
 	DeviceDataRepo deviceData.DeviceDataRepo
-	DeviceLogRepo  device.LogRepo
+	HubLogRepo     device.HubLogRepo
 	TemplateRepo   thing.TemplateRepo
-	DebugLogRepo   device.DebugLogRepo
+	SDKLogRepo     device.SDKLogRepo
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource)
-	deviceLog := deviceLogRepo.NewDeviceLogRepo(c.TDengine.DataSource)
-	deviceDebugLog := deviceDebugLogRepo.NewDeviceDebugLogRepo(c.TDengine.DataSource)
+	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
+	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 
 	//TestTD(td)
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
@@ -73,7 +73,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DataUpdate:     du,
 		Store:          store,
 		DeviceDataRepo: deviceData,
-		DeviceLogRepo:  deviceLog,
-		DebugLogRepo:   deviceDebugLog,
+		HubLogRepo:     hubLog,
+		SDKLogRepo:     sdkLog,
 	}
 }
