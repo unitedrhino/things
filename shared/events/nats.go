@@ -2,7 +2,7 @@ package events
 
 import (
 	"context"
-	tr "github.com/i-Things/things/shared/traces"
+	"github.com/i-Things/things/shared/traces"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -18,7 +18,7 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 			return
 		}
 		ctx := emsg.GetCtx()
-		ctx, span := tr.StartSpan(ctx, msg.Subject, "")
+		ctx, span := traces.StartSpan(ctx, msg.Subject, "")
 		logx.Infof("[dmsvr.NatsSubscription]|-------------------trace:%s, spanid:%s|topic:%s",
 			span.SpanContext().TraceID(), span.SpanContext().SpanID(), msg.Subject)
 		defer span.End()

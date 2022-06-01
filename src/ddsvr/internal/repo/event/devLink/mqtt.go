@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/devices"
-	tr "github.com/i-Things/things/shared/traces"
+	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -110,7 +110,7 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 
 			//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
 			//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
-			ctx, span := tr.StartSpan(ctx, message.Topic(), "")
+			ctx, span := traces.StartSpan(ctx, message.Topic(), "")
 
 			logx.Infof("[mqtt.SubScribe]|-------------------trace:%s, spanid:%s|topic:%s",
 				span.SpanContext().TraceID(), span.SpanContext().SpanID(), message.Topic())

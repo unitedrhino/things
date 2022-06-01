@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/events"
-	my_trace "github.com/i-Things/things/shared/traces"
+	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/src/ddsvr/dd"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -76,7 +76,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
 			topic, payload := devices.GetPublish(msg)
 			//给设备回包之前，将链路信息span推送至jaeger
-			_, span := my_trace.StartSpan(ctx, TopicInnerPublish, "")
+			_, span := traces.StartSpan(ctx, TopicInnerPublish, "")
 			logx.Infof("[mqtt.SubScribe]|-------------------trace:%s, spanid:%s|topic:%s",
 				span.SpanContext().TraceID(), span.SpanContext().SpanID(), TopicInnerPublish)
 			defer span.End()
