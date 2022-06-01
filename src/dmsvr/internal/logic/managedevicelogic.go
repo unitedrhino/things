@@ -155,7 +155,7 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 			l.Errorf("DelDevice|TemplateRepo|GetTemplate|err=%+v", err)
 			return nil, errors.System.AddDetail(err.Error())
 		}
-		err = l.svcCtx.DeviceLogRepo.DropDevice(l.ctx, in.Info.ProductID, in.Info.DeviceName)
+		err = l.svcCtx.HubLogRepo.DropDevice(l.ctx, in.Info.ProductID, in.Info.DeviceName)
 		if err != nil {
 			l.Errorf("DelDevice|DeviceLogRepo|DropDevice|err=%+v", err)
 			return nil, err
