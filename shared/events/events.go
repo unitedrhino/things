@@ -68,7 +68,15 @@ func (m *MsgHead) GetCtx() context.Context {
 	}
 	//将MsgHead 中的msg链路信息 重新注入ctx中并返回
 	t, err := trace.TraceIDFromHex(msg.TraceID)
+	if err != nil {
+		logx.Error("[GetCtx]|TraceIDFromHex err.")
+		return nil
+	}
 	s, err := trace.SpanIDFromHex(msg.SpanID)
+	if err != nil {
+		logx.Error("[GetCtx]|SpanIDFromHex err.")
+		return nil
+	}
 	parent := trace.NewSpanContext(trace.SpanContextConfig{
 		TraceID: t,
 		SpanID:  s,
