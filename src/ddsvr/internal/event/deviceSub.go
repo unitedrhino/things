@@ -65,13 +65,13 @@ func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
 }
 
 // Log 设备调试日志
-func (s *DeviceSubServer) Log(topic string, payload []byte) error {
+func (s *DeviceSubServer) SDKLog(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
 	if err != nil {
 		return err
 	}
-	return s.svcCtx.InnerLink.DevPubLog(s.ctx, pub)
+	return s.svcCtx.InnerLink.DevPubSDKLog(s.ctx, pub)
 }
 
 func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.DevPublish, error) {
