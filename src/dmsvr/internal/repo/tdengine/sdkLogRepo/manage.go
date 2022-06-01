@@ -9,7 +9,7 @@ import (
 
 func (d SDKLogRepo) InitProduct(ctx context.Context, productID string) error {
 	sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
-		"(`ts` timestamp,`content` BINARY(5000),`log_level` BINARY(100),`request_id` BINARY(100),`trance_id` BINARY(100),`result_type` BIGINT)"+
+		"(`ts` timestamp,`content` BINARY(5000),`log_level` BINARY(100),`client_token` BINARY(100),`trance_id` BINARY(100),`result_type` BIGINT)"+
 		"TAGS (device_name BINARY(50));",
 		getDebugLogStableName(productID))
 	if _, err := d.t.Exec(sql); err != nil {

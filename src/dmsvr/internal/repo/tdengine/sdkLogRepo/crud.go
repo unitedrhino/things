@@ -34,9 +34,9 @@ func (d SDKLogRepo) GetDeviceDebugLog(ctx context.Context, productID, deviceName
 
 func (d SDKLogRepo) Insert(ctx context.Context, data *device.SDKLog) error {
 	sql := fmt.Sprintf("insert into %s using %s tags('%s')(`ts`, `content`,`log_level`,"+
-		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?);",
+		" `client_token`, `trance_id`, `result_type`) values (?,?,?,?,?,?);",
 		getDebugLogTableName(data.ProductID, data.DeviceName), getDebugLogStableName(data.ProductID), data.DeviceName)
-	if _, err := d.t.Exec(sql, data.Timestamp, data.Content, data.LogLevel, data.RequestID, data.TranceID, data.ResultType); err != nil {
+	if _, err := d.t.Exec(sql, data.Timestamp, data.Content, data.LogLevel, data.ClientToken, data.TranceID, data.ResultType); err != nil {
 		logx.WithContext(ctx).Errorf(
 			sql+"%s|EventTable|productID:%v,deviceName:%v,err:%v",
 			utils.FuncName(), data.ProductID, data.DeviceName, err)

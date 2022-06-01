@@ -72,21 +72,21 @@ func (l *SDKLogLogic) ReportLogContent(msg *device.PublishMsg) error {
 	logContent := l.dreq.Params["content"]
 
 	err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &device.SDKLog{
-		ProductID:  ld.ProductID,
-		LogLevel:   ld.LogLevel,
-		Timestamp:  msg.Timestamp, // 操作时间
-		DeviceName: ld.DeviceName,
-		Content:    logContent.(string),
-		TranceID:   utils.TraceIdFromContext(l.ctx),
-		ResultType: errors.Fmt(err).GetCode(),
-		RequestID:  l.dreq.ClientToken,
+		ProductID:   ld.ProductID,
+		LogLevel:    ld.LogLevel,
+		Timestamp:   msg.Timestamp, // 操作时间
+		DeviceName:  ld.DeviceName,
+		Content:     logContent.(string),
+		TranceID:    utils.TraceIdFromContext(l.ctx),
+		ResultType:  errors.Fmt(err).GetCode(),
+		ClientToken: l.dreq.ClientToken,
 	})
 	if err != nil {
 		l.Errorf("%s|LogRepo|insert|productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		l.DeviceResp(msg, errors.Database, nil)
 	}
-	l.DeviceResp(msg, errors.OK, map[string]interface{}{"RequestId": l.dreq.ClientToken})
+	l.DeviceResp(msg, errors.OK, nil)
 	return nil
 }
 
