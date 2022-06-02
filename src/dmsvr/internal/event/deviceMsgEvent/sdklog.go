@@ -56,6 +56,7 @@ func (l *SDKLogLogic) Handle(msg *device.PublishMsg) (err error) {
 	return nil
 }
 
+//获取设备上传的调试日志内容
 func (l *SDKLogLogic) ReportLogContent(msg *device.PublishMsg) error {
 	ld, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(msg.ProductID, msg.DeviceName)
 	if err != nil {
@@ -90,6 +91,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *device.PublishMsg) error {
 	return nil
 }
 
+//获取当前日志等级 0 未开启
 func (l *SDKLogLogic) GetLogLevel(msg *device.PublishMsg) {
 	ld, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(msg.ProductID, msg.DeviceName)
 	if err != nil {

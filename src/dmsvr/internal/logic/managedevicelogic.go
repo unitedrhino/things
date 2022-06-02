@@ -3,12 +3,17 @@ package logic
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
+	"strings"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -135,6 +140,14 @@ func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 	if err != nil {
 		l.Errorf("ModifyDevice|DeviceInfo|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
+	}
+	//通知device log_level
+	uuid, _ := uuid.GenerateUUID()
+	tmpTopic := fmt.Sprintf("%s/down/update/%s/%s", devices.TopicHeadLog, di.ProductID, di.DeviceName)
+	topic, payload := deviceSend.GenThingDeviceRespData(deviceSend.GET_STATUS, uuid, strings.Split(tmpTopic, "/"), errors.OK, map[string]interface{}{"log_level": di.LogLevel})
+	er := l.svcCtx.InnerLink.PublishToDev(l.ctx, topic, payload)
+	if er != nil {
+		l.Errorf("DeviceResp|SDK Log PublishToDev failure err:%v", er)
 	}
 	return ToDeviceInfo(di), nil
 }
