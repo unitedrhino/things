@@ -3,6 +3,7 @@ package event
 import (
 	"context"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
@@ -31,7 +32,12 @@ func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
 	if pub != nil {
 		return err
 	}
-	return s.svcCtx.InnerLink.DevPubThing(s.ctx, pub)
+	ctx1, span := traces.StartSpan(s.ctx, topic, "")
+
+	logx.Infof("[mqtt.Thing]|-------------------trace:%s, spanid:%s|topic:%s",
+		span.SpanContext().TraceID(), span.SpanContext().SpanID(), topic)
+	defer span.End()
+	return s.svcCtx.InnerLink.DevPubThing(ctx1, pub)
 }
 
 // Ota ota远程升级
