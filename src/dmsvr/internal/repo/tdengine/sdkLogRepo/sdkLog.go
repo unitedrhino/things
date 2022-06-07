@@ -20,10 +20,10 @@ func NewSDKLogRepo(dataSource string) *SDKLogRepo {
 	return &SDKLogRepo{t: td}
 }
 
-func getDebugLogStableName(productID string) string {
+func getSDKLogStableName(productID string) string {
 	return fmt.Sprintf("`model_sdklog_%s`", productID)
 }
 
-func getDebugLogTableName(productID, deviceName string) string {
+func getSDKLogTableName(productID, deviceName string) string {
 	return fmt.Sprintf("`sdk_log_%s_%s`", productID, deviceName)
 }
