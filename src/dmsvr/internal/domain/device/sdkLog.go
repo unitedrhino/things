@@ -15,11 +15,9 @@ type (
 		Timestamp   time.Time `json:"timestamp"`  // 操作时间
 		ClientToken string    `json:"clientToken"`
 		LogLevel    int64     `json:"log_level"`
-		TranceID    string    `json:"tranceID"`   // 服务器端事务id
-		ResultType  int64     `json:"resultType"` // 请求结果状态,0为成功
 	}
 	SDKLogRepo interface {
-		GetDeviceDebugLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) ([]*SDKLog, error)
+		GetDeviceSDKLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) ([]*SDKLog, error)
 		Insert(ctx context.Context, data *SDKLog) error
 		InitProduct(ctx context.Context, productID string) error
 		InitDevice(ctx context.Context, productID string, deviceName string) error

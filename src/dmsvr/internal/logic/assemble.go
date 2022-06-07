@@ -67,3 +67,12 @@ func ToDeviceDescribeLog(log *device.HubLog) *dm.DeviceDescribeLog {
 		ResultType: log.ResultType,
 	}
 }
+
+//SDK调试日志
+func ToDeviceSDKLog(log *device.SDKLog) *dm.DeviceSDKLog {
+	return &dm.DeviceSDKLog{
+		Timestamp: log.Timestamp.UnixMilli(),
+		Loglevel:  log.LogLevel,
+		Content:   log.Content,
+	}
+}
