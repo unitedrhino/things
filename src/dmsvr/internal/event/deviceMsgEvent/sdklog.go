@@ -78,8 +78,6 @@ func (l *SDKLogLogic) ReportLogContent(msg *device.PublishMsg) error {
 		Timestamp:   msg.Timestamp, // 操作时间
 		DeviceName:  ld.DeviceName,
 		Content:     logContent.(string),
-		TranceID:    utils.TraceIdFromContext(l.ctx),
-		ResultType:  errors.Fmt(err).GetCode(),
 		ClientToken: l.dreq.ClientToken,
 	})
 	if err != nil {
