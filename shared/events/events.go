@@ -11,9 +11,6 @@ import (
 type MySpanContextConfig struct {
 	TraceID string
 	SpanID  string
-	//TraceFlags byte
-	//TraceState string
-	//Remote     bool
 }
 type (
 	// MsgHead 消息队列的头
@@ -76,15 +73,10 @@ func (m *MsgHead) GetCtx() context.Context {
 		return nil
 	}
 	parent := trace.NewSpanContext(trace.SpanContextConfig{
-		TraceID: t,
-		SpanID:  s,
-		//TraceFlags: msg.TraceFlags,
-		//raceState:  msg.TraceState,
-		//Remote:     msg.Remote,
+		TraceID:    t,
+		SpanID:     s,
+		TraceFlags: 0x1,
 	})
-
-	/*	ctx, span := my_trace.StartSpan(ctx, "", "")
-		span.End()*/
 
 	return trace.ContextWithRemoteSpanContext(context.Background(), parent)
 }
