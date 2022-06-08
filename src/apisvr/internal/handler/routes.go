@@ -165,6 +165,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/getDeviceDescribeLog",
 				Handler: opendm.GetDeviceDescribeLogHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/getDeviceSDKLog",
+				Handler: opendm.GetDeviceSDKLogHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/open/dm"),
 	)

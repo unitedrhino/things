@@ -56,7 +56,7 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 	}
 	pi, pt := l.InsertProduct(in)
 	t, _ := thing.NewTemplate([]byte(pt.Template))
-	if err := l.svcCtx.DeviceLogRepo.InitProduct(
+	if err := l.svcCtx.HubLogRepo.InitProduct(
 		l.ctx, pi.ProductID); err != nil {
 		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
@@ -209,7 +209,7 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInf
 	if err != nil {
 		return nil, errors.System.AddDetail(err.Error())
 	}
-	err = l.svcCtx.DeviceLogRepo.DropProduct(l.ctx, in.Info.ProductID)
+	err = l.svcCtx.HubLogRepo.DropProduct(l.ctx, in.Info.ProductID)
 	if err != nil {
 		l.Errorf("DelProduct|DeviceLogRepo|DropProduct|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
