@@ -19,9 +19,9 @@ const (
 	DeviceUpConfig    = "device.up.config.%s.%s"
 	DeviceUpConfigAll = "device.up.config.>"
 
-	// DeviceUpLog 设备调试日志 最后两个是产品id和设备名称
-	DeviceUpLog    = "device.up.log.%s.%s"
-	DeviceUpLogAll = "device.up.log.>"
+	// DeviceUpSDKLog 设备调试日志 最后两个是产品id和设备名称
+	DeviceUpSDKLog    = "device.up.sdklog.%s.%s"
+	DeviceUpSDKLogAll = "device.up.sdklog.>"
 
 	// DeviceUpStatusConnected 设备登录后向内部推送以下topic
 	DeviceUpStatusConnected = "device.up.status.connected"

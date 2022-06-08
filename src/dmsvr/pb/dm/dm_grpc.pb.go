@@ -48,6 +48,8 @@ type DmClient interface {
 	SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 	//同步调用设备属性
 	SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+	//获取设备sdk调试日志
+	GetDeviceSDKLog(ctx context.Context, in *GetDeviceSDKLogReq, opts ...grpc.CallOption) (*GetDeviceSDKLogResp, error)
 }
 
 type dmClient struct {
@@ -175,6 +177,15 @@ func (c *dmClient) SendProperty(ctx context.Context, in *SendPropertyReq, opts .
 	return out, nil
 }
 
+func (c *dmClient) GetDeviceSDKLog(ctx context.Context, in *GetDeviceSDKLogReq, opts ...grpc.CallOption) (*GetDeviceSDKLogResp, error) {
+	out := new(GetDeviceSDKLogResp)
+	err := c.cc.Invoke(ctx, "/dm.Dm/getDeviceSDKLog", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DmServer is the server API for Dm service.
 // All implementations must embed UnimplementedDmServer
 // for forward compatibility
@@ -205,6 +216,8 @@ type DmServer interface {
 	SendAction(context.Context, *SendActionReq) (*SendActionResp, error)
 	//同步调用设备属性
 	SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error)
+	//获取设备sdk调试日志
+	GetDeviceSDKLog(context.Context, *GetDeviceSDKLogReq) (*GetDeviceSDKLogResp, error)
 	mustEmbedUnimplementedDmServer()
 }
 
@@ -250,6 +263,9 @@ func (UnimplementedDmServer) SendAction(context.Context, *SendActionReq) (*SendA
 }
 func (UnimplementedDmServer) SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendProperty not implemented")
+}
+func (UnimplementedDmServer) GetDeviceSDKLog(context.Context, *GetDeviceSDKLogReq) (*GetDeviceSDKLogResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeviceSDKLog not implemented")
 }
 func (UnimplementedDmServer) mustEmbedUnimplementedDmServer() {}
 
@@ -498,6 +514,24 @@ func _Dm_SendProperty_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Dm_GetDeviceSDKLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeviceSDKLogReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DmServer).GetDeviceSDKLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.Dm/getDeviceSDKLog",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DmServer).GetDeviceSDKLog(ctx, req.(*GetDeviceSDKLogReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Dm_ServiceDesc is the grpc.ServiceDesc for Dm service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -556,6 +590,10 @@ var Dm_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "sendProperty",
 			Handler:    _Dm_SendProperty_Handler,
+		},
+		{
+			MethodName: "getDeviceSDKLog",
+			Handler:    _Dm_GetDeviceSDKLog_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
