@@ -1,4 +1,4 @@
-package deviceLogRepo
+package hubLogRepo
 
 import (
 	"fmt"
@@ -7,23 +7,23 @@ import (
 	"os"
 )
 
-type DeviceLogRepo struct {
+type HubLogRepo struct {
 	t *TDengine.Td
 }
 
-func NewDeviceLogRepo(dataSource string) *DeviceLogRepo {
+func NewHubLogRepo(dataSource string) *HubLogRepo {
 	td, err := TDengine.NewTDengine(dataSource)
 	if err != nil {
 		logx.Error("NewTDengine err", err)
 		os.Exit(-1)
 	}
-	return &DeviceLogRepo{t: td}
+	return &HubLogRepo{t: td}
 }
 
 func getLogStableName(productID string) string {
-	return fmt.Sprintf("`model_log_%s`", productID)
+	return fmt.Sprintf("`model_hublog_%s`", productID)
 }
 
 func getLogTableName(productID, deviceName string) string {
-	return fmt.Sprintf("`device_log_%s_%s`", productID, deviceName)
+	return fmt.Sprintf("`hub_log_%s_%s`", productID, deviceName)
 }

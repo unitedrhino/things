@@ -35,7 +35,7 @@ func (l *DisconnectedLogic) Handle(msg *device.ConnectMsg) error {
 	if err != nil {
 		return err
 	}
-	err = l.svcCtx.DeviceLogRepo.Insert(l.ctx, &device.Log{
+	err = l.svcCtx.HubLogRepo.Insert(l.ctx, &device.HubLog{
 		ProductID:  ld.ProductID,
 		Action:     "disconnected",
 		Timestamp:  msg.Timestamp, // 操作时间

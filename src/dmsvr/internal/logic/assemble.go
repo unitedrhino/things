@@ -56,7 +56,7 @@ func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
 	return dpi
 }
 
-func ToDeviceDescribeLog(log *device.Log) *dm.DeviceDescribeLog {
+func ToDeviceDescribeLog(log *device.HubLog) *dm.DeviceDescribeLog {
 	return &dm.DeviceDescribeLog{
 		Timestamp:  log.Timestamp.UnixMilli(),
 		Action:     log.Action,
@@ -65,5 +65,14 @@ func ToDeviceDescribeLog(log *device.Log) *dm.DeviceDescribeLog {
 		Topic:      log.Topic,
 		Content:    log.Content,
 		ResultType: log.ResultType,
+	}
+}
+
+//SDK调试日志
+func ToDeviceSDKLog(log *device.SDKLog) *dm.DeviceSDKLog {
+	return &dm.DeviceSDKLog{
+		Timestamp: log.Timestamp.UnixMilli(),
+		Loglevel:  log.LogLevel,
+		Content:   log.Content,
 	}
 }

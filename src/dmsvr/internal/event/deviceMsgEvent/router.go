@@ -43,9 +43,9 @@ func (l *DeviceMsgHandle) Config(msg *device.PublishMsg) error {
 	return NewConfigLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Log(msg *device.PublishMsg) error {
+func (l *DeviceMsgHandle) SDKLog(msg *device.PublishMsg) error {
 	l.Infof("%s|req=%+v", utils.FuncName(), utils.GetJson(msg))
-	return NewLogLogic(l.ctx, l.svcCtx).Handle(msg)
+	return NewSDKLogLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
 func (l *DeviceMsgHandle) Connected(msg *device.ConnectMsg) error {
