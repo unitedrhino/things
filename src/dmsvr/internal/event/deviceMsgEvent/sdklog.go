@@ -69,7 +69,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *device.PublishMsg) error {
 		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
-	l.svcCtx.SDKLogRepo.InitDevice(l.ctx, ld.ProductID, ld.DeviceName)
+	//l.svcCtx.SDKLogRepo.InitDevice(l.ctx, ld.ProductID, ld.DeviceName)
 	logContent := l.dreq.Params["content"]
 
 	err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &device.SDKLog{
@@ -84,6 +84,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *device.PublishMsg) error {
 		l.Errorf("%s|LogRepo|insert|productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		l.DeviceResp(msg, errors.Database, nil)
+		return err
 	}
 	l.DeviceResp(msg, errors.OK, nil)
 	return nil
@@ -96,6 +97,7 @@ func (l *SDKLogLogic) GetLogLevel(msg *device.PublishMsg) {
 		l.Errorf("%s|Log|operate|productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		l.DeviceResp(msg, errors.Database, nil)
+		return
 	}
 	l.DeviceResp(msg, errors.OK, map[string]interface{}{"log_level": ld.LogLevel})
 }
