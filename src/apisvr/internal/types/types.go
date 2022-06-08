@@ -386,3 +386,23 @@ type SendDcPropertyResp struct {
 	Code        int64  `json:"code,string"`           //设备返回状态码
 	Data        string `json:"data,omitempty"`        //返回信息
 }
+
+type GetDeviceSDKLogReq struct {
+	ProductID  string `form:"productID,omitempty"`
+	DeviceName string `form:"deviceName,omitempty"`
+	TimeStart  int64  `form:"timeStart,optional,string,omitempty"`
+	TimeEnd    int64  `form:"timeEnd,optional,string,omitempty"`
+	Limit      int64  `form:"limit,optional,omitempty"`
+	Page       int64  `form:"page,optional"`     // 页码
+	PageSize   int64  `form:"pageSize,optional"` // 每页大小
+}
+
+type GetDeviceSDKLogResp struct {
+	List []*DeviceSDKLog `json:"list,omitempty"`
+}
+
+type DeviceSDKLog struct {
+	Timestamp int64  `json:"timestamp,string"`
+	Loglevel  int64  `json:"loglevel,string"`
+	Content   string `json:"content"`
+}

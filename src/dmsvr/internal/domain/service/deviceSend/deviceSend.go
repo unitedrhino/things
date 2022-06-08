@@ -3,6 +3,7 @@ package deviceSend
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 type METHOD = string
@@ -94,6 +95,8 @@ func GenThingDeviceRespData(Method, ClientToken string, topics []string, err err
 	respPayload, _ := json.Marshal(DeviceResp{
 		Method:      respMethod,
 		ClientToken: ClientToken,
-		Data:        data}.AddStatus(err))
+		Data:        data,
+		Timestamp:   time.Now().UnixMilli(),
+	}.AddStatus(err))
 	return respTopic, respPayload
 }

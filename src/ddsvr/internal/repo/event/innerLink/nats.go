@@ -59,10 +59,10 @@ func (n *NatsClient) DevPubShadow(ctx context.Context, publishMsg *devices.DevPu
 		fmt.Sprintf(topics.DeviceUpShadow, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
 }
 
-func (n *NatsClient) DevPubLog(ctx context.Context, publishMsg *devices.DevPublish) error {
+func (n *NatsClient) DevPubSDKLog(ctx context.Context, publishMsg *devices.DevPublish) error {
 	pubStr, _ := json.Marshal(publishMsg)
 	return n.publish(ctx,
-		fmt.Sprintf(topics.DeviceUpLog, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
+		fmt.Sprintf(topics.DeviceUpSDKLog, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
 }
 
 func (n *NatsClient) PubConn(ctx context.Context, conn ConnType, info *devices.DevConn) error {

@@ -26,7 +26,7 @@ type (
 		// Shadow 设备影子
 		Shadow(topic string, payload []byte) error
 		// Log 设备调试日志
-		Log(topic string, payload []byte) error
+		SDKLog(topic string, payload []byte) error
 		// Thing 物模型消息
 		Thing(topic string, payload []byte) error
 		Connected(out *devices.DevConn) error
