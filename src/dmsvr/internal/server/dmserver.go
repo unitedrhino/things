@@ -99,3 +99,9 @@ func (s *DmServer) SendProperty(ctx context.Context, in *dm.SendPropertyReq) (*d
 	l := logic.NewSendPropertyLogic(ctx, s.svcCtx)
 	return l.SendProperty(in)
 }
+
+// 获取设备sdk调试日志
+func (s *DmServer) GetDeviceSDKLog(ctx context.Context, in *dm.GetDeviceSDKLogReq) (*dm.GetDeviceSDKLogResp, error) {
+	l := logic.NewGetDeviceSDKLogLogic(ctx, s.svcCtx)
+	return l.GetDeviceSDKLog(in)
+}

@@ -41,7 +41,7 @@ const (
 	TopicThing  = ShareSubTopicPrefix + devices.TopicHeadThing + "/#"
 	TopicOta    = ShareSubTopicPrefix + devices.TopicHeadOta + "/#"
 	TopicConfig = ShareSubTopicPrefix + devices.TopicHeadConfig + "/#"
-	TopicLog    = ShareSubTopicPrefix + devices.TopicHeadLog + "/#"
+	TopicSDKLog = ShareSubTopicPrefix + devices.TopicHeadLog + "/#"
 	TopicShadow = ShareSubTopicPrefix + devices.TopicHeadShadow + "/#"
 )
 
@@ -97,8 +97,8 @@ func (d *MqttClient) SubScribe(handle Handle) error {
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicLog, func(ctx context.Context, topic string, payload []byte) error {
-		return handle(ctx).Log(topic, payload)
+	err = d.subscribeWithFunc(TopicSDKLog, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).SDKLog(topic, payload)
 	})
 	if err != nil {
 		return err

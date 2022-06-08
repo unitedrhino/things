@@ -23,6 +23,12 @@ $rrpc/txd/{productID}/${deviceName}/${MessageId}	发布	RRPC消息上行，Messa
 $rrpc/rxd/{productID}/${deviceName}/+	订阅	RRPC消息下行
 $sys/operation/up/{productID}/${deviceName}	发布	系统topic：ntp服务消息上行
 $sys/operation/down/{productID}/${deviceName}/+	订阅	系统topic：ntp服务消息下行
+log topic
+$log/up/operation/${productID}/${deviceName} //设备查询是否需要上传调试日志及日志级别，上行
+$log/down/operation/${productID}/${deviceName}
+$log/up/report/${productID}/${deviceName} //设备上传调试日志内容，上行
+$log/down/report/${productID}/${deviceName}
+$log/down/update/${productID}/${deviceName} //服务器端下发调试日志配置，下行
 
 自定义topic:
 ${productID}/${deviceName}/control	订阅	编辑删除

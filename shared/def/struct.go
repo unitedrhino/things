@@ -11,11 +11,12 @@ type PageInfo struct {
 	SearchKey  string `json:"searchKey" form:"searchKey"`   // 搜索的key
 	SearchType string `json:"searchType" form:"searchType"` // 搜索的类型
 }
-
 type PageInfo2 struct {
 	TimeStart int64
 	TimeEnd   int64
 	Limit     int64
+	Page      int64 `json:"page" form:"page"`         // 页码
+	PageSize  int64 `json:"pageSize" form:"pageSize"` // 每页大小
 }
 
 func (p PageInfo) GetLimit() int64 {
@@ -33,9 +34,18 @@ func (p PageInfo) GetOffset() int64 {
 
 func (p PageInfo2) GetLimit() int64 {
 	if p.Limit == 0 {
-		return 20
+		if p.PageSize == 0 {
+			return 20
+		}
+		return p.PageSize
 	}
 	return p.Limit
+}
+func (p PageInfo2) GetOffset() int64 {
+	if p.Page == 0 {
+		return 0
+	}
+	return p.PageSize * (p.Page - 1)
 }
 func (p PageInfo2) GetTimeStart() time.Time {
 	return time.UnixMilli(p.TimeStart)
@@ -51,6 +61,9 @@ func (p PageInfo2) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	}
 	if p.TimeEnd != 0 {
 		sql = sql.Where(sq.LtOrEq{"ts": p.GetTimeEnd()})
+	}
+	if p.Page != 0 {
+		sql = sql.Offset(uint64(p.GetOffset()))
 	}
 	return sql
 }
