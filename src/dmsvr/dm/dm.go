@@ -17,12 +17,15 @@ type (
 	DeviceData               = dm.DeviceData
 	DeviceDescribeLog        = dm.DeviceDescribeLog
 	DeviceInfo               = dm.DeviceInfo
+	DeviceSDKLog             = dm.DeviceSDKLog
 	GetDeviceDataReq         = dm.GetDeviceDataReq
 	GetDeviceDataResp        = dm.GetDeviceDataResp
 	GetDeviceDescribeLogReq  = dm.GetDeviceDescribeLogReq
 	GetDeviceDescribeLogResp = dm.GetDeviceDescribeLogResp
 	GetDeviceInfoReq         = dm.GetDeviceInfoReq
 	GetDeviceInfoResp        = dm.GetDeviceInfoResp
+	GetDeviceSDKLogReq       = dm.GetDeviceSDKLogReq
+	GetDeviceSDKLogResp      = dm.GetDeviceSDKLogResp
 	GetProductInfoReq        = dm.GetProductInfoReq
 	GetProductInfoResp       = dm.GetProductInfoResp
 	GetProductTemplateReq    = dm.GetProductTemplateReq
@@ -68,6 +71,8 @@ type (
 		SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 		// 同步调用设备属性
 		SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+		// 获取设备sdk调试日志
+		GetDeviceSDKLog(ctx context.Context, in *GetDeviceSDKLogReq, opts ...grpc.CallOption) (*GetDeviceSDKLogResp, error)
 	}
 
 	defaultDm struct {
@@ -157,4 +162,10 @@ func (m *defaultDm) SendAction(ctx context.Context, in *SendActionReq, opts ...g
 func (m *defaultDm) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.SendProperty(ctx, in, opts...)
+}
+
+// 获取设备sdk调试日志
+func (m *defaultDm) GetDeviceSDKLog(ctx context.Context, in *GetDeviceSDKLogReq, opts ...grpc.CallOption) (*GetDeviceSDKLogResp, error) {
+	client := dm.NewDmClient(m.cli.Conn())
+	return client.GetDeviceSDKLog(ctx, in, opts...)
 }
