@@ -386,3 +386,13 @@ type SendDcPropertyResp struct {
 	Code        int64  `json:"code,string"`           //设备返回状态码
 	Data        string `json:"data,omitempty"`        //返回信息
 }
+
+type UploadReq struct {
+	Business string `path:"business"` //对应的业务
+	Sign     string `form:"sign"`     //签名
+}
+
+type DownloadReq struct {
+	Business string `path:"business"` //对应的业务
+	Sign     string `form:"sign"`     //签名
+}
