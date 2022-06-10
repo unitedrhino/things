@@ -2,6 +2,7 @@ Name: api
 Host: 0.0.0.0
 CpuThreshold: 0
 Timeout: 1000000
+MaxBytes: 1000000000
 Port: 7777
 NodeID: 1
 Mysql:
