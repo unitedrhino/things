@@ -1,4 +1,4 @@
-package utils
+package users
 
 import (
 	"github.com/dgrijalva/jwt-go"
