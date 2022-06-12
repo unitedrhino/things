@@ -31,6 +31,8 @@ service Dm {
   rpc sendAction(SendActionReq)         returns(SendActionResp);
   //同步调用设备属性
   rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
+  //获取设备sdk调试日志
+  rpc getDeviceSDKLog(GetDeviceSDKLogReq) returns (GetDeviceSDKLogResp);
 }
 
 
@@ -276,4 +278,21 @@ message SendPropertyResp{
   string clientToken = 3;//调用id
   string data = 4;//返回信息
 }
-
+/*获取sdk调试日志信息*/
+message GetDeviceSDKLogReq {
+  string  productID = 1; //产品id
+  string  deviceName = 2; //设备名
+  int64   timeStart = 3;//获取时间的开始
+  int64   timeEnd = 4;//时间的结束
+  int64   limit = 5;//获取的长度
+  PageInfo page = 6;//分页信息 只获取一个则不填
+}
+/*sdk调试日志信息*/
+message GetDeviceSDKLogResp {
+  repeated DeviceSDKLog list = 1;
+}
+message DeviceSDKLog {
+  int64 timestamp = 1;//发生时间戳
+  int64 loglevel = 2 ;//操作类型;显示相应的操作名称、API名称、服务的method
+  string content = 3;//具体内容
+}
