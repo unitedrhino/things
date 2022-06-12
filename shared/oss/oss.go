@@ -8,6 +8,11 @@ import (
 
 type OSSer = *minio.Client
 
+//bucket 列表
+const (
+	BucketOta = "ota"
+)
+
 func NewOss(conf conf.OSSConf) (OSSer, error) {
 	if conf.OSS != "minio" {
 		return nil, fmt.Errorf("oss just support minio")

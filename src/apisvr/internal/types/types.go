@@ -112,6 +112,14 @@ type GetUserInfosResp struct {
 	Info []*UserInfo `json:"info"`
 }
 
+type GenOTAUploadUriReq struct {
+}
+
+type GenOTAUploadUriResp struct {
+	Sign string `json:"sign"` //签名 jwt
+	Host string `json:"host"` //上传地址
+}
+
 type LoginAuthReq struct {
 	Username    string `json:"username"`                       //用户名
 	Password    string `json:"password,optional"`              //密码
@@ -388,11 +396,10 @@ type SendDcPropertyResp struct {
 }
 
 type UploadReq struct {
-	Business string `path:"business"` //对应的业务
 	Sign     string `form:"sign"`     //签名
+	FileName string `form:"fileName"` //文件名
 }
 
 type DownloadReq struct {
-	Business string `path:"business"` //对应的业务
-	Sign     string `form:"sign"`     //签名
+	Sign string `form:"sign"` //签名
 }

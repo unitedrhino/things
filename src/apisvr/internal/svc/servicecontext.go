@@ -1,14 +1,18 @@
 package svc
 
 import (
+	"context"
+	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/verify"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/middleware"
 	"github.com/i-Things/things/src/dcsvr/dc"
 	"github.com/i-Things/things/src/dmsvr/dm"
 	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
+	"os"
 	"time"
 )
 
@@ -21,6 +25,7 @@ type ServiceContext struct {
 	DmRpc      dm.Dm
 	DcRpc      dc.Dc
 	Captcha    *verify.Captcha
+	OSS        oss.OSSer
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -36,7 +41,18 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.UserRpc.Enable {
 		ur = user.NewUser(zrpc.MustNewClient(c.UserRpc.Conf))
 	}
-	captcha := verify.NewCaptcha(c.ImgHeight, c.ImgWidth, c.KeyLong, c.CacheRedis, time.Duration(c.KeepTime)*time.Second)
+	ossClient, err := oss.NewOss(c.OSS)
+	if err != nil {
+		logx.Error("NewOss err", err)
+		os.Exit(-1)
+	}
+	oss.InitBuckets(context.TODO(), ossClient)
+	if err != nil {
+		logx.Error("InitBuckets err", err)
+		os.Exit(-1)
+	}
+	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
+		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
 		Config:     c,
 		CheckToken: middleware.NewCheckTokenMiddleware(ur).Handle,
@@ -46,5 +62,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DmRpc:      dr,
 		Captcha:    captcha,
 		DcRpc:      dcSvr,
+		OSS:        ossClient,
 	}
 }

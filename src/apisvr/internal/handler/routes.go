@@ -166,6 +166,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/getDeviceDescribeLog",
 				Handler: opendm.GetDeviceDescribeLogHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/genOTAUploadUri",
+				Handler: opendm.GenOTAUploadUriHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/open/dm"),
 	)
@@ -239,12 +244,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPut,
-				Path:    "/upload/:business",
+				Path:    "/upload",
 				Handler: openoss.UploadHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/download/:business",
+				Path:    "/download",
 				Handler: openoss.DownLoadHandler(serverCtx),
 			},
 		},
