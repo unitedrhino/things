@@ -9,11 +9,12 @@ import "common.api"  //公共结构体定义
 
 
 type UploadReq {
-    Business string  `path:"business"`       //对应的业务
     Sign string `form:"sign"`       //签名
+    FileName string `form:"fileName"` //文件名
+    //File file `form:"file"`//文件二进制 这个需要传!!! 因
+
 }
 type DownloadReq {
-    Business string  `path:"business"`       //对应的业务
     Sign string `form:"sign"`       //签名
 }
 @server (
@@ -23,7 +24,7 @@ type DownloadReq {
 
 service api {
     @handler upload
-    put /upload/:business (UploadReq) returns ()
+    put /upload (UploadReq) returns ()
     @handler downLoad
-    get /download/:business (DownloadReq) returns ()
+    get /download (DownloadReq) returns ()
 }

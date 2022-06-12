@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
 	"time"
 
@@ -32,14 +33,14 @@ func (l *CheckTokenLogic) CheckToken(in *user.CheckTokenReq) (*user.CheckTokenRe
 		}
 	}()
 	l.Infof("CheckToken|req=%+v", in)
-	jwt, err := utils.ParseToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
+	jwt, err := users.ParseToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
 	if err != nil {
 		l.Errorf("CheckToken|parse token fail|err=%s", err.Error())
 		return nil, err
 	}
 	var token string
 	if (jwt.ExpiresAt-time.Now().Unix())*2 < l.svcCtx.Config.UserToken.AccessExpire {
-		token, _ = utils.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
+		token, _ = users.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
 	}
 	l.Infof("CheckToken|uid=%d", jwt.Uid)
 	return &user.CheckTokenResp{

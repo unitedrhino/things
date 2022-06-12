@@ -1,6 +1,8 @@
 package oss
 
 import (
+	"context"
+	"fmt"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -16,4 +18,18 @@ func NewMinio(conf conf.MinioConf) (OSSer, error) {
 		return nil, err
 	}
 	return minioClient, nil
+}
+
+func InitBuckets(ctx context.Context, ser OSSer) error {
+	if exists, err := ser.BucketExists(ctx, BucketOta); err != nil {
+		return err
+	} else if exists {
+		return nil
+	}
+	err := ser.MakeBucket(ctx, BucketOta, minio.MakeBucketOptions{})
+	return err
+}
+
+func GetUploadUrl(conf conf.MinioConf) string {
+	return fmt.Sprintf("%s/open/oss/upload", conf.GateWayHost)
 }
