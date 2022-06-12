@@ -7,38 +7,39 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/utils"
+	"time"
+
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GenOTAUploadUriLogic struct {
+type GenFirmwareUploadUriLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewGenOTAUploadUriLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GenOTAUploadUriLogic {
-	return &GenOTAUploadUriLogic{
+func NewGenFirmwareUploadUriLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GenFirmwareUploadUriLogic {
+	return &GenFirmwareUploadUriLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *GenOTAUploadUriLogic) GenOTAUploadUri(req *types.GenOTAUploadUriReq) (resp *types.GenOTAUploadUriResp, err error) {
+func (l *GenFirmwareUploadUriLogic) GenFirmwareUploadUri(req *types.GenFirmwareUploadUriReq) (resp *types.GenFirmwareUploadUriResp, err error) {
 	l.Infof("[%s]|req=%+v", utils.FuncName(), utils.GetJson(req))
-	dir, err := GenOssDir("ota")
+	dir, err := GenOssDir("firmware")
 	if err != nil {
 		return nil, err
 	}
-	jwt, err := devices.GetJwtToken(l.svcCtx.Config.OSS.AccessSecret, time.Now().Unix(), l.svcCtx.Config.OSS.AccessExpire, oss.BucketOta, dir)
+	jwt, err := devices.GetJwtToken(l.svcCtx.Config.OSS.AccessSecret, time.Now().Unix(), l.svcCtx.Config.OSS.AccessExpire, oss.BucketFirmware, dir)
 	if err != nil {
 		return nil, err
 	}
-	return &types.GenOTAUploadUriResp{
+	return &types.GenFirmwareUploadUriResp{
 		Sign: jwt,
 		Host: oss.GetUploadUrl(l.svcCtx.Config.OSS.Minio),
 	}, nil

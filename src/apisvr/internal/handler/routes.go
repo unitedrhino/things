@@ -173,8 +173,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/genOTAUploadUri",
-				Handler: opendm.GenOTAUploadUriHandler(serverCtx),
+				Path:    "/genFirmwareUploadUri",
+				Handler: opendm.GenFirmwareUploadUriHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/open/dm"),
