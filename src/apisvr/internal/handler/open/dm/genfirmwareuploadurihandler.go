@@ -9,16 +9,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func GenOTAUploadUriHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GenFirmwareUploadUriHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GenOTAUploadUriReq
+		var req types.GenFirmwareUploadUriReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := dm.NewGenOTAUploadUriLogic(r.Context(), svcCtx)
-		resp, err := l.GenOTAUploadUri(&req)
+		l := dm.NewGenFirmwareUploadUriLogic(r.Context(), svcCtx)
+		resp, err := l.GenFirmwareUploadUri(&req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {
