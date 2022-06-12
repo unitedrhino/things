@@ -168,6 +168,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/getDeviceSDKLog",
+				Handler: opendm.GetDeviceSDKLogHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/genOTAUploadUri",
 				Handler: opendm.GenOTAUploadUriHandler(serverCtx),
 			},
