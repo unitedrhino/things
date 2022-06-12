@@ -3,6 +3,7 @@ package event
 import (
 	"context"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
@@ -28,17 +29,22 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub == nil {
 		return err
 	}
-	return s.svcCtx.InnerLink.DevPubThing(s.ctx, pub)
+	ctx1, span := traces.StartSpan(s.ctx, topic, "")
+
+	logx.Infof("[mqtt.Thing]|-------------------trace:%s, spanid:%s|topic:%s",
+		span.SpanContext().TraceID(), span.SpanContext().SpanID(), topic)
+	defer span.End()
+	return s.svcCtx.InnerLink.DevPubThing(ctx1, pub)
 }
 
 // Ota ota远程升级
 func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub == nil {
 		return err
 	}
 	return s.svcCtx.InnerLink.DevPubOta(s.ctx, pub)
@@ -48,7 +54,7 @@ func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
 func (s *DeviceSubServer) Config(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub == nil {
 		return err
 	}
 	return s.svcCtx.InnerLink.DevPubConfig(s.ctx, pub)
@@ -58,20 +64,20 @@ func (s *DeviceSubServer) Config(topic string, payload []byte) error {
 func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub == nil {
 		return err
 	}
 	return s.svcCtx.InnerLink.DevPubShadow(s.ctx, pub)
 }
 
 // Log 设备调试日志
-func (s *DeviceSubServer) Log(topic string, payload []byte) error {
+func (s *DeviceSubServer) SDKLog(topic string, payload []byte) error {
 	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
-	if err != nil {
+	if pub == nil {
 		return err
 	}
-	return s.svcCtx.InnerLink.DevPubLog(s.ctx, pub)
+	return s.svcCtx.InnerLink.DevPubSDKLog(s.ctx, pub)
 }
 
 func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.DevPublish, error) {
