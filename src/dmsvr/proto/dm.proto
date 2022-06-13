@@ -132,17 +132,16 @@ message ManageFirmwareReq{
 
 message FirmwareInfo{
   string  productID = 1;//产品ID 只读
-  int64   id = 2;//固件的id 只读
+  string  version = 2;//固件版本 只读 产品下唯一
   string  name = 3;//固件名
   string  description = 4;//固件描述
   string  dir = 5;//固件标识,拿来下载文件 只读
   int64   size = 6;//固件大小 只读
-  string  version = 7;//固件版本 只读
 }
 
 message GetFirmwareInfoReq{
   string  productID = 1; //产品id 如果不传获取所有固件
-  int64 id=2;//固件id 如果不传,获取产品下或所有固件
+  int64 version=2;//固件版本 如果不传,获取产品下或所有固件
   PageInfo page = 3;//分页信息 只获取一个则不填
 }
 

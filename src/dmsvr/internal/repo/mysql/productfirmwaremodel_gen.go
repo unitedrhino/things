@@ -22,15 +22,15 @@ var (
 	productFirmwareRowsExpectAutoSet   = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
 	productFirmwareRowsWithPlaceHolder = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
-	cacheThingsDmProductFirmwareIdPrefix          = "cache:thingsDm:productFirmware:id:"
-	cacheThingsDmProductFirmwareProductIDIdPrefix = "cache:thingsDm:productFirmware:productID:id:"
+	cacheThingsDmProductFirmwareIdPrefix               = "cache:thingsDm:productFirmware:id:"
+	cacheThingsDmProductFirmwareProductIDVersionPrefix = "cache:thingsDm:productFirmware:productID:version:"
 )
 
 type (
 	productFirmwareModel interface {
 		Insert(ctx context.Context, data *ProductFirmware) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*ProductFirmware, error)
-		FindOneByProductIDId(ctx context.Context, productID string, id int64) (*ProductFirmware, error)
+		FindOneByProductIDVersion(ctx context.Context, productID string, version string) (*ProductFirmware, error)
 		Update(ctx context.Context, data *ProductFirmware) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -43,11 +43,11 @@ type (
 	ProductFirmware struct {
 		Id          int64        `db:"id"`
 		ProductID   string       `db:"productID"` // 产品id
+		Version     string       `db:"version"`   // 固件版本
 		CreatedTime time.Time    `db:"createdTime"`
 		UpdatedTime sql.NullTime `db:"updatedTime"`
 		DeletedTime sql.NullTime `db:"deletedTime"`
 		Name        string       `db:"name"`        // 固件名称
-		Version     string       `db:"version"`     // 固件版本
 		Description string       `db:"description"` // 描述
 		Size        int64        `db:"size"`        // 固件大小
 		Dir         string       `db:"dir"`         // 固件标识,拿来下载文件
@@ -63,11 +63,11 @@ func newProductFirmwareModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultProdu
 
 func (m *defaultProductFirmwareModel) Insert(ctx context.Context, data *ProductFirmware) (sql.Result, error) {
 	thingsDmProductFirmwareIdKey := fmt.Sprintf("%s%v", cacheThingsDmProductFirmwareIdPrefix, data.Id)
-	thingsDmProductFirmwareProductIDIdKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDIdPrefix, data.ProductID, data.Id)
+	thingsDmProductFirmwareProductIDVersionKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDVersionPrefix, data.ProductID, data.Version)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productFirmwareRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.ProductID, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Name, data.Version, data.Description, data.Size, data.Dir)
-	}, thingsDmProductFirmwareIdKey, thingsDmProductFirmwareProductIDIdKey)
+		return conn.ExecCtx(ctx, query, data.ProductID, data.Version, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Name, data.Description, data.Size, data.Dir)
+	}, thingsDmProductFirmwareIdKey, thingsDmProductFirmwareProductIDVersionKey)
 	return ret, err
 }
 
@@ -88,12 +88,12 @@ func (m *defaultProductFirmwareModel) FindOne(ctx context.Context, id int64) (*P
 	}
 }
 
-func (m *defaultProductFirmwareModel) FindOneByProductIDId(ctx context.Context, productID string, id int64) (*ProductFirmware, error) {
-	thingsDmProductFirmwareProductIDIdKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDIdPrefix, productID, id)
+func (m *defaultProductFirmwareModel) FindOneByProductIDVersion(ctx context.Context, productID string, version string) (*ProductFirmware, error) {
+	thingsDmProductFirmwareProductIDVersionKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDVersionPrefix, productID, version)
 	var resp ProductFirmware
-	err := m.QueryRowIndexCtx(ctx, &resp, thingsDmProductFirmwareProductIDIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
-		query := fmt.Sprintf("select %s from %s where `productID` = ? and `id` = ? limit 1", productFirmwareRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, productID, id); err != nil {
+	err := m.QueryRowIndexCtx(ctx, &resp, thingsDmProductFirmwareProductIDVersionKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+		query := fmt.Sprintf("select %s from %s where `productID` = ? and `version` = ? limit 1", productFirmwareRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, productID, version); err != nil {
 			return nil, err
 		}
 		return resp.Id, nil
@@ -110,11 +110,11 @@ func (m *defaultProductFirmwareModel) FindOneByProductIDId(ctx context.Context, 
 
 func (m *defaultProductFirmwareModel) Update(ctx context.Context, data *ProductFirmware) error {
 	thingsDmProductFirmwareIdKey := fmt.Sprintf("%s%v", cacheThingsDmProductFirmwareIdPrefix, data.Id)
-	thingsDmProductFirmwareProductIDIdKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDIdPrefix, data.ProductID, data.Id)
+	thingsDmProductFirmwareProductIDVersionKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDVersionPrefix, data.ProductID, data.Version)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, productFirmwareRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.ProductID, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Name, data.Version, data.Description, data.Size, data.Dir, data.Id)
-	}, thingsDmProductFirmwareIdKey, thingsDmProductFirmwareProductIDIdKey)
+		return conn.ExecCtx(ctx, query, data.ProductID, data.Version, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Name, data.Description, data.Size, data.Dir, data.Id)
+	}, thingsDmProductFirmwareIdKey, thingsDmProductFirmwareProductIDVersionKey)
 	return err
 }
 
@@ -125,11 +125,11 @@ func (m *defaultProductFirmwareModel) Delete(ctx context.Context, id int64) erro
 	}
 
 	thingsDmProductFirmwareIdKey := fmt.Sprintf("%s%v", cacheThingsDmProductFirmwareIdPrefix, id)
-	thingsDmProductFirmwareProductIDIdKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDIdPrefix, data.ProductID, data.Id)
+	thingsDmProductFirmwareProductIDVersionKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDVersionPrefix, data.ProductID, data.Version)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, thingsDmProductFirmwareIdKey, thingsDmProductFirmwareProductIDIdKey)
+	}, thingsDmProductFirmwareIdKey, thingsDmProductFirmwareProductIDVersionKey)
 	return err
 }
 

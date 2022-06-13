@@ -82,16 +82,16 @@ CREATE TABLE if not exists `product_firmware`
 (
     `id`          bigint unsigned NOT NULL AUTO_INCREMENT,
     `productID`   varchar(20)      NOT NULL COMMENT '产品id',
+    `version`     varchar(64)  DEFAULT '' COMMENT '固件版本',
     `createdTime` datetime         NOT NULL,
     `updatedTime` datetime     DEFAULT NULL,
     `deletedTime` datetime     DEFAULT NULL,
     `name`     varchar(64)  DEFAULT '' COMMENT '固件名称',
-    `version`     varchar(64)  DEFAULT '' COMMENT '固件版本',
     `description`  varchar(200)          DEFAULT '' COMMENT '描述',
     `size`          bigint unsigned NOT NULL COMMENT '固件大小',
     `dir`     varchar(128)  NOT NULL COMMENT '固件标识,拿来下载文件',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `deviceId` (`productID`, `id`)
+    UNIQUE KEY `deviceVersion` (`productID`, `version`)
     ) ENGINE = InnoDB
     AUTO_INCREMENT = 4
     DEFAULT CHARSET = utf8mb4
