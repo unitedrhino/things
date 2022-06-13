@@ -40,7 +40,7 @@ CREATE TABLE if not exists `product_template`
 
 CREATE TABLE if not exists `device_info`
 (
-    `id`          int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `id`          bigint unsigned NOT NULL AUTO_INCREMENT,
     `productID`   varchar(20)      NOT NULL COMMENT '产品id',
     `deviceName`  varchar(100)     NOT NULL COMMENT '设备名称',
     `secret`      varchar(50)  DEFAULT '' COMMENT '设备秘钥',
@@ -64,7 +64,7 @@ CREATE TABLE if not exists `device_info`
 
 # CREATE TABLE if not exists `category_detail`
 # (
-#     `id`           int(10) unsigned NOT NULL,
+#     `id`           bigint unsigned NOT NULL,
 #     `categoryKey`  varchar(20)      NOT NULL COMMENT '产品种类英文key',
 #     `categoryName` varchar(100)     NOT NULL COMMENT '产品种类名字',
 #     `parentID`     int(10) DEFAULT 0 COMMENT '父类id',
@@ -75,3 +75,24 @@ CREATE TABLE if not exists `device_info`
 #     PRIMARY KEY (`id`)
 # ) ENGINE = InnoDB
 #   DEFAULT CHARSET = utf8mb4 COMMENT ='产品品类详情';
+
+
+
+CREATE TABLE if not exists `product_firmware`
+(
+    `id`          bigint unsigned NOT NULL AUTO_INCREMENT,
+    `productID`   varchar(20)      NOT NULL COMMENT '产品id',
+    `createdTime` datetime         NOT NULL,
+    `updatedTime` datetime     DEFAULT NULL,
+    `deletedTime` datetime     DEFAULT NULL,
+    `name`     varchar(64)  DEFAULT '' COMMENT '固件名称',
+    `version`     varchar(64)  DEFAULT '' COMMENT '固件版本',
+    `description`  varchar(200)          DEFAULT '' COMMENT '描述',
+    `size`          bigint unsigned NOT NULL COMMENT '固件大小',
+    `dir`     varchar(128)  NOT NULL COMMENT '固件标识,拿来下载文件',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `deviceId` (`productID`, `id`)
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 4
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';

@@ -21,12 +21,12 @@ func NewMinio(conf conf.MinioConf) (OSSer, error) {
 }
 
 func InitBuckets(ctx context.Context, ser OSSer) error {
-	if exists, err := ser.BucketExists(ctx, BucketOta); err != nil {
+	if exists, err := ser.BucketExists(ctx, BucketFirmware); err != nil {
 		return err
 	} else if exists {
 		return nil
 	}
-	err := ser.MakeBucket(ctx, BucketOta, minio.MakeBucketOptions{})
+	err := ser.MakeBucket(ctx, BucketFirmware, minio.MakeBucketOptions{})
 	return err
 }
 

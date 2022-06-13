@@ -23,6 +23,10 @@ service Dm {
   rpc getProductTemplate(GetProductTemplateReq) returns (ProductTemplate);
   //获取设备信息
   rpc getDeviceInfo(GetDeviceInfoReq)   returns (GetDeviceInfoResp);
+  //管理产品的固件
+  rpc manageFirmware(ManageFirmwareReq)   returns (FirmwareInfo);
+  //获取产品固件信息
+  rpc GetFirmwareInfo(GetFirmwareInfoReq) returns (GetFirmwareInfoResp);
   //获取设备调试信息记录登入登出,操作
   rpc getDeviceDescribeLog(GetDeviceDescribeLogReq)   returns (GetDeviceDescribeLogResp);
   //获取设备数据信息
@@ -120,6 +124,32 @@ message RootCheckReq{
 //  OPEN  = 2;  //打开
 //  AUTO  = 3;  //打开并自动创建设备
 //}
+
+message ManageFirmwareReq{
+  int64 opt = 1;//操作 0:新增 1:修改 2:删除
+  FirmwareInfo info = 2; //设备信息
+}
+
+message FirmwareInfo{
+  string  productID = 1;//产品ID 只读
+  int64   id = 2;//固件的id 只读
+  string  name = 3;//固件名
+  string  description = 4;//固件描述
+  string  dir = 5;//固件标识,拿来下载文件 只读
+  int64   size = 6;//固件大小 只读
+  string  version = 7;//固件版本 只读
+}
+
+message GetFirmwareInfoReq{
+  string  productID = 1; //产品id 如果不传获取所有固件
+  int64 id=2;//固件id 如果不传,获取产品下或所有固件
+  PageInfo page = 3;//分页信息 只获取一个则不填
+}
+
+message GetFirmwareInfoResp{
+  repeated FirmwareInfo list = 1;//设备信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
 
 message ProductInfo{
   int64   createdTime = 1; //创建时间 只读
