@@ -96,7 +96,7 @@ func (l *LoginAuthLogic) UpdateLoginTime() {
 	}
 	l.di.UpdatedTime = now
 	l.di.LastLogin = now
-	l.svcCtx.DeviceInfo.Update(l.di)
+	l.svcCtx.DeviceInfo.Update(l.ctx, l.di)
 }
 
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
@@ -126,7 +126,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	if lg.Expiry < time.Now().Unix() {
 		return nil, errors.SignatureExpired
 	}
-	l.di, err = l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(lg.ProductID, lg.DeviceName)
+	l.di, err = l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, lg.ProductID, lg.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Password
