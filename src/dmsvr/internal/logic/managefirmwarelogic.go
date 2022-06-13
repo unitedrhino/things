@@ -2,6 +2,10 @@ package logic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/spf13/cast"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -23,9 +27,32 @@ func NewManageFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ma
 	}
 }
 
+func (l *ManageFirmwareLogic) AddFirmware(in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
+	return nil, nil
+}
+
+func (l *ManageFirmwareLogic) ModifyFirmware(in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
+	return nil, nil
+}
+
+func (l *ManageFirmwareLogic) DelFirmware(in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
+	return nil, nil
+}
+
 // 管理产品的固件
 func (l *ManageFirmwareLogic) ManageFirmware(in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
-	// todo: add your logic here and delete this line
-
-	return &dm.FirmwareInfo{}, nil
+	l.Infof("[%s]opt=%d|info=%+v", utils.FuncName(), in.Opt, in.Info)
+	switch in.Opt {
+	case def.OPT_ADD:
+		if in.Info == nil {
+			return nil, errors.Parameter.WithMsg("add opt need info")
+		}
+		return l.AddFirmware(in)
+	case def.OPT_MODIFY:
+		return l.ModifyFirmware(in)
+	case def.OPT_DEL:
+		return l.DelFirmware(in)
+	default:
+		return nil, errors.Parameter.AddDetail("not support opt:" + cast.ToString(in.Opt))
+	}
 }

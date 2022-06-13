@@ -245,6 +245,6 @@ func (l *ManageProductLogic) ManageProduct(in *dm.ManageProductReq) (*dm.Product
 	case def.OPT_DEL:
 		return l.DelProduct(in)
 	default:
-		return nil, errors.Parameter.AddDetail("not suppot opt:" + cast.ToString(in.Opt))
+		return nil, errors.Parameter.AddDetail("not support opt:" + cast.ToString(in.Opt))
 	}
 }

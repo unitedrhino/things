@@ -32,6 +32,7 @@ type ServiceContext struct {
 	HubLogRepo     device.HubLogRepo
 	TemplateRepo   thing.TemplateRepo
 	SDKLogRepo     device.SDKLogRepo
+	FirmwareInfo   mysql.ProductFirmwareModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -45,7 +46,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	pi := mysql.NewProductInfoModel(conn, c.CacheRedis)
 	pt := mysql.NewProductTemplateModel(conn, c.CacheRedis)
 	tr := mysql.NewTemplateRepo(pt)
-
+	fr := mysql.NewProductFirmwareModel(conn, c.CacheRedis)
 	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
 	store := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
@@ -65,6 +66,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		DeviceInfo:     di,
 		ProductInfo:    pi,
+		FirmwareInfo:   fr,
 		TemplateRepo:   tr,
 		DmDB:           DmDB,
 		DeviceID:       DeviceID,
