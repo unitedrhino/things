@@ -10,7 +10,7 @@ type OSSer = *minio.Client
 
 //bucket 列表
 const (
-	BucketOta = "ota"
+	BucketFirmware = "firmware"
 )
 
 func NewOss(conf conf.OSSConf) (OSSer, error) {

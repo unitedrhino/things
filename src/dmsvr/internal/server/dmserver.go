@@ -76,6 +76,18 @@ func (s *DmServer) GetDeviceInfo(ctx context.Context, in *dm.GetDeviceInfoReq) (
 	return l.GetDeviceInfo(in)
 }
 
+// 管理产品的固件
+func (s *DmServer) ManageFirmware(ctx context.Context, in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
+	l := logic.NewManageFirmwareLogic(ctx, s.svcCtx)
+	return l.ManageFirmware(in)
+}
+
+// 获取产品固件信息
+func (s *DmServer) GetFirmwareInfo(ctx context.Context, in *dm.GetFirmwareInfoReq) (*dm.GetFirmwareInfoResp, error) {
+	l := logic.NewGetFirmwareInfoLogic(ctx, s.svcCtx)
+	return l.GetFirmwareInfo(in)
+}
+
 // 获取设备调试信息记录登入登出,操作
 func (s *DmServer) GetDeviceDescribeLog(ctx context.Context, in *dm.GetDeviceDescribeLogReq) (*dm.GetDeviceDescribeLogResp, error) {
 	l := logic.NewGetDeviceDescribeLogLogic(ctx, s.svcCtx)

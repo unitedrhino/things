@@ -18,6 +18,7 @@ type (
 	DeviceDescribeLog        = dm.DeviceDescribeLog
 	DeviceInfo               = dm.DeviceInfo
 	DeviceSDKLog             = dm.DeviceSDKLog
+	FirmwareInfo             = dm.FirmwareInfo
 	GetDeviceDataReq         = dm.GetDeviceDataReq
 	GetDeviceDataResp        = dm.GetDeviceDataResp
 	GetDeviceDescribeLogReq  = dm.GetDeviceDescribeLogReq
@@ -26,12 +27,15 @@ type (
 	GetDeviceInfoResp        = dm.GetDeviceInfoResp
 	GetDeviceSDKLogReq       = dm.GetDeviceSDKLogReq
 	GetDeviceSDKLogResp      = dm.GetDeviceSDKLogResp
+	GetFirmwareInfoReq       = dm.GetFirmwareInfoReq
+	GetFirmwareInfoResp      = dm.GetFirmwareInfoResp
 	GetProductInfoReq        = dm.GetProductInfoReq
 	GetProductInfoResp       = dm.GetProductInfoResp
 	GetProductTemplateReq    = dm.GetProductTemplateReq
 	LoginAuthReq             = dm.LoginAuthReq
 	ManResp                  = dm.ManResp
 	ManageDeviceReq          = dm.ManageDeviceReq
+	ManageFirmwareReq        = dm.ManageFirmwareReq
 	ManageProductReq         = dm.ManageProductReq
 	ManageProductTemplateReq = dm.ManageProductTemplateReq
 	PageInfo                 = dm.PageInfo
@@ -63,6 +67,10 @@ type (
 		GetProductTemplate(ctx context.Context, in *GetProductTemplateReq, opts ...grpc.CallOption) (*ProductTemplate, error)
 		// 获取设备信息
 		GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq, opts ...grpc.CallOption) (*GetDeviceInfoResp, error)
+		// 管理产品的固件
+		ManageFirmware(ctx context.Context, in *ManageFirmwareReq, opts ...grpc.CallOption) (*FirmwareInfo, error)
+		// 获取产品固件信息
+		GetFirmwareInfo(ctx context.Context, in *GetFirmwareInfoReq, opts ...grpc.CallOption) (*GetFirmwareInfoResp, error)
 		// 获取设备调试信息记录登入登出,操作
 		GetDeviceDescribeLog(ctx context.Context, in *GetDeviceDescribeLogReq, opts ...grpc.CallOption) (*GetDeviceDescribeLogResp, error)
 		// 获取设备数据信息
@@ -138,6 +146,18 @@ func (m *defaultDm) GetProductTemplate(ctx context.Context, in *GetProductTempla
 func (m *defaultDm) GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq, opts ...grpc.CallOption) (*GetDeviceInfoResp, error) {
 	client := dm.NewDmClient(m.cli.Conn())
 	return client.GetDeviceInfo(ctx, in, opts...)
+}
+
+// 管理产品的固件
+func (m *defaultDm) ManageFirmware(ctx context.Context, in *ManageFirmwareReq, opts ...grpc.CallOption) (*FirmwareInfo, error) {
+	client := dm.NewDmClient(m.cli.Conn())
+	return client.ManageFirmware(ctx, in, opts...)
+}
+
+// 获取产品固件信息
+func (m *defaultDm) GetFirmwareInfo(ctx context.Context, in *GetFirmwareInfoReq, opts ...grpc.CallOption) (*GetFirmwareInfoResp, error) {
+	client := dm.NewDmClient(m.cli.Conn())
+	return client.GetFirmwareInfo(ctx, in, opts...)
 }
 
 // 获取设备调试信息记录登入登出,操作
