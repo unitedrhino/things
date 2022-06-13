@@ -59,7 +59,7 @@ func (l *ManageProductTemplateLogic) ModifyProductTemplate(in *dm.ManageProductT
 
 func (l *ManageProductTemplateLogic) AddProductTemplate(in *dm.ManageProductTemplateReq) (*dm.ProductTemplate, error) {
 	l.Infof("ManageProductTemplate|AddProductTemplate|ProductID:%v", in.Info.ProductID)
-	_, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
+	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
