@@ -35,7 +35,7 @@ func (t TemplateRepo) Insert(ctx context.Context, productID string, template *th
 	if err != nil {
 		return errors.Parameter.WithMsg("模板的json格式不对")
 	}
-	_, err = t.db.Insert(&ProductTemplate{
+	_, err = t.db.Insert(ctx, &ProductTemplate{
 		ProductID:   productID,
 		Template:    string(templateStr),
 		CreatedTime: time.Now(),
@@ -45,7 +45,7 @@ func (t TemplateRepo) Insert(ctx context.Context, productID string, template *th
 }
 
 func (t TemplateRepo) GetTemplateInfo(ctx context.Context, productID string) (*thing.TemplateInfo, error) {
-	temp, err := t.db.FindOne(productID)
+	temp, err := t.db.FindOne(ctx, productID)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (t TemplateRepo) GetTemplate(ctx context.Context, productID string) (*thing
 	if ok {
 		return temp.(*thing.Template), nil
 	}
-	templateInfo, err := t.db.FindOne(productID)
+	templateInfo, err := t.db.FindOne(ctx, productID)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (t TemplateRepo) Update(ctx context.Context, productID string, template *th
 		return errors.Parameter.WithMsg("模板的json格式不对")
 	}
 	t.cache.Del(productID)
-	err = t.db.Update(&ProductTemplate{
+	err = t.db.Update(ctx, &ProductTemplate{
 		ProductID:   productID,
 		Template:    string(templateStr),
 		CreatedTime: time.Now(),
@@ -94,6 +94,6 @@ func (t TemplateRepo) ClearCache(ctx context.Context, productID string) error {
 
 func (t TemplateRepo) Delete(ctx context.Context, productID string) error {
 	t.cache.Del(productID)
-	err := t.db.Delete(productID)
+	err := t.db.Delete(ctx, productID)
 	return err
 }

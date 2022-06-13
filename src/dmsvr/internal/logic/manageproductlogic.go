@@ -36,7 +36,7 @@ func NewManageProductLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Man
 发现返回true 没有返回false
 */
 func (l *ManageProductLogic) CheckProduct(in *dm.ManageProductReq) (bool, error) {
-	_, err := l.svcCtx.ProductInfo.FindOneByProductName(in.Info.ProductName)
+	_, err := l.svcCtx.ProductInfo.FindOneByProductName(l.ctx, in.Info.ProductName)
 	switch err {
 	case mysql.ErrNotFound:
 		return false, nil
@@ -66,7 +66,7 @@ func (l *ManageProductLogic) AddProduct(in *dm.ManageProductReq) (*dm.ProductInf
 		l.Errorf("%s|DeviceDataRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.DmDB.Insert(pi, pt)
+	err = l.svcCtx.DmDB.Insert(l.ctx, pi, pt)
 	if err != nil {
 		l.Errorf("AddProduct|Insert|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
@@ -187,7 +187,7 @@ func UpdateProductInfo(old *mysql.ProductInfo, data *dm.ProductInfo) {
 }
 
 func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.ProductInfo, error) {
-	pi, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
+	pi, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
@@ -196,7 +196,7 @@ func (l *ManageProductLogic) ModifyProduct(in *dm.ManageProductReq) (*dm.Product
 	}
 	UpdateProductInfo(pi, in.Info)
 
-	err = l.svcCtx.ProductInfo.Update(pi)
+	err = l.svcCtx.ProductInfo.Update(l.ctx, pi)
 	if err != nil {
 		l.Errorf("ModifyProduct|ProductInfo|Update|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
@@ -220,7 +220,7 @@ func (l *ManageProductLogic) DelProduct(in *dm.ManageProductReq) (*dm.ProductInf
 		return nil, errors.Database.AddDetail(err.Error())
 	}
 	l.svcCtx.TemplateRepo.ClearCache(l.ctx, in.Info.ProductID)
-	err = l.svcCtx.DmDB.Delete(in.Info.ProductID)
+	err = l.svcCtx.DmDB.Delete(l.ctx, in.Info.ProductID)
 	if err != nil {
 		l.Errorf("DelProduct|Delete|err=%+v", err)
 		return nil, errors.Database.AddDetail(err.Error())
