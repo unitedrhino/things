@@ -24,6 +24,17 @@ func ToProductTemplate(pt *thing.TemplateInfo) *dm.ProductTemplate {
 	}
 }
 
+func ToFirmwareInfo(fi *mysql.ProductFirmware) *dm.FirmwareInfo {
+	return &dm.FirmwareInfo{
+		ProductID:   fi.ProductID,
+		Version:     fi.Version,
+		Name:        fi.Name,
+		Description: fi.Description,
+		Dir:         fi.Dir,
+		Size:        fi.Size,
+	}
+}
+
 func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
 	return &dm.DeviceInfo{
 		Version:     &wrappers.StringValue{Value: di.Version},

@@ -29,17 +29,17 @@ func (l *GetProductInfoLogic) GetProductInfo(in *dm.GetProductInfoReq) (resp *dm
 	var info []*dm.ProductInfo
 	var size int64
 	if in.Page == nil || in.Page.Page == 0 {
-		di, err := l.svcCtx.ProductInfo.FindOne(in.ProductID)
+		di, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
 		if err != nil {
 			return nil, err
 		}
 		info = append(info, ToProductInfo(di))
 	} else {
-		size, err = l.svcCtx.DmDB.GetCountByProductInfo()
+		size, err = l.svcCtx.DmDB.GetCountByProductInfo(l.ctx)
 		if err != nil {
 			return nil, err
 		}
-		di, err := l.svcCtx.DmDB.FindByProductInfo(def.PageInfo{PageSize: in.Page.PageSize, Page: in.Page.Page})
+		di, err := l.svcCtx.DmDB.FindByProductInfo(l.ctx, def.PageInfo{PageSize: in.Page.PageSize, Page: in.Page.Page})
 		if err != nil {
 			return nil, err
 		}
