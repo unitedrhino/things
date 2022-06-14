@@ -2,6 +2,7 @@ Name: api
 Host: 0.0.0.0
 CpuThreshold: 0
 Timeout: 1000000
+MaxBytes: 1000000000
 Port: 7777
 NodeID: 1
 Mysql:
@@ -39,6 +40,14 @@ Auth:
 Rej:
   AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
   AccessExpire: 600     #过期时间单位秒
+OSS:
+  AccessSecret: password
+  AccessExpire: 60000     #过期时间单位秒
+  Minio:
+    Endpoint:  127.0.0.1:9000
+    AccessKeyID: root
+    SecretAccessKey: password
+    UseSSL: false
 
 Telemetry:
   Name: api

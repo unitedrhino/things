@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/usersvr/user"
 	"time"
@@ -46,7 +47,7 @@ func (l *RegisterCoreLogic) RegisterCore(req types.RegisterCoreReq) (*types.Regi
 	}
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.Rej.AccessExpire
-	jwtToken, err := utils.GetJwtToken(l.svcCtx.Config.Rej.AccessSecret, now, accessExpire, resp.Uid)
+	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.Rej.AccessSecret, now, accessExpire, resp.Uid)
 	if err != nil {
 		return nil, errors.System.AddDetail(err.Error())
 	}

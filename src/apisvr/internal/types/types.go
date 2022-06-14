@@ -112,6 +112,14 @@ type GetUserInfosResp struct {
 	Info []*UserInfo `json:"info"`
 }
 
+type GenFirmwareUploadUriReq struct {
+}
+
+type GenFirmwareUploadUriResp struct {
+	Sign string `json:"sign"` //签名 jwt
+	Host string `json:"host"` //上传地址
+}
+
 type LoginAuthReq struct {
 	Username    string `json:"username"`                       //用户名
 	Password    string `json:"password,optional"`              //密码
@@ -306,6 +314,26 @@ type GetDevicePropertyStatusResp struct {
 	List []*DevicePropertyStatus `json:"list"`
 }
 
+type GetDeviceSDKLogReq struct {
+	ProductID  string `form:"productID,omitempty"`
+	DeviceName string `form:"deviceName,omitempty"`
+	TimeStart  int64  `form:"timeStart,optional,string,omitempty"`
+	TimeEnd    int64  `form:"timeEnd,optional,string,omitempty"`
+	Limit      int64  `form:"limit,optional,omitempty"`
+	Page       int64  `form:"page,optional"`     // 页码
+	PageSize   int64  `form:"pageSize,optional"` // 每页大小
+}
+
+type GetDeviceSDKLogResp struct {
+	List []*DeviceSDKLog `json:"list,omitempty"`
+}
+
+type DeviceSDKLog struct {
+	Timestamp int64  `json:"timestamp,string"`
+	Loglevel  int64  `json:"loglevel,string"`
+	Content   string `json:"content"`
+}
+
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string,omitempty"`              //组id
 	Name        string `json:"name,omitempty"`                        //组名
@@ -387,22 +415,11 @@ type SendDcPropertyResp struct {
 	Data        string `json:"data,omitempty"`        //返回信息
 }
 
-type GetDeviceSDKLogReq struct {
-	ProductID  string `form:"productID,omitempty"`
-	DeviceName string `form:"deviceName,omitempty"`
-	TimeStart  int64  `form:"timeStart,optional,string,omitempty"`
-	TimeEnd    int64  `form:"timeEnd,optional,string,omitempty"`
-	Limit      int64  `form:"limit,optional,omitempty"`
-	Page       int64  `form:"page,optional"`     // 页码
-	PageSize   int64  `form:"pageSize,optional"` // 每页大小
+type UploadReq struct {
+	Sign     string `form:"sign"`     //签名
+	FileName string `form:"fileName"` //文件名
 }
 
-type GetDeviceSDKLogResp struct {
-	List []*DeviceSDKLog `json:"list,omitempty"`
-}
-
-type DeviceSDKLog struct {
-	Timestamp int64  `json:"timestamp,string"`
-	Loglevel  int64  `json:"loglevel,string"`
-	Content   string `json:"content"`
+type DownloadReq struct {
+	Sign string `form:"sign"` //签名
 }

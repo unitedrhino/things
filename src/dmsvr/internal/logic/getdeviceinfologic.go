@@ -29,7 +29,7 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (resp *dm.Ge
 	var info []*dm.DeviceInfo
 	var size int64
 	if (in.Page == nil || in.Page.Page == 0) && in.DeviceName != "" {
-		di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.ProductID, in.DeviceName)
+		di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
 		if err != nil {
 			if err == mysql.ErrNotFound {
 				return nil, errors.NotFind
@@ -45,12 +45,12 @@ func (l *GetDeviceInfoLogic) GetDeviceInfo(in *dm.GetDeviceInfoReq) (resp *dm.Ge
 			pageSize = in.Page.PageSize
 		}
 		size, err = l.svcCtx.DmDB.GetCountByProductID(
-			in.ProductID)
+			l.ctx, in.ProductID)
 		if err != nil {
 			return nil, err
 		}
 		di, err := l.svcCtx.DmDB.FindByProductID(
-			in.ProductID, def.PageInfo{PageSize: pageSize, Page: page})
+			l.ctx, in.ProductID, def.PageInfo{PageSize: pageSize, Page: page})
 		if err != nil {
 			return nil, err
 		}

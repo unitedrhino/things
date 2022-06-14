@@ -12,35 +12,61 @@ import "common.api"  //公共结构体定义
     prefix: open/dm
 )
 service api {
-    @handler loginAuth //设备登录认证
+    @doc "设备登录认证"
+    @handler loginAuth
     post /loginAuth (LoginAuthReq) returns ()
-    @handler accessAuth //设备操作认证
+    @doc "设备操作认证"
+    @handler accessAuth
     post /accessAuth (AccessAuthReq) returns ()
-    @handler rootCheck //鉴定是否是root账号
+    @doc "鉴定是否是root账号"
+    @handler rootCheck
     post /rootCheck (RootCheckReq) returns ()
 
-    @handler manageDevice //设备管理
+    @doc "设备管理"
+    @handler manageDevice
     post /manageDevice (ManageDeviceReq) returns (DeviceInfo)
-    @handler manageProduct //产品管理
+    @doc "产品管理"
+    @handler manageProduct
     post /manageProduct (ManageProductReq) returns (ProductInfo)
-    @handler getProductInfo //获取产品信息
+    @doc "获取产品信息"
+    @handler getProductInfo
     post /getProductInfo (GetProductInfoReq) returns (GetProductInfoResp)
-    @handler manageProductTemplate //产品管理
+    @doc "产品管理"
+    @handler manageProductTemplate
     post /manageProductTemplate (ManageProductTemplateReq) returns (ProductTemplate)
-    @handler getProductTemplate //获取产品信息
+    @doc "获取产品信息"
+    @handler getProductTemplate
     post /getProductTemplate (GetProductTemplateReq) returns (ProductTemplate)
-    @handler getDeviceInfo //获取设备信息
+    @doc "获取设备信息"
+    @handler getDeviceInfo
     post /getDeviceInfo (GetDeviceInfoReq) returns (GetDeviceInfoResp)
-    @handler sendAction//同步调用设备行为
+    @doc "同步调用设备行为"
+    @handler sendAction
     post /sendAction (SendDmActionReq) returns (SendDmActionResp)
-    @handler sendProperty//同步调用设备属性
+    @doc "同步调用设备属性"
+    @handler sendProperty
     post /sendProperty (SendDmPropertyReq) returns (SendDmPropertyResp)
-    @handler getDeviceData//获取设备日志信息
+    @doc "获取设备日志信息"
+    @handler getDeviceData
     get /getDeviceData (GetDeviceDataReq) returns (GetDeviceDataResp)
-    @handler getDeviceDescribeLog//获取设备日志信息
+    @doc "获取设备日志信息"
+    @handler getDeviceDescribeLog
     get /getDeviceDescribeLog (GetDeviceDescribeLogReq) returns (GetDeviceDescribeLogResp)
     @handler getDeviceSDKLog //获取SDK调试日志
     get /getDeviceSDKLog (GetDeviceSDKLogReq) returns (GetDeviceSDKLogResp)
+
+    @doc "获取ota升级包上传信息"
+    @handler genFirmwareUploadUri
+    get /genFirmwareUploadUri(GenFirmwareUploadUriReq)returns (GenFirmwareUploadUriResp)
+}
+
+type GenFirmwareUploadUriReq struct{
+    //预留后续传租户
+}
+
+type GenFirmwareUploadUriResp struct{
+    Sign     string    `json:"sign"`//签名 jwt
+    Host          string    `json:"host"`//上传地址
 }
 
 
