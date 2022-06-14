@@ -40,6 +40,10 @@ type DmClient interface {
 	GetProductTemplate(ctx context.Context, in *GetProductTemplateReq, opts ...grpc.CallOption) (*ProductTemplate, error)
 	//获取设备信息
 	GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq, opts ...grpc.CallOption) (*GetDeviceInfoResp, error)
+	//管理产品的固件
+	ManageFirmware(ctx context.Context, in *ManageFirmwareReq, opts ...grpc.CallOption) (*FirmwareInfo, error)
+	//获取产品固件信息
+	GetFirmwareInfo(ctx context.Context, in *GetFirmwareInfoReq, opts ...grpc.CallOption) (*GetFirmwareInfoResp, error)
 	//获取设备调试信息记录登入登出,操作
 	GetDeviceDescribeLog(ctx context.Context, in *GetDeviceDescribeLogReq, opts ...grpc.CallOption) (*GetDeviceDescribeLogResp, error)
 	//获取设备数据信息
@@ -141,6 +145,24 @@ func (c *dmClient) GetDeviceInfo(ctx context.Context, in *GetDeviceInfoReq, opts
 	return out, nil
 }
 
+func (c *dmClient) ManageFirmware(ctx context.Context, in *ManageFirmwareReq, opts ...grpc.CallOption) (*FirmwareInfo, error) {
+	out := new(FirmwareInfo)
+	err := c.cc.Invoke(ctx, "/dm.Dm/manageFirmware", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dmClient) GetFirmwareInfo(ctx context.Context, in *GetFirmwareInfoReq, opts ...grpc.CallOption) (*GetFirmwareInfoResp, error) {
+	out := new(GetFirmwareInfoResp)
+	err := c.cc.Invoke(ctx, "/dm.Dm/GetFirmwareInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *dmClient) GetDeviceDescribeLog(ctx context.Context, in *GetDeviceDescribeLogReq, opts ...grpc.CallOption) (*GetDeviceDescribeLogResp, error) {
 	out := new(GetDeviceDescribeLogResp)
 	err := c.cc.Invoke(ctx, "/dm.Dm/getDeviceDescribeLog", in, out, opts...)
@@ -208,6 +230,10 @@ type DmServer interface {
 	GetProductTemplate(context.Context, *GetProductTemplateReq) (*ProductTemplate, error)
 	//获取设备信息
 	GetDeviceInfo(context.Context, *GetDeviceInfoReq) (*GetDeviceInfoResp, error)
+	//管理产品的固件
+	ManageFirmware(context.Context, *ManageFirmwareReq) (*FirmwareInfo, error)
+	//获取产品固件信息
+	GetFirmwareInfo(context.Context, *GetFirmwareInfoReq) (*GetFirmwareInfoResp, error)
 	//获取设备调试信息记录登入登出,操作
 	GetDeviceDescribeLog(context.Context, *GetDeviceDescribeLogReq) (*GetDeviceDescribeLogResp, error)
 	//获取设备数据信息
@@ -251,6 +277,12 @@ func (UnimplementedDmServer) GetProductTemplate(context.Context, *GetProductTemp
 }
 func (UnimplementedDmServer) GetDeviceInfo(context.Context, *GetDeviceInfoReq) (*GetDeviceInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDeviceInfo not implemented")
+}
+func (UnimplementedDmServer) ManageFirmware(context.Context, *ManageFirmwareReq) (*FirmwareInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ManageFirmware not implemented")
+}
+func (UnimplementedDmServer) GetFirmwareInfo(context.Context, *GetFirmwareInfoReq) (*GetFirmwareInfoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFirmwareInfo not implemented")
 }
 func (UnimplementedDmServer) GetDeviceDescribeLog(context.Context, *GetDeviceDescribeLogReq) (*GetDeviceDescribeLogResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDeviceDescribeLog not implemented")
@@ -442,6 +474,42 @@ func _Dm_GetDeviceInfo_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Dm_ManageFirmware_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ManageFirmwareReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DmServer).ManageFirmware(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.Dm/manageFirmware",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DmServer).ManageFirmware(ctx, req.(*ManageFirmwareReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Dm_GetFirmwareInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFirmwareInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DmServer).GetFirmwareInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.Dm/GetFirmwareInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DmServer).GetFirmwareInfo(ctx, req.(*GetFirmwareInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Dm_GetDeviceDescribeLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetDeviceDescribeLogReq)
 	if err := dec(in); err != nil {
@@ -574,6 +642,14 @@ var Dm_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getDeviceInfo",
 			Handler:    _Dm_GetDeviceInfo_Handler,
+		},
+		{
+			MethodName: "manageFirmware",
+			Handler:    _Dm_ManageFirmware_Handler,
+		},
+		{
+			MethodName: "GetFirmwareInfo",
+			Handler:    _Dm_GetFirmwareInfo_Handler,
 		},
 		{
 			MethodName: "getDeviceDescribeLog",

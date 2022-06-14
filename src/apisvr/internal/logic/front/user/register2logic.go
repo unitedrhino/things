@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/usersvr/user"
 
@@ -29,7 +30,7 @@ func NewRegister2Logic(ctx context.Context, svcCtx *svc.ServiceContext) Register
 //注册完成后就需要填写用户信息,填写完成后才算注册成功(目前只有手机号注册登录需要走这步)
 func (l *Register2Logic) Register2(req types.Register2Req) error {
 	l.Infof("Register2|req=%+v", req)
-	token, err := utils.ParseToken(req.Token, l.svcCtx.Config.Rej.AccessSecret)
+	token, err := users.ParseToken(req.Token, l.svcCtx.Config.Rej.AccessSecret)
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("parseToken failure|token=%s|err=%+v", token, er)

@@ -40,7 +40,7 @@ func NewManageDeviceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mana
 发现返回true 没有返回false
 */
 func (l *ManageDeviceLogic) CheckDevice(in *dm.ManageDeviceReq) (bool, error) {
-	_, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID, in.Info.DeviceName)
+	_, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.Info.ProductID, in.Info.DeviceName)
 	switch err {
 	case mysql.ErrNotFound:
 		return false, nil
@@ -55,7 +55,7 @@ func (l *ManageDeviceLogic) CheckDevice(in *dm.ManageDeviceReq) (bool, error) {
 发现返回true 没有返回false
 */
 func (l *ManageDeviceLogic) CheckProduct(in *dm.ManageDeviceReq) (bool, error) {
-	_, err := l.svcCtx.ProductInfo.FindOne(in.Info.ProductID)
+	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
 	switch err {
 	case mysql.ErrNotFound:
 		return false, nil
@@ -99,7 +99,7 @@ func (l *ManageDeviceLogic) AddDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 	if in.Info.LogLevel != def.UNKNOWN {
 		di.LogLevel = device.LOG_CLOSE
 	}
-	_, err = l.svcCtx.DeviceInfo.Insert(&di)
+	_, err = l.svcCtx.DeviceInfo.Insert(l.ctx, &di)
 	if err != nil {
 		l.Errorf("AddDevice|DeviceInfo|Insert|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
@@ -126,17 +126,17 @@ func ChangeDevice(old *mysql.DeviceInfo, data *dm.DeviceInfo) {
 }
 
 func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID, in.Info.DeviceName)
+	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.Info.ProductID, in.Info.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			return nil, errors.Parameter.AddDetailf("not find device|productid=%s|deviceName=%s",
+			return nil, errors.NotFind.AddDetailf("not find device|productid=%s|deviceName=%s",
 				in.Info.ProductID, in.Info.DeviceName)
 		}
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
 	}
 	ChangeDevice(di, in.Info)
 
-	err = l.svcCtx.DeviceInfo.Update(di)
+	err = l.svcCtx.DeviceInfo.Update(l.ctx, di)
 	if err != nil {
 		l.Errorf("ModifyDevice|DeviceInfo|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())
@@ -153,7 +153,7 @@ func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 }
 
 func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(in.Info.ProductID, in.Info.DeviceName)
+	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.Info.ProductID, in.Info.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetailf("not find device|productid=%s|deviceName=%s",
@@ -180,7 +180,7 @@ func (l *ManageDeviceLogic) DelDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo, e
 		}
 	}
 
-	err = l.svcCtx.DeviceInfo.Delete(di.Id)
+	err = l.svcCtx.DeviceInfo.Delete(l.ctx, di.Id)
 	if err != nil {
 		l.Errorf("DelDevice|DeviceInfo|Delete|err=%+v", err)
 		return nil, errors.System.AddDetail(err.Error())

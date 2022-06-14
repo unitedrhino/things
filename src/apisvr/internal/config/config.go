@@ -30,6 +30,6 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	}
-	Captcha
-	NodeID int64
+	Captcha Captcha
+	OSS     conf.OSSConf
 }

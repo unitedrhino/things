@@ -9,6 +9,7 @@ import (
 	frontverify "github.com/i-Things/things/src/apisvr/internal/handler/front/verify"
 	opendc "github.com/i-Things/things/src/apisvr/internal/handler/open/dc"
 	opendm "github.com/i-Things/things/src/apisvr/internal/handler/open/dm"
+	openoss "github.com/i-Things/things/src/apisvr/internal/handler/open/oss"
 	openuser "github.com/i-Things/things/src/apisvr/internal/handler/open/user"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 
@@ -170,6 +171,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/getDeviceSDKLog",
 				Handler: opendm.GetDeviceSDKLogHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/genFirmwareUploadUri",
+				Handler: opendm.GenFirmwareUploadUriHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/open/dm"),
 	)
@@ -237,5 +243,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/open/dc"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPut,
+				Path:    "/upload",
+				Handler: openoss.UploadHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/download",
+				Handler: openoss.DownLoadHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/open/oss"),
 	)
 }

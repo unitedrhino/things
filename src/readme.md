@@ -14,7 +14,7 @@ goctl api go -api http/api.api  -dir ./
 ## 数据库文件生成
 
 ```shell script
-goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/pet" -table="*" -dir ./internal/repo/mysql -c
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_user" -table="*" -dir ./internal/repo/mysql -c
 ```
 
 ## rpc文件编译方法
@@ -31,13 +31,13 @@ goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./
 ## model文件编译
 
 ```shell
-goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/dm" -table="*" -dir ./internal/repo/mysql -c 
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dm" -table="*" -dir ./internal/repo/mysql -c 
 ```
 
 # 设备交互模块-dcsvr
 
 ```shell
-goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/dc" -table="*" -dir ./internal/repo/mysql -c  
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dc" -table="*" -dir ./internal/repo/mysql -c  
 goctl rpc protoc  proto/dc.proto --go_out=./ --go-grpc_out=./ --zrpc_out=.
 
 ```

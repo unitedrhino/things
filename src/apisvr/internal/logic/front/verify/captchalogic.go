@@ -35,7 +35,7 @@ func (l *CaptchaLogic) Captcha(req types.GetCaptchaReq) (*types.GetCaptchaResp, 
 	l.Slowf("Captcha|id=%v,answer:%v", id, answer)
 	return &types.GetCaptchaResp{
 		CodeID: id,
-		Expire: l.svcCtx.Config.KeepTime,
+		Expire: l.svcCtx.Config.Captcha.KeepTime,
 		Url:    url,
 	}, nil
 }
