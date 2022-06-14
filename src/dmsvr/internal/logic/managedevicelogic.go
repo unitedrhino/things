@@ -129,10 +129,10 @@ func (l *ManageDeviceLogic) ModifyDevice(in *dm.ManageDeviceReq) (*dm.DeviceInfo
 	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.Info.ProductID, in.Info.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			return nil, errors.Parameter.AddDetailf("not find device|productid=%s|deviceName=%s",
+			return nil, errors.NotFind.AddDetailf("not find device|productid=%s|deviceName=%s",
 				in.Info.ProductID, in.Info.DeviceName)
 		}
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err.Error())
 	}
 	ChangeDevice(di, in.Info)
 
