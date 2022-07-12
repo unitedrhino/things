@@ -46,6 +46,7 @@ func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
 		FirstLogin:  GetNullTime(di.FirstLogin),
 		LastLogin:   GetNullTime(di.LastLogin),
 		Secret:      di.Secret,
+		IsOnline:    di.IsOnline,
 	}
 }
 
