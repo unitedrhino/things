@@ -55,6 +55,7 @@ func DeviceInfoToApi(v *dm.DeviceInfo) *DeviceInfo {
 		Version:     GetNullVal(v.Version), // 固件版本  读写
 		LogLevel:    v.LogLevel,            // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 		Cert:        v.Cert,                // 设备证书  只读
+		IsOnline:    v.IsOnline,            // 在线状态:0)离线 1)在线
 	}
 }
 
