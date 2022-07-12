@@ -42,17 +42,18 @@ type (
 
 	DeviceInfo struct {
 		Id          int64        `db:"id"`
-		ProductID   string       `db:"productID"`  // äº§å“id
-		DeviceName  string       `db:"deviceName"` // è®¾å¤‡åç§°
-		Secret      string       `db:"secret"`     // è®¾å¤‡ç§˜é’¥
-		FirstLogin  sql.NullTime `db:"firstLogin"` // æ¿€æ´»æ—¶é—´
-		LastLogin   sql.NullTime `db:"lastLogin"`  // æœ€åŽä¸Šçº¿æ—¶é—´
+		ProductID   string       `db:"productID"`  // 产品id
+		DeviceName  string       `db:"deviceName"` // 设备名称
+		Secret      string       `db:"secret"`     // 设备秘钥
+		FirstLogin  sql.NullTime `db:"firstLogin"` // 激活时间
+		LastLogin   sql.NullTime `db:"lastLogin"`  // 最后上线时间
+		IsOnline    int64        `db:"isOnline"`   // 是否在线,0离线1在线
 		CreatedTime time.Time    `db:"createdTime"`
 		UpdatedTime sql.NullTime `db:"updatedTime"`
 		DeletedTime sql.NullTime `db:"deletedTime"`
-		Version     string       `db:"version"`  // å›ºä»¶ç‰ˆæœ¬
-		LogLevel    int64        `db:"logLevel"` // æ—¥å¿—çº§åˆ«:1)å…³é—­ 2)é”™è¯¯ 3)å‘Šè­¦ 4)ä¿¡æ¯ 5)è°ƒè¯•
-		Cert        string       `db:"cert"`     // è®¾å¤‡è¯ä¹¦
+		Version     string       `db:"version"`  // 固件版本
+		LogLevel    int64        `db:"logLevel"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+		Cert        string       `db:"cert"`     // 设备证书
 	}
 )
 
@@ -67,8 +68,8 @@ func (m *defaultDeviceInfoModel) Insert(ctx context.Context, data *DeviceInfo) (
 	thingsDmDeviceInfoIdKey := fmt.Sprintf("%s%v", cacheThingsDmDeviceInfoIdPrefix, data.Id)
 	thingsDmDeviceInfoProductIDDeviceNameKey := fmt.Sprintf("%s%v:%v", cacheThingsDmDeviceInfoProductIDDeviceNamePrefix, data.ProductID, data.DeviceName)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.IsOnline, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert)
 	}, thingsDmDeviceInfoIdKey, thingsDmDeviceInfoProductIDDeviceNameKey)
 	return ret, err
 }
@@ -115,7 +116,7 @@ func (m *defaultDeviceInfoModel) Update(ctx context.Context, data *DeviceInfo) e
 	thingsDmDeviceInfoProductIDDeviceNameKey := fmt.Sprintf("%s%v:%v", cacheThingsDmDeviceInfoProductIDDeviceNamePrefix, data.ProductID, data.DeviceName)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, deviceInfoRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert, data.Id)
+		return conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.IsOnline, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert, data.Id)
 	}, thingsDmDeviceInfoIdKey, thingsDmDeviceInfoProductIDDeviceNameKey)
 	return err
 }
