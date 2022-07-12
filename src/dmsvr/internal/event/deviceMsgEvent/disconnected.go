@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -47,5 +48,16 @@ func (l *DisconnectedLogic) Handle(msg *device.ConnectMsg) error {
 		l.Errorf("%s|LogRepo|insert|productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 	}
+	//更新对应设备的online状态
+	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, ld.ProductID, ld.DeviceName)
+	if err != nil {
+		if err == mysql.ErrNotFound {
+			return errors.NotFind.AddDetailf("Disconnect|not find device|productid=%s|deviceName=%s",
+				ld.ProductID, ld.DeviceName)
+		}
+		return errors.Database.AddDetail(err.Error())
+	}
+	di.IsOnline = 0 //离线
+	l.svcCtx.DeviceInfo.Update(l.ctx, di)
 	return nil
 }
