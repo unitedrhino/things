@@ -46,6 +46,7 @@ CREATE TABLE if not exists `device_info`
     `secret`      varchar(50)  DEFAULT '' COMMENT '设备秘钥',
     `firstLogin`  datetime     DEFAULT NULL COMMENT '激活时间',
     `lastLogin`   datetime     DEFAULT NULL COMMENT '最后上线时间',
+    `isOnline`      tinyint  default 0 comment '是否在线,0离线1在线',
     `createdTime` datetime         NOT NULL,
     `updatedTime` datetime     DEFAULT NULL,
     `deletedTime` datetime     DEFAULT NULL,
