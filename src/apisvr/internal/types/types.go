@@ -203,6 +203,7 @@ type DeviceInfo struct {
 	Version     *string `json:"version,optional"`            // 固件版本  读写
 	LogLevel    int64   `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	Cert        string  `json:"cert,optional,omitempty"`     // 设备证书  只读
+	IsOnline    int64   `json:"isOnline,optional"`           // 在线状态:0)离线 1)在线
 }
 
 type ManageDeviceReq struct {
