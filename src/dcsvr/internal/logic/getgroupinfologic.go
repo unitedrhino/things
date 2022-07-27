@@ -38,7 +38,7 @@ func (l *GetGroupInfoLogic) GetGroupInfo(in *dc.GetGroupInfoReq) (resp *dc.GetGr
 		if err != nil {
 			return nil, err
 		}
-		di, err := l.svcCtx.DcDB.FindByGroupInfo(def.PageInfo{PageSize: in.Page.PageSize, Page: in.Page.Page})
+		di, err := l.svcCtx.DcDB.FindByGroupInfo(def.PageInfo{Size: in.Page.PageSize, Page: in.Page.Page})
 		if err != nil {
 			return nil, err
 		}

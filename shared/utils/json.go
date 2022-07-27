@@ -12,10 +12,18 @@ func Unmarshal(data []byte, v interface{}) error {
 	return decoder.Decode(v)
 }
 
-func GetJson(v interface{}) string {
-	js, err := json.Marshal(v)
-	if err != nil {
-		return fmt.Sprintf("%#v", js)
+// Fmt 将结构以更方便看的方式打印出来
+func Fmt(v interface{}) string {
+	switch v.(type) {
+	case string:
+		return v.(string)
+	case []byte:
+		return string(v.([]byte))
+	default:
+		js, err := json.Marshal(v)
+		if err != nil {
+			return fmt.Sprintf("%#v", js)
+		}
+		return string(js)
 	}
-	return string(js)
 }

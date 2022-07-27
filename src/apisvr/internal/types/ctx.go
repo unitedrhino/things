@@ -8,7 +8,7 @@ type UserCtx struct {
 
 //使用该函数前必须传了UserCtx
 func GetUserCtx(ctx context.Context) *UserCtx {
-	userCtx, ok := ctx.Value(USER_UID).(*UserCtx)
+	userCtx, ok := ctx.Value(USER_UID2).(*UserCtx)
 	if !ok {
 		//这里线上不能获取不到
 		panic("GetUserCtx get UserCtx failed")

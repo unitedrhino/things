@@ -4,8 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/spf13/cast"
+)
+
+const (
+	//是否校验参数范围
+	validateDataRange = false
 )
 
 type TempParam struct {
@@ -16,7 +21,7 @@ type TempParam struct {
 	Required bool   `json:"required"` //是否必须
 	Type     string `json:"type"`     //事件类型: 信息:info  告警alert  故障:fault
 	Value    struct {
-		Type   thing.DataType    `json:"type"`              //参数类型:bool int string struct float timestamp array enum
+		Type   schema.DataType   `json:"type"`              //参数类型:bool int string struct float timestamp array enum
 		Maping map[string]string `json:"mapping,omitempty"` //枚举及bool类型:bool enum
 		Min    string            `json:"min,omitempty"`     //数值最小值:int string float
 		Max    string            `json:"max,omitempty"`     //数值最大值:int string float
@@ -31,7 +36,7 @@ type TempParam struct {
 	} `json:"Value"` //数据定义
 }
 
-func (t *TempParam) AddDefine(d *thing.Define, val interface{}) (err error) {
+func (t *TempParam) AddDefine(d *schema.Define, val interface{}) (err error) {
 	t.Value.Type = d.Type
 	t.Value.Type = d.Type
 	t.Value.Maping = make(map[string]string)
@@ -62,7 +67,7 @@ func (t *TempParam) ToVal() interface{} {
 	}
 
 	switch t.Value.Type {
-	case thing.STRUCT:
+	case schema.STRUCT:
 		v, ok := t.Value.Value.(map[string]TempParam)
 		if ok == false {
 			return nil
@@ -72,7 +77,7 @@ func (t *TempParam) ToVal() interface{} {
 			val[tp.ID] = tp.ToVal()
 		}
 		return val
-	case thing.ARRAY:
+	case schema.ARRAY:
 		array, ok := t.Value.Value.([]interface{})
 		if ok == false {
 			return nil
@@ -96,9 +101,9 @@ func (t *TempParam) ToVal() interface{} {
 	}
 }
 
-func GetVal(d *thing.Define, val interface{}) (interface{}, error) {
+func GetVal(d *schema.Define, val interface{}) (interface{}, error) {
 	switch d.Type {
-	case thing.BOOL:
+	case schema.BOOL:
 		switch val.(type) {
 		case bool:
 			return val.(bool), nil
@@ -110,7 +115,7 @@ func GetVal(d *thing.Define, val interface{}) (interface{}, error) {
 				return true, nil
 			}
 		}
-	case thing.INT:
+	case schema.INT:
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -118,12 +123,12 @@ func GetVal(d *thing.Define, val interface{}) (interface{}, error) {
 			if err != nil {
 				return nil, errors.Parameter.AddDetail(val)
 			}
-			if ret > cast.ToInt64(d.Max) || ret < cast.ToInt64(d.Min) {
+			if validateDataRange && (ret > cast.ToInt64(d.Max) || ret < cast.ToInt64(d.Min)) {
 				return nil, errors.OutRange.AddDetailf("value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
 			return ret, nil
 		}
-	case thing.FLOAT:
+	case schema.FLOAT:
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -131,22 +136,22 @@ func GetVal(d *thing.Define, val interface{}) (interface{}, error) {
 			if err != nil {
 				return nil, errors.Parameter.AddDetail(val)
 			}
-			if ret > cast.ToFloat64(d.Max) || ret < cast.ToFloat64(d.Min) {
+			if validateDataRange && (ret > cast.ToFloat64(d.Max) || ret < cast.ToFloat64(d.Min)) {
 				return nil, errors.OutRange.AddDetailf(
 					"value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
 			return ret, nil
 		}
-	case thing.STRING:
+	case schema.STRING:
 		if str, ok := val.(string); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
-			if len(str) > cast.ToInt(d.Max) {
+			if validateDataRange && (len(str) > cast.ToInt(d.Max)) {
 				return nil, errors.OutRange.AddDetailf("value %v out of range:%s", val, d.Max)
 			}
 			return str, nil
 		}
-	case thing.ENUM: //枚举类型 报文中传递的是数字
+	case schema.ENUM: //枚举类型 报文中传递的是数字
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -160,7 +165,7 @@ func GetVal(d *thing.Define, val interface{}) (interface{}, error) {
 			}
 			return ret, nil
 		}
-	case thing.TIMESTAMP:
+	case schema.TIMESTAMP:
 		switch val.(type) {
 		case json.Number:
 			ret, err := val.(json.Number).Int64()
@@ -175,7 +180,7 @@ func GetVal(d *thing.Define, val interface{}) (interface{}, error) {
 			}
 			return ret, nil
 		}
-	case thing.STRUCT:
+	case schema.STRUCT:
 		if strut, ok := val.(map[string]interface{}); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -198,7 +203,7 @@ func GetVal(d *thing.Define, val interface{}) (interface{}, error) {
 			}
 			return getParam, nil
 		}
-	case thing.ARRAY:
+	case schema.ARRAY:
 		if arr, ok := val.([]interface{}); !ok {
 			return nil, errors.Parameter.AddDetail(fmt.Sprint(val))
 		} else {

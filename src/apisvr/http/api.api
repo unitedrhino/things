@@ -5,8 +5,5 @@ info(
 	email: "603685348@qq.com"
 	version: "v1"
 )
-import "verify.api" //校验接口
-import "user.api" //用户相关功能网关
-import "dm.api"  //设备管理模块相关功能接口
-import "dc.api"  //设备交互模板相关功能接口
-import "oss.api"  //数据存储相关功能接口
+import "system.api" //系统管理
+import "things.api" //物模型管理

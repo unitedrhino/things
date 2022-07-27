@@ -19,11 +19,15 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 		}
 		ctx := emsg.GetCtx()
 		ctx, span := traces.StartSpan(ctx, msg.Subject, "")
-		logx.Infof("[dmsvr.NatsSubscription]|-------------------trace:%s, spanid:%s|topic:%s",
-			span.SpanContext().TraceID(), span.SpanContext().SpanID(), msg.Subject)
 		defer span.End()
 		err := handle(ctx, emsg.GetData())
-		logx.WithContext(ctx).Infof("nats subscription|subject:%v,data:%v,err:%v",
-			msg.Subject, string(msg.Data), err)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("nats subscription|subject:%v,err:%v",
+				msg.Subject, err)
+		} else {
+			logx.WithContext(ctx).Slowf("nats subscription|subject:%v",
+				msg.Subject)
+		}
+
 	}
 }

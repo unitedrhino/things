@@ -21,6 +21,7 @@ type (
 	}
 	HubLogRepo interface {
 		GetDeviceLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) ([]*HubLog, error)
+		GetCountLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) (int64, error)
 		Insert(ctx context.Context, data *HubLog) error
 		InitProduct(ctx context.Context, productID string) error
 		DropProduct(ctx context.Context, productID string) error

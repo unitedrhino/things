@@ -2,7 +2,7 @@ package deviceSend
 
 import (
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"time"
 )
 
@@ -36,13 +36,13 @@ func (d *DeviceReq) GetTimeStamp(defaultTime time.Time) time.Time {
 	return time.UnixMilli(d.Timestamp)
 }
 
-func (d *DeviceReq) VerifyReqParam(t *thing.Template, tt thing.TEMP_TYPE) (map[string]TempParam, error) {
+func (d *DeviceReq) VerifyReqParam(t *schema.Model, tt schema.TEMP_TYPE) (map[string]TempParam, error) {
 	if len(d.Params) == 0 {
 		return nil, errors.Parameter.AddDetail("need add params")
 	}
 	getParam := make(map[string]TempParam, len(d.Params))
 	switch tt {
-	case thing.PROPERTY:
+	case schema.PROPERTY:
 		for k, v := range d.Params {
 			p, ok := t.Property[k]
 			if ok == false {
@@ -62,7 +62,7 @@ func (d *DeviceReq) VerifyReqParam(t *thing.Template, tt thing.TEMP_TYPE) (map[s
 				return nil, errors.Fmt(err).AddDetail(p.ID)
 			}
 		}
-	case thing.EVENT:
+	case schema.EVENT:
 		p, ok := t.Event[d.EventID]
 		if ok == false {
 			return nil, errors.Parameter.AddDetail("need right eventId")
@@ -87,7 +87,7 @@ func (d *DeviceReq) VerifyReqParam(t *thing.Template, tt thing.TEMP_TYPE) (map[s
 				return nil, errors.Fmt(err).AddDetail(p.ID)
 			}
 		}
-	case thing.ACTION_INPUT:
+	case schema.ACTION_INPUT:
 		p, ok := t.Action[d.ActionID]
 		if ok == false {
 			return nil, errors.Parameter.AddDetail("need right ActionID")
@@ -108,7 +108,7 @@ func (d *DeviceReq) VerifyReqParam(t *thing.Template, tt thing.TEMP_TYPE) (map[s
 				return nil, errors.Fmt(err).AddDetail(p.ID)
 			}
 		}
-	case thing.ACTION_OUTPUT:
+	case schema.ACTION_OUTPUT:
 		p, ok := t.Action[d.ActionID]
 		if ok == false {
 			return nil, errors.Parameter.AddDetail("need right ActionID")

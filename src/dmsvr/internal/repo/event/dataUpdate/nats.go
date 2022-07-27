@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,7 +35,7 @@ func NewNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 	return &NatsClient{client: nc}, nil
 }
 
-func (n *NatsClient) TempModelUpdate(ctx context.Context, info *thing.TemplateInfo) error {
+func (n *NatsClient) TempModelUpdate(ctx context.Context, info *schema.SchemaInfo) error {
 	data, err := json.Marshal(info)
 	if err != nil {
 		return err
@@ -49,7 +49,7 @@ func (n *NatsClient) TempModelUpdate(ctx context.Context, info *thing.TemplateIn
 func (n *NatsClient) Subscribe(handle Handle) error {
 	_, err := n.client.Subscribe(TopicUpdateTempModel,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
-			tempInfo := thing.TemplateInfo{}
+			tempInfo := schema.SchemaInfo{}
 			err := json.Unmarshal(msg, &tempInfo)
 			if err != nil {
 				return err

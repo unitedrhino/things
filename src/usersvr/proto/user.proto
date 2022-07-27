@@ -3,28 +3,77 @@ option go_package = "pb/user";
 
 package user;
 
-
 service User {
-
-  rpc login(LoginReq) returns(LoginResp);
-  rpc registerCore(RegisterCoreReq) returns(RegisterCoreResp);
-  rpc register2(Register2Req) returns(Register2Resp);
-  rpc getUserInfo(GetUserInfoReq) returns(GetUserInfoResp);
-  rpc getUserCore(GetUserCoreReq) returns(GetUserCoreResp);
-
-  rpc checkToken(CheckTokenReq) returns(CheckTokenResp);
-  rpc modifyUserInfo(ModifyUserInfoReq) returns(NilResp);
+  rpc coreCreate(UserCoreCreateReq) returns(UserCoreCreateResp);//创建用户核心信息
+  rpc infoCreate(UserInfoCreateReq) returns(Response);//创建用户基本信息
   rpc getUserCoreList(GetUserCoreListReq) returns(GetUserCoreListResp);
+  rpc infoUpdate(UserInfoUpdateReq) returns(Response);//更新用户基本数据
+  rpc read(UserReadReq) returns(UserReadResp);//获取用户信息
+  rpc infoDelete(UserInfoDeleteReq) returns(Response);//刪除用戶
+  rpc login(LoginReq) returns(LoginResp);
+  rpc checkToken(CheckTokenReq) returns(CheckTokenResp);
 }
 
+message UserInfoDeleteReq{
+  string uid = 1;
+}
 
+message UserReadReq{
+  string uid=1;
+}
 
+message UserReadResp{
+  int64  uid = 1;
+  string nickName =2;
+  int64 inviterUid =3;
+  string inviterId =4;
+  int64  sex =5;
+  string city =6;
+  string country =7;
+  string province =8;
+  string language =9;
+  string headImgUrl =10;
+  int64 createTime =11;
+  string password = 12;    // 登录密码
+  string email = 13;       // 邮箱
+  string phone = 14;       // 手机号
+  string wechat = 15;      // 微信UnionID
+  string lastIP = 16;      // 最后登录ip
+  string regIP = 17;       // 注册ip
+  int64  status = 18;     // 用户状态:0为未注册状态
+}
 
-message PageInfo{
-  int64 page = 1;
-  int64 pageSize = 2;
-  string  searchKey  = 3;//搜索的内容
-  string  searchType   = 4;//搜索的字段
+message UserInfoUpdateReq{
+  string uid=1;
+  string userName =2;
+  string nickName =3;
+  int64 inviterUid =4;
+  string inviterId =5;
+  int64 sex =6;
+  string city =7;
+  string country =8;
+  string province =9;
+  string language =10;
+  string headImgUrl =11;
+}
+
+message UserCoreCreateReq{
+  string reqType = 1;//注册方式 phone|wxopen|wxin|wxminip|password| -> phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 密码方式 password 账密方式
+  string identity = 2;//手机号注册时填写手机号 或者用户账号
+  string code = 3;//验证码    微信登录填code
+  string codeID = 4; //验证码编号 微信登录填state
+  string password = 5;//明文密码
+  int64 role = 6;//用户角色，1- admin 2-供应商 3-user
+}
+
+message UserCoreCreateResp{
+  int64 uid = 1;//用户id
+  JwtToken jwtToken = 2;
+}
+
+message UserInfoCreateReq{
+  string token = 1;
+  UserInfo info = 2;
 }
 
 message JwtToken{
@@ -33,8 +82,12 @@ message JwtToken{
   int64 refreshAfter = 3;
 }
 
-message NilResp{
+message Response {
+}
 
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
 }
 
 //用户属性信息
@@ -65,43 +118,7 @@ message UserCore{
   string regIP = 8;       // 注册ip
   int64  createdTime = 9; //创建时间
   int64  status = 10;     // 用户状态:0为未注册状态
-}
-
-message RegisterCoreReq{
-  string reqType = 1;//注册方式:	0:手机号注册 1:微信注册
-  string note = 2;//手机号注册时填写手机号
-  string code = 3;//验证码    微信登录填code
-  string codeID = 4; //验证码编号 微信登录填state
-}
-
-
-message RegisterCoreResp{
-  int64 uid = 1;//用户id
-}
-
-
-message Register2Req{
-  UserInfo info = 1;
-  string password = 2;
-}
-
-message  Register2Resp{
-}
-
-message GetUserInfoReq{
-  repeated int64 uid = 1;//用户id
-}
-
-message GetUserInfoResp{
-  repeated UserInfo info = 1;
-}
-
-message GetUserCoreReq{
-  int64 uid = 1;//用户id
-}
-
-message GetUserCoreResp{
-  UserCore info = 1;
+  int64 role=11;
 }
 
 message LoginReq{
@@ -116,8 +133,17 @@ message LoginReq{
 message LoginResp{
   UserInfo info = 1;
   JwtToken token =2;
+  int64 Role = 3;
 }
 
+message GetUserCoreListReq{
+  PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: uid:用户id userName:登录用户名  email:邮箱  phone:手机号
+}
+
+message GetUserCoreListResp{
+  repeated UserCore info = 1;
+  int64 total = 2;
+}
 message CheckTokenReq{
   string token = 1;
   string ip = 2;
@@ -127,19 +153,3 @@ message CheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
   int64 uid = 2;
 }
-
-message ModifyUserInfoReq{
-  int64 uid = 1;      //修改的用户id
-  map<string, string> info = 2; //修改的属性,参看UserInfo
-}
-
-message GetUserCoreListReq{
-  PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: uid:用户id userName:登录用户名  email:邮箱  phone:手机号
-}
-
-
-message GetUserCoreListResp{
-  repeated UserCore info = 1;
-  int64 total = 2;
-}
-

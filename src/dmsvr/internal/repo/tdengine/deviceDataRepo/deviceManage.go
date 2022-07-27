@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func (d *DeviceDataRepo) InitDevice(ctx context.Context,
-	t *thing.Template,
+	t *schema.Model,
 	productID string,
 	deviceName string) error {
 	err := d.createPropertyTable(ctx, t.Properties, productID, deviceName)
@@ -32,7 +32,7 @@ func (d *DeviceDataRepo) InitDevice(ctx context.Context,
 
 func (d *DeviceDataRepo) DropDevice(
 	ctx context.Context,
-	t *thing.Template,
+	t *schema.Model,
 	productID string,
 	deviceName string) error {
 	tableList := getTableNameList(t, productID, deviceName)
@@ -46,7 +46,7 @@ func (d *DeviceDataRepo) DropDevice(
 }
 
 func (d *DeviceDataRepo) createPropertyTable(
-	ctx context.Context, p thing.Properties, productID string, deviceName string) error {
+	ctx context.Context, p schema.Properties, productID string, deviceName string) error {
 	for _, v := range p {
 		sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s');",
 			getPropertyTableName(productID, deviceName, v.ID),

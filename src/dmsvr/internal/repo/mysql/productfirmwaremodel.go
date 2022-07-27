@@ -1,9 +1,6 @@
 package mysql
 
-import (
-	"github.com/zeromicro/go-zero/core/stores/cache"
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
-)
+import "github.com/zeromicro/go-zero/core/stores/sqlx"
 
 var _ ProductFirmwareModel = (*customProductFirmwareModel)(nil)
 
@@ -20,8 +17,8 @@ type (
 )
 
 // NewProductFirmwareModel returns a model for the database table.
-func NewProductFirmwareModel(conn sqlx.SqlConn, c cache.CacheConf) ProductFirmwareModel {
+func NewProductFirmwareModel(conn sqlx.SqlConn) ProductFirmwareModel {
 	return &customProductFirmwareModel{
-		defaultProductFirmwareModel: newProductFirmwareModel(conn, c),
+		defaultProductFirmwareModel: newProductFirmwareModel(conn),
 	}
 }

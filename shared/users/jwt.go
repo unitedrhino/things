@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/i-Things/things/shared/errors"
 	"time"
@@ -10,6 +11,7 @@ import (
 type CustomClaims struct {
 	Uid int64
 	jwt.StandardClaims
+	Role int
 }
 
 func GetJwtToken(secretKey string, iat, seconds, uid int64) (string, error) {
@@ -78,4 +80,10 @@ func RefreshToken(tokenString string, secretKey string) (string, error) {
 		return CreateToken(secretKey, *claims)
 	}
 	return "", errors.TokenInvalid
+}
+
+func GetClaimsFromToken(l context.Context, uidKey string, roleKey string) *CustomClaims {
+	i := l.Value(uidKey)
+	u, _ := i.(int64)
+	return &CustomClaims{Uid: u}
 }

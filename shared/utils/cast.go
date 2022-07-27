@@ -1,6 +1,10 @@
 package utils
 
-import "reflect"
+import (
+	"github.com/golang/protobuf/ptypes/wrappers"
+	"reflect"
+	"time"
+)
 
 /*
 @in src 赋值的数据源
@@ -23,4 +27,20 @@ func Convert(src interface{}, dst interface{}) interface{} {
 		}
 	}
 	return dst
+}
+
+func GetNullVal(val *wrappers.StringValue) *string {
+	if val == nil {
+		return nil
+	}
+	return &val.Value
+}
+
+var empty = time.Time{}
+
+func TimeToInt64(t time.Time) int64 {
+	if t == empty {
+		return 0
+	}
+	return t.Unix()
 }

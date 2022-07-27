@@ -1,0 +1,126 @@
+Name: api
+Host: 0.0.0.0
+CpuThreshold: 0
+Timeout: 1000000
+MaxBytes: 1000000000
+Port: 7777
+NodeID: 1
+Log:
+  Encoding: plain
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+DcRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: dc.rpc
+    Timeout: 1000000
+UserRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: user.rpc
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+Auth:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 86400
+Rej:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 600     #过期时间单位秒
+DmSvr:
+  Name: dm.rpc
+  ListenOn: 127.0.0.1:9081
+  CpuThreshold: 0
+  Timeout: 1000000
+  Log:
+    Encoding: plain
+  Mysql:
+    DataSource: root:password@tcp(127.0.0.1:3306)/things_dm?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  CacheRedis:
+    - Host: 127.0.0.1:6379
+      Pass:
+      Type: node
+  TDengine:
+    DataSource: root:taosdata@http(localhost:6041)/test?readBufferSize=52428800
+  InnerLink:
+    Nats:
+      Url: nats://127.0.0.1:4222
+  AuthWhite:
+    IpRange:
+      - 127.0.0.1
+      - 172.18.0.1
+      - 192.168.1.1
+DdSvr:
+  Name: dd
+  Host: 0.0.0.0
+  Port: 8848
+  Log:
+    Encoding: plain
+  InnerLink:
+    Nats:
+      Url: nats://127.0.0.1:4222
+  DevLink:
+    Mode: mqtt
+    SubMode: emq
+    Mqtt:
+      ClientID: dd.rpc
+      Pass:
+      User:
+      Brokers:
+        - tcp://127.0.0.1:1883
+DcSvr:
+  Name: dc.rpc
+  ListenOn: 127.0.0.1:9082
+  CpuThreshold: 0
+  Timeout: 1000000
+  Log:
+    Encoding: plain
+  Mysql:
+    DataSource: root:password@tcp(127.0.0.1:3306)/things_dc?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  CacheRedis:
+    - Host: 127.0.0.1:6379
+      Pass:
+      Type: node
+  DmRpc:
+    Enable: true
+    Mode: direct
+    Conf:
+      Timeout: 1000000
+UserSvr:
+  Name: user.rpc
+  ListenOn: 127.0.0.1:9180
+  CpuThreshold: 0
+  Log:
+    Encoding: plain
+  Mysql:
+    DataSource: root:password@tcp(127.0.0.1:3306)/things_user?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  CacheRedis:
+    - Host: 127.0.0.1:6379
+      Pass:
+      Type: node
+  Rej:
+    AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+    AccessExpire: 600     #过期时间单位秒
+  UserToken:
+    AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+    AccessExpire: 8640000
+  WexinMiniprogram:
+    Open: true
+    AppID: wx0a8aabe3ca57d4af
+    AppSecret: f77f42b81e055ae8be41211cb0389b7d
+  UserOpt:
+    NeedUserName: true
+    NeedPassWord: true
+    PassLevel: 2

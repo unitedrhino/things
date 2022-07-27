@@ -30,14 +30,14 @@ func NewManageFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ma
 	}
 }
 
-func (l *ManageFirmwareLogic) AddFirmware(in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
+func (l *ManageFirmwareLogic) AddFirmware(in *dm.ManageFirmwareReq) (*dm.Response, error) {
 	_, err := l.svcCtx.FirmwareInfo.FindOneByProductIDVersion(l.ctx, in.Info.ProductID, in.Info.Version)
 	if err == nil {
 		return nil, errors.Duplicate.WithMsg("产品固件版本已有")
 	}
 	if err != mysql.ErrNotFound {
 		l.Errorf("AddFirmware|FindOneByProductIDVersion|err=%v", err)
-		return nil, errors.Database.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err)
 	}
 	firmware := mysql.ProductFirmware{
 		ProductID:   in.Info.ProductID,
@@ -51,17 +51,17 @@ func (l *ManageFirmwareLogic) AddFirmware(in *dm.ManageFirmwareReq) (*dm.Firmwar
 	_, err = l.svcCtx.FirmwareInfo.Insert(l.ctx, &firmware)
 	if err != nil {
 		l.Errorf("[%s]Insert|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	}
-	return in.Info, nil
+	return &dm.Response{}, nil
 }
 
-func (l *ManageFirmwareLogic) ModifyFirmware(in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
+func (l *ManageFirmwareLogic) ModifyFirmware(in *dm.ManageFirmwareReq) (*dm.Response, error) {
 	oldFirmWare, err := l.svcCtx.FirmwareInfo.FindOneByProductIDVersion(l.ctx, in.Info.ProductID, in.Info.Version)
 	if err != nil {
 		if err != mysql.ErrNotFound {
 			l.Errorf("AddFirmware|FindOneByProductIDVersion|err=%v", err)
-			return nil, errors.Database.AddDetail(err.Error())
+			return nil, errors.Database.AddDetail(err)
 		}
 		return nil, errors.NotFind
 	}
@@ -70,17 +70,17 @@ func (l *ManageFirmwareLogic) ModifyFirmware(in *dm.ManageFirmwareReq) (*dm.Firm
 	oldFirmWare.UpdatedTime = sql.NullTime{Valid: true, Time: time.Now()}
 	err = l.svcCtx.FirmwareInfo.Update(l.ctx, oldFirmWare)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err.Error())
+		return nil, errors.Database.AddDetail(err)
 	}
-	return ToFirmwareInfo(oldFirmWare), nil
+	return &dm.Response{}, nil
 }
 
-func (l *ManageFirmwareLogic) DelFirmware(in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
+func (l *ManageFirmwareLogic) DelFirmware(in *dm.ManageFirmwareReq) (*dm.Response, error) {
 	return nil, nil
 }
 
 // 管理产品的固件
-func (l *ManageFirmwareLogic) ManageFirmware(in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
+func (l *ManageFirmwareLogic) ManageFirmware(in *dm.ManageFirmwareReq) (*dm.Response, error) {
 	l.Infof("[%s]opt=%d|info=%+v", utils.FuncName(), in.Opt, in.Info)
 	switch in.Opt {
 	case def.OPT_ADD:

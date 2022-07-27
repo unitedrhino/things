@@ -29,7 +29,7 @@ func NewCheckTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CheckT
 func (l *CheckTokenLogic) CheckToken(in *user.CheckTokenReq) (*user.CheckTokenResp, error) {
 	defer func() {
 		if p := recover(); p != nil {
-			utils.HandleThrow(p)
+			utils.HandleThrow(l.ctx, p)
 		}
 	}()
 	l.Infof("CheckToken|req=%+v", in)

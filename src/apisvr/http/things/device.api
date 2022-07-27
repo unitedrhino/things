@@ -1,0 +1,81 @@
+info(
+    title: "设备管理模块"
+    desc: "设备管理模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+@server(
+    group : things/device
+    prefix: /api/v1/things/device
+)
+service api {
+    @handler test
+    post /test () returns ()
+    @doc "新增设备"
+    @handler infoCreate
+    post /create (DeviceInfoCreateReq) returns ()
+    @doc "更新设备"
+    @handler infoUpdate
+    post /update (DeviceInfoUpdateReq) returns ()
+    @doc "删除设备"
+    @handler infoDelete
+    post /delete (DeviceInfoDeleteReq) returns ()
+    @doc "获取设备信息列表"
+    @handler infoIndex
+    post /index (DeviceInfoIndexReq) returns (DeviceInfoIndexResp)
+    @doc "获取设备信息详情"
+    @handler infoRead
+    post /read (DeviceInfoReadReq) returns (DeviceInfo)
+}
+
+type (
+    DeviceTag struct {
+        Key string `json:"key"`
+        Value string `json:"value"`
+    }
+    DeviceInfo struct {
+        ProductID string `json:"productID"`                                              //产品id 只读
+        DeviceName string `json:"deviceName"`                                            //设备名称 读写
+        CreatedTime int64 `json:"createdTime,optional,string"`                           //创建时间 只读
+        Secret string `json:"secret,optional"`                                           //设备秘钥 只读
+        FirstLogin int64 `json:"firstLogin,optional,string"`                             //激活时间 只读
+        LastLogin int64 `json:"lastLogin,optional,string"`                               //最后上线时间 只读
+        Version *string `json:"version,optional"`                                        // 固件版本  读写
+        LogLevel int64 `json:"logLevel,optional"`                                        // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+        Cert string `json:"cert,optional"`                                     // 设备证书  只读
+        Tags []*DeviceTag `json:"tags,optional"`                                     // 设备tag
+        IsOnline bool `json:"isOnline,optional"`                                        // 在线状态:0)离线 1)在线
+    }
+
+    DeviceInfoCreateReq struct {
+        ProductID string `json:"productID"`                                              //产品id 只读
+        DeviceName string `json:"deviceName"`                                            //设备名称 读写
+        LogLevel int64 `json:"logLevel,optional"`                                        // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+        Tags []*DeviceTag `json:"tags,optional"`                                     // 设备tag
+    }
+    DeviceInfoUpdateReq struct {
+        ProductID string `json:"productID"`                                              //产品id 只读
+        DeviceName string `json:"deviceName"`                                            //设备名称 读写
+        LogLevel int64 `json:"logLevel,optional"`                                        // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+        Tags []*DeviceTag `json:"tags,optional"`                                     // 设备tag
+    }
+    DeviceInfoDeleteReq struct {
+        ProductID string `json:"productID"`                                              //产品id 只读
+        DeviceName string `json:"deviceName"`                                            //设备名称 读写
+    }
+    DeviceInfoReadReq struct {
+        ProductID string `json:"productID,optional"`     //产品id 为空时获取所有产品
+        DeviceName string `json:"deviceName"`                                            //设备名称 读写
+    }
+    DeviceInfoIndexReq struct {
+        ProductID string `json:"productID,optional"`     //产品id 为空时获取所有产品
+        Page PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+    }
+    DeviceInfoIndexResp struct {
+        List []*DeviceInfo `json:"list"`    //设备信息
+        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+        Num int64 `json:"num"`              //返回的数量
+    }
+)

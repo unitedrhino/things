@@ -4,8 +4,8 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/dataUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -30,24 +30,24 @@ type ServiceContext struct {
 	Store          kv.Store
 	DeviceDataRepo deviceData.DeviceDataRepo
 	HubLogRepo     device.HubLogRepo
-	TemplateRepo   thing.TemplateRepo
+	SchemaRepo     schema.SchemaRepo
 	SDKLogRepo     device.SDKLogRepo
 	FirmwareInfo   mysql.ProductFirmwareModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource)
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 
 	//TestTD(td)
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
-	di := mysql.NewDeviceInfoModel(conn, c.CacheRedis)
-	pi := mysql.NewProductInfoModel(conn, c.CacheRedis)
-	pt := mysql.NewProductTemplateModel(conn, c.CacheRedis)
-	tr := mysql.NewTemplateRepo(pt)
-	fr := mysql.NewProductFirmwareModel(conn, c.CacheRedis)
-	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
+	di := mysql.NewDeviceInfoModel(conn)
+	pi := mysql.NewProductInfoModel(conn)
+	pt := mysql.NewProductSchemaModel(conn)
+	tr := mysql.NewSchemaRepo(pt)
+	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
+	fr := mysql.NewProductFirmwareModel(conn)
+	DmDB := mysql.NewDmModel(conn)
 	store := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	DeviceID := utils.NewSnowFlake(nodeId)
@@ -67,7 +67,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceInfo:     di,
 		ProductInfo:    pi,
 		FirmwareInfo:   fr,
-		TemplateRepo:   tr,
+		SchemaRepo:     tr,
 		DmDB:           DmDB,
 		DeviceID:       DeviceID,
 		ProductID:      ProductID,
