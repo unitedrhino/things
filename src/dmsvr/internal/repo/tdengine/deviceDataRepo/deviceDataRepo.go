@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store/TDengine"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 	"strings"
@@ -16,19 +16,20 @@ const (
 )
 
 type DeviceDataRepo struct {
-	t *TDengine.Td
+	t              *TDengine.Td
+	getSchemaModel schema.GetSchemaModel
 }
 
-func NewDeviceDataRepo(dataSource string) *DeviceDataRepo {
+func NewDeviceDataRepo(dataSource string, getSchemaModel schema.GetSchemaModel) *DeviceDataRepo {
 	td, err := TDengine.NewTDengine(dataSource)
 	if err != nil {
 		logx.Error("NewTDengine err", err)
 		os.Exit(-1)
 	}
-	return &DeviceDataRepo{t: td}
+	return &DeviceDataRepo{t: td, getSchemaModel: getSchemaModel}
 }
 
-func getSpecsColumn(s thing.Specs) string {
+func getSpecsCreateColumn(s schema.Specs) string {
 	var column []string
 	for _, v := range s {
 		column = append(column, fmt.Sprintf("`%s` %s", v.ID, getTdType(v.DataType)))
@@ -36,23 +37,31 @@ func getSpecsColumn(s thing.Specs) string {
 	return strings.Join(column, ",")
 }
 
-func getTdType(define thing.Define) string {
+func getSpecsColumnWithArgFunc(s schema.Specs, argFunc string) string {
+	var column []string
+	for _, v := range s {
+		column = append(column, fmt.Sprintf("%s(`%s`) as %s", argFunc, v.ID, v.ID))
+	}
+	return strings.Join(column, ",")
+}
+
+func getTdType(define schema.Define) string {
 	switch define.Type {
-	case thing.BOOL:
+	case schema.BOOL:
 		return "BOOL"
-	case thing.INT:
+	case schema.INT:
 		return "BIGINT"
-	case thing.STRING:
+	case schema.STRING:
 		return "BINARY(5000)"
-	case thing.STRUCT:
+	case schema.STRUCT:
 		return "BINARY(5000)"
-	case thing.FLOAT:
+	case schema.FLOAT:
 		return "DOUBLE"
-	case thing.TIMESTAMP:
+	case schema.TIMESTAMP:
 		return "TIMESTAMP"
-	case thing.ARRAY:
+	case schema.ARRAY:
 		return "BINARY(5000)"
-	case thing.ENUM:
+	case schema.ENUM:
 		return "SMALLINT"
 	default:
 		panic(fmt.Sprintf("%v not support", define.Type))
@@ -102,7 +111,7 @@ func (d *DeviceDataRepo) GenParams(params map[string]interface{}) (string, strin
 }
 
 func getTableNameList(
-	t *thing.Template,
+	t *schema.Model,
 	productID string,
 	deviceName string) (tables []string) {
 	for _, v := range t.Properties {
@@ -113,7 +122,7 @@ func getTableNameList(
 }
 
 func getStableNameList(
-	t *thing.Template,
+	t *schema.Model,
 	productID string) (tables []string) {
 	for _, v := range t.Properties {
 		tables = append(tables, getPropertyStableName(productID, v.ID))

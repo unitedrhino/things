@@ -27,6 +27,29 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 		Logger: logx.WithContext(ctx),
 	}
 }
+func (l *LoginLogic) getPwd(in *user.LoginReq, uc *mysql.UserCore) error {
+	//根据密码类型不同做不同处理
+	if in.PwdType == 0 {
+		//空密码情况暂不考虑
+		return errors.UnRegister
+	} else if in.PwdType == 1 {
+		//明文密码，则对密码做MD5加密后再与数据库密码比对
+		//uid_temp := l.svcCtx.UserID.GetSnowflakeId()
+		password1 := utils.MakePwd(in.Password, uc.Uid, false) //对密码进行md5加密
+		if password1 != uc.Password {
+			return errors.Password
+		}
+	} else if in.PwdType == 2 {
+		//md5加密后的密码则通过二次md5加密再对比库中的密码
+		password1 := utils.MakePwd(in.Password, uc.Uid, true) //对密码进行md5加密
+		if password1 != uc.Password {
+			return errors.Password
+		}
+	} else {
+		return errors.UnRegister
+	}
+	return nil
+}
 
 func (l *LoginLogic) getRet(uc *mysql.UserCore) (*user.LoginResp, error) {
 	now := time.Now().Unix()
@@ -34,13 +57,20 @@ func (l *LoginLogic) getRet(uc *mysql.UserCore) (*user.LoginResp, error) {
 	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid)
 	if err != nil {
 		l.Error(err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	}
-	ui, err := l.svcCtx.UserInfoModel.FindOne(uc.Uid)
+	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, uc.Uid)
 	if err != nil {
-		l.Errorf("FindOne|uc=%+v|err=%+v", uc, err)
-		return nil, errors.Database.AddDetail(err.Error())
+		l.Errorf("FindOne|UserInfoModel|ui=%+v|err=%+v", ui, err)
+		return nil, errors.Database.AddDetail(err)
 	}
+
+	uc, err1 := l.svcCtx.UserCoreModel.FindOne(l.ctx, uc.Uid)
+	if err1 != nil {
+		l.Errorf("FindOne|UserCoreModel|uc=%+v|err=%+v", uc, err)
+		return nil, errors.Database.AddDetail(err)
+	}
+
 	resp := &user.LoginResp{
 		Info: &user.UserInfo{
 			Uid:        ui.Uid,
@@ -53,59 +83,76 @@ func (l *LoginLogic) getRet(uc *mysql.UserCore) (*user.LoginResp, error) {
 			Province:   ui.Province,
 			Language:   ui.Language,
 			HeadImgUrl: ui.HeadImgUrl,
-			CreateTime: ui.CreatedTime.Time.Unix(),
+
+			//CreateTime: ui.CreatedTime.Time.Unix(),
 		},
 		Token: &user.JwtToken{
 			AccessToken:  jwtToken,
 			AccessExpire: now + accessExpire,
 			RefreshAfter: now + accessExpire/2,
 		},
+		Role: uc.AuthorityId,
 	}
 	l.Infof("Login|getRet=%+v", resp)
 	return resp, nil
 }
 
-func (l *LoginLogic) GetUserCore(in *user.LoginReq) (uc *mysql.UserCore, err error) {
+func (l *LoginLogic) GetUserCore(in *user.LoginReq) (loginType string, uc *mysql.UserCore, err error) {
+	loginTypeTemp := ""
 	switch in.LoginType {
+	case "wxopen":
+		uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(l.ctx, in.UserID)
 	case "sms": //暂时不验证
-		uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(in.UserID)
+		uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(l.ctx, in.UserID)
 	case "img": //暂时不验证
 		lt := utils.GetLoginNameType(in.UserID)
 		switch lt {
 		case def.Phone:
-			uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(in.UserID)
+			//优先用手机号查表，如果未查到，说明可能是纯账号，则用账号字段查表
+			uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(l.ctx, in.UserID)
+			if err != nil || uc == nil {
+				uc, err = l.svcCtx.UserCoreModel.FindOneByUserName(l.ctx, in.UserID)
+			}
 		default:
-			uc, err = l.svcCtx.UserCoreModel.FindOneByUserName(in.UserID)
+			uc, err = l.svcCtx.UserCoreModel.FindOneByUserName(l.ctx, in.UserID)
 		}
+		loginTypeTemp = "password"
 	case "wxminip": //微信小程序登录
 		auth := l.svcCtx.WxMiniProgram.GetAuth()
 		ret, err2 := auth.Code2Session(in.Code)
 		if err2 != nil {
 			l.Errorf("Code2Session|req=%#v|ret=%#v|err=%+v", in, ret, err2)
 			if ret.ErrCode != 0 {
-				return nil, errors.Parameter.AddDetail(ret.ErrMsg)
+				return "", nil, errors.Parameter.AddDetail(ret.ErrMsg)
 			}
-			return nil, errors.System.AddDetail(err2.Error())
+			return "", nil, errors.System.AddDetail(err2.Error())
 		} else if ret.ErrCode != 0 {
-			return nil, errors.Parameter.AddDetail(ret.ErrMsg)
+			return "", nil, errors.Parameter.AddDetail(ret.ErrMsg)
 		}
 		l.Slowf("login|wxminip|ret=%+v", ret)
-		uc, err = l.svcCtx.UserCoreModel.FindOneByWechat(ret.UnionID)
+		uc, err = l.svcCtx.UserCoreModel.FindOneByWechat(l.ctx, ret.UnionID)
 	default:
 		l.Error("LoginType=%s|not suppost", in.LoginType)
-		return nil, errors.Parameter
+		return "", nil, errors.Parameter
 	}
 	l.Slowf("login|uc=%#v|err=%+v", uc, err)
-	return uc, err
+	return loginTypeTemp, uc, err
 }
 
 func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	l.Infof("Login|req=%+v", in)
-	uc, err := l.GetUserCore(in)
+	loginType, uc, err := l.GetUserCore(in)
 	switch err {
 	case nil:
 		if uc.Status != def.NomalStatus {
 			return nil, errors.UnRegister
+		}
+		//增加账密登录分支
+		if loginType == "password" {
+			errGetPwd := l.getPwd(in, uc)
+			if errGetPwd != nil {
+				return nil, errGetPwd
+			}
 		}
 		return l.getRet(uc)
 	case mysql.ErrNotFound:

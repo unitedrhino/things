@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
@@ -19,11 +18,8 @@ import (
 var (
 	productFirmwareFieldNames          = builder.RawFieldNames(&ProductFirmware{})
 	productFirmwareRows                = strings.Join(productFirmwareFieldNames, ",")
-	productFirmwareRowsExpectAutoSet   = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
-	productFirmwareRowsWithPlaceHolder = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
-
-	cacheThingsDmProductFirmwareIdPrefix               = "cache:thingsDm:productFirmware:id:"
-	cacheThingsDmProductFirmwareProductIDVersionPrefix = "cache:thingsDm:productFirmware:productID:version:"
+	productFirmwareRowsExpectAutoSet   = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), ",")
+	productFirmwareRowsWithPlaceHolder = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), "=?,") + "=?"
 )
 
 type (
@@ -31,12 +27,12 @@ type (
 		Insert(ctx context.Context, data *ProductFirmware) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*ProductFirmware, error)
 		FindOneByProductIDVersion(ctx context.Context, productID string, version string) (*ProductFirmware, error)
-		Update(ctx context.Context, data *ProductFirmware) error
+		Update(ctx context.Context, newData *ProductFirmware) error
 		Delete(ctx context.Context, id int64) error
 	}
 
 	defaultProductFirmwareModel struct {
-		sqlc.CachedConn
+		conn  sqlx.SqlConn
 		table string
 	}
 
@@ -54,30 +50,23 @@ type (
 	}
 )
 
-func newProductFirmwareModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultProductFirmwareModel {
+func newProductFirmwareModel(conn sqlx.SqlConn) *defaultProductFirmwareModel {
 	return &defaultProductFirmwareModel{
-		CachedConn: sqlc.NewConn(conn, c),
-		table:      "`product_firmware`",
+		conn:  conn,
+		table: "`product_firmware`",
 	}
 }
 
-func (m *defaultProductFirmwareModel) Insert(ctx context.Context, data *ProductFirmware) (sql.Result, error) {
-	thingsDmProductFirmwareIdKey := fmt.Sprintf("%s%v", cacheThingsDmProductFirmwareIdPrefix, data.Id)
-	thingsDmProductFirmwareProductIDVersionKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDVersionPrefix, data.ProductID, data.Version)
-	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productFirmwareRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.ProductID, data.Version, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Name, data.Description, data.Size, data.Dir)
-	}, thingsDmProductFirmwareIdKey, thingsDmProductFirmwareProductIDVersionKey)
-	return ret, err
+func (m *defaultProductFirmwareModel) Delete(ctx context.Context, id int64) error {
+	query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, id)
+	return err
 }
 
 func (m *defaultProductFirmwareModel) FindOne(ctx context.Context, id int64) (*ProductFirmware, error) {
-	thingsDmProductFirmwareIdKey := fmt.Sprintf("%s%v", cacheThingsDmProductFirmwareIdPrefix, id)
+	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", productFirmwareRows, m.table)
 	var resp ProductFirmware
-	err := m.QueryRowCtx(ctx, &resp, thingsDmProductFirmwareIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", productFirmwareRows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, id)
-	})
+	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -89,15 +78,9 @@ func (m *defaultProductFirmwareModel) FindOne(ctx context.Context, id int64) (*P
 }
 
 func (m *defaultProductFirmwareModel) FindOneByProductIDVersion(ctx context.Context, productID string, version string) (*ProductFirmware, error) {
-	thingsDmProductFirmwareProductIDVersionKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDVersionPrefix, productID, version)
 	var resp ProductFirmware
-	err := m.QueryRowIndexCtx(ctx, &resp, thingsDmProductFirmwareProductIDVersionKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
-		query := fmt.Sprintf("select %s from %s where `productID` = ? and `version` = ? limit 1", productFirmwareRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, productID, version); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
+	query := fmt.Sprintf("select %s from %s where `productID` = ? and `version` = ? limit 1", productFirmwareRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, productID, version)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -108,38 +91,16 @@ func (m *defaultProductFirmwareModel) FindOneByProductIDVersion(ctx context.Cont
 	}
 }
 
-func (m *defaultProductFirmwareModel) Update(ctx context.Context, data *ProductFirmware) error {
-	thingsDmProductFirmwareIdKey := fmt.Sprintf("%s%v", cacheThingsDmProductFirmwareIdPrefix, data.Id)
-	thingsDmProductFirmwareProductIDVersionKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDVersionPrefix, data.ProductID, data.Version)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, productFirmwareRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.ProductID, data.Version, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Name, data.Description, data.Size, data.Dir, data.Id)
-	}, thingsDmProductFirmwareIdKey, thingsDmProductFirmwareProductIDVersionKey)
+func (m *defaultProductFirmwareModel) Insert(ctx context.Context, data *ProductFirmware) (sql.Result, error) {
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productFirmwareRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.Version, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Name, data.Description, data.Size, data.Dir)
+	return ret, err
+}
+
+func (m *defaultProductFirmwareModel) Update(ctx context.Context, newData *ProductFirmware) error {
+	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, productFirmwareRowsWithPlaceHolder)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.Version, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Name, newData.Description, newData.Size, newData.Dir, newData.Id)
 	return err
-}
-
-func (m *defaultProductFirmwareModel) Delete(ctx context.Context, id int64) error {
-	data, err := m.FindOne(ctx, id)
-	if err != nil {
-		return err
-	}
-
-	thingsDmProductFirmwareIdKey := fmt.Sprintf("%s%v", cacheThingsDmProductFirmwareIdPrefix, id)
-	thingsDmProductFirmwareProductIDVersionKey := fmt.Sprintf("%s%v:%v", cacheThingsDmProductFirmwareProductIDVersionPrefix, data.ProductID, data.Version)
-	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
-		return conn.ExecCtx(ctx, query, id)
-	}, thingsDmProductFirmwareIdKey, thingsDmProductFirmwareProductIDVersionKey)
-	return err
-}
-
-func (m *defaultProductFirmwareModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheThingsDmProductFirmwareIdPrefix, primary)
-}
-
-func (m *defaultProductFirmwareModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
-	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", productFirmwareRows, m.table)
-	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 
 func (m *defaultProductFirmwareModel) tableName() string {

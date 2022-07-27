@@ -132,7 +132,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 			return nil, errors.Password
 		} else {
 			l.Errorf("LoginAuth|FindOneByProductIDDeviceName failure|err=%+v", err)
-			return nil, errors.Database
+			return nil, errors.Database.AddDetail(err)
 		}
 	}
 	pwd, err := device.NewPwdInfo(in.Password)

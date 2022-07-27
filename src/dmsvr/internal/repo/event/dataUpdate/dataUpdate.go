@@ -2,21 +2,25 @@ package dataUpdate
 
 import (
 	"context"
-	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
+	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 )
 
 type (
 	DataUpdate interface {
-		TempModelUpdate(ctx context.Context, info *thing.TemplateInfo) error
+		TempModelUpdate(ctx context.Context, info *schema.SchemaInfo) error
 		Subscribe(handle Handle) error
 	}
 	Handle             func(ctx context.Context) DataUpdateSubEvent
 	DataUpdateSubEvent interface {
-		TempModelClearCache(info *thing.TemplateInfo) error
+		TempModelClearCache(info *schema.SchemaInfo) error
 	}
 )
 
-func NewDataUpdate(conf config.InnerLinkConf) (DataUpdate, error) {
-	return NewNatsClient(conf.Nats)
+func NewDataUpdate(c conf.InnerLinkConf) (DataUpdate, error) {
+	switch c.Mode {
+	case conf.InnerLinkModeNats:
+		return NewNatsClient(c.Nats)
+	}
+	return NewDirect()
 }

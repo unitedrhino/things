@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -18,7 +18,7 @@ import (
 type SendActionLogic struct {
 	ctx      context.Context
 	svcCtx   *svc.ServiceContext
-	template *thing.Template
+	template *schema.Model
 	logx.Logger
 }
 
@@ -31,9 +31,9 @@ func NewSendActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendAc
 }
 func (l *SendActionLogic) initMsg(productID string) error {
 	var err error
-	l.template, err = l.svcCtx.TemplateRepo.GetTemplate(l.ctx, productID)
+	l.template, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
 	if err != nil {
-		return errors.System.AddDetail(err.Error())
+		return errors.System.AddDetail(err)
 	}
 	return nil
 }
@@ -60,7 +60,7 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 		ClientToken: "de65377c-4041-565d-0b5e-67b664a06be8", //这个是测试代码
 		Timestamp:   time.Now().UnixMilli(),
 		Params:      param}
-	_, err = req.VerifyReqParam(l.template, thing.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, schema.ACTION_INPUT)
 	if err != nil {
 		return nil, err
 	}

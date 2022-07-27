@@ -20,8 +20,8 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
-	ui := mysql.NewUserInfoModel(conn, c.CacheRedis)
-	uc := mysql.NewUserCoreModel(conn, c.CacheRedis)
+	ui := mysql.NewUserInfoModel(conn)
+	uc := mysql.NewUserCoreModel(conn)
 	um := mysql.NewUserModel(conn, c.CacheRedis)
 	WxMiniProgram := weixin.NewWexinMiniProgram(c.WexinMiniprogram, c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)

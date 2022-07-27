@@ -22,42 +22,42 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
-func (s *UserServer) Login(ctx context.Context, in *user.LoginReq) (*user.LoginResp, error) {
-	l := logic.NewLoginLogic(ctx, s.svcCtx)
-	return l.Login(in)
+func (s *UserServer) CoreCreate(ctx context.Context, in *user.UserCoreCreateReq) (*user.UserCoreCreateResp, error) {
+	l := logic.NewCoreCreateLogic(ctx, s.svcCtx)
+	return l.CoreCreate(in)
 }
 
-func (s *UserServer) RegisterCore(ctx context.Context, in *user.RegisterCoreReq) (*user.RegisterCoreResp, error) {
-	l := logic.NewRegisterCoreLogic(ctx, s.svcCtx)
-	return l.RegisterCore(in)
-}
-
-func (s *UserServer) Register2(ctx context.Context, in *user.Register2Req) (*user.Register2Resp, error) {
-	l := logic.NewRegister2Logic(ctx, s.svcCtx)
-	return l.Register2(in)
-}
-
-func (s *UserServer) GetUserInfo(ctx context.Context, in *user.GetUserInfoReq) (*user.GetUserInfoResp, error) {
-	l := logic.NewGetUserInfoLogic(ctx, s.svcCtx)
-	return l.GetUserInfo(in)
-}
-
-func (s *UserServer) GetUserCore(ctx context.Context, in *user.GetUserCoreReq) (*user.GetUserCoreResp, error) {
-	l := logic.NewGetUserCoreLogic(ctx, s.svcCtx)
-	return l.GetUserCore(in)
-}
-
-func (s *UserServer) CheckToken(ctx context.Context, in *user.CheckTokenReq) (*user.CheckTokenResp, error) {
-	l := logic.NewCheckTokenLogic(ctx, s.svcCtx)
-	return l.CheckToken(in)
-}
-
-func (s *UserServer) ModifyUserInfo(ctx context.Context, in *user.ModifyUserInfoReq) (*user.NilResp, error) {
-	l := logic.NewModifyUserInfoLogic(ctx, s.svcCtx)
-	return l.ModifyUserInfo(in)
+func (s *UserServer) InfoCreate(ctx context.Context, in *user.UserInfoCreateReq) (*user.Response, error) {
+	l := logic.NewInfoCreateLogic(ctx, s.svcCtx)
+	return l.InfoCreate(in)
 }
 
 func (s *UserServer) GetUserCoreList(ctx context.Context, in *user.GetUserCoreListReq) (*user.GetUserCoreListResp, error) {
 	l := logic.NewGetUserCoreListLogic(ctx, s.svcCtx)
 	return l.GetUserCoreList(in)
+}
+
+func (s *UserServer) InfoUpdate(ctx context.Context, in *user.UserInfoUpdateReq) (*user.Response, error) {
+	l := logic.NewInfoUpdateLogic(ctx, s.svcCtx)
+	return l.InfoUpdate(in)
+}
+
+func (s *UserServer) Read(ctx context.Context, in *user.UserReadReq) (*user.UserReadResp, error) {
+	l := logic.NewReadLogic(ctx, s.svcCtx)
+	return l.Read(in)
+}
+
+func (s *UserServer) InfoDelete(ctx context.Context, in *user.UserInfoDeleteReq) (*user.Response, error) {
+	l := logic.NewInfoDeleteLogic(ctx, s.svcCtx)
+	return l.InfoDelete(in)
+}
+
+func (s *UserServer) Login(ctx context.Context, in *user.LoginReq) (*user.LoginResp, error) {
+	l := logic.NewLoginLogic(ctx, s.svcCtx)
+	return l.Login(in)
+}
+
+func (s *UserServer) CheckToken(ctx context.Context, in *user.CheckTokenReq) (*user.CheckTokenResp, error) {
+	l := logic.NewCheckTokenLogic(ctx, s.svcCtx)
+	return l.CheckToken(in)
 }

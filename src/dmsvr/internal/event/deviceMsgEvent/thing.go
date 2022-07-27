@@ -6,9 +6,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -18,7 +18,7 @@ type ThingLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	template *thing.Template
+	template *schema.Model
 	topics   []string
 	dreq     deviceSend.DeviceReq
 	dd       deviceData.DeviceDataRepo
@@ -34,9 +34,9 @@ func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic 
 
 func (l *ThingLogic) initMsg(msg *device.PublishMsg) error {
 	var err error
-	l.template, err = l.svcCtx.TemplateRepo.GetTemplate(l.ctx, msg.ProductID)
+	l.template, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, msg.ProductID)
 	if err != nil {
-		return err
+		return errors.Database.AddDetail(err)
 	}
 	err = utils.Unmarshal(msg.Payload, &l.dreq)
 	if err != nil {
@@ -54,11 +54,11 @@ func (l *ThingLogic) DeviceResp(msg *device.PublishMsg, err error, data map[stri
 		l.Errorf("DeviceResp|PublishToDev failure err:%v", er)
 		return
 	}
-	l.Infof("ThingLogic|DeviceResp|topic:%v payload:%v", topic, string(payload))
+	l.Infof("ThingLogic|DeviceResp|topic:%v payload:%v err:%v", topic, string(payload), err)
 }
 
 func (l *ThingLogic) HandlePropertyReport(msg *device.PublishMsg) error {
-	tp, err := l.dreq.VerifyReqParam(l.template, thing.PROPERTY)
+	tp, err := l.dreq.VerifyReqParam(l.template, schema.PROPERTY)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
 		return err
@@ -84,11 +84,12 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *device.PublishMsg) error {
 	switch l.dreq.Type {
 	case deviceSend.REPORT:
 		for id, _ := range l.template.Property {
-			data, err := l.dd.GetPropertyDataByID(l.ctx, msg.ProductID, msg.DeviceName, id, def.PageInfo2{
-				TimeStart: 0,
-				TimeEnd:   0,
-				Limit:     1,
-			})
+			data, err := l.dd.GetPropertyDataByID(l.ctx,
+				deviceData.FilterOpt{
+					Page:       def.PageInfo2{Size: 1},
+					ProductID:  msg.ProductID,
+					DeviceName: msg.DeviceName,
+					DataID:     id})
 			if err != nil {
 				l.Errorf("HandlePropertyGetStatus|GetPropertyDataByID|get id:%s|err:%s",
 					id, err.Error())
@@ -132,7 +133,7 @@ func (l *ThingLogic) HandleEvent(msg *device.PublishMsg) error {
 	if l.dreq.Method != deviceSend.EVENT_POST {
 		return errors.Method
 	}
-	tp, err := l.dreq.VerifyReqParam(l.template, thing.EVENT)
+	tp, err := l.dreq.VerifyReqParam(l.template, schema.EVENT)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
 		return err
@@ -157,7 +158,7 @@ func (l *ThingLogic) HandleResp(msg *device.PublishMsg) error {
 }
 
 func (l *ThingLogic) Handle(msg *device.PublishMsg) (err error) {
-	l.Infof("ThingLogic|req=%+v", msg)
+	l.Infof("ThingLogic|req=%v", msg)
 	err = l.initMsg(msg)
 	if err != nil {
 		return err

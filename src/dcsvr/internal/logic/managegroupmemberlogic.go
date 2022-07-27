@@ -63,7 +63,7 @@ func (l *ManageGroupMemberLogic) CheckGroupMember(in *dc.ManageGroupMemberReq) (
 func (l *ManageGroupMemberLogic) AddGroupMember(in *dc.ManageGroupMemberReq) (*dc.GroupMember, error) {
 	find, err := l.CheckGroupMember(in)
 	if err != nil {
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	} else if find == true {
 		return nil, errors.Duplicate.AddDetailf(
 			"GroupID:%v, MemberID:%v,MemberType:%v", in.Info.GroupID, in.Info.MemberID, in.Info.MemberType)
@@ -71,7 +71,7 @@ func (l *ManageGroupMemberLogic) AddGroupMember(in *dc.ManageGroupMemberReq) (*d
 	l.Infof("find=%v|err=%v\n", find, err)
 	find, err = l.CheckGroup(in)
 	if err != nil {
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	} else if find == false {
 		return nil, errors.Parameter.AddDetail(
 			"not find GroupID:%v, MemberID:%v,MemberType:%v",
@@ -91,7 +91,7 @@ func (l *ManageGroupMemberLogic) AddGroupMember(in *dc.ManageGroupMemberReq) (*d
 	_, err = l.svcCtx.GroupMember.Insert(di)
 	if err != nil {
 		l.Errorf("AddDevice|DeviceInfo|Insert|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	}
 	return DBToRPCFmt(&di).(*dc.GroupMember), nil
 }
@@ -106,12 +106,12 @@ func (l *ManageGroupMemberLogic) DelGroupMember(in *dc.ManageGroupMemberReq) (*d
 					in.Info.GroupID, in.Info.MemberID, in.Info.MemberType))
 		}
 		l.Errorf("DelGroupMember|GroupMember|FindOne|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	}
 	err = l.svcCtx.GroupMember.Delete(di.Id)
 	if err != nil {
 		l.Errorf("DelGroupMember|GroupMember|Delete|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	}
 	return &dc.GroupMember{}, nil
 }
@@ -120,7 +120,7 @@ func (l *ManageGroupMemberLogic) DelGroupMember(in *dc.ManageGroupMemberReq) (*d
 func (l *ManageGroupMemberLogic) ManageGroupMember(in *dc.ManageGroupMemberReq) (*dc.GroupMember, error) {
 	defer func() {
 		if p := recover(); p != nil {
-			utils.HandleThrow(p)
+			utils.HandleThrow(l.ctx, p)
 		}
 	}()
 	l.Infof("ManageGroupMember|req=%+v", in)

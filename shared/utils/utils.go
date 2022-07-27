@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
@@ -9,7 +10,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"net"
 	"net/http"
-	"os"
 	"regexp"
 	"runtime"
 	"runtime/debug"
@@ -118,12 +118,18 @@ func FuncName() string {
 //	return fmt.Sprintf("%s:%d:%s",file,line,f.Name())
 //}
 
-func HandleThrow(p interface{}) {
+func Recover(ctx context.Context) {
+	if p := recover(); p != nil {
+		HandleThrow(ctx, p)
+	}
+}
+
+func HandleThrow(ctx context.Context, p interface{}) {
 	pc := make([]uintptr, 1)
 	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])
-	logx.Errorf("THROW_ERROR|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
-	os.Exit(-1)
+	logx.WithContext(ctx).Errorf("THROW_ERROR|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
+	//os.Exit(-1)
 }
 
 func Ip2binary(ip string) string {

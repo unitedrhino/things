@@ -45,7 +45,7 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		}
 		logx.WithContext(r.Context()).Infof("CheckToken|ip=%s|uid=%s|token=%s|newToken=%s",
 			strIP, resp.Uid, strToken, resp.Token)
-		ctx := context.WithValue(r.Context(), types.USER_UID, &types.UserCtx{
+		ctx := context.WithValue(r.Context(), types.USER_UID2, &types.UserCtx{
 			Uid: resp.Uid,
 		})
 		next(w, r.WithContext(ctx))

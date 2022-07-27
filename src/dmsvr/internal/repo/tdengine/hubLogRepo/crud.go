@@ -2,12 +2,36 @@ package hubLogRepo
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 )
+
+func (d HubLogRepo) GetCountLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) (int64, error) {
+	sqSql := sq.Select("Count(1)").From(getLogStableName(productID)).
+		Where("`device_name`=?", deviceName)
+	sqSql = page.FmtWhere(sqSql)
+	sqlStr, value, err := sqSql.ToSql()
+	if err != nil {
+		return 0, err
+	}
+	row := d.t.QueryRow(sqlStr, value...)
+	if err != nil {
+		return 0, err
+	}
+	var (
+		total int64
+	)
+
+	err = row.Scan(&total)
+	if err != nil && err != sql.ErrNoRows {
+		return 0, err
+	}
+	return total, nil
+}
 
 func (d HubLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) ([]*device.HubLog, error) {
 	sql := sq.Select("*").From(getLogStableName(productID)).

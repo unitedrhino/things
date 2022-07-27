@@ -2,10 +2,10 @@ package deviceDataRepo
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
@@ -26,13 +26,10 @@ func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,
 
 func (d *DeviceDataRepo) GetEventDataByID(
 	ctx context.Context,
-	productID string,
-	deviceName string,
-	dataID string,
-	page def.PageInfo2) ([]*deviceData.EventData, error) {
-	sql := sq.Select("*").From(getEventStableName(productID)).
-		Where("`device_name`=? and `event_id`=? ", deviceName, dataID).OrderBy("`ts` desc")
-	sql = page.FmtSql(sql)
+	filter deviceData.FilterOpt) ([]*deviceData.EventData, error) {
+	sql := sq.Select("*").From(getEventStableName(filter.ProductID)).
+		Where("`device_name`=? and `event_id`=? ", filter.DeviceName, filter.DataID).OrderBy("`ts` desc")
+	sql = filter.Page.FmtSql(sql)
 	sqlStr, value, err := sql.ToSql()
 	if err != nil {
 		return nil, err
@@ -45,7 +42,26 @@ func (d *DeviceDataRepo) GetEventDataByID(
 	store.Scan(rows, &datas)
 	retEvents := make([]*deviceData.EventData, 0, len(datas))
 	for _, v := range datas {
-		retEvents = append(retEvents, ToEventData(dataID, v))
+		retEvents = append(retEvents, ToEventData(filter.DataID, v))
 	}
 	return retEvents, nil
+}
+
+func (d *DeviceDataRepo) GetEventCountByID(
+	ctx context.Context,
+	filter deviceData.FilterOpt) (int64, error) {
+	sqSql := sq.Select("count(1)").From(getEventStableName(filter.ProductID)).
+		Where("`device_name`=? and `event_id`=? ", filter.DeviceName, filter.DataID)
+	sqSql = filter.Page.FmtWhere(sqSql)
+	sqlStr, value, err := sqSql.ToSql()
+	if err != nil {
+		return 0, err
+	}
+	row := d.t.QueryRow(sqlStr, value...)
+	var total int64
+	err = row.Scan(&total)
+	if err != nil && err != sql.ErrNoRows {
+		return 0, err
+	}
+	return total, nil
 }

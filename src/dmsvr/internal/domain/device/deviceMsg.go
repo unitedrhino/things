@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -15,6 +16,17 @@ type PublishMsg struct {
 	Timestamp  time.Time
 	ProductID  string
 	DeviceName string
+}
+
+func (p *PublishMsg) String() string {
+	msgMap := map[string]interface{}{
+		"Topic":      p.Topic,
+		"Payload":    string(p.Payload),
+		"Timestamp":  p.Timestamp,
+		"ProductID":  p.ProductID,
+		"DeviceName": p.DeviceName,
+	}
+	return utils.Fmt(msgMap)
 }
 
 //连接和断连消息信息

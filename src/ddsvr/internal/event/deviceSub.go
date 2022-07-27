@@ -99,10 +99,10 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 }
 
 func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
-	s.Infof("%s|info:%v", utils.FuncName(), utils.GetJson(info))
+	s.Infof("%s|info:%v", utils.FuncName(), utils.Fmt(info))
 	return s.svcCtx.InnerLink.PubConn(s.ctx, innerLink.Connect, info)
 }
 func (s *DeviceSubServer) Disconnected(info *devices.DevConn) error {
-	s.Infof("%s|info:%v", utils.FuncName(), utils.GetJson(info))
+	s.Infof("%s|info:%v", utils.FuncName(), utils.Fmt(info))
 	return s.svcCtx.InnerLink.PubConn(s.ctx, innerLink.DisConnect, info)
 }

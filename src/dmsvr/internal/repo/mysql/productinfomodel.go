@@ -1,9 +1,6 @@
 package mysql
 
-import (
-	"github.com/zeromicro/go-zero/core/stores/cache"
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
-)
+import "github.com/zeromicro/go-zero/core/stores/sqlx"
 
 var _ ProductInfoModel = (*customProductInfoModel)(nil)
 
@@ -20,8 +17,8 @@ type (
 )
 
 // NewProductInfoModel returns a model for the database table.
-func NewProductInfoModel(conn sqlx.SqlConn, c cache.CacheConf) ProductInfoModel {
+func NewProductInfoModel(conn sqlx.SqlConn) ProductInfoModel {
 	return &customProductInfoModel{
-		defaultProductInfoModel: newProductInfoModel(conn, c),
+		defaultProductInfoModel: newProductInfoModel(conn),
 	}
 }

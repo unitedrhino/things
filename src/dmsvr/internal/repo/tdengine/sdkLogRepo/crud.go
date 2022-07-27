@@ -2,6 +2,7 @@ package sdkLogRepo
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
@@ -12,16 +13,20 @@ import (
 )
 
 func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) ([]*device.SDKLog, error) {
-	sql := sq.Select("*").From(getSDKLogStableName(productID)).
+	sqSql := sq.Select("*").From(getSDKLogStableName(productID)).
 		Where("`device_name`=?", deviceName).OrderBy("`ts` desc")
-	sql = page.FmtSql(sql)
-	sqlStr, value, err := sql.ToSql()
+	sqSql = page.FmtSql(sqSql)
+	sqlStr, value, err := sqSql.ToSql()
 	if err != nil {
 		return nil, err
 	}
 	rows, err := d.t.Query(sqlStr, value...)
 	if err != nil {
-		return nil, err
+		if err != sql.ErrNoRows {
+			return nil, err
+		} else {
+			return []*device.SDKLog{}, nil
+		}
 	}
 	var datas []map[string]interface{}
 	store.Scan(rows, &datas)

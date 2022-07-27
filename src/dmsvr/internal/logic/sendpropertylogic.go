@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/dm"
@@ -20,7 +20,7 @@ type SendPropertyLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	template *thing.Template
+	template *schema.Model
 }
 
 func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendPropertyLogic {
@@ -33,9 +33,9 @@ func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 
 func (l *SendPropertyLogic) initMsg(productID string) error {
 	var err error
-	l.template, err = l.svcCtx.TemplateRepo.GetTemplate(l.ctx, productID)
+	l.template, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
 	if err != nil {
-		return errors.System.AddDetail(err.Error())
+		return errors.System.AddDetail(err)
 	}
 	return nil
 }
@@ -63,7 +63,7 @@ func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendProper
 		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
 		Timestamp: time.Now().UnixMilli(),
 		Params:    param}
-	_, err = req.VerifyReqParam(l.template, thing.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, schema.ACTION_INPUT)
 	if err != nil {
 		return nil, err
 	}

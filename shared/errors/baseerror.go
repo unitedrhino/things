@@ -55,6 +55,14 @@ func (c CodeError) WithMsgf(format string, a ...interface{}) *CodeError {
 	return &CodeError{Code: c.Code, Msg: fmt.Sprintf(format, a...)}
 }
 
+func (c CodeError) AddMsg(msg string) *CodeError {
+	return &CodeError{Code: c.Code, Msg: c.Msg + ":" + msg}
+}
+
+func (c CodeError) AddMsgf(format string, a ...interface{}) *CodeError {
+	return &CodeError{Code: c.Code, Msg: c.Msg + ":" + fmt.Sprintf(format, a...)}
+}
+
 func (c CodeError) AddDetail(msg ...interface{}) *CodeError {
 	c.Details = append(c.Details, fmt.Sprint(msg...))
 	pc := make([]uintptr, 1)

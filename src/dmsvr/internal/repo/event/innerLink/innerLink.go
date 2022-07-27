@@ -2,7 +2,7 @@ package innerLink
 
 import (
 	"context"
-	"github.com/i-Things/things/src/dmsvr/internal/config"
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 )
@@ -31,6 +31,10 @@ type (
 	}
 )
 
-func NewInnerLink(conf config.InnerLinkConf) (InnerLink, error) {
-	return NewNatsClient(conf.Nats)
+func NewInnerLink(c conf.InnerLinkConf) (InnerLink, error) {
+	if c.Mode == conf.InnerLinkModeNats {
+		return NewNatsClient(c.Nats)
+	}
+	//todo 等待支持直接调用模式
+	return nil, nil
 }

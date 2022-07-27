@@ -1,0 +1,48 @@
+info(
+    title: "认证管理(p2)"
+    desc: "认证管理(p2)"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+@server(
+    group : things/auth
+    prefix: /api/v1/things/auth
+)
+service api {
+    @doc "设备登录认证"
+    @handler login
+    post /login (LoginAuthReq) returns ()
+    @doc "设备操作认证"
+    @handler access
+    post /access (AccessAuthReq) returns ()
+    @doc "鉴定是否是root账号"
+    @handler rootCheck
+    post /root-check (RootCheckReq) returns ()
+}
+
+
+type LoginAuthReq struct {
+    Username string `json:"username"`                          //用户名
+    Password string `json:"password,optional"`                 //密码
+    ClientID string `json:"clientID"`                          //clientID
+    Ip string `json:"ip"`                                      //访问的ip地址
+    Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
+}
+
+type AccessAuthReq struct {
+    Username string `json:"username,omitempty"`//用户名
+    Topic string `json:"topic,omitempty"`      //主题
+    ClientID string `json:"clientID,omitempty"`//clientID
+    Access string `json:"access,omitempty"`    //操作
+    Ip string `json:"ip,omitempty"`            //访问的ip地址
+}
+
+type RootCheckReq struct {
+    Username string `json:"username,omitempty"`                //用户名
+    Password string `json:"password,optional,omitempty"`       //密码
+    ClientID string `json:"clientID,omitempty"`                //clientID
+    Ip string `json:"ip,omitempty"`                            //访问的ip地址
+    Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
+}

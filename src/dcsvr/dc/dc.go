@@ -6,6 +6,7 @@ package dc
 import (
 	"context"
 
+	"github.com/i-Things/things/src/dcsvr/internal/svc"
 	"github.com/i-Things/things/src/dcsvr/pb/dc"
 
 	"github.com/zeromicro/go-zero/zrpc"
@@ -46,11 +47,23 @@ type (
 	defaultDc struct {
 		cli zrpc.Client
 	}
+
+	directDc struct {
+		svcCtx *svc.ServiceContext
+		svr    dc.DcServer
+	}
 )
 
 func NewDc(cli zrpc.Client) Dc {
 	return &defaultDc{
 		cli: cli,
+	}
+}
+
+func NewDirectDc(svcCtx *svc.ServiceContext, svr dc.DcServer) Dc {
+	return &directDc{
+		svr:    svr,
+		svcCtx: svcCtx,
 	}
 }
 
@@ -60,10 +73,20 @@ func (m *defaultDc) ManageGroupInfo(ctx context.Context, in *ManageGroupInfoReq,
 	return client.ManageGroupInfo(ctx, in, opts...)
 }
 
+// 管理组
+func (d *directDc) ManageGroupInfo(ctx context.Context, in *ManageGroupInfoReq, opts ...grpc.CallOption) (*GroupInfo, error) {
+	return d.svr.ManageGroupInfo(ctx, in)
+}
+
 // 管理组成员
 func (m *defaultDc) ManageGroupMember(ctx context.Context, in *ManageGroupMemberReq, opts ...grpc.CallOption) (*GroupMember, error) {
 	client := dc.NewDcClient(m.cli.Conn())
 	return client.ManageGroupMember(ctx, in, opts...)
+}
+
+// 管理组成员
+func (d *directDc) ManageGroupMember(ctx context.Context, in *ManageGroupMemberReq, opts ...grpc.CallOption) (*GroupMember, error) {
+	return d.svr.ManageGroupMember(ctx, in)
 }
 
 // 获取组信息
@@ -72,10 +95,20 @@ func (m *defaultDc) GetGroupInfo(ctx context.Context, in *GetGroupInfoReq, opts 
 	return client.GetGroupInfo(ctx, in, opts...)
 }
 
+// 获取组信息
+func (d *directDc) GetGroupInfo(ctx context.Context, in *GetGroupInfoReq, opts ...grpc.CallOption) (*GetGroupInfoResp, error) {
+	return d.svr.GetGroupInfo(ctx, in)
+}
+
 // 获取组成员
 func (m *defaultDc) GetGroupMember(ctx context.Context, in *GetGroupMemberReq, opts ...grpc.CallOption) (*GetGroupMemberResp, error) {
 	client := dc.NewDcClient(m.cli.Conn())
 	return client.GetGroupMember(ctx, in, opts...)
+}
+
+// 获取组成员
+func (d *directDc) GetGroupMember(ctx context.Context, in *GetGroupMemberReq, opts ...grpc.CallOption) (*GetGroupMemberResp, error) {
+	return d.svr.GetGroupMember(ctx, in)
 }
 
 // 同步调用设备行为
@@ -84,8 +117,18 @@ func (m *defaultDc) SendAction(ctx context.Context, in *SendActionReq, opts ...g
 	return client.SendAction(ctx, in, opts...)
 }
 
+// 同步调用设备行为
+func (d *directDc) SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error) {
+	return d.svr.SendAction(ctx, in)
+}
+
 // 同步调用设备属性
 func (m *defaultDc) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	client := dc.NewDcClient(m.cli.Conn())
 	return client.SendProperty(ctx, in, opts...)
+}
+
+// 同步调用设备属性
+func (d *directDc) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
+	return d.svr.SendProperty(ctx, in)
 }
