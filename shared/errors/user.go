@@ -14,4 +14,5 @@ var (
 	NeedUserName       = NewCodeError(USER_ERROR+24, "需要填入用户名")
 	PasswordLevel      = NewCodeError(USER_ERROR+25, "密码强度不够")
 	GetInfoPartFailure = NewCodeError(USER_ERROR+26, "获取用户信息有失败")
+	UsernameFormatErr  = NewCodeError(USER_ERROR+27, "账密方式时，账号必须以大小写字母开头，且账号只能包含大小写字母，数字，下划线和减号。 长度为6到20位之间")
 )

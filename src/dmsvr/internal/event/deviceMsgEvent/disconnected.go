@@ -5,9 +5,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -17,7 +17,7 @@ type DisconnectedLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	template *thing.Template
+	template *schema.Model
 	topics   []string
 	dreq     deviceSend.DeviceReq
 	dd       deviceData.DeviceDataRepo
@@ -31,7 +31,7 @@ func NewDisconnectedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Disc
 	}
 }
 func (l *DisconnectedLogic) Handle(msg *device.ConnectMsg) error {
-	l.Infof("%s|req=%+v", utils.FuncName(), utils.GetJson(msg))
+	l.Infof("%s|req=%+v", utils.FuncName(), utils.Fmt(msg))
 	ld, err := device.GetClientIDInfo(msg.ClientID)
 	if err != nil {
 		return err

@@ -3,51 +3,53 @@ package mysql
 import (
 	"context"
 	"fmt"
+	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
-	"github.com/zeromicro/go-zero/core/stores/cache"
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 type (
 	DmModel interface {
-		FindByProductInfo(ctx context.Context, page def.PageInfo) ([]*ProductInfo, error)
+		FindByProductInfo(ctx context.Context, deviceType int64, productName string, page def.PageInfo) ([]*ProductInfo, error)
 		FindByProductID(ctx context.Context, productID string, page def.PageInfo) ([]*DeviceInfo, error)
 		GetCountByProductID(ctx context.Context, productID string) (size int64, err error)
-		GetCountByProductInfo(ctx context.Context) (size int64, err error)
-		Insert(ctx context.Context, pi *ProductInfo, pt *ProductTemplate) error
+		GetCountByProductInfo(ctx context.Context, deviceType int64, productName string) (size int64, err error)
+		Insert(ctx context.Context, pi *ProductInfo, pt *ProductSchema) error
 		Delete(ctx context.Context, productID string) error
 	}
 
 	defaultDmModel struct {
-		sqlc.CachedConn
-		cache.CacheConf
-		productInfo     string
-		deviceInfo      string
-		productTemplate string
-		deviceLog       string
+		sqlx.SqlConn
+		productInfo   string
+		deviceInfo    string
+		productSchema string
+		deviceLog     string
 		ProductInfoModel
 	}
 )
 
-func NewDmModel(conn sqlx.SqlConn, c cache.CacheConf) DmModel {
+func NewDmModel(conn sqlx.SqlConn) DmModel {
 	return &defaultDmModel{
-		CachedConn:       sqlc.NewConn(conn, c),
-		CacheConf:        c,
+		SqlConn:          conn,
 		productInfo:      "`product_info`",
 		deviceInfo:       "`device_info`",
-		productTemplate:  "`product_template`",
+		productSchema:    "`product_schema`",
 		deviceLog:        "`device_log`",
-		ProductInfoModel: NewProductInfoModel(conn, c),
+		ProductInfoModel: NewProductInfoModel(conn),
 	}
 }
 
 func (m *defaultDmModel) FindByProductID(ctx context.Context, productID string, page def.PageInfo) ([]*DeviceInfo, error) {
 	var resp []*DeviceInfo
-	query := fmt.Sprintf("select %s from %s where `productID` = ? limit %d offset %d ",
-		deviceInfoRows, m.deviceInfo, page.GetLimit(), page.GetOffset())
-	err := m.CachedConn.QueryRowsNoCache(&resp, query, productID)
-
+	sql := sq.Select(deviceInfoRows).From(m.deviceInfo).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+	if productID != "" {
+		sql = sql.Where("`productID` = ?", productID)
+	}
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	err = m.QueryRowsCtx(ctx, &resp, query, arg...)
 	switch err {
 	case nil:
 		return resp, nil
@@ -57,9 +59,15 @@ func (m *defaultDmModel) FindByProductID(ctx context.Context, productID string, 
 }
 
 func (m *defaultDmModel) GetCountByProductID(ctx context.Context, productID string) (size int64, err error) {
-	query := fmt.Sprintf("select count(1) from %s where `productID` = ?",
-		m.deviceInfo)
-	err = m.CachedConn.QueryRowNoCache(&size, query, productID)
+	sql := sq.Select("count(1)").From(m.deviceInfo)
+	if productID != "" {
+		sql = sql.Where("`productID`=?", productID)
+	}
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return 0, err
+	}
+	err = m.QueryRowCtx(ctx, &size, query, arg...)
 
 	switch err {
 	case nil:
@@ -69,11 +77,20 @@ func (m *defaultDmModel) GetCountByProductID(ctx context.Context, productID stri
 	}
 }
 
-func (m *defaultDmModel) FindByProductInfo(ctx context.Context, page def.PageInfo) ([]*ProductInfo, error) {
+func (m *defaultDmModel) FindByProductInfo(ctx context.Context, deviceType int64, productName string, page def.PageInfo) ([]*ProductInfo, error) {
 	var resp []*ProductInfo
-	query := fmt.Sprintf("select %s from %s  limit %d offset %d",
-		productInfoRows, m.productInfo, page.GetLimit(), page.GetOffset())
-	err := m.QueryRowsNoCache(&resp, query)
+	sql := sq.Select(productInfoRows).From(m.productInfo).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+	if deviceType != 0 {
+		sql = sql.Where("deviceType=?", deviceType)
+	}
+	if productName != "" {
+		sql = sql.Where("productName like ?", "%"+productName+"%")
+	}
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	err = m.QueryRowsCtx(ctx, &resp, query, arg...)
 	switch err {
 	case nil:
 		return resp, nil
@@ -82,10 +99,19 @@ func (m *defaultDmModel) FindByProductInfo(ctx context.Context, page def.PageInf
 	}
 }
 
-func (m *defaultDmModel) GetCountByProductInfo(ctx context.Context) (size int64, err error) {
-	query := fmt.Sprintf("select count(1)  from %s ",
-		m.productInfo)
-	err = m.CachedConn.QueryRowNoCache(&size, query)
+func (m *defaultDmModel) GetCountByProductInfo(ctx context.Context, deviceType int64, productName string) (size int64, err error) {
+	sql := sq.Select("count(1)").From(m.productInfo)
+	if deviceType != 0 {
+		sql = sql.Where("deviceType=?", deviceType)
+	}
+	if productName != "" {
+		sql = sql.Where("productName like ?", "%"+productName+"%")
+	}
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return 0, err
+	}
+	err = m.QueryRowCtx(ctx, &size, query, arg...)
 
 	switch err {
 	case nil:
@@ -96,37 +122,32 @@ func (m *defaultDmModel) GetCountByProductInfo(ctx context.Context) (size int64,
 }
 
 func (m *defaultDmModel) Delete(ctx context.Context, productID string) error {
-	data, err := m.FindOne(ctx, productID)
-	if err != nil {
-		return err
-	}
-	dmProductTemplateProductIDKey := fmt.Sprintf("%s%v", cacheThingsDmProductTemplateProductIDPrefix, productID)
-	dmProductInfoProductIDKey := fmt.Sprintf("%s%v", cacheThingsDmProductInfoProductIDPrefix, productID)
-	dmProductInfoProductNameKey := fmt.Sprintf("%s%v", cacheThingsDmProductInfoProductNamePrefix, data.ProductName)
-	if err := m.DelCache(dmProductTemplateProductIDKey, dmProductInfoProductIDKey, dmProductInfoProductNameKey); err != nil {
-		return err
-	}
 	return m.Transact(func(session sqlx.Session) error {
 		query := fmt.Sprintf("delete from %s where `productID` = ?", m.productInfo)
 		_, err := session.Exec(query, productID)
 		if err != nil {
 			return err
 		}
-		query = fmt.Sprintf("delete from %s where `productID` = ?", m.productTemplate)
+		query = fmt.Sprintf("delete from %s where `productID` = ?", m.deviceInfo)
+		_, err = session.Exec(query, productID)
+		if err != nil {
+			return err
+		}
+		query = fmt.Sprintf("delete from %s where `productID` = ?", m.productSchema)
 		_, err = session.Exec(query, productID)
 		return err
 	})
 }
 
-func (m *defaultDmModel) Insert(ctx context.Context, pi *ProductInfo, pt *ProductTemplate) error {
+func (m *defaultDmModel) Insert(ctx context.Context, pi *ProductInfo, pt *ProductSchema) error {
 	return m.Transact(func(session sqlx.Session) error {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.productInfo, productInfoRowsExpectAutoSet)
 		_, err := session.Exec(query, pi.ProductID, pi.ProductName, pi.ProductType, pi.AuthMode, pi.DeviceType, pi.CategoryID, pi.NetType, pi.DataProto, pi.AutoRegister, pi.Secret, pi.Description, pi.CreatedTime, pi.UpdatedTime, pi.DeletedTime, pi.DevStatus)
 		if err != nil {
 			return err
 		}
-		query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.productTemplate, productTemplateRowsExpectAutoSet)
-		_, err = session.Exec(query, pt.ProductID, pt.Template, pt.CreatedTime, pt.UpdatedTime, pt.DeletedTime)
+		query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.productSchema, productSchemaRowsExpectAutoSet)
+		_, err = session.Exec(query, pt.ProductID, pt.Schema, pt.CreatedTime, pt.UpdatedTime, pt.DeletedTime)
 		return err
 	})
 }

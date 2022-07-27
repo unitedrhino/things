@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
@@ -19,11 +18,8 @@ import (
 var (
 	deviceInfoFieldNames          = builder.RawFieldNames(&DeviceInfo{})
 	deviceInfoRows                = strings.Join(deviceInfoFieldNames, ",")
-	deviceInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
-	deviceInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
-
-	cacheThingsDmDeviceInfoIdPrefix                  = "cache:thingsDm:deviceInfo:id:"
-	cacheThingsDmDeviceInfoProductIDDeviceNamePrefix = "cache:thingsDm:deviceInfo:productID:deviceName:"
+	deviceInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), ",")
+	deviceInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), "=?,") + "=?"
 )
 
 type (
@@ -31,12 +27,12 @@ type (
 		Insert(ctx context.Context, data *DeviceInfo) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*DeviceInfo, error)
 		FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DeviceInfo, error)
-		Update(ctx context.Context, data *DeviceInfo) error
+		Update(ctx context.Context, newData *DeviceInfo) error
 		Delete(ctx context.Context, id int64) error
 	}
 
 	defaultDeviceInfoModel struct {
-		sqlc.CachedConn
+		conn  sqlx.SqlConn
 		table string
 	}
 
@@ -47,40 +43,34 @@ type (
 		Secret      string       `db:"secret"`     // 设备秘钥
 		FirstLogin  sql.NullTime `db:"firstLogin"` // 激活时间
 		LastLogin   sql.NullTime `db:"lastLogin"`  // 最后上线时间
-		IsOnline    int64        `db:"isOnline"`   // 是否在线,0离线1在线
 		CreatedTime time.Time    `db:"createdTime"`
 		UpdatedTime sql.NullTime `db:"updatedTime"`
 		DeletedTime sql.NullTime `db:"deletedTime"`
 		Version     string       `db:"version"`  // 固件版本
 		LogLevel    int64        `db:"logLevel"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 		Cert        string       `db:"cert"`     // 设备证书
+		Tags        string       `db:"tags"`     // 设备标签
+		IsOnline    int64        `db:"isOnline"` // 是否在线,0离线1在线
 	}
 )
 
-func newDeviceInfoModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultDeviceInfoModel {
+func newDeviceInfoModel(conn sqlx.SqlConn) *defaultDeviceInfoModel {
 	return &defaultDeviceInfoModel{
-		CachedConn: sqlc.NewConn(conn, c),
-		table:      "`device_info`",
+		conn:  conn,
+		table: "`device_info`",
 	}
 }
 
-func (m *defaultDeviceInfoModel) Insert(ctx context.Context, data *DeviceInfo) (sql.Result, error) {
-	thingsDmDeviceInfoIdKey := fmt.Sprintf("%s%v", cacheThingsDmDeviceInfoIdPrefix, data.Id)
-	thingsDmDeviceInfoProductIDDeviceNameKey := fmt.Sprintf("%s%v:%v", cacheThingsDmDeviceInfoProductIDDeviceNamePrefix, data.ProductID, data.DeviceName)
-	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.IsOnline, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert)
-	}, thingsDmDeviceInfoIdKey, thingsDmDeviceInfoProductIDDeviceNameKey)
-	return ret, err
+func (m *defaultDeviceInfoModel) Delete(ctx context.Context, id int64) error {
+	query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, id)
+	return err
 }
 
 func (m *defaultDeviceInfoModel) FindOne(ctx context.Context, id int64) (*DeviceInfo, error) {
-	thingsDmDeviceInfoIdKey := fmt.Sprintf("%s%v", cacheThingsDmDeviceInfoIdPrefix, id)
+	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", deviceInfoRows, m.table)
 	var resp DeviceInfo
-	err := m.QueryRowCtx(ctx, &resp, thingsDmDeviceInfoIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", deviceInfoRows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, id)
-	})
+	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -92,15 +82,9 @@ func (m *defaultDeviceInfoModel) FindOne(ctx context.Context, id int64) (*Device
 }
 
 func (m *defaultDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DeviceInfo, error) {
-	thingsDmDeviceInfoProductIDDeviceNameKey := fmt.Sprintf("%s%v:%v", cacheThingsDmDeviceInfoProductIDDeviceNamePrefix, productID, deviceName)
 	var resp DeviceInfo
-	err := m.QueryRowIndexCtx(ctx, &resp, thingsDmDeviceInfoProductIDDeviceNameKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
-		query := fmt.Sprintf("select %s from %s where `productID` = ? and `deviceName` = ? limit 1", deviceInfoRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, productID, deviceName); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
+	query := fmt.Sprintf("select %s from %s where `productID` = ? and `deviceName` = ? limit 1", deviceInfoRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, productID, deviceName)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -111,38 +95,16 @@ func (m *defaultDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Contex
 	}
 }
 
-func (m *defaultDeviceInfoModel) Update(ctx context.Context, data *DeviceInfo) error {
-	thingsDmDeviceInfoIdKey := fmt.Sprintf("%s%v", cacheThingsDmDeviceInfoIdPrefix, data.Id)
-	thingsDmDeviceInfoProductIDDeviceNameKey := fmt.Sprintf("%s%v:%v", cacheThingsDmDeviceInfoProductIDDeviceNamePrefix, data.ProductID, data.DeviceName)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, deviceInfoRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.IsOnline, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert, data.Id)
-	}, thingsDmDeviceInfoIdKey, thingsDmDeviceInfoProductIDDeviceNameKey)
+func (m *defaultDeviceInfoModel) Insert(ctx context.Context, data *DeviceInfo) (sql.Result, error) {
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert, data.Tags, data.IsOnline)
+	return ret, err
+}
+
+func (m *defaultDeviceInfoModel) Update(ctx context.Context, newData *DeviceInfo) error {
+	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, deviceInfoRowsWithPlaceHolder)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.FirstLogin, newData.LastLogin, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Version, newData.LogLevel, newData.Cert, newData.Tags, newData.IsOnline, newData.Id)
 	return err
-}
-
-func (m *defaultDeviceInfoModel) Delete(ctx context.Context, id int64) error {
-	data, err := m.FindOne(ctx, id)
-	if err != nil {
-		return err
-	}
-
-	thingsDmDeviceInfoIdKey := fmt.Sprintf("%s%v", cacheThingsDmDeviceInfoIdPrefix, id)
-	thingsDmDeviceInfoProductIDDeviceNameKey := fmt.Sprintf("%s%v:%v", cacheThingsDmDeviceInfoProductIDDeviceNamePrefix, data.ProductID, data.DeviceName)
-	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
-		return conn.ExecCtx(ctx, query, id)
-	}, thingsDmDeviceInfoIdKey, thingsDmDeviceInfoProductIDDeviceNameKey)
-	return err
-}
-
-func (m *defaultDeviceInfoModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheThingsDmDeviceInfoIdPrefix, primary)
-}
-
-func (m *defaultDeviceInfoModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
-	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", deviceInfoRows, m.table)
-	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 
 func (m *defaultDeviceInfoModel) tableName() string {

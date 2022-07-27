@@ -1,9 +1,6 @@
 package mysql
 
-import (
-	"github.com/zeromicro/go-zero/core/stores/cache"
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
-)
+import "github.com/zeromicro/go-zero/core/stores/sqlx"
 
 var _ DeviceInfoModel = (*customDeviceInfoModel)(nil)
 
@@ -20,8 +17,8 @@ type (
 )
 
 // NewDeviceInfoModel returns a model for the database table.
-func NewDeviceInfoModel(conn sqlx.SqlConn, c cache.CacheConf) DeviceInfoModel {
+func NewDeviceInfoModel(conn sqlx.SqlConn) DeviceInfoModel {
 	return &customDeviceInfoModel{
-		defaultDeviceInfoModel: newDeviceInfoModel(conn, c),
+		defaultDeviceInfoModel: newDeviceInfoModel(conn),
 	}
 }

@@ -40,7 +40,7 @@ func (l *ManageGroupInfoLogic) AddGroupInfo(in *dc.ManageGroupInfoReq) (*dc.Grou
 	_, err := l.svcCtx.GroupInfo.Insert(*gi)
 	if err != nil {
 		l.Errorf("AddGroupInfo|GroupInfo|Insert|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	}
 	return DBToRPCFmt(gi).(*dc.GroupInfo), nil
 
@@ -51,7 +51,7 @@ func (l *ManageGroupInfoLogic) ModifyGroupInfo(in *dc.ManageGroupInfoReq) (*dc.G
 		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find GroupID id:" + cast.ToString(in.Info.GroupID))
 		}
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	}
 	gi.Name = in.Info.Name
 	gi.Uid = in.Info.Uid
@@ -59,7 +59,7 @@ func (l *ManageGroupInfoLogic) ModifyGroupInfo(in *dc.ManageGroupInfoReq) (*dc.G
 	err = l.svcCtx.GroupInfo.Update(*gi)
 	if err != nil {
 		l.Errorf("ModifyGroupInfo|GroupInfo|Update|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	}
 	return DBToRPCFmt(gi).(*dc.GroupInfo), nil
 }
@@ -67,7 +67,7 @@ func (l *ManageGroupInfoLogic) DelGroupInfo(in *dc.ManageGroupInfoReq) (*dc.Grou
 	err := l.svcCtx.GroupInfo.Delete(in.Info.GroupID)
 	if err != nil {
 		l.Errorf("DelGroupInfo|GroupInfo|Delete|err=%+v", err)
-		return nil, errors.System.AddDetail(err.Error())
+		return nil, errors.System.AddDetail(err)
 	}
 	return &dc.GroupInfo{}, nil
 }

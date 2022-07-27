@@ -1,6 +1,6 @@
 module github.com/i-Things/things
 
-go 1.17
+go 1.18
 
 require (
 	github.com/Masterminds/squirrel v1.5.2
@@ -19,6 +19,7 @@ require (
 	github.com/zeromicro/go-zero v1.3.4
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/trace v1.7.0
+	golang.org/x/exp v0.0.0-20220713135740-79cabaa25d75
 	google.golang.org/grpc v1.46.2
 	google.golang.org/protobuf v1.28.0
 )
@@ -44,7 +45,7 @@ require (
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/gomodule/redigo v1.8.1 // indirect
-	github.com/google/go-cmp v0.5.7 // indirect
+	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/gnostic v0.5.5 // indirect

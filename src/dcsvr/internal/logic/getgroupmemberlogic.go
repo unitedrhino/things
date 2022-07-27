@@ -53,7 +53,7 @@ func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc
 				return nil, err
 			}
 			di, err = l.svcCtx.DcDB.FindByGroupMemberGroupID(
-				in.GroupID, def.PageInfo{PageSize: pageSize, Page: page})
+				in.GroupID, def.PageInfo{Size: pageSize, Page: page})
 			if err != nil {
 				return nil, err
 			}
@@ -64,7 +64,7 @@ func (l *GetGroupMemberLogic) GetGroupMember(in *dc.GetGroupMemberReq) (resp *dc
 				return nil, err
 			}
 			di, err = l.svcCtx.DcDB.FindByGroupMemberMemberID(
-				in.MemberID, def.PageInfo{PageSize: pageSize, Page: page})
+				in.MemberID, def.PageInfo{Size: pageSize, Page: page})
 			if err != nil {
 				return nil, err
 			}

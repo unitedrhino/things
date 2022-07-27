@@ -64,7 +64,7 @@ func NewEmqClient(conf *conf.MqttConf) (DevLink, error) {
 	mc := mqtt.NewClient(opts)
 	er := mc.Connect().WaitTimeout(5 * time.Second)
 	if er == false {
-		logx.Info("Connect failure")
+		logx.Info("mqtt Connect failure")
 		return nil, fmt.Errorf("mqtt client connect failure")
 	}
 

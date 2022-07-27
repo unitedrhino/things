@@ -9,7 +9,6 @@ import (
 )
 
 type ServiceContext struct {
-	Config    config.Config
 	DevLink   devLink.DevLink
 	InnerLink innerLink.InnerLink
 }
@@ -27,7 +26,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	return &ServiceContext{
 		DevLink:   dl,
-		Config:    c,
 		InnerLink: il,
 	}
 }

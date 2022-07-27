@@ -22,6 +22,90 @@ func NewDmServer(svcCtx *svc.ServiceContext) *DmServer {
 	}
 }
 
+// 新增设备
+func (s *DmServer) DeviceInfoCreate(ctx context.Context, in *dm.DeviceInfo) (*dm.Response, error) {
+	l := logic.NewDeviceInfoCreateLogic(ctx, s.svcCtx)
+	return l.DeviceInfoCreate(in)
+}
+
+// 更新设备
+func (s *DmServer) DeviceInfoUpdate(ctx context.Context, in *dm.DeviceInfo) (*dm.Response, error) {
+	l := logic.NewDeviceInfoUpdateLogic(ctx, s.svcCtx)
+	return l.DeviceInfoUpdate(in)
+}
+
+// 删除设备
+func (s *DmServer) DeviceInfoDelete(ctx context.Context, in *dm.DeviceInfoDeleteReq) (*dm.Response, error) {
+	l := logic.NewDeviceInfoDeleteLogic(ctx, s.svcCtx)
+	return l.DeviceInfoDelete(in)
+}
+
+// 获取设备信息列表
+func (s *DmServer) DeviceInfoIndex(ctx context.Context, in *dm.DeviceInfoIndexReq) (*dm.DeviceInfoIndexResp, error) {
+	l := logic.NewDeviceInfoIndexLogic(ctx, s.svcCtx)
+	return l.DeviceInfoIndex(in)
+}
+
+// 获取设备信息详情
+func (s *DmServer) DeviceInfoRead(ctx context.Context, in *dm.DeviceInfoReadReq) (*dm.DeviceInfo, error) {
+	l := logic.NewDeviceInfoReadLogic(ctx, s.svcCtx)
+	return l.DeviceInfoRead(in)
+}
+
+// 新增设备
+func (s *DmServer) ProductInfoCreate(ctx context.Context, in *dm.ProductInfo) (*dm.Response, error) {
+	l := logic.NewProductInfoCreateLogic(ctx, s.svcCtx)
+	return l.ProductInfoCreate(in)
+}
+
+// 更新设备
+func (s *DmServer) ProductInfoUpdate(ctx context.Context, in *dm.ProductInfo) (*dm.Response, error) {
+	l := logic.NewProductInfoUpdateLogic(ctx, s.svcCtx)
+	return l.ProductInfoUpdate(in)
+}
+
+// 删除设备
+func (s *DmServer) ProductInfoDelete(ctx context.Context, in *dm.ProductInfoDeleteReq) (*dm.Response, error) {
+	l := logic.NewProductInfoDeleteLogic(ctx, s.svcCtx)
+	return l.ProductInfoDelete(in)
+}
+
+// 获取设备信息列表
+func (s *DmServer) ProductInfoIndex(ctx context.Context, in *dm.ProductInfoIndexReq) (*dm.ProductInfoIndexResp, error) {
+	l := logic.NewProductInfoIndexLogic(ctx, s.svcCtx)
+	return l.ProductInfoIndex(in)
+}
+
+// 获取设备信息详情
+func (s *DmServer) ProductInfoRead(ctx context.Context, in *dm.ProductInfoReadReq) (*dm.ProductInfo, error) {
+	l := logic.NewProductInfoReadLogic(ctx, s.svcCtx)
+	return l.ProductInfoRead(in)
+}
+
+// 更新产品物模型
+func (s *DmServer) ProductSchemaUpdate(ctx context.Context, in *dm.ProductSchemaUpdateReq) (*dm.Response, error) {
+	l := logic.NewProductSchemaUpdateLogic(ctx, s.svcCtx)
+	return l.ProductSchemaUpdate(in)
+}
+
+// 获取产品物模型
+func (s *DmServer) ProductSchemaRead(ctx context.Context, in *dm.ProductSchemaReadReq) (*dm.ProductSchema, error) {
+	l := logic.NewProductSchemaReadLogic(ctx, s.svcCtx)
+	return l.ProductSchemaRead(in)
+}
+
+// 管理产品的固件
+func (s *DmServer) ManageFirmware(ctx context.Context, in *dm.ManageFirmwareReq) (*dm.Response, error) {
+	l := logic.NewManageFirmwareLogic(ctx, s.svcCtx)
+	return l.ManageFirmware(in)
+}
+
+// 获取产品固件信息
+func (s *DmServer) GetFirmwareInfo(ctx context.Context, in *dm.GetFirmwareInfoReq) (*dm.GetFirmwareInfoResp, error) {
+	l := logic.NewGetFirmwareInfoLogic(ctx, s.svcCtx)
+	return l.GetFirmwareInfo(in)
+}
+
 // 设备登录认证
 func (s *DmServer) LoginAuth(ctx context.Context, in *dm.LoginAuthReq) (*dm.Response, error) {
 	l := logic.NewLoginAuthLogic(ctx, s.svcCtx)
@@ -40,66 +124,6 @@ func (s *DmServer) RootCheck(ctx context.Context, in *dm.RootCheckReq) (*dm.Resp
 	return l.RootCheck(in)
 }
 
-// 设备管理
-func (s *DmServer) ManageDevice(ctx context.Context, in *dm.ManageDeviceReq) (*dm.DeviceInfo, error) {
-	l := logic.NewManageDeviceLogic(ctx, s.svcCtx)
-	return l.ManageDevice(in)
-}
-
-// 产品管理
-func (s *DmServer) ManageProduct(ctx context.Context, in *dm.ManageProductReq) (*dm.ProductInfo, error) {
-	l := logic.NewManageProductLogic(ctx, s.svcCtx)
-	return l.ManageProduct(in)
-}
-
-// 获取产品信息
-func (s *DmServer) GetProductInfo(ctx context.Context, in *dm.GetProductInfoReq) (*dm.GetProductInfoResp, error) {
-	l := logic.NewGetProductInfoLogic(ctx, s.svcCtx)
-	return l.GetProductInfo(in)
-}
-
-// 产品模板管理
-func (s *DmServer) ManageProductTemplate(ctx context.Context, in *dm.ManageProductTemplateReq) (*dm.ProductTemplate, error) {
-	l := logic.NewManageProductTemplateLogic(ctx, s.svcCtx)
-	return l.ManageProductTemplate(in)
-}
-
-// 获取产品信息
-func (s *DmServer) GetProductTemplate(ctx context.Context, in *dm.GetProductTemplateReq) (*dm.ProductTemplate, error) {
-	l := logic.NewGetProductTemplateLogic(ctx, s.svcCtx)
-	return l.GetProductTemplate(in)
-}
-
-// 获取设备信息
-func (s *DmServer) GetDeviceInfo(ctx context.Context, in *dm.GetDeviceInfoReq) (*dm.GetDeviceInfoResp, error) {
-	l := logic.NewGetDeviceInfoLogic(ctx, s.svcCtx)
-	return l.GetDeviceInfo(in)
-}
-
-// 管理产品的固件
-func (s *DmServer) ManageFirmware(ctx context.Context, in *dm.ManageFirmwareReq) (*dm.FirmwareInfo, error) {
-	l := logic.NewManageFirmwareLogic(ctx, s.svcCtx)
-	return l.ManageFirmware(in)
-}
-
-// 获取产品固件信息
-func (s *DmServer) GetFirmwareInfo(ctx context.Context, in *dm.GetFirmwareInfoReq) (*dm.GetFirmwareInfoResp, error) {
-	l := logic.NewGetFirmwareInfoLogic(ctx, s.svcCtx)
-	return l.GetFirmwareInfo(in)
-}
-
-// 获取设备调试信息记录登入登出,操作
-func (s *DmServer) GetDeviceDescribeLog(ctx context.Context, in *dm.GetDeviceDescribeLogReq) (*dm.GetDeviceDescribeLogResp, error) {
-	l := logic.NewGetDeviceDescribeLogLogic(ctx, s.svcCtx)
-	return l.GetDeviceDescribeLog(in)
-}
-
-// 获取设备数据信息
-func (s *DmServer) GetDeviceData(ctx context.Context, in *dm.GetDeviceDataReq) (*dm.GetDeviceDataResp, error) {
-	l := logic.NewGetDeviceDataLogic(ctx, s.svcCtx)
-	return l.GetDeviceData(in)
-}
-
 // 同步调用设备行为
 func (s *DmServer) SendAction(ctx context.Context, in *dm.SendActionReq) (*dm.SendActionResp, error) {
 	l := logic.NewSendActionLogic(ctx, s.svcCtx)
@@ -113,7 +137,25 @@ func (s *DmServer) SendProperty(ctx context.Context, in *dm.SendPropertyReq) (*d
 }
 
 // 获取设备sdk调试日志
-func (s *DmServer) GetDeviceSDKLog(ctx context.Context, in *dm.GetDeviceSDKLogReq) (*dm.GetDeviceSDKLogResp, error) {
-	l := logic.NewGetDeviceSDKLogLogic(ctx, s.svcCtx)
-	return l.GetDeviceSDKLog(in)
+func (s *DmServer) DataSdkLogIndex(ctx context.Context, in *dm.DataSdkLogIndexReq) (*dm.DataSdkLogIndexResp, error) {
+	l := logic.NewDataSdkLogIndexLogic(ctx, s.svcCtx)
+	return l.DataSdkLogIndex(in)
+}
+
+// 获取设备调试信息记录登入登出,操作
+func (s *DmServer) DataHubLogIndex(ctx context.Context, in *dm.DataHubLogIndexReq) (*dm.DataHubLogIndexResp, error) {
+	l := logic.NewDataHubLogIndexLogic(ctx, s.svcCtx)
+	return l.DataHubLogIndex(in)
+}
+
+// 获取设备数据信息
+func (s *DmServer) DataSchemaLatestIndex(ctx context.Context, in *dm.DataSchemaLatestIndexReq) (*dm.DataSchemaIndexResp, error) {
+	l := logic.NewDataSchemaLatestIndexLogic(ctx, s.svcCtx)
+	return l.DataSchemaLatestIndex(in)
+}
+
+// 获取设备数据信息
+func (s *DmServer) DataSchemaLogIndex(ctx context.Context, in *dm.DataSchemaLogIndexReq) (*dm.DataSchemaIndexResp, error) {
+	l := logic.NewDataSchemaLogIndexLogic(ctx, s.svcCtx)
+	return l.DataSchemaLogIndex(in)
 }

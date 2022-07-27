@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func (d *DeviceDataRepo) DropProduct(ctx context.Context, t *thing.Template, productID string) error {
+func (d *DeviceDataRepo) DropProduct(ctx context.Context, t *schema.Model, productID string) error {
 	tableList := getStableNameList(t, productID)
 	for _, v := range tableList {
 		sql := fmt.Sprintf("drop stable if exists %s;", v)
@@ -19,7 +19,7 @@ func (d *DeviceDataRepo) DropProduct(ctx context.Context, t *thing.Template, pro
 	return nil
 }
 
-func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *thing.Template, productID string) error {
+func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, productID string) error {
 	if t != nil {
 		for _, p := range t.Properties {
 			err := d.createPropertyStable(ctx, &p, productID)
@@ -44,10 +44,10 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *thing.Template, pro
 }
 
 func (d *DeviceDataRepo) ModifyProperty(
-	oldP *thing.Property,
-	newP *thing.Property,
+	oldP *schema.Property,
+	newP *schema.Property,
 	productID string) error {
-	if newP.Define.Type != thing.STRUCT {
+	if newP.Define.Type != schema.STRUCT {
 		//不需要修改数据库
 		return nil
 	}
@@ -76,7 +76,7 @@ func (d *DeviceDataRepo) ModifyProperty(
 }
 
 func (d *DeviceDataRepo) ModifyProduct(
-	ctx context.Context, oldT *thing.Template, newt *thing.Template, productID string) error {
+	ctx context.Context, oldT *schema.Model, newt *schema.Model, productID string) error {
 	for _, p := range newt.Property {
 		if oldP, ok := oldT.Property[p.ID]; ok {
 			//这里需要走修改流程
@@ -110,9 +110,9 @@ func (d *DeviceDataRepo) ModifyProduct(
 }
 
 func (d *DeviceDataRepo) createPropertyStable(
-	ctx context.Context, p *thing.Property, productID string) error {
+	ctx context.Context, p *schema.Property, productID string) error {
 	var sql string
-	if p.Define.Type != thing.STRUCT {
+	if p.Define.Type != schema.STRUCT {
 		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
 			" TAGS (`device_name` BINARY(50),`"+PROPERTY_TYPE+"` BINARY(50));",
 			getPropertyStableName(productID, p.ID), getTdType(p.Define))
@@ -122,7 +122,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 	} else {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
 			" TAGS (`device_name` BINARY(50),`"+PROPERTY_TYPE+"` BINARY(50));",
-			getPropertyStableName(productID, p.ID), getSpecsColumn(p.Define.Specs))
+			getPropertyStableName(productID, p.ID), getSpecsCreateColumn(p.Define.Specs))
 		if _, err := d.t.Exec(sql); err != nil {
 			return err
 		}

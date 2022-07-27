@@ -89,8 +89,8 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 			topic, payload := devices.GetPublish(msg)
 			//给设备回包之前，将链路信息span推送至jaeger
 			_, span := traces.StartSpan(ctx, topics.DeviceDownAll, "")
-			logx.Infof("[ddsvr.mqtt.SubScribe]|-------------------trace:%s, spanid:%s|topic:%s",
-				span.SpanContext().TraceID(), span.SpanContext().SpanID(), topics.DeviceDownAll)
+			logx.WithContext(ctx).Slowf("[ddsvr.mqtt.SubScribe]|topic:%s,payload:%v",
+				topics.DeviceDownAll, string(payload))
 			defer span.End()
 			return handle(ctx).PublishToDev(topic, payload)
 		}))

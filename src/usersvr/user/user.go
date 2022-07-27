@@ -6,6 +6,7 @@ package user
 import (
 	"context"
 
+	"github.com/i-Things/things/src/usersvr/internal/svc"
 	"github.com/i-Things/things/src/usersvr/pb/user"
 
 	"github.com/zeromicro/go-zero/zrpc"
@@ -17,36 +18,39 @@ type (
 	CheckTokenResp      = user.CheckTokenResp
 	GetUserCoreListReq  = user.GetUserCoreListReq
 	GetUserCoreListResp = user.GetUserCoreListResp
-	GetUserCoreReq      = user.GetUserCoreReq
-	GetUserCoreResp     = user.GetUserCoreResp
-	GetUserInfoReq      = user.GetUserInfoReq
-	GetUserInfoResp     = user.GetUserInfoResp
 	JwtToken            = user.JwtToken
 	LoginReq            = user.LoginReq
 	LoginResp           = user.LoginResp
-	ModifyUserInfoReq   = user.ModifyUserInfoReq
-	NilResp             = user.NilResp
 	PageInfo            = user.PageInfo
-	Register2Req        = user.Register2Req
-	Register2Resp       = user.Register2Resp
-	RegisterCoreReq     = user.RegisterCoreReq
-	RegisterCoreResp    = user.RegisterCoreResp
+	Response            = user.Response
 	UserCore            = user.UserCore
+	UserCoreCreateReq   = user.UserCoreCreateReq
+	UserCoreCreateResp  = user.UserCoreCreateResp
 	UserInfo            = user.UserInfo
+	UserInfoCreateReq   = user.UserInfoCreateReq
+	UserInfoDeleteReq   = user.UserInfoDeleteReq
+	UserInfoUpdateReq   = user.UserInfoUpdateReq
+	UserReadReq         = user.UserReadReq
+	UserReadResp        = user.UserReadResp
 
 	User interface {
-		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
-		RegisterCore(ctx context.Context, in *RegisterCoreReq, opts ...grpc.CallOption) (*RegisterCoreResp, error)
-		Register2(ctx context.Context, in *Register2Req, opts ...grpc.CallOption) (*Register2Resp, error)
-		GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*GetUserInfoResp, error)
-		GetUserCore(ctx context.Context, in *GetUserCoreReq, opts ...grpc.CallOption) (*GetUserCoreResp, error)
-		CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error)
-		ModifyUserInfo(ctx context.Context, in *ModifyUserInfoReq, opts ...grpc.CallOption) (*NilResp, error)
+		CoreCreate(ctx context.Context, in *UserCoreCreateReq, opts ...grpc.CallOption) (*UserCoreCreateResp, error)
+		InfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
 		GetUserCoreList(ctx context.Context, in *GetUserCoreListReq, opts ...grpc.CallOption) (*GetUserCoreListResp, error)
+		InfoUpdate(ctx context.Context, in *UserInfoUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error)
+		InfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+		CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error)
 	}
 
 	defaultUser struct {
 		cli zrpc.Client
+	}
+
+	directUser struct {
+		svcCtx *svc.ServiceContext
+		svr    user.UserServer
 	}
 )
 
@@ -56,29 +60,74 @@ func NewUser(cli zrpc.Client) User {
 	}
 }
 
+func NewDirectUser(svcCtx *svc.ServiceContext, svr user.UserServer) User {
+	return &directUser{
+		svr:    svr,
+		svcCtx: svcCtx,
+	}
+}
+
+func (m *defaultUser) CoreCreate(ctx context.Context, in *UserCoreCreateReq, opts ...grpc.CallOption) (*UserCoreCreateResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.CoreCreate(ctx, in, opts...)
+}
+
+func (d *directUser) CoreCreate(ctx context.Context, in *UserCoreCreateReq, opts ...grpc.CallOption) (*UserCoreCreateResp, error) {
+	return d.svr.CoreCreate(ctx, in)
+}
+
+func (m *defaultUser) InfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.InfoCreate(ctx, in, opts...)
+}
+
+func (d *directUser) InfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.InfoCreate(ctx, in)
+}
+
+func (m *defaultUser) GetUserCoreList(ctx context.Context, in *GetUserCoreListReq, opts ...grpc.CallOption) (*GetUserCoreListResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetUserCoreList(ctx, in, opts...)
+}
+
+func (d *directUser) GetUserCoreList(ctx context.Context, in *GetUserCoreListReq, opts ...grpc.CallOption) (*GetUserCoreListResp, error) {
+	return d.svr.GetUserCoreList(ctx, in)
+}
+
+func (m *defaultUser) InfoUpdate(ctx context.Context, in *UserInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.InfoUpdate(ctx, in, opts...)
+}
+
+func (d *directUser) InfoUpdate(ctx context.Context, in *UserInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.InfoUpdate(ctx, in)
+}
+
+func (m *defaultUser) Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.Read(ctx, in, opts...)
+}
+
+func (d *directUser) Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
+	return d.svr.Read(ctx, in)
+}
+
+func (m *defaultUser) InfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.InfoDelete(ctx, in, opts...)
+}
+
+func (d *directUser) InfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.InfoDelete(ctx, in)
+}
+
 func (m *defaultUser) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.Login(ctx, in, opts...)
 }
 
-func (m *defaultUser) RegisterCore(ctx context.Context, in *RegisterCoreReq, opts ...grpc.CallOption) (*RegisterCoreResp, error) {
-	client := user.NewUserClient(m.cli.Conn())
-	return client.RegisterCore(ctx, in, opts...)
-}
-
-func (m *defaultUser) Register2(ctx context.Context, in *Register2Req, opts ...grpc.CallOption) (*Register2Resp, error) {
-	client := user.NewUserClient(m.cli.Conn())
-	return client.Register2(ctx, in, opts...)
-}
-
-func (m *defaultUser) GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*GetUserInfoResp, error) {
-	client := user.NewUserClient(m.cli.Conn())
-	return client.GetUserInfo(ctx, in, opts...)
-}
-
-func (m *defaultUser) GetUserCore(ctx context.Context, in *GetUserCoreReq, opts ...grpc.CallOption) (*GetUserCoreResp, error) {
-	client := user.NewUserClient(m.cli.Conn())
-	return client.GetUserCore(ctx, in, opts...)
+func (d *directUser) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
+	return d.svr.Login(ctx, in)
 }
 
 func (m *defaultUser) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error) {
@@ -86,12 +135,6 @@ func (m *defaultUser) CheckToken(ctx context.Context, in *CheckTokenReq, opts ..
 	return client.CheckToken(ctx, in, opts...)
 }
 
-func (m *defaultUser) ModifyUserInfo(ctx context.Context, in *ModifyUserInfoReq, opts ...grpc.CallOption) (*NilResp, error) {
-	client := user.NewUserClient(m.cli.Conn())
-	return client.ModifyUserInfo(ctx, in, opts...)
-}
-
-func (m *defaultUser) GetUserCoreList(ctx context.Context, in *GetUserCoreListReq, opts ...grpc.CallOption) (*GetUserCoreListResp, error) {
-	client := user.NewUserClient(m.cli.Conn())
-	return client.GetUserCoreList(ctx, in, opts...)
+func (d *directUser) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error) {
+	return d.svr.CheckToken(ctx, in)
 }

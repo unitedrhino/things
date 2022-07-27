@@ -2,11 +2,13 @@ package logic
 
 import (
 	"database/sql"
+	"encoding/json"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/src/dmsvr/dm"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/thing"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/spf13/cast"
 )
 
 func GetNullTime(time sql.NullTime) int64 {
@@ -16,11 +18,11 @@ func GetNullTime(time sql.NullTime) int64 {
 	return time.Time.Unix()
 }
 
-func ToProductTemplate(pt *thing.TemplateInfo) *dm.ProductTemplate {
-	return &dm.ProductTemplate{
+func ToProductSchema(pt *schema.SchemaInfo) *dm.ProductSchema {
+	return &dm.ProductSchema{
 		CreatedTime: pt.CreatedTime.Unix(),
 		ProductID:   pt.ProductID,
-		Template:    pt.Template,
+		Schema:      pt.Template,
 	}
 }
 
@@ -36,6 +38,13 @@ func ToFirmwareInfo(fi *mysql.ProductFirmware) *dm.FirmwareInfo {
 }
 
 func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
+	var (
+		tags map[string]string
+	)
+
+	if di.Tags != "" {
+		_ = json.Unmarshal([]byte(di.Tags), &tags)
+	}
 	return &dm.DeviceInfo{
 		Version:     &wrappers.StringValue{Value: di.Version},
 		LogLevel:    di.LogLevel,
@@ -46,7 +55,8 @@ func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
 		FirstLogin:  GetNullTime(di.FirstLogin),
 		LastLogin:   GetNullTime(di.LastLogin),
 		Secret:      di.Secret,
-		IsOnline:    di.IsOnline,
+		IsOnline:    cast.ToBool(di.IsOnline),
+		Tags:        tags,
 	}
 }
 
@@ -63,13 +73,13 @@ func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
 		Secret:       pi.Secret,                                    //动态注册产品秘钥 只读
 		Description:  &wrappers.StringValue{Value: pi.Description}, //描述
 		CreatedTime:  pi.CreatedTime.Unix(),                        //创建时间
-		//Template:     &wrappers.StringValue{Value: pi.Template},    //数据模板
+		//Model:     &wrappers.StringValue{Value: pi.Model},    //数据模板
 	}
 	return dpi
 }
 
-func ToDeviceDescribeLog(log *device.HubLog) *dm.DeviceDescribeLog {
-	return &dm.DeviceDescribeLog{
+func ToDataHubLogIndex(log *device.HubLog) *dm.DataHubLogIndex {
+	return &dm.DataHubLogIndex{
 		Timestamp:  log.Timestamp.UnixMilli(),
 		Action:     log.Action,
 		RequestID:  log.RequestID,
@@ -81,8 +91,8 @@ func ToDeviceDescribeLog(log *device.HubLog) *dm.DeviceDescribeLog {
 }
 
 //SDK调试日志
-func ToDeviceSDKLog(log *device.SDKLog) *dm.DeviceSDKLog {
-	return &dm.DeviceSDKLog{
+func ToDataSdkLogIndex(log *device.SDKLog) *dm.DataSdkLogIndex {
+	return &dm.DataSdkLogIndex{
 		Timestamp: log.Timestamp.UnixMilli(),
 		Loglevel:  log.LogLevel,
 		Content:   log.Content,

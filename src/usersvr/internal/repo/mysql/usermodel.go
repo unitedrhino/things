@@ -37,11 +37,7 @@ func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
 
 //插入的时候检查key是否重复
 func (m *userModel) RegisterCore(data UserCore, key Keys) (result sql.Result, err error) {
-	userCoreUidKey := fmt.Sprintf("%s%v", cacheUserCoreUidPrefix, data.Uid)
-	userCoreEmailKey := fmt.Sprintf("%s%v", cacheUserCoreEmailPrefix, data.Email)
-	userCorePhoneKey := fmt.Sprintf("%s%v", cacheUserCorePhonePrefix, data.Phone)
-	userCoreUserNameKey := fmt.Sprintf("%s%v", cacheUserCoreUserNamePrefix, data.UserName)
-	userCoreWechatKey := fmt.Sprintf("%s%v", cacheUserCoreWechatPrefix, data.Wechat)
+
 	m.Transact(func(session sqlx.Session) error {
 		var resp UserCore
 		var isUpdate bool = false
@@ -54,16 +50,16 @@ func (m *userModel) RegisterCore(data UserCore, key Keys) (result sql.Result, er
 			isUpdate = true
 		}
 		if isUpdate == true {
-			query = fmt.Sprintf("update %s set %s where `uid` = ?", m.userCore, userCoreRowsWithPlaceHolder)
-			result, err = session.Exec(query, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Status, data.Uid)
+			query = fmt.Sprintf("update %s set %s where `uid` = ?", m.userCore, "`userName`=?,`password`=?,`email`=?,`phone`=?,`wechat`=?,`lastIP`=?,`regIP`=?,`status`=?,`authorityId`=?")
+			result, err = session.Exec(query, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.Status, data.Uid, data.AuthorityId)
 		} else {
-			query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.userCore, userCoreRowsExpectAutoSet)
-			result, err = session.Exec(query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Status)
+			//data.Status = def.NomalStatus //如果前面都没问题，则注册第一步，状态置为1，表示已注册
+			query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.userCore, "`uid`,`userName`,`password`,`email`,`phone`,`wechat`,`lastIP`,`regIP`,`status`,`authorityId`")
+			result, err = session.Exec(query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.Status, data.AuthorityId)
 		}
 		return err
 
 	})
-	m.DelCache(userCoreUidKey, userCoreEmailKey, userCorePhoneKey, userCoreUserNameKey, userCoreWechatKey)
 	return result, err
 }
 

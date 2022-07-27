@@ -3,8 +3,8 @@ package innerLink
 import (
 	//"github.com/i-Things/things/src/ddsvr/internal/domain"
 	"context"
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/src/ddsvr/internal/config"
 )
 
 type ConnType int8
@@ -32,6 +32,10 @@ type (
 	}
 )
 
-func NewInnerLink(conf config.InnerLinkConf) (InnerLink, error) {
-	return NewNatsClient(conf.Nats)
+func NewInnerLink(c conf.InnerLinkConf) (InnerLink, error) {
+	switch c.Mode {
+	case conf.InnerLinkModeNats:
+		return NewNatsClient(c.Nats)
+	}
+	return NewDirect()
 }
