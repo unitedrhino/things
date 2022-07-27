@@ -36,13 +36,13 @@ goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --st
 ## model文件编译
 
 ```shell
-goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dm" -table="*" -dir ./internal/repo/mysql -c 
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dm" -table="*" -dir ./internal/repo/mysql 
 ```
 
 # 设备交互模块-dcsvr
 
 ```shell
-goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dc" -table="*" -dir ./internal/repo/mysql -c  
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dc" -table="*" -dir ./internal/repo/mysql 
 goctl rpc protoc  proto/dc.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero
 
 ```
