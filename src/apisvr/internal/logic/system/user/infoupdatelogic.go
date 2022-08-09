@@ -3,11 +3,10 @@ package user
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/users"
+	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/user"
-	"github.com/spf13/cast"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,7 +27,7 @@ func NewInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *InfoUp
 func (l *InfoUpdateLogic) InfoUpdate(req *types.UserInfoUpdateReq) error {
 	//l.Infof("ModifyUserInfo|uid=%d|req=%+v", uid, req)
 	_, err := l.svcCtx.UserRpc.InfoUpdate(l.ctx, &user.UserInfoUpdateReq{
-		Uid:        cast.ToString(users.GetClaimsFromToken(l.ctx, types.USER_UID, "").Uid),
+		Uid:        userHeader.GetUserCtx(l.ctx).Uid,
 		NickName:   req.NickName,
 		InviterUid: req.InviterUid,
 		InviterId:  req.InviterId,

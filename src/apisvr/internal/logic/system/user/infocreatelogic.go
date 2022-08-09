@@ -8,7 +8,7 @@ import (
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

@@ -8,7 +8,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/usersvr/internal/svc"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -97,8 +97,7 @@ func (l *LoginLogic) getRet(uc *mysql.UserCore) (*user.LoginResp, error) {
 	return resp, nil
 }
 
-func (l *LoginLogic) GetUserCore(in *user.LoginReq) (loginType string, uc *mysql.UserCore, err error) {
-	loginTypeTemp := ""
+func (l *LoginLogic) GetUserCore(in *user.LoginReq) (uc *mysql.UserCore, err error) {
 	switch in.LoginType {
 	case "wxopen":
 		uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(l.ctx, in.UserID)
@@ -116,43 +115,39 @@ func (l *LoginLogic) GetUserCore(in *user.LoginReq) (loginType string, uc *mysql
 		default:
 			uc, err = l.svcCtx.UserCoreModel.FindOneByUserName(l.ctx, in.UserID)
 		}
-		loginTypeTemp = "password"
+		if err := l.getPwd(in, uc); err != nil {
+			return nil, err
+		}
+
 	case "wxminip": //微信小程序登录
 		auth := l.svcCtx.WxMiniProgram.GetAuth()
 		ret, err2 := auth.Code2Session(in.Code)
 		if err2 != nil {
 			l.Errorf("Code2Session|req=%#v|ret=%#v|err=%+v", in, ret, err2)
 			if ret.ErrCode != 0 {
-				return "", nil, errors.Parameter.AddDetail(ret.ErrMsg)
+				return nil, errors.Parameter.AddDetail(ret.ErrMsg)
 			}
-			return "", nil, errors.System.AddDetail(err2.Error())
+			return nil, errors.System.AddDetail(err2.Error())
 		} else if ret.ErrCode != 0 {
-			return "", nil, errors.Parameter.AddDetail(ret.ErrMsg)
+			return nil, errors.Parameter.AddDetail(ret.ErrMsg)
 		}
-		l.Slowf("login|wxminip|ret=%+v", ret)
+		l.Infof("login|wxminip|ret=%+v", ret)
 		uc, err = l.svcCtx.UserCoreModel.FindOneByWechat(l.ctx, ret.UnionID)
 	default:
 		l.Error("LoginType=%s|not suppost", in.LoginType)
-		return "", nil, errors.Parameter
+		return nil, errors.Parameter
 	}
-	l.Slowf("login|uc=%#v|err=%+v", uc, err)
-	return loginTypeTemp, uc, err
+	l.Infof("login|uc=%#v|err=%+v", uc, err)
+	return uc, err
 }
 
 func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	l.Infof("Login|req=%+v", in)
-	loginType, uc, err := l.GetUserCore(in)
+	uc, err := l.GetUserCore(in)
 	switch err {
 	case nil:
 		if uc.Status != def.NomalStatus {
 			return nil, errors.UnRegister
-		}
-		//增加账密登录分支
-		if loginType == "password" {
-			errGetPwd := l.getPwd(in, uc)
-			if errGetPwd != nil {
-				return nil, errGetPwd
-			}
 		}
 		return l.getRet(uc)
 	case mysql.ErrNotFound:

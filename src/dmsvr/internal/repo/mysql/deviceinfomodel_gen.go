@@ -27,7 +27,7 @@ type (
 		Insert(ctx context.Context, data *DeviceInfo) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*DeviceInfo, error)
 		FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DeviceInfo, error)
-		Update(ctx context.Context, newData *DeviceInfo) error
+		Update(ctx context.Context, data *DeviceInfo) error
 		Delete(ctx context.Context, id int64) error
 	}
 
@@ -37,20 +37,20 @@ type (
 	}
 
 	DeviceInfo struct {
-		Id          int64        `db:"id"`
-		ProductID   string       `db:"productID"`  // 产品id
-		DeviceName  string       `db:"deviceName"` // 设备名称
-		Secret      string       `db:"secret"`     // 设备秘钥
-		FirstLogin  sql.NullTime `db:"firstLogin"` // 激活时间
-		LastLogin   sql.NullTime `db:"lastLogin"`  // 最后上线时间
-		CreatedTime time.Time    `db:"createdTime"`
-		UpdatedTime sql.NullTime `db:"updatedTime"`
-		DeletedTime sql.NullTime `db:"deletedTime"`
-		Version     string       `db:"version"`  // 固件版本
-		LogLevel    int64        `db:"logLevel"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
-		Cert        string       `db:"cert"`     // 设备证书
-		Tags        string       `db:"tags"`     // 设备标签
-		IsOnline    int64        `db:"isOnline"` // 是否在线,0离线1在线
+		Id          int64          `db:"id"`
+		ProductID   string         `db:"productID"`  // 产品id
+		DeviceName  string         `db:"deviceName"` // 设备名称
+		Secret      string         `db:"secret"`     // 设备秘钥
+		FirstLogin  sql.NullTime   `db:"firstLogin"` // 激活时间
+		LastLogin   sql.NullTime   `db:"lastLogin"`  // 最后上线时间
+		CreatedTime time.Time      `db:"createdTime"`
+		UpdatedTime time.Time      `db:"updatedTime"`
+		DeletedTime sql.NullTime   `db:"deletedTime"`
+		Version     string         `db:"version"`  // 固件版本
+		LogLevel    int64          `db:"logLevel"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+		Cert        string         `db:"cert"`     // 设备证书
+		IsOnline    int64          `db:"isOnline"` // 是否在线,0离线1在线
+		Tags        sql.NullString `db:"tags"`     // 设备标签
 	}
 )
 
@@ -97,13 +97,13 @@ func (m *defaultDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Contex
 
 func (m *defaultDeviceInfoModel) Insert(ctx context.Context, data *DeviceInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert, data.Tags, data.IsOnline)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert, data.IsOnline, data.Tags)
 	return ret, err
 }
 
 func (m *defaultDeviceInfoModel) Update(ctx context.Context, newData *DeviceInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, deviceInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.FirstLogin, newData.LastLogin, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Version, newData.LogLevel, newData.Cert, newData.Tags, newData.IsOnline, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.FirstLogin, newData.LastLogin, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Version, newData.LogLevel, newData.Cert, newData.IsOnline, newData.Tags, newData.Id)
 	return err
 }
 

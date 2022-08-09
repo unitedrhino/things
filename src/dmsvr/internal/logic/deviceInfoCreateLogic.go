@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
@@ -94,10 +95,16 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)
 		if err == nil {
-			di.Tags = string(tags)
+			di.Tags = sql.NullString{
+				String: string(tags),
+				Valid:  true,
+			}
 		}
 	} else {
-		di.Tags = "{}"
+		di.Tags = sql.NullString{
+			String: "{}",
+			Valid:  true,
+		}
 	}
 	if in.LogLevel != def.UNKNOWN {
 		di.LogLevel = device.LOG_CLOSE

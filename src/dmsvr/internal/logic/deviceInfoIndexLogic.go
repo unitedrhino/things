@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -37,13 +38,21 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		page = in.Page.Page
 		pageSize = in.Page.Size
 	}
-	size, err = l.svcCtx.DmDB.GetCountByProductID(
-		l.ctx, in.ProductID)
+	size, err = l.svcCtx.DmDB.GetDevicesCountByFilter(
+		l.ctx, mysql.DeviceFilter{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+			Tags:       in.Tags,
+		})
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.svcCtx.DmDB.FindByProductID(
-		l.ctx, in.ProductID, def.PageInfo{Size: pageSize, Page: page})
+	di, err := l.svcCtx.DmDB.FindDevicesByFilter(
+		l.ctx, mysql.DeviceFilter{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+			Tags:       in.Tags,
+		}, def.PageInfo{Size: pageSize, Page: page})
 	if err != nil {
 		return nil, err
 	}

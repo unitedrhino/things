@@ -3,7 +3,7 @@ package tests
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/zrpc"
 	"testing"

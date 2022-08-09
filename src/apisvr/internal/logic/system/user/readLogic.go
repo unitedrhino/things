@@ -2,12 +2,10 @@ package user
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/users"
-	"github.com/spf13/cast"
-
+	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,12 +25,14 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 
 func (l *ReadLogic) Read(req *types.UserIndexReq) (resp *types.UserIndexResp, err error) {
 	//l.Infof("UserCoreList|req=%+v", req)
-	info, err := l.svcCtx.UserRpc.Read(l.ctx, &user.UserReadReq{Uid: cast.ToString(users.GetClaimsFromToken(l.ctx, types.USER_UID, "").Uid)})
+	info, err := l.svcCtx.UserRpc.Read(l.ctx,
+		&user.UserReadReq{Uid: userHeader.GetUserCtx(l.ctx).Uid})
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.UserIndexResp{Uid: info.Uid,
+	return &types.UserIndexResp{
+		Uid:        info.Uid,
 		UserName:   info.UserName,
 		InviterUid: info.InviterUid,
 		InviterId:  info.InviterId,

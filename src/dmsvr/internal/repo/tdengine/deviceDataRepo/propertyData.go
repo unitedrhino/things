@@ -86,6 +86,9 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	sql = sql.From(getPropertyStableName(filter.ProductID, filter.DataID)).
 		Where("`device_name`=?", filter.DeviceName)
 	sql = filter.Page.FmtSql(sql)
+	if filter.Order != "" {
+		sql = sql.OrderBy("ts " + filter.Order)
+	}
 	sqlStr, value, err := sql.ToSql()
 	if err != nil {
 		return nil, err

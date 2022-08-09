@@ -25,7 +25,7 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 			logx.WithContext(ctx).Errorf("nats subscription|subject:%v,err:%v",
 				msg.Subject, err)
 		} else {
-			logx.WithContext(ctx).Slowf("nats subscription|subject:%v",
+			logx.WithContext(ctx).Infof("nats subscription|subject:%v",
 				msg.Subject)
 		}
 

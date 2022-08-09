@@ -128,7 +128,7 @@ func HandleThrow(ctx context.Context, p interface{}) {
 	pc := make([]uintptr, 1)
 	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])
-	logx.WithContext(ctx).Errorf("THROW_ERROR|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
+	logx.WithContext(ctx).Errorf("HandleThrow|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
 	//os.Exit(-1)
 }
 
