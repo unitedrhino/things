@@ -283,8 +283,10 @@ type DeviceInfoReadReq struct {
 }
 
 type DeviceInfoIndexReq struct {
-	ProductID string   `json:"productID,optional"` //产品id 为空时获取所有产品
-	Page      PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
+	Page       PageInfo     `json:"page,optional"`       //分页信息 只获取一个则不填
+	ProductID  string       `json:"productID,optional"`  //产品id 为空时获取所有产品
+	DeviceName string       `json:"deviceName,optional"` //过滤条件:模糊查询 设备名
+	Tags       []*DeviceTag `json:"tags,optional"`       // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
 type DeviceInfoIndexResp struct {

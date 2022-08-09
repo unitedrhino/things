@@ -26,10 +26,7 @@ type (
 	userInfoModel interface {
 		Insert(ctx context.Context, data *UserInfo) (sql.Result, error)
 		FindOne(ctx context.Context, uid int64) (*UserInfo, error)
-		FindOneByPhone(ctx context.Context, phone string) (*UserInfo, error)
-		FindOneByWechat(ctx context.Context, weChat string) (*UserInfo, error)
-		InsertOrUpdate(ctx context.Context, data UserInfo) error
-		Update(ctx context.Context, newData *UserInfo) error
+		Update(ctx context.Context, data *UserInfo) error
 		Delete(ctx context.Context, uid int64) error
 	}
 
@@ -39,19 +36,19 @@ type (
 	}
 
 	UserInfo struct {
-		Uid         int64        `db:"uid"`        // 用户id
-		UserName    string       `db:"userName"`   // 用户名
-		NickName    string       `db:"nickName"`   // 用户的昵称
-		InviterUid  int64        `db:"inviterUid"` // 邀请人用户id
-		InviterId   string       `db:"inviterId"`  // 邀请码
-		Sex         int64        `db:"sex"`        // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-		City        string       `db:"city"`       // 用户所在城市
-		Country     string       `db:"country"`    // 用户所在国家
-		Province    string       `db:"province"`   // 用户所在省份
-		Language    string       `db:"language"`   // 用户的语言，简体中文为zh_CN
-		HeadImgUrl  string       `db:"headImgUrl"` // 用户头像
-		CreatedTime time.Time    `db:"createdTime"`
-		UpdatedTime time.Time    `db:"updatedTime"`
+		Uid         int64        `db:"uid"`         // 用户id
+		UserName    string       `db:"userName"`    // 用户名
+		NickName    string       `db:"nickName"`    // 用户的昵称
+		InviterUid  int64        `db:"inviterUid"`  // 邀请人用户id
+		InviterId   string       `db:"inviterId"`   // 邀请码
+		Sex         int64        `db:"sex"`         // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+		City        string       `db:"city"`        // 用户所在城市
+		Country     string       `db:"country"`     // 用户所在国家
+		Province    string       `db:"province"`    // 用户所在省份
+		Language    string       `db:"language"`    // 用户的语言，简体中文为zh_CN
+		HeadImgUrl  string       `db:"headImgUrl"`  // 用户头像
+		CreatedTime time.Time    `db:"createdTime"` // 创建时间
+		UpdatedTime time.Time    `db:"updatedTime"` // 更新时间
 		DeletedTime sql.NullTime `db:"deletedTime"`
 	}
 )
@@ -83,55 +80,18 @@ func (m *defaultUserInfoModel) FindOne(ctx context.Context, uid int64) (*UserInf
 	}
 }
 
-func (m *defaultUserInfoModel) FindOneByPhone(ctx context.Context, phone string) (*UserInfo, error) {
-	query := fmt.Sprintf("select %s from %s where `phone` = ? limit 1", userInfoRows, m.table)
-	var resp UserInfo
-	err := m.conn.QueryRowCtx(ctx, &resp, query, phone)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultUserInfoModel) FindOneByWechat(ctx context.Context, weChat string) (*UserInfo, error) {
-	query := fmt.Sprintf("select %s from %s where `weChat` = ? limit 1", userInfoRows, m.table)
-	var resp UserInfo
-	err := m.conn.QueryRowCtx(ctx, &resp, query, weChat)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
 func (m *defaultUserInfoModel) Insert(ctx context.Context, data *UserInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, "`uid`,`userName`,`nickName`,`inviterUid`,`inviterId`,`sex`,`city`,`country`,`province`,`language`,`headImgUrl`")
-	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
 	return ret, err
 }
 
 func (m *defaultUserInfoModel) Update(ctx context.Context, data *UserInfo) error {
-	query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, "`userName`=?,`nickName`=?,`inviterUid`=?,`inviterId`=?,`sex`=?,`city`=?,`country`=?,`province`=?,`language`=?,`headImgUrl`=?")
-	_, err := m.conn.ExecCtx(ctx, query, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.Uid)
+	query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, userInfoRowsWithPlaceHolder)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Uid)
 	return err
 }
-func (m *defaultUserInfoModel) InsertOrUpdate(ctx context.Context, data UserInfo) error {
-	_, err := m.FindOne(ctx, data.Uid)
-	switch err {
-	case nil: //如果找到了直接更新
-		err = m.Update(ctx, &data)
-	case ErrNotFound: //如果没找到则插入
-		_, err = m.Insert(ctx, &data)
-	}
-	return err
-}
+
 func (m *defaultUserInfoModel) tableName() string {
 	return m.table
 }

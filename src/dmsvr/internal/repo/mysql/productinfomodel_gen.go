@@ -27,7 +27,7 @@ type (
 		Insert(ctx context.Context, data *ProductInfo) (sql.Result, error)
 		FindOne(ctx context.Context, productID string) (*ProductInfo, error)
 		FindOneByProductName(ctx context.Context, productName string) (*ProductInfo, error)
-		Update(ctx context.Context, newData *ProductInfo) error
+		Update(ctx context.Context, data *ProductInfo) error
 		Delete(ctx context.Context, productID string) error
 	}
 
@@ -49,7 +49,7 @@ type (
 		Secret       string       `db:"secret"`       // 动态注册产品秘钥
 		Description  string       `db:"description"`  // 描述
 		CreatedTime  time.Time    `db:"createdTime"`
-		UpdatedTime  sql.NullTime `db:"updatedTime"`
+		UpdatedTime  time.Time    `db:"updatedTime"`
 		DeletedTime  sql.NullTime `db:"deletedTime"`
 		DevStatus    string       `db:"devStatus"` // 产品状态
 	}

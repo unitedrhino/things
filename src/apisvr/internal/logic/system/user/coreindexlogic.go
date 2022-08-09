@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -40,7 +40,7 @@ func (l *CoreIndexLogic) CoreIndex(req *types.UserCoreIndexReq) (resp *types.Use
 
 	usercore = make([]*types.UserCore, 0, len(usercore))
 	for _, i := range info.Info {
-		usercore = append(usercore, types.UserCoreToApi(i))
+		usercore = append(usercore, UserCoreToApi(i))
 	}
 
 	return &types.UserCoreIndexResp{usercore, total}, nil

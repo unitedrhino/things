@@ -4,10 +4,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/dmclient"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/spf13/cast"
 )
 
@@ -18,7 +19,7 @@ func GetNullTime(time sql.NullTime) int64 {
 	return time.Time.Unix()
 }
 
-func ToProductSchema(pt *schema.SchemaInfo) *dm.ProductSchema {
+func ToProductSchema(pt *schema.SchemaInfo) *dmclient.ProductSchema {
 	return &dm.ProductSchema{
 		CreatedTime: pt.CreatedTime.Unix(),
 		ProductID:   pt.ProductID,
@@ -42,8 +43,8 @@ func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
 		tags map[string]string
 	)
 
-	if di.Tags != "" {
-		_ = json.Unmarshal([]byte(di.Tags), &tags)
+	if di.Tags.String != "" {
+		_ = json.Unmarshal([]byte(di.Tags.String), &tags)
 	}
 	return &dm.DeviceInfo{
 		Version:     &wrappers.StringValue{Value: di.Version},

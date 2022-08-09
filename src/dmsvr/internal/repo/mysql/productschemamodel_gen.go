@@ -26,7 +26,7 @@ type (
 	productSchemaModel interface {
 		Insert(ctx context.Context, data *ProductSchema) (sql.Result, error)
 		FindOne(ctx context.Context, productID string) (*ProductSchema, error)
-		Update(ctx context.Context, newData *ProductSchema) error
+		Update(ctx context.Context, data *ProductSchema) error
 		Delete(ctx context.Context, productID string) error
 	}
 
@@ -39,7 +39,7 @@ type (
 		ProductID   string       `db:"productID"` // 产品id
 		Schema      string       `db:"schema"`    // 物模型模板
 		CreatedTime time.Time    `db:"createdTime"`
-		UpdatedTime sql.NullTime `db:"updatedTime"`
+		UpdatedTime time.Time    `db:"updatedTime"`
 		DeletedTime sql.NullTime `db:"deletedTime"`
 	}
 )

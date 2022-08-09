@@ -8,9 +8,10 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"time"
 
-	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/dmclient"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -40,7 +41,7 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 	return nil
 }
 
-func (l *SendPropertyLogic) SendProperty(in *dm.SendPropertyReq) (*dm.SendPropertyResp, error) {
+func (l *SendPropertyLogic) SendProperty(in *dmclient.SendPropertyReq) (*dmclient.SendPropertyResp, error) {
 	l.Infof("SendProperty|req=%+v", in)
 	err := l.initMsg(in.ProductID)
 	if err != nil {

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dcsvr/internal/repo/mysql"
 	"time"
 
@@ -118,11 +117,6 @@ func (l *ManageGroupMemberLogic) DelGroupMember(in *dc.ManageGroupMemberReq) (*d
 
 // 管理组成员
 func (l *ManageGroupMemberLogic) ManageGroupMember(in *dc.ManageGroupMemberReq) (*dc.GroupMember, error) {
-	defer func() {
-		if p := recover(); p != nil {
-			utils.HandleThrow(l.ctx, p)
-		}
-	}()
 	l.Infof("ManageGroupMember|req=%+v", in)
 	switch in.Opt {
 	case def.OPT_ADD:

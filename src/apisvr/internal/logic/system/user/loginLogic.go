@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -32,7 +32,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			return nil, errors.Captcha
 		}
 	}
-	resp1, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
+	uResp, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
 		UserID:    req.UserID,
 		PwdType:   req.PwdType,
 		Password:  req.Password,
@@ -45,19 +45,19 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		l.Errorf("%s|rpc.Login|req=%v|err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	if resp1 == nil {
+	if uResp == nil {
 		l.Errorf("%s|rpc.RegisterCore|return nil|req=%+v", utils.FuncName(), req)
 		return nil, errors.System.AddDetail("register core rpc return nil")
 	}
 	return &types.UserLoginResp{
-		types.UserInfoWithRole{
-			UserInfo: *types.UserInfoToApi(resp1.Info),
-			Role:     resp1.Role,
+		Info: types.UserInfoWithRole{
+			UserInfo: *UserInfoToApi(uResp.Info),
+			Role:     uResp.Role,
 		},
-		types.JwtToken{
-			AccessToken:  resp1.Token.AccessToken,
-			AccessExpire: resp1.Token.AccessExpire,
-			RefreshAfter: resp1.Token.RefreshAfter,
+		Token: types.JwtToken{
+			AccessToken:  uResp.Token.AccessToken,
+			AccessExpire: uResp.Token.AccessExpire,
+			RefreshAfter: uResp.Token.RefreshAfter,
 		},
 	}, nil
 

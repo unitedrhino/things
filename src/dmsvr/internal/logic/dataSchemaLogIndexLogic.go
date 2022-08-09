@@ -53,7 +53,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *dm.DataSchemaLogIndexRe
 			ArgFunc:    in.ArgFunc})
 		if err != nil {
 			l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
-			return nil, errors.System.AddDetail(err)
+			return nil, err
 		}
 		for _, devData := range dds {
 			dmData := dm.DataSchemaIndex{
@@ -68,7 +68,6 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *dm.DataSchemaLogIndexRe
 			}
 			dmData.GetValue = string(payload)
 			dmDatas = append(dmDatas, &dmData)
-			//l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
 		}
 		if in.ArgFunc == "" && in.Interval == 0 {
 			total, err = dd.GetPropertyCountByID(l.ctx, deviceData.FilterOpt{
@@ -85,7 +84,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *dm.DataSchemaLogIndexRe
 				ArgFunc:    in.ArgFunc})
 			if err != nil {
 				l.Errorf("HandleData|GetPropertyCountByID|err=%v", err)
-				return nil, errors.System.AddDetail(err)
+				return nil, err
 			}
 		}
 	case def.EVENT_METHOD:
@@ -115,7 +114,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *dm.DataSchemaLogIndexRe
 			payload, _ = json.Marshal(devData)
 			dmData.GetValue = string(payload)
 			dmDatas = append(dmDatas, &dmData)
-			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
+			l.Infof("GetDeviceLogLogic|get data=%+v", dmData)
 		}
 		if in.ArgFunc == "" && in.Interval == 0 {
 			total, err = dd.GetEventCountByID(l.ctx, deviceData.FilterOpt{

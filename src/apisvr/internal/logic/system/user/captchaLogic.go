@@ -32,7 +32,7 @@ func (l *CaptchaLogic) Captcha(req *types.UserCaptchaReq) (resp *types.UserCaptc
 		l.Errorf("%s|get Captcha err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
-	l.Slowf("Captcha|id=%v,answer:%v", id, answer)
+	l.Infof("Captcha|id=%v,answer:%v", id, answer)
 	return &types.UserCaptchaResp{
 		CodeID: id,
 		Expire: l.svcCtx.Config.Captcha.KeepTime,

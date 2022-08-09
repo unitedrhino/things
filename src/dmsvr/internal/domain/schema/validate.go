@@ -9,7 +9,7 @@ import (
 const (
 	IDFomatChect     = false //是否检查ID是否以数字开头
 	IDLen            = 128   //标识符的长度
-	NameLen          = 20    //参数名称的长度
+	NameLen          = 128   //参数名称的长度
 	DescLen          = 80    //描述的最大长度
 	DefineMappingLen = 20
 	DefineUnitLen    = 12

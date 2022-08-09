@@ -96,7 +96,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *device.PublishMsg) error {
 				return err
 			}
 			if len(data) == 0 {
-				l.Slowf("HandlePropertyGetStatus|GetPropertyDataByID|not find id:%s", id)
+				l.Infof("HandlePropertyGetStatus|GetPropertyDataByID|not find id:%s", id)
 				continue
 			}
 			respData[id] = data[0].Param
@@ -111,7 +111,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *device.PublishMsg) error {
 }
 
 func (l *ThingLogic) HandleProperty(msg *device.PublishMsg) error {
-	l.Slowf("ThingLogic|HandleProperty")
+	l.Infof("ThingLogic|HandleProperty")
 	switch l.dreq.Method {
 	case deviceSend.REPORT, deviceSend.REPORT_INFO:
 		return l.HandlePropertyReport(msg)
@@ -126,7 +126,7 @@ func (l *ThingLogic) HandleProperty(msg *device.PublishMsg) error {
 }
 
 func (l *ThingLogic) HandleEvent(msg *device.PublishMsg) error {
-	l.Slowf("ThingLogic|HandleEvent")
+	l.Infof("ThingLogic|HandleEvent")
 	dbData := deviceData.EventData{}
 	dbData.ID = l.dreq.EventID
 	dbData.Type = l.dreq.Type
@@ -152,7 +152,7 @@ func (l *ThingLogic) HandleEvent(msg *device.PublishMsg) error {
 	return nil
 }
 func (l *ThingLogic) HandleResp(msg *device.PublishMsg) error {
-	l.Slowf("ThingLogic|HandleResp")
+	l.Infof("ThingLogic|HandleResp")
 	//todo 这里后续需要处理异步获取消息的情况
 	return nil
 }

@@ -15,19 +15,19 @@ service User {
 }
 
 message UserInfoDeleteReq{
-  string uid = 1;
+  int64 uid = 1;
 }
 
 message UserReadReq{
-  string uid=1;
+  int64 uid=1;
 }
 
 message UserReadResp{
   int64  uid = 1;
-  string nickName =2;
-  int64 inviterUid =3;
-  string inviterId =4;
-  int64  sex =5;
+  string userName =2;
+  string nickName =3;
+  int64 inviterUid =4;
+  string inviterId =5;
   string city =6;
   string country =7;
   string province =8;
@@ -41,10 +41,11 @@ message UserReadResp{
   string lastIP = 16;      // 最后登录ip
   string regIP = 17;       // 注册ip
   int64  status = 18;     // 用户状态:0为未注册状态
+  int64  sex =19;
 }
 
 message UserInfoUpdateReq{
-  string uid=1;
+  int64 uid=1;
   string userName =2;
   string nickName =3;
   int64 inviterUid =4;

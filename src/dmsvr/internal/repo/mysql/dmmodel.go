@@ -10,14 +10,22 @@ import (
 
 type (
 	DmModel interface {
-		FindByProductInfo(ctx context.Context, deviceType int64, productName string, page def.PageInfo) ([]*ProductInfo, error)
-		FindByProductID(ctx context.Context, productID string, page def.PageInfo) ([]*DeviceInfo, error)
-		GetCountByProductID(ctx context.Context, productID string) (size int64, err error)
-		GetCountByProductInfo(ctx context.Context, deviceType int64, productName string) (size int64, err error)
+		FindProductsByFilter(ctx context.Context, filter ProductFilter, page def.PageInfo) ([]*ProductInfo, error)
+		FindDevicesByFilter(ctx context.Context, filter DeviceFilter, page def.PageInfo) ([]*DeviceInfo, error)
+		GetDevicesCountByFilter(ctx context.Context, filter DeviceFilter) (size int64, err error)
+		GetProductsCountByFilter(ctx context.Context, filter ProductFilter) (size int64, err error)
 		Insert(ctx context.Context, pi *ProductInfo, pt *ProductSchema) error
 		Delete(ctx context.Context, productID string) error
 	}
-
+	ProductFilter struct {
+		DeviceType  int64
+		ProductName string
+	}
+	DeviceFilter struct {
+		ProductID  string
+		DeviceName string
+		Tags       map[string]string
+	}
 	defaultDmModel struct {
 		sqlx.SqlConn
 		productInfo   string
@@ -39,12 +47,26 @@ func NewDmModel(conn sqlx.SqlConn) DmModel {
 	}
 }
 
-func (m *defaultDmModel) FindByProductID(ctx context.Context, productID string, page def.PageInfo) ([]*DeviceInfo, error) {
+func (d *DeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
+	if d.ProductID != "" {
+		sql = sql.Where("`ProductID` = ?", d.ProductID)
+	}
+	if d.DeviceName != "" {
+		sql = sql.Where("`DeviceName` like ?", "%"+d.DeviceName+"%")
+	}
+	if d.Tags != nil {
+		for k, v := range d.Tags {
+			sql = sql.Where("JSON_CONTAINS(`tags`, JSON_OBJECT(?,?))",
+				k, v)
+		}
+	}
+	return sql
+}
+
+func (m *defaultDmModel) FindDevicesByFilter(ctx context.Context, f DeviceFilter, page def.PageInfo) ([]*DeviceInfo, error) {
 	var resp []*DeviceInfo
 	sql := sq.Select(deviceInfoRows).From(m.deviceInfo).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
-	if productID != "" {
-		sql = sql.Where("`productID` = ?", productID)
-	}
+	sql = f.FmtSql(sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return nil, err
@@ -58,11 +80,9 @@ func (m *defaultDmModel) FindByProductID(ctx context.Context, productID string, 
 	}
 }
 
-func (m *defaultDmModel) GetCountByProductID(ctx context.Context, productID string) (size int64, err error) {
+func (m *defaultDmModel) GetDevicesCountByFilter(ctx context.Context, f DeviceFilter) (size int64, err error) {
 	sql := sq.Select("count(1)").From(m.deviceInfo)
-	if productID != "" {
-		sql = sql.Where("`productID`=?", productID)
-	}
+	sql = f.FmtSql(sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return 0, err
@@ -77,15 +97,20 @@ func (m *defaultDmModel) GetCountByProductID(ctx context.Context, productID stri
 	}
 }
 
-func (m *defaultDmModel) FindByProductInfo(ctx context.Context, deviceType int64, productName string, page def.PageInfo) ([]*ProductInfo, error) {
+func (p *ProductFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
+	if p.DeviceType != 0 {
+		sql = sql.Where("DeviceType=?", p.DeviceType)
+	}
+	if p.ProductName != "" {
+		sql = sql.Where("ProductName like ?", "%"+p.ProductName+"%")
+	}
+	return sql
+}
+
+func (m *defaultDmModel) FindProductsByFilter(ctx context.Context, f ProductFilter, page def.PageInfo) ([]*ProductInfo, error) {
 	var resp []*ProductInfo
 	sql := sq.Select(productInfoRows).From(m.productInfo).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
-	if deviceType != 0 {
-		sql = sql.Where("deviceType=?", deviceType)
-	}
-	if productName != "" {
-		sql = sql.Where("productName like ?", "%"+productName+"%")
-	}
+	sql = f.FmtSql(sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return nil, err
@@ -99,14 +124,9 @@ func (m *defaultDmModel) FindByProductInfo(ctx context.Context, deviceType int64
 	}
 }
 
-func (m *defaultDmModel) GetCountByProductInfo(ctx context.Context, deviceType int64, productName string) (size int64, err error) {
+func (m *defaultDmModel) GetProductsCountByFilter(ctx context.Context, f ProductFilter) (size int64, err error) {
 	sql := sq.Select("count(1)").From(m.productInfo)
-	if deviceType != 0 {
-		sql = sql.Where("deviceType=?", deviceType)
-	}
-	if productName != "" {
-		sql = sql.Where("productName like ?", "%"+productName+"%")
-	}
+	sql = f.FmtSql(sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return 0, err
@@ -123,17 +143,17 @@ func (m *defaultDmModel) GetCountByProductInfo(ctx context.Context, deviceType i
 
 func (m *defaultDmModel) Delete(ctx context.Context, productID string) error {
 	return m.Transact(func(session sqlx.Session) error {
-		query := fmt.Sprintf("delete from %s where `productID` = ?", m.productInfo)
+		query := fmt.Sprintf("delete from %s where `ProductID` = ?", m.productInfo)
 		_, err := session.Exec(query, productID)
 		if err != nil {
 			return err
 		}
-		query = fmt.Sprintf("delete from %s where `productID` = ?", m.deviceInfo)
+		query = fmt.Sprintf("delete from %s where `ProductID` = ?", m.deviceInfo)
 		_, err = session.Exec(query, productID)
 		if err != nil {
 			return err
 		}
-		query = fmt.Sprintf("delete from %s where `productID` = ?", m.productSchema)
+		query = fmt.Sprintf("delete from %s where `ProductID` = ?", m.productSchema)
 		_, err = session.Exec(query, productID)
 		return err
 	})

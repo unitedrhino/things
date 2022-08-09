@@ -742,8 +742,10 @@ type DeviceInfoIndexReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ProductID string    `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"` //产品id
-	Page      *PageInfo `protobuf:"bytes,3,opt,name=page,proto3" json:"page,omitempty"`           //分页信息 只获取一个则不填
+	Page       *PageInfo         `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`                                                                                         //分页信息 只获取一个则不填
+	ProductID  string            `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`                                                                               //过滤条件: 产品id
+	DeviceName string            `protobuf:"bytes,3,opt,name=deviceName,proto3" json:"deviceName,omitempty"`                                                                             //过滤条件:模糊查询 设备名
+	Tags       map[string]string `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` //key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
 func (x *DeviceInfoIndexReq) Reset() {
@@ -778,6 +780,13 @@ func (*DeviceInfoIndexReq) Descriptor() ([]byte, []int) {
 	return file_proto_dm_proto_rawDescGZIP(), []int{11}
 }
 
+func (x *DeviceInfoIndexReq) GetPage() *PageInfo {
+	if x != nil {
+		return x.Page
+	}
+	return nil
+}
+
 func (x *DeviceInfoIndexReq) GetProductID() string {
 	if x != nil {
 		return x.ProductID
@@ -785,9 +794,16 @@ func (x *DeviceInfoIndexReq) GetProductID() string {
 	return ""
 }
 
-func (x *DeviceInfoIndexReq) GetPage() *PageInfo {
+func (x *DeviceInfoIndexReq) GetDeviceName() string {
 	if x != nil {
-		return x.Page
+		return x.DeviceName
+	}
+	return ""
+}
+
+func (x *DeviceInfoIndexReq) GetTags() map[string]string {
+	if x != nil {
+		return x.Tags
 	}
 	return nil
 }
@@ -915,7 +931,7 @@ type ProductInfoIndexResp struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	List  []*ProductInfo `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`    //设备信息
+	List  []*ProductInfo `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`    //产品信息
 	Total int64          `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` //总数(只有分页的时候会返回)
 }
 
@@ -2603,12 +2619,21 @@ var file_proto_dm_proto_rawDesc = []byte{
 	0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75,
 	0x63, 0x74, 0x49, 0x44, 0x12, 0x1e, 0x0a, 0x0a, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x4e, 0x61,
 	0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65,
-	0x4e, 0x61, 0x6d, 0x65, 0x22, 0x54, 0x0a, 0x12, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e,
-	0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x71, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x72,
-	0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70,
-	0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x12, 0x20, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x50, 0x61, 0x67, 0x65,
-	0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x22, 0x4f, 0x0a, 0x13, 0x44, 0x65,
+	0x4e, 0x61, 0x6d, 0x65, 0x22, 0xe3, 0x01, 0x0a, 0x12, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49,
+	0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x71, 0x12, 0x20, 0x0a, 0x04, 0x70,
+	0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x50,
+	0x61, 0x67, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x1c, 0x0a,
+	0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x12, 0x1e, 0x0a, 0x0a, 0x64,
+	0x65, 0x76, 0x69, 0x63, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0a, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x34, 0x0a, 0x04, 0x74,
+	0x61, 0x67, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x64, 0x6d, 0x2e, 0x44,
+	0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65,
+	0x71, 0x2e, 0x54, 0x61, 0x67, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x04, 0x74, 0x61, 0x67,
+	0x73, 0x1a, 0x37, 0x0a, 0x09, 0x54, 0x61, 0x67, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10,
+	0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79,
+	0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x4f, 0x0a, 0x13, 0x44, 0x65,
 	0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x73,
 	0x70, 0x12, 0x22, 0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
 	0x0e, 0x2e, 0x64, 0x6d, 0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52,
@@ -2911,7 +2936,7 @@ func file_proto_dm_proto_rawDescGZIP() []byte {
 	return file_proto_dm_proto_rawDescData
 }
 
-var file_proto_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 37)
+var file_proto_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 38)
 var file_proto_dm_proto_goTypes = []interface{}{
 	(*Response)(nil),                 // 0: dm.Response
 	(*PageInfo)(nil),                 // 1: dm.PageInfo
@@ -2950,78 +2975,80 @@ var file_proto_dm_proto_goTypes = []interface{}{
 	(*GetFirmwareInfoReq)(nil),       // 34: dm.GetFirmwareInfoReq
 	(*GetFirmwareInfoResp)(nil),      // 35: dm.GetFirmwareInfoResp
 	nil,                              // 36: dm.DeviceInfo.TagsEntry
-	(*wrapperspb.StringValue)(nil),   // 37: google.protobuf.StringValue
+	nil,                              // 37: dm.DeviceInfoIndexReq.TagsEntry
+	(*wrapperspb.StringValue)(nil),   // 38: google.protobuf.StringValue
 }
 var file_proto_dm_proto_depIdxs = []int32{
-	37, // 0: dm.DeviceInfo.version:type_name -> google.protobuf.StringValue
+	38, // 0: dm.DeviceInfo.version:type_name -> google.protobuf.StringValue
 	36, // 1: dm.DeviceInfo.tags:type_name -> dm.DeviceInfo.TagsEntry
-	37, // 2: dm.ProductInfo.description:type_name -> google.protobuf.StringValue
-	37, // 3: dm.ProductInfo.devStatus:type_name -> google.protobuf.StringValue
+	38, // 2: dm.ProductInfo.description:type_name -> google.protobuf.StringValue
+	38, // 3: dm.ProductInfo.devStatus:type_name -> google.protobuf.StringValue
 	6,  // 4: dm.ProductSchemaUpdateReq.info:type_name -> dm.ProductSchema
 	1,  // 5: dm.DeviceInfoIndexReq.page:type_name -> dm.PageInfo
-	2,  // 6: dm.DeviceInfoIndexResp.list:type_name -> dm.DeviceInfo
-	1,  // 7: dm.ProductInfoIndexReq.page:type_name -> dm.PageInfo
-	3,  // 8: dm.ProductInfoIndexResp.list:type_name -> dm.ProductInfo
-	1,  // 9: dm.DataSchemaLogIndexReq.page:type_name -> dm.PageInfo
-	17, // 10: dm.DataSchemaIndexResp.list:type_name -> dm.DataSchemaIndex
-	1,  // 11: dm.DataHubLogIndexReq.page:type_name -> dm.PageInfo
-	19, // 12: dm.DataHubLogIndexResp.list:type_name -> dm.DataHubLogIndex
-	1,  // 13: dm.DataSdkLogIndexReq.page:type_name -> dm.PageInfo
-	28, // 14: dm.DataSdkLogIndexResp.list:type_name -> dm.DataSdkLogIndex
-	33, // 15: dm.ManageFirmwareReq.info:type_name -> dm.FirmwareInfo
-	1,  // 16: dm.GetFirmwareInfoReq.page:type_name -> dm.PageInfo
-	33, // 17: dm.GetFirmwareInfoResp.list:type_name -> dm.FirmwareInfo
-	2,  // 18: dm.Dm.DeviceInfoCreate:input_type -> dm.DeviceInfo
-	2,  // 19: dm.Dm.DeviceInfoUpdate:input_type -> dm.DeviceInfo
-	9,  // 20: dm.Dm.DeviceInfoDelete:input_type -> dm.DeviceInfoDeleteReq
-	11, // 21: dm.Dm.DeviceInfoIndex:input_type -> dm.DeviceInfoIndexReq
-	10, // 22: dm.Dm.DeviceInfoRead:input_type -> dm.DeviceInfoReadReq
-	3,  // 23: dm.Dm.ProductInfoCreate:input_type -> dm.ProductInfo
-	3,  // 24: dm.Dm.ProductInfoUpdate:input_type -> dm.ProductInfo
-	4,  // 25: dm.Dm.ProductInfoDelete:input_type -> dm.ProductInfoDeleteReq
-	13, // 26: dm.Dm.ProductInfoIndex:input_type -> dm.ProductInfoIndexReq
-	5,  // 27: dm.Dm.ProductInfoRead:input_type -> dm.ProductInfoReadReq
-	7,  // 28: dm.Dm.ProductSchemaUpdate:input_type -> dm.ProductSchemaUpdateReq
-	8,  // 29: dm.Dm.ProductSchemaRead:input_type -> dm.ProductSchemaReadReq
-	32, // 30: dm.Dm.manageFirmware:input_type -> dm.ManageFirmwareReq
-	34, // 31: dm.Dm.GetFirmwareInfo:input_type -> dm.GetFirmwareInfoReq
-	29, // 32: dm.Dm.loginAuth:input_type -> dm.LoginAuthReq
-	30, // 33: dm.Dm.accessAuth:input_type -> dm.AccessAuthReq
-	31, // 34: dm.Dm.rootCheck:input_type -> dm.RootCheckReq
-	22, // 35: dm.Dm.sendAction:input_type -> dm.SendActionReq
-	24, // 36: dm.Dm.sendProperty:input_type -> dm.SendPropertyReq
-	26, // 37: dm.Dm.dataSdkLogIndex:input_type -> dm.DataSdkLogIndexReq
-	20, // 38: dm.Dm.dataHubLogIndex:input_type -> dm.DataHubLogIndexReq
-	16, // 39: dm.Dm.dataSchemaLatestIndex:input_type -> dm.DataSchemaLatestIndexReq
-	15, // 40: dm.Dm.dataSchemaLogIndex:input_type -> dm.DataSchemaLogIndexReq
-	0,  // 41: dm.Dm.DeviceInfoCreate:output_type -> dm.Response
-	0,  // 42: dm.Dm.DeviceInfoUpdate:output_type -> dm.Response
-	0,  // 43: dm.Dm.DeviceInfoDelete:output_type -> dm.Response
-	12, // 44: dm.Dm.DeviceInfoIndex:output_type -> dm.DeviceInfoIndexResp
-	2,  // 45: dm.Dm.DeviceInfoRead:output_type -> dm.DeviceInfo
-	0,  // 46: dm.Dm.ProductInfoCreate:output_type -> dm.Response
-	0,  // 47: dm.Dm.ProductInfoUpdate:output_type -> dm.Response
-	0,  // 48: dm.Dm.ProductInfoDelete:output_type -> dm.Response
-	14, // 49: dm.Dm.ProductInfoIndex:output_type -> dm.ProductInfoIndexResp
-	3,  // 50: dm.Dm.ProductInfoRead:output_type -> dm.ProductInfo
-	0,  // 51: dm.Dm.ProductSchemaUpdate:output_type -> dm.Response
-	6,  // 52: dm.Dm.ProductSchemaRead:output_type -> dm.ProductSchema
-	0,  // 53: dm.Dm.manageFirmware:output_type -> dm.Response
-	35, // 54: dm.Dm.GetFirmwareInfo:output_type -> dm.GetFirmwareInfoResp
-	0,  // 55: dm.Dm.loginAuth:output_type -> dm.Response
-	0,  // 56: dm.Dm.accessAuth:output_type -> dm.Response
-	0,  // 57: dm.Dm.rootCheck:output_type -> dm.Response
-	23, // 58: dm.Dm.sendAction:output_type -> dm.SendActionResp
-	25, // 59: dm.Dm.sendProperty:output_type -> dm.SendPropertyResp
-	27, // 60: dm.Dm.dataSdkLogIndex:output_type -> dm.DataSdkLogIndexResp
-	21, // 61: dm.Dm.dataHubLogIndex:output_type -> dm.DataHubLogIndexResp
-	18, // 62: dm.Dm.dataSchemaLatestIndex:output_type -> dm.DataSchemaIndexResp
-	18, // 63: dm.Dm.dataSchemaLogIndex:output_type -> dm.DataSchemaIndexResp
-	41, // [41:64] is the sub-list for method output_type
-	18, // [18:41] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	37, // 6: dm.DeviceInfoIndexReq.tags:type_name -> dm.DeviceInfoIndexReq.TagsEntry
+	2,  // 7: dm.DeviceInfoIndexResp.list:type_name -> dm.DeviceInfo
+	1,  // 8: dm.ProductInfoIndexReq.page:type_name -> dm.PageInfo
+	3,  // 9: dm.ProductInfoIndexResp.list:type_name -> dm.ProductInfo
+	1,  // 10: dm.DataSchemaLogIndexReq.page:type_name -> dm.PageInfo
+	17, // 11: dm.DataSchemaIndexResp.list:type_name -> dm.DataSchemaIndex
+	1,  // 12: dm.DataHubLogIndexReq.page:type_name -> dm.PageInfo
+	19, // 13: dm.DataHubLogIndexResp.list:type_name -> dm.DataHubLogIndex
+	1,  // 14: dm.DataSdkLogIndexReq.page:type_name -> dm.PageInfo
+	28, // 15: dm.DataSdkLogIndexResp.list:type_name -> dm.DataSdkLogIndex
+	33, // 16: dm.ManageFirmwareReq.info:type_name -> dm.FirmwareInfo
+	1,  // 17: dm.GetFirmwareInfoReq.page:type_name -> dm.PageInfo
+	33, // 18: dm.GetFirmwareInfoResp.list:type_name -> dm.FirmwareInfo
+	2,  // 19: dm.Dm.DeviceInfoCreate:input_type -> dm.DeviceInfo
+	2,  // 20: dm.Dm.DeviceInfoUpdate:input_type -> dm.DeviceInfo
+	9,  // 21: dm.Dm.DeviceInfoDelete:input_type -> dm.DeviceInfoDeleteReq
+	11, // 22: dm.Dm.DeviceInfoIndex:input_type -> dm.DeviceInfoIndexReq
+	10, // 23: dm.Dm.DeviceInfoRead:input_type -> dm.DeviceInfoReadReq
+	3,  // 24: dm.Dm.ProductInfoCreate:input_type -> dm.ProductInfo
+	3,  // 25: dm.Dm.ProductInfoUpdate:input_type -> dm.ProductInfo
+	4,  // 26: dm.Dm.ProductInfoDelete:input_type -> dm.ProductInfoDeleteReq
+	13, // 27: dm.Dm.ProductInfoIndex:input_type -> dm.ProductInfoIndexReq
+	5,  // 28: dm.Dm.ProductInfoRead:input_type -> dm.ProductInfoReadReq
+	7,  // 29: dm.Dm.ProductSchemaUpdate:input_type -> dm.ProductSchemaUpdateReq
+	8,  // 30: dm.Dm.ProductSchemaRead:input_type -> dm.ProductSchemaReadReq
+	32, // 31: dm.Dm.manageFirmware:input_type -> dm.ManageFirmwareReq
+	34, // 32: dm.Dm.GetFirmwareInfo:input_type -> dm.GetFirmwareInfoReq
+	29, // 33: dm.Dm.loginAuth:input_type -> dm.LoginAuthReq
+	30, // 34: dm.Dm.accessAuth:input_type -> dm.AccessAuthReq
+	31, // 35: dm.Dm.rootCheck:input_type -> dm.RootCheckReq
+	22, // 36: dm.Dm.sendAction:input_type -> dm.SendActionReq
+	24, // 37: dm.Dm.sendProperty:input_type -> dm.SendPropertyReq
+	26, // 38: dm.Dm.dataSdkLogIndex:input_type -> dm.DataSdkLogIndexReq
+	20, // 39: dm.Dm.dataHubLogIndex:input_type -> dm.DataHubLogIndexReq
+	16, // 40: dm.Dm.dataSchemaLatestIndex:input_type -> dm.DataSchemaLatestIndexReq
+	15, // 41: dm.Dm.dataSchemaLogIndex:input_type -> dm.DataSchemaLogIndexReq
+	0,  // 42: dm.Dm.DeviceInfoCreate:output_type -> dm.Response
+	0,  // 43: dm.Dm.DeviceInfoUpdate:output_type -> dm.Response
+	0,  // 44: dm.Dm.DeviceInfoDelete:output_type -> dm.Response
+	12, // 45: dm.Dm.DeviceInfoIndex:output_type -> dm.DeviceInfoIndexResp
+	2,  // 46: dm.Dm.DeviceInfoRead:output_type -> dm.DeviceInfo
+	0,  // 47: dm.Dm.ProductInfoCreate:output_type -> dm.Response
+	0,  // 48: dm.Dm.ProductInfoUpdate:output_type -> dm.Response
+	0,  // 49: dm.Dm.ProductInfoDelete:output_type -> dm.Response
+	14, // 50: dm.Dm.ProductInfoIndex:output_type -> dm.ProductInfoIndexResp
+	3,  // 51: dm.Dm.ProductInfoRead:output_type -> dm.ProductInfo
+	0,  // 52: dm.Dm.ProductSchemaUpdate:output_type -> dm.Response
+	6,  // 53: dm.Dm.ProductSchemaRead:output_type -> dm.ProductSchema
+	0,  // 54: dm.Dm.manageFirmware:output_type -> dm.Response
+	35, // 55: dm.Dm.GetFirmwareInfo:output_type -> dm.GetFirmwareInfoResp
+	0,  // 56: dm.Dm.loginAuth:output_type -> dm.Response
+	0,  // 57: dm.Dm.accessAuth:output_type -> dm.Response
+	0,  // 58: dm.Dm.rootCheck:output_type -> dm.Response
+	23, // 59: dm.Dm.sendAction:output_type -> dm.SendActionResp
+	25, // 60: dm.Dm.sendProperty:output_type -> dm.SendPropertyResp
+	27, // 61: dm.Dm.dataSdkLogIndex:output_type -> dm.DataSdkLogIndexResp
+	21, // 62: dm.Dm.dataHubLogIndex:output_type -> dm.DataHubLogIndexResp
+	18, // 63: dm.Dm.dataSchemaLatestIndex:output_type -> dm.DataSchemaIndexResp
+	18, // 64: dm.Dm.dataSchemaLogIndex:output_type -> dm.DataSchemaIndexResp
+	42, // [42:65] is the sub-list for method output_type
+	19, // [19:42] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_proto_dm_proto_init() }
@@ -3469,7 +3496,7 @@ func file_proto_dm_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_dm_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   37,
+			NumMessages:   38,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

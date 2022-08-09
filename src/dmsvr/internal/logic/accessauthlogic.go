@@ -6,9 +6,10 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/dmclient"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,7 +35,7 @@ var (
 	}
 )
 
-func (l *AccessAuthLogic) CompareTopic(in *dm.AccessAuthReq) (err error) {
+func (l *AccessAuthLogic) CompareTopic(in *dmclient.AccessAuthReq) (err error) {
 	l.Infof("%s|in:%v", utils.FuncName(), utils.Fmt(in))
 	lg, err := device.GetClientIDInfo(in.ClientID)
 	if err != nil {

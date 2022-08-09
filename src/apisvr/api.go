@@ -29,7 +29,8 @@ func main() {
 }
 func runApi(c config.Configs) {
 	ctx := svc.NewServiceContext(c)
-	server := rest.MustNewServer(c.RestConf)
+	server := rest.MustNewServer(c.RestConf, rest.WithCors("*"))
+	server.Use(ctx.Record)
 	defer server.Stop()
 	handler.RegisterHandlers(server, ctx)
 	fmt.Printf("Starting apiSvr at %s:%d...\n", c.Host, c.Port)

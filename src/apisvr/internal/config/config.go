@@ -23,14 +23,10 @@ type Config struct {
 	UserRpc    conf.RpcClientConf `json:",optional"`
 	DcRpc      conf.RpcClientConf `json:",optional"`
 	DmRpc      conf.RpcClientConf `json:",optional"`
-	Auth       struct {
+	Rej        struct {
 		AccessSecret string
 		AccessExpire int64
-	}
-	Rej struct {
-		AccessSecret string
-		AccessExpire int64
-	}
+	} //注册token相关配置
 	Captcha Captcha
 	OSS     conf.OSSConf `json:",optional"`
 }

@@ -51,7 +51,8 @@ func (l *DataSchemaLatestIndexLogic) DataSchemaLatestIndex(in *dm.DataSchemaLate
 					Page:       def.PageInfo2{Size: 1},
 					ProductID:  in.ProductID,
 					DeviceName: in.DeviceName,
-					DataID:     v})
+					DataID:     v,
+					Order:      "desc"})
 			if err != nil {
 				l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 				return nil, errors.System.AddDetail(err)
@@ -78,7 +79,7 @@ func (l *DataSchemaLatestIndexLogic) DataSchemaLatestIndex(in *dm.DataSchemaLate
 
 			}
 			dmDatas = append(dmDatas, &dmData)
-			l.Slowf("GetDeviceLogLogic|get data=%+v", dmData)
+			l.Infof("GetDeviceLogLogic|get data=%+v", dmData)
 		}
 	default:
 		return nil, errors.NotRealize.AddDetailf("multi method not implemt:%v", in.Method)

@@ -2,7 +2,7 @@ package logic
 
 import (
 	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 )
 
 func UserCoreToDb() {

@@ -17,9 +17,11 @@ goctl api go -api http/api.api  -dir ./  --style=goZero
 # 用户管理模块-usersvr
 
 ## 数据库文件生成
-
+下面两种方式二选一
 ```shell script
 goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_user" -table="*" -dir ./internal/repo/mysql
+goctl model mysql ddl -src="../../deploy/mysql/usersvr.sql"  -dir ./internal/repo/mysql 
+
 ```
 
 ## rpc文件编译方法
@@ -34,9 +36,11 @@ goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --st
 ```
 
 ## model文件编译
-
+下面两种方式二选一
 ```shell
 goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dm" -table="*" -dir ./internal/repo/mysql 
+goctl model mysql ddl -src="../../deploy/mysql/dmsvr.sql"  -dir ./internal/repo/mysql 
+
 ```
 
 # 设备交互模块-dcsvr
