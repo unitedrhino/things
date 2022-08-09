@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"database/sql"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -67,7 +66,6 @@ func (l *ManageFirmwareLogic) ModifyFirmware(in *dm.ManageFirmwareReq) (*dm.Resp
 	}
 	oldFirmWare.Name = in.Info.Name
 	oldFirmWare.Description = in.Info.Description
-	oldFirmWare.UpdatedTime = sql.NullTime{Valid: true, Time: time.Now()}
 	err = l.svcCtx.FirmwareInfo.Update(l.ctx, oldFirmWare)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)

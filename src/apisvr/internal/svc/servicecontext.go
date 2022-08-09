@@ -8,9 +8,9 @@ import (
 	"github.com/i-Things/things/src/apisvr/internal/middleware"
 	"github.com/i-Things/things/src/dcsvr/dc"
 	"github.com/i-Things/things/src/dcsvr/dcdirect"
-	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/dmclient"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/userclient"
 	"github.com/i-Things/things/src/usersvr/userdirect"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -22,27 +22,27 @@ type ServiceContext struct {
 	CheckToken rest.Middleware
 	Record     rest.Middleware
 	DmManage   rest.Middleware
-	UserRpc    user.User
-	DmRpc      dm.Dm
+	UserRpc    userclient.User
+	DmRpc      dmclient.Dm
 	DcRpc      dc.Dc
 	Captcha    *verify.Captcha
 	OSS        oss.OSSer
 }
 
 func NewServiceContext(c config.Configs) *ServiceContext {
-	var dr dm.Dm
-	var ur user.User
+	var dr dmclient.Dm
+	var ur userclient.User
 	var dcSvr dc.Dc
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc {
-			dr = dm.NewDm(zrpc.MustNewClient(c.DmRpc.Conf))
+			dr = dmclient.NewDm(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else {
 			dr = dmdirect.NewDm(&c.DmSvr)
 		}
 	}
 	if c.UserRpc.Enable {
 		if c.UserRpc.Mode == conf.ClientModeGrpc {
-			ur = user.NewUser(zrpc.MustNewClient(c.UserRpc.Conf))
+			ur = userclient.NewUser(zrpc.MustNewClient(c.UserRpc.Conf))
 		} else {
 			ur = userdirect.NewUser(c.UserSvr)
 		}

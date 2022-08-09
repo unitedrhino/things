@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/usersvr/internal/svc"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )

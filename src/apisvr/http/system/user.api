@@ -10,7 +10,6 @@ import "common.api"  //公共结构体定义
 @server (
 	group : system/user
 	prefix: /api/v1/system/user
-	middleware: Record
 )
 service api {
 	@doc "创建用户核心信息"
@@ -36,7 +35,7 @@ service api {
 @server (
 	group : system/user
 	prefix: /api/v1/system/user
-	middleware: CheckToken,Record
+	middleware: CheckToken
 )
 service api {
 	@doc "更新用户基本数据"

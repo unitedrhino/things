@@ -25,12 +25,6 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 }
 
 func (l *ReadLogic) Read(in *user.UserReadReq) (*user.UserReadResp, error) {
-	//defer func() {
-	//	if p := recover(); p != any {
-	//		utils.HandleThrow(p)
-	//	}
-	//}()
-
 	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.Uid))
 	if err != nil {
 		//l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)
@@ -43,6 +37,7 @@ func (l *ReadLogic) Read(in *user.UserReadReq) (*user.UserReadResp, error) {
 
 	return &user.UserReadResp{
 		Uid:        ui.Uid,
+		UserName:   ui.UserName,
 		InviterUid: ui.InviterUid,
 		InviterId:  ui.InviterId,
 		Sex:        ui.Sex,

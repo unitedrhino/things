@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/dm"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -28,7 +28,9 @@ func NewInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *InfoInd
 
 func (l *InfoIndexLogic) InfoIndex(req *types.DeviceInfoIndexReq) (resp *types.DeviceInfoIndexResp, err error) {
 	dmReq := &dm.DeviceInfoIndexReq{
-		ProductID: req.ProductID, //产品id
+		ProductID:  req.ProductID, //产品id
+		DeviceName: req.DeviceName,
+		Tags:       toTagsMap(req.Tags),
 		Page: &dm.PageInfo{
 			Page: req.Page.Page,
 			Size: req.Page.Size,

@@ -27,7 +27,7 @@ type (
 		Insert(ctx context.Context, data *ProductFirmware) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*ProductFirmware, error)
 		FindOneByProductIDVersion(ctx context.Context, productID string, version string) (*ProductFirmware, error)
-		Update(ctx context.Context, newData *ProductFirmware) error
+		Update(ctx context.Context, data *ProductFirmware) error
 		Delete(ctx context.Context, id int64) error
 	}
 
@@ -41,7 +41,7 @@ type (
 		ProductID   string       `db:"productID"` // 产品id
 		Version     string       `db:"version"`   // 固件版本
 		CreatedTime time.Time    `db:"createdTime"`
-		UpdatedTime sql.NullTime `db:"updatedTime"`
+		UpdatedTime time.Time    `db:"updatedTime"`
 		DeletedTime sql.NullTime `db:"deletedTime"`
 		Name        string       `db:"name"`        // 固件名称
 		Description string       `db:"description"` // 描述

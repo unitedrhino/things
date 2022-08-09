@@ -1,6 +1,10 @@
 package middleware
 
-import "net/http"
+import (
+	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
+	"github.com/zeromicro/go-zero/core/logx"
+	"net/http"
+)
 
 type RecordMiddleware struct {
 }
@@ -11,9 +15,8 @@ func NewRecordMiddleware() *RecordMiddleware {
 
 func (m *RecordMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO generate middleware implement function, delete after code implementation
-
-		// Passthrough to next handler if need
 		next(w, r)
+		guid := r.Header.Get(userHeader.GUID)
+		logx.WithContext(r.Context()).Infof("guid=%s", guid)
 	}
 }

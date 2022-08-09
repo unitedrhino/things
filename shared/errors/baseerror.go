@@ -139,7 +139,7 @@ func ErrorInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	if err != nil {
 		logx.WithContext(ctx).Errorf("err=%s", Fmt(err).Error())
 	} else {
-		logx.WithContext(ctx).Slowf("resp=%+v", resp)
+		logx.WithContext(ctx).Infof("resp=%+v", resp)
 	}
 	err = ToRpc(err)
 	return resp, err

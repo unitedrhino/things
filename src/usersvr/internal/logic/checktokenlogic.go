@@ -3,11 +3,10 @@ package logic
 import (
 	"context"
 	"github.com/i-Things/things/shared/users"
-	"github.com/i-Things/things/shared/utils"
 	"time"
 
 	"github.com/i-Things/things/src/usersvr/internal/svc"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/usersvr/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,11 +26,6 @@ func NewCheckTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CheckT
 }
 
 func (l *CheckTokenLogic) CheckToken(in *user.CheckTokenReq) (*user.CheckTokenResp, error) {
-	defer func() {
-		if p := recover(); p != nil {
-			utils.HandleThrow(l.ctx, p)
-		}
-	}()
 	l.Infof("CheckToken|req=%+v", in)
 	jwt, err := users.ParseToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
 	if err != nil {

@@ -3,9 +3,9 @@ use things_dc;
 
 CREATE TABLE if not exists `group_info`
 (
-    `groupID`     bigint(20) unsigned NOT NULL COMMENT '组id',
+    `groupID`     bigint(20)  NOT NULL COMMENT '组id',
     `name`        varchar(128)        NOT NULL COMMENT '组名',
-    `uid`         bigint(20) unsigned NOT NULL COMMENT '管理员用户id',
+    `uid`         bigint(20)  NOT NULL COMMENT '管理员用户id',
     `createdTime` datetime            NOT NULL,
     `updatedTime` datetime DEFAULT NULL,
     `deletedTime` datetime DEFAULT NULL,
@@ -15,10 +15,10 @@ CREATE TABLE if not exists `group_info`
 
 CREATE TABLE if not exists `group_member`
 (
-    `id`          bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-    `groupID`     bigint(20) unsigned NOT NULL COMMENT '组id',
+    `id`          bigint(20)  NOT NULL AUTO_INCREMENT,
+    `groupID`     bigint(20)  NOT NULL COMMENT '组id',
     `memberID`    varchar(50)         NOT NULL COMMENT '成员id',
-    `memberType`  int(10) unsigned    NOT NULL COMMENT '成员类型:1:设备 2:用户',
+    `memberType`  int(10)     NOT NULL COMMENT '成员类型:1:设备 2:用户',
     `createdTime` datetime            NOT NULL,
     `updatedTime` datetime DEFAULT NULL,
     `deletedTime` datetime DEFAULT NULL,

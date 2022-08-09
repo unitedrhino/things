@@ -11,11 +11,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
-	"strings"
-	"time"
-
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,25 +33,20 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.DeviceInfo) {
-	var isModify bool = false
-	defer func() {
-		if isModify {
-			old.UpdatedTime = sql.NullTime{Valid: true, Time: time.Now()}
-		}
-	}()
 	if data.Tags != nil {
 		tags, err := json.Marshal(data.Tags)
 		if err == nil {
-			old.Tags = string(tags)
+			old.Tags = sql.NullString{
+				String: string(tags),
+				Valid:  true,
+			}
 		}
 	}
 	if data.LogLevel != def.UNKNOWN {
 		old.LogLevel = data.LogLevel
-		isModify = true
 	}
 	if data.Version != nil {
 		old.Version = data.Version.GetValue()
-		isModify = true
 	}
 }
 

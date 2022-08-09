@@ -1,28 +1,27 @@
 package middleware
 
 import (
-	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/user"
+	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
+	"github.com/i-Things/things/src/usersvr/pb/user"
+	"github.com/i-Things/things/src/usersvr/userclient"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 )
 
 type CheckTokenMiddleware struct {
-	UserRpc user.User
+	UserRpc userclient.User
 }
 
-func NewCheckTokenMiddleware(UserRpc user.User) *CheckTokenMiddleware {
+func NewCheckTokenMiddleware(UserRpc userclient.User) *CheckTokenMiddleware {
 	return &CheckTokenMiddleware{UserRpc: UserRpc}
 }
 
 func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		strIP, _ := utils.GetIP(r)
-		r.Header.Set(types.USER_IP, strIP)
-		strToken := r.Header.Get(types.USER_TOKEN)
+		strToken := r.Header.Get(userHeader.UserToken)
 		if strToken == "" {
 			logx.WithContext(r.Context()).Errorf("%s|CheckToken|ip=%s|not find token",
 				utils.FuncName(), strIP)
@@ -41,13 +40,10 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		if resp.Token != "" {
-			w.Header().Set(types.USER_SET_TOKEN, resp.Token)
+			w.Header().Set(userHeader.UserSetToken, resp.Token)
 		}
 		logx.WithContext(r.Context()).Infof("CheckToken|ip=%s|uid=%s|token=%s|newToken=%s",
 			strIP, resp.Uid, strToken, resp.Token)
-		ctx := context.WithValue(r.Context(), types.USER_UID, &types.UserCtx{
-			Uid: resp.Uid,
-		})
-		next(w, r.WithContext(ctx))
+		next(w, r.WithContext(userHeader.SetUserCtx(r.Context(), resp.Uid, strIP)))
 	}
 }
