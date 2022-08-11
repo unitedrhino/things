@@ -70,7 +70,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 	//通知device log_level
 	uuid, _ := uuid.GenerateUUID()
 	tmpTopic := fmt.Sprintf("%s/down/update/%s/%s", devices.TopicHeadLog, di.ProductID, di.DeviceName)
-	topic, payload := deviceSend.GenThingDeviceRespData(deviceSend.GET_STATUS, uuid, strings.Split(tmpTopic, "/"), errors.OK, map[string]interface{}{"log_level": di.LogLevel})
+	topic, payload := deviceSend.GenThingDeviceRespData(deviceSend.GET_STATUS, uuid, strings.Split(tmpTopic, "/"), errors.OK, map[string]any{"log_level": di.LogLevel})
 	er := l.svcCtx.InnerLink.PublishToDev(l.ctx, topic, payload)
 	if er != nil {
 		l.Errorf("DeviceResp|SDK Log PublishToDev failure err:%v", er)

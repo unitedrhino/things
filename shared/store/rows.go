@@ -7,23 +7,23 @@ import (
 	"time"
 )
 
-func prepareValues(values []interface{}, columnTypes []*sql.ColumnType, columns []string) {
+func prepareValues(values []any, columnTypes []*sql.ColumnType, columns []string) {
 	if len(columnTypes) > 0 {
 		for idx, columnType := range columnTypes {
 			if columnType.ScanType() != nil {
 				values[idx] = reflect.New(reflect.PtrTo(columnType.ScanType())).Interface()
 			} else {
-				values[idx] = new(interface{})
+				values[idx] = new(any)
 			}
 		}
 	} else {
 		for idx := range columns {
-			values[idx] = new(interface{})
+			values[idx] = new(any)
 		}
 	}
 }
 
-func scanIntoMap(mapValue map[string]interface{}, values []interface{}, columns []string) {
+func scanIntoMap(mapValue map[string]any, values []any, columns []string) {
 	for idx, column := range columns {
 		if reflectValue := reflect.Indirect(reflect.Indirect(reflect.ValueOf(values[idx]))); reflectValue.IsValid() {
 			mapValue[column] = reflectValue.Interface()
@@ -38,12 +38,12 @@ func scanIntoMap(mapValue map[string]interface{}, values []interface{}, columns 
 	}
 }
 
-func Scan(rows *sql.Rows, Dest interface{}) error {
+func Scan(rows *sql.Rows, Dest any) error {
 	columns, _ := rows.Columns()
-	values := make([]interface{}, len(columns))
+	values := make([]any, len(columns))
 
 	switch dest := Dest.(type) {
-	case map[string]interface{}, *map[string]interface{}:
+	case map[string]any, *map[string]any:
 		if rows.Next() {
 			columnTypes, _ := rows.ColumnTypes()
 			prepareValues(values, columnTypes, columns)
@@ -51,15 +51,15 @@ func Scan(rows *sql.Rows, Dest interface{}) error {
 				return err
 			}
 
-			mapValue, ok := dest.(map[string]interface{})
+			mapValue, ok := dest.(map[string]any)
 			if !ok {
-				if v, ok := dest.(*map[string]interface{}); ok {
+				if v, ok := dest.(*map[string]any); ok {
 					mapValue = *v
 				}
 			}
 			scanIntoMap(mapValue, values, columns)
 		}
-	case *[]map[string]interface{}:
+	case *[]map[string]any:
 		columnTypes, _ := rows.ColumnTypes()
 		for rows.Next() {
 			prepareValues(values, columnTypes, columns)
@@ -67,7 +67,7 @@ func Scan(rows *sql.Rows, Dest interface{}) error {
 				return err
 			}
 
-			mapValue := map[string]interface{}{}
+			mapValue := map[string]any{}
 			scanIntoMap(mapValue, values, columns)
 			*dest = append(*dest, mapValue)
 		}

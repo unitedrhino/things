@@ -62,7 +62,7 @@ func (m *defaultGroupInfoModel) Insert(data GroupInfo) (sql.Result, error) {
 func (m *defaultGroupInfoModel) FindOne(groupID int64) (*GroupInfo, error) {
 	dcGroupInfoGroupIDKey := fmt.Sprintf("%s%v", cacheDcGroupInfoGroupIDPrefix, groupID)
 	var resp GroupInfo
-	err := m.QueryRow(&resp, dcGroupInfoGroupIDKey, func(conn sqlx.SqlConn, v interface{}) error {
+	err := m.QueryRow(&resp, dcGroupInfoGroupIDKey, func(conn sqlx.SqlConn, v any) error {
 		query := fmt.Sprintf("select %s from %s where `groupID` = ? limit 1", groupInfoRows, m.table)
 		return conn.QueryRow(v, query, groupID)
 	})
@@ -95,11 +95,11 @@ func (m *defaultGroupInfoModel) Delete(groupID int64) error {
 	return err
 }
 
-func (m *defaultGroupInfoModel) formatPrimary(primary interface{}) string {
+func (m *defaultGroupInfoModel) formatPrimary(primary any) string {
 	return fmt.Sprintf("%s%v", cacheDcGroupInfoGroupIDPrefix, primary)
 }
 
-func (m *defaultGroupInfoModel) queryPrimary(conn sqlx.SqlConn, v, primary interface{}) error {
+func (m *defaultGroupInfoModel) queryPrimary(conn sqlx.SqlConn, v, primary any) error {
 	query := fmt.Sprintf("select %s from %s where `groupID` = ? limit 1", groupInfoRows, m.table)
 	return conn.QueryRow(v, query, primary)
 }

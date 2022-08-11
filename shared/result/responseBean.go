@@ -1,13 +1,13 @@
 package result
 
 type ResponseSuccessBean struct {
-	Code uint32      `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
+	Code uint32 `json:"code"`
+	Msg  string `json:"msg"`
+	Data any    `json:"data"`
 }
 type NullJson struct{}
 
-func Success(data interface{}) *ResponseSuccessBean {
+func Success(data any) *ResponseSuccessBean {
 	return &ResponseSuccessBean{200, "success", data}
 }
 

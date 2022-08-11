@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cast"
 )
 
-func ToDeviceSDKLog(productID string, db map[string]interface{}) *device.SDKLog {
+func ToDeviceSDKLog(productID string, db map[string]any) *device.SDKLog {
 	return &device.SDKLog{
 		ProductID:   productID,
 		DeviceName:  cast.ToString(db["device_name"]),

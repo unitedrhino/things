@@ -67,7 +67,7 @@ func (m *defaultGroupMemberModel) Insert(data GroupMember) (sql.Result, error) {
 func (m *defaultGroupMemberModel) FindOne(id int64) (*GroupMember, error) {
 	dcGroupMemberIdKey := fmt.Sprintf("%s%v", cacheDcGroupMemberIdPrefix, id)
 	var resp GroupMember
-	err := m.QueryRow(&resp, dcGroupMemberIdKey, func(conn sqlx.SqlConn, v interface{}) error {
+	err := m.QueryRow(&resp, dcGroupMemberIdKey, func(conn sqlx.SqlConn, v any) error {
 		query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", groupMemberRows, m.table)
 		return conn.QueryRow(v, query, id)
 	})
@@ -84,7 +84,7 @@ func (m *defaultGroupMemberModel) FindOne(id int64) (*GroupMember, error) {
 func (m *defaultGroupMemberModel) FindOneByGroupIDMemberIDMemberType(groupID int64, memberID string, memberType int64) (*GroupMember, error) {
 	dcGroupMemberGroupIDMemberIDMemberTypeKey := fmt.Sprintf("%s%v:%v:%v", cacheDcGroupMemberGroupIDMemberIDMemberTypePrefix, groupID, memberID, memberType)
 	var resp GroupMember
-	err := m.QueryRowIndex(&resp, dcGroupMemberGroupIDMemberIDMemberTypeKey, m.formatPrimary, func(conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+	err := m.QueryRowIndex(&resp, dcGroupMemberGroupIDMemberIDMemberTypeKey, m.formatPrimary, func(conn sqlx.SqlConn, v any) (i any, e error) {
 		query := fmt.Sprintf("select %s from %s where `groupID` = ? and `memberID` = ? and `memberType` = ? limit 1", groupMemberRows, m.table)
 		if err := conn.QueryRow(&resp, query, groupID, memberID, memberType); err != nil {
 			return nil, err
@@ -126,11 +126,11 @@ func (m *defaultGroupMemberModel) Delete(id int64) error {
 	return err
 }
 
-func (m *defaultGroupMemberModel) formatPrimary(primary interface{}) string {
+func (m *defaultGroupMemberModel) formatPrimary(primary any) string {
 	return fmt.Sprintf("%s%v", cacheDcGroupMemberIdPrefix, primary)
 }
 
-func (m *defaultGroupMemberModel) queryPrimary(conn sqlx.SqlConn, v, primary interface{}) error {
+func (m *defaultGroupMemberModel) queryPrimary(conn sqlx.SqlConn, v, primary any) error {
 	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", groupMemberRows, m.table)
 	return conn.QueryRow(v, query, primary)
 }

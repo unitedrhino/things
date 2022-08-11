@@ -46,7 +46,7 @@ func (l *SendActionLogic) SendAction(in *dmclient.SendActionReq) (*dmclient.Send
 	if err != nil {
 		return nil, err
 	}
-	param := map[string]interface{}{}
+	param := map[string]any{}
 	err = json.Unmarshal([]byte(in.InputParams), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail("SendAction|InputParams not right:", in.InputParams)

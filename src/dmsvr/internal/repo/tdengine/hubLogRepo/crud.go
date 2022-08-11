@@ -45,7 +45,7 @@ func (d HubLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName stri
 	if err != nil {
 		return nil, err
 	}
-	var datas []map[string]interface{}
+	var datas []map[string]any
 	store.Scan(rows, &datas)
 	retLogs := make([]*device.HubLog, 0, len(datas))
 	for _, v := range datas {
