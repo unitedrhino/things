@@ -1073,7 +1073,7 @@ func file_proto_dc_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_dc_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
-var file_proto_dc_proto_goTypes = []interface{}{
+var file_proto_dc_proto_goTypes = []any{
 	(*PageInfo)(nil),             // 0: dc.PageInfo
 	(*Response)(nil),             // 1: dc.Response
 	(*GroupInfo)(nil),            // 2: dc.GroupInfo
@@ -1121,7 +1121,7 @@ func file_proto_dc_proto_init() {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_proto_dc_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[0].Exporter = func(v any, i int) any {
 			switch v := v.(*PageInfo); i {
 			case 0:
 				return &v.state
@@ -1133,7 +1133,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[1].Exporter = func(v any, i int) any {
 			switch v := v.(*Response); i {
 			case 0:
 				return &v.state
@@ -1145,7 +1145,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[2].Exporter = func(v any, i int) any {
 			switch v := v.(*GroupInfo); i {
 			case 0:
 				return &v.state
@@ -1157,7 +1157,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[3].Exporter = func(v any, i int) any {
 			switch v := v.(*GroupMember); i {
 			case 0:
 				return &v.state
@@ -1169,7 +1169,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[4].Exporter = func(v any, i int) any {
 			switch v := v.(*ManageGroupInfoReq); i {
 			case 0:
 				return &v.state
@@ -1181,7 +1181,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[5].Exporter = func(v any, i int) any {
 			switch v := v.(*ManageGroupMemberReq); i {
 			case 0:
 				return &v.state
@@ -1193,7 +1193,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[6].Exporter = func(v any, i int) any {
 			switch v := v.(*GetGroupInfoReq); i {
 			case 0:
 				return &v.state
@@ -1205,7 +1205,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[7].Exporter = func(v any, i int) any {
 			switch v := v.(*GetGroupInfoResp); i {
 			case 0:
 				return &v.state
@@ -1217,7 +1217,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[8].Exporter = func(v any, i int) any {
 			switch v := v.(*GetGroupMemberReq); i {
 			case 0:
 				return &v.state
@@ -1229,7 +1229,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[9].Exporter = func(v any, i int) any {
 			switch v := v.(*GetGroupMemberResp); i {
 			case 0:
 				return &v.state
@@ -1241,7 +1241,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[10].Exporter = func(v any, i int) any {
 			switch v := v.(*SendActionReq); i {
 			case 0:
 				return &v.state
@@ -1253,7 +1253,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[11].Exporter = func(v any, i int) any {
 			switch v := v.(*SendActionResp); i {
 			case 0:
 				return &v.state
@@ -1265,7 +1265,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[12].Exporter = func(v any, i int) any {
 			switch v := v.(*SendPropertyReq); i {
 			case 0:
 				return &v.state
@@ -1277,7 +1277,7 @@ func file_proto_dc_proto_init() {
 				return nil
 			}
 		}
-		file_proto_dc_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_dc_proto_msgTypes[13].Exporter = func(v any, i int) any {
 			switch v := v.(*SendPropertyResp); i {
 			case 0:
 				return &v.state

@@ -38,7 +38,7 @@ func (d *DeviceDataRepo) GetEventDataByID(
 	if err != nil {
 		return nil, err
 	}
-	var datas []map[string]interface{}
+	var datas []map[string]any
 	store.Scan(rows, &datas)
 	retEvents := make([]*deviceData.EventData, 0, len(datas))
 	for _, v := range datas {

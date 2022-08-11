@@ -14,7 +14,7 @@ func GetNullTime(time sql.NullTime) int64 {
 	return time.Time.Unix()
 }
 
-func DBToRPCFmt(db interface{}) interface{} {
+func DBToRPCFmt(db any) any {
 	switch db.(type) {
 	case *mysql.GroupInfo:
 		di := db.(*mysql.GroupInfo)

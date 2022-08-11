@@ -28,7 +28,7 @@ type TempParam struct {
 		Start  string            `json:"start,omitempty"`   //初始值:int float
 		Step   string            `json:"step,omitempty"`    //步长:int float
 		Unit   string            `json:"unit,omitempty"`    //单位:int float
-		Value  interface{}       `json:"Value"`
+		Value  any               `json:"Value"`
 		/*
 			读到的数据  如果是是数组则类型为[]interface{}  如果是结构体类型则为map[id]TempParam
 				interface 为数据内容  					string为结构体的key value 为数据内容
@@ -36,7 +36,7 @@ type TempParam struct {
 	} `json:"Value"` //数据定义
 }
 
-func (t *TempParam) AddDefine(d *schema.Define, val interface{}) (err error) {
+func (t *TempParam) AddDefine(d *schema.Define, val any) (err error) {
 	t.Value.Type = d.Type
 	t.Value.Type = d.Type
 	t.Value.Maping = make(map[string]string)
@@ -53,15 +53,15 @@ func (t *TempParam) AddDefine(d *schema.Define, val interface{}) (err error) {
 	return err
 }
 
-func ToVal(tp map[string]TempParam) map[string]interface{} {
-	ret := make(map[string]interface{}, len(tp))
+func ToVal(tp map[string]TempParam) map[string]any {
+	ret := make(map[string]any, len(tp))
 	for k, v := range tp {
 		ret[k] = v.ToVal()
 	}
 	return ret
 }
 
-func (t *TempParam) ToVal() interface{} {
+func (t *TempParam) ToVal() any {
 	if t == nil {
 		panic("TempParam is nil")
 	}
@@ -72,21 +72,21 @@ func (t *TempParam) ToVal() interface{} {
 		if ok == false {
 			return nil
 		}
-		val := make(map[string]interface{}, len(v)+1)
+		val := make(map[string]any, len(v)+1)
 		for _, tp := range v {
 			val[tp.ID] = tp.ToVal()
 		}
 		return val
 	case schema.ARRAY:
-		array, ok := t.Value.Value.([]interface{})
+		array, ok := t.Value.Value.([]any)
 		if ok == false {
 			return nil
 		}
-		val := make([]interface{}, 0, len(array)+1)
+		val := make([]any, 0, len(array)+1)
 		for _, value := range array {
 			switch value.(type) {
 			case map[string]TempParam:
-				valMap := make(map[string]interface{}, len(array)+1)
+				valMap := make(map[string]any, len(array)+1)
 				for _, tp := range value.(map[string]TempParam) {
 					valMap[tp.ID] = tp.ToVal()
 				}
@@ -101,7 +101,7 @@ func (t *TempParam) ToVal() interface{} {
 	}
 }
 
-func GetVal(d *schema.Define, val interface{}) (interface{}, error) {
+func GetVal(d *schema.Define, val any) (any, error) {
 	switch d.Type {
 	case schema.BOOL:
 		switch val.(type) {
@@ -181,7 +181,7 @@ func GetVal(d *schema.Define, val interface{}) (interface{}, error) {
 			return ret, nil
 		}
 	case schema.STRUCT:
-		if strut, ok := val.(map[string]interface{}); !ok {
+		if strut, ok := val.(map[string]any); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
 			getParam := make(map[string]TempParam, len(strut))
@@ -204,13 +204,13 @@ func GetVal(d *schema.Define, val interface{}) (interface{}, error) {
 			return getParam, nil
 		}
 	case schema.ARRAY:
-		if arr, ok := val.([]interface{}); !ok {
+		if arr, ok := val.([]any); !ok {
 			return nil, errors.Parameter.AddDetail(fmt.Sprint(val))
 		} else {
 			if len(arr) == 0 {
 				return d, errors.NotFind
 			}
-			getParam := make([]interface{}, 0, len(arr)+1)
+			getParam := make([]any, 0, len(arr)+1)
 			for _, v := range arr {
 				param, err := GetVal(d.ArrayInfo, v)
 				if err == nil {

@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cast"
 )
 
-func ToDeviceLog(productID string, db map[string]interface{}) *device.HubLog {
+func ToDeviceLog(productID string, db map[string]any) *device.HubLog {
 	return &device.HubLog{
 		ProductID:  productID,
 		DeviceName: cast.ToString(db["device_name"]),

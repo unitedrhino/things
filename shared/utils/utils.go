@@ -124,7 +124,7 @@ func Recover(ctx context.Context) {
 	}
 }
 
-func HandleThrow(ctx context.Context, p interface{}) {
+func HandleThrow(ctx context.Context, p any) {
 	pc := make([]uintptr, 1)
 	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])

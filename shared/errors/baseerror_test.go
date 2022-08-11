@@ -30,7 +30,7 @@ func TestJson(t *testing.T) {
 		"string":"dfawefa"
 	}
 `
-	mapStr := make(map[string]interface{}, 10)
+	mapStr := make(map[string]any, 10)
 	decoder := json.NewDecoder(strings.NewReader(str))
 	decoder.UseNumber()
 	err := decoder.Decode(&mapStr)

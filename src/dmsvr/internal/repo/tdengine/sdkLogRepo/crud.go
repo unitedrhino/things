@@ -28,7 +28,7 @@ func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context, productID, deviceName s
 			return []*device.SDKLog{}, nil
 		}
 	}
-	var datas []map[string]interface{}
+	var datas []map[string]any
 	store.Scan(rows, &datas)
 	retLogs := make([]*device.SDKLog, 0, len(datas))
 	for _, v := range datas {

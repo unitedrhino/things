@@ -168,7 +168,7 @@ func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
 	s.RegisterService(&User_ServiceDesc, srv)
 }
 
-func _User_CoreCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_CoreCreate_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(UserCoreCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -180,13 +180,13 @@ func _User_CoreCreate_Handler(srv interface{}, ctx context.Context, dec func(int
 		Server:     srv,
 		FullMethod: "/user.User/coreCreate",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(UserServer).CoreCreate(ctx, req.(*UserCoreCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_InfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_InfoCreate_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(UserInfoCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -198,13 +198,13 @@ func _User_InfoCreate_Handler(srv interface{}, ctx context.Context, dec func(int
 		Server:     srv,
 		FullMethod: "/user.User/infoCreate",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(UserServer).InfoCreate(ctx, req.(*UserInfoCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_GetUserCoreList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_GetUserCoreList_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(GetUserCoreListReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -216,13 +216,13 @@ func _User_GetUserCoreList_Handler(srv interface{}, ctx context.Context, dec fun
 		Server:     srv,
 		FullMethod: "/user.User/getUserCoreList",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(UserServer).GetUserCoreList(ctx, req.(*GetUserCoreListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_InfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_InfoUpdate_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(UserInfoUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -234,13 +234,13 @@ func _User_InfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(int
 		Server:     srv,
 		FullMethod: "/user.User/infoUpdate",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(UserServer).InfoUpdate(ctx, req.(*UserInfoUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_Read_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(UserReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -252,13 +252,13 @@ func _User_Read_Handler(srv interface{}, ctx context.Context, dec func(interface
 		Server:     srv,
 		FullMethod: "/user.User/read",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(UserServer).Read(ctx, req.(*UserReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_InfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_InfoDelete_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(UserInfoDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -270,13 +270,13 @@ func _User_InfoDelete_Handler(srv interface{}, ctx context.Context, dec func(int
 		Server:     srv,
 		FullMethod: "/user.User/infoDelete",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(UserServer).InfoDelete(ctx, req.(*UserInfoDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_Login_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(LoginReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -288,13 +288,13 @@ func _User_Login_Handler(srv interface{}, ctx context.Context, dec func(interfac
 		Server:     srv,
 		FullMethod: "/user.User/login",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(UserServer).Login(ctx, req.(*LoginReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_CheckToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_CheckToken_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(CheckTokenReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -306,7 +306,7 @@ func _User_CheckToken_Handler(srv interface{}, ctx context.Context, dec func(int
 		Server:     srv,
 		FullMethod: "/user.User/checkToken",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(UserServer).CheckToken(ctx, req.(*CheckTokenReq))
 	}
 	return interceptor(ctx, in, info, handler)

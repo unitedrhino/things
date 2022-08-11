@@ -34,7 +34,7 @@ func CreateToken(secretKey string, claims OssJwtToken) (string, error) {
 
 // 解析 token
 func ParseToken(tokenString string, secretKey string) (*OssJwtToken, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &OssJwtToken{}, func(token *jwt.Token) (i interface{}, e error) {
+	token, err := jwt.ParseWithClaims(tokenString, &OssJwtToken{}, func(token *jwt.Token) (i any, e error) {
 		return []byte(secretKey), nil
 	})
 	if err != nil {
@@ -68,7 +68,7 @@ func RefreshToken(tokenString string, secretKey string) (string, error) {
 	jwt.TimeFunc = func() time.Time {
 		return time.Unix(0, 0)
 	}
-	token, err := jwt.ParseWithClaims(tokenString, &OssJwtToken{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &OssJwtToken{}, func(token *jwt.Token) (any, error) {
 		return []byte(secretKey), nil
 	})
 	if err != nil {

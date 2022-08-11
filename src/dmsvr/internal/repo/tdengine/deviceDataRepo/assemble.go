@@ -7,9 +7,9 @@ import (
 	"github.com/spf13/cast"
 )
 
-func ToEventData(id string, db map[string]interface{}) *deviceData.EventData {
+func ToEventData(id string, db map[string]any) *deviceData.EventData {
 	var (
-		params   map[string]interface{}
+		params   map[string]any
 		paramStr = cast.ToString(db["param"])
 	)
 	err := json.Unmarshal([]byte(paramStr), &params)
@@ -25,7 +25,7 @@ func ToEventData(id string, db map[string]interface{}) *deviceData.EventData {
 	return &data
 }
 
-func ToPropertyData(id string, db map[string]interface{}) *deviceData.PropertyData {
+func ToPropertyData(id string, db map[string]any) *deviceData.PropertyData {
 	propertyType := db[PROPERTY_TYPE]
 	switch propertyType {
 	case string(schema.STRUCT):
@@ -41,7 +41,7 @@ func ToPropertyData(id string, db map[string]interface{}) *deviceData.PropertyDa
 		return &data
 	case string(schema.ARRAY):
 		paramStr := cast.ToString(db["param"])
-		var param []interface{}
+		var param []any
 		json.Unmarshal([]byte(paramStr), &param)
 		data := deviceData.PropertyData{
 			ID:        id,

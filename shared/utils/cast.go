@@ -11,7 +11,7 @@ import (
 @in dst 赋值对象的结构体
 @out dst类型的结构体
 */
-func Convert(src interface{}, dst interface{}) interface{} {
+func Convert(src any, dst any) any {
 
 	srcType := reflect.TypeOf(src) //获取type
 	dstType := reflect.TypeOf(dst)

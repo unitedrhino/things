@@ -47,7 +47,7 @@ func (l *ThingLogic) initMsg(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *ThingLogic) DeviceResp(msg *device.PublishMsg, err error, data map[string]interface{}) {
+func (l *ThingLogic) DeviceResp(msg *device.PublishMsg, err error, data map[string]any) {
 	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 	er := l.svcCtx.InnerLink.PublishToDev(l.ctx, topic, payload)
 	if er != nil {
@@ -80,7 +80,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *device.PublishMsg) error {
 }
 
 func (l *ThingLogic) HandlePropertyGetStatus(msg *device.PublishMsg) error {
-	respData := make(map[string]interface{}, len(l.template.Properties))
+	respData := make(map[string]any, len(l.template.Properties))
 	switch l.dreq.Type {
 	case deviceSend.REPORT:
 		for id, _ := range l.template.Property {
