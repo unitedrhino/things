@@ -47,7 +47,7 @@ func (l *SendPropertyLogic) SendProperty(in *dmclient.SendPropertyReq) (*dmclien
 	if err != nil {
 		return nil, err
 	}
-	param := map[string]interface{}{}
+	param := map[string]any{}
 	err = json.Unmarshal([]byte(in.Data), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail(

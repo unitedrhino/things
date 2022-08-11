@@ -99,10 +99,10 @@ func (l *SDKLogLogic) GetLogLevel(msg *device.PublishMsg) {
 		l.DeviceResp(msg, errors.Database, nil)
 		return
 	}
-	l.DeviceResp(msg, errors.OK, map[string]interface{}{"log_level": ld.LogLevel})
+	l.DeviceResp(msg, errors.OK, map[string]any{"log_level": ld.LogLevel})
 }
 
-func (l *SDKLogLogic) DeviceResp(msg *device.PublishMsg, err error, data map[string]interface{}) {
+func (l *SDKLogLogic) DeviceResp(msg *device.PublishMsg, err error, data map[string]any) {
 	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 	er := l.svcCtx.InnerLink.PublishToDev(l.ctx, topic, payload)
 	if er != nil {

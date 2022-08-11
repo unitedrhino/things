@@ -697,7 +697,7 @@ func TestVerifyPropertyParam(t *testing.T) {
 			fmt.Printf("getParam=%s\n", str.String())
 		}
 		{
-			val := make(map[string]interface{}, len(out))
+			val := make(map[string]any, len(out))
 			for _, v := range out {
 				val[v.ID] = v.ToVal()
 			}
@@ -734,7 +734,7 @@ func TestVerifyEventParam(t *testing.T) {
 			fmt.Printf("getParam=%s\n", str.String())
 		}
 		{
-			val := make(map[string]interface{}, len(out))
+			val := make(map[string]any, len(out))
 			for _, v := range out {
 				val[v.ID] = v.ToVal()
 			}
@@ -769,7 +769,7 @@ func TestVerifyActionInParam(t *testing.T) {
 			fmt.Printf("getParam=%s\n", str.String())
 		}
 		{
-			val := make(map[string]interface{}, len(out))
+			val := make(map[string]any, len(out))
 			for _, v := range out {
 				val[v.ID] = v.ToVal()
 			}
@@ -804,7 +804,7 @@ func TestVerifyActionOutParam(t *testing.T) {
 			fmt.Printf("getParam=%s\n", str.String())
 		}
 		{
-			val := make(map[string]interface{}, len(out))
+			val := make(map[string]any, len(out))
 			for _, v := range out {
 				val[v.ID] = v.ToVal()
 			}

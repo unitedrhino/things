@@ -6,14 +6,14 @@ import (
 	"fmt"
 )
 
-func Unmarshal(data []byte, v interface{}) error {
+func Unmarshal(data []byte, v any) error {
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.UseNumber()
 	return decoder.Decode(v)
 }
 
 // Fmt 将结构以更方便看的方式打印出来
-func Fmt(v interface{}) string {
+func Fmt(v any) string {
 	switch v.(type) {
 	case string:
 		return v.(string)

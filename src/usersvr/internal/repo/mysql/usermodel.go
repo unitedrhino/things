@@ -11,7 +11,7 @@ import (
 
 type Keys struct {
 	Key   string
-	Value interface{}
+	Value any
 }
 
 type (

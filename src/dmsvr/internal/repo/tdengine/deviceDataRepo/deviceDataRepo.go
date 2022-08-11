@@ -83,21 +83,21 @@ func getEventTableName(productID, deviceName string) string {
 }
 
 // GenParams 返回占位符?,?,?,? 参数id名:aa,bbb,ccc 参数值列表
-func (d *DeviceDataRepo) GenParams(params map[string]interface{}) (string, string, []interface{}, error) {
+func (d *DeviceDataRepo) GenParams(params map[string]any) (string, string, []any, error) {
 	if len(params) == 0 {
 		//使用这个函数前必须要判断参数的个数是否大于0
 		panic("DeviceDataRepo|GenParams|params num == 0")
 	}
 	var (
 		paramPlaceholder = strings.Repeat("?,", len(params))
-		paramValList     []interface{} //参数值列表
+		paramValList     []any //参数值列表
 		paramIds         []string
 	)
 	//将最后一个?去除
 	paramPlaceholder = paramPlaceholder[:len(paramPlaceholder)-1]
 	for k, v := range params {
 		paramIds = append(paramIds, "`"+k+"`")
-		if _, ok := v.([]interface{}); !ok {
+		if _, ok := v.([]any); !ok {
 			paramValList = append(paramValList, v)
 		} else { //如果是数组类型,需要序列化为json
 			param, err := json.Marshal(v)

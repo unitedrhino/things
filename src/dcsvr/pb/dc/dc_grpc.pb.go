@@ -152,7 +152,7 @@ func RegisterDcServer(s grpc.ServiceRegistrar, srv DcServer) {
 	s.RegisterService(&Dc_ServiceDesc, srv)
 }
 
-func _Dc_ManageGroupInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Dc_ManageGroupInfo_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(ManageGroupInfoReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -164,13 +164,13 @@ func _Dc_ManageGroupInfo_Handler(srv interface{}, ctx context.Context, dec func(
 		Server:     srv,
 		FullMethod: "/dc.Dc/manageGroupInfo",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(DcServer).ManageGroupInfo(ctx, req.(*ManageGroupInfoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dc_ManageGroupMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Dc_ManageGroupMember_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(ManageGroupMemberReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -182,13 +182,13 @@ func _Dc_ManageGroupMember_Handler(srv interface{}, ctx context.Context, dec fun
 		Server:     srv,
 		FullMethod: "/dc.Dc/manageGroupMember",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(DcServer).ManageGroupMember(ctx, req.(*ManageGroupMemberReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dc_GetGroupInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Dc_GetGroupInfo_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(GetGroupInfoReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -200,13 +200,13 @@ func _Dc_GetGroupInfo_Handler(srv interface{}, ctx context.Context, dec func(int
 		Server:     srv,
 		FullMethod: "/dc.Dc/GetGroupInfo",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(DcServer).GetGroupInfo(ctx, req.(*GetGroupInfoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dc_GetGroupMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Dc_GetGroupMember_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(GetGroupMemberReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -218,13 +218,13 @@ func _Dc_GetGroupMember_Handler(srv interface{}, ctx context.Context, dec func(i
 		Server:     srv,
 		FullMethod: "/dc.Dc/GetGroupMember",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(DcServer).GetGroupMember(ctx, req.(*GetGroupMemberReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dc_SendAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Dc_SendAction_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(SendActionReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -236,13 +236,13 @@ func _Dc_SendAction_Handler(srv interface{}, ctx context.Context, dec func(inter
 		Server:     srv,
 		FullMethod: "/dc.Dc/SendAction",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(DcServer).SendAction(ctx, req.(*SendActionReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dc_SendProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Dc_SendProperty_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
 	in := new(SendPropertyReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -254,7 +254,7 @@ func _Dc_SendProperty_Handler(srv interface{}, ctx context.Context, dec func(int
 		Server:     srv,
 		FullMethod: "/dc.Dc/SendProperty",
 	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+	handler := func(ctx context.Context, req any) (any, error) {
 		return srv.(DcServer).SendProperty(ctx, req.(*SendPropertyReq))
 	}
 	return interceptor(ctx, in, info, handler)

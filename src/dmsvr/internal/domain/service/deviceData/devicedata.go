@@ -12,16 +12,16 @@ import (
 type (
 	// PropertyData 属性数据
 	PropertyData struct {
-		ID        string      `json:"id"`         //属性的id
-		Param     interface{} `json:"property" `  //一个属性的参数
-		TimeStamp time.Time   `json:"timeStamp" ` //时间戳
+		ID        string    `json:"id"`         //属性的id
+		Param     any       `json:"property" `  //一个属性的参数
+		TimeStamp time.Time `json:"timeStamp" ` //时间戳
 	}
 	// EventData 事件数据
 	EventData struct {
-		ID        string                 `json:"id" `        //事件id
-		Type      string                 `json:"type" `      //事件类型: 信息:info  告警alert  故障:fault
-		Params    map[string]interface{} `json:"params" `    //事件参数
-		TimeStamp time.Time              `json:"timeStamp" ` //时间戳
+		ID        string         `json:"id" `        //事件id
+		Type      string         `json:"type" `      //事件类型: 信息:info  告警alert  故障:fault
+		Params    map[string]any `json:"params" `    //事件参数
+		TimeStamp time.Time      `json:"timeStamp" ` //时间戳
 	}
 
 	FilterOpt struct {
@@ -40,7 +40,7 @@ type (
 		// InsertPropertyData 插入一条属性数据
 		InsertPropertyData(ctx context.Context, t *schema.Model, productID string, deviceName string, property *PropertyData) error
 		// InsertPropertiesData 插入多条属性数据 params key为属性的id,val为属性的值
-		InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]interface{}, timestamp time.Time) error
+		InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error
 		// GetEventDataWithID 根据事件id获取事件信息
 		GetEventDataByID(ctx context.Context, filter FilterOpt) ([]*EventData, error)
 		GetEventCountByID(ctx context.Context, filter FilterOpt) (int64, error)

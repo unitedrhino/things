@@ -5,7 +5,7 @@ import (
 )
 
 //返回修改的数量
-func SetVal(key interface{}, src, dst interface{}) (num int) {
+func SetVal(key any, src, dst any) (num int) {
 	switch key.(type) {
 	case string:
 		setVal(key.(string), src, dst)
@@ -20,7 +20,7 @@ func SetVal(key interface{}, src, dst interface{}) (num int) {
 }
 
 //返回是否修改
-func setVal(key string, src, dst interface{}) (num int) {
+func setVal(key string, src, dst any) (num int) {
 	srcKey := reflect.ValueOf(src).FieldByName(key)
 	if srcKey.IsValid() == true {
 		if dstV := reflect.ValueOf(dst).Elem().FieldByName(key); dstV.CanSet() == true && dstV.Type().Kind() == srcKey.Kind() {
@@ -31,7 +31,7 @@ func setVal(key string, src, dst interface{}) (num int) {
 	return 0
 }
 
-func SetVals(src interface{}, dst interface{}) (num int) {
+func SetVals(src any, dst any) (num int) {
 	srcV := reflect.ValueOf(src).Elem()
 	dstV := reflect.ValueOf(dst).Elem()
 	srcT := srcV.Type()

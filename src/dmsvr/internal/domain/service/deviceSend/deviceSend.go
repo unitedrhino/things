@@ -88,7 +88,7 @@ func GetMethod(method METHOD) METHOD {
 
 // GenThingDeviceRespData 生成物模型设备请求的回复包
 func GenThingDeviceRespData(Method, ClientToken string, topics []string, err error,
-	data map[string]interface{}) (topic string, payload []byte) {
+	data map[string]any) (topic string, payload []byte) {
 	respMethod := GetMethod(Method)
 	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
 		topics[0], topics[2], topics[3], topics[4])
