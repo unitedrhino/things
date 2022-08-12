@@ -10,7 +10,7 @@ type (
 		Username string            //用户名
 		Topic    string            //主题
 		ClientID string            //clientID
-		Access   devices.DIRECTION //操作
+		Access   devices.Direction //操作
 		Ip       string            //访问的ip地址
 	}
 )

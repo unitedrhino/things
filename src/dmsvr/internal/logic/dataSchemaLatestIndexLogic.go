@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 
@@ -39,7 +40,7 @@ func (l *DataSchemaLatestIndexLogic) DataSchemaLatestIndex(in *dm.DataSchemaLate
 	}
 	dd := l.svcCtx.DeviceDataRepo
 	switch in.Method {
-	case def.PropertyMethod, "":
+	case devices.PropertyMethod, "":
 		dataIDs := in.DataID
 		if len(dataIDs) == 0 {
 			dataIDs = temp.Properties.GetIDs()

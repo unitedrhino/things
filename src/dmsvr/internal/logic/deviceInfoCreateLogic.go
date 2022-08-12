@@ -106,7 +106,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 			Valid:  true,
 		}
 	}
-	if in.LogLevel != def.UNKNOWN {
+	if in.LogLevel != def.Unknown {
 		di.LogLevel = deviceInfo.LogClose
 	}
 	_, err = l.svcCtx.DeviceInfo.Insert(l.ctx, &di)

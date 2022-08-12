@@ -42,7 +42,7 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.Dev
 			}
 		}
 	}
-	if data.LogLevel != def.UNKNOWN {
+	if data.LogLevel != def.Unknown {
 		old.LogLevel = data.LogLevel
 	}
 	if data.Version != nil {

@@ -2,8 +2,8 @@ package logic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/usersvr/internal/svc"
@@ -68,7 +68,7 @@ func (l *InfoCreateLogic) CheckUserCore(in *user.UserInfoCreateReq) (*mysql.User
 	case mysql.ErrNotFound: //如果没有注册过,那么注册账号并进入下一步
 		return nil, errors.RegisterOne
 	case nil: //如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status != def.NotRegisterStatus {
+		if uc.Status != users.NotRegisterStatus {
 			return nil, errors.DuplicateRegister
 		}
 		return uc, nil

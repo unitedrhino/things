@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/users"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -44,7 +45,7 @@ func (m *userModel) RegisterCore(data UserCore, key Keys) (result sql.Result, er
 		query := fmt.Sprintf("select %s from %s where `%s` = ?  limit 1", userCoreRows, m.userCore, key.Key)
 		err = session.QueryRow(&resp, query, key.Value)
 		if !(err == sqlc.ErrNotFound) {
-			if resp.Status == def.NormalStatus {
+			if resp.Status == users.NormalStatus {
 				return ErrDuplicate
 			}
 			isUpdate = true

@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -29,9 +28,9 @@ func NewAccessAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Access
 }
 
 var (
-	AccessMap = map[string]devices.DIRECTION{
-		def.PUB: devices.UP,
-		def.SUB: devices.DOWN,
+	AccessMap = map[string]devices.Direction{
+		devices.Pub: devices.Up,
+		devices.Sub: devices.Down,
 	}
 )
 
