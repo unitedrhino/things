@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/i-Things/things/shared/def"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net"
 	"net/http"
@@ -93,13 +92,6 @@ func MakePwd(pwd string, uid int64, isMd5 bool) string {
 	}
 	strUid := strconv.FormatInt(uid, 8)
 	return MD5V([]byte(pwd + strUid + "god17052709767"))
-}
-
-func GetLoginNameType(userName string) def.UserInfoType {
-	if IsMobile(userName) == true {
-		return def.Phone
-	}
-	return def.UserName
 }
 
 // 获取正在运行的函数名

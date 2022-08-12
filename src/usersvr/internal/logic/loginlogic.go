@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
@@ -104,9 +103,9 @@ func (l *LoginLogic) GetUserCore(in *user.LoginReq) (uc *mysql.UserCore, err err
 	case "sms": //暂时不验证
 		uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(l.ctx, in.UserID)
 	case "img": //暂时不验证
-		lt := utils.GetLoginNameType(in.UserID)
+		lt := users.GetLoginNameType(in.UserID)
 		switch lt {
-		case def.Phone:
+		case users.Phone:
 			//优先用手机号查表，如果未查到，说明可能是纯账号，则用账号字段查表
 			uc, err = l.svcCtx.UserCoreModel.FindOneByPhone(l.ctx, in.UserID)
 			if err != nil || uc == nil {
@@ -146,7 +145,7 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	uc, err := l.GetUserCore(in)
 	switch err {
 	case nil:
-		if uc.Status != def.NormalStatus {
+		if uc.Status != users.NormalStatus {
 			return nil, errors.UnRegister
 		}
 		return l.getRet(uc)

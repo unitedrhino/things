@@ -45,18 +45,18 @@ const (
 	TopicHeadShadow = "$shadow"
 )
 
-type DIRECTION int
+type Direction int
 
 const (
-	UNKNOWN DIRECTION = iota //未知
-	UP                       //上行
-	DOWN                     //下行
+	Unknown Direction = iota //未知
+	Up                       //上行
+	Down                     //下行
 )
 
 type TopicInfo struct {
 	ProductID  string
 	DeviceName string
-	Direction  DIRECTION
+	Direction  Direction
 	TopicHead  string
 }
 
@@ -103,13 +103,13 @@ func parseLast(topics []string) (topicInfo *TopicInfo, err error) {
 	}, err
 }
 
-func getDirection(dir string) DIRECTION {
+func getDirection(dir string) Direction {
 	switch dir {
 	case "up":
-		return UP
+		return Up
 	case "down":
-		return DOWN
+		return Down
 	default:
-		return UNKNOWN
+		return Unknown
 	}
 }

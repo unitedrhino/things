@@ -30,14 +30,14 @@ func (l *ProductInfoUpdateLogic) UpdateProductInfo(old *mysql.ProductInfo, data 
 	if data.ProductName != "" {
 		old.ProductName = data.ProductName
 	}
-	if data.AuthMode != def.UNKNOWN {
+	if data.AuthMode != def.Unknown {
 		old.AuthMode = data.AuthMode
 	}
 	if data.Description != nil {
 		old.Description = data.Description.GetValue()
 	}
 
-	if data.AutoRegister != def.UNKNOWN {
+	if data.AutoRegister != def.Unknown {
 		old.AutoRegister = data.AutoRegister
 	}
 	if data.DevStatus != nil {

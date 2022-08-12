@@ -64,32 +64,32 @@ func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) (*mysql.Produ
 		DevStatus:   in.DevStatus.GetValue(),
 		CreatedTime: createTime,
 	}
-	if in.AutoRegister != def.UNKNOWN {
+	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister
 	} else {
 		pi.AutoRegister = productInfo.AutoRegClose
 	}
-	if in.DataProto != def.UNKNOWN {
+	if in.DataProto != def.Unknown {
 		pi.DataProto = in.DataProto
 	} else {
 		pi.DataProto = productInfo.DataCustom
 	}
-	if in.DeviceType != def.UNKNOWN {
+	if in.DeviceType != def.Unknown {
 		pi.DeviceType = in.DeviceType
 	} else {
 		pi.DeviceType = productInfo.DevDevice
 	}
-	if in.NetType != def.UNKNOWN {
+	if in.NetType != def.Unknown {
 		pi.NetType = in.NetType
 	} else {
 		pi.NetType = productInfo.NetOther
 	}
-	if in.DeviceType != def.UNKNOWN {
+	if in.DeviceType != def.Unknown {
 		pi.DeviceType = in.DeviceType
 	} else {
 		pi.DeviceType = productInfo.DevDevice
 	}
-	if in.AuthMode != def.UNKNOWN {
+	if in.AuthMode != def.Unknown {
 		pi.AuthMode = in.AuthMode
 	} else {
 		pi.AuthMode = productInfo.AuthPwd
