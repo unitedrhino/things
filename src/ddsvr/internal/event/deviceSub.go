@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/ddsvr/internal/repo/event/innerLink"
+	"github.com/i-Things/things/src/ddsvr/internal/repo/event/publish/pubInner"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -37,7 +37,7 @@ func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
 	logx.Infof("[mqtt.Thing]|-------------------trace:%s, spanid:%s|topic:%s",
 		span.SpanContext().TraceID(), span.SpanContext().SpanID(), topic)
 	defer span.End()
-	return s.svcCtx.InnerLink.DevPubThing(ctx1, pub)
+	return s.svcCtx.PubInner.DevPubThing(ctx1, pub)
 }
 
 // Ota ota远程升级
@@ -47,7 +47,7 @@ func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
 	if pub == nil {
 		return err
 	}
-	return s.svcCtx.InnerLink.DevPubOta(s.ctx, pub)
+	return s.svcCtx.PubInner.DevPubOta(s.ctx, pub)
 }
 
 // Config 设备远程配置
@@ -57,7 +57,7 @@ func (s *DeviceSubServer) Config(topic string, payload []byte) error {
 	if pub == nil {
 		return err
 	}
-	return s.svcCtx.InnerLink.DevPubConfig(s.ctx, pub)
+	return s.svcCtx.PubInner.DevPubConfig(s.ctx, pub)
 }
 
 // Shadow 设备影子
@@ -67,7 +67,7 @@ func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
 	if pub == nil {
 		return err
 	}
-	return s.svcCtx.InnerLink.DevPubShadow(s.ctx, pub)
+	return s.svcCtx.PubInner.DevPubShadow(s.ctx, pub)
 }
 
 // Log 设备调试日志
@@ -77,7 +77,7 @@ func (s *DeviceSubServer) SDKLog(topic string, payload []byte) error {
 	if pub == nil {
 		return err
 	}
-	return s.svcCtx.InnerLink.DevPubSDKLog(s.ctx, pub)
+	return s.svcCtx.PubInner.DevPubSDKLog(s.ctx, pub)
 }
 
 func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.DevPublish, error) {
@@ -99,10 +99,10 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 }
 
 func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
-	s.Infof("%s|info:%v", utils.FuncName(), utils.Fmt(info))
-	return s.svcCtx.InnerLink.PubConn(s.ctx, innerLink.Connect, info)
+	s.Infof("%s info:%v", utils.FuncName(), utils.Fmt(info))
+	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.Connect, info)
 }
 func (s *DeviceSubServer) Disconnected(info *devices.DevConn) error {
-	s.Infof("%s|info:%v", utils.FuncName(), utils.Fmt(info))
-	return s.svcCtx.InnerLink.PubConn(s.ctx, innerLink.DisConnect, info)
+	s.Infof("%s info:%v", utils.FuncName(), utils.Fmt(info))
+	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.DisConnect, info)
 }

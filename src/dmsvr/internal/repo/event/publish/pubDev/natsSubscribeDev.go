@@ -1,4 +1,4 @@
-package innerLink
+package pubDev
 
 import (
 	"github.com/i-Things/things/shared/events"
@@ -10,20 +10,20 @@ import (
 )
 
 type (
-	SubDev struct {
+	natsSubDev struct {
 		subscription *nats.Subscription
 	}
 )
 
-func NewSubDev(subscription *nats.Subscription) *SubDev {
-	return &SubDev{subscription: subscription}
+func newNatsSubDev(subscription *nats.Subscription) *natsSubDev {
+	return &natsSubDev{subscription: subscription}
 }
 
-func (s *SubDev) UnSubscribe() error {
+func (s *natsSubDev) UnSubscribe() error {
 	return s.subscription.Unsubscribe()
 }
 
-func (s *SubDev) GetMsg(timeout time.Duration) (ele *device.PublishMsg, err error) {
+func (s *natsSubDev) GetMsg(timeout time.Duration) (ele *device.PublishMsg, err error) {
 	msg, err := s.subscription.NextMsg(timeout)
 	if err != nil {
 		return nil, err

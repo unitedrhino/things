@@ -7,11 +7,6 @@ import (
 
 type Config struct {
 	rest.RestConf
-	DevLink   DevLinkConf        //和设备交互的设置
-	InnerLink conf.InnerLinkConf //和things内部交互的设置
-}
-type DevLinkConf struct {
-	Mode    string         `json:",default=mqtt"` //模式 默认mqtt
-	SubMode string         `json:",default=emq"`  //
-	Mqtt    *conf.MqttConf `json:",optional"`
+	DevLink conf.DevLinkConf //和设备交互的设置
+	Event   conf.EventConf   //和things内部交互的设置
 }

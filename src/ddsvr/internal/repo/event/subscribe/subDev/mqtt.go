@@ -1,11 +1,10 @@
-package devLink
+package subDev
 
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/hashicorp/go-uuid"
+	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/traces"
@@ -34,9 +33,9 @@ const (
 	ActionDisconnected = "disconnected"
 )
 const (
-	// emqx 共享订阅前缀 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/shared-subscriptions.html
+	// ShareSubTopicPrefix emqx 共享订阅前缀 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/shared-subscriptions.html
 	ShareSubTopicPrefix = "$share/dd.rpc/"
-	// emqx 客户端上下线通知 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/system-topic.html#客户端上下线事件
+	// TopicConnectStatus emqx 客户端上下线通知 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/system-topic.html#客户端上下线事件
 	TopicConnectStatus = ShareSubTopicPrefix + "$SYS/brokers/+/clients/#"
 
 	TopicThing  = ShareSubTopicPrefix + devices.TopicHeadThing + "/#"
@@ -46,36 +45,17 @@ const (
 	TopicShadow = ShareSubTopicPrefix + devices.TopicHeadShadow + "/#"
 )
 
-func NewEmqClient(conf *conf.MqttConf) (DevLink, error) {
-	opts := mqtt.NewClientOptions()
-	for _, broker := range conf.Brokers {
-		opts.AddBroker(broker)
-	}
-	uuid, err := uuid.GenerateUUID()
+func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
+	mc, err := clients.NewMqttClient(conf)
 	if err != nil {
-		logx.Info("GenerateUUID failure")
 		return nil, err
 	}
-	opts.SetClientID(conf.ClientID + "/" + uuid).SetUsername(conf.User).
-		SetPassword(conf.Pass).SetAutoReconnect(true).SetConnectRetry(true)
-	opts.OnConnect = func(client mqtt.Client) {
-		logx.Info("Connected")
-	}
-	mc := mqtt.NewClient(opts)
-	er := mc.Connect().WaitTimeout(5 * time.Second)
-	if er == false {
-		logx.Info("mqtt Connect failure")
-		return nil, fmt.Errorf("mqtt client connect failure")
-	}
-
-	c := &MqttClient{
+	return &MqttClient{
 		client: mc,
-	}
-
-	return c, nil
+	}, nil
 }
 
-func (d *MqttClient) SubScribe(handle Handle) error {
+func (d *MqttClient) SubDevMsg(handle Handle) error {
 	err := d.subscribeWithFunc(TopicConnectStatus, d.subscribeConnectStatus(handle))
 	if err != nil {
 		return err

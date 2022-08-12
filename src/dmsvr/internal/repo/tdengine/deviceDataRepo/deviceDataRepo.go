@@ -3,8 +3,8 @@ package deviceDataRepo
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/store/TDengine"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
@@ -16,12 +16,12 @@ const (
 )
 
 type DeviceDataRepo struct {
-	t              *TDengine.Td
+	t              *clients.Td
 	getSchemaModel schema.GetSchemaModel
 }
 
 func NewDeviceDataRepo(dataSource string, getSchemaModel schema.GetSchemaModel) *DeviceDataRepo {
-	td, err := TDengine.NewTDengine(dataSource)
+	td, err := clients.NewTDengine(dataSource)
 	if err != nil {
 		logx.Error("NewTDengine err", err)
 		os.Exit(-1)
