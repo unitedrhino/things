@@ -3,8 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/rootAuth"
-
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceAuth"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -28,7 +27,7 @@ func NewRootCheckLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RootChe
 // 鉴定是否是root账号
 func (l *RootCheckLogic) RootCheck(in *dm.RootCheckReq) (*dm.Response, error) {
 	l.Infof("RootCheck|req=%+v", in)
-	if rootAuth.IsAdmin(l.svcCtx.Config.AuthWhite, in.Ip) {
+	if deviceAuth.IsAdmin(l.svcCtx.Config.AuthWhite, in.Ip) {
 		return &dm.Response{}, nil
 	}
 	return &dm.Response{}, errors.Permissions

@@ -119,9 +119,9 @@ func (l *ManageGroupMemberLogic) DelGroupMember(in *dc.ManageGroupMemberReq) (*d
 func (l *ManageGroupMemberLogic) ManageGroupMember(in *dc.ManageGroupMemberReq) (*dc.GroupMember, error) {
 	l.Infof("ManageGroupMember|req=%+v", in)
 	switch in.Opt {
-	case def.OPT_ADD:
+	case def.OptAdd:
 		return l.AddGroupMember(in)
-	case def.OPT_DEL:
+	case def.OptDel:
 		return l.DelGroupMember(in)
 	default:
 		return nil, errors.Parameter.AddDetail("not support opt:" + string(in.Opt))

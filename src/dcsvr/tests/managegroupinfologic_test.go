@@ -20,7 +20,7 @@ func TestManageGroupInfo(t *testing.T) {
 	ctx := context.Background()
 	{
 		req := &dc.ManageGroupInfoReq{
-			Opt: def.OPT_ADD,
+			Opt: def.OptAdd,
 			Info: &dc.GroupInfo{
 				Name: "测试组1",              //组名
 				Uid:  1699809227385606144, //管理员用户id
@@ -32,7 +32,7 @@ func TestManageGroupInfo(t *testing.T) {
 			t.Errorf("%+v", errors.Fmt(err))
 		}
 		req = &dc.ManageGroupInfoReq{
-			Opt: def.OPT_MODIFY,
+			Opt: def.OptModify,
 			Info: &dc.GroupInfo{
 				GroupID: info.GroupID,
 				Name:    "测试组1修改",            //组名
@@ -47,7 +47,7 @@ func TestManageGroupInfo(t *testing.T) {
 	}
 	{
 		req := &dc.ManageGroupInfoReq{
-			Opt: def.OPT_ADD,
+			Opt: def.OptAdd,
 			Info: &dc.GroupInfo{
 				Name: "测试组2",              //组名
 				Uid:  1699809227385606145, //管理员用户id

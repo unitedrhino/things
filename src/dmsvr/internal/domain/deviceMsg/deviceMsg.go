@@ -1,5 +1,5 @@
 // Package device 设备发送来的消息解析
-package device
+package deviceMsg
 
 import (
 	"context"

@@ -39,7 +39,7 @@ func (l *DataSchemaLatestIndexLogic) DataSchemaLatestIndex(in *dm.DataSchemaLate
 	}
 	dd := l.svcCtx.DeviceDataRepo
 	switch in.Method {
-	case def.PROPERTY_METHOD, "":
+	case def.PropertyMethod, "":
 		dataIDs := in.DataID
 		if len(dataIDs) == 0 {
 			dataIDs = temp.Properties.GetIDs()

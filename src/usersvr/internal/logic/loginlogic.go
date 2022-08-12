@@ -146,7 +146,7 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	uc, err := l.GetUserCore(in)
 	switch err {
 	case nil:
-		if uc.Status != def.NomalStatus {
+		if uc.Status != def.NormalStatus {
 			return nil, errors.UnRegister
 		}
 		return l.getRet(uc)

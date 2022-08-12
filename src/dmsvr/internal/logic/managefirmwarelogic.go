@@ -81,14 +81,14 @@ func (l *ManageFirmwareLogic) DelFirmware(in *dm.ManageFirmwareReq) (*dm.Respons
 func (l *ManageFirmwareLogic) ManageFirmware(in *dm.ManageFirmwareReq) (*dm.Response, error) {
 	l.Infof("[%s]opt=%d|info=%+v", utils.FuncName(), in.Opt, in.Info)
 	switch in.Opt {
-	case def.OPT_ADD:
+	case def.OptAdd:
 		if in.Info == nil {
 			return nil, errors.Parameter.WithMsg("add opt need info")
 		}
 		return l.AddFirmware(in)
-	case def.OPT_MODIFY:
+	case def.OptModify:
 		return l.ModifyFirmware(in)
-	case def.OPT_DEL:
+	case def.OptDel:
 		return l.DelFirmware(in)
 	default:
 		return nil, errors.Parameter.AddDetail("not support opt:" + cast.ToString(in.Opt))

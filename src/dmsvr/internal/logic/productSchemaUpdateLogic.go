@@ -2,9 +2,9 @@ package logic
 
 import (
 	"context"
+	schema2 "github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 
@@ -28,13 +28,13 @@ func NewProductSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdateReq, oldT *schema.Model) (*dm.Response, error) {
+func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdateReq, oldT *schema2.Model) (*dm.Response, error) {
 	l.Infof("ManageProductTemplate|ModifyProductSchema|ProductID:%v", in.Info.ProductID)
-	newT, err := schema.ValidateWithFmt([]byte(in.Info.Schema))
+	newT, err := schema2.ValidateWithFmt([]byte(in.Info.Schema))
 	if err != nil {
 		return nil, err
 	}
-	err = schema.CheckModify(oldT, newT)
+	err = schema2.CheckModify(oldT, newT)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdat
 		l.Errorf("ModifyProductSchema|ProductTemplate|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
-	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema.SchemaInfo{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema2.SchemaInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (l *ProductSchemaUpdateLogic) AddProductSchema(in *dm.ProductSchemaUpdateRe
 		}
 		return nil, errors.Database.AddDetail(err)
 	}
-	t, err := schema.ValidateWithFmt([]byte(in.Info.Schema))
+	t, err := schema2.ValidateWithFmt([]byte(in.Info.Schema))
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (l *ProductSchemaUpdateLogic) AddProductSchema(in *dm.ProductSchemaUpdateRe
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema.SchemaInfo{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema2.SchemaInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}

@@ -3,10 +3,10 @@ package deviceMsgEvent
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -32,7 +32,7 @@ func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic 
 	}
 }
 
-func (l *ThingLogic) initMsg(msg *device.PublishMsg) error {
+func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	var err error
 	l.template, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, msg.ProductID)
 	if err != nil {
@@ -47,7 +47,7 @@ func (l *ThingLogic) initMsg(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *ThingLogic) DeviceResp(msg *device.PublishMsg, err error, data map[string]any) {
+func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) {
 	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, topic, payload)
 	if er != nil {
@@ -57,7 +57,7 @@ func (l *ThingLogic) DeviceResp(msg *device.PublishMsg, err error, data map[stri
 	l.Infof("ThingLogic|DeviceResp|topic:%v payload:%v err:%v", topic, string(payload), err)
 }
 
-func (l *ThingLogic) HandlePropertyReport(msg *device.PublishMsg) error {
+func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) error {
 	tp, err := l.dreq.VerifyReqParam(l.template, schema.PROPERTY)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
@@ -79,7 +79,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *ThingLogic) HandlePropertyGetStatus(msg *device.PublishMsg) error {
+func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) error {
 	respData := make(map[string]any, len(l.template.Properties))
 	switch l.dreq.Type {
 	case deviceSend.REPORT:
@@ -110,7 +110,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *ThingLogic) HandleProperty(msg *device.PublishMsg) error {
+func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) error {
 	l.Infof("ThingLogic|HandleProperty")
 	switch l.dreq.Method {
 	case deviceSend.REPORT, deviceSend.REPORT_INFO:
@@ -125,7 +125,7 @@ func (l *ThingLogic) HandleProperty(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *ThingLogic) HandleEvent(msg *device.PublishMsg) error {
+func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) error {
 	l.Infof("ThingLogic|HandleEvent")
 	dbData := deviceData.EventData{}
 	dbData.ID = l.dreq.EventID
@@ -151,13 +151,13 @@ func (l *ThingLogic) HandleEvent(msg *device.PublishMsg) error {
 
 	return nil
 }
-func (l *ThingLogic) HandleResp(msg *device.PublishMsg) error {
+func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) error {
 	l.Infof("ThingLogic|HandleResp")
 	//todo 这里后续需要处理异步获取消息的情况
 	return nil
 }
 
-func (l *ThingLogic) Handle(msg *device.PublishMsg) (err error) {
+func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
 	l.Infof("ThingLogic|req=%v", msg)
 	err = l.initMsg(msg)
 	if err != nil {
@@ -168,18 +168,18 @@ func (l *ThingLogic) Handle(msg *device.PublishMsg) (err error) {
 			return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
 		switch l.topics[2] {
-		case def.PROPERTY_METHOD: //属性上报
+		case def.PropertyMethod: //属性上报
 			return l.HandleProperty(msg)
-		case def.EVENT_METHOD: //事件上报
+		case def.EventMethod: //事件上报
 			return l.HandleEvent(msg)
-		case def.ACTION_METHOD: //设备响应行为执行结果
+		case def.ActionMethod: //设备响应行为执行结果
 			return l.HandleResp(msg)
 		default:
 			return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
 		return nil
 	}()
-	l.svcCtx.HubLogRepo.Insert(l.ctx, &device.HubLog{
+	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceMsg.HubLog{
 		ProductID:  msg.ProductID,
 		Action:     "publish",
 		Timestamp:  l.dreq.GetTimeStamp(msg.Timestamp), // 操作时间

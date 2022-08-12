@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/dmclient"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceAuth"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -35,37 +35,25 @@ var (
 	}
 )
 
-func (l *AccessAuthLogic) CompareTopic(in *dmclient.AccessAuthReq) (err error) {
+func (l *AccessAuthLogic) Auth(in *dmclient.AccessAuthReq) (err error) {
 	l.Infof("%s|in:%v", utils.FuncName(), utils.Fmt(in))
-	lg, err := device.GetClientIDInfo(in.ClientID)
-	if err != nil {
-		return err
-	}
-	topicInfo, err := devices.GetTopicInfo(in.Topic)
-	if err != nil {
+	access, ok := AccessMap[in.Access]
+	if !ok {
 		return errors.Permissions
 	}
-	/*
-		系统topic及物模型topic都是
-			第一个表示大的功能(如$thing,$ota)
-			第二个表示上行还是下行
-			中间为自定义字段
-			以产品id/设备名结尾
-	*/
-	if access, ok := AccessMap[in.Access]; !ok {
-		return errors.Permissions
-	} else if access != topicInfo.Direction {
-		return errors.Permissions
-	}
-	if topicInfo.ProductID != lg.ProductID || topicInfo.DeviceName != lg.DeviceName {
-		return errors.Permissions
-	}
-	return nil
+	return deviceAuth.AccessAuth(deviceAuth.AccessAuthInfo{
+		Username: in.Username,
+		Topic:    in.Topic,
+		ClientID: in.ClientID,
+		Access:   access,
+		Ip:       in.Ip,
+	})
+
 }
 
 func (l *AccessAuthLogic) AccessAuth(in *dm.AccessAuthReq) (*dm.Response, error) {
 	l.Infof("%s|req=%+v", utils.FuncName(), utils.Fmt(in))
-	err := l.CompareTopic(in)
+	err := l.Auth(in)
 	if err != nil {
 		l.Infof("%s|auth failure=%v", utils.FuncName(), err)
 	}
