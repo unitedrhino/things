@@ -6,8 +6,8 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/event/dataUpdate"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/hubLogRepo"
@@ -25,7 +25,7 @@ type ServiceContext struct {
 	DmDB           mysql.DmModel
 	DeviceID       *utils.SnowFlake
 	ProductID      *utils.SnowFlake
-	InnerLink      innerLink.InnerLink
+	PubDev         pubDev.PubDev
 	DataUpdate     dataUpdate.DataUpdate
 	Store          kv.Store
 	DeviceDataRepo deviceData.DeviceDataRepo
@@ -52,12 +52,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	DeviceID := utils.NewSnowFlake(nodeId)
 	ProductID := utils.NewSnowFlake(nodeId)
-	il, err := innerLink.NewInnerLink(c.InnerLink)
+	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {
-		logx.Error("NewInnerLink err", err)
+		logx.Error("NewPubDev err", err)
 		os.Exit(-1)
 	}
-	du, err := dataUpdate.NewDataUpdate(c.InnerLink)
+	du, err := dataUpdate.NewDataUpdate(c.Event)
 	if err != nil {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
@@ -71,7 +71,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DmDB:           DmDB,
 		DeviceID:       DeviceID,
 		ProductID:      ProductID,
-		InnerLink:      il,
+		PubDev:         pd,
 		DataUpdate:     du,
 		Store:          store,
 		DeviceDataRepo: deviceData,

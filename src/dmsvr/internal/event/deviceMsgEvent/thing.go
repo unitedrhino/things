@@ -49,7 +49,7 @@ func (l *ThingLogic) initMsg(msg *device.PublishMsg) error {
 
 func (l *ThingLogic) DeviceResp(msg *device.PublishMsg, err error, data map[string]any) {
 	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
-	er := l.svcCtx.InnerLink.PublishToDev(l.ctx, topic, payload)
+	er := l.svcCtx.PubDev.PublishToDev(l.ctx, topic, payload)
 	if er != nil {
 		l.Errorf("DeviceResp|PublishToDev failure err:%v", er)
 		return

@@ -51,9 +51,6 @@ DmSvr:
       Type: node
   TDengine:
     DataSource: root:taosdata@http(localhost:6041)/test?readBufferSize=52428800
-  InnerLink:
-    Nats:
-      Url: nats://127.0.0.1:4222
   AuthWhite:
     IpRange:
       - 127.0.0.1
@@ -65,9 +62,6 @@ DdSvr:
   Port: 8848
   Log:
     Encoding: plain
-  InnerLink:
-    Nats:
-      Url: nats://127.0.0.1:4222
   DevLink:
     Mode: mqtt
     SubMode: emq
@@ -110,10 +104,6 @@ UserSvr:
   UserToken:
     AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
     AccessExpire: 8640000
-  WexinMiniprogram:
-    Open: true
-    AppID: wx0a8aabe3ca57d4af
-    AppSecret: f77f42b81e055ae8be41211cb0389b7d
   UserOpt:
     NeedUserName: true
     NeedPassWord: true

@@ -1,4 +1,4 @@
-package TDengine
+package clients
 
 import (
 	"database/sql"
