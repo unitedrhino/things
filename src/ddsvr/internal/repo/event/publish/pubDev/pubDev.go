@@ -1,0 +1,28 @@
+package pubDev
+
+import (
+	"context"
+	"fmt"
+	"github.com/i-Things/things/shared/conf"
+)
+
+type (
+	// PubDev 发送消息到设备
+	PubDev interface {
+		Publish(ctx context.Context, topic string, payload []byte) error
+	}
+)
+
+func Check(conf conf.DevLinkConf) error {
+	if conf.Mqtt == nil {
+		return fmt.Errorf("DevLinkConf need")
+	}
+	return nil
+}
+
+func NewPubDev(conf conf.DevLinkConf) (PubDev, error) {
+	if err := Check(conf); err != nil {
+		return nil, err
+	}
+	return newEmqClient(conf.Mqtt)
+}

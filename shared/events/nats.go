@@ -28,6 +28,5 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 			logx.WithContext(ctx).Infof("nats subscription|subject:%v",
 				msg.Subject)
 		}
-
 	}
 }

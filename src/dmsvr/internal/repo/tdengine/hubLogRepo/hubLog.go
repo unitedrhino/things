@@ -2,17 +2,17 @@ package hubLogRepo
 
 import (
 	"fmt"
-	"github.com/i-Things/things/shared/store/TDengine"
+	"github.com/i-Things/things/shared/clients"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 )
 
 type HubLogRepo struct {
-	t *TDengine.Td
+	t *clients.Td
 }
 
 func NewHubLogRepo(dataSource string) *HubLogRepo {
-	td, err := TDengine.NewTDengine(dataSource)
+	td, err := clients.NewTDengine(dataSource)
 	if err != nil {
 		logx.Error("NewTDengine err", err)
 		os.Exit(-1)

@@ -69,7 +69,7 @@ func (l *SendActionLogic) SendAction(in *dmclient.SendActionReq) (*dmclient.Send
 	pubTopic := fmt.Sprintf("$thing/down/action/%s/%s", in.ProductID, in.DeviceName)
 	subTopic := fmt.Sprintf("$thing/up/action/%s/%s", in.ProductID, in.DeviceName)
 
-	resp, err := l.svcCtx.InnerLink.ReqToDeviceSync(l.ctx, pubTopic, subTopic, &req, in.ProductID, in.DeviceName)
+	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, pubTopic, subTopic, &req, in.ProductID, in.DeviceName)
 	if err != nil {
 		return nil, err
 	}

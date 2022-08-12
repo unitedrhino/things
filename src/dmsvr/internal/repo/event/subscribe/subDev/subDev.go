@@ -1,18 +1,15 @@
-package innerLink
+package subDev
 
 import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	deviceSend "github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 )
 
 type (
-	InnerLink interface {
-		PublishToDev(ctx context.Context, topic string, payload []byte) error
+	SubDev interface {
 		Subscribe(handle Handle) error
-		ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *deviceSend.DeviceReq,
-			productID, deviceName string) (*deviceSend.DeviceResp, error)
 	}
 	Handle        func(ctx context.Context) InnerSubEvent
 	InnerSubEvent interface {
@@ -31,10 +28,9 @@ type (
 	}
 )
 
-func NewInnerLink(c conf.InnerLinkConf) (InnerLink, error) {
-	if c.Mode == conf.InnerLinkModeNats {
-		return NewNatsClient(c.Nats)
+func NewSubDev(c conf.EventConf) (SubDev, error) {
+	if c.Mode == conf.EventModeNats {
+		return newNatsClient(c.Nats)
 	}
-	//todo 等待支持直接调用模式
-	return nil, nil
+	return nil, errors.Parameter.AddMsgf("mode:%v not support", c.Mode)
 }
