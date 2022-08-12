@@ -2,7 +2,7 @@ package deviceDataRepo
 
 import (
 	"encoding/json"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/spf13/cast"
 )

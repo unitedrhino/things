@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceInfo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 	"time"
@@ -107,7 +107,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 		}
 	}
 	if in.LogLevel != def.UNKNOWN {
-		di.LogLevel = device.LOG_CLOSE
+		di.LogLevel = deviceInfo.LogClose
 	}
 	_, err = l.svcCtx.DeviceInfo.Insert(l.ctx, &di)
 	if err != nil {

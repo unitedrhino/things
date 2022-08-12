@@ -1,5 +1,5 @@
 // Package device 设备登录权限认证及对应clientID,userName的处理
-package device
+package deviceAuth
 
 import (
 	"encoding/base64"

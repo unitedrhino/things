@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 )

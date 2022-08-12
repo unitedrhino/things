@@ -1,12 +1,12 @@
 package sdkLogRepo
 
 import (
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/spf13/cast"
 )
 
-func ToDeviceSDKLog(productID string, db map[string]any) *device.SDKLog {
-	return &device.SDKLog{
+func ToDeviceSDKLog(productID string, db map[string]any) *deviceMsg.SDKLog {
+	return &deviceMsg.SDKLog{
 		ProductID:   productID,
 		DeviceName:  cast.ToString(db["device_name"]),
 		Content:     cast.ToString(db["content"]),

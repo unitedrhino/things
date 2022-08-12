@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -27,7 +27,7 @@ func NewSDKLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SDKLogLogi
 	}
 }
 
-func (l *SDKLogLogic) initMsg(msg *device.PublishMsg) error {
+func (l *SDKLogLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	var err error
 	if err != nil {
 		return err
@@ -40,7 +40,7 @@ func (l *SDKLogLogic) initMsg(msg *device.PublishMsg) error {
 	return nil
 }
 
-func (l *SDKLogLogic) Handle(msg *device.PublishMsg) (err error) {
+func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
 	l.Infof("%s|req=%+v", utils.FuncName(), msg)
 	err = l.initMsg(msg)
 	if err != nil {
@@ -57,7 +57,7 @@ func (l *SDKLogLogic) Handle(msg *device.PublishMsg) (err error) {
 }
 
 //获取设备上传的调试日志内容
-func (l *SDKLogLogic) ReportLogContent(msg *device.PublishMsg) error {
+func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) error {
 	ld, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, msg.ProductID, msg.DeviceName)
 	if err != nil {
 		l.Errorf("%s|Log|operate|productID:%v deviceName:%v err:%v",
@@ -72,7 +72,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *device.PublishMsg) error {
 	//l.svcCtx.SDKLogRepo.InitDevice(l.ctx, ld.ProductID, ld.DeviceName)
 	logContent := l.dreq.Params["content"]
 
-	err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &device.SDKLog{
+	err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceMsg.SDKLog{
 		ProductID:   ld.ProductID,
 		LogLevel:    ld.LogLevel,
 		Timestamp:   msg.Timestamp, // 操作时间
@@ -91,7 +91,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *device.PublishMsg) error {
 }
 
 //获取当前日志等级 0 未开启
-func (l *SDKLogLogic) GetLogLevel(msg *device.PublishMsg) {
+func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) {
 	ld, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, msg.ProductID, msg.DeviceName)
 	if err != nil {
 		l.Errorf("%s|Log|operate|productID:%v deviceName:%v err:%v",
@@ -102,7 +102,7 @@ func (l *SDKLogLogic) GetLogLevel(msg *device.PublishMsg) {
 	l.DeviceResp(msg, errors.OK, map[string]any{"log_level": ld.LogLevel})
 }
 
-func (l *SDKLogLogic) DeviceResp(msg *device.PublishMsg, err error, data map[string]any) {
+func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) {
 	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, topic, payload)
 	if er != nil {

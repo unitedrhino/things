@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// Custom claims structure
+// OssJwtToken Custom claims structure
 type OssJwtToken struct {
 	Bucket string //oss的token
 	Dir    string //对象路径
@@ -26,7 +26,7 @@ func GetJwtToken(secretKey string, iat, seconds int64, bucket string, dir string
 	return token.SignedString([]byte(secretKey))
 }
 
-// 创建一个token
+// CreateToken 创建一个token
 func CreateToken(secretKey string, claims OssJwtToken) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secretKey))

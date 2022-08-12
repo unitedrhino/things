@@ -48,9 +48,9 @@ const (
 type DIRECTION int
 
 const (
-	UNKNOW DIRECTION = iota //未知
-	UP                      //上行
-	DOWN                    //下行
+	UNKNOWN DIRECTION = iota //未知
+	UP                       //上行
+	DOWN                     //下行
 )
 
 type TopicInfo struct {
@@ -110,6 +110,6 @@ func getDirection(dir string) DIRECTION {
 	case "down":
 		return DOWN
 	default:
-		return UNKNOW
+		return UNKNOWN
 	}
 }

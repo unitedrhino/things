@@ -1,10 +1,10 @@
 package svc
 
 import (
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubDev"
@@ -29,9 +29,9 @@ type ServiceContext struct {
 	DataUpdate     dataUpdate.DataUpdate
 	Store          kv.Store
 	DeviceDataRepo deviceData.DeviceDataRepo
-	HubLogRepo     device.HubLogRepo
+	HubLogRepo     deviceMsg.HubLogRepo
 	SchemaRepo     schema.SchemaRepo
-	SDKLogRepo     device.SDKLogRepo
+	SDKLogRepo     deviceMsg.SDKLogRepo
 	FirmwareInfo   mysql.ProductFirmwareModel
 }
 
