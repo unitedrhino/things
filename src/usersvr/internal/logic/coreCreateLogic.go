@@ -2,8 +2,8 @@ package logic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/usersvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/usersvr/internal/svc"
@@ -44,7 +44,7 @@ func (l *CoreCreateLogic) handlePhone(in *user.UserCoreCreateReq) (*user.UserCor
 	uc, err := l.svcCtx.UserCoreModel.FindOneByPhone(l.ctx, in.Identity)
 	switch err {
 	case nil: //如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status == def.NotRegisterStatus {
+		if uc.Status == users.NotRegisterStatus {
 			return l.getRet(uc)
 		}
 		return nil, errors.DuplicateRegister.AddDetail(in.Identity)
@@ -86,7 +86,7 @@ func (l *CoreCreateLogic) handleWxminip(in *user.UserCoreCreateReq) (*user.UserC
 	uc, err := l.svcCtx.UserCoreModel.FindOneByWechat(l.ctx, ret.UnionID)
 	switch err {
 	case nil: //如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status == def.NotRegisterStatus {
+		if uc.Status == users.NotRegisterStatus {
 			return l.getRet(uc)
 		}
 		return nil, errors.DuplicateRegister
@@ -134,7 +134,7 @@ func (l *CoreCreateLogic) handlePassword(in *user.UserCoreCreateReq) (*user.User
 	uc, err := l.svcCtx.UserCoreModel.FindOneByUserName(l.ctx, in.Identity)
 	switch err {
 	case nil: //如果已经有该账号,如果是注册了第一步,第二步没有注册,那么直接放行
-		if uc.Status == def.NotRegisterStatus {
+		if uc.Status == users.NotRegisterStatus {
 			return l.getRet(uc)
 		}
 		if in.ReqType == "password" {

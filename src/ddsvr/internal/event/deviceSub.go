@@ -85,7 +85,7 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 	if err != nil {
 		return nil, err
 	}
-	if topicInfo.Direction == devices.DOWN {
+	if topicInfo.Direction == devices.Down {
 		//服务器端下发的消息直接忽略
 		return nil, nil
 	}

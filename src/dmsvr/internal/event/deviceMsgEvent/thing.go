@@ -3,6 +3,7 @@ package deviceMsgEvent
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -168,11 +169,11 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
 			return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
 		switch l.topics[2] {
-		case def.PropertyMethod: //属性上报
+		case devices.PropertyMethod: //属性上报
 			return l.HandleProperty(msg)
-		case def.EventMethod: //事件上报
+		case devices.EventMethod: //事件上报
 			return l.HandleEvent(msg)
-		case def.ActionMethod: //设备响应行为执行结果
+		case devices.ActionMethod: //设备响应行为执行结果
 			return l.HandleResp(msg)
 		default:
 			return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)

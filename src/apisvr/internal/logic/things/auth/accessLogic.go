@@ -2,7 +2,7 @@ package auth
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -33,9 +33,9 @@ func (l *AccessLogic) Access(req *types.AccessAuthReq) error {
 	//如果是
 	switch req.Access {
 	case "1":
-		access = def.SUB
+		access = devices.Sub
 	case "2":
-		access = def.PUB
+		access = devices.Pub
 	}
 	_, err := l.svcCtx.DmRpc.AccessAuth(l.ctx, &dm.AccessAuthReq{
 		Username: req.Username,

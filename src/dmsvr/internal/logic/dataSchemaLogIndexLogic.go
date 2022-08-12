@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
 
@@ -38,7 +39,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *dm.DataSchemaLogIndexRe
 		return nil, errors.Parameter.AddMsg("填写了间隔就必须填写聚合函数")
 	}
 	switch in.Method {
-	case def.PropertyMethod, "":
+	case devices.PropertyMethod, "":
 		dds, err := dd.GetPropertyDataByID(l.ctx, deviceData.FilterOpt{
 			Page: def.PageInfo2{
 				TimeStart: in.TimeStart,
@@ -87,7 +88,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *dm.DataSchemaLogIndexRe
 				return nil, err
 			}
 		}
-	case def.EventMethod:
+	case devices.EventMethod:
 		dds, err := dd.GetEventDataByID(l.ctx, deviceData.FilterOpt{
 			Page: def.PageInfo2{
 				TimeStart: in.TimeStart,
