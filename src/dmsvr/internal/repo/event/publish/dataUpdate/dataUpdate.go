@@ -3,8 +3,8 @@ package dataUpdate
 import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 )
 
 type (

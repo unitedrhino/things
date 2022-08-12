@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/dmclient"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/spf13/cast"
@@ -79,7 +79,7 @@ func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
 	return dpi
 }
 
-func ToDataHubLogIndex(log *device.HubLog) *dm.DataHubLogIndex {
+func ToDataHubLogIndex(log *deviceMsg.HubLog) *dm.DataHubLogIndex {
 	return &dm.DataHubLogIndex{
 		Timestamp:  log.Timestamp.UnixMilli(),
 		Action:     log.Action,
@@ -92,7 +92,7 @@ func ToDataHubLogIndex(log *device.HubLog) *dm.DataHubLogIndex {
 }
 
 //SDK调试日志
-func ToDataSdkLogIndex(log *device.SDKLog) *dm.DataSdkLogIndex {
+func ToDataSdkLogIndex(log *deviceMsg.SDKLog) *dm.DataSdkLogIndex {
 	return &dm.DataSdkLogIndex{
 		Timestamp: log.Timestamp.UnixMilli(),
 		Loglevel:  log.LogLevel,

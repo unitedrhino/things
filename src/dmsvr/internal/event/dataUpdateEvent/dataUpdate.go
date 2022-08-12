@@ -2,7 +2,7 @@ package dataUpdateEvent
 
 import (
 	"context"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )

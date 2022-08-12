@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 )
 
@@ -29,45 +29,50 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	err := n.queueSubscribeDevPublish(topics.DeviceUpThingAll, func(ctx context.Context, msg *device.PublishMsg) error {
-		err := handle(ctx).Thing(msg)
-		return err
-	})
+	err := n.queueSubscribeDevPublish(topics.DeviceUpThingAll,
+		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
+			err := handle(ctx).Thing(msg)
+			return err
+		})
 	if err != nil {
 		return err
 	}
-	err = n.queueSubscribeDevPublish(topics.DeviceUpOtaAll, func(ctx context.Context, msg *device.PublishMsg) error {
-		err := handle(ctx).Ota(msg)
-		return err
-	})
+	err = n.queueSubscribeDevPublish(topics.DeviceUpOtaAll,
+		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
+			err := handle(ctx).Ota(msg)
+			return err
+		})
 	if err != nil {
 		return err
 	}
-	err = n.queueSubscribeDevPublish(topics.DeviceUpConfigAll, func(ctx context.Context, msg *device.PublishMsg) error {
-		err := handle(ctx).Config(msg)
-		return err
-	})
+	err = n.queueSubscribeDevPublish(topics.DeviceUpConfigAll,
+		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
+			err := handle(ctx).Config(msg)
+			return err
+		})
 	if err != nil {
 		return err
 	}
-	err = n.queueSubscribeDevPublish(topics.DeviceUpSDKLogAll, func(ctx context.Context, msg *device.PublishMsg) error {
-		err := handle(ctx).SDKLog(msg)
-		return err
-	})
+	err = n.queueSubscribeDevPublish(topics.DeviceUpSDKLogAll,
+		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
+			err := handle(ctx).SDKLog(msg)
+			return err
+		})
 	if err != nil {
 		return err
 	}
-	err = n.queueSubscribeDevPublish(topics.DeviceUpShadowAll, func(ctx context.Context, msg *device.PublishMsg) error {
-		err := handle(ctx).Shadow(msg)
-		return err
-	})
+	err = n.queueSubscribeDevPublish(topics.DeviceUpShadowAll,
+		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
+			err := handle(ctx).Shadow(msg)
+			return err
+		})
 	if err != nil {
 		return err
 	}
 
 	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusConnected, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
-			ele, err := device.GetDevConnMsg(ctx, msg)
+			ele, err := deviceMsg.GetDevConnMsg(ctx, msg)
 			if err != nil {
 				return err
 			}
@@ -80,7 +85,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 
 	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusDisconnected, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
-			ele, err := device.GetDevConnMsg(ctx, msg)
+			ele, err := deviceMsg.GetDevConnMsg(ctx, msg)
 			if err != nil {
 				return err
 			}
@@ -93,10 +98,10 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 }
 
 func (n *NatsClient) queueSubscribeDevPublish(topic string,
-	handleFunc func(ctx context.Context, msg *device.PublishMsg) error) error {
+	handleFunc func(ctx context.Context, msg *deviceMsg.PublishMsg) error) error {
 	_, err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
-			ele, err := device.GetDevPublish(ctx, msg)
+			ele, err := deviceMsg.GetDevPublish(ctx, msg)
 			if err != nil {
 				return err
 			}

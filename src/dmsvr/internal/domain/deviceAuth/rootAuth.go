@@ -1,4 +1,4 @@
-package rootAuth
+package deviceAuth
 
 import (
 	"github.com/i-Things/things/shared/utils"

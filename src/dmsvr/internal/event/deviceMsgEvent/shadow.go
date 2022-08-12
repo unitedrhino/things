@@ -3,7 +3,7 @@ package deviceMsgEvent
 import (
 	"context"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -22,7 +22,7 @@ func NewShadowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ShadowLogi
 	}
 }
 
-func (l *ShadowLogic) Handle(msg *device.PublishMsg) (err error) {
+func (l *ShadowLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
 	l.Infof("%s|req=%+v", utils.FuncName(), msg)
 	// todo
 	return err

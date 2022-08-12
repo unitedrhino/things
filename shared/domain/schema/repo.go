@@ -1,4 +1,4 @@
-// Package templateModel 这个文件定义和模板相关的接口及dto定义
+// Package schema 这个文件定义和模板相关的接口及dto定义
 package schema
 
 import (

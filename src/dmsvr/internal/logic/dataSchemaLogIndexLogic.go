@@ -38,7 +38,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *dm.DataSchemaLogIndexRe
 		return nil, errors.Parameter.AddMsg("填写了间隔就必须填写聚合函数")
 	}
 	switch in.Method {
-	case def.PROPERTY_METHOD, "":
+	case def.PropertyMethod, "":
 		dds, err := dd.GetPropertyDataByID(l.ctx, deviceData.FilterOpt{
 			Page: def.PageInfo2{
 				TimeStart: in.TimeStart,
@@ -87,7 +87,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *dm.DataSchemaLogIndexRe
 				return nil, err
 			}
 		}
-	case def.EVENT_METHOD:
+	case def.EventMethod:
 		dds, err := dd.GetEventDataByID(l.ctx, deviceData.FilterOpt{
 			Page: def.PageInfo2{
 				TimeStart: in.TimeStart,

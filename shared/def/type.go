@@ -17,16 +17,16 @@ const (
 type UserStatus = int64
 
 const (
-	NotRegistStatus UserStatus = iota //未注册完成状态只注册了第一步
-	NomalStatus                       //正常状态
+	NotRegisterStatus UserStatus = iota //未注册完成状态只注册了第一步
+	NormalStatus                        //正常状态
 )
 
 type OPT = int64
 
 const (
-	OPT_ADD    OPT = 0 //增加
-	OPT_MODIFY OPT = 1 //修改
-	OPT_DEL    OPT = 2 //删除
+	OptAdd    OPT = 0 //增加
+	OptModify OPT = 1 //修改
+	OptDel    OPT = 2 //删除
 )
 const UNKNOWN = 0
 
@@ -36,12 +36,12 @@ const (
 )
 
 const (
-	PROPERTY_METHOD = "property"
-	EVENT_METHOD    = "event"
-	ACTION_METHOD   = "action"
+	PropertyMethod = "property"
+	EventMethod    = "event"
+	ActionMethod   = "action"
 
-	REPORT_TYPE = "report" //设备上报的信息
-	INFO_TYPE   = "info"   //信息
-	ALTERT_TYPE = "alert"  //告警
-	FAULT_TYPE  = "fault"  //故障
+	ReportType = "report" //设备上报的信息
+	InfoType   = "info"   //信息
+	AlertType  = "alert"  //告警
+	FaultType  = "fault"  //故障
 )

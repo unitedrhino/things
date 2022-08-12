@@ -3,11 +3,11 @@ package logic
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/productDetail"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceAuth"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/productInfo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
@@ -54,12 +54,12 @@ func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) (*mysql.Produ
 	createTime := time.Now()
 	pt := &mysql.ProductSchema{
 		Schema:      schema.DefaultSchema,
-		ProductID:   device.GetStrProductID(ProductID),
+		ProductID:   deviceAuth.GetStrProductID(ProductID),
 		CreatedTime: createTime,
 	}
 	pi := &mysql.ProductInfo{
-		ProductID:   device.GetStrProductID(ProductID), // 产品id
-		ProductName: in.ProductName,                    // 产品名称
+		ProductID:   deviceAuth.GetStrProductID(ProductID), // 产品id
+		ProductName: in.ProductName,                        // 产品名称
 		Description: in.Description.GetValue(),
 		DevStatus:   in.DevStatus.GetValue(),
 		CreatedTime: createTime,
@@ -67,32 +67,32 @@ func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) (*mysql.Produ
 	if in.AutoRegister != def.UNKNOWN {
 		pi.AutoRegister = in.AutoRegister
 	} else {
-		pi.AutoRegister = productDetail.AUTO_REG_CLOSE
+		pi.AutoRegister = productInfo.AutoRegClose
 	}
 	if in.DataProto != def.UNKNOWN {
 		pi.DataProto = in.DataProto
 	} else {
-		pi.DataProto = productDetail.DATA_CUSTOM
+		pi.DataProto = productInfo.DataCustom
 	}
 	if in.DeviceType != def.UNKNOWN {
 		pi.DeviceType = in.DeviceType
 	} else {
-		pi.DeviceType = productDetail.DEV_DEVICE
+		pi.DeviceType = productInfo.DevDevice
 	}
 	if in.NetType != def.UNKNOWN {
 		pi.NetType = in.NetType
 	} else {
-		pi.NetType = productDetail.NET_OTHER
+		pi.NetType = productInfo.NetOther
 	}
 	if in.DeviceType != def.UNKNOWN {
 		pi.DeviceType = in.DeviceType
 	} else {
-		pi.DeviceType = productDetail.DEV_DEVICE
+		pi.DeviceType = productInfo.DevDevice
 	}
 	if in.AuthMode != def.UNKNOWN {
 		pi.AuthMode = in.AuthMode
 	} else {
-		pi.AuthMode = productDetail.AUTH_PWD
+		pi.AuthMode = productInfo.AuthPwd
 	}
 	return pi, pt
 }

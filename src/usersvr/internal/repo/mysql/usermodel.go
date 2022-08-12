@@ -44,7 +44,7 @@ func (m *userModel) RegisterCore(data UserCore, key Keys) (result sql.Result, er
 		query := fmt.Sprintf("select %s from %s where `%s` = ?  limit 1", userCoreRows, m.userCore, key.Key)
 		err = session.QueryRow(&resp, query, key.Value)
 		if !(err == sqlc.ErrNotFound) {
-			if resp.Status == def.NomalStatus {
+			if resp.Status == def.NormalStatus {
 				return ErrDuplicate
 			}
 			isUpdate = true
@@ -53,7 +53,7 @@ func (m *userModel) RegisterCore(data UserCore, key Keys) (result sql.Result, er
 			query = fmt.Sprintf("update %s set %s where `uid` = ?", m.userCore, "`userName`=?,`password`=?,`email`=?,`phone`=?,`wechat`=?,`lastIP`=?,`regIP`=?,`status`=?,`authorityId`=?")
 			result, err = session.Exec(query, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.Status, data.Uid, data.AuthorityId)
 		} else {
-			//data.Status = def.NomalStatus //如果前面都没问题，则注册第一步，状态置为1，表示已注册
+			//data.Status = def.NormalStatus //如果前面都没问题，则注册第一步，状态置为1，表示已注册
 			query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.userCore, "`uid`,`userName`,`password`,`email`,`phone`,`wechat`,`lastIP`,`regIP`,`status`,`authorityId`")
 			result, err = session.Exec(query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.Status, data.AuthorityId)
 		}

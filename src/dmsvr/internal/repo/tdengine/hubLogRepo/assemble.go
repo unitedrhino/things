@@ -1,12 +1,12 @@
 package hubLogRepo
 
 import (
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/spf13/cast"
 )
 
-func ToDeviceLog(productID string, db map[string]any) *device.HubLog {
-	return &device.HubLog{
+func ToDeviceLog(productID string, db map[string]any) *deviceMsg.HubLog {
+	return &deviceMsg.HubLog{
 		ProductID:  productID,
 		DeviceName: cast.ToString(db["device_name"]),
 		Content:    cast.ToString(db["content"]),

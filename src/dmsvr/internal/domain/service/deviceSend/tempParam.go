@@ -3,8 +3,8 @@ package deviceSend
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/schema"
 	"github.com/spf13/cast"
 )
 

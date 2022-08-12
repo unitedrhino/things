@@ -3,7 +3,7 @@ package pubDev
 import (
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/traces"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -23,7 +23,7 @@ func (s *natsSubDev) UnSubscribe() error {
 	return s.subscription.Unsubscribe()
 }
 
-func (s *natsSubDev) GetMsg(timeout time.Duration) (ele *device.PublishMsg, err error) {
+func (s *natsSubDev) GetMsg(timeout time.Duration) (ele *deviceMsg.PublishMsg, err error) {
 	msg, err := s.subscription.NextMsg(timeout)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (s *natsSubDev) GetMsg(timeout time.Duration) (ele *device.PublishMsg, err 
 	logx.Infof("[dm.GetMsg]|-------------------trace:%s, spanid:%s|topic:%s",
 		span.SpanContext().TraceID(), span.SpanContext().SpanID(), msg.Subject)
 	defer span.End()
-	ele, err = device.GetDevPublish(ctx, emsg.GetData())
+	ele, err = deviceMsg.GetDevPublish(ctx, emsg.GetData())
 	if err != nil {
 		logx.WithContext(ctx).Error(msg.Subject, string(msg.Data), err)
 		return

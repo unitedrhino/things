@@ -20,7 +20,7 @@ func TestManageGroupMember(t *testing.T) {
 	ctx := context.Background()
 	{
 		req := &dc.ManageGroupMemberReq{
-			Opt: def.OPT_ADD,
+			Opt: def.OptAdd,
 			Info: &dc.GroupMember{
 				GroupID: 1710808183040118784, //组id
 				//如果是用户,则是uid的十进制字符串,
@@ -37,7 +37,7 @@ func TestManageGroupMember(t *testing.T) {
 	}
 	{
 		req := &dc.ManageGroupMemberReq{
-			Opt: def.OPT_ADD,
+			Opt: def.OptAdd,
 			Info: &dc.GroupMember{
 				GroupID: 1710808183040118784, //组id
 				//如果是用户,则是uid的十进制字符串,

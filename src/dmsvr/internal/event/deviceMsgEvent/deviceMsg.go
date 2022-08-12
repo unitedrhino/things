@@ -4,7 +4,7 @@ package deviceMsgEvent
 import (
 	"context"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,37 +23,37 @@ func NewDeviceMsgHandle(ctx context.Context, svcCtx *svc.ServiceContext) *Device
 	}
 }
 
-func (l *DeviceMsgHandle) Thing(msg *device.PublishMsg) error {
+func (l *DeviceMsgHandle) Thing(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s|req=%v", utils.FuncName(), msg)
 	return NewThingLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Ota(msg *device.PublishMsg) error {
+func (l *DeviceMsgHandle) Ota(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s|req=%v", utils.FuncName(), msg)
 	return NewOtaLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Shadow(msg *device.PublishMsg) error {
+func (l *DeviceMsgHandle) Shadow(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s|req=%v", utils.FuncName(), msg)
 	return NewShadowLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Config(msg *device.PublishMsg) error {
+func (l *DeviceMsgHandle) Config(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s|req=%v", utils.FuncName(), msg)
 	return NewConfigLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) SDKLog(msg *device.PublishMsg) error {
+func (l *DeviceMsgHandle) SDKLog(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s|req=%v", utils.FuncName(), msg)
 	return NewSDKLogLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Connected(msg *device.ConnectMsg) error {
+func (l *DeviceMsgHandle) Connected(msg *deviceMsg.ConnectMsg) error {
 	l.Infof("%s|req=%v", utils.FuncName(), msg)
 	return NewConnectedLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Disconnected(msg *device.ConnectMsg) error {
+func (l *DeviceMsgHandle) Disconnected(msg *deviceMsg.ConnectMsg) error {
 	l.Infof("%s|req=%v", utils.FuncName(), msg)
 	return NewDisconnectedLogic(l.ctx, l.svcCtx).Handle(msg)
 }

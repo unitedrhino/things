@@ -76,14 +76,14 @@ func (l *ManageGroupInfoLogic) DelGroupInfo(in *dc.ManageGroupInfoReq) (*dc.Grou
 func (l *ManageGroupInfoLogic) ManageGroupInfo(in *dc.ManageGroupInfoReq) (*dc.GroupInfo, error) {
 	l.Infof("ManageProduct|opt=%d|req=%+v", in.Opt, in)
 	switch in.Opt {
-	case def.OPT_ADD:
+	case def.OptAdd:
 		if in.Info == nil {
 			return nil, errors.Parameter.WithMsg("add opt need info")
 		}
 		return l.AddGroupInfo(in)
-	case def.OPT_MODIFY:
+	case def.OptModify:
 		return l.ModifyGroupInfo(in)
-	case def.OPT_DEL:
+	case def.OptDel:
 		return l.DelGroupInfo(in)
 	default:
 		return nil, errors.Parameter.AddDetail("not suppot opt:" + cast.ToString(in.Opt))

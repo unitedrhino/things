@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 )
 
 type (
@@ -14,17 +14,17 @@ type (
 	Handle        func(ctx context.Context) InnerSubEvent
 	InnerSubEvent interface {
 		// Thing 物模型消息
-		Thing(out *device.PublishMsg) error
+		Thing(out *deviceMsg.PublishMsg) error
 		// SDK Log 设备调试日志
-		SDKLog(out *device.PublishMsg) error
+		SDKLog(out *deviceMsg.PublishMsg) error
 		// Config 设备远程配置
-		Config(out *device.PublishMsg) error
+		Config(out *deviceMsg.PublishMsg) error
 		// Shadow 设备影子
-		Shadow(out *device.PublishMsg) error
+		Shadow(out *deviceMsg.PublishMsg) error
 		// Ota ota升级
-		Ota(out *device.PublishMsg) error
-		Connected(out *device.ConnectMsg) error
-		Disconnected(out *device.ConnectMsg) error
+		Ota(out *deviceMsg.PublishMsg) error
+		Connected(out *deviceMsg.ConnectMsg) error
+		Disconnected(out *deviceMsg.ConnectMsg) error
 	}
 )
 
