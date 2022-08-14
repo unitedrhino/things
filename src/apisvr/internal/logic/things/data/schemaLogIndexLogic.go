@@ -34,6 +34,10 @@ func (l *SchemaLogIndexLogic) SchemaLogIndex(req *types.DataSchemaLogIndexReq) (
 		DataID:     req.DataID,
 		TimeStart:  req.TimeStart,
 		TimeEnd:    req.TimeEnd,
+		Interval:   req.Interval,
+		ArgFunc:    req.ArgFunc,
+		Fill:       req.Fill,
+		Order:      req.Order,
 		Page: &dm.PageInfo{
 			Page: req.Page.Page,
 			Size: req.Page.Size,

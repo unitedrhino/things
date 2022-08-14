@@ -27,9 +27,9 @@ type (
 	FilterOpt struct {
 		Page       def.PageInfo2
 		ProductID  string
-		DeviceName string
+		DeviceName []string
 		DataID     string
-		Order      string //时间排序 aes(默认,从久到近排序) desc(时间从近到久排序)
+		Order      int32  //0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
 		Interval   int64  //间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
 		ArgFunc    string //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
 	}

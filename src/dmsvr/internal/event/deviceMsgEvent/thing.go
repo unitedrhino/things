@@ -89,7 +89,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) error {
 				deviceData.FilterOpt{
 					Page:       def.PageInfo2{Size: 1},
 					ProductID:  msg.ProductID,
-					DeviceName: msg.DeviceName,
+					DeviceName: []string{msg.DeviceName},
 					DataID:     id})
 			if err != nil {
 				l.Errorf("HandlePropertyGetStatus|GetPropertyDataByID|get id:%s|err:%s",
