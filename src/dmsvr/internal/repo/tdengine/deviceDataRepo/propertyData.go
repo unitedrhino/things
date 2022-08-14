@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
@@ -85,9 +86,12 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	}
 	sql = sql.From(getPropertyStableName(filter.ProductID, filter.DataID)).
 		Where("`device_name`=?", filter.DeviceName)
+	if len(filter.DeviceName) > 0 {
+		sql = sql.Where("`device_name` in ?", filter.DeviceName)
+	}
 	sql = filter.Page.FmtSql(sql)
-	if filter.Order != "" {
-		sql = sql.OrderBy("ts " + filter.Order)
+	if filter.Order != def.OrderAes {
+		sql = sql.OrderBy("ts desc")
 	}
 	sqlStr, value, err := sql.ToSql()
 	if err != nil {

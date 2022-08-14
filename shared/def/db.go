@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+const (
+	OrderAes  = iota //从久到近排序
+	OrderDesc        //时间从近到久排序
+)
+
 type PageInfo struct {
 	Page       int64  `json:"page" form:"page"`             // 页码
 	Size       int64  `json:"pageSize" form:"pageSize"`     // 每页大小
