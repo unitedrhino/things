@@ -51,9 +51,9 @@ func (l *DataSchemaLatestIndexLogic) DataSchemaLatestIndex(in *dm.DataSchemaLate
 				deviceData.FilterOpt{
 					Page:       def.PageInfo2{Size: 1},
 					ProductID:  in.ProductID,
-					DeviceName: in.DeviceName,
+					DeviceName: []string{},
 					DataID:     v,
-					Order:      "desc"})
+					Order:      def.OrderDesc})
 			if err != nil {
 				l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 				return nil, errors.System.AddDetail(err)

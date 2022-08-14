@@ -424,7 +424,7 @@ func RegisterDmServer(s grpc.ServiceRegistrar, srv DmServer) {
 	s.RegisterService(&Dm_ServiceDesc, srv)
 }
 
-func _Dm_DeviceInfoCreate_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_DeviceInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeviceInfo)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -436,13 +436,13 @@ func _Dm_DeviceInfoCreate_Handler(srv any, ctx context.Context, dec func(any) er
 		Server:     srv,
 		FullMethod: "/dm.Dm/DeviceInfoCreate",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).DeviceInfoCreate(ctx, req.(*DeviceInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_DeviceInfoUpdate_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_DeviceInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeviceInfo)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -454,13 +454,13 @@ func _Dm_DeviceInfoUpdate_Handler(srv any, ctx context.Context, dec func(any) er
 		Server:     srv,
 		FullMethod: "/dm.Dm/DeviceInfoUpdate",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).DeviceInfoUpdate(ctx, req.(*DeviceInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_DeviceInfoDelete_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_DeviceInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeviceInfoDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -472,13 +472,13 @@ func _Dm_DeviceInfoDelete_Handler(srv any, ctx context.Context, dec func(any) er
 		Server:     srv,
 		FullMethod: "/dm.Dm/DeviceInfoDelete",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).DeviceInfoDelete(ctx, req.(*DeviceInfoDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_DeviceInfoIndex_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_DeviceInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeviceInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -490,13 +490,13 @@ func _Dm_DeviceInfoIndex_Handler(srv any, ctx context.Context, dec func(any) err
 		Server:     srv,
 		FullMethod: "/dm.Dm/DeviceInfoIndex",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).DeviceInfoIndex(ctx, req.(*DeviceInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_DeviceInfoRead_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_DeviceInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeviceInfoReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -508,13 +508,13 @@ func _Dm_DeviceInfoRead_Handler(srv any, ctx context.Context, dec func(any) erro
 		Server:     srv,
 		FullMethod: "/dm.Dm/DeviceInfoRead",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).DeviceInfoRead(ctx, req.(*DeviceInfoReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductInfoCreate_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_ProductInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfo)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -526,13 +526,13 @@ func _Dm_ProductInfoCreate_Handler(srv any, ctx context.Context, dec func(any) e
 		Server:     srv,
 		FullMethod: "/dm.Dm/ProductInfoCreate",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).ProductInfoCreate(ctx, req.(*ProductInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductInfoUpdate_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_ProductInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfo)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -544,13 +544,13 @@ func _Dm_ProductInfoUpdate_Handler(srv any, ctx context.Context, dec func(any) e
 		Server:     srv,
 		FullMethod: "/dm.Dm/ProductInfoUpdate",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).ProductInfoUpdate(ctx, req.(*ProductInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductInfoDelete_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_ProductInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfoDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -562,13 +562,13 @@ func _Dm_ProductInfoDelete_Handler(srv any, ctx context.Context, dec func(any) e
 		Server:     srv,
 		FullMethod: "/dm.Dm/ProductInfoDelete",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).ProductInfoDelete(ctx, req.(*ProductInfoDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductInfoIndex_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_ProductInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -580,13 +580,13 @@ func _Dm_ProductInfoIndex_Handler(srv any, ctx context.Context, dec func(any) er
 		Server:     srv,
 		FullMethod: "/dm.Dm/ProductInfoIndex",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).ProductInfoIndex(ctx, req.(*ProductInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductInfoRead_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_ProductInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfoReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -598,13 +598,13 @@ func _Dm_ProductInfoRead_Handler(srv any, ctx context.Context, dec func(any) err
 		Server:     srv,
 		FullMethod: "/dm.Dm/ProductInfoRead",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).ProductInfoRead(ctx, req.(*ProductInfoReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductSchemaUpdate_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_ProductSchemaUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductSchemaUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -616,13 +616,13 @@ func _Dm_ProductSchemaUpdate_Handler(srv any, ctx context.Context, dec func(any)
 		Server:     srv,
 		FullMethod: "/dm.Dm/ProductSchemaUpdate",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).ProductSchemaUpdate(ctx, req.(*ProductSchemaUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductSchemaRead_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_ProductSchemaRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductSchemaReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -634,13 +634,13 @@ func _Dm_ProductSchemaRead_Handler(srv any, ctx context.Context, dec func(any) e
 		Server:     srv,
 		FullMethod: "/dm.Dm/ProductSchemaRead",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).ProductSchemaRead(ctx, req.(*ProductSchemaReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ManageFirmware_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_ManageFirmware_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ManageFirmwareReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -652,13 +652,13 @@ func _Dm_ManageFirmware_Handler(srv any, ctx context.Context, dec func(any) erro
 		Server:     srv,
 		FullMethod: "/dm.Dm/manageFirmware",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).ManageFirmware(ctx, req.(*ManageFirmwareReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_GetFirmwareInfo_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_GetFirmwareInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetFirmwareInfoReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -670,13 +670,13 @@ func _Dm_GetFirmwareInfo_Handler(srv any, ctx context.Context, dec func(any) err
 		Server:     srv,
 		FullMethod: "/dm.Dm/GetFirmwareInfo",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).GetFirmwareInfo(ctx, req.(*GetFirmwareInfoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_LoginAuth_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_LoginAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginAuthReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -688,13 +688,13 @@ func _Dm_LoginAuth_Handler(srv any, ctx context.Context, dec func(any) error, in
 		Server:     srv,
 		FullMethod: "/dm.Dm/loginAuth",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).LoginAuth(ctx, req.(*LoginAuthReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_AccessAuth_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_AccessAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccessAuthReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -706,13 +706,13 @@ func _Dm_AccessAuth_Handler(srv any, ctx context.Context, dec func(any) error, i
 		Server:     srv,
 		FullMethod: "/dm.Dm/accessAuth",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).AccessAuth(ctx, req.(*AccessAuthReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_RootCheck_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_RootCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RootCheckReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -724,13 +724,13 @@ func _Dm_RootCheck_Handler(srv any, ctx context.Context, dec func(any) error, in
 		Server:     srv,
 		FullMethod: "/dm.Dm/rootCheck",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).RootCheck(ctx, req.(*RootCheckReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_SendAction_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_SendAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SendActionReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -742,13 +742,13 @@ func _Dm_SendAction_Handler(srv any, ctx context.Context, dec func(any) error, i
 		Server:     srv,
 		FullMethod: "/dm.Dm/sendAction",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).SendAction(ctx, req.(*SendActionReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_SendProperty_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_SendProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SendPropertyReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -760,13 +760,13 @@ func _Dm_SendProperty_Handler(srv any, ctx context.Context, dec func(any) error,
 		Server:     srv,
 		FullMethod: "/dm.Dm/sendProperty",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).SendProperty(ctx, req.(*SendPropertyReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_DataSdkLogIndex_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_DataSdkLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DataSdkLogIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -778,13 +778,13 @@ func _Dm_DataSdkLogIndex_Handler(srv any, ctx context.Context, dec func(any) err
 		Server:     srv,
 		FullMethod: "/dm.Dm/dataSdkLogIndex",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).DataSdkLogIndex(ctx, req.(*DataSdkLogIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_DataHubLogIndex_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_DataHubLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DataHubLogIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -796,13 +796,13 @@ func _Dm_DataHubLogIndex_Handler(srv any, ctx context.Context, dec func(any) err
 		Server:     srv,
 		FullMethod: "/dm.Dm/dataHubLogIndex",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).DataHubLogIndex(ctx, req.(*DataHubLogIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_DataSchemaLatestIndex_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_DataSchemaLatestIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DataSchemaLatestIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -814,13 +814,13 @@ func _Dm_DataSchemaLatestIndex_Handler(srv any, ctx context.Context, dec func(an
 		Server:     srv,
 		FullMethod: "/dm.Dm/dataSchemaLatestIndex",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).DataSchemaLatestIndex(ctx, req.(*DataSchemaLatestIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_DataSchemaLogIndex_Handler(srv any, ctx context.Context, dec func(any) error, interceptor grpc.UnaryServerInterceptor) (any, error) {
+func _Dm_DataSchemaLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DataSchemaLogIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -832,7 +832,7 @@ func _Dm_DataSchemaLogIndex_Handler(srv any, ctx context.Context, dec func(any) 
 		Server:     srv,
 		FullMethod: "/dm.Dm/dataSchemaLogIndex",
 	}
-	handler := func(ctx context.Context, req any) (any, error) {
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DmServer).DataSchemaLogIndex(ctx, req.(*DataSchemaLogIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)

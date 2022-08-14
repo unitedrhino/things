@@ -101,7 +101,7 @@ message DeviceInfo{
   int64  logLevel = 9; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
   string  cert = 10;// 设备证书  只读
   bool   isOnline = 11; //在线状态 0离线1在线 只读
-  map<string,string> tags = 12;//设备标签
+  map<string, string> tags = 12;//设备标签
 }
 
 message ProductInfo{
@@ -154,8 +154,8 @@ message DeviceInfoReadReq{
 message DeviceInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string  productID = 2; //过滤条件: 产品id
-  string deviceName =3;//过滤条件:模糊查询 设备名
-  map<string,string> tags = 4;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+  string deviceName = 3;//过滤条件:模糊查询 设备名
+  map<string, string> tags = 4;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
 message DeviceInfoIndexResp{
@@ -183,23 +183,24 @@ message ProductInfoIndexResp{
 message DataSchemaLogIndexReq{
   PageInfo page = 1;//使用了聚合函数及间隔的时候无效
   string method = 2; //获取的类型   property 属性 event事件 action 请求
-  string deviceName = 3; //设备名(必填)
+  repeated string deviceName = 3; //设备名(不填获取产品下所有设备)
   string productID = 4; //产品id (必填)
-  string dataID = 5; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+  string dataID = 5; //获取的具体标识符的数据(必填)
   int64 timeStart = 6;//获取时间的开始(毫秒时间戳)
   int64 timeEnd = 7;//时间的结束(毫秒时间戳)
   int64 interval = 8;//间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
   string argFunc = 9;//聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
-//  /*
-//  FILL 语句指定某一窗口区间数据缺失的情况下的填充模式。填充模式包括以下几种：
-//    不进行填充：NONE（默认填充模式）。
-//    VALUE 填充：固定值填充，此时需要指定填充的数值。例如：FILL(VALUE, 1.23)。
-//    PREV 填充：使用前一个非 NULL 值填充数据。例如：FILL(PREV)。
-//    NULL 填充：使用 NULL 填充数据。例如：FILL(NULL)。
-//    LINEAR 填充：根据前后距离最近的非 NULL 值做线性插值填充。例如：FILL(LINEAR)。
-//    NEXT 填充：使用下一个非 NULL 值填充数据。例如：FILL(NEXT)。
-//  */
-//  string fill = 9;//填充模式
+  //  /*
+  //  FILL 语句指定某一窗口区间数据缺失的情况下的填充模式。填充模式包括以下几种：
+  //    不进行填充：NONE（默认填充模式）。
+  //    VALUE 填充：固定值填充，此时需要指定填充的数值。例如：FILL(VALUE, 1.23)。
+  //    PREV 填充：使用前一个非 NULL 值填充数据。例如：FILL(PREV)。
+  //    NULL 填充：使用 NULL 填充数据。例如：FILL(NULL)。
+  //    LINEAR 填充：根据前后距离最近的非 NULL 值做线性插值填充。例如：FILL(LINEAR)。
+  //    NEXT 填充：使用下一个非 NULL 值填充数据。例如：FILL(NEXT)。
+  //  */
+  string fill = 10; //填充模式 参考:https://docs.taosdata.com/taos-sql/distinguished/
+  int32 order = 11; //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
 }
 
 /*获取对应日志信息*/
@@ -340,7 +341,7 @@ message FirmwareInfo{
 
 message GetFirmwareInfoReq{
   string  productID = 1; //产品id 如果不传获取所有固件
-  int64 version=2;//固件版本 如果不传,获取产品下或所有固件
+  int64 version = 2;//固件版本 如果不传,获取产品下或所有固件
   PageInfo page = 3;//分页信息 只获取一个则不填
 }
 
