@@ -18,20 +18,174 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// DmClient is the client API for Dm service.
+// DeviceAuthClient is the client API for DeviceAuth service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type DmClient interface {
-	//新增设备
-	DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
-	//更新设备
-	DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
-	//删除设备
-	DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	//获取设备信息列表
-	DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
-	//获取设备信息详情
-	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
+type DeviceAuthClient interface {
+	//设备登录认证
+	LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error)
+	//设备操作认证
+	AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
+	//鉴定是否是root账号
+	RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
+}
+
+type deviceAuthClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewDeviceAuthClient(cc grpc.ClientConnInterface) DeviceAuthClient {
+	return &deviceAuthClient{cc}
+}
+
+func (c *deviceAuthClient) LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceAuth/loginAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceAuthClient) AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceAuth/accessAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceAuthClient) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceAuth/rootCheck", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// DeviceAuthServer is the server API for DeviceAuth service.
+// All implementations must embed UnimplementedDeviceAuthServer
+// for forward compatibility
+type DeviceAuthServer interface {
+	//设备登录认证
+	LoginAuth(context.Context, *LoginAuthReq) (*Response, error)
+	//设备操作认证
+	AccessAuth(context.Context, *AccessAuthReq) (*Response, error)
+	//鉴定是否是root账号
+	RootCheck(context.Context, *RootCheckReq) (*Response, error)
+	mustEmbedUnimplementedDeviceAuthServer()
+}
+
+// UnimplementedDeviceAuthServer must be embedded to have forward compatible implementations.
+type UnimplementedDeviceAuthServer struct {
+}
+
+func (UnimplementedDeviceAuthServer) LoginAuth(context.Context, *LoginAuthReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginAuth not implemented")
+}
+func (UnimplementedDeviceAuthServer) AccessAuth(context.Context, *AccessAuthReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccessAuth not implemented")
+}
+func (UnimplementedDeviceAuthServer) RootCheck(context.Context, *RootCheckReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RootCheck not implemented")
+}
+func (UnimplementedDeviceAuthServer) mustEmbedUnimplementedDeviceAuthServer() {}
+
+// UnsafeDeviceAuthServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DeviceAuthServer will
+// result in compilation errors.
+type UnsafeDeviceAuthServer interface {
+	mustEmbedUnimplementedDeviceAuthServer()
+}
+
+func RegisterDeviceAuthServer(s grpc.ServiceRegistrar, srv DeviceAuthServer) {
+	s.RegisterService(&DeviceAuth_ServiceDesc, srv)
+}
+
+func _DeviceAuth_LoginAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginAuthReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceAuthServer).LoginAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceAuth/loginAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceAuthServer).LoginAuth(ctx, req.(*LoginAuthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceAuth_AccessAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccessAuthReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceAuthServer).AccessAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceAuth/accessAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceAuthServer).AccessAuth(ctx, req.(*AccessAuthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceAuth_RootCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RootCheckReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceAuthServer).RootCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceAuth/rootCheck",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceAuthServer).RootCheck(ctx, req.(*RootCheckReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// DeviceAuth_ServiceDesc is the grpc.ServiceDesc for DeviceAuth service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var DeviceAuth_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.DeviceAuth",
+	HandlerType: (*DeviceAuthServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "loginAuth",
+			Handler:    _DeviceAuth_LoginAuth_Handler,
+		},
+		{
+			MethodName: "accessAuth",
+			Handler:    _DeviceAuth_AccessAuth_Handler,
+		},
+		{
+			MethodName: "rootCheck",
+			Handler:    _DeviceAuth_RootCheck_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
+
+// ProductManageClient is the client API for ProductManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ProductManageClient interface {
 	//新增设备
 	ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
 	//更新设备
@@ -46,259 +200,83 @@ type DmClient interface {
 	ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	//获取产品物模型
 	ProductSchemaRead(ctx context.Context, in *ProductSchemaReadReq, opts ...grpc.CallOption) (*ProductSchema, error)
-	//管理产品的固件
-	ManageFirmware(ctx context.Context, in *ManageFirmwareReq, opts ...grpc.CallOption) (*Response, error)
-	//获取产品固件信息
-	GetFirmwareInfo(ctx context.Context, in *GetFirmwareInfoReq, opts ...grpc.CallOption) (*GetFirmwareInfoResp, error)
-	//设备登录认证
-	LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error)
-	//设备操作认证
-	AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
-	//鉴定是否是root账号
-	RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
-	//同步调用设备行为
-	SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
-	//同步调用设备属性
-	SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
-	//获取设备sdk调试日志
-	DataSdkLogIndex(ctx context.Context, in *DataSdkLogIndexReq, opts ...grpc.CallOption) (*DataSdkLogIndexResp, error)
-	//获取设备调试信息记录登入登出,操作
-	DataHubLogIndex(ctx context.Context, in *DataHubLogIndexReq, opts ...grpc.CallOption) (*DataHubLogIndexResp, error)
-	//获取设备数据信息
-	DataSchemaLatestIndex(ctx context.Context, in *DataSchemaLatestIndexReq, opts ...grpc.CallOption) (*DataSchemaIndexResp, error)
-	//获取设备数据信息
-	DataSchemaLogIndex(ctx context.Context, in *DataSchemaLogIndexReq, opts ...grpc.CallOption) (*DataSchemaIndexResp, error)
 }
 
-type dmClient struct {
+type productManageClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewDmClient(cc grpc.ClientConnInterface) DmClient {
-	return &dmClient{cc}
+func NewProductManageClient(cc grpc.ClientConnInterface) ProductManageClient {
+	return &productManageClient{cc}
 }
 
-func (c *dmClient) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
+func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/DeviceInfoCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dmClient) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
+func (c *productManageClient) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/DeviceInfoUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dmClient) DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *productManageClient) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/DeviceInfoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dmClient) DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error) {
-	out := new(DeviceInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/DeviceInfoIndex", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error) {
-	out := new(DeviceInfo)
-	err := c.cc.Invoke(ctx, "/dm.Dm/DeviceInfoRead", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/ProductInfoCreate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/ProductInfoUpdate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/ProductInfoDelete", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error) {
+func (c *productManageClient) ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error) {
 	out := new(ProductInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/ProductInfoIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dmClient) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
+func (c *productManageClient) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
 	out := new(ProductInfo)
-	err := c.cc.Invoke(ctx, "/dm.Dm/ProductInfoRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dmClient) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *productManageClient) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/ProductSchemaUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dmClient) ProductSchemaRead(ctx context.Context, in *ProductSchemaReadReq, opts ...grpc.CallOption) (*ProductSchema, error) {
+func (c *productManageClient) ProductSchemaRead(ctx context.Context, in *ProductSchemaReadReq, opts ...grpc.CallOption) (*ProductSchema, error) {
 	out := new(ProductSchema)
-	err := c.cc.Invoke(ctx, "/dm.Dm/ProductSchemaRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dmClient) ManageFirmware(ctx context.Context, in *ManageFirmwareReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/manageFirmware", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) GetFirmwareInfo(ctx context.Context, in *GetFirmwareInfoReq, opts ...grpc.CallOption) (*GetFirmwareInfoResp, error) {
-	out := new(GetFirmwareInfoResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/GetFirmwareInfo", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/loginAuth", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/accessAuth", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.Dm/rootCheck", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error) {
-	out := new(SendActionResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/sendAction", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
-	out := new(SendPropertyResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/sendProperty", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) DataSdkLogIndex(ctx context.Context, in *DataSdkLogIndexReq, opts ...grpc.CallOption) (*DataSdkLogIndexResp, error) {
-	out := new(DataSdkLogIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/dataSdkLogIndex", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) DataHubLogIndex(ctx context.Context, in *DataHubLogIndexReq, opts ...grpc.CallOption) (*DataHubLogIndexResp, error) {
-	out := new(DataHubLogIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/dataHubLogIndex", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) DataSchemaLatestIndex(ctx context.Context, in *DataSchemaLatestIndexReq, opts ...grpc.CallOption) (*DataSchemaIndexResp, error) {
-	out := new(DataSchemaIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/dataSchemaLatestIndex", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dmClient) DataSchemaLogIndex(ctx context.Context, in *DataSchemaLogIndexReq, opts ...grpc.CallOption) (*DataSchemaIndexResp, error) {
-	out := new(DataSchemaIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.Dm/dataSchemaLogIndex", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// DmServer is the server API for Dm service.
-// All implementations must embed UnimplementedDmServer
+// ProductManageServer is the server API for ProductManage service.
+// All implementations must embed UnimplementedProductManageServer
 // for forward compatibility
-type DmServer interface {
-	//新增设备
-	DeviceInfoCreate(context.Context, *DeviceInfo) (*Response, error)
-	//更新设备
-	DeviceInfoUpdate(context.Context, *DeviceInfo) (*Response, error)
-	//删除设备
-	DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Response, error)
-	//获取设备信息列表
-	DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error)
-	//获取设备信息详情
-	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
+type ProductManageServer interface {
 	//新增设备
 	ProductInfoCreate(context.Context, *ProductInfo) (*Response, error)
 	//更新设备
@@ -313,629 +291,447 @@ type DmServer interface {
 	ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error)
 	//获取产品物模型
 	ProductSchemaRead(context.Context, *ProductSchemaReadReq) (*ProductSchema, error)
-	//管理产品的固件
-	ManageFirmware(context.Context, *ManageFirmwareReq) (*Response, error)
-	//获取产品固件信息
-	GetFirmwareInfo(context.Context, *GetFirmwareInfoReq) (*GetFirmwareInfoResp, error)
-	//设备登录认证
-	LoginAuth(context.Context, *LoginAuthReq) (*Response, error)
-	//设备操作认证
-	AccessAuth(context.Context, *AccessAuthReq) (*Response, error)
-	//鉴定是否是root账号
-	RootCheck(context.Context, *RootCheckReq) (*Response, error)
-	//同步调用设备行为
-	SendAction(context.Context, *SendActionReq) (*SendActionResp, error)
-	//同步调用设备属性
-	SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error)
-	//获取设备sdk调试日志
-	DataSdkLogIndex(context.Context, *DataSdkLogIndexReq) (*DataSdkLogIndexResp, error)
-	//获取设备调试信息记录登入登出,操作
-	DataHubLogIndex(context.Context, *DataHubLogIndexReq) (*DataHubLogIndexResp, error)
-	//获取设备数据信息
-	DataSchemaLatestIndex(context.Context, *DataSchemaLatestIndexReq) (*DataSchemaIndexResp, error)
-	//获取设备数据信息
-	DataSchemaLogIndex(context.Context, *DataSchemaLogIndexReq) (*DataSchemaIndexResp, error)
-	mustEmbedUnimplementedDmServer()
+	mustEmbedUnimplementedProductManageServer()
 }
 
-// UnimplementedDmServer must be embedded to have forward compatible implementations.
-type UnimplementedDmServer struct {
+// UnimplementedProductManageServer must be embedded to have forward compatible implementations.
+type UnimplementedProductManageServer struct {
 }
 
-func (UnimplementedDmServer) DeviceInfoCreate(context.Context, *DeviceInfo) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoCreate not implemented")
-}
-func (UnimplementedDmServer) DeviceInfoUpdate(context.Context, *DeviceInfo) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoUpdate not implemented")
-}
-func (UnimplementedDmServer) DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoDelete not implemented")
-}
-func (UnimplementedDmServer) DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoIndex not implemented")
-}
-func (UnimplementedDmServer) DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoRead not implemented")
-}
-func (UnimplementedDmServer) ProductInfoCreate(context.Context, *ProductInfo) (*Response, error) {
+func (UnimplementedProductManageServer) ProductInfoCreate(context.Context, *ProductInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoCreate not implemented")
 }
-func (UnimplementedDmServer) ProductInfoUpdate(context.Context, *ProductInfo) (*Response, error) {
+func (UnimplementedProductManageServer) ProductInfoUpdate(context.Context, *ProductInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoUpdate not implemented")
 }
-func (UnimplementedDmServer) ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Response, error) {
+func (UnimplementedProductManageServer) ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoDelete not implemented")
 }
-func (UnimplementedDmServer) ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error) {
+func (UnimplementedProductManageServer) ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoIndex not implemented")
 }
-func (UnimplementedDmServer) ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error) {
+func (UnimplementedProductManageServer) ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoRead not implemented")
 }
-func (UnimplementedDmServer) ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error) {
+func (UnimplementedProductManageServer) ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaUpdate not implemented")
 }
-func (UnimplementedDmServer) ProductSchemaRead(context.Context, *ProductSchemaReadReq) (*ProductSchema, error) {
+func (UnimplementedProductManageServer) ProductSchemaRead(context.Context, *ProductSchemaReadReq) (*ProductSchema, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaRead not implemented")
 }
-func (UnimplementedDmServer) ManageFirmware(context.Context, *ManageFirmwareReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ManageFirmware not implemented")
-}
-func (UnimplementedDmServer) GetFirmwareInfo(context.Context, *GetFirmwareInfoReq) (*GetFirmwareInfoResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFirmwareInfo not implemented")
-}
-func (UnimplementedDmServer) LoginAuth(context.Context, *LoginAuthReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LoginAuth not implemented")
-}
-func (UnimplementedDmServer) AccessAuth(context.Context, *AccessAuthReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccessAuth not implemented")
-}
-func (UnimplementedDmServer) RootCheck(context.Context, *RootCheckReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RootCheck not implemented")
-}
-func (UnimplementedDmServer) SendAction(context.Context, *SendActionReq) (*SendActionResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendAction not implemented")
-}
-func (UnimplementedDmServer) SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendProperty not implemented")
-}
-func (UnimplementedDmServer) DataSdkLogIndex(context.Context, *DataSdkLogIndexReq) (*DataSdkLogIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DataSdkLogIndex not implemented")
-}
-func (UnimplementedDmServer) DataHubLogIndex(context.Context, *DataHubLogIndexReq) (*DataHubLogIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DataHubLogIndex not implemented")
-}
-func (UnimplementedDmServer) DataSchemaLatestIndex(context.Context, *DataSchemaLatestIndexReq) (*DataSchemaIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DataSchemaLatestIndex not implemented")
-}
-func (UnimplementedDmServer) DataSchemaLogIndex(context.Context, *DataSchemaLogIndexReq) (*DataSchemaIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DataSchemaLogIndex not implemented")
-}
-func (UnimplementedDmServer) mustEmbedUnimplementedDmServer() {}
+func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
 
-// UnsafeDmServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to DmServer will
+// UnsafeProductManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProductManageServer will
 // result in compilation errors.
-type UnsafeDmServer interface {
-	mustEmbedUnimplementedDmServer()
+type UnsafeProductManageServer interface {
+	mustEmbedUnimplementedProductManageServer()
 }
 
-func RegisterDmServer(s grpc.ServiceRegistrar, srv DmServer) {
-	s.RegisterService(&Dm_ServiceDesc, srv)
+func RegisterProductManageServer(s grpc.ServiceRegistrar, srv ProductManageServer) {
+	s.RegisterService(&ProductManage_ServiceDesc, srv)
 }
 
-func _Dm_DeviceInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).DeviceInfoCreate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/DeviceInfoCreate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).DeviceInfoCreate(ctx, req.(*DeviceInfo))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_DeviceInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).DeviceInfoUpdate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/DeviceInfoUpdate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).DeviceInfoUpdate(ctx, req.(*DeviceInfo))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_DeviceInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceInfoDeleteReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).DeviceInfoDelete(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/DeviceInfoDelete",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).DeviceInfoDelete(ctx, req.(*DeviceInfoDeleteReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_DeviceInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceInfoIndexReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).DeviceInfoIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/DeviceInfoIndex",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).DeviceInfoIndex(ctx, req.(*DeviceInfoIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_DeviceInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceInfoReadReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).DeviceInfoRead(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/DeviceInfoRead",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).DeviceInfoRead(ctx, req.(*DeviceInfoReadReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_ProductInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductManage_ProductInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DmServer).ProductInfoCreate(ctx, in)
+		return srv.(ProductManageServer).ProductInfoCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.Dm/ProductInfoCreate",
+		FullMethod: "/dm.ProductManage/ProductInfoCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).ProductInfoCreate(ctx, req.(*ProductInfo))
+		return srv.(ProductManageServer).ProductInfoCreate(ctx, req.(*ProductInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductManage_ProductInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DmServer).ProductInfoUpdate(ctx, in)
+		return srv.(ProductManageServer).ProductInfoUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.Dm/ProductInfoUpdate",
+		FullMethod: "/dm.ProductManage/ProductInfoUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).ProductInfoUpdate(ctx, req.(*ProductInfo))
+		return srv.(ProductManageServer).ProductInfoUpdate(ctx, req.(*ProductInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductManage_ProductInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfoDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DmServer).ProductInfoDelete(ctx, in)
+		return srv.(ProductManageServer).ProductInfoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.Dm/ProductInfoDelete",
+		FullMethod: "/dm.ProductManage/ProductInfoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).ProductInfoDelete(ctx, req.(*ProductInfoDeleteReq))
+		return srv.(ProductManageServer).ProductInfoDelete(ctx, req.(*ProductInfoDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductManage_ProductInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DmServer).ProductInfoIndex(ctx, in)
+		return srv.(ProductManageServer).ProductInfoIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.Dm/ProductInfoIndex",
+		FullMethod: "/dm.ProductManage/ProductInfoIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).ProductInfoIndex(ctx, req.(*ProductInfoIndexReq))
+		return srv.(ProductManageServer).ProductInfoIndex(ctx, req.(*ProductInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductManage_ProductInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductInfoReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DmServer).ProductInfoRead(ctx, in)
+		return srv.(ProductManageServer).ProductInfoRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.Dm/ProductInfoRead",
+		FullMethod: "/dm.ProductManage/ProductInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).ProductInfoRead(ctx, req.(*ProductInfoReadReq))
+		return srv.(ProductManageServer).ProductInfoRead(ctx, req.(*ProductInfoReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductSchemaUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductManage_ProductSchemaUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductSchemaUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DmServer).ProductSchemaUpdate(ctx, in)
+		return srv.(ProductManageServer).ProductSchemaUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.Dm/ProductSchemaUpdate",
+		FullMethod: "/dm.ProductManage/ProductSchemaUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).ProductSchemaUpdate(ctx, req.(*ProductSchemaUpdateReq))
+		return srv.(ProductManageServer).ProductSchemaUpdate(ctx, req.(*ProductSchemaUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ProductSchemaRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductManage_ProductSchemaRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductSchemaReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DmServer).ProductSchemaRead(ctx, in)
+		return srv.(ProductManageServer).ProductSchemaRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.Dm/ProductSchemaRead",
+		FullMethod: "/dm.ProductManage/ProductSchemaRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).ProductSchemaRead(ctx, req.(*ProductSchemaReadReq))
+		return srv.(ProductManageServer).ProductSchemaRead(ctx, req.(*ProductSchemaReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Dm_ManageFirmware_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ManageFirmwareReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).ManageFirmware(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/manageFirmware",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).ManageFirmware(ctx, req.(*ManageFirmwareReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_GetFirmwareInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetFirmwareInfoReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).GetFirmwareInfo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/GetFirmwareInfo",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).GetFirmwareInfo(ctx, req.(*GetFirmwareInfoReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_LoginAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginAuthReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).LoginAuth(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/loginAuth",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).LoginAuth(ctx, req.(*LoginAuthReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_AccessAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccessAuthReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).AccessAuth(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/accessAuth",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).AccessAuth(ctx, req.(*AccessAuthReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_RootCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RootCheckReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).RootCheck(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/rootCheck",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).RootCheck(ctx, req.(*RootCheckReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_SendAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendActionReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).SendAction(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/sendAction",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).SendAction(ctx, req.(*SendActionReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_SendProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendPropertyReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).SendProperty(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/sendProperty",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).SendProperty(ctx, req.(*SendPropertyReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_DataSdkLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataSdkLogIndexReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).DataSdkLogIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/dataSdkLogIndex",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).DataSdkLogIndex(ctx, req.(*DataSdkLogIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_DataHubLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataHubLogIndexReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).DataHubLogIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/dataHubLogIndex",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).DataHubLogIndex(ctx, req.(*DataHubLogIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_DataSchemaLatestIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataSchemaLatestIndexReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).DataSchemaLatestIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/dataSchemaLatestIndex",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).DataSchemaLatestIndex(ctx, req.(*DataSchemaLatestIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Dm_DataSchemaLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataSchemaLogIndexReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DmServer).DataSchemaLogIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.Dm/dataSchemaLogIndex",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DmServer).DataSchemaLogIndex(ctx, req.(*DataSchemaLogIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// Dm_ServiceDesc is the grpc.ServiceDesc for Dm service.
+// ProductManage_ServiceDesc is the grpc.ServiceDesc for ProductManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Dm_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "dm.Dm",
-	HandlerType: (*DmServer)(nil),
+var ProductManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.ProductManage",
+	HandlerType: (*ProductManageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DeviceInfoCreate",
-			Handler:    _Dm_DeviceInfoCreate_Handler,
-		},
-		{
-			MethodName: "DeviceInfoUpdate",
-			Handler:    _Dm_DeviceInfoUpdate_Handler,
-		},
-		{
-			MethodName: "DeviceInfoDelete",
-			Handler:    _Dm_DeviceInfoDelete_Handler,
-		},
-		{
-			MethodName: "DeviceInfoIndex",
-			Handler:    _Dm_DeviceInfoIndex_Handler,
-		},
-		{
-			MethodName: "DeviceInfoRead",
-			Handler:    _Dm_DeviceInfoRead_Handler,
-		},
-		{
 			MethodName: "ProductInfoCreate",
-			Handler:    _Dm_ProductInfoCreate_Handler,
+			Handler:    _ProductManage_ProductInfoCreate_Handler,
 		},
 		{
 			MethodName: "ProductInfoUpdate",
-			Handler:    _Dm_ProductInfoUpdate_Handler,
+			Handler:    _ProductManage_ProductInfoUpdate_Handler,
 		},
 		{
 			MethodName: "ProductInfoDelete",
-			Handler:    _Dm_ProductInfoDelete_Handler,
+			Handler:    _ProductManage_ProductInfoDelete_Handler,
 		},
 		{
 			MethodName: "ProductInfoIndex",
-			Handler:    _Dm_ProductInfoIndex_Handler,
+			Handler:    _ProductManage_ProductInfoIndex_Handler,
 		},
 		{
 			MethodName: "ProductInfoRead",
-			Handler:    _Dm_ProductInfoRead_Handler,
+			Handler:    _ProductManage_ProductInfoRead_Handler,
 		},
 		{
 			MethodName: "ProductSchemaUpdate",
-			Handler:    _Dm_ProductSchemaUpdate_Handler,
+			Handler:    _ProductManage_ProductSchemaUpdate_Handler,
 		},
 		{
 			MethodName: "ProductSchemaRead",
-			Handler:    _Dm_ProductSchemaRead_Handler,
+			Handler:    _ProductManage_ProductSchemaRead_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
+
+// DeviceManageClient is the client API for DeviceManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type DeviceManageClient interface {
+	//新增设备
+	DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
+	//更新设备
+	DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
+	//删除设备
+	DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	//获取设备信息列表
+	DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
+	//获取设备信息详情
+	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
+}
+
+type deviceManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewDeviceManageClient(cc grpc.ClientConnInterface) DeviceManageClient {
+	return &deviceManageClient{cc}
+}
+
+func (c *deviceManageClient) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error) {
+	out := new(DeviceInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error) {
+	out := new(DeviceInfo)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// DeviceManageServer is the server API for DeviceManage service.
+// All implementations must embed UnimplementedDeviceManageServer
+// for forward compatibility
+type DeviceManageServer interface {
+	//新增设备
+	DeviceInfoCreate(context.Context, *DeviceInfo) (*Response, error)
+	//更新设备
+	DeviceInfoUpdate(context.Context, *DeviceInfo) (*Response, error)
+	//删除设备
+	DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Response, error)
+	//获取设备信息列表
+	DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error)
+	//获取设备信息详情
+	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
+	mustEmbedUnimplementedDeviceManageServer()
+}
+
+// UnimplementedDeviceManageServer must be embedded to have forward compatible implementations.
+type UnimplementedDeviceManageServer struct {
+}
+
+func (UnimplementedDeviceManageServer) DeviceInfoCreate(context.Context, *DeviceInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoCreate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceInfoUpdate(context.Context, *DeviceInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoUpdate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoDelete not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoIndex not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoRead not implemented")
+}
+func (UnimplementedDeviceManageServer) mustEmbedUnimplementedDeviceManageServer() {}
+
+// UnsafeDeviceManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DeviceManageServer will
+// result in compilation errors.
+type UnsafeDeviceManageServer interface {
+	mustEmbedUnimplementedDeviceManageServer()
+}
+
+func RegisterDeviceManageServer(s grpc.ServiceRegistrar, srv DeviceManageServer) {
+	s.RegisterService(&DeviceManage_ServiceDesc, srv)
+}
+
+func _DeviceManage_DeviceInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceManage/DeviceInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceInfoCreate(ctx, req.(*DeviceInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceManage/DeviceInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceInfoUpdate(ctx, req.(*DeviceInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceInfoDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceManage/DeviceInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceInfoDelete(ctx, req.(*DeviceInfoDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceManage/DeviceInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceInfoIndex(ctx, req.(*DeviceInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceInfoReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceManage/DeviceInfoRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceInfoRead(ctx, req.(*DeviceInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// DeviceManage_ServiceDesc is the grpc.ServiceDesc for DeviceManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var DeviceManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.DeviceManage",
+	HandlerType: (*DeviceManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "DeviceInfoCreate",
+			Handler:    _DeviceManage_DeviceInfoCreate_Handler,
 		},
 		{
-			MethodName: "manageFirmware",
-			Handler:    _Dm_ManageFirmware_Handler,
+			MethodName: "DeviceInfoUpdate",
+			Handler:    _DeviceManage_DeviceInfoUpdate_Handler,
 		},
 		{
-			MethodName: "GetFirmwareInfo",
-			Handler:    _Dm_GetFirmwareInfo_Handler,
+			MethodName: "DeviceInfoDelete",
+			Handler:    _DeviceManage_DeviceInfoDelete_Handler,
 		},
 		{
-			MethodName: "loginAuth",
-			Handler:    _Dm_LoginAuth_Handler,
+			MethodName: "DeviceInfoIndex",
+			Handler:    _DeviceManage_DeviceInfoIndex_Handler,
 		},
 		{
-			MethodName: "accessAuth",
-			Handler:    _Dm_AccessAuth_Handler,
-		},
-		{
-			MethodName: "rootCheck",
-			Handler:    _Dm_RootCheck_Handler,
-		},
-		{
-			MethodName: "sendAction",
-			Handler:    _Dm_SendAction_Handler,
-		},
-		{
-			MethodName: "sendProperty",
-			Handler:    _Dm_SendProperty_Handler,
-		},
-		{
-			MethodName: "dataSdkLogIndex",
-			Handler:    _Dm_DataSdkLogIndex_Handler,
-		},
-		{
-			MethodName: "dataHubLogIndex",
-			Handler:    _Dm_DataHubLogIndex_Handler,
-		},
-		{
-			MethodName: "dataSchemaLatestIndex",
-			Handler:    _Dm_DataSchemaLatestIndex_Handler,
-		},
-		{
-			MethodName: "dataSchemaLogIndex",
-			Handler:    _Dm_DataSchemaLogIndex_Handler,
+			MethodName: "DeviceInfoRead",
+			Handler:    _DeviceManage_DeviceInfoRead_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

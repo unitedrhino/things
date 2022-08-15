@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/clients"
-	schema2 "github.com/i-Things/things/shared/domain/schema"
+	schema "github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
@@ -17,10 +17,10 @@ const (
 
 type DeviceDataRepo struct {
 	t              *clients.Td
-	getSchemaModel schema2.GetSchemaModel
+	getSchemaModel schema.GetSchemaModel
 }
 
-func NewDeviceDataRepo(dataSource string, getSchemaModel schema2.GetSchemaModel) *DeviceDataRepo {
+func NewDeviceDataRepo(dataSource string, getSchemaModel schema.GetSchemaModel) *DeviceDataRepo {
 	td, err := clients.NewTDengine(dataSource)
 	if err != nil {
 		logx.Error("NewTDengine err", err)
@@ -29,7 +29,7 @@ func NewDeviceDataRepo(dataSource string, getSchemaModel schema2.GetSchemaModel)
 	return &DeviceDataRepo{t: td, getSchemaModel: getSchemaModel}
 }
 
-func getSpecsCreateColumn(s schema2.Specs) string {
+func getSpecsCreateColumn(s schema.Specs) string {
 	var column []string
 	for _, v := range s {
 		column = append(column, fmt.Sprintf("`%s` %s", v.ID, getTdType(v.DataType)))
@@ -37,7 +37,7 @@ func getSpecsCreateColumn(s schema2.Specs) string {
 	return strings.Join(column, ",")
 }
 
-func getSpecsColumnWithArgFunc(s schema2.Specs, argFunc string) string {
+func getSpecsColumnWithArgFunc(s schema.Specs, argFunc string) string {
 	var column []string
 	for _, v := range s {
 		column = append(column, fmt.Sprintf("%s(`%s`) as %s", argFunc, v.ID, v.ID))
@@ -45,23 +45,23 @@ func getSpecsColumnWithArgFunc(s schema2.Specs, argFunc string) string {
 	return strings.Join(column, ",")
 }
 
-func getTdType(define schema2.Define) string {
+func getTdType(define schema.Define) string {
 	switch define.Type {
-	case schema2.BOOL:
+	case schema.BOOL:
 		return "BOOL"
-	case schema2.INT:
+	case schema.INT:
 		return "BIGINT"
-	case schema2.STRING:
+	case schema.STRING:
 		return "BINARY(5000)"
-	case schema2.STRUCT:
+	case schema.STRUCT:
 		return "BINARY(5000)"
-	case schema2.FLOAT:
+	case schema.FLOAT:
 		return "DOUBLE"
-	case schema2.TIMESTAMP:
+	case schema.TIMESTAMP:
 		return "TIMESTAMP"
-	case schema2.ARRAY:
+	case schema.ARRAY:
 		return "BINARY(5000)"
-	case schema2.ENUM:
+	case schema.ENUM:
 		return "SMALLINT"
 	default:
 		panic(fmt.Sprintf("%v not support", define.Type))
@@ -111,7 +111,7 @@ func (d *DeviceDataRepo) GenParams(params map[string]any) (string, string, []any
 }
 
 func getTableNameList(
-	t *schema2.Model,
+	t *schema.Model,
 	productID string,
 	deviceName string) (tables []string) {
 	for _, v := range t.Properties {
@@ -122,7 +122,7 @@ func getTableNameList(
 }
 
 func getStableNameList(
-	t *schema2.Model,
+	t *schema.Model,
 	productID string) (tables []string) {
 	for _, v := range t.Properties {
 		tables = append(tables, getPropertyStableName(productID, v.ID))

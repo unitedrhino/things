@@ -1,6 +1,6 @@
-#本地安装goctl
-1.本地将go-zero项目克隆下来：  git clone git@github.com:zeromicro/go-zero.git
-2.到目录go-zero\tools\goctl 下 执行命令： go install    生成 goctl.exe ，再复制到Go的安装⽬录bin下
+# 本地安装goctl
+1.本地将go-zero项目克隆下来：  `git clone git@github.com:i4de/go-zero.git`
+2.到目录go-zero\tools\goctl 下 执行命令： `go install`  
 3.后续执行下面的各种goctl命令即可
 
 # 环境初始化
@@ -32,7 +32,7 @@ goctl rpc protoc  proto/user.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --s
 # 设备管理模块-dmsvr
 ##  rpc文件编译
 ```shell
-goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero
+goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m
 ```
 
 ## model文件编译
@@ -43,11 +43,11 @@ goctl model mysql ddl -src="../../deploy/mysql/dmsvr.sql"  -dir ./internal/repo/
 
 ```
 
-# 设备交互模块-dcsvr
+# 设备交互模块-disvr
 
 ```shell
 goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dc" -table="*" -dir ./internal/repo/mysql 
-goctl rpc protoc  proto/dc.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero
+goctl rpc protoc  proto/di.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m
 
 ```
 

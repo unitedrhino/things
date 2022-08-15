@@ -4,10 +4,8 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
+	deviceData2 "github.com/i-Things/things/src/dmsvr/internal/domain/deviceData"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/hubLogRepo"
@@ -25,13 +23,12 @@ type ServiceContext struct {
 	DmDB           mysql.DmModel
 	DeviceID       *utils.SnowFlake
 	ProductID      *utils.SnowFlake
-	PubDev         pubDev.PubDev
 	DataUpdate     dataUpdate.DataUpdate
 	Store          kv.Store
-	DeviceDataRepo deviceData.DeviceDataRepo
-	HubLogRepo     deviceMsg.HubLogRepo
+	DeviceDataRepo deviceData2.SchemaDataRepo
+	HubLogRepo     deviceData2.HubLogRepo
 	SchemaRepo     schema.SchemaRepo
-	SDKLogRepo     deviceMsg.SDKLogRepo
+	SDKLogRepo     deviceData2.SDKLogRepo
 	FirmwareInfo   mysql.ProductFirmwareModel
 }
 
@@ -52,11 +49,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	DeviceID := utils.NewSnowFlake(nodeId)
 	ProductID := utils.NewSnowFlake(nodeId)
-	pd, err := pubDev.NewPubDev(c.Event)
-	if err != nil {
-		logx.Error("NewPubDev err", err)
-		os.Exit(-1)
-	}
 	du, err := dataUpdate.NewDataUpdate(c.Event)
 	if err != nil {
 		logx.Error("NewDataUpdate err", err)
@@ -71,7 +63,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DmDB:           DmDB,
 		DeviceID:       DeviceID,
 		ProductID:      ProductID,
-		PubDev:         pd,
 		DataUpdate:     du,
 		Store:          store,
 		DeviceDataRepo: deviceData,
