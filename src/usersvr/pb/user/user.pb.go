@@ -1619,7 +1619,7 @@ func file_proto_user_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_user_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
-var file_proto_user_proto_goTypes = []any{
+var file_proto_user_proto_goTypes = []interface{}{
 	(*UserInfoDeleteReq)(nil),   // 0: user.UserInfoDeleteReq
 	(*UserReadReq)(nil),         // 1: user.UserReadReq
 	(*UserReadResp)(nil),        // 2: user.UserReadResp
@@ -1675,7 +1675,7 @@ func file_proto_user_proto_init() {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_proto_user_proto_msgTypes[0].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserInfoDeleteReq); i {
 			case 0:
 				return &v.state
@@ -1687,7 +1687,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[1].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserReadReq); i {
 			case 0:
 				return &v.state
@@ -1699,7 +1699,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[2].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserReadResp); i {
 			case 0:
 				return &v.state
@@ -1711,7 +1711,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[3].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserInfoUpdateReq); i {
 			case 0:
 				return &v.state
@@ -1723,7 +1723,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[4].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserCoreCreateReq); i {
 			case 0:
 				return &v.state
@@ -1735,7 +1735,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[5].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserCoreCreateResp); i {
 			case 0:
 				return &v.state
@@ -1747,7 +1747,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[6].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserInfoCreateReq); i {
 			case 0:
 				return &v.state
@@ -1759,7 +1759,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[7].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*JwtToken); i {
 			case 0:
 				return &v.state
@@ -1771,7 +1771,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[8].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Response); i {
 			case 0:
 				return &v.state
@@ -1783,7 +1783,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[9].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PageInfo); i {
 			case 0:
 				return &v.state
@@ -1795,7 +1795,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[10].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserInfo); i {
 			case 0:
 				return &v.state
@@ -1807,7 +1807,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[11].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserCore); i {
 			case 0:
 				return &v.state
@@ -1819,7 +1819,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[12].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LoginReq); i {
 			case 0:
 				return &v.state
@@ -1831,7 +1831,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[13].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LoginResp); i {
 			case 0:
 				return &v.state
@@ -1843,7 +1843,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[14].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetUserCoreListReq); i {
 			case 0:
 				return &v.state
@@ -1855,7 +1855,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[15].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetUserCoreListResp); i {
 			case 0:
 				return &v.state
@@ -1867,7 +1867,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[16].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CheckTokenReq); i {
 			case 0:
 				return &v.state
@@ -1879,7 +1879,7 @@ func file_proto_user_proto_init() {
 				return nil
 			}
 		}
-		file_proto_user_proto_msgTypes[17].Exporter = func(v any, i int) any {
+		file_proto_user_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CheckTokenResp); i {
 			case 0:
 				return &v.state
