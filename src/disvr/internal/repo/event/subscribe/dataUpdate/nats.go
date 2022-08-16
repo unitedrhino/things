@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/nats-io/nats.go"
 )
 
@@ -14,10 +15,6 @@ type (
 	NatsClient struct {
 		client *nats.Conn
 	}
-)
-
-const (
-	TopicUpdateSchema = "server.dm.update.schema"
 )
 
 func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
@@ -29,9 +26,9 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.Subscribe(TopicUpdateSchema,
+	_, err := n.client.Subscribe(topics.DmUpdateSchema,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
-			tempInfo := schema.SchemaInfo{}
+			tempInfo := schema.Info{}
 			err := json.Unmarshal(msg, &tempInfo)
 			if err != nil {
 				return err

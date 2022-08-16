@@ -2,14 +2,15 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
-	"github.com/i-Things/things/src/disvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/disvr/internal/svc"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -48,15 +49,17 @@ func (l *DisconnectedLogic) Handle(msg *deviceMsg.ConnectMsg) error {
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 	}
 	//更新对应设备的online状态
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, ld.ProductID, ld.DeviceName)
+	di, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
+		ProductID:  ld.ProductID,
+		DeviceName: ld.DeviceName,
+	})
 	if err != nil {
-		if err == mysql.ErrNotFound {
-			return errors.NotFind.AddDetailf("Disconnect|not find device|productid=%s|deviceName=%s",
-				ld.ProductID, ld.DeviceName)
-		}
-		return errors.Database.AddDetail(err.Error())
+		return err
 	}
-	di.IsOnline = 0 //离线
-	l.svcCtx.DeviceInfo.Update(l.ctx, di)
+	l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
+		ProductID:  di.ProductID,
+		DeviceName: di.DeviceName,
+		IsOnline:   def.OnLine,
+	})
 	return nil
 }

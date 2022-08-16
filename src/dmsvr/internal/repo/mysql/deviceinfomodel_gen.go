@@ -49,7 +49,7 @@ type (
 		Version     string         `db:"version"`  // 固件版本
 		LogLevel    int64          `db:"logLevel"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 		Cert        string         `db:"cert"`     // 设备证书
-		IsOnline    int64          `db:"isOnline"` // 是否在线,0离线1在线
+		IsOnline    int64          `db:"isOnline"` // 是否在线,1离线2在线
 		Tags        sql.NullString `db:"tags"`     // 设备标签
 	}
 )

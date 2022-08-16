@@ -2,7 +2,8 @@ package productmanagelogic
 
 import (
 	"context"
-
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -27,6 +28,9 @@ func NewProductInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *P
 func (l *ProductInfoReadLogic) ProductInfoRead(in *dm.ProductInfoReadReq) (*dm.ProductInfo, error) {
 	pi, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
 	if err != nil {
+		if err == mysql.ErrNotFound {
+			return nil, errors.NotFind
+		}
 		return nil, err
 	}
 	return ToProductInfo(pi), nil

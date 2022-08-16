@@ -47,7 +47,7 @@ func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdat
 		l.Errorf("ModifyProductSchema|ProductTemplate|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
-	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema2.SchemaInfo{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema2.Info{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (l *ProductSchemaUpdateLogic) AddProductSchema(in *dm.ProductSchemaUpdateRe
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema2.SchemaInfo{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema2.Info{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}

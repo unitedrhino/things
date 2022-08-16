@@ -8,3 +8,7 @@ const (
 	OptDel    Opt = 2 //删除
 )
 const Unknown = 0
+const (
+	OffLine = 1 //离线
+	OnLine  = 2 //在线
+)

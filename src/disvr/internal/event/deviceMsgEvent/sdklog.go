@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/disvr/internal/svc"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 )
@@ -58,7 +59,10 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
 
 //获取设备上传的调试日志内容
 func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) error {
-	ld, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, msg.ProductID, msg.DeviceName)
+	ld, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	})
 	if err != nil {
 		l.Errorf("%s|Log|operate|productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
@@ -85,7 +89,10 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) error {
 
 //获取当前日志等级 0 未开启
 func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) {
-	ld, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, msg.ProductID, msg.DeviceName)
+	ld, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	})
 	if err != nil {
 		l.Errorf("%s|Log|operate|productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)

@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/productInfo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
@@ -67,32 +66,32 @@ func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) (*mysql.Produ
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister
 	} else {
-		pi.AutoRegister = productInfo.AutoRegClose
+		pi.AutoRegister = def.AutoRegClose
 	}
 	if in.DataProto != def.Unknown {
 		pi.DataProto = in.DataProto
 	} else {
-		pi.DataProto = productInfo.DataCustom
+		pi.DataProto = def.DataProtoCustom
 	}
 	if in.DeviceType != def.Unknown {
 		pi.DeviceType = in.DeviceType
 	} else {
-		pi.DeviceType = productInfo.DevDevice
+		pi.DeviceType = def.DeviceTypeDevice
 	}
 	if in.NetType != def.Unknown {
 		pi.NetType = in.NetType
 	} else {
-		pi.NetType = productInfo.NetOther
+		pi.NetType = def.NetOther
 	}
 	if in.DeviceType != def.Unknown {
 		pi.DeviceType = in.DeviceType
 	} else {
-		pi.DeviceType = productInfo.DevDevice
+		pi.DeviceType = def.DeviceTypeDevice
 	}
 	if in.AuthMode != def.Unknown {
 		pi.AuthMode = in.AuthMode
 	} else {
-		pi.AuthMode = productInfo.AuthPwd
+		pi.AuthMode = def.AuthModePwd
 	}
 	return pi, pt
 }

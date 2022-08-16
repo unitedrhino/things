@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	ProductidLen = 11
-	Hmacsha256   = "hmacsha256"
-	Hmacsha1      = "hmacsha1"
+	ProductIdLen = 11
+	HmacSha256   = "hmacsha256"
+	HmacSha1     = "hmacsha1"
 )
 
 type (
@@ -55,12 +55,12 @@ func GetLoginDevice(userName string) (*LoginDevice, error) {
 }
 
 func GetClientIDInfo(ClientID string) (*LoginDevice, error) {
-	if len(ClientID) < ProductidLen {
+	if len(ClientID) < ProductIdLen {
 		return nil, errors.Parameter.AddDetail("clientID length not enough")
 	}
 	lg := &LoginDevice{
-		ProductID:  ClientID[0:ProductidLen],
-		DeviceName: ClientID[ProductidLen:],
+		ProductID:  ClientID[0:ProductIdLen],
+		DeviceName: ClientID[ProductIdLen:],
 	}
 	return lg, nil
 }
@@ -82,9 +82,9 @@ func NewPwdInfo(password string) (*PwdInfo, error) {
 	}
 	var HmacHandle func(data string, secret []byte) string
 	switch keys[1] {
-	case Hmacsha256:
+	case HmacSha256:
 		HmacHandle = utils.HmacSha256
-	case Hmacsha1:
+	case HmacSha1:
 		HmacHandle = utils.HmacSha1
 	default:
 		return nil, errors.Parameter.AddDetail("password not suppot encrypt method:" + keys[1])

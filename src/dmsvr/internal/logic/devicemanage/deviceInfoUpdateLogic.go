@@ -43,6 +43,9 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.Dev
 	if data.Version != nil {
 		old.Version = data.Version.GetValue()
 	}
+	if data.IsOnline != def.Unknown {
+		old.IsOnline = int64(data.IsOnline)
+	}
 }
 
 // 更新设备

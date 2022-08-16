@@ -47,7 +47,7 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 		l.Errorf("DelProduct|Delete|err=%+v", err)
 		return nil, errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema.SchemaInfo{ProductID: in.ProductID})
+	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema.Info{ProductID: in.ProductID})
 	if err != nil {
 		return nil, err
 	}
