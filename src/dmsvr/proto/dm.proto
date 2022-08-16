@@ -65,7 +65,7 @@ message DeviceInfo{
   google.protobuf.StringValue  version = 8; // 固件版本  读写
   int64  logLevel = 9; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
   string  cert = 10;// 设备证书  只读
-  bool   isOnline = 11; //在线状态 0离线1在线 只读
+  int32   isOnline = 11; //在线状态  1离线 2在线 只读
   map<string, string> tags = 12;//设备标签
 }
 

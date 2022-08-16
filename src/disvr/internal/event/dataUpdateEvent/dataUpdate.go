@@ -21,7 +21,7 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdat
 	}
 }
 
-func (d DataUpdateLogic) SchemaClearCache(info *schema.SchemaInfo) error {
+func (d DataUpdateLogic) SchemaClearCache(info *schema.Info) error {
 	d.Infof("DataUpdateLogic|SchemaClearCache|productID:%v", info.ProductID)
 	return d.svcCtx.SchemaRepo.ClearCache(d.ctx, info.ProductID)
 }

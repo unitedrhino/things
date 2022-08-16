@@ -31,3 +31,8 @@ const (
 	// DeviceDownAll dd模块订阅以下topic,收到内部的发布消息后向设备推送
 	DeviceDownAll = "device.down"
 )
+
+//dmsvr发布的事件通知
+const (
+	DmUpdateSchema = "server.dm.update.schema" //物模型有更新
+)

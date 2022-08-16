@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	deviceData2 "github.com/i-Things/things/src/dmsvr/internal/domain/deviceData"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
@@ -27,7 +28,7 @@ type ServiceContext struct {
 	Store          kv.Store
 	DeviceDataRepo deviceData2.SchemaDataRepo
 	HubLogRepo     deviceData2.HubLogRepo
-	SchemaRepo     schema.SchemaRepo
+	SchemaRepo     schema.Repo
 	SDKLogRepo     deviceData2.SDKLogRepo
 	FirmwareInfo   mysql.ProductFirmwareModel
 }
@@ -41,7 +42,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	di := mysql.NewDeviceInfoModel(conn)
 	pi := mysql.NewProductInfoModel(conn)
 	pt := mysql.NewProductSchemaModel(conn)
-	tr := mysql.NewSchemaRepo(pt)
+	tr := cache.NewSchemaRepo(pt)
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
 	fr := mysql.NewProductFirmwareModel(conn)
 	DmDB := mysql.NewDmModel(conn)

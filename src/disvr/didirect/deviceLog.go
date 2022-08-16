@@ -1,8 +1,8 @@
 package dmdirect
 
 import (
-	client "github.com/i-Things/things/src/dmsvr/client/devicelog"
-	server "github.com/i-Things/things/src/dmsvr/internal/server/devicelog"
+	client "github.com/i-Things/things/src/disvr/client/devicelog"
+	server "github.com/i-Things/things/src/disvr/internal/server/devicelog"
 )
 
 var (

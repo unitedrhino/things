@@ -7,17 +7,20 @@ import (
 )
 
 type (
-	SchemaInfo struct {
+	Info struct {
 		ProductID   string // 产品id
-		Template    string // 数据模板
+		Schema      string // 数据模板
 		CreatedTime time.Time
 	}
-	SchemaRepo interface {
+	Repo interface {
+		ReadRepo
 		Insert(ctx context.Context, productID string, template *Model) error
-		GetSchemaModel(ctx context.Context, productID string) (*Model, error)
-		GetSchemaInfo(ctx context.Context, productID string) (*SchemaInfo, error)
 		Update(ctx context.Context, productID string, template *Model) error
 		Delete(ctx context.Context, productID string) error
+	}
+	ReadRepo interface {
+		GetSchemaModel(ctx context.Context, productID string) (*Model, error)
+		GetSchemaInfo(ctx context.Context, productID string) (*Info, error)
 		ClearCache(ctx context.Context, productID string) error
 	}
 	GetSchemaModel func(ctx context.Context, productID string) (*Model, error)

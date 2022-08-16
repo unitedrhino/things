@@ -13,7 +13,7 @@ type (
 	}
 	Handle           func(ctx context.Context) DataUpdateHandle
 	DataUpdateHandle interface {
-		SchemaClearCache(info *schema.SchemaInfo) error
+		SchemaClearCache(info *schema.Info) error
 	}
 )
 

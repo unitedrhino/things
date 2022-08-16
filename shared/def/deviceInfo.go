@@ -1,4 +1,4 @@
-package deviceInfo
+package def
 
 type LogLevel = int64
 
