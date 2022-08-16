@@ -1,29 +1,37 @@
 package productmanagelogic
 
 import (
-	"database/sql"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func GetNullTime(time sql.NullTime) int64 {
-	if time.Valid == false {
-		return 0
-	}
-	return time.Time.Unix()
-}
-
-func ToProductSchema(pt *schema.SchemaInfo) *dm.ProductSchema {
+func ToProductSchema(pt *schema.Info) *dm.ProductSchema {
 	return &dm.ProductSchema{
 		CreatedTime: pt.CreatedTime.Unix(),
 		ProductID:   pt.ProductID,
-		Schema:      pt.Template,
+		Schema:      pt.Schema,
 	}
 }
 
 func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
+	if pi.DeviceType == def.Unknown {
+		pi.DeviceType = def.DeviceTypeDevice
+	}
+	if pi.NetType == def.Unknown {
+		pi.NetType = def.NetOther
+	}
+	if pi.DataProto == def.Unknown {
+		pi.DataProto = def.DataProtoCustom
+	}
+	if pi.AuthMode == def.Unknown {
+		pi.AuthMode = def.AuthModePwd
+	}
+	if pi.AutoRegister == def.Unknown {
+		pi.AutoRegister = def.AutoRegClose
+	}
 	dpi := &dm.ProductInfo{
 		ProductID:    pi.ProductID,                                 //产品id
 		ProductName:  pi.ProductName,                               //产品名

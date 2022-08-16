@@ -18,10 +18,10 @@ type ThingLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	template *schema.Model
-	topics   []string
-	dreq     deviceSend.DeviceReq
-	dd       deviceMsg.SchemaDataRepo
+	schema *schema.Model
+	topics []string
+	dreq   deviceSend.DeviceReq
+	dd     deviceMsg.SchemaDataRepo
 }
 
 func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic {
@@ -34,7 +34,7 @@ func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic 
 
 func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	var err error
-	l.template, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, msg.ProductID)
+	l.schema, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, msg.ProductID)
 	if err != nil {
 		return errors.Database.AddDetail(err)
 	}
@@ -58,7 +58,7 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[s
 }
 
 func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) error {
-	tp, err := l.dreq.VerifyReqParam(l.template, schema.PROPERTY)
+	tp, err := l.dreq.VerifyReqParam(l.schema, schema.PROPERTY)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
 		return err
@@ -69,7 +69,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) error {
 	}
 	params := deviceSend.ToVal(tp)
 	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
-	err = l.dd.InsertPropertiesData(l.ctx, l.template, msg.ProductID, msg.DeviceName, params, timeStamp)
+	err = l.dd.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 		l.DeviceResp(msg, errors.Database, nil)
 		l.Errorf("HandlePropertyReport|InsertPropertyData|err=%+v", err)
@@ -80,10 +80,10 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) error {
-	respData := make(map[string]any, len(l.template.Properties))
+	respData := make(map[string]any, len(l.schema.Properties))
 	switch l.dreq.Type {
 	case deviceSend.Report:
-		for id, _ := range l.template.Property {
+		for id, _ := range l.schema.Property {
 			data, err := l.dd.GetPropertyDataByID(l.ctx,
 				deviceMsg.FilterOpt{
 					Page:       def.PageInfo2{Size: 1},
@@ -133,7 +133,7 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) error {
 	if l.dreq.Method != deviceSend.EventPost {
 		return errors.Method
 	}
-	tp, err := l.dreq.VerifyReqParam(l.template, schema.EVENT)
+	tp, err := l.dreq.VerifyReqParam(l.schema, schema.EVENT)
 	if err != nil {
 		l.DeviceResp(msg, err, nil)
 		return err

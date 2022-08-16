@@ -9,7 +9,7 @@ import (
 
 type (
 	DataUpdate interface {
-		SchemaUpdate(ctx context.Context, info *schema.SchemaInfo) error
+		SchemaUpdate(ctx context.Context, info *schema.Info) error
 	}
 )
 
