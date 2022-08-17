@@ -18,202 +18,202 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// DeviceLogClient is the client API for DeviceLog service.
+// DeviceMsgClient is the client API for DeviceMsg service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type DeviceLogClient interface {
+type DeviceMsgClient interface {
 	//获取设备sdk调试日志
-	DataSdkLogIndex(ctx context.Context, in *DataSdkLogIndexReq, opts ...grpc.CallOption) (*DataSdkLogIndexResp, error)
+	SdkLogIndex(ctx context.Context, in *SdkLogIndexReq, opts ...grpc.CallOption) (*SdkLogIndexResp, error)
 	//获取设备调试信息记录登入登出,操作
-	DataHubLogIndex(ctx context.Context, in *DataHubLogIndexReq, opts ...grpc.CallOption) (*DataHubLogIndexResp, error)
+	HubLogIndex(ctx context.Context, in *HubLogIndexReq, opts ...grpc.CallOption) (*HubLogIndexResp, error)
 	//获取设备数据信息
-	DataSchemaLatestIndex(ctx context.Context, in *DataSchemaLatestIndexReq, opts ...grpc.CallOption) (*DataSchemaIndexResp, error)
+	SchemaLatestIndex(ctx context.Context, in *SchemaLatestIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error)
 	//获取设备数据信息
-	DataSchemaLogIndex(ctx context.Context, in *DataSchemaLogIndexReq, opts ...grpc.CallOption) (*DataSchemaIndexResp, error)
+	SchemaLogIndex(ctx context.Context, in *SchemaLogIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error)
 }
 
-type deviceLogClient struct {
+type deviceMsgClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewDeviceLogClient(cc grpc.ClientConnInterface) DeviceLogClient {
-	return &deviceLogClient{cc}
+func NewDeviceMsgClient(cc grpc.ClientConnInterface) DeviceMsgClient {
+	return &deviceMsgClient{cc}
 }
 
-func (c *deviceLogClient) DataSdkLogIndex(ctx context.Context, in *DataSdkLogIndexReq, opts ...grpc.CallOption) (*DataSdkLogIndexResp, error) {
-	out := new(DataSdkLogIndexResp)
-	err := c.cc.Invoke(ctx, "/di.DeviceLog/dataSdkLogIndex", in, out, opts...)
+func (c *deviceMsgClient) SdkLogIndex(ctx context.Context, in *SdkLogIndexReq, opts ...grpc.CallOption) (*SdkLogIndexResp, error) {
+	out := new(SdkLogIndexResp)
+	err := c.cc.Invoke(ctx, "/di.DeviceMsg/sdkLogIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceLogClient) DataHubLogIndex(ctx context.Context, in *DataHubLogIndexReq, opts ...grpc.CallOption) (*DataHubLogIndexResp, error) {
-	out := new(DataHubLogIndexResp)
-	err := c.cc.Invoke(ctx, "/di.DeviceLog/dataHubLogIndex", in, out, opts...)
+func (c *deviceMsgClient) HubLogIndex(ctx context.Context, in *HubLogIndexReq, opts ...grpc.CallOption) (*HubLogIndexResp, error) {
+	out := new(HubLogIndexResp)
+	err := c.cc.Invoke(ctx, "/di.DeviceMsg/hubLogIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceLogClient) DataSchemaLatestIndex(ctx context.Context, in *DataSchemaLatestIndexReq, opts ...grpc.CallOption) (*DataSchemaIndexResp, error) {
-	out := new(DataSchemaIndexResp)
-	err := c.cc.Invoke(ctx, "/di.DeviceLog/dataSchemaLatestIndex", in, out, opts...)
+func (c *deviceMsgClient) SchemaLatestIndex(ctx context.Context, in *SchemaLatestIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error) {
+	out := new(SchemaIndexResp)
+	err := c.cc.Invoke(ctx, "/di.DeviceMsg/schemaLatestIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceLogClient) DataSchemaLogIndex(ctx context.Context, in *DataSchemaLogIndexReq, opts ...grpc.CallOption) (*DataSchemaIndexResp, error) {
-	out := new(DataSchemaIndexResp)
-	err := c.cc.Invoke(ctx, "/di.DeviceLog/dataSchemaLogIndex", in, out, opts...)
+func (c *deviceMsgClient) SchemaLogIndex(ctx context.Context, in *SchemaLogIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error) {
+	out := new(SchemaIndexResp)
+	err := c.cc.Invoke(ctx, "/di.DeviceMsg/schemaLogIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// DeviceLogServer is the server API for DeviceLog service.
-// All implementations must embed UnimplementedDeviceLogServer
+// DeviceMsgServer is the server API for DeviceMsg service.
+// All implementations must embed UnimplementedDeviceMsgServer
 // for forward compatibility
-type DeviceLogServer interface {
+type DeviceMsgServer interface {
 	//获取设备sdk调试日志
-	DataSdkLogIndex(context.Context, *DataSdkLogIndexReq) (*DataSdkLogIndexResp, error)
+	SdkLogIndex(context.Context, *SdkLogIndexReq) (*SdkLogIndexResp, error)
 	//获取设备调试信息记录登入登出,操作
-	DataHubLogIndex(context.Context, *DataHubLogIndexReq) (*DataHubLogIndexResp, error)
+	HubLogIndex(context.Context, *HubLogIndexReq) (*HubLogIndexResp, error)
 	//获取设备数据信息
-	DataSchemaLatestIndex(context.Context, *DataSchemaLatestIndexReq) (*DataSchemaIndexResp, error)
+	SchemaLatestIndex(context.Context, *SchemaLatestIndexReq) (*SchemaIndexResp, error)
 	//获取设备数据信息
-	DataSchemaLogIndex(context.Context, *DataSchemaLogIndexReq) (*DataSchemaIndexResp, error)
-	mustEmbedUnimplementedDeviceLogServer()
+	SchemaLogIndex(context.Context, *SchemaLogIndexReq) (*SchemaIndexResp, error)
+	mustEmbedUnimplementedDeviceMsgServer()
 }
 
-// UnimplementedDeviceLogServer must be embedded to have forward compatible implementations.
-type UnimplementedDeviceLogServer struct {
+// UnimplementedDeviceMsgServer must be embedded to have forward compatible implementations.
+type UnimplementedDeviceMsgServer struct {
 }
 
-func (UnimplementedDeviceLogServer) DataSdkLogIndex(context.Context, *DataSdkLogIndexReq) (*DataSdkLogIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DataSdkLogIndex not implemented")
+func (UnimplementedDeviceMsgServer) SdkLogIndex(context.Context, *SdkLogIndexReq) (*SdkLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SdkLogIndex not implemented")
 }
-func (UnimplementedDeviceLogServer) DataHubLogIndex(context.Context, *DataHubLogIndexReq) (*DataHubLogIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DataHubLogIndex not implemented")
+func (UnimplementedDeviceMsgServer) HubLogIndex(context.Context, *HubLogIndexReq) (*HubLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HubLogIndex not implemented")
 }
-func (UnimplementedDeviceLogServer) DataSchemaLatestIndex(context.Context, *DataSchemaLatestIndexReq) (*DataSchemaIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DataSchemaLatestIndex not implemented")
+func (UnimplementedDeviceMsgServer) SchemaLatestIndex(context.Context, *SchemaLatestIndexReq) (*SchemaIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SchemaLatestIndex not implemented")
 }
-func (UnimplementedDeviceLogServer) DataSchemaLogIndex(context.Context, *DataSchemaLogIndexReq) (*DataSchemaIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DataSchemaLogIndex not implemented")
+func (UnimplementedDeviceMsgServer) SchemaLogIndex(context.Context, *SchemaLogIndexReq) (*SchemaIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SchemaLogIndex not implemented")
 }
-func (UnimplementedDeviceLogServer) mustEmbedUnimplementedDeviceLogServer() {}
+func (UnimplementedDeviceMsgServer) mustEmbedUnimplementedDeviceMsgServer() {}
 
-// UnsafeDeviceLogServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to DeviceLogServer will
+// UnsafeDeviceMsgServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DeviceMsgServer will
 // result in compilation errors.
-type UnsafeDeviceLogServer interface {
-	mustEmbedUnimplementedDeviceLogServer()
+type UnsafeDeviceMsgServer interface {
+	mustEmbedUnimplementedDeviceMsgServer()
 }
 
-func RegisterDeviceLogServer(s grpc.ServiceRegistrar, srv DeviceLogServer) {
-	s.RegisterService(&DeviceLog_ServiceDesc, srv)
+func RegisterDeviceMsgServer(s grpc.ServiceRegistrar, srv DeviceMsgServer) {
+	s.RegisterService(&DeviceMsg_ServiceDesc, srv)
 }
 
-func _DeviceLog_DataSdkLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataSdkLogIndexReq)
+func _DeviceMsg_SdkLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SdkLogIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceLogServer).DataSdkLogIndex(ctx, in)
+		return srv.(DeviceMsgServer).SdkLogIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/di.DeviceLog/dataSdkLogIndex",
+		FullMethod: "/di.DeviceMsg/sdkLogIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceLogServer).DataSdkLogIndex(ctx, req.(*DataSdkLogIndexReq))
+		return srv.(DeviceMsgServer).SdkLogIndex(ctx, req.(*SdkLogIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceLog_DataHubLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataHubLogIndexReq)
+func _DeviceMsg_HubLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HubLogIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceLogServer).DataHubLogIndex(ctx, in)
+		return srv.(DeviceMsgServer).HubLogIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/di.DeviceLog/dataHubLogIndex",
+		FullMethod: "/di.DeviceMsg/hubLogIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceLogServer).DataHubLogIndex(ctx, req.(*DataHubLogIndexReq))
+		return srv.(DeviceMsgServer).HubLogIndex(ctx, req.(*HubLogIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceLog_DataSchemaLatestIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataSchemaLatestIndexReq)
+func _DeviceMsg_SchemaLatestIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SchemaLatestIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceLogServer).DataSchemaLatestIndex(ctx, in)
+		return srv.(DeviceMsgServer).SchemaLatestIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/di.DeviceLog/dataSchemaLatestIndex",
+		FullMethod: "/di.DeviceMsg/schemaLatestIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceLogServer).DataSchemaLatestIndex(ctx, req.(*DataSchemaLatestIndexReq))
+		return srv.(DeviceMsgServer).SchemaLatestIndex(ctx, req.(*SchemaLatestIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceLog_DataSchemaLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataSchemaLogIndexReq)
+func _DeviceMsg_SchemaLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SchemaLogIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceLogServer).DataSchemaLogIndex(ctx, in)
+		return srv.(DeviceMsgServer).SchemaLogIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/di.DeviceLog/dataSchemaLogIndex",
+		FullMethod: "/di.DeviceMsg/schemaLogIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceLogServer).DataSchemaLogIndex(ctx, req.(*DataSchemaLogIndexReq))
+		return srv.(DeviceMsgServer).SchemaLogIndex(ctx, req.(*SchemaLogIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// DeviceLog_ServiceDesc is the grpc.ServiceDesc for DeviceLog service.
+// DeviceMsg_ServiceDesc is the grpc.ServiceDesc for DeviceMsg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var DeviceLog_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "di.DeviceLog",
-	HandlerType: (*DeviceLogServer)(nil),
+var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "di.DeviceMsg",
+	HandlerType: (*DeviceMsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "dataSdkLogIndex",
-			Handler:    _DeviceLog_DataSdkLogIndex_Handler,
+			MethodName: "sdkLogIndex",
+			Handler:    _DeviceMsg_SdkLogIndex_Handler,
 		},
 		{
-			MethodName: "dataHubLogIndex",
-			Handler:    _DeviceLog_DataHubLogIndex_Handler,
+			MethodName: "hubLogIndex",
+			Handler:    _DeviceMsg_HubLogIndex_Handler,
 		},
 		{
-			MethodName: "dataSchemaLatestIndex",
-			Handler:    _DeviceLog_DataSchemaLatestIndex_Handler,
+			MethodName: "schemaLatestIndex",
+			Handler:    _DeviceMsg_SchemaLatestIndex_Handler,
 		},
 		{
-			MethodName: "dataSchemaLogIndex",
-			Handler:    _DeviceLog_DataSchemaLogIndex_Handler,
+			MethodName: "schemaLogIndex",
+			Handler:    _DeviceMsg_SchemaLogIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

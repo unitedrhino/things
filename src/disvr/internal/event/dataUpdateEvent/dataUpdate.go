@@ -2,9 +2,16 @@ package dataUpdateEvent
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/domain/schema"
+	"fmt"
+	"github.com/hashicorp/go-uuid"
+	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/disvr/internal/svc"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
+	"strings"
 )
 
 type DataUpdateLogic struct {
@@ -21,7 +28,27 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdat
 	}
 }
 
-func (d DataUpdateLogic) SchemaClearCache(info *schema.Info) error {
-	d.Infof("DataUpdateLogic|SchemaClearCache|productID:%v", info.ProductID)
+func (d *DataUpdateLogic) ProductSchemaUpdate(info *events.DataUpdateInfo) error {
+	d.Infof("DataUpdateLogic|ProductSchemaUpdate|DataUpdateInfo:%v", info)
 	return d.svcCtx.SchemaRepo.ClearCache(d.ctx, info.ProductID)
+}
+
+func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DataUpdateInfo) error {
+	d.Infof("DataUpdateLogic|ProductSchemaUpdate|DataUpdateInfo:%v", info)
+	di, err := d.svcCtx.DeviceM.DeviceInfoRead(d.ctx, &dm.DeviceInfoReadReq{
+		ProductID:  info.ProductID,
+		DeviceName: info.DeviceName,
+	})
+	if err != nil {
+		return err
+	}
+	uuid, _ := uuid.GenerateUUID()
+	tmpTopic := fmt.Sprintf("%s/down/update/%s/%s", devices.TopicHeadLog, di.ProductID, di.DeviceName)
+	topic, payload := deviceSend.GenThingDeviceRespData(deviceSend.GetStatus, uuid, strings.Split(tmpTopic, "/"),
+		errors.OK, map[string]any{"log_level": di.LogLevel})
+	er := d.svcCtx.PubDev.PublishToDev(d.ctx, topic, payload)
+	if er != nil {
+		d.Errorf("DeviceResp|SDK Log PublishToDev failure err:%v", er)
+	}
+	return er
 }

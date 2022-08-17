@@ -1,12 +1,12 @@
-package deviceloglogic
+package devicemsglogic
 
 import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/pb/di"
 )
 
-func ToDataHubLogIndex(log *deviceMsg.HubLog) *di.DataHubLogIndex {
-	return &di.DataHubLogIndex{
+func ToDataHubLogIndex(log *deviceMsg.HubLog) *di.HubLogIndex {
+	return &di.HubLogIndex{
 		Timestamp:  log.Timestamp.UnixMilli(),
 		Action:     log.Action,
 		RequestID:  log.RequestID,
@@ -18,8 +18,8 @@ func ToDataHubLogIndex(log *deviceMsg.HubLog) *di.DataHubLogIndex {
 }
 
 //SDK调试日志
-func ToDataSdkLogIndex(log *deviceMsg.SDKLog) *di.DataSdkLogIndex {
-	return &di.DataSdkLogIndex{
+func ToDataSdkLogIndex(log *deviceMsg.SDKLog) *di.SdkLogIndex {
+	return &di.SdkLogIndex{
 		Timestamp: log.Timestamp.UnixMilli(),
 		Loglevel:  log.LogLevel,
 		Content:   log.Content,

@@ -11,7 +11,7 @@ import (
 )
 
 func (d HubLogRepo) GetCountLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) (int64, error) {
-	sqSql := sq.Select("Count(1)").From(getLogStableName(productID)).
+	sqSql := sq.Select("Count(1)").From(d.GetLogStableName(productID)).
 		Where("`device_name`=?", deviceName)
 	sqSql = page.FmtWhere(sqSql)
 	sqlStr, value, err := sqSql.ToSql()
@@ -35,7 +35,7 @@ func (d HubLogRepo) GetCountLog(ctx context.Context, productID, deviceName strin
 
 func (d HubLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) (
 	[]*deviceMsg.HubLog, error) {
-	sql := sq.Select("*").From(getLogStableName(productID)).
+	sql := sq.Select("*").From(d.GetLogStableName(productID)).
 		Where("`device_name`=?", deviceName).OrderBy("`ts` desc")
 	sql = page.FmtSql(sql)
 	sqlStr, value, err := sql.ToSql()
@@ -58,7 +58,7 @@ func (d HubLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName stri
 func (d HubLogRepo) Insert(ctx context.Context, data *deviceMsg.HubLog) error {
 	sql := fmt.Sprintf("insert into %s using %s tags('%s')(`ts`, `content`, `topic`, `action`,"+
 		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
-		getLogTableName(data.ProductID, data.DeviceName), getLogStableName(data.ProductID), data.DeviceName)
+		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(data.ProductID), data.DeviceName)
 	if _, err := d.t.Exec(sql, data.Timestamp, data.Content, data.Topic, data.Action,
 		data.RequestID, data.TranceID, data.ResultType); err != nil {
 		return err

@@ -14,22 +14,22 @@ import (
 )
 
 type (
-	DataHubLogIndex          = di.DataHubLogIndex
-	DataHubLogIndexReq       = di.DataHubLogIndexReq
-	DataHubLogIndexResp      = di.DataHubLogIndexResp
-	DataSchemaIndex          = di.DataSchemaIndex
-	DataSchemaIndexResp      = di.DataSchemaIndexResp
-	DataSchemaLatestIndexReq = di.DataSchemaLatestIndexReq
-	DataSchemaLogIndexReq    = di.DataSchemaLogIndexReq
-	DataSdkLogIndex          = di.DataSdkLogIndex
-	DataSdkLogIndexReq       = di.DataSdkLogIndexReq
-	DataSdkLogIndexResp      = di.DataSdkLogIndexResp
-	PageInfo                 = di.PageInfo
-	Response                 = di.Response
-	SendActionReq            = di.SendActionReq
-	SendActionResp           = di.SendActionResp
-	SendPropertyReq          = di.SendPropertyReq
-	SendPropertyResp         = di.SendPropertyResp
+	HubLogIndex          = di.HubLogIndex
+	HubLogIndexReq       = di.HubLogIndexReq
+	HubLogIndexResp      = di.HubLogIndexResp
+	PageInfo             = di.PageInfo
+	Response             = di.Response
+	SchemaIndex          = di.SchemaIndex
+	SchemaIndexResp      = di.SchemaIndexResp
+	SchemaLatestIndexReq = di.SchemaLatestIndexReq
+	SchemaLogIndexReq    = di.SchemaLogIndexReq
+	SdkLogIndex          = di.SdkLogIndex
+	SdkLogIndexReq       = di.SdkLogIndexReq
+	SdkLogIndexResp      = di.SdkLogIndexResp
+	SendActionReq        = di.SendActionReq
+	SendActionResp       = di.SendActionResp
+	SendPropertyReq      = di.SendPropertyReq
+	SendPropertyResp     = di.SendPropertyResp
 
 	DeviceInteract interface {
 		// 同步调用设备行为

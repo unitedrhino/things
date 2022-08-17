@@ -77,13 +77,9 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 	} else if find == false {
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.ProductID))
 	}
-	pt, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
+	err = l.InitDevice(in)
 	if err != nil {
-		return nil, errors.System.AddDetail(err)
-	}
-	err = l.svcCtx.DeviceDataRepo.InitDevice(l.ctx, pt, in.ProductID, in.DeviceName)
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	di := mysql.DeviceInfo{
 		ProductID:   in.ProductID,  // 产品id
@@ -114,4 +110,20 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 		return nil, errors.System.AddDetail(err)
 	}
 	return &dm.Response{}, nil
+}
+
+func (l *DeviceInfoCreateLogic) InitDevice(in *dm.DeviceInfo) error {
+	pt, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
+	if err != nil {
+		return errors.System.AddDetail(err)
+	}
+	err = l.svcCtx.SchemaManaRepo.InitDevice(l.ctx, pt, in.ProductID, in.DeviceName)
+	if err != nil {
+		return errors.Database.AddDetail(err)
+	}
+	err = l.svcCtx.SDKLogRepo.InitDevice(l.ctx, in.ProductID, in.DeviceName)
+	if err != nil {
+		return errors.Database.AddDetail(err)
+	}
+	return nil
 }

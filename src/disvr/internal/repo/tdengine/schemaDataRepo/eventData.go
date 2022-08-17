@@ -17,7 +17,8 @@ func (d *SchemaDataRepo) InsertEventData(ctx context.Context, productID string,
 	if err != nil {
 		return errors.System.AddDetail("param json parse failure")
 	}
-	sql := fmt.Sprintf("insert into %s (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);", getEventTableName(productID, deviceName))
+	sql := fmt.Sprintf("insert into %s (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);",
+		d.GetEventTableName(productID, deviceName))
 	if _, err := d.t.Exec(sql, event.TimeStamp, event.ID, event.Type, param); err != nil {
 		return err
 	}
@@ -27,7 +28,7 @@ func (d *SchemaDataRepo) InsertEventData(ctx context.Context, productID string,
 func (d *SchemaDataRepo) GetEventDataByID(
 	ctx context.Context,
 	filter deviceMsg.FilterOpt) ([]*deviceMsg.EventData, error) {
-	sql := sq.Select("*").From(getEventStableName(filter.ProductID)).
+	sql := sq.Select("*").From(d.GetEventStableName(filter.ProductID)).
 		Where("`device_name`=? and `event_id`=? ", filter.DeviceName, filter.DataID).OrderBy("`ts` desc")
 	sql = filter.Page.FmtSql(sql)
 	sqlStr, value, err := sql.ToSql()
@@ -50,7 +51,7 @@ func (d *SchemaDataRepo) GetEventDataByID(
 func (d *SchemaDataRepo) GetEventCountByID(
 	ctx context.Context,
 	filter deviceMsg.FilterOpt) (int64, error) {
-	sqSql := sq.Select("count(1)").From(getEventStableName(filter.ProductID)).
+	sqSql := sq.Select("count(1)").From(d.GetEventStableName(filter.ProductID)).
 		Where("`device_name`=? and `event_id`=? ", filter.DeviceName, filter.DataID)
 	sqSql = filter.Page.FmtWhere(sqSql)
 	sqlStr, value, err := sqSql.ToSql()

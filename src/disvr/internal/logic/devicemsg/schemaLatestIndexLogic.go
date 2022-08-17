@@ -1,4 +1,4 @@
-package deviceloglogic
+package devicemsglogic
 
 import (
 	"context"
@@ -7,20 +7,21 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DataSchemaLatestIndexLogic struct {
+type SchemaLatestIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewDataSchemaLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataSchemaLatestIndexLogic {
-	return &DataSchemaLatestIndexLogic{
+func NewSchemaLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SchemaLatestIndexLogic {
+	return &SchemaLatestIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -28,9 +29,9 @@ func NewDataSchemaLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 // 获取设备数据信息
-func (l *DataSchemaLatestIndexLogic) DataSchemaLatestIndex(in *di.DataSchemaLatestIndexReq) (*di.DataSchemaIndexResp, error) {
+func (l *SchemaLatestIndexLogic) SchemaLatestIndex(in *di.SchemaLatestIndexReq) (*di.SchemaIndexResp, error) {
 	var (
-		diDatas []*di.DataSchemaIndex
+		diDatas []*di.SchemaIndex
 		total   int
 	)
 	temp, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
@@ -57,15 +58,15 @@ func (l *DataSchemaLatestIndexLogic) DataSchemaLatestIndex(in *di.DataSchemaLate
 				l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
 				return nil, errors.System.AddDetail(err)
 			}
-			var diData di.DataSchemaIndex
+			var diData di.SchemaIndex
 			if len(dds) == 0 {
-				diData = di.DataSchemaIndex{
+				diData = di.SchemaIndex{
 					Timestamp: 0,
 					DataID:    v,
 				}
 			} else {
 				devData := dds[0]
-				diData = di.DataSchemaIndex{
+				diData = di.SchemaIndex{
 					Timestamp: devData.TimeStamp.UnixMilli(),
 					DataID:    devData.ID,
 				}
@@ -84,7 +85,7 @@ func (l *DataSchemaLatestIndexLogic) DataSchemaLatestIndex(in *di.DataSchemaLate
 	default:
 		return nil, errors.NotRealize.AddDetailf("multi method not implemt:%v", in.Method)
 	}
-	return &di.DataSchemaIndexResp{
+	return &di.SchemaIndexResp{
 		Total: int64(total),
 		List:  diDatas,
 	}, nil
