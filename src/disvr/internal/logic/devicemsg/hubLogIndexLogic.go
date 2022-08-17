@@ -1,4 +1,4 @@
-package deviceloglogic
+package devicemsglogic
 
 import (
 	"context"
@@ -11,14 +11,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DataHubLogIndexLogic struct {
+type HubLogIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewDataHubLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataHubLogIndexLogic {
-	return &DataHubLogIndexLogic{
+func NewHubLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HubLogIndexLogic {
+	return &HubLogIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -26,7 +26,7 @@ func NewDataHubLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 }
 
 // 获取设备调试信息记录登入登出,操作
-func (l *DataHubLogIndexLogic) DataHubLogIndex(in *di.DataHubLogIndexReq) (*di.DataHubLogIndexResp, error) {
+func (l *HubLogIndexLogic) HubLogIndex(in *di.HubLogIndexReq) (*di.HubLogIndexResp, error) {
 	logs, err := l.svcCtx.HubLogRepo.GetDeviceLog(l.ctx, in.ProductID, in.DeviceName, def.PageInfo2{
 		TimeStart: in.TimeStart,
 		TimeEnd:   in.TimeEnd,
@@ -45,9 +45,9 @@ func (l *DataHubLogIndexLogic) DataHubLogIndex(in *di.DataHubLogIndexReq) (*di.D
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	var data []*di.DataHubLogIndex
+	var data []*di.HubLogIndex
 	for _, v := range logs {
 		data = append(data, ToDataHubLogIndex(v))
 	}
-	return &di.DataHubLogIndexResp{List: data, Total: total}, nil
+	return &di.HubLogIndexResp{List: data, Total: total}, nil
 }

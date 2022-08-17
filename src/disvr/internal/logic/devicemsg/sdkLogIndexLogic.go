@@ -1,4 +1,4 @@
-package deviceloglogic
+package devicemsglogic
 
 import (
 	"context"
@@ -11,14 +11,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DataSdkLogIndexLogic struct {
+type SdkLogIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewDataSdkLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataSdkLogIndexLogic {
-	return &DataSdkLogIndexLogic{
+func NewSdkLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SdkLogIndexLogic {
+	return &SdkLogIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -26,7 +26,7 @@ func NewDataSdkLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 }
 
 // 获取设备sdk调试日志
-func (l *DataSdkLogIndexLogic) DataSdkLogIndex(in *di.DataSdkLogIndexReq) (*di.DataSdkLogIndexResp, error) {
+func (l *SdkLogIndexLogic) SdkLogIndex(in *di.SdkLogIndexReq) (*di.SdkLogIndexResp, error) {
 	logs, err := l.svcCtx.SDKLogRepo.GetDeviceSDKLog(l.ctx, in.ProductID, in.DeviceName, def.PageInfo2{
 		TimeStart: in.TimeStart,
 		TimeEnd:   in.TimeEnd,
@@ -36,10 +36,10 @@ func (l *DataSdkLogIndexLogic) DataSdkLogIndex(in *di.DataSdkLogIndexReq) (*di.D
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	var data []*di.DataSdkLogIndex
+	var data []*di.SdkLogIndex
 	for _, v := range logs {
 		data = append(data, ToDataSdkLogIndex(v))
 	}
 	//todo 总数未统计
-	return &di.DataSdkLogIndexResp{List: data}, nil
+	return &di.SdkLogIndexResp{List: data}, nil
 }

@@ -10,20 +10,20 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
-	schema2 "github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"time"
 )
 
-func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model, productID string, deviceName string, property *schema2.PropertyData) error {
+func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model, productID string, deviceName string, property *deviceMsg.PropertyData) error {
 	switch property.Param.(type) {
 	case map[string]any:
-		paramPlaceholder, paramIds, paramValList, err := d.GenParams(property.Param.(map[string]any))
+		paramPlaceholder, paramIds, paramValList, err := store.GenParams(property.Param.(map[string]any))
 		if err != nil {
 			return err
 		}
 		sql := fmt.Sprintf("insert into %s using %s tags('%s','%s') (ts, %s) values (?,%s);",
-			getPropertyTableName(productID, deviceName, property.ID),
-			getPropertyStableName(productID, property.ID), deviceName, t.Property[property.ID].Define.Type,
+			d.GetPropertyTableName(productID, deviceName, property.ID),
+			d.GetPropertyStableName(productID, property.ID), deviceName, t.Property[property.ID].Define.Type,
 			paramIds, paramPlaceholder)
 		param := append([]any{property.TimeStamp}, paramValList...)
 		if _, err := d.t.Exec(sql, param...); err != nil {
@@ -40,7 +40,8 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 				return errors.System.AddDetail("param json parse failure")
 			}
 		}
-		sql := fmt.Sprintf("insert into %s (ts, param) values (?,?);", getPropertyTableName(productID, deviceName, property.ID))
+		sql := fmt.Sprintf("insert into %s (ts, param) values (?,?);",
+			d.GetPropertyTableName(productID, deviceName, property.ID))
 		if _, err := d.t.Exec(sql, property.TimeStamp, param); err != nil {
 			return err
 		}
@@ -51,7 +52,7 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error {
 	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
 	for id, param := range params {
-		err := d.InsertPropertyData(ctx, t, productID, deviceName, &schema2.PropertyData{
+		err := d.InsertPropertyData(ctx, t, productID, deviceName, &deviceMsg.PropertyData{
 			ID:        id,
 			Param:     param,
 			TimeStamp: timestamp,
@@ -66,7 +67,7 @@ func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 
 func (d *SchemaDataRepo) GetPropertyDataByID(
 	ctx context.Context,
-	filter schema2.FilterOpt) ([]*schema2.PropertyData, error) {
+	filter deviceMsg.FilterOpt) ([]*deviceMsg.PropertyData, error) {
 	if err := filter.Check(); err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 			return nil, err
 		}
 	}
-	sql = sql.From(getPropertyStableName(filter.ProductID, filter.DataID)).
+	sql = sql.From(d.GetPropertyStableName(filter.ProductID, filter.DataID)).
 		Where("`device_name`=?", filter.DeviceName)
 	if len(filter.DeviceName) > 0 {
 		sql = sql.Where("`device_name` in ?", filter.DeviceName)
@@ -103,7 +104,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 	}
 	var datas []map[string]any
 	store.Scan(rows, &datas)
-	retProperties := make([]*schema2.PropertyData, 0, len(datas))
+	retProperties := make([]*deviceMsg.PropertyData, 0, len(datas))
 	for _, v := range datas {
 		retProperties = append(retProperties, ToPropertyData(filter.DataID, v))
 	}
@@ -112,7 +113,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 
 func (d *SchemaDataRepo) GetPropertyArgFuncSelect(
 	ctx context.Context,
-	filter schema2.FilterOpt) (sq.SelectBuilder, error) {
+	filter deviceMsg.FilterOpt) (sq.SelectBuilder, error) {
 	schemaModel, err := d.getSchemaModel(ctx, filter.ProductID)
 	if err != nil {
 		return sq.SelectBuilder{}, err
@@ -126,7 +127,7 @@ func (d *SchemaDataRepo) GetPropertyArgFuncSelect(
 	)
 
 	if p.Define.Type == schema.STRUCT {
-		sql = sq.Select(getSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
+		sql = sq.Select(d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
 		sql = sq.Select(fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))
 	}
@@ -138,9 +139,9 @@ func (d *SchemaDataRepo) GetPropertyArgFuncSelect(
 
 func (d *SchemaDataRepo) GetPropertyCountByID(
 	ctx context.Context,
-	filter schema2.FilterOpt) (int64, error) {
+	filter deviceMsg.FilterOpt) (int64, error) {
 
-	sqlData := sq.Select("count(1)").From(getPropertyStableName(filter.ProductID, filter.DataID)).
+	sqlData := sq.Select("count(1)").From(d.GetPropertyStableName(filter.ProductID, filter.DataID)).
 		Where("`device_name`=?", filter.DeviceName)
 	sqlData = filter.Page.FmtWhere(sqlData)
 	sqlStr, value, err := sqlData.ToSql()

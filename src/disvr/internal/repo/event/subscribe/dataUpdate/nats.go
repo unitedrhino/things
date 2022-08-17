@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/nats-io/nats.go"
@@ -26,14 +25,26 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.Subscribe(topics.DmUpdateSchema,
+	_, err := n.client.Subscribe(topics.DmProductUpdateSchema,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
-			tempInfo := schema.Info{}
+			tempInfo := events.DataUpdateInfo{}
 			err := json.Unmarshal(msg, &tempInfo)
 			if err != nil {
 				return err
 			}
-			return handle(ctx).SchemaClearCache(&tempInfo)
+			return handle(ctx).ProductSchemaUpdate(&tempInfo)
+		}))
+	if err != nil {
+		return err
+	}
+	_, err = n.client.Subscribe(topics.DmDeviceUpdateLogLevel,
+		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+			tempInfo := events.DataUpdateInfo{}
+			err := json.Unmarshal(msg, &tempInfo)
+			if err != nil {
+				return err
+			}
+			return handle(ctx).DeviceLogLevelUpdate(&tempInfo)
 		}))
 	if err != nil {
 		return err

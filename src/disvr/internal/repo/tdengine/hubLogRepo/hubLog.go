@@ -1,14 +1,15 @@
 package hubLogRepo
 
 import (
-	"fmt"
 	"github.com/i-Things/things/shared/clients"
+	"github.com/i-Things/things/shared/store"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 )
 
 type HubLogRepo struct {
 	t *clients.Td
+	store.HubLogStore
 }
 
 func NewHubLogRepo(dataSource string) *HubLogRepo {
@@ -18,12 +19,4 @@ func NewHubLogRepo(dataSource string) *HubLogRepo {
 		os.Exit(-1)
 	}
 	return &HubLogRepo{t: td}
-}
-
-func getLogStableName(productID string) string {
-	return fmt.Sprintf("`model_hublog_%s`", productID)
-}
-
-func getLogTableName(productID, deviceName string) string {
-	return fmt.Sprintf("`hub_log_%s_%s`", productID, deviceName)
 }

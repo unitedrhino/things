@@ -105,16 +105,9 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 		return nil, errors.Duplicate.AddDetail("ProductName:" + in.ProductName)
 	}
 	pi, pt := l.InsertProduct(in)
-	t, _ := schema.NewSchema([]byte(pt.Schema))
-	if err := l.svcCtx.HubLogRepo.InitProduct(
-		l.ctx, pi.ProductID); err != nil {
-		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
-		return nil, errors.Database.AddDetail(err)
-	}
-	if err := l.svcCtx.DeviceDataRepo.InitProduct(
-		l.ctx, t, pi.ProductID); err != nil {
-		l.Errorf("%s|DeviceDataRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
-		return nil, errors.Database.AddDetail(err)
+	err = l.InitProduct(pi, pt)
+	if err != nil {
+		return nil, err
 	}
 	err = l.svcCtx.DmDB.Insert(l.ctx, pi, pt)
 	if err != nil {
@@ -122,4 +115,23 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 		return nil, errors.System.AddDetail(err)
 	}
 	return &dm.Response{}, nil
+}
+func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.ProductInfo, pt *mysql.ProductSchema) error {
+	t, _ := schema.NewSchema([]byte(pt.Schema))
+	if err := l.svcCtx.SchemaManaRepo.InitProduct(
+		l.ctx, t, pi.ProductID); err != nil {
+		l.Errorf("%s|SchemaManaRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		return errors.Database.AddDetail(err)
+	}
+	if err := l.svcCtx.HubLogRepo.InitProduct(
+		l.ctx, pi.ProductID); err != nil {
+		l.Errorf("%s|HubLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		return errors.Database.AddDetail(err)
+	}
+	if err := l.svcCtx.SDKLogRepo.InitProduct(
+		l.ctx, pi.ProductID); err != nil {
+		l.Errorf("%s|SDKLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		return errors.Database.AddDetail(err)
+	}
+	return nil
 }

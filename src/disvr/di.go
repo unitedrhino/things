@@ -6,8 +6,8 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/startup"
 
 	"github.com/i-Things/things/src/disvr/internal/config"
-	deviceinteractServer "github.com/i-Things/things/src/disvr/internal/server/deviceinteract"
-	devicelogServer "github.com/i-Things/things/src/disvr/internal/server/devicelog"
+	deviceinteract "github.com/i-Things/things/src/disvr/internal/server/deviceinteract"
+	devicemsg "github.com/i-Things/things/src/disvr/internal/server/devicemsg"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
 
@@ -28,8 +28,8 @@ func main() {
 	svcCtx := svc.NewServiceContext(c)
 	startup.Subscribe(svcCtx)
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		di.RegisterDeviceLogServer(grpcServer, devicelogServer.NewDeviceLogServer(svcCtx))
-		di.RegisterDeviceInteractServer(grpcServer, deviceinteractServer.NewDeviceInteractServer(svcCtx))
+		di.RegisterDeviceMsgServer(grpcServer, devicemsg.NewDeviceMsgServer(svcCtx))
+		di.RegisterDeviceInteractServer(grpcServer, deviceinteract.NewDeviceInteractServer(svcCtx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
