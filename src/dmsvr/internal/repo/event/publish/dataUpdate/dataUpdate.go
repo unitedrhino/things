@@ -3,13 +3,14 @@ package dataUpdate
 import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/events"
 )
 
 type (
 	DataUpdate interface {
-		SchemaUpdate(ctx context.Context, info *schema.Info) error
+		ProductSchemaUpdate(ctx context.Context, info *events.DataUpdateInfo) error
+		DeviceLogLevelUpdate(ctx context.Context, info *events.DataUpdateInfo) error
 	}
 )
 

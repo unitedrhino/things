@@ -20,8 +20,8 @@ const (
 	DeviceUpConfigAll = "device.up.config.>"
 
 	// DeviceUpSDKLog 设备调试日志 最后两个是产品id和设备名称
-	DeviceUpSDKLog    = "device.up.sdklog.%s.%s"
-	DeviceUpSDKLogAll = "device.up.sdklog.>"
+	DeviceUpSDKLog    = "device.up.sdkLog.%s.%s"
+	DeviceUpSDKLogAll = "device.up.sdkLog.>"
 
 	// DeviceUpStatusConnected 设备登录后向内部推送以下topic
 	DeviceUpStatusConnected = "device.up.status.connected"
@@ -34,5 +34,6 @@ const (
 
 //dmsvr发布的事件通知
 const (
-	DmUpdateSchema = "server.dm.update.schema" //物模型有更新
+	DmProductUpdateSchema  = "server.dm.product.update.schema"  //物模型有更新
+	DmDeviceUpdateLogLevel = "server.dm.device.update.logLevel" //设备日志级别有更新
 )

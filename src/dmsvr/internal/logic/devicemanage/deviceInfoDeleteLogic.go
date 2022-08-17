@@ -37,7 +37,7 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		return nil, errors.System.AddDetail(err)
 	}
 	{ //删除时序数据库中的表数据
-		template, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
+		schema, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
 		if err != nil {
 			l.Errorf("DelDevice|SchemaRepo|GetSchemaModel|err=%+v", err)
 			return nil, errors.System.AddDetail(err)
@@ -47,9 +47,14 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 			l.Errorf("DelDevice|DeviceLogRepo|DropDevice|err=%+v", err)
 			return nil, err
 		}
-		err = l.svcCtx.DeviceDataRepo.DropDevice(l.ctx, template, in.ProductID, in.DeviceName)
+		err = l.svcCtx.SchemaManaRepo.DropDevice(l.ctx, schema, in.ProductID, in.DeviceName)
 		if err != nil {
-			l.Errorf("DelDevice|DeviceDataRepo|DropDevice|err=%+v", err)
+			l.Errorf("DelDevice|SchemaManaRepo|DropDevice|err=%+v", err)
+			return nil, err
+		}
+		err = l.svcCtx.SDKLogRepo.DropDevice(l.ctx, in.ProductID, in.DeviceName)
+		if err != nil {
+			l.Errorf("DelDevice|SchemaManaRepo|DropDevice|err=%+v", err)
 			return nil, err
 		}
 	}

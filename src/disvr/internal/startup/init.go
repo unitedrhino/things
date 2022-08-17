@@ -31,7 +31,7 @@ func Subscribe(svcCtx *svc.ServiceContext) {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
 	}
-	err = dataUpdateCli.Subscribe(func(ctx context.Context) dataUpdate.DataUpdateHandle {
+	err = dataUpdateCli.Subscribe(func(ctx context.Context) dataUpdate.UpdateHandle {
 		return dataUpdateEvent.NewPublishLogic(ctx, svcCtx)
 	})
 	if err != nil {

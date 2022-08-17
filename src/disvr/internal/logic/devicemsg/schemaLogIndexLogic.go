@@ -1,4 +1,4 @@
-package deviceloglogic
+package devicemsglogic
 
 import (
 	"context"
@@ -7,20 +7,21 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DataSchemaLogIndexLogic struct {
+type SchemaLogIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewDataSchemaLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataSchemaLogIndexLogic {
-	return &DataSchemaLogIndexLogic{
+func NewSchemaLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SchemaLogIndexLogic {
+	return &SchemaLogIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -28,9 +29,9 @@ func NewDataSchemaLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 // 获取设备数据信息
-func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *di.DataSchemaLogIndexReq) (*di.DataSchemaIndexResp, error) {
+func (l *SchemaLogIndexLogic) SchemaLogIndex(in *di.SchemaLogIndexReq) (*di.SchemaIndexResp, error) {
 	var (
-		diDatas []*di.DataSchemaIndex
+		diDatas []*di.SchemaIndex
 		dd      = l.svcCtx.SchemaMsgRepo
 		total   int64
 	)
@@ -56,7 +57,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *di.DataSchemaLogIndexRe
 			return nil, err
 		}
 		for _, devData := range dds {
-			diData := di.DataSchemaIndex{
+			diData := di.SchemaIndex{
 				Timestamp: devData.TimeStamp.UnixMilli(),
 				DataID:    devData.ID,
 			}
@@ -105,7 +106,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *di.DataSchemaLogIndexRe
 			return nil, errors.System.AddDetail(err)
 		}
 		for _, devData := range dds {
-			diData := di.DataSchemaIndex{
+			diData := di.SchemaIndex{
 				Timestamp: devData.TimeStamp.UnixMilli(),
 				Type:      devData.Type,
 				DataID:    devData.ID,
@@ -136,7 +137,7 @@ func (l *DataSchemaLogIndexLogic) DataSchemaLogIndex(in *di.DataSchemaLogIndexRe
 		}
 
 	}
-	return &di.DataSchemaIndexResp{
+	return &di.SchemaIndexResp{
 		Total: total,
 		List:  diDatas,
 	}, nil

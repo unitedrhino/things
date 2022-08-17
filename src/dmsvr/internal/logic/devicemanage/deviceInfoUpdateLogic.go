@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -62,19 +63,17 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 
 	err = l.svcCtx.DeviceInfo.Update(l.ctx, di)
 	if err != nil {
-		l.Errorf("ModifyDevice|DeviceInfo|Update|err=%+v", err)
+		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
-	//通知device log_level todo 这部分需要用事件通知disvr
-	/*
-		uuid, _ := uuid.GenerateUUID()
-			tmpTopic := fmt.Sprintf("%s/down/update/%s/%s", devices.TopicHeadLog, di.ProductID, di.DeviceName)
-			topic, payload := deviceSend.GenThingDeviceRespData(deviceSend.GetStatus, uuid, strings.Split(tmpTopic, "/"), errors.OK, map[string]any{"log_level": di.LogLevel})
-			er := l.svcCtx.PubDev.PublishToDev(l.ctx, topic, payload)
-			if er != nil {
-				l.Errorf("DeviceResp|SDK Log PublishToDev failure err:%v", er)
-			}
-	*/
-
+	if in.LogLevel != def.Unknown {
+		err := l.svcCtx.DataUpdate.DeviceLogLevelUpdate(l.ctx, &events.DataUpdateInfo{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+		})
+		if err != nil {
+			l.Errorf("DeviceInfoUpdate.DeviceLogLevelUpdate err=%+v", err)
+		}
+	}
 	return &dm.Response{}, nil
 }

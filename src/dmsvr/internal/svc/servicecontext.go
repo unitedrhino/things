@@ -4,7 +4,7 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	deviceData2 "github.com/i-Things/things/src/dmsvr/internal/domain/deviceData"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -26,10 +26,10 @@ type ServiceContext struct {
 	ProductID      *utils.SnowFlake
 	DataUpdate     dataUpdate.DataUpdate
 	Store          kv.Store
-	DeviceDataRepo deviceData2.SchemaDataRepo
-	HubLogRepo     deviceData2.HubLogRepo
+	SchemaManaRepo deviceMsgManage.SchemaDataRepo
+	HubLogRepo     deviceMsgManage.HubLogRepo
 	SchemaRepo     schema.Repo
-	SDKLogRepo     deviceData2.SDKLogRepo
+	SDKLogRepo     deviceMsgManage.SDKLogRepo
 	FirmwareInfo   mysql.ProductFirmwareModel
 }
 
@@ -66,7 +66,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ProductID:      ProductID,
 		DataUpdate:     du,
 		Store:          store,
-		DeviceDataRepo: deviceData,
+		SchemaManaRepo: deviceData,
 		HubLogRepo:     hubLog,
 		SDKLogRepo:     sdkLog,
 	}

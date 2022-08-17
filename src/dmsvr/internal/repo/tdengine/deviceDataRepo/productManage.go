@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func (d *DeviceDataRepo) DropProduct(ctx context.Context, t *schema.Model, productID string) error {
-	tableList := getStableNameList(t, productID)
+	tableList := d.GetStableNameList(t, productID)
 	for _, v := range tableList {
 		sql := fmt.Sprintf("drop stable if exists %s;", v)
 		if _, err := d.t.Exec(sql); err != nil {
@@ -34,7 +35,7 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
 			"(`ts` timestamp,`event_id` BINARY(50),`event_type` BINARY(20), `param` BINARY(5000)) "+
 			"TAGS (device_name BINARY(50));",
-			getEventStableName(productID))
+			d.GetEventStableName(productID))
 		if _, err := d.t.Exec(sql); err != nil {
 			return err
 		}
@@ -58,7 +59,7 @@ func (d *DeviceDataRepo) ModifyProperty(
 		} else {
 			//新增
 			sql := fmt.Sprintf("ALTER STABLE %s ADD COLUMN %s %s; ",
-				getPropertyStableName(productID, newP.ID), newS.ID, getTdType(newS.DataType))
+				d.GetPropertyStableName(productID, newP.ID), newS.ID, store.GetTdType(newS.DataType))
 			if _, err := d.t.Exec(sql); err != nil {
 				return err
 			}
@@ -67,7 +68,7 @@ func (d *DeviceDataRepo) ModifyProperty(
 	for _, oldS := range oldP.Define.Spec {
 		//这里是需要删除的字段
 		sql := fmt.Sprintf("ALTER STABLE %s DROP COLUMN %s; ",
-			getPropertyStableName(productID, newP.ID), oldS.ID)
+			d.GetPropertyStableName(productID, newP.ID), oldS.ID)
 		if _, err := d.t.Exec(sql); err != nil {
 			return err
 		}
@@ -99,7 +100,7 @@ func (d *DeviceDataRepo) ModifyProduct(
 	}
 	//处理删除的属性
 	for _, p := range oldT.Property {
-		sql := fmt.Sprintf("drop stable if exists %s;", getPropertyStableName(productID, p.ID))
+		sql := fmt.Sprintf("drop stable if exists %s;", d.GetPropertyStableName(productID, p.ID))
 		if _, err := d.t.Exec(sql); err != nil {
 			logx.WithContext(ctx).Errorf("%s|drop table|prodecutID:%v,properties:%v,err:%v",
 				utils.FuncName(), productID, p, err)
@@ -114,15 +115,15 @@ func (d *DeviceDataRepo) createPropertyStable(
 	var sql string
 	if p.Define.Type != schema.STRUCT {
 		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
-			" TAGS (`device_name` BINARY(50),`"+PROPERTY_TYPE+"` BINARY(50));",
-			getPropertyStableName(productID, p.ID), getTdType(p.Define))
+			" TAGS (`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
+			d.GetPropertyStableName(productID, p.ID), store.GetTdType(p.Define))
 		if _, err := d.t.Exec(sql); err != nil {
 			return err
 		}
 	} else {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
-			" TAGS (`device_name` BINARY(50),`"+PROPERTY_TYPE+"` BINARY(50));",
-			getPropertyStableName(productID, p.ID), getSpecsCreateColumn(p.Define.Specs))
+			" TAGS (`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
+			d.GetPropertyStableName(productID, p.ID), d.GetSpecsCreateColumn(p.Define.Specs))
 		if _, err := d.t.Exec(sql); err != nil {
 			return err
 		}

@@ -4,6 +4,7 @@ import (
 	"context"
 	schema2 "github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
@@ -38,7 +39,7 @@ func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdat
 	if err != nil {
 		return nil, err
 	}
-	if err := l.svcCtx.DeviceDataRepo.ModifyProduct(l.ctx, oldT, newT, in.Info.ProductID); err != nil {
+	if err := l.svcCtx.SchemaManaRepo.ModifyProduct(l.ctx, oldT, newT, in.Info.ProductID); err != nil {
 		l.Errorf("%s ModifyProduct failure,err:%v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
@@ -47,7 +48,7 @@ func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdat
 		l.Errorf("ModifyProductSchema|ProductTemplate|Update|err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
-	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema2.Info{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}
@@ -72,15 +73,15 @@ func (l *ProductSchemaUpdateLogic) AddProductSchema(in *dm.ProductSchemaUpdateRe
 		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
-	if err := l.svcCtx.DeviceDataRepo.InitProduct(l.ctx, t, in.Info.ProductID); err != nil {
-		l.Errorf("%s|DeviceDataRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+	if err := l.svcCtx.SchemaManaRepo.InitProduct(l.ctx, t, in.Info.ProductID); err != nil {
+		l.Errorf("%s|SchemaManaRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.SchemaRepo.Insert(l.ctx, in.Info.ProductID, t)
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DataUpdate.SchemaUpdate(l.ctx, &schema2.Info{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}

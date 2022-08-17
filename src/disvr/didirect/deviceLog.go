@@ -1,16 +1,16 @@
 package dmdirect
 
 import (
-	client "github.com/i-Things/things/src/disvr/client/devicelog"
-	server "github.com/i-Things/things/src/disvr/internal/server/devicelog"
+	client "github.com/i-Things/things/src/disvr/client/devicemsg"
+	server "github.com/i-Things/things/src/disvr/internal/server/devicemsg"
 )
 
 var (
-	deviceLogSvr client.DeviceLog
+	deviceLogSvr client.DeviceMsg
 )
 
-func NewDeviceLog(config *Config) client.DeviceLog {
+func NewDeviceMsg(config *Config) client.DeviceMsg {
 	svc := getCtxSvc(config)
-	dmSvr := client.NewDirectDeviceLog(svc, server.NewDeviceLogServer(svc))
+	dmSvr := client.NewDirectDeviceMsg(svc, server.NewDeviceMsgServer(svc))
 	return dmSvr
 }
