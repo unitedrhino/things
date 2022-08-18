@@ -143,7 +143,7 @@ type PageInfo struct {
 	Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
 }
 
-type LoginAuthReq struct {
+type DeviceAuthLoginReq struct {
 	Username    string `json:"username"`                       //用户名
 	Password    string `json:"password,optional"`              //密码
 	ClientID    string `json:"clientID"`                       //clientID
@@ -151,7 +151,7 @@ type LoginAuthReq struct {
 	Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
 }
 
-type AccessAuthReq struct {
+type DeviceAuthAccessReq struct {
 	Username string `json:"username,omitempty"` //用户名
 	Topic    string `json:"topic,omitempty"`    //主题
 	ClientID string `json:"clientID,omitempty"` //clientID
@@ -159,7 +159,7 @@ type AccessAuthReq struct {
 	Ip       string `json:"ip,omitempty"`       //访问的ip地址
 }
 
-type RootCheckReq struct {
+type DeviceAuthRootCheckReq struct {
 	Username    string `json:"username,omitempty"`             //用户名
 	Password    string `json:"password,optional,omitempty"`    //密码
 	ClientID    string `json:"clientID,omitempty"`             //clientID
@@ -167,7 +167,7 @@ type RootCheckReq struct {
 	Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
 }
 
-type DataHubLogIndexReq struct {
+type DeviceMsgHubLogIndexReq struct {
 	DeviceName string   `json:"deviceName,omitempty"`                //设备名
 	ProductID  string   `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
 	TimeStart  int64    `json:"timeStart,string,optional,omitempty"` //获取时间的开始
@@ -175,12 +175,12 @@ type DataHubLogIndexReq struct {
 	Page       PageInfo `json:"page,optional"`                       //分页信息
 }
 
-type DataHubLogIndexResp struct {
-	List  []*DataHubLogIndex `json:"list"`  //数据
-	Total int64              `json:"total"` //总数
+type DeviceMsgHubLogIndexResp struct {
+	List  []*DeviceMsgHubLogIndex `json:"list"`  //数据
+	Total int64                   `json:"total"` //总数
 }
 
-type DataHubLogIndex struct {
+type DeviceMsgHubLogIndex struct {
 	Timestamp  int64  `json:"timestamp,string"`
 	Action     string `json:"action"`
 	RequestID  string `json:"requestID"`
@@ -190,7 +190,7 @@ type DataHubLogIndex struct {
 	ResultType int64  `json:"resultType,string"`
 }
 
-type DataSdkLogIndexReq struct {
+type DeviceMsgSdkLogIndexReq struct {
 	DeviceName string   `json:"deviceName,omitempty"`                //设备名
 	ProductID  string   `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
 	TimeStart  int64    `json:"timeStart,string,optional,omitempty"` //获取时间的开始
@@ -198,18 +198,18 @@ type DataSdkLogIndexReq struct {
 	Page       PageInfo `json:"page,optional"`                       //分页信息
 }
 
-type DataSdkIndexResp struct {
-	List  []*DataSdkIndex `json:"list"`  //数据
-	Total int64           `json:"total"` //总数
+type DeviceMsgSdkIndexResp struct {
+	List  []*DeviceMsgSdkIndex `json:"list"`  //数据
+	Total int64                `json:"total"` //总数
 }
 
-type DataSdkIndex struct {
+type DeviceMsgSdkIndex struct {
 	Timestamp int64  `json:"timestamp,string"` //发生时间戳
 	Loglevel  int64  `json:"loglevel"`         //日志级别 1)关闭 2)错误 3)告警 4)信息 5)调试
 	Content   string `json:"content"`          //具体内容
 }
 
-type DataSchemaLogIndexReq struct {
+type DeviceMsgSchemaLogIndexReq struct {
 	Method     string   `json:"method,omitempty"`                    //获取的类型   property 属性 event事件  log 所有日志
 	DeviceName []string `json:"deviceName,omitempty"`                //设备名(不填获取产品下所有设备)
 	ProductID  string   `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
@@ -223,19 +223,19 @@ type DataSchemaLogIndexReq struct {
 	Order      int32    `json:"order,optional"`                      //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
 }
 
-type DataSchemaLatestIndexReq struct {
+type DeviceMsgSchemaLatestIndexReq struct {
 	Method     string   `json:"method,omitempty"`          //获取的类型   property 属性 event事件  log 所有日志
 	DeviceName string   `json:"deviceName,omitempty"`      //设备名
 	ProductID  string   `json:"productID,omitempty"`       //产品id 获取产品id下的所有设备信息
 	DataID     []string `json:"dataID,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
 }
 
-type DataSchemaIndexResp struct {
-	List  []*DataSchemaIndex `json:"list"`  //数据
-	Total int64              `json:"total"` //总数
+type DeviceMsgSchemaIndexResp struct {
+	List  []*DeviceMsgSchemaIndex `json:"list"`  //数据
+	Total int64                   `json:"total"` //总数
 }
 
-type DataSchemaIndex struct {
+type DeviceMsgSchemaIndex struct {
 	Timestamp int64  `json:"timestamp,string"`    //发生时间戳
 	Type      string `json:"type,omitempty"`      //类型 事件类型: 信息:info  告警alert  故障:fault
 	DataID    string `json:"dataID"`              //获取的具体属性值
@@ -259,7 +259,7 @@ type DeviceInfo struct {
 	LogLevel    int64        `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	Cert        string       `json:"cert,optional"`               // 设备证书  只读
 	Tags        []*DeviceTag `json:"tags,optional"`               // 设备tag
-	IsOnline    bool         `json:"isOnline,optional"`           // 在线状态:0)离线 1)在线
+	IsOnline    int32        `json:"isOnline,optional"`           // 在线状态  1离线 2在线 只读
 }
 
 type DeviceInfoCreateReq struct {
@@ -297,6 +297,35 @@ type DeviceInfoIndexResp struct {
 	List  []*DeviceInfo `json:"list"`  //设备信息
 	Total int64         `json:"total"` //总数(只有分页的时候会返回)
 	Num   int64         `json:"num"`   //返回的数量
+}
+
+type DeviceInteractSendPropertyReq struct {
+	ProductID     string `json:"productID"`     //产品id 获取产品id下的所有设备信息
+	DeviceName    string `json:"deviceName"`    //设备名
+	Data          string `json:"data"`          //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	DataTimestamp int64  `json:"dataTimestamp"` //上报数据UNIX时间戳, 仅对Method:reported有效
+	Method        string `json:"method"`        //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+}
+
+type DeviceInteractSendPropertyResp struct {
+	Code        int64  `json:"code"`        //设备返回状态码
+	Status      string `json:"status"`      //返回状态
+	ClientToken string `json:"clientToken"` //调用id
+	Data        string `json:"data"`        //返回信息
+}
+
+type DeviceInteractSendActionReq struct {
+	ProductID   string `json:"productID"`   //产品id 获取产品id下的所有设备信息
+	DeviceName  string `json:"deviceName"`  //设备名
+	ActionID    string `json:"actionId"`    //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+	InputParams string `json:"inputParams"` //输入参数
+}
+
+type DeviceInteractSendActionResp struct {
+	ClientToken  string `json:"clientToken"`  //调用id
+	OutputParams string `json:"outputParams"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
+	Status       string `json:"status"`       //返回状态
+	Code         int64  `json:"code"`         //设备返回状态码
 }
 
 type ProductInfo struct {

@@ -107,7 +107,7 @@ message HubLogIndexResp{
 message SendActionReq{
   string  productID = 1; //产品id 获取产品id下的所有设备信息
   string  deviceName = 2; //设备名
-  string actionId = 3;//产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+  string actionID = 3;//产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
   string inputParams = 4;//输入参数
 }
 message SendActionResp{
