@@ -2,8 +2,8 @@ package config
 
 import (
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/src/dcsvr/dcdirect"
 	"github.com/i-Things/things/src/ddsvr/dddirect"
+	"github.com/i-Things/things/src/disvr/didirect"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/usersvr/userdirect"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -21,7 +21,7 @@ type Config struct {
 	rest.RestConf
 	CacheRedis cache.ClusterConf
 	UserRpc    conf.RpcClientConf `json:",optional"`
-	DcRpc      conf.RpcClientConf `json:",optional"`
+	DiRpc      conf.RpcClientConf `json:",optional"`
 	DmRpc      conf.RpcClientConf `json:",optional"`
 	Rej        struct {
 		AccessSecret string
@@ -34,7 +34,7 @@ type Config struct {
 type Configs struct {
 	Config
 	UserSvr userdirect.Config `json:",optional"` //只有单体模式需要填写
-	DmSvr   dmdirect.Config   `json:",optional"` //只有单体模式需要填写
+	DmSvr   *dmdirect.Config  `json:",optional"` //只有单体模式需要填写
 	DdSvr   *dddirect.Config  `json:",optional"` //只有单体模式需要填写
-	DcSvr   dcdirect.Config   `json:",optional"` //只有单体模式需要填写
+	DiSvr   *didirect.Config  `json:",optional"` //只有单体模式需要填写
 }
