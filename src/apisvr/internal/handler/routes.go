@@ -4,11 +4,13 @@ package handler
 import (
 	"net/http"
 
+	devicedeviceauth "github.com/i-Things/things/src/apisvr/internal/handler/device/device/auth"
+	devicedeviceinfo "github.com/i-Things/things/src/apisvr/internal/handler/device/device/info"
+	devicedeviceinteract "github.com/i-Things/things/src/apisvr/internal/handler/device/device/interact"
+	devicedevicemsg "github.com/i-Things/things/src/apisvr/internal/handler/device/device/msg"
+	deviceproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/device/product/info"
+	deviceproductschema "github.com/i-Things/things/src/apisvr/internal/handler/device/product/schema"
 	systemuser "github.com/i-Things/things/src/apisvr/internal/handler/system/user"
-	thingsauth "github.com/i-Things/things/src/apisvr/internal/handler/things/auth"
-	thingsdata "github.com/i-Things/things/src/apisvr/internal/handler/things/data"
-	thingsdevice "github.com/i-Things/things/src/apisvr/internal/handler/things/device"
-	thingsproduct "github.com/i-Things/things/src/apisvr/internal/handler/things/product"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -75,20 +77,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/login",
-				Handler: thingsauth.LoginHandler(serverCtx),
+				Handler: devicedeviceauth.LoginHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/access",
-				Handler: thingsauth.AccessHandler(serverCtx),
+				Handler: devicedeviceauth.AccessHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/root-check",
-				Handler: thingsauth.RootCheckHandler(serverCtx),
+				Handler: devicedeviceauth.RootCheckHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/things/auth"),
+		rest.WithPrefix("/api/v1/device/device/auth"),
 	)
 
 	server.AddRoutes(
@@ -96,25 +98,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/hub-log/index",
-				Handler: thingsdata.HubLogIndexHandler(serverCtx),
+				Handler: devicedevicemsg.HubLogIndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/sdk-log/index",
-				Handler: thingsdata.SdkLogIndexHandler(serverCtx),
+				Handler: devicedevicemsg.SdkLogIndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/schema-log/index",
-				Handler: thingsdata.SchemaLogIndexHandler(serverCtx),
+				Handler: devicedevicemsg.SchemaLogIndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/schema-latest/index",
-				Handler: thingsdata.SchemaLatestIndexHandler(serverCtx),
+				Handler: devicedevicemsg.SchemaLatestIndexHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/things/data"),
+		rest.WithPrefix("/api/v1/device/device/msg"),
 	)
 
 	server.AddRoutes(
@@ -122,70 +124,92 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/create",
-				Handler: thingsdevice.InfoCreateHandler(serverCtx),
+				Handler: devicedeviceinfo.CreateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/update",
-				Handler: thingsdevice.InfoUpdateHandler(serverCtx),
+				Handler: devicedeviceinfo.UpdateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/delete",
-				Handler: thingsdevice.InfoDeleteHandler(serverCtx),
+				Handler: devicedeviceinfo.DeleteHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/index",
-				Handler: thingsdevice.InfoIndexHandler(serverCtx),
+				Handler: devicedeviceinfo.IndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/read",
-				Handler: thingsdevice.InfoReadHandler(serverCtx),
+				Handler: devicedeviceinfo.ReadHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/things/device"),
+		rest.WithPrefix("/api/v1/device/device/info"),
 	)
 
 	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/info/create",
-				Handler: thingsproduct.InfoCreateHandler(serverCtx),
+				Path:    "/send-action",
+				Handler: devicedeviceinteract.SendActionHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/info/update",
-				Handler: thingsproduct.InfoUpdateHandler(serverCtx),
+				Path:    "/send-property",
+				Handler: devicedeviceinteract.SendPropertyHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/device/device/interact"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/create",
+				Handler: deviceproductinfo.CreateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/info/delete",
-				Handler: thingsproduct.InfoDeleteHandler(serverCtx),
+				Path:    "/update",
+				Handler: deviceproductinfo.UpdateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/info/index",
-				Handler: thingsproduct.InfoIndexHandler(serverCtx),
+				Path:    "/delete",
+				Handler: deviceproductinfo.DeleteHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/info/read",
-				Handler: thingsproduct.InfoReadHandler(serverCtx),
+				Path:    "/index",
+				Handler: deviceproductinfo.IndexHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/read",
+				Handler: deviceproductinfo.ReadHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/device/product/info"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
 			{
 				Method:  http.MethodPost,
 				Path:    "/schema/update",
-				Handler: thingsproduct.SchemaUpdateHandler(serverCtx),
+				Handler: deviceproductschema.UpdateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/schema/read",
-				Handler: thingsproduct.SchemaReadHandler(serverCtx),
+				Handler: deviceproductschema.ReadHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/things/product"),
+		rest.WithPrefix("/api/v1/device/product/schema"),
 	)
 }

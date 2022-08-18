@@ -1,4 +1,4 @@
-package dmdirect
+package didirect
 
 import (
 	client "github.com/i-Things/things/src/disvr/client/deviceinteract"

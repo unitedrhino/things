@@ -6,9 +6,12 @@ import (
 	"github.com/i-Things/things/shared/verify"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/middleware"
-	"github.com/i-Things/things/src/dcsvr/dc"
-	"github.com/i-Things/things/src/dcsvr/dcdirect"
-	"github.com/i-Things/things/src/dmsvr/dmclient"
+	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
+	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
+	"github.com/i-Things/things/src/disvr/didirect"
+	deviceauth "github.com/i-Things/things/src/dmsvr/client/deviceauth"
+	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
+	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/usersvr/userclient"
 	"github.com/i-Things/things/src/usersvr/userdirect"
@@ -18,26 +21,38 @@ import (
 )
 
 type ServiceContext struct {
-	Config     config.Configs
-	CheckToken rest.Middleware
-	Record     rest.Middleware
-	DmManage   rest.Middleware
-	UserRpc    userclient.User
-	DmRpc      dmclient.Dm
-	DcRpc      dc.Dc
-	Captcha    *verify.Captcha
-	OSS        oss.OSSer
+	Config         config.Configs
+	CheckToken     rest.Middleware
+	Record         rest.Middleware
+	DmManage       rest.Middleware
+	UserRpc        userclient.User
+	DeviceM        devicemanage.DeviceManage
+	DeviceA        deviceauth.DeviceAuth
+	ProductM       productmanage.ProductManage
+	DeviceMsg      devicemsg.DeviceMsg
+	DeviceInteract deviceinteract.DeviceInteract
+	Captcha        *verify.Captcha
+	OSS            oss.OSSer
 }
 
 func NewServiceContext(c config.Configs) *ServiceContext {
-	var dr dmclient.Dm
+	var (
+		deviceM        devicemanage.DeviceManage
+		productM       productmanage.ProductManage
+		deviceA        deviceauth.DeviceAuth
+		deviceMsg      devicemsg.DeviceMsg
+		deviceInteract deviceinteract.DeviceInteract
+	)
 	var ur userclient.User
-	var dcSvr dc.Dc
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc {
-			dr = dmclient.NewDm(zrpc.MustNewClient(c.DmRpc.Conf))
+			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else {
-			dr = dmdirect.NewDm(&c.DmSvr)
+			deviceM = dmdirect.NewDeviceManage(c.DmSvr)
+			productM = dmdirect.NewProductManage(c.DmSvr)
+			deviceA = dmdirect.NewDeviceAuth(c.DmSvr)
 		}
 	}
 	if c.UserRpc.Enable {
@@ -47,11 +62,14 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 			ur = userdirect.NewUser(c.UserSvr)
 		}
 	}
-	if c.DcRpc.Enable {
-		if c.DcSvr.Mode == conf.ClientModeGrpc {
-			dcSvr = dc.NewDc(zrpc.MustNewClient(c.DcRpc.Conf))
+	if c.DiRpc.Enable {
+		if c.DiRpc.Mode == conf.ClientModeGrpc {
+			deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DiRpc.Conf))
+			deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DiRpc.Conf))
+
 		} else {
-			dcSvr = dcdirect.NewDc(c.DcSvr)
+			deviceMsg = didirect.NewDeviceMsg(c.DiSvr)
+			deviceInteract = didirect.NewDeviceInteract(c.DiSvr)
 		}
 	}
 	//ossClient, err := oss.NewOss(c.OSS)
@@ -67,13 +85,16 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
-		Config:     c,
-		CheckToken: middleware.NewCheckTokenMiddleware(ur).Handle,
-		Record:     middleware.NewRecordMiddleware().Handle,
-		UserRpc:    ur,
-		DmRpc:      dr,
-		Captcha:    captcha,
-		DcRpc:      dcSvr,
+		Config:         c,
+		CheckToken:     middleware.NewCheckTokenMiddleware(ur).Handle,
+		Record:         middleware.NewRecordMiddleware().Handle,
+		UserRpc:        ur,
+		ProductM:       productM,
+		DeviceM:        deviceM,
+		Captcha:        captcha,
+		DeviceInteract: deviceInteract,
+		DeviceMsg:      deviceMsg,
+		DeviceA:        deviceA,
 		//OSS:        ossClient,
 	}
 }

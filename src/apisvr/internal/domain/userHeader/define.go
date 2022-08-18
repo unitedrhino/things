@@ -1,9 +1,9 @@
 package userHeader
 
 const (
-	GUID         string = "fmcs-guid"
-	UserToken    string = "fmcs-token"
-	UserSetToken string = "fmcs-set-token"
-	UserIp       string = "fmcs-ip"
-	UserUid      string = "fmcs-uid"
+	GUID         string = "iThings-guid"
+	UserToken    string = "iThings-token"
+	UserSetToken string = "iThings-set-token"
+	UserIp       string = "iThings-ip"
+	UserUid      string = "iThings-uid"
 )
