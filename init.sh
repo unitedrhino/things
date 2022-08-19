@@ -49,7 +49,6 @@ function init_mysql_db_table(){
    check_result=$(docker ps |grep mysql)
    if [ -n "$check_result" ];then
        docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < admin.sql'
-       docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < dcsvr.sql'
        docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < dmsvr.sql'
        docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < usersvr.sql'
        sleep 5
@@ -74,4 +73,4 @@ docker-compose up -d
 sleep 10 #这里必须等待足够长时间，等容器中mysql正常启动才能执行后续导入脚本命令
 init_mysql_db_table
 # 初始化tdengine的表
-curl -u root:taosdata -d 'create database if not exists test;' 127.0.0.1:6041/rest/sql
+curl -u root:taosdata -d 'create database if not exists iThings;' 127.0.0.1:6041/rest/sql

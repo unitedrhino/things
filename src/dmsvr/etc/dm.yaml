@@ -13,7 +13,7 @@ CacheRedis:
     Pass:
     Type: node
 TDengine:
-  DataSource: root:taosdata@http(localhost:6041)/test?readBufferSize=52428800
+  DataSource: root:taosdata@http(localhost:6041)/iThings?readBufferSize=52428800
 AuthWhite:
   IpRange:
     - 127.0.0.1
