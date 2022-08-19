@@ -20,14 +20,14 @@ DcRpc:
         - 127.0.0.1:2379
       Key: dc.rpc
     Timeout: 1000000
-UserRpc:
+SysRpc:
   Enable: true
   Mode: direct
   Conf:
     Etcd:
       Hosts:
         - 127.0.0.1:2379
-      Key: user.rpc
+      Key: sys.rpc
 DmRpc:
   Enable: true
   Mode: direct
@@ -89,14 +89,14 @@ DcSvr:
     Mode: direct
     Conf:
       Timeout: 1000000
-UserSvr:
-  Name: user.rpc
+SysSvr:
+  Name: sys.rpc
   ListenOn: 127.0.0.1:9180
   CpuThreshold: 0
   Log:
     Encoding: plain
   Mysql:
-    DataSource: root:password@tcp(127.0.0.1:3306)/things_user?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+    DataSource: root:password@tcp(127.0.0.1:3306)/things_sys?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
   CacheRedis:
     - Host: 127.0.0.1:6379
       Pass:

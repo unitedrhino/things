@@ -3,7 +3,7 @@ package user
 import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/pb/user"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
 func GetNullVal(val *wrappers.StringValue) *string {
@@ -13,7 +13,7 @@ func GetNullVal(val *wrappers.StringValue) *string {
 	return &val.Value
 }
 
-func UserCoreToApi(core *user.UserCore) *types.UserCore {
+func UserCoreToApi(core *sys.UserCore) *types.UserCore {
 	return &types.UserCore{
 		Uid:         core.Uid,
 		UserName:    core.UserName,
@@ -28,7 +28,7 @@ func UserCoreToApi(core *user.UserCore) *types.UserCore {
 	}
 }
 
-func UserInfoToApi(ui *user.UserInfo) *types.UserInfo {
+func UserInfoToApi(ui *sys.UserInfo) *types.UserInfo {
 	return &types.UserInfo{
 		Uid:        ui.Uid,
 		UserName:   ui.UserName,

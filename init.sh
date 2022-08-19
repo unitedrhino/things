@@ -50,7 +50,7 @@ function init_mysql_db_table(){
    if [ -n "$check_result" ];then
        docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < admin.sql'
        docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < dmsvr.sql'
-       docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < usersvr.sql'
+       docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < syssvr.sql'
        sleep 5
        echo "has install mysql"
        break

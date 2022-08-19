@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/pb/user"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,7 +26,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 func (l *ReadLogic) Read(req *types.UserIndexReq) (resp *types.UserIndexResp, err error) {
 	//l.Infof("UserCoreList|req=%+v", req)
 	info, err := l.svcCtx.UserRpc.Read(l.ctx,
-		&user.UserReadReq{Uid: userHeader.GetUserCtx(l.ctx).Uid})
+		&sys.UserReadReq{Uid: userHeader.GetUserCtx(l.ctx).Uid})
 	if err != nil {
 		return nil, err
 	}

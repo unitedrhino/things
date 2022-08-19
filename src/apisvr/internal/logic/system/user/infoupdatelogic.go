@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/pb/user"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,7 +26,7 @@ func NewInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *InfoUp
 
 func (l *InfoUpdateLogic) InfoUpdate(req *types.UserInfoUpdateReq) error {
 	//l.Infof("ModifyUserInfo|uid=%d|req=%+v", uid, req)
-	_, err := l.svcCtx.UserRpc.InfoUpdate(l.ctx, &user.UserInfoUpdateReq{
+	_, err := l.svcCtx.UserRpc.InfoUpdate(l.ctx, &sys.UserInfoUpdateReq{
 		Uid:        userHeader.GetUserCtx(l.ctx).Uid,
 		NickName:   req.NickName,
 		InviterUid: req.InviterUid,

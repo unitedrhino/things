@@ -5,10 +5,10 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/pb/user"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -38,8 +38,8 @@ func (l *InfoCreateLogic) InfoCreate(req *types.UserInfoCreateReq) error {
 		l.Errorf("uid is invalid")
 		return errors.UidNotRight
 	}
-	resp, er := l.svcCtx.UserRpc.InfoCreate(l.ctx, &user.UserInfoCreateReq{
-		Info: &user.UserInfo{
+	resp, er := l.svcCtx.UserRpc.InfoCreate(l.ctx, &sys.UserInfoCreateReq{
+		Info: &sys.UserInfo{
 			Uid:        req.Uid,
 			UserName:   req.UserName,
 			NickName:   req.NickName,

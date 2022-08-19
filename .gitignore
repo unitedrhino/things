@@ -40,3 +40,4 @@ src/ddsvr/ddsvr*
 src/dmsvr/dmsvr*
 src/usersvr/usersvr*
 /src/disvr/disvr.exe
+/src/syssvr/syssvr.exe
