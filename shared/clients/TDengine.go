@@ -2,7 +2,7 @@ package clients
 
 import (
 	"database/sql"
-	_ "github.com/i-Things/driver-go/v2/taosRestful"
+	_ "github.com/taosdata/driver-go/v3/taosRestful"
 )
 
 type Td struct {
