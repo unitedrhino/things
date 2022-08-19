@@ -18,7 +18,7 @@ func (d HubLogRepo) GetCountLog(ctx context.Context, productID, deviceName strin
 	if err != nil {
 		return 0, err
 	}
-	row := d.t.QueryRow(sqlStr, value...)
+	row := d.t.QueryRowContext(ctx, sqlStr, value...)
 	if err != nil {
 		return 0, err
 	}
@@ -42,7 +42,7 @@ func (d HubLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName stri
 	if err != nil {
 		return nil, err
 	}
-	rows, err := d.t.Query(sqlStr, value...)
+	rows, err := d.t.QueryContext(ctx, sqlStr, value...)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (d HubLogRepo) Insert(ctx context.Context, data *deviceMsg.HubLog) error {
 	sql := fmt.Sprintf("insert into %s using %s tags('%s')(`ts`, `content`, `topic`, `action`,"+
 		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
 		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(data.ProductID), data.DeviceName)
-	if _, err := d.t.Exec(sql, data.Timestamp, data.Content, data.Topic, data.Action,
+	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.Topic, data.Action,
 		data.RequestID, data.TranceID, data.ResultType); err != nil {
 		return err
 	}

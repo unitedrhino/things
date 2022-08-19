@@ -9,13 +9,13 @@ require (
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-uuid v1.0.2
-	github.com/i-Things/driver-go/v2 v2.0.6
 	github.com/jinzhu/copier v0.3.2
 	github.com/minio/minio-go/v7 v7.0.27
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/nats-io/nats.go v1.14.0
 	github.com/silenceper/wechat/v2 v2.0.5
-	github.com/spf13/cast v1.3.1
+	github.com/spf13/cast v1.5.0
+	github.com/taosdata/driver-go/v3 v3.0.0
 	github.com/zeromicro/go-zero v1.4.0
 	go.opentelemetry.io/otel v1.9.0
 	go.opentelemetry.io/otel/trace v1.9.0
@@ -111,3 +111,5 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )
+
+replace github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.1
