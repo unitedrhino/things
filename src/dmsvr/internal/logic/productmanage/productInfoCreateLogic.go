@@ -55,6 +55,7 @@ func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) (*mysql.Produ
 		Schema:      schema.DefaultSchema,
 		ProductID:   deviceAuth.GetStrProductID(ProductID),
 		CreatedTime: createTime,
+		UpdatedTime: createTime,
 	}
 	pi := &mysql.ProductInfo{
 		ProductID:   deviceAuth.GetStrProductID(ProductID), // 产品id
@@ -62,6 +63,7 @@ func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) (*mysql.Produ
 		Description: in.Description.GetValue(),
 		DevStatus:   in.DevStatus.GetValue(),
 		CreatedTime: createTime,
+		UpdatedTime: createTime,
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister

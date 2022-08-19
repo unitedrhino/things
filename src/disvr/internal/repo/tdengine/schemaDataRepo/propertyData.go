@@ -26,7 +26,7 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 			d.GetPropertyStableName(productID, property.ID), deviceName, t.Property[property.ID].Define.Type,
 			paramIds, paramPlaceholder)
 		param := append([]any{property.TimeStamp}, paramValList...)
-		if _, err := d.t.Exec(sql, param...); err != nil {
+		if _, err := d.t.ExecContext(ctx, sql, param...); err != nil {
 			return err
 		}
 	default:
@@ -42,7 +42,7 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 		}
 		sql := fmt.Sprintf("insert into %s (ts, param) values (?,?);",
 			d.GetPropertyTableName(productID, deviceName, property.ID))
-		if _, err := d.t.Exec(sql, property.TimeStamp, param); err != nil {
+		if _, err := d.t.ExecContext(ctx, sql, property.TimeStamp, param); err != nil {
 			return err
 		}
 	}
@@ -80,7 +80,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 	if filter.ArgFunc == "" {
 		sql = sq.Select("*")
 	} else {
-		sql, err = d.GetPropertyArgFuncSelect(ctx, filter)
+		sql, err = d.getPropertyArgFuncSelect(ctx, filter)
 		if err != nil {
 			return nil, err
 		}
@@ -98,7 +98,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 	if err != nil {
 		return nil, err
 	}
-	rows, err := d.t.Query(sqlStr, value...)
+	rows, err := d.t.QueryContext(ctx, sqlStr, value...)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 	return retProperties, err
 }
 
-func (d *SchemaDataRepo) GetPropertyArgFuncSelect(
+func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 	ctx context.Context,
 	filter deviceMsg.FilterOpt) (sq.SelectBuilder, error) {
 	schemaModel, err := d.getSchemaModel(ctx, filter.ProductID)
@@ -148,7 +148,7 @@ func (d *SchemaDataRepo) GetPropertyCountByID(
 	if err != nil {
 		return 0, err
 	}
-	row := d.t.QueryRow(sqlStr, value...)
+	row := d.t.QueryRowContext(ctx, sqlStr, value...)
 	var total int64
 	err = row.Scan(&total)
 	if err != nil && err != sql.ErrNoRows {

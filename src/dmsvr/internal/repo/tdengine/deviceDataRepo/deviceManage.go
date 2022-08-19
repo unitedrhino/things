@@ -21,7 +21,7 @@ func (d *DeviceDataRepo) InitDevice(ctx context.Context,
 	}
 	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s TAGS ('%s');",
 		d.GetEventTableName(productID, deviceName), d.GetEventStableName(productID), deviceName)
-	if _, err := d.t.Exec(sql); err != nil {
+	if _, err := d.t.ExecContext(ctx,sql); err != nil {
 		logx.WithContext(ctx).Errorf(
 			"%s|EventTable|productID:%v,deviceName:%v,err:%v",
 			utils.FuncName(), productID, deviceName, err)
@@ -38,7 +38,7 @@ func (d *DeviceDataRepo) DropDevice(
 	tableList := d.GetTableNameList(t, productID, deviceName)
 	for _, v := range tableList {
 		sql := fmt.Sprintf("drop table if exists %s;", v)
-		if _, err := d.t.Exec(sql); err != nil {
+		if _, err := d.t.ExecContext(ctx,sql); err != nil {
 			return err
 		}
 	}
@@ -51,7 +51,7 @@ func (d *DeviceDataRepo) createPropertyTable(
 		sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s');",
 			d.GetPropertyTableName(productID, deviceName, v.ID),
 			d.GetPropertyStableName(productID, v.ID), deviceName, v.Define.Type)
-		if _, err := d.t.Exec(sql); err != nil {
+		if _, err := d.t.ExecContext(ctx,sql); err != nil {
 			return err
 		}
 	}
