@@ -4,17 +4,16 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
-	"github.com/i-Things/things/src/usersvr/pb/user"
-	"github.com/i-Things/things/src/usersvr/userclient"
+	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 )
 
 type CheckTokenMiddleware struct {
-	UserRpc userclient.User
+	UserRpc user.User
 }
 
-func NewCheckTokenMiddleware(UserRpc userclient.User) *CheckTokenMiddleware {
+func NewCheckTokenMiddleware(UserRpc user.User) *CheckTokenMiddleware {
 	return &CheckTokenMiddleware{UserRpc: UserRpc}
 }
 

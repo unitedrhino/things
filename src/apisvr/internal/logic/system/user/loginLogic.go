@@ -6,8 +6,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/pb/user"
-
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -32,7 +31,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			return nil, errors.Captcha
 		}
 	}
-	uResp, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
+	uResp, err := l.svcCtx.UserRpc.Login(l.ctx, &sys.LoginReq{
 		UserID:    req.UserID,
 		PwdType:   req.PwdType,
 		Password:  req.Password,

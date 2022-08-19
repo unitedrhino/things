@@ -13,8 +13,8 @@ import (
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
-	"github.com/i-Things/things/src/usersvr/userclient"
-	"github.com/i-Things/things/src/usersvr/userdirect"
+	user "github.com/i-Things/things/src/syssvr/client/user"
+	"github.com/i-Things/things/src/syssvr/sysdirect"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"time"
@@ -25,7 +25,7 @@ type ServiceContext struct {
 	CheckToken     rest.Middleware
 	Record         rest.Middleware
 	DmManage       rest.Middleware
-	UserRpc        userclient.User
+	UserRpc        user.User
 	DeviceM        devicemanage.DeviceManage
 	DeviceA        deviceauth.DeviceAuth
 	ProductM       productmanage.ProductManage
@@ -43,7 +43,7 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 		deviceMsg      devicemsg.DeviceMsg
 		deviceInteract deviceinteract.DeviceInteract
 	)
-	var ur userclient.User
+	var ur user.User
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc {
 			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -55,11 +55,11 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 			deviceA = dmdirect.NewDeviceAuth(c.DmSvr)
 		}
 	}
-	if c.UserRpc.Enable {
-		if c.UserRpc.Mode == conf.ClientModeGrpc {
-			ur = userclient.NewUser(zrpc.MustNewClient(c.UserRpc.Conf))
+	if c.SysRpc.Enable {
+		if c.SysRpc.Mode == conf.ClientModeGrpc {
+			ur = user.NewUser(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
-			ur = userdirect.NewUser(c.UserSvr)
+			ur = sysdirect.NewUser(c.SysSvr)
 		}
 	}
 	if c.DiRpc.Enable {
