@@ -5,5 +5,5 @@ info(
 	email: "603685348@qq.com"
 	version: "v1"
 )
-import "system.api" //系统管理
-import "things.api" //物模型管理
+import "things/device.api"  //设备相关功能接口
+import "things/product.api"  //产品相关功能接口

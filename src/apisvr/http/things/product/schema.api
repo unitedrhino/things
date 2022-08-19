@@ -1,0 +1,42 @@
+info(
+    title: "产品管理模块"
+    desc: "产品管理模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group : things/product/schema
+    prefix: /api/v1/things/product/schema
+)
+service api {
+    @doc "更新产品物模型"
+    @handler update
+    post /schema/update (ProductSchemaUpdateReq) returns ()
+    @doc "获取产品物模型"
+    @handler read
+    post /schema/read (ProductSchemaReadReq) returns (ProductSchemaReadResp)
+}
+
+type(
+    ProductSchema struct {
+        CreatedTime int64 `json:"createdTime,optional,string"`   //创建时间 只读
+        ProductID string `json:"productID,optional"`             //产品id 只读
+        Schema string `json:"schema,optional"`               //数据模板
+    }
+
+    ProductSchemaUpdateReq struct {
+        ProductID string `json:"productID"`         //产品id
+        Schema string `json:"schema"`               //数据模板
+    }
+
+    ProductSchemaReadReq struct {
+        ProductID string `json:"productID"` //产品id
+    }
+
+    ProductSchemaReadResp struct {
+        ProductSchema
+    }
+)
