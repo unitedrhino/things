@@ -8,7 +8,7 @@ function runsvr(){
   cd ../..
 }
 runsvr dmsvr
-runsvr usersvr
-runsvr dcsvr
+runsvr syssvr
+runsvr disvr
 runsvr apisvr
 runsvr ddsvr

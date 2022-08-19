@@ -48,7 +48,6 @@ function init_mysql_db_table(){
  for (( i=0; i<300; i++)); do
    check_result=$(docker ps |grep mysql)
    if [ -n "$check_result" ];then
-       docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < admin.sql'
        docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < dmsvr.sql'
        docker exec -it mysql-docker /bin/bash -c 'mysql -uroot -ppassword < syssvr.sql'
        sleep 5
