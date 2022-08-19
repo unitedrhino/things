@@ -5,11 +5,11 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"time"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/usersvr/pb/user"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -29,7 +29,7 @@ func NewCoreCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CoreCr
 
 func (l *CoreCreateLogic) CoreCreate(req *types.UserCoreCreateReq) (resp *types.UserCoreCreateResp, err error) {
 	l.Infof("RegisterCore|req=%+v", req)
-	resp1, err1 := l.svcCtx.UserRpc.CoreCreate(l.ctx, &user.UserCoreCreateReq{
+	resp1, err1 := l.svcCtx.UserRpc.CoreCreate(l.ctx, &sys.UserCoreCreateReq{
 		ReqType:  req.ReqType,
 		Identity: req.Identity,
 		Code:     req.Code,

@@ -14,19 +14,19 @@ protoc/protoc-gen-go/protoc-gen-grpc-go 依赖可以通过
 goctl api go -api http/api.api  -dir ./  --style=goZero
 ```
 
-# 用户管理模块-usersvr
+# 系统管理模块-syssvr
 
 ## 数据库文件生成
 下面两种方式二选一
 ```shell script
-goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_user" -table="*" -dir ./internal/repo/mysql
-goctl model mysql ddl -src="../../deploy/mysql/usersvr.sql"  -dir ./internal/repo/mysql 
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_sys" -table="*" -dir ./internal/repo/mysql
+goctl model mysql ddl -src="../../deploy/mysql/syssvr.sql"  -dir ./internal/repo/mysql 
 
 ```
 
 ## rpc文件编译方法
 ```shell script
-goctl rpc protoc  proto/user.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero
+goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m
 ```
 
 # 设备管理模块-dmsvr
