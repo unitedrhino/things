@@ -1,0 +1,11 @@
+info(
+	title: "web端网关"
+	desc: "负责http协议的网关"
+	author: "杨磊"
+	email: "603685348@qq.com"
+	version: "v1"
+)
+import "things/device/auth.api" //设备校验接口
+import "things/device/msg.api" //设备消息获取接口
+import "things/device/device.api"  //设备管理模块相关接口
+import "things/device/interact.api"  //设备交互相关接口

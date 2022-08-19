@@ -1,9 +1,0 @@
-info(
-	title: "web端网关"
-	desc: "负责http协议的网关"
-	author: "杨磊"
-	email: "603685348@qq.com"
-	version: "v1"
-)
-import "device/device.api"  //设备相关功能接口
-import "device/product.api"  //产品相关功能接口
