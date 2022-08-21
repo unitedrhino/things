@@ -27,8 +27,9 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	} //注册token相关配置
-	Captcha Captcha
-	OSS     conf.OSSConf `json:",optional"`
+	FrontDir string `json:",default=./dist"` //前端文件路径
+	Captcha  Captcha
+	OSS      conf.OSSConf `json:",optional"`
 }
 
 type Configs struct {

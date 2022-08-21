@@ -22,7 +22,7 @@ target/
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
-/dist/
+/src/apisvr/dist/
 /nbdist/
 /.nb-gradle/
 build/
@@ -41,3 +41,4 @@ src/dmsvr/dmsvr*
 src/usersvr/usersvr*
 /src/disvr/disvr.exe
 /src/syssvr/syssvr.exe
+/src/apisvr/dist/
