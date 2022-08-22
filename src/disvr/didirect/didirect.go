@@ -2,6 +2,7 @@ package didirect
 
 import (
 	"github.com/i-Things/things/src/disvr/internal/config"
+	"github.com/i-Things/things/src/disvr/internal/startup"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"sync"
 )
@@ -16,6 +17,7 @@ var (
 func getCtxSvc(config *Config) *svc.ServiceContext {
 	once.Do(func() {
 		ctxSvc = svc.NewServiceContext(*config)
+		startup.Subscribe(ctxSvc)
 	})
 	return ctxSvc
 }

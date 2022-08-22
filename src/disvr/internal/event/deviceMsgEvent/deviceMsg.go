@@ -25,7 +25,10 @@ func NewDeviceMsgHandle(ctx context.Context, svcCtx *svc.ServiceContext) *Device
 
 func (l *DeviceMsgHandle) Thing(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s|req=%v", utils.FuncName(), msg)
-	return NewThingLogic(l.ctx, l.svcCtx).Handle(msg)
+	resp, err := NewThingLogic(l.ctx, l.svcCtx).Handle(msg)
+	l.deviceResp(resp)
+	l.Infof("DeviceMsgHandle.Thing|req:%v resp:%v err:%v", msg, resp, err)
+	return err
 }
 
 func (l *DeviceMsgHandle) Ota(msg *deviceMsg.PublishMsg) error {
@@ -44,8 +47,10 @@ func (l *DeviceMsgHandle) Config(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *DeviceMsgHandle) SDKLog(msg *deviceMsg.PublishMsg) error {
-	l.Infof("%s|req=%v", utils.FuncName(), msg)
-	return NewSDKLogLogic(l.ctx, l.svcCtx).Handle(msg)
+	respMsg, err := NewSDKLogLogic(l.ctx, l.svcCtx).Handle(msg)
+	l.deviceResp(respMsg)
+	l.Infof("DeviceMsgHandle.SDKLog|req:%v resp:%v err:%v", msg, respMsg, err)
+	return err
 }
 
 func (l *DeviceMsgHandle) Connected(msg *deviceMsg.ConnectMsg) error {
@@ -56,4 +61,15 @@ func (l *DeviceMsgHandle) Connected(msg *deviceMsg.ConnectMsg) error {
 func (l *DeviceMsgHandle) Disconnected(msg *deviceMsg.ConnectMsg) error {
 	l.Infof("%s|req=%v", utils.FuncName(), msg)
 	return NewDisconnectedLogic(l.ctx, l.svcCtx).Handle(msg)
+}
+func (l *DeviceMsgHandle) deviceResp(respMsg *deviceMsg.PublishMsg) {
+	if respMsg == nil {
+		return
+	}
+	er := l.svcCtx.PubDev.PublishToDev(l.ctx, respMsg.Topic, respMsg.Payload)
+	if er != nil {
+		l.Errorf("DeviceMsgHandle.deviceResp.PublishToDev failure err:%v", er)
+		return
+	}
+	l.Infof("DeviceMsgHandle.deviceResp.PublishToDev msg:%v", respMsg)
 }

@@ -201,12 +201,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/schema/update",
+				Path:    "/update",
 				Handler: thingsproductschema.UpdateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/schema/read",
+				Path:    "/read",
 				Handler: thingsproductschema.ReadHandler(serverCtx),
 			},
 		},

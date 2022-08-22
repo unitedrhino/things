@@ -86,6 +86,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 		DeviceName:  in.DeviceName, // 设备名称
 		Secret:      utils.GetPwdBase64(20),
 		CreatedTime: time.Now(),
+		UpdatedTime: time.Now(),
 	}
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)
@@ -106,7 +107,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 	}
 	_, err = l.svcCtx.DeviceInfo.Insert(l.ctx, &di)
 	if err != nil {
-		l.Errorf("AddDevice|DeviceInfo|Insert|err=%+v", err)
+		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
 	return &dm.Response{}, nil
