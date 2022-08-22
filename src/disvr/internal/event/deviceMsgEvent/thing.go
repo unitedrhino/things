@@ -12,6 +12,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
+	"time"
 )
 
 type ThingLogic struct {
@@ -47,39 +48,36 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	return nil
 }
 
-func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) {
+func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) *deviceMsg.PublishMsg {
 	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
-	er := l.svcCtx.PubDev.PublishToDev(l.ctx, topic, payload)
-	if er != nil {
-		l.Errorf("DeviceResp|PublishToDev failure err:%v", er)
-		return
+	return &deviceMsg.PublishMsg{
+		Topic:     topic,
+		Payload:   payload,
+		Timestamp: time.Now(),
 	}
-	l.Infof("ThingLogic|DeviceResp|topic:%v payload:%v err:%v", topic, string(payload), err)
 }
 
-func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) error {
+func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	tp, err := l.dreq.VerifyReqParam(l.schema, schema.PROPERTY)
 	if err != nil {
-		l.DeviceResp(msg, err, nil)
-		return err
+		return l.DeviceResp(msg, err, nil), err
 	} else if len(tp) == 0 {
 		err := errors.Parameter.AddDetail("need right param")
-		l.DeviceResp(msg, err, nil)
-		return err
+
+		return l.DeviceResp(msg, err, nil), err
 	}
 	params := deviceSend.ToVal(tp)
 	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
 	err = l.dd.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
-		l.DeviceResp(msg, errors.Database, nil)
+
 		l.Errorf("HandlePropertyReport|InsertPropertyData|err=%+v", err)
-		return err
+		return l.DeviceResp(msg, errors.Database, nil), err
 	}
-	l.DeviceResp(msg, errors.OK, nil)
-	return nil
+	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
-func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) error {
+func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Properties))
 	switch l.dreq.Type {
 	case deviceSend.Report:
@@ -93,7 +91,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) error {
 			if err != nil {
 				l.Errorf("HandlePropertyGetStatus|GetPropertyDataByID|get id:%s|err:%s",
 					id, err.Error())
-				return err
+				return nil, err
 			}
 			if len(data) == 0 {
 				l.Infof("HandlePropertyGetStatus|GetPropertyDataByID|not find id:%s", id)
@@ -103,14 +101,14 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) error {
 		}
 	default:
 		err := errors.Parameter.AddDetailf("not suppot type :%s", l.dreq.Type)
-		l.DeviceResp(msg, err, nil)
-		return err
+
+		return l.DeviceResp(msg, err, nil), err
 	}
-	l.DeviceResp(msg, errors.OK, respData)
-	return nil
+
+	return l.DeviceResp(msg, errors.OK, respData), nil
 }
 
-func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) error {
+func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("ThingLogic|HandleProperty")
 	switch l.dreq.Method {
 	case deviceSend.Report, deviceSend.ReportInfo:
@@ -120,52 +118,47 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) error {
 	case deviceSend.ControlReply:
 		return l.HandleResp(msg)
 	default:
-		return errors.Method
+		return nil, errors.Method
 	}
-	return nil
 }
 
-func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) error {
+func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("ThingLogic|HandleEvent")
 	dbData := deviceMsg.EventData{}
 	dbData.ID = l.dreq.EventID
 	dbData.Type = l.dreq.Type
 	if l.dreq.Method != deviceSend.EventPost {
-		return errors.Method
+		return nil, errors.Method
 	}
 	tp, err := l.dreq.VerifyReqParam(l.schema, schema.EVENT)
 	if err != nil {
-		l.DeviceResp(msg, err, nil)
-		return err
+		return l.DeviceResp(msg, err, nil), err
 	}
 	dbData.Params = deviceSend.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
 
 	err = l.dd.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
-		l.DeviceResp(msg, errors.Database, nil)
 		l.Errorf("InsertEventData|err=%+v", err)
-		return errors.Database.AddDetail(err)
+		return l.DeviceResp(msg, errors.Database, nil), errors.Database.AddDetail(err)
 	}
-	l.DeviceResp(msg, errors.OK, nil)
-
-	return nil
+	return l.DeviceResp(msg, errors.OK, nil), nil
 }
-func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) error {
+func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("ThingLogic|HandleResp")
 	//todo 这里后续需要处理异步获取消息的情况
-	return nil
+	return nil, nil
 }
 
-func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
+func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("ThingLogic|req=%v", msg)
 	err = l.initMsg(msg)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	err = func() error {
+	respMsg, err = func() (respMsg *deviceMsg.PublishMsg, err error) {
 		if len(l.topics) < 5 || l.topics[1] != "up" {
-			return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
+			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
 		switch l.topics[2] {
 		case devices.PropertyMethod: //属性上报
@@ -175,9 +168,8 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
 		case devices.ActionMethod: //设备响应行为执行结果
 			return l.HandleResp(msg)
 		default:
-			return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
+			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
-		return nil
 	}()
 	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceMsg.HubLog{
 		ProductID:  msg.ProductID,
@@ -190,5 +182,5 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
 		Topic:      msg.Topic,
 		ResultType: errors.Fmt(err).GetCode(),
 	})
-	return err
+	return
 }

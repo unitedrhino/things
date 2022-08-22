@@ -11,15 +11,9 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
-DcRpc:
-  Enable: true
-  Mode: direct
-  Conf:
-    Etcd:
-      Hosts:
-        - 127.0.0.1:2379
-      Key: dc.rpc
-    Timeout: 1000000
+Rej:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 600     #过期时间单位秒
 SysRpc:
   Enable: true
   Mode: direct
@@ -28,14 +22,16 @@ SysRpc:
       Hosts:
         - 127.0.0.1:2379
       Key: sys.rpc
+DiRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
 DmRpc:
   Enable: true
   Mode: direct
   Conf:
     Timeout: 1000000
-Rej:
-  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
-  AccessExpire: 600     #过期时间单位秒
 DmSvr:
   Name: dm.rpc
   ListenOn: 127.0.0.1:9081
@@ -71,19 +67,19 @@ DdSvr:
       User:
       Brokers:
         - tcp://127.0.0.1:1883
-DcSvr:
-  Name: dc.rpc
-  ListenOn: 127.0.0.1:9082
+DiSvr:
+  Name: di.rpc
+  ListenOn: 127.0.0.1:8180
   CpuThreshold: 0
   Timeout: 1000000
   Log:
     Encoding: plain
-  Mysql:
-    DataSource: root:password@tcp(127.0.0.1:3306)/things_dc?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
   CacheRedis:
     - Host: 127.0.0.1:6379
       Pass:
       Type: node
+  TDengine:
+    DataSource: root:taosdata@http(localhost:6041)/iThings?readBufferSize=52428800
   DmRpc:
     Enable: true
     Mode: direct
