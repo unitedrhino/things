@@ -23,39 +23,9 @@ func (l *InfoCreateLogic) register(in *sys.UserInfoCreateReq, uc *mysql.UserCore
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.UserInfoModel.Update(l.ctx, &mysql.UserInfo{
-		Uid:        in.Info.Uid,
-		UserName:   in.Info.UserName,
-		NickName:   in.Info.NickName,
-		InviterUid: in.Info.InviterUid,
-		InviterId:  in.Info.InviterId,
-		Sex:        in.Info.Sex,
-		City:       in.Info.City,
-		Country:    in.Info.Country,
-		Province:   in.Info.Province,
-		Language:   in.Info.Language,
-		HeadImgUrl: in.Info.HeadImgUrl,
-	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
-	}
-
 	//将user_core表中状态改成1
-	err = l.svcCtx.UserCoreModel.Update(l.ctx, &mysql.UserCore{
-		Uid:      uc.Uid,
-		UserName: uc.UserName,
-		Password: uc.Password,
-		Email:    uc.Email,
-		Phone:    uc.Phone,
-		Wechat:   uc.Wechat,
-		LastIP:   uc.LastIP,
-		RegIP:    uc.RegIP,
-		//	CreatedTime: uc.CreatedTime,
-		//	UpdatedTime: uc.UpdatedTime,
-		//	DeletedTime: uc.DeletedTime,
-		Status:      1,
-		AuthorityId: uc.AuthorityId,
-	})
+	uc.Status = 1
+	err = l.svcCtx.UserCoreModel.Update(l.ctx, uc)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
