@@ -3,6 +3,7 @@ package userlogic
 import (
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"time"
 )
 
 func UserCoreToDb() {
@@ -43,17 +44,18 @@ func UserInfoToPb(ui *mysql.UserInfo) *sys.UserInfo {
 
 func UserInfoToDb(ui *sys.UserInfo) *mysql.UserInfo {
 	return &mysql.UserInfo{
-		Uid:        ui.Uid,
-		UserName:   ui.UserName,
-		NickName:   ui.NickName,
-		InviterUid: ui.InviterUid,
-		InviterId:  ui.InviterId,
-		Sex:        ui.Sex,
-		City:       ui.City,
-		Country:    ui.Country,
-		Province:   ui.Province,
-		Language:   ui.Language,
-		HeadImgUrl: ui.HeadImgUrl,
-		//CreatedTime: sql.NullTime{Valid: true, Time: time.Now()},
+		Uid:         ui.Uid,
+		UserName:    ui.UserName,
+		NickName:    ui.NickName,
+		InviterUid:  ui.InviterUid,
+		InviterId:   ui.InviterId,
+		Sex:         ui.Sex,
+		City:        ui.City,
+		Country:     ui.Country,
+		Province:    ui.Province,
+		Language:    ui.Language,
+		HeadImgUrl:  ui.HeadImgUrl,
+		CreatedTime: time.Now(),
+		UpdatedTime: time.Now(),
 	}
 }
