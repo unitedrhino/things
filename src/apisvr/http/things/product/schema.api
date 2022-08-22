@@ -14,10 +14,10 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "更新产品物模型"
     @handler update
-    post /schema/update (ProductSchemaUpdateReq) returns ()
+    post /update (ProductSchemaUpdateReq) returns ()
     @doc "获取产品物模型"
     @handler read
-    post /schema/read (ProductSchemaReadReq) returns (ProductSchemaReadResp)
+    post /read (ProductSchemaReadReq) returns (ProductSchemaReadResp)
 }
 
 type(

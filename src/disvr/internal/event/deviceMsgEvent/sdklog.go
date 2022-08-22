@@ -41,24 +41,25 @@ func (l *SDKLogLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	return nil
 }
 
-func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
+func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s|req=%+v", utils.FuncName(), msg)
 	err = l.initMsg(msg)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	switch l.dreq.Type {
 	case "get_log_level":
 		l.GetLogLevel(msg)
 	case "report_log_content":
 		l.ReportLogContent(msg)
+	default:
+		return nil, errors.Parameter.AddDetail("sdk log topic is err:" + msg.Topic)
 	}
-
-	return nil
+	return
 }
 
 //获取设备上传的调试日志内容
-func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) error {
+func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	ld, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
@@ -66,7 +67,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) error {
 	if err != nil {
 		l.Errorf("%s|Log|operate|productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
-		return err
+		return nil, err
 	}
 	logContent := l.dreq.Params["content"]
 	err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceMsg.SDKLog{
@@ -80,15 +81,15 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) error {
 	if err != nil {
 		l.Errorf("%s|LogRepo|insert|productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
-		l.DeviceResp(msg, errors.Database, nil)
-		return err
+
+		return l.DeviceResp(msg, errors.Database, nil), err
 	}
-	l.DeviceResp(msg, errors.OK, nil)
-	return nil
+
+	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
 //获取当前日志等级 0 未开启
-func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) {
+func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	ld, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
@@ -96,18 +97,15 @@ func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) {
 	if err != nil {
 		l.Errorf("%s|Log|operate|productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
-		l.DeviceResp(msg, errors.Database, nil)
-		return
+		return l.DeviceResp(msg, errors.Database, nil), err
 	}
-	l.DeviceResp(msg, errors.OK, map[string]any{"log_level": ld.LogLevel})
+	return l.DeviceResp(msg, errors.OK, map[string]any{"log_level": ld.LogLevel}), nil
 }
 
-func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) {
+func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) *deviceMsg.PublishMsg {
 	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
-	er := l.svcCtx.PubDev.PublishToDev(l.ctx, topic, payload)
-	if er != nil {
-		l.Errorf("DeviceResp|PublishToDev failure err:%v", er)
-		return
+	return &deviceMsg.PublishMsg{
+		Topic:   topic,
+		Payload: payload,
 	}
-	l.Infof("ThingLogic|DeviceResp|topic:%v payload:%v", topic, string(payload))
 }

@@ -27,15 +27,14 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 
 // Thing 设备发布物模型消息的信息通过nats转发给内部服务
 func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
-	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
 	if pub == nil {
 		return err
 	}
 	ctx1, span := traces.StartSpan(s.ctx, topic, "")
 
-	logx.Infof("[mqtt.Thing]|-------------------trace:%s, spanid:%s|topic:%s",
-		span.SpanContext().TraceID(), span.SpanContext().SpanID(), topic)
+	logx.Infof("mqtt.Thing trace:%s, spanID:%s topic:%s payload:%v",
+		span.SpanContext().TraceID(), span.SpanContext().SpanID(), topic, string(payload))
 	defer span.End()
 	return s.svcCtx.PubInner.DevPubThing(ctx1, pub)
 }
