@@ -27,7 +27,11 @@ func NewRootCheckLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RootChe
 // 鉴定是否是root账号
 func (l *RootCheckLogic) RootCheck(in *dm.RootCheckReq) (*dm.Response, error) {
 	l.Infof("RootCheck|req=%+v", in)
-	if deviceAuth.IsAdmin(l.svcCtx.Config.AuthWhite, in.Ip) {
+	if deviceAuth.IsAdmin(l.svcCtx.Config.AuthWhite, deviceAuth.AuthInfo{
+		Username: in.Username,
+		ClientID: in.ClientID,
+		Ip:       in.Ip,
+	}) {
 		return &dm.Response{}, nil
 	}
 	return &dm.Response{}, errors.Permissions

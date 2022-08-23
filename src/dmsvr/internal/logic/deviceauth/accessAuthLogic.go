@@ -39,7 +39,7 @@ func (l *AccessAuthLogic) Auth(in *dm.AccessAuthReq) (err error) {
 	if !ok {
 		return errors.Permissions
 	}
-	return deviceAuth.AccessAuth(deviceAuth.AccessAuthInfo{
+	return deviceAuth.AccessAuth(deviceAuth.AuthInfo{
 		Username: in.Username,
 		Topic:    in.Topic,
 		ClientID: in.ClientID,

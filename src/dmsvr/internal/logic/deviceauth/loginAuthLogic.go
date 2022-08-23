@@ -6,7 +6,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
-	deviceAuth2 "github.com/i-Things/things/shared/domain/deviceAuth"
+	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
@@ -100,7 +100,11 @@ func (l *LoginAuthLogic) UpdateLoginTime() {
 
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	l.Infof("LoginAuth|req=%+v", in)
-	if deviceAuth2.IsAdmin(l.svcCtx.Config.AuthWhite, in.Ip) {
+	if deviceAuth.IsAdmin(l.svcCtx.Config.AuthWhite, deviceAuth.AuthInfo{
+		Username: in.Username,
+		ClientID: in.ClientID,
+		Ip:       in.Ip,
+	}) {
 		return &dm.Response{}, nil
 	}
 	if len(in.Certificate) > 0 {
@@ -111,11 +115,11 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 			len(x509Cert.Raw), len(x509Cert.Signature))
 	}
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
-	lg, err := deviceAuth2.GetLoginDevice(in.Username)
+	lg, err := deviceAuth.GetLoginDevice(in.Username)
 	if err != nil {
 		return nil, err
 	}
-	inLg, err := deviceAuth2.GetClientIDInfo(in.ClientID)
+	inLg, err := deviceAuth.GetClientIDInfo(in.ClientID)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +138,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
-	pwd, err := deviceAuth2.NewPwdInfo(in.Password)
+	pwd, err := deviceAuth.NewPwdInfo(in.Password)
 	if err != nil {
 		return nil, err
 	}
