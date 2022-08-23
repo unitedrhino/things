@@ -132,7 +132,10 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 		sql = sq.Select(fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
-		sql = sql.Suffix("INTERVAL(?a)", filter.Interval)
+		sql = sql.Interval("?a", filter.Interval)
+	}
+	if len(filter.Fill) > 0 {
+		sql = sql.Fill(filter.Fill)
 	}
 	return sql, nil
 }
