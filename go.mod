@@ -3,7 +3,7 @@ module github.com/i-Things/things
 go 1.18
 
 require (
-	github.com/Masterminds/squirrel v1.5.2
+	github.com/Masterminds/squirrel v1.20.1
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/eclipse/paho.mqtt.golang v1.3.5
@@ -22,6 +22,11 @@ require (
 	golang.org/x/exp v0.0.0-20220713135740-79cabaa25d75
 	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.1
+)
+
+replace (
+	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.1
+	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.1
 )
 
 require (
@@ -111,5 +116,3 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )
-
-replace github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.1
