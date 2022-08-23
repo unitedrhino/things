@@ -8,7 +8,7 @@ DevLink:
   Mqtt:
     ClientID: dd.rpc
     Pass:
-    User:
+    User: root
     Brokers:
       - tcp://127.0.0.1:1883
 

@@ -6,7 +6,7 @@ import (
 )
 
 type (
-	AccessAuthInfo struct {
+	AuthInfo struct {
 		Username string            //用户名
 		Topic    string            //主题
 		ClientID string            //clientID
@@ -22,7 +22,7 @@ type (
 		中间为自定义字段
 		以产品id/设备名结尾
 */
-func AccessAuth(in AccessAuthInfo) error {
+func AccessAuth(in AuthInfo) error {
 	lg, err := GetClientIDInfo(in.ClientID)
 	if err != nil {
 		return err
