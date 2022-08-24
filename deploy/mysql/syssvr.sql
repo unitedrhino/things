@@ -43,3 +43,14 @@ CREATE TABLE if not exists `user_info`
   KEY `user_inviterUid` (`inviterUid`) USING BTREE,
   KEY `user_deletedTime` (`deletedTime`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='用户详细信息表';
+
+# 新增root用户
+INSERT INTO `user_core`(`uid`, `userName`, `password`, `email`, `phone`, `wechat`, `lastIP`, `regIP`, `authorityId`,
+                        `createdTime`, `updatedTime`, `deletedTime`, `status`)
+VALUES (1740358057038188544, 'administrator', '4f0fded4a38abe7a3ea32f898bb82298', '', '', '', '', '', 1,
+        '2022-08-24 20:30:10', '2022-08-24 20:30:10', NULL, 1);
+
+INSERT INTO `user_info`(`uid`, `userName`, `nickName`, `inviterUid`, `inviterId`, `sex`, `city`, `country`, `province`,
+                        `language`, `headImgUrl`, `createdTime`, `updatedTime`, `deletedTime`)
+VALUES (1740358057038188544, '武刚', '梁娟', 4, 0x3639, 1, '唐山市', 'Ut', '山西省', 'eiusmod dolor id', 'http',
+        '2022-08-24 20:31:25', '2022-08-24 20:31:25', NULL);
