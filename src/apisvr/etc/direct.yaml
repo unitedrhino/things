@@ -101,7 +101,7 @@ SysSvr:
       Type: node
   UserToken:
     AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
-    AccessExpire: 8640000
+    AccessExpire: 3600 #有效期为一小时
   UserOpt:
     NeedUserName: true
     NeedPassWord: true
