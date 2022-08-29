@@ -21,23 +21,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/core/create",
-				Handler: systemuser.CoreCreateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/info/create",
-				Handler: systemuser.InfoCreateHandler(serverCtx),
+				Path:    "/create",
+				Handler: systemuser.CreateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/captcha",
 				Handler: systemuser.CaptchaHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/core/index",
-				Handler: systemuser.CoreIndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -54,8 +44,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/info/update",
-					Handler: systemuser.InfoUpdateHandler(serverCtx),
+					Path:    "/index",
+					Handler: systemuser.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemuser.UpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -64,8 +59,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/info/delete",
-					Handler: systemuser.InfoDeleteHandler(serverCtx),
+					Path:    "/delete",
+					Handler: systemuser.DeleteHandler(serverCtx),
 				},
 			}...,
 		),
