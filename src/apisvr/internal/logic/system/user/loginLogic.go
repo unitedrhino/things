@@ -45,28 +45,28 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		return nil, er
 	}
 	if uResp == nil {
-		l.Errorf("%s|rpc.RegisterCore|return nil|req=%+v", utils.FuncName(), req)
+		l.Errorf("%s|rpc.Register|return nil|req=%+v", utils.FuncName(), req)
 		return nil, errors.System.AddDetail("register core rpc return nil")
 	}
 	return &types.UserLoginResp{
 		Info: types.UserInfo{
-			uResp.Info.Uid,
-			uResp.Info.UserName,
-			"",
-			uResp.Info.Email,
-			uResp.Info.Phone,
-			uResp.Info.Wechat,
-			uResp.Info.LastIP,
-			uResp.Info.RegIP,
-			uResp.Info.NickName,
-			uResp.Info.City,
-			uResp.Info.Country,
-			uResp.Info.Province,
-			uResp.Info.Language,
-			uResp.Info.HeadImgUrl,
-			uResp.Info.CreatedTime,
-			uResp.Info.Role,
-			uResp.Info.Sex,
+			Uid:         uResp.Info.Uid,
+			UserName:    uResp.Info.UserName,
+			Password:    uResp.Info.Password,
+			Email:       uResp.Info.Email,
+			Phone:       uResp.Info.Phone,
+			Wechat:      uResp.Info.Wechat,
+			LastIP:      uResp.Info.LastIP,
+			RegIP:       uResp.Info.RegIP,
+			NickName:    uResp.Info.NickName,
+			City:        uResp.Info.City,
+			Country:     uResp.Info.Country,
+			Province:    uResp.Info.Province,
+			Language:    uResp.Info.Language,
+			HeadImgUrl:  uResp.Info.HeadImgUrl,
+			CreatedTime: uResp.Info.CreatedTime,
+			Role:        uResp.Info.Role,
+			Sex:         uResp.Info.Sex,
 		},
 		Token: types.JwtToken{
 			AccessToken:  uResp.Token.AccessToken,
