@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -16,7 +16,7 @@ type Keys struct {
 
 type (
 	UserModel interface {
-		RegisterCore(data UserInfo, key Keys) (sql.Result, error)
+		Register(ctx context.Context, UserInfoModel UserInfoModel, data UserInfo, key Keys) error
 		Index(page def.PageInfo) ([]*UserInfo, int64, error)
 	}
 
@@ -34,7 +34,7 @@ func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
 }
 
 //插入的时候检查key是否重复
-func (m *userModel) RegisterCore(data UserInfo, key Keys) (result sql.Result, err error) {
+func (m *userModel) Register(ctx context.Context, UserInfoModel UserInfoModel, data UserInfo, key Keys) (err error) {
 
 	m.Transact(func(session sqlx.Session) error {
 		var resp UserInfo
@@ -44,21 +44,22 @@ func (m *userModel) RegisterCore(data UserInfo, key Keys) (result sql.Result, er
 		if err == sqlc.ErrNotFound {
 			isUpdate = false
 		}
+
 		if isUpdate == true {
-			query = fmt.Sprintf("update %s set %s where `uid` = ?", m.userInfo,
-				"`userName`=?,`password`=?,`email`=?,`phone`=?,`wechat`=?,`lastIP`=?,`regIP`=?,`nickName`=?,`sex`=?,`city`=?,`country`=?,`province`=?,`language`=?,`headImgUrl`=?,`role`=?")
-			result, err = session.Exec(query, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP,
-				data.NickName, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.Role, data.Uid)
+			err := UserInfoModel.Update(ctx, &data)
+			if err != nil {
+				return err
+			}
 		} else {
-			query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.userInfo,
-				"`uid`,`userName`,`password`,`email`,`phone`,`wechat`,`lastIP`,`regIP`,`nickName`,`sex`,`city`,`country`,`province`,`language`,`headImgUrl`,`role`")
-			result, err = session.Exec(query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP,
-				data.NickName, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.Role)
+			_, err := UserInfoModel.Insert(ctx, &data)
+			if err != nil {
+				return err
+			}
 		}
 		return err
 
 	})
-	return result, err
+	return nil
 }
 
 //返回 usercore列表,总数及错误信息

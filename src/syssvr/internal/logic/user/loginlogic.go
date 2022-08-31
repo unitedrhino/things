@@ -99,26 +99,6 @@ func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.UserInfo, err erro
 		if err := l.getPwd(in, uc); err != nil {
 			return nil, err
 		}
-
-	//case "wxopen":
-	//	uc, err = l.svcCtx.UserInfoModel.FindOneByPhone(l.ctx, in.UserID)
-	//case "sms": //暂时不验证
-	//	uc, err = l.svcCtx.UserInfoModel.FindOneByPhone(l.ctx, in.UserID)
-
-	//case "wxminip": //微信小程序登录
-	//	auth := l.svcCtx.WxMiniProgram.GetAuth()
-	//	ret, err2 := auth.Code2Session(in.Code)
-	//	if err2 != nil {
-	//		l.Errorf("Code2Session|req=%#v|ret=%#v|err=%+v", in, ret, err2)
-	//		if ret.ErrCode != 0 {
-	//			return nil, errors.Parameter.AddDetail(ret.ErrMsg)
-	//		}
-	//		return nil, errors.System.AddDetail(err2.Error())
-	//	} else if ret.ErrCode != 0 {
-	//		return nil, errors.Parameter.AddDetail(ret.ErrMsg)
-	//	}
-	//	l.Infof("login|wxminip|ret=%+v", ret)
-	//	uc, err = l.svcCtx.UserInfoModel.FindOneByWechat(l.ctx, ret.UnionID)
 	default:
 		l.Error("LoginType=%s|not suppost", in.LoginType)
 		return nil, errors.Parameter
@@ -132,9 +112,6 @@ func (l *LoginLogic) Login(in *sys.LoginReq) (*sys.LoginResp, error) {
 	uc, err := l.GetUserInfo(in)
 	switch err {
 	case nil:
-		/*if uc.Status != users.NormalStatus {
-			return nil, errors.UnRegister
-		}*/
 		return l.getRet(uc)
 	case mysql.ErrNotFound:
 		return nil, errors.UnRegister
