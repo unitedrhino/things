@@ -26,7 +26,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 
 func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, err error) {
 	l.Infof("Login|req=%+v", req)
-	if req.LoginType == "img" {
+	if req.LoginType == "pwd" {
 		if l.svcCtx.Captcha.Verify(req.CodeID, req.Code) == false {
 			return nil, errors.Captcha
 		}
@@ -49,9 +49,24 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		return nil, errors.System.AddDetail("register core rpc return nil")
 	}
 	return &types.UserLoginResp{
-		Info: types.UserInfoWithRole{
-			UserInfo: *UserInfoToApi(uResp.Info),
-			Role:     uResp.Role,
+		Info: types.UserInfo{
+			uResp.Info.Uid,
+			uResp.Info.UserName,
+			"",
+			uResp.Info.Email,
+			uResp.Info.Phone,
+			uResp.Info.Wechat,
+			uResp.Info.LastIP,
+			uResp.Info.RegIP,
+			uResp.Info.NickName,
+			uResp.Info.City,
+			uResp.Info.Country,
+			uResp.Info.Province,
+			uResp.Info.Language,
+			uResp.Info.HeadImgUrl,
+			uResp.Info.CreatedTime,
+			uResp.Info.Role,
+			uResp.Info.Sex,
 		},
 		Token: types.JwtToken{
 			AccessToken:  uResp.Token.AccessToken,

@@ -11,8 +11,6 @@ CREATE TABLE if not exists `user_info`
     `lastIP`      varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '最后登录ip',
     `regIP`       varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '注册ip',
     `nickName`    varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户的昵称',
-    `inviterUid`  bigint       NOT NULL DEFAULT '0' COMMENT '邀请人用户id',
-    `inviterId`   varbinary(64) NOT NULL DEFAULT '' COMMENT '邀请码',
     `sex`         int           NOT NULL DEFAULT '3' COMMENT '用户的性别，值为1时是男性，值为2时是女性，其他值为未知',
     `city`        varchar(256)  CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户所在城市',
     `country`     varchar(256)  CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户所在国家',
