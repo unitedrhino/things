@@ -21,11 +21,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/create",
-				Handler: systemuser.CreateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
 				Path:    "/captcha",
 				Handler: systemuser.CaptchaHandler(serverCtx),
 			},
@@ -42,6 +37,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.CheckToken},
 			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemuser.CreateHandler(serverCtx),
+				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/index",
