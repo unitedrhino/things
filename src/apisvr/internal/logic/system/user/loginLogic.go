@@ -52,7 +52,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		Info: types.UserInfo{
 			Uid:         uResp.Info.Uid,
 			UserName:    uResp.Info.UserName,
-			Password:    uResp.Info.Password,
+			Password:    "",
 			Email:       uResp.Info.Email,
 			Phone:       uResp.Info.Phone,
 			Wechat:      uResp.Info.Wechat,
