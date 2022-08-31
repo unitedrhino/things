@@ -51,7 +51,7 @@ type UserIndexReq struct {
 }
 
 type UserIndexResp struct {
-	List  []*UserInfo `json:"list,omitempty"`           //用户核心信息列表
+	List  []*UserInfo `json:"list,omitempty"`           //用户信息列表
 	Total int64       `json:"total,optional,omitempty"` //总数
 }
 
