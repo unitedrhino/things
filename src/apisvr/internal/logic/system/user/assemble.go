@@ -13,51 +13,23 @@ func GetNullVal(val *wrappers.StringValue) *string {
 	return &val.Value
 }
 
-func UserCoreToApi(core *sys.UserCore) *types.UserCore {
-	return &types.UserCore{
-		Uid:         core.Uid,
-		UserName:    core.UserName,
-		Email:       core.Email,
-		Phone:       core.Phone,
-		Wechat:      core.Wechat,
-		LastIP:      core.LastIP,
-		RegIP:       core.RegIP,
-		CreatedTime: core.CreatedTime,
-		Status:      core.Status,
-		Role:        core.Role,
-	}
-}
-
 func UserInfoToApi(ui *sys.UserInfo) *types.UserInfo {
 	return &types.UserInfo{
-		Uid:        ui.Uid,
-		UserName:   ui.UserName,
-		NickName:   ui.NickName,
-		InviterUid: ui.InviterUid,
-		InviterId:  ui.InviterId,
-		Sex:        ui.Sex,
-		City:       ui.City,
-		Country:    ui.Country,
-		Province:   ui.Province,
-		Language:   ui.Language,
-		HeadImgUrl: ui.HeadImgUrl,
-		CreateTime: ui.CreateTime,
+		Uid:         ui.Uid,
+		UserName:    ui.UserName,
+		Email:       ui.Email,
+		Phone:       ui.Phone,
+		Wechat:      ui.Wechat,
+		LastIP:      ui.LastIP,
+		RegIP:       ui.RegIP,
+		Role:        ui.Role,
+		NickName:    ui.NickName,
+		Sex:         ui.Sex,
+		City:        ui.City,
+		Country:     ui.Country,
+		Province:    ui.Province,
+		Language:    ui.Language,
+		HeadImgUrl:  ui.HeadImgUrl,
+		CreatedTime: ui.CreatedTime,
 	}
 }
-
-//func UserInfoFullToApi(ui *user.UserInfo) *types.UserIndexResp {
-//	return &types.UserIndexResp{
-//		Uid:        ui.Uid,
-//		UserName:   ui.UserName,
-//		NickName:   ui.NickName,
-//		InviterUid: ui.InviterUid,
-//		InviterId:  ui.InviterId,
-//		Sex:        ui.Sex,
-//		City:       ui.City,
-//		Country:    ui.Country,
-//		Province:   ui.Province,
-//		Language:   ui.Language,
-//		HeadImgUrl: ui.HeadImgUrl,
-//		CreateTime: ui.CreateTime,
-//	}
-//}

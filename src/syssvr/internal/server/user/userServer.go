@@ -22,24 +22,19 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
-func (s *UserServer) CoreCreate(ctx context.Context, in *sys.UserCoreCreateReq) (*sys.UserCoreCreateResp, error) {
-	l := userlogic.NewCoreCreateLogic(ctx, s.svcCtx)
-	return l.CoreCreate(in)
+func (s *UserServer) Create(ctx context.Context, in *sys.UserCreateReq) (*sys.UserCreateResp, error) {
+	l := userlogic.NewCreateLogic(ctx, s.svcCtx)
+	return l.Create(in)
 }
 
-func (s *UserServer) InfoCreate(ctx context.Context, in *sys.UserInfoCreateReq) (*sys.Response, error) {
-	l := userlogic.NewInfoCreateLogic(ctx, s.svcCtx)
-	return l.InfoCreate(in)
+func (s *UserServer) Index(ctx context.Context, in *sys.UserIndexReq) (*sys.UserIndexResp, error) {
+	l := userlogic.NewIndexLogic(ctx, s.svcCtx)
+	return l.Index(in)
 }
 
-func (s *UserServer) GetUserCoreList(ctx context.Context, in *sys.GetUserCoreListReq) (*sys.GetUserCoreListResp, error) {
-	l := userlogic.NewGetUserCoreListLogic(ctx, s.svcCtx)
-	return l.GetUserCoreList(in)
-}
-
-func (s *UserServer) InfoUpdate(ctx context.Context, in *sys.UserInfoUpdateReq) (*sys.Response, error) {
-	l := userlogic.NewInfoUpdateLogic(ctx, s.svcCtx)
-	return l.InfoUpdate(in)
+func (s *UserServer) Update(ctx context.Context, in *sys.UserUpdateReq) (*sys.Response, error) {
+	l := userlogic.NewUpdateLogic(ctx, s.svcCtx)
+	return l.Update(in)
 }
 
 func (s *UserServer) Read(ctx context.Context, in *sys.UserReadReq) (*sys.UserReadResp, error) {
@@ -47,9 +42,9 @@ func (s *UserServer) Read(ctx context.Context, in *sys.UserReadReq) (*sys.UserRe
 	return l.Read(in)
 }
 
-func (s *UserServer) InfoDelete(ctx context.Context, in *sys.UserInfoDeleteReq) (*sys.Response, error) {
-	l := userlogic.NewInfoDeleteLogic(ctx, s.svcCtx)
-	return l.InfoDelete(in)
+func (s *UserServer) Delete(ctx context.Context, in *sys.UserDeleteReq) (*sys.Response, error) {
+	l := userlogic.NewDeleteLogic(ctx, s.svcCtx)
+	return l.Delete(in)
 }
 
 func (s *UserServer) Login(ctx context.Context, in *sys.LoginReq) (*sys.LoginResp, error) {

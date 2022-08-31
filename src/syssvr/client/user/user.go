@@ -14,32 +14,29 @@ import (
 )
 
 type (
-	CheckTokenReq       = sys.CheckTokenReq
-	CheckTokenResp      = sys.CheckTokenResp
-	GetUserCoreListReq  = sys.GetUserCoreListReq
-	GetUserCoreListResp = sys.GetUserCoreListResp
-	JwtToken            = sys.JwtToken
-	LoginReq            = sys.LoginReq
-	LoginResp           = sys.LoginResp
-	PageInfo            = sys.PageInfo
-	Response            = sys.Response
-	UserCore            = sys.UserCore
-	UserCoreCreateReq   = sys.UserCoreCreateReq
-	UserCoreCreateResp  = sys.UserCoreCreateResp
-	UserInfo            = sys.UserInfo
-	UserInfoCreateReq   = sys.UserInfoCreateReq
-	UserInfoDeleteReq   = sys.UserInfoDeleteReq
-	UserInfoUpdateReq   = sys.UserInfoUpdateReq
-	UserReadReq         = sys.UserReadReq
-	UserReadResp        = sys.UserReadResp
+	CheckTokenReq  = sys.CheckTokenReq
+	CheckTokenResp = sys.CheckTokenResp
+	JwtToken       = sys.JwtToken
+	LoginReq       = sys.LoginReq
+	LoginResp      = sys.LoginResp
+	PageInfo       = sys.PageInfo
+	Response       = sys.Response
+	UserCreateReq  = sys.UserCreateReq
+	UserCreateResp = sys.UserCreateResp
+	UserDeleteReq  = sys.UserDeleteReq
+	UserIndexReq   = sys.UserIndexReq
+	UserIndexResp  = sys.UserIndexResp
+	UserInfo       = sys.UserInfo
+	UserReadReq    = sys.UserReadReq
+	UserReadResp   = sys.UserReadResp
+	UserUpdateReq  = sys.UserUpdateReq
 
 	User interface {
-		CoreCreate(ctx context.Context, in *UserCoreCreateReq, opts ...grpc.CallOption) (*UserCoreCreateResp, error)
-		InfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
-		GetUserCoreList(ctx context.Context, in *GetUserCoreListReq, opts ...grpc.CallOption) (*GetUserCoreListResp, error)
-		InfoUpdate(ctx context.Context, in *UserInfoUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
+		Index(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error)
+		Update(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error)
-		InfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 		CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error)
 	}
@@ -67,40 +64,31 @@ func NewDirectUser(svcCtx *svc.ServiceContext, svr sys.UserServer) User {
 	}
 }
 
-func (m *defaultUser) CoreCreate(ctx context.Context, in *UserCoreCreateReq, opts ...grpc.CallOption) (*UserCoreCreateResp, error) {
+func (m *defaultUser) Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.CoreCreate(ctx, in, opts...)
+	return client.Create(ctx, in, opts...)
 }
 
-func (d *directUser) CoreCreate(ctx context.Context, in *UserCoreCreateReq, opts ...grpc.CallOption) (*UserCoreCreateResp, error) {
-	return d.svr.CoreCreate(ctx, in)
+func (d *directUser) Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
+	return d.svr.Create(ctx, in)
 }
 
-func (m *defaultUser) InfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultUser) Index(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.InfoCreate(ctx, in, opts...)
+	return client.Index(ctx, in, opts...)
 }
 
-func (d *directUser) InfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.InfoCreate(ctx, in)
+func (d *directUser) Index(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error) {
+	return d.svr.Index(ctx, in)
 }
 
-func (m *defaultUser) GetUserCoreList(ctx context.Context, in *GetUserCoreListReq, opts ...grpc.CallOption) (*GetUserCoreListResp, error) {
+func (m *defaultUser) Update(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.GetUserCoreList(ctx, in, opts...)
+	return client.Update(ctx, in, opts...)
 }
 
-func (d *directUser) GetUserCoreList(ctx context.Context, in *GetUserCoreListReq, opts ...grpc.CallOption) (*GetUserCoreListResp, error) {
-	return d.svr.GetUserCoreList(ctx, in)
-}
-
-func (m *defaultUser) InfoUpdate(ctx context.Context, in *UserInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewUserClient(m.cli.Conn())
-	return client.InfoUpdate(ctx, in, opts...)
-}
-
-func (d *directUser) InfoUpdate(ctx context.Context, in *UserInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.InfoUpdate(ctx, in)
+func (d *directUser) Update(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.Update(ctx, in)
 }
 
 func (m *defaultUser) Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
@@ -112,13 +100,13 @@ func (d *directUser) Read(ctx context.Context, in *UserReadReq, opts ...grpc.Cal
 	return d.svr.Read(ctx, in)
 }
 
-func (m *defaultUser) InfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultUser) Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.InfoDelete(ctx, in, opts...)
+	return client.Delete(ctx, in, opts...)
 }
 
-func (d *directUser) InfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.InfoDelete(ctx, in)
+func (d *directUser) Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.Delete(ctx, in)
 }
 
 func (m *defaultUser) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
