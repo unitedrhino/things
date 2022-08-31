@@ -17,7 +17,7 @@ CREATE TABLE if not exists `user_info`
     `province`    varchar(256)  CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户所在省份',
     `language`    varchar(256)  CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户的语言，简体中文为zh_CN',
     `headImgUrl`  varchar(256)  CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户头像',
-    `role` int DEFAULT 3 COMMENT '角色id 1-超级管理员  2-普通用户 3-供应商',
+    `role`        int not null COMMENT '用户角色',
     `createdTime` datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime  NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime DEFAULT NULL COMMENT '删除时间，默认为空，表示未删除，非空表示已删除',
