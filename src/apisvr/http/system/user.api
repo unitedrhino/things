@@ -63,7 +63,7 @@ type (
 		Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
 		HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
 		CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
-        Role        int64  `json:"role"`                       // 用户角色 1-超级管理员 2-运营商 3-普通用户 4-其他用户
+        Role        int64  `json:"role"`                       // 用户角色
         Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
 	}
 
