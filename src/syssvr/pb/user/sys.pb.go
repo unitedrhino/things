@@ -921,7 +921,7 @@ func (x *UserInfo) GetCreateTime() int64 {
 	return 0
 }
 
-//用户核心信息
+//用户信息
 type UserCore struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

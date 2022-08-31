@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func CoreIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func UpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UserCoreIndexReq
+		var req types.UserUpdateReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.AddMsg(err.Error()))
 			return
 		}
 
-		l := user.NewCoreIndexLogic(r.Context(), svcCtx)
-		resp, err := l.CoreIndex(&req)
-		result.Http(w, r, resp, err)
+		l := user.NewUpdateLogic(r.Context(), svcCtx)
+		err := l.Update(&req)
+		result.Http(w, r, nil, err)
 	}
 }
