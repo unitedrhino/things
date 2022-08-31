@@ -4,7 +4,7 @@ option go_package = "pb/sys";
 package sys;
 
 service User {
-  rpc create(UserCreateReq) returns(UserCreateResp);//创建用户核心信息
+  rpc create(UserCreateReq) returns(UserCreateResp);//创建用户信息
   rpc index(UserIndexReq) returns(UserIndexResp);
   rpc update(UserUpdateReq) returns(Response);//更新用户基本数据
   rpc read(UserReadReq) returns(UserReadResp);//获取用户信息
