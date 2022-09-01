@@ -13,8 +13,10 @@ import (
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
+	role "github.com/i-Things/things/src/syssvr/client/role"
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/i-Things/things/src/syssvr/sysdirect"
+	"github.com/silenceper/wechat/v2/officialaccount/menu"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"time"
@@ -26,6 +28,8 @@ type ServiceContext struct {
 	Record         rest.Middleware
 	DmManage       rest.Middleware
 	UserRpc        user.User
+	RoleRpc        role.Role
+	MenuRpc        menu.Menu
 	DeviceM        devicemanage.DeviceManage
 	DeviceA        deviceauth.DeviceAuth
 	ProductM       productmanage.ProductManage

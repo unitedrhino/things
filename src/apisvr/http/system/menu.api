@@ -1,0 +1,78 @@
+info(
+    desc: "菜单权限"
+	author: "lbs"
+	email: "174805676@qq.com"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group: system/menu
+    prefix: /api/system/menu
+    middleware: CheckToken
+)
+service api {
+    @doc "添加菜单"
+    @handler MenuCreate
+    post /create (MenuCreateReq) returns ()
+
+    @doc "获取菜单列表"
+    @handler MenuIndex
+    post /index (MenuIndexReq) returns (MenuIndexResp)
+
+    @doc "更新菜单"
+    @handler MenuUpdate
+    post /update (MenuUpdateReq) returns ()
+
+    @doc "删除菜单"
+    @handler MenuDelete
+    post /delete (MenuDeleteReq) returns ()
+}
+type (
+    MenuCreateReq struct {
+        Name string `json:"name"`                             // 菜单名称
+        ParentID int64 `json:"parentID,optional"`             // 父菜单ID，一级菜单为1
+        Type int64 `json:"type,optional"`                     // 类型   1：目录   2：菜单   3：按钮
+        Path string `json:"path,optional"`                    // 系统的path
+        Component string `json:"component,optional"`          // 页面
+        Icon string `json:"icon,optional"`                    // 菜单图标
+        Redirect string `json:"redirect,optional"`            // 路由重定向
+        Order int64 `json:"order"`                            // 左侧table排序序号
+    }
+
+    MenuIndexReq struct {
+        Page PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+    }
+    MenuIndexData struct {
+        ID int64 `json:"id"`                           // 编号
+        Name string `json:"name"`                      // 菜单名称
+        ParentID int64 `json:"parentID"`               // 父菜单ID，一级菜单为1
+        Type int64 `json:"type"`                       // 类型   1：目录   2：菜单   3：按钮
+        Path string `json:"path"`                      // 系统的path
+        Component string `json:"component"`            // 页面
+        Icon string `json:"icon"`                      // 菜单图标
+        Redirect string `json:"redirect"`              // 路由重定向
+        CreateBy string `json:"createBy"`              // 创建人
+        CreateTime string `json:"createTime"`          // 创建时间
+        LastUpdateBy string `json:"lastUpdateBy"`      // 更新人
+        LastUpdateTime string `json:"lastUpdateTime"`  // 更新时间
+        Order int64 `json:"order"`                     // 左侧table排序序号
+    }
+    MenuIndexResp struct {
+        Data []*MenuIndexData `json:"data"` //菜单列表
+        Total int64 `json:"total"`         //菜单总数
+    }
+    MenuUpdateReq struct {
+        ID int64 `json:"id"`                                  // 编号
+        Name string `json:"name"`                             // 菜单名称
+        ParentID int64 `json:"parentID"`                      // 父菜单ID，一级菜单为1
+        Type int64 `json:"type,optional"`                     // 类型   1：目录   2：菜单   3：按钮
+        Path string `json:"path,optional"`                    // 系统的path
+        Component string `json:"component,optional"`          // 页面
+        Icon string `json:"icon,optional"`                    // 菜单图标
+        Redirect string `json:"redirect,optional"`            // 路由重定向
+    }
+
+    MenuDeleteReq struct {
+        ID int64 `json:"id"`    // 编号
+    }
+)

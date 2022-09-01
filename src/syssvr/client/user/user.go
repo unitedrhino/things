@@ -14,22 +14,35 @@ import (
 )
 
 type (
-	CheckTokenReq  = sys.CheckTokenReq
-	CheckTokenResp = sys.CheckTokenResp
-	JwtToken       = sys.JwtToken
-	LoginReq       = sys.LoginReq
-	LoginResp      = sys.LoginResp
-	PageInfo       = sys.PageInfo
-	Response       = sys.Response
-	UserCreateReq  = sys.UserCreateReq
-	UserCreateResp = sys.UserCreateResp
-	UserDeleteReq  = sys.UserDeleteReq
-	UserIndexReq   = sys.UserIndexReq
-	UserIndexResp  = sys.UserIndexResp
-	UserInfo       = sys.UserInfo
-	UserReadReq    = sys.UserReadReq
-	UserReadResp   = sys.UserReadResp
-	UserUpdateReq  = sys.UserUpdateReq
+	CheckTokenReq     = sys.CheckTokenReq
+	CheckTokenResp    = sys.CheckTokenResp
+	JwtToken          = sys.JwtToken
+	LoginReq          = sys.LoginReq
+	LoginResp         = sys.LoginResp
+	MenuCreateReq     = sys.MenuCreateReq
+	MenuDeleteReq     = sys.MenuDeleteReq
+	MenuIndexData     = sys.MenuIndexData
+	MenuIndexReq      = sys.MenuIndexReq
+	MenuIndexResp     = sys.MenuIndexResp
+	MenuUpdateReq     = sys.MenuUpdateReq
+	PageInfo          = sys.PageInfo
+	Response          = sys.Response
+	RoleCreateReq     = sys.RoleCreateReq
+	RoleDeleteReq     = sys.RoleDeleteReq
+	RoleIndexData     = sys.RoleIndexData
+	RoleIndexReq      = sys.RoleIndexReq
+	RoleIndexResp     = sys.RoleIndexResp
+	RoleMenuUpdateReq = sys.RoleMenuUpdateReq
+	RoleUpdateReq     = sys.RoleUpdateReq
+	UserCreateReq     = sys.UserCreateReq
+	UserCreateResp    = sys.UserCreateResp
+	UserDeleteReq     = sys.UserDeleteReq
+	UserIndexReq      = sys.UserIndexReq
+	UserIndexResp     = sys.UserIndexResp
+	UserInfo          = sys.UserInfo
+	UserReadReq       = sys.UserReadReq
+	UserReadResp      = sys.UserReadResp
+	UserUpdateReq     = sys.UserUpdateReq
 
 	User interface {
 		Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)

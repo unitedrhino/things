@@ -304,3 +304,407 @@ var _User_serviceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/sys.proto",
 }
+
+// RoleClient is the client API for Role service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type RoleClient interface {
+	RoleCreate(ctx context.Context, in *RoleCreateReq, opts ...grpc.CallOption) (*Response, error)
+	RoleIndex(ctx context.Context, in *RoleIndexReq, opts ...grpc.CallOption) (*RoleIndexResp, error)
+	RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error)
+}
+
+type roleClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewRoleClient(cc grpc.ClientConnInterface) RoleClient {
+	return &roleClient{cc}
+}
+
+func (c *roleClient) RoleCreate(ctx context.Context, in *RoleCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Role/RoleCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleClient) RoleIndex(ctx context.Context, in *RoleIndexReq, opts ...grpc.CallOption) (*RoleIndexResp, error) {
+	out := new(RoleIndexResp)
+	err := c.cc.Invoke(ctx, "/sys.Role/RoleIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleClient) RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Role/RoleUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleClient) RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Role/RoleDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleClient) RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Role/RoleMenuUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// RoleServer is the server API for Role service.
+// All implementations must embed UnimplementedRoleServer
+// for forward compatibility
+type RoleServer interface {
+	RoleCreate(context.Context, *RoleCreateReq) (*Response, error)
+	RoleIndex(context.Context, *RoleIndexReq) (*RoleIndexResp, error)
+	RoleUpdate(context.Context, *RoleUpdateReq) (*Response, error)
+	RoleDelete(context.Context, *RoleDeleteReq) (*Response, error)
+	RoleMenuUpdate(context.Context, *RoleMenuUpdateReq) (*Response, error)
+	mustEmbedUnimplementedRoleServer()
+}
+
+// UnimplementedRoleServer must be embedded to have forward compatible implementations.
+type UnimplementedRoleServer struct {
+}
+
+func (*UnimplementedRoleServer) RoleCreate(context.Context, *RoleCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleCreate not implemented")
+}
+func (*UnimplementedRoleServer) RoleIndex(context.Context, *RoleIndexReq) (*RoleIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleIndex not implemented")
+}
+func (*UnimplementedRoleServer) RoleUpdate(context.Context, *RoleUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleUpdate not implemented")
+}
+func (*UnimplementedRoleServer) RoleDelete(context.Context, *RoleDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleDelete not implemented")
+}
+func (*UnimplementedRoleServer) RoleMenuUpdate(context.Context, *RoleMenuUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleMenuUpdate not implemented")
+}
+func (*UnimplementedRoleServer) mustEmbedUnimplementedRoleServer() {}
+
+func RegisterRoleServer(s *grpc.Server, srv RoleServer) {
+	s.RegisterService(&_Role_serviceDesc, srv)
+}
+
+func _Role_RoleCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServer).RoleCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Role/RoleCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServer).RoleCreate(ctx, req.(*RoleCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Role_RoleIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServer).RoleIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Role/RoleIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServer).RoleIndex(ctx, req.(*RoleIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Role_RoleUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServer).RoleUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Role/RoleUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServer).RoleUpdate(ctx, req.(*RoleUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Role_RoleDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServer).RoleDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Role/RoleDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServer).RoleDelete(ctx, req.(*RoleDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Role_RoleMenuUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleMenuUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServer).RoleMenuUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Role/RoleMenuUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServer).RoleMenuUpdate(ctx, req.(*RoleMenuUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Role_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.Role",
+	HandlerType: (*RoleServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "RoleCreate",
+			Handler:    _Role_RoleCreate_Handler,
+		},
+		{
+			MethodName: "RoleIndex",
+			Handler:    _Role_RoleIndex_Handler,
+		},
+		{
+			MethodName: "RoleUpdate",
+			Handler:    _Role_RoleUpdate_Handler,
+		},
+		{
+			MethodName: "RoleDelete",
+			Handler:    _Role_RoleDelete_Handler,
+		},
+		{
+			MethodName: "RoleMenuUpdate",
+			Handler:    _Role_RoleMenuUpdate_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}
+
+// MenuClient is the client API for Menu service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type MenuClient interface {
+	MenuCreate(ctx context.Context, in *MenuCreateReq, opts ...grpc.CallOption) (*Response, error)
+	MenuIndex(ctx context.Context, in *MenuIndexReq, opts ...grpc.CallOption) (*MenuIndexResp, error)
+	MenuUpdate(ctx context.Context, in *MenuUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	MenuDelete(ctx context.Context, in *MenuDeleteReq, opts ...grpc.CallOption) (*Response, error)
+}
+
+type menuClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMenuClient(cc grpc.ClientConnInterface) MenuClient {
+	return &menuClient{cc}
+}
+
+func (c *menuClient) MenuCreate(ctx context.Context, in *MenuCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Menu/MenuCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) MenuIndex(ctx context.Context, in *MenuIndexReq, opts ...grpc.CallOption) (*MenuIndexResp, error) {
+	out := new(MenuIndexResp)
+	err := c.cc.Invoke(ctx, "/sys.Menu/MenuIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) MenuUpdate(ctx context.Context, in *MenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Menu/MenuUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuClient) MenuDelete(ctx context.Context, in *MenuDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Menu/MenuDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MenuServer is the server API for Menu service.
+// All implementations must embed UnimplementedMenuServer
+// for forward compatibility
+type MenuServer interface {
+	MenuCreate(context.Context, *MenuCreateReq) (*Response, error)
+	MenuIndex(context.Context, *MenuIndexReq) (*MenuIndexResp, error)
+	MenuUpdate(context.Context, *MenuUpdateReq) (*Response, error)
+	MenuDelete(context.Context, *MenuDeleteReq) (*Response, error)
+	mustEmbedUnimplementedMenuServer()
+}
+
+// UnimplementedMenuServer must be embedded to have forward compatible implementations.
+type UnimplementedMenuServer struct {
+}
+
+func (*UnimplementedMenuServer) MenuCreate(context.Context, *MenuCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuCreate not implemented")
+}
+func (*UnimplementedMenuServer) MenuIndex(context.Context, *MenuIndexReq) (*MenuIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuIndex not implemented")
+}
+func (*UnimplementedMenuServer) MenuUpdate(context.Context, *MenuUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuUpdate not implemented")
+}
+func (*UnimplementedMenuServer) MenuDelete(context.Context, *MenuDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuDelete not implemented")
+}
+func (*UnimplementedMenuServer) mustEmbedUnimplementedMenuServer() {}
+
+func RegisterMenuServer(s *grpc.Server, srv MenuServer) {
+	s.RegisterService(&_Menu_serviceDesc, srv)
+}
+
+func _Menu_MenuCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).MenuCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Menu/MenuCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).MenuCreate(ctx, req.(*MenuCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_MenuIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).MenuIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Menu/MenuIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).MenuIndex(ctx, req.(*MenuIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_MenuUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).MenuUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Menu/MenuUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).MenuUpdate(ctx, req.(*MenuUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Menu_MenuDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServer).MenuDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Menu/MenuDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServer).MenuDelete(ctx, req.(*MenuDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Menu_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.Menu",
+	HandlerType: (*MenuServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "MenuCreate",
+			Handler:    _Menu_MenuCreate_Handler,
+		},
+		{
+			MethodName: "MenuIndex",
+			Handler:    _Menu_MenuIndex_Handler,
+		},
+		{
+			MethodName: "MenuUpdate",
+			Handler:    _Menu_MenuUpdate_Handler,
+		},
+		{
+			MethodName: "MenuDelete",
+			Handler:    _Menu_MenuDelete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}
