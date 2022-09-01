@@ -69,7 +69,11 @@ func (m *userModel) Index(in *sys.UserIndexReq) ([]*UserInfo, int64, error) {
 	var resp []*UserInfo
 	page := def.PageInfo{}
 	copier.Copy(&page, in.Page)
-	query := fmt.Sprintf("select %s from %s  limit %d offset %d ",
+
+	if in.UserName != "" {
+
+	}
+	query := fmt.Sprintf("select %s from %s %s limit %d offset %d ",
 		userInfoRows, m.userInfo, page.GetLimit(), page.GetOffset())
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
