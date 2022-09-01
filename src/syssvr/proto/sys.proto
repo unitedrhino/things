@@ -37,7 +37,17 @@ message UserCreateReq{
   string reqType = 1;//注册方式 phone|wxopen|wxin|wxminip|password| -> phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 密码方式 password 账密方式
   string userName = 2;//手机号注册时填写手机号 或者用户账号
   string password = 3;//明文密码
-  UserInfo info = 4;
+  string wechat = 4;
+  string lastIP =5;
+  string regIP =6;
+  string nickName =7;
+  string city =8;
+  string country =9;
+  string province =10;
+  string language =11;
+  string headImgUrl =12;
+  int64  role = 13;
+  int64  sex =14;
 }
 
 message UserCreateResp{
@@ -63,6 +73,7 @@ message UserIndexReq{
   PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: uid:用户id userName:登录用户名  email:邮箱  phone:手机号
   string userName = 2;
   string phone = 3;
+  string email = 4;
 }
 
 message UserIndexResp{
