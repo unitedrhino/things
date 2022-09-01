@@ -28,8 +28,8 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		resp, err := m.UserRpc.CheckToken(r.Context(), &user.CheckTokenReq{
-			Ip:    "59.36.211.176",
-			Token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVaWQiOjE3NDAzNTgwNTcwMzgxODg1NDQsImV4cCI6MTY2MjAwNDk1MiwiaWF0IjoxNjYyMDAxMzUyLCJSb2xlIjowfQ.evHl5XHXOZZ3yFuaIbWLVQO7XBq2ufxolGUUEQaNulg",
+			Ip:    strIP,
+			Token: strToken,
 		})
 		if err != nil {
 			er := errors.Fmt(err)
