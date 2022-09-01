@@ -1,0 +1,75 @@
+info(
+    desc: "角色"
+	author: "lbs"
+	email: "174805676@qq.com"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group: system/role
+    prefix: /api/v1/system/role
+    middleware: CheckToken
+)
+service api {
+    @doc "添加角色"
+    @handler RoleCreate
+    post /create (RoleCreateReq) returns ()
+
+    @doc "获取角色列表"
+    @handler RoleIndex
+    post /index (RoleIndexReq) returns (RoleIndexResp)
+
+    @doc "更新角色"
+    @handler RoleUpdate
+    post /update (RoleUpdateReq) returns ()
+
+    @doc "删除角色"
+    @handler RoleDelete
+    post /delete (RoleDeleteReq) returns ()
+
+    @doc "更新角色对应菜单列表"
+    @handler RoleMenuUpdate
+    post /role-menu/update (RoleMenuUpdateReq) returns ()
+}
+type (
+    RoleCreateReq struct {
+        Name string `json:"name"`                     // 角色名称
+        Remark string `json:"remark,optional"`        // 备注
+        Status int64 `json:"status,optional"`         // 状态 1:启用,2:禁用
+    }
+    RoleIndexReq struct {
+        Page PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+        ID int64 `json:"id,optional "`                //按编号查找角色
+        Name string `json:"name,optional "`           //按名称查找角色
+        Status int64 `json:"status,optional "`        //按状态查找角色
+    }
+
+    RoleIndexData struct {
+        ID int64 `json:"id"`                                // 编号
+        Name string `json:"name"`                           // 角色名称
+        Remark string `json:"remark"`                       // 备注
+        CreatedTime int64 `json:"createdTime"`              // 创建时间
+        Status int64 `json:"status"`                        // 角色状态
+        RoleMenuID []int64 `json:"roleMenuID"`              // 角色对应的菜单id列表
+    }
+
+    RoleIndexResp struct {
+        Data []*RoleIndexData `json:"data"`  //角色列表数据
+        Total int64 `json:"total"`           //角色列表总数
+    }
+    RoleUpdateReq struct {
+        ID int64 `json:"id"`                               // 编号
+        Name string `json:"name"`                          // 角色名称
+        Remark string `json:"remark"`                      // 备注
+        Status int64 `json:"status"`                       // 状态
+    }
+
+    RoleDeleteReq struct {
+        ID int64 `json:"id"`  //编号
+    }
+
+    RoleMenuUpdateReq struct {
+        ID int64 `json:"id"`   //角色编号
+        MenuID []int64 `json:"menuID"` //菜单编号列表
+    }
+)
