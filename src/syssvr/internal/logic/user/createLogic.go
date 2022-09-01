@@ -5,11 +5,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
-	"regexp"
-	"time"
-
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"regexp"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -59,23 +57,20 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 		//2.对密码进行md5加密
 		password1 := utils.MakePwd(in.Password, uid_temp, false)
 		ui := mysql.UserInfo{
-			Uid:         uid_temp,
-			UserName:    in.UserName,
-			Password:    password1,
-			Email:       in.Info.Email,
-			Phone:       in.Info.Phone,
-			Wechat:      in.Info.Wechat,
-			LastIP:      in.Info.LastIP,
-			RegIP:       in.Info.RegIP,
-			NickName:    in.Info.NickName,
-			City:        in.Info.City,
-			Country:     in.Info.Country,
-			Province:    in.Info.Province,
-			Language:    in.Info.Language,
-			HeadImgUrl:  in.Info.HeadImgUrl,
-			CreatedTime: time.Now(),
-			Role:        in.Info.Role,
-			Sex:         in.Info.Sex,
+			Uid:        uid_temp,
+			UserName:   in.UserName,
+			Password:   password1,
+			Wechat:     in.Wechat,
+			LastIP:     in.LastIP,
+			RegIP:      in.RegIP,
+			NickName:   in.NickName,
+			City:       in.City,
+			Country:    in.Country,
+			Province:   in.Province,
+			Language:   in.Language,
+			HeadImgUrl: in.HeadImgUrl,
+			Role:       in.Role,
+			Sex:        in.Sex,
 		}
 
 		err := l.svcCtx.UserModel.Register(l.ctx, l.svcCtx.UserInfoModel, ui, mysql.Keys{Key: "userName", Value: in.UserName})
