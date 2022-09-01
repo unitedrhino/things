@@ -69,18 +69,19 @@ func (m *userModel) Index(in *sys.UserIndexReq) ([]*UserInfo, int64, error) {
 	var resp []*UserInfo
 	page := def.PageInfo{}
 	copier.Copy(&page, in.Page)
-
+	//支持账号模糊匹配
+	sql_where := ""
 	if in.UserName != "" {
-
+		sql_where += "where userName like '%" + in.UserName + "%'"
 	}
 	query := fmt.Sprintf("select %s from %s %s limit %d offset %d ",
-		userInfoRows, m.userInfo, page.GetLimit(), page.GetOffset())
+		userInfoRows, m.userInfo, sql_where, page.GetLimit(), page.GetOffset())
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	count := fmt.Sprintf("select count(1) from %s", m.userInfo)
+	count := fmt.Sprintf("select count(1) from %s %s", m.userInfo, sql_where)
 	var total int64
 	err = m.CachedConn.QueryRowNoCache(&total, count)
 	if err != nil {
