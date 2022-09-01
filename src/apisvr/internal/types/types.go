@@ -17,7 +17,7 @@ type UserInfo struct {
 	Language    string `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
 	HeadImgUrl  string `json:"headImgUrl,optional"`         // 用户头像
 	CreatedTime int64  `json:"createdTime,string,optional"` // 创建时间
-	Role        int64  `json:"role"`                        // 用户角色 1-超级管理员 2-运营商 3-普通用户 4-其他用户
+	Role        int64  `json:"role"`                        // 用户角色
 	Sex         int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
 }
 
@@ -48,6 +48,7 @@ type UserIndexReq struct {
 	Page     PageInfo `json:"page,optional,optional"` //分页信息,只获取一个则不填
 	UserName string   `json:"userName,optional"`      //用户名(唯一)
 	Phone    string   `json:"phone,optional"`         // 手机号
+	Email    string   `json:"email,optional"`         // 邮箱
 }
 
 type UserIndexResp struct {
