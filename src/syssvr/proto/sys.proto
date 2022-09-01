@@ -63,6 +63,7 @@ message UserIndexReq{
   PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: uid:用户id userName:登录用户名  email:邮箱  phone:手机号
   string userName = 2;
   string phone = 3;
+  string email = 4;
 }
 
 message UserIndexResp{

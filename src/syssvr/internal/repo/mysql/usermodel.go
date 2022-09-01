@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -17,7 +19,7 @@ type Keys struct {
 type (
 	UserModel interface {
 		Register(ctx context.Context, UserInfoModel UserInfoModel, data UserInfo, key Keys) error
-		Index(page def.PageInfo) ([]*UserInfo, int64, error)
+		Index(in *sys.UserIndexReq) ([]*UserInfo, int64, error)
 	}
 
 	userModel struct {
@@ -29,7 +31,7 @@ type (
 func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
 	return &userModel{
 		CachedConn: sqlc.NewConn(conn, c),
-		userInfo:   "`user_info_test`",
+		userInfo:   "`user_info`",
 	}
 }
 
@@ -63,8 +65,10 @@ func (m *userModel) Register(ctx context.Context, UserInfoModel UserInfoModel, d
 }
 
 //返回 usercore列表,总数及错误信息
-func (m *userModel) Index(page def.PageInfo) ([]*UserInfo, int64, error) {
+func (m *userModel) Index(in *sys.UserIndexReq) ([]*UserInfo, int64, error) {
 	var resp []*UserInfo
+	page := def.PageInfo{}
+	copier.Copy(&page, in.Page)
 	query := fmt.Sprintf("select %s from %s  limit %d offset %d ",
 		userInfoRows, m.userInfo, page.GetLimit(), page.GetOffset())
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
