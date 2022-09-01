@@ -28,28 +28,20 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 func (l *CreateLogic) Create(req *types.UserCreateReq) (resp *types.UserCreateResp, err error) {
 	l.Infof("Register|req=%+v", req)
 	resp1, err1 := l.svcCtx.UserRpc.Create(l.ctx, &sys.UserCreateReq{
-		ReqType:  req.ReqType,
-		UserName: req.UserName,
-		Password: req.Password,
-		Info: &sys.UserInfo{
-			//Uid:         req.UserInfo.Uid,
-			//UserName:    req.UserInfo.UserName,
-			Password:    req.UserInfo.Password,
-			Email:       req.UserInfo.Email,
-			Phone:       req.UserInfo.Phone,
-			Wechat:      req.UserInfo.Wechat,
-			LastIP:      req.UserInfo.LastIP,
-			RegIP:       req.UserInfo.RegIP,
-			NickName:    req.UserInfo.NickName,
-			City:        req.UserInfo.City,
-			Country:     req.UserInfo.Country,
-			Province:    req.UserInfo.Province,
-			Language:    req.UserInfo.Language,
-			HeadImgUrl:  req.UserInfo.HeadImgUrl,
-			CreatedTime: req.UserInfo.CreatedTime,
-			Role:        req.UserInfo.Role,
-			Sex:         req.UserInfo.Sex,
-		},
+		ReqType:    req.ReqType,
+		UserName:   req.UserName,
+		Password:   req.Password,
+		Wechat:     req.Wechat,
+		LastIP:     req.LastIP,
+		RegIP:      req.RegIP,
+		NickName:   req.NickName,
+		City:       req.City,
+		Country:    req.Country,
+		Province:   req.Province,
+		Language:   req.Language,
+		HeadImgUrl: req.HeadImgUrl,
+		Role:       req.Role,
+		Sex:        req.Sex,
 	})
 	if err1 != nil {
 		er := errors.Fmt(err1)

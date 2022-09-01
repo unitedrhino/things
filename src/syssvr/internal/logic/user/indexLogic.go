@@ -2,10 +2,7 @@ package userlogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/jinzhu/copier"
-
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
@@ -28,9 +25,8 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(in *sys.UserIndexReq) (*sys.UserIndexResp, error) {
 	l.Infof("GetUserCoreList|req=%+v", in)
-	page := def.PageInfo{}
-	copier.Copy(&page, in.Page)
-	ucs, total, err := l.svcCtx.UserModel.Index(page)
+
+	ucs, total, err := l.svcCtx.UserModel.Index(in)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
