@@ -18,8 +18,8 @@ import (
 var (
 	roleMenuFieldNames          = builder.RawFieldNames(&RoleMenu{})
 	roleMenuRows                = strings.Join(roleMenuFieldNames, ",")
-	roleMenuRowsExpectAutoSet   = strings.Join(stringx.Remove(roleMenuFieldNames, "`id`", "`creatdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
-	roleMenuRowsWithPlaceHolder = strings.Join(stringx.Remove(roleMenuFieldNames, "`id`", "`creatdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
+	roleMenuRowsExpectAutoSet   = strings.Join(stringx.Remove(roleMenuFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
+	roleMenuRowsWithPlaceHolder = strings.Join(stringx.Remove(roleMenuFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
 )
 
 type (

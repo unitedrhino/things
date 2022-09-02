@@ -129,7 +129,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/system/menu"),
+		rest.WithPrefix("/api/v1/system/menu"),
 	)
 
 	server.AddRoutes(
