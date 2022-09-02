@@ -7,7 +7,7 @@ import "common.api"  //公共结构体定义
 
 @server(
     group: system/menu
-    prefix: /api/system/menu
+    prefix: /api/v1/system/menu
     middleware: CheckToken
 )
 service api {

@@ -18,8 +18,8 @@ import (
 var (
 	menuInfoFieldNames          = builder.RawFieldNames(&MenuInfo{})
 	menuInfoRows                = strings.Join(menuInfoFieldNames, ",")
-	menuInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`creatdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
-	menuInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`creatdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
+	menuInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
+	menuInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
 )
 
 type (
