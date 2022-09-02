@@ -18,8 +18,8 @@ import (
 var (
 	roleInfoFieldNames          = builder.RawFieldNames(&RoleInfo{})
 	roleInfoRows                = strings.Join(roleInfoFieldNames, ",")
-	roleInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(roleInfoFieldNames, "`id`", "`creatdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
-	roleInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(roleInfoFieldNames, "`id`", "`creatdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
+	roleInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(roleInfoFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
+	roleInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(roleInfoFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
 )
 
 type (
@@ -89,8 +89,8 @@ func (m *defaultRoleInfoModel) FindOneByName(ctx context.Context, name string) (
 }
 
 func (m *defaultRoleInfoModel) Insert(ctx context.Context, data *RoleInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, roleInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Name, data.Remark, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Status)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, roleInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Name, data.Remark, data.Status)
 	return ret, err
 }
 
