@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func InfoDeleteHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func DeleteHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UserInfoDeleteReq
+		var req types.UserDeleteReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.AddMsg(err.Error()))
 			return
 		}
 
-		l := user.NewInfoDeleteLogic(r.Context(), svcCtx)
-		err := l.InfoDelete(&req)
+		l := user.NewDeleteLogic(r.Context(), svcCtx)
+		err := l.Delete(&req)
 		result.Http(w, r, nil, err)
 	}
 }

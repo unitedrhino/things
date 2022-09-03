@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func CoreCreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func CreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UserCoreCreateReq
+		var req types.UserCreateReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.AddMsg(err.Error()))
 			return
 		}
 
-		l := user.NewCoreCreateLogic(r.Context(), svcCtx)
-		resp, err := l.CoreCreate(&req)
+		l := user.NewCreateLogic(r.Context(), svcCtx)
+		resp, err := l.Create(&req)
 		result.Http(w, r, resp, err)
 	}
 }
