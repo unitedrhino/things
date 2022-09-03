@@ -1,9 +1,9 @@
 info(
 	title: "用户管理模块"
-	desc: ""
-	author: "lbs"
+	desc: "用户管理相关接口，包括创建账号，登录，获取验证码，获取用户列表，获取单个用户信息，更新用户信息，删除用户"
+	author: "L"
 	email: "174805676@qq.com"
-	version: "v1"
+	version: "v0.1.0"
 )
 import "common.api"  //公共结构体定义
 
@@ -12,21 +12,9 @@ import "common.api"  //公共结构体定义
 	prefix: /api/v1/system/user
 )
 service api {
-	@doc "创建用户核心信息"
-	@handler coreCreate
-	post /core/create (UserCoreCreateReq) returns (UserCoreCreateResp)
-
-	@doc "创建用户基本信息"
-	@handler infoCreate
-	post /info/create (UserInfoCreateReq) returns ()
-
 	@doc "获取验证码"
 	@handler captcha
 	post /captcha (UserCaptchaReq) returns (UserCaptchaResp)
-
-	@doc "查询用户核心信息列表"
-	@handler coreIndex
-	post /core/index (UserCoreIndexReq) returns (UserCoreIndexResp)
 
 	@doc "用戶登录"
 	@handler login
@@ -38,152 +26,152 @@ service api {
 	middleware: CheckToken
 )
 service api {
+	@doc "创建用户信息"
+	@handler create
+	post /create (UserCreateReq) returns (UserCreateResp)
+
+	@doc "查询用户信息列表"
+	@handler Index
+	post /index (UserIndexReq) returns (UserIndexResp)
+
 	@doc "更新用户基本数据"
-	@handler infoUpdate
-	post /info/update (UserInfoUpdateReq) returns ()
+	@handler update
+	post /update (UserUpdateReq) returns ()
 
 	@doc "获取用户信息"
 	@handler read
-	post /read (UserIndexReq) returns (UserIndexResp)
+	post /read (UserReadReq) returns (UserReadResp)
 
 	@doc "刪除用戶"
-	@handler infoDelete
-	post /info/delete (UserInfoDeleteReq) returns ()
+	@handler delete
+	post /delete (UserDeleteReq) returns ()
 }
 type (
-	UserCoreCreateReq  {
-		ReqType string `json:"reqType,options=phone|wxopen|wxin|wxminip|password"` //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 密码方式 password 账密方式 必输
-		Identity    string `json:"identity"`                             //手机号注册时填写手机号,账密登录时填写用户账号 必输
-		Code    string `json:"code,optional"`                                      //验证码    微信登录填code
-		CodeID  string `json:"codeID,optional"`                           //验证码编号 微信登录填state
+	 UserInfo {
+		Uid         int64  `json:"uid,string,optional"`        // 用户id
+		UserName    string `json:"userName,optional"`          // 用户名(唯一)
+		Password    string `json:"password,omitempty"`         // 登录密码
+        Email       string `json:"email,optional"`             // 邮箱
+        Phone       string `json:"phone,optional"`             // 手机号
+        Wechat      string `json:"wechat,optional"`            // 微信UnionID
+        LastIP      string `json:"lastIP,optional"`            // 最后登录ip
+        RegIP       string `json:"regIP,optional"`             // 注册ip
+		NickName    string `json:"nickName,optional"`          // 用户的昵称
+		City        string `json:"city,optional"`              // 用户所在城市
+		Country     string `json:"country,optional"`           // 用户所在国家
+		Province    string `json:"province,optional"`          // 用户所在省份
+		Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+		HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
+		CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
+        Role        int64  `json:"role"`                       // 用户角色
+        Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	}
+
+	UserCreateReq {
+		ReqType  string `json:"reqType,options=phone|wxopen|wxin|wxminip|pwd"` //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 密码方式 pwd 账密方式 必输
+		UserName string `json:"userName"`                             //手机号注册时填写手机号,账密登录时填写用户账号 必输
 		Password string `json:"password"` //明文密码 必输，且做大小写校验
-		Role int64 `json:"role"`         //用户角色 必输
+        Wechat      string `json:"wechat,optional"`            // 微信UnionID
+        LastIP      string `json:"lastIP,optional"`            // 最后登录ip
+        RegIP       string `json:"regIP,optional"`             // 注册ip
+        NickName    string `json:"nickName,optional"`          // 用户的昵称
+        City        string `json:"city,optional"`              // 用户所在城市
+        Country     string `json:"country,optional"`           // 用户所在国家
+        Province    string `json:"province,optional"`          // 用户所在省份
+        Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+        HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
+        CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
+        Role        int64  `json:"role"`                       // 用户角色
+        Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
 	}
 
-	UserCoreCreateResp {
+	UserCreateResp {
 		Uid int64 `json:"uid,string"` //用户id
-		JwtToken
 	}
 
-	UserInfoCreateReq {
-		Token    string `json:"token"`             //注册第一步的token
-		UserInfo
-	}
-
-	 UserCaptchaReq {
+	UserCaptchaReq {
 		Data string `json:"data,optional"`              //短信验证时填写手机号
 		Type string `json:"type,options=sms|image"`     //验证方式:短信验证,图片验证码
 		Use  string `json:"use,options=login|register"` //用途
 	}
 
-	 UserCaptchaResp {
+	UserCaptchaResp {
 		CodeID string `json:"codeID"`       //验证码编号
 		Url    string `json:"url,optional"` //图片验证码url
 		Expire int64  `json:"expire"`       //过期时间
 	}
 
-	 UserCoreIndexReq {
+	UserIndexReq {
 		Page PageInfo `json:"page,optional,optional"` //分页信息,只获取一个则不填
-	}
-
-	 UserCoreIndexResp {
-		List  []*UserCore `json:"list,omitempty"`           //用户核心信息列表
-		Total int64       `json:"total,optional,omitempty"` //总数
-	}
-
-	UserInfoUpdateReq {
-		Uid   string `json:"uid,optional"`                    //用户id
-		NickName   string `json:"nickName,optional"`          // 用户的昵称
-		InviterUid int64  `json:"inviterUid,string,optional"` // 邀请人用户id
-		InviterId  string `json:"inviterId,optional"`         // 邀请码
-		Sex        int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-		City       string `json:"city,optional"`              // 用户所在城市
-		Country    string `json:"country,optional"`           // 用户所在国家
-		Province   string `json:"province,optional"`          // 用户所在省份
-		Language   string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
-		HeadImgUrl string `json:"headImgUrl,optional"`        // 用户头像
+		UserName    string `json:"userName,optional"`          //用户名(唯一)
+		Phone       string `json:"phone,optional"`             // 手机号
+		Email       string `json:"email,optional"`             // 邮箱
 	}
 
 	UserIndexResp {
-		Uid        int64  `json:"uid,string"`                 // 用户id
-		UserName   string `json:"userName,optional"`          //用户名(唯一)
-		NickName   string `json:"nickName,optional"`          // 用户的昵称
-		InviterUid int64  `json:"inviterUid,string,optional"` // 邀请人用户id
-		InviterId  string `json:"inviterId,optional"`         // 邀请码
-		Sex        int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-		City       string `json:"city,optional"`              // 用户所在城市
-		Country    string `json:"country,optional"`           // 用户所在国家
-		Province   string `json:"province,optional"`          // 用户所在省份
-		Language   string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
-		HeadImgUrl string `json:"headImgUrl,optional"`        // 用户头像
-		CreateTime int64  `json:"createTime,string,optional"`
-		Password   string `json:"password,omitempty"` // 登录密码
-		Email      string `json:"email"`              // 邮箱
-		Phone      string `json:"phone"`              // 手机号
-		Wechat     string `json:"wechat"`             // 微信UnionID
-		LastIP     string `json:"lastIP"`             // 最后登录ip
-		RegIP      string `json:"regIP"`              // 注册ip
-		Status     int64  `json:"status"`             // 用户状态:0为未注册状态
-	//	Role int64 `json:"role"`                      //角色
+		List  []*UserInfo `json:"list,omitempty"`           //用户信息列表
+		Total int64       `json:"total,optional,omitempty"` //总数
 	}
 
-	UserInfoDeleteReq {
+	UserUpdateReq {
+		Uid         int64  `json:"uid,string"`                 // 用户id
+        UserName    string `json:"userName,optional"`          // 用户名(唯一)
+        Email       string `json:"email,optional"`             // 邮箱
+        Phone       string `json:"phone,optional"`             // 手机号
+        Wechat      string `json:"wechat,optional"`            // 微信UnionID
+        NickName    string `json:"nickName,optional"`          // 用户的昵称
+        City        string `json:"city,optional"`              // 用户所在城市
+        Country     string `json:"country,optional"`           // 用户所在国家
+        Province    string `json:"province,optional"`          // 用户所在省份
+        Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+        HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
+        Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	}
+
+	UserReadReq{
+		Uid        int64  `json:"uid,string"`                 // 用户id
+	}
+
+	UserReadResp {
+		Uid         int64  `json:"uid,string,optional"`                 // 用户id
+        UserName    string `json:"userName,optional"`                   // 用户名(唯一)
+        Email       string `json:"email,optional"`             // 邮箱
+        Phone       string `json:"phone,optional"`             // 手机号
+        Wechat      string `json:"wechat,optional"`            // 微信UnionID
+        LastIP      string `json:"lastIP,optional"`            // 最后登录ip
+        RegIP       string `json:"regIP,optional"`             // 注册ip
+        NickName    string `json:"nickName,optional"`          // 用户的昵称
+        City        string `json:"city,optional"`              // 用户所在城市
+        Country     string `json:"country,optional"`           // 用户所在国家
+        Province    string `json:"province,optional"`          // 用户所在省份
+        Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+        HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
+        CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
+        Role        int64  `json:"role"`                       // 用户角色
+        Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	}
+
+	UserDeleteReq {
 		Uid string `json:"uid,omitempty"` //用户id
 	}
 
-	 UserLoginReq {
+	UserLoginReq {
 		UserID    string `json:"userID"`                               //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
-		PwdType   int32  `json:"pwdType"`                              //账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
+		PwdType   int32  `json:"pwdType"`                              //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
 		Password  string `json:"password"`                             //密码，建议md5转换 密码登录时需要填写
-		LoginType string `json:"loginType,options=sms|img|wxopen|wxin|wxminip"` //验证类型 sms 短信验证码 img 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
+		LoginType string `json:"loginType,options=sms|pwd|wxopen|wxin|wxminip"` //验证类型 sms 短信验证码 pwd 账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
 		Code      string `json:"code,optional"`                                 //验证码    微信登录填code
 		CodeID    string `json:"codeID,optional"`                               //验证码编号 微信登录填state
 	}
 
-	 UserLoginResp {
-		Info  UserInfoWithRole `json:"info"`  //用户信息
+	UserLoginResp {
+		Info  UserInfo `json:"info"`  //用户信息
 		Token JwtToken `json:"token"` //用户token
 	}
 
-	 JwtToken {
-		AccessToken  string `json:"accessToken,omitempty"`
-		AccessExpire int64  `json:"accessExpire,string,omitempty"`
-		RefreshAfter int64  `json:"refreshAfter,string,omitempty"`
-	}
-	UserInfoWithRole {
-		UserInfo
-	    Role int64 `json:"role"`//用户角色
-	}
-	 UserInfo {
-		Uid        int64  `json:"uid,string"`                 // 用户id
-		UserName   string `json:"userName,optional"`          //用户名(唯一)
-		NickName   string `json:"nickName,optional"`          // 用户的昵称
-		InviterUid int64  `json:"inviterUid,string,optional"` // 邀请人用户id
-		InviterId  string `json:"inviterId,optional"`         // 邀请码
-		Sex        int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-		City       string `json:"city,optional"`              // 用户所在城市
-		Country    string `json:"country,optional"`           // 用户所在国家
-		Province   string `json:"province,optional"`          // 用户所在省份
-		Language   string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
-		HeadImgUrl string `json:"headImgUrl,optional"`        // 用户头像
-		CreateTime int64  `json:"createTime,string,optional"`
-	}
-
-	UserCore {
-		Uid                  int64   `json:"uid,string"`
-		UserName             string  `json:"userName"`
-		Password             string  `json:"password,omitempty"`// 登录密码
-		Email                string  `json:"email"`// 邮箱
-		Phone                string  `json:"phone"`// 手机号
-		Wechat               string  `json:"wechat"`// 微信UnionID
-		LastIP               string  `json:"lastIP"`// 最后登录ip
-		RegIP                string  `json:"regIP"`// 注册ip
-		CreatedTime          int64   `json:"createdTime,string"`//创建时间
-		Status               int64   `json:"status"`// 用户状态:0为未注册状态
-        Role                 int64   `json:"role"`// 用户角色
-	}
-
-	UserIndexReq{
-		Uid        int64  `json:"uid,string"`                 // 用户id
+	JwtToken {
+		AccessToken  string `json:"accessToken,omitempty"`//用户token
+		AccessExpire int64  `json:"accessExpire,string,omitempty"`//token过期时间
+		RefreshAfter int64  `json:"refreshAfter,string,omitempty"`//token刷新时间
 	}
 )

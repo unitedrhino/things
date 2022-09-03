@@ -18,14 +18,18 @@ import (
 var (
 	userInfoFieldNames          = builder.RawFieldNames(&UserInfo{})
 	userInfoRows                = strings.Join(userInfoFieldNames, ",")
-	userInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(userInfoFieldNames, "`create_time`", "`update_time`", "`create_at`", "`update_at`"), ",")
-	userInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(userInfoFieldNames, "`uid`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), "=?,") + "=?"
+	userInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(userInfoFieldNames, "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
+	userInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(userInfoFieldNames, "`uid`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
 )
 
 type (
 	userInfoModel interface {
 		Insert(ctx context.Context, data *UserInfo) (sql.Result, error)
 		FindOne(ctx context.Context, uid int64) (*UserInfo, error)
+		FindOneByEmail(ctx context.Context, email string) (*UserInfo, error)
+		FindOneByPhone(ctx context.Context, phone string) (*UserInfo, error)
+		FindOneByUserName(ctx context.Context, userName string) (*UserInfo, error)
+		FindOneByWechat(ctx context.Context, wechat string) (*UserInfo, error)
 		Update(ctx context.Context, data *UserInfo) error
 		Delete(ctx context.Context, uid int64) error
 	}
@@ -37,19 +41,24 @@ type (
 
 	UserInfo struct {
 		Uid         int64        `db:"uid"`         // 用户id
-		UserName    string       `db:"userName"`    // 用户名
+		UserName    string       `db:"userName"`    // 登录用户名
+		Password    string       `db:"password"`    // 登录密码
+		Email       string       `db:"email"`       // 邮箱
+		Phone       string       `db:"phone"`       // 手机号
+		Wechat      string       `db:"wechat"`      // 微信union id
+		LastIP      string       `db:"lastIP"`      // 最后登录ip
+		RegIP       string       `db:"regIP"`       // 注册ip
 		NickName    string       `db:"nickName"`    // 用户的昵称
-		InviterUid  int64        `db:"inviterUid"`  // 邀请人用户id
-		InviterId   string       `db:"inviterId"`   // 邀请码
-		Sex         int64        `db:"sex"`         // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+		Sex         int64        `db:"sex"`         // 用户的性别，值为1时是男性，值为2时是女性，其他值为未知
 		City        string       `db:"city"`        // 用户所在城市
 		Country     string       `db:"country"`     // 用户所在国家
 		Province    string       `db:"province"`    // 用户所在省份
 		Language    string       `db:"language"`    // 用户的语言，简体中文为zh_CN
 		HeadImgUrl  string       `db:"headImgUrl"`  // 用户头像
+		Role        int64        `db:"role"`        // 角色id 1-超级管理员  2-普通用户 3-供应商
 		CreatedTime time.Time    `db:"createdTime"` // 创建时间
 		UpdatedTime time.Time    `db:"updatedTime"` // 更新时间
-		DeletedTime sql.NullTime `db:"deletedTime"`
+		DeletedTime sql.NullTime `db:"deletedTime"` // 删除时间，默认为空，表示未删除，非空表示已删除
 	}
 )
 
@@ -80,15 +89,71 @@ func (m *defaultUserInfoModel) FindOne(ctx context.Context, uid int64) (*UserInf
 	}
 }
 
+func (m *defaultUserInfoModel) FindOneByEmail(ctx context.Context, email string) (*UserInfo, error) {
+	var resp UserInfo
+	query := fmt.Sprintf("select %s from %s where `email` = ? limit 1", userInfoRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, email)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultUserInfoModel) FindOneByPhone(ctx context.Context, phone string) (*UserInfo, error) {
+	var resp UserInfo
+	query := fmt.Sprintf("select %s from %s where `phone` = ? limit 1", userInfoRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, phone)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultUserInfoModel) FindOneByUserName(ctx context.Context, userName string) (*UserInfo, error) {
+	var resp UserInfo
+	query := fmt.Sprintf("select %s from %s where `userName` = ? limit 1", userInfoRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, userName)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultUserInfoModel) FindOneByWechat(ctx context.Context, wechat string) (*UserInfo, error) {
+	var resp UserInfo
+	query := fmt.Sprintf("select %s from %s where `wechat` = ? limit 1", userInfoRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, wechat)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultUserInfoModel) Insert(ctx context.Context, data *UserInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.NickName, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.Role)
 	return ret, err
 }
 
-func (m *defaultUserInfoModel) Update(ctx context.Context, data *UserInfo) error {
+func (m *defaultUserInfoModel) Update(ctx context.Context, newData *UserInfo) error {
 	query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, userInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.UserName, data.NickName, data.InviterUid, data.InviterId, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Uid)
+	_, err := m.conn.ExecCtx(ctx, query, newData.UserName, newData.Password, newData.Email, newData.Phone, newData.Wechat, newData.LastIP, newData.RegIP, newData.NickName, newData.Sex, newData.City, newData.Country, newData.Province, newData.Language, newData.HeadImgUrl, newData.Role, newData.Uid)
 	return err
 }
 

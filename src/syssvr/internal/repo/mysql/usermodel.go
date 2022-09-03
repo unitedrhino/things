@@ -1,10 +1,11 @@
 package mysql
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/users"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -17,13 +18,12 @@ type Keys struct {
 
 type (
 	UserModel interface {
-		RegisterCore(data UserCore, key Keys) (sql.Result, error)
-		GetUserCoreList(page def.PageInfo) ([]*UserCore, int64, error)
+		Register(ctx context.Context, UserInfoModel UserInfoModel, data UserInfo, key Keys) error
+		Index(in *sys.UserIndexReq) ([]*UserInfo, int64, error)
 	}
 
 	userModel struct {
 		sqlc.CachedConn
-		userCore string
 		userInfo string
 	}
 )
@@ -31,50 +31,57 @@ type (
 func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
 	return &userModel{
 		CachedConn: sqlc.NewConn(conn, c),
-		userCore:   "`user_core`",
 		userInfo:   "`user_info`",
 	}
 }
 
 //插入的时候检查key是否重复
-func (m *userModel) RegisterCore(data UserCore, key Keys) (result sql.Result, err error) {
+func (m *userModel) Register(ctx context.Context, UserInfoModel UserInfoModel, data UserInfo, key Keys) (err error) {
 
 	m.Transact(func(session sqlx.Session) error {
-		var resp UserCore
-		var isUpdate bool = false
-		query := fmt.Sprintf("select %s from %s where `%s` = ?  limit 1", userCoreRows, m.userCore, key.Key)
+		var resp UserInfo
+		var isUpdate bool = true
+		query := fmt.Sprintf("select %s from %s where `%s` = ?  limit 1", userInfoRows, m.userInfo, key.Key)
 		err = session.QueryRow(&resp, query, key.Value)
-		if !(err == sqlc.ErrNotFound) {
-			if resp.Status == users.NormalStatus {
-				return ErrDuplicate
-			}
-			isUpdate = true
+		if err == sqlc.ErrNotFound {
+			isUpdate = false
 		}
+
 		if isUpdate == true {
-			query = fmt.Sprintf("update %s set %s where `uid` = ?", m.userCore, "`userName`=?,`password`=?,`email`=?,`phone`=?,`wechat`=?,`lastIP`=?,`regIP`=?,`status`=?,`authorityId`=?")
-			result, err = session.Exec(query, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.Status, data.Uid, data.AuthorityId)
+			err := UserInfoModel.Update(ctx, &data)
+			if err != nil {
+				return err
+			}
 		} else {
-			//data.Status = def.NormalStatus //如果前面都没问题，则注册第一步，状态置为1，表示已注册
-			query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.userCore, "`uid`,`userName`,`password`,`email`,`phone`,`wechat`,`lastIP`,`regIP`,`status`,`authorityId`")
-			result, err = session.Exec(query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.Status, data.AuthorityId)
+			_, err := UserInfoModel.Insert(ctx, &data)
+			if err != nil {
+				return err
+			}
 		}
 		return err
 
 	})
-	return result, err
+	return nil
 }
 
 //返回 usercore列表,总数及错误信息
-func (m *userModel) GetUserCoreList(page def.PageInfo) ([]*UserCore, int64, error) {
-	var resp []*UserCore
-	query := fmt.Sprintf("select %s from %s  limit %d offset %d ",
-		userCoreRows, m.userCore, page.GetLimit(), page.GetOffset())
+func (m *userModel) Index(in *sys.UserIndexReq) ([]*UserInfo, int64, error) {
+	var resp []*UserInfo
+	page := def.PageInfo{}
+	copier.Copy(&page, in.Page)
+	//支持账号模糊匹配
+	sql_where := ""
+	if in.UserName != "" {
+		sql_where += "where userName like '%" + in.UserName + "%'"
+	}
+	query := fmt.Sprintf("select %s from %s %s limit %d offset %d ",
+		userInfoRows, m.userInfo, sql_where, page.GetLimit(), page.GetOffset())
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	count := fmt.Sprintf("select count(1) from %s", m.userCore)
+	count := fmt.Sprintf("select count(1) from %s %s", m.userInfo, sql_where)
 	var total int64
 	err = m.CachedConn.QueryRowNoCache(&total, count)
 	if err != nil {
