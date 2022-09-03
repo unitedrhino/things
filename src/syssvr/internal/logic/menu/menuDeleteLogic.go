@@ -2,6 +2,7 @@ package menulogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -24,7 +25,9 @@ func NewMenuDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuDe
 }
 
 func (l *MenuDeleteLogic) MenuDelete(in *sys.MenuDeleteReq) (*sys.Response, error) {
-	// todo: add your logic here and delete this line
-
+	err := l.svcCtx.MenuInfoModle.Delete(l.ctx, in.Id)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
 	return &sys.Response{}, nil
 }

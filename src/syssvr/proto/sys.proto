@@ -170,9 +170,8 @@ message RoleCreateReq{
 
 message RoleIndexReq{
   PageInfo page = 1;//分页信息
-  int64 id = 2;
-  string name = 3;
-  int64 status =4;
+  string name = 2;
+  int64 status = 3;
 }
 
 message RoleIndexResp{
@@ -218,6 +217,8 @@ message MenuCreateReq{
 
 message MenuIndexReq{
   PageInfo page = 1;//分页信息
+  string name = 2;
+  string path = 3;
 }
 message MenuIndexData{
   int64 id = 1;
@@ -228,11 +229,8 @@ message MenuIndexData{
   string component = 6;
   string icon = 7;
   string redirect = 8;
-  string createBy = 9;
-  string createTime = 10;
-  string lastUpdateBy = 11;
-  string lastUpdateTime = 12;
-  int64 order = 13;
+  int64 createTime = 9;
+  int64 order = 10;
 }
 message MenuIndexResp{
   repeated MenuIndexData data = 1;

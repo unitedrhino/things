@@ -95,14 +95,14 @@ func (m *defaultMenuInfoModel) FindOneByName(ctx context.Context, name string) (
 }
 
 func (m *defaultMenuInfoModel) Insert(ctx context.Context, data *MenuInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, menuInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, menuInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl)
 	return ret, err
 }
 
 func (m *defaultMenuInfoModel) Update(ctx context.Context, newData *MenuInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, menuInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.Type, newData.Order, newData.Name, newData.Path, newData.Component, newData.Icon, newData.Redirect, newData.BackgroundUrl, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.Type, newData.Order, newData.Name, newData.Path, newData.Component, newData.Icon, newData.Redirect, newData.BackgroundUrl, newData.Id)
 	return err
 }
 
