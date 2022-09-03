@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/spf13/cast"
 	"reflect"
 	"strings"
 	"time"
@@ -142,4 +143,15 @@ func GenParams(params map[string]any) (string, string, []any, error) {
 		}
 	}
 	return paramPlaceholder, strings.Join(paramIds, ","), paramValList, nil
+}
+
+func ArrayToSql[arrType any](arr []arrType) (sql string) {
+	if len(arr) == 0 {
+		return ""
+	}
+	for _, v := range arr {
+		sql += "\"" + cast.ToString(v) + "\","
+	}
+	sql = sql[:len(sql)-1]
+	return
 }
