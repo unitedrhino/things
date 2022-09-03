@@ -368,6 +368,7 @@ type ProductInfoIndexReq struct {
 	Page        PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
 	ProductName string   `json:"productName,optional"` //过滤产品名称
 	DeviceType  int64    `json:"deviceType,optional"`  //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+	ProductIDs  []string `json:"productIDs,optional"`  //过滤产品id列表
 }
 
 type ProductInfoIndexResp struct {
