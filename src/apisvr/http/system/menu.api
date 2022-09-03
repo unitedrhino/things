@@ -40,7 +40,9 @@ type (
     }
 
     MenuIndexReq struct {
-        Page PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+        Page PageInfo `json:"page"` //分页信息,只获取一个则不填
+        Name string `json:"name,optional"` // 按菜单名称筛选
+        Path string `json:"path,optional"` // 按菜单路径筛选
     }
     MenuIndexData struct {
         ID int64 `json:"id"`                           // 编号
@@ -51,10 +53,7 @@ type (
         Component string `json:"component"`            // 页面
         Icon string `json:"icon"`                      // 菜单图标
         Redirect string `json:"redirect"`              // 路由重定向
-        CreateBy string `json:"createBy"`              // 创建人
-        CreateTime string `json:"createTime"`          // 创建时间
-        LastUpdateBy string `json:"lastUpdateBy"`      // 更新人
-        LastUpdateTime string `json:"lastUpdateTime"`  // 更新时间
+        CreateTime int64 `json:"createTime"`          // 创建时间
         Order int64 `json:"order"`                     // 左侧table排序序号
     }
     MenuIndexResp struct {

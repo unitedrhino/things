@@ -15,6 +15,8 @@ type ServiceContext struct {
 	MenuInfoModle mysql.MenuInfoModel
 	RoleMenuModle mysql.RoleMenuModel
 	UserModel     mysql.UserModel
+	RoleModel     mysql.RoleModel
+	MenuModel     mysql.MenuModel
 	WxMiniProgram *weixin.MiniProgram
 	UserID        *utils.SnowFlake
 }
@@ -23,7 +25,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	ui := mysql.NewUserInfoModel(conn)
 	ro := mysql.NewRoleInfoModel(conn)
+	me := mysql.NewMenuInfoModel(conn)
+	rom := mysql.NewRoleModel(conn, c.CacheRedis)
+	mem := mysql.NewMenuModel(conn, c.CacheRedis)
 	um := mysql.NewUserModel(conn, c.CacheRedis)
+
 	WxMiniProgram := weixin.NewWexinMiniProgram(c.WexinMiniprogram, c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	UserID := utils.NewSnowFlake(nodeId)
@@ -32,7 +38,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:        c,
 		UserInfoModel: ui,
 		UserModel:     um,
+		RoleModel:     rom,
+		MenuModel:     mem,
 		RoleInfoModle: ro,
+		MenuInfoModle: me,
 		WxMiniProgram: WxMiniProgram,
 		UserID:        UserID,
 	}

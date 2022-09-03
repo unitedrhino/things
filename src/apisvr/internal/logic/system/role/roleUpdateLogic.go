@@ -2,6 +2,9 @@ package role
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,7 +27,20 @@ func NewRoleUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleUp
 }
 
 func (l *RoleUpdateLogic) RoleUpdate(req *types.RoleUpdateReq) error {
-	// todo: add your logic here and delete this line
-
+	resp, err := l.svcCtx.RoleRpc.RoleUpdate(l.ctx, &sys.RoleUpdateReq{
+		Id:     req.ID,
+		Name:   req.Name,
+		Remark: req.Remark,
+		Status: req.Status,
+	})
+	if err != nil {
+		err := errors.Fmt(err)
+		l.Errorf("[%s]|rpc.RoleUpdate|req=%v|err=%+v", utils.FuncName(), req, err)
+		return err
+	}
+	if resp == nil {
+		l.Errorf("%s|rpc.RoleUpdate|return nil|req=%+v", utils.FuncName(), req)
+		return errors.System.AddDetail("RoleUpdate rpc return nil")
+	}
 	return nil
 }
