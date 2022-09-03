@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func InfoUpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func IndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UserInfoUpdateReq
+		var req types.UserIndexReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.AddMsg(err.Error()))
 			return
 		}
 
-		l := user.NewInfoUpdateLogic(r.Context(), svcCtx)
-		err := l.InfoUpdate(&req)
-		result.Http(w, r, nil, err)
+		l := user.NewIndexLogic(r.Context(), svcCtx)
+		resp, err := l.Index(&req)
+		result.Http(w, r, resp, err)
 	}
 }

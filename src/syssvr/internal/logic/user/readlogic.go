@@ -25,33 +25,27 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 func (l *ReadLogic) Read(in *sys.UserReadReq) (*sys.UserReadResp, error) {
 	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.Uid))
 	if err != nil {
-		//l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)
-		return nil, err
-	}
-	uc, err1 := l.svcCtx.UserCoreModel.FindOne(l.ctx, cast.ToInt64(in.Uid))
-	if err1 != nil {
+		l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)
 		return nil, err
 	}
 
 	return &sys.UserReadResp{
-		Uid:        ui.Uid,
-		UserName:   ui.UserName,
-		InviterUid: ui.InviterUid,
-		InviterId:  ui.InviterId,
-		Sex:        ui.Sex,
-		City:       ui.City,
-		Country:    ui.Country,
-		Province:   ui.Province,
-		Language:   ui.Language,
-		HeadImgUrl: ui.HeadImgUrl,
-		CreateTime: ui.CreatedTime.Unix(),
-		Password:   uc.Password,
-		Email:      uc.Email,
-		Phone:      uc.Phone,
-		Wechat:     uc.Wechat,
-		LastIP:     uc.LastIP,
-		RegIP:      uc.RegIP,
-		Status:     uc.Status,
+		Uid:         ui.Uid,
+		UserName:    ui.UserName,
+		Email:       ui.Email,
+		Phone:       ui.Phone,
+		Wechat:      ui.Wechat,
+		LastIP:      ui.LastIP,
+		RegIP:       ui.RegIP,
+		NickName:    ui.NickName,
+		City:        ui.City,
+		Country:     ui.Country,
+		Province:    ui.Province,
+		Language:    ui.Language,
+		HeadImgUrl:  ui.HeadImgUrl,
+		CreatedTime: ui.CreatedTime.Unix(),
+		Role:        ui.Role,
+		Sex:         ui.Sex,
 	}, nil
 
 	return &sys.UserReadResp{}, nil
