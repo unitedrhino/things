@@ -2,6 +2,7 @@ package menulogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -24,7 +25,29 @@ func NewMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuInd
 }
 
 func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, error) {
-	// todo: add your logic here and delete this line
+	mes, total, err := l.svcCtx.MenuModel.Index(in)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
+	info := make([]*sys.MenuIndexData, 0, len(mes))
+	for _, me := range mes {
+		info = append(info, &sys.MenuIndexData{
+			Id:         me.Id,
+			Name:       me.Name,
+			ParentID:   me.ParentID,
+			Type:       me.Type,
+			Path:       me.Path,
+			Component:  me.Component,
+			Icon:       me.Icon,
+			Redirect:   me.Redirect,
+			CreateTime: me.CreatedTime.Unix(),
+			Order:      me.Order,
+		})
+	}
+	return &sys.MenuIndexResp{
+		Data:  info,
+		Total: total,
+	}, nil
 
 	return &sys.MenuIndexResp{}, nil
 }

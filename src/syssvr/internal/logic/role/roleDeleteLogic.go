@@ -2,7 +2,7 @@ package rolelogic
 
 import (
 	"context"
-
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
@@ -24,7 +24,9 @@ func NewRoleDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleDe
 }
 
 func (l *RoleDeleteLogic) RoleDelete(in *sys.RoleDeleteReq) (*sys.Response, error) {
-	// todo: add your logic here and delete this line
-
+	err := l.svcCtx.RoleInfoModle.Delete(l.ctx, in.Id)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
 	return &sys.Response{}, nil
 }

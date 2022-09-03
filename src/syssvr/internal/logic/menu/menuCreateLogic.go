@@ -2,6 +2,8 @@ package menulogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -24,7 +26,19 @@ func NewMenuCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuCr
 }
 
 func (l *MenuCreateLogic) MenuCreate(in *sys.MenuCreateReq) (*sys.Response, error) {
-	// todo: add your logic here and delete this line
-
+	_, err := l.svcCtx.MenuInfoModle.Insert(l.ctx, &mysql.MenuInfo{
+		ParentID:      in.ParentID,
+		Type:          in.Type,
+		Order:         in.Order,
+		Name:          in.Name,
+		Path:          in.Path,
+		Component:     in.Component,
+		Icon:          in.Icon,
+		Redirect:      in.Redirect,
+		BackgroundUrl: in.Name,
+	})
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
 	return &sys.Response{}, nil
 }

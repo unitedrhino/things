@@ -2,6 +2,8 @@ package role
 
 import (
 	"context"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/jinzhu/copier"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,7 +26,32 @@ func NewRoleIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleInd
 }
 
 func (l *RoleIndexLogic) RoleIndex(req *types.RoleIndexReq) (resp *types.RoleIndexResp, err error) {
-	// todo: add your logic here and delete this line
+	var page sys.PageInfo
+	copier.Copy(&page, req.Page)
+	info, err := l.svcCtx.RoleRpc.RoleIndex(l.ctx, &sys.RoleIndexReq{
+		Page:   &page,
+		Name:   req.Name,
+		Status: req.Status,
+	})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	var roleInfo []*types.RoleIndexData
+	var total int64
+	total = info.Total
+
+	roleInfo = make([]*types.RoleIndexData, 0, len(roleInfo))
+	for _, i := range info.Data {
+		roleInfo = append(roleInfo, &types.RoleIndexData{
+			ID:          i.Id,
+			Name:        i.Name,
+			Remark:      i.Remark,
+			CreatedTime: i.CreatedTime,
+			Status:      i.Status,
+			RoleMenuID:  i.RoleMenuID,
+		})
+	}
+
+	return &types.RoleIndexResp{roleInfo, total}, nil
 }

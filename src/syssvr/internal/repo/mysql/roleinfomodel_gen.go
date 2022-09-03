@@ -96,7 +96,7 @@ func (m *defaultRoleInfoModel) Insert(ctx context.Context, data *RoleInfo) (sql.
 
 func (m *defaultRoleInfoModel) Update(ctx context.Context, newData *RoleInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, roleInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.Name, newData.Remark, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Status, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.Name, newData.Remark, newData.Status, newData.Id)
 	return err
 }
 

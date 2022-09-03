@@ -2,6 +2,9 @@ package role
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,7 +27,17 @@ func NewRoleDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleDe
 }
 
 func (l *RoleDeleteLogic) RoleDelete(req *types.RoleDeleteReq) error {
-	// todo: add your logic here and delete this line
-
+	resp, err := l.svcCtx.RoleRpc.RoleDelete(l.ctx, &sys.RoleDeleteReq{
+		Id: req.ID,
+	})
+	if err != nil {
+		err := errors.Fmt(err)
+		l.Errorf("[%s]|rpc.RoleDelete|req=%v|err=%+v", utils.FuncName(), req, err)
+		return err
+	}
+	if resp == nil {
+		l.Errorf("%s|rpc.RoleDelete|return nil|req=%+v", utils.FuncName(), req)
+		return errors.System.AddDetail("RoleDelete rpc return nil")
+	}
 	return nil
 }

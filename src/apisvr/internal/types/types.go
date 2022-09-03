@@ -56,10 +56,10 @@ type UserCaptchaResp struct {
 }
 
 type UserIndexReq struct {
-	Page     PageInfo `json:"page,optional,optional"` //分页信息,只获取一个则不填
-	UserName string   `json:"userName,optional"`      //用户名(唯一)
-	Phone    string   `json:"phone,optional"`         // 手机号
-	Email    string   `json:"email,optional"`         // 邮箱
+	Page     PageInfo `json:"page"`              //分页信息
+	UserName string   `json:"userName,optional"` //用户名(唯一)
+	Phone    string   `json:"phone,optional"`    // 手机号
+	Email    string   `json:"email,optional"`    // 邮箱
 }
 
 type UserIndexResp struct {
@@ -141,8 +141,7 @@ type RoleCreateReq struct {
 }
 
 type RoleIndexReq struct {
-	Page   PageInfo `json:"page,optional"`    //分页信息,只获取一个则不填
-	ID     int64    `json:"id,optional "`     //按编号查找角色
+	Page   PageInfo `json:"page"`             //分页信息,只获取一个则不填
 	Name   string   `json:"name,optional "`   //按名称查找角色
 	Status int64    `json:"status,optional "` //按状态查找角色
 }
@@ -189,23 +188,22 @@ type MenuCreateReq struct {
 }
 
 type MenuIndexReq struct {
-	Page PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+	Page PageInfo `json:"page"`          //分页信息,只获取一个则不填
+	Name string   `json:"name,optional"` // 按菜单名称筛选
+	Path string   `json:"path,optional"` // 按菜单路径筛选
 }
 
 type MenuIndexData struct {
-	ID             int64  `json:"id"`             // 编号
-	Name           string `json:"name"`           // 菜单名称
-	ParentID       int64  `json:"parentID"`       // 父菜单ID，一级菜单为1
-	Type           int64  `json:"type"`           // 类型   1：目录   2：菜单   3：按钮
-	Path           string `json:"path"`           // 系统的path
-	Component      string `json:"component"`      // 页面
-	Icon           string `json:"icon"`           // 菜单图标
-	Redirect       string `json:"redirect"`       // 路由重定向
-	CreateBy       string `json:"createBy"`       // 创建人
-	CreateTime     string `json:"createTime"`     // 创建时间
-	LastUpdateBy   string `json:"lastUpdateBy"`   // 更新人
-	LastUpdateTime string `json:"lastUpdateTime"` // 更新时间
-	Order          int64  `json:"order"`          // 左侧table排序序号
+	ID         int64  `json:"id"`         // 编号
+	Name       string `json:"name"`       // 菜单名称
+	ParentID   int64  `json:"parentID"`   // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type"`       // 类型   1：目录   2：菜单   3：按钮
+	Path       string `json:"path"`       // 系统的path
+	Component  string `json:"component"`  // 页面
+	Icon       string `json:"icon"`       // 菜单图标
+	Redirect   string `json:"redirect"`   // 路由重定向
+	CreateTime int64  `json:"createTime"` // 创建时间
+	Order      int64  `json:"order"`      // 左侧table排序序号
 }
 
 type MenuIndexResp struct {
