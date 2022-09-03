@@ -30,6 +30,7 @@ func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductI
 	dmReq := &dm.ProductInfoIndexReq{
 		DeviceType:  req.DeviceType, //产品id
 		ProductName: req.ProductName,
+		ProductIDs:  req.ProductIDs,
 		Page: &dm.PageInfo{
 			Page: req.Page.Page,
 			Size: req.Page.Size,

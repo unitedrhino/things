@@ -132,6 +132,7 @@ message ProductInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   int64  deviceType = 2; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
   string  productName = 3; //过滤条件: 产品名称
+  repeated string   productIDs = 4; //过滤产品id列表
 }
 
 message ProductInfoIndexResp{
