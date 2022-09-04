@@ -13,6 +13,8 @@ import (
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
+	menu "github.com/i-Things/things/src/syssvr/client/menu"
+	role "github.com/i-Things/things/src/syssvr/client/role"
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/i-Things/things/src/syssvr/sysdirect"
 	"github.com/zeromicro/go-zero/rest"
@@ -26,6 +28,8 @@ type ServiceContext struct {
 	Record         rest.Middleware
 	DmManage       rest.Middleware
 	UserRpc        user.User
+	RoleRpc        role.Role
+	MenuRpc        menu.Menu
 	DeviceM        devicemanage.DeviceManage
 	DeviceA        deviceauth.DeviceAuth
 	ProductM       productmanage.ProductManage
@@ -44,6 +48,9 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 		deviceInteract deviceinteract.DeviceInteract
 	)
 	var ur user.User
+	var ro role.Role
+	var me menu.Menu
+	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc {
 			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -58,8 +65,12 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 	if c.SysRpc.Enable {
 		if c.SysRpc.Mode == conf.ClientModeGrpc {
 			ur = user.NewUser(zrpc.MustNewClient(c.SysRpc.Conf))
+			ro = role.NewRole(zrpc.MustNewClient(c.SysRpc.Conf))
+			me = menu.NewMenu(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
 			ur = sysdirect.NewUser(c.SysSvr)
+			ro = sysdirect.NewRole(c.SysSvr)
+			me = sysdirect.NewMenu(c.SysSvr)
 		}
 	}
 	if c.DiRpc.Enable {
@@ -89,6 +100,8 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 		CheckToken:     middleware.NewCheckTokenMiddleware(ur).Handle,
 		Record:         middleware.NewRecordMiddleware().Handle,
 		UserRpc:        ur,
+		RoleRpc:        ro,
+		MenuRpc:        me,
 		ProductM:       productM,
 		DeviceM:        deviceM,
 		Captcha:        captcha,

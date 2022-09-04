@@ -27,13 +27,57 @@ CREATE TABLE if not exists `user_info`
     UNIQUE KEY `user_email` (`email`) USING BTREE,
     UNIQUE KEY `user_wechat` (`wechat`) USING BTREE,
     KEY `user_deletedTime` (`deletedTime`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  ROW_FORMAT = COMPACT COMMENT ='用户登录信息表';
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8
+    ROW_FORMAT = COMPACT COMMENT ='用户登录信息表';
 
 # 新增root用户
-INSERT INTO `user_info`(`uid`, `userName`, `password`, `email`, `phone`, `wechat`, `lastIP`, `regIP`, `role`,
-                        `nickName`,  `sex`, `city`, `country`, `province`, `language`, `headImgUrl`, `deletedTime`)
-VALUES (1740358057038188544, 'administrator', '4f0fded4a38abe7a3ea32f898bb82298', '163', '13911110000', 'wechat',
-        '127.0.0.1', '127.0.0.1', 1, 'liangjuan',
-        1, 'shenzhen', 'Ut', 'guangdong', 'eiusmod', 'http', NULL);
+INSERT INTO `user_info`(`uid`, `userName`, `password`, `email`, `phone`, `wechat`, `lastIP`, `regIP`, `role`,`nickName`, `inviterUid`, `inviterId`,
+                        `sex`, `city`, `country`, `province`,`language`, `headImgUrl`,`deletedTime`)
+VALUES (1740358057038188544, 'administrator', '4f0fded4a38abe7a3ea32f898bb82298', '163', '13911110000', 'wechat', '0.0.0.0', '0.0.0.0', 1,'liangjuan',
+        4, 0x3639, 1, 'shenzhen', 'Ut', 'guangdong', 'eiusmod', 'http',NULL);
+
+CREATE TABLE if not exists `role_info`
+(
+    `id`          bigint auto_increment comment 'id编号',
+    `name`        varchar(100)  CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '角色名称',
+    `remark`      varchar(100)  CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '备注',
+    `createdTime` datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updatedTime` datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deletedTime` datetime DEFAULT NULL,
+    `status`      int default 1 null comment '状态  1:启用,2:禁用',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `nameIndex` (`name`) USING BTREE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='角色管理表';
+
+CREATE TABLE if not exists `role_menu`
+(
+    `id`           bigint auto_increment comment 'id编号',
+    `roleID`       int null comment '角色ID',
+    `menuID`       int null comment '菜单ID',
+    `createdTime`  datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updatedTime`  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deletedTime`  datetime DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `roleIDMenuIDIndex` (`roleID`, `menuID`) USING BTREE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='角色菜单关联表';
+
+CREATE TABLE if not exists `menu_info`
+(
+    `id`              bigint auto_increment comment '编号',
+    `parentID`        int null comment '父菜单ID，一级菜单为1',
+    `type`            int null comment '类型   1：目录   2：菜单   3：按钮',
+    `order`           int null comment '左侧table排序序号',
+    `name`            varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '菜单名称',
+    `path`            varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '系统的path',
+    `component`       varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '页面',
+    `icon`            varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '图标',
+    `redirect`        varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '路由重定向',
+    `backgroundUrl`  varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '后台地址',
+    `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updatedTime` 	  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deletedTime` 	  datetime DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `nameIndex` (`name`) USING BTREE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='菜单管理表';
+

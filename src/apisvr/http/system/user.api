@@ -102,7 +102,7 @@ type (
 	}
 
 	UserIndexReq {
-		Page PageInfo `json:"page,optional,optional"` //分页信息,只获取一个则不填
+		Page PageInfo `json:"page"` //分页信息
 		UserName    string `json:"userName,optional"`          //用户名(唯一)
 		Phone       string `json:"phone,optional"`             // 手机号
 		Email       string `json:"email,optional"`             // 邮箱
