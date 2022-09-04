@@ -57,7 +57,7 @@ type (
         Order int64 `json:"order"`                     // 左侧table排序序号
     }
     MenuIndexResp struct {
-        Data []*MenuIndexData `json:"data"` //菜单列表
+        List []*MenuIndexData `json:"list"` //菜单列表
         Total int64 `json:"total"`         //菜单总数
     }
     MenuUpdateReq struct {
