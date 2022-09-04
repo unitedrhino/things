@@ -5,6 +5,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/store"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -20,6 +21,7 @@ type (
 	ProductFilter struct {
 		DeviceType  int64
 		ProductName string
+		ProductIDs  []string
 	}
 	DeviceFilter struct {
 		ProductID  string
@@ -103,6 +105,9 @@ func (p *ProductFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	}
 	if p.ProductName != "" {
 		sql = sql.Where("ProductName like ?", "%"+p.ProductName+"%")
+	}
+	if len(p.ProductIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("ProductID in (%v)", store.ArrayToSql(p.ProductIDs)))
 	}
 	return sql
 }
