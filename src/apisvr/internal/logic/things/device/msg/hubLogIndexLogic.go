@@ -54,5 +54,5 @@ func (l *HubLogIndexLogic) HubLogIndex(req *types.DeviceMsgHubLogIndexReq) (resp
 			ResultType: v.ResultType,
 		})
 	}
-	return &types.DeviceMsgHubLogIndexResp{List: info}, err
+	return &types.DeviceMsgHubLogIndexResp{List: info, Total: dmResp.Total}, err
 }

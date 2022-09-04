@@ -26,7 +26,7 @@ require (
 
 replace (
 	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.1
-	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.1
+	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.2
 )
 
 require (
