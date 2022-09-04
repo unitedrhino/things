@@ -45,7 +45,7 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 		})
 	}
 	return &sys.MenuIndexResp{
-		Data:  info,
+		List:  info,
 		Total: total,
 	}, nil
 

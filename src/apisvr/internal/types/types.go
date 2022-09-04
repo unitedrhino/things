@@ -156,7 +156,7 @@ type RoleIndexData struct {
 }
 
 type RoleIndexResp struct {
-	Data  []*RoleIndexData `json:"data"`  //角色列表数据
+	List  []*RoleIndexData `json:"list"`  //角色列表数据
 	Total int64            `json:"total"` //角色列表总数
 }
 
@@ -207,7 +207,7 @@ type MenuIndexData struct {
 }
 
 type MenuIndexResp struct {
-	Data  []*MenuIndexData `json:"data"`  //菜单列表
+	List  []*MenuIndexData `json:"list"`  //菜单列表
 	Total int64            `json:"total"` //菜单总数
 }
 

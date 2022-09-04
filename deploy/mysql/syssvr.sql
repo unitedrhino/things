@@ -32,10 +32,10 @@ CREATE TABLE if not exists `user_info`
     ROW_FORMAT = COMPACT COMMENT ='用户登录信息表';
 
 # 新增root用户
-INSERT INTO `user_info`(`uid`, `userName`, `password`, `email`, `phone`, `wechat`, `lastIP`, `regIP`, `role`,`nickName`, `inviterUid`, `inviterId`,
+INSERT INTO `user_info`(`uid`, `userName`, `password`, `email`, `phone`, `wechat`, `lastIP`, `regIP`, `role`,`nickName`,
                         `sex`, `city`, `country`, `province`,`language`, `headImgUrl`,`deletedTime`)
 VALUES (1740358057038188544, 'administrator', '4f0fded4a38abe7a3ea32f898bb82298', '163', '13911110000', 'wechat', '0.0.0.0', '0.0.0.0', 1,'liangjuan',
-        4, 0x3639, 1, 'shenzhen', 'Ut', 'guangdong', 'eiusmod', 'http',NULL);
+         1, 'shenzhen', 'Ut', 'guangdong', 'eiusmod', 'http',NULL);
 
 CREATE TABLE if not exists `role_info`
 (

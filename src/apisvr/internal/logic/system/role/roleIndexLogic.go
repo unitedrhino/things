@@ -42,7 +42,7 @@ func (l *RoleIndexLogic) RoleIndex(req *types.RoleIndexReq) (resp *types.RoleInd
 	total = info.Total
 
 	roleInfo = make([]*types.RoleIndexData, 0, len(roleInfo))
-	for _, i := range info.Data {
+	for _, i := range info.List {
 		roleInfo = append(roleInfo, &types.RoleIndexData{
 			ID:          i.Id,
 			Name:        i.Name,
