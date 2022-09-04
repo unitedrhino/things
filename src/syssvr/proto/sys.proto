@@ -175,7 +175,7 @@ message RoleIndexReq{
 }
 
 message RoleIndexResp{
-  repeated  RoleIndexData data =1;
+  repeated  RoleIndexData list =1;
   int64 total = 2;
 }
 
@@ -233,7 +233,7 @@ message MenuIndexData{
   int64 order = 10;
 }
 message MenuIndexResp{
-  repeated MenuIndexData data = 1;
+  repeated MenuIndexData list = 1;
   int64 total = 2;
 }
 message MenuUpdateReq{

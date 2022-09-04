@@ -41,7 +41,7 @@ func (l *MenuIndexLogic) MenuIndex(req *types.MenuIndexReq) (resp *types.MenuInd
 	total = info.Total
 
 	menuInfo = make([]*types.MenuIndexData, 0, len(menuInfo))
-	for _, i := range info.Data {
+	for _, i := range info.List {
 		menuInfo = append(menuInfo, &types.MenuIndexData{
 			ID:         i.Id,
 			Name:       i.Name,

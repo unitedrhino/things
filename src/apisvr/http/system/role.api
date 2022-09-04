@@ -53,7 +53,7 @@ type (
     }
 
     RoleIndexResp struct {
-        Data []*RoleIndexData `json:"data"`  //角色列表数据
+        List []*RoleIndexData `json:"list"`  //角色列表数据
         Total int64 `json:"total"`           //角色列表总数
     }
     RoleUpdateReq struct {
