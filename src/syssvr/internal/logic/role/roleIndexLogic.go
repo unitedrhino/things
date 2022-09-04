@@ -50,7 +50,7 @@ func (l *RoleIndexLogic) RoleIndex(in *sys.RoleIndexReq) (*sys.RoleIndexResp, er
 	}
 
 	return &sys.RoleIndexResp{
-		Data:  info,
+		List:  info,
 		Total: total,
 	}, nil
 
