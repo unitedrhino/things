@@ -79,3 +79,4 @@ CREATE TABLE if not exists `menu_info`
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `nameIndex` (`name`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='菜单管理表';
+
