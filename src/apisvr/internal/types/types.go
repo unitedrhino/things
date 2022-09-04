@@ -56,10 +56,10 @@ type UserCaptchaResp struct {
 }
 
 type UserIndexReq struct {
-	Page     PageInfo `json:"page,optional,optional"` //分页信息,只获取一个则不填
-	UserName string   `json:"userName,optional"`      //用户名(唯一)
-	Phone    string   `json:"phone,optional"`         // 手机号
-	Email    string   `json:"email,optional"`         // 邮箱
+	Page     PageInfo `json:"page"`              //分页信息
+	UserName string   `json:"userName,optional"` //用户名(唯一)
+	Phone    string   `json:"phone,optional"`    // 手机号
+	Email    string   `json:"email,optional"`    // 邮箱
 }
 
 type UserIndexResp struct {
@@ -132,6 +132,98 @@ type JwtToken struct {
 type PageInfo struct {
 	Page int64 `json:"page,optional" form:"page,optional"` // 页码
 	Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
+}
+
+type RoleCreateReq struct {
+	Name   string `json:"name"`            // 角色名称
+	Remark string `json:"remark,optional"` // 备注
+	Status int64  `json:"status,optional"` // 状态 1:启用,2:禁用
+}
+
+type RoleIndexReq struct {
+	Page   PageInfo `json:"page"`             //分页信息,只获取一个则不填
+	Name   string   `json:"name,optional "`   //按名称查找角色
+	Status int64    `json:"status,optional "` //按状态查找角色
+}
+
+type RoleIndexData struct {
+	ID          int64   `json:"id"`          // 编号
+	Name        string  `json:"name"`        // 角色名称
+	Remark      string  `json:"remark"`      // 备注
+	CreatedTime int64   `json:"createdTime"` // 创建时间
+	Status      int64   `json:"status"`      // 角色状态
+	RoleMenuID  []int64 `json:"roleMenuID"`  // 角色对应的菜单id列表
+}
+
+type RoleIndexResp struct {
+	Data  []*RoleIndexData `json:"data"`  //角色列表数据
+	Total int64            `json:"total"` //角色列表总数
+}
+
+type RoleUpdateReq struct {
+	ID     int64  `json:"id"`     // 编号
+	Name   string `json:"name"`   // 角色名称
+	Remark string `json:"remark"` // 备注
+	Status int64  `json:"status"` // 状态
+}
+
+type RoleDeleteReq struct {
+	ID int64 `json:"id"` //编号
+}
+
+type RoleMenuUpdateReq struct {
+	ID     int64   `json:"id"`     //角色编号
+	MenuID []int64 `json:"menuID"` //菜单编号列表
+}
+
+type MenuCreateReq struct {
+	Name      string `json:"name"`               // 菜单名称
+	ParentID  int64  `json:"parentID,optional"`  // 父菜单ID，一级菜单为1
+	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
+	Path      string `json:"path,optional"`      // 系统的path
+	Component string `json:"component,optional"` // 页面
+	Icon      string `json:"icon,optional"`      // 菜单图标
+	Redirect  string `json:"redirect,optional"`  // 路由重定向
+	Order     int64  `json:"order"`              // 左侧table排序序号
+}
+
+type MenuIndexReq struct {
+	Page PageInfo `json:"page"`          //分页信息,只获取一个则不填
+	Name string   `json:"name,optional"` // 按菜单名称筛选
+	Path string   `json:"path,optional"` // 按菜单路径筛选
+}
+
+type MenuIndexData struct {
+	ID         int64  `json:"id"`         // 编号
+	Name       string `json:"name"`       // 菜单名称
+	ParentID   int64  `json:"parentID"`   // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type"`       // 类型   1：目录   2：菜单   3：按钮
+	Path       string `json:"path"`       // 系统的path
+	Component  string `json:"component"`  // 页面
+	Icon       string `json:"icon"`       // 菜单图标
+	Redirect   string `json:"redirect"`   // 路由重定向
+	CreateTime int64  `json:"createTime"` // 创建时间
+	Order      int64  `json:"order"`      // 左侧table排序序号
+}
+
+type MenuIndexResp struct {
+	Data  []*MenuIndexData `json:"data"`  //菜单列表
+	Total int64            `json:"total"` //菜单总数
+}
+
+type MenuUpdateReq struct {
+	ID        int64  `json:"id"`                 // 编号
+	Name      string `json:"name"`               // 菜单名称
+	ParentID  int64  `json:"parentID"`           // 父菜单ID，一级菜单为1
+	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
+	Path      string `json:"path,optional"`      // 系统的path
+	Component string `json:"component,optional"` // 页面
+	Icon      string `json:"icon,optional"`      // 菜单图标
+	Redirect  string `json:"redirect,optional"`  // 路由重定向
+}
+
+type MenuDeleteReq struct {
+	ID int64 `json:"id"` // 编号
 }
 
 type DeviceAuthLoginReq struct {
