@@ -81,3 +81,22 @@ CREATE TABLE if not exists `menu_info`
     UNIQUE KEY `nameIndex` (`name`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='菜单管理表';
 
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (2,"设备管理","icon_data_01","/deviceMangers",1,1,"./deviceMangers/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (3,"系统管理","icon_system","/systemManagers",1,2,"./systemManagers/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (4,"运维监控","icon_system","/operationsMonitorings",1,3,"./operationsMonitorings/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (5,"规则引擎","icon_system","/ruleEngines",1,4,"./ruleEngines/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (6,"产品","icon_system","/deviceMangers/products/index",2,1,"./deviceMangers/products/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (7,"产品详情-${id}","icon_system","/deviceMangers/products/details/:id",2,2,"./deviceMangers/products/details/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (8,"设备","icon_system","/deviceMangers/devices/index",2,3,"./deviceMangers/devices/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (9,"设备详情-${id}","icon_system","/deviceMangers/devices/details/:id",2,3,"./deviceMangers/devices/details/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (10,"用户管理","icon_system","/systemManagers/users/index",3,1,"./systemManagers/users/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (11,"角色管理","icon_system","/systemManagers/roles/index",3,2,"./systemManagers/roles/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (12,"菜单列表","icon_system","/systemManagers/menus/index",3,3,"./systemManagers/menus/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (13,"固件升级","icon_system","/operationsMonitorings/firmwareUpgrades/index",4,1,"./operationsMonitorings/firmwareUpgrades/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (14,"告警记录","icon_system","/operationsMonitorings/alarmRecords/index",4,2,"./operationsMonitorings/alarmRecords/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (15,"资源管理","icon_system","/operationsMonitorings/resourceManagements/index",4,3,"./operationsMonitorings/resourceManagements/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (16,"远程配置","icon_system","/operationsMonitorings/remoteConfigurations/index",4,4,"./operationsMonitorings/remoteConfigurations/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (17,"告警中心","icon_system","/operationsMonitorings/alarmCenters/index",4,5,"./operationsMonitorings/alarmCenters/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (18,"在线调试","icon_system","/operationsMonitorings/onlineDebugs/index",4,6,"./operationsMonitorings/onlineDebugs/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (19,"消息规则","icon_system","/ruleEngines/messageRules/index",5,1,"./ruleEngines/messageRules/index.tsx",2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`) values (20,"规则日志","icon_system","/ruleEngines/ruleLogs/index",5,2,"./ruleEngines/ruleLogs/index.tsx",2);

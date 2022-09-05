@@ -41,8 +41,8 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if resp.Token != "" {
 			w.Header().Set(userHeader.UserSetToken, resp.Token)
 		}
-		logx.WithContext(r.Context()).Infof("CheckToken|ip=%s|uid=%s|token=%s|newToken=%s",
-			strIP, resp.Uid, strToken, resp.Token)
-		next(w, r.WithContext(userHeader.SetUserCtx(r.Context(), 0, strIP)))
+		logx.WithContext(r.Context()).Infof("CheckToken|ip=%s|uid=%s|token=%s|newToken=%s|role=%d",
+			strIP, resp.Uid, strToken, resp.Token, resp.Role)
+		next(w, r.WithContext(userHeader.SetUserCtx(r.Context(), 0, strIP, resp.Role)))
 	}
 }

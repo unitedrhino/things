@@ -188,9 +188,10 @@ type MenuCreateReq struct {
 }
 
 type MenuIndexReq struct {
-	Page PageInfo `json:"page"`          //分页信息,只获取一个则不填
-	Name string   `json:"name,optional"` // 按菜单名称筛选
-	Path string   `json:"path,optional"` // 按菜单路径筛选
+	Page     PageInfo `json:"page"`          //分页信息,只获取一个则不填
+	Name     string   `json:"name,optional"` // 按菜单名称筛选
+	Path     string   `json:"path,optional"` // 按菜单路径筛选
+	RoleFlag int64    `json:"roleFlag"`      //角色标记： 1-表示获取与角色相关的菜单列表 2-表示获取完整菜单列表
 }
 
 type MenuIndexData struct {
@@ -220,6 +221,7 @@ type MenuUpdateReq struct {
 	Component string `json:"component,optional"` // 页面
 	Icon      string `json:"icon,optional"`      // 菜单图标
 	Redirect  string `json:"redirect,optional"`  // 路由重定向
+	Order     int64  `json:"order"`              // 左侧table排序序号
 }
 
 type MenuDeleteReq struct {

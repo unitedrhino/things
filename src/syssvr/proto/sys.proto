@@ -78,6 +78,7 @@ message CheckTokenReq{
 message CheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
   int64 uid = 2;
+  int64 role = 3;
 }
 
 message PageInfo{
@@ -219,6 +220,7 @@ message MenuIndexReq{
   PageInfo page = 1;//分页信息
   string name = 2;
   string path = 3;
+  int64 roleFlag = 4;
 }
 message MenuIndexData{
   int64 id = 1;
@@ -245,6 +247,7 @@ message MenuUpdateReq{
   string component = 6;
   string icon = 7;
   string redirect = 8;
+  int64 order = 9;
 }
 
 message MenuDeleteReq{
