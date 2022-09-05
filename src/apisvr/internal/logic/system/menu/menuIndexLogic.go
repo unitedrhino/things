@@ -2,6 +2,7 @@ package menu
 
 import (
 	"context"
+	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/jinzhu/copier"
 
@@ -28,10 +29,18 @@ func NewMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuInd
 func (l *MenuIndexLogic) MenuIndex(req *types.MenuIndexReq) (resp *types.MenuIndexResp, err error) {
 	var page sys.PageInfo
 	copier.Copy(&page, req.Page)
+	var role int64
+	if req.RoleFlag == 1 {
+		role = userHeader.GetUserCtx(l.ctx).Role
+	}
 	info, err := l.svcCtx.MenuRpc.MenuIndex(l.ctx, &sys.MenuIndexReq{
-		Page: &page,
-		Name: req.Name,
+		Page:     &page,
+		Name:     req.Name,
+		Path:     req.Path,
+		RoleFlag: req.RoleFlag,
+		Role:     role,
 	})
+
 	if err != nil {
 		return nil, err
 	}
