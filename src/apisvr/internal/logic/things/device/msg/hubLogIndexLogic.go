@@ -36,6 +36,10 @@ func (l *HubLogIndexLogic) HubLogIndex(req *types.DeviceMsgHubLogIndexReq) (resp
 			Page: req.Page.Page,
 			Size: req.Page.Size,
 		},
+		Actions:   req.Actions,
+		Topics:    req.Topics,
+		Content:   req.Content,
+		RequestID: req.RequestID,
 	})
 	if err != nil {
 		er := errors.Fmt(err)

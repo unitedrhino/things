@@ -156,10 +156,12 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	if err != nil {
 		return nil, err
 	}
+	var action = "thing"
 	respMsg, err = func() (respMsg *deviceMsg.PublishMsg, err error) {
 		if len(l.topics) < 5 || l.topics[1] != "up" {
 			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
+		action = l.topics[2]
 		switch l.topics[2] {
 		case devices.PropertyMethod: //属性上报
 			return l.HandleProperty(msg)
@@ -168,12 +170,13 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		case devices.ActionMethod: //设备响应行为执行结果
 			return l.HandleResp(msg)
 		default:
+			action = "thing"
 			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
 	}()
 	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceMsg.HubLog{
 		ProductID:  msg.ProductID,
-		Action:     "publish",
+		Action:     action,
 		Timestamp:  l.dreq.GetTimeStamp(msg.Timestamp), // 操作时间
 		DeviceName: msg.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),
