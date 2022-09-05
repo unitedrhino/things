@@ -10,9 +10,28 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 )
 
-func (d HubLogRepo) GetCountLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) (int64, error) {
-	sqSql := sq.Select("Count(1)").From(d.GetLogStableName(productID)).
-		Where("`device_name`=?", deviceName)
+func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceMsg.HubFilter) sq.SelectBuilder {
+	if len(filter.DeviceName) != 0 {
+		sql = sql.Where("`device_name`=?", filter.DeviceName)
+	}
+	if len(filter.Content) != 0 {
+		sql = sql.Where("`content`=?", filter.Content)
+	}
+	if len(filter.RequestID) != 0 {
+		sql = sql.Where("`request_id`=?", filter.RequestID)
+	}
+	if len(filter.Actions) != 0 {
+		sql = sql.Where(fmt.Sprintf("`action` in (%v)", store.ArrayToSql(filter.Actions)))
+	}
+	if len(filter.Topics) != 0 {
+		sql = sql.Where(fmt.Sprintf("`topic` in (%v)", store.ArrayToSql(filter.Topics)))
+	}
+	return sql
+}
+
+func (d HubLogRepo) GetCountLog(ctx context.Context, filter deviceMsg.HubFilter, page def.PageInfo2) (int64, error) {
+	sqSql := sq.Select("Count(1)").From(d.GetLogStableName(filter.ProductID))
+	sqSql = d.fillFilter(sqSql, filter)
 	sqSql = page.FmtWhere(sqSql)
 	sqlStr, value, err := sqSql.ToSql()
 	if err != nil {
@@ -33,10 +52,10 @@ func (d HubLogRepo) GetCountLog(ctx context.Context, productID, deviceName strin
 	return total, nil
 }
 
-func (d HubLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName string, page def.PageInfo2) (
+func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter deviceMsg.HubFilter, page def.PageInfo2) (
 	[]*deviceMsg.HubLog, error) {
-	sql := sq.Select("*").From(d.GetLogStableName(productID)).
-		Where("`device_name`=?", deviceName).OrderBy("`ts` desc")
+	sql := sq.Select("*").From(d.GetLogStableName(filter.ProductID)).OrderBy("`ts` desc")
+	sql = d.fillFilter(sql, filter)
 	sql = page.FmtSql(sql)
 	sqlStr, value, err := sql.ToSql()
 	if err != nil {
@@ -50,7 +69,7 @@ func (d HubLogRepo) GetDeviceLog(ctx context.Context, productID, deviceName stri
 	store.Scan(rows, &datas)
 	retLogs := make([]*deviceMsg.HubLog, 0, len(datas))
 	for _, v := range datas {
-		retLogs = append(retLogs, ToDeviceLog(productID, v))
+		retLogs = append(retLogs, ToDeviceLog(filter.ProductID, v))
 	}
 	return retLogs, nil
 }
