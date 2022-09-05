@@ -164,6 +164,10 @@ type DeviceMsgHubLogIndexReq struct {
 	TimeStart  int64    `json:"timeStart,string,optional,omitempty"` //获取时间的开始
 	TimeEnd    int64    `json:"timeEnd,string,optional,omitempty"`   //时间的结束
 	Page       PageInfo `json:"page,optional"`                       //分页信息
+	Actions    []string `json:"actions,optional"`                    //过滤操作类型 connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
+	Topics     []string `json:"topics,optional"`                     //过滤主题
+	Content    string   `json:"content,optional"`                    //过滤内容
+	RequestID  string   `json:"requestID,optional"`                  //过滤请求ID
 }
 
 type DeviceMsgHubLogIndexResp struct {
@@ -173,7 +177,7 @@ type DeviceMsgHubLogIndexResp struct {
 
 type DeviceMsgHubLogIndex struct {
 	Timestamp  int64  `json:"timestamp,string"`
-	Action     string `json:"action"`
+	Action     string `json:"action"` //connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
 	RequestID  string `json:"requestID"`
 	TranceID   string `json:"tranceID"`
 	Topic      string `json:"topic"`

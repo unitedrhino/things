@@ -20,7 +20,7 @@ type PublishMsg struct {
 
 func (p *PublishMsg) String() string {
 	msgMap := map[string]any{
-		"Topic":      p.Topic,
+		"Topics":     p.Topic,
 		"Payload":    string(p.Payload),
 		"Timestamp":  p.Timestamp,
 		"ProductID":  p.ProductID,

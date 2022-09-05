@@ -85,11 +85,8 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 			return nil, err
 		}
 	}
-	sql = sql.From(d.GetPropertyStableName(filter.ProductID, filter.DataID)).
-		Where("`device_name`=?", filter.DeviceName)
-	if len(filter.DeviceName) > 0 {
-		sql = sql.Where("`device_name` in ?", filter.DeviceName)
-	}
+	sql = sql.From(d.GetPropertyStableName(filter.ProductID, filter.DataID))
+	sql = d.fillFilter(sql, filter)
 	sql = filter.Page.FmtSql(sql)
 	if filter.Order != def.OrderAes {
 		sql = sql.OrderBy("ts desc")
@@ -140,12 +137,20 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 	return sql, nil
 }
 
+func (d *SchemaDataRepo) fillFilter(
+	sql sq.SelectBuilder, filter deviceMsg.FilterOpt) sq.SelectBuilder {
+	if len(filter.DeviceName) != 0 {
+		sql = sql.Where(fmt.Sprintf("`device_name` in (%v)", store.ArrayToSql(filter.DeviceName)))
+	}
+	return sql
+}
+
 func (d *SchemaDataRepo) GetPropertyCountByID(
 	ctx context.Context,
 	filter deviceMsg.FilterOpt) (int64, error) {
 
-	sqlData := sq.Select("count(1)").From(d.GetPropertyStableName(filter.ProductID, filter.DataID)).
-		Where("`device_name`=?", filter.DeviceName)
+	sqlData := sq.Select("count(1)").From(d.GetPropertyStableName(filter.ProductID, filter.DataID))
+	sqlData = d.fillFilter(sqlData, filter)
 	sqlData = filter.Page.FmtWhere(sqlData)
 	sqlStr, value, err := sqlData.ToSql()
 	if err != nil {
