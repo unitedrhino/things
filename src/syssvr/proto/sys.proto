@@ -221,6 +221,7 @@ message MenuIndexReq{
   string name = 2;
   string path = 3;
   int64 roleFlag = 4;
+  int64 role = 5;
 }
 message MenuIndexData{
   int64 id = 1;
