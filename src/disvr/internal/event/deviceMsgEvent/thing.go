@@ -71,7 +71,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *d
 	err = l.dd.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 
-		l.Errorf("HandlePropertyReport|InsertPropertyData|err=%+v", err)
+		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 		return l.DeviceResp(msg, errors.Database, nil), err
 	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
@@ -89,12 +89,12 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 					DeviceName: []string{msg.DeviceName},
 					DataID:     id})
 			if err != nil {
-				l.Errorf("HandlePropertyGetStatus|GetPropertyDataByID|get id:%s|err:%s",
-					id, err.Error())
+				l.Errorf("%s.GetPropertyDataByID.get id:%s err:%s",
+					utils.FuncName(), id, err.Error())
 				return nil, err
 			}
 			if len(data) == 0 {
-				l.Infof("HandlePropertyGetStatus|GetPropertyDataByID|not find id:%s", id)
+				l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
 				continue
 			}
 			respData[id] = data[0].Param
@@ -109,7 +109,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 }
 
 func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	l.Infof("ThingLogic|HandleProperty")
+	l.Infof("%s", utils.FuncName())
 	switch l.dreq.Method {
 	case deviceSend.Report, deviceSend.ReportInfo:
 		return l.HandlePropertyReport(msg)

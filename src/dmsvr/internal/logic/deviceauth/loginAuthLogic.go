@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
@@ -99,7 +100,7 @@ func (l *LoginAuthLogic) UpdateLoginTime() {
 }
 
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
-	l.Infof("LoginAuth|req=%+v", in)
+	l.Infof("%s req=%+v", utils.FuncName(), in)
 	if deviceAuth.IsAdmin(l.svcCtx.Config.AuthWhite, deviceAuth.AuthInfo{
 		Username: in.Username,
 		ClientID: in.ClientID,
