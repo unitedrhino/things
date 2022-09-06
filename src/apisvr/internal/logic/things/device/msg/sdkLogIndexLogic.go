@@ -41,7 +41,7 @@ func (l *SdkLogIndexLogic) SdkLogIndex(req *types.DeviceMsgSdkLogIndexReq) (resp
 	dmResp, err := l.svcCtx.DeviceMsg.SdkLogIndex(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.GetDeviceSDKLog|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.GetDeviceSDKLog req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	info := make([]*types.DeviceMsgSdkIndex, 0, len(dmResp.List))

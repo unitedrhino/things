@@ -39,11 +39,11 @@ func (l *MenuCreateLogic) MenuCreate(req *types.MenuCreateReq) error {
 	})
 	if err != nil {
 		err := errors.Fmt(err)
-		l.Errorf("[%s]|rpc.MenuCreate|req=%v|err=%+v", utils.FuncName(), req, err)
+		l.Errorf("%s.rpc.MenuCreate req=%v err=%+v", utils.FuncName(), req, err)
 		return err
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.MenuCreate|return nil|req=%+v", utils.FuncName(), req)
+		l.Errorf("%s rpc.MenuCreate return nil req=%+v", utils.FuncName(), req)
 		return errors.System.AddDetail("MenuCreate rpc return nil")
 	}
 	return nil

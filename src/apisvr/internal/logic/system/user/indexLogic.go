@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/jinzhu/copier"
 
@@ -26,7 +27,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.UserIndexReq) (resp *types.UserIndexResp, err error) {
-	l.Infof("UserCoreList|req=%+v", req)
+	l.Infof("%s req=%v", utils.FuncName(), req)
 	var page sys.PageInfo
 	copier.Copy(&page, req.Page)
 	info, err := l.svcCtx.UserRpc.Index(l.ctx, &sys.UserIndexReq{

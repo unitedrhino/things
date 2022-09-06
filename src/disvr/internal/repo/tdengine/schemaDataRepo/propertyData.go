@@ -58,7 +58,7 @@ func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 			TimeStamp: timestamp,
 		})
 		if err != nil {
-			return errors.Database.AddDetailf("SchemaDataRepo|InsertPropertiesData|InsertPropertyData id:%v param:%v err:%v",
+			return errors.Database.AddDetailf("SchemaDataRepo.InsertPropertiesData.InsertPropertyData id:%v param:%v err:%v",
 				id, param, err)
 		}
 	}

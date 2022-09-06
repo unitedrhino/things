@@ -45,7 +45,7 @@ func (l *SchemaLogIndexLogic) SchemaLogIndex(req *types.DeviceMsgSchemaLogIndexR
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.GetDeviceData|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.GetDeviceData req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	info := make([]*types.DeviceMsgSchemaIndex, 0, len(dmResp.List))
