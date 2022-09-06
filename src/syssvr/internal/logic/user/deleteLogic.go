@@ -3,6 +3,7 @@ package userlogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/spf13/cast"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -28,11 +29,11 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 func (l *DeleteLogic) Delete(in *sys.UserDeleteReq) (*sys.Response, error) {
 	err := l.svcCtx.UserInfoModel.Delete(l.ctx, cast.ToInt64(in.Uid))
 	if err != nil {
-		l.Errorf("UserInfoModel|Delete|uid=%d|err=%+v", in.Uid, err)
+		l.Errorf("%s.Delete uid=%d err=%+v", utils.FuncName(), in.Uid, err)
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	l.Infof("InfoDelete|delete usersvr uid= %s", in.Uid)
+	l.Infof("%s.delete uid=%v", utils.FuncName(), in.Uid)
 
 	return &sys.Response{}, nil
 }

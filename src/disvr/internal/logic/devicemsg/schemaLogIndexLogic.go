@@ -103,7 +103,7 @@ func (l *SchemaLogIndexLogic) SchemaLogIndex(in *di.SchemaLogIndexReq) (*di.Sche
 			Interval:   in.Interval,
 			ArgFunc:    in.ArgFunc})
 		if err != nil {
-			l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
+			l.Errorf("%s.GetEventDataByID err=%v", utils.FuncName(), err)
 			return nil, errors.System.AddDetail(err)
 		}
 		for _, devData := range dds {
@@ -116,7 +116,7 @@ func (l *SchemaLogIndexLogic) SchemaLogIndex(in *di.SchemaLogIndexReq) (*di.Sche
 			payload, _ = json.Marshal(devData)
 			diData.GetValue = string(payload)
 			diDatas = append(diDatas, &diData)
-			l.Infof("GetDeviceLogLogic|get data=%+v", diData)
+			l.Infof("%s get data=%+v", utils.FuncName(), diData)
 		}
 		if in.ArgFunc == "" && in.Interval == 0 {
 			total, err = dd.GetEventCountByID(l.ctx, deviceMsg.FilterOpt{
@@ -132,7 +132,7 @@ func (l *SchemaLogIndexLogic) SchemaLogIndex(in *di.SchemaLogIndexReq) (*di.Sche
 				Interval:   in.Interval,
 				ArgFunc:    in.ArgFunc})
 			if err != nil {
-				l.Errorf("HandleData|GetEventCountByID|err=%v", err)
+				l.Errorf("%s.GetEventCountByID err=%v", utils.FuncName(), err)
 				return nil, errors.System.AddDetail(err)
 			}
 		}

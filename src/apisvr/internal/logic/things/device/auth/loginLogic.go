@@ -28,7 +28,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.DeviceAuthLoginReq) error {
-	l.Infof("LoginAuth|req=%+v", req)
+	l.Infof("%s req=%+v", utils.FuncName(), req)
 	var (
 		cert []byte
 		err  error
@@ -49,7 +49,7 @@ func (l *LoginLogic) Login(req *types.DeviceAuthLoginReq) error {
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.ManageDevice|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.ManageDevice req=%v err=%+v", utils.FuncName(), req, er)
 		return er
 	}
 	return nil
