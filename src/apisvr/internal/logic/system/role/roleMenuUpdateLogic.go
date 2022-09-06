@@ -33,11 +33,11 @@ func (l *RoleMenuUpdateLogic) RoleMenuUpdate(req *types.RoleMenuUpdateReq) error
 	})
 	if err != nil {
 		err := errors.Fmt(err)
-		l.Errorf("[%s]|rpc.RoleMenuUpdate|req=%v|err=%+v", utils.FuncName(), req, err)
+		l.Errorf("%s.rpc.RoleMenuUpdate req=%v err=%+v", utils.FuncName(), req, err)
 		return err
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.RoleMenuUpdate|return nil|req=%+v", utils.FuncName(), req)
+		l.Errorf("%s.rpc.RoleMenuUpdate return nil req=%+v", utils.FuncName(), req)
 		return errors.System.AddDetail("RoleMenuUpdate rpc return nil")
 	}
 	return nil

@@ -32,11 +32,11 @@ func (l *MenuDeleteLogic) MenuDelete(req *types.MenuDeleteReq) error {
 	})
 	if err != nil {
 		err := errors.Fmt(err)
-		l.Errorf("[%s]|rpc.MenuDelete|req=%v|err=%+v", utils.FuncName(), req, err)
+		l.Errorf("%s.rpc.MenuDelete req=%v err=%+v", utils.FuncName(), req, err)
 		return err
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.MenuDelete|return nil|req=%+v", utils.FuncName(), req)
+		l.Errorf("%s.rpc.MenuDelete return nil req=%+v", utils.FuncName(), req)
 		return errors.System.AddDetail("MenuDelete rpc return nil")
 	}
 	return nil

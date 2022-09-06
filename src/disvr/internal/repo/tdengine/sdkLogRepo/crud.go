@@ -21,7 +21,7 @@ func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
-	rows, err := d.t.QueryContext(ctx,sqlStr, value...)
+	rows, err := d.t.QueryContext(ctx, sqlStr, value...)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			return nil, err
@@ -42,9 +42,9 @@ func (d SDKLogRepo) Insert(ctx context.Context, data *deviceMsg.SDKLog) error {
 	sql := fmt.Sprintf(
 		"insert into %s using %s tags('%s')(`ts`, `content`,`log_level`,`client_token`) values (?,?,?,?);",
 		d.GetSDKLogTableName(data.ProductID, data.DeviceName), d.GetSDKLogStableName(data.ProductID), data.DeviceName)
-	if _, err := d.t.ExecContext(ctx,sql, data.Timestamp, data.Content, data.LogLevel, data.ClientToken); err != nil {
+	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.LogLevel, data.ClientToken); err != nil {
 		logx.WithContext(ctx).Errorf(
-			sql+"%s|EventTable|productID:%v,deviceName:%v,err:%v",
+			sql+"%s.EventTable productID:%v deviceName:%v err:%v",
 			utils.FuncName(), data.ProductID, data.DeviceName, err)
 		return err
 	}

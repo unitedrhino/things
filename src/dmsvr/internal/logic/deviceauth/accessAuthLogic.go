@@ -51,10 +51,10 @@ func (l *AccessAuthLogic) Auth(in *dm.AccessAuthReq) (err error) {
 
 // 设备操作认证
 func (l *AccessAuthLogic) AccessAuth(in *dm.AccessAuthReq) (*dm.Response, error) {
-	l.Infof("%s|req=%+v", utils.FuncName(), utils.Fmt(in))
+	l.Infof("%s req=%+v", utils.FuncName(), utils.Fmt(in))
 	err := l.Auth(in)
 	if err != nil {
-		l.Infof("%s|auth failure=%v", utils.FuncName(), err)
+		l.Infof("%s auth failure=%v", utils.FuncName(), err)
 	}
 	return &dm.Response{}, err
 }

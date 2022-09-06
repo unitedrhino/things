@@ -3,6 +3,7 @@ package userlogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/spf13/cast"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -28,7 +29,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 func (l *UpdateLogic) Update(in *sys.UserUpdateReq) (*sys.Response, error) {
 	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.Uid))
 	if err != nil {
-		l.Errorf("ModifyUserInfo|FindOne|uid=%d|err=%+v", in.Uid, err)
+		l.Errorf("%s.FindOne uid=%d err=%v", utils.FuncName(), in.Uid, err)
 		return nil, errors.Database.AddDetail(err)
 	}
 	ui.UserName = in.UserName
@@ -45,10 +46,10 @@ func (l *UpdateLogic) Update(in *sys.UserUpdateReq) (*sys.Response, error) {
 
 	err = l.svcCtx.UserInfoModel.Update(l.ctx, ui)
 	if err != nil {
-		l.Errorf("ModifyUserInfo|Update|ui=%+v|err=%+v", ui, err)
+		l.Errorf("%s.Update ui=%v err=%v", utils.FuncName(), ui, err)
 		return nil, errors.Database.AddDetail(err)
 	}
-	l.Infof("ModifyUserInfo|modifyed usersvr info = %+v", ui)
+	l.Infof("%s.modified usersvr info = %+v", utils.FuncName(), ui)
 
 	return &sys.Response{}, nil
 }
