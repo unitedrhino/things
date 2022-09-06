@@ -31,7 +31,7 @@ func (l *ReadLogic) Read(req *types.DeviceInfoReadReq) (resp *types.DeviceInfo, 
 		&dm.DeviceInfoReadReq{ProductID: req.ProductID, DeviceName: req.DeviceName})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.GetDeviceInfo|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	return deviceInfoToApi(dmResp), nil

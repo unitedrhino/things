@@ -79,7 +79,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *devi
 		ClientToken: l.dreq.ClientToken,
 	})
 	if err != nil {
-		l.Errorf("%s|LogRepo|insert|productID:%v deviceName:%v err:%v",
+		l.Errorf("%s.LogRepo.insert.productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 
 		return l.DeviceResp(msg, errors.Database, nil), err
@@ -95,7 +95,7 @@ func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 		DeviceName: msg.DeviceName,
 	})
 	if err != nil {
-		l.Errorf("%s|Log|operate|productID:%v deviceName:%v err:%v",
+		l.Errorf("%s.Log.operate.productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		return l.DeviceResp(msg, errors.Database, nil), err
 	}

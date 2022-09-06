@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/utils"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -33,7 +34,7 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 	}
 	err = l.svcCtx.DmDB.Delete(l.ctx, in.ProductID)
 	if err != nil {
-		l.Errorf("DelProduct|Delete|err=%+v", err)
+		l.Errorf("%s.Delete err=%+v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.ProductID})
@@ -50,22 +51,22 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 	}
 	err = l.svcCtx.HubLogRepo.DropProduct(l.ctx, in.ProductID)
 	if err != nil {
-		l.Errorf("DropProduct|HubLogRepo|DropProduct|err=%+v", err)
+		l.Errorf("%s.HubLogRepo.DropProduct err=%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.SDKLogRepo.DropProduct(l.ctx, in.ProductID)
 	if err != nil {
-		l.Errorf("DropProduct|SDKLogRepo|DropProduct|err=%+v", err)
+		l.Errorf("%s.SDKLogRepo.DropProduct err=%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.SchemaManaRepo.DropProduct(l.ctx, pt, in.ProductID)
 	if err != nil {
-		l.Errorf("DropProduct|SchemaManaRepo|DropProduct|err=%+v", err)
+		l.Errorf("%s.SchemaManaRepo.DropProduct err=%+v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.SchemaRepo.ClearCache(l.ctx, in.ProductID)
 	if err != nil {
-		l.Errorf("DropProduct|SchemaRepo|ClearCache|err=%+v", err)
+		l.Errorf("%s.SchemaRepo.ClearCache err=%+v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
 	return nil
