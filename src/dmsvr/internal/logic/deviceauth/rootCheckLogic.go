@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -26,7 +27,7 @@ func NewRootCheckLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RootChe
 
 // 鉴定是否是root账号
 func (l *RootCheckLogic) RootCheck(in *dm.RootCheckReq) (*dm.Response, error) {
-	l.Infof("RootCheck|req=%+v", in)
+	l.Infof("%s req=%+v", utils.FuncName(), in)
 	if deviceAuth.IsAdmin(l.svcCtx.Config.AuthWhite, deviceAuth.AuthInfo{
 		Username: in.Username,
 		ClientID: in.ClientID,

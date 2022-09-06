@@ -30,7 +30,7 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			return nil, errors.Parameter.AddDetailf("not find device|productid=%s|deviceName=%s",
+			return nil, errors.Parameter.AddDetailf("not find device productId=%s deviceName=%s",
 				in.ProductID, in.DeviceName)
 		}
 		l.Errorf("DelDevice|DeviceInfo|FindOne|err=%+v", err)
