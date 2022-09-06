@@ -37,7 +37,7 @@ func (l *SendPropertyLogic) SendProperty(req *types.DeviceInteractSendPropertyRe
 	dmResp, err := l.svcCtx.DeviceInteract.SendProperty(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.SendProperty|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.SendProperty req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	return &types.DeviceInteractSendPropertyResp{

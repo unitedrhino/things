@@ -123,7 +123,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 }
 
 func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	l.Infof("ThingLogic|HandleEvent")
+	l.Infof("%s req:%v", utils.FuncName(), msg)
 	dbData := deviceMsg.EventData{}
 	dbData.ID = l.dreq.EventID
 	dbData.Type = l.dreq.Type
@@ -139,19 +139,19 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 
 	err = l.dd.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
-		l.Errorf("InsertEventData|err=%+v", err)
+		l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
 		return l.DeviceResp(msg, errors.Database, nil), errors.Database.AddDetail(err)
 	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	l.Infof("ThingLogic|HandleResp")
+	l.Infof("%s req:%v", utils.FuncName(), msg)
 	//todo 这里后续需要处理异步获取消息的情况
 	return nil, nil
 }
 
 func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	l.Infof("ThingLogic|req=%v", msg)
+	l.Infof("%s req=%v", utils.FuncName(), msg)
 	err = l.initMsg(msg)
 	if err != nil {
 		return nil, err

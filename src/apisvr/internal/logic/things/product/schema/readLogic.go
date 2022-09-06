@@ -33,7 +33,7 @@ func (l *ReadLogic) Read(req *types.ProductSchemaReadReq) (resp *types.ProductSc
 	dmResp, err := l.svcCtx.ProductM.ProductSchemaRead(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.GetDeviceInfo|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	respProductSchema := productSchemaToApi(dmResp)

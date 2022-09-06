@@ -26,7 +26,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 }
 
 func (l *CreateLogic) Create(req *types.UserCreateReq) (resp *types.UserCreateResp, err error) {
-	l.Infof("Register|req=%+v", req)
+	l.Infof("%s req=%+v", utils.FuncName(), req)
 	resp1, err1 := l.svcCtx.UserRpc.Create(l.ctx, &sys.UserCreateReq{
 		ReqType:    req.ReqType,
 		UserName:   req.UserName,
@@ -45,11 +45,11 @@ func (l *CreateLogic) Create(req *types.UserCreateReq) (resp *types.UserCreateRe
 	})
 	if err1 != nil {
 		er := errors.Fmt(err1)
-		l.Errorf("[%s]|rpc.Register|req=%v|err=%#v|rpc_err=%+v", utils.FuncName(), req, er, err)
+		l.Errorf("%s.rpc.Register req=%v err=%v rpc_err=%v", utils.FuncName(), req, er, err)
 		return &types.UserCreateResp{}, er
 	}
 	if resp1 == nil {
-		l.Errorf("%s|rpc.Register|return nil|req=%+v", utils.FuncName(), req)
+		l.Errorf("%s.rpc.Register return nil req=%v", utils.FuncName(), req)
 		return &types.UserCreateResp{}, errors.System.AddDetail("register core rpc return nil")
 	}
 
