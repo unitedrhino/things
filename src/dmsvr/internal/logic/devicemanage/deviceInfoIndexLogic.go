@@ -3,6 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -27,7 +28,7 @@ func NewDeviceInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 
 // 获取设备信息列表
 func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.DeviceInfoIndexResp, error) {
-	l.Infof("GetDeviceInfo|req=%+v", in)
+	l.Infof("%s req=%+v",utils.FuncName(), in)
 	var (
 		info     []*dm.DeviceInfo
 		size     int64

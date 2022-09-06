@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
 	"time"
 
@@ -40,7 +41,7 @@ func (l *SendActionLogic) initMsg(productID string) error {
 }
 
 func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, error) {
-	l.Infof("SendAction|req=%+v", in)
+	l.Infof("%s req=%+v", utils.FuncName(), in)
 	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
@@ -48,11 +49,11 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 	param := map[string]any{}
 	err = json.Unmarshal([]byte(in.InputParams), &param)
 	if err != nil {
-		return nil, errors.Parameter.AddDetail("SendAction|InputParams not right:", in.InputParams)
+		return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.InputParams)
 	}
 	uuid, err := uuid.GenerateUUID()
 	if err != nil {
-		l.Errorf("SendAction|GenerateUUID err:%v", err)
+		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
 	req := deviceSend.DeviceReq{
@@ -74,7 +75,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 	}
 	respParam, err := json.Marshal(resp.Response)
 	if err != nil {
-		return nil, errors.RespParam.AddDetailf("SendAction|get device resp not right:%+v", resp.Response)
+		return nil, errors.RespParam.AddDetailf("SendAction get device resp not right:%+v", resp.Response)
 	}
 	return &di.SendActionResp{
 		ClientToken:  resp.ClientToken,

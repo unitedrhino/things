@@ -42,7 +42,7 @@ func (l *SDKLogLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	l.Infof("%s|req=%+v", utils.FuncName(), msg)
+	l.Infof("%s req=%+v", utils.FuncName(), msg)
 	err = l.initMsg(msg)
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *devi
 		DeviceName: msg.DeviceName,
 	})
 	if err != nil {
-		l.Errorf("%s|Log|operate|productID:%v deviceName:%v err:%v",
+		l.Errorf("%s.Log.operate productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		return nil, err
 	}
