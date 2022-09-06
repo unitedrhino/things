@@ -34,7 +34,7 @@ var (
 )
 
 func (l *AccessAuthLogic) Auth(in *dm.AccessAuthReq) (err error) {
-	l.Infof("%s|in:%v", utils.FuncName(), utils.Fmt(in))
+	l.Infof("%s in:%v", utils.FuncName(), utils.Fmt(in))
 	access, ok := AccessMap[in.Access]
 	if !ok {
 		return errors.Permissions

@@ -23,7 +23,7 @@ func NewConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ConfigLogi
 }
 
 func (l *ConfigLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
-	l.Infof("%s|req=%+v", utils.FuncName(), msg)
+	l.Infof("%s req=%+v", utils.FuncName(), msg)
 	// todo
 	return err
 }
