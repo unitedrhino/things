@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/spf13/cast"
 
@@ -82,7 +83,7 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Resp
 
 	err = l.svcCtx.ProductInfo.Update(l.ctx, pi)
 	if err != nil {
-		l.Errorf("ModifyProduct|ProductInfo|Update|err=%+v", err)
+		l.Errorf("%s.Update err=%+v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
 

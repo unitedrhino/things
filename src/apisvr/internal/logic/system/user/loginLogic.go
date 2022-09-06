@@ -25,7 +25,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, err error) {
-	l.Infof("Login|req=%+v", req)
+	l.Infof("%s req=%+v", utils.FuncName(), req)
 	if req.LoginType == "pwd" {
 		if l.svcCtx.Captcha.Verify(req.CodeID, req.Code) == false {
 			return nil, errors.Captcha
@@ -41,11 +41,11 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.Login|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	if uResp == nil {
-		l.Errorf("%s|rpc.Register|return nil|req=%+v", utils.FuncName(), req)
+		l.Errorf("%s.rpc.Register return nil req=%v", utils.FuncName(), req)
 		return nil, errors.System.AddDetail("register core rpc return nil")
 	}
 	return &types.UserLoginResp{

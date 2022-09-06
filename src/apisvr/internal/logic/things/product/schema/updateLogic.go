@@ -37,7 +37,7 @@ func (l *UpdateLogic) Update(req *types.ProductSchemaUpdateReq) error {
 	_, err := l.svcCtx.ProductM.ProductSchemaUpdate(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.ManageProductTemplate|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.ManageProductTemplate req=%v err=%+v", utils.FuncName(), req, er)
 		return er
 	}
 	return nil

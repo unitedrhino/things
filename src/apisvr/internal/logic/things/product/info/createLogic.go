@@ -50,7 +50,7 @@ func (l *CreateLogic) Create(req *types.ProductInfoCreateReq) error {
 	_, err := l.svcCtx.ProductM.ProductInfoCreate(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.ManageProduct|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.ManageProduct req=%v err=%v", utils.FuncName(), req, er)
 		return er
 	}
 	return nil

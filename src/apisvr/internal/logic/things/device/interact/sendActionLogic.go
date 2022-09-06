@@ -35,7 +35,7 @@ func (l *SendActionLogic) SendAction(req *types.DeviceInteractSendActionReq) (re
 	dmResp, err := l.svcCtx.DeviceInteract.SendAction(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.SendAction|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.SendAction req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	return &types.DeviceInteractSendActionResp{

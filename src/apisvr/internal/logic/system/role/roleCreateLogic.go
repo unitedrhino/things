@@ -34,11 +34,11 @@ func (l *RoleCreateLogic) RoleCreate(req *types.RoleCreateReq) error {
 	})
 	if err != nil {
 		err := errors.Fmt(err)
-		l.Errorf("[%s]|rpc.RoleCreate|req=%v|err=%+v", utils.FuncName(), req, err)
+		l.Errorf("%s.rpc.RoleCreate req=%v err=%+v", utils.FuncName(), req, err)
 		return err
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.RoleCreate|return nil|req=%+v", utils.FuncName(), req)
+		l.Errorf("%s.rpc.RoleCreate return nil req=%+v", utils.FuncName(), req)
 		return errors.System.AddDetail("RoleCreate rpc return nil")
 	}
 	return nil

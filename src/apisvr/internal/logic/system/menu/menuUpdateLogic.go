@@ -39,11 +39,11 @@ func (l *MenuUpdateLogic) MenuUpdate(req *types.MenuUpdateReq) error {
 	})
 	if err != nil {
 		err := errors.Fmt(err)
-		l.Errorf("[%s]|rpc.MenuUpdate|req=%v|err=%+v", utils.FuncName(), req, err)
+		l.Errorf("%s.rpc.MenuUpdate req=%v err=%+v", utils.FuncName(), req, err)
 		return err
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.MenuUpdate|return nil|req=%+v", utils.FuncName(), req)
+		l.Errorf("%s.rpc.MenuUpdate return nil req=%+v", utils.FuncName(), req)
 		return errors.System.AddDetail("MenuUpdate rpc return nil")
 	}
 	return nil

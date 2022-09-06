@@ -113,7 +113,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	}
 	err = l.svcCtx.DmDB.Insert(l.ctx, pi, pt)
 	if err != nil {
-		l.Errorf("AddProduct|Insert|err=%+v", err)
+		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
 	return &dm.Response{}, nil
@@ -122,17 +122,17 @@ func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.ProductInfo, pt *mysql.Pr
 	t, _ := schema.NewSchema([]byte(pt.Schema))
 	if err := l.svcCtx.SchemaManaRepo.InitProduct(
 		l.ctx, t, pi.ProductID); err != nil {
-		l.Errorf("%s|SchemaManaRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
 	if err := l.svcCtx.HubLogRepo.InitProduct(
 		l.ctx, pi.ProductID); err != nil {
-		l.Errorf("%s|HubLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		l.Errorf("%s.HubLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
 	if err := l.svcCtx.SDKLogRepo.InitProduct(
 		l.ctx, pi.ProductID); err != nil {
-		l.Errorf("%s|SDKLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		l.Errorf("%s.SDKLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
 	return nil

@@ -43,7 +43,7 @@ func (l *HubLogIndexLogic) HubLogIndex(req *types.DeviceMsgHubLogIndexReq) (resp
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.GetDeviceDescribeLog|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.HubLogIndex req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	info := make([]*types.DeviceMsgHubLogIndex, 0, len(dmResp.List))
