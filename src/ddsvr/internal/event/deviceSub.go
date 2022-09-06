@@ -41,7 +41,7 @@ func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
 
 // Ota ota远程升级
 func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
-	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
 	if pub == nil {
 		return err
@@ -51,7 +51,7 @@ func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
 
 // Config 设备远程配置
 func (s *DeviceSubServer) Config(topic string, payload []byte) error {
-	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
 	if pub == nil {
 		return err
@@ -61,7 +61,7 @@ func (s *DeviceSubServer) Config(topic string, payload []byte) error {
 
 // Shadow 设备影子
 func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
-	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
 	if pub == nil {
 		return err
@@ -71,7 +71,7 @@ func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
 
 // Log 设备调试日志
 func (s *DeviceSubServer) SDKLog(topic string, payload []byte) error {
-	s.Infof("%s|topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
 	pub, err := s.getDevPublish(topic, payload)
 	if pub == nil {
 		return err
