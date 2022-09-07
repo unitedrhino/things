@@ -28,6 +28,8 @@ service Menu {
   rpc MenuDelete(MenuDeleteReq) returns(Response); //删除菜单
 }
 
+
+
 //用户属性信息
 message UserInfo{
   int64  uid = 1;
@@ -78,6 +80,7 @@ message CheckTokenReq{
 message CheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
   int64 uid = 2;
+  int64 role = 3;
 }
 
 message PageInfo{
@@ -216,11 +219,12 @@ message MenuCreateReq{
 }
 
 message MenuIndexReq{
-  PageInfo page = 1;//分页信息
+  int64  role = 1;
   string name = 2;
   string path = 3;
+
 }
-message MenuIndexData{
+message MenuData{
   int64 id = 1;
   string name = 2;
   int64 parentID = 3;
@@ -233,8 +237,7 @@ message MenuIndexData{
   int64 order = 10;
 }
 message MenuIndexResp{
-  repeated MenuIndexData list = 1;
-  int64 total = 2;
+  repeated MenuData list = 1;
 }
 message MenuUpdateReq{
   int64 id = 1;
@@ -245,10 +248,9 @@ message MenuUpdateReq{
   string component = 6;
   string icon = 7;
   string redirect = 8;
+  int64 order = 9;
 }
 
 message MenuDeleteReq{
   int64 id = 1;
 }
-
-

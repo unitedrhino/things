@@ -52,7 +52,7 @@ func (l *LoginLogic) getPwd(in *sys.LoginReq, uc *mysql.UserInfo) error {
 func (l *LoginLogic) getRet(uc *mysql.UserInfo) (*sys.LoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
-	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid)
+	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)

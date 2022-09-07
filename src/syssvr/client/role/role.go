@@ -20,8 +20,8 @@ type (
 	LoginReq          = sys.LoginReq
 	LoginResp         = sys.LoginResp
 	MenuCreateReq     = sys.MenuCreateReq
+	MenuData          = sys.MenuData
 	MenuDeleteReq     = sys.MenuDeleteReq
-	MenuIndexData     = sys.MenuIndexData
 	MenuIndexReq      = sys.MenuIndexReq
 	MenuIndexResp     = sys.MenuIndexResp
 	MenuUpdateReq     = sys.MenuUpdateReq

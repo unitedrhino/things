@@ -47,6 +47,4 @@ func (l *UpdateLogic) Update(req *types.UserUpdateReq) error {
 		return er
 	}
 	return nil
-
-	return nil
 }
