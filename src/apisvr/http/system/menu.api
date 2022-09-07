@@ -40,12 +40,10 @@ type (
     }
 
     MenuIndexReq struct {
-        Page PageInfo `json:"page"` //分页信息,只获取一个则不填
         Name string `json:"name,optional"` // 按菜单名称筛选
         Path string `json:"path,optional"` // 按菜单路径筛选
-        RoleFlag int64 `json:"roleFlag"`   //角色标记： 1-表示获取与角色相关的菜单列表 2-表示获取完整菜单列表
     }
-    MenuIndexData struct {
+    MenuData struct {
         ID int64 `json:"id"`                           // 编号
         Name string `json:"name"`                      // 菜单名称
         ParentID int64 `json:"parentID"`               // 父菜单ID，一级菜单为1
@@ -58,8 +56,7 @@ type (
         Order int64 `json:"order"`                     // 左侧table排序序号
     }
     MenuIndexResp struct {
-        List []*MenuIndexData `json:"list"` //菜单列表
-        Total int64 `json:"total"`         //菜单总数
+        List []*MenuData `json:"list"` //菜单列表
 
     }
     MenuUpdateReq struct {

@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/verify"
@@ -93,6 +94,9 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 	//	logx.Error("InitBuckets err", err)
 	//	os.Exit(-1)
 	//}
+	jwt.TimeFunc = func() time.Time {
+		return time.Now()
+	}
 	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
