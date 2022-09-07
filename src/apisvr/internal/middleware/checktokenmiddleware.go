@@ -22,7 +22,7 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		strIP, _ := utils.GetIP(r)
 		strToken := r.Header.Get(userHeader.UserToken)
 		if strToken == "" {
-			logx.WithContext(r.Context()).Errorf("%s|CheckToken|ip=%s|not find token",
+			logx.WithContext(r.Context()).Errorf("%s.CheckToken ip=%s not find token",
 				utils.FuncName(), strIP)
 			http.Error(w, errors.TokenMalformed.Error(), http.StatusUnauthorized)
 			return
@@ -33,7 +33,7 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		})
 		if err != nil {
 			er := errors.Fmt(err)
-			logx.WithContext(r.Context()).Errorf("%s|CheckToken|ip=%s|token=%s|return=%s",
+			logx.WithContext(r.Context()).Errorf("%s.CheckToken ip=%s token=%s return=%s",
 				utils.FuncName(), strIP, strToken, err)
 			http.Error(w, er.Error(), http.StatusUnauthorized)
 			return
@@ -41,8 +41,8 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if resp.Token != "" {
 			w.Header().Set(userHeader.UserSetToken, resp.Token)
 		}
-		logx.WithContext(r.Context()).Infof("CheckToken|ip=%s|uid=%s|token=%s|newToken=%s|role=%d",
-			strIP, resp.Uid, strToken, resp.Token, resp.Role)
-		next(w, r.WithContext(userHeader.SetUserCtx(r.Context(), 0, strIP, resp.Role)))
+		logx.WithContext(r.Context()).Infof("%s.CheckToken ip=%s uid=%s token=%s newToken=%s",
+			utils.FuncName(), strIP, resp.Uid, strToken, resp.Token)
+		next(w, r.WithContext(userHeader.SetUserCtx(r.Context(), 0, strIP)))
 	}
 }

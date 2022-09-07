@@ -30,7 +30,7 @@ func NewProductSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdateReq, oldT *schema2.Model) (*dm.Response, error) {
-	l.Infof("ManageProductTemplate|ModifyProductSchema|ProductID:%v", in.Info.ProductID)
+	l.Infof("%s ProductID:%v", utils.FuncName(), in.Info.ProductID)
 	newT, err := schema2.ValidateWithFmt([]byte(in.Info.Schema))
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdat
 	}
 	err = l.svcCtx.SchemaRepo.Update(l.ctx, in.Info.ProductID, newT)
 	if err != nil {
-		l.Errorf("ModifyProductSchema|ProductTemplate|Update|err=%+v", err)
+		l.Errorf("%s.Update err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
 	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.Info.ProductID})
@@ -56,7 +56,7 @@ func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdat
 }
 
 func (l *ProductSchemaUpdateLogic) AddProductSchema(in *dm.ProductSchemaUpdateReq) (*dm.Response, error) {
-	l.Infof("ManageProductTemplate|AddProductSchema|ProductID:%v", in.Info.ProductID)
+	l.Infof("%s ProductID:%v", utils.FuncName(), in.Info.ProductID)
 	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
@@ -70,11 +70,11 @@ func (l *ProductSchemaUpdateLogic) AddProductSchema(in *dm.ProductSchemaUpdateRe
 	}
 	if err := l.svcCtx.HubLogRepo.InitProduct(
 		l.ctx, in.Info.ProductID); err != nil {
-		l.Errorf("%s|DeviceLogRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		l.Errorf("%s.DeviceLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
 	if err := l.svcCtx.SchemaManaRepo.InitProduct(l.ctx, t, in.Info.ProductID); err != nil {
-		l.Errorf("%s|SchemaManaRepo|InitProduct| failure,err:%v", utils.FuncName(), err)
+		l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.SchemaRepo.Insert(l.ctx, in.Info.ProductID, t)

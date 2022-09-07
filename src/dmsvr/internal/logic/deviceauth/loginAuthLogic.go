@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 
@@ -99,7 +100,7 @@ func (l *LoginAuthLogic) UpdateLoginTime() {
 }
 
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
-	l.Infof("LoginAuth|req=%+v", in)
+	l.Infof("%s req=%+v", utils.FuncName(), in)
 	if deviceAuth.IsAdmin(l.svcCtx.Config.AuthWhite, deviceAuth.AuthInfo{
 		Username: in.Username,
 		ClientID: in.ClientID,
@@ -111,7 +112,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 		if bytes.Equal(in.Certificate, x509Cert.Signature) {
 			l.Error("it is same")
 		}
-		l.Errorf("cert len=%d|signature len=%d",
+		l.Errorf("cert len=%d signature len=%d",
 			len(x509Cert.Raw), len(x509Cert.Signature))
 	}
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
@@ -134,7 +135,8 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Password
 		} else {
-			l.Errorf("LoginAuth|FindOneByProductIDDeviceName failure|err=%+v", err)
+			l.Errorf("%s.FindOneByProductIDDeviceName failure err=%+v",
+				utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
 	}

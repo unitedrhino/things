@@ -31,7 +31,7 @@ func NewConnectedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Connect
 	}
 }
 func (l *ConnectedLogic) Handle(msg *deviceMsg.ConnectMsg) error {
-	l.Infof("%s|req=%+v", utils.FuncName(), utils.Fmt(msg))
+	l.Infof("%s req=%+v", utils.FuncName(), utils.Fmt(msg))
 	ld, err := deviceAuth.GetClientIDInfo(msg.ClientID)
 	if err != nil {
 		return err
@@ -45,7 +45,7 @@ func (l *ConnectedLogic) Handle(msg *deviceMsg.ConnectMsg) error {
 		ResultType: errors.Fmt(err).GetCode(),
 	})
 	if err != nil {
-		l.Errorf("%s|LogRepo|insert|productID:%v deviceName:%v err:%v",
+		l.Errorf("%s.LogRepo.insert productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 	}
 	//更新对应设备的online状态

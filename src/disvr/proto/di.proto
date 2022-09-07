@@ -79,17 +79,6 @@ message SchemaIndexResp{
   repeated SchemaIndex list = 2;
 }
 
-/*设备的日志数据*/
-message HubLogIndex{
-  int64 timestamp = 1;//发生时间戳(毫秒时间戳)
-  string action = 2 ;//操作类型;显示相应的操作名称、API名称、服务的method
-  string requestID = 3;//请求ID
-  string tranceID = 4;//服务器端事务id
-  string topic = 5;//主题
-  string content = 6;//具体内容
-  int64 resultType = 7;//请求结果状态
-}
-
 /*实时获取对应信息*/
 message HubLogIndexReq{
   string  productID = 1; //产品id
@@ -97,12 +86,29 @@ message HubLogIndexReq{
   int64   timeStart = 3;//获取时间的开始(毫秒时间戳)
   int64   timeEnd = 4;//时间的结束(毫秒时间戳)
   PageInfo   page = 5;//分页信息
+  repeated string actions = 6;//过滤操作类型 connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
+  repeated string topics = 7;//过滤主题
+  string content = 8;//过滤内容
+  string requestID = 9;//过滤请求ID
 }
+
 /*实时获取对应信息*/
 message HubLogIndexResp{
   int64 total = 1; //总数
   repeated HubLogIndex list = 2;
 }
+
+/*设备的日志数据*/
+message HubLogIndex{
+  int64 timestamp = 1;//发生时间戳(毫秒时间戳)
+  string action = 2 ;//操作类型;connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
+  string requestID = 3;//请求ID
+  string tranceID = 4;//服务器端事务id
+  string topic = 5;//主题
+  string content = 6;//具体内容
+  int64 resultType = 7;//请求结果状态
+}
+
 
 message SendActionReq{
   string  productID = 1; //产品id 获取产品id下的所有设备信息
