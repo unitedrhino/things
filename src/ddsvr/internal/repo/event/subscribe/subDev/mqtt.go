@@ -112,7 +112,7 @@ func (d *MqttClient) subscribeConnectStatus(handle Handle) func(ctx context.Cont
 			Reason:    msg.Reason,
 		}
 		if strings.HasSuffix(topic, "/disconnected") {
-			logx.WithContext(ctx).Infof("%s|disconnected|topic:%v,message:%v,err:%v",
+			logx.WithContext(ctx).Infof("%s.disconnected topic:%v message:%v err:%v",
 				utils.FuncName(), topic, string(payload), err)
 			do.Action = ActionDisconnected
 			err = handle(ctx).Disconnected(&do)
@@ -122,7 +122,7 @@ func (d *MqttClient) subscribeConnectStatus(handle Handle) func(ctx context.Cont
 			}
 		} else {
 			do.Action = ActionConnected
-			logx.WithContext(ctx).Infof("%s|connected|topic:%v,message:%v,err:%v",
+			logx.WithContext(ctx).Infof("%s.connected topic:%v message:%v err:%v",
 				utils.FuncName(), topic, string(payload), err)
 			err = handle(ctx).Connected(&do)
 			if err != nil {
@@ -143,11 +143,11 @@ func (d *MqttClient) subscribeWithFunc(topic string, handle func(ctx context.Con
 			//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
 			ctx, span := traces.StartSpan(ctx, message.Topic(), "")
 
-			logx.Infof("[mqtt.subscribeWithFunc]|-------------------trace:%s, spanid:%s|topic:%s",
+			logx.Infof("mqtt.subscribeWithFunc trace:%s spanID:%s topic:%s",
 				span.SpanContext().TraceID(), span.SpanContext().SpanID(), message.Topic())
 			defer span.End()
 			err := handle(ctx, message.Topic(), message.Payload())
-			logx.WithContext(ctx).Infof("%s|publish|topic:%v,message:%v,err:%v",
+			logx.WithContext(ctx).Infof("%s.publish topic:%v message:%v err:%v",
 				utils.FuncName(), message.Topic(), string(message.Payload()), err)
 		}).Error()
 }

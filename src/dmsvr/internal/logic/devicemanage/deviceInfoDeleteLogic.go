@@ -3,6 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -30,38 +31,38 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			return nil, errors.Parameter.AddDetailf("not find device|productid=%s|deviceName=%s",
+			return nil, errors.Parameter.AddDetailf("not find device productId=%s deviceName=%s",
 				in.ProductID, in.DeviceName)
 		}
-		l.Errorf("DelDevice|DeviceInfo|FindOne|err=%+v", err)
+		l.Errorf("%s.FindOne err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
 	{ //删除时序数据库中的表数据
 		schema, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
 		if err != nil {
-			l.Errorf("DelDevice|SchemaRepo|GetSchemaModel|err=%+v", err)
+			l.Errorf("%s.GetSchemaModel err=%+v", utils.FuncName(), err)
 			return nil, errors.System.AddDetail(err)
 		}
 		err = l.svcCtx.HubLogRepo.DropDevice(l.ctx, in.ProductID, in.DeviceName)
 		if err != nil {
-			l.Errorf("DelDevice|DeviceLogRepo|DropDevice|err=%+v", err)
+			l.Errorf("%s.DeviceLogRepo.DropDevice err=%v", utils.FuncName(), err)
 			return nil, err
 		}
 		err = l.svcCtx.SchemaManaRepo.DropDevice(l.ctx, schema, in.ProductID, in.DeviceName)
 		if err != nil {
-			l.Errorf("DelDevice|SchemaManaRepo|DropDevice|err=%+v", err)
+			l.Errorf("%s.SchemaManaRepo.DropDevice err=%v", utils.FuncName(), err)
 			return nil, err
 		}
 		err = l.svcCtx.SDKLogRepo.DropDevice(l.ctx, in.ProductID, in.DeviceName)
 		if err != nil {
-			l.Errorf("DelDevice|SchemaManaRepo|DropDevice|err=%+v", err)
+			l.Errorf("%s.SchemaManaRepo.DropDevice err=%v", utils.FuncName(), err)
 			return nil, err
 		}
 	}
 
 	err = l.svcCtx.DeviceInfo.Delete(l.ctx, di.Id)
 	if err != nil {
-		l.Errorf("DelDevice|DeviceInfo|Delete|err=%+v", err)
+		l.Errorf("%s.DeviceInfo.Delete err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
 	return &dm.Response{}, nil

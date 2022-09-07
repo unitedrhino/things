@@ -26,13 +26,13 @@ func NewCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CaptchaLo
 }
 
 func (l *CaptchaLogic) Captcha(req *types.UserCaptchaReq) (resp *types.UserCaptchaResp, err error) {
-	l.Infof("Captcha|req=%+v", req)
+	l.Infof("%s req=%v", utils.FuncName(), req)
 	id, url, answer, err := l.svcCtx.Captcha.Get()
 	if err != nil {
-		l.Errorf("%s|get Captcha err=%+v", utils.FuncName(), err)
+		l.Errorf("%s get Captcha err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
-	l.Infof("Captcha|id=%v,answer:%v", id, answer)
+	l.Infof("%s id=%v,answer:%v", utils.FuncName(), id, answer)
 	return &types.UserCaptchaResp{
 		CodeID: id,
 		Expire: l.svcCtx.Config.Captcha.KeepTime,

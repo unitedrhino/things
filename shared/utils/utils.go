@@ -99,6 +99,10 @@ func FuncName() string {
 	pc := make([]uintptr, 1)
 	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])
+	funcs := strings.Split(f.Name(), "/")
+	if len(funcs) > 0 {
+		return funcs[len(funcs)-1]
+	}
 	return f.Name()
 }
 

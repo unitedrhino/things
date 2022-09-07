@@ -28,7 +28,7 @@ func NewAccessLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AccessLogi
 }
 
 func (l *AccessLogic) Access(req *types.DeviceAuthAccessReq) error {
-	l.Infof("AccessAuth|req=%+v", req)
+	l.Infof("%s req=%v", utils.FuncName(), req)
 	access := req.Access
 	//如果是
 	switch req.Access {
@@ -46,7 +46,7 @@ func (l *AccessLogic) Access(req *types.DeviceAuthAccessReq) error {
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.AccessAuth|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.AccessAuth req=%v err=%+v", utils.FuncName(), req, er)
 		return er
 	}
 	return nil
