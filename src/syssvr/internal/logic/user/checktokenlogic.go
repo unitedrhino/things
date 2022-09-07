@@ -40,5 +40,6 @@ func (l *CheckTokenLogic) CheckToken(in *sys.CheckTokenReq) (*sys.CheckTokenResp
 	return &sys.CheckTokenResp{
 		Token: token,
 		Uid:   jwt.Uid,
+		Role:  jwt.Role,
 	}, nil
 }

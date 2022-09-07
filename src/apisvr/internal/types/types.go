@@ -129,9 +129,62 @@ type JwtToken struct {
 	RefreshAfter int64  `json:"refreshAfter,string,omitempty"` //token刷新时间
 }
 
+type UserResourceReadResp struct {
+	Menu []*MenuData `json:"menu"` //菜单资源
+}
+
 type PageInfo struct {
 	Page int64 `json:"page,optional" form:"page,optional"` // 页码
 	Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
+}
+
+type MenuCreateReq struct {
+	Name      string `json:"name"`               // 菜单名称
+	ParentID  int64  `json:"parentID,optional"`  // 父菜单ID，一级菜单为1
+	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
+	Path      string `json:"path,optional"`      // 系统的path
+	Component string `json:"component,optional"` // 页面
+	Icon      string `json:"icon,optional"`      // 菜单图标
+	Redirect  string `json:"redirect,optional"`  // 路由重定向
+	Order     int64  `json:"order"`              // 左侧table排序序号
+}
+
+type MenuIndexReq struct {
+	Name string `json:"name,optional"` // 按菜单名称筛选
+	Path string `json:"path,optional"` // 按菜单路径筛选
+}
+
+type MenuData struct {
+	ID         int64  `json:"id"`         // 编号
+	Name       string `json:"name"`       // 菜单名称
+	ParentID   int64  `json:"parentID"`   // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type"`       // 类型   1：目录   2：菜单   3：按钮
+	Path       string `json:"path"`       // 系统的path
+	Component  string `json:"component"`  // 页面
+	Icon       string `json:"icon"`       // 菜单图标
+	Redirect   string `json:"redirect"`   // 路由重定向
+	CreateTime int64  `json:"createTime"` // 创建时间
+	Order      int64  `json:"order"`      // 左侧table排序序号
+}
+
+type MenuIndexResp struct {
+	List []*MenuData `json:"list"` //菜单列表
+}
+
+type MenuUpdateReq struct {
+	ID        int64  `json:"id"`                 // 编号
+	Name      string `json:"name"`               // 菜单名称
+	ParentID  int64  `json:"parentID"`           // 父菜单ID，一级菜单为1
+	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
+	Path      string `json:"path,optional"`      // 系统的path
+	Component string `json:"component,optional"` // 页面
+	Icon      string `json:"icon,optional"`      // 菜单图标
+	Redirect  string `json:"redirect,optional"`  // 路由重定向
+	Order     int64  `json:"order"`              // 左侧table排序序号
+}
+
+type MenuDeleteReq struct {
+	ID int64 `json:"id"` // 编号
 }
 
 type RoleCreateReq struct {
@@ -174,56 +227,6 @@ type RoleDeleteReq struct {
 type RoleMenuUpdateReq struct {
 	ID     int64   `json:"id"`     //角色编号
 	MenuID []int64 `json:"menuID"` //菜单编号列表
-}
-
-type MenuCreateReq struct {
-	Name      string `json:"name"`               // 菜单名称
-	ParentID  int64  `json:"parentID,optional"`  // 父菜单ID，一级菜单为1
-	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
-	Path      string `json:"path,optional"`      // 系统的path
-	Component string `json:"component,optional"` // 页面
-	Icon      string `json:"icon,optional"`      // 菜单图标
-	Redirect  string `json:"redirect,optional"`  // 路由重定向
-	Order     int64  `json:"order"`              // 左侧table排序序号
-}
-
-type MenuIndexReq struct {
-	Page PageInfo `json:"page"`          //分页信息,只获取一个则不填
-	Name string   `json:"name,optional"` // 按菜单名称筛选
-	Path string   `json:"path,optional"` // 按菜单路径筛选
-}
-
-type MenuIndexData struct {
-	ID         int64  `json:"id"`         // 编号
-	Name       string `json:"name"`       // 菜单名称
-	ParentID   int64  `json:"parentID"`   // 父菜单ID，一级菜单为1
-	Type       int64  `json:"type"`       // 类型   1：目录   2：菜单   3：按钮
-	Path       string `json:"path"`       // 系统的path
-	Component  string `json:"component"`  // 页面
-	Icon       string `json:"icon"`       // 菜单图标
-	Redirect   string `json:"redirect"`   // 路由重定向
-	CreateTime int64  `json:"createTime"` // 创建时间
-	Order      int64  `json:"order"`      // 左侧table排序序号
-}
-
-type MenuIndexResp struct {
-	List  []*MenuIndexData `json:"list"`  //菜单列表
-	Total int64            `json:"total"` //菜单总数
-}
-
-type MenuUpdateReq struct {
-	ID        int64  `json:"id"`                 // 编号
-	Name      string `json:"name"`               // 菜单名称
-	ParentID  int64  `json:"parentID"`           // 父菜单ID，一级菜单为1
-	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
-	Path      string `json:"path,optional"`      // 系统的path
-	Component string `json:"component,optional"` // 页面
-	Icon      string `json:"icon,optional"`      // 菜单图标
-	Redirect  string `json:"redirect,optional"`  // 路由重定向
-}
-
-type MenuDeleteReq struct {
-	ID int64 `json:"id"` // 编号
 }
 
 type DeviceAuthLoginReq struct {

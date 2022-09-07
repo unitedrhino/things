@@ -11,16 +11,17 @@ import (
 type CustomClaims struct {
 	Uid int64
 	jwt.StandardClaims
-	Role int
+	Role int64
 }
 
-func GetJwtToken(secretKey string, iat, seconds, uid int64) (string, error) {
+func GetJwtToken(secretKey string, iat, seconds, uid int64, role int64) (string, error) {
 	claims := CustomClaims{
 		Uid: uid,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: iat + seconds,
 			IssuedAt:  iat,
 		},
+		Role: role,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secretKey))
@@ -65,9 +66,6 @@ func ParseToken(tokenString string, secretKey string) (*CustomClaims, *errors.Co
 
 // 更新token
 func RefreshToken(tokenString string, secretKey string) (string, error) {
-	jwt.TimeFunc = func() time.Time {
-		return time.Unix(0, 0)
-	}
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (any, error) {
 		return []byte(secretKey), nil
 	})

@@ -2,11 +2,9 @@ package menu
 
 import (
 	"context"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
-	"github.com/jinzhu/copier"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,23 +24,20 @@ func NewMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuInd
 }
 
 func (l *MenuIndexLogic) MenuIndex(req *types.MenuIndexReq) (resp *types.MenuIndexResp, err error) {
-	var page sys.PageInfo
-	copier.Copy(&page, req.Page)
+
 	info, err := l.svcCtx.MenuRpc.MenuIndex(l.ctx, &sys.MenuIndexReq{
-		Page: &page,
 		Name: req.Name,
+		Path: req.Path,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	var menuInfo []*types.MenuIndexData
-	var total int64
-	total = info.Total
+	var menuInfo []*types.MenuData
 
-	menuInfo = make([]*types.MenuIndexData, 0, len(menuInfo))
+	menuInfo = make([]*types.MenuData, 0, len(menuInfo))
 	for _, i := range info.List {
-		menuInfo = append(menuInfo, &types.MenuIndexData{
+		menuInfo = append(menuInfo, &types.MenuData{
 			ID:         i.Id,
 			Name:       i.Name,
 			ParentID:   i.ParentID,
@@ -56,5 +51,5 @@ func (l *MenuIndexLogic) MenuIndex(req *types.MenuIndexReq) (resp *types.MenuInd
 		})
 	}
 
-	return &types.MenuIndexResp{menuInfo, total}, nil
+	return &types.MenuIndexResp{menuInfo}, nil
 }
