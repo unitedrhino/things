@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -42,7 +43,7 @@ func (l *UpdateLogic) Update(req *types.UserUpdateReq) error {
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("ModifyUserInfo failure|err=%+v", er)
+		l.Errorf("%s.rpc.user.upadte failure err=%+v", utils.FuncName(), er)
 		return er
 	}
 	return nil

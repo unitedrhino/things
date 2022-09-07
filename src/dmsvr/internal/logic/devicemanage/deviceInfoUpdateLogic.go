@@ -54,7 +54,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			return nil, errors.NotFind.AddDetailf("not find device|productid=%s|deviceName=%s",
+			return nil, errors.NotFind.AddDetailf("not find device productID=%s deviceName=%s",
 				in.ProductID, in.DeviceName)
 		}
 		return nil, errors.Database.AddDetail(err)

@@ -36,7 +36,7 @@ func (l *UpdateLogic) Update(req *types.DeviceInfoUpdateReq) error {
 	_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.ManageDevice|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.ManageDevice req=%v err=%+v", utils.FuncName(), req, er)
 		return er
 	}
 	return nil

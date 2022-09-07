@@ -32,11 +32,11 @@ func (l *RoleDeleteLogic) RoleDelete(req *types.RoleDeleteReq) error {
 	})
 	if err != nil {
 		err := errors.Fmt(err)
-		l.Errorf("[%s]|rpc.RoleDelete|req=%v|err=%+v", utils.FuncName(), req, err)
+		l.Errorf("%s.rpc.RoleDelete req=%v err=%+v", utils.FuncName(), req, err)
 		return err
 	}
 	if resp == nil {
-		l.Errorf("%s|rpc.RoleDelete|return nil|req=%+v", utils.FuncName(), req)
+		l.Errorf("%s.rpc.RoleDelete return nil req=%+v", utils.FuncName(), req)
 		return errors.System.AddDetail("RoleDelete rpc return nil")
 	}
 	return nil

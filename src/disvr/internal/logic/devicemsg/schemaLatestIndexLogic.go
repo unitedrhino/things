@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
@@ -55,7 +56,7 @@ func (l *SchemaLatestIndexLogic) SchemaLatestIndex(in *di.SchemaLatestIndexReq) 
 					DataID:     v,
 					Order:      def.OrderDesc})
 			if err != nil {
-				l.Errorf("HandleData|GetPropertyDataByID|err=%v", err)
+				l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
 				return nil, errors.System.AddDetail(err)
 			}
 			var diData di.SchemaIndex
@@ -80,7 +81,7 @@ func (l *SchemaLatestIndexLogic) SchemaLatestIndex(in *di.SchemaLatestIndexReq) 
 
 			}
 			diDatas = append(diDatas, &diData)
-			l.Infof("GetDeviceLogLogic|get data=%+v", diData)
+			l.Infof("%s.get data=%+v", utils.FuncName(), diData)
 		}
 	default:
 		return nil, errors.NotRealize.AddDetailf("multi method not implemt:%v", in.Method)

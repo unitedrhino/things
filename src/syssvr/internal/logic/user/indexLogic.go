@@ -3,6 +3,7 @@ package userlogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
@@ -24,7 +25,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(in *sys.UserIndexReq) (*sys.UserIndexResp, error) {
-	l.Infof("GetUserCoreList|req=%+v", in)
+	l.Infof("%s req=%+v", utils.FuncName(), in)
 
 	ucs, total, err := l.svcCtx.UserModel.Index(in)
 	if err != nil {
