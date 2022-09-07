@@ -25,42 +25,39 @@ func NewMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuInd
 }
 
 func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, error) {
-	info := make([]*sys.MenuIndexData, 0)
-	var total int64
-	if in.RoleFlag == 1 {
+	info := make([]*sys.MenuData, 0)
+	if in.Role != 0 {
 		//获取角色关联的菜单列表
-		menuids, err := l.svcCtx.RoleModel.IndexRoleIDMenuID(in.Role)
+		menuIds, err := l.svcCtx.RoleModel.IndexRoleIDMenuID(in.Role)
 		if err != nil {
 			return nil, errors.Database.AddDetail(err)
 		}
-		total = int64(len(menuids))
-		for _, v := range menuids {
-			menuinfo, err := l.svcCtx.MenuInfoModle.FindOne(l.ctx, v)
+		for _, v := range menuIds {
+			menuInfo, err := l.svcCtx.MenuInfoModle.FindOne(l.ctx, v)
 			if err != nil {
 				return nil, errors.Database.AddDetail(err)
 			}
-			info = append(info, &sys.MenuIndexData{
-				Id:         menuinfo.Id,
-				Name:       menuinfo.Name,
-				ParentID:   menuinfo.ParentID,
-				Type:       menuinfo.Type,
-				Path:       menuinfo.Path,
-				Component:  menuinfo.Component,
-				Icon:       menuinfo.Icon,
-				Redirect:   menuinfo.Redirect,
-				CreateTime: menuinfo.CreatedTime.Unix(),
-				Order:      menuinfo.Order,
+			info = append(info, &sys.MenuData{
+				Id:         menuInfo.Id,
+				Name:       menuInfo.Name,
+				ParentID:   menuInfo.ParentID,
+				Type:       menuInfo.Type,
+				Path:       menuInfo.Path,
+				Component:  menuInfo.Component,
+				Icon:       menuInfo.Icon,
+				Redirect:   menuInfo.Redirect,
+				CreateTime: menuInfo.CreatedTime.Unix(),
+				Order:      menuInfo.Order,
 			})
 		}
 	} else {
 		//获取完整菜单列表
-		mes, count, err := l.svcCtx.MenuModel.Index(in)
+		mes, err := l.svcCtx.MenuModel.Index(in)
 		if err != nil {
 			return nil, errors.Database.AddDetail(err)
 		}
-		total = count
 		for _, me := range mes {
-			info = append(info, &sys.MenuIndexData{
+			info = append(info, &sys.MenuData{
 				Id:         me.Id,
 				Name:       me.Name,
 				ParentID:   me.ParentID,
@@ -76,8 +73,7 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 	}
 
 	return &sys.MenuIndexResp{
-		List:  info,
-		Total: total,
+		List: info,
 	}, nil
 
 	return &sys.MenuIndexResp{}, nil
