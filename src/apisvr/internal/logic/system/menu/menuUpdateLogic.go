@@ -36,6 +36,7 @@ func (l *MenuUpdateLogic) MenuUpdate(req *types.MenuUpdateReq) error {
 		Component: req.Component,
 		Icon:      req.Icon,
 		Redirect:  req.Redirect,
+		Order:     req.Order,
 	})
 	if err != nil {
 		err := errors.Fmt(err)

@@ -30,7 +30,7 @@ func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, erro
 		Id:            in.Id,
 		ParentID:      in.ParentID,
 		Type:          in.Type,
-		Order:         in.Id,
+		Order:         in.Order,
 		Name:          in.Name,
 		Path:          in.Path,
 		Component:     in.Component,

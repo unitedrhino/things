@@ -64,9 +64,43 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/delete",
 					Handler: systemuser.DeleteHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/resource-read",
+					Handler: systemuser.ResourceReadHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/system/user"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemmenu.MenuCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemmenu.MenuIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemmenu.MenuUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemmenu.MenuDeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/menu"),
 	)
 
 	server.AddRoutes(
@@ -101,35 +135,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/system/role"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: systemmenu.MenuCreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: systemmenu.MenuIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: systemmenu.MenuUpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: systemmenu.MenuDeleteHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/system/menu"),
 	)
 
 	server.AddRoutes(
