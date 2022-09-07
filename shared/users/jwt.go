@@ -66,9 +66,6 @@ func ParseToken(tokenString string, secretKey string) (*CustomClaims, *errors.Co
 
 // 更新token
 func RefreshToken(tokenString string, secretKey string) (string, error) {
-	//jwt.TimeFunc = func() time.Time {
-	//	return time.Now()
-	//}
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (any, error) {
 		return []byte(secretKey), nil
 	})
