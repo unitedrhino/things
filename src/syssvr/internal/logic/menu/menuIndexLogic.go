@@ -37,18 +37,7 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 			if err != nil {
 				return nil, errors.Database.AddDetail(err)
 			}
-			info = append(info, &sys.MenuData{
-				Id:         menuInfo.Id,
-				Name:       menuInfo.Name,
-				ParentID:   menuInfo.ParentID,
-				Type:       menuInfo.Type,
-				Path:       menuInfo.Path,
-				Component:  menuInfo.Component,
-				Icon:       menuInfo.Icon,
-				Redirect:   menuInfo.Redirect,
-				CreateTime: menuInfo.CreatedTime.Unix(),
-				Order:      menuInfo.Order,
-			})
+			info = append(info, MenuInfoToPb(menuInfo))
 		}
 	} else {
 		//获取完整菜单列表
@@ -57,18 +46,7 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 			return nil, errors.Database.AddDetail(err)
 		}
 		for _, me := range mes {
-			info = append(info, &sys.MenuData{
-				Id:         me.Id,
-				Name:       me.Name,
-				ParentID:   me.ParentID,
-				Type:       me.Type,
-				Path:       me.Path,
-				Component:  me.Component,
-				Icon:       me.Icon,
-				Redirect:   me.Redirect,
-				CreateTime: me.CreatedTime.Unix(),
-				Order:      me.Order,
-			})
+			info = append(info, MenuInfoToPb(me))
 		}
 	}
 

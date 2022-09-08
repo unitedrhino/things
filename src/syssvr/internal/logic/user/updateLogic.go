@@ -43,6 +43,9 @@ func (l *UpdateLogic) Update(in *sys.UserUpdateReq) (*sys.Response, error) {
 	ui.Province = in.Province
 	ui.Language = in.Language
 	ui.HeadImgUrl = in.GetHeadImgUrl()
+	if in.Role != 0 {
+		ui.Role = in.Role
+	}
 
 	err = l.svcCtx.UserInfoModel.Update(l.ctx, ui)
 	if err != nil {
