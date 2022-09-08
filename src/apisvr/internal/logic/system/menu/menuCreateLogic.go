@@ -28,14 +28,15 @@ func NewMenuCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuCr
 
 func (l *MenuCreateLogic) MenuCreate(req *types.MenuCreateReq) error {
 	resp, err := l.svcCtx.MenuRpc.MenuCreate(l.ctx, &sys.MenuCreateReq{
-		Name:      req.Name,
-		ParentID:  req.ParentID,
-		Type:      req.Type,
-		Path:      req.Path,
-		Component: req.Component,
-		Icon:      req.Icon,
-		Redirect:  req.Redirect,
-		Order:     req.Order,
+		Name:       req.Name,
+		ParentID:   req.ParentID,
+		Type:       req.Type,
+		Path:       req.Path,
+		Component:  req.Component,
+		Icon:       req.Icon,
+		Redirect:   req.Redirect,
+		Order:      req.Order,
+		HideInMenu: req.HideInMenu,
 	})
 	if err != nil {
 		err := errors.Fmt(err)
