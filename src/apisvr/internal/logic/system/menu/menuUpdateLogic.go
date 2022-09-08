@@ -28,15 +28,16 @@ func NewMenuUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuUp
 
 func (l *MenuUpdateLogic) MenuUpdate(req *types.MenuUpdateReq) error {
 	resp, err := l.svcCtx.MenuRpc.MenuUpdate(l.ctx, &sys.MenuUpdateReq{
-		Id:        req.ID,
-		Name:      req.Name,
-		ParentID:  req.ParentID,
-		Type:      req.Type,
-		Path:      req.Path,
-		Component: req.Component,
-		Icon:      req.Icon,
-		Redirect:  req.Redirect,
-		Order:     req.Order,
+		Id:         req.ID,
+		Name:       req.Name,
+		ParentID:   req.ParentID,
+		Type:       req.Type,
+		Path:       req.Path,
+		Component:  req.Component,
+		Icon:       req.Icon,
+		Redirect:   req.Redirect,
+		Order:      req.Order,
+		HideInMenu: req.HideInMenu,
 	})
 	if err != nil {
 		err := errors.Fmt(err)

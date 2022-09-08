@@ -217,6 +217,7 @@ message MenuCreateReq{
   string icon = 6;
   string redirect = 7;
   int64 order = 8;
+  int64 hideInMenu = 9;
 }
 
 message MenuIndexReq{
@@ -236,6 +237,7 @@ message MenuData{
   string redirect = 8;
   int64 createTime = 9;
   int64 order = 10;
+  int64 hideInMenu = 11;
 }
 message MenuIndexResp{
   repeated MenuData list = 1;
@@ -250,6 +252,7 @@ message MenuUpdateReq{
   string icon = 7;
   string redirect = 8;
   int64 order = 9;
+  int64 hideInMenu = 10;
 }
 
 message MenuDeleteReq{
