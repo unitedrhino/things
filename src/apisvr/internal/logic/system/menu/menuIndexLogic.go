@@ -48,6 +48,7 @@ func (l *MenuIndexLogic) MenuIndex(req *types.MenuIndexReq) (resp *types.MenuInd
 			Redirect:   i.Redirect,
 			CreateTime: i.CreateTime,
 			Order:      i.Order,
+			HideInMenu: i.HideInMenu,
 		})
 	}
 

@@ -37,6 +37,7 @@ type (
         Icon string `json:"icon,optional"`                    // 菜单图标
         Redirect string `json:"redirect,optional"`            // 路由重定向
         Order int64 `json:"order,optional"`                   // 左侧table排序序号
+        HideInMenu int64 `json:"hideInMenu,optional"`         // 菜单是否隐藏 1：是 2：否
     }
 
     MenuIndexReq struct {
@@ -52,8 +53,9 @@ type (
         Component string `json:"component"`            // 页面
         Icon string `json:"icon"`                      // 菜单图标
         Redirect string `json:"redirect"`              // 路由重定向
-        CreateTime int64 `json:"createTime"`          // 创建时间
+        CreateTime int64 `json:"createTime"`           // 创建时间
         Order int64 `json:"order"`                     // 左侧table排序序号
+        HideInMenu int64 `json:"hideInMenu,optional"`  // 菜单是否隐藏 1：是 2：否
     }
     MenuIndexResp struct {
         List []*MenuData `json:"list"` //菜单列表
@@ -68,7 +70,8 @@ type (
         Component string `json:"component,optional"`          // 页面
         Icon string `json:"icon,optional"`                    // 菜单图标
         Redirect string `json:"redirect,optional"`            // 路由重定向
-        Order int64 `json:"order"`                     // 左侧table排序序号
+        Order int64 `json:"order"`                            // 左侧table排序序号
+        HideInMenu int64 `json:"hideInMenu,optional"`         // 菜单是否隐藏 1：是 2：否
     }
 
     MenuDeleteReq struct {

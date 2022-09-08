@@ -140,14 +140,15 @@ type PageInfo struct {
 }
 
 type MenuCreateReq struct {
-	Name      string `json:"name"`               // 菜单名称
-	ParentID  int64  `json:"parentID,optional"`  // 父菜单ID，一级菜单为1
-	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
-	Path      string `json:"path,optional"`      // 系统的path
-	Component string `json:"component,optional"` // 页面
-	Icon      string `json:"icon,optional"`      // 菜单图标
-	Redirect  string `json:"redirect,optional"`  // 路由重定向
-	Order     int64  `json:"order,optional"`     // 左侧table排序序号
+	Name       string `json:"name"`                // 菜单名称
+	ParentID   int64  `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type,optional"`       // 类型   1：目录   2：菜单   3：按钮
+	Path       string `json:"path,optional"`       // 系统的path
+	Component  string `json:"component,optional"`  // 页面
+	Icon       string `json:"icon,optional"`       // 菜单图标
+	Redirect   string `json:"redirect,optional"`   // 路由重定向
+	Order      int64  `json:"order,optional"`      // 左侧table排序序号
+	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
 }
 
 type MenuIndexReq struct {
@@ -156,16 +157,17 @@ type MenuIndexReq struct {
 }
 
 type MenuData struct {
-	ID         int64  `json:"id"`         // 编号
-	Name       string `json:"name"`       // 菜单名称
-	ParentID   int64  `json:"parentID"`   // 父菜单ID，一级菜单为1
-	Type       int64  `json:"type"`       // 类型   1：目录   2：菜单   3：按钮
-	Path       string `json:"path"`       // 系统的path
-	Component  string `json:"component"`  // 页面
-	Icon       string `json:"icon"`       // 菜单图标
-	Redirect   string `json:"redirect"`   // 路由重定向
-	CreateTime int64  `json:"createTime"` // 创建时间
-	Order      int64  `json:"order"`      // 左侧table排序序号
+	ID         int64  `json:"id"`                  // 编号
+	Name       string `json:"name"`                // 菜单名称
+	ParentID   int64  `json:"parentID"`            // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type"`                // 类型   1：目录   2：菜单   3：按钮
+	Path       string `json:"path"`                // 系统的path
+	Component  string `json:"component"`           // 页面
+	Icon       string `json:"icon"`                // 菜单图标
+	Redirect   string `json:"redirect"`            // 路由重定向
+	CreateTime int64  `json:"createTime"`          // 创建时间
+	Order      int64  `json:"order"`               // 左侧table排序序号
+	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
 }
 
 type MenuIndexResp struct {
@@ -173,15 +175,16 @@ type MenuIndexResp struct {
 }
 
 type MenuUpdateReq struct {
-	ID        int64  `json:"id"`                 // 编号
-	Name      string `json:"name"`               // 菜单名称
-	ParentID  int64  `json:"parentID"`           // 父菜单ID，一级菜单为1
-	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
-	Path      string `json:"path,optional"`      // 系统的path
-	Component string `json:"component,optional"` // 页面
-	Icon      string `json:"icon,optional"`      // 菜单图标
-	Redirect  string `json:"redirect,optional"`  // 路由重定向
-	Order     int64  `json:"order"`              // 左侧table排序序号
+	ID         int64  `json:"id"`                  // 编号
+	Name       string `json:"name"`                // 菜单名称
+	ParentID   int64  `json:"parentID"`            // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type,optional"`       // 类型   1：目录   2：菜单   3：按钮
+	Path       string `json:"path,optional"`       // 系统的path
+	Component  string `json:"component,optional"`  // 页面
+	Icon       string `json:"icon,optional"`       // 菜单图标
+	Redirect   string `json:"redirect,optional"`   // 路由重定向
+	Order      int64  `json:"order"`               // 左侧table排序序号
+	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
 }
 
 type MenuDeleteReq struct {
