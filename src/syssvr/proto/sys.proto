@@ -113,6 +113,7 @@ message UserUpdateReq{
   string language =10;
   string headImgUrl =11;
   int64  sex =12;
+  int64  role =13;
 }
 
 message UserReadReq{
