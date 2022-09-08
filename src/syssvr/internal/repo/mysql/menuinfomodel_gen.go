@@ -47,6 +47,7 @@ type (
 		Icon          string       `db:"icon"`          // 图标
 		Redirect      string       `db:"redirect"`      // 路由重定向
 		BackgroundUrl string       `db:"backgroundUrl"` // 后台地址
+		HideInMenu    int64        `db:"hideInMenu"`    // 是否隐藏 1-是 2-否
 		CreatedTime   time.Time    `db:"createdTime"`   // 创建时间
 		UpdatedTime   time.Time    `db:"updatedTime"`   // 更新时间
 		DeletedTime   sql.NullTime `db:"deletedTime"`
@@ -95,14 +96,14 @@ func (m *defaultMenuInfoModel) FindOneByName(ctx context.Context, name string) (
 }
 
 func (m *defaultMenuInfoModel) Insert(ctx context.Context, data *MenuInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, menuInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, menuInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl, data.HideInMenu)
 	return ret, err
 }
 
 func (m *defaultMenuInfoModel) Update(ctx context.Context, newData *MenuInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, menuInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.Type, newData.Order, newData.Name, newData.Path, newData.Component, newData.Icon, newData.Redirect, newData.BackgroundUrl, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.Type, newData.Order, newData.Name, newData.Path, newData.Component, newData.Icon, newData.Redirect, newData.BackgroundUrl, newData.HideInMenu, newData.Id)
 	return err
 }
 

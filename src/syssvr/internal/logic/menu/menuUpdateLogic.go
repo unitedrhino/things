@@ -36,7 +36,8 @@ func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, erro
 		Component:     in.Component,
 		Icon:          in.Icon,
 		Redirect:      in.Redirect,
-		BackgroundUrl: in.Name,
+		BackgroundUrl: "",
+		HideInMenu:    in.HideInMenu,
 	})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
