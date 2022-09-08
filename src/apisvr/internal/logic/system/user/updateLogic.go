@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -27,6 +28,11 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 }
 
 func (l *UpdateLogic) Update(req *types.UserUpdateReq) error {
+	//超管可以修改其他用户的角色，并且任何用户不能修改本身的角色
+	role := int64(0)
+	if userHeader.GetUserCtx(l.ctx).Role == 1 && userHeader.GetUserCtx(l.ctx).Uid != req.Uid {
+		role = req.Role
+	}
 	_, err := l.svcCtx.UserRpc.Update(l.ctx, &sys.UserUpdateReq{
 		Uid:        req.Uid,
 		UserName:   req.UserName,
@@ -40,6 +46,7 @@ func (l *UpdateLogic) Update(req *types.UserUpdateReq) error {
 		Language:   req.Language,
 		HeadImgUrl: req.HeadImgUrl,
 		Sex:        req.Sex,
+		Role:       role,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
