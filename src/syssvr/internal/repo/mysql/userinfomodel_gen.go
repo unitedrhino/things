@@ -55,7 +55,7 @@ type (
 		Province    string       `db:"province"`    // 用户所在省份
 		Language    string       `db:"language"`    // 用户的语言，简体中文为zh_CN
 		HeadImgUrl  string       `db:"headImgUrl"`  // 用户头像
-		Role        int64        `db:"role"`        // 角色id 1-超级管理员  2-普通用户 3-供应商
+		Role        int64        `db:"role"`        // 角色id 1-超级管理员  2-供应商 3-普通用户
 		CreatedTime time.Time    `db:"createdTime"` // 创建时间
 		UpdatedTime time.Time    `db:"updatedTime"` // 更新时间
 		DeletedTime sql.NullTime `db:"deletedTime"` // 删除时间，默认为空，表示未删除，非空表示已删除
