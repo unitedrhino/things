@@ -147,7 +147,7 @@ type MenuCreateReq struct {
 	Component string `json:"component,optional"` // 页面
 	Icon      string `json:"icon,optional"`      // 菜单图标
 	Redirect  string `json:"redirect,optional"`  // 路由重定向
-	Order     int64  `json:"order"`              // 左侧table排序序号
+	Order     int64  `json:"order,optional"`     // 左侧table排序序号
 }
 
 type MenuIndexReq struct {
