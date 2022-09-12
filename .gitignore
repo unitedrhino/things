@@ -3,7 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-/deploy/all-in-one/data/*
+/deploy/data/*
 
 ### STS ###
 .apt_generated
