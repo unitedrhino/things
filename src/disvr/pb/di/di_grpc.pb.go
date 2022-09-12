@@ -228,6 +228,8 @@ type DeviceInteractClient interface {
 	SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 	//同步调用设备属性
 	SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+	//发送消息给设备
+	SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
 }
 
 type deviceInteractClient struct {
@@ -256,6 +258,15 @@ func (c *deviceInteractClient) SendProperty(ctx context.Context, in *SendPropert
 	return out, nil
 }
 
+func (c *deviceInteractClient) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
+	out := new(SendMsgResp)
+	err := c.cc.Invoke(ctx, "/di.DeviceInteract/sendMsg", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceInteractServer is the server API for DeviceInteract service.
 // All implementations must embed UnimplementedDeviceInteractServer
 // for forward compatibility
@@ -264,6 +275,8 @@ type DeviceInteractServer interface {
 	SendAction(context.Context, *SendActionReq) (*SendActionResp, error)
 	//同步调用设备属性
 	SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error)
+	//发送消息给设备
+	SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error)
 	mustEmbedUnimplementedDeviceInteractServer()
 }
 
@@ -276,6 +289,9 @@ func (UnimplementedDeviceInteractServer) SendAction(context.Context, *SendAction
 }
 func (UnimplementedDeviceInteractServer) SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendProperty not implemented")
+}
+func (UnimplementedDeviceInteractServer) SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMsg not implemented")
 }
 func (UnimplementedDeviceInteractServer) mustEmbedUnimplementedDeviceInteractServer() {}
 
@@ -326,6 +342,24 @@ func _DeviceInteract_SendProperty_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceInteract_SendMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendMsgReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).SendMsg(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/di.DeviceInteract/sendMsg",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).SendMsg(ctx, req.(*SendMsgReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceInteract_ServiceDesc is the grpc.ServiceDesc for DeviceInteract service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -340,6 +374,10 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "sendProperty",
 			Handler:    _DeviceInteract_SendProperty_Handler,
+		},
+		{
+			MethodName: "sendMsg",
+			Handler:    _DeviceInteract_SendMsg_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
