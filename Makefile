@@ -59,4 +59,4 @@ docker.build.sys:
 
 docker.clean:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>cleaning $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@rm -rf ./deploy/all-in-one/data
+	@rm -rf ./deploy/data
