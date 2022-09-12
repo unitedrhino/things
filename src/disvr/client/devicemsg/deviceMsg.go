@@ -28,6 +28,8 @@ type (
 	SdkLogIndexResp      = di.SdkLogIndexResp
 	SendActionReq        = di.SendActionReq
 	SendActionResp       = di.SendActionResp
+	SendMsgReq           = di.SendMsgReq
+	SendMsgResp          = di.SendMsgResp
 	SendPropertyReq      = di.SendPropertyReq
 	SendPropertyResp     = di.SendPropertyResp
 
