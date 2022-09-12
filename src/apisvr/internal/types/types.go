@@ -393,6 +393,11 @@ type DeviceInfoIndexResp struct {
 	Num   int64         `json:"num"`   //返回的数量
 }
 
+type DeviceInteractSendMsgReq struct {
+	Topic   string `json:"topic"`   //发送的topic
+	Payload string `json:"payload"` //发送的数据
+}
+
 type DeviceInteractSendPropertyReq struct {
 	ProductID     string `json:"productID"`     //产品id 获取产品id下的所有设备信息
 	DeviceName    string `json:"deviceName"`    //设备名
