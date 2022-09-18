@@ -6,7 +6,14 @@ info(
     version: "v1"
 )
 
-type PageInfo{
-    Page     int64 `json:"page,optional" form:"page,optional"`         // 页码
-    Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
-}
+type(
+    PageInfo{
+        Page     int64 `json:"page,optional" form:"page,optional"`         // 页码
+        Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
+    }
+
+    Tag struct {
+        Key string `json:"key"`
+        Value string `json:"value"`
+    }
+)
