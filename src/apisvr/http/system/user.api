@@ -121,8 +121,6 @@ type (
 		Uid         int64  `json:"uid,string"`                 // 用户id
         UserName    string `json:"userName,optional"`          // 用户名(唯一)
         Email       string `json:"email,optional"`             // 邮箱
-        Phone       string `json:"phone,optional"`             // 手机号
-        Wechat      string `json:"wechat,optional"`            // 微信UnionID
         NickName    string `json:"nickName,optional"`          // 用户的昵称
         City        string `json:"city,optional"`              // 用户所在城市
         Country     string `json:"country,optional"`           // 用户所在国家
