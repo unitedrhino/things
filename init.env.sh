@@ -99,7 +99,6 @@ get_ip
 init_module
 echo "now build and start i-Things needs mirror image"
 echo
-echo "docker-compose -f docker-compose.env.yml up -d" >> /etc/rc.local
 sleep 1
 echo "start docker compose "
 docker-compose -f docker-compose.env.yml up -d
