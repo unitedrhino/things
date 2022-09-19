@@ -16,6 +16,7 @@ type (
 		Index(in *sys.RoleIndexReq) ([]*RoleInfo, int64, error)
 		IndexRoleIDMenuID(RoleId int64) ([]int64, error)
 		UpdateRoleIDMenuID(RoleId int64, MenuId []int64) error
+		DeleteRole(RoleId int64) error
 	}
 
 	roleModel struct {
@@ -100,6 +101,28 @@ func (m *roleModel) UpdateRoleIDMenuID(RoleId int64, MenuId []int64) error {
 			if err != nil {
 				return err
 			}
+		}
+
+		return nil
+	})
+	return nil
+}
+
+func (m *roleModel) DeleteRole(RoleId int64) error {
+	m.Transact(func(session sqlx.Session) error {
+		//1.从角色表删除角色
+		query := fmt.Sprintf("delete from %s where id = %d",
+			m.roleInfo, RoleId)
+		_, err := session.Exec(query)
+		if err != nil {
+			return err
+		}
+		//2.从角色菜单关系表删除角色
+		query = fmt.Sprintf("delete from %s where  roleID = %d",
+			m.roleMenu, RoleId)
+		_, err = session.Exec(query)
+		if err != nil {
+			return err
 		}
 
 		return nil

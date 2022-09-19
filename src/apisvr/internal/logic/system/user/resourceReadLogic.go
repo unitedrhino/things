@@ -45,6 +45,7 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 			Redirect:   me.Redirect,
 			CreateTime: me.CreateTime,
 			Order:      me.Order,
+			HideInMenu: me.HideInMenu,
 		})
 	}
 
