@@ -8,7 +8,7 @@ import (
 
 func FrontendHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	dir := http.Dir(svcCtx.Config.FrontDir)
-	rr, err := dir.Open("index.html")
+	f, err := dir.Open("index.html")
 	if err != nil {
 		return func(writer http.ResponseWriter, request *http.Request) {
 			writer.WriteHeader(http.StatusNotFound)
@@ -17,7 +17,7 @@ func FrontendHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 	}
 
-	file, err := io.ReadAll(rr)
+	indexFile, err := io.ReadAll(f)
 	fileServer := http.FileServer(dir)
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +25,7 @@ func FrontendHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		if _, err := dir.Open(upath); err != nil {
 			w.WriteHeader(http.StatusOK)
-			w.Write(file)
+			w.Write(indexFile)
 			return
 		}
 		fileServer.ServeHTTP(w, r)

@@ -53,6 +53,4 @@ func (l *RoleIndexLogic) RoleIndex(in *sys.RoleIndexReq) (*sys.RoleIndexResp, er
 		List:  info,
 		Total: total,
 	}, nil
-
-	return &sys.RoleIndexResp{}, nil
 }
