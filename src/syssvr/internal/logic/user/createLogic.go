@@ -98,7 +98,4 @@ func (l *CreateLogic) Create(in *sys.UserCreateReq) (*sys.UserCreateResp, error)
 		l.Errorf("%s ReqType=%s  not support yet", utils.FuncName(), in.ReqType)
 		return nil, errors.Parameter.AddDetail("reqType not support yet :" + in.ReqType)
 	}
-
-	return &sys.UserCreateResp{}, nil
-
 }
