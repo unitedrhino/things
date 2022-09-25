@@ -21,10 +21,10 @@ CREATE TABLE if not exists `product_info`
     PRIMARY KEY (`productID`),
     KEY `deviceType` (`deviceType`) USING BTREE,
     UNIQUE KEY `productName` (`productName`) USING BTREE
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品信息表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 4
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='产品信息表';
 
 CREATE TABLE if not exists `product_schema`
 (
@@ -34,10 +34,10 @@ CREATE TABLE if not exists `product_schema`
     `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deletedTime` datetime          DEFAULT NULL,
     PRIMARY KEY (`productID`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 4
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
 
 CREATE TABLE if not exists `device_info`
 (
@@ -58,9 +58,9 @@ CREATE TABLE if not exists `device_info`
     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceName` (`productID`, `deviceName`),
     KEY `device_productID` (`productID`) USING BTREE
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
-  DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 3
+    DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
 
 
 
@@ -93,35 +93,7 @@ CREATE TABLE if not exists `product_firmware`
     `dir`         varchar(128) NOT NULL COMMENT '固件标识,拿来下载文件',
     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceVersion` (`productID`, `version`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
-
-CREATE TABLE if not exists `group_info`
-(
-    `groupID`     bigint COMMENT '分组ID',
-    `parentID`    bigint NOT NULL DEFAULT 1 COMMENT '父组ID 1-根组',
-    `groupName`   VARCHAR(100) NOT NULL COMMENT '分组名称',
-    `description` VARCHAR(200) DEFAULT '' COMMENT '描述',
-    `tags`        json comment '设备标签',
-    `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
-    PRIMARY KEY `groupID` (`groupID`),
-    UNIQUE KEY `groupNameIndex` (`groupName`)
-    ) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '设备分组信息表';
-
-CREATE TABLE if not exists `group_device`
-(
-    `id`          bigint       NOT NULL AUTO_INCREMENT,
-    `groupID`     bigint NOT NULL COMMENT '分组ID',
-    `productID`   char(11) NOT NULL COMMENT '产品id',
-    `deviceName`  varchar(100) NOT NULL COMMENT '设备名称',
-    `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `groupID_productID_deviceName` (`groupID`,`productID`,`deviceName`),
-    UNIQUE KEY `deviceNameIndex` (`deviceName`)
-) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '分组与设备关系表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 4
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
