@@ -64,7 +64,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
 		Timestamp: time.Now().UnixMilli(),
 		Params:    param}
-	_, err = req.VerifyReqParam(l.template, schema.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, schema.ParamActionInput)
 	if err != nil {
 		return nil, err
 	}

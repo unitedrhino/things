@@ -167,7 +167,7 @@ func (m *defaultDmModel) Delete(ctx context.Context, productID string) error {
 func (m *defaultDmModel) Insert(ctx context.Context, pi *ProductInfo, pt *ProductSchema) error {
 	return m.Transact(func(session sqlx.Session) error {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.productInfo, productInfoRowsExpectAutoSet)
-		_, err := session.ExecCtx(ctx, query, pi.ProductID, pi.ProductName, pi.ProductType, pi.AuthMode, pi.DeviceType, pi.CategoryID, pi.NetType, pi.DataProto, pi.AutoRegister, pi.Secret, pi.Description, pi.CreatedTime, pi.UpdatedTime, pi.DeletedTime, pi.DevStatus)
+		_, err := session.ExecCtx(ctx, query, pi.ProductID, pi.ProductName, pi.ProductType, pi.AuthMode, pi.DeviceType, pi.CategoryID, pi.NetType, pi.DataProto, pi.AutoRegister, pi.Secret, pi.Desc, pi.CreatedTime, pi.UpdatedTime, pi.DeletedTime, pi.DevStatus)
 		if err != nil {
 			return err
 		}

@@ -60,7 +60,7 @@ func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) (*mysql.Produ
 	pi := &mysql.ProductInfo{
 		ProductID:   deviceAuth.GetStrProductID(ProductID), // 产品id
 		ProductName: in.ProductName,                        // 产品名称
-		Description: in.Description.GetValue(),
+		Desc:        in.Desc.GetValue(),
 		DevStatus:   in.DevStatus.GetValue(),
 		CreatedTime: createTime,
 		UpdatedTime: createTime,
@@ -119,21 +119,21 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	return &dm.Response{}, nil
 }
 func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.ProductInfo, pt *mysql.ProductSchema) error {
-	t, _ := schema.NewSchema([]byte(pt.Schema))
-	if err := l.svcCtx.SchemaManaRepo.InitProduct(
-		l.ctx, t, pi.ProductID); err != nil {
-		l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
-		return errors.Database.AddDetail(err)
-	}
-	if err := l.svcCtx.HubLogRepo.InitProduct(
-		l.ctx, pi.ProductID); err != nil {
-		l.Errorf("%s.HubLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
-		return errors.Database.AddDetail(err)
-	}
-	if err := l.svcCtx.SDKLogRepo.InitProduct(
-		l.ctx, pi.ProductID); err != nil {
-		l.Errorf("%s.SDKLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
-		return errors.Database.AddDetail(err)
-	}
+	//t, _ := schema.NewSchemaTsl([]byte(pt.Schema))
+	//if err := l.svcCtx.SchemaManaRepo.InitProduct(
+	//	l.ctx, t, pi.ProductID); err != nil {
+	//	l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+	//	return errors.Database.AddDetail(err)
+	//}
+	//if err := l.svcCtx.HubLogRepo.InitProduct(
+	//	l.ctx, pi.ProductID); err != nil {
+	//	l.Errorf("%s.HubLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+	//	return errors.Database.AddDetail(err)
+	//}
+	//if err := l.svcCtx.SDKLogRepo.InitProduct(
+	//	l.ctx, pi.ProductID); err != nil {
+	//	l.Errorf("%s.SDKLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+	//	return errors.Database.AddDetail(err)
+	//}
 	return nil
 }
