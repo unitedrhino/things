@@ -33,3 +33,9 @@ func (s *DeviceInteractServer) SendProperty(ctx context.Context, in *di.SendProp
 	l := deviceinteractlogic.NewSendPropertyLogic(ctx, s.svcCtx)
 	return l.SendProperty(in)
 }
+
+// 发送消息给设备
+func (s *DeviceInteractServer) SendMsg(ctx context.Context, in *di.SendMsgReq) (*di.SendMsgResp, error) {
+	l := deviceinteractlogic.NewSendMsgLogic(ctx, s.svcCtx)
+	return l.SendMsg(in)
+}

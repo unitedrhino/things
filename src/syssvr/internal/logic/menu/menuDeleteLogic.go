@@ -25,7 +25,7 @@ func NewMenuDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuDe
 }
 
 func (l *MenuDeleteLogic) MenuDelete(in *sys.MenuDeleteReq) (*sys.Response, error) {
-	err := l.svcCtx.MenuInfoModle.Delete(l.ctx, in.Id)
+	err := l.svcCtx.MenuModel.DeleteMenu(in.Id)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

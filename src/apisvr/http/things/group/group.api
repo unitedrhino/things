@@ -1,0 +1,130 @@
+info(
+    title: "设备分组"
+    desc: "设备分组"
+    author: "lbs"
+    email: "174805676@qq.com"
+    version: "v1"
+)
+
+import "common.api"  //公共结构体定义
+import "things/device/device.api"  //设备结构
+
+@server(
+     group : things/group/info
+     prefix: /api/v1/things/group/info
+     middleware: CheckToken
+)
+
+service api {
+    @doc "创建分组"
+    @handler create
+    post /create (GroupInfoCreateReq) returns ()
+
+    @doc "获取分组列表"
+    @handler index
+    post /index (GroupInfoIndexReq) returns (GroupInfoIndexResp)
+
+
+    @doc "获取分组详情信息"
+    @handler read
+    post /read (GroupInfoReadReq) returns (GroupInfo)
+
+    @doc "更新分组信息"
+    @handler update
+    post /update (GroupInfoUpdateReq) returns ()
+
+    @doc "删除分组"
+    @handler delete
+    post /delete (GroupInfoDeleteReq) returns ()
+}
+
+@server(
+     group : things/group/device
+     prefix: /api/v1/things/group/device
+     middleware: CheckToken
+)
+service api {
+    @doc "添加分组设备"
+    @handler create
+    post /create (GroupDeviceCreateReq) returns ()
+
+    @doc "获取分组设备列表"
+    @handler index
+    post /index (GroupDeviceIndexReq) returns (GroupDeviceIndexResp)
+
+    @doc "删除分组设备"
+    @handler delete
+    post /delete (GroupDeviceDeleteReq) returns ()
+}
+
+type (
+
+    DeviceIndexMessage{
+        ProductID string `json:"productID"`      //产品ID
+        DeviceName string `json:"deviceName"`    //设备名称
+    }
+
+    GroupInfo{
+        GroupID   int64  `json:"groupID,string"`           //分组ID
+        GroupName string `json:"groupName"`                //分组名称
+        ParentID  int64 `json:"parentID,optional"`          //父组ID
+        CreatedTime int64  `json:"createdTime,string"`     //创建时间
+        Desc string `json:"desc,optional"`   //分组描述
+        Tags []*Tag `json:"tags,optional"`                 //分组tag
+    }
+
+    GroupInfoCreateReq struct {
+        GroupName string `json:"groupName"`                        //分组名称
+        ParentID int64 `json:"parentID,optional"`                  //父组ID
+        Desc string `json:"desc,optional"`           //分组描述
+    }
+
+    GroupInfoIndexReq struct {
+        Page PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        GroupName string `json:"groupName,optional"`          //分组名称
+        Tags []*Tag `json:"tags,optional"`                    //分组tag
+    }
+
+    GroupInfoIndexResp struct {
+        List []*GroupInfo `json:"list"`    //分组信息
+        Total int64 `json:"total"`         //总数(只有分页的时候会返回)
+        ListAll []*GroupInfo `json:"listAll"`    //完整分分组信息
+    }
+
+    GroupInfoReadReq struct {
+        GroupID   int64  `json:"groupID,string"`           //分组ID
+    }
+
+    GroupInfoDeleteReq struct {
+        GroupID   int64  `json:"groupID,string"`           //分组ID
+    }
+
+    GroupInfoUpdateReq struct {
+        GroupID   int64  `json:"groupID,string"` //分组ID
+        GroupName *string `json:"groupName,optional"`               //分组名称
+        Desc *string `json:"desc,optional"`           //分组描述
+        Tags []*Tag `json:"tags,optional"`                          //分组tag
+    }
+
+    GroupDeviceIndexReq struct {
+        Page PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        GroupID   int64  `json:"groupID,string"`                    //分组ID
+        ProductID string `json:"productID"`                         //产品ID
+        DeviceName string `json:"deviceName"`                       //设备名称
+    }
+
+    GroupDeviceIndexResp struct {
+        List []*DeviceInfo `json:"list"`   //分组信息
+        Total int64 `json:"total"`         //总数(只有分页的时候会返回)
+    }
+
+    GroupDeviceCreateReq struct {
+        GroupID   int64  `json:"groupID,string"`            //分组ID
+        List []*DeviceIndexMessage `json:"list,optional"`   //分组tag
+    }
+
+    GroupDeviceDeleteReq struct {
+        GroupID   int64  `json:"groupID,string"`            //分组ID
+        List []*DeviceIndexMessage `json:"list,optional"`   //分组tag
+    }
+)

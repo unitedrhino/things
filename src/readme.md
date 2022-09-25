@@ -9,7 +9,7 @@ protoc/protoc-gen-go/protoc-gen-grpc-go 依赖可以通过
 `goctl env check -i -f` 一键安装
 
 # api文件编译方法
-
+命令执行路径: ithings\src\apisvr\
 ```shell script
 goctl api go -api http/api.api  -dir ./  --style=goZero
 ```
@@ -18,6 +18,7 @@ goctl api go -api http/api.api  -dir ./  --style=goZero
 
 ## 数据库文件生成
 下面两种方式二选一
+命令执行路径: ithings\src\syssvr\
 ```shell script
 goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_sys" -table="*" -dir ./internal/repo/mysql
 goctl model mysql ddl -src="../../deploy/mysql/syssvr.sql"  -dir ./internal/repo/mysql 
@@ -25,6 +26,7 @@ goctl model mysql ddl -src="../../deploy/mysql/syssvr.sql"  -dir ./internal/repo
 ```
 
 ## rpc文件编译方法
+命令执行路径: ithings\src\syssvr\
 ```shell script
 goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m
 ```
@@ -47,7 +49,6 @@ goctl model mysql ddl -src="../../deploy/mysql/dmsvr.sql"  -dir ./internal/repo/
 # 设备交互模块-disvr
 
 ```shell
-goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dc" -table="*" -dir ./internal/repo/mysql 
 goctl rpc protoc  proto/di.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m
 
 ```
@@ -56,5 +57,4 @@ goctl rpc protoc  proto/di.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --sty
 
 ```shell
 goctl api go -api http/dd.api  -dir ./ --style=goZero
-goctl rpc protoc  proto/dd.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero
 ```
