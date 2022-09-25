@@ -88,9 +88,9 @@ insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hi
 insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (4,"运维监控","icon_system","/operationsMonitorings",1,3,"./operationsMonitorings/index.tsx",2,2);
 insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (5,"规则引擎","icon_system","/ruleEngines",1,4,"./ruleEngines/index.tsx",2,2);
 insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (6,"产品","icon_system","/deviceMangers/products/index",2,1,"./deviceMangers/products/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (7,"产品详情-${id}","icon_system","/deviceMangers/products/details/:id",2,2,"./deviceMangers/products/details/index.tsx",2,2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (7,"产品详情-${id}","icon_system","/deviceMangers/products/details/:id",2,2,"./deviceMangers/products/details/index.tsx",2,1);
 insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (8,"设备","icon_system","/deviceMangers/devices/index",2,3,"./deviceMangers/devices/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (9,"设备详情-${id}","icon_system","/deviceMangers/devices/details/:id",2,3,"./deviceMangers/devices/details/index.tsx",2,2);
+insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (9,"设备详情-${id}","icon_system","/deviceMangers/devices/details/:id",2,3,"./deviceMangers/devices/details/index.tsx",2,1);
 insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (10,"用户管理","icon_system","/systemManagers/users/index",3,1,"./systemManagers/users/index.tsx",2,2);
 insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (11,"角色管理","icon_system","/systemManagers/roles/index",3,2,"./systemManagers/roles/index.tsx",2,2);
 insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (12,"菜单列表","icon_system","/systemManagers/menus/index",3,3,"./systemManagers/menus/index.tsx",2,2);
