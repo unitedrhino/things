@@ -37,8 +37,6 @@ func (l *UpdateLogic) Update(req *types.UserUpdateReq) error {
 		Uid:        req.Uid,
 		UserName:   req.UserName,
 		Email:      req.Email,
-		Phone:      req.Phone,
-		Wechat:     req.Wechat,
 		NickName:   req.NickName,
 		City:       req.City,
 		Country:    req.Country,

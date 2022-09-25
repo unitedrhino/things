@@ -71,8 +71,6 @@ type UserUpdateReq struct {
 	Uid        int64  `json:"uid,string"`          // 用户id
 	UserName   string `json:"userName,optional"`   // 用户名(唯一)
 	Email      string `json:"email,optional"`      // 邮箱
-	Phone      string `json:"phone,optional"`      // 手机号
-	Wechat     string `json:"wechat,optional"`     // 微信UnionID
 	NickName   string `json:"nickName,optional"`   // 用户的昵称
 	City       string `json:"city,optional"`       // 用户所在城市
 	Country    string `json:"country,optional"`    // 用户所在国家
@@ -137,6 +135,11 @@ type UserResourceReadResp struct {
 type PageInfo struct {
 	Page int64 `json:"page,optional" form:"page,optional"` // 页码
 	Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
+}
+
+type Tag struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 type MenuCreateReq struct {
@@ -502,4 +505,73 @@ type ProductSchemaReadReq struct {
 
 type ProductSchemaReadResp struct {
 	ProductSchema
+}
+
+type DeviceIndexMessage struct {
+	ProductID  string `json:"productID"`  //产品ID
+	DeviceName string `json:"deviceName"` //设备名称
+}
+
+type GroupInfo struct {
+	GroupID     int64  `json:"groupID,string"`     //分组ID
+	GroupName   string `json:"groupName"`          //分组名称
+	ParentID    int64  `json:"parentID,optional"`  //父组ID
+	CreatedTime int64  `json:"createdTime,string"` //创建时间
+	Desc        string `json:"desc,optional"`      //分组描述
+	Tags        []*Tag `json:"tags,optional"`      //分组tag
+}
+
+type GroupInfoCreateReq struct {
+	GroupName string `json:"groupName"`         //分组名称
+	ParentID  int64  `json:"parentID,optional"` //父组ID
+	Desc      string `json:"desc,optional"`     //分组描述
+}
+
+type GroupInfoIndexReq struct {
+	Page      PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
+	GroupName string   `json:"groupName,optional"` //分组名称
+	Tags      []*Tag   `json:"tags,optional"`      //分组tag
+}
+
+type GroupInfoIndexResp struct {
+	List    []*GroupInfo `json:"list"`    //分组信息
+	Total   int64        `json:"total"`   //总数(只有分页的时候会返回)
+	ListAll []*GroupInfo `json:"listAll"` //完整分分组信息
+}
+
+type GroupInfoReadReq struct {
+	GroupID int64 `json:"groupID,string"` //分组ID
+}
+
+type GroupInfoDeleteReq struct {
+	GroupID int64 `json:"groupID,string"` //分组ID
+}
+
+type GroupInfoUpdateReq struct {
+	GroupID   int64   `json:"groupID,string"`     //分组ID
+	GroupName *string `json:"groupName,optional"` //分组名称
+	Desc      *string `json:"desc,optional"`      //分组描述
+	Tags      []*Tag  `json:"tags,optional"`      //分组tag
+}
+
+type GroupDeviceIndexReq struct {
+	Page       PageInfo `json:"page,optional"`  //分页信息 只获取一个则不填
+	GroupID    int64    `json:"groupID,string"` //分组ID
+	ProductID  string   `json:"productID"`      //产品ID
+	DeviceName string   `json:"deviceName"`     //设备名称
+}
+
+type GroupDeviceIndexResp struct {
+	List  []*DeviceInfo `json:"list"`  //分组信息
+	Total int64         `json:"total"` //总数(只有分页的时候会返回)
+}
+
+type GroupDeviceCreateReq struct {
+	GroupID int64                 `json:"groupID,string"` //分组ID
+	List    []*DeviceIndexMessage `json:"list,optional"`  //分组tag
+}
+
+type GroupDeviceDeleteReq struct {
+	GroupID int64                 `json:"groupID,string"` //分组ID
+	List    []*DeviceIndexMessage `json:"list,optional"`  //分组tag
 }

@@ -22,31 +22,31 @@ func NewProductManageServer(svcCtx *svc.ServiceContext) *ProductManageServer {
 	}
 }
 
-// 新增设备
+// 新增产品
 func (s *ProductManageServer) ProductInfoCreate(ctx context.Context, in *dm.ProductInfo) (*dm.Response, error) {
 	l := productmanagelogic.NewProductInfoCreateLogic(ctx, s.svcCtx)
 	return l.ProductInfoCreate(in)
 }
 
-// 更新设备
+// 更新产品
 func (s *ProductManageServer) ProductInfoUpdate(ctx context.Context, in *dm.ProductInfo) (*dm.Response, error) {
 	l := productmanagelogic.NewProductInfoUpdateLogic(ctx, s.svcCtx)
 	return l.ProductInfoUpdate(in)
 }
 
-// 删除设备
+// 删除产品
 func (s *ProductManageServer) ProductInfoDelete(ctx context.Context, in *dm.ProductInfoDeleteReq) (*dm.Response, error) {
 	l := productmanagelogic.NewProductInfoDeleteLogic(ctx, s.svcCtx)
 	return l.ProductInfoDelete(in)
 }
 
-// 获取设备信息列表
+// 获取产品信息列表
 func (s *ProductManageServer) ProductInfoIndex(ctx context.Context, in *dm.ProductInfoIndexReq) (*dm.ProductInfoIndexResp, error) {
 	l := productmanagelogic.NewProductInfoIndexLogic(ctx, s.svcCtx)
 	return l.ProductInfoIndex(in)
 }
 
-// 获取设备信息详情
+// 获取产品信息详情
 func (s *ProductManageServer) ProductInfoRead(ctx context.Context, in *dm.ProductInfoReadReq) (*dm.ProductInfo, error) {
 	l := productmanagelogic.NewProductInfoReadLogic(ctx, s.svcCtx)
 	return l.ProductInfoRead(in)
