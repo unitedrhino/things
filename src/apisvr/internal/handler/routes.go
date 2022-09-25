@@ -22,27 +22,24 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Record},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/captcha",
-					Handler: systemuser.CaptchaHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/login",
-					Handler: systemuser.LoginHandler(serverCtx),
-				},
-			}...,
-		),
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/captcha",
+				Handler: systemuser.CaptchaHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/login",
+				Handler: systemuser.LoginHandler(serverCtx),
+			},
+		},
 		rest.WithPrefix("/api/v1/system/user"),
 	)
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken, serverCtx.Record},
+			[]rest.Middleware{serverCtx.CheckToken},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -81,7 +78,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken, serverCtx.Record},
+			[]rest.Middleware{serverCtx.CheckToken},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -110,7 +107,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken, serverCtx.Record},
+			[]rest.Middleware{serverCtx.CheckToken},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -290,7 +287,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken, serverCtx.Record},
+			[]rest.Middleware{serverCtx.CheckToken},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -324,7 +321,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken, serverCtx.Record},
+			[]rest.Middleware{serverCtx.CheckToken},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
