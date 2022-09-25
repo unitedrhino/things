@@ -10,7 +10,7 @@ import "system/menu.api"  //菜单结构
 @server (
 	group : system/user
 	prefix: /api/v1/system/user
-	middleware: record
+	middleware: Record
 )
 service api {
 	@doc "获取验证码"
@@ -24,7 +24,7 @@ service api {
 @server (
 	group : system/user
 	prefix: /api/v1/system/user
-	middleware: CheckToken,record
+	middleware: CheckToken,Record
 )
 service api {
 	@doc "创建用户信息"
