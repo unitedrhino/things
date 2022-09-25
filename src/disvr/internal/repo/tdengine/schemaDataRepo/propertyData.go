@@ -123,7 +123,7 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 		sql sq.SelectBuilder
 	)
 
-	if p.Define.Type == schema.STRUCT {
+	if p.Define.Type == schema.DataTypeStruct {
 		sql = sq.Select(d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
 		sql = sq.Select(fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))

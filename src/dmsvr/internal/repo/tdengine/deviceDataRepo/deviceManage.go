@@ -12,11 +12,11 @@ func (d *DeviceDataRepo) InitDevice(ctx context.Context,
 	t *schema.Model,
 	productID string,
 	deviceName string) error {
-	err := d.createPropertyTable(ctx, t.Properties, productID, deviceName)
+	err := d.createPropertyTable(ctx, t.Property, productID, deviceName)
 	if err != nil {
 		logx.WithContext(ctx).Errorf(
 			"%s.createPropertyTable productID:%v,deviceName:%v,err:%v,properties:%v",
-			utils.FuncName(), productID, deviceName, t.Properties, err)
+			utils.FuncName(), productID, deviceName, t.Property, err)
 		return err
 	}
 	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s TAGS ('%s');",
@@ -46,11 +46,11 @@ func (d *DeviceDataRepo) DropDevice(
 }
 
 func (d *DeviceDataRepo) createPropertyTable(
-	ctx context.Context, p schema.Properties, productID string, deviceName string) error {
+	ctx context.Context, p schema.PropertyMap, productID string, deviceName string) error {
 	for _, v := range p {
 		sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s');",
-			d.GetPropertyTableName(productID, deviceName, v.ID),
-			d.GetPropertyStableName(productID, v.ID), deviceName, v.Define.Type)
+			d.GetPropertyTableName(productID, deviceName, v.Identifier),
+			d.GetPropertyStableName(productID, v.Identifier), deviceName, v.Define.Type)
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return err
 		}

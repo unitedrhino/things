@@ -29,11 +29,19 @@ func Convert(src any, dst any) any {
 	return dst
 }
 
-func GetNullVal(val *wrappers.StringValue) *string {
+func ToNullString(val *wrappers.StringValue) *string {
 	if val == nil {
 		return nil
 	}
 	return &val.Value
+}
+func ToRpcNullString(val *string) *wrappers.StringValue {
+	if val != nil {
+		return &wrappers.StringValue{
+			Value: *val,
+		}
+	}
+	return nil
 }
 
 var empty = time.Time{}

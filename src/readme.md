@@ -32,6 +32,7 @@ goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --st
 # 设备管理模块-dmsvr
 ##  rpc文件编译
 ```shell
+protoc proto/* --go_out=. --go-grpc_out=.
 goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m
 ```
 

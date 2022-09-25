@@ -14,11 +14,10 @@ func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
 		tags map[string]string
 	)
 
-	if di.Tags.String != "" {
-		_ = json.Unmarshal([]byte(di.Tags.String), &tags)
-	}
+	_ = json.Unmarshal([]byte(di.Tags), &tags)
+
 	if di.IsOnline == def.Unknown {
-		di.IsOnline = def.OffLine
+		di.IsOnline = def.False
 	}
 	if di.LogLevel == def.Unknown {
 		di.LogLevel = def.LogClose
@@ -33,7 +32,7 @@ func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
 		FirstLogin:  utils.GetNullTime(di.FirstLogin),
 		LastLogin:   utils.GetNullTime(di.LastLogin),
 		Secret:      di.Secret,
-		IsOnline:    int32(di.IsOnline),
+		IsOnline:    di.IsOnline,
 		Tags:        tags,
 	}
 }

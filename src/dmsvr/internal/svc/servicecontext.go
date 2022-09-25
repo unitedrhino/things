@@ -21,6 +21,7 @@ type ServiceContext struct {
 	Config         config.Config
 	DeviceInfo     mysql.DeviceInfoModel
 	ProductInfo    mysql.ProductInfoModel
+	ProductSchema  mysql.ProductSchema2Model
 	DmDB           mysql.DmModel
 	DeviceID       *utils.SnowFlake
 	ProductID      *utils.SnowFlake
@@ -41,7 +42,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	di := mysql.NewDeviceInfoModel(conn)
 	pi := mysql.NewProductInfoModel(conn)
-	pt := mysql.NewProductSchemaModel(conn)
+	pt := mysql.NewProductSchema2Model(conn)
 	tr := cache.NewSchemaRepo(pt)
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
 	fr := mysql.NewProductFirmwareModel(conn)
@@ -59,6 +60,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		DeviceInfo:     di,
 		ProductInfo:    pi,
+		ProductSchema:  pt,
 		FirmwareInfo:   fr,
 		SchemaRepo:     tr,
 		DmDB:           DmDB,

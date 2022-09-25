@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func ReadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func CreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.ProductSchemaReadReq
+		var req types.ProductSchemaCreateReq
 		if err := httpx.Parse(r, &req); err != nil {
-			result.Http(w, r, nil, errors.Parameter.AddMsg(err.Error()))
+			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := schema.NewReadLogic(r.Context(), svcCtx)
-		resp, err := l.Read(&req)
-		result.Http(w, r, resp, err)
+		l := schema.NewCreateLogic(r.Context(), svcCtx)
+		err := l.Create(&req)
+		result.Http(w, r, nil, err)
 	}
 }

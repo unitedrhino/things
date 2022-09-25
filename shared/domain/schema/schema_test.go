@@ -193,7 +193,7 @@ var template string = `
     {
       "id": "Cell_Info",
       "name": "蜂窝定位",
-      "desc": "LAC代码为基站小区号；cellId为基站 ID；signal为基站信号强度；采集时间为设备采集基站信息时间",
+      "desc": "LAC代码为基站小区号；cellId为基站 Identifier；signal为基站信号强度；采集时间为设备采集基站信息时间",
       "mode": "rw",
       "define": {
         "type": "struct",
@@ -539,7 +539,7 @@ var template string = `
 
 func TestTempate(t *testing.T) {
 	fmt.Println("TestTempate")
-	T, err := NewSchema([]byte(template))
+	T, err := NewSchemaTsl([]byte(template))
 	if err != nil {
 		t.Error(err)
 	}
@@ -547,7 +547,7 @@ func TestTempate(t *testing.T) {
 		t.Fail()
 	}
 	for i := 0; i < len(T.Properties); i++ {
-		if &T.Properties[i] != T.Property[T.Properties[i].ID] {
+		if &T.Properties[i] != T.Property[T.Properties[i].Identifier] {
 			t.Fail()
 		}
 	}
@@ -555,7 +555,7 @@ func TestTempate(t *testing.T) {
 		t.Fail()
 	}
 	for i := 0; i < len(T.Events); i++ {
-		if &T.Events[i] != T.Event[T.Events[i].ID] {
+		if &T.Events[i] != T.Event[T.Events[i].Identifier] {
 			t.Fail()
 		}
 	}
@@ -563,7 +563,7 @@ func TestTempate(t *testing.T) {
 		t.Fail()
 	}
 	for i := 0; i < len(T.Actions); i++ {
-		if &T.Actions[i] != T.Action[T.Actions[i].ID] {
+		if &T.Actions[i] != T.Action[T.Actions[i].Identifier] {
 			t.Fail()
 		}
 	}

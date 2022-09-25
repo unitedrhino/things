@@ -14,13 +14,13 @@ const (
 )
 
 type TempParam struct {
-	ID       string `json:"id"`       //标识符
-	Name     string `json:"name"`     //功能名称
-	Desc     string `json:"gesc"`     //描述
-	Mode     string `json:"mode"`     //读写乐行:rw(可读可写) r(只读)
-	Required bool   `json:"required"` //是否必须
-	Type     string `json:"type"`     //事件类型: 信息:info  告警alert  故障:fault
-	Value    struct {
+	Identifier string              `json:"identifier"` //标识符
+	Name       string              `json:"name"`       //功能名称
+	Desc       string              `json:"gesc"`       //描述
+	Mode       schema.PropertyMode `json:"mode"`       //读写乐行:rw(可读可写) r(只读)
+	Required   bool                `json:"required"`   //是否必须
+	Type       schema.EventType    `json:"type"`       //事件类型: 信息:info  告警alert  故障:fault
+	Value      struct {
 		Type   schema.DataType   `json:"type"`              //参数类型:bool int string struct float timestamp array enum
 		Maping map[string]string `json:"mapping,omitempty"` //枚举及bool类型:bool enum
 		Min    string            `json:"min,omitempty"`     //数值最小值:int string float
@@ -67,17 +67,17 @@ func (t *TempParam) ToVal() any {
 	}
 
 	switch t.Value.Type {
-	case schema.STRUCT:
+	case schema.DataTypeStruct:
 		v, ok := t.Value.Value.(map[string]TempParam)
 		if ok == false {
 			return nil
 		}
 		val := make(map[string]any, len(v)+1)
 		for _, tp := range v {
-			val[tp.ID] = tp.ToVal()
+			val[tp.Identifier] = tp.ToVal()
 		}
 		return val
-	case schema.ARRAY:
+	case schema.DataTypeArray:
 		array, ok := t.Value.Value.([]any)
 		if ok == false {
 			return nil
@@ -88,7 +88,7 @@ func (t *TempParam) ToVal() any {
 			case map[string]TempParam:
 				valMap := make(map[string]any, len(array)+1)
 				for _, tp := range value.(map[string]TempParam) {
-					valMap[tp.ID] = tp.ToVal()
+					valMap[tp.Identifier] = tp.ToVal()
 				}
 				val = append(val, valMap)
 			default:
@@ -103,7 +103,7 @@ func (t *TempParam) ToVal() any {
 
 func GetVal(d *schema.Define, val any) (any, error) {
 	switch d.Type {
-	case schema.BOOL:
+	case schema.DataTypeBool:
 		switch val.(type) {
 		case bool:
 			return val.(bool), nil
@@ -115,7 +115,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 				return true, nil
 			}
 		}
-	case schema.INT:
+	case schema.DataTypeInt:
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -128,7 +128,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			}
 			return ret, nil
 		}
-	case schema.FLOAT:
+	case schema.DataTypeFloat:
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -142,7 +142,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			}
 			return ret, nil
 		}
-	case schema.STRING:
+	case schema.DataTypeString:
 		if str, ok := val.(string); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -151,7 +151,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			}
 			return str, nil
 		}
-	case schema.ENUM: //枚举类型 报文中传递的是数字
+	case schema.DataTypeEnum: //枚举类型 报文中传递的是数字
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -165,7 +165,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			}
 			return ret, nil
 		}
-	case schema.TIMESTAMP:
+	case schema.DataTypeTimestamp:
 		switch val.(type) {
 		case json.Number:
 			ret, err := val.(json.Number).Int64()
@@ -180,7 +180,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			}
 			return ret, nil
 		}
-	case schema.STRUCT:
+	case schema.DataTypeStruct:
 		if strut, ok := val.(map[string]any); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
@@ -191,19 +191,19 @@ func GetVal(d *schema.Define, val any) (any, error) {
 					continue
 				}
 				tp := TempParam{
-					ID:   sv.ID,
-					Name: sv.Name,
+					Identifier: sv.Identifier,
+					Name:       sv.Name,
 				}
 				err := tp.AddDefine(&sv.DataType, v)
 				if err == nil {
 					getParam[k] = tp
 				} else if !errors.Cmp(err, errors.NotFind) {
-					return nil, errors.Fmt(err).AddDetail(sv.ID)
+					return nil, errors.Fmt(err).AddDetail(sv.Identifier)
 				}
 			}
 			return getParam, nil
 		}
-	case schema.ARRAY:
+	case schema.DataTypeArray:
 		if arr, ok := val.([]any); !ok {
 			return nil, errors.Parameter.AddDetail(fmt.Sprint(val))
 		} else {

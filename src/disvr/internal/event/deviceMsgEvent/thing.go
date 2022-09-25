@@ -58,7 +58,7 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[s
 }
 
 func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	tp, err := l.dreq.VerifyReqParam(l.schema, schema.PROPERTY)
+	tp, err := l.dreq.VerifyReqParam(l.schema, schema.ParamProperty)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	} else if len(tp) == 0 {
@@ -78,7 +78,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *d
 }
 
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	respData := make(map[string]any, len(l.schema.Properties))
+	respData := make(map[string]any, len(l.schema.Property))
 	switch l.dreq.Type {
 	case deviceSend.Report:
 		for id, _ := range l.schema.Property {
@@ -130,7 +130,7 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	if l.dreq.Method != deviceSend.EventPost {
 		return nil, errors.Method
 	}
-	tp, err := l.dreq.VerifyReqParam(l.schema, schema.EVENT)
+	tp, err := l.dreq.VerifyReqParam(l.schema, schema.ParamEvent)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
