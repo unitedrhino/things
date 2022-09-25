@@ -12,7 +12,7 @@ import "things/device/device.api"  //设备结构
 @server(
      group : things/group/info
      prefix: /api/v1/things/group/info
-     middleware: CheckToken,Record
+     middleware: CheckToken
 )
 
 service api {
@@ -41,7 +41,7 @@ service api {
 @server(
      group : things/group/device
      prefix: /api/v1/things/group/device
-     middleware: CheckToken,Record
+     middleware: CheckToken
 )
 service api {
     @doc "添加分组设备"
