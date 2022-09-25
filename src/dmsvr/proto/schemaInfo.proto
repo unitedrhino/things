@@ -1,0 +1,47 @@
+syntax = "proto3";
+option go_package = "pb/dm";
+package dm;
+
+
+
+message SchemaAction {
+  repeated SchemaParam input = 1;     //调用参数
+  repeated SchemaParam output = 2;   //返回参数
+}
+
+message SchemaProperty {
+  string mode = 1;       //读写类型: r(只读) rw(可读可写)
+  SchemaDefine define = 2; //参数定义
+}
+
+message SchemaEvent {
+  string type = 1;        //事件类型: 信息:info  告警alert  故障:fault
+  repeated SchemaParam params = 2;   //事件参数
+}
+
+/*物模型定义*/
+message SchemaDefine  {
+  string type = 1;                    //参数类型: bool int string struct float timestamp array enum
+  map<string, string> mapping = 2;    //枚举及bool类型:bool enum
+  string min = 3;      //数值最小值:int  float
+  string max = 4;      //数值最大值:int string float
+  string start = 5;    //初始值:int float
+  string step = 6;     //步长:int float
+  string unit = 7;     //单位:int float
+  repeated SchemaSpec specs = 8;           //结构体:struct
+  SchemaDefine arrayInfo = 9;//数组:array
+}
+
+/*物模型结构体说明*/
+message  SchemaSpec  {
+  string identifier = 1;//参数标识符
+  string name = 2;   //参数名称
+  SchemaDefine dataType = 3; //参数定义
+}
+
+/*物模型参数*/
+message SchemaParam  {
+  string identifier = 1;       //参数标识符
+  string name = 2;            //参数名称
+  SchemaDefine define = 3; //参数定义
+}

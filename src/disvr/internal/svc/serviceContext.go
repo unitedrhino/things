@@ -18,7 +18,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
-	"time"
 )
 
 type ServiceContext struct {
@@ -54,16 +53,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceM = dmdirect.NewDeviceManage(nil)
 		productM = dmdirect.NewProductManage(nil)
 	}
-	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (schema.Info, error) {
-		info, err := productM.ProductSchemaRead(ctx, &dm.ProductSchemaReadReq{ProductID: productID})
+	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
+		info, err := productM.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: productID})
 		if err != nil {
-			return schema.Info{}, err
+			return nil, err
 		}
-		return schema.Info{
-			Schema:      info.Schema,
-			ProductID:   productID,
-			CreatedTime: time.Unix(info.CreatedTime, 0),
-		}, nil
+		return schema.ValidateWithFmt([]byte(info.Tsl))
 	})
 	deviceData := schemaDataRepo.NewSchemaDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
 

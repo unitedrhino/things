@@ -59,7 +59,7 @@ func (l *DisconnectedLogic) Handle(msg *deviceMsg.ConnectMsg) error {
 	l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
 		ProductID:  di.ProductID,
 		DeviceName: di.DeviceName,
-		IsOnline:   def.OnLine,
+		IsOnline:   def.False,
 	})
 	return nil
 }

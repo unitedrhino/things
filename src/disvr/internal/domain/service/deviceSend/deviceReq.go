@@ -36,45 +36,45 @@ func (d *DeviceReq) GetTimeStamp(defaultTime time.Time) time.Time {
 	return time.UnixMilli(d.Timestamp)
 }
 
-func (d *DeviceReq) VerifyReqParam(t *schema.Model, tt schema.TEMP_TYPE) (map[string]TempParam, error) {
+func (d *DeviceReq) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]TempParam, error) {
 	if len(d.Params) == 0 {
 		return nil, errors.Parameter.AddDetail("need add params")
 	}
 	getParam := make(map[string]TempParam, len(d.Params))
 	switch tt {
-	case schema.PROPERTY:
+	case schema.ParamProperty:
 		for k, v := range d.Params {
 			p, ok := t.Property[k]
 			if ok == false {
 				continue
 			}
 			tp := TempParam{
-				ID:       p.ID,
-				Name:     p.Name,
-				Desc:     p.Desc,
-				Mode:     p.Mode,
-				Required: p.Required,
+				Identifier: p.Identifier,
+				Name:       p.Name,
+				Desc:       p.Desc,
+				Mode:       p.Mode,
+				Required:   p.Required,
 			}
 			err := tp.AddDefine(&p.Define, v)
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
-				return nil, errors.Fmt(err).AddDetail(p.ID)
+				return nil, errors.Fmt(err).AddDetail(p.Identifier)
 			}
 		}
-	case schema.EVENT:
+	case schema.ParamEvent:
 		p, ok := t.Event[d.EventID]
 		if ok == false {
 			return nil, errors.Parameter.AddDetail("need right eventId")
 		}
-		if d.Type != p.Type {
-			return nil, errors.Parameter.AddDetail("err type:" + d.Type)
+		if d.Type != string(p.Type) {
+			return nil, errors.Parameter.AddDetailf("err type:%v", d.Type)
 		}
 
 		for k, v := range p.Param {
 			tp := TempParam{
-				ID:   v.ID,
-				Name: v.Name,
+				Identifier: v.Identifier,
+				Name:       v.Name,
 			}
 			param, ok := d.Params[k]
 			if ok == false {
@@ -84,20 +84,20 @@ func (d *DeviceReq) VerifyReqParam(t *schema.Model, tt schema.TEMP_TYPE) (map[st
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
-				return nil, errors.Fmt(err).AddDetail(p.ID)
+				return nil, errors.Fmt(err).AddDetail(p.Identifier)
 			}
 		}
-	case schema.ACTION_INPUT:
+	case schema.ParamActionInput:
 		p, ok := t.Action[d.ActionID]
 		if ok == false {
 			return nil, errors.Parameter.AddDetail("need right ActionID")
 		}
 		for k, v := range p.In {
 			tp := TempParam{
-				ID:   v.ID,
-				Name: v.Name,
+				Identifier: v.Identifier,
+				Name:       v.Name,
 			}
-			param, ok := d.Params[v.ID]
+			param, ok := d.Params[v.Identifier]
 			if ok == false {
 				return nil, errors.Parameter.AddDetail("need param:" + k)
 			}
@@ -105,20 +105,20 @@ func (d *DeviceReq) VerifyReqParam(t *schema.Model, tt schema.TEMP_TYPE) (map[st
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
-				return nil, errors.Fmt(err).AddDetail(p.ID)
+				return nil, errors.Fmt(err).AddDetail(p.Identifier)
 			}
 		}
-	case schema.ACTION_OUTPUT:
+	case schema.ParamActionOutput:
 		p, ok := t.Action[d.ActionID]
 		if ok == false {
 			return nil, errors.Parameter.AddDetail("need right ActionID")
 		}
 		for k, v := range p.In {
 			tp := TempParam{
-				ID:   v.ID,
-				Name: v.Name,
+				Identifier: v.Identifier,
+				Name:       v.Name,
 			}
-			param, ok := d.Params[v.ID]
+			param, ok := d.Params[v.Identifier]
 			if ok == false {
 				return nil, errors.Parameter.AddDetail("need param:" + k)
 			}
@@ -126,7 +126,7 @@ func (d *DeviceReq) VerifyReqParam(t *schema.Model, tt schema.TEMP_TYPE) (map[st
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
-				return nil, errors.Fmt(err).AddDetail(p.ID)
+				return nil, errors.Fmt(err).AddDetail(p.Identifier)
 			}
 		}
 	}

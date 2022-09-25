@@ -44,7 +44,7 @@ func (l *SchemaLatestIndexLogic) SchemaLatestIndex(in *di.SchemaLatestIndexReq) 
 	case devices.PropertyMethod, "":
 		dataIDs := in.DataID
 		if len(dataIDs) == 0 {
-			dataIDs = temp.Properties.GetIDs()
+			dataIDs = temp.Property.GetIDs()
 		}
 		total = len(dataIDs)
 		for _, v := range dataIDs {
