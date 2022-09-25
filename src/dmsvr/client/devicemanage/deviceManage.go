@@ -20,6 +20,17 @@ type (
 	DeviceInfoIndexReq     = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp    = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq      = dm.DeviceInfoReadReq
+	GroupDeviceCreateReq   = dm.GroupDeviceCreateReq
+	GroupDeviceDeleteReq   = dm.GroupDeviceDeleteReq
+	GroupDeviceIndexReq    = dm.GroupDeviceIndexReq
+	GroupDeviceIndexResp   = dm.GroupDeviceIndexResp
+	GroupInfo              = dm.GroupInfo
+	GroupInfoCreateReq     = dm.GroupInfoCreateReq
+	GroupInfoDeleteReq     = dm.GroupInfoDeleteReq
+	GroupInfoIndexReq      = dm.GroupInfoIndexReq
+	GroupInfoIndexResp     = dm.GroupInfoIndexResp
+	GroupInfoReadReq       = dm.GroupInfoReadReq
+	GroupInfoUpdateReq     = dm.GroupInfoUpdateReq
 	LoginAuthReq           = dm.LoginAuthReq
 	PageInfo               = dm.PageInfo
 	ProductInfo            = dm.ProductInfo
