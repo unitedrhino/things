@@ -20,6 +20,17 @@ type (
 	DeviceInfoIndexReq     = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp    = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq      = dm.DeviceInfoReadReq
+	GroupDeviceCreateReq   = dm.GroupDeviceCreateReq
+	GroupDeviceDeleteReq   = dm.GroupDeviceDeleteReq
+	GroupDeviceIndexReq    = dm.GroupDeviceIndexReq
+	GroupDeviceIndexResp   = dm.GroupDeviceIndexResp
+	GroupInfo              = dm.GroupInfo
+	GroupInfoCreateReq     = dm.GroupInfoCreateReq
+	GroupInfoDeleteReq     = dm.GroupInfoDeleteReq
+	GroupInfoIndexReq      = dm.GroupInfoIndexReq
+	GroupInfoIndexResp     = dm.GroupInfoIndexResp
+	GroupInfoReadReq       = dm.GroupInfoReadReq
+	GroupInfoUpdateReq     = dm.GroupInfoUpdateReq
 	LoginAuthReq           = dm.LoginAuthReq
 	PageInfo               = dm.PageInfo
 	ProductInfo            = dm.ProductInfo
@@ -34,15 +45,15 @@ type (
 	RootCheckReq           = dm.RootCheckReq
 
 	ProductManage interface {
-		// 新增设备
+		// 新增产品
 		ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
-		// 更新设备
+		// 更新产品
 		ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
-		// 删除设备
+		// 删除产品
 		ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-		// 获取设备信息列表
+		// 获取产品信息列表
 		ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
-		// 获取设备信息详情
+		// 获取产品信息详情
 		ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
 		// 更新产品物模型
 		ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
@@ -73,57 +84,57 @@ func NewDirectProductManage(svcCtx *svc.ServiceContext, svr dm.ProductManageServ
 	}
 }
 
-// 新增设备
+// 新增产品
 func (m *defaultProductManage) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductInfoCreate(ctx, in, opts...)
 }
 
-// 新增设备
+// 新增产品
 func (d *directProductManage) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.ProductInfoCreate(ctx, in)
 }
 
-// 更新设备
+// 更新产品
 func (m *defaultProductManage) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductInfoUpdate(ctx, in, opts...)
 }
 
-// 更新设备
+// 更新产品
 func (d *directProductManage) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.ProductInfoUpdate(ctx, in)
 }
 
-// 删除设备
+// 删除产品
 func (m *defaultProductManage) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductInfoDelete(ctx, in, opts...)
 }
 
-// 删除设备
+// 删除产品
 func (d *directProductManage) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.ProductInfoDelete(ctx, in)
 }
 
-// 获取设备信息列表
+// 获取产品信息列表
 func (m *defaultProductManage) ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductInfoIndex(ctx, in, opts...)
 }
 
-// 获取设备信息列表
+// 获取产品信息列表
 func (d *directProductManage) ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error) {
 	return d.svr.ProductInfoIndex(ctx, in)
 }
 
-// 获取设备信息详情
+// 获取产品信息详情
 func (m *defaultProductManage) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductInfoRead(ctx, in, opts...)
 }
 
-// 获取设备信息详情
+// 获取产品信息详情
 func (d *directProductManage) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
 	return d.svr.ProductInfoRead(ctx, in)
 }

@@ -11,6 +11,8 @@ import (
 	thingsdeviceinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/device/info"
 	thingsdeviceinteract "github.com/i-Things/things/src/apisvr/internal/handler/things/device/interact"
 	thingsdevicemsg "github.com/i-Things/things/src/apisvr/internal/handler/things/device/msg"
+	thingsgroupdevice "github.com/i-Things/things/src/apisvr/internal/handler/things/group/device"
+	thingsgroupinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/group/info"
 	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
 	thingsproductschema "github.com/i-Things/things/src/apisvr/internal/handler/things/product/schema"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -20,24 +22,27 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/captcha",
-				Handler: systemuser.CaptchaHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/login",
-				Handler: systemuser.LoginHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.record},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/captcha",
+					Handler: systemuser.CaptchaHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/login",
+					Handler: systemuser.LoginHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/api/v1/system/user"),
 	)
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Middleware{serverCtx.CheckToken, serverCtx.record},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -76,7 +81,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Middleware{serverCtx.CheckToken, serverCtx.record},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -105,7 +110,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Middleware{serverCtx.CheckToken, serverCtx.record},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -281,5 +286,63 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/api/v1/things/product/schema"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken, serverCtx.record},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsgroupinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsgroupinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsgroupinfo.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsgroupinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsgroupinfo.DeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/group/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken, serverCtx.record},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsgroupdevice.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsgroupdevice.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsgroupdevice.DeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/group/device"),
 	)
 }

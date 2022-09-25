@@ -35,7 +35,8 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 		for _, v := range menuIds {
 			menuInfo, err := l.svcCtx.MenuInfoModle.FindOne(l.ctx, v)
 			if err != nil {
-				return nil, errors.Database.AddDetail(err)
+				l.Errorf("MenuIndex find menu_info err,menuID:%d,err:%v", v, err)
+				continue
 			}
 			info = append(info, MenuInfoToPb(menuInfo))
 		}

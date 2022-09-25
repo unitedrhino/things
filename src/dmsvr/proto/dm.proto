@@ -67,26 +67,29 @@ service DeviceGroup {
 }
 
 message GroupInfo{
-  string groupName = 1;
-  int64 parentID = 2;
-  string description = 3;
+  int64 groupID = 1;
+  string groupName = 2;
+  int64 parentID = 3;
+  string desc = 4;
+  int64 createdTime = 5;
+  map<string, string> tags = 6;
 }
 
 message GroupInfoCreateReq{
   string groupName = 1;
   int64 parentID = 2;
-  string description = 3;
+  string desc = 3;
 }
 
 message GroupInfoIndexReq{
   PageInfo page = 1;
-  int64 parentID = 2;
-  string groupName = 3;
-  map<string, string> tags = 4;
+  string groupName = 2;
+  map<string, string> tags = 3;
 }
 message GroupInfoIndexResp{
   repeated GroupInfo list = 1;
   int64 total = 2;
+  repeated GroupInfo listAll = 3;
 }
 
 message GroupInfoReadReq{
@@ -96,7 +99,7 @@ message GroupInfoReadReq{
 message GroupInfoUpdateReq{
   int64 groupID = 1;
   string groupName = 2;
-  string description = 3;
+  string desc = 3;
   map<string, string> tags = 4;
 }
 
@@ -106,8 +109,7 @@ message GroupInfoDeleteReq{
 
 message GroupDeviceCreateReq{
   int64 groupID = 1;
-  string productID = 2;
-  string deviceName = 3;
+  map<string, string> DeviceIndexList = 2;
 }
 
 message GroupDeviceIndexReq{
@@ -124,8 +126,7 @@ message GroupDeviceIndexResp{
 
 message GroupDeviceDeleteReq{
   int64 groupID = 1;
-  string productID = 2;
-  string deviceName = 3;
+  map<string, string> DeviceIndexList = 2;
 }
 
 message Response {
