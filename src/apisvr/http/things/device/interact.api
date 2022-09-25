@@ -17,6 +17,14 @@ service api {
     @doc "同步调用设备属性"
     @handler sendProperty
     post /send-property (DeviceInteractSendPropertyReq) returns (DeviceInteractSendPropertyResp)
+    @doc "发送消息给设备"
+    @handler sendMsg
+    post /send-msg (DeviceInteractSendMsgReq) returns ()
+}
+
+type DeviceInteractSendMsgReq struct{
+    Topic   string `json:"topic"`     //发送的topic
+    Payload string `json:"payload"` //发送的数据
 }
 
 type DeviceInteractSendPropertyReq struct {
