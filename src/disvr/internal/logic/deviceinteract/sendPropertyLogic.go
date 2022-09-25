@@ -81,6 +81,4 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		Status:      resp.Status,
 		Code:        resp.Code,
 	}, nil
-
-	return &di.SendPropertyResp{}, nil
 }

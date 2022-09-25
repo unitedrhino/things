@@ -71,8 +71,6 @@ type UserUpdateReq struct {
 	Uid        int64  `json:"uid,string"`          // 用户id
 	UserName   string `json:"userName,optional"`   // 用户名(唯一)
 	Email      string `json:"email,optional"`      // 邮箱
-	Phone      string `json:"phone,optional"`      // 手机号
-	Wechat     string `json:"wechat,optional"`     // 微信UnionID
 	NickName   string `json:"nickName,optional"`   // 用户的昵称
 	City       string `json:"city,optional"`       // 用户所在城市
 	Country    string `json:"country,optional"`    // 用户所在国家
@@ -139,15 +137,21 @@ type PageInfo struct {
 	Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
 }
 
+type Tag struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
 type MenuCreateReq struct {
-	Name      string `json:"name"`               // 菜单名称
-	ParentID  int64  `json:"parentID,optional"`  // 父菜单ID，一级菜单为1
-	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
-	Path      string `json:"path,optional"`      // 系统的path
-	Component string `json:"component,optional"` // 页面
-	Icon      string `json:"icon,optional"`      // 菜单图标
-	Redirect  string `json:"redirect,optional"`  // 路由重定向
-	Order     int64  `json:"order"`              // 左侧table排序序号
+	Name       string `json:"name"`                // 菜单名称
+	ParentID   int64  `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type,optional"`       // 类型   1：目录   2：菜单   3：按钮
+	Path       string `json:"path,optional"`       // 系统的path
+	Component  string `json:"component,optional"`  // 页面
+	Icon       string `json:"icon,optional"`       // 菜单图标
+	Redirect   string `json:"redirect,optional"`   // 路由重定向
+	Order      int64  `json:"order,optional"`      // 左侧table排序序号
+	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
 }
 
 type MenuIndexReq struct {
@@ -156,16 +160,17 @@ type MenuIndexReq struct {
 }
 
 type MenuData struct {
-	ID         int64  `json:"id"`         // 编号
-	Name       string `json:"name"`       // 菜单名称
-	ParentID   int64  `json:"parentID"`   // 父菜单ID，一级菜单为1
-	Type       int64  `json:"type"`       // 类型   1：目录   2：菜单   3：按钮
-	Path       string `json:"path"`       // 系统的path
-	Component  string `json:"component"`  // 页面
-	Icon       string `json:"icon"`       // 菜单图标
-	Redirect   string `json:"redirect"`   // 路由重定向
-	CreateTime int64  `json:"createTime"` // 创建时间
-	Order      int64  `json:"order"`      // 左侧table排序序号
+	ID         int64  `json:"id"`                  // 编号
+	Name       string `json:"name"`                // 菜单名称
+	ParentID   int64  `json:"parentID"`            // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type"`                // 类型   1：目录   2：菜单   3：按钮
+	Path       string `json:"path"`                // 系统的path
+	Component  string `json:"component"`           // 页面
+	Icon       string `json:"icon"`                // 菜单图标
+	Redirect   string `json:"redirect"`            // 路由重定向
+	CreateTime int64  `json:"createTime"`          // 创建时间
+	Order      int64  `json:"order"`               // 左侧table排序序号
+	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
 }
 
 type MenuIndexResp struct {
@@ -173,15 +178,16 @@ type MenuIndexResp struct {
 }
 
 type MenuUpdateReq struct {
-	ID        int64  `json:"id"`                 // 编号
-	Name      string `json:"name"`               // 菜单名称
-	ParentID  int64  `json:"parentID"`           // 父菜单ID，一级菜单为1
-	Type      int64  `json:"type,optional"`      // 类型   1：目录   2：菜单   3：按钮
-	Path      string `json:"path,optional"`      // 系统的path
-	Component string `json:"component,optional"` // 页面
-	Icon      string `json:"icon,optional"`      // 菜单图标
-	Redirect  string `json:"redirect,optional"`  // 路由重定向
-	Order     int64  `json:"order"`              // 左侧table排序序号
+	ID         int64  `json:"id"`                  // 编号
+	Name       string `json:"name"`                // 菜单名称
+	ParentID   int64  `json:"parentID"`            // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type,optional"`       // 类型   1：目录   2：菜单   3：按钮
+	Path       string `json:"path,optional"`       // 系统的path
+	Component  string `json:"component,optional"`  // 页面
+	Icon       string `json:"icon,optional"`       // 菜单图标
+	Redirect   string `json:"redirect,optional"`   // 路由重定向
+	Order      int64  `json:"order"`               // 左侧table排序序号
+	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
 }
 
 type MenuDeleteReq struct {
@@ -390,6 +396,11 @@ type DeviceInfoIndexResp struct {
 	Num   int64         `json:"num"`   //返回的数量
 }
 
+type DeviceInteractSendMsgReq struct {
+	Topic   string `json:"topic"`   //发送的topic
+	Payload string `json:"payload"` //发送的数据
+}
+
 type DeviceInteractSendPropertyReq struct {
 	ProductID     string `json:"productID"`     //产品id 获取产品id下的所有设备信息
 	DeviceName    string `json:"deviceName"`    //设备名
@@ -567,4 +578,73 @@ type SchemaParam struct {
 	Identifier string        `json:"identifier"`       //参数标识符
 	Name       string        `json:"name"`             //参数名称
 	Define     *SchemaDefine `json:"define,omitempty"` //参数定义
+}
+
+type DeviceIndexMessage struct {
+	ProductID  string `json:"productID"`  //产品ID
+	DeviceName string `json:"deviceName"` //设备名称
+}
+
+type GroupInfo struct {
+	GroupID     int64  `json:"groupID,string"`     //分组ID
+	GroupName   string `json:"groupName"`          //分组名称
+	ParentID    int64  `json:"parentID,optional"`  //父组ID
+	CreatedTime int64  `json:"createdTime,string"` //创建时间
+	Desc        string `json:"desc,optional"`      //分组描述
+	Tags        []*Tag `json:"tags,optional"`      //分组tag
+}
+
+type GroupInfoCreateReq struct {
+	GroupName string `json:"groupName"`         //分组名称
+	ParentID  int64  `json:"parentID,optional"` //父组ID
+	Desc      string `json:"desc,optional"`     //分组描述
+}
+
+type GroupInfoIndexReq struct {
+	Page      PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
+	GroupName string   `json:"groupName,optional"` //分组名称
+	Tags      []*Tag   `json:"tags,optional"`      //分组tag
+}
+
+type GroupInfoIndexResp struct {
+	List    []*GroupInfo `json:"list"`    //分组信息
+	Total   int64        `json:"total"`   //总数(只有分页的时候会返回)
+	ListAll []*GroupInfo `json:"listAll"` //完整分分组信息
+}
+
+type GroupInfoReadReq struct {
+	GroupID int64 `json:"groupID,string"` //分组ID
+}
+
+type GroupInfoDeleteReq struct {
+	GroupID int64 `json:"groupID,string"` //分组ID
+}
+
+type GroupInfoUpdateReq struct {
+	GroupID   int64   `json:"groupID,string"`     //分组ID
+	GroupName *string `json:"groupName,optional"` //分组名称
+	Desc      *string `json:"desc,optional"`      //分组描述
+	Tags      []*Tag  `json:"tags,optional"`      //分组tag
+}
+
+type GroupDeviceIndexReq struct {
+	Page       PageInfo `json:"page,optional"`  //分页信息 只获取一个则不填
+	GroupID    int64    `json:"groupID,string"` //分组ID
+	ProductID  string   `json:"productID"`      //产品ID
+	DeviceName string   `json:"deviceName"`     //设备名称
+}
+
+type GroupDeviceIndexResp struct {
+	List  []*DeviceInfo `json:"list"`  //分组信息
+	Total int64         `json:"total"` //总数(只有分页的时候会返回)
+}
+
+type GroupDeviceCreateReq struct {
+	GroupID int64                 `json:"groupID,string"` //分组ID
+	List    []*DeviceIndexMessage `json:"list,optional"`  //分组tag
+}
+
+type GroupDeviceDeleteReq struct {
+	GroupID int64                 `json:"groupID,string"` //分组ID
+	List    []*DeviceIndexMessage `json:"list,optional"`  //分组tag
 }

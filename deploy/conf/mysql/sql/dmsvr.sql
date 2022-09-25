@@ -21,10 +21,10 @@ CREATE TABLE if not exists `product_info`
     PRIMARY KEY (`productID`),
     KEY `deviceType` (`deviceType`) USING BTREE,
     UNIQUE KEY `productName` (`productName`) USING BTREE
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品信息表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 4
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='产品信息表';
 
 CREATE TABLE if not exists `product_schema`
 (
@@ -81,9 +81,9 @@ CREATE TABLE if not exists `device_info`
     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceName` (`productID`, `deviceName`),
     KEY `device_productID` (`productID`) USING BTREE
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
-  DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 3
+    DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
 
 
 

@@ -97,7 +97,10 @@ func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.UserInfo, err erro
 	switch in.LoginType {
 	case "pwd":
 		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, in.UserID)
-		if err := l.getPwd(in, uc); err != nil {
+		if err != nil {
+			return nil, err
+		}
+		if err = l.getPwd(in, uc); err != nil {
 			return nil, err
 		}
 	default:

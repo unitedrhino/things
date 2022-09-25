@@ -38,6 +38,17 @@ type (
 	ProductSchemaUpdateReq    = dm.ProductSchemaUpdateReq
 	Response                  = dm.Response
 	RootCheckReq              = dm.RootCheckReq
+	GroupDeviceCreateReq   = dm.GroupDeviceCreateReq
+	GroupDeviceDeleteReq   = dm.GroupDeviceDeleteReq
+	GroupDeviceIndexReq    = dm.GroupDeviceIndexReq
+	GroupDeviceIndexResp   = dm.GroupDeviceIndexResp
+	GroupInfo              = dm.GroupInfo
+	GroupInfoCreateReq     = dm.GroupInfoCreateReq
+	GroupInfoDeleteReq     = dm.GroupInfoDeleteReq
+	GroupInfoIndexReq      = dm.GroupInfoIndexReq
+	GroupInfoIndexResp     = dm.GroupInfoIndexResp
+	GroupInfoReadReq       = dm.GroupInfoReadReq
+	GroupInfoUpdateReq     = dm.GroupInfoUpdateReq
 
 	DeviceManage interface {
 		// 新增设备

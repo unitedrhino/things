@@ -17,5 +17,6 @@ func MenuInfoToPb(ui *mysql.MenuInfo) *sys.MenuData {
 		Redirect:   ui.Redirect,
 		CreateTime: ui.CreatedTime.Unix(),
 		Order:      ui.Order,
+		HideInMenu: ui.HideInMenu,
 	}
 }

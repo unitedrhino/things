@@ -11,11 +11,13 @@ import (
 type (
 	MenuModel interface {
 		Index(in *sys.MenuIndexReq) ([]*MenuInfo, error)
+		DeleteMenu(MenuId int64) error
 	}
 
 	menuModel struct {
 		sqlc.CachedConn
 		menuInfo string
+		roleMenu string
 	}
 )
 
@@ -23,6 +25,7 @@ func NewMenuModel(conn sqlx.SqlConn, c cache.CacheConf) MenuModel {
 	return &menuModel{
 		CachedConn: sqlc.NewConn(conn, c),
 		menuInfo:   "`menu_info`",
+		roleMenu:   "`role_menu`",
 	}
 }
 
@@ -50,4 +53,26 @@ func (m *menuModel) Index(in *sys.MenuIndexReq) ([]*MenuInfo, error) {
 	}
 
 	return resp, nil
+}
+
+func (m *menuModel) DeleteMenu(MenuId int64) error {
+	m.Transact(func(session sqlx.Session) error {
+		//1.从菜单表删除角色
+		query := fmt.Sprintf("delete from %s where id = %d",
+			m.menuInfo, MenuId)
+		_, err := session.Exec(query)
+		if err != nil {
+			return err
+		}
+		//2.从角色菜单关系表删除关联菜单项
+		query = fmt.Sprintf("delete from %s where  menuID = %d",
+			m.roleMenu, MenuId)
+		_, err = session.Exec(query)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	return nil
 }
