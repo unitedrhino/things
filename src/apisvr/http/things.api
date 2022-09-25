@@ -7,3 +7,4 @@ info(
 )
 import "things/device.api"  //设备相关功能接口
 import "things/product.api"  //产品相关功能接口
+import "things/group.api"  //产品相关功能接口
