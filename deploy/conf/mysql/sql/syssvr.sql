@@ -1,5 +1,6 @@
 create database if not EXISTS things_sys;
 use things_sys;
+
 CREATE TABLE if not exists `user_info`
 (
     `uid`         bigint                                                  NOT NULL COMMENT '用户id',
@@ -74,7 +75,7 @@ CREATE TABLE if not exists `menu_info`
     `icon`            varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '图标',
     `redirect`        varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '路由重定向',
     `backgroundUrl`   varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '后台地址',
-    `hideInMenu`      int(11) not null default 2 comment '是否隐藏菜单 1-是 2-否';
+    `hideInMenu`      int(11) not null default 2 comment '是否隐藏菜单 1-是 2-否',
     `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` 	  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` 	  datetime DEFAULT NULL,

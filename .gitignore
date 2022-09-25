@@ -3,6 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/deploy/data/*
 
 ### STS ###
 .apt_generated
@@ -34,6 +35,7 @@ build/
 go.sum
 
 ##
+/cmd/*
 src/apisvr/apisvr*
 src/dcsvr/dcsvr*
 src/ddsvr/ddsvr*
