@@ -13,7 +13,7 @@ CREATE TABLE if not exists `product_info`
     `dataProto`    tinyint(1)            DEFAULT '1' COMMENT '数据协议:1:自定义,2:数据模板',
     `autoRegister` tinyint(1)            DEFAULT '1' COMMENT '动态注册:1:关闭,2:打开,3:打开并自动创建设备',
     `secret`       varchar(50)           DEFAULT '' COMMENT '动态注册产品秘钥',
-    `description`  varchar(200)          DEFAULT '' COMMENT '描述',
+    `desc`  varchar(200)          DEFAULT '' COMMENT '描述',
     `createdTime`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updatedTime`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deletedTime`  datetime              DEFAULT NULL,
@@ -26,18 +26,28 @@ CREATE TABLE if not exists `product_info`
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='产品信息表';
 
+
 CREATE TABLE if not exists `product_schema`
 (
+    `id`          bigint       NOT NULL AUTO_INCREMENT,
     `productID`   char(11) NOT NULL COMMENT '产品id',
-    `schema`      json COMMENT '物模型模板',
+    `tag` tinyint(1)  default 1 comment '物模型标签 1:自定义 2:可选 3:必选  必选不可删除',
+    `type` tinyint(1)  default 1 comment '物模型类型 1:property属性 2:event事件 3:action行为',
+    `identifier`      varchar(100) not null COMMENT '标识符',
+    `name`      varchar(100) not null  COMMENT '功能名称',
+    `desc` varchar(200) default '' COMMENT '描述',
+    `required` tinyint(1)  default 2 comment '是否必须,1是 2否',
+    `affordance` json not null  COMMENT '各类型的自定义功能定义',
     `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deletedTime` datetime          DEFAULT NULL,
-    PRIMARY KEY (`productID`)
-    ) ENGINE = InnoDB
-    AUTO_INCREMENT = 4
-    DEFAULT CHARSET = utf8mb4
-    ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `productID_identifier` (`productID`, `identifier`),
+    KEY `productID_type` (`productID`, `type`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 4
+  DEFAULT CHARSET = utf8mb4
+  ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
 
 CREATE TABLE if not exists `device_info`
 (
@@ -53,8 +63,8 @@ CREATE TABLE if not exists `device_info`
     `version`     varchar(64)           DEFAULT '' COMMENT '固件版本',
     `logLevel`    tinyint(1)            DEFAULT '1' COMMENT '日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试',
     `cert`        varchar(512)          DEFAULT '' COMMENT '设备证书',
-    `isOnline`    tinyint(1)            default 1 comment '是否在线,1离线2在线',
-    `tags`        json comment '设备标签',
+    `isOnline`    tinyint(1)            default 2 comment '是否在线,1是2否',
+    `tags`        json not null comment '设备标签',
     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceName` (`productID`, `deviceName`),
     KEY `device_productID` (`productID`) USING BTREE
@@ -88,15 +98,17 @@ CREATE TABLE if not exists `product_firmware`
     `updatedTime` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deletedTime` datetime              DEFAULT NULL,
     `name`        varchar(64)           DEFAULT '' COMMENT '固件名称',
-    `description` varchar(200)          DEFAULT '' COMMENT '描述',
+    `desc` varchar(200)          DEFAULT '' COMMENT '描述',
     `size`        bigint       NOT NULL COMMENT '固件大小',
     `dir`         varchar(128) NOT NULL COMMENT '固件标识,拿来下载文件',
     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceVersion` (`productID`, `version`)
-    ) ENGINE = InnoDB
-    AUTO_INCREMENT = 4
-    DEFAULT CHARSET = utf8mb4
-    ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 4
+  DEFAULT CHARSET = utf8mb4
+  ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
+
+
 
 CREATE TABLE if not exists `group_info`
 (

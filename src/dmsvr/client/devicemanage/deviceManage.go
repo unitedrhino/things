@@ -14,35 +14,41 @@ import (
 )
 
 type (
-	AccessAuthReq          = dm.AccessAuthReq
-	DeviceInfo             = dm.DeviceInfo
-	DeviceInfoDeleteReq    = dm.DeviceInfoDeleteReq
-	DeviceInfoIndexReq     = dm.DeviceInfoIndexReq
-	DeviceInfoIndexResp    = dm.DeviceInfoIndexResp
-	DeviceInfoReadReq      = dm.DeviceInfoReadReq
-	GroupDeviceCreateReq   = dm.GroupDeviceCreateReq
-	GroupDeviceDeleteReq   = dm.GroupDeviceDeleteReq
-	GroupDeviceIndexReq    = dm.GroupDeviceIndexReq
-	GroupDeviceIndexResp   = dm.GroupDeviceIndexResp
-	GroupInfo              = dm.GroupInfo
-	GroupInfoCreateReq     = dm.GroupInfoCreateReq
-	GroupInfoDeleteReq     = dm.GroupInfoDeleteReq
-	GroupInfoIndexReq      = dm.GroupInfoIndexReq
-	GroupInfoIndexResp     = dm.GroupInfoIndexResp
-	GroupInfoReadReq       = dm.GroupInfoReadReq
-	GroupInfoUpdateReq     = dm.GroupInfoUpdateReq
-	LoginAuthReq           = dm.LoginAuthReq
-	PageInfo               = dm.PageInfo
-	ProductInfo            = dm.ProductInfo
-	ProductInfoDeleteReq   = dm.ProductInfoDeleteReq
-	ProductInfoIndexReq    = dm.ProductInfoIndexReq
-	ProductInfoIndexResp   = dm.ProductInfoIndexResp
-	ProductInfoReadReq     = dm.ProductInfoReadReq
-	ProductSchema          = dm.ProductSchema
-	ProductSchemaReadReq   = dm.ProductSchemaReadReq
-	ProductSchemaUpdateReq = dm.ProductSchemaUpdateReq
-	Response               = dm.Response
-	RootCheckReq           = dm.RootCheckReq
+	AccessAuthReq             = dm.AccessAuthReq
+	DeviceInfo                = dm.DeviceInfo
+	DeviceInfoDeleteReq       = dm.DeviceInfoDeleteReq
+	DeviceInfoIndexReq        = dm.DeviceInfoIndexReq
+	DeviceInfoIndexResp       = dm.DeviceInfoIndexResp
+	DeviceInfoReadReq         = dm.DeviceInfoReadReq
+	GroupDeviceCreateReq      = dm.GroupDeviceCreateReq
+	GroupDeviceDeleteReq      = dm.GroupDeviceDeleteReq
+	GroupDeviceIndexReq       = dm.GroupDeviceIndexReq
+	GroupDeviceIndexResp      = dm.GroupDeviceIndexResp
+	GroupInfo                 = dm.GroupInfo
+	GroupInfoCreateReq        = dm.GroupInfoCreateReq
+	GroupInfoDeleteReq        = dm.GroupInfoDeleteReq
+	GroupInfoIndexReq         = dm.GroupInfoIndexReq
+	GroupInfoIndexResp        = dm.GroupInfoIndexResp
+	GroupInfoReadReq          = dm.GroupInfoReadReq
+	GroupInfoUpdateReq        = dm.GroupInfoUpdateReq
+	LoginAuthReq              = dm.LoginAuthReq
+	PageInfo                  = dm.PageInfo
+	ProductInfo               = dm.ProductInfo
+	ProductInfoDeleteReq      = dm.ProductInfoDeleteReq
+	ProductInfoIndexReq       = dm.ProductInfoIndexReq
+	ProductInfoIndexResp      = dm.ProductInfoIndexResp
+	ProductInfoReadReq        = dm.ProductInfoReadReq
+	ProductSchemaCreateReq    = dm.ProductSchemaCreateReq
+	ProductSchemaDeleteReq    = dm.ProductSchemaDeleteReq
+	ProductSchemaIndexReq     = dm.ProductSchemaIndexReq
+	ProductSchemaIndexResp    = dm.ProductSchemaIndexResp
+	ProductSchemaInfo         = dm.ProductSchemaInfo
+	ProductSchemaTslImportReq = dm.ProductSchemaTslImportReq
+	ProductSchemaTslReadReq   = dm.ProductSchemaTslReadReq
+	ProductSchemaTslReadResp  = dm.ProductSchemaTslReadResp
+	ProductSchemaUpdateReq    = dm.ProductSchemaUpdateReq
+	Response                  = dm.Response
+	RootCheckReq              = dm.RootCheckReq
 
 	DeviceManage interface {
 		// 新增设备

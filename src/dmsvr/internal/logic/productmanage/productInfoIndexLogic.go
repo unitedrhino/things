@@ -2,7 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -38,7 +38,7 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.svcCtx.DmDB.FindProductsByFilter(l.ctx, filter, def.PageInfo{Size: in.Page.Size, Page: in.Page.Page})
+	di, err := l.svcCtx.DmDB.FindProductsByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}

@@ -12,7 +12,7 @@ type SchemaStore struct {
 func (S *SchemaStore) GetSpecsCreateColumn(s schema.Specs) string {
 	var column []string
 	for _, v := range s {
-		column = append(column, fmt.Sprintf("`%s` %s", v.ID, GetTdType(v.DataType)))
+		column = append(column, fmt.Sprintf("`%s` %s", v.Identifier, GetTdType(v.DataType)))
 	}
 	return strings.Join(column, ",")
 }
@@ -20,7 +20,7 @@ func (S *SchemaStore) GetSpecsCreateColumn(s schema.Specs) string {
 func (S *SchemaStore) GetSpecsColumnWithArgFunc(s schema.Specs, argFunc string) string {
 	var column []string
 	for _, v := range s {
-		column = append(column, fmt.Sprintf("%s(`%s`) as %s", argFunc, v.ID, v.ID))
+		column = append(column, fmt.Sprintf("%s(`%s`) as %s", argFunc, v.Identifier, v.Identifier))
 	}
 	return strings.Join(column, ",")
 }
@@ -43,8 +43,8 @@ func (S *SchemaStore) GetTableNameList(
 	t *schema.Model,
 	productID string,
 	deviceName string) (tables []string) {
-	for _, v := range t.Properties {
-		tables = append(tables, S.GetPropertyTableName(productID, deviceName, v.ID))
+	for _, v := range t.Property {
+		tables = append(tables, S.GetPropertyTableName(productID, deviceName, v.Identifier))
 	}
 	tables = append(tables, S.GetEventTableName(productID, deviceName))
 	return
@@ -53,8 +53,11 @@ func (S *SchemaStore) GetTableNameList(
 func (S *SchemaStore) GetStableNameList(
 	t *schema.Model,
 	productID string) (tables []string) {
-	for _, v := range t.Properties {
-		tables = append(tables, S.GetPropertyStableName(productID, v.ID))
+	if t.Property == nil {
+		return []string{}
+	}
+	for _, v := range t.Property {
+		tables = append(tables, S.GetPropertyStableName(productID, v.Identifier))
 	}
 	tables = append(tables, S.GetEventStableName(productID))
 	return

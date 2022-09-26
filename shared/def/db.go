@@ -25,7 +25,7 @@ type PageInfo2 struct {
 
 func (p PageInfo) GetLimit() int64 {
 	if p.Size == 0 {
-		return 20
+		return 2000
 	}
 	return p.Size
 }
