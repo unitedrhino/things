@@ -127,7 +127,7 @@ func (m *groupModel) GetGroupDeviceCountByFilter(ctx context.Context, f GroupDev
 }
 func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceFilter, page def.PageInfo) ([]*GroupDevice, error) {
 	var resp []*GroupDevice
-	sql := sq.Select(groupInfoRows).From(m.groupDevice).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+	sql := sq.Select(groupDeviceRows).From(m.groupDevice).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql)
 
 	query, arg, err := sql.ToSql()
@@ -253,7 +253,7 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list map[string]string) error {
 	m.Transact(func(session sqlx.Session) error {
 		for i, v := range list {
-			query := fmt.Sprintf("insert into %s set (groupID,productID,deviceName) values (%d, '%s', '%s')",
+			query := fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s')",
 				m.groupDevice, groupID, i, v)
 			_, err := session.Exec(query)
 			if err != nil {
