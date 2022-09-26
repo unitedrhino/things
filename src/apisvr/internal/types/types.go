@@ -515,16 +515,16 @@ type DeviceIndexMessage struct {
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string"`     //分组ID
 	GroupName   string `json:"groupName"`          //分组名称
-	ParentID    int64  `json:"parentID,optional"`  //父组ID
+	ParentID    int64  `json:"parentID,string"`    //父组ID
 	CreatedTime int64  `json:"createdTime,string"` //创建时间
 	Desc        string `json:"desc,optional"`      //分组描述
 	Tags        []*Tag `json:"tags,optional"`      //分组tag
 }
 
 type GroupInfoCreateReq struct {
-	GroupName string `json:"groupName"`         //分组名称
-	ParentID  int64  `json:"parentID,optional"` //父组ID
-	Desc      string `json:"desc,optional"`     //分组描述
+	GroupName string `json:"groupName"`       //分组名称
+	ParentID  int64  `json:"parentID,string"` //父组ID
+	Desc      string `json:"desc,optional"`   //分组描述
 }
 
 type GroupInfoIndexReq struct {
