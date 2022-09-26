@@ -1,20 +1,19 @@
-package cache
+package mysql
 
 import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"time"
 )
 
-func ToPropertyDB(productID string, in *schema.Property) *mysql.ProductSchema2 {
-	define := mysql.PropertyDef{
+func ToPropertyPo(productID string, in *schema.Property) *ProductSchema {
+	define := PropertyDef{
 		Define: in.Define,
 		Mode:   in.Mode,
 	}
 	defineStr, _ := json.Marshal(define)
-	return &mysql.ProductSchema2{
+	return &ProductSchema{
 		ProductID:   productID,
 		Tag:         int64(schema.TagCustom),
 		Type:        int64(schema.AffordanceTypeProperty),
@@ -28,10 +27,10 @@ func ToPropertyDB(productID string, in *schema.Property) *mysql.ProductSchema2 {
 	}
 }
 
-func ToPropertyDo(in *mysql.ProductSchema2) *schema.Property {
-	affordance := mysql.PropertyDef{}
+func ToPropertyDo(in *ProductSchema) *schema.Property {
+	affordance := PropertyDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
-	return &schema.Property{
+	do := &schema.Property{
 		Identifier: in.Identifier,
 		Name:       in.Name,
 		Desc:       in.Desc,
@@ -39,15 +38,17 @@ func ToPropertyDo(in *mysql.ProductSchema2) *schema.Property {
 		Define:     affordance.Define,
 		Mode:       affordance.Mode,
 	}
+	do.ValidateWithFmt()
+	return do
 }
 
-func ToEventDB(productID string, in *schema.Event) *mysql.ProductSchema2 {
-	define := mysql.EventDef{
+func ToEventPo(productID string, in *schema.Event) *ProductSchema {
+	define := EventDef{
 		Type:   in.Type,
 		Params: in.Params,
 	}
 	defineStr, _ := json.Marshal(define)
-	return &mysql.ProductSchema2{
+	return &ProductSchema{
 		ProductID:   productID,
 		Tag:         int64(schema.TagCustom),
 		Type:        int64(schema.AffordanceTypeEvent),
@@ -61,10 +62,10 @@ func ToEventDB(productID string, in *schema.Event) *mysql.ProductSchema2 {
 	}
 }
 
-func ToEventDo(in *mysql.ProductSchema2) *schema.Event {
-	affordance := mysql.EventDef{}
+func ToEventDo(in *ProductSchema) *schema.Event {
+	affordance := EventDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
-	return &schema.Event{
+	do := &schema.Event{
 		Identifier: in.Identifier,
 		Name:       in.Name,
 		Desc:       in.Desc,
@@ -72,15 +73,17 @@ func ToEventDo(in *mysql.ProductSchema2) *schema.Event {
 		Type:       affordance.Type,
 		Params:     affordance.Params,
 	}
+	do.ValidateWithFmt()
+	return do
 }
 
-func ToActionDB(productID string, in *schema.Action) *mysql.ProductSchema2 {
-	define := mysql.ActionDef{
+func ToActionPo(productID string, in *schema.Action) *ProductSchema {
+	define := ActionDef{
 		Input:  in.Input,
 		Output: in.Output,
 	}
 	defineStr, _ := json.Marshal(define)
-	return &mysql.ProductSchema2{
+	return &ProductSchema{
 		ProductID:   productID,
 		Tag:         int64(schema.TagCustom),
 		Type:        int64(schema.AffordanceTypeAction),
@@ -94,10 +97,10 @@ func ToActionDB(productID string, in *schema.Action) *mysql.ProductSchema2 {
 	}
 }
 
-func ToActionDo(in *mysql.ProductSchema2) *schema.Action {
-	affordance := mysql.ActionDef{}
+func ToActionDo(in *ProductSchema) *schema.Action {
+	affordance := ActionDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
-	return &schema.Action{
+	do := &schema.Action{
 		Identifier: in.Identifier,
 		Name:       in.Name,
 		Desc:       in.Desc,
@@ -105,9 +108,11 @@ func ToActionDo(in *mysql.ProductSchema2) *schema.Action {
 		Input:      affordance.Input,
 		Output:     affordance.Output,
 	}
+	do.ValidateWithFmt()
+	return do
 }
 
-func ToSchemaDo(in []*mysql.ProductSchema2) *schema.Model {
+func ToSchemaDo(in []*ProductSchema) *schema.Model {
 	if len(in) == 0 {
 		return nil
 	}

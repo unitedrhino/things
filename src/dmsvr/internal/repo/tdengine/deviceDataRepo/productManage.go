@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func (d *DeviceDataRepo) DropProduct(ctx context.Context, t *schema.Model, productID string) error {
+func (d *DeviceDataRepo) DeleteProduct(ctx context.Context, t *schema.Model, productID string) error {
 	tableList := d.GetStableNameList(t, productID)
 	for _, v := range tableList {
 		sql := fmt.Sprintf("drop stable if exists %s;", v)
@@ -44,11 +45,31 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 	return nil
 }
 
-func (d *DeviceDataRepo) ModifyProperty(
+func (d *DeviceDataRepo) CreateProperty(ctx context.Context, p *schema.Property, productID string) error {
+	err := d.createPropertyStable(ctx, p, productID)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s.createPropertyStable productID:%v,properties:%v,err:%v",
+			utils.FuncName(), productID, p, err)
+		return err
+	}
+	return nil
+}
+func (d *DeviceDataRepo) DeleteProperty(ctx context.Context, productID string, identifier string) error {
+	sql := fmt.Sprintf("drop stable if exists %s;", d.GetPropertyStableName(productID, identifier))
+	if _, err := d.t.ExecContext(ctx, sql); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *DeviceDataRepo) UpdateProperty(
 	ctx context.Context,
 	oldP *schema.Property,
 	newP *schema.Property,
 	productID string) error {
+	if newP.Define.Type != oldP.Define.Type {
+		return errors.Parameter.AddMsg("类型不能修改,可以删除后新增")
+	}
 	if newP.Define.Type != schema.DataTypeStruct {
 		//不需要修改数据库
 		return nil
@@ -77,14 +98,14 @@ func (d *DeviceDataRepo) ModifyProperty(
 	return nil
 }
 
-func (d *DeviceDataRepo) ModifyProduct(
+func (d *DeviceDataRepo) UpdateProduct(
 	ctx context.Context, oldT *schema.Model, newt *schema.Model, productID string) error {
 	for _, p := range newt.Property {
 		if oldP, ok := oldT.Property[p.Identifier]; ok {
 			//这里需要走修改流程
-			err := d.ModifyProperty(ctx, oldP, p, productID)
+			err := d.UpdateProperty(ctx, oldP, p, productID)
 			if err != nil {
-				logx.WithContext(ctx).Errorf("%s.ModifyProperty productID:%v,properties:%v,err:%v",
+				logx.WithContext(ctx).Errorf("%s.UpdateProperty productID:%v,properties:%v,err:%v",
 					utils.FuncName(), productID, p, err)
 				return err
 			}

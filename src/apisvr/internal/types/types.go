@@ -497,8 +497,7 @@ type ProductSchemaTslReadResp struct {
 }
 
 type ProductSchemaUpdateReq struct {
-	ProductID string             `json:"productID"` //产品id
-	Info      *ProductSchemaInfo `json:"info"`
+	*ProductSchemaInfo
 }
 
 type ProductSchemaTslImportReq struct {
@@ -507,12 +506,12 @@ type ProductSchemaTslImportReq struct {
 }
 
 type ProductSchemaCreateReq struct {
-	ProductID string             `json:"productID"` //产品id
-	Info      *ProductSchemaInfo `json:"info"`
+	*ProductSchemaInfo
 }
 
 type ProductSchemaDeleteReq struct {
-	ProductID string `json:"productID"` //产品id
+	ProductID  string `json:"productID"`  //产品id
+	Identifier string `json:"identifier"` //标识符
 }
 
 type ProductSchemaIndexReq struct {
@@ -529,16 +528,14 @@ type ProductSchemaIndexResp struct {
 }
 
 type ProductSchemaInfo struct {
-	ProductID  string          `json:"productID"`         //产品id 只读
-	Type       int64           `json:"type"`              //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag        int64           `json:"tag"`               //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Identifier string          `json:"identifier"`        //标识符
-	Name       *string         `json:"name"`              //功能名称
-	Desc       *string         `json:"desc"`              //描述
-	Required   int64           `json:"required"`          //是否必须 1:是 2:否
-	Event      *SchemaEvent    `json:"event,optional"`    //事件参数定义
-	Property   *SchemaProperty `json:"property,optional"` //属性参数定义
-	Action     *SchemaAction   `json:"action,optional"`   //行为参数定义
+	ProductID  string  `json:"productID"`  //产品id 只读
+	Type       int64   `json:"type"`       //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag        int64   `json:"tag"`        //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Identifier string  `json:"identifier"` //标识符
+	Name       *string `json:"name"`       //功能名称
+	Desc       *string `json:"desc"`       //描述
+	Required   int64   `json:"required"`   //是否必须 1:是 2:否
+	Affordance *string `json:"affordance"` //各功能类型的详细参数定义
 }
 
 type SchemaAction struct {

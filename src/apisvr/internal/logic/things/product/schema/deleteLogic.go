@@ -28,7 +28,8 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 
 func (l *DeleteLogic) Delete(req *types.ProductSchemaDeleteReq) error {
 	dmReq := &dm.ProductSchemaDeleteReq{
-		ProductID: req.ProductID, //产品id 只读
+		ProductID:  req.ProductID, //产品id 只读
+		Identifier: req.Identifier,
 	}
 	_, err := l.svcCtx.ProductM.ProductSchemaDelete(l.ctx, dmReq)
 	if err != nil {

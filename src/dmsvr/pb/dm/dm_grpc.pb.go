@@ -889,3 +889,357 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/dm.proto",
 }
+
+// DeviceGroupClient is the client API for DeviceGroup service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type DeviceGroupClient interface {
+	//创建分组
+	GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
+	//获取分组信息列表
+	GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
+	//获取分组信息详情
+	GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error)
+	//更新分组
+	GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	//删除分组
+	GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	//创建分组设备
+	GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error)
+	//获取分组设备信息列表
+	GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
+	//删除分组设备
+	GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error)
+}
+
+type deviceGroupClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewDeviceGroupClient(cc grpc.ClientConnInterface) DeviceGroupClient {
+	return &deviceGroupClient{cc}
+}
+
+func (c *deviceGroupClient) GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error) {
+	out := new(GroupInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error) {
+	out := new(GroupInfo)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupDeviceCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error) {
+	out := new(GroupDeviceIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupDeviceIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupDeviceDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// DeviceGroupServer is the server API for DeviceGroup service.
+// All implementations must embed UnimplementedDeviceGroupServer
+// for forward compatibility
+type DeviceGroupServer interface {
+	//创建分组
+	GroupInfoCreate(context.Context, *GroupInfoCreateReq) (*Response, error)
+	//获取分组信息列表
+	GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error)
+	//获取分组信息详情
+	GroupInfoRead(context.Context, *GroupInfoReadReq) (*GroupInfo, error)
+	//更新分组
+	GroupInfoUpdate(context.Context, *GroupInfoUpdateReq) (*Response, error)
+	//删除分组
+	GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error)
+	//创建分组设备
+	GroupDeviceCreate(context.Context, *GroupDeviceCreateReq) (*Response, error)
+	//获取分组设备信息列表
+	GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error)
+	//删除分组设备
+	GroupDeviceDelete(context.Context, *GroupDeviceDeleteReq) (*Response, error)
+	mustEmbedUnimplementedDeviceGroupServer()
+}
+
+// UnimplementedDeviceGroupServer must be embedded to have forward compatible implementations.
+type UnimplementedDeviceGroupServer struct {
+}
+
+func (UnimplementedDeviceGroupServer) GroupInfoCreate(context.Context, *GroupInfoCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoCreate not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoIndex not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupInfoRead(context.Context, *GroupInfoReadReq) (*GroupInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoRead not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInfoUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoUpdate not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoDelete not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupDeviceCreate(context.Context, *GroupDeviceCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceCreate not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceIndex not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupDeviceDelete(context.Context, *GroupDeviceDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceDelete not implemented")
+}
+func (UnimplementedDeviceGroupServer) mustEmbedUnimplementedDeviceGroupServer() {}
+
+// UnsafeDeviceGroupServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DeviceGroupServer will
+// result in compilation errors.
+type UnsafeDeviceGroupServer interface {
+	mustEmbedUnimplementedDeviceGroupServer()
+}
+
+func RegisterDeviceGroupServer(s grpc.ServiceRegistrar, srv DeviceGroupServer) {
+	s.RegisterService(&DeviceGroup_ServiceDesc, srv)
+}
+
+func _DeviceGroup_GroupInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoCreate(ctx, req.(*GroupInfoCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoIndex(ctx, req.(*GroupInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoRead(ctx, req.(*GroupInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoUpdate(ctx, req.(*GroupInfoUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoDelete(ctx, req.(*GroupInfoDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupDeviceCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupDeviceCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupDeviceCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupDeviceCreate(ctx, req.(*GroupDeviceCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupDeviceIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupDeviceIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupDeviceIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupDeviceIndex(ctx, req.(*GroupDeviceIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupDeviceDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupDeviceDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupDeviceDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupDeviceDelete(ctx, req.(*GroupDeviceDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// DeviceGroup_ServiceDesc is the grpc.ServiceDesc for DeviceGroup service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var DeviceGroup_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.DeviceGroup",
+	HandlerType: (*DeviceGroupServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GroupInfoCreate",
+			Handler:    _DeviceGroup_GroupInfoCreate_Handler,
+		},
+		{
+			MethodName: "GroupInfoIndex",
+			Handler:    _DeviceGroup_GroupInfoIndex_Handler,
+		},
+		{
+			MethodName: "GroupInfoRead",
+			Handler:    _DeviceGroup_GroupInfoRead_Handler,
+		},
+		{
+			MethodName: "GroupInfoUpdate",
+			Handler:    _DeviceGroup_GroupInfoUpdate_Handler,
+		},
+		{
+			MethodName: "GroupInfoDelete",
+			Handler:    _DeviceGroup_GroupInfoDelete_Handler,
+		},
+		{
+			MethodName: "GroupDeviceCreate",
+			Handler:    _DeviceGroup_GroupDeviceCreate_Handler,
+		},
+		{
+			MethodName: "GroupDeviceIndex",
+			Handler:    _DeviceGroup_GroupDeviceIndex_Handler,
+		},
+		{
+			MethodName: "GroupDeviceDelete",
+			Handler:    _DeviceGroup_GroupDeviceDelete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
