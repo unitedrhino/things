@@ -38,7 +38,7 @@ type (
 
 	GroupInfo struct {
 		GroupID     int64          `db:"groupID"`     // 分组ID
-		ParentID    int64          `db:"parentID"`    // 父组ID 0-根组
+		ParentID    int64          `db:"parentID"`    // 父组ID 1-根组
 		GroupName   string         `db:"groupName"`   // 分组名称
 		Desc        string         `db:"desc"`        // 描述
 		Tags        sql.NullString `db:"tags"`        // 设备标签
