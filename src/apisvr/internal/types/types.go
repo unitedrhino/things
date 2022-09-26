@@ -515,20 +515,21 @@ type DeviceIndexMessage struct {
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string"`     //分组ID
 	GroupName   string `json:"groupName"`          //分组名称
-	ParentID    int64  `json:"parentID,optional"`  //父组ID
+	ParentID    int64  `json:"parentID,string"`    //父组ID
 	CreatedTime int64  `json:"createdTime,string"` //创建时间
 	Desc        string `json:"desc,optional"`      //分组描述
 	Tags        []*Tag `json:"tags,optional"`      //分组tag
 }
 
 type GroupInfoCreateReq struct {
-	GroupName string `json:"groupName"`         //分组名称
-	ParentID  int64  `json:"parentID,optional"` //父组ID
-	Desc      string `json:"desc,optional"`     //分组描述
+	GroupName string `json:"groupName"`       //分组名称
+	ParentID  int64  `json:"parentID,string"` //父组ID
+	Desc      string `json:"desc,optional"`   //分组描述
 }
 
 type GroupInfoIndexReq struct {
 	Page      PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
+	ParentID  int64    `json:"parentID,string"`    //父组ID
 	GroupName string   `json:"groupName,optional"` //分组名称
 	Tags      []*Tag   `json:"tags,optional"`      //分组tag
 }
@@ -555,10 +556,10 @@ type GroupInfoUpdateReq struct {
 }
 
 type GroupDeviceIndexReq struct {
-	Page       PageInfo `json:"page,optional"`  //分页信息 只获取一个则不填
-	GroupID    int64    `json:"groupID,string"` //分组ID
-	ProductID  string   `json:"productID"`      //产品ID
-	DeviceName string   `json:"deviceName"`     //设备名称
+	Page       PageInfo `json:"page,optional"`       //分页信息 只获取一个则不填
+	GroupID    int64    `json:"groupID,string"`      //分组ID
+	ProductID  string   `json:"productID,optional"`  //产品ID
+	DeviceName string   `json:"deviceName,optional"` //设备名称
 }
 
 type GroupDeviceIndexResp struct {
