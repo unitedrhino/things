@@ -54,6 +54,7 @@ func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoI
 
 	res, err := l.svcCtx.DeviceG.GroupInfoIndex(l.ctx, &dm.GroupInfoIndexReq{
 		Page:      &page,
+		ParentID:  req.ParentID,
 		GroupName: req.GroupName,
 		Tags:      toTagsMap(req.Tags),
 	})

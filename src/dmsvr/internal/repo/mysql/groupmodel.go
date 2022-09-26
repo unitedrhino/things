@@ -146,6 +146,7 @@ func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceF
 func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, int64, error) {
 
 	filter := GroupFilter{
+		ParentID:  in.ParentID,
 		GroupName: in.GroupName,
 		Tags:      in.Tags,
 	}
