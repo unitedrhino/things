@@ -76,7 +76,7 @@ func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoI
 
 	glistAll := make([]*types.GroupInfo, 0, len(res.ListAll))
 	for _, v := range res.ListAll {
-		glist = append(glist, &types.GroupInfo{
+		glistAll = append(glistAll, &types.GroupInfo{
 			GroupName:   v.GroupName,
 			GroupID:     v.GroupID,
 			ParentID:    v.ParentID,
