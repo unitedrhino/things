@@ -30,7 +30,7 @@ func (d *DeviceDataRepo) InitDevice(ctx context.Context,
 	return nil
 }
 
-func (d *DeviceDataRepo) DropDevice(
+func (d *DeviceDataRepo) DeleteDevice(
 	ctx context.Context,
 	t *schema.Model,
 	productID string,

@@ -18,8 +18,8 @@ import (
 var (
 	productInfoFieldNames          = builder.RawFieldNames(&ProductInfo{})
 	productInfoRows                = strings.Join(productInfoFieldNames, ",")
-	productInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(productInfoFieldNames, "`create_time`", "`update_time`", "`create_at`", "`update_at`"), ",")
-	productInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(productInfoFieldNames, "`productID`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), "=?,") + "=?"
+	productInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(productInfoFieldNames, "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
+	productInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(productInfoFieldNames, "`productID`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
 )
 
 type (

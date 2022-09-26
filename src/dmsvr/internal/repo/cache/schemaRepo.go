@@ -17,11 +17,11 @@ const (
 )
 
 type SchemaRepo struct {
-	db    mysql.ProductSchema2Model
+	db    mysql.ProductSchemaModel
 	cache *ristretto.Cache
 }
 
-func NewSchemaRepo(t mysql.ProductSchema2Model) schema.Repo {
+func NewSchemaRepo(t mysql.ProductSchemaModel) schema.Repo {
 	cache, _ := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).
@@ -41,19 +41,19 @@ func (s SchemaRepo) TslImport(ctx context.Context, productID string, schemaInfo 
 		return errors.Database
 	}
 	for _, item := range schemaInfo.Property {
-		_, err = s.db.Insert(ctx, ToPropertyDB(productID, item))
+		_, err = s.db.Insert(ctx, mysql.ToPropertyPo(productID, item))
 		if err != nil {
 			return err
 		}
 	}
 	for _, item := range schemaInfo.Event {
-		_, err = s.db.Insert(ctx, ToEventDB(productID, item))
+		_, err = s.db.Insert(ctx, mysql.ToEventPo(productID, item))
 		if err != nil {
 			return err
 		}
 	}
 	for _, item := range schemaInfo.Action {
-		_, err = s.db.Insert(ctx, ToActionDB(productID, item))
+		_, err = s.db.Insert(ctx, mysql.ToActionPo(productID, item))
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ func (s SchemaRepo) TslRead(ctx context.Context, productID string) (*schema.Mode
 	if err != nil {
 		return nil, err
 	}
-	return ToSchemaDo(dbSchemas), nil
+	return mysql.ToSchemaDo(dbSchemas), nil
 }
 
 //func (t SchemaRepo) GetSchemaInfo(ctx context.Context, productID string) (*schema.Info, error) {

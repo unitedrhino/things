@@ -28,8 +28,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 
 func (l *CreateLogic) Create(req *types.ProductSchemaCreateReq) error {
 	dmReq := &dm.ProductSchemaCreateReq{
-		ProductID: req.ProductID, //产品id 只读
-		Info:      ToSchemaInfoRpc(req.Info),
+		Info: ToSchemaInfoRpc(req.ProductSchemaInfo),
 	}
 	_, err := l.svcCtx.ProductM.ProductSchemaCreate(l.ctx, dmReq)
 	if err != nil {

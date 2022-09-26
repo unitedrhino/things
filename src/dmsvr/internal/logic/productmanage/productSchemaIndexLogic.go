@@ -2,9 +2,9 @@ package productmanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -30,21 +30,26 @@ func NewProductSchemaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 // 获取产品信息列表
 func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexReq) (*dm.ProductSchemaIndexResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
-	schemas, err := l.svcCtx.ProductSchema.FindByFilter(l.ctx, mysql.ProductSchemaFilter{
+	filter := mysql.ProductSchemaFilter{
 		ProductID:   in.ProductID,
 		Type:        in.Type,
 		Tag:         in.Tag,
 		Identifiers: in.Identifiers,
-	}, def.PageInfo{Page: in.Page.GetPage(), Size: in.Page.GetSize()})
+	}
+	schemas, err := l.svcCtx.ProductSchema.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.NotFind
 		}
 		return nil, err
 	}
+	total, err := l.svcCtx.ProductSchema.GetCountByFilter(l.ctx, filter)
+	if err != nil {
+		return nil, err
+	}
 	list := make([]*dm.ProductSchemaInfo, 0, len(schemas))
 	for _, s := range schemas {
 		list = append(list, ToProductSchemaRpc(s))
 	}
-	return &dm.ProductSchemaIndexResp{List: list}, nil
+	return &dm.ProductSchemaIndexResp{List: list, Total: total}, nil
 }
