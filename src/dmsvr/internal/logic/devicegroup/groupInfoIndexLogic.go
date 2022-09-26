@@ -47,7 +47,7 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 		return nil, errors.Database.AddDetail(err)
 	}
 	infoAll := make([]*dm.GroupInfo, 0, len(rosAll))
-	for _, ro := range infoAll {
+	for _, ro := range rosAll {
 		infoAll = append(infoAll, &dm.GroupInfo{
 			GroupID:     ro.GroupID,
 			GroupName:   ro.GroupName,

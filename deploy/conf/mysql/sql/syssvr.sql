@@ -83,22 +83,60 @@ CREATE TABLE if not exists `menu_info`
     UNIQUE KEY `nameIndex` (`name`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='菜单管理表';
 
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (2,"设备管理","icon_data_01","/deviceMangers",1,1,"./deviceMangers/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (3,"系统管理","icon_system","/systemManagers",1,2,"./systemManagers/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (4,"运维监控","icon_system","/operationsMonitorings",1,3,"./operationsMonitorings/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (5,"规则引擎","icon_system","/ruleEngines",1,4,"./ruleEngines/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (6,"产品","icon_system","/deviceMangers/products/index",2,1,"./deviceMangers/products/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (7,"产品详情-${id}","icon_system","/deviceMangers/products/details/:id",2,2,"./deviceMangers/products/details/index.tsx",2,1);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (8,"设备","icon_system","/deviceMangers/devices/index",2,3,"./deviceMangers/devices/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (9,"设备详情-${id}","icon_system","/deviceMangers/devices/details/:id",2,3,"./deviceMangers/devices/details/index.tsx",2,1);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (10,"用户管理","icon_system","/systemManagers/users/index",3,1,"./systemManagers/users/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (11,"角色管理","icon_system","/systemManagers/roles/index",3,2,"./systemManagers/roles/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (12,"菜单列表","icon_system","/systemManagers/menus/index",3,3,"./systemManagers/menus/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (13,"固件升级","icon_system","/operationsMonitorings/firmwareUpgrades/index",4,1,"./operationsMonitorings/firmwareUpgrades/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (14,"告警记录","icon_system","/operationsMonitorings/alarmRecords/index",4,2,"./operationsMonitorings/alarmRecords/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (15,"资源管理","icon_system","/operationsMonitorings/resourceManagements/index",4,3,"./operationsMonitorings/resourceManagements/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (16,"远程配置","icon_system","/operationsMonitorings/remoteConfigurations/index",4,4,"./operationsMonitorings/remoteConfigurations/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (17,"告警中心","icon_system","/operationsMonitorings/alarmCenters/index",4,5,"./operationsMonitorings/alarmCenters/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (18,"在线调试","icon_system","/operationsMonitorings/onlineDebugs/index",4,6,"./operationsMonitorings/onlineDebugs/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (19,"消息规则","icon_system","/ruleEngines/messageRules/index",5,1,"./ruleEngines/messageRules/index.tsx",2,2);
-insert into menu_info (id,name,icon,`path`,parentID,`order`,component,`type`,`hideInMenu`) values (20,"规则日志","icon_system","/ruleEngines/ruleLogs/index",5,2,"./ruleEngines/ruleLogs/index.tsx",2,2);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(2, 1, 2, 1, '设备管理', '/deviceMangers', './deviceMangers/index.tsx', 'icon_data_01', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(3, 1, 2, 2, '系统管理', '/systemManagers', './systemManagers/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(4, 1, 2, 3, '运维监控', '/operationsMonitorings', './operationsMonitorings/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(5, 1, 0, 4, '规则引擎', '/ruleEngines', './ruleEngines/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-09-24 17:01:55', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(6, 2, 2, 1, '产品', '/deviceMangers/product/index', './deviceMangers/product/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:16:58', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(7, 2, 0, 2, '产品详情', '/deviceMangers/product/detail/:id', './deviceMangers/product/detail/index', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-09-24 16:59:45', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(8, 2, 0, 3, '设备', '/deviceMangers/device/index', './deviceMangers/device/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 17:03:49', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(9, 2, 0, 3, '设备详情', '/deviceMangers/device/detail/:id/:name', './deviceMangers/device/detail/index', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-09-24 17:03:44', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(10, 3, 0, 1, '用户管理', '/systemMangers/user/index', './systemMangers/user/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:59:01', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(11, 3, 2, 2, '角色管理', '/systemMangers/role/index', './systemMangers/role/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:15:37', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(12, 3, 2, 3, '菜单列表', '/systemMangers/menu/index', './systemMangers/menu/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:15:52', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(13, 4, 0, 1, '固件升级', '/operationsMonitorings/firmwareUpgrades/index', './operationsMonitorings/firmwareUpgrades/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:52:10', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(14, 4, 2, 2, '告警记录', '/operationsMonitorings/alarmRecords/index', './operationsMonitorings/alarmRecords/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(15, 4, 2, 3, '资源管理', '/operationsMonitorings/resourceManagements/index', './operationsMonitorings/resourceManagements/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(16, 4, 2, 4, '远程配置', '/operationsMonitorings/remoteConfigurations/index', './operationsMonitorings/remoteConfigurations/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(17, 4, 2, 5, '告警中心', '/operationsMonitorings/alarmCenters/index', './operationsMonitorings/alarmCenters/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(18, 4, 2, 6, '在线调试', '/operationsMonitorings/onlineDebugs/index', './operationsMonitorings/onlineDebugs/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(19, 5, 2, 1, '消息规则', '/ruleEngines/messageRules/index', './ruleEngines/messageRules/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO things_sys.menu_info
+(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
+VALUES(20, 5, 2, 2, '规则日志', '/ruleEngines/ruleLogs/index', './ruleEngines/ruleLogs/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
