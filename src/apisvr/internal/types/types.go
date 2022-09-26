@@ -529,6 +529,7 @@ type GroupInfoCreateReq struct {
 
 type GroupInfoIndexReq struct {
 	Page      PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
+	ParentID  int64    `json:"parentID,string"`    //父组ID
 	GroupName string   `json:"groupName,optional"` //分组名称
 	Tags      []*Tag   `json:"tags,optional"`      //分组tag
 }
