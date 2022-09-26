@@ -19,7 +19,7 @@ var (
 	groupInfoFieldNames          = builder.RawFieldNames(&GroupInfo{})
 	groupInfoRows                = strings.Join(groupInfoFieldNames, ",")
 	groupInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(groupInfoFieldNames, "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
-	groupInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(groupInfoFieldNames, "`groupID`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
+	groupInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(groupInfoFieldNames, "`groupID`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`", "`parentID`"), "=?,") + "=?"
 )
 
 type (
@@ -38,7 +38,7 @@ type (
 
 	GroupInfo struct {
 		GroupID     int64          `db:"groupID"`     // 分组ID
-		ParentID    int64          `db:"parentID"`    // 父组ID 0-根组
+		ParentID    int64          `db:"parentID"`    // 父组ID 1-根组
 		GroupName   string         `db:"groupName"`   // 分组名称
 		Desc        string         `db:"desc"`        // 描述
 		Tags        sql.NullString `db:"tags"`        // 设备标签
@@ -97,7 +97,7 @@ func (m *defaultGroupInfoModel) Insert(ctx context.Context, data *GroupInfo) (sq
 
 func (m *defaultGroupInfoModel) Update(ctx context.Context, newData *GroupInfo) error {
 	query := fmt.Sprintf("update %s set %s where `groupID` = ?", m.table, groupInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.GroupName, newData.Desc, newData.Tags, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.GroupID)
+	_, err := m.conn.ExecCtx(ctx, query, newData.GroupName, newData.Desc, newData.Tags, newData.GroupID)
 	return err
 }
 
