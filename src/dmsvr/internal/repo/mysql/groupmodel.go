@@ -51,7 +51,7 @@ func (g *GroupFilter) FmtSql(sql sq.SelectBuilder, parentFlag bool) sq.SelectBui
 		sql = sql.Where("`parentID`=?", g.ParentID)
 	}
 	if g.GroupName != "" {
-		sql = sql.Where("`GroupName` like ?", "%"+g.GroupName+"%")
+		sql = sql.Where("`groupName` like ?", "%"+g.GroupName+"%")
 	}
 	if g.Tags != nil {
 		for k, v := range g.Tags {
@@ -63,13 +63,13 @@ func (g *GroupFilter) FmtSql(sql sq.SelectBuilder, parentFlag bool) sq.SelectBui
 }
 func (g *GroupDeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if g.GroupID != 0 {
-		sql = sql.Where("`GroupID`=?", g.GroupID)
+		sql = sql.Where("`groupID`=?", g.GroupID)
 	}
 	if g.productID != "" {
 		sql = sql.Where("`productID`=?", g.productID)
 	}
 	if g.DeviceName != "" {
-		sql = sql.Where("`DeviceName`=?", g.DeviceName)
+		sql = sql.Where("`deviceName`=?", g.DeviceName)
 	}
 
 	return sql
