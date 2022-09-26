@@ -2,7 +2,6 @@ package devicemanagelogic
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
@@ -32,10 +31,7 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.Dev
 	if data.Tags != nil {
 		tags, err := json.Marshal(data.Tags)
 		if err == nil {
-			old.Tags = sql.NullString{
-				String: string(tags),
-				Valid:  true,
-			}
+			old.Tags = string(tags)
 		}
 	}
 	if data.LogLevel != def.Unknown {

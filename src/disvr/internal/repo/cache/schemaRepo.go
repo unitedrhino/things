@@ -12,7 +12,7 @@ const (
 )
 
 type (
-	GetSchemaInfo func(ctx context.Context, productID string) (info schema.Info, err error)
+	GetSchemaInfo func(ctx context.Context, productID string) (info *schema.Model, err error)
 	SchemaRepo    struct {
 		getSchema GetSchemaInfo
 		cache     *ristretto.Cache
@@ -31,16 +31,12 @@ func NewSchemaRepo(t GetSchemaInfo) schema.ReadRepo {
 	}
 }
 
-func (t SchemaRepo) GetSchemaInfo(ctx context.Context, productID string) (*schema.Info, error) {
+func (t SchemaRepo) GetSchemaInfo(ctx context.Context, productID string) (*schema.Model, error) {
 	temp, err := t.getSchema(ctx, productID)
 	if err != nil {
 		return nil, err
 	}
-	return &schema.Info{
-		ProductID:   productID,
-		Schema:      temp.Schema,
-		CreatedTime: temp.CreatedTime,
-	}, nil
+	return temp, nil
 }
 
 func (t SchemaRepo) GetSchemaModel(ctx context.Context, productID string) (*schema.Model, error) {
@@ -52,12 +48,8 @@ func (t SchemaRepo) GetSchemaModel(ctx context.Context, productID string) (*sche
 	if err != nil {
 		return nil, err
 	}
-	tempModel, err := schema.NewSchema([]byte(schemaInfo.Schema))
-	if err != nil {
-		return nil, err
-	}
-	t.cache.SetWithTTL(productID, tempModel, 1, expireTime)
-	return tempModel, nil
+	t.cache.SetWithTTL(productID, schemaInfo, 1, expireTime)
+	return schemaInfo, nil
 }
 
 func (t SchemaRepo) ClearCache(ctx context.Context, productID string) error {

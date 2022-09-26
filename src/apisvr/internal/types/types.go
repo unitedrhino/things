@@ -356,7 +356,7 @@ type DeviceInfo struct {
 	LogLevel    int64        `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	Cert        string       `json:"cert,optional"`               // 设备证书  只读
 	Tags        []*DeviceTag `json:"tags,optional"`               // 设备tag
-	IsOnline    int32        `json:"isOnline,optional"`           // 在线状态  1离线 2在线 只读
+	IsOnline    int64        `json:"isOnline,optional"`           // 在线状态  1离线 2在线 只读
 }
 
 type DeviceInfoCreateReq struct {
@@ -384,7 +384,7 @@ type DeviceInfoReadReq struct {
 }
 
 type DeviceInfoIndexReq struct {
-	Page       PageInfo     `json:"page,optional"`       //分页信息 只获取一个则不填
+	Page       *PageInfo    `json:"page,optional"`       //分页信息 只获取一个则不填
 	ProductID  string       `json:"productID,optional"`  //产品id 为空时获取所有产品
 	DeviceName string       `json:"deviceName,optional"` //过滤条件:模糊查询 设备名
 	Tags       []*DeviceTag `json:"tags,optional"`       // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
@@ -441,7 +441,7 @@ type ProductInfo struct {
 	DataProto    int64   `json:"dataProto,optional"`          //数据协议:1:自定义,2:数据模板
 	AutoRegister int64   `json:"autoRegister,optional"`       //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret       string  `json:"secret,optional"`             //动态注册产品秘钥 只读
-	Description  *string `json:"description,optional"`        //描述
+	Desc         *string `json:"desc,optional"`               //描述
 }
 
 type ProductInfoReadReq struct {
@@ -456,7 +456,7 @@ type ProductInfoCreateReq struct {
 	NetType      int64   `json:"netType,optional"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
 	DataProto    int64   `json:"dataProto,optional"`    //数据协议:1:自定义,2:数据模板
 	AutoRegister int64   `json:"autoRegister,optional"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Description  *string `json:"description,optional"`  //描述
+	Desc         *string `json:"desc,optional"`         //描述
 }
 
 type ProductInfoUpdateReq struct {
@@ -468,7 +468,7 @@ type ProductInfoUpdateReq struct {
 	NetType      int64   `json:"netType,optional"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
 	DataProto    int64   `json:"dataProto,optional"`    //数据协议:1:自定义,2:数据模板
 	AutoRegister int64   `json:"autoRegister,optional"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Description  *string `json:"description,optional"`  //描述
+	Desc         *string `json:"desc,optional"`         //描述
 }
 
 type ProductInfoDeleteReq struct {
@@ -476,10 +476,10 @@ type ProductInfoDeleteReq struct {
 }
 
 type ProductInfoIndexReq struct {
-	Page        PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
-	ProductName string   `json:"productName,optional"` //过滤产品名称
-	DeviceType  int64    `json:"deviceType,optional"`  //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
-	ProductIDs  []string `json:"productIDs,optional"`  //过滤产品id列表
+	Page        *PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
+	ProductName string    `json:"productName,optional"` //过滤产品名称
+	DeviceType  int64     `json:"deviceType,optional"`  //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+	ProductIDs  []string  `json:"productIDs,optional"`  //过滤产品id列表
 }
 
 type ProductInfoIndexResp struct {
@@ -488,23 +488,93 @@ type ProductInfoIndexResp struct {
 	Num   int64          `json:"num,optional"`   //返回的数量
 }
 
-type ProductSchema struct {
-	CreatedTime int64  `json:"createdTime,optional,string"` //创建时间 只读
-	ProductID   string `json:"productID,optional"`          //产品id 只读
-	Schema      string `json:"schema,optional"`             //数据模板
+type ProductSchemaTslReadReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type ProductSchemaTslReadResp struct {
+	Tsl string `json:"tsl"` //物模型tsl
 }
 
 type ProductSchemaUpdateReq struct {
-	ProductID string `json:"productID"` //产品id
-	Schema    string `json:"schema"`    //数据模板
+	*ProductSchemaInfo
 }
 
-type ProductSchemaReadReq struct {
-	ProductID string `json:"productID"` //产品id
+type ProductSchemaTslImportReq struct {
+	ProductID string `json:"productID"` //产品id 只读
+	Tsl       string `json:"tsl"`       //物模型tsl
 }
 
-type ProductSchemaReadResp struct {
-	ProductSchema
+type ProductSchemaCreateReq struct {
+	*ProductSchemaInfo
+}
+
+type ProductSchemaDeleteReq struct {
+	ProductID  string `json:"productID"`  //产品id
+	Identifier string `json:"identifier"` //标识符
+}
+
+type ProductSchemaIndexReq struct {
+	Page        *PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
+	ProductID   string    `json:"productID"`            //产品id
+	Type        int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag         int64     `json:"tag,optional"`         //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
+	Identifiers []string  `json:"identifiers,optional"` //过滤标识符列表
+}
+
+type ProductSchemaIndexResp struct {
+	List  []*ProductSchemaInfo `json:"list"`  //分页信息,只获取一个则不填
+	Total int64                `json:"total"` //总数(只有分页的时候会返回)
+}
+
+type ProductSchemaInfo struct {
+	ProductID  string  `json:"productID"`  //产品id 只读
+	Type       int64   `json:"type"`       //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag        int64   `json:"tag"`        //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Identifier string  `json:"identifier"` //标识符
+	Name       *string `json:"name"`       //功能名称
+	Desc       *string `json:"desc"`       //描述
+	Required   int64   `json:"required"`   //是否必须 1:是 2:否
+	Affordance *string `json:"affordance"` //各功能类型的详细参数定义
+}
+
+type SchemaAction struct {
+	Input  []*SchemaParam `json:"input,optional"`  //调用参数
+	Output []*SchemaParam `json:"output,optional"` //返回参数
+}
+
+type SchemaProperty struct {
+	Mode   string        `json:"mode,optional"` //读写类型: r(只读) rw(可读可写)
+	Define *SchemaDefine `json:"define"`        //参数定义
+}
+
+type SchemaEvent struct {
+	Type   string         `json:"type"`            //事件类型: 信息:info  告警alert  故障:fault
+	Params []*SchemaParam `json:"params,optional"` //事件参数
+}
+
+type SchemaDefine struct {
+	Type      string            `json:"type"`                //参数类型: bool int string struct float timestamp array enum
+	Mapping   map[string]string `json:"mapping,omitempty"`   //枚举及bool类型:bool enum
+	Min       string            `json:"min,omitempty"`       //数值最小值:int  float
+	Max       string            `json:"max,omitempty"`       //数值最大值:int string float
+	Start     string            `json:"start,omitempty"`     //初始值:int float
+	Step      string            `json:"step,omitempty"`      //步长:int float
+	Unit      string            `json:"unit,omitempty"`      //单位:int float
+	Specs     []*SchemaSpec     `json:"specs,omitempty"`     //结构体:struct
+	ArrayInfo *SchemaDefine     `json:"arrayInfo,omitempty"` //数组:array
+}
+
+type SchemaSpec struct {
+	Identifier string        `json:"identifier"` //参数标识符
+	Name       string        `json:"name"`       //参数名称
+	DataType   *SchemaDefine `json:"dataType"`   //参数定义
+}
+
+type SchemaParam struct {
+	Identifier string        `json:"identifier"`       //参数标识符
+	Name       string        `json:"name"`             //参数名称
+	Define     *SchemaDefine `json:"define,omitempty"` //参数定义
 }
 
 type DeviceIndexMessage struct {

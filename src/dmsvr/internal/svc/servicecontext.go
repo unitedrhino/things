@@ -21,6 +21,7 @@ type ServiceContext struct {
 	Config         config.Config
 	DeviceInfo     mysql.DeviceInfoModel
 	ProductInfo    mysql.ProductInfoModel
+	ProductSchema  mysql.ProductSchemaModel
 	DmDB           mysql.DmModel
 	DeviceID       *utils.SnowFlake
 	ProductID      *utils.SnowFlake
@@ -67,6 +68,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		DeviceInfo:     di,
 		ProductInfo:    pi,
+		ProductSchema:  pt,
 		FirmwareInfo:   fr,
 		SchemaRepo:     tr,
 		DmDB:           DmDB,

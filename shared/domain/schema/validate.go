@@ -33,37 +33,37 @@ func ValidateWithFmt(schemaStr []byte) (*Model, error) {
 	return schema.init(), err
 }
 
-func (t *Model) ValidateWithFmt() error {
-	idMap := make(map[string]struct{}, len(t.Actions)+len(t.Events)+len(t.Properties))
-	for i := range t.Properties {
-		if _, ok := idMap[t.Properties[i].ID]; ok {
+func (m *Model) ValidateWithFmt() error {
+	idMap := make(map[string]struct{}, len(m.Actions)+len(m.Events)+len(m.Properties))
+	for i := range m.Properties {
+		if _, ok := idMap[m.Properties[i].Identifier]; ok {
 			//如果有重复的需要返回错误
-			return errors.Parameter.WithMsgf("属性的id重复了:%v", t.Properties[i].ID)
+			return errors.Parameter.WithMsgf("属性的id重复了:%v", m.Properties[i].Identifier)
 		}
-		idMap[t.Properties[i].ID] = struct{}{}
-		err := t.Properties[i].ValidateWithFmt()
+		idMap[m.Properties[i].Identifier] = struct{}{}
+		err := m.Properties[i].ValidateWithFmt()
 		if err != nil {
 			return err
 		}
 	}
-	for i := range t.Events {
-		if _, ok := idMap[t.Events[i].ID]; ok {
+	for i := range m.Events {
+		if _, ok := idMap[m.Events[i].Identifier]; ok {
 			//如果有重复的需要返回错误
-			return errors.Parameter.WithMsgf("属性的id重复了:%v", t.Events[i].ID)
+			return errors.Parameter.WithMsgf("属性的id重复了:%v", m.Events[i].Identifier)
 		}
-		idMap[t.Events[i].ID] = struct{}{}
-		err := t.Events[i].ValidateWithFmt()
+		idMap[m.Events[i].Identifier] = struct{}{}
+		err := m.Events[i].ValidateWithFmt()
 		if err != nil {
 			return err
 		}
 	}
-	for i := range t.Actions {
-		if _, ok := idMap[t.Actions[i].ID]; ok {
+	for i := range m.Actions {
+		if _, ok := idMap[m.Actions[i].Identifier]; ok {
 			//如果有重复的需要返回错误
-			return errors.Parameter.WithMsgf("属性的id重复了:%v", t.Actions[i].ID)
+			return errors.Parameter.WithMsgf("属性的id重复了:%v", m.Actions[i].Identifier)
 		}
-		idMap[t.Actions[i].ID] = struct{}{}
-		err := t.Actions[i].ValidateWithFmt()
+		idMap[m.Actions[i].Identifier] = struct{}{}
+		err := m.Actions[i].ValidateWithFmt()
 		if err != nil {
 			return err
 		}
@@ -72,7 +72,7 @@ func (t *Model) ValidateWithFmt() error {
 }
 
 func (a *Action) ValidateWithFmt() error {
-	if err := IDValidate(a.ID); err != nil {
+	if err := IDValidate(a.Identifier); err != nil {
 		return err
 	}
 	if err := NameValidate(a.Name); err != nil {
@@ -88,7 +88,7 @@ func (a *Action) ValidateWithFmt() error {
 }
 
 func (e *Event) ValidateWithFmt() error {
-	if err := IDValidate(e.ID); err != nil {
+	if err := IDValidate(e.Identifier); err != nil {
 		return err
 	}
 	if err := NameValidate(e.Name); err != nil {
@@ -104,7 +104,7 @@ func (e *Event) ValidateWithFmt() error {
 }
 
 func (p *Property) ValidateWithFmt() error {
-	if err := IDValidate(p.ID); err != nil {
+	if err := IDValidate(p.Identifier); err != nil {
 		return err
 	}
 	if err := NameValidate(p.Name); err != nil {
@@ -113,7 +113,7 @@ func (p *Property) ValidateWithFmt() error {
 	if err := DescValidate(p.Desc); err != nil {
 		return err
 	}
-	if p.Mode != PropertyModeWR && p.Mode != PropertyModeR {
+	if p.Mode != PropertyModeRW && p.Mode != PropertyModeR {
 		return errors.Parameter.WithMsgf("属性读写类型只能为wr及r,收到:%v", p.Mode)
 	}
 	return p.Define.ValidateWithFmt()
@@ -148,21 +148,21 @@ func DescValidate(desc string) error {
 
 func (d *Define) ValidateWithFmt() error {
 	switch d.Type {
-	case BOOL:
+	case DataTypeBool:
 		return d.ValidateWithFmtBool()
-	case INT:
+	case DataTypeInt:
 		return d.ValidateWithFmtInt()
-	case STRING:
+	case DataTypeString:
 		return d.ValidateWithFmtString()
-	case STRUCT:
+	case DataTypeStruct:
 		return d.ValidateWithFmtStruct()
-	case FLOAT:
+	case DataTypeFloat:
 		return d.ValidateWithFmtFloat()
-	case TIMESTAMP:
+	case DataTypeTimestamp:
 		return d.ValidateWithFmtTimeStamp()
-	case ARRAY:
+	case DataTypeArray:
 		return d.ValidateWithFmtArray()
-	case ENUM:
+	case DataTypeEnum:
 		return d.ValidateWithFmtEnum()
 
 	}
@@ -346,7 +346,7 @@ func (d *Define) ValidateWithFmtEnum() error {
 }
 
 func (s *Spec) ValidateWithFmt() error {
-	if err := IDValidate(s.ID); err != nil {
+	if err := IDValidate(s.Identifier); err != nil {
 		return err
 	}
 	if err := NameValidate(s.Name); err != nil {
@@ -360,11 +360,11 @@ func (s Specs) ValidateWithFmt() error {
 	}
 	specMap := make(map[string]struct{}, len(s))
 	for i := range s {
-		if _, ok := specMap[s[i].ID]; ok {
+		if _, ok := specMap[s[i].Identifier]; ok {
 			//如果有重复的需要返回错误
-			return errors.Parameter.WithMsgf("结构体类型中的id重复了:%v", s[i].ID)
+			return errors.Parameter.WithMsgf("结构体类型中的id重复了:%v", s[i].Identifier)
 		}
-		specMap[s[i].ID] = struct{}{}
+		specMap[s[i].Identifier] = struct{}{}
 		err := s[i].ValidateWithFmt()
 		if err != nil {
 			return err
@@ -374,7 +374,7 @@ func (s Specs) ValidateWithFmt() error {
 }
 
 func (p *Param) ValidateWithFmt() error {
-	if err := IDValidate(p.ID); err != nil {
+	if err := IDValidate(p.Identifier); err != nil {
 		return err
 	}
 	if err := NameValidate(p.Name); err != nil {
@@ -388,11 +388,11 @@ func (p Params) ValidateWithFmt() error {
 	}
 	paramMap := make(map[string]struct{}, len(p))
 	for i := range p {
-		if _, ok := paramMap[p[i].ID]; ok {
+		if _, ok := paramMap[p[i].Identifier]; ok {
 			//如果有重复的需要返回错误
-			return errors.Parameter.WithMsgf("参数的id重复了:%v", p[i].ID)
+			return errors.Parameter.WithMsgf("参数的id重复了:%v", p[i].Identifier)
 		}
-		paramMap[p[i].ID] = struct{}{}
+		paramMap[p[i].Identifier] = struct{}{}
 		err := p[i].ValidateWithFmt()
 		if err != nil {
 			return err

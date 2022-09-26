@@ -48,19 +48,13 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 /*
 根据用户的输入生成对应的数据库数据
 */
-func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) (*mysql.ProductInfo, *mysql.ProductSchema) {
+func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) *mysql.ProductInfo {
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
 	createTime := time.Now()
-	pt := &mysql.ProductSchema{
-		Schema:      schema.DefaultSchema,
-		ProductID:   deviceAuth.GetStrProductID(ProductID),
-		CreatedTime: createTime,
-		UpdatedTime: createTime,
-	}
 	pi := &mysql.ProductInfo{
 		ProductID:   deviceAuth.GetStrProductID(ProductID), // 产品id
 		ProductName: in.ProductName,                        // 产品名称
-		Description: in.Description.GetValue(),
+		Desc:        in.Desc.GetValue(),
 		DevStatus:   in.DevStatus.GetValue(),
 		CreatedTime: createTime,
 		UpdatedTime: createTime,
@@ -95,7 +89,7 @@ func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) (*mysql.Produ
 	} else {
 		pi.AuthMode = def.AuthModePwd
 	}
-	return pi, pt
+	return pi
 }
 
 // 新增设备
@@ -106,20 +100,20 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	} else if find == true {
 		return nil, errors.Duplicate.AddDetail("ProductName:" + in.ProductName)
 	}
-	pi, pt := l.InsertProduct(in)
-	err = l.InitProduct(pi, pt)
+	pi := l.InsertProduct(in)
+	err = l.InitProduct(pi)
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DmDB.Insert(l.ctx, pi, pt)
+	err = l.svcCtx.DmDB.Insert(l.ctx, pi)
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
 	return &dm.Response{}, nil
 }
-func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.ProductInfo, pt *mysql.ProductSchema) error {
-	t, _ := schema.NewSchema([]byte(pt.Schema))
+func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.ProductInfo) error {
+	t, _ := schema.NewSchemaTsl([]byte(schema.DefaultSchema))
 	if err := l.svcCtx.SchemaManaRepo.InitProduct(
 		l.ctx, t, pi.ProductID); err != nil {
 		l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
