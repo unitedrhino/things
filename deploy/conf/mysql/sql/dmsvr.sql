@@ -26,21 +26,8 @@ CREATE TABLE if not exists `product_info`
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='产品信息表';
 
+
 CREATE TABLE if not exists `product_schema`
-(
-    `productID`   char(11) NOT NULL COMMENT '产品id',
-    `schema`      json not null COMMENT '物模型模板',
-    `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `deletedTime` datetime          DEFAULT NULL,
-    PRIMARY KEY (`productID`)
-
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
-
-CREATE TABLE if not exists `product_schema2`
 (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `productID`   char(11) NOT NULL COMMENT '产品id',

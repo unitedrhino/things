@@ -51,19 +51,20 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 	}
 	err = l.svcCtx.HubLogRepo.DropProduct(l.ctx, in.ProductID)
 	if err != nil {
-		l.Errorf("%s.HubLogRepo.DropProduct err=%v", utils.FuncName(), err)
+		l.Errorf("%s.HubLogRepo.DeleteProduct err=%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.SDKLogRepo.DropProduct(l.ctx, in.ProductID)
 	if err != nil {
-		l.Errorf("%s.SDKLogRepo.DropProduct err=%v", utils.FuncName(), err)
+		l.Errorf("%s.SDKLogRepo.DeleteProduct err=%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.SchemaManaRepo.DropProduct(l.ctx, pt, in.ProductID)
+	err = l.svcCtx.SchemaManaRepo.DeleteProduct(l.ctx, pt, in.ProductID)
 	if err != nil {
-		l.Errorf("%s.SchemaManaRepo.DropProduct err=%+v", utils.FuncName(), err)
+		l.Errorf("%s.SchemaManaRepo.DeleteProduct err=%+v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
+	//todo 需要删除物模型的数据
 	err = l.svcCtx.SchemaRepo.ClearCache(l.ctx, in.ProductID)
 	if err != nil {
 		l.Errorf("%s.SchemaRepo.ClearCache err=%+v", utils.FuncName(), err)

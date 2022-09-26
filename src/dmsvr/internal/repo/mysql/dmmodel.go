@@ -15,7 +15,7 @@ type (
 		FindDevicesByFilter(ctx context.Context, filter DeviceFilter, page def.PageInfo) ([]*DeviceInfo, error)
 		GetDevicesCountByFilter(ctx context.Context, filter DeviceFilter) (size int64, err error)
 		GetProductsCountByFilter(ctx context.Context, filter ProductFilter) (size int64, err error)
-		Insert(ctx context.Context, pi *ProductInfo, pt *ProductSchema) error
+		Insert(ctx context.Context, pi *ProductInfo) error
 		Delete(ctx context.Context, productID string) error
 	}
 	ProductFilter struct {
@@ -30,10 +30,9 @@ type (
 	}
 	defaultDmModel struct {
 		sqlx.SqlConn
-		productInfo   string
-		deviceInfo    string
-		productSchema string
-		deviceLog     string
+		productInfo string
+		deviceInfo  string
+		deviceLog   string
 		ProductInfoModel
 	}
 )
@@ -43,7 +42,6 @@ func NewDmModel(conn sqlx.SqlConn) DmModel {
 		SqlConn:          conn,
 		productInfo:      "`product_info`",
 		deviceInfo:       "`device_info`",
-		productSchema:    "`product_schema`",
 		deviceLog:        "`device_log`",
 		ProductInfoModel: NewProductInfoModel(conn),
 	}
@@ -158,21 +156,17 @@ func (m *defaultDmModel) Delete(ctx context.Context, productID string) error {
 		if err != nil {
 			return err
 		}
-		query = fmt.Sprintf("delete from %s where `ProductID` = ?", m.productSchema)
-		_, err = session.Exec(query, productID)
-		return err
+		return nil
 	})
 }
 
-func (m *defaultDmModel) Insert(ctx context.Context, pi *ProductInfo, pt *ProductSchema) error {
+func (m *defaultDmModel) Insert(ctx context.Context, pi *ProductInfo) error {
 	return m.Transact(func(session sqlx.Session) error {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.productInfo, productInfoRowsExpectAutoSet)
 		_, err := session.ExecCtx(ctx, query, pi.ProductID, pi.ProductName, pi.ProductType, pi.AuthMode, pi.DeviceType, pi.CategoryID, pi.NetType, pi.DataProto, pi.AutoRegister, pi.Secret, pi.Desc, pi.CreatedTime, pi.UpdatedTime, pi.DeletedTime, pi.DevStatus)
 		if err != nil {
 			return err
 		}
-		query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.productSchema, productSchemaRowsExpectAutoSet)
-		_, err = session.ExecCtx(ctx, query, pt.ProductID, pt.Schema, pt.CreatedTime, pt.UpdatedTime, pt.DeletedTime)
-		return err
+		return nil
 	})
 }
