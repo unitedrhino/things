@@ -555,10 +555,10 @@ type GroupInfoUpdateReq struct {
 }
 
 type GroupDeviceIndexReq struct {
-	Page       PageInfo `json:"page,optional"`  //分页信息 只获取一个则不填
-	GroupID    int64    `json:"groupID,string"` //分组ID
-	ProductID  string   `json:"productID"`      //产品ID
-	DeviceName string   `json:"deviceName"`     //设备名称
+	Page       PageInfo `json:"page,optional"`       //分页信息 只获取一个则不填
+	GroupID    int64    `json:"groupID,string"`      //分组ID
+	ProductID  string   `json:"productID,optional"`  //产品ID
+	DeviceName string   `json:"deviceName,optional"` //设备名称
 }
 
 type GroupDeviceIndexResp struct {
