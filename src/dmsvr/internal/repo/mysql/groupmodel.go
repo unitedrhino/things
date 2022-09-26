@@ -6,6 +6,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -155,7 +156,7 @@ func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm
 		return nil, 0, err
 	}
 
-	dg, err := m.FindGroupInfoByFilter(ctx, filter, def.PageInfo{Size: in.Page.Size, Page: in.Page.Page}, true)
+	dg, err := m.FindGroupInfoByFilter(ctx, filter, logic.ToPageInfo(in.Page), true)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -222,7 +223,7 @@ func (m *groupModel) IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([
 		return nil, 0, err
 	}
 
-	dg, err := m.FindGroupDeviceByFilter(ctx, filter, def.PageInfo{Size: in.Page.Size, Page: in.Page.Page})
+	dg, err := m.FindGroupDeviceByFilter(ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, 0, err
 	}

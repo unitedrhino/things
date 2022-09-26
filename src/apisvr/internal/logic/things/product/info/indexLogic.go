@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -31,10 +32,7 @@ func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductI
 		DeviceType:  req.DeviceType, //产品id
 		ProductName: req.ProductName,
 		ProductIDs:  req.ProductIDs,
-		Page: &dm.PageInfo{
-			Page: req.Page.Page,
-			Size: req.Page.Size,
-		},
+		Page:        logic.ToPageRpc(req.Page),
 	}
 	dmResp, err := l.svcCtx.ProductM.ProductInfoIndex(l.ctx, dmReq)
 	if err != nil {

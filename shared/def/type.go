@@ -1,5 +1,7 @@
 package def
 
+import "golang.org/x/exp/constraints"
+
 type Opt = int64
 
 const (
@@ -8,7 +10,21 @@ const (
 	OptDel    Opt = 2 //删除
 )
 const Unknown = 0
+
 const (
-	OffLine = 1 //离线
-	OnLine  = 2 //在线
+	True  = 1 //是
+	False = 2 //否
 )
+
+func ToBool[boolType constraints.Integer](in boolType) bool {
+	if in == True {
+		return true
+	}
+	return false
+}
+func ToIntBool[boolType constraints.Integer](in bool) boolType {
+	if in == true {
+		return True
+	}
+	return False
+}

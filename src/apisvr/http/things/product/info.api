@@ -41,7 +41,7 @@ type (
         DataProto int64 `json:"dataProto,optional"`                                       //数据协议:1:自定义,2:数据模板
         AutoRegister int64 `json:"autoRegister,optional"`                                 //动态注册:1:关闭,2:打开,3:打开并自动创建设备
         Secret string `json:"secret,optional"`                                  //动态注册产品秘钥 只读
-        Description *string `json:"description,optional"`                       //描述
+        Desc *string `json:"desc,optional"`                       //描述
     //  DevStatus *string `json:"devStatus,optional,omitempty"`                           // 产品状态
     }
 
@@ -57,7 +57,7 @@ type (
         NetType int64 `json:"netType,optional"`                                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
         DataProto int64 `json:"dataProto,optional"`                                       //数据协议:1:自定义,2:数据模板
         AutoRegister int64 `json:"autoRegister,optional"`                                 //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-        Description *string `json:"description,optional"`                       //描述
+        Desc *string `json:"desc,optional"`                       //描述
     }
 
     ProductInfoUpdateReq struct {
@@ -69,7 +69,7 @@ type (
         NetType int64 `json:"netType,optional"`                                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
         DataProto int64 `json:"dataProto,optional"`                                       //数据协议:1:自定义,2:数据模板
         AutoRegister int64 `json:"autoRegister,optional"`                                 //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-        Description *string `json:"description,optional"`                       //描述
+        Desc *string `json:"desc,optional"`                       //描述
     }
 
     ProductInfoDeleteReq struct {
@@ -77,7 +77,7 @@ type (
     }
 
     ProductInfoIndexReq struct {
-        Page PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
+        Page *PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
         ProductName string `json:"productName,optional"` //过滤产品名称
         DeviceType int64 `json:"deviceType,optional"`    //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
         ProductIDs []string  `json:"productIDs,optional"`    //过滤产品id列表

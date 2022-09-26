@@ -58,8 +58,32 @@ func (s *ProductManageServer) ProductSchemaUpdate(ctx context.Context, in *dm.Pr
 	return l.ProductSchemaUpdate(in)
 }
 
-// 获取产品物模型
-func (s *ProductManageServer) ProductSchemaRead(ctx context.Context, in *dm.ProductSchemaReadReq) (*dm.ProductSchema, error) {
-	l := productmanagelogic.NewProductSchemaReadLogic(ctx, s.svcCtx)
-	return l.ProductSchemaRead(in)
+// 新增产品
+func (s *ProductManageServer) ProductSchemaCreate(ctx context.Context, in *dm.ProductSchemaCreateReq) (*dm.Response, error) {
+	l := productmanagelogic.NewProductSchemaCreateLogic(ctx, s.svcCtx)
+	return l.ProductSchemaCreate(in)
+}
+
+// 删除产品
+func (s *ProductManageServer) ProductSchemaDelete(ctx context.Context, in *dm.ProductSchemaDeleteReq) (*dm.Response, error) {
+	l := productmanagelogic.NewProductSchemaDeleteLogic(ctx, s.svcCtx)
+	return l.ProductSchemaDelete(in)
+}
+
+// 获取产品信息列表
+func (s *ProductManageServer) ProductSchemaIndex(ctx context.Context, in *dm.ProductSchemaIndexReq) (*dm.ProductSchemaIndexResp, error) {
+	l := productmanagelogic.NewProductSchemaIndexLogic(ctx, s.svcCtx)
+	return l.ProductSchemaIndex(in)
+}
+
+// 删除产品
+func (s *ProductManageServer) ProductSchemaTslImport(ctx context.Context, in *dm.ProductSchemaTslImportReq) (*dm.Response, error) {
+	l := productmanagelogic.NewProductSchemaTslImportLogic(ctx, s.svcCtx)
+	return l.ProductSchemaTslImport(in)
+}
+
+// 获取产品信息列表
+func (s *ProductManageServer) ProductSchemaTslRead(ctx context.Context, in *dm.ProductSchemaTslReadReq) (*dm.ProductSchemaTslReadResp, error) {
+	l := productmanagelogic.NewProductSchemaTslReadLogic(ctx, s.svcCtx)
+	return l.ProductSchemaTslRead(in)
 }

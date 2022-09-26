@@ -18,8 +18,8 @@ import (
 var (
 	deviceInfoFieldNames          = builder.RawFieldNames(&DeviceInfo{})
 	deviceInfoRows                = strings.Join(deviceInfoFieldNames, ",")
-	deviceInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), ",")
-	deviceInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), "=?,") + "=?"
+	deviceInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`"), ",")
+	deviceInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`"), "=?,") + "=?"
 )
 
 type (
@@ -37,20 +37,20 @@ type (
 	}
 
 	DeviceInfo struct {
-		Id          int64          `db:"id"`
-		ProductID   string         `db:"productID"`  // 产品id
-		DeviceName  string         `db:"deviceName"` // 设备名称
-		Secret      string         `db:"secret"`     // 设备秘钥
-		FirstLogin  sql.NullTime   `db:"firstLogin"` // 激活时间
-		LastLogin   sql.NullTime   `db:"lastLogin"`  // 最后上线时间
-		CreatedTime time.Time      `db:"createdTime"`
-		UpdatedTime time.Time      `db:"updatedTime"`
-		DeletedTime sql.NullTime   `db:"deletedTime"`
-		Version     string         `db:"version"`  // 固件版本
-		LogLevel    int64          `db:"logLevel"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
-		Cert        string         `db:"cert"`     // 设备证书
-		IsOnline    int64          `db:"isOnline"` // 是否在线,1离线2在线
-		Tags        sql.NullString `db:"tags"`     // 设备标签
+		Id          int64        `db:"id"`
+		ProductID   string       `db:"productID"`  // 产品id
+		DeviceName  string       `db:"deviceName"` // 设备名称
+		Secret      string       `db:"secret"`     // 设备秘钥
+		FirstLogin  sql.NullTime `db:"firstLogin"` // 激活时间
+		LastLogin   sql.NullTime `db:"lastLogin"`  // 最后上线时间
+		CreatedTime time.Time    `db:"createdTime"`
+		UpdatedTime time.Time    `db:"updatedTime"`
+		DeletedTime sql.NullTime `db:"deletedTime"`
+		Version     string       `db:"version"`  // 固件版本
+		LogLevel    int64        `db:"logLevel"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+		Cert        string       `db:"cert"`     // 设备证书
+		IsOnline    int64        `db:"isOnline"` // 是否在线,1是2否
+		Tags        string       `db:"tags"`     // 设备标签
 	}
 )
 

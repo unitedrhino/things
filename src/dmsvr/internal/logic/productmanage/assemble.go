@@ -3,18 +3,17 @@ package productmanagelogic
 import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/schema"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func ToProductSchema(pt *schema.Info) *dm.ProductSchema {
-	return &dm.ProductSchema{
-		CreatedTime: pt.CreatedTime.Unix(),
-		ProductID:   pt.ProductID,
-		Schema:      pt.Schema,
-	}
-}
+//func ToProductSchema(pt *schema.Info) *dm.ProductSchema {
+//	return &dm.ProductSchema{
+//		CreatedTime: pt.CreatedTime.Unix(),
+//		ProductID:   pt.ProductID,
+//		Schema:      pt.Schema,
+//	}
+//}
 
 func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
 	if pi.DeviceType == def.Unknown {
@@ -33,17 +32,17 @@ func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
 		pi.AutoRegister = def.AutoRegClose
 	}
 	dpi := &dm.ProductInfo{
-		ProductID:    pi.ProductID,                                 //产品id
-		ProductName:  pi.ProductName,                               //产品名
-		AuthMode:     pi.AuthMode,                                  //认证方式:0:账密认证,1:秘钥认证
-		DeviceType:   pi.DeviceType,                                //设备类型:0:设备,1:网关,2:子设备
-		CategoryID:   pi.CategoryID,                                //产品品类
-		NetType:      pi.NetType,                                   //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
-		DataProto:    pi.DataProto,                                 //数据协议:0:自定义,1:数据模板
-		AutoRegister: pi.AutoRegister,                              //动态注册:0:关闭,1:打开,2:打开并自动创建设备
-		Secret:       pi.Secret,                                    //动态注册产品秘钥 只读
-		Description:  &wrappers.StringValue{Value: pi.Description}, //描述
-		CreatedTime:  pi.CreatedTime.Unix(),                        //创建时间
+		ProductID:    pi.ProductID,                          //产品id
+		ProductName:  pi.ProductName,                        //产品名
+		AuthMode:     pi.AuthMode,                           //认证方式:0:账密认证,1:秘钥认证
+		DeviceType:   pi.DeviceType,                         //设备类型:0:设备,1:网关,2:子设备
+		CategoryID:   pi.CategoryID,                         //产品品类
+		NetType:      pi.NetType,                            //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
+		DataProto:    pi.DataProto,                          //数据协议:0:自定义,1:数据模板
+		AutoRegister: pi.AutoRegister,                       //动态注册:0:关闭,1:打开,2:打开并自动创建设备
+		Secret:       pi.Secret,                             //动态注册产品秘钥 只读
+		Desc:         &wrappers.StringValue{Value: pi.Desc}, //描述
+		CreatedTime:  pi.CreatedTime.Unix(),                 //创建时间
 		//Model:     &wrappers.StringValue{Value: pi.Model},    //数据模板
 	}
 	return dpi
