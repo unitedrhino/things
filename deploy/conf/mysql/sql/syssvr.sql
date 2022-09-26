@@ -51,6 +51,8 @@ CREATE TABLE if not exists `role_info`
     UNIQUE KEY `nameIndex` (`name`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='角色管理表';
 
+INSERT into  role_info (name) values ('admin');
+
 CREATE TABLE if not exists `role_menu`
 (
     `id`           bigint auto_increment comment 'id编号',
@@ -62,6 +64,26 @@ CREATE TABLE if not exists `role_menu`
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `roleIDMenuIDIndex` (`roleID`, `menuID`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='角色菜单关联表';
+
+INSERT into role_menu (roleID,menuID) values (1,2);
+INSERT into role_menu (roleID,menuID) values (1,3);
+INSERT into role_menu (roleID,menuID) values (1,4);
+INSERT into role_menu (roleID,menuID) values (1,5);
+INSERT into role_menu (roleID,menuID) values (1,6);
+INSERT into role_menu (roleID,menuID) values (1,7);
+INSERT into role_menu (roleID,menuID) values (1,8);
+INSERT into role_menu (roleID,menuID) values (1,9);
+INSERT into role_menu (roleID,menuID) values (1,10);
+INSERT into role_menu (roleID,menuID) values (1,11);
+INSERT into role_menu (roleID,menuID) values (1,12);
+INSERT into role_menu (roleID,menuID) values (1,13);
+INSERT into role_menu (roleID,menuID) values (1,14);
+INSERT into role_menu (roleID,menuID) values (1,15);
+INSERT into role_menu (roleID,menuID) values (1,16);
+INSERT into role_menu (roleID,menuID) values (1,17);
+INSERT into role_menu (roleID,menuID) values (1,18);
+INSERT into role_menu (roleID,menuID) values (1,19);
+INSERT into role_menu (roleID,menuID) values (1,20);
 
 CREATE TABLE if not exists `menu_info`
 (
@@ -140,3 +162,6 @@ VALUES(19, 5, 2, 1, '消息规则', '/ruleEngines/messageRules/index', './ruleEn
 INSERT INTO things_sys.menu_info
 (id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
 VALUES(20, 5, 2, 2, '规则日志', '/ruleEngines/ruleLogs/index', './ruleEngines/ruleLogs/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+
+
+
