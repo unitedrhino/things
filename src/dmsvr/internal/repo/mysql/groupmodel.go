@@ -51,7 +51,7 @@ func (g *GroupFilter) FmtSql(sql sq.SelectBuilder, parentFlag bool) sq.SelectBui
 		sql = sql.Where("`parentID`=?", g.ParentID)
 	}
 	if g.GroupName != "" {
-		sql = sql.Where("`DeviceName` like ?", "%"+g.GroupName+"%")
+		sql = sql.Where("`groupName` like ?", "%"+g.GroupName+"%")
 	}
 	if g.Tags != nil {
 		for k, v := range g.Tags {
@@ -63,13 +63,13 @@ func (g *GroupFilter) FmtSql(sql sq.SelectBuilder, parentFlag bool) sq.SelectBui
 }
 func (g *GroupDeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if g.GroupID != 0 {
-		sql = sql.Where("`GroupID`=?", g.GroupID)
+		sql = sql.Where("`groupID`=?", g.GroupID)
 	}
 	if g.productID != "" {
 		sql = sql.Where("`productID`=?", g.productID)
 	}
 	if g.DeviceName != "" {
-		sql = sql.Where("`DeviceName`=?", g.DeviceName)
+		sql = sql.Where("`deviceName`=?", g.DeviceName)
 	}
 
 	return sql
@@ -127,7 +127,7 @@ func (m *groupModel) GetGroupDeviceCountByFilter(ctx context.Context, f GroupDev
 }
 func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceFilter, page def.PageInfo) ([]*GroupDevice, error) {
 	var resp []*GroupDevice
-	sql := sq.Select(groupInfoRows).From(m.groupDevice).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+	sql := sq.Select(groupDeviceRows).From(m.groupDevice).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql)
 
 	query, arg, err := sql.ToSql()
@@ -146,6 +146,7 @@ func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceF
 func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, int64, error) {
 
 	filter := GroupFilter{
+		ParentID:  in.ParentID,
 		GroupName: in.GroupName,
 		Tags:      in.Tags,
 	}
@@ -253,7 +254,7 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list map[string]string) error {
 	m.Transact(func(session sqlx.Session) error {
 		for i, v := range list {
-			query := fmt.Sprintf("insert into %s set (groupID,productID,deviceName) values (%d, '%s', '%s')",
+			query := fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s')",
 				m.groupDevice, groupID, i, v)
 			_, err := session.Exec(query)
 			if err != nil {
