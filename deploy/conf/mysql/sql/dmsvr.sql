@@ -125,5 +125,4 @@ CREATE TABLE if not exists `group_device`
     `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `groupID_productID_deviceName` (`groupID`,`productID`,`deviceName`),
-    UNIQUE KEY `deviceNameIndex` (`deviceName`)
     ) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '分组与设备关系表';
