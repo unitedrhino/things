@@ -30,11 +30,14 @@ func (d *SchemaDataRepo) fmtSql(f deviceMsg.FilterOpt, sql sq.SelectBuilder) sq.
 	if f.ProductID != "" {
 		sql = sql.Where("`product_id`=? ", f.ProductID)
 	}
-	if len(f.DeviceName) != 0 {
-		sql = sql.Where(fmt.Sprintf("`device_name` in (%v)", store.ArrayToSql(f.DeviceName)))
+	if len(f.DeviceNames) != 0 {
+		sql = sql.Where(fmt.Sprintf("`device_name` in (%v)", store.ArrayToSql(f.DeviceNames)))
 	}
 	if f.DataID != "" {
 		sql = sql.Where("`event_id`=? ", f.DataID)
+	}
+	if len(f.Types) != 0 {
+		sql = sql.Where(fmt.Sprintf("`event_type` in (%v)", store.ArrayToSql(f.Types)))
 	}
 	return sql
 }

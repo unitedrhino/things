@@ -261,15 +261,15 @@ type DeviceAuthRootCheckReq struct {
 }
 
 type DeviceMsgHubLogIndexReq struct {
-	DeviceName string   `json:"deviceName,omitempty"`                //设备名
-	ProductID  string   `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
-	TimeStart  int64    `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd    int64    `json:"timeEnd,string,optional,omitempty"`   //时间的结束
-	Page       PageInfo `json:"page,optional"`                       //分页信息
-	Actions    []string `json:"actions,optional"`                    //过滤操作类型 connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
-	Topics     []string `json:"topics,optional"`                     //过滤主题
-	Content    string   `json:"content,optional"`                    //过滤内容
-	RequestID  string   `json:"requestID,optional"`                  //过滤请求ID
+	DeviceName string    `json:"deviceName,omitempty"`                //设备名
+	ProductID  string    `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
+	TimeStart  int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
+	TimeEnd    int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	Page       *PageInfo `json:"page,optional"`                       //分页信息
+	Actions    []string  `json:"actions,optional"`                    //过滤操作类型 connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
+	Topics     []string  `json:"topics,optional"`                     //过滤主题
+	Content    string    `json:"content,optional"`                    //过滤内容
+	RequestID  string    `json:"requestID,optional"`                  //过滤请求ID
 }
 
 type DeviceMsgHubLogIndexResp struct {
@@ -288,11 +288,11 @@ type DeviceMsgHubLogIndex struct {
 }
 
 type DeviceMsgSdkLogIndexReq struct {
-	DeviceName string   `json:"deviceName,omitempty"`                //设备名
-	ProductID  string   `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
-	TimeStart  int64    `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd    int64    `json:"timeEnd,string,optional,omitempty"`   //时间的结束
-	Page       PageInfo `json:"page,optional"`                       //分页信息
+	DeviceName string    `json:"deviceName,omitempty"`                //设备名
+	ProductID  string    `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
+	TimeStart  int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
+	TimeEnd    int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	Page       *PageInfo `json:"page,optional"`                       //分页信息
 }
 
 type DeviceMsgSdkIndexResp struct {
@@ -306,38 +306,56 @@ type DeviceMsgSdkIndex struct {
 	Content   string `json:"content"`          //具体内容
 }
 
-type DeviceMsgSchemaLogIndexReq struct {
-	Method     string   `json:"method,omitempty"`                    //获取的类型   property 属性 event事件  log 所有日志
-	DeviceName []string `json:"deviceName,omitempty"`                //设备名(不填获取产品下所有设备)
-	ProductID  string   `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
-	DataID     string   `json:"dataID,optional,omitempty"`           //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
-	TimeStart  int64    `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd    int64    `json:"timeEnd,string,optional,omitempty"`   //时间的结束
-	Page       PageInfo `json:"page,optional"`                       //分页信息
-	Interval   int64    `json:"interval,optional"`                   //分页信息
-	ArgFunc    string   `json:"argFunc,optional"`                    //分页信息
-	Fill       string   `json:"fill,optional"`                       //填充模式 参考:https://docs.taosdata.com/taos-sql/distinguished/
-	Order      int32    `json:"order,optional"`                      //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
+type DeviceMsgPropertyLogIndexReq struct {
+	DeviceNames []string  `json:"deviceNames,omitempty"`               //设备名(不填获取产品下所有设备)
+	ProductID   string    `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
+	DataID      string    `json:"dataID,optional,omitempty"`           //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+	TimeStart   int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
+	TimeEnd     int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	Page        *PageInfo `json:"page,optional"`                       //分页信息
+	Interval    int64     `json:"interval,optional"`                   //分页信息
+	ArgFunc     string    `json:"argFunc,optional"`                    //分页信息
+	Fill        string    `json:"fill,optional"`                       //填充模式 参考:https://docs.taosdata.com/taos-sql/distinguished/
+	Order       int32     `json:"order,optional"`                      //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
 }
 
-type DeviceMsgSchemaLatestIndexReq struct {
-	Method     string   `json:"method,omitempty"`          //获取的类型   property 属性 event事件  log 所有日志
-	DeviceName string   `json:"deviceName,omitempty"`      //设备名
-	ProductID  string   `json:"productID,omitempty"`       //产品id 获取产品id下的所有设备信息
-	DataID     []string `json:"dataID,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+type DeviceMsgPropertyLatestIndexReq struct {
+	DeviceName string   `json:"deviceName,omitempty"`       //设备名
+	ProductID  string   `json:"productID,omitempty"`        //产品id 获取产品id下的所有设备信息
+	DataIDs    []string `json:"dataIDs,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
 }
 
-type DeviceMsgSchemaIndexResp struct {
-	List  []*DeviceMsgSchemaIndex `json:"list"`  //数据
-	Total int64                   `json:"total"` //总数
+type DeviceMsgPropertyIndexResp struct {
+	List  []*DeviceMsgPropertyIndex `json:"list"`  //数据
+	Total int64                     `json:"total"` //总数
 }
 
-type DeviceMsgSchemaIndex struct {
-	Timestamp int64  `json:"timestamp,string"`    //发生时间戳
-	Type      string `json:"type,omitempty"`      //类型 事件类型: 信息:info  告警alert  故障:fault
-	DataID    string `json:"dataID"`              //获取的具体属性值
-	GetValue  string `json:"getValue,omitempty"`  //获取到的值
-	SendValue string `json:"sendValue,omitempty"` //发送过去的参数(action限定)
+type DeviceMsgPropertyIndex struct {
+	Timestamp int64  `json:"timestamp,string"` //发生时间戳
+	DataID    string `json:"dataID"`           //获取的具体属性值
+	Value     string `json:"value,omitempty"`  //获取到的值
+}
+
+type DeviceMsgEventLogIndexReq struct {
+	DeviceNames []string  `json:"deviceNames,optional"`                //设备名(不填获取产品下所有设备)
+	ProductID   string    `json:"productID,optional"`                  //产品id 获取产品id下的所有设备信息
+	DataID      string    `json:"dataID,optional,omitempty"`           //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+	TimeStart   int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
+	TimeEnd     int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	Page        *PageInfo `json:"page,optional"`                       //分页信息
+	Types       []string  `json:"types,optional"`                      //类型 事件类型: 信息:info  告警alert  故障:fault
+}
+
+type DeviceMsgEventIndexResp struct {
+	List  []*DeviceMsgEventIndex `json:"list"`  //数据
+	Total int64                  `json:"total"` //总数
+}
+
+type DeviceMsgEventIndex struct {
+	Timestamp int64  `json:"timestamp,string"` //发生时间戳
+	Type      string `json:"type,omitempty"`   //类型 事件类型: 信息:info  告警alert  故障:fault
+	DataID    string `json:"dataID"`           //获取的具体属性值
+	Params    string `json:"params,omitempty"` //获取到的值
 }
 
 type DeviceTag struct {

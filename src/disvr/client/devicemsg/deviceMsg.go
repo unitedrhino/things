@@ -14,24 +14,27 @@ import (
 )
 
 type (
-	HubLogIndex          = di.HubLogIndex
-	HubLogIndexReq       = di.HubLogIndexReq
-	HubLogIndexResp      = di.HubLogIndexResp
-	PageInfo             = di.PageInfo
-	Response             = di.Response
-	SchemaIndex          = di.SchemaIndex
-	SchemaIndexResp      = di.SchemaIndexResp
-	SchemaLatestIndexReq = di.SchemaLatestIndexReq
-	SchemaLogIndexReq    = di.SchemaLogIndexReq
-	SdkLogIndex          = di.SdkLogIndex
-	SdkLogIndexReq       = di.SdkLogIndexReq
-	SdkLogIndexResp      = di.SdkLogIndexResp
-	SendActionReq        = di.SendActionReq
-	SendActionResp       = di.SendActionResp
-	SendMsgReq           = di.SendMsgReq
-	SendMsgResp          = di.SendMsgResp
-	SendPropertyReq      = di.SendPropertyReq
-	SendPropertyResp     = di.SendPropertyResp
+	EventIndex             = di.EventIndex
+	EventIndexResp         = di.EventIndexResp
+	EventLogIndexReq       = di.EventLogIndexReq
+	HubLogIndex            = di.HubLogIndex
+	HubLogIndexReq         = di.HubLogIndexReq
+	HubLogIndexResp        = di.HubLogIndexResp
+	PageInfo               = di.PageInfo
+	PropertyIndex          = di.PropertyIndex
+	PropertyIndexResp      = di.PropertyIndexResp
+	PropertyLatestIndexReq = di.PropertyLatestIndexReq
+	PropertyLogIndexReq    = di.PropertyLogIndexReq
+	Response               = di.Response
+	SdkLogIndex            = di.SdkLogIndex
+	SdkLogIndexReq         = di.SdkLogIndexReq
+	SdkLogIndexResp        = di.SdkLogIndexResp
+	SendActionReq          = di.SendActionReq
+	SendActionResp         = di.SendActionResp
+	SendMsgReq             = di.SendMsgReq
+	SendMsgResp            = di.SendMsgResp
+	SendPropertyReq        = di.SendPropertyReq
+	SendPropertyResp       = di.SendPropertyResp
 
 	DeviceMsg interface {
 		// 获取设备sdk调试日志
@@ -39,9 +42,11 @@ type (
 		// 获取设备调试信息记录登入登出,操作
 		HubLogIndex(ctx context.Context, in *HubLogIndexReq, opts ...grpc.CallOption) (*HubLogIndexResp, error)
 		// 获取设备数据信息
-		SchemaLatestIndex(ctx context.Context, in *SchemaLatestIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error)
+		PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error)
 		// 获取设备数据信息
-		SchemaLogIndex(ctx context.Context, in *SchemaLogIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error)
+		PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error)
+		// 获取设备数据信息
+		EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error)
 	}
 
 	defaultDeviceMsg struct {
@@ -90,23 +95,34 @@ func (d *directDeviceMsg) HubLogIndex(ctx context.Context, in *HubLogIndexReq, o
 }
 
 // 获取设备数据信息
-func (m *defaultDeviceMsg) SchemaLatestIndex(ctx context.Context, in *SchemaLatestIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error) {
+func (m *defaultDeviceMsg) PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
 	client := di.NewDeviceMsgClient(m.cli.Conn())
-	return client.SchemaLatestIndex(ctx, in, opts...)
+	return client.PropertyLatestIndex(ctx, in, opts...)
 }
 
 // 获取设备数据信息
-func (d *directDeviceMsg) SchemaLatestIndex(ctx context.Context, in *SchemaLatestIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error) {
-	return d.svr.SchemaLatestIndex(ctx, in)
+func (d *directDeviceMsg) PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
+	return d.svr.PropertyLatestIndex(ctx, in)
 }
 
 // 获取设备数据信息
-func (m *defaultDeviceMsg) SchemaLogIndex(ctx context.Context, in *SchemaLogIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error) {
+func (m *defaultDeviceMsg) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
 	client := di.NewDeviceMsgClient(m.cli.Conn())
-	return client.SchemaLogIndex(ctx, in, opts...)
+	return client.PropertyLogIndex(ctx, in, opts...)
 }
 
 // 获取设备数据信息
-func (d *directDeviceMsg) SchemaLogIndex(ctx context.Context, in *SchemaLogIndexReq, opts ...grpc.CallOption) (*SchemaIndexResp, error) {
-	return d.svr.SchemaLogIndex(ctx, in)
+func (d *directDeviceMsg) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
+	return d.svr.PropertyLogIndex(ctx, in)
+}
+
+// 获取设备数据信息
+func (m *defaultDeviceMsg) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error) {
+	client := di.NewDeviceMsgClient(m.cli.Conn())
+	return client.EventLogIndex(ctx, in, opts...)
+}
+
+// 获取设备数据信息
+func (d *directDeviceMsg) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error) {
+	return d.svr.EventLogIndex(ctx, in)
 }
