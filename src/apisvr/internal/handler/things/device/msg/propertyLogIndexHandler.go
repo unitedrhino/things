@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func SchemaLogIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func PropertyLogIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.DeviceMsgSchemaLogIndexReq
+		var req types.DeviceMsgPropertyLogIndexReq
 		if err := httpx.Parse(r, &req); err != nil {
-			result.Http(w, r, nil, errors.Parameter.AddMsgf("参数校验失败:%v", err.Error()))
+			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := msg.NewSchemaLogIndexLogic(r.Context(), svcCtx)
-		resp, err := l.SchemaLogIndex(&req)
+		l := msg.NewPropertyLogIndexLogic(r.Context(), svcCtx)
+		resp, err := l.PropertyLogIndex(&req)
 		result.Http(w, r, resp, err)
 	}
 }

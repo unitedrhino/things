@@ -84,10 +84,10 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 		for id, _ := range l.schema.Property {
 			data, err := l.dd.GetPropertyDataByID(l.ctx,
 				deviceMsg.FilterOpt{
-					Page:       def.PageInfo2{Size: 1},
-					ProductID:  msg.ProductID,
-					DeviceName: []string{msg.DeviceName},
-					DataID:     id})
+					Page:        def.PageInfo2{Size: 1},
+					ProductID:   msg.ProductID,
+					DeviceNames: []string{msg.DeviceName},
+					DataID:      id})
 			if err != nil {
 				l.Errorf("%s.GetPropertyDataByID.get id:%s err:%s",
 					utils.FuncName(), id, err.Error())
