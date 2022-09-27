@@ -51,8 +51,8 @@ type (
 		// InsertPropertiesData 插入多条属性数据 params key为属性的id,val为属性的值
 		InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error
 		// GetEventDataWithID 根据事件id获取事件信息
-		GetEventDataByID(ctx context.Context, filter FilterOpt) ([]*EventData, error)
-		GetEventCountByID(ctx context.Context, filter FilterOpt) (int64, error)
+		GetEventDataByFilter(ctx context.Context, filter FilterOpt) ([]*EventData, error)
+		GetEventCountByFilter(ctx context.Context, filter FilterOpt) (int64, error)
 		// GetPropertyDataByID 根据属性id获取属性信息
 		GetPropertyDataByID(ctx context.Context, filter FilterOpt) ([]*PropertyData, error)
 		GetPropertyCountByID(ctx context.Context, filter FilterOpt) (int64, error)
