@@ -33,14 +33,15 @@ type (
 	   NEXT 填充：使用下一个非 NULL 值填充数据。例如：FILL(NEXT)。
 	*/
 	FilterOpt struct {
-		Page       def.PageInfo2
-		ProductID  string
-		DeviceName []string
-		DataID     string
-		Order      int32  //0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
-		Interval   int64  //间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
-		Fill       string //指定窗口区间数据缺失的情况下的填充模式
-		ArgFunc    string //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
+		Page        def.PageInfo2
+		ProductID   string
+		DeviceNames []string
+		DataID      string
+		Types       []string //事件类型: 信息:info  告警alert  故障:fault
+		Order       int32    //0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
+		Interval    int64    //间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
+		Fill        string   //指定窗口区间数据缺失的情况下的填充模式
+		ArgFunc     string   //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
 	}
 
 	SchemaDataRepo interface {
