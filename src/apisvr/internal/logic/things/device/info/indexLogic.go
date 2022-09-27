@@ -32,7 +32,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		ProductID:  req.ProductID, //产品id
 		DeviceName: req.DeviceName,
 		Tags:       toTagsMap(req.Tags),
-		Page:       logic.ToPageRpc(req.Page),
+		Page:       logic.ToDmPageRpc(req.Page),
 	}
 	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
 	if err != nil {

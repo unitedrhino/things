@@ -14,24 +14,27 @@ import (
 )
 
 type (
-	HubLogIndex          = di.HubLogIndex
-	HubLogIndexReq       = di.HubLogIndexReq
-	HubLogIndexResp      = di.HubLogIndexResp
-	PageInfo             = di.PageInfo
-	Response             = di.Response
-	SchemaIndex          = di.SchemaIndex
-	SchemaIndexResp      = di.SchemaIndexResp
-	SchemaLatestIndexReq = di.SchemaLatestIndexReq
-	SchemaLogIndexReq    = di.SchemaLogIndexReq
-	SdkLogIndex          = di.SdkLogIndex
-	SdkLogIndexReq       = di.SdkLogIndexReq
-	SdkLogIndexResp      = di.SdkLogIndexResp
-	SendActionReq        = di.SendActionReq
-	SendActionResp       = di.SendActionResp
-	SendMsgReq           = di.SendMsgReq
-	SendMsgResp          = di.SendMsgResp
-	SendPropertyReq      = di.SendPropertyReq
-	SendPropertyResp     = di.SendPropertyResp
+	EventIndex             = di.EventIndex
+	EventIndexResp         = di.EventIndexResp
+	EventLogIndexReq       = di.EventLogIndexReq
+	HubLogIndex            = di.HubLogIndex
+	HubLogIndexReq         = di.HubLogIndexReq
+	HubLogIndexResp        = di.HubLogIndexResp
+	PageInfo               = di.PageInfo
+	PropertyIndex          = di.PropertyIndex
+	PropertyIndexResp      = di.PropertyIndexResp
+	PropertyLatestIndexReq = di.PropertyLatestIndexReq
+	PropertyLogIndexReq    = di.PropertyLogIndexReq
+	Response               = di.Response
+	SdkLogIndex            = di.SdkLogIndex
+	SdkLogIndexReq         = di.SdkLogIndexReq
+	SdkLogIndexResp        = di.SdkLogIndexResp
+	SendActionReq          = di.SendActionReq
+	SendActionResp         = di.SendActionResp
+	SendMsgReq             = di.SendMsgReq
+	SendMsgResp            = di.SendMsgResp
+	SendPropertyReq        = di.SendPropertyReq
+	SendPropertyResp       = di.SendPropertyResp
 
 	DeviceInteract interface {
 		// 同步调用设备行为
