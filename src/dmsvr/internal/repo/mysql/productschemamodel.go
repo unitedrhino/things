@@ -6,6 +6,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/shared/store"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -45,6 +46,15 @@ type (
 func (p *ProductSchemaFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if p.ProductID != "" {
 		sql = sql.Where("productID=?", p.ProductID)
+	}
+	if p.Type != 0 {
+		sql = sql.Where("type=?", p.Type)
+	}
+	if p.Tag != 0 {
+		sql = sql.Where("tag=?", p.Tag)
+	}
+	if len(p.Identifiers) != 0 {
+		sql = sql.Where(fmt.Sprintf("identifier in (%v)", store.ArrayToSql(p.Identifiers)))
 	}
 	return sql
 }
