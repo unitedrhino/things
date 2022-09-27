@@ -14,18 +14,18 @@ service User {
 }
 
 service Role {
-  rpc RoleCreate(RoleCreateReq) returns(Response); //添加角色
-  rpc RoleIndex(RoleIndexReq) returns(RoleIndexResp); //获取角色列表
-  rpc RoleUpdate(RoleUpdateReq) returns(Response); //更新角色
-  rpc RoleDelete(RoleDeleteReq) returns(Response); //删除角色
-  rpc RoleMenuUpdate(RoleMenuUpdateReq) returns(Response); //添加角色
+  rpc roleCreate(RoleCreateReq) returns(Response); //添加角色
+  rpc roleIndex(RoleIndexReq) returns(RoleIndexResp); //获取角色列表
+  rpc roleUpdate(RoleUpdateReq) returns(Response); //更新角色
+  rpc roleDelete(RoleDeleteReq) returns(Response); //删除角色
+  rpc roleMenuUpdate(RoleMenuUpdateReq) returns(Response); //添加角色
 }
 
 service Menu {
-  rpc MenuCreate(MenuCreateReq) returns(Response); //添加菜单
-  rpc MenuIndex(MenuIndexReq) returns(MenuIndexResp); //获取菜单列表
-  rpc MenuUpdate(MenuUpdateReq) returns(Response); //更新菜单
-  rpc MenuDelete(MenuDeleteReq) returns(Response); //删除菜单
+  rpc menuCreate(MenuCreateReq) returns(Response); //添加菜单
+  rpc menuIndex(MenuIndexReq) returns(MenuIndexResp); //获取菜单列表
+  rpc menuUpdate(MenuUpdateReq) returns(Response); //更新菜单
+  rpc menuDelete(MenuDeleteReq) returns(Response); //删除菜单
 }
 
 
