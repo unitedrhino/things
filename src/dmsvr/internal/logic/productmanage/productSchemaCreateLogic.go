@@ -67,7 +67,7 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
 		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, mysql.ToPropertyDo(po), in.Info.ProductID); err != nil {
-			l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
