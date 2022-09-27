@@ -28,69 +28,6 @@ func NewProductSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *ProductSchemaUpdateLogic) ModifyProductSchema(in *dm.ProductSchemaUpdateReq, oldT *schema.Model) (*dm.Response, error) {
-	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
-
-	//l.Infof("%s ProductID:%v", utils.FuncName(), in.Info.ProductID)
-	//newT, err := schema.ValidateWithFmt([]byte(in.Info.Schema))
-	//if err != nil {
-	//	return nil, err
-	//}
-	//err = schema.CheckModify(oldT, newT)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//if err := l.svcCtx.SchemaManaRepo.UpdateProduct(l.ctx, oldT, newT, in.Info.ProductID); err != nil {
-	//	l.Errorf("%s UpdateProduct failure,err:%v", utils.FuncName(), err)
-	//	return nil, errors.Database.AddDetail(err)
-	//}
-	//err = l.svcCtx.SchemaRepo.Update(l.ctx, in.Info.ProductID, newT)
-	//if err != nil {
-	//	l.Errorf("%s.Update err=%+v", utils.FuncName(), err)
-	//	return nil, errors.System.AddDetail(err)
-	//}
-	//err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.Info.ProductID})
-	//if err != nil {
-	//	return nil, err
-	//}
-	return &dm.Response{}, nil
-}
-
-func (l *ProductSchemaUpdateLogic) AddProductSchema(in *dm.ProductSchemaUpdateReq) (*dm.Response, error) {
-	l.Infof("%s ProductID:%v", utils.FuncName(), in.Info.ProductID)
-	//_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
-	//if err != nil {
-	//	if err == mysql.ErrNotFound {
-	//		return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
-	//	}
-	//	return nil, errors.Database.AddDetail(err)
-	//}
-	//t, err := schema.ValidateWithFmt([]byte(in.Info.Schema))
-	//if err != nil {
-	//	return nil, err
-	//}
-	//if err := l.svcCtx.HubLogRepo.InitProduct(
-	//	l.ctx, in.Info.ProductID); err != nil {
-	//	l.Errorf("%s.DeviceLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
-	//	return nil, errors.Database.AddDetail(err)
-	//}
-	//if err := l.svcCtx.SchemaManaRepo.InitProduct(l.ctx, t, in.Info.ProductID); err != nil {
-	//	l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
-	//	return nil, errors.Database.AddDetail(err)
-	//}
-	//err = l.svcCtx.SchemaRepo.Insert(l.ctx, in.Info.ProductID, t)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.Info.ProductID})
-	//if err != nil {
-	//	return nil, err
-	//}
-	return &dm.Response{}, nil
-
-	//return &dm.Response{}, err
-}
-
 func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*mysql.ProductSchema, *mysql.ProductSchema, error) {
 	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
 	if err != nil {
@@ -108,9 +45,6 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*my
 	}
 	if po.Tag != in.Info.Tag {
 		return nil, nil, errors.Parameter.AddMsg("功能标签不支持修改")
-	}
-	if po.Type != in.Info.Type {
-		return nil, nil, errors.Parameter.AddMsg("功能类型不支持修改,请删除后新增")
 	}
 	newPo := ToProductSchemaPo(in.Info)
 	newPo.Id = po.Id
@@ -139,10 +73,17 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	if err != nil {
 		return nil, err
 	}
+	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
+		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(
+			l.ctx, in.Info.ProductID, in.Info.Identifier); err != nil {
+			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
+			return nil, errors.Database.AddDetail(err)
+		}
+	}
 	if schema.AffordanceType(newPo.Type) == schema.AffordanceTypeProperty {
-		if err := l.svcCtx.SchemaManaRepo.UpdateProperty(l.ctx,
-			mysql.ToPropertyDo(po), mysql.ToPropertyDo(newPo), in.Info.ProductID); err != nil {
-			l.Errorf("%s.SchemaManaRepo.UpdateProperty failure,err:%v", utils.FuncName(), err)
+		if err := l.svcCtx.SchemaManaRepo.CreateProperty(
+			l.ctx, mysql.ToPropertyDo(newPo), in.Info.ProductID); err != nil {
+			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
@@ -150,7 +91,8 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(
+		l.ctx, &events.DataUpdateInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}
