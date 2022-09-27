@@ -90,7 +90,7 @@ func (l *SchemaLogIndexLogic) SchemaLogIndex(in *di.SchemaLogIndexReq) (*di.Sche
 			}
 		}
 	case devices.EventMethod:
-		dds, err := dd.GetEventDataByID(l.ctx, deviceMsg.FilterOpt{
+		dds, err := dd.GetEventDataByFilter(l.ctx, deviceMsg.FilterOpt{
 			Page: def.PageInfo2{
 				TimeStart: in.TimeStart,
 				TimeEnd:   in.TimeEnd,
@@ -99,11 +99,9 @@ func (l *SchemaLogIndexLogic) SchemaLogIndex(in *di.SchemaLogIndexReq) (*di.Sche
 			},
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,
-			DataID:     in.DataID,
-			Interval:   in.Interval,
-			ArgFunc:    in.ArgFunc})
+			DataID:     in.DataID})
 		if err != nil {
-			l.Errorf("%s.GetEventDataByID err=%v", utils.FuncName(), err)
+			l.Errorf("%s.GetEventDataByFilter err=%v", utils.FuncName(), err)
 			return nil, errors.System.AddDetail(err)
 		}
 		for _, devData := range dds {
@@ -119,7 +117,7 @@ func (l *SchemaLogIndexLogic) SchemaLogIndex(in *di.SchemaLogIndexReq) (*di.Sche
 			l.Infof("%s get data=%+v", utils.FuncName(), diData)
 		}
 		if in.ArgFunc == "" && in.Interval == 0 {
-			total, err = dd.GetEventCountByID(l.ctx, deviceMsg.FilterOpt{
+			total, err = dd.GetEventCountByFilter(l.ctx, deviceMsg.FilterOpt{
 				Page: def.PageInfo2{
 					TimeStart: in.TimeStart,
 					TimeEnd:   in.TimeEnd,
@@ -132,7 +130,7 @@ func (l *SchemaLogIndexLogic) SchemaLogIndex(in *di.SchemaLogIndexReq) (*di.Sche
 				Interval:   in.Interval,
 				ArgFunc:    in.ArgFunc})
 			if err != nil {
-				l.Errorf("%s.GetEventCountByID err=%v", utils.FuncName(), err)
+				l.Errorf("%s.GetEventCountByFilter err=%v", utils.FuncName(), err)
 				return nil, errors.System.AddDetail(err)
 			}
 		}

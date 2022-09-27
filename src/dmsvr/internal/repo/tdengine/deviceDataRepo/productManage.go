@@ -35,8 +35,8 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 	{
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
 			"(`ts` timestamp,`event_id` BINARY(50),`event_type` BINARY(20), `param` BINARY(5000)) "+
-			"TAGS (device_name BINARY(50));",
-			d.GetEventStableName(productID))
+			"TAGS (`product_id` BINARY(50),`device_name` BINARY(50));",
+			d.GetEventStableName())
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return err
 		}
