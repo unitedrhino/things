@@ -29,7 +29,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.ProductSchemaIndexReq) (resp *types.ProductSchemaIndexResp, err error) {
 	dmReq := &dm.ProductSchemaIndexReq{
-		Page:        logic.ToPageRpc(req.Page),
+		Page:        logic.ToDmPageRpc(req.Page),
 		ProductID:   req.ProductID,
 		Type:        req.Type,
 		Tag:         req.Tag,

@@ -174,13 +174,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/schema-log/index",
-				Handler: thingsdevicemsg.SchemaLogIndexHandler(serverCtx),
+				Path:    "/property-log/index",
+				Handler: thingsdevicemsg.PropertyLogIndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/schema-latest/index",
-				Handler: thingsdevicemsg.SchemaLatestIndexHandler(serverCtx),
+				Path:    "/property-latest/index",
+				Handler: thingsdevicemsg.PropertyLatestIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/event-log/index",
+				Handler: thingsdevicemsg.EventLogIndexHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api/v1/things/device/msg"),
