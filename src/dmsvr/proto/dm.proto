@@ -19,63 +19,63 @@ service DeviceAuth{
 //设备管理
 service DeviceManage {
   //新增设备
-  rpc DeviceInfoCreate(DeviceInfo)     returns (Response);
+  rpc deviceInfoCreate(DeviceInfo)     returns (Response);
   //更新设备
-  rpc DeviceInfoUpdate(DeviceInfo)     returns (Response);
+  rpc deviceInfoUpdate(DeviceInfo)     returns (Response);
   //删除设备
-  rpc DeviceInfoDelete(DeviceInfoDeleteReq)     returns (Response);
+  rpc deviceInfoDelete(DeviceInfoDeleteReq)     returns (Response);
   //获取设备信息列表
-  rpc DeviceInfoIndex(DeviceInfoIndexReq)     returns (DeviceInfoIndexResp);
+  rpc deviceInfoIndex(DeviceInfoIndexReq)     returns (DeviceInfoIndexResp);
   //获取设备信息详情
-  rpc DeviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
+  rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
 }
 
 //产品管理
 service ProductManage{
   /*产品管理*/
   //新增产品
-  rpc ProductInfoCreate(ProductInfo)     returns (Response);
+  rpc productInfoCreate(ProductInfo)     returns (Response);
   //更新产品
-  rpc ProductInfoUpdate(ProductInfo)     returns (Response);
+  rpc productInfoUpdate(ProductInfo)     returns (Response);
   //删除产品
-  rpc ProductInfoDelete(ProductInfoDeleteReq)     returns (Response);
+  rpc productInfoDelete(ProductInfoDeleteReq)     returns (Response);
   //获取产品信息列表
-  rpc ProductInfoIndex(ProductInfoIndexReq)     returns (ProductInfoIndexResp);
+  rpc productInfoIndex(ProductInfoIndexReq)     returns (ProductInfoIndexResp);
   //获取产品信息详情
-  rpc ProductInfoRead(ProductInfoReadReq)     returns (ProductInfo);
+  rpc productInfoRead(ProductInfoReadReq)     returns (ProductInfo);
 
   /*物模型管理*/
   //更新产品物模型
-  rpc ProductSchemaUpdate(ProductSchemaUpdateReq)returns (Response);
+  rpc productSchemaUpdate(ProductSchemaUpdateReq)returns (Response);
   //新增产品
-  rpc ProductSchemaCreate(ProductSchemaCreateReq)     returns (Response);
+  rpc productSchemaCreate(ProductSchemaCreateReq)     returns (Response);
   //删除产品
-  rpc ProductSchemaDelete(ProductSchemaDeleteReq)     returns (Response);
+  rpc productSchemaDelete(ProductSchemaDeleteReq)     returns (Response);
   //获取产品信息列表
-  rpc ProductSchemaIndex(ProductSchemaIndexReq)     returns (ProductSchemaIndexResp);
+  rpc productSchemaIndex(ProductSchemaIndexReq)     returns (ProductSchemaIndexResp);
   //删除产品
-  rpc ProductSchemaTslImport(ProductSchemaTslImportReq)     returns (Response);
+  rpc productSchemaTslImport(ProductSchemaTslImportReq)     returns (Response);
   //获取产品信息列表
-  rpc ProductSchemaTslRead(ProductSchemaTslReadReq)     returns (ProductSchemaTslReadResp);
+  rpc productSchemaTslRead(ProductSchemaTslReadReq)     returns (ProductSchemaTslReadResp);
 }
 
 service DeviceGroup {
   //创建分组
-  rpc GroupInfoCreate(GroupInfoCreateReq)     returns (Response);
+  rpc groupInfoCreate(GroupInfoCreateReq)     returns (Response);
   //获取分组信息列表
-  rpc GroupInfoIndex(GroupInfoIndexReq)     returns (GroupInfoIndexResp);
+  rpc groupInfoIndex(GroupInfoIndexReq)     returns (GroupInfoIndexResp);
   //获取分组信息详情
-  rpc GroupInfoRead(GroupInfoReadReq)     returns (GroupInfo);
+  rpc groupInfoRead(GroupInfoReadReq)     returns (GroupInfo);
   //更新分组
-  rpc GroupInfoUpdate(GroupInfoUpdateReq)     returns (Response);
+  rpc groupInfoUpdate(GroupInfoUpdateReq)     returns (Response);
   //删除分组
-  rpc GroupInfoDelete(GroupInfoDeleteReq)     returns (Response);
+  rpc groupInfoDelete(GroupInfoDeleteReq)     returns (Response);
   //创建分组设备
-  rpc GroupDeviceCreate(GroupDeviceCreateReq)     returns (Response);
+  rpc groupDeviceCreate(GroupDeviceCreateReq)     returns (Response);
   //获取分组设备信息列表
-  rpc GroupDeviceIndex(GroupDeviceIndexReq)     returns (GroupDeviceIndexResp);
+  rpc groupDeviceIndex(GroupDeviceIndexReq)     returns (GroupDeviceIndexResp);
   //删除分组设备
-  rpc GroupDeviceDelete(GroupDeviceDeleteReq)     returns (Response);
+  rpc groupDeviceDelete(GroupDeviceDeleteReq)     returns (Response);
 }
 
 
