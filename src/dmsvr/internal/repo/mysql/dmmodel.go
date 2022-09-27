@@ -99,13 +99,13 @@ func (m *defaultDmModel) GetDevicesCountByFilter(ctx context.Context, f DeviceFi
 
 func (p *ProductFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if p.DeviceType != 0 {
-		sql = sql.Where("DeviceType=?", p.DeviceType)
+		sql = sql.Where("deviceType=?", p.DeviceType)
 	}
 	if p.ProductName != "" {
-		sql = sql.Where("ProductName like ?", "%"+p.ProductName+"%")
+		sql = sql.Where("productName like ?", "%"+p.ProductName+"%")
 	}
 	if len(p.ProductIDs) != 0 {
-		sql = sql.Where(fmt.Sprintf("ProductID in (%v)", store.ArrayToSql(p.ProductIDs)))
+		sql = sql.Where(fmt.Sprintf("productID in (%v)", store.ArrayToSql(p.ProductIDs)))
 	}
 	return sql
 }
