@@ -62,7 +62,7 @@ func (m *defaultGroupInfoModel) Delete(ctx context.Context, groupID int64) error
 }
 
 func (m *defaultGroupInfoModel) FindOne(ctx context.Context, groupID int64) (*GroupInfo, error) {
-	query := fmt.Sprintf("select %s from %s where `groupID` = ? limit 1", groupInfoRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `parentID` = ? limit 1", groupInfoRows, m.table)
 	var resp GroupInfo
 	err := m.conn.QueryRowCtx(ctx, &resp, query, groupID)
 	switch err {
