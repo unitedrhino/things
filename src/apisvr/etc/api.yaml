@@ -5,52 +5,31 @@ Timeout: 1000000
 MaxBytes: 1000000000
 Port: 7777
 NodeID: 1
-Mysql:
-  DataSource: root:password@tcp(127.0.0.1:3308)/pet?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+Log:
+  Encoding: plain
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
-DmRpc:
-  Enable: true
-  Conf:
-    Etcd:
-      Hosts:
-        - 127.0.0.1:2379
-      Key: dm.rpc
-    Timeout: 1000000
-DcRpc:
-  Enable: false
-  Conf:
-    Etcd:
-      Hosts:
-        - 127.0.0.1:2379
-      Key: dc.rpc
-    Timeout: 1000000
-UserRpc:
-  Enable: false
-  Conf:
-    Etcd:
-      Hosts:
-        - 127.0.0.1:2379
-      Key: user.rpc
-Auth:
-  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
-  AccessExpire: 86400
 Rej:
   AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
   AccessExpire: 600     #过期时间单位秒
-OSS:
-  AccessSecret: password
-  AccessExpire: 60000     #过期时间单位秒
-  Minio:
-    Endpoint:  127.0.0.1:9000
-    AccessKeyID: root
-    SecretAccessKey: password
-    UseSSL: false
-
-Telemetry:
-  Name: api
-  Endpoint: http://127.0.0.1:14268/api/traces
-  Sampler: 1.0
-  Batcher: jaeger
+DdEnable: true
+SysRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: sys.rpc
+DiRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000

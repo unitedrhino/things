@@ -10,17 +10,17 @@ import (
 	serverRole "github.com/i-Things/things/src/syssvr/internal/server/role"
 )
 
-func NewUser(config *Config) client.User {
-	userSvc := getCtxSvc(config)
+func NewUser() client.User {
+	userSvc := GetCtxSvc()
 	return client.NewDirectUser(userSvc, server.NewUserServer(userSvc))
 }
 
-func NewRole(config *Config) clientRole.Role {
-	userSvc := getCtxSvc(config)
+func NewRole() clientRole.Role {
+	userSvc := GetCtxSvc()
 	return clientRole.NewDirectRole(userSvc, serverRole.NewRoleServer(userSvc))
 }
 
-func NewMenu(config *Config) clientMenu.Menu {
-	userSvc := getCtxSvc(config)
+func NewMenu() clientMenu.Menu {
+	userSvc := GetCtxSvc()
 	return clientMenu.NewDirectMenu(userSvc, serverMenu.NewMenuServer(userSvc))
 }
