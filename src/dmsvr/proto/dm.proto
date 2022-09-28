@@ -110,7 +110,7 @@ message GroupInfoDeleteReq{
 
 message GroupDeviceCreateReq{
   int64 groupID = 1;
-  map<string, string> DeviceIndexList = 2;
+  repeated DeviceInfoReadReq DeviceIndexList = 2;
 }
 
 message GroupDeviceIndexReq{

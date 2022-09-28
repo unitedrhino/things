@@ -28,9 +28,12 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 
 func (l *CreateLogic) Create(req *types.GroupDeviceCreateReq) error {
 
-	m := make(map[string]string, len(req.List))
+	m := make([]*dm.DeviceInfoReadReq, 0, len(req.List))
 	for _, v := range req.List {
-		m[v.ProductID] = v.DeviceName
+		m = append(m, &dm.DeviceInfoReadReq{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
 	}
 	_, err := l.svcCtx.DeviceG.GroupDeviceCreate(l.ctx, &dm.GroupDeviceCreateReq{GroupID: req.GroupID, DeviceIndexList: m})
 	if err != nil {
