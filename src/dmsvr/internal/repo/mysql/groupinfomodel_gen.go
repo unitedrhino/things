@@ -26,6 +26,7 @@ type (
 	groupInfoModel interface {
 		Insert(ctx context.Context, data *GroupInfo) (sql.Result, error)
 		FindOne(ctx context.Context, groupID int64) (*GroupInfo, error)
+		FindOneByParentID(ctx context.Context, parentID int64) (*GroupInfo, error)
 		FindOneByGroupName(ctx context.Context, groupName string) (*GroupInfo, error)
 		Update(ctx context.Context, data *GroupInfo) error
 		Delete(ctx context.Context, groupID int64) error
@@ -62,9 +63,23 @@ func (m *defaultGroupInfoModel) Delete(ctx context.Context, groupID int64) error
 }
 
 func (m *defaultGroupInfoModel) FindOne(ctx context.Context, groupID int64) (*GroupInfo, error) {
-	query := fmt.Sprintf("select %s from %s where `parentID` = ? limit 1", groupInfoRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `groupID` = ? limit 1", groupInfoRows, m.table)
 	var resp GroupInfo
 	err := m.conn.QueryRowCtx(ctx, &resp, query, groupID)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultGroupInfoModel) FindOneByParentID(ctx context.Context, parentID int64) (*GroupInfo, error) {
+	query := fmt.Sprintf("select %s from %s where `parentID` = ? limit 1", groupInfoRows, m.table)
+	var resp GroupInfo
+	err := m.conn.QueryRowCtx(ctx, &resp, query, parentID)
 	switch err {
 	case nil:
 		return &resp, nil
