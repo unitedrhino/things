@@ -12,43 +12,40 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SchemaLatestIndexLogic struct {
+type PropertyLatestIndexLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewSchemaLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SchemaLatestIndexLogic {
-	return &SchemaLatestIndexLogic{
+func NewPropertyLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyLatestIndexLogic {
+	return &PropertyLatestIndexLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *SchemaLatestIndexLogic) SchemaLatestIndex(req *types.DeviceMsgSchemaLatestIndexReq) (resp *types.DeviceMsgSchemaIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.SchemaLatestIndex(l.ctx, &di.SchemaLatestIndexReq{
-		Method:     req.Method,
+func (l *PropertyLatestIndexLogic) PropertyLatestIndex(req *types.DeviceMsgPropertyLatestIndexReq) (resp *types.DeviceMsgPropertyIndexResp, err error) {
+	dmResp, err := l.svcCtx.DeviceMsg.PropertyLatestIndex(l.ctx, &di.PropertyLatestIndexReq{
 		DeviceName: req.DeviceName,
 		ProductID:  req.ProductID,
-		DataID:     req.DataID,
+		DataIDs:    req.DataIDs,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.GetDeviceData req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	info := make([]*types.DeviceMsgSchemaIndex, 0, len(dmResp.List))
+	info := make([]*types.DeviceMsgPropertyIndex, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		info = append(info, &types.DeviceMsgSchemaIndex{
+		info = append(info, &types.DeviceMsgPropertyIndex{
 			Timestamp: v.Timestamp,
-			Type:      v.Type,
 			DataID:    v.DataID,
-			GetValue:  v.GetValue,
-			SendValue: v.SendValue,
+			Value:     v.Value,
 		})
 	}
-	return &types.DeviceMsgSchemaIndexResp{
+	return &types.DeviceMsgPropertyIndexResp{
 		Total: dmResp.Total,
 		List:  info,
 	}, nil

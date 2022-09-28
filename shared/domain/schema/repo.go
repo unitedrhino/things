@@ -14,13 +14,14 @@ type (
 	}
 	Repo interface {
 		ReadRepo
-		Insert(ctx context.Context, productID string, template *Model) error
-		Update(ctx context.Context, productID string, template *Model) error
+		TslImport(ctx context.Context, productID string, template *Model) error
+		//Update(ctx context.Context, productID string, template *Model) error
+		TslRead(ctx context.Context, productID string) (*Model, error)
 		Delete(ctx context.Context, productID string) error
 	}
 	ReadRepo interface {
 		GetSchemaModel(ctx context.Context, productID string) (*Model, error)
-		GetSchemaInfo(ctx context.Context, productID string) (*Info, error)
+		//GetSchemaInfo(ctx context.Context, productID string) (*Info, error)
 		ClearCache(ctx context.Context, productID string) error
 	}
 	GetSchemaModel func(ctx context.Context, productID string) (*Model, error)

@@ -20,11 +20,11 @@ type PublishMsg struct {
 
 func (p *PublishMsg) String() string {
 	msgMap := map[string]any{
-		"Topic":      p.Topic,
-		"Payload":    string(p.Payload),
-		"Timestamp":  p.Timestamp,
-		"ProductID":  p.ProductID,
-		"DeviceName": p.DeviceName,
+		"Topic":       p.Topic,
+		"Payload":     string(p.Payload),
+		"Timestamp":   p.Timestamp,
+		"ProductID":   p.ProductID,
+		"DeviceNames": p.DeviceName,
 	}
 	return utils.Fmt(msgMap)
 }

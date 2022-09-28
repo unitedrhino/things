@@ -174,13 +174,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/schema-log/index",
-				Handler: thingsdevicemsg.SchemaLogIndexHandler(serverCtx),
+				Path:    "/property-log/index",
+				Handler: thingsdevicemsg.PropertyLogIndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/schema-latest/index",
-				Handler: thingsdevicemsg.SchemaLatestIndexHandler(serverCtx),
+				Path:    "/property-latest/index",
+				Handler: thingsdevicemsg.PropertyLatestIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/event-log/index",
+				Handler: thingsdevicemsg.EventLogIndexHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api/v1/things/device/msg"),
@@ -273,13 +278,33 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/tsl-import",
+				Handler: thingsproductschema.TslImportHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/tsl-read",
+				Handler: thingsproductschema.TslReadHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/update",
 				Handler: thingsproductschema.UpdateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/read",
-				Handler: thingsproductschema.ReadHandler(serverCtx),
+				Path:    "/create",
+				Handler: thingsproductschema.CreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/delete",
+				Handler: thingsproductschema.DeleteHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/index",
+				Handler: thingsproductschema.IndexHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api/v1/things/product/schema"),

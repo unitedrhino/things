@@ -28,7 +28,7 @@ func ToEventData(id string, db map[string]any) *schema2.EventData {
 func ToPropertyData(id string, db map[string]any) *schema2.PropertyData {
 	propertyType := db[PROPERTY_TYPE]
 	switch propertyType {
-	case string(schema.STRUCT):
+	case string(schema.DataTypeStruct):
 		data := schema2.PropertyData{
 			ID:        id,
 			Param:     nil,
@@ -39,7 +39,7 @@ func ToPropertyData(id string, db map[string]any) *schema2.PropertyData {
 		delete(db, PROPERTY_TYPE)
 		data.Param = db
 		return &data
-	case string(schema.ARRAY):
+	case string(schema.DataTypeArray):
 		paramStr := cast.ToString(db["param"])
 		var param []any
 		json.Unmarshal([]byte(paramStr), &param)

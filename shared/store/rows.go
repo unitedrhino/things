@@ -96,21 +96,21 @@ func Scan(rows *sql.Rows, Dest any) error {
 
 func GetTdType(define schema.Define) string {
 	switch define.Type {
-	case schema.BOOL:
+	case schema.DataTypeBool:
 		return "BOOL"
-	case schema.INT:
+	case schema.DataTypeInt:
 		return "BIGINT"
-	case schema.STRING:
+	case schema.DataTypeString:
 		return "BINARY(5000)"
-	case schema.STRUCT:
+	case schema.DataTypeStruct:
 		return "BINARY(5000)"
-	case schema.FLOAT:
+	case schema.DataTypeFloat:
 		return "DOUBLE"
-	case schema.TIMESTAMP:
+	case schema.DataTypeTimestamp:
 		return "TIMESTAMP"
-	case schema.ARRAY:
+	case schema.DataTypeArray:
 		return "BINARY(5000)"
-	case schema.ENUM:
+	case schema.DataTypeEnum:
 		return "SMALLINT"
 	default:
 		panic(fmt.Sprintf("%v not support", define.Type))

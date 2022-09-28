@@ -22,7 +22,7 @@ func init() {
 	DefaultSchema = string(t)
 }
 
-func NewSchema(schemaStr []byte) (*Model, error) {
+func NewSchemaTsl(schemaStr []byte) (*Model, error) {
 	schema := Model{}
 	//如果没有需要返回默认值
 	if len(schemaStr) == 0 {
@@ -41,7 +41,7 @@ func (d *Define) init() *Define {
 		d.Spec = make(map[string]*Spec, len(d.Specs)+1)
 		for i := 0; i < len(d.Specs); i++ {
 			p := &d.Specs[i]
-			d.Spec[p.ID] = p
+			d.Spec[p.Identifier] = p
 		}
 	}
 	if d.ArrayInfo != nil {
@@ -60,7 +60,7 @@ func (e *Event) init() *Event {
 	for i := 0; i < len(e.Params); i++ {
 		p := &e.Params[i]
 		p.init()
-		e.Param[p.ID] = p
+		e.Param[p.Identifier] = p
 	}
 	return e
 }
@@ -70,12 +70,12 @@ func (a *Action) init() *Action {
 	a.Out = make(map[string]*Param, len(a.Output)+1)
 	for i := 0; i < len(a.Input); i++ {
 		p := &a.Input[i]
-		a.In[p.ID] = p
+		a.In[p.Identifier] = p
 		p.init()
 	}
 	for i := 0; i < len(a.Output); i++ {
 		p := &a.Output[i]
-		a.Out[p.ID] = p
+		a.Out[p.Identifier] = p
 		p.init()
 	}
 	return a
@@ -86,24 +86,24 @@ func (p *Property) init() *Property {
 	return p
 }
 
-func (t *Model) init() *Model {
-	t.Property = make(map[string]*Property, len(t.Properties)+1)
-	t.Event = make(map[string]*Event, len(t.Events)+1)
-	t.Action = make(map[string]*Action, len(t.Actions)+1)
-	for i := 0; i < len(t.Properties); i++ {
-		p := &t.Properties[i]
-		t.Property[p.ID] = p
+func (m *Model) init() *Model {
+	m.Property = make(map[string]*Property, len(m.Properties)+1)
+	m.Event = make(map[string]*Event, len(m.Events)+1)
+	m.Action = make(map[string]*Action, len(m.Actions)+1)
+	for i := 0; i < len(m.Properties); i++ {
+		p := &m.Properties[i]
+		m.Property[p.Identifier] = p
 		p.init()
 	}
-	for i := 0; i < len(t.Events); i++ {
-		p := &t.Events[i]
-		t.Event[p.ID] = p
+	for i := 0; i < len(m.Events); i++ {
+		p := &m.Events[i]
+		m.Event[p.Identifier] = p
 		p.init()
 	}
-	for i := 0; i < len(t.Actions); i++ {
-		p := &t.Actions[i]
-		t.Action[p.ID] = p
+	for i := 0; i < len(m.Actions); i++ {
+		p := &m.Actions[i]
+		m.Action[p.Identifier] = p
 		p.init()
 	}
-	return t
+	return m
 }

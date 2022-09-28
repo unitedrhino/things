@@ -28,16 +28,12 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(req *types.ProductSchemaUpdateReq) error {
 	dmReq := &dm.ProductSchemaUpdateReq{
-		Info: &dm.ProductSchema{
-			ProductID: req.ProductID, //产品id 只读
-			Schema:    req.Schema,
-		},
+		Info: ToSchemaInfoRpc(req.ProductSchemaInfo),
 	}
-
 	_, err := l.svcCtx.ProductM.ProductSchemaUpdate(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.ManageProductTemplate req=%v err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.ProductSchemaUpdate req=%v err=%+v", utils.FuncName(), req, er)
 		return er
 	}
 	return nil

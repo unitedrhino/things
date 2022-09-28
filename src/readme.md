@@ -21,7 +21,7 @@ goctl api go -api http/api.api  -dir ./  --style=goZero
 命令执行路径: ithings\src\syssvr\
 ```shell script
 goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_sys" -table="*" -dir ./internal/repo/mysql
-goctl model mysql ddl -src="../../deploy/mysql/syssvr.sql"  -dir ./internal/repo/mysql 
+goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./internal/repo/mysql 
 
 ```
 
@@ -34,6 +34,7 @@ goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --st
 # 设备管理模块-dmsvr
 ##  rpc文件编译
 ```shell
+protoc proto/* --go_out=. --go-grpc_out=.
 goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m
 ```
 
@@ -41,7 +42,7 @@ goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --st
 下面两种方式二选一
 ```shell
 goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dm" -table="*" -dir ./internal/repo/mysql 
-goctl model mysql ddl -src="../../deploy/mysql/dmsvr.sql"  -dir ./internal/repo/mysql 
+goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql 
 
 ```
 
