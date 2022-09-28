@@ -9,8 +9,8 @@ var (
 	productManageSvr client.ProductManage
 )
 
-func NewProductManage(config *Config) client.ProductManage {
-	svc := getCtxSvc(config)
+func NewProductManage() client.ProductManage {
+	svc := GetCtxSvc()
 	dmSvr := client.NewDirectProductManage(svc, server.NewProductManageServer(svc))
 	return dmSvr
 }

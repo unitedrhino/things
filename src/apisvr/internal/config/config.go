@@ -2,10 +2,6 @@ package config
 
 import (
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/src/ddsvr/dddirect"
-	"github.com/i-Things/things/src/disvr/didirect"
-	"github.com/i-Things/things/src/dmsvr/dmdirect"
-	"github.com/i-Things/things/src/syssvr/sysdirect"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -20,6 +16,7 @@ type Captcha struct {
 type Config struct {
 	rest.RestConf
 	CacheRedis cache.ClusterConf
+	DdEnable   bool               `json:",optional"`
 	SysRpc     conf.RpcClientConf `json:",optional"`
 	DiRpc      conf.RpcClientConf `json:",optional"`
 	DmRpc      conf.RpcClientConf `json:",optional"`
@@ -30,12 +27,4 @@ type Config struct {
 	FrontDir string `json:",default=./dist"` //前端文件路径
 	Captcha  Captcha
 	OSS      conf.OSSConf `json:",optional"`
-}
-
-type Configs struct {
-	Config
-	SysSvr *sysdirect.Config `json:",optional"` //只有单体模式需要填写
-	DmSvr  *dmdirect.Config  `json:",optional"` //只有单体模式需要填写
-	DdSvr  *dddirect.Config  `json:",optional"` //只有单体模式需要填写
-	DiSvr  *didirect.Config  `json:",optional"` //只有单体模式需要填写
 }

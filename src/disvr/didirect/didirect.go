@@ -1,23 +1,28 @@
 package didirect
 
 import (
+	"flag"
 	"github.com/i-Things/things/src/disvr/internal/config"
 	"github.com/i-Things/things/src/disvr/internal/startup"
 	"github.com/i-Things/things/src/disvr/internal/svc"
+	"github.com/zeromicro/go-zero/core/conf"
 	"sync"
 )
 
 type Config = config.Config
 
 var (
-	ctxSvc *svc.ServiceContext
+	svcCtx *svc.ServiceContext
 	once   sync.Once
+	c      config.Config
 )
 
-func getCtxSvc(config *Config) *svc.ServiceContext {
+func GetCtxSvc() *svc.ServiceContext {
 	once.Do(func() {
-		ctxSvc = svc.NewServiceContext(*config)
-		startup.Subscribe(ctxSvc)
+		flag.Parse()
+		conf.MustLoad("etc/di.yaml", &c)
+		svcCtx = svc.NewServiceContext(c)
+		startup.Subscribe(svcCtx)
 	})
-	return ctxSvc
+	return svcCtx
 }

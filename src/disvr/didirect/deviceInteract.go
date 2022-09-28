@@ -9,8 +9,8 @@ var (
 	deviceInteractSvr client.DeviceInteract
 )
 
-func NewDeviceInteract(config *Config) client.DeviceInteract {
-	svc := getCtxSvc(config)
+func NewDeviceInteract() client.DeviceInteract {
+	svc := GetCtxSvc()
 	dmSvr := client.NewDirectDeviceInteract(svc, server.NewDeviceInteractServer(svc))
 	return dmSvr
 }
