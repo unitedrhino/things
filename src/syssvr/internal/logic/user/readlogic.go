@@ -47,6 +47,4 @@ func (l *ReadLogic) Read(in *sys.UserReadReq) (*sys.UserReadResp, error) {
 		Role:        ui.Role,
 		Sex:         ui.Sex,
 	}, nil
-
-	return &sys.UserReadResp{}, nil
 }

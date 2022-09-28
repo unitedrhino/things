@@ -14,35 +14,41 @@ import (
 )
 
 type (
-	AccessAuthReq          = dm.AccessAuthReq
-	DeviceInfo             = dm.DeviceInfo
-	DeviceInfoDeleteReq    = dm.DeviceInfoDeleteReq
-	DeviceInfoIndexReq     = dm.DeviceInfoIndexReq
-	DeviceInfoIndexResp    = dm.DeviceInfoIndexResp
-	DeviceInfoReadReq      = dm.DeviceInfoReadReq
-	GroupDeviceCreateReq   = dm.GroupDeviceCreateReq
-	GroupDeviceDeleteReq   = dm.GroupDeviceDeleteReq
-	GroupDeviceIndexReq    = dm.GroupDeviceIndexReq
-	GroupDeviceIndexResp   = dm.GroupDeviceIndexResp
-	GroupInfo              = dm.GroupInfo
-	GroupInfoCreateReq     = dm.GroupInfoCreateReq
-	GroupInfoDeleteReq     = dm.GroupInfoDeleteReq
-	GroupInfoIndexReq      = dm.GroupInfoIndexReq
-	GroupInfoIndexResp     = dm.GroupInfoIndexResp
-	GroupInfoReadReq       = dm.GroupInfoReadReq
-	GroupInfoUpdateReq     = dm.GroupInfoUpdateReq
-	LoginAuthReq           = dm.LoginAuthReq
-	PageInfo               = dm.PageInfo
-	ProductInfo            = dm.ProductInfo
-	ProductInfoDeleteReq   = dm.ProductInfoDeleteReq
-	ProductInfoIndexReq    = dm.ProductInfoIndexReq
-	ProductInfoIndexResp   = dm.ProductInfoIndexResp
-	ProductInfoReadReq     = dm.ProductInfoReadReq
-	ProductSchema          = dm.ProductSchema
-	ProductSchemaReadReq   = dm.ProductSchemaReadReq
-	ProductSchemaUpdateReq = dm.ProductSchemaUpdateReq
-	Response               = dm.Response
-	RootCheckReq           = dm.RootCheckReq
+	AccessAuthReq             = dm.AccessAuthReq
+	DeviceInfo                = dm.DeviceInfo
+	DeviceInfoDeleteReq       = dm.DeviceInfoDeleteReq
+	DeviceInfoIndexReq        = dm.DeviceInfoIndexReq
+	DeviceInfoIndexResp       = dm.DeviceInfoIndexResp
+	DeviceInfoReadReq         = dm.DeviceInfoReadReq
+	GroupDeviceCreateReq      = dm.GroupDeviceCreateReq
+	GroupDeviceDeleteReq      = dm.GroupDeviceDeleteReq
+	GroupDeviceIndexReq       = dm.GroupDeviceIndexReq
+	GroupDeviceIndexResp      = dm.GroupDeviceIndexResp
+	GroupInfo                 = dm.GroupInfo
+	GroupInfoCreateReq        = dm.GroupInfoCreateReq
+	GroupInfoDeleteReq        = dm.GroupInfoDeleteReq
+	GroupInfoIndexReq         = dm.GroupInfoIndexReq
+	GroupInfoIndexResp        = dm.GroupInfoIndexResp
+	GroupInfoReadReq          = dm.GroupInfoReadReq
+	GroupInfoUpdateReq        = dm.GroupInfoUpdateReq
+	LoginAuthReq              = dm.LoginAuthReq
+	PageInfo                  = dm.PageInfo
+	ProductInfo               = dm.ProductInfo
+	ProductInfoDeleteReq      = dm.ProductInfoDeleteReq
+	ProductInfoIndexReq       = dm.ProductInfoIndexReq
+	ProductInfoIndexResp      = dm.ProductInfoIndexResp
+	ProductInfoReadReq        = dm.ProductInfoReadReq
+	ProductSchemaCreateReq    = dm.ProductSchemaCreateReq
+	ProductSchemaDeleteReq    = dm.ProductSchemaDeleteReq
+	ProductSchemaIndexReq     = dm.ProductSchemaIndexReq
+	ProductSchemaIndexResp    = dm.ProductSchemaIndexResp
+	ProductSchemaInfo         = dm.ProductSchemaInfo
+	ProductSchemaTslImportReq = dm.ProductSchemaTslImportReq
+	ProductSchemaTslReadReq   = dm.ProductSchemaTslReadReq
+	ProductSchemaTslReadResp  = dm.ProductSchemaTslReadResp
+	ProductSchemaUpdateReq    = dm.ProductSchemaUpdateReq
+	Response                  = dm.Response
+	RootCheckReq              = dm.RootCheckReq
 
 	ProductManage interface {
 		// 新增产品
@@ -57,8 +63,16 @@ type (
 		ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
 		// 更新产品物模型
 		ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
-		// 获取产品物模型
-		ProductSchemaRead(ctx context.Context, in *ProductSchemaReadReq, opts ...grpc.CallOption) (*ProductSchema, error)
+		// 新增产品
+		ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error)
+		// 删除产品
+		ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		// 获取产品信息列表
+		ProductSchemaIndex(ctx context.Context, in *ProductSchemaIndexReq, opts ...grpc.CallOption) (*ProductSchemaIndexResp, error)
+		// 删除产品
+		ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error)
+		// 获取产品信息列表
+		ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
 	}
 
 	defaultProductManage struct {
@@ -150,13 +164,57 @@ func (d *directProductManage) ProductSchemaUpdate(ctx context.Context, in *Produ
 	return d.svr.ProductSchemaUpdate(ctx, in)
 }
 
-// 获取产品物模型
-func (m *defaultProductManage) ProductSchemaRead(ctx context.Context, in *ProductSchemaReadReq, opts ...grpc.CallOption) (*ProductSchema, error) {
+// 新增产品
+func (m *defaultProductManage) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
-	return client.ProductSchemaRead(ctx, in, opts...)
+	return client.ProductSchemaCreate(ctx, in, opts...)
 }
 
-// 获取产品物模型
-func (d *directProductManage) ProductSchemaRead(ctx context.Context, in *ProductSchemaReadReq, opts ...grpc.CallOption) (*ProductSchema, error) {
-	return d.svr.ProductSchemaRead(ctx, in)
+// 新增产品
+func (d *directProductManage) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ProductSchemaCreate(ctx, in)
+}
+
+// 删除产品
+func (m *defaultProductManage) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductSchemaDelete(ctx, in, opts...)
+}
+
+// 删除产品
+func (d *directProductManage) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ProductSchemaDelete(ctx, in)
+}
+
+// 获取产品信息列表
+func (m *defaultProductManage) ProductSchemaIndex(ctx context.Context, in *ProductSchemaIndexReq, opts ...grpc.CallOption) (*ProductSchemaIndexResp, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductSchemaIndex(ctx, in, opts...)
+}
+
+// 获取产品信息列表
+func (d *directProductManage) ProductSchemaIndex(ctx context.Context, in *ProductSchemaIndexReq, opts ...grpc.CallOption) (*ProductSchemaIndexResp, error) {
+	return d.svr.ProductSchemaIndex(ctx, in)
+}
+
+// 删除产品
+func (m *defaultProductManage) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductSchemaTslImport(ctx, in, opts...)
+}
+
+// 删除产品
+func (d *directProductManage) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ProductSchemaTslImport(ctx, in)
+}
+
+// 获取产品信息列表
+func (m *defaultProductManage) ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductSchemaTslRead(ctx, in, opts...)
+}
+
+// 获取产品信息列表
+func (d *directProductManage) ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error) {
+	return d.svr.ProductSchemaTslRead(ctx, in)
 }

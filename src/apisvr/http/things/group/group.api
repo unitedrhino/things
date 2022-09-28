@@ -7,7 +7,7 @@ info(
 )
 
 import "common.api"  //公共结构体定义
-import "things/device/device.api"  //设备结构
+import "things/device/info.api"  //设备结构
 
 @server(
      group : things/group/info
@@ -23,7 +23,6 @@ service api {
     @doc "获取分组列表"
     @handler index
     post /index (GroupInfoIndexReq) returns (GroupInfoIndexResp)
-
 
     @doc "获取分组详情信息"
     @handler read

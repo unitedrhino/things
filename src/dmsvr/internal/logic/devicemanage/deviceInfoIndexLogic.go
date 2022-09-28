@@ -28,7 +28,7 @@ func NewDeviceInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 
 // 获取设备信息列表
 func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.DeviceInfoIndexResp, error) {
-	l.Infof("%s req=%+v",utils.FuncName(), in)
+	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	var (
 		info     []*dm.DeviceInfo
 		size     int64

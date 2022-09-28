@@ -123,7 +123,7 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 		sql sq.SelectBuilder
 	)
 
-	if p.Define.Type == schema.STRUCT {
+	if p.Define.Type == schema.DataTypeStruct {
 		sql = sq.Select(d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
 		sql = sq.Select(fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))
@@ -139,8 +139,8 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 
 func (d *SchemaDataRepo) fillFilter(
 	sql sq.SelectBuilder, filter deviceMsg.FilterOpt) sq.SelectBuilder {
-	if len(filter.DeviceName) != 0 {
-		sql = sql.Where(fmt.Sprintf("`device_name` in (%v)", store.ArrayToSql(filter.DeviceName)))
+	if len(filter.DeviceNames) != 0 {
+		sql = sql.Where(fmt.Sprintf("`device_name` in (%v)", store.ArrayToSql(filter.DeviceNames)))
 	}
 	return sql
 }
