@@ -50,8 +50,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 	} else {
-		deviceM = dmdirect.NewDeviceManage(nil)
-		productM = dmdirect.NewProductManage(nil)
+		deviceM = dmdirect.NewDeviceManage()
+		productM = dmdirect.NewProductManage()
 	}
 	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
 		info, err := productM.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: productID})
