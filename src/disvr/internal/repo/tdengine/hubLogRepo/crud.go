@@ -11,6 +11,9 @@ import (
 )
 
 func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceMsg.HubFilter) sq.SelectBuilder {
+	if len(filter.ProductID) != 0 {
+		sql = sql.Where("`product_id`=?", filter.ProductID)
+	}
 	if len(filter.DeviceName) != 0 {
 		sql = sql.Where("`device_name`=?", filter.DeviceName)
 	}
@@ -30,7 +33,7 @@ func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceMsg.HubFilter)
 }
 
 func (d HubLogRepo) GetCountLog(ctx context.Context, filter deviceMsg.HubFilter, page def.PageInfo2) (int64, error) {
-	sqSql := sq.Select("Count(1)").From(d.GetLogStableName(filter.ProductID))
+	sqSql := sq.Select("Count(1)").From(d.GetLogStableName())
 	sqSql = d.fillFilter(sqSql, filter)
 	sqSql = page.FmtWhere(sqSql)
 	sqlStr, value, err := sqSql.ToSql()
@@ -54,7 +57,7 @@ func (d HubLogRepo) GetCountLog(ctx context.Context, filter deviceMsg.HubFilter,
 
 func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter deviceMsg.HubFilter, page def.PageInfo2) (
 	[]*deviceMsg.HubLog, error) {
-	sql := sq.Select("*").From(d.GetLogStableName(filter.ProductID)).OrderBy("`ts` desc")
+	sql := sq.Select("*").From(d.GetLogStableName()).OrderBy("`ts` desc")
 	sql = d.fillFilter(sql, filter)
 	sql = page.FmtSql(sql)
 	sqlStr, value, err := sql.ToSql()
@@ -75,9 +78,9 @@ func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter deviceMsg.HubFilter
 }
 
 func (d HubLogRepo) Insert(ctx context.Context, data *deviceMsg.HubLog) error {
-	sql := fmt.Sprintf("insert into %s using %s tags('%s')(`ts`, `content`, `topic`, `action`,"+
+	sql := fmt.Sprintf("insert into %s using %s tags('%s','%s')(`ts`, `content`, `topic`, `action`,"+
 		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
-		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(data.ProductID), data.DeviceName)
+		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(), data.ProductID, data.DeviceName)
 	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.Topic, data.Action,
 		data.RequestID, data.TranceID, data.ResultType); err != nil {
 		return err

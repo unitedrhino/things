@@ -33,7 +33,7 @@ func (n *NatsClient) ProductSchemaUpdate(ctx context.Context, info *events.DataU
 	}
 	err = n.client.Publish(topics.DmProductUpdateSchema, events.NewEventMsg(ctx, data))
 	logx.WithContext(ctx).Infof("%s info:%v,err:%v", utils.FuncName(),
-		info, err)
+		utils.Fmt(info), err)
 	return err
 }
 

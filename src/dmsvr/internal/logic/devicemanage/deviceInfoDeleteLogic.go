@@ -45,17 +45,17 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		}
 		err = l.svcCtx.HubLogRepo.DropDevice(l.ctx, in.ProductID, in.DeviceName)
 		if err != nil {
-			l.Errorf("%s.DeviceLogRepo.DropDevice err=%v", utils.FuncName(), err)
+			l.Errorf("%s.DeviceLogRepo.DeleteDevice err=%v", utils.FuncName(), err)
 			return nil, err
 		}
-		err = l.svcCtx.SchemaManaRepo.DropDevice(l.ctx, schema, in.ProductID, in.DeviceName)
+		err = l.svcCtx.SchemaManaRepo.DeleteDevice(l.ctx, schema, in.ProductID, in.DeviceName)
 		if err != nil {
-			l.Errorf("%s.SchemaManaRepo.DropDevice err=%v", utils.FuncName(), err)
+			l.Errorf("%s.SchemaManaRepo.DeleteDevice err=%v", utils.FuncName(), err)
 			return nil, err
 		}
 		err = l.svcCtx.SDKLogRepo.DropDevice(l.ctx, in.ProductID, in.DeviceName)
 		if err != nil {
-			l.Errorf("%s.SchemaManaRepo.DropDevice err=%v", utils.FuncName(), err)
+			l.Errorf("%s.SchemaManaRepo.DeleteDevice err=%v", utils.FuncName(), err)
 			return nil, err
 		}
 	}

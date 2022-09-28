@@ -35,13 +35,19 @@ func (s *DeviceMsgServer) HubLogIndex(ctx context.Context, in *di.HubLogIndexReq
 }
 
 // 获取设备数据信息
-func (s *DeviceMsgServer) SchemaLatestIndex(ctx context.Context, in *di.SchemaLatestIndexReq) (*di.SchemaIndexResp, error) {
-	l := devicemsglogic.NewSchemaLatestIndexLogic(ctx, s.svcCtx)
-	return l.SchemaLatestIndex(in)
+func (s *DeviceMsgServer) PropertyLatestIndex(ctx context.Context, in *di.PropertyLatestIndexReq) (*di.PropertyIndexResp, error) {
+	l := devicemsglogic.NewPropertyLatestIndexLogic(ctx, s.svcCtx)
+	return l.PropertyLatestIndex(in)
 }
 
 // 获取设备数据信息
-func (s *DeviceMsgServer) SchemaLogIndex(ctx context.Context, in *di.SchemaLogIndexReq) (*di.SchemaIndexResp, error) {
-	l := devicemsglogic.NewSchemaLogIndexLogic(ctx, s.svcCtx)
-	return l.SchemaLogIndex(in)
+func (s *DeviceMsgServer) PropertyLogIndex(ctx context.Context, in *di.PropertyLogIndexReq) (*di.PropertyIndexResp, error) {
+	l := devicemsglogic.NewPropertyLogIndexLogic(ctx, s.svcCtx)
+	return l.PropertyLogIndex(in)
+}
+
+// 获取设备数据信息
+func (s *DeviceMsgServer) EventLogIndex(ctx context.Context, in *di.EventLogIndexReq) (*di.EventIndexResp, error) {
+	l := devicemsglogic.NewEventLogIndexLogic(ctx, s.svcCtx)
+	return l.EventLogIndex(in)
 }
