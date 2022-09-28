@@ -25,7 +25,7 @@ import (
 )
 
 type ServiceContext struct {
-	Config         config.Configs
+	Config         config.Config
 	CheckToken     rest.Middleware
 	Record         rest.Middleware
 	DmManage       rest.Middleware
@@ -42,7 +42,7 @@ type ServiceContext struct {
 	DeviceG        devicegroup.DeviceGroup
 }
 
-func NewServiceContext(c config.Configs) *ServiceContext {
+func NewServiceContext(c config.Config) *ServiceContext {
 	var (
 		deviceM        devicemanage.DeviceManage
 		productM       productmanage.ProductManage
@@ -62,10 +62,10 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else {
-			deviceM = dmdirect.NewDeviceManage(c.DmSvr)
-			productM = dmdirect.NewProductManage(c.DmSvr)
-			deviceA = dmdirect.NewDeviceAuth(c.DmSvr)
-			deviceG = dmdirect.NewDeviceGroup(c.DmSvr)
+			deviceM = dmdirect.NewDeviceManage()
+			productM = dmdirect.NewProductManage()
+			deviceA = dmdirect.NewDeviceAuth()
+			deviceG = dmdirect.NewDeviceGroup()
 		}
 	}
 	if c.SysRpc.Enable {
@@ -74,9 +74,9 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 			ro = role.NewRole(zrpc.MustNewClient(c.SysRpc.Conf))
 			me = menu.NewMenu(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
-			ur = sysdirect.NewUser(c.SysSvr)
-			ro = sysdirect.NewRole(c.SysSvr)
-			me = sysdirect.NewMenu(c.SysSvr)
+			ur = sysdirect.NewUser()
+			ro = sysdirect.NewRole()
+			me = sysdirect.NewMenu()
 		}
 	}
 	if c.DiRpc.Enable {
@@ -85,8 +85,8 @@ func NewServiceContext(c config.Configs) *ServiceContext {
 			deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DiRpc.Conf))
 
 		} else {
-			deviceMsg = didirect.NewDeviceMsg(c.DiSvr)
-			deviceInteract = didirect.NewDeviceInteract(c.DiSvr)
+			deviceMsg = didirect.NewDeviceMsg()
+			deviceInteract = didirect.NewDeviceInteract()
 		}
 	}
 	//ossClient, err := oss.NewOss(c.OSS)
