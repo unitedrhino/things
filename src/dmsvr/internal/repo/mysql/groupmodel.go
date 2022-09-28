@@ -17,7 +17,7 @@ type (
 		IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, error)
 		IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([]*GroupDevice, int64, error)
 		Delete(ctx context.Context, groupID int64) error
-		GroupDeviceCreate(ctx context.Context, groupID int64, list map[string]string) error
+		GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceInfoReadReq) error
 		GroupDeviceDelete(ctx context.Context, groupID int64, list map[string]string) error
 	}
 
@@ -251,15 +251,22 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 	return nil
 }
 
-func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list map[string]string) error {
+func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceInfoReadReq) error {
 	m.Transact(func(session sqlx.Session) error {
-		for i, v := range list {
-			query := fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s')",
-				m.groupDevice, groupID, i, v)
-			_, err := session.Exec(query)
-			if err != nil {
-				return err
+		for _, v := range list {
+			query1 := fmt.Sprintf("select id from %s where groupID=%d and productID='%s' and deviceName='%s'",
+				m.groupDevice, groupID, v.ProductID, v.DeviceName)
+			resp, _ := session.Exec(query1)
+			count, err := resp.RowsAffected()
+			if count == 0 {
+				query := fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s')",
+					m.groupDevice, groupID, v.ProductID, v.DeviceName)
+				_, err = session.Exec(query)
+				if err != nil {
+					return nil
+				}
 			}
+
 		}
 		return nil
 	})
@@ -273,7 +280,7 @@ func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list 
 				m.groupDevice, groupID, i, v)
 			_, err := session.Exec(query)
 			if err != nil {
-				return err
+				return nil
 			}
 		}
 		return nil
