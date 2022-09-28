@@ -12,9 +12,11 @@ import (
 )
 
 type (
-	Config = config.Config
-	ApiCtx struct {
+	Config         = config.Config
+	ServiceContext = svc.ServiceContext
+	ApiCtx         struct {
 		Server *rest.Server
+		Svc    *ServiceContext
 	}
 )
 
@@ -22,7 +24,7 @@ var (
 	c config.Config
 )
 
-func NewApi(apiCtx ApiCtx) *rest.Server {
+func NewApi(apiCtx ApiCtx) ApiCtx {
 	conf.MustLoad("etc/api.yaml", &c)
 	if c.DdEnable == true {
 		go runDdSvr()
@@ -30,13 +32,15 @@ func NewApi(apiCtx ApiCtx) *rest.Server {
 	return runApi(apiCtx)
 }
 
-func runApi(apiCtx ApiCtx) *rest.Server {
-	ctx := svc.NewServiceContext(c)
+func runApi(apiCtx ApiCtx) ApiCtx {
 	var server = apiCtx.Server
+	ctx := svc.NewServiceContext(c)
+	apiCtx.Svc = ctx
 	if server == nil {
 		server = rest.MustNewServer(c.RestConf, rest.WithCors("*"),
 			rest.WithNotFoundHandler(frontend.FrontendHandler(ctx)),
 		)
+		apiCtx.Server = server
 	}
 	defer server.Stop()
 	server.Use(ctx.Record)
@@ -44,7 +48,7 @@ func runApi(apiCtx ApiCtx) *rest.Server {
 	server.PrintRoutes()
 	fmt.Printf("Starting apiSvr at %s:%d...\n", c.Host, c.Port)
 
-	return server
+	return apiCtx
 }
 func runDdSvr() {
 	dddirect.NewDd()
