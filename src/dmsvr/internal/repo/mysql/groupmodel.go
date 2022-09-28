@@ -9,7 +9,9 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"strings"
 )
 
 type (
@@ -255,11 +257,10 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceInfoReadReq) error {
 	m.Transact(func(session sqlx.Session) error {
 		for _, v := range list {
-			query1 := fmt.Sprintf("select id from %s where groupID=%d and productID='%s' and deviceName='%s'",
-				m.groupDevice, groupID, v.ProductID, v.DeviceName)
-			resp, _ := session.Exec(query1)
-			count, err := resp.RowsAffected()
-			if count == 0 {
+			var resp GroupDevice
+			query := fmt.Sprintf("select %s from %s where `groupID` = ? and `productID` = ? and `deviceName` = ?  limit 1", groupDeviceRows, m.groupDevice)
+			err := session.QueryRow(&resp, query, groupID, v.ProductID, v.DeviceName)
+			if err == sqlc.ErrNotFound {
 				query := fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s')",
 					m.groupDevice, groupID, v.ProductID, v.DeviceName)
 				_, err = session.Exec(query)
@@ -267,7 +268,6 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 					return nil
 				}
 			}
-
 		}
 		return nil
 	})
@@ -277,8 +277,9 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list map[string]string) error {
 	m.Transact(func(session sqlx.Session) error {
 		for i, v := range list {
+			s := strings.Split(i, "|||")
 			query := fmt.Sprintf("delete from %s where groupID = %d and productID = '%s' and deviceName = '%s' ",
-				m.groupDevice, groupID, i, v)
+				m.groupDevice, groupID, s[0], v)
 			_, err := session.Exec(query)
 			if err != nil {
 				return nil
