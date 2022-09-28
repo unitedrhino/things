@@ -7,6 +7,6 @@ import (
 
 func main() {
 	logx.DisableStat()
-	server := apidirect.NewApi(apidirect.ApiCtx{})
-	server.Start()
+	apiCtx := apidirect.NewApi(apidirect.ApiCtx{})
+	apiCtx.Server.Start()
 }
