@@ -1,0 +1,23 @@
+Name: dm.rpc
+ListenOn: 127.0.0.1:9081
+CpuThreshold: 0
+Timeout: 1000000
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: dm.rpc
+Mysql:
+  DataSource: root:password@tcp(127.0.0.1:3306)/things_dm?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+TDengine:
+  DataSource: root:taosdata@http(localhost:6041)/iThings?readBufferSize=52428800
+AuthWhite:
+  Users:
+    - root
+  IpRange:
+    - 127.0.0.1
+    - 172.18.0.1
+    - 192.168.1.1
