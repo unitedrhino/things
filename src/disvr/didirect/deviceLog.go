@@ -9,8 +9,8 @@ var (
 	deviceLogSvr client.DeviceMsg
 )
 
-func NewDeviceMsg(config *Config) client.DeviceMsg {
-	svc := getCtxSvc(config)
+func NewDeviceMsg() client.DeviceMsg {
+	svc := GetCtxSvc()
 	dmSvr := client.NewDirectDeviceMsg(svc, server.NewDeviceMsgServer(svc))
 	return dmSvr
 }
