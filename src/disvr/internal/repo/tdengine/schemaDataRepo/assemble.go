@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cast"
 )
 
-func ToEventData(id string, db map[string]any) *schema2.EventData {
+func ToEventData(db map[string]any) *schema2.EventData {
 	var (
 		params   map[string]any
 		paramStr = cast.ToString(db["param"])
@@ -17,7 +17,7 @@ func ToEventData(id string, db map[string]any) *schema2.EventData {
 		return nil
 	}
 	data := schema2.EventData{
-		ID:        id,
+		ID:        cast.ToString(db["event_id"]),
 		Type:      cast.ToString(db["event_type"]),
 		Params:    params,
 		TimeStamp: cast.ToTime(db["ts"]),

@@ -56,7 +56,7 @@ func (l *EventLogIndexLogic) EventLogIndex(in *di.EventLogIndexReq) (*di.EventIn
 			DataID:    devData.ID,
 		}
 		var payload []byte
-		payload, _ = json.Marshal(devData)
+		payload, _ = json.Marshal(devData.Params)
 		diData.Params = string(payload)
 		diDatas = append(diDatas, &diData)
 		l.Infof("%s get data=%+v", utils.FuncName(), diData)
