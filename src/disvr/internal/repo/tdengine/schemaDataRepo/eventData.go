@@ -60,7 +60,7 @@ func (d *SchemaDataRepo) GetEventDataByFilter(
 	store.Scan(rows, &datas)
 	retEvents := make([]*deviceMsg.EventData, 0, len(datas))
 	for _, v := range datas {
-		retEvents = append(retEvents, ToEventData(filter.DataID, v))
+		retEvents = append(retEvents, ToEventData(v))
 	}
 	return retEvents, nil
 }
