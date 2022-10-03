@@ -25,7 +25,8 @@ CREATE TABLE if not exists `product_info`
     AUTO_INCREMENT = 4
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='产品信息表';
-
+INSERT INTO product_info (productID,productName,productType,authMode,deviceType,categoryID,netType,dataProto,autoRegister,secret,`desc`,createdTime,updatedTime,deletedTime,devStatus) VALUES ('24P0IMpz5Li','test5',0,1,1,0,1,1,1,'','','2022-10-02 18:48:54','2022-10-02 18:48:54',NULL,''),
+INSERT INTO product_info (productID,productName,productType,authMode,deviceType,categoryID,netType,dataProto,autoRegister,secret,`desc`,createdTime,updatedTime,deletedTime,devStatus) VALUES ('24P0IUBntsI','test6',0,1,1,0,1,1,1,'','','2022-10-02 18:49:01','2022-10-02 18:49:01',NULL,'');
 
 CREATE TABLE if not exists `product_schema`
 (
@@ -71,6 +72,9 @@ CREATE TABLE if not exists `device_info`
     ) ENGINE = InnoDB
     AUTO_INCREMENT = 3
     DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
+
+INSERT INTO device_info (productID,deviceName,secret,firstLogin,lastLogin,createdTime,updatedTime,deletedTime,version,logLevel,cert,isOnline,tags) VALUES ('24P0IMpz5Li','test5','pK/omxnHU30SCwto+VsCV1+4uVk=','2022-10-02 18:54:06','2022-10-02 22:28:24','2022-10-02 18:49:43','2022-10-02 18:49:43',NULL,'',1,'',2,'{}'),
+INSERT INTO device_info (productID,deviceName,secret,firstLogin,lastLogin,createdTime,updatedTime,deletedTime,version,logLevel,cert,isOnline,tags) VALUES ('24P0IMpz5Li','test6','DYay5mLJBOjqr0liKkm3ndF2oZY=',NULL,NULL,'2022-10-02 18:49:49','2022-10-02 18:49:49',NULL,'',1,'',0,'{}');
 
 
 
