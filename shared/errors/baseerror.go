@@ -48,19 +48,23 @@ func ToRpc(err error) error {
 }
 
 func (c CodeError) WithMsg(msg string) *CodeError {
-	return &CodeError{Code: c.Code, Msg: msg}
+	c.Msg = msg
+	return &c
 }
 
 func (c CodeError) WithMsgf(format string, a ...any) *CodeError {
-	return &CodeError{Code: c.Code, Msg: fmt.Sprintf(format, a...)}
+	c.Msg = fmt.Sprintf(format, a...)
+	return &c
 }
 
 func (c CodeError) AddMsg(msg string) *CodeError {
-	return &CodeError{Code: c.Code, Msg: c.Msg + ":" + msg}
+	c.Msg = c.Msg + ":" + msg
+	return &c
 }
 
 func (c CodeError) AddMsgf(format string, a ...any) *CodeError {
-	return &CodeError{Code: c.Code, Msg: c.Msg + ":" + fmt.Sprintf(format, a...)}
+	c.Msg = c.Msg + ":" + fmt.Sprintf(format, a...)
+	return &c
 }
 
 func (c CodeError) AddDetail(msg ...any) *CodeError {
@@ -98,9 +102,9 @@ func NewDefaultError(msg string) error {
 	return Default.WithMsg(msg)
 }
 
-func (e CodeError) Error() string {
-	e.Stack = nil
-	ret, _ := json.Marshal(e)
+func (c CodeError) Error() string {
+	c.Stack = nil
+	ret, _ := json.Marshal(c)
 	return string(ret)
 }
 
