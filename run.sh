@@ -7,8 +7,8 @@ function runsvr(){
   nohup ./$1 &
   cd ../..
 }
-runsvr dmsvr
-runsvr syssvr
-runsvr disvr
+#runsvr dmsvr
+#runsvr syssvr
+#runsvr disvr
 runsvr apisvr
-runsvr ddsvr
+#runsvr ddsvr
