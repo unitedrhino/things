@@ -1,6 +1,7 @@
 syntax = "proto3";
 option go_package = "pb/dm";
 import "google/protobuf/wrappers.proto";
+import "proto/schemaInfo.proto";
 package dm;
 
 
@@ -15,45 +16,139 @@ service DeviceAuth{
   rpc rootCheck(RootCheckReq)           returns (Response);
 }
 
-//产品管理
-service ProductManage{
-  //新增设备
-  rpc ProductInfoCreate(ProductInfo)     returns (Response);
-  //更新设备
-  rpc ProductInfoUpdate(ProductInfo)     returns (Response);
-  //删除设备
-  rpc ProductInfoDelete(ProductInfoDeleteReq)     returns (Response);
-  //获取设备信息列表
-  rpc ProductInfoIndex(ProductInfoIndexReq)     returns (ProductInfoIndexResp);
-  //获取设备信息详情
-  rpc ProductInfoRead(ProductInfoReadReq)     returns (ProductInfo);
-  //更新产品物模型
-  rpc ProductSchemaUpdate(ProductSchemaUpdateReq)returns (Response);
-  //获取产品物模型
-  rpc ProductSchemaRead(ProductSchemaReadReq)returns(ProductSchema);
-}
-
 //设备管理
 service DeviceManage {
   //新增设备
-  rpc DeviceInfoCreate(DeviceInfo)     returns (Response);
+  rpc deviceInfoCreate(DeviceInfo)     returns (Response);
   //更新设备
-  rpc DeviceInfoUpdate(DeviceInfo)     returns (Response);
+  rpc deviceInfoUpdate(DeviceInfo)     returns (Response);
   //删除设备
-  rpc DeviceInfoDelete(DeviceInfoDeleteReq)     returns (Response);
+  rpc deviceInfoDelete(DeviceInfoDeleteReq)     returns (Response);
   //获取设备信息列表
-  rpc DeviceInfoIndex(DeviceInfoIndexReq)     returns (DeviceInfoIndexResp);
+  rpc deviceInfoIndex(DeviceInfoIndexReq)     returns (DeviceInfoIndexResp);
   //获取设备信息详情
-  rpc DeviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
+  rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
 }
 
-message Response {
+//产品管理
+service ProductManage{
+  /*产品管理*/
+  //新增产品
+  rpc productInfoCreate(ProductInfo)     returns (Response);
+  //更新产品
+  rpc productInfoUpdate(ProductInfo)     returns (Response);
+  //删除产品
+  rpc productInfoDelete(ProductInfoDeleteReq)     returns (Response);
+  //获取产品信息列表
+  rpc productInfoIndex(ProductInfoIndexReq)     returns (ProductInfoIndexResp);
+  //获取产品信息详情
+  rpc productInfoRead(ProductInfoReadReq)     returns (ProductInfo);
+
+  /*物模型管理*/
+  //更新产品物模型
+  rpc productSchemaUpdate(ProductSchemaUpdateReq)returns (Response);
+  //新增产品
+  rpc productSchemaCreate(ProductSchemaCreateReq)     returns (Response);
+  //删除产品
+  rpc productSchemaDelete(ProductSchemaDeleteReq)     returns (Response);
+  //获取产品信息列表
+  rpc productSchemaIndex(ProductSchemaIndexReq)     returns (ProductSchemaIndexResp);
+  //删除产品
+  rpc productSchemaTslImport(ProductSchemaTslImportReq)     returns (Response);
+  //获取产品信息列表
+  rpc productSchemaTslRead(ProductSchemaTslReadReq)     returns (ProductSchemaTslReadResp);
 }
+
+service DeviceGroup {
+  //创建分组
+  rpc groupInfoCreate(GroupInfoCreateReq)     returns (Response);
+  //获取分组信息列表
+  rpc groupInfoIndex(GroupInfoIndexReq)     returns (GroupInfoIndexResp);
+  //获取分组信息详情
+  rpc groupInfoRead(GroupInfoReadReq)     returns (GroupInfo);
+  //更新分组
+  rpc groupInfoUpdate(GroupInfoUpdateReq)     returns (Response);
+  //删除分组
+  rpc groupInfoDelete(GroupInfoDeleteReq)     returns (Response);
+  //创建分组设备
+  rpc groupDeviceCreate(GroupDeviceCreateReq)     returns (Response);
+  //获取分组设备信息列表
+  rpc groupDeviceIndex(GroupDeviceIndexReq)     returns (GroupDeviceIndexResp);
+  //删除分组设备
+  rpc groupDeviceDelete(GroupDeviceDeleteReq)     returns (Response);
+}
+
+
 message PageInfo{
   int64 page = 1;
   int64 size = 2;
 }
+message Response {
+}
 
+message GroupInfo{
+  int64 groupID = 1;
+  string groupName = 2;
+  int64 parentID = 3;
+  string desc = 4;
+  int64 createdTime = 5;
+  map<string, string> tags = 6;
+}
+
+message GroupInfoCreateReq{
+  string groupName = 1;
+  int64 parentID = 2;
+  string desc = 3;
+}
+
+message GroupInfoIndexReq{
+  PageInfo page = 1;
+  string groupName = 2;
+  int64 parentID = 3;
+  map<string, string> tags = 4;
+}
+message GroupInfoIndexResp{
+  repeated GroupInfo list = 1;
+  int64 total = 2;
+  repeated GroupInfo listAll = 3;
+}
+
+message GroupInfoReadReq{
+  int64 groupID = 1;
+}
+
+message GroupInfoUpdateReq{
+  int64 groupID = 1;
+  string groupName = 2;
+  string desc = 3;
+  map<string, string> tags = 4;
+}
+
+message GroupInfoDeleteReq{
+  int64 groupID = 1;
+}
+
+message GroupDeviceCreateReq{
+  int64 groupID = 1;
+  repeated DeviceInfoReadReq DeviceIndexList = 2;
+}
+
+message GroupDeviceIndexReq{
+  PageInfo page = 1;
+  int64 groupID = 2;
+  string productID = 3;
+  string deviceName = 4;
+}
+
+message GroupDeviceIndexResp{
+  repeated DeviceInfo list = 1;
+  int64 total = 2;
+}
+
+message GroupDeviceDeleteReq{
+  int64 groupID = 1;
+  map<string, string> DeviceIndexList = 2;
+}
 
 message DeviceInfo{
   string   productID = 1; //产品id 只读
@@ -65,7 +160,7 @@ message DeviceInfo{
   google.protobuf.StringValue  version = 8; // 固件版本  读写
   int64  logLevel = 9; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
   string  cert = 10;// 设备证书  只读
-  int32   isOnline = 11; //在线状态  1离线 2在线 只读
+  int64   isOnline = 11; //在线状态  1离线 2在线 只读
   map<string, string> tags = 12;//设备标签
 }
 
@@ -80,7 +175,7 @@ message ProductInfo{
   int64   dataProto = 8;//数据协议:1:自定义,2:数据模板
   int64   autoRegister = 9;//动态注册:1:关闭,2:打开,3:打开并自动创建设备
   string   secret = 10;//动态注册产品秘钥 只读
-  google.protobuf.StringValue   description = 11;//描述
+  google.protobuf.StringValue   desc = 11;//描述
   google.protobuf.StringValue   devStatus = 12; // 产品状态
 }
 
@@ -92,19 +187,23 @@ message ProductInfoReadReq{
   string   productID = 1; //产品id
 }
 
-message ProductSchema{
-  int64   createdTime = 1; //创建时间 只读
-  string   productID = 2; //产品id 只读
-  string schema = 3;//数据模板
+
+
+message ProductInfoIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  int64  deviceType = 2; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+  string  productName = 3; //过滤条件: 产品名称
+  repeated string   productIDs = 4; //过滤产品id列表
 }
 
-message ProductSchemaUpdateReq{
-  ProductSchema info = 1;//产品信息
+message ProductInfoIndexResp{
+  repeated ProductInfo list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
 }
 
-message ProductSchemaReadReq{
-  string productID = 1; //产品id  如果为空返回所有产品的信息
-}
+
+
+
 
 message DeviceInfoDeleteReq{
   string   productID = 1; //产品id
@@ -128,16 +227,7 @@ message DeviceInfoIndexResp{
   int64  total = 2;//总数(只有分页的时候会返回)
 }
 
-message ProductInfoIndexReq{
-  PageInfo page = 1;//分页信息 只获取一个则不填
-  int64  deviceType = 2; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
-  string  productName = 3; //过滤条件: 产品名称
-}
 
-message ProductInfoIndexResp{
-  repeated ProductInfo list = 1;//产品信息
-  int64  total = 2;//总数(只有分页的时候会返回)
-}
 
 
 /*
@@ -173,3 +263,66 @@ message RootCheckReq{
   string ip = 4;//访问的ip地址
   bytes certificate = 5;//客户端证书
 }
+
+
+
+
+message ProductSchemaUpdateReq{
+  ProductSchemaInfo info = 1;//物模型信息
+
+}
+
+
+
+message ProductSchemaCreateReq{
+  ProductSchemaInfo info = 1;//物模型信息
+}
+
+message ProductSchemaDeleteReq{
+  string productID = 1; //产品id  如果为空返回所有产品的信息
+  string identifier = 2;           //标识符
+
+}
+
+message ProductSchemaIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  string productID = 2; //产品id  必填
+  int64  type = 3; //物模型类型 1:property属性 2:event事件 3:action行为
+  int64  tag = 4; //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
+  repeated string   identifiers = 5; //过滤标识符列表
+}
+
+message ProductSchemaIndexResp{
+  repeated ProductSchemaInfo list = 1;
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message ProductSchemaInfo{
+  string productID = 1; //产品id  必填
+  int64 type = 2;         //物模型类型 1:property属性 2:event事件 3:action行为
+  int64 tag = 3;         //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+  string identifier = 4;           //标识符
+  google.protobuf.StringValue name = 5;       //功能名称
+  google.protobuf.StringValue desc = 6;       //描述
+  int64 required = 7;  //是否必须 1:是 2:否
+  google.protobuf.StringValue affordance = 8;//各功能类型的详细参数定义
+//  SchemaAction action =8;
+//  SchemaProperty property =9;
+//  SchemaEvent event =10;
+}
+
+message ProductSchemaTslImportReq{
+  string   productID = 1; //产品id
+  string   tsl = 2;//物模型tsl
+}
+
+message ProductSchemaTslReadReq{
+  string   productID = 1; //产品id
+}
+
+message ProductSchemaTslReadResp{
+  string   tsl = 1;//物模型tsl
+}
+
+
+

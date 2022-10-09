@@ -21,6 +21,7 @@ type ServiceContext struct {
 	Config         config.Config
 	DeviceInfo     mysql.DeviceInfoModel
 	ProductInfo    mysql.ProductInfoModel
+	ProductSchema  mysql.ProductSchemaModel
 	DmDB           mysql.DmModel
 	DeviceID       *utils.SnowFlake
 	ProductID      *utils.SnowFlake
@@ -31,6 +32,10 @@ type ServiceContext struct {
 	SchemaRepo     schema.Repo
 	SDKLogRepo     deviceMsgManage.SDKLogRepo
 	FirmwareInfo   mysql.ProductFirmwareModel
+	GroupInfo      mysql.GroupInfoModel
+	GroupDevice    mysql.GroupDeviceModel
+	GroupID        *utils.SnowFlake
+	GroupDB        mysql.GroupModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -51,6 +56,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	DeviceID := utils.NewSnowFlake(nodeId)
 	ProductID := utils.NewSnowFlake(nodeId)
 	du, err := dataUpdate.NewDataUpdate(c.Event)
+	gi := mysql.NewGroupInfoModel(conn)
+	gd := mysql.NewGroupDeviceModel(conn)
+	GroupID := utils.NewSnowFlake(nodeId)
+	GroupDB := mysql.NewGroupModel(conn, c.CacheRedis)
 	if err != nil {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
@@ -59,6 +68,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		DeviceInfo:     di,
 		ProductInfo:    pi,
+		ProductSchema:  pt,
 		FirmwareInfo:   fr,
 		SchemaRepo:     tr,
 		DmDB:           DmDB,
@@ -69,5 +79,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SchemaManaRepo: deviceData,
 		HubLogRepo:     hubLog,
 		SDKLogRepo:     sdkLog,
+		GroupInfo:      gi,
+		GroupDevice:    gd,
+		GroupID:        GroupID,
+		GroupDB:        GroupDB,
 	}
 }

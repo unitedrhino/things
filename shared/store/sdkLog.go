@@ -5,10 +5,10 @@ import "fmt"
 type SDKLogStore struct {
 }
 
-func (s *SDKLogStore) GetSDKLogStableName(productID string) string {
-	return fmt.Sprintf("`model_sdklog_%s`", productID)
+func (s *SDKLogStore) GetSDKLogStableName() string {
+	return fmt.Sprintf("`model_common_sdklog`")
 }
 
 func (s *SDKLogStore) GetSDKLogTableName(productID, deviceName string) string {
-	return fmt.Sprintf("`sdk_log_%s_%s`", productID, deviceName)
+	return fmt.Sprintf("`device_sdklog_%s_%s`", productID, deviceName)
 }

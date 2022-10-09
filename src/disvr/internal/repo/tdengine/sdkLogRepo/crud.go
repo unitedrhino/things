@@ -14,14 +14,14 @@ import (
 
 func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,
 	productID, deviceName string, page def.PageInfo2) ([]*deviceMsg.SDKLog, error) {
-	sqSql := sq.Select("*").From(d.GetSDKLogStableName(productID)).
-		Where("`device_name`=?", deviceName).OrderBy("`ts` desc")
+	sqSql := sq.Select("*").From(d.GetSDKLogStableName()).
+		Where("`product_id`=? and `device_name`=?", productID, deviceName).OrderBy("`ts` desc")
 	sqSql = page.FmtSql(sqSql)
 	sqlStr, value, err := sqSql.ToSql()
 	if err != nil {
 		return nil, err
 	}
-	rows, err := d.t.QueryContext(ctx,sqlStr, value...)
+	rows, err := d.t.QueryContext(ctx, sqlStr, value...)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			return nil, err
@@ -40,11 +40,12 @@ func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,
 
 func (d SDKLogRepo) Insert(ctx context.Context, data *deviceMsg.SDKLog) error {
 	sql := fmt.Sprintf(
-		"insert into %s using %s tags('%s')(`ts`, `content`,`log_level`,`client_token`) values (?,?,?,?);",
-		d.GetSDKLogTableName(data.ProductID, data.DeviceName), d.GetSDKLogStableName(data.ProductID), data.DeviceName)
-	if _, err := d.t.ExecContext(ctx,sql, data.Timestamp, data.Content, data.LogLevel, data.ClientToken); err != nil {
+		"insert into %s using %s tags('%s','%s')(`ts`, `content`,`log_level`,`client_token`) values (?,?,?,?);",
+		d.GetSDKLogTableName(data.ProductID, data.DeviceName), d.GetSDKLogStableName(), data.ProductID, data.DeviceName)
+
+	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.LogLevel, data.ClientToken); err != nil {
 		logx.WithContext(ctx).Errorf(
-			sql+"%s|EventTable|productID:%v,deviceName:%v,err:%v",
+			sql+"%s.EventTable productID:%v deviceName:%v err:%v",
 			utils.FuncName(), data.ProductID, data.DeviceName, err)
 		return err
 	}

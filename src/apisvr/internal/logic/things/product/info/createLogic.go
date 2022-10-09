@@ -2,7 +2,6 @@ package info
 
 import (
 	"context"
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -36,11 +35,7 @@ func (l *CreateLogic) Create(req *types.ProductInfoCreateReq) error {
 		NetType:      req.NetType,
 		DataProto:    req.DataProto,
 		AutoRegister: req.AutoRegister,
-	}
-	if req.Description != nil {
-		dmReq.Description = &wrappers.StringValue{
-			Value: *req.Description,
-		}
+		Desc:         utils.ToRpcNullString(req.Desc),
 	}
 	//if req.DevStatus != nil {
 	//	dmReq.DevStatus = &wrappers.StringValue{
@@ -50,7 +45,7 @@ func (l *CreateLogic) Create(req *types.ProductInfoCreateReq) error {
 	_, err := l.svcCtx.ProductM.ProductInfoCreate(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.ManageProduct|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.ManageProduct req=%v err=%v", utils.FuncName(), req, er)
 		return er
 	}
 	return nil

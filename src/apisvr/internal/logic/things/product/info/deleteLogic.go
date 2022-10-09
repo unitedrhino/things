@@ -30,7 +30,7 @@ func (l *DeleteLogic) Delete(req *types.ProductInfoDeleteReq) error {
 	_, err := l.svcCtx.ProductM.ProductInfoDelete(l.ctx, &dm.ProductInfoDeleteReq{ProductID: req.ProductID})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.ManageProduct|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.ManageProduct req=%v err=%v", utils.FuncName(), req, er)
 		return er
 	}
 	return nil

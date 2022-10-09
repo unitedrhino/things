@@ -18,16 +18,17 @@ import (
 var (
 	productSchemaFieldNames          = builder.RawFieldNames(&ProductSchema{})
 	productSchemaRows                = strings.Join(productSchemaFieldNames, ",")
-	productSchemaRowsExpectAutoSet   = strings.Join(stringx.Remove(productSchemaFieldNames, "`create_time`", "`update_time`", "`create_at`", "`update_at`"), ",")
-	productSchemaRowsWithPlaceHolder = strings.Join(stringx.Remove(productSchemaFieldNames, "`productID`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), "=?,") + "=?"
+	productSchemaRowsExpectAutoSet   = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), ",")
+	productSchemaRowsWithPlaceHolder = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), "=?,") + "=?"
 )
 
 type (
 	productSchemaModel interface {
 		Insert(ctx context.Context, data *ProductSchema) (sql.Result, error)
-		FindOne(ctx context.Context, productID string) (*ProductSchema, error)
+		FindOne(ctx context.Context, id int64) (*ProductSchema, error)
+		FindOneByProductIDIdentifier(ctx context.Context, productID string, identifier string) (*ProductSchema, error)
 		Update(ctx context.Context, data *ProductSchema) error
-		Delete(ctx context.Context, productID string) error
+		Delete(ctx context.Context, id int64) error
 	}
 
 	defaultProductSchemaModel struct {
@@ -36,8 +37,15 @@ type (
 	}
 
 	ProductSchema struct {
-		ProductID   string       `db:"productID"` // 产品id
-		Schema      string       `db:"schema"`    // 物模型模板
+		Id          int64        `db:"id"`
+		ProductID   string       `db:"productID"`  // 产品id
+		Tag         int64        `db:"tag"`        // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+		Type        int64        `db:"type"`       // 物模型类型 1:property属性 2:event事件 3:action行为
+		Identifier  string       `db:"identifier"` // 标识符
+		Name        string       `db:"name"`       // 功能名称
+		Desc        string       `db:"desc"`       // 描述
+		Required    int64        `db:"required"`   // 是否必须,1是 2否
+		Affordance  string       `db:"affordance"` // 各类型的自定义功能定义
 		CreatedTime time.Time    `db:"createdTime"`
 		UpdatedTime time.Time    `db:"updatedTime"`
 		DeletedTime sql.NullTime `db:"deletedTime"`
@@ -51,16 +59,30 @@ func newProductSchemaModel(conn sqlx.SqlConn) *defaultProductSchemaModel {
 	}
 }
 
-func (m *defaultProductSchemaModel) Delete(ctx context.Context, productID string) error {
-	query := fmt.Sprintf("delete from %s where `productID` = ?", m.table)
-	_, err := m.conn.ExecCtx(ctx, query, productID)
+func (m *defaultProductSchemaModel) Delete(ctx context.Context, id int64) error {
+	query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, id)
 	return err
 }
 
-func (m *defaultProductSchemaModel) FindOne(ctx context.Context, productID string) (*ProductSchema, error) {
-	query := fmt.Sprintf("select %s from %s where `productID` = ? limit 1", productSchemaRows, m.table)
+func (m *defaultProductSchemaModel) FindOne(ctx context.Context, id int64) (*ProductSchema, error) {
+	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", productSchemaRows, m.table)
 	var resp ProductSchema
-	err := m.conn.QueryRowCtx(ctx, &resp, query, productID)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultProductSchemaModel) FindOneByProductIDIdentifier(ctx context.Context, productID string, identifier string) (*ProductSchema, error) {
+	var resp ProductSchema
+	query := fmt.Sprintf("select %s from %s where `productID` = ? and `identifier` = ? limit 1", productSchemaRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, productID, identifier)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -72,14 +94,14 @@ func (m *defaultProductSchemaModel) FindOne(ctx context.Context, productID strin
 }
 
 func (m *defaultProductSchemaModel) Insert(ctx context.Context, data *ProductSchema) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, productSchemaRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.Schema, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productSchemaRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.Tag, data.Type, data.Identifier, data.Name, data.Desc, data.Required, data.Affordance, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
 	return ret, err
 }
 
-func (m *defaultProductSchemaModel) Update(ctx context.Context, data *ProductSchema) error {
-	query := fmt.Sprintf("update %s set %s where `productID` = ?", m.table, productSchemaRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Schema, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.ProductID)
+func (m *defaultProductSchemaModel) Update(ctx context.Context, newData *ProductSchema) error {
+	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, productSchemaRowsWithPlaceHolder)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.Tag, newData.Type, newData.Identifier, newData.Name, newData.Desc, newData.Required, newData.Affordance, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Id)
 	return err
 }
 

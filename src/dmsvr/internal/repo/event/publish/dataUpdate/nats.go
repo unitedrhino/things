@@ -32,8 +32,8 @@ func (n *NatsClient) ProductSchemaUpdate(ctx context.Context, info *events.DataU
 		return err
 	}
 	err = n.client.Publish(topics.DmProductUpdateSchema, events.NewEventMsg(ctx, data))
-	logx.WithContext(ctx).Infof("%s|info:%v,err:%v", utils.FuncName(),
-		info, err)
+	logx.WithContext(ctx).Infof("%s info:%v,err:%v", utils.FuncName(),
+		utils.Fmt(info), err)
 	return err
 }
 
@@ -43,7 +43,7 @@ func (n *NatsClient) DeviceLogLevelUpdate(ctx context.Context, info *events.Data
 		return err
 	}
 	err = n.client.Publish(topics.DmDeviceUpdateLogLevel, events.NewEventMsg(ctx, data))
-	logx.WithContext(ctx).Infof("%s|info:%v,err:%v", utils.FuncName(),
+	logx.WithContext(ctx).Infof("%s info:%v,err:%v", utils.FuncName(),
 		info, err)
 	return err
 }

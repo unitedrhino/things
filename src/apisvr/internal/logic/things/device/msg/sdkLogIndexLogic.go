@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/disvr/pb/di"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -32,16 +33,13 @@ func (l *SdkLogIndexLogic) SdkLogIndex(req *types.DeviceMsgSdkLogIndexReq) (resp
 		ProductID:  req.ProductID, //产品id
 		TimeStart:  req.TimeStart,
 		TimeEnd:    req.TimeEnd,
-		Page: &di.PageInfo{
-			Page: req.Page.Page,
-			Size: req.Page.Size,
-		},
+		Page:       logic.ToDiPageRpc(req.Page),
 	}
 
 	dmResp, err := l.svcCtx.DeviceMsg.SdkLogIndex(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.GetDeviceSDKLog|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.GetDeviceSDKLog req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	info := make([]*types.DeviceMsgSdkIndex, 0, len(dmResp.List))
