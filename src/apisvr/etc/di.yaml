@@ -1,0 +1,21 @@
+Name: di.rpc
+ListenOn: 127.0.0.1:8180
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: di.rpc
+CpuThreshold: 0
+Timeout: 1000000
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+Log:
+  Encoding: plain
+TDengine:
+  DataSource: root:taosdata@http(localhost:6041)/iThings?readBufferSize=52428800
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000

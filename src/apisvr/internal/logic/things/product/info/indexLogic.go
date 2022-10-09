@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -30,15 +31,13 @@ func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductI
 	dmReq := &dm.ProductInfoIndexReq{
 		DeviceType:  req.DeviceType, //产品id
 		ProductName: req.ProductName,
-		Page: &dm.PageInfo{
-			Page: req.Page.Page,
-			Size: req.Page.Size,
-		},
+		ProductIDs:  req.ProductIDs,
+		Page:        logic.ToDmPageRpc(req.Page),
 	}
 	dmResp, err := l.svcCtx.ProductM.ProductInfoIndex(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.GetDeviceInfo|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	pis := make([]*types.ProductInfo, 0, len(dmResp.List))

@@ -1,0 +1,13 @@
+Name: dd
+Host: 0.0.0.0
+Port: 8848
+
+DevLink:
+  Mode: mqtt
+  SubMode: emq
+  Mqtt:
+    ClientID: dd.rpc
+    Pass:
+    User: root
+    Brokers:
+      - tcp://127.0.0.1:1883

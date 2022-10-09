@@ -8,7 +8,11 @@ const (
 )
 
 type RpcClientConf struct {
-	Conf   zrpc.RpcClientConf `json:",optional"`
-	Mode   string             `json:",default=grpc,options=grpc|direct"`
+	Conf zrpc.RpcClientConf `json:",optional"`
+	ModeConf
+}
+
+type ModeConf struct {
+	Mode   string `json:",default=grpc,options=grpc|direct"`
 	Enable bool
 }

@@ -2,7 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -32,14 +32,13 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 		size int64
 		err  error
 	)
-
-	size, err = l.svcCtx.DmDB.GetProductsCountByFilter(l.ctx, mysql.ProductFilter{
-		DeviceType: in.DeviceType, ProductName: in.ProductName})
+	filter := mysql.ProductFilter{
+		DeviceType: in.DeviceType, ProductName: in.ProductName, ProductIDs: in.ProductIDs}
+	size, err = l.svcCtx.DmDB.GetProductsCountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.svcCtx.DmDB.FindProductsByFilter(l.ctx, mysql.ProductFilter{
-		DeviceType: in.DeviceType, ProductName: in.ProductName}, def.PageInfo{Size: in.Page.Size, Page: in.Page.Page})
+	di, err := l.svcCtx.DmDB.FindProductsByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}

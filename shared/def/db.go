@@ -11,10 +11,8 @@ const (
 )
 
 type PageInfo struct {
-	Page       int64  `json:"page" form:"page"`             // 页码
-	Size       int64  `json:"pageSize" form:"pageSize"`     // 每页大小
-	SearchKey  string `json:"searchKey" form:"searchKey"`   // 搜索的key
-	SearchType string `json:"searchType" form:"searchType"` // 搜索的类型
+	Page int64 `json:"page" form:"page"`         // 页码
+	Size int64 `json:"pageSize" form:"pageSize"` // 每页大小
 }
 type PageInfo2 struct {
 	TimeStart int64
@@ -25,7 +23,7 @@ type PageInfo2 struct {
 
 func (p PageInfo) GetLimit() int64 {
 	if p.Size == 0 {
-		return 20
+		return 2000
 	}
 	return p.Size
 }

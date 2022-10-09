@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/spf13/cast"
 	"reflect"
 	"strings"
 	"time"
@@ -95,21 +96,21 @@ func Scan(rows *sql.Rows, Dest any) error {
 
 func GetTdType(define schema.Define) string {
 	switch define.Type {
-	case schema.BOOL:
+	case schema.DataTypeBool:
 		return "BOOL"
-	case schema.INT:
+	case schema.DataTypeInt:
 		return "BIGINT"
-	case schema.STRING:
+	case schema.DataTypeString:
 		return "BINARY(5000)"
-	case schema.STRUCT:
+	case schema.DataTypeStruct:
 		return "BINARY(5000)"
-	case schema.FLOAT:
+	case schema.DataTypeFloat:
 		return "DOUBLE"
-	case schema.TIMESTAMP:
+	case schema.DataTypeTimestamp:
 		return "TIMESTAMP"
-	case schema.ARRAY:
+	case schema.DataTypeArray:
 		return "BINARY(5000)"
-	case schema.ENUM:
+	case schema.DataTypeEnum:
 		return "SMALLINT"
 	default:
 		panic(fmt.Sprintf("%v not support", define.Type))
@@ -142,4 +143,15 @@ func GenParams(params map[string]any) (string, string, []any, error) {
 		}
 	}
 	return paramPlaceholder, strings.Join(paramIds, ","), paramValList, nil
+}
+
+func ArrayToSql[arrType any](arr []arrType) (sql string) {
+	if len(arr) == 0 {
+		return ""
+	}
+	for _, v := range arr {
+		sql += "\"" + cast.ToString(v) + "\","
+	}
+	sql = sql[:len(sql)-1]
+	return
 }

@@ -38,9 +38,9 @@ func (l *UpdateLogic) Update(req *types.ProductInfoUpdateReq) error {
 		DataProto:    req.DataProto,
 		AutoRegister: req.AutoRegister,
 	}
-	if req.Description != nil {
-		dmReq.Description = &wrappers.StringValue{
-			Value: *req.Description,
+	if req.Desc != nil {
+		dmReq.Desc = &wrappers.StringValue{
+			Value: *req.Desc,
 		}
 	}
 	//if req.DevStatus != nil {
@@ -51,7 +51,7 @@ func (l *UpdateLogic) Update(req *types.ProductInfoUpdateReq) error {
 	_, err := l.svcCtx.ProductM.ProductInfoUpdate(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.ManageProduct|req=%v|err=%+v", utils.FuncName(), utils.Fmt(req), er)
+		l.Errorf("%s.rpc.ManageProduct req=%v err=%+v", utils.FuncName(), utils.Fmt(req), er)
 		return er
 	}
 	return nil

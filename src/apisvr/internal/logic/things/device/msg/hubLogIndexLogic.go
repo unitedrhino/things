@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/disvr/pb/di"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -32,14 +33,15 @@ func (l *HubLogIndexLogic) HubLogIndex(req *types.DeviceMsgHubLogIndexReq) (resp
 		ProductID:  req.ProductID,
 		TimeStart:  req.TimeStart,
 		TimeEnd:    req.TimeEnd,
-		Page: &di.PageInfo{
-			Page: req.Page.Page,
-			Size: req.Page.Size,
-		},
+		Page:       logic.ToDiPageRpc(req.Page),
+		Actions:    req.Actions,
+		Topics:     req.Topics,
+		Content:    req.Content,
+		RequestID:  req.RequestID,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s|rpc.GetDeviceDescribeLog|req=%v|err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.HubLogIndex req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	info := make([]*types.DeviceMsgHubLogIndex, 0, len(dmResp.List))

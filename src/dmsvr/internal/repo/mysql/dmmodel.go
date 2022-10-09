@@ -5,6 +5,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/store"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -14,12 +15,13 @@ type (
 		FindDevicesByFilter(ctx context.Context, filter DeviceFilter, page def.PageInfo) ([]*DeviceInfo, error)
 		GetDevicesCountByFilter(ctx context.Context, filter DeviceFilter) (size int64, err error)
 		GetProductsCountByFilter(ctx context.Context, filter ProductFilter) (size int64, err error)
-		Insert(ctx context.Context, pi *ProductInfo, pt *ProductSchema) error
+		Insert(ctx context.Context, pi *ProductInfo) error
 		Delete(ctx context.Context, productID string) error
 	}
 	ProductFilter struct {
 		DeviceType  int64
 		ProductName string
+		ProductIDs  []string
 	}
 	DeviceFilter struct {
 		ProductID  string
@@ -28,10 +30,9 @@ type (
 	}
 	defaultDmModel struct {
 		sqlx.SqlConn
-		productInfo   string
-		deviceInfo    string
-		productSchema string
-		deviceLog     string
+		productInfo string
+		deviceInfo  string
+		deviceLog   string
 		ProductInfoModel
 	}
 )
@@ -41,7 +42,6 @@ func NewDmModel(conn sqlx.SqlConn) DmModel {
 		SqlConn:          conn,
 		productInfo:      "`product_info`",
 		deviceInfo:       "`device_info`",
-		productSchema:    "`product_schema`",
 		deviceLog:        "`device_log`",
 		ProductInfoModel: NewProductInfoModel(conn),
 	}
@@ -99,10 +99,13 @@ func (m *defaultDmModel) GetDevicesCountByFilter(ctx context.Context, f DeviceFi
 
 func (p *ProductFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if p.DeviceType != 0 {
-		sql = sql.Where("DeviceType=?", p.DeviceType)
+		sql = sql.Where("deviceType=?", p.DeviceType)
 	}
 	if p.ProductName != "" {
-		sql = sql.Where("ProductName like ?", "%"+p.ProductName+"%")
+		sql = sql.Where("productName like ?", "%"+p.ProductName+"%")
+	}
+	if len(p.ProductIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("productID in (%v)", store.ArrayToSql(p.ProductIDs)))
 	}
 	return sql
 }
@@ -153,21 +156,17 @@ func (m *defaultDmModel) Delete(ctx context.Context, productID string) error {
 		if err != nil {
 			return err
 		}
-		query = fmt.Sprintf("delete from %s where `ProductID` = ?", m.productSchema)
-		_, err = session.Exec(query, productID)
-		return err
+		return nil
 	})
 }
 
-func (m *defaultDmModel) Insert(ctx context.Context, pi *ProductInfo, pt *ProductSchema) error {
+func (m *defaultDmModel) Insert(ctx context.Context, pi *ProductInfo) error {
 	return m.Transact(func(session sqlx.Session) error {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.productInfo, productInfoRowsExpectAutoSet)
-		_, err := session.ExecCtx(ctx, query, pi.ProductID, pi.ProductName, pi.ProductType, pi.AuthMode, pi.DeviceType, pi.CategoryID, pi.NetType, pi.DataProto, pi.AutoRegister, pi.Secret, pi.Description, pi.CreatedTime, pi.UpdatedTime, pi.DeletedTime, pi.DevStatus)
+		_, err := session.ExecCtx(ctx, query, pi.ProductID, pi.ProductName, pi.ProductType, pi.AuthMode, pi.DeviceType, pi.CategoryID, pi.NetType, pi.DataProto, pi.AutoRegister, pi.Secret, pi.Desc, pi.CreatedTime, pi.UpdatedTime, pi.DeletedTime, pi.DevStatus)
 		if err != nil {
 			return err
 		}
-		query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.productSchema, productSchemaRowsExpectAutoSet)
-		_, err = session.ExecCtx(ctx, query, pt.ProductID, pt.Schema, pt.CreatedTime, pt.UpdatedTime, pt.DeletedTime)
-		return err
+		return nil
 	})
 }

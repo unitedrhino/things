@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -29,12 +30,12 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdat
 }
 
 func (d *DataUpdateLogic) ProductSchemaUpdate(info *events.DataUpdateInfo) error {
-	d.Infof("DataUpdateLogic|ProductSchemaUpdate|DataUpdateInfo:%v", info)
+	d.Infof("%s DataUpdateInfo:%v", utils.FuncName(), info)
 	return d.svcCtx.SchemaRepo.ClearCache(d.ctx, info.ProductID)
 }
 
 func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DataUpdateInfo) error {
-	d.Infof("DataUpdateLogic|ProductSchemaUpdate|DataUpdateInfo:%v", info)
+	d.Infof("%s DataUpdateInfo:%v", utils.FuncName(), info)
 	di, err := d.svcCtx.DeviceM.DeviceInfoRead(d.ctx, &dm.DeviceInfoReadReq{
 		ProductID:  info.ProductID,
 		DeviceName: info.DeviceName,
@@ -48,7 +49,7 @@ func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DataUpdateInfo) erro
 		errors.OK, map[string]any{"log_level": di.LogLevel})
 	er := d.svcCtx.PubDev.PublishToDev(d.ctx, topic, payload)
 	if er != nil {
-		d.Errorf("DeviceResp|SDK Log PublishToDev failure err:%v", er)
+		d.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 	}
 	return er
 }
