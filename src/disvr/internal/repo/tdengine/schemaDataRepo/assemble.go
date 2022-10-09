@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cast"
 )
 
-func ToEventData(id string, db map[string]any) *schema2.EventData {
+func ToEventData(db map[string]any) *schema2.EventData {
 	var (
 		params   map[string]any
 		paramStr = cast.ToString(db["param"])
@@ -17,7 +17,7 @@ func ToEventData(id string, db map[string]any) *schema2.EventData {
 		return nil
 	}
 	data := schema2.EventData{
-		ID:        id,
+		ID:        cast.ToString(db["event_id"]),
 		Type:      cast.ToString(db["event_type"]),
 		Params:    params,
 		TimeStamp: cast.ToTime(db["ts"]),
@@ -28,7 +28,7 @@ func ToEventData(id string, db map[string]any) *schema2.EventData {
 func ToPropertyData(id string, db map[string]any) *schema2.PropertyData {
 	propertyType := db[PROPERTY_TYPE]
 	switch propertyType {
-	case string(schema.STRUCT):
+	case string(schema.DataTypeStruct):
 		data := schema2.PropertyData{
 			ID:        id,
 			Param:     nil,
@@ -39,7 +39,7 @@ func ToPropertyData(id string, db map[string]any) *schema2.PropertyData {
 		delete(db, PROPERTY_TYPE)
 		data.Param = db
 		return &data
-	case string(schema.ARRAY):
+	case string(schema.DataTypeArray):
 		paramStr := cast.ToString(db["param"])
 		var param []any
 		json.Unmarshal([]byte(paramStr), &param)

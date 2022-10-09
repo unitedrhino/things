@@ -78,7 +78,7 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 			if err == mysql.ErrDuplicate {
 				return nil, errors.DuplicateMobile.AddDetail(in.UserName)
 			}
-			l.Errorf("handlePassword|Inserts|err=%#v", err)
+			l.Errorf("%s.Inserts err=%#v", utils.FuncName(), err)
 			return nil, err
 		}
 
@@ -90,15 +90,12 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 	return &sys.UserCreateResp{}, nil
 }
 func (l *CreateLogic) Create(in *sys.UserCreateReq) (*sys.UserCreateResp, error) {
-	l.Infof("Register|req=%+v", in)
+	l.Infof("%s req=%+v", utils.FuncName(), in)
 	switch in.ReqType {
 	case "pwd":
 		return l.handlePassword(in)
 	default:
-		l.Errorf("%s|ReqType=%s| not suppot yet", utils.FuncName(), in.ReqType)
-		return nil, errors.Parameter.AddDetail("reqType not suppot yet :" + in.ReqType)
+		l.Errorf("%s ReqType=%s  not support yet", utils.FuncName(), in.ReqType)
+		return nil, errors.Parameter.AddDetail("reqType not support yet :" + in.ReqType)
 	}
-
-	return &sys.UserCreateResp{}, nil
-
 }

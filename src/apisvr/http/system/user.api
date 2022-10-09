@@ -6,7 +6,7 @@ info(
 	version: "v0.1.0"
 )
 import "common.api"  //公共结构体定义
-
+import "system/menu.api"  //菜单结构
 @server (
 	group : system/user
 	prefix: /api/v1/system/user
@@ -45,6 +45,10 @@ service api {
 	@doc "刪除用戶"
 	@handler delete
 	post /delete (UserDeleteReq) returns ()
+
+    @doc "获取用戶资源"
+    @handler resourceRead
+    post /resource-read () returns (UserResourceReadResp)
 }
 type (
 	 UserInfo {
@@ -102,7 +106,7 @@ type (
 	}
 
 	UserIndexReq {
-		Page PageInfo `json:"page,optional,optional"` //分页信息,只获取一个则不填
+		Page PageInfo `json:"page"` //分页信息
 		UserName    string `json:"userName,optional"`          //用户名(唯一)
 		Phone       string `json:"phone,optional"`             // 手机号
 		Email       string `json:"email,optional"`             // 邮箱
@@ -117,8 +121,6 @@ type (
 		Uid         int64  `json:"uid,string"`                 // 用户id
         UserName    string `json:"userName,optional"`          // 用户名(唯一)
         Email       string `json:"email,optional"`             // 邮箱
-        Phone       string `json:"phone,optional"`             // 手机号
-        Wechat      string `json:"wechat,optional"`            // 微信UnionID
         NickName    string `json:"nickName,optional"`          // 用户的昵称
         City        string `json:"city,optional"`              // 用户所在城市
         Country     string `json:"country,optional"`           // 用户所在国家
@@ -126,6 +128,7 @@ type (
         Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
         HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
         Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+        Role        int64  `json:"role,optional"`              // 用户角色
 	}
 
 	UserReadReq{
@@ -174,4 +177,8 @@ type (
 		AccessExpire int64  `json:"accessExpire,string,omitempty"`//token过期时间
 		RefreshAfter int64  `json:"refreshAfter,string,omitempty"`//token刷新时间
 	}
+
+    UserResourceReadResp{
+        Menu   []*MenuData   `json:"menu"`           //菜单资源
+    }
 )

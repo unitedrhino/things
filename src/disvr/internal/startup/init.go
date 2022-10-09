@@ -23,7 +23,7 @@ func Subscribe(svcCtx *svc.ServiceContext) {
 		return deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx)
 	})
 	if err != nil {
-		log.Fatalf("%v|SubDev.Subscribe|err:%v",
+		log.Fatalf("%v.SubDev.Subscribe err:%v",
 			utils.FuncName(), err)
 	}
 	dataUpdateCli, err := dataUpdate.NewDataUpdate(svcCtx.Config.Event)
@@ -35,7 +35,7 @@ func Subscribe(svcCtx *svc.ServiceContext) {
 		return dataUpdateEvent.NewPublishLogic(ctx, svcCtx)
 	})
 	if err != nil {
-		log.Fatalf("[%v]DataUpdate.Subscribe|err:%v",
+		log.Fatalf("%v.DataUpdate err:%v",
 			utils.FuncName(), err)
 	}
 }

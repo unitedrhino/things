@@ -11,9 +11,11 @@ service DeviceMsg {
   //获取设备调试信息记录登入登出,操作
   rpc hubLogIndex(HubLogIndexReq)   returns (HubLogIndexResp);
   //获取设备数据信息
-  rpc schemaLatestIndex(SchemaLatestIndexReq)     returns (SchemaIndexResp);
+  rpc propertyLatestIndex(PropertyLatestIndexReq)     returns (PropertyIndexResp);
   //获取设备数据信息
-  rpc schemaLogIndex(SchemaLogIndexReq)     returns (SchemaIndexResp);
+  rpc propertyLogIndex(PropertyLogIndexReq)     returns (PropertyIndexResp);
+  //获取设备数据信息
+  rpc eventLogIndex(EventLogIndexReq)     returns (EventIndexResp);
 }
 
 //设备交互
@@ -22,6 +24,8 @@ service DeviceInteract {
   rpc sendAction(SendActionReq)         returns(SendActionResp);
   //同步调用设备属性
   rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
+  //发送消息给设备
+  rpc sendMsg(SendMsgReq)     returns(SendMsgResp);
 }
 
 
@@ -33,10 +37,9 @@ message PageInfo{
 }
 
 /*获取对应日志信息*/
-message SchemaLogIndexReq{
+message PropertyLogIndexReq{
   PageInfo page = 1;//使用了聚合函数及间隔的时候无效
-  string method = 2; //获取的类型   property 属性 event事件 action 请求
-  repeated string deviceName = 3; //设备名(不填获取产品下所有设备)
+  repeated string deviceNames = 3; //设备名(不填获取产品下所有设备)
   string productID = 4; //产品id (必填)
   string dataID = 5; //获取的具体标识符的数据(必填)
   int64 timeStart = 6;//获取时间的开始(毫秒时间戳)
@@ -57,37 +60,48 @@ message SchemaLogIndexReq{
 }
 
 /*获取对应日志信息*/
-message SchemaLatestIndexReq{
-  string method = 1; //获取的类型   property 属性 event事件 action 请求
-  string deviceName = 2; //设备名(必填)
-  string productID = 3; //产品id (必填)
-  repeated string dataID = 4; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+message PropertyLatestIndexReq{
+  string deviceName = 1; //设备名(必填)
+  string productID = 2; //产品id (必填)
+  repeated string dataIDs = 3; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
 }
 
 /*设备的日志数据*/
-message SchemaIndex{
+message PropertyIndex{
   int64 timestamp = 1;//发生时间戳(毫秒时间戳)
-  string type = 2 ;//类型 事件类型: 信息:info  告警alert  故障:fault
   string dataID = 3;//属性id
-  string getValue = 4;//获取到的值
-  string sendValue = 5;//发送过去的参数(action限定)
+  string value = 4;//获取到的值
 }
 
 /*获取对应日志信息*/
-message SchemaIndexResp{
+message PropertyIndexResp{
   int64 total = 1; //总数
-  repeated SchemaIndex list = 2;
+  repeated PropertyIndex list = 2;
+}
+
+/*获取对应日志信息*/
+message EventLogIndexReq{
+  PageInfo page = 1;//使用了聚合函数及间隔的时候无效
+  string productID = 2; //产品id (必填)
+  repeated string deviceNames = 3; //设备名(不填获取产品下所有设备)
+  string dataID = 4; //获取的具体标识符的数据(必填)
+  int64 timeStart = 5;//获取时间的开始(毫秒时间戳)
+  int64 timeEnd = 6;//时间的结束(毫秒时间戳)
+  repeated string types = 7; //类型 事件类型: 信息:info  告警alert  故障:fault
 }
 
 /*设备的日志数据*/
-message HubLogIndex{
+message EventIndex{
   int64 timestamp = 1;//发生时间戳(毫秒时间戳)
-  string action = 2 ;//操作类型;显示相应的操作名称、API名称、服务的method
-  string requestID = 3;//请求ID
-  string tranceID = 4;//服务器端事务id
-  string topic = 5;//主题
-  string content = 6;//具体内容
-  int64 resultType = 7;//请求结果状态
+  string type = 2 ;// 事件类型: 信息:info  告警alert  故障:fault
+  string dataID = 3;//属性id
+  string params = 4;//获取到的值
+}
+
+/*获取对应日志信息*/
+message EventIndexResp{
+  int64 total = 1; //总数
+  repeated EventIndex list = 2;
 }
 
 /*实时获取对应信息*/
@@ -97,12 +111,48 @@ message HubLogIndexReq{
   int64   timeStart = 3;//获取时间的开始(毫秒时间戳)
   int64   timeEnd = 4;//时间的结束(毫秒时间戳)
   PageInfo   page = 5;//分页信息
+  repeated string actions = 6;//过滤操作类型 connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
+  repeated string topics = 7;//过滤主题
+  string content = 8;//过滤内容
+  string requestID = 9;//过滤请求ID
 }
+
 /*实时获取对应信息*/
 message HubLogIndexResp{
   int64 total = 1; //总数
   repeated HubLogIndex list = 2;
 }
+
+/*设备的日志数据*/
+message HubLogIndex{
+  int64 timestamp = 1;//发生时间戳(毫秒时间戳)
+  string action = 2 ;//操作类型;connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
+  string requestID = 3;//请求ID
+  string tranceID = 4;//服务器端事务id
+  string topic = 5;//主题
+  string content = 6;//具体内容
+  int64 resultType = 7;//请求结果状态
+}
+
+/*获取sdk调试日志信息*/
+message SdkLogIndexReq {
+  string  productID = 1; //产品id
+  string  deviceName = 2; //设备名
+  int64   timeStart = 3;//获取时间的开始
+  int64   timeEnd = 4;//时间的结束
+  PageInfo page = 5;//分页信息 只获取一个则不填
+}
+/*sdk调试日志信息*/
+message SdkLogIndexResp {
+  int64 total = 1; //总数
+  repeated SdkLogIndex list = 2;
+}
+message SdkLogIndex {
+  int64 timestamp = 1;//发生时间戳(毫秒时间戳)
+  int64 loglevel = 2 ;//操作类型;显示相应的操作名称、API名称、服务的method
+  string content = 3;//具体内容
+}
+
 
 message SendActionReq{
   string  productID = 1; //产品id 获取产品id下的所有设备信息
@@ -130,21 +180,13 @@ message SendPropertyResp{
   string clientToken = 3;//调用id
   string data = 4;//返回信息
 }
-/*获取sdk调试日志信息*/
-message SdkLogIndexReq {
-  string  productID = 1; //产品id
-  string  deviceName = 2; //设备名
-  int64   timeStart = 3;//获取时间的开始
-  int64   timeEnd = 4;//时间的结束
-  PageInfo page = 5;//分页信息 只获取一个则不填
+
+message SendMsgReq{
+  string topic = 1; //发送的topic
+  bytes payload = 2;//发送的数据
 }
-/*sdk调试日志信息*/
-message SdkLogIndexResp {
-  int64 total = 1; //总数
-  repeated SdkLogIndex list = 2;
+
+message SendMsgResp{
+
 }
-message SdkLogIndex {
-  int64 timestamp = 1;//发生时间戳(毫秒时间戳)
-  int64 loglevel = 2 ;//操作类型;显示相应的操作名称、API名称、服务的method
-  string content = 3;//具体内容
-}
+

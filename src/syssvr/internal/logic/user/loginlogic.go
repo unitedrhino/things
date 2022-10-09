@@ -52,14 +52,15 @@ func (l *LoginLogic) getPwd(in *sys.LoginReq, uc *mysql.UserInfo) error {
 func (l *LoginLogic) getRet(uc *mysql.UserInfo) (*sys.LoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
-	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid)
+	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)
 	}
 	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, uc.Uid)
 	if err != nil {
-		l.Errorf("FindOne|UserInfoModel|ui=%+v|err=%+v", ui, err)
+		l.Errorf("%s.FindOne.UserInfoModel ui=%v err=%v",
+			utils.FuncName(), utils.Fmt(ui), utils.Fmt(err))
 		return nil, errors.Database.AddDetail(err)
 	}
 
@@ -88,7 +89,7 @@ func (l *LoginLogic) getRet(uc *mysql.UserInfo) (*sys.LoginResp, error) {
 			RefreshAfter: now + accessExpire/2,
 		},
 	}
-	l.Infof("Login|getRet=%+v", resp)
+	l.Infof("%s getRet=%+v", utils.FuncName(), resp)
 	return resp, nil
 }
 
@@ -96,19 +97,22 @@ func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.UserInfo, err erro
 	switch in.LoginType {
 	case "pwd":
 		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, in.UserID)
-		if err := l.getPwd(in, uc); err != nil {
+		if err != nil {
+			return nil, err
+		}
+		if err = l.getPwd(in, uc); err != nil {
 			return nil, err
 		}
 	default:
-		l.Error("LoginType=%s|not suppost", in.LoginType)
+		l.Error("%s LoginType=%s not support", utils.FuncName(), in.LoginType)
 		return nil, errors.Parameter
 	}
-	l.Infof("login|uc=%#v|err=%+v", uc, err)
+	l.Infof("%s uc=%#v err=%+v", utils.FuncName(), uc, err)
 	return uc, err
 }
 
 func (l *LoginLogic) Login(in *sys.LoginReq) (*sys.LoginResp, error) {
-	l.Infof("Login|req=%+v", in)
+	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	uc, err := l.GetUserInfo(in)
 	switch err {
 	case nil:
@@ -116,7 +120,7 @@ func (l *LoginLogic) Login(in *sys.LoginReq) (*sys.LoginResp, error) {
 	case mysql.ErrNotFound:
 		return nil, errors.UnRegister
 	default:
-		l.Errorf("GetUserCore|req=%#v|err=%+v", in, err)
+		l.Errorf("%s req=%v err=%+v", utils.FuncName(), utils.Fmt(in), err)
 		return nil, errors.Database.AddDetail(err)
 	}
 }

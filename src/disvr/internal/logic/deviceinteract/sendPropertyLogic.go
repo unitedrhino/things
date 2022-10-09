@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
 	"time"
 
@@ -41,7 +42,7 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 }
 
 func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendPropertyResp, error) {
-	l.Infof("SendProperty|req=%+v", in)
+	l.Infof("%s req=%+v", utils.FuncName(), in)
 	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
@@ -50,11 +51,11 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 	err = json.Unmarshal([]byte(in.Data), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail(
-			"SendProperty|data not right:", in.Data)
+			"SendProperty data not right:", in.Data)
 	}
 	uuid, err := uuid.GenerateUUID()
 	if err != nil {
-		l.Errorf("SendProperty|GenerateUUID err:%v", err)
+		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
 	req := deviceSend.DeviceReq{
@@ -63,7 +64,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
 		Timestamp: time.Now().UnixMilli(),
 		Params:    param}
-	_, err = req.VerifyReqParam(l.template, schema.ACTION_INPUT)
+	_, err = req.VerifyReqParam(l.template, schema.ParamActionInput)
 	if err != nil {
 		return nil, err
 	}
@@ -80,6 +81,4 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		Status:      resp.Status,
 		Code:        resp.Code,
 	}, nil
-
-	return &di.SendPropertyResp{}, nil
 }

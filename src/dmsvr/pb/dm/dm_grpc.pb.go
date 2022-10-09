@@ -182,322 +182,6 @@ var DeviceAuth_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "proto/dm.proto",
 }
 
-// ProductManageClient is the client API for ProductManage service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ProductManageClient interface {
-	//新增设备
-	ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
-	//更新设备
-	ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
-	//删除设备
-	ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	//获取设备信息列表
-	ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
-	//获取设备信息详情
-	ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
-	//更新产品物模型
-	ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	//获取产品物模型
-	ProductSchemaRead(ctx context.Context, in *ProductSchemaReadReq, opts ...grpc.CallOption) (*ProductSchema, error)
-}
-
-type productManageClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewProductManageClient(cc grpc.ClientConnInterface) ProductManageClient {
-	return &productManageClient{cc}
-}
-
-func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoCreate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *productManageClient) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoUpdate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *productManageClient) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoDelete", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *productManageClient) ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error) {
-	out := new(ProductInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoIndex", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *productManageClient) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
-	out := new(ProductInfo)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoRead", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *productManageClient) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaUpdate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *productManageClient) ProductSchemaRead(ctx context.Context, in *ProductSchemaReadReq, opts ...grpc.CallOption) (*ProductSchema, error) {
-	out := new(ProductSchema)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaRead", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// ProductManageServer is the server API for ProductManage service.
-// All implementations must embed UnimplementedProductManageServer
-// for forward compatibility
-type ProductManageServer interface {
-	//新增设备
-	ProductInfoCreate(context.Context, *ProductInfo) (*Response, error)
-	//更新设备
-	ProductInfoUpdate(context.Context, *ProductInfo) (*Response, error)
-	//删除设备
-	ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Response, error)
-	//获取设备信息列表
-	ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error)
-	//获取设备信息详情
-	ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error)
-	//更新产品物模型
-	ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error)
-	//获取产品物模型
-	ProductSchemaRead(context.Context, *ProductSchemaReadReq) (*ProductSchema, error)
-	mustEmbedUnimplementedProductManageServer()
-}
-
-// UnimplementedProductManageServer must be embedded to have forward compatible implementations.
-type UnimplementedProductManageServer struct {
-}
-
-func (UnimplementedProductManageServer) ProductInfoCreate(context.Context, *ProductInfo) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoCreate not implemented")
-}
-func (UnimplementedProductManageServer) ProductInfoUpdate(context.Context, *ProductInfo) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoUpdate not implemented")
-}
-func (UnimplementedProductManageServer) ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoDelete not implemented")
-}
-func (UnimplementedProductManageServer) ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoIndex not implemented")
-}
-func (UnimplementedProductManageServer) ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoRead not implemented")
-}
-func (UnimplementedProductManageServer) ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaUpdate not implemented")
-}
-func (UnimplementedProductManageServer) ProductSchemaRead(context.Context, *ProductSchemaReadReq) (*ProductSchema, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaRead not implemented")
-}
-func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
-
-// UnsafeProductManageServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ProductManageServer will
-// result in compilation errors.
-type UnsafeProductManageServer interface {
-	mustEmbedUnimplementedProductManageServer()
-}
-
-func RegisterProductManageServer(s grpc.ServiceRegistrar, srv ProductManageServer) {
-	s.RegisterService(&ProductManage_ServiceDesc, srv)
-}
-
-func _ProductManage_ProductInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProductManageServer).ProductInfoCreate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoCreate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductInfoCreate(ctx, req.(*ProductInfo))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductManage_ProductInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProductManageServer).ProductInfoUpdate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoUpdate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductInfoUpdate(ctx, req.(*ProductInfo))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductManage_ProductInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductInfoDeleteReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProductManageServer).ProductInfoDelete(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoDelete",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductInfoDelete(ctx, req.(*ProductInfoDeleteReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductManage_ProductInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductInfoIndexReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProductManageServer).ProductInfoIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoIndex",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductInfoIndex(ctx, req.(*ProductInfoIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductManage_ProductInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductInfoReadReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProductManageServer).ProductInfoRead(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoRead",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductInfoRead(ctx, req.(*ProductInfoReadReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductManage_ProductSchemaUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductSchemaUpdateReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProductManageServer).ProductSchemaUpdate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductSchemaUpdate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductSchemaUpdate(ctx, req.(*ProductSchemaUpdateReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductManage_ProductSchemaRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductSchemaReadReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProductManageServer).ProductSchemaRead(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductSchemaRead",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductSchemaRead(ctx, req.(*ProductSchemaReadReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// ProductManage_ServiceDesc is the grpc.ServiceDesc for ProductManage service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var ProductManage_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "dm.ProductManage",
-	HandlerType: (*ProductManageServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "ProductInfoCreate",
-			Handler:    _ProductManage_ProductInfoCreate_Handler,
-		},
-		{
-			MethodName: "ProductInfoUpdate",
-			Handler:    _ProductManage_ProductInfoUpdate_Handler,
-		},
-		{
-			MethodName: "ProductInfoDelete",
-			Handler:    _ProductManage_ProductInfoDelete_Handler,
-		},
-		{
-			MethodName: "ProductInfoIndex",
-			Handler:    _ProductManage_ProductInfoIndex_Handler,
-		},
-		{
-			MethodName: "ProductInfoRead",
-			Handler:    _ProductManage_ProductInfoRead_Handler,
-		},
-		{
-			MethodName: "ProductSchemaUpdate",
-			Handler:    _ProductManage_ProductSchemaUpdate_Handler,
-		},
-		{
-			MethodName: "ProductSchemaRead",
-			Handler:    _ProductManage_ProductSchemaRead_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/dm.proto",
-}
-
 // DeviceManageClient is the client API for DeviceManage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
@@ -732,6 +416,828 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeviceInfoRead",
 			Handler:    _DeviceManage_DeviceInfoRead_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
+
+// ProductManageClient is the client API for ProductManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ProductManageClient interface {
+	//新增产品
+	ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
+	//更新产品
+	ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
+	//删除产品
+	ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	//获取产品信息列表
+	ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
+	//获取产品信息详情
+	ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
+	//更新产品物模型
+	ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	//新增产品
+	ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error)
+	//删除产品
+	ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	//获取产品信息列表
+	ProductSchemaIndex(ctx context.Context, in *ProductSchemaIndexReq, opts ...grpc.CallOption) (*ProductSchemaIndexResp, error)
+	//删除产品
+	ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error)
+	//获取产品信息列表
+	ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
+}
+
+type productManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewProductManageClient(cc grpc.ClientConnInterface) ProductManageClient {
+	return &productManageClient{cc}
+}
+
+func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error) {
+	out := new(ProductInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
+	out := new(ProductInfo)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductSchemaIndex(ctx context.Context, in *ProductSchemaIndexReq, opts ...grpc.CallOption) (*ProductSchemaIndexResp, error) {
+	out := new(ProductSchemaIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaTslImport", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error) {
+	out := new(ProductSchemaTslReadResp)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaTslRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ProductManageServer is the server API for ProductManage service.
+// All implementations must embed UnimplementedProductManageServer
+// for forward compatibility
+type ProductManageServer interface {
+	//新增产品
+	ProductInfoCreate(context.Context, *ProductInfo) (*Response, error)
+	//更新产品
+	ProductInfoUpdate(context.Context, *ProductInfo) (*Response, error)
+	//删除产品
+	ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Response, error)
+	//获取产品信息列表
+	ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error)
+	//获取产品信息详情
+	ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error)
+	//更新产品物模型
+	ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error)
+	//新增产品
+	ProductSchemaCreate(context.Context, *ProductSchemaCreateReq) (*Response, error)
+	//删除产品
+	ProductSchemaDelete(context.Context, *ProductSchemaDeleteReq) (*Response, error)
+	//获取产品信息列表
+	ProductSchemaIndex(context.Context, *ProductSchemaIndexReq) (*ProductSchemaIndexResp, error)
+	//删除产品
+	ProductSchemaTslImport(context.Context, *ProductSchemaTslImportReq) (*Response, error)
+	//获取产品信息列表
+	ProductSchemaTslRead(context.Context, *ProductSchemaTslReadReq) (*ProductSchemaTslReadResp, error)
+	mustEmbedUnimplementedProductManageServer()
+}
+
+// UnimplementedProductManageServer must be embedded to have forward compatible implementations.
+type UnimplementedProductManageServer struct {
+}
+
+func (UnimplementedProductManageServer) ProductInfoCreate(context.Context, *ProductInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoCreate not implemented")
+}
+func (UnimplementedProductManageServer) ProductInfoUpdate(context.Context, *ProductInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoUpdate not implemented")
+}
+func (UnimplementedProductManageServer) ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoDelete not implemented")
+}
+func (UnimplementedProductManageServer) ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoIndex not implemented")
+}
+func (UnimplementedProductManageServer) ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoRead not implemented")
+}
+func (UnimplementedProductManageServer) ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaUpdate not implemented")
+}
+func (UnimplementedProductManageServer) ProductSchemaCreate(context.Context, *ProductSchemaCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaCreate not implemented")
+}
+func (UnimplementedProductManageServer) ProductSchemaDelete(context.Context, *ProductSchemaDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaDelete not implemented")
+}
+func (UnimplementedProductManageServer) ProductSchemaIndex(context.Context, *ProductSchemaIndexReq) (*ProductSchemaIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaIndex not implemented")
+}
+func (UnimplementedProductManageServer) ProductSchemaTslImport(context.Context, *ProductSchemaTslImportReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaTslImport not implemented")
+}
+func (UnimplementedProductManageServer) ProductSchemaTslRead(context.Context, *ProductSchemaTslReadReq) (*ProductSchemaTslReadResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaTslRead not implemented")
+}
+func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
+
+// UnsafeProductManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProductManageServer will
+// result in compilation errors.
+type UnsafeProductManageServer interface {
+	mustEmbedUnimplementedProductManageServer()
+}
+
+func RegisterProductManageServer(s grpc.ServiceRegistrar, srv ProductManageServer) {
+	s.RegisterService(&ProductManage_ServiceDesc, srv)
+}
+
+func _ProductManage_ProductInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductInfoCreate(ctx, req.(*ProductInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductInfoUpdate(ctx, req.(*ProductInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductInfoDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductInfoDelete(ctx, req.(*ProductInfoDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductInfoIndex(ctx, req.(*ProductInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductInfoReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductInfoRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductInfoRead(ctx, req.(*ProductInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductSchemaUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductSchemaUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductSchemaUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductSchemaUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductSchemaUpdate(ctx, req.(*ProductSchemaUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductSchemaCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductSchemaCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductSchemaCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductSchemaCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductSchemaCreate(ctx, req.(*ProductSchemaCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductSchemaDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductSchemaDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductSchemaDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductSchemaDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductSchemaDelete(ctx, req.(*ProductSchemaDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductSchemaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductSchemaIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductSchemaIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductSchemaIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductSchemaIndex(ctx, req.(*ProductSchemaIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductSchemaTslImport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductSchemaTslImportReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductSchemaTslImport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductSchemaTslImport",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductSchemaTslImport(ctx, req.(*ProductSchemaTslImportReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductSchemaTslRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductSchemaTslReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductSchemaTslRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProductManage/ProductSchemaTslRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductSchemaTslRead(ctx, req.(*ProductSchemaTslReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ProductManage_ServiceDesc is the grpc.ServiceDesc for ProductManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProductManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.ProductManage",
+	HandlerType: (*ProductManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ProductInfoCreate",
+			Handler:    _ProductManage_ProductInfoCreate_Handler,
+		},
+		{
+			MethodName: "ProductInfoUpdate",
+			Handler:    _ProductManage_ProductInfoUpdate_Handler,
+		},
+		{
+			MethodName: "ProductInfoDelete",
+			Handler:    _ProductManage_ProductInfoDelete_Handler,
+		},
+		{
+			MethodName: "ProductInfoIndex",
+			Handler:    _ProductManage_ProductInfoIndex_Handler,
+		},
+		{
+			MethodName: "ProductInfoRead",
+			Handler:    _ProductManage_ProductInfoRead_Handler,
+		},
+		{
+			MethodName: "ProductSchemaUpdate",
+			Handler:    _ProductManage_ProductSchemaUpdate_Handler,
+		},
+		{
+			MethodName: "ProductSchemaCreate",
+			Handler:    _ProductManage_ProductSchemaCreate_Handler,
+		},
+		{
+			MethodName: "ProductSchemaDelete",
+			Handler:    _ProductManage_ProductSchemaDelete_Handler,
+		},
+		{
+			MethodName: "ProductSchemaIndex",
+			Handler:    _ProductManage_ProductSchemaIndex_Handler,
+		},
+		{
+			MethodName: "ProductSchemaTslImport",
+			Handler:    _ProductManage_ProductSchemaTslImport_Handler,
+		},
+		{
+			MethodName: "ProductSchemaTslRead",
+			Handler:    _ProductManage_ProductSchemaTslRead_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
+
+// DeviceGroupClient is the client API for DeviceGroup service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type DeviceGroupClient interface {
+	//创建分组
+	GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
+	//获取分组信息列表
+	GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
+	//获取分组信息详情
+	GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error)
+	//更新分组
+	GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	//删除分组
+	GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	//创建分组设备
+	GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error)
+	//获取分组设备信息列表
+	GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
+	//删除分组设备
+	GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error)
+}
+
+type deviceGroupClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewDeviceGroupClient(cc grpc.ClientConnInterface) DeviceGroupClient {
+	return &deviceGroupClient{cc}
+}
+
+func (c *deviceGroupClient) GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error) {
+	out := new(GroupInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error) {
+	out := new(GroupInfo)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupDeviceCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error) {
+	out := new(GroupDeviceIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupDeviceIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupDeviceDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// DeviceGroupServer is the server API for DeviceGroup service.
+// All implementations must embed UnimplementedDeviceGroupServer
+// for forward compatibility
+type DeviceGroupServer interface {
+	//创建分组
+	GroupInfoCreate(context.Context, *GroupInfoCreateReq) (*Response, error)
+	//获取分组信息列表
+	GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error)
+	//获取分组信息详情
+	GroupInfoRead(context.Context, *GroupInfoReadReq) (*GroupInfo, error)
+	//更新分组
+	GroupInfoUpdate(context.Context, *GroupInfoUpdateReq) (*Response, error)
+	//删除分组
+	GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error)
+	//创建分组设备
+	GroupDeviceCreate(context.Context, *GroupDeviceCreateReq) (*Response, error)
+	//获取分组设备信息列表
+	GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error)
+	//删除分组设备
+	GroupDeviceDelete(context.Context, *GroupDeviceDeleteReq) (*Response, error)
+	mustEmbedUnimplementedDeviceGroupServer()
+}
+
+// UnimplementedDeviceGroupServer must be embedded to have forward compatible implementations.
+type UnimplementedDeviceGroupServer struct {
+}
+
+func (UnimplementedDeviceGroupServer) GroupInfoCreate(context.Context, *GroupInfoCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoCreate not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoIndex not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupInfoRead(context.Context, *GroupInfoReadReq) (*GroupInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoRead not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInfoUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoUpdate not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoDelete not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupDeviceCreate(context.Context, *GroupDeviceCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceCreate not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceIndex not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupDeviceDelete(context.Context, *GroupDeviceDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceDelete not implemented")
+}
+func (UnimplementedDeviceGroupServer) mustEmbedUnimplementedDeviceGroupServer() {}
+
+// UnsafeDeviceGroupServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DeviceGroupServer will
+// result in compilation errors.
+type UnsafeDeviceGroupServer interface {
+	mustEmbedUnimplementedDeviceGroupServer()
+}
+
+func RegisterDeviceGroupServer(s grpc.ServiceRegistrar, srv DeviceGroupServer) {
+	s.RegisterService(&DeviceGroup_ServiceDesc, srv)
+}
+
+func _DeviceGroup_GroupInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoCreate(ctx, req.(*GroupInfoCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoIndex(ctx, req.(*GroupInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoRead(ctx, req.(*GroupInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoUpdate(ctx, req.(*GroupInfoUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoDelete(ctx, req.(*GroupInfoDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupDeviceCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupDeviceCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupDeviceCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupDeviceCreate(ctx, req.(*GroupDeviceCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupDeviceIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupDeviceIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupDeviceIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupDeviceIndex(ctx, req.(*GroupDeviceIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupDeviceDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupDeviceDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceGroup/GroupDeviceDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupDeviceDelete(ctx, req.(*GroupDeviceDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// DeviceGroup_ServiceDesc is the grpc.ServiceDesc for DeviceGroup service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var DeviceGroup_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.DeviceGroup",
+	HandlerType: (*DeviceGroupServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GroupInfoCreate",
+			Handler:    _DeviceGroup_GroupInfoCreate_Handler,
+		},
+		{
+			MethodName: "GroupInfoIndex",
+			Handler:    _DeviceGroup_GroupInfoIndex_Handler,
+		},
+		{
+			MethodName: "GroupInfoRead",
+			Handler:    _DeviceGroup_GroupInfoRead_Handler,
+		},
+		{
+			MethodName: "GroupInfoUpdate",
+			Handler:    _DeviceGroup_GroupInfoUpdate_Handler,
+		},
+		{
+			MethodName: "GroupInfoDelete",
+			Handler:    _DeviceGroup_GroupInfoDelete_Handler,
+		},
+		{
+			MethodName: "GroupDeviceCreate",
+			Handler:    _DeviceGroup_GroupDeviceCreate_Handler,
+		},
+		{
+			MethodName: "GroupDeviceIndex",
+			Handler:    _DeviceGroup_GroupDeviceIndex_Handler,
+		},
+		{
+			MethodName: "GroupDeviceDelete",
+			Handler:    _DeviceGroup_GroupDeviceDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

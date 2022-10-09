@@ -35,20 +35,20 @@ func (d *DeviceResp) GetTimeStamp(defaultTime time.Time) time.Time {
 }
 
 func (d *DeviceResp) VerifyRespParam(t *schema.Model, id string,
-	tt schema.TEMP_TYPE) (map[string]TempParam, error) {
+	tt schema.ParamType) (map[string]TempParam, error) {
 	getParam := make(map[string]TempParam, len(d.Response))
 	switch tt {
-	case schema.ACTION_OUTPUT:
+	case schema.ParamActionOutput:
 		p, ok := t.Action[id]
 		if ok == false {
 			return nil, errors.Parameter.AddDetail("need right ActionID")
 		}
 		for k, v := range p.Out {
 			tp := TempParam{
-				ID:   v.ID,
-				Name: v.Name,
+				Identifier: v.Identifier,
+				Name:       v.Name,
 			}
-			param, ok := d.Response[v.ID]
+			param, ok := d.Response[v.Identifier]
 			if ok == false {
 				return nil, errors.Parameter.AddDetail("need param:" + k)
 			}
@@ -56,7 +56,7 @@ func (d *DeviceResp) VerifyRespParam(t *schema.Model, id string,
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
-				return nil, errors.Fmt(err).AddDetail(p.ID)
+				return nil, errors.Fmt(err).AddDetail(p.Identifier)
 			}
 		}
 	}

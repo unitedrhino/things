@@ -14,28 +14,35 @@ import (
 )
 
 type (
-	HubLogIndex          = di.HubLogIndex
-	HubLogIndexReq       = di.HubLogIndexReq
-	HubLogIndexResp      = di.HubLogIndexResp
-	PageInfo             = di.PageInfo
-	Response             = di.Response
-	SchemaIndex          = di.SchemaIndex
-	SchemaIndexResp      = di.SchemaIndexResp
-	SchemaLatestIndexReq = di.SchemaLatestIndexReq
-	SchemaLogIndexReq    = di.SchemaLogIndexReq
-	SdkLogIndex          = di.SdkLogIndex
-	SdkLogIndexReq       = di.SdkLogIndexReq
-	SdkLogIndexResp      = di.SdkLogIndexResp
-	SendActionReq        = di.SendActionReq
-	SendActionResp       = di.SendActionResp
-	SendPropertyReq      = di.SendPropertyReq
-	SendPropertyResp     = di.SendPropertyResp
+	EventIndex             = di.EventIndex
+	EventIndexResp         = di.EventIndexResp
+	EventLogIndexReq       = di.EventLogIndexReq
+	HubLogIndex            = di.HubLogIndex
+	HubLogIndexReq         = di.HubLogIndexReq
+	HubLogIndexResp        = di.HubLogIndexResp
+	PageInfo               = di.PageInfo
+	PropertyIndex          = di.PropertyIndex
+	PropertyIndexResp      = di.PropertyIndexResp
+	PropertyLatestIndexReq = di.PropertyLatestIndexReq
+	PropertyLogIndexReq    = di.PropertyLogIndexReq
+	Response               = di.Response
+	SdkLogIndex            = di.SdkLogIndex
+	SdkLogIndexReq         = di.SdkLogIndexReq
+	SdkLogIndexResp        = di.SdkLogIndexResp
+	SendActionReq          = di.SendActionReq
+	SendActionResp         = di.SendActionResp
+	SendMsgReq             = di.SendMsgReq
+	SendMsgResp            = di.SendMsgResp
+	SendPropertyReq        = di.SendPropertyReq
+	SendPropertyResp       = di.SendPropertyResp
 
 	DeviceInteract interface {
 		// 同步调用设备行为
 		SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 		// 同步调用设备属性
 		SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+		// 发送消息给设备
+		SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
 	}
 
 	defaultDeviceInteract struct {
@@ -81,4 +88,15 @@ func (m *defaultDeviceInteract) SendProperty(ctx context.Context, in *SendProper
 // 同步调用设备属性
 func (d *directDeviceInteract) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	return d.svr.SendProperty(ctx, in)
+}
+
+// 发送消息给设备
+func (m *defaultDeviceInteract) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
+	client := di.NewDeviceInteractClient(m.cli.Conn())
+	return client.SendMsg(ctx, in, opts...)
+}
+
+// 发送消息给设备
+func (d *directDeviceInteract) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
+	return d.svr.SendMsg(ctx, in)
 }
