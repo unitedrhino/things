@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/timex"
 	"strings"
 	"time"
 )
@@ -138,16 +139,17 @@ func (d *MqttClient) subscribeConnectStatus(handle Handle) func(ctx context.Cont
 func (d *MqttClient) subscribeWithFunc(topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {
 	return d.client.Subscribe(topic,
 		1, func(client mqtt.Client, message mqtt.Message) {
-			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
 			//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
 			//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
 			ctx, span := traces.StartSpan(ctx, message.Topic(), "")
-
-			logx.Infof("mqtt.subscribeWithFunc trace:%s spanID:%s topic:%s",
-				span.SpanContext().TraceID(), span.SpanContext().SpanID(), message.Topic())
 			defer span.End()
+			startTime := timex.Now()
+			duration := timex.Since(startTime)
 			err := handle(ctx, message.Topic(), message.Payload())
-			logx.WithContext(ctx).Infof("%s.publish topic:%v message:%v err:%v",
-				utils.FuncName(), message.Topic(), string(message.Payload()), err)
+			logx.WithContext(ctx).WithDuration(duration).Infof(
+				"subscribeWithFunc.Subscribe.publish topic:%v message:%v err:%v",
+				message.Topic(), string(message.Payload()), err)
 		}).Error()
 }
