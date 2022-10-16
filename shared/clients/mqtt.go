@@ -31,17 +31,17 @@ func NewMqttClient(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 			return
 		}
 		opts.SetClientID(conf.ClientID + "/" + uuid).SetUsername(conf.User).
-			SetPassword(conf.Pass).SetAutoReconnect(true).SetConnectRetry(true)
-		opts.OnConnect = func(client mqtt.Client) {
+			SetPassword(conf.Pass).SetAutoReconnect(true).SetConnectRetry(true).SetCleanSession(false)
+		opts.SetOnConnectHandler(func(client mqtt.Client) {
 			logx.Info("mqtt client Connected")
-		}
-		opts.OnConnectAttempt = func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
+		})
+		opts.SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
 			logx.Infof("mqtt client connect attempt broker:%v", utils.Fmt(broker))
 			return tlsCfg
-		}
-		opts.OnConnectionLost = func(client mqtt.Client, err error) {
+		})
+		opts.SetConnectionLostHandler(func(client mqtt.Client, err error) {
 			logx.Errorf("mqtt client connection lost err:%v", utils.Fmt(err))
-		}
+		})
 		mc := mqtt.NewClient(opts)
 		er2 := mc.Connect().WaitTimeout(5 * time.Second)
 		if er2 == false {
