@@ -19,6 +19,10 @@ func Fmt(v any) string {
 		return v.(string)
 	case []byte:
 		return string(v.([]byte))
+	case error:
+		return v.(error).Error()
+	case interface{ String() string }:
+		return v.(interface{ String() string }).String()
 	default:
 		js, err := json.Marshal(v)
 		if err != nil {
