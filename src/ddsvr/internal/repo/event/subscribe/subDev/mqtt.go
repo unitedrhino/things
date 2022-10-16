@@ -151,7 +151,3 @@ func (d *MqttClient) subscribeWithFunc(topic string, handle func(ctx context.Con
 				utils.FuncName(), message.Topic(), string(message.Payload()), err)
 		}).Error()
 }
-
-func (d *MqttClient) Publish(ctx context.Context, topic string, payload []byte) error {
-	return d.client.Publish(topic, 1, false, payload).Error()
-}
