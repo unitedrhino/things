@@ -20,8 +20,8 @@ goctl api go -api http/api.api  -dir ./  --style=goZero
 下面两种方式二选一
 命令执行路径: ithings\src\syssvr\
 ```shell script
-goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_sys" -table="*" -dir ./internal/repo/mysql
-goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./internal/repo/mysql 
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_sys" -table="*" -dir ./internal/repo/mysql -icreatedTime,updatedTime,deletedTime
+goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./internal/repo/mysql -icreatedTime,updatedTime,deletedTime
 
 ```
 
@@ -41,8 +41,8 @@ goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --st
 ## model文件编译
 下面两种方式二选一
 ```shell
-goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dm" -table="*" -dir ./internal/repo/mysql 
-goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql 
+goctl model mysql datasource -url="root:password@tcp(127.0.0.1:3306)/things_dm" -table="*" -dir ./internal/repo/mysql -icreatedTime,updatedTime,deletedTime
+goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql -icreatedTime,updatedTime,deletedTime
 
 ```
 
