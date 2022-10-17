@@ -116,7 +116,7 @@ CREATE TABLE if not exists `group_info`
     `parentID`    bigint NOT NULL DEFAULT 0 COMMENT '父组ID 0-根组',
     `groupName`   VARCHAR(100) NOT NULL COMMENT '分组名称',
     `desc` VARCHAR(200) DEFAULT '' COMMENT '描述',
-    `tags`        json comment '设备标签',
+    `tags`        json not null comment '设备标签',
     `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
@@ -124,7 +124,6 @@ CREATE TABLE if not exists `group_info`
     UNIQUE KEY `groupNameIndex` (`groupName`)
     ) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '设备分组信息表';
 
-insert into `group_info` (`groupID`,`parentID`,`groupName`,`desc`,`tags`) values (1742856964762775552, 1, 'groupTest1', 'test1', '');
 
 CREATE TABLE if not exists `group_device`
 (
@@ -136,5 +135,5 @@ CREATE TABLE if not exists `group_device`
     `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `groupID_productID_deviceName` (`groupID`,`productID`,`deviceName`),
+    UNIQUE KEY `groupID_productID_deviceName` (`groupID`,`productID`,`deviceName`)
     ) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '分组与设备关系表';
