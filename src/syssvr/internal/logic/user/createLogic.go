@@ -61,7 +61,6 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 			Uid:        uid_temp,
 			UserName:   sql.NullString{String: in.UserName, Valid: true},
 			Password:   password1,
-			Wechat:     sql.NullString{String: in.Wechat, Valid: false},
 			LastIP:     in.LastIP,
 			RegIP:      in.RegIP,
 			NickName:   in.NickName,
