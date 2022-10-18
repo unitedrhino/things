@@ -2,6 +2,7 @@ package menulogic
 
 import (
 	"context"
+	"database/sql"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 
@@ -28,9 +29,9 @@ func NewMenuUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuUp
 func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, error) {
 	err := l.svcCtx.MenuInfoModle.Update(l.ctx, &mysql.MenuInfo{
 		Id:            in.Id,
-		ParentID:      in.ParentID,
-		Type:          in.Type,
-		Order:         in.Order,
+		ParentID:      sql.NullInt64{Int64: in.ParentID, Valid: false},
+		Type:          sql.NullInt64{Int64: in.Type, Valid: true},
+		Order:         sql.NullInt64{Int64: in.Order, Valid: true},
 		Name:          in.Name,
 		Path:          in.Path,
 		Component:     in.Component,

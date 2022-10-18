@@ -18,15 +18,14 @@ import (
 var (
 	groupDeviceFieldNames          = builder.RawFieldNames(&GroupDevice{})
 	groupDeviceRows                = strings.Join(groupDeviceFieldNames, ",")
-	groupDeviceRowsExpectAutoSet   = strings.Join(stringx.Remove(groupDeviceFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
-	groupDeviceRowsWithPlaceHolder = strings.Join(stringx.Remove(groupDeviceFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
+	groupDeviceRowsExpectAutoSet   = strings.Join(stringx.Remove(groupDeviceFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	groupDeviceRowsWithPlaceHolder = strings.Join(stringx.Remove(groupDeviceFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
 	groupDeviceModel interface {
 		Insert(ctx context.Context, data *GroupDevice) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*GroupDevice, error)
-		FindOneByDeviceName(ctx context.Context, deviceName string) (*GroupDevice, error)
 		FindOneByGroupIDProductIDDeviceName(ctx context.Context, groupID int64, productID string, deviceName string) (*GroupDevice, error)
 		Update(ctx context.Context, data *GroupDevice) error
 		Delete(ctx context.Context, id int64) error
@@ -75,20 +74,6 @@ func (m *defaultGroupDeviceModel) FindOne(ctx context.Context, id int64) (*Group
 	}
 }
 
-func (m *defaultGroupDeviceModel) FindOneByDeviceName(ctx context.Context, deviceName string) (*GroupDevice, error) {
-	var resp GroupDevice
-	query := fmt.Sprintf("select %s from %s where `deviceName` = ? limit 1", groupDeviceRows, m.table)
-	err := m.conn.QueryRowCtx(ctx, &resp, query, deviceName)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
 func (m *defaultGroupDeviceModel) FindOneByGroupIDProductIDDeviceName(ctx context.Context, groupID int64, productID string, deviceName string) (*GroupDevice, error) {
 	var resp GroupDevice
 	query := fmt.Sprintf("select %s from %s where `groupID` = ? and `productID` = ? and `deviceName` = ? limit 1", groupDeviceRows, m.table)
@@ -104,14 +89,14 @@ func (m *defaultGroupDeviceModel) FindOneByGroupIDProductIDDeviceName(ctx contex
 }
 
 func (m *defaultGroupDeviceModel) Insert(ctx context.Context, data *GroupDevice) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, groupDeviceRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.GroupID, data.ProductID, data.DeviceName, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, groupDeviceRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.GroupID, data.ProductID, data.DeviceName)
 	return ret, err
 }
 
 func (m *defaultGroupDeviceModel) Update(ctx context.Context, newData *GroupDevice) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, groupDeviceRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.GroupID, newData.ProductID, newData.DeviceName, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.GroupID, newData.ProductID, newData.DeviceName, newData.Id)
 	return err
 }
 

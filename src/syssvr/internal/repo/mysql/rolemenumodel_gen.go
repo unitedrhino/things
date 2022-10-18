@@ -18,15 +18,15 @@ import (
 var (
 	roleMenuFieldNames          = builder.RawFieldNames(&RoleMenu{})
 	roleMenuRows                = strings.Join(roleMenuFieldNames, ",")
-	roleMenuRowsExpectAutoSet   = strings.Join(stringx.Remove(roleMenuFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
-	roleMenuRowsWithPlaceHolder = strings.Join(stringx.Remove(roleMenuFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
+	roleMenuRowsExpectAutoSet   = strings.Join(stringx.Remove(roleMenuFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), ",")
+	roleMenuRowsWithPlaceHolder = strings.Join(stringx.Remove(roleMenuFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), "=?,") + "=?"
 )
 
 type (
 	roleMenuModel interface {
 		Insert(ctx context.Context, data *RoleMenu) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*RoleMenu, error)
-		FindOneByRoleIDMenuID(ctx context.Context, roleID int64, menuID int64) (*RoleMenu, error)
+		FindOneByRoleIDMenuID(ctx context.Context, roleID sql.NullInt64, menuID sql.NullInt64) (*RoleMenu, error)
 		Update(ctx context.Context, data *RoleMenu) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -37,12 +37,12 @@ type (
 	}
 
 	RoleMenu struct {
-		Id          int64        `db:"id"`          // id编号
-		RoleID      int64        `db:"roleID"`      // 角色ID
-		MenuID      int64        `db:"menuID"`      // 菜单ID
-		CreatedTime time.Time    `db:"createdTime"` // 创建时间
-		UpdatedTime time.Time    `db:"updatedTime"` // 更新时间
-		DeletedTime sql.NullTime `db:"deletedTime"`
+		Id          int64         `db:"id"`          // id编号
+		RoleID      sql.NullInt64 `db:"roleID"`      // 角色ID
+		MenuID      sql.NullInt64 `db:"menuID"`      // 菜单ID
+		CreatedTime time.Time     `db:"createdTime"` // 创建时间
+		UpdatedTime time.Time     `db:"updatedTime"` // 更新时间
+		DeletedTime sql.NullTime  `db:"deletedTime"`
 	}
 )
 
@@ -73,7 +73,7 @@ func (m *defaultRoleMenuModel) FindOne(ctx context.Context, id int64) (*RoleMenu
 	}
 }
 
-func (m *defaultRoleMenuModel) FindOneByRoleIDMenuID(ctx context.Context, roleID int64, menuID int64) (*RoleMenu, error) {
+func (m *defaultRoleMenuModel) FindOneByRoleIDMenuID(ctx context.Context, roleID sql.NullInt64, menuID sql.NullInt64) (*RoleMenu, error) {
 	var resp RoleMenu
 	query := fmt.Sprintf("select %s from %s where `roleID` = ? and `menuID` = ? limit 1", roleMenuRows, m.table)
 	err := m.conn.QueryRowCtx(ctx, &resp, query, roleID, menuID)
@@ -88,14 +88,14 @@ func (m *defaultRoleMenuModel) FindOneByRoleIDMenuID(ctx context.Context, roleID
 }
 
 func (m *defaultRoleMenuModel) Insert(ctx context.Context, data *RoleMenu) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, roleMenuRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.RoleID, data.MenuID, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?)", m.table, roleMenuRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.RoleID, data.MenuID)
 	return ret, err
 }
 
 func (m *defaultRoleMenuModel) Update(ctx context.Context, newData *RoleMenu) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, roleMenuRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.RoleID, newData.MenuID, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.RoleID, newData.MenuID, newData.Id)
 	return err
 }
 

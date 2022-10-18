@@ -2,6 +2,7 @@ package userlogic
 
 import (
 	"context"
+	"database/sql"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
@@ -45,7 +46,7 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 	}
 
 	//如果是账密，则in.Note为账号
-	_, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, in.UserName)
+	_, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserName, Valid: true})
 	switch err {
 	case nil: //已注册
 		//提示重复注册
@@ -58,9 +59,8 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 		password1 := utils.MakePwd(in.Password, uid_temp, false)
 		ui := mysql.UserInfo{
 			Uid:        uid_temp,
-			UserName:   in.UserName,
+			UserName:   sql.NullString{String: in.UserName, Valid: true},
 			Password:   password1,
-			Wechat:     in.Wechat,
 			LastIP:     in.LastIP,
 			RegIP:      in.RegIP,
 			NickName:   in.NickName,
