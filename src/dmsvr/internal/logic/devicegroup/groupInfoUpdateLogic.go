@@ -54,6 +54,9 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.R
 		Tags:      sqlTags,
 		ParentID:  record.ParentID,
 	})
+	if err != nil {
+		return nil, errors.Parameter.AddMsg(err.Error())
+	}
 
 	return &dm.Response{}, nil
 }
