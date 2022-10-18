@@ -18,8 +18,8 @@ import (
 var (
 	productSchemaFieldNames          = builder.RawFieldNames(&ProductSchema{})
 	productSchemaRows                = strings.Join(productSchemaFieldNames, ",")
-	productSchemaRowsExpectAutoSet   = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), ",")
-	productSchemaRowsWithPlaceHolder = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), "=?,") + "=?"
+	productSchemaRowsExpectAutoSet   = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	productSchemaRowsWithPlaceHolder = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
@@ -94,14 +94,14 @@ func (m *defaultProductSchemaModel) FindOneByProductIDIdentifier(ctx context.Con
 }
 
 func (m *defaultProductSchemaModel) Insert(ctx context.Context, data *ProductSchema) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productSchemaRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.Tag, data.Type, data.Identifier, data.Name, data.Desc, data.Required, data.Affordance, data.CreatedTime, data.UpdatedTime, data.DeletedTime)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, productSchemaRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.Tag, data.Type, data.Identifier, data.Name, data.Desc, data.Required, data.Affordance)
 	return ret, err
 }
 
 func (m *defaultProductSchemaModel) Update(ctx context.Context, newData *ProductSchema) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, productSchemaRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.Tag, newData.Type, newData.Identifier, newData.Name, newData.Desc, newData.Required, newData.Affordance, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.Tag, newData.Type, newData.Identifier, newData.Name, newData.Desc, newData.Required, newData.Affordance, newData.Id)
 	return err
 }
 

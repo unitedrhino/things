@@ -77,7 +77,7 @@ func (m *roleModel) IndexRoleIDMenuID(RoleId int64) ([]int64, error) {
 		return nil, err
 	}
 	for _, v := range resp {
-		resp_menuID = append(resp_menuID, v.MenuID)
+		resp_menuID = append(resp_menuID, v.MenuID.Int64)
 	}
 
 	return resp_menuID, nil

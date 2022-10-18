@@ -2,6 +2,7 @@ package userlogic
 
 import (
 	"context"
+	"database/sql"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/spf13/cast"
@@ -32,10 +33,10 @@ func (l *UpdateLogic) Update(in *sys.UserUpdateReq) (*sys.Response, error) {
 		l.Errorf("%s.FindOne uid=%d err=%v", utils.FuncName(), in.Uid, err)
 		return nil, errors.Database.AddDetail(err)
 	}
-	ui.UserName = in.UserName
-	ui.Email = in.Email
-	ui.Phone = in.Phone
-	ui.Wechat = in.Wechat
+	ui.UserName = sql.NullString{String: in.UserName, Valid: true}
+	ui.Email = sql.NullString{String: in.Email, Valid: true}
+	ui.Phone = sql.NullString{String: in.Phone, Valid: true}
+	ui.Wechat = sql.NullString{String: in.Wechat, Valid: true}
 	ui.NickName = in.NickName
 	ui.Sex = in.Sex
 	ui.City = in.City

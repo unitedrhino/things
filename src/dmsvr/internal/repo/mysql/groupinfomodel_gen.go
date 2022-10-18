@@ -18,15 +18,14 @@ import (
 var (
 	groupInfoFieldNames          = builder.RawFieldNames(&GroupInfo{})
 	groupInfoRows                = strings.Join(groupInfoFieldNames, ",")
-	groupInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(groupInfoFieldNames, "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
-	groupInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(groupInfoFieldNames, "`groupID`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`", "`parentID`"), "=?,") + "=?"
+	groupInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(groupInfoFieldNames, "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	groupInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(groupInfoFieldNames, "`groupID`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
 	groupInfoModel interface {
 		Insert(ctx context.Context, data *GroupInfo) (sql.Result, error)
 		FindOne(ctx context.Context, groupID int64) (*GroupInfo, error)
-		FindOneByParentID(ctx context.Context, parentID int64) (*GroupInfo, error)
 		FindOneByGroupName(ctx context.Context, groupName string) (*GroupInfo, error)
 		Update(ctx context.Context, data *GroupInfo) error
 		Delete(ctx context.Context, groupID int64) error
@@ -38,14 +37,14 @@ type (
 	}
 
 	GroupInfo struct {
-		GroupID     int64          `db:"groupID"`     // 分组ID
-		ParentID    int64          `db:"parentID"`    // 父组ID 1-根组
-		GroupName   string         `db:"groupName"`   // 分组名称
-		Desc        string         `db:"desc"`        // 描述
-		Tags        sql.NullString `db:"tags"`        // 设备标签
-		CreatedTime time.Time      `db:"createdTime"` // 创建时间
-		UpdatedTime time.Time      `db:"updatedTime"` // 更新时间
-		DeletedTime sql.NullTime   `db:"deletedTime"` // 删除时间
+		GroupID     int64        `db:"groupID"`     // 分组ID
+		ParentID    int64        `db:"parentID"`    // 父组ID 0-根组
+		GroupName   string       `db:"groupName"`   // 分组名称
+		Desc        string       `db:"desc"`        // 描述
+		Tags        string       `db:"tags"`        // 设备标签
+		CreatedTime time.Time    `db:"createdTime"` // 创建时间
+		UpdatedTime time.Time    `db:"updatedTime"` // 更新时间
+		DeletedTime sql.NullTime `db:"deletedTime"` // 删除时间
 	}
 )
 
@@ -66,20 +65,6 @@ func (m *defaultGroupInfoModel) FindOne(ctx context.Context, groupID int64) (*Gr
 	query := fmt.Sprintf("select %s from %s where `groupID` = ? limit 1", groupInfoRows, m.table)
 	var resp GroupInfo
 	err := m.conn.QueryRowCtx(ctx, &resp, query, groupID)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultGroupInfoModel) FindOneByParentID(ctx context.Context, parentID int64) (*GroupInfo, error) {
-	query := fmt.Sprintf("select %s from %s where `parentID` = ? limit 1", groupInfoRows, m.table)
-	var resp GroupInfo
-	err := m.conn.QueryRowCtx(ctx, &resp, query, parentID)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -112,7 +97,7 @@ func (m *defaultGroupInfoModel) Insert(ctx context.Context, data *GroupInfo) (sq
 
 func (m *defaultGroupInfoModel) Update(ctx context.Context, newData *GroupInfo) error {
 	query := fmt.Sprintf("update %s set %s where `groupID` = ?", m.table, groupInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.GroupName, newData.Desc, newData.Tags, newData.GroupID)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.GroupName, newData.Desc, newData.Tags, newData.GroupID)
 	return err
 }
 

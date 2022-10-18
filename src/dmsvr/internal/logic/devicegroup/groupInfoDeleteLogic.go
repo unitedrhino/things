@@ -25,14 +25,8 @@ func NewGroupInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 
 // 删除分组
 func (l *GroupInfoDeleteLogic) GroupInfoDelete(in *dm.GroupInfoDeleteReq) (*dm.Response, error) {
-	//查询是否存在子组，若存在 则无法直接删除，返回删除失败
-	resp, err := l.svcCtx.GroupInfo.FindOneByParentID(l.ctx, in.GroupID)
-	if resp != nil {
-		return nil, errors.NotEmpty.WithMsg("存在子分组").AddDetailf("the group have sun group can not delete.", in.GroupID)
-	}
-
 	//删除两表数据
-	err = l.svcCtx.GroupDB.Delete(l.ctx, in.GroupID)
+	err := l.svcCtx.GroupDB.Delete(l.ctx, in.GroupID)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

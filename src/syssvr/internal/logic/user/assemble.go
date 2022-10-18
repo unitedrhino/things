@@ -1,6 +1,7 @@
 package userlogic
 
 import (
+	"database/sql"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"time"
@@ -13,11 +14,11 @@ func UserCoreToDb() {
 func UserInfoToPb(ui *mysql.UserInfo) *sys.UserInfo {
 	return &sys.UserInfo{
 		Uid:         ui.Uid,
-		UserName:    ui.UserName,
+		UserName:    ui.UserName.String,
 		Password:    ui.Password,
-		Email:       ui.Email,
-		Phone:       ui.Phone,
-		Wechat:      ui.Wechat,
+		Email:       ui.Email.String,
+		Phone:       ui.Phone.String,
+		Wechat:      ui.Wechat.String,
 		LastIP:      ui.LastIP,
 		RegIP:       ui.RegIP,
 		Role:        ui.Role,
@@ -35,11 +36,11 @@ func UserInfoToPb(ui *mysql.UserInfo) *sys.UserInfo {
 func UserInfoToDb(ui *sys.UserInfo) *mysql.UserInfo {
 	return &mysql.UserInfo{
 		Uid:         ui.Uid,
-		UserName:    ui.UserName,
+		UserName:    sql.NullString{String: ui.UserName, Valid: true},
 		Password:    ui.Password,
-		Email:       ui.Email,
-		Phone:       ui.Phone,
-		Wechat:      ui.Wechat,
+		Email:       sql.NullString{String: ui.Email, Valid: true},
+		Phone:       sql.NullString{String: ui.Phone, Valid: true},
+		Wechat:      sql.NullString{String: ui.Wechat, Valid: true},
 		LastIP:      ui.LastIP,
 		RegIP:       ui.RegIP,
 		Role:        ui.Role,
