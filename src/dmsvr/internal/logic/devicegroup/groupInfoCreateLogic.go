@@ -32,6 +32,7 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 		ParentID:  in.ParentID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,
+		Tags:      "{}",
 	})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
