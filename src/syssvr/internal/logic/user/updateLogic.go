@@ -33,7 +33,7 @@ func (l *UpdateLogic) Update(in *sys.UserUpdateReq) (*sys.Response, error) {
 		l.Errorf("%s.FindOne uid=%d err=%v", utils.FuncName(), in.Uid, err)
 		return nil, errors.Database.AddDetail(err)
 	}
-	ui.UserName = sql.NullString{String: in.UserName, Valid: false}
+	ui.UserName = sql.NullString{String: in.UserName, Valid: true}
 	ui.Email = sql.NullString{String: in.Email, Valid: false}
 	ui.Phone = sql.NullString{String: in.Phone, Valid: false}
 	ui.Wechat = sql.NullString{String: in.Wechat, Valid: false}
