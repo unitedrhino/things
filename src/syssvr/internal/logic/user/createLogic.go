@@ -46,7 +46,7 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 	}
 
 	//如果是账密，则in.Note为账号
-	_, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserName, Valid: false})
+	_, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserName, Valid: true})
 	switch err {
 	case nil: //已注册
 		//提示重复注册
@@ -59,7 +59,7 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 		password1 := utils.MakePwd(in.Password, uid_temp, false)
 		ui := mysql.UserInfo{
 			Uid:        uid_temp,
-			UserName:   sql.NullString{String: in.UserName, Valid: false},
+			UserName:   sql.NullString{String: in.UserName, Valid: true},
 			Password:   password1,
 			Wechat:     sql.NullString{String: in.Wechat, Valid: false},
 			LastIP:     in.LastIP,
