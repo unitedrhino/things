@@ -9,14 +9,14 @@ func MenuInfoToPb(ui *mysql.MenuInfo) *sys.MenuData {
 	return &sys.MenuData{
 		Id:         ui.Id,
 		Name:       ui.Name,
-		ParentID:   ui.ParentID,
-		Type:       ui.Type,
+		ParentID:   ui.ParentID.Int64,
+		Type:       ui.Type.Int64,
 		Path:       ui.Path,
 		Component:  ui.Component,
 		Icon:       ui.Icon,
 		Redirect:   ui.Redirect,
 		CreateTime: ui.CreatedTime.Unix(),
-		Order:      ui.Order,
+		Order:      ui.Order.Int64,
 		HideInMenu: ui.HideInMenu,
 	}
 }

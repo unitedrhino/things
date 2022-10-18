@@ -18,8 +18,8 @@ import (
 var (
 	deviceInfoFieldNames          = builder.RawFieldNames(&DeviceInfo{})
 	deviceInfoRows                = strings.Join(deviceInfoFieldNames, ",")
-	deviceInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`"), ",")
-	deviceInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`"), "=?,") + "=?"
+	deviceInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
+	deviceInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(deviceInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
 )
 
 type (
@@ -96,14 +96,14 @@ func (m *defaultDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Contex
 }
 
 func (m *defaultDeviceInfoModel) Insert(ctx context.Context, data *DeviceInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.Version, data.LogLevel, data.Cert, data.IsOnline, data.Tags)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.Version, data.LogLevel, data.Cert, data.IsOnline, data.Tags)
 	return ret, err
 }
 
 func (m *defaultDeviceInfoModel) Update(ctx context.Context, newData *DeviceInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, deviceInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.FirstLogin, newData.LastLogin, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.Version, newData.LogLevel, newData.Cert, newData.IsOnline, newData.Tags, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.FirstLogin, newData.LastLogin, newData.Version, newData.LogLevel, newData.Cert, newData.IsOnline, newData.Tags, newData.Id)
 	return err
 }
 
