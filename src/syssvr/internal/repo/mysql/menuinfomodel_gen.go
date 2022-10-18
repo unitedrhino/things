@@ -18,8 +18,8 @@ import (
 var (
 	menuInfoFieldNames          = builder.RawFieldNames(&MenuInfo{})
 	menuInfoRows                = strings.Join(menuInfoFieldNames, ",")
-	menuInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
-	menuInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
+	menuInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
+	menuInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
 )
 
 type (
@@ -37,20 +37,20 @@ type (
 	}
 
 	MenuInfo struct {
-		Id            int64         `db:"id"`            // 编号
-		ParentID      sql.NullInt64 `db:"parentID"`      // 父菜单ID，一级菜单为1
-		Type          sql.NullInt64 `db:"type"`          // 类型   1：目录   2：菜单   3：按钮
-		Order         sql.NullInt64 `db:"order"`         // 左侧table排序序号
-		Name          string        `db:"name"`          // 菜单名称
-		Path          string        `db:"path"`          // 系统的path
-		Component     string        `db:"component"`     // 页面
-		Icon          string        `db:"icon"`          // 图标
-		Redirect      string        `db:"redirect"`      // 路由重定向
-		BackgroundUrl string        `db:"backgroundUrl"` // 后台地址
-		HideInMenu    int64         `db:"hideInMenu"`    // 是否隐藏菜单 1-是 2-否
-		CreatedTime   time.Time     `db:"createdTime"`   // 创建时间
-		UpdatedTime   time.Time     `db:"updatedTime"`   // 更新时间
-		DeletedTime   sql.NullTime  `db:"deletedTime"`
+		Id            int64        `db:"id"`            // 编号
+		ParentID      int64        `db:"parentID"`      // 父菜单ID，一级菜单为1
+		Type          int64        `db:"type"`          // 类型   1：目录   2：菜单   3：按钮
+		Order         int64        `db:"order"`         // 左侧table排序序号
+		Name          string       `db:"name"`          // 菜单名称
+		Path          string       `db:"path"`          // 系统的path
+		Component     string       `db:"component"`     // 页面
+		Icon          string       `db:"icon"`          // 图标
+		Redirect      string       `db:"redirect"`      // 路由重定向
+		BackgroundUrl string       `db:"backgroundUrl"` // 后台地址
+		HideInMenu    int64        `db:"hideInMenu"`    // 是否隐藏菜单 1-是 2-否
+		CreatedTime   time.Time    `db:"createdTime"`   // 创建时间
+		UpdatedTime   time.Time    `db:"updatedTime"`   // 更新时间
+		DeletedTime   sql.NullTime `db:"deletedTime"`
 	}
 )
 
