@@ -53,7 +53,7 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.R
 		GroupID:   in.GroupID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,
-		Tags:      sql_tags,
+		Tags:      sql_tags.String,
 	})
 
 	return &dm.Response{}, nil
