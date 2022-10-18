@@ -2,7 +2,6 @@ package devicegrouplogic
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -38,22 +37,21 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.R
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	var sqlTags sql.NullString
+	var sqlTags string
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)
 		if err == nil {
-			sqlTags = sql.NullString{
-				String: string(tags),
-				Valid:  true,
-			}
+			sqlTags = string(tags)
 		}
+	} else {
+		sqlTags = "{}"
 	}
 
 	err = l.svcCtx.GroupInfo.Update(l.ctx, &mysql.GroupInfo{
 		GroupID:   in.GroupID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,
-		Tags:      sqlTags.String,
+		Tags:      sqlTags,
 	})
 
 	return &dm.Response{}, nil
