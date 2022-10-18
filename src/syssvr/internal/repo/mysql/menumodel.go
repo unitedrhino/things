@@ -6,8 +6,6 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"github.com/zeromicro/go-zero/core/stringx"
-	"strings"
 )
 
 type (
@@ -23,8 +21,6 @@ type (
 		roleMenu string
 	}
 )
-
-var menuInfoRowsExpectAutoSet1 = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
 
 func NewMenuModel(conn sqlx.SqlConn, c cache.CacheConf) MenuModel {
 	return &menuModel{
@@ -85,7 +81,7 @@ func (m *menuModel) DeleteMenu(MenuId int64) error {
 func (m *menuModel) InsertMenuID(data *MenuInfo, RoleId int64) error {
 	m.Transact(func(session sqlx.Session) error {
 		//1.向menu_info表插入菜单项
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.menuInfo, menuInfoRowsExpectAutoSet1)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.menuInfo, menuInfoRowsExpectAutoSet)
 		ret, err := session.Exec(query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl, data.HideInMenu)
 		if err != nil {
 			return err
