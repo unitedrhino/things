@@ -97,7 +97,7 @@ func (l *LoginLogic) getRet(uc *mysql.UserInfo) (*sys.LoginResp, error) {
 func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.UserInfo, err error) {
 	switch in.LoginType {
 	case "pwd":
-		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserID, Valid: true})
+		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserID, Valid: false})
 		if err != nil {
 			return nil, err
 		}

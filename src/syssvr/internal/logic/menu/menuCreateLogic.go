@@ -28,9 +28,9 @@ func NewMenuCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuCr
 
 func (l *MenuCreateLogic) MenuCreate(in *sys.MenuCreateReq) (*sys.Response, error) {
 	_, err := l.svcCtx.MenuInfoModle.Insert(l.ctx, &mysql.MenuInfo{
-		ParentID:      sql.NullInt64{Int64: in.ParentID, Valid: true},
-		Type:          sql.NullInt64{Int64: in.Type, Valid: true},
-		Order:         sql.NullInt64{Int64: in.Order, Valid: true},
+		ParentID:      sql.NullInt64{Int64: in.ParentID, Valid: false},
+		Type:          sql.NullInt64{Int64: in.Type, Valid: false},
+		Order:         sql.NullInt64{Int64: in.Order, Valid: false},
 		Name:          in.Name,
 		Path:          in.Path,
 		Component:     in.Component,

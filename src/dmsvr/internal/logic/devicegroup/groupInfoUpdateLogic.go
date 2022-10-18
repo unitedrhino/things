@@ -38,11 +38,11 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.R
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	var sql_tags sql.NullString
+	var sqlTags sql.NullString
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)
 		if err == nil {
-			sql_tags = sql.NullString{
+			sqlTags = sql.NullString{
 				String: string(tags),
 				Valid:  true,
 			}
@@ -53,7 +53,7 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.R
 		GroupID:   in.GroupID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,
-		Tags:      sql_tags.String,
+		Tags:      sqlTags.String,
 	})
 
 	return &dm.Response{}, nil
