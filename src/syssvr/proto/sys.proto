@@ -218,6 +218,7 @@ message MenuCreateReq{
   string redirect = 7;
   int64 order = 8;
   int64 hideInMenu = 9;
+  int64 role = 10;
 }
 
 message MenuIndexReq{
