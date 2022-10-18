@@ -6,6 +6,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -166,8 +167,8 @@ func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm
 	info := make([]*dm.GroupInfo, 0, len(dg))
 	for _, v := range dg {
 		var tags map[string]string
-		if v.Tags.String != "" {
-			_ = json.Unmarshal([]byte(v.Tags.String), &tags)
+		if v.Tags != "" {
+			_ = json.Unmarshal([]byte(v.Tags), &tags)
 		}
 		info = append(info, &dm.GroupInfo{
 			GroupID:     v.GroupID,
@@ -197,8 +198,8 @@ func (m *groupModel) IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]
 	info := make([]*dm.GroupInfo, 0, len(dg))
 	for _, v := range dg {
 		var tags map[string]string
-		if v.Tags.String != "" {
-			_ = json.Unmarshal([]byte(v.Tags.String), &tags)
+		if v.Tags != "" {
+			_ = json.Unmarshal([]byte(v.Tags), &tags)
 		}
 		info = append(info, &dm.GroupInfo{
 			GroupID:     v.GroupID,
@@ -235,19 +236,29 @@ func (m *groupModel) IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([
 
 func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 	m.Transact(func(session sqlx.Session) error {
-		//1.从group_info表删除角色
+		//1.查詢是否存在子分组，如果存在则不允许删除该分组
+		sql := fmt.Sprintf("select count(1) from %s where parentID = %d", m.groupInfo, groupID)
+		var count int64
+		err := session.QueryRow(&count, sql)
+		if err != sqlc.ErrNotFound && count > 0 {
+			return errors.NotEmpty.WithMsg("存在子分组").AddDetailf("the group have sun group can not delete.")
+		}
+
+		//2.从group_info表删除角色
 		query := fmt.Sprintf("delete from %s where groupID = %d", m.groupInfo, groupID)
-		_, err := session.Exec(query)
+		_, err = session.Exec(query)
 		if err != nil {
 			return err
 		}
-		//2.从group_device关系表删除关联项
+
+		//3.从group_device关系表删除关联项
 		query = fmt.Sprintf("delete from %s where  groupID = %d",
 			m.groupDevice, groupID)
 		_, err = session.Exec(query)
 		if err != nil {
 			return err
 		}
+
 		return nil
 	})
 

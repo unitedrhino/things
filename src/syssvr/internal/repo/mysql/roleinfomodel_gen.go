@@ -18,8 +18,8 @@ import (
 var (
 	roleInfoFieldNames          = builder.RawFieldNames(&RoleInfo{})
 	roleInfoRows                = strings.Join(roleInfoFieldNames, ",")
-	roleInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(roleInfoFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), ",")
-	roleInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(roleInfoFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`create_at`", "`update_at`", "`deletedTime`"), "=?,") + "=?"
+	roleInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(roleInfoFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), ",")
+	roleInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(roleInfoFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), "=?,") + "=?"
 )
 
 type (

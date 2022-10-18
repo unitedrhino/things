@@ -2,6 +2,7 @@ package userlogic
 
 import (
 	"context"
+	"database/sql"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
@@ -67,16 +68,16 @@ func (l *LoginLogic) getRet(uc *mysql.UserInfo) (*sys.LoginResp, error) {
 	resp := &sys.LoginResp{
 		Info: &sys.UserInfo{
 			Uid:         ui.Uid,
-			UserName:    ui.UserName,
+			UserName:    ui.UserName.String,
 			NickName:    ui.NickName,
 			City:        ui.City,
 			Country:     ui.Country,
 			Province:    ui.Province,
 			Language:    ui.Language,
 			HeadImgUrl:  ui.HeadImgUrl,
-			Email:       ui.Email,
-			Phone:       ui.Phone,
-			Wechat:      ui.Wechat,
+			Email:       ui.Email.String,
+			Phone:       ui.Phone.String,
+			Wechat:      ui.Wechat.String,
 			LastIP:      ui.LastIP,
 			RegIP:       ui.RegIP,
 			CreatedTime: ui.CreatedTime.Unix(),
@@ -96,7 +97,7 @@ func (l *LoginLogic) getRet(uc *mysql.UserInfo) (*sys.LoginResp, error) {
 func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.UserInfo, err error) {
 	switch in.LoginType {
 	case "pwd":
-		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, in.UserID)
+		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserID, Valid: true})
 		if err != nil {
 			return nil, err
 		}
