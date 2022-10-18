@@ -37,9 +37,13 @@ func (l *UpdateLogic) Update(in *sys.UserUpdateReq) (*sys.Response, error) {
 	ui.NickName = in.NickName
 
 	//性別有效才賦值，否則使用旧值
+	if ui.Sex == 0 {
+		ui.Sex = 1
+	}
 	if in.Sex == 1 || in.Sex == 2 {
 		ui.Sex = in.Sex
 	}
+
 	ui.City = in.City
 	ui.Country = in.Country
 	ui.Province = in.Province
