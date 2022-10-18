@@ -37,8 +37,8 @@ func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.GroupInfoReadReq) (*dm.GroupIn
 	}
 
 	var tags map[string]string
-	if dg.Tags.String != "" {
-		_ = json.Unmarshal([]byte(dg.Tags.String), &tags)
+	if dg.Tags != "" {
+		_ = json.Unmarshal([]byte(dg.Tags), &tags)
 	}
 	return &dm.GroupInfo{
 		GroupID:     dg.GroupID,

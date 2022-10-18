@@ -31,10 +31,10 @@ func (l *ReadLogic) Read(in *sys.UserReadReq) (*sys.UserReadResp, error) {
 
 	return &sys.UserReadResp{
 		Uid:         ui.Uid,
-		UserName:    ui.UserName,
-		Email:       ui.Email,
-		Phone:       ui.Phone,
-		Wechat:      ui.Wechat,
+		UserName:    ui.UserName.String,
+		Email:       ui.Email.String,
+		Phone:       ui.Phone.String,
+		Wechat:      ui.Wechat.String,
 		LastIP:      ui.LastIP,
 		RegIP:       ui.RegIP,
 		NickName:    ui.NickName,

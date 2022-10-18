@@ -18,8 +18,8 @@ import (
 var (
 	productInfoFieldNames          = builder.RawFieldNames(&ProductInfo{})
 	productInfoRows                = strings.Join(productInfoFieldNames, ",")
-	productInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(productInfoFieldNames, "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
-	productInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(productInfoFieldNames, "`productID`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
+	productInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(productInfoFieldNames, "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	productInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(productInfoFieldNames, "`productID`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
@@ -97,14 +97,14 @@ func (m *defaultProductInfoModel) FindOneByProductName(ctx context.Context, prod
 }
 
 func (m *defaultProductInfoModel) Insert(ctx context.Context, data *ProductInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Desc, data.CreatedTime, data.UpdatedTime, data.DeletedTime, data.DevStatus)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Desc, data.DevStatus)
 	return ret, err
 }
 
 func (m *defaultProductInfoModel) Update(ctx context.Context, newData *ProductInfo) error {
 	query := fmt.Sprintf("update %s set %s where `productID` = ?", m.table, productInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductName, newData.ProductType, newData.AuthMode, newData.DeviceType, newData.CategoryID, newData.NetType, newData.DataProto, newData.AutoRegister, newData.Secret, newData.Desc, newData.CreatedTime, newData.UpdatedTime, newData.DeletedTime, newData.DevStatus, newData.ProductID)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductName, newData.ProductType, newData.AuthMode, newData.DeviceType, newData.CategoryID, newData.NetType, newData.DataProto, newData.AutoRegister, newData.Secret, newData.Desc, newData.DevStatus, newData.ProductID)
 	return err
 }
 
