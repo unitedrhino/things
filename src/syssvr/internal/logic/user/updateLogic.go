@@ -34,9 +34,6 @@ func (l *UpdateLogic) Update(in *sys.UserUpdateReq) (*sys.Response, error) {
 		return nil, errors.Database.AddDetail(err)
 	}
 	ui.UserName = sql.NullString{String: in.UserName, Valid: true}
-	ui.Email = sql.NullString{String: in.Email, Valid: false}
-	ui.Phone = sql.NullString{String: in.Phone, Valid: false}
-	ui.Wechat = sql.NullString{String: in.Wechat, Valid: false}
 	ui.NickName = in.NickName
 	ui.Sex = in.Sex
 	ui.City = in.City
