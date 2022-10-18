@@ -88,9 +88,9 @@ INSERT into role_menu (roleID,menuID) values (1,20);
 CREATE TABLE if not exists `menu_info`
 (
     `id`              bigint auto_increment comment '编号',
-    `parentID`        int null comment '父菜单ID，一级菜单为1',
-    `type`            int null comment '类型   1：目录   2：菜单   3：按钮',
-    `order`           int null comment '左侧table排序序号',
+    `parentID`        int not null default 1 comment '父菜单ID，一级菜单为1',
+    `type`            int not null default 1 comment '类型   1：目录   2：菜单   3：按钮',
+    `order`           int not null default 1 comment '左侧table排序序号',
     `name`            varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '菜单名称',
     `path`            varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '系统的path',
     `component`       varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '页面',
