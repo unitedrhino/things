@@ -28,7 +28,7 @@ func NewGroupInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 
 // 更新分组
 func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.Response, error) {
-	_, err := l.svcCtx.GroupInfo.FindOne(l.ctx, in.GroupID)
+	record, err := l.svcCtx.GroupInfo.FindOne(l.ctx, in.GroupID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.NotFind.AddDetailf("not find Group GroupID=%d",
@@ -52,6 +52,7 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.R
 		GroupName: in.GroupName,
 		Desc:      in.Desc,
 		Tags:      sqlTags,
+		ParentID:  record.ParentID,
 	})
 
 	return &dm.Response{}, nil
