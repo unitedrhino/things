@@ -30,8 +30,8 @@ func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, erro
 	err := l.svcCtx.MenuInfoModle.Update(l.ctx, &mysql.MenuInfo{
 		Id:            in.Id,
 		ParentID:      sql.NullInt64{Int64: in.ParentID, Valid: false},
-		Type:          sql.NullInt64{Int64: in.Type, Valid: false},
-		Order:         sql.NullInt64{Int64: in.Order, Valid: false},
+		Type:          sql.NullInt64{Int64: in.Type, Valid: true},
+		Order:         sql.NullInt64{Int64: in.Order, Valid: true},
 		Name:          in.Name,
 		Path:          in.Path,
 		Component:     in.Component,

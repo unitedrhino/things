@@ -36,7 +36,7 @@ func UserInfoToPb(ui *mysql.UserInfo) *sys.UserInfo {
 func UserInfoToDb(ui *sys.UserInfo) *mysql.UserInfo {
 	return &mysql.UserInfo{
 		Uid:         ui.Uid,
-		UserName:    sql.NullString{String: ui.UserName, Valid: false},
+		UserName:    sql.NullString{String: ui.UserName, Valid: true},
 		Password:    ui.Password,
 		Email:       sql.NullString{String: ui.Email, Valid: false},
 		Phone:       sql.NullString{String: ui.Phone, Valid: false},
