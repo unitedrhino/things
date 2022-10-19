@@ -9,6 +9,7 @@ var (
 	Password           = NewCodeError(USER_ERROR+4, "账号或密码错误")
 	Captcha            = NewCodeError(USER_ERROR+5, "验证码错误")
 	UidNotRight        = NewCodeError(USER_ERROR+6, "uid不对")
+	NotLogin           = NewCodeError(USER_ERROR+7, "尚未登录")
 	RegisterOne        = NewCodeError(USER_ERROR+22, "注册第一步未成功")
 	DuplicateRegister  = NewCodeError(USER_ERROR+23, "重复注册")
 	NeedUserName       = NewCodeError(USER_ERROR+24, "需要填入用户名")

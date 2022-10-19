@@ -24,7 +24,7 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if strToken == "" {
 			logx.WithContext(r.Context()).Errorf("%s.CheckToken ip=%s not find token",
 				utils.FuncName(), strIP)
-			http.Error(w, errors.TokenMalformed.Error(), http.StatusUnauthorized)
+			http.Error(w, errors.NotLogin.Error(), http.StatusUnauthorized)
 			return
 		}
 		resp, err := m.UserRpc.CheckToken(r.Context(), &user.CheckTokenReq{
