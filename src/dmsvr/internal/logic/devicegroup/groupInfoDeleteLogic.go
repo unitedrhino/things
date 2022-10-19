@@ -28,7 +28,7 @@ func (l *GroupInfoDeleteLogic) GroupInfoDelete(in *dm.GroupInfoDeleteReq) (*dm.R
 	//删除两表数据
 	err := l.svcCtx.GroupDB.Delete(l.ctx, in.GroupID)
 	if err != nil {
-		return nil, errors.SunGroup.AddDetail(err)
+		return nil, errors.NotEmpty.AddDetail(err)
 	}
 	return &dm.Response{}, nil
 }
