@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -37,6 +38,7 @@ func (l *MenuCreateLogic) MenuCreate(req *types.MenuCreateReq) error {
 		Redirect:   req.Redirect,
 		Order:      req.Order,
 		HideInMenu: req.HideInMenu,
+		Role:       userHeader.GetUserCtx(l.ctx).Role,
 	})
 	if err != nil {
 		err := errors.Fmt(err)

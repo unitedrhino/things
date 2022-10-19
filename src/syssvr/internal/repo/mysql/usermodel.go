@@ -38,7 +38,7 @@ func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
 //插入的时候检查key是否重复
 func (m *userModel) Register(ctx context.Context, UserInfoModel UserInfoModel, data UserInfo, key Keys) (err error) {
 
-	m.Transact(func(session sqlx.Session) error {
+	return m.Transact(func(session sqlx.Session) error {
 		var resp UserInfo
 		var isUpdate bool = true
 		query := fmt.Sprintf("select %s from %s where `%s` = ?  limit 1", userInfoRows, m.userInfo, key.Key)
@@ -61,7 +61,6 @@ func (m *userModel) Register(ctx context.Context, UserInfoModel UserInfoModel, d
 		return err
 
 	})
-	return nil
 }
 
 //返回 usercore列表,总数及错误信息

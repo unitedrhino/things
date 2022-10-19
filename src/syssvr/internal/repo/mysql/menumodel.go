@@ -12,6 +12,7 @@ type (
 	MenuModel interface {
 		Index(in *sys.MenuIndexReq) ([]*MenuInfo, error)
 		DeleteMenu(MenuId int64) error
+		InsertMenuID(data *MenuInfo, RoleId int64) error
 	}
 
 	menuModel struct {
@@ -56,7 +57,7 @@ func (m *menuModel) Index(in *sys.MenuIndexReq) ([]*MenuInfo, error) {
 }
 
 func (m *menuModel) DeleteMenu(MenuId int64) error {
-	m.Transact(func(session sqlx.Session) error {
+	return m.Transact(func(session sqlx.Session) error {
 		//1.从菜单表删除角色
 		query := fmt.Sprintf("delete from %s where id = %d",
 			m.menuInfo, MenuId)
@@ -74,5 +75,25 @@ func (m *menuModel) DeleteMenu(MenuId int64) error {
 
 		return nil
 	})
-	return nil
+}
+
+func (m *menuModel) InsertMenuID(data *MenuInfo, RoleId int64) error {
+	return m.Transact(func(session sqlx.Session) error {
+		//1.向menu_info表插入菜单项
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.menuInfo, menuInfoRowsExpectAutoSet)
+		ret, err := session.Exec(query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl, data.HideInMenu)
+		if err != nil {
+			return err
+		}
+		insertID, err := ret.LastInsertId()
+		//2.向role_menu表插入关联菜单项
+		query = fmt.Sprintf("insert into %s (roleID, menuID) values (%d, %d)",
+			m.roleMenu, RoleId, insertID)
+		_, err = session.Exec(query)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 }

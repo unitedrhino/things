@@ -2,7 +2,6 @@ package menulogic
 
 import (
 	"context"
-	"database/sql"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 
@@ -27,10 +26,23 @@ func NewMenuCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuCr
 }
 
 func (l *MenuCreateLogic) MenuCreate(in *sys.MenuCreateReq) (*sys.Response, error) {
-	_, err := l.svcCtx.MenuInfoModle.Insert(l.ctx, &mysql.MenuInfo{
-		ParentID:      sql.NullInt64{Int64: in.ParentID, Valid: true},
-		Type:          sql.NullInt64{Int64: in.Type, Valid: true},
-		Order:         sql.NullInt64{Int64: in.Order, Valid: true},
+
+	if in.Type == 0 {
+		in.Type = 1
+	}
+	if in.ParentID == 0 {
+		in.ParentID = 1
+	}
+	if in.Order == 0 {
+		in.Order = 1
+	}
+	if in.HideInMenu == 0 {
+		in.HideInMenu = 1
+	}
+	err := l.svcCtx.MenuModel.InsertMenuID(&mysql.MenuInfo{
+		ParentID:      in.ParentID,
+		Type:          in.Type,
+		Order:         in.Order,
 		Name:          in.Name,
 		Path:          in.Path,
 		Component:     in.Component,
@@ -38,7 +50,7 @@ func (l *MenuCreateLogic) MenuCreate(in *sys.MenuCreateReq) (*sys.Response, erro
 		Redirect:      in.Redirect,
 		BackgroundUrl: "",
 		HideInMenu:    in.HideInMenu,
-	})
+	}, in.Role)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
