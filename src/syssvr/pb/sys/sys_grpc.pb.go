@@ -326,7 +326,7 @@ func NewRoleClient(cc grpc.ClientConnInterface) RoleClient {
 
 func (c *roleClient) RoleCreate(ctx context.Context, in *RoleCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.Role/RoleCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Role/roleCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -335,7 +335,7 @@ func (c *roleClient) RoleCreate(ctx context.Context, in *RoleCreateReq, opts ...
 
 func (c *roleClient) RoleIndex(ctx context.Context, in *RoleIndexReq, opts ...grpc.CallOption) (*RoleIndexResp, error) {
 	out := new(RoleIndexResp)
-	err := c.cc.Invoke(ctx, "/sys.Role/RoleIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Role/roleIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -344,7 +344,7 @@ func (c *roleClient) RoleIndex(ctx context.Context, in *RoleIndexReq, opts ...gr
 
 func (c *roleClient) RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.Role/RoleUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Role/roleUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -353,7 +353,7 @@ func (c *roleClient) RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...
 
 func (c *roleClient) RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.Role/RoleDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Role/roleDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -362,7 +362,7 @@ func (c *roleClient) RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...
 
 func (c *roleClient) RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.Role/RoleMenuUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Role/roleMenuUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -501,23 +501,23 @@ var _Role_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*RoleServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "RoleCreate",
+			MethodName: "roleCreate",
 			Handler:    _Role_RoleCreate_Handler,
 		},
 		{
-			MethodName: "RoleIndex",
+			MethodName: "roleIndex",
 			Handler:    _Role_RoleIndex_Handler,
 		},
 		{
-			MethodName: "RoleUpdate",
+			MethodName: "roleUpdate",
 			Handler:    _Role_RoleUpdate_Handler,
 		},
 		{
-			MethodName: "RoleDelete",
+			MethodName: "roleDelete",
 			Handler:    _Role_RoleDelete_Handler,
 		},
 		{
-			MethodName: "RoleMenuUpdate",
+			MethodName: "roleMenuUpdate",
 			Handler:    _Role_RoleMenuUpdate_Handler,
 		},
 	},
@@ -545,7 +545,7 @@ func NewMenuClient(cc grpc.ClientConnInterface) MenuClient {
 
 func (c *menuClient) MenuCreate(ctx context.Context, in *MenuCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.Menu/MenuCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Menu/menuCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -554,7 +554,7 @@ func (c *menuClient) MenuCreate(ctx context.Context, in *MenuCreateReq, opts ...
 
 func (c *menuClient) MenuIndex(ctx context.Context, in *MenuIndexReq, opts ...grpc.CallOption) (*MenuIndexResp, error) {
 	out := new(MenuIndexResp)
-	err := c.cc.Invoke(ctx, "/sys.Menu/MenuIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Menu/menuIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -563,7 +563,7 @@ func (c *menuClient) MenuIndex(ctx context.Context, in *MenuIndexReq, opts ...gr
 
 func (c *menuClient) MenuUpdate(ctx context.Context, in *MenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.Menu/MenuUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Menu/menuUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -572,7 +572,7 @@ func (c *menuClient) MenuUpdate(ctx context.Context, in *MenuUpdateReq, opts ...
 
 func (c *menuClient) MenuDelete(ctx context.Context, in *MenuDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.Menu/MenuDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Menu/menuDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -689,19 +689,19 @@ var _Menu_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MenuServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "MenuCreate",
+			MethodName: "menuCreate",
 			Handler:    _Menu_MenuCreate_Handler,
 		},
 		{
-			MethodName: "MenuIndex",
+			MethodName: "menuIndex",
 			Handler:    _Menu_MenuIndex_Handler,
 		},
 		{
-			MethodName: "MenuUpdate",
+			MethodName: "menuUpdate",
 			Handler:    _Menu_MenuUpdate_Handler,
 		},
 		{
-			MethodName: "MenuDelete",
+			MethodName: "menuDelete",
 			Handler:    _Menu_MenuDelete_Handler,
 		},
 	},

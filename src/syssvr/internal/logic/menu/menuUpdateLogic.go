@@ -2,7 +2,6 @@ package menulogic
 
 import (
 	"context"
-	"database/sql"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 
@@ -27,11 +26,26 @@ func NewMenuUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuUp
 }
 
 func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, error) {
-	err := l.svcCtx.MenuInfoModle.Update(l.ctx, &mysql.MenuInfo{
+	mi, err := l.svcCtx.MenuInfoModle.FindOne(l.ctx, in.Id)
+	if err != nil {
+		l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)
+		return nil, err
+	}
+	if in.Type != 1 && in.Type != 2 && in.Type != 3 {
+		in.Type = mi.Type
+	}
+	if in.Order == 0 {
+		in.Order = mi.Order
+	}
+	if in.HideInMenu == 0 {
+		in.HideInMenu = mi.HideInMenu
+	}
+
+	err = l.svcCtx.MenuInfoModle.Update(l.ctx, &mysql.MenuInfo{
 		Id:            in.Id,
-		ParentID:      sql.NullInt64{Int64: in.ParentID, Valid: false},
-		Type:          sql.NullInt64{Int64: in.Type, Valid: true},
-		Order:         sql.NullInt64{Int64: in.Order, Valid: true},
+		ParentID:      mi.ParentID,
+		Type:          in.Type,
+		Order:         in.Order,
 		Name:          in.Name,
 		Path:          in.Path,
 		Component:     in.Component,
