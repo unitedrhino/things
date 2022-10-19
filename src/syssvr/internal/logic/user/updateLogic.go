@@ -35,7 +35,15 @@ func (l *UpdateLogic) Update(in *sys.UserUpdateReq) (*sys.Response, error) {
 	}
 	ui.UserName = sql.NullString{String: in.UserName, Valid: true}
 	ui.NickName = in.NickName
-	ui.Sex = in.Sex
+
+	//性別有效才賦值，否則使用旧值
+	if ui.Sex == 0 {
+		ui.Sex = 1
+	}
+	if in.Sex == 1 || in.Sex == 2 {
+		ui.Sex = in.Sex
+	}
+
 	ui.City = in.City
 	ui.Country = in.Country
 	ui.Province = in.Province
