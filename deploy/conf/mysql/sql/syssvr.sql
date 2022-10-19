@@ -65,32 +65,33 @@ CREATE TABLE if not exists `role_menu`
     UNIQUE KEY `roleIDMenuIDIndex` (`roleID`, `menuID`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='角色菜单关联表';
 
-INSERT into role_menu (roleID,menuID) values (1,2);
-INSERT into role_menu (roleID,menuID) values (1,3);
-INSERT into role_menu (roleID,menuID) values (1,4);
-INSERT into role_menu (roleID,menuID) values (1,5);
-INSERT into role_menu (roleID,menuID) values (1,6);
-INSERT into role_menu (roleID,menuID) values (1,7);
-INSERT into role_menu (roleID,menuID) values (1,8);
-INSERT into role_menu (roleID,menuID) values (1,9);
-INSERT into role_menu (roleID,menuID) values (1,10);
-INSERT into role_menu (roleID,menuID) values (1,11);
-INSERT into role_menu (roleID,menuID) values (1,12);
-INSERT into role_menu (roleID,menuID) values (1,13);
-INSERT into role_menu (roleID,menuID) values (1,14);
-INSERT into role_menu (roleID,menuID) values (1,15);
-INSERT into role_menu (roleID,menuID) values (1,16);
-INSERT into role_menu (roleID,menuID) values (1,17);
-INSERT into role_menu (roleID,menuID) values (1,18);
-INSERT into role_menu (roleID,menuID) values (1,19);
-INSERT into role_menu (roleID,menuID) values (1,20);
+INSERT INTO `role_menu` VALUES (266, 1, 2, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (250, 1, 3, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (268, 1, 4, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (251, 1, 6, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (252, 1, 7, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (253, 1, 8, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (254, 1, 9, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (255, 1, 10, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (256, 1, 11, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (257, 1, 12, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (258, 1, 13, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (259, 1, 14, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (260, 1, 15, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (261, 1, 16, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (262, 1, 17, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (269, 1, 18, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (263, 1, 21, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (264, 1, 24, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (265, 1, 23, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `role_menu` VALUES (267, 1, 25, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
 
 CREATE TABLE if not exists `menu_info`
 (
     `id`              bigint auto_increment comment '编号',
-    `parentID`        int null comment '父菜单ID，一级菜单为1',
-    `type`            int null comment '类型   1：目录   2：菜单   3：按钮',
-    `order`           int null comment '左侧table排序序号',
+    `parentID`        int not null comment '父菜单ID，一级菜单为1',
+    `type`            int not null comment '类型   1：目录   2：菜单   3：按钮',
+    `order`           int not null comment '左侧table排序序号',
     `name`            varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '菜单名称',
     `path`            varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '系统的path',
     `component`       varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' comment '页面',
@@ -105,63 +106,25 @@ CREATE TABLE if not exists `menu_info`
     UNIQUE KEY `nameIndex` (`name`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='菜单管理表';
 
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(2, 1, 2, 1, '设备管理', '/deviceMangers', './deviceMangers/index.tsx', 'icon_data_01', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(3, 1, 2, 2, '系统管理', '/systemManagers', './systemManagers/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(4, 1, 2, 3, '运维监控', '/operationsMonitorings', './operationsMonitorings/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(5, 1, 0, 4, '规则引擎', '/ruleEngines', './ruleEngines/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-09-24 17:01:55', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(6, 2, 2, 1, '产品', '/deviceMangers/product/index', './deviceMangers/product/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:16:58', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(7, 2, 0, 2, '产品详情', '/deviceMangers/product/detail/:id', './deviceMangers/product/detail/index', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-09-24 16:59:45', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(8, 2, 0, 3, '设备', '/deviceMangers/device/index', './deviceMangers/device/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 17:03:49', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(9, 2, 0, 3, '设备详情', '/deviceMangers/device/detail/:id/:name', './deviceMangers/device/detail/index', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-09-24 17:03:44', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(10, 3, 0, 1, '用户管理', '/systemMangers/user/index', './systemMangers/user/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:59:01', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(11, 3, 2, 2, '角色管理', '/systemMangers/role/index', './systemMangers/role/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:15:37', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(12, 3, 2, 3, '菜单列表', '/systemMangers/menu/index', './systemMangers/menu/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:15:52', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(13, 4, 0, 1, '固件升级', '/operationsMonitorings/firmwareUpgrades/index', './operationsMonitorings/firmwareUpgrades/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:52:10', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(14, 4, 2, 2, '告警记录', '/operationsMonitorings/alarmRecords/index', './operationsMonitorings/alarmRecords/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(15, 4, 2, 3, '资源管理', '/operationsMonitorings/resourceManagements/index', './operationsMonitorings/resourceManagements/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(16, 4, 2, 4, '远程配置', '/operationsMonitorings/remoteConfigurations/index', './operationsMonitorings/remoteConfigurations/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(17, 4, 2, 5, '告警中心', '/operationsMonitorings/alarmCenters/index', './operationsMonitorings/alarmCenters/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(18, 4, 2, 6, '在线调试', '/operationsMonitorings/onlineDebugs/index', './operationsMonitorings/onlineDebugs/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(19, 5, 2, 1, '消息规则', '/ruleEngines/messageRules/index', './ruleEngines/messageRules/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-INSERT INTO things_sys.menu_info
-(id, parentID, `type`, `order`, name, `path`, component, icon, redirect, backgroundUrl, hideInMenu, createdTime, updatedTime, deletedTime)
-VALUES(20, 5, 2, 2, '规则日志', '/ruleEngines/ruleLogs/index', './ruleEngines/ruleLogs/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
-
+INSERT INTO `menu_info` VALUES (2, 1, 0, 2, '设备管理', '/deviceMangers', './deviceMangers/index.tsx', 'icon_data_01', '', '', 2, '2022-09-24 15:38:54', '2022-10-18 10:31:11', NULL);
+INSERT INTO `menu_info` VALUES (3, 1, 0, 9, '系统管理', '/systemManagers', './systemManagers/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-10-17 20:42:42', NULL);
+INSERT INTO `menu_info` VALUES (4, 1, 0, 4, '运维监控', '/operationsMonitorings', './operationsMonitorings/index.tsx', 'icon_hvac', '', '', 2, '2022-09-24 15:38:54', '2022-10-18 21:42:34', NULL);
+INSERT INTO `menu_info` VALUES (6, 2, 2, 1, '产品', '/deviceMangers/product/index', './deviceMangers/product/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:16:58', NULL);
+INSERT INTO `menu_info` VALUES (7, 2, 0, 1, '产品详情', '/deviceMangers/product/detail/:id', './deviceMangers/product/detail/index', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-10-13 23:02:39', NULL);
+INSERT INTO `menu_info` VALUES (8, 2, 0, 2, '设备', '/deviceMangers/device/index', './deviceMangers/device/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-10-13 23:02:46', NULL);
+INSERT INTO `menu_info` VALUES (9, 2, 0, 2, '设备详情', '/deviceMangers/device/detail/:id/:name', './deviceMangers/device/detail/index', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-10-13 23:02:51', NULL);
+INSERT INTO `menu_info` VALUES (10, 3, 0, 1, '用户管理', '/systemMangers/user/index', './systemMangers/user/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:59:01', NULL);
+INSERT INTO `menu_info` VALUES (11, 3, 2, 2, '角色管理', '/systemMangers/role/index', './systemMangers/role/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:15:37', NULL);
+INSERT INTO `menu_info` VALUES (12, 3, 2, 3, '菜单列表', '/systemMangers/menu/index', './systemMangers/menu/index', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 16:15:52', NULL);
+INSERT INTO `menu_info` VALUES (13, 4, 0, 1, '固件升级', '/operationsMonitorings/firmwareUpgrades/index', './operationsMonitorings/firmwareUpgrades/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-10-17 20:47:13', NULL);
+INSERT INTO `menu_info` VALUES (14, 4, 0, 2, '告警记录', '/operationsMonitorings/alarmRecords/index', './operationsMonitorings/alarmRecords/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-10-17 20:45:01', NULL);
+INSERT INTO `menu_info` VALUES (15, 4, 0, 3, '资源管理', '/operationsMonitorings/resourceManagements/index', './operationsMonitorings/resourceManagements/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-10-17 20:45:12', NULL);
+INSERT INTO `menu_info` VALUES (16, 4, 0, 4, '远程配置', '/operationsMonitorings/remoteConfigurations/index', './operationsMonitorings/remoteConfigurations/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-10-17 20:45:19', NULL);
+INSERT INTO `menu_info` VALUES (17, 4, 0, 5, '告警中心', '/operationsMonitorings/alarmCenters/index', './operationsMonitorings/alarmCenters/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-10-17 20:45:27', NULL);
+INSERT INTO `menu_info` VALUES (18, 4, 2, 6, '在线调试', '/operationsMonitorings/onlineDebugs/index', './operationsMonitorings/onlineDebugs/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54', '2022-09-24 15:38:54', NULL);
+INSERT INTO `menu_info` VALUES (21, 1, 0, 1, '官网', 'https://ithings.pages.dev/', './deviceMangers/product/index', 'icon_dosing', '/deviceMangers/product/index', '', 2, '2022-10-01 10:14:17', '2022-10-18 21:42:15', NULL);
+INSERT INTO `menu_info` VALUES (23, 2, 0, 3, '分组', '/deviceMangers/group/index', './deviceMangers/group/index.tsx', 'icon_system', '', '', 2, '2022-10-13 23:04:01', '2022-10-13 23:04:01', NULL);
+INSERT INTO `menu_info` VALUES (24, 2, 0, 3, '分组详情', '/deviceMangers/group/detail/:id', './deviceMangers/group/detail/index.tsx', 'icon_system', '', '', 1, '2022-10-13 23:04:44', '2022-10-13 23:06:45', NULL);
+INSERT INTO `menu_info` VALUES (25, 4, 0, 7, '日志服务', '/operationsMonitorings/logService/index', './operationsMonitorings/logService/index.tsx', 'icon_system', '', '', 2, '2022-10-16 23:04:36', '2022-10-16 23:04:36', NULL);
 
 
