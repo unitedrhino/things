@@ -235,7 +235,7 @@ func (m *groupModel) IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([
 }
 
 func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
-	m.Transact(func(session sqlx.Session) error {
+	return m.Transact(func(session sqlx.Session) error {
 		//1.查詢是否存在子分组，如果存在则不允许删除该分组
 		sql := fmt.Sprintf("select count(1) from %s where parentID = %d", m.groupInfo, groupID)
 		var count int64
@@ -261,12 +261,10 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 
 		return nil
 	})
-
-	return nil
 }
 
 func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceInfoReadReq) error {
-	m.Transact(func(session sqlx.Session) error {
+	return m.Transact(func(session sqlx.Session) error {
 		for _, v := range list {
 			var resp GroupDevice
 			query := fmt.Sprintf("select %s from %s where `groupID` = ? and `productID` = ? and `deviceName` = ?  limit 1", groupDeviceRows, m.groupDevice)
@@ -282,11 +280,10 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 		}
 		return nil
 	})
-	return nil
 }
 
 func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list map[string]string) error {
-	m.Transact(func(session sqlx.Session) error {
+	return m.Transact(func(session sqlx.Session) error {
 		for i, v := range list {
 			s := strings.Split(i, "|||")
 			query := fmt.Sprintf("delete from %s where groupID = %d and productID = '%s' and deviceName = '%s' ",
@@ -298,5 +295,4 @@ func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list 
 		}
 		return nil
 	})
-	return nil
 }

@@ -84,7 +84,7 @@ func (m *roleModel) IndexRoleIDMenuID(RoleId int64) ([]int64, error) {
 }
 
 func (m *roleModel) UpdateRoleIDMenuID(RoleId int64, MenuId []int64) error {
-	m.Transact(func(session sqlx.Session) error {
+	return m.Transact(func(session sqlx.Session) error {
 		//1.删除所有roleID对应的menuID
 		query := fmt.Sprintf("delete from %s where  roleID = %d",
 			m.roleMenu, RoleId)
@@ -105,11 +105,10 @@ func (m *roleModel) UpdateRoleIDMenuID(RoleId int64, MenuId []int64) error {
 
 		return nil
 	})
-	return nil
 }
 
 func (m *roleModel) DeleteRole(RoleId int64) error {
-	m.Transact(func(session sqlx.Session) error {
+	return m.Transact(func(session sqlx.Session) error {
 		//1.从角色表删除角色
 		query := fmt.Sprintf("delete from %s where id = %d",
 			m.roleInfo, RoleId)
@@ -127,5 +126,4 @@ func (m *roleModel) DeleteRole(RoleId int64) error {
 
 		return nil
 	})
-	return nil
 }
