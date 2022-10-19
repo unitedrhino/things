@@ -23,4 +23,5 @@ var (
 	Server           = NewCodeError(SYS_ERROR+17, "本实例处理不了该信息")
 	NotRealize       = NewCodeError(SYS_ERROR+18, "尚未实现")
 	NotEmpty         = NewCodeError(SYS_ERROR+19, "不为空")
+	SunGroup         = NewCodeError(SYS_ERROR+20, "存在子分组，无法删除")
 )
