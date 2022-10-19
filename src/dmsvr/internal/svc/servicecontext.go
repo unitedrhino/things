@@ -22,7 +22,6 @@ type ServiceContext struct {
 	DeviceInfo     mysql.DeviceInfoModel
 	ProductInfo    mysql.ProductInfoModel
 	ProductSchema  mysql.ProductSchemaModel
-	DmDB           mysql.DmModel
 	DeviceID       *utils.SnowFlake
 	ProductID      *utils.SnowFlake
 	DataUpdate     dataUpdate.DataUpdate
@@ -50,7 +49,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	tr := cache.NewSchemaRepo(pt)
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
 	fr := mysql.NewProductFirmwareModel(conn)
-	DmDB := mysql.NewDmModel(conn)
 	store := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	DeviceID := utils.NewSnowFlake(nodeId)
@@ -71,7 +69,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ProductSchema:  pt,
 		FirmwareInfo:   fr,
 		SchemaRepo:     tr,
-		DmDB:           DmDB,
 		DeviceID:       DeviceID,
 		ProductID:      ProductID,
 		DataUpdate:     du,
