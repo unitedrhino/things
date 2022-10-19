@@ -11,12 +11,10 @@ import (
 
 //http返回
 func Http(w http.ResponseWriter, r *http.Request, resp any, err error) {
-
 	if err == nil {
 		//成功返回
 		r := Success(resp)
 		httpx.WriteJson(w, http.StatusOK, r)
-
 	} else {
 		//错误返回
 		er := errors.Fmt(err)
