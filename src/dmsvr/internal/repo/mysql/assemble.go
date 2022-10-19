@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
-	"time"
 )
 
 func ToPropertyPo(productID string, in *schema.Property) *ProductSchema {
@@ -14,16 +13,14 @@ func ToPropertyPo(productID string, in *schema.Property) *ProductSchema {
 	}
 	defineStr, _ := json.Marshal(define)
 	return &ProductSchema{
-		ProductID:   productID,
-		Tag:         int64(schema.TagCustom),
-		Type:        int64(schema.AffordanceTypeProperty),
-		Identifier:  in.Identifier,
-		Name:        in.Name,
-		Desc:        in.Desc,
-		Required:    def.ToIntBool[int64](in.Required),
-		Affordance:  string(defineStr),
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
+		ProductID:  productID,
+		Tag:        int64(schema.TagCustom),
+		Type:       int64(schema.AffordanceTypeProperty),
+		Identifier: in.Identifier,
+		Name:       in.Name,
+		Desc:       in.Desc,
+		Required:   def.ToIntBool[int64](in.Required),
+		Affordance: string(defineStr),
 	}
 }
 
@@ -49,16 +46,14 @@ func ToEventPo(productID string, in *schema.Event) *ProductSchema {
 	}
 	defineStr, _ := json.Marshal(define)
 	return &ProductSchema{
-		ProductID:   productID,
-		Tag:         int64(schema.TagCustom),
-		Type:        int64(schema.AffordanceTypeEvent),
-		Identifier:  in.Identifier,
-		Name:        in.Name,
-		Desc:        in.Desc,
-		Required:    def.ToIntBool[int64](in.Required),
-		Affordance:  string(defineStr),
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
+		ProductID:  productID,
+		Tag:        int64(schema.TagCustom),
+		Type:       int64(schema.AffordanceTypeEvent),
+		Identifier: in.Identifier,
+		Name:       in.Name,
+		Desc:       in.Desc,
+		Required:   def.ToIntBool[int64](in.Required),
+		Affordance: string(defineStr),
 	}
 }
 
@@ -84,16 +79,14 @@ func ToActionPo(productID string, in *schema.Action) *ProductSchema {
 	}
 	defineStr, _ := json.Marshal(define)
 	return &ProductSchema{
-		ProductID:   productID,
-		Tag:         int64(schema.TagCustom),
-		Type:        int64(schema.AffordanceTypeAction),
-		Identifier:  in.Identifier,
-		Name:        in.Name,
-		Desc:        in.Desc,
-		Required:    def.ToIntBool[int64](in.Required),
-		Affordance:  string(defineStr),
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
+		ProductID:  productID,
+		Tag:        int64(schema.TagCustom),
+		Type:       int64(schema.AffordanceTypeAction),
+		Identifier: in.Identifier,
+		Name:       in.Name,
+		Desc:       in.Desc,
+		Required:   def.ToIntBool[int64](in.Required),
+		Affordance: string(defineStr),
 	}
 }
 
