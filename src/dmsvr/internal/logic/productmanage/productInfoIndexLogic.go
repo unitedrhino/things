@@ -34,11 +34,11 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 	)
 	filter := mysql.ProductFilter{
 		DeviceType: in.DeviceType, ProductName: in.ProductName, ProductIDs: in.ProductIDs}
-	size, err = l.svcCtx.DmDB.GetProductsCountByFilter(l.ctx, filter)
+	size, err = l.svcCtx.ProductInfo.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.svcCtx.DmDB.FindProductsByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
+	di, err := l.svcCtx.ProductInfo.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}
