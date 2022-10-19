@@ -8,8 +8,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
-	"time"
-
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -50,14 +48,11 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 */
 func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) *mysql.ProductInfo {
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
-	createTime := time.Now()
 	pi := &mysql.ProductInfo{
 		ProductID:   deviceAuth.GetStrProductID(ProductID), // 产品id
 		ProductName: in.ProductName,                        // 产品名称
 		Desc:        in.Desc.GetValue(),
 		DevStatus:   in.DevStatus.GetValue(),
-		CreatedTime: createTime,
-		UpdatedTime: createTime,
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister
@@ -98,14 +93,14 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	} else if find == true {
-		return nil, errors.Duplicate.AddDetail("ProductName:" + in.ProductName)
+		return nil, errors.Duplicate.WithMsgf("产品名称重复:%s", in.ProductName).AddDetail("ProductName:" + in.ProductName)
 	}
 	pi := l.InsertProduct(in)
 	err = l.InitProduct(pi)
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DmDB.Insert(l.ctx, pi)
+	_, err = l.svcCtx.ProductInfo.Insert(l.ctx, pi)
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)

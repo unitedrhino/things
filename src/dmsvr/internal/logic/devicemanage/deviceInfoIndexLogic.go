@@ -40,7 +40,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		page = in.Page.Page
 		pageSize = in.Page.Size
 	}
-	size, err = l.svcCtx.DmDB.GetDevicesCountByFilter(
+	size, err = l.svcCtx.DeviceInfo.CountByFilter(
 		l.ctx, mysql.DeviceFilter{
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,
@@ -49,7 +49,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.svcCtx.DmDB.FindDevicesByFilter(
+	di, err := l.svcCtx.DeviceInfo.FindByFilter(
 		l.ctx, mysql.DeviceFilter{
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,
