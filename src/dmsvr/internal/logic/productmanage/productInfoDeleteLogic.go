@@ -37,7 +37,7 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DmDB.Delete(l.ctx, in.ProductID)
+	err = l.svcCtx.ProductInfo.Delete(l.ctx, in.ProductID)
 	if err != nil {
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))
 		return nil, errors.Database.AddDetail(err)
@@ -78,9 +78,9 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 	return nil
 }
 func (l *ProductInfoDeleteLogic) Check(in *dm.ProductInfoDeleteReq) error {
-	count, err := l.svcCtx.DmDB.GetDevicesCountByFilter(l.ctx, mysql.DeviceFilter{ProductID: in.ProductID})
+	count, err := l.svcCtx.DeviceInfo.CountByFilter(l.ctx, mysql.DeviceFilter{ProductID: in.ProductID})
 	if err != nil {
-		l.Errorf("%s.GetDevicesCountByFilter err=%v", utils.FuncName(), utils.Fmt(err))
+		l.Errorf("%s.CountByFilter err=%v", utils.FuncName(), utils.Fmt(err))
 		return errors.Database.AddDetail(err)
 	}
 	if count > 0 {

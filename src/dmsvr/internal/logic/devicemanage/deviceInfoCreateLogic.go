@@ -7,11 +7,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
-	"github.com/spf13/cast"
-	"time"
-
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
+	"github.com/spf13/cast"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -81,11 +79,9 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 		return nil, err
 	}
 	di := mysql.DeviceInfo{
-		ProductID:   in.ProductID,  // 产品id
-		DeviceName:  in.DeviceName, // 设备名称
-		Secret:      utils.GetPwdBase64(20),
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
+		ProductID:  in.ProductID,  // 产品id
+		DeviceName: in.DeviceName, // 设备名称
+		Secret:     utils.GetPwdBase64(20),
 	}
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)
