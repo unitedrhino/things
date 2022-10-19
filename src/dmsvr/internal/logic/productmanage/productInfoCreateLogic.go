@@ -93,7 +93,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	} else if find == true {
-		return nil, errors.Duplicate.AddDetail("ProductName:" + in.ProductName)
+		return nil, errors.Duplicate.WithMsgf("产品名称重复:%s", in.ProductName).AddDetail("ProductName:" + in.ProductName)
 	}
 	pi := l.InsertProduct(in)
 	err = l.InitProduct(pi)
