@@ -9,6 +9,7 @@ info(
 @server(
     group : things/device/interact
     prefix: /api/v1/things/device/interact
+    middleware: CheckToken
 )
 service api {
     @doc "同步调用设备行为"
