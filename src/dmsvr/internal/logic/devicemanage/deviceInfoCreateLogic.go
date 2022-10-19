@@ -65,7 +65,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 		l.Errorf("%s.CheckDevice in=%v\n", utils.FuncName(), in)
 		return nil, errors.Database.AddDetail(err)
 	} else if find == true {
-		return nil, errors.Duplicate.AddDetail("DeviceName:" + in.DeviceName)
+		return nil, errors.Duplicate.WithMsgf("设备名称重复:%s", in.DeviceName).AddDetail("DeviceName:" + in.DeviceName)
 	}
 	find, err = l.CheckProduct(in)
 	if err != nil {
