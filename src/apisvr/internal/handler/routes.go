@@ -161,152 +161,167 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/hub-log/index",
-				Handler: thingsdevicemsg.HubLogIndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/sdk-log/index",
-				Handler: thingsdevicemsg.SdkLogIndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/property-log/index",
-				Handler: thingsdevicemsg.PropertyLogIndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/property-latest/index",
-				Handler: thingsdevicemsg.PropertyLatestIndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/event-log/index",
-				Handler: thingsdevicemsg.EventLogIndexHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/hub-log/index",
+					Handler: thingsdevicemsg.HubLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/sdk-log/index",
+					Handler: thingsdevicemsg.SdkLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-log/index",
+					Handler: thingsdevicemsg.PropertyLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-latest/index",
+					Handler: thingsdevicemsg.PropertyLatestIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/event-log/index",
+					Handler: thingsdevicemsg.EventLogIndexHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/api/v1/things/device/msg"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/create",
-				Handler: thingsdeviceinfo.CreateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/update",
-				Handler: thingsdeviceinfo.UpdateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/delete",
-				Handler: thingsdeviceinfo.DeleteHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/index",
-				Handler: thingsdeviceinfo.IndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/read",
-				Handler: thingsdeviceinfo.ReadHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsdeviceinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsdeviceinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsdeviceinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsdeviceinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsdeviceinfo.ReadHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/api/v1/things/device/info"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/send-action",
-				Handler: thingsdeviceinteract.SendActionHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/send-property",
-				Handler: thingsdeviceinteract.SendPropertyHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/send-msg",
-				Handler: thingsdeviceinteract.SendMsgHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/send-action",
+					Handler: thingsdeviceinteract.SendActionHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/send-property",
+					Handler: thingsdeviceinteract.SendPropertyHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/send-msg",
+					Handler: thingsdeviceinteract.SendMsgHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/api/v1/things/device/interact"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/create",
-				Handler: thingsproductinfo.CreateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/update",
-				Handler: thingsproductinfo.UpdateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/delete",
-				Handler: thingsproductinfo.DeleteHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/index",
-				Handler: thingsproductinfo.IndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/read",
-				Handler: thingsproductinfo.ReadHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsproductinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsproductinfo.ReadHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/api/v1/things/product/info"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/tsl-import",
-				Handler: thingsproductschema.TslImportHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/tsl-read",
-				Handler: thingsproductschema.TslReadHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/update",
-				Handler: thingsproductschema.UpdateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/create",
-				Handler: thingsproductschema.CreateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/delete",
-				Handler: thingsproductschema.DeleteHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/index",
-				Handler: thingsproductschema.IndexHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/tsl-import",
+					Handler: thingsproductschema.TslImportHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/tsl-read",
+					Handler: thingsproductschema.TslReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductschema.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductschema.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsproductschema.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductschema.IndexHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/api/v1/things/product/schema"),
 	)
 
