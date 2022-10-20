@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -53,7 +54,7 @@ func (l *LoginLogic) getPwd(in *sys.LoginReq, uc *mysql.UserInfo) error {
 func (l *LoginLogic) getRet(uc *mysql.UserInfo) (*sys.LoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
-	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role)
+	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, cast.ToString(uc.Uid), uc.Role)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)

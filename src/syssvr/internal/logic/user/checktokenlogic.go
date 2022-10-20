@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/spf13/cast"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -40,7 +41,7 @@ func (l *CheckTokenLogic) CheckToken(in *sys.CheckTokenReq) (*sys.CheckTokenResp
 	l.Infof("%s uid=%d", utils.FuncName(), jwt.Uid)
 	return &sys.CheckTokenResp{
 		Token: token,
-		Uid:   jwt.Uid,
+		Uid:   cast.ToInt64(jwt.Uid),
 		Role:  jwt.Role,
 	}, nil
 }

@@ -9,12 +9,12 @@ import (
 
 // Custom claims structure
 type CustomClaims struct {
-	Uid int64
+	Uid string
 	jwt.StandardClaims
 	Role int64
 }
 
-func GetJwtToken(secretKey string, iat, seconds, uid int64, role int64) (string, error) {
+func GetJwtToken(secretKey string, iat int64, seconds int64, uid string, role int64) (string, error) {
 	claims := CustomClaims{
 		Uid: uid,
 		StandardClaims: jwt.StandardClaims{
@@ -82,6 +82,6 @@ func RefreshToken(tokenString string, secretKey string, AccessExpire int64) (str
 
 func GetClaimsFromToken(l context.Context, uidKey string, roleKey string) *CustomClaims {
 	i := l.Value(uidKey)
-	u, _ := i.(int64)
+	u, _ := i.(string)
 	return &CustomClaims{Uid: u}
 }
