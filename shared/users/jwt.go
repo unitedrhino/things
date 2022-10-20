@@ -9,7 +9,7 @@ import (
 
 // Custom claims structure
 type CustomClaims struct {
-	Uid int64
+	Uid int64 `json:",string"`
 	jwt.StandardClaims
 	Role int64
 }
