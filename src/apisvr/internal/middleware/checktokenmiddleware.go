@@ -39,6 +39,7 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		if resp.Token != "" {
+			w.Header().Set("Access-Control-Expose-Headers", userHeader.UserSetToken)
 			w.Header().Set(userHeader.UserSetToken, resp.Token)
 		}
 		logx.WithContext(r.Context()).Infof("%s.CheckToken ip=%s uid=%s token=%s newToken=%s",
