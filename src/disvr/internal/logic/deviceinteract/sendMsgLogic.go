@@ -26,7 +26,7 @@ func NewSendMsgLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendMsgLo
 
 // 发送消息给设备
 func (l *SendMsgLogic) SendMsg(in *di.SendMsgReq) (*di.SendMsgResp, error) {
-	l.Infof("%s topic:%v payload:%v", utils.FuncName(), in.GetTopic(), in.GetPayload())
+	l.Infof("%s topic:%v payload:%v", utils.FuncName(), in.GetTopic(), string(in.GetPayload()))
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, in.Topic, in.Payload)
 	if er != nil {
 		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
