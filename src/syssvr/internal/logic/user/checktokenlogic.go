@@ -33,8 +33,9 @@ func (l *CheckTokenLogic) CheckToken(in *sys.CheckTokenReq) (*sys.CheckTokenResp
 		return nil, err
 	}
 	var token string
+
 	if (jwt.ExpiresAt-time.Now().Unix())*2 < l.svcCtx.Config.UserToken.AccessExpire {
-		token, _ = users.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
+		token, _ = users.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret, time.Now().Unix()+l.svcCtx.Config.UserToken.AccessExpire)
 	}
 	l.Infof("%s uid=%d", utils.FuncName(), jwt.Uid)
 	return &sys.CheckTokenResp{
