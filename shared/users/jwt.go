@@ -65,7 +65,7 @@ func ParseToken(tokenString string, secretKey string) (*CustomClaims, *errors.Co
 }
 
 // 更新token
-func RefreshToken(tokenString string, secretKey string) (string, error) {
+func RefreshToken(tokenString string, secretKey string, AccessExpire int64) (string, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (any, error) {
 		return []byte(secretKey), nil
 	})
@@ -74,7 +74,7 @@ func RefreshToken(tokenString string, secretKey string) (string, error) {
 	}
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		jwt.TimeFunc = time.Now
-		claims.StandardClaims.ExpiresAt = time.Now().Add(1 * time.Hour).Unix()
+		claims.StandardClaims.ExpiresAt = AccessExpire
 		return CreateToken(secretKey, *claims)
 	}
 	return "", errors.TokenInvalid
