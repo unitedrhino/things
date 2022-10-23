@@ -1,3 +1,6 @@
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
 create database if not EXISTS things_dm;
 use things_dm;
 
@@ -122,7 +125,7 @@ CREATE TABLE if not exists `group_info`
     `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY `groupID` (`groupID`),
     UNIQUE KEY `groupNameIndex` (`groupName`)
-    ) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '设备分组信息表';
+    ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '设备分组信息表';
 
 
 CREATE TABLE if not exists `group_device`
@@ -136,4 +139,4 @@ CREATE TABLE if not exists `group_device`
     `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `groupID_productID_deviceName` (`groupID`,`productID`,`deviceName`)
-    ) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '分组与设备关系表';
+    ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '分组与设备关系表';
