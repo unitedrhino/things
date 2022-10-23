@@ -3,9 +3,11 @@
 iThings是一个基于golang开发的轻量级云原生微服务物联网平台.
 
 定位于:
-* 高性能 -- 使用golang编写,基于gozero微服务框架高性能的同时保证服务的稳定性
-* 云原生易拓展 -- 支持k8s,docker微服务及单体模式部署,便于业务从单体到微服务的切换
+* 高性能 -- 使用golang编写,选用高性能组件(emqx,tdengine),基于gozero微服务框架高性能的同时保证服务的稳定性
+* 云原生易拓展 -- 支持k8s,docker,微服务及单体模式部署,便于业务从单体到微服务的切换
 * 易部署 -- 一键安装所有依赖,一键运行iThings
+* 易集成 -- 可以通过http,grpc,甚至直接将iThings作为包集成进自己系统
+
 
 git地址:
 * 后端github地址:[https://github.com/i4de/ithings](https://github.com/i4de/ithings)
