@@ -3,7 +3,9 @@ package event
 import (
 	"context"
 	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/src/ddsvr/internal/repo/event/innerLink"
+	"github.com/i-Things/things/shared/traces"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/ddsvr/internal/repo/event/publish/pubInner"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -23,32 +25,83 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 	}
 }
 
-// Publish 设备发布的信息通过nats转发给内部服务
-func (s *DeviceSubServer) Publish(topic string, payload []byte) error {
-	s.Infof("DeviceSubServer|Publish|topic:%v payload:%v", topic, string(payload))
-	topicInfo, err := devices.GetTopicInfo(topic)
-	if err != nil {
+// Thing 设备发布物模型消息的信息通过nats转发给内部服务
+func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
+	pub, err := s.getDevPublish(topic, payload)
+	if pub == nil {
 		return err
 	}
-	if topicInfo.Direction == devices.DOWN {
-		//服务器端下发的消息直接忽略
-		return nil
+	ctx1, span := traces.StartSpan(s.ctx, topic, "")
+
+	logx.Infof("mqtt.Thing trace:%s, spanID:%s topic:%s payload:%v",
+		span.SpanContext().TraceID(), span.SpanContext().SpanID(), topic, string(payload))
+	defer span.End()
+	return s.svcCtx.PubInner.DevPubThing(ctx1, pub)
+}
+
+// Ota ota远程升级
+func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
+	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	pub, err := s.getDevPublish(topic, payload)
+	if pub == nil {
+		return err
 	}
-	pub := devices.DevPublish{
+	return s.svcCtx.PubInner.DevPubOta(s.ctx, pub)
+}
+
+// Config 设备远程配置
+func (s *DeviceSubServer) Config(topic string, payload []byte) error {
+	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	pub, err := s.getDevPublish(topic, payload)
+	if pub == nil {
+		return err
+	}
+	return s.svcCtx.PubInner.DevPubConfig(s.ctx, pub)
+}
+
+// Shadow 设备影子
+func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
+	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	pub, err := s.getDevPublish(topic, payload)
+	if pub == nil {
+		return err
+	}
+	return s.svcCtx.PubInner.DevPubShadow(s.ctx, pub)
+}
+
+// Log 设备调试日志
+func (s *DeviceSubServer) SDKLog(topic string, payload []byte) error {
+	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	pub, err := s.getDevPublish(topic, payload)
+	if pub == nil {
+		return err
+	}
+	return s.svcCtx.PubInner.DevPubSDKLog(s.ctx, pub)
+}
+
+func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.DevPublish, error) {
+	topicInfo, err := devices.GetTopicInfo(topic)
+	if err != nil {
+		return nil, err
+	}
+	if topicInfo.Direction == devices.Down {
+		//服务器端下发的消息直接忽略
+		return nil, nil
+	}
+	return &devices.DevPublish{
 		Timestamp:  time.Now().UnixMilli(),
 		Topic:      topic,
 		Payload:    payload,
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,
-	}
-	return s.svcCtx.InnerLink.PubDevPublish(s.ctx, pub)
+	}, nil
 }
 
 func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
-	s.Info("Connected", info)
-	return s.svcCtx.InnerLink.PubConn(s.ctx, innerLink.Connect, info)
+	s.Infof("%s info:%v", utils.FuncName(), utils.Fmt(info))
+	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.Connect, info)
 }
 func (s *DeviceSubServer) Disconnected(info *devices.DevConn) error {
-	s.Info("Disconnected", info)
-	return s.svcCtx.InnerLink.PubConn(s.ctx, innerLink.DisConnect, info)
+	s.Infof("%s info:%v", utils.FuncName(), utils.Fmt(info))
+	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.DisConnect, info)
 }

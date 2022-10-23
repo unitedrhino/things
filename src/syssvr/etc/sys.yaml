@@ -1,0 +1,24 @@
+Name: sys.rpc
+ListenOn: 127.0.0.1:9180
+CpuThreshold: 0
+Etcd:
+  Hosts:
+    - 127.0.0.1:2379
+  Key: user.rpc
+Mysql:
+  DataSource: root:password@tcp(127.0.0.1:3306)/things_sys?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+UserToken:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 3600 #有效期为一小时
+WexinMiniprogram:
+  Open: true
+  AppID: wx0a8aabe3ca57d4af
+  AppSecret: f77f42b81e055ae8be41211cb0389b7d
+UserOpt:
+  NeedUserName: true
+  NeedPassWord: true
+  PassLevel: 2

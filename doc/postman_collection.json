@@ -645,7 +645,7 @@
 					},
 					"response": [
 						{
-							"name": "获取用户核心信息列表",
+							"name": "获取用户信息列表",
 							"originalRequest": {
 								"method": "GET",
 								"header": [

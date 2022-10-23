@@ -15,21 +15,16 @@ type Captcha struct {
 
 type Config struct {
 	rest.RestConf
-	Mysql struct {
-		DataSource string
-	}
 	CacheRedis cache.ClusterConf
-	UserRpc    conf.RpcClientConf
-	DcRpc      conf.RpcClientConf
-	DmRpc      conf.RpcClientConf
-	Auth       struct {
+	DdEnable   bool               `json:",optional"`
+	SysRpc     conf.RpcClientConf `json:",optional"`
+	DiRpc      conf.RpcClientConf `json:",optional"`
+	DmRpc      conf.RpcClientConf `json:",optional"`
+	Rej        struct {
 		AccessSecret string
 		AccessExpire int64
-	}
-	Rej struct {
-		AccessSecret string
-		AccessExpire int64
-	}
-	Captcha
-	NodeID int64
+	} //注册token相关配置
+	FrontDir string `json:",default=./dist"` //前端文件路径
+	Captcha  Captcha
+	OSS      conf.OSSConf `json:",optional"`
 }

@@ -13,9 +13,17 @@ CacheRedis:
     Pass:
     Type: node
 TDengine:
-  DataSource: root:taosdata@http(localhost:6041)/test?readBufferSize=52428800
+  DataSource: root:taosdata@http(localhost:6041)/iThings?readBufferSize=52428800
 AuthWhite:
+  Users:
+    - root
   IpRange:
     - 127.0.0.1
     - 172.18.0.1
     - 192.168.1.1
+
+Telemetry:
+  Name: dm.rpc
+  Endpoint: http://127.0.0.1:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger

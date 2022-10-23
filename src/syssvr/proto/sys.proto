@@ -1,0 +1,261 @@
+syntax = "proto3";
+option go_package = "pb/sys";
+
+package sys;
+
+service User {
+  rpc create(UserCreateReq) returns(UserCreateResp);//创建用户信息
+  rpc index(UserIndexReq) returns(UserIndexResp);
+  rpc update(UserUpdateReq) returns(Response);//更新用户基本数据
+  rpc read(UserReadReq) returns(UserReadResp);//获取用户信息
+  rpc delete(UserDeleteReq) returns(Response);//刪除用戶
+  rpc login(LoginReq) returns(LoginResp);
+  rpc checkToken(CheckTokenReq) returns(CheckTokenResp);
+}
+
+service Role {
+  rpc roleCreate(RoleCreateReq) returns(Response); //添加角色
+  rpc roleIndex(RoleIndexReq) returns(RoleIndexResp); //获取角色列表
+  rpc roleUpdate(RoleUpdateReq) returns(Response); //更新角色
+  rpc roleDelete(RoleDeleteReq) returns(Response); //删除角色
+  rpc roleMenuUpdate(RoleMenuUpdateReq) returns(Response); //添加角色
+}
+
+service Menu {
+  rpc menuCreate(MenuCreateReq) returns(Response); //添加菜单
+  rpc menuIndex(MenuIndexReq) returns(MenuIndexResp); //获取菜单列表
+  rpc menuUpdate(MenuUpdateReq) returns(Response); //更新菜单
+  rpc menuDelete(MenuDeleteReq) returns(Response); //删除菜单
+}
+
+
+
+//用户属性信息
+message UserInfo{
+  int64  uid = 1;
+  string userName =2;
+  string password = 3;
+  string email = 4;
+  string phone =5;
+  string wechat = 6;
+  string lastIP =7;
+  string regIP =8;
+  string nickName =9;
+  string city =10;
+  string country =11;
+  string province =12;
+  string language =13;
+  string headImgUrl =14;
+  int64  createdTime =15;
+  int64  role = 16;
+  int64  sex =17;
+}
+
+message UserCreateReq{
+  string reqType = 1;//注册方式 phone|wxopen|wxin|wxminip|password| -> phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 密码方式 password 账密方式
+  string userName = 2;//手机号注册时填写手机号 或者用户账号
+  string password = 3;//明文密码
+  string wechat = 4;
+  string lastIP =5;
+  string regIP =6;
+  string nickName =7;
+  string city =8;
+  string country =9;
+  string province =10;
+  string language =11;
+  string headImgUrl =12;
+  int64  role = 13;
+  int64  sex =14;
+}
+
+message UserCreateResp{
+  int64 uid = 1;//用户id
+}
+
+message CheckTokenReq{
+  string token = 1;
+  string ip = 2;
+}
+
+message CheckTokenResp{
+  string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
+  int64 uid = 2;
+  int64 role = 3;
+}
+
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+}
+
+message UserIndexReq{
+  PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: uid:用户id userName:登录用户名  email:邮箱  phone:手机号
+  string userName = 2;
+  string phone = 3;
+  string email = 4;
+}
+
+message UserIndexResp{
+  repeated UserInfo info = 1;
+  int64 total = 2;
+}
+
+message UserUpdateReq{
+  int64  uid = 1;
+  string userName =2;
+  string email = 3;
+  string phone =4;
+  string wechat = 5;
+  string nickName =6;
+  string city =7;
+  string country =8;
+  string province =9;
+  string language =10;
+  string headImgUrl =11;
+  int64  sex =12;
+  int64  role =13;
+}
+
+message UserReadReq{
+  int64 uid=1;
+}
+
+message UserReadResp{
+  int64  uid = 1;
+  string userName =2;
+  string email = 3;
+  string phone =4;
+  string wechat = 5;
+  string lastIP =6;
+  string regIP =7;
+  string nickName =8;
+  string city =9;
+  string country =10;
+  string province =11;
+  string language =12;
+  string headImgUrl =13;
+  int64  createdTime =14;
+  int64  role = 15;
+  int64  sex =16;
+}
+message UserDeleteReq{
+  int64 uid = 1;
+}
+
+message JwtToken{
+  string accessToken = 1;
+  int64 accessExpire = 2;
+  int64 refreshAfter = 3;
+}
+
+message LoginReq{
+    string userID = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+    int32 pwdType = 2;//账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
+    string password =3;//密码，建议md5转换 密码登录时需要填写
+    string loginType =4;//验证类型 sms 短信验证码 pwd 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxmini 微信小程序
+    string code = 5;//验证码    微信登录填code
+    string codeID = 6;//验证码编号 微信登录填state
+}
+
+message LoginResp{
+  UserInfo info = 1;
+  JwtToken token =2;
+}
+
+message Response {
+}
+
+//角色相关信息
+message RoleCreateReq{
+  string name= 1;          // 角色名称
+  string remark = 2;       // 备注
+  int64  status = 3;       // 状态 1:启用,2:禁用
+}
+
+message RoleIndexReq{
+  PageInfo page = 1;//分页信息
+  string name = 2;
+  int64 status = 3;
+}
+
+message RoleIndexResp{
+  repeated  RoleIndexData list =1;
+  int64 total = 2;
+}
+
+message RoleIndexData{
+  int64   id = 1;
+  string  name = 2;
+  string  remark = 3;
+  int64   createdTime  =4;
+  int64   status = 5;
+  repeated int64  roleMenuID = 6;
+}
+
+message RoleUpdateReq{
+  int64 id = 1;
+  string name = 2;
+  string remark = 3;
+  int64 status = 4;
+}
+
+message RoleDeleteReq{
+  int64 id = 1;
+}
+message RoleMenuUpdateReq{
+  int64 id = 1;
+  repeated int64 menuID = 2;
+}
+
+//菜单相关信息
+message MenuCreateReq{
+  string name = 1;
+  int64 parentID = 2;
+  int64 type = 3;
+  string path = 4;
+  string component = 5;
+  string icon = 6;
+  string redirect = 7;
+  int64 order = 8;
+  int64 hideInMenu = 9;
+  int64 role = 10;
+}
+
+message MenuIndexReq{
+  int64  role = 1;
+  string name = 2;
+  string path = 3;
+
+}
+message MenuData{
+  int64 id = 1;
+  string name = 2;
+  int64 parentID = 3;
+  int64 type = 4;
+  string path = 5;
+  string component = 6;
+  string icon = 7;
+  string redirect = 8;
+  int64 createTime = 9;
+  int64 order = 10;
+  int64 hideInMenu = 11;
+}
+message MenuIndexResp{
+  repeated MenuData list = 1;
+}
+message MenuUpdateReq{
+  int64 id = 1;
+  string name = 2;
+  int64 parentID = 3;
+  int64 type = 4;
+  string path = 5;
+  string component = 6;
+  string icon = 7;
+  string redirect = 8;
+  int64 order = 9;
+  int64 hideInMenu = 10;
+}
+
+message MenuDeleteReq{
+  int64 id = 1;
+}

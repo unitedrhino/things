@@ -21,5 +21,5 @@ func NewInnerSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *InnerSu
 }
 
 func (s *InnerSubServer) PublishToDev(topic string, payload []byte) error {
-	return s.svcCtx.DevLink.Publish(s.ctx, topic, payload)
+	return s.svcCtx.PubDev.Publish(s.ctx, topic, payload)
 }

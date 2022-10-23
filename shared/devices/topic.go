@@ -17,12 +17,18 @@ $thing/down/action/${productID}/${deviceName}	订阅	应用调用设备行为
 $ota/report/${productID}/${deviceName}	发布	固件升级消息上行
 $ota/update/${productID}/${deviceName}	订阅	固件升级消息下行
 $broadcast/rxd/${productID}/${deviceName}	订阅	广播消息下行
-$shadow/operation/{productID}/${deviceName}	发布	设备影子消息上行
-$shadow/operation/result/{productID}/${deviceName}	订阅	设备影子消息下行
+$shadow/operation/up/{productID}/${deviceName}	发布	设备影子消息上行
+$shadow/operation/down/{productID}/${deviceName}	订阅	设备影子消息下行
 $rrpc/txd/{productID}/${deviceName}/${MessageId}	发布	RRPC消息上行，MessageId为RRPC消息ID
 $rrpc/rxd/{productID}/${deviceName}/+	订阅	RRPC消息下行
-$sys/operation/{productID}/${deviceName}	发布	系统topic：ntp服务消息上行
-$sys/operation/result/{productID}/${deviceName}/+	订阅	系统topic：ntp服务消息下行
+$sys/operation/up/{productID}/${deviceName}	发布	系统topic：ntp服务消息上行
+$sys/operation/down/{productID}/${deviceName}/+	订阅	系统topic：ntp服务消息下行
+log topic
+$log/up/operation/${productID}/${deviceName} //设备查询是否需要上传调试日志及日志级别，上行
+$log/down/operation/${productID}/${deviceName}
+$log/up/report/${productID}/${deviceName} //设备上传调试日志内容，上行
+$log/down/report/${productID}/${deviceName}
+$log/down/update/${productID}/${deviceName} //服务器端下发调试日志配置，下行
 
 自定义topic:
 ${productID}/${deviceName}/control	订阅	编辑删除
@@ -31,18 +37,27 @@ ${productID}/${deviceName}/event	发布
 ${productID}/${deviceName}/xxxxx	订阅和发布   //自定义 暂不做支持
 */
 
-type DIRECTION int
+const (
+	TopicHeadThing  = "$thing"
+	TopicHeadOta    = "$ota"
+	TopicHeadConfig = "$config"
+	TopicHeadLog    = "$log"
+	TopicHeadShadow = "$shadow"
+)
+
+type Direction int
 
 const (
-	UNKNOW DIRECTION = iota //未知
-	UP                      //上行
-	DOWN                    //下行
+	Unknown Direction = iota //未知
+	Up                       //上行
+	Down                     //下行
 )
 
 type TopicInfo struct {
 	ProductID  string
 	DeviceName string
-	Direction  DIRECTION
+	Direction  Direction
+	TopicHead  string
 }
 
 func GetTopicInfo(topic string) (topicInfo *TopicInfo, err error) {
@@ -56,7 +71,7 @@ func parseTopic(topics []string) (topicInfo *TopicInfo, err error) {
 		return nil, errors.Parameter.AddDetail("topic is err")
 	}
 	switch topics[0] {
-	case "$thing", "$ota", "$shadow", "$broadcast":
+	case TopicHeadThing, TopicHeadOta, TopicHeadShadow, TopicHeadLog, TopicHeadConfig:
 		return parseLast(topics)
 	default: //自定义消息
 		return parsePose(0, topics)
@@ -64,33 +79,37 @@ func parseTopic(topics []string) (topicInfo *TopicInfo, err error) {
 }
 
 func parsePose(productPos int, topics []string) (topicInfo *TopicInfo, err error) {
-	if len(topics) < (productPos + 2) {
-		return nil, errors.Parameter.AddDetail("topic is err")
-	}
-	return &TopicInfo{
-		ProductID:  topics[productPos],
-		DeviceName: topics[productPos+1],
-	}, err
+	return nil, errors.Parameter.AddDetail("topic is err")
+	//先不考虑自定义消息
+	//if len(topics) < (productPos + 2) {
+	//	return nil, errors.Parameter.AddDetail("topic is err")
+	//}
+	//return &TopicInfo{
+	//	ProductID:  topics[productPos],
+	//	DeviceName: topics[productPos+1],
+	//	TopicHead:  topics[0],
+	//}, err
 }
 
 func parseLast(topics []string) (topicInfo *TopicInfo, err error) {
-	if len(topics) < 2 {
+	if len(topics) < 4 {
 		return nil, errors.Parameter.AddDetail("topic is err")
 	}
 	return &TopicInfo{
 		ProductID:  topics[len(topics)-2],
 		DeviceName: topics[len(topics)-1],
 		Direction:  getDirection(topics[1]),
+		TopicHead:  topics[0],
 	}, err
 }
 
-func getDirection(dir string) DIRECTION {
+func getDirection(dir string) Direction {
 	switch dir {
-	case "up", "report", "rxd":
-		return UP
-	case "down", "update", "txd":
-		return DOWN
+	case "up":
+		return Up
+	case "down":
+		return Down
 	default:
-		return UNKNOW
+		return Unknown
 	}
 }
