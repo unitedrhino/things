@@ -1,0 +1,9 @@
+info(
+	title: "web端网关"
+	desc: "负责http协议的网关"
+	author: "杨磊"
+	email: "603685348@qq.com"
+	version: "v1"
+)
+import "system.api" //系统管理
+import "things.api" //物模型管理

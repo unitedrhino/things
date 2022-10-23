@@ -48,14 +48,26 @@ func ToRpc(err error) error {
 }
 
 func (c CodeError) WithMsg(msg string) *CodeError {
-	return &CodeError{Code: c.Code, Msg: msg}
+	c.Msg = msg
+	return &c
 }
 
-func (c CodeError) WithMsgf(format string, a ...interface{}) *CodeError {
-	return &CodeError{Code: c.Code, Msg: fmt.Sprintf(format, a...)}
+func (c CodeError) WithMsgf(format string, a ...any) *CodeError {
+	c.Msg = fmt.Sprintf(format, a...)
+	return &c
 }
 
-func (c CodeError) AddDetail(msg ...interface{}) *CodeError {
+func (c CodeError) AddMsg(msg string) *CodeError {
+	c.Msg = c.Msg + ":" + msg
+	return &c
+}
+
+func (c CodeError) AddMsgf(format string, a ...any) *CodeError {
+	c.Msg = c.Msg + ":" + fmt.Sprintf(format, a...)
+	return &c
+}
+
+func (c CodeError) AddDetail(msg ...any) *CodeError {
 	c.Details = append(c.Details, fmt.Sprint(msg...))
 	pc := make([]uintptr, 1)
 	runtime.Callers(2, pc)
@@ -63,7 +75,7 @@ func (c CodeError) AddDetail(msg ...interface{}) *CodeError {
 	return &c
 }
 
-func (c CodeError) AddDetailf(format string, a ...interface{}) *CodeError {
+func (c CodeError) AddDetailf(format string, a ...any) *CodeError {
 	c.Details = append(c.Details, fmt.Sprintf(format, a...))
 	return &c
 }
@@ -90,9 +102,9 @@ func NewDefaultError(msg string) error {
 	return Default.WithMsg(msg)
 }
 
-func (e CodeError) Error() string {
-	e.Stack = nil
-	ret, _ := json.Marshal(e)
+func (c CodeError) Error() string {
+	c.Stack = nil
+	ret, _ := json.Marshal(c)
 	return string(ret)
 }
 
@@ -126,12 +138,12 @@ func Fmt(errs error) *CodeError {
 	}
 }
 
-func ErrorInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+func ErrorInterceptor(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 	resp, err := handler(ctx, req)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("err=%s", Fmt(err).Error())
 	} else {
-		logx.WithContext(ctx).Slowf("resp=%+v", resp)
+		logx.WithContext(ctx).Infof("resp=%+v", resp)
 	}
 	err = ToRpc(err)
 	return resp, err

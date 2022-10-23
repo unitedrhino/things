@@ -18,7 +18,7 @@ func NewExpMap(checkTime time.Duration) *ExpMap {
 	expMap := ExpMap{}
 	go func() {
 		time.Sleep(checkTime)
-		expMap.Map.Range(func(key, value interface{}) bool {
+		expMap.Map.Range(func(key, value any) bool {
 			v := value.(CheckExp)
 			if v.IsTimeOut() {
 				expMap.Map.Delete(key)

@@ -1,0 +1,184 @@
+info(
+	title: "用户管理模块"
+	desc: "用户管理相关接口，包括创建账号，登录，获取验证码，获取用户列表，获取单个用户信息，更新用户信息，删除用户"
+	author: "L"
+	email: "174805676@qq.com"
+	version: "v0.1.0"
+)
+import "common.api"  //公共结构体定义
+import "system/menu.api"  //菜单结构
+@server (
+	group : system/user
+	prefix: /api/v1/system/user
+)
+service api {
+	@doc "获取验证码"
+	@handler captcha
+	post /captcha (UserCaptchaReq) returns (UserCaptchaResp)
+
+	@doc "用戶登录"
+	@handler login
+	post /login (UserLoginReq) returns (UserLoginResp)
+}
+@server (
+	group : system/user
+	prefix: /api/v1/system/user
+	middleware: CheckToken
+)
+service api {
+	@doc "创建用户信息"
+	@handler create
+	post /create (UserCreateReq) returns (UserCreateResp)
+
+	@doc "查询用户信息列表"
+	@handler Index
+	post /index (UserIndexReq) returns (UserIndexResp)
+
+	@doc "更新用户基本数据"
+	@handler update
+	post /update (UserUpdateReq) returns ()
+
+	@doc "获取用户信息"
+	@handler read
+	post /read (UserReadReq) returns (UserReadResp)
+
+	@doc "刪除用戶"
+	@handler delete
+	post /delete (UserDeleteReq) returns ()
+
+    @doc "获取用戶资源"
+    @handler resourceRead
+    post /resource-read () returns (UserResourceReadResp)
+}
+type (
+	 UserInfo {
+		Uid         int64  `json:"uid,string,optional"`        // 用户id
+		UserName    string `json:"userName,optional"`          // 用户名(唯一)
+		Password    string `json:"password,omitempty"`         // 登录密码
+        Email       string `json:"email,optional"`             // 邮箱
+        Phone       string `json:"phone,optional"`             // 手机号
+        Wechat      string `json:"wechat,optional"`            // 微信UnionID
+        LastIP      string `json:"lastIP,optional"`            // 最后登录ip
+        RegIP       string `json:"regIP,optional"`             // 注册ip
+		NickName    string `json:"nickName,optional"`          // 用户的昵称
+		City        string `json:"city,optional"`              // 用户所在城市
+		Country     string `json:"country,optional"`           // 用户所在国家
+		Province    string `json:"province,optional"`          // 用户所在省份
+		Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+		HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
+		CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
+        Role        int64  `json:"role"`                       // 用户角色
+        Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	}
+
+	UserCreateReq {
+		ReqType  string `json:"reqType,options=phone|wxopen|wxin|wxminip|pwd"` //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 密码方式 pwd 账密方式 必输
+		UserName string `json:"userName"`                             //手机号注册时填写手机号,账密登录时填写用户账号 必输
+		Password string `json:"password"` //明文密码 必输，且做大小写校验
+        Wechat      string `json:"wechat,optional"`            // 微信UnionID
+        LastIP      string `json:"lastIP,optional"`            // 最后登录ip
+        RegIP       string `json:"regIP,optional"`             // 注册ip
+        NickName    string `json:"nickName,optional"`          // 用户的昵称
+        City        string `json:"city,optional"`              // 用户所在城市
+        Country     string `json:"country,optional"`           // 用户所在国家
+        Province    string `json:"province,optional"`          // 用户所在省份
+        Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+        HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
+        CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
+        Role        int64  `json:"role"`                       // 用户角色
+        Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	}
+
+	UserCreateResp {
+		Uid int64 `json:"uid,string"` //用户id
+	}
+
+	UserCaptchaReq {
+		Data string `json:"data,optional"`              //短信验证时填写手机号
+		Type string `json:"type,options=sms|image"`     //验证方式:短信验证,图片验证码
+		Use  string `json:"use,options=login|register"` //用途
+	}
+
+	UserCaptchaResp {
+		CodeID string `json:"codeID"`       //验证码编号
+		Url    string `json:"url,optional"` //图片验证码url
+		Expire int64  `json:"expire"`       //过期时间
+	}
+
+	UserIndexReq {
+		Page PageInfo `json:"page"` //分页信息
+		UserName    string `json:"userName,optional"`          //用户名(唯一)
+		Phone       string `json:"phone,optional"`             // 手机号
+		Email       string `json:"email,optional"`             // 邮箱
+	}
+
+	UserIndexResp {
+		List  []*UserInfo `json:"list,omitempty"`           //用户信息列表
+		Total int64       `json:"total,optional,omitempty"` //总数
+	}
+
+	UserUpdateReq {
+		Uid         int64  `json:"uid,string"`                 // 用户id
+        UserName    string `json:"userName,optional"`          // 用户名(唯一)
+        Email       string `json:"email,optional"`             // 邮箱
+        NickName    string `json:"nickName,optional"`          // 用户的昵称
+        City        string `json:"city,optional"`              // 用户所在城市
+        Country     string `json:"country,optional"`           // 用户所在国家
+        Province    string `json:"province,optional"`          // 用户所在省份
+        Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+        HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
+        Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+        Role        int64  `json:"role,optional"`              // 用户角色
+	}
+
+	UserReadReq{
+		Uid        int64  `json:"uid,string"`                 // 用户id
+	}
+
+	UserReadResp {
+		Uid         int64  `json:"uid,string,optional"`                 // 用户id
+        UserName    string `json:"userName,optional"`                   // 用户名(唯一)
+        Email       string `json:"email,optional"`             // 邮箱
+        Phone       string `json:"phone,optional"`             // 手机号
+        Wechat      string `json:"wechat,optional"`            // 微信UnionID
+        LastIP      string `json:"lastIP,optional"`            // 最后登录ip
+        RegIP       string `json:"regIP,optional"`             // 注册ip
+        NickName    string `json:"nickName,optional"`          // 用户的昵称
+        City        string `json:"city,optional"`              // 用户所在城市
+        Country     string `json:"country,optional"`           // 用户所在国家
+        Province    string `json:"province,optional"`          // 用户所在省份
+        Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
+        HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
+        CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
+        Role        int64  `json:"role"`                       // 用户角色
+        Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	}
+
+	UserDeleteReq {
+		Uid string `json:"uid,omitempty"` //用户id
+	}
+
+	UserLoginReq {
+		UserID    string `json:"userID"`                               //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+		PwdType   int32  `json:"pwdType"`                              //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
+		Password  string `json:"password"`                             //密码，建议md5转换 密码登录时需要填写
+		LoginType string `json:"loginType,options=sms|pwd|wxopen|wxin|wxminip"` //验证类型 sms 短信验证码 pwd 账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
+		Code      string `json:"code,optional"`                                 //验证码    微信登录填code
+		CodeID    string `json:"codeID,optional"`                               //验证码编号 微信登录填state
+	}
+
+	UserLoginResp {
+		Info  UserInfo `json:"info"`  //用户信息
+		Token JwtToken `json:"token"` //用户token
+	}
+
+	JwtToken {
+		AccessToken  string `json:"accessToken,omitempty"`//用户token
+		AccessExpire int64  `json:"accessExpire,string,omitempty"`//token过期时间
+		RefreshAfter int64  `json:"refreshAfter,string,omitempty"`//token刷新时间
+	}
+
+    UserResourceReadResp{
+        Menu   []*MenuData   `json:"menu"`           //菜单资源
+    }
+)

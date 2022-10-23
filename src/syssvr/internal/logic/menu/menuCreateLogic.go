@@ -1,0 +1,58 @@
+package menulogic
+
+import (
+	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+
+	"github.com/i-Things/things/src/syssvr/internal/svc"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
+
+type MenuCreateLogic struct {
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+	logx.Logger
+}
+
+func NewMenuCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuCreateLogic {
+	return &MenuCreateLogic{
+		ctx:    ctx,
+		svcCtx: svcCtx,
+		Logger: logx.WithContext(ctx),
+	}
+}
+
+func (l *MenuCreateLogic) MenuCreate(in *sys.MenuCreateReq) (*sys.Response, error) {
+
+	if in.Type == 0 {
+		in.Type = 1
+	}
+	if in.ParentID == 0 {
+		in.ParentID = 1
+	}
+	if in.Order == 0 {
+		in.Order = 1
+	}
+	if in.HideInMenu == 0 {
+		in.HideInMenu = 1
+	}
+	err := l.svcCtx.MenuModel.InsertMenuID(&mysql.MenuInfo{
+		ParentID:      in.ParentID,
+		Type:          in.Type,
+		Order:         in.Order,
+		Name:          in.Name,
+		Path:          in.Path,
+		Component:     in.Component,
+		Icon:          in.Icon,
+		Redirect:      in.Redirect,
+		BackgroundUrl: "",
+		HideInMenu:    in.HideInMenu,
+	}, in.Role)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
+	return &sys.Response{}, nil
+}
