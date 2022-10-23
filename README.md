@@ -82,5 +82,10 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 - 官网:[https://ithings.pages.dev/](https://ithings.pages.dev/)
 - 微信二维码:
 - <img src="./doc/assets/微信二维码.jpg">
+
+## 赞赏
+如果iThings对你有帮助或者有启发,欢迎赞赏,这是对我们的认可及动力  
+<img src="./doc/assets/微信赞赏码.jpg">
+
 ## 收藏
 <img src="https://starchart.cc/i4de/ithings.svg">
