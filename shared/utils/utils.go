@@ -1,15 +1,14 @@
 package utils
 
 import (
+	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/i-Things/things/shared/def"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net"
 	"net/http"
-	"os"
 	"regexp"
 	"runtime"
 	"runtime/debug"
@@ -95,18 +94,15 @@ func MakePwd(pwd string, uid int64, isMd5 bool) string {
 	return MD5V([]byte(pwd + strUid + "god17052709767"))
 }
 
-func GetLoginNameType(userName string) def.UserInfoType {
-	if IsMobile(userName) == true {
-		return def.Phone
-	}
-	return def.UserName
-}
-
 // 获取正在运行的函数名
 func FuncName() string {
 	pc := make([]uintptr, 1)
 	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])
+	funcs := strings.Split(f.Name(), "/")
+	if len(funcs) > 0 {
+		return funcs[len(funcs)-1]
+	}
 	return f.Name()
 }
 
@@ -118,12 +114,18 @@ func FuncName() string {
 //	return fmt.Sprintf("%s:%d:%s",file,line,f.Name())
 //}
 
-func HandleThrow(p interface{}) {
+func Recover(ctx context.Context) {
+	if p := recover(); p != nil {
+		HandleThrow(ctx, p)
+	}
+}
+
+func HandleThrow(ctx context.Context, p any) {
 	pc := make([]uintptr, 1)
 	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])
-	logx.Errorf("THROW_ERROR|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
-	os.Exit(-1)
+	logx.WithContext(ctx).Errorf("HandleThrow|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
+	//os.Exit(-1)
 }
 
 func Ip2binary(ip string) string {

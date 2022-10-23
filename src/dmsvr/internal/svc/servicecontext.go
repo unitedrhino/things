@@ -1,16 +1,16 @@
 package svc
 
 import (
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/service/deviceData"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/templateModel"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/event/dataUpdate"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/event/innerLink"
-	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceLogRepo"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/hubLogRepo"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/sdkLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -21,39 +21,43 @@ type ServiceContext struct {
 	Config         config.Config
 	DeviceInfo     mysql.DeviceInfoModel
 	ProductInfo    mysql.ProductInfoModel
-	DmDB           mysql.DmModel
+	ProductSchema  mysql.ProductSchemaModel
 	DeviceID       *utils.SnowFlake
 	ProductID      *utils.SnowFlake
-	InnerLink      innerLink.InnerLink
 	DataUpdate     dataUpdate.DataUpdate
 	Store          kv.Store
-	DeviceDataRepo deviceData.DeviceDataRepo
-	DeviceLogRepo  device.LogRepo
-	TemplateRepo   templateModel.TemplateRepo
+	SchemaManaRepo deviceMsgManage.SchemaDataRepo
+	HubLogRepo     deviceMsgManage.HubLogRepo
+	SchemaRepo     schema.Repo
+	SDKLogRepo     deviceMsgManage.SDKLogRepo
+	FirmwareInfo   mysql.ProductFirmwareModel
+	GroupInfo      mysql.GroupInfoModel
+	GroupDevice    mysql.GroupDeviceModel
+	GroupID        *utils.SnowFlake
+	GroupDB        mysql.GroupModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource)
-	deviceLog := deviceLogRepo.NewDeviceLogRepo(c.TDengine.DataSource)
+	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
+	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 
 	//TestTD(td)
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
-	di := mysql.NewDeviceInfoModel(conn, c.CacheRedis)
-	pi := mysql.NewProductInfoModel(conn, c.CacheRedis)
-	pt := mysql.NewProductTemplateModel(conn, c.CacheRedis)
-	tr := mysql.NewTemplateRepo(pt)
-
-	DmDB := mysql.NewDmModel(conn, c.CacheRedis)
+	di := mysql.NewDeviceInfoModel(conn)
+	pi := mysql.NewProductInfoModel(conn)
+	pt := mysql.NewProductSchemaModel(conn)
+	tr := cache.NewSchemaRepo(pt)
+	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
+	fr := mysql.NewProductFirmwareModel(conn)
 	store := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	DeviceID := utils.NewSnowFlake(nodeId)
 	ProductID := utils.NewSnowFlake(nodeId)
-	il, err := innerLink.NewInnerLink(c.InnerLink)
-	if err != nil {
-		logx.Error("NewInnerLink err", err)
-		os.Exit(-1)
-	}
-	du, err := dataUpdate.NewDataUpdate(c.InnerLink)
+	du, err := dataUpdate.NewDataUpdate(c.Event)
+	gi := mysql.NewGroupInfoModel(conn)
+	gd := mysql.NewGroupDeviceModel(conn)
+	GroupID := utils.NewSnowFlake(nodeId)
+	GroupDB := mysql.NewGroupModel(conn, c.CacheRedis)
 	if err != nil {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
@@ -62,14 +66,19 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		DeviceInfo:     di,
 		ProductInfo:    pi,
-		TemplateRepo:   tr,
-		DmDB:           DmDB,
+		ProductSchema:  pt,
+		FirmwareInfo:   fr,
+		SchemaRepo:     tr,
 		DeviceID:       DeviceID,
 		ProductID:      ProductID,
-		InnerLink:      il,
 		DataUpdate:     du,
 		Store:          store,
-		DeviceDataRepo: deviceData,
-		DeviceLogRepo:  deviceLog,
+		SchemaManaRepo: deviceData,
+		HubLogRepo:     hubLog,
+		SDKLogRepo:     sdkLog,
+		GroupInfo:      gi,
+		GroupDevice:    gd,
+		GroupID:        GroupID,
+		GroupDB:        GroupDB,
 	}
 }

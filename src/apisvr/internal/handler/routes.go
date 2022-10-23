@@ -4,12 +4,17 @@ package handler
 import (
 	"net/http"
 
-	frontdc "github.com/i-Things/things/src/apisvr/internal/handler/front/dc"
-	frontuser "github.com/i-Things/things/src/apisvr/internal/handler/front/user"
-	frontverify "github.com/i-Things/things/src/apisvr/internal/handler/front/verify"
-	opendc "github.com/i-Things/things/src/apisvr/internal/handler/open/dc"
-	opendm "github.com/i-Things/things/src/apisvr/internal/handler/open/dm"
-	openuser "github.com/i-Things/things/src/apisvr/internal/handler/open/user"
+	systemmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/menu"
+	systemrole "github.com/i-Things/things/src/apisvr/internal/handler/system/role"
+	systemuser "github.com/i-Things/things/src/apisvr/internal/handler/system/user"
+	thingsdeviceauth "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth"
+	thingsdeviceinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/device/info"
+	thingsdeviceinteract "github.com/i-Things/things/src/apisvr/internal/handler/things/device/interact"
+	thingsdevicemsg "github.com/i-Things/things/src/apisvr/internal/handler/things/device/msg"
+	thingsgroupdevice "github.com/i-Things/things/src/apisvr/internal/handler/things/group/device"
+	thingsgroupinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/group/info"
+	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
+	thingsproductschema "github.com/i-Things/things/src/apisvr/internal/handler/things/product/schema"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -21,152 +26,15 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/captcha",
-				Handler: frontverify.CaptchaHandler(serverCtx),
+				Handler: systemuser.CaptchaHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/login",
+				Handler: systemuser.LoginHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/front/verify"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Record},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/login",
-					Handler: frontuser.LoginHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/registerCore",
-					Handler: frontuser.RegisterCoreHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/front/user"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Record},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/register2",
-					Handler: frontuser.Register2Handler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/front/user"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckToken, serverCtx.Record},
-			[]rest.Route{
-				{
-					Method:  http.MethodGet,
-					Path:    "/userInfo",
-					Handler: frontuser.UserInfoHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/modifyUserInfo",
-					Handler: frontuser.ModifyUserInfoHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/front/user"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Record},
-			[]rest.Route{
-				{
-					Method:  http.MethodGet,
-					Path:    "/userCoreList",
-					Handler: openuser.UserCoreListHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/userInfos",
-					Handler: openuser.UserInfosHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/open/user"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/loginAuth",
-				Handler: opendm.LoginAuthHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/accessAuth",
-				Handler: opendm.AccessAuthHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/rootCheck",
-				Handler: opendm.RootCheckHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/manageDevice",
-				Handler: opendm.ManageDeviceHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/manageProduct",
-				Handler: opendm.ManageProductHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/getProductInfo",
-				Handler: opendm.GetProductInfoHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/manageProductTemplate",
-				Handler: opendm.ManageProductTemplateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/getProductTemplate",
-				Handler: opendm.GetProductTemplateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/getDeviceInfo",
-				Handler: opendm.GetDeviceInfoHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/sendAction",
-				Handler: opendm.SendActionHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/sendProperty",
-				Handler: opendm.SendPropertyHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/getDeviceData",
-				Handler: opendm.GetDeviceDataHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/getDeviceDescribeLog",
-				Handler: opendm.GetDeviceDescribeLogHandler(serverCtx),
-			},
-		},
-		rest.WithPrefix("/open/dm"),
+		rest.WithPrefix("/api/v1/system/user"),
 	)
 
 	server.AddRoutes(
@@ -175,62 +43,343 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/manageGroupInfo",
-					Handler: frontdc.ManageGroupInfoHandler(serverCtx),
+					Path:    "/create",
+					Handler: systemuser.CreateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/manageGroupMember",
-					Handler: frontdc.ManageGroupMemberHandler(serverCtx),
+					Path:    "/index",
+					Handler: systemuser.IndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/getGroupInfo",
-					Handler: frontdc.GetGroupInfoHandler(serverCtx),
+					Path:    "/update",
+					Handler: systemuser.UpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/getGroupMember",
-					Handler: frontdc.GetGroupMemberHandler(serverCtx),
+					Path:    "/read",
+					Handler: systemuser.ReadHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/sendAction",
-					Handler: frontdc.SendActionHandler(serverCtx),
+					Path:    "/delete",
+					Handler: systemuser.DeleteHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/sendProperty",
-					Handler: frontdc.SendPropertyHandler(serverCtx),
+					Path:    "/resource-read",
+					Handler: systemuser.ResourceReadHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/front/dc"),
+		rest.WithPrefix("/api/v1/system/user"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemmenu.MenuCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemmenu.MenuIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemmenu.MenuUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemmenu.MenuDeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/menu"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemrole.RoleCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemrole.RoleIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemrole.RoleUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemrole.RoleDeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/role-menu/update",
+					Handler: systemrole.RoleMenuUpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/role"),
 	)
 
 	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/manageGroupInfo",
-				Handler: opendc.BgManageGroupInfoHandler(serverCtx),
+				Path:    "/login",
+				Handler: thingsdeviceauth.LoginHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/manageGroupMember",
-				Handler: opendc.BgManageGroupMemberHandler(serverCtx),
+				Path:    "/access",
+				Handler: thingsdeviceauth.AccessHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/getGroupInfo",
-				Handler: opendc.BgGetGroupInfoHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/getGroupMember",
-				Handler: opendc.BgGetGroupMemberHandler(serverCtx),
+				Path:    "/root-check",
+				Handler: thingsdeviceauth.RootCheckHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/open/dc"),
+		rest.WithPrefix("/api/v1/things/device/auth"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/hub-log/index",
+					Handler: thingsdevicemsg.HubLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/sdk-log/index",
+					Handler: thingsdevicemsg.SdkLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-log/index",
+					Handler: thingsdevicemsg.PropertyLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-latest/index",
+					Handler: thingsdevicemsg.PropertyLatestIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/event-log/index",
+					Handler: thingsdevicemsg.EventLogIndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/msg"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsdeviceinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsdeviceinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsdeviceinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsdeviceinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsdeviceinfo.ReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/send-action",
+					Handler: thingsdeviceinteract.SendActionHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/send-property",
+					Handler: thingsdeviceinteract.SendPropertyHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/send-msg",
+					Handler: thingsdeviceinteract.SendMsgHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/interact"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsproductinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsproductinfo.ReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/tsl-import",
+					Handler: thingsproductschema.TslImportHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/tsl-read",
+					Handler: thingsproductschema.TslReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductschema.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductschema.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsproductschema.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductschema.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/schema"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsgroupinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsgroupinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsgroupinfo.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsgroupinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsgroupinfo.DeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/group/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsgroupdevice.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsgroupdevice.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsgroupdevice.DeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/group/device"),
 	)
 }
