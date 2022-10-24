@@ -49,16 +49,9 @@ func (l *DisconnectedLogic) Handle(msg *deviceMsg.ConnectMsg) error {
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 	}
 	//更新对应设备的online状态
-	di, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
+	l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
 		ProductID:  ld.ProductID,
 		DeviceName: ld.DeviceName,
-	})
-	if err != nil {
-		return err
-	}
-	l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
-		ProductID:  di.ProductID,
-		DeviceName: di.DeviceName,
 		IsOnline:   def.False,
 	})
 	return nil
