@@ -1,8 +1,9 @@
 package def
 
 import (
-	sq "github.com/Masterminds/squirrel"
 	"time"
+
+	sq "github.com/Masterminds/squirrel"
 )
 
 const (
@@ -15,8 +16,8 @@ type PageInfo struct {
 	Size int64 `json:"pageSize" form:"pageSize"` // 每页大小
 }
 type PageInfo2 struct {
-	TimeStart int64
-	TimeEnd   int64
+	TimeStart int64 `json:"timeStart"`
+	TimeEnd   int64 `json:"timeEnd"`
 	Page      int64 `json:"page" form:"page"` // 页码
 	Size      int64 `json:"size" form:"size"` // 每页大小
 }
