@@ -5,7 +5,7 @@
 ```json
 {
   "method": "get_status",
-  "type": "get_log_level",
+  "timestamp": 1654844328734,
   "clientToken": "xxxxxx"
 }
 ```
@@ -25,18 +25,27 @@
 - ### 日志直传
 上行topic: $log/up/report/${productID}/${deviceName}
 
-> 日志级别log_level: 2)错误 3)告警 4)信息 5)调试  
+> 日志级别log_level: 2)错误 3)告警 4)信息 5)调试  ,不传默认为5
 > 日志内容content：在后台将以文本形式直接展示
 
 ```json
 {                     
     "method": "report_info",    
-    "Type": "report_log_content",
+    "timestamp": 1654844328734,
     "clientToken": "xxxxxx",   
-    "params": {
+    "params": [
+      {
         "log_level":5,
         "content":"long string,不要超过500k"
-    }
+      },
+      {
+        "log_level":4,
+        "content":"long string"
+      },
+      {
+        "content":"sdsdadasfafasdf sdfasd sadfasdf sdfsdfs sdf4asdfsdf"
+      }
+    ]
 }
 ```
 下行topic: $log/down/report/${productID}/${deviceName}
