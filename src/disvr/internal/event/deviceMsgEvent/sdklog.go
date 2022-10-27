@@ -81,7 +81,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *devi
 		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceMsg.SDKLog{
 			ProductID:   ld.ProductID,
 			LogLevel:    logObj.LogLevel,
-			Timestamp:   msg.Timestamp, // 操作时间
+			Timestamp:   l.dreq.GetTimeStamp(logObj.Timestamp), // 操作时间
 			DeviceName:  ld.DeviceName,
 			Content:     logObj.Content,
 			ClientToken: l.dreq.ClientToken,

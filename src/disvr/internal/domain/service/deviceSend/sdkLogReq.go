@@ -15,16 +15,20 @@ type (
 		Timestamp   int64    `json:"timestamp,omitempty"`
 	}
 	sdklog struct {
-		Content  string `json:"content"`
-		LogLevel int64  `json:"log_level,optional"`
+		Content   string `json:"content"`
+		Timestamp int64  `json:"timestamp,optional"`
+		LogLevel  int64  `json:"log_level,optional"`
 	}
 )
 
-func (d *SdkLogReq) GetTimeStamp(defaultTime time.Time) time.Time {
-	if d.Timestamp == 0 {
-		return defaultTime
+func (d *SdkLogReq) GetTimeStamp(logTime int64) time.Time {
+	if logTime == 0 {
+		if d.Timestamp != 0 {
+			return time.UnixMilli(d.Timestamp)
+		}
+		return time.Now()
 	}
-	return time.UnixMilli(d.Timestamp)
+	return time.UnixMilli(logTime)
 }
 
 func (d *SdkLogReq) VerifyReqParam() error {
