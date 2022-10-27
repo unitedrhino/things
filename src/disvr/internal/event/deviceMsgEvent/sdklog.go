@@ -4,7 +4,6 @@ import (
 	"context"
 	"strings"
 
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
@@ -19,7 +18,7 @@ type SDKLogLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	topics []string
-	dreq   deviceSend.DeviceReq
+	dreq   deviceSend.SdkLogReq
 }
 
 func NewSDKLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SDKLogLogic {
@@ -40,6 +39,9 @@ func (l *SDKLogLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 		return errors.Parameter.AddDetail("sdklog topic is err:" + msg.Topic)
 	}
 	l.topics = strings.Split(msg.Topic, "/")
+	if len(l.topics) < 5 {
+		return errors.Parameter.AddDetail("sdklog topic is err:" + msg.Topic)
+	}
 	return nil
 }
 
@@ -49,10 +51,10 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	if err != nil {
 		return nil, err
 	}
-	switch l.dreq.Type {
-	case "get_log_level":
+	switch l.topics[2] {
+	case "operation":
 		respMsg, err = l.GetLogLevel(msg)
-	case "report_log_content":
+	case "report":
 		respMsg, err = l.ReportLogContent(msg)
 	default:
 		return nil, errors.Parameter.AddDetail("sdk log topic is err:" + msg.Topic)
@@ -71,37 +73,31 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *devi
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		return nil, err
 	}
-	logContent, ok := l.dreq.Params["content"]
-	if !ok {
-		return nil, errors.SDKLOG_MissParam
-	}
-	logLevel, ok := l.dreq.Params["log_level"]
-	if !ok {
-		logLevel = def.LogDebug
-	} else {
-		if logLevel.(int64) < int64(def.LogError) || logLevel.(int64) > def.LogDebug {
-			return nil, errors.SDKLOG_ErrorLevel
-		}
-	}
-	err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceMsg.SDKLog{
-		ProductID:   ld.ProductID,
-		LogLevel:    logLevel.(int64),
-		Timestamp:   msg.Timestamp, // 操作时间
-		DeviceName:  ld.DeviceName,
-		Content:     logContent.(string),
-		ClientToken: l.dreq.ClientToken,
-	})
+	err = l.dreq.VerifyReqParam()
 	if err != nil {
-		l.Errorf("%s.LogRepo.insert.productID:%v deviceName:%v err:%v",
-			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+		return nil, err
+	}
+	for _, logObj := range l.dreq.Params {
+		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceMsg.SDKLog{
+			ProductID:   ld.ProductID,
+			LogLevel:    logObj.LogLevel,
+			Timestamp:   msg.Timestamp, // 操作时间
+			DeviceName:  ld.DeviceName,
+			Content:     logObj.Content,
+			ClientToken: l.dreq.ClientToken,
+		})
+		if err != nil {
+			l.Errorf("%s.LogRepo.insert.productID:%v deviceName:%v err:%v",
+				utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 
-		return l.DeviceResp(msg, errors.Database, nil), err
+			return l.DeviceResp(msg, errors.Database, nil), err
+		}
 	}
 
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
-//获取当前日志等级 1 未开启
+//获取当前日志等级
 func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	ld, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
 		ProductID:  msg.ProductID,
