@@ -12,5 +12,6 @@ func ToDeviceSDKLog(productID string, db map[string]any) *deviceMsg.SDKLog {
 		Content:     cast.ToString(db["content"]),
 		Timestamp:   cast.ToTime(db["ts"]),
 		ClientToken: cast.ToString(db["client_token"]),
+		LogLevel:    cast.ToInt64(db["log_level"]),
 	}
 }
