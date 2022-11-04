@@ -17,7 +17,7 @@ type (
 	sdklog struct {
 		Content   string `json:"content"`
 		Timestamp int64  `json:"timestamp,optional"`
-		LogLevel  int64  `json:"log_level,optional"`
+		LogLevel  int64  `json:"logLevel,optional"`
 	}
 )
 
