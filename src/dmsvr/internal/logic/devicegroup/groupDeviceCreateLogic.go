@@ -26,7 +26,7 @@ func NewGroupDeviceCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 // 创建分组设备
 func (l *GroupDeviceCreateLogic) GroupDeviceCreate(in *dm.GroupDeviceCreateReq) (*dm.Response, error) {
-	err := l.svcCtx.GroupDB.GroupDeviceCreate(l.ctx, in.GroupID, in.DeviceIndexList)
+	err := l.svcCtx.GroupDB.GroupDeviceCreate(l.ctx, in.GroupID, in.List)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

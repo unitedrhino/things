@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -34,5 +35,5 @@ func (l *ReadLogic) Read(req *types.DeviceInfoReadReq) (resp *types.DeviceInfo, 
 		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return deviceInfoToApi(dmResp), nil
+	return device.DeviceInfoToApi(dmResp), nil
 }
