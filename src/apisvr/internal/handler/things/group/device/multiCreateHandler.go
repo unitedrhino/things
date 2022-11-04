@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func CreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func MultiCreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GroupDeviceCreateReq
+		var req types.GroupDeviceMultiCreateReq
 		if err := httpx.Parse(r, &req); err != nil {
-			result.Http(w, r, nil, errors.Parameter.AddMsg(err.Error()))
+			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := device.NewCreateLogic(r.Context(), svcCtx)
-		err := l.Create(&req)
+		l := device.NewMultiCreateLogic(r.Context(), svcCtx)
+		err := l.MultiCreate(&req)
 		result.Http(w, r, nil, err)
 	}
 }
