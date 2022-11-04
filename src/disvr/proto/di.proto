@@ -140,7 +140,8 @@ message SdkLogIndexReq {
   string  deviceName = 2; //设备名
   int64   timeStart = 3;//获取时间的开始
   int64   timeEnd = 4;//时间的结束
-  PageInfo page = 5;//分页信息 只获取一个则不填
+  int64   logLevel = 5; //日志等级
+  PageInfo page = 6;//分页信息 只获取一个则不填
 }
 /*sdk调试日志信息*/
 message SdkLogIndexResp {
