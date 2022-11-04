@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func DeleteHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func MultiDeleteHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GroupDeviceDeleteReq
+		var req types.GroupDeviceMultiDeleteReq
 		if err := httpx.Parse(r, &req); err != nil {
-			result.Http(w, r, nil, errors.Parameter.AddMsg(err.Error()))
+			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := device.NewDeleteLogic(r.Context(), svcCtx)
-		err := l.Delete(&req)
+		l := device.NewMultiDeleteLogic(r.Context(), svcCtx)
+		err := l.MultiDelete(&req)
 		result.Http(w, r, nil, err)
 	}
 }

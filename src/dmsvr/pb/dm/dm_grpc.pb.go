@@ -1019,11 +1019,11 @@ type DeviceGroupClient interface {
 	//删除分组
 	GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	//创建分组设备
-	GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error)
+	GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
 	//获取分组设备信息列表
 	GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
 	//删除分组设备
-	GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 }
 
 type deviceGroupClient struct {
@@ -1079,9 +1079,9 @@ func (c *deviceGroupClient) GroupInfoDelete(ctx context.Context, in *GroupInfoDe
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *deviceGroupClient) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupDeviceCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupDeviceMultiCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1097,9 +1097,9 @@ func (c *deviceGroupClient) GroupDeviceIndex(ctx context.Context, in *GroupDevic
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *deviceGroupClient) GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupDeviceDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupDeviceMultiDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1121,11 +1121,11 @@ type DeviceGroupServer interface {
 	//删除分组
 	GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error)
 	//创建分组设备
-	GroupDeviceCreate(context.Context, *GroupDeviceCreateReq) (*Response, error)
+	GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiCreateReq) (*Response, error)
 	//获取分组设备信息列表
 	GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error)
 	//删除分组设备
-	GroupDeviceDelete(context.Context, *GroupDeviceDeleteReq) (*Response, error)
+	GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Response, error)
 	mustEmbedUnimplementedDeviceGroupServer()
 }
 
@@ -1148,14 +1148,14 @@ func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInf
 func (UnimplementedDeviceGroupServer) GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoDelete not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupDeviceCreate(context.Context, *GroupDeviceCreateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceCreate not implemented")
+func (UnimplementedDeviceGroupServer) GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceMultiCreate not implemented")
 }
 func (UnimplementedDeviceGroupServer) GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceIndex not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupDeviceDelete(context.Context, *GroupDeviceDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceDelete not implemented")
+func (UnimplementedDeviceGroupServer) GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceMultiDelete not implemented")
 }
 func (UnimplementedDeviceGroupServer) mustEmbedUnimplementedDeviceGroupServer() {}
 
@@ -1260,20 +1260,20 @@ func _DeviceGroup_GroupInfoDelete_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceGroup_GroupDeviceCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupDeviceCreateReq)
+func _DeviceGroup_GroupDeviceMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceMultiCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceGroupServer).GroupDeviceCreate(ctx, in)
+		return srv.(DeviceGroupServer).GroupDeviceMultiCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/groupDeviceCreate",
+		FullMethod: "/dm.DeviceGroup/groupDeviceMultiCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupDeviceCreate(ctx, req.(*GroupDeviceCreateReq))
+		return srv.(DeviceGroupServer).GroupDeviceMultiCreate(ctx, req.(*GroupDeviceMultiCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1296,20 +1296,20 @@ func _DeviceGroup_GroupDeviceIndex_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceGroup_GroupDeviceDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupDeviceDeleteReq)
+func _DeviceGroup_GroupDeviceMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceMultiDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceGroupServer).GroupDeviceDelete(ctx, in)
+		return srv.(DeviceGroupServer).GroupDeviceMultiDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/groupDeviceDelete",
+		FullMethod: "/dm.DeviceGroup/groupDeviceMultiDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupDeviceDelete(ctx, req.(*GroupDeviceDeleteReq))
+		return srv.(DeviceGroupServer).GroupDeviceMultiDelete(ctx, req.(*GroupDeviceMultiDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1342,16 +1342,16 @@ var DeviceGroup_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DeviceGroup_GroupInfoDelete_Handler,
 		},
 		{
-			MethodName: "groupDeviceCreate",
-			Handler:    _DeviceGroup_GroupDeviceCreate_Handler,
+			MethodName: "groupDeviceMultiCreate",
+			Handler:    _DeviceGroup_GroupDeviceMultiCreate_Handler,
 		},
 		{
 			MethodName: "groupDeviceIndex",
 			Handler:    _DeviceGroup_GroupDeviceIndex_Handler,
 		},
 		{
-			MethodName: "groupDeviceDelete",
-			Handler:    _DeviceGroup_GroupDeviceDelete_Handler,
+			MethodName: "groupDeviceMultiDelete",
+			Handler:    _DeviceGroup_GroupDeviceMultiDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

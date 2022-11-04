@@ -679,12 +679,12 @@ type GroupDeviceIndexResp struct {
 	Total int64         `json:"total"` //总数(只有分页的时候会返回)
 }
 
-type GroupDeviceCreateReq struct {
+type GroupDeviceMultiCreateReq struct {
 	GroupID int64         `json:"groupID,string"` //分组ID
 	List    []*DeviceCore `json:"list,optional"`  //分组tag
 }
 
-type GroupDeviceDeleteReq struct {
+type GroupDeviceMultiDeleteReq struct {
 	GroupID int64         `json:"groupID,string"` //分组ID
 	List    []*DeviceCore `json:"list,optional"`  //分组tag
 }

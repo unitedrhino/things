@@ -25,10 +25,10 @@ type (
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq           = dm.DeviceInfoReadReq
-	GroupDeviceCreateReq        = dm.GroupDeviceCreateReq
-	GroupDeviceDeleteReq        = dm.GroupDeviceDeleteReq
 	GroupDeviceIndexReq         = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp        = dm.GroupDeviceIndexResp
+	GroupDeviceMultiCreateReq   = dm.GroupDeviceMultiCreateReq
+	GroupDeviceMultiDeleteReq   = dm.GroupDeviceMultiDeleteReq
 	GroupInfo                   = dm.GroupInfo
 	GroupInfoCreateReq          = dm.GroupInfoCreateReq
 	GroupInfoDeleteReq          = dm.GroupInfoDeleteReq
