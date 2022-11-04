@@ -2,6 +2,7 @@ package msg
 
 import (
 	"context"
+
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
@@ -31,6 +32,7 @@ func (l *SdkLogIndexLogic) SdkLogIndex(req *types.DeviceMsgSdkLogIndexReq) (resp
 	dmReq := &di.SdkLogIndexReq{
 		DeviceName: req.DeviceName,
 		ProductID:  req.ProductID, //产品id
+		LogLevel:   int64(req.LogLevel),
 		TimeStart:  req.TimeStart,
 		TimeEnd:    req.TimeEnd,
 		Page:       logic.ToDiPageRpc(req.Page),
