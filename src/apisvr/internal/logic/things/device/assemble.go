@@ -1,4 +1,4 @@
-package info
+package device
 
 import (
 	"github.com/i-Things/things/shared/utils"
@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func toTagsMap(tags []*types.DeviceTag) map[string]string {
+func ToTagsMap(tags []*types.DeviceTag) map[string]string {
 	if tags == nil {
 		return nil
 	}
@@ -16,7 +16,7 @@ func toTagsMap(tags []*types.DeviceTag) map[string]string {
 	}
 	return tagMap
 }
-func toTagsType(tags map[string]string) (retTag []*types.DeviceTag) {
+func ToTagsType(tags map[string]string) (retTag []*types.DeviceTag) {
 	for k, v := range tags {
 		retTag = append(retTag, &types.DeviceTag{
 			Key:   k,
@@ -26,7 +26,7 @@ func toTagsType(tags map[string]string) (retTag []*types.DeviceTag) {
 	return
 }
 
-func deviceInfoToApi(v *dm.DeviceInfo) *types.DeviceInfo {
+func DeviceInfoToApi(v *dm.DeviceInfo) *types.DeviceInfo {
 	return &types.DeviceInfo{
 		ProductID:   v.ProductID,                   //产品id 只读
 		DeviceName:  v.DeviceName,                  //设备名称 读写
@@ -37,7 +37,7 @@ func deviceInfoToApi(v *dm.DeviceInfo) *types.DeviceInfo {
 		Version:     utils.ToNullString(v.Version), // 固件版本  读写
 		LogLevel:    v.LogLevel,                    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 		Cert:        v.Cert,                        // 设备证书  只读
-		Tags:        toTagsType(v.Tags),
+		Tags:        ToTagsType(v.Tags),
 		IsOnline:    v.IsOnline, // 在线状态  1离线 2在线 只读
 	}
 }

@@ -196,6 +196,12 @@ type DeviceManageClient interface {
 	DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
 	//获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
+	//创建分组设备
+	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
+	//获取分组设备信息列表
+	DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
+	//删除分组设备
+	DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 }
 
 type deviceManageClient struct {
@@ -208,7 +214,7 @@ func NewDeviceManageClient(cc grpc.ClientConnInterface) DeviceManageClient {
 
 func (c *deviceManageClient) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/deviceInfoCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +223,7 @@ func (c *deviceManageClient) DeviceInfoCreate(ctx context.Context, in *DeviceInf
 
 func (c *deviceManageClient) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/deviceInfoUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -226,7 +232,7 @@ func (c *deviceManageClient) DeviceInfoUpdate(ctx context.Context, in *DeviceInf
 
 func (c *deviceManageClient) DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/deviceInfoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -235,7 +241,7 @@ func (c *deviceManageClient) DeviceInfoDelete(ctx context.Context, in *DeviceInf
 
 func (c *deviceManageClient) DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error) {
 	out := new(DeviceInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/deviceInfoIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +250,34 @@ func (c *deviceManageClient) DeviceInfoIndex(ctx context.Context, in *DeviceInfo
 
 func (c *deviceManageClient) DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error) {
 	out := new(DeviceInfo)
-	err := c.cc.Invoke(ctx, "/dm.DeviceManage/DeviceInfoRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/deviceInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/deviceGatewayMultiCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error) {
+	out := new(DeviceGatewayIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/deviceGatewayIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.DeviceManage/deviceGatewayMultiDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -265,6 +298,12 @@ type DeviceManageServer interface {
 	DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error)
 	//获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
+	//创建分组设备
+	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Response, error)
+	//获取分组设备信息列表
+	DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error)
+	//删除分组设备
+	DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Response, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }
 
@@ -286,6 +325,15 @@ func (UnimplementedDeviceManageServer) DeviceInfoIndex(context.Context, *DeviceI
 }
 func (UnimplementedDeviceManageServer) DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoRead not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiCreate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayIndex not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiDelete not implemented")
 }
 func (UnimplementedDeviceManageServer) mustEmbedUnimplementedDeviceManageServer() {}
 
@@ -310,7 +358,7 @@ func _DeviceManage_DeviceInfoCreate_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceManage/DeviceInfoCreate",
+		FullMethod: "/dm.DeviceManage/deviceInfoCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoCreate(ctx, req.(*DeviceInfo))
@@ -328,7 +376,7 @@ func _DeviceManage_DeviceInfoUpdate_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceManage/DeviceInfoUpdate",
+		FullMethod: "/dm.DeviceManage/deviceInfoUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoUpdate(ctx, req.(*DeviceInfo))
@@ -346,7 +394,7 @@ func _DeviceManage_DeviceInfoDelete_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceManage/DeviceInfoDelete",
+		FullMethod: "/dm.DeviceManage/deviceInfoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoDelete(ctx, req.(*DeviceInfoDeleteReq))
@@ -364,7 +412,7 @@ func _DeviceManage_DeviceInfoIndex_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceManage/DeviceInfoIndex",
+		FullMethod: "/dm.DeviceManage/deviceInfoIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoIndex(ctx, req.(*DeviceInfoIndexReq))
@@ -382,10 +430,64 @@ func _DeviceManage_DeviceInfoRead_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceManage/DeviceInfoRead",
+		FullMethod: "/dm.DeviceManage/deviceInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoRead(ctx, req.(*DeviceInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceGatewayMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceGatewayMultiCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceGatewayMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceManage/deviceGatewayMultiCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceGatewayMultiCreate(ctx, req.(*DeviceGatewayMultiCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceGatewayIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceGatewayIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceGatewayIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceManage/deviceGatewayIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceGatewayIndex(ctx, req.(*DeviceGatewayIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceGatewayMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceGatewayMultiDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceGatewayMultiDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.DeviceManage/deviceGatewayMultiDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceGatewayMultiDelete(ctx, req.(*DeviceGatewayMultiDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -398,24 +500,36 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DeviceManageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DeviceInfoCreate",
+			MethodName: "deviceInfoCreate",
 			Handler:    _DeviceManage_DeviceInfoCreate_Handler,
 		},
 		{
-			MethodName: "DeviceInfoUpdate",
+			MethodName: "deviceInfoUpdate",
 			Handler:    _DeviceManage_DeviceInfoUpdate_Handler,
 		},
 		{
-			MethodName: "DeviceInfoDelete",
+			MethodName: "deviceInfoDelete",
 			Handler:    _DeviceManage_DeviceInfoDelete_Handler,
 		},
 		{
-			MethodName: "DeviceInfoIndex",
+			MethodName: "deviceInfoIndex",
 			Handler:    _DeviceManage_DeviceInfoIndex_Handler,
 		},
 		{
-			MethodName: "DeviceInfoRead",
+			MethodName: "deviceInfoRead",
 			Handler:    _DeviceManage_DeviceInfoRead_Handler,
+		},
+		{
+			MethodName: "deviceGatewayMultiCreate",
+			Handler:    _DeviceManage_DeviceGatewayMultiCreate_Handler,
+		},
+		{
+			MethodName: "deviceGatewayIndex",
+			Handler:    _DeviceManage_DeviceGatewayIndex_Handler,
+		},
+		{
+			MethodName: "deviceGatewayMultiDelete",
+			Handler:    _DeviceManage_DeviceGatewayMultiDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -460,7 +574,7 @@ func NewProductManageClient(cc grpc.ClientConnInterface) ProductManageClient {
 
 func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productInfoCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -469,7 +583,7 @@ func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *Product
 
 func (c *productManageClient) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productInfoUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -478,7 +592,7 @@ func (c *productManageClient) ProductInfoUpdate(ctx context.Context, in *Product
 
 func (c *productManageClient) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productInfoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -487,7 +601,7 @@ func (c *productManageClient) ProductInfoDelete(ctx context.Context, in *Product
 
 func (c *productManageClient) ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error) {
 	out := new(ProductInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productInfoIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -496,7 +610,7 @@ func (c *productManageClient) ProductInfoIndex(ctx context.Context, in *ProductI
 
 func (c *productManageClient) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
 	out := new(ProductInfo)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductInfoRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productInfoRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -505,7 +619,7 @@ func (c *productManageClient) ProductInfoRead(ctx context.Context, in *ProductIn
 
 func (c *productManageClient) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productSchemaUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -514,7 +628,7 @@ func (c *productManageClient) ProductSchemaUpdate(ctx context.Context, in *Produ
 
 func (c *productManageClient) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productSchemaCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -523,7 +637,7 @@ func (c *productManageClient) ProductSchemaCreate(ctx context.Context, in *Produ
 
 func (c *productManageClient) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productSchemaDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -532,7 +646,7 @@ func (c *productManageClient) ProductSchemaDelete(ctx context.Context, in *Produ
 
 func (c *productManageClient) ProductSchemaIndex(ctx context.Context, in *ProductSchemaIndexReq, opts ...grpc.CallOption) (*ProductSchemaIndexResp, error) {
 	out := new(ProductSchemaIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productSchemaIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -541,7 +655,7 @@ func (c *productManageClient) ProductSchemaIndex(ctx context.Context, in *Produc
 
 func (c *productManageClient) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaTslImport", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productSchemaTslImport", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -550,7 +664,7 @@ func (c *productManageClient) ProductSchemaTslImport(ctx context.Context, in *Pr
 
 func (c *productManageClient) ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error) {
 	out := new(ProductSchemaTslReadResp)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/ProductSchemaTslRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productSchemaTslRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -646,7 +760,7 @@ func _ProductManage_ProductInfoCreate_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoCreate",
+		FullMethod: "/dm.ProductManage/productInfoCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductInfoCreate(ctx, req.(*ProductInfo))
@@ -664,7 +778,7 @@ func _ProductManage_ProductInfoUpdate_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoUpdate",
+		FullMethod: "/dm.ProductManage/productInfoUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductInfoUpdate(ctx, req.(*ProductInfo))
@@ -682,7 +796,7 @@ func _ProductManage_ProductInfoDelete_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoDelete",
+		FullMethod: "/dm.ProductManage/productInfoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductInfoDelete(ctx, req.(*ProductInfoDeleteReq))
@@ -700,7 +814,7 @@ func _ProductManage_ProductInfoIndex_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoIndex",
+		FullMethod: "/dm.ProductManage/productInfoIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductInfoIndex(ctx, req.(*ProductInfoIndexReq))
@@ -718,7 +832,7 @@ func _ProductManage_ProductInfoRead_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductInfoRead",
+		FullMethod: "/dm.ProductManage/productInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductInfoRead(ctx, req.(*ProductInfoReadReq))
@@ -736,7 +850,7 @@ func _ProductManage_ProductSchemaUpdate_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductSchemaUpdate",
+		FullMethod: "/dm.ProductManage/productSchemaUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductSchemaUpdate(ctx, req.(*ProductSchemaUpdateReq))
@@ -754,7 +868,7 @@ func _ProductManage_ProductSchemaCreate_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductSchemaCreate",
+		FullMethod: "/dm.ProductManage/productSchemaCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductSchemaCreate(ctx, req.(*ProductSchemaCreateReq))
@@ -772,7 +886,7 @@ func _ProductManage_ProductSchemaDelete_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductSchemaDelete",
+		FullMethod: "/dm.ProductManage/productSchemaDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductSchemaDelete(ctx, req.(*ProductSchemaDeleteReq))
@@ -790,7 +904,7 @@ func _ProductManage_ProductSchemaIndex_Handler(srv interface{}, ctx context.Cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductSchemaIndex",
+		FullMethod: "/dm.ProductManage/productSchemaIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductSchemaIndex(ctx, req.(*ProductSchemaIndexReq))
@@ -808,7 +922,7 @@ func _ProductManage_ProductSchemaTslImport_Handler(srv interface{}, ctx context.
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductSchemaTslImport",
+		FullMethod: "/dm.ProductManage/productSchemaTslImport",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductSchemaTslImport(ctx, req.(*ProductSchemaTslImportReq))
@@ -826,7 +940,7 @@ func _ProductManage_ProductSchemaTslRead_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/ProductSchemaTslRead",
+		FullMethod: "/dm.ProductManage/productSchemaTslRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductSchemaTslRead(ctx, req.(*ProductSchemaTslReadReq))
@@ -842,47 +956,47 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ProductManageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ProductInfoCreate",
+			MethodName: "productInfoCreate",
 			Handler:    _ProductManage_ProductInfoCreate_Handler,
 		},
 		{
-			MethodName: "ProductInfoUpdate",
+			MethodName: "productInfoUpdate",
 			Handler:    _ProductManage_ProductInfoUpdate_Handler,
 		},
 		{
-			MethodName: "ProductInfoDelete",
+			MethodName: "productInfoDelete",
 			Handler:    _ProductManage_ProductInfoDelete_Handler,
 		},
 		{
-			MethodName: "ProductInfoIndex",
+			MethodName: "productInfoIndex",
 			Handler:    _ProductManage_ProductInfoIndex_Handler,
 		},
 		{
-			MethodName: "ProductInfoRead",
+			MethodName: "productInfoRead",
 			Handler:    _ProductManage_ProductInfoRead_Handler,
 		},
 		{
-			MethodName: "ProductSchemaUpdate",
+			MethodName: "productSchemaUpdate",
 			Handler:    _ProductManage_ProductSchemaUpdate_Handler,
 		},
 		{
-			MethodName: "ProductSchemaCreate",
+			MethodName: "productSchemaCreate",
 			Handler:    _ProductManage_ProductSchemaCreate_Handler,
 		},
 		{
-			MethodName: "ProductSchemaDelete",
+			MethodName: "productSchemaDelete",
 			Handler:    _ProductManage_ProductSchemaDelete_Handler,
 		},
 		{
-			MethodName: "ProductSchemaIndex",
+			MethodName: "productSchemaIndex",
 			Handler:    _ProductManage_ProductSchemaIndex_Handler,
 		},
 		{
-			MethodName: "ProductSchemaTslImport",
+			MethodName: "productSchemaTslImport",
 			Handler:    _ProductManage_ProductSchemaTslImport_Handler,
 		},
 		{
-			MethodName: "ProductSchemaTslRead",
+			MethodName: "productSchemaTslRead",
 			Handler:    _ProductManage_ProductSchemaTslRead_Handler,
 		},
 	},
@@ -905,11 +1019,11 @@ type DeviceGroupClient interface {
 	//删除分组
 	GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	//创建分组设备
-	GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error)
+	GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
 	//获取分组设备信息列表
 	GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
 	//删除分组设备
-	GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 }
 
 type deviceGroupClient struct {
@@ -922,7 +1036,7 @@ func NewDeviceGroupClient(cc grpc.ClientConnInterface) DeviceGroupClient {
 
 func (c *deviceGroupClient) GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupInfoCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -931,7 +1045,7 @@ func (c *deviceGroupClient) GroupInfoCreate(ctx context.Context, in *GroupInfoCr
 
 func (c *deviceGroupClient) GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error) {
 	out := new(GroupInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupInfoIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -940,7 +1054,7 @@ func (c *deviceGroupClient) GroupInfoIndex(ctx context.Context, in *GroupInfoInd
 
 func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error) {
 	out := new(GroupInfo)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupInfoRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -949,7 +1063,7 @@ func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *GroupInfoRead
 
 func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupInfoUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -958,16 +1072,16 @@ func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfoUp
 
 func (c *deviceGroupClient) GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupInfoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupInfoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *deviceGroupClient) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupDeviceCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupDeviceMultiCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -976,16 +1090,16 @@ func (c *deviceGroupClient) GroupDeviceCreate(ctx context.Context, in *GroupDevi
 
 func (c *deviceGroupClient) GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error) {
 	out := new(GroupDeviceIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupDeviceIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupDeviceIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *deviceGroupClient) GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/GroupDeviceDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.DeviceGroup/groupDeviceMultiDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1007,11 +1121,11 @@ type DeviceGroupServer interface {
 	//删除分组
 	GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error)
 	//创建分组设备
-	GroupDeviceCreate(context.Context, *GroupDeviceCreateReq) (*Response, error)
+	GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiCreateReq) (*Response, error)
 	//获取分组设备信息列表
 	GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error)
 	//删除分组设备
-	GroupDeviceDelete(context.Context, *GroupDeviceDeleteReq) (*Response, error)
+	GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Response, error)
 	mustEmbedUnimplementedDeviceGroupServer()
 }
 
@@ -1034,14 +1148,14 @@ func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInf
 func (UnimplementedDeviceGroupServer) GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoDelete not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupDeviceCreate(context.Context, *GroupDeviceCreateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceCreate not implemented")
+func (UnimplementedDeviceGroupServer) GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceMultiCreate not implemented")
 }
 func (UnimplementedDeviceGroupServer) GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceIndex not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupDeviceDelete(context.Context, *GroupDeviceDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceDelete not implemented")
+func (UnimplementedDeviceGroupServer) GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceMultiDelete not implemented")
 }
 func (UnimplementedDeviceGroupServer) mustEmbedUnimplementedDeviceGroupServer() {}
 
@@ -1066,7 +1180,7 @@ func _DeviceGroup_GroupInfoCreate_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/GroupInfoCreate",
+		FullMethod: "/dm.DeviceGroup/groupInfoCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceGroupServer).GroupInfoCreate(ctx, req.(*GroupInfoCreateReq))
@@ -1084,7 +1198,7 @@ func _DeviceGroup_GroupInfoIndex_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/GroupInfoIndex",
+		FullMethod: "/dm.DeviceGroup/groupInfoIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceGroupServer).GroupInfoIndex(ctx, req.(*GroupInfoIndexReq))
@@ -1102,7 +1216,7 @@ func _DeviceGroup_GroupInfoRead_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/GroupInfoRead",
+		FullMethod: "/dm.DeviceGroup/groupInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceGroupServer).GroupInfoRead(ctx, req.(*GroupInfoReadReq))
@@ -1120,7 +1234,7 @@ func _DeviceGroup_GroupInfoUpdate_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/GroupInfoUpdate",
+		FullMethod: "/dm.DeviceGroup/groupInfoUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceGroupServer).GroupInfoUpdate(ctx, req.(*GroupInfoUpdateReq))
@@ -1138,7 +1252,7 @@ func _DeviceGroup_GroupInfoDelete_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/GroupInfoDelete",
+		FullMethod: "/dm.DeviceGroup/groupInfoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceGroupServer).GroupInfoDelete(ctx, req.(*GroupInfoDeleteReq))
@@ -1146,20 +1260,20 @@ func _DeviceGroup_GroupInfoDelete_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceGroup_GroupDeviceCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupDeviceCreateReq)
+func _DeviceGroup_GroupDeviceMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceMultiCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceGroupServer).GroupDeviceCreate(ctx, in)
+		return srv.(DeviceGroupServer).GroupDeviceMultiCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/GroupDeviceCreate",
+		FullMethod: "/dm.DeviceGroup/groupDeviceMultiCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupDeviceCreate(ctx, req.(*GroupDeviceCreateReq))
+		return srv.(DeviceGroupServer).GroupDeviceMultiCreate(ctx, req.(*GroupDeviceMultiCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1174,7 +1288,7 @@ func _DeviceGroup_GroupDeviceIndex_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/GroupDeviceIndex",
+		FullMethod: "/dm.DeviceGroup/groupDeviceIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceGroupServer).GroupDeviceIndex(ctx, req.(*GroupDeviceIndexReq))
@@ -1182,20 +1296,20 @@ func _DeviceGroup_GroupDeviceIndex_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceGroup_GroupDeviceDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupDeviceDeleteReq)
+func _DeviceGroup_GroupDeviceMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupDeviceMultiDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceGroupServer).GroupDeviceDelete(ctx, in)
+		return srv.(DeviceGroupServer).GroupDeviceMultiDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.DeviceGroup/GroupDeviceDelete",
+		FullMethod: "/dm.DeviceGroup/groupDeviceMultiDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupDeviceDelete(ctx, req.(*GroupDeviceDeleteReq))
+		return srv.(DeviceGroupServer).GroupDeviceMultiDelete(ctx, req.(*GroupDeviceMultiDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1208,36 +1322,36 @@ var DeviceGroup_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DeviceGroupServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GroupInfoCreate",
+			MethodName: "groupInfoCreate",
 			Handler:    _DeviceGroup_GroupInfoCreate_Handler,
 		},
 		{
-			MethodName: "GroupInfoIndex",
+			MethodName: "groupInfoIndex",
 			Handler:    _DeviceGroup_GroupInfoIndex_Handler,
 		},
 		{
-			MethodName: "GroupInfoRead",
+			MethodName: "groupInfoRead",
 			Handler:    _DeviceGroup_GroupInfoRead_Handler,
 		},
 		{
-			MethodName: "GroupInfoUpdate",
+			MethodName: "groupInfoUpdate",
 			Handler:    _DeviceGroup_GroupInfoUpdate_Handler,
 		},
 		{
-			MethodName: "GroupInfoDelete",
+			MethodName: "groupInfoDelete",
 			Handler:    _DeviceGroup_GroupInfoDelete_Handler,
 		},
 		{
-			MethodName: "GroupDeviceCreate",
-			Handler:    _DeviceGroup_GroupDeviceCreate_Handler,
+			MethodName: "groupDeviceMultiCreate",
+			Handler:    _DeviceGroup_GroupDeviceMultiCreate_Handler,
 		},
 		{
-			MethodName: "GroupDeviceIndex",
+			MethodName: "groupDeviceIndex",
 			Handler:    _DeviceGroup_GroupDeviceIndex_Handler,
 		},
 		{
-			MethodName: "GroupDeviceDelete",
-			Handler:    _DeviceGroup_GroupDeviceDelete_Handler,
+			MethodName: "groupDeviceMultiDelete",
+			Handler:    _DeviceGroup_GroupDeviceMultiDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

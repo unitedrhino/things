@@ -9,7 +9,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"strings"
@@ -17,11 +16,12 @@ import (
 
 type (
 	GroupModel interface {
+		//todo b 仓储层不允许使用pb的结构体,如果需要定制结构体则请在domain 领域层进行定义
 		Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, int64, error)
 		IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, error)
 		IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([]*GroupDevice, int64, error)
 		Delete(ctx context.Context, groupID int64) error
-		GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceInfoReadReq) error
+		GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceCore) error
 		GroupDeviceDelete(ctx context.Context, groupID int64, list map[string]string) error
 	}
 
@@ -42,7 +42,7 @@ type (
 	}
 )
 
-func NewGroupModel(conn sqlx.SqlConn, c cache.CacheConf) GroupModel {
+func NewGroupModel(conn sqlx.SqlConn) GroupModel {
 	return &groupModel{
 		SqlConn:     conn,
 		groupInfo:   "`group_info`",
@@ -263,9 +263,9 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 	})
 }
 
-func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceInfoReadReq) error {
+func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceCore) error {
 	return m.Transact(func(session sqlx.Session) error {
-		for _, v := range list {
+		for _, v := range list { // todo b 需要检查 设备是否存在
 			var resp GroupDevice
 			query := fmt.Sprintf("select %s from %s where `groupID` = ? and `productID` = ? and `deviceName` = ?  limit 1", groupDeviceRows, m.groupDevice)
 			err := session.QueryRow(&resp, query, groupID, v.ProductID, v.DeviceName)
