@@ -12,35 +12,30 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type CreateLogic struct {
+type MultiDeleteLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogic {
-	return &CreateLogic{
+func NewMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiDeleteLogic {
+	return &MultiDeleteLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *CreateLogic) Create(req *types.GroupDeviceCreateReq) error {
-
-	m := make([]*dm.DeviceCore, 0, len(req.List))
+func (l *MultiDeleteLogic) MultiDelete(req *types.GroupDeviceMultiDeleteReq) error {
+	m := make(map[string]string, len(req.List))
 	for _, v := range req.List {
-		m = append(m, &dm.DeviceCore{
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-		})
+		m[v.ProductID+"|||"+v.DeviceName] = v.DeviceName
 	}
-	_, err := l.svcCtx.DeviceG.GroupDeviceCreate(l.ctx, &dm.GroupDeviceCreateReq{GroupID: req.GroupID, List: m})
+	_, err := l.svcCtx.DeviceG.GroupDeviceMultiDelete(l.ctx, &dm.GroupDeviceMultiDeleteReq{GroupID: req.GroupID, List: m})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.DeviceGroup Create req=%v err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.DeviceGroup Delete req=%v err=%+v", utils.FuncName(), req, er)
 		return er
 	}
-
 	return nil
 }

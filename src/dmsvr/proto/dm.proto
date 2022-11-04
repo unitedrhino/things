@@ -78,11 +78,11 @@ service DeviceGroup {
   //删除分组
   rpc groupInfoDelete(GroupInfoDeleteReq)     returns (Response);
   //创建分组设备
-  rpc groupDeviceCreate(GroupDeviceCreateReq)     returns (Response);
+  rpc groupDeviceMultiCreate(GroupDeviceMultiCreateReq)     returns (Response);
   //获取分组设备信息列表
   rpc groupDeviceIndex(GroupDeviceIndexReq)     returns (GroupDeviceIndexResp);
   //删除分组设备
-  rpc groupDeviceDelete(GroupDeviceDeleteReq)     returns (Response);
+  rpc groupDeviceMultiDelete(GroupDeviceMultiDeleteReq)     returns (Response);
 }
 
 
@@ -158,7 +158,7 @@ message GroupInfoDeleteReq{
   int64 groupID = 1;
 }
 
-message GroupDeviceCreateReq{
+message GroupDeviceMultiCreateReq{
   int64 groupID = 1;
   repeated DeviceCore list = 2;
 }
@@ -175,7 +175,7 @@ message GroupDeviceIndexResp{
   int64 total = 2;
 }
 
-message GroupDeviceDeleteReq{
+message GroupDeviceMultiDeleteReq{
   int64 groupID = 1;
   map<string, string> list = 2;
 }

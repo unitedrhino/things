@@ -390,8 +390,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsgroupdevice.CreateHandler(serverCtx),
+					Path:    "/multi-create",
+					Handler: thingsgroupdevice.MultiCreateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -400,8 +400,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsgroupdevice.DeleteHandler(serverCtx),
+					Path:    "/multi-delete",
+					Handler: thingsgroupdevice.MultiDeleteHandler(serverCtx),
 				},
 			}...,
 		),
