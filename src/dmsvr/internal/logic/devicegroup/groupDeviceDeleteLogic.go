@@ -26,7 +26,7 @@ func NewGroupDeviceDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 // 删除分组设备
 func (l *GroupDeviceDeleteLogic) GroupDeviceDelete(in *dm.GroupDeviceDeleteReq) (*dm.Response, error) {
-	err := l.svcCtx.GroupDB.GroupDeviceDelete(l.ctx, in.GroupID, in.DeviceIndexList)
+	err := l.svcCtx.GroupDB.GroupDeviceDelete(l.ctx, in.GroupID, in.List)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

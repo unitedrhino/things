@@ -1,4 +1,4 @@
-package device
+package gateway
 
 import (
 	"context"
@@ -12,22 +12,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type CreateLogic struct {
+type MultiDeleteLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogic {
-	return &CreateLogic{
+func NewMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiDeleteLogic {
+	return &MultiDeleteLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *CreateLogic) Create(req *types.GroupDeviceCreateReq) error {
-
+func (l *MultiDeleteLogic) MultiDelete(req *types.DeviceGateWayMultiDeleteReq) error {
 	m := make([]*dm.DeviceCore, 0, len(req.List))
 	for _, v := range req.List {
 		m = append(m, &dm.DeviceCore{
@@ -35,12 +34,15 @@ func (l *CreateLogic) Create(req *types.GroupDeviceCreateReq) error {
 			DeviceName: v.DeviceName,
 		})
 	}
-	_, err := l.svcCtx.DeviceG.GroupDeviceCreate(l.ctx, &dm.GroupDeviceCreateReq{GroupID: req.GroupID, List: m})
+	_, err := l.svcCtx.DeviceM.DeviceGatewayMultiDelete(l.ctx,
+		&dm.DeviceGatewayMultiDeleteReq{
+			GatewayProductID:  req.GateWayProductID,
+			GatewayDeviceName: req.GateWayDeviceName,
+			List:              m})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.DeviceGroup Create req=%v err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.MultiDelete MultiDelete req=%v err=%+v", utils.FuncName(), req, er)
 		return er
 	}
-
 	return nil
 }

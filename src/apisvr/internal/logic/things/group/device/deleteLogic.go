@@ -31,7 +31,7 @@ func (l *DeleteLogic) Delete(req *types.GroupDeviceDeleteReq) error {
 	for _, v := range req.List {
 		m[v.ProductID+"|||"+v.DeviceName] = v.DeviceName
 	}
-	_, err := l.svcCtx.DeviceG.GroupDeviceDelete(l.ctx, &dm.GroupDeviceDeleteReq{GroupID: req.GroupID, DeviceIndexList: m})
+	_, err := l.svcCtx.DeviceG.GroupDeviceDelete(l.ctx, &dm.GroupDeviceDeleteReq{GroupID: req.GroupID, List: m})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.DeviceGroup Delete req=%v err=%+v", utils.FuncName(), req, er)
