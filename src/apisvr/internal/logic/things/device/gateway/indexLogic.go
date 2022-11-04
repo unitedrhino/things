@@ -1,4 +1,4 @@
-package info
+package gateway
 
 import (
 	"context"
@@ -28,14 +28,13 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 	}
 }
 
-func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInfoIndexResp, err error) {
-	dmReq := &dm.DeviceInfoIndexReq{
-		ProductID:  req.ProductID, //产品id
-		DeviceName: req.DeviceName,
-		Tags:       device.ToTagsMap(req.Tags),
-		Page:       logic.ToDmPageRpc(req.Page),
+func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.DeviceGateWayIndexResp, err error) {
+	dmReq := &dm.DeviceGatewayIndexReq{
+		GatewayDeviceName: req.GateWayDeviceName,
+		GatewayProductID:  req.GateWayProductID,
+		Page:              logic.ToDmPageRpc(req.Page),
 	}
-	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
+	dmResp, err := l.svcCtx.DeviceM.DeviceGatewayIndex(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)
@@ -46,9 +45,9 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		pi := device.DeviceInfoToApi(v)
 		pis = append(pis, pi)
 	}
-	return &types.DeviceInfoIndexResp{
+	return &types.DeviceGateWayIndexResp{
 		Total: dmResp.Total,
 		List:  pis,
-		Num:   int64(len(pis)),
 	}, nil
+	return
 }

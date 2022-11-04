@@ -10,26 +10,25 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GroupDeviceDeleteLogic struct {
+type GroupDeviceMultiCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGroupDeviceDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupDeviceDeleteLogic {
-	return &GroupDeviceDeleteLogic{
+func NewGroupDeviceMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupDeviceMultiCreateLogic {
+	return &GroupDeviceMultiCreateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-// 删除分组设备
-func (l *GroupDeviceDeleteLogic) GroupDeviceDelete(in *dm.GroupDeviceDeleteReq) (*dm.Response, error) {
-	err := l.svcCtx.GroupDB.GroupDeviceDelete(l.ctx, in.GroupID, in.DeviceIndexList)
+// 创建分组设备
+func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceMultiCreateReq) (*dm.Response, error) {
+	err := l.svcCtx.GroupDB.GroupDeviceCreate(l.ctx, in.GroupID, in.List)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-
 	return &dm.Response{}, nil
 }

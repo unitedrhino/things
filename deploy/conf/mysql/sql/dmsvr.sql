@@ -140,3 +140,18 @@ CREATE TABLE if not exists `group_device`
     PRIMARY KEY (`id`),
     UNIQUE KEY `groupID_productID_deviceName` (`groupID`,`productID`,`deviceName`)
     ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '分组与设备关系表';
+
+
+CREATE TABLE if not exists `gateway_device`
+(
+    `id`          bigint       NOT NULL AUTO_INCREMENT,
+    `gatewayProductID`   char(11) NOT NULL COMMENT '网关产品id',
+    `gatewayDeviceName`  varchar(100) NOT NULL COMMENT '网关设备名称',
+    `productID`   char(11) NOT NULL COMMENT '子设备产品id',
+    `deviceName`  varchar(100) NOT NULL COMMENT '子设备名称',
+    `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `gatewayDeviceName_gatewayProductID_productID_deviceName` (`gatewayDeviceName`,`gatewayProductID`,`productID`,`deviceName`)
+    ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '网关与子设备关系表';
