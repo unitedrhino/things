@@ -35,6 +35,7 @@ type ServiceContext struct {
 	GroupDevice    mysql.GroupDeviceModel
 	GroupID        *utils.SnowFlake
 	GroupDB        mysql.GroupModel
+	Gateway        mysql.GatewayDeviceModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -54,14 +55,16 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	DeviceID := utils.NewSnowFlake(nodeId)
 	ProductID := utils.NewSnowFlake(nodeId)
 	du, err := dataUpdate.NewDataUpdate(c.Event)
-	gi := mysql.NewGroupInfoModel(conn)
-	gd := mysql.NewGroupDeviceModel(conn)
-	GroupID := utils.NewSnowFlake(nodeId)
-	GroupDB := mysql.NewGroupModel(conn, c.CacheRedis)
+
 	if err != nil {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
 	}
+	gi := mysql.NewGroupInfoModel(conn)
+	gd := mysql.NewGroupDeviceModel(conn)
+	GroupID := utils.NewSnowFlake(nodeId)
+	GroupDB := mysql.NewGroupModel(conn)
+	gw := mysql.NewGatewayDeviceModel(conn)
 	return &ServiceContext{
 		Config:         c,
 		DeviceInfo:     di,
@@ -80,5 +83,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		GroupDevice:    gd,
 		GroupID:        GroupID,
 		GroupDB:        GroupDB,
+		Gateway:        gw,
 	}
 }

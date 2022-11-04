@@ -18,8 +18,8 @@ import (
 var (
 	groupDeviceFieldNames          = builder.RawFieldNames(&GroupDevice{})
 	groupDeviceRows                = strings.Join(groupDeviceFieldNames, ",")
-	groupDeviceRowsExpectAutoSet   = strings.Join(stringx.Remove(groupDeviceFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
-	groupDeviceRowsWithPlaceHolder = strings.Join(stringx.Remove(groupDeviceFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
+	groupDeviceRowsExpectAutoSet   = strings.Join(stringx.Remove(groupDeviceFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), ",")
+	groupDeviceRowsWithPlaceHolder = strings.Join(stringx.Remove(groupDeviceFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), "=?,") + "=?"
 )
 
 type (

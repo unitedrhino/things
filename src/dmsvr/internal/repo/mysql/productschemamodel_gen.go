@@ -18,8 +18,8 @@ import (
 var (
 	productSchemaFieldNames          = builder.RawFieldNames(&ProductSchema{})
 	productSchemaRows                = strings.Join(productSchemaFieldNames, ",")
-	productSchemaRowsExpectAutoSet   = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
-	productSchemaRowsWithPlaceHolder = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
+	productSchemaRowsExpectAutoSet   = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), ",")
+	productSchemaRowsWithPlaceHolder = strings.Join(stringx.Remove(productSchemaFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), "=?,") + "=?"
 )
 
 type (
