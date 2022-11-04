@@ -108,7 +108,7 @@ func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		return l.DeviceResp(msg, errors.Database, nil), err
 	}
-	return l.DeviceResp(msg, errors.OK, map[string]any{"log_level": ld.LogLevel}), nil
+	return l.DeviceResp(msg, errors.OK, map[string]any{"logLevel": ld.LogLevel}), nil
 }
 
 func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) *deviceMsg.PublishMsg {
