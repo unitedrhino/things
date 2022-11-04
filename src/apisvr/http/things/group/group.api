@@ -58,11 +58,6 @@ service api {
 
 type (
 
-    DeviceIndexMessage{
-        ProductID string `json:"productID"`      //产品ID
-        DeviceName string `json:"deviceName"`    //设备名称
-    }
-
     GroupInfo{
         GroupID   int64  `json:"groupID,string"`           //分组ID
         GroupName string `json:"groupName"`                //分组名称
@@ -120,11 +115,11 @@ type (
 
     GroupDeviceCreateReq struct {
         GroupID   int64  `json:"groupID,string"`            //分组ID
-        List []*DeviceIndexMessage `json:"list,optional"`   //分组tag
+        List []*DeviceCore `json:"list,optional"`   //分组tag
     }
 
     GroupDeviceDeleteReq struct {
         GroupID   int64  `json:"groupID,string"`            //分组ID
-        List []*DeviceIndexMessage `json:"list,optional"`   //分组tag
+        List []*DeviceCore `json:"list,optional"`   //分组tag
     }
 )

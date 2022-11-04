@@ -28,6 +28,13 @@ service DeviceManage {
   rpc deviceInfoIndex(DeviceInfoIndexReq)     returns (DeviceInfoIndexResp);
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
+
+  //创建分组设备
+  rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Response);
+  //获取分组设备信息列表
+  rpc deviceGatewayIndex(DeviceGatewayIndexReq)     returns (DeviceGatewayIndexResp);
+  //删除分组设备
+  rpc deviceGatewayMultiDelete(DeviceGatewayMultiDeleteReq)     returns (Response);
 }
 
 //产品管理
@@ -86,6 +93,29 @@ message PageInfo{
 message Response {
 }
 
+message DeviceGatewayMultiCreateReq{
+  string gatewayProductID = 1;
+  string gatewayDeviceName = 2;
+  repeated DeviceCore list = 3;
+}
+
+message DeviceGatewayIndexReq{
+  PageInfo page = 1;
+  string gatewayProductID = 2;
+  string gatewayDeviceName = 3;
+}
+
+message DeviceGatewayIndexResp{
+  repeated DeviceInfo list = 1;
+  int64 total = 2;
+}
+
+message DeviceGatewayMultiDeleteReq{
+  string gatewayProductID  = 1;
+  string gatewayDeviceName = 2;
+  repeated DeviceCore list = 3;
+}
+
 message GroupInfo{
   int64 groupID = 1;
   string groupName = 2;
@@ -130,7 +160,7 @@ message GroupInfoDeleteReq{
 
 message GroupDeviceCreateReq{
   int64 groupID = 1;
-  repeated DeviceInfoReadReq DeviceIndexList = 2;
+  repeated DeviceCore list = 2;
 }
 
 message GroupDeviceIndexReq{
@@ -147,7 +177,7 @@ message GroupDeviceIndexResp{
 
 message GroupDeviceDeleteReq{
   int64 groupID = 1;
-  map<string, string> DeviceIndexList = 2;
+  map<string, string> list = 2;
 }
 
 message DeviceInfo{
@@ -206,6 +236,11 @@ message ProductInfoIndexResp{
 
 
 message DeviceInfoDeleteReq{
+  string   productID = 1; //产品id
+  string  deviceName = 2; //设备名称
+}
+
+message DeviceCore{
   string   productID = 1; //产品id
   string  deviceName = 2; //设备名称
 }
