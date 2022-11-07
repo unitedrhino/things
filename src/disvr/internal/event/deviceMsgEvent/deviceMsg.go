@@ -23,6 +23,14 @@ func NewDeviceMsgHandle(ctx context.Context, svcCtx *svc.ServiceContext) *Device
 	}
 }
 
+func (l *DeviceMsgHandle) Gateway(msg *deviceMsg.PublishMsg) error {
+	l.Infof("%s req=%v", utils.FuncName(), msg)
+	resp, err := NewGatewayLogic(l.ctx, l.svcCtx).Handle(msg)
+	l.deviceResp(resp)
+	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
+	return err
+}
+
 func (l *DeviceMsgHandle) Thing(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
 	resp, err := NewThingLogic(l.ctx, l.svcCtx).Handle(msg)
@@ -33,17 +41,26 @@ func (l *DeviceMsgHandle) Thing(msg *deviceMsg.PublishMsg) error {
 
 func (l *DeviceMsgHandle) Ota(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
-	return NewOtaLogic(l.ctx, l.svcCtx).Handle(msg)
+	resp, err := NewOtaLogic(l.ctx, l.svcCtx).Handle(msg)
+	l.deviceResp(resp)
+	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
+	return err
 }
 
 func (l *DeviceMsgHandle) Shadow(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
-	return NewShadowLogic(l.ctx, l.svcCtx).Handle(msg)
+	resp, err := NewShadowLogic(l.ctx, l.svcCtx).Handle(msg)
+	l.deviceResp(resp)
+	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
+	return err
 }
 
 func (l *DeviceMsgHandle) Config(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
-	return NewConfigLogic(l.ctx, l.svcCtx).Handle(msg)
+	respMsg, err := NewConfigLogic(l.ctx, l.svcCtx).Handle(msg)
+	l.deviceResp(respMsg)
+	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, respMsg, err)
+	return err
 }
 
 func (l *DeviceMsgHandle) SDKLog(msg *deviceMsg.PublishMsg) error {
