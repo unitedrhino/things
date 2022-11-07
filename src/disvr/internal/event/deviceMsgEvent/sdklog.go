@@ -79,12 +79,12 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *devi
 	}
 	for _, logObj := range l.dreq.Params {
 		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceMsg.SDKLog{
-			ProductID:   ld.ProductID,
-			LogLevel:    logObj.LogLevel,
-			Timestamp:   l.dreq.GetTimeStamp(logObj.Timestamp), // 操作时间
-			DeviceName:  ld.DeviceName,
-			Content:     logObj.Content,
-			ClientToken: l.dreq.ClientToken,
+			ProductID:  ld.ProductID,
+			LogLevel:   logObj.LogLevel,
+			Timestamp:  l.dreq.GetTimeStamp(logObj.Timestamp), // 操作时间
+			DeviceName: ld.DeviceName,
+			Content:    logObj.Content,
+			RequestID:  l.dreq.ClientToken,
 		})
 		if err != nil {
 			l.Errorf("%s.LogRepo.insert.productID:%v deviceName:%v err:%v",

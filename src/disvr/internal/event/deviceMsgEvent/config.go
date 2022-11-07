@@ -22,8 +22,8 @@ func NewConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ConfigLogi
 	}
 }
 
-func (l *ConfigLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
+func (l *ConfigLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), msg)
 	// todo
-	return err
+	return
 }

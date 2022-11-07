@@ -10,12 +10,12 @@ import (
 
 type (
 	SDKLog struct {
-		ProductID   string    `json:"productID"`  // 产品id
-		DeviceName  string    `json:"deviceName"` // 设备名称
-		Content     string    `json:"content"`    // 具体信息
-		Timestamp   time.Time `json:"timestamp"`  // 操作时间
-		ClientToken string    `json:"clientToken"`
-		LogLevel    int64     `json:"log_level"`
+		ProductID  string    `json:"productID"`  // 产品id
+		DeviceName string    `json:"deviceName"` // 设备名称
+		Content    string    `json:"content"`    // 具体信息
+		Timestamp  time.Time `json:"timestamp"`  // 操作时间
+		RequestID  string    `json:"requestID"`  // 请求ID
+		LogLevel   int64     `json:"logLevel"`
 	}
 	SdkLogFilter struct {
 		ProductID  string // 产品id
