@@ -41,10 +41,10 @@ func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,
 
 func (d SDKLogRepo) Insert(ctx context.Context, data *deviceMsg.SDKLog) error {
 	sql := fmt.Sprintf(
-		"insert into %s using %s tags('%s','%s')(`ts`, `content`,`log_level`,`client_token`) values (?,?,?,?);",
+		"insert into %s using %s tags('%s','%s')(`ts`, `content`,`logLevel`,`requestID`) values (?,?,?,?);",
 		d.GetSDKLogTableName(data.ProductID, data.DeviceName), d.GetSDKLogStableName(), data.ProductID, data.DeviceName)
 
-	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.LogLevel, data.ClientToken); err != nil {
+	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.LogLevel, data.RequestID); err != nil {
 		logx.WithContext(ctx).Errorf(
 			sql+"%s.EventTable productID:%v deviceName:%v err:%v",
 			utils.FuncName(), data.ProductID, data.DeviceName, err)
@@ -54,13 +54,13 @@ func (d SDKLogRepo) Insert(ctx context.Context, data *deviceMsg.SDKLog) error {
 }
 func (d SDKLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceMsg.SdkLogFilter) sq.SelectBuilder {
 	if len(filter.ProductID) != 0 {
-		sql = sql.Where("`product_id`=?", filter.ProductID)
+		sql = sql.Where("`productID`=?", filter.ProductID)
 	}
 	if len(filter.DeviceName) != 0 {
-		sql = sql.Where("`device_name`=?", filter.DeviceName)
+		sql = sql.Where("`deviceName`=?", filter.DeviceName)
 	}
 	if filter.LogLevel != 0 {
-		sql = sql.Where("`log_level`=?", filter.LogLevel)
+		sql = sql.Where("`logLevel`=?", filter.LogLevel)
 	}
 	return sql
 }

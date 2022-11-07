@@ -46,7 +46,7 @@ func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DataUpdateInfo) erro
 	uuid, _ := uuid.GenerateUUID()
 	tmpTopic := fmt.Sprintf("%s/down/update/%s/%s", devices.TopicHeadLog, di.ProductID, di.DeviceName)
 	topic, payload := deviceSend.GenThingDeviceRespData(deviceSend.GetStatus, uuid, strings.Split(tmpTopic, "/"),
-		errors.OK, map[string]any{"log_level": di.LogLevel})
+		errors.OK, map[string]any{"logLevel": di.LogLevel})
 	er := d.svcCtx.PubDev.PublishToDev(d.ctx, topic, payload)
 	if er != nil {
 		d.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)

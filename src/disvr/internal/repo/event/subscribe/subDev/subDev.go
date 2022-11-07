@@ -21,6 +21,8 @@ type (
 		Config(out *deviceMsg.PublishMsg) error
 		// Shadow 设备影子
 		Shadow(out *deviceMsg.PublishMsg) error
+		// Gateway 网关与子设备
+		Gateway(out *deviceMsg.PublishMsg) error
 		// Ota ota升级
 		Ota(out *deviceMsg.PublishMsg) error
 		Connected(out *deviceMsg.ConnectMsg) error
