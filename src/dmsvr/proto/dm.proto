@@ -130,7 +130,7 @@ message GroupInfoDeleteReq{
 
 message GroupDeviceCreateReq{
   int64 groupID = 1;
-  repeated DeviceInfoReadReq DeviceIndexList = 2;
+  repeated DeviceInfoReadReq list = 2;
 }
 
 message GroupDeviceIndexReq{
@@ -147,7 +147,7 @@ message GroupDeviceIndexResp{
 
 message GroupDeviceDeleteReq{
   int64 groupID = 1;
-  map<string, string> DeviceIndexList = 2;
+  repeated DeviceInfoReadReq list = 2;
 }
 
 message DeviceInfo{
@@ -187,8 +187,6 @@ message ProductInfoReadReq{
   string   productID = 1; //产品id
 }
 
-
-
 message ProductInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   int64  deviceType = 2; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
@@ -200,10 +198,6 @@ message ProductInfoIndexResp{
   repeated ProductInfo list = 1;//产品信息
   int64  total = 2;//总数(只有分页的时候会返回)
 }
-
-
-
-
 
 message DeviceInfoDeleteReq{
   string   productID = 1; //产品id

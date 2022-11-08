@@ -27,11 +27,14 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 }
 
 func (l *DeleteLogic) Delete(req *types.GroupDeviceDeleteReq) error {
-	m := make(map[string]string, len(req.List))
+	m := make([]*dm.DeviceInfoReadReq, 0, len(req.List))
 	for _, v := range req.List {
-		m[v.ProductID+"|||"+v.DeviceName] = v.DeviceName
+		m = append(m, &dm.DeviceInfoReadReq{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
 	}
-	_, err := l.svcCtx.DeviceG.GroupDeviceDelete(l.ctx, &dm.GroupDeviceDeleteReq{GroupID: req.GroupID, DeviceIndexList: m})
+	_, err := l.svcCtx.DeviceG.GroupDeviceDelete(l.ctx, &dm.GroupDeviceDeleteReq{GroupID: req.GroupID, List: m})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.DeviceGroup Delete req=%v err=%+v", utils.FuncName(), req, er)

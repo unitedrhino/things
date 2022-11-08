@@ -35,7 +35,7 @@ func (l *CreateLogic) Create(req *types.GroupDeviceCreateReq) error {
 			DeviceName: v.DeviceName,
 		})
 	}
-	_, err := l.svcCtx.DeviceG.GroupDeviceCreate(l.ctx, &dm.GroupDeviceCreateReq{GroupID: req.GroupID, DeviceIndexList: m})
+	_, err := l.svcCtx.DeviceG.GroupDeviceCreate(l.ctx, &dm.GroupDeviceCreateReq{GroupID: req.GroupID, List: m})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.DeviceGroup Create req=%v err=%+v", utils.FuncName(), req, er)
