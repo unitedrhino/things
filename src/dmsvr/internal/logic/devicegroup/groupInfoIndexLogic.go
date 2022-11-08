@@ -2,7 +2,9 @@ package devicegrouplogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -25,7 +27,12 @@ func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gr
 
 // 获取分组信息列表
 func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.GroupInfoIndexResp, error) {
-	ros, total, err := l.svcCtx.GroupDB.Index(l.ctx, in)
+	ros, total, err := l.svcCtx.GroupDB.Index(l.ctx, &mysql.GroupFilter{
+		Page:      &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
+		GroupName: in.GroupName,
+		ParentID:  in.ParentID,
+		Tags:      in.Tags,
+	})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
@@ -42,7 +49,12 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 		})
 	}
 
-	rosAll, err := l.svcCtx.GroupDB.IndexAll(l.ctx, in)
+	rosAll, err := l.svcCtx.GroupDB.IndexAll(l.ctx, &mysql.GroupFilter{
+		Page:      &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
+		GroupName: in.GroupName,
+		ParentID:  in.ParentID,
+		Tags:      in.Tags,
+	})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
