@@ -43,11 +43,6 @@ type (
 		DeviceName string
 	}
 
-	GroupDeviceIndexKey struct {
-		ProductID  string
-		DeviceName string
-	}
-
 	GroupInformation struct {
 		GroupID     int64
 		GroupName   string
