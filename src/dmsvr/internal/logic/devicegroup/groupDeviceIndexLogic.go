@@ -30,7 +30,7 @@ func NewGroupDeviceIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 func (l *GroupDeviceIndexLogic) GroupDeviceIndex(in *dm.GroupDeviceIndexReq) (*dm.GroupDeviceIndexResp, error) {
 
 	var list []*dm.DeviceInfo
-	gd, total, err := l.svcCtx.GroupDB.IndexGD(l.ctx, &mysql.GroupDeviceIndex{
+	gd, total, err := l.svcCtx.GroupDB.IndexGD(l.ctx, &mysql.GroupDeviceFilter{
 		Page:       &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
 		GroupID:    in.GroupID,
 		ProductID:  in.ProductID,
