@@ -3,8 +3,7 @@ package devicegrouplogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
-
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -27,9 +26,9 @@ func NewGroupDeviceMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 // 删除分组设备
 func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceMultiDeleteReq) (*dm.Response, error) {
-	list := make([]*mysql.GroupDeviceIndexKey, len(in.List))
+	list := make([]*device.Core, len(in.List))
 	for _, v := range in.List {
-		list = append(list, &mysql.GroupDeviceIndexKey{
+		list = append(list, &device.Core{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 		})
