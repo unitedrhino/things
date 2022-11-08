@@ -3,6 +3,7 @@ package devicegrouplogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -26,7 +27,14 @@ func NewGroupDeviceMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 // 创建分组设备
 func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceMultiCreateReq) (*dm.Response, error) {
-	err := l.svcCtx.GroupDB.GroupDeviceCreate(l.ctx, in.GroupID, in.List)
+	list := make([]*mysql.GroupDeviceIndexKey, len(in.List))
+	for _, v := range in.List {
+		list = append(list, &mysql.GroupDeviceIndexKey{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+	}
+	err := l.svcCtx.GroupDB.GroupDeviceCreate(l.ctx, in.GroupID, list)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
