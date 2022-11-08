@@ -25,6 +25,8 @@ type (
 		DevPubShadow(ctx context.Context, publishMsg *devices.DevPublish) error
 		// DevPubSDKLog 发布设备调试日志
 		DevPubSDKLog(ctx context.Context, publishMsg *devices.DevPublish) error
+		// DevPubGateway 发布网关子设备消息
+		DevPubGateway(ctx context.Context, publishMsg *devices.DevPublish) error
 		// DevPubConfig 发布设备配置相关消息
 		DevPubConfig(ctx context.Context, publishMsg *devices.DevPublish) error
 		// PubConn 向内部发布连接及断连消息

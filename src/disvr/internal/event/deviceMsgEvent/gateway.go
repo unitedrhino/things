@@ -8,21 +8,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ShadowLogic struct {
+type GatewayLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewShadowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ShadowLogic {
-	return &ShadowLogic{
+func NewGatewayLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GatewayLogic {
+	return &GatewayLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *ShadowLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), msg)
 	// todo
 	return
