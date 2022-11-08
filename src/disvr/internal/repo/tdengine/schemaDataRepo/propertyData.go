@@ -140,7 +140,7 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 func (d *SchemaDataRepo) fillFilter(
 	sql sq.SelectBuilder, filter deviceMsg.FilterOpt) sq.SelectBuilder {
 	if len(filter.DeviceNames) != 0 {
-		sql = sql.Where(fmt.Sprintf("`device_name` in (%v)", store.ArrayToSql(filter.DeviceNames)))
+		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", store.ArrayToSql(filter.DeviceNames)))
 	}
 	return sql
 }

@@ -39,11 +39,12 @@ const (
 	// TopicConnectStatus emqx 客户端上下线通知 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/system-topic.html#客户端上下线事件
 	TopicConnectStatus = ShareSubTopicPrefix + "$SYS/brokers/+/clients/#"
 
-	TopicThing  = ShareSubTopicPrefix + devices.TopicHeadThing + "/#"
-	TopicOta    = ShareSubTopicPrefix + devices.TopicHeadOta + "/#"
-	TopicConfig = ShareSubTopicPrefix + devices.TopicHeadConfig + "/#"
-	TopicSDKLog = ShareSubTopicPrefix + devices.TopicHeadLog + "/#"
-	TopicShadow = ShareSubTopicPrefix + devices.TopicHeadShadow + "/#"
+	TopicThing   = ShareSubTopicPrefix + devices.TopicHeadThing + "/#"
+	TopicOta     = ShareSubTopicPrefix + devices.TopicHeadOta + "/#"
+	TopicConfig  = ShareSubTopicPrefix + devices.TopicHeadConfig + "/#"
+	TopicSDKLog  = ShareSubTopicPrefix + devices.TopicHeadLog + "/#"
+	TopicShadow  = ShareSubTopicPrefix + devices.TopicHeadShadow + "/#"
+	TopicGateway = ShareSubTopicPrefix + devices.TopicHeadGateway + "/#"
 )
 
 func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
@@ -87,6 +88,12 @@ func (d *MqttClient) SubDevMsg(handle Handle) error {
 	}
 	err = d.subscribeWithFunc(TopicShadow, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Shadow(topic, payload)
+	})
+	if err != nil {
+		return err
+	}
+	err = d.subscribeWithFunc(TopicGateway, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).Gateway(topic, payload)
 	})
 	if err != nil {
 		return err

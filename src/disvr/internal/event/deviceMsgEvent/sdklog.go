@@ -79,12 +79,12 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *devi
 	}
 	for _, logObj := range l.dreq.Params {
 		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceMsg.SDKLog{
-			ProductID:   ld.ProductID,
-			LogLevel:    logObj.LogLevel,
-			Timestamp:   l.dreq.GetTimeStamp(logObj.Timestamp), // 操作时间
-			DeviceName:  ld.DeviceName,
-			Content:     logObj.Content,
-			ClientToken: l.dreq.ClientToken,
+			ProductID:  ld.ProductID,
+			LogLevel:   logObj.LogLevel,
+			Timestamp:  l.dreq.GetTimeStamp(logObj.Timestamp), // 操作时间
+			DeviceName: ld.DeviceName,
+			Content:    logObj.Content,
+			RequestID:  l.dreq.ClientToken,
 		})
 		if err != nil {
 			l.Errorf("%s.LogRepo.insert.productID:%v deviceName:%v err:%v",
@@ -108,7 +108,7 @@ func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		return l.DeviceResp(msg, errors.Database, nil), err
 	}
-	return l.DeviceResp(msg, errors.OK, map[string]any{"log_level": ld.LogLevel}), nil
+	return l.DeviceResp(msg, errors.OK, map[string]any{"logLevel": ld.LogLevel}), nil
 }
 
 func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) *deviceMsg.PublishMsg {

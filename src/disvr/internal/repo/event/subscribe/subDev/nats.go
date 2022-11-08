@@ -69,6 +69,14 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	if err != nil {
 		return err
 	}
+	err = n.queueSubscribeDevPublish(topics.DeviceUpGatewayAll,
+		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
+			err := handle(ctx).Gateway(msg)
+			return err
+		})
+	if err != nil {
+		return err
+	}
 
 	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusConnected, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {

@@ -7,6 +7,10 @@ const (
 	DeviceUpThing    = "device.up.thing.%s.%s"
 	DeviceUpThingAll = "device.up.thing.>"
 
+	// DeviceUpGateway 网关与子设备 最后两个是产品id和设备名称
+	DeviceUpGateway    = "device.up.gateway.%s.%s"
+	DeviceUpGatewayAll = "device.up.gateway.>"
+
 	// DeviceUpOta ota升级相关 最后两个是产品id和设备名称
 	DeviceUpOta    = "device.up.ota.%s.%s"
 	DeviceUpOtaAll = "device.up.ota.>"
