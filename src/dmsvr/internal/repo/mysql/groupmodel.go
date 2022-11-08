@@ -7,38 +7,49 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"strings"
 )
 
 type (
 	GroupModel interface {
-		//todo b 仓储层不允许使用pb的结构体,如果需要定制结构体则请在domain 领域层进行定义
-		Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, int64, error)
-		IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, error)
-		IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([]*GroupDevice, int64, error)
+		Index(ctx context.Context, in *GroupFilter) ([]*GroupInformation, int64, error)
+		IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInformation, error)
+		IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*GroupDevice, int64, error)
 		Delete(ctx context.Context, groupID int64) error
-		GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceCore) error
-		GroupDeviceDelete(ctx context.Context, groupID int64, list map[string]string) error
+		GroupDeviceCreate(ctx context.Context, groupID int64, list []*device.Core) error
+		GroupDeviceDelete(ctx context.Context, groupID int64, list []*device.Core) error
 	}
 
 	groupModel struct {
 		sqlx.SqlConn
 		groupInfo   string
 		groupDevice string
+		deviceInfo  string
 	}
 	GroupFilter struct {
+		Page      *def.PageInfo
 		ParentID  int64
 		GroupName string
 		Tags      map[string]string
 	}
 	GroupDeviceFilter struct {
+		Page       *def.PageInfo
 		GroupID    int64
-		productID  string
+		ProductID  string
 		DeviceName string
+	}
+
+	GroupInformation struct {
+		GroupID     int64
+		GroupName   string
+		ParentID    int64
+		Desc        string
+		CreatedTime int64
+		Tags        map[string]string
 	}
 )
 
@@ -47,6 +58,7 @@ func NewGroupModel(conn sqlx.SqlConn) GroupModel {
 		SqlConn:     conn,
 		groupInfo:   "`group_info`",
 		groupDevice: "`group_device`",
+		deviceInfo:  "`device_info`",
 	}
 }
 
@@ -69,8 +81,8 @@ func (g *GroupDeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if g.GroupID != 0 {
 		sql = sql.Where("`groupID`=?", g.GroupID)
 	}
-	if g.productID != "" {
-		sql = sql.Where("`productID`=?", g.productID)
+	if g.ProductID != "" {
+		sql = sql.Where("`productID`=?", g.ProductID)
 	}
 	if g.DeviceName != "" {
 		sql = sql.Where("`deviceName`=?", g.DeviceName)
@@ -147,7 +159,7 @@ func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceF
 	}
 }
 
-func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, int64, error) {
+func (m *groupModel) Index(ctx context.Context, in *GroupFilter) ([]*GroupInformation, int64, error) {
 
 	filter := GroupFilter{
 		ParentID:  in.ParentID,
@@ -159,18 +171,18 @@ func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm
 		return nil, 0, err
 	}
 
-	dg, err := m.FindGroupInfoByFilter(ctx, filter, logic.ToPageInfo(in.Page), true)
+	dg, err := m.FindGroupInfoByFilter(ctx, filter, logic.ToPageInfo(&dm.PageInfo{Page: in.Page.Page, Size: in.Page.Size}), true)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	info := make([]*dm.GroupInfo, 0, len(dg))
+	info := make([]*GroupInformation, 0, len(dg))
 	for _, v := range dg {
 		var tags map[string]string
 		if v.Tags != "" {
 			_ = json.Unmarshal([]byte(v.Tags), &tags)
 		}
-		info = append(info, &dm.GroupInfo{
+		info = append(info, &GroupInformation{
 			GroupID:     v.GroupID,
 			GroupName:   v.GroupName,
 			ParentID:    v.ParentID,
@@ -183,7 +195,7 @@ func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm
 	return info, size, nil
 }
 
-func (m *groupModel) IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, error) {
+func (m *groupModel) IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInformation, error) {
 
 	filter := GroupFilter{
 		GroupName: in.GroupName,
@@ -195,13 +207,13 @@ func (m *groupModel) IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]
 		return nil, err
 	}
 
-	info := make([]*dm.GroupInfo, 0, len(dg))
+	info := make([]*GroupInformation, 0, len(dg))
 	for _, v := range dg {
 		var tags map[string]string
 		if v.Tags != "" {
 			_ = json.Unmarshal([]byte(v.Tags), &tags)
 		}
-		info = append(info, &dm.GroupInfo{
+		info = append(info, &GroupInformation{
 			GroupID:     v.GroupID,
 			GroupName:   v.GroupName,
 			ParentID:    v.ParentID,
@@ -214,11 +226,11 @@ func (m *groupModel) IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]
 	return info, nil
 }
 
-func (m *groupModel) IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([]*GroupDevice, int64, error) {
+func (m *groupModel) IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*GroupDevice, int64, error) {
 
 	filter := GroupDeviceFilter{
 		GroupID:    in.GroupID,
-		productID:  in.ProductID,
+		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
 	size, err := m.GetGroupDeviceCountByFilter(ctx, filter)
@@ -226,7 +238,7 @@ func (m *groupModel) IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([
 		return nil, 0, err
 	}
 
-	dg, err := m.FindGroupDeviceByFilter(ctx, filter, logic.ToPageInfo(in.Page))
+	dg, err := m.FindGroupDeviceByFilter(ctx, filter, logic.ToPageInfo(&dm.PageInfo{Page: in.Page.Page, Size: in.Page.Size}))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -263,18 +275,23 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 	})
 }
 
-func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceCore) error {
+func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*device.Core) error {
 	return m.Transact(func(session sqlx.Session) error {
-		for _, v := range list { // todo b 需要检查 设备是否存在
-			var resp GroupDevice
-			query := fmt.Sprintf("select %s from %s where `groupID` = ? and `productID` = ? and `deviceName` = ?  limit 1", groupDeviceRows, m.groupDevice)
-			err := session.QueryRow(&resp, query, groupID, v.ProductID, v.DeviceName)
-			if err == sqlc.ErrNotFound {
-				query := fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s')",
-					m.groupDevice, groupID, v.ProductID, v.DeviceName)
-				_, err = session.Exec(query)
-				if err != nil {
-					return nil
+		for _, v := range list {
+			var count int64
+			query := fmt.Sprintf("select count(1) from %s where productID = %s and deviceName = %s", m.deviceInfo, v.ProductID, v.DeviceName)
+			err := session.QueryRow(&count, query)
+			if err != sqlc.ErrNotFound && count > 0 {
+				var resp GroupDevice
+				query = fmt.Sprintf("select %s from %s where `groupID` = ? and `productID` = ? and `deviceName` = ?  limit 1", groupDeviceRows, m.groupDevice)
+				err = session.QueryRow(&resp, query, groupID, v.ProductID, v.DeviceName)
+				if err == sqlc.ErrNotFound {
+					query := fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s')",
+						m.groupDevice, groupID, v.ProductID, v.DeviceName)
+					_, err = session.Exec(query)
+					if err != nil {
+						return nil
+					}
 				}
 			}
 		}
@@ -282,12 +299,11 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 	})
 }
 
-func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list map[string]string) error {
+func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list []*device.Core) error {
 	return m.Transact(func(session sqlx.Session) error {
-		for i, v := range list {
-			s := strings.Split(i, "|||")
+		for _, v := range list {
 			query := fmt.Sprintf("delete from %s where groupID = %d and productID = '%s' and deviceName = '%s' ",
-				m.groupDevice, groupID, s[0], v)
+				m.groupDevice, groupID, v.ProductID, v.DeviceName)
 			_, err := session.Exec(query)
 			if err != nil {
 				return nil
