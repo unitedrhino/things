@@ -8,8 +8,8 @@ import (
 func (d HubLogRepo) InitProduct(ctx context.Context, productID string) error {
 	sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
 		"(`ts` timestamp,`content` BINARY(5000),`topic` BINARY(500), `action` BINARY(100),"+
-		" `request_id` BINARY(100), `trance_id` BINARY(100), `result_type` BIGINT)"+
-		"TAGS (`product_id` BINARY(50),`device_name`  BINARY(50));",
+		" `requestID` BINARY(100), `trance_id` BINARY(100), `result_type` BIGINT)"+
+		"TAGS (`productID` BINARY(50),`deviceName`  BINARY(50));",
 		d.GetLogStableName())
 	if _, err := d.t.ExecContext(ctx, sql); err != nil {
 		return err

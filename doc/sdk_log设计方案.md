@@ -18,14 +18,14 @@
   "code": 0,
   "status": "成功",
   "data": {
-    "log_level": 2
+    "logLevel": 2
   }
 }
 ```
 - ### 日志直传
 上行topic: $log/up/report/${productID}/${deviceName}
 
-> 日志级别log_level: 2)错误 3)告警 4)信息 5)调试  ,不传默认为5
+> 日志级别logLevel: 2)错误 3)告警 4)信息 5)调试  ,不传默认为5
 > 日志内容content：在后台将以文本形式直接展示
 > 日志时间戳timestamp
 
@@ -37,12 +37,12 @@
     "params": [
       {
         "timestamp": 1654844328734,
-        "log_level":5,
+        "logLevel":5,
         "content":"long string,不要超过500k"
       },
       {
         "timestamp": 1654844328734,
-        "log_level":4,
+        "logLevel":4,
         "content":"long string"
       },
       {
@@ -71,7 +71,7 @@
   "code": 0,
   "status": "成功",
   "data": {
-    "log_level":1
+    "logLevel":1
   }
 }
 ```
