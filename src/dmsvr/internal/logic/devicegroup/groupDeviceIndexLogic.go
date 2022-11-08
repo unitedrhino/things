@@ -2,9 +2,11 @@ package devicegrouplogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/logic/devicemanage"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -28,7 +30,12 @@ func NewGroupDeviceIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 func (l *GroupDeviceIndexLogic) GroupDeviceIndex(in *dm.GroupDeviceIndexReq) (*dm.GroupDeviceIndexResp, error) {
 
 	var list []*dm.DeviceInfo
-	gd, total, err := l.svcCtx.GroupDB.IndexGD(l.ctx, in)
+	gd, total, err := l.svcCtx.GroupDB.IndexGD(l.ctx, &mysql.GroupDeviceIndex{
+		Page:       &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
+		GroupID:    in.GroupID,
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
