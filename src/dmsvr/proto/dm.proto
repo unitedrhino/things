@@ -177,7 +177,7 @@ message GroupDeviceIndexResp{
 
 message GroupDeviceMultiDeleteReq{
   int64 groupID = 1;
-  map<string, string> list = 2;
+  repeated DeviceCore list = 2;
 }
 
 message DeviceInfo{
