@@ -1,5 +1,5 @@
 // Package device 设备操作日志
-package deviceMsg
+package msgSdkLog
 
 import (
 	"context"
@@ -14,7 +14,6 @@ type (
 		DeviceName string    `json:"deviceName"` // 设备名称
 		Content    string    `json:"content"`    // 具体信息
 		Timestamp  time.Time `json:"timestamp"`  // 操作时间
-		RequestID  string    `json:"requestID"`  // 请求ID
 		LogLevel   int64     `json:"logLevel"`
 	}
 	SdkLogFilter struct {

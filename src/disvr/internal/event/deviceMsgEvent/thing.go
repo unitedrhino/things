@@ -8,7 +8,8 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
+	msgThing2 "github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -21,8 +22,8 @@ type ThingLogic struct {
 	logx.Logger
 	schema *schema.Model
 	topics []string
-	dreq   deviceSend.DeviceReq
-	dd     deviceMsg.SchemaDataRepo
+	dreq   msgThing2.Req
+	dd     msgThing2.SchemaDataRepo
 }
 
 func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic {
@@ -49,10 +50,15 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) *deviceMsg.PublishMsg {
-	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
+	resp := &deviceMsg.CommonMsg{
+		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
+		ClientToken: l.dreq.ClientToken,
+		Timestamp:   time.Now().UnixMilli(),
+		Data:        data,
+	}
 	return &deviceMsg.PublishMsg{
-		Topic:     topic,
-		Payload:   payload,
+		Topic:     deviceMsg.GenRespTopic(l.topics),
+		Payload:   resp.AddStatus(err).Bytes(),
 		Timestamp: time.Now(),
 	}
 }
@@ -66,7 +72,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *d
 
 		return l.DeviceResp(msg, err, nil), err
 	}
-	params := deviceSend.ToVal(tp)
+	params := msgThing2.ToVal(tp)
 	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
 	err = l.dd.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
@@ -80,10 +86,10 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *d
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Property))
 	switch l.dreq.Type {
-	case deviceSend.Report:
+	case deviceMsg.Report:
 		for id, _ := range l.schema.Property {
 			data, err := l.dd.GetPropertyDataByID(l.ctx,
-				deviceMsg.FilterOpt{
+				msgThing2.FilterOpt{
 					Page:        def.PageInfo2{Size: 1},
 					ProductID:   msg.ProductID,
 					DeviceNames: []string{msg.DeviceName},
@@ -111,11 +117,11 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s", utils.FuncName())
 	switch l.dreq.Method {
-	case deviceSend.Report, deviceSend.ReportInfo:
+	case deviceMsg.Report, deviceMsg.ReportInfo:
 		return l.HandlePropertyReport(msg)
-	case deviceSend.GetStatus:
+	case deviceMsg.GetStatus:
 		return l.HandlePropertyGetStatus(msg)
-	case deviceSend.ControlReply:
+	case deviceMsg.ControlReply:
 		return l.HandleResp(msg)
 	default:
 		return nil, errors.Method
@@ -124,17 +130,17 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 
 func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s req:%v", utils.FuncName(), msg)
-	dbData := deviceMsg.EventData{}
+	dbData := msgThing2.EventData{}
 	dbData.ID = l.dreq.EventID
 	dbData.Type = l.dreq.Type
-	if l.dreq.Method != deviceSend.EventPost {
+	if l.dreq.Method != deviceMsg.EventPost {
 		return nil, errors.Method
 	}
 	tp, err := l.dreq.VerifyReqParam(l.schema, schema.ParamEvent)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
-	dbData.Params = deviceSend.ToVal(tp)
+	dbData.Params = msgThing2.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
 
 	err = l.dd.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
@@ -174,7 +180,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
 	}()
-	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceMsg.HubLog{
+	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  msg.ProductID,
 		Action:     action,
 		Timestamp:  l.dreq.GetTimeStamp(msg.Timestamp), // 操作时间

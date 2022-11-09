@@ -1,5 +1,5 @@
 // Package repo 本文件是提供设备模型数据存储的信息
-package deviceMsg
+package msgThing
 
 import (
 	"context"

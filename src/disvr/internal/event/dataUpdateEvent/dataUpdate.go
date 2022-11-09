@@ -8,11 +8,12 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
+	"time"
 )
 
 type DataUpdateLogic struct {
@@ -45,9 +46,13 @@ func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DataUpdateInfo) erro
 	}
 	uuid, _ := uuid.GenerateUUID()
 	tmpTopic := fmt.Sprintf("%s/down/update/%s/%s", devices.TopicHeadLog, di.ProductID, di.DeviceName)
-	topic, payload := deviceSend.GenThingDeviceRespData(deviceSend.GetStatus, uuid, strings.Split(tmpTopic, "/"),
-		errors.OK, map[string]any{"logLevel": di.LogLevel})
-	er := d.svcCtx.PubDev.PublishToDev(d.ctx, topic, payload)
+	resp := &deviceMsg.CommonMsg{
+		Method:      deviceMsg.GetRespMethod(deviceMsg.GetStatus),
+		ClientToken: uuid,
+		Timestamp:   time.Now().UnixMilli(),
+		Data:        map[string]any{"logLevel": di.LogLevel},
+	}
+	er := d.svcCtx.PubDev.PublishToDev(d.ctx, deviceMsg.GenRespTopic(strings.Split(tmpTopic, "/")), resp.AddStatus(errors.OK).Bytes())
 	if er != nil {
 		d.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 	}
