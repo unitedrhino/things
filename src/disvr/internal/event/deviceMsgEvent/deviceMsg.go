@@ -5,6 +5,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -70,12 +71,12 @@ func (l *DeviceMsgHandle) SDKLog(msg *deviceMsg.PublishMsg) error {
 	return err
 }
 
-func (l *DeviceMsgHandle) Connected(msg *deviceMsg.ConnectMsg) error {
+func (l *DeviceMsgHandle) Connected(msg *deviceStatus.ConnectMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
 	return NewConnectedLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 
-func (l *DeviceMsgHandle) Disconnected(msg *deviceMsg.ConnectMsg) error {
+func (l *DeviceMsgHandle) Disconnected(msg *deviceStatus.ConnectMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
 	return NewDisconnectedLogic(l.ctx, l.svcCtx).Handle(msg)
 }
