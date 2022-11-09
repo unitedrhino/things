@@ -5,7 +5,9 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/src/disvr/internal/config"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/hubLogRepo"
@@ -23,10 +25,10 @@ import (
 type ServiceContext struct {
 	Config        config.Config
 	PubDev        pubDev.PubDev
-	SchemaMsgRepo deviceMsg.SchemaDataRepo
-	HubLogRepo    deviceMsg.HubLogRepo
+	SchemaMsgRepo msgThing.SchemaDataRepo
+	HubLogRepo    msgHubLog.HubLogRepo
 	SchemaRepo    schema.ReadRepo
-	SDKLogRepo    deviceMsg.SDKLogRepo
+	SDKLogRepo    msgSdkLog.SDKLogRepo
 	DeviceM       devicemanage.DeviceManage
 	ProductM      productmanage.ProductManage
 }

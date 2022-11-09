@@ -86,7 +86,7 @@ func (s *DeviceSubServer) Gateway(topic string, payload []byte) error {
 	if pub == nil {
 		return err
 	}
-	return s.svcCtx.PubInner.DevPubSDKLog(s.ctx, pub)
+	return s.svcCtx.PubInner.DevPubGateway(s.ctx, pub)
 }
 
 func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.DevPublish, error) {
