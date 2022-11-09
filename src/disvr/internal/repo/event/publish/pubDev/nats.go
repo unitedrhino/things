@@ -11,7 +11,7 @@ import (
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -41,8 +41,8 @@ func (n *NatsClient) PublishToDev(ctx context.Context, topic string, payload []b
 	return err
 }
 
-func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *deviceSend.DeviceReq,
-	productID, deviceName string) (*deviceSend.DeviceResp, error) {
+func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *msgThing.Req,
+	productID, deviceName string) (*msgThing.Resp, error) {
 	payload, _ := json.Marshal(req)
 	err := n.PublishToDev(ctx, reqTopic, payload)
 	if err != nil {
@@ -67,7 +67,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic st
 		if msg.Topic != respTopic { //不是订阅的topic
 			continue
 		}
-		var dresp deviceSend.DeviceResp
+		var dresp msgThing.Resp
 		err = utils.Unmarshal(msg.Payload, &dresp)
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可
 			continue
