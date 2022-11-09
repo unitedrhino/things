@@ -9,7 +9,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
-	msgThing2 "github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -22,8 +22,8 @@ type ThingLogic struct {
 	logx.Logger
 	schema *schema.Model
 	topics []string
-	dreq   msgThing2.Req
-	dd     msgThing2.SchemaDataRepo
+	dreq   msgThing.Req
+	dd     msgThing.SchemaDataRepo
 }
 
 func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic {
@@ -72,7 +72,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *d
 
 		return l.DeviceResp(msg, err, nil), err
 	}
-	params := msgThing2.ToVal(tp)
+	params := msgThing.ToVal(tp)
 	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
 	err = l.dd.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
@@ -89,7 +89,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 	case deviceMsg.Report:
 		for id, _ := range l.schema.Property {
 			data, err := l.dd.GetPropertyDataByID(l.ctx,
-				msgThing2.FilterOpt{
+				msgThing.FilterOpt{
 					Page:        def.PageInfo2{Size: 1},
 					ProductID:   msg.ProductID,
 					DeviceNames: []string{msg.DeviceName},
@@ -130,7 +130,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 
 func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s req:%v", utils.FuncName(), msg)
-	dbData := msgThing2.EventData{}
+	dbData := msgThing.EventData{}
 	dbData.ID = l.dreq.EventID
 	dbData.Type = l.dreq.Type
 	if l.dreq.Method != deviceMsg.EventPost {
@@ -140,7 +140,7 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
-	dbData.Params = msgThing2.ToVal(tp)
+	dbData.Params = msgThing.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
 
 	err = l.dd.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)

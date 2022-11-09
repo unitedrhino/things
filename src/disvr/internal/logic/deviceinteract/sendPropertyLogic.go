@@ -9,7 +9,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
-	msgThing2 "github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"time"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
@@ -59,7 +59,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
-	req := msgThing2.Req{
+	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:      deviceMsg.Control,
 			ClientToken: uuid,
