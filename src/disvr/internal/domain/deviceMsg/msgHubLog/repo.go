@@ -1,5 +1,5 @@
 // Package device 设备操作日志
-package deviceMsg
+package msgHubLog
 
 import (
 	"context"

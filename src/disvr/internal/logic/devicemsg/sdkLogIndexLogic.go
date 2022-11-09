@@ -2,11 +2,11 @@ package devicemsglogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
 
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
 
@@ -29,7 +29,7 @@ func NewSdkLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SdkLo
 
 // 获取设备sdk调试日志
 func (l *SdkLogIndexLogic) SdkLogIndex(in *di.SdkLogIndexReq) (*di.SdkLogIndexResp, error) {
-	filter := deviceMsg.SdkLogFilter{
+	filter := msgSdkLog.SdkLogFilter{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 		LogLevel:   int(in.LogLevel),
