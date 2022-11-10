@@ -1,10 +1,4 @@
-package deviceSend
-
-import (
-	"encoding/json"
-	"fmt"
-	"time"
-)
+package deviceMsg
 
 type Method = string
 
@@ -22,7 +16,6 @@ const (
 		下发 Topic： $thing/down/property/{ProductID}/{DeviceNames}
 		响应 Topic： $thing/up/property/{ProductID}/{DeviceNames}
 	*/
-	//todo 尚未支持
 	Control      Method = "control"      //表示云端向设备发起控制请求
 	ControlReply Method = "controlReply" //表示设备向云端下发的控制指令的请求响应
 
@@ -67,7 +60,7 @@ const (
 
 )
 
-func GetMethod(method Method) Method {
+func GetRespMethod(method Method) Method {
 	switch method {
 	case ReportInfo:
 		return ReportInfoReply
@@ -84,19 +77,4 @@ func GetMethod(method Method) Method {
 	default:
 		panic(method)
 	}
-}
-
-// GenThingDeviceRespData 生成物模型设备请求的回复包
-func GenThingDeviceRespData(Method, ClientToken string, topics []string, err error,
-	data map[string]any) (topic string, payload []byte) {
-	respMethod := GetMethod(Method)
-	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
-		topics[0], topics[2], topics[3], topics[4])
-	respPayload, _ := json.Marshal(DeviceResp{
-		Method:      respMethod,
-		ClientToken: ClientToken,
-		Data:        data,
-		Timestamp:   time.Now().UnixMilli(),
-	}.AddStatus(err))
-	return respTopic, respPayload
 }

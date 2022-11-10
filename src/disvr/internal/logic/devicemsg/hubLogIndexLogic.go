@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
@@ -28,7 +28,7 @@ func NewHubLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HubLo
 
 // 获取设备调试信息记录登入登出,操作
 func (l *HubLogIndexLogic) HubLogIndex(in *di.HubLogIndexReq) (*di.HubLogIndexResp, error) {
-	filter := deviceMsg.HubFilter{
+	filter := msgHubLog.HubFilter{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 		Actions:    in.Actions,
