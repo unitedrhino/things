@@ -18,8 +18,8 @@ import (
 var (
 	groupInfoFieldNames          = builder.RawFieldNames(&GroupInfo{})
 	groupInfoRows                = strings.Join(groupInfoFieldNames, ",")
-	groupInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(groupInfoFieldNames, "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
-	groupInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(groupInfoFieldNames, "`groupID`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
+	groupInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(groupInfoFieldNames, "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	groupInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(groupInfoFieldNames, "`groupID`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (

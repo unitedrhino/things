@@ -18,9 +18,13 @@ goctl api go -api http/api.api  -dir ./  --style=goZero
 
 ## 数据库文件生成
 
-命令执行路径: ithings\src\syssvr\
+### 命令执行路径: ithings\src\syssvr\
 ```shell script
-goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./internal/repo/mysql -icreatedTime,updatedTime,deletedTime
+goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime
+
+### 命令执行路径: ithings\src\dmsvr\
+```shell script
+goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime
 
 ```
 
@@ -28,6 +32,7 @@ goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./inte
 命令执行路径: ithings\src\syssvr\
 ```shell script
 goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m
+
 ```
 
 # 设备管理模块-dmsvr

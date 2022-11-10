@@ -624,6 +624,39 @@ type SchemaParam struct {
 	Define     *SchemaDefine `json:"define,omitempty"` //参数定义
 }
 
+type ProductRemoteConfig struct {
+	ID         int64  `json:"id"`         //配置编号
+	Content    string `json:"content"`    //配置内容
+	CreateTime string `json:"createTime"` //创建时间
+}
+
+type ProductRemoteConfigCreateReq struct {
+	ProductID string `json:"productID"` //产品id
+	Content   string `json:"content"`   //配置内容
+}
+
+type ProductRemoteConfigIndexReq struct {
+	ProductID string    `json:"productID"`     //产品id
+	Page      *PageInfo `json:"page,optional"` //分页信息
+}
+
+type ProductRemoteConfigIndexResp struct {
+	List  []*ProductRemoteConfig `json:"list"`  //产品信息
+	Total int64                  `json:"total"` //拥有的总数
+}
+
+type ProductRemoteConfigPushAllReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type ProductRemoteConfigLastestReadReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type ProductRemoteConfigLastestReadResp struct {
+	ProductRemoteConfig
+}
+
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string"`     //分组ID
 	GroupName   string `json:"groupName"`          //分组名称
