@@ -10,11 +10,11 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"time"
 )
 
-func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model, productID string, deviceName string, property *deviceMsg.PropertyData) error {
+func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model, productID string, deviceName string, property *msgThing.PropertyData) error {
 	switch property.Param.(type) {
 	case map[string]any:
 		paramPlaceholder, paramIds, paramValList, err := store.GenParams(property.Param.(map[string]any))
@@ -52,7 +52,7 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error {
 	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
 	for id, param := range params {
-		err := d.InsertPropertyData(ctx, t, productID, deviceName, &deviceMsg.PropertyData{
+		err := d.InsertPropertyData(ctx, t, productID, deviceName, &msgThing.PropertyData{
 			ID:        id,
 			Param:     param,
 			TimeStamp: timestamp,
@@ -67,7 +67,7 @@ func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 
 func (d *SchemaDataRepo) GetPropertyDataByID(
 	ctx context.Context,
-	filter deviceMsg.FilterOpt) ([]*deviceMsg.PropertyData, error) {
+	filter msgThing.FilterOpt) ([]*msgThing.PropertyData, error) {
 	if err := filter.Check(); err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 	}
 	var datas []map[string]any
 	store.Scan(rows, &datas)
-	retProperties := make([]*deviceMsg.PropertyData, 0, len(datas))
+	retProperties := make([]*msgThing.PropertyData, 0, len(datas))
 	for _, v := range datas {
 		retProperties = append(retProperties, ToPropertyData(filter.DataID, v))
 	}
@@ -110,7 +110,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 
 func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 	ctx context.Context,
-	filter deviceMsg.FilterOpt) (sq.SelectBuilder, error) {
+	filter msgThing.FilterOpt) (sq.SelectBuilder, error) {
 	schemaModel, err := d.getSchemaModel(ctx, filter.ProductID)
 	if err != nil {
 		return sq.SelectBuilder{}, err
@@ -138,7 +138,7 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 }
 
 func (d *SchemaDataRepo) fillFilter(
-	sql sq.SelectBuilder, filter deviceMsg.FilterOpt) sq.SelectBuilder {
+	sql sq.SelectBuilder, filter msgThing.FilterOpt) sq.SelectBuilder {
 	if len(filter.DeviceNames) != 0 {
 		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", store.ArrayToSql(filter.DeviceNames)))
 	}
@@ -147,7 +147,7 @@ func (d *SchemaDataRepo) fillFilter(
 
 func (d *SchemaDataRepo) GetPropertyCountByID(
 	ctx context.Context,
-	filter deviceMsg.FilterOpt) (int64, error) {
+	filter msgThing.FilterOpt) (int64, error) {
 
 	sqlData := sq.Select("count(1)").From(d.GetPropertyStableName(filter.ProductID, filter.DataID))
 	sqlData = d.fillFilter(sqlData, filter)

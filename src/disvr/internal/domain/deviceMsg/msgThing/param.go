@@ -1,4 +1,4 @@
-package deviceSend
+package msgThing
 
 import (
 	"encoding/json"
@@ -10,10 +10,10 @@ import (
 
 const (
 	//是否校验参数范围
-	validateDataRange = false
+	validateDataRange = true
 )
 
-type TempParam struct {
+type Param struct {
 	Identifier string              `json:"identifier"` //标识符
 	Name       string              `json:"name"`       //功能名称
 	Desc       string              `json:"gesc"`       //描述
@@ -28,32 +28,32 @@ type TempParam struct {
 		Start  string            `json:"start,omitempty"`   //初始值:int float
 		Step   string            `json:"step,omitempty"`    //步长:int float
 		Unit   string            `json:"unit,omitempty"`    //单位:int float
-		Value  any               `json:"Value"`
+		Value  any               `json:"value"`
 		/*
-			读到的数据  如果是是数组则类型为[]interface{}  如果是结构体类型则为map[id]TempParam
+			读到的数据  如果是是数组则类型为[]interface{}  如果是结构体类型则为map[id]Param
 				interface 为数据内容  					string为结构体的key value 为数据内容
 		*/
-	} `json:"Value"` //数据定义
+	} `json:"value"` //数据定义
 }
 
-func (t *TempParam) AddDefine(d *schema.Define, val any) (err error) {
-	t.Value.Type = d.Type
-	t.Value.Type = d.Type
-	t.Value.Maping = make(map[string]string)
+func (p *Param) AddDefine(d *schema.Define, val any) (err error) {
+	p.Value.Type = d.Type
+	p.Value.Type = d.Type
+	p.Value.Maping = make(map[string]string)
 	for k, v := range d.Maping {
-		t.Value.Maping[k] = v
+		p.Value.Maping[k] = v
 	}
-	t.Value.Maping = d.Maping
-	t.Value.Min = d.Min
-	t.Value.Max = d.Max
-	t.Value.Start = d.Start
-	t.Value.Step = d.Step
-	t.Value.Unit = d.Unit
-	t.Value.Value, err = GetVal(d, val)
+	p.Value.Maping = d.Maping
+	p.Value.Min = d.Min
+	p.Value.Max = d.Max
+	p.Value.Start = d.Start
+	p.Value.Step = d.Step
+	p.Value.Unit = d.Unit
+	p.Value.Value, err = GetVal(d, val)
 	return err
 }
 
-func ToVal(tp map[string]TempParam) map[string]any {
+func ToVal(tp map[string]Param) map[string]any {
 	ret := make(map[string]any, len(tp))
 	for k, v := range tp {
 		ret[k] = v.ToVal()
@@ -61,14 +61,14 @@ func ToVal(tp map[string]TempParam) map[string]any {
 	return ret
 }
 
-func (t *TempParam) ToVal() any {
-	if t == nil {
-		panic("TempParam is nil")
+func (p *Param) ToVal() any {
+	if p == nil {
+		panic("Param is nil")
 	}
 
-	switch t.Value.Type {
+	switch p.Value.Type {
 	case schema.DataTypeStruct:
-		v, ok := t.Value.Value.(map[string]TempParam)
+		v, ok := p.Value.Value.(map[string]Param)
 		if ok == false {
 			return nil
 		}
@@ -78,16 +78,16 @@ func (t *TempParam) ToVal() any {
 		}
 		return val
 	case schema.DataTypeArray:
-		array, ok := t.Value.Value.([]any)
+		array, ok := p.Value.Value.([]any)
 		if ok == false {
 			return nil
 		}
 		val := make([]any, 0, len(array)+1)
 		for _, value := range array {
 			switch value.(type) {
-			case map[string]TempParam:
+			case map[string]Param:
 				valMap := make(map[string]any, len(array)+1)
-				for _, tp := range value.(map[string]TempParam) {
+				for _, tp := range value.(map[string]Param) {
 					valMap[tp.Identifier] = tp.ToVal()
 				}
 				val = append(val, valMap)
@@ -97,7 +97,7 @@ func (t *TempParam) ToVal() any {
 		}
 		return val
 	default:
-		return t.Value.Value
+		return p.Value.Value
 	}
 }
 
@@ -184,13 +184,13 @@ func GetVal(d *schema.Define, val any) (any, error) {
 		if strut, ok := val.(map[string]any); !ok {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
-			getParam := make(map[string]TempParam, len(strut))
+			getParam := make(map[string]Param, len(strut))
 			for k, v := range strut {
 				sv, ok := d.Spec[k]
 				if ok == false {
 					continue
 				}
-				tp := TempParam{
+				tp := Param{
 					Identifier: sv.Identifier,
 					Name:       sv.Name,
 				}

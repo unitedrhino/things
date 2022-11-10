@@ -2,12 +2,13 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
 	"strings"
+	"time"
 
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -18,7 +19,7 @@ type SDKLogLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	topics []string
-	dreq   deviceSend.SdkLogReq
+	dreq   msgSdkLog.Req
 }
 
 func NewSDKLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SDKLogLogic {
@@ -78,13 +79,12 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *devi
 		return nil, err
 	}
 	for _, logObj := range l.dreq.Params {
-		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceMsg.SDKLog{
+		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &msgSdkLog.SDKLog{
 			ProductID:  ld.ProductID,
 			LogLevel:   logObj.LogLevel,
 			Timestamp:  l.dreq.GetTimeStamp(logObj.Timestamp), // 操作时间
 			DeviceName: ld.DeviceName,
 			Content:    logObj.Content,
-			RequestID:  l.dreq.ClientToken,
 		})
 		if err != nil {
 			l.Errorf("%s.LogRepo.insert.productID:%v deviceName:%v err:%v",
@@ -112,9 +112,14 @@ func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 }
 
 func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) *deviceMsg.PublishMsg {
-	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
+	resp := &deviceMsg.CommonMsg{
+		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
+		ClientToken: l.dreq.ClientToken,
+		Timestamp:   time.Now().UnixMilli(),
+		Data:        data,
+	}
 	return &deviceMsg.PublishMsg{
-		Topic:   topic,
-		Payload: payload,
+		Topic:   deviceMsg.GenRespTopic(l.topics),
+		Payload: resp.AddStatus(err).Bytes(),
 	}
 }

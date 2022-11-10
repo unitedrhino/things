@@ -7,10 +7,10 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/store"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 )
 
-func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceMsg.HubFilter) sq.SelectBuilder {
+func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter msgHubLog.HubFilter) sq.SelectBuilder {
 	if len(filter.ProductID) != 0 {
 		sql = sql.Where("`productID`=?", filter.ProductID)
 	}
@@ -32,7 +32,7 @@ func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceMsg.HubFilter)
 	return sql
 }
 
-func (d HubLogRepo) GetCountLog(ctx context.Context, filter deviceMsg.HubFilter, page def.PageInfo2) (int64, error) {
+func (d HubLogRepo) GetCountLog(ctx context.Context, filter msgHubLog.HubFilter, page def.PageInfo2) (int64, error) {
 	sqSql := sq.Select("Count(1)").From(d.GetLogStableName())
 	sqSql = d.fillFilter(sqSql, filter)
 	sqSql = page.FmtWhere(sqSql)
@@ -55,8 +55,8 @@ func (d HubLogRepo) GetCountLog(ctx context.Context, filter deviceMsg.HubFilter,
 	return total, nil
 }
 
-func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter deviceMsg.HubFilter, page def.PageInfo2) (
-	[]*deviceMsg.HubLog, error) {
+func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter msgHubLog.HubFilter, page def.PageInfo2) (
+	[]*msgHubLog.HubLog, error) {
 	sql := sq.Select("*").From(d.GetLogStableName()).OrderBy("`ts` desc")
 	sql = d.fillFilter(sql, filter)
 	sql = page.FmtSql(sql)
@@ -70,14 +70,14 @@ func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter deviceMsg.HubFilter
 	}
 	var datas []map[string]any
 	store.Scan(rows, &datas)
-	retLogs := make([]*deviceMsg.HubLog, 0, len(datas))
+	retLogs := make([]*msgHubLog.HubLog, 0, len(datas))
 	for _, v := range datas {
 		retLogs = append(retLogs, ToDeviceLog(filter.ProductID, v))
 	}
 	return retLogs, nil
 }
 
-func (d HubLogRepo) Insert(ctx context.Context, data *deviceMsg.HubLog) error {
+func (d HubLogRepo) Insert(ctx context.Context, data *msgHubLog.HubLog) error {
 	sql := fmt.Sprintf("insert into %s using %s tags('%s','%s')(`ts`, `content`, `topic`, `action`,"+
 		" `requestID`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
 		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(), data.ProductID, data.DeviceName)

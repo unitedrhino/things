@@ -4,14 +4,14 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 )
 
 type (
 	PubDev interface {
 		PublishToDev(ctx context.Context, topic string, payload []byte) error
-		ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *deviceSend.DeviceReq,
-			productID, deviceName string) (*deviceSend.DeviceResp, error)
+		ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *msgThing.Req,
+			productID, deviceName string) (*msgThing.Resp, error)
 	}
 )
 

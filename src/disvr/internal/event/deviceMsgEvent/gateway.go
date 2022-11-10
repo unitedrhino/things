@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 type GatewayLogic struct {
@@ -24,6 +25,11 @@ func NewGatewayLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GatewayLo
 
 func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), msg)
-	// todo
-	return
+	return &deviceMsg.PublishMsg{
+		Topic:      "",
+		Payload:    nil,
+		Timestamp:  time.Time{},
+		ProductID:  "",
+		DeviceName: "",
+	}, nil
 }
