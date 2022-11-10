@@ -1312,3 +1312,187 @@ var _DeviceGroup_serviceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/dm.proto",
 }
+
+// RemoteConfigClient is the client API for RemoteConfig service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type RemoteConfigClient interface {
+	RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error)
+	RemoteConfigIndex(ctx context.Context, in *RemoteConfigIndexReq, opts ...grpc.CallOption) (*RemoteConfigIndexResp, error)
+	RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error)
+	RemoteConfigLastRead(ctx context.Context, in *RemoteConfigLastReadReq, opts ...grpc.CallOption) (*RemoteConfigLastReadResp, error)
+}
+
+type remoteConfigClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewRemoteConfigClient(cc grpc.ClientConnInterface) RemoteConfigClient {
+	return &remoteConfigClient{cc}
+}
+
+func (c *remoteConfigClient) RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.RemoteConfig/RemoteConfigCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *remoteConfigClient) RemoteConfigIndex(ctx context.Context, in *RemoteConfigIndexReq, opts ...grpc.CallOption) (*RemoteConfigIndexResp, error) {
+	out := new(RemoteConfigIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.RemoteConfig/RemoteConfigIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *remoteConfigClient) RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/dm.RemoteConfig/RemoteConfigPushAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *remoteConfigClient) RemoteConfigLastRead(ctx context.Context, in *RemoteConfigLastReadReq, opts ...grpc.CallOption) (*RemoteConfigLastReadResp, error) {
+	out := new(RemoteConfigLastReadResp)
+	err := c.cc.Invoke(ctx, "/dm.RemoteConfig/RemoteConfigLastRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// RemoteConfigServer is the server API for RemoteConfig service.
+// All implementations must embed UnimplementedRemoteConfigServer
+// for forward compatibility
+type RemoteConfigServer interface {
+	RemoteConfigCreate(context.Context, *RemoteConfigCreateReq) (*Response, error)
+	RemoteConfigIndex(context.Context, *RemoteConfigIndexReq) (*RemoteConfigIndexResp, error)
+	RemoteConfigPushAll(context.Context, *RemoteConfigPushAllReq) (*Response, error)
+	RemoteConfigLastRead(context.Context, *RemoteConfigLastReadReq) (*RemoteConfigLastReadResp, error)
+	mustEmbedUnimplementedRemoteConfigServer()
+}
+
+// UnimplementedRemoteConfigServer must be embedded to have forward compatible implementations.
+type UnimplementedRemoteConfigServer struct {
+}
+
+func (*UnimplementedRemoteConfigServer) RemoteConfigCreate(context.Context, *RemoteConfigCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoteConfigCreate not implemented")
+}
+func (*UnimplementedRemoteConfigServer) RemoteConfigIndex(context.Context, *RemoteConfigIndexReq) (*RemoteConfigIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoteConfigIndex not implemented")
+}
+func (*UnimplementedRemoteConfigServer) RemoteConfigPushAll(context.Context, *RemoteConfigPushAllReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoteConfigPushAll not implemented")
+}
+func (*UnimplementedRemoteConfigServer) RemoteConfigLastRead(context.Context, *RemoteConfigLastReadReq) (*RemoteConfigLastReadResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoteConfigLastRead not implemented")
+}
+func (*UnimplementedRemoteConfigServer) mustEmbedUnimplementedRemoteConfigServer() {}
+
+func RegisterRemoteConfigServer(s *grpc.Server, srv RemoteConfigServer) {
+	s.RegisterService(&_RemoteConfig_serviceDesc, srv)
+}
+
+func _RemoteConfig_RemoteConfigCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoteConfigCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RemoteConfigServer).RemoteConfigCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.RemoteConfig/RemoteConfigCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RemoteConfigServer).RemoteConfigCreate(ctx, req.(*RemoteConfigCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RemoteConfig_RemoteConfigIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoteConfigIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RemoteConfigServer).RemoteConfigIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.RemoteConfig/RemoteConfigIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RemoteConfigServer).RemoteConfigIndex(ctx, req.(*RemoteConfigIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RemoteConfig_RemoteConfigPushAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoteConfigPushAllReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RemoteConfigServer).RemoteConfigPushAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.RemoteConfig/RemoteConfigPushAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RemoteConfigServer).RemoteConfigPushAll(ctx, req.(*RemoteConfigPushAllReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RemoteConfig_RemoteConfigLastRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoteConfigLastReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RemoteConfigServer).RemoteConfigLastRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.RemoteConfig/RemoteConfigLastRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RemoteConfigServer).RemoteConfigLastRead(ctx, req.(*RemoteConfigLastReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _RemoteConfig_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.RemoteConfig",
+	HandlerType: (*RemoteConfigServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "RemoteConfigCreate",
+			Handler:    _RemoteConfig_RemoteConfigCreate_Handler,
+		},
+		{
+			MethodName: "RemoteConfigIndex",
+			Handler:    _RemoteConfig_RemoteConfigIndex_Handler,
+		},
+		{
+			MethodName: "RemoteConfigPushAll",
+			Handler:    _RemoteConfig_RemoteConfigPushAll_Handler,
+		},
+		{
+			MethodName: "RemoteConfigLastRead",
+			Handler:    _RemoteConfig_RemoteConfigLastRead_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
