@@ -14,6 +14,7 @@ import (
 	devicegroup "github.com/i-Things/things/src/dmsvr/client/devicegroup"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
+	remoteconfig "github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	menu "github.com/i-Things/things/src/syssvr/client/menu"
 	role "github.com/i-Things/things/src/syssvr/client/role"
@@ -40,6 +41,7 @@ type ServiceContext struct {
 	Captcha        *verify.Captcha
 	OSS            oss.OSSer
 	DeviceG        devicegroup.DeviceGroup
+	RemoteConfig   remoteconfig.RemoteConfig
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -50,6 +52,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg      devicemsg.DeviceMsg
 		deviceInteract deviceinteract.DeviceInteract
 		deviceG        devicegroup.DeviceGroup
+		remoteConfig   remoteconfig.RemoteConfig
 	)
 	var ur user.User
 	var ro role.Role
@@ -61,11 +64,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
+			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else {
 			deviceM = dmdirect.NewDeviceManage()
 			productM = dmdirect.NewProductManage()
 			deviceA = dmdirect.NewDeviceAuth()
 			deviceG = dmdirect.NewDeviceGroup()
+			remoteConfig = dmdirect.NewRemoteConfig()
 		}
 	}
 	if c.SysRpc.Enable {
@@ -118,6 +123,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceMsg:      deviceMsg,
 		DeviceA:        deviceA,
 		DeviceG:        deviceG,
+		RemoteConfig:   remoteConfig,
 		//OSS:        ossClient,
 	}
 }
