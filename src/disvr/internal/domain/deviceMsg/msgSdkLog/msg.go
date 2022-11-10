@@ -1,6 +1,7 @@
-package deviceSend
+package msgSdkLog
 
 import (
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"time"
 
 	"github.com/i-Things/things/shared/def"
@@ -8,11 +9,9 @@ import (
 )
 
 type (
-	SdkLogReq struct {
-		Method      string   `json:"method"`          //操作方法
-		ClientToken string   `json:"clientToken"`     //方便排查随机数
-		Params      []sdklog `json:"params,optional"` //参数列表
-		Timestamp   int64    `json:"timestamp,omitempty"`
+	Req struct {
+		deviceMsg.CommonMsg
+		Params []sdklog `json:"params,optional"` //参数列表
 	}
 	sdklog struct {
 		Content   string `json:"content"`
@@ -21,17 +20,14 @@ type (
 	}
 )
 
-func (d *SdkLogReq) GetTimeStamp(logTime int64) time.Time {
+func (d *Req) GetTimeStamp(logTime int64) time.Time {
 	if logTime == 0 {
-		if d.Timestamp != 0 {
-			return time.UnixMilli(d.Timestamp)
-		}
-		return time.Now()
+		return d.CommonMsg.GetTimeStamp()
 	}
 	return time.UnixMilli(logTime)
 }
 
-func (d *SdkLogReq) VerifyReqParam() error {
+func (d *Req) VerifyReqParam() error {
 	if len(d.Params) == 0 {
 		return errors.Parameter.AddDetail("need add params")
 	}

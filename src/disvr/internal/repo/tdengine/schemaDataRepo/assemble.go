@@ -3,7 +3,7 @@ package schemaDataRepo
 import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/domain/schema"
-	schema2 "github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	schema2 "github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/spf13/cast"
 )
 

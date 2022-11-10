@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
 )
 
 type (
@@ -25,8 +26,8 @@ type (
 		Gateway(out *deviceMsg.PublishMsg) error
 		// Ota ota升级
 		Ota(out *deviceMsg.PublishMsg) error
-		Connected(out *deviceMsg.ConnectMsg) error
-		Disconnected(out *deviceMsg.ConnectMsg) error
+		Connected(out *deviceStatus.ConnectMsg) error
+		Disconnected(out *deviceStatus.ConnectMsg) error
 	}
 )
 
