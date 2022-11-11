@@ -62,67 +62,68 @@ type (
 	Response                    = dm.Response
 	RootCheckReq                = dm.RootCheckReq
 
-	DeviceAuth interface {
-		// 设备登录认证
-		LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error)
-		// 设备操作认证
-		AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
-		// 鉴定是否是root账号
-		RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
+	RemoteConfig interface {
+		RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error)
+		RemoteConfigIndex(ctx context.Context, in *RemoteConfigIndexReq, opts ...grpc.CallOption) (*RemoteConfigIndexResp, error)
+		RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error)
+		RemoteConfigLastRead(ctx context.Context, in *RemoteConfigLastReadReq, opts ...grpc.CallOption) (*RemoteConfigLastReadResp, error)
 	}
 
-	defaultDeviceAuth struct {
+	defaultRemoteConfig struct {
 		cli zrpc.Client
 	}
 
-	directDeviceAuth struct {
+	directRemoteConfig struct {
 		svcCtx *svc.ServiceContext
-		svr    dm.DeviceAuthServer
+		svr    dm.RemoteConfigServer
 	}
 )
 
-func NewDeviceAuth(cli zrpc.Client) DeviceAuth {
-	return &defaultDeviceAuth{
+func NewRemoteConfig(cli zrpc.Client) RemoteConfig {
+	return &defaultRemoteConfig{
 		cli: cli,
 	}
 }
 
-func NewDirectDeviceAuth(svcCtx *svc.ServiceContext, svr dm.DeviceAuthServer) DeviceAuth {
-	return &directDeviceAuth{
+func NewDirectRemoteConfig(svcCtx *svc.ServiceContext, svr dm.RemoteConfigServer) RemoteConfig {
+	return &directRemoteConfig{
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
 }
 
-// 设备登录认证
-func (m *defaultDeviceAuth) LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	client := dm.NewDeviceAuthClient(m.cli.Conn())
-	return client.LoginAuth(ctx, in, opts...)
+func (m *defaultRemoteConfig) RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewRemoteConfigClient(m.cli.Conn())
+	return client.RemoteConfigCreate(ctx, in, opts...)
 }
 
-// 设备登录认证
-func (d *directDeviceAuth) LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.LoginAuth(ctx, in)
+func (d *directRemoteConfig) RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.RemoteConfigCreate(ctx, in)
 }
 
-// 设备操作认证
-func (m *defaultDeviceAuth) AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	client := dm.NewDeviceAuthClient(m.cli.Conn())
-	return client.AccessAuth(ctx, in, opts...)
+func (m *defaultRemoteConfig) RemoteConfigIndex(ctx context.Context, in *RemoteConfigIndexReq, opts ...grpc.CallOption) (*RemoteConfigIndexResp, error) {
+	client := dm.NewRemoteConfigClient(m.cli.Conn())
+	return client.RemoteConfigIndex(ctx, in, opts...)
 }
 
-// 设备操作认证
-func (d *directDeviceAuth) AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.AccessAuth(ctx, in)
+func (d *directRemoteConfig) RemoteConfigIndex(ctx context.Context, in *RemoteConfigIndexReq, opts ...grpc.CallOption) (*RemoteConfigIndexResp, error) {
+	return d.svr.RemoteConfigIndex(ctx, in)
 }
 
-// 鉴定是否是root账号
-func (m *defaultDeviceAuth) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
-	client := dm.NewDeviceAuthClient(m.cli.Conn())
-	return client.RootCheck(ctx, in, opts...)
+func (m *defaultRemoteConfig) RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewRemoteConfigClient(m.cli.Conn())
+	return client.RemoteConfigPushAll(ctx, in, opts...)
 }
 
-// 鉴定是否是root账号
-func (d *directDeviceAuth) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.RootCheck(ctx, in)
+func (d *directRemoteConfig) RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.RemoteConfigPushAll(ctx, in)
+}
+
+func (m *defaultRemoteConfig) RemoteConfigLastRead(ctx context.Context, in *RemoteConfigLastReadReq, opts ...grpc.CallOption) (*RemoteConfigLastReadResp, error) {
+	client := dm.NewRemoteConfigClient(m.cli.Conn())
+	return client.RemoteConfigLastRead(ctx, in, opts...)
+}
+
+func (d *directRemoteConfig) RemoteConfigLastRead(ctx context.Context, in *RemoteConfigLastReadReq, opts ...grpc.CallOption) (*RemoteConfigLastReadResp, error) {
+	return d.svr.RemoteConfigLastRead(ctx, in)
 }

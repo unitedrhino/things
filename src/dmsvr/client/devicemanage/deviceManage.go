@@ -43,6 +43,7 @@ type (
 	ProductInfoIndexReq         = dm.ProductInfoIndexReq
 	ProductInfoIndexResp        = dm.ProductInfoIndexResp
 	ProductInfoReadReq          = dm.ProductInfoReadReq
+	ProductRemoteConfig         = dm.ProductRemoteConfig
 	ProductSchemaCreateReq      = dm.ProductSchemaCreateReq
 	ProductSchemaDeleteReq      = dm.ProductSchemaDeleteReq
 	ProductSchemaIndexReq       = dm.ProductSchemaIndexReq
@@ -52,6 +53,12 @@ type (
 	ProductSchemaTslReadReq     = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp    = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq      = dm.ProductSchemaUpdateReq
+	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
+	RemoteConfigIndexReq        = dm.RemoteConfigIndexReq
+	RemoteConfigIndexResp       = dm.RemoteConfigIndexResp
+	RemoteConfigLastReadReq     = dm.RemoteConfigLastReadReq
+	RemoteConfigLastReadResp    = dm.RemoteConfigLastReadResp
+	RemoteConfigPushAllReq      = dm.RemoteConfigPushAllReq
 	Response                    = dm.Response
 	RootCheckReq                = dm.RootCheckReq
 
