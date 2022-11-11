@@ -32,6 +32,14 @@ func (l *RemoteConfigLastReadLogic) RemoteConfigLastRead(in *dm.RemoteConfigLast
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
+	if res == nil {
+		return &dm.RemoteConfigLastReadResp{Info: &dm.ProductRemoteConfig{
+			Id:          0,
+			ProductID:   in.ProductID,
+			Content:     "",
+			CreatedTime: 0,
+		}}, nil
+	}
 
 	return &dm.RemoteConfigLastReadResp{Info: &dm.ProductRemoteConfig{
 		Id:          res.ID,
