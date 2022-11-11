@@ -85,6 +85,46 @@ service DeviceGroup {
   rpc groupDeviceMultiDelete(GroupDeviceMultiDeleteReq)     returns (Response);
 }
 
+service RemoteConfig {
+  rpc RemoteConfigCreate(RemoteConfigCreateReq) returns (Response);
+  rpc RemoteConfigIndex(RemoteConfigIndexReq) returns (RemoteConfigIndexResp);
+  rpc RemoteConfigPushAll(RemoteConfigPushAllReq) returns (Response);
+  rpc RemoteConfigLastRead(RemoteConfigLastReadReq) returns (RemoteConfigLastReadResp);
+}
+
+message ProductRemoteConfig{
+    int64 id = 1;
+    string productID = 2;
+    string content = 3;
+    int64 createdTime = 4;
+}
+
+message RemoteConfigCreateReq{
+    string productID = 1;
+    string content = 2;
+}
+
+message RemoteConfigIndexReq{
+  PageInfo page = 1;
+  string productID = 2;
+}
+
+message RemoteConfigIndexResp{
+  repeated ProductRemoteConfig list = 1;
+  int64 total = 2;
+}
+
+message RemoteConfigPushAllReq{
+  string productID = 1;
+}
+
+message RemoteConfigLastReadReq{
+  string productID = 1;
+}
+
+message RemoteConfigLastReadResp{
+    ProductRemoteConfig info = 1;
+}
 
 message PageInfo{
   int64 page = 1;

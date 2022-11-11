@@ -155,3 +155,15 @@ CREATE TABLE if not exists `gateway_device`
     PRIMARY KEY (`id`),
     UNIQUE KEY `gatewayDeviceName_gatewayProductID_productID_deviceName` (`gatewayDeviceName`,`gatewayProductID`,`productID`,`deviceName`)
     ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '网关与子设备关系表';
+
+CREATE TABLE if not exists `product_remote_config`
+(
+    `id`          bigint   NOT NULL AUTO_INCREMENT,
+    `productID`   char(11) NOT NULL COMMENT '产品id',
+    `content`     json not null comment '配置内容',
+    `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
+    PRIMARY KEY (`id`),
+    KEY `productID` (`productID`)
+    ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '产品远程配置表';

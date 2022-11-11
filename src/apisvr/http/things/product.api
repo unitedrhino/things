@@ -7,3 +7,4 @@ info(
 )
 import "things/product/info.api"  //产品信息相关接口
 import "things/product/schema.api"  //产品物模型相关接口
+import "things/product/remoteConfig.api"  //产品物模型相关接口

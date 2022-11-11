@@ -18,8 +18,8 @@ import (
 var (
 	productFirmwareFieldNames          = builder.RawFieldNames(&ProductFirmware{})
 	productFirmwareRows                = strings.Join(productFirmwareFieldNames, ",")
-	productFirmwareRowsExpectAutoSet   = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), ",")
-	productFirmwareRowsWithPlaceHolder = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), "=?,") + "=?"
+	productFirmwareRowsExpectAutoSet   = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
+	productFirmwareRowsWithPlaceHolder = strings.Join(stringx.Remove(productFirmwareFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
 )
 
 type (

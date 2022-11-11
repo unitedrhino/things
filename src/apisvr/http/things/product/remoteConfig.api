@@ -1,0 +1,65 @@
+info(
+    title: "产品远程配置模块"
+    desc: "产品远程配置模块"
+    author: "liuboshu"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group : things/product/remoteConfig
+    prefix: /api/v1/things/product/remote-config
+    middleware: CheckToken
+)
+service api {
+    @doc "创建配置"
+    @handler create
+    post /create (ProductRemoteConfigCreateReq) returns ()
+
+    @doc "获取配置列表"
+    @handler index
+    post /index (ProductRemoteConfigIndexReq) returns (ProductRemoteConfigIndexResp)
+
+    @doc "推送配置"
+    @handler pushAll
+    post /push-all (ProductRemoteConfigPushAllReq) returns ()
+
+    @doc "获取最新配置"
+    @handler lastestRead
+    post /lastest-read (ProductRemoteConfigLastestReadReq) returns (ProductRemoteConfigLastestReadResp)
+}
+
+type (
+    ProductRemoteConfig struct {
+        ID int64 `json:"id"`                  //配置编号
+        Content string `json:"content"`       //配置内容
+        CreateTime string `json:"createTime"` //创建时间
+    }
+
+    ProductRemoteConfigCreateReq struct {
+        ProductID string `json:"productID"` //产品id
+        Content string `json:"content"`     //配置内容
+    }
+
+    ProductRemoteConfigIndexReq struct {
+        ProductID string `json:"productID"` //产品id
+        Page *PageInfo `json:"page,optional"` //分页信息
+    }
+
+    ProductRemoteConfigIndexResp struct {
+        List []*ProductRemoteConfig `json:"list"` //产品信息
+        Total int64 `json:"total"`       //拥有的总数
+    }
+
+    ProductRemoteConfigPushAllReq struct {
+        ProductID string `json:"productID"` //产品id
+    }
+
+    ProductRemoteConfigLastestReadReq struct {
+        ProductID string `json:"productID"` //产品id
+    }
+
+    ProductRemoteConfigLastestReadResp struct {
+        ProductRemoteConfig
+    }
+)
