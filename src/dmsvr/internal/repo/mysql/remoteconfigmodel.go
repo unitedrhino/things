@@ -43,7 +43,7 @@ func NewRemoteConfigModel(conn sqlx.SqlConn) RemoteConfigModel {
 func (g *RemoteConfigFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if g.ProductID != "" {
 		sql = sql.Where("`productID` = ?", g.ProductID)
-		sql.OrderBy("createdTime")
+		sql = sql.OrderBy("createdTime desc")
 	}
 	return sql
 }
