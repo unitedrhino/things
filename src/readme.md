@@ -22,11 +22,6 @@ goctl api go -api http/api.api  -dir ./  --style=goZero
 ```shell script
 goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime
 
-### 命令执行路径: ithings\src\dmsvr\
-```shell script
-goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime
-
-```
 
 ## rpc文件编译方法
 命令执行路径: ithings\src\syssvr\
@@ -46,7 +41,7 @@ goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --st
 ## model文件编译
 命令执行路径: ithings\src\dmsvr\
 ```shell
-goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql -icreatedTime,updatedTime,deletedTime
+goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime
 ```
 
 # 设备交互模块-disvr
