@@ -202,7 +202,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/muti-create",
+					Path:    "/multi-create",
 					Handler: thingsdevicegateway.MultiCreateHandler(serverCtx),
 				},
 				{

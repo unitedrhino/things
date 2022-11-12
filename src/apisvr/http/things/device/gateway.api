@@ -16,7 +16,7 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "添加网关子设备"
     @handler multiCreate
-    post /muti-create (DeviceGateWayMultiCreateReq) returns ()
+    post /multi-create (DeviceGateWayMultiCreateReq) returns ()
 
     @doc "获取子设备列表"
     @handler index
