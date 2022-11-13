@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -281,18 +282,19 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 			var count int64
 			query := fmt.Sprintf("select count(1) from %s where productID = %s and deviceName = %s", m.deviceInfo, v.ProductID, v.DeviceName)
 			err := session.QueryRow(&count, query)
-			if err != sqlc.ErrNotFound && count > 0 {
-				var resp GroupDevice
-				query = fmt.Sprintf("select %s from %s where `groupID` = ? and `productID` = ? and `deviceName` = ?  limit 1", groupDeviceRows, m.groupDevice)
-				err = session.QueryRow(&resp, query, groupID, v.ProductID, v.DeviceName)
-				if err == sqlc.ErrNotFound {
-					query := fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s')",
-						m.groupDevice, groupID, v.ProductID, v.DeviceName)
-					_, err = session.Exec(query)
-					if err != nil {
-						return nil
-					}
-				}
+			if err != nil {
+				logx.WithContext(ctx).Errorf("groupModel.deviceInfoTable.QueryRowCtx data:%v err:%v", v, err)
+				return err
+			}
+			if count == 0 {
+				return errors.Parameter.WithMsgf("设备不存在:产品ID:%v,设备名:%", v.ProductID, v.DeviceName)
+			}
+			query = fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s') ON duplicate KEY UPDATE id = id",
+				m.groupDevice, groupID, v.ProductID, v.DeviceName)
+			_, err = session.Exec(query)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("groupModel.GroupDeviceCreate data:%v err:%v", v, err)
+				return err
 			}
 		}
 		return nil

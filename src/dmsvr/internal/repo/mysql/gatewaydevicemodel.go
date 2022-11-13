@@ -85,9 +85,9 @@ func NewGatewayDeviceModel(conn sqlx.SqlConn) GatewayDeviceModel {
 func (c customGatewayDeviceModel) CreateList(ctx context.Context, gateway *device.Core, subDevices []*device.Core) error {
 	return c.conn.Transact(func(session sqlx.Session) error {
 		for _, v := range subDevices {
-			sql := sq.Select("count(1)").From(c.deviceInfoTable)
-			//f := GatewayDeviceFilter{ProductID: v.ProductID, DeviceName: v.DeviceName}
-			//sql = f.FmtSql(sql)
+			sql := sq.Select("count(1)").
+				Where("`productID` = ? and `deviceName` = ?", v.ProductID, v.DeviceName).
+				From(c.deviceInfoTable)
 			query, arg, err := sql.ToSql()
 			if err != nil {
 				logx.WithContext(ctx).Errorf("customGatewayDeviceModel.GatewayDeviceFilter.ToSql data:%v err:%v", v, err)
@@ -102,7 +102,7 @@ func (c customGatewayDeviceModel) CreateList(ctx context.Context, gateway *devic
 			if size == 0 {
 				return errors.Parameter.WithMsgf("设备不存在:产品ID:%v,设备名:%", v.ProductID, v.DeviceName)
 			}
-			query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", c.table, gatewayDeviceRowsExpectAutoSet)
+			query = fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?) ON duplicate KEY UPDATE id = id", c.table, gatewayDeviceRowsExpectAutoSet)
 			_, err = session.ExecCtx(ctx, query, gateway.ProductID, gateway.DeviceName, v.ProductID, v.DeviceName)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("customGatewayDeviceModel.CreateList data:%v err:%v", v, err)
