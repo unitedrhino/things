@@ -21,6 +21,383 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type ProductRemoteConfig struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id          int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	ProductID   string `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`
+	Content     string `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	CreatedTime int64  `protobuf:"varint,4,opt,name=createdTime,proto3" json:"createdTime,omitempty"`
+}
+
+func (x *ProductRemoteConfig) Reset() {
+	*x = ProductRemoteConfig{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dm_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProductRemoteConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProductRemoteConfig) ProtoMessage() {}
+
+func (x *ProductRemoteConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dm_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProductRemoteConfig.ProtoReflect.Descriptor instead.
+func (*ProductRemoteConfig) Descriptor() ([]byte, []int) {
+	return file_proto_dm_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *ProductRemoteConfig) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ProductRemoteConfig) GetProductID() string {
+	if x != nil {
+		return x.ProductID
+	}
+	return ""
+}
+
+func (x *ProductRemoteConfig) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *ProductRemoteConfig) GetCreatedTime() int64 {
+	if x != nil {
+		return x.CreatedTime
+	}
+	return 0
+}
+
+type RemoteConfigCreateReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ProductID string `protobuf:"bytes,1,opt,name=productID,proto3" json:"productID,omitempty"`
+	Content   string `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+}
+
+func (x *RemoteConfigCreateReq) Reset() {
+	*x = RemoteConfigCreateReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dm_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoteConfigCreateReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoteConfigCreateReq) ProtoMessage() {}
+
+func (x *RemoteConfigCreateReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dm_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoteConfigCreateReq.ProtoReflect.Descriptor instead.
+func (*RemoteConfigCreateReq) Descriptor() ([]byte, []int) {
+	return file_proto_dm_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *RemoteConfigCreateReq) GetProductID() string {
+	if x != nil {
+		return x.ProductID
+	}
+	return ""
+}
+
+func (x *RemoteConfigCreateReq) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+type RemoteConfigIndexReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page      *PageInfo `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`
+	ProductID string    `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`
+}
+
+func (x *RemoteConfigIndexReq) Reset() {
+	*x = RemoteConfigIndexReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dm_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoteConfigIndexReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoteConfigIndexReq) ProtoMessage() {}
+
+func (x *RemoteConfigIndexReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dm_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoteConfigIndexReq.ProtoReflect.Descriptor instead.
+func (*RemoteConfigIndexReq) Descriptor() ([]byte, []int) {
+	return file_proto_dm_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *RemoteConfigIndexReq) GetPage() *PageInfo {
+	if x != nil {
+		return x.Page
+	}
+	return nil
+}
+
+func (x *RemoteConfigIndexReq) GetProductID() string {
+	if x != nil {
+		return x.ProductID
+	}
+	return ""
+}
+
+type RemoteConfigIndexResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	List  []*ProductRemoteConfig `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`
+	Total int64                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+}
+
+func (x *RemoteConfigIndexResp) Reset() {
+	*x = RemoteConfigIndexResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dm_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoteConfigIndexResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoteConfigIndexResp) ProtoMessage() {}
+
+func (x *RemoteConfigIndexResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dm_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoteConfigIndexResp.ProtoReflect.Descriptor instead.
+func (*RemoteConfigIndexResp) Descriptor() ([]byte, []int) {
+	return file_proto_dm_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *RemoteConfigIndexResp) GetList() []*ProductRemoteConfig {
+	if x != nil {
+		return x.List
+	}
+	return nil
+}
+
+func (x *RemoteConfigIndexResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+type RemoteConfigPushAllReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ProductID string `protobuf:"bytes,1,opt,name=productID,proto3" json:"productID,omitempty"`
+}
+
+func (x *RemoteConfigPushAllReq) Reset() {
+	*x = RemoteConfigPushAllReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dm_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoteConfigPushAllReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoteConfigPushAllReq) ProtoMessage() {}
+
+func (x *RemoteConfigPushAllReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dm_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoteConfigPushAllReq.ProtoReflect.Descriptor instead.
+func (*RemoteConfigPushAllReq) Descriptor() ([]byte, []int) {
+	return file_proto_dm_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *RemoteConfigPushAllReq) GetProductID() string {
+	if x != nil {
+		return x.ProductID
+	}
+	return ""
+}
+
+type RemoteConfigLastReadReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ProductID string `protobuf:"bytes,1,opt,name=productID,proto3" json:"productID,omitempty"`
+}
+
+func (x *RemoteConfigLastReadReq) Reset() {
+	*x = RemoteConfigLastReadReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dm_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoteConfigLastReadReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoteConfigLastReadReq) ProtoMessage() {}
+
+func (x *RemoteConfigLastReadReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dm_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoteConfigLastReadReq.ProtoReflect.Descriptor instead.
+func (*RemoteConfigLastReadReq) Descriptor() ([]byte, []int) {
+	return file_proto_dm_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *RemoteConfigLastReadReq) GetProductID() string {
+	if x != nil {
+		return x.ProductID
+	}
+	return ""
+}
+
+type RemoteConfigLastReadResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Info *ProductRemoteConfig `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
+}
+
+func (x *RemoteConfigLastReadResp) Reset() {
+	*x = RemoteConfigLastReadResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dm_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoteConfigLastReadResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoteConfigLastReadResp) ProtoMessage() {}
+
+func (x *RemoteConfigLastReadResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dm_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoteConfigLastReadResp.ProtoReflect.Descriptor instead.
+func (*RemoteConfigLastReadResp) Descriptor() ([]byte, []int) {
+	return file_proto_dm_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *RemoteConfigLastReadResp) GetInfo() *ProductRemoteConfig {
+	if x != nil {
+		return x.Info
+	}
+	return nil
+}
+
 type PageInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -33,7 +410,7 @@ type PageInfo struct {
 func (x *PageInfo) Reset() {
 	*x = PageInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[0]
+		mi := &file_proto_dm_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -46,7 +423,7 @@ func (x *PageInfo) String() string {
 func (*PageInfo) ProtoMessage() {}
 
 func (x *PageInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[0]
+	mi := &file_proto_dm_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +436,7 @@ func (x *PageInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PageInfo.ProtoReflect.Descriptor instead.
 func (*PageInfo) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{0}
+	return file_proto_dm_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *PageInfo) GetPage() int64 {
@@ -85,7 +462,7 @@ type Response struct {
 func (x *Response) Reset() {
 	*x = Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[1]
+		mi := &file_proto_dm_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -98,7 +475,7 @@ func (x *Response) String() string {
 func (*Response) ProtoMessage() {}
 
 func (x *Response) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[1]
+	mi := &file_proto_dm_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -111,7 +488,7 @@ func (x *Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Response.ProtoReflect.Descriptor instead.
 func (*Response) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{1}
+	return file_proto_dm_proto_rawDescGZIP(), []int{8}
 }
 
 type DeviceGatewayMultiCreateReq struct {
@@ -127,7 +504,7 @@ type DeviceGatewayMultiCreateReq struct {
 func (x *DeviceGatewayMultiCreateReq) Reset() {
 	*x = DeviceGatewayMultiCreateReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[2]
+		mi := &file_proto_dm_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -140,7 +517,7 @@ func (x *DeviceGatewayMultiCreateReq) String() string {
 func (*DeviceGatewayMultiCreateReq) ProtoMessage() {}
 
 func (x *DeviceGatewayMultiCreateReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[2]
+	mi := &file_proto_dm_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -153,7 +530,7 @@ func (x *DeviceGatewayMultiCreateReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceGatewayMultiCreateReq.ProtoReflect.Descriptor instead.
 func (*DeviceGatewayMultiCreateReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{2}
+	return file_proto_dm_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *DeviceGatewayMultiCreateReq) GetGatewayProductID() string {
@@ -190,7 +567,7 @@ type DeviceGatewayIndexReq struct {
 func (x *DeviceGatewayIndexReq) Reset() {
 	*x = DeviceGatewayIndexReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[3]
+		mi := &file_proto_dm_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -203,7 +580,7 @@ func (x *DeviceGatewayIndexReq) String() string {
 func (*DeviceGatewayIndexReq) ProtoMessage() {}
 
 func (x *DeviceGatewayIndexReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[3]
+	mi := &file_proto_dm_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -216,7 +593,7 @@ func (x *DeviceGatewayIndexReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceGatewayIndexReq.ProtoReflect.Descriptor instead.
 func (*DeviceGatewayIndexReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{3}
+	return file_proto_dm_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DeviceGatewayIndexReq) GetPage() *PageInfo {
@@ -252,7 +629,7 @@ type DeviceGatewayIndexResp struct {
 func (x *DeviceGatewayIndexResp) Reset() {
 	*x = DeviceGatewayIndexResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[4]
+		mi := &file_proto_dm_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -265,7 +642,7 @@ func (x *DeviceGatewayIndexResp) String() string {
 func (*DeviceGatewayIndexResp) ProtoMessage() {}
 
 func (x *DeviceGatewayIndexResp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[4]
+	mi := &file_proto_dm_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -278,7 +655,7 @@ func (x *DeviceGatewayIndexResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceGatewayIndexResp.ProtoReflect.Descriptor instead.
 func (*DeviceGatewayIndexResp) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{4}
+	return file_proto_dm_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DeviceGatewayIndexResp) GetList() []*DeviceInfo {
@@ -308,7 +685,7 @@ type DeviceGatewayMultiDeleteReq struct {
 func (x *DeviceGatewayMultiDeleteReq) Reset() {
 	*x = DeviceGatewayMultiDeleteReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[5]
+		mi := &file_proto_dm_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -321,7 +698,7 @@ func (x *DeviceGatewayMultiDeleteReq) String() string {
 func (*DeviceGatewayMultiDeleteReq) ProtoMessage() {}
 
 func (x *DeviceGatewayMultiDeleteReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[5]
+	mi := &file_proto_dm_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -334,7 +711,7 @@ func (x *DeviceGatewayMultiDeleteReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceGatewayMultiDeleteReq.ProtoReflect.Descriptor instead.
 func (*DeviceGatewayMultiDeleteReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{5}
+	return file_proto_dm_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DeviceGatewayMultiDeleteReq) GetGatewayProductID() string {
@@ -374,7 +751,7 @@ type GroupInfo struct {
 func (x *GroupInfo) Reset() {
 	*x = GroupInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[6]
+		mi := &file_proto_dm_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -387,7 +764,7 @@ func (x *GroupInfo) String() string {
 func (*GroupInfo) ProtoMessage() {}
 
 func (x *GroupInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[6]
+	mi := &file_proto_dm_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -400,7 +777,7 @@ func (x *GroupInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupInfo.ProtoReflect.Descriptor instead.
 func (*GroupInfo) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{6}
+	return file_proto_dm_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GroupInfo) GetGroupID() int64 {
@@ -458,7 +835,7 @@ type GroupInfoCreateReq struct {
 func (x *GroupInfoCreateReq) Reset() {
 	*x = GroupInfoCreateReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[7]
+		mi := &file_proto_dm_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -471,7 +848,7 @@ func (x *GroupInfoCreateReq) String() string {
 func (*GroupInfoCreateReq) ProtoMessage() {}
 
 func (x *GroupInfoCreateReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[7]
+	mi := &file_proto_dm_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -484,7 +861,7 @@ func (x *GroupInfoCreateReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupInfoCreateReq.ProtoReflect.Descriptor instead.
 func (*GroupInfoCreateReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{7}
+	return file_proto_dm_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GroupInfoCreateReq) GetGroupName() string {
@@ -522,7 +899,7 @@ type GroupInfoIndexReq struct {
 func (x *GroupInfoIndexReq) Reset() {
 	*x = GroupInfoIndexReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[8]
+		mi := &file_proto_dm_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -535,7 +912,7 @@ func (x *GroupInfoIndexReq) String() string {
 func (*GroupInfoIndexReq) ProtoMessage() {}
 
 func (x *GroupInfoIndexReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[8]
+	mi := &file_proto_dm_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -548,7 +925,7 @@ func (x *GroupInfoIndexReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupInfoIndexReq.ProtoReflect.Descriptor instead.
 func (*GroupInfoIndexReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{8}
+	return file_proto_dm_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GroupInfoIndexReq) GetPage() *PageInfo {
@@ -592,7 +969,7 @@ type GroupInfoIndexResp struct {
 func (x *GroupInfoIndexResp) Reset() {
 	*x = GroupInfoIndexResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[9]
+		mi := &file_proto_dm_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -605,7 +982,7 @@ func (x *GroupInfoIndexResp) String() string {
 func (*GroupInfoIndexResp) ProtoMessage() {}
 
 func (x *GroupInfoIndexResp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[9]
+	mi := &file_proto_dm_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -618,7 +995,7 @@ func (x *GroupInfoIndexResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupInfoIndexResp.ProtoReflect.Descriptor instead.
 func (*GroupInfoIndexResp) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{9}
+	return file_proto_dm_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GroupInfoIndexResp) GetList() []*GroupInfo {
@@ -653,7 +1030,7 @@ type GroupInfoReadReq struct {
 func (x *GroupInfoReadReq) Reset() {
 	*x = GroupInfoReadReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[10]
+		mi := &file_proto_dm_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -666,7 +1043,7 @@ func (x *GroupInfoReadReq) String() string {
 func (*GroupInfoReadReq) ProtoMessage() {}
 
 func (x *GroupInfoReadReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[10]
+	mi := &file_proto_dm_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -679,7 +1056,7 @@ func (x *GroupInfoReadReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupInfoReadReq.ProtoReflect.Descriptor instead.
 func (*GroupInfoReadReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{10}
+	return file_proto_dm_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GroupInfoReadReq) GetGroupID() int64 {
@@ -703,7 +1080,7 @@ type GroupInfoUpdateReq struct {
 func (x *GroupInfoUpdateReq) Reset() {
 	*x = GroupInfoUpdateReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[11]
+		mi := &file_proto_dm_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -716,7 +1093,7 @@ func (x *GroupInfoUpdateReq) String() string {
 func (*GroupInfoUpdateReq) ProtoMessage() {}
 
 func (x *GroupInfoUpdateReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[11]
+	mi := &file_proto_dm_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -729,7 +1106,7 @@ func (x *GroupInfoUpdateReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupInfoUpdateReq.ProtoReflect.Descriptor instead.
 func (*GroupInfoUpdateReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{11}
+	return file_proto_dm_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GroupInfoUpdateReq) GetGroupID() int64 {
@@ -771,7 +1148,7 @@ type GroupInfoDeleteReq struct {
 func (x *GroupInfoDeleteReq) Reset() {
 	*x = GroupInfoDeleteReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[12]
+		mi := &file_proto_dm_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -784,7 +1161,7 @@ func (x *GroupInfoDeleteReq) String() string {
 func (*GroupInfoDeleteReq) ProtoMessage() {}
 
 func (x *GroupInfoDeleteReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[12]
+	mi := &file_proto_dm_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -797,7 +1174,7 @@ func (x *GroupInfoDeleteReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupInfoDeleteReq.ProtoReflect.Descriptor instead.
 func (*GroupInfoDeleteReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{12}
+	return file_proto_dm_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GroupInfoDeleteReq) GetGroupID() int64 {
@@ -819,7 +1196,7 @@ type GroupDeviceMultiCreateReq struct {
 func (x *GroupDeviceMultiCreateReq) Reset() {
 	*x = GroupDeviceMultiCreateReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[13]
+		mi := &file_proto_dm_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -832,7 +1209,7 @@ func (x *GroupDeviceMultiCreateReq) String() string {
 func (*GroupDeviceMultiCreateReq) ProtoMessage() {}
 
 func (x *GroupDeviceMultiCreateReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[13]
+	mi := &file_proto_dm_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -845,7 +1222,7 @@ func (x *GroupDeviceMultiCreateReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDeviceMultiCreateReq.ProtoReflect.Descriptor instead.
 func (*GroupDeviceMultiCreateReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{13}
+	return file_proto_dm_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GroupDeviceMultiCreateReq) GetGroupID() int64 {
@@ -876,7 +1253,7 @@ type GroupDeviceIndexReq struct {
 func (x *GroupDeviceIndexReq) Reset() {
 	*x = GroupDeviceIndexReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[14]
+		mi := &file_proto_dm_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -889,7 +1266,7 @@ func (x *GroupDeviceIndexReq) String() string {
 func (*GroupDeviceIndexReq) ProtoMessage() {}
 
 func (x *GroupDeviceIndexReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[14]
+	mi := &file_proto_dm_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -902,7 +1279,7 @@ func (x *GroupDeviceIndexReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDeviceIndexReq.ProtoReflect.Descriptor instead.
 func (*GroupDeviceIndexReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{14}
+	return file_proto_dm_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *GroupDeviceIndexReq) GetPage() *PageInfo {
@@ -945,7 +1322,7 @@ type GroupDeviceIndexResp struct {
 func (x *GroupDeviceIndexResp) Reset() {
 	*x = GroupDeviceIndexResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[15]
+		mi := &file_proto_dm_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -958,7 +1335,7 @@ func (x *GroupDeviceIndexResp) String() string {
 func (*GroupDeviceIndexResp) ProtoMessage() {}
 
 func (x *GroupDeviceIndexResp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[15]
+	mi := &file_proto_dm_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -971,7 +1348,7 @@ func (x *GroupDeviceIndexResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDeviceIndexResp.ProtoReflect.Descriptor instead.
 func (*GroupDeviceIndexResp) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{15}
+	return file_proto_dm_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GroupDeviceIndexResp) GetList() []*DeviceInfo {
@@ -1000,7 +1377,7 @@ type GroupDeviceMultiDeleteReq struct {
 func (x *GroupDeviceMultiDeleteReq) Reset() {
 	*x = GroupDeviceMultiDeleteReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[16]
+		mi := &file_proto_dm_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1013,7 +1390,7 @@ func (x *GroupDeviceMultiDeleteReq) String() string {
 func (*GroupDeviceMultiDeleteReq) ProtoMessage() {}
 
 func (x *GroupDeviceMultiDeleteReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[16]
+	mi := &file_proto_dm_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1026,7 +1403,7 @@ func (x *GroupDeviceMultiDeleteReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDeviceMultiDeleteReq.ProtoReflect.Descriptor instead.
 func (*GroupDeviceMultiDeleteReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{16}
+	return file_proto_dm_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GroupDeviceMultiDeleteReq) GetGroupID() int64 {
@@ -1064,7 +1441,7 @@ type DeviceInfo struct {
 func (x *DeviceInfo) Reset() {
 	*x = DeviceInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[17]
+		mi := &file_proto_dm_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1077,7 +1454,7 @@ func (x *DeviceInfo) String() string {
 func (*DeviceInfo) ProtoMessage() {}
 
 func (x *DeviceInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[17]
+	mi := &file_proto_dm_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1090,7 +1467,7 @@ func (x *DeviceInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceInfo.ProtoReflect.Descriptor instead.
 func (*DeviceInfo) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{17}
+	return file_proto_dm_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *DeviceInfo) GetProductID() string {
@@ -1192,7 +1569,7 @@ type ProductInfo struct {
 func (x *ProductInfo) Reset() {
 	*x = ProductInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[18]
+		mi := &file_proto_dm_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1205,7 +1582,7 @@ func (x *ProductInfo) String() string {
 func (*ProductInfo) ProtoMessage() {}
 
 func (x *ProductInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[18]
+	mi := &file_proto_dm_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1218,7 +1595,7 @@ func (x *ProductInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductInfo.ProtoReflect.Descriptor instead.
 func (*ProductInfo) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{18}
+	return file_proto_dm_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *ProductInfo) GetCreatedTime() int64 {
@@ -1316,7 +1693,7 @@ type ProductInfoDeleteReq struct {
 func (x *ProductInfoDeleteReq) Reset() {
 	*x = ProductInfoDeleteReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[19]
+		mi := &file_proto_dm_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1329,7 +1706,7 @@ func (x *ProductInfoDeleteReq) String() string {
 func (*ProductInfoDeleteReq) ProtoMessage() {}
 
 func (x *ProductInfoDeleteReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[19]
+	mi := &file_proto_dm_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1342,7 +1719,7 @@ func (x *ProductInfoDeleteReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductInfoDeleteReq.ProtoReflect.Descriptor instead.
 func (*ProductInfoDeleteReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{19}
+	return file_proto_dm_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *ProductInfoDeleteReq) GetProductID() string {
@@ -1363,7 +1740,7 @@ type ProductInfoReadReq struct {
 func (x *ProductInfoReadReq) Reset() {
 	*x = ProductInfoReadReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[20]
+		mi := &file_proto_dm_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1376,7 +1753,7 @@ func (x *ProductInfoReadReq) String() string {
 func (*ProductInfoReadReq) ProtoMessage() {}
 
 func (x *ProductInfoReadReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[20]
+	mi := &file_proto_dm_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1389,7 +1766,7 @@ func (x *ProductInfoReadReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductInfoReadReq.ProtoReflect.Descriptor instead.
 func (*ProductInfoReadReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{20}
+	return file_proto_dm_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *ProductInfoReadReq) GetProductID() string {
@@ -1413,7 +1790,7 @@ type ProductInfoIndexReq struct {
 func (x *ProductInfoIndexReq) Reset() {
 	*x = ProductInfoIndexReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[21]
+		mi := &file_proto_dm_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1426,7 +1803,7 @@ func (x *ProductInfoIndexReq) String() string {
 func (*ProductInfoIndexReq) ProtoMessage() {}
 
 func (x *ProductInfoIndexReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[21]
+	mi := &file_proto_dm_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1439,7 +1816,7 @@ func (x *ProductInfoIndexReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductInfoIndexReq.ProtoReflect.Descriptor instead.
 func (*ProductInfoIndexReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{21}
+	return file_proto_dm_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *ProductInfoIndexReq) GetPage() *PageInfo {
@@ -1482,7 +1859,7 @@ type ProductInfoIndexResp struct {
 func (x *ProductInfoIndexResp) Reset() {
 	*x = ProductInfoIndexResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[22]
+		mi := &file_proto_dm_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1495,7 +1872,7 @@ func (x *ProductInfoIndexResp) String() string {
 func (*ProductInfoIndexResp) ProtoMessage() {}
 
 func (x *ProductInfoIndexResp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[22]
+	mi := &file_proto_dm_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1508,7 +1885,7 @@ func (x *ProductInfoIndexResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductInfoIndexResp.ProtoReflect.Descriptor instead.
 func (*ProductInfoIndexResp) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{22}
+	return file_proto_dm_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *ProductInfoIndexResp) GetList() []*ProductInfo {
@@ -1537,7 +1914,7 @@ type DeviceInfoDeleteReq struct {
 func (x *DeviceInfoDeleteReq) Reset() {
 	*x = DeviceInfoDeleteReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[23]
+		mi := &file_proto_dm_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1550,7 +1927,7 @@ func (x *DeviceInfoDeleteReq) String() string {
 func (*DeviceInfoDeleteReq) ProtoMessage() {}
 
 func (x *DeviceInfoDeleteReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[23]
+	mi := &file_proto_dm_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1563,7 +1940,7 @@ func (x *DeviceInfoDeleteReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceInfoDeleteReq.ProtoReflect.Descriptor instead.
 func (*DeviceInfoDeleteReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{23}
+	return file_proto_dm_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *DeviceInfoDeleteReq) GetProductID() string {
@@ -1592,7 +1969,7 @@ type DeviceCore struct {
 func (x *DeviceCore) Reset() {
 	*x = DeviceCore{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[24]
+		mi := &file_proto_dm_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1605,7 +1982,7 @@ func (x *DeviceCore) String() string {
 func (*DeviceCore) ProtoMessage() {}
 
 func (x *DeviceCore) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[24]
+	mi := &file_proto_dm_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1618,7 +1995,7 @@ func (x *DeviceCore) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceCore.ProtoReflect.Descriptor instead.
 func (*DeviceCore) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{24}
+	return file_proto_dm_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *DeviceCore) GetProductID() string {
@@ -1647,7 +2024,7 @@ type DeviceInfoReadReq struct {
 func (x *DeviceInfoReadReq) Reset() {
 	*x = DeviceInfoReadReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[25]
+		mi := &file_proto_dm_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1660,7 +2037,7 @@ func (x *DeviceInfoReadReq) String() string {
 func (*DeviceInfoReadReq) ProtoMessage() {}
 
 func (x *DeviceInfoReadReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[25]
+	mi := &file_proto_dm_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1673,7 +2050,7 @@ func (x *DeviceInfoReadReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceInfoReadReq.ProtoReflect.Descriptor instead.
 func (*DeviceInfoReadReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{25}
+	return file_proto_dm_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *DeviceInfoReadReq) GetProductID() string {
@@ -1704,7 +2081,7 @@ type DeviceInfoIndexReq struct {
 func (x *DeviceInfoIndexReq) Reset() {
 	*x = DeviceInfoIndexReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[26]
+		mi := &file_proto_dm_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1717,7 +2094,7 @@ func (x *DeviceInfoIndexReq) String() string {
 func (*DeviceInfoIndexReq) ProtoMessage() {}
 
 func (x *DeviceInfoIndexReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[26]
+	mi := &file_proto_dm_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1730,7 +2107,7 @@ func (x *DeviceInfoIndexReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceInfoIndexReq.ProtoReflect.Descriptor instead.
 func (*DeviceInfoIndexReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{26}
+	return file_proto_dm_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *DeviceInfoIndexReq) GetPage() *PageInfo {
@@ -1773,7 +2150,7 @@ type DeviceInfoIndexResp struct {
 func (x *DeviceInfoIndexResp) Reset() {
 	*x = DeviceInfoIndexResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[27]
+		mi := &file_proto_dm_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1786,7 +2163,7 @@ func (x *DeviceInfoIndexResp) String() string {
 func (*DeviceInfoIndexResp) ProtoMessage() {}
 
 func (x *DeviceInfoIndexResp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[27]
+	mi := &file_proto_dm_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1799,7 +2176,7 @@ func (x *DeviceInfoIndexResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceInfoIndexResp.ProtoReflect.Descriptor instead.
 func (*DeviceInfoIndexResp) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{27}
+	return file_proto_dm_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *DeviceInfoIndexResp) GetList() []*DeviceInfo {
@@ -1833,7 +2210,7 @@ type LoginAuthReq struct {
 func (x *LoginAuthReq) Reset() {
 	*x = LoginAuthReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[28]
+		mi := &file_proto_dm_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1846,7 +2223,7 @@ func (x *LoginAuthReq) String() string {
 func (*LoginAuthReq) ProtoMessage() {}
 
 func (x *LoginAuthReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[28]
+	mi := &file_proto_dm_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1859,7 +2236,7 @@ func (x *LoginAuthReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginAuthReq.ProtoReflect.Descriptor instead.
 func (*LoginAuthReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{28}
+	return file_proto_dm_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *LoginAuthReq) GetUsername() string {
@@ -1912,7 +2289,7 @@ type AccessAuthReq struct {
 func (x *AccessAuthReq) Reset() {
 	*x = AccessAuthReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[29]
+		mi := &file_proto_dm_proto_msgTypes[36]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1925,7 +2302,7 @@ func (x *AccessAuthReq) String() string {
 func (*AccessAuthReq) ProtoMessage() {}
 
 func (x *AccessAuthReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[29]
+	mi := &file_proto_dm_proto_msgTypes[36]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1938,7 +2315,7 @@ func (x *AccessAuthReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessAuthReq.ProtoReflect.Descriptor instead.
 func (*AccessAuthReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{29}
+	return file_proto_dm_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *AccessAuthReq) GetUsername() string {
@@ -1991,7 +2368,7 @@ type RootCheckReq struct {
 func (x *RootCheckReq) Reset() {
 	*x = RootCheckReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[30]
+		mi := &file_proto_dm_proto_msgTypes[37]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2004,7 +2381,7 @@ func (x *RootCheckReq) String() string {
 func (*RootCheckReq) ProtoMessage() {}
 
 func (x *RootCheckReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[30]
+	mi := &file_proto_dm_proto_msgTypes[37]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2017,7 +2394,7 @@ func (x *RootCheckReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RootCheckReq.ProtoReflect.Descriptor instead.
 func (*RootCheckReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{30}
+	return file_proto_dm_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *RootCheckReq) GetUsername() string {
@@ -2066,7 +2443,7 @@ type ProductSchemaUpdateReq struct {
 func (x *ProductSchemaUpdateReq) Reset() {
 	*x = ProductSchemaUpdateReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[31]
+		mi := &file_proto_dm_proto_msgTypes[38]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2079,7 +2456,7 @@ func (x *ProductSchemaUpdateReq) String() string {
 func (*ProductSchemaUpdateReq) ProtoMessage() {}
 
 func (x *ProductSchemaUpdateReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[31]
+	mi := &file_proto_dm_proto_msgTypes[38]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2092,7 +2469,7 @@ func (x *ProductSchemaUpdateReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductSchemaUpdateReq.ProtoReflect.Descriptor instead.
 func (*ProductSchemaUpdateReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{31}
+	return file_proto_dm_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *ProductSchemaUpdateReq) GetInfo() *ProductSchemaInfo {
@@ -2113,7 +2490,7 @@ type ProductSchemaCreateReq struct {
 func (x *ProductSchemaCreateReq) Reset() {
 	*x = ProductSchemaCreateReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[32]
+		mi := &file_proto_dm_proto_msgTypes[39]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2126,7 +2503,7 @@ func (x *ProductSchemaCreateReq) String() string {
 func (*ProductSchemaCreateReq) ProtoMessage() {}
 
 func (x *ProductSchemaCreateReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[32]
+	mi := &file_proto_dm_proto_msgTypes[39]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2139,7 +2516,7 @@ func (x *ProductSchemaCreateReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductSchemaCreateReq.ProtoReflect.Descriptor instead.
 func (*ProductSchemaCreateReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{32}
+	return file_proto_dm_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *ProductSchemaCreateReq) GetInfo() *ProductSchemaInfo {
@@ -2161,7 +2538,7 @@ type ProductSchemaDeleteReq struct {
 func (x *ProductSchemaDeleteReq) Reset() {
 	*x = ProductSchemaDeleteReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[33]
+		mi := &file_proto_dm_proto_msgTypes[40]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2174,7 +2551,7 @@ func (x *ProductSchemaDeleteReq) String() string {
 func (*ProductSchemaDeleteReq) ProtoMessage() {}
 
 func (x *ProductSchemaDeleteReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[33]
+	mi := &file_proto_dm_proto_msgTypes[40]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2187,7 +2564,7 @@ func (x *ProductSchemaDeleteReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductSchemaDeleteReq.ProtoReflect.Descriptor instead.
 func (*ProductSchemaDeleteReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{33}
+	return file_proto_dm_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *ProductSchemaDeleteReq) GetProductID() string {
@@ -2219,7 +2596,7 @@ type ProductSchemaIndexReq struct {
 func (x *ProductSchemaIndexReq) Reset() {
 	*x = ProductSchemaIndexReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[34]
+		mi := &file_proto_dm_proto_msgTypes[41]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2232,7 +2609,7 @@ func (x *ProductSchemaIndexReq) String() string {
 func (*ProductSchemaIndexReq) ProtoMessage() {}
 
 func (x *ProductSchemaIndexReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[34]
+	mi := &file_proto_dm_proto_msgTypes[41]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2245,7 +2622,7 @@ func (x *ProductSchemaIndexReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductSchemaIndexReq.ProtoReflect.Descriptor instead.
 func (*ProductSchemaIndexReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{34}
+	return file_proto_dm_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *ProductSchemaIndexReq) GetPage() *PageInfo {
@@ -2295,7 +2672,7 @@ type ProductSchemaIndexResp struct {
 func (x *ProductSchemaIndexResp) Reset() {
 	*x = ProductSchemaIndexResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[35]
+		mi := &file_proto_dm_proto_msgTypes[42]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2308,7 +2685,7 @@ func (x *ProductSchemaIndexResp) String() string {
 func (*ProductSchemaIndexResp) ProtoMessage() {}
 
 func (x *ProductSchemaIndexResp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[35]
+	mi := &file_proto_dm_proto_msgTypes[42]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2321,7 +2698,7 @@ func (x *ProductSchemaIndexResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductSchemaIndexResp.ProtoReflect.Descriptor instead.
 func (*ProductSchemaIndexResp) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{35}
+	return file_proto_dm_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *ProductSchemaIndexResp) GetList() []*ProductSchemaInfo {
@@ -2356,7 +2733,7 @@ type ProductSchemaInfo struct {
 func (x *ProductSchemaInfo) Reset() {
 	*x = ProductSchemaInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[36]
+		mi := &file_proto_dm_proto_msgTypes[43]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2369,7 +2746,7 @@ func (x *ProductSchemaInfo) String() string {
 func (*ProductSchemaInfo) ProtoMessage() {}
 
 func (x *ProductSchemaInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[36]
+	mi := &file_proto_dm_proto_msgTypes[43]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2382,7 +2759,7 @@ func (x *ProductSchemaInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductSchemaInfo.ProtoReflect.Descriptor instead.
 func (*ProductSchemaInfo) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{36}
+	return file_proto_dm_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *ProductSchemaInfo) GetProductID() string {
@@ -2453,7 +2830,7 @@ type ProductSchemaTslImportReq struct {
 func (x *ProductSchemaTslImportReq) Reset() {
 	*x = ProductSchemaTslImportReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[37]
+		mi := &file_proto_dm_proto_msgTypes[44]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2466,7 +2843,7 @@ func (x *ProductSchemaTslImportReq) String() string {
 func (*ProductSchemaTslImportReq) ProtoMessage() {}
 
 func (x *ProductSchemaTslImportReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[37]
+	mi := &file_proto_dm_proto_msgTypes[44]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2479,7 +2856,7 @@ func (x *ProductSchemaTslImportReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductSchemaTslImportReq.ProtoReflect.Descriptor instead.
 func (*ProductSchemaTslImportReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{37}
+	return file_proto_dm_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *ProductSchemaTslImportReq) GetProductID() string {
@@ -2507,7 +2884,7 @@ type ProductSchemaTslReadReq struct {
 func (x *ProductSchemaTslReadReq) Reset() {
 	*x = ProductSchemaTslReadReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[38]
+		mi := &file_proto_dm_proto_msgTypes[45]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2520,7 +2897,7 @@ func (x *ProductSchemaTslReadReq) String() string {
 func (*ProductSchemaTslReadReq) ProtoMessage() {}
 
 func (x *ProductSchemaTslReadReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[38]
+	mi := &file_proto_dm_proto_msgTypes[45]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2533,7 +2910,7 @@ func (x *ProductSchemaTslReadReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductSchemaTslReadReq.ProtoReflect.Descriptor instead.
 func (*ProductSchemaTslReadReq) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{38}
+	return file_proto_dm_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *ProductSchemaTslReadReq) GetProductID() string {
@@ -2554,7 +2931,7 @@ type ProductSchemaTslReadResp struct {
 func (x *ProductSchemaTslReadResp) Reset() {
 	*x = ProductSchemaTslReadResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dm_proto_msgTypes[39]
+		mi := &file_proto_dm_proto_msgTypes[46]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2567,7 +2944,7 @@ func (x *ProductSchemaTslReadResp) String() string {
 func (*ProductSchemaTslReadResp) ProtoMessage() {}
 
 func (x *ProductSchemaTslReadResp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dm_proto_msgTypes[39]
+	mi := &file_proto_dm_proto_msgTypes[46]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2580,7 +2957,7 @@ func (x *ProductSchemaTslReadResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductSchemaTslReadResp.ProtoReflect.Descriptor instead.
 func (*ProductSchemaTslReadResp) Descriptor() ([]byte, []int) {
-	return file_proto_dm_proto_rawDescGZIP(), []int{39}
+	return file_proto_dm_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *ProductSchemaTslReadResp) GetTsl() string {
@@ -2597,7 +2974,43 @@ var file_proto_dm_proto_rawDesc = []byte{
 	0x12, 0x02, 0x64, 0x6d, 0x1a, 0x1e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x77, 0x72, 0x61, 0x70, 0x70, 0x65, 0x72, 0x73, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x16, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x63, 0x68, 0x65,
-	0x6d, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x32, 0x0a, 0x08,
+	0x6d, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x7f, 0x0a, 0x13,
+	0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x02, 0x69, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49,
+	0x44, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x12, 0x20, 0x0a, 0x0b, 0x63,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x4f, 0x0a,
+	0x15, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63,
+	0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75,
+	0x63, 0x74, 0x49, 0x44, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x22, 0x56,
+	0x0a, 0x14, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x49, 0x6e,
+	0x64, 0x65, 0x78, 0x52, 0x65, 0x71, 0x12, 0x20, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x49, 0x6e,
+	0x66, 0x6f, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x64,
+	0x75, 0x63, 0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x72, 0x6f,
+	0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x22, 0x5a, 0x0a, 0x15, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65,
+	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x73, 0x70, 0x12,
+	0x2b, 0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e,
+	0x64, 0x6d, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65,
+	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05,
+	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74,
+	0x61, 0x6c, 0x22, 0x36, 0x0a, 0x16, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66,
+	0x69, 0x67, 0x50, 0x75, 0x73, 0x68, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x12, 0x1c, 0x0a, 0x09,
+	0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x22, 0x37, 0x0a, 0x17, 0x52, 0x65,
+	0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x4c, 0x61, 0x73, 0x74, 0x52, 0x65,
+	0x61, 0x64, 0x52, 0x65, 0x71, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
+	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63,
+	0x74, 0x49, 0x44, 0x22, 0x47, 0x0a, 0x18, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x4c, 0x61, 0x73, 0x74, 0x52, 0x65, 0x61, 0x64, 0x52, 0x65, 0x73, 0x70, 0x12,
+	0x2b, 0x0a, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e,
+	0x64, 0x6d, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65,
+	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x22, 0x32, 0x0a, 0x08,
 	0x50, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04,
 	0x73, 0x69, 0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65,
@@ -3043,8 +3456,27 @@ var file_proto_dm_proto_rawDesc = []byte{
 	0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x44, 0x65, 0x6c, 0x65, 0x74,
 	0x65, 0x12, 0x1d, 0x2e, 0x64, 0x6d, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x44, 0x65, 0x76, 0x69,
 	0x63, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71,
-	0x1a, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x07,
-	0x5a, 0x05, 0x70, 0x62, 0x2f, 0x64, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x1a, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xab,
+	0x02, 0x0a, 0x0c, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12,
+	0x3d, 0x0a, 0x12, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x43,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0x19, 0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74,
+	0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71,
+	0x1a, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x48,
+	0x0a, 0x11, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x49, 0x6e,
+	0x64, 0x65, 0x78, 0x12, 0x18, 0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43,
+	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x71, 0x1a, 0x19, 0x2e,
+	0x64, 0x6d, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x49,
+	0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3f, 0x0a, 0x13, 0x52, 0x65, 0x6d, 0x6f,
+	0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x50, 0x75, 0x73, 0x68, 0x41, 0x6c, 0x6c, 0x12,
+	0x1a, 0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69,
+	0x67, 0x50, 0x75, 0x73, 0x68, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x1a, 0x0c, 0x2e, 0x64, 0x6d,
+	0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x51, 0x0a, 0x14, 0x52, 0x65, 0x6d,
+	0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x4c, 0x61, 0x73, 0x74, 0x52, 0x65, 0x61,
+	0x64, 0x12, 0x1b, 0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x4c, 0x61, 0x73, 0x74, 0x52, 0x65, 0x61, 0x64, 0x52, 0x65, 0x71, 0x1a, 0x1c,
+	0x2e, 0x64, 0x6d, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67,
+	0x4c, 0x61, 0x73, 0x74, 0x52, 0x65, 0x61, 0x64, 0x52, 0x65, 0x73, 0x70, 0x42, 0x07, 0x5a, 0x05,
+	0x70, 0x62, 0x2f, 0x64, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3059,151 +3491,169 @@ func file_proto_dm_proto_rawDescGZIP() []byte {
 	return file_proto_dm_proto_rawDescData
 }
 
-var file_proto_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 45)
+var file_proto_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
 var file_proto_dm_proto_goTypes = []interface{}{
-	(*PageInfo)(nil),                    // 0: dm.PageInfo
-	(*Response)(nil),                    // 1: dm.Response
-	(*DeviceGatewayMultiCreateReq)(nil), // 2: dm.DeviceGatewayMultiCreateReq
-	(*DeviceGatewayIndexReq)(nil),       // 3: dm.DeviceGatewayIndexReq
-	(*DeviceGatewayIndexResp)(nil),      // 4: dm.DeviceGatewayIndexResp
-	(*DeviceGatewayMultiDeleteReq)(nil), // 5: dm.DeviceGatewayMultiDeleteReq
-	(*GroupInfo)(nil),                   // 6: dm.GroupInfo
-	(*GroupInfoCreateReq)(nil),          // 7: dm.GroupInfoCreateReq
-	(*GroupInfoIndexReq)(nil),           // 8: dm.GroupInfoIndexReq
-	(*GroupInfoIndexResp)(nil),          // 9: dm.GroupInfoIndexResp
-	(*GroupInfoReadReq)(nil),            // 10: dm.GroupInfoReadReq
-	(*GroupInfoUpdateReq)(nil),          // 11: dm.GroupInfoUpdateReq
-	(*GroupInfoDeleteReq)(nil),          // 12: dm.GroupInfoDeleteReq
-	(*GroupDeviceMultiCreateReq)(nil),   // 13: dm.GroupDeviceMultiCreateReq
-	(*GroupDeviceIndexReq)(nil),         // 14: dm.GroupDeviceIndexReq
-	(*GroupDeviceIndexResp)(nil),        // 15: dm.GroupDeviceIndexResp
-	(*GroupDeviceMultiDeleteReq)(nil),   // 16: dm.GroupDeviceMultiDeleteReq
-	(*DeviceInfo)(nil),                  // 17: dm.DeviceInfo
-	(*ProductInfo)(nil),                 // 18: dm.ProductInfo
-	(*ProductInfoDeleteReq)(nil),        // 19: dm.ProductInfoDeleteReq
-	(*ProductInfoReadReq)(nil),          // 20: dm.ProductInfoReadReq
-	(*ProductInfoIndexReq)(nil),         // 21: dm.ProductInfoIndexReq
-	(*ProductInfoIndexResp)(nil),        // 22: dm.ProductInfoIndexResp
-	(*DeviceInfoDeleteReq)(nil),         // 23: dm.DeviceInfoDeleteReq
-	(*DeviceCore)(nil),                  // 24: dm.DeviceCore
-	(*DeviceInfoReadReq)(nil),           // 25: dm.DeviceInfoReadReq
-	(*DeviceInfoIndexReq)(nil),          // 26: dm.DeviceInfoIndexReq
-	(*DeviceInfoIndexResp)(nil),         // 27: dm.DeviceInfoIndexResp
-	(*LoginAuthReq)(nil),                // 28: dm.LoginAuthReq
-	(*AccessAuthReq)(nil),               // 29: dm.AccessAuthReq
-	(*RootCheckReq)(nil),                // 30: dm.RootCheckReq
-	(*ProductSchemaUpdateReq)(nil),      // 31: dm.ProductSchemaUpdateReq
-	(*ProductSchemaCreateReq)(nil),      // 32: dm.ProductSchemaCreateReq
-	(*ProductSchemaDeleteReq)(nil),      // 33: dm.ProductSchemaDeleteReq
-	(*ProductSchemaIndexReq)(nil),       // 34: dm.ProductSchemaIndexReq
-	(*ProductSchemaIndexResp)(nil),      // 35: dm.ProductSchemaIndexResp
-	(*ProductSchemaInfo)(nil),           // 36: dm.ProductSchemaInfo
-	(*ProductSchemaTslImportReq)(nil),   // 37: dm.ProductSchemaTslImportReq
-	(*ProductSchemaTslReadReq)(nil),     // 38: dm.ProductSchemaTslReadReq
-	(*ProductSchemaTslReadResp)(nil),    // 39: dm.ProductSchemaTslReadResp
-	nil,                                 // 40: dm.GroupInfo.TagsEntry
-	nil,                                 // 41: dm.GroupInfoIndexReq.TagsEntry
-	nil,                                 // 42: dm.GroupInfoUpdateReq.TagsEntry
-	nil,                                 // 43: dm.DeviceInfo.TagsEntry
-	nil,                                 // 44: dm.DeviceInfoIndexReq.TagsEntry
-	(*wrapperspb.StringValue)(nil),      // 45: google.protobuf.StringValue
+	(*ProductRemoteConfig)(nil),         // 0: dm.ProductRemoteConfig
+	(*RemoteConfigCreateReq)(nil),       // 1: dm.RemoteConfigCreateReq
+	(*RemoteConfigIndexReq)(nil),        // 2: dm.RemoteConfigIndexReq
+	(*RemoteConfigIndexResp)(nil),       // 3: dm.RemoteConfigIndexResp
+	(*RemoteConfigPushAllReq)(nil),      // 4: dm.RemoteConfigPushAllReq
+	(*RemoteConfigLastReadReq)(nil),     // 5: dm.RemoteConfigLastReadReq
+	(*RemoteConfigLastReadResp)(nil),    // 6: dm.RemoteConfigLastReadResp
+	(*PageInfo)(nil),                    // 7: dm.PageInfo
+	(*Response)(nil),                    // 8: dm.Response
+	(*DeviceGatewayMultiCreateReq)(nil), // 9: dm.DeviceGatewayMultiCreateReq
+	(*DeviceGatewayIndexReq)(nil),       // 10: dm.DeviceGatewayIndexReq
+	(*DeviceGatewayIndexResp)(nil),      // 11: dm.DeviceGatewayIndexResp
+	(*DeviceGatewayMultiDeleteReq)(nil), // 12: dm.DeviceGatewayMultiDeleteReq
+	(*GroupInfo)(nil),                   // 13: dm.GroupInfo
+	(*GroupInfoCreateReq)(nil),          // 14: dm.GroupInfoCreateReq
+	(*GroupInfoIndexReq)(nil),           // 15: dm.GroupInfoIndexReq
+	(*GroupInfoIndexResp)(nil),          // 16: dm.GroupInfoIndexResp
+	(*GroupInfoReadReq)(nil),            // 17: dm.GroupInfoReadReq
+	(*GroupInfoUpdateReq)(nil),          // 18: dm.GroupInfoUpdateReq
+	(*GroupInfoDeleteReq)(nil),          // 19: dm.GroupInfoDeleteReq
+	(*GroupDeviceMultiCreateReq)(nil),   // 20: dm.GroupDeviceMultiCreateReq
+	(*GroupDeviceIndexReq)(nil),         // 21: dm.GroupDeviceIndexReq
+	(*GroupDeviceIndexResp)(nil),        // 22: dm.GroupDeviceIndexResp
+	(*GroupDeviceMultiDeleteReq)(nil),   // 23: dm.GroupDeviceMultiDeleteReq
+	(*DeviceInfo)(nil),                  // 24: dm.DeviceInfo
+	(*ProductInfo)(nil),                 // 25: dm.ProductInfo
+	(*ProductInfoDeleteReq)(nil),        // 26: dm.ProductInfoDeleteReq
+	(*ProductInfoReadReq)(nil),          // 27: dm.ProductInfoReadReq
+	(*ProductInfoIndexReq)(nil),         // 28: dm.ProductInfoIndexReq
+	(*ProductInfoIndexResp)(nil),        // 29: dm.ProductInfoIndexResp
+	(*DeviceInfoDeleteReq)(nil),         // 30: dm.DeviceInfoDeleteReq
+	(*DeviceCore)(nil),                  // 31: dm.DeviceCore
+	(*DeviceInfoReadReq)(nil),           // 32: dm.DeviceInfoReadReq
+	(*DeviceInfoIndexReq)(nil),          // 33: dm.DeviceInfoIndexReq
+	(*DeviceInfoIndexResp)(nil),         // 34: dm.DeviceInfoIndexResp
+	(*LoginAuthReq)(nil),                // 35: dm.LoginAuthReq
+	(*AccessAuthReq)(nil),               // 36: dm.AccessAuthReq
+	(*RootCheckReq)(nil),                // 37: dm.RootCheckReq
+	(*ProductSchemaUpdateReq)(nil),      // 38: dm.ProductSchemaUpdateReq
+	(*ProductSchemaCreateReq)(nil),      // 39: dm.ProductSchemaCreateReq
+	(*ProductSchemaDeleteReq)(nil),      // 40: dm.ProductSchemaDeleteReq
+	(*ProductSchemaIndexReq)(nil),       // 41: dm.ProductSchemaIndexReq
+	(*ProductSchemaIndexResp)(nil),      // 42: dm.ProductSchemaIndexResp
+	(*ProductSchemaInfo)(nil),           // 43: dm.ProductSchemaInfo
+	(*ProductSchemaTslImportReq)(nil),   // 44: dm.ProductSchemaTslImportReq
+	(*ProductSchemaTslReadReq)(nil),     // 45: dm.ProductSchemaTslReadReq
+	(*ProductSchemaTslReadResp)(nil),    // 46: dm.ProductSchemaTslReadResp
+	nil,                                 // 47: dm.GroupInfo.TagsEntry
+	nil,                                 // 48: dm.GroupInfoIndexReq.TagsEntry
+	nil,                                 // 49: dm.GroupInfoUpdateReq.TagsEntry
+	nil,                                 // 50: dm.DeviceInfo.TagsEntry
+	nil,                                 // 51: dm.DeviceInfoIndexReq.TagsEntry
+	(*wrapperspb.StringValue)(nil),      // 52: google.protobuf.StringValue
 }
 var file_proto_dm_proto_depIdxs = []int32{
-	24, // 0: dm.DeviceGatewayMultiCreateReq.list:type_name -> dm.DeviceCore
-	0,  // 1: dm.DeviceGatewayIndexReq.page:type_name -> dm.PageInfo
-	17, // 2: dm.DeviceGatewayIndexResp.list:type_name -> dm.DeviceInfo
-	24, // 3: dm.DeviceGatewayMultiDeleteReq.list:type_name -> dm.DeviceCore
-	40, // 4: dm.GroupInfo.tags:type_name -> dm.GroupInfo.TagsEntry
-	0,  // 5: dm.GroupInfoIndexReq.page:type_name -> dm.PageInfo
-	41, // 6: dm.GroupInfoIndexReq.tags:type_name -> dm.GroupInfoIndexReq.TagsEntry
-	6,  // 7: dm.GroupInfoIndexResp.list:type_name -> dm.GroupInfo
-	6,  // 8: dm.GroupInfoIndexResp.listAll:type_name -> dm.GroupInfo
-	42, // 9: dm.GroupInfoUpdateReq.tags:type_name -> dm.GroupInfoUpdateReq.TagsEntry
-	24, // 10: dm.GroupDeviceMultiCreateReq.list:type_name -> dm.DeviceCore
-	0,  // 11: dm.GroupDeviceIndexReq.page:type_name -> dm.PageInfo
-	17, // 12: dm.GroupDeviceIndexResp.list:type_name -> dm.DeviceInfo
-	24, // 13: dm.GroupDeviceMultiDeleteReq.list:type_name -> dm.DeviceCore
-	45, // 14: dm.DeviceInfo.version:type_name -> google.protobuf.StringValue
-	43, // 15: dm.DeviceInfo.tags:type_name -> dm.DeviceInfo.TagsEntry
-	45, // 16: dm.ProductInfo.desc:type_name -> google.protobuf.StringValue
-	45, // 17: dm.ProductInfo.devStatus:type_name -> google.protobuf.StringValue
-	0,  // 18: dm.ProductInfoIndexReq.page:type_name -> dm.PageInfo
-	18, // 19: dm.ProductInfoIndexResp.list:type_name -> dm.ProductInfo
-	0,  // 20: dm.DeviceInfoIndexReq.page:type_name -> dm.PageInfo
-	44, // 21: dm.DeviceInfoIndexReq.tags:type_name -> dm.DeviceInfoIndexReq.TagsEntry
-	17, // 22: dm.DeviceInfoIndexResp.list:type_name -> dm.DeviceInfo
-	36, // 23: dm.ProductSchemaUpdateReq.info:type_name -> dm.ProductSchemaInfo
-	36, // 24: dm.ProductSchemaCreateReq.info:type_name -> dm.ProductSchemaInfo
-	0,  // 25: dm.ProductSchemaIndexReq.page:type_name -> dm.PageInfo
-	36, // 26: dm.ProductSchemaIndexResp.list:type_name -> dm.ProductSchemaInfo
-	45, // 27: dm.ProductSchemaInfo.name:type_name -> google.protobuf.StringValue
-	45, // 28: dm.ProductSchemaInfo.desc:type_name -> google.protobuf.StringValue
-	45, // 29: dm.ProductSchemaInfo.affordance:type_name -> google.protobuf.StringValue
-	28, // 30: dm.DeviceAuth.loginAuth:input_type -> dm.LoginAuthReq
-	29, // 31: dm.DeviceAuth.accessAuth:input_type -> dm.AccessAuthReq
-	30, // 32: dm.DeviceAuth.rootCheck:input_type -> dm.RootCheckReq
-	17, // 33: dm.DeviceManage.deviceInfoCreate:input_type -> dm.DeviceInfo
-	17, // 34: dm.DeviceManage.deviceInfoUpdate:input_type -> dm.DeviceInfo
-	23, // 35: dm.DeviceManage.deviceInfoDelete:input_type -> dm.DeviceInfoDeleteReq
-	26, // 36: dm.DeviceManage.deviceInfoIndex:input_type -> dm.DeviceInfoIndexReq
-	25, // 37: dm.DeviceManage.deviceInfoRead:input_type -> dm.DeviceInfoReadReq
-	2,  // 38: dm.DeviceManage.deviceGatewayMultiCreate:input_type -> dm.DeviceGatewayMultiCreateReq
-	3,  // 39: dm.DeviceManage.deviceGatewayIndex:input_type -> dm.DeviceGatewayIndexReq
-	5,  // 40: dm.DeviceManage.deviceGatewayMultiDelete:input_type -> dm.DeviceGatewayMultiDeleteReq
-	18, // 41: dm.ProductManage.productInfoCreate:input_type -> dm.ProductInfo
-	18, // 42: dm.ProductManage.productInfoUpdate:input_type -> dm.ProductInfo
-	19, // 43: dm.ProductManage.productInfoDelete:input_type -> dm.ProductInfoDeleteReq
-	21, // 44: dm.ProductManage.productInfoIndex:input_type -> dm.ProductInfoIndexReq
-	20, // 45: dm.ProductManage.productInfoRead:input_type -> dm.ProductInfoReadReq
-	31, // 46: dm.ProductManage.productSchemaUpdate:input_type -> dm.ProductSchemaUpdateReq
-	32, // 47: dm.ProductManage.productSchemaCreate:input_type -> dm.ProductSchemaCreateReq
-	33, // 48: dm.ProductManage.productSchemaDelete:input_type -> dm.ProductSchemaDeleteReq
-	34, // 49: dm.ProductManage.productSchemaIndex:input_type -> dm.ProductSchemaIndexReq
-	37, // 50: dm.ProductManage.productSchemaTslImport:input_type -> dm.ProductSchemaTslImportReq
-	38, // 51: dm.ProductManage.productSchemaTslRead:input_type -> dm.ProductSchemaTslReadReq
-	7,  // 52: dm.DeviceGroup.groupInfoCreate:input_type -> dm.GroupInfoCreateReq
-	8,  // 53: dm.DeviceGroup.groupInfoIndex:input_type -> dm.GroupInfoIndexReq
-	10, // 54: dm.DeviceGroup.groupInfoRead:input_type -> dm.GroupInfoReadReq
-	11, // 55: dm.DeviceGroup.groupInfoUpdate:input_type -> dm.GroupInfoUpdateReq
-	12, // 56: dm.DeviceGroup.groupInfoDelete:input_type -> dm.GroupInfoDeleteReq
-	13, // 57: dm.DeviceGroup.groupDeviceMultiCreate:input_type -> dm.GroupDeviceMultiCreateReq
-	14, // 58: dm.DeviceGroup.groupDeviceIndex:input_type -> dm.GroupDeviceIndexReq
-	16, // 59: dm.DeviceGroup.groupDeviceMultiDelete:input_type -> dm.GroupDeviceMultiDeleteReq
-	1,  // 60: dm.DeviceAuth.loginAuth:output_type -> dm.Response
-	1,  // 61: dm.DeviceAuth.accessAuth:output_type -> dm.Response
-	1,  // 62: dm.DeviceAuth.rootCheck:output_type -> dm.Response
-	1,  // 63: dm.DeviceManage.deviceInfoCreate:output_type -> dm.Response
-	1,  // 64: dm.DeviceManage.deviceInfoUpdate:output_type -> dm.Response
-	1,  // 65: dm.DeviceManage.deviceInfoDelete:output_type -> dm.Response
-	27, // 66: dm.DeviceManage.deviceInfoIndex:output_type -> dm.DeviceInfoIndexResp
-	17, // 67: dm.DeviceManage.deviceInfoRead:output_type -> dm.DeviceInfo
-	1,  // 68: dm.DeviceManage.deviceGatewayMultiCreate:output_type -> dm.Response
-	4,  // 69: dm.DeviceManage.deviceGatewayIndex:output_type -> dm.DeviceGatewayIndexResp
-	1,  // 70: dm.DeviceManage.deviceGatewayMultiDelete:output_type -> dm.Response
-	1,  // 71: dm.ProductManage.productInfoCreate:output_type -> dm.Response
-	1,  // 72: dm.ProductManage.productInfoUpdate:output_type -> dm.Response
-	1,  // 73: dm.ProductManage.productInfoDelete:output_type -> dm.Response
-	22, // 74: dm.ProductManage.productInfoIndex:output_type -> dm.ProductInfoIndexResp
-	18, // 75: dm.ProductManage.productInfoRead:output_type -> dm.ProductInfo
-	1,  // 76: dm.ProductManage.productSchemaUpdate:output_type -> dm.Response
-	1,  // 77: dm.ProductManage.productSchemaCreate:output_type -> dm.Response
-	1,  // 78: dm.ProductManage.productSchemaDelete:output_type -> dm.Response
-	35, // 79: dm.ProductManage.productSchemaIndex:output_type -> dm.ProductSchemaIndexResp
-	1,  // 80: dm.ProductManage.productSchemaTslImport:output_type -> dm.Response
-	39, // 81: dm.ProductManage.productSchemaTslRead:output_type -> dm.ProductSchemaTslReadResp
-	1,  // 82: dm.DeviceGroup.groupInfoCreate:output_type -> dm.Response
-	9,  // 83: dm.DeviceGroup.groupInfoIndex:output_type -> dm.GroupInfoIndexResp
-	6,  // 84: dm.DeviceGroup.groupInfoRead:output_type -> dm.GroupInfo
-	1,  // 85: dm.DeviceGroup.groupInfoUpdate:output_type -> dm.Response
-	1,  // 86: dm.DeviceGroup.groupInfoDelete:output_type -> dm.Response
-	1,  // 87: dm.DeviceGroup.groupDeviceMultiCreate:output_type -> dm.Response
-	15, // 88: dm.DeviceGroup.groupDeviceIndex:output_type -> dm.GroupDeviceIndexResp
-	1,  // 89: dm.DeviceGroup.groupDeviceMultiDelete:output_type -> dm.Response
-	60, // [60:90] is the sub-list for method output_type
-	30, // [30:60] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	7,  // 0: dm.RemoteConfigIndexReq.page:type_name -> dm.PageInfo
+	0,  // 1: dm.RemoteConfigIndexResp.list:type_name -> dm.ProductRemoteConfig
+	0,  // 2: dm.RemoteConfigLastReadResp.info:type_name -> dm.ProductRemoteConfig
+	31, // 3: dm.DeviceGatewayMultiCreateReq.list:type_name -> dm.DeviceCore
+	7,  // 4: dm.DeviceGatewayIndexReq.page:type_name -> dm.PageInfo
+	24, // 5: dm.DeviceGatewayIndexResp.list:type_name -> dm.DeviceInfo
+	31, // 6: dm.DeviceGatewayMultiDeleteReq.list:type_name -> dm.DeviceCore
+	47, // 7: dm.GroupInfo.tags:type_name -> dm.GroupInfo.TagsEntry
+	7,  // 8: dm.GroupInfoIndexReq.page:type_name -> dm.PageInfo
+	48, // 9: dm.GroupInfoIndexReq.tags:type_name -> dm.GroupInfoIndexReq.TagsEntry
+	13, // 10: dm.GroupInfoIndexResp.list:type_name -> dm.GroupInfo
+	13, // 11: dm.GroupInfoIndexResp.listAll:type_name -> dm.GroupInfo
+	49, // 12: dm.GroupInfoUpdateReq.tags:type_name -> dm.GroupInfoUpdateReq.TagsEntry
+	31, // 13: dm.GroupDeviceMultiCreateReq.list:type_name -> dm.DeviceCore
+	7,  // 14: dm.GroupDeviceIndexReq.page:type_name -> dm.PageInfo
+	24, // 15: dm.GroupDeviceIndexResp.list:type_name -> dm.DeviceInfo
+	31, // 16: dm.GroupDeviceMultiDeleteReq.list:type_name -> dm.DeviceCore
+	52, // 17: dm.DeviceInfo.version:type_name -> google.protobuf.StringValue
+	50, // 18: dm.DeviceInfo.tags:type_name -> dm.DeviceInfo.TagsEntry
+	52, // 19: dm.ProductInfo.desc:type_name -> google.protobuf.StringValue
+	52, // 20: dm.ProductInfo.devStatus:type_name -> google.protobuf.StringValue
+	7,  // 21: dm.ProductInfoIndexReq.page:type_name -> dm.PageInfo
+	25, // 22: dm.ProductInfoIndexResp.list:type_name -> dm.ProductInfo
+	7,  // 23: dm.DeviceInfoIndexReq.page:type_name -> dm.PageInfo
+	51, // 24: dm.DeviceInfoIndexReq.tags:type_name -> dm.DeviceInfoIndexReq.TagsEntry
+	24, // 25: dm.DeviceInfoIndexResp.list:type_name -> dm.DeviceInfo
+	43, // 26: dm.ProductSchemaUpdateReq.info:type_name -> dm.ProductSchemaInfo
+	43, // 27: dm.ProductSchemaCreateReq.info:type_name -> dm.ProductSchemaInfo
+	7,  // 28: dm.ProductSchemaIndexReq.page:type_name -> dm.PageInfo
+	43, // 29: dm.ProductSchemaIndexResp.list:type_name -> dm.ProductSchemaInfo
+	52, // 30: dm.ProductSchemaInfo.name:type_name -> google.protobuf.StringValue
+	52, // 31: dm.ProductSchemaInfo.desc:type_name -> google.protobuf.StringValue
+	52, // 32: dm.ProductSchemaInfo.affordance:type_name -> google.protobuf.StringValue
+	35, // 33: dm.DeviceAuth.loginAuth:input_type -> dm.LoginAuthReq
+	36, // 34: dm.DeviceAuth.accessAuth:input_type -> dm.AccessAuthReq
+	37, // 35: dm.DeviceAuth.rootCheck:input_type -> dm.RootCheckReq
+	24, // 36: dm.DeviceManage.deviceInfoCreate:input_type -> dm.DeviceInfo
+	24, // 37: dm.DeviceManage.deviceInfoUpdate:input_type -> dm.DeviceInfo
+	30, // 38: dm.DeviceManage.deviceInfoDelete:input_type -> dm.DeviceInfoDeleteReq
+	33, // 39: dm.DeviceManage.deviceInfoIndex:input_type -> dm.DeviceInfoIndexReq
+	32, // 40: dm.DeviceManage.deviceInfoRead:input_type -> dm.DeviceInfoReadReq
+	9,  // 41: dm.DeviceManage.deviceGatewayMultiCreate:input_type -> dm.DeviceGatewayMultiCreateReq
+	10, // 42: dm.DeviceManage.deviceGatewayIndex:input_type -> dm.DeviceGatewayIndexReq
+	12, // 43: dm.DeviceManage.deviceGatewayMultiDelete:input_type -> dm.DeviceGatewayMultiDeleteReq
+	25, // 44: dm.ProductManage.productInfoCreate:input_type -> dm.ProductInfo
+	25, // 45: dm.ProductManage.productInfoUpdate:input_type -> dm.ProductInfo
+	26, // 46: dm.ProductManage.productInfoDelete:input_type -> dm.ProductInfoDeleteReq
+	28, // 47: dm.ProductManage.productInfoIndex:input_type -> dm.ProductInfoIndexReq
+	27, // 48: dm.ProductManage.productInfoRead:input_type -> dm.ProductInfoReadReq
+	38, // 49: dm.ProductManage.productSchemaUpdate:input_type -> dm.ProductSchemaUpdateReq
+	39, // 50: dm.ProductManage.productSchemaCreate:input_type -> dm.ProductSchemaCreateReq
+	40, // 51: dm.ProductManage.productSchemaDelete:input_type -> dm.ProductSchemaDeleteReq
+	41, // 52: dm.ProductManage.productSchemaIndex:input_type -> dm.ProductSchemaIndexReq
+	44, // 53: dm.ProductManage.productSchemaTslImport:input_type -> dm.ProductSchemaTslImportReq
+	45, // 54: dm.ProductManage.productSchemaTslRead:input_type -> dm.ProductSchemaTslReadReq
+	14, // 55: dm.DeviceGroup.groupInfoCreate:input_type -> dm.GroupInfoCreateReq
+	15, // 56: dm.DeviceGroup.groupInfoIndex:input_type -> dm.GroupInfoIndexReq
+	17, // 57: dm.DeviceGroup.groupInfoRead:input_type -> dm.GroupInfoReadReq
+	18, // 58: dm.DeviceGroup.groupInfoUpdate:input_type -> dm.GroupInfoUpdateReq
+	19, // 59: dm.DeviceGroup.groupInfoDelete:input_type -> dm.GroupInfoDeleteReq
+	20, // 60: dm.DeviceGroup.groupDeviceMultiCreate:input_type -> dm.GroupDeviceMultiCreateReq
+	21, // 61: dm.DeviceGroup.groupDeviceIndex:input_type -> dm.GroupDeviceIndexReq
+	23, // 62: dm.DeviceGroup.groupDeviceMultiDelete:input_type -> dm.GroupDeviceMultiDeleteReq
+	1,  // 63: dm.RemoteConfig.RemoteConfigCreate:input_type -> dm.RemoteConfigCreateReq
+	2,  // 64: dm.RemoteConfig.RemoteConfigIndex:input_type -> dm.RemoteConfigIndexReq
+	4,  // 65: dm.RemoteConfig.RemoteConfigPushAll:input_type -> dm.RemoteConfigPushAllReq
+	5,  // 66: dm.RemoteConfig.RemoteConfigLastRead:input_type -> dm.RemoteConfigLastReadReq
+	8,  // 67: dm.DeviceAuth.loginAuth:output_type -> dm.Response
+	8,  // 68: dm.DeviceAuth.accessAuth:output_type -> dm.Response
+	8,  // 69: dm.DeviceAuth.rootCheck:output_type -> dm.Response
+	8,  // 70: dm.DeviceManage.deviceInfoCreate:output_type -> dm.Response
+	8,  // 71: dm.DeviceManage.deviceInfoUpdate:output_type -> dm.Response
+	8,  // 72: dm.DeviceManage.deviceInfoDelete:output_type -> dm.Response
+	34, // 73: dm.DeviceManage.deviceInfoIndex:output_type -> dm.DeviceInfoIndexResp
+	24, // 74: dm.DeviceManage.deviceInfoRead:output_type -> dm.DeviceInfo
+	8,  // 75: dm.DeviceManage.deviceGatewayMultiCreate:output_type -> dm.Response
+	11, // 76: dm.DeviceManage.deviceGatewayIndex:output_type -> dm.DeviceGatewayIndexResp
+	8,  // 77: dm.DeviceManage.deviceGatewayMultiDelete:output_type -> dm.Response
+	8,  // 78: dm.ProductManage.productInfoCreate:output_type -> dm.Response
+	8,  // 79: dm.ProductManage.productInfoUpdate:output_type -> dm.Response
+	8,  // 80: dm.ProductManage.productInfoDelete:output_type -> dm.Response
+	29, // 81: dm.ProductManage.productInfoIndex:output_type -> dm.ProductInfoIndexResp
+	25, // 82: dm.ProductManage.productInfoRead:output_type -> dm.ProductInfo
+	8,  // 83: dm.ProductManage.productSchemaUpdate:output_type -> dm.Response
+	8,  // 84: dm.ProductManage.productSchemaCreate:output_type -> dm.Response
+	8,  // 85: dm.ProductManage.productSchemaDelete:output_type -> dm.Response
+	42, // 86: dm.ProductManage.productSchemaIndex:output_type -> dm.ProductSchemaIndexResp
+	8,  // 87: dm.ProductManage.productSchemaTslImport:output_type -> dm.Response
+	46, // 88: dm.ProductManage.productSchemaTslRead:output_type -> dm.ProductSchemaTslReadResp
+	8,  // 89: dm.DeviceGroup.groupInfoCreate:output_type -> dm.Response
+	16, // 90: dm.DeviceGroup.groupInfoIndex:output_type -> dm.GroupInfoIndexResp
+	13, // 91: dm.DeviceGroup.groupInfoRead:output_type -> dm.GroupInfo
+	8,  // 92: dm.DeviceGroup.groupInfoUpdate:output_type -> dm.Response
+	8,  // 93: dm.DeviceGroup.groupInfoDelete:output_type -> dm.Response
+	8,  // 94: dm.DeviceGroup.groupDeviceMultiCreate:output_type -> dm.Response
+	22, // 95: dm.DeviceGroup.groupDeviceIndex:output_type -> dm.GroupDeviceIndexResp
+	8,  // 96: dm.DeviceGroup.groupDeviceMultiDelete:output_type -> dm.Response
+	8,  // 97: dm.RemoteConfig.RemoteConfigCreate:output_type -> dm.Response
+	3,  // 98: dm.RemoteConfig.RemoteConfigIndex:output_type -> dm.RemoteConfigIndexResp
+	8,  // 99: dm.RemoteConfig.RemoteConfigPushAll:output_type -> dm.Response
+	6,  // 100: dm.RemoteConfig.RemoteConfigLastRead:output_type -> dm.RemoteConfigLastReadResp
+	67, // [67:101] is the sub-list for method output_type
+	33, // [33:67] is the sub-list for method input_type
+	33, // [33:33] is the sub-list for extension type_name
+	33, // [33:33] is the sub-list for extension extendee
+	0,  // [0:33] is the sub-list for field type_name
 }
 
 func init() { file_proto_dm_proto_init() }
@@ -3214,7 +3664,7 @@ func file_proto_dm_proto_init() {
 	file_proto_schemaInfo_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_proto_dm_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PageInfo); i {
+			switch v := v.(*ProductRemoteConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3226,7 +3676,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Response); i {
+			switch v := v.(*RemoteConfigCreateReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3238,7 +3688,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceGatewayMultiCreateReq); i {
+			switch v := v.(*RemoteConfigIndexReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3250,7 +3700,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceGatewayIndexReq); i {
+			switch v := v.(*RemoteConfigIndexResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3262,7 +3712,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceGatewayIndexResp); i {
+			switch v := v.(*RemoteConfigPushAllReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3274,7 +3724,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceGatewayMultiDeleteReq); i {
+			switch v := v.(*RemoteConfigLastReadReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3286,7 +3736,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupInfo); i {
+			switch v := v.(*RemoteConfigLastReadResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3298,7 +3748,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupInfoCreateReq); i {
+			switch v := v.(*PageInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3310,7 +3760,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupInfoIndexReq); i {
+			switch v := v.(*Response); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3322,7 +3772,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupInfoIndexResp); i {
+			switch v := v.(*DeviceGatewayMultiCreateReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3334,7 +3784,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupInfoReadReq); i {
+			switch v := v.(*DeviceGatewayIndexReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3346,7 +3796,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupInfoUpdateReq); i {
+			switch v := v.(*DeviceGatewayIndexResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3358,7 +3808,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupInfoDeleteReq); i {
+			switch v := v.(*DeviceGatewayMultiDeleteReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3370,7 +3820,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupDeviceMultiCreateReq); i {
+			switch v := v.(*GroupInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3382,7 +3832,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupDeviceIndexReq); i {
+			switch v := v.(*GroupInfoCreateReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3394,7 +3844,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupDeviceIndexResp); i {
+			switch v := v.(*GroupInfoIndexReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3406,7 +3856,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GroupDeviceMultiDeleteReq); i {
+			switch v := v.(*GroupInfoIndexResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3418,7 +3868,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceInfo); i {
+			switch v := v.(*GroupInfoReadReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3430,7 +3880,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductInfo); i {
+			switch v := v.(*GroupInfoUpdateReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3442,7 +3892,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductInfoDeleteReq); i {
+			switch v := v.(*GroupInfoDeleteReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3454,7 +3904,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductInfoReadReq); i {
+			switch v := v.(*GroupDeviceMultiCreateReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3466,7 +3916,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductInfoIndexReq); i {
+			switch v := v.(*GroupDeviceIndexReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3478,7 +3928,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductInfoIndexResp); i {
+			switch v := v.(*GroupDeviceIndexResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3490,7 +3940,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceInfoDeleteReq); i {
+			switch v := v.(*GroupDeviceMultiDeleteReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3502,7 +3952,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceCore); i {
+			switch v := v.(*DeviceInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3514,7 +3964,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceInfoReadReq); i {
+			switch v := v.(*ProductInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3526,7 +3976,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceInfoIndexReq); i {
+			switch v := v.(*ProductInfoDeleteReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3538,7 +3988,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeviceInfoIndexResp); i {
+			switch v := v.(*ProductInfoReadReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3550,7 +4000,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginAuthReq); i {
+			switch v := v.(*ProductInfoIndexReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3562,7 +4012,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessAuthReq); i {
+			switch v := v.(*ProductInfoIndexResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3574,7 +4024,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RootCheckReq); i {
+			switch v := v.(*DeviceInfoDeleteReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3586,7 +4036,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductSchemaUpdateReq); i {
+			switch v := v.(*DeviceCore); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3598,7 +4048,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductSchemaCreateReq); i {
+			switch v := v.(*DeviceInfoReadReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3610,7 +4060,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductSchemaDeleteReq); i {
+			switch v := v.(*DeviceInfoIndexReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3622,7 +4072,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductSchemaIndexReq); i {
+			switch v := v.(*DeviceInfoIndexResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3634,7 +4084,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductSchemaIndexResp); i {
+			switch v := v.(*LoginAuthReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3646,7 +4096,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductSchemaInfo); i {
+			switch v := v.(*AccessAuthReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3658,7 +4108,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductSchemaTslImportReq); i {
+			switch v := v.(*RootCheckReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3670,7 +4120,7 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductSchemaTslReadReq); i {
+			switch v := v.(*ProductSchemaUpdateReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3682,6 +4132,90 @@ func file_proto_dm_proto_init() {
 			}
 		}
 		file_proto_dm_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProductSchemaCreateReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dm_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProductSchemaDeleteReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dm_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProductSchemaIndexReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dm_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProductSchemaIndexResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dm_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProductSchemaInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dm_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProductSchemaTslImportReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dm_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProductSchemaTslReadReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dm_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ProductSchemaTslReadResp); i {
 			case 0:
 				return &v.state
@@ -3700,9 +4234,9 @@ func file_proto_dm_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_dm_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   45,
+			NumMessages:   52,
 			NumExtensions: 0,
-			NumServices:   4,
+			NumServices:   5,
 		},
 		GoTypes:           file_proto_dm_proto_goTypes,
 		DependencyIndexes: file_proto_dm_proto_depIdxs,
