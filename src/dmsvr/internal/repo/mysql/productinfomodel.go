@@ -16,7 +16,7 @@ type (
 	// and implement the added methods in customProductInfoModel.
 	ProductInfoModel interface {
 		productInfoModel
-		FindByFilter(ctx context.Context, filter ProductFilter, page def.PageInfo) ([]*ProductInfo, error)
+		FindByFilter(ctx context.Context, filter ProductFilter, page *def.PageInfo) ([]*ProductInfo, error)
 		CountByFilter(ctx context.Context, filter ProductFilter) (size int64, err error)
 	}
 	ProductFilter struct {
@@ -50,7 +50,7 @@ func (p *ProductFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	return sql
 }
 
-func (m *customProductInfoModel) FindByFilter(ctx context.Context, f ProductFilter, page def.PageInfo) ([]*ProductInfo, error) {
+func (m *customProductInfoModel) FindByFilter(ctx context.Context, f ProductFilter, page *def.PageInfo) ([]*ProductInfo, error) {
 	var resp []*ProductInfo
 	sql := sq.Select(productInfoRows).From(m.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql)

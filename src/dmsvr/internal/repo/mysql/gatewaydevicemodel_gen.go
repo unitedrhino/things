@@ -18,15 +18,15 @@ import (
 var (
 	gatewayDeviceFieldNames          = builder.RawFieldNames(&GatewayDevice{})
 	gatewayDeviceRows                = strings.Join(gatewayDeviceFieldNames, ",")
-	gatewayDeviceRowsExpectAutoSet   = strings.Join(stringx.Remove(gatewayDeviceFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
-	gatewayDeviceRowsWithPlaceHolder = strings.Join(stringx.Remove(gatewayDeviceFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
+	gatewayDeviceRowsExpectAutoSet   = strings.Join(stringx.Remove(gatewayDeviceFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), ",")
+	gatewayDeviceRowsWithPlaceHolder = strings.Join(stringx.Remove(gatewayDeviceFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), "=?,") + "=?"
 )
 
 type (
 	gatewayDeviceModel interface {
 		Insert(ctx context.Context, data *GatewayDevice) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*GatewayDevice, error)
-		FindOneByGatewayDeviceNameGatewayProductIDProductIDDeviceName(ctx context.Context, gatewayDeviceName string, gatewayProductID string, productID string, deviceName string) (*GatewayDevice, error)
+		FindOneByGatewayProductIDGatewayDeviceNameProductIDDeviceName(ctx context.Context, gatewayProductID string, gatewayDeviceName string, productID string, deviceName string) (*GatewayDevice, error)
 		Update(ctx context.Context, data *GatewayDevice) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -75,10 +75,10 @@ func (m *defaultGatewayDeviceModel) FindOne(ctx context.Context, id int64) (*Gat
 	}
 }
 
-func (m *defaultGatewayDeviceModel) FindOneByGatewayDeviceNameGatewayProductIDProductIDDeviceName(ctx context.Context, gatewayDeviceName string, gatewayProductID string, productID string, deviceName string) (*GatewayDevice, error) {
+func (m *defaultGatewayDeviceModel) FindOneByGatewayProductIDGatewayDeviceNameProductIDDeviceName(ctx context.Context, gatewayProductID string, gatewayDeviceName string, productID string, deviceName string) (*GatewayDevice, error) {
 	var resp GatewayDevice
-	query := fmt.Sprintf("select %s from %s where `gatewayDeviceName` = ? and `gatewayProductID` = ? and `productID` = ? and `deviceName` = ? limit 1", gatewayDeviceRows, m.table)
-	err := m.conn.QueryRowCtx(ctx, &resp, query, gatewayDeviceName, gatewayProductID, productID, deviceName)
+	query := fmt.Sprintf("select %s from %s where `gatewayProductID` = ? and `gatewayDeviceName` = ? and `productID` = ? and `deviceName` = ? limit 1", gatewayDeviceRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, gatewayProductID, gatewayDeviceName, productID, deviceName)
 	switch err {
 	case nil:
 		return &resp, nil
