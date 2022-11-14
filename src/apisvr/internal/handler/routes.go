@@ -15,6 +15,7 @@ import (
 	thingsgroupdevice "github.com/i-Things/things/src/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/group/info"
 	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
+	thingsproductremoteConfig "github.com/i-Things/things/src/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/src/apisvr/internal/handler/things/product/schema"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 
@@ -348,6 +349,35 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/product/schema"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductremoteConfig.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductremoteConfig.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/push-all",
+					Handler: thingsproductremoteConfig.PushAllHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/lastest-read",
+					Handler: thingsproductremoteConfig.LastestReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/remote-config"),
 	)
 
 	server.AddRoutes(
