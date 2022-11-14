@@ -14,7 +14,7 @@ type (
 		Version  string         `json:"version,omitempty"`  //协议版本，默认为1.0。
 		EventID  string         `json:"eventId,omitempty"`  //事件的 Id，在数据模板事件中定义。
 		ActionID string         `json:"actionId,omitempty"` //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
-		Showmeta int64          `json:"showmeta,omitempty"` //标识回复消息是否带 metadata，缺省为0表示不返回 metadata
+		ShowMeta int64          `json:"showmeta,omitempty"` //标识回复消息是否带 metadata，缺省为0表示不返回 metadata
 		Type     string         `json:"type,omitempty"`     //	表示获取什么类型的信息。report:表示设备上报的信息 info:信息 alert:告警 fault:故障
 	}
 )

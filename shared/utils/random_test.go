@@ -5,12 +5,12 @@ import (
 	"testing"
 )
 
-func TestGetPassword(t *testing.T) {
-	pass := GetPassword(32, 1)
+func TestRandom(t *testing.T) {
+	pass := Random(32, 1)
 	fmt.Println(pass)
 }
 
-func TestGetPwdBase64(t *testing.T) {
-	pass := GetPwdBase64(20)
+func TestGetRandomBase64(t *testing.T) {
+	pass := GetRandomBase64(20)
 	fmt.Println(pass)
 }

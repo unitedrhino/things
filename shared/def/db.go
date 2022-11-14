@@ -22,14 +22,14 @@ type PageInfo2 struct {
 	Size      int64 `json:"size" form:"size"` // 每页大小
 }
 
-func (p PageInfo) GetLimit() int64 {
-	if p.Size == 0 {
+func (p *PageInfo) GetLimit() int64 {
+	if p == nil || p.Size == 0 {
 		return 2000
 	}
 	return p.Size
 }
-func (p PageInfo) GetOffset() int64 {
-	if p.Page == 0 {
+func (p *PageInfo) GetOffset() int64 {
+	if p == nil || p.Page == 0 {
 		return 0
 	}
 	return p.Size * (p.Page - 1)
