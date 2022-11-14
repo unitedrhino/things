@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/dgraph-io/ristretto"
-	"github.com/i-Things/things/shared/def"
 	schema "github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -66,7 +65,7 @@ func (s SchemaRepo) TslRead(ctx context.Context, productID string) (*schema.Mode
 	if ok {
 		return temp.(*schema.Model), nil
 	}
-	dbSchemas, err := s.db.FindByFilter(ctx, mysql.ProductSchemaFilter{ProductID: productID}, def.PageInfo{})
+	dbSchemas, err := s.db.FindByFilter(ctx, mysql.ProductSchemaFilter{ProductID: productID}, nil)
 	if err != nil {
 		return nil, err
 	}

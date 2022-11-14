@@ -19,6 +19,11 @@ type ConnectMsg struct {
 	Reason    string
 }
 
+const (
+	ConnectStatus    = "connected"
+	DisConnectStatus = "disconnected"
+)
+
 func GetDevConnMsg(ctx context.Context, data []byte) (*ConnectMsg, error) {
 	logInfo := devices.DevConn{}
 	err := json.Unmarshal(data, &logInfo)

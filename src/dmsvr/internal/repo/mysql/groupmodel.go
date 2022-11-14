@@ -108,7 +108,7 @@ func (m *groupModel) GetGroupsCountByFilter(ctx context.Context, f GroupFilter, 
 		return 0, err
 	}
 }
-func (m *groupModel) FindGroupInfoByFilter(ctx context.Context, f GroupFilter, page def.PageInfo, parentFlag bool) ([]*GroupInfo, error) {
+func (m *groupModel) FindGroupInfoByFilter(ctx context.Context, f GroupFilter, page *def.PageInfo, parentFlag bool) ([]*GroupInfo, error) {
 	var resp []*GroupInfo
 	sql := sq.Select(groupInfoRows).From(m.groupInfo).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql, parentFlag)
@@ -142,7 +142,7 @@ func (m *groupModel) GetGroupDeviceCountByFilter(ctx context.Context, f GroupDev
 		return 0, err
 	}
 }
-func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceFilter, page def.PageInfo) ([]*GroupDevice, error) {
+func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceFilter, page *def.PageInfo) ([]*GroupDevice, error) {
 	var resp []*GroupDevice
 	sql := sq.Select(groupDeviceRows).From(m.groupDevice).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql)
@@ -203,7 +203,7 @@ func (m *groupModel) IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInf
 		Tags:      in.Tags,
 	}
 
-	dg, err := m.FindGroupInfoByFilter(ctx, filter, def.PageInfo{Size: 100000, Page: 1}, false)
+	dg, err := m.FindGroupInfoByFilter(ctx, filter, nil, false)
 	if err != nil {
 		return nil, err
 	}
