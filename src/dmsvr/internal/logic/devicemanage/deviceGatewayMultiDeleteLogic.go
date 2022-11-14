@@ -3,7 +3,6 @@ package devicemanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
-
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 

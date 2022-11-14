@@ -81,7 +81,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 	di := mysql.DeviceInfo{
 		ProductID:  in.ProductID,  // 产品id
 		DeviceName: in.DeviceName, // 设备名称
-		Secret:     utils.GetPwdBase64(20),
+		Secret:     utils.GetRandomBase64(20),
 	}
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)

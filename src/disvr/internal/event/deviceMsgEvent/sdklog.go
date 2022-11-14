@@ -53,9 +53,9 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 		return nil, err
 	}
 	switch l.topics[2] {
-	case "operation":
+	case msgSdkLog.TypeOperation:
 		respMsg, err = l.GetLogLevel(msg)
-	case "report":
+	case msgSdkLog.TypeReport:
 		respMsg, err = l.ReportLogContent(msg)
 	default:
 		return nil, errors.Parameter.AddDetail("sdk log topic is err:" + msg.Topic)
@@ -111,7 +111,7 @@ func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 	return l.DeviceResp(msg, errors.OK, map[string]any{"logLevel": ld.LogLevel}), nil
 }
 
-func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) *deviceMsg.PublishMsg {
+func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
 	resp := &deviceMsg.CommonMsg{
 		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
 		ClientToken: l.dreq.ClientToken,
