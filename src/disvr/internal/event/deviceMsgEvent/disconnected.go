@@ -39,7 +39,7 @@ func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	}
 	err = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  ld.ProductID,
-		Action:     "disconnected",
+		Action:     deviceStatus.DisConnectStatus,
 		Timestamp:  msg.Timestamp, // 操作时间
 		DeviceName: ld.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),

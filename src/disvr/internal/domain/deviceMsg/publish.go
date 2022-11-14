@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
+	"strings"
 	"time"
 )
 
@@ -22,12 +23,12 @@ type (
 	}
 
 	CommonMsg struct { //消息内容通用字段
-		Method      string         `json:"method"`              //操作方法
-		ClientToken string         `json:"clientToken"`         //方便排查随机数
-		Timestamp   int64          `json:"timestamp,omitempty"` //毫秒时间戳
-		Code        int64          `json:"code,omitempty"`      //状态码
-		Status      string         `json:"status,omitempty"`    //返回信息
-		Data        map[string]any `json:"data,omitempty"`      //返回具体设备上报的最新数据内容
+		Method      string `json:"method"`              //操作方法
+		ClientToken string `json:"clientToken"`         //方便排查随机数
+		Timestamp   int64  `json:"timestamp,omitempty"` //毫秒时间戳
+		Code        int64  `json:"code,omitempty"`      //状态码
+		Status      string `json:"status,omitempty"`    //返回信息
+		Data        any    `json:"data,omitempty"`      //返回具体设备上报的最新数据内容
 	}
 )
 
@@ -40,6 +41,14 @@ func (p *PublishMsg) String() string {
 		"DeviceNames": p.DeviceName,
 	}
 	return utils.Fmt(msgMap)
+}
+
+func NewRespCommonMsg(method, clientToken string) *CommonMsg {
+	return &CommonMsg{
+		Method:      GetRespMethod(method),
+		ClientToken: clientToken,
+		Timestamp:   time.Now().UnixMilli(),
+	}
 }
 
 func (c *CommonMsg) GetTimeStamp() time.Time {
@@ -80,19 +89,18 @@ func GetDevPublish(ctx context.Context, data []byte) (*PublishMsg, error) {
 	return &ele, nil
 }
 
-// GenDeviceResp 生成设备请求的回复包
-func GenDeviceResp(Method, ClientToken string, err error) *CommonMsg {
-	respMethod := GetRespMethod(Method)
-	resp := &CommonMsg{
-		Method:      respMethod,
-		ClientToken: ClientToken,
-		Timestamp:   time.Now().UnixMilli(),
+func GenRespTopic(topics any) string {
+	var (
+		strs []string
+		ok   bool
+	)
+	if strs, ok = topics.([]string); ok {
+	} else if str, ok := topics.(string); ok {
+		strs = strings.Split(str, "/")
+	} else {
+		panic("GenRespTopic not support type")
 	}
-	return resp.AddStatus(err)
-}
-
-func GenRespTopic(topics []string) string {
 	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
-		topics[0], topics[2], topics[3], topics[4])
+		strs[0], strs[2], strs[3], strs[4])
 	return respTopic
 }

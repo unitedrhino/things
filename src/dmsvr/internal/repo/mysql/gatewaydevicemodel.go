@@ -20,7 +20,7 @@ type (
 		gatewayDeviceModel
 		CreateList(ctx context.Context, gateway *device.Core, subDevices []*device.Core) error
 		DeleteList(ctx context.Context, gateway *device.Core, subDevices []*device.Core) error
-		FindByFilter(ctx context.Context, filter GatewayDeviceFilter, page def.PageInfo) ([]*DeviceInfo, error)
+		FindByFilter(ctx context.Context, filter GatewayDeviceFilter, page *def.PageInfo) ([]*DeviceInfo, error)
 		CountByFilter(ctx context.Context, filter GatewayDeviceFilter) (size int64, err error)
 	}
 
@@ -38,7 +38,7 @@ func (g GatewayDeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	return sql
 }
 
-func (c customGatewayDeviceModel) FindByFilter(ctx context.Context, f GatewayDeviceFilter, page def.PageInfo) ([]*DeviceInfo, error) {
+func (c customGatewayDeviceModel) FindByFilter(ctx context.Context, f GatewayDeviceFilter, page *def.PageInfo) ([]*DeviceInfo, error) {
 	var resp []*DeviceInfo
 	sql := sq.Select("di.*").From(c.table + "as gd").
 		LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.productID and di.deviceName=gd.deviceName", c.deviceInfoTable)).
