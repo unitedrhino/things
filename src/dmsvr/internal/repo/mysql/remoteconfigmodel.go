@@ -65,7 +65,7 @@ func (m *remoteConfigModel) GetRemoteConfigCountByFilter(ctx context.Context, f 
 	}
 }
 
-func (m *remoteConfigModel) FindRemoteConfigByFilter(ctx context.Context, f RemoteConfigFilter, page def.PageInfo) ([]*ProductRemoteConfig, error) {
+func (m *remoteConfigModel) FindRemoteConfigByFilter(ctx context.Context, f RemoteConfigFilter, page *def.PageInfo) ([]*ProductRemoteConfig, error) {
 	var resp []*ProductRemoteConfig
 	sql := sq.Select(productRemoteConfigRows).From(m.remoteConfig).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql)
