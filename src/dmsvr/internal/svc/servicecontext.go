@@ -18,24 +18,26 @@ import (
 )
 
 type ServiceContext struct {
-	Config         config.Config
-	DeviceInfo     mysql.DeviceInfoModel
-	ProductInfo    mysql.ProductInfoModel
-	ProductSchema  mysql.ProductSchemaModel
-	DeviceID       *utils.SnowFlake
-	ProductID      *utils.SnowFlake
-	DataUpdate     dataUpdate.DataUpdate
-	Store          kv.Store
-	SchemaManaRepo deviceMsgManage.SchemaDataRepo
-	HubLogRepo     deviceMsgManage.HubLogRepo
-	SchemaRepo     schema.Repo
-	SDKLogRepo     deviceMsgManage.SDKLogRepo
-	FirmwareInfo   mysql.ProductFirmwareModel
-	GroupInfo      mysql.GroupInfoModel
-	GroupDevice    mysql.GroupDeviceModel
-	GroupID        *utils.SnowFlake
-	GroupDB        mysql.GroupModel
-	Gateway        mysql.GatewayDeviceModel
+	Config           config.Config
+	DeviceInfo       mysql.DeviceInfoModel
+	ProductInfo      mysql.ProductInfoModel
+	ProductSchema    mysql.ProductSchemaModel
+	DeviceID         *utils.SnowFlake
+	ProductID        *utils.SnowFlake
+	DataUpdate       dataUpdate.DataUpdate
+	Store            kv.Store
+	SchemaManaRepo   deviceMsgManage.SchemaDataRepo
+	HubLogRepo       deviceMsgManage.HubLogRepo
+	SchemaRepo       schema.Repo
+	SDKLogRepo       deviceMsgManage.SDKLogRepo
+	FirmwareInfo     mysql.ProductFirmwareModel
+	GroupInfo        mysql.GroupInfoModel
+	GroupDevice      mysql.GroupDeviceModel
+	GroupID          *utils.SnowFlake
+	GroupDB          mysql.GroupModel
+	Gateway          mysql.GatewayDeviceModel
+	RemoteConfigDB   mysql.RemoteConfigModel
+	RemoteConfigInfo mysql.ProductRemoteConfigModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -64,25 +66,30 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	gd := mysql.NewGroupDeviceModel(conn)
 	GroupID := utils.NewSnowFlake(nodeId)
 	GroupDB := mysql.NewGroupModel(conn)
+	RemoteConfigDB := mysql.NewRemoteConfigModel(conn)
+	RemoteConfigInfo := mysql.NewProductRemoteConfigModel(conn)
+	mysql.NewProductRemoteConfigModel(conn)
 	gw := mysql.NewGatewayDeviceModel(conn)
 	return &ServiceContext{
-		Config:         c,
-		DeviceInfo:     di,
-		ProductInfo:    pi,
-		ProductSchema:  pt,
-		FirmwareInfo:   fr,
-		SchemaRepo:     tr,
-		DeviceID:       DeviceID,
-		ProductID:      ProductID,
-		DataUpdate:     du,
-		Store:          store,
-		SchemaManaRepo: deviceData,
-		HubLogRepo:     hubLog,
-		SDKLogRepo:     sdkLog,
-		GroupInfo:      gi,
-		GroupDevice:    gd,
-		GroupID:        GroupID,
-		GroupDB:        GroupDB,
-		Gateway:        gw,
+		Config:           c,
+		DeviceInfo:       di,
+		ProductInfo:      pi,
+		ProductSchema:    pt,
+		FirmwareInfo:     fr,
+		SchemaRepo:       tr,
+		DeviceID:         DeviceID,
+		ProductID:        ProductID,
+		DataUpdate:       du,
+		Store:            store,
+		SchemaManaRepo:   deviceData,
+		HubLogRepo:       hubLog,
+		SDKLogRepo:       sdkLog,
+		GroupInfo:        gi,
+		GroupDevice:      gd,
+		GroupID:          GroupID,
+		GroupDB:          GroupDB,
+		Gateway:          gw,
+		RemoteConfigDB:   RemoteConfigDB,
+		RemoteConfigInfo: RemoteConfigInfo,
 	}
 }
