@@ -53,11 +53,22 @@ const (
 	ReportInfoReply Method = "reportInfoReply" //表示云端接收设备上报后的响应报文
 
 	/*
-		当用户在小程序或App中删除已绑定成功的设备，平台会下发用户删除设备的通知到设备，设备接收后可根据业务需求自行处理。如网关类设备接收到子设备被删除。
-		下发用户删除设备 Topic： $thing/down/service/{ProductID}/{DeviceNames}
+		拓扑关系管理
+		网关类型的设备，可通过与云端的数据通信，对其下的子设备进行绑定与解绑操作。实现此类功能需利用如下两个 Topic：
+		数据上行 Topic（用于发布）：$gateway/operation/${productid}/${devicename}
+		数据下行 Topic（用于订阅）：$gateway/operation/${productid}/${devicename}
 	*/
-	UnbindDevice Method = "unbindDevice" // 表示是用户在小程序或 App 中删除或解绑某个设备
+	Bind               Method = "bind"               //绑定设备
+	Unbind             Method = "unbind"             //解绑设备
+	DescribeSubDevices Method = "describeSubDevices" //查询拓扑关系
+	Change             Method = "change"             //拓扑关系变化
 
+	/*
+		数据上行 Topic（用于发布）：$gateway/status/${productid}/${devicename}
+		数据下行 Topic（用于订阅）：$gateway/status/${productid}/${devicename}
+	*/
+	Online  Method = "online"  //代理子设备上线
+	Offline Method = "offline" //代理子设备下线
 )
 
 func GetRespMethod(method Method) Method {
@@ -74,7 +85,7 @@ func GetRespMethod(method Method) Method {
 		return ControlReply
 	case Report:
 		return ReportReply
-	default:
-		panic(method)
+	default: //不在里面的方法直接返回方法名即可
+		return method
 	}
 }

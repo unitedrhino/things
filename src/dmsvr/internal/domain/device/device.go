@@ -1,6 +1,6 @@
 package device
 
 type Core struct {
-	ProductID  string //产品id
-	DeviceName string //设备名称
+	ProductID  string `json:"productID"`  //产品id
+	DeviceName string `json:"deviceName"` //设备名称
 }

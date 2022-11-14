@@ -153,7 +153,7 @@ CREATE TABLE if not exists `gateway_device`
     `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `gatewayDeviceName_gatewayProductID_productID_deviceName` (`gatewayDeviceName`,`gatewayProductID`,`productID`,`deviceName`)
+    UNIQUE KEY `gatewayProductID_gatewayDeviceName_productID_deviceName` (`gatewayProductID`,`gatewayDeviceName`,`productID`,`deviceName`)
     ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '网关与子设备关系表';
 
 CREATE TABLE if not exists `product_remote_config`
