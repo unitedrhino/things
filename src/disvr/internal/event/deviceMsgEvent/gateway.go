@@ -87,7 +87,7 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 			resp.AddStatus(err)
 			return &resp, err
 		}
-		resp.Payload = &msgGateway.GateWayData{Devices: l.dreq.Payload.Devices}
+		resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices}
 	case deviceMsg.Unbind:
 		_, err := l.svcCtx.DeviceM.DeviceGatewayMultiDelete(l.ctx, &dm.DeviceGatewayMultiDeleteReq{
 			GatewayProductID:  msg.ProductID,
@@ -98,7 +98,7 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 			resp.AddStatus(err)
 			return &resp, err
 		}
-		resp.Payload = &msgGateway.GateWayData{Devices: l.dreq.Payload.Devices}
+		resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices}
 	case deviceMsg.DescribeSubDevices:
 		deviceList, err := l.svcCtx.DeviceM.DeviceGatewayIndex(l.ctx, &dm.DeviceGatewayIndexReq{
 			GatewayProductID:  msg.ProductID,
@@ -108,7 +108,7 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 			resp.AddStatus(err)
 			return &resp, err
 		}
-		var payload msgGateway.GateWayData
+		var payload msgGateway.GatewayPayload
 		for _, device := range deviceList.List {
 			payload.Devices = append(payload.Devices, &msgGateway.Device{
 				ProductID:  device.ProductID,
@@ -131,7 +131,7 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 	var (
 		isOnline = int64(def.False)
 		action   = deviceStatus.DisConnectStatus
-		payload  msgGateway.GateWayData
+		payload  msgGateway.GatewayPayload
 	)
 
 	switch l.dreq.Method {
