@@ -114,7 +114,7 @@ func (p *Property) ValidateWithFmt() error {
 		return err
 	}
 	if p.Mode != PropertyModeRW && p.Mode != PropertyModeR {
-		return errors.Parameter.WithMsgf("属性读写类型只能为wr及r,收到:%v", p.Mode)
+		return errors.Parameter.WithMsgf("属性读写类型只能为rw及r,收到:%v", p.Mode)
 	}
 	return p.Define.ValidateWithFmt()
 }
