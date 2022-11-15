@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -40,6 +41,16 @@ func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
 func ToDeviceCoreDos(in []*dm.DeviceCore) (ret []*device.Core) {
 	for _, v := range in {
 		ret = append(ret, &device.Core{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+	}
+	return
+}
+
+func ToDeviceCoreEvents(in []*dm.DeviceCore) (ret []*events.DeviceCore) {
+	for _, v := range in {
+		ret = append(ret, &events.DeviceCore{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 		})
