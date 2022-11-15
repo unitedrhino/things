@@ -15,6 +15,7 @@ type (
 	UpdateHandle interface {
 		ProductSchemaUpdate(info *events.DataUpdateInfo) error
 		DeviceLogLevelUpdate(info *events.DataUpdateInfo) error
+		DeviceGatewayUpdate(info *events.GatewayUpdateInfo) error
 	}
 )
 

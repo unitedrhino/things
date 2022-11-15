@@ -2,6 +2,9 @@ package devicemanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -31,6 +34,15 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	}, ToDeviceCoreDos(in.List))
 	if err != nil {
 		return nil, err
+	}
+	err = l.svcCtx.DataUpdate.DeviceGatewayUpdate(l.ctx, &events.GatewayUpdateInfo{
+		GatewayProductID:  in.GatewayProductID,
+		GatewayDeviceName: in.GatewayDeviceName,
+		Status:            def.GatewayUnbind,
+		Devices:           ToDeviceCoreEvents(in.List),
+	})
+	if err != nil {
+		l.Errorf("%s.DeviceGatewayUpdate err=%+v", utils.FuncName(), err)
 	}
 	return &dm.Response{}, nil
 }

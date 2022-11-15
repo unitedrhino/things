@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -43,7 +44,11 @@ func (p *PublishMsg) String() string {
 	return utils.Fmt(msgMap)
 }
 
+// 如果clientToken为空,会使用uuid生成一个
 func NewRespCommonMsg(method, clientToken string) *CommonMsg {
+	if clientToken == "" {
+		clientToken, _ = uuid.GenerateUUID()
+	}
 	return &CommonMsg{
 		Method:      GetRespMethod(method),
 		ClientToken: clientToken,
