@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	IDFomatChect     = false //是否检查ID是否以数字开头
-	IDLen            = 128   //标识符的长度
-	NameLen          = 128   //参数名称的长度
-	DescLen          = 80    //描述的最大长度
+	IDFFormatCheck   = true //是否检查ID是否以数字开头
+	IDLen            = 128  //标识符的长度
+	NameLen          = 128  //参数名称的长度
+	DescLen          = 80   //描述的最大长度
 	DefineMappingLen = 20
 	DefineUnitLen    = 12
 	DefineIntMax     = 9999999999999
@@ -124,7 +124,7 @@ func IDValidate(id string) error {
 		return errors.Parameter.WithMsgf(
 			"标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
 	}
-	if IDFomatChect {
+	if IDFFormatCheck {
 		if !(id[0] <= '9' || id[0] >= '0') {
 			return errors.Parameter.WithMsgf(
 				"标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
