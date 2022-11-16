@@ -9,7 +9,6 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgGateway"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -61,6 +60,17 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		resp, err = l.HandleStatus(msg)
 	}
 	respStr, _ := json.Marshal(resp)
+	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+		ProductID:  msg.ProductID,
+		Action:     "gateway",
+		Timestamp:  l.dreq.GetTimeStamp(), // 操作时间
+		DeviceName: msg.DeviceName,
+		TranceID:   utils.TraceIdFromContext(l.ctx),
+		RequestID:  l.dreq.ClientToken,
+		Content:    string(msg.Payload),
+		Topic:      msg.Topic,
+		ResultType: errors.Fmt(err).GetCode(),
+	})
 	return &deviceMsg.PublishMsg{
 		Topic:      deviceMsg.GenRespTopic(msg.Topic),
 		Payload:    respStr,
@@ -123,21 +133,18 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 
 func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
 	l.Debugf("%s", utils.FuncName())
-	l.Debugf("%s", utils.FuncName())
 	var resp = msgGateway.Msg{
 		CommonMsg: deviceMsg.NewRespCommonMsg(l.dreq.Method, l.dreq.ClientToken),
 	}
 	resp.AddStatus(errors.OK)
 	var (
 		isOnline = int64(def.False)
-		action   = deviceStatus.DisConnectStatus
 		payload  msgGateway.GatewayPayload
 	)
 
 	switch l.dreq.Method {
 	case deviceMsg.Online:
 		isOnline = def.True
-		action = deviceStatus.ConnectStatus
 	case deviceMsg.Offline:
 	default:
 		err := errors.Parameter.AddDetailf("not support method :%s", l.dreq.Method)
@@ -145,18 +152,6 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 		return &resp, err
 	}
 	for _, v := range l.dreq.Payload.Devices {
-		err = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
-			ProductID:  v.ProductID,
-			Action:     action,
-			Timestamp:  msg.Timestamp, // 操作时间
-			DeviceName: v.DeviceName,
-			TranceID:   utils.TraceIdFromContext(l.ctx),
-			ResultType: errors.Fmt(err).GetCode(),
-		})
-		if err != nil {
-			l.Errorf("%s.LogRepo.insert productID:%v deviceName:%v err:%v",
-				utils.FuncName(), v.ProductID, v.DeviceName, err)
-		}
 		//更新对应设备的online状态
 		_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
 			ProductID:  v.ProductID,
