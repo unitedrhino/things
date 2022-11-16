@@ -2,6 +2,7 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
 	"strings"
 	"time"
@@ -60,6 +61,17 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	default:
 		return nil, errors.Parameter.AddDetail("sdk log topic is err:" + msg.Topic)
 	}
+	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+		ProductID:  msg.ProductID,
+		Action:     "sdkLog",
+		Timestamp:  l.dreq.GetTimeStamp(msg.Timestamp.UnixMilli()), // 操作时间
+		DeviceName: msg.DeviceName,
+		TranceID:   utils.TraceIdFromContext(l.ctx),
+		RequestID:  l.dreq.ClientToken,
+		Content:    string(msg.Payload),
+		Topic:      msg.Topic,
+		ResultType: errors.Fmt(err).GetCode(),
+	})
 	return respMsg, err
 }
 
