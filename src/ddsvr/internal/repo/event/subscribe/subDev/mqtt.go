@@ -58,6 +58,22 @@ func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
 }
 
 func (d *MqttClient) SubDevMsg(handle Handle) error {
+
+	err := d.subDevMsg(handle)
+	if err != nil {
+		return err
+	}
+	clients.MqttSetOnConnectHandler = func() {
+		err := d.subDevMsg(handle)
+		if err != nil {
+			logx.Errorf("%s.MqttSetOnConnectHandler.subDevMsg err:%v", utils.FuncName(), err)
+		}
+	}
+	return nil
+}
+
+func (d *MqttClient) subDevMsg(handle Handle) error {
+	logx.Infof("%s", utils.FuncName())
 	err := d.subscribeWithFunc(TopicConnectStatus, d.subscribeConnectStatus(handle))
 	if err != nil {
 		return err
