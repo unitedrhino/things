@@ -206,7 +206,7 @@ func (d *Define) ValidateWithFmtInt() error {
 		max = DefineIntMax
 		d.Max = cast.ToString(max)
 	}
-	min, err := cast.ToInt64E(d.Max)
+	min, err := cast.ToInt64E(d.Min)
 	if err != nil {
 		return errors.Parameter.WithMsgf("整数的最小值定义不是数字:%v", d.Min)
 	}
@@ -219,7 +219,7 @@ func (d *Define) ValidateWithFmtInt() error {
 	}
 	step, err := cast.ToInt64E(d.Step)
 	if err != nil {
-		return errors.Parameter.WithMsgf("整数的单位定义不是数字:%v", d.Max)
+		return errors.Parameter.WithMsgf("整数的步长定义值类型不是数字:%v", d.Max)
 	}
 	if step > max {
 		step = max
@@ -236,7 +236,7 @@ func (d *Define) ValidateWithFmtInt() error {
 func (d *Define) ValidateWithFmtString() error {
 	max, err := cast.ToInt64E(d.Max)
 	if err != nil {
-		return errors.Parameter.WithMsgf("字符串的最大值定义不是数字:%v", d.Max)
+		return errors.Parameter.WithMsgf("字符串的最大值定义不是数字类型:%v", d.Max)
 	}
 	if max > DefineStringMax {
 		max = DefineStringMax
@@ -265,15 +265,15 @@ func (d *Define) ValidateWithFmtStruct() error {
 func (d *Define) ValidateWithFmtFloat() error {
 	max, err := cast.ToFloat64E(d.Max)
 	if err != nil {
-		return errors.Parameter.WithMsgf("浮点型的最大值定义不是数字:%v", d.Max)
+		return errors.Parameter.WithMsgf("浮点型的最大值定义不是数字类型:%v", d.Max)
 	}
 	if max > DefineIntMax {
 		max = DefineIntMax
 		d.Max = cast.ToString(max)
 	}
-	min, err := cast.ToFloat64E(d.Max)
+	min, err := cast.ToFloat64E(d.Min)
 	if err != nil {
-		return errors.Parameter.WithMsgf("浮点型的最小值定义不是数字:%v", d.Min)
+		return errors.Parameter.WithMsgf("浮点型的最小值定义不是数字类型:%v", d.Min)
 	}
 	if min < DefineIntMin {
 		min = DefineIntMin
@@ -284,7 +284,7 @@ func (d *Define) ValidateWithFmtFloat() error {
 	}
 	step, err := cast.ToFloat64E(d.Step)
 	if err != nil {
-		return errors.Parameter.WithMsgf("浮点型的单位定义不是数字:%v", d.Max)
+		return errors.Parameter.WithMsgf("浮点型的步长定义不是数字类型:%v", d.Max)
 	}
 	if step > max {
 		step = max
