@@ -319,6 +319,9 @@ func (d *Define) ValidateWithFmtArray() error {
 	d.Maping = nil
 	d.Specs = nil
 	d.Spec = nil
+	if d.ArrayInfo == nil {
+		return errors.Parameter.WithMsgf("数组类型缺失arrayInfo结构体")
+	}
 	return d.ArrayInfo.ValidateWithFmt()
 }
 func (d *Define) ValidateWithFmtEnum() error {
