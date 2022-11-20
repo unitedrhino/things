@@ -2,6 +2,8 @@ Name: dm.rpc
 ListenOn: 127.0.0.1:9081
 CpuThreshold: 0
 Timeout: 1000000
+Log:
+  Encoding: plain
 Etcd:
   Hosts:
   - 127.0.0.1:2379
