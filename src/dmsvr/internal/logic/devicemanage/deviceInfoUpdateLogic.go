@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
@@ -9,6 +10,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -41,8 +43,19 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.Dev
 		old.Version = data.Version.GetValue()
 	}
 	if data.IsOnline != def.Unknown {
-		old.IsOnline = int64(data.IsOnline)
+		old.IsOnline = data.IsOnline
+		if data.IsOnline == def.True {//需要处理第一次上线的情况,一般在网关代理登录时需要处理
+			now := sql.NullTime{
+				Valid: true,
+				Time:  time.Now(),
+			}
+			if old.FirstLogin.Valid == false {
+				old.FirstLogin = now
+			}
+			old.LastLogin = now
+		}
 	}
+
 }
 
 // 更新设备
