@@ -1,7 +1,8 @@
 Name: dd
 Host: 0.0.0.0
 Port: 8848
-
+Log:
+  Encoding: plain
 DevLink:
   Mode: mqtt
   SubMode: emq
