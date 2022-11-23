@@ -58,3 +58,14 @@ func (n *NatsClient) DeviceGatewayUpdate(ctx context.Context, info *events.Gatew
 		utils.Fmt(info), err)
 	return err
 }
+
+func (n *NatsClient) DeviceRemoteConfigUpdate(ctx context.Context, info *events.DataUpdateInfo) error {
+	data, err := json.Marshal(info)
+	if err != nil {
+		return err
+	}
+	err = n.client.Publish(topics.DmDeviceUpdateRemoteConfig, events.NewEventMsg(ctx, data))
+	logx.WithContext(ctx).Infof("%s info:%v,err:%v", utils.FuncName(),
+		utils.Fmt(info), err)
+	return err
+}
