@@ -69,6 +69,12 @@ const (
 	*/
 	Online  Method = "online"  //代理子设备上线
 	Offline Method = "offline" //代理子设备下线
+
+	/*
+		数据上行 Topic（用于发布）：$config/up/get/${productid}/${devicename}
+		数据下行 Topic（用于订阅）：$config/down/get/${productid}/${devicename}
+	*/
+	RemoteConfigReply Method = "reply" //表示设备请求配置
 )
 
 func GetRespMethod(method Method) Method {
