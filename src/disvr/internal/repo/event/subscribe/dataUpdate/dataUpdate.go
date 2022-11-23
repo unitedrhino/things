@@ -16,6 +16,7 @@ type (
 		ProductSchemaUpdate(info *events.DataUpdateInfo) error
 		DeviceLogLevelUpdate(info *events.DataUpdateInfo) error
 		DeviceGatewayUpdate(info *events.GatewayUpdateInfo) error
+		DeviceRemoteConfigUpdate(info *events.DataUpdateInfo) error
 	}
 )
 

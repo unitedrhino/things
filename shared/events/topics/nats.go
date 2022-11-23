@@ -38,8 +38,8 @@ const (
 
 //dmsvr发布的事件通知
 const (
-	DmProductUpdateSchema  = "server.dm.product.update.schema"  //物模型有更新
-	DmDeviceUpdateLogLevel = "server.dm.device.update.logLevel" //设备日志级别有更新
-	DmDeviceUpdateGateway  = "server.dm.device.update.gateway"  //网关下的子设备有改动
-
+	DmProductUpdateSchema      = "server.dm.product.update.schema"       //物模型有更新
+	DmDeviceUpdateLogLevel     = "server.dm.device.update.logLevel"      //设备日志级别有更新
+	DmDeviceUpdateGateway      = "server.dm.device.update.gateway"       //网关下的子设备有改动
+	DmDeviceUpdateRemoteConfig = "server.dm.product.update.remoteConfig" //远程配置推送
 )
