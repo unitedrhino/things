@@ -279,12 +279,15 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*device.Core) error {
 	return m.Transact(func(session sqlx.Session) error {
 		for _, v := range list {
+			if v == nil {
+				continue
+			}
 			var count int64
-			query := fmt.Sprintf("select count(1) from %s where productID = %s and deviceName = %s", m.deviceInfo, v.ProductID, v.DeviceName)
+			query := fmt.Sprintf("select count(1) from %s where productID = %q and deviceName = %q", m.deviceInfo, v.ProductID, v.DeviceName)
 			err := session.QueryRow(&count, query)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("groupModel.deviceInfoTable.QueryRowCtx data:%v err:%v", v, err)
-				return err
+				continue
 			}
 			if count == 0 {
 				return errors.Parameter.WithMsgf("设备不存在:产品ID:%v,设备名:%", v.ProductID, v.DeviceName)
@@ -294,7 +297,7 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 			_, err = session.Exec(query)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("groupModel.GroupDeviceCreate data:%v err:%v", v, err)
-				return err
+				continue
 			}
 		}
 		return nil
@@ -304,6 +307,9 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list []*device.Core) error {
 	return m.Transact(func(session sqlx.Session) error {
 		for _, v := range list {
+			if v == nil {
+				continue
+			}
 			query := fmt.Sprintf("delete from %s where groupID = %d and productID = '%s' and deviceName = '%s' ",
 				m.groupDevice, groupID, v.ProductID, v.DeviceName)
 			_, err := session.Exec(query)
