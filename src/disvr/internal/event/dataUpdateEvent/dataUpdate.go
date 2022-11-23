@@ -94,7 +94,7 @@ func (d *DataUpdateLogic) DeviceRemoteConfigUpdate(info *events.DataUpdateInfo) 
 
 	//3. for循环所有设备发送消息给设备
 	for _, v := range respDevices.List {
-		tmpTopic := fmt.Sprintf("%s/down/%s/%s/%s", devices.TopicHeadConfig, msgSdkLog.TypePush, v.ProductID, v.DeviceName)
+		tmpTopic := fmt.Sprintf("%s/down/%s/%s/%s", devices.TopicHeadConfig, msgRemoteConfig.TypePush, v.ProductID, v.DeviceName)
 
 		resp := &msgRemoteConfig.RemoteConfigMsg{
 			Method:  "push",
