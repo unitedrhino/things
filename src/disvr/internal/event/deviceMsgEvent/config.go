@@ -33,7 +33,7 @@ func (l *ConfigLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	})
 
 	resp := &deviceMsg.CommonMsg{
-		Method:    "reply",
+		Method:    deviceMsg.RemoteConfigReply,
 		Timestamp: time.Now().UnixMilli(),
 		Data:      resp1.Info.Content,
 	}
