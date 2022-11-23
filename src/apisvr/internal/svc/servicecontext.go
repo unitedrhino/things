@@ -28,7 +28,6 @@ import (
 type ServiceContext struct {
 	Config         config.Config
 	CheckToken     rest.Middleware
-	Record         rest.Middleware
 	DmManage       rest.Middleware
 	UserRpc        user.User
 	RoleRpc        role.Role
@@ -112,7 +111,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:         c,
 		CheckToken:     middleware.NewCheckTokenMiddleware(ur).Handle,
-		Record:         middleware.NewRecordMiddleware().Handle,
 		UserRpc:        ur,
 		RoleRpc:        ro,
 		MenuRpc:        me,

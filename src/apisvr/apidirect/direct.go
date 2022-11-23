@@ -43,7 +43,6 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 		apiCtx.Server = server
 	}
 	defer server.Stop()
-	server.Use(ctx.Record)
 	handler.RegisterHandlers(server, ctx)
 	server.PrintRoutes()
 	fmt.Printf("Starting apiSvr at %s:%d...\n", c.Host, c.Port)
