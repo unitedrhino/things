@@ -32,14 +32,14 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*my
 	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			return nil, nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.Info.ProductID))
+			return nil, nil, errors.Parameter.AddMsgf("产品id不存在:" + cast.ToString(in.Info.ProductID))
 		}
 		return nil, nil, errors.Database.AddDetail(err)
 	}
 	po, err := l.svcCtx.ProductSchema.FindOneByProductIDIdentifier(l.ctx, in.Info.ProductID, in.Info.Identifier)
 	if err != nil {
 		if err == mysql.ErrNotFound {
-			return nil, nil, nil
+			return nil, nil, errors.Parameter.AddMsgf("标识符不存在:" + in.Info.Identifier)
 		}
 		return nil, nil, errors.Database.AddDetail(err)
 	}
