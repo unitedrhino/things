@@ -31,6 +31,13 @@ var (
 		DeviceName:   "test1",
 		DeviceSecret: "vsjl+0R8/kpkLd0PJ0my1HN8XDg=",
 	}
+
+	DefaultRemoteConfig = ClientInfo{
+		MqttBrokers:  []string{"tcp://106.15.225.172:1883"},
+		ProductID:    "255fCsZtKEM",
+		DeviceName:   "test1",
+		DeviceSecret: "vsjl+0R8/kpkLd0PJ0my1HN8XDg=",
+	}
 )
 
 func GetMqttClient(c *ClientInfo) (mc mqtt.Client, err error) {
