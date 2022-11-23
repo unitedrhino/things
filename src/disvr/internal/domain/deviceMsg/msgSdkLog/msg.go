@@ -24,8 +24,6 @@ const (
 	TypeOperation = "operation" //获取日志级别
 	TypeReport    = "report"    //日志上报
 	TypeUpdate    = "update"    //日志级别改变推送
-	TypeGet       = "get"       //远程配置请求
-	TypePush      = "push"      //远程配置推送
 )
 
 func (d *Req) GetTimeStamp(logTime int64) time.Time {

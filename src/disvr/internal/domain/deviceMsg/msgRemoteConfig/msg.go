@@ -6,3 +6,8 @@ type RemoteConfigMsg struct {
 	Status  string `json:"status,omitempty"` //返回信息
 	Payload string `json:"payload,optional"` //配置信息
 }
+
+const (
+	TypeGet  = "get"  //远程配置请求
+	TypePush = "push" //远程配置推送
+)
