@@ -28,6 +28,9 @@ func NewGroupDeviceMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCont
 func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceMultiDeleteReq) (*dm.Response, error) {
 	list := make([]*device.Core, len(in.List))
 	for _, v := range in.List {
+		if v == nil {
+			continue
+		}
 		list = append(list, &device.Core{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,

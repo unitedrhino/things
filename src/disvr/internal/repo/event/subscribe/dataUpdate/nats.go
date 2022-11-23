@@ -61,5 +61,18 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	if err != nil {
 		return err
 	}
+
+	_, err = n.client.Subscribe(topics.DmDeviceUpdateRemoteConfig,
+		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+			tempInfo := events.DataUpdateInfo{}
+			err := json.Unmarshal(msg, &tempInfo)
+			if err != nil {
+				return err
+			}
+			return handle(ctx).DeviceRemoteConfigUpdate(&tempInfo)
+		}))
+	if err != nil {
+		return err
+	}
 	return nil
 }
