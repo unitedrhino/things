@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"golang.org/x/exp/constraints"
 	"reflect"
 	"time"
 )
@@ -51,4 +52,10 @@ func TimeToInt64(t time.Time) int64 {
 		return 0
 	}
 	return t.Unix()
+}
+func SetToSlice[t constraints.Ordered](in map[t]struct{}) (ret []t) {
+	for k, _ := range in {
+		ret = append(ret, k)
+	}
+	return
 }

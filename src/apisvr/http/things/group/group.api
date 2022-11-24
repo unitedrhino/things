@@ -44,24 +44,19 @@ service api {
 )
 service api {
     @doc "添加分组设备"
-    @handler create
-    post /create (GroupDeviceCreateReq) returns ()
+    @handler multiCreate
+    post /multi-create (GroupDeviceMultiCreateReq) returns ()
 
     @doc "获取分组设备列表"
     @handler index
     post /index (GroupDeviceIndexReq) returns (GroupDeviceIndexResp)
 
     @doc "删除分组设备"
-    @handler delete
-    post /delete (GroupDeviceDeleteReq) returns ()
+    @handler multiDelete
+    post /multi-delete (GroupDeviceMultiDeleteReq) returns ()
 }
 
 type (
-
-    DeviceIndexMessage{
-        ProductID string `json:"productID"`      //产品ID
-        DeviceName string `json:"deviceName"`    //设备名称
-    }
 
     GroupInfo{
         GroupID   int64  `json:"groupID,string"`           //分组ID
@@ -118,13 +113,13 @@ type (
         Total int64 `json:"total"`         //总数(只有分页的时候会返回)
     }
 
-    GroupDeviceCreateReq struct {
+    GroupDeviceMultiCreateReq struct {
         GroupID   int64  `json:"groupID,string"`            //分组ID
-        List []*DeviceIndexMessage `json:"list,optional"`   //分组tag
+        List []*DeviceCore `json:"list,optional"`   //分组tag
     }
 
-    GroupDeviceDeleteReq struct {
+    GroupDeviceMultiDeleteReq struct {
         GroupID   int64  `json:"groupID,string"`            //分组ID
-        List []*DeviceIndexMessage `json:"list,optional"`   //分组tag
+        List []*DeviceCore `json:"list,optional"`   //分组tag
     }
 )

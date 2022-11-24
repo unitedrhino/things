@@ -79,6 +79,16 @@ func (s *DeviceSubServer) SDKLog(topic string, payload []byte) error {
 	return s.svcCtx.PubInner.DevPubSDKLog(s.ctx, pub)
 }
 
+// Log 设备调试日志
+func (s *DeviceSubServer) Gateway(topic string, payload []byte) error {
+	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
+	pub, err := s.getDevPublish(topic, payload)
+	if pub == nil {
+		return err
+	}
+	return s.svcCtx.PubInner.DevPubGateway(s.ctx, pub)
+}
+
 func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.DevPublish, error) {
 	topicInfo, err := devices.GetTopicInfo(topic)
 	if err != nil {

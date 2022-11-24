@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/handler"
-	"github.com/i-Things/things/src/apisvr/internal/handler/frontend"
+	"github.com/i-Things/things/src/apisvr/internal/handler/system/proxy"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/ddsvr/dddirect"
 	"github.com/zeromicro/go-zero/core/conf"
@@ -38,12 +38,11 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 	apiCtx.Svc = ctx
 	if server == nil {
 		server = rest.MustNewServer(c.RestConf, rest.WithCors("*"),
-			rest.WithNotFoundHandler(frontend.FrontendHandler(ctx)),
+			rest.WithNotFoundHandler(proxy.Handler(ctx)),
 		)
 		apiCtx.Server = server
 	}
 	defer server.Stop()
-	server.Use(ctx.Record)
 	handler.RegisterHandlers(server, ctx)
 	server.PrintRoutes()
 	fmt.Printf("Starting apiSvr at %s:%d...\n", c.Host, c.Port)

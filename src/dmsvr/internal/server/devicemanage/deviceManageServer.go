@@ -51,3 +51,21 @@ func (s *DeviceManageServer) DeviceInfoRead(ctx context.Context, in *dm.DeviceIn
 	l := devicemanagelogic.NewDeviceInfoReadLogic(ctx, s.svcCtx)
 	return l.DeviceInfoRead(in)
 }
+
+// 创建分组设备
+func (s *DeviceManageServer) DeviceGatewayMultiCreate(ctx context.Context, in *dm.DeviceGatewayMultiCreateReq) (*dm.Response, error) {
+	l := devicemanagelogic.NewDeviceGatewayMultiCreateLogic(ctx, s.svcCtx)
+	return l.DeviceGatewayMultiCreate(in)
+}
+
+// 获取分组设备信息列表
+func (s *DeviceManageServer) DeviceGatewayIndex(ctx context.Context, in *dm.DeviceGatewayIndexReq) (*dm.DeviceGatewayIndexResp, error) {
+	l := devicemanagelogic.NewDeviceGatewayIndexLogic(ctx, s.svcCtx)
+	return l.DeviceGatewayIndex(in)
+}
+
+// 删除分组设备
+func (s *DeviceManageServer) DeviceGatewayMultiDelete(ctx context.Context, in *dm.DeviceGatewayMultiDeleteReq) (*dm.Response, error) {
+	l := devicemanagelogic.NewDeviceGatewayMultiDeleteLogic(ctx, s.svcCtx)
+	return l.DeviceGatewayMultiDelete(in)
+}

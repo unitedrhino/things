@@ -8,7 +8,8 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"time"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
@@ -58,12 +59,13 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
-	req := deviceSend.DeviceReq{
-		Method:      deviceSend.Control,
-		ClientToken: uuid,
-		//ClientToken:"de65377c-4041-565d-0b5e-67b664a06be8",//这个是测试代码
-		Timestamp: time.Now().UnixMilli(),
-		Params:    param}
+	req := msgThing.Req{
+		CommonMsg: deviceMsg.CommonMsg{
+			Method:      deviceMsg.Control,
+			ClientToken: uuid,
+			Timestamp:   time.Now().UnixMilli(),
+		},
+		Params: param}
 	_, err = req.VerifyReqParam(l.template, schema.ParamActionInput)
 	if err != nil {
 		return nil, err

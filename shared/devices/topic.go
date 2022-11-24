@@ -38,11 +38,12 @@ ${productID}/${deviceName}/xxxxx	订阅和发布   //自定义 暂不做支持
 */
 
 const (
-	TopicHeadThing  = "$thing"
-	TopicHeadOta    = "$ota"
-	TopicHeadConfig = "$config"
-	TopicHeadLog    = "$log"
-	TopicHeadShadow = "$shadow"
+	TopicHeadThing   = "$thing"
+	TopicHeadOta     = "$ota"
+	TopicHeadConfig  = "$config"
+	TopicHeadLog     = "$log"
+	TopicHeadShadow  = "$shadow"
+	TopicHeadGateway = "$gateway"
 )
 
 type Direction int
@@ -71,7 +72,7 @@ func parseTopic(topics []string) (topicInfo *TopicInfo, err error) {
 		return nil, errors.Parameter.AddDetail("topic is err")
 	}
 	switch topics[0] {
-	case TopicHeadThing, TopicHeadOta, TopicHeadShadow, TopicHeadLog, TopicHeadConfig:
+	case TopicHeadThing, TopicHeadOta, TopicHeadShadow, TopicHeadLog, TopicHeadConfig, TopicHeadGateway:
 		return parseLast(topics)
 	default: //自定义消息
 		return parsePose(0, topics)

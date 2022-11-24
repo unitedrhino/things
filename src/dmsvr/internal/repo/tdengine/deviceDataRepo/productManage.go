@@ -34,8 +34,8 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 	}
 	{
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
-			"(`ts` timestamp,`event_id` BINARY(50),`event_type` BINARY(20), `param` BINARY(5000)) "+
-			"TAGS (`product_id` BINARY(50),`device_name` BINARY(50));",
+			"(`ts` timestamp,`eventID` BINARY(50),`eventType` BINARY(20), `param` BINARY(5000)) "+
+			"TAGS (`productID` BINARY(50),`deviceName` BINARY(50));",
 			d.GetEventStableName())
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return err
@@ -137,14 +137,14 @@ func (d *DeviceDataRepo) createPropertyStable(
 	var sql string
 	if p.Define.Type != schema.DataTypeStruct {
 		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
-			" TAGS (`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
+			" TAGS (`deviceName` BINARY(50),`"+PropertyType+"` BINARY(50));",
 			d.GetPropertyStableName(productID, p.Identifier), store.GetTdType(p.Define))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return err
 		}
 	} else {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
-			" TAGS (`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
+			" TAGS (`deviceName` BINARY(50),`"+PropertyType+"` BINARY(50));",
 			d.GetPropertyStableName(productID, p.Identifier), d.GetSpecsCreateColumn(p.Define.Specs))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return err
