@@ -69,3 +69,15 @@ func (s *DeviceManageServer) DeviceGatewayMultiDelete(ctx context.Context, in *d
 	l := devicemanagelogic.NewDeviceGatewayMultiDeleteLogic(ctx, s.svcCtx)
 	return l.DeviceGatewayMultiDelete(in)
 }
+
+// 设备计数
+func (s *DeviceManageServer) DeviceInfoCount(ctx context.Context, in *dm.DeviceInfoCountReq) (*dm.DeviceInfoCountResp, error) {
+	l := devicemanagelogic.NewDeviceInfoCountLogic(ctx, s.svcCtx)
+	return l.DeviceInfoCount(in)
+}
+
+// 设备类型
+func (s *DeviceManageServer) DeviceTypeCount(ctx context.Context, in *dm.DeviceTypeCountReq) (*dm.DeviceTypeCountResp, error) {
+	l := devicemanagelogic.NewDeviceTypeCountLogic(ctx, s.svcCtx)
+	return l.DeviceTypeCount(in)
+}

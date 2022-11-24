@@ -443,6 +443,29 @@ type DeviceCore struct {
 	DeviceName string `json:"deviceName"` //设备名称
 }
 
+type DeviceCountReq struct {
+	StartTime int64 `json:"startTime,optional" form:"startTime,optional"`
+	EndTime   int64 `json:"endTime,optional" form:"endTime,optional"`
+}
+
+type DeviceInfoCount struct {
+	Online  int64 `json:"online"`
+	Offline int64 `json:"offline"`
+	Unknown int64 `json:"unknown"`
+}
+
+type DeviceTypeCount struct {
+	Device  int64 `json:"device"`
+	Gateway int64 `json:"gateway"`
+	Subset  int64 `json:"subset"`
+	Unknown int64 `json:"unknown"`
+}
+
+type DeviceCountResp struct {
+	DeviceInfoCount DeviceInfoCount `json:"deviceCount"`
+	DeviceTypeCount DeviceTypeCount `json:"deviceTypeCount"`
+}
+
 type DeviceInteractSendMsgReq struct {
 	Topic   string `json:"topic"`   //发送的topic
 	Payload string `json:"payload"` //发送的数据
