@@ -444,21 +444,22 @@ type DeviceCore struct {
 }
 
 type DeviceCountReq struct {
-	StartTime int64 `json:"startTime,optional" form:"startTime,optional"`
-	EndTime   int64 `json:"endTime,optional" form:"endTime,optional"`
+	StartTime int64 `json:"startTime,optional" form:"startTime,optional"` //查询区间的开始时间（秒）
+	EndTime   int64 `json:"endTime,optional" form:"endTime,optional"`     //查询区间的结束时间（秒）
 }
 
 type DeviceInfoCount struct {
-	Online  int64 `json:"online"`
-	Offline int64 `json:"offline"`
-	Unknown int64 `json:"unknown"`
+	Online   int64 `json:"online"`   // 在线设备数
+	Offline  int64 `json:"offline"`  // 离线设备数
+	Inactive int64 `json:"inactive"` // 未激活设备数
+	Unknown  int64 `json:"unknown"`  // 未知设备数（all = 在线+离线+未激活+未知）
 }
 
 type DeviceTypeCount struct {
-	Device  int64 `json:"device"`
-	Gateway int64 `json:"gateway"`
-	Subset  int64 `json:"subset"`
-	Unknown int64 `json:"unknown"`
+	Device  int64 `json:"device"`  // 设备类型数
+	Gateway int64 `json:"gateway"` // 网关类型数
+	Subset  int64 `json:"subset"`  // 子设备类型数
+	Unknown int64 `json:"unknown"` // 未知设备类型
 }
 
 type DeviceCountResp struct {

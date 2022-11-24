@@ -18,6 +18,7 @@ const (
 type DeviceStatus = int64
 
 const (
-	DeviceStatusOnline  DeviceStatus = 1 //在线
-	DeviceStatusOffline DeviceStatus = 2 //离线
+	DeviceStatusInactive DeviceStatus = 0 // 未激活
+	DeviceStatusOnline   DeviceStatus = 1 //在线
+	DeviceStatusOffline  DeviceStatus = 2 //离线
 )

@@ -417,7 +417,8 @@ message DeviceTypeCountReq{
 message DeviceInfoCountResp{
   int64 online = 1;
   int64 offline = 2;
-  int64 unknown = 3;
+  int64 inactive = 3;
+  int64 unknown = 4;
 }
 
 message DeviceTypeCountResp{
