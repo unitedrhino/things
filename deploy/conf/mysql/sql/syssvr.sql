@@ -180,9 +180,9 @@ INSERT INTO `menu_info`
 VALUES (15, 4, 0, 3, '资源管理', '/operationsMonitorings/resourceManagements/index',
         './operationsMonitorings/resourceManagements/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54',
         '2022-10-17 20:45:12', NULL);
-INSERT INTO `menu_info`
-VALUES (16, 4, 0, 4, '远程配置', '/operationsMonitorings/remoteConfigurations/index',
-        './operationsMonitorings/remoteConfigurations/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54',
+INSERT INTO `menu_info`         /operationsMonitorings/remoteConfiguration/index
+VALUES (16, 4, 0, 4, '远程配置', '/operationsMonitorings/remoteConfiguration/index',
+        './operationsMonitorings/remoteConfiguration/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54',
         '2022-10-17 20:45:19', NULL);
 INSERT INTO `menu_info`
 VALUES (17, 4, 0, 5, '告警中心', '/operationsMonitorings/alarmCenters/index',
