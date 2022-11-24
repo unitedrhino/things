@@ -11,6 +11,8 @@ type (
 	DataUpdate interface {
 		ProductSchemaUpdate(ctx context.Context, info *events.DataUpdateInfo) error
 		DeviceLogLevelUpdate(ctx context.Context, info *events.DataUpdateInfo) error
+		DeviceGatewayUpdate(ctx context.Context, info *events.GatewayUpdateInfo) error
+		DeviceRemoteConfigUpdate(ctx context.Context, info *events.DataUpdateInfo) error
 	}
 )
 

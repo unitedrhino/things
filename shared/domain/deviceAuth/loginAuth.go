@@ -3,10 +3,12 @@ package deviceAuth
 
 import (
 	"encoding/base64"
+	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/spf13/cast"
 	"strings"
+	"time"
 )
 
 const (
@@ -108,4 +110,24 @@ func (p *PwdInfo) CmpPwd(userName, secret string) error {
 		return errors.Password
 	}
 	return nil
+}
+
+func GenSecretDeviceInfo(hmacType string, productID string, deviceName string, deviceSecret string) (
+	clientID, userName, password string) {
+	var (
+		connID = utils.Random(5, 0)
+		expiry = time.Now().AddDate(0, 0, 10).Unix()
+		token  string
+		pwd, _ = base64.StdEncoding.DecodeString(deviceSecret)
+	)
+	clientID = productID + deviceName
+	userName = fmt.Sprintf("%s;12010126;%s;%d", clientID, connID, expiry)
+	if hmacType == HmacSha1 {
+		token = utils.HmacSha1(userName, pwd)
+		password = token + ";hmacsha1"
+	} else {
+		token = utils.HmacSha256(userName, pwd)
+		password = token + ";hmacsha256"
+	}
+	return
 }

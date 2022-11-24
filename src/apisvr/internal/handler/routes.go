@@ -8,12 +8,14 @@ import (
 	systemrole "github.com/i-Things/things/src/apisvr/internal/handler/system/role"
 	systemuser "github.com/i-Things/things/src/apisvr/internal/handler/system/user"
 	thingsdeviceauth "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth"
+	thingsdevicegateway "github.com/i-Things/things/src/apisvr/internal/handler/things/device/gateway"
 	thingsdeviceinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/device/info"
 	thingsdeviceinteract "github.com/i-Things/things/src/apisvr/internal/handler/things/device/interact"
 	thingsdevicemsg "github.com/i-Things/things/src/apisvr/internal/handler/things/device/msg"
 	thingsgroupdevice "github.com/i-Things/things/src/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/group/info"
 	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
+	thingsproductremoteConfig "github.com/i-Things/things/src/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/src/apisvr/internal/handler/things/product/schema"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 
@@ -200,6 +202,30 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: thingsdevicegateway.MultiCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsdevicegateway.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-delete",
+					Handler: thingsdevicegateway.MultiDeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/gateway"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
 					Path:    "/create",
 					Handler: thingsdeviceinfo.CreateHandler(serverCtx),
 				},
@@ -332,6 +358,35 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/create",
+					Handler: thingsproductremoteConfig.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductremoteConfig.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/push-all",
+					Handler: thingsproductremoteConfig.PushAllHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/lastest-read",
+					Handler: thingsproductremoteConfig.LastestReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/remote-config"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
 					Handler: thingsgroupinfo.CreateHandler(serverCtx),
 				},
 				{
@@ -365,8 +420,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsgroupdevice.CreateHandler(serverCtx),
+					Path:    "/multi-create",
+					Handler: thingsgroupdevice.MultiCreateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -375,8 +430,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsgroupdevice.DeleteHandler(serverCtx),
+					Path:    "/multi-delete",
+					Handler: thingsgroupdevice.MultiDeleteHandler(serverCtx),
 				},
 			}...,
 		),

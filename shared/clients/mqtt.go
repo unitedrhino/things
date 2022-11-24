@@ -16,6 +16,9 @@ import (
 var (
 	mqttInitOnce sync.Once
 	mqttClient   mqtt.Client
+	// MqttSetOnConnectHandler 如果会话断开可以通过该回调函数来重新订阅消息
+	//不使用mqtt的clean session是因为会话保持期间共享订阅也会给离线的客户端,这会导致在线的客户端丢失消息
+	MqttSetOnConnectHandler func()
 )
 
 func NewMqttClient(conf *conf.MqttConf) (mc mqtt.Client, err error) {
@@ -31,9 +34,12 @@ func NewMqttClient(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 			return
 		}
 		opts.SetClientID(conf.ClientID + "/" + uuid).SetUsername(conf.User).
-			SetPassword(conf.Pass).SetAutoReconnect(true).SetConnectRetry(true).SetCleanSession(false)
+			SetPassword(conf.Pass).SetAutoReconnect(true).SetConnectRetry(true)
 		opts.SetOnConnectHandler(func(client mqtt.Client) {
 			logx.Info("mqtt client Connected")
+			if MqttSetOnConnectHandler != nil {
+				MqttSetOnConnectHandler()
+			}
 		})
 		opts.SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
 			logx.Infof("mqtt client connect attempt broker:%v", utils.Fmt(broker))

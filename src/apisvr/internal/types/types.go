@@ -359,6 +359,29 @@ type DeviceMsgEventIndex struct {
 	Params    string `json:"params,omitempty"` //获取到的值
 }
 
+type DeviceGateWayIndexReq struct {
+	Page              *PageInfo `json:"page,optional"`     //分页信息 只获取一个则不填
+	GateWayProductID  string    `json:"gateWayProductID"`  //产品ID
+	GateWayDeviceName string    `json:"gateWaydeviceName"` //设备名称
+}
+
+type DeviceGateWayIndexResp struct {
+	List  []*DeviceInfo `json:"list"`  //分组信息
+	Total int64         `json:"total"` //总数(只有分页的时候会返回)
+}
+
+type DeviceGateWayMultiCreateReq struct {
+	GateWayProductID  string        `json:"gateWayProductID"`  //产品ID
+	GateWayDeviceName string        `json:"gateWaydeviceName"` //设备名称
+	List              []*DeviceCore `json:"list,optional"`     //分组tag
+}
+
+type DeviceGateWayMultiDeleteReq struct {
+	GateWayProductID  string        `json:"gateWayProductID"`  //产品ID
+	GateWayDeviceName string        `json:"gateWaydeviceName"` //设备名称
+	List              []*DeviceCore `json:"list,optional"`     //分组tag
+}
+
 type DeviceTag struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
@@ -413,6 +436,11 @@ type DeviceInfoIndexResp struct {
 	List  []*DeviceInfo `json:"list"`  //设备信息
 	Total int64         `json:"total"` //总数(只有分页的时候会返回)
 	Num   int64         `json:"num"`   //返回的数量
+}
+
+type DeviceCore struct {
+	ProductID  string `json:"productID"`  //产品ID
+	DeviceName string `json:"deviceName"` //设备名称
 }
 
 type DeviceInteractSendMsgReq struct {
@@ -547,14 +575,14 @@ type ProductSchemaIndexResp struct {
 }
 
 type ProductSchemaInfo struct {
-	ProductID  string  `json:"productID"`  //产品id 只读
-	Type       int64   `json:"type"`       //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag        int64   `json:"tag"`        //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Identifier string  `json:"identifier"` //标识符
-	Name       *string `json:"name"`       //功能名称
-	Desc       *string `json:"desc"`       //描述
-	Required   int64   `json:"required"`   //是否必须 1:是 2:否
-	Affordance *string `json:"affordance"` //各功能类型的详细参数定义
+	ProductID  string  `json:"productID"`           //产品id 只读
+	Type       int64   `json:"type"`                //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag        int64   `json:"tag"`                 //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Identifier string  `json:"identifier"`          //标识符
+	Name       *string `json:"name,optional"`       //功能名称
+	Desc       *string `json:"desc,optional"`       //描述
+	Required   int64   `json:"required,optional"`   //是否必须 1:是 2:否
+	Affordance *string `json:"affordance,optional"` //各功能类型的详细参数定义
 }
 
 type SchemaAction struct {
@@ -596,9 +624,37 @@ type SchemaParam struct {
 	Define     *SchemaDefine `json:"define,omitempty"` //参数定义
 }
 
-type DeviceIndexMessage struct {
-	ProductID  string `json:"productID"`  //产品ID
-	DeviceName string `json:"deviceName"` //设备名称
+type ProductRemoteConfig struct {
+	ID         int64  `json:"id"`         //配置编号
+	Content    string `json:"content"`    //配置内容
+	CreateTime string `json:"createTime"` //创建时间
+}
+
+type ProductRemoteConfigCreateReq struct {
+	ProductID string `json:"productID"` //产品id
+	Content   string `json:"content"`   //配置内容
+}
+
+type ProductRemoteConfigIndexReq struct {
+	ProductID string    `json:"productID"`     //产品id
+	Page      *PageInfo `json:"page,optional"` //分页信息
+}
+
+type ProductRemoteConfigIndexResp struct {
+	List  []*ProductRemoteConfig `json:"list"`  //产品信息
+	Total int64                  `json:"total"` //拥有的总数
+}
+
+type ProductRemoteConfigPushAllReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type ProductRemoteConfigLastestReadReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type ProductRemoteConfigLastestReadResp struct {
+	ProductRemoteConfig
 }
 
 type GroupInfo struct {
@@ -656,12 +712,12 @@ type GroupDeviceIndexResp struct {
 	Total int64         `json:"total"` //总数(只有分页的时候会返回)
 }
 
-type GroupDeviceCreateReq struct {
-	GroupID int64                 `json:"groupID,string"` //分组ID
-	List    []*DeviceIndexMessage `json:"list,optional"`  //分组tag
+type GroupDeviceMultiCreateReq struct {
+	GroupID int64         `json:"groupID,string"` //分组ID
+	List    []*DeviceCore `json:"list,optional"`  //分组tag
 }
 
-type GroupDeviceDeleteReq struct {
-	GroupID int64                 `json:"groupID,string"` //分组ID
-	List    []*DeviceIndexMessage `json:"list,optional"`  //分组tag
+type GroupDeviceMultiDeleteReq struct {
+	GroupID int64         `json:"groupID,string"` //分组ID
+	List    []*DeviceCore `json:"list,optional"`  //分组tag
 }

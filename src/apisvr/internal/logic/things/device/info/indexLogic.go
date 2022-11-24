@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
+	"github.com/i-Things/things/src/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -31,7 +32,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 	dmReq := &dm.DeviceInfoIndexReq{
 		ProductID:  req.ProductID, //产品id
 		DeviceName: req.DeviceName,
-		Tags:       toTagsMap(req.Tags),
+		Tags:       device.ToTagsMap(req.Tags),
 		Page:       logic.ToDmPageRpc(req.Page),
 	}
 	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
@@ -42,7 +43,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 	}
 	pis := make([]*types.DeviceInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		pi := deviceInfoToApi(v)
+		pi := device.DeviceInfoToApi(v)
 		pis = append(pis, pi)
 	}
 	return &types.DeviceInfoIndexResp{

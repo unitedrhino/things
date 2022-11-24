@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
@@ -35,7 +35,7 @@ func (l *EventLogIndexLogic) EventLogIndex(in *di.EventLogIndexReq) (*di.EventIn
 		dd      = l.svcCtx.SchemaMsgRepo
 		total   int64
 	)
-	dds, err := dd.GetEventDataByFilter(l.ctx, deviceMsg.FilterOpt{
+	dds, err := dd.GetEventDataByFilter(l.ctx, msgThing.FilterOpt{
 		Page: def.PageInfo2{
 			TimeStart: in.TimeStart,
 			TimeEnd:   in.TimeEnd,
@@ -62,7 +62,7 @@ func (l *EventLogIndexLogic) EventLogIndex(in *di.EventLogIndexReq) (*di.EventIn
 		l.Infof("%s get data=%+v", utils.FuncName(), diData)
 	}
 
-	total, err = dd.GetEventCountByFilter(l.ctx, deviceMsg.FilterOpt{
+	total, err = dd.GetEventCountByFilter(l.ctx, msgThing.FilterOpt{
 		Page: def.PageInfo2{
 			TimeStart: in.TimeStart,
 			TimeEnd:   in.TimeEnd,
