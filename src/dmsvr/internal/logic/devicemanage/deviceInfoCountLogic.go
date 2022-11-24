@@ -47,14 +47,16 @@ func (l *DeviceInfoCountLogic) DeviceInfoCount(in *dm.DeviceInfoCountReq) (*dm.D
 
 	onlineCount := diCount[fmt.Sprintf("%d", def.DeviceStatusOnline)]
 	offlineCount := diCount[fmt.Sprintf("%d", def.DeviceStatusOffline)]
+	InactiveCount := diCount[fmt.Sprintf("%d", def.DeviceStatusInactive)]
 	var allCount int64
 	for _, v := range diCount {
 		allCount += v
 	}
 
 	return &dm.DeviceInfoCountResp{
-		Online:  onlineCount,
-		Offline: offlineCount,
-		Unknown: allCount - onlineCount - offlineCount,
+		Online:   onlineCount,
+		Offline:  offlineCount,
+		Inactive: InactiveCount,
+		Unknown:  allCount - onlineCount - offlineCount - InactiveCount,
 	}, nil
 }
