@@ -32,8 +32,8 @@ func GetInit(t *testing.T) (*mqttTest.ClientInfo, mqtt.Client) {
 func TestRemoteConfigPush(t *testing.T) {
 
 	clientInfo, mc := GetInit(t)
-	subTopic := fmt.Sprintf("config/down/push/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
-	pubTopic := fmt.Sprintf("config/up/push/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
+	subTopic := fmt.Sprintf("$config/down/push/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
+	pubTopic := fmt.Sprintf("$config/up/push/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
 	pubPayload := `
 	{
 	  "method": "push",
@@ -61,8 +61,8 @@ func TestRemoteConfigPush(t *testing.T) {
 func TestRemoteConfigGet(t *testing.T) {
 
 	clientInfo, mc := GetInit(t)
-	subTopic := fmt.Sprintf("config/down/get/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
-	pubTopic := fmt.Sprintf("config/up/get/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
+	subTopic := fmt.Sprintf("$config/down/get/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
+	pubTopic := fmt.Sprintf("$config/up/get/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
 	pubPayload := `
 	{
 	  "method": "get",
