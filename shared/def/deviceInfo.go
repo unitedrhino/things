@@ -14,3 +14,10 @@ const (
 	GatewayBind   = 1 //绑定
 	GatewayUnbind = 2 //解绑
 )
+
+type DeviceStatus = int64
+
+const (
+	DeviceStatusOnline  DeviceStatus = 1 //在线
+	DeviceStatusOffline DeviceStatus = 2 //离线
+)
