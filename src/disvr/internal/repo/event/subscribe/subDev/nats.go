@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
 	"github.com/nats-io/nats.go"
 )
 
@@ -69,10 +70,18 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	if err != nil {
 		return err
 	}
+	err = n.queueSubscribeDevPublish(topics.DeviceUpGatewayAll,
+		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
+			err := handle(ctx).Gateway(msg)
+			return err
+		})
+	if err != nil {
+		return err
+	}
 
 	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusConnected, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
-			ele, err := deviceMsg.GetDevConnMsg(ctx, msg)
+			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
 			if err != nil {
 				return err
 			}
@@ -85,7 +94,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 
 	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusDisconnected, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
-			ele, err := deviceMsg.GetDevConnMsg(ctx, msg)
+			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
 			if err != nil {
 				return err
 			}

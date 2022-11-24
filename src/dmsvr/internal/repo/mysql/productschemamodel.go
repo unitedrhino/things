@@ -34,7 +34,7 @@ type (
 	ProductSchemaModel interface {
 		productSchemaModel
 		DeleteWithFilter(ctx context.Context, filter ProductSchemaFilter) error
-		FindByFilter(ctx context.Context, filter ProductSchemaFilter, page def.PageInfo) ([]*ProductSchema, error)
+		FindByFilter(ctx context.Context, filter ProductSchemaFilter, page *def.PageInfo) ([]*ProductSchema, error)
 		GetCountByFilter(ctx context.Context, filter ProductSchemaFilter) (size int64, err error)
 	}
 
@@ -72,7 +72,7 @@ func (p *customProductSchemaModel) DeleteWithFilter(ctx context.Context, filter 
 }
 
 func (p customProductSchemaModel) FindByFilter(
-	ctx context.Context, filter ProductSchemaFilter, page def.PageInfo) (
+	ctx context.Context, filter ProductSchemaFilter, page *def.PageInfo) (
 	[]*ProductSchema, error) {
 	var resp []*ProductSchema
 	sql := sq.Select(productSchemaRows).From(p.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))

@@ -22,8 +22,8 @@ func NewShadowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ShadowLogi
 	}
 }
 
-func (l *ShadowLogic) Handle(msg *deviceMsg.PublishMsg) (err error) {
+func (l *ShadowLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), msg)
 	// todo
-	return err
+	return
 }

@@ -7,46 +7,59 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
-	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"strings"
 )
 
 type (
 	GroupModel interface {
-		Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, int64, error)
-		IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, error)
-		IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([]*GroupDevice, int64, error)
+		Index(ctx context.Context, in *GroupFilter) ([]*GroupInformation, int64, error)
+		IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInformation, error)
+		IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*GroupDevice, int64, error)
 		Delete(ctx context.Context, groupID int64) error
-		GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceInfoReadReq) error
-		GroupDeviceDelete(ctx context.Context, groupID int64, list map[string]string) error
+		GroupDeviceCreate(ctx context.Context, groupID int64, list []*device.Core) error
+		GroupDeviceDelete(ctx context.Context, groupID int64, list []*device.Core) error
 	}
 
 	groupModel struct {
 		sqlx.SqlConn
 		groupInfo   string
 		groupDevice string
+		deviceInfo  string
 	}
 	GroupFilter struct {
+		Page      *def.PageInfo
 		ParentID  int64
 		GroupName string
 		Tags      map[string]string
 	}
 	GroupDeviceFilter struct {
+		Page       *def.PageInfo
 		GroupID    int64
-		productID  string
+		ProductID  string
 		DeviceName string
+	}
+
+	GroupInformation struct {
+		GroupID     int64
+		GroupName   string
+		ParentID    int64
+		Desc        string
+		CreatedTime int64
+		Tags        map[string]string
 	}
 )
 
-func NewGroupModel(conn sqlx.SqlConn, c cache.CacheConf) GroupModel {
+func NewGroupModel(conn sqlx.SqlConn) GroupModel {
 	return &groupModel{
 		SqlConn:     conn,
 		groupInfo:   "`group_info`",
 		groupDevice: "`group_device`",
+		deviceInfo:  "`device_info`",
 	}
 }
 
@@ -69,8 +82,8 @@ func (g *GroupDeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if g.GroupID != 0 {
 		sql = sql.Where("`groupID`=?", g.GroupID)
 	}
-	if g.productID != "" {
-		sql = sql.Where("`productID`=?", g.productID)
+	if g.ProductID != "" {
+		sql = sql.Where("`productID`=?", g.ProductID)
 	}
 	if g.DeviceName != "" {
 		sql = sql.Where("`deviceName`=?", g.DeviceName)
@@ -95,7 +108,7 @@ func (m *groupModel) GetGroupsCountByFilter(ctx context.Context, f GroupFilter, 
 		return 0, err
 	}
 }
-func (m *groupModel) FindGroupInfoByFilter(ctx context.Context, f GroupFilter, page def.PageInfo, parentFlag bool) ([]*GroupInfo, error) {
+func (m *groupModel) FindGroupInfoByFilter(ctx context.Context, f GroupFilter, page *def.PageInfo, parentFlag bool) ([]*GroupInfo, error) {
 	var resp []*GroupInfo
 	sql := sq.Select(groupInfoRows).From(m.groupInfo).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql, parentFlag)
@@ -129,7 +142,7 @@ func (m *groupModel) GetGroupDeviceCountByFilter(ctx context.Context, f GroupDev
 		return 0, err
 	}
 }
-func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceFilter, page def.PageInfo) ([]*GroupDevice, error) {
+func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceFilter, page *def.PageInfo) ([]*GroupDevice, error) {
 	var resp []*GroupDevice
 	sql := sq.Select(groupDeviceRows).From(m.groupDevice).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql)
@@ -147,7 +160,7 @@ func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceF
 	}
 }
 
-func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, int64, error) {
+func (m *groupModel) Index(ctx context.Context, in *GroupFilter) ([]*GroupInformation, int64, error) {
 
 	filter := GroupFilter{
 		ParentID:  in.ParentID,
@@ -159,18 +172,18 @@ func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm
 		return nil, 0, err
 	}
 
-	dg, err := m.FindGroupInfoByFilter(ctx, filter, logic.ToPageInfo(in.Page), true)
+	dg, err := m.FindGroupInfoByFilter(ctx, filter, logic.ToPageInfo(&dm.PageInfo{Page: in.Page.Page, Size: in.Page.Size}), true)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	info := make([]*dm.GroupInfo, 0, len(dg))
+	info := make([]*GroupInformation, 0, len(dg))
 	for _, v := range dg {
 		var tags map[string]string
 		if v.Tags != "" {
 			_ = json.Unmarshal([]byte(v.Tags), &tags)
 		}
-		info = append(info, &dm.GroupInfo{
+		info = append(info, &GroupInformation{
 			GroupID:     v.GroupID,
 			GroupName:   v.GroupName,
 			ParentID:    v.ParentID,
@@ -183,25 +196,25 @@ func (m *groupModel) Index(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm
 	return info, size, nil
 }
 
-func (m *groupModel) IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]*dm.GroupInfo, error) {
+func (m *groupModel) IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInformation, error) {
 
 	filter := GroupFilter{
 		GroupName: in.GroupName,
 		Tags:      in.Tags,
 	}
 
-	dg, err := m.FindGroupInfoByFilter(ctx, filter, def.PageInfo{Size: 100000, Page: 1}, false)
+	dg, err := m.FindGroupInfoByFilter(ctx, filter, nil, false)
 	if err != nil {
 		return nil, err
 	}
 
-	info := make([]*dm.GroupInfo, 0, len(dg))
+	info := make([]*GroupInformation, 0, len(dg))
 	for _, v := range dg {
 		var tags map[string]string
 		if v.Tags != "" {
 			_ = json.Unmarshal([]byte(v.Tags), &tags)
 		}
-		info = append(info, &dm.GroupInfo{
+		info = append(info, &GroupInformation{
 			GroupID:     v.GroupID,
 			GroupName:   v.GroupName,
 			ParentID:    v.ParentID,
@@ -214,11 +227,11 @@ func (m *groupModel) IndexAll(ctx context.Context, in *dm.GroupInfoIndexReq) ([]
 	return info, nil
 }
 
-func (m *groupModel) IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([]*GroupDevice, int64, error) {
+func (m *groupModel) IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*GroupDevice, int64, error) {
 
 	filter := GroupDeviceFilter{
 		GroupID:    in.GroupID,
-		productID:  in.ProductID,
+		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
 	size, err := m.GetGroupDeviceCountByFilter(ctx, filter)
@@ -226,7 +239,7 @@ func (m *groupModel) IndexGD(ctx context.Context, in *dm.GroupDeviceIndexReq) ([
 		return nil, 0, err
 	}
 
-	dg, err := m.FindGroupDeviceByFilter(ctx, filter, logic.ToPageInfo(in.Page))
+	dg, err := m.FindGroupDeviceByFilter(ctx, filter, logic.ToPageInfo(&dm.PageInfo{Page: in.Page.Page, Size: in.Page.Size}))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -263,31 +276,42 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 	})
 }
 
-func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*dm.DeviceInfoReadReq) error {
+func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*device.Core) error {
 	return m.Transact(func(session sqlx.Session) error {
 		for _, v := range list {
-			var resp GroupDevice
-			query := fmt.Sprintf("select %s from %s where `groupID` = ? and `productID` = ? and `deviceName` = ?  limit 1", groupDeviceRows, m.groupDevice)
-			err := session.QueryRow(&resp, query, groupID, v.ProductID, v.DeviceName)
-			if err == sqlc.ErrNotFound {
-				query := fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s')",
-					m.groupDevice, groupID, v.ProductID, v.DeviceName)
-				_, err = session.Exec(query)
-				if err != nil {
-					return nil
-				}
+			if v == nil {
+				continue
+			}
+			var count int64
+			query := fmt.Sprintf("select count(1) from %s where productID = %q and deviceName = %q", m.deviceInfo, v.ProductID, v.DeviceName)
+			err := session.QueryRow(&count, query)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("groupModel.deviceInfoTable.QueryRowCtx data:%v err:%v", v, err)
+				continue
+			}
+			if count == 0 {
+				return errors.Parameter.WithMsgf("设备不存在:产品ID:%v,设备名:%", v.ProductID, v.DeviceName)
+			}
+			query = fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s') ON duplicate KEY UPDATE id = id",
+				m.groupDevice, groupID, v.ProductID, v.DeviceName)
+			_, err = session.Exec(query)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("groupModel.GroupDeviceCreate data:%v err:%v", v, err)
+				continue
 			}
 		}
 		return nil
 	})
 }
 
-func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list map[string]string) error {
+func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list []*device.Core) error {
 	return m.Transact(func(session sqlx.Session) error {
-		for i, v := range list {
-			s := strings.Split(i, "|||")
+		for _, v := range list {
+			if v == nil {
+				continue
+			}
 			query := fmt.Sprintf("delete from %s where groupID = %d and productID = '%s' and deviceName = '%s' ",
-				m.groupDevice, groupID, s[0], v)
+				m.groupDevice, groupID, v.ProductID, v.DeviceName)
 			_, err := session.Exec(query)
 			if err != nil {
 				return nil

@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
@@ -38,7 +38,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *di.PropertyLogIndexReq) (*d
 	if in.Interval != 0 && in.ArgFunc == "" {
 		return nil, errors.Parameter.AddMsg("填写了间隔就必须填写聚合函数")
 	}
-	dds, err := dd.GetPropertyDataByID(l.ctx, deviceMsg.FilterOpt{
+	dds, err := dd.GetPropertyDataByID(l.ctx, msgThing.FilterOpt{
 		Page: def.PageInfo2{
 			TimeStart: in.TimeStart,
 			TimeEnd:   in.TimeEnd,
@@ -69,7 +69,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *di.PropertyLogIndexReq) (*d
 		diDatas = append(diDatas, &diData)
 	}
 	if in.ArgFunc == "" && in.Interval == 0 {
-		total, err = dd.GetPropertyCountByID(l.ctx, deviceMsg.FilterOpt{
+		total, err = dd.GetPropertyCountByID(l.ctx, msgThing.FilterOpt{
 			Page: def.PageInfo2{
 				TimeStart: in.TimeStart,
 				TimeEnd:   in.TimeEnd,

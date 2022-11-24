@@ -14,41 +14,53 @@ import (
 )
 
 type (
-	AccessAuthReq             = dm.AccessAuthReq
-	DeviceInfo                = dm.DeviceInfo
-	DeviceInfoDeleteReq       = dm.DeviceInfoDeleteReq
-	DeviceInfoIndexReq        = dm.DeviceInfoIndexReq
-	DeviceInfoIndexResp       = dm.DeviceInfoIndexResp
-	DeviceInfoReadReq         = dm.DeviceInfoReadReq
-	GroupDeviceCreateReq      = dm.GroupDeviceCreateReq
-	GroupDeviceDeleteReq      = dm.GroupDeviceDeleteReq
-	GroupDeviceIndexReq       = dm.GroupDeviceIndexReq
-	GroupDeviceIndexResp      = dm.GroupDeviceIndexResp
-	GroupInfo                 = dm.GroupInfo
-	GroupInfoCreateReq        = dm.GroupInfoCreateReq
-	GroupInfoDeleteReq        = dm.GroupInfoDeleteReq
-	GroupInfoIndexReq         = dm.GroupInfoIndexReq
-	GroupInfoIndexResp        = dm.GroupInfoIndexResp
-	GroupInfoReadReq          = dm.GroupInfoReadReq
-	GroupInfoUpdateReq        = dm.GroupInfoUpdateReq
-	LoginAuthReq              = dm.LoginAuthReq
-	PageInfo                  = dm.PageInfo
-	ProductInfo               = dm.ProductInfo
-	ProductInfoDeleteReq      = dm.ProductInfoDeleteReq
-	ProductInfoIndexReq       = dm.ProductInfoIndexReq
-	ProductInfoIndexResp      = dm.ProductInfoIndexResp
-	ProductInfoReadReq        = dm.ProductInfoReadReq
-	ProductSchemaCreateReq    = dm.ProductSchemaCreateReq
-	ProductSchemaDeleteReq    = dm.ProductSchemaDeleteReq
-	ProductSchemaIndexReq     = dm.ProductSchemaIndexReq
-	ProductSchemaIndexResp    = dm.ProductSchemaIndexResp
-	ProductSchemaInfo         = dm.ProductSchemaInfo
-	ProductSchemaTslImportReq = dm.ProductSchemaTslImportReq
-	ProductSchemaTslReadReq   = dm.ProductSchemaTslReadReq
-	ProductSchemaTslReadResp  = dm.ProductSchemaTslReadResp
-	ProductSchemaUpdateReq    = dm.ProductSchemaUpdateReq
-	Response                  = dm.Response
-	RootCheckReq              = dm.RootCheckReq
+	AccessAuthReq               = dm.AccessAuthReq
+	DeviceCore                  = dm.DeviceCore
+	DeviceGatewayIndexReq       = dm.DeviceGatewayIndexReq
+	DeviceGatewayIndexResp      = dm.DeviceGatewayIndexResp
+	DeviceGatewayMultiCreateReq = dm.DeviceGatewayMultiCreateReq
+	DeviceGatewayMultiDeleteReq = dm.DeviceGatewayMultiDeleteReq
+	DeviceInfo                  = dm.DeviceInfo
+	DeviceInfoDeleteReq         = dm.DeviceInfoDeleteReq
+	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
+	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
+	DeviceInfoReadReq           = dm.DeviceInfoReadReq
+	GroupDeviceIndexReq         = dm.GroupDeviceIndexReq
+	GroupDeviceIndexResp        = dm.GroupDeviceIndexResp
+	GroupDeviceMultiCreateReq   = dm.GroupDeviceMultiCreateReq
+	GroupDeviceMultiDeleteReq   = dm.GroupDeviceMultiDeleteReq
+	GroupInfo                   = dm.GroupInfo
+	GroupInfoCreateReq          = dm.GroupInfoCreateReq
+	GroupInfoDeleteReq          = dm.GroupInfoDeleteReq
+	GroupInfoIndexReq           = dm.GroupInfoIndexReq
+	GroupInfoIndexResp          = dm.GroupInfoIndexResp
+	GroupInfoReadReq            = dm.GroupInfoReadReq
+	GroupInfoUpdateReq          = dm.GroupInfoUpdateReq
+	LoginAuthReq                = dm.LoginAuthReq
+	PageInfo                    = dm.PageInfo
+	ProductInfo                 = dm.ProductInfo
+	ProductInfoDeleteReq        = dm.ProductInfoDeleteReq
+	ProductInfoIndexReq         = dm.ProductInfoIndexReq
+	ProductInfoIndexResp        = dm.ProductInfoIndexResp
+	ProductInfoReadReq          = dm.ProductInfoReadReq
+	ProductRemoteConfig         = dm.ProductRemoteConfig
+	ProductSchemaCreateReq      = dm.ProductSchemaCreateReq
+	ProductSchemaDeleteReq      = dm.ProductSchemaDeleteReq
+	ProductSchemaIndexReq       = dm.ProductSchemaIndexReq
+	ProductSchemaIndexResp      = dm.ProductSchemaIndexResp
+	ProductSchemaInfo           = dm.ProductSchemaInfo
+	ProductSchemaTslImportReq   = dm.ProductSchemaTslImportReq
+	ProductSchemaTslReadReq     = dm.ProductSchemaTslReadReq
+	ProductSchemaTslReadResp    = dm.ProductSchemaTslReadResp
+	ProductSchemaUpdateReq      = dm.ProductSchemaUpdateReq
+	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
+	RemoteConfigIndexReq        = dm.RemoteConfigIndexReq
+	RemoteConfigIndexResp       = dm.RemoteConfigIndexResp
+	RemoteConfigLastReadReq     = dm.RemoteConfigLastReadReq
+	RemoteConfigLastReadResp    = dm.RemoteConfigLastReadResp
+	RemoteConfigPushAllReq      = dm.RemoteConfigPushAllReq
+	Response                    = dm.Response
+	RootCheckReq                = dm.RootCheckReq
 
 	DeviceGroup interface {
 		// 创建分组
@@ -62,11 +74,11 @@ type (
 		// 删除分组
 		GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 创建分组设备
-		GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error)
+		GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
 		// 获取分组设备信息列表
 		GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
 		// 删除分组设备
-		GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultDeviceGroup struct {
@@ -148,14 +160,14 @@ func (d *directDeviceGroup) GroupInfoDelete(ctx context.Context, in *GroupInfoDe
 }
 
 // 创建分组设备
-func (m *defaultDeviceGroup) GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceGroup) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewDeviceGroupClient(m.cli.Conn())
-	return client.GroupDeviceCreate(ctx, in, opts...)
+	return client.GroupDeviceMultiCreate(ctx, in, opts...)
 }
 
 // 创建分组设备
-func (d *directDeviceGroup) GroupDeviceCreate(ctx context.Context, in *GroupDeviceCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.GroupDeviceCreate(ctx, in)
+func (d *directDeviceGroup) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.GroupDeviceMultiCreate(ctx, in)
 }
 
 // 获取分组设备信息列表
@@ -170,12 +182,12 @@ func (d *directDeviceGroup) GroupDeviceIndex(ctx context.Context, in *GroupDevic
 }
 
 // 删除分组设备
-func (m *defaultDeviceGroup) GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceGroup) GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewDeviceGroupClient(m.cli.Conn())
-	return client.GroupDeviceDelete(ctx, in, opts...)
+	return client.GroupDeviceMultiDelete(ctx, in, opts...)
 }
 
 // 删除分组设备
-func (d *directDeviceGroup) GroupDeviceDelete(ctx context.Context, in *GroupDeviceDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.GroupDeviceDelete(ctx, in)
+func (d *directDeviceGroup) GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.GroupDeviceMultiDelete(ctx, in)
 }

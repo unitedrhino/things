@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
@@ -46,7 +46,7 @@ func (l *PropertyLatestIndexLogic) PropertyLatestIndex(in *di.PropertyLatestInde
 	total = len(dataIDs)
 	for _, v := range dataIDs {
 		dds, err := dd.GetPropertyDataByID(l.ctx,
-			deviceMsg.FilterOpt{
+			msgThing.FilterOpt{
 				Page:        def.PageInfo2{Size: 1},
 				ProductID:   in.ProductID,
 				DeviceNames: []string{},

@@ -3,7 +3,7 @@ package schemaDataRepo
 import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/domain/schema"
-	schema2 "github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	schema2 "github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/spf13/cast"
 )
 
@@ -17,8 +17,8 @@ func ToEventData(db map[string]any) *schema2.EventData {
 		return nil
 	}
 	data := schema2.EventData{
-		ID:        cast.ToString(db["event_id"]),
-		Type:      cast.ToString(db["event_type"]),
+		ID:        cast.ToString(db["eventID"]),
+		Type:      cast.ToString(db["eventType"]),
 		Params:    params,
 		TimeStamp: cast.ToTime(db["ts"]),
 	}
@@ -35,7 +35,7 @@ func ToPropertyData(id string, db map[string]any) *schema2.PropertyData {
 			TimeStamp: cast.ToTime(db["ts"]),
 		}
 		delete(db, "ts")
-		delete(db, "device_name")
+		delete(db, "deviceName")
 		delete(db, PROPERTY_TYPE)
 		data.Param = db
 		return &data

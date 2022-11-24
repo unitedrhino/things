@@ -2,12 +2,14 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
 	"strings"
+	"time"
 
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -18,7 +20,7 @@ type SDKLogLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	topics []string
-	dreq   deviceSend.SdkLogReq
+	dreq   msgSdkLog.Req
 }
 
 func NewSDKLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SDKLogLogic {
@@ -52,13 +54,24 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 		return nil, err
 	}
 	switch l.topics[2] {
-	case "operation":
+	case msgSdkLog.TypeOperation:
 		respMsg, err = l.GetLogLevel(msg)
-	case "report":
+	case msgSdkLog.TypeReport:
 		respMsg, err = l.ReportLogContent(msg)
 	default:
 		return nil, errors.Parameter.AddDetail("sdk log topic is err:" + msg.Topic)
 	}
+	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+		ProductID:  msg.ProductID,
+		Action:     "sdkLog",
+		Timestamp:  l.dreq.GetTimeStamp(msg.Timestamp.UnixMilli()), // 操作时间
+		DeviceName: msg.DeviceName,
+		TranceID:   utils.TraceIdFromContext(l.ctx),
+		RequestID:  l.dreq.ClientToken,
+		Content:    string(msg.Payload),
+		Topic:      msg.Topic,
+		ResultType: errors.Fmt(err).GetCode(),
+	})
 	return respMsg, err
 }
 
@@ -78,13 +91,12 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *devi
 		return nil, err
 	}
 	for _, logObj := range l.dreq.Params {
-		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceMsg.SDKLog{
-			ProductID:   ld.ProductID,
-			LogLevel:    logObj.LogLevel,
-			Timestamp:   l.dreq.GetTimeStamp(logObj.Timestamp), // 操作时间
-			DeviceName:  ld.DeviceName,
-			Content:     logObj.Content,
-			ClientToken: l.dreq.ClientToken,
+		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &msgSdkLog.SDKLog{
+			ProductID:  ld.ProductID,
+			LogLevel:   logObj.LogLevel,
+			Timestamp:  l.dreq.GetTimeStamp(logObj.Timestamp), // 操作时间
+			DeviceName: ld.DeviceName,
+			Content:    logObj.Content,
 		})
 		if err != nil {
 			l.Errorf("%s.LogRepo.insert.productID:%v deviceName:%v err:%v",
@@ -108,13 +120,18 @@ func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		return l.DeviceResp(msg, errors.Database, nil), err
 	}
-	return l.DeviceResp(msg, errors.OK, map[string]any{"log_level": ld.LogLevel}), nil
+	return l.DeviceResp(msg, errors.OK, map[string]any{"logLevel": ld.LogLevel}), nil
 }
 
-func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data map[string]any) *deviceMsg.PublishMsg {
-	topic, payload := deviceSend.GenThingDeviceRespData(l.dreq.Method, l.dreq.ClientToken, l.topics, err, data)
+func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
+	resp := &deviceMsg.CommonMsg{
+		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
+		ClientToken: l.dreq.ClientToken,
+		Timestamp:   time.Now().UnixMilli(),
+		Data:        data,
+	}
 	return &deviceMsg.PublishMsg{
-		Topic:   topic,
-		Payload: payload,
+		Topic:   deviceMsg.GenRespTopic(l.topics),
+		Payload: resp.AddStatus(err).Bytes(),
 	}
 }

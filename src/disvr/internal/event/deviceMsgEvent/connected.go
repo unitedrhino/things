@@ -7,8 +7,9 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/deviceSend"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -20,7 +21,7 @@ type ConnectedLogic struct {
 	logx.Logger
 	template *schema.Model
 	topics   []string
-	dreq     deviceSend.DeviceReq
+	dreq     msgThing.Req
 }
 
 func NewConnectedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ConnectedLogic {
@@ -30,15 +31,15 @@ func NewConnectedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Connect
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *ConnectedLogic) Handle(msg *deviceMsg.ConnectMsg) error {
+func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	l.Infof("%s req=%+v", utils.FuncName(), utils.Fmt(msg))
 	ld, err := deviceAuth.GetClientIDInfo(msg.ClientID)
 	if err != nil {
 		return err
 	}
-	err = l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceMsg.HubLog{
+	err = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  ld.ProductID,
-		Action:     "connected",
+		Action:     deviceStatus.ConnectStatus,
 		Timestamp:  msg.Timestamp, // 操作时间
 		DeviceName: ld.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),

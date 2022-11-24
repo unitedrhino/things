@@ -5,7 +5,9 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/src/disvr/internal/config"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/hubLogRepo"
@@ -13,6 +15,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/sdkLogRepo"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
+	remoteconfig "github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -23,18 +26,20 @@ import (
 type ServiceContext struct {
 	Config        config.Config
 	PubDev        pubDev.PubDev
-	SchemaMsgRepo deviceMsg.SchemaDataRepo
-	HubLogRepo    deviceMsg.HubLogRepo
+	SchemaMsgRepo msgThing.SchemaDataRepo
+	HubLogRepo    msgHubLog.HubLogRepo
 	SchemaRepo    schema.ReadRepo
-	SDKLogRepo    deviceMsg.SDKLogRepo
+	SDKLogRepo    msgSdkLog.SDKLogRepo
 	DeviceM       devicemanage.DeviceManage
 	ProductM      productmanage.ProductManage
+	RemoteConfig  remoteconfig.RemoteConfig
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
-		deviceM  devicemanage.DeviceManage
-		productM productmanage.ProductManage
+		deviceM      devicemanage.DeviceManage
+		productM     productmanage.ProductManage
+		remoteConfig remoteconfig.RemoteConfig
 	)
 
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
@@ -49,9 +54,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.DmRpc.Mode == conf.ClientModeGrpc {
 		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
+		remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
 	} else {
 		deviceM = dmdirect.NewDeviceManage()
 		productM = dmdirect.NewProductManage()
+		remoteConfig = dmdirect.NewRemoteConfig()
 	}
 	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
 		info, err := productM.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: productID})
@@ -71,5 +78,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SDKLogRepo:    sdkLog,
 		ProductM:      productM,
 		DeviceM:       deviceM,
+		RemoteConfig:  remoteConfig,
 	}
 }

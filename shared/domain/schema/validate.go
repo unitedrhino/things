@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	IDFomatChect     = false //是否检查ID是否以数字开头
-	IDLen            = 128   //标识符的长度
-	NameLen          = 128   //参数名称的长度
-	DescLen          = 80    //描述的最大长度
+	IDFFormatCheck   = true //是否检查ID是否以数字开头
+	IDLen            = 128  //标识符的长度
+	NameLen          = 128  //参数名称的长度
+	DescLen          = 80   //描述的最大长度
 	DefineMappingLen = 20
 	DefineUnitLen    = 12
 	DefineIntMax     = 9999999999999
@@ -114,7 +114,7 @@ func (p *Property) ValidateWithFmt() error {
 		return err
 	}
 	if p.Mode != PropertyModeRW && p.Mode != PropertyModeR {
-		return errors.Parameter.WithMsgf("属性读写类型只能为wr及r,收到:%v", p.Mode)
+		return errors.Parameter.WithMsgf("属性读写类型只能为rw及r,收到:%v", p.Mode)
 	}
 	return p.Define.ValidateWithFmt()
 }
@@ -124,7 +124,7 @@ func IDValidate(id string) error {
 		return errors.Parameter.WithMsgf(
 			"标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
 	}
-	if IDFomatChect {
+	if IDFFormatCheck {
 		if !(id[0] <= '9' || id[0] >= '0') {
 			return errors.Parameter.WithMsgf(
 				"标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
@@ -206,7 +206,7 @@ func (d *Define) ValidateWithFmtInt() error {
 		max = DefineIntMax
 		d.Max = cast.ToString(max)
 	}
-	min, err := cast.ToInt64E(d.Max)
+	min, err := cast.ToInt64E(d.Min)
 	if err != nil {
 		return errors.Parameter.WithMsgf("整数的最小值定义不是数字:%v", d.Min)
 	}
@@ -219,7 +219,7 @@ func (d *Define) ValidateWithFmtInt() error {
 	}
 	step, err := cast.ToInt64E(d.Step)
 	if err != nil {
-		return errors.Parameter.WithMsgf("整数的单位定义不是数字:%v", d.Max)
+		return errors.Parameter.WithMsgf("整数的步长定义值类型不是数字:%v", d.Max)
 	}
 	if step > max {
 		step = max
@@ -236,7 +236,7 @@ func (d *Define) ValidateWithFmtInt() error {
 func (d *Define) ValidateWithFmtString() error {
 	max, err := cast.ToInt64E(d.Max)
 	if err != nil {
-		return errors.Parameter.WithMsgf("字符串的最大值定义不是数字:%v", d.Max)
+		return errors.Parameter.WithMsgf("字符串的最大值定义不是数字类型:%v", d.Max)
 	}
 	if max > DefineStringMax {
 		max = DefineStringMax
@@ -265,15 +265,15 @@ func (d *Define) ValidateWithFmtStruct() error {
 func (d *Define) ValidateWithFmtFloat() error {
 	max, err := cast.ToFloat64E(d.Max)
 	if err != nil {
-		return errors.Parameter.WithMsgf("浮点型的最大值定义不是数字:%v", d.Max)
+		return errors.Parameter.WithMsgf("浮点型的最大值定义不是数字类型:%v", d.Max)
 	}
 	if max > DefineIntMax {
 		max = DefineIntMax
 		d.Max = cast.ToString(max)
 	}
-	min, err := cast.ToFloat64E(d.Max)
+	min, err := cast.ToFloat64E(d.Min)
 	if err != nil {
-		return errors.Parameter.WithMsgf("浮点型的最小值定义不是数字:%v", d.Min)
+		return errors.Parameter.WithMsgf("浮点型的最小值定义不是数字类型:%v", d.Min)
 	}
 	if min < DefineIntMin {
 		min = DefineIntMin
@@ -284,7 +284,7 @@ func (d *Define) ValidateWithFmtFloat() error {
 	}
 	step, err := cast.ToFloat64E(d.Step)
 	if err != nil {
-		return errors.Parameter.WithMsgf("浮点型的单位定义不是数字:%v", d.Max)
+		return errors.Parameter.WithMsgf("浮点型的步长定义不是数字类型:%v", d.Max)
 	}
 	if step > max {
 		step = max
@@ -319,6 +319,9 @@ func (d *Define) ValidateWithFmtArray() error {
 	d.Maping = nil
 	d.Specs = nil
 	d.Spec = nil
+	if d.ArrayInfo == nil {
+		return errors.Parameter.WithMsgf("数组类型缺失arrayInfo结构体")
+	}
 	return d.ArrayInfo.ValidateWithFmt()
 }
 func (d *Define) ValidateWithFmtEnum() error {
