@@ -50,9 +50,10 @@ func (l *CountLogic) Count(req *types.DeviceCountReq) (resp *types.DeviceCountRe
 
 	return &types.DeviceCountResp{
 		DeviceInfoCount: types.DeviceInfoCount{
-			Online:  diResp.Online,
-			Offline: diResp.Offline,
-			Unknown: diResp.Unknown,
+			Online:   diResp.Online,
+			Offline:  diResp.Offline,
+			Inactive: diResp.Inactive,
+			Unknown:  diResp.Unknown,
 		},
 		DeviceTypeCount: types.DeviceTypeCount{
 			Device:  dtResp.Device,

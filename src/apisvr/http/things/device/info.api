@@ -90,15 +90,16 @@ type (
         EndTime int64 `json:"endTime,optional" form:"endTime,optional"`        //查询区间的结束时间（秒）
     }
     DeviceInfoCount {
-        Online int64 `json:"online"`
-        Offline int64 `json:"offline"`
-        Unknown int64 `json:"unknown"`
+        Online int64 `json:"online"`     // 在线设备数
+        Offline int64 `json:"offline"`   // 离线设备数
+        Inactive int64 `json:"inactive"` // 未激活设备数
+        Unknown int64 `json:"unknown"`   // 未知设备数（all = 在线+离线+未激活+未知）
     }
     DeviceTypeCount {
-        device int64 `json:"device"`
-        gateway int64 `json:"gateway"`
-        subset int64 `json:"subset"`
-        unknown int64 `json:"unknown"`
+        device int64 `json:"device"`   // 设备类型数
+        gateway int64 `json:"gateway"` // 网关类型数
+        subset int64 `json:"subset"`   // 子设备类型数
+        unknown int64 `json:"unknown"` // 未知设备类型
     }
     DeviceCountResp {
         DeviceInfoCount DeviceInfoCount `json:"deviceCount"`
