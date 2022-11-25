@@ -21,10 +21,14 @@ type (
 	DeviceGatewayMultiCreateReq = dm.DeviceGatewayMultiCreateReq
 	DeviceGatewayMultiDeleteReq = dm.DeviceGatewayMultiDeleteReq
 	DeviceInfo                  = dm.DeviceInfo
+	DeviceInfoCountReq          = dm.DeviceInfoCountReq
+	DeviceInfoCountResp         = dm.DeviceInfoCountResp
 	DeviceInfoDeleteReq         = dm.DeviceInfoDeleteReq
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq           = dm.DeviceInfoReadReq
+	DeviceTypeCountReq          = dm.DeviceTypeCountReq
+	DeviceTypeCountResp         = dm.DeviceTypeCountResp
 	GroupDeviceIndexReq         = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp        = dm.GroupDeviceIndexResp
 	GroupDeviceMultiCreateReq   = dm.GroupDeviceMultiCreateReq
