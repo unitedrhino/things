@@ -250,7 +250,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdeviceinfo.ReadHandler(serverCtx),
 				},
 				{
-					Method:  http.MethodGet,
+					Method:  http.MethodPost,
 					Path:    "/count",
 					Handler: thingsdeviceinfo.CountHandler(serverCtx),
 				},
