@@ -29,7 +29,7 @@ service api {
     post /read (DeviceInfoReadReq) returns (DeviceInfo)
     @doc "设备统计详情"
     @handler count
-    get /count (DeviceCountReq) returns (DeviceCountResp)
+    post /count (DeviceCountReq) returns (DeviceCountResp)
 }
 
 type (
