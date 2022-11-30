@@ -249,6 +249,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/read",
 					Handler: thingsdeviceinfo.ReadHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/count",
+					Handler: thingsdeviceinfo.CountHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/info"),
