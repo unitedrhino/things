@@ -19,5 +19,27 @@ func productInfoToApi(v *dm.ProductInfo) *types.ProductInfo {
 		AutoRegister: v.AutoRegister,             //动态注册:0:关闭,1:打开,2:打开并自动创建设备
 		Secret:       v.Secret,                   //动态注册产品秘钥 只读
 		Desc:         utils.ToNullString(v.Desc), //描述
+		Tags:         ToTagsType(v.Tags),
 	}
+}
+
+func ToTagsMap(tags []*types.ProductTag) map[string]string {
+	if tags == nil {
+		return nil
+	}
+	tagMap := make(map[string]string, len(tags))
+	for _, tag := range tags {
+		tagMap[tag.Key] = tag.Value
+	}
+	return tagMap
+}
+
+func ToTagsType(tags map[string]string) (retTag []*types.ProductTag) {
+	for k, v := range tags {
+		retTag = append(retTag, &types.ProductTag{
+			Key:   k,
+			Value: v,
+		})
+	}
+	return
 }
