@@ -27,9 +27,9 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 	}
 }
 
-func toTagsType(tags map[string]string) (retTag []*types.DeviceTag) {
+func toTagsType(tags map[string]string) (retTag []*types.Tag) {
 	for k, v := range tags {
-		retTag = append(retTag, &types.DeviceTag{
+		retTag = append(retTag, &types.Tag{
 			Key:   k,
 			Value: v,
 		})
