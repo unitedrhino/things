@@ -36,6 +36,7 @@ func (l *CreateLogic) Create(req *types.ProductInfoCreateReq) error {
 		DataProto:    req.DataProto,
 		AutoRegister: req.AutoRegister,
 		Desc:         utils.ToRpcNullString(req.Desc),
+		Tags:         ToTagsMap(req.Tags),
 	}
 	//if req.DevStatus != nil {
 	//	dmReq.DevStatus = &wrappers.StringValue{

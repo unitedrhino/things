@@ -37,6 +37,7 @@ func (l *UpdateLogic) Update(req *types.ProductInfoUpdateReq) error {
 		NetType:      req.NetType,
 		DataProto:    req.DataProto,
 		AutoRegister: req.AutoRegister,
+		Tags:         ToTagsMap(req.Tags),
 	}
 	if req.Desc != nil {
 		dmReq.Desc = &wrappers.StringValue{
