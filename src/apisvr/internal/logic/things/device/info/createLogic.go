@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/apisvr/internal/logic/things/device"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -32,7 +32,7 @@ func (l *CreateLogic) Create(req *types.DeviceInfoCreateReq) error {
 		ProductID:  req.ProductID,  //产品id 只读
 		DeviceName: req.DeviceName, //设备名称 读写
 		LogLevel:   req.LogLevel,   // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-		Tags:       device.ToTagsMap(req.Tags),
+		Tags:       logic.ToTagsMap(req.Tags),
 	}
 	_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, dmReq)
 	if err != nil {

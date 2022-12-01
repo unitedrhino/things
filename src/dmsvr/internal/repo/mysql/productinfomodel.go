@@ -23,6 +23,7 @@ type (
 		DeviceType  int64
 		ProductName string
 		ProductIDs  []string
+		Tags        map[string]string
 	}
 
 	customProductInfoModel struct {

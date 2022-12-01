@@ -1,6 +1,7 @@
 package productmanagelogic
 
 import (
+	"encoding/json"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/def"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -16,6 +17,11 @@ import (
 //}
 
 func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
+	var (
+		tags map[string]string
+	)
+
+	_ = json.Unmarshal([]byte(pi.Tags), &tags)
 	if pi.DeviceType == def.Unknown {
 		pi.DeviceType = def.DeviceTypeDevice
 	}
@@ -43,6 +49,7 @@ func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
 		Secret:       pi.Secret,                             //动态注册产品秘钥 只读
 		Desc:         &wrappers.StringValue{Value: pi.Desc}, //描述
 		CreatedTime:  pi.CreatedTime.Unix(),                 //创建时间
+		Tags:         tags,                                  //产品tags
 		//Model:     &wrappers.StringValue{Value: pi.Model},    //数据模板
 	}
 	return dpi
