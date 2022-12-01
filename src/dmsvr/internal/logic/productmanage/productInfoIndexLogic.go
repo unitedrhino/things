@@ -33,7 +33,7 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 		err  error
 	)
 	filter := mysql.ProductFilter{
-		DeviceType: in.DeviceType, ProductName: in.ProductName, ProductIDs: in.ProductIDs}
+		DeviceType: in.DeviceType, ProductName: in.ProductName, Tags: in.Tags, ProductIDs: in.ProductIDs}
 	size, err = l.svcCtx.ProductInfo.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
