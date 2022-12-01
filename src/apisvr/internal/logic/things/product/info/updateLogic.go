@@ -5,6 +5,7 @@ import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -37,6 +38,7 @@ func (l *UpdateLogic) Update(req *types.ProductInfoUpdateReq) error {
 		NetType:      req.NetType,
 		DataProto:    req.DataProto,
 		AutoRegister: req.AutoRegister,
+		Tags:         logic.ToTagsMap(req.Tags),
 	}
 	if req.Desc != nil {
 		dmReq.Desc = &wrappers.StringValue{
