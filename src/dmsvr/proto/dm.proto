@@ -252,6 +252,7 @@ message ProductInfo{
   string   secret = 10;//动态注册产品秘钥 只读
   google.protobuf.StringValue   desc = 11;//描述
   google.protobuf.StringValue   devStatus = 12; // 产品状态
+  map<string, string> tags = 13; //产品标签
 }
 
 message ProductInfoDeleteReq{
@@ -269,6 +270,7 @@ message ProductInfoIndexReq{
   int64  deviceType = 2; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
   string  productName = 3; //过滤条件: 产品名称
   repeated string   productIDs = 4; //过滤产品id列表
+  map<string, string> tags = 5;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
 message ProductInfoIndexResp{
