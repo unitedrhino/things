@@ -11,6 +11,8 @@ type (
 	PubApp interface {
 		DeviceStatusConnected(ctx context.Context, msg application.ConnectMsg) error
 		DeviceStatusDisConnected(ctx context.Context, msg application.ConnectMsg) error
+		DeviceThingPropertyReport(ctx context.Context, msg application.PropertyReport) error
+		DeviceThingEventReport(ctx context.Context, msg application.EventReport) error
 	}
 )
 
