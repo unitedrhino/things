@@ -23,6 +23,7 @@ type (
 		DeviceType  int64
 		ProductName string
 		ProductIDs  []string
+		Tags        map[string]string
 	}
 
 	customProductInfoModel struct {
@@ -46,6 +47,12 @@ func (p *ProductFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	}
 	if len(p.ProductIDs) != 0 {
 		sql = sql.Where(fmt.Sprintf("productID in (%v)", store.ArrayToSql(p.ProductIDs)))
+	}
+	if p.Tags != nil {
+		for k, v := range p.Tags {
+			sql = sql.Where("JSON_CONTAINS(`tags`, JSON_OBJECT(?,?))",
+				k, v)
+		}
 	}
 	return sql
 }
