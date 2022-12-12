@@ -23,10 +23,6 @@ type (
 	}
 )
 
-const (
-	ThingsDeliverGroup = "things_dm_group"
-)
-
 func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 	nc, err := clients.NewNatsClient(conf)
 	if err != nil {

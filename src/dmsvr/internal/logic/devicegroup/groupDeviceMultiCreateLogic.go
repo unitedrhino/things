@@ -2,8 +2,8 @@ package devicegrouplogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -26,9 +26,9 @@ func NewGroupDeviceMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 // 创建分组设备
 func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceMultiCreateReq) (*dm.Response, error) {
-	list := make([]*device.Core, len(in.List))
+	list := make([]*devices.Core, len(in.List))
 	for _, v := range in.List {
-		list = append(list, &device.Core{
+		list = append(list, &devices.Core{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 		})
