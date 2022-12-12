@@ -3,10 +3,10 @@ package devicemanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -65,7 +65,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 		}
 	}
 
-	err := l.svcCtx.Gateway.CreateList(l.ctx, &device.Core{
+	err := l.svcCtx.Gateway.CreateList(l.ctx, &devices.Core{
 		ProductID:  in.GatewayProductID,
 		DeviceName: in.GatewayDeviceName,
 	}, ToDeviceCoreDos(in.List))
