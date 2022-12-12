@@ -21,7 +21,7 @@ func TestGetApplicationMsg(t *testing.T) {
 		t.Error(err)
 	}
 	//订阅所有消息
-	_, err = nc.Subscribe(">", events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+	_, err = nc.Subscribe("application.>", events.NatsSubscription(func(ctx context.Context, msg []byte) error {
 		ele, err := deviceMsg.GetDevPublish(ctx, msg)
 		if err != nil {
 			return err
