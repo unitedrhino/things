@@ -6,8 +6,8 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -21,8 +21,8 @@ type (
 		IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInformation, error)
 		IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*GroupDevice, int64, error)
 		Delete(ctx context.Context, groupID int64) error
-		GroupDeviceCreate(ctx context.Context, groupID int64, list []*device.Core) error
-		GroupDeviceDelete(ctx context.Context, groupID int64, list []*device.Core) error
+		GroupDeviceCreate(ctx context.Context, groupID int64, list []*devices.Core) error
+		GroupDeviceDelete(ctx context.Context, groupID int64, list []*devices.Core) error
 	}
 
 	groupModel struct {
@@ -276,7 +276,7 @@ func (m *groupModel) Delete(ctx context.Context, groupID int64) error {
 	})
 }
 
-func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*device.Core) error {
+func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list []*devices.Core) error {
 	return m.Transact(func(session sqlx.Session) error {
 		for _, v := range list {
 			if v == nil {
@@ -304,7 +304,7 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 	})
 }
 
-func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list []*device.Core) error {
+func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list []*devices.Core) error {
 	return m.Transact(func(session sqlx.Session) error {
 		for _, v := range list {
 			if v == nil {

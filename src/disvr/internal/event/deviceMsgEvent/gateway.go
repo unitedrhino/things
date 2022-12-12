@@ -4,11 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgGateway"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
+	"github.com/i-Things/things/src/disvr/internal/domain/service/application"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -138,14 +140,31 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 	}
 	resp.AddStatus(errors.OK)
 	var (
-		isOnline = int64(def.False)
-		payload  msgGateway.GatewayPayload
+		isOnline   = int64(def.False)
+		payload    msgGateway.GatewayPayload
+		appConnMsg = application.ConnectMsg{
+			Device: devices.Core{
+				ProductID:  msg.ProductID,
+				DeviceName: msg.DeviceName,
+			},
+			Timestamp: msg.Timestamp,
+		}
 	)
 
 	switch l.dreq.Method {
 	case deviceMsg.Online:
 		isOnline = def.True
+		err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, appConnMsg)
+		if err != nil {
+			l.Errorf("%s.DeviceStatusConnected productID:%v deviceName:%v err:%v",
+				utils.FuncName(), msg.ProductID, msg.DeviceName, err)
+		}
 	case deviceMsg.Offline:
+		err = l.svcCtx.PubApp.DeviceStatusDisConnected(l.ctx, appConnMsg)
+		if err != nil {
+			l.Errorf("%s.DeviceStatusDisConnected productID:%v deviceName:%v err:%v",
+				utils.FuncName(), msg.ProductID, msg.DeviceName, err)
+		}
 	default:
 		err := errors.Parameter.AddDetailf("not support method :%s", l.dreq.Method)
 		resp.AddStatus(err)
