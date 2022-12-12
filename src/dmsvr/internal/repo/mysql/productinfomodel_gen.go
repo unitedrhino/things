@@ -52,6 +52,7 @@ type (
 		UpdatedTime  time.Time    `db:"updatedTime"`
 		DeletedTime  sql.NullTime `db:"deletedTime"`
 		DevStatus    string       `db:"devStatus"` // 产品状态
+		Tags         string       `db:"tags"`      // 产品标签
 	}
 )
 
@@ -97,14 +98,14 @@ func (m *defaultProductInfoModel) FindOneByProductName(ctx context.Context, prod
 }
 
 func (m *defaultProductInfoModel) Insert(ctx context.Context, data *ProductInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Desc, data.DevStatus)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, productInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Desc, data.DevStatus, data.Tags)
 	return ret, err
 }
 
 func (m *defaultProductInfoModel) Update(ctx context.Context, newData *ProductInfo) error {
 	query := fmt.Sprintf("update %s set %s where `productID` = ?", m.table, productInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductName, newData.ProductType, newData.AuthMode, newData.DeviceType, newData.CategoryID, newData.NetType, newData.DataProto, newData.AutoRegister, newData.Secret, newData.Desc, newData.DevStatus, newData.ProductID)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductName, newData.ProductType, newData.AuthMode, newData.DeviceType, newData.CategoryID, newData.NetType, newData.DataProto, newData.AutoRegister, newData.Secret, newData.Desc, newData.DevStatus, newData.Tags, newData.ProductID)
 	return err
 }
 
