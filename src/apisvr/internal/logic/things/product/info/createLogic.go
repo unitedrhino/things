@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -36,6 +37,7 @@ func (l *CreateLogic) Create(req *types.ProductInfoCreateReq) error {
 		DataProto:    req.DataProto,
 		AutoRegister: req.AutoRegister,
 		Desc:         utils.ToRpcNullString(req.Desc),
+		Tags:         logic.ToTagsMap(req.Tags),
 	}
 	//if req.DevStatus != nil {
 	//	dmReq.DevStatus = &wrappers.StringValue{

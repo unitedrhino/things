@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/domain/schema"
@@ -99,6 +100,14 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	err = l.InitProduct(pi)
 	if err != nil {
 		return nil, err
+	}
+	if in.Tags != nil {
+		tags, err := json.Marshal(in.Tags)
+		if err == nil {
+			pi.Tags = string(tags)
+		}
+	} else {
+		pi.Tags = "{}"
 	}
 	_, err = l.svcCtx.ProductInfo.Insert(l.ctx, pi)
 	if err != nil {

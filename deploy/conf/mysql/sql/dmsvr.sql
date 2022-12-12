@@ -21,6 +21,7 @@ CREATE TABLE if not exists `product_info`
     `updatedTime`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deletedTime`  datetime              DEFAULT NULL,
     `devStatus`    varchar(20)  NOT NULL DEFAULT '' COMMENT '产品状态',
+    `tags`        json not null comment '产品标签',
     PRIMARY KEY (`productID`),
     KEY `deviceType` (`deviceType`) USING BTREE,
     UNIQUE KEY `productName` (`productName`) USING BTREE
