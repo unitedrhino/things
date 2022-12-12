@@ -22,8 +22,8 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 			return err
 		}
 		sql := fmt.Sprintf("insert into %s using %s tags('%s','%s') (ts, %s) values (?,%s);",
-			d.GetPropertyTableName(productID, deviceName, property.ID),
-			d.GetPropertyStableName(productID, property.ID), deviceName, t.Property[property.ID].Define.Type,
+			d.GetPropertyTableName(productID, deviceName, property.Identifier),
+			d.GetPropertyStableName(productID, property.Identifier), deviceName, t.Property[property.Identifier].Define.Type,
 			paramIds, paramPlaceholder)
 		param := append([]any{property.TimeStamp}, paramValList...)
 		if _, err := d.t.ExecContext(ctx, sql, param...); err != nil {
@@ -41,7 +41,7 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 			}
 		}
 		sql := fmt.Sprintf("insert into %s (ts, param) values (?,?);",
-			d.GetPropertyTableName(productID, deviceName, property.ID))
+			d.GetPropertyTableName(productID, deviceName, property.Identifier))
 		if _, err := d.t.ExecContext(ctx, sql, property.TimeStamp, param); err != nil {
 			return err
 		}
@@ -51,15 +51,16 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 
 func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error {
 	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
-	for id, param := range params {
+	for identifier, param := range params {
 		err := d.InsertPropertyData(ctx, t, productID, deviceName, &msgThing.PropertyData{
-			ID:        id,
-			Param:     param,
-			TimeStamp: timestamp,
+			Identifier: identifier,
+			Param:      param,
+			TimeStamp:  timestamp,
 		})
 		if err != nil {
-			return errors.Database.AddDetailf("SchemaDataRepo.InsertPropertiesData.InsertPropertyData id:%v param:%v err:%v",
-				id, param, err)
+			return errors.Database.AddDetailf(
+				"SchemaDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
+				identifier, param, err)
 		}
 	}
 	return nil

@@ -53,7 +53,7 @@ func (l *EventLogIndexLogic) EventLogIndex(in *di.EventLogIndexReq) (*di.EventIn
 		diData := di.EventIndex{
 			Timestamp: devData.TimeStamp.UnixMilli(),
 			Type:      devData.Type,
-			DataID:    devData.ID,
+			DataID:    devData.Identifier,
 		}
 		var payload []byte
 		payload, _ = json.Marshal(devData.Params)
