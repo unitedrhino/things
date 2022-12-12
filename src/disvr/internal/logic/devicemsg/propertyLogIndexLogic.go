@@ -57,7 +57,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *di.PropertyLogIndexReq) (*d
 	for _, devData := range dds {
 		diData := di.PropertyIndex{
 			Timestamp: devData.TimeStamp.UnixMilli(),
-			DataID:    devData.ID,
+			DataID:    devData.Identifier,
 		}
 		var payload []byte
 		if param, ok := devData.Param.(string); ok {

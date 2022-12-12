@@ -25,15 +25,15 @@ func (S *SchemaStore) GetSpecsColumnWithArgFunc(s schema.Specs, argFunc string) 
 	return strings.Join(column, ",")
 }
 
-func (S *SchemaStore) GetPropertyStableName(productID, id string) string {
-	return fmt.Sprintf("`model_custom_property_%s_%s`", productID, id)
+func (S *SchemaStore) GetPropertyStableName(productID, identifier string) string {
+	return fmt.Sprintf("`model_custom_property_%s_%s`", productID, identifier)
 }
 func (S *SchemaStore) GetEventStableName() string {
 	return fmt.Sprintf("`model_common_event`")
 }
 
-func (S *SchemaStore) GetPropertyTableName(productID, deviceName, id string) string {
-	return fmt.Sprintf("`device_property_%s_%s_%s`", productID, deviceName, id)
+func (S *SchemaStore) GetPropertyTableName(productID, deviceName, identifier string) string {
+	return fmt.Sprintf("`device_property_%s_%s_%s`", productID, deviceName, identifier)
 }
 func (S *SchemaStore) GetEventTableName(productID, deviceName string) string {
 	return fmt.Sprintf("`device_event_%s_%s`", productID, deviceName)
