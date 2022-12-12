@@ -39,12 +39,12 @@ const (
 const (
 	// ApplicationDeviceStatusConnected 设备登录状态推送 中间两个是产品id和设备名称
 	ApplicationDeviceStatusConnected = "application.device.%s.%s.status.connected"
-	// ApplicationDeviceStatusDisConnected 设备登录状态推送 中间两个是产品id和设备名称
+	// ApplicationDeviceStatusDisConnected 设备登出状态推送 中间两个是产品id和设备名称
 	ApplicationDeviceStatusDisConnected = "application.device.%s.%s.status.disconnected"
-	// ApplicationDeviceReportThingProperty 设备物模型属性上报通知 中间两个是产品id和设备名称
-	ApplicationDeviceReportThingProperty = "application.device.%s.%s.report.thing.property"
-	// ApplicationDeviceReportThingEvent 设备物模型事件上报通知 中间两个是产品id和设备名称
-	ApplicationDeviceReportThingEvent = "application.device.%s.%s.report.thing.event"
+	// ApplicationDeviceReportThingProperty 设备物模型属性上报通知 中间两个是产品id和设备名称,最后一个是属性id
+	ApplicationDeviceReportThingProperty = "application.device.%s.%s.report.thing.property.%s"
+	// ApplicationDeviceReportThingEvent 设备物模型事件上报通知 中间两个是产品id和设备名称,最后两个是事件类型和事件id
+	ApplicationDeviceReportThingEvent = "application.device.%s.%s.report.thing.event.%s.%s"
 )
 
 //dmsvr发布的事件通知
