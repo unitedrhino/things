@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/src/disvr/internal/domain/service/application"
@@ -27,9 +26,20 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 	return &NatsClient{client: nc}, nil
 }
 
-func (n *NatsClient) PublishToDev(ctx context.Context, topic string, payload []byte) error {
-	msg := events.NewEventMsg(ctx, devices.PublishToDev(topic, payload))
-	err := n.client.Publish(topics.DeviceDownAll, msg)
+func (n *NatsClient) DeviceThingPropertyReport(ctx context.Context, msg application.PropertyReport) error {
+	data, _ := json.Marshal(msg)
+	pubMsg := events.NewEventMsg(ctx, data)
+	topic := fmt.Sprintf(topics.ApplicationDeviceReportThingProperty, msg.Device.ProductID, msg.Device.DeviceName, msg.Identifier)
+	err := n.client.Publish(topic, pubMsg)
+	return err
+}
+
+func (n *NatsClient) DeviceThingEventReport(ctx context.Context, msg application.EventReport) error {
+	data, _ := json.Marshal(msg)
+	pubMsg := events.NewEventMsg(ctx, data)
+	topic := fmt.Sprintf(topics.ApplicationDeviceReportThingEvent,
+		msg.Device.ProductID, msg.Device.DeviceName, msg.Type, msg.Identifier)
+	err := n.client.Publish(topic, pubMsg)
 	return err
 }
 

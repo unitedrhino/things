@@ -3,12 +3,14 @@ package deviceMsgEvent
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/domain/service/application"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -76,6 +78,19 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *d
 	}
 	params := msgThing.ToVal(tp)
 	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
+	core := devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}
+	for identifier, param := range params {
+		err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, application.PropertyReport{
+			Device: core, Timestamp: timeStamp.UnixMilli(),
+			Identifier: identifier, Param: param,
+		})
+		if err != nil {
+			l.Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
+		}
+	}
 	err = l.dd.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 
@@ -133,7 +148,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 	dbData := msgThing.EventData{}
-	dbData.ID = l.dreq.EventID
+	dbData.Identifier = l.dreq.EventID
 	dbData.Type = l.dreq.Type
 	if l.dreq.Method != deviceMsg.EventPost {
 		return nil, errors.Method
@@ -144,7 +159,16 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	}
 	dbData.Params = msgThing.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
-
+	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, application.EventReport{
+		Device:     devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
+		Timestamp:  dbData.TimeStamp.UnixMilli(),
+		Identifier: dbData.Identifier,
+		Params:     dbData.Params,
+		Type:       dbData.Type,
+	})
+	if err != nil {
+		l.Errorf("%s.DeviceThingEventReport  err:%v", utils.FuncName(), err)
+	}
 	err = l.dd.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
 		l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)

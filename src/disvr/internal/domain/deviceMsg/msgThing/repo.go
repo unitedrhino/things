@@ -12,16 +12,16 @@ import (
 type (
 	// PropertyData 属性数据
 	PropertyData struct {
-		ID        string    `json:"id"`         //属性的id
-		Param     any       `json:"property" `  //一个属性的参数
-		TimeStamp time.Time `json:"timeStamp" ` //时间戳
+		Identifier string    `json:"identifier"` //标识符
+		Param      any       `json:"property" `  //一个属性的参数
+		TimeStamp  time.Time `json:"timeStamp" ` //时间戳
 	}
 	// EventData 事件数据
 	EventData struct {
-		ID        string         `json:"id" `        //事件id
-		Type      string         `json:"type" `      //事件类型: 信息:info  告警alert  故障:fault
-		Params    map[string]any `json:"params" `    //事件参数
-		TimeStamp time.Time      `json:"timeStamp" ` //时间戳
+		Identifier string         `json:"identifier"` //标识符
+		Type       string         `json:"type" `      //事件类型: 信息:info  告警alert  故障:fault
+		Params     map[string]any `json:"params" `    //事件参数
+		TimeStamp  time.Time      `json:"timeStamp" ` //时间戳
 	}
 	/*
 	   FILL 语句指定某一窗口区间数据缺失的情况下的填充模式。填充模式包括以下几种：
