@@ -5,8 +5,8 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -18,8 +18,8 @@ type (
 	// and implement the added methods in customGatewayDeviceModel.
 	GatewayDeviceModel interface {
 		gatewayDeviceModel
-		CreateList(ctx context.Context, gateway *device.Core, subDevices []*device.Core) error
-		DeleteList(ctx context.Context, gateway *device.Core, subDevices []*device.Core) error
+		CreateList(ctx context.Context, gateway *devices.Core, subDevices []*devices.Core) error
+		DeleteList(ctx context.Context, gateway *devices.Core, subDevices []*devices.Core) error
 		FindByFilter(ctx context.Context, filter GatewayDeviceFilter, page *def.PageInfo) ([]*DeviceInfo, error)
 		CountByFilter(ctx context.Context, filter GatewayDeviceFilter) (size int64, err error)
 	}
@@ -29,7 +29,7 @@ type (
 		deviceInfoTable string
 	}
 	GatewayDeviceFilter struct {
-		Gateway device.Core //必填
+		Gateway devices.Core //必填
 	}
 )
 
@@ -82,7 +82,7 @@ func NewGatewayDeviceModel(conn sqlx.SqlConn) GatewayDeviceModel {
 	}
 }
 
-func (c customGatewayDeviceModel) CreateList(ctx context.Context, gateway *device.Core, subDevices []*device.Core) error {
+func (c customGatewayDeviceModel) CreateList(ctx context.Context, gateway *devices.Core, subDevices []*devices.Core) error {
 	return c.conn.Transact(func(session sqlx.Session) error {
 		for _, v := range subDevices {
 			sql := sq.Select("count(1)").
@@ -113,7 +113,7 @@ func (c customGatewayDeviceModel) CreateList(ctx context.Context, gateway *devic
 	})
 }
 
-func (c customGatewayDeviceModel) DeleteList(ctx context.Context, gateway *device.Core, subDevices []*device.Core) error {
+func (c customGatewayDeviceModel) DeleteList(ctx context.Context, gateway *devices.Core, subDevices []*devices.Core) error {
 	return c.conn.Transact(func(session sqlx.Session) error {
 		for _, v := range subDevices {
 			query := fmt.Sprintf("delete from %s where `gatewayProductID` = ? and `GatewayDeviceName`=? and `productID`=? and `deviceName`=?", c.table)
