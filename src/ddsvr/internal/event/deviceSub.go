@@ -3,6 +3,7 @@ package event
 import (
 	"context"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/publish/pubInner"
@@ -109,9 +110,17 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 
 func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
 	s.Infof("%s info:%v", utils.FuncName(), utils.Fmt(info))
+	_, err := deviceAuth.GetLoginDevice(info.UserName)
+	if err != nil { //只传送设备的消息
+		return nil
+	}
 	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.Connect, info)
 }
 func (s *DeviceSubServer) Disconnected(info *devices.DevConn) error {
 	s.Infof("%s info:%v", utils.FuncName(), utils.Fmt(info))
+	_, err := deviceAuth.GetLoginDevice(info.UserName)
+	if err != nil { //只传送设备的消息
+		return nil
+	}
 	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.DisConnect, info)
 }

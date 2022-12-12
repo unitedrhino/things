@@ -2,7 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/device"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 
@@ -29,7 +29,7 @@ func NewDeviceGatewayIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 // 获取分组设备信息列表
 func (l *DeviceGatewayIndexLogic) DeviceGatewayIndex(in *dm.DeviceGatewayIndexReq) (*dm.DeviceGatewayIndexResp, error) {
 	f := mysql.GatewayDeviceFilter{
-		Gateway: device.Core{
+		Gateway: devices.Core{
 			ProductID:  in.GatewayProductID,
 			DeviceName: in.GatewayDeviceName,
 		},
