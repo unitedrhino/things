@@ -147,7 +147,7 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 				ProductID:  msg.ProductID,
 				DeviceName: msg.DeviceName,
 			},
-			Timestamp: msg.Timestamp,
+			Timestamp: msg.Timestamp.UnixMilli(),
 		}
 	)
 

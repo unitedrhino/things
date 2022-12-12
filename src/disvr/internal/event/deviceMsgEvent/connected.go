@@ -56,7 +56,7 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 			ProductID:  ld.ProductID,
 			DeviceName: ld.DeviceName,
 		},
-		Timestamp: msg.Timestamp,
+		Timestamp: msg.Timestamp.UnixMilli(),
 	})
 	if err != nil {
 		l.Errorf("%s.DeviceStatusConnected productID:%v deviceName:%v err:%v",
