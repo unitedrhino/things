@@ -1,4 +1,4 @@
-package device
+package devices
 
 type Core struct {
 	ProductID  string `json:"productID"`  //产品id
