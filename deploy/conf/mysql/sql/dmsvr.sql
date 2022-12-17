@@ -69,13 +69,19 @@ CREATE TABLE if not exists `device_info`
     `cert`        varchar(512)          DEFAULT '' COMMENT '设备证书',
     `isOnline`    tinyint(1)            default 2 comment '是否在线,1是2否',
     `tags`        json not null comment '设备标签',
+    `address`     varchar(512)    DEFAULT '' COMMENT '所在地址',
+    `pointBD09`  Point  NOT NULL comment 'BD09坐标系：即百度坐标系，GCJ02坐标系经加密后的坐标系，使用厂家：百度地图',
+    `pointWGS84` Point  NOT NULL comment 'WGS84坐标系：即地球坐标系，国际上通用的坐标系。设备一般包含GPS芯片或者北斗芯片获取的经纬度为WGS84地理坐标系，使用厂家：谷歌地图',
+    `pointGCJ02` Point  NOT NULL comment 'GCJ02坐标系：即火星坐标系，是由中国国家测绘局制订的地理信息系统的坐标系统，使用厂家：谷歌中国地图、搜搜中国地图，高德地图，腾讯地图',
     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceName` (`productID`, `deviceName`),
-    KEY `device_productID` (`productID`) USING BTREE
+    KEY `device_productID` (`productID`) USING BTREE,
+    SPATIAL INDEX `pointBD09Idx` (`pointBD09`),
+    SPATIAL INDEX `pointWGS84Idx` (`pointWGS84`),
+    SPATIAL INDEX `pointGCJ02Idx` (`pointGCJ02`)
     ) ENGINE = InnoDB
     AUTO_INCREMENT = 3
     DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
-
 
 
 -- # CREATE TABLE if not exists `category_detail`
