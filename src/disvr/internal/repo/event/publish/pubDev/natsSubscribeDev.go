@@ -1,6 +1,7 @@
 package pubDev
 
 import (
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
@@ -27,6 +28,9 @@ func (s *natsSubDev) UnSubscribe() error {
 func (s *natsSubDev) GetMsg(timeout time.Duration) (ele *deviceMsg.PublishMsg, err error) {
 	msg, err := s.subscription.NextMsg(timeout)
 	if err != nil {
+		if err == nats.ErrTimeout {
+			return nil, errors.TimeOut.AddMsg("设备回复超时")
+		}
 		return nil, err
 	}
 	msg.Ack()
