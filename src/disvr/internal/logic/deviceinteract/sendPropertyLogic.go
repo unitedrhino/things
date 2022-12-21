@@ -2,7 +2,6 @@ package deviceinteractlogic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/domain/schema"
@@ -49,7 +48,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		return nil, err
 	}
 	param := map[string]any{}
-	err = json.Unmarshal([]byte(in.Data), &param)
+	err = utils.Unmarshal([]byte(in.Data), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail(
 			"SendProperty data not right:", in.Data)
@@ -66,7 +65,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 			Timestamp:   time.Now().UnixMilli(),
 		},
 		Params: param}
-	_, err = req.VerifyReqParam(l.template, schema.ParamActionInput)
+	_, err = req.VerifyReqParam(l.template, schema.ParamProperty)
 	if err != nil {
 		return nil, err
 	}
