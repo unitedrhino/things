@@ -224,7 +224,10 @@ message GroupDeviceMultiDeleteReq{
   int64 groupID = 1;
   repeated DeviceCore list = 2;
 }
-
+message Point{
+  double  longitude = 1;//经度
+  double  latitude = 2;//纬度
+}
 message DeviceInfo{
   string   productID = 1; //产品id 只读
   string  deviceName = 3; //设备名称 读写
@@ -237,6 +240,8 @@ message DeviceInfo{
   string  cert = 10;// 设备证书  只读
   int64   isOnline = 11; //在线状态  1离线 2在线 只读
   map<string, string> tags = 12;//设备标签
+  google.protobuf.StringValue address = 13; // 所在地址 读写
+  Point Position = 14;   //设备定位,默认百度坐标系
 }
 
 message ProductInfo{
@@ -295,6 +300,7 @@ message DeviceCore{
 message DeviceInfoReadReq{
   string   productID = 1; //产品id
   string  deviceName = 2; //设备名称
+  string coordinate = 3; //坐标系
 }
 
 message DeviceInfoIndexReq{
@@ -302,6 +308,8 @@ message DeviceInfoIndexReq{
   string  productID = 2; //过滤条件: 产品id
   string deviceName = 3;//过滤条件:模糊查询 设备名
   map<string, string> tags = 4;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+  int64 range = 5; //过滤条件:取距离坐标点固定范围内的设备
+  Point Position = 6;   //设备定位,默认百度坐标系
 }
 
 message DeviceInfoIndexResp{

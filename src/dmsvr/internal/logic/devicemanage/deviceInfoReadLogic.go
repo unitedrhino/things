@@ -26,7 +26,7 @@ func NewDeviceInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 
 // 获取设备信息详情
 func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.DeviceInfo, error) {
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
+	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDAndDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.NotFind
