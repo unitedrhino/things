@@ -70,15 +70,11 @@ CREATE TABLE if not exists `device_info`
     `isOnline`    tinyint(1)            default 2 comment '是否在线,1是2否',
     `tags`        json not null comment '设备标签',
     `address`     varchar(512)    DEFAULT '' COMMENT '所在地址',
-    `pointBD09`  Point  NOT NULL comment 'BD09坐标系：即百度坐标系，GCJ02坐标系经加密后的坐标系，使用厂家：百度地图',
-    `pointWGS84` Point  NOT NULL comment 'WGS84坐标系：即地球坐标系，国际上通用的坐标系。设备一般包含GPS芯片或者北斗芯片获取的经纬度为WGS84地理坐标系，使用厂家：谷歌地图',
-    `pointGCJ02` Point  NOT NULL comment 'GCJ02坐标系：即火星坐标系，是由中国国家测绘局制订的地理信息系统的坐标系统，使用厂家：谷歌中国地图、搜搜中国地图，高德地图，腾讯地图',
-    PRIMARY KEY (`id`),
+    `position`    point NOT NULL comment '设备的位置,默认百度坐标系BD09',
+     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceName` (`productID`, `deviceName`),
     KEY `device_productID` (`productID`) USING BTREE,
-    SPATIAL INDEX `pointBD09Idx` (`pointBD09`),
-    SPATIAL INDEX `pointWGS84Idx` (`pointWGS84`),
-    SPATIAL INDEX `pointGCJ02Idx` (`pointGCJ02`)
+    SPATIAL INDEX `position` (`position`)
     ) ENGINE = InnoDB
     AUTO_INCREMENT = 3
     DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
@@ -174,3 +170,110 @@ CREATE TABLE if not exists `product_remote_config`
     PRIMARY KEY (`id`),
     KEY `productID` (`productID`)
     ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '产品远程配置表';
+
+
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test1', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test2', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test3', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test4', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test5', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test6', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test7', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test8', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test9', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test10', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test11', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test12', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test13', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test14', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test15', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test16', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test17', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test18', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test19', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test20', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test21', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test22', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test23', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test24', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test25', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test26', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test27', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test28', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test29', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test30', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test31', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test32', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test33', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test34', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test35', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test36', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test37', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test38', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test39', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test40', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test41', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test42', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test43', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test44', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test45', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test46', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test47', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test48', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test49', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test50', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test51', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test52', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test53', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test54', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test55', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test56', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test57', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test58', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test59', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+INSERT INTO things_dm.device_info_test3 (productID, deviceName, secret, version, logLevel, cert, isOnline, tags, address, `position`) VALUES('254pwnKQsvK', 'test60', 'G5ad8/dUMSyMPsn3YSpRCQMKSKI=',  'v1', 0, '', 2, '{}', '', ST_GeomFromText('POINT(101.123 20.456)'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
