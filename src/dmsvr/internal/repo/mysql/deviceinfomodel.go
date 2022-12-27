@@ -5,11 +5,11 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"strings"
 )
 
 var _ DeviceInfoModel = (*customDeviceInfoModel)(nil)
@@ -142,13 +142,11 @@ func (m *customDeviceInfoModel) CountGroupByField(ctx context.Context, f DeviceF
 }
 
 func (m *customDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *DeviceInfo) error {
-	sql := fmt.Sprintf("INSERT INTO %s (`productID`,`deviceName`,`secret`,`version`,`logLevel`,`cert`,`isOnline`,`tags`,`address`,`position`) values (%q,%q,%q,%q,%d,%q,%d,%q,%q,%s)",
-		m.table, data.ProductID, data.DeviceName, data.Secret, data.Version, data.LogLevel, data.Cert, data.IsOnline, data.Tags, data.Address, data.Position)
-	_, err := m.conn.ExecCtx(ctx, sql)
-	if err != nil {
-		return errors.System.AddDetail(err)
-	}
-	return nil
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
+	i := utils.IndexN(query, '?', 12)
+	query = query[0:i-1] + "ST_GeomFromText(?))" + query[i+1:len(query)]
+	_, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.Version, data.LogLevel, data.Cert, data.IsOnline, data.Tags, data.Address, data.Position)
+	return err
 }
 
 func (m *defaultDeviceInfoModel) FindOneByProductIDAndDeviceName(ctx context.Context, productID string, deviceName string) (*DeviceInfo, error) {
@@ -165,13 +163,10 @@ func (m *defaultDeviceInfoModel) FindOneByProductIDAndDeviceName(ctx context.Con
 	}
 }
 
-func (m *customDeviceInfoModel) UpdateDeviceInfo(ctx context.Context, data *DeviceInfo) error {
-	values := fmt.Sprintf("productID=%q, deviceName=%q, secret=%q, version=%q, logLevel=%d,cert=%q, isOnline=%d, tags=%q, address=%q, position=%s",
-		data.ProductID, data.DeviceName, data.Secret, data.Version, data.LogLevel, data.Cert, data.IsOnline, data.Tags, data.Address, data.Position)
-	sql := fmt.Sprintf("update %s set %s where `id` = %d", m.table, values, data.Id)
-	_, err := m.conn.ExecCtx(ctx, sql)
-	if err != nil {
-		return errors.System.AddDetail(err)
-	}
-	return nil
+func (m *customDeviceInfoModel) UpdateDeviceInfo(ctx context.Context, newData *DeviceInfo) error {
+	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, deviceInfoRowsWithPlaceHolder)
+	query = strings.Replace(query, "`position`=?", "`position`=ST_GeomFromText(?)", 1)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.FirstLogin, newData.LastLogin, newData.Version, newData.LogLevel, newData.Cert, newData.IsOnline, newData.Tags, newData.Address, newData.Position, newData.Id)
+
+	return err
 }

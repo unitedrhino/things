@@ -59,7 +59,7 @@ type (
 func newDeviceInfoModel(conn sqlx.SqlConn) *defaultDeviceInfoModel {
 	return &defaultDeviceInfoModel{
 		conn:  conn,
-		table: "`device_info_test2`",
+		table: "`device_info`",
 	}
 }
 
