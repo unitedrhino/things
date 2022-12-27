@@ -29,6 +29,17 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInfoIndexResp, err error) {
+	if req.Position != nil {
+		//经度范围是0-180°，纬度范围是0-90°
+		if req.Position.Longitude < 0 || req.Position.Longitude > 180 {
+			l.Errorf("%s.rpc.ManageDevice req=%v err= Longitude value is invalid", utils.FuncName(), req)
+			return nil, errors.Parameter.AddDetail("Longitude value is invalid")
+		}
+		if req.Position.Latitude < 0 || req.Position.Latitude > 90 {
+			l.Errorf("%s.rpc.ManageDevice req=%v err= the Latitude value is invalid", utils.FuncName(), req)
+			return nil, errors.Parameter.AddDetail("Latitude value is invalid")
+		}
+	}
 	dmReq := &dm.DeviceInfoIndexReq{
 		ProductID:  req.ProductID, //产品id
 		DeviceName: req.DeviceName,
