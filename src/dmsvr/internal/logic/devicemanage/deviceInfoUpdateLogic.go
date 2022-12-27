@@ -11,7 +11,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
-	"github.com/spf13/cast"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -63,9 +62,7 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.Dev
 	}
 
 	if data.Position != nil {
-		old.Position = fmt.Sprintf("%s", "POINT("+cast.ToString(data.Position.Longitude)+" "+cast.ToString(data.Position.Latitude)+")")
-	} else {
-		old.Position = fmt.Sprintf("%s", old.Position)
+		old.Position = fmt.Sprintf("POINT(%f %f)", data.Position.Longitude, data.Position.Latitude)
 	}
 }
 
