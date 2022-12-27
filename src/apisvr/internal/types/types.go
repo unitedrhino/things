@@ -143,8 +143,8 @@ type Tag struct {
 }
 
 type Point struct {
-	Longitude float64 `json:"longitude"` //经度
-	Latitude  float64 `json:"latitude"`  //纬度
+	Longitude float64 `json:"longitude,range=[0:180]"` //经度
+	Latitude  float64 `json:"latitude,range=[0:90]"`   //纬度
 }
 
 type MenuCreateReq struct {
@@ -435,8 +435,8 @@ type DeviceInfoIndexReq struct {
 	Page       *PageInfo `json:"page,optional"`       //分页信息 只获取一个则不填
 	ProductID  string    `json:"productID,optional"`  //产品id 为空时获取所有产品
 	DeviceName string    `json:"deviceName,optional"` //过滤条件:模糊查询 设备名
-	Position   *Point    `json:"position,optional"`   //设备定位,默认百度坐标系
-	Range      int64     `json:"range,optional"`      //过滤条件:取距离坐标点固定范围内的设备
+	Position   *Point    `json:"position,optional"`   //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
+	Range      int64     `json:"range,optional"`      //过滤条件:距离坐标点固定范围内的设备 單位：米
 	Tags       []*Tag    `json:"tags,optional"`       // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
