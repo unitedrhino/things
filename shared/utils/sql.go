@@ -13,6 +13,7 @@ func GetNullTime(time sql.NullTime) int64 {
 	return time.Time.Unix()
 }
 
+// position 格式: POINT(100.101 50.894)
 func GetPositionValue(position string) (float64, float64) {
 	if position == "" || len(position) <= 7 {
 		return 0, 0

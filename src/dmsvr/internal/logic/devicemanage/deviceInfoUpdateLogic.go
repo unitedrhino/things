@@ -63,10 +63,9 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.Dev
 	}
 
 	if data.Position != nil {
-		old.Position = fmt.Sprintf("ST_GeomFromText('%s')",
-			"POINT("+cast.ToString(data.Position.Longitude)+" "+cast.ToString(data.Position.Latitude)+")")
+		old.Position = fmt.Sprintf("%s", "POINT("+cast.ToString(data.Position.Longitude)+" "+cast.ToString(data.Position.Latitude)+")")
 	} else {
-		old.Position = fmt.Sprintf("ST_GeomFromText('%s')", old.Position)
+		old.Position = fmt.Sprintf("%s", old.Position)
 	}
 }
 

@@ -300,7 +300,6 @@ message DeviceCore{
 message DeviceInfoReadReq{
   string   productID = 1; //产品id
   string  deviceName = 2; //设备名称
-  string coordinate = 3; //坐标系
 }
 
 message DeviceInfoIndexReq{
