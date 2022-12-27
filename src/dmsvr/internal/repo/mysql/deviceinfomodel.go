@@ -143,7 +143,7 @@ func (m *customDeviceInfoModel) CountGroupByField(ctx context.Context, f DeviceF
 
 func (m *customDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *DeviceInfo) error {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, deviceInfoRowsExpectAutoSet)
-	//position为points类型字段,插入时需用函数ST_GeomFromText转换，而不能直接使用问号
+	//position为points类型字段,插入时需用函数ST_GeomFromText转换，而不能使用问号
 	i := utils.IndexN(query, '?', 12)
 	query = query[0:i-1] + "ST_GeomFromText(?))" + query[i+1:len(query)]
 	_, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.Version, data.LogLevel, data.Cert, data.IsOnline, data.Tags, data.Address, data.Position)
@@ -152,7 +152,9 @@ func (m *customDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *Devi
 
 func (m *defaultDeviceInfoModel) FindOneByProductIDAndDeviceName(ctx context.Context, productID string, deviceName string) (*DeviceInfo, error) {
 	var resp DeviceInfo
-	query := fmt.Sprintf("select `id`,`productID`,`deviceName`,`secret`,`firstLogin`,`lastLogin`,`createdTime`,`updatedTime`,`deletedTime`,`version`,`logLevel`,`cert`,`isOnline`,`tags`,`address`, AsText(`position`) as position from %s where `productID` = ? and `deviceName` = ? limit 1", m.table)
+	query := fmt.Sprintf("select %s from %s where `productID` = ? and `deviceName` = ? limit 1", deviceInfoRows, m.table)
+	//position字段为point类型 无法直接读取，需使用函数AsText转换后再读取
+	query = strings.Replace(query, "`position`", "AsText(`position`) as position", 1)
 	err := m.conn.QueryRowCtx(ctx, &resp, query, productID, deviceName)
 	switch err {
 	case nil:
