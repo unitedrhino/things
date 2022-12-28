@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/spf13/cast"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -41,13 +42,18 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		page = in.Page.Page
 		pageSize = in.Page.Size
 	}
+	position := "POINT(0 0)"
+	if in.Position != nil {
+		position = fmt.Sprintf("POINT(%s)",
+			cast.ToString(in.Position.Longitude)+" "+cast.ToString(in.Position.Latitude))
+	}
 	size, err = l.svcCtx.DeviceInfo.CountByFilter(
 		l.ctx, mysql.DeviceFilter{
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,
 			Tags:       in.Tags,
 			Range:      in.Range,
-			Position:   fmt.Sprintf("POINT(%f %f)", in.Position.Longitude, in.Position.Latitude),
+			Position:   position,
 		})
 	if err != nil {
 		return nil, err
@@ -58,7 +64,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 			DeviceName: in.DeviceName,
 			Tags:       in.Tags,
 			Range:      in.Range,
-			Position:   fmt.Sprintf("POINT(%f %f)", in.Position.Longitude, in.Position.Latitude),
+			Position:   position,
 		}, def.PageInfo{Size: pageSize, Page: page})
 	if err != nil {
 		return nil, err
