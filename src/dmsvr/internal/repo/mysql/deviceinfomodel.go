@@ -83,7 +83,7 @@ func (d *DeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 
 func (m *customDeviceInfoModel) FindByFilter(ctx context.Context, f DeviceFilter, page def.PageInfo) ([]*DeviceInfo, error) {
 	var resp []*DeviceInfo
-	sSql := "`id`,`productID`,`deviceName`,`secret`,`firstLogin`,`lastLogin`,`createdTime`,`updatedTime`,`deletedTime`,`version`,`logLevel`,`cert`,`isOnline`,`tags`,`address`, AsText(`position`) as position"
+	sSql := strings.Replace(deviceInfoRows, "`position`", "AsText(`position`) as position", 1)
 	sql := sq.Select(sSql).From(m.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql)
 	query, arg, err := sql.ToSql()
