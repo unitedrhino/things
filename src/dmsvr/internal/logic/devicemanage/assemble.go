@@ -24,6 +24,11 @@ func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
 	if di.LogLevel == def.Unknown {
 		di.LogLevel = def.LogClose
 	}
+
+	var Longitude float64
+	var Latitude float64
+	Longitude, Latitude = utils.GetPositionValue(di.Position)
+
 	return &dm.DeviceInfo{
 		Version:     &wrappers.StringValue{Value: di.Version},
 		LogLevel:    di.LogLevel,
@@ -36,6 +41,8 @@ func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
 		Secret:      di.Secret,
 		IsOnline:    di.IsOnline,
 		Tags:        tags,
+		Address:     &wrappers.StringValue{Value: di.Address},
+		Position:    &dm.Point{Longitude: Longitude, Latitude: Latitude},
 	}
 }
 func ToDeviceCoreDos(in []*dm.DeviceCore) (ret []*devices.Core) {

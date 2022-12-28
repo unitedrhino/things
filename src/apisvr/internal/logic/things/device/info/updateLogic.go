@@ -33,6 +33,8 @@ func (l *UpdateLogic) Update(req *types.DeviceInfoUpdateReq) error {
 		DeviceName: req.DeviceName, //设备名称 读写
 		LogLevel:   req.LogLevel,   // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 		Tags:       logic.ToTagsMap(req.Tags),
+		Address:    utils.ToRpcNullString(req.Address),
+		Position:   logic.ToDmPointRpc(req.Position),
 	}
 	_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, dmReq)
 	if err != nil {
