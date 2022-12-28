@@ -20,5 +20,7 @@ func DeviceInfoToApi(v *dm.DeviceInfo) *types.DeviceInfo {
 		Cert:        v.Cert,                        // 设备证书  只读
 		Tags:        logic.ToTagsType(v.Tags),
 		IsOnline:    v.IsOnline, // 在线状态  1离线 2在线 只读
+		Address:     &v.Address.Value,
+		Position:    &types.Point{Longitude: v.Position.Longitude, Latitude: v.Position.Latitude},
 	}
 }

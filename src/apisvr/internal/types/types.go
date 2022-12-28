@@ -142,6 +142,11 @@ type Tag struct {
 	Value string `json:"value"`
 }
 
+type Point struct {
+	Longitude float64 `json:"longitude,range=[0:180]"` //经度
+	Latitude  float64 `json:"latitude,range=[0:90]"`   //纬度
+}
+
 type MenuCreateReq struct {
 	Name       string `json:"name"`                // 菜单名称
 	ParentID   int64  `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
@@ -394,20 +399,26 @@ type DeviceInfo struct {
 	Cert        string  `json:"cert,optional"`               // 设备证书  只读
 	Tags        []*Tag  `json:"tags,optional"`               // 设备tag
 	IsOnline    int64   `json:"isOnline,optional"`           // 在线状态  1离线 2在线 只读
+	Address     *string `json:"address,optional"`            //所在地址
+	Position    *Point  `json:"position,optional"`           //设备定位,默认百度坐标系
 }
 
 type DeviceInfoCreateReq struct {
-	ProductID  string `json:"productID"`         //产品id 只读
-	DeviceName string `json:"deviceName"`        //设备名称 读写
-	LogLevel   int64  `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Tags       []*Tag `json:"tags,optional"`     // 设备tag
+	ProductID  string  `json:"productID"`         //产品id 只读
+	DeviceName string  `json:"deviceName"`        //设备名称 读写
+	LogLevel   int64   `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Address    *string `json:"address,optional"`  //所在地址
+	Position   *Point  `json:"position,optional"` //设备定位,默认百度坐标系
+	Tags       []*Tag  `json:"tags,optional"`     // 设备tag
 }
 
 type DeviceInfoUpdateReq struct {
-	ProductID  string `json:"productID"`         //产品id 只读
-	DeviceName string `json:"deviceName"`        //设备名称 读写
-	LogLevel   int64  `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Tags       []*Tag `json:"tags,optional"`     // 设备tag
+	ProductID  string  `json:"productID"`         //产品id 只读
+	DeviceName string  `json:"deviceName"`        //设备名称 读写
+	LogLevel   int64   `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Address    *string `json:"address,optional"`  //所在地址
+	Position   *Point  `json:"position,optional"` //设备定位,默认百度坐标系
+	Tags       []*Tag  `json:"tags,optional"`     // 设备tag
 }
 
 type DeviceInfoDeleteReq struct {
@@ -424,6 +435,8 @@ type DeviceInfoIndexReq struct {
 	Page       *PageInfo `json:"page,optional"`       //分页信息 只获取一个则不填
 	ProductID  string    `json:"productID,optional"`  //产品id 为空时获取所有产品
 	DeviceName string    `json:"deviceName,optional"` //过滤条件:模糊查询 设备名
+	Position   *Point    `json:"position,optional"`   //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
+	Range      int64     `json:"range,optional"`      //过滤条件:距离坐标点固定范围内的设备 單位：米
 	Tags       []*Tag    `json:"tags,optional"`       // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 

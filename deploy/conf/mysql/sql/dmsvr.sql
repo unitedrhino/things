@@ -69,13 +69,14 @@ CREATE TABLE if not exists `device_info`
     `cert`        varchar(512)          DEFAULT '' COMMENT '设备证书',
     `isOnline`    tinyint(1)            default 2 comment '是否在线,1是2否',
     `tags`        json not null comment '设备标签',
-    PRIMARY KEY (`id`),
+    `address`     varchar(512)    DEFAULT '' COMMENT '所在地址',
+    `position`    point NOT NULL comment '设备的位置,默认百度坐标系BD09',
+     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceName` (`productID`, `deviceName`),
     KEY `device_productID` (`productID`) USING BTREE
     ) ENGINE = InnoDB
     AUTO_INCREMENT = 3
     DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
-
 
 
 -- # CREATE TABLE if not exists `category_detail`

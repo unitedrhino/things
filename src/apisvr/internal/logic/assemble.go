@@ -46,3 +46,13 @@ func ToDiPageRpc(in *types.PageInfo) *di.PageInfo {
 		Size: in.Size,
 	}
 }
+
+func ToDmPointRpc(in *types.Point) *dm.Point {
+	if in == nil {
+		return nil
+	}
+	return &dm.Point{
+		Longitude: in.Longitude,
+		Latitude:  in.Latitude,
+	}
+}

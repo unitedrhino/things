@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -45,6 +46,8 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,
 			Tags:       in.Tags,
+			Range:      in.Range,
+			Position:   fmt.Sprintf("POINT(%f %f)", in.Position.Longitude, in.Position.Latitude),
 		})
 	if err != nil {
 		return nil, err
@@ -54,6 +57,8 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,
 			Tags:       in.Tags,
+			Range:      in.Range,
+			Position:   fmt.Sprintf("POINT(%f %f)", in.Position.Longitude, in.Position.Latitude),
 		}, def.PageInfo{Size: pageSize, Page: page})
 	if err != nil {
 		return nil, err
