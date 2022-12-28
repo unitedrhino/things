@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
@@ -44,7 +45,7 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.Dev
 	}
 	if data.IsOnline != def.Unknown {
 		old.IsOnline = data.IsOnline
-		if data.IsOnline == def.True {//需要处理第一次上线的情况,一般在网关代理登录时需要处理
+		if data.IsOnline == def.True { //需要处理第一次上线的情况,一般在网关代理登录时需要处理
 			now := sql.NullTime{
 				Valid: true,
 				Time:  time.Now(),
@@ -56,11 +57,18 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.Dev
 		}
 	}
 
+	if data.Address != nil {
+		old.Address = data.Address.Value
+	}
+
+	if data.Position != nil {
+		old.Position = fmt.Sprintf("POINT(%f %f)", data.Position.Longitude, data.Position.Latitude)
+	}
 }
 
 // 更新设备
 func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Response, error) {
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
+	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDAndDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.NotFind.AddDetailf("not find device productID=%s deviceName=%s",
@@ -70,7 +78,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 	}
 	l.ChangeDevice(di, in)
 
-	err = l.svcCtx.DeviceInfo.Update(l.ctx, di)
+	err = l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, di)
 	if err != nil {
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, errors.System.AddDetail(err)
