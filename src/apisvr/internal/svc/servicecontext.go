@@ -16,7 +16,7 @@ import (
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
 	remoteconfig "github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
-	sysconfig "github.com/i-Things/things/src/syssvr/client/config"
+	sysconfig "github.com/i-Things/things/src/syssvr/client/common"
 	menu "github.com/i-Things/things/src/syssvr/client/menu"
 	role "github.com/i-Things/things/src/syssvr/client/role"
 	user "github.com/i-Things/things/src/syssvr/client/user"
@@ -42,7 +42,7 @@ type ServiceContext struct {
 	OSS            oss.OSSer
 	DeviceG        devicegroup.DeviceGroup
 	RemoteConfig   remoteconfig.RemoteConfig
-	SysConfig      sysconfig.Config
+	SysConfig      sysconfig.Common
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -54,7 +54,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceInteract deviceinteract.DeviceInteract
 		deviceG        devicegroup.DeviceGroup
 		remoteConfig   remoteconfig.RemoteConfig
-		sysConfig      sysconfig.Config
+		sysConfig      sysconfig.Common
 	)
 	var ur user.User
 	var ro role.Role
@@ -67,7 +67,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
-			sysConfig = sysconfig.NewConfig(zrpc.MustNewClient(c.DmRpc.Conf))
+			sysConfig = sysconfig.NewCommon(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else {
 			deviceM = dmdirect.NewDeviceManage()
 			productM = dmdirect.NewProductManage()
