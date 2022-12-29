@@ -27,7 +27,7 @@ func NewConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ConfigLogi
 }
 
 func (l *ConfigLogic) Config() (resp *types.ConfigResp, err error) {
-	rsp, err := l.svcCtx.SysConfig.Config(l.ctx, &sys.Response{})
+	rsp, err := l.svcCtx.Common.Config(l.ctx, &sys.Response{})
 	if err != nil {
 		err = errors.Fmt(err)
 		l.Errorf("%s.rpc.SysConfig err=%+v", utils.FuncName(), err)
