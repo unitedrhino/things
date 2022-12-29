@@ -1,4 +1,4 @@
-package configlogic
+package commonlogic
 
 import (
 	"context"

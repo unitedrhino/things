@@ -46,38 +46,38 @@ type (
 	UserReadResp      = sys.UserReadResp
 	UserUpdateReq     = sys.UserUpdateReq
 
-	Config interface {
+	Common interface {
 		Config(ctx context.Context, in *Response, opts ...grpc.CallOption) (*ConfigResp, error)
 	}
 
-	defaultConfig struct {
+	defaultCommon struct {
 		cli zrpc.Client
 	}
 
-	directConfig struct {
+	directCommon struct {
 		svcCtx *svc.ServiceContext
-		svr    sys.ConfigServer
+		svr    sys.CommonServer
 	}
 )
 
-func NewConfig(cli zrpc.Client) Config {
-	return &defaultConfig{
+func NewCommon(cli zrpc.Client) Common {
+	return &defaultCommon{
 		cli: cli,
 	}
 }
 
-func NewDirectConfig(svcCtx *svc.ServiceContext, svr sys.ConfigServer) Config {
-	return &directConfig{
+func NewDirectCommon(svcCtx *svc.ServiceContext, svr sys.CommonServer) Common {
+	return &directCommon{
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
 }
 
-func (m *defaultConfig) Config(ctx context.Context, in *Response, opts ...grpc.CallOption) (*ConfigResp, error) {
-	client := sys.NewConfigClient(m.cli.Conn())
+func (m *defaultCommon) Config(ctx context.Context, in *Response, opts ...grpc.CallOption) (*ConfigResp, error) {
+	client := sys.NewCommonClient(m.cli.Conn())
 	return client.Config(ctx, in, opts...)
 }
 
-func (d *directConfig) Config(ctx context.Context, in *Response, opts ...grpc.CallOption) (*ConfigResp, error) {
+func (d *directCommon) Config(ctx context.Context, in *Response, opts ...grpc.CallOption) (*ConfigResp, error) {
 	return d.svr.Config(ctx, in)
 }

@@ -744,86 +744,86 @@ var Menu_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "proto/sys.proto",
 }
 
-// ConfigClient is the client API for Config service.
+// CommonClient is the client API for Common service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ConfigClient interface {
+type CommonClient interface {
 	Config(ctx context.Context, in *Response, opts ...grpc.CallOption) (*ConfigResp, error)
 }
 
-type configClient struct {
+type commonClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewConfigClient(cc grpc.ClientConnInterface) ConfigClient {
-	return &configClient{cc}
+func NewCommonClient(cc grpc.ClientConnInterface) CommonClient {
+	return &commonClient{cc}
 }
 
-func (c *configClient) Config(ctx context.Context, in *Response, opts ...grpc.CallOption) (*ConfigResp, error) {
+func (c *commonClient) Config(ctx context.Context, in *Response, opts ...grpc.CallOption) (*ConfigResp, error) {
 	out := new(ConfigResp)
-	err := c.cc.Invoke(ctx, "/sys.Config/config", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.Common/config", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ConfigServer is the server API for Config service.
-// All implementations must embed UnimplementedConfigServer
+// CommonServer is the server API for Common service.
+// All implementations must embed UnimplementedCommonServer
 // for forward compatibility
-type ConfigServer interface {
+type CommonServer interface {
 	Config(context.Context, *Response) (*ConfigResp, error)
-	mustEmbedUnimplementedConfigServer()
+	mustEmbedUnimplementedCommonServer()
 }
 
-// UnimplementedConfigServer must be embedded to have forward compatible implementations.
-type UnimplementedConfigServer struct {
+// UnimplementedCommonServer must be embedded to have forward compatible implementations.
+type UnimplementedCommonServer struct {
 }
 
-func (UnimplementedConfigServer) Config(context.Context, *Response) (*ConfigResp, error) {
+func (UnimplementedCommonServer) Config(context.Context, *Response) (*ConfigResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Config not implemented")
 }
-func (UnimplementedConfigServer) mustEmbedUnimplementedConfigServer() {}
+func (UnimplementedCommonServer) mustEmbedUnimplementedCommonServer() {}
 
-// UnsafeConfigServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ConfigServer will
+// UnsafeCommonServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CommonServer will
 // result in compilation errors.
-type UnsafeConfigServer interface {
-	mustEmbedUnimplementedConfigServer()
+type UnsafeCommonServer interface {
+	mustEmbedUnimplementedCommonServer()
 }
 
-func RegisterConfigServer(s grpc.ServiceRegistrar, srv ConfigServer) {
-	s.RegisterService(&Config_ServiceDesc, srv)
+func RegisterCommonServer(s grpc.ServiceRegistrar, srv CommonServer) {
+	s.RegisterService(&Common_ServiceDesc, srv)
 }
 
-func _Config_Config_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Common_Config_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Response)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConfigServer).Config(ctx, in)
+		return srv.(CommonServer).Config(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.Config/config",
+		FullMethod: "/sys.Common/config",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServer).Config(ctx, req.(*Response))
+		return srv.(CommonServer).Config(ctx, req.(*Response))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Config_ServiceDesc is the grpc.ServiceDesc for Config service.
+// Common_ServiceDesc is the grpc.ServiceDesc for Common service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Config_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sys.Config",
-	HandlerType: (*ConfigServer)(nil),
+var Common_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.Common",
+	HandlerType: (*CommonServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "config",
-			Handler:    _Config_Config_Handler,
+			Handler:    _Common_Config_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
