@@ -1,0 +1,26 @@
+info(
+    desc: "系统配置"
+	author: "lbs"
+	email: "174805676@qq.com"
+)
+import "common.api"  //公共结构体定义
+
+@server (
+	group : system/common
+	prefix: /api/v1/system/common
+)
+service api {
+	@doc "获取系统配置"
+	@handler config
+	post /config () returns (ConfigResp)
+}
+
+type (
+    Map struct {
+        Mode string `json:"mode，options=baidu"`              //坐标系 默认百度坐标系
+        AccessKey    string `json:"accessKey"` //设备地图key
+    }
+    ConfigResp struct {
+       Map Map `json:"map"`  //设备地图相关配置
+    }
+)

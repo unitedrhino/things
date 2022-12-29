@@ -27,4 +27,5 @@ type Config struct {
 	Proxy   conf.ProxyConf
 	Captcha Captcha
 	OSS     conf.OSSConf `json:",optional"`
+	Map     conf.MapConf `json:",optional"`
 }
