@@ -8,6 +8,9 @@ import (
 	clientRole "github.com/i-Things/things/src/syssvr/client/role"
 	serverMenu "github.com/i-Things/things/src/syssvr/internal/server/menu"
 	serverRole "github.com/i-Things/things/src/syssvr/internal/server/role"
+
+	clientCommon "github.com/i-Things/things/src/syssvr/client/common"
+	serverCommon "github.com/i-Things/things/src/syssvr/internal/server/common"
 )
 
 func NewUser() client.User {
@@ -23,4 +26,9 @@ func NewRole() clientRole.Role {
 func NewMenu() clientMenu.Menu {
 	userSvc := GetCtxSvc()
 	return clientMenu.NewDirectMenu(userSvc, serverMenu.NewMenuServer(userSvc))
+}
+
+func NewCommon() clientCommon.Common {
+	userSvc := GetCtxSvc()
+	return clientCommon.NewDirectCommon(userSvc, serverCommon.NewCommonServer(userSvc))
 }
