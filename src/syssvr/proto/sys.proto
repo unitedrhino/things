@@ -28,7 +28,9 @@ service Menu {
   rpc menuDelete(MenuDeleteReq) returns(Response); //删除菜单
 }
 
-
+service Config {
+  rpc config(Response) returns(configResp); //添加菜单
+}
 
 //用户属性信息
 message UserInfo{
@@ -258,4 +260,12 @@ message MenuUpdateReq{
 
 message MenuDeleteReq{
   int64 id = 1;
+}
+
+message Map{
+  string mode = 1;       //坐标系 默认百度坐标系
+  string accessKey = 2;  //设备地图key
+}
+message configResp{
+  Map map = 1;           //设备地图相关配置
 }

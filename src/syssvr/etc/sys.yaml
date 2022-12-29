@@ -22,3 +22,6 @@ UserOpt:
   NeedUserName: true
   NeedPassWord: true
   PassLevel: 2
+Map:
+  Mode: baidu
+  AccessKey: UGmGEIzlEQWtRjC1uGb6f0oypHPQC3Bs
