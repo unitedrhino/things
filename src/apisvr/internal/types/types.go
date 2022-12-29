@@ -241,6 +241,15 @@ type RoleMenuUpdateReq struct {
 	MenuID []int64 `json:"menuID"` //菜单编号列表
 }
 
+type Map struct {
+	Mode      string `json:"mode，options=baidu"` //坐标系 默认百度坐标系
+	AccessKey string `json:"accessKey"`          //设备地图key
+}
+
+type ConfigResp struct {
+	Map Map `json:"map"` //设备地图相关配置
+}
+
 type DeviceAuthLoginReq struct {
 	Username    string `json:"username"`                       //用户名
 	Password    string `json:"password,optional"`              //密码
@@ -436,7 +445,7 @@ type DeviceInfoIndexReq struct {
 	ProductID  string    `json:"productID,optional"`  //产品id 为空时获取所有产品
 	DeviceName string    `json:"deviceName,optional"` //过滤条件:模糊查询 设备名
 	Position   *Point    `json:"position,optional"`   //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
-	Range      int64     `json:"range,optional"`      //过滤条件:距离坐标点固定范围内的设备 單位：米
+	Range      int64     `json:"range,optional"`      //过滤条件:距离坐标点固定范围内的设备 单位：米
 	Tags       []*Tag    `json:"tags,optional"`       // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
