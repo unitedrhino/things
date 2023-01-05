@@ -101,11 +101,7 @@ func (l *LoginAuthLogic) UpdateLoginTime() {
 
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
-	if deviceAuth.IsAdmin(l.svcCtx.Config.AuthWhite, deviceAuth.AuthInfo{
-		Username: in.Username,
-		ClientID: in.ClientID,
-		Ip:       in.Ip,
-	}) {
+	if l.svcCtx.Config.AuthWhite.Auth(in.Username, in.Password, in.Ip) {
 		return &dm.Response{}, nil
 	}
 	if len(in.Certificate) > 0 {
