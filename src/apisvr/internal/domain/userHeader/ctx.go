@@ -8,8 +8,8 @@ type UserCtx struct {
 	Role int64  //用户角色
 }
 
-func SetUserCtx(ctx context.Context, uid int64, IP string, role int64) context.Context {
-	return context.WithValue(ctx, UserUid, &UserCtx{Uid: uid, IP: IP, Role: role})
+func SetUserCtx(ctx context.Context, userCtx *UserCtx) context.Context {
+	return context.WithValue(ctx, UserUid, userCtx)
 }
 
 //使用该函数前必须传了UserCtx
