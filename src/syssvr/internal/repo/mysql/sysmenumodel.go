@@ -10,9 +10,9 @@ import (
 
 type (
 	MenuModel interface {
-		Index(in *sys.MenuIndexReq) ([]*MenuInfo, error)
+		Index(in *sys.MenuIndexReq) ([]*SysMenuInfo, error)
 		DeleteMenu(MenuId int64) error
-		InsertMenuID(data *MenuInfo, RoleId int64) error
+		InsertMenuID(data *SysMenuInfo, RoleId int64) error
 	}
 
 	menuModel struct {
@@ -25,13 +25,13 @@ type (
 func NewMenuModel(conn sqlx.SqlConn, c cache.CacheConf) MenuModel {
 	return &menuModel{
 		CachedConn: sqlc.NewConn(conn, c),
-		menuInfo:   "`menu_info`",
-		roleMenu:   "`role_menu`",
+		menuInfo:   "`sys_menu_info`",
+		roleMenu:   "`sys_role_menu`",
 	}
 }
 
-func (m *menuModel) Index(in *sys.MenuIndexReq) ([]*MenuInfo, error) {
-	var resp []*MenuInfo
+func (m *menuModel) Index(in *sys.MenuIndexReq) ([]*SysMenuInfo, error) {
+	var resp []*SysMenuInfo
 
 	//支持账号模糊匹配
 	sql_where := ""
@@ -47,7 +47,7 @@ func (m *menuModel) Index(in *sys.MenuIndexReq) ([]*MenuInfo, error) {
 	}
 
 	query := fmt.Sprintf("select %s from %s %s",
-		menuInfoRows, m.menuInfo, sql_where)
+		sysMenuInfoRows, m.menuInfo, sql_where)
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
 		return nil, err
@@ -77,10 +77,10 @@ func (m *menuModel) DeleteMenu(MenuId int64) error {
 	})
 }
 
-func (m *menuModel) InsertMenuID(data *MenuInfo, RoleId int64) error {
+func (m *menuModel) InsertMenuID(data *SysMenuInfo, RoleId int64) error {
 	return m.Transact(func(session sqlx.Session) error {
 		//1.向menu_info表插入菜单项
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.menuInfo, menuInfoRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.menuInfo, sysMenuInfoRowsExpectAutoSet)
 		ret, err := session.Exec(query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl, data.HideInMenu)
 		if err != nil {
 			return err
