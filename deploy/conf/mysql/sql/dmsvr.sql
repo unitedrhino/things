@@ -1,10 +1,10 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
-create database if not EXISTS things_dm;
-use things_dm;
+create database if not EXISTS iThings;
+use iThings;
 
-CREATE TABLE if not exists `product_info`
+CREATE TABLE if not exists `dm_product_info`
 (
     `productID`    char(11)     NOT NULL COMMENT '产品id',
     `productName`  varchar(100) NOT NULL COMMENT '产品名称',
@@ -31,7 +31,7 @@ CREATE TABLE if not exists `product_info`
     ROW_FORMAT = COMPACT COMMENT ='产品信息表';
 
 
-CREATE TABLE if not exists `product_schema`
+CREATE TABLE if not exists `dm_product_schema`
 (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `productID`   char(11) NOT NULL COMMENT '产品id',
@@ -53,7 +53,7 @@ CREATE TABLE if not exists `product_schema`
   DEFAULT CHARSET = utf8mb4
   ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
 
-CREATE TABLE if not exists `device_info`
+CREATE TABLE if not exists `dm_device_info`
 (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `productID`   char(11)     NOT NULL COMMENT '产品id',
@@ -94,7 +94,7 @@ CREATE TABLE if not exists `device_info`
 -- #   DEFAULT CHARSET = utf8mb4 COMMENT ='产品品类详情';
 
 
-CREATE TABLE if not exists `product_firmware`
+CREATE TABLE if not exists `dm_product_firmware`
 (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `productID`   char(11)     NOT NULL COMMENT '产品id',
@@ -115,7 +115,7 @@ CREATE TABLE if not exists `product_firmware`
 
 
 
-CREATE TABLE if not exists `group_info`
+CREATE TABLE if not exists `dm_group_info`
 (
     `groupID`     bigint COMMENT '分组ID',
     `parentID`    bigint NOT NULL DEFAULT 0 COMMENT '父组ID 0-根组',
@@ -130,7 +130,7 @@ CREATE TABLE if not exists `group_info`
     ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '设备分组信息表';
 
 
-CREATE TABLE if not exists `group_device`
+CREATE TABLE if not exists `dm_group_device`
 (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `groupID`     bigint NOT NULL COMMENT '分组ID',
@@ -144,7 +144,7 @@ CREATE TABLE if not exists `group_device`
     ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '分组与设备关系表';
 
 
-CREATE TABLE if not exists `gateway_device`
+CREATE TABLE if not exists `dm_gateway_device`
 (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `gatewayProductID`   char(11) NOT NULL COMMENT '网关产品id',
@@ -158,7 +158,7 @@ CREATE TABLE if not exists `gateway_device`
     UNIQUE KEY `gatewayProductID_gatewayDeviceName_productID_deviceName` (`gatewayProductID`,`gatewayDeviceName`,`productID`,`deviceName`)
     ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '网关与子设备关系表';
 
-CREATE TABLE if not exists `product_remote_config`
+CREATE TABLE if not exists `dm_product_remote_config`
 (
     `id`          bigint   NOT NULL AUTO_INCREMENT,
     `productID`   char(11) NOT NULL COMMENT '产品id',
