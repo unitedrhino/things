@@ -13,7 +13,7 @@ import (
 
 type (
 	RoleModel interface {
-		Index(in *sys.RoleIndexReq) ([]*RoleInfo, int64, error)
+		Index(in *sys.RoleIndexReq) ([]*SysRoleInfo, int64, error)
 		IndexRoleIDMenuID(RoleId int64) ([]int64, error)
 		UpdateRoleIDMenuID(RoleId int64, MenuId []int64) error
 		DeleteRole(RoleId int64) error
@@ -34,8 +34,8 @@ func NewRoleModel(conn sqlx.SqlConn, c cache.CacheConf) RoleModel {
 	}
 }
 
-func (m *roleModel) Index(in *sys.RoleIndexReq) ([]*RoleInfo, int64, error) {
-	var resp []*RoleInfo
+func (m *roleModel) Index(in *sys.RoleIndexReq) ([]*SysRoleInfo, int64, error) {
+	var resp []*SysRoleInfo
 	page := def.PageInfo{}
 	copier.Copy(&page, in.Page)
 	//支持账号模糊匹配
@@ -52,7 +52,7 @@ func (m *roleModel) Index(in *sys.RoleIndexReq) ([]*RoleInfo, int64, error) {
 	}
 
 	query := fmt.Sprintf("select %s from %s %s limit %d offset %d ",
-		roleInfoRows, m.roleInfo, sql_where, page.GetLimit(), page.GetOffset())
+		sysRoleInfoRows, m.roleInfo, sql_where, page.GetLimit(), page.GetOffset())
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
 		return nil, 0, err
@@ -69,9 +69,9 @@ func (m *roleModel) Index(in *sys.RoleIndexReq) ([]*RoleInfo, int64, error) {
 
 func (m *roleModel) IndexRoleIDMenuID(RoleId int64) ([]int64, error) {
 	var resp_menuID []int64
-	var resp []*RoleMenu
+	var resp []*SysRoleMenu
 	query := fmt.Sprintf("select %s from %s where roleID = %d",
-		roleMenuRows, m.roleMenu, RoleId)
+		sysRoleMenuRows, m.roleMenu, RoleId)
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
 		return nil, err

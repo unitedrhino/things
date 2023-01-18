@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
-func UserInfoToPb(ui *mysql.UserInfo) *sys.UserInfo {
+func UserInfoToPb(ui *mysql.SysUserInfo) *sys.UserInfo {
 	return &sys.UserInfo{
 		Uid:         ui.Uid,
 		UserName:    ui.UserName.String,

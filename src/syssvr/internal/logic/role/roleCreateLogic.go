@@ -26,7 +26,7 @@ func NewRoleCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleCr
 }
 
 func (l *RoleCreateLogic) RoleCreate(in *sys.RoleCreateReq) (*sys.Response, error) {
-	_, err := l.svcCtx.RoleInfoModle.Insert(l.ctx, &mysql.RoleInfo{
+	_, err := l.svcCtx.RoleInfoModle.Insert(l.ctx, &mysql.SysRoleInfo{
 		Name:   in.Name,
 		Remark: in.Remark,
 		Status: in.Status,

@@ -26,7 +26,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *LoginLogic) getPwd(in *sys.LoginReq, uc *mysql.UserInfo) error {
+func (l *LoginLogic) getPwd(in *sys.LoginReq, uc *mysql.SysUserInfo) error {
 	//根据密码类型不同做不同处理
 	if in.PwdType == 0 {
 		//空密码情况暂不考虑
@@ -50,7 +50,7 @@ func (l *LoginLogic) getPwd(in *sys.LoginReq, uc *mysql.UserInfo) error {
 	return nil
 }
 
-func (l *LoginLogic) getRet(uc *mysql.UserInfo) (*sys.LoginResp, error) {
+func (l *LoginLogic) getRet(uc *mysql.SysUserInfo) (*sys.LoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role)
@@ -94,7 +94,7 @@ func (l *LoginLogic) getRet(uc *mysql.UserInfo) (*sys.LoginResp, error) {
 	return resp, nil
 }
 
-func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.UserInfo, err error) {
+func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.SysUserInfo, err error) {
 	switch in.LoginType {
 	case "pwd":
 		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserID, Valid: true})

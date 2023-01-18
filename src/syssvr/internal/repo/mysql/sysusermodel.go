@@ -18,8 +18,8 @@ type Keys struct {
 
 type (
 	UserModel interface {
-		Register(ctx context.Context, UserInfoModel UserInfoModel, data UserInfo, key Keys) error
-		Index(in *sys.UserIndexReq) ([]*UserInfo, int64, error)
+		Register(ctx context.Context, UserInfoModel SysUserInfoModel, data SysUserInfo, key Keys) error
+		Index(in *sys.UserIndexReq) ([]*SysUserInfo, int64, error)
 	}
 
 	userModel struct {
@@ -36,12 +36,12 @@ func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
 }
 
 //插入的时候检查key是否重复
-func (m *userModel) Register(ctx context.Context, UserInfoModel UserInfoModel, data UserInfo, key Keys) (err error) {
+func (m *userModel) Register(ctx context.Context, UserInfoModel SysUserInfoModel, data SysUserInfo, key Keys) (err error) {
 
 	return m.Transact(func(session sqlx.Session) error {
-		var resp UserInfo
+		var resp SysUserInfo
 		var isUpdate bool = true
-		query := fmt.Sprintf("select %s from %s where `%s` = ?  limit 1", userInfoRows, m.userInfo, key.Key)
+		query := fmt.Sprintf("select %s from %s where `%s` = ?  limit 1", sysUserInfoRows, m.userInfo, key.Key)
 		err = session.QueryRow(&resp, query, key.Value)
 		if err == sqlc.ErrNotFound {
 			isUpdate = false
@@ -64,8 +64,8 @@ func (m *userModel) Register(ctx context.Context, UserInfoModel UserInfoModel, d
 }
 
 //返回 usercore列表,总数及错误信息
-func (m *userModel) Index(in *sys.UserIndexReq) ([]*UserInfo, int64, error) {
-	var resp []*UserInfo
+func (m *userModel) Index(in *sys.UserIndexReq) ([]*SysUserInfo, int64, error) {
+	var resp []*SysUserInfo
 	page := def.PageInfo{}
 	copier.Copy(&page, in.Page)
 	//支持账号模糊匹配
@@ -74,7 +74,7 @@ func (m *userModel) Index(in *sys.UserIndexReq) ([]*UserInfo, int64, error) {
 		sql_where += "where userName like '%" + in.UserName + "%'"
 	}
 	query := fmt.Sprintf("select %s from %s %s limit %d offset %d ",
-		userInfoRows, m.userInfo, sql_where, page.GetLimit(), page.GetOffset())
+		sysUserInfoRows, m.userInfo, sql_where, page.GetLimit(), page.GetOffset())
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
 		return nil, 0, err
