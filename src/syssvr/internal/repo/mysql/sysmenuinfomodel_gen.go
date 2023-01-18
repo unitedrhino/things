@@ -16,27 +16,27 @@ import (
 )
 
 var (
-	menuInfoFieldNames          = builder.RawFieldNames(&MenuInfo{})
-	menuInfoRows                = strings.Join(menuInfoFieldNames, ",")
-	menuInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
-	menuInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(menuInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
+	sysMenuInfoFieldNames          = builder.RawFieldNames(&SysMenuInfo{})
+	sysMenuInfoRows                = strings.Join(sysMenuInfoFieldNames, ",")
+	sysMenuInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysMenuInfoFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	sysMenuInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysMenuInfoFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
-	menuInfoModel interface {
-		Insert(ctx context.Context, data *MenuInfo) (sql.Result, error)
-		FindOne(ctx context.Context, id int64) (*MenuInfo, error)
-		FindOneByName(ctx context.Context, name string) (*MenuInfo, error)
-		Update(ctx context.Context, data *MenuInfo) error
+	sysMenuInfoModel interface {
+		Insert(ctx context.Context, data *SysMenuInfo) (sql.Result, error)
+		FindOne(ctx context.Context, id int64) (*SysMenuInfo, error)
+		FindOneByName(ctx context.Context, name string) (*SysMenuInfo, error)
+		Update(ctx context.Context, data *SysMenuInfo) error
 		Delete(ctx context.Context, id int64) error
 	}
 
-	defaultMenuInfoModel struct {
+	defaultSysMenuInfoModel struct {
 		conn  sqlx.SqlConn
 		table string
 	}
 
-	MenuInfo struct {
+	SysMenuInfo struct {
 		Id            int64        `db:"id"`            // 编号
 		ParentID      int64        `db:"parentID"`      // 父菜单ID，一级菜单为1
 		Type          int64        `db:"type"`          // 类型   1：目录   2：菜单   3：按钮
@@ -54,22 +54,22 @@ type (
 	}
 )
 
-func newMenuInfoModel(conn sqlx.SqlConn) *defaultMenuInfoModel {
-	return &defaultMenuInfoModel{
+func newSysMenuInfoModel(conn sqlx.SqlConn) *defaultSysMenuInfoModel {
+	return &defaultSysMenuInfoModel{
 		conn:  conn,
-		table: "`menu_info`",
+		table: "`sys_menu_info`",
 	}
 }
 
-func (m *defaultMenuInfoModel) Delete(ctx context.Context, id int64) error {
+func (m *defaultSysMenuInfoModel) Delete(ctx context.Context, id int64) error {
 	query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 	_, err := m.conn.ExecCtx(ctx, query, id)
 	return err
 }
 
-func (m *defaultMenuInfoModel) FindOne(ctx context.Context, id int64) (*MenuInfo, error) {
-	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", menuInfoRows, m.table)
-	var resp MenuInfo
+func (m *defaultSysMenuInfoModel) FindOne(ctx context.Context, id int64) (*SysMenuInfo, error) {
+	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", sysMenuInfoRows, m.table)
+	var resp SysMenuInfo
 	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
 	switch err {
 	case nil:
@@ -81,9 +81,9 @@ func (m *defaultMenuInfoModel) FindOne(ctx context.Context, id int64) (*MenuInfo
 	}
 }
 
-func (m *defaultMenuInfoModel) FindOneByName(ctx context.Context, name string) (*MenuInfo, error) {
-	var resp MenuInfo
-	query := fmt.Sprintf("select %s from %s where `name` = ? limit 1", menuInfoRows, m.table)
+func (m *defaultSysMenuInfoModel) FindOneByName(ctx context.Context, name string) (*SysMenuInfo, error) {
+	var resp SysMenuInfo
+	query := fmt.Sprintf("select %s from %s where `name` = ? limit 1", sysMenuInfoRows, m.table)
 	err := m.conn.QueryRowCtx(ctx, &resp, query, name)
 	switch err {
 	case nil:
@@ -95,18 +95,18 @@ func (m *defaultMenuInfoModel) FindOneByName(ctx context.Context, name string) (
 	}
 }
 
-func (m *defaultMenuInfoModel) Insert(ctx context.Context, data *MenuInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, menuInfoRowsExpectAutoSet)
+func (m *defaultSysMenuInfoModel) Insert(ctx context.Context, data *SysMenuInfo) (sql.Result, error) {
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, sysMenuInfoRowsExpectAutoSet)
 	ret, err := m.conn.ExecCtx(ctx, query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl, data.HideInMenu)
 	return ret, err
 }
 
-func (m *defaultMenuInfoModel) Update(ctx context.Context, newData *MenuInfo) error {
-	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, menuInfoRowsWithPlaceHolder)
+func (m *defaultSysMenuInfoModel) Update(ctx context.Context, newData *SysMenuInfo) error {
+	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, sysMenuInfoRowsWithPlaceHolder)
 	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.Type, newData.Order, newData.Name, newData.Path, newData.Component, newData.Icon, newData.Redirect, newData.BackgroundUrl, newData.HideInMenu, newData.Id)
 	return err
 }
 
-func (m *defaultMenuInfoModel) tableName() string {
+func (m *defaultSysMenuInfoModel) tableName() string {
 	return m.table
 }
