@@ -121,7 +121,7 @@ CREATE TABLE if not exists `dm_group_info`
     `parentID`    bigint NOT NULL DEFAULT 0 COMMENT '父组ID 0-根组',
     `groupName`   VARCHAR(100) NOT NULL COMMENT '分组名称',
     `desc` VARCHAR(200) DEFAULT '' COMMENT '描述',
-    `tags`        json not null comment '设备标签',
+    `tags`        json not null comment '分组标签',
     `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
