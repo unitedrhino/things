@@ -69,3 +69,21 @@ goctl rpc protoc  proto/di.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --sty
 ```shell
 goctl api go -api http/dd.api  -dir ./ --style=goZero
 ```
+
+# 规则引擎模块-rulesvr
+
+## rpc文件编译
+
+命令执行路径: ithings\src\rulesvr\
+
+```shell
+goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m
+```
+
+## model文件编译
+
+命令执行路径: ithings\src\rulesvr\
+
+```shell
+goctl model mysql ddl -src="../../deploy/conf/mysql/sql/rulesvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime
+```
