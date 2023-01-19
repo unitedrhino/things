@@ -31,7 +31,7 @@ type (
 func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
 	return &userModel{
 		CachedConn: sqlc.NewConn(conn, c),
-		userInfo:   "`user_info`",
+		userInfo:   "`sys_user_info`",
 	}
 }
 

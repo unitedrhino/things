@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 )
 
-func CheckAffordance(po *mysql.ProductSchema) error {
+func CheckAffordance(po *mysql.DmProductSchema) error {
 	var affordance interface {
 		ValidateWithFmt() error
 	}

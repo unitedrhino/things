@@ -10,7 +10,7 @@ import (
 )
 
 type (
-	RemoteConfigModel interface {
+	DmRemoteConfigModel interface {
 		Index(ctx context.Context, in *RemoteConfigFilter) ([]*RemoteConfigInfo, int64, error)
 		GetLastRecord(ctx context.Context, in *RemoteConfigFilter) (*RemoteConfigInfo, error)
 	}
@@ -33,10 +33,10 @@ type (
 	}
 )
 
-func NewRemoteConfigModel(conn sqlx.SqlConn) RemoteConfigModel {
+func NewDmRemoteConfigModel(conn sqlx.SqlConn) DmRemoteConfigModel {
 	return &remoteConfigModel{
 		SqlConn:      conn,
-		remoteConfig: "`product_remote_config`",
+		remoteConfig: "`dm_product_remote_config`",
 	}
 }
 
@@ -65,9 +65,9 @@ func (m *remoteConfigModel) GetRemoteConfigCountByFilter(ctx context.Context, f 
 	}
 }
 
-func (m *remoteConfigModel) FindRemoteConfigByFilter(ctx context.Context, f RemoteConfigFilter, page *def.PageInfo) ([]*ProductRemoteConfig, error) {
-	var resp []*ProductRemoteConfig
-	sql := sq.Select(productRemoteConfigRows).From(m.remoteConfig).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+func (m *remoteConfigModel) FindRemoteConfigByFilter(ctx context.Context, f RemoteConfigFilter, page *def.PageInfo) ([]*DmProductRemoteConfig, error) {
+	var resp []*DmProductRemoteConfig
+	sql := sq.Select(dmProductRemoteConfigRows).From(m.remoteConfig).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql)
 
 	query, arg, err := sql.ToSql()
@@ -83,9 +83,9 @@ func (m *remoteConfigModel) FindRemoteConfigByFilter(ctx context.Context, f Remo
 	}
 }
 
-func (m *remoteConfigModel) FindLastRemoteConfigByFilter(ctx context.Context, f RemoteConfigFilter) ([]*ProductRemoteConfig, error) {
-	var resp []*ProductRemoteConfig
-	sql := sq.Select(productRemoteConfigRows).From(m.remoteConfig).Limit(1)
+func (m *remoteConfigModel) FindLastRemoteConfigByFilter(ctx context.Context, f RemoteConfigFilter) ([]*DmProductRemoteConfig, error) {
+	var resp []*DmProductRemoteConfig
+	sql := sq.Select(dmProductRemoteConfigRows).From(m.remoteConfig).Limit(1)
 	sql = f.FmtSql(sql)
 
 	query, arg, err := sql.ToSql()

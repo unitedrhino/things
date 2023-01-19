@@ -85,7 +85,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 			cast.ToString(in.Position.Longitude)+" "+cast.ToString(in.Position.Latitude))
 	}
 
-	di := mysql.DeviceInfo{
+	di := mysql.DmDeviceInfo{
 		ProductID:  in.ProductID,  // 产品id
 		DeviceName: in.DeviceName, // 设备名称
 		Secret:     utils.GetRandomBase64(20),
