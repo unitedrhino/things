@@ -30,7 +30,7 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DeviceInfo, data *dm.DeviceInfo) {
+func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DmDeviceInfo, data *dm.DeviceInfo) {
 	if data.Tags != nil {
 		tags, err := json.Marshal(data.Tags)
 		if err == nil {

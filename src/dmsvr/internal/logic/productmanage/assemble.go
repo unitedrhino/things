@@ -16,7 +16,7 @@ import (
 //	}
 //}
 
-func ToProductInfo(pi *mysql.ProductInfo) *dm.ProductInfo {
+func ToProductInfo(pi *mysql.DmProductInfo) *dm.ProductInfo {
 	var (
 		tags map[string]string
 	)

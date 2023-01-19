@@ -1,0 +1,47 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+
+package rule;
+option go_package="pb/rule";
+
+message Response {
+}
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+}
+
+
+service Flow {
+  rpc flowInfoCreate(FlowInfo) returns(Response);
+  rpc flowInfoUpdate(FlowInfo) returns(Response);
+  rpc flowInfoDelete(FlowInfoDeleteReq) returns(Response);
+  rpc flowInfoIndex(FlowInfoIndexReq) returns(FlowInfoIndexResp);
+  rpc flowInfoRead(FlowInfoReadReq) returns(FlowInfo);
+}
+
+message FlowInfoReadReq{
+  int64 id = 1;
+}
+
+message FlowInfoIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+}
+
+message FlowInfoIndexResp{
+  repeated FlowInfo list = 1;//设备信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message FlowInfoDeleteReq{
+  int64 id = 1;
+}
+
+message FlowInfo{
+  int64 id = 1;
+  string name =2;//流的名称
+  int64 isDisabled = 3;//是否禁用 1:是 2:否
+  google.protobuf.StringValue desc = 4;//描述
+  int64 createdTime = 5;//创建时间 秒级时间戳 只读
+
+}

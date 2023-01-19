@@ -29,7 +29,7 @@ func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *ProductInfoUpdateLogic) UpdateProductInfo(old *mysql.ProductInfo, data *dm.ProductInfo) {
+func (l *ProductInfoUpdateLogic) UpdateProductInfo(old *mysql.DmProductInfo, data *dm.ProductInfo) {
 	if data.Tags != nil {
 		tags, err := json.Marshal(data.Tags)
 		if err == nil {
