@@ -82,7 +82,7 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 		return nil, errors.OutRange.WithMsgf("子分组嵌套不能超过3层")
 	}
 
-	_, err = l.svcCtx.GroupInfo.Insert(l.ctx, &mysql.GroupInfo{
+	_, err = l.svcCtx.GroupInfo.Insert(l.ctx, &mysql.DmGroupInfo{
 		GroupID:   l.svcCtx.GroupID.GetSnowflakeId(),
 		ParentID:  in.ParentID,
 		GroupName: in.GroupName,

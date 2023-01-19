@@ -4,7 +4,12 @@ import "google/protobuf/wrappers.proto";
 //import "proto/schemaInfo.proto";
 package dm;
 
-
+message Response {
+}
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+}
 
 //权限认证(提供给mqtt broker)
 service DeviceAuth{
@@ -131,12 +136,8 @@ message RemoteConfigLastReadResp{
   ProductRemoteConfig info = 1;
 }
 
-message PageInfo{
-  int64 page = 1;
-  int64 size = 2;
-}
-message Response {
-}
+
+
 
 message DeviceGatewayMultiCreateReq{
   string gatewayProductID = 1;

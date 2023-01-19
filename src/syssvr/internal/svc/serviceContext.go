@@ -10,10 +10,10 @@ import (
 
 type ServiceContext struct {
 	Config        config.Config
-	UserInfoModel mysql.UserInfoModel
-	RoleInfoModle mysql.RoleInfoModel
-	MenuInfoModle mysql.MenuInfoModel
-	RoleMenuModle mysql.RoleMenuModel
+	UserInfoModel mysql.SysUserInfoModel
+	RoleInfoModle mysql.SysRoleInfoModel
+	MenuInfoModle mysql.SysMenuInfoModel
+	RoleMenuModle mysql.SysRoleMenuModel
 	UserModel     mysql.UserModel
 	RoleModel     mysql.RoleModel
 	MenuModel     mysql.MenuModel
@@ -23,9 +23,9 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
-	ui := mysql.NewUserInfoModel(conn)
-	ro := mysql.NewRoleInfoModel(conn)
-	me := mysql.NewMenuInfoModel(conn)
+	ui := mysql.NewSysUserInfoModel(conn)
+	ro := mysql.NewSysRoleInfoModel(conn)
+	me := mysql.NewSysMenuInfoModel(conn)
 	rom := mysql.NewRoleModel(conn, c.CacheRedis)
 	mem := mysql.NewMenuModel(conn, c.CacheRedis)
 	um := mysql.NewUserModel(conn, c.CacheRedis)
