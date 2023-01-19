@@ -44,7 +44,7 @@ src/usersvr/usersvr*
 /src/disvr/disvr.exe
 /src/syssvr/syssvr.exe
 /src/apisvr/dist/
-
+*.exe
 ### MacOS ###
 .DS_Store
 /src/apisvr/logs/
