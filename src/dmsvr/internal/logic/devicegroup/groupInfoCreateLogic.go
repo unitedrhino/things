@@ -40,6 +40,27 @@ func (l *GroupInfoCreateLogic) CheckGroupInfo(in *dm.GroupInfoCreateReq) (bool, 
 	}
 }
 
+/*
+	检查当前分组是否已嵌套3层以上，是返回true 否则返回false
+*/
+func (l *GroupInfoCreateLogic) CheckGroupLevel(groupID int64) (bool, error) {
+	if groupID == 1 {
+		return false, nil
+	}
+
+	resp, err := l.svcCtx.GroupInfo.FindOne(l.ctx, groupID)
+	if err != nil {
+		l.Errorf("%s.CheckGroupInfo msg=not find group id is %d\n", utils.FuncName(), groupID)
+		return false, errors.Database.AddDetail(err)
+	}
+
+	if resp.ParentID != 1 {
+		return true, nil
+	}
+
+	return false, nil
+}
+
 // 创建分组
 func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.Response, error) {
 	find, err := l.CheckGroupInfo(in)
@@ -49,7 +70,19 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 	} else if find == true {
 		return nil, errors.Duplicate.WithMsgf("组名重复:%s", in.GroupName).AddDetail("GroupName:" + in.GroupName)
 	}
-	_, err = l.svcCtx.GroupInfo.Insert(l.ctx, &mysql.DmGroupInfo{
+
+	//判断当前分组parentid 层数是否达到3层，达到则不允许创建分组
+	f, err := l.CheckGroupLevel(in.ParentID)
+	if err != nil {
+		l.Errorf("%s.CheckGroupLevel in=%v\n", utils.FuncName(), in)
+		return nil, errors.Database.AddDetail(err)
+	}
+	if f {
+		l.Errorf("%s.CheckGroupInfo msg=group level is over 3 \n", utils.FuncName())
+		return nil, errors.OutRange.WithMsgf("子分组嵌套不能超过3层")
+	}
+
+	_, err = l.svcCtx.GroupInfo.Insert(l.ctx, &mysql.GroupInfo{
 		GroupID:   l.svcCtx.GroupID.GetSnowflakeId(),
 		ParentID:  in.ParentID,
 		GroupName: in.GroupName,
