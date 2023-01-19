@@ -47,9 +47,9 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 /*
 根据用户的输入生成对应的数据库数据
 */
-func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) *mysql.ProductInfo {
+func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) *mysql.DmProductInfo {
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
-	pi := &mysql.ProductInfo{
+	pi := &mysql.DmProductInfo{
 		ProductID:   deviceAuth.GetStrProductID(ProductID), // 产品id
 		ProductName: in.ProductName,                        // 产品名称
 		Desc:        in.Desc.GetValue(),
@@ -116,7 +116,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	}
 	return &dm.Response{}, nil
 }
-func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.ProductInfo) error {
+func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.DmProductInfo) error {
 	t, _ := schema.NewSchemaTsl([]byte(schema.DefaultSchema))
 	if err := l.svcCtx.SchemaManaRepo.InitProduct(
 		l.ctx, t, pi.ProductID); err != nil {

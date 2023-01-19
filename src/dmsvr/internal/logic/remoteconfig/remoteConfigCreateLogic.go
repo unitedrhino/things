@@ -26,7 +26,7 @@ func NewRemoteConfigCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *RemoteConfigCreateLogic) RemoteConfigCreate(in *dm.RemoteConfigCreateReq) (*dm.Response, error) {
-	_, err := l.svcCtx.RemoteConfigInfo.Insert(l.ctx, &mysql.ProductRemoteConfig{
+	_, err := l.svcCtx.RemoteConfigInfo.Insert(l.ctx, &mysql.DmProductRemoteConfig{
 		ProductID: in.ProductID,
 		Content:   in.Content,
 	})

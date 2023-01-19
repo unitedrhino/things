@@ -16,10 +16,10 @@ import (
 )
 
 type (
-	GroupModel interface {
+	DmGroupModel interface {
 		Index(ctx context.Context, in *GroupFilter) ([]*GroupInformation, int64, error)
 		IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInformation, error)
-		IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*GroupDevice, int64, error)
+		IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*DmGroupDevice, int64, error)
 		Delete(ctx context.Context, groupID int64) error
 		GroupDeviceCreate(ctx context.Context, groupID int64, list []*devices.Core) error
 		GroupDeviceDelete(ctx context.Context, groupID int64, list []*devices.Core) error
@@ -54,12 +54,12 @@ type (
 	}
 )
 
-func NewGroupModel(conn sqlx.SqlConn) GroupModel {
+func NewDmGroupModel(conn sqlx.SqlConn) DmGroupModel {
 	return &groupModel{
 		SqlConn:     conn,
-		groupInfo:   "`group_info`",
-		groupDevice: "`group_device`",
-		deviceInfo:  "`device_info`",
+		groupInfo:   "`dm_group_info`",
+		groupDevice: "`dm_group_device`",
+		deviceInfo:  "`dm_device_info`",
 	}
 }
 
@@ -108,9 +108,9 @@ func (m *groupModel) GetGroupsCountByFilter(ctx context.Context, f GroupFilter, 
 		return 0, err
 	}
 }
-func (m *groupModel) FindGroupInfoByFilter(ctx context.Context, f GroupFilter, page *def.PageInfo, parentFlag bool) ([]*GroupInfo, error) {
-	var resp []*GroupInfo
-	sql := sq.Select(groupInfoRows).From(m.groupInfo).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+func (m *groupModel) FindGroupInfoByFilter(ctx context.Context, f GroupFilter, page *def.PageInfo, parentFlag bool) ([]*DmGroupInfo, error) {
+	var resp []*DmGroupInfo
+	sql := sq.Select(dmGroupInfoRows).From(m.groupInfo).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql, parentFlag)
 
 	query, arg, err := sql.ToSql()
@@ -142,9 +142,9 @@ func (m *groupModel) GetGroupDeviceCountByFilter(ctx context.Context, f GroupDev
 		return 0, err
 	}
 }
-func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceFilter, page *def.PageInfo) ([]*GroupDevice, error) {
-	var resp []*GroupDevice
-	sql := sq.Select(groupDeviceRows).From(m.groupDevice).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+func (m *groupModel) FindGroupDeviceByFilter(ctx context.Context, f GroupDeviceFilter, page *def.PageInfo) ([]*DmGroupDevice, error) {
+	var resp []*DmGroupDevice
+	sql := sq.Select(dmGroupDeviceRows).From(m.groupDevice).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSql(sql)
 
 	query, arg, err := sql.ToSql()
@@ -227,7 +227,7 @@ func (m *groupModel) IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInf
 	return info, nil
 }
 
-func (m *groupModel) IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*GroupDevice, int64, error) {
+func (m *groupModel) IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*DmGroupDevice, int64, error) {
 
 	filter := GroupDeviceFilter{
 		GroupID:    in.GroupID,

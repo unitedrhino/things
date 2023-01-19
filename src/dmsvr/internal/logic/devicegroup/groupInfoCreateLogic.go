@@ -49,7 +49,7 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 	} else if find == true {
 		return nil, errors.Duplicate.WithMsgf("组名重复:%s", in.GroupName).AddDetail("GroupName:" + in.GroupName)
 	}
-	_, err = l.svcCtx.GroupInfo.Insert(l.ctx, &mysql.GroupInfo{
+	_, err = l.svcCtx.GroupInfo.Insert(l.ctx, &mysql.DmGroupInfo{
 		GroupID:   l.svcCtx.GroupID.GetSnowflakeId(),
 		ParentID:  in.ParentID,
 		GroupName: in.GroupName,

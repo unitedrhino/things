@@ -29,8 +29,8 @@ type (
 func NewRoleModel(conn sqlx.SqlConn, c cache.CacheConf) RoleModel {
 	return &roleModel{
 		CachedConn: sqlc.NewConn(conn, c),
-		roleInfo:   "`role_info`",
-		roleMenu:   "`role_menu`",
+		roleInfo:   "`sys_role_info`",
+		roleMenu:   "`sys_role_menu`",
 	}
 }
 
