@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"fmt"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -10,7 +9,7 @@ import (
 
 type (
 	MenuModel interface {
-		Index(in *sys.MenuIndexReq) ([]*SysMenuInfo, error)
+		Index(in *MenuIndexReq) ([]*SysMenuInfo, error)
 		DeleteMenu(MenuId int64) error
 		InsertMenuID(data *SysMenuInfo, RoleId int64) error
 	}
@@ -19,6 +18,12 @@ type (
 		sqlc.CachedConn
 		menuInfo string
 		roleMenu string
+	}
+
+	MenuIndexReq struct {
+		Role int64
+		Name string
+		Path string
 	}
 )
 
@@ -30,24 +35,24 @@ func NewMenuModel(conn sqlx.SqlConn, c cache.CacheConf) MenuModel {
 	}
 }
 
-func (m *menuModel) Index(in *sys.MenuIndexReq) ([]*SysMenuInfo, error) {
+func (m *menuModel) Index(in *MenuIndexReq) ([]*SysMenuInfo, error) {
 	var resp []*SysMenuInfo
 
 	//支持账号模糊匹配
-	sql_where := ""
+	sqlWhere := ""
 	if in.Name != "" || in.Path != "" {
-		sql_where += " where "
+		sqlWhere += " where "
 		if in.Name != "" && in.Path != "" {
-			sql_where += "name like '%" + in.Name + "%' and path like '%" + in.Path + "%'"
+			sqlWhere += "name like '%" + in.Name + "%' and path like '%" + in.Path + "%'"
 		} else if in.Name != "" && in.Path == "" {
-			sql_where += "name like '%" + in.Name + "%'"
+			sqlWhere += "name like '%" + in.Name + "%'"
 		} else {
-			sql_where += "path like '%" + in.Path + "%'"
+			sqlWhere += "path like '%" + in.Path + "%'"
 		}
 	}
 
 	query := fmt.Sprintf("select %s from %s %s",
-		sysMenuInfoRows, m.menuInfo, sql_where)
+		sysMenuInfoRows, m.menuInfo, sqlWhere)
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
 		return nil, err

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -19,12 +18,18 @@ type Keys struct {
 type (
 	UserModel interface {
 		Register(ctx context.Context, UserInfoModel SysUserInfoModel, data SysUserInfo, key Keys) error
-		Index(in *sys.UserIndexReq) ([]*SysUserInfo, int64, error)
+		Index(in *UserIndexReq) ([]*SysUserInfo, int64, error)
 	}
 
 	userModel struct {
 		sqlc.CachedConn
 		userInfo string
+	}
+	UserIndexReq struct {
+		Page     *def.PageInfo
+		UserName string
+		Phone    string
+		Email    string
 	}
 )
 
@@ -64,23 +69,23 @@ func (m *userModel) Register(ctx context.Context, UserInfoModel SysUserInfoModel
 }
 
 //返回 usercore列表,总数及错误信息
-func (m *userModel) Index(in *sys.UserIndexReq) ([]*SysUserInfo, int64, error) {
+func (m *userModel) Index(in *UserIndexReq) ([]*SysUserInfo, int64, error) {
 	var resp []*SysUserInfo
 	page := def.PageInfo{}
 	copier.Copy(&page, in.Page)
 	//支持账号模糊匹配
-	sql_where := ""
+	sqlWhere := ""
 	if in.UserName != "" {
-		sql_where += "where userName like '%" + in.UserName + "%'"
+		sqlWhere += "where userName like '%" + in.UserName + "%'"
 	}
 	query := fmt.Sprintf("select %s from %s %s limit %d offset %d ",
-		sysUserInfoRows, m.userInfo, sql_where, page.GetLimit(), page.GetOffset())
+		sysUserInfoRows, m.userInfo, sqlWhere, page.GetLimit(), page.GetOffset())
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	count := fmt.Sprintf("select count(1) from %s %s", m.userInfo, sql_where)
+	count := fmt.Sprintf("select count(1) from %s %s", m.userInfo, sqlWhere)
 	var total int64
 	err = m.CachedConn.QueryRowNoCache(&total, count)
 	if err != nil {
