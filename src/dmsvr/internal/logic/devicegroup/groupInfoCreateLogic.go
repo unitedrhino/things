@@ -42,10 +42,10 @@ func (l *GroupInfoCreateLogic) CheckGroupInfo(in *dm.GroupInfoCreateReq) (bool, 
 }
 
 /*
-	检查当前分组是否已嵌套指定层数以上，是返回true 否则返回false
+	检查当前分组嵌套层数是否超限，是返回true 否则返回false
 */
 func (l *GroupInfoCreateLogic) CheckGroupLevel(groupID int64, level int64) (bool, error) {
-
+	//采用递归方式，根据当前分组id和层数上限综合判断
 	if groupID == 1 {
 		if level <= def.DeviceGroupLevel && level > 1 {
 			return false, nil
