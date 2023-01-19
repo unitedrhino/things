@@ -11,7 +11,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func ToDeviceInfo(di *mysql.DeviceInfo) *dm.DeviceInfo {
+func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
 	var (
 		tags map[string]string
 	)

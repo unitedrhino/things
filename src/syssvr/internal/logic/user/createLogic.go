@@ -57,7 +57,7 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 
 		//2.对密码进行md5加密
 		password1 := utils.MakePwd(in.Password, uid_temp, false)
-		ui := mysql.UserInfo{
+		ui := mysql.SysUserInfo{
 			Uid:        uid_temp,
 			UserName:   sql.NullString{String: in.UserName, Valid: true},
 			Password:   password1,

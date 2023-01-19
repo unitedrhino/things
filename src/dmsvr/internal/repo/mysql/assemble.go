@@ -6,13 +6,13 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 )
 
-func ToPropertyPo(productID string, in *schema.Property) *ProductSchema {
+func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
 	define := PropertyDef{
 		Define: in.Define,
 		Mode:   in.Mode,
 	}
 	defineStr, _ := json.Marshal(define)
-	return &ProductSchema{
+	return &DmProductSchema{
 		ProductID:  productID,
 		Tag:        int64(schema.TagCustom),
 		Type:       int64(schema.AffordanceTypeProperty),
@@ -24,7 +24,7 @@ func ToPropertyPo(productID string, in *schema.Property) *ProductSchema {
 	}
 }
 
-func ToPropertyDo(in *ProductSchema) *schema.Property {
+func ToPropertyDo(in *DmProductSchema) *schema.Property {
 	affordance := PropertyDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Property{
@@ -39,13 +39,13 @@ func ToPropertyDo(in *ProductSchema) *schema.Property {
 	return do
 }
 
-func ToEventPo(productID string, in *schema.Event) *ProductSchema {
+func ToEventPo(productID string, in *schema.Event) *DmProductSchema {
 	define := EventDef{
 		Type:   in.Type,
 		Params: in.Params,
 	}
 	defineStr, _ := json.Marshal(define)
-	return &ProductSchema{
+	return &DmProductSchema{
 		ProductID:  productID,
 		Tag:        int64(schema.TagCustom),
 		Type:       int64(schema.AffordanceTypeEvent),
@@ -57,7 +57,7 @@ func ToEventPo(productID string, in *schema.Event) *ProductSchema {
 	}
 }
 
-func ToEventDo(in *ProductSchema) *schema.Event {
+func ToEventDo(in *DmProductSchema) *schema.Event {
 	affordance := EventDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Event{
@@ -72,13 +72,13 @@ func ToEventDo(in *ProductSchema) *schema.Event {
 	return do
 }
 
-func ToActionPo(productID string, in *schema.Action) *ProductSchema {
+func ToActionPo(productID string, in *schema.Action) *DmProductSchema {
 	define := ActionDef{
 		Input:  in.Input,
 		Output: in.Output,
 	}
 	defineStr, _ := json.Marshal(define)
-	return &ProductSchema{
+	return &DmProductSchema{
 		ProductID:  productID,
 		Tag:        int64(schema.TagCustom),
 		Type:       int64(schema.AffordanceTypeAction),
@@ -90,7 +90,7 @@ func ToActionPo(productID string, in *schema.Action) *ProductSchema {
 	}
 }
 
-func ToActionDo(in *ProductSchema) *schema.Action {
+func ToActionDo(in *DmProductSchema) *schema.Action {
 	affordance := ActionDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Action{
@@ -105,7 +105,7 @@ func ToActionDo(in *ProductSchema) *schema.Action {
 	return do
 }
 
-func ToSchemaDo(in []*ProductSchema) *schema.Model {
+func ToSchemaDo(in []*DmProductSchema) *schema.Model {
 	if len(in) == 0 {
 		return nil
 	}
