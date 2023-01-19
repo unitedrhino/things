@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func ToProductSchemaRpc(info *mysql.ProductSchema) *dm.ProductSchemaInfo {
+func ToProductSchemaRpc(info *mysql.DmProductSchema) *dm.ProductSchemaInfo {
 	db := &dm.ProductSchemaInfo{
 		ProductID:  info.ProductID,
 		Tag:        info.Tag,
@@ -20,8 +20,8 @@ func ToProductSchemaRpc(info *mysql.ProductSchema) *dm.ProductSchemaInfo {
 	return db
 }
 
-func ToProductSchemaPo(info *dm.ProductSchemaInfo) *mysql.ProductSchema {
-	db := &mysql.ProductSchema{
+func ToProductSchemaPo(info *dm.ProductSchemaInfo) *mysql.DmProductSchema {
+	db := &mysql.DmProductSchema{
 		ProductID:  info.ProductID,
 		Tag:        info.Tag,
 		Type:       info.Type,

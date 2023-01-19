@@ -22,7 +22,7 @@ type LoginAuthLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	di *mysql.DeviceInfo
+	di *mysql.DmDeviceInfo
 }
 
 var clientCert string = `-----BEGIN CERTIFICATE-----
