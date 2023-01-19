@@ -2,7 +2,9 @@ package rolelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -25,7 +27,11 @@ func NewRoleIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleInd
 }
 
 func (l *RoleIndexLogic) RoleIndex(in *sys.RoleIndexReq) (*sys.RoleIndexResp, error) {
-	ros, total, err := l.svcCtx.RoleModel.Index(in)
+	ros, total, err := l.svcCtx.RoleModel.Index(&mysql.RoleIndexReq{
+		Page:   &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
+		Name:   in.Name,
+		Status: in.Status,
+	})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
