@@ -18,14 +18,14 @@ type Keys struct {
 type (
 	UserModel interface {
 		Register(ctx context.Context, UserInfoModel SysUserInfoModel, data SysUserInfo, key Keys) error
-		Index(in *UserIndexReq) ([]*SysUserInfo, int64, error)
+		Index(in *UserIndexFilter) ([]*SysUserInfo, int64, error)
 	}
 
 	userModel struct {
 		sqlc.CachedConn
 		userInfo string
 	}
-	UserIndexReq struct {
+	UserIndexFilter struct {
 		Page     *def.PageInfo
 		UserName string
 		Phone    string
@@ -69,7 +69,7 @@ func (m *userModel) Register(ctx context.Context, UserInfoModel SysUserInfoModel
 }
 
 //返回 usercore列表,总数及错误信息
-func (m *userModel) Index(in *UserIndexReq) ([]*SysUserInfo, int64, error) {
+func (m *userModel) Index(in *UserIndexFilter) ([]*SysUserInfo, int64, error) {
 	var resp []*SysUserInfo
 	page := def.PageInfo{}
 	copier.Copy(&page, in.Page)
