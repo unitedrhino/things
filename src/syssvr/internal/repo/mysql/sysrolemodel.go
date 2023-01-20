@@ -12,7 +12,7 @@ import (
 
 type (
 	RoleModel interface {
-		Index(in *RoleIndexReq) ([]*SysRoleInfo, int64, error)
+		Index(in *RoleIndexFilter) ([]*SysRoleInfo, int64, error)
 		IndexRoleIDMenuID(RoleId int64) ([]int64, error)
 		UpdateRoleIDMenuID(RoleId int64, MenuId []int64) error
 		DeleteRole(RoleId int64) error
@@ -24,7 +24,7 @@ type (
 		roleMenu string
 	}
 
-	RoleIndexReq struct {
+	RoleIndexFilter struct {
 		Page   *def.PageInfo
 		Name   string
 		Status int64
@@ -39,7 +39,7 @@ func NewRoleModel(conn sqlx.SqlConn, c cache.CacheConf) RoleModel {
 	}
 }
 
-func (m *roleModel) Index(in *RoleIndexReq) ([]*SysRoleInfo, int64, error) {
+func (m *roleModel) Index(in *RoleIndexFilter) ([]*SysRoleInfo, int64, error) {
 	var resp []*SysRoleInfo
 	page := def.PageInfo{}
 	copier.Copy(&page, in.Page)

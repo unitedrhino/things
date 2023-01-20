@@ -43,7 +43,7 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 		}
 	} else {
 		//获取完整菜单列表
-		mes, err := l.svcCtx.MenuModel.Index(&mysql.MenuIndexReq{
+		mes, err := l.svcCtx.MenuModel.Index(&mysql.MenuIndexFilter{
 			Role: in.Role,
 			Name: in.Name,
 			Path: in.Path,
