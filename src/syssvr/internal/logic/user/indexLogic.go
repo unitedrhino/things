@@ -29,7 +29,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 func (l *IndexLogic) Index(in *sys.UserIndexReq) (*sys.UserIndexResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 
-	ucs, total, err := l.svcCtx.UserModel.Index(&mysql.UserIndexReq{
+	ucs, total, err := l.svcCtx.UserModel.Index(&mysql.UserIndexFilter{
 		Page:     &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
 		UserName: in.UserName,
 		Phone:    in.Phone,

@@ -9,7 +9,7 @@ import (
 
 type (
 	MenuModel interface {
-		Index(in *MenuIndexReq) ([]*SysMenuInfo, error)
+		Index(in *MenuIndexFilter) ([]*SysMenuInfo, error)
 		DeleteMenu(MenuId int64) error
 		InsertMenuID(data *SysMenuInfo, RoleId int64) error
 	}
@@ -20,7 +20,7 @@ type (
 		roleMenu string
 	}
 
-	MenuIndexReq struct {
+	MenuIndexFilter struct {
 		Role int64
 		Name string
 		Path string
@@ -35,7 +35,7 @@ func NewMenuModel(conn sqlx.SqlConn, c cache.CacheConf) MenuModel {
 	}
 }
 
-func (m *menuModel) Index(in *MenuIndexReq) ([]*SysMenuInfo, error) {
+func (m *menuModel) Index(in *MenuIndexFilter) ([]*SysMenuInfo, error) {
 	var resp []*SysMenuInfo
 
 	//支持账号模糊匹配

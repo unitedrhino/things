@@ -27,7 +27,7 @@ func NewRoleIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleInd
 }
 
 func (l *RoleIndexLogic) RoleIndex(in *sys.RoleIndexReq) (*sys.RoleIndexResp, error) {
-	ros, total, err := l.svcCtx.RoleModel.Index(&mysql.RoleIndexReq{
+	ros, total, err := l.svcCtx.RoleModel.Index(&mysql.RoleIndexFilter{
 		Page:   &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
 		Name:   in.Name,
 		Status: in.Status,
