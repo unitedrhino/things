@@ -3,7 +3,6 @@ package mysql
 import (
 	"fmt"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/jinzhu/copier"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -13,7 +12,7 @@ import (
 
 type (
 	RoleModel interface {
-		Index(in *sys.RoleIndexReq) ([]*SysRoleInfo, int64, error)
+		Index(in *RoleIndexFilter) ([]*SysRoleInfo, int64, error)
 		IndexRoleIDMenuID(RoleId int64) ([]int64, error)
 		UpdateRoleIDMenuID(RoleId int64, MenuId []int64) error
 		DeleteRole(RoleId int64) error
@@ -23,6 +22,12 @@ type (
 		sqlc.CachedConn
 		roleInfo string
 		roleMenu string
+	}
+
+	RoleIndexFilter struct {
+		Page   *def.PageInfo
+		Name   string
+		Status int64
 	}
 )
 
@@ -34,31 +39,31 @@ func NewRoleModel(conn sqlx.SqlConn, c cache.CacheConf) RoleModel {
 	}
 }
 
-func (m *roleModel) Index(in *sys.RoleIndexReq) ([]*SysRoleInfo, int64, error) {
+func (m *roleModel) Index(in *RoleIndexFilter) ([]*SysRoleInfo, int64, error) {
 	var resp []*SysRoleInfo
 	page := def.PageInfo{}
 	copier.Copy(&page, in.Page)
 	//支持账号模糊匹配
-	sql_where := ""
+	sqlWhere := ""
 	if in.Name != "" || in.Status != 0 {
-		sql_where += " where "
+		sqlWhere += " where "
 		if in.Name != "" && in.Status != 0 {
-			sql_where += "name like '%" + in.Name + "%' and status=" + cast.ToString(in.Status)
+			sqlWhere += "name like '%" + in.Name + "%' and status=" + cast.ToString(in.Status)
 		} else if in.Name != "" && in.Status == 0 {
-			sql_where += "name like '%" + in.Name + "%'"
+			sqlWhere += "name like '%" + in.Name + "%'"
 		} else {
-			sql_where += "status=" + cast.ToString(in.Status)
+			sqlWhere += "status=" + cast.ToString(in.Status)
 		}
 	}
 
 	query := fmt.Sprintf("select %s from %s %s limit %d offset %d ",
-		sysRoleInfoRows, m.roleInfo, sql_where, page.GetLimit(), page.GetOffset())
+		sysRoleInfoRows, m.roleInfo, sqlWhere, page.GetLimit(), page.GetOffset())
 	err := m.CachedConn.QueryRowsNoCache(&resp, query)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	count := fmt.Sprintf("select count(1) from %s %s", m.roleInfo, sql_where)
+	count := fmt.Sprintf("select count(1) from %s %s", m.roleInfo, sqlWhere)
 	var total int64
 	err = m.CachedConn.QueryRowNoCache(&total, count)
 	if err != nil {
