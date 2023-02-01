@@ -18,8 +18,8 @@ import (
 var (
 	sysLoginLogFieldNames          = builder.RawFieldNames(&SysLoginLog{})
 	sysLoginLogRows                = strings.Join(sysLoginLogFieldNames, ",")
-	sysLoginLogRowsExpectAutoSet   = strings.Join(stringx.Remove(sysLoginLogFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
-	sysLoginLogRowsWithPlaceHolder = strings.Join(stringx.Remove(sysLoginLogFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
+	sysLoginLogRowsExpectAutoSet   = strings.Join(stringx.Remove(sysLoginLogFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	sysLoginLogRowsWithPlaceHolder = strings.Join(stringx.Remove(sysLoginLogFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
@@ -36,15 +36,16 @@ type (
 	}
 
 	SysLoginLog struct {
-		Id          int64     `db:"id"`          // 编号
-		Uid         int64     `db:"uid"`         // 用户id
-		UserName    string    `db:"userName"`    // 登录账号
-		IpAddr      string    `db:"ipAddr"`      // 登录IP地址
-		Browser     string    `db:"browser"`     // 浏览器类型
-		Os          string    `db:"os"`          // 操作系统
-		Code        int64     `db:"code"`        // 登录状态（200成功 其它失败）
-		Msg         string    `db:"msg"`         // 提示消息
-		CreatedTime time.Time `db:"createdTime"` // 登录时间
+		Id            int64     `db:"id"`            // 编号
+		Uid           int64     `db:"uid"`           // 用户id
+		UserName      string    `db:"userName"`      // 登录账号
+		IpAddr        string    `db:"ipAddr"`        // 登录IP地址
+		LoginLocation string    `db:"loginLocation"` // 登录地点
+		Browser       string    `db:"browser"`       // 浏览器类型
+		Os            string    `db:"os"`            // 操作系统
+		Code          int64     `db:"code"`          // 登录状态（200成功 其它失败）
+		Msg           string    `db:"msg"`           // 提示消息
+		CreatedTime   time.Time `db:"createdTime"`   // 登录时间
 	}
 )
 
@@ -76,14 +77,14 @@ func (m *defaultSysLoginLogModel) FindOne(ctx context.Context, id int64) (*SysLo
 }
 
 func (m *defaultSysLoginLogModel) Insert(ctx context.Context, data *SysLoginLog) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, sysLoginLogRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.IpAddr, data.Browser, data.Os, data.Code, data.Msg)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, sysLoginLogRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.IpAddr, data.LoginLocation, data.Browser, data.Os, data.Code, data.Msg)
 	return ret, err
 }
 
 func (m *defaultSysLoginLogModel) Update(ctx context.Context, data *SysLoginLog) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, sysLoginLogRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.IpAddr, data.Browser, data.Os, data.Code, data.Msg, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.IpAddr, data.LoginLocation, data.Browser, data.Os, data.Code, data.Msg, data.Id)
 	return err
 }
 

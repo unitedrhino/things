@@ -210,6 +210,7 @@ CREATE TABLE `sys_login_log` (
     `uid`         bigint       NOT NULL COMMENT '用户id',
     `userName` varchar(50) DEFAULT '' COMMENT '登录账号',
     `ipAddr` varchar(50) DEFAULT '' COMMENT '登录IP地址',
+    `loginLocation` varchar(100) DEFAULT '' COMMENT '登录地点',
     `browser` varchar(50) DEFAULT '' COMMENT '浏览器类型',
     `os` varchar(50) DEFAULT '' COMMENT '操作系统',
     `code` int(11) NOT NULL DEFAULT 200 COMMENT '登录状态（200成功 其它失败）',

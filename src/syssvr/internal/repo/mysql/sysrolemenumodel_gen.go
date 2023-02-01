@@ -18,8 +18,8 @@ import (
 var (
 	sysRoleMenuFieldNames          = builder.RawFieldNames(&SysRoleMenu{})
 	sysRoleMenuRows                = strings.Join(sysRoleMenuFieldNames, ",")
-	sysRoleMenuRowsExpectAutoSet   = strings.Join(stringx.Remove(sysRoleMenuFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), ",")
-	sysRoleMenuRowsWithPlaceHolder = strings.Join(stringx.Remove(sysRoleMenuFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), "=?,") + "=?"
+	sysRoleMenuRowsExpectAutoSet   = strings.Join(stringx.Remove(sysRoleMenuFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	sysRoleMenuRowsWithPlaceHolder = strings.Join(stringx.Remove(sysRoleMenuFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (

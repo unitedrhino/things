@@ -254,14 +254,15 @@ type SysLogLoginIndexReq struct {
 }
 
 type SysLogLoginIndexData struct {
-	UserName      string `json:"userName"`      // 登录账号
-	IpAddr        string `json:"ipAddr"`        // 登录IP地址
-	LoginLocation string `json:"loginLocation"` // 登录地点
-	Browser       string `json:"browser"`       // 浏览器类型
-	Os            string `json:"os"`            // 操作系统
-	Code          int64  `json:"code"`          // 登录状态（200成功 其它失败）
-	Msg           string `json:"msg"`           // 提示消息
-	CreatedTime   int64  `json:"createdTime"`   // 登录时间
+	Uid           int64  `json:"uid,string,optional"` // 用户id
+	UserName      string `json:"userName"`            // 登录账号
+	IpAddr        string `json:"ipAddr"`              // 登录IP地址
+	LoginLocation string `json:"loginLocation"`       // 登录地点
+	Browser       string `json:"browser"`             // 浏览器类型
+	Os            string `json:"os"`                  // 操作系统
+	Code          int64  `json:"code"`                // 登录状态（200成功 其它失败）
+	Msg           string `json:"msg"`                 // 提示消息
+	CreatedTime   int64  `json:"createdTime"`         // 登录时间
 }
 
 type SysLogLoginIndexResp struct {
@@ -277,17 +278,18 @@ type SysLogOperIndexReq struct {
 }
 
 type SysLogOperIndexData struct {
-	OperUserName string `json:"operUserName"` //操作人员名称
-	OperName     string `json:"operName"`     //操作名称
-	BusinessType int64  `json:"businessType"` //业务类型（1新增 2修改 3删除 4查询）
-	Uri          string `json:"uri"`          //请求地址
-	OperIpAddr   string `json:"operIpAddr"`   //操作主机地址
-	OperLocation string `json:"operLocation"` //操作地点
-	Req          string `json:"req"`          //请求参数
-	Resp         string `json:"resp"`         //返回参数
-	Code         int64  `json:"code"`         //登录状态（200成功 其它失败）
-	Msg          string `json:"msg"`          //提示消息
-	CreatedTime  int64  `json:"createdTime"`  //操作时间
+	Uid          int64  `json:"uid,string,optional"` // 用户id
+	OperUserName string `json:"operUserName"`        //操作人员名称
+	OperName     string `json:"operName"`            //操作名称
+	BusinessType int64  `json:"businessType"`        //业务类型（1新增 2修改 3删除 4查询）
+	Uri          string `json:"uri"`                 //请求地址
+	OperIpAddr   string `json:"operIpAddr"`          //操作主机地址
+	OperLocation string `json:"operLocation"`        //操作地点
+	Req          string `json:"req"`                 //请求参数
+	Resp         string `json:"resp"`                //返回参数
+	Code         int64  `json:"code"`                //登录状态（200成功 其它失败）
+	Msg          string `json:"msg"`                 //提示消息
+	CreatedTime  int64  `json:"createdTime"`         //操作时间
 }
 
 type SysLogOperIndexResp struct {
