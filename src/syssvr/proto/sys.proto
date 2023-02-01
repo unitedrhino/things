@@ -52,14 +52,15 @@ message LoginLogIndexReq{
 }
 
 message LoginLogIndexData {
-  string userName = 1;      // 登录账号
-  string ipAddr = 2;        // 登录IP地址
-  string loginLocation = 3; // 登录地点
-  int64 browser = 4;        // 浏览器类型
-  string os = 5;            // 操作系统
-  int64 code = 6;           // 登录状态（200成功 其它失败）
-  string msg = 7;           // 提示消息
-  int64  createdTime = 8;   // 登录时间
+  int64  uid = 1;           //用户id
+  string userName = 2;      // 登录账号
+  string ipAddr = 3;        // 登录IP地址
+  string loginLocation = 4; // 登录地点
+  int64 browser = 5;        // 浏览器类型
+  string os = 6;            // 操作系统
+  int64 code = 7;           // 登录状态（200成功 其它失败）
+  string msg = 8;           // 提示消息
+  int64  createdTime = 9;   // 登录时间
 }
 
 message LoginLogIndexResp{
@@ -75,17 +76,18 @@ message OperLogIndexReq{
 }
 
 message OperLogIndexData {
-    string operUserName = 1;       //操作人员名称
-    string operName = 2;           //操作名称
-    int64  businessType = 3;       //业务类型（1新增 2修改 3删除 4查询）
-    string uri = 4;                //请求地址
-    string operIpAddr = 5;         //操作主机地址
-    string operLocation = 6;       //操作地点
-    string req = 7;                //请求参数
-    string resp = 8;               //返回参数
-    int64  code = 9;               //登录状态（200成功 其它失败）
-    string msg = 10;               //提示消息
-    int64  createdTime = 11;       //操作时间
+    int64  uid = 1;                //用户id
+    string operUserName = 2;       //操作人员名称
+    string operName = 3;           //操作名称
+    int64  businessType = 4;       //业务类型（1新增 2修改 3删除 4查询）
+    string uri = 5;                //请求地址
+    string operIpAddr = 6;         //操作主机地址
+    string operLocation = 7;       //操作地点
+    string req = 8;                //请求参数
+    string resp = 9;               //返回参数
+    int64  code = 10;               //登录状态（200成功 其它失败）
+    string msg = 11;               //提示消息
+    int64  createdTime = 12;       //操作时间
 }
 
 message OperLogIndexResp{
