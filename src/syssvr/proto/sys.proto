@@ -32,6 +32,77 @@ service Common {
   rpc config(Response) returns(configResp); //添加菜单
 }
 
+service Log {
+  rpc loginLogIndex(LoginLogIndexReq) returns (LoginLogIndexResp); //获取登录日志列表
+  rpc operLogIndex(OperLogIndexReq) returns (OperLogIndexResp);    //获取操作日志列表
+  rpc loginLogCreate(LoginLogCreateReq) returns(Response);         //登录日志数据入库
+  rpc operLogCreate(OperLogCreateReq) returns(Response);           //操作日志数据入库
+}
+
+message DateRange{
+    string start = 1;
+    string end = 2;
+}
+
+message LoginLogIndexReq{
+  PageInfo page       = 1;  // 分页信息 只获取一个则不填
+  string ipAddr = 2;        // 登录IP地址
+  string loginLocation = 3; // 登录地点
+  DateRange date = 4;       // 时间范围
+}
+
+message LoginLogIndexData {
+  string userName = 1;      // 登录账号
+  string ipAddr = 2;        // 登录IP地址
+  string loginLocation = 3; // 登录地点
+  int64 browser = 4;        // 浏览器类型
+  string os = 5;            // 操作系统
+  int64 code = 6;           // 登录状态（200成功 其它失败）
+  string msg = 7;           // 提示消息
+  int64  createdTime = 8;   // 登录时间
+}
+
+message LoginLogIndexResp{
+  repeated LoginLogIndexData info = 1;
+  int64 total = 2; //总记录数
+}
+
+message OperLogIndexReq{
+  PageInfo page       = 1; //分页信息 只获取一个则不填
+  string operName     = 2; //按操作名称查找
+  string operUserName = 3; //按操作人员名称查找
+  int64 businessType  = 4; //按业务类型（1新增 2修改 3删除 4查询）查找
+}
+
+message OperLogIndexData {
+    string operUserName = 1;       //操作人员名称
+    string operName = 2;           //操作名称
+    int64  businessType = 3;       //业务类型（1新增 2修改 3删除 4查询）
+    string uri = 4;                //请求地址
+    string operIpAddr = 5;         //操作主机地址
+    string operLocation = 6;       //操作地点
+    string req = 7;                //请求参数
+    string resp = 8;               //返回参数
+    int64  code = 9;               //登录状态（200成功 其它失败）
+    string msg = 10;               //提示消息
+    int64  createdTime = 11;       //操作时间
+}
+
+message OperLogIndexResp{
+  repeated OperLogIndexData info = 1;
+  int64 total = 2; //总记录数
+}
+
+message LoginLogCreateReq{
+    LoginLogIndexData info = 1;
+}
+
+message OperLogCreateReq{
+    OperLogIndexData info = 1;
+}
+
+
+
 //用户属性信息
 message UserInfo{
   int64  uid = 1;

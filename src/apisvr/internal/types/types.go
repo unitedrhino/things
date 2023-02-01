@@ -147,6 +147,11 @@ type Point struct {
 	Latitude  float64 `json:"latitude,range=[0:90]"`   //纬度
 }
 
+type DateRange struct {
+	Start string `json:"start,optional "` //开始时间 格式：yyyy-mm-dd
+	End   string `json:"end,optional "`   //结束时间 格式：yyyy-mm-dd
+}
+
 type MenuCreateReq struct {
 	Name       string `json:"name"`                // 菜单名称
 	ParentID   int64  `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
@@ -239,6 +244,55 @@ type RoleDeleteReq struct {
 type RoleMenuUpdateReq struct {
 	ID     int64   `json:"id"`     //角色编号
 	MenuID []int64 `json:"menuID"` //菜单编号列表
+}
+
+type SysLogLoginIndexReq struct {
+	Page          PageInfo  `json:"page"`                    //分页信息,只获取一个则不填
+	IpAddr        string    `json:"ipAddr,optional "`        //按ip地址查找
+	LoginLocation string    `json:"loginLocation,optional "` //按登录地址查找
+	Date          DateRange `json:"date,optional "`          //按时间范围查找
+}
+
+type SysLogLoginIndexData struct {
+	UserName      string `json:"userName"`      // 登录账号
+	IpAddr        string `json:"ipAddr"`        // 登录IP地址
+	LoginLocation string `json:"loginLocation"` // 登录地点
+	Browser       string `json:"browser"`       // 浏览器类型
+	Os            string `json:"os"`            // 操作系统
+	Code          int64  `json:"code"`          // 登录状态（200成功 其它失败）
+	Msg           string `json:"msg"`           // 提示消息
+	CreatedTime   int64  `json:"createdTime"`   // 登录时间
+}
+
+type SysLogLoginIndexResp struct {
+	List  []*SysLogLoginIndexData `json:"list"`  //登录日志列表数据
+	Total int64                   `json:"total"` //登录日志列表总记录数
+}
+
+type SysLogOperIndexReq struct {
+	Page         PageInfo `json:"page"`                   //分页信息,只获取一个则不填
+	OperName     string   `json:"operName,optional "`     //按操作名称查找
+	OperUserName string   `json:"operUserName,optional "` //按操作人员名称查找
+	BusinessType int64    `json:"businessType,optional "` //按业务类型（1新增 2修改 3删除 4查询）查找
+}
+
+type SysLogOperIndexData struct {
+	OperUserName string `json:"operUserName"` //操作人员名称
+	OperName     string `json:"operName"`     //操作名称
+	BusinessType int64  `json:"businessType"` //业务类型（1新增 2修改 3删除 4查询）
+	Uri          string `json:"uri"`          //请求地址
+	OperIpAddr   string `json:"operIpAddr"`   //操作主机地址
+	OperLocation string `json:"operLocation"` //操作地点
+	Req          string `json:"req"`          //请求参数
+	Resp         string `json:"resp"`         //返回参数
+	Code         int64  `json:"code"`         //登录状态（200成功 其它失败）
+	Msg          string `json:"msg"`          //提示消息
+	CreatedTime  int64  `json:"createdTime"`  //操作时间
+}
+
+type SysLogOperIndexResp struct {
+	List  []*SysLogOperIndexData `json:"list"`  //操作日志列表数据
+	Total int64                  `json:"total"` //操作日志列表总记录数
 }
 
 type Map struct {

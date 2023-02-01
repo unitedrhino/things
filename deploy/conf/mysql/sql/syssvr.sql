@@ -204,4 +204,48 @@ VALUES (25, 4, 0, 7, '日志服务', '/operationsMonitorings/logService/index',
         './operationsMonitorings/logService/index.tsx', 'icon_system', '', '', 2, '2022-10-16 23:04:36',
         '2022-10-16 23:04:36', NULL);
 
+DROP TABLE IF EXISTS `sys_login_log`;
+CREATE TABLE `sys_login_log` (
+    `id` bigint auto_increment COMMENT '编号',
+    `uid`         bigint       NOT NULL COMMENT '用户id',
+    `userName` varchar(50) DEFAULT '' COMMENT '登录账号',
+    `ipAddr` varchar(50) DEFAULT '' COMMENT '登录IP地址',
+    `browser` varchar(50) DEFAULT '' COMMENT '浏览器类型',
+    `os` varchar(50) DEFAULT '' COMMENT '操作系统',
+    `code` int(11) NOT NULL DEFAULT 200 COMMENT '登录状态（200成功 其它失败）',
+    `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
+    `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登录时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT  COMMENT='登录日志管理';
 
+DROP TABLE IF EXISTS `sys_oper_log`;
+CREATE TABLE `sys_oper_log` (
+    `id` bigint auto_increment COMMENT '编号',
+    `operUid`         bigint       NOT NULL COMMENT '用户id',
+    `operUserName` varchar(50) DEFAULT '' COMMENT '操作人员名称',
+    `operName` varchar(50) DEFAULT '' COMMENT '操作名称',
+    `businessType` int(11) NOT NULL COMMENT '业务类型（1新增 2修改 3删除 4查询）',
+    `uri` varchar(100) DEFAULT '' COMMENT '请求地址',
+    `operIpAddr` varchar(50) DEFAULT '' COMMENT '主机地址',
+    `operLocation` varchar(255) DEFAULT '' COMMENT '操作地点',
+    `req` text COMMENT '请求参数',
+    `resp` text COMMENT '返回参数',
+    `code` int(11) NOT NULL DEFAULT 200 COMMENT '登录状态（200成功 其它失败）',
+    `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
+    `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT  COMMENT='操作日志管理';
+
+CREATE TABLE if not exists `sys_api`
+(
+    `id`              bigint auto_increment comment '编号',
+    `route`           varchar(100) NOT NULL DEFAULT '' comment '路由',
+    `method`          varchar(100) NOT NULL DEFAULT '' comment '请求方式',
+    `name`            varchar(100) NOT NULL DEFAULT '' comment '请求名称',
+    `desc`            varchar(100) NOT NULL DEFAULT '' comment '备注',
+    `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updatedTime` 	  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deletedTime` 	  datetime DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `routeIndex` (`route`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='接口管理';
