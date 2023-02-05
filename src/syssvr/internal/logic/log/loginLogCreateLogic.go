@@ -2,6 +2,8 @@ package loglogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -24,7 +26,18 @@ func NewLoginLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Lo
 }
 
 func (l *LoginLogCreateLogic) LoginLogCreate(in *sys.LoginLogCreateReq) (*sys.Response, error) {
-	// todo: add your logic here and delete this line
-
+	_, err := l.svcCtx.LogLoginModel.Insert(l.ctx, &mysql.SysLoginLog{
+		Uid:           in.Uid,
+		UserName:      in.UserName,
+		IpAddr:        in.IpAddr,
+		LoginLocation: in.LoginLocation,
+		Browser:       in.Browser,
+		Os:            in.Os,
+		Code:          in.Code,
+		Msg:           in.Msg,
+	})
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
 	return &sys.Response{}, nil
 }

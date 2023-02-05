@@ -2,6 +2,9 @@ package loglogic
 
 import (
 	"context"
+	"database/sql"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -24,7 +27,35 @@ func NewOperLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ope
 }
 
 func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Response, error) {
-	// todo: add your logic here and delete this line
+	//OperUserName: 用uid查用户表
+	//OperName:     用uri查接口表
+	//BusinessType: 用uri查接口表
+	resUser, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, in.Uid)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
 
+	resApi, err := l.svcCtx.SysApi.FindOneByRoute(l.ctx, in.Uri)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
+
+	_, err = l.svcCtx.LogOperModel.Insert(l.ctx, &mysql.SysOperLog{
+		OperUid:      in.Uid,
+		OperUserName: resUser.UserName.String,
+		OperName:     resApi.Name,
+		BusinessType: resApi.BusinessType,
+		Uri:          in.Uri,
+		OperIpAddr:   in.OperIpAddr,
+		OperLocation: in.OperLocation,
+		Req:          sql.NullString{String: in.Req},
+		Resp:         sql.NullString{String: in.Resp},
+		Code:         in.Code,
+		Msg:          in.Msg,
+	})
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
+	
 	return &sys.Response{}, nil
 }
