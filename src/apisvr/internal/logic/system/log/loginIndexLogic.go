@@ -2,6 +2,9 @@ package log
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/jinzhu/copier"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,7 +27,38 @@ func NewLoginIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginI
 }
 
 func (l *LoginIndexLogic) LoginIndex(req *types.SysLogLoginIndexReq) (resp *types.SysLogLoginIndexResp, err error) {
-	// todo: add your logic here and delete this line
+	l.Infof("%s req=%v", utils.FuncName(), req)
+	var page sys.PageInfo
+	copier.Copy(&page, req.Page)
+	info, err := l.svcCtx.LogRpc.LoginLogIndex(l.ctx, &sys.LoginLogIndexReq{
+		Page:          &page,
+		IpAddr:        req.IpAddr,
+		LoginLocation: req.LoginLocation,
+		Date:          &sys.DateRange{Start: req.Date.Start, End: req.Date.End},
+	})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	var total int64
+	total = info.Total
+
+	var logLoginInfo []*types.SysLogLoginIndexData
+	logLoginInfo = make([]*types.SysLogLoginIndexData, 0, len(logLoginInfo))
+
+	for _, i := range info.Info {
+		logLoginInfo = append(logLoginInfo, &types.SysLogLoginIndexData{
+			Uid:           i.Uid,
+			UserName:      i.UserName,
+			IpAddr:        i.IpAddr,
+			LoginLocation: i.LoginLocation,
+			Browser:       i.Browser,
+			Os:            i.Os,
+			Code:          i.Code,
+			Msg:           i.Msg,
+			CreatedTime:   i.CreatedTime,
+		})
+	}
+
+	return &types.SysLogLoginIndexResp{List: logLoginInfo, Total: total}, nil
 }

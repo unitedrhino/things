@@ -52,11 +52,11 @@ message LoginLogIndexReq{
 }
 
 message LoginLogIndexData {
-  int64  uid = 1;           //用户id
+  int64  uid = 1;           // 用户id
   string userName = 2;      // 登录账号
   string ipAddr = 3;        // 登录IP地址
   string loginLocation = 4; // 登录地点
-  int64 browser = 5;        // 浏览器类型
+  string browser = 5;       // 浏览器
   string os = 6;            // 操作系统
   int64 code = 7;           // 登录状态（200成功 其它失败）
   string msg = 8;           // 提示消息
@@ -96,14 +96,29 @@ message OperLogIndexResp{
 }
 
 message LoginLogCreateReq{
-    LoginLogIndexData info = 1;
+  int64  uid = 1;           // 用户id
+  string userName = 2;      // 登录账号
+  string ipAddr = 3;        // 登录IP地址
+  string loginLocation = 4; // 登录地点
+  string browser = 5;       // 浏览器
+  string os = 6;            // 操作系统
+  int64 code = 7;           // 登录状态（200成功 其它失败）
+  string msg = 8;           // 提示消息
 }
 
 message OperLogCreateReq{
-    OperLogIndexData info = 1;
+  int64  uid = 1;                //用户id
+  string operUserName = 2;       //操作人员名称
+  string operName = 3;           //操作名称
+  int64  businessType = 4;       //业务类型（1新增 2修改 3删除 4查询）
+  string uri = 5;                //请求地址
+  string operIpAddr = 6;         //操作主机地址
+  string operLocation = 7;       //操作地点
+  string req = 8;                //请求参数
+  string resp = 9;               //返回参数
+  int64  code = 10;               //登录状态（200成功 其它失败）
+  string msg = 11;               //提示消息
 }
-
-
 
 //用户属性信息
 message UserInfo{

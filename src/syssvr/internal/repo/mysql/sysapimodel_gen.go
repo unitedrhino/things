@@ -37,14 +37,15 @@ type (
 	}
 
 	SysApi struct {
-		Id          int64        `db:"id"`          // 编号
-		Route       string       `db:"route"`       // 路由
-		Method      string       `db:"method"`      // 请求方式
-		Name        string       `db:"name"`        // 请求名称
-		Desc        string       `db:"desc"`        // 备注
-		CreatedTime time.Time    `db:"createdTime"` // 创建时间
-		UpdatedTime time.Time    `db:"updatedTime"` // 更新时间
-		DeletedTime sql.NullTime `db:"deletedTime"`
+		Id           int64        `db:"id"`           // 编号
+		Route        string       `db:"route"`        // 路由
+		Method       string       `db:"method"`       // 请求方式
+		Name         string       `db:"name"`         // 请求名称
+		BusinessType int64        `db:"businessType"` // 业务类型（1新增 2修改 3删除 4查询）
+		Desc         string       `db:"desc"`         // 备注
+		CreatedTime  time.Time    `db:"createdTime"`  // 创建时间
+		UpdatedTime  time.Time    `db:"updatedTime"`  // 更新时间
+		DeletedTime  sql.NullTime `db:"deletedTime"`
 	}
 )
 
@@ -90,14 +91,14 @@ func (m *defaultSysApiModel) FindOneByRoute(ctx context.Context, route string) (
 }
 
 func (m *defaultSysApiModel) Insert(ctx context.Context, data *SysApi) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, sysApiRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Route, data.Method, data.Name, data.Desc)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, sysApiRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Route, data.Method, data.Name, data.BusinessType, data.Desc)
 	return ret, err
 }
 
 func (m *defaultSysApiModel) Update(ctx context.Context, newData *SysApi) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, sysApiRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.Route, newData.Method, newData.Name, newData.Desc, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.Route, newData.Method, newData.Name, newData.BusinessType, newData.Desc, newData.Id)
 	return err
 }
 
