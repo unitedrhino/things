@@ -243,6 +243,7 @@ CREATE TABLE if not exists `sys_api`
     `route`           varchar(100) NOT NULL DEFAULT '' comment '路由',
     `method`          varchar(100) NOT NULL DEFAULT '' comment '请求方式',
     `name`            varchar(100) NOT NULL DEFAULT '' comment '请求名称',
+    `businessType`    int(11) NOT NULL COMMENT '业务类型（1新增 2修改 3删除 4查询）',
     `desc`            varchar(100) NOT NULL DEFAULT '' comment '备注',
     `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` 	  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',

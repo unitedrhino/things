@@ -18,8 +18,8 @@ import (
 var (
 	sysLoginLogFieldNames          = builder.RawFieldNames(&SysLoginLog{})
 	sysLoginLogRows                = strings.Join(sysLoginLogFieldNames, ",")
-	sysLoginLogRowsExpectAutoSet   = strings.Join(stringx.Remove(sysLoginLogFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
-	sysLoginLogRowsWithPlaceHolder = strings.Join(stringx.Remove(sysLoginLogFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
+	sysLoginLogRowsExpectAutoSet   = strings.Join(stringx.Remove(sysLoginLogFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
+	sysLoginLogRowsWithPlaceHolder = strings.Join(stringx.Remove(sysLoginLogFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
 )
 
 type (

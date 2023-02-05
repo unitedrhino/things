@@ -19,6 +19,10 @@ type ServiceContext struct {
 	MenuModel     mysql.MenuModel
 	WxMiniProgram *weixin.MiniProgram
 	UserID        *utils.SnowFlake
+	LogLoginModel mysql.SysLoginLogModel
+	LogOperModel  mysql.SysOperLogModel
+	SysApi        mysql.SysApiModel
+	LogModel      mysql.LogModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
