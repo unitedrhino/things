@@ -115,6 +115,8 @@ INSERT INTO `sys_role_menu`
 VALUES (265, 1, 23, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
 INSERT INTO `sys_role_menu`
 VALUES (267, 1, 25, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT INTO `sys_role_menu`
+VALUES (268, 1, 35, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
 
 CREATE TABLE if not exists `sys_menu_info`
 (
@@ -202,6 +204,10 @@ VALUES (24, 2, 0, 3, '分组详情', '/deviceMangers/group/detail/:id', './devic
 INSERT INTO `sys_menu_info`
 VALUES (25, 4, 0, 7, '日志服务', '/operationsMonitorings/logService/index',
         './operationsMonitorings/logService/index.tsx', 'icon_system', '', '', 2, '2022-10-16 23:04:36',
+        '2022-10-16 23:04:36', NULL);
+INSERT INTO `sys_menu_info`
+VALUES (35, 1, 1, 1, '首页', '/home',
+        './home/index.tsx', 'icon_dosing', '', '', 2, '2022-10-16 23:04:36',
         '2022-10-16 23:04:36', NULL);
 
 
