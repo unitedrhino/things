@@ -40,7 +40,7 @@ type (
 	}
 )
 
-func NewRole1Model(conn sqlx.SqlConn) LogModel {
+func NewLogModel(conn sqlx.SqlConn) LogModel {
 	return &logModel{
 		SqlConn:  conn,
 		loginLog: "`sys_login_log`",
@@ -104,7 +104,7 @@ func (g *LoginLogFilter) FmtSqlLoginLog(sql sq.SelectBuilder) sq.SelectBuilder {
 	if g.LoginLocation != "" {
 		sql = sql.Where("`loginLocation` like ?", "%"+g.LoginLocation+"%")
 	}
-	if g.Data != nil {
+	if g.Data != nil && g.Data.Start != "" && g.Data.End != "" {
 		sql = sql.Where("`createdTime` >= ? and `createdTime` <= ?", g.Data.Start, g.Data.End)
 	}
 

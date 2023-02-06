@@ -104,6 +104,18 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		})
 		return nil, errors.System.AddDetail("register core rpc return nil")
 	}
+
+	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
+		Uid:           uResp.Info.Uid,
+		UserName:      uResp.Info.UserName,
+		IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
+		LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
+		Browser:       browser,
+		Os:            os,
+		Msg:           "登录成功",
+		Code:          200,
+	})
+
 	return &types.UserLoginResp{
 		Info: types.UserInfo{
 			Uid:         uResp.Info.Uid,
@@ -131,15 +143,5 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		},
 	}, nil
 
-	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-		Uid:           uResp.Info.Uid,
-		UserName:      uResp.Info.UserName,
-		IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
-		LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
-		Browser:       browser,
-		Os:            os,
-		Msg:           "登录成功",
-		Code:          2400,
-	})
 	return
 }

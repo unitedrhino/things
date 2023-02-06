@@ -30,6 +30,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	ui := mysql.NewSysUserInfoModel(conn)
 	ro := mysql.NewSysRoleInfoModel(conn)
 	me := mysql.NewSysMenuInfoModel(conn)
+	ll := mysql.NewSysLoginLogModel(conn)
+	lo := mysql.NewSysOperLogModel(conn)
+	l := mysql.NewLogModel(conn)
 	rom := mysql.NewRoleModel(conn, c.CacheRedis)
 	mem := mysql.NewMenuModel(conn, c.CacheRedis)
 	um := mysql.NewUserModel(conn, c.CacheRedis)
@@ -48,5 +51,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		MenuInfoModle: me,
 		WxMiniProgram: WxMiniProgram,
 		UserID:        UserID,
+		LogLoginModel: ll,
+		LogOperModel:  lo,
+		LogModel:      l,
 	}
 }

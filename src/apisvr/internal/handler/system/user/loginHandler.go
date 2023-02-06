@@ -1,8 +1,11 @@
 package user
 
 import (
+	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/result"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system/user"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -18,7 +21,12 @@ func LoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := user.NewLoginLogic(r.Context(), svcCtx)
+		strIP, _ := utils.GetIP(r)
+		c := context.WithValue(r.Context(), userHeader.UserUid, &userHeader.UserCtx{
+			IP: strIP,
+			Os: r.Header.Get("User-Agent"),
+		})
+		l := user.NewLoginLogic(c, svcCtx)
 		resp, err := l.Login(&req)
 		result.Http(w, r, resp, err)
 	}
