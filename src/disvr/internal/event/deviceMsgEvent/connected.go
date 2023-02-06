@@ -3,6 +3,7 @@ package deviceMsgEvent
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
@@ -10,6 +11,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
+	"github.com/i-Things/things/src/disvr/internal/domain/service/application"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -46,14 +48,29 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 		ResultType: errors.Fmt(err).GetCode(),
 	})
 	if err != nil {
-		l.Errorf("%s.LogRepo.insert productID:%v deviceName:%v err:%v",
+		l.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
+			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+	}
+	err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, application.ConnectMsg{
+		Device: devices.Core{
+			ProductID:  ld.ProductID,
+			DeviceName: ld.DeviceName,
+		},
+		Timestamp: msg.Timestamp.UnixMilli(),
+	})
+	if err != nil {
+		l.Errorf("%s.DeviceStatusConnected productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 	}
 	//更新对应设备的online状态
-	l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
+	_, err = l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
 		ProductID:  ld.ProductID,
 		DeviceName: ld.DeviceName,
 		IsOnline:   def.True,
 	})
+	if err != nil {
+		l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
+			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+	}
 	return nil
 }

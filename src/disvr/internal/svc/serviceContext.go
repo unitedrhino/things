@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
+	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/hubLogRepo"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/schemaDataRepo"
@@ -26,6 +27,7 @@ import (
 type ServiceContext struct {
 	Config        config.Config
 	PubDev        pubDev.PubDev
+	PubApp        pubApp.PubApp
 	SchemaMsgRepo msgThing.SchemaDataRepo
 	HubLogRepo    msgHubLog.HubLogRepo
 	SchemaRepo    schema.ReadRepo
@@ -51,6 +53,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("NewPubDev err", err)
 		os.Exit(-1)
 	}
+	pa, err := pubApp.NewPubApp(c.Event)
+	if err != nil {
+		logx.Error("NewPubApp err", err)
+		os.Exit(-1)
+	}
 	if c.DmRpc.Mode == conf.ClientModeGrpc {
 		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -70,6 +77,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	deviceData := schemaDataRepo.NewSchemaDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
 
 	return &ServiceContext{
+		PubApp:        pa,
 		Config:        c,
 		SchemaRepo:    tr,
 		PubDev:        pd,

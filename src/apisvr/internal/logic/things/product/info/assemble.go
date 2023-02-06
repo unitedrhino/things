@@ -2,6 +2,7 @@ package info
 
 import (
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
@@ -19,5 +20,6 @@ func productInfoToApi(v *dm.ProductInfo) *types.ProductInfo {
 		AutoRegister: v.AutoRegister,             //动态注册:0:关闭,1:打开,2:打开并自动创建设备
 		Secret:       v.Secret,                   //动态注册产品秘钥 只读
 		Desc:         utils.ToNullString(v.Desc), //描述
+		Tags:         logic.ToTagsType(v.Tags),
 	}
 }

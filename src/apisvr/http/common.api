@@ -16,4 +16,9 @@ type(
         Key string `json:"key"`
         Value string `json:"value"`
     }
+
+    Point struct{
+        Longitude float64 `json:"longitude,range=[0:180]"`                           //经度
+        Latitude  float64 `json:"latitude,range=[0:90]"`                            //纬度
+    }
 )

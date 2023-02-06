@@ -1,10 +1,15 @@
 syntax = "proto3";
 option go_package = "pb/dm";
 import "google/protobuf/wrappers.proto";
-import "proto/schemaInfo.proto";
+//import "proto/schemaInfo.proto";
 package dm;
 
-
+message Response {
+}
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+}
 
 //权限认证(提供给mqtt broker)
 service DeviceAuth{
@@ -35,6 +40,11 @@ service DeviceManage {
   rpc deviceGatewayIndex(DeviceGatewayIndexReq)     returns (DeviceGatewayIndexResp);
   //删除分组设备
   rpc deviceGatewayMultiDelete(DeviceGatewayMultiDeleteReq)     returns (Response);
+
+  //设备计数
+  rpc deviceInfoCount(DeviceInfoCountReq) returns (DeviceInfoCountResp);
+  //设备类型
+  rpc deviceTypeCount(DeviceTypeCountReq) returns (DeviceTypeCountResp);
 }
 
 //产品管理
@@ -93,15 +103,15 @@ service RemoteConfig {
 }
 
 message ProductRemoteConfig{
-    int64 id = 1;
-    string productID = 2;
-    string content = 3;
-    int64 createdTime = 4;
+  int64 id = 1;
+  string productID = 2;
+  string content = 3;
+  int64 createdTime = 4;
 }
 
 message RemoteConfigCreateReq{
-    string productID = 1;
-    string content = 2;
+  string productID = 1;
+  string content = 2;
 }
 
 message RemoteConfigIndexReq{
@@ -123,15 +133,11 @@ message RemoteConfigLastReadReq{
 }
 
 message RemoteConfigLastReadResp{
-    ProductRemoteConfig info = 1;
+  ProductRemoteConfig info = 1;
 }
 
-message PageInfo{
-  int64 page = 1;
-  int64 size = 2;
-}
-message Response {
-}
+
+
 
 message DeviceGatewayMultiCreateReq{
   string gatewayProductID = 1;
@@ -151,7 +157,7 @@ message DeviceGatewayIndexResp{
 }
 
 message DeviceGatewayMultiDeleteReq{
-  string gatewayProductID  = 1;
+  string gatewayProductID = 1;
   string gatewayDeviceName = 2;
   repeated DeviceCore list = 3;
 }
@@ -219,7 +225,10 @@ message GroupDeviceMultiDeleteReq{
   int64 groupID = 1;
   repeated DeviceCore list = 2;
 }
-
+message Point{
+  double  longitude = 1;//经度
+  double  latitude = 2;//纬度
+}
 message DeviceInfo{
   string   productID = 1; //产品id 只读
   string  deviceName = 3; //设备名称 读写
@@ -232,6 +241,8 @@ message DeviceInfo{
   string  cert = 10;// 设备证书  只读
   int64   isOnline = 11; //在线状态  1离线 2在线 只读
   map<string, string> tags = 12;//设备标签
+  google.protobuf.StringValue address = 13; // 所在地址 读写
+  Point Position = 14;   //设备定位,默认百度坐标系
 }
 
 message ProductInfo{
@@ -247,6 +258,7 @@ message ProductInfo{
   string   secret = 10;//动态注册产品秘钥 只读
   google.protobuf.StringValue   desc = 11;//描述
   google.protobuf.StringValue   devStatus = 12; // 产品状态
+  map<string, string> tags = 13; //产品标签
 }
 
 message ProductInfoDeleteReq{
@@ -264,6 +276,7 @@ message ProductInfoIndexReq{
   int64  deviceType = 2; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
   string  productName = 3; //过滤条件: 产品名称
   repeated string   productIDs = 4; //过滤产品id列表
+  map<string, string> tags = 5;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
 message ProductInfoIndexResp{
@@ -295,6 +308,8 @@ message DeviceInfoIndexReq{
   string  productID = 2; //过滤条件: 产品id
   string deviceName = 3;//过滤条件:模糊查询 设备名
   map<string, string> tags = 4;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+  int64 range = 5; //过滤条件:取距离坐标点固定范围内的设备
+  Point Position = 6;   //设备定位,默认百度坐标系
 }
 
 message DeviceInfoIndexResp{
@@ -381,9 +396,9 @@ message ProductSchemaInfo{
   google.protobuf.StringValue desc = 6;       //描述
   int64 required = 7;  //是否必须 1:是 2:否
   google.protobuf.StringValue affordance = 8;//各功能类型的详细参数定义
-//  SchemaAction action =8;
-//  SchemaProperty property =9;
-//  SchemaEvent event =10;
+  //  SchemaAction action =8;
+  //  SchemaProperty property =9;
+  //  SchemaEvent event =10;
 }
 
 message ProductSchemaTslImportReq{
@@ -399,5 +414,26 @@ message ProductSchemaTslReadResp{
   string   tsl = 1;//物模型tsl
 }
 
+message DeviceInfoCountReq {
+  int64  startTime = 1; // 查询区间 开始
+  int64  endTime = 2;   // 查询区间 结束
+}
 
+message DeviceTypeCountReq{
+  int64  startTime = 1; // 查询区间 开始
+  int64  endTime = 2;   // 查询区间 结束
+}
 
+message DeviceInfoCountResp{
+  int64 online = 1;
+  int64 offline = 2;
+  int64 inactive = 3;
+  int64 unknown = 4;
+}
+
+message DeviceTypeCountResp{
+  int64 device = 1;
+  int64 gateway = 2;
+  int64 subset = 3;
+  int64 unknown = 4;
+}

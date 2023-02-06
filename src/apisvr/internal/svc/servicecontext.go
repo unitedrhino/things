@@ -16,6 +16,7 @@ import (
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
 	remoteconfig "github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
+	common "github.com/i-Things/things/src/syssvr/client/common"
 	menu "github.com/i-Things/things/src/syssvr/client/menu"
 	role "github.com/i-Things/things/src/syssvr/client/role"
 	user "github.com/i-Things/things/src/syssvr/client/user"
@@ -41,6 +42,7 @@ type ServiceContext struct {
 	OSS            oss.OSSer
 	DeviceG        devicegroup.DeviceGroup
 	RemoteConfig   remoteconfig.RemoteConfig
+	Common         common.Common
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -52,6 +54,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceInteract deviceinteract.DeviceInteract
 		deviceG        devicegroup.DeviceGroup
 		remoteConfig   remoteconfig.RemoteConfig
+		sysCommon      common.Common
 	)
 	var ur user.User
 	var ro role.Role
@@ -64,12 +67,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
+			sysCommon = common.NewCommon(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else {
 			deviceM = dmdirect.NewDeviceManage()
 			productM = dmdirect.NewProductManage()
 			deviceA = dmdirect.NewDeviceAuth()
 			deviceG = dmdirect.NewDeviceGroup()
 			remoteConfig = dmdirect.NewRemoteConfig()
+			sysCommon = sysdirect.NewCommon()
 		}
 	}
 	if c.SysRpc.Enable {
@@ -110,7 +115,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
 		Config:         c,
-		CheckToken:     middleware.NewCheckTokenMiddleware(ur).Handle,
+		CheckToken:     middleware.NewCheckTokenMiddleware(c, ur).Handle,
 		UserRpc:        ur,
 		RoleRpc:        ro,
 		MenuRpc:        me,
@@ -122,6 +127,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceA:        deviceA,
 		DeviceG:        deviceG,
 		RemoteConfig:   remoteConfig,
+		Common:         sysCommon,
 		//OSS:        ossClient,
 	}
 }
