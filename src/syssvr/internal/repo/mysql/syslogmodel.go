@@ -63,7 +63,7 @@ func (g *OperLogFilter) FmtSqlOperLog(sql sq.SelectBuilder) sq.SelectBuilder {
 }
 
 func (m *logModel) GetOperLogCountByFilter(ctx context.Context, f OperLogFilter) (size int64, err error) {
-	sql := sq.Select("count(1)").From(m.loginLog)
+	sql := sq.Select("count(1)").From(m.operLog)
 	sql = f.FmtSqlOperLog(sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
@@ -81,7 +81,7 @@ func (m *logModel) GetOperLogCountByFilter(ctx context.Context, f OperLogFilter)
 
 func (m *logModel) FindOperLogByFilter(ctx context.Context, f OperLogFilter, page *def.PageInfo) ([]*SysOperLog, error) {
 	var resp []*SysOperLog
-	sql := sq.Select(sysLoginLogRows).From(m.loginLog).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+	sql := sq.Select(sysOperLogRows).From(m.operLog).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = f.FmtSqlOperLog(sql)
 
 	query, arg, err := sql.ToSql()
