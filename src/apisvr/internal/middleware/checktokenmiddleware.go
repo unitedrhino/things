@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"github.com/gogf/gf/v2/encoding/gcharset"
@@ -24,8 +25,8 @@ type CheckTokenMiddleware struct {
 	c       config.Config
 }
 
-func NewCheckTokenMiddleware(c config.Config, UserRpc user.User) *CheckTokenMiddleware {
-	return &CheckTokenMiddleware{UserRpc: UserRpc, c: c}
+func NewCheckTokenMiddleware(c config.Config, UserRpc user.User, LogRpc operLog.Log) *CheckTokenMiddleware {
+	return &CheckTokenMiddleware{UserRpc: UserRpc, c: c, LogRpc: LogRpc}
 }
 
 func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
@@ -42,11 +43,21 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		//	}
 		//	return
 		//}
+
+		re, _ := ioutil.ReadAll(r.Body)
+		fmt.Println(re)
+
 		userCtx, err := m.UserAuth(w, r)
 		if err == nil {
-			next(w, r.WithContext(userHeader.SetUserCtx(r.Context(), userCtx)))
-			if r.Response != nil {
-				m.OperationLogRecord(r)
+			userHeader.SetUserCtx(r.Context(), userCtx)
+			c := context.WithValue(r.Context(), userHeader.UserUid, userCtx)
+			r2 := r.WithContext(c)
+			r2.Response = r.Response
+			r2.Body = ioutil.NopCloser(bytes.NewReader(re))
+
+			next(w, r2)
+			if r2.Response != nil {
+				m.OperationLogRecord(r2, string(re))
 			}
 			return
 		}
@@ -126,27 +137,20 @@ func (m *CheckTokenMiddleware) GetCityByIp(ip string) string {
 }
 
 //操作日志记录
-func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request) error {
-	re, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return err
-	}
+func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) error {
 
 	res, err := ioutil.ReadAll(r.Response.Body)
 	if err != nil {
 		return err
 	}
 
-	var p []byte
-	r.Body.Read(p)
-	fmt.Println(p, p)
 	ipAddr := r.Host[0:strings.Index(r.Host, ":")]
 	_, err = m.LogRpc.OperLogCreate(r.Context(), &user.OperLogCreateReq{
-		//Uid:          userHeader.GetUserCtx(r.Context()).Uid,
+		Uid:          userHeader.GetUserCtx(r.Context()).Uid,
 		Uri:          r.RequestURI,
 		OperIpAddr:   ipAddr,
 		OperLocation: m.GetCityByIp(ipAddr),
-		Req:          string(re),
+		Req:          rsp,
 		Resp:         string(res),
 		Code:         int64(r.Response.StatusCode),
 		Msg:          r.Response.Status,
