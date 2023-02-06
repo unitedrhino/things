@@ -2,29 +2,10 @@ package device
 
 import (
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
-
-func ToTagsMap(tags []*types.DeviceTag) map[string]string {
-	if tags == nil {
-		return nil
-	}
-	tagMap := make(map[string]string, len(tags))
-	for _, tag := range tags {
-		tagMap[tag.Key] = tag.Value
-	}
-	return tagMap
-}
-func ToTagsType(tags map[string]string) (retTag []*types.DeviceTag) {
-	for k, v := range tags {
-		retTag = append(retTag, &types.DeviceTag{
-			Key:   k,
-			Value: v,
-		})
-	}
-	return
-}
 
 func DeviceInfoToApi(v *dm.DeviceInfo) *types.DeviceInfo {
 	return &types.DeviceInfo{
@@ -37,7 +18,9 @@ func DeviceInfoToApi(v *dm.DeviceInfo) *types.DeviceInfo {
 		Version:     utils.ToNullString(v.Version), // 固件版本  读写
 		LogLevel:    v.LogLevel,                    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 		Cert:        v.Cert,                        // 设备证书  只读
-		Tags:        ToTagsType(v.Tags),
+		Tags:        logic.ToTagsType(v.Tags),
 		IsOnline:    v.IsOnline, // 在线状态  1离线 2在线 只读
+		Address:     &v.Address.Value,
+		Position:    &types.Point{Longitude: v.Position.Longitude, Latitude: v.Position.Latitude},
 	}
 }

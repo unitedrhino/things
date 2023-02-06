@@ -1,7 +1,6 @@
 package apidirect
 
 import (
-	"fmt"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/handler"
 	"github.com/i-Things/things/src/apisvr/internal/handler/system/proxy"
@@ -42,11 +41,7 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 		)
 		apiCtx.Server = server
 	}
-	defer server.Stop()
 	handler.RegisterHandlers(server, ctx)
-	server.PrintRoutes()
-	fmt.Printf("Starting apiSvr at %s:%d...\n", c.Host, c.Port)
-
 	return apiCtx
 }
 func runDdSvr() {

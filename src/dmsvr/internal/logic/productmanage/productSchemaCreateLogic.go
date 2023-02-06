@@ -28,7 +28,7 @@ func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*mysql.ProductSchema, error) {
+func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*mysql.DmProductSchema, error) {
 	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {

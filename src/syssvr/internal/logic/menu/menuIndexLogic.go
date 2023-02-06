@@ -3,6 +3,7 @@ package menulogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -42,7 +43,11 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 		}
 	} else {
 		//获取完整菜单列表
-		mes, err := l.svcCtx.MenuModel.Index(in)
+		mes, err := l.svcCtx.MenuModel.Index(&mysql.MenuIndexFilter{
+			Role: in.Role,
+			Name: in.Name,
+			Path: in.Path,
+		})
 		if err != nil {
 			return nil, errors.Database.AddDetail(err)
 		}

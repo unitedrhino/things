@@ -16,11 +16,11 @@ const (
 )
 
 type SchemaRepo struct {
-	db    mysql.ProductSchemaModel
+	db    mysql.DmProductSchemaModel
 	cache *ristretto.Cache
 }
 
-func NewSchemaRepo(t mysql.ProductSchemaModel) schema.Repo {
+func NewSchemaRepo(t mysql.DmProductSchemaModel) schema.Repo {
 	cache, _ := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).

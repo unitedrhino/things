@@ -45,6 +45,15 @@ func ToRpcNullString(val *string) *wrappers.StringValue {
 	return nil
 }
 
+func ToRpcNullDouble(val *float64) *wrappers.DoubleValue {
+	if val != nil {
+		return &wrappers.DoubleValue{
+			Value: *val,
+		}
+	}
+	return nil
+}
+
 var empty = time.Time{}
 
 func TimeToInt64(t time.Time) int64 {

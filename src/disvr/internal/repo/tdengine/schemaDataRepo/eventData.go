@@ -20,7 +20,7 @@ func (d *SchemaDataRepo) InsertEventData(ctx context.Context, productID string,
 	sql := fmt.Sprintf(
 		"insert into %s using %s tags('%s','%s') (`ts`,`eventID`,`eventType`, `param`) values (?,?,?,?);",
 		d.GetEventTableName(productID, deviceName), d.GetEventStableName(), productID, deviceName)
-	if _, err := d.t.ExecContext(ctx, sql, event.TimeStamp, event.ID, event.Type, param); err != nil {
+	if _, err := d.t.ExecContext(ctx, sql, event.TimeStamp, event.Identifier, event.Type, param); err != nil {
 		return err
 	}
 	return nil

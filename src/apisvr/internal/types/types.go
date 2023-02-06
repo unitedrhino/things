@@ -142,6 +142,11 @@ type Tag struct {
 	Value string `json:"value"`
 }
 
+type Point struct {
+	Longitude float64 `json:"longitude,range=[0:180]"` //经度
+	Latitude  float64 `json:"latitude,range=[0:90]"`   //纬度
+}
+
 type MenuCreateReq struct {
 	Name       string `json:"name"`                // 菜单名称
 	ParentID   int64  `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
@@ -234,6 +239,15 @@ type RoleDeleteReq struct {
 type RoleMenuUpdateReq struct {
 	ID     int64   `json:"id"`     //角色编号
 	MenuID []int64 `json:"menuID"` //菜单编号列表
+}
+
+type Map struct {
+	Mode      string `json:"mode，options=baidu"` //坐标系 默认百度坐标系
+	AccessKey string `json:"accessKey"`          //设备地图key
+}
+
+type ConfigResp struct {
+	Map Map `json:"map"` //设备地图相关配置
 }
 
 type DeviceAuthLoginReq struct {
@@ -382,37 +396,38 @@ type DeviceGateWayMultiDeleteReq struct {
 	List              []*DeviceCore `json:"list,optional"`     //分组tag
 }
 
-type DeviceTag struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
 type DeviceInfo struct {
-	ProductID   string       `json:"productID"`                   //产品id 只读
-	DeviceName  string       `json:"deviceName"`                  //设备名称 读写
-	CreatedTime int64        `json:"createdTime,optional,string"` //创建时间 只读
-	Secret      string       `json:"secret,optional"`             //设备秘钥 只读
-	FirstLogin  int64        `json:"firstLogin,optional,string"`  //激活时间 只读
-	LastLogin   int64        `json:"lastLogin,optional,string"`   //最后上线时间 只读
-	Version     *string      `json:"version,optional"`            // 固件版本  读写
-	LogLevel    int64        `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Cert        string       `json:"cert,optional"`               // 设备证书  只读
-	Tags        []*DeviceTag `json:"tags,optional"`               // 设备tag
-	IsOnline    int64        `json:"isOnline,optional"`           // 在线状态  1离线 2在线 只读
+	ProductID   string  `json:"productID"`                   //产品id 只读
+	DeviceName  string  `json:"deviceName"`                  //设备名称 读写
+	CreatedTime int64   `json:"createdTime,optional,string"` //创建时间 只读
+	Secret      string  `json:"secret,optional"`             //设备秘钥 只读
+	FirstLogin  int64   `json:"firstLogin,optional,string"`  //激活时间 只读
+	LastLogin   int64   `json:"lastLogin,optional,string"`   //最后上线时间 只读
+	Version     *string `json:"version,optional"`            // 固件版本  读写
+	LogLevel    int64   `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Cert        string  `json:"cert,optional"`               // 设备证书  只读
+	Tags        []*Tag  `json:"tags,optional"`               // 设备tag
+	IsOnline    int64   `json:"isOnline,optional"`           // 在线状态  1离线 2在线 只读
+	Address     *string `json:"address,optional"`            //所在地址
+	Position    *Point  `json:"position,optional"`           //设备定位,默认百度坐标系
 }
 
 type DeviceInfoCreateReq struct {
-	ProductID  string       `json:"productID"`         //产品id 只读
-	DeviceName string       `json:"deviceName"`        //设备名称 读写
-	LogLevel   int64        `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Tags       []*DeviceTag `json:"tags,optional"`     // 设备tag
+	ProductID  string  `json:"productID"`         //产品id 只读
+	DeviceName string  `json:"deviceName"`        //设备名称 读写
+	LogLevel   int64   `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Address    *string `json:"address,optional"`  //所在地址
+	Position   *Point  `json:"position,optional"` //设备定位,默认百度坐标系
+	Tags       []*Tag  `json:"tags,optional"`     // 设备tag
 }
 
 type DeviceInfoUpdateReq struct {
-	ProductID  string       `json:"productID"`         //产品id 只读
-	DeviceName string       `json:"deviceName"`        //设备名称 读写
-	LogLevel   int64        `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Tags       []*DeviceTag `json:"tags,optional"`     // 设备tag
+	ProductID  string  `json:"productID"`         //产品id 只读
+	DeviceName string  `json:"deviceName"`        //设备名称 读写
+	LogLevel   int64   `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Address    *string `json:"address,optional"`  //所在地址
+	Position   *Point  `json:"position,optional"` //设备定位,默认百度坐标系
+	Tags       []*Tag  `json:"tags,optional"`     // 设备tag
 }
 
 type DeviceInfoDeleteReq struct {
@@ -426,10 +441,12 @@ type DeviceInfoReadReq struct {
 }
 
 type DeviceInfoIndexReq struct {
-	Page       *PageInfo    `json:"page,optional"`       //分页信息 只获取一个则不填
-	ProductID  string       `json:"productID,optional"`  //产品id 为空时获取所有产品
-	DeviceName string       `json:"deviceName,optional"` //过滤条件:模糊查询 设备名
-	Tags       []*DeviceTag `json:"tags,optional"`       // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+	Page       *PageInfo `json:"page,optional"`       //分页信息 只获取一个则不填
+	ProductID  string    `json:"productID,optional"`  //产品id 为空时获取所有产品
+	DeviceName string    `json:"deviceName,optional"` //过滤条件:模糊查询 设备名
+	Position   *Point    `json:"position,optional"`   //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
+	Range      int64     `json:"range,optional"`      //过滤条件:距离坐标点固定范围内的设备 单位：米
+	Tags       []*Tag    `json:"tags,optional"`       // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
 type DeviceInfoIndexResp struct {
@@ -441,6 +458,30 @@ type DeviceInfoIndexResp struct {
 type DeviceCore struct {
 	ProductID  string `json:"productID"`  //产品ID
 	DeviceName string `json:"deviceName"` //设备名称
+}
+
+type DeviceCountReq struct {
+	StartTime int64 `json:"startTime,optional" form:"startTime,optional"` //查询区间的开始时间（秒）
+	EndTime   int64 `json:"endTime,optional" form:"endTime,optional"`     //查询区间的结束时间（秒）
+}
+
+type DeviceInfoCount struct {
+	Online   int64 `json:"online"`   // 在线设备数
+	Offline  int64 `json:"offline"`  // 离线设备数
+	Inactive int64 `json:"inactive"` // 未激活设备数
+	Unknown  int64 `json:"unknown"`  // 未知设备数（all = 在线+离线+未激活+未知）
+}
+
+type DeviceTypeCount struct {
+	Device  int64 `json:"device"`  // 设备类型数
+	Gateway int64 `json:"gateway"` // 网关类型数
+	Subset  int64 `json:"subset"`  // 子设备类型数
+	Unknown int64 `json:"unknown"` // 未知设备类型
+}
+
+type DeviceCountResp struct {
+	DeviceInfoCount DeviceInfoCount `json:"deviceCount"`
+	DeviceTypeCount DeviceTypeCount `json:"deviceTypeCount"`
 }
 
 type DeviceInteractSendMsgReq struct {
@@ -489,6 +530,7 @@ type ProductInfo struct {
 	AutoRegister int64   `json:"autoRegister,optional"`       //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret       string  `json:"secret,optional"`             //动态注册产品秘钥 只读
 	Desc         *string `json:"desc,optional"`               //描述
+	Tags         []*Tag  `json:"tags,optional"`               // 产品tag
 }
 
 type ProductInfoReadReq struct {
@@ -504,6 +546,7 @@ type ProductInfoCreateReq struct {
 	DataProto    int64   `json:"dataProto,optional"`    //数据协议:1:自定义,2:数据模板
 	AutoRegister int64   `json:"autoRegister,optional"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Desc         *string `json:"desc,optional"`         //描述
+	Tags         []*Tag  `json:"tags,optional"`         // 产品tag
 }
 
 type ProductInfoUpdateReq struct {
@@ -516,6 +559,7 @@ type ProductInfoUpdateReq struct {
 	DataProto    int64   `json:"dataProto,optional"`    //数据协议:1:自定义,2:数据模板
 	AutoRegister int64   `json:"autoRegister,optional"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Desc         *string `json:"desc,optional"`         //描述
+	Tags         []*Tag  `json:"tags,optional"`         // 产品tag
 }
 
 type ProductInfoDeleteReq struct {
@@ -527,6 +571,7 @@ type ProductInfoIndexReq struct {
 	ProductName string    `json:"productName,optional"` //过滤产品名称
 	DeviceType  int64     `json:"deviceType,optional"`  //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
 	ProductIDs  []string  `json:"productIDs,optional"`  //过滤产品id列表
+	Tags        []*Tag    `json:"tags,optional"`        // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
 type ProductInfoIndexResp struct {
