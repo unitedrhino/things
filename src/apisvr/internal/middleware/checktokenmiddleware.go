@@ -31,22 +31,17 @@ func NewCheckTokenMiddleware(c config.Config, UserRpc user.User, LogRpc operLog.
 
 func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//err, isOpen := m.OpenAuth(w, r)
-		//if isOpen { //如果是开放请求
-		//	if err == nil {
-		//		next(w, r)
-		//		//if r.Response != nil {
-		//		//	m.OperationLogRecord(r)
-		//		//}
-		//	} else {
-		//		http.Error(w, err.Error(), http.StatusUnauthorized)
-		//	}
-		//	return
-		//}
+		err, isOpen := m.OpenAuth(w, r)
+		if isOpen { //如果是开放请求
+			if err == nil {
+				next(w, r)
+			} else {
+				http.Error(w, err.Error(), http.StatusUnauthorized)
+			}
+			return
+		}
 
 		re, _ := ioutil.ReadAll(r.Body)
-		fmt.Println(re)
-
 		userCtx, err := m.UserAuth(w, r)
 		if err == nil {
 			userHeader.SetUserCtx(r.Context(), userCtx)
@@ -54,7 +49,6 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			r2 := r.WithContext(c)
 			r2.Response = r.Response
 			r2.Body = ioutil.NopCloser(bytes.NewReader(re))
-
 			next(w, r2)
 			if r2.Response != nil {
 				m.OperationLogRecord(r2, string(re))
