@@ -78,6 +78,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, er)
+		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
 			Uid:           uResp.Info.Uid,
 			UserName:      uResp.Info.UserName,
@@ -92,6 +93,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	}
 	if uResp == nil {
 		l.Errorf("%s.rpc.Register return nil req=%v", utils.FuncName(), req)
+		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
 			Uid:           uResp.Info.Uid,
 			UserName:      uResp.Info.UserName,
@@ -104,7 +106,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		})
 		return nil, errors.System.AddDetail("register core rpc return nil")
 	}
-
+	//登录成功记录
 	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
 		Uid:           uResp.Info.Uid,
 		UserName:      uResp.Info.UserName,
