@@ -30,18 +30,18 @@ func NewCheckTokenMiddleware(c config.Config, UserRpc user.User) *CheckTokenMidd
 
 func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err, isOpen := m.OpenAuth(w, r)
-		if isOpen { //如果是开放请求
-			if err == nil {
-				next(w, r)
-				if r.Response != nil {
-					m.OperationLogRecord(r)
-				}
-			} else {
-				http.Error(w, err.Error(), http.StatusUnauthorized)
-			}
-			return
-		}
+		//err, isOpen := m.OpenAuth(w, r)
+		//if isOpen { //如果是开放请求
+		//	if err == nil {
+		//		next(w, r)
+		//		//if r.Response != nil {
+		//		//	m.OperationLogRecord(r)
+		//		//}
+		//	} else {
+		//		http.Error(w, err.Error(), http.StatusUnauthorized)
+		//	}
+		//	return
+		//}
 		userCtx, err := m.UserAuth(w, r)
 		if err == nil {
 			next(w, r.WithContext(userHeader.SetUserCtx(r.Context(), userCtx)))
@@ -138,11 +138,11 @@ func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request) error {
 	}
 
 	var p []byte
-	r.Response.Body.Read(p)
+	r.Body.Read(p)
 	fmt.Println(p, p)
 	ipAddr := r.Host[0:strings.Index(r.Host, ":")]
 	_, err = m.LogRpc.OperLogCreate(r.Context(), &user.OperLogCreateReq{
-		Uid:          userHeader.GetUserCtx(r.Context()).Uid,
+		//Uid:          userHeader.GetUserCtx(r.Context()).Uid,
 		Uri:          r.RequestURI,
 		OperIpAddr:   ipAddr,
 		OperLocation: m.GetCityByIp(ipAddr),
