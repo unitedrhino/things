@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	systemcommon "github.com/i-Things/things/src/apisvr/internal/handler/system/common"
 	systemmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/menu"
 	systemrole "github.com/i-Things/things/src/apisvr/internal/handler/system/role"
 	systemuser "github.com/i-Things/things/src/apisvr/internal/handler/system/user"
@@ -145,6 +146,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/config",
+				Handler: systemcommon.ConfigHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/system/common"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
 				Path:    "/login",
 				Handler: thingsdeviceauth.LoginHandler(serverCtx),
 			},
@@ -248,6 +260,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/read",
 					Handler: thingsdeviceinfo.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/count",
+					Handler: thingsdeviceinfo.CountHandler(serverCtx),
 				},
 			}...,
 		),

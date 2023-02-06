@@ -26,7 +26,7 @@ func NewRoleUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleUp
 }
 
 func (l *RoleUpdateLogic) RoleUpdate(in *sys.RoleUpdateReq) (*sys.Response, error) {
-	err := l.svcCtx.RoleInfoModle.Update(l.ctx, &mysql.RoleInfo{
+	err := l.svcCtx.RoleInfoModle.Update(l.ctx, &mysql.SysRoleInfo{
 		Id:     in.Id,
 		Name:   in.Name,
 		Remark: in.Remark,

@@ -19,9 +19,9 @@ import (
 
 type ServiceContext struct {
 	Config           config.Config
-	DeviceInfo       mysql.DeviceInfoModel
-	ProductInfo      mysql.ProductInfoModel
-	ProductSchema    mysql.ProductSchemaModel
+	DeviceInfo       mysql.DmDeviceInfoModel
+	ProductInfo      mysql.DmProductInfoModel
+	ProductSchema    mysql.DmProductSchemaModel
 	DeviceID         *utils.SnowFlake
 	ProductID        *utils.SnowFlake
 	DataUpdate       dataUpdate.DataUpdate
@@ -30,14 +30,14 @@ type ServiceContext struct {
 	HubLogRepo       deviceMsgManage.HubLogRepo
 	SchemaRepo       schema.Repo
 	SDKLogRepo       deviceMsgManage.SDKLogRepo
-	FirmwareInfo     mysql.ProductFirmwareModel
-	GroupInfo        mysql.GroupInfoModel
-	GroupDevice      mysql.GroupDeviceModel
+	FirmwareInfo     mysql.DmProductFirmwareModel
+	GroupInfo        mysql.DmGroupInfoModel
+	GroupDevice      mysql.DmGroupDeviceModel
 	GroupID          *utils.SnowFlake
-	GroupDB          mysql.GroupModel
-	Gateway          mysql.GatewayDeviceModel
-	RemoteConfigDB   mysql.RemoteConfigModel
-	RemoteConfigInfo mysql.ProductRemoteConfigModel
+	GroupDB          mysql.DmGroupModel
+	Gateway          mysql.DmGatewayDeviceModel
+	RemoteConfigDB   mysql.DmRemoteConfigModel
+	RemoteConfigInfo mysql.DmProductRemoteConfigModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -46,12 +46,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	//TestTD(td)
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
-	di := mysql.NewDeviceInfoModel(conn)
-	pi := mysql.NewProductInfoModel(conn)
-	pt := mysql.NewProductSchemaModel(conn)
+	di := mysql.NewDmDeviceInfoModel(conn)
+	pi := mysql.NewDmProductInfoModel(conn)
+	pt := mysql.NewDmProductSchemaModel(conn)
 	tr := cache.NewSchemaRepo(pt)
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
-	fr := mysql.NewProductFirmwareModel(conn)
+	fr := mysql.NewDmProductFirmwareModel(conn)
 	store := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	DeviceID := utils.NewSnowFlake(nodeId)
@@ -62,14 +62,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
 	}
-	gi := mysql.NewGroupInfoModel(conn)
-	gd := mysql.NewGroupDeviceModel(conn)
+	gi := mysql.NewDmGroupInfoModel(conn)
+	gd := mysql.NewDmGroupDeviceModel(conn)
 	GroupID := utils.NewSnowFlake(nodeId)
-	GroupDB := mysql.NewGroupModel(conn)
-	RemoteConfigDB := mysql.NewRemoteConfigModel(conn)
-	RemoteConfigInfo := mysql.NewProductRemoteConfigModel(conn)
-	mysql.NewProductRemoteConfigModel(conn)
-	gw := mysql.NewGatewayDeviceModel(conn)
+	GroupDB := mysql.NewDmGroupModel(conn)
+	RemoteConfigDB := mysql.NewDmRemoteConfigModel(conn)
+	RemoteConfigInfo := mysql.NewDmProductRemoteConfigModel(conn)
+	mysql.NewDmProductRemoteConfigModel(conn)
+	gw := mysql.NewDmGatewayDeviceModel(conn)
 	return &ServiceContext{
 		Config:           c,
 		DeviceInfo:       di,

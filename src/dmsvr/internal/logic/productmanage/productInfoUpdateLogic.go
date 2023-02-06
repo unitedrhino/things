@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -28,7 +29,13 @@ func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *ProductInfoUpdateLogic) UpdateProductInfo(old *mysql.ProductInfo, data *dm.ProductInfo) {
+func (l *ProductInfoUpdateLogic) UpdateProductInfo(old *mysql.DmProductInfo, data *dm.ProductInfo) {
+	if data.Tags != nil {
+		tags, err := json.Marshal(data.Tags)
+		if err == nil {
+			old.Tags = string(tags)
+		}
+	}
 	if data.ProductName != "" {
 		old.ProductName = data.ProductName
 	}

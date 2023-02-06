@@ -47,7 +47,7 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.R
 		sqlTags = "{}"
 	}
 
-	err = l.svcCtx.GroupInfo.Update(l.ctx, &mysql.GroupInfo{
+	err = l.svcCtx.GroupInfo.Update(l.ctx, &mysql.DmGroupInfo{
 		GroupID:   in.GroupID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,

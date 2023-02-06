@@ -41,7 +41,7 @@ func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, erro
 		in.HideInMenu = mi.HideInMenu
 	}
 
-	err = l.svcCtx.MenuInfoModle.Update(l.ctx, &mysql.MenuInfo{
+	err = l.svcCtx.MenuInfoModle.Update(l.ctx, &mysql.SysMenuInfo{
 		Id:            in.Id,
 		ParentID:      mi.ParentID,
 		Type:          in.Type,

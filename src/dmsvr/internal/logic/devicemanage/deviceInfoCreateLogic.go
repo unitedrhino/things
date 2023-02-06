@@ -3,6 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -10,7 +11,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/spf13/cast"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -78,10 +78,18 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 	if err != nil {
 		return nil, err
 	}
-	di := mysql.DeviceInfo{
+
+	position := "POINT(0 0)"
+	if in.Position != nil {
+		position = fmt.Sprintf("POINT(%s)",
+			cast.ToString(in.Position.Longitude)+" "+cast.ToString(in.Position.Latitude))
+	}
+
+	di := mysql.DmDeviceInfo{
 		ProductID:  in.ProductID,  // 产品id
 		DeviceName: in.DeviceName, // 设备名称
 		Secret:     utils.GetRandomBase64(20),
+		Position:   position,
 	}
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)
@@ -94,7 +102,10 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 	if in.LogLevel != def.Unknown {
 		di.LogLevel = def.LogClose
 	}
-	_, err = l.svcCtx.DeviceInfo.Insert(l.ctx, &di)
+	if in.Address != nil {
+		di.Address = in.Address.Value
+	}
+	err = l.svcCtx.DeviceInfo.InsertDeviceInfo(l.ctx, &di)
 	if err != nil {
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
 		return nil, errors.System.AddDetail(err)

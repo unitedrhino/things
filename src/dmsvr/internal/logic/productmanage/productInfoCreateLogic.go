@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/domain/schema"
@@ -46,9 +47,9 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 /*
 根据用户的输入生成对应的数据库数据
 */
-func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) *mysql.ProductInfo {
+func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) *mysql.DmProductInfo {
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
-	pi := &mysql.ProductInfo{
+	pi := &mysql.DmProductInfo{
 		ProductID:   deviceAuth.GetStrProductID(ProductID), // 产品id
 		ProductName: in.ProductName,                        // 产品名称
 		Desc:        in.Desc.GetValue(),
@@ -100,6 +101,14 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	if err != nil {
 		return nil, err
 	}
+	if in.Tags != nil {
+		tags, err := json.Marshal(in.Tags)
+		if err == nil {
+			pi.Tags = string(tags)
+		}
+	} else {
+		pi.Tags = "{}"
+	}
 	_, err = l.svcCtx.ProductInfo.Insert(l.ctx, pi)
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
@@ -107,7 +116,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	}
 	return &dm.Response{}, nil
 }
-func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.ProductInfo) error {
+func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.DmProductInfo) error {
 	t, _ := schema.NewSchemaTsl([]byte(schema.DefaultSchema))
 	if err := l.svcCtx.SchemaManaRepo.InitProduct(
 		l.ctx, t, pi.ProductID); err != nil {
