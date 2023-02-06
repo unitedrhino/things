@@ -27,14 +27,12 @@ func NewOperLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ope
 }
 
 func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Response, error) {
-	//OperUserName: 用uid查用户表
-	//OperName:     用uri查接口表
-	//BusinessType: 用uri查接口表
+	//OperUserName 用uid查用户表获得
 	resUser, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, in.Uid)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-
+	//OperName，BusinessType 用uri查接口管理表获得
 	resApi, err := l.svcCtx.SysApi.FindOneByRoute(l.ctx, in.Uri)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)

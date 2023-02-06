@@ -64,6 +64,4 @@ func (l *OperIndexLogic) OperIndex(req *types.SysLogOperIndexReq) (resp *types.S
 	}
 
 	return &types.SysLogOperIndexResp{List: logOperInfo, Total: total}, nil
-
-	return
 }
