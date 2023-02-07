@@ -20,7 +20,6 @@ func IndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := user.NewIndexLogic(r.Context(), svcCtx)
 		resp, err := l.Index(&req)
-		//r.Response.Write()
 		result.Http(w, r, resp, err)
 	}
 }
