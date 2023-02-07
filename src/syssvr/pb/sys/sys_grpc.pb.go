@@ -829,3 +829,197 @@ var Common_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/sys.proto",
 }
+
+// LogClient is the client API for Log service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type LogClient interface {
+	LoginLogIndex(ctx context.Context, in *LoginLogIndexReq, opts ...grpc.CallOption) (*LoginLogIndexResp, error)
+	OperLogIndex(ctx context.Context, in *OperLogIndexReq, opts ...grpc.CallOption) (*OperLogIndexResp, error)
+	LoginLogCreate(ctx context.Context, in *LoginLogCreateReq, opts ...grpc.CallOption) (*Response, error)
+	OperLogCreate(ctx context.Context, in *OperLogCreateReq, opts ...grpc.CallOption) (*Response, error)
+}
+
+type logClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewLogClient(cc grpc.ClientConnInterface) LogClient {
+	return &logClient{cc}
+}
+
+func (c *logClient) LoginLogIndex(ctx context.Context, in *LoginLogIndexReq, opts ...grpc.CallOption) (*LoginLogIndexResp, error) {
+	out := new(LoginLogIndexResp)
+	err := c.cc.Invoke(ctx, "/sys.Log/loginLogIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *logClient) OperLogIndex(ctx context.Context, in *OperLogIndexReq, opts ...grpc.CallOption) (*OperLogIndexResp, error) {
+	out := new(OperLogIndexResp)
+	err := c.cc.Invoke(ctx, "/sys.Log/operLogIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *logClient) LoginLogCreate(ctx context.Context, in *LoginLogCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Log/loginLogCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *logClient) OperLogCreate(ctx context.Context, in *OperLogCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Log/operLogCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// LogServer is the server API for Log service.
+// All implementations must embed UnimplementedLogServer
+// for forward compatibility
+type LogServer interface {
+	LoginLogIndex(context.Context, *LoginLogIndexReq) (*LoginLogIndexResp, error)
+	OperLogIndex(context.Context, *OperLogIndexReq) (*OperLogIndexResp, error)
+	LoginLogCreate(context.Context, *LoginLogCreateReq) (*Response, error)
+	OperLogCreate(context.Context, *OperLogCreateReq) (*Response, error)
+	mustEmbedUnimplementedLogServer()
+}
+
+// UnimplementedLogServer must be embedded to have forward compatible implementations.
+type UnimplementedLogServer struct {
+}
+
+func (UnimplementedLogServer) LoginLogIndex(context.Context, *LoginLogIndexReq) (*LoginLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginLogIndex not implemented")
+}
+func (UnimplementedLogServer) OperLogIndex(context.Context, *OperLogIndexReq) (*OperLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OperLogIndex not implemented")
+}
+func (UnimplementedLogServer) LoginLogCreate(context.Context, *LoginLogCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginLogCreate not implemented")
+}
+func (UnimplementedLogServer) OperLogCreate(context.Context, *OperLogCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OperLogCreate not implemented")
+}
+func (UnimplementedLogServer) mustEmbedUnimplementedLogServer() {}
+
+// UnsafeLogServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to LogServer will
+// result in compilation errors.
+type UnsafeLogServer interface {
+	mustEmbedUnimplementedLogServer()
+}
+
+func RegisterLogServer(s grpc.ServiceRegistrar, srv LogServer) {
+	s.RegisterService(&Log_ServiceDesc, srv)
+}
+
+func _Log_LoginLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginLogIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogServer).LoginLogIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Log/loginLogIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogServer).LoginLogIndex(ctx, req.(*LoginLogIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Log_OperLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OperLogIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogServer).OperLogIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Log/operLogIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogServer).OperLogIndex(ctx, req.(*OperLogIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Log_LoginLogCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginLogCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogServer).LoginLogCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Log/loginLogCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogServer).LoginLogCreate(ctx, req.(*LoginLogCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Log_OperLogCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OperLogCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogServer).OperLogCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Log/operLogCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogServer).OperLogCreate(ctx, req.(*OperLogCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Log_ServiceDesc is the grpc.ServiceDesc for Log service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Log_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.Log",
+	HandlerType: (*LogServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "loginLogIndex",
+			Handler:    _Log_LoginLogIndex_Handler,
+		},
+		{
+			MethodName: "operLogIndex",
+			Handler:    _Log_OperLogIndex_Handler,
+		},
+		{
+			MethodName: "loginLogCreate",
+			Handler:    _Log_LoginLogCreate_Handler,
+		},
+		{
+			MethodName: "operLogCreate",
+			Handler:    _Log_OperLogCreate_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}

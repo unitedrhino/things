@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	systemcommon "github.com/i-Things/things/src/apisvr/internal/handler/system/common"
+	systemlog "github.com/i-Things/things/src/apisvr/internal/handler/system/log"
 	systemmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/menu"
 	systemrole "github.com/i-Things/things/src/apisvr/internal/handler/system/role"
 	systemuser "github.com/i-Things/things/src/apisvr/internal/handler/system/user"
@@ -140,6 +141,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/system/role"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/login/index",
+					Handler: systemlog.LoginIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/oper/index",
+					Handler: systemlog.OperIndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/log"),
 	)
 
 	server.AddRoutes(

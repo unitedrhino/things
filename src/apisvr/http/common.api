@@ -21,4 +21,9 @@ type(
         Longitude float64 `json:"longitude,range=[0:180]"`                           //经度
         Latitude  float64 `json:"latitude,range=[0:90]"`                            //纬度
     }
+
+    DateRange struct{
+        Start string `json:"start,optional "`       //开始时间 格式：yyyy-mm-dd
+        End string `json:"end,optional "`           //结束时间 格式：yyyy-mm-dd
+    }
 )

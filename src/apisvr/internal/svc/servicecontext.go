@@ -17,6 +17,7 @@ import (
 	remoteconfig "github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	common "github.com/i-Things/things/src/syssvr/client/common"
+	log "github.com/i-Things/things/src/syssvr/client/log"
 	menu "github.com/i-Things/things/src/syssvr/client/menu"
 	role "github.com/i-Things/things/src/syssvr/client/role"
 	user "github.com/i-Things/things/src/syssvr/client/user"
@@ -43,6 +44,7 @@ type ServiceContext struct {
 	DeviceG        devicegroup.DeviceGroup
 	RemoteConfig   remoteconfig.RemoteConfig
 	Common         common.Common
+	LogRpc         log.Log
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -59,6 +61,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var ur user.User
 	var ro role.Role
 	var me menu.Menu
+	var lo log.Log
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc {
@@ -82,10 +85,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			ur = user.NewUser(zrpc.MustNewClient(c.SysRpc.Conf))
 			ro = role.NewRole(zrpc.MustNewClient(c.SysRpc.Conf))
 			me = menu.NewMenu(zrpc.MustNewClient(c.SysRpc.Conf))
+			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
 			ur = sysdirect.NewUser()
 			ro = sysdirect.NewRole()
 			me = sysdirect.NewMenu()
+			lo = sysdirect.NewLog()
 		}
 	}
 	if c.DiRpc.Enable {
@@ -115,7 +120,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
 		Config:         c,
-		CheckToken:     middleware.NewCheckTokenMiddleware(c, ur).Handle,
+		CheckToken:     middleware.NewCheckTokenMiddleware(c, ur, lo).Handle,
 		UserRpc:        ur,
 		RoleRpc:        ro,
 		MenuRpc:        me,
@@ -128,6 +133,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceG:        deviceG,
 		RemoteConfig:   remoteConfig,
 		Common:         sysCommon,
+		LogRpc:         lo,
 		//OSS:        ossClient,
 	}
 }
