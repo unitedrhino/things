@@ -28,7 +28,7 @@ type (
         Page PageInfo `json:"page"`                                 //分页信息,只获取一个则不填
         IpAddr string `json:"ipAddr,optional "`                     //按ip地址查找
         LoginLocation string `json:"loginLocation,optional "`       //按登录地址查找
-        Date DateRange `json:"date,optional "`                      //按时间范围查找
+        DateRange DateRange `json:"dateRange,optional "`            //按时间范围查找
 	}
 
     SysLogLoginIndexData {

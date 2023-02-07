@@ -34,7 +34,7 @@ func (l *LoginIndexLogic) LoginIndex(req *types.SysLogLoginIndexReq) (resp *type
 		Page:          &page,
 		IpAddr:        req.IpAddr,
 		LoginLocation: req.LoginLocation,
-		Date:          &sys.DateRange{Start: req.Date.Start, End: req.Date.End},
+		Date:          &sys.DateRange{Start: req.DateRange.Start, End: req.DateRange.End},
 	})
 	if err != nil {
 		return nil, err
