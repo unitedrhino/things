@@ -322,3 +322,7 @@ INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUE
 INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/index','POST','获取用户信息列表',4,'','用户管理');
 INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/resource-read','POST','获取用户资源',4,'','用户管理');
 INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/common/config','POST','获取系统配置',4,'','系统配置');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/create','POST','添加接口',1,'','接口管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/index','POST','获取接口列表',4,'','接口管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/update','POST','更新接口',2,'','接口管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/delete','POST','删除接口',3,'','接口管理');

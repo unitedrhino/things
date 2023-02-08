@@ -297,6 +297,48 @@ type SysLogOperIndexResp struct {
 	Total int64                  `json:"total"` //操作日志列表总记录数
 }
 
+type ApiCreateReq struct {
+	Route        string `json:"route"`        // 接口路由
+	Method       string `json:"method"`       // 接口请求方式: POST GET等
+	Group        string `json:"group"`        // 接口分组
+	Name         string `json:"name"`         // 接口名称
+	BusinessType int64  `json:"businessType"` // 业务类型（1新增 2修改 3删除 4查询 5其它）
+}
+
+type ApiIndexReq struct {
+	Page   PageInfo `json:"page"`   // 分页信息,只获取一个则不填
+	Route  string   `json:"route"`  // 接口路由
+	Method string   `json:"method"` // 接口请求方式(POST,  GET等)
+	Group  string   `json:"group"`  // 接口分组
+	Name   string   `json:"name"`   // 接口名称
+}
+
+type ApiIndexData struct {
+	ID           int64  `json:"id"`           // 接口编号
+	Route        string `json:"route"`        // 接口路由
+	Method       string `json:"method"`       // 接口请求方式: POST GET等
+	Group        string `json:"group"`        // 接口分组
+	Name         string `json:"name"`         // 接口名称
+	BusinessType int64  `json:"businessType"` // 业务类型（1新增 2修改 3删除 4查询 5其它)
+}
+
+type ApiIndexResp struct {
+	List  []*ApiIndexData `json:"list"`  // 接口列表数据
+	Total int64           `json:"total"` // 接口列表总记录数
+}
+
+type ApiUpdateReq struct {
+	ID     int64  `json:"id"`              // 接口编号
+	Route  string `json:"route,optional"`  // 接口路由
+	Method string `json:"method,optional"` // 接口请求方式: POST GET等
+	Group  string `json:"group,optional"`  // 接口分组
+	Name   string `json:"name,optional"`   // 接口名称
+}
+
+type ApiDeleteReq struct {
+	ID int64 `json:"id"` // 接口编号
+}
+
 type Map struct {
 	Mode      string `json:"mode，options=baidu"` //坐标系 默认百度坐标系
 	AccessKey string `json:"accessKey"`          //设备地图key
