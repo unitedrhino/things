@@ -61,68 +61,68 @@ type (
 	UserReadResp      = sys.UserReadResp
 	UserUpdateReq     = sys.UserUpdateReq
 
-	Menu interface {
-		MenuCreate(ctx context.Context, in *MenuCreateReq, opts ...grpc.CallOption) (*Response, error)
-		MenuIndex(ctx context.Context, in *MenuIndexReq, opts ...grpc.CallOption) (*MenuIndexResp, error)
-		MenuUpdate(ctx context.Context, in *MenuUpdateReq, opts ...grpc.CallOption) (*Response, error)
-		MenuDelete(ctx context.Context, in *MenuDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	Api interface {
+		ApiCreate(ctx context.Context, in *ApiCreateReq, opts ...grpc.CallOption) (*Response, error)
+		ApiIndex(ctx context.Context, in *ApiIndexReq, opts ...grpc.CallOption) (*ApiIndexResp, error)
+		ApiUpdate(ctx context.Context, in *ApiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		ApiDelete(ctx context.Context, in *ApiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	}
 
-	defaultMenu struct {
+	defaultApi struct {
 		cli zrpc.Client
 	}
 
-	directMenu struct {
+	directApi struct {
 		svcCtx *svc.ServiceContext
-		svr    sys.MenuServer
+		svr    sys.ApiServer
 	}
 )
 
-func NewMenu(cli zrpc.Client) Menu {
-	return &defaultMenu{
+func NewApi(cli zrpc.Client) Api {
+	return &defaultApi{
 		cli: cli,
 	}
 }
 
-func NewDirectMenu(svcCtx *svc.ServiceContext, svr sys.MenuServer) Menu {
-	return &directMenu{
+func NewDirectApi(svcCtx *svc.ServiceContext, svr sys.ApiServer) Api {
+	return &directApi{
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
 }
 
-func (m *defaultMenu) MenuCreate(ctx context.Context, in *MenuCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewMenuClient(m.cli.Conn())
-	return client.MenuCreate(ctx, in, opts...)
+func (m *defaultApi) ApiCreate(ctx context.Context, in *ApiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewApiClient(m.cli.Conn())
+	return client.ApiCreate(ctx, in, opts...)
 }
 
-func (d *directMenu) MenuCreate(ctx context.Context, in *MenuCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.MenuCreate(ctx, in)
+func (d *directApi) ApiCreate(ctx context.Context, in *ApiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ApiCreate(ctx, in)
 }
 
-func (m *defaultMenu) MenuIndex(ctx context.Context, in *MenuIndexReq, opts ...grpc.CallOption) (*MenuIndexResp, error) {
-	client := sys.NewMenuClient(m.cli.Conn())
-	return client.MenuIndex(ctx, in, opts...)
+func (m *defaultApi) ApiIndex(ctx context.Context, in *ApiIndexReq, opts ...grpc.CallOption) (*ApiIndexResp, error) {
+	client := sys.NewApiClient(m.cli.Conn())
+	return client.ApiIndex(ctx, in, opts...)
 }
 
-func (d *directMenu) MenuIndex(ctx context.Context, in *MenuIndexReq, opts ...grpc.CallOption) (*MenuIndexResp, error) {
-	return d.svr.MenuIndex(ctx, in)
+func (d *directApi) ApiIndex(ctx context.Context, in *ApiIndexReq, opts ...grpc.CallOption) (*ApiIndexResp, error) {
+	return d.svr.ApiIndex(ctx, in)
 }
 
-func (m *defaultMenu) MenuUpdate(ctx context.Context, in *MenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewMenuClient(m.cli.Conn())
-	return client.MenuUpdate(ctx, in, opts...)
+func (m *defaultApi) ApiUpdate(ctx context.Context, in *ApiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewApiClient(m.cli.Conn())
+	return client.ApiUpdate(ctx, in, opts...)
 }
 
-func (d *directMenu) MenuUpdate(ctx context.Context, in *MenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.MenuUpdate(ctx, in)
+func (d *directApi) ApiUpdate(ctx context.Context, in *ApiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ApiUpdate(ctx, in)
 }
 
-func (m *defaultMenu) MenuDelete(ctx context.Context, in *MenuDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewMenuClient(m.cli.Conn())
-	return client.MenuDelete(ctx, in, opts...)
+func (m *defaultApi) ApiDelete(ctx context.Context, in *ApiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewApiClient(m.cli.Conn())
+	return client.ApiDelete(ctx, in, opts...)
 }
 
-func (d *directMenu) MenuDelete(ctx context.Context, in *MenuDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.MenuDelete(ctx, in)
+func (d *directApi) ApiDelete(ctx context.Context, in *ApiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ApiDelete(ctx, in)
 }
