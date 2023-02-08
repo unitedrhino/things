@@ -21,8 +21,9 @@ type ServiceContext struct {
 	UserID        *utils.SnowFlake
 	LogLoginModel mysql.SysLoginLogModel
 	LogOperModel  mysql.SysOperLogModel
-	SysApi        mysql.SysApiModel
 	LogModel      mysql.LogModel
+	ApiModel      mysql.SysApiModel
+	ApiInfoModel  mysql.ApiModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -33,6 +34,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	ll := mysql.NewSysLoginLogModel(conn)
 	lo := mysql.NewSysOperLogModel(conn)
 	l := mysql.NewLogModel(conn)
+	ap := mysql.NewApiModel(conn)
 	api := mysql.NewSysApiModel(conn)
 	rom := mysql.NewRoleModel(conn, c.CacheRedis)
 	mem := mysql.NewMenuModel(conn, c.CacheRedis)
@@ -55,6 +57,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LogLoginModel: ll,
 		LogOperModel:  lo,
 		LogModel:      l,
-		SysApi:        api,
+		ApiModel:      api,
+		ApiInfoModel:  ap,
 	}
 }

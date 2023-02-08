@@ -16,6 +16,7 @@ import (
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
 	remoteconfig "github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
+	api "github.com/i-Things/things/src/syssvr/client/api"
 	common "github.com/i-Things/things/src/syssvr/client/common"
 	log "github.com/i-Things/things/src/syssvr/client/log"
 	menu "github.com/i-Things/things/src/syssvr/client/menu"
@@ -45,6 +46,7 @@ type ServiceContext struct {
 	RemoteConfig   remoteconfig.RemoteConfig
 	Common         common.Common
 	LogRpc         log.Log
+	ApiRpc         api.Api
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -62,6 +64,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var ro role.Role
 	var me menu.Menu
 	var lo log.Log
+	var ap api.Api
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc {
@@ -86,11 +89,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			ro = role.NewRole(zrpc.MustNewClient(c.SysRpc.Conf))
 			me = menu.NewMenu(zrpc.MustNewClient(c.SysRpc.Conf))
 			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
+			ap = api.NewApi(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
 			ur = sysdirect.NewUser()
 			ro = sysdirect.NewRole()
 			me = sysdirect.NewMenu()
 			lo = sysdirect.NewLog()
+			ap = sysdirect.NewApi()
 		}
 	}
 	if c.DiRpc.Enable {
@@ -134,6 +139,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		RemoteConfig:   remoteConfig,
 		Common:         sysCommon,
 		LogRpc:         lo,
+		ApiRpc:         ap,
 		//OSS:        ossClient,
 	}
 }
