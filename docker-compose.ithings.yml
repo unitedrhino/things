@@ -9,7 +9,7 @@ networks:
 
 services:
   ithings:
-    image: ithings/ithings:latest
+    image: i4de/ithings:latest
     container_name: ithings
     ports:
       - "7777:7777"
