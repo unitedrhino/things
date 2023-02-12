@@ -3,7 +3,6 @@ ARG GOPROXY=goproxy.cn
 ENV GOPROXY=https://${GOPROXY},direct
 WORKDIR /ithings/
 COPY ./go.mod ./go.mod
-COPY ./go.sum ./go.sum
 RUN go mod download
 COPY ./ ./
 RUN cd ./src/apisvr && go build .
