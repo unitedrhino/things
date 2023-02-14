@@ -274,6 +274,31 @@ type DeviceAuthRootCheckReq struct {
 	Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
 }
 
+type DeviceAuth5LoginReq struct {
+	Username    string `json:"username"`                       //用户名
+	Password    string `json:"password,optional"`              //密码
+	ClientID    string `json:"clientID"`                       //clientID
+	Ip          string `json:"ip"`                             //访问的ip地址
+	Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
+}
+
+type DeviceAuth5LoginResp struct {
+	Result      string `json:"result"`                //验证结果 "allow" | "deny" | "ignore"
+	IsSuperuser bool   `json:"is_superuser,optional"` //是否为超级用户，可选 true | false，该项为空时默认为 false
+}
+
+type DeviceAuth5AccessReq struct {
+	Username string `json:"username,omitempty"` //用户名
+	Topic    string `json:"topic,omitempty"`    //主题
+	ClientID string `json:"clientID,omitempty"` //clientID
+	Action   string `json:"action,omitempty"`   //操作
+	Ip       string `json:"ip,omitempty"`       //访问的ip地址
+}
+
+type DeviceAuth5AccessResp struct {
+	Result string `json:"result"` //验证结果 "allow" | "deny" | "ignore"
+}
+
 type DeviceMsgHubLogIndexReq struct {
 	DeviceName string    `json:"deviceName,omitempty"`                //设备名
 	ProductID  string    `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
