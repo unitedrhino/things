@@ -11,6 +11,9 @@ import (
 	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
 	deviceauth "github.com/i-Things/things/src/dmsvr/client/deviceauth"
+	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
+	"github.com/i-Things/things/src/rulesvr/ruledirect"
+
 	devicegroup "github.com/i-Things/things/src/dmsvr/client/devicegroup"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
@@ -26,10 +29,7 @@ import (
 	"time"
 )
 
-type ServiceContext struct {
-	Config         config.Config
-	CheckToken     rest.Middleware
-	DmManage       rest.Middleware
+type SvrClient struct {
 	UserRpc        user.User
 	RoleRpc        role.Role
 	MenuRpc        menu.Menu
@@ -38,11 +38,19 @@ type ServiceContext struct {
 	ProductM       productmanage.ProductManage
 	DeviceMsg      devicemsg.DeviceMsg
 	DeviceInteract deviceinteract.DeviceInteract
-	Captcha        *verify.Captcha
-	OSS            oss.OSSer
 	DeviceG        devicegroup.DeviceGroup
 	RemoteConfig   remoteconfig.RemoteConfig
 	Common         common.Common
+	Scene          scenelinkage.SceneLinkage
+}
+
+type ServiceContext struct {
+	SvrClient
+	Config     config.Config
+	CheckToken rest.Middleware
+	DmManage   rest.Middleware
+	Captcha    *verify.Captcha
+	OSS        oss.OSSer
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -55,6 +63,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceG        devicegroup.DeviceGroup
 		remoteConfig   remoteconfig.RemoteConfig
 		sysCommon      common.Common
+		scene          scenelinkage.SceneLinkage
 	)
 	var ur user.User
 	var ro role.Role
@@ -75,6 +84,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceG = dmdirect.NewDeviceGroup()
 			remoteConfig = dmdirect.NewRemoteConfig()
 			sysCommon = sysdirect.NewCommon()
+		}
+	}
+	if c.RuleRpc.Enable {
+		if c.RuleRpc.Mode == conf.ClientModeGrpc {
+			scene = scenelinkage.NewSceneLinkage(zrpc.MustNewClient(c.RuleRpc.Conf))
+		} else {
+			scene = ruledirect.NewSceneLinkage()
 		}
 	}
 	if c.SysRpc.Enable {
@@ -114,20 +130,23 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
-		Config:         c,
-		CheckToken:     middleware.NewCheckTokenMiddleware(c, ur).Handle,
-		UserRpc:        ur,
-		RoleRpc:        ro,
-		MenuRpc:        me,
-		ProductM:       productM,
-		DeviceM:        deviceM,
-		Captcha:        captcha,
-		DeviceInteract: deviceInteract,
-		DeviceMsg:      deviceMsg,
-		DeviceA:        deviceA,
-		DeviceG:        deviceG,
-		RemoteConfig:   remoteConfig,
-		Common:         sysCommon,
+		Config:     c,
+		CheckToken: middleware.NewCheckTokenMiddleware(c, ur).Handle,
+		SvrClient: SvrClient{
+			UserRpc:        ur,
+			RoleRpc:        ro,
+			MenuRpc:        me,
+			ProductM:       productM,
+			DeviceM:        deviceM,
+			DeviceInteract: deviceInteract,
+			DeviceMsg:      deviceMsg,
+			DeviceA:        deviceA,
+			DeviceG:        deviceG,
+			RemoteConfig:   remoteConfig,
+			Common:         sysCommon,
+			Scene:          scene,
+		},
+		Captcha: captcha,
 		//OSS:        ossClient,
 	}
 }
