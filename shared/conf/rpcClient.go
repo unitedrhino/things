@@ -13,6 +13,6 @@ type RpcClientConf struct {
 }
 
 type ModeConf struct {
-	Mode   string `json:",default=grpc,options=grpc|direct"`
+	Mode   string `json:",default=direct,options=grpc|direct"`
 	Enable bool
 }
