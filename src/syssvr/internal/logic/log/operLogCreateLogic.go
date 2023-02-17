@@ -33,7 +33,7 @@ func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Respo
 		return nil, errors.Database.AddDetail(err)
 	}
 	//OperName，BusinessType 用uri查接口管理表获得
-	resApi, err := l.svcCtx.SysApi.FindOneByRoute(l.ctx, in.Uri)
+	resApi, err := l.svcCtx.ApiModel.FindOneByRoute(l.ctx, in.Uri)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

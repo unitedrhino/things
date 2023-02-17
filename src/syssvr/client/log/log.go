@@ -14,6 +14,12 @@ import (
 )
 
 type (
+	ApiCreateReq      = sys.ApiCreateReq
+	ApiData           = sys.ApiData
+	ApiDeleteReq      = sys.ApiDeleteReq
+	ApiIndexReq       = sys.ApiIndexReq
+	ApiIndexResp      = sys.ApiIndexResp
+	ApiUpdateReq      = sys.ApiUpdateReq
 	CheckTokenReq     = sys.CheckTokenReq
 	CheckTokenResp    = sys.CheckTokenResp
 	ConfigResp        = sys.ConfigResp
