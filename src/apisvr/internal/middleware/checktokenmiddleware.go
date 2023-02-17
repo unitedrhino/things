@@ -154,7 +154,8 @@ func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) e
 		Msg:          r.Response.Status,
 	})
 	if err != nil {
-		return err
+		logx.WithContext(r.Context()).Errorf("%s.OperationLogRecord is error : %s",
+			utils.FuncName(), err.Error())
 	}
 	return nil
 }
