@@ -40,13 +40,13 @@ type (
 		OperUid      int64          `db:"operUid"`      // 用户id
 		OperUserName string         `db:"operUserName"` // 操作人员名称
 		OperName     string         `db:"operName"`     // 操作名称
-		BusinessType int64          `db:"businessType"` // 业务类型（1新增 2修改 3删除 4查询）
+		BusinessType int64          `db:"businessType"` // 业务类型（1新增 2修改 3删除 4查询 5其它）
 		Uri          string         `db:"uri"`          // 请求地址
 		OperIpAddr   string         `db:"operIpAddr"`   // 主机地址
 		OperLocation string         `db:"operLocation"` // 操作地点
 		Req          sql.NullString `db:"req"`          // 请求参数
 		Resp         sql.NullString `db:"resp"`         // 返回参数
-		Code         int64          `db:"code"`         // 登录状态（200成功 其它失败）
+		Code         int64          `db:"code"`         // 返回状态（200成功 其它失败）
 		Msg          string         `db:"msg"`          // 提示消息
 		CreatedTime  time.Time      `db:"createdTime"`  // 操作时间
 	}

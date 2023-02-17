@@ -138,10 +138,14 @@ func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) e
 		return err
 	}
 
+	uri := "https://"
+	if !strings.Contains(r.Proto, "HTTPS") {
+		uri = "http://"
+	}
 	ipAddr := r.Host[0:strings.Index(r.Host, ":")]
 	_, err = m.LogRpc.OperLogCreate(r.Context(), &user.OperLogCreateReq{
 		Uid:          userHeader.GetUserCtx(r.Context()).Uid,
-		Uri:          r.RequestURI,
+		Uri:          uri + r.Host + r.RequestURI,
 		OperIpAddr:   ipAddr,
 		OperLocation: m.GetCityByIp(ipAddr),
 		Req:          rsp,
@@ -150,7 +154,8 @@ func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) e
 		Msg:          r.Response.Status,
 	})
 	if err != nil {
-		return err
+		logx.WithContext(r.Context()).Errorf("%s.OperationLogRecord is error : %s",
+			utils.FuncName(), err.Error())
 	}
 	return nil
 }

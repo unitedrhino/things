@@ -690,7 +690,7 @@ type OperLogCreateReq struct {
 	OperLocation string `protobuf:"bytes,7,opt,name=operLocation,proto3" json:"operLocation,omitempty"`  //操作地点
 	Req          string `protobuf:"bytes,8,opt,name=req,proto3" json:"req,omitempty"`                    //请求参数
 	Resp         string `protobuf:"bytes,9,opt,name=resp,proto3" json:"resp,omitempty"`                  //返回参数
-	Code         int64  `protobuf:"varint,10,opt,name=code,proto3" json:"code,omitempty"`                //登录状态（200成功 其它失败）
+	Code         int64  `protobuf:"varint,10,opt,name=code,proto3" json:"code,omitempty"`                //返回状态（200成功 其它失败）
 	Msg          string `protobuf:"bytes,11,opt,name=msg,proto3" json:"msg,omitempty"`                   //提示消息
 }
 
@@ -3190,6 +3190,433 @@ func (x *ConfigResp) GetMap() *Map {
 	return nil
 }
 
+// 接口相关信息
+type ApiCreateReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Route        string `protobuf:"bytes,1,opt,name=route,proto3" json:"route,omitempty"`                // 接口路由
+	Method       string `protobuf:"bytes,2,opt,name=method,proto3" json:"method,omitempty"`              // 接口请求方式: POST GET
+	Group        string `protobuf:"bytes,3,opt,name=group,proto3" json:"group,omitempty"`                // 接口分组
+	Name         string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`                  // 接口名称
+	BusinessType int64  `protobuf:"varint,5,opt,name=businessType,proto3" json:"businessType,omitempty"` // 业务类型（1新增 2修改 3删除 4查询 5其它)
+}
+
+func (x *ApiCreateReq) Reset() {
+	*x = ApiCreateReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_sys_proto_msgTypes[40]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ApiCreateReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ApiCreateReq) ProtoMessage() {}
+
+func (x *ApiCreateReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_sys_proto_msgTypes[40]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ApiCreateReq.ProtoReflect.Descriptor instead.
+func (*ApiCreateReq) Descriptor() ([]byte, []int) {
+	return file_proto_sys_proto_rawDescGZIP(), []int{40}
+}
+
+func (x *ApiCreateReq) GetRoute() string {
+	if x != nil {
+		return x.Route
+	}
+	return ""
+}
+
+func (x *ApiCreateReq) GetMethod() string {
+	if x != nil {
+		return x.Method
+	}
+	return ""
+}
+
+func (x *ApiCreateReq) GetGroup() string {
+	if x != nil {
+		return x.Group
+	}
+	return ""
+}
+
+func (x *ApiCreateReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ApiCreateReq) GetBusinessType() int64 {
+	if x != nil {
+		return x.BusinessType
+	}
+	return 0
+}
+
+type ApiIndexReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page   *PageInfo `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`     // 分页信息
+	Route  string    `protobuf:"bytes,2,opt,name=route,proto3" json:"route,omitempty"`   // 接口路由
+	Method string    `protobuf:"bytes,3,opt,name=method,proto3" json:"method,omitempty"` // 接口请求方式: POST GET
+	Group  string    `protobuf:"bytes,4,opt,name=group,proto3" json:"group,omitempty"`   // 接口分组
+	Name   string    `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`     // 接口名称
+}
+
+func (x *ApiIndexReq) Reset() {
+	*x = ApiIndexReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_sys_proto_msgTypes[41]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ApiIndexReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ApiIndexReq) ProtoMessage() {}
+
+func (x *ApiIndexReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_sys_proto_msgTypes[41]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ApiIndexReq.ProtoReflect.Descriptor instead.
+func (*ApiIndexReq) Descriptor() ([]byte, []int) {
+	return file_proto_sys_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *ApiIndexReq) GetPage() *PageInfo {
+	if x != nil {
+		return x.Page
+	}
+	return nil
+}
+
+func (x *ApiIndexReq) GetRoute() string {
+	if x != nil {
+		return x.Route
+	}
+	return ""
+}
+
+func (x *ApiIndexReq) GetMethod() string {
+	if x != nil {
+		return x.Method
+	}
+	return ""
+}
+
+func (x *ApiIndexReq) GetGroup() string {
+	if x != nil {
+		return x.Group
+	}
+	return ""
+}
+
+func (x *ApiIndexReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type ApiData struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id           int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                     // 接口编号
+	Route        string `protobuf:"bytes,2,opt,name=route,proto3" json:"route,omitempty"`                // 接口路由
+	Method       string `protobuf:"bytes,3,opt,name=method,proto3" json:"method,omitempty"`              // 接口请求方式: POST GET
+	Group        string `protobuf:"bytes,4,opt,name=group,proto3" json:"group,omitempty"`                // 接口分组
+	Name         string `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`                  // 接口名称
+	BusinessType int64  `protobuf:"varint,6,opt,name=businessType,proto3" json:"businessType,omitempty"` // 业务类型（1新增 2修改 3删除 4查询 5其它)
+}
+
+func (x *ApiData) Reset() {
+	*x = ApiData{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_sys_proto_msgTypes[42]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ApiData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ApiData) ProtoMessage() {}
+
+func (x *ApiData) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_sys_proto_msgTypes[42]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ApiData.ProtoReflect.Descriptor instead.
+func (*ApiData) Descriptor() ([]byte, []int) {
+	return file_proto_sys_proto_rawDescGZIP(), []int{42}
+}
+
+func (x *ApiData) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ApiData) GetRoute() string {
+	if x != nil {
+		return x.Route
+	}
+	return ""
+}
+
+func (x *ApiData) GetMethod() string {
+	if x != nil {
+		return x.Method
+	}
+	return ""
+}
+
+func (x *ApiData) GetGroup() string {
+	if x != nil {
+		return x.Group
+	}
+	return ""
+}
+
+func (x *ApiData) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ApiData) GetBusinessType() int64 {
+	if x != nil {
+		return x.BusinessType
+	}
+	return 0
+}
+
+type ApiIndexResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	List  []*ApiData `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`    // 接口列表数据
+	Total int64      `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` // 接口列表总记录数
+}
+
+func (x *ApiIndexResp) Reset() {
+	*x = ApiIndexResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_sys_proto_msgTypes[43]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ApiIndexResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ApiIndexResp) ProtoMessage() {}
+
+func (x *ApiIndexResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_sys_proto_msgTypes[43]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ApiIndexResp.ProtoReflect.Descriptor instead.
+func (*ApiIndexResp) Descriptor() ([]byte, []int) {
+	return file_proto_sys_proto_rawDescGZIP(), []int{43}
+}
+
+func (x *ApiIndexResp) GetList() []*ApiData {
+	if x != nil {
+		return x.List
+	}
+	return nil
+}
+
+func (x *ApiIndexResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+type ApiUpdateReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id     int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`        // 接口编号
+	Route  string `protobuf:"bytes,2,opt,name=route,proto3" json:"route,omitempty"`   // 接口路由
+	Method string `protobuf:"bytes,3,opt,name=method,proto3" json:"method,omitempty"` // 接口请求方式: POST GET
+	Group  string `protobuf:"bytes,4,opt,name=group,proto3" json:"group,omitempty"`   // 接口分组
+	Name   string `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`     // 接口名称
+}
+
+func (x *ApiUpdateReq) Reset() {
+	*x = ApiUpdateReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_sys_proto_msgTypes[44]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ApiUpdateReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ApiUpdateReq) ProtoMessage() {}
+
+func (x *ApiUpdateReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_sys_proto_msgTypes[44]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ApiUpdateReq.ProtoReflect.Descriptor instead.
+func (*ApiUpdateReq) Descriptor() ([]byte, []int) {
+	return file_proto_sys_proto_rawDescGZIP(), []int{44}
+}
+
+func (x *ApiUpdateReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ApiUpdateReq) GetRoute() string {
+	if x != nil {
+		return x.Route
+	}
+	return ""
+}
+
+func (x *ApiUpdateReq) GetMethod() string {
+	if x != nil {
+		return x.Method
+	}
+	return ""
+}
+
+func (x *ApiUpdateReq) GetGroup() string {
+	if x != nil {
+		return x.Group
+	}
+	return ""
+}
+
+func (x *ApiUpdateReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type ApiDeleteReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"` // 接口编号
+}
+
+func (x *ApiDeleteReq) Reset() {
+	*x = ApiDeleteReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_sys_proto_msgTypes[45]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ApiDeleteReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ApiDeleteReq) ProtoMessage() {}
+
+func (x *ApiDeleteReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_sys_proto_msgTypes[45]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ApiDeleteReq.ProtoReflect.Descriptor instead.
+func (*ApiDeleteReq) Descriptor() ([]byte, []int) {
+	return file_proto_sys_proto_rawDescGZIP(), []int{45}
+}
+
+func (x *ApiDeleteReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 var File_proto_sys_proto protoreflect.FileDescriptor
 
 var file_proto_sys_proto_rawDesc = []byte{
@@ -3551,7 +3978,48 @@ var file_proto_sys_proto_rawDesc = []byte{
 	0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x4b, 0x65, 0x79, 0x22, 0x28, 0x0a,
 	0x0a, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x65, 0x73, 0x70, 0x12, 0x1a, 0x0a, 0x03, 0x6d,
 	0x61, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x4d,
-	0x61, 0x70, 0x52, 0x03, 0x6d, 0x61, 0x70, 0x32, 0xcf, 0x02, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72,
+	0x61, 0x70, 0x52, 0x03, 0x6d, 0x61, 0x70, 0x22, 0x8a, 0x01, 0x0a, 0x0c, 0x41, 0x70, 0x69, 0x43,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x12, 0x14, 0x0a, 0x05, 0x72, 0x6f, 0x75, 0x74,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x12, 0x16,
+	0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x12, 0x0a, 0x04,
+	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x12, 0x22, 0x0a, 0x0c, 0x62, 0x75, 0x73, 0x69, 0x6e, 0x65, 0x73, 0x73, 0x54, 0x79, 0x70, 0x65,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x62, 0x75, 0x73, 0x69, 0x6e, 0x65, 0x73, 0x73,
+	0x54, 0x79, 0x70, 0x65, 0x22, 0x88, 0x01, 0x0a, 0x0b, 0x41, 0x70, 0x69, 0x49, 0x6e, 0x64, 0x65,
+	0x78, 0x52, 0x65, 0x71, 0x12, 0x21, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66,
+	0x6f, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x72, 0x6f, 0x75, 0x74, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x12, 0x16, 0x0a,
+	0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d,
+	0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x6e,
+	0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22,
+	0x95, 0x01, 0x0a, 0x07, 0x41, 0x70, 0x69, 0x44, 0x61, 0x74, 0x61, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x72,
+	0x6f, 0x75, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x72, 0x6f, 0x75, 0x74,
+	0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x67, 0x72, 0x6f,
+	0x75, 0x70, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x12,
+	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
+	0x61, 0x6d, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x62, 0x75, 0x73, 0x69, 0x6e, 0x65, 0x73, 0x73, 0x54,
+	0x79, 0x70, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x62, 0x75, 0x73, 0x69, 0x6e,
+	0x65, 0x73, 0x73, 0x54, 0x79, 0x70, 0x65, 0x22, 0x46, 0x0a, 0x0c, 0x41, 0x70, 0x69, 0x49, 0x6e,
+	0x64, 0x65, 0x78, 0x52, 0x65, 0x73, 0x70, 0x12, 0x20, 0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x41, 0x70, 0x69, 0x44,
+	0x61, 0x74, 0x61, 0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74,
+	0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x22,
+	0x76, 0x0a, 0x0c, 0x41, 0x70, 0x69, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12,
+	0x14, 0x0a, 0x05, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x72, 0x6f, 0x75, 0x74, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x14, 0x0a,
+	0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x67, 0x72,
+	0x6f, 0x75, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x1e, 0x0a, 0x0c, 0x41, 0x70, 0x69, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x32, 0xcf, 0x02, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72,
 	0x12, 0x31, 0x0a, 0x06, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0x12, 0x2e, 0x73, 0x79, 0x73,
 	0x2e, 0x55, 0x73, 0x65, 0x72, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x13,
 	0x2e, 0x73, 0x79, 0x73, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52,
@@ -3620,8 +4088,21 @@ var file_proto_sys_proto_rawDesc = []byte{
 	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x35, 0x0a, 0x0d, 0x6f, 0x70, 0x65, 0x72, 0x4c, 0x6f, 0x67, 0x43,
 	0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0x15, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x4f, 0x70, 0x65, 0x72,
 	0x4c, 0x6f, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x0d, 0x2e, 0x73,
-	0x79, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x08, 0x5a, 0x06, 0x70,
-	0x62, 0x2f, 0x73, 0x79, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x79, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xc3, 0x01, 0x0a, 0x03,
+	0x41, 0x70, 0x69, 0x12, 0x2d, 0x0a, 0x09, 0x61, 0x70, 0x69, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x12, 0x11, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x41, 0x70, 0x69, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x52, 0x65, 0x71, 0x1a, 0x0d, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x2f, 0x0a, 0x08, 0x61, 0x70, 0x69, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x10,
+	0x2e, 0x73, 0x79, 0x73, 0x2e, 0x41, 0x70, 0x69, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x71,
+	0x1a, 0x11, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x41, 0x70, 0x69, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52,
+	0x65, 0x73, 0x70, 0x12, 0x2d, 0x0a, 0x09, 0x61, 0x70, 0x69, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x12, 0x11, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x41, 0x70, 0x69, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x52, 0x65, 0x71, 0x1a, 0x0d, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x2d, 0x0a, 0x09, 0x61, 0x70, 0x69, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x12,
+	0x11, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x41, 0x70, 0x69, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52,
+	0x65, 0x71, 0x1a, 0x0d, 0x2e, 0x73, 0x79, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x42, 0x08, 0x5a, 0x06, 0x70, 0x62, 0x2f, 0x73, 0x79, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3636,7 +4117,7 @@ func file_proto_sys_proto_rawDescGZIP() []byte {
 	return file_proto_sys_proto_rawDescData
 }
 
-var file_proto_sys_proto_msgTypes = make([]protoimpl.MessageInfo, 40)
+var file_proto_sys_proto_msgTypes = make([]protoimpl.MessageInfo, 46)
 var file_proto_sys_proto_goTypes = []interface{}{
 	(*DateRange)(nil),         // 0: sys.DateRange
 	(*LoginLogIndexReq)(nil),  // 1: sys.LoginLogIndexReq
@@ -3678,6 +4159,12 @@ var file_proto_sys_proto_goTypes = []interface{}{
 	(*MenuDeleteReq)(nil),     // 37: sys.MenuDeleteReq
 	(*Map)(nil),               // 38: sys.Map
 	(*ConfigResp)(nil),        // 39: sys.configResp
+	(*ApiCreateReq)(nil),      // 40: sys.ApiCreateReq
+	(*ApiIndexReq)(nil),       // 41: sys.ApiIndexReq
+	(*ApiData)(nil),           // 42: sys.ApiData
+	(*ApiIndexResp)(nil),      // 43: sys.ApiIndexResp
+	(*ApiUpdateReq)(nil),      // 44: sys.ApiUpdateReq
+	(*ApiDeleteReq)(nil),      // 45: sys.ApiDeleteReq
 }
 var file_proto_sys_proto_depIdxs = []int32{
 	14, // 0: sys.LoginLogIndexReq.page:type_name -> sys.PageInfo
@@ -3693,53 +4180,63 @@ var file_proto_sys_proto_depIdxs = []int32{
 	28, // 10: sys.RoleIndexResp.list:type_name -> sys.RoleIndexData
 	34, // 11: sys.MenuIndexResp.list:type_name -> sys.MenuData
 	38, // 12: sys.configResp.map:type_name -> sys.Map
-	10, // 13: sys.User.create:input_type -> sys.UserCreateReq
-	15, // 14: sys.User.index:input_type -> sys.UserIndexReq
-	17, // 15: sys.User.update:input_type -> sys.UserUpdateReq
-	18, // 16: sys.User.read:input_type -> sys.UserReadReq
-	20, // 17: sys.User.delete:input_type -> sys.UserDeleteReq
-	22, // 18: sys.User.login:input_type -> sys.LoginReq
-	12, // 19: sys.User.checkToken:input_type -> sys.CheckTokenReq
-	25, // 20: sys.Role.roleCreate:input_type -> sys.RoleCreateReq
-	26, // 21: sys.Role.roleIndex:input_type -> sys.RoleIndexReq
-	29, // 22: sys.Role.roleUpdate:input_type -> sys.RoleUpdateReq
-	30, // 23: sys.Role.roleDelete:input_type -> sys.RoleDeleteReq
-	31, // 24: sys.Role.roleMenuUpdate:input_type -> sys.RoleMenuUpdateReq
-	32, // 25: sys.Menu.menuCreate:input_type -> sys.MenuCreateReq
-	33, // 26: sys.Menu.menuIndex:input_type -> sys.MenuIndexReq
-	36, // 27: sys.Menu.menuUpdate:input_type -> sys.MenuUpdateReq
-	37, // 28: sys.Menu.menuDelete:input_type -> sys.MenuDeleteReq
-	24, // 29: sys.Common.config:input_type -> sys.Response
-	1,  // 30: sys.Log.loginLogIndex:input_type -> sys.LoginLogIndexReq
-	4,  // 31: sys.Log.operLogIndex:input_type -> sys.OperLogIndexReq
-	7,  // 32: sys.Log.loginLogCreate:input_type -> sys.LoginLogCreateReq
-	8,  // 33: sys.Log.operLogCreate:input_type -> sys.OperLogCreateReq
-	11, // 34: sys.User.create:output_type -> sys.UserCreateResp
-	16, // 35: sys.User.index:output_type -> sys.UserIndexResp
-	24, // 36: sys.User.update:output_type -> sys.Response
-	19, // 37: sys.User.read:output_type -> sys.UserReadResp
-	24, // 38: sys.User.delete:output_type -> sys.Response
-	23, // 39: sys.User.login:output_type -> sys.LoginResp
-	13, // 40: sys.User.checkToken:output_type -> sys.CheckTokenResp
-	24, // 41: sys.Role.roleCreate:output_type -> sys.Response
-	27, // 42: sys.Role.roleIndex:output_type -> sys.RoleIndexResp
-	24, // 43: sys.Role.roleUpdate:output_type -> sys.Response
-	24, // 44: sys.Role.roleDelete:output_type -> sys.Response
-	24, // 45: sys.Role.roleMenuUpdate:output_type -> sys.Response
-	24, // 46: sys.Menu.menuCreate:output_type -> sys.Response
-	35, // 47: sys.Menu.menuIndex:output_type -> sys.MenuIndexResp
-	24, // 48: sys.Menu.menuUpdate:output_type -> sys.Response
-	24, // 49: sys.Menu.menuDelete:output_type -> sys.Response
-	39, // 50: sys.Common.config:output_type -> sys.configResp
-	3,  // 51: sys.Log.loginLogIndex:output_type -> sys.LoginLogIndexResp
-	6,  // 52: sys.Log.operLogIndex:output_type -> sys.OperLogIndexResp
-	24, // 53: sys.Log.loginLogCreate:output_type -> sys.Response
-	24, // 54: sys.Log.operLogCreate:output_type -> sys.Response
-	34, // [34:55] is the sub-list for method output_type
-	13, // [13:34] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	14, // 13: sys.ApiIndexReq.page:type_name -> sys.PageInfo
+	42, // 14: sys.ApiIndexResp.list:type_name -> sys.ApiData
+	10, // 15: sys.User.create:input_type -> sys.UserCreateReq
+	15, // 16: sys.User.index:input_type -> sys.UserIndexReq
+	17, // 17: sys.User.update:input_type -> sys.UserUpdateReq
+	18, // 18: sys.User.read:input_type -> sys.UserReadReq
+	20, // 19: sys.User.delete:input_type -> sys.UserDeleteReq
+	22, // 20: sys.User.login:input_type -> sys.LoginReq
+	12, // 21: sys.User.checkToken:input_type -> sys.CheckTokenReq
+	25, // 22: sys.Role.roleCreate:input_type -> sys.RoleCreateReq
+	26, // 23: sys.Role.roleIndex:input_type -> sys.RoleIndexReq
+	29, // 24: sys.Role.roleUpdate:input_type -> sys.RoleUpdateReq
+	30, // 25: sys.Role.roleDelete:input_type -> sys.RoleDeleteReq
+	31, // 26: sys.Role.roleMenuUpdate:input_type -> sys.RoleMenuUpdateReq
+	32, // 27: sys.Menu.menuCreate:input_type -> sys.MenuCreateReq
+	33, // 28: sys.Menu.menuIndex:input_type -> sys.MenuIndexReq
+	36, // 29: sys.Menu.menuUpdate:input_type -> sys.MenuUpdateReq
+	37, // 30: sys.Menu.menuDelete:input_type -> sys.MenuDeleteReq
+	24, // 31: sys.Common.config:input_type -> sys.Response
+	1,  // 32: sys.Log.loginLogIndex:input_type -> sys.LoginLogIndexReq
+	4,  // 33: sys.Log.operLogIndex:input_type -> sys.OperLogIndexReq
+	7,  // 34: sys.Log.loginLogCreate:input_type -> sys.LoginLogCreateReq
+	8,  // 35: sys.Log.operLogCreate:input_type -> sys.OperLogCreateReq
+	40, // 36: sys.Api.apiCreate:input_type -> sys.ApiCreateReq
+	41, // 37: sys.Api.apiIndex:input_type -> sys.ApiIndexReq
+	44, // 38: sys.Api.apiUpdate:input_type -> sys.ApiUpdateReq
+	45, // 39: sys.Api.apiDelete:input_type -> sys.ApiDeleteReq
+	11, // 40: sys.User.create:output_type -> sys.UserCreateResp
+	16, // 41: sys.User.index:output_type -> sys.UserIndexResp
+	24, // 42: sys.User.update:output_type -> sys.Response
+	19, // 43: sys.User.read:output_type -> sys.UserReadResp
+	24, // 44: sys.User.delete:output_type -> sys.Response
+	23, // 45: sys.User.login:output_type -> sys.LoginResp
+	13, // 46: sys.User.checkToken:output_type -> sys.CheckTokenResp
+	24, // 47: sys.Role.roleCreate:output_type -> sys.Response
+	27, // 48: sys.Role.roleIndex:output_type -> sys.RoleIndexResp
+	24, // 49: sys.Role.roleUpdate:output_type -> sys.Response
+	24, // 50: sys.Role.roleDelete:output_type -> sys.Response
+	24, // 51: sys.Role.roleMenuUpdate:output_type -> sys.Response
+	24, // 52: sys.Menu.menuCreate:output_type -> sys.Response
+	35, // 53: sys.Menu.menuIndex:output_type -> sys.MenuIndexResp
+	24, // 54: sys.Menu.menuUpdate:output_type -> sys.Response
+	24, // 55: sys.Menu.menuDelete:output_type -> sys.Response
+	39, // 56: sys.Common.config:output_type -> sys.configResp
+	3,  // 57: sys.Log.loginLogIndex:output_type -> sys.LoginLogIndexResp
+	6,  // 58: sys.Log.operLogIndex:output_type -> sys.OperLogIndexResp
+	24, // 59: sys.Log.loginLogCreate:output_type -> sys.Response
+	24, // 60: sys.Log.operLogCreate:output_type -> sys.Response
+	24, // 61: sys.Api.apiCreate:output_type -> sys.Response
+	43, // 62: sys.Api.apiIndex:output_type -> sys.ApiIndexResp
+	24, // 63: sys.Api.apiUpdate:output_type -> sys.Response
+	24, // 64: sys.Api.apiDelete:output_type -> sys.Response
+	40, // [40:65] is the sub-list for method output_type
+	15, // [15:40] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_proto_sys_proto_init() }
@@ -4228,6 +4725,78 @@ func file_proto_sys_proto_init() {
 				return nil
 			}
 		}
+		file_proto_sys_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ApiCreateReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_sys_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ApiIndexReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_sys_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ApiData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_sys_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ApiIndexResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_sys_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ApiUpdateReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_sys_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ApiDeleteReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -4235,9 +4804,9 @@ func file_proto_sys_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_sys_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   40,
+			NumMessages:   46,
 			NumExtensions: 0,
-			NumServices:   5,
+			NumServices:   6,
 		},
 		GoTypes:           file_proto_sys_proto_goTypes,
 		DependencyIndexes: file_proto_sys_proto_depIdxs,

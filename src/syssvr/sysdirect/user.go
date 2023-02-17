@@ -14,6 +14,9 @@ import (
 
 	clientCommon "github.com/i-Things/things/src/syssvr/client/common"
 	serverCommon "github.com/i-Things/things/src/syssvr/internal/server/common"
+
+	clientApi "github.com/i-Things/things/src/syssvr/client/api"
+	serverApi "github.com/i-Things/things/src/syssvr/internal/server/api"
 )
 
 func NewUser() client.User {
@@ -41,3 +44,7 @@ func NewLog() clientLog.Log {
 	return clientLog.NewDirectLog(userSvc, serverLog.NewLogServer(userSvc))
 }
 
+func NewApi() clientApi.Api {
+	userSvc := GetCtxSvc()
+	return clientApi.NewDirectApi(userSvc, serverApi.NewApiServer(userSvc))
+}
