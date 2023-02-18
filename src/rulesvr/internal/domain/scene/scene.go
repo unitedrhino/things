@@ -1,11 +1,12 @@
 package scene
 
 import (
-	"github.com/i-Things/things/shared/errors"
+	"context"
+	"github.com/i-Things/things/shared/def"
 	"time"
 )
 
-type InfoDo struct {
+type Info struct {
 	ID          int64     `json:"id"`
 	Name        string    `json:"name"`
 	Desc        string    `json:"desc"`
@@ -24,9 +25,14 @@ type CreateInfoDto struct {
 	Action      Action    `json:"action"`
 }
 
-func NewInfo(dto CreateInfoDto) (*InfoDo, error) {
-	if dto.Name == "" {
-		return nil, errors.Parameter.AddMsg("场景名不能为空")
-	}
-	return nil, nil
+type InfoFilter struct {
+}
+
+type Repo interface {
+	Insert(ctx context.Context, info *Info) error
+	Update(ctx context.Context, info *Info) error
+	Delete(ctx context.Context, id int64) error
+	FindOne(ctx context.Context, id int64) (*Info, error)
+	FindByFilter(ctx context.Context, filter InfoFilter, page *def.PageInfo) ([]*Info, error)
+	CountByFilter(ctx context.Context, filter InfoFilter) (size int64, err error)
 }

@@ -24,7 +24,6 @@ func NewSceneInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 }
 
 func (l *SceneInfoDeleteLogic) SceneInfoDelete(in *rule.SceneInfoDeleteReq) (*rule.Response, error) {
-	// todo: add your logic here and delete this line
-
-	return &rule.Response{}, nil
+	err := l.svcCtx.SceneRepo.Delete(l.ctx, in.Id)
+	return &rule.Response{}, err
 }

@@ -2,6 +2,8 @@ package scenelinkagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -24,7 +26,12 @@ func NewSceneInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sce
 }
 
 func (l *SceneInfoReadLogic) SceneInfoRead(in *rule.SceneInfoReadReq) (*rule.SceneInfo, error) {
-	// todo: add your logic here and delete this line
-
-	return &rule.SceneInfo{}, nil
+	pi, err := l.svcCtx.SceneRepo.FindOne(l.ctx, in.Id)
+	if err != nil {
+		if err == mysql.ErrNotFound {
+			return nil, errors.NotFind
+		}
+		return nil, err
+	}
+	return ToScenePb(pi), nil
 }

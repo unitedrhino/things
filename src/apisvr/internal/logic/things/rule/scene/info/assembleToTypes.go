@@ -28,6 +28,9 @@ func ToSceneActionsTypes(in []*rule.SceneAction) []*types.SceneAction {
 }
 
 func ToSceneActionTypes(in *rule.SceneAction) *types.SceneAction {
+	if in == nil {
+		return nil
+	}
 	return &types.SceneAction{Executor: in.Executor}
 }
 
@@ -38,6 +41,9 @@ func ToSceneActionDelayTypes(in *rule.SceneActionDelay) *types.SceneActionDelay 
 	}
 }
 func ToSceneActionAlarmTypes(in *rule.SceneActionAlarm) *types.SceneActionAlarm {
+	if in == nil {
+		return nil
+	}
 	return &types.SceneActionAlarm{Mode: in.Mode}
 }
 
@@ -53,6 +59,9 @@ func ToSceneTermsTypes(in []*rule.SceneTerm) []*types.SceneTerm {
 }
 
 func ToSceneTermTypes(in *rule.SceneTerm) *types.SceneTerm {
+	if in == nil {
+		return nil
+	}
 	return &types.SceneTerm{
 		Column:   in.Column,
 		Value:    in.Value,
@@ -63,9 +72,15 @@ func ToSceneTermTypes(in *rule.SceneTerm) *types.SceneTerm {
 }
 
 func ToSceneTriggerTypes(in *rule.SceneTrigger) *types.SceneTrigger {
+	if in == nil {
+		return nil
+	}
 	return &types.SceneTrigger{Type: in.Type, Device: ToSceneTriggerDeviceTypes(in.Device)}
 }
 func ToSceneTriggerDeviceTypes(in *rule.SceneTriggerDevice) *types.SceneTriggerDevice {
+	if in == nil {
+		return nil
+	}
 	return &types.SceneTriggerDevice{
 		ProductID:      in.ProductID,
 		Selector:       in.Selector,

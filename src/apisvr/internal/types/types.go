@@ -794,9 +794,9 @@ type SceneInfoIndexResp struct {
 }
 
 type SceneInfo struct {
-	ID          int64          `json:"id"`
-	Name        string         `json:"name"`
-	Desc        string         `json:"desc"`
+	ID          int64          `json:"id,optional"`
+	Name        string         `json:"name,optional"`
+	Desc        string         `json:"desc,optional"`
 	CreatedTime int64          `json:"createdTime,optional"`
 	Trigger     *SceneTrigger  `json:"trigger,optional"`
 	When        []*SceneTerm   `json:"when,optional"`
