@@ -32,6 +32,101 @@ service Common {
   rpc config(Response) returns(configResp); //添加菜单
 }
 
+service Log {
+  rpc loginLogIndex(LoginLogIndexReq) returns (LoginLogIndexResp); //获取登录日志列表
+  rpc operLogIndex(OperLogIndexReq) returns (OperLogIndexResp);    //获取操作日志列表
+  rpc loginLogCreate(LoginLogCreateReq) returns(Response);         //登录日志数据入库
+  rpc operLogCreate(OperLogCreateReq) returns(Response);           //操作日志数据入库
+}
+
+service Api {
+  rpc apiCreate(ApiCreateReq) returns(Response);   //添加接口
+  rpc apiIndex(ApiIndexReq) returns(ApiIndexResp); //获取接口列表
+  rpc apiUpdate(ApiUpdateReq) returns(Response);   //更新接口
+  rpc apiDelete(ApiDeleteReq) returns(Response);   //删除接口
+}
+
+message DateRange{
+    string start = 1;
+    string end = 2;
+}
+
+message LoginLogIndexReq{
+  PageInfo page       = 1;  // 分页信息 只获取一个则不填
+  string ipAddr = 2;        // 登录IP地址
+  string loginLocation = 3; // 登录地点
+  DateRange date = 4;       // 时间范围
+}
+
+message LoginLogIndexData {
+  int64  uid = 1;           // 用户id
+  string userName = 2;      // 登录账号
+  string ipAddr = 3;        // 登录IP地址
+  string loginLocation = 4; // 登录地点
+  string browser = 5;       // 浏览器
+  string os = 6;            // 操作系统
+  int64 code = 7;           // 登录状态（200成功 其它失败）
+  string msg = 8;           // 提示消息
+  int64  createdTime = 9;   // 登录时间
+}
+
+message LoginLogIndexResp{
+  repeated LoginLogIndexData info = 1;
+  int64 total = 2; //总记录数
+}
+
+message OperLogIndexReq{
+  PageInfo page       = 1; //分页信息 只获取一个则不填
+  string operName     = 2; //按操作名称查找
+  string operUserName = 3; //按操作人员名称查找
+  int64 businessType  = 4; //按业务类型（1新增 2修改 3删除 4查询）查找
+}
+
+message OperLogIndexData {
+    int64  uid = 1;                //用户id
+    string operUserName = 2;       //操作人员名称
+    string operName = 3;           //操作名称
+    int64  businessType = 4;       //业务类型（1新增 2修改 3删除 4查询）
+    string uri = 5;                //请求地址
+    string operIpAddr = 6;         //操作主机地址
+    string operLocation = 7;       //操作地点
+    string req = 8;                //请求参数
+    string resp = 9;               //返回参数
+    int64  code = 10;               //登录状态（200成功 其它失败）
+    string msg = 11;               //提示消息
+    int64  createdTime = 12;       //操作时间
+}
+
+message OperLogIndexResp{
+  repeated OperLogIndexData info = 1;
+  int64 total = 2; //总记录数
+}
+
+message LoginLogCreateReq{
+  int64  uid = 1;           // 用户id
+  string userName = 2;      // 登录账号
+  string ipAddr = 3;        // 登录IP地址
+  string loginLocation = 4; // 登录地点
+  string browser = 5;       // 浏览器
+  string os = 6;            // 操作系统
+  int64 code = 7;           // 登录状态（200成功 其它失败）
+  string msg = 8;           // 提示消息
+}
+
+message OperLogCreateReq{
+  int64  uid = 1;                //用户id
+  string operUserName = 2;       //操作人员名称
+  string operName = 3;           //操作名称
+  int64  businessType = 4;       //业务类型（1新增 2修改 3删除 4查询）
+  string uri = 5;                //请求地址
+  string operIpAddr = 6;         //操作主机地址
+  string operLocation = 7;       //操作地点
+  string req = 8;                //请求参数
+  string resp = 9;               //返回参数
+  int64  code = 10;              //返回状态（200成功 其它失败）
+  string msg = 11;               //提示消息
+}
+
 //用户属性信息
 message UserInfo{
   int64  uid = 1;
@@ -268,4 +363,46 @@ message Map{
 }
 message configResp{
   Map map = 1;           //设备地图相关配置
+}
+
+//接口相关信息
+message ApiCreateReq{
+  string route = 1;         // 接口路由
+  string method = 2;        // 接口请求方式: POST GET
+  string group = 3;         // 接口分组
+  string name = 4;          // 接口名称
+  int64  businessType = 5;  // 业务类型（1新增 2修改 3删除 4查询 5其它)
+}
+
+message ApiIndexReq{
+  PageInfo page = 1;// 分页信息
+  string route = 2; // 接口路由
+  string method = 3;// 接口请求方式: POST GET
+  string group = 4; // 接口分组
+  string name = 5;  // 接口名称
+}
+message ApiData{
+  int64 id = 1;            // 接口编号
+  string route = 2;        // 接口路由
+  string method = 3;       // 接口请求方式: POST GET
+  string group = 4;        // 接口分组
+  string name = 5;         // 接口名称
+  int64  businessType = 6; // 业务类型（1新增 2修改 3删除 4查询 5其它)
+}
+
+message ApiIndexResp{
+  repeated ApiData list = 1; // 接口列表数据
+  int64 total = 2;           // 接口列表总记录数
+}
+
+message ApiUpdateReq{
+  int64 id = 1;            // 接口编号
+  string route = 2;        // 接口路由
+  string method = 3;       // 接口请求方式: POST GET
+  string group = 4;        // 接口分组
+  string name = 5;         // 接口名称
+}
+
+message ApiDeleteReq{
+  int64 id = 1;            // 接口编号
 }

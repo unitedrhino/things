@@ -14,10 +14,21 @@ import (
 )
 
 type (
+	ApiCreateReq      = sys.ApiCreateReq
+	ApiData           = sys.ApiData
+	ApiDeleteReq      = sys.ApiDeleteReq
+	ApiIndexReq       = sys.ApiIndexReq
+	ApiIndexResp      = sys.ApiIndexResp
+	ApiUpdateReq      = sys.ApiUpdateReq
 	CheckTokenReq     = sys.CheckTokenReq
 	CheckTokenResp    = sys.CheckTokenResp
 	ConfigResp        = sys.ConfigResp
+	DateRange         = sys.DateRange
 	JwtToken          = sys.JwtToken
+	LoginLogCreateReq = sys.LoginLogCreateReq
+	LoginLogIndexData = sys.LoginLogIndexData
+	LoginLogIndexReq  = sys.LoginLogIndexReq
+	LoginLogIndexResp = sys.LoginLogIndexResp
 	LoginReq          = sys.LoginReq
 	LoginResp         = sys.LoginResp
 	Map               = sys.Map
@@ -27,6 +38,10 @@ type (
 	MenuIndexReq      = sys.MenuIndexReq
 	MenuIndexResp     = sys.MenuIndexResp
 	MenuUpdateReq     = sys.MenuUpdateReq
+	OperLogCreateReq  = sys.OperLogCreateReq
+	OperLogIndexData  = sys.OperLogIndexData
+	OperLogIndexReq   = sys.OperLogIndexReq
+	OperLogIndexResp  = sys.OperLogIndexResp
 	PageInfo          = sys.PageInfo
 	Response          = sys.Response
 	RoleCreateReq     = sys.RoleCreateReq

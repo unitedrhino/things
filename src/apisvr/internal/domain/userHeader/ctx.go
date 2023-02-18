@@ -6,6 +6,7 @@ type UserCtx struct {
 	Uid  int64  //用户id
 	IP   string //用户的ip地址
 	Role int64  //用户角色
+	Os   string //操作系统
 }
 
 func SetUserCtx(ctx context.Context, userCtx *UserCtx) context.Context {

@@ -9,8 +9,14 @@ import (
 	serverMenu "github.com/i-Things/things/src/syssvr/internal/server/menu"
 	serverRole "github.com/i-Things/things/src/syssvr/internal/server/role"
 
+	clientLog "github.com/i-Things/things/src/syssvr/client/log"
+	serverLog "github.com/i-Things/things/src/syssvr/internal/server/log"
+
 	clientCommon "github.com/i-Things/things/src/syssvr/client/common"
 	serverCommon "github.com/i-Things/things/src/syssvr/internal/server/common"
+
+	clientApi "github.com/i-Things/things/src/syssvr/client/api"
+	serverApi "github.com/i-Things/things/src/syssvr/internal/server/api"
 )
 
 func NewUser() client.User {
@@ -31,4 +37,14 @@ func NewMenu() clientMenu.Menu {
 func NewCommon() clientCommon.Common {
 	userSvc := GetCtxSvc()
 	return clientCommon.NewDirectCommon(userSvc, serverCommon.NewCommonServer(userSvc))
+}
+
+func NewLog() clientLog.Log {
+	userSvc := GetCtxSvc()
+	return clientLog.NewDirectLog(userSvc, serverLog.NewLogServer(userSvc))
+}
+
+func NewApi() clientApi.Api {
+	userSvc := GetCtxSvc()
+	return clientApi.NewDirectApi(userSvc, serverApi.NewApiServer(userSvc))
 }
