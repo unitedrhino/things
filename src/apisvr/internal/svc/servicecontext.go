@@ -140,24 +140,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
-		Config:         c,
-		CheckToken:     middleware.NewCheckTokenMiddleware(c, ur, lo).Handle,
-		UserRpc:        ur,
-		RoleRpc:        ro,
-		MenuRpc:        me,
-		ProductM:       productM,
-		DeviceM:        deviceM,
-		Captcha:        captcha,
-		DeviceInteract: deviceInteract,
-		DeviceMsg:      deviceMsg,
-		DeviceA:        deviceA,
-		DeviceG:        deviceG,
-		RemoteConfig:   remoteConfig,
-		Common:         sysCommon,
-		LogRpc:         lo,
-		ApiRpc:         ap,
 		Config:     c,
-		CheckToken: middleware.NewCheckTokenMiddleware(c, ur).Handle,
+		CheckToken: middleware.NewCheckTokenMiddleware(c, ur, lo).Handle,
+		Captcha:    captcha,
 		SvrClient: SvrClient{
 			UserRpc:        ur,
 			RoleRpc:        ro,
@@ -171,8 +156,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			RemoteConfig:   remoteConfig,
 			Common:         sysCommon,
 			Scene:          scene,
+			LogRpc:         lo,
+			ApiRpc:         ap,
 		},
-		Captcha: captcha,
 		//OSS:        ossClient,
 	}
 }
