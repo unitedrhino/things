@@ -6,7 +6,9 @@ import (
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 	"github.com/i-Things/things/src/rulesvr/ruledirect"
 
-	flow "github.com/i-Things/things/src/rulesvr/internal/server/flow"
+	ruleengine "github.com/i-Things/things/src/rulesvr/internal/server/ruleengine"
+	scenelinkage "github.com/i-Things/things/src/rulesvr/internal/server/scenelinkage"
+
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -18,7 +20,8 @@ func main() {
 	c := svcCtx.Config
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		rule.RegisterFlowServer(grpcServer, flow.NewFlowServer(svcCtx))
+		rule.RegisterSceneLinkageServer(grpcServer, scenelinkage.NewSceneLinkageServer(svcCtx))
+		rule.RegisterRuleEngineServer(grpcServer, ruleengine.NewRuleEngineServer(svcCtx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
@@ -26,6 +29,6 @@ func main() {
 	defer s.Stop()
 	s.AddUnaryInterceptors(errors.ErrorInterceptor)
 
-	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
+	fmt.Printf("Starting rulesvr server at %s...\n", c.ListenOn)
 	s.Start()
 }

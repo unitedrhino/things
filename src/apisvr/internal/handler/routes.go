@@ -20,6 +20,7 @@ import (
 	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
 	thingsproductremoteConfig "github.com/i-Things/things/src/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/src/apisvr/internal/handler/things/product/schema"
+	thingsrulesceneinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/scene/info"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -503,5 +504,39 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/group/device"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsrulesceneinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsrulesceneinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsrulesceneinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsrulesceneinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsrulesceneinfo.ReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/rule/scene/info"),
 	)
 }

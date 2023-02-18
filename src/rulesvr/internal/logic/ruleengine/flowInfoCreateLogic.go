@@ -1,4 +1,4 @@
-package flowlogic
+package ruleenginelogic
 
 import (
 	"context"
