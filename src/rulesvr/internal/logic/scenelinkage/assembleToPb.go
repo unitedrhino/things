@@ -1,11 +1,11 @@
-package info
+package scenelinkagelogic
 
 import (
-	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 )
 
-func ToScenePb(in *types.SceneInfo) *rule.SceneInfo {
+func ToScenePb(in *scene.Info) *rule.SceneInfo {
 	return &rule.SceneInfo{
 		Id:      in.ID,
 		Name:    in.Name,
@@ -16,7 +16,7 @@ func ToScenePb(in *types.SceneInfo) *rule.SceneInfo {
 	}
 }
 
-func ToSceneActionsPb(in []*types.SceneAction) []*rule.SceneAction {
+func ToSceneActionsPb(in []*scene.Action) []*rule.SceneAction {
 	if in == nil {
 		return nil
 	}
@@ -30,14 +30,14 @@ func ToSceneActionsPb(in []*types.SceneAction) []*rule.SceneAction {
 	return actions
 }
 
-func ToSceneActionPb(in *types.SceneAction) *rule.SceneAction {
+func ToSceneActionPb(in *scene.Action) *rule.SceneAction {
 	if in == nil {
 		return nil
 	}
 	return &rule.SceneAction{Executor: in.Executor}
 }
 
-func ToSceneActionDelayPb(in *types.SceneActionDelay) *rule.SceneActionDelay {
+func ToSceneActionDelayPb(in *scene.ActionDelay) *rule.SceneActionDelay {
 	if in == nil {
 		return nil
 	}
@@ -46,14 +46,14 @@ func ToSceneActionDelayPb(in *types.SceneActionDelay) *rule.SceneActionDelay {
 		Unit: in.Unit,
 	}
 }
-func ToSceneActionAlarmPb(in *types.SceneActionAlarm) *rule.SceneActionAlarm {
+func ToSceneActionAlarmPb(in *scene.ActionAlarm) *rule.SceneActionAlarm {
 	if in == nil {
 		return nil
 	}
 	return &rule.SceneActionAlarm{Mode: in.Mode}
 }
 
-func ToSceneTermsPb(in []*types.SceneTerm) []*rule.SceneTerm {
+func ToSceneTermsPb(in []*scene.Term) []*rule.SceneTerm {
 	if in == nil {
 		return nil
 	}
@@ -64,7 +64,7 @@ func ToSceneTermsPb(in []*types.SceneTerm) []*rule.SceneTerm {
 	return terms
 }
 
-func ToSceneTermPb(in *types.SceneTerm) *rule.SceneTerm {
+func ToSceneTermPb(in *scene.Term) *rule.SceneTerm {
 	if in == nil {
 		return nil
 	}
@@ -77,13 +77,13 @@ func ToSceneTermPb(in *types.SceneTerm) *rule.SceneTerm {
 	}
 }
 
-func ToSceneTriggerPb(in *types.SceneTrigger) *rule.SceneTrigger {
+func ToSceneTriggerPb(in *scene.Trigger) *rule.SceneTrigger {
 	if in == nil {
 		return nil
 	}
 	return &rule.SceneTrigger{Type: in.Type, Device: ToSceneTriggerDevicePb(in.Device)}
 }
-func ToSceneTriggerDevicePb(in *types.SceneTriggerDevice) *rule.SceneTriggerDevice {
+func ToSceneTriggerDevicePb(in *scene.TriggerDevice) *rule.SceneTriggerDevice {
 	if in == nil {
 		return nil
 	}
