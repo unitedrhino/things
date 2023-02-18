@@ -18,7 +18,7 @@ func GetPositionValue(position string) (float64, float64) {
 	if position == "" || len(position) <= 7 {
 		return 0, 0
 	}
-	sTemp := position[6 : len(position)-2]
+	sTemp := position[6 : len(position)-1]
 	sCli := strings.Split(sTemp, " ")
 	if len(sCli) < 2 {
 		return 0, 0
