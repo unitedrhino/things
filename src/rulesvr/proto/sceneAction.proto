@@ -1,0 +1,18 @@
+syntax = "proto3";
+//执行动作
+package scene;
+option go_package="./pb/rule";
+
+message SceneAction{
+  string executor =1;//执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
+  SceneActionDelay delay = 2;
+  SceneActionAlarm alarm = 3;
+}
+message SceneActionDelay{
+  int64 time =1;//延迟时间
+  string unit=2;//时间单位 seconds:秒  minutes:分钟  hours:小时
+}
+
+message SceneActionAlarm{
+  string mode = 1;//告警模式  trigger: 触发告警  relieve: 解除告警
+}
