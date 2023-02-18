@@ -20,6 +20,7 @@ type Config struct {
 	SysRpc     conf.RpcClientConf `json:",optional"`
 	DiRpc      conf.RpcClientConf `json:",optional"`
 	DmRpc      conf.RpcClientConf `json:",optional"`
+	RuleRpc    conf.RpcClientConf `json:",optional"`
 	Rej        struct {
 		AccessSecret string
 		AccessExpire int64

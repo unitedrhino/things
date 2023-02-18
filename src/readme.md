@@ -77,6 +77,7 @@ goctl api go -api http/dd.api  -dir ./ --style=goZero
 命令执行路径: ithings\src\rulesvr\
 
 ```shell
+protoc  proto/* --go_out=. --go-grpc_out=.
 goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m
 ```
 

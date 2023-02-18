@@ -1,0 +1,104 @@
+info(
+    title: "场景联动信息模块"
+    desc: "场景联动信息模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+@server(
+    group : things/rule/scene/info
+    prefix: /api/v1/things/rule/scene/info
+    middleware: CheckToken
+)
+service api {
+    @doc "新增场景"
+    @handler create
+    post /create (SceneInfoCreateReq) returns ()
+    @doc "更新场景"
+    @handler update
+    post /update (SceneInfoUpdateReq) returns ()
+    @doc "删除场景"
+    @handler delete
+    post /delete (SceneInfoDeleteReq) returns ()
+    @doc "获取场景信息列表"
+    @handler index
+    post /index (SceneInfoIndexReq) returns (SceneInfoIndexResp)
+    @doc "获取场景信息详情"
+    @handler read
+    post /read (SceneInfoReadReq) returns (SceneInfo)
+}
+
+type (
+    SceneInfoCreateReq struct {
+        SceneInfo
+    }
+    SceneInfoUpdateReq struct {
+        SceneInfo
+    }
+    SceneInfoDeleteReq struct {
+        ID          int64     `json:"id"`
+    }
+    SceneInfoReadReq struct {
+        ID          int64     `json:"id"`
+    }
+    SceneInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+    }
+    SceneInfoIndexResp struct {
+        List []*SceneInfo `json:"list"`    //场景信息
+        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+        Num int64 `json:"num"`              //返回的数量
+    }
+)
+
+type SceneInfo struct {
+    ID          int64     `json:"id,optional"`
+    Name        string    `json:"name,optional"`
+    Desc        string    `json:"desc,optional"`
+    CreatedTime int64 `json:"createdTime,optional"`
+    Trigger     *SceneTrigger  `json:"trigger,optional"`
+    When        []*SceneTerm   `json:"when,optional"`
+    Then      []*SceneAction `json:"then"`
+}
+
+type SceneTerm struct {
+    Column   string  `json:"column"`   //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+    Value    string  `json:"value"`    //条件值
+    Type     string  `json:"type"`     //多个条件关联类型  or  and
+    TermType string  `json:"termType"` //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+    Terms    []*SceneTerm `json:"terms,optional"`    //嵌套条件
+}
+
+type SceneTrigger struct {
+    Type   string         `json:"type"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+    Device *SceneTriggerDevice `json:"device,optional"`
+}
+
+type SceneTriggerDevice struct {
+    ProductID      string          `json:"productID"`      //产品id
+    Selector       string          `json:"selector"`       //设备选择方式  all: 全部 fixed:指定的设备
+    SelectorValues []string        `json:"selectorValues"` //选择的列表  选择的列表, fixed类型是设备名列表
+    Operation      SceneDeviceOperation `json:"operation"`
+}
+
+type SceneDeviceOperation struct {
+    Operator string `json:"operator"` //触发类型  online:上线 offline:下线 reportProperty:属性上报 reportEvent: 事件上报
+}
+
+
+
+type SceneAction struct {
+    Executor string `json:"executor"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
+    Delay SceneActionDelay  `json:"delay,optional"`
+    Alarm SceneActionAlarm `json:"alarm,optional"`
+}
+
+type SceneActionDelay struct {
+    Time int64  `json:"time"` //延迟时间
+    Unit string `json:"unit"` //时间单位 seconds:秒  minutes:分钟  hours:小时
+}
+
+type SceneActionAlarm struct {
+    Mode string `json:"mode"` //告警模式  trigger: 触发告警  relieve: 解除告警
+}
