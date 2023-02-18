@@ -1,6 +1,8 @@
 // Package scene 触发条件
 package scene
 
+type Terms []*Term
+
 type Term struct {
 	Column   string  `json:"column"`   //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
 	Value    string  `json:"value"`    //条件值

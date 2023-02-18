@@ -24,7 +24,7 @@ func NewSceneInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 }
 
 func (l *SceneInfoCreateLogic) SceneInfoCreate(in *rule.SceneInfo) (*rule.Response, error) {
-	// todo: add your logic here and delete this line
-
-	return &rule.Response{}, nil
+	do := ToSceneDo(in)
+	err := l.svcCtx.SceneRepo.Insert(l.ctx, do)
+	return &rule.Response{}, err
 }
