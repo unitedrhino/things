@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/domain/log"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -37,7 +38,7 @@ func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Respo
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	if resApi.BusinessType != 4 {
+	if resApi.BusinessType != log.OptQuery {
 		_, err = l.svcCtx.LogOperModel.Insert(l.ctx, &mysql.SysOperLog{
 			OperUid:      in.Uid,
 			OperUserName: resUser.UserName.String,
