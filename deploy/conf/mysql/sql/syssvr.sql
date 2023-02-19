@@ -247,82 +247,82 @@ CREATE TABLE if not exists `sys_api`
 (
     `id`              bigint auto_increment comment '编号',
     `route`           varchar(100) NOT NULL DEFAULT '' comment '路由',
-    `method`          varchar(100) NOT NULL DEFAULT '' comment '请求方式',
+    `method`          int(11) NOT NULL comment '请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）',
     `name`            varchar(100) NOT NULL DEFAULT '' comment '请求名称',
     `businessType`    int(11) NOT NULL COMMENT '业务类型（1新增 2修改 3删除 4查询 5其它）',
-    `group`            varchar(100) NOT NULL DEFAULT '' comment '接口组',
+    `group`           varchar(100) NOT NULL DEFAULT '' comment '接口组',
     `desc`            varchar(100) NOT NULL DEFAULT '' comment '备注',
     `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` 	  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` 	  datetime DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `routeIndex` (`route`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='接口管理';
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='接口管理';
 
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/update','POST','更新产品',2,'','产品管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/create','POST','新增产品',1,'','产品管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/read','POST','获取产品详情',4,'','产品管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/delete','POST','删除产品',3,'','产品管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/index','POST','获取产品列表',4,'','产品管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/index','POST','获取产品物模型列表',4,'','物模型');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/tsl-import','POST','导入物模型tsl',1,'','物模型');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/tsl-read','POST','获取产品物模型tsl',4,'','物模型');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/create','POST','新增物模型功能',1,'','物模型');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/update','POST','更新物模型功能',2,'','物模型');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/delete','POST','删除物模型功能',3,'','物模型');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/remote-config/create','POST','创建配置',1,'','产品远程配置');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/remote-config/index','POST','获取配置列表',4,'','产品远程配置');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/remote-config/push-all','POST','推送配置',5,'','产品远程配置');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/remote-config/lastest-read','POST','获取最新配置',4,'','产品远程配置');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/create','POST','创建分组',1,'','设备分组');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/index','POST','获取分组列表',4,'','设备分组');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/read','POST','获取分组详情信息',4,'','设备分组');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/update','POST','更新分组信息',2,'','设备分组');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/delete','POST','删除分组',3,'','设备分组');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/device/index','POST','获取分组设备列表',4,'','设备分组');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/device/multi-create','POST','添加分组设备(支持批量)',1,'','设备分组');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/device/multi-delete','POST','删除分组设备(支持批量)',3,'','设备分组');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/index','POST','获取设备列表',4,'','设备管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/read','POST','获取设备详情',4,'','设备管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/create','POST','新增设备',1,'','设备管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/delete','POST','删除设备',3,'','设备管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/update','POST','更新设备',2,'','设备管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/count','POST','设备统计详情',4,'','设备管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/auth/login','POST','设备登录认证',5,'','设备鉴权');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/auth/root-check','POST','鉴定mqtt账号root权限',5,'','设备鉴权');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/auth/access','POST','设备操作认证',5,'','设备鉴权');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/property-log/index','POST','获取单个id属性历史记录',4,'','设备消息');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/sdk-log/index','POST','获取设备本地日志',4,'','设备消息');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/hub-log/index','POST','获取云端诊断日志',4,'','设备消息');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/property-latest/index','POST','获取最新属性',4,'','设备消息');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/event-log/index','POST','获取物模型事件历史记录',4,'','设备消息');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/send-action','POST','同步调用设备行为',5,'','设备交互');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/send-property','POST','同步调用设备属性',5,'','设备交互');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/send-msg','POST','发送消息给设备',5,'','设备交互');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/gateway/multi-create','POST','批量添加网关子设备',1,'','网关子设备管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/gateway/multi-delete','POST','批量解绑网关子设备',3,'','网关子设备管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/gateway/index','POST','获取子设备列表',4,'','网关子设备管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/log/login/index','POST','获取登录日志列表',4,'','日志管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/log/oper/index','POST','获取操作日志列表',4,'','日志管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/create','POST','添加角色',1,'','角色管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/index','POST','获取角色列表',4,'','角色管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/update','POST','更新角色',2,'','角色管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/delete','POST','删除角色',3,'','角色管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/role-menu/update','POST','更新角色对应菜单列表',2,'','角色管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/menu/create','POST','添加菜单',1,'','菜单管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/menu/index','POST','获取菜单列表',4,'','菜单管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/menu/update','POST','更新菜单',2,'','菜单管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/menu/delete','POST','删除菜单',3,'','菜单管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/create','POST','创建用户信息',1,'','用户管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/captcha','POST','获取验证码',5,'','用户管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/login','POST','登录',5,'','用户管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/delete','POST','删除用户',3,'','用户管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/read','POST','获取用户信息',4,'','用户管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/update','POST','更新用户基本数据',2,'','用户管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/index','POST','获取用户信息列表',4,'','用户管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/resource-read','POST','获取用户资源',4,'','用户管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/common/config','POST','获取系统配置',4,'','系统配置');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/create','POST','添加接口',1,'','接口管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/index','POST','获取接口列表',4,'','接口管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/update','POST','更新接口',2,'','接口管理');
-INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/delete','POST','删除接口',3,'','接口管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/update',2,'更新产品',2,'','产品管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/create',2,'新增产品',1,'','产品管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/read',2,'获取产品详情',4,'','产品管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/delete',2,'删除产品',3,'','产品管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/index',2,'获取产品列表',4,'','产品管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/index',2,'获取产品物模型列表',4,'','物模型');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/tsl-import',2,'导入物模型tsl',1,'','物模型');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/tsl-read',2,'获取产品物模型tsl',4,'','物模型');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/create',2,'新增物模型功能',1,'','物模型');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/update',2,'更新物模型功能',2,'','物模型');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/schema/delete',2,'删除物模型功能',3,'','物模型');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/remote-config/create',2,'创建配置',1,'','产品远程配置');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/remote-config/index',2,'获取配置列表',4,'','产品远程配置');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/remote-config/push-all',2,'推送配置',5,'','产品远程配置');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/remote-config/lastest-read',2,'获取最新配置',4,'','产品远程配置');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/create',2,'创建分组',1,'','设备分组');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/index',2,'获取分组列表',4,'','设备分组');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/read',2,'获取分组详情信息',4,'','设备分组');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/update',2,'更新分组信息',2,'','设备分组');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/info/delete',2,'删除分组',3,'','设备分组');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/device/index',2,'获取分组设备列表',4,'','设备分组');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/device/multi-create',2,'添加分组设备(支持批量)',1,'','设备分组');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/group/device/multi-delete',2,'删除分组设备(支持批量)',3,'','设备分组');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/index',2,'获取设备列表',4,'','设备管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/read',2,'获取设备详情',4,'','设备管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/create',2,'新增设备',1,'','设备管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/delete',2,'删除设备',3,'','设备管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/update',2,'更新设备',2,'','设备管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/count',2,'设备统计详情',4,'','设备管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/auth/login',2,'设备登录认证',5,'','设备鉴权');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/auth/root-check',2,'鉴定mqtt账号root权限',5,'','设备鉴权');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/auth/access',2,'设备操作认证',5,'','设备鉴权');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/property-log/index',2,'获取单个id属性历史记录',4,'','设备消息');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/sdk-log/index',2,'获取设备本地日志',4,'','设备消息');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/hub-log/index',2,'获取云端诊断日志',4,'','设备消息');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/property-latest/index',2,'获取最新属性',4,'','设备消息');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/event-log/index',2,'获取物模型事件历史记录',4,'','设备消息');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/send-action',2,'同步调用设备行为',5,'','设备交互');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/send-property',2,'同步调用设备属性',5,'','设备交互');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/send-msg',2,'发送消息给设备',5,'','设备交互');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/gateway/multi-create',2,'批量添加网关子设备',1,'','网关子设备管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/gateway/multi-delete',2,'批量解绑网关子设备',3,'','网关子设备管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/gateway/index',2,'获取子设备列表',4,'','网关子设备管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/log/login/index',2,'获取登录日志列表',4,'','日志管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/log/oper/index',2,'获取操作日志列表',4,'','日志管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/create',2,'添加角色',1,'','角色管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/index',2,'获取角色列表',4,'','角色管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/update',2,'更新角色',2,'','角色管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/delete',2,'删除角色',3,'','角色管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/role/role-menu/update',2,'更新角色对应菜单列表',2,'','角色管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/menu/create',2,'添加菜单',1,'','菜单管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/menu/index',2,'获取菜单列表',4,'','菜单管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/menu/update',2,'更新菜单',2,'','菜单管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/menu/delete',2,'删除菜单',3,'','菜单管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/create',2,'创建用户信息',1,'','用户管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/captcha',2,'获取验证码',5,'','用户管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/login',2,'登录',5,'','用户管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/delete',2,'删除用户',3,'','用户管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/read',2,'获取用户信息',4,'','用户管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/update',2,'更新用户基本数据',2,'','用户管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/index',2,'获取用户信息列表',4,'','用户管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/user/resource-read',2,'获取用户资源',4,'','用户管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/common/config',2,'获取系统配置',4,'','系统配置');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/create',2,'添加接口',1,'','接口管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/index',2,'获取接口列表',4,'','接口管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/update',2,'更新接口',2,'','接口管理');
+INSERT INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/delete',2,'删除接口',3,'','接口管理');
