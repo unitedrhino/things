@@ -18,8 +18,8 @@ import (
 var (
 	sysUserInfoFieldNames          = builder.RawFieldNames(&SysUserInfo{})
 	sysUserInfoRows                = strings.Join(sysUserInfoFieldNames, ",")
-	sysUserInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`createdTime`", "`updatedTime`", "`deletedTime`"), ",")
-	sysUserInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`uid`", "`createdTime`", "`updatedTime`", "`deletedTime`"), "=?,") + "=?"
+	sysUserInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	sysUserInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`uid`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
@@ -147,13 +147,13 @@ func (m *defaultSysUserInfoModel) FindOneByWechat(ctx context.Context, wechat sq
 
 func (m *defaultSysUserInfoModel) Insert(ctx context.Context, data *SysUserInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, sysUserInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName.String, data.Password, data.Email.String, data.Phone.String, data.Wechat.String, data.LastIP, data.RegIP, data.NickName, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.Role)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.NickName, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.Role)
 	return ret, err
 }
 
 func (m *defaultSysUserInfoModel) Update(ctx context.Context, newData *SysUserInfo) error {
 	query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, sysUserInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.UserName.String, newData.Password, newData.Email.String, newData.Phone.String, newData.Wechat.String, newData.LastIP, newData.RegIP, newData.NickName, newData.Sex, newData.City, newData.Country, newData.Province, newData.Language, newData.HeadImgUrl, newData.Role, newData.Uid)
+	_, err := m.conn.ExecCtx(ctx, query, newData.UserName, newData.Password, newData.Email, newData.Phone, newData.Wechat, newData.LastIP, newData.RegIP, newData.NickName, newData.Sex, newData.City, newData.Country, newData.Province, newData.Language, newData.HeadImgUrl, newData.Role, newData.Uid)
 	return err
 }
 
