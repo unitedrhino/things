@@ -26,12 +26,18 @@ func NewApiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ApiUpda
 }
 
 func (l *ApiUpdateLogic) ApiUpdate(in *sys.ApiUpdateReq) (*sys.Response, error) {
-	err := l.svcCtx.ApiModel.Update(l.ctx, &mysql.SysApi{
-		Id:     in.Id,
-		Route:  in.Route,
-		Method: in.Method,
-		Name:   in.Name,
-		Group:  in.Group,
+	res, err := l.svcCtx.ApiModel.FindOne(l.ctx, in.Id)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
+
+	err = l.svcCtx.ApiModel.Update(l.ctx, &mysql.SysApi{
+		Id:           in.Id,
+		Route:        in.Route,
+		Method:       in.Method,
+		Name:         in.Name,
+		Group:        in.Group,
+		BusinessType: res.BusinessType,
 	})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)

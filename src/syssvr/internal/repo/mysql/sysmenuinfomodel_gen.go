@@ -18,8 +18,8 @@ import (
 var (
 	sysMenuInfoFieldNames          = builder.RawFieldNames(&SysMenuInfo{})
 	sysMenuInfoRows                = strings.Join(sysMenuInfoFieldNames, ",")
-	sysMenuInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysMenuInfoFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
-	sysMenuInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysMenuInfoFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
+	sysMenuInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysMenuInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
+	sysMenuInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysMenuInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
 )
 
 type (
