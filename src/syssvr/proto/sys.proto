@@ -368,7 +368,7 @@ message configResp{
 //接口相关信息
 message ApiCreateReq{
   string route = 1;         // 接口路由
-  string method = 2;        // 接口请求方式: POST GET
+  int64 method = 2;         // 接口请求方式: POST GET
   string group = 3;         // 接口分组
   string name = 4;          // 接口名称
   int64  businessType = 5;  // 业务类型（1新增 2修改 3删除 4查询 5其它)
@@ -377,14 +377,14 @@ message ApiCreateReq{
 message ApiIndexReq{
   PageInfo page = 1;// 分页信息
   string route = 2; // 接口路由
-  string method = 3;// 接口请求方式: POST GET
+  int64 method = 3; // 接口请求方式: POST GET
   string group = 4; // 接口分组
   string name = 5;  // 接口名称
 }
 message ApiData{
   int64 id = 1;            // 接口编号
   string route = 2;        // 接口路由
-  string method = 3;       // 接口请求方式: POST GET
+  int64 method = 3;        // 接口请求方式: POST GET
   string group = 4;        // 接口分组
   string name = 5;         // 接口名称
   int64  businessType = 6; // 业务类型（1新增 2修改 3删除 4查询 5其它)
@@ -398,7 +398,7 @@ message ApiIndexResp{
 message ApiUpdateReq{
   int64 id = 1;            // 接口编号
   string route = 2;        // 接口路由
-  string method = 3;       // 接口请求方式: POST GET
+  int64 method = 3;        // 接口请求方式: POST GET
   string group = 4;        // 接口分组
   string name = 5;         // 接口名称
 }
