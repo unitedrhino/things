@@ -33,28 +33,28 @@ service api {
 
 type (
     ApiCreateReq struct {
-        Route string `json:"route"`                   // 接口路由
-        Method string `json:"method"`                 // 接口请求方式: POST GET等
-        Group string `json:"group"`                   // 接口分组
-        Name string `json:"name"`                     // 接口名称
-        BusinessType int64 `json:"businessType"`            // 业务类型（1新增 2修改 3删除 4查询 5其它）
+        Route string `json:"route"`                          // 接口路由
+        Method int64 `json:"method,range=[1:9]"`             // 接口请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+        Group string `json:"group"`                          // 接口分组
+        Name string `json:"name"`                            // 接口名称
+        BusinessType int64 `json:"businessType,range=[1:5]"` // 业务类型（1新增 2修改 3删除 4查询 5其它）
     }
 
     ApiIndexReq struct {
-        Page PageInfo `json:"page"`                   // 分页信息,只获取一个则不填
-        Route string `json:"route"`                   // 接口路由
-        Method string `json:"method"`                 // 接口请求方式(POST,  GET等)
-        Group string `json:"group"`                   // 接口分组
-        Name string `json:"name"`                     // 接口名称
+        Page PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
+        Route string `json:"route,optional"`                   // 接口路由
+        Method int64 `json:"method,range=[1:9],optional"`      // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+        Group string `json:"group,optional"`                   // 接口分组
+        Name string `json:"name,optional"`                     // 接口名称
     }
 
     ApiIndexData struct {
-        ID int64 `json:"id"`                          // 接口编号
-        Route string `json:"route"`                   // 接口路由
-        Method string `json:"method"`                 // 接口请求方式: POST GET等
-        Group string `json:"group"`                   // 接口分组
-        Name string `json:"name"`                     // 接口名称
-        BusinessType int64 `json:"businessType"`      // 业务类型（1新增 2修改 3删除 4查询 5其它)
+        ID int64 `json:"id"`                                      // 接口编号
+        Route string `json:"route"`                               // 接口路由
+        Method int64 `json:"method,range=[1:9]"`                  // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+        Group string `json:"group"`                               // 接口分组
+        Name string `json:"name"`                                 // 接口名称
+        BusinessType int64 `json:"businessType,range=[1:5]"`      // 业务类型（1新增 2修改 3删除 4查询 5其它)
     }
     ApiIndexResp struct {
         List []*ApiIndexData `json:"list"`            // 接口列表数据
@@ -62,11 +62,11 @@ type (
     }
 
     ApiUpdateReq struct {
-        ID int64 `json:"id"`                          // 接口编号
-        Route string `json:"route,optional"`          // 接口路由
-        Method string `json:"method,optional"`        // 接口请求方式: POST GET等
-        Group string `json:"group,optional"`          // 接口分组
-        Name string `json:"name,optional"`            // 接口名称
+        ID int64 `json:"id"`                              // 接口编号
+        Route string `json:"route,optional"`              // 接口路由
+        Method int64 `json:"method,range=[1:9],optional"` // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+        Group string `json:"group,optional"`              // 接口分组
+        Name string `json:"name,optional"`                // 接口名称
     }
 
     ApiDeleteReq struct {
