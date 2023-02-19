@@ -20,7 +20,7 @@ type (
 	ApiFilter struct {
 		Page   *def.PageInfo
 		Route  string
-		Method string
+		Method int64
 		Group  string
 		Name   string
 	}
@@ -37,8 +37,8 @@ func (g *ApiFilter) FmtSqlApi(sql sq.SelectBuilder) sq.SelectBuilder {
 	if g.Route != "" {
 		sql = sql.Where("`route` like ?", "%"+g.Route+"%")
 	}
-	if g.Method != "" {
-		sql = sql.Where("`method` like ?", "%"+g.Method+"%")
+	if g.Method != 0 {
+		sql = sql.Where("`method` = ?", g.Method)
 	}
 	if g.Group != "" {
 		sql = sql.Where("`group` like ?", "%"+g.Group+"%")
@@ -69,7 +69,7 @@ func (m *apiModel) GetApiCountByFilter(ctx context.Context, f ApiFilter) (size i
 
 func (m *apiModel) FindApiByFilter(ctx context.Context, f ApiFilter, page *def.PageInfo) ([]*SysApi, error) {
 	var resp []*SysApi
-	sql := sq.Select(sysLoginLogRows).From(m.api).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+	sql := sq.Select(sysApiRows).From(m.api).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset())).OrderBy("createdTime desc")
 	sql = f.FmtSqlApi(sql)
 
 	query, arg, err := sql.ToSql()
