@@ -37,22 +37,23 @@ func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Respo
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-
-	_, err = l.svcCtx.LogOperModel.Insert(l.ctx, &mysql.SysOperLog{
-		OperUid:      in.Uid,
-		OperUserName: resUser.UserName.String,
-		OperName:     resApi.Name,
-		BusinessType: resApi.BusinessType,
-		Uri:          in.Uri,
-		OperIpAddr:   in.OperIpAddr,
-		OperLocation: in.OperLocation,
-		Req:          sql.NullString{String: in.Req, Valid: true},
-		Resp:         sql.NullString{String: in.Resp, Valid: true},
-		Code:         in.Code,
-		Msg:          in.Msg,
-	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+	if resApi.BusinessType != 4 {
+		_, err = l.svcCtx.LogOperModel.Insert(l.ctx, &mysql.SysOperLog{
+			OperUid:      in.Uid,
+			OperUserName: resUser.UserName.String,
+			OperName:     resApi.Name,
+			BusinessType: resApi.BusinessType,
+			Uri:          in.Uri,
+			OperIpAddr:   in.OperIpAddr,
+			OperLocation: in.OperLocation,
+			Req:          sql.NullString{String: in.Req, Valid: true},
+			Resp:         sql.NullString{String: in.Resp, Valid: true},
+			Code:         in.Code,
+			Msg:          in.Msg,
+		})
+		if err != nil {
+			return nil, errors.Database.AddDetail(err)
+		}
 	}
 
 	return &sys.Response{}, nil
