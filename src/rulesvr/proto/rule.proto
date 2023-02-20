@@ -1,7 +1,5 @@
 syntax = "proto3";
-import "proto/sceneTrigger.proto";
-import "proto/sceneAction.proto";
-import "proto/sceneTerm.proto";
+
 
 package rule;
 option go_package="./pb/rule";
@@ -37,6 +35,8 @@ message SceneInfoReadReq{
 
 message SceneInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
+  string name =2;//场景名 模糊查询
+
 }
 
 message SceneInfoIndexResp{
@@ -53,9 +53,9 @@ message SceneInfo{
   string name =2;//场景名
   string desc = 4;//描述
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
-  scene.SceneTrigger trigger = 6;//触发器
-  repeated scene.SceneTerm when = 7;//触发条件
-  repeated scene.SceneAction then = 8;//满足条件时执行的动作
+  string trigger = 6;//触发器
+  string when = 7;//触发条件
+  string then = 8;//满足条件时执行的动作
 }
 
 
