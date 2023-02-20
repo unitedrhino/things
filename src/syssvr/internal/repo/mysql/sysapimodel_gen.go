@@ -39,7 +39,7 @@ type (
 	SysApi struct {
 		Id           int64        `db:"id"`           // 编号
 		Route        string       `db:"route"`        // 路由
-		Method       string       `db:"method"`       // 请求方式
+		Method       int64        `db:"method"`       // 请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
 		Name         string       `db:"name"`         // 请求名称
 		BusinessType int64        `db:"businessType"` // 业务类型（1新增 2修改 3删除 4查询 5其它）
 		Group        string       `db:"group"`        // 接口组
