@@ -30,6 +30,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 func (l *IndexLogic) Index(req *types.SceneInfoIndexReq) (resp *types.SceneInfoIndexResp, err error) {
 	dmReq := &rule.SceneInfoIndexReq{
 		Page: logic.ToRulePageRpc(req.Page),
+		Name: req.Name,
 	}
 	ruleResp, err := l.svcCtx.Scene.SceneInfoIndex(l.ctx, dmReq)
 	if err != nil {

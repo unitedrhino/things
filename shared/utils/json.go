@@ -12,6 +12,11 @@ func Unmarshal(data []byte, v any) error {
 	return decoder.Decode(v)
 }
 
+func MarshalNoErr(v any) string {
+	ret, _ := json.Marshal(v)
+	return string(ret)
+}
+
 // Fmt 将结构以更方便看的方式打印出来
 func Fmt(v any) string {
 	switch v.(type) {
