@@ -2,6 +2,8 @@ package scenelinkagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -24,7 +26,21 @@ func NewSceneInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 }
 
 func (l *SceneInfoCreateLogic) SceneInfoCreate(in *rule.SceneInfo) (*rule.Response, error) {
-	do := ToSceneDo(in)
-	err := l.svcCtx.SceneRepo.Insert(l.ctx, do)
+	do, err := ToSceneDo(in)
+	if err != nil {
+		return nil, err
+	}
+	_, err = l.svcCtx.SceneRepo.FindOneByName(l.ctx, do.Name)
+	if err == nil {
+		return nil, errors.Parameter.AddMsg("场景名字重复")
+	}
+	if err != mysql.ErrNotFound {
+		return nil, errors.Database.AddDetail(err)
+	}
+	err = do.Validate()
+	if err != nil {
+		return nil, err
+	}
+	err = l.svcCtx.SceneRepo.Insert(l.ctx, do)
 	return &rule.Response{}, err
 }
