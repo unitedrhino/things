@@ -1,19 +1,60 @@
 // Package scene 执行动作
 package scene
 
+import "github.com/i-Things/things/shared/errors"
+
+//操作执行器类型
+type ActionExecutor string
+
+const (
+	ActionExecutorNotify ActionExecutor = "notify" //通知
+	ActionExecutorDelay  ActionExecutor = "delay"  //延迟
+	ActionExecutorDevice ActionExecutor = "device" //设备输出
+	ActionExecutorAlarm  ActionExecutor = "alarm"  //告警
+)
+
 type Actions []*Action
 
 type Action struct {
-	Executor string      `json:"executor"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
-	Delay    ActionDelay `json:"delay""`
-	Alarm    ActionAlarm `json:"alarm""`
+	Executor ActionExecutor `json:"executor"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
+	Delay    *ActionDelay   `json:"delay"`
+	Alarm    *ActionAlarm   `json:"alarm"`
 }
 
-type ActionDelay struct {
-	Time int64  `json:"time"` //延迟时间
-	Unit string `json:"unit"` //时间单位 seconds:秒  minutes:分钟  hours:小时
+func (a Actions) Validate() error {
+	if a == nil {
+		return nil
+	}
+	for _, v := range a {
+		err := v.Validate()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
-type ActionAlarm struct {
-	Mode string `json:"mode"` //告警模式  trigger: 触发告警  relieve: 解除告警
+func (a *Action) Validate() error {
+	if a == nil {
+		return nil
+	}
+	switch a.Executor {
+	case ActionExecutorNotify:
+		return errors.Parameter.AddMsg("暂不支持的操作类型:" + string(a.Executor))
+	case ActionExecutorDelay:
+		if a.Delay == nil {
+			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
+		}
+		return a.Delay.Validate()
+	case ActionExecutorDevice:
+		return errors.Parameter.AddMsg("暂不支持的操作类型:" + string(a.Executor))
+	case ActionExecutorAlarm:
+		if a.Alarm == nil {
+			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
+		}
+		return a.Alarm.Validate()
+	default:
+		return errors.Parameter.AddMsg("操作类型不支持:" + string(a.Executor))
+	}
+	return nil
 }
