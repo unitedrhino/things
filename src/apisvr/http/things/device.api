@@ -6,6 +6,7 @@ info(
 	version: "v1"
 )
 import "things/device/auth.api" //设备校验接口
+import "things/device/auth5.api" //设备校验接口
 import "things/device/msg.api" //设备消息获取接口
 import "things/device/gateway.api"  //设备网关子设备模块相关接口
 import "things/device/info.api"  //设备管理模块相关接口
