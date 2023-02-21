@@ -1,30 +1,27 @@
 FROM golang:1.19-alpine3.16 as go-builder
-ARG SVR_NAME
 ARG GOPROXY=goproxy.cn
 ENV GOPROXY=https://${GOPROXY},direct
-
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
-RUN apk add --no-cache make
-
 WORKDIR /ithings/
+COPY ./go.mod ./go.mod
+RUN go mod download
+COPY ./ ./
+RUN cd ./src/apisvr && go mod tidy && go build .
 
-COPY src/ src/
-COPY shared/ shared/
-COPY go.mod go.sum Makefile ./
-
-RUN go mod download -x
-RUN make build.${SVR_NAME}
+FROM node:19 as web-builder
+WORKDIR /ithings/
+COPY ./assets/package.json ./assets/package.json
+RUN cd assets && yarn config set registry https://registry.npm.taobao.org && yarn install --no-lockfile
+COPY ./assets ./assets
+RUN cd assets && yarn build
 
 FROM alpine:3.16
-ARG SVR_NAME
-LABEL name="${SVR_NAME}svr"
-LABEL author="wwhai"
-LABEL email="cnwwhai@gmail.com"
 LABEL homepage="https://github.com/i4de/ithings"
+ENV TZ Asia/Shanghai
+RUN apk add tzdata
 
 WORKDIR /ithings/
-COPY --from=go-builder /ithings/cmd/${SVR_NAME}svr ./bin/svr
-COPY --from=go-builder /ithings/src/${SVR_NAME}svr/etc ./etc
+COPY --from=go-builder /ithings/src/apisvr/apisvr ./apisvr
+COPY --from=go-builder /ithings/src/apisvr/etc ./etc
+COPY --from=web-builder /ithings/assets/dist/ ./dist/front/iThingsCore
 
-EXPOSE 2580
-ENTRYPOINT ["./bin/svr"]
+ENTRYPOINT ["./apisvr"]
