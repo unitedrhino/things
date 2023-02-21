@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/events"
+	"github.com/nats-io/nats.go"
 	"testing"
 	"time"
 )
@@ -20,7 +21,7 @@ func TestGetApplicationMsg(t *testing.T) {
 		t.Error(err)
 	}
 	//订阅所有消息
-	_, err = nc.Subscribe("application.>", events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+	_, err = nc.Subscribe("application.>", events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 		fmt.Println(string(msg))
 		return err
 	}))

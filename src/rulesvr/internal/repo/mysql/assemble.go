@@ -18,14 +18,13 @@ func ToScenePo(info *scene.Info) *RuleSceneInfo {
 
 func ToSceneDo(info *RuleSceneInfo) *scene.Info {
 	ret := &scene.Info{
-		ID:      info.Id,
-		Name:    info.Name,
-		Desc:    info.Desc,
-		Trigger: &scene.Trigger{},
-		When:    make(scene.Terms, 0),
-		Then:    make(scene.Actions, 0),
+		ID:   info.Id,
+		Name: info.Name,
+		Desc: info.Desc,
+		When: make(scene.Terms, 0),
+		Then: make(scene.Actions, 0),
 	}
-	utils.SqlNullStringToAny(info.Trigger, ret.Trigger)
+	utils.SqlNullStringToAny(info.Trigger, &ret.Trigger)
 	utils.SqlNullStringToAny(info.When, &ret.When)
 	utils.SqlNullStringToAny(info.Then, &ret.Then)
 	return ret

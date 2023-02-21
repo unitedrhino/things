@@ -36,7 +36,8 @@ message SceneInfoReadReq{
 message SceneInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string name =2;//场景名 模糊查询
-
+  int64 state = 3;//状态: 1启用 2禁用
+  string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
 }
 
 message SceneInfoIndexResp{
@@ -51,6 +52,7 @@ message SceneInfoDeleteReq{
 message SceneInfo{
   int64 id = 1;//场景id
   string name =2;//场景名
+  int64 state = 3;//状态: 1启用 2禁用
   string desc = 4;//描述
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
   string trigger = 6;//触发器

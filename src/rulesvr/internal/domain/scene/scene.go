@@ -9,9 +9,10 @@ type Info struct {
 	Name        string    `json:"name"`
 	Desc        string    `json:"desc"`
 	CreatedTime time.Time `json:"createdTime"`
-	Trigger     *Trigger  `json:"trigger"`
+	Trigger     Trigger   `json:"trigger"`
 	When        Terms     `json:"when"` //只有设备触发时才有用
 	Then        Actions   `json:"then"`
+	Status      int64     `json:"status"` // 状态
 }
 
 func (i *Info) Validate() error {
