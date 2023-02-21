@@ -6,7 +6,7 @@ import (
 )
 
 func NewRuleEngine() client.RuleEngine {
-	svc := GetCtxSvc()
+	svc := GetSvcCtx()
 	svr := client.NewDirectRuleEngine(svc, server.NewRuleEngineServer(svc))
 	return svr
 }
