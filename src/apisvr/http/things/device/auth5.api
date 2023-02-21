@@ -1,0 +1,42 @@
+info(
+    title: "认证管理(p2)"
+    desc: "认证管理(p2)"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+@server(
+    group : things/device/auth5
+    prefix: /api/v1/things/device/auth5
+)
+service api {
+    @doc "设备登录认证"
+    @handler login
+    post /login (DeviceAuth5LoginReq) returns (DeviceAuth5LoginResp)
+    @doc "设备操作认证"
+    @handler access
+    post /access (DeviceAuth5AccessReq) returns (DeviceAuth5AccessResp)
+}
+
+type DeviceAuth5LoginReq {
+    Username    string `json:"username"`                       //用户名
+    Password    string `json:"password,optional"`              //密码
+    ClientID    string `json:"clientID"`                       //clientID
+    Ip          string `json:"ip"`                             //访问的ip地址
+    Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
+}
+type DeviceAuth5LoginResp {
+    Result      string `json:"result"`              //验证结果 "allow" | "deny" | "ignore"
+    IsSuperuser bool `json:"is_superuser,optional"` //是否为超级用户，可选 true | false，该项为空时默认为 false
+}
+type DeviceAuth5AccessReq {
+    Username string `json:"username,omitempty"` //用户名
+    Topic    string `json:"topic,omitempty"`    //主题
+    ClientID string `json:"clientID,omitempty"` //clientID
+    Action   string `json:"action,omitempty"`   //操作
+    Ip       string `json:"ip,omitempty"`       //访问的ip地址
+}
+type DeviceAuth5AccessResp {
+    Result      string `json:"result"`              //验证结果 "allow" | "deny" | "ignore"
+}
