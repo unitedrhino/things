@@ -45,6 +45,11 @@ const (
 	ApplicationDeviceReportThingProperty = "application.device.%s.%s.report.thing.property.%s"
 	// ApplicationDeviceReportThingEvent 设备物模型事件上报通知 中间两个是产品id和设备名称,最后两个是事件类型和事件id
 	ApplicationDeviceReportThingEvent = "application.device.%s.%s.report.thing.event.%s.%s"
+
+	ApplicationDeviceReportThingEventAllDevice    = "application.device.*.*.report.thing.event.>"
+	ApplicationDeviceReportThingPropertyAllDevice = "application.device.*.*.report.thing.property.>"
+	ApplicationDeviceStatusConnectedAllDevice     = "application.device.*.*.status.connected"
+	ApplicationDeviceStatusDisConnectedAllDevice  = "application.device.*.*.status.disconnected"
 )
 
 //dmsvr发布的事件通知

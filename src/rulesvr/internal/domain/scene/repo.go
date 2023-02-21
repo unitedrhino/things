@@ -4,7 +4,9 @@ import "github.com/i-Things/things/shared/def"
 import "context"
 
 type InfoFilter struct {
-	Name string `json:"name"`
+	Name        string `json:"name"`
+	State       int64
+	TriggerType TriggerType
 }
 
 type Repo interface {
