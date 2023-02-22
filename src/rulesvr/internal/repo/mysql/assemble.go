@@ -6,25 +6,38 @@ import (
 )
 
 func ToScenePo(info *scene.Info) *RuleSceneInfo {
-	return &RuleSceneInfo{
-		Id:      info.ID,
-		Name:    info.Name,
-		Trigger: utils.AnyToNullString(info.Trigger),
-		When:    utils.AnyToNullString(info.When),
-		Then:    utils.AnyToNullString(info.Then),
-		Desc:    info.Desc,
+	ret := RuleSceneInfo{
+		Id:          info.ID,
+		Name:        info.Name,
+		TriggerType: string(info.TriggerType),
+		Trigger:     utils.AnyToNullString(info.Trigger),
+		When:        utils.AnyToNullString(info.When),
+		Then:        utils.AnyToNullString(info.Then),
+		Desc:        info.Desc,
+		State:       info.State,
 	}
+	switch info.TriggerType {
+	case scene.TriggerTypeDevice:
+		ret.Trigger = utils.AnyToNullString(info.Trigger.Device)
+	}
+	return &ret
 }
 
 func ToSceneDo(info *RuleSceneInfo) *scene.Info {
 	ret := &scene.Info{
-		ID:   info.Id,
-		Name: info.Name,
-		Desc: info.Desc,
-		When: make(scene.Terms, 0),
-		Then: make(scene.Actions, 0),
+		ID:          info.Id,
+		Name:        info.Name,
+		Desc:        info.Desc,
+		When:        make(scene.Terms, 0),
+		Then:        make(scene.Actions, 0),
+		State:       info.State,
+		TriggerType: scene.TriggerType(info.TriggerType),
+		CreatedTime: info.CreatedTime,
 	}
-	utils.SqlNullStringToAny(info.Trigger, &ret.Trigger)
+	switch ret.TriggerType {
+	case scene.TriggerTypeDevice:
+		utils.SqlNullStringToAny(info.Trigger, &ret.Trigger.Device)
+	}
 	utils.SqlNullStringToAny(info.When, &ret.When)
 	utils.SqlNullStringToAny(info.Then, &ret.Then)
 	return ret
