@@ -28,11 +28,13 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.SceneInfoIndexReq) (resp *types.SceneInfoIndexResp, err error) {
-	dmReq := &rule.SceneInfoIndexReq{
-		Page: logic.ToRulePageRpc(req.Page),
-		Name: req.Name,
+	pbReq := &rule.SceneInfoIndexReq{
+		Page:        logic.ToRulePageRpc(req.Page),
+		Name:        req.Name,
+		State:       req.State,
+		TriggerType: req.TriggerType,
 	}
-	ruleResp, err := l.svcCtx.Scene.SceneInfoIndex(l.ctx, dmReq)
+	ruleResp, err := l.svcCtx.Scene.SceneInfoIndex(l.ctx, pbReq)
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.SceneInfoIndexReq req=%v err=%+v", utils.FuncName(), req, er)
