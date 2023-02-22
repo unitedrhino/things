@@ -80,7 +80,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	}
 
 	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusConnected, ThingsDeliverGroup,
-		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
 			if err != nil {
 				return err
@@ -93,7 +93,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	}
 
 	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusDisconnected, ThingsDeliverGroup,
-		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
 			if err != nil {
 				return err
@@ -109,7 +109,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 func (n *NatsClient) queueSubscribeDevPublish(topic string,
 	handleFunc func(ctx context.Context, msg *deviceMsg.PublishMsg) error) error {
 	_, err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
-		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ele, err := deviceMsg.GetDevPublish(ctx, msg)
 			if err != nil {
 				return err

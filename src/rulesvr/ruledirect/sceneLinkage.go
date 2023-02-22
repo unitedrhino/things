@@ -6,7 +6,7 @@ import (
 )
 
 func NewSceneLinkage() client.SceneLinkage {
-	svc := GetCtxSvc()
+	svc := GetSvcCtx()
 	svr := client.NewDirectSceneLinkage(svc, server.NewSceneLinkageServer(svc))
 	return svr
 }

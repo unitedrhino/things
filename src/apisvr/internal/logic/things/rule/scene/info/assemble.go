@@ -7,21 +7,27 @@ import (
 
 func ToSceneTypes(in *rule.SceneInfo) *types.SceneInfo {
 	return &types.SceneInfo{
-		ID:      in.Id,
-		Name:    in.Name,
-		Desc:    in.Desc,
-		Trigger: in.Trigger,
-		When:    in.When,
-		Then:    in.Then,
+		ID:          in.Id,
+		Name:        in.Name,
+		Desc:        in.Desc,
+		Trigger:     in.Trigger,
+		When:        in.When,
+		Then:        in.Then,
+		State:       in.State,
+		TriggerType: in.TriggerType,
+		CreatedTime: in.CreatedTime,
 	}
 }
 func ToScenePb(in *types.SceneInfo) *rule.SceneInfo {
 	return &rule.SceneInfo{
-		Id:      in.ID,
-		Name:    in.Name,
-		Desc:    in.Desc,
-		Trigger: in.Trigger,
-		When:    in.When,
-		Then:    in.Then,
+		Id:          in.ID,
+		Name:        in.Name,
+		Desc:        in.Desc,
+		Trigger:     in.Trigger,
+		When:        in.When,
+		Then:        in.Then,
+		State:       in.State,
+		TriggerType: in.TriggerType,
+		CreatedTime: in.CreatedTime,
 	}
 }

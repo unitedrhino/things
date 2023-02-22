@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	svcCtx := ruledirect.GetCtxSvc()
+	svcCtx := ruledirect.GetSvcCtx()
 	c := svcCtx.Config
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {

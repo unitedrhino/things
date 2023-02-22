@@ -61,6 +61,12 @@ func (c customRuleSceneInfoModel) FmtFilter(filter scene.InfoFilter, sql sq.Sele
 	if filter.Name != "" {
 		sql = sql.Where("name like ?", "%"+filter.Name+"%")
 	}
+	if filter.TriggerType != "" {
+		sql = sql.Where("triggerType = ?", filter.TriggerType)
+	}
+	if filter.State != 0 {
+		sql = sql.Where("state = ?", filter.State)
+	}
 	return sql
 }
 
