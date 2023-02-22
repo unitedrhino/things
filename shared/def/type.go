@@ -16,6 +16,11 @@ const (
 	False = 2 //否
 )
 
+const (
+	Enable  = 1 //启用
+	Disable = 2 //禁用
+)
+
 func ToBool[boolType constraints.Integer](in boolType) bool {
 	if in == True {
 		return true

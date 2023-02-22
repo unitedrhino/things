@@ -26,7 +26,7 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 
 func (n *NatsClient) Subscribe(handle Handle) error {
 	_, err := n.client.Subscribe(topics.DmProductUpdateSchema,
-		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			tempInfo := events.DataUpdateInfo{}
 			err := json.Unmarshal(msg, &tempInfo)
 			if err != nil {
@@ -38,7 +38,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		return err
 	}
 	_, err = n.client.Subscribe(topics.DmDeviceUpdateLogLevel,
-		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			tempInfo := events.DataUpdateInfo{}
 			err := json.Unmarshal(msg, &tempInfo)
 			if err != nil {
@@ -50,7 +50,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		return err
 	}
 	_, err = n.client.Subscribe(topics.DmDeviceUpdateGateway,
-		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			tempInfo := events.GatewayUpdateInfo{}
 			err := json.Unmarshal(msg, &tempInfo)
 			if err != nil {
@@ -63,7 +63,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	}
 
 	_, err = n.client.Subscribe(topics.DmDeviceUpdateRemoteConfig,
-		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			tempInfo := events.DataUpdateInfo{}
 			err := json.Unmarshal(msg, &tempInfo)
 			if err != nil {

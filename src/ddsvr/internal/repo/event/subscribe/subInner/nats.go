@@ -32,7 +32,7 @@ func newNatsClient(conf conf.NatsConf) (SubInner, error) {
 
 func (n *NatsClient) SubToDevMsg(handle Handle) error {
 	_, err := n.client.QueueSubscribe(topics.DeviceDownAll, ThingsDDDeliverGroup,
-		events.NatsSubscription(func(ctx context.Context, msg []byte) error {
+		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			topic, payload := devices.GetPublish(msg)
 			//给设备回包之前，将链路信息span推送至jaeger
 			_, span := traces.StartSpan(ctx, topics.DeviceDownAll, "")

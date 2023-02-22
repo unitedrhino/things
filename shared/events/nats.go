@@ -8,7 +8,7 @@ import (
 	"github.com/zeromicro/go-zero/core/timex"
 )
 
-type HandleFunc func(ctx context.Context, msg []byte) error
+type HandleFunc func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error
 
 func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 	return func(msg *nats.Msg) {
@@ -23,7 +23,7 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 		ctx := emsg.GetCtx()
 		ctx, span := traces.StartSpan(ctx, msg.Subject, "")
 		defer span.End()
-		err := handle(ctx, emsg.GetData())
+		err := handle(ctx, emsg.GetData(), msg)
 		if err != nil {
 			logx.WithContext(ctx).WithDuration(duration).Errorf("nats subscription|subject:%v,body:%v,err:%v",
 				msg.Subject, string(emsg.GetData()), err)
