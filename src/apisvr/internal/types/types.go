@@ -900,6 +900,7 @@ type SceneInfo struct {
 	State       int64  `json:"state,optional"` //状态: 1启用 2禁用
 	Desc        string `json:"desc,optional"`
 	CreatedTime int64  `json:"createdTime,optional"`
+	TriggerType string `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
 	Trigger     string `json:"trigger,optional"`
 	When        string `json:"when,optional"`
 	Then        string `json:"then"`

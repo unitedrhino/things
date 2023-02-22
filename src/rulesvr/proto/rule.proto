@@ -55,9 +55,10 @@ message SceneInfo{
   int64 state = 3;//状态: 1启用 2禁用
   string desc = 4;//描述
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
-  string trigger = 6;//触发器
-  string when = 7;//触发条件
-  string then = 8;//满足条件时执行的动作
+  string triggerType = 6;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+  string trigger = 7;//触发器
+  string when = 8;//触发条件
+  string then = 9;//满足条件时执行的动作
 }
 
 
