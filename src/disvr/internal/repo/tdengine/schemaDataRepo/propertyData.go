@@ -40,9 +40,10 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 				return errors.System.AddDetail("param json parse failure")
 			}
 		}
-		sql := fmt.Sprintf("insert into %s using %s (ts, param) values (?,?);",
+		sql := fmt.Sprintf("insert into %s using %s tags('%s','%s')(ts, param) values (?,?);",
 			d.GetPropertyTableName(productID, deviceName, property.Identifier),
-			d.GetPropertyStableName(productID, property.Identifier))
+			d.GetPropertyStableName(productID, property.Identifier),
+			deviceName, t.Property[property.Identifier].Define.Type)
 		if _, err := d.t.ExecContext(ctx, sql, property.TimeStamp, param); err != nil {
 			return err
 		}
