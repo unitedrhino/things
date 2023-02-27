@@ -2,8 +2,10 @@ package appDeviceEvent
 
 import (
 	"context"
+	"fmt"
 	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,15 +31,33 @@ func (a *AppDeviceHandle) DeviceEventReport(in *application.EventReport) error {
 
 func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) error {
 	a.Infof("%s req=%v", utils.FuncName(), in)
+	infos, err := a.svcCtx.SceneDeviceRepo.GetInfos(a.ctx, in.Device, scene.DeviceOperationOperatorReportProperty, in.Identifier)
+	if err != nil {
+		a.Errorf("%s.GetInfos err:%v", err)
+		return err
+	}
+	fmt.Println(infos)
 	return nil
 }
 
 func (a *AppDeviceHandle) DeviceStatusConnected(in *application.ConnectMsg) error {
 	a.Infof("%s req=%v", utils.FuncName(), in)
+	infos, err := a.svcCtx.SceneDeviceRepo.GetInfos(a.ctx, in.Device, scene.DeviceOperationOperatorConnected, "")
+	if err != nil {
+		a.Errorf("%s.GetInfos err:%v", err)
+		return err
+	}
+	fmt.Println(infos)
 	return nil
 }
 
 func (a *AppDeviceHandle) DeviceStatusDisConnected(in *application.ConnectMsg) error {
 	a.Infof("%s req=%v", utils.FuncName(), in)
+	infos, err := a.svcCtx.SceneDeviceRepo.GetInfos(a.ctx, in.Device, scene.DeviceOperationOperatorDisConnected, "")
+	if err != nil {
+		a.Errorf("%s.GetInfos err:%v", err)
+		return err
+	}
+	fmt.Println(infos)
 	return nil
 }
