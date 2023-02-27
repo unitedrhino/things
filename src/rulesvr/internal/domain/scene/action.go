@@ -17,8 +17,9 @@ type Actions []*Action
 
 type Action struct {
 	Executor ActionExecutor `json:"executor"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
-	Delay    *ActionDelay   `json:"delay"`
+	Delay    *UnitTime      `json:"delay"`
 	Alarm    *ActionAlarm   `json:"alarm"`
+	Device   *ActionDevice  `json:"device"`
 }
 
 func (a Actions) Validate() error {

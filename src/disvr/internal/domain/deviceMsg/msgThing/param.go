@@ -70,7 +70,7 @@ func (p *Param) ToVal() any {
 	case schema.DataTypeStruct:
 		v, ok := p.Value.Value.(map[string]Param)
 		if ok == false {
-			return nil
+			panic("struct Param is not find")
 		}
 		val := make(map[string]any, len(v)+1)
 		for _, tp := range v {
@@ -80,7 +80,7 @@ func (p *Param) ToVal() any {
 	case schema.DataTypeArray:
 		array, ok := p.Value.Value.([]any)
 		if ok == false {
-			return nil
+			panic("array Param is not find")
 		}
 		val := make([]any, 0, len(array)+1)
 		for _, value := range array {

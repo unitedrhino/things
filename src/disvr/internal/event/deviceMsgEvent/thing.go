@@ -82,7 +82,8 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *d
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}
-	for identifier, param := range params {
+	paramValues := ToParamValues(tp)
+	for identifier, param := range paramValues {
 		err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, application.PropertyReport{
 			Device: core, Timestamp: timeStamp.UnixMilli(),
 			Identifier: identifier, Param: param,
@@ -159,11 +160,12 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	}
 	dbData.Params = msgThing.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
+	paramValues := ToParamValues(tp)
 	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, application.EventReport{
 		Device:     devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		Timestamp:  dbData.TimeStamp.UnixMilli(),
 		Identifier: dbData.Identifier,
-		Params:     dbData.Params,
+		Params:     paramValues,
 		Type:       dbData.Type,
 	})
 	if err != nil {
