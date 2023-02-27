@@ -8,24 +8,44 @@ import (
 type TermColumnType string
 
 const (
-	TermColumnTypeProperty   TermColumnType = "property"
-	TermColumnTypeEvent      TermColumnType = "event"
-	TermColumnTypeReportTime TermColumnType = "reportTime"
-	TermColumnTypeSysTime    TermColumnType = "sysTime"
+	TermColumnTypeProperty TermColumnType = "property"
+	TermColumnTypeEvent    TermColumnType = "event"
+	//TermColumnTypeReportTime TermColumnType = "reportTime"
+	TermColumnTypeSysTime TermColumnType = "sysTime"
 )
 
-type TermColumn struct {
-	Type   TermColumnType `json:"type"`   //字段类型 property:属性 event:事件 reportTime:上报时间 sysTime:系统时间
-	DataID []string       `json:"dataID"` //属性的id及事件的id
+// ColumnSchema 物模型类型 属性,事件
+type ColumnSchema struct {
+	ProductID  string   `json:"productID"` //产品id
+	DeviceName string   `json:"deviceName"`
+	DataID     []string `json:"dataID"`   //属性的id及事件的id aa.bb.cc
+	TermType   TermType `json:"termType"` //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	Values     []string `json:"values"`   //条件值 参数根据动态条件类型会有多个参数
 }
 
-func (t *TermColumn) Validate() error {
-	if t == nil {
+func (t TermColumnType) Validate() error {
+	if !utils.SliceIn(t, TermColumnTypeProperty, TermColumnTypeEvent, TermColumnTypeSysTime) {
+		return errors.Parameter.AddMsg("条件类型不支持:" + string(t))
+	}
+	return nil
+}
+
+func (c *ColumnSchema) Validate() error {
+	if c == nil {
 		return nil
 	}
-	if !utils.SliceIn(t.Type, TermColumnTypeProperty, TermColumnTypeEvent, TermColumnTypeReportTime, TermColumnTypeSysTime) {
-		return errors.Parameter.AddMsg("触发条件中的字段名类型不支持:" + string(t.Type))
+	if err := c.TermType.Validate(c.Values); err != nil {
+		return err
 	}
-	//todo 这里需要校验属性是否存在
+	if c.ProductID == "" {
+		return errors.Parameter.AddMsg("触发设备类型中的产品id需要填写")
+	}
+	if c.DeviceName == "" {
+		return errors.Parameter.AddMsg("触发设备类型中的设备名需要填写")
+	}
+	if len(c.DataID) == 0 {
+		return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
+	}
+
 	return nil
 }

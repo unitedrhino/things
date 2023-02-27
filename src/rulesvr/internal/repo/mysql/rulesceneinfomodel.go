@@ -70,7 +70,7 @@ func (c customRuleSceneInfoModel) FmtFilter(filter scene.InfoFilter, sql sq.Sele
 	return sql
 }
 
-func (c customRuleSceneInfoModel) FindByFilter(ctx context.Context, filter scene.InfoFilter, page *def.PageInfo) ([]*scene.Info, error) {
+func (c customRuleSceneInfoModel) FindByFilter(ctx context.Context, filter scene.InfoFilter, page *def.PageInfo) (scene.Infos, error) {
 	var poList []*RuleSceneInfo
 	sql := sq.Select(ruleSceneInfoRows).From(c.repo.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = c.FmtFilter(filter, sql)

@@ -72,7 +72,7 @@ func SetToSlice[t constraints.Ordered](in map[t]struct{}) (ret []t) {
 }
 
 func AnyToNullString(in any) sql.NullString {
-	if in == nil {
+	if in == nil || IsNil(in) {
 		return sql.NullString{}
 	}
 	str, err := json.Marshal(in)

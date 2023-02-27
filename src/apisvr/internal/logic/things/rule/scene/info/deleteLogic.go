@@ -2,6 +2,9 @@ package info
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,7 +27,11 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 }
 
 func (l *DeleteLogic) Delete(req *types.SceneInfoDeleteReq) error {
-	// todo: add your logic here and delete this line
-
+	_, err := l.svcCtx.Scene.SceneInfoDelete(l.ctx, &rule.SceneInfoDeleteReq{Id: req.ID})
+	if err != nil {
+		er := errors.Fmt(err)
+		l.Errorf("%s.rpc.SceneInfoDelete req=%v err=%v", utils.FuncName(), req, er)
+		return er
+	}
 	return nil
 }
