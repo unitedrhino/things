@@ -146,6 +146,7 @@ func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) e
 	_, err = m.LogRpc.OperLogCreate(r.Context(), &user.OperLogCreateReq{
 		Uid:          userHeader.GetUserCtx(r.Context()).Uid,
 		Uri:          uri + r.Host + r.RequestURI,
+		Route:        r.RequestURI,
 		OperIpAddr:   ipAddr,
 		OperLocation: m.GetCityByIp(ipAddr),
 		Req:          rsp,
