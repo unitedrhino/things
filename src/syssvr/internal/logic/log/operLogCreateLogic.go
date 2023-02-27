@@ -31,15 +31,15 @@ func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Respo
 	//OperUserName 用uid查用户表获得
 	resUser, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, in.Uid)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, errors.Database.AddMsgf("UserInfoModel.FindOne is err, uid:%ld", in.Uid)
 	}
-	//OperName，BusinessType 用uri查接口管理表获得
-	resApi, err := l.svcCtx.ApiModel.FindOneByRoute(l.ctx, in.Uri)
+	//OperName，BusinessType 用Route查接口管理表获得
+	resApi, err := l.svcCtx.ApiModel.FindOneByRoute(l.ctx, in.Route)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, errors.Database.AddMsgf("ApiModel.FindOneByRoute is err, url:%s", in.Route)
 	}
 	if resApi.BusinessType != log.OptQuery {
-		_, err = l.svcCtx.LogOperModel.Insert(l.ctx, &mysql.SysOperLog{
+		_, err := l.svcCtx.LogOperModel.Insert(l.ctx, &mysql.SysOperLog{
 			OperUid:      in.Uid,
 			OperUserName: resUser.UserName.String,
 			OperName:     resApi.Name,
@@ -53,7 +53,7 @@ func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Respo
 			Msg:          in.Msg,
 		})
 		if err != nil {
-			return nil, errors.Database.AddDetail(err)
+			return nil, errors.Database.AddMsgf("LogOperModel.Insert is err:%s", err.Error())
 		}
 	}
 
