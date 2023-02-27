@@ -8,6 +8,20 @@ networks:
     driver: bridge
 
 services:
+  ithings:
+    image: ithings/ithings:latest
+    container_name: ithings
+    restart: always
+    ports:
+      - "7777:7777"
+    volumes:
+      - ./deploy/conf/ithings/apisvr/etc:/ithings/etc
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+
   nats-server:
     image: nats:2.8-alpine
     container_name: nats
@@ -16,58 +30,28 @@ services:
       - "4222:4222"
       - "6222:6222"
       - "8222:8222"
-    volumes:
-      - ./deploy/conf/nats/nats-server.conf:/nats-server.conf
     logging:
       options:
         max-size: "50M"
         max-file: "10"
       driver: json-file
-    networks:
-      ithings_net:
-        aliases:
-          - node1.nats.io
 
   etcd:
-    image: quay.io/coreos/etcd:v3.3.12
+    image: docker.io/bitnami/etcd:3.5
     container_name: etcd-v3
     restart: always
     ports:
-      - 2379:2379
-      - 2380:2380
+      - "2379:2379"
+      - "2380:2380"
     environment:
-      ETCDCTL_API: 3
-    command:
-      - "/usr/local/bin/etcd"
-      - "--name"
-      - "s1"
-      - "--data-dir"
-      - "/etcd-data"
-      - "--advertise-client-urls"
-      - "http://0.0.0.0:2379"
-      - --listen-client-urls
-      - "http://0.0.0.0:2379"
-      - "--initial-advertise-peer-urls"
-      - "http://0.0.0.0:2380"
-      - "--listen-peer-urls"
-      - "http://0.0.0.0:2380"
-      - "--initial-cluster-token"
-      - "tkn"
-      - "--initial-cluster"
-      - "s1=http://0.0.0.0:2380"
-      - "--initial-cluster-state"
-      - "new"
-    volumes:
-      - ${DATA_DIR}/data/etcd/data:/etcd-data
+      - ALLOW_NONE_AUTHENTICATION=yes
+#    volumes:
+#      - etcd_data:/bitnami/etcd
     logging:
       options:
         max-size: "50M"
         max-file: "10"
       driver: json-file
-    networks:
-      ithings_net:
-        aliases:
-          - node1.etcd.io
 
   mariadb:
     container_name: mariadb
@@ -86,10 +70,6 @@ services:
         max-size: "50M"
         max-file: "10"
       driver: json-file
-    networks:
-      ithings_net:
-        aliases:
-          - node1.mysql.io
 
   redis:
     hostname: redis
@@ -103,10 +83,6 @@ services:
         max-size: "50M"
         max-file: "10"
       driver: json-file
-    networks:
-      ithings_net:
-        aliases:
-          - node1.redis.io
 
   tdengine:
     image: tdengine/tdengine
@@ -117,11 +93,6 @@ services:
       - "6035:6035"
       - "6041:6041"
       - "6030-6040:6030-6040/udp"
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - ${DATA_DIR}/data/tdengine/lib:/var/lib/taos:Z
-      - ${DATA_DIR}/data/tdengine/log:/var/log/taos:Z
     restart: always
     tty: true
     logging:
@@ -129,10 +100,6 @@ services:
         max-size: "50M"
         max-file: "10"
       driver: json-file
-    networks:
-      ithings_net:
-        aliases:
-          - node1.tdengine.io
 
   emqx:
     container_name: emqx
@@ -156,10 +123,6 @@ services:
         max-size: "50M"
         max-file: "10"
       driver: json-file
-    networks:
-      ithings_net:
-        aliases:
-          - node1.emqx.io
 
   minio:
     image: minio/minio:latest
