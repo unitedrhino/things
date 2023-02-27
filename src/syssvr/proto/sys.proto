@@ -119,12 +119,13 @@ message OperLogCreateReq{
   string operName = 3;           //操作名称
   int64  businessType = 4;       //业务类型（1新增 2修改 3删除 4查询）
   string uri = 5;                //请求地址
-  string operIpAddr = 6;         //操作主机地址
-  string operLocation = 7;       //操作地点
-  string req = 8;                //请求参数
-  string resp = 9;               //返回参数
-  int64  code = 10;              //返回状态（200成功 其它失败）
-  string msg = 11;               //提示消息
+  string route = 6;              //接口路由
+  string operIpAddr = 7;         //操作主机地址
+  string operLocation = 8;       //操作地点
+  string req = 9;                //请求参数
+  string resp = 10;              //返回参数
+  int64  code = 11;              //返回状态（200成功 其它失败）
+  string msg = 12;               //提示消息
 }
 
 //用户属性信息
