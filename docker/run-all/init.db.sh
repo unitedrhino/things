@@ -1,4 +1,5 @@
 #!/bin/bash
+
 function init_mysql_db_table(){
  for (( i=0; i<300; i++)); do
    check_result=$(docker ps |grep mariadb)
