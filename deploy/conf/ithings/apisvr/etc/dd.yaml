@@ -11,8 +11,8 @@ DevLink:
     Pass: iThings
     User: ddsvr
     Brokers:
-      - tcp://10.1.0.237:1883
+      - tcp://172.19.0.7:1883
 Event:
   Mode: nats
   Nats:
-    Url: nats://10.1.0.237:4222
+    Url: nats://172.19.0.2:4222

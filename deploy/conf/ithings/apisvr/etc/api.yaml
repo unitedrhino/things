@@ -8,7 +8,7 @@ NodeID: 1
 Log:
   Encoding: plain
 CacheRedis:
-  - Host: 10.1.0.237:6379
+  - Host: 172.19.0.5:6379
     Pass:
     Type: node
 Rej:
@@ -23,6 +23,7 @@ OpenAuth:
   IpRange:
     - 127.0.0.1
     - 172.18.0.1
+    - 172.19.0.1
     - 192.168.1.1
 DdEnable: true
 SysRpc:
@@ -31,7 +32,7 @@ SysRpc:
   Conf:
     Etcd:
       Hosts:
-        - 10.1.0.237:2379
+        - 172.19.0.3:2379
       Key: sys.rpc
 DiRpc:
   Enable: true
