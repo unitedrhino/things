@@ -8,7 +8,7 @@ networks:
 
 services:
   ithings:
-    image: ithings/ithings:latest
+    image: ghcr.io/i4de/ithings:latest
     container_name: ithings
     restart: always
     ports:
