@@ -31,9 +31,9 @@ CREATE TABLE if not exists `sys_user_info`
     UNIQUE KEY `user_email` (`email`) USING BTREE,
     UNIQUE KEY `user_wechat` (`wechat`) USING BTREE,
     KEY `user_deletedTime` (`deletedTime`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='用户登录信息表';
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='用户登录信息表';
 
 # 新增root用户
 INSERT IGNORE INTO `sys_user_info`(`uid`, `userName`, `password`, `email`, `phone`, `wechat`, `lastIP`, `regIP`, `role`,
@@ -54,9 +54,9 @@ CREATE TABLE if not exists `sys_role_info`
     `status`      int                   default 1 null comment '状态  1:启用,2:禁用',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `nameIndex` (`name`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='角色管理表';
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='角色管理表';
 
 INSERT into sys_role_info (name)
 values ('admin');
@@ -71,9 +71,9 @@ CREATE TABLE if not exists `sys_role_menu`
     `deletedTime` datetime          DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `roleIDMenuIDIndex` (`roleID`, `menuID`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='角色菜单关联表';
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='角色菜单关联表';
 
 INSERT IGNORE INTO `sys_role_menu`
 VALUES (248, 1, 2, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
@@ -136,9 +136,9 @@ CREATE TABLE if not exists `sys_menu_info`
     `deletedTime`   datetime              DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `nameIndex` (`name`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='菜单管理表';
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='菜单管理表';
 
 INSERT IGNORE INTO `sys_menu_info`
 VALUES (2, 1, 0, 2, '设备管理', '/deviceMangers', './deviceMangers/index.tsx', 'icon_data_01', '', '', 2,
@@ -212,35 +212,35 @@ VALUES (35, 1, 1, 1, '首页', '/home',
 
 DROP TABLE IF EXISTS `sys_login_log`;
 CREATE TABLE `sys_login_log` (
-    `id` bigint auto_increment COMMENT '编号',
-    `uid`         bigint       NOT NULL COMMENT '用户id',
-    `userName` varchar(50) DEFAULT '' COMMENT '登录账号',
-    `ipAddr` varchar(50) DEFAULT '' COMMENT '登录IP地址',
-    `loginLocation` varchar(100) DEFAULT '' COMMENT '登录地点',
-    `browser` varchar(50) DEFAULT '' COMMENT '浏览器类型',
-    `os` varchar(50) DEFAULT '' COMMENT '操作系统',
-    `code` int(11) NOT NULL DEFAULT 200 COMMENT '登录状态（200成功 其它失败）',
-    `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
-    `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登录时间',
-    PRIMARY KEY (`id`) USING BTREE
+                                 `id` bigint auto_increment COMMENT '编号',
+                                 `uid`         bigint       NOT NULL COMMENT '用户id',
+                                 `userName` varchar(50) DEFAULT '' COMMENT '登录账号',
+                                 `ipAddr` varchar(50) DEFAULT '' COMMENT '登录IP地址',
+                                 `loginLocation` varchar(100) DEFAULT '' COMMENT '登录地点',
+                                 `browser` varchar(50) DEFAULT '' COMMENT '浏览器类型',
+                                 `os` varchar(50) DEFAULT '' COMMENT '操作系统',
+                                 `code` int(11) NOT NULL DEFAULT 200 COMMENT '登录状态（200成功 其它失败）',
+                                 `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
+                                 `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登录时间',
+                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT  COMMENT='登录日志管理';
 
 DROP TABLE IF EXISTS `sys_oper_log`;
 CREATE TABLE `sys_oper_log` (
-    `id` bigint auto_increment COMMENT '编号',
-    `operUid`         bigint       NOT NULL COMMENT '用户id',
-    `operUserName` varchar(50) DEFAULT '' COMMENT '操作人员名称',
-    `operName` varchar(50) DEFAULT '' COMMENT '操作名称',
-    `businessType` int(11) NOT NULL COMMENT '业务类型（1新增 2修改 3删除 4查询 5其它）',
-    `uri` varchar(100) DEFAULT '' COMMENT '请求地址',
-    `operIpAddr` varchar(50) DEFAULT '' COMMENT '主机地址',
-    `operLocation` varchar(255) DEFAULT '' COMMENT '操作地点',
-    `req` text COMMENT '请求参数',
-    `resp` text COMMENT '返回参数',
-    `code` int(11) NOT NULL DEFAULT 200 COMMENT '返回状态（200成功 其它失败）',
-    `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
-    `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
-    PRIMARY KEY (`id`) USING BTREE
+                                `id` bigint auto_increment COMMENT '编号',
+                                `operUid`         bigint       NOT NULL COMMENT '用户id',
+                                `operUserName` varchar(50) DEFAULT '' COMMENT '操作人员名称',
+                                `operName` varchar(50) DEFAULT '' COMMENT '操作名称',
+                                `businessType` int(11) NOT NULL COMMENT '业务类型（1新增 2修改 3删除 4查询 5其它）',
+                                `uri` varchar(100) DEFAULT '' COMMENT '请求地址',
+                                `operIpAddr` varchar(50) DEFAULT '' COMMENT '主机地址',
+                                `operLocation` varchar(255) DEFAULT '' COMMENT '操作地点',
+                                `req` text COMMENT '请求参数',
+                                `resp` text COMMENT '返回参数',
+                                `code` int(11) NOT NULL DEFAULT 200 COMMENT '返回状态（200成功 其它失败）',
+                                `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
+                                `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
+                                PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT  COMMENT='操作日志管理';
 
 CREATE TABLE if not exists `sys_api`
