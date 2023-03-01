@@ -117,6 +117,24 @@ INSERT IGNORE INTO `sys_role_menu`
 VALUES (267, 1, 25, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
 INSERT IGNORE INTO `sys_role_menu`
 VALUES (268, 1, 35, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
+INSERT IGNORE INTO `sys_role_menu`
+VALUES (755, 1, 36, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
+INSERT IGNORE INTO `sys_role_menu`
+VALUES (756, 1, 37, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
+INSERT IGNORE INTO `sys_role_menu`
+VALUES (757, 1, 38, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
+INSERT IGNORE INTO `sys_role_menu`
+VALUES (758, 1, 39, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
+INSERT IGNORE INTO `sys_role_menu`
+VALUES (759, 1, 41, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
+INSERT IGNORE INTO `sys_role_menu`
+VALUES (760, 1, 42, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
+INSERT IGNORE INTO `sys_role_menu`
+VALUES (761, 1, 43, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
+INSERT IGNORE INTO `sys_role_menu`
+VALUES (762, 1, 44, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
+INSERT IGNORE INTO `sys_role_menu`
+VALUES (763, 1, 45, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
 
 CREATE TABLE if not exists `sys_menu_info`
 (
@@ -209,6 +227,19 @@ INSERT IGNORE INTO `sys_menu_info`
 VALUES (35, 1, 1, 1, '首页', '/home',
         './home/index.tsx', 'icon_dosing', '', '', 2, '2022-10-16 23:04:36',
         '2022-10-16 23:04:36', NULL);
+INSERT IGNORE INTO `sys_menu_info`
+VALUES (38, 3, 1, 5, '日志管理', '/systemManagers/log/index',
+        './systemManagers/log/index.tsx', 'icon_system', '', '', 2, '2023-02-07 11:28:11', '2023-02-18 11:09:33', null);
+INSERT IGNORE INTO `sys_menu_info`
+VALUES (39, 38, 1, 1, '操作日志', '/systemMangers/log/operationLog/index',
+        './systemMangers/log/operationLog/index.tsx', 'icon_dosing', '', '', 2, '2023-02-07 11:31:07', '2023-02-18 10:45:50', null);
+INSERT IGNORE INTO `sys_menu_info`
+VALUES (41, 38, 1, 2, '登录日志', '/systemMangers/log/loginLog/index',
+        './systemMangers/log/loginLog/index', 'icon_heat', '', '', 2, '2023-02-16 23:03:15', '2023-02-18 10:45:55', null);
+INSERT IGNORE INTO `sys_menu_info`
+VALUES (42, 3, 1, 4, '接口管理', '/systemMangers/api/index',
+        './systemMangers/api/index', 'icon_system', '', '', 2, '2023-02-18 11:08:56', '2023-02-18 11:09:27', null);
+
 
 DROP TABLE IF EXISTS `sys_login_log`;
 CREATE TABLE `sys_login_log` (
