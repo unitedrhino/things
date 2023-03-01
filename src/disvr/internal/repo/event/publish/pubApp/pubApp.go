@@ -3,8 +3,8 @@ package pubApp
 import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/application"
 )
 
 type (

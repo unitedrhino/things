@@ -147,6 +147,11 @@ type Point struct {
 	Latitude  float64 `json:"latitude,range=[0:90]"`   //纬度
 }
 
+type DateRange struct {
+	Start string `json:"start,optional "` //开始时间 格式：yyyy-mm-dd
+	End   string `json:"end,optional "`   //结束时间 格式：yyyy-mm-dd
+}
+
 type MenuCreateReq struct {
 	Name       string `json:"name"`                // 菜单名称
 	ParentID   int64  `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
@@ -241,6 +246,99 @@ type RoleMenuUpdateReq struct {
 	MenuID []int64 `json:"menuID"` //菜单编号列表
 }
 
+type SysLogLoginIndexReq struct {
+	Page          PageInfo  `json:"page"`                    //分页信息,只获取一个则不填
+	IpAddr        string    `json:"ipAddr,optional "`        //按ip地址查找
+	LoginLocation string    `json:"loginLocation,optional "` //按登录地址查找
+	DateRange     DateRange `json:"dateRange,optional "`     //按时间范围查找
+}
+
+type SysLogLoginIndexData struct {
+	Uid           int64  `json:"uid,string"`         // 用户id
+	UserName      string `json:"userName"`           // 登录账号
+	IpAddr        string `json:"ipAddr"`             // 登录IP地址
+	LoginLocation string `json:"loginLocation"`      // 登录地点
+	Browser       string `json:"browser"`            // 浏览器类型
+	Os            string `json:"os"`                 // 操作系统
+	Code          int64  `json:"code,string"`        // 登录状态（200成功 其它失败）
+	Msg           string `json:"msg"`                // 提示消息
+	CreatedTime   int64  `json:"createdTime,string"` // 登录时间
+}
+
+type SysLogLoginIndexResp struct {
+	List  []*SysLogLoginIndexData `json:"list"`  //登录日志列表数据
+	Total int64                   `json:"total"` //登录日志列表总记录数
+}
+
+type SysLogOperIndexReq struct {
+	Page         PageInfo `json:"page"`                          //分页信息,只获取一个则不填
+	OperName     string   `json:"operName,optional "`            //按操作名称查找
+	OperUserName string   `json:"operUserName,optional "`        //按操作人员名称查找
+	BusinessType int64    `json:"businessType,string,optional "` //按业务类型（1新增 2修改 3删除 4查询）查找
+}
+
+type SysLogOperIndexData struct {
+	Uid          int64  `json:"uid,string"`          //用户id
+	OperUserName string `json:"operUserName"`        //操作人员名称
+	OperName     string `json:"operName"`            //操作名称
+	BusinessType int64  `json:"businessType,string"` //业务类型（1新增 2修改 3删除 4查询）
+	Uri          string `json:"uri"`                 //请求地址
+	OperIpAddr   string `json:"operIpAddr"`          //操作主机ip地址
+	OperLocation string `json:"operLocation"`        //操作地点
+	Req          string `json:"req"`                 //请求参数
+	Resp         string `json:"resp"`                //返回参数
+	Code         int64  `json:"code,string"`         //登录状态（200成功 其它失败）
+	Msg          string `json:"msg"`                 //提示消息
+	CreatedTime  int64  `json:"createdTime,string"`  //操作时间
+}
+
+type SysLogOperIndexResp struct {
+	List  []*SysLogOperIndexData `json:"list"`  //操作日志列表数据
+	Total int64                  `json:"total"` //操作日志列表总记录数
+}
+
+type ApiCreateReq struct {
+	Route        string `json:"route"`                    // 接口路由
+	Method       int64  `json:"method,range=[1:9]"`       // 接口请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Group        string `json:"group"`                    // 接口分组
+	Name         string `json:"name"`                     // 接口名称
+	BusinessType int64  `json:"businessType,range=[1:5]"` // 业务类型（1新增 2修改 3删除 4查询 5其它）
+}
+
+type ApiIndexReq struct {
+	Page   PageInfo `json:"page,optional"`               // 分页信息,只获取一个则不填
+	Route  string   `json:"route,optional"`              // 接口路由
+	Method int64    `json:"method,range=[1:9],optional"` // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Group  string   `json:"group,optional"`              // 接口分组
+	Name   string   `json:"name,optional"`               // 接口名称
+}
+
+type ApiIndexData struct {
+	ID           int64  `json:"id"`                       // 接口编号
+	Route        string `json:"route"`                    // 接口路由
+	Method       int64  `json:"method,range=[1:9]"`       // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Group        string `json:"group"`                    // 接口分组
+	Name         string `json:"name"`                     // 接口名称
+	BusinessType int64  `json:"businessType,range=[1:5]"` // 业务类型（1新增 2修改 3删除 4查询 5其它)
+}
+
+type ApiIndexResp struct {
+	List  []*ApiIndexData `json:"list"`  // 接口列表数据
+	Total int64           `json:"total"` // 接口列表总记录数
+}
+
+type ApiUpdateReq struct {
+	ID     int64  `json:"id"`                          // 接口编号
+	Route  string `json:"route,optional"`              // 接口路由
+	Method int64  `json:"method,range=[1:9],optional"` // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Group  string `json:"group,optional"`              // 接口分组
+	Name   string `json:"name,optional"`               // 接口名称
+}
+
+type ApiDeleteReq struct {
+	ID int64 `json:"id"` // 接口编号
+}
+
 type Map struct {
 	Mode      string `json:"mode，options=baidu"` //坐标系 默认百度坐标系
 	AccessKey string `json:"accessKey"`          //设备地图key
@@ -272,6 +370,31 @@ type DeviceAuthRootCheckReq struct {
 	ClientID    string `json:"clientID,omitempty"`             //clientID
 	Ip          string `json:"ip,omitempty"`                   //访问的ip地址
 	Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
+}
+
+type DeviceAuth5LoginReq struct {
+	Username    string `json:"username"`                       //用户名
+	Password    string `json:"password,optional"`              //密码
+	ClientID    string `json:"clientID"`                       //clientID
+	Ip          string `json:"ip"`                             //访问的ip地址
+	Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
+}
+
+type DeviceAuth5LoginResp struct {
+	Result      string `json:"result"`                //验证结果 "allow" | "deny" | "ignore"
+	IsSuperuser bool   `json:"is_superuser,optional"` //是否为超级用户，可选 true | false，该项为空时默认为 false
+}
+
+type DeviceAuth5AccessReq struct {
+	Username string `json:"username,omitempty"` //用户名
+	Topic    string `json:"topic,omitempty"`    //主题
+	ClientID string `json:"clientID,omitempty"` //clientID
+	Action   string `json:"action,omitempty"`   //操作
+	Ip       string `json:"ip,omitempty"`       //访问的ip地址
+}
+
+type DeviceAuth5AccessResp struct {
+	Result string `json:"result"` //验证结果 "allow" | "deny" | "ignore"
 }
 
 type DeviceMsgHubLogIndexReq struct {
@@ -765,4 +888,45 @@ type GroupDeviceMultiCreateReq struct {
 type GroupDeviceMultiDeleteReq struct {
 	GroupID int64         `json:"groupID,string"` //分组ID
 	List    []*DeviceCore `json:"list,optional"`  //分组tag
+}
+
+type SceneInfoCreateReq struct {
+	SceneInfo
+}
+
+type SceneInfoUpdateReq struct {
+	SceneInfo
+}
+
+type SceneInfoDeleteReq struct {
+	ID int64 `json:"id"`
+}
+
+type SceneInfoReadReq struct {
+	ID int64 `json:"id"`
+}
+
+type SceneInfoIndexReq struct {
+	Page        *PageInfo `json:"page,optional"`        //分页信息 只获取一个则不填
+	Name        string    `json:"name,optional"`        //场景名模糊查询
+	TriggerType string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	State       int64     `json:"state,optional"`       //状态: 1启用 2禁用
+}
+
+type SceneInfoIndexResp struct {
+	List  []*SceneInfo `json:"list"`  //场景信息
+	Total int64        `json:"total"` //总数(只有分页的时候会返回)
+	Num   int64        `json:"num"`   //返回的数量
+}
+
+type SceneInfo struct {
+	ID          int64  `json:"id,optional"`
+	Name        string `json:"name,optional"`
+	State       int64  `json:"state,optional"` //状态: 1启用 2禁用
+	Desc        string `json:"desc,optional"`
+	CreatedTime int64  `json:"createdTime,optional"`
+	TriggerType string `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	Trigger     string `json:"trigger,optional"`
+	When        string `json:"when,optional"`
+	Then        string `json:"then"`
 }

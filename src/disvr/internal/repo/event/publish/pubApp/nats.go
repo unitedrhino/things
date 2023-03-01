@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
-	"github.com/i-Things/things/src/disvr/internal/domain/service/application"
 	"github.com/nats-io/nats.go"
 )
 
