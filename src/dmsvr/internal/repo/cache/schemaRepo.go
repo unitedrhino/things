@@ -69,7 +69,7 @@ func (s SchemaRepo) TslRead(ctx context.Context, productID string) (*schema.Mode
 	if err != nil {
 		return nil, err
 	}
-	schemaModel := mysql.ToSchemaDo(dbSchemas)
+	schemaModel := mysql.ToSchemaDo(productID, dbSchemas)
 	s.cache.SetWithTTL(productID, schemaModel, 1, expirtTime)
 	return schemaModel, nil
 }
@@ -83,7 +83,7 @@ func (s SchemaRepo) GetSchemaModel(ctx context.Context, productID string) (*sche
 	if err != nil {
 		return nil, err
 	}
-	schemaModel := mysql.ToSchemaDo(dbSchemas)
+	schemaModel := mysql.ToSchemaDo(productID, dbSchemas)
 	s.cache.SetWithTTL(productID, schemaModel, 1, expirtTime)
 	return schemaModel, nil
 }
