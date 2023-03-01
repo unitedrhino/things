@@ -18,10 +18,10 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// FlowClient is the client API for Flow service.
+// RuleEngineClient is the client API for RuleEngine service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type FlowClient interface {
+type RuleEngineClient interface {
 	FlowInfoCreate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error)
 	FlowInfoUpdate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error)
 	FlowInfoDelete(ctx context.Context, in *FlowInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
@@ -29,219 +29,449 @@ type FlowClient interface {
 	FlowInfoRead(ctx context.Context, in *FlowInfoReadReq, opts ...grpc.CallOption) (*FlowInfo, error)
 }
 
-type flowClient struct {
+type ruleEngineClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewFlowClient(cc grpc.ClientConnInterface) FlowClient {
-	return &flowClient{cc}
+func NewRuleEngineClient(cc grpc.ClientConnInterface) RuleEngineClient {
+	return &ruleEngineClient{cc}
 }
 
-func (c *flowClient) FlowInfoCreate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error) {
+func (c *ruleEngineClient) FlowInfoCreate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/rule.Flow/flowInfoCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rule.RuleEngine/flowInfoCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *flowClient) FlowInfoUpdate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error) {
+func (c *ruleEngineClient) FlowInfoUpdate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/rule.Flow/flowInfoUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rule.RuleEngine/flowInfoUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *flowClient) FlowInfoDelete(ctx context.Context, in *FlowInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *ruleEngineClient) FlowInfoDelete(ctx context.Context, in *FlowInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/rule.Flow/flowInfoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rule.RuleEngine/flowInfoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *flowClient) FlowInfoIndex(ctx context.Context, in *FlowInfoIndexReq, opts ...grpc.CallOption) (*FlowInfoIndexResp, error) {
+func (c *ruleEngineClient) FlowInfoIndex(ctx context.Context, in *FlowInfoIndexReq, opts ...grpc.CallOption) (*FlowInfoIndexResp, error) {
 	out := new(FlowInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/rule.Flow/flowInfoIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rule.RuleEngine/flowInfoIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *flowClient) FlowInfoRead(ctx context.Context, in *FlowInfoReadReq, opts ...grpc.CallOption) (*FlowInfo, error) {
+func (c *ruleEngineClient) FlowInfoRead(ctx context.Context, in *FlowInfoReadReq, opts ...grpc.CallOption) (*FlowInfo, error) {
 	out := new(FlowInfo)
-	err := c.cc.Invoke(ctx, "/rule.Flow/flowInfoRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rule.RuleEngine/flowInfoRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// FlowServer is the server API for Flow service.
-// All implementations must embed UnimplementedFlowServer
+// RuleEngineServer is the server API for RuleEngine service.
+// All implementations must embed UnimplementedRuleEngineServer
 // for forward compatibility
-type FlowServer interface {
+type RuleEngineServer interface {
 	FlowInfoCreate(context.Context, *FlowInfo) (*Response, error)
 	FlowInfoUpdate(context.Context, *FlowInfo) (*Response, error)
 	FlowInfoDelete(context.Context, *FlowInfoDeleteReq) (*Response, error)
 	FlowInfoIndex(context.Context, *FlowInfoIndexReq) (*FlowInfoIndexResp, error)
 	FlowInfoRead(context.Context, *FlowInfoReadReq) (*FlowInfo, error)
-	mustEmbedUnimplementedFlowServer()
+	mustEmbedUnimplementedRuleEngineServer()
 }
 
-// UnimplementedFlowServer must be embedded to have forward compatible implementations.
-type UnimplementedFlowServer struct {
+// UnimplementedRuleEngineServer must be embedded to have forward compatible implementations.
+type UnimplementedRuleEngineServer struct {
 }
 
-func (UnimplementedFlowServer) FlowInfoCreate(context.Context, *FlowInfo) (*Response, error) {
+func (UnimplementedRuleEngineServer) FlowInfoCreate(context.Context, *FlowInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoCreate not implemented")
 }
-func (UnimplementedFlowServer) FlowInfoUpdate(context.Context, *FlowInfo) (*Response, error) {
+func (UnimplementedRuleEngineServer) FlowInfoUpdate(context.Context, *FlowInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoUpdate not implemented")
 }
-func (UnimplementedFlowServer) FlowInfoDelete(context.Context, *FlowInfoDeleteReq) (*Response, error) {
+func (UnimplementedRuleEngineServer) FlowInfoDelete(context.Context, *FlowInfoDeleteReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoDelete not implemented")
 }
-func (UnimplementedFlowServer) FlowInfoIndex(context.Context, *FlowInfoIndexReq) (*FlowInfoIndexResp, error) {
+func (UnimplementedRuleEngineServer) FlowInfoIndex(context.Context, *FlowInfoIndexReq) (*FlowInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoIndex not implemented")
 }
-func (UnimplementedFlowServer) FlowInfoRead(context.Context, *FlowInfoReadReq) (*FlowInfo, error) {
+func (UnimplementedRuleEngineServer) FlowInfoRead(context.Context, *FlowInfoReadReq) (*FlowInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoRead not implemented")
 }
-func (UnimplementedFlowServer) mustEmbedUnimplementedFlowServer() {}
+func (UnimplementedRuleEngineServer) mustEmbedUnimplementedRuleEngineServer() {}
 
-// UnsafeFlowServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to FlowServer will
+// UnsafeRuleEngineServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RuleEngineServer will
 // result in compilation errors.
-type UnsafeFlowServer interface {
-	mustEmbedUnimplementedFlowServer()
+type UnsafeRuleEngineServer interface {
+	mustEmbedUnimplementedRuleEngineServer()
 }
 
-func RegisterFlowServer(s grpc.ServiceRegistrar, srv FlowServer) {
-	s.RegisterService(&Flow_ServiceDesc, srv)
+func RegisterRuleEngineServer(s grpc.ServiceRegistrar, srv RuleEngineServer) {
+	s.RegisterService(&RuleEngine_ServiceDesc, srv)
 }
 
-func _Flow_FlowInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RuleEngine_FlowInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FlowInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FlowServer).FlowInfoCreate(ctx, in)
+		return srv.(RuleEngineServer).FlowInfoCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rule.Flow/flowInfoCreate",
+		FullMethod: "/rule.RuleEngine/flowInfoCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlowServer).FlowInfoCreate(ctx, req.(*FlowInfo))
+		return srv.(RuleEngineServer).FlowInfoCreate(ctx, req.(*FlowInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Flow_FlowInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RuleEngine_FlowInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FlowInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FlowServer).FlowInfoUpdate(ctx, in)
+		return srv.(RuleEngineServer).FlowInfoUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rule.Flow/flowInfoUpdate",
+		FullMethod: "/rule.RuleEngine/flowInfoUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlowServer).FlowInfoUpdate(ctx, req.(*FlowInfo))
+		return srv.(RuleEngineServer).FlowInfoUpdate(ctx, req.(*FlowInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Flow_FlowInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RuleEngine_FlowInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FlowInfoDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FlowServer).FlowInfoDelete(ctx, in)
+		return srv.(RuleEngineServer).FlowInfoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rule.Flow/flowInfoDelete",
+		FullMethod: "/rule.RuleEngine/flowInfoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlowServer).FlowInfoDelete(ctx, req.(*FlowInfoDeleteReq))
+		return srv.(RuleEngineServer).FlowInfoDelete(ctx, req.(*FlowInfoDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Flow_FlowInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RuleEngine_FlowInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FlowInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FlowServer).FlowInfoIndex(ctx, in)
+		return srv.(RuleEngineServer).FlowInfoIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rule.Flow/flowInfoIndex",
+		FullMethod: "/rule.RuleEngine/flowInfoIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlowServer).FlowInfoIndex(ctx, req.(*FlowInfoIndexReq))
+		return srv.(RuleEngineServer).FlowInfoIndex(ctx, req.(*FlowInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Flow_FlowInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RuleEngine_FlowInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FlowInfoReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FlowServer).FlowInfoRead(ctx, in)
+		return srv.(RuleEngineServer).FlowInfoRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rule.Flow/flowInfoRead",
+		FullMethod: "/rule.RuleEngine/flowInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlowServer).FlowInfoRead(ctx, req.(*FlowInfoReadReq))
+		return srv.(RuleEngineServer).FlowInfoRead(ctx, req.(*FlowInfoReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Flow_ServiceDesc is the grpc.ServiceDesc for Flow service.
+// RuleEngine_ServiceDesc is the grpc.ServiceDesc for RuleEngine service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Flow_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "rule.Flow",
-	HandlerType: (*FlowServer)(nil),
+var RuleEngine_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "rule.RuleEngine",
+	HandlerType: (*RuleEngineServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "flowInfoCreate",
-			Handler:    _Flow_FlowInfoCreate_Handler,
+			Handler:    _RuleEngine_FlowInfoCreate_Handler,
 		},
 		{
 			MethodName: "flowInfoUpdate",
-			Handler:    _Flow_FlowInfoUpdate_Handler,
+			Handler:    _RuleEngine_FlowInfoUpdate_Handler,
 		},
 		{
 			MethodName: "flowInfoDelete",
-			Handler:    _Flow_FlowInfoDelete_Handler,
+			Handler:    _RuleEngine_FlowInfoDelete_Handler,
 		},
 		{
 			MethodName: "flowInfoIndex",
-			Handler:    _Flow_FlowInfoIndex_Handler,
+			Handler:    _RuleEngine_FlowInfoIndex_Handler,
 		},
 		{
 			MethodName: "flowInfoRead",
-			Handler:    _Flow_FlowInfoRead_Handler,
+			Handler:    _RuleEngine_FlowInfoRead_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/rule.proto",
+}
+
+// SceneLinkageClient is the client API for SceneLinkage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type SceneLinkageClient interface {
+	SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Response, error)
+	SceneInfoUpdate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Response, error)
+	SceneInfoDelete(ctx context.Context, in *SceneInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error)
+	SceneInfoRead(ctx context.Context, in *SceneInfoReadReq, opts ...grpc.CallOption) (*SceneInfo, error)
+}
+
+type sceneLinkageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewSceneLinkageClient(cc grpc.ClientConnInterface) SceneLinkageClient {
+	return &sceneLinkageClient{cc}
+}
+
+func (c *sceneLinkageClient) SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sceneLinkageClient) SceneInfoUpdate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sceneLinkageClient) SceneInfoDelete(ctx context.Context, in *SceneInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sceneLinkageClient) SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error) {
+	out := new(SceneInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sceneLinkageClient) SceneInfoRead(ctx context.Context, in *SceneInfoReadReq, opts ...grpc.CallOption) (*SceneInfo, error) {
+	out := new(SceneInfo)
+	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// SceneLinkageServer is the server API for SceneLinkage service.
+// All implementations must embed UnimplementedSceneLinkageServer
+// for forward compatibility
+type SceneLinkageServer interface {
+	SceneInfoCreate(context.Context, *SceneInfo) (*Response, error)
+	SceneInfoUpdate(context.Context, *SceneInfo) (*Response, error)
+	SceneInfoDelete(context.Context, *SceneInfoDeleteReq) (*Response, error)
+	SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error)
+	SceneInfoRead(context.Context, *SceneInfoReadReq) (*SceneInfo, error)
+	mustEmbedUnimplementedSceneLinkageServer()
+}
+
+// UnimplementedSceneLinkageServer must be embedded to have forward compatible implementations.
+type UnimplementedSceneLinkageServer struct {
+}
+
+func (UnimplementedSceneLinkageServer) SceneInfoCreate(context.Context, *SceneInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoCreate not implemented")
+}
+func (UnimplementedSceneLinkageServer) SceneInfoUpdate(context.Context, *SceneInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoUpdate not implemented")
+}
+func (UnimplementedSceneLinkageServer) SceneInfoDelete(context.Context, *SceneInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoDelete not implemented")
+}
+func (UnimplementedSceneLinkageServer) SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoIndex not implemented")
+}
+func (UnimplementedSceneLinkageServer) SceneInfoRead(context.Context, *SceneInfoReadReq) (*SceneInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoRead not implemented")
+}
+func (UnimplementedSceneLinkageServer) mustEmbedUnimplementedSceneLinkageServer() {}
+
+// UnsafeSceneLinkageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to SceneLinkageServer will
+// result in compilation errors.
+type UnsafeSceneLinkageServer interface {
+	mustEmbedUnimplementedSceneLinkageServer()
+}
+
+func RegisterSceneLinkageServer(s grpc.ServiceRegistrar, srv SceneLinkageServer) {
+	s.RegisterService(&SceneLinkage_ServiceDesc, srv)
+}
+
+func _SceneLinkage_SceneInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SceneInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SceneLinkageServer).SceneInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.SceneLinkage/sceneInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SceneLinkageServer).SceneInfoCreate(ctx, req.(*SceneInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SceneLinkage_SceneInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SceneInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SceneLinkageServer).SceneInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.SceneLinkage/sceneInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SceneLinkageServer).SceneInfoUpdate(ctx, req.(*SceneInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SceneLinkage_SceneInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SceneInfoDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SceneLinkageServer).SceneInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.SceneLinkage/sceneInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SceneLinkageServer).SceneInfoDelete(ctx, req.(*SceneInfoDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SceneLinkage_SceneInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SceneInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SceneLinkageServer).SceneInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.SceneLinkage/sceneInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SceneLinkageServer).SceneInfoIndex(ctx, req.(*SceneInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SceneLinkage_SceneInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SceneInfoReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SceneLinkageServer).SceneInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.SceneLinkage/sceneInfoRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SceneLinkageServer).SceneInfoRead(ctx, req.(*SceneInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// SceneLinkage_ServiceDesc is the grpc.ServiceDesc for SceneLinkage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var SceneLinkage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "rule.SceneLinkage",
+	HandlerType: (*SceneLinkageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "sceneInfoCreate",
+			Handler:    _SceneLinkage_SceneInfoCreate_Handler,
+		},
+		{
+			MethodName: "sceneInfoUpdate",
+			Handler:    _SceneLinkage_SceneInfoUpdate_Handler,
+		},
+		{
+			MethodName: "sceneInfoDelete",
+			Handler:    _SceneLinkage_SceneInfoDelete_Handler,
+		},
+		{
+			MethodName: "sceneInfoIndex",
+			Handler:    _SceneLinkage_SceneInfoIndex_Handler,
+		},
+		{
+			MethodName: "sceneInfoRead",
+			Handler:    _SceneLinkage_SceneInfoRead_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

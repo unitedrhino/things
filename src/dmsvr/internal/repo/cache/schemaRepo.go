@@ -69,61 +69,24 @@ func (s SchemaRepo) TslRead(ctx context.Context, productID string) (*schema.Mode
 	if err != nil {
 		return nil, err
 	}
-	return mysql.ToSchemaDo(dbSchemas), nil
+	schemaModel := mysql.ToSchemaDo(productID, dbSchemas)
+	s.cache.SetWithTTL(productID, schemaModel, 1, expirtTime)
+	return schemaModel, nil
 }
-
-//func (t SchemaRepo) GetSchemaInfo(ctx context.Context, productID string) (*schema.Info, error) {
-//	temp, err := t.db.FindOne(ctx, productID)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return &schema.Info{
-//		ProductID:   temp.ProductID,
-//		Schema:      temp.Schema,
-//		CreatedTime: temp.CreatedTime,
-//	}, nil
-//}
 
 func (s SchemaRepo) GetSchemaModel(ctx context.Context, productID string) (*schema.Model, error) {
 	temp, ok := s.cache.Get(productID)
 	if ok {
 		return temp.(*schema.Model), nil
 	}
-	return &schema.Model{}, nil
-	//todo 待补充
-	//templateInfo, err := s.db.FindOne(ctx, productID)
-	//if err != nil {
-	//	if err == sql.ErrNoRows {
-	//		return nil, errors.Parameter.AddMsg("ProductID not find")
-	//	}
-	//	return nil, err
-	//}
-	//tempModel, err := schema.NewSchemaTsl([]byte(templateInfo.Schema))
-	//if err != nil {
-	//	return nil, err
-	//}
-	//s.cache.SetWithTTL(productID, tempModel, 1, expirtTime)
-	//return tempModel, nil
+	dbSchemas, err := s.db.FindByFilter(ctx, mysql.ProductSchemaFilter{ProductID: productID}, nil)
+	if err != nil {
+		return nil, err
+	}
+	schemaModel := mysql.ToSchemaDo(productID, dbSchemas)
+	s.cache.SetWithTTL(productID, schemaModel, 1, expirtTime)
+	return schemaModel, nil
 }
-
-//func (t SchemaRepo) Update(ctx context.Context, productID string, schema *schema.Model) error {
-//	templateStr, err := json.Marshal(schema)
-//	if err != nil {
-//		return errors.Parameter.WithMsg("模板的json格式不对")
-//	}
-//	t.cache.Del(productID)
-//	old, err := t.db.FindOne(ctx, productID)
-//	if err != nil {
-//		return errors.Database
-//	}
-//	err = t.db.Update(ctx, &mysql.ProductSchema{
-//		ProductID:   productID,
-//		Schema:      string(templateStr),
-//		UpdatedTime: time.Now(),
-//		CreatedTime: old.CreatedTime,
-//	})
-//	return err
-//}
 
 func (s SchemaRepo) ClearCache(ctx context.Context, productID string) error {
 	s.cache.Del(productID)

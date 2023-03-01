@@ -1,0 +1,76 @@
+info(
+	title: "日志管理模块"
+	desc: "登录日志，操作日志"
+	author: "L"
+	email: "174805676@qq.com"
+	version: "v0.1.0"
+)
+import "common.api"  //公共结构体定义
+
+@server (
+	group : system/log
+	prefix: /api/v1/system/log
+	middleware: CheckToken
+)
+
+service api {
+	@doc "获取登录日志列表"
+	@handler loginIndex
+	post /login/index (SysLogLoginIndexReq) returns (SysLogLoginIndexResp)
+
+    @doc "获取操作日志列表"
+	@handler operIndex
+	post /oper/index (SysLogOperIndexReq) returns (SysLogOperIndexResp)
+}
+
+type (
+	 SysLogLoginIndexReq {
+        Page PageInfo `json:"page"`                                 //分页信息,只获取一个则不填
+        IpAddr string `json:"ipAddr,optional "`                     //按ip地址查找
+        LoginLocation string `json:"loginLocation,optional "`       //按登录地址查找
+        DateRange DateRange `json:"dateRange,optional "`            //按时间范围查找
+	}
+
+    SysLogLoginIndexData {
+        Uid      int64  `json:"uid,string"`                              // 用户id
+        UserName string `json:"userName"`                                // 登录账号
+        IpAddr string `json:"ipAddr"`                                    // 登录IP地址
+        LoginLocation string `json:"loginLocation"`                      // 登录地点
+        Browser string `json:"browser"`                                  // 浏览器类型
+        Os string `json:"os"`                                            // 操作系统
+        Code int64 `json:"code,string"`                                  // 登录状态（200成功 其它失败）
+        Msg string `json:"msg"`                                          // 提示消息
+        CreatedTime int64 `json:"createdTime,string"`                    // 登录时间
+    }
+
+    SysLogLoginIndexResp {
+        List []*SysLogLoginIndexData `json:"list"`  //登录日志列表数据
+        Total int64 `json:"total"`                  //登录日志列表总记录数
+    }
+
+     SysLogOperIndexReq {
+        Page PageInfo `json:"page"`                                //分页信息,只获取一个则不填
+        OperName string `json:"operName,optional "`                //按操作名称查找
+        OperUserName string `json:"operUserName,optional "`        //按操作人员名称查找
+        BusinessType int64 `json:"businessType,string,optional "`  //按业务类型（1新增 2修改 3删除 4查询）查找
+    }
+
+    SysLogOperIndexData {
+        Uid      int64  `json:"uid,string"`                        //用户id
+        operUserName string `json:"operUserName"`                  //操作人员名称
+        operName string `json:"operName"`                          //操作名称
+        businessType int64 `json:"businessType,string"`            //业务类型（1新增 2修改 3删除 4查询）
+        uri string `json:"uri"`                                    //请求地址
+        operIpAddr string `json:"operIpAddr"`                      //操作主机ip地址
+        operLocation string `json:"operLocation"`                  //操作地点
+        req string `json:"req"`                                    //请求参数
+        resp string `json:"resp"`                                  //返回参数
+        code int64 `json:"code,string"`                            //登录状态（200成功 其它失败）
+        Msg string `json:"msg"`                                    //提示消息
+        CreatedTime int64 `json:"createdTime,string"`              //操作时间
+    }
+    SysLogOperIndexResp {
+        List []*SysLogOperIndexData `json:"list"`  //操作日志列表数据
+        Total int64 `json:"total"`                 //操作日志列表总记录数
+    }
+)

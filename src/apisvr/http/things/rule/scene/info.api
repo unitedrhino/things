@@ -1,0 +1,68 @@
+info(
+    title: "场景联动信息模块"
+    desc: "场景联动信息模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+@server(
+    group : things/rule/scene/info
+    prefix: /api/v1/things/rule/scene/info
+    middleware: CheckToken
+)
+service api {
+    @doc "新增场景"
+    @handler create
+    post /create (SceneInfoCreateReq) returns ()
+    @doc "更新场景"
+    @handler update
+    post /update (SceneInfoUpdateReq) returns ()
+    @doc "删除场景"
+    @handler delete
+    post /delete (SceneInfoDeleteReq) returns ()
+    @doc "获取场景信息列表"
+    @handler index
+    post /index (SceneInfoIndexReq) returns (SceneInfoIndexResp)
+    @doc "获取场景信息详情"
+    @handler read
+    post /read (SceneInfoReadReq) returns (SceneInfo)
+}
+
+type (
+    SceneInfoCreateReq struct {
+        SceneInfo
+    }
+    SceneInfoUpdateReq struct {
+        SceneInfo
+    }
+    SceneInfoDeleteReq struct {
+        ID          int64     `json:"id"`
+    }
+    SceneInfoReadReq struct {
+        ID          int64     `json:"id"`
+    }
+    SceneInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        Name        string    `json:"name,optional"` //场景名模糊查询
+        TriggerType  string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+        State        int64    `json:"state,optional"` //状态: 1启用 2禁用
+    }
+    SceneInfoIndexResp struct {
+        List []*SceneInfo `json:"list"`    //场景信息
+        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+        Num int64 `json:"num"`              //返回的数量
+    }
+)
+
+type SceneInfo struct {
+    ID          int64     `json:"id,optional"`
+    Name        string    `json:"name,optional"`
+    State        int64    `json:"state,optional"` //状态: 1启用 2禁用
+    Desc        string    `json:"desc,optional"`
+    CreatedTime int64   `json:"createdTime,optional"`
+    TriggerType  string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+    Trigger     string  `json:"trigger,optional"`
+    When        string  `json:"when,optional"`
+    Then      string `json:"then"`
+}
