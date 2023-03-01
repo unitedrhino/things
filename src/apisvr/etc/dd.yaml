@@ -12,7 +12,3 @@ DevLink:
     User: ddsvr
     Brokers:
       - tcp://127.0.0.1:1883
-Event:
-  Mode: nats
-  Nats:
-    Url: nats://10.1.0.237:4222

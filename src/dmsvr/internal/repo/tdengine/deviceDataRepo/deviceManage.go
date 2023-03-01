@@ -12,15 +12,14 @@ func (d *DeviceDataRepo) InitDevice(ctx context.Context,
 	t *schema.Model,
 	productID string,
 	deviceName string) error {
-	if t.Property != nil { //如果还没有定义属性则不需要初始化
-		err := d.createPropertyTable(ctx, t.Property, productID, deviceName)
-		if err != nil {
-			logx.WithContext(ctx).Errorf(
-				"%s.createPropertyTable productID:%v,deviceName:%v,err:%v,properties:%v",
-				utils.FuncName(), productID, deviceName, t.Property, err)
-			return err
-		}
+	err := d.createPropertyTable(ctx, t.Property, productID, deviceName)
+	if err != nil {
+		logx.WithContext(ctx).Errorf(
+			"%s.createPropertyTable productID:%v,deviceName:%v,err:%v,properties:%v",
+			utils.FuncName(), productID, deviceName, t.Property, err)
+		return err
 	}
+
 	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s TAGS ('%s','%s');",
 		d.GetEventTableName(productID, deviceName), d.GetEventStableName(), productID, deviceName)
 	if _, err := d.t.ExecContext(ctx, sql); err != nil {
