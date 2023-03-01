@@ -4,11 +4,14 @@ package handler
 import (
 	"net/http"
 
+	systemapi "github.com/i-Things/things/src/apisvr/internal/handler/system/api"
 	systemcommon "github.com/i-Things/things/src/apisvr/internal/handler/system/common"
+	systemlog "github.com/i-Things/things/src/apisvr/internal/handler/system/log"
 	systemmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/menu"
 	systemrole "github.com/i-Things/things/src/apisvr/internal/handler/system/role"
 	systemuser "github.com/i-Things/things/src/apisvr/internal/handler/system/user"
 	thingsdeviceauth "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth"
+	thingsdeviceauth5 "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth5"
 	thingsdevicegateway "github.com/i-Things/things/src/apisvr/internal/handler/things/device/gateway"
 	thingsdeviceinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/device/info"
 	thingsdeviceinteract "github.com/i-Things/things/src/apisvr/internal/handler/things/device/interact"
@@ -18,6 +21,7 @@ import (
 	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
 	thingsproductremoteConfig "github.com/i-Things/things/src/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/src/apisvr/internal/handler/things/product/schema"
+	thingsrulesceneinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/scene/info"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -143,6 +147,54 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/login/index",
+					Handler: systemlog.LoginIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/oper/index",
+					Handler: systemlog.OperIndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/log"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemapi.ApiCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemapi.ApiIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemapi.ApiUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemapi.ApiDeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/api"),
+	)
+
+	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
@@ -172,6 +224,22 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/api/v1/things/device/auth"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/login",
+				Handler: thingsdeviceauth5.LoginHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/access",
+				Handler: thingsdeviceauth5.AccessHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/device/auth5"),
 	)
 
 	server.AddRoutes(
@@ -453,5 +521,39 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/group/device"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsrulesceneinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsrulesceneinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsrulesceneinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsrulesceneinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsrulesceneinfo.ReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/rule/scene/info"),
 	)
 }

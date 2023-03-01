@@ -43,3 +43,11 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
+RuleRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: rule.rpc

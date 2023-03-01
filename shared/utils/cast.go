@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"database/sql"
+	"encoding/json"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"golang.org/x/exp/constraints"
 	"reflect"
@@ -67,4 +69,22 @@ func SetToSlice[t constraints.Ordered](in map[t]struct{}) (ret []t) {
 		ret = append(ret, k)
 	}
 	return
+}
+
+func AnyToNullString(in any) sql.NullString {
+	if in == nil {
+		return sql.NullString{}
+	}
+	str, err := json.Marshal(in)
+	if err != nil {
+		return sql.NullString{}
+	}
+	return sql.NullString{String: string(str), Valid: true}
+}
+func SqlNullStringToAny(in sql.NullString, ret any) error {
+	if in.Valid == false {
+		return nil
+	}
+	err := json.Unmarshal([]byte(in.String), ret)
+	return err
 }

@@ -1,0 +1,8 @@
+info(
+	title: "场景联动"
+	desc: "场景联动"
+	author: "杨磊"
+	email: "603685348@qq.com"
+	version: "v1"
+)
+import "things/rule/scene/info.api" //场景联动信息接口
