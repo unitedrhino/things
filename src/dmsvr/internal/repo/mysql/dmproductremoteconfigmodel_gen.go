@@ -18,8 +18,8 @@ import (
 var (
 	dmProductRemoteConfigFieldNames          = builder.RawFieldNames(&DmProductRemoteConfig{})
 	dmProductRemoteConfigRows                = strings.Join(dmProductRemoteConfigFieldNames, ",")
-	dmProductRemoteConfigRowsExpectAutoSet   = strings.Join(stringx.Remove(dmProductRemoteConfigFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), ",")
-	dmProductRemoteConfigRowsWithPlaceHolder = strings.Join(stringx.Remove(dmProductRemoteConfigFieldNames, "`id`", "`createdTime`", "`updatedTime`", "`deletedTime`"), "=?,") + "=?"
+	dmProductRemoteConfigRowsExpectAutoSet   = strings.Join(stringx.Remove(dmProductRemoteConfigFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
+	dmProductRemoteConfigRowsWithPlaceHolder = strings.Join(stringx.Remove(dmProductRemoteConfigFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (

@@ -18,8 +18,8 @@ import (
 var (
 	dmDeviceInfoFieldNames          = builder.RawFieldNames(&DmDeviceInfo{})
 	dmDeviceInfoRows                = strings.Join(dmDeviceInfoFieldNames, ",")
-	dmDeviceInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(dmDeviceInfoFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
-	dmDeviceInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(dmDeviceInfoFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
+	dmDeviceInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(dmDeviceInfoFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
+	dmDeviceInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(dmDeviceInfoFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
