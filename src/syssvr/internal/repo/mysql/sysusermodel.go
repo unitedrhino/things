@@ -53,17 +53,17 @@ func (m *userModel) Register(ctx context.Context, UserInfoModel SysUserInfoModel
 		}
 
 		if isUpdate == true {
-			err := UserInfoModel.Update(ctx, &data)
+			err = UserInfoModel.Update(ctx, &data)
 			if err != nil {
 				return err
 			}
 		} else {
-			_, err := UserInfoModel.Insert(ctx, &data)
+			_, err = UserInfoModel.Insert(ctx, &data)
 			if err != nil {
 				return err
 			}
 		}
-		return err
+		return nil
 
 	})
 }
