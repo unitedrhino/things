@@ -39,7 +39,7 @@ func (l *MenuCreateLogic) MenuCreate(in *sys.MenuCreateReq) (*sys.Response, erro
 	if in.HideInMenu == 0 {
 		in.HideInMenu = 1
 	}
-	err := l.svcCtx.MenuModel.InsertMenuID(&mysql.SysMenuInfo{
+	_, err := l.svcCtx.MenuInfoModle.Insert(l.ctx, &mysql.SysMenuInfo{
 		ParentID:      in.ParentID,
 		Type:          in.Type,
 		Order:         in.Order,
@@ -50,7 +50,7 @@ func (l *MenuCreateLogic) MenuCreate(in *sys.MenuCreateReq) (*sys.Response, erro
 		Redirect:      in.Redirect,
 		BackgroundUrl: "",
 		HideInMenu:    in.HideInMenu,
-	}, in.Role)
+	})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
