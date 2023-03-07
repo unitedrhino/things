@@ -1,7 +1,10 @@
 package mysql
 
 import (
+	"context"
 	"fmt"
+	sq "github.com/Masterminds/squirrel"
+	"github.com/i-Things/things/shared/store"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -9,9 +12,8 @@ import (
 
 type (
 	MenuModel interface {
-		Index(in *MenuIndexFilter) ([]*SysMenuInfo, error)
-		DeleteMenu(MenuId int64) error
-		InsertMenuID(data *SysMenuInfo, RoleId int64) error
+		Index(ctx context.Context, in *MenuIndexFilter) ([]*SysMenuInfo, error)
+		DeleteMenu(ctx context.Context, menuId int64) error
 	}
 
 	menuModel struct {
@@ -21,9 +23,10 @@ type (
 	}
 
 	MenuIndexFilter struct {
-		Role int64
-		Name string
-		Path string
+		Role    int64
+		Name    string
+		Path    string
+		MenuIds []int64
 	}
 )
 
@@ -35,25 +38,29 @@ func NewMenuModel(conn sqlx.SqlConn, c cache.CacheConf) MenuModel {
 	}
 }
 
-func (m *menuModel) Index(in *MenuIndexFilter) ([]*SysMenuInfo, error) {
-	var resp []*SysMenuInfo
-
+func (m *MenuIndexFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	//支持账号模糊匹配
-	sqlWhere := ""
-	if in.Name != "" || in.Path != "" {
-		sqlWhere += " where "
-		if in.Name != "" && in.Path != "" {
-			sqlWhere += "name like '%" + in.Name + "%' and path like '%" + in.Path + "%'"
-		} else if in.Name != "" && in.Path == "" {
-			sqlWhere += "name like '%" + in.Name + "%'"
-		} else {
-			sqlWhere += "path like '%" + in.Path + "%'"
-		}
+	if m.Name != "" {
+		sql = sql.Where("`name` like ?", "%"+m.Name+"%")
 	}
+	if m.Path != "" {
+		sql = sql.Where("`path` like ?", "%"+m.Path+"%")
+	}
+	if len(m.MenuIds) != 0 {
+		sql = sql.Where(fmt.Sprintf("`id` in(%v)", store.ArrayToSql(m.MenuIds)))
+	}
+	return sql
+}
 
-	query := fmt.Sprintf("select %s from %s %s",
-		sysMenuInfoRows, m.menuInfo, sqlWhere)
-	err := m.CachedConn.QueryRowsNoCache(&resp, query)
+func (m *menuModel) Index(ctx context.Context, in *MenuIndexFilter) ([]*SysMenuInfo, error) {
+	var resp []*SysMenuInfo
+	sql := sq.Select(sysMenuInfoRows).From(m.menuInfo)
+	sql = in.FmtSql(sql)
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	err = m.CachedConn.QueryRowsNoCacheCtx(ctx, &resp, query, arg...)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +68,7 @@ func (m *menuModel) Index(in *MenuIndexFilter) ([]*SysMenuInfo, error) {
 	return resp, nil
 }
 
-func (m *menuModel) DeleteMenu(MenuId int64) error {
+func (m *menuModel) DeleteMenu(ctx context.Context, MenuId int64) error {
 	return m.Transact(func(session sqlx.Session) error {
 		//1.从菜单表删除角色
 		query := fmt.Sprintf("delete from %s where id = %d",
@@ -73,28 +80,7 @@ func (m *menuModel) DeleteMenu(MenuId int64) error {
 		//2.从角色菜单关系表删除关联菜单项
 		query = fmt.Sprintf("delete from %s where  menuID = %d",
 			m.roleMenu, MenuId)
-		_, err = session.Exec(query)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-}
-
-func (m *menuModel) InsertMenuID(data *SysMenuInfo, RoleId int64) error {
-	return m.Transact(func(session sqlx.Session) error {
-		//1.向menu_info表插入菜单项
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.menuInfo, sysMenuInfoRowsExpectAutoSet)
-		ret, err := session.Exec(query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl, data.HideInMenu)
-		if err != nil {
-			return err
-		}
-		insertID, err := ret.LastInsertId()
-		//2.向role_menu表插入关联菜单项
-		query = fmt.Sprintf("insert into %s (roleID, menuID) values (%d, %d)",
-			m.roleMenu, RoleId, insertID)
-		_, err = session.Exec(query)
+		_, err = session.ExecCtx(ctx, query)
 		if err != nil {
 			return err
 		}
