@@ -18,8 +18,8 @@ import (
 var (
 	dmGroupInfoFieldNames          = builder.RawFieldNames(&DmGroupInfo{})
 	dmGroupInfoRows                = strings.Join(dmGroupInfoFieldNames, ",")
-	dmGroupInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(dmGroupInfoFieldNames, "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
-	dmGroupInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(dmGroupInfoFieldNames, "`groupID`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
+	dmGroupInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(dmGroupInfoFieldNames, "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
+	dmGroupInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(dmGroupInfoFieldNames, "`groupID`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
