@@ -33,17 +33,17 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 		if err != nil {
 			return nil, errors.Database.AddDetail(err)
 		}
-		for _, v := range menuIds {
-			menuInfo, err := l.svcCtx.MenuInfoModle.FindOne(l.ctx, v)
-			if err != nil {
-				l.Errorf("MenuIndex find menu_info err,menuID:%d,err:%v", v, err)
-				continue
-			}
-			info = append(info, MenuInfoToPb(menuInfo))
+		menuInfos, err := l.svcCtx.MenuModel.Index(l.ctx, &mysql.MenuIndexFilter{MenuIds: menuIds})
+		if err != nil {
+			l.Errorf("MenuIndex find menu_info err,menuIds:%v,err:%v", menuIds, err)
+			return nil, errors.Database.AddDetail(err)
+		}
+		for _, v := range menuInfos {
+			info = append(info, MenuInfoToPb(v))
 		}
 	} else {
 		//获取完整菜单列表
-		mes, err := l.svcCtx.MenuModel.Index(&mysql.MenuIndexFilter{
+		mes, err := l.svcCtx.MenuModel.Index(l.ctx, &mysql.MenuIndexFilter{
 			Role: in.Role,
 			Name: in.Name,
 			Path: in.Path,
