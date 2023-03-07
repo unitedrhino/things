@@ -2,7 +2,6 @@ package menu
 
 import (
 	"context"
-	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -29,7 +28,6 @@ func (l *MenuIndexLogic) MenuIndex(req *types.MenuIndexReq) (resp *types.MenuInd
 	info, err := l.svcCtx.MenuRpc.MenuIndex(l.ctx, &sys.MenuIndexReq{
 		Name: req.Name,
 		Path: req.Path,
-		Role: userHeader.GetUserCtx(l.ctx).Role,
 	})
 	if err != nil {
 		return nil, err
