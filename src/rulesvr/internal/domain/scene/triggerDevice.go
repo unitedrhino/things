@@ -1,6 +1,7 @@
 package scene
 
 import (
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 )
@@ -33,7 +34,7 @@ const (
 
 type OperationSchema struct {
 	DataID    []string   `json:"dataID"`    //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
-	TermType  TermType   `json:"termType"`  //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	TermType  CmpType    `json:"termType"`  //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
 	Values    []string   `json:"values"`    //比较条件列表
 	StateKeep *StateKeep `json:"stateKeep"` //状态保持
 }
@@ -80,4 +81,28 @@ func (o *OperationSchema) Validate() error {
 		return err
 	}
 	return nil
+}
+
+// IsTrigger 判断触发器是否命中
+func (t TriggerDevices) IsTrigger(device devices.Core, operator DeviceOperationOperator, dataID string) bool {
+	for _, d := range t {
+		//需要排除不是该设备的触发类型
+		if d.Operator != operator {
+			continue
+		}
+		if utils.SliceIn(d.Operator, DeviceOperationOperatorReportEvent, DeviceOperationOperatorReportProperty) {
+			if d.OperationSchema.DataID[0] != dataID {
+				continue
+			}
+		}
+		if d.Selector == TriggerDeviceSelectorAll {
+			return true
+		}
+		for _, d := range d.SelectorValues {
+			if d == device.DeviceName {
+				return true
+			}
+		}
+	}
+	return false
 }

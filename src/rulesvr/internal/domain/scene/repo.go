@@ -3,6 +3,9 @@ package scene
 import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/domain/schema"
+	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
+	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
 )
 import "context"
 
@@ -33,4 +36,11 @@ type DeviceRepo interface {
 	Update(ctx context.Context, info *Info) error
 	Delete(ctx context.Context, id int64) error
 	GetInfos(ctx context.Context, device devices.Core, operator DeviceOperationOperator, dataID string) (Infos, error)
+}
+
+// TermRepo 场景运行需要用到的对外仓储
+type TermRepo struct {
+	DeviceInteract deviceinteract.DeviceInteract
+	DeviceMsg      devicemsg.DeviceMsg
+	SchemaRepo     schema.ReadRepo
 }
