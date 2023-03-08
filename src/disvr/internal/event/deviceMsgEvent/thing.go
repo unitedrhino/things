@@ -209,7 +209,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  msg.ProductID,
 		Action:     action,
-		Timestamp:  l.dreq.GetTimeStamp(msg.Timestamp), // 操作时间
+		Timestamp:  time.Now(), // 操作时间
 		DeviceName: msg.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),
 		RequestID:  l.dreq.ClientToken,

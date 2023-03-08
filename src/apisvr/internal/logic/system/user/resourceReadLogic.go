@@ -29,7 +29,6 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 		Role: userHeader.GetUserCtx(l.ctx).Role,
 	})
 	if err != nil {
-
 		return nil, err
 	}
 

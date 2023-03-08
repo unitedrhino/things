@@ -18,8 +18,8 @@ import (
 var (
 	ruleSceneInfoFieldNames          = builder.RawFieldNames(&RuleSceneInfo{})
 	ruleSceneInfoRows                = strings.Join(ruleSceneInfoFieldNames, ",")
-	ruleSceneInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(ruleSceneInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
-	ruleSceneInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(ruleSceneInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
+	ruleSceneInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(ruleSceneInfoFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
+	ruleSceneInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(ruleSceneInfoFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
@@ -44,7 +44,7 @@ type (
 		When        sql.NullString `db:"when"`        // 触发条件
 		Then        sql.NullString `db:"then"`        // 满足条件时执行的动作
 		Desc        string         `db:"desc"`        // 描述
-		State       int64          `db:"state"`       // 告警配置状态（1启用 2禁用）
+		State       int64          `db:"state"`       // 状态（1启用 2禁用）
 		CreatedTime time.Time      `db:"createdTime"` // 创建时间
 		UpdatedTime time.Time      `db:"updatedTime"` // 更新时间
 		DeletedTime sql.NullTime   `db:"deletedTime"` // 删除时间，默认为空，表示未删除，非空表示已删除
