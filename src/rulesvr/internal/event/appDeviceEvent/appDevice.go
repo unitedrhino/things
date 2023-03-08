@@ -47,6 +47,18 @@ func (a *AppDeviceHandle) DeviceStatusConnected(in *application.ConnectMsg) erro
 		a.Errorf("%s.GetInfos err:%v", err)
 		return err
 	}
+	for _, info := range infos {
+		if len(info.When) != 0 {
+			if !info.When.IsTrue(a.ctx, scene.TermRepo{
+				DeviceInteract: a.svcCtx.DeviceInteract,
+				DeviceMsg:      a.svcCtx.DeviceMsg,
+				SchemaRepo:     a.svcCtx.SchemaRepo,
+			}) {
+				a.Infof("%s req=%v when not commit scene id:%v", utils.FuncName(), in, info.ID)
+				return nil
+			}
+		}
+	}
 	fmt.Println(infos)
 	return nil
 }

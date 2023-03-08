@@ -88,3 +88,11 @@ func SqlNullStringToAny(in sql.NullString, ret any) error {
 	err := json.Unmarshal([]byte(in.String), ret)
 	return err
 }
+
+func SliceTo[retT any](values []string, cov func(any) retT) []retT {
+	var ret []retT
+	for _, v := range values {
+		ret = append(ret, cov(v))
+	}
+	return ret
+}

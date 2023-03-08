@@ -11,4 +11,6 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
+	DmRpc conf.RpcClientConf `json:",optional"`
+	DiRpc conf.RpcClientConf `json:",optional"`
 }
