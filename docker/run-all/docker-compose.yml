@@ -4,10 +4,26 @@ networks:
   ithings_net:
     ipam:
       config:
-        - subnet: 192.168.1.0/24
-    driver: bridge
+        - subnet: 172.19.0.0/16
 
 services:
+  ithings:
+    image: ghcr.io/i4de/ithings:latest
+    container_name: ithings
+    restart: always
+    ports:
+      - "7777:7777"
+    volumes:
+      - ../../deploy/conf/ithings/apisvr/etc:/ithings/etc
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.8
+
   nats-server:
     image: nats:2.8-alpine
     container_name: nats
@@ -16,8 +32,6 @@ services:
       - "4222:4222"
       - "6222:6222"
       - "8222:8222"
-    volumes:
-      - ./deploy/conf/nats/nats-server.conf:/nats-server.conf
     logging:
       options:
         max-size: "50M"
@@ -25,40 +39,17 @@ services:
       driver: json-file
     networks:
       ithings_net:
-        aliases:
-          - node1.nats.io
+        ipv4_address: 172.19.0.2
 
   etcd:
-    image: quay.io/coreos/etcd:v3.3.12
+    image: docker.io/bitnami/etcd:3.5
     container_name: etcd-v3
     restart: always
     ports:
-      - 2379:2379
-      - 2380:2380
+      - "2379:2379"
+      - "2380:2380"
     environment:
-      ETCDCTL_API: 3
-    command:
-      - "/usr/local/bin/etcd"
-      - "--name"
-      - "s1"
-      - "--data-dir"
-      - "/etcd-data"
-      - "--advertise-client-urls"
-      - "http://0.0.0.0:2379"
-      - --listen-client-urls
-      - "http://0.0.0.0:2379"
-      - "--initial-advertise-peer-urls"
-      - "http://0.0.0.0:2380"
-      - "--listen-peer-urls"
-      - "http://0.0.0.0:2380"
-      - "--initial-cluster-token"
-      - "tkn"
-      - "--initial-cluster"
-      - "s1=http://0.0.0.0:2380"
-      - "--initial-cluster-state"
-      - "new"
-    volumes:
-      - ${DATA_DIR}/data/etcd/data:/etcd-data
+      - ALLOW_NONE_AUTHENTICATION=yes
     logging:
       options:
         max-size: "50M"
@@ -66,8 +57,7 @@ services:
       driver: json-file
     networks:
       ithings_net:
-        aliases:
-          - node1.etcd.io
+        ipv4_address: 172.19.0.3
 
   mariadb:
     container_name: mariadb
@@ -79,8 +69,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
       TZ: Asia/Shanghai
     volumes:
-      - ./deploy/conf/mysql/sql:/mysql
-      - ${DATA_DIR}/data/mariadb/:/var/lib/mysql
+      - ../../deploy/conf/mysql/sql:/mysql
     logging:
       options:
         max-size: "50M"
@@ -88,8 +77,7 @@ services:
       driver: json-file
     networks:
       ithings_net:
-        aliases:
-          - node1.mysql.io
+        ipv4_address: 172.19.0.4
 
   redis:
     hostname: redis
@@ -105,8 +93,7 @@ services:
       driver: json-file
     networks:
       ithings_net:
-        aliases:
-          - node1.redis.io
+        ipv4_address: 172.19.0.5
 
   tdengine:
     image: tdengine/tdengine
@@ -117,11 +104,6 @@ services:
       - "6035:6035"
       - "6041:6041"
       - "6030-6040:6030-6040/udp"
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - ${DATA_DIR}/data/tdengine/lib:/var/lib/taos:Z
-      - ${DATA_DIR}/data/tdengine/log:/var/log/taos:Z
     restart: always
     tty: true
     logging:
@@ -131,8 +113,7 @@ services:
       driver: json-file
     networks:
       ithings_net:
-        aliases:
-          - node1.tdengine.io
+        ipv4_address: 172.19.0.6
 
   emqx:
     container_name: emqx
@@ -146,8 +127,8 @@ services:
       - "8084:8084"
       - "18083:18083"
     volumes:
-      - ./deploy/conf/emqx/etc/plugins/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf
-      - ./deploy/conf/emqx/data/loaded_plugins:/opt/emqx/data/loaded_plugins
+      - ../../deploy/conf/emqx/etc/plugins/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf
+      - ../../deploy/conf/emqx/data/loaded_plugins:/opt/emqx/data/loaded_plugins
     environment:
       - "EMQX_NAME=emqx"
       - "EMQX_HOST=node1.emqx.io"
@@ -158,23 +139,4 @@ services:
       driver: json-file
     networks:
       ithings_net:
-        aliases:
-          - node1.emqx.io
-
-  minio:
-    image: minio/minio:latest
-    container_name: minio
-    ports:
-      - "9000:9000"
-    restart: always
-    command: server /data
-    environment:
-      MINIO_ACCESS_KEY: root
-      MINIO_SECRET_KEY: password
-    logging:
-      options:
-        max-size: "50M"
-        max-file: "10"
-      driver: json-file
-    volumes:
-      - ${DATA_DIR}/data/minio/data:/data
+        ipv4_address: 172.19.0.7
