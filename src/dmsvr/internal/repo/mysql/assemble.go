@@ -105,12 +105,12 @@ func ToActionDo(in *DmProductSchema) *schema.Action {
 	return do
 }
 
-func ToSchemaDo(in []*DmProductSchema) *schema.Model {
-	if len(in) == 0 {
-		return nil
-	}
+func ToSchemaDo(productID string, in []*DmProductSchema) *schema.Model {
 	model := schema.Model{
-		Profile: schema.Profile{ProductID: in[0].ProductID},
+		Profile: schema.Profile{ProductID: productID},
+	}
+	if len(in) == 0 {
+		return &model
 	}
 	for _, v := range in {
 		switch schema.AffordanceType(v.Type) {

@@ -19,6 +19,7 @@ func (d *DeviceDataRepo) InitDevice(ctx context.Context,
 			utils.FuncName(), productID, deviceName, t.Property, err)
 		return err
 	}
+
 	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s TAGS ('%s','%s');",
 		d.GetEventTableName(productID, deviceName), d.GetEventStableName(), productID, deviceName)
 	if _, err := d.t.ExecContext(ctx, sql); err != nil {
