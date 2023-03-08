@@ -96,26 +96,8 @@ func (s *SceneDeviceRepo) GetInfos(ctx context.Context, device devices.Core, ope
 	scenes := temp.(scene.Infos)
 	var ret scene.Infos
 	for _, s := range scenes {
-		for _, t := range s.Trigger.Device {
-			//需要排除不是该设备的触发类型
-			if t.Operator != operator {
-				continue
-			}
-			if utils.SliceIn(t.Operator, scene.DeviceOperationOperatorReportEvent, scene.DeviceOperationOperatorReportProperty) {
-				if t.OperationSchema.DataID[0] != dataID {
-					continue
-				}
-			}
-			if t.Selector == scene.TriggerDeviceSelectorAll {
-				ret = append(ret, s)
-				break
-			}
-			for _, d := range t.SelectorValues {
-				if d == device.DeviceName {
-					ret = append(ret, s)
-					break
-				}
-			}
+		if s.Trigger.Device.IsTrigger(device, operator, dataID) {
+			ret = append(ret, s)
 		}
 	}
 	return ret, nil

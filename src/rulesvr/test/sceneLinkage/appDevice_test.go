@@ -48,12 +48,23 @@ func Init() {
 				Operator:  scene.DeviceOperationOperatorConnected,
 				OperationSchema: &scene.OperationSchema{
 					DataID:   []string{"GPS_Info", "longtitude"},
-					TermType: scene.TermTypeGt,
+					TermType: scene.CmpTypeGt,
 					Values:   []string{"0.001"},
 				},
 			}},
 		},
-		When: nil,
+		When: scene.Terms{&scene.Term{
+			ColumnType: scene.TermColumnTypeProperty,
+			ColumnSchema: &scene.ColumnSchema{
+				ProductID:  productID,
+				DeviceName: deviceName,
+				DataID:     []string{"GPS_Info", "longtitude"},
+				TermType:   scene.CmpTypeGt,
+				Values:     []string{"0.001"},
+			},
+			NextCondition: scene.TermConditionTypeOr,
+			Terms:         nil,
+		}},
 		Then: scene.Actions{&scene.Action{
 			Executor: scene.ActionExecutorAlarm,
 			Alarm:    &scene.ActionAlarm{Mode: scene.ActionAlarmModeTrigger},
