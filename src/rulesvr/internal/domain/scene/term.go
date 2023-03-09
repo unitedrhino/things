@@ -84,28 +84,34 @@ func (t CmpType) Validate(values []string) error {
 }
 
 //判断条件是否成立
-func (t Terms) IsTrue(ctx context.Context, repo TermRepo) bool {
+func (t Terms) IsHit(ctx context.Context, repo TermRepo) bool {
+	if len(t) == 0 {
+		return true
+	}
 	var nextCondition = TermConditionTypeOr
+	var finalIsHit = false
 	for _, v := range t {
-		isTrue := v.IsTrue(ctx, repo)
-		if !isTrue && nextCondition == TermConditionTypeAnd {
+		isHit := v.IsHit(ctx, repo)
+		if !isHit && nextCondition == TermConditionTypeAnd {
 			return false
 		}
+		finalIsHit = isHit //如果是or,每个都返回false那就是false
 		nextCondition = v.NextCondition
 	}
-	return true
+	return finalIsHit
 }
-func (t *Term) IsTrue(ctx context.Context, repo TermRepo) bool {
+
+func (t *Term) IsHit(ctx context.Context, repo TermRepo) bool {
 	switch t.ColumnType {
 	case TermColumnTypeProperty, TermColumnTypeEvent:
-		isTrue := t.ColumnSchema.IsTrue(ctx, t.ColumnType, repo)
-		if !isTrue && t.ChildrenCondition == TermConditionTypeAnd { //如果没满足,如果是and条件直接返回false即可
+		IsHit := t.ColumnSchema.IsHit(ctx, t.ColumnType, repo)
+		if !IsHit && t.ChildrenCondition == TermConditionTypeAnd { //如果没满足,如果是and条件直接返回false即可
 			return false
 		}
-		return t.Terms.IsTrue(ctx, repo)
+		return t.Terms.IsHit(ctx, repo)
 	case TermColumnTypeSysTime:
 		t.ColumnTime.Validate()
-		return t.Terms.IsTrue(ctx, repo)
+		return t.Terms.IsHit(ctx, repo)
 	}
 	return false
 }
