@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
 	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
+	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 )
 import "context"
 
@@ -40,7 +41,11 @@ type DeviceRepo interface {
 
 // TermRepo 场景运行需要用到的对外仓储
 type TermRepo struct {
+	DeviceMsg  devicemsg.DeviceMsg
+	SchemaRepo schema.ReadRepo
+}
+
+type ActionRepo struct {
 	DeviceInteract deviceinteract.DeviceInteract
-	DeviceMsg      devicemsg.DeviceMsg
-	SchemaRepo     schema.ReadRepo
+	DeviceM        devicemanage.DeviceManage
 }

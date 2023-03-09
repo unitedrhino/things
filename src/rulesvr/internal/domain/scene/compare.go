@@ -20,16 +20,16 @@ const (
 	CmpTypeIn  CmpType = "in"  //在xx值之中,可以有n个参数
 )
 
-func (t CmpType) IsTrue(dataType schema.DataType, data string, values []string) bool {
+func (t CmpType) IsHit(dataType schema.DataType, data any, values []string) bool {
 	switch dataType {
 	case schema.DataTypeFloat:
 		return TermCompareAll(t, cast.ToFloat64(data), utils.SliceTo(values, cast.ToFloat64))
 	case schema.DataTypeInt, schema.DataTypeTimestamp:
 		return TermCompareAll(t, cast.ToInt64(data), utils.SliceTo(values, cast.ToInt64))
 	case schema.DataTypeString, schema.DataTypeBool:
-		return TermCompareAll(t, data, values)
+		return TermCompareAll(t, cast.ToString(data), values)
 	default:
-		return TermCompareAll(t, data, values)
+		return TermCompareAll(t, cast.ToString(data), values)
 	}
 }
 
