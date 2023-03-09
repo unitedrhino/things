@@ -48,7 +48,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		return nil, err
 	}
 	param := map[string]any{}
-	err = json.Unmarshal([]byte(in.InputParams), &param)
+	err = utils.Unmarshal([]byte(in.InputParams), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.InputParams)
 	}
@@ -63,7 +63,8 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 			ClientToken: uuid,
 			Timestamp:   time.Now().UnixMilli(),
 		},
-		Params: param}
+		ActionID: in.ActionID,
+		Params:   param}
 	_, err = req.VerifyReqParam(l.schema, schema.ParamActionInput)
 	if err != nil {
 		return nil, err
@@ -71,6 +72,16 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 	pubTopic := fmt.Sprintf("$thing/down/action/%s/%s", in.ProductID, in.DeviceName)
 	subTopic := fmt.Sprintf("$thing/up/action/%s/%s", in.ProductID, in.DeviceName)
 
+	if in.IsAsync { //如果是异步获取 处理结果暂不关注
+		payload, _ := json.Marshal(req)
+		err := l.svcCtx.PubDev.PublishToDev(l.ctx, pubTopic, payload)
+		if err != nil {
+			return nil, err
+		}
+		return &di.SendActionResp{
+			ClientToken: req.ClientToken,
+		}, nil
+	}
 	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, pubTopic, subTopic, &req, in.ProductID, in.DeviceName)
 	if err != nil {
 		return nil, err
