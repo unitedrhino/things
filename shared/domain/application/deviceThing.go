@@ -1,8 +1,10 @@
 package application
 
 import (
+	"encoding/json"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/spf13/cast"
 )
 
 type ParamValue struct {
@@ -26,4 +28,45 @@ type EventReport struct {
 	Identifier string                `json:"identifier"`       //标识符
 	Type       string                `json:"type" `            //事件类型: 信息:info  告警:alert  故障:fault
 	Params     map[string]ParamValue `json:"params" `          //事件参数
+}
+
+//func (c ParamValue) MarshalJSON() ([]byte, error) {
+//
+//}
+
+func (c *ParamValue) UnmarshalJSON(b []byte) error {
+	//自定义json解析
+	stu := map[string]any{}
+	err := json.Unmarshal(b, &stu)
+	if err != nil {
+		return err
+	}
+	ret := parse(stu)
+	c.Type = ret.Type
+	c.Value = ret.Value
+	return nil
+}
+func parse(stu map[string]any) (ret ParamValue) {
+	ret.Type = schema.DataType(cast.ToString(stu["type"]))
+	ret.Value = stu["value"]
+	switch ret.Type {
+	case schema.DataTypeFloat:
+		ret.Value = cast.ToFloat64(ret.Value)
+		return
+	case schema.DataTypeInt, schema.DataTypeEnum, schema.DataTypeTimestamp:
+		ret.Value = cast.ToInt64(ret.Value)
+		return
+	case schema.DataTypeStruct:
+		val := ret.Value.(map[string]any)
+		structVal := StructValue{}
+		for k, v := range val {
+			structVal[k] = parse(v.(map[string]any))
+		}
+		ret.Value = structVal
+	case schema.DataTypeArray:
+
+	default:
+		return
+	}
+	return
 }

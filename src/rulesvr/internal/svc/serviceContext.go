@@ -54,15 +54,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("设备场景数据初始化失败 err:", err)
 		os.Exit(-1)
 	}
-	if c.DmRpc.Enable {
-		if c.DmRpc.Mode == conf.ClientModeGrpc {
-			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
-		} else {
-			productM = dmdirect.NewProductManage()
-			deviceM = dmdirect.NewDeviceManage()
-		}
+	if c.DmRpc.Mode == conf.ClientModeGrpc {
+		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
+		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
+	} else {
+		productM = dmdirect.NewProductManage()
+		deviceM = dmdirect.NewDeviceManage()
 	}
+
 	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
 		info, err := productM.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: productID})
 		if err != nil {
@@ -70,15 +69,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 		return schema.ValidateWithFmt([]byte(info.Tsl))
 	})
-	if c.DiRpc.Enable {
-		if c.DiRpc.Mode == conf.ClientModeGrpc {
-			deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DiRpc.Conf))
-			deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DiRpc.Conf))
-
-		} else {
-			deviceMsg = didirect.NewDeviceMsg()
-			deviceInteract = didirect.NewDeviceInteract()
-		}
+	if c.DiRpc.Mode == conf.ClientModeGrpc {
+		deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DiRpc.Conf))
+		deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DiRpc.Conf))
+	} else {
+		deviceMsg = didirect.NewDeviceMsg()
+		deviceInteract = didirect.NewDeviceInteract()
 	}
 	return &ServiceContext{
 		Config: c,

@@ -6,6 +6,7 @@ import (
 	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	"github.com/zeromicro/go-zero/core/logx"
+	"sync"
 )
 
 type ActionDeviceType string
@@ -34,6 +35,7 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 	case ActionDeviceTypePropertyControl:
 		executeFunc = func(productID, deviceName string) error {
 			_, err := repo.DeviceInteract.SendProperty(ctx, &deviceinteract.SendPropertyReq{
+				IsAsync:    true,
 				ProductID:  productID,
 				DeviceName: deviceName,
 				Data:       a.Value, //todo 这里需要根据dataID来生成
@@ -47,6 +49,7 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 	case ActionDeviceTypeAction:
 		executeFunc = func(productID, deviceName string) error {
 			_, err := repo.DeviceInteract.SendAction(ctx, &deviceinteract.SendActionReq{
+				IsAsync:     true,
 				ProductID:   productID,
 				DeviceName:  deviceName,
 				ActionID:    a.DataID,
@@ -72,12 +75,18 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 			deviceList = append(deviceList, v.DeviceName)
 		}
 	}
+	wait := sync.WaitGroup{}
 	for _, device := range deviceList {
-		err := executeFunc(a.ProductID, device)
-		if err != nil {
-			logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex execute:%#v err:%v", utils.FuncName(), a, err)
-			return err
-		}
+		wait.Add(1)
+		go func(device string) {
+			defer wait.Done()
+			err := executeFunc(a.ProductID, device)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex device:%v execute:%#v err:%v", utils.FuncName(), device, a, err)
+				//return err
+			}
+		}(device)
 	}
+	wait.Wait()
 	return nil
 }
