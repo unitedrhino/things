@@ -13,3 +13,8 @@ func TraceIdFromContext(ctx context.Context) string {
 
 	return ""
 }
+
+func CopyContext(ctx context.Context) context.Context {
+	span := trace.SpanContextFromContext(ctx)
+	return trace.ContextWithSpanContext(context.Background(), span)
+}

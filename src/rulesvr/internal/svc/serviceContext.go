@@ -7,6 +7,7 @@ import (
 	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
 	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
+	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -34,10 +35,12 @@ type SvrClient struct {
 	ProductM       productmanage.ProductManage
 	DeviceInteract deviceinteract.DeviceInteract
 	DeviceMsg      devicemsg.DeviceMsg
+	DeviceM        devicemanage.DeviceManage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
+		deviceM        devicemanage.DeviceManage
 		productM       productmanage.ProductManage
 		deviceInteract deviceinteract.DeviceInteract
 		deviceMsg      devicemsg.DeviceMsg
@@ -54,8 +57,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc {
 			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else {
 			productM = dmdirect.NewProductManage()
+			deviceM = dmdirect.NewDeviceManage()
 		}
 	}
 	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
@@ -81,6 +86,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			ProductM:       productM,
 			DeviceInteract: deviceInteract,
 			DeviceMsg:      deviceMsg,
+			DeviceM:        deviceM,
 		},
 		Repo: Repo{
 			SceneRepo:       SceneRepo,

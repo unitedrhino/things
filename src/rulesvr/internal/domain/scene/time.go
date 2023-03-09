@@ -3,6 +3,7 @@ package scene
 import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"time"
 )
 
 // TimeRange 时间范围 只支持后面几种特殊字符:*  - ,
@@ -46,4 +47,16 @@ func (a *UnitTime) Validate() error {
 		return nil
 	}
 	return a.Unit.Validate()
+}
+func (a *UnitTime) Execute() {
+	var delayTime = time.Duration(a.Time)
+	switch a.Unit {
+	case TimeUnitSeconds:
+		delayTime *= time.Second
+	case TimeUnitMinutes:
+		delayTime *= time.Minute
+	case TimeUnitHours:
+		delayTime *= time.Hour
+	}
+	time.Sleep(delayTime)
 }

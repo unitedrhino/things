@@ -1,10 +1,83 @@
 package scene
 
+import (
+	"context"
+	"github.com/i-Things/things/shared/utils"
+	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
+	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
+	"github.com/zeromicro/go-zero/core/logx"
+)
+
+type ActionDeviceType string
+
+const (
+	ActionDeviceTypePropertyControl ActionDeviceType = "propertyControl"
+	ActionDeviceTypeAction          ActionDeviceType = "action"
+)
+
 type ActionDevice struct {
-	ProductID      string                `json:"productID"`      //产品id
-	Selector       TriggerDeviceSelector `json:"selector"`       //设备选择方式   fixed:指定的设备
-	SelectorValues []string              `json:"selectorValues"` //选择的列表  选择的列表, fixed类型是设备名列表
-	Type           string                `json:"type"`           // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
-	DataID         []string              `json:"dataID"`         // 属性的id及事件的id aa.bb.cc
-	Value          string                `json:"value"`          //传的值
+	ProductID      string           `json:"productID"`      //产品id
+	Selector       DeviceSelector   `json:"selector"`       //设备选择方式   fixed:指定的设备
+	SelectorValues []string         `json:"selectorValues"` //选择的列表  选择的列表, fixed类型是设备名列表
+	Type           ActionDeviceType `json:"type"`           // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
+	DataID         string           `json:"dataID"`         // 属性的id及事件的id
+	Value          string           `json:"value"`          //传的值
+}
+
+func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
+	var (
+		executeFunc func(productID, deviceName string) error
+		deviceList  []string
+	)
+
+	switch a.Type {
+	case ActionDeviceTypePropertyControl:
+		executeFunc = func(productID, deviceName string) error {
+			_, err := repo.DeviceInteract.SendProperty(ctx, &deviceinteract.SendPropertyReq{
+				ProductID:  productID,
+				DeviceName: deviceName,
+				Data:       a.Value, //todo 这里需要根据dataID来生成
+			})
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex SendProperty:%#v err:%v", utils.FuncName(), a, err)
+				return err
+			}
+			return nil
+		}
+	case ActionDeviceTypeAction:
+		executeFunc = func(productID, deviceName string) error {
+			_, err := repo.DeviceInteract.SendAction(ctx, &deviceinteract.SendActionReq{
+				ProductID:   productID,
+				DeviceName:  deviceName,
+				ActionID:    a.DataID,
+				InputParams: a.Value})
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex SendAction:%#v err:%v", utils.FuncName(), a, err)
+				return err
+			}
+			return nil
+		}
+	}
+	if a.Selector == DeviceSelectorFixed {
+		deviceList = a.SelectorValues
+	} else {
+		ret, err := repo.DeviceM.DeviceInfoIndex(ctx, &devicemanage.DeviceInfoIndexReq{
+			ProductID: a.ProductID,
+		})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex ActionDevice:%#v err:%v", utils.FuncName(), a, err)
+			return err
+		}
+		for _, v := range ret.List {
+			deviceList = append(deviceList, v.DeviceName)
+		}
+	}
+	for _, device := range deviceList {
+		err := executeFunc(a.ProductID, device)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex execute:%#v err:%v", utils.FuncName(), a, err)
+			return err
+		}
+	}
+	return nil
 }
