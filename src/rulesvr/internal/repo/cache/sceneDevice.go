@@ -87,20 +87,14 @@ func (s *SceneDeviceRepo) Insert(ctx context.Context, info *scene.Info) error {
 	return nil
 }
 
-func (s *SceneDeviceRepo) GetInfos(ctx context.Context, device devices.Core, operator scene.DeviceOperationOperator, dataID string) (scene.Infos, error) {
+func (s *SceneDeviceRepo) GetInfos(ctx context.Context, device devices.Core,
+	operator scene.DeviceOperationOperator, dataID string) (scene.Infos, error) {
 	key := s.genKey(device, operator, dataID)
 	temp, ok := s.triggerMap.Load(key)
 	if !ok {
 		return nil, nil
 	}
-	scenes := temp.(scene.Infos)
-	var ret scene.Infos
-	for _, s := range scenes {
-		if s.Trigger.Device.IsTrigger(device, operator, dataID) {
-			ret = append(ret, s)
-		}
-	}
-	return ret, nil
+	return temp.(scene.Infos), nil
 }
 
 func (s *SceneDeviceRepo) Update(ctx context.Context, info *scene.Info) error {

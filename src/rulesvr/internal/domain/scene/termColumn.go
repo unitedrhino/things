@@ -55,7 +55,7 @@ func (c *ColumnSchema) Validate() error {
 
 	return nil
 }
-func (c *ColumnSchema) IsTrue(ctx context.Context, columnType TermColumnType, repo TermRepo) bool {
+func (c *ColumnSchema) IsHit(ctx context.Context, columnType TermColumnType, repo TermRepo) bool {
 	sm, err := repo.SchemaRepo.GetSchemaModel(ctx, c.ProductID)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err:%v", utils.FuncName(), err)
@@ -91,7 +91,7 @@ func (c *ColumnSchema) IsTrue(ctx context.Context, columnType TermColumnType, re
 				val = info.List[0].Value
 			}
 		}
-		return c.TermType.IsTrue(dataType, val, c.Values)
+		return c.TermType.IsHit(dataType, val, c.Values)
 	case TermColumnTypeEvent:
 		logx.WithContext(ctx).Errorf("scene not support event yet")
 		return false

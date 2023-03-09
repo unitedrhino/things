@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/application"
+	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/event/appDeviceEvent"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
@@ -28,7 +29,6 @@ var (
 
 func TestMain(t *testing.M) {
 	fmt.Println("start test appDeviceEvent")
-	ruledirect.ConfigFile = "../../etc/rule.yaml"
 	svcCtx = ruledirect.GetSvcCtx()
 	Logger = logx.WithContext(ctx)
 	Init()
@@ -44,8 +44,42 @@ func Init() {
 		Trigger: scene.Trigger{
 			Device: scene.TriggerDevices{&scene.TriggerDevice{
 				ProductID: productID,
-				Selector:  scene.TriggerDeviceSelectorAll,
+				Selector:  scene.DeviceSelectorAll,
 				Operator:  scene.DeviceOperationOperatorConnected,
+				OperationSchema: &scene.OperationSchema{
+					DataID:   []string{"GPS_Info", "longtitude"},
+					TermType: scene.CmpTypeGt,
+					Values:   []string{"0.001"},
+				},
+			}},
+		},
+		When: scene.Terms{&scene.Term{
+			ColumnType: scene.TermColumnTypeProperty,
+			ColumnSchema: &scene.ColumnSchema{
+				ProductID:  productID,
+				DeviceName: deviceName,
+				DataID:     []string{"GPS_Info", "longtitude"},
+				TermType:   scene.CmpTypeGt,
+				Values:     []string{"0.001"},
+			},
+			NextCondition: scene.TermConditionTypeOr,
+			Terms:         nil,
+		}},
+		Then: scene.Actions{&scene.Action{
+			Executor: scene.ActionExecutorAlarm,
+			Alarm:    &scene.ActionAlarm{Mode: scene.ActionAlarmModeTrigger},
+		}},
+		State: 1,
+	})
+	err = svcCtx.SceneRepo.Insert(ctx, &scene.Info{
+		Name:        "结构体上报",
+		Desc:        "结构体上报",
+		TriggerType: scene.TriggerTypeDevice,
+		Trigger: scene.Trigger{
+			Device: scene.TriggerDevices{&scene.TriggerDevice{
+				ProductID: productID,
+				Selector:  scene.DeviceSelectorAll,
+				Operator:  scene.DeviceOperationOperatorReportProperty,
 				OperationSchema: &scene.OperationSchema{
 					DataID:   []string{"GPS_Info", "longtitude"},
 					TermType: scene.CmpTypeGt,
@@ -97,10 +131,20 @@ func TestAppDeviceHandle_DevicePropertyReport(t *testing.T) {
 	type args struct {
 		in *application.PropertyReport
 	}
-	var tests []struct {
+	var tests = []struct {
 		name    string
 		args    args
 		wantErr bool
+	}{
+		{args: args{in: &application.PropertyReport{
+			Device:     devices.Core{ProductID: productID, DeviceName: deviceName},
+			Timestamp:  time.Now().UnixMilli(),
+			Identifier: "GPS_Info",
+			Param: application.ParamValue{Type: schema.DataTypeStruct, Value: application.StructValue{
+				"longtitude": {Type: schema.DataTypeFloat, Value: 0.12},
+				"latitude":   {Type: schema.DataTypeFloat, Value: 0.42},
+			}},
+		}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

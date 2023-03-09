@@ -1,7 +1,12 @@
 // Package scene 执行动作
 package scene
 
-import "github.com/i-Things/things/shared/errors"
+import (
+	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/zeromicro/go-zero/core/logx"
+)
 
 //操作执行器类型
 type ActionExecutor string
@@ -56,6 +61,31 @@ func (a *Action) Validate() error {
 		return a.Alarm.Validate()
 	default:
 		return errors.Parameter.AddMsg("操作类型不支持:" + string(a.Executor))
+	}
+	return nil
+}
+
+//执行操作
+func (a *Action) Execute(ctx context.Context, repo ActionRepo) error {
+	switch a.Executor {
+	case ActionExecutorDelay:
+		a.Delay.Execute()
+	case ActionExecutorDevice:
+		err := a.Device.Execute(ctx, repo)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.Execute Action:%#v err:%v", utils.FuncName(), a, err)
+			return err
+		}
+	}
+	return nil
+}
+func (a Actions) Execute(ctx context.Context, repo ActionRepo) error {
+	for _, v := range a {
+		err := v.Execute(ctx, repo)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.Execute Action:%#v err:%v", utils.FuncName(), v, err)
+			return err
+		}
 	}
 	return nil
 }
