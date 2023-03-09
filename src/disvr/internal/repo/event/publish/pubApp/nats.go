@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/nats-io/nats.go"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type (
@@ -21,6 +22,7 @@ type (
 func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 	nc, err := clients.NewNatsClient(conf)
 	if err != nil {
+		logx.Errorf("Nats 连接失败 err:%v", err)
 		return nil, err
 	}
 	return &NatsClient{client: nc}, nil

@@ -16,7 +16,6 @@ require (
 	github.com/mssola/user_agent v0.5.3
 	github.com/nats-io/nats.go v1.14.0
 	github.com/silenceper/wechat/v2 v2.0.5
-	github.com/sourcegraph/conc v0.3.0
 	github.com/spf13/cast v1.5.0
 	github.com/taosdata/driver-go/v3 v3.0.0
 	github.com/zeromicro/go-zero v1.5.0
