@@ -15,7 +15,9 @@ import (
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/cache"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/timer"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
@@ -25,8 +27,10 @@ type ServiceContext struct {
 	Config config.Config
 	Repo
 	SvrClient
+	SceneTimerControl timer.SceneControl
 }
 type Repo struct {
+	Store           kv.Store
 	SceneRepo       scene.Repo
 	SceneDeviceRepo scene.DeviceRepo
 	SchemaRepo      schema.ReadRepo
@@ -45,7 +49,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceInteract deviceinteract.DeviceInteract
 		deviceMsg      devicemsg.DeviceMsg
 	)
-
+	store := kv.NewStore(c.CacheRedis)
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	SceneRepo := mysql.NewRuleSceneInfoModel(conn)
 	sceneDevice := cache.NewSceneDeviceRepo(SceneRepo)
@@ -85,6 +89,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceM:        deviceM,
 		},
 		Repo: Repo{
+			Store:           store,
 			SceneRepo:       SceneRepo,
 			SceneDeviceRepo: sceneDevice,
 			SchemaRepo:      tr,

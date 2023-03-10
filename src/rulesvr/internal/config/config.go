@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/i-Things/things/shared/conf"
+	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
@@ -11,6 +12,7 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
-	DmRpc conf.RpcClientConf `json:",optional"`
-	DiRpc conf.RpcClientConf `json:",optional"`
+	CacheRedis cache.ClusterConf
+	DmRpc      conf.RpcClientConf `json:",optional"`
+	DiRpc      conf.RpcClientConf `json:",optional"`
 }
