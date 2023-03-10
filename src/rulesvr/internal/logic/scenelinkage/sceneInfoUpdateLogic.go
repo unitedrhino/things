@@ -42,5 +42,9 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *rule.SceneInfo) (*rule.Respon
 		return nil, err
 	}
 	err = l.svcCtx.SceneRepo.Update(l.ctx, do)
+	err = l.svcCtx.SceneTimerControl.Update(do)
+	if err != nil {
+		return nil, err
+	}
 	return &rule.Response{}, err
 }

@@ -58,18 +58,18 @@ func (m *MsgHead) GetCtx() context.Context {
 	var msg MySpanContextConfig
 	err := json.Unmarshal(m.Trace, &msg)
 	if err != nil {
-		logx.Error("[GetCtx]|json Unmarshal trace.SpanContextConfig err.")
+		logx.Errorf("[GetCtx]|json Unmarshal trace.SpanContextConfig err:%v", err)
 		return nil
 	}
 	//将MsgHead 中的msg链路信息 重新注入ctx中并返回
 	t, err := trace.TraceIDFromHex(msg.TraceID)
 	if err != nil {
-		logx.Error("[GetCtx]|TraceIDFromHex err.")
+		logx.Errorf("[GetCtx]|TraceIDFromHex err:%v", err)
 		return nil
 	}
 	s, err := trace.SpanIDFromHex(msg.SpanID)
 	if err != nil {
-		logx.Error("[GetCtx]|SpanIDFromHex err.")
+		logx.Errorf("[GetCtx]|SpanIDFromHex err:%v", err)
 		return nil
 	}
 	parent := trace.NewSpanContext(trace.SpanContextConfig{

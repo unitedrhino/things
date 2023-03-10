@@ -37,15 +37,95 @@ func TestMain(t *testing.M) {
 }
 
 func Init() {
-	err := svcCtx.SceneRepo.Insert(ctx, &scene.Info{
-		Name:        "上线测试2",
-		Desc:        "上线测试2",
+	err := svcCtx.SceneRepo.Insert(ctx,
+		&scene.Info{
+			Name:        "上线测试2",
+			Desc:        "上线测试2",
+			TriggerType: scene.TriggerTypeDevice,
+			Trigger: scene.Trigger{
+				Device: scene.TriggerDevices{&scene.TriggerDevice{
+					ProductID: productID,
+					Selector:  scene.DeviceSelectorAll,
+					Operator:  scene.DeviceOperationOperatorConnected,
+					OperationSchema: &scene.OperationSchema{
+						DataID:   []string{"GPS_Info", "longtitude"},
+						TermType: scene.CmpTypeGt,
+						Values:   []string{"0.001"},
+					},
+				}},
+			},
+			When: scene.Terms{&scene.Term{
+				ColumnType: scene.TermColumnTypeProperty,
+				ColumnSchema: &scene.ColumnSchema{
+					ProductID:  productID,
+					DeviceName: deviceName,
+					DataID:     []string{"GPS_Info", "longtitude"},
+					TermType:   scene.CmpTypeGt,
+					Values:     []string{"0.001"},
+				},
+				NextCondition: scene.TermConditionTypeOr,
+				Terms:         nil,
+			}},
+			Then: scene.Actions{&scene.Action{
+				Executor: scene.ActionExecutorAlarm,
+				Alarm:    &scene.ActionAlarm{Mode: scene.ActionAlarmModeTrigger},
+			}, &scene.Action{
+				Executor: scene.ActionExecutorDelay,
+				Delay: &scene.UnitTime{
+					Time: 2,
+					Unit: scene.TimeUnitSeconds,
+				},
+			},
+				&scene.Action{
+					Executor: scene.ActionExecutorDevice,
+					Delay:    nil,
+					Alarm:    nil,
+					Device: &scene.ActionDevice{
+						ProductID: productID,
+						Selector:  scene.DeviceSelectorAll,
+						Type:      scene.ActionDeviceTypePropertyControl,
+						Value: `{"GPS_Info":
+			{
+				"longtitude":33,
+				"latitude":33
+			}}`,
+					},
+				},
+				&scene.Action{
+					Executor: scene.ActionExecutorDevice,
+					Delay:    nil,
+					Alarm:    nil,
+					Device: &scene.ActionDevice{
+						ProductID: productID,
+						Selector:  scene.DeviceSelectorAll,
+						Type:      scene.ActionDeviceTypePropertyControl,
+						Value:     `{"battery_state":14}`,
+					},
+				},
+				&scene.Action{
+					Executor: scene.ActionExecutorDevice,
+					Delay:    nil,
+					Alarm:    nil,
+					Device: &scene.ActionDevice{
+						ProductID: productID,
+						Selector:  scene.DeviceSelectorAll,
+						Type:      scene.ActionDeviceTypeAction,
+						DataID:    "whistle",
+						Value:     `{"time":123,"switch":1}`,
+					},
+				},
+			},
+			State: 1,
+		})
+	err = svcCtx.SceneRepo.Insert(ctx, &scene.Info{
+		Name:        "结构体上报1",
+		Desc:        "结构体上报1",
 		TriggerType: scene.TriggerTypeDevice,
 		Trigger: scene.Trigger{
 			Device: scene.TriggerDevices{&scene.TriggerDevice{
 				ProductID: productID,
 				Selector:  scene.DeviceSelectorAll,
-				Operator:  scene.DeviceOperationOperatorConnected,
+				Operator:  scene.DeviceOperationOperatorReportProperty,
 				OperationSchema: &scene.OperationSchema{
 					DataID:   []string{"GPS_Info", "longtitude"},
 					TermType: scene.CmpTypeGt,
@@ -117,20 +197,14 @@ func Init() {
 		State: 1,
 	})
 	err = svcCtx.SceneRepo.Insert(ctx, &scene.Info{
-		Name:        "结构体上报1",
-		Desc:        "结构体上报1",
-		TriggerType: scene.TriggerTypeDevice,
+		Name:        "定时两秒",
+		Desc:        "定时2秒",
+		TriggerType: scene.TriggerTypeTimer,
 		Trigger: scene.Trigger{
-			Device: scene.TriggerDevices{&scene.TriggerDevice{
-				ProductID: productID,
-				Selector:  scene.DeviceSelectorAll,
-				Operator:  scene.DeviceOperationOperatorReportProperty,
-				OperationSchema: &scene.OperationSchema{
-					DataID:   []string{"GPS_Info", "longtitude"},
-					TermType: scene.CmpTypeGt,
-					Values:   []string{"0.001"},
-				},
-			}},
+			Timer: &scene.Timer{
+				Type: "cron",
+				Cron: "*/2 * * * * ? ",
+			},
 		},
 		When: scene.Terms{&scene.Term{
 			ColumnType: scene.TermColumnTypeProperty,
