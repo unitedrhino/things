@@ -3,6 +3,7 @@ package scene
 import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/robfig/cron/v3"
 	"time"
 )
 
@@ -33,6 +34,15 @@ const (
 type UnitTime struct {
 	Time int64    `json:"time"` //延迟时间
 	Unit TimeUnit `json:"unit"` //时间单位 second:秒  minute:分钟  hour:小时  week:星期 month:月
+}
+
+func (t *Timer) Validate() error {
+	if t == nil {
+		return errors.Parameter.AddMsg("时间触发模式需要填写时间内容")
+	}
+	p := cron.NewParser(cron.Second | cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow | cron.Descriptor)
+	_, err := p.Parse(t.Cron)
+	return errors.Parameter.AddMsg("时间cron表达式解析失败").AddDetail(err)
 }
 
 func (t TimeUnit) Validate() error {

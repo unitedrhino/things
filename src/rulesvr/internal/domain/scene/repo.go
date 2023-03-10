@@ -10,16 +10,10 @@ import (
 )
 import "context"
 
-type TriggerDeviceFilter struct {
-	ProductID string `json:"productID"` //产品id
-	//Operator  OperationSchema `json:"operator"`  //触发类型  online:上线 offline:下线 reportProperty:属性上报 reportEvent: 事件上报
-}
-
 type InfoFilter struct {
-	Name          string `json:"name"`
-	State         int64
-	TriggerType   TriggerType
-	TriggerDevice *TriggerDeviceFilter //只有设备类型可以查询
+	Name        string `json:"name"`
+	State       int64
+	TriggerType TriggerType
 }
 
 type Repo interface {
