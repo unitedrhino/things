@@ -10,7 +10,10 @@ message PageInfo{
   int64 page = 1;
   int64 size = 2;
 }
-
+message DateRange{
+  string start = 1;
+  string end = 2;
+}
 
 service RuleEngine {
   rpc flowInfoCreate(FlowInfo) returns(Response);
@@ -27,6 +30,87 @@ service SceneLinkage{
   rpc sceneInfoDelete(SceneInfoDeleteReq) returns(Response);
   rpc sceneInfoIndex(SceneInfoIndexReq) returns(SceneInfoIndexResp);
   rpc sceneInfoRead(SceneInfoReadReq) returns(SceneInfo);
+}
+
+//告警中心
+service alarmCenter{
+  rpc alarmInfoCreate(AlarmInfo)returns(Response);
+  rpc alarmInfoUpdate(AlarmInfo)returns(Response);
+  rpc alarmInfoDelete(AlarmInfoDeleteReq)returns(Response);
+  rpc alarmInfoIndex(AlarmInfoIndexReq)returns(Response);
+
+  //告警日志
+  rpc alarmLogIndex(AlarmLogIndexReq)returns(AlarmLogIndexResp);
+
+  //告警处理记录
+  rpc alarmDealRecordCreate(alarmDealRecordCreateReq)returns(Response);//处理告警
+  rpc alarmDealRecordIndex(AlarmDealRecordIndexReq)returns(AlarmDealRecordIndexResp);
+
+}
+message alarmDealRecordCreateReq{
+  string alarmID = 1;//告警配置ID
+  string result = 2;//告警处理结果
+}
+
+message AlarmDeal{
+  string id = 1;//编号
+  string alarmID = 2;//告警配置ID
+  string result = 3;//告警处理结果
+  string type = 4;//告警处理类型（1人工 2其它）
+  string alarmTime = 5;//告警时间
+  string createdTime = 6;//告警处理时间
+}
+
+message AlarmDealRecordIndexReq{
+
+}
+message AlarmDealRecordIndexResp{
+
+}
+
+message AlarmLogInfo{
+  string id = 1;//编号
+  string alarmID = 2;//告警记录ID
+  string serial = 3;//告警流水
+  string sceneName = 4;//场景名称
+  string sceneID = 5;//场景ID
+  string desc = 6;//告警说明
+  string createdTime = 7;//告警时间
+}
+
+message AlarmLogIndexReq{
+  PageInfo page       = 1;  // 分页信息 只获取一个则不填
+  DateRange date = 4;       // 时间范围
+}
+
+message AlarmLogIndexResp{
+  repeated AlarmLogInfo list = 1;//告警日志
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message AlarmInfo{
+  int64 id = 1;//编号
+  string name = 2;//告警配置名称
+  string desc = 3;//告警配置说明
+  int64 type = 4;//告警配置类型（1产品 2设备 3其它）
+  int64 level = 5;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+  int64 state = 6;//告警配置状态（1启用 2禁用）
+  int64 dealState = 7;//告警记录状态（1告警中 2已处理）
+  int64 lastAlarm = 8;//最新告警时间
+  int64 createdTime = 9;//创建时间
+}
+message AlarmInfoDeleteReq{
+  int64 id = 1;//告警id
+}
+
+message AlarmInfoIndexReq{
+  PageInfo page       = 1;  // 分页信息 只获取一个则不填
+  string name = 2;//告警配置名称 模糊查询
+}
+
+message AlarmInfoIndexResp{
+  repeated AlarmInfo list = 1;//告警信息
+  int64  total = 2;//总数(只有分页的时候会返回)
 }
 
 message SceneInfoReadReq{
