@@ -82,18 +82,20 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 
 	if filter.ArgFunc == "" {
 		sql = sq.Select("*")
+		if filter.Order != def.OrderAes {
+			sql = sql.OrderBy("ts desc")
+		}
 	} else {
 		sql, err = d.getPropertyArgFuncSelect(ctx, filter)
 		if err != nil {
 			return nil, err
 		}
+		filter.Page.Size = 0
 	}
 	sql = sql.From(d.GetPropertyStableName(filter.ProductID, filter.DataID))
 	sql = d.fillFilter(sql, filter)
 	sql = filter.Page.FmtSql(sql)
-	if filter.Order != def.OrderAes {
-		sql = sql.OrderBy("ts desc")
-	}
+
 	sqlStr, value, err := sql.ToSql()
 	if err != nil {
 		return nil, err
@@ -127,9 +129,9 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 	)
 
 	if p.Define.Type == schema.DataTypeStruct {
-		sql = sq.Select(d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
+		sql = sq.Select("FIRST(ts) AS `ts`", d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
-		sql = sq.Select(fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))
+		sql = sq.Select("FIRST(ts) AS `ts`", fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
 		sql = sql.Interval("?a", filter.Interval)
