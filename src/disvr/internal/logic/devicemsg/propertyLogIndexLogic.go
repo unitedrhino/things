@@ -47,7 +47,9 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *di.PropertyLogIndexReq) (*d
 		},
 		ProductID:   in.ProductID,
 		DeviceNames: in.DeviceNames,
+		Order:       in.Order,
 		DataID:      in.DataID,
+		Fill:        in.Fill,
 		Interval:    in.Interval,
 		ArgFunc:     in.ArgFunc})
 	if err != nil {

@@ -16,19 +16,21 @@ require (
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/mssola/user_agent v0.5.3
 	github.com/nats-io/nats.go v1.14.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.5.0
 	github.com/taosdata/driver-go/v3 v3.0.0
 	github.com/zeromicro/go-zero v1.5.0
 	go.opentelemetry.io/otel v1.14.0
 	go.opentelemetry.io/otel/trace v1.14.0
+	go.uber.org/atomic v1.10.0
 	golang.org/x/exp v0.0.0-20220713135740-79cabaa25d75
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.2-0.20220831092852-f930b1dc76e8
 )
 
 replace (
-	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.1
+	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.2
 	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.3
 )
 
@@ -102,7 +104,6 @@ require (
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/xid v1.2.1 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
@@ -118,7 +119,6 @@ require (
 	go.opentelemetry.io/otel/exporters/zipkin v1.14.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.14.0 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
-	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/automaxprocs v1.5.1 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect

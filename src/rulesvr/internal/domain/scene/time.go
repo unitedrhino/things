@@ -19,8 +19,8 @@ func (t TimeRange) Validate() error {
 
 // Timer 定时器类型
 type Timer struct {
-	Type string //时间类型 cron
-	Cron string //  cron表达式
+	Type string `json:"type"` //时间类型 cron
+	Cron string `json:"cron"` //  cron表达式
 }
 
 type TimeUnit string
