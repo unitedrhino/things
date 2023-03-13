@@ -69,13 +69,14 @@ func Init() {
 			Then: scene.Actions{&scene.Action{
 				Executor: scene.ActionExecutorAlarm,
 				Alarm:    &scene.ActionAlarm{Mode: scene.ActionAlarmModeTrigger},
-			}, &scene.Action{
-				Executor: scene.ActionExecutorDelay,
-				Delay: &scene.UnitTime{
-					Time: 2,
-					Unit: scene.TimeUnitSeconds,
-				},
 			},
+				&scene.Action{
+					Executor: scene.ActionExecutorDelay,
+					Delay: &scene.UnitTime{
+						Time: 2,
+						Unit: scene.TimeUnitSeconds,
+					},
+				},
 				&scene.Action{
 					Executor: scene.ActionExecutorDevice,
 					Delay:    nil,

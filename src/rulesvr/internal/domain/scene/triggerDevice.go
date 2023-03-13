@@ -21,7 +21,7 @@ type TriggerDevice struct {
 	ProductID       string                  `json:"productID"`       //产品id
 	Selector        DeviceSelector          `json:"selector"`        //设备选择方式  all: 全部 fixed:指定的设备
 	SelectorValues  []string                `json:"selectorValues"`  //选择的列表  选择的列表, fixed类型是设备名列表
-	Operator        DeviceOperationOperator `json:"operator"`        //触发类型  online:上线 offline:下线 reportProperty:属性上报 reportEvent: 事件上报
+	Operator        DeviceOperationOperator `json:"operator"`        //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
 	OperationSchema *OperationSchema        `json:"operationSchema"` //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
 }
 
