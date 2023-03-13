@@ -14,18 +14,30 @@ import (
 )
 
 type (
-	FlowInfo           = rule.FlowInfo
-	FlowInfoDeleteReq  = rule.FlowInfoDeleteReq
-	FlowInfoIndexReq   = rule.FlowInfoIndexReq
-	FlowInfoIndexResp  = rule.FlowInfoIndexResp
-	FlowInfoReadReq    = rule.FlowInfoReadReq
-	PageInfo           = rule.PageInfo
-	Response           = rule.Response
-	SceneInfo          = rule.SceneInfo
-	SceneInfoDeleteReq = rule.SceneInfoDeleteReq
-	SceneInfoIndexReq  = rule.SceneInfoIndexReq
-	SceneInfoIndexResp = rule.SceneInfoIndexResp
-	SceneInfoReadReq   = rule.SceneInfoReadReq
+	AlarmDeal                = rule.AlarmDeal
+	AlarmDealRecordCreateReq = rule.AlarmDealRecordCreateReq
+	AlarmDealRecordIndexReq  = rule.AlarmDealRecordIndexReq
+	AlarmDealRecordIndexResp = rule.AlarmDealRecordIndexResp
+	AlarmInfo                = rule.AlarmInfo
+	AlarmInfoDeleteReq       = rule.AlarmInfoDeleteReq
+	AlarmInfoIndexReq        = rule.AlarmInfoIndexReq
+	AlarmInfoIndexResp       = rule.AlarmInfoIndexResp
+	AlarmLogIndexReq         = rule.AlarmLogIndexReq
+	AlarmLogIndexResp        = rule.AlarmLogIndexResp
+	AlarmLogInfo             = rule.AlarmLogInfo
+	DateRange                = rule.DateRange
+	FlowInfo                 = rule.FlowInfo
+	FlowInfoDeleteReq        = rule.FlowInfoDeleteReq
+	FlowInfoIndexReq         = rule.FlowInfoIndexReq
+	FlowInfoIndexResp        = rule.FlowInfoIndexResp
+	FlowInfoReadReq          = rule.FlowInfoReadReq
+	PageInfo                 = rule.PageInfo
+	Response                 = rule.Response
+	SceneInfo                = rule.SceneInfo
+	SceneInfoDeleteReq       = rule.SceneInfoDeleteReq
+	SceneInfoIndexReq        = rule.SceneInfoIndexReq
+	SceneInfoIndexResp       = rule.SceneInfoIndexResp
+	SceneInfoReadReq         = rule.SceneInfoReadReq
 
 	SceneLinkage interface {
 		SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Response, error)

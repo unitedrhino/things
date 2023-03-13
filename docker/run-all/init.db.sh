@@ -6,6 +6,7 @@ function init_mysql_db_table(){
    if [ -n "$check_result" ];then
        docker exec -it mariadb /bin/bash -c 'mysql -uroot -ppassword < /mysql/dmsvr.sql'
        docker exec -it mariadb /bin/bash -c 'mysql -uroot -ppassword < /mysql/syssvr.sql'
+       docker exec -it mariadb /bin/bash -c 'mysql -uroot -ppassword < /mysql/rulesvr.sql'
        sleep 5
        echo "has install mysql"
        break

@@ -71,7 +71,7 @@ CREATE TABLE if not exists `rule_alarm_log`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='告警日志表';
 
 
-CREATE TABLE if not exists `rule_alarm_deal`
+CREATE TABLE if not exists `rule_alarm_deal_record`
 (
     `id`              bigint auto_increment comment '编号',
     `alarmID`         bigint NOT NULL comment '告警配置ID',
