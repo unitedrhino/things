@@ -72,7 +72,7 @@ func SetToSlice[t constraints.Ordered](in map[t]struct{}) (ret []t) {
 }
 
 func AnyToNullString(in any) sql.NullString {
-	if in == nil {
+	if in == nil || IsNil(in) {
 		return sql.NullString{}
 	}
 	str, err := json.Marshal(in)
@@ -87,4 +87,12 @@ func SqlNullStringToAny(in sql.NullString, ret any) error {
 	}
 	err := json.Unmarshal([]byte(in.String), ret)
 	return err
+}
+
+func SliceTo[retT any](values []string, cov func(any) retT) []retT {
+	var ret []retT
+	for _, v := range values {
+		ret = append(ret, cov(v))
+	}
+	return ret
 }

@@ -42,5 +42,12 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *rule.SceneInfo) (*rule.Respon
 		return nil, err
 	}
 	err = l.svcCtx.SceneRepo.Insert(l.ctx, do)
+	if err != nil {
+		return nil, err
+	}
+	err = l.svcCtx.SceneTimerControl.Create(do)
+	if err != nil {
+		return nil, err
+	}
 	return &rule.Response{}, err
 }

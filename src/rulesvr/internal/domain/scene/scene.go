@@ -2,6 +2,7 @@ package scene
 
 import (
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"time"
@@ -15,14 +16,16 @@ const (
 	TriggerTypeManual TriggerType = "manual"
 )
 
+type Infos []*Info
+
 type Info struct {
 	ID          int64       `json:"id"`
 	Name        string      `json:"name"`
 	Desc        string      `json:"desc"`
 	CreatedTime time.Time   `json:"createdTime"`
 	TriggerType TriggerType `json:"triggerType"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
-	Trigger     Trigger     `json:"trigger"`
-	When        Terms       `json:"when"` //只有设备触发时才有用
+	Trigger     Trigger     `json:"trigger"`     //多种触发方式
+	When        Terms       `json:"when"`
 	Then        Actions     `json:"then"`
 	State       int64       `json:"state"` // 状态（1启用 2禁用）
 }
@@ -48,3 +51,12 @@ func (i *Info) Validate() error {
 	}
 	return nil
 }
+
+type FindWithTriggerDto struct {
+	devices.Core
+	//Operator OperationSchema //触发类型  online:上线 offline:下线 reportProperty:属性上报 reportEvent: 事件上报
+}
+
+//func FindWithDeviceTrigger(ctx context.Context, svcCtx svc.ServiceContext, dot FindWithTriggerDto) []*Info {
+//	return nil
+//}

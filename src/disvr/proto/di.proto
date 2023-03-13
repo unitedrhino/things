@@ -160,6 +160,7 @@ message SendActionReq{
   string  deviceName = 2; //设备名
   string actionID = 3;//产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
   string inputParams = 4;//输入参数
+  bool isAsync = 5;//是否异步获取
 }
 message SendActionResp{
   string clientToken = 1;//调用id
@@ -174,6 +175,7 @@ message SendPropertyReq{
   string data = 3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
   int64  dataTimestamp = 4;//上报数据UNIX时间戳, 仅对Method:reported有效
   string method = 5;//请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+  bool isAsync = 6;//是否异步操作
 }
 message SendPropertyResp{
   int64   code = 1;//设备返回状态码
