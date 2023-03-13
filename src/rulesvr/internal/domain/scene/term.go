@@ -2,6 +2,7 @@
 package scene
 
 import (
+	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 )
@@ -15,25 +16,13 @@ const (
 	TermConditionTypeAnd TermConditionType = "and"
 )
 
-type TermType string
-
-const (
-	TermTypeEq  TermType = "eq"
-	TermTypeNot TermType = "not"
-	TermTypeBtw TermType = "btw"
-	TermTypeGt  TermType = "gt"
-	TermTypeGte TermType = "gte"
-	TermTypeLt  TermType = "lt"
-	TermTypeLte TermType = "lte"
-	TermTypeIn  TermType = "in"
-)
-
 type Term struct {
-	Column        *TermColumn       `json:"column"`        //字段名
-	Value         string            `json:"value"`         //条件值
-	ConditionType TermConditionType `json:"conditionType"` //多个条件关联类型  or  and
-	TermType      TermType          `json:"termType"`      //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Terms         Terms             `json:"terms"`         //嵌套条件
+	ColumnType        TermColumnType    `json:"columnType"`        //字段类型 property:属性 event:事件 sysTime:系统时间
+	ColumnSchema      *ColumnSchema     `json:"columnSchema"`      //物模型类型
+	ColumnTime        *TimeRange        `json:"columnTime"`        //时间类型 只支持后面几种特殊字符:*  - ,
+	NextCondition     TermConditionType `json:"netCondition"`      //和下个条件的关联类型  or  and
+	ChildrenCondition TermConditionType `json:"childrenCondition"` //和嵌套条件的关联类型  or  and
+	Terms             Terms             `json:"terms"`             //嵌套条件
 }
 
 func (t Terms) Validate() error {
@@ -53,15 +42,25 @@ func (t *Term) Validate() error {
 	if t == nil {
 		return nil
 	}
-	err := t.Column.Validate()
+	err := t.ColumnType.Validate()
 	if err != nil {
 		return err
 	}
-	if !utils.SliceIn(t.ConditionType, TermConditionTypeOr, TermConditionTypeAnd) {
-		return errors.Parameter.AddMsg("触发条件中的多个条件关联类型不支持的类型:" + string(t.ConditionType))
+	switch t.ColumnType {
+	case TermColumnTypeProperty, TermColumnTypeEvent:
+		if err := t.ColumnSchema.Validate(); err != nil {
+			return err
+		}
+	case TermColumnTypeSysTime:
+		if err := t.ColumnTime.Validate(); err != nil {
+			return err
+		}
 	}
-	if !utils.SliceIn(t.TermType, TermTypeEq, TermTypeNot, TermTypeBtw, TermTypeGt, TermTypeGte, TermTypeLt, TermTypeLte, TermTypeIn) {
-		return errors.Parameter.AddMsg("触发条件中的动态条件类型不支持的类型:" + string(t.TermType))
+	if !utils.SliceIn(t.NextCondition, TermConditionTypeOr, TermConditionTypeAnd) {
+		return errors.Parameter.AddMsg("触发条件中的下个条件的关联类型不支持的类型:" + string(t.NextCondition))
+	}
+	if !utils.SliceIn(t.ChildrenCondition, TermConditionTypeOr, TermConditionTypeAnd) {
+		return errors.Parameter.AddMsg("触发条件中的嵌套条件的关联类型不支持的类型:" + string(t.ChildrenCondition))
 	}
 	for i := range t.Terms {
 		err := t.Terms[i].Validate()
@@ -70,4 +69,49 @@ func (t *Term) Validate() error {
 		}
 	}
 	return nil
+}
+func (t CmpType) Validate(values []string) error {
+	if !utils.SliceIn(t, CmpTypeEq, CmpTypeNot, CmpTypeBtw, CmpTypeGt, CmpTypeGte, CmpTypeLt, CmpTypeLte, CmpTypeIn) {
+		return errors.Parameter.AddMsg("动态条件类型 类型不支持:" + string(t))
+	}
+	if len(values) == 0 {
+		return errors.Parameter.AddMsg("动态条件类型 需要填写参数")
+	}
+	if utils.SliceIn(t, CmpTypeIn, CmpTypeBtw) && len(values) != 2 {
+		return errors.Parameter.AddMsgf("动态条件类型:%v 需要填写2个参数:%v", string(t), values)
+	}
+	return nil
+}
+
+//判断条件是否成立
+func (t Terms) IsHit(ctx context.Context, repo TermRepo) bool {
+	if len(t) == 0 {
+		return true
+	}
+	var nextCondition = TermConditionTypeOr
+	var finalIsHit = false
+	for _, v := range t {
+		isHit := v.IsHit(ctx, repo)
+		if !isHit && nextCondition == TermConditionTypeAnd {
+			return false
+		}
+		finalIsHit = isHit //如果是or,每个都返回false那就是false
+		nextCondition = v.NextCondition
+	}
+	return finalIsHit
+}
+
+func (t *Term) IsHit(ctx context.Context, repo TermRepo) bool {
+	switch t.ColumnType {
+	case TermColumnTypeProperty, TermColumnTypeEvent:
+		IsHit := t.ColumnSchema.IsHit(ctx, t.ColumnType, repo)
+		if !IsHit && t.ChildrenCondition == TermConditionTypeAnd { //如果没满足,如果是and条件直接返回false即可
+			return false
+		}
+		return t.Terms.IsHit(ctx, repo)
+	case TermColumnTypeSysTime:
+		t.ColumnTime.Validate()
+		return t.Terms.IsHit(ctx, repo)
+	}
+	return false
 }
