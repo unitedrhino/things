@@ -64,7 +64,7 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  msg.ProductID,
 		Action:     "sdkLog",
-		Timestamp:  l.dreq.GetTimeStamp(msg.Timestamp.UnixMilli()), // 操作时间
+		Timestamp:  time.Now(), // 记录当前时间
 		DeviceName: msg.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),
 		RequestID:  l.dreq.ClientToken,

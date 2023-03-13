@@ -59,7 +59,7 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 		Timestamp: msg.Timestamp.UnixMilli(),
 	})
 	if err != nil {
-		l.Errorf("%s.DeviceStatusConnected productID:%v deviceName:%v err:%v",
+		l.Errorf("%s.PubApp.DeviceStatusConnected productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 	}
 	//更新对应设备的online状态
