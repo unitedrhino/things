@@ -25,6 +25,10 @@ type (
 	AlarmLogIndexReq         = rule.AlarmLogIndexReq
 	AlarmLogIndexResp        = rule.AlarmLogIndexResp
 	AlarmLogInfo             = rule.AlarmLogInfo
+	AlarmSceneCreateMultiReq = rule.AlarmSceneCreateMultiReq
+	AlarmSceneDeleteReq      = rule.AlarmSceneDeleteReq
+	AlarmSceneIndexReq       = rule.AlarmSceneIndexReq
+	AlarmSceneIndexResp      = rule.AlarmSceneIndexResp
 	DateRange                = rule.DateRange
 	FlowInfo                 = rule.FlowInfo
 	FlowInfoDeleteReq        = rule.FlowInfoDeleteReq

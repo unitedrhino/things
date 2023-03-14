@@ -26,6 +26,7 @@ type (
 	ruleAlarmInfoModel interface {
 		Insert(ctx context.Context, data *RuleAlarmInfo) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*RuleAlarmInfo, error)
+		FindOneByName(ctx context.Context, name string) (*RuleAlarmInfo, error)
 		Update(ctx context.Context, data *RuleAlarmInfo) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -39,10 +40,9 @@ type (
 		Id          int64        `db:"id"`          // 编号
 		Name        string       `db:"name"`        // 告警配置名称
 		Desc        string       `db:"desc"`        // 告警配置说明
-		Type        int64        `db:"type"`        // 告警配置类型（1产品 2设备 3其它）
 		Level       int64        `db:"level"`       // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
 		State       int64        `db:"state"`       // 告警配置状态（1启用 2禁用）
-		DealState   int64        `db:"dealState"`   // 告警记录状态（1告警中 2已处理）
+		DealState   int64        `db:"dealState"`   // 告警记录状态（1无告警 2告警中 3已处理）
 		LastAlarm   sql.NullTime `db:"lastAlarm"`   // 最新告警时间
 		CreatedTime time.Time    `db:"createdTime"` // 创建时间
 		UpdatedTime time.Time    `db:"updatedTime"` // 更新时间
@@ -77,15 +77,29 @@ func (m *defaultRuleAlarmInfoModel) FindOne(ctx context.Context, id int64) (*Rul
 	}
 }
 
+func (m *defaultRuleAlarmInfoModel) FindOneByName(ctx context.Context, name string) (*RuleAlarmInfo, error) {
+	var resp RuleAlarmInfo
+	query := fmt.Sprintf("select %s from %s where `name` = ? limit 1", ruleAlarmInfoRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, name)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultRuleAlarmInfoModel) Insert(ctx context.Context, data *RuleAlarmInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, ruleAlarmInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Name, data.Desc, data.Type, data.Level, data.State, data.DealState, data.LastAlarm)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, ruleAlarmInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Name, data.Desc, data.Level, data.State, data.DealState, data.LastAlarm)
 	return ret, err
 }
 
-func (m *defaultRuleAlarmInfoModel) Update(ctx context.Context, data *RuleAlarmInfo) error {
+func (m *defaultRuleAlarmInfoModel) Update(ctx context.Context, newData *RuleAlarmInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, ruleAlarmInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Name, data.Desc, data.Type, data.Level, data.State, data.DealState, data.LastAlarm, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.Name, newData.Desc, newData.Level, newData.State, newData.DealState, newData.LastAlarm, newData.Id)
 	return err
 }
 

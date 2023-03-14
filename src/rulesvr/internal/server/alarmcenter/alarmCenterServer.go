@@ -42,6 +42,22 @@ func (s *AlarmCenterServer) AlarmInfoIndex(ctx context.Context, in *rule.AlarmIn
 	return l.AlarmInfoIndex(in)
 }
 
+// 告警关联场景联动
+func (s *AlarmCenterServer) AlarmSceneCreateMulti(ctx context.Context, in *rule.AlarmSceneCreateMultiReq) (*rule.Response, error) {
+	l := alarmcenterlogic.NewAlarmSceneCreateMultiLogic(ctx, s.svcCtx)
+	return l.AlarmSceneCreateMulti(in)
+}
+
+func (s *AlarmCenterServer) AlarmSceneDelete(ctx context.Context, in *rule.AlarmSceneDeleteReq) (*rule.Response, error) {
+	l := alarmcenterlogic.NewAlarmSceneDeleteLogic(ctx, s.svcCtx)
+	return l.AlarmSceneDelete(in)
+}
+
+func (s *AlarmCenterServer) AlarmSceneIndex(ctx context.Context, in *rule.AlarmSceneIndexReq) (*rule.AlarmSceneIndexResp, error) {
+	l := alarmcenterlogic.NewAlarmSceneIndexLogic(ctx, s.svcCtx)
+	return l.AlarmSceneIndex(in)
+}
+
 // 告警日志
 func (s *AlarmCenterServer) AlarmLogIndex(ctx context.Context, in *rule.AlarmLogIndexReq) (*rule.AlarmLogIndexResp, error) {
 	l := alarmcenterlogic.NewAlarmLogIndexLogic(ctx, s.svcCtx)

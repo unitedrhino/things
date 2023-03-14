@@ -30,10 +30,14 @@ type ServiceContext struct {
 	SceneTimerControl timer.SceneControl
 }
 type Repo struct {
-	Store           kv.Store
-	SceneRepo       scene.Repo
-	SceneDeviceRepo scene.DeviceRepo
-	SchemaRepo      schema.ReadRepo
+	Store               kv.Store
+	SceneRepo           scene.Repo
+	SceneDeviceRepo     scene.DeviceRepo
+	SchemaRepo          schema.ReadRepo
+	SceneInfoRepo       mysql.RuleSceneInfoModel
+	AlarmInfoRepo       mysql.RuleAlarmInfoModel
+	AlarmDealRecordRepo mysql.RuleAlarmDealRecordModel
+	AlarmLogRepo        mysql.RuleAlarmLogModel
 }
 type SvrClient struct {
 	ProductM       productmanage.ProductManage
@@ -51,6 +55,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	)
 	store := kv.NewStore(c.CacheRedis)
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
+	SceneInfoRepo := mysql.NewRuleSceneInfoModel(conn)
+	AlarmInfoRepo := mysql.NewRuleAlarmInfoModel(conn)
+	AlarmDealRecordRepo := mysql.NewRuleAlarmDealRecordModel(conn)
+	AlarmLogRepo := mysql.NewRuleAlarmLogModel(conn)
 	SceneRepo := mysql.NewRuleSceneInfoModel(conn)
 	sceneDevice := cache.NewSceneDeviceRepo(SceneRepo)
 	err := sceneDevice.Init(context.TODO())
@@ -80,6 +88,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg = didirect.NewDeviceMsg()
 		deviceInteract = didirect.NewDeviceInteract()
 	}
+
 	return &ServiceContext{
 		Config: c,
 		SvrClient: SvrClient{
@@ -89,10 +98,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceM:        deviceM,
 		},
 		Repo: Repo{
-			Store:           store,
-			SceneRepo:       SceneRepo,
-			SceneDeviceRepo: sceneDevice,
-			SchemaRepo:      tr,
+			Store:               store,
+			SceneRepo:           SceneRepo,
+			SceneDeviceRepo:     sceneDevice,
+			SchemaRepo:          tr,
+			SceneInfoRepo:       SceneInfoRepo,
+			AlarmInfoRepo:       AlarmInfoRepo,
+			AlarmDealRecordRepo: AlarmDealRecordRepo,
+			AlarmLogRepo:        AlarmLogRepo,
 		},
 	}
 }
