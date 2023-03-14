@@ -45,16 +45,15 @@ CREATE TABLE if not exists `rule_alarm_info`
     `id`              bigint auto_increment comment '编号',
     `name`            varchar(100) NOT NULL DEFAULT '' comment '告警配置名称',
     `desc`            varchar(100) NOT NULL DEFAULT '' comment '告警配置说明',
-    `type`            tinyint(1) NOT NULL COMMENT '告警配置类型（1产品 2设备 3其它）',
     `level`           tinyint(1) NOT NULL COMMENT '告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）',
     `state`           tinyint(1) NOT NULL DEFAULT 2 COMMENT '告警配置状态（1启用 2禁用）',
-    `dealState`       tinyint(1) NOT NULL DEFAULT 1 COMMENT '告警记录状态（1告警中 2已处理）',
+    `dealState`       tinyint(1) NOT NULL DEFAULT 1 COMMENT '告警记录状态（1无告警 2告警中 3已处理）',
     `lastAlarm`       datetime              DEFAULT NULL COMMENT '最新告警时间',
     `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` 	  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` 	  datetime DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE,
-    KEY `alarm_config_name` (`name`) USING BTREE
+    UNIQUE KEY `name` ( `name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='告警配置信息表';
 
 CREATE TABLE if not exists `rule_alarm_log`
