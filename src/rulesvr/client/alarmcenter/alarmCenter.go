@@ -25,6 +25,10 @@ type (
 	AlarmLogIndexReq         = rule.AlarmLogIndexReq
 	AlarmLogIndexResp        = rule.AlarmLogIndexResp
 	AlarmLogInfo             = rule.AlarmLogInfo
+	AlarmSceneCreateMultiReq = rule.AlarmSceneCreateMultiReq
+	AlarmSceneDeleteReq      = rule.AlarmSceneDeleteReq
+	AlarmSceneIndexReq       = rule.AlarmSceneIndexReq
+	AlarmSceneIndexResp      = rule.AlarmSceneIndexResp
 	DateRange                = rule.DateRange
 	FlowInfo                 = rule.FlowInfo
 	FlowInfoDeleteReq        = rule.FlowInfoDeleteReq
@@ -44,6 +48,10 @@ type (
 		AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
 		AlarmInfoDelete(ctx context.Context, in *AlarmInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*Response, error)
+		// 告警关联场景联动
+		AlarmSceneCreateMulti(ctx context.Context, in *AlarmSceneCreateMultiReq, opts ...grpc.CallOption) (*Response, error)
+		AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneIndexResp, error)
 		// 告警日志
 		AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error)
 		// 告警处理记录
@@ -108,6 +116,35 @@ func (m *defaultAlarmCenter) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIn
 
 func (d *directAlarmCenter) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.AlarmInfoIndex(ctx, in)
+}
+
+// 告警关联场景联动
+func (m *defaultAlarmCenter) AlarmSceneCreateMulti(ctx context.Context, in *AlarmSceneCreateMultiReq, opts ...grpc.CallOption) (*Response, error) {
+	client := rule.NewAlarmCenterClient(m.cli.Conn())
+	return client.AlarmSceneCreateMulti(ctx, in, opts...)
+}
+
+// 告警关联场景联动
+func (d *directAlarmCenter) AlarmSceneCreateMulti(ctx context.Context, in *AlarmSceneCreateMultiReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AlarmSceneCreateMulti(ctx, in)
+}
+
+func (m *defaultAlarmCenter) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	client := rule.NewAlarmCenterClient(m.cli.Conn())
+	return client.AlarmSceneDelete(ctx, in, opts...)
+}
+
+func (d *directAlarmCenter) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AlarmSceneDelete(ctx, in)
+}
+
+func (m *defaultAlarmCenter) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneIndexResp, error) {
+	client := rule.NewAlarmCenterClient(m.cli.Conn())
+	return client.AlarmSceneIndex(ctx, in, opts...)
+}
+
+func (d *directAlarmCenter) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneIndexResp, error) {
+	return d.svr.AlarmSceneIndex(ctx, in)
 }
 
 // 告警日志
