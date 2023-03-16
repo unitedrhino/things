@@ -26,7 +26,7 @@ type (
 	ruleAlarmSceneModel interface {
 		Insert(ctx context.Context, data *RuleAlarmScene) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*RuleAlarmScene, error)
-		FindOneByAlarmIDSceneID(ctx context.Context, alarmID sql.NullInt64, sceneID sql.NullInt64) (*RuleAlarmScene, error)
+		FindOneByAlarmIDSceneID(ctx context.Context, alarmID int64, sceneID int64) (*RuleAlarmScene, error)
 		Update(ctx context.Context, data *RuleAlarmScene) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -37,12 +37,12 @@ type (
 	}
 
 	RuleAlarmScene struct {
-		Id          int64         `db:"id"`          // id编号
-		AlarmID     sql.NullInt64 `db:"alarmID"`     // 告警配置ID
-		SceneID     sql.NullInt64 `db:"sceneID"`     // 场景ID
-		CreatedTime time.Time     `db:"createdTime"` // 创建时间
-		UpdatedTime time.Time     `db:"updatedTime"` // 更新时间
-		DeletedTime sql.NullTime  `db:"deletedTime"`
+		Id          int64        `db:"id"`          // id编号
+		AlarmID     int64        `db:"alarmID"`     // 告警配置ID
+		SceneID     int64        `db:"sceneID"`     // 场景ID
+		CreatedTime time.Time    `db:"createdTime"` // 创建时间
+		UpdatedTime time.Time    `db:"updatedTime"` // 更新时间
+		DeletedTime sql.NullTime `db:"deletedTime"`
 	}
 )
 
@@ -73,7 +73,7 @@ func (m *defaultRuleAlarmSceneModel) FindOne(ctx context.Context, id int64) (*Ru
 	}
 }
 
-func (m *defaultRuleAlarmSceneModel) FindOneByAlarmIDSceneID(ctx context.Context, alarmID sql.NullInt64, sceneID sql.NullInt64) (*RuleAlarmScene, error) {
+func (m *defaultRuleAlarmSceneModel) FindOneByAlarmIDSceneID(ctx context.Context, alarmID int64, sceneID int64) (*RuleAlarmScene, error) {
 	var resp RuleAlarmScene
 	query := fmt.Sprintf("select %s from %s where `alarmID` = ? and `sceneID` = ? limit 1", ruleAlarmSceneRows, m.table)
 	err := m.conn.QueryRowCtx(ctx, &resp, query, alarmID, sceneID)

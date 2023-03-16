@@ -15,3 +15,7 @@ const (
 	LevelUrgent   = 1 //紧急
 	LevelSpUrgent = 1 //超级紧急
 )
+
+type InfoFilter struct {
+	Name string //名字
+}

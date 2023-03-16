@@ -2,6 +2,7 @@ package alarmcenterlogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -24,7 +25,10 @@ func NewAlarmInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *A
 }
 
 func (l *AlarmInfoDeleteLogic) AlarmInfoDelete(in *rule.AlarmInfoDeleteReq) (*rule.Response, error) {
-	// todo: add your logic here and delete this line
-
+	err := l.svcCtx.AlarmInfoRepo.Delete(l.ctx, in.Id)
+	//todo 要把日志等删除
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
 	return &rule.Response{}, nil
 }

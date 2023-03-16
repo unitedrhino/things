@@ -12,11 +12,22 @@ func ToAlarmInfoPo(in *rule.AlarmInfo) *mysql.RuleAlarmInfo {
 		Id:          in.Id,
 		Name:        in.Name,
 		Desc:        in.Desc,
-		Type:        in.Type,
 		Level:       in.Level,
 		State:       in.State,
 		DealState:   in.DealState,
 		LastAlarm:   utils.ToNullTime(in.LastAlarm),
 		CreatedTime: time.Unix(in.CreatedTime, 0),
+	}
+}
+func ToAlarmInfo(in *mysql.RuleAlarmInfo) *rule.AlarmInfo {
+	return &rule.AlarmInfo{
+		Id:          in.Id,
+		Name:        in.Name,
+		Desc:        in.Desc,
+		Level:       in.Level,
+		State:       in.State,
+		DealState:   in.DealState,
+		LastAlarm:   utils.GetNullTime(in.LastAlarm),
+		CreatedTime: in.CreatedTime.Unix(),
 	}
 }
