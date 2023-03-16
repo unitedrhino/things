@@ -2,6 +2,8 @@ package alarmcenterlogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -24,7 +26,12 @@ func NewAlarmSceneDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *AlarmSceneDeleteLogic) AlarmSceneDelete(in *rule.AlarmSceneDeleteReq) (*rule.Response, error) {
-	// todo: add your logic here and delete this line
-
+	err := l.svcCtx.AlarmSceneRepo.DeleteByFilter(l.ctx, alarm.SceneFilter{
+		AlarmID: in.AlarmID,
+		SceneID: in.SceneID,
+	})
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
 	return &rule.Response{}, nil
 }

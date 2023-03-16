@@ -37,7 +37,7 @@ service alarmCenter{
   rpc alarmInfoCreate(AlarmInfo)returns(Response);
   rpc alarmInfoUpdate(AlarmInfo)returns(Response);
   rpc alarmInfoDelete(AlarmInfoDeleteReq)returns(Response);
-  rpc alarmInfoIndex(AlarmInfoIndexReq)returns(Response);
+  rpc alarmInfoIndex(AlarmInfoIndexReq)returns(AlarmInfoIndexResp);
 
   //告警关联场景联动
   rpc alarmSceneCreateMulti(alarmSceneCreateMultiReq)returns(Response);//绑定场景联动

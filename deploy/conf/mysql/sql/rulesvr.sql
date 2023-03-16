@@ -30,8 +30,8 @@ CREATE TABLE if not exists `rule_scene_info`
 CREATE TABLE if not exists `rule_alarm_scene`
 (
     `id`          bigint auto_increment comment 'id编号',
-    `alarmID`      bigint      null comment '告警配置ID',
-    `sceneID`      int      null comment '场景ID',
+    `alarmID`      bigint  not    null comment '告警配置ID',
+    `sceneID`      int    not  null comment '场景ID',
     `createdTime` datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime          DEFAULT NULL,

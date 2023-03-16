@@ -1,6 +1,12 @@
 package mysql
 
-import "github.com/zeromicro/go-zero/core/stores/sqlx"
+import (
+	"context"
+	sq "github.com/Masterminds/squirrel"
+	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+)
 
 var _ RuleAlarmInfoModel = (*customRuleAlarmInfoModel)(nil)
 
@@ -9,6 +15,8 @@ type (
 	// and implement the added methods in customRuleAlarmInfoModel.
 	RuleAlarmInfoModel interface {
 		ruleAlarmInfoModel
+		FindByFilter(ctx context.Context, filter alarm.InfoFilter, page *def.PageInfo) ([]*RuleAlarmInfo, error)
+		CountByFilter(ctx context.Context, filter alarm.InfoFilter) (size int64, err error)
 	}
 
 	customRuleAlarmInfoModel struct {
@@ -20,5 +28,45 @@ type (
 func NewRuleAlarmInfoModel(conn sqlx.SqlConn) RuleAlarmInfoModel {
 	return &customRuleAlarmInfoModel{
 		defaultRuleAlarmInfoModel: newRuleAlarmInfoModel(conn),
+	}
+}
+func (c *customRuleAlarmInfoModel) FmtSql(sql sq.SelectBuilder, f alarm.InfoFilter) sq.SelectBuilder {
+	if f.Name != "" {
+		sql = sql.Where("name=?", f.Name)
+	}
+	return sql
+}
+
+func (c *customRuleAlarmInfoModel) FindByFilter(
+	ctx context.Context, filter alarm.InfoFilter, page *def.PageInfo) ([]*RuleAlarmInfo, error) {
+	var resp []*RuleAlarmInfo
+	sql := sq.Select(ruleAlarmInfoRows).From(c.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetLimit()))
+	sql = c.FmtSql(sql, filter)
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	err = c.conn.QueryRowsCtx(ctx, &resp, query, arg...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+func (c *customRuleAlarmInfoModel) CountByFilter(ctx context.Context, filter alarm.InfoFilter) (size int64, err error) {
+	sql := sq.Select("count(1)").From(c.table)
+	sql = c.FmtSql(sql, filter)
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return 0, err
+	}
+	err = c.conn.QueryRowCtx(ctx, &size, query, arg...)
+
+	switch err {
+	case nil:
+		return size, nil
+	default:
+		return 0, err
 	}
 }

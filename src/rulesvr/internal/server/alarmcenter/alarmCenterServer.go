@@ -37,7 +37,7 @@ func (s *AlarmCenterServer) AlarmInfoDelete(ctx context.Context, in *rule.AlarmI
 	return l.AlarmInfoDelete(in)
 }
 
-func (s *AlarmCenterServer) AlarmInfoIndex(ctx context.Context, in *rule.AlarmInfoIndexReq) (*rule.Response, error) {
+func (s *AlarmCenterServer) AlarmInfoIndex(ctx context.Context, in *rule.AlarmInfoIndexReq) (*rule.AlarmInfoIndexResp, error) {
 	l := alarmcenterlogic.NewAlarmInfoIndexLogic(ctx, s.svcCtx)
 	return l.AlarmInfoIndex(in)
 }
