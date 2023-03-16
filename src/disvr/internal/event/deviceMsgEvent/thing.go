@@ -43,7 +43,7 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	}
 	err = utils.Unmarshal(msg.Payload, &l.dreq)
 	if err != nil {
-		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
+		return errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
 	l.dd = l.svcCtx.SchemaMsgRepo
 	l.topics = strings.Split(msg.Topic, "/")
