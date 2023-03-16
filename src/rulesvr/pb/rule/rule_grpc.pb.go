@@ -485,7 +485,7 @@ type AlarmCenterClient interface {
 	AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
 	AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
 	AlarmInfoDelete(ctx context.Context, in *AlarmInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error)
 	//告警关联场景联动
 	AlarmSceneCreateMulti(ctx context.Context, in *AlarmSceneCreateMultiReq, opts ...grpc.CallOption) (*Response, error)
 	AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
@@ -532,8 +532,8 @@ func (c *alarmCenterClient) AlarmInfoDelete(ctx context.Context, in *AlarmInfoDe
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *alarmCenterClient) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error) {
+	out := new(AlarmInfoIndexResp)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -602,7 +602,7 @@ type AlarmCenterServer interface {
 	AlarmInfoCreate(context.Context, *AlarmInfo) (*Response, error)
 	AlarmInfoUpdate(context.Context, *AlarmInfo) (*Response, error)
 	AlarmInfoDelete(context.Context, *AlarmInfoDeleteReq) (*Response, error)
-	AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*Response, error)
+	AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error)
 	//告警关联场景联动
 	AlarmSceneCreateMulti(context.Context, *AlarmSceneCreateMultiReq) (*Response, error)
 	AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Response, error)
@@ -628,7 +628,7 @@ func (UnimplementedAlarmCenterServer) AlarmInfoUpdate(context.Context, *AlarmInf
 func (UnimplementedAlarmCenterServer) AlarmInfoDelete(context.Context, *AlarmInfoDeleteReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoDelete not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*Response, error) {
+func (UnimplementedAlarmCenterServer) AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoIndex not implemented")
 }
 func (UnimplementedAlarmCenterServer) AlarmSceneCreateMulti(context.Context, *AlarmSceneCreateMultiReq) (*Response, error) {

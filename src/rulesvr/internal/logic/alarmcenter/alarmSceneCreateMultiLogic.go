@@ -2,6 +2,9 @@ package alarmcenterlogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -25,7 +28,20 @@ func NewAlarmSceneCreateMultiLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 告警关联场景联动
 func (l *AlarmSceneCreateMultiLogic) AlarmSceneCreateMulti(in *rule.AlarmSceneCreateMultiReq) (*rule.Response, error) {
-	// todo: add your logic here and delete this line
-
+	//检查数据是否存在
+	_, err := l.svcCtx.AlarmInfoRepo.FindOne(l.ctx, in.AlarmID)
+	if err != nil {
+		return nil, mysql.ToError(err)
+	}
+	err = l.svcCtx.AlarmSceneRepo.DeleteByFilter(l.ctx, alarm.SceneFilter{
+		AlarmID: in.AlarmID,
+	})
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
+	err = l.svcCtx.AlarmSceneRepo.InsertMulti(l.ctx, in.AlarmID, in.SceneID)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
 	return &rule.Response{}, nil
 }

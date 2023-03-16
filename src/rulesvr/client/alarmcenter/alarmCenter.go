@@ -47,7 +47,7 @@ type (
 		AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
 		AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
 		AlarmInfoDelete(ctx context.Context, in *AlarmInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-		AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*Response, error)
+		AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error)
 		// 告警关联场景联动
 		AlarmSceneCreateMulti(ctx context.Context, in *AlarmSceneCreateMultiReq, opts ...grpc.CallOption) (*Response, error)
 		AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
@@ -109,12 +109,12 @@ func (d *directAlarmCenter) AlarmInfoDelete(ctx context.Context, in *AlarmInfoDe
 	return d.svr.AlarmInfoDelete(ctx, in)
 }
 
-func (m *defaultAlarmCenter) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultAlarmCenter) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error) {
 	client := rule.NewAlarmCenterClient(m.cli.Conn())
 	return client.AlarmInfoIndex(ctx, in, opts...)
 }
 
-func (d *directAlarmCenter) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directAlarmCenter) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error) {
 	return d.svr.AlarmInfoIndex(ctx, in)
 }
 
