@@ -36,13 +36,13 @@ type (
 	}
 
 	RuleAlarmLog struct {
-		Id          int64         `db:"id"`          // 编号
-		AlarmID     int64         `db:"alarmID"`     // 告警记录ID
-		Serial      string        `db:"serial"`      // 告警流水
-		SceneName   string        `db:"sceneName"`   // 场景名称
-		SceneID     sql.NullInt64 `db:"sceneID"`     // 场景ID
-		Desc        string        `db:"desc"`        // 告警说明
-		CreatedTime time.Time     `db:"createdTime"` // 告警时间
+		Id          int64     `db:"id"`          // 编号
+		AlarmID     int64     `db:"alarmID"`     // 告警记录ID
+		Serial      string    `db:"serial"`      // 告警流水
+		SceneName   string    `db:"sceneName"`   // 场景名称
+		SceneID     int64     `db:"sceneID"`     // 场景ID
+		Desc        string    `db:"desc"`        // 告警说明
+		CreatedTime time.Time `db:"createdTime"` // 告警时间
 	}
 )
 

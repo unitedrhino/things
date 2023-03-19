@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
@@ -33,6 +34,10 @@ func NewRuleAlarmInfoModel(conn sqlx.SqlConn) RuleAlarmInfoModel {
 func (c *customRuleAlarmInfoModel) FmtSql(sql sq.SelectBuilder, f alarm.InfoFilter) sq.SelectBuilder {
 	if f.Name != "" {
 		sql = sql.Where("name=?", f.Name)
+	}
+	if f.SceneID != 0 {
+		sql = sql.LeftJoin(fmt.Sprintf("`rule_alarm_scene` as ras on ras.alarmID=%s.id", c.table))
+		sql = sql.Where("ras.sceneID=?", f.SceneID)
 	}
 	return sql
 }

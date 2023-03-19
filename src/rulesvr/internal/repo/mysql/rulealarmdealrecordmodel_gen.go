@@ -39,7 +39,7 @@ type (
 		Id          int64     `db:"id"`          // 编号
 		AlarmID     int64     `db:"alarmID"`     // 告警配置ID
 		Result      string    `db:"result"`      // 告警处理结果
-		Type        int64     `db:"type"`        // 告警处理类型（1人工 2其它）
+		Type        int64     `db:"type"`        // 告警处理类型（1人工 2系统）
 		AlarmTime   time.Time `db:"alarmTime"`   // 告警时间
 		CreatedTime time.Time `db:"createdTime"` // 告警处理时间
 	}
