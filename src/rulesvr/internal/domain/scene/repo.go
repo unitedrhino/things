@@ -14,6 +14,7 @@ type InfoFilter struct {
 	Name        string `json:"name"`
 	State       int64
 	TriggerType TriggerType
+	AlarmID     int64 //绑定的告警id
 }
 
 type Repo interface {

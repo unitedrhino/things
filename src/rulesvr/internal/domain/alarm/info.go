@@ -17,5 +17,6 @@ const (
 )
 
 type InfoFilter struct {
-	Name string //名字
+	Name    string //名字
+	SceneID int64  // 场景ID
 }

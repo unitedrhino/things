@@ -53,11 +53,6 @@ func (s *AlarmCenterServer) AlarmSceneDelete(ctx context.Context, in *rule.Alarm
 	return l.AlarmSceneDelete(in)
 }
 
-func (s *AlarmCenterServer) AlarmSceneIndex(ctx context.Context, in *rule.AlarmSceneIndexReq) (*rule.AlarmSceneIndexResp, error) {
-	l := alarmcenterlogic.NewAlarmSceneIndexLogic(ctx, s.svcCtx)
-	return l.AlarmSceneIndex(in)
-}
-
 // 告警日志
 func (s *AlarmCenterServer) AlarmLogIndex(ctx context.Context, in *rule.AlarmLogIndexReq) (*rule.AlarmLogIndexResp, error) {
 	l := alarmcenterlogic.NewAlarmLogIndexLogic(ctx, s.svcCtx)
