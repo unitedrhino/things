@@ -34,7 +34,7 @@ func (l *AlarmInfoCreateLogic) AlarmInfoCreate(in *rule.AlarmInfo) (*rule.Respon
 	in.DealState = 1
 	_, err = l.svcCtx.AlarmInfoRepo.Insert(l.ctx, ToAlarmInfoPo(in))
 	if err != nil {
-		return nil, err
+		return nil, errors.Database.AddDetail(err)
 	}
 	return &rule.Response{}, nil
 }

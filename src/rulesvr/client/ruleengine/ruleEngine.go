@@ -29,7 +29,6 @@ type (
 	AlarmSceneDeleteReq      = rule.AlarmSceneDeleteReq
 	AlarmSceneIndexReq       = rule.AlarmSceneIndexReq
 	AlarmSceneIndexResp      = rule.AlarmSceneIndexResp
-	DateRange                = rule.DateRange
 	FlowInfo                 = rule.FlowInfo
 	FlowInfoDeleteReq        = rule.FlowInfoDeleteReq
 	FlowInfoIndexReq         = rule.FlowInfoIndexReq
@@ -42,6 +41,7 @@ type (
 	SceneInfoIndexReq        = rule.SceneInfoIndexReq
 	SceneInfoIndexResp       = rule.SceneInfoIndexResp
 	SceneInfoReadReq         = rule.SceneInfoReadReq
+	TimeRange                = rule.TimeRange
 
 	RuleEngine interface {
 		FlowInfoCreate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error)

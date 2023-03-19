@@ -31,7 +31,7 @@ func (l *AlarmInfoIndexLogic) AlarmInfoIndex(in *rule.AlarmInfoIndexReq) (*rule.
 		err  error
 	)
 	filter := alarm.InfoFilter{
-		Name: in.Name}
+		Name: in.Name, SceneID: in.SceneID}
 	size, err = l.svcCtx.AlarmInfoRepo.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err

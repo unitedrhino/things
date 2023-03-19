@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
@@ -66,6 +67,10 @@ func (c customRuleSceneInfoModel) FmtFilter(filter scene.InfoFilter, sql sq.Sele
 	}
 	if filter.State != 0 {
 		sql = sql.Where("state = ?", filter.State)
+	}
+	if filter.AlarmID != 0 {
+		sql = sql.LeftJoin(fmt.Sprintf("`rule_alarm_scene` as ras on ras.sceneID=%s.id", c.repo.table))
+		sql = sql.Where("ras.alarmID=?", filter.AlarmID)
 	}
 	return sql
 }

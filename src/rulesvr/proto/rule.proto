@@ -10,9 +10,9 @@ message PageInfo{
   int64 page = 1;
   int64 size = 2;
 }
-message DateRange{
-  string start = 1;
-  string end = 2;
+message TimeRange{
+  int64 start = 1;
+  int64 end = 2;
 }
 
 service RuleEngine {
@@ -42,8 +42,6 @@ service alarmCenter{
   //告警关联场景联动
   rpc alarmSceneCreateMulti(alarmSceneCreateMultiReq)returns(Response);//绑定场景联动
   rpc alarmSceneDelete(alarmSceneDeleteReq)returns(Response);//解绑场景联动
-  rpc alarmSceneIndex(alarmSceneIndexReq)returns(alarmSceneIndexResp);//获取告警绑定的场景联动列表
-
 
   //告警日志
   rpc alarmLogIndex(AlarmLogIndexReq)returns(AlarmLogIndexResp);
@@ -77,6 +75,7 @@ message  alarmSceneCreateMultiReq{
 message alarmDealRecordCreateReq{
   int64 alarmID = 1;//告警配置ID
   string result = 2;//告警处理结果
+  int64 type = 3;//告警处理类型（1人工 2系统）
 }
 
 message AlarmDeal{
@@ -84,16 +83,20 @@ message AlarmDeal{
   int64 alarmID = 2;//告警配置ID
   string result = 3;//告警处理结果
   int64 type = 4;//告警处理类型（1人工 2其它）
-  int64 alarmTime = 5;//告警时间
+  int64 alarmTime = 5;//最早告警时间
   int64 createdTime = 6;//告警处理时间
 }
 
 message AlarmDealRecordIndexReq{
-
+  PageInfo page       = 1;  // 分页信息 只获取一个则不填
+  TimeRange timeRange = 4;       // 时间范围
 }
 message AlarmDealRecordIndexResp{
-
+  repeated AlarmDeal list = 1;//告警日志
+  int64  total = 2;//总数(只有分页的时候会返回)
 }
+
+
 
 message AlarmLogInfo{
   int64 id = 1;//编号
@@ -102,12 +105,12 @@ message AlarmLogInfo{
   string sceneName = 4;//场景名称
   int64 sceneID = 5;//场景ID
   string desc = 6;//告警说明
-  string createdTime = 7;//告警时间
+  int64 createdTime = 7;//告警时间
 }
 
 message AlarmLogIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
-  DateRange date = 4;       // 时间范围
+  TimeRange timeRange = 4;       // 时间范围
 }
 
 message AlarmLogIndexResp{
@@ -132,6 +135,7 @@ message AlarmInfoDeleteReq{
 message AlarmInfoIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
   string name = 2;//告警配置名称 模糊查询
+  int64 sceneID = 3;//场景ID过滤
 }
 
 message AlarmInfoIndexResp{
@@ -148,6 +152,7 @@ message SceneInfoIndexReq{
   string name =2;//场景名 模糊查询
   int64 state = 3;//状态: 1启用 2禁用
   string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+  int64 alarmID = 5;//告警配置ID过滤
 }
 
 message SceneInfoIndexResp{
