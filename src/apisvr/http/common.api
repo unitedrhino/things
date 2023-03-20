@@ -23,7 +23,11 @@ type(
     }
 
     DateRange struct{
-        Start string `json:"start,optional "`       //开始时间 格式：yyyy-mm-dd
-        End string `json:"end,optional "`           //结束时间 格式：yyyy-mm-dd
+        Start string `json:"start,optional"`       //开始时间 格式：yyyy-mm-dd
+        End string `json:"end,optional"`           //结束时间 格式：yyyy-mm-dd
+    }
+    TimeRange struct {
+        Start int64 `json:"start,optional"`       //开始时间 unix时间戳
+        End int64 `json:"end,optional"`           //结束时间 unix时间戳
     }
 )

@@ -1,0 +1,40 @@
+info(
+    title: "告警日志"
+    desc: "告警日志"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+@server(
+    group : things/rule/alarm/log
+    prefix: /api/v1/things/rule/alarm/log
+    middleware: CheckToken
+)
+service api {
+    @doc "获取告警日志记录列表"
+    @handler index
+    post /index (AlarmLogIndexReq) returns (AlarmLogIndexResp)
+}
+
+type (
+    AlarmLogIndexReq struct {
+        Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        TimeRange        *TimeRange    `json:"timeRange,optional"` //时间范围
+    }
+    AlarmLogIndexResp struct {
+        List []*AlarmLog `json:"list"`    //告警信息
+        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+        Num int64 `json:"num"`              //返回的数量
+    }
+)
+
+type AlarmLog struct {
+    ID          int64     `json:"id,optional"`
+    Desc        string    `json:"desc,optional"`
+    CreatedTime int64   `json:"createdTime,optional"`
+    AlarmID int64 `json:"alarmID"`//告警记录ID
+    Serial string `json:"serial"`//告警流水
+    SceneName string `json:"sceneName"`//场景名称
+    SceneID int64 `json:"sceneID"`//场景ID
+}

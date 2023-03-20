@@ -1,0 +1,61 @@
+info(
+    title: "告警联动信息模块"
+    desc: "告警联动信息模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+@server(
+    group : things/rule/alarm/info
+    prefix: /api/v1/things/rule/alarm/info
+    middleware: CheckToken
+)
+service api {
+    @doc "新增告警"
+    @handler create
+    post /create (AlarmInfoCreateReq) returns ()
+    @doc "更新告警"
+    @handler update
+    post /update (AlarmInfoUpdateReq) returns ()
+    @doc "删除告警"
+    @handler delete
+    post /delete (AlarmInfoDeleteReq) returns ()
+    @doc "获取告警信息列表"
+    @handler index
+    post /index (AlarmInfoIndexReq) returns (AlarmInfoIndexResp)
+}
+
+type (
+    AlarmInfoCreateReq struct {
+        AlarmInfo
+    }
+    AlarmInfoUpdateReq struct {
+        AlarmInfo
+    }
+    AlarmInfoDeleteReq struct {
+        ID          int64     `json:"id"`
+    }
+
+    AlarmInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        Name        string    `json:"name,optional"` //告警名模糊查询
+        SceneID        int64    `json:"sceneID,optional"` //状态: 1启用 2禁用
+    }
+    AlarmInfoIndexResp struct {
+        List []*AlarmInfo `json:"list"`    //告警信息
+        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+        Num int64 `json:"num"`              //返回的数量
+    }
+)
+
+type AlarmInfo struct {
+    ID          int64     `json:"id,optional"`
+    Name        string    `json:"name,optional"`
+    State        int64    `json:"state,optional"` //状态: 1启用 2禁用
+    Desc        string    `json:"desc,optional"`
+    CreatedTime int64   `json:"createdTime,optional"`
+    level       int64 `json:"level"`//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+    dealState       int64 `json:"dealState"`//告警记录状态（1无告警 2告警中 3已处理）
+    lastAlarm       int64 `json:"lastAlarm"`//最新告警时间
+}

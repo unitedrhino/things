@@ -43,9 +43,9 @@ func (s *AlarmCenterServer) AlarmInfoIndex(ctx context.Context, in *rule.AlarmIn
 }
 
 // 告警关联场景联动
-func (s *AlarmCenterServer) AlarmSceneCreateMulti(ctx context.Context, in *rule.AlarmSceneCreateMultiReq) (*rule.Response, error) {
-	l := alarmcenterlogic.NewAlarmSceneCreateMultiLogic(ctx, s.svcCtx)
-	return l.AlarmSceneCreateMulti(in)
+func (s *AlarmCenterServer) AlarmSceneMultiCreate(ctx context.Context, in *rule.AlarmSceneMultiCreateReq) (*rule.Response, error) {
+	l := alarmcenterlogic.NewAlarmSceneMultiCreateLogic(ctx, s.svcCtx)
+	return l.AlarmSceneMultiCreate(in)
 }
 
 func (s *AlarmCenterServer) AlarmSceneDelete(ctx context.Context, in *rule.AlarmSceneDeleteReq) (*rule.Response, error) {
