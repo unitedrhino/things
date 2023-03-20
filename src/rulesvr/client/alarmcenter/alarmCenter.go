@@ -25,10 +25,10 @@ type (
 	AlarmLogIndexReq         = rule.AlarmLogIndexReq
 	AlarmLogIndexResp        = rule.AlarmLogIndexResp
 	AlarmLogInfo             = rule.AlarmLogInfo
-	AlarmSceneCreateMultiReq = rule.AlarmSceneCreateMultiReq
 	AlarmSceneDeleteReq      = rule.AlarmSceneDeleteReq
 	AlarmSceneIndexReq       = rule.AlarmSceneIndexReq
 	AlarmSceneIndexResp      = rule.AlarmSceneIndexResp
+	AlarmSceneMultiCreateReq = rule.AlarmSceneMultiCreateReq
 	FlowInfo                 = rule.FlowInfo
 	FlowInfoDeleteReq        = rule.FlowInfoDeleteReq
 	FlowInfoIndexReq         = rule.FlowInfoIndexReq
@@ -49,7 +49,7 @@ type (
 		AlarmInfoDelete(ctx context.Context, in *AlarmInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error)
 		// 告警关联场景联动
-		AlarmSceneCreateMulti(ctx context.Context, in *AlarmSceneCreateMultiReq, opts ...grpc.CallOption) (*Response, error)
+		AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
 		AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 告警日志
 		AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error)
@@ -118,14 +118,14 @@ func (d *directAlarmCenter) AlarmInfoIndex(ctx context.Context, in *AlarmInfoInd
 }
 
 // 告警关联场景联动
-func (m *defaultAlarmCenter) AlarmSceneCreateMulti(ctx context.Context, in *AlarmSceneCreateMultiReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultAlarmCenter) AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := rule.NewAlarmCenterClient(m.cli.Conn())
-	return client.AlarmSceneCreateMulti(ctx, in, opts...)
+	return client.AlarmSceneMultiCreate(ctx, in, opts...)
 }
 
 // 告警关联场景联动
-func (d *directAlarmCenter) AlarmSceneCreateMulti(ctx context.Context, in *AlarmSceneCreateMultiReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.AlarmSceneCreateMulti(ctx, in)
+func (d *directAlarmCenter) AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AlarmSceneMultiCreate(ctx, in)
 }
 
 func (m *defaultAlarmCenter) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error) {
