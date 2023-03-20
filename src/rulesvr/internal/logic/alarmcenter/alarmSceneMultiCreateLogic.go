@@ -12,14 +12,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AlarmSceneCreateMultiLogic struct {
+type AlarmSceneMultiCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewAlarmSceneCreateMultiLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmSceneCreateMultiLogic {
-	return &AlarmSceneCreateMultiLogic{
+func NewAlarmSceneMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmSceneMultiCreateLogic {
+	return &AlarmSceneMultiCreateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -27,7 +27,7 @@ func NewAlarmSceneCreateMultiLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 // 告警关联场景联动
-func (l *AlarmSceneCreateMultiLogic) AlarmSceneCreateMulti(in *rule.AlarmSceneCreateMultiReq) (*rule.Response, error) {
+func (l *AlarmSceneMultiCreateLogic) AlarmSceneMultiCreate(in *rule.AlarmSceneMultiCreateReq) (*rule.Response, error) {
 	//检查数据是否存在
 	_, err := l.svcCtx.AlarmInfoRepo.FindOne(l.ctx, in.AlarmID)
 	if err != nil {
