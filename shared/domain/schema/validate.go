@@ -2,6 +2,7 @@ package schema
 
 import (
 	"encoding/json"
+
 	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
 )
@@ -164,7 +165,6 @@ func (d *Define) ValidateWithFmt() error {
 		return d.ValidateWithFmtArray()
 	case DataTypeEnum:
 		return d.ValidateWithFmtEnum()
-
 	}
 	return nil
 }
@@ -216,6 +216,16 @@ func (d *Define) ValidateWithFmtInt() error {
 	}
 	if len(d.Unit) > DefineUnitLen {
 		return errors.Parameter.WithMsgf("整数的单位定义值长度过大:%v", d.Unit)
+	}
+	step, err := cast.ToInt64E(d.Step)
+	if err != nil {
+		return errors.Parameter.WithMsgf("整数的步长定义值类型不是数字:%v", d.Max)
+	}
+	if step > max {
+		d.Step = cast.ToString(max)
+	}
+	if step < 1 {
+		d.Step = cast.ToString(1)
 	}
 
 	d.Maping = nil
@@ -272,6 +282,16 @@ func (d *Define) ValidateWithFmtFloat() error {
 	}
 	if len(d.Unit) > DefineUnitLen {
 		return errors.Parameter.WithMsgf("浮点型的单位定义值长度过大:%v", d.Unit)
+	}
+	step, err := cast.ToFloat64E(d.Step)
+	if err != nil {
+		return errors.Parameter.WithMsgf("浮点型的步长定义不是数字类型:%v", d.Max)
+	}
+	if step > max {
+		d.Step = cast.ToString(max)
+	}
+	if step < 1 {
+		d.Step = cast.ToString(1)
 	}
 
 	d.Maping = nil
