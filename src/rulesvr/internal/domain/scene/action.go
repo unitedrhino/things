@@ -8,7 +8,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-//操作执行器类型
+// 操作执行器类型
 type ActionExecutor string
 
 const (
@@ -62,10 +62,9 @@ func (a *Action) Validate() error {
 	default:
 		return errors.Parameter.AddMsg("操作类型不支持:" + string(a.Executor))
 	}
-	return nil
 }
 
-//执行操作
+// 执行操作
 func (a *Action) Execute(ctx context.Context, repo ActionRepo) error {
 	switch a.Executor {
 	case ActionExecutorDelay:
