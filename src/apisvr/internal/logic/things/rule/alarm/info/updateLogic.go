@@ -2,6 +2,9 @@ package info
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,7 +27,17 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 }
 
 func (l *UpdateLogic) Update(req *types.AlarmInfoUpdateReq) error {
-	// todo: add your logic here and delete this line
-
+	_, err := l.svcCtx.Alarm.AlarmInfoUpdate(l.ctx, &rule.AlarmInfo{
+		Id:    req.ID,
+		Name:  req.Name,
+		State: req.State,
+		Desc:  req.Desc,
+		Level: req.Level,
+	})
+	if err != nil {
+		er := errors.Fmt(err)
+		l.Errorf("%s.rpc.AlarmInfoUpdate req=%v err=%v", utils.FuncName(), req, er)
+		return er
+	}
 	return nil
 }
