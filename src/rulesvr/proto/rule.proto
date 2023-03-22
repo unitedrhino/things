@@ -69,7 +69,7 @@ message  alarmSceneDeleteReq{
 
 message  alarmSceneMultiCreateReq{
   int64 alarmID = 1;//告警配置ID
-  repeated int64 sceneID = 2;//场景id
+  repeated int64 sceneIDs = 2;//场景id
 }
 
 message alarmDealRecordCreateReq{

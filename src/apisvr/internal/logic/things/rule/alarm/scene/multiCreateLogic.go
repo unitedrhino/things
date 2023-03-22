@@ -2,6 +2,9 @@ package scene
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,7 +27,14 @@ func NewMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 }
 
 func (l *MultiCreateLogic) MultiCreate(req *types.AlarmSceneMultiCreateReq) error {
-	// todo: add your logic here and delete this line
-
+	_, err := l.svcCtx.Alarm.AlarmSceneMultiCreate(l.ctx, &rule.AlarmSceneMultiCreateReq{
+		AlarmID:  req.AlarmID,
+		SceneIDs: req.SceneIDs,
+	})
+	if err != nil {
+		er := errors.Fmt(err)
+		l.Errorf("%s.rpc.AlarmSceneMultiCreate req=%v err=%v", utils.FuncName(), req, er)
+		return er
+	}
 	return nil
 }
