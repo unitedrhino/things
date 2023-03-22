@@ -39,7 +39,7 @@ func (l *AlarmSceneMultiCreateLogic) AlarmSceneMultiCreate(in *rule.AlarmSceneMu
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.AlarmSceneRepo.InsertMulti(l.ctx, in.AlarmID, in.SceneID)
+	err = l.svcCtx.AlarmSceneRepo.InsertMulti(l.ctx, in.AlarmID, in.SceneIDs)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
