@@ -33,6 +33,7 @@ func (l *IndexLogic) Index(req *types.SceneInfoIndexReq) (resp *types.SceneInfoI
 		Name:        req.Name,
 		State:       req.State,
 		TriggerType: req.TriggerType,
+		AlarmID:     req.AlarmID,
 	}
 	ruleResp, err := l.svcCtx.Scene.SceneInfoIndex(l.ctx, pbReq)
 	if err != nil {
