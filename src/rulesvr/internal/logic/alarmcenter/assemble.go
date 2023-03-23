@@ -48,8 +48,8 @@ func ToAlarmDealRecord(in *mysql.RuleAlarmDealRecord) *rule.AlarmDeal {
 		CreatedTime: utils.TimeToInt64(in.CreatedTime),
 	}
 }
-func ToAlarmLog(in *mysql.RuleAlarmLog) *rule.AlarmLogInfo {
-	return &rule.AlarmLogInfo{
+func ToAlarmLog(in *mysql.RuleAlarmLog) *rule.AlarmLog {
+	return &rule.AlarmLog{
 		Id:          in.Id,
 		AlarmID:     in.AlarmID,
 		Serial:      in.Serial,

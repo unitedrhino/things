@@ -47,8 +47,6 @@ CREATE TABLE if not exists `rule_alarm_info`
     `desc`            varchar(100) NOT NULL DEFAULT '' comment '告警配置说明',
     `level`           tinyint(1) NOT NULL COMMENT '告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）',
     `state`           tinyint(1) NOT NULL DEFAULT 2 COMMENT '告警配置状态（1启用 2禁用）',
-    `dealState`       tinyint(1) NOT NULL DEFAULT 1 COMMENT '告警记录状态（1无告警 2告警中 3已处理）',
-    `lastAlarm`       datetime              DEFAULT NULL COMMENT '最新告警时间',
     `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` 	  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` 	  datetime DEFAULT NULL,
@@ -56,10 +54,30 @@ CREATE TABLE if not exists `rule_alarm_info`
     UNIQUE KEY `name` ( `name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='告警配置信息表';
 
-CREATE TABLE if not exists `rule_alarm_log`
+CREATE TABLE if not exists `rule_alarm_record`
 (
     `id`              bigint auto_increment comment '编号',
     `alarmID`         bigint NOT NULL comment '告警记录ID',
+    `triggerType`          int NOT NULL DEFAULT '' comment '触发类型(设备触发1,定时触发2)',
+    `productID`   char(11)     NOT NULL COMMENT '触发产品id',
+    `deviceName`  varchar(100) NOT NULL COMMENT '触发设备名称',
+    `level`           tinyint(1) NOT NULL COMMENT '告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）',
+    `sceneName`       varchar(100) NOT NULL DEFAULT '' comment '场景名称',
+    `sceneID`         int    not  null comment '场景ID',
+    `dealState`       tinyint(1) NOT NULL DEFAULT 1 COMMENT '告警记录状态（1无告警 2告警中 3已处理）',
+    `lastAlarm`       datetime   not NULL COMMENT '最新告警时间',
+    `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '告警时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    KEY `alarm_time` (`createdTime`) USING BTREE,
+    unique key `trigger` (`triggerType`,`productID`,`deviceName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='告警记录表';
+
+
+
+CREATE TABLE if not exists `rule_alarm_log`
+(
+    `id`              bigint auto_increment comment '编号',
+    `alarmRecordID`         bigint NOT NULL comment '告警记录ID',
     `serial`          varchar(1024) NOT NULL DEFAULT '' comment '告警流水',
     `sceneName`       varchar(100) NOT NULL DEFAULT '' comment '场景名称',
     `sceneID`         int    not  null comment '场景ID',
@@ -67,7 +85,7 @@ CREATE TABLE if not exists `rule_alarm_log`
     `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '告警时间',
     PRIMARY KEY (`id`) USING BTREE,
     KEY `alarm_time` (`createdTime`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='告警日志表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='告警流水详情表';
 
 
 CREATE TABLE if not exists `rule_alarm_deal_record`

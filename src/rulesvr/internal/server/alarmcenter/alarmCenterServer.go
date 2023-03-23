@@ -59,6 +59,11 @@ func (s *AlarmCenterServer) AlarmLogIndex(ctx context.Context, in *rule.AlarmLog
 	return l.AlarmLogIndex(in)
 }
 
+func (s *AlarmCenterServer) AlarmLogCreate(ctx context.Context, in *rule.AlarmLog) (*rule.Response, error) {
+	l := alarmcenterlogic.NewAlarmLogCreateLogic(ctx, s.svcCtx)
+	return l.AlarmLogCreate(in)
+}
+
 // 告警处理记录
 func (s *AlarmCenterServer) AlarmDealRecordCreate(ctx context.Context, in *rule.AlarmDealRecordCreateReq) (*rule.Response, error) {
 	l := alarmcenterlogic.NewAlarmDealRecordCreateLogic(ctx, s.svcCtx)

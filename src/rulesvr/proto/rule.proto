@@ -45,6 +45,7 @@ service alarmCenter{
 
   //告警日志
   rpc alarmLogIndex(AlarmLogIndexReq)returns(AlarmLogIndexResp);
+  rpc alarmLogCreate(AlarmLog)returns(Response);
 
   //告警处理记录
   rpc alarmDealRecordCreate(alarmDealRecordCreateReq)returns(Response);//处理告警
@@ -98,7 +99,7 @@ message AlarmDealRecordIndexResp{
 
 
 
-message AlarmLogInfo{
+message AlarmLog{
   int64 id = 1;//编号
   int64 alarmID = 2;//告警记录ID
   string serial = 3;//告警流水
@@ -114,7 +115,7 @@ message AlarmLogIndexReq{
 }
 
 message AlarmLogIndexResp{
-  repeated AlarmLogInfo list = 1;//告警日志
+  repeated AlarmLog list = 1;//告警日志
   int64  total = 2;//总数(只有分页的时候会返回)
 }
 

@@ -22,9 +22,9 @@ type (
 	AlarmInfoDeleteReq       = rule.AlarmInfoDeleteReq
 	AlarmInfoIndexReq        = rule.AlarmInfoIndexReq
 	AlarmInfoIndexResp       = rule.AlarmInfoIndexResp
+	AlarmLog                 = rule.AlarmLog
 	AlarmLogIndexReq         = rule.AlarmLogIndexReq
 	AlarmLogIndexResp        = rule.AlarmLogIndexResp
-	AlarmLogInfo             = rule.AlarmLogInfo
 	AlarmSceneDeleteReq      = rule.AlarmSceneDeleteReq
 	AlarmSceneIndexReq       = rule.AlarmSceneIndexReq
 	AlarmSceneIndexResp      = rule.AlarmSceneIndexResp
@@ -53,6 +53,7 @@ type (
 		AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 告警日志
 		AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error)
+		AlarmLogCreate(ctx context.Context, in *AlarmLog, opts ...grpc.CallOption) (*Response, error)
 		// 告警处理记录
 		AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*Response, error)
 		AlarmDealRecordIndex(ctx context.Context, in *AlarmDealRecordIndexReq, opts ...grpc.CallOption) (*AlarmDealRecordIndexResp, error)
@@ -146,6 +147,15 @@ func (m *defaultAlarmCenter) AlarmLogIndex(ctx context.Context, in *AlarmLogInde
 // 告警日志
 func (d *directAlarmCenter) AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error) {
 	return d.svr.AlarmLogIndex(ctx, in)
+}
+
+func (m *defaultAlarmCenter) AlarmLogCreate(ctx context.Context, in *AlarmLog, opts ...grpc.CallOption) (*Response, error) {
+	client := rule.NewAlarmCenterClient(m.cli.Conn())
+	return client.AlarmLogCreate(ctx, in, opts...)
+}
+
+func (d *directAlarmCenter) AlarmLogCreate(ctx context.Context, in *AlarmLog, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AlarmLogCreate(ctx, in)
 }
 
 // 告警处理记录
