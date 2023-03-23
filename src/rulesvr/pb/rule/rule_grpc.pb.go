@@ -491,6 +491,7 @@ type AlarmCenterClient interface {
 	AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	//告警日志
 	AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error)
+	AlarmLogCreate(ctx context.Context, in *AlarmLog, opts ...grpc.CallOption) (*Response, error)
 	//告警处理记录
 	AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*Response, error)
 	AlarmDealRecordIndex(ctx context.Context, in *AlarmDealRecordIndexReq, opts ...grpc.CallOption) (*AlarmDealRecordIndexResp, error)
@@ -567,6 +568,15 @@ func (c *alarmCenterClient) AlarmLogIndex(ctx context.Context, in *AlarmLogIndex
 	return out, nil
 }
 
+func (c *alarmCenterClient) AlarmLogCreate(ctx context.Context, in *AlarmLog, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmLogCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *alarmCenterClient) AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmDealRecordCreate", in, out, opts...)
@@ -598,6 +608,7 @@ type AlarmCenterServer interface {
 	AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Response, error)
 	//告警日志
 	AlarmLogIndex(context.Context, *AlarmLogIndexReq) (*AlarmLogIndexResp, error)
+	AlarmLogCreate(context.Context, *AlarmLog) (*Response, error)
 	//告警处理记录
 	AlarmDealRecordCreate(context.Context, *AlarmDealRecordCreateReq) (*Response, error)
 	AlarmDealRecordIndex(context.Context, *AlarmDealRecordIndexReq) (*AlarmDealRecordIndexResp, error)
@@ -628,6 +639,9 @@ func (UnimplementedAlarmCenterServer) AlarmSceneDelete(context.Context, *AlarmSc
 }
 func (UnimplementedAlarmCenterServer) AlarmLogIndex(context.Context, *AlarmLogIndexReq) (*AlarmLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmLogIndex not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmLogCreate(context.Context, *AlarmLog) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmLogCreate not implemented")
 }
 func (UnimplementedAlarmCenterServer) AlarmDealRecordCreate(context.Context, *AlarmDealRecordCreateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmDealRecordCreate not implemented")
@@ -774,6 +788,24 @@ func _AlarmCenter_AlarmLogIndex_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AlarmCenter_AlarmLogCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmLog)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmLogCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmLogCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmLogCreate(ctx, req.(*AlarmLog))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AlarmCenter_AlarmDealRecordCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AlarmDealRecordCreateReq)
 	if err := dec(in); err != nil {
@@ -844,6 +876,10 @@ var AlarmCenter_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "alarmLogIndex",
 			Handler:    _AlarmCenter_AlarmLogIndex_Handler,
+		},
+		{
+			MethodName: "alarmLogCreate",
+			Handler:    _AlarmCenter_AlarmLogCreate_Handler,
 		},
 		{
 			MethodName: "alarmDealRecordCreate",

@@ -36,13 +36,13 @@ type (
 	}
 
 	RuleAlarmLog struct {
-		Id          int64     `db:"id"`          // 编号
-		AlarmID     int64     `db:"alarmID"`     // 告警记录ID
-		Serial      string    `db:"serial"`      // 告警流水
-		SceneName   string    `db:"sceneName"`   // 场景名称
-		SceneID     int64     `db:"sceneID"`     // 场景ID
-		Desc        string    `db:"desc"`        // 告警说明
-		CreatedTime time.Time `db:"createdTime"` // 告警时间
+		Id            int64     `db:"id"`            // 编号
+		AlarmRecordID int64     `db:"alarmRecordID"` // 告警记录ID
+		Serial        string    `db:"serial"`        // 告警流水
+		SceneName     string    `db:"sceneName"`     // 场景名称
+		SceneID       int64     `db:"sceneID"`       // 场景ID
+		Desc          string    `db:"desc"`          // 告警说明
+		CreatedTime   time.Time `db:"createdTime"`   // 告警时间
 	}
 )
 
@@ -75,13 +75,13 @@ func (m *defaultRuleAlarmLogModel) FindOne(ctx context.Context, id int64) (*Rule
 
 func (m *defaultRuleAlarmLogModel) Insert(ctx context.Context, data *RuleAlarmLog) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, ruleAlarmLogRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.AlarmID, data.Serial, data.SceneName, data.SceneID, data.Desc)
+	ret, err := m.conn.ExecCtx(ctx, query, data.AlarmRecordID, data.Serial, data.SceneName, data.SceneID, data.Desc)
 	return ret, err
 }
 
 func (m *defaultRuleAlarmLogModel) Update(ctx context.Context, data *RuleAlarmLog) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, ruleAlarmLogRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.AlarmID, data.Serial, data.SceneName, data.SceneID, data.Desc, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.AlarmRecordID, data.Serial, data.SceneName, data.SceneID, data.Desc, data.Id)
 	return err
 }
 

@@ -42,8 +42,6 @@ type (
 		Desc        string       `db:"desc"`        // 告警配置说明
 		Level       int64        `db:"level"`       // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
 		State       int64        `db:"state"`       // 告警配置状态（1启用 2禁用）
-		DealState   int64        `db:"dealState"`   // 告警记录状态（1无告警 2告警中 3已处理）
-		LastAlarm   sql.NullTime `db:"lastAlarm"`   // 最新告警时间
 		CreatedTime time.Time    `db:"createdTime"` // 创建时间
 		UpdatedTime time.Time    `db:"updatedTime"` // 更新时间
 		DeletedTime sql.NullTime `db:"deletedTime"`
@@ -92,14 +90,14 @@ func (m *defaultRuleAlarmInfoModel) FindOneByName(ctx context.Context, name stri
 }
 
 func (m *defaultRuleAlarmInfoModel) Insert(ctx context.Context, data *RuleAlarmInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, ruleAlarmInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Name, data.Desc, data.Level, data.State, data.DealState, data.LastAlarm)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, ruleAlarmInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Name, data.Desc, data.Level, data.State)
 	return ret, err
 }
 
 func (m *defaultRuleAlarmInfoModel) Update(ctx context.Context, newData *RuleAlarmInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, ruleAlarmInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.Name, newData.Desc, newData.Level, newData.State, newData.DealState, newData.LastAlarm, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.Name, newData.Desc, newData.Level, newData.State, newData.Id)
 	return err
 }
 
