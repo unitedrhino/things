@@ -3,7 +3,6 @@ package alarmcenterlogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
@@ -32,12 +31,6 @@ func (l *AlarmSceneMultiCreateLogic) AlarmSceneMultiCreate(in *rule.AlarmSceneMu
 	_, err := l.svcCtx.AlarmInfoRepo.FindOne(l.ctx, in.AlarmID)
 	if err != nil {
 		return nil, mysql.ToError(err)
-	}
-	err = l.svcCtx.AlarmSceneRepo.DeleteByFilter(l.ctx, alarm.SceneFilter{
-		AlarmID: in.AlarmID,
-	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.AlarmSceneRepo.InsertMulti(l.ctx, in.AlarmID, in.SceneIDs)
 	if err != nil {
