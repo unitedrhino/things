@@ -27,7 +27,7 @@ func NewAlarmLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ala
 // 告警日志
 func (l *AlarmLogIndexLogic) AlarmLogIndex(in *rule.AlarmLogIndexReq) (*rule.AlarmLogIndexResp, error) {
 	var (
-		info []*rule.AlarmLogInfo
+		info []*rule.AlarmLog
 		size int64
 		err  error
 	)
@@ -41,7 +41,7 @@ func (l *AlarmLogIndexLogic) AlarmLogIndex(in *rule.AlarmLogIndexReq) (*rule.Ala
 	if err != nil {
 		return nil, err
 	}
-	info = make([]*rule.AlarmLogInfo, 0, len(di))
+	info = make([]*rule.AlarmLog, 0, len(di))
 	for _, v := range di {
 		info = append(info, ToAlarmLog(v))
 	}
