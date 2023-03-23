@@ -45,7 +45,7 @@ func (c *customRuleAlarmInfoModel) FmtSql(sql sq.SelectBuilder, f alarm.InfoFilt
 func (c *customRuleAlarmInfoModel) FindByFilter(
 	ctx context.Context, filter alarm.InfoFilter, page *def.PageInfo) ([]*RuleAlarmInfo, error) {
 	var resp []*RuleAlarmInfo
-	sql := sq.Select(ruleAlarmInfoRows).From(c.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetLimit()))
+	sql := sq.Select(c.table + ".*").From(c.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = c.FmtSql(sql, filter)
 	query, arg, err := sql.ToSql()
 	if err != nil {
