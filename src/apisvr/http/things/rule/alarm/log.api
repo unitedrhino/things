@@ -33,7 +33,7 @@ type AlarmLog struct {
     ID          int64     `json:"id,optional"`
     Desc        string    `json:"desc,optional"`
     CreatedTime int64   `json:"createdTime,optional"`
-    AlarmID int64 `json:"alarmID"`//告警记录ID
+    AlarmRecordID int64 `json:"alarmRecordID"`//告警记录ID
     Serial string `json:"serial"`//告警流水
     SceneName string `json:"sceneName"`//场景名称
     SceneID int64 `json:"sceneID"`//场景ID

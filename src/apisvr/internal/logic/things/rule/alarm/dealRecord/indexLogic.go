@@ -40,12 +40,12 @@ func (l *IndexLogic) Index(req *types.AlarmDealRecordIndexReq) (resp *types.Alar
 	pis := make([]*types.AlarmDealRecord, 0, len(ret.List))
 	for _, v := range ret.List {
 		pi := &types.AlarmDealRecord{
-			ID:          v.Id,
-			CreatedTime: v.CreatedTime,
-			AlarmID:     v.AlarmID,
-			Result:      v.Result,
-			Type:        v.Type,
-			AlarmTime:   v.AlarmTime,
+			ID:            v.Id,
+			CreatedTime:   v.CreatedTime,
+			AlarmRecordID: v.AlarmRecordID,
+			Result:        v.Result,
+			Type:          v.Type,
+			AlarmTime:     v.AlarmTime,
 		}
 		pis = append(pis, pi)
 	}

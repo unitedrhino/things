@@ -43,7 +43,10 @@ service alarmCenter{
   rpc alarmSceneMultiCreate(alarmSceneMultiCreateReq)returns(Response);//绑定场景联动
   rpc alarmSceneDelete(alarmSceneDeleteReq)returns(Response);//解绑场景联动
 
-  //告警日志
+  //告警记录
+  rpc alarmRecordIndex(AlarmRecordIndexReq)returns(AlarmRecordIndexResp);
+
+  //告警流水日志
   rpc alarmLogIndex(AlarmLogIndexReq)returns(AlarmLogIndexResp);
   rpc alarmLogCreate(AlarmLog)returns(Response);
 
@@ -52,6 +55,15 @@ service alarmCenter{
   rpc alarmDealRecordIndex(AlarmDealRecordIndexReq)returns(AlarmDealRecordIndexResp);
 
 }
+
+message AlarmRecordIndexReq{
+
+}
+message AlarmRecordIndexResp{
+
+}
+
+
 
 message alarmSceneIndexReq{
   int64 alarmID = 1;//告警配置ID
@@ -74,14 +86,14 @@ message  alarmSceneMultiCreateReq{
 }
 
 message alarmDealRecordCreateReq{
-  int64 alarmID = 1;//告警配置ID
+  int64 alarmRecordID = 1;//告警配置ID
   string result = 2;//告警处理结果
   int64 type = 3;//告警处理类型（1人工 2系统）
 }
 
 message AlarmDeal{
   int64 id = 1;//编号
-  int64 alarmID = 2;//告警配置ID
+  int64 alarmRecordID = 2;//告警配置ID
   string result = 3;//告警处理结果
   int64 type = 4;//告警处理类型（1人工 2其它）
   int64 alarmTime = 5;//最早告警时间
@@ -101,7 +113,7 @@ message AlarmDealRecordIndexResp{
 
 message AlarmLog{
   int64 id = 1;//编号
-  int64 alarmID = 2;//告警记录ID
+  int64 alarmRecordID = 2;//告警记录ID
   string serial = 3;//告警流水
   string sceneName = 4;//场景名称
   int64 sceneID = 5;//场景ID
@@ -123,11 +135,21 @@ message AlarmInfo{
   int64 id = 1;//编号
   string name = 2;//告警配置名称
   string desc = 3;//告警配置说明
-  int64 level = 5;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-  int64 state = 6;//告警配置状态（1启用 2禁用）
-  int64 dealState = 7;//告警记录状态（1无告警 2告警中 3已处理）
-  int64 lastAlarm = 8;//最新告警时间
-  int64 createdTime = 9;//创建时间
+  int64 level = 4;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+  int64 state = 5;//告警配置状态（1启用 2禁用）
+  int64 createdTime = 6;//创建时间
+}
+message AlarmRecord{
+  int64 id = 1;//编号
+  int64 alarmID = 2;//告警记录ID
+  int64 triggerType = 3;//触发类型(设备触发1,其他2)
+  string productID = 4;//触发产品id
+  string deviceName = 5;//触发设备名称
+  string sceneName = 6;//场景名称
+  int64 sceneID = 7;//场景ID
+  int64 level = 8;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+  int64 lastAlarm = 9;//最新告警时间
+  int64 createdTime = 10;//创建时间
 }
 
 message AlarmInfoDeleteReq{

@@ -15,8 +15,6 @@ func ToAlarmInfoPo(in *rule.AlarmInfo) *mysql.RuleAlarmInfo {
 		Desc:        in.Desc,
 		Level:       in.Level,
 		State:       in.State,
-		DealState:   in.DealState,
-		LastAlarm:   utils.ToNullTime(in.LastAlarm),
 		CreatedTime: time.Unix(in.CreatedTime, 0),
 	}
 }
@@ -27,8 +25,6 @@ func ToAlarmInfo(in *mysql.RuleAlarmInfo) *rule.AlarmInfo {
 		Desc:        in.Desc,
 		Level:       in.Level,
 		State:       in.State,
-		DealState:   in.DealState,
-		LastAlarm:   utils.GetNullTime(in.LastAlarm),
 		CreatedTime: in.CreatedTime.Unix(),
 	}
 }
@@ -40,22 +36,22 @@ func ToTimeRange(timeRange *rule.TimeRange) def.TimeRange {
 }
 func ToAlarmDealRecord(in *mysql.RuleAlarmDealRecord) *rule.AlarmDeal {
 	return &rule.AlarmDeal{
-		Id:          in.Id,
-		AlarmID:     in.AlarmID,
-		Result:      in.Result,
-		Type:        in.Type,
-		AlarmTime:   utils.TimeToInt64(in.AlarmTime),
-		CreatedTime: utils.TimeToInt64(in.CreatedTime),
+		Id:            in.Id,
+		AlarmRecordID: in.AlarmRecordID,
+		Result:        in.Result,
+		Type:          in.Type,
+		AlarmTime:     utils.TimeToInt64(in.AlarmTime),
+		CreatedTime:   utils.TimeToInt64(in.CreatedTime),
 	}
 }
 func ToAlarmLog(in *mysql.RuleAlarmLog) *rule.AlarmLog {
 	return &rule.AlarmLog{
-		Id:          in.Id,
-		AlarmID:     in.AlarmID,
-		Serial:      in.Serial,
-		SceneName:   in.SceneName,
-		SceneID:     in.SceneID,
-		Desc:        in.Desc,
-		CreatedTime: utils.TimeToInt64(in.CreatedTime),
+		Id:            in.Id,
+		AlarmRecordID: in.AlarmRecordID,
+		Serial:        in.Serial,
+		SceneName:     in.SceneName,
+		SceneID:       in.SceneID,
+		Desc:          in.Desc,
+		CreatedTime:   utils.TimeToInt64(in.CreatedTime),
 	}
 }

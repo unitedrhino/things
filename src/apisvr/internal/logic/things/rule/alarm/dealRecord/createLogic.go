@@ -27,9 +27,9 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 
 func (l *CreateLogic) Create(req *types.AlarmDealRecordCreateReq) error {
 	_, err := l.svcCtx.Alarm.AlarmDealRecordCreate(l.ctx, &rule.AlarmDealRecordCreateReq{
-		AlarmID: req.AlarmID,
-		Result:  req.Result,
-		Type:    1,
+		AlarmRecordID: req.AlarmRecordID,
+		Result:        req.Result,
+		Type:          1,
 	})
 	if err != nil {
 		er := errors.Fmt(err)

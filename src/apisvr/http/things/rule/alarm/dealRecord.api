@@ -22,8 +22,8 @@ service api {
 
 type (
     AlarmDealRecordCreateReq struct {
-     alarmID int64 `json:"alarmID"`//告警配置ID
-     result string `json:"result"`//告警处理结果
+        AlarmRecordID int64 `json:"alarmRecordID"`//告警配置ID
+        result string `json:"result"`//告警处理结果
     }
     AlarmDealRecordIndexReq struct {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
@@ -39,7 +39,7 @@ type (
 type AlarmDealRecord struct {
     ID          int64     `json:"id,optional"`
     CreatedTime int64   `json:"createdTime,optional"`
-    AlarmID int64 `json:"alarmID"`//告警配置ID
+    AlarmRecordID int64 `json:"alarmRecordID"`//告警配置ID
     Result string `json:"result"`//告警处理结果
     Type int64 `json:"type"`//告警处理类型（1人工 2系统）
     AlarmTime int64 `json:"alarmTime"`//最早告警时间
