@@ -58,7 +58,7 @@ CREATE TABLE if not exists `rule_alarm_record`
 (
     `id`              bigint auto_increment comment '编号',
     `alarmID`         bigint NOT NULL comment '告警记录ID',
-    `triggerType`          int NOT NULL DEFAULT '' comment '触发类型(设备触发1,定时触发2)',
+    `triggerType`          int NOT NULL DEFAULT '' comment '触发类型(设备触发1,其他2)',
     `productID`   char(11)     NOT NULL COMMENT '触发产品id',
     `deviceName`  varchar(100) NOT NULL COMMENT '触发设备名称',
     `level`           tinyint(1) NOT NULL COMMENT '告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）',
@@ -91,7 +91,7 @@ CREATE TABLE if not exists `rule_alarm_log`
 CREATE TABLE if not exists `rule_alarm_deal_record`
 (
     `id`              bigint auto_increment comment '编号',
-    `alarmID`         bigint NOT NULL comment '告警配置ID',
+    `alarmRecordID`         bigint NOT NULL comment '告警记录ID',
     `result`          varchar(1024) NOT NULL DEFAULT '' comment '告警处理结果',
     `type`            tinyint(1) NOT NULL COMMENT '告警处理类型（1人工 2系统）',
     `alarmTime`       datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '告警时间',

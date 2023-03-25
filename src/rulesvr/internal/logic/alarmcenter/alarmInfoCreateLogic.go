@@ -30,8 +30,6 @@ func (l *AlarmInfoCreateLogic) AlarmInfoCreate(in *rule.AlarmInfo) (*rule.Respon
 	if !(err == mysql.ErrNotFound) {
 		return nil, errors.Parameter.AddMsg("告警名称重复").AddDetail(err)
 	}
-	in.LastAlarm = 0
-	in.DealState = 1
 	_, err = l.svcCtx.AlarmInfoRepo.Insert(l.ctx, ToAlarmInfoPo(in))
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)

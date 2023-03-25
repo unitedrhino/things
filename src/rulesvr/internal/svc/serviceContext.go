@@ -36,6 +36,7 @@ type Repo struct {
 	SchemaRepo          schema.ReadRepo
 	SceneInfoRepo       mysql.RuleSceneInfoModel
 	AlarmInfoRepo       mysql.RuleAlarmInfoModel
+	AlarmRecordRepo     mysql.RuleAlarmRecordModel
 	AlarmSceneRepo      mysql.RuleAlarmSceneModel
 	AlarmDealRecordRepo mysql.RuleAlarmDealRecordModel
 	AlarmLogRepo        mysql.RuleAlarmLogModel
@@ -61,6 +62,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	AlarmSceneRepo := mysql.NewRuleAlarmSceneModel(conn)
 	AlarmDealRecordRepo := mysql.NewRuleAlarmDealRecordModel(conn)
 	AlarmLogRepo := mysql.NewRuleAlarmLogModel(conn)
+	AlarmRecordRepo := mysql.NewRuleAlarmRecordModel(conn)
 	SceneRepo := mysql.NewRuleSceneInfoModel(conn)
 	sceneDevice := cache.NewSceneDeviceRepo(SceneRepo)
 	err := sceneDevice.Init(context.TODO())
@@ -109,6 +111,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			AlarmSceneRepo:      AlarmSceneRepo,
 			AlarmDealRecordRepo: AlarmDealRecordRepo,
 			AlarmLogRepo:        AlarmLogRepo,
+			AlarmRecordRepo:     AlarmRecordRepo,
 		},
 	}
 }
