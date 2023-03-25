@@ -938,8 +938,8 @@ type SceneInfo struct {
 }
 
 type AlarmDealRecordCreateReq struct {
-	AlarmID int64  `json:"alarmID"` //告警配置ID
-	Result  string `json:"result"`  //告警处理结果
+	AlarmRecordID int64  `json:"alarmRecordID"` //告警配置ID
+	Result        string `json:"result"`        //告警处理结果
 }
 
 type AlarmDealRecordIndexReq struct {
@@ -954,12 +954,12 @@ type AlarmDealRecordIndexResp struct {
 }
 
 type AlarmDealRecord struct {
-	ID          int64  `json:"id,optional"`
-	CreatedTime int64  `json:"createdTime,optional"`
-	AlarmID     int64  `json:"alarmID"`   //告警配置ID
-	Result      string `json:"result"`    //告警处理结果
-	Type        int64  `json:"type"`      //告警处理类型（1人工 2系统）
-	AlarmTime   int64  `json:"alarmTime"` //最早告警时间
+	ID            int64  `json:"id,optional"`
+	CreatedTime   int64  `json:"createdTime,optional"`
+	AlarmRecordID int64  `json:"alarmRecordID"` //告警配置ID
+	Result        string `json:"result"`        //告警处理结果
+	Type          int64  `json:"type"`          //告警处理类型（1人工 2系统）
+	AlarmTime     int64  `json:"alarmTime"`     //最早告警时间
 }
 
 type AlarmInfoCreateReq struct {
@@ -1009,13 +1009,13 @@ type AlarmLogIndexResp struct {
 }
 
 type AlarmLog struct {
-	ID          int64  `json:"id,optional"`
-	Desc        string `json:"desc,optional"`
-	CreatedTime int64  `json:"createdTime,optional"`
-	AlarmID     int64  `json:"alarmID"`   //告警记录ID
-	Serial      string `json:"serial"`    //告警流水
-	SceneName   string `json:"sceneName"` //场景名称
-	SceneID     int64  `json:"sceneID"`   //场景ID
+	ID            int64  `json:"id,optional"`
+	Desc          string `json:"desc,optional"`
+	CreatedTime   int64  `json:"createdTime,optional"`
+	AlarmRecordID int64  `json:"alarmRecordID"` //告警记录ID
+	Serial        string `json:"serial"`        //告警流水
+	SceneName     string `json:"sceneName"`     //场景名称
+	SceneID       int64  `json:"sceneID"`       //场景ID
 }
 
 type AlarmSceneMultiCreateReq struct {

@@ -36,12 +36,12 @@ type (
 	}
 
 	RuleAlarmDealRecord struct {
-		Id          int64     `db:"id"`          // 编号
-		AlarmID     int64     `db:"alarmID"`     // 告警配置ID
-		Result      string    `db:"result"`      // 告警处理结果
-		Type        int64     `db:"type"`        // 告警处理类型（1人工 2系统）
-		AlarmTime   time.Time `db:"alarmTime"`   // 告警时间
-		CreatedTime time.Time `db:"createdTime"` // 告警处理时间
+		Id            int64     `db:"id"`            // 编号
+		AlarmRecordID int64     `db:"alarmRecordID"` // 告警记录ID
+		Result        string    `db:"result"`        // 告警处理结果
+		Type          int64     `db:"type"`          // 告警处理类型（1人工 2系统）
+		AlarmTime     time.Time `db:"alarmTime"`     // 告警时间
+		CreatedTime   time.Time `db:"createdTime"`   // 告警处理时间
 	}
 )
 
@@ -74,13 +74,13 @@ func (m *defaultRuleAlarmDealRecordModel) FindOne(ctx context.Context, id int64)
 
 func (m *defaultRuleAlarmDealRecordModel) Insert(ctx context.Context, data *RuleAlarmDealRecord) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, ruleAlarmDealRecordRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.AlarmID, data.Result, data.Type, data.AlarmTime)
+	ret, err := m.conn.ExecCtx(ctx, query, data.AlarmRecordID, data.Result, data.Type, data.AlarmTime)
 	return ret, err
 }
 
 func (m *defaultRuleAlarmDealRecordModel) Update(ctx context.Context, data *RuleAlarmDealRecord) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, ruleAlarmDealRecordRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.AlarmID, data.Result, data.Type, data.AlarmTime, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.AlarmRecordID, data.Result, data.Type, data.AlarmTime, data.Id)
 	return err
 }
 

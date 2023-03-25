@@ -39,7 +39,7 @@ type (
 	RuleAlarmRecord struct {
 		Id          int64     `db:"id"`          // 编号
 		AlarmID     int64     `db:"alarmID"`     // 告警记录ID
-		TriggerType int64     `db:"triggerType"` // 触发类型(设备触发1,定时触发2)
+		TriggerType int64     `db:"triggerType"` // 触发类型(设备触发1,其他2)
 		ProductID   string    `db:"productID"`   // 触发产品id
 		DeviceName  string    `db:"deviceName"`  // 触发设备名称
 		Level       int64     `db:"level"`       // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
