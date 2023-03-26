@@ -55,3 +55,17 @@ func ToAlarmLog(in *mysql.RuleAlarmLog) *rule.AlarmLog {
 		CreatedTime:   utils.TimeToInt64(in.CreatedTime),
 	}
 }
+func ToAlarmRecord(in *mysql.RuleAlarmRecord) *rule.AlarmRecord {
+	return &rule.AlarmRecord{
+		Id:          in.Id,
+		AlarmID:     in.AlarmID,
+		TriggerType: in.TriggerType,
+		ProductID:   in.ProductID,
+		DeviceName:  in.DeviceName,
+		SceneName:   in.SceneName,
+		SceneID:     in.SceneID,
+		Level:       in.Level,
+		LastAlarm:   utils.TimeToInt64(in.LastAlarm),
+		CreatedTime: utils.TimeToInt64(in.CreatedTime),
+	}
+}

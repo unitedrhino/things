@@ -13,6 +13,21 @@ const (
 	ActionAlarmModeRelieve ActionAlarmMode = "relieve"
 )
 
+type AlarmTrigger struct {
+	SceneID     int64  //场景ID
+	SceneName   string //场景名称
+	TriggerType int64  //触发类型(设备触发1,其他2)
+	ProductID   string //触发产品id
+	DeviceName  string //触发设备名称
+	Serial      string //告警流水
+	Desc        string //告警说明
+}
+
+type AlarmRelieve struct {
+	SceneID   int64  //场景ID
+	SceneName string //场景名称
+}
+
 type ActionAlarm struct {
 	Mode ActionAlarmMode `json:"mode"` //告警模式  trigger: 触发告警  relieve: 解除告警
 }

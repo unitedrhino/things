@@ -26,10 +26,14 @@ type (
 	AlarmLogIndexReq         = rule.AlarmLogIndexReq
 	AlarmLogIndexResp        = rule.AlarmLogIndexResp
 	AlarmRecord              = rule.AlarmRecord
+	AlarmRecordIndexReq      = rule.AlarmRecordIndexReq
+	AlarmRecordIndexResp     = rule.AlarmRecordIndexResp
+	AlarmRelieveReq          = rule.AlarmRelieveReq
 	AlarmSceneDeleteReq      = rule.AlarmSceneDeleteReq
 	AlarmSceneIndexReq       = rule.AlarmSceneIndexReq
 	AlarmSceneIndexResp      = rule.AlarmSceneIndexResp
 	AlarmSceneMultiCreateReq = rule.AlarmSceneMultiCreateReq
+	AlarmTriggerReq          = rule.AlarmTriggerReq
 	FlowInfo                 = rule.FlowInfo
 	FlowInfoDeleteReq        = rule.FlowInfoDeleteReq
 	FlowInfoIndexReq         = rule.FlowInfoIndexReq
@@ -52,9 +56,13 @@ type (
 		// 告警关联场景联动
 		AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
 		AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
-		// 告警日志
+		// 告警记录
+		AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
+		// 告警触发及解除
+		AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error)
+		AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error)
+		// 告警流水日志
 		AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error)
-		AlarmLogCreate(ctx context.Context, in *AlarmLog, opts ...grpc.CallOption) (*Response, error)
 		// 告警处理记录
 		AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*Response, error)
 		AlarmDealRecordIndex(ctx context.Context, in *AlarmDealRecordIndexReq, opts ...grpc.CallOption) (*AlarmDealRecordIndexResp, error)
@@ -139,24 +147,46 @@ func (d *directAlarmCenter) AlarmSceneDelete(ctx context.Context, in *AlarmScene
 	return d.svr.AlarmSceneDelete(ctx, in)
 }
 
-// 告警日志
+// 告警记录
+func (m *defaultAlarmCenter) AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error) {
+	client := rule.NewAlarmCenterClient(m.cli.Conn())
+	return client.AlarmRecordIndex(ctx, in, opts...)
+}
+
+// 告警记录
+func (d *directAlarmCenter) AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error) {
+	return d.svr.AlarmRecordIndex(ctx, in)
+}
+
+// 告警触发及解除
+func (m *defaultAlarmCenter) AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error) {
+	client := rule.NewAlarmCenterClient(m.cli.Conn())
+	return client.AlarmTrigger(ctx, in, opts...)
+}
+
+// 告警触发及解除
+func (d *directAlarmCenter) AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AlarmTrigger(ctx, in)
+}
+
+func (m *defaultAlarmCenter) AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error) {
+	client := rule.NewAlarmCenterClient(m.cli.Conn())
+	return client.AlarmRelieve(ctx, in, opts...)
+}
+
+func (d *directAlarmCenter) AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AlarmRelieve(ctx, in)
+}
+
+// 告警流水日志
 func (m *defaultAlarmCenter) AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error) {
 	client := rule.NewAlarmCenterClient(m.cli.Conn())
 	return client.AlarmLogIndex(ctx, in, opts...)
 }
 
-// 告警日志
+// 告警流水日志
 func (d *directAlarmCenter) AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error) {
 	return d.svr.AlarmLogIndex(ctx, in)
-}
-
-func (m *defaultAlarmCenter) AlarmLogCreate(ctx context.Context, in *AlarmLog, opts ...grpc.CallOption) (*Response, error) {
-	client := rule.NewAlarmCenterClient(m.cli.Conn())
-	return client.AlarmLogCreate(ctx, in, opts...)
-}
-
-func (d *directAlarmCenter) AlarmLogCreate(ctx context.Context, in *AlarmLog, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.AlarmLogCreate(ctx, in)
 }
 
 // 告警处理记录
