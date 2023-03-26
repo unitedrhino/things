@@ -7,6 +7,7 @@ import (
 	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
 	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
+	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
 )
 import "context"
 
@@ -43,4 +44,12 @@ type TermRepo struct {
 type ActionRepo struct {
 	DeviceInteract deviceinteract.DeviceInteract
 	DeviceM        devicemanage.DeviceManage
+	Alarm          alarmcenter.AlarmCenter
+}
+
+type AlarmRepo interface {
+	//告警触发
+	AlarmTrigger(ctx context.Context, in AlarmTrigger) error
+	//告警解除
+	AlarmRelieve(ctx context.Context, in AlarmRelieve) error
 }

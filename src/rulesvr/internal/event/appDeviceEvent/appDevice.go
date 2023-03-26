@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
+	"github.com/i-Things/things/src/rulesvr/ruledirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -97,6 +98,7 @@ func (a *AppDeviceHandle) executeActions(exeInfos scene.Infos) {
 			err = info.Then.Execute(ctx, scene.ActionRepo{
 				DeviceInteract: a.svcCtx.DeviceInteract,
 				DeviceM:        a.svcCtx.DeviceM,
+				Alarm:          ruledirect.NewAlarmCenter(),
 			})
 			return err
 		}(newCtx, info)

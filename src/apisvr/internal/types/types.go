@@ -997,6 +997,31 @@ type AlarmInfo struct {
 	LastAlarm   int64  `json:"lastAlarm,optional"` //最新告警时间
 }
 
+type AlarmRecordIndexReq struct {
+	AlarmID   int64      `json:"alarmID,optional"`   //告警配置ID
+	Page      *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
+	TimeRange *TimeRange `json:"timeRange,optional"` //时间范围
+}
+
+type AlarmRecordIndexResp struct {
+	List  []*AlarmRecord `json:"list"`  //告警信息
+	Total int64          `json:"total"` //总数(只有分页的时候会返回)
+	Num   int64          `json:"num"`   //返回的数量
+}
+
+type AlarmRecord struct {
+	ID          int64  `json:"id"`          //编号
+	AlarmID     int64  `json:"alarmID"`     //告警记录ID
+	TriggerType int64  `json:"triggerType"` //触发类型(设备触发1,其他2)
+	ProductID   string `json:"productID"`   //触发产品id
+	DeviceName  string `json:"deviceName"`  //触发设备名称
+	SceneName   string `json:"sceneName"`   //场景名称
+	SceneID     int64  `json:"sceneID"`     //场景ID
+	Level       int64  `json:"level"`       //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+	LastAlarm   int64  `json:"lastAlarm"`   //最新告警时间
+	CreatedTime int64  `json:"createdTime"` //创建时间
+}
+
 type AlarmLogIndexReq struct {
 	Page      *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
 	TimeRange *TimeRange `json:"timeRange,optional"` //时间范围

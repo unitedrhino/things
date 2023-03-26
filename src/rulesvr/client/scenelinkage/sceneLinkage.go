@@ -26,10 +26,14 @@ type (
 	AlarmLogIndexReq         = rule.AlarmLogIndexReq
 	AlarmLogIndexResp        = rule.AlarmLogIndexResp
 	AlarmRecord              = rule.AlarmRecord
+	AlarmRecordIndexReq      = rule.AlarmRecordIndexReq
+	AlarmRecordIndexResp     = rule.AlarmRecordIndexResp
+	AlarmRelieveReq          = rule.AlarmRelieveReq
 	AlarmSceneDeleteReq      = rule.AlarmSceneDeleteReq
 	AlarmSceneIndexReq       = rule.AlarmSceneIndexReq
 	AlarmSceneIndexResp      = rule.AlarmSceneIndexResp
 	AlarmSceneMultiCreateReq = rule.AlarmSceneMultiCreateReq
+	AlarmTriggerReq          = rule.AlarmTriggerReq
 	FlowInfo                 = rule.FlowInfo
 	FlowInfoDeleteReq        = rule.FlowInfoDeleteReq
 	FlowInfoIndexReq         = rule.FlowInfoIndexReq

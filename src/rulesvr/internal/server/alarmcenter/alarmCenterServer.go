@@ -53,15 +53,27 @@ func (s *AlarmCenterServer) AlarmSceneDelete(ctx context.Context, in *rule.Alarm
 	return l.AlarmSceneDelete(in)
 }
 
-// 告警日志
+// 告警记录
+func (s *AlarmCenterServer) AlarmRecordIndex(ctx context.Context, in *rule.AlarmRecordIndexReq) (*rule.AlarmRecordIndexResp, error) {
+	l := alarmcenterlogic.NewAlarmRecordIndexLogic(ctx, s.svcCtx)
+	return l.AlarmRecordIndex(in)
+}
+
+// 告警触发及解除
+func (s *AlarmCenterServer) AlarmTrigger(ctx context.Context, in *rule.AlarmTriggerReq) (*rule.Response, error) {
+	l := alarmcenterlogic.NewAlarmTriggerLogic(ctx, s.svcCtx)
+	return l.AlarmTrigger(in)
+}
+
+func (s *AlarmCenterServer) AlarmRelieve(ctx context.Context, in *rule.AlarmRelieveReq) (*rule.Response, error) {
+	l := alarmcenterlogic.NewAlarmRelieveLogic(ctx, s.svcCtx)
+	return l.AlarmRelieve(in)
+}
+
+// 告警流水日志
 func (s *AlarmCenterServer) AlarmLogIndex(ctx context.Context, in *rule.AlarmLogIndexReq) (*rule.AlarmLogIndexResp, error) {
 	l := alarmcenterlogic.NewAlarmLogIndexLogic(ctx, s.svcCtx)
 	return l.AlarmLogIndex(in)
-}
-
-func (s *AlarmCenterServer) AlarmLogCreate(ctx context.Context, in *rule.AlarmLog) (*rule.Response, error) {
-	l := alarmcenterlogic.NewAlarmLogCreateLogic(ctx, s.svcCtx)
-	return l.AlarmLogCreate(in)
 }
 
 // 告警处理记录
