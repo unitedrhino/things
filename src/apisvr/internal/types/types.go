@@ -612,6 +612,21 @@ type DeviceCountResp struct {
 	DeviceTypeCount DeviceTypeCount `json:"deviceTypeCount"`
 }
 
+type DeviceMultiImportReq struct {
+	ProductID string `form:"productID"` //产品ID
+	File      []byte `form:"file"`      //csv文件
+}
+
+type DeviceMultiImportResp struct {
+	Total   int64                      `json:"total"`   //当前表格数据量
+	Errdata []DeviceMultiImportErrdata `json:"errdata"` //批量导入错误列表
+}
+
+type DeviceMultiImportErrdata struct {
+	Row int64  `json:"row"` //错误所在表格行
+	Msg string `json:"msg"` //详细错误信息
+}
+
 type DeviceInteractSendMsgReq struct {
 	Topic   string `json:"topic"`   //发送的topic
 	Payload string `json:"payload"` //发送的数据
