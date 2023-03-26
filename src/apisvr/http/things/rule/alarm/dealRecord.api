@@ -12,9 +12,6 @@ import "common.api"  //公共结构体定义
     middleware: CheckToken
 )
 service api {
-    @doc "新增告警处理记录"
-    @handler create
-    post /create (AlarmDealRecordCreateReq) returns ()
     @doc "获取告警处理记录列表"
     @handler index
     post /index (AlarmDealRecordIndexReq) returns (AlarmDealRecordIndexResp)

@@ -46,9 +46,13 @@ service alarmCenter{
   //告警记录
   rpc alarmRecordIndex(AlarmRecordIndexReq)returns(AlarmRecordIndexResp);
 
+  //告警触发
+  rpc alarmTrigger(AlarmTriggerReq)returns(Response);
+  //告警解除
+  rpc alarmRelieve(AlarmRelieveReq)returns(Response);
+
   //告警流水日志
   rpc alarmLogIndex(AlarmLogIndexReq)returns(AlarmLogIndexResp);
-  rpc alarmLogCreate(AlarmLog)returns(Response);
 
   //告警处理记录
   rpc alarmDealRecordCreate(alarmDealRecordCreateReq)returns(Response);//处理告警
@@ -57,13 +61,43 @@ service alarmCenter{
 }
 
 message AlarmRecordIndexReq{
+  int64 alarmID = 1;//告警配置ID
+  PageInfo page       = 2;  // 分页信息 获取全部不填
+  TimeRange timeRange = 3;       // 时间范围
 
 }
 message AlarmRecordIndexResp{
-
+  repeated AlarmRecord list =1;
+  int64  total = 2;//总数(只有分页的时候会返回)
 }
 
+message AlarmRecord{
+  int64 id = 1;//编号
+  int64 alarmID = 2;//告警记录ID
+  int64 triggerType = 3;//触发类型(设备触发1,其他2)
+  string productID = 4;//触发产品id
+  string deviceName = 5;//触发设备名称
+  string sceneName = 6;//场景名称
+  int64 sceneID = 7;//场景ID
+  int64 level = 8;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+  int64 lastAlarm = 9;//最新告警时间
+  int64 createdTime = 10;//创建时间
+}
 
+message AlarmRelieveReq{
+  int64 sceneID = 7;//场景ID
+  string sceneName = 6;//场景名称
+}
+
+message AlarmTriggerReq{
+  int64 sceneID = 7;//场景ID
+  string sceneName = 6;//场景名称
+  int64 triggerType = 2;//触发类型(设备触发1,其他2)
+  string productID = 3;//触发产品id
+  string deviceName = 4;//触发设备名称
+  string serial = 5;//告警流水
+  string desc = 8;//告警说明
+}
 
 message alarmSceneIndexReq{
   int64 alarmID = 1;//告警配置ID
@@ -139,18 +173,7 @@ message AlarmInfo{
   int64 state = 5;//告警配置状态（1启用 2禁用）
   int64 createdTime = 6;//创建时间
 }
-message AlarmRecord{
-  int64 id = 1;//编号
-  int64 alarmID = 2;//告警记录ID
-  int64 triggerType = 3;//触发类型(设备触发1,其他2)
-  string productID = 4;//触发产品id
-  string deviceName = 5;//触发设备名称
-  string sceneName = 6;//场景名称
-  int64 sceneID = 7;//场景ID
-  int64 level = 8;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-  int64 lastAlarm = 9;//最新告警时间
-  int64 createdTime = 10;//创建时间
-}
+
 
 message AlarmInfoDeleteReq{
   int64 id = 1;//告警id
