@@ -40,6 +40,9 @@ func defaultHandle(svcCtx *svc.ServiceContext, w http.ResponseWriter, r *http.Re
 		return
 	}
 	indexFile, err := io.ReadAll(f)
+	if err != nil {
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(indexFile)
 	return
