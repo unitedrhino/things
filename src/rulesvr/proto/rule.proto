@@ -156,8 +156,9 @@ message AlarmLog{
 }
 
 message AlarmLogIndexReq{
-  PageInfo page       = 1;  // 分页信息 只获取一个则不填
-  TimeRange timeRange = 4;       // 时间范围
+  int64 alarmRecordID = 1;//告警记录ID
+  TimeRange timeRange = 2;       // 时间范围
+  PageInfo page       = 3;  // 分页信息 只获取一个则不填
 }
 
 message AlarmLogIndexResp{

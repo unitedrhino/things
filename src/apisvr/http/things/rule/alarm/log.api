@@ -23,7 +23,7 @@ service api {
     middleware: CheckToken
 )
 service api {
-    @doc "获取告警日志记录列表"
+    @doc "获取告警记录列表"
     @handler index
     post /index (AlarmRecordIndexReq) returns (AlarmRecordIndexResp)
 }
@@ -55,6 +55,7 @@ type (
 
 type (
     AlarmLogIndexReq struct {
+        AlarmRecordID int64 `json:"alarmRecordID"`//告警记录ID
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         TimeRange        *TimeRange    `json:"timeRange,optional"` //时间范围
     }
