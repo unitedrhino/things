@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func GetNullTime(time sql.NullTime) int64 {
@@ -11,6 +12,13 @@ func GetNullTime(time sql.NullTime) int64 {
 		return 0
 	}
 	return time.Time.Unix()
+}
+
+func ToNullTime(in int64) sql.NullTime {
+	if in == 0 {
+		return sql.NullTime{}
+	}
+	return sql.NullTime{Valid: true, Time: time.Unix(in, 0)}
 }
 
 // position 格式: POINT(100.101 50.894)

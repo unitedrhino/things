@@ -47,6 +47,15 @@ func ToRulePageRpc(in *types.PageInfo) *rule.PageInfo {
 		Size: in.Size,
 	}
 }
+func ToRuleTimeRangeRpc(in *types.TimeRange) *rule.TimeRange {
+	if in == nil {
+		return nil
+	}
+	return &rule.TimeRange{
+		Start: in.Start,
+		End:   in.End,
+	}
+}
 
 func ToDiPageRpc(in *types.PageInfo) *di.PageInfo {
 	if in == nil {

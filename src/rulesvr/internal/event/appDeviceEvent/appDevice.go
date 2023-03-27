@@ -2,9 +2,11 @@ package appDeviceEvent
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/repoComplex"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -53,7 +55,7 @@ func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) e
 		}
 		exeInfos = append(exeInfos, info)
 	}
-	a.executeActions(exeInfos)
+	a.executeActions(in.Device, in, exeInfos)
 	return nil
 }
 
@@ -81,11 +83,11 @@ func (a *AppDeviceHandle) DeviceStatusConnected(in *application.ConnectMsg) erro
 		}
 		exeInfos = append(exeInfos, info)
 	}
-	a.executeActions(exeInfos)
+	a.executeActions(in.Device, in, exeInfos)
 	return nil
 }
 
-func (a *AppDeviceHandle) executeActions(exeInfos scene.Infos) {
+func (a *AppDeviceHandle) executeActions(device devices.Core, serial scene.Serial, exeInfos scene.Infos) {
 	newCtx := utils.CopyContext(a.ctx)
 	for _, info := range exeInfos {
 		go func(ctx context.Context, info *scene.Info) (err error) {
@@ -97,6 +99,10 @@ func (a *AppDeviceHandle) executeActions(exeInfos scene.Infos) {
 			err = info.Then.Execute(ctx, scene.ActionRepo{
 				DeviceInteract: a.svcCtx.DeviceInteract,
 				DeviceM:        a.svcCtx.DeviceM,
+				Alarm:          repoComplex.NewSceneAlarm(a.svcCtx),
+				Device:         device,
+				Serial:         serial,
+				Scene:          info,
 			})
 			return err
 		}(newCtx, info)
@@ -127,6 +133,6 @@ func (a *AppDeviceHandle) DeviceStatusDisConnected(in *application.ConnectMsg) e
 		}
 		exeInfos = append(exeInfos, info)
 	}
-	a.executeActions(exeInfos)
+	a.executeActions(in.Device, in, exeInfos)
 	return nil
 }

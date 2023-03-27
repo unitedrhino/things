@@ -59,7 +59,7 @@ func (t *Term) Validate() error {
 	if !utils.SliceIn(t.NextCondition, TermConditionTypeOr, TermConditionTypeAnd) {
 		return errors.Parameter.AddMsg("触发条件中的下个条件的关联类型不支持的类型:" + string(t.NextCondition))
 	}
-	if !utils.SliceIn(t.ChildrenCondition, TermConditionTypeOr, TermConditionTypeAnd) {
+	if !utils.SliceIn(t.ChildrenCondition, TermConditionTypeOr, TermConditionTypeAnd, "") {
 		return errors.Parameter.AddMsg("触发条件中的嵌套条件的关联类型不支持的类型:" + string(t.ChildrenCondition))
 	}
 	for i := range t.Terms {
