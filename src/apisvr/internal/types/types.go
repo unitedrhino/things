@@ -938,7 +938,7 @@ type SceneInfo struct {
 }
 
 type AlarmDealRecordCreateReq struct {
-	AlarmRecordID int64  `json:"alarmRecordID"` //告警配置ID
+	AlarmRecordID int64  `json:"alarmRecordID"` //告警记录ID
 	Result        string `json:"result"`        //告警处理结果
 }
 
@@ -992,9 +992,7 @@ type AlarmInfo struct {
 	State       int64  `json:"state,optional"` //状态: 1启用 2禁用
 	Desc        string `json:"desc,optional"`
 	CreatedTime int64  `json:"createdTime,optional"`
-	Level       int64  `json:"level,optional"`     //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-	DealState   int64  `json:"dealState,optional"` //告警记录状态（1无告警 2告警中 3已处理）
-	LastAlarm   int64  `json:"lastAlarm,optional"` //最新告警时间
+	Level       int64  `json:"level,optional"` //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
 }
 
 type AlarmRecordIndexReq struct {
@@ -1023,8 +1021,9 @@ type AlarmRecord struct {
 }
 
 type AlarmLogIndexReq struct {
-	Page      *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
-	TimeRange *TimeRange `json:"timeRange,optional"` //时间范围
+	AlarmRecordID int64      `json:"alarmRecordID"`      //告警记录ID
+	Page          *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
+	TimeRange     *TimeRange `json:"timeRange,optional"` //时间范围
 }
 
 type AlarmLogIndexResp struct {

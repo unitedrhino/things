@@ -15,11 +15,14 @@ service api {
     @doc "获取告警处理记录列表"
     @handler index
     post /index (AlarmDealRecordIndexReq) returns (AlarmDealRecordIndexResp)
+    @doc "新增告警处理记录列表"
+    @handler create
+    post /create (AlarmDealRecordCreateReq) returns ()
 }
 
 type (
     AlarmDealRecordCreateReq struct {
-        AlarmRecordID int64 `json:"alarmRecordID"`//告警配置ID
+        AlarmRecordID int64 `json:"alarmRecordID"`//告警记录ID
         result string `json:"result"`//告警处理结果
     }
     AlarmDealRecordIndexReq struct {
