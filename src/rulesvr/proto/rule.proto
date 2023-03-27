@@ -82,6 +82,7 @@ message AlarmRecord{
   int64 level = 8;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
   int64 lastAlarm = 9;//最新告警时间
   int64 createdTime = 10;//创建时间
+  int64 dealState = 11;//告警记录状态（1无告警 2告警中 3已处理）
 }
 
 message AlarmRelieveReq{
@@ -135,8 +136,9 @@ message AlarmDeal{
 }
 
 message AlarmDealRecordIndexReq{
-  PageInfo page       = 1;  // 分页信息 只获取一个则不填
-  TimeRange timeRange = 4;       // 时间范围
+  int64 alarmRecordID = 1;//告警配置ID
+  PageInfo page       = 2;  // 分页信息 只获取一个则不填
+  TimeRange timeRange = 3;       // 时间范围
 }
 message AlarmDealRecordIndexResp{
   repeated AlarmDeal list = 1;//告警日志

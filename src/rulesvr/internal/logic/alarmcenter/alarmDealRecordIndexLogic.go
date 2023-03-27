@@ -32,7 +32,8 @@ func (l *AlarmDealRecordIndexLogic) AlarmDealRecordIndex(in *rule.AlarmDealRecor
 		err  error
 	)
 	filter := alarm.DealRecordFilter{
-		Time: ToTimeRange(in.TimeRange)}
+		AlarmRecordID: in.AlarmRecordID,
+		Time:          ToTimeRange(in.TimeRange)}
 	size, err = l.svcCtx.AlarmDealRecordRepo.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err

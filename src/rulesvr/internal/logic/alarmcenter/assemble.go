@@ -65,6 +65,7 @@ func ToAlarmRecord(in *mysql.RuleAlarmRecord) *rule.AlarmRecord {
 		SceneName:   in.SceneName,
 		SceneID:     in.SceneID,
 		Level:       in.Level,
+		DealState:   in.DealState,
 		LastAlarm:   utils.TimeToInt64(in.LastAlarm),
 		CreatedTime: utils.TimeToInt64(in.CreatedTime),
 	}
