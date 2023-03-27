@@ -32,7 +32,11 @@ func NewRuleAlarmLogModel(conn sqlx.SqlConn) RuleAlarmLogModel {
 }
 
 func (c customRuleAlarmLogModel) FmtSql(sql sq.SelectBuilder, f alarm.LogFilter) sq.SelectBuilder {
-	return f.Time.FmtSql(sql)
+	sql = f.Time.FmtSql(sql)
+	if f.AlarmRecordID != 0 {
+		sql = sql.Where("alarmRecordID=?", f.AlarmRecordID)
+	}
+	return sql
 }
 
 func (c customRuleAlarmLogModel) FindByFilter(ctx context.Context, filter alarm.LogFilter, page *def.PageInfo) ([]*RuleAlarmLog, error) {

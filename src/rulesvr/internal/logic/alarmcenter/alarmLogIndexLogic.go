@@ -32,7 +32,8 @@ func (l *AlarmLogIndexLogic) AlarmLogIndex(in *rule.AlarmLogIndexReq) (*rule.Ala
 		err  error
 	)
 	filter := alarm.LogFilter{
-		Time: ToTimeRange(in.TimeRange)}
+		AlarmRecordID: in.AlarmRecordID,
+		Time:          ToTimeRange(in.TimeRange)}
 	size, err = l.svcCtx.AlarmLogRepo.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
