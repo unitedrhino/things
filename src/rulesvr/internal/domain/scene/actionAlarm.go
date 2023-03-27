@@ -2,8 +2,11 @@
 package scene
 
 import (
+	"context"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type ActionAlarmMode string
@@ -13,14 +16,13 @@ const (
 	ActionAlarmModeRelieve ActionAlarmMode = "relieve"
 )
 
-type AlarmTrigger struct {
+type TriggerSerial struct {
 	SceneID     int64  //场景ID
 	SceneName   string //场景名称
 	TriggerType int64  //触发类型(设备触发1,其他2)
-	ProductID   string //触发产品id
-	DeviceName  string //触发设备名称
-	Serial      string //告警流水
-	Desc        string //告警说明
+	Device      devices.Core
+	Serial      string //流水
+	Desc        string //说明
 }
 
 type AlarmRelieve struct {
@@ -38,6 +40,33 @@ func (a *ActionAlarm) Validate() error {
 	}
 	if !utils.SliceIn(a.Mode, ActionAlarmModeRelieve, ActionAlarmModeTrigger) {
 		return errors.Parameter.AddMsg("操作告警不支持的类型:" + string(a.Mode))
+	}
+	return nil
+}
+func (a *ActionAlarm) Execute(ctx context.Context, repo ActionRepo) error {
+	switch a.Mode {
+	case ActionAlarmModeRelieve:
+		err := repo.Alarm.AlarmRelieve(ctx, AlarmRelieve{
+			SceneID:   repo.Scene.ID,
+			SceneName: repo.Scene.Name,
+		})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.AlarmRelieve err:%v", utils.FuncName(), err)
+			return err
+		}
+	case ActionAlarmModeTrigger:
+		err := repo.Alarm.AlarmTrigger(ctx, TriggerSerial{
+			SceneID:     repo.Scene.ID,
+			SceneName:   repo.Scene.Name,
+			TriggerType: 1,
+			Device:      repo.Device,
+			Serial:      repo.Serial.GenSerial(),
+			Desc:        "",
+		})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.AlarmTrigger err:%v", utils.FuncName(), err)
+			return err
+		}
 	}
 	return nil
 }

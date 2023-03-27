@@ -22,7 +22,7 @@ func NewSceneAlarm(svcCtx *svc.ServiceContext) *SceneAlarm {
 	}
 }
 
-func (l *SceneAlarm) AlarmTrigger(ctx context.Context, in scene.AlarmTrigger) error {
+func (l *SceneAlarm) AlarmTrigger(ctx context.Context, in scene.TriggerSerial) error {
 	//调这个接口默认都是场景联动调用的
 	alarms, err := l.svcCtx.AlarmInfoRepo.FindByFilter(ctx, alarm.InfoFilter{SceneID: in.SceneID}, nil)
 	if err != nil {
@@ -31,7 +31,7 @@ func (l *SceneAlarm) AlarmTrigger(ctx context.Context, in scene.AlarmTrigger) er
 	for _, a := range alarms {
 		err := l.HandleTrigger(ctx, in, a)
 		if err != nil {
-			logx.WithContext(ctx).Errorf("%s.AlarmTrigger Alarm:%#v err:%v", utils.FuncName(), a, err)
+			logx.WithContext(ctx).Errorf("%s.TriggerSerial Alarm:%#v err:%v", utils.FuncName(), a, err)
 		}
 	}
 	return nil
@@ -46,7 +46,7 @@ func (l *SceneAlarm) AlarmRelieve(ctx context.Context, in scene.AlarmRelieve) er
 	for _, a := range alarms {
 		err := l.HandleRelieve(ctx, in, a)
 		if err != nil {
-			logx.WithContext(ctx).Errorf("%s.AlarmTrigger Alarm:%#v err:%v", utils.FuncName(), a, err)
+			logx.WithContext(ctx).Errorf("%s.TriggerSerial Alarm:%#v err:%v", utils.FuncName(), a, err)
 		}
 	}
 	return nil
@@ -85,13 +85,13 @@ func (l *SceneAlarm) HandleRelieve(ctx context.Context, in scene.AlarmRelieve, a
 	return nil
 }
 
-func (l *SceneAlarm) HandleTrigger(ctx context.Context, in scene.AlarmTrigger, alarmInfo *mysql.RuleAlarmInfo) error {
+func (l *SceneAlarm) HandleTrigger(ctx context.Context, in scene.TriggerSerial, alarmInfo *mysql.RuleAlarmInfo) error {
 	var recordID int64
 	ars, err := l.svcCtx.AlarmRecordRepo.FindByFilter(ctx, alarm.RecordFilter{
 		AlarmID:     alarmInfo.Id,
 		TriggerType: in.TriggerType,
-		ProductID:   in.ProductID,
-		DeviceName:  in.DeviceName,
+		ProductID:   in.Device.ProductID,
+		DeviceName:  in.Device.DeviceName,
 	}, nil)
 	if err != nil {
 		return errors.Database.AddDetail(err)
@@ -100,8 +100,8 @@ func (l *SceneAlarm) HandleTrigger(ctx context.Context, in scene.AlarmTrigger, a
 		ret, err := l.svcCtx.AlarmRecordRepo.Insert(ctx, &mysql.RuleAlarmRecord{
 			AlarmID:     alarmInfo.Id,
 			TriggerType: in.TriggerType,
-			ProductID:   in.ProductID,
-			DeviceName:  in.DeviceName,
+			ProductID:   in.Device.ProductID,
+			DeviceName:  in.Device.DeviceName,
 			Level:       alarmInfo.Level,
 			SceneName:   in.SceneName,
 			SceneID:     in.SceneID,
