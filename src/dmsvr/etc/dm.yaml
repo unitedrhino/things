@@ -1,3 +1,4 @@
+#设备管理模块-dmsvr
 Name: dm.rpc
 ListenOn: 127.0.0.1:9081
 CpuThreshold: 0

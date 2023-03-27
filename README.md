@@ -22,12 +22,11 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 向上为应用开发商与系统集成商提供应用开发的统一数据接口及共性模块工具。应用厂商可以通过http,grpc,及golang包引入的方式快速集成进自己的系统中,迅速获取物联网平台的能力,轻量而高效.
 
 - v1:
-  - <img style="width:300px;" src="./doc/v2/新版things架构图.png">
+    - <img style="width:300px;" src="./doc/v2/新版things架构图.png">
 - v2:
-  - <img style="width:300px;" src="./doc/assets/iThings架构图.png">
+    - <img style="width:300px;" src="./doc/assets/iThings架构图.png">
 
 ## 产品价值
-
 
 | 平台价值     | 描述                                                                                                                                                          |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -47,7 +46,6 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 * 快速开发及维护: 提供设备云端调试日志,设备本地日志,在线设备调试 快速开发及调试问题
 
 ## 产品功能
-
 
 | 功能       | 描述                                                                               |
 | ---------- | ---------------------------------------------------------------------------------- |
@@ -90,12 +88,12 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
           - emqx_auth_http.conf #mtqq组件 鉴权服务配置文件
     - ithings #本项目服务 相关配置
       - apisvr
-        - etc #部署时 各服务配置文件
-          - api.yaml #api网关接口代理模块配置-apisvr
-          - dd.yaml #设备数据处理模块配置-ddsvr
-          - di.yaml #设备交互模块配置-disvr
-          - dm.yaml #设备管理模块配置-dmsvr
-          - sys.yaml #系统管理模块配置-syssvr
+        - etc #部署时 各服务 配置文件
+          - api.yaml #api网关接口代理模块配置
+          - dd.yaml #设备数据处理模块配置
+          - di.yaml #设备交互模块配置
+          - dm.yaml #设备管理模块配置
+          - sys.yaml #系统管理模块配置
     - mysql #本项目SQL文件
       - sql
         - dmsvr.sql #设备管理模块SQL
@@ -128,14 +126,42 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
   - users #jwt方法封装
   - utils #工具类函数封装
   - verify #验证码函数封装
-- src #项目主要代码
-  - apisvr
-    - etc #运行时 各服务配置文件
-      - api.yaml #api网关接口代理模块配置-apisvr
-      - dd.yaml #设备数据处理模块配置-ddsvr
-      - di.yaml #设备交互模块配置-disvr
-      - dm.yaml #设备管理模块配置-dmsvr
-      - sys.yaml #系统管理模块配置-syssvr
+
+- src #项目主要代码（go-zero rest）
+  - apisvr #api网关接口代理模块
+    - etc #单体部署 运行时 各服务 配置文件
+      - api.yaml #api网关接口代理模块配置
+      - dd.yaml #设备数据处理模块配置
+      - di.yaml #设备交互模块配置
+      - dm.yaml #设备管理模块配置
+      - sys.yaml #系统管理模块配置
+    - apidirect
+      - direct.go #加载配置、协程启动dd服务、构造单例上下文（含根据配置判断连接其他子服务）
+  - ddsvr #设备数据处理模块（go-zero rest）
+    - etc
+      - dd.yaml #独立部署 运行时 当前服务 配置文件
+    - dddirect
+      - direct.go #加载配置、构造单例上下文、注册消费者Handle
+  - disvr #设备交互模块（go-zero rpc）
+    - etc
+      - di.yaml #独立部署 运行时 当前服务 配置文件
+    - didirect
+      - direct.go #加载配置、构造单例上下文、注册消费者Handle
+  - dmsvr #设备管理模块（go-zero rpc）
+    - etc
+      - dm.yaml #独立部署 运行时 当前服务 配置文件
+    - dmdirect
+      - direct.go #加载配置、构造单例上下文
+  - rulesvr #协议规则引擎模块（go-zero rpc）
+    - etc
+      - rule.yaml #独立部署 运行时 当前服务 配置文件
+    - ruledirect
+      - direct.go #加载配置、构造单例上下文、注册消费者Handle
+  - syssvr #系统管理模块（go-zero rpc）
+    - etc
+      - sys.yaml #独立部署 运行时 当前服务 配置文件
+    - sysdirect
+      - direct.go #加载配置、构造单例上下文
 
 - tests #单元测试用例
 ```
@@ -143,6 +169,17 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 ### 接口文档
 
 - apisvr: https://www.apifox.com/apidoc/shared-1424696c-bc32-4678-83c0-6ff9f72c4f24/api-13581481
+
+### 本地运行步骤
+
+- 创建数据库`iThings`，并执行目录`ithings/deploy/conf/mysql/sql/`下所有SQL
+- 修改`JetBrain`工作目录为`ithings\src\apisvr`
+
+### 直连测试运行步骤
+
+> 操作参考：https://ithings.yuque.com/staff-yecp5z/wzf72v/ncaadp
+
+- 下载`Xshell`，导入隧道文件`ithings/doc/xshell端口映射文件.fwr`
 
 ### 前端架构
 
