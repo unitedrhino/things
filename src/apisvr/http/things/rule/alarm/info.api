@@ -56,6 +56,4 @@ type AlarmInfo struct {
     Desc        string    `json:"desc,optional"`
     CreatedTime int64   `json:"createdTime,optional"`
     level       int64 `json:"level,optional"`//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-    dealState       int64 `json:"dealState,optional"`//告警记录状态（1无告警 2告警中 3已处理）
-    lastAlarm       int64 `json:"lastAlarm,optional"`//最新告警时间
 }

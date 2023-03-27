@@ -58,8 +58,9 @@ type (
 		AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 告警记录
 		AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
-		// 告警触发及解除
+		// 告警触发
 		AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error)
+		// 告警解除
 		AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error)
 		// 告警流水日志
 		AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error)
@@ -158,22 +159,24 @@ func (d *directAlarmCenter) AlarmRecordIndex(ctx context.Context, in *AlarmRecor
 	return d.svr.AlarmRecordIndex(ctx, in)
 }
 
-// 告警触发及解除
+// 告警触发
 func (m *defaultAlarmCenter) AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error) {
 	client := rule.NewAlarmCenterClient(m.cli.Conn())
 	return client.AlarmTrigger(ctx, in, opts...)
 }
 
-// 告警触发及解除
+// 告警触发
 func (d *directAlarmCenter) AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.AlarmTrigger(ctx, in)
 }
 
+// 告警解除
 func (m *defaultAlarmCenter) AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error) {
 	client := rule.NewAlarmCenterClient(m.cli.Conn())
 	return client.AlarmRelieve(ctx, in, opts...)
 }
 
+// 告警解除
 func (d *directAlarmCenter) AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.AlarmRelieve(ctx, in)
 }

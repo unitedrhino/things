@@ -59,12 +59,13 @@ func (s *AlarmCenterServer) AlarmRecordIndex(ctx context.Context, in *rule.Alarm
 	return l.AlarmRecordIndex(in)
 }
 
-// 告警触发及解除
+// 告警触发
 func (s *AlarmCenterServer) AlarmTrigger(ctx context.Context, in *rule.AlarmTriggerReq) (*rule.Response, error) {
 	l := alarmcenterlogic.NewAlarmTriggerLogic(ctx, s.svcCtx)
 	return l.AlarmTrigger(in)
 }
 
+// 告警解除
 func (s *AlarmCenterServer) AlarmRelieve(ctx context.Context, in *rule.AlarmRelieveReq) (*rule.Response, error) {
 	l := alarmcenterlogic.NewAlarmRelieveLogic(ctx, s.svcCtx)
 	return l.AlarmRelieve(in)
