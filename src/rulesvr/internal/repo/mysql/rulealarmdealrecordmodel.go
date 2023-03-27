@@ -32,12 +32,16 @@ func NewRuleAlarmDealRecordModel(conn sqlx.SqlConn) RuleAlarmDealRecordModel {
 }
 
 func (c customRuleAlarmDealRecordModel) FmtSql(sql sq.SelectBuilder, f alarm.DealRecordFilter) sq.SelectBuilder {
-	return f.Time.FmtSql(sql)
+	sql = f.Time.FmtSql(sql)
+	if f.AlarmRecordID != 0 {
+		sql = sql.Where("alarmRecordID=?", f.AlarmRecordID)
+	}
+	return sql
 }
 
 func (c customRuleAlarmDealRecordModel) FindByFilter(ctx context.Context, filter alarm.DealRecordFilter, page *def.PageInfo) ([]*RuleAlarmDealRecord, error) {
 	var resp []*RuleAlarmDealRecord
-	sql := sq.Select(ruleAlarmDealRecordRows).From(c.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetLimit()))
+	sql := sq.Select(ruleAlarmDealRecordRows).From(c.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = c.FmtSql(sql, filter)
 	query, arg, err := sql.ToSql()
 	if err != nil {

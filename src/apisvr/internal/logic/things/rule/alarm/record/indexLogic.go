@@ -50,6 +50,7 @@ func (l *IndexLogic) Index(req *types.AlarmRecordIndexReq) (resp *types.AlarmRec
 			SceneID:     v.SceneID,
 			Level:       v.Level,
 			LastAlarm:   v.LastAlarm,
+			DealState:   v.DealState,
 			CreatedTime: v.CreatedTime,
 		}
 		pis = append(pis, pi)

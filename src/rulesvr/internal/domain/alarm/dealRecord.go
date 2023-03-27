@@ -5,7 +5,8 @@ import (
 )
 
 type DealRecordFilter struct {
-	Time def.TimeRange
+	AlarmRecordID int64 //告警配置ID
+	Time          def.TimeRange
 }
 
 const (
