@@ -32,7 +32,6 @@ type ServiceContext struct {
 type Repo struct {
 	Store               kv.Store
 	SceneRepo           scene.Repo
-	SceneAlarm          scene.AlarmRepo
 	SceneDeviceRepo     scene.DeviceRepo
 	SchemaRepo          schema.ReadRepo
 	SceneInfoRepo       mysql.RuleSceneInfoModel
