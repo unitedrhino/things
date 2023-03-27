@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/internal/timer/sceneTimer"
 	"github.com/zeromicro/go-zero/core/conf"
+
 	"sync"
 )
 

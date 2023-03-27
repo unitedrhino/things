@@ -477,3 +477,497 @@ var SceneLinkage_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/rule.proto",
 }
+
+// AlarmCenterClient is the client API for AlarmCenter service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type AlarmCenterClient interface {
+	AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
+	AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
+	AlarmInfoDelete(ctx context.Context, in *AlarmInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error)
+	//告警关联场景联动
+	AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	//告警记录
+	AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
+	//告警触发
+	AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error)
+	//告警解除
+	AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error)
+	//告警流水日志
+	AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error)
+	//告警处理记录
+	AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmDealRecordIndex(ctx context.Context, in *AlarmDealRecordIndexReq, opts ...grpc.CallOption) (*AlarmDealRecordIndexResp, error)
+}
+
+type alarmCenterClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAlarmCenterClient(cc grpc.ClientConnInterface) AlarmCenterClient {
+	return &alarmCenterClient{cc}
+}
+
+func (c *alarmCenterClient) AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmInfoDelete(ctx context.Context, in *AlarmInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error) {
+	out := new(AlarmInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmSceneMultiCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmSceneDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error) {
+	out := new(AlarmRecordIndexResp)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmRecordIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmTrigger", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmRelieve", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error) {
+	out := new(AlarmLogIndexResp)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmLogIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmDealRecordCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmDealRecordIndex(ctx context.Context, in *AlarmDealRecordIndexReq, opts ...grpc.CallOption) (*AlarmDealRecordIndexResp, error) {
+	out := new(AlarmDealRecordIndexResp)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmDealRecordIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AlarmCenterServer is the server API for AlarmCenter service.
+// All implementations must embed UnimplementedAlarmCenterServer
+// for forward compatibility
+type AlarmCenterServer interface {
+	AlarmInfoCreate(context.Context, *AlarmInfo) (*Response, error)
+	AlarmInfoUpdate(context.Context, *AlarmInfo) (*Response, error)
+	AlarmInfoDelete(context.Context, *AlarmInfoDeleteReq) (*Response, error)
+	AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error)
+	//告警关联场景联动
+	AlarmSceneMultiCreate(context.Context, *AlarmSceneMultiCreateReq) (*Response, error)
+	AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Response, error)
+	//告警记录
+	AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error)
+	//告警触发
+	AlarmTrigger(context.Context, *AlarmTriggerReq) (*Response, error)
+	//告警解除
+	AlarmRelieve(context.Context, *AlarmRelieveReq) (*Response, error)
+	//告警流水日志
+	AlarmLogIndex(context.Context, *AlarmLogIndexReq) (*AlarmLogIndexResp, error)
+	//告警处理记录
+	AlarmDealRecordCreate(context.Context, *AlarmDealRecordCreateReq) (*Response, error)
+	AlarmDealRecordIndex(context.Context, *AlarmDealRecordIndexReq) (*AlarmDealRecordIndexResp, error)
+	mustEmbedUnimplementedAlarmCenterServer()
+}
+
+// UnimplementedAlarmCenterServer must be embedded to have forward compatible implementations.
+type UnimplementedAlarmCenterServer struct {
+}
+
+func (UnimplementedAlarmCenterServer) AlarmInfoCreate(context.Context, *AlarmInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoCreate not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmInfoUpdate(context.Context, *AlarmInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoUpdate not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmInfoDelete(context.Context, *AlarmInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoDelete not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoIndex not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmSceneMultiCreate(context.Context, *AlarmSceneMultiCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneMultiCreate not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneDelete not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmRecordIndex not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmTrigger(context.Context, *AlarmTriggerReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmTrigger not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmRelieve(context.Context, *AlarmRelieveReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmRelieve not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmLogIndex(context.Context, *AlarmLogIndexReq) (*AlarmLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmLogIndex not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmDealRecordCreate(context.Context, *AlarmDealRecordCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmDealRecordCreate not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmDealRecordIndex(context.Context, *AlarmDealRecordIndexReq) (*AlarmDealRecordIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmDealRecordIndex not implemented")
+}
+func (UnimplementedAlarmCenterServer) mustEmbedUnimplementedAlarmCenterServer() {}
+
+// UnsafeAlarmCenterServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AlarmCenterServer will
+// result in compilation errors.
+type UnsafeAlarmCenterServer interface {
+	mustEmbedUnimplementedAlarmCenterServer()
+}
+
+func RegisterAlarmCenterServer(s grpc.ServiceRegistrar, srv AlarmCenterServer) {
+	s.RegisterService(&AlarmCenter_ServiceDesc, srv)
+}
+
+func _AlarmCenter_AlarmInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmInfoCreate(ctx, req.(*AlarmInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmInfoUpdate(ctx, req.(*AlarmInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmInfoDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmInfoDelete(ctx, req.(*AlarmInfoDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmInfoIndex(ctx, req.(*AlarmInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmSceneMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmSceneMultiCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmSceneMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmSceneMultiCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmSceneMultiCreate(ctx, req.(*AlarmSceneMultiCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmSceneDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmSceneDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmSceneDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmSceneDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmSceneDelete(ctx, req.(*AlarmSceneDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmRecordIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmRecordIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmRecordIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmRecordIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmRecordIndex(ctx, req.(*AlarmRecordIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmTrigger_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmTriggerReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmTrigger(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmTrigger",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmTrigger(ctx, req.(*AlarmTriggerReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmRelieve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmRelieveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmRelieve(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmRelieve",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmRelieve(ctx, req.(*AlarmRelieveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmLogIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmLogIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmLogIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmLogIndex(ctx, req.(*AlarmLogIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmDealRecordCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmDealRecordCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmDealRecordCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmDealRecordCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmDealRecordCreate(ctx, req.(*AlarmDealRecordCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmDealRecordIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmDealRecordIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmDealRecordIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmDealRecordIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmDealRecordIndex(ctx, req.(*AlarmDealRecordIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// AlarmCenter_ServiceDesc is the grpc.ServiceDesc for AlarmCenter service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var AlarmCenter_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "rule.alarmCenter",
+	HandlerType: (*AlarmCenterServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "alarmInfoCreate",
+			Handler:    _AlarmCenter_AlarmInfoCreate_Handler,
+		},
+		{
+			MethodName: "alarmInfoUpdate",
+			Handler:    _AlarmCenter_AlarmInfoUpdate_Handler,
+		},
+		{
+			MethodName: "alarmInfoDelete",
+			Handler:    _AlarmCenter_AlarmInfoDelete_Handler,
+		},
+		{
+			MethodName: "alarmInfoIndex",
+			Handler:    _AlarmCenter_AlarmInfoIndex_Handler,
+		},
+		{
+			MethodName: "alarmSceneMultiCreate",
+			Handler:    _AlarmCenter_AlarmSceneMultiCreate_Handler,
+		},
+		{
+			MethodName: "alarmSceneDelete",
+			Handler:    _AlarmCenter_AlarmSceneDelete_Handler,
+		},
+		{
+			MethodName: "alarmRecordIndex",
+			Handler:    _AlarmCenter_AlarmRecordIndex_Handler,
+		},
+		{
+			MethodName: "alarmTrigger",
+			Handler:    _AlarmCenter_AlarmTrigger_Handler,
+		},
+		{
+			MethodName: "alarmRelieve",
+			Handler:    _AlarmCenter_AlarmRelieve_Handler,
+		},
+		{
+			MethodName: "alarmLogIndex",
+			Handler:    _AlarmCenter_AlarmLogIndex_Handler,
+		},
+		{
+			MethodName: "alarmDealRecordCreate",
+			Handler:    _AlarmCenter_AlarmDealRecordCreate_Handler,
+		},
+		{
+			MethodName: "alarmDealRecordIndex",
+			Handler:    _AlarmCenter_AlarmDealRecordIndex_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/rule.proto",
+}

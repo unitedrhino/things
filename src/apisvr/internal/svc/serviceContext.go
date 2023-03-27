@@ -11,6 +11,7 @@ import (
 	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
 	deviceauth "github.com/i-Things/things/src/dmsvr/client/deviceauth"
+	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
 	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
 	"github.com/i-Things/things/src/rulesvr/ruledirect"
 
@@ -46,6 +47,7 @@ type SvrClient struct {
 	LogRpc         log.Log
 	ApiRpc         api.Api
 	Scene          scenelinkage.SceneLinkage
+	Alarm          alarmcenter.AlarmCenter
 }
 
 type ServiceContext struct {
@@ -68,6 +70,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		remoteConfig   remoteconfig.RemoteConfig
 		sysCommon      common.Common
 		scene          scenelinkage.SceneLinkage
+		alarm          alarmcenter.AlarmCenter
 	)
 	var ur user.User
 	var ro role.Role
@@ -95,8 +98,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.RuleRpc.Enable {
 		if c.RuleRpc.Mode == conf.ClientModeGrpc {
 			scene = scenelinkage.NewSceneLinkage(zrpc.MustNewClient(c.RuleRpc.Conf))
+			alarm = alarmcenter.NewAlarmCenter(zrpc.MustNewClient(c.RuleRpc.Conf))
 		} else {
 			scene = ruledirect.NewSceneLinkage()
+			alarm = ruledirect.NewAlarmCenter()
 		}
 	}
 	if c.SysRpc.Enable {
@@ -156,6 +161,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			RemoteConfig:   remoteConfig,
 			Common:         sysCommon,
 			Scene:          scene,
+			Alarm:          alarm,
 			LogRpc:         lo,
 			ApiRpc:         ap,
 		},

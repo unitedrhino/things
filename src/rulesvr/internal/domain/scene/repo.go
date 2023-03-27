@@ -14,6 +14,7 @@ type InfoFilter struct {
 	Name        string `json:"name"`
 	State       int64
 	TriggerType TriggerType
+	AlarmID     int64 //绑定的告警id
 }
 
 type Repo interface {
@@ -42,4 +43,18 @@ type TermRepo struct {
 type ActionRepo struct {
 	DeviceInteract deviceinteract.DeviceInteract
 	DeviceM        devicemanage.DeviceManage
+	Alarm          AlarmRepo
+	Device         devices.Core
+	Serial         Serial
+	Scene          *Info
+}
+
+type AlarmRepo interface {
+	//告警触发
+	AlarmTrigger(ctx context.Context, in TriggerSerial) error
+	//告警解除
+	AlarmRelieve(ctx context.Context, in AlarmRelieve) error
+}
+type Serial interface {
+	GenSerial() string
 }
