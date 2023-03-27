@@ -1,8 +1,8 @@
 package ruledirect
 
 import (
+	"context"
 	"github.com/i-Things/things/src/rulesvr/internal/config"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/repoComplex"
 	"github.com/i-Things/things/src/rulesvr/internal/startup"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/internal/timer/sceneTimer"
@@ -25,9 +25,8 @@ func GetSvcCtx() *svc.ServiceContext {
 		conf.MustLoad(ConfigFile, &c)
 		svcCtx = svc.NewServiceContext(c)
 		startup.Subscribe(svcCtx)
-		//	sceneTimer.NewSceneTimer(context.TODO(), svcCtx).Start()
+		sceneTimer.NewSceneTimer(context.TODO(), svcCtx).Start()
 		svcCtx.SceneTimerControl = sceneTimer.NewSceneTimerControl()
-		svcCtx.SceneAlarm = repoComplex.NewSceneAlarm(svcCtx)
 	})
 	return svcCtx
 }
