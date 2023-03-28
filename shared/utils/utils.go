@@ -141,7 +141,7 @@ func Ip2binary(ip string) string {
 	return ipstr
 }
 
-//测试IP地址和地址端是否匹配 变量ip为字符串，例子"192.168.56.4" iprange为地址端"192.168.56.64/26"
+// MatchIP 测试IP地址和地址端是否匹配 变量ip为字符串，例子"192.168.56.4" iprange为地址端"192.168.56.64/26"
 func MatchIP(ip, iprange string) bool {
 	ipb := Ip2binary(ip)
 	if strings.Contains(iprange, "/") { //如果是ip段
