@@ -67,8 +67,8 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 	}
 }
 
-func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	tp, err := l.dreq.VerifyReqParam(l.schema, schema.ParamProperty)
+func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
+	tp, err := req.VerifyReqParam(l.schema, schema.ParamProperty)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	} else if len(tp) == 0 {
@@ -77,7 +77,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *d
 		return l.DeviceResp(msg, err, nil), err
 	}
 	params := msgThing.ToVal(tp)
-	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
+	timeStamp := req.GetTimeStamp(msg.Timestamp)
 	core := devices.Core{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
@@ -136,11 +136,11 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 	switch l.dreq.Method {
 	case deviceMsg.Report, deviceMsg.ReportInfo:
-		return l.HandlePropertyReport(msg)
+		return l.HandlePropertyReport(msg, l.dreq)
 	case deviceMsg.GetStatus:
 		return l.HandlePropertyGetStatus(msg)
 	case deviceMsg.ControlReply:
-		return l.HandleResp(msg)
+		return l.HandleResp(msg, msgThing.TypeProperty)
 	default:
 		return nil, errors.Method
 	}
@@ -178,9 +178,25 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
-func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg, msgThingType string) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
-	//todo 这里后续需要处理异步获取消息的情况
+	var resp msgThing.Resp
+	err = utils.Unmarshal(msg.Payload, &resp)
+	if err != nil {
+		return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
+	}
+	req, err := l.svcCtx.MsgThingRepo.GetReq(l.ctx, msgThingType, resp.ClientToken)
+	if req == nil || err != nil {
+		return nil, err
+	}
+	err = l.svcCtx.MsgThingRepo.SetResp(l.ctx, msgThingType, &resp)
+	if err != nil {
+		return nil, err
+	}
+	if msgThingType == msgThing.TypeProperty {
+		_, err = l.HandlePropertyReport(msg, *req)
+		return nil, err
+	}
 	return nil, nil
 }
 
@@ -200,7 +216,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		case msgThing.TypeEvent: //事件上报
 			return l.HandleEvent(msg)
 		case msgThing.TypeAction: //设备响应行为执行结果
-			return l.HandleResp(msg)
+			return l.HandleResp(msg, msgThing.TypeAction)
 		default:
 			action = "thing"
 			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)

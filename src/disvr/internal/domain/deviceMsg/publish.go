@@ -14,6 +14,11 @@ import (
 	"time"
 )
 
+const (
+	ReqMsg  = "req"
+	RespMsg = "resp"
+)
+
 type (
 	PublishMsg struct { //发布消息结构体
 		Topic      string
