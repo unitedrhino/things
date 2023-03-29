@@ -25,6 +25,7 @@ type (
 	PropertyIndexResp      = di.PropertyIndexResp
 	PropertyLatestIndexReq = di.PropertyLatestIndexReq
 	PropertyLogIndexReq    = di.PropertyLogIndexReq
+	RespReadReq            = di.RespReadReq
 	Response               = di.Response
 	SdkLogIndex            = di.SdkLogIndex
 	SdkLogIndexReq         = di.SdkLogIndexReq
