@@ -1,20 +1,19 @@
 package scene
 
 import (
+	"github.com/i-Things/things/shared/crons"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/robfig/cron/v3"
 	"time"
 )
 
+var secondParser = crons.NewParser(crons.Second | crons.Minute | crons.Hour | crons.Dom | crons.Month | crons.DowOptional | crons.Descriptor)
+
 // TimeRange 时间范围 只支持后面几种特殊字符:*  - ,
 type TimeRange struct {
 	Type string `json:"type"` //时间类型 cron
 	Cron string `json:"cron"` //  cron表达式
-}
-
-func (t TimeRange) Validate() error {
-	return nil
 }
 
 // Timer 定时器类型
@@ -34,6 +33,21 @@ const (
 type UnitTime struct {
 	Time int64    `json:"time"` //延迟时间
 	Unit TimeUnit `json:"unit"` //时间单位 second:秒  minute:分钟  hour:小时  week:星期 month:月
+}
+
+func (t *TimeRange) Validate() error {
+	_, err := secondParser.Parse(t.Cron)
+	if err != nil {
+		return errors.Parameter.AddMsgf("cron表达式检验不通过:%v", t.Cron).AddDetail(err)
+	}
+	return nil
+}
+func (t *TimeRange) IsHit(tim time.Time) bool {
+	s, err := secondParser.Parse(t.Cron)
+	if err != nil {
+		return false
+	}
+	return s.Parse(tim)
 }
 
 func (t *Timer) Validate() error {

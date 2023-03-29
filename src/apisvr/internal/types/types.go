@@ -618,11 +618,10 @@ type DeviceInteractSendMsgReq struct {
 }
 
 type DeviceInteractSendPropertyReq struct {
-	ProductID     string `json:"productID"`     //产品id 获取产品id下的所有设备信息
-	DeviceName    string `json:"deviceName"`    //设备名
-	Data          string `json:"data"`          //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-	DataTimestamp int64  `json:"dataTimestamp"` //上报数据UNIX时间戳, 仅对Method:reported有效
-	Method        string `json:"method"`        //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+	ProductID  string `json:"productID"`        //产品id
+	DeviceName string `json:"deviceName"`       //设备名
+	Data       string `json:"data"`             //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	IsAsync    bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
 }
 
 type DeviceInteractSendPropertyResp struct {
@@ -632,11 +631,18 @@ type DeviceInteractSendPropertyResp struct {
 	Data        string `json:"data"`        //返回信息
 }
 
-type DeviceInteractSendActionReq struct {
-	ProductID   string `json:"productID"`   //产品id 获取产品id下的所有设备信息
+type DeviceInteractRespReadReq struct {
+	ProductID   string `json:"productID"`   //产品id
 	DeviceName  string `json:"deviceName"`  //设备名
-	ActionID    string `json:"actionId"`    //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
-	InputParams string `json:"inputParams"` //输入参数
+	ClientToken string `json:"clientToken"` //调用id
+}
+
+type DeviceInteractSendActionReq struct {
+	ProductID   string `json:"productID"`        //产品id
+	DeviceName  string `json:"deviceName"`       //设备名
+	ActionID    string `json:"actionId"`         //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+	InputParams string `json:"inputParams"`      //输入参数
+	IsAsync     bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
 }
 
 type DeviceInteractSendActionResp struct {

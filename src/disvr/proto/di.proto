@@ -20,10 +20,15 @@ service DeviceMsg {
 
 //设备交互
 service DeviceInteract {
-  //同步调用设备行为
+  //调用设备行为
   rpc sendAction(SendActionReq)         returns(SendActionResp);
-  //同步调用设备属性
+  //获取异步调用设备行为的结果
+  rpc actionRead(RespReadReq)         returns(SendActionResp);
+
+  //调用设备属性
   rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
+  //获取异步调用设备属性的结果
+  rpc propertyRead(RespReadReq)  returns(SendPropertyResp);
   //发送消息给设备
   rpc sendMsg(SendMsgReq)     returns(SendMsgResp);
 }
@@ -169,13 +174,18 @@ message SendActionResp{
   int64   code = 4;//设备返回状态码
 }
 
+//获取异步消息的请求
+message RespReadReq{
+  string  productID = 1; //产品id
+  string  deviceName = 2; //设备名
+  string  clientToken = 3;//调用id
+}
+
 message SendPropertyReq{
-  string  productID = 1; //产品id 获取产品id下的所有设备信息
+  string  productID = 1; //产品id
   string  deviceName = 2; //设备名
   string data = 3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-  int64  dataTimestamp = 4;//上报数据UNIX时间戳, 仅对Method:reported有效
-  string method = 5;//请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
-  bool isAsync = 6;//是否异步操作
+  bool isAsync = 6;//是否异步操作 异步情况通过获取接口来获取
 }
 message SendPropertyResp{
   int64   code = 1;//设备返回状态码
