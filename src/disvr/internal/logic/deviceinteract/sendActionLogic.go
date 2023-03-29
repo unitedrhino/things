@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/go-uuid"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -66,6 +67,11 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		ActionID: in.ActionID,
 		Params:   param}
 	_, err = req.VerifyReqParam(l.schema, schema.ParamActionInput)
+	if err != nil {
+		return nil, err
+	}
+	err = l.svcCtx.MsgThingRepo.SetReq(l.ctx, msgThing.TypeAction,
+		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, &req)
 	if err != nil {
 		return nil, err
 	}
