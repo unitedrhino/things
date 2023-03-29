@@ -5,6 +5,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"time"
 )
 
 type Terms []*Term
@@ -102,16 +103,15 @@ func (t Terms) IsHit(ctx context.Context, repo TermRepo) bool {
 }
 
 func (t *Term) IsHit(ctx context.Context, repo TermRepo) bool {
+	var isHit bool
 	switch t.ColumnType {
 	case TermColumnTypeProperty, TermColumnTypeEvent:
-		IsHit := t.ColumnSchema.IsHit(ctx, t.ColumnType, repo)
-		if !IsHit && t.ChildrenCondition == TermConditionTypeAnd { //如果没满足,如果是and条件直接返回false即可
-			return false
-		}
-		return t.Terms.IsHit(ctx, repo)
+		isHit = t.ColumnSchema.IsHit(ctx, t.ColumnType, repo)
 	case TermColumnTypeSysTime:
-		t.ColumnTime.Validate()
-		return t.Terms.IsHit(ctx, repo)
+		isHit = t.ColumnTime.IsHit(time.Now())
 	}
-	return false
+	if !isHit && t.ChildrenCondition == TermConditionTypeAnd { //如果没满足,如果是and条件直接返回false即可
+		return false
+	}
+	return t.Terms.IsHit(ctx, repo)
 }
