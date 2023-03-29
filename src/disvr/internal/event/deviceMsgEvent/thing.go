@@ -185,11 +185,14 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg, msgThingType string) 
 	if err != nil {
 		return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
-	req, err := l.svcCtx.MsgThingRepo.GetReq(l.ctx, msgThingType, resp.ClientToken)
+	req, err := l.svcCtx.MsgThingRepo.GetReq(l.ctx, msgThingType,
+		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
+		resp.ClientToken)
 	if req == nil || err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.MsgThingRepo.SetResp(l.ctx, msgThingType, &resp)
+	err = l.svcCtx.MsgThingRepo.SetResp(l.ctx, msgThingType,
+		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}, &resp)
 	if err != nil {
 		return nil, err
 	}

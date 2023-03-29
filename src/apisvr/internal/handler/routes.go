@@ -355,8 +355,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/action-read",
+					Handler: thingsdeviceinteract.ActionReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/send-property",
 					Handler: thingsdeviceinteract.SendPropertyHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-read",
+					Handler: thingsdeviceinteract.PropertyReadHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
