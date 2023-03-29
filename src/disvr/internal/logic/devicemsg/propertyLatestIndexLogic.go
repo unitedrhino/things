@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"sync"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
@@ -44,42 +45,51 @@ func (l *PropertyLatestIndexLogic) PropertyLatestIndex(in *di.PropertyLatestInde
 		dataIDs = temp.Property.GetIDs()
 	}
 	total = len(dataIDs)
+	wait := sync.WaitGroup{}
+	mutex := sync.Mutex{}
 	for _, v := range dataIDs {
-		dds, err := dd.GetPropertyDataByID(l.ctx,
-			msgThing.FilterOpt{
-				Page:        def.PageInfo2{Size: 1},
-				ProductID:   in.ProductID,
-				DeviceNames: []string{},
-				DataID:      v,
-				Order:       def.OrderDesc})
-		if err != nil {
-			l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
-			return nil, errors.System.AddDetail(err)
-		}
-		var diData di.PropertyIndex
-		if len(dds) == 0 {
-			diData = di.PropertyIndex{
-				Timestamp: 0,
-				DataID:    v,
+		wait.Add(1)
+		go func(dataID string) {
+			defer wait.Done()
+			dds, err := dd.GetPropertyDataByID(l.ctx,
+				msgThing.FilterOpt{
+					Page:        def.PageInfo2{Size: 1},
+					ProductID:   in.ProductID,
+					DeviceNames: []string{in.DeviceName},
+					DataID:      dataID,
+					Order:       def.OrderDesc})
+			if err != nil {
+				l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
+				return
 			}
-		} else {
-			devData := dds[0]
-			diData = di.PropertyIndex{
-				Timestamp: devData.TimeStamp.UnixMilli(),
-				DataID:    devData.Identifier,
-			}
-			var payload []byte
-			if param, ok := devData.Param.(string); ok {
-				payload = []byte(param)
+			var diData di.PropertyIndex
+			if len(dds) == 0 {
+				diData = di.PropertyIndex{
+					Timestamp: 0,
+					DataID:    dataID,
+				}
 			} else {
-				payload, _ = json.Marshal(devData.Param)
-			}
-			diData.Value = string(payload)
+				devData := dds[0]
+				diData = di.PropertyIndex{
+					Timestamp: devData.TimeStamp.UnixMilli(),
+					DataID:    devData.Identifier,
+				}
+				var payload []byte
+				if param, ok := devData.Param.(string); ok {
+					payload = []byte(param)
+				} else {
+					payload, _ = json.Marshal(devData.Param)
+				}
+				diData.Value = string(payload)
 
-		}
-		diDatas = append(diDatas, &diData)
-		l.Infof("%s.get data=%+v", utils.FuncName(), diData)
+			}
+			mutex.Lock()
+			defer mutex.Unlock()
+			diDatas = append(diDatas, &diData)
+			l.Infof("%s.get data=%+v", utils.FuncName(), diData)
+		}(v)
 	}
+	wait.Wait()
 	return &di.PropertyIndexResp{
 		Total: int64(total),
 		List:  diDatas,
