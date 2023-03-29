@@ -12,30 +12,30 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SendPropertyLogic struct {
+type PropertyReadLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendPropertyLogic {
-	return &SendPropertyLogic{
+func NewPropertyReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyReadLogic {
+	return &PropertyReadLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *SendPropertyLogic) SendProperty(req *types.DeviceInteractSendPropertyReq) (resp *types.DeviceInteractSendPropertyResp, err error) {
-	dmReq := &di.SendPropertyReq{
-		ProductID:  req.ProductID,
-		DeviceName: req.DeviceName,
-		Data:       req.Data,
+func (l *PropertyReadLogic) PropertyRead(req *types.DeviceInteractRespReadReq) (resp *types.DeviceInteractSendPropertyResp, err error) {
+	dmReq := &di.RespReadReq{
+		ProductID:   req.ProductID,
+		DeviceName:  req.DeviceName,
+		ClientToken: req.ClientToken,
 	}
-	dmResp, err := l.svcCtx.DeviceInteract.SendProperty(l.ctx, dmReq)
+	dmResp, err := l.svcCtx.DeviceInteract.PropertyRead(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.SendProperty req=%v err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.PropertyRead req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
 	return &types.DeviceInteractSendPropertyResp{

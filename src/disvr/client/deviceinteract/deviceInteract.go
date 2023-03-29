@@ -25,6 +25,7 @@ type (
 	PropertyIndexResp      = di.PropertyIndexResp
 	PropertyLatestIndexReq = di.PropertyLatestIndexReq
 	PropertyLogIndexReq    = di.PropertyLogIndexReq
+	RespReadReq            = di.RespReadReq
 	Response               = di.Response
 	SdkLogIndex            = di.SdkLogIndex
 	SdkLogIndexReq         = di.SdkLogIndexReq
@@ -37,10 +38,14 @@ type (
 	SendPropertyResp       = di.SendPropertyResp
 
 	DeviceInteract interface {
-		// 同步调用设备行为
+		// 调用设备行为
 		SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
-		// 同步调用设备属性
+		// 获取异步调用设备行为的结果
+		ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error)
+		// 调用设备属性
 		SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+		// 获取异步调用设备属性的结果
+		PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
 		// 发送消息给设备
 		SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
 	}
@@ -68,26 +73,48 @@ func NewDirectDeviceInteract(svcCtx *svc.ServiceContext, svr di.DeviceInteractSe
 	}
 }
 
-// 同步调用设备行为
+// 调用设备行为
 func (m *defaultDeviceInteract) SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error) {
 	client := di.NewDeviceInteractClient(m.cli.Conn())
 	return client.SendAction(ctx, in, opts...)
 }
 
-// 同步调用设备行为
+// 调用设备行为
 func (d *directDeviceInteract) SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error) {
 	return d.svr.SendAction(ctx, in)
 }
 
-// 同步调用设备属性
+// 获取异步调用设备行为的结果
+func (m *defaultDeviceInteract) ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error) {
+	client := di.NewDeviceInteractClient(m.cli.Conn())
+	return client.ActionRead(ctx, in, opts...)
+}
+
+// 获取异步调用设备行为的结果
+func (d *directDeviceInteract) ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error) {
+	return d.svr.ActionRead(ctx, in)
+}
+
+// 调用设备属性
 func (m *defaultDeviceInteract) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	client := di.NewDeviceInteractClient(m.cli.Conn())
 	return client.SendProperty(ctx, in, opts...)
 }
 
-// 同步调用设备属性
+// 调用设备属性
 func (d *directDeviceInteract) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	return d.svr.SendProperty(ctx, in)
+}
+
+// 获取异步调用设备属性的结果
+func (m *defaultDeviceInteract) PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
+	client := di.NewDeviceInteractClient(m.cli.Conn())
+	return client.PropertyRead(ctx, in, opts...)
+}
+
+// 获取异步调用设备属性的结果
+func (d *directDeviceInteract) PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
+	return d.svr.PropertyRead(ctx, in)
 }
 
 // 发送消息给设备
