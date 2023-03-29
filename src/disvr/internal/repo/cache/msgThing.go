@@ -27,7 +27,7 @@ func NewMsgThingRepo(store kv.Store) *MsgThingRepo {
 }
 
 func (m MsgThingRepo) genKey(msgType string /*请求还是回复*/, msgThingType string /*属性还是行为*/, device devices.Core, clientToken string) string {
-	return fmt.Sprintf("msgThing_%s_%s_%s_%s_%s", msgType, msgThingType, device.ProductID, device.DeviceName, clientToken)
+	return fmt.Sprintf("device:msgThing:%s:%s:%s:%s:%s", msgType, msgThingType, device.ProductID, device.DeviceName, clientToken)
 }
 
 func (m MsgThingRepo) SetReq(ctx context.Context, msgThingType string, device devices.Core, req *msgThing.Req) error {
