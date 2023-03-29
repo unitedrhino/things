@@ -2,7 +2,6 @@ package deviceMsgEvent
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/domain/schema"
@@ -105,23 +104,22 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 	respData := make(map[string]any, len(l.schema.Property))
 	switch l.dreq.Type {
 	case deviceMsg.Report:
-		for id, _ := range l.schema.Property {
-			data, err := l.dd.GetPropertyDataByID(l.ctx,
-				msgThing.FilterOpt{
-					Page:        def.PageInfo2{Size: 1},
-					ProductID:   msg.ProductID,
-					DeviceNames: []string{msg.DeviceName},
-					DataID:      id})
+		for id := range l.schema.Property {
+			data, err := l.dd.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
+				ProductID:  msg.ProductID,
+				DeviceName: msg.DeviceName,
+				DataID:     id,
+			})
 			if err != nil {
 				l.Errorf("%s.GetPropertyDataByID.get id:%s err:%s",
 					utils.FuncName(), id, err.Error())
 				return nil, err
 			}
-			if len(data) == 0 {
+			if data == nil {
 				l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
 				continue
 			}
-			respData[id] = data[0].Param
+			respData[id] = data.Param
 		}
 	default:
 		err := errors.Parameter.AddDetailf("not support type :%s", l.dreq.Type)
@@ -225,7 +223,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
 	}()
-	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  msg.ProductID,
 		Action:     action,
 		Timestamp:  time.Now(), // 操作时间

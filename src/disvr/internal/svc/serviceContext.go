@@ -77,8 +77,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 		return schema.ValidateWithFmt([]byte(info.Tsl))
 	})
-	deviceData := schemaDataRepo.NewSchemaDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
 	store := kv.NewStore(c.CacheRedis)
+
+	deviceData := schemaDataRepo.NewSchemaDataRepo(c.TDengine.DataSource, tr.GetSchemaModel, store)
 	MsgThingRepo := cache.NewMsgThingRepo(store)
 	return &ServiceContext{
 		PubApp:        pa,
