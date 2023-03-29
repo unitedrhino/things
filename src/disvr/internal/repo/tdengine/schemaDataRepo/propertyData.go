@@ -52,7 +52,7 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 }
 
 func (d *SchemaDataRepo) genRedisPropertyKey(productID string, deviceName, identifier string) string {
-	return fmt.Sprintf("device_thing_property_%s_%s_%s", productID, deviceName, identifier)
+	return fmt.Sprintf("device:thing:property:%s:%s:%s", productID, deviceName, identifier)
 }
 func (d *SchemaDataRepo) GetLatestPropertyDataByID(ctx context.Context, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
 	retStr, err := d.kv.GetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName, filter.DataID))
