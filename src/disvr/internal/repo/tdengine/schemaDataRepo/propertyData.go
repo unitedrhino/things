@@ -51,14 +51,53 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 	return nil
 }
 
+func (d *SchemaDataRepo) genRedisPropertyKey(productID string, deviceName, identifier string) string {
+	return fmt.Sprintf("device_thing_property_%s_%s_%s", productID, deviceName, identifier)
+}
+func (d *SchemaDataRepo) GetLatestPropertyDataByID(ctx context.Context, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
+	retStr, err := d.kv.GetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName, filter.DataID))
+	if err != nil {
+		return nil, errors.Database.AddDetailf(
+			"SchemaDataRepo.GetLatestPropertyDataByID.GetCtx filter:%v  err:%v",
+			filter, err)
+	}
+	if retStr == "" { //如果缓存里没有查到,需要从db里查
+		dds, err := d.GetPropertyDataByID(ctx,
+			msgThing.FilterOpt{
+				Page:        def.PageInfo2{Size: 1},
+				ProductID:   filter.ProductID,
+				DeviceNames: []string{filter.DeviceName},
+				DataID:      filter.DataID,
+				Order:       def.OrderDesc})
+		if len(dds) == 0 || err != nil {
+			return nil, err
+		}
+		d.kv.SetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName, filter.DataID), dds[0].String())
+		return dds[0], nil
+	}
+	var ret msgThing.PropertyData
+	err = json.Unmarshal([]byte(retStr), &ret)
+	if err != nil {
+		return nil, err
+	}
+	return &ret, nil
+}
+
 func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error {
 	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
 	for identifier, param := range params {
-		err := d.InsertPropertyData(ctx, t, productID, deviceName, &msgThing.PropertyData{
+		data := msgThing.PropertyData{
 			Identifier: identifier,
 			Param:      param,
 			TimeStamp:  timestamp,
-		})
+		}
+		err := d.kv.SetCtx(ctx, d.genRedisPropertyKey(productID, deviceName, identifier), data.String())
+		if err != nil {
+			return errors.Database.AddDetailf(
+				"SchemaDataRepo.InsertPropertiesData.SetCtx identifier:%v param:%v err:%v",
+				identifier, param, err)
+		}
+		err = d.InsertPropertyData(ctx, t, productID, deviceName, &data)
 		if err != nil {
 			return errors.Database.AddDetailf(
 				"SchemaDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
