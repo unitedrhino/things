@@ -20,6 +20,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
 )
@@ -35,6 +36,8 @@ type ServiceContext struct {
 	DeviceM       devicemanage.DeviceManage
 	ProductM      productmanage.ProductManage
 	RemoteConfig  remoteconfig.RemoteConfig
+	Store         kv.Store
+	MsgThingRepo  *cache.MsgThingRepo
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -74,18 +77,22 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 		return schema.ValidateWithFmt([]byte(info.Tsl))
 	})
-	deviceData := schemaDataRepo.NewSchemaDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
+	store := kv.NewStore(c.CacheRedis)
 
+	deviceData := schemaDataRepo.NewSchemaDataRepo(c.TDengine.DataSource, tr.GetSchemaModel, store)
+	MsgThingRepo := cache.NewMsgThingRepo(store)
 	return &ServiceContext{
 		PubApp:        pa,
 		Config:        c,
 		SchemaRepo:    tr,
 		PubDev:        pd,
+		Store:         store,
 		SchemaMsgRepo: deviceData,
 		HubLogRepo:    hubLog,
 		SDKLogRepo:    sdkLog,
 		ProductM:      productM,
 		DeviceM:       deviceM,
 		RemoteConfig:  remoteConfig,
+		MsgThingRepo:  MsgThingRepo,
 	}
 }

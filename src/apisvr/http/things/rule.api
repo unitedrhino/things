@@ -6,3 +6,7 @@ info(
 	version: "v1"
 )
 import "things/rule/scene/info.api" //场景联动信息接口
+import "things/rule/alarm/dealRecord.api"
+import "things/rule/alarm/info.api"
+import "things/rule/alarm/log.api"
+import "things/rule/alarm/scene.api"

@@ -6,14 +6,14 @@ import (
 )
 
 type Trigger struct {
-	Device *TriggerDevice `json:"device"`
+	Device TriggerDevices `json:"device"`
+	Timer  *Timer         `json:"timer"`
 }
 
 func (t *Trigger) Validate(triggerType TriggerType) error {
 	if t == nil {
 		return nil
 	}
-
 	switch triggerType {
 	case TriggerTypeDevice:
 		if t.Device == nil {

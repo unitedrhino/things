@@ -31,6 +31,7 @@ func (l *SendActionLogic) SendAction(req *types.DeviceInteractSendActionReq) (re
 		DeviceName:  req.DeviceName,
 		ActionID:    req.ActionID,
 		InputParams: req.InputParams,
+		IsAsync:     req.IsAsync,
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.SendAction(l.ctx, dmReq)
 	if err != nil {

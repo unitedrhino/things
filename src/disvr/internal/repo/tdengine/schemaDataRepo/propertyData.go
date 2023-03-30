@@ -51,14 +51,53 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 	return nil
 }
 
+func (d *SchemaDataRepo) genRedisPropertyKey(productID string, deviceName, identifier string) string {
+	return fmt.Sprintf("device:thing:property:%s:%s:%s", productID, deviceName, identifier)
+}
+func (d *SchemaDataRepo) GetLatestPropertyDataByID(ctx context.Context, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
+	retStr, err := d.kv.GetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName, filter.DataID))
+	if err != nil {
+		return nil, errors.Database.AddDetailf(
+			"SchemaDataRepo.GetLatestPropertyDataByID.GetCtx filter:%v  err:%v",
+			filter, err)
+	}
+	if retStr == "" { //如果缓存里没有查到,需要从db里查
+		dds, err := d.GetPropertyDataByID(ctx,
+			msgThing.FilterOpt{
+				Page:        def.PageInfo2{Size: 1},
+				ProductID:   filter.ProductID,
+				DeviceNames: []string{filter.DeviceName},
+				DataID:      filter.DataID,
+				Order:       def.OrderDesc})
+		if len(dds) == 0 || err != nil {
+			return nil, err
+		}
+		d.kv.SetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName, filter.DataID), dds[0].String())
+		return dds[0], nil
+	}
+	var ret msgThing.PropertyData
+	err = json.Unmarshal([]byte(retStr), &ret)
+	if err != nil {
+		return nil, err
+	}
+	return &ret, nil
+}
+
 func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error {
 	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
 	for identifier, param := range params {
-		err := d.InsertPropertyData(ctx, t, productID, deviceName, &msgThing.PropertyData{
+		data := msgThing.PropertyData{
 			Identifier: identifier,
 			Param:      param,
 			TimeStamp:  timestamp,
-		})
+		}
+		err := d.kv.SetCtx(ctx, d.genRedisPropertyKey(productID, deviceName, identifier), data.String())
+		if err != nil {
+			return errors.Database.AddDetailf(
+				"SchemaDataRepo.InsertPropertiesData.SetCtx identifier:%v param:%v err:%v",
+				identifier, param, err)
+		}
+		err = d.InsertPropertyData(ctx, t, productID, deviceName, &data)
 		if err != nil {
 			return errors.Database.AddDetailf(
 				"SchemaDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
@@ -82,18 +121,20 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 
 	if filter.ArgFunc == "" {
 		sql = sq.Select("*")
+		if filter.Order != def.OrderAes {
+			sql = sql.OrderBy("ts desc")
+		}
 	} else {
 		sql, err = d.getPropertyArgFuncSelect(ctx, filter)
 		if err != nil {
 			return nil, err
 		}
+		filter.Page.Size = 0
 	}
 	sql = sql.From(d.GetPropertyStableName(filter.ProductID, filter.DataID))
 	sql = d.fillFilter(sql, filter)
 	sql = filter.Page.FmtSql(sql)
-	if filter.Order != def.OrderAes {
-		sql = sql.OrderBy("ts desc")
-	}
+
 	sqlStr, value, err := sql.ToSql()
 	if err != nil {
 		return nil, err
@@ -127,9 +168,9 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 	)
 
 	if p.Define.Type == schema.DataTypeStruct {
-		sql = sq.Select(d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
+		sql = sq.Select("FIRST(ts) AS `ts`", d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
-		sql = sq.Select(fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))
+		sql = sq.Select("FIRST(ts) AS `ts`", fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
 		sql = sql.Interval("?a", filter.Interval)

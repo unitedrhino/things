@@ -2,7 +2,6 @@ package deviceMsgEvent
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/domain/schema"
@@ -43,7 +42,7 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	}
 	err = utils.Unmarshal(msg.Payload, &l.dreq)
 	if err != nil {
-		return errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
+		return errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
 	l.dd = l.svcCtx.SchemaMsgRepo
 	l.topics = strings.Split(msg.Topic, "/")
@@ -67,8 +66,8 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 	}
 }
 
-func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	tp, err := l.dreq.VerifyReqParam(l.schema, schema.ParamProperty)
+func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
+	tp, err := req.VerifyReqParam(l.schema, schema.ParamProperty)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	} else if len(tp) == 0 {
@@ -77,12 +76,13 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg) (respMsg *d
 		return l.DeviceResp(msg, err, nil), err
 	}
 	params := msgThing.ToVal(tp)
-	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
+	timeStamp := req.GetTimeStamp(msg.Timestamp)
 	core := devices.Core{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}
-	for identifier, param := range params {
+	paramValues := ToParamValues(tp)
+	for identifier, param := range paramValues {
 		err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, application.PropertyReport{
 			Device: core, Timestamp: timeStamp.UnixMilli(),
 			Identifier: identifier, Param: param,
@@ -104,23 +104,22 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 	respData := make(map[string]any, len(l.schema.Property))
 	switch l.dreq.Type {
 	case deviceMsg.Report:
-		for id, _ := range l.schema.Property {
-			data, err := l.dd.GetPropertyDataByID(l.ctx,
-				msgThing.FilterOpt{
-					Page:        def.PageInfo2{Size: 1},
-					ProductID:   msg.ProductID,
-					DeviceNames: []string{msg.DeviceName},
-					DataID:      id})
+		for id := range l.schema.Property {
+			data, err := l.dd.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
+				ProductID:  msg.ProductID,
+				DeviceName: msg.DeviceName,
+				DataID:     id,
+			})
 			if err != nil {
 				l.Errorf("%s.GetPropertyDataByID.get id:%s err:%s",
 					utils.FuncName(), id, err.Error())
 				return nil, err
 			}
-			if len(data) == 0 {
+			if data == nil {
 				l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
 				continue
 			}
-			respData[id] = data[0].Param
+			respData[id] = data.Param
 		}
 	default:
 		err := errors.Parameter.AddDetailf("not support type :%s", l.dreq.Type)
@@ -135,11 +134,11 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 	switch l.dreq.Method {
 	case deviceMsg.Report, deviceMsg.ReportInfo:
-		return l.HandlePropertyReport(msg)
+		return l.HandlePropertyReport(msg, l.dreq)
 	case deviceMsg.GetStatus:
 		return l.HandlePropertyGetStatus(msg)
 	case deviceMsg.ControlReply:
-		return l.HandleResp(msg)
+		return l.HandleResp(msg, msgThing.TypeProperty)
 	default:
 		return nil, errors.Method
 	}
@@ -159,11 +158,12 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	}
 	dbData.Params = msgThing.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
+	paramValues := ToParamValues(tp)
 	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, application.EventReport{
 		Device:     devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		Timestamp:  dbData.TimeStamp.UnixMilli(),
 		Identifier: dbData.Identifier,
-		Params:     dbData.Params,
+		Params:     paramValues,
 		Type:       dbData.Type,
 	})
 	if err != nil {
@@ -176,9 +176,28 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
-func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg, msgThingType string) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
-	//todo 这里后续需要处理异步获取消息的情况
+	var resp msgThing.Resp
+	err = utils.Unmarshal(msg.Payload, &resp)
+	if err != nil {
+		return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
+	}
+	req, err := l.svcCtx.MsgThingRepo.GetReq(l.ctx, msgThingType,
+		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
+		resp.ClientToken)
+	if req == nil || err != nil {
+		return nil, err
+	}
+	err = l.svcCtx.MsgThingRepo.SetResp(l.ctx, msgThingType,
+		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}, &resp)
+	if err != nil {
+		return nil, err
+	}
+	if msgThingType == msgThing.TypeProperty {
+		_, err = l.HandlePropertyReport(msg, *req)
+		return nil, err
+	}
 	return nil, nil
 }
 
@@ -198,16 +217,16 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		case msgThing.TypeEvent: //事件上报
 			return l.HandleEvent(msg)
 		case msgThing.TypeAction: //设备响应行为执行结果
-			return l.HandleResp(msg)
+			return l.HandleResp(msg, msgThing.TypeAction)
 		default:
 			action = "thing"
 			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
 	}()
-	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  msg.ProductID,
 		Action:     action,
-		Timestamp:  l.dreq.GetTimeStamp(msg.Timestamp), // 操作时间
+		Timestamp:  time.Now(), // 操作时间
 		DeviceName: msg.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),
 		RequestID:  l.dreq.ClientToken,

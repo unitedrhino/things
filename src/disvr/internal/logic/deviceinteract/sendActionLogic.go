@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/go-uuid"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -48,7 +49,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		return nil, err
 	}
 	param := map[string]any{}
-	err = json.Unmarshal([]byte(in.InputParams), &param)
+	err = utils.Unmarshal([]byte(in.InputParams), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.InputParams)
 	}
@@ -63,14 +64,30 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 			ClientToken: uuid,
 			Timestamp:   time.Now().UnixMilli(),
 		},
-		Params: param}
+		ActionID: in.ActionID,
+		Params:   param}
 	_, err = req.VerifyReqParam(l.schema, schema.ParamActionInput)
+	if err != nil {
+		return nil, err
+	}
+	err = l.svcCtx.MsgThingRepo.SetReq(l.ctx, msgThing.TypeAction,
+		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, &req)
 	if err != nil {
 		return nil, err
 	}
 	pubTopic := fmt.Sprintf("$thing/down/action/%s/%s", in.ProductID, in.DeviceName)
 	subTopic := fmt.Sprintf("$thing/up/action/%s/%s", in.ProductID, in.DeviceName)
 
+	if in.IsAsync { //如果是异步获取 处理结果暂不关注
+		payload, _ := json.Marshal(req)
+		err := l.svcCtx.PubDev.PublishToDev(l.ctx, pubTopic, payload)
+		if err != nil {
+			return nil, err
+		}
+		return &di.SendActionResp{
+			ClientToken: req.ClientToken,
+		}, nil
+	}
 	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, pubTopic, subTopic, &req, in.ProductID, in.DeviceName)
 	if err != nil {
 		return nil, err
