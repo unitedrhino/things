@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
@@ -67,12 +68,16 @@ func (c customRuleSceneInfoModel) FmtFilter(filter scene.InfoFilter, sql sq.Sele
 	if filter.State != 0 {
 		sql = sql.Where("state = ?", filter.State)
 	}
+	if filter.AlarmID != 0 {
+		sql = sql.LeftJoin(fmt.Sprintf("`rule_alarm_scene` as ras on ras.sceneID=%s.id", c.repo.table))
+		sql = sql.Where("ras.alarmID=?", filter.AlarmID)
+	}
 	return sql
 }
 
-func (c customRuleSceneInfoModel) FindByFilter(ctx context.Context, filter scene.InfoFilter, page *def.PageInfo) ([]*scene.Info, error) {
+func (c customRuleSceneInfoModel) FindByFilter(ctx context.Context, filter scene.InfoFilter, page *def.PageInfo) (scene.Infos, error) {
 	var poList []*RuleSceneInfo
-	sql := sq.Select(ruleSceneInfoRows).From(c.repo.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+	sql := sq.Select(c.repo.table + ".*").From(c.repo.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
 	sql = c.FmtFilter(filter, sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {

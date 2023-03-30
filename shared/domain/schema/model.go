@@ -59,7 +59,6 @@ type (
 		Out        map[string]*Param `json:"-"`          //内部使用,使用map加速匹配,key为id
 	}
 	Actions []Action
-
 	/*属性*/
 	Property struct {
 		Identifier string       `json:"identifier"` //标识符

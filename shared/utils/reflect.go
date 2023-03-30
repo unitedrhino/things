@@ -46,3 +46,11 @@ func SetVals(src any, dst any) (num int) {
 	}
 	return num
 }
+
+func IsNil(i interface{}) bool {
+	vi := reflect.ValueOf(i)
+	if SliceIn(vi.Kind(), reflect.Ptr, reflect.Map, reflect.Slice, reflect.Chan) {
+		return vi.IsNil()
+	}
+	return false
+}

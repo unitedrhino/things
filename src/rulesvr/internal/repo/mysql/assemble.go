@@ -16,10 +16,6 @@ func ToScenePo(info *scene.Info) *RuleSceneInfo {
 		Desc:        info.Desc,
 		State:       info.State,
 	}
-	switch info.TriggerType {
-	case scene.TriggerTypeDevice:
-		ret.Trigger = utils.AnyToNullString(info.Trigger.Device)
-	}
 	return &ret
 }
 
@@ -34,10 +30,7 @@ func ToSceneDo(info *RuleSceneInfo) *scene.Info {
 		TriggerType: scene.TriggerType(info.TriggerType),
 		CreatedTime: info.CreatedTime,
 	}
-	switch ret.TriggerType {
-	case scene.TriggerTypeDevice:
-		utils.SqlNullStringToAny(info.Trigger, &ret.Trigger.Device)
-	}
+	utils.SqlNullStringToAny(info.Trigger, &ret.Trigger)
 	utils.SqlNullStringToAny(info.When, &ret.When)
 	utils.SqlNullStringToAny(info.Then, &ret.Then)
 	return ret

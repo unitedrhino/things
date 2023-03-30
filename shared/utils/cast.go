@@ -65,14 +65,14 @@ func TimeToInt64(t time.Time) int64 {
 	return t.Unix()
 }
 func SetToSlice[t constraints.Ordered](in map[t]struct{}) (ret []t) {
-	for k, _ := range in {
+	for k := range in {
 		ret = append(ret, k)
 	}
 	return
 }
 
 func AnyToNullString(in any) sql.NullString {
-	if in == nil {
+	if in == nil || IsNil(in) {
 		return sql.NullString{}
 	}
 	str, err := json.Marshal(in)
@@ -87,4 +87,12 @@ func SqlNullStringToAny(in sql.NullString, ret any) error {
 	}
 	err := json.Unmarshal([]byte(in.String), ret)
 	return err
+}
+
+func SliceTo[retT any](values []string, cov func(any) retT) []retT {
+	var ret []retT
+	for _, v := range values {
+		ret = append(ret, cov(v))
+	}
+	return ret
 }

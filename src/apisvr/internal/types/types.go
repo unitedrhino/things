@@ -148,8 +148,13 @@ type Point struct {
 }
 
 type DateRange struct {
-	Start string `json:"start,optional "` //开始时间 格式：yyyy-mm-dd
-	End   string `json:"end,optional "`   //结束时间 格式：yyyy-mm-dd
+	Start string `json:"start,optional"` //开始时间 格式：yyyy-mm-dd
+	End   string `json:"end,optional"`   //结束时间 格式：yyyy-mm-dd
+}
+
+type TimeRange struct {
+	Start int64 `json:"start,optional"` //开始时间 unix时间戳
+	End   int64 `json:"end,optional"`   //结束时间 unix时间戳
 }
 
 type MenuCreateReq struct {
@@ -613,11 +618,10 @@ type DeviceInteractSendMsgReq struct {
 }
 
 type DeviceInteractSendPropertyReq struct {
-	ProductID     string `json:"productID"`     //产品id 获取产品id下的所有设备信息
-	DeviceName    string `json:"deviceName"`    //设备名
-	Data          string `json:"data"`          //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-	DataTimestamp int64  `json:"dataTimestamp"` //上报数据UNIX时间戳, 仅对Method:reported有效
-	Method        string `json:"method"`        //请求类型 , 不填该参数或者 desired 表示下发属性给设备, reported 表示模拟设备上报属性
+	ProductID  string `json:"productID"`        //产品id
+	DeviceName string `json:"deviceName"`       //设备名
+	Data       string `json:"data"`             //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	IsAsync    bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
 }
 
 type DeviceInteractSendPropertyResp struct {
@@ -627,11 +631,18 @@ type DeviceInteractSendPropertyResp struct {
 	Data        string `json:"data"`        //返回信息
 }
 
-type DeviceInteractSendActionReq struct {
-	ProductID   string `json:"productID"`   //产品id 获取产品id下的所有设备信息
+type DeviceInteractRespReadReq struct {
+	ProductID   string `json:"productID"`   //产品id
 	DeviceName  string `json:"deviceName"`  //设备名
-	ActionID    string `json:"actionId"`    //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
-	InputParams string `json:"inputParams"` //输入参数
+	ClientToken string `json:"clientToken"` //调用id
+}
+
+type DeviceInteractSendActionReq struct {
+	ProductID   string `json:"productID"`        //产品id
+	DeviceName  string `json:"deviceName"`       //设备名
+	ActionID    string `json:"actionId"`         //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+	InputParams string `json:"inputParams"`      //输入参数
+	IsAsync     bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
 }
 
 type DeviceInteractSendActionResp struct {
@@ -911,6 +922,7 @@ type SceneInfoIndexReq struct {
 	Name        string    `json:"name,optional"`        //场景名模糊查询
 	TriggerType string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
 	State       int64     `json:"state,optional"`       //状态: 1启用 2禁用
+	AlarmID     int64     `json:"alarmID,optional"`     //告警id
 }
 
 type SceneInfoIndexResp struct {
@@ -929,4 +941,121 @@ type SceneInfo struct {
 	Trigger     string `json:"trigger,optional"`
 	When        string `json:"when,optional"`
 	Then        string `json:"then"`
+}
+
+type AlarmDealRecordCreateReq struct {
+	AlarmRecordID int64  `json:"alarmRecordID"` //告警记录ID
+	Result        string `json:"result"`        //告警处理结果
+}
+
+type AlarmDealRecordIndexReq struct {
+	AlarmRecordID int64      `json:"alarmRecordID,optional"` //告警记录ID
+	Page          *PageInfo  `json:"page,optional"`          //分页信息 只获取一个则不填
+	TimeRange     *TimeRange `json:"timeRange,optional"`     //时间范围
+}
+
+type AlarmDealRecordIndexResp struct {
+	List  []*AlarmDealRecord `json:"list"`  //告警信息
+	Total int64              `json:"total"` //总数(只有分页的时候会返回)
+	Num   int64              `json:"num"`   //返回的数量
+}
+
+type AlarmDealRecord struct {
+	ID            int64  `json:"id,optional"`
+	CreatedTime   int64  `json:"createdTime,optional"`
+	AlarmRecordID int64  `json:"alarmRecordID"` //告警配置ID
+	Result        string `json:"result"`        //告警处理结果
+	Type          int64  `json:"type"`          //告警处理类型（1人工 2系统）
+	AlarmTime     int64  `json:"alarmTime"`     //最早告警时间
+}
+
+type AlarmInfoCreateReq struct {
+	AlarmInfo
+}
+
+type AlarmInfoUpdateReq struct {
+	AlarmInfo
+}
+
+type AlarmInfoDeleteReq struct {
+	ID int64 `json:"id"`
+}
+
+type AlarmInfoIndexReq struct {
+	Page    *PageInfo `json:"page,optional"`    //分页信息 只获取一个则不填
+	Name    string    `json:"name,optional"`    //告警名模糊查询
+	SceneID int64     `json:"sceneID,optional"` //状态: 1启用 2禁用
+}
+
+type AlarmInfoIndexResp struct {
+	List  []*AlarmInfo `json:"list"`  //告警信息
+	Total int64        `json:"total"` //总数(只有分页的时候会返回)
+	Num   int64        `json:"num"`   //返回的数量
+}
+
+type AlarmInfo struct {
+	ID          int64  `json:"id,optional"`
+	Name        string `json:"name,optional"`
+	State       int64  `json:"state,optional"` //状态: 1启用 2禁用
+	Desc        string `json:"desc,optional"`
+	CreatedTime int64  `json:"createdTime,optional"`
+	Level       int64  `json:"level,optional"` //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+}
+
+type AlarmRecordIndexReq struct {
+	AlarmID   int64      `json:"alarmID,optional"`   //告警配置ID
+	Page      *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
+	TimeRange *TimeRange `json:"timeRange,optional"` //时间范围
+}
+
+type AlarmRecordIndexResp struct {
+	List  []*AlarmRecord `json:"list"`  //告警信息
+	Total int64          `json:"total"` //总数(只有分页的时候会返回)
+	Num   int64          `json:"num"`   //返回的数量
+}
+
+type AlarmRecord struct {
+	ID          int64  `json:"id"`          //编号
+	AlarmID     int64  `json:"alarmID"`     //告警记录ID
+	TriggerType int64  `json:"triggerType"` //触发类型(设备触发1,其他2)
+	ProductID   string `json:"productID"`   //触发产品id
+	DeviceName  string `json:"deviceName"`  //触发设备名称
+	SceneName   string `json:"sceneName"`   //场景名称
+	SceneID     int64  `json:"sceneID"`     //场景ID
+	Level       int64  `json:"level"`       //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+	LastAlarm   int64  `json:"lastAlarm"`   //最新告警时间
+	DealState   int64  `json:"dealState"`   //告警记录状态（1无告警 2告警中 3已处理）
+	CreatedTime int64  `json:"createdTime"` //创建时间
+}
+
+type AlarmLogIndexReq struct {
+	AlarmRecordID int64      `json:"alarmRecordID,optional"` //告警记录ID
+	Page          *PageInfo  `json:"page,optional"`          //分页信息 只获取一个则不填
+	TimeRange     *TimeRange `json:"timeRange,optional"`     //时间范围
+}
+
+type AlarmLogIndexResp struct {
+	List  []*AlarmLog `json:"list"`  //告警信息
+	Total int64       `json:"total"` //总数(只有分页的时候会返回)
+	Num   int64       `json:"num"`   //返回的数量
+}
+
+type AlarmLog struct {
+	ID            int64  `json:"id,optional"`
+	Desc          string `json:"desc,optional"`
+	CreatedTime   int64  `json:"createdTime,optional"`
+	AlarmRecordID int64  `json:"alarmRecordID"` //告警记录ID
+	Serial        string `json:"serial"`        //告警流水
+	SceneName     string `json:"sceneName"`     //场景名称
+	SceneID       int64  `json:"sceneID"`       //场景ID
+}
+
+type AlarmSceneMultiCreateReq struct {
+	AlarmID  int64   `json:"alarmID"`  //告警配置ID
+	SceneIDs []int64 `json:"sceneIDs"` //场景id
+}
+
+type AlarmSceneDeleteReq struct {
+	AlarmID int64 `json:"alarmID"` //告警配置ID
+	SceneID int64 `json:"sceneID"` //场景id
 }
