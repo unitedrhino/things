@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 	"github.com/i-Things/things/src/rulesvr/ruledirect"
 
+	alarmcenter "github.com/i-Things/things/src/rulesvr/internal/server/alarmcenter"
 	ruleengine "github.com/i-Things/things/src/rulesvr/internal/server/ruleengine"
 	scenelinkage "github.com/i-Things/things/src/rulesvr/internal/server/scenelinkage"
 
@@ -22,6 +23,7 @@ func main() {
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		rule.RegisterSceneLinkageServer(grpcServer, scenelinkage.NewSceneLinkageServer(svcCtx))
 		rule.RegisterRuleEngineServer(grpcServer, ruleengine.NewRuleEngineServer(svcCtx))
+		rule.RegisterAlarmCenterServer(grpcServer, alarmcenter.NewAlarmCenterServer(svcCtx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

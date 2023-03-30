@@ -22,16 +22,28 @@ func NewDeviceInteractServer(svcCtx *svc.ServiceContext) *DeviceInteractServer {
 	}
 }
 
-// 同步调用设备行为
+// 调用设备行为
 func (s *DeviceInteractServer) SendAction(ctx context.Context, in *di.SendActionReq) (*di.SendActionResp, error) {
 	l := deviceinteractlogic.NewSendActionLogic(ctx, s.svcCtx)
 	return l.SendAction(in)
 }
 
-// 同步调用设备属性
+// 获取异步调用设备行为的结果
+func (s *DeviceInteractServer) ActionRead(ctx context.Context, in *di.RespReadReq) (*di.SendActionResp, error) {
+	l := deviceinteractlogic.NewActionReadLogic(ctx, s.svcCtx)
+	return l.ActionRead(in)
+}
+
+// 调用设备属性
 func (s *DeviceInteractServer) SendProperty(ctx context.Context, in *di.SendPropertyReq) (*di.SendPropertyResp, error) {
 	l := deviceinteractlogic.NewSendPropertyLogic(ctx, s.svcCtx)
 	return l.SendProperty(in)
+}
+
+// 获取异步调用设备属性的结果
+func (s *DeviceInteractServer) PropertyRead(ctx context.Context, in *di.RespReadReq) (*di.SendPropertyResp, error) {
+	l := deviceinteractlogic.NewPropertyReadLogic(ctx, s.svcCtx)
+	return l.PropertyRead(in)
 }
 
 // 发送消息给设备

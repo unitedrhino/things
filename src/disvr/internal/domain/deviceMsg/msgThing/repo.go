@@ -3,6 +3,7 @@ package msgThing
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
@@ -43,6 +44,11 @@ type (
 		Fill        string   //指定窗口区间数据缺失的情况下的填充模式
 		ArgFunc     string   //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
 	}
+	LatestFilter struct {
+		ProductID  string
+		DeviceName string
+		DataID     string
+	}
 
 	SchemaDataRepo interface {
 		// InsertEventData 插入事件数据
@@ -56,9 +62,15 @@ type (
 		GetEventCountByFilter(ctx context.Context, filter FilterOpt) (int64, error)
 		// GetPropertyDataByID 根据属性id获取属性信息
 		GetPropertyDataByID(ctx context.Context, filter FilterOpt) ([]*PropertyData, error)
+		GetLatestPropertyDataByID(ctx context.Context, filter LatestFilter) (*PropertyData, error)
 		GetPropertyCountByID(ctx context.Context, filter FilterOpt) (int64, error)
 	}
 )
+
+func (p PropertyData) String() string {
+	v, _ := json.Marshal(p)
+	return string(v)
+}
 
 func (f FilterOpt) Check() error {
 	if f.Interval != 0 && f.ArgFunc == "" {

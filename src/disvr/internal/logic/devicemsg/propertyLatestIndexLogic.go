@@ -3,7 +3,6 @@ package devicemsglogic
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
@@ -51,34 +50,31 @@ func (l *PropertyLatestIndexLogic) PropertyLatestIndex(in *di.PropertyLatestInde
 		wait.Add(1)
 		go func(dataID string) {
 			defer wait.Done()
-			dds, err := dd.GetPropertyDataByID(l.ctx,
-				msgThing.FilterOpt{
-					Page:        def.PageInfo2{Size: 1},
-					ProductID:   in.ProductID,
-					DeviceNames: []string{in.DeviceName},
-					DataID:      dataID,
-					Order:       def.OrderDesc})
+			data, err := dd.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
+				ProductID:  in.ProductID,
+				DeviceName: in.DeviceName,
+				DataID:     dataID,
+			})
 			if err != nil {
-				l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
+				l.Errorf("%s.GetLatestPropertyDataByID err=%v", utils.FuncName(), err)
 				return
 			}
 			var diData di.PropertyIndex
-			if len(dds) == 0 {
+			if data == nil {
 				diData = di.PropertyIndex{
 					Timestamp: 0,
 					DataID:    dataID,
 				}
 			} else {
-				devData := dds[0]
 				diData = di.PropertyIndex{
-					Timestamp: devData.TimeStamp.UnixMilli(),
-					DataID:    devData.Identifier,
+					Timestamp: data.TimeStamp.UnixMilli(),
+					DataID:    data.Identifier,
 				}
 				var payload []byte
-				if param, ok := devData.Param.(string); ok {
+				if param, ok := data.Param.(string); ok {
 					payload = []byte(param)
 				} else {
-					payload, _ = json.Marshal(devData.Param)
+					payload, _ = json.Marshal(data.Param)
 				}
 				diData.Value = string(payload)
 
