@@ -31,6 +31,7 @@ func (l *SendPropertyLogic) SendProperty(req *types.DeviceInteractSendPropertyRe
 		ProductID:  req.ProductID,
 		DeviceName: req.DeviceName,
 		Data:       req.Data,
+		IsAsync:    req.IsAsync,
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.SendProperty(l.ctx, dmReq)
 	if err != nil {
