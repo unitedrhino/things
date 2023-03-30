@@ -35,10 +35,6 @@ func GetNodeID(cache cache.ClusterConf, svrName string) int64 {
 	return nodeIdS % 1024
 }
 
-//var Snow = &SnowFlake{
-//	lastTime: time.Now().UnixNano() / 1000000,
-//	machineID:1,
-//}
 func NewSnowFlake(mId int64) *SnowFlake {
 	sf := SnowFlake{
 		lastTime: time.Now().UnixNano() / 1000000,
@@ -55,12 +51,12 @@ func (c *SnowFlake) unLock() {
 	c._lock.Unlock()
 }
 
-//获取当前毫秒
+// 获取当前毫秒
 func (c *SnowFlake) getCurMilliSecond() int64 {
 	return time.Now().UnixNano() / 1000000
 }
 
-//设置机器id,默认为0,范围[0,255]
+// 设置机器id,默认为0,范围[0,255]
 func (c *SnowFlake) SetMachineId(mId int64) {
 	//保留8位
 	mId = mId & 0xFF
@@ -69,14 +65,14 @@ func (c *SnowFlake) SetMachineId(mId int64) {
 	c.machineID = mId
 }
 
-//获取机器id
+// 获取机器id
 func (c *SnowFlake) GetMachineId() int64 {
 	mId := c.machineID
 	mId >>= 12
 	return mId | 0xFF
 }
 
-//解析雪花(id)
+// 解析雪花(id)
 // 返回值
 // milliSecond:毫秒数
 // mId:机器id
@@ -91,30 +87,30 @@ func (c *SnowFlake) ParseId(id int64) (milliSecond, mId, sn int64) {
 	return
 }
 
-//毫秒转换成time
+// 毫秒转换成time
 func (c *SnowFlake) MilliSecondToTime(milliSecond int64) (t time.Time) {
 	return time.Unix(milliSecond/1000, milliSecond%1000*1000000)
 }
 
-//毫秒转换成"20060102T150405.999Z"
+// 毫秒转换成"20060102T150405.999Z"
 func (c *SnowFlake) MillisecondToTimeTz(ts int64) string {
 	tm := c.MilliSecondToTime(ts)
 	return tm.UTC().Format("20060102T150405.999Z")
 }
 
-//毫秒转换成"2006-01-02 15:04:05.999"
+// 毫秒转换成"2006-01-02 15:04:05.999"
 func (c *SnowFlake) MillisecondToTimeDb(ts int64) string {
 	tm := c.MilliSecondToTime(ts)
 	return tm.UTC().Format("2006-01-02 15:04:05.999")
 }
 
-//获取雪花
-//返回值
-//id:自增id
-//ts:生成该id的毫秒时间戳
+// 获取雪花
+// 返回值
+// id:自增id
+// ts:生成该id的毫秒时间戳
 func (c *SnowFlake) GetSnowflakeId() (id int64) {
 	curTime := c.getCurMilliSecond()
-	var sn int64 = 0
+	var sn int64
 
 	c.lock()
 	// 同一毫秒

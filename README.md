@@ -81,7 +81,7 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 ## 社区
 - 微信(加我拉微信群): `godLei6` (需备注“来自github”)
 - QQ群(需备注“来自github”): <a href="https://jq.qq.com/?_wv=1027&k=1J4ZL7mn">776725046</a>
-- [官网](https://ithings.pages.dev/)  [备用官网](http://112.74.36.75/)
+- [官网](http://ithings.net.cn/) 
 - 时刻招募相信分布式办公的你
 - 微信二维码:
 - <img src="./doc/assets/微信二维码.jpg">

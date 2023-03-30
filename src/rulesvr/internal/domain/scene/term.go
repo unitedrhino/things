@@ -5,6 +5,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"time"
 )
 
 type Terms []*Term
@@ -59,7 +60,7 @@ func (t *Term) Validate() error {
 	if !utils.SliceIn(t.NextCondition, TermConditionTypeOr, TermConditionTypeAnd) {
 		return errors.Parameter.AddMsg("触发条件中的下个条件的关联类型不支持的类型:" + string(t.NextCondition))
 	}
-	if !utils.SliceIn(t.ChildrenCondition, TermConditionTypeOr, TermConditionTypeAnd) {
+	if !utils.SliceIn(t.ChildrenCondition, TermConditionTypeOr, TermConditionTypeAnd, "") {
 		return errors.Parameter.AddMsg("触发条件中的嵌套条件的关联类型不支持的类型:" + string(t.ChildrenCondition))
 	}
 	for i := range t.Terms {
@@ -102,16 +103,15 @@ func (t Terms) IsHit(ctx context.Context, repo TermRepo) bool {
 }
 
 func (t *Term) IsHit(ctx context.Context, repo TermRepo) bool {
+	var isHit bool
 	switch t.ColumnType {
 	case TermColumnTypeProperty, TermColumnTypeEvent:
-		IsHit := t.ColumnSchema.IsHit(ctx, t.ColumnType, repo)
-		if !IsHit && t.ChildrenCondition == TermConditionTypeAnd { //如果没满足,如果是and条件直接返回false即可
-			return false
-		}
-		return t.Terms.IsHit(ctx, repo)
+		isHit = t.ColumnSchema.IsHit(ctx, t.ColumnType, repo)
 	case TermColumnTypeSysTime:
-		t.ColumnTime.Validate()
-		return t.Terms.IsHit(ctx, repo)
+		isHit = t.ColumnTime.IsHit(time.Now())
 	}
-	return false
+	if !isHit && t.ChildrenCondition == TermConditionTypeAnd { //如果没满足,如果是and条件直接返回false即可
+		return false
+	}
+	return t.Terms.IsHit(ctx, repo)
 }

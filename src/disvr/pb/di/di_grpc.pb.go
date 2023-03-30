@@ -262,10 +262,14 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DeviceInteractClient interface {
-	//同步调用设备行为
+	//调用设备行为
 	SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
-	//同步调用设备属性
+	//获取异步调用设备行为的结果
+	ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error)
+	//调用设备属性
 	SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+	//获取异步调用设备属性的结果
+	PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
 	//发送消息给设备
 	SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
 }
@@ -287,9 +291,27 @@ func (c *deviceInteractClient) SendAction(ctx context.Context, in *SendActionReq
 	return out, nil
 }
 
+func (c *deviceInteractClient) ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error) {
+	out := new(SendActionResp)
+	err := c.cc.Invoke(ctx, "/di.DeviceInteract/actionRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *deviceInteractClient) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	out := new(SendPropertyResp)
 	err := c.cc.Invoke(ctx, "/di.DeviceInteract/sendProperty", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceInteractClient) PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
+	out := new(SendPropertyResp)
+	err := c.cc.Invoke(ctx, "/di.DeviceInteract/propertyRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -309,10 +331,14 @@ func (c *deviceInteractClient) SendMsg(ctx context.Context, in *SendMsgReq, opts
 // All implementations must embed UnimplementedDeviceInteractServer
 // for forward compatibility
 type DeviceInteractServer interface {
-	//同步调用设备行为
+	//调用设备行为
 	SendAction(context.Context, *SendActionReq) (*SendActionResp, error)
-	//同步调用设备属性
+	//获取异步调用设备行为的结果
+	ActionRead(context.Context, *RespReadReq) (*SendActionResp, error)
+	//调用设备属性
 	SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error)
+	//获取异步调用设备属性的结果
+	PropertyRead(context.Context, *RespReadReq) (*SendPropertyResp, error)
 	//发送消息给设备
 	SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error)
 	mustEmbedUnimplementedDeviceInteractServer()
@@ -325,8 +351,14 @@ type UnimplementedDeviceInteractServer struct {
 func (UnimplementedDeviceInteractServer) SendAction(context.Context, *SendActionReq) (*SendActionResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendAction not implemented")
 }
+func (UnimplementedDeviceInteractServer) ActionRead(context.Context, *RespReadReq) (*SendActionResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ActionRead not implemented")
+}
 func (UnimplementedDeviceInteractServer) SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendProperty not implemented")
+}
+func (UnimplementedDeviceInteractServer) PropertyRead(context.Context, *RespReadReq) (*SendPropertyResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PropertyRead not implemented")
 }
 func (UnimplementedDeviceInteractServer) SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMsg not implemented")
@@ -362,6 +394,24 @@ func _DeviceInteract_SendAction_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceInteract_ActionRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RespReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).ActionRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/di.DeviceInteract/actionRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).ActionRead(ctx, req.(*RespReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DeviceInteract_SendProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SendPropertyReq)
 	if err := dec(in); err != nil {
@@ -376,6 +426,24 @@ func _DeviceInteract_SendProperty_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceInteractServer).SendProperty(ctx, req.(*SendPropertyReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceInteract_PropertyRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RespReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).PropertyRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/di.DeviceInteract/propertyRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).PropertyRead(ctx, req.(*RespReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -410,8 +478,16 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DeviceInteract_SendAction_Handler,
 		},
 		{
+			MethodName: "actionRead",
+			Handler:    _DeviceInteract_ActionRead_Handler,
+		},
+		{
 			MethodName: "sendProperty",
 			Handler:    _DeviceInteract_SendProperty_Handler,
+		},
+		{
+			MethodName: "propertyRead",
+			Handler:    _DeviceInteract_PropertyRead_Handler,
 		},
 		{
 			MethodName: "sendMsg",

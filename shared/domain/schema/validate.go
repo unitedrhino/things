@@ -2,6 +2,7 @@ package schema
 
 import (
 	"encoding/json"
+
 	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
 )
@@ -164,7 +165,6 @@ func (d *Define) ValidateWithFmt() error {
 		return d.ValidateWithFmtArray()
 	case DataTypeEnum:
 		return d.ValidateWithFmtEnum()
-
 	}
 	return nil
 }
@@ -222,11 +222,12 @@ func (d *Define) ValidateWithFmtInt() error {
 		return errors.Parameter.WithMsgf("整数的步长定义值类型不是数字:%v", d.Max)
 	}
 	if step > max {
-		step = max
+		d.Step = cast.ToString(max)
 	}
 	if step < 1 {
-		step = 1
+		d.Step = cast.ToString(1)
 	}
+
 	d.Maping = nil
 	d.Specs = nil
 	d.ArrayInfo = nil
@@ -287,11 +288,12 @@ func (d *Define) ValidateWithFmtFloat() error {
 		return errors.Parameter.WithMsgf("浮点型的步长定义不是数字类型:%v", d.Max)
 	}
 	if step > max {
-		step = max
+		d.Step = cast.ToString(max)
 	}
 	if step < 1 {
-		step = 1
+		d.Step = cast.ToString(1)
 	}
+
 	d.Maping = nil
 	d.Specs = nil
 	d.ArrayInfo = nil

@@ -118,6 +118,7 @@ func Init() {
 			},
 			State: 1,
 		})
+	fmt.Println(err)
 	err = svcCtx.SceneRepo.Insert(ctx, &scene.Info{
 		Name:        "结构体上报1",
 		Desc:        "结构体上报1",
@@ -197,6 +198,7 @@ func Init() {
 		},
 		State: 1,
 	})
+	fmt.Println(err)
 	err = svcCtx.SceneRepo.Insert(ctx, &scene.Info{
 		Name:        "定时两秒",
 		Desc:        "定时2秒",
