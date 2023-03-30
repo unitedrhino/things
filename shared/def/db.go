@@ -22,6 +22,11 @@ type PageInfo2 struct {
 	Size      int64 `json:"size" form:"size"` // 每页大小
 }
 
+type TimeRange struct {
+	Start int64
+	End   int64
+}
+
 func (p *PageInfo) GetLimit() int64 {
 	if p == nil || p.Size == 0 {
 		return 2000
@@ -76,6 +81,16 @@ func (p PageInfo2) FmtWhere(sql sq.SelectBuilder) sq.SelectBuilder {
 	}
 	if p.TimeEnd != 0 {
 		sql = sql.Where(sq.LtOrEq{"ts": p.GetTimeEnd()})
+	}
+	return sql
+}
+
+func (t TimeRange) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
+	if t.Start != 0 {
+		sql = sql.Where("createdTime>=?", time.Unix(t.Start, 0))
+	}
+	if t.End != 0 {
+		sql = sql.Where("createdTime<=?", time.Unix(t.End, 0))
 	}
 	return sql
 }

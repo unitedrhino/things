@@ -30,6 +30,14 @@ type EventReport struct {
 	Params     map[string]ParamValue `json:"params" `          //事件参数
 }
 
+func (c PropertyReport) GenSerial() string {
+	return ""
+}
+
+func (c EventReport) GenSerial() string {
+	return ""
+}
+
 //func (c ParamValue) MarshalJSON() ([]byte, error) {
 //
 //}
