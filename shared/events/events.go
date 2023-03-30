@@ -31,7 +31,7 @@ type (
 func NewEventMsg(ctx context.Context, data []byte) []byte {
 	//生成新的消息时，使用go-zero的链路追踪接口，从ctx中提取span信息，并放入MsgHead中的Trace字段
 	span := trace.SpanFromContext(ctx)
-	traceinfo, err := span.SpanContext().MarshalJSON()
+	traceinfo, _ := span.SpanContext().MarshalJSON()
 
 	msg := MsgHead{
 		Trace:     traceinfo,
