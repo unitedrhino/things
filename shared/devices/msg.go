@@ -16,32 +16,40 @@ type (
 	}
 	// DevPublish ddsvr 发布设备发布信息的结构体
 	DevPublish struct {
-		Timestamp  int64  `json:"timestamp"`
-		ProductID  string `json:"productID"`
-		DeviceName string `json:"deviceName"`
-		Topic      string `json:"topic"`
-		Payload    []byte `json:"payload"`
+		Topic      string   `json:"topic"` //只用于日志记录
+		Timestamp  int64    `json:"timestamp"`
+		ProductID  string   `json:"productID"`
+		DeviceName string   `json:"deviceName"`
+		Handle     string   `json:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
+		Types      []string `json:"types"`  //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+		Payload    []byte   `json:"payload"`
 	}
 	// InnerPublish 用于其他服务发送给ddsvr转发给设备的
 	InnerPublish struct {
-		Topic   string `json:"topic"`
-		Payload []byte `json:"payload"`
+		Handle     string   `json:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
+		Types      []string `json:"types"`  // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+		Payload    []byte   `json:"payload"`
+		ProductID  string   `json:"productID"`
+		DeviceName string   `json:"deviceName"`
 	}
 )
 
-//发送给设备的数据组包
-func PublishToDev(topic string, payload []byte) []byte {
+// 发送给设备的数据组包
+func PublishToDev(handle string, types []string, payload []byte, productID string, deviceName string) []byte {
 	pub := InnerPublish{
-		Topic:   topic,
-		Payload: payload,
+		Handle:     handle,
+		Types:      types,
+		Payload:    payload,
+		ProductID:  productID,
+		DeviceName: deviceName,
 	}
 	data, _ := json.Marshal(pub)
 	return data
 }
 
-//收到发送给设备的数据,解包
-func GetPublish(data []byte) (topic string, payload []byte) {
+// 收到发送给设备的数据,解包
+func GetPublish(data []byte) *InnerPublish {
 	pub := InnerPublish{}
 	_ = json.Unmarshal(data, &pub)
-	return pub.Topic, pub.Payload
+	return &pub
 }

@@ -4,13 +4,11 @@ package deviceMsg
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 	"time"
 )
 
@@ -21,7 +19,9 @@ const (
 
 type (
 	PublishMsg struct { //发布消息结构体
-		Topic      string
+		Topic      string   //只用于日志记录
+		Handle     string   //对应 mqtt topic的第一个 thing ota config 等等
+		Types      []string //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
 		Payload    []byte
 		Timestamp  time.Time
 		ProductID  string
@@ -40,7 +40,8 @@ type (
 
 func (p *PublishMsg) String() string {
 	msgMap := map[string]any{
-		"Topic":       p.Topic,
+		"Handle":      p.Handle,
+		"Types":       p.Types,
 		"Payload":     string(p.Payload),
 		"Timestamp":   p.Timestamp,
 		"ProductID":   p.ProductID,
@@ -90,27 +91,13 @@ func GetDevPublish(ctx context.Context, data []byte) (*PublishMsg, error) {
 		return nil, err
 	}
 	ele := PublishMsg{
+		Handle:     pubInfo.Handle,
 		Topic:      pubInfo.Topic,
+		Types:      pubInfo.Types,
 		Payload:    pubInfo.Payload,
 		Timestamp:  time.UnixMilli(pubInfo.Timestamp),
 		ProductID:  pubInfo.ProductID,
 		DeviceName: pubInfo.DeviceName,
 	}
 	return &ele, nil
-}
-
-func GenRespTopic(topics any) string {
-	var (
-		strs []string
-		ok   bool
-	)
-	if strs, ok = topics.([]string); ok {
-	} else if str, ok := topics.(string); ok {
-		strs = strings.Split(str, "/")
-	} else {
-		panic("GenRespTopic not support type")
-	}
-	respTopic := fmt.Sprintf("%s/down/%s/%s/%s",
-		strs[0], strs[2], strs[3], strs[4])
-	return respTopic
 }
