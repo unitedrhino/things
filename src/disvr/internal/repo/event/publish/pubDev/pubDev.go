@@ -4,14 +4,15 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 )
 
 type (
+	CompareMsg func(payload []byte) bool
+
 	PubDev interface {
-		PublishToDev(ctx context.Context, topic string, payload []byte) error
-		ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *msgThing.Req,
-			productID, deviceName string) (*msgThing.Resp, error)
+		PublishToDev(ctx context.Context, msg *deviceMsg.PublishMsg) error
+		ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.PublishMsg, compareMsg CompareMsg) ([]byte, error)
 	}
 )
 
