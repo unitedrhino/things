@@ -30,9 +30,12 @@ func NewRuleSceneInfoModel(conn sqlx.SqlConn) RuleSceneInfoModel {
 	}
 }
 
-func (c customRuleSceneInfoModel) Insert(ctx context.Context, info *scene.Info) error {
-	_, err := c.repo.Insert(ctx, ToScenePo(info))
-	return err
+func (c customRuleSceneInfoModel) Insert(ctx context.Context, info *scene.Info) (int64, error) {
+	rst, err := c.repo.Insert(ctx, ToScenePo(info))
+	if err != nil {
+		return 0, err
+	}
+	return rst.LastInsertId()
 }
 
 func (c customRuleSceneInfoModel) Delete(ctx context.Context, id int64) error {

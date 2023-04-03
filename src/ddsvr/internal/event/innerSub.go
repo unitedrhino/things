@@ -2,8 +2,11 @@ package event
 
 import (
 	"context"
+	"fmt"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"strings"
 )
 
 type InnerSubServer struct {
@@ -20,6 +23,8 @@ func NewInnerSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *InnerSu
 	}
 }
 
-func (s *InnerSubServer) PublishToDev(topic string, payload []byte) error {
-	return s.svcCtx.PubDev.Publish(s.ctx, topic, payload)
+func (s *InnerSubServer) PublishToDev(info *devices.InnerPublish) error {
+	//todo 自定义语言放这里
+	topic := fmt.Sprintf("%s/down/%s/%s/%s", "$"+info.Handle, strings.Join(info.Types, "/"), info.ProductID, info.DeviceName)
+	return s.svcCtx.PubDev.Publish(s.ctx, topic, info.Payload)
 }
