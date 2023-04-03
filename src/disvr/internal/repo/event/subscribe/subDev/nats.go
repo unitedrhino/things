@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
 	"github.com/nats-io/nats.go"
@@ -110,6 +111,7 @@ func (n *NatsClient) queueSubscribeDevPublish(topic string,
 	handleFunc func(ctx context.Context, msg *deviceMsg.PublishMsg) error) error {
 	_, err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
+			defer utils.Recover(ctx)
 			ele, err := deviceMsg.GetDevPublish(ctx, msg)
 			if err != nil {
 				return err

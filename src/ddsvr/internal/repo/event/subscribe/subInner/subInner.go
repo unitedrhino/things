@@ -3,6 +3,7 @@ package subInner
 import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/devices"
 )
 
 type (
@@ -11,7 +12,7 @@ type (
 	}
 	Handle         func(ctx context.Context) InnerSubHandle
 	InnerSubHandle interface {
-		PublishToDev(topic string, payload []byte) error
+		PublishToDev(info *devices.InnerPublish) error
 	}
 )
 
