@@ -79,37 +79,37 @@ func (d *MqttClient) subDevMsg(handle Handle) error {
 		return err
 	}
 	err = d.subscribeWithFunc(TopicThing, func(ctx context.Context, topic string, payload []byte) error {
-		return handle(ctx).Thing(topic, payload)
+		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
 	err = d.subscribeWithFunc(TopicConfig, func(ctx context.Context, topic string, payload []byte) error {
-		return handle(ctx).Config(topic, payload)
+		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
 	err = d.subscribeWithFunc(TopicOta, func(ctx context.Context, topic string, payload []byte) error {
-		return handle(ctx).Ota(topic, payload)
+		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
 	err = d.subscribeWithFunc(TopicSDKLog, func(ctx context.Context, topic string, payload []byte) error {
-		return handle(ctx).SDKLog(topic, payload)
+		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
 	err = d.subscribeWithFunc(TopicShadow, func(ctx context.Context, topic string, payload []byte) error {
-		return handle(ctx).Shadow(topic, payload)
+		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
 	err = d.subscribeWithFunc(TopicGateway, func(ctx context.Context, topic string, payload []byte) error {
-		return handle(ctx).Gateway(topic, payload)
+		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err

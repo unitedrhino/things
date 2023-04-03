@@ -122,7 +122,7 @@ func Recover(ctx context.Context) {
 
 func HandleThrow(ctx context.Context, p any) {
 	pc := make([]uintptr, 1)
-	runtime.Callers(2, pc)
+	runtime.Callers(3, pc)
 	f := runtime.FuncForPC(pc[0])
 	logx.WithContext(ctx).Errorf("HandleThrow|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
 	//os.Exit(-1)
