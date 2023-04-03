@@ -26,7 +26,6 @@ func NewProductSchemaTslReadLogic(ctx context.Context, svcCtx *svc.ServiceContex
 // 获取产品信息列表
 func (l *ProductSchemaTslReadLogic) ProductSchemaTslRead(in *dm.ProductSchemaTslReadReq) (*dm.ProductSchemaTslReadResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
-
 	model, err := l.svcCtx.SchemaRepo.TslRead(l.ctx, in.ProductID)
 	if err != nil {
 		return nil, err
