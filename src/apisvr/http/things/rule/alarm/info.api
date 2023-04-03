@@ -14,7 +14,7 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "新增告警"
     @handler create
-    post /create (AlarmInfoCreateReq) returns ()
+    post /create (AlarmInfoCreateReq) returns (CommonResp)
     @doc "更新告警"
     @handler update
     post /update (AlarmInfoUpdateReq) returns ()
