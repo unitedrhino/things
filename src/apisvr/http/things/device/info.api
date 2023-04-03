@@ -117,8 +117,8 @@ type (
     }
 
     DeviceMultiImportReq {
-        ProductID string `form:"productID"`      //产品ID
-        File []byte `form:"file"`                //csv文件
+        ProductID string `form:"productID"`               //产品ID
+        File []byte `form:"file,optional"`                //csv文件(实际必填)
     }
     DeviceMultiImportResp {
         Total int64 `json:"total"`                          //当前表格数据量
