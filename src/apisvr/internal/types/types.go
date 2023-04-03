@@ -137,6 +137,10 @@ type PageInfo struct {
 	Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
 }
 
+type CommonResp struct {
+	ID int64 `json:"id,optional"` // id
+}
+
 type Tag struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`

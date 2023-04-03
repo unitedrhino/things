@@ -10,9 +10,9 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/repo/cache"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 	"time"
 )
 
@@ -21,7 +21,6 @@ type ThingLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	schema *schema.Model
-	topics []string
 	dreq   msgThing.Req
 	dd     msgThing.SchemaDataRepo
 }
@@ -45,10 +44,6 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 		return errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
 	l.dd = l.svcCtx.SchemaMsgRepo
-	l.topics = strings.Split(msg.Topic, "/")
-	if len(l.topics) < 5 || l.topics[1] != "up" {
-		return errors.Parameter.AddDetail("initMsg topic is err:" + msg.Topic)
-	}
 	return nil
 }
 
@@ -60,9 +55,12 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 		Data:        data,
 	}
 	return &deviceMsg.PublishMsg{
-		Topic:     deviceMsg.GenRespTopic(l.topics),
-		Payload:   resp.AddStatus(err).Bytes(),
-		Timestamp: time.Now(),
+		Handle:     msg.Handle,
+		Types:      msg.Types,
+		Payload:    resp.AddStatus(err).Bytes(),
+		Timestamp:  time.Now(),
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
 	}
 }
 
@@ -138,7 +136,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 	case deviceMsg.GetStatus:
 		return l.HandlePropertyGetStatus(msg)
 	case deviceMsg.ControlReply:
-		return l.HandleResp(msg, msgThing.TypeProperty)
+		return l.HandleResp(msg)
 	default:
 		return nil, errors.Method
 	}
@@ -176,25 +174,24 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
-func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg, msgThingType string) (respMsg *deviceMsg.PublishMsg, err error) {
+func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 	var resp msgThing.Resp
 	err = utils.Unmarshal(msg.Payload, &resp)
 	if err != nil {
 		return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
-	req, err := l.svcCtx.MsgThingRepo.GetReq(l.ctx, msgThingType,
+	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, msg.Handle, msg.Types,
 		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		resp.ClientToken)
 	if req == nil || err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.MsgThingRepo.SetResp(l.ctx, msgThingType,
-		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}, &resp)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Store, deviceMsg.RespMsg, msg, resp.ClientToken)
 	if err != nil {
 		return nil, err
 	}
-	if msgThingType == msgThing.TypeProperty {
+	if msg.Types[0] == msgThing.TypeProperty {
 		_, err = l.HandlePropertyReport(msg, *req)
 		return nil, err
 	}
@@ -207,20 +204,19 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	if err != nil {
 		return nil, err
 	}
-	var action = "thing"
+	var action = devices.Thing
 	respMsg, err = func() (respMsg *deviceMsg.PublishMsg, err error) {
-
-		action = l.topics[2]
-		switch l.topics[2] {
+		action = msg.Types[0]
+		switch msg.Types[0] {
 		case msgThing.TypeProperty: //属性上报
 			return l.HandleProperty(msg)
 		case msgThing.TypeEvent: //事件上报
 			return l.HandleEvent(msg)
 		case msgThing.TypeAction: //设备响应行为执行结果
-			return l.HandleResp(msg, msgThing.TypeAction)
+			return l.HandleResp(msg)
 		default:
-			action = "thing"
-			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
+			action = devices.Thing
+			return nil, errors.Parameter.AddDetailf("things types is err:%v", msg.Types)
 		}
 	}()
 	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
