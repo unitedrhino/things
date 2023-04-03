@@ -11,6 +11,9 @@ type(
         Page     int64 `json:"page,optional" form:"page,optional"`         // 页码
         Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
     }
+    CommonResp{
+        ID int64 `json:"id,optional"`         // id
+    }
 
     Tag struct {
         Key string `json:"key"`
