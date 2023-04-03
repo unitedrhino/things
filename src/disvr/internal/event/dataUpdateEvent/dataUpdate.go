@@ -3,7 +3,6 @@ package dataUpdateEvent
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
@@ -15,6 +14,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 type DataUpdateLogic struct {
@@ -45,11 +45,18 @@ func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DataUpdateInfo) erro
 	if err != nil {
 		return err
 	}
-	tmpTopic := fmt.Sprintf("%s/down/%s/%s/%s", devices.TopicHeadLog, msgSdkLog.TypeUpdate, di.ProductID, di.DeviceName)
 	resp := deviceMsg.NewRespCommonMsg(deviceMsg.GetStatus, "")
 	resp.Data = map[string]any{"logLevel": di.LogLevel}
 
-	er := d.svcCtx.PubDev.PublishToDev(d.ctx, tmpTopic, resp.AddStatus(errors.OK).Bytes())
+	msg := deviceMsg.PublishMsg{
+		Handle:     devices.Log,
+		Types:      []string{msgSdkLog.TypeUpdate},
+		Payload:    resp.AddStatus(errors.OK).Bytes(),
+		Timestamp:  time.Now(),
+		ProductID:  di.ProductID,
+		DeviceName: di.DeviceName,
+	}
+	er := d.svcCtx.PubDev.PublishToDev(d.ctx, &msg)
 	if er != nil {
 		d.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 	}
@@ -57,14 +64,20 @@ func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DataUpdateInfo) erro
 }
 
 func (d *DataUpdateLogic) DeviceGatewayUpdate(info *events.GatewayUpdateInfo) error {
-	tmpTopic := fmt.Sprintf("%s/down/%s/%s/%s", devices.TopicHeadGateway, msgSdkLog.TypeOperation,
-		info.GatewayProductID, info.GatewayDeviceName)
 	resp := &msgGateway.Msg{
 		CommonMsg: deviceMsg.NewRespCommonMsg(deviceMsg.Change, "").AddStatus(errors.OK),
 		Payload:   ToGatewayPayload(info.Status, info.Devices),
 	}
 	respBytes, _ := json.Marshal(resp)
-	er := d.svcCtx.PubDev.PublishToDev(d.ctx, tmpTopic, respBytes)
+	msg := deviceMsg.PublishMsg{
+		Handle:     devices.Gateway,
+		Types:      []string{msgGateway.TypeOperation},
+		Payload:    respBytes,
+		Timestamp:  time.Now(),
+		ProductID:  info.GatewayProductID,
+		DeviceName: info.GatewayDeviceName,
+	}
+	er := d.svcCtx.PubDev.PublishToDev(d.ctx, &msg)
 	if er != nil {
 		d.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 	}
@@ -94,15 +107,21 @@ func (d *DataUpdateLogic) DeviceRemoteConfigUpdate(info *events.DataUpdateInfo) 
 
 	//3. for循环所有设备发送消息给设备
 	for _, v := range respDevices.List {
-		tmpTopic := fmt.Sprintf("%s/down/%s/%s/%s", devices.TopicHeadConfig, msgRemoteConfig.TypePush, v.ProductID, v.DeviceName)
-
 		resp := &msgRemoteConfig.RemoteConfigMsg{
 			Method:  "push",
 			Code:    0,
 			Payload: respConfig.Info.Content,
 		}
 		respBytes, _ := json.Marshal(resp)
-		er := d.svcCtx.PubDev.PublishToDev(d.ctx, tmpTopic, respBytes)
+		msg := deviceMsg.PublishMsg{
+			Handle:     devices.Config,
+			Types:      []string{msgRemoteConfig.TypePush},
+			Payload:    respBytes,
+			Timestamp:  time.Now(),
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		}
+		er := d.svcCtx.PubDev.PublishToDev(d.ctx, &msg)
 		if er != nil {
 			d.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 		}

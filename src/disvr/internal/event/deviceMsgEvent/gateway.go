@@ -14,7 +14,6 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 	"time"
 )
 
@@ -22,8 +21,7 @@ type GatewayLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	dreq   msgGateway.Msg
-	topics []string
+	dreq msgGateway.Msg
 }
 
 func NewGatewayLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GatewayLogic {
@@ -38,10 +36,6 @@ func (l *GatewayLogic) initMsg(msg *deviceMsg.PublishMsg) (err error) {
 	if err != nil {
 		return errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
-	l.topics = strings.Split(msg.Topic, "/")
-	if len(l.topics) < 5 || l.topics[1] != "up" {
-		return errors.Parameter.AddDetail("initMsg topic is err:" + msg.Topic)
-	}
 	return nil
 }
 
@@ -55,7 +49,7 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		resp *msgGateway.Msg
 	)
 
-	switch l.topics[2] {
+	switch msg.Types[0] {
 	case msgGateway.TypeOperation:
 		resp, err = l.HandleOperation(msg)
 	case msgGateway.TypeStatus:
@@ -74,7 +68,8 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		ResultType: errors.Fmt(err).GetCode(),
 	})
 	return &deviceMsg.PublishMsg{
-		Topic:      deviceMsg.GenRespTopic(msg.Topic),
+		Handle:     msg.Handle,
+		Types:      msg.Types,
 		Payload:    respStr,
 		Timestamp:  time.Now(),
 		ProductID:  msg.ProductID,
