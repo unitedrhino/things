@@ -5,6 +5,7 @@ package rule;
 option go_package="./pb/rule";
 
 message Response {
+  int64 id = 1;
 }
 message PageInfo{
   int64 page = 1;
