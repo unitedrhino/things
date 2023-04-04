@@ -613,8 +613,7 @@ type DeviceCountResp struct {
 }
 
 type DeviceMultiImportReq struct {
-	ProductID string `form:"productID"`     //产品ID
-	File      []byte `form:"file,optional"` //csv文件(实际必填)
+	File []byte `form:"file,optional"` //csv文件(实际必填)
 }
 
 type DeviceMultiImportResp struct {
