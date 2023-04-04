@@ -3,8 +3,10 @@ package info
 import (
 	"bytes"
 	"context"
+	"github.com/i-Things/things/src/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/xuri/excelize/v2"
 	"github.com/zeromicro/go-zero/core/logx"
 	"golang.org/x/sync/errgroup"
@@ -39,23 +41,41 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq) (resp *t
 	var errDatas []types.DeviceMultiImportErrdata
 
 	for r := int64(0); rows.Next(); r++ {
-		if cell, err := rows.Columns(); err != nil {
+		if r < 3 { //第1行是标题、第2、3行是示例，均跳过
+			continue
+		}
+
+		//读取行数据
+		cell, err := rows.Columns()
+		if err != nil {
 			errDatas = append(errDatas, types.DeviceMultiImportErrdata{
 				Row: r,
 				Msg: "读取行数据出错:" + err.Error(),
 			})
-		} else {
-			if r < 2 { //第1行是标题、第2行是示例，均跳过
-				continue
-			}
-
-			//TODO 校验行单元格数据
-
-			egg.Go(func() error {
-				_ = cell //TODO 异步添加设备逻辑
-				return nil
-			})
+			return nil, err
 		}
+
+		//解析行数据到Dto，并验证数据格式
+		rowDto := device.NewMultiImportCsvRow(cell)
+		if err := rowDto.Valid(); err != nil {
+			return nil, err
+		}
+
+		egg.Go(func() error {
+			dmReq := &dm.DeviceInfo{
+				//ProductID:  req.ProductID,  //产品id 只读
+				//DeviceName: req.DeviceName, //设备名称 读写
+				//LogLevel:   req.LogLevel,   // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+				//Tags:       logic.ToTagsMap(req.Tags),
+				//Address:    utils.ToRpcNullString(req.Address),
+				//Position:   logic.ToDmPointRpc(req.Position),
+			}
+			_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, dmReq)
+			if err != nil {
+
+			}
+			return nil
+		})
 	}
 	//阻塞等待所有gorouting
 	if err = egg.Wait(); err != nil {

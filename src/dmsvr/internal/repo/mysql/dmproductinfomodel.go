@@ -18,6 +18,7 @@ type (
 		dmProductInfoModel
 		FindByFilter(ctx context.Context, filter ProductFilter, page *def.PageInfo) ([]*DmProductInfo, error)
 		CountByFilter(ctx context.Context, filter ProductFilter) (size int64, err error)
+		FindIDsByNames(ctx context.Context, names []string) (ids []string, err error)
 	}
 	ProductFilter struct {
 		DeviceType  int64
@@ -87,5 +88,20 @@ func (m *customDmProductInfoModel) CountByFilter(ctx context.Context, f ProductF
 		return size, nil
 	default:
 		return 0, err
+	}
+}
+
+func (m *customDmProductInfoModel) FindIDsByNames(ctx context.Context, names []string) (ids []string, err error) {
+	sql := sq.Select("productID").From(m.table).Where(fmt.Sprintf("productName in (%v)", store.ArrayToSql(names)))
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	err = m.conn.QueryRowsCtx(ctx, &ids, query, arg...)
+	switch err {
+	case nil:
+		return ids, nil
+	default:
+		return nil, err
 	}
 }
