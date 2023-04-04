@@ -138,12 +138,31 @@ message RemoteConfigLastReadResp{
 
 
 
+message DeviceGatewayBindDevice{
+  string   productID = 1; //产品id
+  string  deviceName = 2; //设备名称
+  DeviceGatewaySign sign =3;//签名
+}
+
+message DeviceGatewaySign{
+  /*
+     子设备绑定签名串。 签名算法：
+     1. 签名原串，将产品 ID 设备名称，随机数，时间戳拼接：text=${product_id}${device_name};${random};${expiration_time}
+     2. 使用设备 Psk 密钥，或者证书的 Sha1 摘要，进行签名：hmac_sha1(device_secret, text)
+   */
+  string signature = 3;
+  int64  random = 4; //随机数。
+  int64 timestamp = 5; //时间戳，单位：秒。
+  string    signMethod = 6; //签名算法。支持 hmacsha1、hmacsha256
+}
 
 message DeviceGatewayMultiCreateReq{
   string gatewayProductID = 1;
   string gatewayDeviceName = 2;
-  repeated DeviceCore list = 3;
+  bool isAuthSign =3;//是否校验设备签名
+  repeated DeviceGatewayBindDevice list = 4;
 }
+
 
 message DeviceGatewayIndexReq{
   PageInfo page = 1;
