@@ -43,6 +43,8 @@ type (
 	LoginAuthReq                = dm.LoginAuthReq
 	PageInfo                    = dm.PageInfo
 	Point                       = dm.Point
+	ProductIDByNameIndexReq     = dm.ProductIDByNameIndexReq
+	ProductIDByNameIndexResp    = dm.ProductIDByNameIndexResp
 	ProductInfo                 = dm.ProductInfo
 	ProductInfoDeleteReq        = dm.ProductInfoDeleteReq
 	ProductInfoIndexReq         = dm.ProductInfoIndexReq
@@ -78,6 +80,8 @@ type (
 		ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
 		// 获取产品信息详情
 		ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
+		// 通过产品名称获取产品ID列表
+		ProductIDByNameIndex(ctx context.Context, in *ProductIDByNameIndexReq, opts ...grpc.CallOption) (*ProductIDByNameIndexResp, error)
 		// 更新产品物模型
 		ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		// 新增产品
@@ -168,6 +172,17 @@ func (m *defaultProductManage) ProductInfoRead(ctx context.Context, in *ProductI
 // 获取产品信息详情
 func (d *directProductManage) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
 	return d.svr.ProductInfoRead(ctx, in)
+}
+
+// 通过产品名称获取产品ID列表
+func (m *defaultProductManage) ProductIDByNameIndex(ctx context.Context, in *ProductIDByNameIndexReq, opts ...grpc.CallOption) (*ProductIDByNameIndexResp, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductIDByNameIndex(ctx, in, opts...)
+}
+
+// 通过产品名称获取产品ID列表
+func (d *directProductManage) ProductIDByNameIndex(ctx context.Context, in *ProductIDByNameIndexReq, opts ...grpc.CallOption) (*ProductIDByNameIndexResp, error) {
+	return d.svr.ProductIDByNameIndex(ctx, in)
 }
 
 // 更新产品物模型
