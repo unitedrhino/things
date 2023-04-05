@@ -59,7 +59,25 @@ func (l *DeviceInfoCreateLogic) CheckProduct(in *dm.DeviceInfo) (bool, error) {
 }
 
 // 新增设备
-func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Response, error) {
+func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Response, err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			utils.HandleThrow(l.ctx, p)
+			err = errors.Panic
+			return
+		}
+	}()
+
+	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
+		if pids, err := l.svcCtx.ProductInfo.FindIDsByNames(l.ctx, []string{in.ProductName}); err != nil {
+			return nil, err
+		} else if len(pids) != 1 {
+			return nil, errors.NotFind.WithMsg("查无产品名对应的产品ID")
+		} else {
+			in.ProductID = pids[0]
+		}
+	}
+
 	find, err := l.CheckDevice(in)
 	if err != nil {
 		l.Errorf("%s.CheckDevice in=%v\n", utils.FuncName(), in)
@@ -67,6 +85,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 	} else if find == true {
 		return nil, errors.Duplicate.WithMsgf("设备名称重复:%s", in.DeviceName).AddDetail("DeviceName:" + in.DeviceName)
 	}
+
 	find, err = l.CheckProduct(in)
 	if err != nil {
 		l.Errorf("%s.CheckProduct in=%v", utils.FuncName(), in)
@@ -74,6 +93,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 	} else if find == false {
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.ProductID))
 	}
+
 	err = l.InitDevice(in)
 	if err != nil {
 		return nil, err
@@ -99,17 +119,20 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (*dm.Respons
 	} else {
 		di.Tags = "{}"
 	}
+
 	if in.LogLevel != def.Unknown {
 		di.LogLevel = def.LogClose
 	}
 	if in.Address != nil {
 		di.Address = in.Address.Value
 	}
+
 	err = l.svcCtx.DeviceInfo.InsertDeviceInfo(l.ctx, &di)
 	if err != nil {
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
+
 	return &dm.Response{}, nil
 }
 

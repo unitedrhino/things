@@ -17,7 +17,7 @@ goctl env check -i -f
 # api网关接口代理模块-apisvr
 
 ```shell
-cd src/apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ../..
+cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ..
 ```
 
 # 系统管理模块-syssvr
@@ -25,13 +25,13 @@ cd src/apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd .
 - 数据库文件生成
 
 ```shell
-cd src/syssvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ../..
+cd syssvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
 ```
 
 - rpc文件编译方法
 
 ```shell
-cd src/syssvr && goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m && cd ../..
+cd syssvr && goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m && cd ..
 ```
 
 # 设备管理模块-dmsvr
@@ -40,25 +40,25 @@ cd src/syssvr && goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ 
 
 ```shell
 #protoc proto/* --go_out=. --go-grpc_out=.
-cd src/dmsvr && goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ../..
+cd dmsvr && goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
 
 - model文件编译
 
 ```shell
-cd src/dmsvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ../..
+cd dmsvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
 ```
 
 # 设备交互模块-disvr
 
 ```shell
-cd src/disvr && goctl rpc protoc  proto/di.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m && cd ../..
+cd disvr && goctl rpc protoc  proto/di.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m && cd ..
 ```
 
 # 设备数据处理模块-ddsvr
 
 ```shell
-cd src/ddsvr && goctl api go -api http/dd.api  -dir ./ --style=goZero && cd ../..
+cd ddsvr && goctl api go -api http/dd.api  -dir ./ --style=goZero && cd ..
 ```
 
 # 协议规则引擎模块-rulesvr
@@ -67,11 +67,11 @@ cd src/ddsvr && goctl api go -api http/dd.api  -dir ./ --style=goZero && cd ../.
 
 ```shell
 #protoc  proto/* --go_out=. --go-grpc_out=.
-cd src/rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ../..
+cd rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
 
 - model文件编译
 
 ```shell
-cd src/rulesvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/rulesvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ../..
+cd rulesvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/rulesvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
 ```

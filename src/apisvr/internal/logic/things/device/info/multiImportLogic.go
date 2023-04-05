@@ -1,15 +1,15 @@
 package info
 
 import (
-	"bytes"
 	"context"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/xuri/excelize/v2"
 	"github.com/zeromicro/go-zero/core/logx"
 	"golang.org/x/sync/errgroup"
+	"sync"
 )
 
 type MultiImportLogic struct {
@@ -26,61 +26,60 @@ func NewMultiImportLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 	}
 }
 
-func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq) (resp *types.DeviceMultiImportResp, err error) {
-	reader := bytes.NewReader(req.File)
-	csv, err := excelize.OpenReader(reader)
-	if err != nil {
-		return nil, err
-	}
-	rows, err := csv.Rows("Sheet1")
-	if err != nil {
-		return nil, err
-	}
+const MultiImportDemoCnt = int64(3)
 
+func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, csv *excelize.File, demoCnt int64) (resp *types.DeviceMultiImportResp, err error) {
+	sm := sync.Map{}
 	var egg errgroup.Group
 	var errDatas []types.DeviceMultiImportErrdata
 
-	for r := int64(0); rows.Next(); r++ {
-		if r < 3 { //第1行是标题、第2、3行是示例，均跳过
+	rows, err := csv.Rows(csv.GetSheetName(0))
+	if err != nil {
+		return nil, errors.Parameter.WithMsg("读取表格Sheet失败了:" + err.Error())
+	}
+
+	var rowCnt int64
+	for ; rows.Next(); rowCnt++ {
+		rowIdx := rowCnt
+		if rowIdx < demoCnt { //第1行是标题、第2、3行是示例，均跳过
 			continue
 		}
 
 		//读取行数据
 		cell, err := rows.Columns()
 		if err != nil {
-			errDatas = append(errDatas, types.DeviceMultiImportErrdata{
-				Row: r,
-				Msg: "读取行数据出错:" + err.Error(),
-			})
-			return nil, err
+			errDatas = append(errDatas, types.DeviceMultiImportErrdata{rowIdx, "读取行数据出错:" + err.Error()})
+			continue
 		}
-
-		//解析行数据到Dto，并验证数据格式
-		rowDto := device.NewMultiImportCsvRow(cell)
-		if err := rowDto.Valid(); err != nil {
-			return nil, err
+		//cell转dto
+		dmReq, err := device.DeviceMultiImportCellToDeviceInfo(cell)
+		if err != nil {
+			errDatas = append(errDatas, types.DeviceMultiImportErrdata{rowIdx, "行数据解析出错:" + err.Error()})
+			continue
 		}
 
 		egg.Go(func() error {
-			dmReq := &dm.DeviceInfo{
-				//ProductID:  req.ProductID,  //产品id 只读
-				//DeviceName: req.DeviceName, //设备名称 读写
-				//LogLevel:   req.LogLevel,   // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-				//Tags:       logic.ToTagsMap(req.Tags),
-				//Address:    utils.ToRpcNullString(req.Address),
-				//Position:   logic.ToDmPointRpc(req.Position),
-			}
 			_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, dmReq)
 			if err != nil {
-
+				sm.Store(rowIdx, errors.Fmt(err).Msg)
 			}
 			return nil
 		})
-	}
+
+	} //end for
+
 	//阻塞等待所有gorouting
 	if err = egg.Wait(); err != nil {
 		return nil, err
 	}
 
-	return
+	sm.Range(func(key, value any) bool {
+		errDatas = append(errDatas, types.DeviceMultiImportErrdata{key.(int64), "创建设备出错:" + value.(string)})
+		return true
+	})
+
+	return &types.DeviceMultiImportResp{
+		Total:   rowCnt - demoCnt,
+		Errdata: errDatas,
+	}, nil
 }
