@@ -21,10 +21,7 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 联动感知层及应用层之间的所有交互——向下连接、管理物联网设备端并完成感知数据的归集与存储，
 向上为应用开发商与系统集成商提供应用开发的统一数据接口及共性模块工具。应用厂商可以通过http,grpc,及golang包引入的方式快速集成进自己的系统中,迅速获取物联网平台的能力,轻量而高效.
 
-- v1:
-    - <img style="width:300px;" src="./doc/v2/新版things架构图.png">
-- v2:
-    - <img style="width:300px;" src="./doc/assets/iThings架构图.png">
+- <img style="width:300px;" src="./doc/assets/iThings架构图.png">
 
 ## 产品价值
 
@@ -172,14 +169,9 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 
 ### 本地运行步骤
 
+- 部署 需要的 组件服务，如 mysql、redis、nats、etcd、TDengine 等待，详见`ithings\src\apisvr\etc\*.yaml` 下的配置文件内容
 - 创建数据库`iThings`，并执行目录`ithings/deploy/conf/mysql/sql/`下所有SQL
-- 修改`JetBrain`工作目录为`ithings\src\apisvr`
-
-### 直连测试运行步骤
-
-> 操作参考：https://ithings.yuque.com/staff-yecp5z/wzf72v/ncaadp
-
-- 下载`Xshell`，导入隧道文件`ithings/doc/xshell端口映射文件.fwr`
+- 修改`IDE`工作目录为`ithings\src\apisvr`, 然后运行 `ithings/src/apisvr/api.go` 的 `main` 函数
 
 ### 前端架构
 
