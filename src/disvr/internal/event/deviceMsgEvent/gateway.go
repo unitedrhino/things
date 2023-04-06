@@ -133,7 +133,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 		payload.Devices = append(payload.Devices, &msgGateway.Device{
 			ProductID:    v.ProductID,
 			DeviceName:   v.DeviceName,
-			DeviceSecret: di.GetCert(),
+			DeviceSecret: di.GetSecret(),
 			Result:       errors.Fmt(err).GetCode(),
 			Status:       errors.Fmt(err).GetMsg(),
 		})
@@ -168,7 +168,8 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 				resp.AddStatus(err)
 				return &resp, err
 			}
-			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices}
+			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
+			return &resp, nil
 		case deviceMsg.Unbind:
 			_, err := l.svcCtx.DeviceM.DeviceGatewayMultiDelete(l.ctx, &dm.DeviceGatewayMultiDeleteReq{
 				GatewayProductID:  msg.ProductID,
@@ -179,7 +180,7 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 				resp.AddStatus(err)
 				return &resp, err
 			}
-			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices}
+			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
 		case deviceMsg.DescribeSubDevices:
 			deviceList, err := l.svcCtx.DeviceM.DeviceGatewayIndex(l.ctx, &dm.DeviceGatewayIndexReq{
 				GatewayProductID:  msg.ProductID,
@@ -198,6 +199,7 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 				})
 			}
 			resp.Payload = &payload
+			return &resp, err
 		default:
 			return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Types)
 		}
