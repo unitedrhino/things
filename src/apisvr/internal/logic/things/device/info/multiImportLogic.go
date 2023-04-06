@@ -26,8 +26,6 @@ func NewMultiImportLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 	}
 }
 
-const MultiImportDemoCnt = int64(3)
-
 func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, csv *excelize.File, demoCnt int64) (resp *types.DeviceMultiImportResp, err error) {
 	sm := sync.Map{}
 	var egg errgroup.Group
@@ -38,10 +36,10 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, csv *exc
 		return nil, errors.Parameter.WithMsg("读取表格Sheet失败了:" + err.Error())
 	}
 
-	var rowCnt int64
+	rowCnt := int64(1)
 	for ; rows.Next(); rowCnt++ {
 		rowIdx := rowCnt
-		if rowIdx < demoCnt { //第1行是标题、第2、3行是示例，均跳过
+		if rowIdx <= demoCnt { //第1行是标题、第2、3行是示例，均跳过
 			continue
 		}
 
@@ -67,6 +65,7 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, csv *exc
 		})
 
 	} //end for
+	rowCnt-- //最后多累计了1，要扣掉
 
 	//阻塞等待所有gorouting
 	if err = egg.Wait(); err != nil {
