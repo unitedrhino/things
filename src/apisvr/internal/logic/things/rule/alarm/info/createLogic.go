@@ -26,8 +26,8 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.AlarmInfoCreateReq) error {
-	_, err := l.svcCtx.Alarm.AlarmInfoCreate(l.ctx, &rule.AlarmInfo{
+func (l *CreateLogic) Create(req *types.AlarmInfoCreateReq) (*types.CommonResp, error) {
+	rst, err := l.svcCtx.Alarm.AlarmInfoCreate(l.ctx, &rule.AlarmInfo{
 		Name:  req.Name,
 		State: req.State,
 		Desc:  req.Desc,
@@ -36,8 +36,8 @@ func (l *CreateLogic) Create(req *types.AlarmInfoCreateReq) error {
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.AlarmInfoCreate req=%v err=%v", utils.FuncName(), req, er)
-		return er
+		return nil, er
 	}
 
-	return nil
+	return &types.CommonResp{ID: rst.Id}, nil
 }

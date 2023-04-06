@@ -6,7 +6,7 @@ import (
 )
 
 func TestRandom(t *testing.T) {
-	pass := Random(32, 1)
+	pass := Random(32, 2)
 	fmt.Println(pass)
 }
 
