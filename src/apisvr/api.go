@@ -19,6 +19,7 @@ func main() {
 	apiCtx.Server.Start()
 	defer apiCtx.Server.Stop()
 }
+
 func Test() {
 	sc := gocron.NewScheduler(time.Local)
 	job, err := sc.Tag("cron 1s test").CronWithSeconds("* * * * * ?").Do(func() {

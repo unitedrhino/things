@@ -72,7 +72,8 @@ func MultiImportHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		for rowCnt := int64(0); rows.Next(); rowCnt++ {
+		rowCnt := int64(1)
+		for ; rows.Next(); rowCnt++ {
 			if rowCnt >= rowLimitCnt {
 				result.Http(w, r, nil, errors.Parameter.WithMsgf("最多只能导入%s条数据", cast.ToString(limitCnt)))
 				return
