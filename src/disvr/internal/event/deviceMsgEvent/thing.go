@@ -58,7 +58,7 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 		Handle:     msg.Handle,
 		Types:      msg.Types,
 		Payload:    resp.AddStatus(err).Bytes(),
-		Timestamp:  time.Now(),
+		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}
@@ -219,6 +219,9 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 			return nil, errors.Parameter.AddDetailf("things types is err:%v", msg.Types)
 		}
 	}()
+	if l.dreq.NoAsk() { //如果不需要回复
+		respMsg = nil
+	}
 	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  msg.ProductID,
 		Action:     action,

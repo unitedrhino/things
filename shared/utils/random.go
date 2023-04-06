@@ -14,10 +14,11 @@ var (
 		"abcdefghijklmnopqrstuvwxyz"
 	//密码强度
 	strength = map[int]string{
-		0: digits + letter,
-		1: digits + letter + specials1,
-		2: digits + specials2 + letter,
-		3: digits + specials2 + letter + specials2}
+		0: digits,
+		1: digits + letter,
+		2: digits + letter + specials1,
+		3: digits + specials2 + letter,
+		4: digits + specials2 + letter + specials2}
 )
 
 /*
