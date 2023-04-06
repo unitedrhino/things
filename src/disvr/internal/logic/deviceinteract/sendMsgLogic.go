@@ -41,7 +41,7 @@ func (l *SendMsgLogic) SendMsg(in *di.SendMsgReq) (*di.SendMsgResp, error) {
 		return nil, errors.Parameter.AddMsg("只能发给设备")
 	}
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &deviceMsg.PublishMsg{
-		Timestamp:  time.Now(),
+		Timestamp:  time.Now().UnixMilli(),
 		Payload:    in.Payload,
 		Handle:     strings.TrimPrefix(topicInfo.TopicHead, "$"),
 		Types:      topicInfo.Types,

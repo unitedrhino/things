@@ -23,7 +23,7 @@ type (
 		Handle     string   //对应 mqtt topic的第一个 thing ota config 等等
 		Types      []string //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
 		Payload    []byte
-		Timestamp  time.Time
+		Timestamp  int64 //毫秒时间戳
 		ProductID  string
 		DeviceName string
 	}
@@ -105,7 +105,7 @@ func GetDevPublish(ctx context.Context, data []byte) (*PublishMsg, error) {
 		Topic:      pubInfo.Topic,
 		Types:      pubInfo.Types,
 		Payload:    pubInfo.Payload,
-		Timestamp:  time.UnixMilli(pubInfo.Timestamp),
+		Timestamp:  pubInfo.Timestamp,
 		ProductID:  pubInfo.ProductID,
 		DeviceName: pubInfo.DeviceName,
 	}
