@@ -58,7 +58,7 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 		Handle:     msg.Handle,
 		Types:      msg.Types,
 		Payload:    resp.AddStatus(err).Bytes(),
-		Timestamp:  time.Now(),
+		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}
