@@ -43,8 +43,6 @@ type (
 	LoginAuthReq                = dm.LoginAuthReq
 	PageInfo                    = dm.PageInfo
 	Point                       = dm.Point
-	ProductIDByNameIndexReq     = dm.ProductIDByNameIndexReq
-	ProductIDByNameIndexResp    = dm.ProductIDByNameIndexResp
 	ProductInfo                 = dm.ProductInfo
 	ProductInfoDeleteReq        = dm.ProductInfoDeleteReq
 	ProductInfoIndexReq         = dm.ProductInfoIndexReq

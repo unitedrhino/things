@@ -69,12 +69,10 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	}()
 
 	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
-		if pids, err := l.svcCtx.ProductInfo.FindIDsByNames(l.ctx, []string{in.ProductName}); err != nil {
+		if pid, err := l.svcCtx.ProductInfo.GetIDByName(l.ctx, mysql.ProductFilter{ProductName: in.ProductName}, nil); err != nil {
 			return nil, err
-		} else if len(pids) != 1 {
-			return nil, errors.NotFind.WithMsg("查无产品名对应的产品ID")
 		} else {
-			in.ProductID = pids[0]
+			in.ProductID = pid
 		}
 	}
 

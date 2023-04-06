@@ -52,12 +52,6 @@ func (s *ProductManageServer) ProductInfoRead(ctx context.Context, in *dm.Produc
 	return l.ProductInfoRead(in)
 }
 
-// 通过产品名称获取产品ID列表
-func (s *ProductManageServer) ProductIDByNameIndex(ctx context.Context, in *dm.ProductIDByNameIndexReq) (*dm.ProductIDByNameIndexResp, error) {
-	l := productmanagelogic.NewProductIDByNameIndexLogic(ctx, s.svcCtx)
-	return l.ProductIDByNameIndex(in)
-}
-
 // 更新产品物模型
 func (s *ProductManageServer) ProductSchemaUpdate(ctx context.Context, in *dm.ProductSchemaUpdateReq) (*dm.Response, error) {
 	l := productmanagelogic.NewProductSchemaUpdateLogic(ctx, s.svcCtx)
