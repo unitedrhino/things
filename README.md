@@ -169,7 +169,7 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 
 ### 本地运行步骤
 
-- 部署 需要的 组件服务，如 mysql、redis、nats、etcd、TDengine 等待，详见`ithings\src\apisvr\etc\*.yaml` 下的配置文件内容
+- 部署 需要的 组件服务，如 mysql、redis、nats、etcd、TDengine 等等，详见`ithings\src\apisvr\etc\*.yaml` 下的配置文件内容
 - 创建数据库`iThings`，并执行目录`ithings/deploy/conf/mysql/sql/`下所有SQL
 - 修改`IDE`工作目录为`ithings\src\apisvr`, 然后运行 `ithings/src/apisvr/api.go` 的 `main` 函数
 
