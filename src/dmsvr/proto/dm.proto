@@ -60,8 +60,6 @@ service ProductManage{
   rpc productInfoIndex(ProductInfoIndexReq)     returns (ProductInfoIndexResp);
   //获取产品信息详情
   rpc productInfoRead(ProductInfoReadReq)     returns (ProductInfo);
-  //通过产品名称获取产品ID列表
-  rpc productIDByNameIndex(ProductIDByNameIndexReq)     returns (ProductIDByNameIndexResp);
 
   /*物模型管理*/
   //更新产品物模型
@@ -270,13 +268,6 @@ message ProductInfoDeleteReq{
 
 message ProductInfoReadReq{
   string   productID = 1; //产品id
-}
-
-message ProductIDByNameIndexReq{
-  repeated string productNames = 1; //产品名称数组
-}
-message ProductIDByNameIndexResp{
-  repeated string productIDs = 1; //产品id数组
 }
 
 message ProductInfoIndexReq{
