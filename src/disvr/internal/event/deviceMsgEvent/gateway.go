@@ -71,7 +71,7 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		Handle:     msg.Handle,
 		Types:      msg.Types,
 		Payload:    respStr,
-		Timestamp:  time.Now(),
+		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}, nil
@@ -225,7 +225,7 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 				ProductID:  msg.ProductID,
 				DeviceName: msg.DeviceName,
 			},
-			Timestamp: msg.Timestamp.UnixMilli(),
+			Timestamp: msg.Timestamp,
 		}
 	)
 
