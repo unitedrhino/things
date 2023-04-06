@@ -118,7 +118,7 @@ func (p *PwdInfo) CmpPwd(signature, secret string) error {
 func GenSecretDeviceInfo(hmacType string, productID string, deviceName string, deviceSecret string) (
 	clientID, userName, password string) {
 	var (
-		connID = utils.Random(5, 0)
+		connID = utils.Random(5, 1)
 		expiry = time.Now().AddDate(0, 0, 10).Unix()
 		token  string
 		pwd, _ = base64.StdEncoding.DecodeString(deviceSecret)

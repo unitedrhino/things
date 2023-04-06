@@ -52,3 +52,16 @@ func (d Devices) GetProductIDs() []string {
 	}
 	return utils.SetToSlice(set)
 }
+func (d Devices) GetCore() Devices {
+	if d == nil {
+		return nil
+	}
+	var ret Devices
+	for _, v := range d {
+		ret = append(ret, &Device{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+	}
+	return ret
+}
