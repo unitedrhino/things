@@ -1,11 +1,15 @@
 package thing
 
 import (
+	"encoding/base64"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/tests/device/mqttTest"
+	"github.com/spf13/cast"
 	"sync"
 	"testing"
+	"time"
 )
 
 var (
@@ -27,6 +31,34 @@ func GetInit(t *testing.T) (*mqttTest.ClientInfo, mqtt.Client) {
 	})
 
 	return clientInfo, mc
+}
+
+func TestGatewayOperationRegister(t *testing.T) {
+	clientInfo, mc := GetInit(t)
+	subTopic := fmt.Sprintf("$gateway/down/operation/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
+	pubTopic := fmt.Sprintf("$gateway/up/operation/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
+	pubPayload := `
+{
+  "method": "register",
+  "payload": {
+    "devices": [
+      {
+        "productID": "255fCKEJ02I",
+        "deviceName": "subdeviceaa5"
+      }
+    ]
+  }
+}
+`
+	err := mqttTest.Assert(mc, mqttTest.AssertInfo{
+		SubTopic: subTopic,
+		PubTopic: pubTopic,
+		Req:      []byte(pubPayload),
+	}, func(resp []byte) error {
+		t.Log(string(resp))
+		return nil
+	})
+	t.Log(err)
 }
 
 func TestGatewayStatusOnline(t *testing.T) {
@@ -84,23 +116,34 @@ func TestGatewayOperationBind(t *testing.T) {
 	clientInfo, mc := GetInit(t)
 	subTopic := fmt.Sprintf("$gateway/down/operation/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
 	pubTopic := fmt.Sprintf("$gateway/up/operation/%s/%s", clientInfo.ProductID, clientInfo.DeviceName)
+	subDevice := mqttTest.SubDevice
+	random := utils.Random(5, 0)
+	ts := time.Now().Unix()
+	sign := fmt.Sprintf("%v;%v;%v;%v", subDevice.ProductID, subDevice.DeviceName, random, ts)
+	pwd, _ := base64.StdEncoding.DecodeString(subDevice.DeviceSecret)
+	signature := utils.HmacSha256(sign, pwd)
 	pubPayload := `
 	{
-	  "method": "bind",
- "payload": {
+  "method": "bind",
+  "payload": {
     "devices": [
       {
-            "productID": "255fCKEJ02I",
-            "deviceName": "test1"
-        }
+        "productID": "%s",
+        "deviceName": "%s",
+        "signature": "%s",
+        "random": %d,
+        "timestamp": %v,
+        "signMethod": "hmacsha256"
+      }
     ]
   }
-	}
+}
 `
+	pub := fmt.Sprintf(pubPayload, subDevice.ProductID, subDevice.DeviceName, signature, cast.ToInt(random), ts)
 	err := mqttTest.Assert(mc, mqttTest.AssertInfo{
 		SubTopic: subTopic,
 		PubTopic: pubTopic,
-		Req:      []byte(pubPayload),
+		Req:      []byte(pub),
 	}, func(resp []byte) error {
 		t.Log(string(resp))
 		return nil
