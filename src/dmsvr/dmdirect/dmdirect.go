@@ -2,6 +2,7 @@ package dmdirect
 
 import (
 	"github.com/i-Things/things/src/dmsvr/internal/config"
+	"github.com/i-Things/things/src/dmsvr/internal/startup"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/conf"
 	"sync"
@@ -10,7 +11,7 @@ import (
 type Config = config.Config
 
 var (
-	ctxSvc *svc.ServiceContext
+	svcCtx *svc.ServiceContext
 	once   sync.Once
 	c      config.Config
 )
@@ -18,7 +19,8 @@ var (
 func GetCtxSvc() *svc.ServiceContext {
 	once.Do(func() {
 		conf.MustLoad("etc/dm.yaml", &c)
-		ctxSvc = svc.NewServiceContext(c)
+		svcCtx = svc.NewServiceContext(c)
+		startup.Subscribe(svcCtx)
 	})
-	return ctxSvc
+	return svcCtx
 }
