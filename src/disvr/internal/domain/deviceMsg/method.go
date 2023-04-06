@@ -62,7 +62,7 @@ const (
 	Unbind             Method = "unbind"             //解绑设备
 	DescribeSubDevices Method = "describeSubDevices" //查询拓扑关系
 	Change             Method = "change"             //拓扑关系变化
-
+	Register           Method = "register"           //注册新设备
 	/*
 		数据上行 Topic（用于发布）：$gateway/status/${productid}/${devicename}
 		数据下行 Topic（用于订阅）：$gateway/status/${productid}/${devicename}

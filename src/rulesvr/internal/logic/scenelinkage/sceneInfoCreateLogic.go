@@ -41,7 +41,7 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *rule.SceneInfo) (*rule.Respon
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.SceneRepo.Insert(l.ctx, do)
+	id, err := l.svcCtx.SceneRepo.Insert(l.ctx, do)
 	if err != nil {
 		return nil, err
 	}
@@ -49,5 +49,5 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *rule.SceneInfo) (*rule.Respon
 	if err != nil {
 		return nil, err
 	}
-	return &rule.Response{}, err
+	return &rule.Response{Id: id}, err
 }

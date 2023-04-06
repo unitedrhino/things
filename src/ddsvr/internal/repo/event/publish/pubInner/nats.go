@@ -29,7 +29,13 @@ func newNatsClient(conf conf.NatsConf) (PubInner, error) {
 func (n *NatsClient) DevPubGateway(ctx context.Context, publishMsg *devices.DevPublish) error {
 	pubStr, _ := json.Marshal(publishMsg)
 	return n.publish(ctx,
-		fmt.Sprintf(topics.DeviceUpGateway, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
+		fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
+}
+
+func (n *NatsClient) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
+	pubStr, _ := json.Marshal(publishMsg)
+	return n.publish(ctx,
+		fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
 }
 
 func (n *NatsClient) DevPubThing(ctx context.Context, publishMsg *devices.DevPublish) error {

@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/publish/pubInner"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"strings"
 	"time"
 )
 
@@ -26,68 +27,18 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 	}
 }
 
-// Thing 设备发布物模型消息的信息通过nats转发给内部服务
-func (s *DeviceSubServer) Thing(topic string, payload []byte) error {
+// Msg 设备发布物模型消息的信息通过nats转发给内部服务
+func (s *DeviceSubServer) Msg(topic string, payload []byte) error {
 	pub, err := s.getDevPublish(topic, payload)
 	if pub == nil {
 		return err
 	}
 	ctx1, span := traces.StartSpan(s.ctx, topic, "")
 
-	logx.Infof("mqtt.Thing trace:%s, spanID:%s topic:%s payload:%v",
+	logx.Infof("mqtt.Msg trace:%s, spanID:%s topic:%s payload:%v",
 		span.SpanContext().TraceID(), span.SpanContext().SpanID(), topic, string(payload))
 	defer span.End()
-	return s.svcCtx.PubInner.DevPubThing(ctx1, pub)
-}
-
-// Ota ota远程升级
-func (s *DeviceSubServer) Ota(topic string, payload []byte) error {
-	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
-	pub, err := s.getDevPublish(topic, payload)
-	if pub == nil {
-		return err
-	}
-	return s.svcCtx.PubInner.DevPubOta(s.ctx, pub)
-}
-
-// Config 设备远程配置
-func (s *DeviceSubServer) Config(topic string, payload []byte) error {
-	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
-	pub, err := s.getDevPublish(topic, payload)
-	if pub == nil {
-		return err
-	}
-	return s.svcCtx.PubInner.DevPubConfig(s.ctx, pub)
-}
-
-// Shadow 设备影子
-func (s *DeviceSubServer) Shadow(topic string, payload []byte) error {
-	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
-	pub, err := s.getDevPublish(topic, payload)
-	if pub == nil {
-		return err
-	}
-	return s.svcCtx.PubInner.DevPubShadow(s.ctx, pub)
-}
-
-// Log 设备调试日志
-func (s *DeviceSubServer) SDKLog(topic string, payload []byte) error {
-	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
-	pub, err := s.getDevPublish(topic, payload)
-	if pub == nil {
-		return err
-	}
-	return s.svcCtx.PubInner.DevPubSDKLog(s.ctx, pub)
-}
-
-// Log 设备调试日志
-func (s *DeviceSubServer) Gateway(topic string, payload []byte) error {
-	s.Infof("%s topic:%v payload:%v", utils.FuncName(), topic, string(payload))
-	pub, err := s.getDevPublish(topic, payload)
-	if pub == nil {
-		return err
-	}
-	return s.svcCtx.PubInner.DevPubGateway(s.ctx, pub)
+	return s.svcCtx.PubInner.DevPubMsg(ctx1, pub)
 }
 
 func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.DevPublish, error) {
@@ -100,9 +51,11 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 		return nil, nil
 	}
 	return &devices.DevPublish{
-		Timestamp:  time.Now().UnixMilli(),
 		Topic:      topic,
+		Timestamp:  time.Now().UnixMilli(),
 		Payload:    payload,
+		Handle:     strings.TrimPrefix(topicInfo.TopicHead, "$"),
+		Types:      topicInfo.Types,
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,
 	}, nil
