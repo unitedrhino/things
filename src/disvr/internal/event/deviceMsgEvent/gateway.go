@@ -71,10 +71,75 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		Handle:     msg.Handle,
 		Types:      msg.Types,
 		Payload:    respStr,
-		Timestamp:  time.Now(),
+		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}, nil
+}
+
+func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGateway.Msg) (respMsg *msgGateway.Msg, err error) {
+	var (
+		payload msgGateway.GatewayPayload
+	)
+
+	pds := l.dreq.Payload.Devices.GetProductIDs()
+	pis, err := l.svcCtx.ProductM.ProductInfoIndex(l.ctx, &dm.ProductInfoIndexReq{
+		ProductIDs: pds,
+	})
+	if err != nil {
+		er := errors.Fmt(err)
+		resp.AddStatus(er)
+		return resp, er
+	}
+	{ //参数检查
+		if len(pis.List) != len(pds) {
+			er := errors.Parameter.AddMsg("有产品id不正确,请查验")
+			resp.AddStatus(er)
+			return resp, er
+		}
+		for _, pi := range pis.List {
+			if pi.AutoRegister != def.AutoRegAuto {
+				er := errors.Parameter.AddMsgf("产品:%s 未打开自动注册", pi.ProductName)
+				resp.AddStatus(er)
+				return resp, er
+			}
+		}
+	}
+	for _, v := range l.dreq.Payload.Devices {
+		//更新对应设备的online状态
+		_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, &dm.DeviceInfo{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+		if err != nil {
+			l.Errorf("%s.DeviceM.DeviceInfoCreate productID:%v deviceName:%v err:%v",
+				utils.FuncName(), v.ProductID, v.DeviceName, err)
+			payload.Devices = append(payload.Devices, &msgGateway.Device{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+				Result:     errors.Fmt(err).GetCode(),
+				Status:     errors.Fmt(err).Msg,
+			})
+			continue
+		}
+		di, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+		if err != nil {
+			l.Errorf("%s.DeviceM.DeviceInfoRead productID:%v deviceName:%v err:%v",
+				utils.FuncName(), v.ProductID, v.DeviceName, err)
+		}
+		payload.Devices = append(payload.Devices, &msgGateway.Device{
+			ProductID:    v.ProductID,
+			DeviceName:   v.DeviceName,
+			DeviceSecret: di.GetSecret(),
+			Result:       errors.Fmt(err).GetCode(),
+			Status:       errors.Fmt(err).GetMsg(),
+		})
+	}
+	resp.Payload = &payload
+	return resp, nil
 }
 
 func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
@@ -83,49 +148,67 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 		CommonMsg: deviceMsg.NewRespCommonMsg(l.dreq.Method, l.dreq.ClientToken),
 	}
 	resp.AddStatus(errors.OK)
-	switch l.dreq.Method {
-	case deviceMsg.Bind:
-		_, err := l.svcCtx.DeviceM.DeviceGatewayMultiCreate(l.ctx, &dm.DeviceGatewayMultiCreateReq{
-			GatewayProductID:  msg.ProductID,
-			GatewayDeviceName: msg.DeviceName,
-			List:              ToDmDevicesCore(l.dreq.Payload.Devices),
-		})
-		if err != nil {
-			resp.AddStatus(err)
-			return &resp, err
-		}
-		resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices}
-	case deviceMsg.Unbind:
-		_, err := l.svcCtx.DeviceM.DeviceGatewayMultiDelete(l.ctx, &dm.DeviceGatewayMultiDeleteReq{
-			GatewayProductID:  msg.ProductID,
-			GatewayDeviceName: msg.DeviceName,
-			List:              ToDmDevicesCore(l.dreq.Payload.Devices),
-		})
-		if err != nil {
-			resp.AddStatus(err)
-			return &resp, err
-		}
-		resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices}
-	case deviceMsg.DescribeSubDevices:
-		deviceList, err := l.svcCtx.DeviceM.DeviceGatewayIndex(l.ctx, &dm.DeviceGatewayIndexReq{
-			GatewayProductID:  msg.ProductID,
-			GatewayDeviceName: msg.DeviceName,
-		})
-		if err != nil {
-			resp.AddStatus(err)
-			return &resp, err
-		}
-		var payload msgGateway.GatewayPayload
-		for _, device := range deviceList.List {
-			payload.Devices = append(payload.Devices, &msgGateway.Device{
-				ProductID:  device.ProductID,
-				DeviceName: device.DeviceName,
-				Result:     errors.OK.Code,
+	rsp, err := func() (respMsg *msgGateway.Msg, err error) {
+		switch l.dreq.Method {
+		case deviceMsg.Register:
+			return l.HandleRegister(msg, &resp)
+		case deviceMsg.Bind:
+			list, err := ToDmDevicesBind(l.dreq.Payload.Devices)
+			if err != nil {
+				resp.AddStatus(err)
+				return &resp, err
+			}
+			_, err = l.svcCtx.DeviceM.DeviceGatewayMultiCreate(l.ctx, &dm.DeviceGatewayMultiCreateReq{
+				IsAuthSign:        true,
+				GatewayProductID:  msg.ProductID,
+				GatewayDeviceName: msg.DeviceName,
+				List:              list,
 			})
+			if err != nil {
+				resp.AddStatus(err)
+				return &resp, err
+			}
+			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
+			return &resp, nil
+		case deviceMsg.Unbind:
+			_, err := l.svcCtx.DeviceM.DeviceGatewayMultiDelete(l.ctx, &dm.DeviceGatewayMultiDeleteReq{
+				GatewayProductID:  msg.ProductID,
+				GatewayDeviceName: msg.DeviceName,
+				List:              ToDmDevicesCore(l.dreq.Payload.Devices),
+			})
+			if err != nil {
+				resp.AddStatus(err)
+				return &resp, err
+			}
+			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
+		case deviceMsg.DescribeSubDevices:
+			deviceList, err := l.svcCtx.DeviceM.DeviceGatewayIndex(l.ctx, &dm.DeviceGatewayIndexReq{
+				GatewayProductID:  msg.ProductID,
+				GatewayDeviceName: msg.DeviceName,
+			})
+			if err != nil {
+				resp.AddStatus(err)
+				return &resp, err
+			}
+			var payload msgGateway.GatewayPayload
+			for _, device := range deviceList.List {
+				payload.Devices = append(payload.Devices, &msgGateway.Device{
+					ProductID:  device.ProductID,
+					DeviceName: device.DeviceName,
+					Result:     errors.OK.Code,
+				})
+			}
+			resp.Payload = &payload
+			return &resp, err
+		default:
+			return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Types)
 		}
-		resp.Payload = &payload
+		return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Types)
+	}()
+	if l.dreq.NoAsk() { //如果不需要回复
+		rsp = nil
 	}
-	return &resp, err
+	return rsp, err
 }
 
 func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
@@ -142,7 +225,7 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 				ProductID:  msg.ProductID,
 				DeviceName: msg.DeviceName,
 			},
-			Timestamp: msg.Timestamp.UnixMilli(),
+			Timestamp: msg.Timestamp,
 		}
 	)
 
@@ -180,6 +263,7 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 			Result:     errors.Fmt(err).GetCode(),
+			Status:     errors.Fmt(err).GetMsg(),
 		})
 	}
 	return &resp, err
