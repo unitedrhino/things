@@ -20,11 +20,6 @@ OpenAuth:
       Password: iThings
     - UserName: root
       Password: iThings
-  IpRange:
-    - 127.0.0.1
-    - 172.18.0.1
-    - 172.19.0.1
-    - 192.168.1.1
 DdEnable: true
 SysRpc:
   Enable: true
