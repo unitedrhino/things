@@ -87,3 +87,14 @@ func (s *ProductManageServer) ProductSchemaTslRead(ctx context.Context, in *dm.P
 	l := productmanagelogic.NewProductSchemaTslReadLogic(ctx, s.svcCtx)
 	return l.ProductSchemaTslRead(in)
 }
+
+// 脚本管理
+func (s *ProductManageServer) ProductScriptRead(ctx context.Context, in *dm.ProductScriptReadReq) (*dm.ProductScript, error) {
+	l := productmanagelogic.NewProductScriptReadLogic(ctx, s.svcCtx)
+	return l.ProductScriptRead(in)
+}
+
+func (s *ProductManageServer) ProductScriptUpdate(ctx context.Context, in *dm.ProductScript) (*dm.Response, error) {
+	l := productmanagelogic.NewProductScriptUpdateLogic(ctx, s.svcCtx)
+	return l.ProductScriptUpdate(in)
+}

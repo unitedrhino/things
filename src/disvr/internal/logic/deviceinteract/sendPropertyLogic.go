@@ -74,7 +74,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
 		Handle:     devices.Thing,
-		Types:      []string{msgThing.TypeProperty},
+		Type:       msgThing.TypeProperty,
 		Payload:    payload,
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  in.ProductID,

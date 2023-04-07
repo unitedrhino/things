@@ -19,9 +19,9 @@ const (
 
 type (
 	PublishMsg struct { //发布消息结构体
-		Topic      string   //只用于日志记录
-		Handle     string   //对应 mqtt topic的第一个 thing ota config 等等
-		Types      []string //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+		Topic      string //只用于日志记录
+		Handle     string //对应 mqtt topic的第一个 thing ota config 等等
+		Type       string //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
 		Payload    []byte
 		Timestamp  int64 //毫秒时间戳
 		ProductID  string
@@ -45,7 +45,7 @@ type (
 func (p *PublishMsg) String() string {
 	msgMap := map[string]any{
 		"Handle":      p.Handle,
-		"Types":       p.Types,
+		"Type":        p.Type,
 		"Payload":     string(p.Payload),
 		"Timestamp":   p.Timestamp,
 		"ProductID":   p.ProductID,
@@ -103,7 +103,7 @@ func GetDevPublish(ctx context.Context, data []byte) (*PublishMsg, error) {
 	ele := PublishMsg{
 		Handle:     pubInfo.Handle,
 		Topic:      pubInfo.Topic,
-		Types:      pubInfo.Types,
+		Type:       pubInfo.Type,
 		Payload:    pubInfo.Payload,
 		Timestamp:  pubInfo.Timestamp,
 		ProductID:  pubInfo.ProductID,
