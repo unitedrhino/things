@@ -26,9 +26,9 @@ func (d Req) AddStatus(err error) Req {
 	return d
 }
 
-func (d *Req) GetTimeStamp(defaultTime time.Time) time.Time {
+func (d *Req) GetTimeStamp(defaultTime int64) time.Time {
 	if d.Timestamp == 0 {
-		return defaultTime
+		return time.UnixMilli(defaultTime)
 	}
 	return time.UnixMilli(d.Timestamp)
 }

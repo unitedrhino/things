@@ -24,7 +24,7 @@ type (
 		FindByFilter(ctx context.Context, filter DeviceFilter, page def.PageInfo) ([]*DmDeviceInfo, error)
 		CountByFilter(ctx context.Context, filter DeviceFilter) (size int64, err error)
 		CountGroupByField(ctx context.Context, filter DeviceFilter, fieldName string) (map[string]int64, error)
-		FindOneByProductIDAndDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error)
+		FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error)
 		UpdateDeviceInfo(ctx context.Context, data *DmDeviceInfo) error
 	}
 
@@ -155,7 +155,7 @@ func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *Dm
 	return err
 }
 
-func (m *customDmDeviceInfoModel) FindOneByProductIDAndDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error) {
+func (m *customDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error) {
 	var resp DmDeviceInfo
 	query := fmt.Sprintf("select %s from %s where `productID` = ? and `deviceName` = ? limit 1", dmDeviceInfoRows, m.table)
 	//position字段为point类型 无法直接读取，需使用函数AsText转换后再读取

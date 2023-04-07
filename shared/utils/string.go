@@ -1,5 +1,7 @@
 package utils
 
+import "strings"
+
 //从目标串src中查找第n个目标字符c所在位置下标
 func IndexN(src string, c byte, n int) int {
 	var s []byte
@@ -14,4 +16,19 @@ func IndexN(src string, c byte, n int) int {
 		}
 	}
 	return -1
+}
+
+//SplitCutset 按数组 cuset 里的分隔符，对 str 进行切割
+func SplitCutset(str, cutset string) []string {
+	words := strings.FieldsFunc(str, func(r rune) bool {
+		return strings.ContainsRune(cutset, r)
+	})
+	result := make([]string, 0, len(words))
+	for _, w := range words {
+		wd := strings.TrimSpace(w)
+		if wd != "" {
+			result = append(result, wd)
+		}
+	}
+	return result
 }

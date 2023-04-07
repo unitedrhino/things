@@ -67,7 +67,7 @@ func GetClientIDInfo(ClientID string) (*LoginDevice, error) {
 	return lg, nil
 }
 
-//字符串类型的产品id有11个字节,不够的需要在前面补0
+// 字符串类型的产品id有11个字节,不够的需要在前面补0
 func GetStrProductID(id int64) string {
 	str := utils.DecimalToAny(id, 62)
 	return utils.ToLen(str, 11)
@@ -77,35 +77,38 @@ func GetInt64ProductID(id string) int64 {
 	return utils.AnyToDecimal(id, 62)
 }
 
-func NewPwdInfo(password string) (*PwdInfo, error) {
-	keys := strings.Split(password, ";")
-	if len(keys) != 2 {
-		return nil, errors.Parameter.AddDetail("password not right")
-	}
+func NewPwdInfo(signature string, signMethod string) (*PwdInfo, error) {
 	var HmacHandle func(data string, secret []byte) string
-	switch keys[1] {
+	switch signMethod {
 	case HmacSha256:
 		HmacHandle = utils.HmacSha256
 	case HmacSha1:
 		HmacHandle = utils.HmacSha1
 	default:
-		return nil, errors.Parameter.AddDetail("password not suppot encrypt method:" + keys[1])
+		return nil, errors.Parameter.AddDetail("password not support encrypt method:" + signMethod)
 	}
-
 	return &PwdInfo{
-		token:      keys[0],
-		hmac:       keys[1],
+		token:      signature,
+		hmac:       signMethod,
 		HmacHandle: HmacHandle,
 	}, nil
+}
+
+func NewPwdInfoWithPwd(password string) (*PwdInfo, error) {
+	keys := strings.Split(password, ";")
+	if len(keys) != 2 {
+		return nil, errors.Parameter.AddDetail("password not right")
+	}
+	return NewPwdInfo(keys[0], keys[1])
 }
 
 /*
 比较设备秘钥是否正确
 @param secret 设备秘钥
 */
-func (p *PwdInfo) CmpPwd(userName, secret string) error {
+func (p *PwdInfo) CmpPwd(signature, secret string) error {
 	pwd, _ := base64.StdEncoding.DecodeString(secret)
-	passwrod := p.HmacHandle(userName, pwd)
+	passwrod := p.HmacHandle(signature, pwd)
 	if passwrod != p.token {
 		return errors.Password
 	}
@@ -115,7 +118,7 @@ func (p *PwdInfo) CmpPwd(userName, secret string) error {
 func GenSecretDeviceInfo(hmacType string, productID string, deviceName string, deviceSecret string) (
 	clientID, userName, password string) {
 	var (
-		connID = utils.Random(5, 0)
+		connID = utils.Random(5, 1)
 		expiry = time.Now().AddDate(0, 0, 10).Unix()
 		token  string
 		pwd, _ = base64.StdEncoding.DecodeString(deviceSecret)
