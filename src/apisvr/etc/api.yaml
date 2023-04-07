@@ -21,6 +21,13 @@ OpenAuth:
       Password: iThings
     - UserName: root
       Password: iThings
+Proxy:
+  FileProxy:
+    - FrontDir: ./dist
+      FrontDefaultPage: front/iThingsCore/index.html
+  StaticProxy:
+    - Router: /api/v1/app/
+      Dest: http://127.0.0.1:8000
 DdEnable: true
 SysRpc:
   Enable: true
