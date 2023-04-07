@@ -60,6 +60,8 @@ type (
 	ProductSchemaTslReadReq     = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp    = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq      = dm.ProductSchemaUpdateReq
+	ProductScript               = dm.ProductScript
+	ProductScriptReadReq        = dm.ProductScriptReadReq
 	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq        = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp       = dm.RemoteConfigIndexResp
@@ -92,6 +94,9 @@ type (
 		ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error)
 		// 获取产品信息列表
 		ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
+		// 脚本管理
+		ProductScriptRead(ctx context.Context, in *ProductScriptReadReq, opts ...grpc.CallOption) (*ProductScript, error)
+		ProductScriptUpdate(ctx context.Context, in *ProductScript, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultProductManage struct {
@@ -236,4 +241,24 @@ func (m *defaultProductManage) ProductSchemaTslRead(ctx context.Context, in *Pro
 // 获取产品信息列表
 func (d *directProductManage) ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error) {
 	return d.svr.ProductSchemaTslRead(ctx, in)
+}
+
+// 脚本管理
+func (m *defaultProductManage) ProductScriptRead(ctx context.Context, in *ProductScriptReadReq, opts ...grpc.CallOption) (*ProductScript, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductScriptRead(ctx, in, opts...)
+}
+
+// 脚本管理
+func (d *directProductManage) ProductScriptRead(ctx context.Context, in *ProductScriptReadReq, opts ...grpc.CallOption) (*ProductScript, error) {
+	return d.svr.ProductScriptRead(ctx, in)
+}
+
+func (m *defaultProductManage) ProductScriptUpdate(ctx context.Context, in *ProductScript, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductScriptUpdate(ctx, in, opts...)
+}
+
+func (d *directProductManage) ProductScriptUpdate(ctx context.Context, in *ProductScript, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ProductScriptUpdate(ctx, in)
 }

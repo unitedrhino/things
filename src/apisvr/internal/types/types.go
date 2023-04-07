@@ -854,6 +854,16 @@ type ProductRemoteConfigLastestReadResp struct {
 	ProductRemoteConfig
 }
 
+type ProductScript struct {
+	ProductID string `json:"productId"`
+	Script    string `json:"script"`
+	Lang      int64  `json:"lang"` //脚本语言类型 1:JavaScript 2:lua 3:python
+}
+
+type ProductScriptReadReq struct {
+	ProductID string `json:"productID"` //产品id 只读
+}
+
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string"`     //分组ID
 	GroupName   string `json:"groupName"`          //分组名称

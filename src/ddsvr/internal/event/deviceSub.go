@@ -55,7 +55,7 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 		Timestamp:  time.Now().UnixMilli(),
 		Payload:    payload,
 		Handle:     strings.TrimPrefix(topicInfo.TopicHead, "$"),
-		Types:      topicInfo.Types,
+		Type:       topicInfo.Types[0],
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,
 	}, nil

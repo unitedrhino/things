@@ -21,6 +21,7 @@ type ServiceContext struct {
 	Config           config.Config
 	DeviceInfo       mysql.DmDeviceInfoModel
 	ProductInfo      mysql.DmProductInfoModel
+	ProductScript    mysql.DmProductScriptModel
 	ProductSchema    mysql.DmProductSchemaModel
 	DeviceID         *utils.SnowFlake
 	ProductID        *utils.SnowFlake
@@ -49,6 +50,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	di := mysql.NewDmDeviceInfoModel(conn)
 	pi := mysql.NewDmProductInfoModel(conn)
 	pt := mysql.NewDmProductSchemaModel(conn)
+	ps := mysql.NewDmProductScriptModel(conn)
 	tr := cache.NewSchemaRepo(pt)
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
 	fr := mysql.NewDmProductFirmwareModel(conn)
@@ -84,6 +86,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SchemaManaRepo:   deviceData,
 		HubLogRepo:       hubLog,
 		SDKLogRepo:       sdkLog,
+		ProductScript:    ps,
 		GroupInfo:        gi,
 		GroupDevice:      gd,
 		GroupID:          GroupID,

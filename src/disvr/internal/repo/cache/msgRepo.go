@@ -7,16 +7,15 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/zeromicro/go-zero/core/stores/kv"
-	"strings"
 )
 
 const (
 	msgExpr = 10 * 60
 )
 
-func genDeviceMsgKey(msgType string, handle string, types []string, device devices.Core, clientToken string) string {
+func genDeviceMsgKey(msgType string, handle string, Type string, device devices.Core, clientToken string) string {
 	return fmt.Sprintf("device:%s:%s:%s:%s:%s:%s",
-		handle, strings.Join(types, ":"), msgType, device.ProductID, device.DeviceName, clientToken)
+		handle, Type, msgType, device.ProductID, device.DeviceName, clientToken)
 }
 
 func SetDeviceMsg(ctx context.Context, store kv.Store, msgType string, req *deviceMsg.PublishMsg, clientToken string) error {
@@ -24,15 +23,15 @@ func SetDeviceMsg(ctx context.Context, store kv.Store, msgType string, req *devi
 	if err != nil {
 		return err
 	}
-	err = store.SetexCtx(ctx, genDeviceMsgKey(msgType, req.Handle, req.Types, devices.Core{
+	err = store.SetexCtx(ctx, genDeviceMsgKey(msgType, req.Handle, req.Type, devices.Core{
 		ProductID:  req.ProductID,
 		DeviceName: req.DeviceName,
 	}, clientToken), string(payload), msgExpr)
 	return err
 }
 
-func GetDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType string /*请求还是回复*/, handle string, types []string, device devices.Core, clientToken string) (*reqType, error) {
-	val, err := store.GetCtx(ctx, genDeviceMsgKey(msgType, handle, types, devices.Core{
+func GetDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType string /*请求还是回复*/, handle string, Type string, device devices.Core, clientToken string) (*reqType, error) {
+	val, err := store.GetCtx(ctx, genDeviceMsgKey(msgType, handle, Type, devices.Core{
 		ProductID:  device.ProductID,
 		DeviceName: device.DeviceName,
 	}, clientToken))
