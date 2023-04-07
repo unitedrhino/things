@@ -339,6 +339,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/count",
 					Handler: thingsdeviceinfo.CountHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-import",
+					Handler: thingsdeviceinfo.MultiImportHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/info"),

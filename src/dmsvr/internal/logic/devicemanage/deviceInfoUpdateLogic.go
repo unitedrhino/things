@@ -68,7 +68,7 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DmDeviceInfo, data *dm.D
 
 // 更新设备
 func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Response, error) {
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDAndDeviceName(l.ctx, in.ProductID, in.DeviceName)
+	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.NotFind.AddDetailf("not find device productID=%s deviceName=%s",

@@ -45,6 +45,17 @@ func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
 		Position:    &dm.Point{Longitude: Longitude, Latitude: Latitude},
 	}
 }
+
+func BindToDeviceCoreDos(in []*dm.DeviceGatewayBindDevice) (ret []*devices.Core) {
+	for _, v := range in {
+		ret = append(ret, &devices.Core{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+	}
+	return
+}
+
 func ToDeviceCoreDos(in []*dm.DeviceCore) (ret []*devices.Core) {
 	for _, v := range in {
 		ret = append(ret, &devices.Core{
@@ -56,6 +67,15 @@ func ToDeviceCoreDos(in []*dm.DeviceCore) (ret []*devices.Core) {
 }
 
 func ToDeviceCoreEvents(in []*dm.DeviceCore) (ret []*events.DeviceCore) {
+	for _, v := range in {
+		ret = append(ret, &events.DeviceCore{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+	}
+	return
+}
+func BindToDeviceCoreEvents(in []*dm.DeviceGatewayBindDevice) (ret []*events.DeviceCore) {
 	for _, v := range in {
 		ret = append(ret, &events.DeviceCore{
 			ProductID:  v.ProductID,

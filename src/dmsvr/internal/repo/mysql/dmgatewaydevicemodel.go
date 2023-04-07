@@ -34,7 +34,7 @@ type (
 )
 
 func (g GatewayDeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
-	sql = sql.Where("`gatewayProductID`=? and `gatewayDeviceName`=?", g.Gateway.ProductID, g.Gateway.DeviceName)
+	sql = sql.Where("`gatewayProductID`=? and `gatewayDeviceName`=? and di.id IS NOT NULL", g.Gateway.ProductID, g.Gateway.DeviceName)
 	return sql
 }
 
@@ -66,7 +66,8 @@ func (c customDmGatewayDeviceModel) FindByFilter(ctx context.Context, f GatewayD
 }
 
 func (c customDmGatewayDeviceModel) CountByFilter(ctx context.Context, f GatewayDeviceFilter) (size int64, err error) {
-	sql := sq.Select("count(1)").From(c.table)
+	sql := sq.Select("count(1)").From(c.table + "as gd").
+		LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.productID and di.deviceName=gd.deviceName", c.deviceInfoTable))
 	sql = f.FmtSql(sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {

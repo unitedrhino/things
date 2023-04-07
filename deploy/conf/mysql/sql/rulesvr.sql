@@ -1,3 +1,4 @@
+-- 协议规则引擎模块SQL
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 

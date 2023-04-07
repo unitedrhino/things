@@ -10,6 +10,14 @@ const (
 	LogDebug LogLevel = 5 //调试
 )
 
+var LogLevelTextToIntMap = map[string]LogLevel{
+	"关闭": LogClose,
+	"错误": LogError,
+	"告警": LogWarn,
+	"信息": LogInfo,
+	"调试": LogDebug,
+}
+
 const (
 	GatewayBind   = 1 //绑定
 	GatewayUnbind = 2 //解绑

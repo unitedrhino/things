@@ -34,7 +34,7 @@ func (l *SDKLogLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	if err != nil {
 		return err
 	}
-	err = utils.Unmarshal([]byte(msg.Payload), &l.dreq)
+	err = utils.Unmarshal(msg.Payload, &l.dreq)
 	if err != nil {
 		return errors.Parameter.AddDetailf("sdkLog Unmarshal err:%v", err)
 	}
@@ -54,6 +54,9 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 		respMsg, err = l.ReportLogContent(msg)
 	default:
 		return nil, errors.Parameter.AddDetailf("sdk log types is err:%v", msg.Types)
+	}
+	if l.dreq.NoAsk() { //如果不需要回复
+		respMsg = nil
 	}
 	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  msg.ProductID,
