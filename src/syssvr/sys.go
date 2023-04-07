@@ -1,3 +1,4 @@
+//系统管理模块-syssvr
 package main
 
 import (
@@ -18,7 +19,6 @@ func main() {
 	c := ctx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		sys.RegisterUserServer(grpcServer, userServer.NewUserServer(ctx))
-
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

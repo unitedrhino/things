@@ -79,14 +79,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var ap api.Api
 	//var me menu.Menu
 	if c.DmRpc.Enable {
-		if c.DmRpc.Mode == conf.ClientModeGrpc {
+		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
 			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
 			sysCommon = common.NewCommon(zrpc.MustNewClient(c.DmRpc.Conf))
-		} else {
+		} else { //直连模式
 			deviceM = dmdirect.NewDeviceManage()
 			productM = dmdirect.NewProductManage()
 			deviceA = dmdirect.NewDeviceAuth()
