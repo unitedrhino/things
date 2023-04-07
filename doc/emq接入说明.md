@@ -44,7 +44,6 @@ ${productID} 为产品id ${deviceName} 为设备id
 
 # EMQX配置文件
 
-
 ```
 
 auth.http.auth_req = http://127.0.0.1:8080/mqtt/auth
@@ -79,4 +78,5 @@ auth.http.acl_req.params = access=%A,username=%u,clientid=%c,ip=%a,topic=%t
 - %t: topic
 
 ## HTTP API
+
 成功返回**200**；失败返回**400**即可

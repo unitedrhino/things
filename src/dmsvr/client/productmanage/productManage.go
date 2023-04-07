@@ -16,10 +16,12 @@ import (
 type (
 	AccessAuthReq               = dm.AccessAuthReq
 	DeviceCore                  = dm.DeviceCore
+	DeviceGatewayBindDevice     = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq       = dm.DeviceGatewayIndexReq
 	DeviceGatewayIndexResp      = dm.DeviceGatewayIndexResp
 	DeviceGatewayMultiCreateReq = dm.DeviceGatewayMultiCreateReq
 	DeviceGatewayMultiDeleteReq = dm.DeviceGatewayMultiDeleteReq
+	DeviceGatewaySign           = dm.DeviceGatewaySign
 	DeviceInfo                  = dm.DeviceInfo
 	DeviceInfoCountReq          = dm.DeviceInfoCountReq
 	DeviceInfoCountResp         = dm.DeviceInfoCountResp

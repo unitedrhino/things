@@ -75,7 +75,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		Handle:     devices.Thing,
 		Types:      []string{msgThing.TypeAction},
 		Payload:    payload,
-		Timestamp:  time.Time{},
+		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
