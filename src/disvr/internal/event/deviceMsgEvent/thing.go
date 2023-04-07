@@ -73,6 +73,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 
 		return l.DeviceResp(msg, err, nil), err
 	}
+
 	params := msgThing.ToVal(tp)
 	timeStamp := req.GetTimeStamp(msg.Timestamp)
 	core := devices.Core{
@@ -89,12 +90,13 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 			l.Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
 		}
 	}
+
 	err = l.dd.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
-
 		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 		return l.DeviceResp(msg, errors.Database, nil), err
 	}
+
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
