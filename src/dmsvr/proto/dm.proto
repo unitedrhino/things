@@ -262,6 +262,7 @@ message DeviceInfo{
   map<string, string> tags = 12;//设备标签
   google.protobuf.StringValue address = 13; // 所在地址 读写
   Point Position = 14;   //设备定位,默认百度坐标系
+  string   productName = 15; //产品名称 只读
 }
 
 message ProductInfo{
@@ -287,8 +288,6 @@ message ProductInfoDeleteReq{
 message ProductInfoReadReq{
   string   productID = 1; //产品id
 }
-
-
 
 message ProductInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
