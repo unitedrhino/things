@@ -32,6 +32,23 @@ CREATE TABLE if not exists `dm_product_info`
     ROW_FORMAT = COMPACT COMMENT ='产品信息表';
 
 
+CREATE TABLE if not exists `dm_product_script`
+(
+    `id`          bigint       NOT NULL AUTO_INCREMENT,
+    `productID`   char(11) NOT NULL COMMENT '产品id',
+    `script` text  not null comment '脚本',
+    `lang` tinyint(1)  default 1 comment '脚本语言类型 1:JavaScript 2:lua 3:python',
+    `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deletedTime` datetime          DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `productID` (`productID`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 4
+  DEFAULT CHARSET = utf8mb4
+  ROW_FORMAT = COMPACT COMMENT ='产品脚本表';
+
+
 CREATE TABLE if not exists `dm_product_schema`
 (
     `id`          bigint       NOT NULL AUTO_INCREMENT,

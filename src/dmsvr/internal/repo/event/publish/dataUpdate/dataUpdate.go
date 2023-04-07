@@ -9,6 +9,7 @@ import (
 
 type (
 	DataUpdate interface {
+		ProductScriptUpdate(ctx context.Context, info *events.DataUpdateInfo) error
 		ProductSchemaUpdate(ctx context.Context, info *events.DataUpdateInfo) error
 		DeviceLogLevelUpdate(ctx context.Context, info *events.DataUpdateInfo) error
 		DeviceGatewayUpdate(ctx context.Context, info *events.GatewayUpdateInfo) error

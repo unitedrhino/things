@@ -44,7 +44,7 @@ func (l *SendMsgLogic) SendMsg(in *di.SendMsgReq) (*di.SendMsgResp, error) {
 		Timestamp:  time.Now().UnixMilli(),
 		Payload:    in.Payload,
 		Handle:     strings.TrimPrefix(topicInfo.TopicHead, "$"),
-		Types:      topicInfo.Types,
+		Type:       topicInfo.Types[0],
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,
 	})
