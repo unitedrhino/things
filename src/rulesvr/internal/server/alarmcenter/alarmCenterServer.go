@@ -42,6 +42,11 @@ func (s *AlarmCenterServer) AlarmInfoIndex(ctx context.Context, in *rule.AlarmIn
 	return l.AlarmInfoIndex(in)
 }
 
+func (s *AlarmCenterServer) AlarmInfoRead(ctx context.Context, in *rule.AlarmInfoReadReq) (*rule.AlarmInfo, error) {
+	l := alarmcenterlogic.NewAlarmInfoReadLogic(ctx, s.svcCtx)
+	return l.AlarmInfoRead(in)
+}
+
 // 告警关联场景联动
 func (s *AlarmCenterServer) AlarmSceneMultiCreate(ctx context.Context, in *rule.AlarmSceneMultiCreateReq) (*rule.Response, error) {
 	l := alarmcenterlogic.NewAlarmSceneMultiCreateLogic(ctx, s.svcCtx)

@@ -22,6 +22,7 @@ type (
 	AlarmInfoDeleteReq       = rule.AlarmInfoDeleteReq
 	AlarmInfoIndexReq        = rule.AlarmInfoIndexReq
 	AlarmInfoIndexResp       = rule.AlarmInfoIndexResp
+	AlarmInfoReadReq         = rule.AlarmInfoReadReq
 	AlarmLog                 = rule.AlarmLog
 	AlarmLogIndexReq         = rule.AlarmLogIndexReq
 	AlarmLogIndexResp        = rule.AlarmLogIndexResp

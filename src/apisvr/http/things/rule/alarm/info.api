@@ -24,6 +24,9 @@ service api {
     @doc "获取告警信息列表"
     @handler index
     post /index (AlarmInfoIndexReq) returns (AlarmInfoIndexResp)
+    @doc "获取告警信息"
+    @handler read
+    post /read (AlarmInfoReadReq) returns (AlarmInfo)
 }
 
 type (
@@ -32,6 +35,9 @@ type (
     }
     AlarmInfoUpdateReq struct {
         AlarmInfo
+    }
+    AlarmInfoReadReq struct {
+        ID          int64     `json:"id"`
     }
     AlarmInfoDeleteReq struct {
         ID          int64     `json:"id"`

@@ -40,15 +40,7 @@ func (l *IndexLogic) Index(req *types.AlarmInfoIndexReq) (resp *types.AlarmInfoI
 	}
 	pis := make([]*types.AlarmInfo, 0, len(ret.List))
 	for _, v := range ret.List {
-		pi := &types.AlarmInfo{
-			ID:          v.Id,
-			Name:        v.Name,
-			State:       v.State,
-			Desc:        v.Desc,
-			CreatedTime: v.CreatedTime,
-			Level:       v.Level,
-		}
-		pis = append(pis, pi)
+		pis = append(pis, AlarmInfoToApi(v))
 	}
 	return &types.AlarmInfoIndexResp{
 		Total: ret.Total,
