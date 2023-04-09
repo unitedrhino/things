@@ -1004,9 +1004,10 @@ type AlarmInfoDeleteReq struct {
 }
 
 type AlarmInfoIndexReq struct {
-	Page    *PageInfo `json:"page,optional"`    //分页信息 只获取一个则不填
-	Name    string    `json:"name,optional"`    //告警名模糊查询
-	SceneID int64     `json:"sceneID,optional"` //状态: 1启用 2禁用
+	Page     *PageInfo `json:"page,optional"`     //分页信息 只获取一个则不填
+	Name     string    `json:"name,optional"`     //告警名模糊查询
+	SceneID  int64     `json:"sceneID,optional"`  //状态: 1启用 2禁用
+	AlarmIDs []int64   `json:"alarmIDs,optional"` //告警id列表
 }
 
 type AlarmInfoIndexResp struct {
