@@ -29,9 +29,10 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.AlarmInfoIndexReq) (resp *types.AlarmInfoIndexResp, err error) {
 	ret, err := l.svcCtx.Alarm.AlarmInfoIndex(l.ctx, &rule.AlarmInfoIndexReq{
-		Page:    logic.ToRulePageRpc(req.Page),
-		Name:    req.Name,
-		SceneID: req.SceneID,
+		Page:     logic.ToRulePageRpc(req.Page),
+		Name:     req.Name,
+		SceneID:  req.SceneID,
+		AlarmIDs: req.AlarmIDs,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
