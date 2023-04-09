@@ -39,6 +39,7 @@ service alarmCenter{
   rpc alarmInfoUpdate(AlarmInfo)returns(Response);
   rpc alarmInfoDelete(AlarmInfoDeleteReq)returns(Response);
   rpc alarmInfoIndex(AlarmInfoIndexReq)returns(AlarmInfoIndexResp);
+  rpc alarmInfoRead(AlarmInfoReadReq)returns(AlarmInfo);
 
   //告警关联场景联动
   rpc alarmSceneMultiCreate(alarmSceneMultiCreateReq)returns(Response);//绑定场景联动
@@ -178,6 +179,9 @@ message AlarmInfo{
   int64 createdTime = 6;//创建时间
 }
 
+message AlarmInfoReadReq{
+  int64 id = 1;//告警id
+}
 
 message AlarmInfoDeleteReq{
   int64 id = 1;//告警id
