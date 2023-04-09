@@ -995,6 +995,10 @@ type AlarmInfoUpdateReq struct {
 	AlarmInfo
 }
 
+type AlarmInfoReadReq struct {
+	ID int64 `json:"id"`
+}
+
 type AlarmInfoDeleteReq struct {
 	ID int64 `json:"id"`
 }
