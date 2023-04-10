@@ -12,6 +12,11 @@ DevLink:
     User: ddsvr
     Brokers:
       - tcp://127.0.0.1:1883
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
 
 Telemetry:
   Name: dd
