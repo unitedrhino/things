@@ -1,6 +1,7 @@
 package def
 
 import (
+	"fmt"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -11,15 +12,28 @@ const (
 	OrderDesc        //时间从近到久排序
 )
 
+var orderMap = map[int64]string{
+	OrderAes:  "aes",
+	OrderDesc: "desc",
+}
+
 type PageInfo struct {
-	Page int64 `json:"page" form:"page"`         // 页码
-	Size int64 `json:"pageSize" form:"pageSize"` // 每页大小
+	Page   int64     `json:"page" form:"page"`         // 页码
+	Size   int64     `json:"pageSize" form:"pageSize"` // 每页大小
+	Orders []OrderBy `json:"orderBy" form:"orderBy"`   // 排序信息
 }
 type PageInfo2 struct {
-	TimeStart int64 `json:"timeStart"`
-	TimeEnd   int64 `json:"timeEnd"`
-	Page      int64 `json:"page" form:"page"` // 页码
-	Size      int64 `json:"size" form:"size"` // 每页大小
+	TimeStart int64     `json:"timeStart"`
+	TimeEnd   int64     `json:"timeEnd"`
+	Page      int64     `json:"page" form:"page"`       // 页码
+	Size      int64     `json:"size" form:"size"`       // 每页大小
+	Orders    []OrderBy `json:"orderBy" form:"orderBy"` // 排序信息
+}
+
+//排序结构体
+type OrderBy struct {
+	Filed string `json:"filed" form:"filed"` //要排序的字段名
+	Sort  int64  `json:"sort" form:"sort"`   //排序的方式： OrderAes 、 OrderDesc
 }
 
 type TimeRange struct {
@@ -38,6 +52,16 @@ func (p *PageInfo) GetOffset() int64 {
 		return 0
 	}
 	return p.Size * (p.Page - 1)
+}
+
+//获取排序参数
+func (p *PageInfo) GetOrders() (arr []string) {
+	if p != nil && len(p.Orders) > 0 {
+		for _, o := range p.Orders {
+			arr = append(arr, fmt.Sprintf("`%s` %s", o.Filed, orderMap[o.Sort]))
+		}
+	}
+	return
 }
 
 func (p PageInfo2) GetLimit() int64 {

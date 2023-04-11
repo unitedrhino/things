@@ -2,15 +2,17 @@ package info
 
 import (
 	"bytes"
+	"encoding/csv"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/result"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/shared/utils/cast"
 	"github.com/i-Things/things/src/apisvr/internal/logic/things/device/info"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/xuri/excelize/v2"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/rest/httpx"
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
 	"net/http"
 	"path"
 )
@@ -26,10 +28,9 @@ func MultiImportHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}()
 
 		var (
-			demoCnt     = int64(3)
-			limitCnt    = int64(1000)
-			rowLimitCnt = demoCnt + limitCnt
-			req         types.DeviceMultiImportReq
+			req      types.DeviceMultiImportReq
+			limitCnt = 1000              //限制表格数据条数
+			limitKB  = float64(5 * 1024) //限制表格文件大小（5M）
 		)
 
 		if err := httpx.Parse(r, &req); err != nil {
@@ -51,8 +52,8 @@ func MultiImportHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		//判断和限制大小
-		if KB := float64(fh.Size) / 1024; KB > 700 { //byte->KB，限制最大700KB
-			result.Http(w, r, nil, errors.Parameter.WithMsg("文件不能超过700KB"))
+		if fileKB := float64(fh.Size) / 1024; fileKB > limitKB { //byte->KB
+			result.Http(w, r, nil, errors.Parameter.WithMsgf("文件不能超过%.2fM", limitKB/1024))
 			return
 		}
 
@@ -62,29 +63,20 @@ func MultiImportHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		reader := bytes.NewReader(fb)
-		csv, err := excelize.OpenReader(reader)
+		reader := csv.NewReader(transform.NewReader(bytes.NewReader(fb), simplifiedchinese.GB18030.NewDecoder()))
+		rows, err := reader.ReadAll()
 		if err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("读取表格内容失败:"+err.Error()))
 			return
 		}
-		rows, err := csv.Rows(csv.GetSheetName(0))
-		if err != nil {
-			result.Http(w, r, nil, errors.Parameter.WithMsg("读取表格Sheet失败:"+err.Error()))
+		if len(rows)-1 > limitCnt {
+			result.Http(w, r, nil, errors.Parameter.WithMsgf("最多只能导入%s条数据", cast.ToString(limitCnt)))
 			return
-		}
-
-		rowCnt := int64(1)
-		for ; rows.Next(); rowCnt++ {
-			if rowCnt >= rowLimitCnt {
-				result.Http(w, r, nil, errors.Parameter.WithMsgf("最多只能导入%s条数据", cast.ToString(limitCnt)))
-				return
-			}
 		}
 
 		req.File = fb
 		l := info.NewMultiImportLogic(r.Context(), svcCtx)
-		resp, err := l.MultiImport(&req, csv, demoCnt)
+		resp, err := l.MultiImport(&req, rows)
 		result.Http(w, r, resp, err)
 	}
 }
