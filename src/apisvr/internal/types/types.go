@@ -854,6 +854,17 @@ type ProductRemoteConfigLastestReadResp struct {
 	ProductRemoteConfig
 }
 
+type ProductCustom struct {
+	ProductID       string   `json:"productID"`
+	TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
+	ScriptLang      int64    `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+	CustomTopic     []string `json:"customTopic,optional"`     //自定义topic数组
+}
+
+type ProductCustomReadReq struct {
+	ProductID string `json:"productID"` //产品id 只读
+}
+
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string"`     //分组ID
 	GroupName   string `json:"groupName"`          //分组名称

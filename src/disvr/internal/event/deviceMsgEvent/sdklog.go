@@ -47,13 +47,13 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	if err != nil {
 		return nil, err
 	}
-	switch msg.Types[0] {
+	switch msg.Type {
 	case msgSdkLog.TypeOperation:
 		respMsg, err = l.GetLogLevel(msg)
 	case msgSdkLog.TypeReport:
 		respMsg, err = l.ReportLogContent(msg)
 	default:
-		return nil, errors.Parameter.AddDetailf("sdk log types is err:%v", msg.Types)
+		return nil, errors.Parameter.AddDetailf("sdk log types is err:%v", msg.Type)
 	}
 	if l.dreq.NoAsk() { //如果不需要回复
 		respMsg = nil
@@ -129,7 +129,7 @@ func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any)
 	}
 	return &deviceMsg.PublishMsg{
 		Handle:     msg.Handle,
-		Types:      msg.Types,
+		Type:       msg.Type,
 		Payload:    resp.AddStatus(err).Bytes(),
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,

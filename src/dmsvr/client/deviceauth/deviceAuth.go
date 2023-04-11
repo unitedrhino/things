@@ -46,6 +46,8 @@ type (
 	PageInfo                    = dm.PageInfo
 	PageInfo_OrderBy            = dm.PageInfo_OrderBy
 	Point                       = dm.Point
+	ProductCustom               = dm.ProductCustom
+	ProductCustomReadReq        = dm.ProductCustomReadReq
 	ProductInfo                 = dm.ProductInfo
 	ProductInfoDeleteReq        = dm.ProductInfoDeleteReq
 	ProductInfoIndexReq         = dm.ProductInfoIndexReq
