@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/ddsvr/internal/domain/script"
+	"github.com/i-Things/things/src/ddsvr/internal/domain/custom"
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/publish/pubInner"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -49,9 +49,9 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 	}
 	finalPayload := payload
 	handle := strings.TrimPrefix(topicInfo.TopicHead, "$")
-	if len(topicInfo.Types) > 1 && topicInfo.Types[1] == script.CustomType {
+	if len(topicInfo.Types) > 1 && topicInfo.Types[1] == custom.CustomType {
 		//自定义协议
-		f, err := s.svcCtx.Script.GetProtoFunc(s.ctx, topicInfo.ProductID, script.ConvertTypeRowToProto, handle, topicInfo.Types[0])
+		f, err := s.svcCtx.Script.GetProtoFunc(s.ctx, topicInfo.ProductID, custom.ConvertTypeUp, handle, topicInfo.Types[0])
 		if err != nil {
 			s.Errorf("%s.GetProtoFunc topicInfo:%#v err:%v", utils.FuncName(), topicInfo, err)
 			return nil, err
@@ -71,7 +71,7 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 		Topic:      topic,
 		Timestamp:  time.Now().UnixMilli(),
 		Payload:    finalPayload,
-		Handle:     strings.TrimPrefix(topicInfo.TopicHead, "$"),
+		Handle:     handle,
 		Type:       topicInfo.Types[0],
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,

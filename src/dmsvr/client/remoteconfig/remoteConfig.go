@@ -45,6 +45,8 @@ type (
 	LoginAuthReq                = dm.LoginAuthReq
 	PageInfo                    = dm.PageInfo
 	Point                       = dm.Point
+	ProductCustom               = dm.ProductCustom
+	ProductCustomReadReq        = dm.ProductCustomReadReq
 	ProductInfo                 = dm.ProductInfo
 	ProductInfoDeleteReq        = dm.ProductInfoDeleteReq
 	ProductInfoIndexReq         = dm.ProductInfoIndexReq
@@ -60,8 +62,6 @@ type (
 	ProductSchemaTslReadReq     = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp    = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq      = dm.ProductSchemaUpdateReq
-	ProductScript               = dm.ProductScript
-	ProductScriptReadReq        = dm.ProductScriptReadReq
 	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq        = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp       = dm.RemoteConfigIndexResp
