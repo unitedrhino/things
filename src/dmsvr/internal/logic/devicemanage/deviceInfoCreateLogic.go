@@ -128,7 +128,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	err = l.svcCtx.DeviceInfo.InsertDeviceInfo(l.ctx, &di)
 	if err != nil {
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
-		return nil, errors.System.AddDetail(err)
+		return nil, errors.Database.AddDetail(err)
 	}
 
 	return &dm.Response{}, nil
