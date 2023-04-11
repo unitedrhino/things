@@ -44,6 +44,7 @@ type (
 	GroupInfoUpdateReq          = dm.GroupInfoUpdateReq
 	LoginAuthReq                = dm.LoginAuthReq
 	PageInfo                    = dm.PageInfo
+	PageInfo_OrderBy            = dm.PageInfo_OrderBy
 	Point                       = dm.Point
 	ProductInfo                 = dm.ProductInfo
 	ProductInfoDeleteReq        = dm.ProductInfoDeleteReq
