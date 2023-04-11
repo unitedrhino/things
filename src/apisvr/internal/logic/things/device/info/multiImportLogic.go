@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"golang.org/x/sync/errgroup"
+	"sort"
 	"strings"
 	"sync"
 )
@@ -22,17 +23,6 @@ type MultiImportLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
-type (
-	multiImportCsvRow struct {
-		ProductName string //【必填】产品名称
-		DeviceName  string //【必填】设备名称 读写
-		LogLevel    string //【可选】日志级别:关闭 错误 告警 信息 5调试
-		Tags        string //【可选】设备tags
-		Position    string //【可选】设备定位,默认百度坐标系
-		Address     string //【可选】所在详细地址
-	}
-)
-
 func NewMultiImportLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiImportLogic {
 	return &MultiImportLogic{
 		Logger: logx.WithContext(ctx),
@@ -42,25 +32,32 @@ func NewMultiImportLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 }
 
 func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][]string) (resp *types.DeviceMultiImportResp, err error) {
-	sm := sync.Map{}
-	var egg errgroup.Group
-	var errDatas []types.DeviceMultiImportErrdata
+	var (
+		sm      = sync.Map{}
+		egg     errgroup.Group
+		headers *types.DeviceMultiImportRow
+		errdata []*types.DeviceMultiImportRow
+	)
 
 	for i, cell := range rows {
 		idx := int64(i) //这里必须是 int64，因为下面 key.(int64) 要推断
-		if idx == 0 {
-			continue //第一行是 header，跳过
-		}
 
 		//cell转dto
-		dmReq, err := l.deviceMultiImportCellToDeviceInfo(cell)
+		importRow := l.deviceMultiImportRowToDto(idx, cell)
+		if idx == 0 { //第一行是表头
+			headers = importRow
+			continue //数据处理 跳过表头
+		}
+
+		dmDeviceInfoReq, err := l.deviceMultiImportRowToDeviceInfo(importRow)
 		if err != nil {
-			errDatas = append(errDatas, types.DeviceMultiImportErrdata{int64(idx + 1), "行数据解析出错:" + errors.Fmt(err).GetMsg()})
+			importRow.Tips = "行数据解析出错:" + errors.Fmt(err).GetMsg()
+			errdata = append(errdata, importRow)
 			continue
 		}
 
 		egg.Go(func() error {
-			_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, dmReq)
+			_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, dmDeviceInfoReq)
 			if err != nil {
 				sm.Store(idx, errors.Fmt(err).GetMsg())
 			}
@@ -74,30 +71,43 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 		return nil, err
 	}
 
-	sm.Range(func(key, value any) bool {
-		errDatas = append(errDatas, types.DeviceMultiImportErrdata{key.(int64), "创建设备出错:" + value.(string)})
+	sm.Range(func(i, value any) bool {
+		idx := i.(int64) //这里必须是 int64，因为下面 key.(int64) 要推断
+		importRow := l.deviceMultiImportRowToDto(idx, rows[idx])
+		importRow.Tips = "创建设备出错:" + value.(string)
+		errdata = append(errdata, importRow)
 		return true
 	})
 
+	if len(errdata) > 0 { //重新排序
+		sort.Slice(errdata, func(i, j int) bool { return errdata[i].Row < errdata[j].Row })
+	}
+
 	return &types.DeviceMultiImportResp{
 		Total:   int64(len(rows) - 1),
-		Errdata: errDatas,
+		Headers: headers,
+		Errdata: errdata,
 	}, nil
 }
 
-//deviceMultiImportCellToDeviceInfo cell转dto
-func (l *MultiImportLogic) deviceMultiImportCellToDeviceInfo(cell []string) (info *dm.DeviceInfo, err error) {
+func (l *MultiImportLogic) deviceMultiImportRowToDto(idx int64, cell []string) *types.DeviceMultiImportRow {
+	return &types.DeviceMultiImportRow{
+		Row:         idx,
+		ProductName: strings.TrimSpace(utils.SliceIndex(cell, 0, "")),
+		DeviceName:  strings.TrimSpace(utils.SliceIndex(cell, 1, "")),
+		LogLevel:    strings.TrimSpace(utils.SliceIndex(cell, 2, "")),
+		Tags:        strings.TrimSpace(utils.SliceIndex(cell, 3, "")),
+		Position:    strings.TrimSpace(utils.SliceIndex(cell, 4, "")),
+		Address:     strings.TrimSpace(utils.SliceIndex(cell, 5, "")),
+		Tips:        strings.TrimSpace(utils.SliceIndex(cell, 6, "")),
+	}
+}
+
+//deviceMultiImportRowToDeviceInfo cell转dto
+func (l *MultiImportLogic) deviceMultiImportRowToDeviceInfo(importRow *types.DeviceMultiImportRow) (info *dm.DeviceInfo, err error) {
 	var (
 		demoDataTag = "ithingsdemo"
 		deviceInfo  = &dm.DeviceInfo{}
-		importRow   = &multiImportCsvRow{
-			ProductName: strings.TrimSpace(utils.SliceIndex(cell, 0, "")),
-			DeviceName:  strings.TrimSpace(utils.SliceIndex(cell, 1, "")),
-			LogLevel:    strings.TrimSpace(utils.SliceIndex(cell, 2, "")),
-			Tags:        strings.TrimSpace(utils.SliceIndex(cell, 3, "")),
-			Position:    strings.TrimSpace(utils.SliceIndex(cell, 4, "")),
-			Address:     strings.TrimSpace(utils.SliceIndex(cell, 5, "")),
-		}
 	)
 
 	if importRow.ProductName == "" {
