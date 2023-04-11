@@ -102,8 +102,8 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Property))
-	switch l.dreq.Type {
-	case deviceMsg.Report:
+	switch l.dreq.Type { //表示获取什么类型的信息（report:表示设备上报的信息 info:信息 alert:告警 fault:故障）
+	case deviceMsg.Report: //表示设备属性上报
 		for id := range l.schema.Property {
 			data, err := l.dd.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
 				ProductID:  msg.ProductID,
@@ -130,14 +130,15 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 	return l.DeviceResp(msg, errors.OK, respData), nil
 }
 
+//属性上报
 func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
-	switch l.dreq.Method {
-	case deviceMsg.Report, deviceMsg.ReportInfo:
+	switch l.dreq.Method { //操作方法
+	case deviceMsg.Report, deviceMsg.ReportInfo: //设备属性上报
 		return l.HandlePropertyReport(msg, l.dreq)
-	case deviceMsg.GetStatus:
+	case deviceMsg.GetStatus: //设备请求获取 云端记录的最新设备信息
 		return l.HandlePropertyGetStatus(msg)
-	case deviceMsg.ControlReply:
+	case deviceMsg.ControlReply: //设备回复的 云端下发控制指令 的处理结果
 		return l.HandleResp(msg)
 	default:
 		return nil, errors.Method
@@ -209,12 +210,12 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	var action = devices.Thing
 	respMsg, err = func() (respMsg *deviceMsg.PublishMsg, err error) {
 		action = msg.Type
-		switch msg.Type {
-		case msgThing.TypeProperty: //属性上报
+		switch msg.Type { //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+		case msgThing.TypeProperty: //属性或信息上报
 			return l.HandleProperty(msg)
 		case msgThing.TypeEvent: //事件上报
 			return l.HandleEvent(msg)
-		case msgThing.TypeAction: //设备响应行为执行结果
+		case msgThing.TypeAction: //行为上报
 			return l.HandleResp(msg)
 		default:
 			action = devices.Thing
