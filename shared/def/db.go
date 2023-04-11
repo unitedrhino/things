@@ -33,7 +33,7 @@ type PageInfo2 struct {
 //排序结构体
 type OrderBy struct {
 	Filed string `json:"filed" form:"filed"` //要排序的字段名
-	Sort  int64  `json:"sort" form:"sort"`   //排序的方式： OrderAes 、 OrderDesc
+	Sort  int64  `json:"sort" form:"sort"`   //排序的方式：0 OrderAes、1 OrderDesc
 }
 
 type TimeRange struct {
