@@ -84,7 +84,7 @@ func (t CmpType) Validate(values []string) error {
 	return nil
 }
 
-//判断条件是否成立
+// 判断条件是否成立
 func (t Terms) IsHit(ctx context.Context, repo TermRepo) bool {
 	if len(t) == 0 {
 		return true
@@ -96,6 +96,10 @@ func (t Terms) IsHit(ctx context.Context, repo TermRepo) bool {
 		if !isHit && nextCondition == TermConditionTypeAnd {
 			return false
 		}
+		if isHit && nextCondition == TermConditionTypeOr {
+			return true
+		}
+		//如果没有命中又是or条件,或者命中了但是是and条件,则需要继续判断
 		finalIsHit = isHit //如果是or,每个都返回false那就是false
 		nextCondition = v.NextCondition
 	}

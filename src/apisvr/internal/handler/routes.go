@@ -640,6 +640,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/index",
 					Handler: thingsrulealarminfo.IndexHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsrulealarminfo.ReadHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/rule/alarm/info"),
