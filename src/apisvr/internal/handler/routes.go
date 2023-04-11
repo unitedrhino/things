@@ -18,10 +18,10 @@ import (
 	thingsdevicemsg "github.com/i-Things/things/src/apisvr/internal/handler/things/device/msg"
 	thingsgroupdevice "github.com/i-Things/things/src/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/group/info"
+	thingsproductcustom "github.com/i-Things/things/src/apisvr/internal/handler/things/product/custom"
 	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
 	thingsproductremoteConfig "github.com/i-Things/things/src/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/src/apisvr/internal/handler/things/product/schema"
-	thingsproductscript "github.com/i-Things/things/src/apisvr/internal/handler/things/product/script"
 	thingsrulealarmdealRecord "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/alarm/dealRecord"
 	thingsrulealarminfo "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/alarm/info"
 	thingsrulealarmlog "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/alarm/log"
@@ -493,16 +493,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/update",
-					Handler: thingsproductscript.UpdateHandler(serverCtx),
+					Handler: thingsproductcustom.UpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/read",
-					Handler: thingsproductscript.ReadHandler(serverCtx),
+					Handler: thingsproductcustom.ReadHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/product/script"),
+		rest.WithPrefix("/api/v1/things/product/custom"),
 	)
 
 	server.AddRoutes(

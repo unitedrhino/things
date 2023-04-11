@@ -639,8 +639,8 @@ type ProductManageClient interface {
 	//获取产品信息列表
 	ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
 	//脚本管理
-	ProductScriptRead(ctx context.Context, in *ProductScriptReadReq, opts ...grpc.CallOption) (*ProductScript, error)
-	ProductScriptUpdate(ctx context.Context, in *ProductScript, opts ...grpc.CallOption) (*Response, error)
+	ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error)
+	ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error)
 }
 
 type productManageClient struct {
@@ -750,18 +750,18 @@ func (c *productManageClient) ProductSchemaTslRead(ctx context.Context, in *Prod
 	return out, nil
 }
 
-func (c *productManageClient) ProductScriptRead(ctx context.Context, in *ProductScriptReadReq, opts ...grpc.CallOption) (*ProductScript, error) {
-	out := new(ProductScript)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/productScriptRead", in, out, opts...)
+func (c *productManageClient) ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error) {
+	out := new(ProductCustom)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productCustomRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *productManageClient) ProductScriptUpdate(ctx context.Context, in *ProductScript, opts ...grpc.CallOption) (*Response, error) {
+func (c *productManageClient) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/dm.ProductManage/productScriptUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.ProductManage/productCustomUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -795,8 +795,8 @@ type ProductManageServer interface {
 	//获取产品信息列表
 	ProductSchemaTslRead(context.Context, *ProductSchemaTslReadReq) (*ProductSchemaTslReadResp, error)
 	//脚本管理
-	ProductScriptRead(context.Context, *ProductScriptReadReq) (*ProductScript, error)
-	ProductScriptUpdate(context.Context, *ProductScript) (*Response, error)
+	ProductCustomRead(context.Context, *ProductCustomReadReq) (*ProductCustom, error)
+	ProductCustomUpdate(context.Context, *ProductCustom) (*Response, error)
 	mustEmbedUnimplementedProductManageServer()
 }
 
@@ -837,11 +837,11 @@ func (UnimplementedProductManageServer) ProductSchemaTslImport(context.Context, 
 func (UnimplementedProductManageServer) ProductSchemaTslRead(context.Context, *ProductSchemaTslReadReq) (*ProductSchemaTslReadResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaTslRead not implemented")
 }
-func (UnimplementedProductManageServer) ProductScriptRead(context.Context, *ProductScriptReadReq) (*ProductScript, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductScriptRead not implemented")
+func (UnimplementedProductManageServer) ProductCustomRead(context.Context, *ProductCustomReadReq) (*ProductCustom, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCustomRead not implemented")
 }
-func (UnimplementedProductManageServer) ProductScriptUpdate(context.Context, *ProductScript) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductScriptUpdate not implemented")
+func (UnimplementedProductManageServer) ProductCustomUpdate(context.Context, *ProductCustom) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCustomUpdate not implemented")
 }
 func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
 
@@ -1054,38 +1054,38 @@ func _ProductManage_ProductSchemaTslRead_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProductManage_ProductScriptRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductScriptReadReq)
+func _ProductManage_ProductCustomRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCustomReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProductManageServer).ProductScriptRead(ctx, in)
+		return srv.(ProductManageServer).ProductCustomRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/productScriptRead",
+		FullMethod: "/dm.ProductManage/productCustomRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductScriptRead(ctx, req.(*ProductScriptReadReq))
+		return srv.(ProductManageServer).ProductCustomRead(ctx, req.(*ProductCustomReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProductManage_ProductScriptUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductScript)
+func _ProductManage_ProductCustomUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCustom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProductManageServer).ProductScriptUpdate(ctx, in)
+		return srv.(ProductManageServer).ProductCustomUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.ProductManage/productScriptUpdate",
+		FullMethod: "/dm.ProductManage/productCustomUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductScriptUpdate(ctx, req.(*ProductScript))
+		return srv.(ProductManageServer).ProductCustomUpdate(ctx, req.(*ProductCustom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1142,12 +1142,12 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ProductManage_ProductSchemaTslRead_Handler,
 		},
 		{
-			MethodName: "productScriptRead",
-			Handler:    _ProductManage_ProductScriptRead_Handler,
+			MethodName: "productCustomRead",
+			Handler:    _ProductManage_ProductCustomRead_Handler,
 		},
 		{
-			MethodName: "productScriptUpdate",
-			Handler:    _ProductManage_ProductScriptUpdate_Handler,
+			MethodName: "productCustomUpdate",
+			Handler:    _ProductManage_ProductCustomUpdate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -32,7 +32,7 @@ type (
 		Method      string     `json:"method"`              //操作方法
 		ClientToken string     `json:"clientToken"`         //方便排查随机数
 		Timestamp   int64      `json:"timestamp,omitempty"` //毫秒时间戳
-		Code        int64      `json:"code,omitempty"`      //状态码
+		Code        int64      `json:"code"`                //状态码
 		Status      string     `json:"status,omitempty"`    //返回信息
 		Data        any        `json:"data,omitempty"`      //返回具体设备上报的最新数据内容
 		Sys         *SysConfig `json:"sys,omitempty"`       //系统配置

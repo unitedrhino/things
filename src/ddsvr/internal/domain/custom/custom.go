@@ -1,4 +1,4 @@
-package script
+package custom
 
 import (
 	"context"
@@ -6,15 +6,16 @@ import (
 	"fmt"
 	"github.com/dop251/goja"
 	"github.com/i-Things/things/shared/devices"
-	"strings"
+	"github.com/i-Things/things/shared/utils"
 	"sync"
 )
 
 type (
 	Info struct {
-		ProductID string
-		Script    string
-		Lang      int64
+		ProductID       string
+		TransformScript *string //可能为空
+		ScriptLang      int64
+		CustomTopic     []string
 	}
 	Vm struct {
 		sync.Pool
@@ -44,15 +45,18 @@ const (
 type ConvertType int
 
 const (
-	ConvertTypeRowToProto ConvertType = iota //自定义协议转iThings协议
-	ConvertTypeProtoToRow                    //iThings协议转自定义协议
-	ConvertTypeTransform                     //自定义topic协议转换
+	ConvertTypeUp        ConvertType = iota //自定义协议转iThings协议
+	ConvertTypeDown                         //iThings协议转自定义协议
+	ConvertTypeTransform                    //自定义topic协议转换
 )
 
 func (i *Info) InitScript() *Vm {
+	if i.TransformScript == nil || *i.TransformScript == "" {
+		return nil
+	}
 	vmInfo := Vm{Pool: sync.Pool{New: func() any {
 		vm := goja.New()
-		_, err := vm.RunString(i.Script)
+		_, err := vm.RunString(*i.TransformScript)
 		if err != nil {
 			return nil
 		}
@@ -61,11 +65,12 @@ func (i *Info) InitScript() *Vm {
 	return &vmInfo
 }
 
-func (v *Vm) RawDataToProtocol(ctx context.Context,
+// 上行数据
+func (v *Vm) DataUp(ctx context.Context,
 	handle string, /*对应 mqtt topic的第一个 thing ota config 等等*/
 	Type string /*操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为*/) ConvertFunc {
 	vm := v.Get().(*goja.Runtime)
-	funName := fmt.Sprintf("%s%sProtocolToRawData", handle, strings.ToTitle(Type))
+	funName := fmt.Sprintf("%s%sUp", handle, utils.FirstUpper(Type))
 	convert, ok := goja.AssertFunction(vm.Get(funName))
 	if !ok {
 		return nil
@@ -75,24 +80,38 @@ func (v *Vm) RawDataToProtocol(ctx context.Context,
 		if err != nil {
 			panic(err)
 		}
-		return res.ToObject(nil).MarshalJSON()
+		str, err := res.ToObject(nil).MarshalJSON()
+		return str, err
 	}
 }
-func (v *Vm) ProtocolToRawData(ctx context.Context,
+
+// 下行数据
+func (v *Vm) DataDown(ctx context.Context,
 	handle string, /*对应 mqtt topic的第一个 thing ota config 等等*/
 	Type string /*操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为*/) ConvertFunc {
 	vm := v.Get().(*goja.Runtime)
-	funName := fmt.Sprintf("%s%sProtocolToRawData", handle, strings.ToTitle(Type))
+	funName := fmt.Sprintf("%s%sDown", handle, utils.FirstUpper(Type))
 	convert, ok := goja.AssertFunction(vm.Get(funName))
 	if !ok {
 		return nil
 	}
 	return func(data []byte) ([]byte, error) {
-		res, err := convert(goja.Undefined(), vm.ToValue(data))
+		var dataStr = map[string]any{}
+		json.Unmarshal(data, &dataStr)
+		res, err := convert(goja.Undefined(), vm.ToValue(dataStr))
 		if err != nil {
 			panic(err)
 		}
-		return res.ToObject(nil).MarshalJSON()
+		ret, err := res.ToObject(nil).MarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		var retData []byte
+		err = json.Unmarshal(ret, &retData)
+		if err != nil {
+			return ret, nil
+		}
+		return retData, nil
 	}
 }
 
