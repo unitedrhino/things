@@ -24,10 +24,11 @@ CREATE TABLE if not exists `dm_product_info`
     `devStatus`    varchar(20)  NOT NULL DEFAULT '' COMMENT '产品状态',
     `tags`        json not null comment '产品标签',
     PRIMARY KEY (`productID`),
+    UNIQUE KEY `productName` (`productName`) USING BTREE,
     KEY `deviceType` (`deviceType`) USING BTREE,
-    UNIQUE KEY `productName` (`productName`) USING BTREE
+    KEY `createdTime` (`createdTime`) USING BTREE
     ) ENGINE = InnoDB
-    AUTO_INCREMENT = 4
+    AUTO_INCREMENT = 0
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='产品信息表';
 
@@ -68,10 +69,10 @@ CREATE TABLE if not exists `dm_product_schema`
     PRIMARY KEY (`id`),
     UNIQUE KEY `productID_identifier` (`productID`, `identifier`),
     KEY `productID_type` (`productID`, `type`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 0
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
 
 CREATE TABLE if not exists `dm_device_info`
 (
@@ -91,11 +92,11 @@ CREATE TABLE if not exists `dm_device_info`
     `tags`        json not null comment '设备标签',
     `address`     varchar(512)    DEFAULT '' COMMENT '所在地址',
     `position`    point NOT NULL comment '设备的位置,默认百度坐标系BD09',
-     PRIMARY KEY (`id`),
-    UNIQUE KEY `deviceName` (`productID`, `deviceName`),
-    KEY `device_productID` (`productID`) USING BTREE
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `productID_deviceName` (`productID`, `deviceName`),
+    KEY `createdTime` (`createdTime`) USING BTREE
     ) ENGINE = InnoDB
-    AUTO_INCREMENT = 3
+    AUTO_INCREMENT = 0
     DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
 
 
@@ -128,10 +129,10 @@ CREATE TABLE if not exists `dm_product_firmware`
     `dir`         varchar(128) NOT NULL COMMENT '固件标识,拿来下载文件',
     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceVersion` (`productID`, `version`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 0
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
 
 
 

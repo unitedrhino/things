@@ -10,7 +10,6 @@ import (
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/spf13/cast"
-	"github.com/xuri/excelize/v2"
 	"github.com/zeromicro/go-zero/core/logx"
 	"golang.org/x/sync/errgroup"
 	"strings"
@@ -42,46 +41,33 @@ func NewMultiImportLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 	}
 }
 
-func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, csv *excelize.File, demoCnt int64) (resp *types.DeviceMultiImportResp, err error) {
+func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][]string) (resp *types.DeviceMultiImportResp, err error) {
 	sm := sync.Map{}
 	var egg errgroup.Group
 	var errDatas []types.DeviceMultiImportErrdata
 
-	rows, err := csv.Rows(csv.GetSheetName(0))
-	if err != nil {
-		return nil, errors.Parameter.WithMsg("读取表格Sheet失败了:" + err.Error())
-	}
-
-	rowCnt := int64(1)
-	for ; rows.Next(); rowCnt++ {
-		rowIdx := rowCnt
-		if rowIdx <= demoCnt { //第1行是标题、第2、3行是示例，均跳过
-			continue
+	for i, cell := range rows {
+		idx := int64(i) //这里必须是 int64，因为下面 key.(int64) 要推断
+		if idx == 0 {
+			continue //第一行是 header，跳过
 		}
 
-		//读取行数据
-		cell, err := rows.Columns()
-		if err != nil {
-			errDatas = append(errDatas, types.DeviceMultiImportErrdata{rowIdx, "读取行数据出错:" + err.Error()})
-			continue
-		}
 		//cell转dto
 		dmReq, err := l.deviceMultiImportCellToDeviceInfo(cell)
 		if err != nil {
-			errDatas = append(errDatas, types.DeviceMultiImportErrdata{rowIdx, "行数据解析出错:" + err.Error()})
+			errDatas = append(errDatas, types.DeviceMultiImportErrdata{int64(idx + 1), "行数据解析出错:" + errors.Fmt(err).GetMsg()})
 			continue
 		}
 
 		egg.Go(func() error {
 			_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, dmReq)
 			if err != nil {
-				sm.Store(rowIdx, errors.Fmt(err).Msg)
+				sm.Store(idx, errors.Fmt(err).GetMsg())
 			}
 			return nil
 		})
 
 	} //end for
-	rowCnt-- //最后多累计了1，要扣掉
 
 	//阻塞等待所有gorouting
 	if err = egg.Wait(); err != nil {
@@ -94,45 +80,53 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, csv *exc
 	})
 
 	return &types.DeviceMultiImportResp{
-		Total:   rowCnt - demoCnt,
+		Total:   int64(len(rows) - 1),
 		Errdata: errDatas,
 	}, nil
 }
 
 //deviceMultiImportCellToDeviceInfo cell转dto
 func (l *MultiImportLogic) deviceMultiImportCellToDeviceInfo(cell []string) (info *dm.DeviceInfo, err error) {
-	d := &dm.DeviceInfo{}
-	m := &multiImportCsvRow{
-		ProductName: strings.TrimSpace(utils.SliceIndex(cell, 0, "")),
-		DeviceName:  strings.TrimSpace(utils.SliceIndex(cell, 1, "")),
-		LogLevel:    strings.TrimSpace(utils.SliceIndex(cell, 2, "")),
-		Tags:        strings.TrimSpace(utils.SliceIndex(cell, 3, "")),
-		Position:    strings.TrimSpace(utils.SliceIndex(cell, 4, "")),
-		Address:     strings.TrimSpace(utils.SliceIndex(cell, 5, "")),
-	}
+	var (
+		demoDataTag = "ithingsdemo"
+		deviceInfo  = &dm.DeviceInfo{}
+		importRow   = &multiImportCsvRow{
+			ProductName: strings.TrimSpace(utils.SliceIndex(cell, 0, "")),
+			DeviceName:  strings.TrimSpace(utils.SliceIndex(cell, 1, "")),
+			LogLevel:    strings.TrimSpace(utils.SliceIndex(cell, 2, "")),
+			Tags:        strings.TrimSpace(utils.SliceIndex(cell, 3, "")),
+			Position:    strings.TrimSpace(utils.SliceIndex(cell, 4, "")),
+			Address:     strings.TrimSpace(utils.SliceIndex(cell, 5, "")),
+		}
+	)
 
-	if m.ProductName == "" {
+	if importRow.ProductName == "" {
 		return nil, errors.Parameter.WithMsg("缺少必填的产品名称")
 	} else {
-		d.ProductName = m.ProductName
+		deviceInfo.ProductName = importRow.ProductName
 	}
 
-	if m.DeviceName == "" {
+	if importRow.DeviceName == "" {
 		return nil, errors.Parameter.WithMsg("缺少必填的设备名称")
 	} else {
-		d.DeviceName = m.DeviceName
+		deviceInfo.DeviceName = importRow.DeviceName
 	}
 
-	if m.LogLevel != "" {
-		if level, ok := def.LogLevelTextToIntMap[m.LogLevel]; !ok {
+	if strings.Contains(strings.ToLower(importRow.ProductName), demoDataTag) ||
+		strings.Contains(strings.ToLower(importRow.DeviceName), demoDataTag) {
+		return nil, errors.Parameter.WithMsg("请勿上传模板Demo数据")
+	}
+
+	if importRow.LogLevel != "" {
+		if level, ok := def.LogLevelTextToIntMap[importRow.LogLevel]; !ok {
 			return nil, errors.Parameter.WithMsg("设备日志级别格式错误")
 		} else {
-			d.LogLevel = level
+			deviceInfo.LogLevel = level
 		}
 	}
 
-	if m.Tags != "" {
-		arr := utils.SplitCutset(m.Tags, ";；\n")
+	if importRow.Tags != "" {
+		arr := utils.SplitCutset(importRow.Tags, ";；\n")
 		tagArr := make([]*types.Tag, 0, len(arr))
 		for _, item := range arr {
 			tagSli := utils.SplitCutset(item, ":：")
@@ -142,21 +136,21 @@ func (l *MultiImportLogic) deviceMultiImportCellToDeviceInfo(cell []string) (inf
 				return nil, errors.Parameter.WithMsg("设备标签格式错误")
 			}
 		}
-		d.Tags = logic.ToTagsMap(tagArr)
+		deviceInfo.Tags = logic.ToTagsMap(tagArr)
 	}
 
-	if m.Position != "" {
-		arr := utils.SplitCutset(m.Position, ",，")
+	if importRow.Position != "" {
+		arr := utils.SplitCutset(importRow.Position, ",，")
 		if len(arr) == 2 {
-			d.Position = logic.ToDmPointRpc(&types.Point{cast.ToFloat64(arr[0]), cast.ToFloat64(arr[1])})
+			deviceInfo.Position = logic.ToDmPointRpc(&types.Point{cast.ToFloat64(arr[0]), cast.ToFloat64(arr[1])})
 		} else {
 			return nil, errors.Parameter.WithMsg("设备位置坐标格式错误")
 		}
 	}
 
-	if m.Address != "" {
-		d.Address = utils.ToRpcNullString(&m.Address)
+	if importRow.Address != "" {
+		deviceInfo.Address = utils.ToRpcNullString(&importRow.Address)
 	}
 
-	return d, nil
+	return deviceInfo, nil
 }

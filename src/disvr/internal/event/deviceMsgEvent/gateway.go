@@ -118,7 +118,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 				Result:     errors.Fmt(err).GetCode(),
-				Status:     errors.Fmt(err).Msg,
+				Status:     errors.Fmt(err).GetMsg(),
 			})
 			continue
 		}

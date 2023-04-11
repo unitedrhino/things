@@ -21,7 +21,7 @@ type (
 	DmDeviceInfoModel interface {
 		dmDeviceInfoModel
 		InsertDeviceInfo(ctx context.Context, data *DmDeviceInfo) error
-		FindByFilter(ctx context.Context, filter DeviceFilter, page def.PageInfo) ([]*DmDeviceInfo, error)
+		FindByFilter(ctx context.Context, filter DeviceFilter, page *def.PageInfo) ([]*DmDeviceInfo, error)
 		CountByFilter(ctx context.Context, filter DeviceFilter) (size int64, err error)
 		CountGroupByField(ctx context.Context, filter DeviceFilter, fieldName string) (map[string]int64, error)
 		FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error)
@@ -82,15 +82,19 @@ func NewDmDeviceInfoModel(conn sqlx.SqlConn) DmDeviceInfoModel {
 	}
 }
 
-func (m *customDmDeviceInfoModel) FindByFilter(ctx context.Context, f DeviceFilter, page def.PageInfo) ([]*DmDeviceInfo, error) {
+func (m *customDmDeviceInfoModel) FindByFilter(ctx context.Context, f DeviceFilter, page *def.PageInfo) ([]*DmDeviceInfo, error) {
 	var resp []*DmDeviceInfo
+
 	sSql := strings.Replace(dmDeviceInfoRows, "`position`", "AsText(`position`) as position", 1)
-	sql := sq.Select(sSql).From(m.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+	sql := sq.Select(sSql).From(m.table).
+		Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset())).OrderBy(page.GetOrders()...)
+
 	sql = f.FmtSql(sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return nil, err
 	}
+
 	err = m.conn.QueryRowsCtx(ctx, &resp, query, arg...)
 	switch err {
 	case nil:
