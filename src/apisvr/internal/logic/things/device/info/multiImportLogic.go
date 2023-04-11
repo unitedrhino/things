@@ -47,7 +47,7 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 	var errDatas []types.DeviceMultiImportErrdata
 
 	for i, cell := range rows {
-		idx := i
+		idx := int64(i) //这里必须是 int64，因为下面 key.(int64) 要推断
 		if idx == 0 {
 			continue //第一行是 header，跳过
 		}
