@@ -5,15 +5,28 @@ SET FOREIGN_KEY_CHECKS = 0;
 create database if not EXISTS iThings;
 use iThings;
 
-CREATE TABLE if not exists `dm_product_info`
-(
-    `productID`    char(11)     NOT NULL COMMENT '产品id',
-    `productName`  varchar(100) NOT NULL COMMENT '产品名称',
-    `productType`  tinyint(1)            DEFAULT '1' COMMENT '产品状态:1:开发中,2:审核中,3:已发布',
-    `authMode`     tinyint(1)            DEFAULT '1' COMMENT '认证方式:1:账密认证,2:秘钥认证',
-    `deviceType`   tinyint(1)            DEFAULT '1' COMMENT '设备类型:1:设备,2:网关,3:子设备',
-    `categoryID`   int(10)               DEFAULT '1' COMMENT '产品品类',
-    `netType`      tinyint(1)            DEFAULT '1' COMMENT '通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN',
+CREATE TABLE if not exists `dm_product_info` (
+    `productID` char(
+    11
+) NOT NULL COMMENT '产品id',
+    `productName` varchar (
+    100
+) NOT NULL COMMENT '产品名称',
+    `productType` tinyint (
+    1
+) DEFAULT '1' COMMENT '产品状态:1:开发中,2:审核中,3:已发布',
+    `authMode` tinyint (
+    1
+) DEFAULT '1' COMMENT '认证方式:1:账密认证,2:秘钥认证',
+    `deviceType` tinyint (
+    1
+) DEFAULT '1' COMMENT '设备类型:1:设备,2:网关,3:子设备',
+    `categoryID` int (
+    10
+) DEFAULT '1' COMMENT '产品品类',
+    `netType` tinyint (
+    1
+) DEFAULT '1' COMMENT '通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN',
     `dataProto` tinyint (
     1
 ) DEFAULT '1' COMMENT '数据协议:1:自定义,2:数据模板',
@@ -50,19 +63,33 @@ CREATE TABLE if not exists `dm_product_info`
 )
     USING BTREE
     ) ENGINE = InnoDB
-    AUTO_INCREMENT = 0
+    AUTO_INCREMENT = 4
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='产品信息表';
 
 
-CREATE TABLE if not exists `dm_product_schema`
-(
-    `id`          bigint       NOT NULL AUTO_INCREMENT,
-    `productID`   char(11) NOT NULL COMMENT '产品id',
-    `tag` tinyint(1)  default 1 comment '物模型标签 1:自定义 2:可选 3:必选  必选不可删除',
-    `type` tinyint(1)  default 1 comment '物模型类型 1:property属性 2:event事件 3:action行为',
-    `identifier`      varchar(100) not null COMMENT '标识符',
-    `name`      varchar(100) not null  COMMENT '功能名称',
+CREATE TABLE if not exists `dm_product_schema` (
+    `id`
+    bigint
+    NOT
+    NULL
+    AUTO_INCREMENT,
+    `productID`
+    char (
+    11
+) NOT NULL COMMENT '产品id',
+    `tag` tinyint (
+    1
+) default 1 comment '物模型标签 1:自定义 2:可选 3:必选  必选不可删除',
+    `type` tinyint (
+    1
+) default 1 comment '物模型类型 1:property属性 2:event事件 3:action行为',
+    `identifier` varchar (
+    100
+) not null COMMENT '标识符',
+    `name` varchar (
+    100
+) not null COMMENT '功能名称',
     `desc` varchar (
     200
 ) default '' COMMENT '描述',
@@ -86,19 +113,29 @@ CREATE TABLE if not exists `dm_product_schema`
     `type`
 )
     ) ENGINE = InnoDB
-    AUTO_INCREMENT = 0
+    AUTO_INCREMENT = 4
     DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
+    ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
 
-CREATE TABLE if not exists `dm_device_info`
-(
-    `id`          bigint       NOT NULL AUTO_INCREMENT,
-    `productID`   char(11)     NOT NULL COMMENT '产品id',
-    `deviceName`  varchar(100) NOT NULL COMMENT '设备名称',
-    `secret`      varchar(50)           DEFAULT '' COMMENT '设备秘钥',
-    `firstLogin`  datetime              DEFAULT NULL COMMENT '激活时间',
-    `lastLogin`   datetime              DEFAULT NULL COMMENT '最后上线时间',
-    `createdTime` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE if not exists `dm_device_info` (
+    `id`
+    bigint
+    NOT
+    NULL
+    AUTO_INCREMENT,
+    `productID`
+    char (
+    11
+) NOT NULL COMMENT '产品id',
+    `deviceName` varchar (
+    100
+) NOT NULL COMMENT '设备名称',
+    `secret` varchar (
+    50
+) DEFAULT '' COMMENT '设备秘钥',
+    `firstLogin` datetime DEFAULT NULL COMMENT '激活时间',
+    `lastLogin` datetime DEFAULT NULL COMMENT '最后上线时间',
+    `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP,
     `deletedTime` datetime DEFAULT NULL,
@@ -131,7 +168,7 @@ CREATE TABLE if not exists `dm_device_info`
 )
     USING BTREE
     ) ENGINE = InnoDB
-    AUTO_INCREMENT = 0
+    AUTO_INCREMENT = 3
     DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
 
 
@@ -150,11 +187,19 @@ CREATE TABLE if not exists `dm_device_info`
 -- #   DEFAULT CHARSET = utf8mb4 COMMENT ='产品品类详情';
 
 
-CREATE TABLE if not exists `dm_product_firmware`
-(
-    `id`          bigint       NOT NULL AUTO_INCREMENT,
-    `productID`   char(11)     NOT NULL COMMENT '产品id',
-    `version`     varchar(64)           DEFAULT '' COMMENT '固件版本',
+CREATE TABLE if not exists `dm_product_firmware` (
+    `id`
+    bigint
+    NOT
+    NULL
+    AUTO_INCREMENT,
+    `productID`
+    char (
+    11
+) NOT NULL COMMENT '产品id',
+    `version` varchar (
+    64
+) DEFAULT '' COMMENT '固件版本',
     `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP,
@@ -177,19 +222,33 @@ CREATE TABLE if not exists `dm_product_firmware`
     `version`
 )
     ) ENGINE = InnoDB
-    AUTO_INCREMENT = 0
+    AUTO_INCREMENT = 4
     DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
+    ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
 
 
 
-CREATE TABLE if not exists `dm_group_info`
-(
-    `groupID`     bigint COMMENT '分组ID',
-    `parentID`    bigint NOT NULL DEFAULT 0 COMMENT '父组ID 0-根组',
-    `groupName`   VARCHAR(100) NOT NULL COMMENT '分组名称',
-    `desc` VARCHAR(200) DEFAULT '' COMMENT '描述',
-    `tags`        json not null comment '分组标签',
+CREATE TABLE if not exists `dm_group_info` (
+    `groupID`
+    bigint
+    COMMENT
+    '分组ID',
+    `parentID`
+    bigint
+    NOT
+    NULL
+    DEFAULT
+    0
+    COMMENT
+    '父组ID 0-根组',
+    `groupName`
+    VARCHAR (
+    100
+) NOT NULL COMMENT '分组名称',
+    `desc` VARCHAR (
+    200
+) DEFAULT '' COMMENT '描述',
+    `tags` json not null comment '分组标签',
     `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime DEFAULT NULL COMMENT '删除时间',
