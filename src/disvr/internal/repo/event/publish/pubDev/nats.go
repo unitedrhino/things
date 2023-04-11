@@ -12,7 +12,6 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
-	"reflect"
 	"time"
 )
 
@@ -31,7 +30,7 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.PublishMsg) error {
-	msg := events.NewEventMsg(ctx, devices.PublishToDev(respMsg.Handle, respMsg.Types, respMsg.Payload, respMsg.ProductID, respMsg.DeviceName))
+	msg := events.NewEventMsg(ctx, devices.PublishToDev(respMsg.Handle, respMsg.Type, respMsg.Payload, respMsg.ProductID, respMsg.DeviceName))
 	err := n.client.Publish(fmt.Sprintf(topics.DeviceDownMsg, respMsg.Handle, respMsg.ProductID, respMsg.DeviceName), msg)
 	return err
 }
@@ -57,7 +56,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 		if err != nil {
 			return nil, err
 		}
-		if msg.Handle != reqMsg.Handle || !reflect.DeepEqual(msg.Types, reqMsg.Types) { //不是订阅的topic
+		if msg.Handle != reqMsg.Handle || msg.Type != reqMsg.Type { //不是订阅的topic
 			continue
 		}
 		if !compareMsg(msg.Payload) {

@@ -73,7 +73,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
 		Handle:     devices.Thing,
-		Types:      []string{msgThing.TypeAction},
+		Type:       msgThing.TypeAction,
 		Payload:    payload,
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  in.ProductID,

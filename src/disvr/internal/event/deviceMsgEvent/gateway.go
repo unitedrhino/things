@@ -49,7 +49,7 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		resp *msgGateway.Msg
 	)
 
-	switch msg.Types[0] {
+	switch msg.Type {
 	case msgGateway.TypeOperation:
 		resp, err = l.HandleOperation(msg)
 	case msgGateway.TypeStatus:
@@ -69,7 +69,7 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 	})
 	return &deviceMsg.PublishMsg{
 		Handle:     msg.Handle,
-		Types:      msg.Types,
+		Type:       msg.Type,
 		Payload:    respStr,
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  msg.ProductID,
@@ -201,9 +201,9 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 			resp.Payload = &payload
 			return &resp, err
 		default:
-			return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Types)
+			return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Type)
 		}
-		return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Types)
+		return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Type)
 	}()
 	if l.dreq.NoAsk() { //如果不需要回复
 		rsp = nil

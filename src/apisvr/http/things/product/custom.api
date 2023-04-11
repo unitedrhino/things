@@ -1,0 +1,36 @@
+info(
+    title: "产品管理模块"
+    desc: "产品管理模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group : things/product/custom
+    prefix: /api/v1/things/product/custom
+    middleware: CheckToken
+)
+service api {
+    @doc "更新产品自定义信息"
+    @handler update
+    post /update (ProductCustom) returns ()
+    @doc "获取产品自定义信息详情"
+    @handler read
+    post /read (ProductCustomReadReq) returns (ProductCustom)
+}
+
+type (
+
+     ProductCustom struct {
+        ProductID string    `json:"productID"`
+        TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
+        ScriptLang      int64    `json:"scriptLang,optional"` //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+        CustomTopic     []string `json:"customTopic,optional"` //自定义topic数组
+    }
+
+    ProductCustomReadReq struct {
+        ProductID string `json:"productID"`                            //产品id 只读
+    }
+)
