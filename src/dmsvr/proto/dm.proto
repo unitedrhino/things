@@ -9,6 +9,14 @@ message Response {
 message PageInfo{
   int64 page = 1;
   int64 size = 2;
+  //排序信息
+  repeated OrderBy orders = 3;
+  message OrderBy {
+    //排序的字段名
+    string filed = 1;
+    //排序方式：0 aes, 1 desc
+    int64 sort = 2;
+  }
 }
 
 //权限认证(提供给mqtt broker)
@@ -141,7 +149,7 @@ message RemoteConfigLastReadResp{
 message DeviceGatewayBindDevice{
   string   productID = 1; //产品id
   string  deviceName = 2; //设备名称
-  DeviceGatewaySign sign =3;//签名
+  DeviceGatewaySign sign = 3;//签名
 }
 
 message DeviceGatewaySign{
@@ -159,7 +167,7 @@ message DeviceGatewaySign{
 message DeviceGatewayMultiCreateReq{
   string gatewayProductID = 1;
   string gatewayDeviceName = 2;
-  bool isAuthSign =3;//是否校验设备签名
+  bool isAuthSign = 3;//是否校验设备签名
   repeated DeviceGatewayBindDevice list = 4;
 }
 
