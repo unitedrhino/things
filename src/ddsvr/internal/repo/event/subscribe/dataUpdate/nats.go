@@ -25,14 +25,14 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.Subscribe(topics.DmProductUpdateScript,
+	_, err := n.client.Subscribe(topics.DmProductUpdateCustom,
 		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			tempInfo := events.DataUpdateInfo{}
 			err := json.Unmarshal(msg, &tempInfo)
 			if err != nil {
 				return err
 			}
-			return handle(ctx).ProductScriptUpdate(&tempInfo)
+			return handle(ctx).ProductCustomUpdate(&tempInfo)
 		}))
 	if err != nil {
 		return err

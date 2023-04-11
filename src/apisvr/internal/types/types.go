@@ -854,13 +854,14 @@ type ProductRemoteConfigLastestReadResp struct {
 	ProductRemoteConfig
 }
 
-type ProductScript struct {
-	ProductID string `json:"productId"`
-	Script    string `json:"script"`
-	Lang      int64  `json:"lang"` //脚本语言类型 1:JavaScript 2:lua 3:python
+type ProductCustom struct {
+	ProductID       string   `json:"productID"`
+	TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
+	ScriptLang      int64    `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+	CustomTopic     []string `json:"customTopic,optional"`     //自定义topic数组
 }
 
-type ProductScriptReadReq struct {
+type ProductCustomReadReq struct {
 	ProductID string `json:"productID"` //产品id 只读
 }
 

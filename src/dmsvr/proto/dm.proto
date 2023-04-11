@@ -76,8 +76,8 @@ service ProductManage{
   rpc productSchemaTslRead(ProductSchemaTslReadReq)     returns (ProductSchemaTslReadResp);
 
   /*脚本管理*/
-  rpc productScriptRead(ProductScriptReadReq) returns (ProductScript);
-  rpc productScriptUpdate(ProductScript) returns (Response);
+  rpc productCustomRead(ProductCustomReadReq) returns (ProductCustom);
+  rpc productCustomUpdate(ProductCustom) returns (Response);
 }
 
 service DeviceGroup {
@@ -140,14 +140,15 @@ message RemoteConfigLastReadResp{
   ProductRemoteConfig info = 1;
 }
 
-message ProductScriptReadReq{
+message ProductCustomReadReq{
   string productID = 1;
 }
 
-message ProductScript{
+message ProductCustom{
   string productID = 1;
-  string script = 2;
-  int64 lang = 3;//脚本语言类型 1:JavaScript 2:lua 3:python
+  int64 scriptLang = 3;//脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+  google.protobuf.StringValue transformScript = 2;//协议转换脚本
+  repeated string customTopic =4;//自定义topic数组
 }
 
 message DeviceGatewayBindDevice{

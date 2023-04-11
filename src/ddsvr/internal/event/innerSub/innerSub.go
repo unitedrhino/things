@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/ddsvr/internal/domain/script"
+	"github.com/i-Things/things/src/ddsvr/internal/domain/custom"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +28,7 @@ func (s *InnerSubServer) PublishToDev(info *devices.InnerPublish) error {
 	var finalPayload = info.Payload
 	topic := fmt.Sprintf("%s/down/%s/%s/%s", "$"+info.Handle, info.Type, info.ProductID, info.DeviceName)
 
-	f, err := s.svcCtx.Script.GetProtoFunc(s.ctx, info.ProductID, script.ConvertTypeProtoToRow, info.Handle, info.Type)
+	f, err := s.svcCtx.Script.GetProtoFunc(s.ctx, info.ProductID, custom.ConvertTypeDown, info.Handle, info.Type)
 	if err != nil {
 		s.Errorf("%s.GetProtoFunc info:%#v err:%v", utils.FuncName(), info, err)
 		return err
@@ -41,7 +41,7 @@ func (s *InnerSubServer) PublishToDev(info *devices.InnerPublish) error {
 		}
 		s.Infof("%s.transform success before:%#v after:%#v", utils.FuncName(), info.Payload, finalPayload)
 		topic = fmt.Sprintf("%s/down/%s/%s/%s/%s",
-			"$"+info.Handle, info.Type, script.CustomType, info.ProductID, info.DeviceName)
+			"$"+info.Handle, info.Type, custom.CustomType, info.ProductID, info.DeviceName)
 	}
 
 	return s.svcCtx.PubDev.Publish(s.ctx, topic, finalPayload)

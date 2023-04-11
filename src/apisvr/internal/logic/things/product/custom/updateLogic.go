@@ -1,4 +1,4 @@
-package script
+package custom
 
 import (
 	"context"
@@ -26,16 +26,17 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
-func (l *UpdateLogic) Update(req *types.ProductScript) error {
-	dmReq := &dm.ProductScript{
-		ProductID: req.ProductID,
-		Script:    req.Script,
-		Lang:      req.Lang,
+func (l *UpdateLogic) Update(req *types.ProductCustom) error {
+	dmReq := &dm.ProductCustom{
+		ProductID:       req.ProductID,
+		TransformScript: utils.ToRpcNullString(req.TransformScript),
+		ScriptLang:      req.ScriptLang,
+		CustomTopic:     req.CustomTopic,
 	}
-	_, err := l.svcCtx.ProductM.ProductScriptUpdate(l.ctx, dmReq)
+	_, err := l.svcCtx.ProductM.ProductCustomUpdate(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.ProductScriptUpdate req=%v err=%+v", utils.FuncName(), utils.Fmt(req), er)
+		l.Errorf("%s.rpc.ProductCustomUpdate req=%v err=%+v", utils.FuncName(), utils.Fmt(req), er)
 		return er
 	}
 	return nil

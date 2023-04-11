@@ -89,12 +89,12 @@ func (s *ProductManageServer) ProductSchemaTslRead(ctx context.Context, in *dm.P
 }
 
 // 脚本管理
-func (s *ProductManageServer) ProductScriptRead(ctx context.Context, in *dm.ProductScriptReadReq) (*dm.ProductScript, error) {
-	l := productmanagelogic.NewProductScriptReadLogic(ctx, s.svcCtx)
-	return l.ProductScriptRead(in)
+func (s *ProductManageServer) ProductCustomRead(ctx context.Context, in *dm.ProductCustomReadReq) (*dm.ProductCustom, error) {
+	l := productmanagelogic.NewProductCustomReadLogic(ctx, s.svcCtx)
+	return l.ProductCustomRead(in)
 }
 
-func (s *ProductManageServer) ProductScriptUpdate(ctx context.Context, in *dm.ProductScript) (*dm.Response, error) {
-	l := productmanagelogic.NewProductScriptUpdateLogic(ctx, s.svcCtx)
-	return l.ProductScriptUpdate(in)
+func (s *ProductManageServer) ProductCustomUpdate(ctx context.Context, in *dm.ProductCustom) (*dm.Response, error) {
+	l := productmanagelogic.NewProductCustomUpdateLogic(ctx, s.svcCtx)
+	return l.ProductCustomUpdate(in)
 }

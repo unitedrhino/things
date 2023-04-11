@@ -45,6 +45,8 @@ type (
 	LoginAuthReq                = dm.LoginAuthReq
 	PageInfo                    = dm.PageInfo
 	Point                       = dm.Point
+	ProductCustom               = dm.ProductCustom
+	ProductCustomReadReq        = dm.ProductCustomReadReq
 	ProductInfo                 = dm.ProductInfo
 	ProductInfoDeleteReq        = dm.ProductInfoDeleteReq
 	ProductInfoIndexReq         = dm.ProductInfoIndexReq
@@ -60,8 +62,6 @@ type (
 	ProductSchemaTslReadReq     = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp    = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq      = dm.ProductSchemaUpdateReq
-	ProductScript               = dm.ProductScript
-	ProductScriptReadReq        = dm.ProductScriptReadReq
 	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq        = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp       = dm.RemoteConfigIndexResp
@@ -95,8 +95,8 @@ type (
 		// 获取产品信息列表
 		ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
 		// 脚本管理
-		ProductScriptRead(ctx context.Context, in *ProductScriptReadReq, opts ...grpc.CallOption) (*ProductScript, error)
-		ProductScriptUpdate(ctx context.Context, in *ProductScript, opts ...grpc.CallOption) (*Response, error)
+		ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error)
+		ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultProductManage struct {
@@ -244,21 +244,21 @@ func (d *directProductManage) ProductSchemaTslRead(ctx context.Context, in *Prod
 }
 
 // 脚本管理
-func (m *defaultProductManage) ProductScriptRead(ctx context.Context, in *ProductScriptReadReq, opts ...grpc.CallOption) (*ProductScript, error) {
+func (m *defaultProductManage) ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
-	return client.ProductScriptRead(ctx, in, opts...)
+	return client.ProductCustomRead(ctx, in, opts...)
 }
 
 // 脚本管理
-func (d *directProductManage) ProductScriptRead(ctx context.Context, in *ProductScriptReadReq, opts ...grpc.CallOption) (*ProductScript, error) {
-	return d.svr.ProductScriptRead(ctx, in)
+func (d *directProductManage) ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error) {
+	return d.svr.ProductCustomRead(ctx, in)
 }
 
-func (m *defaultProductManage) ProductScriptUpdate(ctx context.Context, in *ProductScript, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
-	return client.ProductScriptUpdate(ctx, in, opts...)
+	return client.ProductCustomUpdate(ctx, in, opts...)
 }
 
-func (d *directProductManage) ProductScriptUpdate(ctx context.Context, in *ProductScript, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.ProductScriptUpdate(ctx, in)
+func (d *directProductManage) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ProductCustomUpdate(ctx, in)
 }

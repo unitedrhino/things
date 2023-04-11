@@ -1,4 +1,4 @@
-package script
+package custom
 
 import (
 	"context"
@@ -26,16 +26,17 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 	}
 }
 
-func (l *ReadLogic) Read(req *types.ProductScriptReadReq) (resp *types.ProductScript, err error) {
-	dmResp, err := l.svcCtx.ProductM.ProductScriptRead(l.ctx, &dm.ProductScriptReadReq{ProductID: req.ProductID})
+func (l *ReadLogic) Read(req *types.ProductCustomReadReq) (resp *types.ProductCustom, err error) {
+	dmResp, err := l.svcCtx.ProductM.ProductCustomRead(l.ctx, &dm.ProductCustomReadReq{ProductID: req.ProductID})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s rpc.ProductScriptRead req=%v err=%+v", utils.FuncName(), req, er)
+		l.Errorf("%s rpc.ProductCustomRead req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return &types.ProductScript{
-		ProductID: dmResp.ProductID,
-		Script:    dmResp.Script,
-		Lang:      dmResp.Lang,
+	return &types.ProductCustom{
+		ProductID:       dmResp.ProductID,
+		TransformScript: utils.ToNullString(dmResp.TransformScript),
+		ScriptLang:      dmResp.ScriptLang,
+		CustomTopic:     dmResp.CustomTopic,
 	}, nil
 }
