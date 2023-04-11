@@ -104,17 +104,7 @@ func (p *Param) ToVal() any {
 func GetVal(d *schema.Define, val any) (any, error) {
 	switch d.Type {
 	case schema.DataTypeBool:
-		switch val.(type) {
-		case bool:
-			return val.(bool), nil
-		case json.Number:
-			num := val.(json.Number).String()
-			if num == "0" {
-				return false, nil
-			} else {
-				return true, nil
-			}
-		}
+		return cast.ToBoolE(val)
 	case schema.DataTypeInt:
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)

@@ -7,6 +7,7 @@ import (
 
 type Config struct {
 	rest.RestConf
-	DevLink conf.DevLinkConf //和设备交互的设置
-	Event   conf.EventConf   //和things内部交互的设置
+	DmRpc   conf.RpcClientConf `json:",optional"`
+	DevLink conf.DevLinkConf   //和设备交互的设置
+	Event   conf.EventConf     //和things内部交互的设置
 }

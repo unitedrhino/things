@@ -31,7 +31,7 @@ func NewActionReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Action
 
 // 获取异步调用设备行为的结果
 func (l *ActionReadLogic) ActionRead(in *di.RespReadReq) (*di.SendActionResp, error) {
-	resp, err := cache.GetDeviceMsg[msgThing.Resp](l.ctx, l.svcCtx.Store, deviceMsg.RespMsg, devices.Thing, []string{msgThing.TypeAction},
+	resp, err := cache.GetDeviceMsg[msgThing.Resp](l.ctx, l.svcCtx.Store, deviceMsg.RespMsg, devices.Thing, msgThing.TypeAction,
 		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, in.ClientToken)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)

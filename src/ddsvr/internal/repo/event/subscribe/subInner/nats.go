@@ -36,8 +36,8 @@ func (n *NatsClient) SubToDevMsg(handle Handle) error {
 			//给设备回包之前，将链路信息span推送至jaeger
 			_, span := traces.StartSpan(ctx, topics.DeviceDownAll, "")
 			info := devices.GetPublish(msg)
-			logx.WithContext(ctx).Infof("ddsvr.mqtt.SubDevMsg Handle:%s Types:%v Payload:%v",
-				info.Handle, info.Types, string(info.Payload))
+			logx.WithContext(ctx).Infof("ddsvr.mqtt.SubDevMsg Handle:%s Type:%v Payload:%v",
+				info.Handle, info.Type, string(info.Payload))
 			defer span.End()
 			return handle(ctx).PublishToDev(info)
 		}))
