@@ -3,7 +3,7 @@ package schema
 import "encoding/json"
 
 type (
-	// Model 数据模板定义
+	// Model 物模型定义-数据模板定义
 	Model struct {
 		Version    string      `json:"version"`    //版本号
 		Properties Properties  `json:"properties"` //属性
@@ -14,12 +14,17 @@ type (
 		Event      EventMap    `json:"-"`          //内部使用,使用map加速匹配,key为id
 		Action     ActionMap   `json:"-"`          //内部使用,使用map加速匹配,key为id
 	}
+
+	/*配置信息*/
 	Profile struct {
 		ProductID string `json:"productID"` //产品ID
 	}
+
+	/*内部使用*/
 	PropertyMap map[string]*Property
 	EventMap    map[string]*Event
 	ActionMap   map[string]*Action
+
 	/*结构体说明*/
 	Spec struct {
 		Identifier string `json:"identifier"` //参数标识符
@@ -47,6 +52,7 @@ type (
 		Param      map[string]*Param `json:"-"`          //内部使用,使用map加速匹配,key为id
 	}
 	Events []Event
+
 	/*行为*/
 	Action struct {
 		Identifier string            `json:"identifier"` //标识符
@@ -59,6 +65,7 @@ type (
 		Out        map[string]*Param `json:"-"`          //内部使用,使用map加速匹配,key为id
 	}
 	Actions []Action
+
 	/*属性*/
 	Property struct {
 		Identifier string       `json:"identifier"` //标识符
@@ -69,6 +76,7 @@ type (
 		Required   bool         `json:"required"`   //是否必须
 	}
 	Properties []Property
+
 	/*数据类型定义*/
 	Define struct {
 		Type      DataType          `json:"type"`                //参数类型:bool int string struct float timestamp array enum
