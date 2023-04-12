@@ -80,8 +80,10 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}
+
 	paramValues := ToParamValues(tp)
 	for identifier, param := range paramValues {
+		//应用事件通知-设备物模型属性上报通知 ↓↓↓
 		err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, application.PropertyReport{
 			Device: core, Timestamp: timeStamp.UnixMilli(),
 			Identifier: identifier, Param: param,
@@ -91,6 +93,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 		}
 	}
 
+	//插入多条设备物模型属性数据
 	err = l.dd.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
@@ -138,7 +141,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 		return l.HandlePropertyReport(msg, l.dreq)
 	case deviceMsg.GetStatus: //设备请求获取 云端记录的最新设备信息
 		return l.HandlePropertyGetStatus(msg)
-	case deviceMsg.ControlReply: //设备回复的 云端下发控制指令 的处理结果
+	case deviceMsg.ControlReply: //设备响应的 云端下发控制指令 的处理结果
 		return l.HandleResp(msg)
 	default:
 		return nil, errors.Method
@@ -179,21 +182,25 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 }
 func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
+
 	var resp msgThing.Resp
 	err = utils.Unmarshal(msg.Payload, &resp)
 	if err != nil {
 		return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
+
 	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, msg.Handle, msg.Type,
 		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		resp.ClientToken)
 	if req == nil || err != nil {
 		return nil, err
 	}
+
 	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Store, deviceMsg.RespMsg, msg, resp.ClientToken)
 	if err != nil {
 		return nil, err
 	}
+
 	if msg.Type == msgThing.TypeProperty {
 		_, err = l.HandlePropertyReport(msg, *req)
 		return nil, err
@@ -201,6 +208,7 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.P
 	return nil, nil
 }
 
+// Handle for topics.DeviceUpThingAll
 func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
 	err = l.initMsg(msg)
@@ -211,11 +219,11 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	respMsg, err = func() (respMsg *deviceMsg.PublishMsg, err error) {
 		action = msg.Type
 		switch msg.Type { //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
-		case msgThing.TypeProperty: //属性或信息上报
+		case msgThing.TypeProperty: //设备上报的 属性或信息
 			return l.HandleProperty(msg)
-		case msgThing.TypeEvent: //事件上报
+		case msgThing.TypeEvent: //设备上报的 事件
 			return l.HandleEvent(msg)
-		case msgThing.TypeAction: //行为上报
+		case msgThing.TypeAction: //设备响应的 行为执行结果
 			return l.HandleResp(msg)
 		default:
 			action = devices.Thing
