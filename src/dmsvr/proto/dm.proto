@@ -42,11 +42,11 @@ service DeviceManage {
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
 
-  //创建分组设备
+  //绑定网关下子设备设备
   rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Response);
-  //获取分组设备信息列表
+  //获取绑定信息的设备信息列表
   rpc deviceGatewayIndex(DeviceGatewayIndexReq)     returns (DeviceGatewayIndexResp);
-  //删除分组设备
+  //删除网关下子设备
   rpc deviceGatewayMultiDelete(DeviceGatewayMultiDeleteReq)     returns (Response);
 
   //设备计数
@@ -187,8 +187,8 @@ message DeviceGatewayMultiCreateReq{
 
 message DeviceGatewayIndexReq{
   PageInfo page = 1;
-  string gatewayProductID = 2;
-  string gatewayDeviceName = 3;
+  DeviceCore gateway = 2;//获取网关下子设备列表
+  DeviceCore subDevice = 3; //获取子设备绑定的网关列表
 }
 
 message DeviceGatewayIndexResp{
