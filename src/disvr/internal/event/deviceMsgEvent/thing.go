@@ -141,7 +141,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 		return l.HandlePropertyReport(msg, l.dreq)
 	case deviceMsg.GetStatus: //设备请求获取 云端记录的最新设备信息
 		return l.HandlePropertyGetStatus(msg)
-	case deviceMsg.ControlReply: //设备响应的 云端下发控制指令 的处理结果
+	case deviceMsg.ControlReply: //设备响应的 “云端下发控制指令” 的处理结果
 		return l.HandleResp(msg)
 	default:
 		return nil, errors.Method
@@ -150,6 +150,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 
 func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
+
 	dbData := msgThing.EventData{}
 	dbData.Identifier = l.dreq.EventID
 	dbData.Type = l.dreq.Type
@@ -180,6 +181,7 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
+
 func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 
@@ -211,10 +213,12 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.P
 // Handle for topics.DeviceUpThingAll
 func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
+
 	err = l.initMsg(msg)
 	if err != nil {
 		return nil, err
 	}
+
 	var action = devices.Thing
 	respMsg, err = func() (respMsg *deviceMsg.PublishMsg, err error) {
 		action = msg.Type
@@ -223,7 +227,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 			return l.HandleProperty(msg)
 		case msgThing.TypeEvent: //设备上报的 事件
 			return l.HandleEvent(msg)
-		case msgThing.TypeAction: //设备响应的 行为执行结果
+		case msgThing.TypeAction: //设备响应的 “应用调用设备行为”的执行结果
 			return l.HandleResp(msg)
 		default:
 			action = devices.Thing
@@ -233,6 +237,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	if l.dreq.NoAsk() { //如果不需要回复
 		respMsg = nil
 	}
+
 	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  msg.ProductID,
 		Action:     action,
