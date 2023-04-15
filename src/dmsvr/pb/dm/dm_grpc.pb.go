@@ -196,11 +196,11 @@ type DeviceManageClient interface {
 	DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
 	//获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
-	//创建分组设备
+	//绑定网关下子设备设备
 	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
-	//获取分组设备信息列表
+	//获取绑定信息的设备信息列表
 	DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
-	//删除分组设备
+	//删除网关下子设备
 	DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	//设备计数
 	DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCountResp, error)
@@ -320,11 +320,11 @@ type DeviceManageServer interface {
 	DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error)
 	//获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
-	//创建分组设备
+	//绑定网关下子设备设备
 	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Response, error)
-	//获取分组设备信息列表
+	//获取绑定信息的设备信息列表
 	DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error)
-	//删除分组设备
+	//删除网关下子设备
 	DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Response, error)
 	//设备计数
 	DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCountResp, error)

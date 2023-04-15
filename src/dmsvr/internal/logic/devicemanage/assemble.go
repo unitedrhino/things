@@ -75,6 +75,16 @@ func ToDeviceCoreEvents(in []*dm.DeviceCore) (ret []*events.DeviceCore) {
 	}
 	return
 }
+
+func ToDeviceCoreDo(core *dm.DeviceCore) *devices.Core {
+	if core == nil {
+		return nil
+	}
+	return &devices.Core{
+		ProductID:  core.ProductID,
+		DeviceName: core.DeviceName,
+	}
+}
 func BindToDeviceCoreEvents(in []*dm.DeviceGatewayBindDevice) (ret []*events.DeviceCore) {
 	for _, v := range in {
 		ret = append(ret, &events.DeviceCore{
