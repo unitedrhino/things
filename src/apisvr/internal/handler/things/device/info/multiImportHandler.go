@@ -15,6 +15,7 @@ import (
 	"golang.org/x/text/transform"
 	"net/http"
 	"path"
+	"unicode/utf8"
 )
 
 func MultiImportHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
@@ -63,7 +64,22 @@ func MultiImportHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		reader := csv.NewReader(transform.NewReader(bytes.NewReader(fb), simplifiedchinese.GB18030.NewDecoder()))
+		//删除 BOM 字符
+		bom := []byte{0xEF, 0xBB, 0xBF} // BOM 字符
+		if bytes.HasPrefix(fb, bom) {
+			fb = fb[len(bom):] // 删除前三个字节
+		}
+		fr := bytes.NewReader(fb)
+
+		// 兼容 UTF-8 和 GBK/GB2312
+		var reader *csv.Reader
+		if utf8.Valid(fb) {
+			reader = csv.NewReader(fr)
+		} else {
+			decoder := simplifiedchinese.GBK.NewDecoder()
+			reader = csv.NewReader(transform.NewReader(fr, decoder))
+		}
+
 		rows, err := reader.ReadAll()
 		if err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("读取表格内容失败:"+err.Error()))
