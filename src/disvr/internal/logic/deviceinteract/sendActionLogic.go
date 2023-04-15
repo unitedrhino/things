@@ -44,6 +44,12 @@ func (l *SendActionLogic) initMsg(productID string) error {
 
 func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
+	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}); err != nil {
+		return nil, err
+	}
 	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err

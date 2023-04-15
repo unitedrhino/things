@@ -183,9 +183,10 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
 		case deviceMsg.DescribeSubDevices:
 			deviceList, err := l.svcCtx.DeviceM.DeviceGatewayIndex(l.ctx, &dm.DeviceGatewayIndexReq{
-				GatewayProductID:  msg.ProductID,
-				GatewayDeviceName: msg.DeviceName,
-			})
+				Gateway: &dm.DeviceCore{
+					ProductID:  msg.ProductID,
+					DeviceName: msg.DeviceName,
+				}})
 			if err != nil {
 				resp.AddStatus(err)
 				return &resp, err
