@@ -620,9 +620,21 @@ type DeviceMultiImportReq struct {
 	File []byte `form:"file,optional"` //csv文件(实际必填)
 }
 
+type DeviceMultiImportRow struct {
+	Row         int64  `json:"row"`         //【提示】数据所在表格行
+	ProductName string `json:"productName"` //【必填】产品名称
+	DeviceName  string `json:"deviceName"`  //【必填】设备名称
+	LogLevel    string `json:"logLevel"`    //【选填】日志级别（关闭/错误/告警/信息/调试）
+	Tags        string `json:"tags"`        //【选填】设备标签（格式k1:v1;k2:v2;...）
+	Position    string `json:"position"`    //【选填】设备位置百度坐标（格式:经,纬）
+	Address     string `json:"address"`     //【选填】设备所在详细地址
+	Tips        string `json:"tips"`        //【提示】模板使用提示
+}
+
 type DeviceMultiImportResp struct {
-	Total   int64                      `json:"total"`   //当前表格数据量
-	Errdata []DeviceMultiImportErrdata `json:"errdata"` //批量导入错误列表
+	Total   int64                   `json:"total"`   //当前表格数据量
+	Headers *DeviceMultiImportRow   `json:"headers"` //表格表头信息
+	Errdata []*DeviceMultiImportRow `json:"errdata"` //批量导入错误清单
 }
 
 type DeviceMultiImportErrdata struct {
@@ -852,6 +864,17 @@ type ProductRemoteConfigLastestReadReq struct {
 
 type ProductRemoteConfigLastestReadResp struct {
 	ProductRemoteConfig
+}
+
+type ProductCustom struct {
+	ProductID       string   `json:"productID"`
+	TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
+	ScriptLang      int64    `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+	CustomTopic     []string `json:"customTopic,optional"`     //自定义topic数组
+}
+
+type ProductCustomReadReq struct {
+	ProductID string `json:"productID"` //产品id 只读
 }
 
 type GroupInfo struct {

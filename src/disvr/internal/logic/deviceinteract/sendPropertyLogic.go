@@ -45,6 +45,12 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 
 func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendPropertyResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
+	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}); err != nil {
+		return nil, err
+	}
 	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
@@ -74,7 +80,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
 		Handle:     devices.Thing,
-		Types:      []string{msgThing.TypeProperty},
+		Type:       msgThing.TypeProperty,
 		Payload:    payload,
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  in.ProductID,
