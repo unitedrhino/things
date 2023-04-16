@@ -42,6 +42,7 @@ func (l *SendActionLogic) initMsg(productID string) error {
 	return nil
 }
 
+//调用设备行为
 func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
@@ -50,20 +51,24 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 	}); err != nil {
 		return nil, err
 	}
+
 	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
 	}
+
 	param := map[string]any{}
 	err = utils.Unmarshal([]byte(in.InputParams), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.InputParams)
 	}
+
 	clientToken, err := uuid.GenerateUUID()
 	if err != nil {
 		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
+
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:      deviceMsg.Action,
@@ -71,11 +76,13 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 			Timestamp:   time.Now().UnixMilli(),
 		},
 		ActionID: in.ActionID,
-		Params:   param}
+		Params:   param,
+	}
 	_, err = req.VerifyReqParam(l.schema, schema.ParamActionInput)
 	if err != nil {
 		return nil, err
 	}
+
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
 		Handle:     devices.Thing,

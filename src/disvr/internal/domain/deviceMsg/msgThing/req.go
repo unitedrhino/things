@@ -33,11 +33,13 @@ func (d *Req) GetTimeStamp(defaultTime int64) time.Time {
 	return time.UnixMilli(d.Timestamp)
 }
 
+//校验设备上报的参数合法性
 func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]Param, error) {
 	if len(d.Params) == 0 {
 		return nil, errors.Parameter.AddDetail("need add params")
 	}
 	getParam := make(map[string]Param, len(d.Params))
+
 	switch tt {
 	case schema.ParamProperty:
 		for k, v := range d.Params {
@@ -45,6 +47,7 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 			if ok == false {
 				continue
 			}
+
 			tp := Param{
 				Identifier: p.Identifier,
 				Name:       p.Name,
@@ -52,7 +55,8 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 				Mode:       p.Mode,
 				Required:   p.Required,
 			}
-			err := tp.AddDefine(&p.Define, v)
+
+			err := tp.SetByDefine(&p.Define, v)
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
@@ -73,11 +77,13 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 				Identifier: v.Identifier,
 				Name:       v.Name,
 			}
+
 			param, ok := d.Params[k]
 			if ok == false {
 				return nil, errors.Parameter.AddDetail("need param:" + k)
 			}
-			err := tp.AddDefine(&v.Define, param)
+
+			err := tp.SetByDefine(&v.Define, param)
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
@@ -94,11 +100,13 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 				Identifier: v.Identifier,
 				Name:       v.Name,
 			}
+
 			param, ok := d.Params[v.Identifier]
 			if ok == false {
 				return nil, errors.Parameter.AddDetail("need param:" + k)
 			}
-			err := tp.AddDefine(&v.Define, param)
+
+			err := tp.SetByDefine(&v.Define, param)
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
@@ -110,6 +118,7 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 		if ok == false {
 			return nil, errors.Parameter.AddDetail("need right ActionID")
 		}
+
 		for k, v := range p.In {
 			tp := Param{
 				Identifier: v.Identifier,
@@ -119,7 +128,8 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 			if ok == false {
 				return nil, errors.Parameter.AddDetail("need param:" + k)
 			}
-			err := tp.AddDefine(&v.Define, param)
+
+			err := tp.SetByDefine(&v.Define, param)
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
