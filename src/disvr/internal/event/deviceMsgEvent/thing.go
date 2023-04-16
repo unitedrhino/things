@@ -64,13 +64,13 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 	}
 }
 
+//设备属性上报
 func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
 	tp, err := req.VerifyReqParam(l.schema, schema.ParamProperty)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	} else if len(tp) == 0 {
 		err := errors.Parameter.AddDetail("need right param")
-
 		return l.DeviceResp(msg, err, nil), err
 	}
 
@@ -103,8 +103,15 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
+//设备基础信息上报
+func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
+	return nil, nil
+}
+
+//设备请求获取 云端记录的最新设备信息
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Property))
+
 	switch l.dreq.Type { //表示获取什么类型的信息（report:表示设备上报的信息 info:信息 alert:告警 fault:故障）
 	case deviceMsg.Report: //表示设备属性上报
 		for id := range l.schema.Property {
@@ -118,6 +125,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 					utils.FuncName(), id, err.Error())
 				return nil, err
 			}
+
 			if data == nil {
 				l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
 				continue
@@ -126,7 +134,6 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 		}
 	default:
 		err := errors.Parameter.AddDetailf("not support type :%s", l.dreq.Type)
-
 		return l.DeviceResp(msg, err, nil), err
 	}
 
@@ -137,8 +144,10 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 	switch l.dreq.Method { //操作方法
-	case deviceMsg.Report, deviceMsg.ReportInfo: //设备属性上报
+	case deviceMsg.Report: //设备属性上报
 		return l.HandlePropertyReport(msg, l.dreq)
+	case deviceMsg.ReportInfo: //设备基础信息上报
+		return l.HandlePropertyReportInfo(msg, l.dreq)
 	case deviceMsg.GetStatus: //设备请求获取 云端记录的最新设备信息
 		return l.HandlePropertyGetStatus(msg)
 	case deviceMsg.ControlReply: //设备响应的 “云端下发控制指令” 的处理结果
@@ -154,16 +163,20 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	dbData := msgThing.EventData{}
 	dbData.Identifier = l.dreq.EventID
 	dbData.Type = l.dreq.Type
+
 	if l.dreq.Method != deviceMsg.EventPost {
 		return nil, errors.Method
 	}
+
 	tp, err := l.dreq.VerifyReqParam(l.schema, schema.ParamEvent)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
+
 	dbData.Params = msgThing.ToVal(tp)
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
 	paramValues := ToParamValues(tp)
+
 	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, application.EventReport{
 		Device:     devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		Timestamp:  dbData.TimeStamp.UnixMilli(),
@@ -174,6 +187,7 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	if err != nil {
 		l.Errorf("%s.DeviceThingEventReport  err:%v", utils.FuncName(), err)
 	}
+
 	err = l.dd.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
 		l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)

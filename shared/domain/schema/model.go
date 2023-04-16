@@ -3,7 +3,7 @@ package schema
 import "encoding/json"
 
 type (
-	// Model 物模型定义-数据模板定义
+	// Model 物模型协议-数据模板定义
 	Model struct {
 		Version    string      `json:"version"`    //版本号
 		Properties Properties  `json:"properties"` //属性
