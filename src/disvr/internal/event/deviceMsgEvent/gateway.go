@@ -129,6 +129,9 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 			})
 		}
 		resp.Payload = &payload
+	default:
+		return nil, errors.Method.AddMsg(l.dreq.Method)
+
 	}
 	return &resp, err
 }
