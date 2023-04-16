@@ -140,7 +140,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 	case deviceMsg.ControlReply:
 		return l.HandleResp(msg, msgThing.TypeProperty)
 	default:
-		return nil, errors.Method
+		return nil, errors.Method.AddMsg(l.dreq.Method)
 	}
 }
 
