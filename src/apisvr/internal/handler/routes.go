@@ -684,8 +684,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/multi-create",
-					Handler: thingsrulealarmscene.MultiCreateHandler(serverCtx),
+					Path:    "/multi-update",
+					Handler: thingsrulealarmscene.MultiUpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
