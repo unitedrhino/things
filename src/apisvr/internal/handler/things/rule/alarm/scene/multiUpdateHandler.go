@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func MultiCreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func MultiUpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.AlarmSceneMultiCreateReq
+		var req types.AlarmSceneMultiUpdateReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := scene.NewMultiCreateLogic(r.Context(), svcCtx)
-		err := l.MultiCreate(&req)
+		l := scene.NewMultiUpdateLogic(r.Context(), svcCtx)
+		err := l.MultiUpdate(&req)
 		result.Http(w, r, nil, err)
 	}
 }
