@@ -16,6 +16,6 @@ func Subscribe(svcCtx *svc.ServiceContext) {
 		os.Exit(-1)
 	}
 	err = dataUpdateCli.Subscribe(func(ctx context.Context) dataUpdate.UpdateHandle {
-		return dataUpdateEvent.NewPublishLogic(ctx, svcCtx)
+		return dataUpdateEvent.NewDataUpdateLogic(ctx, svcCtx)
 	})
 }

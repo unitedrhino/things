@@ -56,7 +56,7 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 	}
 	return &deviceMsg.PublishMsg{
 		Handle:     msg.Handle,
-		Types:      msg.Types,
+		Type:       msg.Type,
 		Payload:    resp.AddStatus(err).Bytes(),
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  msg.ProductID,
@@ -183,7 +183,7 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.P
 	if err != nil {
 		return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
-	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, msg.Handle, msg.Types,
+	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, msg.Handle, msg.Type,
 		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		resp.ClientToken)
 	if req == nil || err != nil {
@@ -193,7 +193,7 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.P
 	if err != nil {
 		return nil, err
 	}
-	if msg.Types[0] == msgThing.TypeProperty {
+	if msg.Type == msgThing.TypeProperty {
 		_, err = l.HandlePropertyReport(msg, *req)
 		return nil, err
 	}
@@ -208,8 +208,8 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	}
 	var action = devices.Thing
 	respMsg, err = func() (respMsg *deviceMsg.PublishMsg, err error) {
-		action = msg.Types[0]
-		switch msg.Types[0] {
+		action = msg.Type
+		switch msg.Type {
 		case msgThing.TypeProperty: //属性上报
 			return l.HandleProperty(msg)
 		case msgThing.TypeEvent: //事件上报
@@ -218,7 +218,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 			return l.HandleResp(msg)
 		default:
 			action = devices.Thing
-			return nil, errors.Parameter.AddDetailf("things types is err:%v", msg.Types)
+			return nil, errors.Parameter.AddDetailf("things types is err:%v", msg.Type)
 		}
 	}()
 	if l.dreq.NoAsk() { //如果不需要回复
