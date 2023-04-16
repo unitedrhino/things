@@ -202,7 +202,7 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 			resp.Payload = &payload
 			return &resp, err
 		default:
-			return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Type)
+			return nil, errors.Method.AddMsg(l.dreq.Method)
 		}
 		return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Type)
 	}()
