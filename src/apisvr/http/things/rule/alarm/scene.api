@@ -12,9 +12,9 @@ import "common.api"  //公共结构体定义
     middleware: CheckToken
 )
 service api {
-    @doc "新增告警和场景的关联"
-    @handler multiCreate
-    post /multi-create (AlarmSceneMultiCreateReq) returns ()
+    @doc "更新告警和场景的关联"
+    @handler multiUpdate
+    post /multi-update (AlarmSceneMultiUpdateReq) returns ()
     @doc "删除告警和场景的关联"
     @handler delete
     post /delete (AlarmSceneDeleteReq) returns ()
@@ -22,7 +22,7 @@ service api {
 }
 
 type (
-    AlarmSceneMultiCreateReq struct {
+    AlarmSceneMultiUpdateReq struct {
         alarmID int64 `json:"alarmID"`//告警配置ID
         sceneIDs []int64 `json:"sceneIDs"`//场景id
     }
