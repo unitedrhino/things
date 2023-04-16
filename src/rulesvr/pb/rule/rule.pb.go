@@ -737,7 +737,7 @@ func (x *AlarmSceneDeleteReq) GetSceneID() int64 {
 	return 0
 }
 
-type AlarmSceneMultiCreateReq struct {
+type AlarmSceneMultiUpdateReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -746,8 +746,8 @@ type AlarmSceneMultiCreateReq struct {
 	SceneIDs []int64 `protobuf:"varint,2,rep,packed,name=sceneIDs,proto3" json:"sceneIDs,omitempty"` //场景id
 }
 
-func (x *AlarmSceneMultiCreateReq) Reset() {
-	*x = AlarmSceneMultiCreateReq{}
+func (x *AlarmSceneMultiUpdateReq) Reset() {
+	*x = AlarmSceneMultiUpdateReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_rule_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -755,13 +755,13 @@ func (x *AlarmSceneMultiCreateReq) Reset() {
 	}
 }
 
-func (x *AlarmSceneMultiCreateReq) String() string {
+func (x *AlarmSceneMultiUpdateReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlarmSceneMultiCreateReq) ProtoMessage() {}
+func (*AlarmSceneMultiUpdateReq) ProtoMessage() {}
 
-func (x *AlarmSceneMultiCreateReq) ProtoReflect() protoreflect.Message {
+func (x *AlarmSceneMultiUpdateReq) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_rule_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -773,19 +773,19 @@ func (x *AlarmSceneMultiCreateReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlarmSceneMultiCreateReq.ProtoReflect.Descriptor instead.
-func (*AlarmSceneMultiCreateReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use AlarmSceneMultiUpdateReq.ProtoReflect.Descriptor instead.
+func (*AlarmSceneMultiUpdateReq) Descriptor() ([]byte, []int) {
 	return file_proto_rule_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *AlarmSceneMultiCreateReq) GetAlarmID() int64 {
+func (x *AlarmSceneMultiUpdateReq) GetAlarmID() int64 {
 	if x != nil {
 		return x.AlarmID
 	}
 	return 0
 }
 
-func (x *AlarmSceneMultiCreateReq) GetSceneIDs() []int64 {
+func (x *AlarmSceneMultiUpdateReq) GetSceneIDs() []int64 {
 	if x != nil {
 		return x.SceneIDs
 	}
@@ -2275,7 +2275,7 @@ var file_proto_rule_proto_rawDesc = []byte{
 	0x61, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x44, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x63, 0x65, 0x6e, 0x65,
 	0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x73, 0x63, 0x65, 0x6e, 0x65, 0x49,
 	0x44, 0x22, 0x50, 0x0a, 0x18, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x4d,
-	0x75, 0x6c, 0x74, 0x69, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x12, 0x18, 0x0a,
+	0x75, 0x6c, 0x74, 0x69, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x12, 0x18, 0x0a,
 	0x07, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07,
 	0x61, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x63, 0x65, 0x6e, 0x65,
 	0x49, 0x44, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x03, 0x52, 0x08, 0x73, 0x63, 0x65, 0x6e, 0x65,
@@ -2478,9 +2478,9 @@ var file_proto_rule_proto_rawDesc = []byte{
 	0x12, 0x16, 0x2e, 0x72, 0x75, 0x6c, 0x65, 0x2e, 0x41, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x6e, 0x66,
 	0x6f, 0x52, 0x65, 0x61, 0x64, 0x52, 0x65, 0x71, 0x1a, 0x0f, 0x2e, 0x72, 0x75, 0x6c, 0x65, 0x2e,
 	0x41, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x47, 0x0a, 0x15, 0x61, 0x6c, 0x61,
-	0x72, 0x6d, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x43, 0x72, 0x65, 0x61,
+	0x72, 0x6d, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x55, 0x70, 0x64, 0x61,
 	0x74, 0x65, 0x12, 0x1e, 0x2e, 0x72, 0x75, 0x6c, 0x65, 0x2e, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x53,
-	0x63, 0x65, 0x6e, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52,
+	0x63, 0x65, 0x6e, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52,
 	0x65, 0x71, 0x1a, 0x0e, 0x2e, 0x72, 0x75, 0x6c, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
 	0x73, 0x65, 0x12, 0x3d, 0x0a, 0x10, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x53, 0x63, 0x65, 0x6e, 0x65,
 	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x12, 0x19, 0x2e, 0x72, 0x75, 0x6c, 0x65, 0x2e, 0x61, 0x6c,
@@ -2541,7 +2541,7 @@ var file_proto_rule_proto_goTypes = []interface{}{
 	(*AlarmSceneIndexReq)(nil),       // 8: rule.alarmSceneIndexReq
 	(*AlarmSceneIndexResp)(nil),      // 9: rule.alarmSceneIndexResp
 	(*AlarmSceneDeleteReq)(nil),      // 10: rule.alarmSceneDeleteReq
-	(*AlarmSceneMultiCreateReq)(nil), // 11: rule.alarmSceneMultiCreateReq
+	(*AlarmSceneMultiUpdateReq)(nil), // 11: rule.alarmSceneMultiUpdateReq
 	(*AlarmDealRecordCreateReq)(nil), // 12: rule.alarmDealRecordCreateReq
 	(*AlarmDeal)(nil),                // 13: rule.AlarmDeal
 	(*AlarmDealRecordIndexReq)(nil),  // 14: rule.AlarmDealRecordIndexReq
@@ -2598,7 +2598,7 @@ var file_proto_rule_proto_depIdxs = []int32{
 	21, // 29: rule.alarmCenter.alarmInfoDelete:input_type -> rule.AlarmInfoDeleteReq
 	22, // 30: rule.alarmCenter.alarmInfoIndex:input_type -> rule.AlarmInfoIndexReq
 	20, // 31: rule.alarmCenter.alarmInfoRead:input_type -> rule.AlarmInfoReadReq
-	11, // 32: rule.alarmCenter.alarmSceneMultiCreate:input_type -> rule.alarmSceneMultiCreateReq
+	11, // 32: rule.alarmCenter.alarmSceneMultiUpdate:input_type -> rule.alarmSceneMultiUpdateReq
 	10, // 33: rule.alarmCenter.alarmSceneDelete:input_type -> rule.alarmSceneDeleteReq
 	3,  // 34: rule.alarmCenter.alarmRecordIndex:input_type -> rule.AlarmRecordIndexReq
 	7,  // 35: rule.alarmCenter.alarmTrigger:input_type -> rule.AlarmTriggerReq
@@ -2621,7 +2621,7 @@ var file_proto_rule_proto_depIdxs = []int32{
 	0,  // 52: rule.alarmCenter.alarmInfoDelete:output_type -> rule.Response
 	23, // 53: rule.alarmCenter.alarmInfoIndex:output_type -> rule.AlarmInfoIndexResp
 	19, // 54: rule.alarmCenter.alarmInfoRead:output_type -> rule.AlarmInfo
-	0,  // 55: rule.alarmCenter.alarmSceneMultiCreate:output_type -> rule.Response
+	0,  // 55: rule.alarmCenter.alarmSceneMultiUpdate:output_type -> rule.Response
 	0,  // 56: rule.alarmCenter.alarmSceneDelete:output_type -> rule.Response
 	4,  // 57: rule.alarmCenter.alarmRecordIndex:output_type -> rule.AlarmRecordIndexResp
 	0,  // 58: rule.alarmCenter.alarmTrigger:output_type -> rule.Response
@@ -2775,7 +2775,7 @@ func file_proto_rule_proto_init() {
 			}
 		}
 		file_proto_rule_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AlarmSceneMultiCreateReq); i {
+			switch v := v.(*AlarmSceneMultiUpdateReq); i {
 			case 0:
 				return &v.state
 			case 1:

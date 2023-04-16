@@ -1096,7 +1096,7 @@ type AlarmLog struct {
 	SceneID       int64  `json:"sceneID"`       //场景ID
 }
 
-type AlarmSceneMultiCreateReq struct {
+type AlarmSceneMultiUpdateReq struct {
 	AlarmID  int64   `json:"alarmID"`  //告警配置ID
 	SceneIDs []int64 `json:"sceneIDs"` //场景id
 }

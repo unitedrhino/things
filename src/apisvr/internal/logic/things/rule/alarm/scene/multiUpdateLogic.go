@@ -12,28 +12,28 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type MultiCreateLogic struct {
+type MultiUpdateLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiCreateLogic {
-	return &MultiCreateLogic{
+func NewMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiUpdateLogic {
+	return &MultiUpdateLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *MultiCreateLogic) MultiCreate(req *types.AlarmSceneMultiCreateReq) error {
-	_, err := l.svcCtx.Alarm.AlarmSceneMultiCreate(l.ctx, &rule.AlarmSceneMultiCreateReq{
+func (l *MultiUpdateLogic) MultiUpdate(req *types.AlarmSceneMultiUpdateReq) error {
+	_, err := l.svcCtx.Alarm.AlarmSceneMultiUpdate(l.ctx, &rule.AlarmSceneMultiUpdateReq{
 		AlarmID:  req.AlarmID,
 		SceneIDs: req.SceneIDs,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.AlarmSceneMultiCreate req=%v err=%v", utils.FuncName(), req, er)
+		l.Errorf("%s.rpc.AlarmSceneMultiUpdate req=%v err=%v", utils.FuncName(), req, er)
 		return er
 	}
 	return nil
