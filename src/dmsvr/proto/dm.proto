@@ -9,6 +9,14 @@ message Response {
 message PageInfo{
   int64 page = 1;
   int64 size = 2;
+  //排序信息
+  repeated OrderBy orders = 3;
+  message OrderBy {
+    //排序的字段名
+    string filed = 1;
+    //排序方式：0 aes, 1 desc
+    int64 sort = 2;
+  }
 }
 
 //权限认证(提供给mqtt broker)
@@ -34,11 +42,11 @@ service DeviceManage {
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
 
-  //创建分组设备
+  //绑定网关下子设备设备
   rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Response);
-  //获取分组设备信息列表
+  //获取绑定信息的设备信息列表
   rpc deviceGatewayIndex(DeviceGatewayIndexReq)     returns (DeviceGatewayIndexResp);
-  //删除分组设备
+  //删除网关下子设备
   rpc deviceGatewayMultiDelete(DeviceGatewayMultiDeleteReq)     returns (Response);
 
   //设备计数
@@ -74,6 +82,10 @@ service ProductManage{
   rpc productSchemaTslImport(ProductSchemaTslImportReq)     returns (Response);
   //获取产品信息列表
   rpc productSchemaTslRead(ProductSchemaTslReadReq)     returns (ProductSchemaTslReadResp);
+
+  /*脚本管理*/
+  rpc productCustomRead(ProductCustomReadReq) returns (ProductCustom);
+  rpc productCustomUpdate(ProductCustom) returns (Response);
 }
 
 service DeviceGroup {
@@ -136,12 +148,21 @@ message RemoteConfigLastReadResp{
   ProductRemoteConfig info = 1;
 }
 
+message ProductCustomReadReq{
+  string productID = 1;
+}
 
+message ProductCustom{
+  string productID = 1;
+  int64 scriptLang = 3;//脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+  google.protobuf.StringValue transformScript = 2;//协议转换脚本
+  repeated string customTopic =4;//自定义topic数组
+}
 
 message DeviceGatewayBindDevice{
   string   productID = 1; //产品id
   string  deviceName = 2; //设备名称
-  DeviceGatewaySign sign =3;//签名
+  DeviceGatewaySign sign = 3;//签名
 }
 
 message DeviceGatewaySign{
@@ -159,15 +180,15 @@ message DeviceGatewaySign{
 message DeviceGatewayMultiCreateReq{
   string gatewayProductID = 1;
   string gatewayDeviceName = 2;
-  bool isAuthSign =3;//是否校验设备签名
+  bool isAuthSign = 3;//是否校验设备签名
   repeated DeviceGatewayBindDevice list = 4;
 }
 
 
 message DeviceGatewayIndexReq{
   PageInfo page = 1;
-  string gatewayProductID = 2;
-  string gatewayDeviceName = 3;
+  DeviceCore gateway = 2;//获取网关下子设备列表
+  DeviceCore subDevice = 3; //获取子设备绑定的网关列表
 }
 
 message DeviceGatewayIndexResp{

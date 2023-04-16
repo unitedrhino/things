@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/spf13/cast"
 	"golang.org/x/exp/constraints"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 	"reflect"
 	"time"
 )
@@ -38,10 +40,27 @@ func ToNullString(val *wrappers.StringValue) *string {
 	}
 	return &val.Value
 }
-func ToRpcNullString(val *string) *wrappers.StringValue {
-	if val != nil {
+func ToRpcNullString(val any) *wrappers.StringValue {
+	if val == nil {
+		return nil
+	}
+	switch val.(type) {
+	case string:
+		v := val.(string)
 		return &wrappers.StringValue{
-			Value: *val,
+			Value: v,
+		}
+	case *string:
+		v := val.(*string)
+		if v != nil {
+			return &wrappers.StringValue{
+				Value: *v,
+			}
+		}
+	case sql.NullString:
+		v := val.(sql.NullString)
+		if v.Valid == true {
+			return &wrappers.StringValue{Value: v.String}
 		}
 	}
 	return nil
@@ -74,6 +93,22 @@ func SetToSlice[t constraints.Ordered](in map[t]struct{}) (ret []t) {
 func AnyToNullString(in any) sql.NullString {
 	if in == nil || IsNil(in) {
 		return sql.NullString{}
+	}
+	switch in.(type) {
+	case string, []byte:
+		return sql.NullString{
+			String: cast.ToString(in),
+			Valid:  true,
+		}
+	case *wrapperspb.StringValue:
+		v := in.(*wrapperspb.StringValue)
+		if v == nil {
+			return sql.NullString{}
+		}
+		return sql.NullString{
+			String: v.Value,
+			Valid:  true,
+		}
 	}
 	str, err := json.Marshal(in)
 	if err != nil {

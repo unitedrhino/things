@@ -49,7 +49,7 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		resp *msgGateway.Msg
 	)
 
-	switch msg.Types[0] {
+	switch msg.Type {
 	case msgGateway.TypeOperation:
 		resp, err = l.HandleOperation(msg)
 	case msgGateway.TypeStatus:
@@ -69,7 +69,7 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 	})
 	return &deviceMsg.PublishMsg{
 		Handle:     msg.Handle,
-		Types:      msg.Types,
+		Type:       msg.Type,
 		Payload:    respStr,
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  msg.ProductID,
@@ -118,7 +118,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 				Result:     errors.Fmt(err).GetCode(),
-				Status:     errors.Fmt(err).Msg,
+				Status:     errors.Fmt(err).GetMsg(),
 			})
 			continue
 		}
@@ -183,9 +183,10 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
 		case deviceMsg.DescribeSubDevices:
 			deviceList, err := l.svcCtx.DeviceM.DeviceGatewayIndex(l.ctx, &dm.DeviceGatewayIndexReq{
-				GatewayProductID:  msg.ProductID,
-				GatewayDeviceName: msg.DeviceName,
-			})
+				Gateway: &dm.DeviceCore{
+					ProductID:  msg.ProductID,
+					DeviceName: msg.DeviceName,
+				}})
 			if err != nil {
 				resp.AddStatus(err)
 				return &resp, err
@@ -203,7 +204,7 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 		default:
 			return nil, errors.Method.AddMsg(l.dreq.Method)
 		}
-		return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Types)
+		return nil, errors.Parameter.AddDetailf("gateway types is err:%v", msg.Type)
 	}()
 	if l.dreq.NoAsk() { //如果不需要回复
 		rsp = nil
