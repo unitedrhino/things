@@ -1,6 +1,7 @@
 package deviceMsgEvent
 
 import (
+	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
@@ -84,5 +85,27 @@ func ToParamValue(p msgThing.Param) application.ParamValue {
 	default:
 		ret.Value = p.Value.Value
 		return ret
+	}
+}
+
+func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDeviceInfoReq *dm.DeviceInfo) {
+	var position *dm.Point
+
+	if diDeviceBasicInfoDo.Position != nil {
+		//TODO 调用 Utils 转换坐标系
+		position = &dm.Point{
+			Longitude: diDeviceBasicInfoDo.Position.Longitude,
+			Latitude:  diDeviceBasicInfoDo.Position.Latitude,
+		}
+		//TODO 获取坐标对应的位置名称
+	}
+
+	//TODO 拓展 DeviceInfo 支持新的 基础信息字段
+	return &dm.DeviceInfo{
+		ProductID:  diDeviceBasicInfoDo.ProductID,
+		DeviceName: diDeviceBasicInfoDo.DeviceName,
+		Version:    &wrappers.StringValue{Value: diDeviceBasicInfoDo.Version},
+		Tags:       diDeviceBasicInfoDo.Tags,
+		Position:   position,
 	}
 }

@@ -40,9 +40,12 @@ const (
 type AffordanceType int64
 
 const (
+	//物模型功能类型：1-property 属性
 	AffordanceTypeProperty AffordanceType = 1
-	AffordanceTypeEvent    AffordanceType = 2
-	AffordanceTypeAction   AffordanceType = 3
+	//物模型功能类型：2-event 事件
+	AffordanceTypeEvent AffordanceType = 2
+	//物模型功能类型：3-action 行为
+	AffordanceTypeAction AffordanceType = 3
 )
 
 func (m AffordanceType) String() string {
@@ -73,4 +76,12 @@ const (
 	EventTypeInfo  EventType = "info"
 	EventTypeAlert EventType = "alert"
 	EventTypeFault EventType = "fault"
+)
+
+type CoordinateSystem string
+
+const (
+	CoordinateSystemEarth CoordinateSystem = "WGS84" //GPS坐标系：地球系
+	CoordinateSystemMars  CoordinateSystem = "GCJ02" //GPS坐标系：火星系
+	CoordinateSystemBaidu CoordinateSystem = "BD09"  //GPS坐标系：百度系
 )
