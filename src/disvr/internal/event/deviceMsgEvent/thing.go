@@ -12,6 +12,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
 	"github.com/i-Things/things/src/disvr/internal/svc"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -22,7 +23,7 @@ type ThingLogic struct {
 	logx.Logger
 	schema *schema.Model
 	dreq   msgThing.Req
-	dd     msgThing.SchemaDataRepo
+	repo   msgThing.SchemaDataRepo
 }
 
 func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic {
@@ -43,7 +44,7 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	if err != nil {
 		return errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
-	l.dd = l.svcCtx.SchemaMsgRepo
+	l.repo = l.svcCtx.SchemaMsgRepo
 	return nil
 }
 
@@ -94,7 +95,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	}
 
 	//插入多条设备物模型属性数据
-	err = l.dd.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
+	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 		return l.DeviceResp(msg, errors.Database, nil), err
@@ -105,6 +106,33 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 
 //设备基础信息上报
 func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
+	core := devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}
+
+	deviceInfo := dm.DeviceInfo{
+		ProductID:   "",
+		DeviceName:  "",
+		CreatedTime: 0,
+		Secret:      "",
+		FirstLogin:  0,
+		LastLogin:   0,
+		Version:     nil,
+		LogLevel:    0,
+		Cert:        "",
+		IsOnline:    0,
+		Tags:        nil,
+		Address:     nil,
+		Position:    nil,
+		ProductName: "",
+	}
+	_, err = l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &deviceInfo)
+	if err != nil {
+		l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
+			utils.FuncName(), core.ProductID, core.DeviceName, err)
+	}
+
 	return nil, nil
 }
 
@@ -115,7 +143,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 	switch l.dreq.Type { //表示获取什么类型的信息（report:表示设备上报的信息 info:信息 alert:告警 fault:故障）
 	case deviceMsg.Report: //表示设备属性上报
 		for id := range l.schema.Property {
-			data, err := l.dd.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
+			data, err := l.repo.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
 				ProductID:  msg.ProductID,
 				DeviceName: msg.DeviceName,
 				DataID:     id,
@@ -188,7 +216,7 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 		l.Errorf("%s.DeviceThingEventReport  err:%v", utils.FuncName(), err)
 	}
 
-	err = l.dd.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
+	err = l.repo.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
 		l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
 		return l.DeviceResp(msg, errors.Database, nil), errors.Database.AddDetail(err)

@@ -178,7 +178,20 @@ func (m *customDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Conte
 func (m *customDmDeviceInfoModel) UpdateDeviceInfo(ctx context.Context, newData *DmDeviceInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, dmDeviceInfoRowsWithPlaceHolder)
 	query = strings.Replace(query, "`position`=?", "`position`=ST_GeomFromText(?)", 1)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.FirstLogin, newData.LastLogin, newData.Version, newData.LogLevel, newData.Cert, newData.IsOnline, newData.Tags, newData.Address, newData.Position, newData.Id)
-
+	_, err := m.conn.ExecCtx(ctx, query,
+		newData.ProductID,
+		newData.DeviceName,
+		newData.Secret,
+		newData.FirstLogin,
+		newData.LastLogin,
+		newData.Version,
+		newData.LogLevel,
+		newData.Cert,
+		newData.IsOnline,
+		newData.Tags,
+		newData.Address,
+		newData.Position,
+		newData.Id,
+	)
 	return err
 }
