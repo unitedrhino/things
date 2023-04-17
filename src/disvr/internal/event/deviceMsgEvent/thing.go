@@ -2,6 +2,7 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/domain/schema"
@@ -12,7 +13,6 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
 	"github.com/i-Things/things/src/disvr/internal/svc"
-	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -106,31 +106,16 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 
 //设备基础信息上报
 func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
-	core := devices.Core{
-		ProductID:  msg.ProductID,
-		DeviceName: msg.DeviceName,
+	diDeviceBasicInfoDo := &msgThing.DeviceBasicInfo{Core: devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}}
+	if err = gconv.Struct(req.Params, diDeviceBasicInfoDo); err != nil {
+		return nil, err
 	}
 
-	deviceInfo := dm.DeviceInfo{
-		ProductID:   "",
-		DeviceName:  "",
-		CreatedTime: 0,
-		Secret:      "",
-		FirstLogin:  0,
-		LastLogin:   0,
-		Version:     nil,
-		LogLevel:    0,
-		Cert:        "",
-		IsOnline:    0,
-		Tags:        nil,
-		Address:     nil,
-		Position:    nil,
-		ProductName: "",
-	}
-	_, err = l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &deviceInfo)
+	dmDeviceInfoReq := ToDmDevicesInfoReq(diDeviceBasicInfoDo)
+	_, err = l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, dmDeviceInfoReq)
 	if err != nil {
 		l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
-			utils.FuncName(), core.ProductID, core.DeviceName, err)
+			utils.FuncName(), dmDeviceInfoReq.ProductID, dmDeviceInfoReq.DeviceName, err)
 	}
 
 	return nil, nil
