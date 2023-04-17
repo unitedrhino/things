@@ -1,6 +1,7 @@
 package msgThing
 
 import (
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
@@ -16,6 +17,22 @@ type (
 		ActionID string         `json:"actionId,omitempty"` //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
 		ShowMeta int64          `json:"showmeta,omitempty"` //标识回复消息是否带 metadata，缺省为0表示不返回 metadata
 		Type     string         `json:"type,omitempty"`     //表示获取什么类型的信息（report:表示设备上报的信息 info:信息 alert:告警 fault:故障）
+	}
+	//设备基础信息
+	DeviceBasicInfo struct {
+		core     devices.Core
+		Imei     string                  `json:"imei"`     //设备的 IMEI 号信息，非必填项
+		Mac      string                  `json:"mac"`      //设备的 MAC 信息，非必填项
+		Version  string                  `json:"version"`  //固件版本
+		HardInfo string                  `json:"hardInfo"` //模组具体硬件型号
+		SoftInfo string                  `json:"softInfo"` //模组软件版本
+		Position DeviceBasicInfoPosition `json:"position"` //坐标信息
+		Tags     map[string]string       `json:"tags"`
+	}
+	DeviceBasicInfoPosition struct {
+		CoordinateSystem string  `json:"coordinateSystem"` //坐标系：WGS84(地球系)，GCJ02(火星系)，BD09(百度系)<br/>参考解释：https://www.cnblogs.com/bigroc/p/16423120.html
+		Longitude        float64 `json:"longitude"`        //经度坐标(度格式，十进制)<br/>参考解释：http://www.360doc.com/document/17/1228/16/12479599_365694647.shtml
+		Latitude         float64 `json:"latitude"`         //纬度坐标(度格式，十进制
 	}
 )
 
@@ -138,4 +155,21 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 		}
 	}
 	return getParam, nil
+}
+
+func (d *DeviceBasicInfo) Fill(core devices.Core) *DeviceBasicInfo {
+	return &DeviceBasicInfo{
+		core:     core,
+		Imei:     "",
+		Mac:      "",
+		Version:  "",
+		HardInfo: "",
+		SoftInfo: "",
+		Position: DeviceBasicInfoPosition{
+			CoordinateSystem: "",
+			Longitude:        0,
+			Latitude:         0,
+		},
+		Tags: nil,
+	}
 }

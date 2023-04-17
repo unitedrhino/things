@@ -30,7 +30,7 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DmDeviceInfo, data *dm.DeviceInfo) {
+func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *dm.DeviceInfo) {
 	if data.Tags != nil {
 		tags, err := json.Marshal(data.Tags)
 		if err == nil {
@@ -68,6 +68,14 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DmDeviceInfo, data *dm.D
 
 // 更新设备
 func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Response, error) {
+	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
+		if pid, err := l.svcCtx.ProductInfo.GetIDByName(l.ctx, mysql.ProductFilter{ProductName: in.ProductName}, nil); err != nil {
+			return nil, err
+		} else {
+			in.ProductID = pid
+		}
+	}
+
 	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
@@ -76,13 +84,15 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 		}
 		return nil, errors.Database.AddDetail(err)
 	}
-	l.ChangeDevice(di, in)
+
+	l.SetDevicePoByDto(di, in)
 
 	err = l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, di)
 	if err != nil {
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
+
 	if in.LogLevel != def.Unknown {
 		err := l.svcCtx.DataUpdate.DeviceLogLevelUpdate(l.ctx, &events.DataUpdateInfo{
 			ProductID:  in.ProductID,
