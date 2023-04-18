@@ -1,6 +1,7 @@
 package msgThing
 
 import (
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
@@ -31,9 +32,9 @@ type (
 	}
 	//设备基础信息-坐标信息
 	DeviceBasicInfoPosition struct {
-		CoordinateSystem schema.CoordinateSystem `json:"coordinateSystem,omitempty"` //坐标系：WGS84(地球系)，GCJ02(火星系)，BD09(百度系)<br/>参考解释：https://www.cnblogs.com/bigroc/p/16423120.html
-		Longitude        float64                 `json:"longitude,omitempty"`        //坐标经度(度格式，十进制)<br/>参考解释：http://www.360doc.com/document/17/1228/16/12479599_365694647.shtml
-		Latitude         float64                 `json:"latitude,omitempty"`         //坐标纬度(度格式，十进制
+		CoordinateSystem def.CoordinateSystem `json:"coordinateSystem,omitempty"` //坐标系：WGS84(地球系)，GCJ02(火星系)，BD09(百度系)<br/>参考解释：https://www.cnblogs.com/bigroc/p/16423120.html
+		Longitude        float64              `json:"longitude,omitempty"`        //坐标经度(度格式，十进制)<br/>参考解释：http://www.360doc.com/document/17/1228/16/12479599_365694647.shtml
+		Latitude         float64              `json:"latitude,omitempty"`         //坐标纬度(度格式，十进制
 	}
 )
 

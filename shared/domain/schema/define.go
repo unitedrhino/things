@@ -77,11 +77,3 @@ const (
 	EventTypeAlert EventType = "alert"
 	EventTypeFault EventType = "fault"
 )
-
-type CoordinateSystem string
-
-const (
-	CoordinateSystemEarth CoordinateSystem = "WGS84" //GPS坐标系：地球系
-	CoordinateSystemMars  CoordinateSystem = "GCJ02" //GPS坐标系：火星系
-	CoordinateSystemBaidu CoordinateSystem = "BD09"  //GPS坐标系：百度系
-)

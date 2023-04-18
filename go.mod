@@ -21,6 +21,7 @@ require (
 	github.com/silenceper/wechat/v2 v2.0.5
 	github.com/spf13/cast v1.5.0
 	github.com/stretchr/testify v1.8.2
+	github.com/suifengtec/gocoord v0.0.0-20210116135606-a0cd8c71c959
 	github.com/taosdata/driver-go/v3 v3.0.0
 	github.com/zeromicro/go-zero v1.5.0
 	go.opentelemetry.io/otel v1.14.0

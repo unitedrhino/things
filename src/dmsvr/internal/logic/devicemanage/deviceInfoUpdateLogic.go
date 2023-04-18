@@ -40,9 +40,23 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 	if data.LogLevel != def.Unknown {
 		old.LogLevel = data.LogLevel
 	}
+
+	if data.Imei != nil {
+		old.Imei = data.Imei.GetValue()
+	}
+	if data.Mac != nil {
+		old.Mac = data.Mac.GetValue()
+	}
 	if data.Version != nil {
 		old.Version = data.Version.GetValue()
 	}
+	if data.HardInfo != nil {
+		old.HardInfo = data.HardInfo.GetValue()
+	}
+	if data.SoftInfo != nil {
+		old.SoftInfo = data.SoftInfo.GetValue()
+	}
+
 	if data.IsOnline != def.Unknown {
 		old.IsOnline = data.IsOnline
 		if data.IsOnline == def.True { //需要处理第一次上线的情况,一般在网关代理登录时需要处理
@@ -60,7 +74,6 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 	if data.Address != nil {
 		old.Address = data.Address.Value
 	}
-
 	if data.Position != nil {
 		old.Position = fmt.Sprintf("POINT(%f %f)", data.Position.Longitude, data.Position.Latitude)
 	}
@@ -76,7 +89,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 		}
 	}
 
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
+	dmDiPo, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.NotFind.AddDetailf("not find device productID=%s deviceName=%s",
@@ -85,9 +98,9 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	l.SetDevicePoByDto(di, in)
+	l.SetDevicePoByDto(dmDiPo, in)
 
-	err = l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, di)
+	err = l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, dmDiPo)
 	if err != nil {
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, errors.System.AddDetail(err)
