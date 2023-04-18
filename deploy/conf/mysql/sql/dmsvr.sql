@@ -74,28 +74,32 @@ CREATE TABLE if not exists `dm_product_schema`
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
 
-CREATE TABLE if not exists `dm_device_info`
-(
+CREATE TABLE if not exists `dm_device_info` (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `productID`   char(11)     NOT NULL COMMENT '产品id',
     `deviceName`  varchar(100) NOT NULL COMMENT '设备名称',
-    `secret`      varchar(50)           DEFAULT '' COMMENT '设备秘钥',
+    `secret`      varchar(50)  NOT NULL DEFAULT '' COMMENT '设备秘钥',
+    `cert`        varchar(512) NOT NULL DEFAULT '' COMMENT '设备证书',
+    `imei`        varchar(15)  NOT NULL DEFAULT '' COMMENT 'IMEI号信息',
+    `mac`         varchar(17)  NOT NULL DEFAULT '' COMMENT 'MAC号信息',
+    `version`     varchar(64)  NOT NULL DEFAULT '' COMMENT '固件版本',
+    `hardInfo`    varchar(64)  NOT NULL DEFAULT '' COMMENT '模组硬件型号',
+    `softInfo`    varchar(64)  NOT NULL DEFAULT '' COMMENT '模组软件版本',
+    `position`    point        NOT NULL COMMENT '设备的位置(默认百度坐标系BD09)',
+    `address`     varchar(512) NOT NULL DEFAULT '' COMMENT '所在地址',
+    `tags`        json         NOT NULL COMMENT '设备标签',
+    `isOnline`    tinyint(1)   NOT NULL DEFAULT 2 COMMENT '是否在线,1是2否',
     `firstLogin`  datetime              DEFAULT NULL COMMENT '激活时间',
     `lastLogin`   datetime              DEFAULT NULL COMMENT '最后上线时间',
+    `logLevel`    tinyint(1)   NOT NULL DEFAULT '1' COMMENT '日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试',
     `createdTime` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updatedTime` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deletedTime` datetime              DEFAULT NULL,
-    `version`     varchar(64)           DEFAULT '' COMMENT '固件版本',
-    `logLevel`    tinyint(1)            DEFAULT '1' COMMENT '日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试',
-    `cert`        varchar(512)          DEFAULT '' COMMENT '设备证书',
-    `isOnline`    tinyint(1)            default 2 comment '是否在线,1是2否',
-    `tags`        json not null comment '设备标签',
-    `address`     varchar(512)    DEFAULT '' COMMENT '所在地址',
-    `position`    point NOT NULL comment '设备的位置,默认百度坐标系BD09',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `productID_deviceName` (`productID`, `deviceName`),
-    KEY `createdTime` (`createdTime`) USING BTREE
-    ) ENGINE = InnoDB
+    UNIQUE KEY `productID_deviceName`(`productID`, `deviceName`),
+    KEY `createdTime`(`createdTime`) USING BTREE
+)
+    ENGINE = InnoDB
     AUTO_INCREMENT = 0
     DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
 
