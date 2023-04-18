@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgGateway"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -90,22 +91,21 @@ func ToParamValue(p msgThing.Param) application.ParamValue {
 
 func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDeviceInfoReq *dm.DeviceInfo) {
 	var position *dm.Point
-
-	if diDeviceBasicInfoDo.Position != nil {
-		//TODO 调用 Utils 转换坐标系
-		position = &dm.Point{
-			Longitude: diDeviceBasicInfoDo.Position.Longitude,
-			Latitude:  diDeviceBasicInfoDo.Position.Latitude,
-		}
-		//TODO 获取坐标对应的位置名称
+	if p := diDeviceBasicInfoDo.Position; p != nil {
+		gcp := utils.PositionToBaidu(p.CoordinateSystem, p.Longitude, p.Latitude)
+		position = &dm.Point{Longitude: gcp.Lon, Latitude: gcp.Lat}
 	}
 
 	//TODO 拓展 DeviceInfo 支持新的 基础信息字段
 	return &dm.DeviceInfo{
 		ProductID:  diDeviceBasicInfoDo.ProductID,
 		DeviceName: diDeviceBasicInfoDo.DeviceName,
+		Imei:       &wrappers.StringValue{Value: diDeviceBasicInfoDo.Imei},
+		Mac:        &wrappers.StringValue{Value: diDeviceBasicInfoDo.Mac},
 		Version:    &wrappers.StringValue{Value: diDeviceBasicInfoDo.Version},
-		Tags:       diDeviceBasicInfoDo.Tags,
+		HardInfo:   &wrappers.StringValue{Value: diDeviceBasicInfoDo.HardInfo},
+		SoftInfo:   &wrappers.StringValue{Value: diDeviceBasicInfoDo.SoftInfo},
 		Position:   position,
+		Tags:       diDeviceBasicInfoDo.Tags,
 	}
 }

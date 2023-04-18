@@ -116,9 +116,10 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 	if err != nil {
 		l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
 			utils.FuncName(), dmDeviceInfoReq.ProductID, dmDeviceInfoReq.DeviceName, err)
+		return l.DeviceResp(msg, errors.Database, nil), err
 	}
 
-	return nil, nil
+	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
 //设备请求获取 云端记录的最新设备信息
