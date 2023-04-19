@@ -48,3 +48,8 @@ func FirstLower(s string) string {
 	}
 	return strings.ToLower(s[:1]) + s[1:]
 }
+
+func NewFillString(num int, val string, sep string) string {
+	sli := NewFillSlice(num, val)
+	return strings.Join(sli, sep)
+}
