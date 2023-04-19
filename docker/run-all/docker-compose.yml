@@ -69,7 +69,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
       TZ: Asia/Shanghai
     volumes:
-      - ../../deploy/conf/mysql/sql:/mysql
+      - ../../deploy/conf/mysql/sql:/docker-entrypoint-initdb.d
     logging:
       options:
         max-size: "50M"
