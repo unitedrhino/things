@@ -3,14 +3,13 @@ package mysql
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"strings"
 )
 
 var _ DmDeviceInfoModel = (*customDmDeviceInfoModel)(nil)
@@ -151,11 +150,35 @@ func (m *customDmDeviceInfoModel) CountGroupByField(ctx context.Context, f Devic
 }
 
 func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *DmDeviceInfo) error {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, dmDeviceInfoRowsExpectAutoSet)
-	//position为points类型字段,插入时需用函数ST_GeomFromText转换，而不能使用问号
-	i := utils.IndexN(query, '?', 12)
-	query = query[0:i-1] + "ST_GeomFromText(?))" + query[i+1:]
-	_, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.FirstLogin, data.LastLogin, data.Version, data.LogLevel, data.Cert, data.IsOnline, data.Tags, data.Address, data.Position)
+	table := m.table
+	fields := dmDeviceInfoRowsExpectAutoSet
+	params := []any{ //注意：要和 fields的 字段顺序 对上
+		data.ProductID,
+		data.DeviceName,
+		data.Secret,
+		data.Cert,
+		data.Imei,
+		data.Mac,
+		data.Version,
+		data.HardInfo,
+		data.SoftInfo,
+		data.Position, //注意，记住这里的 position pos=10
+		data.Address,
+		data.Tags,
+		data.IsOnline,
+		data.FirstLogin,
+		data.LastLogin,
+		data.LogLevel,
+	}
+	valsPlace := utils.NewFillPlace(len(params)) //生成 ?,?,... (有len个?)
+
+	//SQL基本结构
+	query := fmt.Sprintf("insert into %s (%s) values (%s)", table, fields, valsPlace)
+	//SQL特殊处理（position为points类型字段,插入时需用函数ST_GeomFromText转换，而不能使用问号）
+	pos := utils.IndexN(query, '?', 10) //注意：这里是上面的 position pos 10，如位置有变值要跟着改（比如加了字段...）
+	query = query[0:pos-1] + "ST_GeomFromText(?)," + query[pos+1:]
+
+	_, err := m.conn.ExecCtx(ctx, query, params...)
 	return err
 }
 
@@ -176,9 +199,33 @@ func (m *customDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Conte
 }
 
 func (m *customDmDeviceInfoModel) UpdateDeviceInfo(ctx context.Context, newData *DmDeviceInfo) error {
-	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, dmDeviceInfoRowsWithPlaceHolder)
-	query = strings.Replace(query, "`position`=?", "`position`=ST_GeomFromText(?)", 1)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.FirstLogin, newData.LastLogin, newData.Version, newData.LogLevel, newData.Cert, newData.IsOnline, newData.Tags, newData.Address, newData.Position, newData.Id)
+	table := m.table
+	fields := dmDeviceInfoRowsWithPlaceHolder
+	params := []any{ //注意：要和 fields的 字段顺序 对上
+		newData.ProductID,
+		newData.DeviceName,
+		newData.Secret,
+		newData.Cert,
+		newData.Imei,
+		newData.Mac,
+		newData.Version,
+		newData.HardInfo,
+		newData.SoftInfo,
+		newData.Position,
+		newData.Address,
+		newData.Tags,
+		newData.IsOnline,
+		newData.FirstLogin,
+		newData.LastLogin,
+		newData.LogLevel,
+		newData.Id,
+	}
 
+	//SQL基本结构
+	query := fmt.Sprintf("update %s set %s where `id` = ?", table, fields)
+	//SQL特殊处理（position为points类型字段,插入时需用函数ST_GeomFromText转换，而不能使用问号）
+	query = strings.Replace(query, "`position`=?", "`position`=ST_GeomFromText(?)", 1)
+
+	_, err := m.conn.ExecCtx(ctx, query, params...)
 	return err
 }
