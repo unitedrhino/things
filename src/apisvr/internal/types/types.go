@@ -531,17 +531,21 @@ type DeviceGateWayMultiDeleteReq struct {
 type DeviceInfo struct {
 	ProductID   string  `json:"productID"`                   //产品id 只读
 	DeviceName  string  `json:"deviceName"`                  //设备名称 读写
-	CreatedTime int64   `json:"createdTime,optional,string"` //创建时间 只读
 	Secret      string  `json:"secret,optional"`             //设备秘钥 只读
-	FirstLogin  int64   `json:"firstLogin,optional,string"`  //激活时间 只读
-	LastLogin   int64   `json:"lastLogin,optional,string"`   //最后上线时间 只读
-	Version     *string `json:"version,optional"`            // 固件版本  读写
-	LogLevel    int64   `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	Cert        string  `json:"cert,optional"`               // 设备证书  只读
+	Imei        string  `json:"imei,optional"`               // IMEI号信息 只读
+	Mac         string  `json:"mac,optional"`                // MAC号信息 只读
+	Version     *string `json:"version,optional"`            // 固件版本  读写
+	HardInfo    string  `json:"hardInfo,optional"`           // 模组硬件型号 只读
+	SoftInfo    string  `json:"softInfo,optional"`           // 模组软件版本 只读
+	Position    *Point  `json:"position,optional"`           //设备定位,默认百度坐标系
+	Address     *string `json:"address,optional"`            //所在地址
 	Tags        []*Tag  `json:"tags,optional"`               // 设备tag
 	IsOnline    int64   `json:"isOnline,optional"`           // 在线状态  1离线 2在线 只读
-	Address     *string `json:"address,optional"`            //所在地址
-	Position    *Point  `json:"position,optional"`           //设备定位,默认百度坐标系
+	FirstLogin  int64   `json:"firstLogin,optional,string"`  //激活时间 只读
+	LastLogin   int64   `json:"lastLogin,optional,string"`   //最后上线时间 只读
+	LogLevel    int64   `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	CreatedTime int64   `json:"createdTime,optional,string"` //创建时间 只读
 }
 
 type DeviceInfoCreateReq struct {
