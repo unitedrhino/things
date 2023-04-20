@@ -18,3 +18,11 @@ func SliceIndex[T any](slice []T, index int, defaul T) T {
 		return defaul
 	}
 }
+
+func NewFillSlice[T any](num int, val T) []T {
+	sli := make([]T, num)
+	for i := range sli {
+		sli[i] = val
+	}
+	return sli
+}

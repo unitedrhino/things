@@ -91,12 +91,14 @@ func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 			Param:      param,
 			TimeStamp:  timestamp,
 		}
+		//缓存
 		err := d.kv.SetCtx(ctx, d.genRedisPropertyKey(productID, deviceName, identifier), data.String())
 		if err != nil {
 			return errors.Database.AddDetailf(
 				"SchemaDataRepo.InsertPropertiesData.SetCtx identifier:%v param:%v err:%v",
 				identifier, param, err)
 		}
+		//入库
 		err = d.InsertPropertyData(ctx, t, productID, deviceName, &data)
 		if err != nil {
 			return errors.Database.AddDetailf(
