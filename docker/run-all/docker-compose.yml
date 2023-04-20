@@ -115,6 +115,18 @@ services:
       ithings_net:
         ipv4_address: 172.19.0.6
 
+  init-db:
+    image: tdengine/tdengine
+    container_name: init-db
+    depends_on:
+      - tdengine
+    volumes:
+      - ./init-db.sh:/init-db.sh
+    command: /bin/bash /init-db.sh
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.9
+
   emqx:
     container_name: emqx
     image: emqx/emqx
