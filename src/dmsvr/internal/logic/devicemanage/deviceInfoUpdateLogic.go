@@ -41,20 +41,20 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 		old.LogLevel = data.LogLevel
 	}
 
-	if data.Imei != nil {
-		old.Imei = data.Imei.GetValue()
+	if data.Imei != "" {
+		old.Imei = data.Imei
 	}
-	if data.Mac != nil {
-		old.Mac = data.Mac.GetValue()
+	if data.Mac != "" {
+		old.Mac = data.Mac
 	}
 	if data.Version != nil {
 		old.Version = data.Version.GetValue()
 	}
-	if data.HardInfo != nil {
-		old.HardInfo = data.HardInfo.GetValue()
+	if data.HardInfo != "" {
+		old.HardInfo = data.HardInfo
 	}
-	if data.SoftInfo != nil {
-		old.SoftInfo = data.SoftInfo.GetValue()
+	if data.SoftInfo != "" {
+		old.SoftInfo = data.SoftInfo
 	}
 
 	if data.IsOnline != def.Unknown {

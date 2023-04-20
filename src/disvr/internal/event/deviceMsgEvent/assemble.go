@@ -1,7 +1,6 @@
 package deviceMsgEvent
 
 import (
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
@@ -96,15 +95,14 @@ func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDevice
 		position = &dm.Point{Longitude: gcp.Lon, Latitude: gcp.Lat}
 	}
 
-	//TODO 拓展 DeviceInfo 支持新的 基础信息字段
 	return &dm.DeviceInfo{
 		ProductID:  diDeviceBasicInfoDo.ProductID,
 		DeviceName: diDeviceBasicInfoDo.DeviceName,
-		Imei:       &wrappers.StringValue{Value: diDeviceBasicInfoDo.Imei},
-		Mac:        &wrappers.StringValue{Value: diDeviceBasicInfoDo.Mac},
-		Version:    &wrappers.StringValue{Value: diDeviceBasicInfoDo.Version},
-		HardInfo:   &wrappers.StringValue{Value: diDeviceBasicInfoDo.HardInfo},
-		SoftInfo:   &wrappers.StringValue{Value: diDeviceBasicInfoDo.SoftInfo},
+		Imei:       diDeviceBasicInfoDo.Imei,
+		Mac:        diDeviceBasicInfoDo.Mac,
+		Version:    utils.ToRpcNullString(diDeviceBasicInfoDo.Version),
+		HardInfo:   diDeviceBasicInfoDo.HardInfo,
+		SoftInfo:   diDeviceBasicInfoDo.SoftInfo,
 		Position:   position,
 		Tags:       diDeviceBasicInfoDo.Tags,
 	}

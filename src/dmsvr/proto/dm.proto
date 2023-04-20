@@ -276,11 +276,11 @@ message DeviceInfo{
   int64   createdTime = 4; //创建时间 只读
   string  secret = 5; //设备秘钥 只读
   string  cert = 6;// 设备证书  只读
-  google.protobuf.StringValue  imei = 7; //IMEI号信息 只读
-  google.protobuf.StringValue  mac = 8; //MAC号信息 只读
+  string  imei = 7; //IMEI号信息 只读
+  string  mac = 8; //MAC号信息 只读
   google.protobuf.StringValue  version = 9; // 固件版本  读写
-  google.protobuf.StringValue  hardInfo = 10; //模组硬件型号 只读
-  google.protobuf.StringValue  softInfo = 11; //模组软件版本 只读
+  string  hardInfo = 10; //模组硬件型号 只读
+  string  softInfo = 11; //模组软件版本 只读
   Point Position = 12;   //设备定位,默认百度坐标系
   google.protobuf.StringValue address = 13; // 所在地址 读写
   map<string, string> tags = 14;//设备标签
