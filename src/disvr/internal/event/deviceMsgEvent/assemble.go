@@ -4,6 +4,7 @@ import (
 	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgGateway"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -84,5 +85,25 @@ func ToParamValue(p msgThing.Param) application.ParamValue {
 	default:
 		ret.Value = p.Value.Value
 		return ret
+	}
+}
+
+func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDeviceInfoReq *dm.DeviceInfo) {
+	var position *dm.Point
+	if p := diDeviceBasicInfoDo.Position; p != nil {
+		gcp := utils.PositionToBaidu(p.CoordinateSystem, p.Longitude, p.Latitude)
+		position = &dm.Point{Longitude: gcp.Lon, Latitude: gcp.Lat}
+	}
+
+	return &dm.DeviceInfo{
+		ProductID:  diDeviceBasicInfoDo.ProductID,
+		DeviceName: diDeviceBasicInfoDo.DeviceName,
+		Imei:       diDeviceBasicInfoDo.Imei,
+		Mac:        diDeviceBasicInfoDo.Mac,
+		Version:    utils.ToRpcNullString(diDeviceBasicInfoDo.Version),
+		HardInfo:   diDeviceBasicInfoDo.HardInfo,
+		SoftInfo:   diDeviceBasicInfoDo.SoftInfo,
+		Position:   position,
+		Tags:       diDeviceBasicInfoDo.Tags,
 	}
 }
