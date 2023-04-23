@@ -117,7 +117,7 @@ services:
 
   emqx:
     container_name: emqx
-    image: emqx/emqx
+    image: emqx/emqx:4.4.17
     hostname: node1.emqx.io
     restart: always
     ports:
