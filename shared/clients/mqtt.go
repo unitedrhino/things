@@ -3,14 +3,15 @@ package clients
 import (
 	"crypto/tls"
 	"fmt"
+	"net/url"
+	"sync"
+	"time"
+
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
-	"net/url"
-	"sync"
-	"time"
 )
 
 var (
@@ -23,6 +24,8 @@ var (
 
 func NewMqttClient(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 	mqttInitOnce.Do(func() {
+		// TODO: [暂时兼容] 延迟初始化，等待 router 完毕
+		time.Sleep(5 * time.Second)
 		opts := mqtt.NewClientOptions()
 		for _, broker := range conf.Brokers {
 			opts.AddBroker(broker)

@@ -15,6 +15,14 @@ services:
       - "7777:7777"
     volumes:
       - ../../deploy/conf/ithings/apisvr/etc:/ithings/etc
+    depends_on:
+      - tdengine
+      - nats-server
+      - etcd
+      - mariadb
+      - redis
+      - init-db
+      - emqx
     logging:
       options:
         max-size: "50M"
@@ -69,7 +77,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
       TZ: Asia/Shanghai
     volumes:
-      - ../../deploy/conf/mysql/sql:/mysql
+      - ../../deploy/conf/mysql/sql:/docker-entrypoint-initdb.d
     logging:
       options:
         max-size: "50M"
@@ -115,9 +123,21 @@ services:
       ithings_net:
         ipv4_address: 172.19.0.6
 
+  init-db:
+    image: tdengine/tdengine
+    container_name: init-db
+    depends_on:
+      - tdengine
+    volumes:
+      - ./init-db.sh:/init-db.sh
+    command: /bin/bash /init-db.sh
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.9
+
   emqx:
     container_name: emqx
-    image: emqx/emqx:4.4.17
+    image: emqx:4.4.17
     hostname: node1.emqx.io
     restart: always
     ports:
