@@ -1,0 +1,41 @@
+info(
+    title: "权限控制"
+    desc:  "权限控制，包括权限管理、角色访问控制"
+    author: "lbs"
+    email: "174805676@qq.com"
+    version: "v1.0"
+)
+
+@server(
+    group: system/authority
+    prefix: /api/v1/system/authority
+    middleware: CheckToken
+)
+
+service api {
+    @doc "更新API权限"
+    @handler AuthorityApiUpdate
+    post /update (AuthorityApiUpdateReq) returns ()
+
+    @doc "获取API权限列表"
+    @handler AuthorityApiIndex
+    post /index () returns (AuthorityApiIndexResp)
+}
+
+type (
+    AuthorityApiInfo {
+        Path string   `json:"path" validate="required,max=80"`         //API路径
+        Method string `json:"method" validate="required,min=3,max=4"`  //API请求方法
+    }
+
+    AuthorityApiUpdateReq {
+        List []*AuthorityApiInfo `json:"list"`  //API列表数据
+    }
+
+    AuthorityApiIndexResp {
+        List []*AuthorityApiInfo `json:"list"`  //API列表数据
+        Total int64 `json:"total"`              //API列表总数
+    }
+)
+
+

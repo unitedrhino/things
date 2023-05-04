@@ -357,6 +357,20 @@ type ConfigResp struct {
 	Map Map `json:"map"` //设备地图相关配置
 }
 
+type AuthorityApiInfo struct {
+	Path   string `json:"path" validate="required,max=80"`        //API路径
+	Method string `json:"method" validate="required,min=3,max=4"` //API请求方法
+}
+
+type AuthorityApiUpdateReq struct {
+	List []*AuthorityApiInfo `json:"list"` //API列表数据
+}
+
+type AuthorityApiIndexResp struct {
+	List  []*AuthorityApiInfo `json:"list"`  //API列表数据
+	Total int64               `json:"total"` //API列表总数
+}
+
 type DeviceAuthLoginReq struct {
 	Username    string `json:"username"`                       //用户名
 	Password    string `json:"password,optional"`              //密码

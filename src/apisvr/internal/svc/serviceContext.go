@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"github.com/casbin/casbin/v2"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/oss"
@@ -48,6 +49,7 @@ type SvrClient struct {
 	ApiRpc         api.Api
 	Scene          scenelinkage.SceneLinkage
 	Alarm          alarmcenter.AlarmCenter
+	Casbin         *casbin.Enforcer
 }
 
 type ServiceContext struct {
@@ -144,6 +146,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
+	cbn := c.CasbinConf.MustNewCasbinWithRedisWatcher(c.DatabaseConf.Type, c.DatabaseConf.GetDSN(), c.RedisConf)
+
 	return &ServiceContext{
 		Config:     c,
 		CheckToken: middleware.NewCheckTokenMiddleware(c, ur, lo).Handle,
@@ -164,6 +168,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Alarm:          alarm,
 			LogRpc:         lo,
 			ApiRpc:         ap,
+			Casbin:         cbn,
 		},
 		//OSS:        ossClient,
 	}

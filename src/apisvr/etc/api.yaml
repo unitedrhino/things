@@ -55,3 +55,29 @@ RuleRpc:
       Hosts:
         - 127.0.0.1:2379
       Key: rule.rpc
+CasbinConf:
+  ModelText: |
+    [request_definition]
+    r = sub, obj, act
+    [policy_definition]
+    p = sub, obj, act
+    [role_definition]
+    g = _, _
+    [policy_effect]
+    e = some(where (p.eft == allow))
+    [matchers]
+    m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act
+RedisConf:
+  Host: 127.0.0.1:6379
+  Type: node
+
+DatabaseConf:
+  Type: mysql
+  Host: 127.0.0.1
+  Port: 3306
+  DBName: iThings
+  Username: root
+  Password: password
+  MaxOpenConn: 100
+  SSLMode: disable
+  CacheTime: 5

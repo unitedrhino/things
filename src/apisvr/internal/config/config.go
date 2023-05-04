@@ -2,7 +2,10 @@ package config
 
 import (
 	"github.com/i-Things/things/shared/conf"
+	"github.com/suyuan32/simple-admin-common/config"
+	"github.com/suyuan32/simple-admin-common/plugins/casbin"
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/rest"
 )
 
@@ -25,9 +28,12 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	} //注册token相关配置
-	Proxy    conf.ProxyConf `json:",optional"`
-	Captcha  Captcha
-	OSS      conf.OSSConf  `json:",optional"`
-	Map      conf.MapConf  `json:",optional"`
-	OpenAuth conf.AuthConf `json:",optional"`
+	Proxy        conf.ProxyConf `json:",optional"`
+	Captcha      Captcha
+	OSS          conf.OSSConf  `json:",optional"`
+	Map          conf.MapConf  `json:",optional"`
+	OpenAuth     conf.AuthConf `json:",optional"`
+	CasbinConf   casbin.CasbinConf
+	RedisConf    redis.RedisConf
+	DatabaseConf config.DatabaseConf
 }
