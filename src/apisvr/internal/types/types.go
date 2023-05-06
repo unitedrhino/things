@@ -358,12 +358,17 @@ type ConfigResp struct {
 }
 
 type AuthorityApiInfo struct {
-	Path   string `json:"path" validate="required,max=80"`        //API路径
-	Method string `json:"method" validate="required,min=3,max=4"` //API请求方法
+	Route  string `json:"route"`              // 接口路由
+	Method int64  `json:"method,range=[1:9]"` // 接口请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
 }
 
-type AuthorityApiUpdateReq struct {
-	List []*AuthorityApiInfo `json:"list"` //API列表数据
+type AuthorityApiMultiUpdateReq struct {
+	RoleID uint64              `json:"roleID"` //角色ID
+	List   []*AuthorityApiInfo `json:"list"`   //API列表数据
+}
+
+type AuthorityApiIndexReq struct {
+	RoleID uint64 `json:"roleID"` //角色ID
 }
 
 type AuthorityApiIndexResp struct {

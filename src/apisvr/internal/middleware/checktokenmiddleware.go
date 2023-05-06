@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/casbin/casbin/v2"
 	"github.com/gogf/gf/v2/encoding/gcharset"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
@@ -97,6 +98,16 @@ func (m *CheckTokenMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) 
 	}
 	logx.WithContext(r.Context()).Infof("%s.CheckToken ip:%v in.token=%s checkResp:%v",
 		utils.FuncName(), strIP, strToken, utils.Fmt(resp))
+
+	//check api authority
+	obj := r.URL.Path
+	act := r.Method
+	roleId := userHeader.GetUserCtx(r.Context()).Role
+	var cbn casbin.Enforcer
+	result := batchCheck(&cbn, roleId, act, obj)
+	if !result {
+		return nil, errors.System.AddDetail("check api authority failed")
+	}
 	return &userHeader.UserCtx{
 		Uid:  resp.Uid,
 		IP:   strIP,
@@ -105,7 +116,7 @@ func (m *CheckTokenMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) 
 	}, nil
 }
 
-//获取ip所属城市
+// 获取ip所属城市
 func (m *CheckTokenMiddleware) GetCityByIp(ip string) string {
 	if ip == "" {
 		return ""
@@ -130,7 +141,7 @@ func (m *CheckTokenMiddleware) GetCityByIp(ip string) string {
 	}
 }
 
-//操作日志记录
+// 操作日志记录
 func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) error {
 
 	res, err := ioutil.ReadAll(r.Response.Body)
@@ -159,4 +170,22 @@ func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) e
 			utils.FuncName(), err.Error())
 	}
 	return nil
+}
+
+func batchCheck(cbn *casbin.Enforcer, roleId int64, act, obj string) bool {
+	var checkReq [][]any
+	checkReq = append(checkReq, []any{roleId, obj, act})
+	result, err := cbn.BatchEnforce(checkReq)
+	if err != nil {
+		logx.Errorw("Casbin enforce error", logx.Field("detail", err.Error()))
+		return false
+	}
+
+	for _, v := range result {
+		if v {
+			return true
+		}
+	}
+
+	return false
 }

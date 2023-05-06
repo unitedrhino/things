@@ -218,8 +218,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: systemauthority.AuthorityApiUpdateHandler(serverCtx),
+					Path:    "/multiUpdate",
+					Handler: systemauthority.AuthorityApiMultiUpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -228,7 +228,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/system/authority"),
+		rest.WithPrefix("/api/v1/system/authority/api"),
 	)
 
 	server.AddRoutes(

@@ -358,3 +358,87 @@ INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/index',2,'获取接口列表',4,'','接口管理');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/update',2,'更新接口',2,'','接口管理');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/delete',2,'删除接口',3,'','接口管理');
+INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/authority/api/index',2,'获取API权限列表',4,'','权限管理');
+INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/authority/api/multiUpdate',2,'更新API权限',2,'','权限管理');
+
+CREATE TABLE if not exists `casbin_rules` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT comment '编号',
+    `ptype` varchar(255) NOT NULL DEFAULT '' comment '策略类型，即策略的分类，例如"p"表示主体（provider）访问资源（resource）的许可权，"g"表示主体（provider）之间的关系访问控制',
+    `v0` varchar(255) NOT NULL DEFAULT '' comment '策略中的第一个参数，通常用于表示资源的归属范围（即限制访问的对象），例如资源所属的机构、部门、业务线、地域等',
+    `v1` varchar(255) NOT NULL DEFAULT '' comment '策略中的第二个参数，通常用于表示主体（provider），即需要访问资源的用户或者服务',
+    `v2` varchar(255) NOT NULL DEFAULT '' comment '策略中的第三个参数，通常用于表示资源（resource），即需要进行访问的对象',
+    `v3` varchar(255) NOT NULL DEFAULT '' comment '策略中的第四个参数，通常用于表示访问操作（permission），例如 “read”, “write”, “execute” 等',
+    `v4` varchar(255) NOT NULL DEFAULT '' comment '策略中的第五个参数，通常用于表示资源的类型（object type），例如表示是文件或者数据库表等',
+    `v5` varchar(255) NOT NULL DEFAULT '' comment '策略中的第六个参数，通常用于表示扩展信息，例如 IP 地址、端口号等',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/update',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/read',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/schema/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/schema/tsl-import',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/schema/tsl-read',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/schema/create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/schema/update',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/schema/delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/remote-config/create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/remote-config/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/remote-config/push-all',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/remote-config/lastest-read',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/group/info/create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/group/info/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/group/info/read',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/group/info/update',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/group/info/delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/group/device/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/group/device/multi-create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/group/device/multi-delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/info/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/info/read',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/info/create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/info/delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/info/update',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/info/count',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/auth/login',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/auth/root-check'2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/auth/access',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/msg/property-log/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/msg/sdk-log/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/msg/hub-log/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/msg/property-latest/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/msg/event-log/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/interact/send-action',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/interact/send-property',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/interact/send-msg',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/gateway/multi-create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/gateway/multi-delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/gateway/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/log/login/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/log/oper/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/role/create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/role/index'2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/role/update',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/role/delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/role/role-menu/update',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/menu/create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/menu/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/menu/update',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/menu/delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/user/create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/user/captcha',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/user/login',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/user/delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/user/read',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/user/update',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/user/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/user/resource-read',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/common/config',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/api/create',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/api/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/api/update',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/api/delete',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/authority/api/index',2,'','','');
+INSERT INTO iThings.casbin_rules (ptype, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/authority/api/multiUpdate',2,'','','');

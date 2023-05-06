@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func AuthorityApiUpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func AuthorityApiMultiUpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.AuthorityApiUpdateReq
+		var req types.AuthorityApiMultiUpdateReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := authority.NewAuthorityApiUpdateLogic(r.Context(), svcCtx)
-		err := l.AuthorityApiUpdate(&req)
+		l := authority.NewAuthorityApiMultiUpdateLogic(r.Context(), svcCtx)
+		err := l.AuthorityApiMultiUpdate(&req)
 		result.Http(w, r, nil, err)
 	}
 }

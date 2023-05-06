@@ -2,7 +2,6 @@ package authority
 
 import (
 	"context"
-	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/spf13/cast"
@@ -23,16 +22,15 @@ func NewAuthorityApiIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *AuthorityApiIndexLogic) AuthorityApiIndex() (resp *types.AuthorityApiIndexResp, err error) {
-	RoleId := cast.ToString(userHeader.GetUserCtx(l.ctx).Role)
-	data := l.svcCtx.Casbin.GetFilteredPolicy(0, RoleId)
+func (l *AuthorityApiIndexLogic) AuthorityApiIndex(req *types.AuthorityApiIndexReq) (resp *types.AuthorityApiIndexResp, err error) {
+	data := l.svcCtx.Casbin.GetFilteredPolicy(0, cast.ToString(req.RoleID))
 	resp = &types.AuthorityApiIndexResp{}
 	resp.Total = int64(len(data))
 	if resp.Total > 0 {
 		for _, v := range data {
 			resp.List = append(resp.List, &types.AuthorityApiInfo{
-				Path:   v[1],
-				Method: v[2],
+				Route:  v[1],
+				Method: cast.ToInt64(v[2]),
 			})
 		}
 	}

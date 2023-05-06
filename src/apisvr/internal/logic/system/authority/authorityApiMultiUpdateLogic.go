@@ -5,28 +5,29 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
+	"github.com/spf13/cast"
+
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/spf13/cast"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AuthorityApiUpdateLogic struct {
+type AuthorityApiMultiUpdateLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewAuthorityApiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AuthorityApiUpdateLogic {
-	return &AuthorityApiUpdateLogic{
+func NewAuthorityApiMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AuthorityApiMultiUpdateLogic {
+	return &AuthorityApiMultiUpdateLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *AuthorityApiUpdateLogic) AuthorityApiUpdate(req *types.AuthorityApiUpdateReq) error {
+func (l *AuthorityApiMultiUpdateLogic) AuthorityApiMultiUpdate(req *types.AuthorityApiMultiUpdateReq) error {
 	// clear old policies
 	var oldPolicies [][]string
 	RoleId := cast.ToString(userHeader.GetUserCtx(l.ctx).Role)
@@ -46,7 +47,7 @@ func (l *AuthorityApiUpdateLogic) AuthorityApiUpdate(req *types.AuthorityApiUpda
 	// add new policies
 	var policies [][]string
 	for _, v := range req.List {
-		policies = append(policies, []string{RoleId, v.Path, v.Method})
+		policies = append(policies, []string{RoleId, v.Route, cast.ToString(v.Method)})
 	}
 	addResult, err := l.svcCtx.Casbin.AddPolicies(policies)
 	if err != nil {
