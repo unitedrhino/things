@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	systemapi "github.com/i-Things/things/src/apisvr/internal/handler/system/api"
+	systemauth "github.com/i-Things/things/src/apisvr/internal/handler/system/auth"
 	systemcommon "github.com/i-Things/things/src/apisvr/internal/handler/system/common"
 	systemlog "github.com/i-Things/things/src/apisvr/internal/handler/system/log"
 	systemmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/menu"
@@ -209,6 +210,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/api/v1/system/common"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/multiUpdate",
+					Handler: systemauth.AuthApiMultiUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemauth.AuthApiIndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/auth/api"),
 	)
 
 	server.AddRoutes(
