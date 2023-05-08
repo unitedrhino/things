@@ -12,21 +12,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AuthorityApiMultiUpdateLogic struct {
+type AuthApiMultiUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewAuthorityApiMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AuthorityApiMultiUpdateLogic {
-	return &AuthorityApiMultiUpdateLogic{
+func NewAuthApiMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AuthApiMultiUpdateLogic {
+	return &AuthApiMultiUpdateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *AuthorityApiMultiUpdateLogic) AuthorityApiMultiUpdate(in *sys.AuthorityApiMultiUpdateReq) (*sys.Response, error) {
+func (l *AuthApiMultiUpdateLogic) AuthApiMultiUpdate(in *sys.AuthApiMultiUpdateReq) (*sys.Response, error) {
 	// clear old policies
 	var oldPolicies [][]string
 	oldPolicies = l.svcCtx.Casbin.GetFilteredPolicy(0, cast.ToString(in.RoleID))

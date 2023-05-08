@@ -14,57 +14,57 @@ import (
 )
 
 type (
-	ApiCreateReq               = sys.ApiCreateReq
-	ApiData                    = sys.ApiData
-	ApiDeleteReq               = sys.ApiDeleteReq
-	ApiIndexReq                = sys.ApiIndexReq
-	ApiIndexResp               = sys.ApiIndexResp
-	ApiUpdateReq               = sys.ApiUpdateReq
-	AuthorityApiIndexReq       = sys.AuthorityApiIndexReq
-	AuthorityApiIndexResp      = sys.AuthorityApiIndexResp
-	AuthorityApiInfo           = sys.AuthorityApiInfo
-	AuthorityApiMultiUpdateReq = sys.AuthorityApiMultiUpdateReq
-	CheckAuthReq               = sys.CheckAuthReq
-	CheckTokenReq              = sys.CheckTokenReq
-	CheckTokenResp             = sys.CheckTokenResp
-	ConfigResp                 = sys.ConfigResp
-	DateRange                  = sys.DateRange
-	JwtToken                   = sys.JwtToken
-	LoginLogCreateReq          = sys.LoginLogCreateReq
-	LoginLogIndexData          = sys.LoginLogIndexData
-	LoginLogIndexReq           = sys.LoginLogIndexReq
-	LoginLogIndexResp          = sys.LoginLogIndexResp
-	LoginReq                   = sys.LoginReq
-	LoginResp                  = sys.LoginResp
-	Map                        = sys.Map
-	MenuCreateReq              = sys.MenuCreateReq
-	MenuData                   = sys.MenuData
-	MenuDeleteReq              = sys.MenuDeleteReq
-	MenuIndexReq               = sys.MenuIndexReq
-	MenuIndexResp              = sys.MenuIndexResp
-	MenuUpdateReq              = sys.MenuUpdateReq
-	OperLogCreateReq           = sys.OperLogCreateReq
-	OperLogIndexData           = sys.OperLogIndexData
-	OperLogIndexReq            = sys.OperLogIndexReq
-	OperLogIndexResp           = sys.OperLogIndexResp
-	PageInfo                   = sys.PageInfo
-	Response                   = sys.Response
-	RoleCreateReq              = sys.RoleCreateReq
-	RoleDeleteReq              = sys.RoleDeleteReq
-	RoleIndexData              = sys.RoleIndexData
-	RoleIndexReq               = sys.RoleIndexReq
-	RoleIndexResp              = sys.RoleIndexResp
-	RoleMenuUpdateReq          = sys.RoleMenuUpdateReq
-	RoleUpdateReq              = sys.RoleUpdateReq
-	UserCreateReq              = sys.UserCreateReq
-	UserCreateResp             = sys.UserCreateResp
-	UserDeleteReq              = sys.UserDeleteReq
-	UserIndexReq               = sys.UserIndexReq
-	UserIndexResp              = sys.UserIndexResp
-	UserInfo                   = sys.UserInfo
-	UserReadReq                = sys.UserReadReq
-	UserReadResp               = sys.UserReadResp
-	UserUpdateReq              = sys.UserUpdateReq
+	ApiCreateReq          = sys.ApiCreateReq
+	ApiData               = sys.ApiData
+	ApiDeleteReq          = sys.ApiDeleteReq
+	ApiIndexReq           = sys.ApiIndexReq
+	ApiIndexResp          = sys.ApiIndexResp
+	ApiUpdateReq          = sys.ApiUpdateReq
+	AuthApiIndexReq       = sys.AuthApiIndexReq
+	AuthApiIndexResp      = sys.AuthApiIndexResp
+	AuthApiInfo           = sys.AuthApiInfo
+	AuthApiMultiUpdateReq = sys.AuthApiMultiUpdateReq
+	CheckAuthReq          = sys.CheckAuthReq
+	CheckTokenReq         = sys.CheckTokenReq
+	CheckTokenResp        = sys.CheckTokenResp
+	ConfigResp            = sys.ConfigResp
+	DateRange             = sys.DateRange
+	JwtToken              = sys.JwtToken
+	LoginLogCreateReq     = sys.LoginLogCreateReq
+	LoginLogIndexData     = sys.LoginLogIndexData
+	LoginLogIndexReq      = sys.LoginLogIndexReq
+	LoginLogIndexResp     = sys.LoginLogIndexResp
+	LoginReq              = sys.LoginReq
+	LoginResp             = sys.LoginResp
+	Map                   = sys.Map
+	MenuCreateReq         = sys.MenuCreateReq
+	MenuData              = sys.MenuData
+	MenuDeleteReq         = sys.MenuDeleteReq
+	MenuIndexReq          = sys.MenuIndexReq
+	MenuIndexResp         = sys.MenuIndexResp
+	MenuUpdateReq         = sys.MenuUpdateReq
+	OperLogCreateReq      = sys.OperLogCreateReq
+	OperLogIndexData      = sys.OperLogIndexData
+	OperLogIndexReq       = sys.OperLogIndexReq
+	OperLogIndexResp      = sys.OperLogIndexResp
+	PageInfo              = sys.PageInfo
+	Response              = sys.Response
+	RoleCreateReq         = sys.RoleCreateReq
+	RoleDeleteReq         = sys.RoleDeleteReq
+	RoleIndexData         = sys.RoleIndexData
+	RoleIndexReq          = sys.RoleIndexReq
+	RoleIndexResp         = sys.RoleIndexResp
+	RoleMenuUpdateReq     = sys.RoleMenuUpdateReq
+	RoleUpdateReq         = sys.RoleUpdateReq
+	UserCreateReq         = sys.UserCreateReq
+	UserCreateResp        = sys.UserCreateResp
+	UserDeleteReq         = sys.UserDeleteReq
+	UserIndexReq          = sys.UserIndexReq
+	UserIndexResp         = sys.UserIndexResp
+	UserInfo              = sys.UserInfo
+	UserReadReq           = sys.UserReadReq
+	UserReadResp          = sys.UserReadResp
+	UserUpdateReq         = sys.UserUpdateReq
 
 	User interface {
 		Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
@@ -74,7 +74,6 @@ type (
 		Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 		CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error)
-		CheckAuth(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultUser struct {
@@ -161,13 +160,4 @@ func (m *defaultUser) CheckToken(ctx context.Context, in *CheckTokenReq, opts ..
 
 func (d *directUser) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error) {
 	return d.svr.CheckToken(ctx, in)
-}
-
-func (m *defaultUser) CheckAuth(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewUserClient(m.cli.Conn())
-	return client.CheckAuth(ctx, in, opts...)
-}
-
-func (d *directUser) CheckAuth(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.CheckAuth(ctx, in)
 }

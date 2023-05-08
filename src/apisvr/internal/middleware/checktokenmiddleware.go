@@ -11,6 +11,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
+	auth "github.com/i-Things/things/src/syssvr/client/auth"
 	operLog "github.com/i-Things/things/src/syssvr/client/log"
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -22,11 +23,16 @@ import (
 type CheckTokenMiddleware struct {
 	UserRpc user.User
 	LogRpc  operLog.Log
+	AuthRpc auth.Auth
 	c       config.Config
 }
 
-func NewCheckTokenMiddleware(c config.Config, UserRpc user.User, LogRpc operLog.Log) *CheckTokenMiddleware {
-	return &CheckTokenMiddleware{UserRpc: UserRpc, c: c, LogRpc: LogRpc}
+const (
+	POST = "2"
+)
+
+func NewCheckTokenMiddleware(c config.Config, UserRpc user.User, AuthRpc auth.Auth, LogRpc operLog.Log) *CheckTokenMiddleware {
+	return &CheckTokenMiddleware{UserRpc: UserRpc, c: c, AuthRpc: AuthRpc, LogRpc: LogRpc}
 }
 
 func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
@@ -46,10 +52,10 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if err == nil {
 			userHeader.SetUserCtx(r.Context(), userCtx)
 			c := context.WithValue(r.Context(), userHeader.UserUid, userCtx)
-			_, err = m.UserRpc.CheckAuth(r.Context(), &user.CheckAuthReq{
+			_, err = m.AuthRpc.AuthApiCheck(r.Context(), &user.CheckAuthReq{
 				RoleID: userHeader.GetUserCtx(c).Role,
 				Path:   r.URL.Path,
-				Method: r.Method,
+				Method: POST,
 			})
 			if err != nil {
 				logx.WithContext(r.Context()).Errorf("%s.CheckAuth return=%s", utils.FuncName(), err)
