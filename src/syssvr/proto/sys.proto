@@ -11,6 +11,7 @@ service User {
   rpc delete(UserDeleteReq) returns(Response);//刪除用戶
   rpc login(LoginReq) returns(LoginResp);
   rpc checkToken(CheckTokenReq) returns(CheckTokenResp);
+  rpc checkAuth(CheckAuthReq) returns(Response);
 }
 
 service Role {
@@ -46,9 +47,33 @@ service Api {
   rpc apiDelete(ApiDeleteReq) returns(Response);   //删除接口
 }
 
+service Auth {
+  rpc authorityApiMultiUpdate(AuthorityApiMultiUpdateReq) returns (Response); //更新API权限
+  rpc AuthorityApiIndex(AuthorityApiIndexReq) returns (AuthorityApiIndexResp); //获取API权限列表
+}
+message AuthorityApiInfo{
+  string route = 1;
+  int64 method = 2;
+}
+
+message AuthorityApiMultiUpdateReq{
+  uint64 roleID = 1;//角色ID
+  repeated AuthorityApiInfo list = 2;//API列表数据
+}
+
+message AuthorityApiIndexReq{
+  uint64 roleID = 1;//角色ID
+}
+
+message AuthorityApiIndexResp{
+  int64 total = 1;
+  repeated AuthorityApiInfo list = 2;//API列表数据
+}
+
+
 message DateRange{
-    string start = 1;
-    string end = 2;
+  string start = 1;
+  string end = 2;
 }
 
 message LoginLogIndexReq{
@@ -179,6 +204,12 @@ message CheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
   int64 uid = 2;
   int64 role = 3;
+}
+
+message CheckAuthReq{
+  int64 roleID = 1;
+  string path = 2;
+  string method = 3;
 }
 
 message PageInfo{
