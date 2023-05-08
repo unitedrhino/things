@@ -32,7 +32,6 @@ func NewCheckTokenMiddleware(c config.Config, UserRpc user.User, LogRpc operLog.
 func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err, isOpen := m.OpenAuth(w, r)
-		isOpen = false
 		if isOpen { //如果是开放请求
 			if err == nil {
 				next(w, r)
