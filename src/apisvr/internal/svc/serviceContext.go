@@ -152,7 +152,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
 		Config:     c,
-		CheckToken: middleware.NewCheckTokenMiddleware(c, ur, lo).Handle,
+		CheckToken: middleware.NewCheckTokenMiddleware(c, ur, au, lo).Handle,
 		Captcha:    captcha,
 		SvrClient: SvrClient{
 			UserRpc:        ur,
