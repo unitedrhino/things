@@ -357,6 +357,25 @@ type ConfigResp struct {
 	Map Map `json:"map"` //设备地图相关配置
 }
 
+type AuthApiInfo struct {
+	Route  string `json:"route"`              // 接口路由
+	Method int64  `json:"method,range=[1:9]"` // 接口请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+}
+
+type AuthApiMultiUpdateReq struct {
+	RoleID uint64         `json:"roleID"` //角色ID
+	List   []*AuthApiInfo `json:"list"`   //API列表数据
+}
+
+type AuthApiIndexReq struct {
+	RoleID uint64 `json:"roleID"` //角色ID
+}
+
+type AuthApiIndexResp struct {
+	List  []*AuthApiInfo `json:"list"`  //API列表数据
+	Total int64          `json:"total"` //API列表总数
+}
+
 type DeviceAuthLoginReq struct {
 	Username    string `json:"username"`                       //用户名
 	Password    string `json:"password,optional"`              //密码

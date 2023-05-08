@@ -29,6 +29,7 @@ type UserClient interface {
 	Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 	CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error)
+	CheckAuth(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error)
 }
 
 type userClient struct {
@@ -102,6 +103,15 @@ func (c *userClient) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...
 	return out, nil
 }
 
+func (c *userClient) CheckAuth(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.User/checkAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -113,6 +123,7 @@ type UserServer interface {
 	Delete(context.Context, *UserDeleteReq) (*Response, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	CheckToken(context.Context, *CheckTokenReq) (*CheckTokenResp, error)
+	CheckAuth(context.Context, *CheckAuthReq) (*Response, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -140,6 +151,9 @@ func (UnimplementedUserServer) Login(context.Context, *LoginReq) (*LoginResp, er
 }
 func (UnimplementedUserServer) CheckToken(context.Context, *CheckTokenReq) (*CheckTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckToken not implemented")
+}
+func (UnimplementedUserServer) CheckAuth(context.Context, *CheckAuthReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckAuth not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -280,6 +294,24 @@ func _User_CheckToken_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_CheckAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckAuthReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).CheckAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.User/checkAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).CheckAuth(ctx, req.(*CheckAuthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,6 +346,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "checkToken",
 			Handler:    _User_CheckToken_Handler,
+		},
+		{
+			MethodName: "checkAuth",
+			Handler:    _User_CheckAuth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1212,6 +1248,128 @@ var Api_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "apiDelete",
 			Handler:    _Api_ApiDelete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}
+
+// AuthClient is the client API for Auth service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type AuthClient interface {
+	AuthorityApiMultiUpdate(ctx context.Context, in *AuthorityApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	AuthorityApiIndex(ctx context.Context, in *AuthorityApiIndexReq, opts ...grpc.CallOption) (*AuthorityApiIndexResp, error)
+}
+
+type authClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
+	return &authClient{cc}
+}
+
+func (c *authClient) AuthorityApiMultiUpdate(ctx context.Context, in *AuthorityApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.Auth/authorityApiMultiUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authClient) AuthorityApiIndex(ctx context.Context, in *AuthorityApiIndexReq, opts ...grpc.CallOption) (*AuthorityApiIndexResp, error) {
+	out := new(AuthorityApiIndexResp)
+	err := c.cc.Invoke(ctx, "/sys.Auth/AuthorityApiIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AuthServer is the server API for Auth service.
+// All implementations must embed UnimplementedAuthServer
+// for forward compatibility
+type AuthServer interface {
+	AuthorityApiMultiUpdate(context.Context, *AuthorityApiMultiUpdateReq) (*Response, error)
+	AuthorityApiIndex(context.Context, *AuthorityApiIndexReq) (*AuthorityApiIndexResp, error)
+	mustEmbedUnimplementedAuthServer()
+}
+
+// UnimplementedAuthServer must be embedded to have forward compatible implementations.
+type UnimplementedAuthServer struct {
+}
+
+func (UnimplementedAuthServer) AuthorityApiMultiUpdate(context.Context, *AuthorityApiMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthorityApiMultiUpdate not implemented")
+}
+func (UnimplementedAuthServer) AuthorityApiIndex(context.Context, *AuthorityApiIndexReq) (*AuthorityApiIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthorityApiIndex not implemented")
+}
+func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
+
+// UnsafeAuthServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AuthServer will
+// result in compilation errors.
+type UnsafeAuthServer interface {
+	mustEmbedUnimplementedAuthServer()
+}
+
+func RegisterAuthServer(s grpc.ServiceRegistrar, srv AuthServer) {
+	s.RegisterService(&Auth_ServiceDesc, srv)
+}
+
+func _Auth_AuthorityApiMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthorityApiMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).AuthorityApiMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Auth/authorityApiMultiUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).AuthorityApiMultiUpdate(ctx, req.(*AuthorityApiMultiUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Auth_AuthorityApiIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthorityApiIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).AuthorityApiIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.Auth/AuthorityApiIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).AuthorityApiIndex(ctx, req.(*AuthorityApiIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Auth_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.Auth",
+	HandlerType: (*AuthServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "authorityApiMultiUpdate",
+			Handler:    _Auth_AuthorityApiMultiUpdate_Handler,
+		},
+		{
+			MethodName: "AuthorityApiIndex",
+			Handler:    _Auth_AuthorityApiIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -32,6 +32,7 @@ func NewCheckTokenMiddleware(c config.Config, UserRpc user.User, LogRpc operLog.
 func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err, isOpen := m.OpenAuth(w, r)
+		isOpen = false
 		if isOpen { //如果是开放请求
 			if err == nil {
 				next(w, r)
@@ -46,6 +47,16 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if err == nil {
 			userHeader.SetUserCtx(r.Context(), userCtx)
 			c := context.WithValue(r.Context(), userHeader.UserUid, userCtx)
+			_, err = m.UserRpc.CheckAuth(r.Context(), &user.CheckAuthReq{
+				RoleID: userHeader.GetUserCtx(c).Role,
+				Path:   r.URL.Path,
+				Method: r.Method,
+			})
+			if err != nil {
+				logx.WithContext(r.Context()).Errorf("%s.CheckAuth return=%s", utils.FuncName(), err)
+				http.Error(w, err.Error(), http.StatusNotFound)
+				return
+			}
 			r2 := r.WithContext(c)
 			r2.Response = r.Response
 			r2.Body = ioutil.NopCloser(bytes.NewReader(re))
@@ -97,6 +108,7 @@ func (m *CheckTokenMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) 
 	}
 	logx.WithContext(r.Context()).Infof("%s.CheckToken ip:%v in.token=%s checkResp:%v",
 		utils.FuncName(), strIP, strToken, utils.Fmt(resp))
+
 	return &userHeader.UserCtx{
 		Uid:  resp.Uid,
 		IP:   strIP,
@@ -105,7 +117,7 @@ func (m *CheckTokenMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) 
 	}, nil
 }
 
-//获取ip所属城市
+// 获取ip所属城市
 func (m *CheckTokenMiddleware) GetCityByIp(ip string) string {
 	if ip == "" {
 		return ""
@@ -130,7 +142,7 @@ func (m *CheckTokenMiddleware) GetCityByIp(ip string) string {
 	}
 }
 
-//操作日志记录
+// 操作日志记录
 func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) error {
 
 	res, err := ioutil.ReadAll(r.Response.Body)
