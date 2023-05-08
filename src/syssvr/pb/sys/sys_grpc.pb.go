@@ -22,13 +22,13 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
-	Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
-	Index(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error)
-	Update(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error)
-	Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
-	CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error)
+	UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
+	UserIndex(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error)
+	UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error)
+	UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	UserLogin(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+	UserCheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error)
 }
 
 type userClient struct {
@@ -39,63 +39,63 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
 }
 
-func (c *userClient) Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
+func (c *userClient) UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	out := new(UserCreateResp)
-	err := c.cc.Invoke(ctx, "/sys.User/create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.User/userCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) Index(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error) {
+func (c *userClient) UserIndex(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error) {
 	out := new(UserIndexResp)
-	err := c.cc.Invoke(ctx, "/sys.User/index", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.User/userIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) Update(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *userClient) UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.User/update", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.User/userUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
+func (c *userClient) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
 	out := new(UserReadResp)
-	err := c.cc.Invoke(ctx, "/sys.User/read", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.User/userRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *userClient) UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.User/delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.User/userDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
+func (c *userClient) UserLogin(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
 	out := new(LoginResp)
-	err := c.cc.Invoke(ctx, "/sys.User/login", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.User/userLogin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error) {
+func (c *userClient) UserCheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error) {
 	out := new(CheckTokenResp)
-	err := c.cc.Invoke(ctx, "/sys.User/checkToken", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sys.User/userCheckToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -106,13 +106,13 @@ func (c *userClient) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
-	Create(context.Context, *UserCreateReq) (*UserCreateResp, error)
-	Index(context.Context, *UserIndexReq) (*UserIndexResp, error)
-	Update(context.Context, *UserUpdateReq) (*Response, error)
-	Read(context.Context, *UserReadReq) (*UserReadResp, error)
-	Delete(context.Context, *UserDeleteReq) (*Response, error)
-	Login(context.Context, *LoginReq) (*LoginResp, error)
-	CheckToken(context.Context, *CheckTokenReq) (*CheckTokenResp, error)
+	UserCreate(context.Context, *UserCreateReq) (*UserCreateResp, error)
+	UserIndex(context.Context, *UserIndexReq) (*UserIndexResp, error)
+	UserUpdate(context.Context, *UserUpdateReq) (*Response, error)
+	UserRead(context.Context, *UserReadReq) (*UserReadResp, error)
+	UserDelete(context.Context, *UserDeleteReq) (*Response, error)
+	UserLogin(context.Context, *LoginReq) (*LoginResp, error)
+	UserCheckToken(context.Context, *CheckTokenReq) (*CheckTokenResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -120,26 +120,26 @@ type UserServer interface {
 type UnimplementedUserServer struct {
 }
 
-func (UnimplementedUserServer) Create(context.Context, *UserCreateReq) (*UserCreateResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+func (UnimplementedUserServer) UserCreate(context.Context, *UserCreateReq) (*UserCreateResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCreate not implemented")
 }
-func (UnimplementedUserServer) Index(context.Context, *UserIndexReq) (*UserIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Index not implemented")
+func (UnimplementedUserServer) UserIndex(context.Context, *UserIndexReq) (*UserIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserIndex not implemented")
 }
-func (UnimplementedUserServer) Update(context.Context, *UserUpdateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+func (UnimplementedUserServer) UserUpdate(context.Context, *UserUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserUpdate not implemented")
 }
-func (UnimplementedUserServer) Read(context.Context, *UserReadReq) (*UserReadResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
+func (UnimplementedUserServer) UserRead(context.Context, *UserReadReq) (*UserReadResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRead not implemented")
 }
-func (UnimplementedUserServer) Delete(context.Context, *UserDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+func (UnimplementedUserServer) UserDelete(context.Context, *UserDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDelete not implemented")
 }
-func (UnimplementedUserServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+func (UnimplementedUserServer) UserLogin(context.Context, *LoginReq) (*LoginResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
 }
-func (UnimplementedUserServer) CheckToken(context.Context, *CheckTokenReq) (*CheckTokenResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckToken not implemented")
+func (UnimplementedUserServer) UserCheckToken(context.Context, *CheckTokenReq) (*CheckTokenResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCheckToken not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -154,128 +154,128 @@ func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
 	s.RegisterService(&User_ServiceDesc, srv)
 }
 
-func _User_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).Create(ctx, in)
+		return srv.(UserServer).UserCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/create",
+		FullMethod: "/sys.User/userCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).Create(ctx, req.(*UserCreateReq))
+		return srv.(UserServer).UserCreate(ctx, req.(*UserCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_Index_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).Index(ctx, in)
+		return srv.(UserServer).UserIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/index",
+		FullMethod: "/sys.User/userIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).Index(ctx, req.(*UserIndexReq))
+		return srv.(UserServer).UserIndex(ctx, req.(*UserIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).Update(ctx, in)
+		return srv.(UserServer).UserUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/update",
+		FullMethod: "/sys.User/userUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).Update(ctx, req.(*UserUpdateReq))
+		return srv.(UserServer).UserUpdate(ctx, req.(*UserUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).Read(ctx, in)
+		return srv.(UserServer).UserRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/read",
+		FullMethod: "/sys.User/userRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).Read(ctx, req.(*UserReadReq))
+		return srv.(UserServer).UserRead(ctx, req.(*UserReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).Delete(ctx, in)
+		return srv.(UserServer).UserDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/delete",
+		FullMethod: "/sys.User/userDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).Delete(ctx, req.(*UserDeleteReq))
+		return srv.(UserServer).UserDelete(ctx, req.(*UserDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).Login(ctx, in)
+		return srv.(UserServer).UserLogin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/login",
+		FullMethod: "/sys.User/userLogin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).Login(ctx, req.(*LoginReq))
+		return srv.(UserServer).UserLogin(ctx, req.(*LoginReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_CheckToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserCheckToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CheckTokenReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).CheckToken(ctx, in)
+		return srv.(UserServer).UserCheckToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/checkToken",
+		FullMethod: "/sys.User/userCheckToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).CheckToken(ctx, req.(*CheckTokenReq))
+		return srv.(UserServer).UserCheckToken(ctx, req.(*CheckTokenReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -288,32 +288,32 @@ var User_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "create",
-			Handler:    _User_Create_Handler,
+			MethodName: "userCreate",
+			Handler:    _User_UserCreate_Handler,
 		},
 		{
-			MethodName: "index",
-			Handler:    _User_Index_Handler,
+			MethodName: "userIndex",
+			Handler:    _User_UserIndex_Handler,
 		},
 		{
-			MethodName: "update",
-			Handler:    _User_Update_Handler,
+			MethodName: "userUpdate",
+			Handler:    _User_UserUpdate_Handler,
 		},
 		{
-			MethodName: "read",
-			Handler:    _User_Read_Handler,
+			MethodName: "userRead",
+			Handler:    _User_UserRead_Handler,
 		},
 		{
-			MethodName: "delete",
-			Handler:    _User_Delete_Handler,
+			MethodName: "userDelete",
+			Handler:    _User_UserDelete_Handler,
 		},
 		{
-			MethodName: "login",
-			Handler:    _User_Login_Handler,
+			MethodName: "userLogin",
+			Handler:    _User_UserLogin_Handler,
 		},
 		{
-			MethodName: "checkToken",
-			Handler:    _User_CheckToken_Handler,
+			MethodName: "userCheckToken",
+			Handler:    _User_UserCheckToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

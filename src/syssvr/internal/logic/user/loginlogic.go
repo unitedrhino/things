@@ -19,7 +19,7 @@ type LoginLogic struct {
 	logx.Logger
 }
 
-func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
+func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
 	return &LoginLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -112,7 +112,7 @@ func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.SysUserInfo, err e
 	return uc, err
 }
 
-func (l *LoginLogic) Login(in *sys.LoginReq) (*sys.LoginResp, error) {
+func (l *LoginLogic) UserLogin(in *sys.LoginReq) (*sys.LoginResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	uc, err := l.GetUserInfo(in)
 	switch err {

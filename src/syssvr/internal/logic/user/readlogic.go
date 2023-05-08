@@ -14,7 +14,7 @@ type ReadLogic struct {
 	logx.Logger
 }
 
-func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
+func NewUserReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 	return &ReadLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -22,7 +22,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 	}
 }
 
-func (l *ReadLogic) Read(in *sys.UserReadReq) (*sys.UserReadResp, error) {
+func (l *ReadLogic) UserRead(in *sys.UserReadReq) (*sys.UserReadResp, error) {
 	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.Uid))
 	if err != nil {
 		l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)

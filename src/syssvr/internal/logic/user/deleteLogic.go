@@ -18,7 +18,7 @@ type DeleteLogic struct {
 	logx.Logger
 }
 
-func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogic {
+func NewUserDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogic {
 	return &DeleteLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -26,7 +26,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
-func (l *DeleteLogic) Delete(in *sys.UserDeleteReq) (*sys.Response, error) {
+func (l *DeleteLogic) UserDelete(in *sys.UserDeleteReq) (*sys.Response, error) {
 	err := l.svcCtx.UserInfoModel.Delete(l.ctx, cast.ToInt64(in.Uid))
 	if err != nil {
 		l.Errorf("%s.Delete uid=%d err=%+v", utils.FuncName(), in.Uid, err)
