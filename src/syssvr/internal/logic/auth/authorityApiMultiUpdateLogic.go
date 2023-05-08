@@ -47,7 +47,7 @@ func (l *AuthorityApiMultiUpdateLogic) AuthorityApiMultiUpdate(in *sys.Authority
 	for _, v := range in.List {
 		policies = append(policies, []string{cast.ToString(in.RoleID), v.Route, cast.ToString(v.Method)})
 	}
-	addResult, err := l.svcCtx.Casbin.AddPolicies(policies)
+	addResult, err := l.svcCtx.Casbin.AddPolicies(policies) //如果是删除策略是否还有用?
 	if err != nil {
 		err := errors.Fmt(err)
 		l.Errorf("%s.Casbin.AddPolicies req=%v err=%+v", utils.FuncName(), in, err)
