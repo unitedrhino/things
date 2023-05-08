@@ -438,5 +438,5 @@ INSERT IGNORE INTO casbin_rule (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','
 INSERT IGNORE INTO casbin_rule (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/api/index',2,'','','');
 INSERT IGNORE INTO casbin_rule (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/api/update',2,'','','');
 INSERT IGNORE INTO casbin_rule (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/api/delete',2,'','','');
-INSERT IGNORE INTO casbin_rule (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/authority/api/index',2,'','','');
-INSERT IGNORE INTO casbin_rule (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/authority/api/multiUpdate',2,'','','');
+INSERT IGNORE INTO casbin_rule (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/auth/api/index',2,'','','');
+INSERT IGNORE INTO casbin_rule (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/system/auth/api/multiUpdate',2,'','','');
