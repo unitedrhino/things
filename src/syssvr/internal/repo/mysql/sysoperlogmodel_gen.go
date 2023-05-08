@@ -18,8 +18,8 @@ import (
 var (
 	sysOperLogFieldNames          = builder.RawFieldNames(&SysOperLog{})
 	sysOperLogRows                = strings.Join(sysOperLogFieldNames, ",")
-	sysOperLogRowsExpectAutoSet   = strings.Join(stringx.Remove(sysOperLogFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
-	sysOperLogRowsWithPlaceHolder = strings.Join(stringx.Remove(sysOperLogFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
+	sysOperLogRowsExpectAutoSet   = strings.Join(stringx.Remove(sysOperLogFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
+	sysOperLogRowsWithPlaceHolder = strings.Join(stringx.Remove(sysOperLogFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
 )
 
 type (

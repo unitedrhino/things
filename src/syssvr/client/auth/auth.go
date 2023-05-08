@@ -66,78 +66,58 @@ type (
 	UserReadResp          = sys.UserReadResp
 	UserUpdateReq         = sys.UserUpdateReq
 
-	Role interface {
-		RoleCreate(ctx context.Context, in *RoleCreateReq, opts ...grpc.CallOption) (*Response, error)
-		RoleIndex(ctx context.Context, in *RoleIndexReq, opts ...grpc.CallOption) (*RoleIndexResp, error)
-		RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...grpc.CallOption) (*Response, error)
-		RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...grpc.CallOption) (*Response, error)
-		RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	Auth interface {
+		AuthApiCheck(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error)
+		AuthApiMultiUpdate(ctx context.Context, in *AuthApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		AuthApiIndex(ctx context.Context, in *AuthApiIndexReq, opts ...grpc.CallOption) (*AuthApiIndexResp, error)
 	}
 
-	defaultRole struct {
+	defaultAuth struct {
 		cli zrpc.Client
 	}
 
-	directRole struct {
+	directAuth struct {
 		svcCtx *svc.ServiceContext
-		svr    sys.RoleServer
+		svr    sys.AuthServer
 	}
 )
 
-func NewRole(cli zrpc.Client) Role {
-	return &defaultRole{
+func NewAuth(cli zrpc.Client) Auth {
+	return &defaultAuth{
 		cli: cli,
 	}
 }
 
-func NewDirectRole(svcCtx *svc.ServiceContext, svr sys.RoleServer) Role {
-	return &directRole{
+func NewDirectAuth(svcCtx *svc.ServiceContext, svr sys.AuthServer) Auth {
+	return &directAuth{
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
 }
 
-func (m *defaultRole) RoleCreate(ctx context.Context, in *RoleCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewRoleClient(m.cli.Conn())
-	return client.RoleCreate(ctx, in, opts...)
+func (m *defaultAuth) AuthApiCheck(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewAuthClient(m.cli.Conn())
+	return client.AuthApiCheck(ctx, in, opts...)
 }
 
-func (d *directRole) RoleCreate(ctx context.Context, in *RoleCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.RoleCreate(ctx, in)
+func (d *directAuth) AuthApiCheck(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AuthApiCheck(ctx, in)
 }
 
-func (m *defaultRole) RoleIndex(ctx context.Context, in *RoleIndexReq, opts ...grpc.CallOption) (*RoleIndexResp, error) {
-	client := sys.NewRoleClient(m.cli.Conn())
-	return client.RoleIndex(ctx, in, opts...)
+func (m *defaultAuth) AuthApiMultiUpdate(ctx context.Context, in *AuthApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewAuthClient(m.cli.Conn())
+	return client.AuthApiMultiUpdate(ctx, in, opts...)
 }
 
-func (d *directRole) RoleIndex(ctx context.Context, in *RoleIndexReq, opts ...grpc.CallOption) (*RoleIndexResp, error) {
-	return d.svr.RoleIndex(ctx, in)
+func (d *directAuth) AuthApiMultiUpdate(ctx context.Context, in *AuthApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AuthApiMultiUpdate(ctx, in)
 }
 
-func (m *defaultRole) RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewRoleClient(m.cli.Conn())
-	return client.RoleUpdate(ctx, in, opts...)
+func (m *defaultAuth) AuthApiIndex(ctx context.Context, in *AuthApiIndexReq, opts ...grpc.CallOption) (*AuthApiIndexResp, error) {
+	client := sys.NewAuthClient(m.cli.Conn())
+	return client.AuthApiIndex(ctx, in, opts...)
 }
 
-func (d *directRole) RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.RoleUpdate(ctx, in)
-}
-
-func (m *defaultRole) RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewRoleClient(m.cli.Conn())
-	return client.RoleDelete(ctx, in, opts...)
-}
-
-func (d *directRole) RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.RoleDelete(ctx, in)
-}
-
-func (m *defaultRole) RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewRoleClient(m.cli.Conn())
-	return client.RoleMenuUpdate(ctx, in, opts...)
-}
-
-func (d *directRole) RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.RoleMenuUpdate(ctx, in)
+func (d *directAuth) AuthApiIndex(ctx context.Context, in *AuthApiIndexReq, opts ...grpc.CallOption) (*AuthApiIndexResp, error) {
+	return d.svr.AuthApiIndex(ctx, in)
 }
