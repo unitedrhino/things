@@ -47,7 +47,7 @@ func (l *AuthApiMultiUpdateLogic) AuthApiMultiUpdate(in *sys.AuthApiMultiUpdateR
 	for _, v := range in.List {
 		policies = append(policies, []string{cast.ToString(in.RoleID), v.Route, cast.ToString(v.Method)})
 	}
-	addResult, err := l.svcCtx.Casbin.AddPolicies(policies) //如果是删除策略是否还有用?
+	addResult, err := l.svcCtx.Casbin.AddPolicies(policies)
 	if err != nil {
 		err := errors.Fmt(err)
 		l.Errorf("%s.Casbin.AddPolicies req=%v err=%+v", utils.FuncName(), in, err)
