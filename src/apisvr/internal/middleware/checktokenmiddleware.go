@@ -27,10 +27,6 @@ type CheckTokenMiddleware struct {
 	c       config.Config
 }
 
-const (
-	POST = "2"
-)
-
 func NewCheckTokenMiddleware(c config.Config, UserRpc user.User, AuthRpc auth.Auth, LogRpc operLog.Log) *CheckTokenMiddleware {
 	return &CheckTokenMiddleware{UserRpc: UserRpc, c: c, AuthRpc: AuthRpc, LogRpc: LogRpc}
 }
@@ -55,7 +51,7 @@ func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			_, err = m.AuthRpc.AuthApiCheck(r.Context(), &user.CheckAuthReq{
 				RoleID: userHeader.GetUserCtx(c).Role,
 				Path:   r.URL.Path,
-				Method: POST,
+				Method: utils.MethodToNum(r.Method),
 			})
 			if err != nil {
 				logx.WithContext(r.Context()).Errorf("%s.CheckAuth return=%s", utils.FuncName(), err)
