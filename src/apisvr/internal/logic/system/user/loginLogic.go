@@ -67,7 +67,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			return nil, errors.Captcha
 		}
 	}
-	uResp, err := l.svcCtx.UserRpc.Login(l.ctx, &sys.LoginReq{
+	uResp, err := l.svcCtx.UserRpc.UserLogin(l.ctx, &sys.UserLoginReq{
 		UserID:    req.UserID,
 		PwdType:   req.PwdType,
 		Password:  req.Password,
