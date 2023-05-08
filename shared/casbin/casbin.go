@@ -32,10 +32,11 @@ const (
 		[matchers]
 		m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act
 		`
+	tableName = "casbin_rule"
 )
 
-func NewCasbin(conn *sql.DB, driver, dataSource string) (*casbin.Enforcer, error) {
-	adapter, err := adapter.NewAdapter(conn, driver, dataSource)
+func NewCasbin(conn *sql.DB, driver string) (*casbin.Enforcer, error) {
+	adapter, err := adapter.NewAdapter(conn, driver, tableName)
 	logx.Must(err)
 
 	m, err := model.NewModelFromString(rule)
@@ -50,8 +51,8 @@ func NewCasbin(conn *sql.DB, driver, dataSource string) (*casbin.Enforcer, error
 	return enforcer, nil
 }
 
-func MustNewCasbin(conn *sql.DB, driver, dataSource string) *casbin.Enforcer {
-	csb, err := NewCasbin(conn, driver, dataSource)
+func MustNewCasbin(conn *sql.DB, driver string) *casbin.Enforcer {
+	csb, err := NewCasbin(conn, driver)
 	if err != nil {
 		logx.Errorw("initialize Casbin failed", logx.Field("detail", err.Error()))
 		return nil
@@ -77,8 +78,8 @@ func NewRedisWatcher(c redis.RedisConf, f func(string2 string)) persist.Watcher 
 	return w
 }
 
-func NewCasbinWithRedisWatcher(conn *sql.DB, driver, dataSource string, c redis.RedisConf) *casbin.Enforcer {
-	cas := MustNewCasbin(conn, driver, dataSource)
+func NewCasbinWithRedisWatcher(conn *sql.DB, driver string, c redis.RedisConf) *casbin.Enforcer {
+	cas := MustNewCasbin(conn, driver)
 	wat := NewRedisWatcher(c, func(data string) {
 		watcher.DefaultUpdateCallback(cas)(data)
 	})

@@ -47,7 +47,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	UserID := utils.NewSnowFlake(nodeId)
 	db, _ := conn.RawDB()
-	ca := cas.NewCasbinWithRedisWatcher(db, "mysql", "", c.CacheRedis[0].RedisConf)
+	ca := cas.NewCasbinWithRedisWatcher(db, "mysql", c.CacheRedis[0].RedisConf)
 
 	return &ServiceContext{
 		Config:        c,
