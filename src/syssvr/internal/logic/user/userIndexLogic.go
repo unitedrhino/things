@@ -18,7 +18,7 @@ type IndexLogic struct {
 	logx.Logger
 }
 
-func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic {
+func NewUserIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic {
 	return &IndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -26,7 +26,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 	}
 }
 
-func (l *IndexLogic) Index(in *sys.UserIndexReq) (*sys.UserIndexResp, error) {
+func (l *IndexLogic) UserIndex(in *sys.UserIndexReq) (*sys.UserIndexResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 
 	ucs, total, err := l.svcCtx.UserModel.Index(&mysql.UserIndexFilter{
