@@ -17,7 +17,7 @@ type CheckTokenLogic struct {
 	logx.Logger
 }
 
-func NewCheckTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CheckTokenLogic {
+func NewUserCheckTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CheckTokenLogic {
 	return &CheckTokenLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -25,7 +25,7 @@ func NewCheckTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CheckT
 	}
 }
 
-func (l *CheckTokenLogic) CheckToken(in *sys.CheckTokenReq) (*sys.CheckTokenResp, error) {
+func (l *CheckTokenLogic) UserCheckToken(in *sys.CheckTokenReq) (*sys.CheckTokenResp, error) {
 	jwt, err := users.ParseToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
 	if err != nil {
 		l.Errorf("%s parse token fail err=%s", utils.FuncName(), err.Error())
