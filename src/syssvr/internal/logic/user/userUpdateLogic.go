@@ -19,7 +19,7 @@ type UpdateLogic struct {
 	logx.Logger
 }
 
-func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogic {
+func NewUserUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogic {
 	return &UpdateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -27,7 +27,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
-func (l *UpdateLogic) Update(in *sys.UserUpdateReq) (*sys.Response, error) {
+func (l *UpdateLogic) UserUpdate(in *sys.UserUpdateReq) (*sys.Response, error) {
 	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.Uid))
 	if err != nil {
 		l.Errorf("%s.FindOne uid=%d err=%v", utils.FuncName(), in.Uid, err)
