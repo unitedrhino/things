@@ -47,12 +47,12 @@ func (s *UserServer) UserDelete(ctx context.Context, in *sys.UserDeleteReq) (*sy
 	return l.UserDelete(in)
 }
 
-func (s *UserServer) UserLogin(ctx context.Context, in *sys.LoginReq) (*sys.LoginResp, error) {
+func (s *UserServer) UserLogin(ctx context.Context, in *sys.UserLoginReq) (*sys.UserLoginResp, error) {
 	l := userlogic.NewUserLoginLogic(ctx, s.svcCtx)
 	return l.UserLogin(in)
 }
 
-func (s *UserServer) UserCheckToken(ctx context.Context, in *sys.CheckTokenReq) (*sys.CheckTokenResp, error) {
+func (s *UserServer) UserCheckToken(ctx context.Context, in *sys.UserCheckTokenReq) (*sys.UserCheckTokenResp, error) {
 	l := userlogic.NewUserCheckTokenLogic(ctx, s.svcCtx)
 	return l.UserCheckToken(in)
 }
