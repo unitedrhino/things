@@ -25,7 +25,7 @@ func NewUserCheckTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ch
 	}
 }
 
-func (l *CheckTokenLogic) UserCheckToken(in *sys.CheckTokenReq) (*sys.CheckTokenResp, error) {
+func (l *CheckTokenLogic) UserCheckToken(in *sys.UserCheckTokenReq) (*sys.UserCheckTokenResp, error) {
 	jwt, err := users.ParseToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
 	if err != nil {
 		l.Errorf("%s parse token fail err=%s", utils.FuncName(), err.Error())
@@ -36,7 +36,7 @@ func (l *CheckTokenLogic) UserCheckToken(in *sys.CheckTokenReq) (*sys.CheckToken
 	if (jwt.ExpiresAt-time.Now().Unix())*2 < l.svcCtx.Config.UserToken.AccessExpire {
 		token, _ = users.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret, time.Now().Unix()+l.svcCtx.Config.UserToken.AccessExpire)
 	}
-	return &sys.CheckTokenResp{
+	return &sys.UserCheckTokenResp{
 		Token: token,
 		Uid:   jwt.Uid,
 		Role:  jwt.Role,

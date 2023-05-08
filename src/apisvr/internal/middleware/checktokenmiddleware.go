@@ -93,7 +93,7 @@ func (m *CheckTokenMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) 
 			utils.FuncName(), strIP)
 		return nil, errors.NotLogin
 	}
-	resp, err := m.UserRpc.UserCheckToken(r.Context(), &user.CheckTokenReq{
+	resp, err := m.UserRpc.UserCheckToken(r.Context(), &user.UserCheckTokenReq{
 		Ip:    strIP,
 		Token: strToken,
 	})

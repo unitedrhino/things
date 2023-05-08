@@ -27,8 +27,8 @@ type UserClient interface {
 	UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error)
 	UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	UserLogin(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
-	UserCheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error)
+	UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
+	UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
 }
 
 type userClient struct {
@@ -84,8 +84,8 @@ func (c *userClient) UserDelete(ctx context.Context, in *UserDeleteReq, opts ...
 	return out, nil
 }
 
-func (c *userClient) UserLogin(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
-	out := new(LoginResp)
+func (c *userClient) UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error) {
+	out := new(UserLoginResp)
 	err := c.cc.Invoke(ctx, "/sys.User/userLogin", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -93,8 +93,8 @@ func (c *userClient) UserLogin(ctx context.Context, in *LoginReq, opts ...grpc.C
 	return out, nil
 }
 
-func (c *userClient) UserCheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error) {
-	out := new(CheckTokenResp)
+func (c *userClient) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error) {
+	out := new(UserCheckTokenResp)
 	err := c.cc.Invoke(ctx, "/sys.User/userCheckToken", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -111,8 +111,8 @@ type UserServer interface {
 	UserUpdate(context.Context, *UserUpdateReq) (*Response, error)
 	UserRead(context.Context, *UserReadReq) (*UserReadResp, error)
 	UserDelete(context.Context, *UserDeleteReq) (*Response, error)
-	UserLogin(context.Context, *LoginReq) (*LoginResp, error)
-	UserCheckToken(context.Context, *CheckTokenReq) (*CheckTokenResp, error)
+	UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error)
+	UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -135,10 +135,10 @@ func (UnimplementedUserServer) UserRead(context.Context, *UserReadReq) (*UserRea
 func (UnimplementedUserServer) UserDelete(context.Context, *UserDeleteReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDelete not implemented")
 }
-func (UnimplementedUserServer) UserLogin(context.Context, *LoginReq) (*LoginResp, error) {
+func (UnimplementedUserServer) UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
 }
-func (UnimplementedUserServer) UserCheckToken(context.Context, *CheckTokenReq) (*CheckTokenResp, error) {
+func (UnimplementedUserServer) UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCheckToken not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
@@ -245,7 +245,7 @@ func _User_UserDelete_Handler(srv interface{}, ctx context.Context, dec func(int
 }
 
 func _User_UserLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginReq)
+	in := new(UserLoginReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -257,13 +257,13 @@ func _User_UserLogin_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: "/sys.User/userLogin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserLogin(ctx, req.(*LoginReq))
+		return srv.(UserServer).UserLogin(ctx, req.(*UserLoginReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _User_UserCheckToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CheckTokenReq)
+	in := new(UserCheckTokenReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -275,7 +275,7 @@ func _User_UserCheckToken_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/sys.User/userCheckToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserCheckToken(ctx, req.(*CheckTokenReq))
+		return srv.(UserServer).UserCheckToken(ctx, req.(*UserCheckTokenReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
