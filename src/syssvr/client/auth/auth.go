@@ -66,68 +66,48 @@ type (
 	UserReadResp               = sys.UserReadResp
 	UserUpdateReq              = sys.UserUpdateReq
 
-	Log interface {
-		LoginLogIndex(ctx context.Context, in *LoginLogIndexReq, opts ...grpc.CallOption) (*LoginLogIndexResp, error)
-		OperLogIndex(ctx context.Context, in *OperLogIndexReq, opts ...grpc.CallOption) (*OperLogIndexResp, error)
-		LoginLogCreate(ctx context.Context, in *LoginLogCreateReq, opts ...grpc.CallOption) (*Response, error)
-		OperLogCreate(ctx context.Context, in *OperLogCreateReq, opts ...grpc.CallOption) (*Response, error)
+	Auth interface {
+		AuthorityApiMultiUpdate(ctx context.Context, in *AuthorityApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		AuthorityApiIndex(ctx context.Context, in *AuthorityApiIndexReq, opts ...grpc.CallOption) (*AuthorityApiIndexResp, error)
 	}
 
-	defaultLog struct {
+	defaultAuth struct {
 		cli zrpc.Client
 	}
 
-	directLog struct {
+	directAuth struct {
 		svcCtx *svc.ServiceContext
-		svr    sys.LogServer
+		svr    sys.AuthServer
 	}
 )
 
-func NewLog(cli zrpc.Client) Log {
-	return &defaultLog{
+func NewAuth(cli zrpc.Client) Auth {
+	return &defaultAuth{
 		cli: cli,
 	}
 }
 
-func NewDirectLog(svcCtx *svc.ServiceContext, svr sys.LogServer) Log {
-	return &directLog{
+func NewDirectAuth(svcCtx *svc.ServiceContext, svr sys.AuthServer) Auth {
+	return &directAuth{
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
 }
 
-func (m *defaultLog) LoginLogIndex(ctx context.Context, in *LoginLogIndexReq, opts ...grpc.CallOption) (*LoginLogIndexResp, error) {
-	client := sys.NewLogClient(m.cli.Conn())
-	return client.LoginLogIndex(ctx, in, opts...)
+func (m *defaultAuth) AuthorityApiMultiUpdate(ctx context.Context, in *AuthorityApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewAuthClient(m.cli.Conn())
+	return client.AuthorityApiMultiUpdate(ctx, in, opts...)
 }
 
-func (d *directLog) LoginLogIndex(ctx context.Context, in *LoginLogIndexReq, opts ...grpc.CallOption) (*LoginLogIndexResp, error) {
-	return d.svr.LoginLogIndex(ctx, in)
+func (d *directAuth) AuthorityApiMultiUpdate(ctx context.Context, in *AuthorityApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AuthorityApiMultiUpdate(ctx, in)
 }
 
-func (m *defaultLog) OperLogIndex(ctx context.Context, in *OperLogIndexReq, opts ...grpc.CallOption) (*OperLogIndexResp, error) {
-	client := sys.NewLogClient(m.cli.Conn())
-	return client.OperLogIndex(ctx, in, opts...)
+func (m *defaultAuth) AuthorityApiIndex(ctx context.Context, in *AuthorityApiIndexReq, opts ...grpc.CallOption) (*AuthorityApiIndexResp, error) {
+	client := sys.NewAuthClient(m.cli.Conn())
+	return client.AuthorityApiIndex(ctx, in, opts...)
 }
 
-func (d *directLog) OperLogIndex(ctx context.Context, in *OperLogIndexReq, opts ...grpc.CallOption) (*OperLogIndexResp, error) {
-	return d.svr.OperLogIndex(ctx, in)
-}
-
-func (m *defaultLog) LoginLogCreate(ctx context.Context, in *LoginLogCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewLogClient(m.cli.Conn())
-	return client.LoginLogCreate(ctx, in, opts...)
-}
-
-func (d *directLog) LoginLogCreate(ctx context.Context, in *LoginLogCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.LoginLogCreate(ctx, in)
-}
-
-func (m *defaultLog) OperLogCreate(ctx context.Context, in *OperLogCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewLogClient(m.cli.Conn())
-	return client.OperLogCreate(ctx, in, opts...)
-}
-
-func (d *directLog) OperLogCreate(ctx context.Context, in *OperLogCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.OperLogCreate(ctx, in)
+func (d *directAuth) AuthorityApiIndex(ctx context.Context, in *AuthorityApiIndexReq, opts ...grpc.CallOption) (*AuthorityApiIndexResp, error) {
+	return d.svr.AuthorityApiIndex(ctx, in)
 }
