@@ -27,21 +27,20 @@ func NewAuthApiMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *AuthApiMultiUpdateLogic) AuthApiMultiUpdate(req *types.AuthApiMultiUpdateReq) error {
-	m := make([]*sys.AuthorityApiInfo, 0, len(req.List))
+	m := make([]*sys.AuthApiInfo, 0, len(req.List))
 	for _, v := range req.List {
-		m = append(m, &sys.AuthorityApiInfo{
+		m = append(m, &sys.AuthApiInfo{
 			Route:  v.Route,
 			Method: v.Method,
 		})
 	}
 
-	resp, err := l.svcCtx.AuthRpc.AuthorityApiMultiUpdate(l.ctx, &sys.AuthorityApiMultiUpdateReq{
+	resp, err := l.svcCtx.AuthRpc.AuthApiMultiUpdate(l.ctx, &sys.AuthApiMultiUpdateReq{
 		RoleID: req.RoleID,
 		List:   m,
 	})
 
 	if err != nil {
-		err := errors.Fmt(err)
 		l.Errorf("%s.rpc.AuthApiMultiUpdate req=%v err=%v", utils.FuncName(), req, err)
 		return err
 	}

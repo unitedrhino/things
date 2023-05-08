@@ -56,8 +56,3 @@ func (s *UserServer) CheckToken(ctx context.Context, in *sys.CheckTokenReq) (*sy
 	l := userlogic.NewCheckTokenLogic(ctx, s.svcCtx)
 	return l.CheckToken(in)
 }
-
-func (s *UserServer) CheckAuth(ctx context.Context, in *sys.CheckAuthReq) (*sys.Response, error) {
-	l := userlogic.NewCheckAuthLogic(ctx, s.svcCtx)
-	return l.CheckAuth(in)
-}

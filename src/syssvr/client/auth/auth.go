@@ -14,61 +14,62 @@ import (
 )
 
 type (
-	ApiCreateReq               = sys.ApiCreateReq
-	ApiData                    = sys.ApiData
-	ApiDeleteReq               = sys.ApiDeleteReq
-	ApiIndexReq                = sys.ApiIndexReq
-	ApiIndexResp               = sys.ApiIndexResp
-	ApiUpdateReq               = sys.ApiUpdateReq
-	AuthorityApiIndexReq       = sys.AuthorityApiIndexReq
-	AuthorityApiIndexResp      = sys.AuthorityApiIndexResp
-	AuthorityApiInfo           = sys.AuthorityApiInfo
-	AuthorityApiMultiUpdateReq = sys.AuthorityApiMultiUpdateReq
-	CheckAuthReq               = sys.CheckAuthReq
-	CheckTokenReq              = sys.CheckTokenReq
-	CheckTokenResp             = sys.CheckTokenResp
-	ConfigResp                 = sys.ConfigResp
-	DateRange                  = sys.DateRange
-	JwtToken                   = sys.JwtToken
-	LoginLogCreateReq          = sys.LoginLogCreateReq
-	LoginLogIndexData          = sys.LoginLogIndexData
-	LoginLogIndexReq           = sys.LoginLogIndexReq
-	LoginLogIndexResp          = sys.LoginLogIndexResp
-	LoginReq                   = sys.LoginReq
-	LoginResp                  = sys.LoginResp
-	Map                        = sys.Map
-	MenuCreateReq              = sys.MenuCreateReq
-	MenuData                   = sys.MenuData
-	MenuDeleteReq              = sys.MenuDeleteReq
-	MenuIndexReq               = sys.MenuIndexReq
-	MenuIndexResp              = sys.MenuIndexResp
-	MenuUpdateReq              = sys.MenuUpdateReq
-	OperLogCreateReq           = sys.OperLogCreateReq
-	OperLogIndexData           = sys.OperLogIndexData
-	OperLogIndexReq            = sys.OperLogIndexReq
-	OperLogIndexResp           = sys.OperLogIndexResp
-	PageInfo                   = sys.PageInfo
-	Response                   = sys.Response
-	RoleCreateReq              = sys.RoleCreateReq
-	RoleDeleteReq              = sys.RoleDeleteReq
-	RoleIndexData              = sys.RoleIndexData
-	RoleIndexReq               = sys.RoleIndexReq
-	RoleIndexResp              = sys.RoleIndexResp
-	RoleMenuUpdateReq          = sys.RoleMenuUpdateReq
-	RoleUpdateReq              = sys.RoleUpdateReq
-	UserCreateReq              = sys.UserCreateReq
-	UserCreateResp             = sys.UserCreateResp
-	UserDeleteReq              = sys.UserDeleteReq
-	UserIndexReq               = sys.UserIndexReq
-	UserIndexResp              = sys.UserIndexResp
-	UserInfo                   = sys.UserInfo
-	UserReadReq                = sys.UserReadReq
-	UserReadResp               = sys.UserReadResp
-	UserUpdateReq              = sys.UserUpdateReq
+	ApiCreateReq          = sys.ApiCreateReq
+	ApiData               = sys.ApiData
+	ApiDeleteReq          = sys.ApiDeleteReq
+	ApiIndexReq           = sys.ApiIndexReq
+	ApiIndexResp          = sys.ApiIndexResp
+	ApiUpdateReq          = sys.ApiUpdateReq
+	AuthApiIndexReq       = sys.AuthApiIndexReq
+	AuthApiIndexResp      = sys.AuthApiIndexResp
+	AuthApiInfo           = sys.AuthApiInfo
+	AuthApiMultiUpdateReq = sys.AuthApiMultiUpdateReq
+	CheckAuthReq          = sys.CheckAuthReq
+	CheckTokenReq         = sys.CheckTokenReq
+	CheckTokenResp        = sys.CheckTokenResp
+	ConfigResp            = sys.ConfigResp
+	DateRange             = sys.DateRange
+	JwtToken              = sys.JwtToken
+	LoginLogCreateReq     = sys.LoginLogCreateReq
+	LoginLogIndexData     = sys.LoginLogIndexData
+	LoginLogIndexReq      = sys.LoginLogIndexReq
+	LoginLogIndexResp     = sys.LoginLogIndexResp
+	LoginReq              = sys.LoginReq
+	LoginResp             = sys.LoginResp
+	Map                   = sys.Map
+	MenuCreateReq         = sys.MenuCreateReq
+	MenuData              = sys.MenuData
+	MenuDeleteReq         = sys.MenuDeleteReq
+	MenuIndexReq          = sys.MenuIndexReq
+	MenuIndexResp         = sys.MenuIndexResp
+	MenuUpdateReq         = sys.MenuUpdateReq
+	OperLogCreateReq      = sys.OperLogCreateReq
+	OperLogIndexData      = sys.OperLogIndexData
+	OperLogIndexReq       = sys.OperLogIndexReq
+	OperLogIndexResp      = sys.OperLogIndexResp
+	PageInfo              = sys.PageInfo
+	Response              = sys.Response
+	RoleCreateReq         = sys.RoleCreateReq
+	RoleDeleteReq         = sys.RoleDeleteReq
+	RoleIndexData         = sys.RoleIndexData
+	RoleIndexReq          = sys.RoleIndexReq
+	RoleIndexResp         = sys.RoleIndexResp
+	RoleMenuUpdateReq     = sys.RoleMenuUpdateReq
+	RoleUpdateReq         = sys.RoleUpdateReq
+	UserCreateReq         = sys.UserCreateReq
+	UserCreateResp        = sys.UserCreateResp
+	UserDeleteReq         = sys.UserDeleteReq
+	UserIndexReq          = sys.UserIndexReq
+	UserIndexResp         = sys.UserIndexResp
+	UserInfo              = sys.UserInfo
+	UserReadReq           = sys.UserReadReq
+	UserReadResp          = sys.UserReadResp
+	UserUpdateReq         = sys.UserUpdateReq
 
 	Auth interface {
-		AuthorityApiMultiUpdate(ctx context.Context, in *AuthorityApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
-		AuthorityApiIndex(ctx context.Context, in *AuthorityApiIndexReq, opts ...grpc.CallOption) (*AuthorityApiIndexResp, error)
+		AuthApiCheck(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error)
+		AuthApiMultiUpdate(ctx context.Context, in *AuthApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		AuthApiIndex(ctx context.Context, in *AuthApiIndexReq, opts ...grpc.CallOption) (*AuthApiIndexResp, error)
 	}
 
 	defaultAuth struct {
@@ -94,20 +95,29 @@ func NewDirectAuth(svcCtx *svc.ServiceContext, svr sys.AuthServer) Auth {
 	}
 }
 
-func (m *defaultAuth) AuthorityApiMultiUpdate(ctx context.Context, in *AuthorityApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultAuth) AuthApiCheck(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewAuthClient(m.cli.Conn())
-	return client.AuthorityApiMultiUpdate(ctx, in, opts...)
+	return client.AuthApiCheck(ctx, in, opts...)
 }
 
-func (d *directAuth) AuthorityApiMultiUpdate(ctx context.Context, in *AuthorityApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.AuthorityApiMultiUpdate(ctx, in)
+func (d *directAuth) AuthApiCheck(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AuthApiCheck(ctx, in)
 }
 
-func (m *defaultAuth) AuthorityApiIndex(ctx context.Context, in *AuthorityApiIndexReq, opts ...grpc.CallOption) (*AuthorityApiIndexResp, error) {
+func (m *defaultAuth) AuthApiMultiUpdate(ctx context.Context, in *AuthApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewAuthClient(m.cli.Conn())
-	return client.AuthorityApiIndex(ctx, in, opts...)
+	return client.AuthApiMultiUpdate(ctx, in, opts...)
 }
 
-func (d *directAuth) AuthorityApiIndex(ctx context.Context, in *AuthorityApiIndexReq, opts ...grpc.CallOption) (*AuthorityApiIndexResp, error) {
-	return d.svr.AuthorityApiIndex(ctx, in)
+func (d *directAuth) AuthApiMultiUpdate(ctx context.Context, in *AuthApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AuthApiMultiUpdate(ctx, in)
+}
+
+func (m *defaultAuth) AuthApiIndex(ctx context.Context, in *AuthApiIndexReq, opts ...grpc.CallOption) (*AuthApiIndexResp, error) {
+	client := sys.NewAuthClient(m.cli.Conn())
+	return client.AuthApiIndex(ctx, in, opts...)
+}
+
+func (d *directAuth) AuthApiIndex(ctx context.Context, in *AuthApiIndexReq, opts ...grpc.CallOption) (*AuthApiIndexResp, error) {
+	return d.svr.AuthApiIndex(ctx, in)
 }

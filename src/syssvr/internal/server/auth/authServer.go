@@ -22,12 +22,17 @@ func NewAuthServer(svcCtx *svc.ServiceContext) *AuthServer {
 	}
 }
 
-func (s *AuthServer) AuthorityApiMultiUpdate(ctx context.Context, in *sys.AuthorityApiMultiUpdateReq) (*sys.Response, error) {
-	l := authlogic.NewAuthorityApiMultiUpdateLogic(ctx, s.svcCtx)
-	return l.AuthorityApiMultiUpdate(in)
+func (s *AuthServer) AuthApiCheck(ctx context.Context, in *sys.CheckAuthReq) (*sys.Response, error) {
+	l := authlogic.NewAuthApiCheckLogic(ctx, s.svcCtx)
+	return l.AuthApiCheck(in)
 }
 
-func (s *AuthServer) AuthorityApiIndex(ctx context.Context, in *sys.AuthorityApiIndexReq) (*sys.AuthorityApiIndexResp, error) {
-	l := authlogic.NewAuthorityApiIndexLogic(ctx, s.svcCtx)
-	return l.AuthorityApiIndex(in)
+func (s *AuthServer) AuthApiMultiUpdate(ctx context.Context, in *sys.AuthApiMultiUpdateReq) (*sys.Response, error) {
+	l := authlogic.NewAuthApiMultiUpdateLogic(ctx, s.svcCtx)
+	return l.AuthApiMultiUpdate(in)
+}
+
+func (s *AuthServer) AuthApiIndex(ctx context.Context, in *sys.AuthApiIndexReq) (*sys.AuthApiIndexResp, error) {
+	l := authlogic.NewAuthApiIndexLogic(ctx, s.svcCtx)
+	return l.AuthApiIndex(in)
 }

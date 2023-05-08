@@ -1,4 +1,4 @@
-package userlogic
+package authlogic
 
 import (
 	"context"
@@ -11,21 +11,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type CheckAuthLogic struct {
+type AuthApiCheckLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewCheckAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CheckAuthLogic {
-	return &CheckAuthLogic{
+func NewAuthApiCheckLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AuthApiCheckLogic {
+	return &AuthApiCheckLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *CheckAuthLogic) CheckAuth(in *sys.CheckAuthReq) (*sys.Response, error) {
+func (l *AuthApiCheckLogic) AuthApiCheck(in *sys.CheckAuthReq) (*sys.Response, error) {
 	var checkReq [][]any
 	checkReq = append(checkReq, []any{cast.ToString(in.RoleID), in.Path, in.Method})
 	result, err := l.svcCtx.Casbin.BatchEnforce(checkReq)
