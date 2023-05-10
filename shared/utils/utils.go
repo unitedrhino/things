@@ -122,7 +122,7 @@ func Recover(ctx context.Context) {
 
 func HandleThrow(ctx context.Context, p any) {
 	pc := make([]uintptr, 1)
-	runtime.Callers(2, pc)
+	runtime.Callers(3, pc)
 	f := runtime.FuncForPC(pc[0])
 	logx.WithContext(ctx).Errorf("HandleThrow|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
 	//os.Exit(-1)
@@ -182,4 +182,27 @@ func GetIP(r *http.Request) (string, error) {
 	}
 
 	return "", errors.New("no valid ip found")
+}
+
+func MethodToNum(methond string) string {
+	switch methond {
+	case "GET":
+		return "1"
+	case "POST":
+		return "2"
+	case "HEAD":
+		return "3"
+	case "OPTIONS":
+		return "4"
+	case "PUT":
+		return "5"
+	case "DELETE":
+		return "6"
+	case "TRACE":
+		return "7"
+	case "CONNECT":
+		return "8"
+	default:
+		return "-1"
+	}
 }

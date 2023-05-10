@@ -3,7 +3,6 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
@@ -11,6 +10,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/repo/cache"
 	"time"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
@@ -45,42 +45,61 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 
 func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendPropertyResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
+
+	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}); err != nil {
+		return nil, err
+	}
+
 	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
 	}
+
 	param := map[string]any{}
 	err = utils.Unmarshal([]byte(in.Data), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail(
 			"SendProperty data not right:", in.Data)
 	}
-	uuid, err := uuid.GenerateUUID()
+
+	clientToken, err := uuid.GenerateUUID()
 	if err != nil {
 		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
+
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:      deviceMsg.Control,
-			ClientToken: uuid,
+			ClientToken: clientToken,
 			Timestamp:   time.Now().UnixMilli(),
 		},
-		Params: param}
+		Params: param,
+	}
 	_, err = req.VerifyReqParam(l.template, schema.ParamProperty)
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.MsgThingRepo.SetReq(l.ctx, msgThing.TypeProperty,
-		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, &req)
+
+	payload, _ := json.Marshal(req)
+	reqMsg := deviceMsg.PublishMsg{
+		Handle:     devices.Thing,
+		Type:       msgThing.TypeProperty,
+		Payload:    payload,
+		Timestamp:  time.Now().UnixMilli(),
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
 	if err != nil {
 		return nil, err
 	}
-	pubTopic := fmt.Sprintf("$thing/down/property/%s/%s", in.ProductID, in.DeviceName)
-	subTopic := fmt.Sprintf("$thing/up/property/%s/%s", in.ProductID, in.DeviceName)
+
 	if in.IsAsync { //如果是异步获取 处理结果暂不关注
-		payload, _ := json.Marshal(req)
-		err := l.svcCtx.PubDev.PublishToDev(l.ctx, pubTopic, payload)
+		err := l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
 		if err != nil {
 			return nil, err
 		}
@@ -88,14 +107,31 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 			ClientToken: req.ClientToken,
 		}, nil
 	}
-	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, pubTopic, subTopic, &req, in.ProductID, in.DeviceName)
+
+	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, func(payload []byte) bool {
+		var dresp msgThing.Resp
+		err = utils.Unmarshal(payload, &dresp)
+		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可
+			return false
+		}
+		if dresp.ClientToken != req.ClientToken { //不是该请求的回复.跳过
+			return false
+		}
+		return true
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var dresp msgThing.Resp
+	err = utils.Unmarshal(resp, &dresp)
 	if err != nil {
 		return nil, err
 	}
 
 	return &di.SendPropertyResp{
-		ClientToken: resp.ClientToken,
-		Status:      resp.Status,
-		Code:        resp.Code,
+		ClientToken: dresp.ClientToken,
+		Status:      dresp.Status,
+		Code:        dresp.Code,
 	}, nil
 }

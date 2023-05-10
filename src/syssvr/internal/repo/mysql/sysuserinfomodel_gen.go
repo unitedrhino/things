@@ -18,8 +18,8 @@ import (
 var (
 	sysUserInfoFieldNames          = builder.RawFieldNames(&SysUserInfo{})
 	sysUserInfoRows                = strings.Join(sysUserInfoFieldNames, ",")
-	sysUserInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
-	sysUserInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`uid`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
+	sysUserInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	sysUserInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`uid`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (

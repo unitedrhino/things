@@ -30,21 +30,36 @@ func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
 	Longitude, Latitude = utils.GetPositionValue(di.Position)
 
 	return &dm.DeviceInfo{
-		Version:     &wrappers.StringValue{Value: di.Version},
-		LogLevel:    di.LogLevel,
-		Cert:        di.Cert,
 		ProductID:   di.ProductID,
 		DeviceName:  di.DeviceName,
-		CreatedTime: di.CreatedTime.Unix(),
+		Secret:      di.Secret,
+		Cert:        di.Cert,
+		Imei:        di.Imei,
+		Mac:         di.Mac,
+		Version:     &wrappers.StringValue{Value: di.Version},
+		HardInfo:    di.HardInfo,
+		SoftInfo:    di.SoftInfo,
+		Position:    &dm.Point{Longitude: Longitude, Latitude: Latitude},
+		Address:     &wrappers.StringValue{Value: di.Address},
+		Tags:        tags,
+		IsOnline:    di.IsOnline,
 		FirstLogin:  utils.GetNullTime(di.FirstLogin),
 		LastLogin:   utils.GetNullTime(di.LastLogin),
-		Secret:      di.Secret,
-		IsOnline:    di.IsOnline,
-		Tags:        tags,
-		Address:     &wrappers.StringValue{Value: di.Address},
-		Position:    &dm.Point{Longitude: Longitude, Latitude: Latitude},
+		LogLevel:    di.LogLevel,
+		CreatedTime: di.CreatedTime.Unix(),
 	}
 }
+
+func BindToDeviceCoreDos(in []*dm.DeviceGatewayBindDevice) (ret []*devices.Core) {
+	for _, v := range in {
+		ret = append(ret, &devices.Core{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+	}
+	return
+}
+
 func ToDeviceCoreDos(in []*dm.DeviceCore) (ret []*devices.Core) {
 	for _, v := range in {
 		ret = append(ret, &devices.Core{
@@ -56,6 +71,25 @@ func ToDeviceCoreDos(in []*dm.DeviceCore) (ret []*devices.Core) {
 }
 
 func ToDeviceCoreEvents(in []*dm.DeviceCore) (ret []*events.DeviceCore) {
+	for _, v := range in {
+		ret = append(ret, &events.DeviceCore{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+	}
+	return
+}
+
+func ToDeviceCoreDo(core *dm.DeviceCore) *devices.Core {
+	if core == nil {
+		return nil
+	}
+	return &devices.Core{
+		ProductID:  core.ProductID,
+		DeviceName: core.DeviceName,
+	}
+}
+func BindToDeviceCoreEvents(in []*dm.DeviceGatewayBindDevice) (ret []*events.DeviceCore) {
 	for _, v := range in {
 		ret = append(ret, &events.DeviceCore{
 			ProductID:  v.ProductID,

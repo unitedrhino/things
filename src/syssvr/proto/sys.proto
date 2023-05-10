@@ -4,13 +4,13 @@ option go_package = "pb/sys";
 package sys;
 
 service User {
-  rpc create(UserCreateReq) returns(UserCreateResp);//创建用户信息
-  rpc index(UserIndexReq) returns(UserIndexResp);
-  rpc update(UserUpdateReq) returns(Response);//更新用户基本数据
-  rpc read(UserReadReq) returns(UserReadResp);//获取用户信息
-  rpc delete(UserDeleteReq) returns(Response);//刪除用戶
-  rpc login(LoginReq) returns(LoginResp);
-  rpc checkToken(CheckTokenReq) returns(CheckTokenResp);
+  rpc userCreate(UserCreateReq) returns(UserCreateResp);//创建用户信息
+  rpc userIndex(UserIndexReq) returns(UserIndexResp);
+  rpc userUpdate(UserUpdateReq) returns(Response);//更新用户基本数据
+  rpc userRead(UserReadReq) returns(UserReadResp);//获取用户信息
+  rpc userDelete(UserDeleteReq) returns(Response);//刪除用戶
+  rpc userLogin(UserLoginReq) returns(UserLoginResp);
+  rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
 }
 
 service Role {
@@ -46,9 +46,34 @@ service Api {
   rpc apiDelete(ApiDeleteReq) returns(Response);   //删除接口
 }
 
+service Auth {
+  rpc authApiCheck(CheckAuthReq) returns(Response);                               //角色API鉴权
+  rpc authApiMultiUpdate(AuthApiMultiUpdateReq) returns (Response);  //更新API权限
+  rpc authApiIndex(AuthApiIndexReq) returns (AuthApiIndexResp); //获取API权限列表
+}
+message AuthApiInfo{
+  string route = 1;
+  int64 method = 2;
+}
+
+message AuthApiMultiUpdateReq{
+  uint64 roleID = 1;//角色ID
+  repeated AuthApiInfo list = 2;//API列表数据
+}
+
+message AuthApiIndexReq{
+  uint64 roleID = 1;//角色ID
+}
+
+message AuthApiIndexResp{
+  int64 total = 1;
+  repeated AuthApiInfo list = 2;//API列表数据
+}
+
+
 message DateRange{
-    string start = 1;
-    string end = 2;
+  string start = 1;
+  string end = 2;
 }
 
 message LoginLogIndexReq{
@@ -170,15 +195,21 @@ message UserCreateResp{
   int64 uid = 1;//用户id
 }
 
-message CheckTokenReq{
+message UserCheckTokenReq{
   string token = 1;
   string ip = 2;
 }
 
-message CheckTokenResp{
+message UserCheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
   int64 uid = 2;
   int64 role = 3;
+}
+
+message CheckAuthReq{
+  int64 roleID = 1;
+  string path = 2;
+  string method = 3;
 }
 
 message PageInfo{
@@ -246,7 +277,7 @@ message JwtToken{
   int64 refreshAfter = 3;
 }
 
-message LoginReq{
+message UserLoginReq{
     string userID = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
     int32 pwdType = 2;//账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
     string password =3;//密码，建议md5转换 密码登录时需要填写
@@ -255,7 +286,7 @@ message LoginReq{
     string codeID = 6;//验证码编号 微信登录填state
 }
 
-message LoginResp{
+message UserLoginResp{
   UserInfo info = 1;
   JwtToken token =2;
 }

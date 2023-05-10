@@ -17,6 +17,9 @@ import (
 
 	clientApi "github.com/i-Things/things/src/syssvr/client/api"
 	serverApi "github.com/i-Things/things/src/syssvr/internal/server/api"
+
+	clientAuth "github.com/i-Things/things/src/syssvr/client/auth"
+	serverAuth "github.com/i-Things/things/src/syssvr/internal/server/auth"
 )
 
 func NewUser() client.User {
@@ -47,4 +50,9 @@ func NewLog() clientLog.Log {
 func NewApi() clientApi.Api {
 	userSvc := GetCtxSvc()
 	return clientApi.NewDirectApi(userSvc, serverApi.NewApiServer(userSvc))
+}
+
+func NewAuth() clientAuth.Auth {
+	userSvc := GetCtxSvc()
+	return clientAuth.NewDirectAuth(userSvc, serverAuth.NewAuthServer(userSvc))
 }

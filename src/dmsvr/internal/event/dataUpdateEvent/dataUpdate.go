@@ -14,7 +14,7 @@ type DataUpdateLogic struct {
 	logx.Logger
 }
 
-func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdateLogic {
+func NewDataUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdateLogic {
 	return &DataUpdateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,

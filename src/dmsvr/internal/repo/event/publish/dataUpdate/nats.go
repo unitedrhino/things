@@ -37,6 +37,17 @@ func (n *NatsClient) ProductSchemaUpdate(ctx context.Context, info *events.DataU
 	return err
 }
 
+func (n *NatsClient) ProductCustomUpdate(ctx context.Context, info *events.DataUpdateInfo) error {
+	data, err := json.Marshal(info)
+	if err != nil {
+		return err
+	}
+	err = n.client.Publish(topics.DmProductUpdateCustom, events.NewEventMsg(ctx, data))
+	logx.WithContext(ctx).Infof("%s info:%v,err:%v", utils.FuncName(),
+		utils.Fmt(info), err)
+	return err
+}
+
 func (n *NatsClient) DeviceLogLevelUpdate(ctx context.Context, info *events.DataUpdateInfo) error {
 	data, err := json.Marshal(info)
 	if err != nil {

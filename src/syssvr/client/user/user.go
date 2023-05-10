@@ -14,61 +14,66 @@ import (
 )
 
 type (
-	ApiCreateReq      = sys.ApiCreateReq
-	ApiData           = sys.ApiData
-	ApiDeleteReq      = sys.ApiDeleteReq
-	ApiIndexReq       = sys.ApiIndexReq
-	ApiIndexResp      = sys.ApiIndexResp
-	ApiUpdateReq      = sys.ApiUpdateReq
-	CheckTokenReq     = sys.CheckTokenReq
-	CheckTokenResp    = sys.CheckTokenResp
-	ConfigResp        = sys.ConfigResp
-	DateRange         = sys.DateRange
-	JwtToken          = sys.JwtToken
-	LoginLogCreateReq = sys.LoginLogCreateReq
-	LoginLogIndexData = sys.LoginLogIndexData
-	LoginLogIndexReq  = sys.LoginLogIndexReq
-	LoginLogIndexResp = sys.LoginLogIndexResp
-	LoginReq          = sys.LoginReq
-	LoginResp         = sys.LoginResp
-	Map               = sys.Map
-	MenuCreateReq     = sys.MenuCreateReq
-	MenuData          = sys.MenuData
-	MenuDeleteReq     = sys.MenuDeleteReq
-	MenuIndexReq      = sys.MenuIndexReq
-	MenuIndexResp     = sys.MenuIndexResp
-	MenuUpdateReq     = sys.MenuUpdateReq
-	OperLogCreateReq  = sys.OperLogCreateReq
-	OperLogIndexData  = sys.OperLogIndexData
-	OperLogIndexReq   = sys.OperLogIndexReq
-	OperLogIndexResp  = sys.OperLogIndexResp
-	PageInfo          = sys.PageInfo
-	Response          = sys.Response
-	RoleCreateReq     = sys.RoleCreateReq
-	RoleDeleteReq     = sys.RoleDeleteReq
-	RoleIndexData     = sys.RoleIndexData
-	RoleIndexReq      = sys.RoleIndexReq
-	RoleIndexResp     = sys.RoleIndexResp
-	RoleMenuUpdateReq = sys.RoleMenuUpdateReq
-	RoleUpdateReq     = sys.RoleUpdateReq
-	UserCreateReq     = sys.UserCreateReq
-	UserCreateResp    = sys.UserCreateResp
-	UserDeleteReq     = sys.UserDeleteReq
-	UserIndexReq      = sys.UserIndexReq
-	UserIndexResp     = sys.UserIndexResp
-	UserInfo          = sys.UserInfo
-	UserReadReq       = sys.UserReadReq
-	UserReadResp      = sys.UserReadResp
-	UserUpdateReq     = sys.UserUpdateReq
+	ApiCreateReq          = sys.ApiCreateReq
+	ApiData               = sys.ApiData
+	ApiDeleteReq          = sys.ApiDeleteReq
+	ApiIndexReq           = sys.ApiIndexReq
+	ApiIndexResp          = sys.ApiIndexResp
+	ApiUpdateReq          = sys.ApiUpdateReq
+	AuthApiIndexReq       = sys.AuthApiIndexReq
+	AuthApiIndexResp      = sys.AuthApiIndexResp
+	AuthApiInfo           = sys.AuthApiInfo
+	AuthApiMultiUpdateReq = sys.AuthApiMultiUpdateReq
+	CheckAuthReq          = sys.CheckAuthReq
+	ConfigResp            = sys.ConfigResp
+	DateRange             = sys.DateRange
+	JwtToken              = sys.JwtToken
+	LoginLogCreateReq     = sys.LoginLogCreateReq
+	LoginLogIndexData     = sys.LoginLogIndexData
+	LoginLogIndexReq      = sys.LoginLogIndexReq
+	LoginLogIndexResp     = sys.LoginLogIndexResp
+	Map                   = sys.Map
+	MenuCreateReq         = sys.MenuCreateReq
+	MenuData              = sys.MenuData
+	MenuDeleteReq         = sys.MenuDeleteReq
+	MenuIndexReq          = sys.MenuIndexReq
+	MenuIndexResp         = sys.MenuIndexResp
+	MenuUpdateReq         = sys.MenuUpdateReq
+	OperLogCreateReq      = sys.OperLogCreateReq
+	OperLogIndexData      = sys.OperLogIndexData
+	OperLogIndexReq       = sys.OperLogIndexReq
+	OperLogIndexResp      = sys.OperLogIndexResp
+	PageInfo              = sys.PageInfo
+	Response              = sys.Response
+	RoleCreateReq         = sys.RoleCreateReq
+	RoleDeleteReq         = sys.RoleDeleteReq
+	RoleIndexData         = sys.RoleIndexData
+	RoleIndexReq          = sys.RoleIndexReq
+	RoleIndexResp         = sys.RoleIndexResp
+	RoleMenuUpdateReq     = sys.RoleMenuUpdateReq
+	RoleUpdateReq         = sys.RoleUpdateReq
+	UserCheckTokenReq     = sys.UserCheckTokenReq
+	UserCheckTokenResp    = sys.UserCheckTokenResp
+	UserCreateReq         = sys.UserCreateReq
+	UserCreateResp        = sys.UserCreateResp
+	UserDeleteReq         = sys.UserDeleteReq
+	UserIndexReq          = sys.UserIndexReq
+	UserIndexResp         = sys.UserIndexResp
+	UserInfo              = sys.UserInfo
+	UserLoginReq          = sys.UserLoginReq
+	UserLoginResp         = sys.UserLoginResp
+	UserReadReq           = sys.UserReadReq
+	UserReadResp          = sys.UserReadResp
+	UserUpdateReq         = sys.UserUpdateReq
 
 	User interface {
-		Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
-		Index(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error)
-		Update(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error)
-		Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error)
-		Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
-		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
-		CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error)
+		UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
+		UserIndex(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error)
+		UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error)
+		UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
+		UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
 	}
 
 	defaultUser struct {
@@ -94,65 +99,65 @@ func NewDirectUser(svcCtx *svc.ServiceContext, svr sys.UserServer) User {
 	}
 }
 
-func (m *defaultUser) Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
+func (m *defaultUser) UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.Create(ctx, in, opts...)
+	return client.UserCreate(ctx, in, opts...)
 }
 
-func (d *directUser) Create(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
-	return d.svr.Create(ctx, in)
+func (d *directUser) UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
+	return d.svr.UserCreate(ctx, in)
 }
 
-func (m *defaultUser) Index(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error) {
+func (m *defaultUser) UserIndex(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.Index(ctx, in, opts...)
+	return client.UserIndex(ctx, in, opts...)
 }
 
-func (d *directUser) Index(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error) {
-	return d.svr.Index(ctx, in)
+func (d *directUser) UserIndex(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error) {
+	return d.svr.UserIndex(ctx, in)
 }
 
-func (m *defaultUser) Update(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultUser) UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.Update(ctx, in, opts...)
+	return client.UserUpdate(ctx, in, opts...)
 }
 
-func (d *directUser) Update(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.Update(ctx, in)
+func (d *directUser) UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserUpdate(ctx, in)
 }
 
-func (m *defaultUser) Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
+func (m *defaultUser) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.Read(ctx, in, opts...)
+	return client.UserRead(ctx, in, opts...)
 }
 
-func (d *directUser) Read(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
-	return d.svr.Read(ctx, in)
+func (d *directUser) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
+	return d.svr.UserRead(ctx, in)
 }
 
-func (m *defaultUser) Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultUser) UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.Delete(ctx, in, opts...)
+	return client.UserDelete(ctx, in, opts...)
 }
 
-func (d *directUser) Delete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.Delete(ctx, in)
+func (d *directUser) UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserDelete(ctx, in)
 }
 
-func (m *defaultUser) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
+func (m *defaultUser) UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.Login(ctx, in, opts...)
+	return client.UserLogin(ctx, in, opts...)
 }
 
-func (d *directUser) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
-	return d.svr.Login(ctx, in)
+func (d *directUser) UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error) {
+	return d.svr.UserLogin(ctx, in)
 }
 
-func (m *defaultUser) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error) {
+func (m *defaultUser) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error) {
 	client := sys.NewUserClient(m.cli.Conn())
-	return client.CheckToken(ctx, in, opts...)
+	return client.UserCheckToken(ctx, in, opts...)
 }
 
-func (d *directUser) CheckToken(ctx context.Context, in *CheckTokenReq, opts ...grpc.CallOption) (*CheckTokenResp, error) {
-	return d.svr.CheckToken(ctx, in)
+func (d *directUser) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error) {
+	return d.svr.UserCheckToken(ctx, in)
 }

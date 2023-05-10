@@ -5,6 +5,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -34,6 +35,9 @@ func NewRuleAlarmInfoModel(conn sqlx.SqlConn) RuleAlarmInfoModel {
 func (c *customRuleAlarmInfoModel) FmtSql(sql sq.SelectBuilder, f alarm.InfoFilter) sq.SelectBuilder {
 	if f.Name != "" {
 		sql = sql.Where("name=?", f.Name)
+	}
+	if len(f.AlarmIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("id in (%v)", store.ArrayToSql(f.AlarmIDs)))
 	}
 	if f.SceneID != 0 {
 		sql = sql.LeftJoin(fmt.Sprintf("`rule_alarm_scene` as ras on ras.alarmID=%s.id", c.table))
