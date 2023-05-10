@@ -10,6 +10,9 @@ cd ../../script
 rem "update front"
 call buildFront.bat
 cp -rf ../assets/dist/* ../pack/linux/dist/front/iThingsCore
-tar -cvf ../pack/iThings-linux.tgz ../pack/linux
+cd ../pack
+rm -rf iThings-linux.tgz
+tar -zcvf iThings-linux.tgz ./linux/*
+cd ../script
 SET GOOS=windows
 SET GOARCH=amd64
