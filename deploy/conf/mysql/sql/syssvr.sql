@@ -322,6 +322,7 @@ INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/delete',2,'删除设备',3,'','设备管理');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/update',2,'更新设备',2,'','设备管理');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/count',2,'设备统计详情',4,'','设备管理');
+INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/info/multi-import',2,'批量导入设备',1,'','设备管理');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/auth/login',2,'设备登录认证',5,'','设备鉴权');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/auth/root-check',2,'鉴定mqtt账号root权限',5,'','设备鉴权');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/auth/access',2,'设备操作认证',5,'','设备鉴权');
@@ -360,6 +361,8 @@ INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/index',2,'获取接口列表',4,'','接口管理');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/update',2,'更新接口',2,'','接口管理');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/api/delete',2,'删除接口',3,'','接口管理');
+INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/auth/api/index',2,'获取API权限列表',4,'','权限管理');
+INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/system/auth/api/multiUpdate',2,'更新API权限',2,'','权限管理');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/rule/scene/info/read',2,'获取场景信息',4,'','场景联动');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/rule/scene/info/index', 2,'获取场景列表',4,'','场景联动');
 INSERT IGNORE INTO sys_api (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/rule/scene/info/create',2,'创建场景信息',1,'','场景联动');
@@ -391,6 +394,7 @@ CREATE TABLE if not exists `casbin_rule` (
     `v4` varchar(255) NOT NULL DEFAULT '' comment '策略中的第五个参数，通常用于表示资源的类型（object type），例如表示是文件或者数据库表等',
     `v5` varchar(255) NOT NULL DEFAULT '' comment '策略中的第六个参数，通常用于表示扩展信息，例如 IP 地址、端口号等',
     PRIMARY KEY (`id`)
+    UNIQUE KEY `routeIndex` (`v1`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='权限管理';
 
 INSERT IGNORE INTO casbin_rule (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/update',2,'','','');
