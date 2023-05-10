@@ -183,3 +183,26 @@ func GetIP(r *http.Request) (string, error) {
 
 	return "", errors.New("no valid ip found")
 }
+
+func MethodToNum(methond string) string {
+	switch methond {
+	case "GET":
+		return "1"
+	case "POST":
+		return "2"
+	case "HEAD":
+		return "3"
+	case "OPTIONS":
+		return "4"
+	case "PUT":
+		return "5"
+	case "DELETE":
+		return "6"
+	case "TRACE":
+		return "7"
+	case "CONNECT":
+		return "8"
+	default:
+		return "-1"
+	}
+}

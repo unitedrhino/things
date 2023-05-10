@@ -50,7 +50,7 @@ func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DataUpdateInfo) erro
 
 	msg := deviceMsg.PublishMsg{
 		Handle:     devices.Log,
-		Types:      []string{msgSdkLog.TypeUpdate},
+		Type:       msgSdkLog.TypeUpdate,
 		Payload:    resp.AddStatus(errors.OK).Bytes(),
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  di.ProductID,
@@ -71,7 +71,7 @@ func (d *DataUpdateLogic) DeviceGatewayUpdate(info *events.GatewayUpdateInfo) er
 	respBytes, _ := json.Marshal(resp)
 	msg := deviceMsg.PublishMsg{
 		Handle:     devices.Gateway,
-		Types:      []string{msgGateway.TypeOperation},
+		Type:       msgGateway.TypeOperation,
 		Payload:    respBytes,
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  info.GatewayProductID,
@@ -115,7 +115,7 @@ func (d *DataUpdateLogic) DeviceRemoteConfigUpdate(info *events.DataUpdateInfo) 
 		respBytes, _ := json.Marshal(resp)
 		msg := deviceMsg.PublishMsg{
 			Handle:     devices.Config,
-			Types:      []string{msgRemoteConfig.TypePush},
+			Type:       msgRemoteConfig.TypePush,
 			Payload:    respBytes,
 			Timestamp:  time.Now().UnixMilli(),
 			ProductID:  v.ProductID,

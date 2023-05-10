@@ -21,14 +21,14 @@ type Param struct {
 	Required   bool                `json:"required"`   //是否必须
 	Type       schema.EventType    `json:"type"`       //事件类型: 信息:info  告警alert  故障:fault
 	Value      struct {
-		Type   schema.DataType   `json:"type"`              //参数类型:bool int string struct float timestamp array enum
-		Maping map[string]string `json:"mapping,omitempty"` //枚举及bool类型:bool enum
-		Min    string            `json:"min,omitempty"`     //数值最小值:int string float
-		Max    string            `json:"max,omitempty"`     //数值最大值:int string float
-		Start  string            `json:"start,omitempty"`   //初始值:int float
-		Step   string            `json:"step,omitempty"`    //步长:int float
-		Unit   string            `json:"unit,omitempty"`    //单位:int float
-		Value  any               `json:"value"`
+		Type    schema.DataType   `json:"type"`              //参数类型:bool int string struct float timestamp array enum
+		Mapping map[string]string `json:"mapping,omitempty"` //枚举及bool类型:bool enum
+		Min     string            `json:"min,omitempty"`     //数值最小值:int string float
+		Max     string            `json:"max,omitempty"`     //数值最大值:int string float
+		Start   string            `json:"start,omitempty"`   //初始值:int float
+		Step    string            `json:"step,omitempty"`    //步长:int float
+		Unit    string            `json:"unit,omitempty"`    //单位:int float
+		Value   any               `json:"value"`
 		/*
 			读到的数据  如果是是数组则类型为[]interface{}  如果是结构体类型则为map[id]Param
 				interface 为数据内容  					string为结构体的key value 为数据内容
@@ -36,20 +36,20 @@ type Param struct {
 	} `json:"value"` //数据定义
 }
 
-func (p *Param) AddDefine(d *schema.Define, val any) (err error) {
-	p.Value.Type = d.Type
-	p.Value.Type = d.Type
-	p.Value.Maping = make(map[string]string)
+func (tp *Param) SetByDefine(d *schema.Define, val any) (err error) {
+	tp.Value.Type = d.Type
+	tp.Value.Type = d.Type
+	tp.Value.Mapping = make(map[string]string)
 	for k, v := range d.Maping {
-		p.Value.Maping[k] = v
+		tp.Value.Mapping[k] = v
 	}
-	p.Value.Maping = d.Maping
-	p.Value.Min = d.Min
-	p.Value.Max = d.Max
-	p.Value.Start = d.Start
-	p.Value.Step = d.Step
-	p.Value.Unit = d.Unit
-	p.Value.Value, err = GetVal(d, val)
+	tp.Value.Mapping = d.Maping
+	tp.Value.Min = d.Min
+	tp.Value.Max = d.Max
+	tp.Value.Start = d.Start
+	tp.Value.Step = d.Step
+	tp.Value.Unit = d.Unit
+	tp.Value.Value, err = GetVal(d, val)
 	return err
 }
 
@@ -61,14 +61,14 @@ func ToVal(tp map[string]Param) map[string]any {
 	return ret
 }
 
-func (p *Param) ToVal() any {
-	if p == nil {
+func (tp *Param) ToVal() any {
+	if tp == nil {
 		panic("Param is nil")
 	}
 
-	switch p.Value.Type {
+	switch tp.Value.Type {
 	case schema.DataTypeStruct:
-		v, ok := p.Value.Value.(map[string]Param)
+		v, ok := tp.Value.Value.(map[string]Param)
 		if ok == false {
 			panic("struct Param is not find")
 		}
@@ -78,7 +78,7 @@ func (p *Param) ToVal() any {
 		}
 		return val
 	case schema.DataTypeArray:
-		array, ok := p.Value.Value.([]any)
+		array, ok := tp.Value.Value.([]any)
 		if ok == false {
 			panic("array Param is not find")
 		}
@@ -97,24 +97,14 @@ func (p *Param) ToVal() any {
 		}
 		return val
 	default:
-		return p.Value.Value
+		return tp.Value.Value
 	}
 }
 
 func GetVal(d *schema.Define, val any) (any, error) {
 	switch d.Type {
 	case schema.DataTypeBool:
-		switch val.(type) {
-		case bool:
-			return val.(bool), nil
-		case json.Number:
-			num := val.(json.Number).String()
-			if num == "0" {
-				return false, nil
-			} else {
-				return true, nil
-			}
-		}
+		return cast.ToBoolE(val)
 	case schema.DataTypeInt:
 		if num, ok := val.(json.Number); !ok {
 			return nil, errors.Parameter.AddDetail(val)
@@ -194,7 +184,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 					Identifier: sv.Identifier,
 					Name:       sv.Name,
 				}
-				err := tp.AddDefine(&sv.DataType, v)
+				err := tp.SetByDefine(&sv.DataType, v)
 				if err == nil {
 					getParam[k] = tp
 				} else if !errors.Cmp(err, errors.NotFind) {

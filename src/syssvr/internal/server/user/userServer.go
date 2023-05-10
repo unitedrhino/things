@@ -22,37 +22,37 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
-func (s *UserServer) Create(ctx context.Context, in *sys.UserCreateReq) (*sys.UserCreateResp, error) {
-	l := userlogic.NewCreateLogic(ctx, s.svcCtx)
-	return l.Create(in)
+func (s *UserServer) UserCreate(ctx context.Context, in *sys.UserCreateReq) (*sys.UserCreateResp, error) {
+	l := userlogic.NewUserCreateLogic(ctx, s.svcCtx)
+	return l.UserCreate(in)
 }
 
-func (s *UserServer) Index(ctx context.Context, in *sys.UserIndexReq) (*sys.UserIndexResp, error) {
-	l := userlogic.NewIndexLogic(ctx, s.svcCtx)
-	return l.Index(in)
+func (s *UserServer) UserIndex(ctx context.Context, in *sys.UserIndexReq) (*sys.UserIndexResp, error) {
+	l := userlogic.NewUserIndexLogic(ctx, s.svcCtx)
+	return l.UserIndex(in)
 }
 
-func (s *UserServer) Update(ctx context.Context, in *sys.UserUpdateReq) (*sys.Response, error) {
-	l := userlogic.NewUpdateLogic(ctx, s.svcCtx)
-	return l.Update(in)
+func (s *UserServer) UserUpdate(ctx context.Context, in *sys.UserUpdateReq) (*sys.Response, error) {
+	l := userlogic.NewUserUpdateLogic(ctx, s.svcCtx)
+	return l.UserUpdate(in)
 }
 
-func (s *UserServer) Read(ctx context.Context, in *sys.UserReadReq) (*sys.UserReadResp, error) {
-	l := userlogic.NewReadLogic(ctx, s.svcCtx)
-	return l.Read(in)
+func (s *UserServer) UserRead(ctx context.Context, in *sys.UserReadReq) (*sys.UserReadResp, error) {
+	l := userlogic.NewUserReadLogic(ctx, s.svcCtx)
+	return l.UserRead(in)
 }
 
-func (s *UserServer) Delete(ctx context.Context, in *sys.UserDeleteReq) (*sys.Response, error) {
-	l := userlogic.NewDeleteLogic(ctx, s.svcCtx)
-	return l.Delete(in)
+func (s *UserServer) UserDelete(ctx context.Context, in *sys.UserDeleteReq) (*sys.Response, error) {
+	l := userlogic.NewUserDeleteLogic(ctx, s.svcCtx)
+	return l.UserDelete(in)
 }
 
-func (s *UserServer) Login(ctx context.Context, in *sys.LoginReq) (*sys.LoginResp, error) {
-	l := userlogic.NewLoginLogic(ctx, s.svcCtx)
-	return l.Login(in)
+func (s *UserServer) UserLogin(ctx context.Context, in *sys.UserLoginReq) (*sys.UserLoginResp, error) {
+	l := userlogic.NewUserLoginLogic(ctx, s.svcCtx)
+	return l.UserLogin(in)
 }
 
-func (s *UserServer) CheckToken(ctx context.Context, in *sys.CheckTokenReq) (*sys.CheckTokenResp, error) {
-	l := userlogic.NewCheckTokenLogic(ctx, s.svcCtx)
-	return l.CheckToken(in)
+func (s *UserServer) UserCheckToken(ctx context.Context, in *sys.UserCheckTokenReq) (*sys.UserCheckTokenResp, error) {
+	l := userlogic.NewUserCheckTokenLogic(ctx, s.svcCtx)
+	return l.UserCheckToken(in)
 }

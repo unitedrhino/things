@@ -19,7 +19,7 @@ type CreateLogic struct {
 	logx.Logger
 }
 
-func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogic {
+func NewUserCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogic {
 	return &CreateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -89,7 +89,7 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 
 	return &sys.UserCreateResp{}, nil
 }
-func (l *CreateLogic) Create(in *sys.UserCreateReq) (*sys.UserCreateResp, error) {
+func (l *CreateLogic) UserCreate(in *sys.UserCreateReq) (*sys.UserCreateResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	switch in.ReqType {
 	case "pwd":

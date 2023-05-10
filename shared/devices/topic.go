@@ -52,12 +52,13 @@ const (
 	Gateway          = "gateway"
 )
 
+//设备通信流向
 type Direction int
 
 const (
-	Unknown Direction = iota //未知
-	Up                       //上行
-	Down                     //下行
+	Unknown Direction = iota //设备通信流向：未知
+	Up                       //设备通信流向：上行
+	Down                     //设备通信流向：下行
 )
 
 type TopicInfo struct {

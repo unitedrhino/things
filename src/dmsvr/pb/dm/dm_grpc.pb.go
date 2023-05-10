@@ -217,11 +217,11 @@ type DeviceManageClient interface {
 	DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
 	//获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
-	//创建分组设备
+	//绑定网关下子设备设备
 	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
-	//获取分组设备信息列表
+	//获取绑定信息的设备信息列表
 	DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
-	//删除分组设备
+	//删除网关下子设备
 	DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	//设备计数
 	DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCountResp, error)
@@ -341,11 +341,11 @@ type DeviceManageServer interface {
 	DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error)
 	//获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
-	//创建分组设备
+	//绑定网关下子设备设备
 	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Response, error)
-	//获取分组设备信息列表
+	//获取绑定信息的设备信息列表
 	DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error)
-	//删除分组设备
+	//删除网关下子设备
 	DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Response, error)
 	//设备计数
 	DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCountResp, error)
@@ -645,6 +645,8 @@ const (
 	ProductManage_ProductSchemaIndex_FullMethodName     = "/dm.ProductManage/productSchemaIndex"
 	ProductManage_ProductSchemaTslImport_FullMethodName = "/dm.ProductManage/productSchemaTslImport"
 	ProductManage_ProductSchemaTslRead_FullMethodName   = "/dm.ProductManage/productSchemaTslRead"
+	ProductManage_ProductCustomRead_FullMethodName      = "/dm.ProductManage/productCustomRead"
+	ProductManage_ProductCustomUpdate_FullMethodName    = "/dm.ProductManage/productCustomUpdate"
 )
 
 // ProductManageClient is the client API for ProductManage service.
@@ -673,6 +675,9 @@ type ProductManageClient interface {
 	ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error)
 	//获取产品信息列表
 	ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
+	//脚本管理
+	ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error)
+	ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error)
 }
 
 type productManageClient struct {
@@ -782,6 +787,24 @@ func (c *productManageClient) ProductSchemaTslRead(ctx context.Context, in *Prod
 	return out, nil
 }
 
+func (c *productManageClient) ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error) {
+	out := new(ProductCustom)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCustomRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCustomUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductManageServer is the server API for ProductManage service.
 // All implementations must embed UnimplementedProductManageServer
 // for forward compatibility
@@ -808,6 +831,9 @@ type ProductManageServer interface {
 	ProductSchemaTslImport(context.Context, *ProductSchemaTslImportReq) (*Response, error)
 	//获取产品信息列表
 	ProductSchemaTslRead(context.Context, *ProductSchemaTslReadReq) (*ProductSchemaTslReadResp, error)
+	//脚本管理
+	ProductCustomRead(context.Context, *ProductCustomReadReq) (*ProductCustom, error)
+	ProductCustomUpdate(context.Context, *ProductCustom) (*Response, error)
 	mustEmbedUnimplementedProductManageServer()
 }
 
@@ -847,6 +873,12 @@ func (UnimplementedProductManageServer) ProductSchemaTslImport(context.Context, 
 }
 func (UnimplementedProductManageServer) ProductSchemaTslRead(context.Context, *ProductSchemaTslReadReq) (*ProductSchemaTslReadResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaTslRead not implemented")
+}
+func (UnimplementedProductManageServer) ProductCustomRead(context.Context, *ProductCustomReadReq) (*ProductCustom, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCustomRead not implemented")
+}
+func (UnimplementedProductManageServer) ProductCustomUpdate(context.Context, *ProductCustom) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCustomUpdate not implemented")
 }
 func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
 
@@ -1059,6 +1091,42 @@ func _ProductManage_ProductSchemaTslRead_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductManage_ProductCustomRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCustomReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCustomRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCustomRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCustomRead(ctx, req.(*ProductCustomReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCustomUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCustom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCustomUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCustomUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCustomUpdate(ctx, req.(*ProductCustom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductManage_ServiceDesc is the grpc.ServiceDesc for ProductManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1109,6 +1177,14 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "productSchemaTslRead",
 			Handler:    _ProductManage_ProductSchemaTslRead_Handler,
+		},
+		{
+			MethodName: "productCustomRead",
+			Handler:    _ProductManage_ProductCustomRead_Handler,
+		},
+		{
+			MethodName: "productCustomUpdate",
+			Handler:    _ProductManage_ProductCustomUpdate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
