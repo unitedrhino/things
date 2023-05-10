@@ -45,36 +45,49 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 
 func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendPropertyResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
+
+	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}); err != nil {
+		return nil, err
+	}
+
 	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
 	}
+
 	param := map[string]any{}
 	err = utils.Unmarshal([]byte(in.Data), &param)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail(
 			"SendProperty data not right:", in.Data)
 	}
+
 	clientToken, err := uuid.GenerateUUID()
 	if err != nil {
 		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
+
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:      deviceMsg.Control,
 			ClientToken: clientToken,
 			Timestamp:   time.Now().UnixMilli(),
 		},
-		Params: param}
+		Params: param,
+	}
 	_, err = req.VerifyReqParam(l.template, schema.ParamProperty)
 	if err != nil {
 		return nil, err
 	}
+
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
 		Handle:     devices.Thing,
-		Types:      []string{msgThing.TypeProperty},
+		Type:       msgThing.TypeProperty,
 		Payload:    payload,
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  in.ProductID,
@@ -84,6 +97,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 	if err != nil {
 		return nil, err
 	}
+
 	if in.IsAsync { //如果是异步获取 处理结果暂不关注
 		err := l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
 		if err != nil {
@@ -93,6 +107,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 			ClientToken: req.ClientToken,
 		}, nil
 	}
+
 	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, func(payload []byte) bool {
 		var dresp msgThing.Resp
 		err = utils.Unmarshal(payload, &dresp)
@@ -107,11 +122,13 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 	if err != nil {
 		return nil, err
 	}
+
 	var dresp msgThing.Resp
 	err = utils.Unmarshal(resp, &dresp)
 	if err != nil {
 		return nil, err
 	}
+
 	return &di.SendPropertyResp{
 		ClientToken: dresp.ClientToken,
 		Status:      dresp.Status,

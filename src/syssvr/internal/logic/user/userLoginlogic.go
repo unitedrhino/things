@@ -19,14 +19,14 @@ type LoginLogic struct {
 	logx.Logger
 }
 
-func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
+func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
 	return &LoginLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *LoginLogic) getPwd(in *sys.LoginReq, uc *mysql.SysUserInfo) error {
+func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
 	//根据密码类型不同做不同处理
 	if in.PwdType == 0 {
 		//空密码情况暂不考虑
@@ -50,7 +50,7 @@ func (l *LoginLogic) getPwd(in *sys.LoginReq, uc *mysql.SysUserInfo) error {
 	return nil
 }
 
-func (l *LoginLogic) getRet(uc *mysql.SysUserInfo) (*sys.LoginResp, error) {
+func (l *LoginLogic) getRet(uc *mysql.SysUserInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role)
@@ -65,7 +65,7 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo) (*sys.LoginResp, error) {
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	resp := &sys.LoginResp{
+	resp := &sys.UserLoginResp{
 		Info: &sys.UserInfo{
 			Uid:         ui.Uid,
 			UserName:    ui.UserName.String,
@@ -94,7 +94,7 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo) (*sys.LoginResp, error) {
 	return resp, nil
 }
 
-func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.SysUserInfo, err error) {
+func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *mysql.SysUserInfo, err error) {
 	switch in.LoginType {
 	case "pwd":
 		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserID, Valid: true})
@@ -112,7 +112,7 @@ func (l *LoginLogic) GetUserInfo(in *sys.LoginReq) (uc *mysql.SysUserInfo, err e
 	return uc, err
 }
 
-func (l *LoginLogic) Login(in *sys.LoginReq) (*sys.LoginResp, error) {
+func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	uc, err := l.GetUserInfo(in)
 	switch err {

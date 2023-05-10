@@ -23,7 +23,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 }
 
 func (l *ReadLogic) Read(req *types.UserReadReq) (resp *types.UserReadResp, err error) {
-	info, err := l.svcCtx.UserRpc.Read(l.ctx, &sys.UserReadReq{Uid: req.Uid})
+	info, err := l.svcCtx.UserRpc.UserRead(l.ctx, &sys.UserReadReq{Uid: req.Uid})
 	if err != nil {
 		return nil, err
 	}

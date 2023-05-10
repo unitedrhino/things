@@ -65,12 +65,16 @@ func NewDmProductInfoModel(conn sqlx.SqlConn) DmProductInfoModel {
 
 func (m *customDmProductInfoModel) FindByFilter(ctx context.Context, f ProductFilter, page *def.PageInfo) ([]*DmProductInfo, error) {
 	var resp []*DmProductInfo
-	sql := sq.Select(dmProductInfoRows).From(m.table).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
+
+	sql := sq.Select(dmProductInfoRows).From(m.table).
+		Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset())).OrderBy(page.GetOrders()...)
+
 	sql = f.FmtSql(sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return nil, err
 	}
+
 	err = m.conn.QueryRowsCtx(ctx, &resp, query, arg...)
 	switch err {
 	case nil:

@@ -19,9 +19,9 @@ const (
 
 type (
 	PublishMsg struct { //发布消息结构体
-		Topic      string   //只用于日志记录
-		Handle     string   //对应 mqtt topic的第一个 thing ota config 等等
-		Types      []string //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+		Topic      string //只用于日志记录
+		Handle     string //对应 mqtt topic的第一个 thing ota config 等等
+		Type       string //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
 		Payload    []byte
 		Timestamp  int64 //毫秒时间戳
 		ProductID  string
@@ -32,7 +32,7 @@ type (
 		Method      string     `json:"method"`              //操作方法
 		ClientToken string     `json:"clientToken"`         //方便排查随机数
 		Timestamp   int64      `json:"timestamp,omitempty"` //毫秒时间戳
-		Code        int64      `json:"code,omitempty"`      //状态码
+		Code        int64      `json:"code"`                //状态码
 		Status      string     `json:"status,omitempty"`    //返回信息
 		Data        any        `json:"data,omitempty"`      //返回具体设备上报的最新数据内容
 		Sys         *SysConfig `json:"sys,omitempty"`       //系统配置
@@ -45,7 +45,7 @@ type (
 func (p *PublishMsg) String() string {
 	msgMap := map[string]any{
 		"Handle":      p.Handle,
-		"Types":       p.Types,
+		"Type":        p.Type,
 		"Payload":     string(p.Payload),
 		"Timestamp":   p.Timestamp,
 		"ProductID":   p.ProductID,
@@ -103,7 +103,7 @@ func GetDevPublish(ctx context.Context, data []byte) (*PublishMsg, error) {
 	ele := PublishMsg{
 		Handle:     pubInfo.Handle,
 		Topic:      pubInfo.Topic,
-		Types:      pubInfo.Types,
+		Type:       pubInfo.Type,
 		Payload:    pubInfo.Payload,
 		Timestamp:  pubInfo.Timestamp,
 		ProductID:  pubInfo.ProductID,
