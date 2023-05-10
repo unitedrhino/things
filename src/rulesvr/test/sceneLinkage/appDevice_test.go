@@ -37,7 +37,7 @@ func TestMain(t *testing.M) {
 }
 
 func Init() {
-	err := svcCtx.SceneRepo.Insert(ctx,
+	_, err := svcCtx.SceneRepo.Insert(ctx,
 		&scene.Info{
 			Name:        "上线测试2",
 			Desc:        "上线测试2",
@@ -119,7 +119,7 @@ func Init() {
 			State: 1,
 		})
 	fmt.Println(err)
-	err = svcCtx.SceneRepo.Insert(ctx, &scene.Info{
+	_, err = svcCtx.SceneRepo.Insert(ctx, &scene.Info{
 		Name:        "结构体上报1",
 		Desc:        "结构体上报1",
 		TriggerType: scene.TriggerTypeDevice,
@@ -199,7 +199,7 @@ func Init() {
 		State: 1,
 	})
 	fmt.Println(err)
-	err = svcCtx.SceneRepo.Insert(ctx, &scene.Info{
+	_, err = svcCtx.SceneRepo.Insert(ctx, &scene.Info{
 		Name:        "定时两秒",
 		Desc:        "定时2秒",
 		TriggerType: scene.TriggerTypeTimer,

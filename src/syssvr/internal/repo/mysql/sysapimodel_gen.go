@@ -18,8 +18,8 @@ import (
 var (
 	sysApiFieldNames          = builder.RawFieldNames(&SysApi{})
 	sysApiRows                = strings.Join(sysApiFieldNames, ",")
-	sysApiRowsExpectAutoSet   = strings.Join(stringx.Remove(sysApiFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
-	sysApiRowsWithPlaceHolder = strings.Join(stringx.Remove(sysApiFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
+	sysApiRowsExpectAutoSet   = strings.Join(stringx.Remove(sysApiFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
+	sysApiRowsWithPlaceHolder = strings.Join(stringx.Remove(sysApiFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (

@@ -1,6 +1,8 @@
 package svc
 
 import (
+	"github.com/casbin/casbin/v2"
+	cas "github.com/i-Things/things/shared/casbin"
 	"github.com/i-Things/things/shared/third/weixin"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/config"
@@ -24,6 +26,7 @@ type ServiceContext struct {
 	LogModel      mysql.LogModel
 	ApiModel      mysql.SysApiModel
 	ApiInfoModel  mysql.ApiModel
+	Casbin        *casbin.Enforcer
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -43,6 +46,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	WxMiniProgram := weixin.NewWexinMiniProgram(c.WexinMiniprogram, c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	UserID := utils.NewSnowFlake(nodeId)
+	db, _ := conn.RawDB()
+	ca := cas.NewCasbinWithRedisWatcher(db, "mysql", c.CacheRedis[0].RedisConf)
 
 	return &ServiceContext{
 		Config:        c,
@@ -59,5 +64,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LogModel:      l,
 		ApiModel:      api,
 		ApiInfoModel:  ap,
+		Casbin:        ca,
 	}
 }

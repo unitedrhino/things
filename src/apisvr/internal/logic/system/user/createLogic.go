@@ -31,7 +31,7 @@ func (l *CreateLogic) Create(req *types.UserCreateReq) (resp *types.UserCreateRe
 	if req.Sex != 1 && req.Sex != 2 {
 		req.Sex = 1
 	}
-	resp1, err1 := l.svcCtx.UserRpc.Create(l.ctx, &sys.UserCreateReq{
+	resp1, err1 := l.svcCtx.UserRpc.UserCreate(l.ctx, &sys.UserCreateReq{
 		ReqType:    req.ReqType,
 		UserName:   req.UserName,
 		Password:   req.Password,

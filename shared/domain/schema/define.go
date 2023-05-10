@@ -17,9 +17,13 @@ const (
 type ParamType int64
 
 const (
+	//请求参数的类型：设备属性上报参数
 	ParamProperty ParamType = iota + 1
+	//请求参数的类型：设备行为调用的下行参数
 	ParamActionInput
+	//请求参数的类型：设备行为调用上行的回复参数
 	ParamActionOutput
+	//请求参数的类型：设备事件上报参数
 	ParamEvent
 )
 
@@ -36,9 +40,12 @@ const (
 type AffordanceType int64
 
 const (
+	//物模型功能类型：1-property 属性
 	AffordanceTypeProperty AffordanceType = 1
-	AffordanceTypeEvent    AffordanceType = 2
-	AffordanceTypeAction   AffordanceType = 3
+	//物模型功能类型：2-event 事件
+	AffordanceTypeEvent AffordanceType = 2
+	//物模型功能类型：3-action 行为
+	AffordanceTypeAction AffordanceType = 3
 )
 
 func (m AffordanceType) String() string {

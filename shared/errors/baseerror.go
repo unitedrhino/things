@@ -94,6 +94,13 @@ func (c *CodeError) GetCode() int64 {
 	return c.Code
 }
 
+func (c *CodeError) GetMsg() string {
+	if c == nil {
+		return ""
+	}
+	return c.Msg
+}
+
 func NewCodeError(code int64, msg string) *CodeError {
 	return &CodeError{Code: code, Msg: msg}
 }
@@ -108,7 +115,7 @@ func (c CodeError) Error() string {
 	return string(ret)
 }
 
-//将普通的error及转换成json的error或error类型的转回自己的error
+// 将普通的error及转换成json的error或error类型的转回自己的error
 func Fmt(errs error) *CodeError {
 	if errs == nil {
 		return nil

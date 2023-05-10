@@ -84,7 +84,7 @@ func (l *DeviceMsgHandle) deviceResp(respMsg *deviceMsg.PublishMsg) {
 	if respMsg == nil {
 		return
 	}
-	er := l.svcCtx.PubDev.PublishToDev(l.ctx, respMsg.Topic, respMsg.Payload)
+	er := l.svcCtx.PubDev.PublishToDev(l.ctx, respMsg)
 	if er != nil {
 		l.Errorf("DeviceMsgHandle.deviceResp.PublishToDev failure err:%v", er)
 		return

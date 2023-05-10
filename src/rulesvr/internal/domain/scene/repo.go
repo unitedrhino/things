@@ -18,7 +18,7 @@ type InfoFilter struct {
 }
 
 type Repo interface {
-	Insert(ctx context.Context, info *Info) error
+	Insert(ctx context.Context, info *Info) (id int64, err error)
 	Update(ctx context.Context, info *Info) error
 	Delete(ctx context.Context, id int64) error
 	FindOne(ctx context.Context, id int64) (*Info, error)

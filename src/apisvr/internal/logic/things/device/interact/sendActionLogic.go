@@ -25,6 +25,7 @@ func NewSendActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendAc
 	}
 }
 
+//调用设备行为
 func (l *SendActionLogic) SendAction(req *types.DeviceInteractSendActionReq) (resp *types.DeviceInteractSendActionResp, err error) {
 	dmReq := &di.SendActionReq{
 		ProductID:   req.ProductID,

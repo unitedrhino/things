@@ -30,7 +30,7 @@ func (l *IndexLogic) Index(req *types.UserIndexReq) (resp *types.UserIndexResp, 
 	l.Infof("%s req=%v", utils.FuncName(), req)
 	var page sys.PageInfo
 	copier.Copy(&page, req.Page)
-	info, err := l.svcCtx.UserRpc.Index(l.ctx, &sys.UserIndexReq{
+	info, err := l.svcCtx.UserRpc.UserIndex(l.ctx, &sys.UserIndexReq{
 		Page:     &page,
 		UserName: req.UserName,
 		Phone:    req.Phone,

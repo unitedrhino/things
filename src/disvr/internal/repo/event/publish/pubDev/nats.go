@@ -2,7 +2,6 @@ package pubDev
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
@@ -10,8 +9,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
-	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -31,20 +29,18 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 	return &NatsClient{client: nc}, nil
 }
 
-func (n *NatsClient) PublishToDev(ctx context.Context, topic string, payload []byte) error {
-	msg := events.NewEventMsg(ctx, devices.PublishToDev(topic, payload))
-	err := n.client.Publish(topics.DeviceDownAll, msg)
+func (n *NatsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.PublishMsg) error {
+	msg := events.NewEventMsg(ctx, devices.PublishToDev(respMsg.Handle, respMsg.Type, respMsg.Payload, respMsg.ProductID, respMsg.DeviceName))
+	err := n.client.Publish(fmt.Sprintf(topics.DeviceDownMsg, respMsg.Handle, respMsg.ProductID, respMsg.DeviceName), msg)
 	return err
 }
 
-func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic string, req *msgThing.Req,
-	productID, deviceName string) (*msgThing.Resp, error) {
-	payload, _ := json.Marshal(req)
-	err := n.PublishToDev(ctx, reqTopic, payload)
+func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.PublishMsg, compareMsg CompareMsg) ([]byte, error) {
+	err := n.PublishToDev(ctx, reqMsg)
 	if err != nil {
 		return nil, err
 	}
-	handle, err := n.subscribeDevSync(ctx, fmt.Sprintf(topics.DeviceUpThing, productID, deviceName))
+	handle, err := n.subscribeDevSync(ctx, fmt.Sprintf(topics.DeviceUpThing, reqMsg.ProductID, reqMsg.DeviceName))
 	if err != nil {
 		return nil, err
 	}
@@ -60,18 +56,13 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqTopic, respTopic st
 		if err != nil {
 			return nil, err
 		}
-		if msg.Topic != respTopic { //不是订阅的topic
+		if msg.Handle != reqMsg.Handle || msg.Type != reqMsg.Type { //不是订阅的topic
 			continue
 		}
-		var dresp msgThing.Resp
-		err = utils.Unmarshal(msg.Payload, &dresp)
-		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可
+		if !compareMsg(msg.Payload) {
 			continue
 		}
-		if dresp.ClientToken != req.ClientToken { //不是该请求的回复.跳过
-			continue
-		}
-		return &dresp, nil
+		return msg.Payload, nil
 	}
 	return nil, errors.DeviceTimeOut
 }

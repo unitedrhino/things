@@ -33,13 +33,13 @@ func newNatsClient(conf conf.NatsConf) (SubInner, error) {
 func (n *NatsClient) SubToDevMsg(handle Handle) error {
 	_, err := n.client.QueueSubscribe(topics.DeviceDownAll, ThingsDDDeliverGroup,
 		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
-			topic, payload := devices.GetPublish(msg)
 			//给设备回包之前，将链路信息span推送至jaeger
 			_, span := traces.StartSpan(ctx, topics.DeviceDownAll, "")
-			logx.WithContext(ctx).Infof("ddsvr.mqtt.SubDevMsg topic:%s payload:%v",
-				topic, string(payload))
+			info := devices.GetPublish(msg)
+			logx.WithContext(ctx).Infof("ddsvr.mqtt.SubDevMsg Handle:%s Type:%v Payload:%v",
+				info.Handle, info.Type, string(info.Payload))
 			defer span.End()
-			return handle(ctx).PublishToDev(topic, payload)
+			return handle(ctx).PublishToDev(info)
 		}))
 	return err
 }
