@@ -39,25 +39,33 @@ ${productID}/${deviceName}/xxxxx	订阅和发布   //自定义 暂不做支持
 
 const (
 	TopicHeadThing   = "$thing"
+	Thing            = "thing"
 	TopicHeadOta     = "$ota"
+	Ota              = "ota"
 	TopicHeadConfig  = "$config"
+	Config           = "config"
 	TopicHeadLog     = "$log"
+	Log              = "log"
 	TopicHeadShadow  = "$shadow"
+	Shadow           = "shadow"
 	TopicHeadGateway = "$gateway"
+	Gateway          = "gateway"
 )
 
+//设备通信流向
 type Direction int
 
 const (
-	Unknown Direction = iota //未知
-	Up                       //上行
-	Down                     //下行
+	Unknown Direction = iota //设备通信流向：未知
+	Up                       //设备通信流向：上行
+	Down                     //设备通信流向：下行
 )
 
 type TopicInfo struct {
 	ProductID  string
 	DeviceName string
 	Direction  Direction
+	Types      []string
 	TopicHead  string
 }
 
@@ -66,7 +74,7 @@ func GetTopicInfo(topic string) (topicInfo *TopicInfo, err error) {
 	return parseTopic(keys)
 }
 
-//通过topic的第一个字段来获取处理函数
+// 通过topic的第一个字段来获取处理函数
 func parseTopic(topics []string) (topicInfo *TopicInfo, err error) {
 	if len(topics) < 2 {
 		return nil, errors.Parameter.AddDetail("topic is err")
@@ -100,6 +108,7 @@ func parseLast(topics []string) (topicInfo *TopicInfo, err error) {
 		ProductID:  topics[len(topics)-2],
 		DeviceName: topics[len(topics)-1],
 		Direction:  getDirection(topics[1]),
+		Types:      topics[2 : len(topics)-2],
 		TopicHead:  topics[0],
 	}, err
 }

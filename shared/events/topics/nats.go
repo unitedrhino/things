@@ -2,40 +2,51 @@ package topics
 
 // 设备交互相关topic
 const (
-	// DeviceUpThing 物模型 最后两个是产品id和设备名称
-	DeviceUpThing    = "device.up.thing.%s.%s"
-	DeviceUpThingAll = "device.up.thing.>"
+	DeviceUpMsg   = "device.up.%s.%s.%s"
+	DeviceUpAll   = "device.up.>"
+	DeviceDownMsg = "device.down.%s.%s.%s"
+	// DeviceDownAll dd模块订阅以下topic,收到内部的发布消息后向设备推送
+	DeviceDownAll = "device.down.>"
 
+	// DeviceUpThing 物模型 最后两个是产品id和设备名称
+	DeviceUpThing      = "device.up.thing.%s.%s"
+	DeviceUpThingAll   = "device.up.thing.>"
+	DeviceDownThing    = "device.down.thing.%s.%s"
+	DeviceDownThingAll = "device.down.thing.>"
 	// DeviceUpGateway 网关与子设备 最后两个是产品id和设备名称
-	DeviceUpGateway    = "device.up.gateway.%s.%s"
-	DeviceUpGatewayAll = "device.up.gateway.>"
+	DeviceUpGateway      = "device.up.gateway.%s.%s"
+	DeviceUpGatewayAll   = "device.up.gateway.>"
+	DeviceDownGateway    = "device.down.gateway.%s.%s"
+	DeviceDownGatewayAll = "device.down.gateway.>"
 
 	// DeviceUpOta ota升级相关 最后两个是产品id和设备名称
-	DeviceUpOta    = "device.up.ota.%s.%s"
-	DeviceUpOtaAll = "device.up.ota.>"
-
+	DeviceUpOta      = "device.up.ota.%s.%s"
+	DeviceUpOtaAll   = "device.up.ota.>"
+	DeviceDownOta    = "device.down.ota.%s.%s"
+	DeviceDownOtaAll = "device.down.ota.>"
 	// DeviceUpShadow 设备影子  最后两个是产品id和设备名称
-	DeviceUpShadow    = "device.up.shadow.%s.%s"
-	DeviceUpShadowAll = "device.up.shadow.>"
-
+	DeviceUpShadow      = "device.up.shadow.%s.%s"
+	DeviceUpShadowAll   = "device.up.shadow.>"
+	DeviceDownShadow    = "device.down.shadow.%s.%s"
+	DeviceDownShadowAll = "device.down.shadow.>"
 	// DeviceUpConfig 设备远程配置 最后两个是产品id和设备名称
-	DeviceUpConfig    = "device.up.config.%s.%s"
-	DeviceUpConfigAll = "device.up.config.>"
-
+	DeviceUpConfig      = "device.up.config.%s.%s"
+	DeviceUpConfigAll   = "device.up.config.>"
+	DeviceDownConfig    = "device.down.config.%s.%s"
+	DeviceDownConfigAll = "device.down.config.>"
 	// DeviceUpSDKLog 设备调试日志 最后两个是产品id和设备名称
-	DeviceUpSDKLog    = "device.up.sdkLog.%s.%s"
-	DeviceUpSDKLogAll = "device.up.sdkLog.>"
+	DeviceUpSDKLog      = "device.up.sdkLog.%s.%s"
+	DeviceUpSDKLogAll   = "device.up.sdkLog.>"
+	DeviceDownSdkLog    = "device.down.sdkLog.%s.%s"
+	DeviceDownSDKLogAll = "device.down.sdkLog.>"
 
 	// DeviceUpStatusConnected 设备登录后向内部推送以下topic
 	DeviceUpStatusConnected = "device.up.status.connected"
 	// DeviceUpStatusDisconnected 设备的登出后向内部推送以下topic
 	DeviceUpStatusDisconnected = "device.up.status.disconnected"
-
-	// DeviceDownAll dd模块订阅以下topic,收到内部的发布消息后向设备推送
-	DeviceDownAll = "device.down"
 )
 
-//应用事件通知(设备状态变化,设备上报)
+// 应用事件通知(设备状态变化,设备上报)
 const (
 	// ApplicationDeviceStatusConnected 设备登录状态推送 中间两个是产品id和设备名称
 	ApplicationDeviceStatusConnected = "application.device.%s.%s.status.connected"
@@ -52,8 +63,9 @@ const (
 	ApplicationDeviceStatusDisConnectedAllDevice  = "application.device.*.*.status.disconnected"
 )
 
-//dmsvr发布的事件通知
+// dmsvr发布的事件通知
 const (
+	DmProductUpdateCustom      = "server.dm.product.update.custom"       //产品脚本有更新
 	DmProductUpdateSchema      = "server.dm.product.update.schema"       //物模型有更新
 	DmDeviceUpdateLogLevel     = "server.dm.device.update.logLevel"      //设备日志级别有更新
 	DmDeviceUpdateGateway      = "server.dm.device.update.gateway"       //网关下的子设备有改动

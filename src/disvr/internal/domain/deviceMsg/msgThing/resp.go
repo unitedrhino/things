@@ -41,7 +41,7 @@ func (d *Resp) VerifyRespParam(t *schema.Model, id string,
 			if ok == false {
 				return nil, errors.Parameter.AddDetail("need param:" + k)
 			}
-			err := tp.AddDefine(&v.Define, param)
+			err := tp.SetByDefine(&v.Define, param)
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {

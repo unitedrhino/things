@@ -2,8 +2,10 @@ package devicemanagelogic
 
 import (
 	"context"
+	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
@@ -64,19 +66,38 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			}
 		}
 	}
+	for _, device := range in.List {
+		di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, device.ProductID, device.DeviceName)
+		if err != nil { //检查是否找到
+			return nil, errors.Database.AddDetail(err)
+		}
+		if in.IsAuthSign { //秘钥检查
+			if device.Sign == nil {
+				return nil, errors.Parameter.AddMsg("没有填写签名信息")
+			}
+			pi, err := deviceAuth.NewPwdInfo(device.Sign.Signature, device.Sign.SignMethod)
+			if err != nil {
+				return nil, err
+			}
+			sign := fmt.Sprintf("%v;%v;%v;%v", device.ProductID, device.DeviceName, device.Sign.Random, device.Sign.Timestamp)
+			if err := pi.CmpPwd(sign, di.Secret); err != nil {
+				return nil, err
+			}
+		}
+	}
 
 	err := l.svcCtx.Gateway.CreateList(l.ctx, &devices.Core{
 		ProductID:  in.GatewayProductID,
 		DeviceName: in.GatewayDeviceName,
-	}, ToDeviceCoreDos(in.List))
+	}, BindToDeviceCoreDos(in.List))
 	if err != nil {
-		return nil, err
+		return nil, errors.Database.AddDetail(err)
 	}
 	err = l.svcCtx.DataUpdate.DeviceGatewayUpdate(l.ctx, &events.GatewayUpdateInfo{
 		GatewayProductID:  in.GatewayProductID,
 		GatewayDeviceName: in.GatewayDeviceName,
 		Status:            def.GatewayBind,
-		Devices:           ToDeviceCoreEvents(in.List),
+		Devices:           BindToDeviceCoreEvents(in.List),
 	})
 	if err != nil {
 		l.Errorf("%s.DeviceGatewayUpdate err=%+v", utils.FuncName(), err)

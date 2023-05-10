@@ -16,10 +16,12 @@ import (
 type (
 	AccessAuthReq               = dm.AccessAuthReq
 	DeviceCore                  = dm.DeviceCore
+	DeviceGatewayBindDevice     = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq       = dm.DeviceGatewayIndexReq
 	DeviceGatewayIndexResp      = dm.DeviceGatewayIndexResp
 	DeviceGatewayMultiCreateReq = dm.DeviceGatewayMultiCreateReq
 	DeviceGatewayMultiDeleteReq = dm.DeviceGatewayMultiDeleteReq
+	DeviceGatewaySign           = dm.DeviceGatewaySign
 	DeviceInfo                  = dm.DeviceInfo
 	DeviceInfoCountReq          = dm.DeviceInfoCountReq
 	DeviceInfoCountResp         = dm.DeviceInfoCountResp
@@ -42,7 +44,10 @@ type (
 	GroupInfoUpdateReq          = dm.GroupInfoUpdateReq
 	LoginAuthReq                = dm.LoginAuthReq
 	PageInfo                    = dm.PageInfo
+	PageInfo_OrderBy            = dm.PageInfo_OrderBy
 	Point                       = dm.Point
+	ProductCustom               = dm.ProductCustom
+	ProductCustomReadReq        = dm.ProductCustomReadReq
 	ProductInfo                 = dm.ProductInfo
 	ProductInfoDeleteReq        = dm.ProductInfoDeleteReq
 	ProductInfoIndexReq         = dm.ProductInfoIndexReq

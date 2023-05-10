@@ -17,14 +17,14 @@ const (
 		响应 Topic： $thing/up/property/{ProductID}/{DeviceNames}
 	*/
 	Control      Method = "control"      //表示云端向设备发起控制请求
-	ControlReply Method = "controlReply" //表示设备向云端下发的控制指令的请求响应
+	ControlReply Method = "controlReply" //表示设备向云端下发的控制指令的请求响应（设备回复的 云端下发控制指令 的处理结果）
 
 	/*
 		设备从云端接收最新消息使用的 Topic：
 		请求 Topic： $thing/up/property/{ProductID}/{DeviceNames}
 		响应 Topic： $thing/down/property/{ProductID}/{DeviceNames}
 	*/
-	GetStatus      Method = "getStatus"      //表示获取设备最新上报的信息
+	GetStatus      Method = "getStatus"      //表示获取设备最新上报的信息（设备请求获取 云端记录的最新设备信息）
 	GetStatusReply Method = "getStatusReply" //表示获取设备最新上报信息的 reply 消息
 
 	/*
@@ -62,7 +62,7 @@ const (
 	Unbind             Method = "unbind"             //解绑设备
 	DescribeSubDevices Method = "describeSubDevices" //查询拓扑关系
 	Change             Method = "change"             //拓扑关系变化
-
+	Register           Method = "register"           //注册新设备
 	/*
 		数据上行 Topic（用于发布）：$gateway/status/${productid}/${devicename}
 		数据下行 Topic（用于订阅）：$gateway/status/${productid}/${devicename}
