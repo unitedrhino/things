@@ -357,6 +357,25 @@ type ConfigResp struct {
 	Map Map `json:"map"` //设备地图相关配置
 }
 
+type AuthApiInfo struct {
+	Route  string `json:"route"`              // 接口路由
+	Method int64  `json:"method,range=[1:9]"` // 接口请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+}
+
+type AuthApiMultiUpdateReq struct {
+	RoleID uint64         `json:"roleID"` //角色ID
+	List   []*AuthApiInfo `json:"list"`   //API列表数据
+}
+
+type AuthApiIndexReq struct {
+	RoleID uint64 `json:"roleID"` //角色ID
+}
+
+type AuthApiIndexResp struct {
+	List  []*AuthApiInfo `json:"list"`  //API列表数据
+	Total int64          `json:"total"` //API列表总数
+}
+
 type DeviceAuthLoginReq struct {
 	Username    string `json:"username"`                       //用户名
 	Password    string `json:"password,optional"`              //密码
@@ -531,17 +550,21 @@ type DeviceGateWayMultiDeleteReq struct {
 type DeviceInfo struct {
 	ProductID   string  `json:"productID"`                   //产品id 只读
 	DeviceName  string  `json:"deviceName"`                  //设备名称 读写
-	CreatedTime int64   `json:"createdTime,optional,string"` //创建时间 只读
 	Secret      string  `json:"secret,optional"`             //设备秘钥 只读
-	FirstLogin  int64   `json:"firstLogin,optional,string"`  //激活时间 只读
-	LastLogin   int64   `json:"lastLogin,optional,string"`   //最后上线时间 只读
-	Version     *string `json:"version,optional"`            // 固件版本  读写
-	LogLevel    int64   `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	Cert        string  `json:"cert,optional"`               // 设备证书  只读
+	Imei        string  `json:"imei,optional"`               // IMEI号信息 只读
+	Mac         string  `json:"mac,optional"`                // MAC号信息 只读
+	Version     *string `json:"version,optional"`            // 固件版本  读写
+	HardInfo    string  `json:"hardInfo,optional"`           // 模组硬件型号 只读
+	SoftInfo    string  `json:"softInfo,optional"`           // 模组软件版本 只读
+	Position    *Point  `json:"position,optional"`           //设备定位,默认百度坐标系
+	Address     *string `json:"address,optional"`            //所在地址
 	Tags        []*Tag  `json:"tags,optional"`               // 设备tag
 	IsOnline    int64   `json:"isOnline,optional"`           // 在线状态  1离线 2在线 只读
-	Address     *string `json:"address,optional"`            //所在地址
-	Position    *Point  `json:"position,optional"`           //设备定位,默认百度坐标系
+	FirstLogin  int64   `json:"firstLogin,optional,string"`  //激活时间 只读
+	LastLogin   int64   `json:"lastLogin,optional,string"`   //最后上线时间 只读
+	LogLevel    int64   `json:"logLevel,optional"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	CreatedTime int64   `json:"createdTime,optional,string"` //创建时间 只读
 }
 
 type DeviceInfoCreateReq struct {
@@ -620,9 +643,21 @@ type DeviceMultiImportReq struct {
 	File []byte `form:"file,optional"` //csv文件(实际必填)
 }
 
+type DeviceMultiImportRow struct {
+	Row         int64  `json:"row"`         //【提示】数据所在表格行
+	ProductName string `json:"productName"` //【必填】产品名称
+	DeviceName  string `json:"deviceName"`  //【必填】设备名称
+	LogLevel    string `json:"logLevel"`    //【选填】日志级别（关闭/错误/告警/信息/调试）
+	Tags        string `json:"tags"`        //【选填】设备标签（格式k1:v1;k2:v2;...）
+	Position    string `json:"position"`    //【选填】设备位置百度坐标（格式:经,纬）
+	Address     string `json:"address"`     //【选填】设备所在详细地址
+	Tips        string `json:"tips"`        //【提示】模板使用提示
+}
+
 type DeviceMultiImportResp struct {
-	Total   int64                      `json:"total"`   //当前表格数据量
-	Errdata []DeviceMultiImportErrdata `json:"errdata"` //批量导入错误列表
+	Total   int64                   `json:"total"`   //当前表格数据量
+	Headers *DeviceMultiImportRow   `json:"headers"` //表格表头信息
+	Errdata []*DeviceMultiImportRow `json:"errdata"` //批量导入错误清单
 }
 
 type DeviceMultiImportErrdata struct {
@@ -854,6 +889,17 @@ type ProductRemoteConfigLastestReadResp struct {
 	ProductRemoteConfig
 }
 
+type ProductCustom struct {
+	ProductID       string   `json:"productID"`
+	TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
+	ScriptLang      int64    `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+	CustomTopic     []string `json:"customTopic,optional"`     //自定义topic数组
+}
+
+type ProductCustomReadReq struct {
+	ProductID string `json:"productID"` //产品id 只读
+}
+
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string"`     //分组ID
 	GroupName   string `json:"groupName"`          //分组名称
@@ -1004,9 +1050,10 @@ type AlarmInfoDeleteReq struct {
 }
 
 type AlarmInfoIndexReq struct {
-	Page    *PageInfo `json:"page,optional"`    //分页信息 只获取一个则不填
-	Name    string    `json:"name,optional"`    //告警名模糊查询
-	SceneID int64     `json:"sceneID,optional"` //状态: 1启用 2禁用
+	Page     *PageInfo `json:"page,optional"`     //分页信息 只获取一个则不填
+	Name     string    `json:"name,optional"`     //告警名模糊查询
+	SceneID  int64     `json:"sceneID,optional"`  //状态: 1启用 2禁用
+	AlarmIDs []int64   `json:"alarmIDs,optional"` //告警id列表
 }
 
 type AlarmInfoIndexResp struct {
@@ -1072,7 +1119,7 @@ type AlarmLog struct {
 	SceneID       int64  `json:"sceneID"`       //场景ID
 }
 
-type AlarmSceneMultiCreateReq struct {
+type AlarmSceneMultiUpdateReq struct {
 	AlarmID  int64   `json:"alarmID"`  //告警配置ID
 	SceneIDs []int64 `json:"sceneIDs"` //场景id
 }

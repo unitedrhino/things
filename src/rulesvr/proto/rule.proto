@@ -42,7 +42,7 @@ service alarmCenter{
   rpc alarmInfoRead(AlarmInfoReadReq)returns(AlarmInfo);
 
   //告警关联场景联动
-  rpc alarmSceneMultiCreate(alarmSceneMultiCreateReq)returns(Response);//绑定场景联动
+  rpc alarmSceneMultiUpdate(alarmSceneMultiUpdateReq)returns(Response);//绑定场景联动
   rpc alarmSceneDelete(alarmSceneDeleteReq)returns(Response);//解绑场景联动
 
   //告警记录
@@ -117,7 +117,7 @@ message  alarmSceneDeleteReq{
   int64 sceneID = 2;//场景id
 }
 
-message  alarmSceneMultiCreateReq{
+message  alarmSceneMultiUpdateReq{
   int64 alarmID = 1;//告警配置ID
   repeated int64 sceneIDs = 2;//场景id
 }
@@ -191,6 +191,7 @@ message AlarmInfoIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
   string name = 2;//告警配置名称 模糊查询
   int64 sceneID = 3;//场景ID过滤
+  repeated int64 alarmIDs =4;//告警id列表
 }
 
 message AlarmInfoIndexResp{

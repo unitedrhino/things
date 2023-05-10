@@ -44,7 +44,10 @@ type (
 	GroupInfoUpdateReq          = dm.GroupInfoUpdateReq
 	LoginAuthReq                = dm.LoginAuthReq
 	PageInfo                    = dm.PageInfo
+	PageInfo_OrderBy            = dm.PageInfo_OrderBy
 	Point                       = dm.Point
+	ProductCustom               = dm.ProductCustom
+	ProductCustomReadReq        = dm.ProductCustomReadReq
 	ProductInfo                 = dm.ProductInfo
 	ProductInfoDeleteReq        = dm.ProductInfoDeleteReq
 	ProductInfoIndexReq         = dm.ProductInfoIndexReq
@@ -92,6 +95,9 @@ type (
 		ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error)
 		// 获取产品信息列表
 		ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
+		// 脚本管理
+		ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error)
+		ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultProductManage struct {
@@ -236,4 +242,24 @@ func (m *defaultProductManage) ProductSchemaTslRead(ctx context.Context, in *Pro
 // 获取产品信息列表
 func (d *directProductManage) ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error) {
 	return d.svr.ProductSchemaTslRead(ctx, in)
+}
+
+// 脚本管理
+func (m *defaultProductManage) ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCustomRead(ctx, in, opts...)
+}
+
+// 脚本管理
+func (d *directProductManage) ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error) {
+	return d.svr.ProductCustomRead(ctx, in)
+}
+
+func (m *defaultProductManage) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCustomUpdate(ctx, in, opts...)
+}
+
+func (d *directProductManage) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ProductCustomUpdate(ctx, in)
 }
