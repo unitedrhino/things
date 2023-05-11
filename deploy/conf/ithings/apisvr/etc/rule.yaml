@@ -1,9 +1,5 @@
 Name: rule.rpc
 ListenOn: 127.0.0.1:9980
-Etcd:
-  Hosts:
-    - 172.19.0.3:2379
-  Key: rule.rpc
 Mysql:
   DataSource: root:password@tcp(172.19.0.4:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
