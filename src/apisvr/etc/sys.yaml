@@ -2,10 +2,6 @@
 Name: sys.rpc
 ListenOn: 127.0.0.1:9180
 CpuThreshold: 0
-Etcd:
-  Hosts:
-    - 127.0.0.1:2379
-  Key: user.rpc
 Log:
   Encoding: plain
 Mysql:
