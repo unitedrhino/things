@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/repo/cache"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
@@ -29,7 +31,7 @@ func NewActionReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Action
 
 // 获取异步调用设备行为的结果
 func (l *ActionReadLogic) ActionRead(in *di.RespReadReq) (*di.SendActionResp, error) {
-	resp, err := l.svcCtx.MsgThingRepo.GetResp(l.ctx, msgThing.TypeAction,
+	resp, err := cache.GetDeviceMsg[msgThing.Resp](l.ctx, l.svcCtx.Store, deviceMsg.RespMsg, devices.Thing, msgThing.TypeAction,
 		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, in.ClientToken)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)

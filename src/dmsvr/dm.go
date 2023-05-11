@@ -1,3 +1,4 @@
+//设备管理模块-dmsvr
 package main
 
 import (

@@ -33,7 +33,7 @@ func (l *UpdateLogic) Update(req *types.UserUpdateReq) error {
 	if userHeader.GetUserCtx(l.ctx).Role == 1 && userHeader.GetUserCtx(l.ctx).Uid != req.Uid {
 		role = req.Role
 	}
-	_, err := l.svcCtx.UserRpc.Update(l.ctx, &sys.UserUpdateReq{
+	_, err := l.svcCtx.UserRpc.UserUpdate(l.ctx, &sys.UserUpdateReq{
 		Uid:        req.Uid,
 		UserName:   req.UserName,
 		Email:      req.Email,

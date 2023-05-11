@@ -1,3 +1,4 @@
+-- 设备管理模块SQL
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -23,12 +24,32 @@ CREATE TABLE if not exists `dm_product_info`
     `devStatus`    varchar(20)  NOT NULL DEFAULT '' COMMENT '产品状态',
     `tags`        json not null comment '产品标签',
     PRIMARY KEY (`productID`),
+    UNIQUE KEY `productName` (`productName`) USING BTREE,
     KEY `deviceType` (`deviceType`) USING BTREE,
-    UNIQUE KEY `productName` (`productName`) USING BTREE
+    KEY `createdTime` (`createdTime`) USING BTREE
     ) ENGINE = InnoDB
-    AUTO_INCREMENT = 4
+    AUTO_INCREMENT = 0
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='产品信息表';
+
+
+CREATE TABLE if not exists `dm_product_custom`
+(
+    `id`          bigint       NOT NULL AUTO_INCREMENT,
+    `productID`   char(11) NOT NULL COMMENT '产品id',
+    `scriptLang` tinyint(1)  default 1 comment '脚本语言类型 1:JavaScript 2:lua 3:python',
+    `customTopic` json  null comment '自定义topic数组',
+    `transformScript` text   null comment '协议转换脚本',
+    `loginAuthScript` text   null comment '登录认证脚本',
+    `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updatedTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deletedTime` datetime          DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `productID` (`productID`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 4
+  DEFAULT CHARSET = utf8mb4
+  ROW_FORMAT = COMPACT COMMENT ='产品自定义协议表';
 
 
 CREATE TABLE if not exists `dm_product_schema`
@@ -48,34 +69,38 @@ CREATE TABLE if not exists `dm_product_schema`
     PRIMARY KEY (`id`),
     UNIQUE KEY `productID_identifier` (`productID`, `identifier`),
     KEY `productID_type` (`productID`, `type`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 0
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='产品物模型表';
 
-CREATE TABLE if not exists `dm_device_info`
-(
+CREATE TABLE if not exists `dm_device_info` (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `productID`   char(11)     NOT NULL COMMENT '产品id',
     `deviceName`  varchar(100) NOT NULL COMMENT '设备名称',
-    `secret`      varchar(50)           DEFAULT '' COMMENT '设备秘钥',
+    `secret`      varchar(50)  NOT NULL DEFAULT '' COMMENT '设备秘钥',
+    `cert`        varchar(512) NOT NULL DEFAULT '' COMMENT '设备证书',
+    `imei`        varchar(15)  NOT NULL DEFAULT '' COMMENT 'IMEI号信息',
+    `mac`         varchar(17)  NOT NULL DEFAULT '' COMMENT 'MAC号信息',
+    `version`     varchar(64)  NOT NULL DEFAULT '' COMMENT '固件版本',
+    `hardInfo`    varchar(64)  NOT NULL DEFAULT '' COMMENT '模组硬件型号',
+    `softInfo`    varchar(64)  NOT NULL DEFAULT '' COMMENT '模组软件版本',
+    `position`    point        NOT NULL COMMENT '设备的位置(默认百度坐标系BD09)',
+    `address`     varchar(512) NOT NULL DEFAULT '' COMMENT '所在地址',
+    `tags`        json         NOT NULL COMMENT '设备标签',
+    `isOnline`    tinyint(1)   NOT NULL DEFAULT 2 COMMENT '是否在线,1是2否',
     `firstLogin`  datetime              DEFAULT NULL COMMENT '激活时间',
     `lastLogin`   datetime              DEFAULT NULL COMMENT '最后上线时间',
+    `logLevel`    tinyint(1)   NOT NULL DEFAULT '1' COMMENT '日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试',
     `createdTime` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updatedTime` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deletedTime` datetime              DEFAULT NULL,
-    `version`     varchar(64)           DEFAULT '' COMMENT '固件版本',
-    `logLevel`    tinyint(1)            DEFAULT '1' COMMENT '日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试',
-    `cert`        varchar(512)          DEFAULT '' COMMENT '设备证书',
-    `isOnline`    tinyint(1)            default 2 comment '是否在线,1是2否',
-    `tags`        json not null comment '设备标签',
-    `address`     varchar(512)    DEFAULT '' COMMENT '所在地址',
-    `position`    point NOT NULL comment '设备的位置,默认百度坐标系BD09',
-     PRIMARY KEY (`id`),
-    UNIQUE KEY `deviceName` (`productID`, `deviceName`),
-    KEY `device_productID` (`productID`) USING BTREE
-    ) ENGINE = InnoDB
-    AUTO_INCREMENT = 3
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `productID_deviceName`(`productID`, `deviceName`),
+    KEY `createdTime`(`createdTime`) USING BTREE
+)
+    ENGINE = InnoDB
+    AUTO_INCREMENT = 0
     DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
 
 
@@ -108,10 +133,10 @@ CREATE TABLE if not exists `dm_product_firmware`
     `dir`         varchar(128) NOT NULL COMMENT '固件标识,拿来下载文件',
     PRIMARY KEY (`id`),
     UNIQUE KEY `deviceVersion` (`productID`, `version`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4
-  ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
+    ) ENGINE = InnoDB
+    AUTO_INCREMENT = 0
+    DEFAULT CHARSET = utf8mb4
+    ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
 
 
 

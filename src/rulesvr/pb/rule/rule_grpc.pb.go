@@ -486,8 +486,9 @@ type AlarmCenterClient interface {
 	AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
 	AlarmInfoDelete(ctx context.Context, in *AlarmInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error)
+	AlarmInfoRead(ctx context.Context, in *AlarmInfoReadReq, opts ...grpc.CallOption) (*AlarmInfo, error)
 	//告警关联场景联动
-	AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmSceneMultiUpdate(ctx context.Context, in *AlarmSceneMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	//告警记录
 	AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
@@ -546,9 +547,18 @@ func (c *alarmCenterClient) AlarmInfoIndex(ctx context.Context, in *AlarmInfoInd
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *alarmCenterClient) AlarmInfoRead(ctx context.Context, in *AlarmInfoReadReq, opts ...grpc.CallOption) (*AlarmInfo, error) {
+	out := new(AlarmInfo)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *alarmCenterClient) AlarmSceneMultiUpdate(ctx context.Context, in *AlarmSceneMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmSceneMultiCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmSceneMultiUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -626,8 +636,9 @@ type AlarmCenterServer interface {
 	AlarmInfoUpdate(context.Context, *AlarmInfo) (*Response, error)
 	AlarmInfoDelete(context.Context, *AlarmInfoDeleteReq) (*Response, error)
 	AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error)
+	AlarmInfoRead(context.Context, *AlarmInfoReadReq) (*AlarmInfo, error)
 	//告警关联场景联动
-	AlarmSceneMultiCreate(context.Context, *AlarmSceneMultiCreateReq) (*Response, error)
+	AlarmSceneMultiUpdate(context.Context, *AlarmSceneMultiUpdateReq) (*Response, error)
 	AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Response, error)
 	//告警记录
 	AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error)
@@ -659,8 +670,11 @@ func (UnimplementedAlarmCenterServer) AlarmInfoDelete(context.Context, *AlarmInf
 func (UnimplementedAlarmCenterServer) AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoIndex not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmSceneMultiCreate(context.Context, *AlarmSceneMultiCreateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneMultiCreate not implemented")
+func (UnimplementedAlarmCenterServer) AlarmInfoRead(context.Context, *AlarmInfoReadReq) (*AlarmInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoRead not implemented")
+}
+func (UnimplementedAlarmCenterServer) AlarmSceneMultiUpdate(context.Context, *AlarmSceneMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneMultiUpdate not implemented")
 }
 func (UnimplementedAlarmCenterServer) AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneDelete not implemented")
@@ -768,20 +782,38 @@ func _AlarmCenter_AlarmInfoIndex_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AlarmCenter_AlarmSceneMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AlarmSceneMultiCreateReq)
+func _AlarmCenter_AlarmInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmInfoReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AlarmCenterServer).AlarmSceneMultiCreate(ctx, in)
+		return srv.(AlarmCenterServer).AlarmInfoRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rule.alarmCenter/alarmSceneMultiCreate",
+		FullMethod: "/rule.alarmCenter/alarmInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AlarmCenterServer).AlarmSceneMultiCreate(ctx, req.(*AlarmSceneMultiCreateReq))
+		return srv.(AlarmCenterServer).AlarmInfoRead(ctx, req.(*AlarmInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlarmCenter_AlarmSceneMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmSceneMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlarmCenterServer).AlarmSceneMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.alarmCenter/alarmSceneMultiUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlarmCenterServer).AlarmSceneMultiUpdate(ctx, req.(*AlarmSceneMultiUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -936,8 +968,12 @@ var AlarmCenter_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AlarmCenter_AlarmInfoIndex_Handler,
 		},
 		{
-			MethodName: "alarmSceneMultiCreate",
-			Handler:    _AlarmCenter_AlarmSceneMultiCreate_Handler,
+			MethodName: "alarmInfoRead",
+			Handler:    _AlarmCenter_AlarmInfoRead_Handler,
+		},
+		{
+			MethodName: "alarmSceneMultiUpdate",
+			Handler:    _AlarmCenter_AlarmSceneMultiUpdate_Handler,
 		},
 		{
 			MethodName: "alarmSceneDelete",

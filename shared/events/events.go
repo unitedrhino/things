@@ -16,9 +16,9 @@ type (
 	// MsgHead 消息队列的头
 	//todo 后续考虑用proto重构这个头
 	MsgHead struct {
-		Trace     []byte `json:"trace"`            //追踪tid
-		Timestamp int64  `json:"timestamp,string"` //发送时毫秒级时间戳
-		Data      []byte `json:"data"`             //传送的内容
+		Trace     []byte `json:"trace"`     //追踪tid
+		Timestamp int64  `json:"timestamp"` //发送时毫秒级时间戳
+		Data      []byte `json:"data"`      //传送的内容
 	}
 
 	EventHandle interface {

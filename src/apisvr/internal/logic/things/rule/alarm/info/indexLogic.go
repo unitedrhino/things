@@ -29,9 +29,10 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.AlarmInfoIndexReq) (resp *types.AlarmInfoIndexResp, err error) {
 	ret, err := l.svcCtx.Alarm.AlarmInfoIndex(l.ctx, &rule.AlarmInfoIndexReq{
-		Page:    logic.ToRulePageRpc(req.Page),
-		Name:    req.Name,
-		SceneID: req.SceneID,
+		Page:     logic.ToRulePageRpc(req.Page),
+		Name:     req.Name,
+		SceneID:  req.SceneID,
+		AlarmIDs: req.AlarmIDs,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
@@ -40,15 +41,7 @@ func (l *IndexLogic) Index(req *types.AlarmInfoIndexReq) (resp *types.AlarmInfoI
 	}
 	pis := make([]*types.AlarmInfo, 0, len(ret.List))
 	for _, v := range ret.List {
-		pi := &types.AlarmInfo{
-			ID:          v.Id,
-			Name:        v.Name,
-			State:       v.State,
-			Desc:        v.Desc,
-			CreatedTime: v.CreatedTime,
-			Level:       v.Level,
-		}
-		pis = append(pis, pi)
+		pis = append(pis, AlarmInfoToApi(v))
 	}
 	return &types.AlarmInfoIndexResp{
 		Total: ret.Total,

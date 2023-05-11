@@ -5,6 +5,7 @@ package rule;
 option go_package="./pb/rule";
 
 message Response {
+  int64 id = 1;
 }
 message PageInfo{
   int64 page = 1;
@@ -38,9 +39,10 @@ service alarmCenter{
   rpc alarmInfoUpdate(AlarmInfo)returns(Response);
   rpc alarmInfoDelete(AlarmInfoDeleteReq)returns(Response);
   rpc alarmInfoIndex(AlarmInfoIndexReq)returns(AlarmInfoIndexResp);
+  rpc alarmInfoRead(AlarmInfoReadReq)returns(AlarmInfo);
 
   //告警关联场景联动
-  rpc alarmSceneMultiCreate(alarmSceneMultiCreateReq)returns(Response);//绑定场景联动
+  rpc alarmSceneMultiUpdate(alarmSceneMultiUpdateReq)returns(Response);//绑定场景联动
   rpc alarmSceneDelete(alarmSceneDeleteReq)returns(Response);//解绑场景联动
 
   //告警记录
@@ -115,7 +117,7 @@ message  alarmSceneDeleteReq{
   int64 sceneID = 2;//场景id
 }
 
-message  alarmSceneMultiCreateReq{
+message  alarmSceneMultiUpdateReq{
   int64 alarmID = 1;//告警配置ID
   repeated int64 sceneIDs = 2;//场景id
 }
@@ -177,6 +179,9 @@ message AlarmInfo{
   int64 createdTime = 6;//创建时间
 }
 
+message AlarmInfoReadReq{
+  int64 id = 1;//告警id
+}
 
 message AlarmInfoDeleteReq{
   int64 id = 1;//告警id
@@ -186,6 +191,7 @@ message AlarmInfoIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
   string name = 2;//告警配置名称 模糊查询
   int64 sceneID = 3;//场景ID过滤
+  repeated int64 alarmIDs =4;//告警id列表
 }
 
 message AlarmInfoIndexResp{
