@@ -74,8 +74,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 	} else {
-		productM = dmdirect.NewProductManage()
-		deviceM = dmdirect.NewDeviceManage()
+		productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
+		deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 	}
 
 	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
@@ -89,8 +89,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DiRpc.Conf))
 		deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DiRpc.Conf))
 	} else {
-		deviceMsg = didirect.NewDeviceMsg()
-		deviceInteract = didirect.NewDeviceInteract()
+		deviceMsg = didirect.NewDeviceMsg(c.DiRpc.RunProxy)
+		deviceInteract = didirect.NewDeviceInteract(c.DiRpc.RunProxy)
 	}
 
 	return &ServiceContext{
