@@ -71,6 +71,6 @@ func NewApi(runSvr bool) clientApi.Api {
 }
 
 func NewAuth() clientAuth.Auth {
-	userSvc := GetCtxSvc()
+	userSvc := GetSvcCtx()
 	return clientAuth.NewDirectAuth(userSvc, serverAuth.NewAuthServer(userSvc))
 }
