@@ -5,8 +5,11 @@ import (
 	server "github.com/i-Things/things/src/rulesvr/internal/server/alarmcenter"
 )
 
-func NewAlarmCenter() client.AlarmCenter {
-	svc := GetSvcCtx()
-	svr := client.NewDirectAlarmCenter(svc, server.NewAlarmCenterServer(svc))
+func NewAlarmCenter(runSvr bool) client.AlarmCenter {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	svr := client.NewDirectAlarmCenter(svcCtx, server.NewAlarmCenterServer(svcCtx))
 	return svr
 }
