@@ -65,9 +65,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
 	} else {
-		deviceM = dmdirect.NewDeviceManage()
-		productM = dmdirect.NewProductManage()
-		remoteConfig = dmdirect.NewRemoteConfig()
+		deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
+		productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
+		remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
 	}
 	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
 		info, err := productM.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: productID})
