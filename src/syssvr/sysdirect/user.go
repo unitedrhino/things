@@ -19,32 +19,50 @@ import (
 	serverApi "github.com/i-Things/things/src/syssvr/internal/server/api"
 )
 
-func NewUser() client.User {
-	userSvc := GetCtxSvc()
-	return client.NewDirectUser(userSvc, server.NewUserServer(userSvc))
+func NewUser(runSvr bool) client.User {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return client.NewDirectUser(svcCtx, server.NewUserServer(svcCtx))
 }
 
-func NewRole() clientRole.Role {
-	userSvc := GetCtxSvc()
-	return clientRole.NewDirectRole(userSvc, serverRole.NewRoleServer(userSvc))
+func NewRole(runSvr bool) clientRole.Role {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return clientRole.NewDirectRole(svcCtx, serverRole.NewRoleServer(svcCtx))
 }
 
-func NewMenu() clientMenu.Menu {
-	userSvc := GetCtxSvc()
-	return clientMenu.NewDirectMenu(userSvc, serverMenu.NewMenuServer(userSvc))
+func NewMenu(runSvr bool) clientMenu.Menu {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return clientMenu.NewDirectMenu(svcCtx, serverMenu.NewMenuServer(svcCtx))
 }
 
-func NewCommon() clientCommon.Common {
-	userSvc := GetCtxSvc()
-	return clientCommon.NewDirectCommon(userSvc, serverCommon.NewCommonServer(userSvc))
+func NewCommon(runSvr bool) clientCommon.Common {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return clientCommon.NewDirectCommon(svcCtx, serverCommon.NewCommonServer(svcCtx))
 }
 
-func NewLog() clientLog.Log {
-	userSvc := GetCtxSvc()
-	return clientLog.NewDirectLog(userSvc, serverLog.NewLogServer(userSvc))
+func NewLog(runSvr bool) clientLog.Log {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return clientLog.NewDirectLog(svcCtx, serverLog.NewLogServer(svcCtx))
 }
 
-func NewApi() clientApi.Api {
-	userSvc := GetCtxSvc()
-	return clientApi.NewDirectApi(userSvc, serverApi.NewApiServer(userSvc))
+func NewApi(runSvr bool) clientApi.Api {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return clientApi.NewDirectApi(svcCtx, serverApi.NewApiServer(svcCtx))
 }
