@@ -9,8 +9,11 @@ var (
 	deviceGroupSvr client.DeviceGroup
 )
 
-func NewDeviceGroup() client.DeviceGroup {
-	svc := GetCtxSvc()
-	dmSvr := client.NewDirectDeviceGroup(svc, server.NewDeviceGroupServer(svc))
+func NewDeviceGroup(runSvr bool) client.DeviceGroup {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	dmSvr := client.NewDirectDeviceGroup(svcCtx, server.NewDeviceGroupServer(svcCtx))
 	return dmSvr
 }

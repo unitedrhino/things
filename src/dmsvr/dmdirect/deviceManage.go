@@ -9,8 +9,11 @@ var (
 	deviceManageSvr client.DeviceManage
 )
 
-func NewDeviceManage() client.DeviceManage {
-	svc := GetCtxSvc()
-	dmSvr := client.NewDirectDeviceManage(svc, server.NewDeviceManageServer(svc))
+func NewDeviceManage(runSvr bool) client.DeviceManage {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	dmSvr := client.NewDirectDeviceManage(svcCtx, server.NewDeviceManageServer(svcCtx))
 	return dmSvr
 }

@@ -5,8 +5,11 @@ import (
 	server "github.com/i-Things/things/src/rulesvr/internal/server/scenelinkage"
 )
 
-func NewSceneLinkage() client.SceneLinkage {
-	svc := GetSvcCtx()
-	svr := client.NewDirectSceneLinkage(svc, server.NewSceneLinkageServer(svc))
+func NewSceneLinkage(runSvr bool) client.SceneLinkage {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	svr := client.NewDirectSceneLinkage(svcCtx, server.NewSceneLinkageServer(svcCtx))
 	return svr
 }

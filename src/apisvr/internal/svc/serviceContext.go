@@ -85,14 +85,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
-			sysCommon = common.NewCommon(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else {
-			deviceM = dmdirect.NewDeviceManage()
-			productM = dmdirect.NewProductManage()
-			deviceA = dmdirect.NewDeviceAuth()
-			deviceG = dmdirect.NewDeviceGroup()
-			remoteConfig = dmdirect.NewRemoteConfig()
-			sysCommon = sysdirect.NewCommon()
+			deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
+			productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
+			deviceA = dmdirect.NewDeviceAuth(c.DmRpc.RunProxy)
+			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
+			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
 		}
 	}
 	if c.RuleRpc.Enable {
@@ -100,8 +98,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			scene = scenelinkage.NewSceneLinkage(zrpc.MustNewClient(c.RuleRpc.Conf))
 			alarm = alarmcenter.NewAlarmCenter(zrpc.MustNewClient(c.RuleRpc.Conf))
 		} else {
-			scene = ruledirect.NewSceneLinkage()
-			alarm = ruledirect.NewAlarmCenter()
+			scene = ruledirect.NewSceneLinkage(c.RuleRpc.RunProxy)
+			alarm = ruledirect.NewAlarmCenter(c.RuleRpc.RunProxy)
 		}
 	}
 	if c.SysRpc.Enable {
@@ -111,12 +109,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			me = menu.NewMenu(zrpc.MustNewClient(c.SysRpc.Conf))
 			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
 			ap = api.NewApi(zrpc.MustNewClient(c.SysRpc.Conf))
+			sysCommon = common.NewCommon(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else {
-			ur = sysdirect.NewUser()
-			ro = sysdirect.NewRole()
-			me = sysdirect.NewMenu()
-			lo = sysdirect.NewLog()
-			ap = sysdirect.NewApi()
+			ur = sysdirect.NewUser(c.SysRpc.RunProxy)
+			ro = sysdirect.NewRole(c.SysRpc.RunProxy)
+			me = sysdirect.NewMenu(c.SysRpc.RunProxy)
+			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
+			ap = sysdirect.NewApi(c.SysRpc.RunProxy)
+			sysCommon = sysdirect.NewCommon(c.DmRpc.RunProxy)
 		}
 	}
 	if c.DiRpc.Enable {
@@ -125,8 +125,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DiRpc.Conf))
 
 		} else {
-			deviceMsg = didirect.NewDeviceMsg()
-			deviceInteract = didirect.NewDeviceInteract()
+			deviceMsg = didirect.NewDeviceMsg(c.DiRpc.RunProxy)
+			deviceInteract = didirect.NewDeviceInteract(c.DiRpc.RunProxy)
 		}
 	}
 	//ossClient, err := oss.NewOss(c.OSS)
