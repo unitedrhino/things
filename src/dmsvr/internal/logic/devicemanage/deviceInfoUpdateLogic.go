@@ -30,7 +30,7 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DmDeviceInfo, data *dm.DeviceInfo) {
+func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *dm.DeviceInfo) {
 	if data.Tags != nil {
 		tags, err := json.Marshal(data.Tags)
 		if err == nil {
@@ -40,9 +40,23 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DmDeviceInfo, data *dm.D
 	if data.LogLevel != def.Unknown {
 		old.LogLevel = data.LogLevel
 	}
+
+	if data.Imei != "" {
+		old.Imei = data.Imei
+	}
+	if data.Mac != "" {
+		old.Mac = data.Mac
+	}
 	if data.Version != nil {
 		old.Version = data.Version.GetValue()
 	}
+	if data.HardInfo != "" {
+		old.HardInfo = data.HardInfo
+	}
+	if data.SoftInfo != "" {
+		old.SoftInfo = data.SoftInfo
+	}
+
 	if data.IsOnline != def.Unknown {
 		old.IsOnline = data.IsOnline
 		if data.IsOnline == def.True { //需要处理第一次上线的情况,一般在网关代理登录时需要处理
@@ -60,7 +74,6 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DmDeviceInfo, data *dm.D
 	if data.Address != nil {
 		old.Address = data.Address.Value
 	}
-
 	if data.Position != nil {
 		old.Position = fmt.Sprintf("POINT(%f %f)", data.Position.Longitude, data.Position.Latitude)
 	}
@@ -68,7 +81,15 @@ func (l *DeviceInfoUpdateLogic) ChangeDevice(old *mysql.DmDeviceInfo, data *dm.D
 
 // 更新设备
 func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Response, error) {
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDAndDeviceName(l.ctx, in.ProductID, in.DeviceName)
+	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
+		if pid, err := l.svcCtx.ProductInfo.GetIDByName(l.ctx, mysql.ProductFilter{ProductName: in.ProductName}, nil); err != nil {
+			return nil, err
+		} else {
+			in.ProductID = pid
+		}
+	}
+
+	dmDiPo, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.NotFind.AddDetailf("not find device productID=%s deviceName=%s",
@@ -76,13 +97,15 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 		}
 		return nil, errors.Database.AddDetail(err)
 	}
-	l.ChangeDevice(di, in)
 
-	err = l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, di)
+	l.SetDevicePoByDto(dmDiPo, in)
+
+	err = l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, dmDiPo)
 	if err != nil {
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
+
 	if in.LogLevel != def.Unknown {
 		err := l.svcCtx.DataUpdate.DeviceLogLevelUpdate(l.ctx, &events.DataUpdateInfo{
 			ProductID:  in.ProductID,

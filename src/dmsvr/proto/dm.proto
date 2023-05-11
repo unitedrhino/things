@@ -9,6 +9,14 @@ message Response {
 message PageInfo{
   int64 page = 1;
   int64 size = 2;
+  //排序信息
+  repeated OrderBy orders = 3;
+  message OrderBy {
+    //排序的字段名
+    string filed = 1;
+    //排序方式：0 aes, 1 desc
+    int64 sort = 2;
+  }
 }
 
 //权限认证(提供给mqtt broker)
@@ -34,11 +42,11 @@ service DeviceManage {
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
 
-  //创建分组设备
+  //绑定网关下子设备设备
   rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Response);
-  //获取分组设备信息列表
+  //获取绑定信息的设备信息列表
   rpc deviceGatewayIndex(DeviceGatewayIndexReq)     returns (DeviceGatewayIndexResp);
-  //删除分组设备
+  //删除网关下子设备
   rpc deviceGatewayMultiDelete(DeviceGatewayMultiDeleteReq)     returns (Response);
 
   //设备计数
@@ -74,6 +82,10 @@ service ProductManage{
   rpc productSchemaTslImport(ProductSchemaTslImportReq)     returns (Response);
   //获取产品信息列表
   rpc productSchemaTslRead(ProductSchemaTslReadReq)     returns (ProductSchemaTslReadResp);
+
+  /*脚本管理*/
+  rpc productCustomRead(ProductCustomReadReq) returns (ProductCustom);
+  rpc productCustomUpdate(ProductCustom) returns (Response);
 }
 
 service DeviceGroup {
@@ -136,19 +148,47 @@ message RemoteConfigLastReadResp{
   ProductRemoteConfig info = 1;
 }
 
+message ProductCustomReadReq{
+  string productID = 1;
+}
 
+message ProductCustom{
+  string productID = 1;
+  int64 scriptLang = 3;//脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+  google.protobuf.StringValue transformScript = 2;//协议转换脚本
+  repeated string customTopic = 4;//自定义topic数组
+}
 
+message DeviceGatewayBindDevice{
+  string   productID = 1; //产品id
+  string  deviceName = 2; //设备名称
+  DeviceGatewaySign sign = 3;//签名
+}
+
+message DeviceGatewaySign{
+  /*
+     子设备绑定签名串。 签名算法：
+     1. 签名原串，将产品 ID 设备名称，随机数，时间戳拼接：text=${product_id}${device_name};${random};${expiration_time}
+     2. 使用设备 Psk 密钥，或者证书的 Sha1 摘要，进行签名：hmac_sha1(device_secret, text)
+   */
+  string signature = 3;
+  int64  random = 4; //随机数。
+  int64 timestamp = 5; //时间戳，单位：秒。
+  string    signMethod = 6; //签名算法。支持 hmacsha1、hmacsha256
+}
 
 message DeviceGatewayMultiCreateReq{
   string gatewayProductID = 1;
   string gatewayDeviceName = 2;
-  repeated DeviceCore list = 3;
+  bool isAuthSign = 3;//是否校验设备签名
+  repeated DeviceGatewayBindDevice list = 4;
 }
+
 
 message DeviceGatewayIndexReq{
   PageInfo page = 1;
-  string gatewayProductID = 2;
-  string gatewayDeviceName = 3;
+  DeviceCore gateway = 2;//获取网关下子设备列表
+  DeviceCore subDevice = 3; //获取子设备绑定的网关列表
 }
 
 message DeviceGatewayIndexResp{
@@ -230,19 +270,24 @@ message Point{
   double  latitude = 2;//纬度
 }
 message DeviceInfo{
-  string   productID = 1; //产品id 只读
+  string  productID = 1; //产品id 只读
+  string  productName = 2; //产品名称 只读
   string  deviceName = 3; //设备名称 读写
   int64   createdTime = 4; //创建时间 只读
   string  secret = 5; //设备秘钥 只读
-  int64   firstLogin = 6; //激活时间 只读
-  int64   lastLogin = 7; //最后上线时间 只读
-  google.protobuf.StringValue  version = 8; // 固件版本  读写
-  int64  logLevel = 9; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-  string  cert = 10;// 设备证书  只读
-  int64   isOnline = 11; //在线状态  1离线 2在线 只读
-  map<string, string> tags = 12;//设备标签
+  string  cert = 6;// 设备证书  只读
+  string  imei = 7; //IMEI号信息 只读
+  string  mac = 8; //MAC号信息 只读
+  google.protobuf.StringValue  version = 9; // 固件版本  读写
+  string  hardInfo = 10; //模组硬件型号 只读
+  string  softInfo = 11; //模组软件版本 只读
+  Point Position = 12;   //设备定位,默认百度坐标系
   google.protobuf.StringValue address = 13; // 所在地址 读写
-  Point Position = 14;   //设备定位,默认百度坐标系
+  map<string, string> tags = 14;//设备标签
+  int64   isOnline = 15; //在线状态  1离线 2在线 只读
+  int64   firstLogin = 16; //激活时间 只读
+  int64   lastLogin = 17; //最后上线时间 只读
+  int64   logLevel = 18; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 }
 
 message ProductInfo{
@@ -268,8 +313,6 @@ message ProductInfoDeleteReq{
 message ProductInfoReadReq{
   string   productID = 1; //产品id
 }
-
-
 
 message ProductInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填

@@ -25,6 +25,37 @@ func NewMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuInd
 	}
 }
 
+func findMissingParentIds(menuInfos []*mysql.SysMenuInfo) map[int64]bool {
+	missingParentIds := make(map[int64]bool)
+	ids := make(map[int64]bool)
+	for _, menu := range menuInfos {
+		ids[menu.Id] = true
+	}
+	for _, menu := range menuInfos {
+		if !ids[menu.ParentID] && menu.ParentID != 1 {
+			missingParentIds[menu.ParentID] = true
+		}
+	}
+	return missingParentIds
+}
+
+func (l *MenuIndexLogic) checkMissingParentIdMenuIndex(menuInfos []*mysql.SysMenuInfo) []*mysql.SysMenuInfo {
+	var MenuInfos []*mysql.SysMenuInfo
+	missingParentIds := findMissingParentIds(menuInfos)
+	if len(missingParentIds) > 0 {
+		for k, _ := range missingParentIds {
+			menuInfo, err := l.svcCtx.MenuInfoModle.FindOne(l.ctx, k)
+			if err != nil {
+				l.Errorf("MenuIndex find menu_info err,menuIds:%d,err:%v", k, err)
+				continue
+			}
+			MenuInfos = append(MenuInfos, menuInfo)
+		}
+	}
+
+	return MenuInfos
+}
+
 func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, error) {
 	info := make([]*sys.MenuData, 0)
 	if in.Role != 0 {
@@ -41,10 +72,16 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 		for _, v := range menuInfos {
 			info = append(info, MenuInfoToPb(v))
 		}
+		//查看缺失的父菜单Id
+		missingMenuInfos := l.checkMissingParentIdMenuIndex(menuInfos)
+		if len(missingMenuInfos) > 0 {
+			for _, v := range missingMenuInfos {
+				info = append(info, MenuInfoToPb(v))
+			}
+		}
 	} else {
 		//获取完整菜单列表
 		mes, err := l.svcCtx.MenuModel.Index(l.ctx, &mysql.MenuIndexFilter{
-			Role: in.Role,
 			Name: in.Name,
 			Path: in.Path,
 		})

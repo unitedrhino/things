@@ -37,7 +37,6 @@ type ServiceContext struct {
 	ProductM      productmanage.ProductManage
 	RemoteConfig  remoteconfig.RemoteConfig
 	Store         kv.Store
-	MsgThingRepo  *cache.MsgThingRepo
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -80,7 +79,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	store := kv.NewStore(c.CacheRedis)
 
 	deviceData := schemaDataRepo.NewSchemaDataRepo(c.TDengine.DataSource, tr.GetSchemaModel, store)
-	MsgThingRepo := cache.NewMsgThingRepo(store)
 	return &ServiceContext{
 		PubApp:        pa,
 		Config:        c,
@@ -93,6 +91,5 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ProductM:      productM,
 		DeviceM:       deviceM,
 		RemoteConfig:  remoteConfig,
-		MsgThingRepo:  MsgThingRepo,
 	}
 }

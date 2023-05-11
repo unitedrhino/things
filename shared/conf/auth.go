@@ -3,7 +3,7 @@ package conf
 import "github.com/i-Things/things/shared/utils"
 
 type AuthConf struct {
-	IpRange []string //白名单ip 及ip段
+	IpRange []string `json:",optional"` //白名单ip 及ip段
 	Users   []AuthUserInfo
 }
 
@@ -26,6 +26,10 @@ func (a *AuthConf) Auth(userName, password, ipaddr string) bool {
 	}
 	if !userCompare {
 		return false
+	}
+	if len(a.IpRange) == 0 {
+		//如果没有,表示不开启ip白名单模式
+		return true
 	}
 	for _, whiteIp := range a.IpRange {
 		if utils.MatchIP(ipaddr, whiteIp) {

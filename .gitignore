@@ -48,3 +48,4 @@ src/usersvr/usersvr*
 ### MacOS ###
 .DS_Store
 /src/apisvr/logs/
+/pack/*

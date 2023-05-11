@@ -36,3 +36,8 @@ func GetPositionValue(position string) (float64, float64) {
 
 	return Longitude, Latitude
 }
+
+//生成 "?,?,..." (有num个?)
+func NewFillPlace(num int) string {
+	return NewFillString(num, "?", ",")
+}
