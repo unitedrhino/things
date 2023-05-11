@@ -9,8 +9,11 @@ var (
 	deviceAuthSvr client.DeviceAuth
 )
 
-func NewDeviceAuth() client.DeviceAuth {
-	svc := GetCtxSvc()
-	dmSvr := client.NewDirectDeviceAuth(svc, server.NewDeviceAuthServer(svc))
+func NewDeviceAuth(runSvr bool) client.DeviceAuth {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	dmSvr := client.NewDirectDeviceAuth(svcCtx, server.NewDeviceAuthServer(svcCtx))
 	return dmSvr
 }
