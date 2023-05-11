@@ -27,9 +27,9 @@ func NewMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 }
 
 func (l *MultiCreateLogic) MultiCreate(req *types.DeviceGateWayMultiCreateReq) error {
-	m := make([]*dm.DeviceCore, 0, len(req.List))
+	m := make([]*dm.DeviceGatewayBindDevice, 0, len(req.List))
 	for _, v := range req.List {
-		m = append(m, &dm.DeviceCore{
+		m = append(m, &dm.DeviceGatewayBindDevice{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 		})
@@ -38,6 +38,7 @@ func (l *MultiCreateLogic) MultiCreate(req *types.DeviceGateWayMultiCreateReq) e
 		&dm.DeviceGatewayMultiCreateReq{
 			GatewayProductID:  req.GateWayProductID,
 			GatewayDeviceName: req.GateWayDeviceName,
+			IsAuthSign:        false,
 			List:              m})
 	if err != nil {
 		er := errors.Fmt(err)

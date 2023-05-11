@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/src/ddsvr/internal/config"
-	"github.com/i-Things/things/src/ddsvr/internal/event"
+	"github.com/i-Things/things/src/ddsvr/internal/event/dataUpdateEvent"
+	"github.com/i-Things/things/src/ddsvr/internal/event/deviceSub"
+	"github.com/i-Things/things/src/ddsvr/internal/event/innerSub"
 	"github.com/i-Things/things/src/ddsvr/internal/handler"
+	"github.com/i-Things/things/src/ddsvr/internal/repo/event/subscribe/dataUpdate"
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/subscribe/subDev"
 	"github.com/i-Things/things/src/ddsvr/internal/repo/event/subscribe/subInner"
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
@@ -32,7 +35,7 @@ func Subscript(svcCtx *svc.ServiceContext) {
 		os.Exit(-1)
 	}
 	err = sd.SubDevMsg(func(ctx context.Context) subDev.DevSubHandle {
-		return event.NewDeviceSubServer(svcCtx, ctx)
+		return deviceSub.NewDeviceSubServer(svcCtx, ctx)
 	})
 	if err != nil {
 		logx.Error("PubDev SubToDevMsg failure", err)
@@ -45,10 +48,18 @@ func Subscript(svcCtx *svc.ServiceContext) {
 		os.Exit(-1)
 	}
 	err = si.SubToDevMsg(func(ctx context.Context) subInner.InnerSubHandle {
-		return event.NewInnerSubServer(svcCtx, ctx)
+		return innerSub.NewInnerSubServer(svcCtx, ctx)
 	})
 	if err != nil {
 		logx.Error("DevPubInner SubToDevMsg failure", err)
 		os.Exit(-1)
 	}
+	dataUpdateCli, err := dataUpdate.NewDataUpdate(svcCtx.Config.Event)
+	if err != nil {
+		logx.Error("NewDataUpdate err", err)
+		os.Exit(-1)
+	}
+	err = dataUpdateCli.Subscribe(func(ctx context.Context) dataUpdate.UpdateHandle {
+		return dataUpdateEvent.NewDataUpdateLogic(ctx, svcCtx)
+	})
 }

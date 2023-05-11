@@ -136,7 +136,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
-	pwd, err := deviceAuth.NewPwdInfo(in.Password)
+	pwd, err := deviceAuth.NewPwdInfoWithPwd(in.Password)
 	if err != nil {
 		return nil, err
 	}

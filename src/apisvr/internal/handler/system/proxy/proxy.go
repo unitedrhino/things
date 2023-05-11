@@ -1,14 +1,18 @@
 package proxy
 
 import (
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"io"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"strings"
 )
 
 func Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
-	dir := http.Dir(svcCtx.Config.Proxy.FrontDir)
-	_, err := dir.Open(svcCtx.Config.Proxy.FrontDefaultPage)
+	dir := http.Dir(svcCtx.Config.Proxy.FileProxy[0].FrontDir)
+	_, err := dir.Open(svcCtx.Config.Proxy.FileProxy[0].FrontDefaultPage)
 	if err != nil { //没有前端代理模式
 		return func(writer http.ResponseWriter, request *http.Request) {
 			writer.WriteHeader(http.StatusNotFound)
@@ -16,9 +20,16 @@ func Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 	}
+
 	fileServer := http.FileServer(dir)
 	return func(w http.ResponseWriter, r *http.Request) {
 		upath := r.URL.Path
+		for _, v := range svcCtx.Config.Proxy.StaticProxy {
+			if strings.HasPrefix(upath, v.Router) {
+				staticProxy(svcCtx, v, w, r)
+				return
+			}
+		}
 		f, err := dir.Open(upath)
 		if err != nil {
 			defaultHandle(svcCtx, w, r)
@@ -33,9 +44,20 @@ func Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		fileServer.ServeHTTP(w, r)
 	}
 }
+
+func staticProxy(svcCtx *svc.ServiceContext, conf *conf.StaticProxyConf, w http.ResponseWriter, r *http.Request) {
+	remote, err := url.Parse(conf.Dest)
+	if err != nil {
+		defaultHandle(svcCtx, w, r)
+		return
+	}
+	proxy := httputil.NewSingleHostReverseProxy(remote)
+	r.Host = remote.Host
+	proxy.ServeHTTP(w, r)
+}
 func defaultHandle(svcCtx *svc.ServiceContext, w http.ResponseWriter, r *http.Request) {
-	dir := http.Dir(svcCtx.Config.Proxy.FrontDir)
-	f, err := dir.Open(svcCtx.Config.Proxy.FrontDefaultPage)
+	dir := http.Dir(svcCtx.Config.Proxy.FileProxy[0].FrontDir)
+	f, err := dir.Open(svcCtx.Config.Proxy.FileProxy[0].FrontDefaultPage)
 	if err != nil {
 		return
 	}

@@ -25,11 +25,16 @@ var (
 		DeviceName:   "test5",
 		DeviceSecret: "6skuocmEga94+OhVYRGWUphWlX0=",
 	}
+	SubDevice = ClientInfo{
+		ProductID:    "255fCKEJ02I",
+		DeviceName:   "subdeviceaaaa",
+		DeviceSecret: "uygGxwKG84DIwS5LAluVLRa9Xow=",
+	}
 	DefaultGateway = ClientInfo{
 		MqttBrokers:  []string{"tcp://106.15.225.172:1883"},
 		ProductID:    "255fCsZtKEM",
 		DeviceName:   "test1",
-		DeviceSecret: "vsjl+0R8/kpkLd0PJ0my1HN8XDg=",
+		DeviceSecret: "YZy3xOuvw4YfupMDnLA+PzmMTRA=",
 	}
 
 	DefaultRemoteConfig = ClientInfo{

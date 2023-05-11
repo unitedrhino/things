@@ -29,12 +29,24 @@ type (
 		deviceInfoTable string
 	}
 	GatewayDeviceFilter struct {
-		Gateway devices.Core //必填
+		//网关和子设备至少要有一个填写
+		Gateway   *devices.Core
+		SubDevice *devices.Core
 	}
 )
 
-func (g GatewayDeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
-	sql = sql.Where("`gatewayProductID`=? and `gatewayDeviceName`=?", g.Gateway.ProductID, g.Gateway.DeviceName)
+func (c customDmGatewayDeviceModel) FmtSql(g GatewayDeviceFilter, sql sq.SelectBuilder) sq.SelectBuilder {
+	if g.Gateway != nil { //通过网关获取旗下子设备列表
+		sql = sql.LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.productID and di.deviceName=gd.deviceName",
+			c.deviceInfoTable)).
+			Where("`gatewayProductID`=? and `gatewayDeviceName`=? and di.id IS NOT NULL",
+				g.Gateway.ProductID, g.Gateway.DeviceName)
+		return sql
+	}
+	sql = sql.LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.gatewayProductID and di.deviceName=gd.gatewayDeviceName",
+		c.deviceInfoTable)).
+		Where("gd.`productID`=? and gd.`deviceName`=? and di.id IS NOT NULL",
+			g.SubDevice.ProductID, g.SubDevice.DeviceName)
 	return sql
 }
 
@@ -49,9 +61,8 @@ func NewDmGatewayDeviceModel(conn sqlx.SqlConn) DmGatewayDeviceModel {
 func (c customDmGatewayDeviceModel) FindByFilter(ctx context.Context, f GatewayDeviceFilter, page *def.PageInfo) ([]*DmDeviceInfo, error) {
 	var resp []*DmDeviceInfo
 	sql := sq.Select("di.*").From(c.table + "as gd").
-		LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.productID and di.deviceName=gd.deviceName", c.deviceInfoTable)).
 		Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
-	sql = f.FmtSql(sql)
+	sql = c.FmtSql(f, sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return nil, err
@@ -66,8 +77,8 @@ func (c customDmGatewayDeviceModel) FindByFilter(ctx context.Context, f GatewayD
 }
 
 func (c customDmGatewayDeviceModel) CountByFilter(ctx context.Context, f GatewayDeviceFilter) (size int64, err error) {
-	sql := sq.Select("count(1)").From(c.table)
-	sql = f.FmtSql(sql)
+	sql := sq.Select("count(1)").From(c.table + "as gd")
+	sql = c.FmtSql(f, sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return 0, err

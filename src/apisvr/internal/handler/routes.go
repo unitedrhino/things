@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	systemapi "github.com/i-Things/things/src/apisvr/internal/handler/system/api"
+	systemauth "github.com/i-Things/things/src/apisvr/internal/handler/system/auth"
 	systemcommon "github.com/i-Things/things/src/apisvr/internal/handler/system/common"
 	systemlog "github.com/i-Things/things/src/apisvr/internal/handler/system/log"
 	systemmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/menu"
@@ -18,6 +19,7 @@ import (
 	thingsdevicemsg "github.com/i-Things/things/src/apisvr/internal/handler/things/device/msg"
 	thingsgroupdevice "github.com/i-Things/things/src/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/group/info"
+	thingsproductcustom "github.com/i-Things/things/src/apisvr/internal/handler/things/product/custom"
 	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
 	thingsproductremoteConfig "github.com/i-Things/things/src/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/src/apisvr/internal/handler/things/product/schema"
@@ -211,6 +213,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/multiUpdate",
+					Handler: systemauth.AuthApiMultiUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemauth.AuthApiIndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/auth/api"),
+	)
+
+	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
@@ -338,6 +359,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/count",
 					Handler: thingsdeviceinfo.CountHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-import",
+					Handler: thingsdeviceinfo.MultiImportHandler(serverCtx),
 				},
 			}...,
 		),
@@ -486,6 +512,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductcustom.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsproductcustom.ReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/custom"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckToken},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
 					Path:    "/create",
 					Handler: thingsgroupinfo.CreateHandler(serverCtx),
 				},
@@ -615,6 +660,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/index",
 					Handler: thingsrulealarminfo.IndexHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsrulealarminfo.ReadHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/rule/alarm/info"),
@@ -654,8 +704,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/multi-create",
-					Handler: thingsrulealarmscene.MultiCreateHandler(serverCtx),
+					Path:    "/multi-update",
+					Handler: thingsrulealarmscene.MultiUpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,

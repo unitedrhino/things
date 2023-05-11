@@ -28,6 +28,7 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 	return &NatsClient{client: nc}, nil
 }
 
+//应用事件通知-设备物模型属性上报通知
 func (n *NatsClient) DeviceThingPropertyReport(ctx context.Context, msg application.PropertyReport) error {
 	data, _ := json.Marshal(msg)
 	pubMsg := events.NewEventMsg(ctx, data)
