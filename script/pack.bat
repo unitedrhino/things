@@ -2,7 +2,8 @@ cd ../src/apisvr
 rem "update backend"
 go mod tidy
 go build
-mkdir -p  ..\..\pack\linux
+mkdir  ../../pack
+mkdir  ../../pack/linux
 cp -rf apisvr dist etc ../../pack/linux
 cd ../../script
 rem "update front"
