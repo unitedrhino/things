@@ -78,7 +78,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 	}
 
-	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
+	tr := schema.NewReadRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
 		info, err := productM.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: productID})
 		if err != nil {
 			return nil, err

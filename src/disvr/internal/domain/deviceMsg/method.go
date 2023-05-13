@@ -6,10 +6,18 @@ const (
 	/*
 		当设备需要向云端上报设备运行状态的变化时，以通知应用端小程序、App 实时展示或云端业务系统接收设备上报属性数据，物联网开发平台为设备设定了默认的 Topic：
 		设备属性上行请求 Topic： $thing/up/property/{ProductID}/{DeviceNames}
-		设备属性上行响应 Topic： $thing/down/property/{ProductID}/{DeviceNames}
+		设备属性下行响应 Topic： $thing/down/property/{ProductID}/{DeviceNames}
 	*/
 	Report      Method = "report"      //表示设备属性上报
 	ReportReply Method = "reportReply" // 表示云端接收设备上报后的响应报文
+
+	/*
+		需要主动请求设备上报的时候需要用以下方式上报 Topic：
+		设备属性下行请求 Topic： $thing/up/property/{ProductID}/{DeviceNames}
+		设备属性上行响应 Topic： $thing/down/property/{ProductID}/{DeviceNames}
+	*/
+	GetReport      Method = "getReport"      //表示云端请求设备获取上报消息
+	GetReportReply Method = "getReportReply" // 表示设备属性上报
 
 	/*
 		使用数据模板协议的设备，当需要通过云端远程控制设备时，设备需订阅下发 Topic 接收云端指令：
