@@ -8,7 +8,6 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
-	"github.com/i-Things/things/src/disvr/internal/repo/cache"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/hubLogRepo"
@@ -69,7 +68,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 		remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
 	}
-	tr := cache.NewSchemaRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
+	tr := schema.NewReadRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
 		info, err := productM.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: productID})
 		if err != nil {
 			return nil, err
