@@ -4,6 +4,13 @@ import "google/protobuf/wrappers.proto";
 
 package di;
 
+message Response {
+}
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+}
+
 //设备消息
 service DeviceMsg {
   //获取设备sdk调试日志
@@ -25,6 +32,9 @@ service DeviceInteract {
   //获取异步调用设备行为的结果
   rpc actionRead(RespReadReq)         returns(SendActionResp);
 
+  //请求设备获取设备最新属性
+  rpc getPropertyReply(GetPropertyReplyReq) returns(GetPropertyReplyResp);
+
   //调用设备属性
   rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
   //获取异步调用设备属性的结果
@@ -34,11 +44,18 @@ service DeviceInteract {
 }
 
 
-message Response {
+message GetPropertyReplyReq{
+  string productID = 1; //产品id (必填)
+  string deviceName = 2; //设备名(必填)
+  repeated string dataIDs = 3; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条
 }
-message PageInfo{
-  int64 page = 1;
-  int64 size = 2;
+
+message GetPropertyReplyResp{
+  int64   code = 1;//设备返回状态码
+  string  status = 2;//返回状态
+  string clientToken = 3;//调用id
+  int64 timestamp = 4;//上报时间戳(毫秒时间戳)
+  string params = 5;//获取到的值
 }
 
 /*获取对应日志信息*/
@@ -66,8 +83,8 @@ message PropertyLogIndexReq{
 
 /*获取对应日志信息*/
 message PropertyLatestIndexReq{
-  string deviceName = 1; //设备名(必填)
   string productID = 2; //产品id (必填)
+  string deviceName = 1; //设备名(必填)
   repeated string dataIDs = 3; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
 }
 
