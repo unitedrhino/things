@@ -53,7 +53,7 @@ type (
 func newSysApiModel(conn sqlx.SqlConn) *defaultSysApiModel {
 	return &defaultSysApiModel{
 		conn:  conn,
-		table: "`sys_api`",
+		table: "`sys_api_info`",
 	}
 }
 
