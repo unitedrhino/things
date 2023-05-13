@@ -291,6 +291,7 @@ CREATE TABLE if not exists `sys_api_info`
     UNIQUE KEY `routeIndex` (`route`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='接口管理';
 
+RENAME TABLE sys_api TO sys_api_info;
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/update',2,'更新产品',2,'','产品管理');
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/create',2,'新增产品',1,'','产品管理');
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/product/info/read',2,'获取产品详情',4,'','产品管理');
@@ -397,6 +398,7 @@ CREATE TABLE if not exists `sys_api_auth` (
     UNIQUE KEY `routeIndex` (`v1`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='api权限管理';
 
+RENAME TABLE casbin_rule TO sys_api_auth;
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/update',2,'','','');
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/create',2,'','','');
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/read',2,'','','');
