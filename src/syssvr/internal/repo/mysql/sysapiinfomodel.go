@@ -29,7 +29,7 @@ type (
 func NewApiModel(conn sqlx.SqlConn) ApiModel {
 	return &apiModel{
 		SqlConn: conn,
-		api:     "`sys_api`",
+		api:     "`sys_api_info`",
 	}
 }
 
