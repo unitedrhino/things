@@ -16,27 +16,27 @@ import (
 )
 
 var (
-	sysApiFieldNames          = builder.RawFieldNames(&SysApi{})
-	sysApiRows                = strings.Join(sysApiFieldNames, ",")
-	sysApiRowsExpectAutoSet   = strings.Join(stringx.Remove(sysApiFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
-	sysApiRowsWithPlaceHolder = strings.Join(stringx.Remove(sysApiFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
+	sysApiInfoFieldNames          = builder.RawFieldNames(&SysApiInfo{})
+	sysApiInfoRows                = strings.Join(sysApiInfoFieldNames, ",")
+	sysApiInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysApiInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
+	sysApiInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysApiInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
 )
 
 type (
-	sysApiModel interface {
-		Insert(ctx context.Context, data *SysApi) (sql.Result, error)
-		FindOne(ctx context.Context, id int64) (*SysApi, error)
-		FindOneByRoute(ctx context.Context, route string) (*SysApi, error)
-		Update(ctx context.Context, data *SysApi) error
+	sysApiInfoModel interface {
+		Insert(ctx context.Context, data *SysApiInfo) (sql.Result, error)
+		FindOne(ctx context.Context, id int64) (*SysApiInfo, error)
+		FindOneByRoute(ctx context.Context, route string) (*SysApiInfo, error)
+		Update(ctx context.Context, data *SysApiInfo) error
 		Delete(ctx context.Context, id int64) error
 	}
 
-	defaultSysApiModel struct {
+	defaultSysApiInfoModel struct {
 		conn  sqlx.SqlConn
 		table string
 	}
 
-	SysApi struct {
+	SysApiInfo struct {
 		Id           int64        `db:"id"`           // 编号
 		Route        string       `db:"route"`        // 路由
 		Method       int64        `db:"method"`       // 请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
@@ -50,22 +50,22 @@ type (
 	}
 )
 
-func newSysApiModel(conn sqlx.SqlConn) *defaultSysApiModel {
-	return &defaultSysApiModel{
+func newSysApiInfoModel(conn sqlx.SqlConn) *defaultSysApiInfoModel {
+	return &defaultSysApiInfoModel{
 		conn:  conn,
-		table: "`sys_api`",
+		table: "`sys_api_info`",
 	}
 }
 
-func (m *defaultSysApiModel) Delete(ctx context.Context, id int64) error {
+func (m *defaultSysApiInfoModel) Delete(ctx context.Context, id int64) error {
 	query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 	_, err := m.conn.ExecCtx(ctx, query, id)
 	return err
 }
 
-func (m *defaultSysApiModel) FindOne(ctx context.Context, id int64) (*SysApi, error) {
-	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", sysApiRows, m.table)
-	var resp SysApi
+func (m *defaultSysApiInfoModel) FindOne(ctx context.Context, id int64) (*SysApiInfo, error) {
+	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", sysApiInfoRows, m.table)
+	var resp SysApiInfo
 	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
 	switch err {
 	case nil:
@@ -77,9 +77,9 @@ func (m *defaultSysApiModel) FindOne(ctx context.Context, id int64) (*SysApi, er
 	}
 }
 
-func (m *defaultSysApiModel) FindOneByRoute(ctx context.Context, route string) (*SysApi, error) {
-	var resp SysApi
-	query := fmt.Sprintf("select %s from %s where `route` = ? limit 1", sysApiRows, m.table)
+func (m *defaultSysApiInfoModel) FindOneByRoute(ctx context.Context, route string) (*SysApiInfo, error) {
+	var resp SysApiInfo
+	query := fmt.Sprintf("select %s from %s where `route` = ? limit 1", sysApiInfoRows, m.table)
 	err := m.conn.QueryRowCtx(ctx, &resp, query, route)
 	switch err {
 	case nil:
@@ -91,18 +91,18 @@ func (m *defaultSysApiModel) FindOneByRoute(ctx context.Context, route string) (
 	}
 }
 
-func (m *defaultSysApiModel) Insert(ctx context.Context, data *SysApi) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, sysApiRowsExpectAutoSet)
+func (m *defaultSysApiInfoModel) Insert(ctx context.Context, data *SysApiInfo) (sql.Result, error) {
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, sysApiInfoRowsExpectAutoSet)
 	ret, err := m.conn.ExecCtx(ctx, query, data.Route, data.Method, data.Name, data.BusinessType, data.Group, data.Desc)
 	return ret, err
 }
 
-func (m *defaultSysApiModel) Update(ctx context.Context, newData *SysApi) error {
-	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, sysApiRowsWithPlaceHolder)
+func (m *defaultSysApiInfoModel) Update(ctx context.Context, newData *SysApiInfo) error {
+	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, sysApiInfoRowsWithPlaceHolder)
 	_, err := m.conn.ExecCtx(ctx, query, newData.Route, newData.Method, newData.Name, newData.BusinessType, newData.Group, newData.Desc, newData.Id)
 	return err
 }
 
-func (m *defaultSysApiModel) tableName() string {
+func (m *defaultSysApiInfoModel) tableName() string {
 	return m.table
 }
