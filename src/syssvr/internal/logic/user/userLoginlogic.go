@@ -120,6 +120,8 @@ func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error)
 		return l.getRet(uc)
 	case mysql.ErrNotFound:
 		return nil, errors.UnRegister
+	case errors.Password:
+		return nil, errors.Password
 	default:
 		l.Errorf("%s req=%v err=%+v", utils.FuncName(), utils.Fmt(in), err)
 		return nil, errors.Database.AddDetail(err)

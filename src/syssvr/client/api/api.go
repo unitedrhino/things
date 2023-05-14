@@ -62,6 +62,7 @@ type (
 	UserInfo              = sys.UserInfo
 	UserLoginReq          = sys.UserLoginReq
 	UserLoginResp         = sys.UserLoginResp
+	UserLoginSafeCtlReq   = sys.UserLoginSafeCtlReq
 	UserReadReq           = sys.UserReadReq
 	UserReadResp          = sys.UserReadResp
 	UserUpdateReq         = sys.UserUpdateReq

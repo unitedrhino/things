@@ -11,7 +11,7 @@ service User {
   rpc userDelete(UserDeleteReq) returns(Response);//刪除用戶
   rpc userLogin(UserLoginReq) returns(UserLoginResp);
   rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
-  rpc user
+  rpc userLoginSafeCtl(UserLoginSafeCtlReq) returns(Response);
 }
 
 service Role {
@@ -52,6 +52,7 @@ service Auth {
   rpc authApiMultiUpdate(AuthApiMultiUpdateReq) returns (Response);  //更新API权限
   rpc authApiIndex(AuthApiIndexReq) returns (AuthApiIndexResp); //获取API权限列表
 }
+
 message AuthApiInfo{
   string route = 1;
   int64 method = 2;
@@ -438,4 +439,10 @@ message ApiUpdateReq{
 
 message ApiDeleteReq{
   int64 id = 1;            // 接口编号
+}
+
+message UserLoginSafeCtlReq{
+  string userID = 1;
+  string ip = 2;
+  bool wrongPassword = 3;
 }

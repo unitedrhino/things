@@ -27,7 +27,7 @@ type Config struct {
 		AccessKey string
 	}
 	WrongPasswordCounter struct {
-		Captcha int32
+		Captcha int
 		Account []string
 		Ip      []string
 	}

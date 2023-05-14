@@ -62,6 +62,7 @@ type (
 	UserInfo              = sys.UserInfo
 	UserLoginReq          = sys.UserLoginReq
 	UserLoginResp         = sys.UserLoginResp
+	UserLoginSafeCtlReq   = sys.UserLoginSafeCtlReq
 	UserReadReq           = sys.UserReadReq
 	UserReadResp          = sys.UserReadResp
 	UserUpdateReq         = sys.UserUpdateReq
@@ -74,6 +75,7 @@ type (
 		UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
 		UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
+		UserLoginSafeCtl(ctx context.Context, in *UserLoginSafeCtlReq, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultUser struct {
@@ -160,4 +162,13 @@ func (m *defaultUser) UserCheckToken(ctx context.Context, in *UserCheckTokenReq,
 
 func (d *directUser) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error) {
 	return d.svr.UserCheckToken(ctx, in)
+}
+
+func (m *defaultUser) UserLoginSafeCtl(ctx context.Context, in *UserLoginSafeCtlReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserLoginSafeCtl(ctx, in, opts...)
+}
+
+func (d *directUser) UserLoginSafeCtl(ctx context.Context, in *UserLoginSafeCtlReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserLoginSafeCtl(ctx, in)
 }

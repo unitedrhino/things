@@ -56,13 +56,27 @@ func GetCityByIp(ip string) string {
 }
 
 func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, err error) {
-
 	ua := user_agent.New(userHeader.GetUserCtx(l.ctx).Os)
 	browser, _ := ua.Browser()
 	os := ua.OS()
 
 	l.Infof("%s req=%+v", utils.FuncName(), req)
-	if req.LoginType == "pwd" {
+	//登录安全策略校验
+	//safeCtlList := PraseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter)
+	var useCaptcha int32 = 0
+	_, err = l.svcCtx.UserRpc.UserLoginSafeCtl(l.ctx, &sys.UserLoginSafeCtlReq{
+		UserID:        req.UserID,
+		Ip:            userHeader.GetUserCtx(l.ctx).IP,
+		WrongPassword: false,
+	})
+	if err == errors.AccountForbidden {
+		//账号冻结
+	}
+	if err == errors.IpForbidden {
+		//ip冻结
+	}
+
+	if req.LoginType == "pwd" && req.CodeID != "" && req.Code != "" {
 		if l.svcCtx.Captcha.Verify(req.CodeID, req.Code) == false {
 			return nil, errors.Captcha
 		}
@@ -76,7 +90,18 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		CodeID:    req.CodeID,
 	})
 	if err != nil {
-		er := errors.Fmt(err)
+		var er error
+		if err == errors.Password {
+			_, er = l.svcCtx.UserRpc.UserLoginSafeCtl(l.ctx, &sys.UserLoginSafeCtlReq{
+				UserID:        req.UserID,
+				Ip:            userHeader.GetUserCtx(l.ctx).IP,
+				WrongPassword: true,
+			})
+		}
+		if er == errors.UseCaptcha {
+			useCaptcha = 1
+		}
+		er = errors.Fmt(err)
 		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, er)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
@@ -143,6 +168,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			AccessExpire: uResp.Token.AccessExpire,
 			RefreshAfter: uResp.Token.RefreshAfter,
 		},
+		UseCaptcha: useCaptcha,
 	}, nil
 
 	return

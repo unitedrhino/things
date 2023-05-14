@@ -118,8 +118,9 @@ type UserLoginReq struct {
 }
 
 type UserLoginResp struct {
-	Info  UserInfo `json:"info"`  //用户信息
-	Token JwtToken `json:"token"` //用户token
+	Info       UserInfo `json:"info"`       //用户信息
+	Token      JwtToken `json:"token"`      //用户token
+	UseCaptcha int32    `json:"useCaptcha"` //是否需要传入验证码 0-不需要验证码(默认)， 1-需要验证码
 }
 
 type JwtToken struct {
