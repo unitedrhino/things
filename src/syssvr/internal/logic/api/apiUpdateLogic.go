@@ -31,7 +31,7 @@ func (l *ApiUpdateLogic) ApiUpdate(in *sys.ApiUpdateReq) (*sys.Response, error) 
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	err = l.svcCtx.ApiModel.Update(l.ctx, &mysql.SysApi{
+	err = l.svcCtx.ApiModel.Update(l.ctx, &mysql.SysApiInfo{
 		Id:           in.Id,
 		Route:        in.Route,
 		Method:       in.Method,
