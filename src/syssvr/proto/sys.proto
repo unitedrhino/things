@@ -11,6 +11,7 @@ service User {
   rpc userDelete(UserDeleteReq) returns(Response);//刪除用戶
   rpc userLogin(UserLoginReq) returns(UserLoginResp);
   rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
+  rpc user
 }
 
 service Role {

@@ -25,9 +25,10 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	} //注册token相关配置
-	Proxy    conf.ProxyConf `json:",optional"`
-	Captcha  Captcha
-	OSS      conf.OSSConf  `json:",optional"`
-	Map      conf.MapConf  `json:",optional"`
-	OpenAuth conf.AuthConf `json:",optional"`
+	Proxy                conf.ProxyConf `json:",optional"`
+	Captcha              Captcha
+	OSS                  conf.OSSConf              `json:",optional"`
+	Map                  conf.MapConf              `json:",optional"`
+	OpenAuth             conf.AuthConf             `json:",optional"`
+	WrongPasswordCounter conf.WrongPasswordCounter `json:",optional"`
 }

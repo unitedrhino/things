@@ -26,4 +26,9 @@ type Config struct {
 		Mode      string `json:",default=baidu"`
 		AccessKey string
 	}
+	WrongPasswordCounter struct {
+		Captcha int32
+		Account []string
+		Ip      []string
+	}
 }
