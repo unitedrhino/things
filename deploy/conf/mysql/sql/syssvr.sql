@@ -59,7 +59,7 @@ CREATE TABLE if not exists `sys_role_info`
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='角色管理表';
 
-INSERT into sys_role_info (id, name) values (1, 'admin');
+INSERT IGNORE INTO sys_role_info (id, name) values (1, 'admin');
 
 CREATE TABLE if not exists `sys_role_menu`
 (
