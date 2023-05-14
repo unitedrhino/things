@@ -31,8 +31,8 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.DeviceGateWayIndexResp, err error) {
 	dmReq := &dm.DeviceGatewayIndexReq{
 		Gateway: &dm.DeviceCore{
-			ProductID:  req.GateWayDeviceName,
-			DeviceName: req.GateWayProductID,
+			ProductID:  req.GateWayProductID,
+			DeviceName: req.GateWayDeviceName,
 		},
 		Page: logic.ToDmPageRpc(req.Page),
 	}
