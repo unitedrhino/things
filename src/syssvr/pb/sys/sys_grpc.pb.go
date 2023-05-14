@@ -29,7 +29,7 @@ type UserClient interface {
 	UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
 	UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
-	UserLoginSafeCtl(ctx context.Context, in *UserLoginSafeCtlReq, opts ...grpc.CallOption) (*Response, error)
+	UserLoginSafeCtl(ctx context.Context, in *UserLoginSafeCtlReq, opts ...grpc.CallOption) (*UserLoginSafeCtlResp, error)
 }
 
 type userClient struct {
@@ -103,8 +103,8 @@ func (c *userClient) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, 
 	return out, nil
 }
 
-func (c *userClient) UserLoginSafeCtl(ctx context.Context, in *UserLoginSafeCtlReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *userClient) UserLoginSafeCtl(ctx context.Context, in *UserLoginSafeCtlReq, opts ...grpc.CallOption) (*UserLoginSafeCtlResp, error) {
+	out := new(UserLoginSafeCtlResp)
 	err := c.cc.Invoke(ctx, "/sys.User/userLoginSafeCtl", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -123,7 +123,7 @@ type UserServer interface {
 	UserDelete(context.Context, *UserDeleteReq) (*Response, error)
 	UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error)
 	UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error)
-	UserLoginSafeCtl(context.Context, *UserLoginSafeCtlReq) (*Response, error)
+	UserLoginSafeCtl(context.Context, *UserLoginSafeCtlReq) (*UserLoginSafeCtlResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -152,7 +152,7 @@ func (UnimplementedUserServer) UserLogin(context.Context, *UserLoginReq) (*UserL
 func (UnimplementedUserServer) UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCheckToken not implemented")
 }
-func (UnimplementedUserServer) UserLoginSafeCtl(context.Context, *UserLoginSafeCtlReq) (*Response, error) {
+func (UnimplementedUserServer) UserLoginSafeCtl(context.Context, *UserLoginSafeCtlReq) (*UserLoginSafeCtlResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserLoginSafeCtl not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}

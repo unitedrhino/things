@@ -27,10 +27,10 @@ Map:
 WrongPasswordCounter:
   Captcha: 4 # 连续输错密码 4 次，需要输验证码
   Account:
-    - year:5,times:500,forbidden:3  # 5年 内连续输错密码次数达到 500 次， 冻结账号 3 分钟
-    - month:3,times:200,forbidden:3 # 3个月 内连续输错密码次数达到 200 次， 冻结账号 3 分钟
-    - day:2,times:100,forbidden:3   # 2天 内连续输错密码次数达到 100 次， 冻结账号 3 分钟
+    - year:5,times:5,forbidden:5  # 5年 内连续输错密码次数达到 500 次， 冻结账号 3 分钟
+    - month:3,times:4,forbidden:5 # 3个月 内连续输错密码次数达到 200 次， 冻结账号 3 分钟
+    - day:2,times:3,forbidden:5   # 2天 内连续输错密码次数达到 100 次， 冻结账号 3 分钟
   Ip:
-    - year:5,times:500,forbidden:3  # 5年 内连续输错密码次数达到 500 次， 冻结ip 3 分钟
-    - month:3,times:200,forbidden:3 # 3个月 内连续输错密码次数达到 200 次， 冻结ip 3 分钟
-    - day:2,times:100,forbidden:3   # 2天 内连续输错密码次数达到 100 次， 冻结ip 3 分钟
+    - year:5,times:6,forbidden:5  # 5年 内连续输错密码次数达到 500 次， 冻结ip 3 分钟
+    - month:3,times:6,forbidden:5 # 3个月 内连续输错密码次数达到 200 次， 冻结ip 3 分钟
+    - day:2,times:6,forbidden:5   # 2天 内连续输错密码次数达到 100 次， 冻结ip 3 分钟

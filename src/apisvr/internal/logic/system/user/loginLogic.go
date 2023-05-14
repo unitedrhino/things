@@ -13,6 +13,7 @@ import (
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/mssola/user_agent"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -64,16 +65,20 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	//登录安全策略校验
 	//safeCtlList := PraseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter)
 	var useCaptcha int32 = 0
-	_, err = l.svcCtx.UserRpc.UserLoginSafeCtl(l.ctx, &sys.UserLoginSafeCtlReq{
+	ret, err := l.svcCtx.UserRpc.UserLoginSafeCtl(l.ctx, &sys.UserLoginSafeCtlReq{
 		UserID:        req.UserID,
 		Ip:            userHeader.GetUserCtx(l.ctx).IP,
 		WrongPassword: false,
 	})
 	if err == errors.AccountForbidden {
 		//账号冻结
+		return nil, errors.NewDefaultError("连续错误密码次数达到上限 " + cast.ToString(ret.Times) + " 次, 账号冻结 " +
+			cast.ToString(ret.Forbidden) + " 分钟")
 	}
 	if err == errors.IpForbidden {
 		//ip冻结
+		return nil, errors.NewDefaultError("累计错误密码次数达到上限 " + cast.ToString(ret.Times) + " 次, ip冻结 " +
+			cast.ToString(ret.Forbidden) + " 分钟")
 	}
 
 	if req.LoginType == "pwd" && req.CodeID != "" && req.Code != "" {
@@ -105,8 +110,8 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, er)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-			Uid:           uResp.Info.Uid,
-			UserName:      uResp.Info.UserName,
+			Uid:           0,
+			UserName:      req.UserID,
 			IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
 			Browser:       browser,
@@ -114,14 +119,16 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			Msg:           er.Error(),
 			Code:          400,
 		})
-		return nil, er
+		return &types.UserLoginResp{
+			UseCaptcha: useCaptcha,
+		}, er
 	}
 	if uResp == nil {
 		l.Errorf("%s.rpc.Register return nil req=%v", utils.FuncName(), req)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-			Uid:           uResp.Info.Uid,
-			UserName:      uResp.Info.UserName,
+			Uid:           0,
+			UserName:      req.UserID,
 			IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
 			Browser:       browser,
@@ -129,7 +136,9 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			Msg:           "register core rpc return nil",
 			Code:          400,
 		})
-		return nil, errors.System.AddDetail("register core rpc return nil")
+		return &types.UserLoginResp{
+			UseCaptcha: useCaptcha,
+		}, errors.System.AddDetail("register core rpc return nil")
 	}
 	//登录成功记录
 	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{

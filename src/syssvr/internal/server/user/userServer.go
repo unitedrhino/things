@@ -57,7 +57,7 @@ func (s *UserServer) UserCheckToken(ctx context.Context, in *sys.UserCheckTokenR
 	return l.UserCheckToken(in)
 }
 
-func (s *UserServer) UserLoginSafeCtl(ctx context.Context, in *sys.UserLoginSafeCtlReq) (*sys.Response, error) {
+func (s *UserServer) UserLoginSafeCtl(ctx context.Context, in *sys.UserLoginSafeCtlReq) (*sys.UserLoginSafeCtlResp, error) {
 	l := userlogic.NewUserLoginSafeCtlLogic(ctx, s.svcCtx)
 	return l.UserLoginSafeCtl(in)
 }

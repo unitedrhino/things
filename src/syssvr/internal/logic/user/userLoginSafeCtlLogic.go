@@ -77,7 +77,7 @@ func parseWrongpassConf(counter conf.WrongPasswordCounter, userID string, ip str
 	return res
 }
 
-func checkAccountForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) bool {
+func checkAccountForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, int32, bool) {
 	for _, v := range list {
 		if v.prefix == "login:wrongPassword:account:" {
 			ret, err := conn.Get(v.key)
@@ -85,14 +85,15 @@ func checkAccountForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) bool {
 				continue
 			}
 			if cast.ToInt(ret) >= v.times {
-				return true
+				//	t, err := conn.Ttl(v.key)
+				return int32(v.forbidden), int32(v.times), true
 			}
 		}
 	}
-	return false
+	return 0, 0, false
 }
 
-func checkIpForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) bool {
+func checkIpForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, int32, bool) {
 
 	for _, v := range list {
 		if v.prefix == "login:wrongPassword:ip:" {
@@ -101,30 +102,35 @@ func checkIpForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) bool {
 				continue
 			}
 			if cast.ToInt(ret) >= v.times {
-				return true
+				//	t, err := conn.Ttl(v.key)
+				return int32(v.forbidden), int32(v.times), true
 			}
 		}
 	}
-	return false
+	return 0, 0, false
 }
 
 func checkCaptchaTimes(conn *redis.Redis, list []*LoginSafeCtlInfo) (bool, error) {
 	for _, v := range list {
 		ret, err := conn.Get(v.key)
-		if err != nil {
-			if err == redis.Nil {
-				err = conn.Setex(v.key, "1", v.timeout)
-				if err != nil {
-					return false, errors.Redis.AddMsgf("创建 redis key：%s 失败", v.key)
-				}
-			} else {
-				return false, errors.Redis.AddMsgf("获取 redis key：%s 失败", v.key)
+		if ret == "" {
+			err = conn.Setex(v.key, "1", v.timeout)
+			if err != nil {
+				return false, errors.Redis.AddMsgf("创建 redis key：%s 失败", v.key)
 			}
+			continue
+		}
+
+		_, err = conn.Incr(v.key)
+		if err != nil {
+			return false, errors.Redis.AddMsgf("redis key：%s 自增失败", v.key)
 		}
 		if v.prefix != "login:wrongPassword:captcha:" {
-			_, err = conn.Incr(v.key)
-			if err != nil {
-				return false, errors.Redis.AddMsgf("redis key：%s 自增失败", v.key)
+			if cast.ToInt(ret)+1 >= v.times {
+				err = conn.Setex(v.key, cast.ToString(cast.ToInt(ret)+1), v.forbidden)
+				if err != nil {
+					return false, errors.Redis.AddMsgf("重置 redis key：%s 时间失败", v.key)
+				}
 			}
 		} else {
 			if cast.ToInt(ret) >= v.times {
@@ -143,18 +149,20 @@ func NewUserLoginSafeCtlLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *UserLoginSafeCtlLogic) UserLoginSafeCtl(in *sys.UserLoginSafeCtlReq) (*sys.Response, error) {
+func (l *UserLoginSafeCtlLogic) UserLoginSafeCtl(in *sys.UserLoginSafeCtlReq) (*sys.UserLoginSafeCtlResp, error) {
 	redis, err := redis.NewRedis(l.svcCtx.Config.CacheRedis[0].RedisConf)
 	if err != nil {
 		return nil, err
 	}
 	list := parseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter, in.UserID, in.Ip)
 	if !in.WrongPassword {
-		if checkAccountForbidden(redis, list) {
-			return nil, errors.AccountForbidden
+		forbidden, times, f := checkAccountForbidden(redis, list)
+		if f {
+			return &sys.UserLoginSafeCtlResp{Forbidden: forbidden / 60, Times: times}, errors.AccountForbidden
 		}
-		if checkIpForbidden(redis, list) {
-			return nil, errors.IpForbidden
+		forbidden, times, f = checkIpForbidden(redis, list)
+		if f {
+			return &sys.UserLoginSafeCtlResp{Forbidden: forbidden / 60, Times: times}, errors.IpForbidden
 		}
 	} else {
 		ret, err := checkCaptchaTimes(redis, list)
@@ -166,5 +174,5 @@ func (l *UserLoginSafeCtlLogic) UserLoginSafeCtl(in *sys.UserLoginSafeCtlReq) (*
 		}
 	}
 
-	return &sys.Response{}, nil
+	return nil, nil
 }

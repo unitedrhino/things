@@ -11,7 +11,7 @@ service User {
   rpc userDelete(UserDeleteReq) returns(Response);//刪除用戶
   rpc userLogin(UserLoginReq) returns(UserLoginResp);
   rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
-  rpc userLoginSafeCtl(UserLoginSafeCtlReq) returns(Response);
+  rpc userLoginSafeCtl(UserLoginSafeCtlReq) returns(UserLoginSafeCtlResp);
 }
 
 service Role {
@@ -445,4 +445,9 @@ message UserLoginSafeCtlReq{
   string userID = 1;
   string ip = 2;
   bool wrongPassword = 3;
+}
+
+message UserLoginSafeCtlResp{
+  int32 forbidden = 1; //账号或ip冻结时间
+  int32 times = 2;     //错误密码次数上限
 }
