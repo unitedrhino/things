@@ -36,6 +36,8 @@ type (
 // NewSysApiInfoModel returns a model for the database table.
 func NewSysApiInfoModel(conn sqlx.SqlConn) SysApiInfoModel {
 	return &customSysApiInfoModel{
+		api:                    "`sys_api_info`",
+		SqlConn:                conn,
 		defaultSysApiInfoModel: newSysApiInfoModel(conn),
 	}
 }
