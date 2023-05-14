@@ -85,7 +85,6 @@ func checkAccountForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, 
 				continue
 			}
 			if cast.ToInt(ret) >= v.times {
-				//	t, err := conn.Ttl(v.key)
 				return int32(v.forbidden), int32(v.times), true
 			}
 		}
@@ -94,7 +93,6 @@ func checkAccountForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, 
 }
 
 func checkIpForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, int32, bool) {
-
 	for _, v := range list {
 		if v.prefix == "login:wrongPassword:ip:" {
 			ret, err := conn.Get(v.key)
@@ -102,7 +100,6 @@ func checkIpForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, int32
 				continue
 			}
 			if cast.ToInt(ret) >= v.times {
-				//	t, err := conn.Ttl(v.key)
 				return int32(v.forbidden), int32(v.times), true
 			}
 		}
