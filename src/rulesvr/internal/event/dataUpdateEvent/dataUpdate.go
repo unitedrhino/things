@@ -22,7 +22,7 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdat
 	}
 }
 
-func (d *DataUpdateLogic) ProductSchemaUpdate(info *events.DataUpdateInfo) error {
-	d.Infof("%s DataUpdateInfo:%v", utils.FuncName(), info)
+func (d *DataUpdateLogic) ProductSchemaUpdate(info *events.DeviceUpdateInfo) error {
+	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
 	return d.svcCtx.SchemaRepo.ClearCache(d.ctx, info.ProductID)
 }
