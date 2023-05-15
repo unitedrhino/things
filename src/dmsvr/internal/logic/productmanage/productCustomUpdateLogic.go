@@ -60,7 +60,7 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.DataUpdate.ProductCustomUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.ProductID})
+	err = l.svcCtx.DataUpdate.ProductCustomUpdate(l.ctx, &events.DeviceUpdateInfo{ProductID: in.ProductID})
 	if err != nil {
 		return nil, err
 	}
