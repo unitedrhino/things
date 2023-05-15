@@ -449,5 +449,4 @@ message UserLoginSafeCtlReq{
 
 message UserLoginSafeCtlResp{
   int32 forbidden = 1; //账号或ip冻结时间
-  int32 times = 2;     //错误密码次数上限
 }

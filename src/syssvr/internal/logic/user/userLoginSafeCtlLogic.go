@@ -77,7 +77,7 @@ func parseWrongpassConf(counter conf.WrongPasswordCounter, userID string, ip str
 	return res
 }
 
-func checkAccountForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, int32, bool) {
+func checkAccountForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, bool) {
 	for _, v := range list {
 		if v.prefix == "login:wrongPassword:account:" {
 			ret, err := conn.Get(v.key)
@@ -85,14 +85,14 @@ func checkAccountForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, 
 				continue
 			}
 			if cast.ToInt(ret) >= v.times {
-				return int32(v.forbidden), int32(v.times), true
+				return int32(v.forbidden), true
 			}
 		}
 	}
-	return 0, 0, false
+	return 0, false
 }
 
-func checkIpForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, int32, bool) {
+func checkIpForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, bool) {
 	for _, v := range list {
 		if v.prefix == "login:wrongPassword:ip:" {
 			ret, err := conn.Get(v.key)
@@ -100,11 +100,11 @@ func checkIpForbidden(conn *redis.Redis, list []*LoginSafeCtlInfo) (int32, int32
 				continue
 			}
 			if cast.ToInt(ret) >= v.times {
-				return int32(v.forbidden), int32(v.times), true
+				return int32(v.forbidden), true
 			}
 		}
 	}
-	return 0, 0, false
+	return 0, false
 }
 
 func checkCaptchaTimes(conn *redis.Redis, list []*LoginSafeCtlInfo) (bool, error) {
@@ -153,13 +153,13 @@ func (l *UserLoginSafeCtlLogic) UserLoginSafeCtl(in *sys.UserLoginSafeCtlReq) (*
 	}
 	list := parseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter, in.UserID, in.Ip)
 	if !in.WrongPassword {
-		forbidden, times, f := checkAccountForbidden(redis, list)
+		forbidden, f := checkAccountForbidden(redis, list)
 		if f {
-			return &sys.UserLoginSafeCtlResp{Forbidden: forbidden / 60, Times: times}, errors.AccountForbidden
+			return &sys.UserLoginSafeCtlResp{Forbidden: forbidden / 60}, errors.AccountForbidden
 		}
-		forbidden, times, f = checkIpForbidden(redis, list)
+		forbidden, f = checkIpForbidden(redis, list)
 		if f {
-			return &sys.UserLoginSafeCtlResp{Forbidden: forbidden / 60, Times: times}, errors.IpForbidden
+			return &sys.UserLoginSafeCtlResp{Forbidden: forbidden / 60}, errors.IpForbidden
 		}
 	} else {
 		ret, err := checkCaptchaTimes(redis, list)

@@ -69,14 +69,9 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		Ip:            userHeader.GetUserCtx(l.ctx).IP,
 		WrongPassword: false,
 	})
-	if err == errors.AccountForbidden {
+	if err == errors.AccountForbidden || err == errors.IpForbidden {
 		//账号冻结
-		return nil, errors.NewDefaultError("连续错误密码次数达到上限 " + cast.ToString(ret.Times) + " 次, 账号冻结 " +
-			cast.ToString(ret.Forbidden) + " 分钟")
-	}
-	if err == errors.IpForbidden {
-		//ip冻结
-		return nil, errors.NewDefaultError("累计错误密码次数达到上限 " + cast.ToString(ret.Times) + " 次, ip冻结 " +
+		return nil, errors.NewDefaultError("密码输入错误过多，账号封禁 " +
 			cast.ToString(ret.Forbidden) + " 分钟")
 	}
 
