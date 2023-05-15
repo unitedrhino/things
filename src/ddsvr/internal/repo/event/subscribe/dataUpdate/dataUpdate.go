@@ -13,7 +13,7 @@ type (
 	}
 	Handle       func(ctx context.Context) UpdateHandle
 	UpdateHandle interface {
-		ProductCustomUpdate(info *events.DataUpdateInfo) error
+		ProductCustomUpdate(info *events.DeviceUpdateInfo) error
 	}
 )
 

@@ -107,7 +107,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 	}
 
 	if in.LogLevel != def.Unknown {
-		err := l.svcCtx.DataUpdate.DeviceLogLevelUpdate(l.ctx, &events.DataUpdateInfo{
+		err := l.svcCtx.DataUpdate.DeviceLogLevelUpdate(l.ctx, &events.DeviceUpdateInfo{
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,
 		})
