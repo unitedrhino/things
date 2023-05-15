@@ -26,7 +26,7 @@ func NewRemoteConfigPushAllLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *RemoteConfigPushAllLogic) RemoteConfigPushAll(in *dm.RemoteConfigPushAllReq) (*dm.Response, error) {
-	err := l.svcCtx.DataUpdate.DeviceRemoteConfigUpdate(l.ctx, &events.DataUpdateInfo{
+	err := l.svcCtx.DataUpdate.DeviceRemoteConfigUpdate(l.ctx, &events.DeviceUpdateInfo{
 		ProductID: in.ProductID,
 	})
 	if err != nil {

@@ -22,7 +22,7 @@ func NewDataUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUp
 	}
 }
 
-func (d *DataUpdateLogic) ProductCustomUpdate(info *events.DataUpdateInfo) error {
-	d.Infof("%s DataUpdateInfo:%v", utils.FuncName(), info)
+func (d *DataUpdateLogic) ProductCustomUpdate(info *events.DeviceUpdateInfo) error {
+	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
 	return d.svcCtx.Script.ClearCache(d.ctx, info.ProductID)
 }
