@@ -18,5 +18,5 @@ var (
 	UsernameFormatErr  = NewCodeError(USER_ERROR+27, "账密方式时，账号必须以大小写字母开头，且账号只能包含大小写字母，数字，下划线和减号。 长度为6到20位之间")
 	AccountForbidden   = NewCodeError(USER_ERROR+28, "用户账号冻结")
 	IpForbidden        = NewCodeError(USER_ERROR+29, "ip冻结")
-	UseCaptcha         = NewCodeError(USER_ERROR+30, "连续密码错误触发验证码")
+	UseCaptcha         = NewCodeError(USER_ERROR+30, "账号或密码错误")
 )

@@ -64,7 +64,6 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	l.Infof("%s req=%+v", utils.FuncName(), req)
 	//登录安全策略校验
 	//safeCtlList := PraseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter)
-	var useCaptcha int32 = 0
 	ret, err := l.svcCtx.UserRpc.UserLoginSafeCtl(l.ctx, &sys.UserLoginSafeCtlReq{
 		UserID:        req.UserID,
 		Ip:            userHeader.GetUserCtx(l.ctx).IP,
@@ -95,19 +94,16 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		CodeID:    req.CodeID,
 	})
 	if err != nil {
-		var er error
 		if err == errors.Password {
-			_, er = l.svcCtx.UserRpc.UserLoginSafeCtl(l.ctx, &sys.UserLoginSafeCtlReq{
+			_, err = l.svcCtx.UserRpc.UserLoginSafeCtl(l.ctx, &sys.UserLoginSafeCtlReq{
 				UserID:        req.UserID,
 				Ip:            userHeader.GetUserCtx(l.ctx).IP,
 				WrongPassword: true,
 			})
 		}
-		if er == errors.UseCaptcha {
-			useCaptcha = 1
-		}
-		er = errors.Fmt(err)
-		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, er)
+
+		err = errors.Fmt(err)
+		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, err)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
 			Uid:           0,
@@ -116,12 +112,10 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
 			Browser:       browser,
 			Os:            os,
-			Msg:           er.Error(),
+			Msg:           err.Error(),
 			Code:          400,
 		})
-		return &types.UserLoginResp{
-			UseCaptcha: useCaptcha,
-		}, er
+		return nil, err
 	}
 	if uResp == nil {
 		l.Errorf("%s.rpc.Register return nil req=%v", utils.FuncName(), req)
@@ -136,9 +130,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			Msg:           "register core rpc return nil",
 			Code:          400,
 		})
-		return &types.UserLoginResp{
-			UseCaptcha: useCaptcha,
-		}, errors.System.AddDetail("register core rpc return nil")
+		return nil, errors.System.AddDetail("register core rpc return nil")
 	}
 	//登录成功记录
 	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
@@ -177,7 +169,6 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			AccessExpire: uResp.Token.AccessExpire,
 			RefreshAfter: uResp.Token.RefreshAfter,
 		},
-		UseCaptcha: useCaptcha,
 	}, nil
 
 	return
