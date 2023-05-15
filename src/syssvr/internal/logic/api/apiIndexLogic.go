@@ -27,7 +27,7 @@ func NewApiIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ApiIndex
 }
 
 func (l *ApiIndexLogic) ApiIndex(in *sys.ApiIndexReq) (*sys.ApiIndexResp, error) {
-	resp, total, err := l.svcCtx.ApiInfoModel.Index(l.ctx, &mysql.ApiFilter{
+	resp, total, err := l.svcCtx.ApiModel.Index(l.ctx, &mysql.ApiFilter{
 		Page:   &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
 		Route:  in.Route,
 		Method: in.Method,

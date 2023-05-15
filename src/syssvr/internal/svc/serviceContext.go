@@ -24,8 +24,7 @@ type ServiceContext struct {
 	LogLoginModel mysql.SysLoginLogModel
 	LogOperModel  mysql.SysOperLogModel
 	LogModel      mysql.LogModel
-	ApiModel      mysql.SysApiModel
-	ApiInfoModel  mysql.ApiModel
+	ApiModel      mysql.SysApiInfoModel
 	Casbin        *casbin.Enforcer
 }
 
@@ -37,8 +36,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	ll := mysql.NewSysLoginLogModel(conn)
 	lo := mysql.NewSysOperLogModel(conn)
 	l := mysql.NewLogModel(conn)
-	ap := mysql.NewApiModel(conn)
-	api := mysql.NewSysApiModel(conn)
+	api := mysql.NewSysApiInfoModel(conn)
 	rom := mysql.NewRoleModel(conn, c.CacheRedis)
 	mem := mysql.NewMenuModel(conn, c.CacheRedis)
 	um := mysql.NewUserModel(conn, c.CacheRedis)
@@ -63,7 +61,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LogOperModel:  lo,
 		LogModel:      l,
 		ApiModel:      api,
-		ApiInfoModel:  ap,
 		Casbin:        ca,
 	}
 }
