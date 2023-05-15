@@ -1,6 +1,6 @@
 package events
 
-type DataUpdateInfo struct {
+type DeviceUpdateInfo struct {
 	ProductID  string
 	DeviceName string
 	Data       any
