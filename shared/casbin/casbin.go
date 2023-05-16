@@ -32,7 +32,7 @@ const (
 		[matchers]
 		m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act
 		`
-	tableName = "casbin_rule"
+	tableName = "sys_api_auth"
 )
 
 func NewCasbin(conn *sql.DB, driver string) (*casbin.Enforcer, error) {

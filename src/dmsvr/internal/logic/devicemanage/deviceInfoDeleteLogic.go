@@ -59,6 +59,9 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 			return nil, err
 		}
 	}
+	{ //删除设备组中的数据
+
+	}
 
 	err = l.svcCtx.DeviceInfo.Delete(l.ctx, di.Id)
 	if err != nil {

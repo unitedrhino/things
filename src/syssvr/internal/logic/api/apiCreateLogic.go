@@ -26,7 +26,7 @@ func NewApiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ApiCrea
 }
 
 func (l *ApiCreateLogic) ApiCreate(in *sys.ApiCreateReq) (*sys.Response, error) {
-	_, err := l.svcCtx.ApiModel.Insert(l.ctx, &mysql.SysApi{
+	_, err := l.svcCtx.ApiModel.Insert(l.ctx, &mysql.SysApiInfo{
 		Route:        in.Route,
 		Method:       in.Method,
 		Name:         in.Name,

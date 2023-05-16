@@ -9,8 +9,11 @@ var (
 	remoteConfigSvr client.RemoteConfig
 )
 
-func NewRemoteConfig() client.RemoteConfig {
-	svc := GetCtxSvc()
-	dmSvr := client.NewDirectRemoteConfig(svc, server.NewRemoteConfigServer(svc))
+func NewRemoteConfig(runSvr bool) client.RemoteConfig {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	dmSvr := client.NewDirectRemoteConfig(svcCtx, server.NewRemoteConfigServer(svcCtx))
 	return dmSvr
 }

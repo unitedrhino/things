@@ -31,13 +31,13 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdat
 	}
 }
 
-func (d *DataUpdateLogic) ProductSchemaUpdate(info *events.DataUpdateInfo) error {
-	d.Infof("%s DataUpdateInfo:%v", utils.FuncName(), info)
+func (d *DataUpdateLogic) ProductSchemaUpdate(info *events.DeviceUpdateInfo) error {
+	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
 	return d.svcCtx.SchemaRepo.ClearCache(d.ctx, info.ProductID)
 }
 
-func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DataUpdateInfo) error {
-	d.Infof("%s DataUpdateInfo:%v", utils.FuncName(), info)
+func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DeviceUpdateInfo) error {
+	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
 	di, err := d.svcCtx.DeviceM.DeviceInfoRead(d.ctx, &dm.DeviceInfoReadReq{
 		ProductID:  info.ProductID,
 		DeviceName: info.DeviceName,
@@ -84,7 +84,7 @@ func (d *DataUpdateLogic) DeviceGatewayUpdate(info *events.GatewayUpdateInfo) er
 	return er
 }
 
-func (d *DataUpdateLogic) DeviceRemoteConfigUpdate(info *events.DataUpdateInfo) error {
+func (d *DataUpdateLogic) DeviceRemoteConfigUpdate(info *events.DeviceUpdateInfo) error {
 	d.Infof("%s DeviceRemoteConfigUpdate:%v", utils.FuncName(), info)
 
 	//1. 根据产品id获取配置json

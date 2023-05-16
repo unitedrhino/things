@@ -8,11 +8,6 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"sync"
-	"time"
-)
-
-const (
-	expireTime = time.Hour
 )
 
 type (

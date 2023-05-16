@@ -92,7 +92,7 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 		return nil, err
 	}
 	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(
-		l.ctx, &events.DataUpdateInfo{ProductID: in.Info.ProductID})
+		l.ctx, &events.DeviceUpdateInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}

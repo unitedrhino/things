@@ -32,11 +32,6 @@ DdEnable: true
 SysRpc:
   Enable: true
   Mode: direct
-  Conf:
-    Etcd:
-      Hosts:
-        - 172.19.0.3:2379
-      Key: sys.rpc
 DiRpc:
   Enable: true
   Mode: direct
