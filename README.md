@@ -11,9 +11,9 @@ iThings是一个基于golang开发的轻量级云原生微服务物联网平台.
 
 git地址:
 
-* 后端github地址:[https://github.com/i4de/ithings](https://github.com/i4de/ithings)
+* 后端github地址:[https://github.com/i-Things/iThings](https://github.com/i-Things/iThings)
 * 后端gitee地址:[https://gitee.com/i-Things/things](https://gitee.com/i-Things/things)
-* 前端github地址:[https://github.com/i4de/iThings-admin-react](https://github.com/i4de/iThings-admin-react)
+* 前端github地址:[https://github.com/i-Things/iThings-admin-react](https://github.com/i-Things/iThings-admin-react)
 
 ## 产品架构
 
@@ -188,14 +188,14 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 
 ### 后端
 
-<a href="https://github.com/i4de/iThings/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=i4de/iThings" />
+<a href="https://github.com/i-Things/iThings/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=i-Things/iThings" />
 </a>
 
 ### 前端
 
-<a href="https://github.com/i4de/iThings-admin-react/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=i4de/iThings-admin-react" />
+<a href="https://github.com/i-Things/iThings-admin-react/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=i-Things/iThings-admin-react" />
 </a>
 
 ## 社区
@@ -214,4 +214,4 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 
 ## 收藏
 
-<img src="https://starchart.cc/i4de/ithings.svg">
+<img src="https://starchart.cc/i-Things/iThings.svg">
