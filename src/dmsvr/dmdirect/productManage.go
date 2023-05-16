@@ -9,8 +9,11 @@ var (
 	productManageSvr client.ProductManage
 )
 
-func NewProductManage() client.ProductManage {
-	svc := GetCtxSvc()
-	dmSvr := client.NewDirectProductManage(svc, server.NewProductManageServer(svc))
+func NewProductManage(runSvr bool) client.ProductManage {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	dmSvr := client.NewDirectProductManage(svcCtx, server.NewProductManageServer(svcCtx))
 	return dmSvr
 }

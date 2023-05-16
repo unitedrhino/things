@@ -44,7 +44,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.DmRpc.Mode == conf.ClientModeGrpc {
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 	} else {
-		productM = dmdirect.NewProductManage()
+		productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 	}
 	scriptCache := cache.NewScriptRepo(func(ctx context.Context, productID string) (info *custom.Info, err error) {
 		ret, err := productM.ProductCustomRead(ctx, &dm.ProductCustomReadReq{ProductID: productID})

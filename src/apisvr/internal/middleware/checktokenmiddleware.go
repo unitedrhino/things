@@ -155,7 +155,12 @@ func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) e
 	if !strings.Contains(r.Proto, "HTTPS") {
 		uri = "http://"
 	}
-	ipAddr := r.Host[0:strings.Index(r.Host, ":")]
+	ipAddr, err := utils.GetIP(r)
+	if err != nil {
+		logx.WithContext(r.Context()).Errorf("%s.GetIP is error : %s req:%v",
+			utils.FuncName(), err.Error(), utils.Fmt(r))
+		ipAddr = "0.0.0.0"
+	}
 	_, err = m.LogRpc.OperLogCreate(r.Context(), &user.OperLogCreateReq{
 		Uid:          userHeader.GetUserCtx(r.Context()).Uid,
 		Uri:          uri + r.Host + r.RequestURI,

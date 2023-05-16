@@ -21,7 +21,7 @@ type (
 	}
 	ReadRepo interface {
 		GetSchemaModel(ctx context.Context, productID string) (*Model, error)
-		//GetSchemaInfo(ctx context.Context, productID string) (*Info, error)
+		//GetReadInfo(ctx context.Context, productID string) (*Info, error)
 		ClearCache(ctx context.Context, productID string) error
 	}
 	GetSchemaModel func(ctx context.Context, productID string) (*Model, error)

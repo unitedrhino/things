@@ -13,7 +13,7 @@ COPY ./assets ./assets
 RUN cd assets && yarn build
 
 FROM alpine:3.16
-LABEL homepage="https://github.com/i4de/ithings"
+LABEL homepage="https://github.com/i-Things/iThings"
 ENV TZ Asia/Shanghai
 RUN apk add tzdata
 

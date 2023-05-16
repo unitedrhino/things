@@ -75,7 +75,7 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.Info.ProductID})
+	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DeviceUpdateInfo{ProductID: in.Info.ProductID})
 	if err != nil {
 		return nil, err
 	}

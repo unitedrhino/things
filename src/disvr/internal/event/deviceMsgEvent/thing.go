@@ -65,7 +65,7 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 	}
 }
 
-//设备属性上报
+// 设备属性上报
 func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
 	tp, err := req.VerifyReqParam(l.schema, schema.ParamProperty)
 	if err != nil {
@@ -104,7 +104,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
-//设备基础信息上报
+// 设备基础信息上报
 func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
 	diDeviceBasicInfoDo := &msgThing.DeviceBasicInfo{Core: devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}}
 	if err = gconv.Struct(req.Params, diDeviceBasicInfoDo); err != nil {
@@ -122,7 +122,7 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
-//设备请求获取 云端记录的最新设备信息
+// 设备请求获取 云端记录的最新设备信息
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Property))
 
@@ -154,10 +154,16 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 	return l.DeviceResp(msg, errors.OK, respData), nil
 }
 
-//属性上报
+// 属性上报
 func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 	switch l.dreq.Method { //操作方法
+	case deviceMsg.GetReportReply:
+		if l.dreq.Code != errors.OK.Code { //如果不成功,则记录日志即可
+			return nil, errors.DeviceError.AddMsg(l.dreq.Status).AddDetail(msg.Payload)
+		}
+		_, err = l.HandlePropertyReport(msg, l.dreq)
+		return nil, err
 	case deviceMsg.Report: //设备属性上报
 		return l.HandlePropertyReport(msg, l.dreq)
 	case deviceMsg.ReportInfo: //设备基础信息上报

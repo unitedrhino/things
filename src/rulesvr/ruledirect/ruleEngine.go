@@ -5,8 +5,11 @@ import (
 	server "github.com/i-Things/things/src/rulesvr/internal/server/ruleengine"
 )
 
-func NewRuleEngine() client.RuleEngine {
-	svc := GetSvcCtx()
-	svr := client.NewDirectRuleEngine(svc, server.NewRuleEngineServer(svc))
+func NewRuleEngine(runSvr bool) client.RuleEngine {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	svr := client.NewDirectRuleEngine(svcCtx, server.NewRuleEngineServer(svcCtx))
 	return svr
 }

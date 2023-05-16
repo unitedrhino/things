@@ -68,7 +68,7 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DataUpdateInfo{ProductID: in.ProductID})
+	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DeviceUpdateInfo{ProductID: in.ProductID})
 	if err != nil {
 		return nil, err
 	}
