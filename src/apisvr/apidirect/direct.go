@@ -25,10 +25,11 @@ var (
 
 func NewApi(apiCtx ApiCtx) ApiCtx {
 	conf.MustLoad("etc/api.yaml", &c)
+	apiCtx = runApi(apiCtx)
 	if c.DdEnable == true {
 		go runDdSvr()
 	}
-	return runApi(apiCtx)
+	return apiCtx
 }
 
 func runApi(apiCtx ApiCtx) ApiCtx {
