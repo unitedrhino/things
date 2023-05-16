@@ -1,8 +1,8 @@
 [TOC]
 
-# 本地安装goctl【非官方，请使用i4de/go-zero】
+# 本地安装goctl【非官方，请使用i-Things/go-zero】
 
-1. 本地将 `go-zero 项目克隆下来：  `git clone git@github.com:i4de/go-zero.git`
+1. 本地将 `go-zero 项目克隆下来：  `git clone git@github.com:i-Things/go-zero.git`
 2. 到目录 `go-zero\tools\goctl 下 执行命令： `go install`
 3. 后续执行下面的各种goctl命令即可
 
@@ -25,7 +25,7 @@ cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ..
 - 数据库文件生成
 
 ```shell
-cd syssvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
+cd syssvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  --style=goZero -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
 ```
 
 - rpc文件编译方法
@@ -46,7 +46,7 @@ cd dmsvr && goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc
 - model文件编译
 
 ```shell
-cd dmsvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
+cd dmsvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  --style=goZero -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
 ```
 
 # 设备交互模块-disvr
@@ -73,5 +73,5 @@ cd rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --
 - model文件编译
 
 ```shell
-cd rulesvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/rulesvr.sql"  -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
+cd rulesvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/rulesvr.sql"  --style=goZero -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
 ```

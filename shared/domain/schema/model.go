@@ -96,6 +96,13 @@ func (m *Model) String() string {
 	tls, _ := json.Marshal(m)
 	return string(tls)
 }
+func (d *Define) String() string {
+	if d == nil {
+		return "{}"
+	}
+	def, _ := json.Marshal(d)
+	return string(def)
+}
 
 func (p *PropertyMap) GetIDs() []string {
 	var ids []string

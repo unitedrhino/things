@@ -13,10 +13,10 @@ type (
 	}
 	Handle       func(ctx context.Context) UpdateHandle
 	UpdateHandle interface {
-		ProductSchemaUpdate(info *events.DataUpdateInfo) error
-		DeviceLogLevelUpdate(info *events.DataUpdateInfo) error
+		ProductSchemaUpdate(info *events.DeviceUpdateInfo) error
+		DeviceLogLevelUpdate(info *events.DeviceUpdateInfo) error
 		DeviceGatewayUpdate(info *events.GatewayUpdateInfo) error
-		DeviceRemoteConfigUpdate(info *events.DataUpdateInfo) error
+		DeviceRemoteConfigUpdate(info *events.DeviceUpdateInfo) error
 	}
 )
 

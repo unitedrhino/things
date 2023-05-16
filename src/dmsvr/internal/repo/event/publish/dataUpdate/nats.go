@@ -26,7 +26,7 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 	return &NatsClient{client: nc}, nil
 }
 
-func (n *NatsClient) ProductSchemaUpdate(ctx context.Context, info *events.DataUpdateInfo) error {
+func (n *NatsClient) ProductSchemaUpdate(ctx context.Context, info *events.DeviceUpdateInfo) error {
 	data, err := json.Marshal(info)
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func (n *NatsClient) ProductSchemaUpdate(ctx context.Context, info *events.DataU
 	return err
 }
 
-func (n *NatsClient) ProductCustomUpdate(ctx context.Context, info *events.DataUpdateInfo) error {
+func (n *NatsClient) ProductCustomUpdate(ctx context.Context, info *events.DeviceUpdateInfo) error {
 	data, err := json.Marshal(info)
 	if err != nil {
 		return err
@@ -48,7 +48,7 @@ func (n *NatsClient) ProductCustomUpdate(ctx context.Context, info *events.DataU
 	return err
 }
 
-func (n *NatsClient) DeviceLogLevelUpdate(ctx context.Context, info *events.DataUpdateInfo) error {
+func (n *NatsClient) DeviceLogLevelUpdate(ctx context.Context, info *events.DeviceUpdateInfo) error {
 	data, err := json.Marshal(info)
 	if err != nil {
 		return err
@@ -70,7 +70,7 @@ func (n *NatsClient) DeviceGatewayUpdate(ctx context.Context, info *events.Gatew
 	return err
 }
 
-func (n *NatsClient) DeviceRemoteConfigUpdate(ctx context.Context, info *events.DataUpdateInfo) error {
+func (n *NatsClient) DeviceRemoteConfigUpdate(ctx context.Context, info *events.DeviceUpdateInfo) error {
 	data, err := json.Marshal(info)
 	if err != nil {
 		return err

@@ -24,8 +24,6 @@ var (
 
 func NewMqttClient(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 	mqttInitOnce.Do(func() {
-		// TODO: [暂时兼容] 延迟初始化，等待 router 完毕
-		time.Sleep(5 * time.Second)
 		opts := mqtt.NewClientOptions()
 		for _, broker := range conf.Brokers {
 			opts.AddBroker(broker)

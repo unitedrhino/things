@@ -8,11 +8,18 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
+var _ SysApiInfoModel = (*customSysApiInfoModel)(nil)
+
 type (
-	ApiModel interface {
-		Index(ctx context.Context, in *ApiFilter) ([]*SysApi, int64, error)
+	// SysApiInfoModel is an interface to be customized, add more methods here,
+	// and implement the added methods in customSysApiInfoModel.
+	SysApiInfoModel interface {
+		sysApiInfoModel
+		Index(ctx context.Context, in *ApiFilter) ([]*SysApiInfo, int64, error)
 	}
-	apiModel struct {
+
+	customSysApiInfoModel struct {
+		*defaultSysApiInfoModel
 		sqlx.SqlConn
 		api string
 	}
@@ -26,10 +33,12 @@ type (
 	}
 )
 
-func NewApiModel(conn sqlx.SqlConn) ApiModel {
-	return &apiModel{
-		SqlConn: conn,
-		api:     "`sys_api`",
+// NewSysApiInfoModel returns a model for the database table.
+func NewSysApiInfoModel(conn sqlx.SqlConn) SysApiInfoModel {
+	return &customSysApiInfoModel{
+		api:                    "`sys_api_info`",
+		SqlConn:                conn,
+		defaultSysApiInfoModel: newSysApiInfoModel(conn),
 	}
 }
 
@@ -50,7 +59,7 @@ func (g *ApiFilter) FmtSqlApi(sql sq.SelectBuilder) sq.SelectBuilder {
 	return sql
 }
 
-func (m *apiModel) GetApiCountByFilter(ctx context.Context, f ApiFilter) (size int64, err error) {
+func (m *customSysApiInfoModel) GetApiCountByFilter(ctx context.Context, f ApiFilter) (size int64, err error) {
 	sql := sq.Select("count(1)").From(m.api)
 	sql = f.FmtSqlApi(sql)
 	query, arg, err := sql.ToSql()
@@ -67,9 +76,9 @@ func (m *apiModel) GetApiCountByFilter(ctx context.Context, f ApiFilter) (size i
 	}
 }
 
-func (m *apiModel) FindApiByFilter(ctx context.Context, f ApiFilter, page *def.PageInfo) ([]*SysApi, error) {
-	var resp []*SysApi
-	sql := sq.Select(sysApiRows).From(m.api).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset())).OrderBy("createdTime desc")
+func (m *customSysApiInfoModel) FindApiByFilter(ctx context.Context, f ApiFilter, page *def.PageInfo) ([]*SysApiInfo, error) {
+	var resp []*SysApiInfo
+	sql := sq.Select(sysApiInfoRows).From(m.api).Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset())).OrderBy("createdTime desc")
 	sql = f.FmtSqlApi(sql)
 
 	query, arg, err := sql.ToSql()
@@ -85,7 +94,7 @@ func (m *apiModel) FindApiByFilter(ctx context.Context, f ApiFilter, page *def.P
 	}
 }
 
-func (m *apiModel) Index(ctx context.Context, in *ApiFilter) ([]*SysApi, int64, error) {
+func (m *customSysApiInfoModel) Index(ctx context.Context, in *ApiFilter) ([]*SysApiInfo, int64, error) {
 	page := def.PageInfo{}
 	copier.Copy(&page, in.Page)
 	filter := ApiFilter{
@@ -106,9 +115,9 @@ func (m *apiModel) Index(ctx context.Context, in *ApiFilter) ([]*SysApi, int64, 
 		return nil, 0, err
 	}
 
-	info := make([]*SysApi, 0, len(resp))
+	info := make([]*SysApiInfo, 0, len(resp))
 	for _, v := range resp {
-		info = append(info, &SysApi{
+		info = append(info, &SysApiInfo{
 			Id:           v.Id,
 			Route:        v.Route,
 			Method:       v.Method,

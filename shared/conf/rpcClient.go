@@ -13,6 +13,7 @@ type RpcClientConf struct {
 }
 
 type ModeConf struct {
-	Mode   string `json:",default=direct,options=grpc|direct"`
-	Enable bool   `json:",default=true"`
+	Mode     string `json:",default=direct,options=grpc|direct"`
+	RunProxy bool   `json:",default=false"` //是否开启grpc服务
+	Enable   bool   `json:",default=true"`
 }
