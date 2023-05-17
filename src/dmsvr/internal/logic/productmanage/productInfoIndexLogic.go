@@ -54,6 +54,5 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 	for _, v := range di {
 		info = append(info, ToProductInfo(v))
 	}
-
 	return &dm.ProductInfoIndexResp{List: info, Total: size}, nil
 }
