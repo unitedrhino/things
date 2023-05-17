@@ -23,6 +23,7 @@ type (
 		Delete(ctx context.Context, groupID int64) error
 		GroupDeviceCreate(ctx context.Context, groupID int64, list []*devices.Core) error
 		GroupDeviceDelete(ctx context.Context, groupID int64, list []*devices.Core) error
+		DeleteDevice(ctx context.Context, device *devices.Core) error
 	}
 
 	groupModel struct {
@@ -310,13 +311,23 @@ func (m *groupModel) GroupDeviceDelete(ctx context.Context, groupID int64, list 
 			if v == nil {
 				continue
 			}
+
 			query := fmt.Sprintf("delete from %s where groupID = %d and productID = '%s' and deviceName = '%s' ",
 				m.groupDevice, groupID, v.ProductID, v.DeviceName)
 			_, err := session.Exec(query)
 			if err != nil {
-				return nil
+				return err
 			}
 		}
 		return nil
 	})
+}
+func (m *groupModel) DeleteDevice(ctx context.Context, device *devices.Core) error {
+	query := fmt.Sprintf("delete from %s where  productID = '%s' and deviceName = '%s' ",
+		m.groupDevice, device.ProductID, device.DeviceName)
+	_, err := m.SqlConn.ExecCtx(ctx, query)
+	if err != nil {
+		return err
+	}
+	return nil
 }
