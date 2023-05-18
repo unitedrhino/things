@@ -75,7 +75,7 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *mysql.DmProductInfo, data *dm.Pr
 		if err != nil {
 			return err
 		}
-		path, err := l.svcCtx.OssClient.PublicBucket().CopyFromTempBucket(data.ProductImg, nwePath)
+		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(data.ProductImg, nwePath)
 		if err != nil {
 			return errors.System.AddDetail(err)
 		}

@@ -1,7 +1,11 @@
 package productmanagelogic
 
 import (
+	"context"
 	"encoding/json"
+	"github.com/i-Things/things/shared/oss/common"
+	"github.com/i-Things/things/src/dmsvr/internal/svc"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/def"
@@ -18,7 +22,7 @@ import (
 //	}
 //}
 
-func ToProductInfo(pi *mysql.DmProductInfo) *dm.ProductInfo {
+func ToProductInfo(ctx context.Context, pi *mysql.DmProductInfo, svcCtx *svc.ServiceContext) *dm.ProductInfo {
 	var (
 		tags map[string]string
 	)
@@ -54,6 +58,13 @@ func ToProductInfo(pi *mysql.DmProductInfo) *dm.ProductInfo {
 		Tags:         tags,                                  //产品tags
 		ProductImg:   pi.ProductImg,
 		//Model:     &wrappers.StringValue{Value: pi.Model},    //数据模板
+	}
+	if pi.ProductImg != "" {
+		var err error
+		dpi.ProductImg, err = svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, pi.ProductImg, 24*60, common.OptionKv{})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
+		}
 	}
 	return dpi
 }
