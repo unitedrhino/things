@@ -15,7 +15,6 @@ require (
 	github.com/go-co-op/gocron v1.18.1
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gogf/gf/v2 v2.3.3
-	github.com/golang-module/carbon/v2 v2.2.3
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/jinzhu/copier v0.3.2
