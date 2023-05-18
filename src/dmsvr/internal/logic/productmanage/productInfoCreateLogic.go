@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/domain/schema"
@@ -47,7 +48,7 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 /*
 根据用户的输入生成对应的数据库数据
 */
-func (l *ProductInfoCreateLogic) InsertProduct(in *dm.ProductInfo) *mysql.DmProductInfo {
+func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) *mysql.DmProductInfo {
 	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
 	pi := &mysql.DmProductInfo{
 		ProductID:   deviceAuth.GetStrProductID(ProductID), // 产品id
@@ -96,11 +97,13 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	} else if find == true {
 		return nil, errors.Duplicate.WithMsgf("产品名称重复:%s", in.ProductName).AddDetail("ProductName:" + in.ProductName)
 	}
-	pi := l.InsertProduct(in)
+
+	pi := l.ConvProductPbToPo(in)
 	err = l.InitProduct(pi)
 	if err != nil {
 		return nil, err
 	}
+
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)
 		if err == nil {
@@ -109,11 +112,13 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	} else {
 		pi.Tags = "{}"
 	}
+
 	_, err = l.svcCtx.ProductInfo.Insert(l.ctx, pi)
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
+
 	return &dm.Response{}, nil
 }
 func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.DmProductInfo) error {

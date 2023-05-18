@@ -256,10 +256,10 @@ type RoleMenuUpdateReq struct {
 }
 
 type SysLogLoginIndexReq struct {
-	Page          PageInfo  `json:"page"`                    //分页信息,只获取一个则不填
-	IpAddr        string    `json:"ipAddr,optional "`        //按ip地址查找
-	LoginLocation string    `json:"loginLocation,optional "` //按登录地址查找
-	DateRange     DateRange `json:"dateRange,optional "`     //按时间范围查找
+	Page          PageInfo  `json:"page"`                   //分页信息,只获取一个则不填
+	IpAddr        string    `json:"ipAddr,optional"`        //按ip地址查找
+	LoginLocation string    `json:"loginLocation,optional"` //按登录地址查找
+	DateRange     DateRange `json:"dateRange,optional"`     //按时间范围查找
 }
 
 type SysLogLoginIndexData struct {
@@ -353,8 +353,38 @@ type Map struct {
 	AccessKey string `json:"accessKey"`          //设备地图key
 }
 
+type Oss struct {
+	Host string `json:"host"` //oss访问前缀
+}
+
 type ConfigResp struct {
 	Map Map `json:"map"` //设备地图相关配置
+	Oss Oss `json:"oss"` //oss相关配置
+}
+
+type UploadUrlCreateReq struct {
+	Business string `json:"business"`        //业务(如产品管理 productManage)
+	Scene    string `json:"scene"`           //场景(业务定义 如产品图片 productImg)
+	FilePath string `json:"filePath"`        //文件路径(带文件名)
+	Rename   bool   `json:"rename,optional"` //true 文件重命名，false 不重命名(默认)
+}
+
+type UploadUrlCreateResp struct {
+	FilePath  string `json:"filePath"`  //文件路径(带文件名)
+	UploadUrl string `json:"uploadUrl"` //附件直传地址
+}
+
+type UploadFileReq struct {
+	FilePath string `json:"filePath"`        //文件路径(带文件名)
+	Business string `form:"business"`        //业务(如产品管理 productManage)
+	Scence   string `form:"scence"`          //场景(业务定义 如产品图片 productImg)
+	Rename   bool   `form:"rename,optional"` //1文件重命名，0不重命名
+	File     []byte `form:"file"`            //文件内容,二进制文件传输
+}
+
+type UploadFileResp struct {
+	FileDir string `json:"fileDir"` //文件路径(带文件名)
+	FileUrl string `json:"fileUrl"` //文件url
 }
 
 type AuthApiInfo struct {
@@ -709,6 +739,7 @@ type ProductInfo struct {
 	CreatedTime  int64   `json:"createdTime,optional,string"` //创建时间 只读
 	ProductID    string  `json:"productID,optional"`          //产品id 只读
 	ProductName  string  `json:"productName,optional"`        //产品名称
+	ProductImg   string  `json:"productImg,optional"`         //产品图片
 	AuthMode     int64   `json:"authMode,optional"`           //认证方式:1:账密认证,2:秘钥认证
 	DeviceType   int64   `json:"deviceType,optional"`         //设备类型:1:设备,2:网关,3:子设备
 	CategoryID   int64   `json:"categoryID,optional"`         //产品品类
@@ -734,19 +765,22 @@ type ProductInfoCreateReq struct {
 	AutoRegister int64   `json:"autoRegister,optional"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Desc         *string `json:"desc,optional"`         //描述
 	Tags         []*Tag  `json:"tags,optional"`         // 产品tag
+	ProductImg   string  `json:"productImg,optional"`   //产品图片
 }
 
 type ProductInfoUpdateReq struct {
-	ProductID    string  `json:"productID"`             //产品id 只读
-	ProductName  string  `json:"productName,optional"`  //产品名称
-	AuthMode     int64   `json:"authMode,optional"`     //认证方式:1:账密认证,2:秘钥认证
-	DeviceType   int64   `json:"deviceType,optional"`   //设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64   `json:"categoryID,optional"`   //产品品类
-	NetType      int64   `json:"netType,optional"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto    int64   `json:"dataProto,optional"`    //数据协议:1:自定义,2:数据模板
-	AutoRegister int64   `json:"autoRegister,optional"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Desc         *string `json:"desc,optional"`         //描述
-	Tags         []*Tag  `json:"tags,optional"`         // 产品tag
+	ProductID          string  `json:"productID"`                   //产品id 只读
+	ProductName        string  `json:"productName,optional"`        //产品名称
+	AuthMode           int64   `json:"authMode,optional"`           //认证方式:1:账密认证,2:秘钥认证
+	DeviceType         int64   `json:"deviceType,optional"`         //设备类型:1:设备,2:网关,3:子设备
+	CategoryID         int64   `json:"categoryID,optional"`         //产品品类
+	NetType            int64   `json:"netType,optional"`            //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	DataProto          int64   `json:"dataProto,optional"`          //数据协议:1:自定义,2:数据模板
+	AutoRegister       int64   `json:"autoRegister,optional"`       //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Desc               *string `json:"desc,optional"`               //描述
+	Tags               []*Tag  `json:"tags,optional"`               // 产品tag
+	ProductImg         string  `json:"productImg,optional"`         //产品图片
+	IsUpdateProductImg bool    `json:"isUpdateProductImg,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
 }
 
 type ProductInfoDeleteReq struct {
