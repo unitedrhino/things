@@ -30,15 +30,17 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(req *types.ProductInfoUpdateReq) error {
 	dmReq := &dm.ProductInfo{
-		ProductID:    req.ProductID,
-		ProductName:  req.ProductName,
-		AuthMode:     req.AuthMode,
-		DeviceType:   req.DeviceType,
-		CategoryID:   req.CategoryID,
-		NetType:      req.NetType,
-		DataProto:    req.DataProto,
-		AutoRegister: req.AutoRegister,
-		Tags:         logic.ToTagsMap(req.Tags),
+		ProductID:          req.ProductID,
+		ProductName:        req.ProductName,
+		AuthMode:           req.AuthMode,
+		DeviceType:         req.DeviceType,
+		CategoryID:         req.CategoryID,
+		NetType:            req.NetType,
+		DataProto:          req.DataProto,
+		AutoRegister:       req.AutoRegister,
+		Tags:               logic.ToTagsMap(req.Tags),
+		ProductImg:         req.ProductImg,
+		IsUpdateProductImg: req.IsUpdateProductImg,
 	}
 	if req.Desc != nil {
 		dmReq.Desc = &wrappers.StringValue{
@@ -50,6 +52,7 @@ func (l *UpdateLogic) Update(req *types.ProductInfoUpdateReq) error {
 	//		Value: *req.DevStatus,
 	//	}
 	//}
+
 	_, err := l.svcCtx.ProductM.ProductInfoUpdate(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)

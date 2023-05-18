@@ -42,3 +42,6 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
+RuleRpc:
+  Enable: true
+  Mode: direct

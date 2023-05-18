@@ -31,7 +31,7 @@ func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
 		conf.MustLoad("etc/dm.yaml", &c)
 		svcCtx = svc.NewServiceContext(c)
-		startup.Subscribe(svcCtx)
+		startup.Init(svcCtx)
 	})
 	return svcCtx
 }

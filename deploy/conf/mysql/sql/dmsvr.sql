@@ -9,6 +9,7 @@ CREATE TABLE if not exists `dm_product_info`
 (
     `productID`    char(11)     NOT NULL COMMENT '产品id',
     `productName`  varchar(100) NOT NULL COMMENT '产品名称',
+    `productImg`   varchar(200) DEFAULT '' COMMENT '产品图片',
     `productType`  tinyint(1)            DEFAULT '1' COMMENT '产品状态:1:开发中,2:审核中,3:已发布',
     `authMode`     tinyint(1)            DEFAULT '1' COMMENT '认证方式:1:账密认证,2:秘钥认证',
     `deviceType`   tinyint(1)            DEFAULT '1' COMMENT '设备类型:1:设备,2:网关,3:子设备',

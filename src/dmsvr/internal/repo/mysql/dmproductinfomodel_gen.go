@@ -39,6 +39,7 @@ type (
 	DmProductInfo struct {
 		ProductID    string       `db:"productID"`    // 产品id
 		ProductName  string       `db:"productName"`  // 产品名称
+		ProductImg   string       `db:"productImg"`   // 产品图片
 		ProductType  int64        `db:"productType"`  // 产品状态:1:开发中,2:审核中,3:已发布
 		AuthMode     int64        `db:"authMode"`     // 认证方式:1:账密认证,2:秘钥认证
 		DeviceType   int64        `db:"deviceType"`   // 设备类型:1:设备,2:网关,3:子设备
@@ -98,14 +99,14 @@ func (m *defaultDmProductInfoModel) FindOneByProductName(ctx context.Context, pr
 }
 
 func (m *defaultDmProductInfoModel) Insert(ctx context.Context, data *DmProductInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, dmProductInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.ProductName, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Desc, data.DevStatus, data.Tags)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, dmProductInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.ProductName, data.ProductImg, data.ProductType, data.AuthMode, data.DeviceType, data.CategoryID, data.NetType, data.DataProto, data.AutoRegister, data.Secret, data.Desc, data.DevStatus, data.Tags)
 	return ret, err
 }
 
 func (m *defaultDmProductInfoModel) Update(ctx context.Context, newData *DmProductInfo) error {
 	query := fmt.Sprintf("update %s set %s where `productID` = ?", m.table, dmProductInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductName, newData.ProductType, newData.AuthMode, newData.DeviceType, newData.CategoryID, newData.NetType, newData.DataProto, newData.AutoRegister, newData.Secret, newData.Desc, newData.DevStatus, newData.Tags, newData.ProductID)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductName, newData.ProductImg, newData.ProductType, newData.AuthMode, newData.DeviceType, newData.CategoryID, newData.NetType, newData.DataProto, newData.AutoRegister, newData.Secret, newData.Desc, newData.DevStatus, newData.Tags, newData.ProductID)
 	return err
 }
 
