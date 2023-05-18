@@ -304,6 +304,8 @@ message ProductInfo{
   google.protobuf.StringValue   desc = 11;//描述
   google.protobuf.StringValue   devStatus = 12; // 产品状态
   map<string, string> tags = 13; //产品标签
+  string productImg = 14; //产品图片
+  bool isUpdateProductImg = 15;//只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
 }
 
 message ProductInfoDeleteReq{

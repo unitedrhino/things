@@ -7,18 +7,20 @@ import (
 	"github.com/i-Things/things/shared/verify"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/middleware"
-	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
-	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
+	"github.com/i-Things/things/src/disvr/client/deviceinteract"
+	"github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
-	deviceauth "github.com/i-Things/things/src/dmsvr/client/deviceauth"
+	"github.com/i-Things/things/src/dmsvr/client/deviceauth"
 	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
 	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
 	"github.com/i-Things/things/src/rulesvr/ruledirect"
+	"github.com/zeromicro/go-zero/core/logx"
+	"os"
 
-	devicegroup "github.com/i-Things/things/src/dmsvr/client/devicegroup"
-	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
-	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
-	remoteconfig "github.com/i-Things/things/src/dmsvr/client/remoteconfig"
+	"github.com/i-Things/things/src/dmsvr/client/devicegroup"
+	"github.com/i-Things/things/src/dmsvr/client/devicemanage"
+	"github.com/i-Things/things/src/dmsvr/client/productmanage"
+	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	api "github.com/i-Things/things/src/syssvr/client/api"
 	common "github.com/i-Things/things/src/syssvr/client/common"
@@ -33,6 +35,12 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"time"
 )
+
+func init() {
+	jwt.TimeFunc = func() time.Time {
+		return time.Now()
+	}
+}
 
 type SvrClient struct {
 	UserRpc        user.User
@@ -59,7 +67,7 @@ type ServiceContext struct {
 	CheckToken rest.Middleware
 	DmManage   rest.Middleware
 	Captcha    *verify.Captcha
-	OSS        oss.OSSer
+	OssClient  *oss.Client
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -135,25 +143,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceInteract = didirect.NewDeviceInteract(c.DiRpc.RunProxy)
 		}
 	}
-	//ossClient, err := oss.NewOss(c.OSS)
-	//if err != nil {
-	//	logx.Error("NewOss err", err)
-	//	os.Exit(-1)
-	//}
-	//oss.InitBuckets(context.TODO(), ossClient)
-	//if err != nil {
-	//	logx.Error("InitBuckets err", err)
-	//	os.Exit(-1)
-	//}
-	jwt.TimeFunc = func() time.Time {
-		return time.Now()
+
+	ossClient := oss.NewOssClient(c.OssConf)
+	if ossClient == nil {
+		logx.Error("NewOss err")
+		os.Exit(-1)
 	}
+
 	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
 		Config:     c,
 		CheckToken: middleware.NewCheckTokenMiddleware(c, ur, au, lo).Handle,
 		Captcha:    captcha,
+		OssClient:  ossClient,
 		SvrClient: SvrClient{
 			UserRpc:        ur,
 			RoleRpc:        ro,

@@ -15,7 +15,7 @@ func TestDecimalToAny(t *testing.T) {
 	fmt.Println(bit62, ans)
 }
 func TestToLen(t *testing.T) {
-	src := ToLen("123", 11)
+	src := FillZeroToLen("123", 11)
 	ans := AnyToDecimal("00000000i23", 62)
 	bit62 := DecimalToAny(ans, 62)
 	fmt.Println(src, ans, bit62)
