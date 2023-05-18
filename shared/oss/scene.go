@@ -2,7 +2,6 @@ package oss
 
 import (
 	"fmt"
-	"github.com/golang-module/carbon/v2"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
 	"path"
@@ -73,9 +72,6 @@ func GetFilePath(scene *SceneInfo, rename bool) (string, error) {
 		if strings.ContainsAny(scene.FilePath, strings.Join(spcChar, "")) {
 			return "", errors.Parameter.WithMsg("包含特殊字符")
 		}
-	}
-	if scene.Date == "" {
-		scene.Date = carbon.Now().ToDateString()
 	}
 	filePath := fmt.Sprintf("%s/%s/%s", scene.Business, scene.Scene, scene.FilePath)
 	return filePath, nil
