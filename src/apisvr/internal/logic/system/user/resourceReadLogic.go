@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
+	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"

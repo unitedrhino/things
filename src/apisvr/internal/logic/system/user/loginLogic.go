@@ -6,9 +6,9 @@ import (
 	"github.com/gogf/gf/v2/encoding/gcharset"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/apisvr/internal/domain/userHeader"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -62,7 +62,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	os := ua.OS()
 
 	l.Infof("%s req=%+v", utils.FuncName(), req)
-	if req.LoginType == "pwd" {
+	if req.LoginType == "pwd" && req.Code != "" && req.CodeID != "" {
 		if l.svcCtx.Captcha.Verify(req.CodeID, req.Code) == false {
 			return nil, errors.Captcha
 		}
@@ -80,8 +80,8 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, er)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-			Uid:           uResp.Info.Uid,
-			UserName:      uResp.Info.UserName,
+			Uid:           0,
+			UserName:      req.UserID,
 			IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
 			Browser:       browser,
@@ -95,8 +95,8 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		l.Errorf("%s.rpc.Register return nil req=%v", utils.FuncName(), req)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-			Uid:           uResp.Info.Uid,
-			UserName:      uResp.Info.UserName,
+			Uid:           0,
+			UserName:      req.UserID,
 			IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
 			Browser:       browser,

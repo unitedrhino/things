@@ -3,13 +3,17 @@ package userlogic
 import (
 	"context"
 	"database/sql"
+	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/kv"
 	"time"
 )
 
@@ -17,6 +21,14 @@ type LoginLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+}
+
+type LoginSafeCtlInfo struct {
+	prefix    string
+	key       string
+	timeout   int
+	times     int
+	forbidden int
 }
 
 func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
@@ -50,7 +62,7 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
 	return nil
 }
 
-func (l *LoginLogic) getRet(uc *mysql.SysUserInfo) (*sys.UserLoginResp, error) {
+func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role)
@@ -64,6 +76,9 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo) (*sys.UserLoginResp, error) {
 			utils.FuncName(), utils.Fmt(ui), utils.Fmt(err))
 		return nil, errors.Database.AddDetail(err)
 	}
+
+	//登录成功，清除密码错误次数相关redis key
+	clearWrongpassKeys(store, list)
 
 	resp := &sys.UserLoginResp{
 		Info: &sys.UserInfo{
@@ -112,16 +127,123 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *mysql.SysUserInfo, e
 	return uc, err
 }
 
+func clearWrongpassKeys(store kv.Store, list []*LoginSafeCtlInfo) {
+	for _, v := range list {
+		if v.prefix != "login:wrongPassword:ip:" {
+			store.Del(v.key)
+		}
+	}
+}
+
+func parseWrongpassConf(counter conf.WrongPasswordCounter, userID string, ip string) []*LoginSafeCtlInfo {
+	var res []*LoginSafeCtlInfo
+	res = append(res, &LoginSafeCtlInfo{
+		prefix:  "login:wrongPassword:captcha:",
+		key:     "login:wrongPassword:captcha:" + userID,
+		timeout: 24 * 3600,
+		times:   counter.Captcha,
+	})
+
+	for i, v := range counter.Account {
+		res = append(res, &LoginSafeCtlInfo{
+			prefix:    "login:wrongPassword:account:",
+			key:       "login:wrongPassword:account:" + cast.ToString(i+1) + ":" + userID,
+			timeout:   v.Statistics * 60,
+			times:     v.TriggerTimes,
+			forbidden: v.ForbiddenTime * 60,
+		})
+	}
+	for i, v := range counter.Ip {
+		res = append(res, &LoginSafeCtlInfo{
+			prefix:    "login:wrongPassword:ip:",
+			key:       "login:wrongPassword:ip:" + cast.ToString(i+1) + ":" + ip,
+			timeout:   v.Statistics * 60,
+			times:     v.TriggerTimes,
+			forbidden: v.ForbiddenTime * 60,
+		})
+	}
+
+	return res
+}
+
+func checkAccountOrIpForbidden(store kv.Store, list []*LoginSafeCtlInfo) (int32, bool) {
+	for _, v := range list {
+		if v.prefix != "login:wrongPassword:captcha:" {
+			ret, err := store.Get(v.key)
+			if err != nil {
+				continue
+			}
+			if cast.ToInt(ret) >= v.times {
+				return int32(v.forbidden), true
+			}
+		}
+	}
+	return 0, false
+}
+
+func checkCaptchaTimes(store kv.Store, list []*LoginSafeCtlInfo) (bool, error) {
+	for _, v := range list {
+		ret, err := store.Get(v.key)
+		if ret == "" {
+			err = store.Setex(v.key, "1", v.timeout)
+			if err != nil {
+				return false, errors.Redis.AddMsgf("创建 redis key：%s 失败", v.key)
+			}
+			continue
+		}
+
+		_, err = store.Incr(v.key)
+		if err != nil {
+			return false, errors.Redis.AddMsgf("redis key：%s 自增失败", v.key)
+		}
+		if v.prefix != "login:wrongPassword:captcha:" {
+			if cast.ToInt(ret)+1 >= v.times {
+				err = store.Setex(v.key, cast.ToString(cast.ToInt(ret)+1), v.forbidden)
+				if err != nil {
+					return false, errors.Redis.AddMsgf("重置 key：%s 时间失败", v.key)
+				}
+			}
+		} else {
+			if cast.ToInt(ret)+1 >= v.times {
+				return true, nil
+			}
+		}
+	}
+	return false, nil
+}
+
 func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
+
+	//检查账号是否冻结
+	list := parseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter, in.UserID, userHeader.GetUserCtx(l.ctx).IP)
+	if len(list) > 0 {
+		forbiddenTime, f := checkAccountOrIpForbidden(l.svcCtx.Store, list)
+		if f {
+			return nil, errors.Default.AddMsgf("%s %d 分钟", errors.AccountOrIpForbidden.Error(), forbiddenTime/60)
+		}
+	}
+
 	uc, err := l.GetUserInfo(in)
 	switch err {
 	case nil:
-		return l.getRet(uc)
+		return l.getRet(uc, l.svcCtx.Store, list)
 	case mysql.ErrNotFound:
 		return nil, errors.UnRegister
+	case errors.Password:
+		ret, err := checkCaptchaTimes(l.svcCtx.Store, list)
+		if err != nil {
+			return nil, err
+		}
+		if ret {
+			return nil, errors.UseCaptcha
+		}
+		return nil, errors.Password
+
 	default:
 		l.Errorf("%s req=%v err=%+v", utils.FuncName(), utils.Fmt(in), err)
 		return nil, errors.Database.AddDetail(err)
 	}
+
+	return nil, nil
 }
