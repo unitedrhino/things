@@ -52,7 +52,7 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 
 	info = make([]*dm.ProductInfo, 0, len(di))
 	for _, v := range di {
-		info = append(info, ToProductInfo(v))
+		info = append(info, ToProductInfo(l.ctx, v, l.svcCtx))
 	}
 
 	return &dm.ProductInfoIndexResp{List: info, Total: size}, nil
