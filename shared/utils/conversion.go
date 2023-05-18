@@ -38,7 +38,7 @@ func DecimalToAny(num, n int64) string {
 	return new_num_str
 }
 
-func ToLen(src string, length int) string {
+func FillZeroToLen(src string, length int) string {
 	for len(src) < length {
 		src = "0" + src
 	}

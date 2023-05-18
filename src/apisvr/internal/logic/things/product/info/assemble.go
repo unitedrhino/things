@@ -21,5 +21,6 @@ func productInfoToApi(v *dm.ProductInfo) *types.ProductInfo {
 		Secret:       v.Secret,                   //动态注册产品秘钥 只读
 		Desc:         utils.ToNullString(v.Desc), //描述
 		Tags:         logic.ToTagsType(v.Tags),
+		ProductImg:   v.ProductImg, //产品图片
 	}
 }

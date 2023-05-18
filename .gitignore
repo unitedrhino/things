@@ -49,3 +49,5 @@ src/usersvr/usersvr*
 .DS_Store
 /src/apisvr/logs/
 /pack/*
+
+.history
