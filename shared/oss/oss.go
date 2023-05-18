@@ -1,21 +1,22 @@
 package oss
 
 import (
-	"fmt"
-	"github.com/i-Things/things/shared/conf"
-	"github.com/minio/minio-go/v7"
+	"context"
+	"io"
+
+	"github.com/i-Things/things/shared/oss/common"
 )
 
-type OSSer = *minio.Client
-
-//bucket 列表
-const (
-	BucketFirmware = "firmware"
-)
-
-func NewOss(conf conf.OSSConf) (OSSer, error) {
-	if conf.OSS != "minio" {
-		return nil, fmt.Errorf("oss just support minio")
-	}
-	return NewMinio(conf.Minio)
+type Handle interface {
+	SignedPutUrl(ctx context.Context, objectName string, expiredSec int64, opKv common.OptionKv) (string, error)
+	SignedGetUrl(ctx context.Context, objectName string, expiredSec int64, opKv common.OptionKv) (string, error)
+	Delete(ctx context.Context, objectName string, opKv common.OptionKv) error
+	Upload(ctx context.Context, objectName string, reader io.Reader, opKv common.OptionKv) (string, error)
+	GetObjectInfo(ctx context.Context, objectName string) (*common.StorageObjectInfo, error)
+	PrivateBucket() Handle
+	PublicBucket() Handle
+	TemporaryBucket() Handle
+	CopyFromTempBucket(tempPath, dstPath string) (string, error)
+	GetUrl(path string) (string, error)
+	//List(ctx context.Context)
 }

@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/Blank-Xu/sql-adapter v0.0.0-20210714092925-0bdd0d548758
 	github.com/Masterminds/squirrel v1.20.1
+	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
 	github.com/casbin/casbin/v2 v2.68.0
 	github.com/casbin/redis-watcher/v2 v2.5.0
 	github.com/dgraph-io/ristretto v0.1.0
@@ -14,6 +15,7 @@ require (
 	github.com/go-co-op/gocron v1.18.1
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gogf/gf/v2 v2.3.3
+	github.com/golang-module/carbon/v2 v2.2.3
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/jinzhu/copier v0.3.2

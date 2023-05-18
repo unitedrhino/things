@@ -208,6 +208,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/config",
 				Handler: systemcommon.ConfigHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/upload-url/create",
+				Handler: systemcommon.UploadUrlCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/upload-file",
+				Handler: systemcommon.UploadFileHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/api/v1/system/common"),
 	)

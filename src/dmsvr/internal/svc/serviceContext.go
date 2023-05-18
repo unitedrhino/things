@@ -2,6 +2,7 @@ package svc
 
 import (
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
@@ -39,6 +40,7 @@ type ServiceContext struct {
 	Gateway          mysql.DmGatewayDeviceModel
 	RemoteConfigDB   mysql.DmRemoteConfigModel
 	RemoteConfigInfo mysql.DmProductRemoteConfigModel
+	OssClient        *oss.Client
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -72,8 +74,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	RemoteConfigInfo := mysql.NewDmProductRemoteConfigModel(conn)
 	mysql.NewDmProductRemoteConfigModel(conn)
 	gw := mysql.NewDmGatewayDeviceModel(conn)
+	ossClient := oss.NewOssClient(c.OssConf)
+	if ossClient == nil {
+		logx.Error("NewOss err")
+		os.Exit(-1)
+	}
+
 	return &ServiceContext{
 		Config:           c,
+		OssClient:        ossClient,
 		DeviceInfo:       di,
 		ProductInfo:      pi,
 		ProductSchema:    pt,

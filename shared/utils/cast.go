@@ -34,6 +34,62 @@ func Convert(src any, dst any) any {
 	return dst
 }
 
+func ToEmptyInt64(val *wrappers.Int64Value) int64 {
+	if val == nil {
+		return 0
+	}
+	return val.Value
+}
+func ToNullInt64(val *wrappers.Int64Value) *int64 {
+	if val == nil {
+		return nil
+	}
+	return &val.Value
+}
+func ToRpcNullInt64(val any) *wrappers.Int64Value {
+	if val == nil {
+		return nil
+	}
+
+	var wrapVal any
+	switch val.(type) {
+	case string:
+		wrapVal = val
+	case *string:
+		if v := val.(*string); v != nil {
+			wrapVal = *v
+		}
+	case sql.NullString:
+		if v := val.(sql.NullString); v.Valid == true {
+			wrapVal = v.String
+		}
+	case int64:
+		wrapVal = val
+	case *int64:
+		if v := val.(*int64); v != nil {
+			wrapVal = *v
+		}
+	case sql.NullInt64:
+		if v := val.(sql.NullInt64); v.Valid == true {
+			wrapVal = v.Int64
+		}
+	default:
+		return nil
+	}
+
+	if wrapVal != nil {
+		return &wrappers.Int64Value{Value: cast.ToInt64(wrapVal)}
+	} else {
+		return nil
+	}
+}
+
+func ToEmptyString(val *wrappers.StringValue) string {
+	if val == nil {
+		return ""
+	}
+	return val.Value
+}
 func ToNullString(val *wrappers.StringValue) *string {
 	if val == nil {
 		return nil
