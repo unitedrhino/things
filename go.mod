@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/Blank-Xu/sql-adapter v0.0.0-20210714092925-0bdd0d548758
 	github.com/Masterminds/squirrel v1.20.1
+	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
 	github.com/casbin/casbin/v2 v2.68.0
 	github.com/casbin/redis-watcher/v2 v2.5.0
 	github.com/dgraph-io/ristretto v0.1.0
@@ -72,6 +73,7 @@ require (
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+	github.com/golang-module/carbon/v2 v2.2.3 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/mock v1.6.0 // indirect

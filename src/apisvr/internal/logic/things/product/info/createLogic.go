@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
@@ -38,6 +39,7 @@ func (l *CreateLogic) Create(req *types.ProductInfoCreateReq) error {
 		AutoRegister: req.AutoRegister,
 		Desc:         utils.ToRpcNullString(req.Desc),
 		Tags:         logic.ToTagsMap(req.Tags),
+		ProductImg:   req.ProductImg,
 	}
 	//if req.DevStatus != nil {
 	//	dmReq.DevStatus = &wrappers.StringValue{

@@ -55,3 +55,15 @@ RuleRpc:
       Hosts:
         - 127.0.0.1:2379
       Key: rule.rpc
+OssConf:
+  OssType: minio
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  AccessKeyID: root
+  AccessKeySecret: password
+  Location: 127.0.0.1:9000
+  CustomHost: http://127.0.0.1:9000/
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000
+  UseSSL: false

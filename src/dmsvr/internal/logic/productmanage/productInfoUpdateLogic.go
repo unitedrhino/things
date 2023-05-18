@@ -3,6 +3,9 @@ package productmanagelogic
 import (
 	"context"
 	"encoding/json"
+	"github.com/i-Things/things/shared/oss"
+	"path"
+
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -29,7 +32,7 @@ func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *ProductInfoUpdateLogic) UpdateProductInfo(old *mysql.DmProductInfo, data *dm.ProductInfo) {
+func (l *ProductInfoUpdateLogic) setPoByPb(old *mysql.DmProductInfo, data *dm.ProductInfo) error {
 	if data.Tags != nil {
 		tags, err := json.Marshal(data.Tags)
 		if err == nil {
@@ -56,6 +59,28 @@ func (l *ProductInfoUpdateLogic) UpdateProductInfo(old *mysql.DmProductInfo, dat
 	if data.ProductName != "" {
 		old.ProductName = data.ProductName
 	}
+	if data.ProductImg != "" {
+		old.ProductImg = data.ProductImg
+	}
+	if data.ProductImg != "" && data.IsUpdateProductImg == true { //如果填了参数且不等于原来的,说明修改头像,需要处理
+		si, err := oss.GetSceneInfo(data.ProductImg)
+		if err != nil {
+			return err
+		}
+		if !(si.Business == oss.BusinessProductManage && si.Scene == oss.SceneProductImg) {
+			return errors.Parameter.WithMsg("产品图片的路径不对")
+		}
+		si.FilePath = data.ProductID + path.Ext(si.FilePath)
+		nwePath, err := oss.GetFilePath(si, false)
+		if err != nil {
+			return err
+		}
+		path, err := l.svcCtx.OssClient.PublicBucket().CopyFromTempBucket(data.ProductImg, nwePath)
+		if err != nil {
+			return errors.System.AddDetail(err)
+		}
+		old.ProductImg = path
+	}
 	if data.AuthMode != 0 {
 		old.AuthMode = data.AuthMode
 	}
@@ -74,21 +99,24 @@ func (l *ProductInfoUpdateLogic) UpdateProductInfo(old *mysql.DmProductInfo, dat
 	if data.AutoRegister != 0 {
 		old.AutoRegister = data.AutoRegister
 	}
-
+	return nil
 }
 
 // 更新设备
 func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Response, error) {
-	pi, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
+	po, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.ProductID))
 		}
 		return nil, errors.Database.AddDetail(err)
 	}
-	l.UpdateProductInfo(pi, in)
 
-	err = l.svcCtx.ProductInfo.Update(l.ctx, pi)
+	err = l.setPoByPb(po, in)
+	if err != nil {
+		return nil, err
+	}
+	err = l.svcCtx.ProductInfo.Update(l.ctx, po)
 	if err != nil {
 		l.Errorf("%s.Update err=%+v", utils.FuncName(), err)
 		return nil, errors.Database.AddDetail(err)

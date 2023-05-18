@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"encoding/json"
+
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
@@ -51,6 +52,7 @@ func ToProductInfo(pi *mysql.DmProductInfo) *dm.ProductInfo {
 		Desc:         &wrappers.StringValue{Value: pi.Desc}, //描述
 		CreatedTime:  pi.CreatedTime.Unix(),                 //创建时间
 		Tags:         tags,                                  //产品tags
+		ProductImg:   pi.ProductImg,
 		//Model:     &wrappers.StringValue{Value: pi.Model},    //数据模板
 	}
 	return dpi
