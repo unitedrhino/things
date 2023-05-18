@@ -62,7 +62,7 @@ type (
         AutoRegister int64 `json:"autoRegister,optional"`                                 //动态注册:1:关闭,2:打开,3:打开并自动创建设备
         Desc *string `json:"desc,optional"`                       //描述
         Tags []*Tag `json:"tags,optional"`                                         // 产品tag
-        ProductImg string `json:"productImg,optional"`                        //产品图片
+        ProductImg string `json:"productImg,optional"`                        //产品图片 传参为产品图片的file path
     }
 
     ProductInfoUpdateReq struct {

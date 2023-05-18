@@ -33,5 +33,5 @@ func (l *ProductInfoReadLogic) ProductInfoRead(in *dm.ProductInfoReadReq) (*dm.P
 		}
 		return nil, err
 	}
-	return ToProductInfo(pi), nil
+	return ToProductInfo(l.ctx, pi, l.svcCtx), nil
 }
