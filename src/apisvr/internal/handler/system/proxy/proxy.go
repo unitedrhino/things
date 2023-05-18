@@ -11,6 +11,7 @@ import (
 )
 
 func Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+
 	dir := http.Dir(svcCtx.Config.Proxy.FileProxy[0].FrontDir)
 	_, err := dir.Open(svcCtx.Config.Proxy.FileProxy[0].FrontDefaultPage)
 	if err != nil { //没有前端代理模式
