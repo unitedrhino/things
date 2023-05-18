@@ -8,7 +8,7 @@ networks:
 
 services:
   ithings:
-    image: ghcr.io/i4de/ithings:latest
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:ithings-latest
     container_name: ithings
     restart: always
     ports:
@@ -33,7 +33,7 @@ services:
         ipv4_address: 172.19.0.8
 
   nats-server:
-    image: nats:2.8-alpine
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:nats-2.8-alpine
     container_name: nats
     restart: always
     ports:
@@ -50,7 +50,7 @@ services:
         ipv4_address: 172.19.0.2
 
   etcd:
-    image: docker.io/bitnami/etcd:3.5
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:bitnami-etcd-3.5
     container_name: etcd-v3
     restart: always
     ports:
@@ -68,8 +68,8 @@ services:
         ipv4_address: 172.19.0.3
 
   mariadb:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:mariadb-10.7
     container_name: mariadb
-    image: mariadb:10.7
     restart: always
     ports:
       - "3306:3306"
@@ -88,9 +88,9 @@ services:
         ipv4_address: 172.19.0.4
 
   redis:
-    hostname: redis
-    image: redis:7-alpine
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:redis-7-alpine
     container_name: redis
+    hostname: redis
     restart: always
     ports:
       - "6379:6379"
@@ -104,7 +104,7 @@ services:
         ipv4_address: 172.19.0.5
 
   tdengine:
-    image: tdengine/tdengine
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:tdengine-tdengine-3.0.4.2
     container_name: tdengine
     hostname: tdengine
     ports:
@@ -124,7 +124,7 @@ services:
         ipv4_address: 172.19.0.6
 
   init-db:
-    image: tdengine/tdengine
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:tdengine-tdengine-3.0.4.2
     container_name: init-db
     depends_on:
       - tdengine
@@ -136,8 +136,8 @@ services:
         ipv4_address: 172.19.0.9
 
   emqx:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:emqx-4.4.17
     container_name: emqx
-    image: emqx:4.4.17
     hostname: node1.emqx.io
     restart: always
     ports:
