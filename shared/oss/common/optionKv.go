@@ -1,7 +1,7 @@
 package common
 
 import (
-	oss "github.com/aliyun/aliyun-oss-go-sdk/aliYunOss"
+	oss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"net/url"
 )
 

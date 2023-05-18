@@ -3,7 +3,7 @@ package conf
 import (
 	"fmt"
 
-	oss "github.com/aliyun/aliyun-oss-go-sdk/aliYunOss"
+	oss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
 type OssConf struct {

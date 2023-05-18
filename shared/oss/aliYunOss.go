@@ -5,7 +5,7 @@ import (
 	"io"
 	"strconv"
 
-	aliOss "github.com/aliyun/aliyun-oss-go-sdk/aliYunOss"
+	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/oss/common"
 )
