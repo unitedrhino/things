@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/config"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -26,6 +27,7 @@ type ServiceContext struct {
 	LogModel      mysql.LogModel
 	ApiModel      mysql.SysApiInfoModel
 	Casbin        *casbin.Enforcer
+	Store         kv.Store
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -46,6 +48,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	UserID := utils.NewSnowFlake(nodeId)
 	db, _ := conn.RawDB()
 	ca := cas.NewCasbinWithRedisWatcher(db, "mysql", c.CacheRedis[0].RedisConf)
+	store := kv.NewStore(c.CacheRedis)
 
 	return &ServiceContext{
 		Config:        c,
@@ -62,5 +65,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LogModel:      l,
 		ApiModel:      api,
 		Casbin:        ca,
+		Store:         store,
 	}
 }

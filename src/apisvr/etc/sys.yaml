@@ -24,3 +24,19 @@ UserOpt:
 Map:
   Mode: baidu
   AccessKey: UGmGEIzlEQWtRjC1uGb6f0oypHPQC3Bs
+WrongPasswordCounter:
+  Captcha: 4 # 连续输错密码次数上限，需要输验证码
+  Account:
+    - statistics: 5    # 统计时间 单位：分钟
+      triggerTimes: 8  # 触发次数
+      forbiddenTime: 2 # 冻结时长 单位：分钟
+    - statistics: 6    # 统计时间 单位：分钟
+      triggerTimes: 9  # 触发次数
+      forbiddenTime: 1 # 冻结时长 单位：分钟
+  Ip:
+    - statistics: 5    # 统计时间 单位：分钟
+      triggerTimes: 8  # 触发次数
+      forbiddenTime: 2 # 冻结时长 单位：分钟
+    - statistics: 6    # 统计时间 单位：分钟
+      triggerTimes: 9  # 触发次数
+      forbiddenTime: 1 # 冻结时长 单位：分钟
