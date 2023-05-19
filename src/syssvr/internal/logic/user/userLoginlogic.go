@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
@@ -187,20 +186,20 @@ func checkCaptchaTimes(store kv.Store, list []*LoginSafeCtlInfo) (bool, error) {
 		if ret == "" {
 			err = store.Setex(v.key, "1", v.timeout)
 			if err != nil {
-				return false, errors.Redis.AddMsgf("创建 redis key：%s 失败", v.key)
+				return false, errors.Database.AddMsgf("创建 redis key：%s 失败", v.key)
 			}
 			continue
 		}
 
 		_, err = store.Incr(v.key)
 		if err != nil {
-			return false, errors.Redis.AddMsgf("redis key：%s 自增失败", v.key)
+			return false, errors.Database.AddMsgf("redis key：%s 自增失败", v.key)
 		}
 		if v.prefix != "login:wrongPassword:captcha:" {
 			if cast.ToInt(ret)+1 >= v.times {
 				err = store.Setex(v.key, cast.ToString(cast.ToInt(ret)+1), v.forbidden)
 				if err != nil {
-					return false, errors.Redis.AddMsgf("重置 key：%s 时间失败", v.key)
+					return false, errors.Database.AddMsgf("重置 key：%s 时间失败", v.key)
 				}
 			}
 		} else {
@@ -216,7 +215,7 @@ func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error)
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 
 	//检查账号是否冻结
-	list := parseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter, in.UserID, userHeader.GetUserCtx(l.ctx).IP)
+	list := parseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter, in.UserID, in.Ip)
 	if len(list) > 0 {
 		forbiddenTime, f := checkAccountOrIpForbidden(l.svcCtx.Store, list)
 		if f {
