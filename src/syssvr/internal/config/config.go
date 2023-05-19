@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/third/weixin"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -26,17 +27,5 @@ type Config struct {
 		Mode      string `json:",default=baidu"`
 		AccessKey string
 	}
-	WrongPasswordCounter struct {
-		Captcha int
-		Account []struct {
-			Statistics    int
-			TriggerTimes  int
-			ForbiddenTime int
-		}
-		Ip []struct {
-			Statistics    int
-			TriggerTimes  int
-			ForbiddenTime int
-		}
-	}
+	WrongPasswordCounter conf.WrongPasswordCounter `json:",optional"`
 }

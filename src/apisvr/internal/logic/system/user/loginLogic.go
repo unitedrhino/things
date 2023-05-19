@@ -74,6 +74,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		LoginType: req.LoginType,
 		Code:      req.Code,
 		CodeID:    req.CodeID,
+		Ip:        userHeader.GetUserCtx(l.ctx).IP,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
