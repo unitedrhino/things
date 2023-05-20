@@ -288,6 +288,7 @@ message DeviceInfo{
   int64   firstLogin = 16; //激活时间 只读
   int64   lastLogin = 17; //最后上线时间 只读
   int64   logLevel = 18; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+  string  deviceAlias = 19; //设备别名 读写
 }
 
 message ProductInfo{

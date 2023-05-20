@@ -155,6 +155,7 @@ func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *Dm
 	params := []any{ //注意：要和 fields的 字段顺序 对上
 		data.ProductID,
 		data.DeviceName,
+		data.DeviceAlias,
 		data.Secret,
 		data.Cert,
 		data.Imei,
@@ -204,6 +205,7 @@ func (m *customDmDeviceInfoModel) UpdateDeviceInfo(ctx context.Context, newData 
 	params := []any{ //注意：要和 fields的 字段顺序 对上
 		newData.ProductID,
 		newData.DeviceName,
+		newData.DeviceAlias,
 		newData.Secret,
 		newData.Cert,
 		newData.Imei,

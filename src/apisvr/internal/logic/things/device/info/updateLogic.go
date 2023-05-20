@@ -29,12 +29,13 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(req *types.DeviceInfoUpdateReq) error {
 	deviceInfo := dm.DeviceInfo{
-		ProductID:  req.ProductID,  //产品id 只读
-		DeviceName: req.DeviceName, //设备名称 读写
-		LogLevel:   req.LogLevel,   // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-		Tags:       logic.ToTagsMap(req.Tags),
-		Address:    utils.ToRpcNullString(req.Address),
-		Position:   logic.ToDmPointRpc(req.Position),
+		ProductID:   req.ProductID,  //产品id 只读
+		DeviceName:  req.DeviceName, //设备名称 读写
+		LogLevel:    req.LogLevel,   // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+		Tags:        logic.ToTagsMap(req.Tags),
+		Address:     utils.ToRpcNullString(req.Address),
+		Position:    logic.ToDmPointRpc(req.Position),
+		DeviceAlias: req.DeviceAlias, //设备别名 读写
 	}
 	_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &deviceInfo)
 	if err != nil {
