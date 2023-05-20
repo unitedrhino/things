@@ -28,6 +28,9 @@ Proxy:
   StaticProxy:
     - Router: /api/v1/app/
       Dest: http://127.0.0.1:8000
+    - Router: /api/v1/oss/
+      DeletePrefix: true
+      Dest: http://127.0.0.1:9000
 DdEnable: true
 SysRpc:
   Enable: true
@@ -63,7 +66,7 @@ OssConf:
   AccessKeyID: root
   AccessKeySecret: password
   Location: 127.0.0.1:9000
-  CustomHost: http://127.0.0.1:9000/
+  CustomHost: /api/v1/oss
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false

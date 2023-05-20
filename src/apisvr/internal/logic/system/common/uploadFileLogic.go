@@ -51,12 +51,12 @@ func (l *UploadFileLogic) UploadFile() (resp *types.UploadFileResp, err error) {
 		return resp, err
 	}
 	defer file.Close()
-	fileUrl, err := l.svcCtx.OssClient.TemporaryBucket().Upload(l.ctx, newFilePath, file, common.OptionKv{})
+	fileUri, err := l.svcCtx.OssClient.TemporaryBucket().Upload(l.ctx, newFilePath, file, common.OptionKv{})
 	if err != nil {
 		return resp, err
 	}
 	return &types.UploadFileResp{
-		FileUrl:  fileUrl,
+		FileUri:  fileUri,
 		FilePath: newFilePath,
 	}, err
 }
