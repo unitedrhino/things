@@ -371,7 +371,7 @@ type UploadUrlCreateReq struct {
 
 type UploadUrlCreateResp struct {
 	FilePath  string `json:"filePath"`  //文件路径(带文件名)
-	UploadUrl string `json:"uploadUrl"` //附件直传地址
+	UploadUri string `json:"uploadUri"` //附件直传地址
 }
 
 type UploadFileReq struct {
@@ -383,8 +383,8 @@ type UploadFileReq struct {
 }
 
 type UploadFileResp struct {
-	FileDir string `json:"fileDir"` //文件路径(带文件名)
-	FileUrl string `json:"fileUrl"` //文件url
+	FilePath string `json:"filePath"` //文件路径(带文件名)
+	FileUri  string `json:"fileUri"`  //文件uri 相对路径
 }
 
 type AuthApiInfo struct {
@@ -765,7 +765,7 @@ type ProductInfoCreateReq struct {
 	AutoRegister int64   `json:"autoRegister,optional"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Desc         *string `json:"desc,optional"`         //描述
 	Tags         []*Tag  `json:"tags,optional"`         // 产品tag
-	ProductImg   string  `json:"productImg,optional"`   //产品图片
+	ProductImg   string  `json:"productImg,optional"`   //产品图片 传参为产品图片的file path
 }
 
 type ProductInfoUpdateReq struct {

@@ -187,3 +187,11 @@ func SliceTo[retT any](values []string, cov func(any) retT) []retT {
 	}
 	return ret
 }
+
+func TrimNil[a any](in *a) a {
+	if in != nil {
+		return *in
+	}
+	var ret a
+	return ret
+}
