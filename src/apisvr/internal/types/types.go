@@ -580,6 +580,7 @@ type DeviceGateWayMultiDeleteReq struct {
 type DeviceInfo struct {
 	ProductID      string                             `json:"productID"`                         //产品id 只读
 	DeviceName     string                             `json:"deviceName"`                        //设备名称 读写
+	DeviceAlias    string                             `json:"deviceAlias,optional"`              //设备别名 读写
 	Secret         string                             `json:"secret,optional"`                   //设备秘钥 只读
 	Cert           string                             `json:"cert,optional"`                     // 设备证书  只读
 	Imei           string                             `json:"imei,optional"`                     // IMEI号信息 只读
@@ -604,21 +605,23 @@ type DeviceInfoWithProperty struct {
 }
 
 type DeviceInfoCreateReq struct {
-	ProductID  string  `json:"productID"`         //产品id 只读
-	DeviceName string  `json:"deviceName"`        //设备名称 读写
-	LogLevel   int64   `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Address    *string `json:"address,optional"`  //所在地址
-	Position   *Point  `json:"position,optional"` //设备定位,默认百度坐标系
-	Tags       []*Tag  `json:"tags,optional"`     // 设备tag
+	ProductID   string  `json:"productID"`            //产品id 只读
+	DeviceName  string  `json:"deviceName"`           //设备名称 读写
+	DeviceAlias string  `json:"deviceAlias,optional"` //设备别名 读写
+	LogLevel    int64   `json:"logLevel,optional"`    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Address     *string `json:"address,optional"`     //所在地址
+	Position    *Point  `json:"position,optional"`    //设备定位,默认百度坐标系
+	Tags        []*Tag  `json:"tags,optional"`        // 设备tag
 }
 
 type DeviceInfoUpdateReq struct {
-	ProductID  string  `json:"productID"`         //产品id 只读
-	DeviceName string  `json:"deviceName"`        //设备名称 读写
-	LogLevel   int64   `json:"logLevel,optional"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Address    *string `json:"address,optional"`  //所在地址
-	Position   *Point  `json:"position,optional"` //设备定位,默认百度坐标系
-	Tags       []*Tag  `json:"tags,optional"`     // 设备tag
+	ProductID   string  `json:"productID"`            //产品id 只读
+	DeviceName  string  `json:"deviceName"`           //设备名称 读写
+	DeviceAlias string  `json:"deviceAlias,optional"` //设备别名 读写
+	LogLevel    int64   `json:"logLevel,optional"`    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Address     *string `json:"address,optional"`     //所在地址
+	Position    *Point  `json:"position,optional"`    //设备定位,默认百度坐标系
+	Tags        []*Tag  `json:"tags,optional"`        // 设备tag
 }
 
 type DeviceInfoDeleteReq struct {
