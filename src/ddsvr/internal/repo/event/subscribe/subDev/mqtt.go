@@ -35,7 +35,7 @@ const (
 )
 const (
 	// ShareSubTopicPrefix emqx 共享订阅前缀 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/shared-subscriptions.html
-	ShareSubTopicPrefix = "$share/dd.yl.rpc/"
+	ShareSubTopicPrefix = "$share/dd.rpc/"
 	// TopicConnectStatus emqx 客户端上下线通知 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/system-topic.html#客户端上下线事件
 	TopicConnectStatus = ShareSubTopicPrefix + "$SYS/brokers/+/clients/#"
 
