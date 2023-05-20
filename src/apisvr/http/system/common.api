@@ -52,7 +52,7 @@ type (
         File []byte `form:"file"` //文件内容,二进制文件传输
     }
     UploadFileResp struct {
-        FileDir string `json:"fileDir"` //文件路径(带文件名)
+        FilePath string `json:"filePath"` //文件路径(带文件名)
         FileUrl string `json:"fileUrl"` //文件url
     }
 )
