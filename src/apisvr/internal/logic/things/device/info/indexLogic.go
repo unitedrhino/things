@@ -45,7 +45,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 	}
 	pis := make([]*types.DeviceInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		pi := device.InfoToApi(l.ctx, l.svcCtx, v, req.WithProperty)
+		pi := device.InfoToApi(l.ctx, l.svcCtx, v, req.WithProperties)
 		pis = append(pis, pi)
 	}
 	return &types.DeviceInfoIndexResp{
