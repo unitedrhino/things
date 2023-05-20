@@ -11,15 +11,11 @@ import (
 )
 
 func Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
-
+	var fileProxy bool
 	dir := http.Dir(svcCtx.Config.Proxy.FileProxy[0].FrontDir)
 	_, err := dir.Open(svcCtx.Config.Proxy.FileProxy[0].FrontDefaultPage)
-	if err != nil { //没有前端代理模式
-		return func(writer http.ResponseWriter, request *http.Request) {
-			writer.WriteHeader(http.StatusNotFound)
-			writer.Write([]byte("404"))
-			return
-		}
+	if err == nil { //没有前端代理模式
+		fileProxy = true
 	}
 
 	fileServer := http.FileServer(dir)
@@ -30,6 +26,11 @@ func Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				staticProxy(svcCtx, v, w, r)
 				return
 			}
+		}
+		if fileProxy == false {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("404"))
+			return
 		}
 		f, err := dir.Open(upath)
 		if err != nil {
@@ -54,6 +55,9 @@ func staticProxy(svcCtx *svc.ServiceContext, conf *conf.StaticProxyConf, w http.
 	}
 	proxy := httputil.NewSingleHostReverseProxy(remote)
 	r.Host = remote.Host
+	if conf.DeletePrefix {
+		r.URL.Path = strings.TrimPrefix(r.URL.Path, conf.Router)
+	}
 	proxy.ServeHTTP(w, r)
 }
 func defaultHandle(svcCtx *svc.ServiceContext, upath string, w http.ResponseWriter, r *http.Request) {
