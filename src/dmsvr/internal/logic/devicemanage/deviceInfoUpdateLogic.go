@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -78,8 +79,8 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 		old.Position = fmt.Sprintf("POINT(%f %f)", data.Position.Longitude, data.Position.Latitude)
 	}
 
-	if data.DeviceAlias != "" {
-		old.DeviceAlias = data.DeviceAlias
+	if data.DeviceAlias != nil {
+		old.DeviceAlias = utils.AnyToNullString(data.DeviceAlias)
 	}
 }
 

@@ -35,7 +35,7 @@ func (l *UpdateLogic) Update(req *types.DeviceInfoUpdateReq) error {
 		Tags:        logic.ToTagsMap(req.Tags),
 		Address:     utils.ToRpcNullString(req.Address),
 		Position:    logic.ToDmPointRpc(req.Position),
-		DeviceAlias: req.DeviceAlias, //设备别名 读写
+		DeviceAlias: utils.ToRpcNullString(req.DeviceAlias), //设备别名 读写
 	}
 	_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &deviceInfo)
 	if err != nil {
