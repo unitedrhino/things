@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/third/weixin"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -26,4 +27,5 @@ type Config struct {
 		Mode      string `json:",default=baidu"`
 		AccessKey string
 	}
+	WrongPasswordCounter conf.WrongPasswordCounter `json:",optional"`
 }

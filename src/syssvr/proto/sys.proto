@@ -284,6 +284,7 @@ message UserLoginReq{
     string loginType =4;//验证类型 sms 短信验证码 pwd 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxmini 微信小程序
     string code = 5;//验证码    微信登录填code
     string codeID = 6;//验证码编号 微信登录填state
+    string ip = 7;//透传请求的 ip
 }
 
 message UserLoginResp{
