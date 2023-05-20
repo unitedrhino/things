@@ -42,7 +42,7 @@ func (l *UploadUrlCreateLogic) UploadUrlCreate(req *types.UploadUrlCreateReq) (r
 	}
 	resp = &types.UploadUrlCreateResp{
 		FilePath:  filePath,
-		UploadUrl: url,
+		UploadUri: url,
 	}
 	return resp, err
 }

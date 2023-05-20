@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/i-Things/things/shared/conf"
@@ -68,7 +69,7 @@ func (m *Minio) SignedPutUrl(ctx context.Context, fileDir string, expiredSec int
 	if err != nil {
 		return "", err
 	}
-	return url.String(), err
+	return m.setting.CustomHost + url.RequestURI(), err
 }
 
 // 获取get下载url
@@ -77,7 +78,7 @@ func (m *Minio) SignedGetUrl(ctx context.Context, fileDir string, expiredSec int
 	if err != nil {
 		return "", err
 	}
-	return url.String(), err
+	return m.setting.CustomHost + url.RequestURI(), err
 }
 
 // 删除
@@ -114,7 +115,8 @@ func (m *Minio) IsObjectExist(ctx context.Context, filePath string, opKv common.
 }
 func (m *Minio) Upload(ctx context.Context, filePath string, reader io.Reader, opKv common.OptionKv) (string, error) {
 	uploadInfo, err := m.client.PutObject(ctx, m.currentBucketName, filePath, reader, -1, minio.PutObjectOptions{ContentType: common.GetFilePathMineType(filePath)})
-	return uploadInfo.Location, err
+	uri, _ := url.Parse(uploadInfo.Location)
+	return m.setting.CustomHost + uri.RequestURI(), err
 }
 
 func (m *Minio) GetObjectInfo(ctx context.Context, filePath string) (*common.StorageObjectInfo, error) {

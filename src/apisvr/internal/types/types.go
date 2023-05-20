@@ -371,7 +371,7 @@ type UploadUrlCreateReq struct {
 
 type UploadUrlCreateResp struct {
 	FilePath  string `json:"filePath"`  //文件路径(带文件名)
-	UploadUrl string `json:"uploadUrl"` //附件直传地址
+	UploadUri string `json:"uploadUri"` //附件直传地址
 }
 
 type UploadFileReq struct {
@@ -384,7 +384,7 @@ type UploadFileReq struct {
 
 type UploadFileResp struct {
 	FilePath string `json:"filePath"` //文件路径(带文件名)
-	FileUrl  string `json:"fileUrl"`  //文件url
+	FileUri  string `json:"fileUri"`  //文件uri 相对路径
 }
 
 type AuthApiInfo struct {
