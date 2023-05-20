@@ -35,7 +35,7 @@ func (l *CreateLogic) Create(req *types.DeviceInfoCreateReq) error {
 		Tags:        logic.ToTagsMap(req.Tags),
 		Address:     utils.ToRpcNullString(req.Address),
 		Position:    logic.ToDmPointRpc(req.Position),
-		DeviceAlias: req.DeviceAlias, //设备别名 读写
+		DeviceAlias: utils.ToRpcNullString(req.DeviceAlias), //设备别名 读写
 	}
 	_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, dmReq)
 	if err != nil {
