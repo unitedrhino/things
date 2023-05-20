@@ -44,6 +44,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	return &types.DeviceInfo{
 		ProductID:      v.ProductID,                   //产品id 只读
 		DeviceName:     v.DeviceName,                  //设备名称 读写
+		DeviceAlias:    v.DeviceAlias,                 //设备别名 读写
 		Secret:         v.Secret,                      //设备秘钥 只读
 		Cert:           v.Cert,                        //设备证书 只读
 		Imei:           v.Imei,                        //IMEI号信息 只读
