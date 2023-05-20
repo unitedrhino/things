@@ -8,8 +8,9 @@ type FileProxyConf struct {
 
 // http反向代理
 type StaticProxyConf struct {
-	Router string //原路由
-	Dest   string //目标路由
+	Router       string //原路由
+	Dest         string //目标路由
+	DeletePrefix bool   `json:",optional"` //是否删除原路由路径
 }
 
 type ProxyConf struct {

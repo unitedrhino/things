@@ -38,7 +38,7 @@ func (l *UploadFileLogic) UploadFile() (resp *types.UploadFileResp, err error) {
 	if business == "" || scene == "" || filePath == "" {
 		return nil, errors.Parameter.WithMsg("business,scene,fileName是必填项")
 	}
-	fileDir, err := oss.GetFilePath(&oss.SceneInfo{
+	newFilePath, err := oss.GetFilePath(&oss.SceneInfo{
 		Business: business,
 		Scene:    scene,
 		FilePath: filePath}, rename)
@@ -51,12 +51,12 @@ func (l *UploadFileLogic) UploadFile() (resp *types.UploadFileResp, err error) {
 		return resp, err
 	}
 	defer file.Close()
-	newFilePath, err := l.svcCtx.OssClient.TemporaryBucket().Upload(l.ctx, fileDir, file, common.OptionKv{})
+	fileUri, err := l.svcCtx.OssClient.TemporaryBucket().Upload(l.ctx, newFilePath, file, common.OptionKv{})
 	if err != nil {
 		return resp, err
 	}
 	return &types.UploadFileResp{
-		FileUrl: newFilePath,
-		FileDir: fileDir,
+		FileUri:  fileUri,
+		FilePath: newFilePath,
 	}, err
 }

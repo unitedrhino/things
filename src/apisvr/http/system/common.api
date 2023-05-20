@@ -42,7 +42,7 @@ type (
     
     UploadUrlCreateResp struct {
         FilePath string `json:"filePath"` //文件路径(带文件名)
-        UploadUrl string `json:"uploadUrl"` //附件直传地址
+        UploadUri string `json:"uploadUri"` //附件直传地址
     }
     UploadFileReq struct{
         FilePath string `json:"filePath"` //文件路径(带文件名)
@@ -52,7 +52,7 @@ type (
         File []byte `form:"file"` //文件内容,二进制文件传输
     }
     UploadFileResp struct {
-        FileDir string `json:"fileDir"` //文件路径(带文件名)
-        FileUrl string `json:"fileUrl"` //文件url
+        FilePath string `json:"filePath"` //文件路径(带文件名)
+        FileUri string `json:"fileUri"` //文件uri 相对路径
     }
 )

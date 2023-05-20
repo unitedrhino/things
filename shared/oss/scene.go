@@ -1,6 +1,7 @@
 package oss
 
 import (
+	"context"
 	"fmt"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
@@ -75,4 +76,24 @@ func GetFilePath(scene *SceneInfo, rename bool) (string, error) {
 	}
 	filePath := fmt.Sprintf("%s/%s/%s", scene.Business, scene.Scene, scene.FilePath)
 	return filePath, nil
+}
+
+func CheckWithCopy(ctx context.Context, handle Handle, srcPath string, business, scene string) (string, error) {
+	//如果第一次就提交了模型文件
+	si, err := GetSceneInfo(srcPath)
+	if err != nil {
+		return "", err
+	}
+	if !(si.Business == business && si.Scene == scene) {
+		return "", errors.Parameter.WithMsg(scene + "的路径不对")
+	}
+	nwePath, err := GetFilePath(si, false)
+	if err != nil {
+		return "", err
+	}
+	path, err := handle.CopyFromTempBucket(srcPath, nwePath)
+	if err != nil {
+		return "", errors.System.AddDetail(err)
+	}
+	return path, nil
 }
