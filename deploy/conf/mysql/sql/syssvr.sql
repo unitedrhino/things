@@ -23,6 +23,7 @@ CREATE TABLE if not exists `sys_user_info`
     `language`    varchar(50)  NOT NULL DEFAULT '' COMMENT '用户的语言，简体中文为zh_CN',
     `headImgUrl`  varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户头像',
     `role`        bigint       not null COMMENT '用户角色',
+    `isAllData`   tinyint(1)   UNSIGNED NOT NULL default 2 COMMENT '是否所有数据权限（1是，2否）',
     `createdTime` datetime     not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime     NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime              DEFAULT NULL COMMENT '删除时间，默认为空，表示未删除，非空表示已删除',
