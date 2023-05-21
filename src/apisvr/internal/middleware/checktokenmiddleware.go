@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/encoding/gcharset"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -15,7 +16,7 @@ import (
 	operLog "github.com/i-Things/things/src/syssvr/client/log"
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/zeromicro/go-zero/core/logx"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -33,66 +34,92 @@ func NewCheckTokenMiddleware(c config.Config, UserRpc user.User, AuthRpc auth.Au
 
 func (m *CheckTokenMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err, isOpen := m.OpenAuth(w, r)
-		if isOpen { //如果是开放请求
-			if err == nil {
-				next(w, r)
-			} else {
-				http.Error(w, err.Error(), http.StatusUnauthorized)
-			}
-			return
-		}
+		var userCtx *userHeader.UserCtx
 
-		re, _ := ioutil.ReadAll(r.Body)
-		userCtx, err := m.UserAuth(w, r)
-		if err == nil {
-			userHeader.SetUserCtx(r.Context(), userCtx)
-			c := context.WithValue(r.Context(), userHeader.UserUid, userCtx)
+		isOpen, userCtx, err := m.OpenAuth(w, r)
+		if isOpen { //如果是开放请求
+			if err != nil {
+				logx.WithContext(r.Context()).Errorf("%s.OpenAuth error=%s", utils.FuncName(), err)
+				http.Error(w, "开放请求失败："+err.Error(), http.StatusUnauthorized)
+				return
+			}
+		} else { //如果是用户请求
+			//校验 Jwt Token
+			userCtx, err = m.UserAuth(w, r)
+			if err != nil {
+				logx.WithContext(r.Context()).Errorf("%s.UserAuth error=%s", utils.FuncName(), err)
+				http.Error(w, "用户请求失败："+err.Error(), http.StatusUnauthorized)
+				return
+			}
+
+			//校验 Casbin Rule
 			_, err = m.AuthRpc.AuthApiCheck(r.Context(), &user.CheckAuthReq{
-				RoleID: userHeader.GetUserCtx(c).Role,
+				RoleID: userCtx.Role,
 				Path:   r.URL.Path,
 				Method: utils.MethodToNum(r.Method),
 			})
 			if err != nil {
-				logx.WithContext(r.Context()).Errorf("%s.CheckAuth return=%s", utils.FuncName(), err)
-				http.Error(w, err.Error(), http.StatusNotFound)
+				logx.WithContext(r.Context()).Errorf("%s.AuthApiCheck error=%s", utils.FuncName(), err)
+				http.Error(w, "接口权限不足："+err.Error(), http.StatusUnauthorized)
 				return
 			}
-			r2 := r.WithContext(c)
-			r2.Response = r.Response
-			r2.Body = ioutil.NopCloser(bytes.NewReader(re))
-			next(w, r2)
-			if r2.Response != nil {
-				m.OperationLogRecord(r2, string(re))
-			}
-			return
 		}
 
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		//注入 用户信息 到 ctx
+		ctx2 := userHeader.SetUserCtx(r.Context(), userCtx)
+		r2 := r.WithContext(ctx2)
+
+		//记录 接口响应日志
+		err = m.OperationLogRecord("requestInfo", r2)
+		if err != nil {
+			logx.WithContext(r2.Context()).Errorf("%s.OperationLogRecord requestInfo error=%s", utils.FuncName(), err)
+		}
+
+		next(w, r2)
+
+		//记录 接口响应日志
+		err = m.OperationLogRecord("responseInfo", r2)
+		if err != nil {
+			logx.WithContext(r2.Context()).Errorf("%s.OperationLogRecord responseInfo error=%s", utils.FuncName(), err)
+		}
 	}
 }
 
 // 如果有开放认证的字段才进行认证
-func (m *CheckTokenMiddleware) OpenAuth(w http.ResponseWriter, r *http.Request) (error, bool) {
+func (m *CheckTokenMiddleware) OpenAuth(w http.ResponseWriter, r *http.Request) (bool, *userHeader.UserCtx, error) {
+	var isOpen bool
 	userName, password, ok := r.BasicAuth()
 	if !ok {
-		return nil, false
+		return isOpen, nil, nil
+	} else {
+		isOpen = true
 	}
+
 	strIP, _ := utils.GetIP(r)
 	if !m.c.OpenAuth.Auth(userName, password, strIP) {
-		return errors.Permissions.AddMsg("开放认证没通过"), true
+		return isOpen, nil, errors.Permissions.AddMsg("开放认证没通过")
 	}
-	return nil, true
+
+	return isOpen, &userHeader.UserCtx{
+		IsOpen:    isOpen,
+		Uid:       0,
+		Role:      0,
+		IsAllData: true,
+		IP:        strIP,
+		Os:        r.Header.Get("User-Agent"),
+	}, nil
 }
 
 func (m *CheckTokenMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) (*userHeader.UserCtx, error) {
 	strIP, _ := utils.GetIP(r)
+
 	strToken := r.Header.Get(userHeader.UserToken)
 	if strToken == "" {
 		logx.WithContext(r.Context()).Errorf("%s.CheckToken ip=%s not find token",
 			utils.FuncName(), strIP)
 		return nil, errors.NotLogin
 	}
+
 	resp, err := m.UserRpc.UserCheckToken(r.Context(), &user.UserCheckTokenReq{
 		Ip:    strIP,
 		Token: strToken,
@@ -103,6 +130,7 @@ func (m *CheckTokenMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) 
 			utils.FuncName(), strIP, strToken, err)
 		return nil, er
 	}
+
 	if resp.Token != "" {
 		w.Header().Set("Access-Control-Expose-Headers", userHeader.UserSetToken)
 		w.Header().Set(userHeader.UserSetToken, resp.Token)
@@ -111,10 +139,12 @@ func (m *CheckTokenMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) 
 		utils.FuncName(), strIP, strToken, utils.Fmt(resp))
 
 	return &userHeader.UserCtx{
-		Uid:  resp.Uid,
-		IP:   strIP,
-		Role: resp.Role,
-		Os:   r.Header.Get("User-Agent"),
+		IsOpen:    false,
+		Uid:       resp.Uid,
+		Role:      resp.Role,
+		IsAllData: resp.IsAllData == def.True,
+		IP:        strIP,
+		Os:        r.Header.Get("User-Agent"),
 	}, nil
 }
 
@@ -144,37 +174,50 @@ func (m *CheckTokenMiddleware) GetCityByIp(ip string) string {
 }
 
 // 操作日志记录
-func (m *CheckTokenMiddleware) OperationLogRecord(r *http.Request, rsp string) error {
+func (m *CheckTokenMiddleware) OperationLogRecord(logTitle string, r *http.Request) error {
+	reqBody, _ := io.ReadAll(r.Body)                //读取 reqBody
+	r.Body = io.NopCloser(bytes.NewReader(reqBody)) //重建 reqBody
+	reqBodyStr := string(reqBody)
 
-	res, err := ioutil.ReadAll(r.Response.Body)
-	if err != nil {
-		return err
+	respStatusCode := http.StatusOK
+	respStatusMsg := ""
+	respBodyStr := ""
+
+	if r.Response != nil {
+		respStatusCode = r.Response.StatusCode
+		respStatusMsg = r.Response.Status
+		respBody, _ := io.ReadAll(r.Response.Body)                //读取 respBody
+		r.Response.Body = io.NopCloser(bytes.NewReader(respBody)) //重建 respBody
+		respBodyStr = string(respBody)
 	}
 
 	uri := "https://"
 	if !strings.Contains(r.Proto, "HTTPS") {
 		uri = "http://"
 	}
+
 	ipAddr, err := utils.GetIP(r)
 	if err != nil {
 		logx.WithContext(r.Context()).Errorf("%s.GetIP is error : %s req:%v",
 			utils.FuncName(), err.Error(), utils.Fmt(r))
 		ipAddr = "0.0.0.0"
 	}
+
 	_, err = m.LogRpc.OperLogCreate(r.Context(), &user.OperLogCreateReq{
 		Uid:          userHeader.GetUserCtx(r.Context()).Uid,
 		Uri:          uri + r.Host + r.RequestURI,
 		Route:        r.RequestURI,
 		OperIpAddr:   ipAddr,
 		OperLocation: m.GetCityByIp(ipAddr),
-		Req:          rsp,
-		Resp:         string(res),
-		Code:         int64(r.Response.StatusCode),
-		Msg:          r.Response.Status,
+		Code:         int64(respStatusCode),
+		Msg:          fmt.Sprintf("logTitle:%s; statusMsg:%s", logTitle, respStatusMsg),
+		Req:          reqBodyStr,
+		Resp:         respBodyStr,
 	})
 	if err != nil {
 		logx.WithContext(r.Context()).Errorf("%s.OperationLogRecord is error : %s",
 			utils.FuncName(), err.Error())
 	}
+
 	return nil
 }

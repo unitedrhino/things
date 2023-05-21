@@ -71,6 +71,7 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 			HeadImgUrl: in.HeadImgUrl,
 			Role:       in.Role,
 			Sex:        in.Sex,
+			IsAllData:  in.IsAllData,
 		}
 
 		err := l.svcCtx.UserModel.Register(l.ctx, l.svcCtx.UserInfoModel, ui, mysql.Keys{Key: "userName", Value: in.UserName})

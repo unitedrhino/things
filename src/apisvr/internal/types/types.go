@@ -19,6 +19,7 @@ type UserInfo struct {
 	CreatedTime int64  `json:"createdTime,string,optional"` // 创建时间
 	Role        int64  `json:"role"`                        // 用户角色
 	Sex         int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	IsAllData   int64  `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
 }
 
 type UserCreateReq struct {
@@ -37,6 +38,7 @@ type UserCreateReq struct {
 	CreatedTime int64  `json:"createdTime,string,optional"`                   // 创建时间
 	Role        int64  `json:"role"`                                          // 用户角色
 	Sex         int64  `json:"sex,optional"`                                  // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	IsAllData   int64  `json:"isAllData,optional"`                            // 是否所有数据权限（1是，2否）
 }
 
 type UserCreateResp struct {
@@ -77,8 +79,9 @@ type UserUpdateReq struct {
 	Province   string `json:"province,optional"`   // 用户所在省份
 	Language   string `json:"language,optional"`   // 用户的语言，简体中文为zh_CN
 	HeadImgUrl string `json:"headImgUrl,optional"` // 用户头像
-	Sex        int64  `json:"sex,optional"`        // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
 	Role       int64  `json:"role,optional"`       // 用户角色
+	Sex        int64  `json:"sex,optional"`        // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	IsAllData  int64  `json:"isAllData,optional"`  // 是否所有数据权限（1是，2否）
 }
 
 type UserReadReq struct {
@@ -102,6 +105,7 @@ type UserReadResp struct {
 	CreatedTime int64  `json:"createdTime,string,optional"` // 创建时间
 	Role        int64  `json:"role"`                        // 用户角色
 	Sex         int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	IsAllData   int64  `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
 }
 
 type UserDeleteReq struct {

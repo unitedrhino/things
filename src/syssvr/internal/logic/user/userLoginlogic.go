@@ -57,11 +57,13 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
 func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
-	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role)
+
+	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role, uc.IsAllData)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)
 	}
+
 	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, uc.Uid)
 	if err != nil {
 		l.Errorf("%s.FindOne.UserInfoModel ui=%v err=%v",
@@ -90,6 +92,7 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.
 			CreatedTime: ui.CreatedTime.Unix(),
 			Role:        ui.Role,
 			Sex:         ui.Sex,
+			IsAllData:   ui.IsAllData,
 		},
 		Token: &sys.JwtToken{
 			AccessToken:  jwtToken,

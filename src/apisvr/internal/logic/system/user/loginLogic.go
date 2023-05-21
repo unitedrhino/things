@@ -138,6 +138,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			CreatedTime: uResp.Info.CreatedTime,
 			Role:        uResp.Info.Role,
 			Sex:         uResp.Info.Sex,
+			IsAllData:   uResp.Info.IsAllData,
 		},
 		Token: types.JwtToken{
 			AccessToken:  uResp.Token.AccessToken,
