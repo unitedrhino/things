@@ -31,6 +31,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 func (l *CreateLogic) Create(req *types.ProductInfoCreateReq) error {
 	dmReq := &dm.ProductInfo{
 		ProductName:  req.ProductName,
+		ProductID:    req.ProductID,
 		AuthMode:     req.AuthMode,
 		DeviceType:   req.DeviceType,
 		CategoryID:   req.CategoryID,
