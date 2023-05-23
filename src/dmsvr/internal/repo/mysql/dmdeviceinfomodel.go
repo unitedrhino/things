@@ -169,6 +169,7 @@ func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *Dm
 		data.FirstLogin,
 		data.LastLogin,
 		data.LogLevel,
+		data.DeviceAlias,
 	}
 	valsPlace := utils.NewFillPlace(len(params)) //生成 ?,?,... (有len个?)
 
@@ -218,6 +219,7 @@ func (m *customDmDeviceInfoModel) UpdateDeviceInfo(ctx context.Context, newData 
 		newData.FirstLogin,
 		newData.LastLogin,
 		newData.LogLevel,
+		newData.DeviceAlias,
 		newData.Id,
 	}
 
