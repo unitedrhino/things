@@ -2,7 +2,6 @@ package scene
 
 import (
 	"context"
-	"fmt"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -96,7 +95,5 @@ func (c *ColumnSchema) IsHit(ctx context.Context, columnType TermColumnType, rep
 		logx.WithContext(ctx).Errorf("scene not support event yet")
 		return false
 	}
-
-	fmt.Println(sm)
 	return true
 }
