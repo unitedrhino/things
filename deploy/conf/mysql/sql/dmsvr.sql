@@ -99,7 +99,6 @@ CREATE TABLE if not exists `dm_device_info` (
     `deletedTime` datetime              DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `productID_deviceName`(`productID`, `deviceName`),
-    UNIQUE KEY `productID_deviceAlias`(`productID`,`deviceAlias`),
     KEY `createdTime`(`createdTime`) USING BTREE
     ) ENGINE = InnoDB
     AUTO_INCREMENT = 0
