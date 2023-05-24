@@ -12,6 +12,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
+	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -107,6 +108,9 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 
 	err = l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, dmDiPo)
 	if err != nil {
+		if strings.Contains(err.Error(), "Duplicate entry") {
+			return nil, errors.Duplicate.WithMsgf("设备别名重复:%s", in.DeviceAlias.Value)
+		}
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
