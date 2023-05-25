@@ -12,7 +12,6 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"reflect"
 	"strings"
-	"time"
 )
 
 var _ DmDeviceInfoModel = (*customDmDeviceInfoModel)(nil)
@@ -174,8 +173,8 @@ func reflectStructFields(newData *DmDeviceInfo) []interface{} {
 		}
 		fieldValue := valueField.Interface()
 		if tag == "firstLogin" || tag == "lastLogin" {
-			t, _ := fieldValue.(time.Time)
-			fieldValue = sql.NullTime{Time: t, Valid: !t.IsZero()}
+			t, _ := fieldValue.(sql.NullTime)
+			fieldValue = t
 		}
 		if fieldValue == nil {
 			continue
