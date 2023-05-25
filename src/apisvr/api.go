@@ -12,8 +12,7 @@ func main() {
 	logx.DisableStat()
 	apiCtx := apidirect.NewApi(apidirect.ApiCtx{})
 	apiCtx.Server.PrintRoutes()
-	fmt.Printf("Starting apiSvr at %s:%d...\n", apiCtx.Svc.Config.Host, apiCtx.Svc.Config.Port)
+	fmt.Printf("Starting apiSvr at %s:%d...\n", apiCtx.SvcCtx.Config.Host, apiCtx.SvcCtx.Config.Port)
 	apiCtx.Server.Start()
 	defer apiCtx.Server.Stop()
 }
-
