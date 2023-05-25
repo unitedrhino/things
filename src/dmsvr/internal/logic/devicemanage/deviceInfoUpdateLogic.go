@@ -80,7 +80,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 	}
 
 	if data.DeviceAlias != nil {
-		old.DeviceAlias = utils.AnyToNullString(data.DeviceAlias)
+		old.DeviceAlias = utils.AnyToNullString(data.DeviceAlias).String
 	}
 }
 
