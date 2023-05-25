@@ -1,17 +1,14 @@
 package utils
 
 import (
-	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/zeromicro/go-zero/core/logx"
 	"net"
 	"net/http"
 	"regexp"
 	"runtime"
-	"runtime/debug"
 	"strconv"
 	"strings"
 )
@@ -113,20 +110,6 @@ func FuncName() string {
 //	fmt.Sprintf("%s:%d:%s\n\n\n",file,line,f.Name())
 //	return fmt.Sprintf("%s:%d:%s",file,line,f.Name())
 //}
-
-func Recover(ctx context.Context) {
-	if p := recover(); p != nil {
-		HandleThrow(ctx, p)
-	}
-}
-
-func HandleThrow(ctx context.Context, p any) {
-	pc := make([]uintptr, 1)
-	runtime.Callers(3, pc)
-	f := runtime.FuncForPC(pc[0])
-	logx.WithContext(ctx).Errorf("HandleThrow|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
-	//os.Exit(-1)
-}
 
 func Ip2binary(ip string) string {
 	str := strings.Split(ip, ".")
