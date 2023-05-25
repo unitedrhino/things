@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
@@ -9,7 +10,9 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"reflect"
 	"strings"
+	"time"
 )
 
 var _ DmDeviceInfoModel = (*customDmDeviceInfoModel)(nil)
@@ -153,28 +156,47 @@ func (m *customDmDeviceInfoModel) CountGroupByField(ctx context.Context, f Devic
 	return result, err
 }
 
+func reflectStructFields(newData *DmDeviceInfo) []interface{} {
+	fieldValues := make([]interface{}, 0)
+	fieldNames := make([]string, 0)
+
+	// 通过反射获取对象的字段和值，并将其存储到slice中
+	elem := reflect.ValueOf(newData).Elem()
+	for i := 0; i < elem.NumField(); i++ {
+		valueField := elem.Field(i)
+		if !valueField.CanInterface() {
+			continue
+		}
+		typeField := elem.Type().Field(i)
+		tag := typeField.Tag.Get("db")
+		if tag == "-" {
+			continue
+		}
+		fieldValue := valueField.Interface()
+		if tag == "firstLogin" || tag == "lastLogin" {
+			t, _ := fieldValue.(time.Time)
+			fieldValue = sql.NullTime{Time: t, Valid: !t.IsZero()}
+		}
+		if fieldValue == nil {
+			continue
+		}
+		if tag != "id" && tag != "createdTime" && tag != "deletedTime" && tag != "updatedTime" {
+			fieldNames = append(fieldNames, tag)
+			fieldValues = append(fieldValues, fieldValue)
+		}
+	}
+
+	if newData.Id > 0 {
+		fieldValues = append(fieldValues, newData.Id)
+	}
+
+	return fieldValues
+}
+
 func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *DmDeviceInfo) error {
 	table := m.table
 	fields := dmDeviceInfoRowsExpectAutoSet
-	params := []any{ //注意：要和 fields的 字段顺序 对上
-		data.ProductID,
-		data.DeviceName,
-		data.Secret,
-		data.Cert,
-		data.Imei,
-		data.Mac,
-		data.Version,
-		data.HardInfo,
-		data.SoftInfo,
-		data.Position, //注意，记住这里的 position pos=10
-		data.Address,
-		data.Tags,
-		data.IsOnline,
-		data.FirstLogin,
-		data.LastLogin,
-		data.LogLevel,
-		data.DeviceAlias,
-	}
+	params := reflectStructFields(data)
 	valsPlace := utils.NewFillPlace(len(params)) //生成 ?,?,... (有len个?)
 
 	//SQL基本结构
@@ -205,31 +227,8 @@ func (m *customDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Conte
 
 func (m *customDmDeviceInfoModel) UpdateDeviceInfo(ctx context.Context, newData *DmDeviceInfo) error {
 	table := m.table
-	fields := dmDeviceInfoRowsWithPlaceHolder
-	params := []any{ //注意：要和 fields的 字段顺序 对上
-		newData.ProductID,
-		newData.DeviceName,
-		newData.Secret,
-		newData.Cert,
-		newData.Imei,
-		newData.Mac,
-		newData.Version,
-		newData.HardInfo,
-		newData.SoftInfo,
-		newData.Position,
-		newData.Address,
-		newData.Tags,
-		newData.IsOnline,
-		newData.FirstLogin,
-		newData.LastLogin,
-		newData.LogLevel,
-		newData.DeviceAlias,
-		newData.Id,
-	}
-
-	//SQL基本结构
-	query := fmt.Sprintf("update %s set %s where `id` = ?", table, fields)
-	//SQL特殊处理（position为points类型字段,插入时需用函数ST_GeomFromText转换，而不能使用问号）
+	params := reflectStructFields(newData)
+	query := fmt.Sprintf("update %s set %s where `id` = ?", table, dmDeviceInfoRowsWithPlaceHolder)
 	query = strings.Replace(query, "`position`=?", "`position`=ST_GeomFromText(?)", 1)
 
 	_, err := m.conn.ExecCtx(ctx, query, params...)
