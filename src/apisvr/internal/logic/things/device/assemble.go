@@ -11,18 +11,18 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, withProperty []string) *types.DeviceInfo {
+func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, withProperties []string) *types.DeviceInfo {
 	var properties map[string]*types.DeviceInfoWithProperty
 	position := &types.Point{
 		Longitude: v.Position.Longitude, //经度
 		Latitude:  v.Position.Latitude,  //维度
 	}
-	if withProperty != nil {
+	if withProperties != nil {
 		func() {
 			resp, err := svcCtx.DeviceMsg.PropertyLatestIndex(ctx, &di.PropertyLatestIndexReq{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
-				DataIDs:    withProperty,
+				DataIDs:    withProperties,
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", utils.FuncName(), err)
@@ -44,6 +44,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	return &types.DeviceInfo{
 		ProductID:      v.ProductID,                   //产品id 只读
 		DeviceName:     v.DeviceName,                  //设备名称 读写
+		DeviceAlias:    &v.DeviceAlias.Value,          //设备别名 读写
 		Secret:         v.Secret,                      //设备秘钥 只读
 		Cert:           v.Cert,                        //设备证书 只读
 		Imei:           v.Imei,                        //IMEI号信息 只读
