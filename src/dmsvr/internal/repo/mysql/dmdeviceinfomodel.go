@@ -38,9 +38,10 @@ type (
 			Start int64
 			End   int64
 		}
-		IsOnline []int64
-		Range    int64
-		Position string
+		IsOnline    []int64
+		Range       int64
+		Position    string
+		DeviceAlias string
 	}
 )
 
@@ -50,6 +51,9 @@ func (d *DeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	}
 	if d.DeviceName != "" {
 		sql = sql.Where("`DeviceName` like ?", "%"+d.DeviceName+"%")
+	}
+	if d.DeviceAlias != "" {
+		sql = sql.Where("`DeviceAlias` like ?", "%"+d.DeviceAlias+"%")
 	}
 	if d.Tags != nil {
 		for k, v := range d.Tags {

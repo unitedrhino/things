@@ -79,7 +79,7 @@ CREATE TABLE if not exists `dm_device_info` (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `productID`   char(11)     NOT NULL COMMENT '产品id',
     `deviceName`  varchar(100) NOT NULL COMMENT '设备名称',
-    `deviceAlias` varchar(100) DEFAULT NULL COMMENT '设备别名',
+    `deviceAlias` varchar(100) NOT NULL DEFAULT '' COMMENT '设备别名',
     `secret`      varchar(50)  NOT NULL DEFAULT '' COMMENT '设备秘钥',
     `cert`        varchar(512) NOT NULL DEFAULT '' COMMENT '设备证书',
     `imei`        varchar(15)  NOT NULL DEFAULT '' COMMENT 'IMEI号信息',
@@ -99,7 +99,6 @@ CREATE TABLE if not exists `dm_device_info` (
     `deletedTime` datetime              DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `productID_deviceName`(`productID`, `deviceName`),
-    UNIQUE KEY `productID_deviceAlias`(`productID`,`deviceAlias`),
     KEY `createdTime`(`createdTime`) USING BTREE
     ) ENGINE = InnoDB
     AUTO_INCREMENT = 0

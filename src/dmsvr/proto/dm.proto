@@ -356,6 +356,7 @@ message DeviceInfoIndexReq{
   map<string, string> tags = 4;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
   int64 range = 5; //过滤条件:取距离坐标点固定范围内的设备
   Point Position = 6;   //设备定位,默认百度坐标系
+  string deviceAlias = 7; //过滤条件:模糊查询 设备别名
 }
 
 message DeviceInfoIndexResp{
