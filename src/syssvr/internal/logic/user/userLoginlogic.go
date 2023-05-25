@@ -3,13 +3,17 @@ package userlogic
 import (
 	"context"
 	"database/sql"
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/syssvr/internal/repo/cache"
 	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/kv"
 	"time"
 )
 
@@ -50,7 +54,7 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
 	return nil
 }
 
-func (l *LoginLogic) getRet(uc *mysql.SysUserInfo) (*sys.UserLoginResp, error) {
+func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role)
@@ -64,6 +68,9 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo) (*sys.UserLoginResp, error) {
 			utils.FuncName(), utils.Fmt(ui), utils.Fmt(err))
 		return nil, errors.Database.AddDetail(err)
 	}
+
+	//登录成功，清除密码错误次数相关redis key
+	cache.ClearWrongpassKeys(l.ctx, store, list)
 
 	resp := &sys.UserLoginResp{
 		Info: &sys.UserInfo{
@@ -112,16 +119,69 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *mysql.SysUserInfo, e
 	return uc, err
 }
 
+func parseWrongpassConf(counter conf.WrongPasswordCounter, userID string, ip string) []*conf.LoginSafeCtlInfo {
+	var res []*conf.LoginSafeCtlInfo
+	res = append(res, &conf.LoginSafeCtlInfo{
+		Prefix:  "login:wrongPassword:captcha:",
+		Key:     "login:wrongPassword:captcha:" + userID,
+		Timeout: 24 * 3600,
+		Times:   counter.Captcha,
+	})
+
+	for i, v := range counter.Account {
+		res = append(res, &conf.LoginSafeCtlInfo{
+			Prefix:    "login:wrongPassword:account:",
+			Key:       "login:wrongPassword:account:" + cast.ToString(i+1) + ":" + userID,
+			Timeout:   v.Statistics * 60,
+			Times:     v.TriggerTimes,
+			Forbidden: v.ForbiddenTime * 60,
+		})
+	}
+	for i, v := range counter.Ip {
+		res = append(res, &conf.LoginSafeCtlInfo{
+			Prefix:    "login:wrongPassword:ip:",
+			Key:       "login:wrongPassword:ip:" + cast.ToString(i+1) + ":" + ip,
+			Timeout:   v.Statistics * 60,
+			Times:     v.TriggerTimes,
+			Forbidden: v.ForbiddenTime * 60,
+		})
+	}
+
+	return res
+}
+
 func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
+
+	//检查账号是否冻结
+	list := parseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter, in.UserID, in.Ip)
+	if len(list) > 0 {
+		forbiddenTime, f := cache.CheckAccountOrIpForbidden(l.ctx, l.svcCtx.Store, list)
+		if f {
+			return nil, errors.Default.AddMsgf("%s %d 分钟", errors.AccountOrIpForbidden.Error(), forbiddenTime/60)
+		}
+	}
+
 	uc, err := l.GetUserInfo(in)
 	switch err {
 	case nil:
-		return l.getRet(uc)
+		return l.getRet(uc, l.svcCtx.Store, list)
 	case mysql.ErrNotFound:
 		return nil, errors.UnRegister
+	case errors.Password:
+		ret, err := cache.CheckCaptchaTimes(l.ctx, l.svcCtx.Store, list)
+		if err != nil {
+			return nil, err
+		}
+		if ret {
+			return nil, errors.UseCaptcha
+		}
+		return nil, errors.Password
+
 	default:
 		l.Errorf("%s req=%v err=%+v", utils.FuncName(), utils.Fmt(in), err)
 		return nil, errors.Database.AddDetail(err)
 	}
+
+	return nil, nil
 }

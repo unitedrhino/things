@@ -3,8 +3,11 @@ package productmanagelogic
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/shared/oss"
+	"fmt"
 	"path"
+	"regexp"
+
+	"github.com/i-Things/things/shared/oss"
 
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
@@ -48,13 +51,27 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 }
 
 /*
+检测productid,发现返回true 没有返回false
+*/
+func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error) {
+	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
+	switch err {
+	case mysql.ErrNotFound:
+		return false, nil
+	case nil:
+		return true, nil
+	default:
+		return false, err
+	}
+}
+
+/*
 根据用户的输入生成对应的数据库数据
 */
 func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*mysql.DmProductInfo, error) {
-	ProductID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
 	pi := &mysql.DmProductInfo{
-		ProductID:   deviceAuth.GetStrProductID(ProductID), // 产品id
-		ProductName: in.ProductName,                        // 产品名称
+		ProductID:   in.ProductID,   // 产品id
+		ProductName: in.ProductName, // 产品名称
 		Desc:        in.Desc.GetValue(),
 		DevStatus:   in.DevStatus.GetValue(),
 	}
@@ -126,7 +143,23 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	} else if find == true {
 		return nil, errors.Duplicate.WithMsgf("产品名称重复:%s", in.ProductName).AddDetail("ProductName:" + in.ProductName)
 	}
-
+	if in.ProductID != "" {
+		expr := `[0-9A-Za-z]{11,11}`
+		match, _ := regexp.MatchString(expr, in.ProductID)
+		fmt.Println(match)
+		if !match {
+			return nil, errors.Parameter.WithMsg("产品id格式不对,格式为11位数字和英文字母组成的字符串")
+		}
+		find, err := l.CheckProductID(in)
+		if err != nil {
+			return nil, errors.System.AddDetail(err)
+		} else if find {
+			return nil, errors.Duplicate.WithMsgf("产品id重复:%s", in.ProductID).AddDetail("ProductID:" + in.ProductID)
+		}
+	} else {
+		productID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
+		in.ProductID = deviceAuth.GetStrProductID(productID)
+	}
 	pi, err := l.ConvProductPbToPo(in)
 	if err != nil {
 		return nil, err
