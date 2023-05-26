@@ -214,6 +214,9 @@ func (d *Define) ValidateWithFmtInt() error {
 		min = DefineIntMin
 		d.Min = cast.ToString(min)
 	}
+	if d.Max < d.Min {
+		return errors.Parameter.WithMsgf("整数的最大值需要大于最小值")
+	}
 	if len(d.Unit) > DefineUnitLen {
 		return errors.Parameter.WithMsgf("整数的单位定义值长度过大:%v", d.Unit)
 	}
@@ -279,6 +282,9 @@ func (d *Define) ValidateWithFmtFloat() error {
 	if min < DefineIntMin {
 		min = DefineIntMin
 		d.Min = cast.ToString(min)
+	}
+	if d.Max < d.Min {
+		return errors.Parameter.WithMsgf("浮点型的最大值需要大于最小值")
 	}
 	if len(d.Unit) > DefineUnitLen {
 		return errors.Parameter.WithMsgf("浮点型的单位定义值长度过大:%v", d.Unit)
