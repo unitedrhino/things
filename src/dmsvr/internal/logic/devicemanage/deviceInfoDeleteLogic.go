@@ -67,6 +67,6 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		l.Errorf("%s.DeviceInfo.Delete err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
-	l.svcCtx.Bus.Publish(l.ctx, topics.DeviceDelete, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	l.svcCtx.Bus.Publish(l.ctx, topics.DmDeviceDelete, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	return &dm.Response{}, nil
 }

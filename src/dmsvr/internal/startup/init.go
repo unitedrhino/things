@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/src/dmsvr/internal/event/dataUpdateEvent"
 	"github.com/i-Things/things/src/dmsvr/internal/event/deviceChange/deviceDelete"
+	"github.com/i-Things/things/src/dmsvr/internal/event/deviceChange/productSchemaUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/subscribe/dataUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -13,7 +14,7 @@ import (
 
 func Init(svcCtx *svc.ServiceContext) {
 	InitSubscribe(svcCtx)
-	InitMiddleware(svcCtx)
+	InitEventBus(svcCtx)
 }
 func InitSubscribe(svcCtx *svc.ServiceContext) {
 	dataUpdateCli, err := dataUpdate.NewDataUpdate(svcCtx.Config.Event)
@@ -26,6 +27,7 @@ func InitSubscribe(svcCtx *svc.ServiceContext) {
 	})
 }
 
-func InitMiddleware(svcCtx *svc.ServiceContext) {
-	svcCtx.Bus.Subscribe(topics.DeviceDelete, deviceDelete.DeviceGroupHandle(svcCtx))
+func InitEventBus(svcCtx *svc.ServiceContext) {
+	svcCtx.Bus.Subscribe(topics.DmDeviceDelete, deviceDelete.DeviceGroupHandle(svcCtx))
+	svcCtx.Bus.Subscribe(topics.DmProductUpdateSchema, productSchemaUpdate.EventsHandle(svcCtx))
 }
