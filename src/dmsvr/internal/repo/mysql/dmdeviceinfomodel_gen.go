@@ -57,6 +57,7 @@ type (
 		CreatedTime time.Time    `db:"createdTime"`
 		UpdatedTime time.Time    `db:"updatedTime"`
 		DeletedTime sql.NullTime `db:"deletedTime"`
+		DeviceAlias string       `db:"deviceAlias"` // 设备别名
 	}
 )
 
@@ -102,14 +103,14 @@ func (m *defaultDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Cont
 }
 
 func (m *defaultDmDeviceInfoModel) Insert(ctx context.Context, data *DmDeviceInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, dmDeviceInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.Cert, data.Imei, data.Mac, data.Version, data.HardInfo, data.SoftInfo, data.Position, data.Address, data.Tags, data.IsOnline, data.FirstLogin, data.LastLogin, data.LogLevel)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, dmDeviceInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.Cert, data.Imei, data.Mac, data.Version, data.HardInfo, data.SoftInfo, data.Position, data.Address, data.Tags, data.IsOnline, data.FirstLogin, data.LastLogin, data.LogLevel, data.DeviceAlias)
 	return ret, err
 }
 
 func (m *defaultDmDeviceInfoModel) Update(ctx context.Context, newData *DmDeviceInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, dmDeviceInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.Cert, newData.Imei, newData.Mac, newData.Version, newData.HardInfo, newData.SoftInfo, newData.Position, newData.Address, newData.Tags, newData.IsOnline, newData.FirstLogin, newData.LastLogin, newData.LogLevel, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.Cert, newData.Imei, newData.Mac, newData.Version, newData.HardInfo, newData.SoftInfo, newData.Position, newData.Address, newData.Tags, newData.IsOnline, newData.FirstLogin, newData.LastLogin, newData.LogLevel, newData.DeviceAlias, newData.Id)
 	return err
 }
 

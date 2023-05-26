@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/oss"
 	"path"
+	"strings"
 
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
@@ -108,6 +109,9 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Resp
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.ProductID))
+		}
+		if strings.Contains(err.Error(), "Duplicate entry") {
+			return nil, errors.Duplicate.WithMsgf("产品名重复:%s", in.ProductName)
 		}
 		return nil, errors.Database.AddDetail(err)
 	}
