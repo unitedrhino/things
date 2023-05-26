@@ -4,9 +4,8 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/middlewares"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/middleware"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -68,7 +67,6 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		l.Errorf("%s.DeviceInfo.Delete err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
-	middlewares.Execute(middleware.DeviceDelete, l.ctx,
-		&devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	l.svcCtx.Bus.Publish(l.ctx, topics.DmDeviceDelete, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	return &dm.Response{}, nil
 }
