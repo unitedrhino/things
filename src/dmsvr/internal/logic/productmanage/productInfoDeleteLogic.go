@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 
@@ -75,6 +76,7 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 		l.Errorf("%s.SchemaRepo.ClearCache err=%v", utils.FuncName(), utils.Fmt(err))
 		return errors.Database.AddDetail(err)
 	}
+	l.svcCtx.Bus.Publish(l.ctx, topics.DmProductDelete, in.ProductID)
 	return nil
 }
 func (l *ProductInfoDeleteLogic) Check(in *dm.ProductInfoDeleteReq) error {
