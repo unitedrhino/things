@@ -288,6 +288,7 @@ message DeviceInfo{
   int64   firstLogin = 16; //激活时间 只读
   int64   lastLogin = 17; //最后上线时间 只读
   int64   logLevel = 18; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+  google.protobuf.StringValue  deviceAlias = 19; //设备别名 读写
 }
 
 message ProductInfo{
@@ -355,6 +356,7 @@ message DeviceInfoIndexReq{
   map<string, string> tags = 4;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
   int64 range = 5; //过滤条件:取距离坐标点固定范围内的设备
   Point Position = 6;   //设备定位,默认百度坐标系
+  string deviceAlias = 7; //过滤条件:模糊查询 设备别名
 }
 
 message DeviceInfoIndexResp{
