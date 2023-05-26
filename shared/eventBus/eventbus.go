@@ -3,7 +3,7 @@ package eventBus
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/utils"
+	"github.com/zeromicro/go-zero/core/logx"
 	"reflect"
 	"sync"
 )
@@ -52,7 +52,7 @@ func (bus *AsyncEventBus) Subscribe(topic string, f interface{}) error {
 func (bus *AsyncEventBus) Publish(ctx context.Context, topic string, args ...interface{}) {
 	handlers, ok := bus.handlers[topic]
 	if !ok {
-		fmt.Println("not found handlers in topic:", topic)
+		logx.WithContext(ctx).Debugf("Publish not found handlers in topic:", topic)
 		return
 	}
 
@@ -63,8 +63,9 @@ func (bus *AsyncEventBus) Publish(ctx context.Context, topic string, args ...int
 	}
 
 	for i := range handlers {
-		utils.Go(ctx, func() {
-			handlers[i].Call(params)
-		})
+		//先不使用异步,异步ctx会超时,先不做这块
+		//utils.Go(ctx, func() {
+		handlers[i].Call(params)
+		//})
 	}
 }

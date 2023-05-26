@@ -8,9 +8,9 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func DeviceGroupHandle(svcCtx *svc.ServiceContext) func(ctx context.Context, value any) {
-	return func(ctx context.Context, value any) {
-		err := svcCtx.GroupDB.DeleteDevice(ctx, value.(*devices.Core))
+func DeviceGroupHandle(svcCtx *svc.ServiceContext) any {
+	return func(ctx context.Context, value *devices.Core) {
+		err := svcCtx.GroupDB.DeleteDevice(ctx, value)
 		logx.WithContext(ctx).Infof("DeviceGroupHandle value:%v err:%v", utils.Fmt(value), err)
 	}
 }
