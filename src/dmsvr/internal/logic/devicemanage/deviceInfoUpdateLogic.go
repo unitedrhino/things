@@ -77,6 +77,10 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 	if data.Position != nil {
 		old.Position = fmt.Sprintf("POINT(%f %f)", data.Position.Longitude, data.Position.Latitude)
 	}
+
+	if data.DeviceAlias != nil {
+		old.DeviceAlias = data.DeviceAlias.Value
+	}
 }
 
 // 更新设备

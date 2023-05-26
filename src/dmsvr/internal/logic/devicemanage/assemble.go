@@ -32,6 +32,7 @@ func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
 	return &dm.DeviceInfo{
 		ProductID:   di.ProductID,
 		DeviceName:  di.DeviceName,
+		DeviceAlias: &wrappers.StringValue{Value: di.DeviceAlias},
 		Secret:      di.Secret,
 		Cert:        di.Cert,
 		Imei:        di.Imei,
