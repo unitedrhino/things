@@ -195,7 +195,8 @@ func reflectStructFields(newData *DmDeviceInfo) []interface{} {
 func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *DmDeviceInfo) error {
 	table := m.table
 	fields := dmDeviceInfoRowsExpectAutoSet
-	params := reflectStructFields(data)
+	exclude := []string{"id", "createdTime", "deletedTime", "updatedTime"}
+	params := utils.ReflectFields(data, exclude)
 	valsPlace := utils.NewFillPlace(len(params)) //生成 ?,?,... (有len个?)
 
 	//SQL基本结构
@@ -226,9 +227,12 @@ func (m *customDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Conte
 
 func (m *customDmDeviceInfoModel) UpdateDeviceInfo(ctx context.Context, newData *DmDeviceInfo) error {
 	table := m.table
-	params := reflectStructFields(newData)
 	query := fmt.Sprintf("update %s set %s where `id` = ?", table, dmDeviceInfoRowsWithPlaceHolder)
 	query = strings.Replace(query, "`position`=?", "`position`=ST_GeomFromText(?)", 1)
+
+	exclude := []string{"id", "createdTime", "deletedTime", "updatedTime"}
+	params := utils.ReflectFields(newData, exclude)
+	params = append(params, newData.Id)
 
 	_, err := m.conn.ExecCtx(ctx, query, params...)
 	return err
