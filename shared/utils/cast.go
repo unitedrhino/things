@@ -133,6 +133,14 @@ func ToRpcNullDouble(val *float64) *wrappers.DoubleValue {
 
 var empty = time.Time{}
 
+func Int64ToTimex(in int64) *time.Time {
+	if in == 0 {
+		return nil
+	}
+	ret := time.Unix(in, 0)
+	return &ret
+}
+
 func TimeToInt64(t time.Time) int64 {
 	if t == empty {
 		return 0
