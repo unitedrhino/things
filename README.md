@@ -66,9 +66,7 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 5. 微服务注册中心(单体可不使用):`etcd`
 6. 云原生轻量级对象存储:[minio](https://min.io/)
 7. 开源、高性能、云原生,极简的时序数据处理平台:[tdengine](https://www.taosdata.com/)
-8.
-
-大规模可弹性伸缩的云原生分布式物联网MQTT消息服务器:[emqx](https://docs.emqx.com/zh/enterprise/v4.4/getting-started/install-ee.html)
+8. 大规模可弹性伸缩的云原生分布式物联网MQTT消息服务器:[emqx](https://docs.emqx.com/zh/enterprise/v4.4/getting-started/install-ee.html)
 
 ### 代码结构
 
@@ -166,7 +164,7 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 
 ### 接口文档
 
-- apisvr: https://www.apifox.com/apidoc/shared-1424696c-bc32-4678-83c0-6ff9f72c4f24/api-13581481
+- apisvr: https://apifox.com/apidoc/shared-0fb2272b-5f25-4ce0-90ce-f5bf82958c6d/api-83891730
 
 ### 本地运行步骤
 
