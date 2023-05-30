@@ -23,7 +23,7 @@ func NewSceneInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 	}
 }
 
-func (l *SceneInfoDeleteLogic) SceneInfoDelete(in *rule.SceneInfoDeleteReq) (*rule.Response, error) {
+func (l *SceneInfoDeleteLogic) SceneInfoDelete(in *rule.WithID) (*rule.Empty, error) {
 	err := l.svcCtx.SceneRepo.Delete(l.ctx, in.Id)
 	if err != nil { //如果是数据库错误
 		return nil, errors.Database.AddDetail(err)
@@ -32,5 +32,5 @@ func (l *SceneInfoDeleteLogic) SceneInfoDelete(in *rule.SceneInfoDeleteReq) (*ru
 	if err != nil {
 		return nil, err
 	}
-	return &rule.Response{}, err
+	return &rule.Empty{}, err
 }

@@ -22,17 +22,17 @@ func NewSceneLinkageServer(svcCtx *svc.ServiceContext) *SceneLinkageServer {
 	}
 }
 
-func (s *SceneLinkageServer) SceneInfoCreate(ctx context.Context, in *rule.SceneInfo) (*rule.Response, error) {
+func (s *SceneLinkageServer) SceneInfoCreate(ctx context.Context, in *rule.SceneInfo) (*rule.WithID, error) {
 	l := scenelinkagelogic.NewSceneInfoCreateLogic(ctx, s.svcCtx)
 	return l.SceneInfoCreate(in)
 }
 
-func (s *SceneLinkageServer) SceneInfoUpdate(ctx context.Context, in *rule.SceneInfo) (*rule.Response, error) {
+func (s *SceneLinkageServer) SceneInfoUpdate(ctx context.Context, in *rule.SceneInfo) (*rule.Empty, error) {
 	l := scenelinkagelogic.NewSceneInfoUpdateLogic(ctx, s.svcCtx)
 	return l.SceneInfoUpdate(in)
 }
 
-func (s *SceneLinkageServer) SceneInfoDelete(ctx context.Context, in *rule.SceneInfoDeleteReq) (*rule.Response, error) {
+func (s *SceneLinkageServer) SceneInfoDelete(ctx context.Context, in *rule.WithID) (*rule.Empty, error) {
 	l := scenelinkagelogic.NewSceneInfoDeleteLogic(ctx, s.svcCtx)
 	return l.SceneInfoDelete(in)
 }
@@ -42,7 +42,12 @@ func (s *SceneLinkageServer) SceneInfoIndex(ctx context.Context, in *rule.SceneI
 	return l.SceneInfoIndex(in)
 }
 
-func (s *SceneLinkageServer) SceneInfoRead(ctx context.Context, in *rule.SceneInfoReadReq) (*rule.SceneInfo, error) {
+func (s *SceneLinkageServer) SceneInfoRead(ctx context.Context, in *rule.WithID) (*rule.SceneInfo, error) {
 	l := scenelinkagelogic.NewSceneInfoReadLogic(ctx, s.svcCtx)
 	return l.SceneInfoRead(in)
+}
+
+func (s *SceneLinkageServer) SceneManuallyTrigger(ctx context.Context, in *rule.WithID) (*rule.Empty, error) {
+	l := scenelinkagelogic.NewSceneManuallyTriggerLogic(ctx, s.svcCtx)
+	return l.SceneManuallyTrigger(in)
 }

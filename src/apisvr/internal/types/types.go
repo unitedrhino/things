@@ -141,6 +141,10 @@ type CommonResp struct {
 	ID int64 `json:"id,optional"` // id
 }
 
+type WithID struct {
+	ID int64 `json:"id,optional"` // id
+}
+
 type Tag struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
@@ -1018,14 +1022,6 @@ type SceneInfoCreateReq struct {
 
 type SceneInfoUpdateReq struct {
 	SceneInfo
-}
-
-type SceneInfoDeleteReq struct {
-	ID int64 `json:"id"`
-}
-
-type SceneInfoReadReq struct {
-	ID int64 `json:"id"`
 }
 
 type SceneInfoIndexReq struct {

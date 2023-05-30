@@ -23,8 +23,8 @@ func NewFlowInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fl
 	}
 }
 
-func (l *FlowInfoCreateLogic) FlowInfoCreate(in *rule.FlowInfo) (*rule.Response, error) {
+func (l *FlowInfoCreateLogic) FlowInfoCreate(in *rule.FlowInfo) (*rule.WithID, error) {
 	// todo: add your logic here and delete this line
 
-	return &rule.Response{}, nil
+	return &rule.WithID{}, nil
 }

@@ -23,7 +23,7 @@ func NewSceneInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 	}
 }
 
-func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *rule.SceneInfo) (*rule.Response, error) {
+func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *rule.SceneInfo) (*rule.Empty, error) {
 	do, err := ToSceneDo(in)
 	if err != nil {
 		return nil, err
@@ -46,5 +46,5 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *rule.SceneInfo) (*rule.Respon
 		return nil, err
 	}
 
-	return &rule.Response{}, err
+	return &rule.Empty{}, err
 }
