@@ -27,7 +27,7 @@ func NewAlarmSceneMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 // 告警关联场景联动
-func (l *AlarmSceneMultiUpdateLogic) AlarmSceneMultiUpdate(in *rule.AlarmSceneMultiUpdateReq) (*rule.Response, error) {
+func (l *AlarmSceneMultiUpdateLogic) AlarmSceneMultiUpdate(in *rule.AlarmSceneMultiUpdateReq) (*rule.Empty, error) {
 	//检查数据是否存在
 	_, err := l.svcCtx.AlarmInfoRepo.FindOne(l.ctx, in.AlarmID)
 	if err != nil {
@@ -42,5 +42,5 @@ func (l *AlarmSceneMultiUpdateLogic) AlarmSceneMultiUpdate(in *rule.AlarmSceneMu
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	return &rule.Response{}, nil
+	return &rule.Empty{}, nil
 }

@@ -27,7 +27,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 }
 
 func (l *DeleteLogic) Delete(req *types.AlarmInfoDeleteReq) error {
-	_, err := l.svcCtx.Alarm.AlarmInfoDelete(l.ctx, &rule.AlarmInfoDeleteReq{
+	_, err := l.svcCtx.Alarm.AlarmInfoDelete(l.ctx, &rule.WithID{
 		Id: req.ID,
 	})
 	if err != nil {

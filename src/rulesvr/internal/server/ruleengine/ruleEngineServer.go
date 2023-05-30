@@ -22,17 +22,17 @@ func NewRuleEngineServer(svcCtx *svc.ServiceContext) *RuleEngineServer {
 	}
 }
 
-func (s *RuleEngineServer) FlowInfoCreate(ctx context.Context, in *rule.FlowInfo) (*rule.Response, error) {
+func (s *RuleEngineServer) FlowInfoCreate(ctx context.Context, in *rule.FlowInfo) (*rule.WithID, error) {
 	l := ruleenginelogic.NewFlowInfoCreateLogic(ctx, s.svcCtx)
 	return l.FlowInfoCreate(in)
 }
 
-func (s *RuleEngineServer) FlowInfoUpdate(ctx context.Context, in *rule.FlowInfo) (*rule.Response, error) {
+func (s *RuleEngineServer) FlowInfoUpdate(ctx context.Context, in *rule.FlowInfo) (*rule.Empty, error) {
 	l := ruleenginelogic.NewFlowInfoUpdateLogic(ctx, s.svcCtx)
 	return l.FlowInfoUpdate(in)
 }
 
-func (s *RuleEngineServer) FlowInfoDelete(ctx context.Context, in *rule.FlowInfoDeleteReq) (*rule.Response, error) {
+func (s *RuleEngineServer) FlowInfoDelete(ctx context.Context, in *rule.WithID) (*rule.Empty, error) {
 	l := ruleenginelogic.NewFlowInfoDeleteLogic(ctx, s.svcCtx)
 	return l.FlowInfoDelete(in)
 }
@@ -42,7 +42,7 @@ func (s *RuleEngineServer) FlowInfoIndex(ctx context.Context, in *rule.FlowInfoI
 	return l.FlowInfoIndex(in)
 }
 
-func (s *RuleEngineServer) FlowInfoRead(ctx context.Context, in *rule.FlowInfoReadReq) (*rule.FlowInfo, error) {
+func (s *RuleEngineServer) FlowInfoRead(ctx context.Context, in *rule.WithID) (*rule.FlowInfo, error) {
 	l := ruleenginelogic.NewFlowInfoReadLogic(ctx, s.svcCtx)
 	return l.FlowInfoRead(in)
 }
