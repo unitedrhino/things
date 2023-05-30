@@ -29,7 +29,7 @@ func NewAlarmTriggerLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Alar
 }
 
 // 告警触发
-func (l *AlarmTriggerLogic) AlarmTrigger(in *rule.AlarmTriggerReq) (*rule.Response, error) {
+func (l *AlarmTriggerLogic) AlarmTrigger(in *rule.AlarmTriggerReq) (*rule.WithID, error) {
 	//调这个接口默认都是场景联动调用的
 	alarms, err := l.svcCtx.AlarmInfoRepo.FindByFilter(l.ctx, alarm.InfoFilter{SceneID: in.SceneID}, nil)
 	if err != nil {
@@ -41,7 +41,7 @@ func (l *AlarmTriggerLogic) AlarmTrigger(in *rule.AlarmTriggerReq) (*rule.Respon
 			l.Errorf("%s.AlarmTrigger Alarm:%#v err:%v", utils.FuncName(), a, err)
 		}
 	}
-	return &rule.Response{}, nil
+	return &rule.WithID{}, nil
 }
 func (l *AlarmTriggerLogic) HandleOne(in *rule.AlarmTriggerReq, alarmInfo *mysql.RuleAlarmInfo) error {
 	var recordID int64

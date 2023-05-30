@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func DeleteHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func ManuallyTriggerHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.WithID
 		if err := httpx.Parse(r, &req); err != nil {
@@ -18,8 +18,8 @@ func DeleteHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := info.NewDeleteLogic(r.Context(), svcCtx)
-		err := l.Delete(&req)
+		l := info.NewManuallyTriggerLogic(r.Context(), svcCtx)
+		err := l.ManuallyTrigger(&req)
 		result.Http(w, r, nil, err)
 	}
 }

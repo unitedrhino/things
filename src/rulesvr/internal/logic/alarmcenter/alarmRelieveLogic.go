@@ -26,7 +26,7 @@ func NewAlarmRelieveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Alar
 	}
 }
 
-func (l *AlarmRelieveLogic) AlarmRelieve(in *rule.AlarmRelieveReq) (*rule.Response, error) {
+func (l *AlarmRelieveLogic) AlarmRelieve(in *rule.AlarmRelieveReq) (*rule.WithID, error) {
 	//调这个接口默认都是场景联动调用的
 	alarms, err := l.svcCtx.AlarmInfoRepo.FindByFilter(l.ctx, alarm.InfoFilter{SceneID: in.SceneID}, nil)
 	if err != nil {
@@ -39,7 +39,7 @@ func (l *AlarmRelieveLogic) AlarmRelieve(in *rule.AlarmRelieveReq) (*rule.Respon
 		}
 	}
 
-	return &rule.Response{}, nil
+	return &rule.WithID{}, nil
 }
 
 func (l *AlarmRelieveLogic) HandleOne(in *rule.AlarmRelieveReq, alarmInfo *mysql.RuleAlarmInfo) error {

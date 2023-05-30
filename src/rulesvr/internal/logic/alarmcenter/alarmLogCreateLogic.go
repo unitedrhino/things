@@ -24,7 +24,7 @@ func NewAlarmLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Al
 	}
 }
 
-func (l *AlarmLogCreateLogic) AlarmLogCreate(in *rule.AlarmLog) (*rule.Response, error) {
+func (l *AlarmLogCreateLogic) AlarmLogCreate(in *rule.AlarmLog) (*rule.WithID, error) {
 	_, err := l.svcCtx.AlarmRecordRepo.FindOne(l.ctx, in.AlarmRecordID)
 	if !(err == mysql.ErrNotFound) {
 		return nil, errors.Parameter.AddMsg("告警名称重复").AddDetail(err)
@@ -39,5 +39,5 @@ func (l *AlarmLogCreateLogic) AlarmLogCreate(in *rule.AlarmLog) (*rule.Response,
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	return &rule.Response{}, nil
+	return &rule.WithID{}, nil
 }
