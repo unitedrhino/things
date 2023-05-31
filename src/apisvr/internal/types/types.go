@@ -240,10 +240,10 @@ type RoleIndexResp struct {
 }
 
 type RoleUpdateReq struct {
-	ID     int64  `json:"id"`              // 编号
-	Name   string `json:"name,optional"`   // 角色名称
-	Remark string `json:"remark,optional"` // 备注
-	Status int64  `json:"status,optional"` // 状态
+	ID     int64  `json:"id"`                          // 编号
+	Name   string `json:"name,optional"`               // 角色名称
+	Remark string `json:"remark,optional"`             // 备注
+	Status int64  `json:"status,optional,options=1|2"` // 状态
 }
 
 type RoleDeleteReq struct {
