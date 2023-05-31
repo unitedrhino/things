@@ -27,7 +27,7 @@ func NewAlarmInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *A
 
 func (l *AlarmInfoUpdateLogic) Update(old *mysql.RuleAlarmInfo, in *rule.AlarmInfo) *mysql.RuleAlarmInfo {
 	old.Name = in.Name
-	old.State = in.State
+	old.Status = in.Status
 	old.Level = in.Level
 	old.Desc = in.Desc
 	return old

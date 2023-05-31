@@ -2,6 +2,7 @@ package scenelinkagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
@@ -32,6 +33,12 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *rule.WithID) (*rule
 			return nil, errors.NotFind
 		}
 		return nil, err
+	}
+	if pi.Status != def.True {
+		return nil, errors.NotEnable
+	}
+	if pi.TriggerType != scene.TriggerTypeManual {
+		return nil, errors.Parameter.AddMsg("只支持手动触发模式")
 	}
 	err = pi.Then.Execute(l.ctx, scene.ActionRepo{
 		DeviceInteract: l.svcCtx.DeviceInteract,

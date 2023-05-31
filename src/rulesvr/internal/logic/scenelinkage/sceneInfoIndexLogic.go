@@ -31,7 +31,7 @@ func (l *SceneInfoIndexLogic) SceneInfoIndex(in *rule.SceneInfoIndexReq) (*rule.
 		size int64
 		err  error
 	)
-	filter := scene.InfoFilter{Name: in.Name, State: in.State,
+	filter := scene.InfoFilter{Name: in.Name, State: in.Status,
 		TriggerType: scene.TriggerType(in.TriggerType), AlarmID: in.AlarmID}
 	size, err = l.svcCtx.SceneRepo.CountByFilter(l.ctx, filter)
 	if err != nil {
