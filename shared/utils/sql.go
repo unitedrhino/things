@@ -19,6 +19,12 @@ func TimeToNullTime(in *time.Time) sql.NullTime {
 	}
 	return sql.NullTime{Valid: true, Time: *in}
 }
+func NullTimeToTime(in sql.NullTime) *time.Time {
+	if !in.Valid {
+		return nil
+	}
+	return &in.Time
+}
 
 func ToNullTime(in int64) sql.NullTime {
 	if in == 0 {
