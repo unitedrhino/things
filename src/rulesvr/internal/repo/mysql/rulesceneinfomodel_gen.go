@@ -44,7 +44,7 @@ type (
 		When        sql.NullString `db:"when"`        // 触发条件
 		Then        sql.NullString `db:"then"`        // 满足条件时执行的动作
 		Desc        string         `db:"desc"`        // 描述
-		State       int64          `db:"state"`       // 状态（1启用 2禁用）
+		Status      int64          `db:"status"`      // 状态  1:启用,2:禁用
 		CreatedTime time.Time      `db:"createdTime"` // 创建时间
 		UpdatedTime time.Time      `db:"updatedTime"` // 更新时间
 		DeletedTime sql.NullTime   `db:"deletedTime"` // 删除时间，默认为空，表示未删除，非空表示已删除
@@ -94,13 +94,13 @@ func (m *defaultRuleSceneInfoModel) FindOneByName(ctx context.Context, name stri
 
 func (m *defaultRuleSceneInfoModel) Insert(ctx context.Context, data *RuleSceneInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, ruleSceneInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Name, data.TriggerType, data.Trigger, data.When, data.Then, data.Desc, data.State)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Name, data.TriggerType, data.Trigger, data.When, data.Then, data.Desc, data.Status)
 	return ret, err
 }
 
 func (m *defaultRuleSceneInfoModel) Update(ctx context.Context, newData *RuleSceneInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, ruleSceneInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.Name, newData.TriggerType, newData.Trigger, newData.When, newData.Then, newData.Desc, newData.State, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.Name, newData.TriggerType, newData.Trigger, newData.When, newData.Then, newData.Desc, newData.Status, newData.Id)
 	return err
 }
 

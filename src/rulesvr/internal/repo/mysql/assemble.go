@@ -14,7 +14,7 @@ func ToScenePo(info *scene.Info) *RuleSceneInfo {
 		When:        utils.AnyToNullString(info.When),
 		Then:        utils.AnyToNullString(info.Then),
 		Desc:        info.Desc,
-		State:       info.State,
+		Status:      info.Status,
 	}
 	return &ret
 }
@@ -26,7 +26,7 @@ func ToSceneDo(info *RuleSceneInfo) *scene.Info {
 		Desc:        info.Desc,
 		When:        make(scene.Terms, 0),
 		Then:        make(scene.Actions, 0),
-		State:       info.State,
+		Status:      info.Status,
 		TriggerType: scene.TriggerType(info.TriggerType),
 		CreatedTime: info.CreatedTime,
 	}
