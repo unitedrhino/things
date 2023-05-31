@@ -28,11 +28,11 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(req *types.AlarmInfoUpdateReq) error {
 	_, err := l.svcCtx.Alarm.AlarmInfoUpdate(l.ctx, &rule.AlarmInfo{
-		Id:    req.ID,
-		Name:  req.Name,
-		State: req.State,
-		Desc:  req.Desc,
-		Level: req.Level,
+		Id:     req.ID,
+		Name:   req.Name,
+		Status: req.Status,
+		Desc:   req.Desc,
+		Level:  req.Level,
 	})
 	if err != nil {
 		er := errors.Fmt(err)

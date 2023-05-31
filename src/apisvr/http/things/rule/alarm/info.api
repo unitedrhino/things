@@ -59,7 +59,7 @@ type (
 type AlarmInfo struct {
     ID          int64     `json:"id,optional"`
     Name        string    `json:"name,optional"`
-    State        int64    `json:"state,optional"` //状态: 1启用 2禁用
+    Status        int64    `json:"status,optional"` //状态: 1启用 2禁用
     Desc        string    `json:"desc,optional"`
     CreatedTime int64   `json:"createdTime,optional"`
     level       int64 `json:"level,optional"`//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
