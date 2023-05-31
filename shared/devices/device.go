@@ -27,3 +27,9 @@ func (p Point) ToPo() store.Point {
 		Latitude:  p.Latitude,
 	}
 }
+func ToPoint(p store.Point) Point {
+	return Point{
+		Longitude: p.Longitude,
+		Latitude:  p.Latitude,
+	}
+}
