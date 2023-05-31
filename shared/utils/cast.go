@@ -147,6 +147,12 @@ func TimeToInt64(t time.Time) int64 {
 	}
 	return t.Unix()
 }
+func Time2ToInt64(t *time.Time) int64 {
+	if t == nil {
+		return 0
+	}
+	return TimeToInt64(*t)
+}
 func SetToSlice[t constraints.Ordered](in map[t]struct{}) (ret []t) {
 	for k := range in {
 		ret = append(ret, k)
