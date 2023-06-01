@@ -31,7 +31,7 @@ func (l *IndexLogic) Index(req *types.SceneInfoIndexReq) (resp *types.SceneInfoI
 	pbReq := &rule.SceneInfoIndexReq{
 		Page:        logic.ToRulePageRpc(req.Page),
 		Name:        req.Name,
-		State:       req.State,
+		Status:      req.Status,
 		TriggerType: req.TriggerType,
 		AlarmID:     req.AlarmID,
 	}

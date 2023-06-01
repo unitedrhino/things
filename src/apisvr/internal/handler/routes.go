@@ -622,6 +622,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/read",
 					Handler: thingsrulesceneinfo.ReadHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/manually-trigger",
+					Handler: thingsrulesceneinfo.ManuallyTriggerHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/rule/scene/info"),

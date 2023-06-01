@@ -28,10 +28,10 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 
 func (l *CreateLogic) Create(req *types.AlarmInfoCreateReq) (*types.CommonResp, error) {
 	rst, err := l.svcCtx.Alarm.AlarmInfoCreate(l.ctx, &rule.AlarmInfo{
-		Name:  req.Name,
-		State: req.State,
-		Desc:  req.Desc,
-		Level: req.Level,
+		Name:   req.Name,
+		Status: req.Status,
+		Desc:   req.Desc,
+		Level:  req.Level,
 	})
 	if err != nil {
 		er := errors.Fmt(err)

@@ -13,7 +13,7 @@ func ToSceneTypes(in *rule.SceneInfo) *types.SceneInfo {
 		Trigger:     in.Trigger,
 		When:        in.When,
 		Then:        in.Then,
-		State:       in.State,
+		Status:      in.Status,
 		TriggerType: in.TriggerType,
 		CreatedTime: in.CreatedTime,
 	}
@@ -26,7 +26,7 @@ func ToScenePb(in *types.SceneInfo) *rule.SceneInfo {
 		Trigger:     in.Trigger,
 		When:        in.When,
 		Then:        in.Then,
-		State:       in.State,
+		Status:      in.Status,
 		TriggerType: in.TriggerType,
 		CreatedTime: in.CreatedTime,
 	}

@@ -25,7 +25,7 @@ func NewSceneInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 	}
 }
 
-func (l *SceneInfoCreateLogic) SceneInfoCreate(in *rule.SceneInfo) (*rule.Response, error) {
+func (l *SceneInfoCreateLogic) SceneInfoCreate(in *rule.SceneInfo) (*rule.WithID, error) {
 	do, err := ToSceneDo(in)
 	if err != nil {
 		return nil, err
@@ -49,5 +49,5 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *rule.SceneInfo) (*rule.Respon
 	if err != nil {
 		return nil, err
 	}
-	return &rule.Response{Id: id}, err
+	return &rule.WithID{Id: id}, err
 }
