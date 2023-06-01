@@ -27,6 +27,9 @@ func NewRoleCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleCr
 }
 
 func (l *RoleCreateLogic) RoleCreate(req *types.RoleCreateReq) error {
+	if req.Status == 0 {
+		req.Status = 1
+	}
 	resp, err := l.svcCtx.RoleRpc.RoleCreate(l.ctx, &sys.RoleCreateReq{
 		Name:   req.Name,
 		Remark: req.Remark,

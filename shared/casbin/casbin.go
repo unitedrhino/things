@@ -85,7 +85,5 @@ func NewCasbinWithRedisWatcher(conn *sql.DB, driver string, c redis.RedisConf) *
 	})
 	err := cas.SetWatcher(wat)
 	logx.Must(err)
-	err = cas.SavePolicy()
-	logx.Must(err)
 	return cas
 }

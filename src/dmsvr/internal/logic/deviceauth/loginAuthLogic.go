@@ -96,7 +96,7 @@ func (l *LoginAuthLogic) UpdateLoginTime() {
 		l.di.FirstLogin = now
 	}
 	l.di.LastLogin = now
-	l.svcCtx.DeviceInfo.Update(l.ctx, l.di)
+	l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, l.di)
 }
 
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {

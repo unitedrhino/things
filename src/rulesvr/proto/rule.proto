@@ -4,9 +4,12 @@ syntax = "proto3";
 package rule;
 option go_package="./pb/rule";
 
-message Response {
+message WithID {
   int64 id = 1;
 }
+message Empty{
+}
+
 message PageInfo{
   int64 page = 1;
   int64 size = 2;
@@ -17,47 +20,48 @@ message TimeRange{
 }
 
 service RuleEngine {
-  rpc flowInfoCreate(FlowInfo) returns(Response);
-  rpc flowInfoUpdate(FlowInfo) returns(Response);
-  rpc flowInfoDelete(FlowInfoDeleteReq) returns(Response);
+  rpc flowInfoCreate(FlowInfo) returns(WithID);
+  rpc flowInfoUpdate(FlowInfo) returns(Empty);
+  rpc flowInfoDelete(WithID) returns(Empty);
   rpc flowInfoIndex(FlowInfoIndexReq) returns(FlowInfoIndexResp);
-  rpc flowInfoRead(FlowInfoReadReq) returns(FlowInfo);
+  rpc flowInfoRead(WithID) returns(FlowInfo);
 }
 
 //场景联动
 service SceneLinkage{
-  rpc sceneInfoCreate(SceneInfo) returns(Response);
-  rpc sceneInfoUpdate(SceneInfo) returns(Response);
-  rpc sceneInfoDelete(SceneInfoDeleteReq) returns(Response);
+  rpc sceneInfoCreate(SceneInfo) returns(WithID);
+  rpc sceneInfoUpdate(SceneInfo) returns(Empty);
+  rpc sceneInfoDelete(WithID) returns(Empty);
   rpc sceneInfoIndex(SceneInfoIndexReq) returns(SceneInfoIndexResp);
-  rpc sceneInfoRead(SceneInfoReadReq) returns(SceneInfo);
+  rpc sceneInfoRead(WithID) returns(SceneInfo);
+  rpc sceneManuallyTrigger(WithID) returns (Empty);//手动触发场景
 }
 
 //告警中心
 service alarmCenter{
-  rpc alarmInfoCreate(AlarmInfo)returns(Response);
-  rpc alarmInfoUpdate(AlarmInfo)returns(Response);
-  rpc alarmInfoDelete(AlarmInfoDeleteReq)returns(Response);
+  rpc alarmInfoCreate(AlarmInfo)returns(WithID);
+  rpc alarmInfoUpdate(AlarmInfo)returns(Empty);
+  rpc alarmInfoDelete(WithID)returns(Empty);
   rpc alarmInfoIndex(AlarmInfoIndexReq)returns(AlarmInfoIndexResp);
-  rpc alarmInfoRead(AlarmInfoReadReq)returns(AlarmInfo);
+  rpc alarmInfoRead(WithID)returns(AlarmInfo);
 
   //告警关联场景联动
-  rpc alarmSceneMultiUpdate(alarmSceneMultiUpdateReq)returns(Response);//绑定场景联动
-  rpc alarmSceneDelete(alarmSceneDeleteReq)returns(Response);//解绑场景联动
+  rpc alarmSceneMultiUpdate(alarmSceneMultiUpdateReq)returns(Empty);//绑定场景联动
+  rpc alarmSceneDelete(alarmSceneDeleteReq)returns(Empty);//解绑场景联动
 
   //告警记录
   rpc alarmRecordIndex(AlarmRecordIndexReq)returns(AlarmRecordIndexResp);
 
   //告警触发
-  rpc alarmTrigger(AlarmTriggerReq)returns(Response);
+  rpc alarmTrigger(AlarmTriggerReq)returns(WithID);
   //告警解除
-  rpc alarmRelieve(AlarmRelieveReq)returns(Response);
+  rpc alarmRelieve(AlarmRelieveReq)returns(WithID);
 
   //告警流水日志
   rpc alarmLogIndex(AlarmLogIndexReq)returns(AlarmLogIndexResp);
 
   //告警处理记录
-  rpc alarmDealRecordCreate(alarmDealRecordCreateReq)returns(Response);//处理告警
+  rpc alarmDealRecordCreate(alarmDealRecordCreateReq)returns(WithID);//处理告警
   rpc alarmDealRecordIndex(AlarmDealRecordIndexReq)returns(AlarmDealRecordIndexResp);
 
 }
@@ -175,17 +179,11 @@ message AlarmInfo{
   string name = 2;//告警配置名称
   string desc = 3;//告警配置说明
   int64 level = 4;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-  int64 state = 5;//告警配置状态（1启用 2禁用）
+  int64 status = 5;//告警配置状态（1启用 2禁用）
   int64 createdTime = 6;//创建时间
 }
 
-message AlarmInfoReadReq{
-  int64 id = 1;//告警id
-}
 
-message AlarmInfoDeleteReq{
-  int64 id = 1;//告警id
-}
 
 message AlarmInfoIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
@@ -199,14 +197,12 @@ message AlarmInfoIndexResp{
   int64  total = 2;//总数(只有分页的时候会返回)
 }
 
-message SceneInfoReadReq{
-  int64 id = 1;//场景id
-}
+
 
 message SceneInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string name =2;//场景名 模糊查询
-  int64 state = 3;//状态: 1启用 2禁用
+  int64 status = 3;//状态: 1启用 2禁用
   string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
   int64 alarmID = 5;//告警配置ID过滤
 }
@@ -216,14 +212,12 @@ message SceneInfoIndexResp{
   int64  total = 2;//总数(只有分页的时候会返回)
 }
 
-message SceneInfoDeleteReq{
-  int64 id = 1;
-}
+
 
 message SceneInfo{
   int64 id = 1;//场景id
   string name =2;//场景名
-  int64 state = 3;//状态: 1启用 2禁用
+  int64 status = 3;//状态: 1启用 2禁用
   string desc = 4;//描述
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
   string triggerType = 6;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
@@ -249,9 +243,6 @@ message SceneInfo{
 
 
 
-message FlowInfoReadReq{
-  int64 id = 1;
-}
 
 message FlowInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
@@ -262,9 +253,7 @@ message FlowInfoIndexResp{
   int64  total = 2;//总数(只有分页的时候会返回)
 }
 
-message FlowInfoDeleteReq{
-  int64 id = 1;
-}
+
 
 message FlowInfo{
   int64 id = 1;

@@ -52,7 +52,7 @@ CREATE TABLE if not exists `sys_role_info`
     `createdTime` datetime     not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime     NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime              DEFAULT NULL,
-    `status`      int                   default 1 null comment '状态  1:启用,2:禁用',
+    `status`      tinyint(1)                   default 1 null comment '状态  1:启用,2:禁用',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `nameIndex` (`name`) USING BTREE
     ) ENGINE = InnoDB

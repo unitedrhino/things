@@ -14,7 +14,7 @@ func ToSceneDo(in *rule.SceneInfo) (*scene.Info, error) {
 		ID:          in.Id,
 		Name:        in.Name,
 		Desc:        in.Desc,
-		State:       in.State,
+		Status:      in.Status,
 		TriggerType: scene.TriggerType(in.TriggerType),
 		CreatedTime: time.Unix(in.CreatedTime, 0),
 	}
@@ -41,7 +41,7 @@ func ToScenePb(in *scene.Info) *rule.SceneInfo {
 		Id:          in.ID,
 		Name:        in.Name,
 		Desc:        in.Desc,
-		State:       in.State,
+		Status:      in.Status,
 		TriggerType: string(in.TriggerType),
 		Trigger:     utils.MarshalNoErr(in.Trigger),
 		When:        utils.MarshalNoErr(in.When),

@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -91,10 +92,7 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(
-		l.ctx, &events.DeviceUpdateInfo{ProductID: in.Info.ProductID})
-	if err != nil {
-		return nil, err
-	}
+	l.svcCtx.Bus.Publish(l.ctx, topics.DmProductSchemaUpdate, &events.DeviceUpdateInfo{ProductID: in.Info.ProductID})
+
 	return &dm.Response{}, nil
 }

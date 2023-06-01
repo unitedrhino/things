@@ -14,7 +14,9 @@ type(
     CommonResp{
         ID int64 `json:"id,optional"`         // id
     }
-
+    WithID{
+        ID int64 `json:"id,optional"`         // id
+    }
     Tag struct {
         Key string `json:"key"`
         Value string `json:"value"`

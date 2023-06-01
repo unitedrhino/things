@@ -14,7 +14,7 @@ func ToAlarmInfoPo(in *rule.AlarmInfo) *mysql.RuleAlarmInfo {
 		Name:        in.Name,
 		Desc:        in.Desc,
 		Level:       in.Level,
-		State:       in.State,
+		Status:      in.Status,
 		CreatedTime: time.Unix(in.CreatedTime, 0),
 	}
 }
@@ -24,7 +24,7 @@ func ToAlarmInfo(in *mysql.RuleAlarmInfo) *rule.AlarmInfo {
 		Name:        in.Name,
 		Desc:        in.Desc,
 		Level:       in.Level,
-		State:       in.State,
+		Status:      in.Status,
 		CreatedTime: in.CreatedTime.Unix(),
 	}
 }
