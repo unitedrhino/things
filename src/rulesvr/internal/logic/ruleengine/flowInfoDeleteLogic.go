@@ -23,8 +23,8 @@ func NewFlowInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fl
 	}
 }
 
-func (l *FlowInfoDeleteLogic) FlowInfoDelete(in *rule.FlowInfoDeleteReq) (*rule.Response, error) {
+func (l *FlowInfoDeleteLogic) FlowInfoDelete(in *rule.WithID) (*rule.Empty, error) {
 	// todo: add your logic here and delete this line
 
-	return &rule.Response{}, nil
+	return &rule.Empty{}, nil
 }

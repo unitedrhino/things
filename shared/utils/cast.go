@@ -133,11 +133,25 @@ func ToRpcNullDouble(val *float64) *wrappers.DoubleValue {
 
 var empty = time.Time{}
 
+func Int64ToTimex(in int64) *time.Time {
+	if in == 0 {
+		return nil
+	}
+	ret := time.Unix(in, 0)
+	return &ret
+}
+
 func TimeToInt64(t time.Time) int64 {
 	if t == empty {
 		return 0
 	}
 	return t.Unix()
+}
+func Time2ToInt64(t *time.Time) int64 {
+	if t == nil {
+		return 0
+	}
+	return TimeToInt64(*t)
 }
 func SetToSlice[t constraints.Ordered](in map[t]struct{}) (ret []t) {
 	for k := range in {

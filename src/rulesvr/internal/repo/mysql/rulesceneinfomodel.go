@@ -68,8 +68,8 @@ func (c customRuleSceneInfoModel) FmtFilter(filter scene.InfoFilter, sql sq.Sele
 	if filter.TriggerType != "" {
 		sql = sql.Where("triggerType = ?", filter.TriggerType)
 	}
-	if filter.State != 0 {
-		sql = sql.Where("state = ?", filter.State)
+	if filter.Status != 0 {
+		sql = sql.Where("status = ?", filter.Status)
 	}
 	if filter.AlarmID != 0 {
 		sql = sql.LeftJoin(fmt.Sprintf("`rule_alarm_scene` as ras on ras.sceneID=%s.id", c.repo.table))

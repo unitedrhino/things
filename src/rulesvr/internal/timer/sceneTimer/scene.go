@@ -83,7 +83,7 @@ func (s *SceneTimer) run() {
 	isRunning.Store(true)
 	infos, err := s.svcCtx.SceneRepo.FindByFilter(s.ctx, scene.InfoFilter{
 		Name:        "",
-		State:       def.Enable,
+		Status:      def.Enable,
 		TriggerType: scene.TriggerTypeTimer,
 	}, nil)
 	if err != nil {

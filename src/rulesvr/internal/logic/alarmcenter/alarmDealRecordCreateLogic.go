@@ -26,7 +26,7 @@ func NewAlarmDealRecordCreateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 // 告警处理记录
-func (l *AlarmDealRecordCreateLogic) AlarmDealRecordCreate(in *rule.AlarmDealRecordCreateReq) (*rule.Response, error) {
+func (l *AlarmDealRecordCreateLogic) AlarmDealRecordCreate(in *rule.AlarmDealRecordCreateReq) (*rule.WithID, error) {
 	ai, err := l.svcCtx.AlarmRecordRepo.FindOne(l.ctx, in.AlarmRecordID)
 	if err != nil {
 		if err == mysql.ErrNotFound {
@@ -51,5 +51,5 @@ func (l *AlarmDealRecordCreateLogic) AlarmDealRecordCreate(in *rule.AlarmDealRec
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	return &rule.Response{}, nil
+	return &rule.WithID{}, nil
 }

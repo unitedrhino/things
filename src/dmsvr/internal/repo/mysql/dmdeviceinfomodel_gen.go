@@ -26,7 +26,6 @@ type (
 	dmDeviceInfoModel interface {
 		Insert(ctx context.Context, data *DmDeviceInfo) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*DmDeviceInfo, error)
-		FindOneByProductIDDeviceAlias(ctx context.Context, productID string, deviceAlias sql.NullString) (*DmDeviceInfo, error)
 		FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error)
 		Update(ctx context.Context, data *DmDeviceInfo) error
 		Delete(ctx context.Context, id int64) error
@@ -38,27 +37,27 @@ type (
 	}
 
 	DmDeviceInfo struct {
-		Id          int64          `db:"id"`
-		ProductID   string         `db:"productID"`  // 产品id
-		DeviceName  string         `db:"deviceName"` // 设备名称
-		Secret      string         `db:"secret"`     // 设备秘钥
-		Cert        string         `db:"cert"`       // 设备证书
-		Imei        string         `db:"imei"`       // IMEI号信息
-		Mac         string         `db:"mac"`        // MAC号信息
-		Version     string         `db:"version"`    // 固件版本
-		HardInfo    string         `db:"hardInfo"`   // 模组硬件型号
-		SoftInfo    string         `db:"softInfo"`   // 模组软件版本
-		Position    string         `db:"position"`   // 设备的位置(默认百度坐标系BD09)
-		Address     string         `db:"address"`    // 所在地址
-		Tags        string         `db:"tags"`       // 设备标签
-		IsOnline    int64          `db:"isOnline"`   // 是否在线,1是2否
-		FirstLogin  sql.NullTime   `db:"firstLogin"` // 激活时间
-		LastLogin   sql.NullTime   `db:"lastLogin"`  // 最后上线时间
-		LogLevel    int64          `db:"logLevel"`   // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
-		CreatedTime time.Time      `db:"createdTime"`
-		UpdatedTime time.Time      `db:"updatedTime"`
-		DeletedTime sql.NullTime   `db:"deletedTime"`
-		DeviceAlias sql.NullString `db:"deviceAlias"` // 设备别名
+		Id          int64        `db:"id"`
+		ProductID   string       `db:"productID"`  // 产品id
+		DeviceName  string       `db:"deviceName"` // 设备名称
+		Secret      string       `db:"secret"`     // 设备秘钥
+		Cert        string       `db:"cert"`       // 设备证书
+		Imei        string       `db:"imei"`       // IMEI号信息
+		Mac         string       `db:"mac"`        // MAC号信息
+		Version     string       `db:"version"`    // 固件版本
+		HardInfo    string       `db:"hardInfo"`   // 模组硬件型号
+		SoftInfo    string       `db:"softInfo"`   // 模组软件版本
+		Position    string       `db:"position"`   // 设备的位置(默认百度坐标系BD09)
+		Address     string       `db:"address"`    // 所在地址
+		Tags        string       `db:"tags"`       // 设备标签
+		IsOnline    int64        `db:"isOnline"`   // 是否在线,1是2否
+		FirstLogin  sql.NullTime `db:"firstLogin"` // 激活时间
+		LastLogin   sql.NullTime `db:"lastLogin"`  // 最后上线时间
+		LogLevel    int64        `db:"logLevel"`   // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+		CreatedTime time.Time    `db:"createdTime"`
+		UpdatedTime time.Time    `db:"updatedTime"`
+		DeletedTime sql.NullTime `db:"deletedTime"`
+		DeviceAlias string       `db:"deviceAlias"` // 设备别名
 	}
 )
 
@@ -79,20 +78,6 @@ func (m *defaultDmDeviceInfoModel) FindOne(ctx context.Context, id int64) (*DmDe
 	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", dmDeviceInfoRows, m.table)
 	var resp DmDeviceInfo
 	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultDmDeviceInfoModel) FindOneByProductIDDeviceAlias(ctx context.Context, productID string, deviceAlias sql.NullString) (*DmDeviceInfo, error) {
-	var resp DmDeviceInfo
-	query := fmt.Sprintf("select %s from %s where `productID` = ? and `deviceAlias` = ? limit 1", dmDeviceInfoRows, m.table)
-	err := m.conn.QueryRowCtx(ctx, &resp, query, productID, deviceAlias)
 	switch err {
 	case nil:
 		return &resp, nil

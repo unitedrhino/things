@@ -14,19 +14,22 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "新增场景"
     @handler create
-    post /create (SceneInfoCreateReq) returns (CommonResp)
+    post /create (SceneInfoCreateReq) returns (WithID)
     @doc "更新场景"
     @handler update
     post /update (SceneInfoUpdateReq) returns ()
     @doc "删除场景"
     @handler delete
-    post /delete (SceneInfoDeleteReq) returns ()
+    post /delete (WithID) returns ()
     @doc "获取场景信息列表"
     @handler index
     post /index (SceneInfoIndexReq) returns (SceneInfoIndexResp)
     @doc "获取场景信息详情"
     @handler read
-    post /read (SceneInfoReadReq) returns (SceneInfo)
+    post /read (WithID) returns (SceneInfo)
+    @doc "获取场景信息详情"
+    @handler ManuallyTrigger
+    post /manually-trigger (WithID) returns ()
 }
 
 type (
@@ -36,17 +39,12 @@ type (
     SceneInfoUpdateReq struct {
         SceneInfo
     }
-    SceneInfoDeleteReq struct {
-        ID          int64     `json:"id"`
-    }
-    SceneInfoReadReq struct {
-        ID          int64     `json:"id"`
-    }
+
     SceneInfoIndexReq struct {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         Name        string    `json:"name,optional"` //场景名模糊查询
         TriggerType  string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
-        State        int64    `json:"state,optional"` //状态: 1启用 2禁用
+        Status        int64    `json:"status,optional"` //状态: 1启用 2禁用
         AlarmID int64 `json:"alarmID,optional"` //告警id
     }
     SceneInfoIndexResp struct {
@@ -59,7 +57,7 @@ type (
 type SceneInfo struct {
     ID          int64     `json:"id,optional"`
     Name        string    `json:"name,optional"`
-    State        int64    `json:"state,optional"` //状态: 1启用 2禁用
+    Status        int64    `json:"status,optional"` //状态: 1启用 2禁用
     Desc        string    `json:"desc,optional"`
     CreatedTime int64   `json:"createdTime,optional"`
     TriggerType  string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
