@@ -19,8 +19,8 @@ func ToSceneDo(in *rule.SceneInfo) (*scene.Info, error) {
 		CreatedTime: time.Unix(in.CreatedTime, 0),
 	}
 	switch info.TriggerType {
-	case scene.TriggerTypeDevice:
-		err = json.Unmarshal([]byte(in.Trigger), &info.Trigger.Device)
+	case scene.TriggerTypeDevice, scene.TriggerTypeTimer:
+		err = json.Unmarshal([]byte(in.Trigger), &info.Trigger)
 	}
 	if err != nil {
 		return nil, err
