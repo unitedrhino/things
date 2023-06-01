@@ -141,6 +141,7 @@ func genInfoNameKey(name string) string {
 func (s *SceneTimer) jobRun(info *scene.Info) (err error) {
 	ctx, span := traces.StartSpan(s.ctx, fmt.Sprintf("SceneTimer.jobRun"), "")
 	defer span.End()
+	defer utils.Recover(ctx)
 	if len(info.When) != 0 {
 		if !info.When.IsHit(ctx, scene.TermRepo{
 			DeviceMsg:  s.svcCtx.DeviceMsg,
