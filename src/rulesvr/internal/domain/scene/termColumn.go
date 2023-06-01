@@ -67,6 +67,11 @@ func (c *ColumnSchema) IsHit(ctx context.Context, columnType TermColumnType, rep
 		info, err := repo.DeviceMsg.PropertyLatestIndex(ctx, &devicemsg.PropertyLatestIndexReq{ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: c.DataID[:1]})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", err)
+			return false
+		}
+		if len(info.List) == 0 {
+			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:dataID is not right:%v", c.DataID[0])
+			return false
 		}
 		if info.List[0].Timestamp != 0 { //如果有值
 			dataType = sm.Property[c.DataID[0]].Define.Type
