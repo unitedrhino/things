@@ -31,7 +31,7 @@ type Info struct {
 }
 
 func (i *Info) Validate() error {
-	if !utils.SliceIn(i.TriggerType, TriggerTypeDevice) {
+	if !utils.SliceIn(i.TriggerType, TriggerTypeDevice, TriggerTypeTimer, TriggerTypeManual) {
 		return errors.Parameter.AddMsg("触发器不支持的类型:" + string(i.TriggerType))
 	}
 	err := i.Trigger.Validate(i.TriggerType)
