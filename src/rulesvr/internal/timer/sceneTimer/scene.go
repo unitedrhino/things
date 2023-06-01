@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/repoComplex"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/internal/timer"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -156,6 +157,8 @@ func (s *SceneTimer) jobRun(info *scene.Info) (err error) {
 	err = info.Then.Execute(ctx, scene.ActionRepo{
 		DeviceInteract: s.svcCtx.DeviceInteract,
 		DeviceM:        s.svcCtx.DeviceM,
+		Alarm:          repoComplex.NewSceneAlarm(s.svcCtx),
+		Scene:          info,
 	})
 	return err
 }
