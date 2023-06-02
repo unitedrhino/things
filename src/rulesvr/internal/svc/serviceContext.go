@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/shared/eventBus"
 	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
 	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
@@ -28,6 +29,7 @@ type ServiceContext struct {
 	Repo
 	SvrClient
 	SceneTimerControl timer.SceneControl
+	Bus               eventBus.Bus
 }
 type Repo struct {
 	Store               kv.Store
@@ -92,8 +94,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg = didirect.NewDeviceMsg(c.DiRpc.RunProxy)
 		deviceInteract = didirect.NewDeviceInteract(c.DiRpc.RunProxy)
 	}
-
+	bus := eventBus.NewEventBus()
 	return &ServiceContext{
+		Bus:    bus,
 		Config: c,
 		SvrClient: SvrClient{
 			ProductM:       productM,

@@ -3,6 +3,7 @@ package scenelinkagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
@@ -45,6 +46,8 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *rule.SceneInfo) (*rule.Empty,
 	if err = l.svcCtx.SceneTimerControl.Update(do); err != nil {
 		return nil, err
 	}
-
+	if !l.svcCtx.SceneTimerControl.IsRunning() {
+		l.svcCtx.Bus.Publish(l.ctx, topics.RuleSceneInfoUpdate, in.Id)
+	}
 	return &rule.Empty{}, err
 }
