@@ -26,3 +26,16 @@ func (d *DataUpdateLogic) ProductSchemaUpdate(info *events.DeviceUpdateInfo) err
 	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
 	return d.svcCtx.SchemaRepo.ClearCache(d.ctx, info.ProductID)
 }
+
+func (d *DataUpdateLogic) SceneInfoDelete(info *events.ChangeInfo) error {
+	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
+	return d.svcCtx.SceneTimerControl.Delete(info.ID)
+}
+func (d *DataUpdateLogic) SceneInfoUpdate(info *events.ChangeInfo) error {
+	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
+	do, err := d.svcCtx.SceneRepo.FindOne(d.ctx, info.ID)
+	if err != nil {
+		return err
+	}
+	return d.svcCtx.SceneTimerControl.Update(do)
+}
