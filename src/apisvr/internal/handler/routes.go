@@ -401,6 +401,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/multi-send-property",
+					Handler: thingsdeviceinteract.MultiSendPropertyHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/property-read",
 					Handler: thingsdeviceinteract.PropertyReadHandler(serverCtx),
 				},
