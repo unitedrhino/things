@@ -4,18 +4,11 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/events"
 )
 
 type (
 	DataUpdate interface {
-		Subscribe(handle Handle) error
-	}
-	Handle       func(ctx context.Context) UpdateHandle
-	UpdateHandle interface {
-		ProductSchemaUpdate(info *events.DeviceUpdateInfo) error
-		SceneInfoDelete(info *events.ChangeInfo) error
-		SceneInfoUpdate(info *events.ChangeInfo) error
+		UpdateWithTopic(ctx context.Context, topic string, info any) error
 	}
 )
 

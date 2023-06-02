@@ -2,8 +2,10 @@ package startup
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/event/appDeviceEvent"
+	"github.com/i-Things/things/src/rulesvr/internal/event/busEvent/sceneChange"
 	"github.com/i-Things/things/src/rulesvr/internal/event/dataUpdateEvent"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/event/subscribe/dataUpdate"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/event/subscribe/subApp"
@@ -12,6 +14,11 @@ import (
 	"log"
 	"os"
 )
+
+func Init(svcCtx *svc.ServiceContext) {
+	Subscribe(svcCtx)
+	InitEventBus(svcCtx)
+}
 
 func Subscribe(svcCtx *svc.ServiceContext) {
 	subAppCli, err := subApp.NewSubApp(svcCtx.Config.Event)
@@ -38,4 +45,9 @@ func Subscribe(svcCtx *svc.ServiceContext) {
 		log.Fatalf("%v.DataUpdate err:%v",
 			utils.FuncName(), err)
 	}
+}
+
+func InitEventBus(svcCtx *svc.ServiceContext) {
+	svcCtx.Bus.Subscribe(topics.RuleSceneInfoDelete, sceneChange.EventsHandle(svcCtx, topics.RuleSceneInfoDelete))
+	svcCtx.Bus.Subscribe(topics.RuleSceneInfoUpdate, sceneChange.EventsHandle(svcCtx, topics.RuleSceneInfoUpdate))
 }

@@ -2,7 +2,6 @@ package dataUpdate
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/events"
@@ -25,16 +24,22 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.Subscribe(topics.DmProductUpdateSchema,
-		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
-			tempInfo := events.DeviceUpdateInfo{}
-			err := json.Unmarshal(msg, &tempInfo)
-			if err != nil {
-				return err
-			}
+	if _, err := n.client.Subscribe(topics.DmProductSchemaUpdate,
+		events.NatsSubWithType(func(ctx context.Context, tempInfo events.DeviceUpdateInfo, natsMsg *nats.Msg) error {
 			return handle(ctx).ProductSchemaUpdate(&tempInfo)
-		}))
-	if err != nil {
+		})); err != nil {
+		return err
+	}
+	if _, err := n.client.Subscribe(topics.RuleSceneInfoUpdate,
+		events.NatsSubWithType(func(ctx context.Context, tempInfo events.ChangeInfo, natsMsg *nats.Msg) error {
+			return handle(ctx).SceneInfoUpdate(&tempInfo)
+		})); err != nil {
+		return err
+	}
+	if _, err := n.client.Subscribe(topics.RuleSceneInfoDelete,
+		events.NatsSubWithType(func(ctx context.Context, tempInfo events.ChangeInfo, natsMsg *nats.Msg) error {
+			return handle(ctx).SceneInfoDelete(&tempInfo)
+		})); err != nil {
 		return err
 	}
 	return nil

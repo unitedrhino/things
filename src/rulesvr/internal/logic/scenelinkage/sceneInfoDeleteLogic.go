@@ -3,6 +3,7 @@ package scenelinkagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
@@ -31,6 +32,9 @@ func (l *SceneInfoDeleteLogic) SceneInfoDelete(in *rule.WithID) (*rule.Empty, er
 	err = l.svcCtx.SceneTimerControl.Delete(in.Id)
 	if err != nil {
 		return nil, err
+	}
+	if !l.svcCtx.SceneTimerControl.IsRunning() {
+		l.svcCtx.Bus.Publish(l.ctx, topics.RuleSceneInfoDelete, in.Id)
 	}
 	return &rule.Empty{}, err
 }
