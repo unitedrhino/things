@@ -14,6 +14,8 @@ type (
 	Handle       func(ctx context.Context) UpdateHandle
 	UpdateHandle interface {
 		ProductSchemaUpdate(info *events.DeviceUpdateInfo) error
+		SceneInfoDelete(info *events.ChangeInfo) error
+		SceneInfoUpdate(info *events.ChangeInfo) error
 	}
 )
 

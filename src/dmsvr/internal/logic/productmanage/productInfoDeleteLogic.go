@@ -76,7 +76,7 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 		l.Errorf("%s.SchemaRepo.ClearCache err=%v", utils.FuncName(), utils.Fmt(err))
 		return errors.Database.AddDetail(err)
 	}
-	l.svcCtx.Bus.Publish(l.ctx, topics.DmProductDelete, in.ProductID)
+	l.svcCtx.Bus.Publish(l.ctx, topics.DmProductInfoDelete, in.ProductID)
 	return nil
 }
 func (l *ProductInfoDeleteLogic) Check(in *dm.ProductInfoDeleteReq) error {

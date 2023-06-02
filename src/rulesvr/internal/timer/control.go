@@ -7,5 +7,6 @@ import (
 type SceneControl interface {
 	Create(info *scene.Info) error
 	Update(info *scene.Info) error
+	IsRunning() bool
 	Delete(id int64) error
 }
