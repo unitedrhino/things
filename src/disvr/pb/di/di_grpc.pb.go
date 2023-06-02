@@ -22,15 +22,15 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DeviceMsgClient interface {
-	//获取设备sdk调试日志
+	// 获取设备sdk调试日志
 	SdkLogIndex(ctx context.Context, in *SdkLogIndexReq, opts ...grpc.CallOption) (*SdkLogIndexResp, error)
-	//获取设备调试信息记录登入登出,操作
+	// 获取设备调试信息记录登入登出,操作
 	HubLogIndex(ctx context.Context, in *HubLogIndexReq, opts ...grpc.CallOption) (*HubLogIndexResp, error)
-	//获取设备数据信息
+	// 获取设备数据信息
 	PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error)
-	//获取设备数据信息
+	// 获取设备数据信息
 	PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error)
-	//获取设备数据信息
+	// 获取设备数据信息
 	EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error)
 }
 
@@ -91,15 +91,15 @@ func (c *deviceMsgClient) EventLogIndex(ctx context.Context, in *EventLogIndexRe
 // All implementations must embed UnimplementedDeviceMsgServer
 // for forward compatibility
 type DeviceMsgServer interface {
-	//获取设备sdk调试日志
+	// 获取设备sdk调试日志
 	SdkLogIndex(context.Context, *SdkLogIndexReq) (*SdkLogIndexResp, error)
-	//获取设备调试信息记录登入登出,操作
+	// 获取设备调试信息记录登入登出,操作
 	HubLogIndex(context.Context, *HubLogIndexReq) (*HubLogIndexResp, error)
-	//获取设备数据信息
+	// 获取设备数据信息
 	PropertyLatestIndex(context.Context, *PropertyLatestIndexReq) (*PropertyIndexResp, error)
-	//获取设备数据信息
+	// 获取设备数据信息
 	PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyIndexResp, error)
-	//获取设备数据信息
+	// 获取设备数据信息
 	EventLogIndex(context.Context, *EventLogIndexReq) (*EventIndexResp, error)
 	mustEmbedUnimplementedDeviceMsgServer()
 }
@@ -262,17 +262,19 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DeviceInteractClient interface {
-	//调用设备行为
+	// 调用设备行为
 	SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
-	//获取异步调用设备行为的结果
+	// 获取异步调用设备行为的结果
 	ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error)
-	//请求设备获取设备最新属性
+	// 请求设备获取设备最新属性
 	GetPropertyReply(ctx context.Context, in *GetPropertyReplyReq, opts ...grpc.CallOption) (*GetPropertyReplyResp, error)
-	//调用设备属性
+	// 调用设备属性
 	SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
-	//获取异步调用设备属性的结果
+	// 批量调用设备属性
+	MultiSendProperty(ctx context.Context, in *MultiSendPropertyReq, opts ...grpc.CallOption) (*MultiSendPropertyResp, error)
+	// 获取异步调用设备属性的结果
 	PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
-	//发送消息给设备
+	// 发送消息给设备
 	SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
 }
 
@@ -320,6 +322,15 @@ func (c *deviceInteractClient) SendProperty(ctx context.Context, in *SendPropert
 	return out, nil
 }
 
+func (c *deviceInteractClient) MultiSendProperty(ctx context.Context, in *MultiSendPropertyReq, opts ...grpc.CallOption) (*MultiSendPropertyResp, error) {
+	out := new(MultiSendPropertyResp)
+	err := c.cc.Invoke(ctx, "/di.DeviceInteract/multiSendProperty", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *deviceInteractClient) PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	out := new(SendPropertyResp)
 	err := c.cc.Invoke(ctx, "/di.DeviceInteract/propertyRead", in, out, opts...)
@@ -342,17 +353,19 @@ func (c *deviceInteractClient) SendMsg(ctx context.Context, in *SendMsgReq, opts
 // All implementations must embed UnimplementedDeviceInteractServer
 // for forward compatibility
 type DeviceInteractServer interface {
-	//调用设备行为
+	// 调用设备行为
 	SendAction(context.Context, *SendActionReq) (*SendActionResp, error)
-	//获取异步调用设备行为的结果
+	// 获取异步调用设备行为的结果
 	ActionRead(context.Context, *RespReadReq) (*SendActionResp, error)
-	//请求设备获取设备最新属性
+	// 请求设备获取设备最新属性
 	GetPropertyReply(context.Context, *GetPropertyReplyReq) (*GetPropertyReplyResp, error)
-	//调用设备属性
+	// 调用设备属性
 	SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error)
-	//获取异步调用设备属性的结果
+	// 批量调用设备属性
+	MultiSendProperty(context.Context, *MultiSendPropertyReq) (*MultiSendPropertyResp, error)
+	// 获取异步调用设备属性的结果
 	PropertyRead(context.Context, *RespReadReq) (*SendPropertyResp, error)
-	//发送消息给设备
+	// 发送消息给设备
 	SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error)
 	mustEmbedUnimplementedDeviceInteractServer()
 }
@@ -372,6 +385,9 @@ func (UnimplementedDeviceInteractServer) GetPropertyReply(context.Context, *GetP
 }
 func (UnimplementedDeviceInteractServer) SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendProperty not implemented")
+}
+func (UnimplementedDeviceInteractServer) MultiSendProperty(context.Context, *MultiSendPropertyReq) (*MultiSendPropertyResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiSendProperty not implemented")
 }
 func (UnimplementedDeviceInteractServer) PropertyRead(context.Context, *RespReadReq) (*SendPropertyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyRead not implemented")
@@ -464,6 +480,24 @@ func _DeviceInteract_SendProperty_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceInteract_MultiSendProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiSendPropertyReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).MultiSendProperty(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/di.DeviceInteract/multiSendProperty",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).MultiSendProperty(ctx, req.(*MultiSendPropertyReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DeviceInteract_PropertyRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RespReadReq)
 	if err := dec(in); err != nil {
@@ -522,6 +556,10 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "sendProperty",
 			Handler:    _DeviceInteract_SendProperty_Handler,
+		},
+		{
+			MethodName: "multiSendProperty",
+			Handler:    _DeviceInteract_MultiSendProperty_Handler,
 		},
 		{
 			MethodName: "propertyRead",
