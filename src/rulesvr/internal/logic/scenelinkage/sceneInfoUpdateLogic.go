@@ -29,10 +29,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *rule.SceneInfo) (*rule.Empty,
 	if err != nil {
 		return nil, err
 	}
-	oldDo, err := l.svcCtx.SceneRepo.FindOneByName(l.ctx, do.Name)
-	if err == nil && oldDo.ID != do.ID { //如果查到了并且和其他的场景重名了
-		return nil, errors.Parameter.AddMsg("场景名字重复")
-	}
+	_, err = l.svcCtx.SceneRepo.FindOne(l.ctx, do.ID)
 	if err != nil { //如果是数据库错误
 		return nil, errors.Database.AddDetail(err)
 	}
