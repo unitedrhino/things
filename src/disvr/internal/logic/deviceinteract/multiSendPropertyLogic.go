@@ -3,6 +3,7 @@ package deviceinteractlogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/disvr/pb/di"
 	"sync"
@@ -40,8 +41,8 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(in *di.MultiSendPropertyReq) 
 		wg.Add(1)
 
 		go func(v string) {
+			defer utils.Recover(l.ctx)
 			defer wg.Done()
-
 			ret, err := sigSend.SendProperty(&di.SendPropertyReq{
 				ProductID:  in.ProductID,
 				DeviceName: v,
@@ -52,8 +53,8 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(in *di.MultiSendPropertyReq) 
 			if err != nil {
 				myErr, _ := err.(*errors.CodeError)
 				msg := &di.SendPropertyMsg{
-					ErrMsg:  err.Error(),
-					ErrCode: myErr.Code,
+					SysMsg:  err.Error(),
+					SysCode: myErr.Code,
 				}
 				mu.Lock()
 				defer mu.Unlock()

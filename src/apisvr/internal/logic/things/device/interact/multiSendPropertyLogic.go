@@ -47,8 +47,8 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 				Status:      v.Status,
 				ClientToken: v.ClientToken,
 				Data:        v.Data,
-				ErrMsg:      v.ErrMsg,
-				ErrCode:     v.ErrCode,
+				SysMsg:      v.SysMsg,
+				SysCode:     v.SysCode,
 			})
 		}
 	}
