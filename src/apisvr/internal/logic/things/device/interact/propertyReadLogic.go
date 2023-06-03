@@ -42,6 +42,5 @@ func (l *PropertyReadLogic) PropertyRead(req *types.DeviceInteractRespReadReq) (
 		Code:        dmResp.Code,
 		Status:      dmResp.Status,
 		ClientToken: dmResp.ClientToken,
-		Data:        dmResp.Data,
 	}, nil
 }
