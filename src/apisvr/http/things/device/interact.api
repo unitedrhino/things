@@ -47,7 +47,6 @@ type DeviceInteractSendPropertyResp struct {
     Code        int64  `json:"code"`        //设备返回状态码
     Status      string `json:"status"`      //返回状态
     ClientToken string `json:"clientToken"` //调用id
-    Data        string `json:"data"`        //返回信息
 }
 type DeviceInteractRespReadReq struct{
     ProductID   string `json:"productID"`   //产品id
@@ -74,14 +73,13 @@ type DeviceInteractMultiSendPropertyMsg struct {
     Code        int64  `json:"code"`        //设备返回状态码
     Status      string `json:"status"`      //返回状态
     ClientToken string `json:"clientToken"` //调用id
-    Data        string `json:"data"`        //返回信息
     SysCode     int64  `json:"sysCode"`      //系统错误码
-    SysMsg      string `json:"sysMsg"`      //系统错误信息
+    sysMsg      string `json:"sysMsg"`      //系统错误信息
 }
 
 type DeviceInteractMultiSendPropertyReq struct {
     ProductID     string `json:"productID"`      //产品id
-    DeviceNames   []string `json:"deviceNames"`   //设备名列表
+    DeviceNames   []string `json:"deviceNames"`  //设备名列表
     Data          string `json:"data"`           //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
 }
 

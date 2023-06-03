@@ -66,7 +66,6 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(in *di.MultiSendPropertyReq) 
 				Code:        ret.Code,
 				Status:      ret.Status,
 				ClientToken: ret.ClientToken,
-				Data:        ret.Data,
 			}
 
 			mu.Lock()
