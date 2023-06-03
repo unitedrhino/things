@@ -210,7 +210,6 @@ message SendPropertyResp{
   int64   code = 1;//设备返回状态码
   string  status = 2;//返回状态
   string clientToken = 3;//调用id
-  string data = 4;//返回信息
 }
 
 message SendMsgReq{
@@ -226,9 +225,8 @@ message SendPropertyMsg{
   int64   code = 1;//设备返回状态码
   string  status = 2;//返回状态
   string clientToken = 3;//调用id
-  string data = 4;//返回信息
-  string sysMsg = 5;//系统错误信息
-  int64  sysCode = 6;//系统错误码
+  string sysMsg = 4;//系统错误信息
+  int64  sysCode = 5;//系统错误码
 }
 
 message MultiSendPropertyReq{

@@ -727,7 +727,6 @@ type DeviceInteractSendPropertyResp struct {
 	Code        int64  `json:"code"`        //设备返回状态码
 	Status      string `json:"status"`      //返回状态
 	ClientToken string `json:"clientToken"` //调用id
-	Data        string `json:"data"`        //返回信息
 }
 
 type DeviceInteractRespReadReq struct {
@@ -755,7 +754,6 @@ type DeviceInteractMultiSendPropertyMsg struct {
 	Code        int64  `json:"code"`        //设备返回状态码
 	Status      string `json:"status"`      //返回状态
 	ClientToken string `json:"clientToken"` //调用id
-	Data        string `json:"data"`        //返回信息
 	SysCode     int64  `json:"sysCode"`     //系统错误码
 	SysMsg      string `json:"sysMsg"`      //系统错误信息
 }
