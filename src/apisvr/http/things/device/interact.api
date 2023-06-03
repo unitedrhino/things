@@ -75,8 +75,8 @@ type DeviceInteractMultiSendPropertyMsg struct {
     Status      string `json:"status"`      //返回状态
     ClientToken string `json:"clientToken"` //调用id
     Data        string `json:"data"`        //返回信息
-    ErrCode     int64  `json:"errCode"`      //系统错误码
-    ErrMsg      string `json:"errMsg"`      //系统错误信息
+    SysCode     int64  `json:"sysCode"`      //系统错误码
+    SysMsg      string `json:"sysMsg"`      //系统错误信息
 }
 
 type DeviceInteractMultiSendPropertyReq struct {

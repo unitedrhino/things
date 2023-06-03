@@ -227,8 +227,8 @@ message SendPropertyMsg{
   string  status = 2;//返回状态
   string clientToken = 3;//调用id
   string data = 4;//返回信息
-  string errMsg = 5;//系统错误信息
-  int64  errCode = 6;//系统错误码
+  string sysMsg = 5;//系统错误信息
+  int64  sysCode = 6;//系统错误码
 }
 
 message MultiSendPropertyReq{
