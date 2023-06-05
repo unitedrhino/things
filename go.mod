@@ -6,6 +6,7 @@ require (
 	github.com/Blank-Xu/sql-adapter v0.0.0-20210714092925-0bdd0d548758
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
+	github.com/carlmjohnson/versioninfo v0.22.4
 	github.com/casbin/casbin/v2 v2.68.0
 	github.com/casbin/redis-watcher/v2 v2.5.0
 	github.com/dgraph-io/ristretto v0.1.0
