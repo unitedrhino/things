@@ -46,6 +46,12 @@ func (s *DeviceInteractServer) SendProperty(ctx context.Context, in *di.SendProp
 	return l.SendProperty(in)
 }
 
+// 批量调用设备属性
+func (s *DeviceInteractServer) MultiSendProperty(ctx context.Context, in *di.MultiSendPropertyReq) (*di.MultiSendPropertyResp, error) {
+	l := deviceinteractlogic.NewMultiSendPropertyLogic(ctx, s.svcCtx)
+	return l.MultiSendProperty(in)
+}
+
 // 获取异步调用设备属性的结果
 func (s *DeviceInteractServer) PropertyRead(ctx context.Context, in *di.RespReadReq) (*di.SendPropertyResp, error) {
 	l := deviceinteractlogic.NewPropertyReadLogic(ctx, s.svcCtx)
