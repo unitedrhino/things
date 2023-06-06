@@ -790,7 +790,7 @@ type ProductInfoReadReq struct {
 
 type ProductInfoCreateReq struct {
 	ProductName  string  `json:"productName"`                       //产品名称
-	ProductID    string  `json:"productID"`                         //产品id
+	ProductID    string  `json:"productID,optional"`                //产品id
 	AuthMode     int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
 	DeviceType   int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
 	CategoryID   int64   `json:"categoryID,optional"`               //产品品类
