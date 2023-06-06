@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/carlmjohnson/versioninfo"
 	"net"
 	"net/http"
 	"regexp"
@@ -12,6 +13,10 @@ import (
 	"strconv"
 	"strings"
 )
+
+func init() {
+	PrintVersion()
+}
 
 func MD5V(str []byte) string {
 	h := md5.New()
@@ -188,4 +193,9 @@ func MethodToNum(methond string) string {
 	default:
 		return "-1"
 	}
+}
+
+func PrintVersion() {
+	fmt.Printf("gitInfo: lastCommitTime:%v,lastCommitHash:%v\n",
+		versioninfo.LastCommit, versioninfo.Revision)
 }
