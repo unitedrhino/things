@@ -414,6 +414,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/send-msg",
 					Handler: thingsdeviceinteract.SendMsgHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/get-property-reply",
+					Handler: thingsdeviceinteract.GetPropertyReplyHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/interact"),
