@@ -984,10 +984,10 @@ type GroupInfoCreateReq struct {
 }
 
 type GroupInfoIndexReq struct {
-	Page      PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
-	ParentID  int64    `json:"parentID,string"`    //父组ID
-	GroupName string   `json:"groupName,optional"` //分组名称
-	Tags      []*Tag   `json:"tags,optional"`      //分组tag
+	Page      *PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
+	ParentID  int64     `json:"parentID,string"`    //父组ID
+	GroupName string    `json:"groupName,optional"` //分组名称
+	Tags      []*Tag    `json:"tags,optional"`      //分组tag
 }
 
 type GroupInfoIndexResp struct {
@@ -1012,10 +1012,11 @@ type GroupInfoUpdateReq struct {
 }
 
 type GroupDeviceIndexReq struct {
-	Page       PageInfo `json:"page,optional"`       //分页信息 只获取一个则不填
-	GroupID    int64    `json:"groupID,string"`      //分组ID
-	ProductID  string   `json:"productID,optional"`  //产品ID
-	DeviceName string   `json:"deviceName,optional"` //设备名称
+	Page           *PageInfo `json:"page,optional"`           //分页信息 只获取一个则不填
+	GroupID        int64     `json:"groupID,string"`          //分组ID
+	ProductID      string    `json:"productID,optional"`      //产品ID
+	DeviceName     string    `json:"deviceName,optional"`     //设备名称
+	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
 }
 
 type GroupDeviceIndexResp struct {
