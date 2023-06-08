@@ -80,6 +80,7 @@ func (s *SceneTimer) keepSingleton() {
 		}
 	}()
 }
+
 func (s *SceneTimer) run() {
 	isRunning.Store(true)
 	infos, err := s.svcCtx.SceneRepo.FindByFilter(s.ctx, scene.InfoFilter{

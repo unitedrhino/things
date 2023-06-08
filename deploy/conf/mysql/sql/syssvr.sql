@@ -75,66 +75,8 @@ CREATE TABLE if not exists `sys_role_menu`
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='角色菜单关联表';
 
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (248, 1, 2, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (249, 1, 4, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (250, 1, 3, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (251, 1, 6, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (252, 1, 7, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (253, 1, 8, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (254, 1, 9, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (255, 1, 10, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (256, 1, 11, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (257, 1, 12, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (258, 1, 13, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (259, 1, 14, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (260, 1, 15, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (261, 1, 16, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (262, 1, 17, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (269, 1, 18, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (263, 1, 21, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (264, 1, 24, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (265, 1, 23, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (267, 1, 25, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (268, 1, 35, '2022-10-18 12:26:29', '2022-10-18 12:26:29', NULL);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (755, 1, 36, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (756, 1, 37, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (757, 1, 38, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (758, 1, 39, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (759, 1, 41, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (760, 1, 42, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (761, 1, 43, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (762, 1, 44, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
-INSERT IGNORE INTO `sys_role_menu`
-VALUES (763, 1, 45, '2023-02-27 14:01:10', '2023-02-27 14:01:10', null);
+INSERT IGNORE into `sys_role_menu` (`roleID`,`menuID`)values(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9),(1,10),(1,11),(1,12),(1,13),(1,14),(1,15),(1,16),(1,17),(1,18),(1,19),(1,20),(1,21),(1,22),(1,23),(1,24),(1,25),(1,26),(1,27),(1,28),(1,29),(1,30),(1,31),(1,32),(1,33),(1,34),(1,35),(1,36),(1,37),(1,38),(1,39),(1,40),(1,41),(1,42),(1,43),(1,44),(1,45),(1,46),(1,47),(1,48),(1,49),(1,50),(1,51),(1,52),(1,53),(1,54),(1,55),(1,56),(1,57),(1,58),(1,59),(1,60),(1,61),(1,62),(1,63),(1,64),(1,65),(1,66),(1,67),(1,68),(1,69),(1,70),(1,71),(1,72),(1,73),(1,74),(1,75),(1,76),(1,77),(1,78),(1,79),(1,80),(1,81),(1,82),(1,83),(1,84),(1,85),(1,86),(1,87),(1,88),(1,89),(1,90),(1,91),(1,92),(1,93),(1,94),(1,95),(1,96),(1,97),(1,98),(1,99),(1,100);
+
 
 CREATE TABLE if not exists `sys_menu_info`
 (
@@ -190,24 +132,16 @@ VALUES (12, 3, 2, 3, '菜单列表', '/systemMangers/menu/index', './systemMange
         '2022-09-24 15:38:54', '2022-09-24 16:15:52', NULL);
 INSERT IGNORE INTO `sys_menu_info`
 VALUES (13, 4, 0, 1, '固件升级', '/operationsMonitorings/firmwareUpgrades/index',
-        './operationsMonitorings/firmwareUpgrades/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54',
+        './operationsMonitorings/firmwareUpgrades/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54',
         '2022-10-17 20:47:13', NULL);
 INSERT IGNORE INTO `sys_menu_info`
-VALUES (14, 4, 0, 2, '告警记录', '/operationsMonitorings/alarmRecords/index',
-        './operationsMonitorings/alarmRecords/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54',
-        '2022-10-17 20:45:01', NULL);
-INSERT IGNORE INTO `sys_menu_info`
 VALUES (15, 4, 0, 3, '资源管理', '/operationsMonitorings/resourceManagements/index',
-        './operationsMonitorings/resourceManagements/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54',
+        './operationsMonitorings/resourceManagements/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54',
         '2022-10-17 20:45:12', NULL);
 INSERT IGNORE INTO `sys_menu_info`
 VALUES (16, 4, 0, 4, '远程配置', '/operationsMonitorings/remoteConfiguration/index',
         './operationsMonitorings/remoteConfiguration/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54',
         '2022-10-17 20:45:19', NULL);
-INSERT IGNORE INTO `sys_menu_info`
-VALUES (17, 4, 0, 5, '告警中心', '/operationsMonitorings/alarmCenters/index',
-        './operationsMonitorings/alarmCenters/index.tsx', 'icon_system', '', '', 1, '2022-09-24 15:38:54',
-        '2022-10-17 20:45:27', NULL);
 INSERT IGNORE INTO `sys_menu_info`
 VALUES (18, 4, 2, 6, '在线调试', '/operationsMonitorings/onlineDebugs/index',
         './operationsMonitorings/onlineDebugs/index.tsx', 'icon_system', '', '', 2, '2022-09-24 15:38:54',
@@ -239,7 +173,20 @@ VALUES (41, 38, 1, 2, '登录日志', '/systemMangers/log/loginLog/index',
 INSERT IGNORE INTO `sys_menu_info`
 VALUES (42, 3, 1, 4, '接口管理', '/systemMangers/api/index',
         './systemMangers/api/index', 'icon_system', '', '', 2, '2023-02-18 11:08:56', '2023-02-18 11:09:27', null);
-
+INSERT IGNORE INTO `sys_menu_info`
+    VALUES (43, 1, 1, 5, '告警管理', '/alarmMangers', './alarmMangers/index', 'icon_ap', '', '', 2, '2023-02-22 16:42:54', '2023-04-09 12:18:22', null);
+INSERT IGNORE INTO `sys_menu_info`
+    VALUES (44, 43, 1, 1, '告警配置', '/alarmMangers/alarmConfiguration/index', './alarmMangers/alarmConfiguration/index', 'icon_ap', '', '', 2, '2023-02-22 16:43:48', '2023-02-22 16:45:25', null);
+INSERT IGNORE INTO `sys_menu_info`
+    VALUES (53, 43, 1, 5, '新增告警配置', '/alarmMangers/alarmConfiguration/save', './alarmMangers/alarmConfiguration/addAlarmConfig/index', 'icon_ap', '', '', 1, '2023-03-26 15:11:15', '2023-04-09 11:13:26', null);
+INSERT IGNORE INTO `sys_menu_info`
+    VALUES (54, 43, 1, 5, '告警日志', '/alarmMangers/alarmConfiguration/log/detail/:id/:level', './alarmMangers/alarmLog/index', 'icon_ap', '', '', 1, '2023-04-09 17:25:32', '2023-04-15 18:05:14', null);
+INSERT IGNORE INTO `sys_menu_info`
+    VALUES (62, 43, 1, 5, '告警记录', '/alarmMangers/alarmConfiguration/log', './alarmMangers/alarmRecord/index', 'icon_ap', '', '', 2, '2023-04-09 18:47:12', '2023-04-09 18:47:12', null);
+INSERT IGNORE INTO `sys_menu_info`
+    VALUES (50, 1, 1, 5, '规则引擎', '/ruleEngine', './ruleEngine/index.tsx', 'icon_dosing', '', '', 2, '2023-05-31 23:07:08', '2023-06-06 16:03:32', null);
+INSERT IGNORE INTO `sys_menu_info`
+    VALUES (51, 50, 1, 1, '场景联动', '/ruleEngine/scene/index', './ruleEngine/scene/index.tsx', 'icon_device', '', '', 2, '2023-05-31 23:07:34', '2023-05-31 23:08:15', null);
 
 DROP TABLE IF EXISTS `sys_login_log`;
 CREATE TABLE `sys_login_log` (
@@ -258,20 +205,20 @@ CREATE TABLE `sys_login_log` (
 
 DROP TABLE IF EXISTS `sys_oper_log`;
 CREATE TABLE `sys_oper_log` (
-                                `id` bigint auto_increment COMMENT '编号',
-                                `operUid`         bigint       NOT NULL COMMENT '用户id',
-                                `operUserName` varchar(50) DEFAULT '' COMMENT '操作人员名称',
-                                `operName` varchar(50) DEFAULT '' COMMENT '操作名称',
-                                `businessType` int(11) NOT NULL COMMENT '业务类型（1新增 2修改 3删除 4查询 5其它）',
-                                `uri` varchar(100) DEFAULT '' COMMENT '请求地址',
-                                `operIpAddr` varchar(50) DEFAULT '' COMMENT '主机地址',
-                                `operLocation` varchar(255) DEFAULT '' COMMENT '操作地点',
-                                `req` text COMMENT '请求参数',
-                                `resp` text COMMENT '返回参数',
-                                `code` int(11) NOT NULL DEFAULT 200 COMMENT '返回状态（200成功 其它失败）',
-                                `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
-                                `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
-                                PRIMARY KEY (`id`) USING BTREE
+    `id` bigint auto_increment COMMENT '编号',
+    `operUid`         bigint       NOT NULL COMMENT '用户id',
+    `operUserName` varchar(50) DEFAULT '' COMMENT '操作人员名称',
+    `operName` varchar(50) DEFAULT '' COMMENT '操作名称',
+    `businessType` int(11) NOT NULL COMMENT '业务类型（1新增 2修改 3删除 4查询 5其它）',
+    `uri` varchar(100) DEFAULT '' COMMENT '请求地址',
+    `operIpAddr` varchar(50) DEFAULT '' COMMENT '主机地址',
+    `operLocation` varchar(255) DEFAULT '' COMMENT '操作地点',
+    `req` text COMMENT '请求参数',
+    `resp` text COMMENT '返回参数',
+    `code` int(11) NOT NULL DEFAULT 200 COMMENT '返回状态（200成功 其它失败）',
+    `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
+    `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT  COMMENT='操作日志管理';
 
 CREATE TABLE if not exists `sys_api_info`
