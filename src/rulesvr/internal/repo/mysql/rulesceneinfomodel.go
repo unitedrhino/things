@@ -35,6 +35,7 @@ func (c customRuleSceneInfoModel) Insert(ctx context.Context, info *scene.Info) 
 	if err != nil {
 		return 0, err
 	}
+	info.ID, err = rst.LastInsertId()
 	return rst.LastInsertId()
 }
 

@@ -727,7 +727,6 @@ type DeviceInteractSendPropertyResp struct {
 	Code        int64  `json:"code"`        //设备返回状态码
 	Status      string `json:"status"`      //返回状态
 	ClientToken string `json:"clientToken"` //调用id
-	Data        string `json:"data"`        //返回信息
 }
 
 type DeviceInteractRespReadReq struct {
@@ -749,6 +748,24 @@ type DeviceInteractSendActionResp struct {
 	OutputParams string `json:"outputParams"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
 	Status       string `json:"status"`       //返回状态
 	Code         int64  `json:"code"`         //设备返回状态码
+}
+
+type DeviceInteractMultiSendPropertyMsg struct {
+	Code        int64  `json:"code"`        //设备返回状态码
+	Status      string `json:"status"`      //返回状态
+	ClientToken string `json:"clientToken"` //调用id
+	SysCode     int64  `json:"sysCode"`     //系统错误码
+	SysMsg      string `json:"sysMsg"`      //系统错误信息
+}
+
+type DeviceInteractMultiSendPropertyReq struct {
+	ProductID   string   `json:"productID"`   //产品id
+	DeviceNames []string `json:"deviceNames"` //设备名列表
+	Data        string   `json:"data"`        //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+}
+
+type DeviceInteractMultiSendPropertyResp struct {
+	List []*DeviceInteractMultiSendPropertyMsg `json:"list"` //批量设备返回结果列表
 }
 
 type ProductInfo struct {
@@ -773,7 +790,7 @@ type ProductInfoReadReq struct {
 
 type ProductInfoCreateReq struct {
 	ProductName  string  `json:"productName"`                       //产品名称
-	ProductID    string  `json:"productID"`                         //产品id
+	ProductID    string  `json:"productID,optional"`                //产品id
 	AuthMode     int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
 	DeviceType   int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
 	CategoryID   int64   `json:"categoryID,optional"`               //产品品类
@@ -967,10 +984,10 @@ type GroupInfoCreateReq struct {
 }
 
 type GroupInfoIndexReq struct {
-	Page      PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
-	ParentID  int64    `json:"parentID,string"`    //父组ID
-	GroupName string   `json:"groupName,optional"` //分组名称
-	Tags      []*Tag   `json:"tags,optional"`      //分组tag
+	Page      *PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
+	ParentID  int64     `json:"parentID,string"`    //父组ID
+	GroupName string    `json:"groupName,optional"` //分组名称
+	Tags      []*Tag    `json:"tags,optional"`      //分组tag
 }
 
 type GroupInfoIndexResp struct {
@@ -995,10 +1012,11 @@ type GroupInfoUpdateReq struct {
 }
 
 type GroupDeviceIndexReq struct {
-	Page       PageInfo `json:"page,optional"`       //分页信息 只获取一个则不填
-	GroupID    int64    `json:"groupID,string"`      //分组ID
-	ProductID  string   `json:"productID,optional"`  //产品ID
-	DeviceName string   `json:"deviceName,optional"` //设备名称
+	Page           *PageInfo `json:"page,optional"`           //分页信息 只获取一个则不填
+	GroupID        int64     `json:"groupID,string"`          //分组ID
+	ProductID      string    `json:"productID,optional"`      //产品ID
+	DeviceName     string    `json:"deviceName,optional"`     //设备名称
+	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
 }
 
 type GroupDeviceIndexResp struct {

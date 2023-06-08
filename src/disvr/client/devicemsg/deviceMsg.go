@@ -22,6 +22,8 @@ type (
 	HubLogIndex            = di.HubLogIndex
 	HubLogIndexReq         = di.HubLogIndexReq
 	HubLogIndexResp        = di.HubLogIndexResp
+	MultiSendPropertyReq   = di.MultiSendPropertyReq
+	MultiSendPropertyResp  = di.MultiSendPropertyResp
 	PageInfo               = di.PageInfo
 	PropertyIndex          = di.PropertyIndex
 	PropertyIndexResp      = di.PropertyIndexResp
@@ -36,6 +38,7 @@ type (
 	SendActionResp         = di.SendActionResp
 	SendMsgReq             = di.SendMsgReq
 	SendMsgResp            = di.SendMsgResp
+	SendPropertyMsg        = di.SendPropertyMsg
 	SendPropertyReq        = di.SendPropertyReq
 	SendPropertyResp       = di.SendPropertyResp
 

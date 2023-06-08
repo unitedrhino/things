@@ -69,3 +69,25 @@ func (bus *AsyncEventBus) Publish(ctx context.Context, topic string, args ...int
 		//})
 	}
 }
+
+/*
+//后续需要支持
+//nats 匹配函数 //github.com/nats-io/nats.go@v1.24.0/micro/service.go:583
+func matchEndpointSubject(endpointSubject, literalSubject string) bool {
+	subjectTokens := strings.Split(literalSubject, ".")
+	endpointTokens := strings.Split(endpointSubject, ".")
+	if len(endpointTokens) > len(subjectTokens) {
+		return false
+	}
+	for i, et := range endpointTokens {
+		if i == len(endpointTokens)-1 && et == ">" {
+			return true
+		}
+		if et != subjectTokens[i] && et != "*" {
+			return false
+		}
+	}
+	return true
+}
+
+*/
