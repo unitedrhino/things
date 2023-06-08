@@ -711,6 +711,20 @@ type DeviceMultiImportErrdata struct {
 	Msg string `json:"msg"` //详细错误信息
 }
 
+type DeviceInteractGetPropertyReplyReq struct {
+	ProductID  string   `json:"productID"`        //产品id (必填)
+	DeviceName string   `json:"deviceName"`       //设备名(必填)
+	DataIDs    []string `json:"dataIDs,optional"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条
+}
+
+type DeviceInteractGetPropertyReplyResp struct {
+	Code        int64  `json:"code"`        //设备返回状态码
+	Status      string `json:"status"`      //返回状态
+	ClientToken string `json:"clientToken"` //调用id
+	Timestamp   int64  `json:"timestamp"`   //上报时间戳(毫秒时间戳)
+	Params      string `json:"params"`      //获取到的值
+}
+
 type DeviceInteractSendMsgReq struct {
 	Topic   string `json:"topic"`   //发送的topic
 	Payload string `json:"payload"` //发送的数据
