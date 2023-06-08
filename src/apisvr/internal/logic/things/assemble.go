@@ -1,4 +1,4 @@
-package device
+package things
 
 import (
 	"context"
@@ -39,7 +39,6 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 				}
 			}
 		}()
-
 	}
 	return &types.DeviceInfo{
 		ProductID:      v.ProductID,                   //产品id 只读
