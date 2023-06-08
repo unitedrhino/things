@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -31,7 +32,7 @@ func (l *UpdateLogic) Update(req *types.GroupInfoUpdateReq) error {
 		GroupID:   req.GroupID,
 		GroupName: *req.GroupName,
 		Desc:      *req.Desc,
-		Tags:      toTagsMap(req.Tags),
+		Tags:      logic.ToTagsMap(req.Tags),
 	})
 
 	if err != nil {
