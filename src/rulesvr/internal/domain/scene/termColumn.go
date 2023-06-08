@@ -66,11 +66,11 @@ func (c *ColumnSchema) IsHit(ctx context.Context, columnType TermColumnType, rep
 	case TermColumnTypeProperty:
 		info, err := repo.DeviceMsg.PropertyLatestIndex(ctx, &devicemsg.PropertyLatestIndexReq{ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: c.DataID[:1]})
 		if err != nil {
-			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", err)
+			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", utils.FuncName(), err)
 			return false
 		}
 		if len(info.List) == 0 {
-			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:dataID is not right:%v", c.DataID[0])
+			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:dataID is not right:%v", utils.FuncName(), c.DataID[0])
 			return false
 		}
 		if info.List[0].Timestamp != 0 { //如果有值
@@ -89,7 +89,7 @@ func (c *ColumnSchema) IsHit(ctx context.Context, columnType TermColumnType, rep
 					dataType = def.Spec[c.DataID[1]].DataType.Type
 				}
 			case schema.DataTypeArray:
-				logx.WithContext(ctx).Errorf("%s scene not support array yet")
+				logx.WithContext(ctx).Errorf("%s scene not support array yet", utils.FuncName())
 				return false
 			default:
 				val = info.List[0].Value

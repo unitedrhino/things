@@ -48,8 +48,7 @@ func NewSceneTimerControl() timer.SceneControl {
 }
 
 func (s *SceneTimer) Start() {
-	go func() {
-		defer utils.Recover(s.ctx)
+	utils.Go(s.ctx, func() {
 		for true { //定时任务为单例执行模式,有效期15秒,如果服务挂了,其他服务每隔10秒检测到就抢到执行
 			ok, err := s.svcCtx.Store.SetnxExCtx(s.ctx, singletonKey, time.Now().Format("2006-01-02 15:04:05.999"), 15)
 			if err != nil {
@@ -67,18 +66,18 @@ func (s *SceneTimer) Start() {
 		//抢到锁需要维系锁
 		s.keepSingleton()
 		s.run()
-	}()
-
+	})
 }
 
 func (s *SceneTimer) keepSingleton() {
 	//每隔10秒刷新锁,如果服务挂了,锁才能退出
-	go func() {
+	utils.Go(s.ctx, func() {
+		defer utils.Recover(s.ctx)
 		ticker := time.NewTicker(time.Second * 10)
 		for range ticker.C {
 			s.svcCtx.Store.SetexCtx(s.ctx, singletonKey, time.Now().Format("2006-01-02 15:04:05.999"), 15)
 		}
-	}()
+	})
 }
 
 func (s *SceneTimer) run() {
@@ -106,6 +105,11 @@ func (s *SceneTimer) Create(info *scene.Info) error {
 	}, info)
 	return err
 }
+
+func (s *SceneTimer) IsRunning() bool {
+	return isRunning.Load()
+}
+
 func (s *SceneTimer) Update(info *scene.Info) error {
 	if !isRunning.Load() {
 		return nil
@@ -114,10 +118,7 @@ func (s *SceneTimer) Update(info *scene.Info) error {
 	if err != nil {
 		return err
 	}
-	_, err = s.scheduler.Tag(genInfoIDKey(info.ID), genInfoNameKey(info.Name)).CronWithSeconds(info.Trigger.Timer.Cron).Do(func(info *scene.Info) {
-		s.jobRun(info)
-	}, info)
-	return err
+	return s.Create(info)
 }
 func (s *SceneTimer) Delete(id int64) error {
 	if !isRunning.Load() {
@@ -125,8 +126,8 @@ func (s *SceneTimer) Delete(id int64) error {
 	}
 	jobs, err := s.scheduler.FindJobsByTag(genInfoIDKey(id))
 	if err != nil {
-		s.Errorf("%s.FindJobsByTag err:%v", err)
-		return err
+		s.Errorf("%s.FindJobsByTag err:%v", utils.FuncName(), err)
+		return nil
 	}
 	for _, job := range jobs {
 		s.scheduler.Remove(job)
@@ -139,6 +140,7 @@ func genInfoIDKey(id int64) string {
 func genInfoNameKey(name string) string {
 	return "name:" + name
 }
+
 func (s *SceneTimer) jobRun(info *scene.Info) (err error) {
 	ctx, span := traces.StartSpan(s.ctx, fmt.Sprintf("SceneTimer.jobRun"), "")
 	defer span.End()

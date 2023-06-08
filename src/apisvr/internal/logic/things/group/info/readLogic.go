@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -40,6 +41,6 @@ func (l *ReadLogic) Read(req *types.GroupInfoReadReq) (resp *types.GroupInfo, er
 		GroupName:   dgResp.GroupName,
 		CreatedTime: dgResp.CreatedTime,
 		Desc:        dgResp.Desc,
-		Tags:        toTagsType(dgResp.Tags),
+		Tags:        logic.ToTagsType(dgResp.Tags),
 	}, err
 }
