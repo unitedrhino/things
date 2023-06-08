@@ -22,6 +22,8 @@ type (
 	HubLogIndex            = di.HubLogIndex
 	HubLogIndexReq         = di.HubLogIndexReq
 	HubLogIndexResp        = di.HubLogIndexResp
+	MultiSendPropertyReq   = di.MultiSendPropertyReq
+	MultiSendPropertyResp  = di.MultiSendPropertyResp
 	PageInfo               = di.PageInfo
 	PropertyIndex          = di.PropertyIndex
 	PropertyIndexResp      = di.PropertyIndexResp
@@ -36,6 +38,7 @@ type (
 	SendActionResp         = di.SendActionResp
 	SendMsgReq             = di.SendMsgReq
 	SendMsgResp            = di.SendMsgResp
+	SendPropertyMsg        = di.SendPropertyMsg
 	SendPropertyReq        = di.SendPropertyReq
 	SendPropertyResp       = di.SendPropertyResp
 
@@ -48,6 +51,8 @@ type (
 		GetPropertyReply(ctx context.Context, in *GetPropertyReplyReq, opts ...grpc.CallOption) (*GetPropertyReplyResp, error)
 		// 调用设备属性
 		SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+		// 批量调用设备属性
+		MultiSendProperty(ctx context.Context, in *MultiSendPropertyReq, opts ...grpc.CallOption) (*MultiSendPropertyResp, error)
 		// 获取异步调用设备属性的结果
 		PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
 		// 发送消息给设备
@@ -119,6 +124,17 @@ func (m *defaultDeviceInteract) SendProperty(ctx context.Context, in *SendProper
 // 调用设备属性
 func (d *directDeviceInteract) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
 	return d.svr.SendProperty(ctx, in)
+}
+
+// 批量调用设备属性
+func (m *defaultDeviceInteract) MultiSendProperty(ctx context.Context, in *MultiSendPropertyReq, opts ...grpc.CallOption) (*MultiSendPropertyResp, error) {
+	client := di.NewDeviceInteractClient(m.cli.Conn())
+	return client.MultiSendProperty(ctx, in, opts...)
+}
+
+// 批量调用设备属性
+func (d *directDeviceInteract) MultiSendProperty(ctx context.Context, in *MultiSendPropertyReq, opts ...grpc.CallOption) (*MultiSendPropertyResp, error) {
+	return d.svr.MultiSendProperty(ctx, in)
 }
 
 // 获取异步调用设备属性的结果

@@ -1,3 +1,4 @@
+git pull
 set buildOs=%1
 cd ../src/apisvr
 rem "update backend"

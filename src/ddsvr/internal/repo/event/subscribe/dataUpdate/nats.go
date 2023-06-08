@@ -25,7 +25,7 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	_, err := n.client.Subscribe(topics.DmProductUpdateCustom,
+	_, err := n.client.Subscribe(topics.DmProductCustomUpdate,
 		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			tempInfo := events.DeviceUpdateInfo{}
 			err := json.Unmarshal(msg, &tempInfo)

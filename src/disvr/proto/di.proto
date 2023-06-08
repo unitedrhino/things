@@ -37,6 +37,8 @@ service DeviceInteract {
 
   //调用设备属性
   rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
+  //批量调用设备属性
+  rpc multiSendProperty(MultiSendPropertyReq)     returns(MultiSendPropertyResp);
   //获取异步调用设备属性的结果
   rpc propertyRead(RespReadReq)  returns(SendPropertyResp);
   //发送消息给设备
@@ -208,7 +210,6 @@ message SendPropertyResp{
   int64   code = 1;//设备返回状态码
   string  status = 2;//返回状态
   string clientToken = 3;//调用id
-  string data = 4;//返回信息
 }
 
 message SendMsgReq{
@@ -220,3 +221,20 @@ message SendMsgResp{
 
 }
 
+message SendPropertyMsg{
+  int64   code = 1;//设备返回状态码
+  string  status = 2;//返回状态
+  string clientToken = 3;//调用id
+  string sysMsg = 4;//系统错误信息
+  int64  sysCode = 5;//系统错误码
+}
+
+message MultiSendPropertyReq{
+  string  productID = 1; //产品id
+  repeated string deviceNames = 2; //设备名
+  string data = 3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+}
+
+message MultiSendPropertyResp{
+  repeated SendPropertyMsg list = 1; //批量设备返回结果列表
+}
