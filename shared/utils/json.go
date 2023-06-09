@@ -12,6 +12,12 @@ func Unmarshal(data []byte, v any) error {
 	return decoder.Decode(v)
 }
 
+func UnmarshalNoErr[inT any](data string) inT {
+	var ret inT
+	json.Unmarshal([]byte(data), &ret)
+	return ret
+}
+
 func MarshalNoErr(v any) string {
 	ret, _ := json.Marshal(v)
 	return string(ret)
