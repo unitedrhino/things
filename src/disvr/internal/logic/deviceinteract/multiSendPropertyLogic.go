@@ -52,8 +52,9 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(in *di.MultiSendPropertyReq) 
 			if err != nil {
 				myErr, _ := err.(*errors.CodeError)
 				msg := &di.SendPropertyMsg{
-					SysMsg:  err.Error(),
-					SysCode: myErr.Code,
+					DeviceName: v,
+					SysMsg:     err.Error(),
+					SysCode:    myErr.Code,
 				}
 				mu.Lock()
 				defer mu.Unlock()
