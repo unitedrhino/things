@@ -37,15 +37,23 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 		err := l.SendProperty(req.ProductID, req.DeviceNames, req.Data)
 		return &types.DeviceInteractMultiSendPropertyResp{List: l.retMsg}, err
 	}
-	if req.GroupID != 0 {
-		dgRet, err := l.svcCtx.DeviceG.GroupDeviceIndex(l.ctx, &dm.GroupDeviceIndexReq{
-			GroupID: req.GroupID,
-		})
-		if err != nil {
-			return nil, err
+	if req.GroupID != 0 || req.AreaID != 0 {
+		var ds []*dm.DeviceInfo
+		if req.GroupID != 0 {
+			dgRet, err := l.svcCtx.DeviceG.GroupDeviceIndex(l.ctx, &dm.GroupDeviceIndexReq{
+				GroupID: req.GroupID,
+			})
+			if err != nil {
+				return nil, err
+			}
+			ds = dgRet.List
+		}
+		if req.AreaID != 0 {
+			//企业版功能
+			return nil, errors.Company
 		}
 		var devices = map[string][]string{} //key 是产品id value是设备名列表
-		for _, v := range dgRet.List {
+		for _, v := range ds {
 			if p := devices[v.ProductID]; p != nil {
 				devices[v.ProductID] = append(p, v.DeviceName)
 				continue
@@ -70,11 +78,7 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 		}
 		return &types.DeviceInteractMultiSendPropertyResp{List: l.retMsg}, nil
 	}
-	if req.AreaID != 0 {
-		//企业版功能
-	}
 	return nil, errors.Parameter.AddMsg("产品id设备名或分组id或区域id必须填一个")
-
 }
 func (l *MultiSendPropertyLogic) SendProperty(productID string, deviceNames []string, data string) error {
 	list := make([]*types.DeviceInteractMultiSendPropertyMsg, 0)
