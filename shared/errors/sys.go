@@ -25,4 +25,5 @@ var (
 	NotEmpty         = NewCodeError(SYS_ERROR+19, "不为空")
 	Panic            = NewCodeError(SYS_ERROR+20, "系统异常，请联系开发者")
 	NotEnable        = NewCodeError(SYS_ERROR+21, "未启用")
+	Company          = NewCodeError(SYS_ERROR+22, "该功能是企业版功能")
 )
