@@ -63,6 +63,8 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Phone:          utils.ToNullString(v.Phone),
 		Iccid:          utils.ToNullString(v.Iccid),
 		Uid:            v.Uid,
+		ProjectID:      utils.ToEmptyInt64(v.ProjectID), //项目id 只读
+		AreaID:         utils.ToEmptyInt64(v.AreaID),    //项目区域id 只读
 		WithProperties: properties,
 	}
 }
