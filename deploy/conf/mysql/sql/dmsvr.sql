@@ -78,18 +78,24 @@ CREATE TABLE if not exists `dm_product_schema`
 CREATE TABLE if not exists `dm_device_info` (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `productID`   char(11)     NOT NULL COMMENT '产品id',
+    `projectID`   bigint       NOT NULL DEFAULT 0 COMMENT '项目ID(雪花ID)',
+    `areaID`      bigint       NOT NULL DEFAULT 0 COMMENT '项目区域ID(雪花ID)',
     `deviceName`  varchar(100) NOT NULL COMMENT '设备名称',
     `deviceAlias` varchar(100) NOT NULL DEFAULT '' COMMENT '设备别名',
     `secret`      varchar(50)  NOT NULL DEFAULT '' COMMENT '设备秘钥',
     `cert`        varchar(512) NOT NULL DEFAULT '' COMMENT '设备证书',
+    `position`    point        NOT NULL COMMENT '设备的位置(默认百度坐标系BD09)',
     `imei`        varchar(15)  NOT NULL DEFAULT '' COMMENT 'IMEI号信息',
     `mac`         varchar(17)  NOT NULL DEFAULT '' COMMENT 'MAC号信息',
     `version`     varchar(64)  NOT NULL DEFAULT '' COMMENT '固件版本',
     `hardInfo`    varchar(64)  NOT NULL DEFAULT '' COMMENT '模组硬件型号',
     `softInfo`    varchar(64)  NOT NULL DEFAULT '' COMMENT '模组软件版本',
-    `position`    point        NOT NULL COMMENT '设备的位置(默认百度坐标系BD09)',
+    `mobileOperator` tinyint(1)   NOT NULL DEFAULT '1' COMMENT '移动运营商:1)移动 2)联通 3)电信 4)广电',
+    `phone`       varchar(20)           DEFAULT NULL COMMENT '手机号',
+    `iccid`       varchar(20)           DEFAULT NULL COMMENT 'SIM卡卡号',
     `address`     varchar(512) NOT NULL DEFAULT '' COMMENT '所在地址',
     `tags`        json         NOT NULL COMMENT '设备标签',
+    `uid`         bigint       NOT NULL COMMENT '所属用户id',
     `isOnline`    tinyint(1)   NOT NULL DEFAULT 2 COMMENT '是否在线,1是2否',
     `firstLogin`  datetime              DEFAULT NULL COMMENT '激活时间',
     `lastLogin`   datetime              DEFAULT NULL COMMENT '最后上线时间',
@@ -98,11 +104,15 @@ CREATE TABLE if not exists `dm_device_info` (
     `updatedTime` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deletedTime` datetime              DEFAULT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `iccid` (`iccid`) USING BTREE,
+    UNIQUE KEY `phone` (`phone`) USING BTREE,
     UNIQUE KEY `productID_deviceName`(`productID`, `deviceName`),
     KEY `createdTime`(`createdTime`) USING BTREE
     ) ENGINE = InnoDB
     AUTO_INCREMENT = 0
     DEFAULT CHARSET = utf8mb4 COMMENT ='设备信息表';
+
+
 
 
 -- # CREATE TABLE if not exists `category_detail`

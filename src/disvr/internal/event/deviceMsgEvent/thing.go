@@ -237,7 +237,7 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.P
 		return nil, err
 	}
 
-	if msg.Type == msgThing.TypeProperty {
+	if msg.Type == msgThing.TypeProperty && resp.Code == errors.OK.GetCode() { //如果设备回复了,且处理成功,需要入库
 		_, err = l.HandlePropertyReport(msg, *req)
 		return nil, err
 	}
