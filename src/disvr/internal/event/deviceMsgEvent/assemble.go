@@ -91,8 +91,8 @@ func ToParamValue(p msgThing.Param) application.ParamValue {
 func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDeviceInfoReq *dm.DeviceInfo) {
 	var position *dm.Point
 	if p := diDeviceBasicInfoDo.Position; p != nil {
-		gcp := utils.PositionToBaidu(p.CoordinateSystem, p.Longitude, p.Latitude)
-		position = &dm.Point{Longitude: gcp.Lon, Latitude: gcp.Lat}
+		gcp := utils.PositionToBaidu(*p)
+		position = &dm.Point{Longitude: gcp.Longitude, Latitude: gcp.Latitude}
 	}
 
 	return &dm.DeviceInfo{
