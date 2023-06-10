@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -80,6 +81,18 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 
 	if data.DeviceAlias != nil {
 		old.DeviceAlias = data.DeviceAlias.Value
+	}
+	if data.Uid != 0 {
+		old.Uid = data.Uid
+	}
+	if data.MobileOperator != 0 {
+		old.MobileOperator = data.MobileOperator
+	}
+	if data.Iccid != nil {
+		old.Iccid = utils.AnyToNullString(data.Iccid)
+	}
+	if data.Phone != nil {
+		old.Phone = utils.AnyToNullString(data.Phone)
 	}
 }
 
