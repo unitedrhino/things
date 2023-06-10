@@ -59,6 +59,12 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		LastLogin:      v.LastLogin,                   //最后上线时间 只读
 		LogLevel:       v.LogLevel,                    //日志级别 1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 		CreatedTime:    v.CreatedTime,                 //创建时间 只读
+		MobileOperator: v.MobileOperator,
+		Phone:          utils.ToNullString(v.Phone),
+		Iccid:          utils.ToNullString(v.Iccid),
+		Uid:            v.Uid,
+		ProjectID:      utils.ToEmptyInt64(v.ProjectID), //项目id 只读
+		AreaID:         utils.ToEmptyInt64(v.AreaID),    //项目区域id 只读
 		WithProperties: properties,
 	}
 }
