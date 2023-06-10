@@ -5,6 +5,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/pb/di"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
+	"golang.org/x/sync/errgroup"
+	"sync"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -16,6 +19,9 @@ type MultiSendPropertyLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
+	retMsg []*types.DeviceInteractMultiSendPropertyMsg
+	err    error
+	mutex  sync.Mutex
 }
 
 func NewMultiSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiSendPropertyLogic {
@@ -27,22 +33,71 @@ func NewMultiSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMultiSendPropertyReq) (resp *types.DeviceInteractMultiSendPropertyResp, err error) {
+	if req.ProductID != "" && len(req.DeviceNames) != 0 {
+		err := l.SendProperty(req.ProductID, req.DeviceNames, req.Data)
+		return &types.DeviceInteractMultiSendPropertyResp{List: l.retMsg}, err
+	}
+	if req.GroupID != 0 || req.AreaID != 0 {
+		var ds []*dm.DeviceInfo
+		if req.GroupID != 0 {
+			dgRet, err := l.svcCtx.DeviceG.GroupDeviceIndex(l.ctx, &dm.GroupDeviceIndexReq{
+				GroupID: req.GroupID,
+			})
+			if err != nil {
+				return nil, err
+			}
+			ds = dgRet.List
+		}
+		if req.AreaID != 0 {
+			//企业版功能
+			return nil, errors.Company
+		}
+		var devices = map[string][]string{} //key 是产品id value是设备名列表
+		for _, v := range ds {
+			if p := devices[v.ProductID]; p != nil {
+				devices[v.ProductID] = append(p, v.DeviceName)
+				continue
+			}
+			devices[v.ProductID] = []string{v.DeviceName}
+		}
+		for p, d := range devices {
+			var eg errgroup.Group
+			productID := p
+			deviceNames := d
+			eg.Go(func() error {
+				err := l.SendProperty(productID, deviceNames, req.Data)
+				if err != nil {
+					return err
+				}
+				return nil
+			})
+			err := eg.Wait()
+			if err != nil {
+				return nil, err
+			}
+		}
+		return &types.DeviceInteractMultiSendPropertyResp{List: l.retMsg}, nil
+	}
+	return nil, errors.Parameter.AddMsg("产品id设备名或分组id或区域id必须填一个")
+}
+func (l *MultiSendPropertyLogic) SendProperty(productID string, deviceNames []string, data string) error {
 	list := make([]*types.DeviceInteractMultiSendPropertyMsg, 0)
-
 	dmReq := &di.MultiSendPropertyReq{
-		ProductID:   req.ProductID,
-		DeviceNames: req.DeviceNames,
-		Data:        req.Data,
+		ProductID:   productID,
+		DeviceNames: deviceNames,
+		Data:        data,
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.MultiSendProperty(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.MultiSendProperty req=%v err=%+v", utils.FuncName(), req, er)
-		return nil, er
+		l.Errorf("%s.rpc.MultiSendProperty productID=%v deviceNames=%v data=%v err=%+v", utils.FuncName(), productID, deviceNames, data, er)
+		return er
 	}
 	if len(dmResp.List) > 0 {
 		for _, v := range dmResp.List {
 			list = append(list, &types.DeviceInteractMultiSendPropertyMsg{
+				ProductID:   productID,
+				DeviceName:  v.DeviceName,
 				Code:        v.Code,
 				Status:      v.Status,
 				ClientToken: v.ClientToken,
@@ -51,6 +106,8 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 			})
 		}
 	}
-
-	return &types.DeviceInteractMultiSendPropertyResp{List: list}, nil
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+	l.retMsg = append(l.retMsg, list...)
+	return nil
 }
