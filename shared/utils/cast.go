@@ -84,6 +84,13 @@ func ToRpcNullInt64(val any) *wrappers.Int64Value {
 	}
 }
 
+func SqlToString(val sql.NullString) string {
+	if !val.Valid {
+		return ""
+	}
+	return val.String
+}
+
 func ToEmptyString(val *wrappers.StringValue) string {
 	if val == nil {
 		return ""

@@ -128,6 +128,19 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	if in.DeviceAlias != nil {
 		di.DeviceAlias = in.DeviceAlias.Value
 	}
+	if in.Uid != 0 {
+		di.Uid = in.Uid
+	}
+	if in.MobileOperator != 0 {
+		di.MobileOperator = in.MobileOperator
+	}
+
+	if in.Iccid != nil {
+		di.Iccid = utils.AnyToNullString(in.Iccid)
+	}
+	if in.Phone != nil {
+		di.Phone = utils.AnyToNullString(in.Phone)
+	}
 
 	err = l.svcCtx.DeviceInfo.InsertDeviceInfo(l.ctx, &di)
 	if err != nil {
