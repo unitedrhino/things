@@ -3,7 +3,7 @@ package errors
 const SYS_ERROR = 100000
 
 var (
-	OK               = NewCodeError(0, "成功")
+	OK               = NewCodeError(200, "成功")
 	Default          = NewCodeError(SYS_ERROR+1, "其他错误")
 	TokenExpired     = NewCodeError(SYS_ERROR+2, "token已经过期")
 	TokenNotValidYet = NewCodeError(SYS_ERROR+3, "token还未生效")
