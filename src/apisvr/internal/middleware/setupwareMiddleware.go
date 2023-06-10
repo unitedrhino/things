@@ -22,7 +22,7 @@ func (m *SetupWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logx.WithContext(r.Context()).Infof("%s.Lifecycle.Before", utils.FuncName())
 
-		ctx2 := userHeader.SetMetadataCtx(r.Context(), r.Header)
+		ctx2 := userHeader.SetMetaCtx(r.Context(), r.Header)
 		r = r.WithContext(ctx2)
 
 		next(w, r)

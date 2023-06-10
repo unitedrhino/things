@@ -5,6 +5,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -32,6 +33,8 @@ type (
 	}
 	DeviceFilter struct {
 		ProductID     string
+		ProjectIDs    []int64
+		AreaIDs       []int64
 		DeviceName    string
 		Tags          map[string]string
 		LastLoginTime struct {
@@ -45,9 +48,21 @@ type (
 	}
 )
 
-func (d *DeviceFilter) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
+func (d *DeviceFilter) FmtSql(ctx context.Context, sql sq.SelectBuilder) sq.SelectBuilder {
+	//数据权限条件（企业版功能）
+	mdProjectID := userHeader.GetMetaProjectID(ctx)
+	if mdProjectID != "" {
+		sql = sql.Where("`ProjectID` = ?", mdProjectID)
+	}
+	//业务过滤条件
 	if d.ProductID != "" {
 		sql = sql.Where("`ProductID` = ?", d.ProductID)
+	}
+	if len(d.ProjectIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("ProjectID in (%v)", store.ArrayToSql(d.ProjectIDs)))
+	}
+	if len(d.AreaIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("AreaID in (%v)", store.ArrayToSql(d.AreaIDs)))
 	}
 	if d.DeviceName != "" {
 		sql = sql.Where("`DeviceName` like ?", "%"+d.DeviceName+"%")
@@ -92,7 +107,7 @@ func (m *customDmDeviceInfoModel) FindByFilter(ctx context.Context, f DeviceFilt
 	sql := sq.Select(sSql).From(m.table).
 		Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset())).OrderBy(page.GetOrders()...)
 
-	sql = f.FmtSql(sql)
+	sql = f.FmtSql(ctx, sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return nil, err
@@ -109,7 +124,7 @@ func (m *customDmDeviceInfoModel) FindByFilter(ctx context.Context, f DeviceFilt
 
 func (m *customDmDeviceInfoModel) CountByFilter(ctx context.Context, f DeviceFilter) (size int64, err error) {
 	sql := sq.Select("count(1)").From(m.table)
-	sql = f.FmtSql(sql)
+	sql = f.FmtSql(ctx, sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return 0, err
@@ -126,7 +141,7 @@ func (m *customDmDeviceInfoModel) CountByFilter(ctx context.Context, f DeviceFil
 
 func (m *customDmDeviceInfoModel) CountGroupByField(ctx context.Context, f DeviceFilter, columnName string) (map[string]int64, error) {
 	sql := sq.Select(fmt.Sprintf("%s as CountKey", columnName), "count(1) as count").From(m.table)
-	sql = f.FmtSql(sql)
+	sql = f.FmtSql(ctx, sql)
 	sql = sql.GroupBy(columnName)
 	query, arg, err := sql.ToSql()
 	if err != nil {
