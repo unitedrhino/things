@@ -1,7 +1,8 @@
 package userHeader
 
 const (
-	UserToken    string = "iThings-token"
-	UserSetToken string = "iThings-set-token"
-	UserUid      string = "iThings-uid"
+	UserUidKey      string = "iThings-uid"
+	UserTokenKey    string = "iThings-token"
+	UserSetTokenKey string = "iThings-set-token"
+	MetadataKey     string = "iThings-metadata"
 )
