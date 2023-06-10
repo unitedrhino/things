@@ -12,15 +12,27 @@ type UserCtx struct {
 }
 
 func SetUserCtx(ctx context.Context, userCtx *UserCtx) context.Context {
-	return context.WithValue(ctx, UserUid, userCtx)
+	return context.WithValue(ctx, UserUidKey, userCtx)
 }
 
 // 使用该函数前必须传了UserCtx
 func GetUserCtx(ctx context.Context) *UserCtx {
-	userCtx, ok := ctx.Value(UserUid).(*UserCtx)
-	if !ok {
-		//这里线上不能获取不到
+	val, ok := ctx.Value(UserUidKey).(*UserCtx)
+	if !ok { //这里线上不能获取不到
 		panic("GetUserCtx get UserCtx failed")
 	}
-	return userCtx
+	return val
+}
+
+type MetadataCtx map[string][]string
+
+func SetMetadataCtx(ctx context.Context, maps map[string][]string) context.Context {
+	return context.WithValue(ctx, MetadataKey, maps)
+}
+func GetMetadataCtx(ctx context.Context) *MetadataCtx {
+	val, ok := ctx.Value(UserUidKey).(*MetadataCtx)
+	if !ok {
+		return nil
+	}
+	return val
 }

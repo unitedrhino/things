@@ -23,7 +23,7 @@ service api {
 @server (
 	group : system/user
 	prefix: /api/v1/system/user
-	middleware: CheckToken
+	middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 service api {
 	@doc "创建用户信息"
