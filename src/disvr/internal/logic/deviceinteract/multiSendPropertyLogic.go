@@ -39,7 +39,6 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(in *di.MultiSendPropertyReq) 
 
 	for _, v := range in.DeviceNames {
 		wg.Add(1)
-
 		go func(v string) {
 			defer utils.Recover(l.ctx)
 			defer wg.Done()
@@ -53,8 +52,9 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(in *di.MultiSendPropertyReq) 
 			if err != nil {
 				myErr, _ := err.(*errors.CodeError)
 				msg := &di.SendPropertyMsg{
-					SysMsg:  err.Error(),
-					SysCode: myErr.Code,
+					DeviceName: v,
+					SysMsg:     err.Error(),
+					SysCode:    myErr.Code,
 				}
 				mu.Lock()
 				defer mu.Unlock()
@@ -63,6 +63,7 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(in *di.MultiSendPropertyReq) 
 			}
 
 			msg := &di.SendPropertyMsg{
+				DeviceName:  v,
 				Code:        ret.Code,
 				Status:      ret.Status,
 				ClientToken: ret.ClientToken,

@@ -240,7 +240,7 @@ func (m *groupModel) IndexGD(ctx context.Context, in *GroupDeviceFilter) ([]*DmG
 		return nil, 0, err
 	}
 
-	dg, err := m.FindGroupDeviceByFilter(ctx, filter, logic.ToPageInfo(&dm.PageInfo{Page: in.Page.Page, Size: in.Page.Size}))
+	dg, err := m.FindGroupDeviceByFilter(ctx, filter, in.Page)
 	if err != nil {
 		return nil, 0, err
 	}
