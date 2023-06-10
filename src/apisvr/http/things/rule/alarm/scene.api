@@ -9,7 +9,7 @@ import "common.api"  //公共结构体定义
 @server(
     group : things/rule/alarm/scene
     prefix: /api/v1/things/rule/alarm/scene
-    middleware: CheckToken
+    middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 service api {
     @doc "更新告警和场景的关联"
