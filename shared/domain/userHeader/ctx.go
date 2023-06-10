@@ -26,13 +26,32 @@ func GetUserCtx(ctx context.Context) *UserCtx {
 
 type MetadataCtx map[string][]string
 
-func SetMetadataCtx(ctx context.Context, maps map[string][]string) context.Context {
+func SetMetaCtx(ctx context.Context, maps map[string][]string) context.Context {
 	return context.WithValue(ctx, MetadataKey, maps)
 }
-func GetMetadataCtx(ctx context.Context) *MetadataCtx {
-	val, ok := ctx.Value(UserUidKey).(*MetadataCtx)
+func GetMetaCtx(ctx context.Context) MetadataCtx {
+	val, ok := ctx.Value(MetadataKey).(map[string][]string)
 	if !ok {
 		return nil
 	}
 	return val
+}
+
+func GetMetaVal(ctx context.Context, field string) []string {
+	mdCtx := GetMetaCtx(ctx)
+	if val, ok := mdCtx[field]; !ok {
+		return nil
+	} else {
+		return val
+	}
+}
+
+// 获取meta里的项目ID（企业版功能）
+func GetMetaProjectID(ctx context.Context) string {
+	items := GetMetaVal(ctx, string(MetaFieldProjectID))
+	if len(items) == 0 {
+		return ""
+	} else {
+		return items[0]
+	}
 }
