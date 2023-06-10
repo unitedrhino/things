@@ -766,18 +766,22 @@ type DeviceInteractSendActionResp struct {
 	Code         int64  `json:"code"`         //设备返回状态码
 }
 
+type DeviceInteractMultiSendPropertyReq struct {
+	AreaID      int64    `json:"areaID,string,optional"`  //项目区域id,传了优先从项目区域中获取设备列表
+	GroupID     int64    `json:"groupID,string,optional"` //分组ID,传了会从分组下获取设备
+	ProductID   string   `json:"productID,optional"`      //产品id
+	DeviceNames []string `json:"deviceNames,optional"`    //设备名列表
+	Data        string   `json:"data"`                    //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+}
+
 type DeviceInteractMultiSendPropertyMsg struct {
+	ProductID   string `json:"productID"`   //产品id
+	DeviceName  string `json:"deviceName"`  //设备名
 	Code        int64  `json:"code"`        //设备返回状态码
 	Status      string `json:"status"`      //返回状态
 	ClientToken string `json:"clientToken"` //调用id
 	SysCode     int64  `json:"sysCode"`     //系统错误码
 	SysMsg      string `json:"sysMsg"`      //系统错误信息
-}
-
-type DeviceInteractMultiSendPropertyReq struct {
-	ProductID   string   `json:"productID"`   //产品id
-	DeviceNames []string `json:"deviceNames"` //设备名列表
-	Data        string   `json:"data"`        //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
 }
 
 type DeviceInteractMultiSendPropertyResp struct {
