@@ -66,6 +66,8 @@ func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
 	return &dm.DeviceInfo{
 		ProductID:      di.ProductID,
 		DeviceName:     di.DeviceName,
+		ProjectID:      utils.ToRpcNullInt64(di.ProjectID),
+		AreaID:         utils.ToRpcNullInt64(di.AreaID),
 		DeviceAlias:    &wrappers.StringValue{Value: di.DeviceAlias},
 		Uid:            di.Uid,
 		MobileOperator: di.MobileOperator,
