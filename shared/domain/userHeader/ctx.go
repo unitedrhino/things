@@ -1,6 +1,9 @@
 package userHeader
 
-import "context"
+import (
+	"context"
+	"github.com/i-Things/things/shared/utils/cast"
+)
 
 type UserCtx struct {
 	IsOpen    bool   //是否开放认证用户
@@ -20,6 +23,15 @@ func GetUserCtx(ctx context.Context) *UserCtx {
 	val, ok := ctx.Value(UserUidKey).(*UserCtx)
 	if !ok { //这里线上不能获取不到
 		panic("GetUserCtx get UserCtx failed")
+	}
+	return val
+}
+
+// 使用该函数前必须传了UserCtx
+func GetUserCtxOrNil(ctx context.Context) *UserCtx {
+	val, ok := ctx.Value(UserUidKey).(*UserCtx)
+	if !ok { //这里线上不能获取不到
+		return nil
 	}
 	return val
 }
@@ -47,11 +59,11 @@ func GetMetaVal(ctx context.Context, field string) []string {
 }
 
 // 获取meta里的项目ID（企业版功能）
-func GetMetaProjectID(ctx context.Context) string {
+func GetMetaProjectID(ctx context.Context) int64 {
 	items := GetMetaVal(ctx, string(MetaFieldProjectID))
 	if len(items) == 0 {
-		return ""
+		return 0
 	} else {
-		return items[0]
+		return cast.ToInt64(items[0])
 	}
 }
