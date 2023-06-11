@@ -25,6 +25,7 @@ func UserInfoToApi(ui *sys.UserInfo) *types.UserInfo {
 		Role:        ui.Role,
 		NickName:    ui.NickName,
 		Sex:         ui.Sex,
+		IsAllData:   ui.IsAllData,
 		City:        ui.City,
 		Country:     ui.Country,
 		Province:    ui.Province,
