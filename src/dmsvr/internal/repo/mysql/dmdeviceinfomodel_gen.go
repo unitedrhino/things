@@ -37,27 +37,33 @@ type (
 	}
 
 	DmDeviceInfo struct {
-		Id          int64        `db:"id"`
-		ProductID   string       `db:"productID"`  // 产品id
-		DeviceName  string       `db:"deviceName"` // 设备名称
-		Secret      string       `db:"secret"`     // 设备秘钥
-		Cert        string       `db:"cert"`       // 设备证书
-		Imei        string       `db:"imei"`       // IMEI号信息
-		Mac         string       `db:"mac"`        // MAC号信息
-		Version     string       `db:"version"`    // 固件版本
-		HardInfo    string       `db:"hardInfo"`   // 模组硬件型号
-		SoftInfo    string       `db:"softInfo"`   // 模组软件版本
-		Position    string       `db:"position"`   // 设备的位置(默认百度坐标系BD09)
-		Address     string       `db:"address"`    // 所在地址
-		Tags        string       `db:"tags"`       // 设备标签
-		IsOnline    int64        `db:"isOnline"`   // 是否在线,1是2否
-		FirstLogin  sql.NullTime `db:"firstLogin"` // 激活时间
-		LastLogin   sql.NullTime `db:"lastLogin"`  // 最后上线时间
-		LogLevel    int64        `db:"logLevel"`   // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
-		CreatedTime time.Time    `db:"createdTime"`
-		UpdatedTime time.Time    `db:"updatedTime"`
-		DeletedTime sql.NullTime `db:"deletedTime"`
-		DeviceAlias string       `db:"deviceAlias"` // 设备别名
+		Id             int64          `db:"id"`
+		ProductID      string         `db:"productID"`      // 产品id
+		ProjectID      int64          `db:"projectID"`      // 项目ID(雪花ID)
+		AreaID         int64          `db:"areaID"`         // 项目区域ID(雪花ID)
+		DeviceName     string         `db:"deviceName"`     // 设备名称
+		DeviceAlias    string         `db:"deviceAlias"`    // 设备别名
+		Secret         string         `db:"secret"`         // 设备秘钥
+		Cert           string         `db:"cert"`           // 设备证书
+		Position       string         `db:"position"`       // 设备的位置(默认百度坐标系BD09)
+		Imei           string         `db:"imei"`           // IMEI号信息
+		Mac            string         `db:"mac"`            // MAC号信息
+		Version        string         `db:"version"`        // 固件版本
+		HardInfo       string         `db:"hardInfo"`       // 模组硬件型号
+		SoftInfo       string         `db:"softInfo"`       // 模组软件版本
+		MobileOperator int64          `db:"mobileOperator"` // 移动运营商:1)移动 2)联通 3)电信 4)广电
+		Phone          sql.NullString `db:"phone"`          // 手机号
+		Iccid          sql.NullString `db:"iccid"`          // SIM卡卡号
+		Address        string         `db:"address"`        // 所在地址
+		Tags           string         `db:"tags"`           // 设备标签
+		Uid            int64          `db:"uid"`            // 所属用户id
+		IsOnline       int64          `db:"isOnline"`       // 是否在线,1是2否
+		FirstLogin     sql.NullTime   `db:"firstLogin"`     // 激活时间
+		LastLogin      sql.NullTime   `db:"lastLogin"`      // 最后上线时间
+		LogLevel       int64          `db:"logLevel"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+		CreatedTime    time.Time      `db:"createdTime"`
+		UpdatedTime    time.Time      `db:"updatedTime"`
+		DeletedTime    sql.NullTime   `db:"deletedTime"`
 	}
 )
 
@@ -103,14 +109,14 @@ func (m *defaultDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Cont
 }
 
 func (m *defaultDmDeviceInfoModel) Insert(ctx context.Context, data *DmDeviceInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, dmDeviceInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.DeviceName, data.Secret, data.Cert, data.Imei, data.Mac, data.Version, data.HardInfo, data.SoftInfo, data.Position, data.Address, data.Tags, data.IsOnline, data.FirstLogin, data.LastLogin, data.LogLevel, data.DeviceAlias)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, dmDeviceInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.ProjectID, data.AreaID, data.DeviceName, data.DeviceAlias, data.Secret, data.Cert, data.Position, data.Imei, data.Mac, data.Version, data.HardInfo, data.SoftInfo, data.MobileOperator, data.Phone, data.Iccid, data.Address, data.Tags, data.Uid, data.IsOnline, data.FirstLogin, data.LastLogin, data.LogLevel)
 	return ret, err
 }
 
 func (m *defaultDmDeviceInfoModel) Update(ctx context.Context, newData *DmDeviceInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, dmDeviceInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.DeviceName, newData.Secret, newData.Cert, newData.Imei, newData.Mac, newData.Version, newData.HardInfo, newData.SoftInfo, newData.Position, newData.Address, newData.Tags, newData.IsOnline, newData.FirstLogin, newData.LastLogin, newData.LogLevel, newData.DeviceAlias, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.ProjectID, newData.AreaID, newData.DeviceName, newData.DeviceAlias, newData.Secret, newData.Cert, newData.Position, newData.Imei, newData.Mac, newData.Version, newData.HardInfo, newData.SoftInfo, newData.MobileOperator, newData.Phone, newData.Iccid, newData.Address, newData.Tags, newData.Uid, newData.IsOnline, newData.FirstLogin, newData.LastLogin, newData.LogLevel, newData.Id)
 	return err
 }
 
