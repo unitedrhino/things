@@ -52,7 +52,9 @@ func (d *DeviceFilter) FmtSql(ctx context.Context, sql sq.SelectBuilder) sq.Sele
 	//数据权限条件（企业版功能）
 	if uc := userHeader.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
 		mdProjectID := userHeader.GetMetaProjectID(ctx)
-		sql = sql.Where("`ProjectID` = ?", mdProjectID)
+		if mdProjectID != 0 {
+			sql = sql.Where("`ProjectID` = ?", mdProjectID)
+		}
 	}
 	//业务过滤条件
 	if d.ProductID != "" {
