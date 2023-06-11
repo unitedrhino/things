@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
@@ -10,7 +9,6 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"reflect"
 	"strings"
 )
 
@@ -155,43 +153,6 @@ func (m *customDmDeviceInfoModel) CountGroupByField(ctx context.Context, f Devic
 	return result, err
 }
 
-func reflectStructFields(newData *DmDeviceInfo) []interface{} {
-	fieldValues := make([]interface{}, 0)
-	fieldNames := make([]string, 0)
-
-	// 通过反射获取对象的字段和值，并将其存储到slice中
-	elem := reflect.ValueOf(newData).Elem()
-	for i := 0; i < elem.NumField(); i++ {
-		valueField := elem.Field(i)
-		if !valueField.CanInterface() {
-			continue
-		}
-		typeField := elem.Type().Field(i)
-		tag := typeField.Tag.Get("db")
-		if tag == "-" {
-			continue
-		}
-		fieldValue := valueField.Interface()
-		if tag == "firstLogin" || tag == "lastLogin" {
-			t, _ := fieldValue.(sql.NullTime)
-			fieldValue = t
-		}
-		if fieldValue == nil {
-			continue
-		}
-		if tag != "id" && tag != "createdTime" && tag != "deletedTime" && tag != "updatedTime" {
-			fieldNames = append(fieldNames, tag)
-			fieldValues = append(fieldValues, fieldValue)
-		}
-	}
-
-	if newData.Id > 0 {
-		fieldValues = append(fieldValues, newData.Id)
-	}
-
-	return fieldValues
-}
-
 func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *DmDeviceInfo) error {
 	table := m.table
 	fields := dmDeviceInfoRowsExpectAutoSet
@@ -202,7 +163,7 @@ func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *Dm
 	//SQL基本结构
 	query := fmt.Sprintf("insert into %s (%s) values (%s)", table, fields, valsPlace)
 	//SQL特殊处理（position为points类型字段,插入时需用函数ST_GeomFromText转换，而不能使用问号）
-	pos := utils.IndexN(query, '?', 10) //注意：这里是上面的 position pos 10，如位置有变值要跟着改（比如加了字段...）
+	pos := utils.IndexN(query, '?', 8) //注意：这里是上面的 position pos 10，如位置有变值要跟着改（比如加了字段...）
 	query = query[0:pos-1] + "ST_GeomFromText(?)," + query[pos+1:]
 
 	_, err := m.conn.ExecCtx(ctx, query, params...)

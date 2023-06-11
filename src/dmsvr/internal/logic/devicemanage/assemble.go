@@ -11,6 +11,40 @@ import (
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
+func FillDeviceInfo(in *dm.DeviceInfo, di *mysql.DmDeviceInfo) {
+	if in.Tags != nil {
+		tags, err := json.Marshal(in.Tags)
+		if err == nil {
+			di.Tags = string(tags)
+		}
+	} else {
+		di.Tags = "{}"
+	}
+
+	if in.LogLevel != def.Unknown {
+		di.LogLevel = def.LogClose
+	}
+	if in.Address != nil {
+		di.Address = in.Address.Value
+	}
+
+	if in.DeviceAlias != nil {
+		di.DeviceAlias = in.DeviceAlias.Value
+	}
+	if in.Uid != 0 {
+		di.Uid = in.Uid
+	}
+	if in.MobileOperator != 0 {
+		di.MobileOperator = in.MobileOperator
+	}
+	if in.Iccid != nil {
+		di.Iccid = utils.AnyToNullString(in.Iccid)
+	}
+	if in.Phone != nil {
+		di.Phone = utils.AnyToNullString(in.Phone)
+	}
+}
+
 func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
 	var (
 		tags map[string]string
@@ -30,24 +64,30 @@ func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
 	Longitude, Latitude = utils.GetPositionValue(di.Position)
 
 	return &dm.DeviceInfo{
-		ProductID:   di.ProductID,
-		DeviceName:  di.DeviceName,
-		DeviceAlias: &wrappers.StringValue{Value: di.DeviceAlias},
-		Secret:      di.Secret,
-		Cert:        di.Cert,
-		Imei:        di.Imei,
-		Mac:         di.Mac,
-		Version:     &wrappers.StringValue{Value: di.Version},
-		HardInfo:    di.HardInfo,
-		SoftInfo:    di.SoftInfo,
-		Position:    &dm.Point{Longitude: Longitude, Latitude: Latitude},
-		Address:     &wrappers.StringValue{Value: di.Address},
-		Tags:        tags,
-		IsOnline:    di.IsOnline,
-		FirstLogin:  utils.GetNullTime(di.FirstLogin),
-		LastLogin:   utils.GetNullTime(di.LastLogin),
-		LogLevel:    di.LogLevel,
-		CreatedTime: di.CreatedTime.Unix(),
+		ProductID:      di.ProductID,
+		DeviceName:     di.DeviceName,
+		ProjectID:      utils.ToRpcNullInt64(di.ProjectID),
+		AreaID:         utils.ToRpcNullInt64(di.AreaID),
+		DeviceAlias:    &wrappers.StringValue{Value: di.DeviceAlias},
+		Uid:            di.Uid,
+		MobileOperator: di.MobileOperator,
+		Phone:          utils.ToRpcNullString(di.Phone),
+		Iccid:          utils.ToRpcNullString(di.Iccid),
+		Secret:         di.Secret,
+		Cert:           di.Cert,
+		Imei:           di.Imei,
+		Mac:            di.Mac,
+		Version:        &wrappers.StringValue{Value: di.Version},
+		HardInfo:       di.HardInfo,
+		SoftInfo:       di.SoftInfo,
+		Position:       &dm.Point{Longitude: Longitude, Latitude: Latitude},
+		Address:        &wrappers.StringValue{Value: di.Address},
+		Tags:           tags,
+		IsOnline:       di.IsOnline,
+		FirstLogin:     utils.GetNullTime(di.FirstLogin),
+		LastLogin:      utils.GetNullTime(di.LastLogin),
+		LogLevel:       di.LogLevel,
+		CreatedTime:    di.CreatedTime.Unix(),
 	}
 }
 

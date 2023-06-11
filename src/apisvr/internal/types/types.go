@@ -582,25 +582,31 @@ type DeviceGateWayMultiDeleteReq struct {
 }
 
 type DeviceInfo struct {
-	ProductID      string                             `json:"productID"`                         //产品id 只读
-	DeviceName     string                             `json:"deviceName"`                        //设备名称 读写
-	DeviceAlias    *string                            `json:"deviceAlias,optional"`              //设备别名 读写
-	Secret         string                             `json:"secret,optional"`                   //设备秘钥 只读
-	Cert           string                             `json:"cert,optional"`                     // 设备证书  只读
-	Imei           string                             `json:"imei,optional"`                     // IMEI号信息 只读
-	Mac            string                             `json:"mac,optional"`                      // MAC号信息 只读
-	Version        *string                            `json:"version,optional"`                  // 固件版本  读写
-	HardInfo       string                             `json:"hardInfo,optional"`                 // 模组硬件型号 只读
-	SoftInfo       string                             `json:"softInfo,optional"`                 // 模组软件版本 只读
-	Position       *Point                             `json:"position,optional"`                 //设备定位,默认百度坐标系
-	Address        *string                            `json:"address,optional"`                  //所在地址
-	Tags           []*Tag                             `json:"tags,optional"`                     // 设备tag
-	IsOnline       int64                              `json:"isOnline,optional,range=[0:2]"`     // 在线状态  1离线 2在线 只读
-	FirstLogin     int64                              `json:"firstLogin,optional,string"`        //激活时间 只读
-	LastLogin      int64                              `json:"lastLogin,optional,string"`         //最后上线时间 只读
-	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"`     // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	CreatedTime    int64                              `json:"createdTime,optional,string"`       //创建时间 只读
-	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"` //获取的属性列表,如果不传withProperty,则不会返回
+	ProductID      string                             `json:"productID"`                           //产品id 只读
+	ProjectID      int64                              `json:"projectID,string,optional"`           //项目id 只读
+	AreaID         int64                              `json:"areaID,string,optional"`              //项目区域id 只读
+	DeviceName     string                             `json:"deviceName"`                          //设备名称 读写
+	DeviceAlias    *string                            `json:"deviceAlias,optional"`                //设备别名 读写
+	Secret         string                             `json:"secret,optional"`                     //设备秘钥 只读
+	Cert           string                             `json:"cert,optional"`                       // 设备证书  只读
+	Imei           string                             `json:"imei,optional"`                       // IMEI号信息 只读
+	Mac            string                             `json:"mac,optional"`                        // MAC号信息 只读
+	Version        *string                            `json:"version,optional"`                    // 固件版本  读写
+	HardInfo       string                             `json:"hardInfo,optional"`                   // 模组硬件型号 只读
+	SoftInfo       string                             `json:"softInfo,optional"`                   // 模组软件版本 只读
+	MobileOperator int64                              `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
+	Phone          *string                            `json:"phone,optional"`                      //手机号
+	Iccid          *string                            `json:"iccid,optional"`                      //SIM卡卡号
+	Uid            int64                              `json:"uid,string,optional"`                 //所属用户id
+	Position       *Point                             `json:"position,optional"`                   //设备定位,默认百度坐标系
+	Address        *string                            `json:"address,optional"`                    //所在地址
+	Tags           []*Tag                             `json:"tags,optional"`                       // 设备tag
+	IsOnline       int64                              `json:"isOnline,optional,range=[0:2]"`       // 在线状态  1离线 2在线 只读
+	FirstLogin     int64                              `json:"firstLogin,optional,string"`          //激活时间 只读
+	LastLogin      int64                              `json:"lastLogin,optional,string"`           //最后上线时间 只读
+	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	CreatedTime    int64                              `json:"createdTime,optional,string"`         //创建时间 只读
+	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"`   //获取的属性列表,如果不传withProperty,则不会返回
 }
 
 type DeviceInfoWithProperty struct {
@@ -608,24 +614,20 @@ type DeviceInfoWithProperty struct {
 	Timestamp int64  `json:"timestamp,string"` //发生时间戳
 }
 
-type DeviceInfoCreateReq struct {
-	ProductID   string  `json:"productID"`                     //产品id 只读
-	DeviceName  string  `json:"deviceName"`                    //设备名称 读写
-	DeviceAlias *string `json:"deviceAlias,optional"`          //设备别名 读写
-	LogLevel    int64   `json:"logLevel,optional,range=[0:5]"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Address     *string `json:"address,optional"`              //所在地址
-	Position    *Point  `json:"position,optional"`             //设备定位,默认百度坐标系
-	Tags        []*Tag  `json:"tags,optional"`                 // 设备tag
-}
-
-type DeviceInfoUpdateReq struct {
-	ProductID   string  `json:"productID"`                     //产品id 只读
-	DeviceName  string  `json:"deviceName"`                    //设备名称 读写
-	DeviceAlias *string `json:"deviceAlias,optional"`          //设备别名 读写
-	LogLevel    int64   `json:"logLevel,optional,range=[0:5]"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Address     *string `json:"address,optional"`              //所在地址
-	Position    *Point  `json:"position,optional"`             //设备定位,默认百度坐标系
-	Tags        []*Tag  `json:"tags,optional"`                 // 设备tag
+type DeviceInfoSaveReq struct {
+	ProductID      string  `json:"productID"`                           //产品id 只读
+	DeviceName     string  `json:"deviceName"`                          //设备名称 读写
+	DeviceAlias    *string `json:"deviceAlias,optional"`                //设备别名 读写
+	LogLevel       int64   `json:"logLevel,optional,range=[0:5]"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Address        *string `json:"address,optional"`                    //所在地址
+	Position       *Point  `json:"position,optional"`                   //设备定位,默认百度坐标系
+	Tags           []*Tag  `json:"tags,optional"`                       // 设备tag
+	Phone          *string `json:"phone,optional"`                      //手机号
+	Iccid          *string `json:"iccid,optional"`                      //SIM卡卡号
+	Uid            int64   `json:"uid,string,optional"`                 //所属用户id
+	MobileOperator int64   `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
+	ProjectID      *int64  `json:"projectID,string,optional"`           //项目id 只读（nil不更新，0为取消绑定，other则绑定）
+	AreaID         *int64  `json:"areaID,string,optional"`              //项目区域id 只读（nil不更新，0为取消绑定，other则绑定）
 }
 
 type DeviceInfoDeleteReq struct {
