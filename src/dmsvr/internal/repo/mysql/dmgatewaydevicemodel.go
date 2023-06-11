@@ -6,6 +6,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -29,24 +30,28 @@ type (
 		deviceInfoTable string
 	}
 	GatewayDeviceFilter struct {
-		//网关和子设备至少要有一个填写
-		Gateway   *devices.Core
+		//网关和子设备 至少要有一个填写
+		Gateway *devices.Core
+		//网关和子设备 至少要有一个填写
 		SubDevice *devices.Core
 	}
 )
 
-func (c customDmGatewayDeviceModel) FmtSql(g GatewayDeviceFilter, sql sq.SelectBuilder) sq.SelectBuilder {
-	if g.Gateway != nil { //通过网关获取旗下子设备列表
-		sql = sql.LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.productID and di.deviceName=gd.deviceName",
-			c.deviceInfoTable)).
-			Where("`gatewayProductID`=? and `gatewayDeviceName`=? and di.id IS NOT NULL",
-				g.Gateway.ProductID, g.Gateway.DeviceName)
-		return sql
+func (c customDmGatewayDeviceModel) FmtSql(ctx context.Context, f GatewayDeviceFilter, sql sq.SelectBuilder) sq.SelectBuilder {
+	if f.Gateway != nil { //通过网关获取旗下子设备列表
+		sql = sql.LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.productID and di.deviceName=gd.deviceName", c.deviceInfoTable)).
+			Where("`gatewayProductID`=? and `gatewayDeviceName`=? and di.id IS NOT NULL", f.Gateway.ProductID, f.Gateway.DeviceName)
+	} else {
+		sql = sql.LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.gatewayProductID and di.deviceName=gd.gatewayDeviceName", c.deviceInfoTable)).
+			Where("gd.`productID`=? and gd.`deviceName`=? and di.id IS NOT NULL", f.SubDevice.ProductID, f.SubDevice.DeviceName)
 	}
-	sql = sql.LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.gatewayProductID and di.deviceName=gd.gatewayDeviceName",
-		c.deviceInfoTable)).
-		Where("gd.`productID`=? and gd.`deviceName`=? and di.id IS NOT NULL",
-			g.SubDevice.ProductID, g.SubDevice.DeviceName)
+
+	//数据权限条件（企业版功能）
+	if uc := userHeader.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
+		mdProjectID := userHeader.GetMetaProjectID(ctx)
+		sql = sql.Where("di.`ProjectID` = ?", mdProjectID)
+	}
+
 	return sql
 }
 
@@ -62,7 +67,7 @@ func (c customDmGatewayDeviceModel) FindByFilter(ctx context.Context, f GatewayD
 	var resp []*DmDeviceInfo
 	sql := sq.Select("di.*").From(c.table + "as gd").
 		Limit(uint64(page.GetLimit())).Offset(uint64(page.GetOffset()))
-	sql = c.FmtSql(f, sql)
+	sql = c.FmtSql(ctx, f, sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return nil, err
@@ -78,7 +83,7 @@ func (c customDmGatewayDeviceModel) FindByFilter(ctx context.Context, f GatewayD
 
 func (c customDmGatewayDeviceModel) CountByFilter(ctx context.Context, f GatewayDeviceFilter) (size int64, err error) {
 	sql := sq.Select("count(1)").From(c.table + "as gd")
-	sql = c.FmtSql(f, sql)
+	sql = c.FmtSql(ctx, f, sql)
 	query, arg, err := sql.ToSql()
 	if err != nil {
 		return 0, err
