@@ -6,6 +6,12 @@ import (
 
 const DeviceGroupLevel = 3
 
+type RoleID int64
+
+const (
+	RoleIDSuper RoleID = 1
+)
+
 type CoordinateSystem string
 
 var SystemCoordinate = CoordinateSystemBaidu //默认坐标系

@@ -31,19 +31,21 @@ func (l *DeviceGatewayIndexLogic) DeviceGatewayIndex(in *dm.DeviceGatewayIndexRe
 		Gateway:   ToDeviceCoreDo(in.Gateway),
 		SubDevice: ToDeviceCoreDo(in.SubDevice),
 	}
-	size, err := l.svcCtx.Gateway.CountByFilter(
-		l.ctx, f)
+
+	size, err := l.svcCtx.Gateway.CountByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.svcCtx.Gateway.FindByFilter(
-		l.ctx, f, logic.ToPageInfo(in.Page))
+
+	di, err := l.svcCtx.Gateway.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}
+
 	info := make([]*dm.DeviceInfo, 0, len(di))
 	for _, v := range di {
 		info = append(info, ToDeviceInfo(v))
 	}
+
 	return &dm.DeviceGatewayIndexResp{List: info, Total: size}, nil
 }

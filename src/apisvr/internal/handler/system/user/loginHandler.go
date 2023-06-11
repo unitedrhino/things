@@ -22,7 +22,7 @@ func LoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		strIP, _ := utils.GetIP(r)
-		c := context.WithValue(r.Context(), userHeader.UserUid, &userHeader.UserCtx{
+		c := context.WithValue(r.Context(), userHeader.UserUidKey, &userHeader.UserCtx{
 			IP: strIP,
 			Os: r.Header.Get("User-Agent"),
 		})
