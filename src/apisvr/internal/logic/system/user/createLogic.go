@@ -46,6 +46,7 @@ func (l *CreateLogic) Create(req *types.UserCreateReq) (resp *types.UserCreateRe
 		HeadImgUrl: req.HeadImgUrl,
 		Role:       req.Role,
 		Sex:        req.Sex,
+		IsAllData:  req.IsAllData,
 	})
 	if err1 != nil {
 		er := errors.Fmt(err1)

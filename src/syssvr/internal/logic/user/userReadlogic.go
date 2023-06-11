@@ -46,5 +46,6 @@ func (l *ReadLogic) UserRead(in *sys.UserReadReq) (*sys.UserReadResp, error) {
 		CreatedTime: ui.CreatedTime.Unix(),
 		Role:        ui.Role,
 		Sex:         ui.Sex,
+		IsAllData:   ui.IsAllData,
 	}, nil
 }
