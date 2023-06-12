@@ -68,12 +68,14 @@ type (
 
 	/*属性*/
 	Property struct {
-		Identifier string       `json:"identifier"` //标识符
-		Name       string       `json:"name"`       //功能名称
-		Desc       string       `json:"desc"`       //描述
-		Mode       PropertyMode `json:"mode"`       //读写类型:rw(可读可写) r(只读)
-		Define     Define       `json:"define"`     //数据定义
-		Required   bool         `json:"required"`   //是否必须
+		Identifier  string       `json:"identifier"`  //标识符
+		Name        string       `json:"name"`        //功能名称
+		Desc        string       `json:"desc"`        //描述
+		Mode        PropertyMode `json:"mode"`        //读写类型:rw(可读可写) r(只读)
+		Define      Define       `json:"define"`      //数据定义
+		IsUseShadow bool         `json:"isUseShadow"` //是否使用设备影子
+		IsNoRecord  bool         `json:"isNoRecord"`  //不存储历史记录
+		Required    bool         `json:"required"`    //是否必须
 	}
 	Properties []Property
 
