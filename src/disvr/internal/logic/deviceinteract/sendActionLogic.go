@@ -42,7 +42,7 @@ func (l *SendActionLogic) initMsg(productID string) error {
 	return nil
 }
 
-//调用设备行为
+// 调用设备行为
 func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
@@ -78,7 +78,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		ActionID: in.ActionID,
 		Params:   param,
 	}
-	_, err = req.VerifyReqParam(l.schema, schema.ParamActionInput)
+	err = req.FmtReqParam(l.schema, schema.ParamActionInput)
 	if err != nil {
 		return nil, err
 	}
