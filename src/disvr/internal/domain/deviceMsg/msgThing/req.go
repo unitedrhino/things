@@ -46,6 +46,15 @@ func (d *Req) GetTimeStamp(defaultTime int64) time.Time {
 	return time.UnixMilli(d.Timestamp)
 }
 
+func (d *Req) FmtReqParam(t *schema.Model, tt schema.ParamType) error {
+	param, err := d.VerifyReqParam(t, tt)
+	if err != nil {
+		return err
+	}
+	d.Params = ToVal(param)
+	return nil
+}
+
 // 校验设备上报的参数合法性
 func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]Param, error) {
 	if len(d.Params) == 0 {
