@@ -63,11 +63,12 @@ type SvrClient struct {
 
 type ServiceContext struct {
 	SvrClient
-	Config     config.Config
-	CheckToken rest.Middleware
-	DmManage   rest.Middleware
-	Captcha    *verify.Captcha
-	OssClient  *oss.Client
+	Config         config.Config
+	SetupWare      rest.Middleware
+	CheckTokenWare rest.Middleware
+	TeardownWare   rest.Middleware
+	Captcha        *verify.Captcha
+	OssClient      *oss.Client
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -153,10 +154,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
-		Config:     c,
-		CheckToken: middleware.NewCheckTokenMiddleware(c, ur, au, lo).Handle,
-		Captcha:    captcha,
-		OssClient:  ossClient,
+		Config:         c,
+		SetupWare:      middleware.NewSetupWareMiddleware(c, lo).Handle,
+		CheckTokenWare: middleware.NewCheckTokenWareMiddleware(c, ur, au).Handle,
+		TeardownWare:   middleware.NewTeardownWareMiddleware(c, lo).Handle,
+		Captcha:        captcha,
+		OssClient:      ossClient,
 		SvrClient: SvrClient{
 			UserRpc:        ur,
 			RoleRpc:        ro,

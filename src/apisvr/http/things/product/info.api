@@ -10,7 +10,7 @@ import "common.api"  //公共结构体定义
 @server(
     group : things/product/info
     prefix: /api/v1/things/product/info
-    middleware: CheckToken
+    middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 service api {
     @doc "新增产品"
