@@ -9,7 +9,7 @@ info(
 @server(
     group: system/auth
     prefix: /api/v1/system/auth/api
-    middleware: CheckToken
+    middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 
 service api {

@@ -18,8 +18,8 @@ import (
 var (
 	sysRoleInfoFieldNames          = builder.RawFieldNames(&SysRoleInfo{})
 	sysRoleInfoRows                = strings.Join(sysRoleInfoFieldNames, ",")
-	sysRoleInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysRoleInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), ",")
-	sysRoleInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysRoleInfoFieldNames, "`id`", "`updatedTime`", "`deletedTime`", "`createdTime`"), "=?,") + "=?"
+	sysRoleInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysRoleInfoFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
+	sysRoleInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysRoleInfoFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (

@@ -45,6 +45,7 @@ func (l *ReadLogic) Read(req *types.UserReadReq) (resp *types.UserReadResp, err 
 		CreatedTime: info.CreatedTime,
 		Role:        info.Role,
 		Sex:         info.Sex,
+		IsAllData:   info.IsAllData,
 	}, nil
 	return nil, err
 }

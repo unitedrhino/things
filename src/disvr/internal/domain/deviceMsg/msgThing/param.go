@@ -106,31 +106,23 @@ func GetVal(d *schema.Define, val any) (any, error) {
 	case schema.DataTypeBool:
 		return cast.ToBoolE(val)
 	case schema.DataTypeInt:
-		if num, ok := val.(json.Number); !ok {
+		if num, err := cast.ToInt64E(val); err != nil {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
-			ret, err := num.Int64()
-			if err != nil {
-				return nil, errors.Parameter.AddDetail(val)
-			}
-			if validateDataRange && (ret > cast.ToInt64(d.Max) || ret < cast.ToInt64(d.Min)) {
+			if validateDataRange && (num > cast.ToInt64(d.Max) || num < cast.ToInt64(d.Min)) {
 				return nil, errors.OutRange.AddDetailf("value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
-			return ret, nil
+			return num, nil
 		}
 	case schema.DataTypeFloat:
-		if num, ok := val.(json.Number); !ok {
+		if num, err := cast.ToFloat64E(val); err != nil {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
-			ret, err := num.Float64()
-			if err != nil {
-				return nil, errors.Parameter.AddDetail(val)
-			}
-			if validateDataRange && (ret > cast.ToFloat64(d.Max) || ret < cast.ToFloat64(d.Min)) {
+			if validateDataRange && (num > cast.ToFloat64(d.Max) || num < cast.ToFloat64(d.Min)) {
 				return nil, errors.OutRange.AddDetailf(
 					"value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
-			return ret, nil
+			return num, nil
 		}
 	case schema.DataTypeString:
 		if str, ok := val.(string); !ok {

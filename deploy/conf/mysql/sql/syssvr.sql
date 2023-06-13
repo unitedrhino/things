@@ -23,6 +23,7 @@ CREATE TABLE if not exists `sys_user_info`
     `language`    varchar(50)  NOT NULL DEFAULT '' COMMENT '用户的语言，简体中文为zh_CN',
     `headImgUrl`  varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户头像',
     `role`        bigint       not null COMMENT '用户角色',
+    `isAllData`   tinyint(1)   UNSIGNED NOT NULL default 2 COMMENT '是否所有数据权限（1是，2否）',
     `createdTime` datetime     not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime     NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime              DEFAULT NULL COMMENT '删除时间，默认为空，表示未删除，非空表示已删除',
@@ -279,6 +280,7 @@ INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `g
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/msg/event-log/index',2,'获取物模型事件历史记录',4,'','设备消息');
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/send-action',2,'同步调用设备行为',5,'','设备交互');
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/send-property',2,'同步调用设备属性',5,'','设备交互');
+INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/multi-send-property',2,'批量调用设备属性',5,'','设备交互');
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/get-property-reply',2,'请求设备获取设备最新属性',4,'','设备交互');
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/interact/send-msg',2,'发送消息给设备',5,'','设备交互');
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/device/gateway/multi-create',2,'批量添加网关子设备',1,'','网关子设备管理');
@@ -385,6 +387,7 @@ INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1',
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/msg/event-log/index',2,'','','');
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/interact/send-action',2,'','','');
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/interact/send-property',2,'','','');
+INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/interact/multi-send-property',2,'','','');
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/interact/send-msg',2,'','','');
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/gateway/multi-create',2,'','','');
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/device/gateway/multi-delete',2,'','','');

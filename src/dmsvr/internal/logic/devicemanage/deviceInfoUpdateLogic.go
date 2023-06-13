@@ -32,6 +32,13 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *dm.DeviceInfo) {
+	if data.ProjectID != nil {
+		old.ProjectID = utils.ToEmptyInt64(data.ProjectID)
+	}
+	if data.AreaID != nil {
+		old.AreaID = utils.ToEmptyInt64(data.AreaID)
+	}
+
 	if data.Tags != nil {
 		tags, err := json.Marshal(data.Tags)
 		if err == nil {
