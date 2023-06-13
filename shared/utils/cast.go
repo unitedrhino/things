@@ -216,3 +216,24 @@ func TrimNil[a any](in *a) a {
 	var ret a
 	return ret
 }
+
+// TimeTo24Sec 转换成 24小时的秒单位表示
+func TimeTo24Sec(t time.Time) int64 {
+	ret := t.Hour() * 60 * 60
+	ret += t.Minute() * 60
+	ret += t.Second()
+	return int64(ret)
+}
+
+func ToTimeX(t time.Time) *time.Time {
+	if t.IsZero() {
+		return nil
+	}
+	return &t
+}
+func TimeXToTime(t *time.Time) time.Time {
+	if t == nil {
+		return time.Time{}
+	}
+	return *t
+}

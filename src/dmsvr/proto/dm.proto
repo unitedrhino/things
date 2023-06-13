@@ -1,8 +1,10 @@
 syntax = "proto3";
 option go_package = "pb/dm";
-import "google/protobuf/wrappers.proto";
+
 //import "proto/schemaInfo.proto";
 package dm;
+
+import "google/protobuf/wrappers.proto";
 
 message Response {
 }
@@ -265,6 +267,7 @@ message GroupDeviceMultiDeleteReq{
   int64 groupID = 1;
   repeated DeviceCore list = 2;
 }
+
 message Point{
   double  longitude = 1;//经度
   double  latitude = 2;//纬度
@@ -361,7 +364,9 @@ message DeviceInfoIndexReq{
   map<string, string> tags = 4;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
   int64 range = 5; //过滤条件:取距离坐标点固定范围内的设备
   Point Position = 6;   //设备定位,默认百度坐标系
-  string deviceAlias = 7; //过滤条件:模糊查询 设备别名
+  repeated int64 projectIDs = 8;//项目ids
+  repeated int64 areaIDs = 10;//区域ids
+  string deviceAlias = 11; //过滤条件:模糊查询 设备别名
 }
 
 message DeviceInfoIndexResp{

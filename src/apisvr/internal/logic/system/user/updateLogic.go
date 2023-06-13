@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -29,9 +30,10 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(req *types.UserUpdateReq) error {
 	//超管可以修改其他用户的角色，并且任何用户不能修改本身的角色
-	role := int64(0)
-	if userHeader.GetUserCtx(l.ctx).Role == 1 && userHeader.GetUserCtx(l.ctx).Uid != req.Uid {
-		role = req.Role
+	roleID := int64(0)
+	userCtx := userHeader.GetUserCtx(l.ctx)
+	if !userCtx.IsOpen && userCtx.Role == int64(def.RoleIDSuper) && userCtx.Uid != req.Uid {
+		roleID = req.Role
 	}
 	_, err := l.svcCtx.UserRpc.UserUpdate(l.ctx, &sys.UserUpdateReq{
 		Uid:        req.Uid,
@@ -43,8 +45,9 @@ func (l *UpdateLogic) Update(req *types.UserUpdateReq) error {
 		Province:   req.Province,
 		Language:   req.Language,
 		HeadImgUrl: req.HeadImgUrl,
+		Role:       roleID,
 		Sex:        req.Sex,
-		Role:       role,
+		IsAllData:  req.IsAllData,
 	})
 	if err != nil {
 		er := errors.Fmt(err)

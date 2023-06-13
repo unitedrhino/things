@@ -30,7 +30,9 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInfoIndexResp, err error) {
 	dmReq := &dm.DeviceInfoIndexReq{
-		ProductID:   req.ProductID, //产品id
+		ProductID:   req.ProductID,  //产品id
+		ProjectIDs:  req.ProjectIDs, //项目ids
+		AreaIDs:     req.AreaIDs,    //项目区域ids
 		DeviceName:  req.DeviceName,
 		Tags:        logic.ToTagsMap(req.Tags),
 		Page:        logic.ToDmPageRpc(req.Page),

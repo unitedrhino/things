@@ -17,7 +17,7 @@ type (
 		Timestamp  time.Time `json:"timestamp"`  // 操作时间
 		RequestID  string    `json:"requestID"`  // 请求ID
 		TranceID   string    `json:"tranceID"`   // 服务器端事务id
-		ResultType int64     `json:"resultType"` // 请求结果状态,0为成功
+		ResultType int64     `json:"resultType"` // 请求结果状态,200为成功
 	}
 	HubFilter struct {
 		ProductID  string   // 产品id
