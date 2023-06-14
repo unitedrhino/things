@@ -66,11 +66,11 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dm.DeviceRegisterReq) (*dm.Devi
 		LogLevel:   1,
 	})
 	if err != nil {
-		return nil, errors.Default.AddMsg(fmt.Sprintf("设备注册失败: %s", err.Error()))
+		return nil, errors.Database.AddMsg(fmt.Sprintf("设备注册失败: %s", err.Error()))
 	}
 	resp, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
-		return nil, errors.Default.AddMsg(fmt.Sprintf("设备注册失败: %s", err.Error()))
+		return nil, errors.Database.AddMsg(fmt.Sprintf("设备注册失败: %s", err.Error()))
 	}
 
 	//4.给设备返回设备密钥 经过aes cbc base64加密
