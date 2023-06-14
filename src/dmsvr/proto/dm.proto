@@ -29,6 +29,8 @@ service DeviceAuth{
   rpc accessAuth(AccessAuthReq)         returns (Response);
   //鉴定是否是root账号
   rpc rootCheck(RootCheckReq)           returns (Response);
+  //设备动态注册
+  rpc deviceRegister(DeviceRegisterReq) returns (DeviceRegisterResp);
 }
 
 //设备管理
@@ -493,4 +495,16 @@ message DeviceTypeCountResp{
   int64 gateway = 2;
   int64 subset = 3;
   int64 unknown = 4;
+}
+
+message DeviceRegisterReq{
+  string productID = 1;  //产品id
+  string deviceName = 2; //设备名称
+  int64 nonce = 3;       //随机数
+  int64 timestamp = 4;   //秒级时间戳
+  string signature = 5;  //签名信息
+}
+
+message DeviceRegisterResp{
+  string psk = 1;  //设备密钥 AES 加密后内容
 }
