@@ -74,6 +74,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*mysql.D
 		ProductName: in.ProductName, // 产品名称
 		Desc:        in.Desc.GetValue(),
 		DevStatus:   in.DevStatus.GetValue(),
+		Secret:      utils.GetRandomBase64(20),
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister

@@ -20,6 +20,9 @@ service api {
     @doc "鉴定是否是root账号"
     @handler rootCheck
     post /root-check (DeviceAuthRootCheckReq) returns ()
+    @doc "设备自动注册"
+    @handler register
+    post /register (DeviceRegisterReq) returns (DeviceRegisterResp)
 }
 
 
@@ -45,4 +48,16 @@ type DeviceAuthRootCheckReq struct {
     ClientID string `json:"clientID,omitempty"`                //clientID
     Ip string `json:"ip,omitempty"`                            //访问的ip地址
     Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
+}
+
+type DeviceRegisterReq struct {
+    ProductID string `json:"productID"`                                              //产品id 只读
+    DeviceName string `json:"deviceName"`                                            //设备名称 读写
+    Nonce int64 `json:"nonce"`                                                        //随机数
+    Timestamp int64 `json:"timestamp"`                                                //秒级时间戳
+    Signature string `json:"signature"`                                              //签名信息
+}
+
+type DeviceRegisterResp struct {
+    Psk string `json:"psk"`                                              //设备密钥 AES 加密后内容
 }
