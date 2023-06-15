@@ -463,6 +463,16 @@ type DeviceAuth5AccessResp struct {
 	Result string `json:"result"` //验证结果 "allow" | "deny" | "ignore"
 }
 
+type DeviceMsgShadowIndex struct {
+	DataID            string `json:"dataID"`            //属性id
+	Value             string `json:"value"`             //获取到的值
+	UpdatedDeviceTime int64  `json:"updatedDeviceTime"` //更新到设备的时间
+}
+
+type DeviceMsgShadowIndexResp struct {
+	List []*DeviceMsgShadowIndex `json:"list"`
+}
+
 type DeviceMsgHubLogIndexReq struct {
 	DeviceName string    `json:"deviceName,omitempty"`                //设备名
 	ProductID  string    `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
@@ -739,10 +749,11 @@ type DeviceInteractSendMsgReq struct {
 }
 
 type DeviceInteractSendPropertyReq struct {
-	ProductID  string `json:"productID"`        //产品id
-	DeviceName string `json:"deviceName"`       //设备名
-	Data       string `json:"data"`             //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-	IsAsync    bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
+	ProductID     string `json:"productID"`        //产品id
+	DeviceName    string `json:"deviceName"`       //设备名
+	Data          string `json:"data"`             //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	IsAsync       bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
+	ShadowControl int64  `json:"shadowControl"`    //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
 }
 
 type DeviceInteractSendPropertyResp struct {
@@ -773,11 +784,12 @@ type DeviceInteractSendActionResp struct {
 }
 
 type DeviceInteractMultiSendPropertyReq struct {
-	AreaID      int64    `json:"areaID,string,optional"`  //项目区域id,传了优先从项目区域中获取设备列表
-	GroupID     int64    `json:"groupID,string,optional"` //分组ID,传了会从分组下获取设备
-	ProductID   string   `json:"productID,optional"`      //产品id
-	DeviceNames []string `json:"deviceNames,optional"`    //设备名列表
-	Data        string   `json:"data"`                    //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	AreaID        int64    `json:"areaID,string,optional"`  //项目区域id,传了优先从项目区域中获取设备列表
+	GroupID       int64    `json:"groupID,string,optional"` //分组ID,传了会从分组下获取设备
+	ProductID     string   `json:"productID,optional"`      //产品id
+	DeviceNames   []string `json:"deviceNames,optional"`    //设备名列表
+	ShadowControl int64    `json:"shadowControl"`           //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+	Data          string   `json:"data"`                    //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
 }
 
 type DeviceInteractMultiSendPropertyMsg struct {

@@ -1,6 +1,11 @@
 package schema
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/spf13/cast"
+)
 
 type (
 	// Model 物模型协议-数据模板定义
@@ -14,7 +19,12 @@ type (
 		Event      EventMap    `json:"-"`          //内部使用,使用map加速匹配,key为id
 		Action     ActionMap   `json:"-"`          //内部使用,使用map加速匹配,key为id
 	}
-
+	CommonParam struct {
+		Identifier string `json:"identifier"` //标识符
+		Name       string `json:"name"`       //功能名称
+		Desc       string `json:"desc"`       //描述
+		Required   bool   `json:"required"`   //是否必须
+	}
 	/*配置信息*/
 	Profile struct {
 		ProductID string `json:"productID"` //产品ID
@@ -43,37 +53,30 @@ type (
 
 	/*事件*/
 	Event struct {
-		Identifier string            `json:"identifier"` //标识符
-		Name       string            `json:"name"`       //功能名称
-		Desc       string            `json:"desc"`       //描述
-		Type       EventType         `json:"type"`       //事件类型: 1:信息:info  2:告警alert  3:故障:fault
-		Params     Params            `json:"params"`     //事件参数
-		Required   bool              `json:"required"`   //是否必须
-		Param      map[string]*Param `json:"-"`          //内部使用,使用map加速匹配,key为id
+		CommonParam
+		Type   EventType         `json:"type"`   //事件类型: 1:信息:info  2:告警alert  3:故障:fault
+		Params Params            `json:"params"` //事件参数
+		Param  map[string]*Param `json:"-"`      //内部使用,使用map加速匹配,key为id
 	}
 	Events []Event
 
 	/*行为*/
 	Action struct {
-		Identifier string            `json:"identifier"` //标识符
-		Name       string            `json:"name"`       //功能名称
-		Desc       string            `json:"desc"`       //描述
-		Input      Params            `json:"input"`      //调用参数
-		Output     Params            `json:"output"`     //返回参数
-		Required   bool              `json:"required"`   //是否必须
-		In         map[string]*Param `json:"-"`          //内部使用,使用map加速匹配,key为id
-		Out        map[string]*Param `json:"-"`          //内部使用,使用map加速匹配,key为id
+		CommonParam
+		Input  Params            `json:"input"`  //调用参数
+		Output Params            `json:"output"` //返回参数
+		In     map[string]*Param `json:"-"`      //内部使用,使用map加速匹配,key为id
+		Out    map[string]*Param `json:"-"`      //内部使用,使用map加速匹配,key为id
 	}
 	Actions []Action
 
 	/*属性*/
 	Property struct {
-		Identifier string       `json:"identifier"` //标识符
-		Name       string       `json:"name"`       //功能名称
-		Desc       string       `json:"desc"`       //描述
-		Mode       PropertyMode `json:"mode"`       //读写类型:rw(可读可写) r(只读)
-		Define     Define       `json:"define"`     //数据定义
-		Required   bool         `json:"required"`   //是否必须
+		CommonParam
+		Mode        PropertyMode `json:"mode"`        //读写类型:rw(可读可写) r(只读)
+		Define      Define       `json:"define"`      //数据定义
+		IsUseShadow bool         `json:"isUseShadow"` //是否使用设备影子
+		IsNoRecord  bool         `json:"isNoRecord"`  //不存储历史记录
 	}
 	Properties []Property
 
@@ -110,4 +113,34 @@ func (p *PropertyMap) GetIDs() []string {
 		ids = append(ids, v.Identifier)
 	}
 	return ids
+}
+
+func (d *Define) GetDefaultValue() any {
+	switch d.Type {
+	case DataTypeBool:
+		return false
+	case DataTypeInt:
+		return cast.ToInt64(d.Start)
+	case DataTypeString:
+		return ""
+	case DataTypeStruct:
+		var ret = map[string]any{}
+		for _, v := range d.Specs {
+			ret[v.Identifier] = v.DataType.GetDefaultValue()
+		}
+		return ret
+	case DataTypeFloat:
+		return cast.ToFloat64(d.Start)
+	case DataTypeTimestamp:
+		return int64(0)
+	case DataTypeArray:
+		return []any{}
+	case DataTypeEnum:
+		var keys []int64
+		for k := range d.Maping {
+			keys = append(keys, cast.ToInt64(k))
+		}
+		return utils.Min(keys)
+	}
+	panic(errors.Parameter.AddMsgf("数据类型:%v 不支持", d.Type))
 }

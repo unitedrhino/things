@@ -27,8 +27,20 @@ service api {
     @doc "获取单个id事件历史记录"
     @handler eventLogIndex
     post /event-log/index (DeviceMsgEventLogIndexReq) returns (DeviceMsgEventIndexResp)
+    @doc "获取设备影子列表"
+    @handler shadowIndex
+    post /shadow/index (DeviceMsgPropertyLatestIndexReq) returns (DeviceMsgShadowIndexResp)
 }
 type (
+    DeviceMsgShadowIndex struct {
+        DataID string `json:"dataID"` //属性id
+        Value string `json:"value"` //获取到的值
+        UpdatedDeviceTime int64 `json:"updatedDeviceTime"` //更新到设备的时间
+    }
+    DeviceMsgShadowIndexResp struct{
+        List []*DeviceMsgShadowIndex `json:"list"`
+    }
+
     DeviceMsgHubLogIndexReq struct {
         DeviceName string `json:"deviceName,omitempty"`                       //设备名
         ProductID string `json:"productID,omitempty"`                         //产品id 获取产品id下的所有设备信息

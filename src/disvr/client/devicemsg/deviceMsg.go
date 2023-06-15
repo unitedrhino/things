@@ -41,6 +41,8 @@ type (
 	SendPropertyMsg        = di.SendPropertyMsg
 	SendPropertyReq        = di.SendPropertyReq
 	SendPropertyResp       = di.SendPropertyResp
+	ShadowIndex            = di.ShadowIndex
+	ShadowIndexResp        = di.ShadowIndexResp
 
 	DeviceMsg interface {
 		// 获取设备sdk调试日志
@@ -53,6 +55,8 @@ type (
 		PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error)
 		// 获取设备数据信息
 		EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error)
+		// 获取设备影子列表
+		ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
 	}
 
 	defaultDeviceMsg struct {
@@ -131,4 +135,15 @@ func (m *defaultDeviceMsg) EventLogIndex(ctx context.Context, in *EventLogIndexR
 // 获取设备数据信息
 func (d *directDeviceMsg) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error) {
 	return d.svr.EventLogIndex(ctx, in)
+}
+
+// 获取设备影子列表
+func (m *defaultDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
+	client := di.NewDeviceMsgClient(m.cli.Conn())
+	return client.ShadowIndex(ctx, in, opts...)
+}
+
+// 获取设备影子列表
+func (d *directDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
+	return d.svr.ShadowIndex(ctx, in)
 }

@@ -9,6 +9,9 @@ CacheRedis:
     Type: node
 Log:
   Encoding: plain
+Database:
+  DBType: mysql
+  DSN: root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 TDengine:
   DataSource: root:taosdata@http(localhost:6041)/iThings?readBufferSize=52428800
 DmRpc:

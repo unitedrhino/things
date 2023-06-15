@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"github.com/i-Things/things/shared/def"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"math"
@@ -12,6 +13,19 @@ import (
 type Point struct {
 	Longitude float64 `json:"longitude,range=[0:180]"` //经度
 	Latitude  float64 `json:"latitude,range=[0:90]"`   //纬度
+}
+
+func (p Point) ToPo() def.Point {
+	return def.Point{
+		Longitude: p.Longitude,
+		Latitude:  p.Latitude,
+	}
+}
+func ToPoint(p def.Point) Point {
+	return Point{
+		Longitude: p.Longitude,
+		Latitude:  p.Latitude,
+	}
 }
 
 func (p *Point) parsePoint(binaryData []byte) error {
