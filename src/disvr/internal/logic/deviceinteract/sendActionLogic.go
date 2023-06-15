@@ -78,7 +78,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		ActionID: in.ActionID,
 		Params:   param,
 	}
-	_, err = req.VerifyReqParam(l.schema, schema.ParamActionInput)
+	err = req.FmtReqParam(l.schema, schema.ParamActionInput)
 	if err != nil {
 		return nil, err
 	}

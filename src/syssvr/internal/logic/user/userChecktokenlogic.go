@@ -37,8 +37,9 @@ func (l *CheckTokenLogic) UserCheckToken(in *sys.UserCheckTokenReq) (*sys.UserCh
 		token, _ = users.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret, time.Now().Unix()+l.svcCtx.Config.UserToken.AccessExpire)
 	}
 	return &sys.UserCheckTokenResp{
-		Token: token,
-		Uid:   jwt.Uid,
-		Role:  jwt.Role,
+		Token:     token,
+		Uid:       jwt.Uid,
+		Role:      jwt.Role,
+		IsAllData: jwt.IsAllData,
 	}, nil
 }
