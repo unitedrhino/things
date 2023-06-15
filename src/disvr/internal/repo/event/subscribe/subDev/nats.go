@@ -19,7 +19,7 @@ type (
 )
 
 const (
-	ThingsDeliverGroup = "things_dm_yl_group"
+	ThingsDeliverGroup = "things_dm_group"
 )
 
 func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
