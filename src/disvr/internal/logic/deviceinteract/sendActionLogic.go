@@ -42,7 +42,7 @@ func (l *SendActionLogic) initMsg(productID string) error {
 	return nil
 }
 
-//调用设备行为
+// 调用设备行为
 func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
@@ -92,7 +92,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
 	if err != nil {
 		return nil, err
 	}
