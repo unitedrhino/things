@@ -9,7 +9,7 @@ info(
 @server(
     group : things/device/interact
     prefix: /api/v1/things/device/interact
-    middleware: CheckToken
+    middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 service api {
     @doc "调用设备行为"

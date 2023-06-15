@@ -89,8 +89,8 @@ func (c *CodeError) GetDetailMsg() string {
 }
 
 func (c *CodeError) GetCode() int64 {
-	if c == nil {
-		return 0
+	if c == nil { //如果没错误,则是成功
+		return OK.Code
 	}
 	return c.Code
 }
