@@ -11,7 +11,9 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/domain/shadow"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
+	"github.com/i-Things/things/src/disvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -128,7 +130,39 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 
 	switch l.dreq.Type { //表示获取什么类型的信息（report:表示设备上报的信息 info:信息 alert:告警 fault:故障）
 	case deviceMsg.Report: //表示设备属性上报
-		for id := range l.schema.Property {
+		{ //设备影子处理
+			sr := relationDB.NewShadowRepo(l.ctx)
+			shadows, err := sr.FindByFilter(l.ctx, shadow.Filter{
+				ProductID:           msg.ProductID,
+				DeviceName:          msg.DeviceName,
+				UpdatedDeviceStatus: shadow.NotUpdateDevice, //只获取未下发过的
+			})
+			if err != nil {
+				l.Errorf("%s.NewShadowRepo.FindByFilter  err:%v",
+					utils.FuncName(), err)
+				return nil, err
+			}
+			if len(shadows) != 0 {
+				//插入多条设备物模型属性数据
+				err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, shadow.ToValues(shadows, l.schema.Property), time.Now())
+				if err != nil {
+					l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
+					return l.DeviceResp(msg, errors.Database, nil), err
+				}
+				now := time.Now()
+				for _, v := range shadows {
+					v.UpdatedDeviceTime = &now
+				}
+				err = sr.MultiUpdate(l.ctx, shadows)
+				if err != nil {
+					l.Errorf("%s.MultiUpdate err=%+v", utils.FuncName(), err)
+					return l.DeviceResp(msg, errors.Database, nil), err
+				}
+			}
+
+		}
+
+		for id, v := range l.schema.Property {
 			data, err := l.repo.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
 				ProductID:  msg.ProductID,
 				DeviceName: msg.DeviceName,
@@ -142,6 +176,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 
 			if data == nil {
 				l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
+				respData[id] = v.Define.GetDefaultValue()
 				continue
 			}
 			respData[id] = data.Param
@@ -225,14 +260,14 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.P
 		return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
 
-	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, msg.Handle, msg.Type,
+	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg.Handle, msg.Type,
 		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		resp.ClientToken)
 	if req == nil || err != nil {
 		return nil, err
 	}
 
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Store, deviceMsg.RespMsg, msg, resp.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.ClientToken)
 	if err != nil {
 		return nil, err
 	}

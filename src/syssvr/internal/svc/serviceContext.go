@@ -31,7 +31,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	conn := sqlx.NewMysql(c.Mysql.DataSource)
+	conn := sqlx.NewMysql(c.Database.DSN)
 	ui := mysql.NewSysUserInfoModel(conn)
 	ro := mysql.NewSysRoleInfoModel(conn)
 	me := mysql.NewSysMenuInfoModel(conn)

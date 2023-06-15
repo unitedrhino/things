@@ -9,9 +9,7 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
-	Mysql struct {
-		DataSource string
-	}
+	Database   conf.Database
 	CacheRedis cache.ClusterConf
 	UserToken  struct {
 		AccessSecret string
