@@ -20,8 +20,10 @@ type (
 		Identifiers []string //过滤标识符列表
 	}
 	PropertyDef struct {
-		Define schema.Define       `json:"define"` //数据定义
-		Mode   schema.PropertyMode `json:"mode"`   //读写类型: 1:r(只读) 2:rw(可读可写)
+		IsUseShadow bool                `json:"isUseShadow"` //是否使用设备影子
+		IsNoRecord  bool                `json:"isNoRecord"`  //不存储历史记录
+		Define      schema.Define       `json:"define"`      //数据定义
+		Mode        schema.PropertyMode `json:"mode"`        //读写类型: 1:r(只读) 2:rw(可读可写)
 	}
 	EventDef struct {
 		Type   schema.EventType `json:"type"`   //事件类型: 1:信息:info  2:告警alert  3:故障:fault

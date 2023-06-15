@@ -92,7 +92,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
 	if err != nil {
 		return nil, err
 	}

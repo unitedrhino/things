@@ -51,3 +51,9 @@ func (s *DeviceMsgServer) EventLogIndex(ctx context.Context, in *di.EventLogInde
 	l := devicemsglogic.NewEventLogIndexLogic(ctx, s.svcCtx)
 	return l.EventLogIndex(in)
 }
+
+// 获取设备影子列表
+func (s *DeviceMsgServer) ShadowIndex(ctx context.Context, in *di.PropertyLatestIndexReq) (*di.ShadowIndexResp, error) {
+	l := devicemsglogic.NewShadowIndexLogic(ctx, s.svcCtx)
+	return l.ShadowIndex(in)
+}
