@@ -41,6 +41,8 @@ type (
 	SendPropertyMsg        = di.SendPropertyMsg
 	SendPropertyReq        = di.SendPropertyReq
 	SendPropertyResp       = di.SendPropertyResp
+	ShadowIndex            = di.ShadowIndex
+	ShadowIndexResp        = di.ShadowIndexResp
 
 	DeviceInteract interface {
 		// 调用设备行为
