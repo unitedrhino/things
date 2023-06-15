@@ -73,7 +73,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	} else if len(tp) == 0 {
-		err := errors.Parameter.AddDetail("need right param")
+		err := errors.Parameter.AddMsgf("查不到物模型:%v", req.Params)
 		return l.DeviceResp(msg, err, nil), err
 	}
 
