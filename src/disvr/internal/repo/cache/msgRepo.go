@@ -38,10 +38,12 @@ func GetDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType stri
 	if val == "" || err != nil {
 		return nil, err
 	}
-	var req reqType
+	var req deviceMsg.PublishMsg
+	var ret reqType
 	err = json.Unmarshal([]byte(val), &req)
 	if err != nil {
 		return nil, err
 	}
-	return &req, err
+	err = json.Unmarshal(req.Payload, &ret)
+	return &ret, err
 }

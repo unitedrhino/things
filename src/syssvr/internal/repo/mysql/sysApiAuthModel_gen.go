@@ -17,15 +17,15 @@ import (
 var (
 	sysApiAuthFieldNames          = builder.RawFieldNames(&SysApiAuth{})
 	sysApiAuthRows                = strings.Join(sysApiAuthFieldNames, ",")
-	sysApiAuthRowsExpectAutoSet   = strings.Join(stringx.Remove(sysApiAuthFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), ",")
-	sysApiAuthRowsWithPlaceHolder = strings.Join(stringx.Remove(sysApiAuthFieldNames, "`id`", "`deletedTime`", "`createdTime`", "`updatedTime`"), "=?,") + "=?"
+	sysApiAuthRowsExpectAutoSet   = strings.Join(stringx.Remove(sysApiAuthFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
+	sysApiAuthRowsWithPlaceHolder = strings.Join(stringx.Remove(sysApiAuthFieldNames, "`id`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
 	sysApiAuthModel interface {
 		Insert(ctx context.Context, data *SysApiAuth) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*SysApiAuth, error)
-		FindOneByV1(ctx context.Context, v1 string) (*SysApiAuth, error)
+		FindOneByV0V1(ctx context.Context, v0 string, v1 string) (*SysApiAuth, error)
 		Update(ctx context.Context, data *SysApiAuth) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -74,10 +74,10 @@ func (m *defaultSysApiAuthModel) FindOne(ctx context.Context, id int64) (*SysApi
 	}
 }
 
-func (m *defaultSysApiAuthModel) FindOneByV1(ctx context.Context, v1 string) (*SysApiAuth, error) {
+func (m *defaultSysApiAuthModel) FindOneByV0V1(ctx context.Context, v0 string, v1 string) (*SysApiAuth, error) {
 	var resp SysApiAuth
-	query := fmt.Sprintf("select %s from %s where `v1` = ? limit 1", sysApiAuthRows, m.table)
-	err := m.conn.QueryRowCtx(ctx, &resp, query, v1)
+	query := fmt.Sprintf("select %s from %s where `v0` = ? and `v1` = ? limit 1", sysApiAuthRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, v0, v1)
 	switch err {
 	case nil:
 		return &resp, nil

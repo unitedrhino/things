@@ -44,6 +44,11 @@ func (l *UpdateLogic) UserUpdate(in *sys.UserUpdateReq) (*sys.Response, error) {
 		ui.Sex = in.Sex
 	}
 
+	//设置数据超管
+	if in.IsAllData == 1 || in.IsAllData == 2 {
+		ui.IsAllData = in.IsAllData
+	}
+
 	ui.City = in.City
 	ui.Country = in.Country
 	ui.Province = in.Province

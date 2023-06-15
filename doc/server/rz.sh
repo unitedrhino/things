@@ -1,5 +1,5 @@
 cd iThings-pkg
 rm -rf *
-rz
+rz -bey
 cd ..
 ./update.sh

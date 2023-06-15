@@ -87,7 +87,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		},
 		Params: param,
 	}
-	_, err = req.VerifyReqParam(l.model, schema.ParamProperty)
+	err = req.FmtReqParam(l.model, schema.ParamProperty)
 	if err != nil {
 		return nil, err
 	}

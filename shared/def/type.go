@@ -21,14 +21,6 @@ const (
 	Disable = 2 //禁用
 )
 
-type CoordinateSystem string
-
-const (
-	CoordinateSystemEarth CoordinateSystem = "WGS84" //GPS坐标系：地球系
-	CoordinateSystemMars  CoordinateSystem = "GCJ02" //GPS坐标系：火星系
-	CoordinateSystemBaidu CoordinateSystem = "BD09"  //GPS坐标系：百度系
-)
-
 func ToBool[boolType constraints.Integer](in boolType) bool {
 	if in == True {
 		return true

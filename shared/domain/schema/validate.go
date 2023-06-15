@@ -166,7 +166,7 @@ func (d *Define) ValidateWithFmt() error {
 	case DataTypeEnum:
 		return d.ValidateWithFmtEnum()
 	}
-	return nil
+	return errors.Parameter.WithMsgf("定义的类型不支持:%v", d.Type)
 }
 func (d *Define) ValidateWithFmtBool() error {
 	if len(d.Maping) != 2 {

@@ -22,19 +22,13 @@ type (
 	//设备基础信息
 	DeviceBasicInfo struct {
 		devices.Core
-		Imei     string                   `json:"imei,omitempty"`     //设备的 IMEI 号信息，非必填项
-		Mac      string                   `json:"mac,omitempty"`      //设备的 MAC 信息，非必填项
-		Version  string                   `json:"version,omitempty"`  //固件版本
-		HardInfo string                   `json:"hardInfo,omitempty"` //模组具体硬件型号
-		SoftInfo string                   `json:"softInfo,omitempty"` //模组软件版本
-		Position *DeviceBasicInfoPosition `json:"position,omitempty"` //坐标信息
-		Tags     map[string]string        `json:"tags,omitempty"`     //设备标签信息
-	}
-	//设备基础信息-坐标信息
-	DeviceBasicInfoPosition struct {
-		CoordinateSystem def.CoordinateSystem `json:"coordinateSystem,omitempty"` //坐标系：WGS84(地球系)，GCJ02(火星系)，BD09(百度系)<br/>参考解释：https://www.cnblogs.com/bigroc/p/16423120.html
-		Longitude        float64              `json:"longitude,omitempty"`        //坐标经度(度格式，十进制)<br/>参考解释：http://www.360doc.com/document/17/1228/16/12479599_365694647.shtml
-		Latitude         float64              `json:"latitude,omitempty"`         //坐标纬度(度格式，十进制
+		Imei     string            `json:"imei,omitempty"`     //设备的 IMEI 号信息，非必填项
+		Mac      string            `json:"mac,omitempty"`      //设备的 MAC 信息，非必填项
+		Version  string            `json:"version,omitempty"`  //固件版本
+		HardInfo string            `json:"hardInfo,omitempty"` //模组具体硬件型号
+		SoftInfo string            `json:"softInfo,omitempty"` //模组软件版本
+		Position *def.Point        `json:"position,omitempty"` //设备基础信息-坐标信息
+		Tags     map[string]string `json:"tags,omitempty"`     //设备标签信息
 	}
 )
 
@@ -50,6 +44,15 @@ func (d *Req) GetTimeStamp(defaultTime int64) time.Time {
 		return time.UnixMilli(defaultTime)
 	}
 	return time.UnixMilli(d.Timestamp)
+}
+
+func (d *Req) FmtReqParam(t *schema.Model, tt schema.ParamType) error {
+	param, err := d.VerifyReqParam(t, tt)
+	if err != nil {
+		return err
+	}
+	d.Params = ToVal(param)
+	return nil
 }
 
 // 校验设备上报的参数合法性
