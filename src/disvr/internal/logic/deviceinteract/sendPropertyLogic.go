@@ -10,7 +10,9 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/domain/shadow"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
+	"github.com/i-Things/things/src/disvr/internal/repo/relationDB"
 	"time"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
@@ -23,7 +25,7 @@ type SendPropertyLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	template *schema.Model
+	model *schema.Model
 }
 
 func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendPropertyLogic {
@@ -36,7 +38,7 @@ func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 
 func (l *SendPropertyLogic) initMsg(productID string) error {
 	var err error
-	l.template, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
+	l.model, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}
@@ -45,12 +47,19 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 
 func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendPropertyResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
-
+	var isOnline = true
 	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
-	}); err != nil {
-		return nil, err
+	}); err != nil { //如果是不启用设备影子的模式则直接返回
+		if errors.Is(err, errors.NotOnline) {
+			isOnline = false
+			if in.ShadowControl == shadow.ControlNo {
+				return nil, err
+			}
+		} else {
+			return nil, err
+		}
 	}
 
 	err := l.initMsg(in.ProductID)
@@ -64,7 +73,6 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		return nil, errors.Parameter.AddDetail(
 			"SendProperty data not right:", in.Data)
 	}
-
 	clientToken, err := uuid.GenerateUUID()
 	if err != nil {
 		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
@@ -79,9 +87,21 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		},
 		Params: param,
 	}
-	_, err = req.VerifyReqParam(l.template, schema.ParamProperty)
+	_, err = req.VerifyReqParam(l.model, schema.ParamProperty)
 	if err != nil {
 		return nil, err
+	}
+	if in.ShadowControl == shadow.ControlOnly || (!isOnline && in.ShadowControl == shadow.ControlAuto) {
+		//设备影子模式
+		err := shadow.CheckEnableShadow(param, l.model)
+		if err != nil {
+			return nil, err
+		}
+		err = relationDB.NewShadowRepo(l.ctx).MultiUpdate(l.ctx, shadow.NewInfo(in.ProductID, in.DeviceName, param))
+		if err != nil {
+			return nil, err
+		}
+		return &di.SendPropertyResp{}, nil
 	}
 
 	payload, _ := json.Marshal(req)
@@ -93,7 +113,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
 	if err != nil {
 		return nil, err
 	}

@@ -8,9 +8,7 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
-	Mysql struct {
-		DataSource string
-	}
+	Database conf.Database
 	TDengine struct {
 		DataSource string
 	}
