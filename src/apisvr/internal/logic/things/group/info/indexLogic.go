@@ -41,9 +41,10 @@ func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoI
 	glist := make([]*types.GroupInfo, 0, len(res.List))
 	for _, v := range res.List {
 		glist = append(glist, &types.GroupInfo{
-			GroupName:   v.GroupName,
 			GroupID:     v.GroupID,
 			ParentID:    v.ParentID,
+			ProjectID:   v.ProjectID,
+			GroupName:   v.GroupName,
 			CreatedTime: v.CreatedTime,
 			Desc:        v.Desc,
 			Tags:        logic.ToTagsType(v.Tags),
@@ -53,9 +54,10 @@ func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoI
 	glistAll := make([]*types.GroupInfo, 0, len(res.ListAll))
 	for _, v := range res.ListAll {
 		glistAll = append(glistAll, &types.GroupInfo{
-			GroupName:   v.GroupName,
 			GroupID:     v.GroupID,
 			ParentID:    v.ParentID,
+			ProjectID:   v.ProjectID,
+			GroupName:   v.GroupName,
 			CreatedTime: v.CreatedTime,
 			Desc:        v.Desc,
 			Tags:        logic.ToTagsType(v.Tags),

@@ -43,7 +43,6 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	}
 	filter := mysql.DeviceFilter{
 		ProductID:   in.ProductID,
-		ProjectIDs:  in.ProjectIDs,
 		AreaIDs:     in.AreaIDs,
 		DeviceName:  in.DeviceName,
 		Tags:        in.Tags,

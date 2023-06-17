@@ -41,8 +41,9 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 	for _, ro := range ros {
 		info = append(info, &dm.GroupInfo{
 			GroupID:     ro.GroupID,
-			GroupName:   ro.GroupName,
 			ParentID:    ro.ParentID,
+			ProjectID:   ro.ProjectID,
+			GroupName:   ro.GroupName,
 			Desc:        ro.Desc,
 			CreatedTime: ro.CreatedTime,
 			Tags:        in.Tags,
@@ -62,8 +63,9 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 	for _, ro := range rosAll {
 		infoAll = append(infoAll, &dm.GroupInfo{
 			GroupID:     ro.GroupID,
-			GroupName:   ro.GroupName,
 			ParentID:    ro.ParentID,
+			ProjectID:   ro.ProjectID,
+			GroupName:   ro.GroupName,
 			Desc:        ro.Desc,
 			CreatedTime: ro.CreatedTime,
 			Tags:        in.Tags,

@@ -640,7 +640,6 @@ type DeviceInfoSaveReq struct {
 	Iccid          *string `json:"iccid,optional"`                      //SIM卡卡号
 	Uid            int64   `json:"uid,string,optional"`                 //所属用户id
 	MobileOperator int64   `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
-	ProjectID      *int64  `json:"projectID,string,optional"`           //项目id 只读（nil不更新，0为取消绑定，other则绑定）
 	AreaID         *int64  `json:"areaID,string,optional"`              //项目区域id 只读（nil不更新，0为取消绑定，other则绑定）
 }
 
@@ -664,7 +663,6 @@ type DeviceInfoIndexReq struct {
 	Range          int64     `json:"range,optional"`          //过滤条件:距离坐标点固定范围内的设备 单位：米
 	Tags           []*Tag    `json:"tags,optional"`           // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
-	ProjectIDs     []int64   `json:"projectIDs,optional"`     //项目ids
 	AreaIDs        []int64   `json:"areaIDs,optional"`        //项目区域ids
 }
 
@@ -1008,8 +1006,9 @@ type ProductCustomReadReq struct {
 
 type GroupInfo struct {
 	GroupID     int64  `json:"groupID,string"`     //分组ID
-	GroupName   string `json:"groupName"`          //分组名称
 	ParentID    int64  `json:"parentID,string"`    //父组ID
+	ProjectID   int64  `json:"projectID,string"`   //项目ID
+	GroupName   string `json:"groupName"`          //分组名称
 	CreatedTime int64  `json:"createdTime,string"` //创建时间
 	Desc        string `json:"desc,optional"`      //分组描述
 	Tags        []*Tag `json:"tags,optional"`      //分组tag
