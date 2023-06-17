@@ -48,8 +48,9 @@ type (
 
 	GroupInformation struct {
 		GroupID     int64
-		GroupName   string
 		ParentID    int64
+		ProjectID   int64
+		GroupName   string
 		Desc        string
 		CreatedTime int64
 		Tags        map[string]string
@@ -66,6 +67,14 @@ func NewDmGroupModel(conn sqlx.SqlConn) DmGroupModel {
 }
 
 func (m *groupModel) FmtGroupSql(ctx context.Context, f GroupFilter, sql sq.SelectBuilder, parentFlag bool) sq.SelectBuilder {
+	//数据权限条件（企业版功能）
+	if uc := userHeader.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
+		mdProjectID := userHeader.GetMetaProjectID(ctx)
+		if mdProjectID != 0 {
+			sql = sql.Where("`projectID` = ?", mdProjectID)
+		}
+	}
+	//业务过滤条件
 	if parentFlag == true && f.ParentID != 0 {
 		sql = sql.Where("`parentID`=?", f.ParentID)
 	}
@@ -88,7 +97,7 @@ func (m *groupModel) FmtGroupDeviceSql(ctx context.Context, f GroupDeviceFilter,
 	if uc := userHeader.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
 		mdProjectID := userHeader.GetMetaProjectID(ctx)
 		if mdProjectID != 0 {
-			sql = sql.Where("di.`ProjectID` = ?", mdProjectID)
+			sql = sql.Where("di.`projectID` = ?", mdProjectID)
 		}
 	}
 	//业务过滤条件
@@ -199,8 +208,9 @@ func (m *groupModel) Index(ctx context.Context, in *GroupFilter) ([]*GroupInform
 		}
 		info = append(info, &GroupInformation{
 			GroupID:     v.GroupID,
-			GroupName:   v.GroupName,
 			ParentID:    v.ParentID,
+			ProjectID:   v.ProjectID,
+			GroupName:   v.GroupName,
 			Desc:        v.Desc,
 			CreatedTime: v.CreatedTime.Unix(),
 			Tags:        tags,
@@ -229,8 +239,9 @@ func (m *groupModel) IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInf
 		}
 		info = append(info, &GroupInformation{
 			GroupID:     v.GroupID,
-			GroupName:   v.GroupName,
 			ParentID:    v.ParentID,
+			ProjectID:   v.ProjectID,
+			GroupName:   v.GroupName,
 			Desc:        v.Desc,
 			CreatedTime: v.CreatedTime.Unix(),
 			Tags:        tags,
@@ -304,8 +315,8 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 			if count == 0 {
 				return errors.Parameter.WithMsgf("设备不存在:产品ID:%v,设备名:%", v.ProductID, v.DeviceName)
 			}
-			query = fmt.Sprintf("insert into %s (groupID,productID,deviceName) values (%d, '%s', '%s') ON duplicate KEY UPDATE id = id",
-				m.groupDevice, groupID, v.ProductID, v.DeviceName)
+			query = fmt.Sprintf("insert into %s (projectID, groupID,productID,deviceName) values (%d, %d, '%s', '%s') ON duplicate KEY UPDATE id = id",
+				m.groupDevice, userHeader.GetMetaProjectID(ctx), groupID, v.ProductID, v.DeviceName)
 			_, err = session.Exec(query)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("groupModel.GroupDeviceCreate data:%v err:%v", v, err)
