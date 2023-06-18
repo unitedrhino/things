@@ -33,7 +33,6 @@ type (
 	}
 	DeviceFilter struct {
 		ProductID     string
-		ProjectIDs    []int64
 		AreaIDs       []int64
 		DeviceName    string
 		Tags          map[string]string
@@ -59,9 +58,6 @@ func (d *DeviceFilter) FmtSql(ctx context.Context, sql sq.SelectBuilder) sq.Sele
 	//业务过滤条件
 	if d.ProductID != "" {
 		sql = sql.Where("`ProductID` = ?", d.ProductID)
-	}
-	if len(d.ProjectIDs) != 0 {
-		sql = sql.Where(fmt.Sprintf("ProjectID in (%v)", store.ArrayToSql(d.ProjectIDs)))
 	}
 	if len(d.AreaIDs) != 0 {
 		sql = sql.Where(fmt.Sprintf("AreaID in (%v)", store.ArrayToSql(d.AreaIDs)))
@@ -189,10 +185,23 @@ func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *Dm
 
 func (m *customDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error) {
 	var resp DmDeviceInfo
-	query := fmt.Sprintf("select %s from %s where `productID` = ? and `deviceName` = ? limit 1", dmDeviceInfoRows, m.table)
-	//position字段为point类型 无法直接读取，需使用函数AsText转换后再读取
+
+	sql := sq.Select(dmDeviceInfoRows).From(m.table)
+
+	f := DeviceFilter{
+		ProductID:  productID,
+		DeviceName: deviceName,
+	}
+
+	sql = f.FmtSql(ctx, sql)
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return nil, err
+	}
 	query = strings.Replace(query, "`position`", "AsText(`position`) as position", 1)
-	err := m.conn.QueryRowCtx(ctx, &resp, query, productID, deviceName)
+
+	//position字段为point类型 无法直接读取，需使用函数AsText转换后再读取
+	err = m.conn.QueryRowCtx(ctx, &resp, query, arg...)
 	switch err {
 	case nil:
 		return &resp, nil
