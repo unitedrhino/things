@@ -127,63 +127,66 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 // 设备请求获取 云端记录的最新设备信息
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Property))
-
-	switch l.dreq.Type { //表示获取什么类型的信息（report:表示设备上报的信息 info:信息 alert:告警 fault:故障）
-	case deviceMsg.Report: //表示设备属性上报
-		{ //设备影子处理
-			sr := relationDB.NewShadowRepo(l.ctx)
-			shadows, err := sr.FindByFilter(l.ctx, shadow.Filter{
-				ProductID:           msg.ProductID,
-				DeviceName:          msg.DeviceName,
-				UpdatedDeviceStatus: shadow.NotUpdateDevice, //只获取未下发过的
-			})
+	dataIDs := l.dreq.Identifiers
+	{ //设备影子处理
+		sr := relationDB.NewShadowRepo(l.ctx)
+		shadows, err := sr.FindByFilter(l.ctx, shadow.Filter{
+			ProductID:           msg.ProductID,
+			DeviceName:          msg.DeviceName,
+			UpdatedDeviceStatus: shadow.NotUpdateDevice, //只获取未下发过的
+			DataIDs:             dataIDs,
+		})
+		if err != nil {
+			l.Errorf("%s.NewShadowRepo.FindByFilter  err:%v",
+				utils.FuncName(), err)
+			return nil, err
+		}
+		if len(shadows) != 0 {
+			//插入多条设备物模型属性数据
+			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, shadow.ToValues(shadows, l.schema.Property), time.Now())
 			if err != nil {
-				l.Errorf("%s.NewShadowRepo.FindByFilter  err:%v",
-					utils.FuncName(), err)
-				return nil, err
+				l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
+				return l.DeviceResp(msg, errors.Database, nil), err
 			}
-			if len(shadows) != 0 {
-				//插入多条设备物模型属性数据
-				err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, shadow.ToValues(shadows, l.schema.Property), time.Now())
-				if err != nil {
-					l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
-					return l.DeviceResp(msg, errors.Database, nil), err
-				}
-				now := time.Now()
-				for _, v := range shadows {
-					v.UpdatedDeviceTime = &now
-				}
-				err = sr.MultiUpdate(l.ctx, shadows)
-				if err != nil {
-					l.Errorf("%s.MultiUpdate err=%+v", utils.FuncName(), err)
-					return l.DeviceResp(msg, errors.Database, nil), err
-				}
+			now := time.Now()
+			for _, v := range shadows {
+				v.UpdatedDeviceTime = &now
 			}
-
+			err = sr.MultiUpdate(l.ctx, shadows)
+			if err != nil {
+				l.Errorf("%s.MultiUpdate err=%+v", utils.FuncName(), err)
+				return l.DeviceResp(msg, errors.Database, nil), err
+			}
+		}
+	}
+	var propertyMap = schema.PropertyMap{}
+	for _, d := range dataIDs {
+		p := l.schema.Property[d]
+		if p != nil {
+			propertyMap[p.Identifier] = p
+		}
+	}
+	if len(propertyMap) == 0 {
+		propertyMap = l.schema.Property
+	}
+	for id, v := range propertyMap {
+		data, err := l.repo.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
+			ProductID:  msg.ProductID,
+			DeviceName: msg.DeviceName,
+			DataID:     id,
+		})
+		if err != nil {
+			l.Errorf("%s.GetPropertyDataByID.get id:%s err:%s",
+				utils.FuncName(), id, err.Error())
+			return nil, err
 		}
 
-		for id, v := range l.schema.Property {
-			data, err := l.repo.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
-				ProductID:  msg.ProductID,
-				DeviceName: msg.DeviceName,
-				DataID:     id,
-			})
-			if err != nil {
-				l.Errorf("%s.GetPropertyDataByID.get id:%s err:%s",
-					utils.FuncName(), id, err.Error())
-				return nil, err
-			}
-
-			if data == nil {
-				l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
-				respData[id] = v.Define.GetDefaultValue()
-				continue
-			}
-			respData[id] = data.Param
+		if data == nil {
+			l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
+			respData[id] = v.Define.GetDefaultValue()
+			continue
 		}
-	default:
-		err := errors.Parameter.AddDetailf("not support type :%s", l.dreq.Type)
-		return l.DeviceResp(msg, err, nil), err
+		respData[id] = data.Param
 	}
 
 	return l.DeviceResp(msg, errors.OK, respData), nil
