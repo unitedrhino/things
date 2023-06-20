@@ -131,25 +131,6 @@ CREATE TABLE if not exists `dm_device_info` (
 -- #   DEFAULT CHARSET = utf8mb4 COMMENT ='产品品类详情';
 
 
-CREATE TABLE if not exists `dm_product_firmware`
-(
-    `id`          bigint       NOT NULL AUTO_INCREMENT,
-    `productID`   char(11)     NOT NULL COMMENT '产品id',
-    `version`     varchar(64)           DEFAULT '' COMMENT '固件版本',
-    `createdTime` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updatedTime` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `deletedTime` datetime              DEFAULT NULL,
-    `name`        varchar(64)           DEFAULT '' COMMENT '固件名称',
-    `desc` varchar(200)          DEFAULT '' COMMENT '描述',
-    `size`        bigint       NOT NULL COMMENT '固件大小',
-    `dir`         varchar(128) NOT NULL COMMENT '固件标识,拿来下载文件',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `deviceVersion` (`productID`, `version`)
-    ) ENGINE = InnoDB
-    AUTO_INCREMENT = 0
-    DEFAULT CHARSET = utf8mb4
-    ROW_FORMAT = COMPACT COMMENT ='产品固件信息表';
-
 
 
 CREATE TABLE if not exists `dm_group_info`
@@ -157,6 +138,7 @@ CREATE TABLE if not exists `dm_group_info`
     `groupID`     bigint COMMENT '分组ID',
     `parentID`    bigint NOT NULL DEFAULT 0 COMMENT '父组ID 0-根组',
     `projectID`   bigint       NOT NULL DEFAULT 0 COMMENT '项目ID(雪花ID)',
+    `productID`   char(11)     NOT NULL DEFAULT '' COMMENT '产品id,为空则不限定分组内的产品类型',
     `groupName`   VARCHAR(100) NOT NULL COMMENT '分组名称',
     `desc` VARCHAR(200) DEFAULT '' COMMENT '描述',
     `tags`        json not null comment '分组标签',

@@ -51,6 +51,7 @@ type (
 		ParentID    int64
 		ProjectID   int64
 		GroupName   string
+		ProductID   string
 		Desc        string
 		CreatedTime int64
 		Tags        map[string]string
@@ -211,6 +212,7 @@ func (m *groupModel) Index(ctx context.Context, in *GroupFilter) ([]*GroupInform
 			ParentID:    v.ParentID,
 			ProjectID:   v.ProjectID,
 			GroupName:   v.GroupName,
+			ProductID:   v.ProductID,
 			Desc:        v.Desc,
 			CreatedTime: v.CreatedTime.Unix(),
 			Tags:        tags,
@@ -241,6 +243,7 @@ func (m *groupModel) IndexAll(ctx context.Context, in *GroupFilter) ([]*GroupInf
 			GroupID:     v.GroupID,
 			ParentID:    v.ParentID,
 			ProjectID:   v.ProjectID,
+			ProductID:   v.ProductID,
 			GroupName:   v.GroupName,
 			Desc:        v.Desc,
 			CreatedTime: v.CreatedTime.Unix(),
