@@ -64,6 +64,14 @@ func (l *DeviceMsgHandle) Config(msg *deviceMsg.PublishMsg) error {
 	return err
 }
 
+func (l *DeviceMsgHandle) Ext(msg *deviceMsg.PublishMsg) error {
+	l.Infof("%s req=%v", utils.FuncName(), msg)
+	resp, err := NewExtLogic(l.ctx, l.svcCtx).Handle(msg)
+	l.deviceResp(resp)
+	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
+	return err
+}
+
 func (l *DeviceMsgHandle) SDKLog(msg *deviceMsg.PublishMsg) error {
 	respMsg, err := NewSDKLogLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(respMsg)
