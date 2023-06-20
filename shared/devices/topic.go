@@ -50,6 +50,8 @@ const (
 	Shadow           = "shadow"
 	TopicHeadGateway = "$gateway"
 	Gateway          = "gateway"
+	TopicHeadExt     = "$ext"
+	Ext              = "ext"
 )
 
 //设备通信流向
@@ -80,7 +82,7 @@ func parseTopic(topics []string) (topicInfo *TopicInfo, err error) {
 		return nil, errors.Parameter.AddDetail("topic is err")
 	}
 	switch topics[0] {
-	case TopicHeadThing, TopicHeadOta, TopicHeadShadow, TopicHeadLog, TopicHeadConfig, TopicHeadGateway:
+	case TopicHeadThing, TopicHeadOta, TopicHeadShadow, TopicHeadLog, TopicHeadConfig, TopicHeadGateway, TopicHeadExt:
 		return parseLast(topics)
 	default: //自定义消息
 		return parsePose(0, topics)
