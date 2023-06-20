@@ -90,6 +90,7 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 		GroupID:   l.svcCtx.GroupID.GetSnowflakeId(),
 		ParentID:  in.ParentID,
 		ProjectID: userHeader.GetMetaProjectID(l.ctx),
+		ProductID: in.ProductID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,
 		Tags:      "{}",
