@@ -29,6 +29,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(req *types.GroupInfoUpdateReq) error {
 	_, err := l.svcCtx.DeviceG.GroupInfoUpdate(l.ctx, &dm.GroupInfoUpdateReq{
+		ProductID: req.ProductID,
 		GroupID:   req.GroupID,
 		GroupName: *req.GroupName,
 		Desc:      *req.Desc,

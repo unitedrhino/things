@@ -212,12 +212,15 @@ message GroupInfo{
   string desc = 5;
   int64 createdTime = 6;
   map<string, string> tags = 7;
+  string productID = 8;
+  string productName = 9;
 }
 
 message GroupInfoCreateReq{
   string groupName = 1;
   int64 parentID = 2;
-  string desc = 3;
+  string productID = 3;
+  string desc = 4;
 }
 
 message GroupInfoIndexReq{
@@ -241,6 +244,7 @@ message GroupInfoUpdateReq{
   string groupName = 2;
   string desc = 3;
   map<string, string> tags = 4;
+  string productID = 5;
 }
 
 message GroupInfoDeleteReq{
