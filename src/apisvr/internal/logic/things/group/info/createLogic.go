@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -30,6 +31,7 @@ func (l *CreateLogic) Create(req *types.GroupInfoCreateReq) error {
 	_, err := l.svcCtx.DeviceG.GroupInfoCreate(l.ctx, &dm.GroupInfoCreateReq{
 		GroupName: req.GroupName,
 		ParentID:  req.ParentID,
+		ProductID: req.ProductID,
 		Desc:      req.Desc,
 	})
 	if err != nil {

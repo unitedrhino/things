@@ -1005,24 +1005,28 @@ type ProductCustomReadReq struct {
 }
 
 type GroupInfo struct {
-	GroupID     int64  `json:"groupID,string"`     //分组ID
-	ParentID    int64  `json:"parentID,string"`    //父组ID
-	ProjectID   int64  `json:"projectID,string"`   //项目ID
-	GroupName   string `json:"groupName"`          //分组名称
-	CreatedTime int64  `json:"createdTime,string"` //创建时间
-	Desc        string `json:"desc,optional"`      //分组描述
-	Tags        []*Tag `json:"tags,optional"`      //分组tag
+	GroupID     int64  `json:"groupID,string"`       //分组ID
+	ParentID    int64  `json:"parentID,string"`      //父组ID
+	ProjectID   int64  `json:"projectID,string"`     //项目ID
+	GroupName   string `json:"groupName"`            //分组名称
+	ProductID   string `json:"productID,optional"`   //产品ID
+	ProductName string `json:"productName,optional"` //产品ID
+	CreatedTime int64  `json:"createdTime,string"`   //创建时间
+	Desc        string `json:"desc,optional"`        //分组描述
+	Tags        []*Tag `json:"tags,optional"`        //分组tag
 }
 
 type GroupInfoCreateReq struct {
-	GroupName string `json:"groupName"`       //分组名称
-	ParentID  int64  `json:"parentID,string"` //父组ID
-	Desc      string `json:"desc,optional"`   //分组描述
+	GroupName string `json:"groupName"`          //分组名称
+	ParentID  int64  `json:"parentID,string"`    //父组ID
+	ProductID string `json:"productID,optional"` //产品ID
+	Desc      string `json:"desc,optional"`      //分组描述
 }
 
 type GroupInfoIndexReq struct {
 	Page      *PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
 	ParentID  int64     `json:"parentID,string"`    //父组ID
+	ProductID string    `json:"productID,optional"` //产品ID
 	GroupName string    `json:"groupName,optional"` //分组名称
 	Tags      []*Tag    `json:"tags,optional"`      //分组tag
 }
@@ -1044,6 +1048,7 @@ type GroupInfoDeleteReq struct {
 type GroupInfoUpdateReq struct {
 	GroupID   int64   `json:"groupID,string"`     //分组ID
 	GroupName *string `json:"groupName,optional"` //分组名称
+	ProductID string  `json:"productID,optional"` //产品ID
 	Desc      *string `json:"desc,optional"`      //分组描述
 	Tags      []*Tag  `json:"tags,optional"`      //分组tag
 }

@@ -95,8 +95,7 @@ CREATE TABLE if not exists `sys_menu_info`
     `createdTime`   datetime     not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime`   datetime     NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime`   datetime              DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE,
-    UNIQUE KEY `nameIndex` (`name`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE
     ) ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='菜单管理表';
