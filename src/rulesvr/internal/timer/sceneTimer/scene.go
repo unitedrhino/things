@@ -3,7 +3,6 @@ package sceneTimer
 import (
 	"context"
 	"fmt"
-	"github.com/go-co-op/gocron"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/timers"
 	"github.com/i-Things/things/shared/utils"
@@ -20,8 +19,7 @@ type SceneTimer struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	scheduler *gocron.Scheduler
-	timer     timers.TimerControl
+	timer timers.TimerControl
 }
 
 var (
@@ -39,10 +37,10 @@ func NewSceneTimer(ctx context.Context, svcCtx *svc.ServiceContext) *SceneTimer 
 		sceneTimer.ctx = ctx
 		sceneTimer.svcCtx = svcCtx
 		sceneTimer.Logger = logx.WithContext(ctx)
-		sceneTimer.scheduler = gocron.NewScheduler(time.Local)
 	})
 	return &sceneTimer
 }
+
 func NewSceneTimerControl() timer.SceneControl {
 	return &sceneTimer
 }
@@ -50,7 +48,6 @@ func NewSceneTimerControl() timer.SceneControl {
 func (s *SceneTimer) Start() {
 	s.timer.Start(func(ctx context.Context) {
 		infos, err := s.svcCtx.SceneRepo.FindByFilter(s.ctx, scene.InfoFilter{
-			Name:        "",
 			Status:      def.Enable,
 			TriggerType: scene.TriggerTypeTimer,
 		}, nil)
@@ -62,7 +59,6 @@ func (s *SceneTimer) Start() {
 			s.Create(info)
 		}
 	})
-
 }
 
 func (s *SceneTimer) Create(info *scene.Info) error {
@@ -93,6 +89,7 @@ func (s *SceneTimer) Delete(id int64) error {
 	}
 	return s.timer.Delete(genInfoIDKey(id))
 }
+
 func genInfoIDKey(id int64) string {
 	return fmt.Sprintf("id:%v", id)
 }
