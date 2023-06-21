@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
+	"math"
 )
 
 const (
@@ -112,6 +113,10 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			if validateDataRange && (num > cast.ToInt64(d.Max) || num < cast.ToInt64(d.Min)) {
 				return nil, errors.OutRange.AddDetailf("value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
+			step := cast.ToInt64(d.Step)
+			if step != 0 {
+				num = num / step * step
+			}
 			return num, nil
 		}
 	case schema.DataTypeFloat:
@@ -121,6 +126,10 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			if validateDataRange && (num > cast.ToFloat64(d.Max) || num < cast.ToFloat64(d.Min)) {
 				return nil, errors.OutRange.AddDetailf(
 					"value %v out of range:[%s,%s]", val, d.Max, d.Min)
+			}
+			step := cast.ToFloat64(d.Step)
+			if step != 0 && !math.IsNaN(step) && !math.IsInf(step, 0) {
+				num = math.Floor(num/step) * step
 			}
 			return num, nil
 		}
