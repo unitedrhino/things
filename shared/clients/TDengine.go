@@ -3,6 +3,7 @@ package clients
 import (
 	"database/sql"
 	_ "github.com/taosdata/driver-go/v3/taosRestful"
+	"sync"
 )
 
 type Td struct {
@@ -10,13 +11,19 @@ type Td struct {
 	*sql.DB
 }
 
-func NewTDengine(DataSource string) (*Td, error) {
-	taos, err := sql.Open("taosRestful", DataSource)
-	if err != nil {
-		return nil, err
-	}
-	return &Td{
-		Dsn: DataSource,
-		DB:  taos,
-	}, nil
+var (
+	td   = Td{}
+	once = sync.Once{}
+)
+
+func NewTDengine(DataSource string) (TD *Td, err error) {
+	once.Do(func() {
+		td.DB, err = sql.Open("taosRestful", DataSource)
+		if err != nil {
+			return
+		}
+		td.Dsn = DataSource
+		_, err = td.Exec("create database if not exists iThings;")
+	})
+	return &td, err
 }
