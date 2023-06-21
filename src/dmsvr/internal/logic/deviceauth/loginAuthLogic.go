@@ -6,6 +6,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -96,6 +97,7 @@ func (l *LoginAuthLogic) UpdateLoginTime() {
 		l.di.FirstLogin = now
 	}
 	l.di.LastLogin = now
+	l.di.IsOnline = def.True
 	l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, l.di)
 }
 
