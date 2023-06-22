@@ -47,7 +47,9 @@ type (
 
 func CheckEnableShadow(params map[string]any, model *schema.Model) error {
 	for k := range params {
-		if model.Property[k].IsUseShadow != true {
+		if prop, ok := model.Property[k]; !ok {
+			return errors.Parameter.AddMsgf("属性: %v 未定义该物模型属性", k)
+		} else if prop.IsUseShadow != true {
 			return errors.Parameter.AddMsgf("属性: %v 未开启设备影子模式", k)
 		}
 	}
