@@ -3,6 +3,7 @@ package clients
 import (
 	"database/sql"
 	_ "github.com/taosdata/driver-go/v3/taosRestful"
+	"github.com/zeromicro/go-zero/core/logx"
 	"sync"
 )
 
@@ -25,5 +26,8 @@ func NewTDengine(DataSource string) (TD *Td, err error) {
 		td.Dsn = DataSource
 		_, err = td.Exec("create database if not exists iThings;")
 	})
+	if err != nil {
+		logx.Errorf("tdengine 初始化失败,err:%v", err)
+	}
 	return &td, err
 }
