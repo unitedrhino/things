@@ -145,7 +145,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
 	l.Debugf("%s", utils.FuncName())
 	var resp = msgGateway.Msg{
-		CommonMsg: deviceMsg.NewRespCommonMsg(l.dreq.Method, l.dreq.ClientToken),
+		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.ClientToken),
 	}
 	resp.AddStatus(errors.OK)
 	rsp, err := func() (respMsg *msgGateway.Msg, err error) {
@@ -215,7 +215,7 @@ func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgG
 func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
 	l.Debugf("%s", utils.FuncName())
 	var resp = msgGateway.Msg{
-		CommonMsg: deviceMsg.NewRespCommonMsg(l.dreq.Method, l.dreq.ClientToken),
+		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.ClientToken),
 	}
 	resp.AddStatus(errors.OK)
 	var (
