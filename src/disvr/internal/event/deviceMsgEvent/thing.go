@@ -77,14 +77,20 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 		return l.DeviceResp(msg, err, nil), err
 	}
 
-	params := msgThing.ToVal(tp)
+	params, err := msgThing.ToVal(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
 	timeStamp := req.GetTimeStamp(msg.Timestamp)
 	core := devices.Core{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}
 
-	paramValues := ToParamValues(tp)
+	paramValues, err := ToParamValues(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
 	for identifier, param := range paramValues {
 		//应用事件通知-设备物模型属性上报通知 ↓↓↓
 		err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, application.PropertyReport{
@@ -183,7 +189,12 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 
 		if data == nil {
 			l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
-			respData[id] = v.Define.GetDefaultValue()
+			respData[id], err = v.Define.GetDefaultValue()
+			if err != nil {
+				l.Errorf("%s.GetDefaultValue id:%s err:%s",
+					utils.FuncName(), id, err.Error())
+				return nil, err
+			}
 			continue
 		}
 		respData[id] = data.Param
@@ -231,10 +242,15 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 		return l.DeviceResp(msg, err, nil), err
 	}
 
-	dbData.Params = msgThing.ToVal(tp)
+	dbData.Params, err = msgThing.ToVal(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
-	paramValues := ToParamValues(tp)
-
+	paramValues, err := ToParamValues(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
 	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, application.EventReport{
 		Device:     devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		Timestamp:  dbData.TimeStamp.UnixMilli(),

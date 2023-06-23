@@ -51,7 +51,10 @@ func (d *Req) FmtReqParam(t *schema.Model, tt schema.ParamType) error {
 	if err != nil {
 		return err
 	}
-	d.Params = ToVal(param)
+	d.Params, err = ToVal(param)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

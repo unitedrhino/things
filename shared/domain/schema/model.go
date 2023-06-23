@@ -115,32 +115,32 @@ func (p *PropertyMap) GetIDs() []string {
 	return ids
 }
 
-func (d *Define) GetDefaultValue() any {
+func (d *Define) GetDefaultValue() (retAny any, err error) {
 	switch d.Type {
 	case DataTypeBool:
-		return false
+		return false, nil
 	case DataTypeInt:
-		return cast.ToInt64(d.Start)
+		return cast.ToInt64(d.Start), nil
 	case DataTypeString:
-		return ""
+		return "", nil
 	case DataTypeStruct:
 		var ret = map[string]any{}
 		for _, v := range d.Specs {
-			ret[v.Identifier] = v.DataType.GetDefaultValue()
+			ret[v.Identifier], err = v.DataType.GetDefaultValue()
 		}
-		return ret
+		return ret, err
 	case DataTypeFloat:
-		return cast.ToFloat64(d.Start)
+		return cast.ToFloat64(d.Start), nil
 	case DataTypeTimestamp:
-		return int64(0)
+		return int64(0), nil
 	case DataTypeArray:
-		return []any{}
+		return []any{}, nil
 	case DataTypeEnum:
 		var keys []int64
 		for k := range d.Maping {
 			keys = append(keys, cast.ToInt64(k))
 		}
-		return utils.Min(keys)
+		return utils.Min(keys), nil
 	}
-	panic(errors.Parameter.AddMsgf("数据类型:%v 不支持", d.Type))
+	return nil, errors.Parameter.AddMsgf("数据类型:%v 不支持", d.Type)
 }
