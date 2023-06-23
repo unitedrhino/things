@@ -104,6 +104,15 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	if err != nil {
 		return err
 	}
+
+	err = n.queueSubscribeDevPublish(topics.DeviceUpExtAll,
+		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
+			err := handle(ctx).Ext(msg)
+			return err
+		})
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
