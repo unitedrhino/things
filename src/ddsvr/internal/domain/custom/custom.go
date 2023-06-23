@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/dop251/goja"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"sync"
 )
@@ -78,7 +79,7 @@ func (v *Vm) DataUp(ctx context.Context,
 	return func(data []byte) ([]byte, error) {
 		res, err := convert(goja.Undefined(), vm.ToValue(data))
 		if err != nil {
-			panic(err)
+			return nil, errors.System.AddMsgf("调用js函数失败:%v", err)
 		}
 		str, err := res.ToObject(nil).MarshalJSON()
 		return str, err
