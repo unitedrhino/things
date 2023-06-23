@@ -40,6 +40,10 @@ const (
 	DeviceDownSdkLog    = "device.down.sdkLog.%s.%s"
 	DeviceDownSDKLogAll = "device.down.sdkLog.>"
 
+	// DeviceUpExt ext模块(包含ntp) 最后两个是产品id和设备名称
+	DeviceUpExt    = "device.up.ext.%s.%s"
+	DeviceUpExtAll = "device.up.ext.>"
+
 	// DeviceUpStatusConnected 设备登录后向内部推送以下topic
 	DeviceUpStatusConnected = "device.up.status.connected"
 	// DeviceUpStatusDisconnected 设备的登出后向内部推送以下topic
