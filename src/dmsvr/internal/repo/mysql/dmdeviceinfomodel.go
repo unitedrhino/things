@@ -67,7 +67,7 @@ func (d *DeviceFilter) FmtSql(ctx context.Context, sql sq.SelectBuilder) sq.Sele
 		sql = sql.Where("`deviceName` like ?", "%"+d.DeviceName+"%")
 	}
 	if len(d.DeviceNames) != 0 {
-		sql = sql.Where("`deviceName` in (?)", store.ArrayToSql(d.DeviceNames))
+		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", store.ArrayToSql(d.DeviceNames)))
 	}
 	if d.DeviceAlias != "" {
 		sql = sql.Where("`deviceAlias` like ?", "%"+d.DeviceAlias+"%")
