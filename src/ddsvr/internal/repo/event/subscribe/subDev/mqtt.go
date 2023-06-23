@@ -45,6 +45,7 @@ const (
 	TopicSDKLog  = ShareSubTopicPrefix + devices.TopicHeadLog + "/#"
 	TopicShadow  = ShareSubTopicPrefix + devices.TopicHeadShadow + "/#"
 	TopicGateway = ShareSubTopicPrefix + devices.TopicHeadGateway + "/#"
+	TopicExt = ShareSubTopicPrefix + devices.TopicHeadExt + "/#"
 )
 
 func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
@@ -109,6 +110,13 @@ func (d *MqttClient) subDevMsg(handle Handle) error {
 		return err
 	}
 	err = d.subscribeWithFunc(TopicGateway, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).Msg(topic, payload)
+	})
+	if err != nil {
+		return err
+	}
+
+	err = d.subscribeWithFunc(TopicExt, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
