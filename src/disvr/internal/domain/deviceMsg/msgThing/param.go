@@ -54,34 +54,41 @@ func (tp *Param) SetByDefine(d *schema.Define, val any) (err error) {
 	return err
 }
 
-func ToVal(tp map[string]Param) map[string]any {
+func ToVal(tp map[string]Param) (map[string]any, error) {
 	ret := make(map[string]any, len(tp))
+	var err error
 	for k, v := range tp {
-		ret[k] = v.ToVal()
+		ret[k], err = v.ToVal()
+		if err != nil {
+			return nil, err
+		}
 	}
-	return ret
+	return ret, nil
 }
 
-func (tp *Param) ToVal() any {
+func (tp *Param) ToVal() (any, error) {
 	if tp == nil {
-		panic("Param is nil")
+		return nil, errors.Parameter.AddMsgf("Param is nil")
 	}
-
+	var err error
 	switch tp.Value.Type {
 	case schema.DataTypeStruct:
 		v, ok := tp.Value.Value.(map[string]Param)
 		if ok == false {
-			panic("struct Param is not find")
+			return nil, errors.Parameter.AddMsgf("struct Param is not find")
 		}
 		val := make(map[string]any, len(v)+1)
 		for _, tp := range v {
-			val[tp.Identifier] = tp.ToVal()
+			val[tp.Identifier], err = tp.ToVal()
+			if err != nil {
+				return nil, err
+			}
 		}
-		return val
+		return val, nil
 	case schema.DataTypeArray:
 		array, ok := tp.Value.Value.([]any)
 		if ok == false {
-			panic("array Param is not find")
+			return nil, errors.Parameter.AddMsgf("array Param is not find")
 		}
 		val := make([]any, 0, len(array)+1)
 		for _, value := range array {
@@ -89,16 +96,19 @@ func (tp *Param) ToVal() any {
 			case map[string]Param:
 				valMap := make(map[string]any, len(array)+1)
 				for _, tp := range value.(map[string]Param) {
-					valMap[tp.Identifier] = tp.ToVal()
+					valMap[tp.Identifier], err = tp.ToVal()
+					if err != nil {
+						return nil, err
+					}
 				}
 				val = append(val, valMap)
 			default:
 				val = append(val, value)
 			}
 		}
-		return val
+		return val, nil
 	default:
-		return tp.Value.Value
+		return tp.Value.Value, nil
 	}
 }
 
