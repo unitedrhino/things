@@ -39,3 +39,9 @@ func (s *DeviceAuthServer) RootCheck(ctx context.Context, in *dm.RootCheckReq) (
 	l := deviceauthlogic.NewRootCheckLogic(ctx, s.svcCtx)
 	return l.RootCheck(in)
 }
+
+// 设备动态注册
+func (s *DeviceAuthServer) DeviceRegister(ctx context.Context, in *dm.DeviceRegisterReq) (*dm.DeviceRegisterResp, error) {
+	l := deviceauthlogic.NewDeviceRegisterLogic(ctx, s.svcCtx)
+	return l.DeviceRegister(in)
+}

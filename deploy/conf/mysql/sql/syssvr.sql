@@ -341,8 +341,7 @@ CREATE TABLE if not exists `sys_api_auth` (
     `v3` varchar(255) NOT NULL DEFAULT '' comment '策略中的第四个参数，通常用于表示访问操作（permission），例如 “read”, “write”, “execute” 等',
     `v4` varchar(255) NOT NULL DEFAULT '' comment '策略中的第五个参数，通常用于表示资源的类型（object type），例如表示是文件或者数据库表等',
     `v5` varchar(255) NOT NULL DEFAULT '' comment '策略中的第六个参数，通常用于表示扩展信息，例如 IP 地址、端口号等',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `roleId_path_index` (`v0`, `v1`) USING BTREE
+    PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='api权限管理';
 
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/update',2,'','','');
