@@ -26,6 +26,9 @@ type (
 		Gateway(out *deviceMsg.PublishMsg) error
 		// Ota ota升级
 		Ota(out *deviceMsg.PublishMsg) error
+		// ext
+		Ext(out *deviceMsg.PublishMsg) error
+
 		Connected(out *deviceStatus.ConnectMsg) error
 		Disconnected(out *deviceStatus.ConnectMsg) error
 	}
