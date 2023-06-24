@@ -64,6 +64,6 @@ func (s *ShadowRepo) fmtFilter(ctx context.Context, f shadow.Filter) *gorm.DB {
 
 func (s *ShadowRepo) MultiDelete(ctx context.Context, f shadow.Filter) error {
 	db := s.fmtFilter(ctx, f)
-	err := db.Delete(&DiDeviceShadow{}).Error
+	err := db.Unscoped().Delete(&DiDeviceShadow{}).Error
 	return errors.IfNotNil(errors.Database, err)
 }

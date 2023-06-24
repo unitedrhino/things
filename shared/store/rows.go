@@ -89,7 +89,7 @@ func Scan(rows *sql.Rows, Dest any) error {
 			}
 		}
 	default:
-		panic("not support")
+		return errors.Database.AddMsgf("not support type:%v", reflect.TypeOf(dest))
 	}
 	return nil
 }
@@ -112,7 +112,7 @@ func GetTdType(define schema.Define) string {
 		return "BINARY(5000)"
 	case schema.DataTypeEnum:
 		return "SMALLINT"
-	default:
+	default: //走到这里说明前面没有进行校验需要检查是否是前面有问题
 		panic(fmt.Sprintf("%v not support", define.Type))
 	}
 }
@@ -121,7 +121,7 @@ func GetTdType(define schema.Define) string {
 func GenParams(params map[string]any) (string, string, []any, error) {
 	if len(params) == 0 {
 		//使用这个函数前必须要判断参数的个数是否大于0
-		panic("SchemaDataRepo|GenParams|params num == 0")
+		return "", "", nil, errors.Parameter.AddMsgf("SchemaDataRepo|GenParams|params num == 0")
 	}
 	var (
 		paramPlaceholder = strings.Repeat("?,", len(params))
