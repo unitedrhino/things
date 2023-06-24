@@ -447,7 +447,8 @@ type DeviceRegisterReq struct {
 }
 
 type DeviceRegisterResp struct {
-	Psk string `json:"psk"` //设备密钥 AES 加密后内容
+	Len     int64  `json:"len"` //payload加密前信息的长度
+	Payload string `json:"payload"`
 }
 
 type DeviceAuth5LoginReq struct {

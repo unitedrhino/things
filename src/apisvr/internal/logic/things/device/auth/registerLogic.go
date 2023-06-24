@@ -27,7 +27,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.DeviceRegisterReq) (resp *types.DeviceRegisterResp, err error) {
-	res, err := l.svcCtx.DeviceA.DeviceRegister(l.ctx, &dm.DeviceRegisterReq{
+	data, err := l.svcCtx.DeviceA.DeviceRegister(l.ctx, &dm.DeviceRegisterReq{
 		ProductID:  req.ProductID,
 		DeviceName: req.DeviceName,
 		Nonce:      req.Nonce,
@@ -39,5 +39,5 @@ func (l *RegisterLogic) Register(req *types.DeviceRegisterReq) (resp *types.Devi
 		l.Errorf("%s.rpc.DeviceRegister req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, err
 	}
-	return &types.DeviceRegisterResp{Psk: res.Psk}, nil
+	return &types.DeviceRegisterResp{Len: data.Len, Payload: data.Payload}, nil
 }

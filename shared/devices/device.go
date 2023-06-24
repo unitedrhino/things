@@ -3,6 +3,7 @@ package devices
 const (
 	DeviceRegisterUnable   = 1
 	DeviceAutoCreateEnable = 3
+	EncryptionTypeCert     = 1
 )
 
 type Core struct {
