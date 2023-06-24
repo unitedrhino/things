@@ -34,7 +34,7 @@ func NewMultiSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMultiSendPropertyReq) (resp *types.DeviceInteractMultiSendPropertyResp, err error) {
 	if req.ProductID != "" && len(req.DeviceNames) != 0 {
-		err := l.SendProperty(req.ProductID, req.DeviceNames, req.Data)
+		err := l.SendProperty(req.ProductID, req.DeviceNames, req.Data, req.ShadowControl)
 		return &types.DeviceInteractMultiSendPropertyResp{List: l.retMsg}, err
 	}
 	if req.GroupID != 0 || req.AreaID != 0 {
@@ -65,7 +65,7 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 			productID := p
 			deviceNames := d
 			eg.Go(func() error {
-				err := l.SendProperty(productID, deviceNames, req.Data)
+				err := l.SendProperty(productID, deviceNames, req.Data, req.ShadowControl)
 				if err != nil {
 					return err
 				}
@@ -80,12 +80,13 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 	}
 	return nil, errors.Parameter.AddMsg("产品id设备名或分组id或区域id必须填一个")
 }
-func (l *MultiSendPropertyLogic) SendProperty(productID string, deviceNames []string, data string) error {
+func (l *MultiSendPropertyLogic) SendProperty(productID string, deviceNames []string, data string, shadowControl int64) error {
 	list := make([]*types.DeviceInteractMultiSendPropertyMsg, 0)
 	dmReq := &di.MultiSendPropertyReq{
-		ProductID:   productID,
-		DeviceNames: deviceNames,
-		Data:        data,
+		ProductID:     productID,
+		DeviceNames:   deviceNames,
+		Data:          data,
+		ShadowControl: shadowControl,
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.MultiSendProperty(l.ctx, dmReq)
 	if err != nil {

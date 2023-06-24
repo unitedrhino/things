@@ -39,6 +39,8 @@ type (
 	DmGroupInfo struct {
 		GroupID     int64        `db:"groupID"`     // 分组ID
 		ParentID    int64        `db:"parentID"`    // 父组ID 0-根组
+		ProjectID   int64        `db:"projectID"`   // 项目ID(雪花ID)
+		ProductID   string       `db:"productID"`   // 产品id,为空则不限定分组内的产品类型
 		GroupName   string       `db:"groupName"`   // 分组名称
 		Desc        string       `db:"desc"`        // 描述
 		Tags        string       `db:"tags"`        // 分组标签
@@ -90,14 +92,14 @@ func (m *defaultDmGroupInfoModel) FindOneByGroupName(ctx context.Context, groupN
 }
 
 func (m *defaultDmGroupInfoModel) Insert(ctx context.Context, data *DmGroupInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, dmGroupInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.GroupID, data.ParentID, data.GroupName, data.Desc, data.Tags)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, dmGroupInfoRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.GroupID, data.ParentID, data.ProjectID, data.ProductID, data.GroupName, data.Desc, data.Tags)
 	return ret, err
 }
 
 func (m *defaultDmGroupInfoModel) Update(ctx context.Context, newData *DmGroupInfo) error {
 	query := fmt.Sprintf("update %s set %s where `groupID` = ?", m.table, dmGroupInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.GroupName, newData.Desc, newData.Tags, newData.GroupID)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.ProjectID, newData.ProductID, newData.GroupName, newData.Desc, newData.Tags, newData.GroupID)
 	return err
 }
 

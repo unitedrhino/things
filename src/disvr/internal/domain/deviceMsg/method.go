@@ -83,6 +83,14 @@ const (
 		数据下行 Topic（用于订阅）：$config/down/get/${productid}/${devicename}
 	*/
 	RemoteConfigReply Method = "reply" //表示设备请求配置
+
+	/*
+		ntp时间同步
+		设备ntp上行请求 Topic（用于发布）：$ext/up/ntp/${productid}/${devicename}
+		设备ntp下行响应 Topic（用于订阅）：$ext/down/ntp/${productid}/${devicename}
+	*/
+	GetNtp      Method = "getNtp"      //表示设备ntp请求
+	GetNtpReply Method = "getNtpReply" //表示云端ntp返回
 )
 
 func GetRespMethod(method Method) Method {
@@ -99,6 +107,8 @@ func GetRespMethod(method Method) Method {
 		return ControlReply
 	case Report:
 		return ReportReply
+	case GetNtp:
+		return GetNtpReply
 	default: //不在里面的方法直接返回方法名即可
 		return method
 	}

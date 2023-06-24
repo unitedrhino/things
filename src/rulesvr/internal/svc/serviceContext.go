@@ -60,7 +60,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg      devicemsg.DeviceMsg
 	)
 	store := kv.NewStore(c.CacheRedis)
-	conn := sqlx.NewMysql(c.Mysql.DataSource)
+	conn := sqlx.NewMysql(c.Database.DSN)
 	SceneInfoRepo := mysql.NewRuleSceneInfoModel(conn)
 	AlarmInfoRepo := mysql.NewRuleAlarmInfoModel(conn)
 	AlarmSceneRepo := mysql.NewRuleAlarmSceneModel(conn)

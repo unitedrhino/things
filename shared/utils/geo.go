@@ -12,10 +12,8 @@ func PositionToBaidu(point def.Point) def.Point {
 		return ToDefPoint(def.CoordinateSystemBaidu, gocoord.GCJ02ToBD09(gcp))
 	case def.CoordinateSystemEarth:
 		return ToDefPoint(def.CoordinateSystemBaidu, gocoord.WGS84ToBD09(gcp))
-	case def.CoordinateSystemBaidu:
+	default: //默认百度坐标系
 		return point
-	default:
-		panic("暂未支持的坐标系")
 	}
 }
 func PositionToEarth(point def.Point) def.Point {
@@ -28,10 +26,8 @@ func PositionToEarth(point def.Point) def.Point {
 		return ToDefPoint(def.CoordinateSystemEarth, gocoord.GCJ02ToWGS84(gcp))
 	case def.CoordinateSystemEarth:
 		return point
-	case def.CoordinateSystemBaidu:
+	default: //默认百度坐标系
 		return ToDefPoint(def.CoordinateSystemEarth, gocoord.BD09ToWGS84(gcp))
-	default:
-		panic("暂未支持的坐标系")
 	}
 }
 func ToDefPoint(coordinateSystem def.CoordinateSystem, position gocoord.Position) def.Point {

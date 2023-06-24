@@ -45,7 +45,7 @@ func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DeviceUpdateInfo) er
 	if err != nil {
 		return err
 	}
-	resp := deviceMsg.NewRespCommonMsg(deviceMsg.GetStatus, "")
+	resp := deviceMsg.NewRespCommonMsg(d.ctx, deviceMsg.GetStatus, "")
 	resp.Data = map[string]any{"logLevel": di.LogLevel}
 
 	msg := deviceMsg.PublishMsg{
@@ -65,7 +65,7 @@ func (d *DataUpdateLogic) DeviceLogLevelUpdate(info *events.DeviceUpdateInfo) er
 
 func (d *DataUpdateLogic) DeviceGatewayUpdate(info *events.GatewayUpdateInfo) error {
 	resp := &msgGateway.Msg{
-		CommonMsg: deviceMsg.NewRespCommonMsg(deviceMsg.Change, "").AddStatus(errors.OK),
+		CommonMsg: deviceMsg.NewRespCommonMsg(d.ctx, deviceMsg.Change, "").AddStatus(errors.OK),
 		Payload:   ToGatewayPayload(info.Status, info.Devices),
 	}
 	respBytes, _ := json.Marshal(resp)

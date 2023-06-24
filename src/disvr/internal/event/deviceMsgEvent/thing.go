@@ -11,7 +11,9 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/disvr/internal/domain/shadow"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
+	"github.com/i-Things/things/src/disvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -71,18 +73,24 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	} else if len(tp) == 0 {
-		err := errors.Parameter.AddDetail("need right param")
+		err := errors.Parameter.AddMsgf("查不到物模型:%v", req.Params)
 		return l.DeviceResp(msg, err, nil), err
 	}
 
-	params := msgThing.ToVal(tp)
+	params, err := msgThing.ToVal(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
 	timeStamp := req.GetTimeStamp(msg.Timestamp)
 	core := devices.Core{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}
 
-	paramValues := ToParamValues(tp)
+	paramValues, err := ToParamValues(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
 	for identifier, param := range paramValues {
 		//应用事件通知-设备物模型属性上报通知 ↓↓↓
 		err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, application.PropertyReport{
@@ -125,30 +133,71 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 // 设备请求获取 云端记录的最新设备信息
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Property))
-
-	switch l.dreq.Type { //表示获取什么类型的信息（report:表示设备上报的信息 info:信息 alert:告警 fault:故障）
-	case deviceMsg.Report: //表示设备属性上报
-		for id := range l.schema.Property {
-			data, err := l.repo.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
-				ProductID:  msg.ProductID,
-				DeviceName: msg.DeviceName,
-				DataID:     id,
-			})
+	dataIDs := l.dreq.Identifiers
+	{ //设备影子处理
+		sr := relationDB.NewShadowRepo(l.ctx)
+		shadows, err := sr.FindByFilter(l.ctx, shadow.Filter{
+			ProductID:           msg.ProductID,
+			DeviceName:          msg.DeviceName,
+			UpdatedDeviceStatus: shadow.NotUpdateDevice, //只获取未下发过的
+			DataIDs:             dataIDs,
+		})
+		if err != nil {
+			l.Errorf("%s.NewShadowRepo.FindByFilter  err:%v",
+				utils.FuncName(), err)
+			return nil, err
+		}
+		if len(shadows) != 0 {
+			//插入多条设备物模型属性数据
+			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, shadow.ToValues(shadows, l.schema.Property), time.Now())
 			if err != nil {
-				l.Errorf("%s.GetPropertyDataByID.get id:%s err:%s",
+				l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
+				return l.DeviceResp(msg, errors.Database, nil), err
+			}
+			now := time.Now()
+			for _, v := range shadows {
+				v.UpdatedDeviceTime = &now
+			}
+			err = sr.MultiUpdate(l.ctx, shadows)
+			if err != nil {
+				l.Errorf("%s.MultiUpdate err=%+v", utils.FuncName(), err)
+				return l.DeviceResp(msg, errors.Database, nil), err
+			}
+		}
+	}
+	var propertyMap = schema.PropertyMap{}
+	for _, d := range dataIDs {
+		p := l.schema.Property[d]
+		if p != nil {
+			propertyMap[p.Identifier] = p
+		}
+	}
+	if len(propertyMap) == 0 {
+		propertyMap = l.schema.Property
+	}
+	for id, v := range propertyMap {
+		data, err := l.repo.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
+			ProductID:  msg.ProductID,
+			DeviceName: msg.DeviceName,
+			DataID:     id,
+		})
+		if err != nil {
+			l.Errorf("%s.GetPropertyDataByID.get id:%s err:%s",
+				utils.FuncName(), id, err.Error())
+			return nil, err
+		}
+
+		if data == nil {
+			l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
+			respData[id], err = v.Define.GetDefaultValue()
+			if err != nil {
+				l.Errorf("%s.GetDefaultValue id:%s err:%s",
 					utils.FuncName(), id, err.Error())
 				return nil, err
 			}
-
-			if data == nil {
-				l.Infof("%s.GetPropertyDataByID not find id:%s", utils.FuncName(), id)
-				continue
-			}
-			respData[id] = data.Param
+			continue
 		}
-	default:
-		err := errors.Parameter.AddDetailf("not support type :%s", l.dreq.Type)
-		return l.DeviceResp(msg, err, nil), err
+		respData[id] = data.Param
 	}
 
 	return l.DeviceResp(msg, errors.OK, respData), nil
@@ -193,10 +242,15 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 		return l.DeviceResp(msg, err, nil), err
 	}
 
-	dbData.Params = msgThing.ToVal(tp)
+	dbData.Params, err = msgThing.ToVal(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
-	paramValues := ToParamValues(tp)
-
+	paramValues, err := ToParamValues(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
 	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, application.EventReport{
 		Device:     devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		Timestamp:  dbData.TimeStamp.UnixMilli(),
@@ -225,14 +279,14 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.P
 		return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
 	}
 
-	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, msg.Handle, msg.Type,
+	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg.Handle, msg.Type,
 		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		resp.ClientToken)
 	if req == nil || err != nil {
 		return nil, err
 	}
 
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Store, deviceMsg.RespMsg, msg, resp.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.ClientToken)
 	if err != nil {
 		return nil, err
 	}
