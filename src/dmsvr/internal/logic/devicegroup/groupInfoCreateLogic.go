@@ -3,6 +3,7 @@ package devicegrouplogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -42,7 +43,7 @@ func (l *GroupInfoCreateLogic) CheckGroupInfo(in *dm.GroupInfoCreateReq) (bool, 
 }
 
 /*
-	检查当前分组嵌套层数是否超限，是返回true 否则返回false
+检查当前分组嵌套层数是否超限，是返回true 否则返回false
 */
 func (l *GroupInfoCreateLogic) CheckGroupLevel(groupID int64, level int64) (bool, error) {
 	//采用递归方式，根据当前分组id和层数上限综合判断
@@ -88,6 +89,8 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 	_, err = l.svcCtx.GroupInfo.Insert(l.ctx, &mysql.DmGroupInfo{
 		GroupID:   l.svcCtx.GroupID.GetSnowflakeId(),
 		ParentID:  in.ParentID,
+		ProjectID: userHeader.GetMetaProjectID(l.ctx),
+		ProductID: in.ProductID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,
 		Tags:      "{}",

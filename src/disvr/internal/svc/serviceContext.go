@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/src/disvr/internal/config"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
@@ -35,7 +36,7 @@ type ServiceContext struct {
 	DeviceM       devicemanage.DeviceManage
 	ProductM      productmanage.ProductManage
 	RemoteConfig  remoteconfig.RemoteConfig
-	Store         kv.Store
+	Cache         kv.Store
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -47,7 +48,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
-
+	store.InitConn(c.Database)
 	//TestTD(td)
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {
@@ -83,7 +84,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:        c,
 		SchemaRepo:    tr,
 		PubDev:        pd,
-		Store:         store,
+		Cache:         store,
 		SchemaMsgRepo: deviceData,
 		HubLogRepo:    hubLog,
 		SDKLogRepo:    sdkLog,

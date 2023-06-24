@@ -2,6 +2,7 @@ package oss
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/i-Things/things/shared/conf"
@@ -21,7 +22,7 @@ func NewOssClient(c conf.OssConf) *Client {
 	newOnce.Do(func() {
 		ossManager, err := newOssManager(c)
 		if err != nil {
-			panic(err)
+			panic(fmt.Sprintf("oss 初始化失败 err:%v", err))
 		}
 		client = &Client{
 			ossManager,

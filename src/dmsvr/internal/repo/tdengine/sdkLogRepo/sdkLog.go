@@ -15,7 +15,7 @@ type SDKLogRepo struct {
 func NewSDKLogRepo(dataSource string) *SDKLogRepo {
 	td, err := clients.NewTDengine(dataSource)
 	if err != nil {
-		logx.Error("NewTDengine err", err)
+		logx.Error("tdengine 初始化错误 err", err)
 		os.Exit(-1)
 	}
 	return &SDKLogRepo{t: td}

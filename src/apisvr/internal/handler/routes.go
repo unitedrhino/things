@@ -312,6 +312,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/event-log/index",
 					Handler: thingsdevicemsg.EventLogIndexHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/shadow/index",
+					Handler: thingsdevicemsg.ShadowIndexHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/msg"),

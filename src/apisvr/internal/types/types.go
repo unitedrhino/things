@@ -475,6 +475,16 @@ type DeviceAuth5AccessResp struct {
 	Result string `json:"result"` //验证结果 "allow" | "deny" | "ignore"
 }
 
+type DeviceMsgShadowIndex struct {
+	DataID            string `json:"dataID"`            //属性id
+	Value             string `json:"value"`             //获取到的值
+	UpdatedDeviceTime int64  `json:"updatedDeviceTime"` //更新到设备的时间
+}
+
+type DeviceMsgShadowIndexResp struct {
+	List []*DeviceMsgShadowIndex `json:"list"`
+}
+
 type DeviceMsgHubLogIndexReq struct {
 	DeviceName string    `json:"deviceName,omitempty"`                //设备名
 	ProductID  string    `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
@@ -642,7 +652,6 @@ type DeviceInfoSaveReq struct {
 	Iccid          *string `json:"iccid,optional"`                      //SIM卡卡号
 	Uid            int64   `json:"uid,string,optional"`                 //所属用户id
 	MobileOperator int64   `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
-	ProjectID      *int64  `json:"projectID,string,optional"`           //项目id 只读（nil不更新，0为取消绑定，other则绑定）
 	AreaID         *int64  `json:"areaID,string,optional"`              //项目区域id 只读（nil不更新，0为取消绑定，other则绑定）
 }
 
@@ -666,7 +675,6 @@ type DeviceInfoIndexReq struct {
 	Range          int64     `json:"range,optional"`          //过滤条件:距离坐标点固定范围内的设备 单位：米
 	Tags           []*Tag    `json:"tags,optional"`           // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
-	ProjectIDs     []int64   `json:"projectIDs,optional"`     //项目ids
 	AreaIDs        []int64   `json:"areaIDs,optional"`        //项目区域ids
 }
 
@@ -751,10 +759,11 @@ type DeviceInteractSendMsgReq struct {
 }
 
 type DeviceInteractSendPropertyReq struct {
-	ProductID  string `json:"productID"`        //产品id
-	DeviceName string `json:"deviceName"`       //设备名
-	Data       string `json:"data"`             //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-	IsAsync    bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
+	ProductID     string `json:"productID"`              //产品id
+	DeviceName    string `json:"deviceName"`             //设备名
+	Data          string `json:"data"`                   //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	IsAsync       bool   `json:"isAsync,optional"`       //是否异步操作 异步情况通过获取接口来获取
+	ShadowControl int64  `json:"shadowControl,optional"` //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
 }
 
 type DeviceInteractSendPropertyResp struct {
@@ -785,11 +794,12 @@ type DeviceInteractSendActionResp struct {
 }
 
 type DeviceInteractMultiSendPropertyReq struct {
-	AreaID      int64    `json:"areaID,string,optional"`  //项目区域id,传了优先从项目区域中获取设备列表
-	GroupID     int64    `json:"groupID,string,optional"` //分组ID,传了会从分组下获取设备
-	ProductID   string   `json:"productID,optional"`      //产品id
-	DeviceNames []string `json:"deviceNames,optional"`    //设备名列表
-	Data        string   `json:"data"`                    //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	AreaID        int64    `json:"areaID,string,optional"`  //项目区域id,传了优先从项目区域中获取设备列表
+	GroupID       int64    `json:"groupID,string,optional"` //分组ID,传了会从分组下获取设备
+	ProductID     string   `json:"productID,optional"`      //产品id
+	DeviceNames   []string `json:"deviceNames,optional"`    //设备名列表
+	ShadowControl int64    `json:"shadowControl,optional"`  //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+	Data          string   `json:"data"`                    //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
 }
 
 type DeviceInteractMultiSendPropertyMsg struct {
@@ -1007,23 +1017,28 @@ type ProductCustomReadReq struct {
 }
 
 type GroupInfo struct {
-	GroupID     int64  `json:"groupID,string"`     //分组ID
-	GroupName   string `json:"groupName"`          //分组名称
-	ParentID    int64  `json:"parentID,string"`    //父组ID
-	CreatedTime int64  `json:"createdTime,string"` //创建时间
-	Desc        string `json:"desc,optional"`      //分组描述
-	Tags        []*Tag `json:"tags,optional"`      //分组tag
+	GroupID     int64  `json:"groupID,string"`       //分组ID
+	ParentID    int64  `json:"parentID,string"`      //父组ID
+	ProjectID   int64  `json:"projectID,string"`     //项目ID
+	GroupName   string `json:"groupName"`            //分组名称
+	ProductID   string `json:"productID,optional"`   //产品ID
+	ProductName string `json:"productName,optional"` //产品ID
+	CreatedTime int64  `json:"createdTime,string"`   //创建时间
+	Desc        string `json:"desc,optional"`        //分组描述
+	Tags        []*Tag `json:"tags,optional"`        //分组tag
 }
 
 type GroupInfoCreateReq struct {
-	GroupName string `json:"groupName"`       //分组名称
-	ParentID  int64  `json:"parentID,string"` //父组ID
-	Desc      string `json:"desc,optional"`   //分组描述
+	GroupName string `json:"groupName"`          //分组名称
+	ParentID  int64  `json:"parentID,string"`    //父组ID
+	ProductID string `json:"productID,optional"` //产品ID
+	Desc      string `json:"desc,optional"`      //分组描述
 }
 
 type GroupInfoIndexReq struct {
 	Page      *PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
 	ParentID  int64     `json:"parentID,string"`    //父组ID
+	ProductID string    `json:"productID,optional"` //产品ID
 	GroupName string    `json:"groupName,optional"` //分组名称
 	Tags      []*Tag    `json:"tags,optional"`      //分组tag
 }
@@ -1045,6 +1060,7 @@ type GroupInfoDeleteReq struct {
 type GroupInfoUpdateReq struct {
 	GroupID   int64   `json:"groupID,string"`     //分组ID
 	GroupName *string `json:"groupName,optional"` //分组名称
+	ProductID string  `json:"productID,optional"` //产品ID
 	Desc      *string `json:"desc,optional"`      //分组描述
 	Tags      []*Tag  `json:"tags,optional"`      //分组tag
 }

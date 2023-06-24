@@ -55,6 +55,12 @@ cd dmsvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  
 cd disvr && goctl rpc protoc  proto/di.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m && cd ..
 ```
 
+- model文件编译
+
+```shell
+cd disvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/disvr.sql"  --style=goZero -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
+```
+
 # 设备数据处理模块-ddsvr
 
 ```shell

@@ -50,7 +50,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 
 	//TestTD(td)
-	conn := sqlx.NewMysql(c.Mysql.DataSource)
+	conn := sqlx.NewMysql(c.Database.DSN)
 	di := mysql.NewDmDeviceInfoModel(conn)
 	pi := mysql.NewDmProductInfoModel(conn)
 	pt := mysql.NewDmProductSchemaModel(conn)
