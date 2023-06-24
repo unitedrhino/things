@@ -26,6 +26,8 @@ type (
 	dmDeviceInfoModel interface {
 		Insert(ctx context.Context, data *DmDeviceInfo) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*DmDeviceInfo, error)
+		FindOneByIccid(ctx context.Context, iccid sql.NullString) (*DmDeviceInfo, error)
+		FindOneByPhone(ctx context.Context, phone sql.NullString) (*DmDeviceInfo, error)
 		FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error)
 		Update(ctx context.Context, data *DmDeviceInfo) error
 		Delete(ctx context.Context, id int64) error
@@ -38,9 +40,9 @@ type (
 
 	DmDeviceInfo struct {
 		Id             int64          `db:"id"`
-		ProductID      string         `db:"productID"`      // 产品id
 		ProjectID      int64          `db:"projectID"`      // 项目ID(雪花ID)
 		AreaID         int64          `db:"areaID"`         // 项目区域ID(雪花ID)
+		ProductID      string         `db:"productID"`      // 产品id
 		DeviceName     string         `db:"deviceName"`     // 设备名称
 		DeviceAlias    string         `db:"deviceAlias"`    // 设备别名
 		Secret         string         `db:"secret"`         // 设备秘钥
@@ -94,6 +96,34 @@ func (m *defaultDmDeviceInfoModel) FindOne(ctx context.Context, id int64) (*DmDe
 	}
 }
 
+func (m *defaultDmDeviceInfoModel) FindOneByIccid(ctx context.Context, iccid sql.NullString) (*DmDeviceInfo, error) {
+	var resp DmDeviceInfo
+	query := fmt.Sprintf("select %s from %s where `iccid` = ? limit 1", dmDeviceInfoRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, iccid)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultDmDeviceInfoModel) FindOneByPhone(ctx context.Context, phone sql.NullString) (*DmDeviceInfo, error) {
+	var resp DmDeviceInfo
+	query := fmt.Sprintf("select %s from %s where `phone` = ? limit 1", dmDeviceInfoRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, phone)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error) {
 	var resp DmDeviceInfo
 	query := fmt.Sprintf("select %s from %s where `productID` = ? and `deviceName` = ? limit 1", dmDeviceInfoRows, m.table)
@@ -110,13 +140,13 @@ func (m *defaultDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Cont
 
 func (m *defaultDmDeviceInfoModel) Insert(ctx context.Context, data *DmDeviceInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, dmDeviceInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProductID, data.ProjectID, data.AreaID, data.DeviceName, data.DeviceAlias, data.Secret, data.Cert, data.Position, data.Imei, data.Mac, data.Version, data.HardInfo, data.SoftInfo, data.MobileOperator, data.Phone, data.Iccid, data.Address, data.Tags, data.Uid, data.IsOnline, data.FirstLogin, data.LastLogin, data.LogLevel)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProjectID, data.AreaID, data.ProductID, data.DeviceName, data.DeviceAlias, data.Secret, data.Cert, data.Position, data.Imei, data.Mac, data.Version, data.HardInfo, data.SoftInfo, data.MobileOperator, data.Phone, data.Iccid, data.Address, data.Tags, data.Uid, data.IsOnline, data.FirstLogin, data.LastLogin, data.LogLevel)
 	return ret, err
 }
 
 func (m *defaultDmDeviceInfoModel) Update(ctx context.Context, newData *DmDeviceInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, dmDeviceInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProductID, newData.ProjectID, newData.AreaID, newData.DeviceName, newData.DeviceAlias, newData.Secret, newData.Cert, newData.Position, newData.Imei, newData.Mac, newData.Version, newData.HardInfo, newData.SoftInfo, newData.MobileOperator, newData.Phone, newData.Iccid, newData.Address, newData.Tags, newData.Uid, newData.IsOnline, newData.FirstLogin, newData.LastLogin, newData.LogLevel, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProjectID, newData.AreaID, newData.ProductID, newData.DeviceName, newData.DeviceAlias, newData.Secret, newData.Cert, newData.Position, newData.Imei, newData.Mac, newData.Version, newData.HardInfo, newData.SoftInfo, newData.MobileOperator, newData.Phone, newData.Iccid, newData.Address, newData.Tags, newData.Uid, newData.IsOnline, newData.FirstLogin, newData.LastLogin, newData.LogLevel, newData.Id)
 	return err
 }
 

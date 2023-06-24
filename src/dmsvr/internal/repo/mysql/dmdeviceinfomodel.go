@@ -33,9 +33,9 @@ type (
 	}
 	DeviceFilter struct {
 		ProductID     string
-		ProjectIDs    []int64
 		AreaIDs       []int64
 		DeviceName    string
+		DeviceNames   []string
 		Tags          map[string]string
 		LastLoginTime struct {
 			Start int64
@@ -53,24 +53,24 @@ func (d *DeviceFilter) FmtSql(ctx context.Context, sql sq.SelectBuilder) sq.Sele
 	if uc := userHeader.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
 		mdProjectID := userHeader.GetMetaProjectID(ctx)
 		if mdProjectID != 0 {
-			sql = sql.Where("`ProjectID` = ?", mdProjectID)
+			sql = sql.Where("`projectID` = ?", mdProjectID)
 		}
 	}
 	//业务过滤条件
 	if d.ProductID != "" {
-		sql = sql.Where("`ProductID` = ?", d.ProductID)
-	}
-	if len(d.ProjectIDs) != 0 {
-		sql = sql.Where(fmt.Sprintf("ProjectID in (%v)", store.ArrayToSql(d.ProjectIDs)))
+		sql = sql.Where("`productID` = ?", d.ProductID)
 	}
 	if len(d.AreaIDs) != 0 {
 		sql = sql.Where(fmt.Sprintf("AreaID in (%v)", store.ArrayToSql(d.AreaIDs)))
 	}
 	if d.DeviceName != "" {
-		sql = sql.Where("`DeviceName` like ?", "%"+d.DeviceName+"%")
+		sql = sql.Where("`deviceName` like ?", "%"+d.DeviceName+"%")
+	}
+	if len(d.DeviceNames) != 0 {
+		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", store.ArrayToSql(d.DeviceNames)))
 	}
 	if d.DeviceAlias != "" {
-		sql = sql.Where("`DeviceAlias` like ?", "%"+d.DeviceAlias+"%")
+		sql = sql.Where("`deviceAlias` like ?", "%"+d.DeviceAlias+"%")
 	}
 	if d.Tags != nil {
 		for k, v := range d.Tags {
@@ -189,10 +189,23 @@ func (m *customDmDeviceInfoModel) InsertDeviceInfo(ctx context.Context, data *Dm
 
 func (m *customDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error) {
 	var resp DmDeviceInfo
-	query := fmt.Sprintf("select %s from %s where `productID` = ? and `deviceName` = ? limit 1", dmDeviceInfoRows, m.table)
-	//position字段为point类型 无法直接读取，需使用函数AsText转换后再读取
+
+	sql := sq.Select(dmDeviceInfoRows).From(m.table)
+
+	f := DeviceFilter{
+		ProductID:  productID,
+		DeviceName: deviceName,
+	}
+
+	sql = f.FmtSql(ctx, sql)
+	query, arg, err := sql.ToSql()
+	if err != nil {
+		return nil, err
+	}
 	query = strings.Replace(query, "`position`", "AsText(`position`) as position", 1)
-	err := m.conn.QueryRowCtx(ctx, &resp, query, productID, deviceName)
+
+	//position字段为point类型 无法直接读取，需使用函数AsText转换后再读取
+	err = m.conn.QueryRowCtx(ctx, &resp, query, arg...)
 	switch err {
 	case nil:
 		return &resp, nil
