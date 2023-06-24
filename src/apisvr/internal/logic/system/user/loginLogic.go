@@ -81,7 +81,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, er)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-			Uid:           0,
+			UserID:        0,
 			UserName:      req.UserID,
 			IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
@@ -96,7 +96,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		l.Errorf("%s.rpc.Register return nil req=%v", utils.FuncName(), req)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-			Uid:           0,
+			UserID:        0,
 			UserName:      req.UserID,
 			IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
@@ -109,7 +109,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	}
 	//登录成功记录
 	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-		Uid:           uResp.Info.Uid,
+		UserID:        uResp.Info.UserID,
 		UserName:      uResp.Info.UserName,
 		IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
 		LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
@@ -121,7 +121,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 
 	return &types.UserLoginResp{
 		Info: types.UserInfo{
-			Uid:         uResp.Info.Uid,
+			UserID:      uResp.Info.UserID,
 			UserName:    uResp.Info.UserName,
 			Password:    "",
 			Email:       uResp.Info.Email,

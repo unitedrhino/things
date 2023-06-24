@@ -48,7 +48,7 @@ func (l *LoginIndexLogic) LoginIndex(req *types.SysLogLoginIndexReq) (resp *type
 
 	for _, i := range info.Info {
 		logLoginInfo = append(logLoginInfo, &types.SysLogLoginIndexData{
-			Uid:           i.Uid,
+			UserID:        i.UserID,
 			UserName:      i.UserName,
 			IpAddr:        i.IpAddr,
 			LoginLocation: i.LoginLocation,
