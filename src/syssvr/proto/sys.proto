@@ -84,7 +84,7 @@ message LoginLogIndexReq{
 }
 
 message LoginLogIndexData {
-  int64  uid = 1;           // 用户id
+  int64  userID = 1;           // 用户id
   string userName = 2;      // 登录账号
   string ipAddr = 3;        // 登录IP地址
   string loginLocation = 4; // 登录地点
@@ -108,7 +108,7 @@ message OperLogIndexReq{
 }
 
 message OperLogIndexData {
-    int64  uid = 1;                //用户id
+    int64  userID = 1;                //用户id
     string operUserName = 2;       //操作人员名称
     string operName = 3;           //操作名称
     int64  businessType = 4;       //业务类型（1新增 2修改 3删除 4查询）
@@ -128,7 +128,7 @@ message OperLogIndexResp{
 }
 
 message LoginLogCreateReq{
-  int64  uid = 1;           // 用户id
+  int64  userID = 1;           // 用户id
   string userName = 2;      // 登录账号
   string ipAddr = 3;        // 登录IP地址
   string loginLocation = 4; // 登录地点
@@ -139,7 +139,7 @@ message LoginLogCreateReq{
 }
 
 message OperLogCreateReq{
-  int64  uid = 1;                //用户id
+  int64  userID = 1;                //用户id
   string operUserName = 2;       //操作人员名称
   string operName = 3;           //操作名称
   int64  businessType = 4;       //业务类型（1新增 2修改 3删除 4查询）
@@ -155,7 +155,7 @@ message OperLogCreateReq{
 
 //用户属性信息
 message UserInfo{
-  int64  uid = 1;
+  int64  userID = 1;
   string userName =2;
   string password = 3;
   string email = 4;
@@ -194,7 +194,7 @@ message UserCreateReq{
 }
 
 message UserCreateResp{
-  int64 uid = 1;//用户id
+  int64 userID = 1;//用户id
 }
 
 message UserCheckTokenReq{
@@ -204,7 +204,7 @@ message UserCheckTokenReq{
 
 message UserCheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
-  int64 uid = 2;
+  int64 userID = 2;
   int64 role = 3;
   int64 isAllData = 4;
 }
@@ -221,7 +221,7 @@ message PageInfo{
 }
 
 message UserIndexReq{
-  PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: uid:用户id userName:登录用户名  email:邮箱  phone:手机号
+  PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: userID:用户id userName:登录用户名  email:邮箱  phone:手机号
   string userName = 2;
   string phone = 3;
   string email = 4;
@@ -233,7 +233,7 @@ message UserIndexResp{
 }
 
 message UserUpdateReq{
-  int64  uid = 1;
+  int64  userID = 1;
   string userName =2;
   string email = 3;
   string phone =4;
@@ -250,11 +250,11 @@ message UserUpdateReq{
 }
 
 message UserReadReq{
-  int64 uid=1;
+  int64 userID=1;
 }
 
 message UserReadResp{
-  int64  uid = 1;
+  int64  userID = 1;
   string userName =2;
   string email = 3;
   string phone =4;
@@ -273,7 +273,7 @@ message UserReadResp{
   int64  isAllData =17;
 }
 message UserDeleteReq{
-  int64 uid = 1;
+  int64 userID = 1;
 }
 
 message JwtToken{

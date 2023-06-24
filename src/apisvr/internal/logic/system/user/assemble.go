@@ -15,7 +15,7 @@ func GetNullVal(val *wrappers.StringValue) *string {
 
 func UserInfoToApi(ui *sys.UserInfo) *types.UserInfo {
 	return &types.UserInfo{
-		Uid:         ui.Uid,
+		UserID:      ui.UserID,
 		UserName:    ui.UserName,
 		Email:       ui.Email,
 		Phone:       ui.Phone,
