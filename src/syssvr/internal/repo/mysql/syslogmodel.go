@@ -170,7 +170,7 @@ func (m *logModel) OperLogIndex(ctx context.Context, in *OperLogFilter) ([]*SysO
 	for _, v := range resp {
 		info = append(info, &SysOperLog{
 			Id:           v.Id,
-			OperUid:      v.OperUid,
+			OperUserID:   v.OperUserID,
 			OperUserName: v.OperUserName,
 			OperName:     v.OperName,
 			BusinessType: v.BusinessType,
@@ -216,7 +216,7 @@ func (m *logModel) LoginLogIndex(ctx context.Context, in *LoginLogFilter) ([]*Sy
 	for _, v := range resp {
 		info = append(info, &SysLoginLog{
 			Id:            v.Id,
-			Uid:           v.Uid,
+			UserID:        v.UserID,
 			UserName:      v.UserName,
 			IpAddr:        v.IpAddr,
 			LoginLocation: v.LoginLocation,

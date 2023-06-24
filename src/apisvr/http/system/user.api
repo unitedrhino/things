@@ -52,7 +52,7 @@ service api {
 }
 type (
 	 UserInfo {
-		Uid         int64  `json:"uid,string,optional"`        // 用户id
+		UserID         int64  `json:"userID,string,optional"`        // 用户id
 		UserName    string `json:"userName,optional"`          // 用户名(唯一)
 		Password    string `json:"password,omitempty"`         // 登录密码
         Email       string `json:"email,optional"`             // 邮箱
@@ -92,7 +92,7 @@ type (
 	}
 
 	UserCreateResp {
-		Uid int64 `json:"uid,string"` //用户id
+		UserID         int64  `json:"userID,string,optional"`        // 用户id
 	}
 
 	UserCaptchaReq {
@@ -120,7 +120,7 @@ type (
 	}
 
 	UserUpdateReq {
-		Uid         int64  `json:"uid,string"`                 // 用户id
+		UserID         int64  `json:"userID,string,optional"`        // 用户id
         UserName    string `json:"userName,optional"`          // 用户名(唯一)
         Email       string `json:"email,optional"`             // 邮箱
         NickName    string `json:"nickName,optional"`          // 用户的昵称
@@ -135,11 +135,11 @@ type (
 	}
 
 	UserReadReq{
-		Uid        int64  `json:"uid,string"`                 // 用户id
+		UserID         int64  `json:"userID,string,optional"`        // 用户id
 	}
 
 	UserReadResp {
-		Uid         int64  `json:"uid,string,optional"`                 // 用户id
+		UserID         int64  `json:"userID,string,optional"`        // 用户id
         UserName    string `json:"userName,optional"`                   // 用户名(唯一)
         Email       string `json:"email,optional"`             // 邮箱
         Phone       string `json:"phone,optional"`             // 手机号
@@ -159,7 +159,7 @@ type (
 	}
 
 	UserDeleteReq {
-		Uid string `json:"uid,omitempty"` //用户id
+		UserID         int64  `json:"userID,string,optional"`        // 用户id
 	}
 
 	UserLoginReq {

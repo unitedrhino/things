@@ -27,13 +27,13 @@ func NewUserDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Delete
 }
 
 func (l *DeleteLogic) UserDelete(in *sys.UserDeleteReq) (*sys.Response, error) {
-	err := l.svcCtx.UserInfoModel.Delete(l.ctx, cast.ToInt64(in.Uid))
+	err := l.svcCtx.UserInfoModel.Delete(l.ctx, cast.ToInt64(in.UserID))
 	if err != nil {
-		l.Errorf("%s.Delete uid=%d err=%+v", utils.FuncName(), in.Uid, err)
+		l.Errorf("%s.Delete uid=%d err=%+v", utils.FuncName(), in.UserID, err)
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	l.Infof("%s.delete uid=%v", utils.FuncName(), in.Uid)
+	l.Infof("%s.delete uid=%v", utils.FuncName(), in.UserID)
 
 	return &sys.Response{}, nil
 }

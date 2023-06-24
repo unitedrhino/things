@@ -37,7 +37,7 @@ type (
 
 	SysOperLog struct {
 		Id           int64          `db:"id"`           // 编号
-		OperUid      int64          `db:"operUid"`      // 用户id
+		OperUserID   int64          `db:"operUserID"`   // 用户id
 		OperUserName string         `db:"operUserName"` // 操作人员名称
 		OperName     string         `db:"operName"`     // 操作名称
 		BusinessType int64          `db:"businessType"` // 业务类型（1新增 2修改 3删除 4查询 5其它）
@@ -81,13 +81,13 @@ func (m *defaultSysOperLogModel) FindOne(ctx context.Context, id int64) (*SysOpe
 
 func (m *defaultSysOperLogModel) Insert(ctx context.Context, data *SysOperLog) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, sysOperLogRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.OperUid, data.OperUserName, data.OperName, data.BusinessType, data.Uri, data.OperIpAddr, data.OperLocation, data.Req, data.Resp, data.Code, data.Msg)
+	ret, err := m.conn.ExecCtx(ctx, query, data.OperUserID, data.OperUserName, data.OperName, data.BusinessType, data.Uri, data.OperIpAddr, data.OperLocation, data.Req, data.Resp, data.Code, data.Msg)
 	return ret, err
 }
 
 func (m *defaultSysOperLogModel) Update(ctx context.Context, data *SysOperLog) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, sysOperLogRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.OperUid, data.OperUserName, data.OperName, data.BusinessType, data.Uri, data.OperIpAddr, data.OperLocation, data.Req, data.Resp, data.Code, data.Msg, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.OperUserID, data.OperUserName, data.OperName, data.BusinessType, data.Uri, data.OperIpAddr, data.OperLocation, data.Req, data.Resp, data.Code, data.Msg, data.Id)
 	return err
 }
 

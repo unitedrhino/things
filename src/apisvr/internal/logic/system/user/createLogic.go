@@ -58,7 +58,7 @@ func (l *CreateLogic) Create(req *types.UserCreateReq) (resp *types.UserCreateRe
 		return &types.UserCreateResp{}, errors.System.AddDetail("register core rpc return nil")
 	}
 
-	return &types.UserCreateResp{Uid: resp1.Uid}, nil
+	return &types.UserCreateResp{UserID: resp1.UserID}, nil
 
 	return
 }
