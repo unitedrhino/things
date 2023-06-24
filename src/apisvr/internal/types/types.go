@@ -2,7 +2,7 @@
 package types
 
 type UserInfo struct {
-	Uid         int64  `json:"uid,string,optional"`         // 用户id
+	UserID      int64  `json:"userID,string,optional"`      // 用户id
 	UserName    string `json:"userName,optional"`           // 用户名(唯一)
 	Password    string `json:"password,omitempty"`          // 登录密码
 	Email       string `json:"email,optional"`              // 邮箱
@@ -42,7 +42,7 @@ type UserCreateReq struct {
 }
 
 type UserCreateResp struct {
-	Uid int64 `json:"uid,string"` //用户id
+	UserID int64 `json:"userID,string,optional"` // 用户id
 }
 
 type UserCaptchaReq struct {
@@ -70,26 +70,26 @@ type UserIndexResp struct {
 }
 
 type UserUpdateReq struct {
-	Uid        int64  `json:"uid,string"`          // 用户id
-	UserName   string `json:"userName,optional"`   // 用户名(唯一)
-	Email      string `json:"email,optional"`      // 邮箱
-	NickName   string `json:"nickName,optional"`   // 用户的昵称
-	City       string `json:"city,optional"`       // 用户所在城市
-	Country    string `json:"country,optional"`    // 用户所在国家
-	Province   string `json:"province,optional"`   // 用户所在省份
-	Language   string `json:"language,optional"`   // 用户的语言，简体中文为zh_CN
-	HeadImgUrl string `json:"headImgUrl,optional"` // 用户头像
-	Role       int64  `json:"role,optional"`       // 用户角色
-	Sex        int64  `json:"sex,optional"`        // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData  int64  `json:"isAllData,optional"`  // 是否所有数据权限（1是，2否）
+	UserID     int64  `json:"userID,string,optional"` // 用户id
+	UserName   string `json:"userName,optional"`      // 用户名(唯一)
+	Email      string `json:"email,optional"`         // 邮箱
+	NickName   string `json:"nickName,optional"`      // 用户的昵称
+	City       string `json:"city,optional"`          // 用户所在城市
+	Country    string `json:"country,optional"`       // 用户所在国家
+	Province   string `json:"province,optional"`      // 用户所在省份
+	Language   string `json:"language,optional"`      // 用户的语言，简体中文为zh_CN
+	HeadImgUrl string `json:"headImgUrl,optional"`    // 用户头像
+	Role       int64  `json:"role,optional"`          // 用户角色
+	Sex        int64  `json:"sex,optional"`           // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	IsAllData  int64  `json:"isAllData,optional"`     // 是否所有数据权限（1是，2否）
 }
 
 type UserReadReq struct {
-	Uid int64 `json:"uid,string"` // 用户id
+	UserID int64 `json:"userID,string,optional"` // 用户id
 }
 
 type UserReadResp struct {
-	Uid         int64  `json:"uid,string,optional"`         // 用户id
+	UserID      int64  `json:"userID,string,optional"`      // 用户id
 	UserName    string `json:"userName,optional"`           // 用户名(唯一)
 	Email       string `json:"email,optional"`              // 邮箱
 	Phone       string `json:"phone,optional"`              // 手机号
@@ -109,7 +109,7 @@ type UserReadResp struct {
 }
 
 type UserDeleteReq struct {
-	Uid string `json:"uid,omitempty"` //用户id
+	UserID int64 `json:"userID,string,optional"` // 用户id
 }
 
 type UserLoginReq struct {
@@ -271,15 +271,15 @@ type SysLogLoginIndexReq struct {
 }
 
 type SysLogLoginIndexData struct {
-	Uid           int64  `json:"uid,string"`         // 用户id
-	UserName      string `json:"userName"`           // 登录账号
-	IpAddr        string `json:"ipAddr"`             // 登录IP地址
-	LoginLocation string `json:"loginLocation"`      // 登录地点
-	Browser       string `json:"browser"`            // 浏览器类型
-	Os            string `json:"os"`                 // 操作系统
-	Code          int64  `json:"code,string"`        // 登录状态（200成功 其它失败）
-	Msg           string `json:"msg"`                // 提示消息
-	CreatedTime   int64  `json:"createdTime,string"` // 登录时间
+	UserID        int64  `json:"userID,string,optional"` // 用户id
+	UserName      string `json:"userName"`               // 登录账号
+	IpAddr        string `json:"ipAddr"`                 // 登录IP地址
+	LoginLocation string `json:"loginLocation"`          // 登录地点
+	Browser       string `json:"browser"`                // 浏览器类型
+	Os            string `json:"os"`                     // 操作系统
+	Code          int64  `json:"code,string"`            // 登录状态（200成功 其它失败）
+	Msg           string `json:"msg"`                    // 提示消息
+	CreatedTime   int64  `json:"createdTime,string"`     // 登录时间
 }
 
 type SysLogLoginIndexResp struct {
@@ -295,18 +295,18 @@ type SysLogOperIndexReq struct {
 }
 
 type SysLogOperIndexData struct {
-	Uid          int64  `json:"uid,string"`          //用户id
-	OperUserName string `json:"operUserName"`        //操作人员名称
-	OperName     string `json:"operName"`            //操作名称
-	BusinessType int64  `json:"businessType,string"` //业务类型（1新增 2修改 3删除 4查询）
-	Uri          string `json:"uri"`                 //请求地址
-	OperIpAddr   string `json:"operIpAddr"`          //操作主机ip地址
-	OperLocation string `json:"operLocation"`        //操作地点
-	Req          string `json:"req"`                 //请求参数
-	Resp         string `json:"resp"`                //返回参数
-	Code         int64  `json:"code,string"`         //登录状态（200成功 其它失败）
-	Msg          string `json:"msg"`                 //提示消息
-	CreatedTime  int64  `json:"createdTime,string"`  //操作时间
+	UserID       int64  `json:"userID,string,optional"` // 用户id
+	OperUserName string `json:"operUserName"`           //操作人员名称
+	OperName     string `json:"operName"`               //操作名称
+	BusinessType int64  `json:"businessType,string"`    //业务类型（1新增 2修改 3删除 4查询）
+	Uri          string `json:"uri"`                    //请求地址
+	OperIpAddr   string `json:"operIpAddr"`             //操作主机ip地址
+	OperLocation string `json:"operLocation"`           //操作地点
+	Req          string `json:"req"`                    //请求参数
+	Resp         string `json:"resp"`                   //返回参数
+	Code         int64  `json:"code,string"`            //登录状态（200成功 其它失败）
+	Msg          string `json:"msg"`                    //提示消息
+	CreatedTime  int64  `json:"createdTime,string"`     //操作时间
 }
 
 type SysLogOperIndexResp struct {
@@ -624,7 +624,7 @@ type DeviceInfo struct {
 	MobileOperator int64                              `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
 	Phone          *string                            `json:"phone,optional"`                      //手机号
 	Iccid          *string                            `json:"iccid,optional"`                      //SIM卡卡号
-	Uid            int64                              `json:"uid,string,optional"`                 //所属用户id
+	UserID         int64                              `json:"userID,string,optional"`              // 用户id
 	Position       *Point                             `json:"position,optional"`                   //设备定位,默认百度坐标系
 	Address        *string                            `json:"address,optional"`                    //所在地址
 	Tags           []*Tag                             `json:"tags,optional"`                       // 设备tag
@@ -651,7 +651,7 @@ type DeviceInfoSaveReq struct {
 	Tags           []*Tag  `json:"tags,optional"`                       // 设备tag
 	Phone          *string `json:"phone,optional"`                      //手机号
 	Iccid          *string `json:"iccid,optional"`                      //SIM卡卡号
-	Uid            int64   `json:"uid,string,optional"`                 //所属用户id
+	UserID         int64   `json:"userID,string,optional"`              // 用户id
 	MobileOperator int64   `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
 	AreaID         *int64  `json:"areaID,string,optional"`              //项目区域id 只读（nil不更新，0为取消绑定，other则绑定）
 }

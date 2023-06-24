@@ -29,7 +29,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 
 func (l *DeleteLogic) Delete(req *types.UserDeleteReq) error {
 	_, err := l.svcCtx.UserRpc.UserDelete(l.ctx, &sys.UserDeleteReq{
-		Uid: cast.ToInt64(req.Uid)})
+		UserID: cast.ToInt64(req.UserID)})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.InfoDelete req=%v err=%+v", utils.FuncName(), req, er)

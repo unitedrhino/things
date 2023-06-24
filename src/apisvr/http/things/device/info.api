@@ -54,7 +54,7 @@ type (
         MobileOperator int64    `json:"mobileOperator,optional,range=[0:4]"`                       //移动运营商:1)移动 2)联通 3)电信 4)广电
         Phone          *string   `json:"phone,optional"`                        //手机号
         Iccid          *string   `json:"iccid,optional"`                        //SIM卡卡号
-        Uid            int64    `json:"uid,string,optional"`                      //所属用户id
+        UserID         int64  `json:"userID,string,optional"`        // 用户id
         Position *Point `json:"position,optional"`                                        //设备定位,默认百度坐标系
         Address *string `json:"address,optional"`                                         //所在地址
         Tags []*Tag `json:"tags,optional"`                                                // 设备tag
@@ -79,7 +79,7 @@ type (
         Tags []*Tag `json:"tags,optional"`                                               // 设备tag
         Phone          *string   `json:"phone,optional"`                        //手机号
         Iccid          *string   `json:"iccid,optional"`                        //SIM卡卡号
-        Uid            int64    `json:"uid,string,optional"`                      //所属用户id
+        UserID         int64  `json:"userID,string,optional"`        // 用户id
         MobileOperator int64    `json:"mobileOperator,optional,range=[0:4]"`                       //移动运营商:1)移动 2)联通 3)电信 4)广电
         AreaID *int64 `json:"areaID,string,optional"`      //项目区域id 只读（nil不更新，0为取消绑定，other则绑定）
     }

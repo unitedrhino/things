@@ -31,8 +31,8 @@ func FillDeviceInfo(in *dm.DeviceInfo, di *mysql.DmDeviceInfo) {
 	if in.DeviceAlias != nil {
 		di.DeviceAlias = in.DeviceAlias.Value
 	}
-	if in.Uid != 0 {
-		di.Uid = in.Uid
+	if in.UserID != 0 {
+		di.UserID = in.UserID
 	}
 	if in.MobileOperator != 0 {
 		di.MobileOperator = in.MobileOperator
@@ -69,7 +69,7 @@ func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
 		ProjectID:      utils.ToRpcNullInt64(di.ProjectID),
 		AreaID:         utils.ToRpcNullInt64(di.AreaID),
 		DeviceAlias:    &wrappers.StringValue{Value: di.DeviceAlias},
-		Uid:            di.Uid,
+		UserID:         di.UserID,
 		MobileOperator: di.MobileOperator,
 		Phone:          utils.ToRpcNullString(di.Phone),
 		Iccid:          utils.ToRpcNullString(di.Iccid),

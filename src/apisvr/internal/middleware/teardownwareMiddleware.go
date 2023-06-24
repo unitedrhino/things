@@ -46,7 +46,7 @@ func (m *TeardownWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc 
 // 接口操作日志记录
 func (m *TeardownWareMiddleware) OperationLogRecord(r *http.Request) error {
 	useCtx := userHeader.GetUserCtx(r.Context())
-	if useCtx.IsOpen || useCtx.Uid == 0 {
+	if useCtx.IsOpen || useCtx.UserID == 0 {
 		return nil
 	}
 
@@ -79,7 +79,7 @@ func (m *TeardownWareMiddleware) OperationLogRecord(r *http.Request) error {
 	}
 
 	_, err = m.LogRpc.OperLogCreate(r.Context(), &user.OperLogCreateReq{
-		Uid:          userHeader.GetUserCtx(r.Context()).Uid,
+		UserID:       userHeader.GetUserCtx(r.Context()).UserID,
 		Uri:          uri + r.Host + r.RequestURI,
 		Route:        r.RequestURI,
 		OperIpAddr:   ipAddr,

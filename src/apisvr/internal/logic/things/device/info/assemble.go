@@ -18,7 +18,7 @@ func ToRpcDeviceInfo(req *types.DeviceInfoSaveReq) *dm.DeviceInfo {
 		DeviceAlias:    utils.ToRpcNullString(req.DeviceAlias), //设备别名 读写
 		Phone:          utils.ToRpcNullString(req.Phone),
 		Iccid:          utils.ToRpcNullString(req.Iccid),
-		Uid:            req.Uid,
+		UserID:         req.UserID,
 		MobileOperator: req.MobileOperator,
 		AreaID:         utils.ToRpcNullInt64(req.AreaID), //项目区域id 只读
 	}

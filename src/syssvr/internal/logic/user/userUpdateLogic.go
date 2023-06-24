@@ -28,9 +28,9 @@ func NewUserUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateLogic) UserUpdate(in *sys.UserUpdateReq) (*sys.Response, error) {
-	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.Uid))
+	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.UserID))
 	if err != nil {
-		l.Errorf("%s.FindOne uid=%d err=%v", utils.FuncName(), in.Uid, err)
+		l.Errorf("%s.FindOne UserID=%d err=%v", utils.FuncName(), in.UserID, err)
 		return nil, errors.Database.AddDetail(err)
 	}
 	ui.UserName = sql.NullString{String: in.UserName, Valid: true}
