@@ -3,6 +3,7 @@ package deviceauthlogic
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
@@ -20,6 +21,13 @@ type DeviceRegisterLogic struct {
 	logx.Logger
 }
 
+type DeviceRegisterPayload struct {
+	EncryptionType int    `json:"encryptionType"` //加密类型，1表示证书认证，2表示签名认证
+	Psk            string `json:"psk"`            //设备密钥，当产品认证类型为签名认证时有此参数。
+	ClientCert     string `json:"clientCert"`     //设备证书文件字符串格式，当产品认证类型为证书认证时有此参数
+	ClientKey      string `json:"clientKey"`      //设备私钥文件字符串格式，当产品认证类型为证书认证时有此参数
+}
+
 func NewDeviceRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceRegisterLogic {
 	return &DeviceRegisterLogic{
 		ctx:    ctx,
@@ -35,6 +43,22 @@ func getSignature(secret string, dest string) string {
 	}
 
 	return base64.StdEncoding.EncodeToString([]byte(utils.HmacSha1(dest, []byte(secret))))
+}
+
+func getPayload(encryptionType int, psk string, productSecret string) (size int, payload string, err error) {
+	var data DeviceRegisterPayload
+	data.EncryptionType = encryptionType
+	data.Psk = psk
+	pay, err := json.Marshal(data)
+	if err != nil {
+		return 0, "", err
+	}
+	payloadStr, err := utils.AesCbcBase64(string(pay), productSecret)
+	if err != nil {
+		return 0, "", err
+	}
+
+	return len(pay), payloadStr, nil
 }
 
 // 设备动态注册
@@ -71,7 +95,9 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dm.DeviceRegisterReq) (*dm.Devi
 				if err != nil {
 					return nil, errors.Database.AddMsg(fmt.Sprintf("设备注册失败: %s", err.Error()))
 				}
-				return &dm.DeviceRegisterResp{Psk: resp.Secret}, nil
+				//将应答信息封装json 并加密
+				len, payload, err := getPayload(devices.EncryptionTypeCert, resp.Secret, pi.Secret)
+				return &dm.DeviceRegisterResp{Len: int64(len), Payload: payload}, nil
 			}
 			return nil, errors.NotFind.AddMsg("设备注册失败，无效设备")
 		} else {
@@ -89,10 +115,7 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dm.DeviceRegisterReq) (*dm.Devi
 		return nil, errors.Parameter.AddMsg("无效签名")
 	}
 
-	//给设备返回设备密钥 经过aes cbc base64加密
-	psk, err := utils.AesCbcBase64(di.Secret, pi.Secret)
-	if err != nil {
-		return nil, errors.Default.AddMsg(fmt.Sprintf("设备密钥加密失败: %s", err.Error()))
-	}
-	return &dm.DeviceRegisterResp{Psk: psk}, nil
+	//将应答信息封装json 并加密
+	len, payload, err := getPayload(devices.EncryptionTypeCert, di.Secret, pi.Secret)
+	return &dm.DeviceRegisterResp{Len: int64(len), Payload: payload}, nil
 }
