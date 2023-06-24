@@ -38,13 +38,13 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
 	} else if in.PwdType == 1 {
 		//明文密码，则对密码做MD5加密后再与数据库密码比对
 		//uid_temp := l.svcCtx.UserID.GetSnowflakeId()
-		password1 := utils.MakePwd(in.Password, uc.Uid, false) //对密码进行md5加密
+		password1 := utils.MakePwd(in.Password, uc.UserID, false) //对密码进行md5加密
 		if password1 != uc.Password {
 			return errors.Password
 		}
 	} else if in.PwdType == 2 {
 		//md5加密后的密码则通过二次md5加密再对比库中的密码
-		password1 := utils.MakePwd(in.Password, uc.Uid, true) //对密码进行md5加密
+		password1 := utils.MakePwd(in.Password, uc.UserID, true) //对密码进行md5加密
 		if password1 != uc.Password {
 			return errors.Password
 		}
@@ -58,13 +58,13 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 
-	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role, uc.IsAllData)
+	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.UserID, uc.Role, uc.IsAllData)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)
 	}
 
-	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, uc.Uid)
+	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, uc.UserID)
 	if err != nil {
 		l.Errorf("%s.FindOne.UserInfoModel ui=%v err=%v",
 			utils.FuncName(), utils.Fmt(ui), utils.Fmt(err))
@@ -76,7 +76,7 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.
 
 	resp := &sys.UserLoginResp{
 		Info: &sys.UserInfo{
-			Uid:         ui.Uid,
+			UserID:      ui.UserID,
 			UserName:    ui.UserName.String,
 			NickName:    ui.NickName,
 			City:        ui.City,

@@ -7,7 +7,7 @@ import (
 
 type UserCtx struct {
 	IsOpen    bool   //是否开放认证用户
-	Uid       int64  //用户id（开放认证用户值为0）
+	UserID    int64  //用户id（开放认证用户值为0）
 	Role      int64  //用户角色（开放认证用户值为0）
 	IsAllData bool   //是否所有数据权限（开放认证用户值为true）
 	IP        string //用户的ip地址

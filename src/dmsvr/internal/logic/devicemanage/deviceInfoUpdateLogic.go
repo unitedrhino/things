@@ -88,8 +88,8 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 	if data.DeviceAlias != nil {
 		old.DeviceAlias = data.DeviceAlias.Value
 	}
-	if data.Uid != 0 {
-		old.Uid = data.Uid
+	if data.UserID != 0 {
+		old.UserID = data.UserID
 	}
 	if data.MobileOperator != 0 {
 		old.MobileOperator = data.MobileOperator

@@ -84,7 +84,7 @@ func (m *CheckTokenWareMiddleware) OpenAuth(w http.ResponseWriter, r *http.Reque
 
 	return isOpen, &userHeader.UserCtx{
 		IsOpen:    isOpen,
-		Uid:       0,
+		UserID:    0,
 		Role:      0,
 		IsAllData: true,
 		IP:        strIP,
@@ -122,7 +122,7 @@ func (m *CheckTokenWareMiddleware) UserAuth(w http.ResponseWriter, r *http.Reque
 
 	return &userHeader.UserCtx{
 		IsOpen:    false,
-		Uid:       resp.Uid,
+		UserID:    resp.UserID,
 		Role:      resp.Role,
 		IsAllData: resp.IsAllData == def.True,
 		IP:        strIP,

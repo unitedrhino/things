@@ -130,8 +130,8 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	if in.DeviceAlias != nil {
 		di.DeviceAlias = in.DeviceAlias.Value
 	}
-	if in.Uid != 0 {
-		di.Uid = in.Uid
+	if in.UserID != 0 {
+		di.UserID = in.UserID
 	}
 	if in.MobileOperator != 0 {
 		di.MobileOperator = in.MobileOperator
