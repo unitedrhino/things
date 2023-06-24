@@ -48,7 +48,7 @@ func (l *OperIndexLogic) OperIndex(req *types.SysLogOperIndexReq) (resp *types.S
 
 	for _, i := range info.Info {
 		logOperInfo = append(logOperInfo, &types.SysLogOperIndexData{
-			Uid:          i.Uid,
+			UserID:       i.UserID,
 			OperUserName: i.OperUserName,
 			OperName:     i.OperName,
 			BusinessType: i.BusinessType,

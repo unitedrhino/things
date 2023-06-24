@@ -40,7 +40,7 @@ func (l *OperLogIndexLogic) OperLogIndex(in *sys.OperLogIndexReq) (*sys.OperLogI
 	info := make([]*sys.OperLogIndexData, 0, len(resp))
 	for _, v := range resp {
 		info = append(info, &sys.OperLogIndexData{
-			Uid:          v.OperUid,
+			UserID:       v.OperUserID,
 			OperUserName: v.OperUserName,
 			OperName:     v.OperName,
 			BusinessType: v.BusinessType,

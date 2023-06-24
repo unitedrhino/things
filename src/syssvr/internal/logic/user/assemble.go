@@ -7,7 +7,7 @@ import (
 
 func UserInfoToPb(ui *mysql.SysUserInfo) *sys.UserInfo {
 	return &sys.UserInfo{
-		Uid:         ui.Uid,
+		UserID:      ui.UserID,
 		UserName:    ui.UserName.String,
 		Password:    ui.Password,
 		Email:       ui.Email.String,

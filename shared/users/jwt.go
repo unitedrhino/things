@@ -8,15 +8,15 @@ import (
 
 // Custom claims structure
 type CustomClaims struct {
-	Uid       int64 `json:",string"`
+	UserID    int64 `json:",string"`
 	Role      int64
 	IsAllData int64
 	jwt.StandardClaims
 }
 
-func GetJwtToken(secretKey string, iat, seconds, uid, role, isAllData int64) (string, error) {
+func GetJwtToken(secretKey string, iat, seconds, userID, role, isAllData int64) (string, error) {
 	claims := CustomClaims{
-		Uid:       uid,
+		UserID:    userID,
 		Role:      role,
 		IsAllData: isAllData,
 		StandardClaims: jwt.StandardClaims{
