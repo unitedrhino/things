@@ -438,6 +438,19 @@ type DeviceAuthRootCheckReq struct {
 	Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
 }
 
+type DeviceRegisterReq struct {
+	ProductID  string `json:"productID"`  //产品id 只读
+	DeviceName string `json:"deviceName"` //设备名称 读写
+	Nonce      int64  `json:"nonce"`      //随机数
+	Timestamp  int64  `json:"timestamp"`  //秒级时间戳
+	Signature  string `json:"signature"`  //签名信息
+}
+
+type DeviceRegisterResp struct {
+	Len     int64  `json:"len"` //payload加密前信息的长度
+	Payload string `json:"payload"`
+}
+
 type DeviceAuth5LoginReq struct {
 	Username    string `json:"username"`                       //用户名
 	Password    string `json:"password,optional"`              //密码
