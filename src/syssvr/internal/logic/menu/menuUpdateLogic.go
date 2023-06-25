@@ -41,9 +41,13 @@ func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, erro
 		in.HideInMenu = mi.HideInMenu
 	}
 
+	if in.ParentID == 0 {
+		in.ParentID = mi.ParentID
+	}
+
 	err = l.svcCtx.MenuInfoModel.Update(l.ctx, &mysql.SysMenuInfo{
 		Id:            in.Id,
-		ParentID:      mi.ParentID,
+		ParentID:      in.ParentID,
 		Type:          in.Type,
 		Order:         in.Order,
 		Name:          in.Name,
