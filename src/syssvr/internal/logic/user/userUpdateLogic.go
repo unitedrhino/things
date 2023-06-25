@@ -27,7 +27,7 @@ func NewUserUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 	}
 }
 
-func (l *UpdateLogic) UserUpdate(in *sys.UserUpdateReq) (*sys.Response, error) {
+func (l *UpdateLogic) UserUpdate(in *sys.UserInfo) (*sys.Response, error) {
 	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.UserID))
 	if err != nil {
 		l.Errorf("%s.FindOne UserID=%d err=%v", utils.FuncName(), in.UserID, err)
