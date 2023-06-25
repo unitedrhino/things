@@ -57,7 +57,7 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 
-	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.UserID, uc.Role, uc.IsAllData)
+	jwtToken, err := users.GetLoginJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.UserID, uc.Role, uc.IsAllData)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)
