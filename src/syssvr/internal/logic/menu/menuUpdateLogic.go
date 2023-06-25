@@ -26,7 +26,7 @@ func NewMenuUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuUp
 }
 
 func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, error) {
-	mi, err := l.svcCtx.MenuInfoModle.FindOne(l.ctx, in.Id)
+	mi, err := l.svcCtx.MenuInfoModel.FindOne(l.ctx, in.Id)
 	if err != nil {
 		l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)
 		return nil, err
@@ -41,7 +41,7 @@ func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, erro
 		in.HideInMenu = mi.HideInMenu
 	}
 
-	err = l.svcCtx.MenuInfoModle.Update(l.ctx, &mysql.SysMenuInfo{
+	err = l.svcCtx.MenuInfoModel.Update(l.ctx, &mysql.SysMenuInfo{
 		Id:            in.Id,
 		ParentID:      mi.ParentID,
 		Type:          in.Type,
