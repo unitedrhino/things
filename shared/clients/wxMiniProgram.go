@@ -1,6 +1,7 @@
-package weixin
+package clients
 
 import (
+	"context"
 	"github.com/silenceper/wechat/v2"
 	"github.com/silenceper/wechat/v2/cache"
 	"github.com/silenceper/wechat/v2/miniprogram"
@@ -8,7 +9,7 @@ import (
 	zeroCache "github.com/zeromicro/go-zero/core/stores/cache"
 )
 
-type MiniprogramConf struct {
+type WxMiniProgram struct {
 	Open      bool //如果开启则需要初始化为true
 	AppID     string
 	AppSecret string
@@ -16,12 +17,12 @@ type MiniprogramConf struct {
 
 type MiniProgram = miniprogram.MiniProgram
 
-func NewWexinMiniProgram(conf MiniprogramConf, redisConf zeroCache.ClusterConf) *MiniProgram {
+func NewWxMiniProgram(ctx context.Context, conf WxMiniProgram, redisConf zeroCache.ClusterConf) *MiniProgram {
 	if conf.Open == false {
 		return nil
 	}
 	wc := wechat.NewWechat()
-	memory := cache.NewRedis(&cache.RedisOpts{
+	memory := cache.NewRedis(ctx, &cache.RedisOpts{
 		Host:     redisConf[0].Host,
 		Password: redisConf[0].Pass,
 	})
