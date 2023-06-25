@@ -59,12 +59,12 @@ type UserDeleteReq struct {
 }
 
 type UserLoginReq struct {
-	UserID    string `json:"userID"`                                        //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
-	PwdType   int32  `json:"pwdType"`                                       //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
-	Password  string `json:"password"`                                      //密码，建议md5转换 密码登录时需要填写
-	LoginType string `json:"loginType,options=sms|pwd|wxopen|wxin|wxminip"` //验证类型 sms 短信验证码 pwd 账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
-	Code      string `json:"code,optional"`                                 //验证码    微信登录填code
-	CodeID    string `json:"codeID,optional"`                               //验证码编号 微信登录填state
+	UserID    string `json:"userID"`                                          //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+	PwdType   int32  `json:"pwdType"`                                         //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
+	Password  string `json:"password"`                                        //密码，建议md5转换 密码登录时需要填写
+	LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
+	Code      string `json:"code,optional"`                                   //验证码    微信登录填code
+	CodeID    string `json:"codeID,optional"`                                 //验证码编号 微信登录填state
 }
 
 type UserLoginResp struct {

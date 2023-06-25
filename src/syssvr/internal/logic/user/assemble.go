@@ -9,7 +9,6 @@ func UserInfoToPb(ui *mysql.SysUserInfo) *sys.UserInfo {
 	return &sys.UserInfo{
 		UserID:      ui.UserID,
 		UserName:    ui.UserName.String,
-		Password:    ui.Password,
 		Email:       ui.Email.String,
 		Phone:       ui.Phone.String,
 		Wechat:      ui.Wechat.String,
