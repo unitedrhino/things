@@ -4,7 +4,7 @@ package types
 type UserInfo struct {
 	UserID      int64  `json:"userID,string,optional"`      // 用户id
 	UserName    string `json:"userName,optional"`           // 用户名(唯一)
-	Password    string `json:"password,omitempty"`          // 登录密码
+	Password    string `json:"password,optional,omitempty"` // 登录密码
 	Email       string `json:"email,optional"`              // 邮箱
 	Phone       string `json:"phone,optional"`              // 手机号
 	Wechat      string `json:"wechat,optional"`             // 微信UnionID
@@ -17,28 +17,9 @@ type UserInfo struct {
 	Language    string `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
 	HeadImgUrl  string `json:"headImgUrl,optional"`         // 用户头像
 	CreatedTime int64  `json:"createdTime,string,optional"` // 创建时间
-	Role        int64  `json:"role"`                        // 用户角色
+	Role        int64  `json:"role,optional"`               // 用户角色
 	Sex         int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
 	IsAllData   int64  `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
-}
-
-type UserCreateReq struct {
-	ReqType     string `json:"reqType,options=phone|wxopen|wxin|wxminip|pwd"` //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 密码方式 pwd 账密方式 必输
-	UserName    string `json:"userName"`                                      //手机号注册时填写手机号,账密登录时填写用户账号 必输
-	Password    string `json:"password"`                                      //明文密码 必输，且做大小写校验
-	Wechat      string `json:"wechat,optional"`                               // 微信UnionID
-	LastIP      string `json:"lastIP,optional"`                               // 最后登录ip
-	RegIP       string `json:"regIP,optional"`                                // 注册ip
-	NickName    string `json:"nickName,optional"`                             // 用户的昵称
-	City        string `json:"city,optional"`                                 // 用户所在城市
-	Country     string `json:"country,optional"`                              // 用户所在国家
-	Province    string `json:"province,optional"`                             // 用户所在省份
-	Language    string `json:"language,optional"`                             // 用户的语言，简体中文为zh_CN
-	HeadImgUrl  string `json:"headImgUrl,optional"`                           // 用户头像
-	CreatedTime int64  `json:"createdTime,string,optional"`                   // 创建时间
-	Role        int64  `json:"role"`                                          // 用户角色
-	Sex         int64  `json:"sex,optional"`                                  // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData   int64  `json:"isAllData,optional"`                            // 是否所有数据权限（1是，2否）
 }
 
 type UserCreateResp struct {
@@ -69,43 +50,8 @@ type UserIndexResp struct {
 	Total int64       `json:"total,optional,omitempty"` //总数
 }
 
-type UserUpdateReq struct {
-	UserID     int64  `json:"userID,string,optional"` // 用户id
-	UserName   string `json:"userName,optional"`      // 用户名(唯一)
-	Email      string `json:"email,optional"`         // 邮箱
-	NickName   string `json:"nickName,optional"`      // 用户的昵称
-	City       string `json:"city,optional"`          // 用户所在城市
-	Country    string `json:"country,optional"`       // 用户所在国家
-	Province   string `json:"province,optional"`      // 用户所在省份
-	Language   string `json:"language,optional"`      // 用户的语言，简体中文为zh_CN
-	HeadImgUrl string `json:"headImgUrl,optional"`    // 用户头像
-	Role       int64  `json:"role,optional"`          // 用户角色
-	Sex        int64  `json:"sex,optional"`           // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData  int64  `json:"isAllData,optional"`     // 是否所有数据权限（1是，2否）
-}
-
 type UserReadReq struct {
 	UserID int64 `json:"userID,string,optional"` // 用户id
-}
-
-type UserReadResp struct {
-	UserID      int64  `json:"userID,string,optional"`      // 用户id
-	UserName    string `json:"userName,optional"`           // 用户名(唯一)
-	Email       string `json:"email,optional"`              // 邮箱
-	Phone       string `json:"phone,optional"`              // 手机号
-	Wechat      string `json:"wechat,optional"`             // 微信UnionID
-	LastIP      string `json:"lastIP,optional"`             // 最后登录ip
-	RegIP       string `json:"regIP,optional"`              // 注册ip
-	NickName    string `json:"nickName,optional"`           // 用户的昵称
-	City        string `json:"city,optional"`               // 用户所在城市
-	Country     string `json:"country,optional"`            // 用户所在国家
-	Province    string `json:"province,optional"`           // 用户所在省份
-	Language    string `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
-	HeadImgUrl  string `json:"headImgUrl,optional"`         // 用户头像
-	CreatedTime int64  `json:"createdTime,string,optional"` // 创建时间
-	Role        int64  `json:"role"`                        // 用户角色
-	Sex         int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData   int64  `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
 }
 
 type UserDeleteReq struct {
