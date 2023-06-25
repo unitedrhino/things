@@ -2,6 +2,15 @@ package users
 
 import "github.com/i-Things/things/shared/utils"
 
+// phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
+const (
+	RegPhone   = "phone"   //手机号 (企业版)
+	RegWxOpen  = "wxOpen"  //微信开放平台登录(企业版)
+	RegWxIn    = "wxIn"    //微信内登录(企业版)
+	RegWxMiniP = "wxMiniP" //微信小程序(企业版)
+	RegPwd     = "pwd"     //账号密码注册
+)
+
 type UserInfoType uint8
 
 const (
