@@ -26,20 +26,21 @@ func NewUserCheckTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ch
 }
 
 func (l *CheckTokenLogic) UserCheckToken(in *sys.UserCheckTokenReq) (*sys.UserCheckTokenResp, error) {
-	jwt, err := users.ParseToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret)
+	var claim users.LoginClaims
+	err := users.ParseToken(&claim, in.Token, l.svcCtx.Config.UserToken.AccessSecret)
 	if err != nil {
 		l.Errorf("%s parse token fail err=%s", utils.FuncName(), err.Error())
 		return nil, err
 	}
 	var token string
 
-	if (jwt.ExpiresAt-time.Now().Unix())*2 < l.svcCtx.Config.UserToken.AccessExpire {
-		token, _ = users.RefreshToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret, time.Now().Unix()+l.svcCtx.Config.UserToken.AccessExpire)
+	if (claim.ExpiresAt-time.Now().Unix())*2 < l.svcCtx.Config.UserToken.AccessExpire {
+		token, _ = users.RefreshLoginToken(in.Token, l.svcCtx.Config.UserToken.AccessSecret, time.Now().Unix()+l.svcCtx.Config.UserToken.AccessExpire)
 	}
 	return &sys.UserCheckTokenResp{
 		Token:     token,
-		UserID:    jwt.UserID,
-		Role:      jwt.Role,
-		IsAllData: jwt.IsAllData,
+		UserID:    claim.UserID,
+		Role:      claim.Role,
+		IsAllData: claim.IsAllData,
 	}, nil
 }
