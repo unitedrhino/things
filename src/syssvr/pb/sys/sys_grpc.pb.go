@@ -22,10 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
-	UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
+	UserCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error)
 	UserIndex(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error)
-	UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error)
+	UserUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error)
+	UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserInfo, error)
 	UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
 	UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
@@ -39,7 +39,7 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
 }
 
-func (c *userClient) UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
+func (c *userClient) UserCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	out := new(UserCreateResp)
 	err := c.cc.Invoke(ctx, "/sys.User/userCreate", in, out, opts...)
 	if err != nil {
@@ -57,7 +57,7 @@ func (c *userClient) UserIndex(ctx context.Context, in *UserIndexReq, opts ...gr
 	return out, nil
 }
 
-func (c *userClient) UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *userClient) UserUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/sys.User/userUpdate", in, out, opts...)
 	if err != nil {
@@ -66,8 +66,8 @@ func (c *userClient) UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...
 	return out, nil
 }
 
-func (c *userClient) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
-	out := new(UserReadResp)
+func (c *userClient) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserInfo, error) {
+	out := new(UserInfo)
 	err := c.cc.Invoke(ctx, "/sys.User/userRead", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -106,10 +106,10 @@ func (c *userClient) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, 
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
-	UserCreate(context.Context, *UserCreateReq) (*UserCreateResp, error)
+	UserCreate(context.Context, *UserInfo) (*UserCreateResp, error)
 	UserIndex(context.Context, *UserIndexReq) (*UserIndexResp, error)
-	UserUpdate(context.Context, *UserUpdateReq) (*Response, error)
-	UserRead(context.Context, *UserReadReq) (*UserReadResp, error)
+	UserUpdate(context.Context, *UserInfo) (*Response, error)
+	UserRead(context.Context, *UserReadReq) (*UserInfo, error)
 	UserDelete(context.Context, *UserDeleteReq) (*Response, error)
 	UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error)
 	UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error)
@@ -120,16 +120,16 @@ type UserServer interface {
 type UnimplementedUserServer struct {
 }
 
-func (UnimplementedUserServer) UserCreate(context.Context, *UserCreateReq) (*UserCreateResp, error) {
+func (UnimplementedUserServer) UserCreate(context.Context, *UserInfo) (*UserCreateResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCreate not implemented")
 }
 func (UnimplementedUserServer) UserIndex(context.Context, *UserIndexReq) (*UserIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserIndex not implemented")
 }
-func (UnimplementedUserServer) UserUpdate(context.Context, *UserUpdateReq) (*Response, error) {
+func (UnimplementedUserServer) UserUpdate(context.Context, *UserInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserUpdate not implemented")
 }
-func (UnimplementedUserServer) UserRead(context.Context, *UserReadReq) (*UserReadResp, error) {
+func (UnimplementedUserServer) UserRead(context.Context, *UserReadReq) (*UserInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserRead not implemented")
 }
 func (UnimplementedUserServer) UserDelete(context.Context, *UserDeleteReq) (*Response, error) {
@@ -155,7 +155,7 @@ func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
 }
 
 func _User_UserCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserCreateReq)
+	in := new(UserInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func _User_UserCreate_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: "/sys.User/userCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserCreate(ctx, req.(*UserCreateReq))
+		return srv.(UserServer).UserCreate(ctx, req.(*UserInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -191,7 +191,7 @@ func _User_UserIndex_Handler(srv interface{}, ctx context.Context, dec func(inte
 }
 
 func _User_UserUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserUpdateReq)
+	in := new(UserInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -203,7 +203,7 @@ func _User_UserUpdate_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: "/sys.User/userUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserUpdate(ctx, req.(*UserUpdateReq))
+		return srv.(UserServer).UserUpdate(ctx, req.(*UserInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }

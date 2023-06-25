@@ -54,7 +54,6 @@ type (
 	RoleUpdateReq         = sys.RoleUpdateReq
 	UserCheckTokenReq     = sys.UserCheckTokenReq
 	UserCheckTokenResp    = sys.UserCheckTokenResp
-	UserCreateReq         = sys.UserCreateReq
 	UserCreateResp        = sys.UserCreateResp
 	UserDeleteReq         = sys.UserDeleteReq
 	UserIndexReq          = sys.UserIndexReq
@@ -63,8 +62,6 @@ type (
 	UserLoginReq          = sys.UserLoginReq
 	UserLoginResp         = sys.UserLoginResp
 	UserReadReq           = sys.UserReadReq
-	UserReadResp          = sys.UserReadResp
-	UserUpdateReq         = sys.UserUpdateReq
 
 	Api interface {
 		ApiCreate(ctx context.Context, in *ApiCreateReq, opts ...grpc.CallOption) (*Response, error)

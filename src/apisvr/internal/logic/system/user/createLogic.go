@@ -25,14 +25,13 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.UserCreateReq) (resp *types.UserCreateResp, err error) {
+func (l *CreateLogic) Create(req *types.UserInfo) (resp *types.UserCreateResp, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), req)
 	//性别参数如果未传或者无效，则默认指定为男性
 	if req.Sex != 1 && req.Sex != 2 {
 		req.Sex = 1
 	}
-	resp1, err1 := l.svcCtx.UserRpc.UserCreate(l.ctx, &sys.UserCreateReq{
-		ReqType:    req.ReqType,
+	resp1, err1 := l.svcCtx.UserRpc.UserCreate(l.ctx, &sys.UserInfo{
 		UserName:   req.UserName,
 		Password:   req.Password,
 		Wechat:     req.Wechat,

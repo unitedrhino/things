@@ -28,14 +28,14 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
-func (l *UpdateLogic) Update(req *types.UserUpdateReq) error {
+func (l *UpdateLogic) Update(req *types.UserInfo) error {
 	//超管可以修改其他用户的角色，并且任何用户不能修改本身的角色
 	roleID := int64(0)
 	userCtx := userHeader.GetUserCtx(l.ctx)
 	if !userCtx.IsOpen && userCtx.Role == int64(def.RoleIDSuper) && userCtx.UserID != req.UserID {
 		roleID = req.Role
 	}
-	_, err := l.svcCtx.UserRpc.UserUpdate(l.ctx, &sys.UserUpdateReq{
+	_, err := l.svcCtx.UserRpc.UserUpdate(l.ctx, &sys.UserInfo{
 		UserID:     req.UserID,
 		UserName:   req.UserName,
 		Email:      req.Email,

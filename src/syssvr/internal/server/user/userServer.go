@@ -22,7 +22,7 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
-func (s *UserServer) UserCreate(ctx context.Context, in *sys.UserCreateReq) (*sys.UserCreateResp, error) {
+func (s *UserServer) UserCreate(ctx context.Context, in *sys.UserInfo) (*sys.UserCreateResp, error) {
 	l := userlogic.NewUserCreateLogic(ctx, s.svcCtx)
 	return l.UserCreate(in)
 }
@@ -32,12 +32,12 @@ func (s *UserServer) UserIndex(ctx context.Context, in *sys.UserIndexReq) (*sys.
 	return l.UserIndex(in)
 }
 
-func (s *UserServer) UserUpdate(ctx context.Context, in *sys.UserUpdateReq) (*sys.Response, error) {
+func (s *UserServer) UserUpdate(ctx context.Context, in *sys.UserInfo) (*sys.Response, error) {
 	l := userlogic.NewUserUpdateLogic(ctx, s.svcCtx)
 	return l.UserUpdate(in)
 }
 
-func (s *UserServer) UserRead(ctx context.Context, in *sys.UserReadReq) (*sys.UserReadResp, error) {
+func (s *UserServer) UserRead(ctx context.Context, in *sys.UserReadReq) (*sys.UserInfo, error) {
 	l := userlogic.NewUserReadLogic(ctx, s.svcCtx)
 	return l.UserRead(in)
 }
