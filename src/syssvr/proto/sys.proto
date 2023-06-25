@@ -237,7 +237,7 @@ message UserLoginReq{
     string userID = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
     int32 pwdType = 2;//账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
     string password =3;//密码，建议md5转换 密码登录时需要填写
-    string loginType =4;//验证类型 sms 短信验证码 pwd 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxmini 微信小程序
+    string loginType =4;//验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
     string code = 5;//验证码    微信登录填code
     string codeID = 6;//验证码编号 微信登录填state
     string ip = 7;//透传请求的 ip

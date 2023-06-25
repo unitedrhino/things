@@ -1789,7 +1789,7 @@ type UserLoginReq struct {
 	UserID    string `protobuf:"bytes,1,opt,name=userID,proto3" json:"userID,omitempty"`       //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
 	PwdType   int32  `protobuf:"varint,2,opt,name=pwdType,proto3" json:"pwdType,omitempty"`    //账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
 	Password  string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`   //密码，建议md5转换 密码登录时需要填写
-	LoginType string `protobuf:"bytes,4,opt,name=loginType,proto3" json:"loginType,omitempty"` //验证类型 sms 短信验证码 pwd 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxmini 微信小程序
+	LoginType string `protobuf:"bytes,4,opt,name=loginType,proto3" json:"loginType,omitempty"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
 	Code      string `protobuf:"bytes,5,opt,name=code,proto3" json:"code,omitempty"`           //验证码    微信登录填code
 	CodeID    string `protobuf:"bytes,6,opt,name=codeID,proto3" json:"codeID,omitempty"`       //验证码编号 微信登录填state
 	Ip        string `protobuf:"bytes,7,opt,name=ip,proto3" json:"ip,omitempty"`               //透传请求的 ip
