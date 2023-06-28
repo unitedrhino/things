@@ -1,7 +1,6 @@
 package users
 
 import (
-	"context"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/i-Things/things/shared/errors"
 	"time"
@@ -9,19 +8,21 @@ import (
 
 // Custom claims structure
 type CustomClaims struct {
-	Uid int64 `json:",string"`
+	Uid       int64 `json:",string"`
+	Role      int64
+	IsAllData int64
 	jwt.StandardClaims
-	Role int64
 }
 
-func GetJwtToken(secretKey string, iat, seconds, uid int64, role int64) (string, error) {
+func GetJwtToken(secretKey string, iat, seconds, uid, role, isAllData int64) (string, error) {
 	claims := CustomClaims{
-		Uid: uid,
+		Uid:       uid,
+		Role:      role,
+		IsAllData: isAllData,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: iat + seconds,
 			IssuedAt:  iat,
 		},
-		Role: role,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secretKey))
@@ -78,10 +79,4 @@ func RefreshToken(tokenString string, secretKey string, AccessExpire int64) (str
 		return CreateToken(secretKey, *claims)
 	}
 	return "", errors.TokenInvalid
-}
-
-func GetClaimsFromToken(l context.Context, uidKey string, roleKey string) *CustomClaims {
-	i := l.Value(uidKey)
-	u, _ := i.(int64)
-	return &CustomClaims{Uid: u}
 }

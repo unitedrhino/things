@@ -10,7 +10,7 @@ import "common.api"  //公共结构体定义
 @server (
 	group : system/log
 	prefix: /api/v1/system/log
-	middleware: CheckToken
+	middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 
 service api {
@@ -26,9 +26,9 @@ service api {
 type (
 	 SysLogLoginIndexReq {
         Page PageInfo `json:"page"`                                 //分页信息,只获取一个则不填
-        IpAddr string `json:"ipAddr,optional "`                     //按ip地址查找
-        LoginLocation string `json:"loginLocation,optional "`       //按登录地址查找
-        DateRange DateRange `json:"dateRange,optional "`            //按时间范围查找
+        IpAddr string `json:"ipAddr,optional"`                     //按ip地址查找
+        LoginLocation string `json:"loginLocation,optional"`       //按登录地址查找
+        DateRange DateRange `json:"dateRange,optional"`            //按时间范围查找
 	}
 
     SysLogLoginIndexData {

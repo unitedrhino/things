@@ -27,11 +27,11 @@ type Info struct {
 	Trigger     Trigger     `json:"trigger"`     //多种触发方式
 	When        Terms       `json:"when"`
 	Then        Actions     `json:"then"`
-	State       int64       `json:"state"` // 状态（1启用 2禁用）
+	Status      int64       `json:"state"` // 状态（1启用 2禁用）
 }
 
 func (i *Info) Validate() error {
-	if !utils.SliceIn(i.TriggerType, TriggerTypeDevice) {
+	if !utils.SliceIn(i.TriggerType, TriggerTypeDevice, TriggerTypeTimer, TriggerTypeManual) {
 		return errors.Parameter.AddMsg("触发器不支持的类型:" + string(i.TriggerType))
 	}
 	err := i.Trigger.Validate(i.TriggerType)
@@ -46,8 +46,8 @@ func (i *Info) Validate() error {
 	if err != nil {
 		return err
 	}
-	if i.State == 0 {
-		i.State = def.Enable
+	if i.Status == 0 {
+		i.Status = def.Enable
 	}
 	return nil
 }

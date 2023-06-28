@@ -160,3 +160,26 @@ services:
     networks:
       ithings_net:
         ipv4_address: 172.19.0.7
+  minio:
+    image: minio/minio:latest
+    hostname: "minio"
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9090:9090" # 控制台端口
+    restart: always
+    command: server --console-address ':9090' /data  #指定容器中的目录 /data
+    environment:
+      MINIO_ACCESS_KEY: root
+      MINIO_SECRET_KEY: password #大于等于8位
+    logging:
+      options:
+        max-size: "50M" # 最大文件上传限制
+        max-file: "10"
+      driver: json-file
+    volumes:
+      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
+      - /docker/minio/config:/root/.minio/     #映射配置目录
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.10

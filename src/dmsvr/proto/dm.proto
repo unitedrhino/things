@@ -1,8 +1,10 @@
 syntax = "proto3";
 option go_package = "pb/dm";
-import "google/protobuf/wrappers.proto";
+
 //import "proto/schemaInfo.proto";
 package dm;
+
+import "google/protobuf/wrappers.proto";
 
 message Response {
 }
@@ -204,17 +206,21 @@ message DeviceGatewayMultiDeleteReq{
 
 message GroupInfo{
   int64 groupID = 1;
-  string groupName = 2;
-  int64 parentID = 3;
-  string desc = 4;
-  int64 createdTime = 5;
-  map<string, string> tags = 6;
+  int64 parentID = 2;
+  int64 projectID = 3;
+  string groupName = 4;
+  string desc = 5;
+  int64 createdTime = 6;
+  map<string, string> tags = 7;
+  string productID = 8;
+  string productName = 9;
 }
 
 message GroupInfoCreateReq{
   string groupName = 1;
   int64 parentID = 2;
-  string desc = 3;
+  string productID = 3;
+  string desc = 4;
 }
 
 message GroupInfoIndexReq{
@@ -238,6 +244,7 @@ message GroupInfoUpdateReq{
   string groupName = 2;
   string desc = 3;
   map<string, string> tags = 4;
+  string productID = 5;
 }
 
 message GroupInfoDeleteReq{
@@ -265,31 +272,38 @@ message GroupDeviceMultiDeleteReq{
   int64 groupID = 1;
   repeated DeviceCore list = 2;
 }
+
 message Point{
   double  longitude = 1;//经度
   double  latitude = 2;//纬度
 }
-message DeviceInfo{
-  string  productID = 1; //产品id 只读
-  string  productName = 2; //产品名称 只读
-  string  deviceName = 3; //设备名称 读写
-  int64   createdTime = 4; //创建时间 只读
-  string  secret = 5; //设备秘钥 只读
-  string  cert = 6;// 设备证书  只读
-  string  imei = 7; //IMEI号信息 只读
-  string  mac = 8; //MAC号信息 只读
-  google.protobuf.StringValue  version = 9; // 固件版本  读写
-  string  hardInfo = 10; //模组硬件型号 只读
-  string  softInfo = 11; //模组软件版本 只读
-  Point Position = 12;   //设备定位,默认百度坐标系
-  google.protobuf.StringValue address = 13; // 所在地址 读写
-  map<string, string> tags = 14;//设备标签
-  int64   isOnline = 15; //在线状态  1离线 2在线 只读
-  int64   firstLogin = 16; //激活时间 只读
-  int64   lastLogin = 17; //最后上线时间 只读
-  int64   logLevel = 18; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+message DeviceInfo {
+  string productID = 1; //产品id 只读
+  google.protobuf.Int64Value projectID = 2; //项目id 只读（nil不更新，0为未分类，other则更新）
+  google.protobuf.Int64Value areaID = 3; //项目区域id 只读（nil不更新，0为未分类，other则更新）
+  string productName = 4; //产品名称 只读
+  string deviceName = 5; //设备名称 读写
+  int64 createdTime = 6; //创建时间 只读
+  string secret = 7; //设备秘钥 只读
+  string cert = 8;// 设备证书  只读
+  string imei = 9; //IMEI号信息 只读
+  string mac = 10; //MAC号信息 只读
+  google.protobuf.StringValue version = 11; // 固件版本  读写
+  string hardInfo = 12; //模组硬件型号 只读
+  string softInfo = 13; //模组软件版本 只读
+  Point Position = 14;   //设备定位,默认百度坐标系
+  google.protobuf.StringValue address = 15; // 所在地址 读写
+  map<string, string> tags = 16;//设备标签
+  int64 isOnline = 17; //在线状态  1离线 2在线 只读
+  int64 firstLogin = 18; //激活时间 只读
+  int64 lastLogin = 19; //最后上线时间 只读
+  int64 logLevel = 20; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+  google.protobuf.StringValue  deviceAlias = 21; //设备别名 读写
+  int64 mobileOperator = 22;//移动运营商:1)移动 2)联通 3)电信 4)广电
+  google.protobuf.StringValue phone =23;//手机号
+  google.protobuf.StringValue iccid = 24;//SIM卡卡号
+  int64 uid = 25;//所属用户id
 }
-
 message ProductInfo{
   int64   createdTime = 1; //创建时间 只读
   string   productID = 2; //产品id 只读
@@ -304,6 +318,8 @@ message ProductInfo{
   google.protobuf.StringValue   desc = 11;//描述
   google.protobuf.StringValue   devStatus = 12; // 产品状态
   map<string, string> tags = 13; //产品标签
+  string productImg = 14; //产品图片
+  bool isUpdateProductImg = 15;//只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
 }
 
 message ProductInfoDeleteReq{
@@ -353,6 +369,8 @@ message DeviceInfoIndexReq{
   map<string, string> tags = 4;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
   int64 range = 5; //过滤条件:取距离坐标点固定范围内的设备
   Point Position = 6;   //设备定位,默认百度坐标系
+  repeated int64 areaIDs = 10;//区域ids
+  string deviceAlias = 11; //过滤条件:模糊查询 设备别名
 }
 
 message DeviceInfoIndexResp{

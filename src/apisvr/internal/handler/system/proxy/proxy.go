@@ -11,14 +11,11 @@ import (
 )
 
 func Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+	var fileProxy bool
 	dir := http.Dir(svcCtx.Config.Proxy.FileProxy[0].FrontDir)
 	_, err := dir.Open(svcCtx.Config.Proxy.FileProxy[0].FrontDefaultPage)
-	if err != nil { //没有前端代理模式
-		return func(writer http.ResponseWriter, request *http.Request) {
-			writer.WriteHeader(http.StatusNotFound)
-			writer.Write([]byte("404"))
-			return
-		}
+	if err == nil { //没有前端代理模式
+		fileProxy = true
 	}
 
 	fileServer := http.FileServer(dir)
@@ -30,14 +27,19 @@ func Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				return
 			}
 		}
+		if fileProxy == false {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("404"))
+			return
+		}
 		f, err := dir.Open(upath)
 		if err != nil {
-			defaultHandle(svcCtx, w, r)
+			defaultHandle(svcCtx, upath, w, r)
 			return
 		} else {
 			info, err := f.Stat()
 			if err != nil || info.Mode().IsDir() {
-				defaultHandle(svcCtx, w, r)
+				defaultHandle(svcCtx, upath, w, r)
 				return
 			}
 		}
@@ -48,16 +50,22 @@ func Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 func staticProxy(svcCtx *svc.ServiceContext, conf *conf.StaticProxyConf, w http.ResponseWriter, r *http.Request) {
 	remote, err := url.Parse(conf.Dest)
 	if err != nil {
-		defaultHandle(svcCtx, w, r)
+		//defaultHandle(svcCtx, w, r)
 		return
 	}
 	proxy := httputil.NewSingleHostReverseProxy(remote)
 	r.Host = remote.Host
+	if conf.DeletePrefix {
+		r.URL.Path = strings.TrimPrefix(r.URL.Path, conf.Router)
+	}
 	proxy.ServeHTTP(w, r)
 }
-func defaultHandle(svcCtx *svc.ServiceContext, w http.ResponseWriter, r *http.Request) {
+func defaultHandle(svcCtx *svc.ServiceContext, upath string, w http.ResponseWriter, r *http.Request) {
 	dir := http.Dir(svcCtx.Config.Proxy.FileProxy[0].FrontDir)
 	f, err := dir.Open(svcCtx.Config.Proxy.FileProxy[0].FrontDefaultPage)
+	if upath == "/favicon.ico" {
+		f, err = dir.Open("front/iThingsCore/favicon.ico")
+	}
 	if err != nil {
 		return
 	}

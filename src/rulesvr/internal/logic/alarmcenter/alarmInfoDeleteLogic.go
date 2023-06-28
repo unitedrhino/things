@@ -24,11 +24,11 @@ func NewAlarmInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *A
 	}
 }
 
-func (l *AlarmInfoDeleteLogic) AlarmInfoDelete(in *rule.AlarmInfoDeleteReq) (*rule.Response, error) {
+func (l *AlarmInfoDeleteLogic) AlarmInfoDelete(in *rule.WithID) (*rule.Empty, error) {
 	err := l.svcCtx.AlarmInfoRepo.Delete(l.ctx, in.Id)
 	//todo 要把日志等删除
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	return &rule.Response{}, nil
+	return &rule.Empty{}, nil
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/shared/eventBus"
 	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
 	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
@@ -14,6 +15,7 @@ import (
 	"github.com/i-Things/things/src/rulesvr/internal/config"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/cache"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/event/dataUpdate"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/rulesvr/internal/timer"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -28,6 +30,8 @@ type ServiceContext struct {
 	Repo
 	SvrClient
 	SceneTimerControl timer.SceneControl
+	Bus               eventBus.Bus
+	DataUpdate        dataUpdate.DataUpdate
 }
 type Repo struct {
 	Store               kv.Store
@@ -56,7 +60,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg      devicemsg.DeviceMsg
 	)
 	store := kv.NewStore(c.CacheRedis)
-	conn := sqlx.NewMysql(c.Mysql.DataSource)
+	conn := sqlx.NewMysql(c.Database.DSN)
 	SceneInfoRepo := mysql.NewRuleSceneInfoModel(conn)
 	AlarmInfoRepo := mysql.NewRuleAlarmInfoModel(conn)
 	AlarmSceneRepo := mysql.NewRuleAlarmSceneModel(conn)
@@ -92,9 +96,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg = didirect.NewDeviceMsg(c.DiRpc.RunProxy)
 		deviceInteract = didirect.NewDeviceInteract(c.DiRpc.RunProxy)
 	}
-
+	bus := eventBus.NewEventBus()
+	du, err := dataUpdate.NewDataUpdate(c.Event)
+	logx.Must(err)
 	return &ServiceContext{
-		Config: c,
+		Bus:        bus,
+		Config:     c,
+		DataUpdate: du,
 		SvrClient: SvrClient{
 			ProductM:       productM,
 			DeviceInteract: deviceInteract,

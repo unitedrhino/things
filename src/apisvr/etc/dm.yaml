@@ -5,8 +5,9 @@ CpuThreshold: 0
 Timeout: 1000000
 Log:
   Encoding: plain
-Mysql:
-  DataSource: root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+Database:
+  DBType: mysql
+  DSN: root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
@@ -17,10 +18,16 @@ AuthWhite:
   Users:
     - UserName: ddsvr
       Password: iThings
-  IpRange:
-    - 127.0.0.1
-    - 172.18.0.1
-    - 172.19.0.1
-    - 192.168.1.1
-    - 172.19.0.8
+OssConf:
+  OssType: minio
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  AccessKeyID: root
+  AccessKeySecret: password
+  Location: 127.0.0.1:9000
+  CustomHost: /api/v1/oss
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000
+  UseSSL: false
 

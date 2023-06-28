@@ -28,10 +28,11 @@ func NewSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 
 func (l *SendPropertyLogic) SendProperty(req *types.DeviceInteractSendPropertyReq) (resp *types.DeviceInteractSendPropertyResp, err error) {
 	dmReq := &di.SendPropertyReq{
-		ProductID:  req.ProductID,
-		DeviceName: req.DeviceName,
-		Data:       req.Data,
-		IsAsync:    req.IsAsync,
+		ProductID:     req.ProductID,
+		DeviceName:    req.DeviceName,
+		Data:          req.Data,
+		IsAsync:       req.IsAsync,
+		ShadowControl: req.ShadowControl,
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.SendProperty(l.ctx, dmReq)
 	if err != nil {
@@ -43,6 +44,5 @@ func (l *SendPropertyLogic) SendProperty(req *types.DeviceInteractSendPropertyRe
 		Code:        dmResp.Code,
 		Status:      dmResp.Status,
 		ClientToken: dmResp.ClientToken,
-		Data:        dmResp.Data,
 	}, nil
 }

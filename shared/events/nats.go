@@ -2,6 +2,7 @@ package events
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/i-Things/things/shared/traces"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -9,6 +10,17 @@ import (
 )
 
 type HandleFunc func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error
+
+func NatsSubWithType[msgType any](handle func(ctx context.Context, msgIn msgType, natsMsg *nats.Msg) error) func(msg *nats.Msg) {
+	return NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
+		var tempInfo msgType
+		err := json.Unmarshal(msg, &tempInfo)
+		if err != nil {
+			return err
+		}
+		return handle(ctx, tempInfo, natsMsg)
+	})
+}
 
 func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 	return func(msg *nats.Msg) {

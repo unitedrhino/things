@@ -26,8 +26,8 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
-func (l *DeleteLogic) Delete(req *types.SceneInfoDeleteReq) error {
-	_, err := l.svcCtx.Scene.SceneInfoDelete(l.ctx, &rule.SceneInfoDeleteReq{Id: req.ID})
+func (l *DeleteLogic) Delete(req *types.WithID) error {
+	_, err := l.svcCtx.Scene.SceneInfoDelete(l.ctx, &rule.WithID{Id: req.ID})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.SceneInfoDelete req=%v err=%v", utils.FuncName(), req, er)

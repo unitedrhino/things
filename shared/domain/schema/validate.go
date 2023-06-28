@@ -166,7 +166,7 @@ func (d *Define) ValidateWithFmt() error {
 	case DataTypeEnum:
 		return d.ValidateWithFmtEnum()
 	}
-	return nil
+	return errors.Parameter.WithMsgf("定义的类型不支持:%v", d.Type)
 }
 func (d *Define) ValidateWithFmtBool() error {
 	if len(d.Maping) != 2 {
@@ -213,6 +213,9 @@ func (d *Define) ValidateWithFmtInt() error {
 	if min < DefineIntMin {
 		min = DefineIntMin
 		d.Min = cast.ToString(min)
+	}
+	if d.Max < d.Min {
+		return errors.Parameter.WithMsgf("整数的最大值需要大于最小值")
 	}
 	if len(d.Unit) > DefineUnitLen {
 		return errors.Parameter.WithMsgf("整数的单位定义值长度过大:%v", d.Unit)
@@ -279,6 +282,9 @@ func (d *Define) ValidateWithFmtFloat() error {
 	if min < DefineIntMin {
 		min = DefineIntMin
 		d.Min = cast.ToString(min)
+	}
+	if d.Max < d.Min {
+		return errors.Parameter.WithMsgf("浮点型的最大值需要大于最小值")
 	}
 	if len(d.Unit) > DefineUnitLen {
 		return errors.Parameter.WithMsgf("浮点型的单位定义值长度过大:%v", d.Unit)
