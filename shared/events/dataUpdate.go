@@ -6,6 +6,10 @@ type DeviceUpdateInfo struct {
 	Data       any
 }
 
+type ChangeInfo struct {
+	ID int64
+}
+
 type GatewayUpdateInfo struct {
 	GatewayProductID  string
 	GatewayDeviceName string

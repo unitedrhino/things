@@ -27,13 +27,13 @@ func NewAlarmInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *A
 
 func (l *AlarmInfoUpdateLogic) Update(old *mysql.RuleAlarmInfo, in *rule.AlarmInfo) *mysql.RuleAlarmInfo {
 	old.Name = in.Name
-	old.State = in.State
+	old.Status = in.Status
 	old.Level = in.Level
 	old.Desc = in.Desc
 	return old
 }
 
-func (l *AlarmInfoUpdateLogic) AlarmInfoUpdate(in *rule.AlarmInfo) (*rule.Response, error) {
+func (l *AlarmInfoUpdateLogic) AlarmInfoUpdate(in *rule.AlarmInfo) (*rule.Empty, error) {
 	old, err := l.svcCtx.AlarmInfoRepo.FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
@@ -42,5 +42,5 @@ func (l *AlarmInfoUpdateLogic) AlarmInfoUpdate(in *rule.AlarmInfo) (*rule.Respon
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	return &rule.Response{}, nil
+	return &rule.Empty{}, nil
 }

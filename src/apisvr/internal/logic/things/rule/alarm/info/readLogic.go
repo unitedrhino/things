@@ -27,7 +27,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 }
 
 func (l *ReadLogic) Read(req *types.AlarmInfoReadReq) (resp *types.AlarmInfo, err error) {
-	rpcResp, err := l.svcCtx.Alarm.AlarmInfoRead(l.ctx, &rule.AlarmInfoReadReq{Id: req.ID})
+	rpcResp, err := l.svcCtx.Alarm.AlarmInfoRead(l.ctx, &rule.WithID{Id: req.ID})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s rpc.AlarmInfoRead req=%v err=%+v", utils.FuncName(), req, er)

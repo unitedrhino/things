@@ -3,7 +3,6 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
-	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
@@ -11,6 +10,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
+	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
@@ -42,7 +42,7 @@ func (l *SendActionLogic) initMsg(productID string) error {
 	return nil
 }
 
-//调用设备行为
+// 调用设备行为
 func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
@@ -63,11 +63,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.InputParams)
 	}
 
-	clientToken, err := uuid.GenerateUUID()
-	if err != nil {
-		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
-		return nil, errors.System.AddDetail(err)
-	}
+	clientToken := trace.TraceIDFromContext(l.ctx)
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
@@ -78,7 +74,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		ActionID: in.ActionID,
 		Params:   param,
 	}
-	_, err = req.VerifyReqParam(l.schema, schema.ParamActionInput)
+	err = req.FmtReqParam(l.schema, schema.ParamActionInput)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +88,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Store, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
 	if err != nil {
 		return nil, err
 	}

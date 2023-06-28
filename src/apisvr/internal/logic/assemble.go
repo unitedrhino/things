@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/src/disvr/pb/di"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
 func ToTagsMap(tags []*types.Tag) map[string]string {
@@ -33,6 +34,16 @@ func ToDmPageRpc(in *types.PageInfo) *dm.PageInfo {
 		return nil
 	}
 	return &dm.PageInfo{
+		Page: in.Page,
+		Size: in.Size,
+	}
+}
+
+func ToSysPageRpc(in *types.PageInfo) *sys.PageInfo {
+	if in == nil {
+		return nil
+	}
+	return &sys.PageInfo{
 		Page: in.Page,
 		Size: in.Size,
 	}
@@ -72,6 +83,16 @@ func ToDmPointRpc(in *types.Point) *dm.Point {
 		return nil
 	}
 	return &dm.Point{
+		Longitude: in.Longitude,
+		Latitude:  in.Latitude,
+	}
+}
+
+func ToDmPointApi(in *dm.Point) *types.Point {
+	if in == nil {
+		return nil
+	}
+	return &types.Point{
 		Longitude: in.Longitude,
 		Latitude:  in.Latitude,
 	}

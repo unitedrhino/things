@@ -3,6 +3,7 @@ package errors
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/grpc"
@@ -88,8 +89,8 @@ func (c *CodeError) GetDetailMsg() string {
 }
 
 func (c *CodeError) GetCode() int64 {
-	if c == nil {
-		return 0
+	if c == nil { //如果没错误,则是成功
+		return OK.Code
 	}
 	return c.Code
 }
@@ -164,4 +165,13 @@ func Cmp(err1 error, err2 error) bool {
 		return false
 	}
 	return Fmt(err1).Code == Fmt(err2).Code
+}
+func IfNotNil(c *CodeError, err error) error {
+	if err != nil {
+		return c.AddDetail(err)
+	}
+	return nil
+}
+func Is(err, target error) bool {
+	return errors.Is(err, target)
 }

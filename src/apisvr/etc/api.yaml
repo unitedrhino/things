@@ -28,6 +28,9 @@ Proxy:
   StaticProxy:
     - Router: /api/v1/app/
       Dest: http://127.0.0.1:8000
+    - Router: /api/v1/oss/
+      DeletePrefix: true
+      Dest: http://127.0.0.1:9000
 DdEnable: true
 SysRpc:
   Enable: true
@@ -55,3 +58,15 @@ RuleRpc:
       Hosts:
         - 127.0.0.1:2379
       Key: rule.rpc
+OssConf:
+  OssType: minio
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  AccessKeyID: root
+  AccessKeySecret: password
+  Location: 127.0.0.1:9000
+  CustomHost: /api/v1/oss
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000
+  UseSSL: false

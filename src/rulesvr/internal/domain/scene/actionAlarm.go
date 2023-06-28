@@ -55,12 +55,16 @@ func (a *ActionAlarm) Execute(ctx context.Context, repo ActionRepo) error {
 			return err
 		}
 	case ActionAlarmModeTrigger:
+		serial := ""
+		if repo.Serial != nil {
+			serial = repo.Serial.GenSerial()
+		}
 		err := repo.Alarm.AlarmTrigger(ctx, TriggerSerial{
 			SceneID:     repo.Scene.ID,
 			SceneName:   repo.Scene.Name,
 			TriggerType: 1,
 			Device:      repo.Device,
-			Serial:      repo.Serial.GenSerial(),
+			Serial:      serial,
 			Desc:        "",
 		})
 		if err != nil {

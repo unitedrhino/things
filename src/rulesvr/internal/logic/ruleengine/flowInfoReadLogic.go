@@ -23,7 +23,7 @@ func NewFlowInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Flow
 	}
 }
 
-func (l *FlowInfoReadLogic) FlowInfoRead(in *rule.FlowInfoReadReq) (*rule.FlowInfo, error) {
+func (l *FlowInfoReadLogic) FlowInfoRead(in *rule.WithID) (*rule.FlowInfo, error) {
 	// todo: add your logic here and delete this line
 
 	return &rule.FlowInfo{}, nil

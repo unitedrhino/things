@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
-	"github.com/i-Things/things/src/apisvr/internal/logic/things/device"
+	"github.com/i-Things/things/src/apisvr/internal/logic/things"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -30,12 +30,14 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInfoIndexResp, err error) {
 	dmReq := &dm.DeviceInfoIndexReq{
-		ProductID:  req.ProductID, //产品id
-		DeviceName: req.DeviceName,
-		Tags:       logic.ToTagsMap(req.Tags),
-		Page:       logic.ToDmPageRpc(req.Page),
-		Range:      req.Range,
-		Position:   logic.ToDmPointRpc(req.Position),
+		ProductID:   req.ProductID, //产品id
+		AreaIDs:     req.AreaIDs,   //项目区域ids
+		DeviceName:  req.DeviceName,
+		Tags:        logic.ToTagsMap(req.Tags),
+		Page:        logic.ToDmPageRpc(req.Page),
+		Range:       req.Range,
+		Position:    logic.ToDmPointRpc(req.Position),
+		DeviceAlias: req.DeviceAlias,
 	}
 	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
 	if err != nil {
@@ -45,7 +47,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 	}
 	pis := make([]*types.DeviceInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		pi := device.DeviceInfoToApi(v)
+		pi := things.InfoToApi(l.ctx, l.svcCtx, v, req.WithProperties)
 		pis = append(pis, pi)
 	}
 	return &types.DeviceInfoIndexResp{

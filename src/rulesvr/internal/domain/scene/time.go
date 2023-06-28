@@ -56,7 +56,7 @@ func (t *Timer) Validate() error {
 	}
 	p := cron.NewParser(cron.Second | cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow | cron.Descriptor)
 	_, err := p.Parse(t.Cron)
-	return errors.Parameter.AddMsg("时间cron表达式解析失败").AddDetail(err)
+	return errors.IfNotNil(errors.Parameter.AddMsg("时间cron表达式解析失败"), err)
 }
 
 func (t TimeUnit) Validate() error {

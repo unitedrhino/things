@@ -3,7 +3,7 @@ package errors
 const SYS_ERROR = 100000
 
 var (
-	OK               = NewCodeError(0, "成功")
+	OK               = NewCodeError(200, "成功")
 	Default          = NewCodeError(SYS_ERROR+1, "其他错误")
 	TokenExpired     = NewCodeError(SYS_ERROR+2, "token已经过期")
 	TokenNotValidYet = NewCodeError(SYS_ERROR+3, "token还未生效")
@@ -24,4 +24,6 @@ var (
 	NotRealize       = NewCodeError(SYS_ERROR+18, "尚未实现")
 	NotEmpty         = NewCodeError(SYS_ERROR+19, "不为空")
 	Panic            = NewCodeError(SYS_ERROR+20, "系统异常，请联系开发者")
+	NotEnable        = NewCodeError(SYS_ERROR+21, "未启用")
+	Company          = NewCodeError(SYS_ERROR+22, "该功能是企业版功能")
 )

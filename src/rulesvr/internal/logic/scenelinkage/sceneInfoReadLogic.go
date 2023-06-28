@@ -25,7 +25,7 @@ func NewSceneInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sce
 	}
 }
 
-func (l *SceneInfoReadLogic) SceneInfoRead(in *rule.SceneInfoReadReq) (*rule.SceneInfo, error) {
+func (l *SceneInfoReadLogic) SceneInfoRead(in *rule.WithID) (*rule.SceneInfo, error) {
 	pi, err := l.svcCtx.SceneRepo.FindOne(l.ctx, in.Id)
 	if err != nil {
 		if err == mysql.ErrNotFound {

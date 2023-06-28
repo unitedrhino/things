@@ -25,7 +25,7 @@ func NewAlarmSceneDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *AlarmSceneDeleteLogic) AlarmSceneDelete(in *rule.AlarmSceneDeleteReq) (*rule.Response, error) {
+func (l *AlarmSceneDeleteLogic) AlarmSceneDelete(in *rule.AlarmSceneDeleteReq) (*rule.Empty, error) {
 	err := l.svcCtx.AlarmSceneRepo.DeleteByFilter(l.ctx, alarm.SceneFilter{
 		AlarmID: in.AlarmID,
 		SceneID: in.SceneID,
@@ -33,5 +33,5 @@ func (l *AlarmSceneDeleteLogic) AlarmSceneDelete(in *rule.AlarmSceneDeleteReq) (
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	return &rule.Response{}, nil
+	return &rule.Empty{}, nil
 }

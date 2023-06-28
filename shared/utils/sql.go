@@ -13,6 +13,18 @@ func GetNullTime(time sql.NullTime) int64 {
 	}
 	return time.Time.Unix()
 }
+func TimeToNullTime(in *time.Time) sql.NullTime {
+	if in == nil {
+		return sql.NullTime{}
+	}
+	return sql.NullTime{Valid: true, Time: *in}
+}
+func NullTimeToTime(in sql.NullTime) *time.Time {
+	if !in.Valid {
+		return nil
+	}
+	return &in.Time
+}
 
 func ToNullTime(in int64) sql.NullTime {
 	if in == 0 {
@@ -37,7 +49,7 @@ func GetPositionValue(position string) (float64, float64) {
 	return Longitude, Latitude
 }
 
-//生成 "?,?,..." (有num个?)
+// 生成 "?,?,..." (有num个?)
 func NewFillPlace(num int) string {
 	return NewFillString(num, "?", ",")
 }

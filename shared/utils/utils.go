@@ -1,20 +1,22 @@
 package utils
 
 import (
-	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/carlmjohnson/versioninfo"
 	"net"
 	"net/http"
 	"regexp"
 	"runtime"
-	"runtime/debug"
 	"strconv"
 	"strings"
 )
+
+func init() {
+	PrintVersion()
+}
 
 func MD5V(str []byte) string {
 	h := md5.New()
@@ -114,20 +116,6 @@ func FuncName() string {
 //	return fmt.Sprintf("%s:%d:%s",file,line,f.Name())
 //}
 
-func Recover(ctx context.Context) {
-	if p := recover(); p != nil {
-		HandleThrow(ctx, p)
-	}
-}
-
-func HandleThrow(ctx context.Context, p any) {
-	pc := make([]uintptr, 1)
-	runtime.Callers(3, pc)
-	f := runtime.FuncForPC(pc[0])
-	logx.WithContext(ctx).Errorf("HandleThrow|func=%s|error=%#v|stack=%s\n", f, p, string(debug.Stack()))
-	//os.Exit(-1)
-}
-
 func Ip2binary(ip string) string {
 	str := strings.Split(ip, ".")
 	var ipstr string
@@ -205,4 +193,9 @@ func MethodToNum(methond string) string {
 	default:
 		return "-1"
 	}
+}
+
+func PrintVersion() {
+	fmt.Printf("gitInfo: lastCommitTime:%v,lastCommitHash:%v\n",
+		versioninfo.LastCommit, versioninfo.Revision)
 }

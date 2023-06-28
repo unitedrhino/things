@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -31,6 +33,11 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *dm.DeviceInfo) {
+	old.ProjectID = userHeader.GetMetaProjectID(l.ctx)
+	if data.AreaID != nil {
+		old.AreaID = utils.ToEmptyInt64(data.AreaID)
+	}
+
 	if data.Tags != nil {
 		tags, err := json.Marshal(data.Tags)
 		if err == nil {
@@ -76,6 +83,22 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 	}
 	if data.Position != nil {
 		old.Position = fmt.Sprintf("POINT(%f %f)", data.Position.Longitude, data.Position.Latitude)
+	}
+
+	if data.DeviceAlias != nil {
+		old.DeviceAlias = data.DeviceAlias.Value
+	}
+	if data.Uid != 0 {
+		old.Uid = data.Uid
+	}
+	if data.MobileOperator != 0 {
+		old.MobileOperator = data.MobileOperator
+	}
+	if data.Iccid != nil {
+		old.Iccid = utils.AnyToNullString(data.Iccid)
+	}
+	if data.Phone != nil {
+		old.Phone = utils.AnyToNullString(data.Phone)
 	}
 }
 

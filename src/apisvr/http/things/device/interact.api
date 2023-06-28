@@ -9,7 +9,7 @@ info(
 @server(
     group : things/device/interact
     prefix: /api/v1/things/device/interact
-    middleware: CheckToken
+    middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 service api {
     @doc "调用设备行为"
@@ -21,12 +21,32 @@ service api {
     @doc "调用设备属性"
     @handler sendProperty
     post /send-property (DeviceInteractSendPropertyReq) returns (DeviceInteractSendPropertyResp)
+    @doc "批量调用设备属性"
+    @handler multiSendProperty
+    post /multi-send-property (DeviceInteractMultiSendPropertyReq) returns (DeviceInteractMultiSendPropertyResp)
     @doc "获取调用设备属性的结果"
     @handler propertyRead
     post /property-read (DeviceInteractRespReadReq) returns (DeviceInteractSendPropertyResp)
     @doc "发送消息给设备"
     @handler sendMsg
     post /send-msg (DeviceInteractSendMsgReq) returns ()
+    @doc "请求设备获取设备最新属性"
+    @handler getPropertyReply
+    post /get-property-reply (DeviceInteractGetPropertyReplyReq) returns (DeviceInteractGetPropertyReplyResp)
+}
+
+type DeviceInteractGetPropertyReplyReq struct{
+    ProductID  string   `json:"productID"`   //产品id (必填)
+    DeviceName string   `json:"deviceName"` //设备名(必填)
+    DataIDs    []string `json:"dataIDs,optional"`       //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条
+}
+
+type DeviceInteractGetPropertyReplyResp struct {
+    Code        int64  `json:"code"`              //设备返回状态码
+    Status      string `json:"status"`           //返回状态
+    ClientToken string `json:"clientToken"` //调用id
+    Timestamp   int64  `json:"timestamp"`    //上报时间戳(毫秒时间戳)
+    Params      string `json:"params"`           //获取到的值
 }
 
 type DeviceInteractSendMsgReq struct{
@@ -39,12 +59,12 @@ type DeviceInteractSendPropertyReq struct {
     DeviceName    string `json:"deviceName"`    //设备名
     Data          string `json:"data"`          //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
     IsAsync       bool `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
+    ShadowControl  int64 `json:"shadowControl,optional"` //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
 }
 type DeviceInteractSendPropertyResp struct {
     Code        int64  `json:"code"`        //设备返回状态码
     Status      string `json:"status"`      //返回状态
     ClientToken string `json:"clientToken"` //调用id
-    Data        string `json:"data"`        //返回信息
 }
 type DeviceInteractRespReadReq struct{
     ProductID   string `json:"productID"`   //产品id
@@ -65,4 +85,27 @@ type DeviceInteractSendActionResp struct {
     OutputParams string `json:"outputParams"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
     Status       string `json:"status"`       //返回状态
     Code         int64  `json:"code"`         //设备返回状态码
+}
+
+type DeviceInteractMultiSendPropertyReq struct {
+    AreaID int64 `json:"areaID,string,optional"` //项目区域id,传了优先从项目区域中获取设备列表
+    GroupID   int64  `json:"groupID,string,optional"`           //分组ID,传了会从分组下获取设备
+    ProductID     string `json:"productID,optional"`      //产品id
+    DeviceNames   []string `json:"deviceNames,optional"`  //设备名列表
+    ShadowControl  int64 `json:"shadowControl,optional"` //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+    Data          string `json:"data"`           //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+}
+
+type DeviceInteractMultiSendPropertyMsg struct {
+    ProductID   string `json:"productID"`   //产品id
+    DeviceName  string `json:"deviceName"`  //设备名
+    Code        int64  `json:"code"`        //设备返回状态码
+    Status      string `json:"status"`      //返回状态
+    ClientToken string `json:"clientToken"` //调用id
+    SysCode     int64  `json:"sysCode"`      //系统错误码
+    sysMsg      string `json:"sysMsg"`      //系统错误信息
+}
+
+type DeviceInteractMultiSendPropertyResp struct {
+    List []*DeviceInteractMultiSendPropertyMsg `json:"list"` //批量设备返回结果列表
 }

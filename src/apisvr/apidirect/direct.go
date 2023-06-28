@@ -15,7 +15,7 @@ type (
 	ServiceContext = svc.ServiceContext
 	ApiCtx         struct {
 		Server *rest.Server
-		Svc    *ServiceContext
+		SvcCtx *ServiceContext
 	}
 )
 
@@ -35,7 +35,7 @@ func NewApi(apiCtx ApiCtx) ApiCtx {
 func runApi(apiCtx ApiCtx) ApiCtx {
 	var server = apiCtx.Server
 	ctx := svc.NewServiceContext(c)
-	apiCtx.Svc = ctx
+	apiCtx.SvcCtx = ctx
 	if server == nil {
 		server = rest.MustNewServer(c.RestConf, rest.WithCors("*"),
 			rest.WithNotFoundHandler(proxy.Handler(ctx)),

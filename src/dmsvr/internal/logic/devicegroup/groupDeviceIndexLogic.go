@@ -2,9 +2,9 @@ package devicegrouplogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -31,7 +31,7 @@ func (l *GroupDeviceIndexLogic) GroupDeviceIndex(in *dm.GroupDeviceIndexReq) (*d
 
 	var list []*dm.DeviceInfo
 	gd, total, err := l.svcCtx.GroupDB.IndexGD(l.ctx, &mysql.GroupDeviceFilter{
-		Page:       &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
+		Page:       logic.ToPageInfo(in.Page),
 		GroupID:    in.GroupID,
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,

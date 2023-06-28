@@ -22,11 +22,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RuleEngineClient interface {
-	FlowInfoCreate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error)
-	FlowInfoUpdate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error)
-	FlowInfoDelete(ctx context.Context, in *FlowInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	FlowInfoCreate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*WithID, error)
+	FlowInfoUpdate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Empty, error)
+	FlowInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	FlowInfoIndex(ctx context.Context, in *FlowInfoIndexReq, opts ...grpc.CallOption) (*FlowInfoIndexResp, error)
-	FlowInfoRead(ctx context.Context, in *FlowInfoReadReq, opts ...grpc.CallOption) (*FlowInfo, error)
+	FlowInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*FlowInfo, error)
 }
 
 type ruleEngineClient struct {
@@ -37,8 +37,8 @@ func NewRuleEngineClient(cc grpc.ClientConnInterface) RuleEngineClient {
 	return &ruleEngineClient{cc}
 }
 
-func (c *ruleEngineClient) FlowInfoCreate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *ruleEngineClient) FlowInfoCreate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, "/rule.RuleEngine/flowInfoCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,8 +46,8 @@ func (c *ruleEngineClient) FlowInfoCreate(ctx context.Context, in *FlowInfo, opt
 	return out, nil
 }
 
-func (c *ruleEngineClient) FlowInfoUpdate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *ruleEngineClient) FlowInfoUpdate(ctx context.Context, in *FlowInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/rule.RuleEngine/flowInfoUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -55,8 +55,8 @@ func (c *ruleEngineClient) FlowInfoUpdate(ctx context.Context, in *FlowInfo, opt
 	return out, nil
 }
 
-func (c *ruleEngineClient) FlowInfoDelete(ctx context.Context, in *FlowInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *ruleEngineClient) FlowInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/rule.RuleEngine/flowInfoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func (c *ruleEngineClient) FlowInfoIndex(ctx context.Context, in *FlowInfoIndexR
 	return out, nil
 }
 
-func (c *ruleEngineClient) FlowInfoRead(ctx context.Context, in *FlowInfoReadReq, opts ...grpc.CallOption) (*FlowInfo, error) {
+func (c *ruleEngineClient) FlowInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*FlowInfo, error) {
 	out := new(FlowInfo)
 	err := c.cc.Invoke(ctx, "/rule.RuleEngine/flowInfoRead", in, out, opts...)
 	if err != nil {
@@ -86,11 +86,11 @@ func (c *ruleEngineClient) FlowInfoRead(ctx context.Context, in *FlowInfoReadReq
 // All implementations must embed UnimplementedRuleEngineServer
 // for forward compatibility
 type RuleEngineServer interface {
-	FlowInfoCreate(context.Context, *FlowInfo) (*Response, error)
-	FlowInfoUpdate(context.Context, *FlowInfo) (*Response, error)
-	FlowInfoDelete(context.Context, *FlowInfoDeleteReq) (*Response, error)
+	FlowInfoCreate(context.Context, *FlowInfo) (*WithID, error)
+	FlowInfoUpdate(context.Context, *FlowInfo) (*Empty, error)
+	FlowInfoDelete(context.Context, *WithID) (*Empty, error)
 	FlowInfoIndex(context.Context, *FlowInfoIndexReq) (*FlowInfoIndexResp, error)
-	FlowInfoRead(context.Context, *FlowInfoReadReq) (*FlowInfo, error)
+	FlowInfoRead(context.Context, *WithID) (*FlowInfo, error)
 	mustEmbedUnimplementedRuleEngineServer()
 }
 
@@ -98,19 +98,19 @@ type RuleEngineServer interface {
 type UnimplementedRuleEngineServer struct {
 }
 
-func (UnimplementedRuleEngineServer) FlowInfoCreate(context.Context, *FlowInfo) (*Response, error) {
+func (UnimplementedRuleEngineServer) FlowInfoCreate(context.Context, *FlowInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoCreate not implemented")
 }
-func (UnimplementedRuleEngineServer) FlowInfoUpdate(context.Context, *FlowInfo) (*Response, error) {
+func (UnimplementedRuleEngineServer) FlowInfoUpdate(context.Context, *FlowInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoUpdate not implemented")
 }
-func (UnimplementedRuleEngineServer) FlowInfoDelete(context.Context, *FlowInfoDeleteReq) (*Response, error) {
+func (UnimplementedRuleEngineServer) FlowInfoDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoDelete not implemented")
 }
 func (UnimplementedRuleEngineServer) FlowInfoIndex(context.Context, *FlowInfoIndexReq) (*FlowInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoIndex not implemented")
 }
-func (UnimplementedRuleEngineServer) FlowInfoRead(context.Context, *FlowInfoReadReq) (*FlowInfo, error) {
+func (UnimplementedRuleEngineServer) FlowInfoRead(context.Context, *WithID) (*FlowInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FlowInfoRead not implemented")
 }
 func (UnimplementedRuleEngineServer) mustEmbedUnimplementedRuleEngineServer() {}
@@ -163,7 +163,7 @@ func _RuleEngine_FlowInfoUpdate_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _RuleEngine_FlowInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FlowInfoDeleteReq)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -175,7 +175,7 @@ func _RuleEngine_FlowInfoDelete_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/rule.RuleEngine/flowInfoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleEngineServer).FlowInfoDelete(ctx, req.(*FlowInfoDeleteReq))
+		return srv.(RuleEngineServer).FlowInfoDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -199,7 +199,7 @@ func _RuleEngine_FlowInfoIndex_Handler(srv interface{}, ctx context.Context, dec
 }
 
 func _RuleEngine_FlowInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FlowInfoReadReq)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -211,7 +211,7 @@ func _RuleEngine_FlowInfoRead_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/rule.RuleEngine/flowInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleEngineServer).FlowInfoRead(ctx, req.(*FlowInfoReadReq))
+		return srv.(RuleEngineServer).FlowInfoRead(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -252,11 +252,12 @@ var RuleEngine_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SceneLinkageClient interface {
-	SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Response, error)
-	SceneInfoUpdate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Response, error)
-	SceneInfoDelete(ctx context.Context, in *SceneInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*WithID, error)
+	SceneInfoUpdate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Empty, error)
+	SceneInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error)
-	SceneInfoRead(ctx context.Context, in *SceneInfoReadReq, opts ...grpc.CallOption) (*SceneInfo, error)
+	SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error)
+	SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type sceneLinkageClient struct {
@@ -267,8 +268,8 @@ func NewSceneLinkageClient(cc grpc.ClientConnInterface) SceneLinkageClient {
 	return &sceneLinkageClient{cc}
 }
 
-func (c *sceneLinkageClient) SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *sceneLinkageClient) SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneInfoCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -276,8 +277,8 @@ func (c *sceneLinkageClient) SceneInfoCreate(ctx context.Context, in *SceneInfo,
 	return out, nil
 }
 
-func (c *sceneLinkageClient) SceneInfoUpdate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *sceneLinkageClient) SceneInfoUpdate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneInfoUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -285,8 +286,8 @@ func (c *sceneLinkageClient) SceneInfoUpdate(ctx context.Context, in *SceneInfo,
 	return out, nil
 }
 
-func (c *sceneLinkageClient) SceneInfoDelete(ctx context.Context, in *SceneInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *sceneLinkageClient) SceneInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneInfoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -303,9 +304,18 @@ func (c *sceneLinkageClient) SceneInfoIndex(ctx context.Context, in *SceneInfoIn
 	return out, nil
 }
 
-func (c *sceneLinkageClient) SceneInfoRead(ctx context.Context, in *SceneInfoReadReq, opts ...grpc.CallOption) (*SceneInfo, error) {
+func (c *sceneLinkageClient) SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error) {
 	out := new(SceneInfo)
 	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sceneLinkageClient) SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/rule.SceneLinkage/sceneManuallyTrigger", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -316,11 +326,12 @@ func (c *sceneLinkageClient) SceneInfoRead(ctx context.Context, in *SceneInfoRea
 // All implementations must embed UnimplementedSceneLinkageServer
 // for forward compatibility
 type SceneLinkageServer interface {
-	SceneInfoCreate(context.Context, *SceneInfo) (*Response, error)
-	SceneInfoUpdate(context.Context, *SceneInfo) (*Response, error)
-	SceneInfoDelete(context.Context, *SceneInfoDeleteReq) (*Response, error)
+	SceneInfoCreate(context.Context, *SceneInfo) (*WithID, error)
+	SceneInfoUpdate(context.Context, *SceneInfo) (*Empty, error)
+	SceneInfoDelete(context.Context, *WithID) (*Empty, error)
 	SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error)
-	SceneInfoRead(context.Context, *SceneInfoReadReq) (*SceneInfo, error)
+	SceneInfoRead(context.Context, *WithID) (*SceneInfo, error)
+	SceneManuallyTrigger(context.Context, *WithID) (*Empty, error)
 	mustEmbedUnimplementedSceneLinkageServer()
 }
 
@@ -328,20 +339,23 @@ type SceneLinkageServer interface {
 type UnimplementedSceneLinkageServer struct {
 }
 
-func (UnimplementedSceneLinkageServer) SceneInfoCreate(context.Context, *SceneInfo) (*Response, error) {
+func (UnimplementedSceneLinkageServer) SceneInfoCreate(context.Context, *SceneInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoCreate not implemented")
 }
-func (UnimplementedSceneLinkageServer) SceneInfoUpdate(context.Context, *SceneInfo) (*Response, error) {
+func (UnimplementedSceneLinkageServer) SceneInfoUpdate(context.Context, *SceneInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoUpdate not implemented")
 }
-func (UnimplementedSceneLinkageServer) SceneInfoDelete(context.Context, *SceneInfoDeleteReq) (*Response, error) {
+func (UnimplementedSceneLinkageServer) SceneInfoDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoDelete not implemented")
 }
 func (UnimplementedSceneLinkageServer) SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoIndex not implemented")
 }
-func (UnimplementedSceneLinkageServer) SceneInfoRead(context.Context, *SceneInfoReadReq) (*SceneInfo, error) {
+func (UnimplementedSceneLinkageServer) SceneInfoRead(context.Context, *WithID) (*SceneInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoRead not implemented")
+}
+func (UnimplementedSceneLinkageServer) SceneManuallyTrigger(context.Context, *WithID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SceneManuallyTrigger not implemented")
 }
 func (UnimplementedSceneLinkageServer) mustEmbedUnimplementedSceneLinkageServer() {}
 
@@ -393,7 +407,7 @@ func _SceneLinkage_SceneInfoUpdate_Handler(srv interface{}, ctx context.Context,
 }
 
 func _SceneLinkage_SceneInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SceneInfoDeleteReq)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -405,7 +419,7 @@ func _SceneLinkage_SceneInfoDelete_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/rule.SceneLinkage/sceneInfoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SceneLinkageServer).SceneInfoDelete(ctx, req.(*SceneInfoDeleteReq))
+		return srv.(SceneLinkageServer).SceneInfoDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -429,7 +443,7 @@ func _SceneLinkage_SceneInfoIndex_Handler(srv interface{}, ctx context.Context, 
 }
 
 func _SceneLinkage_SceneInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SceneInfoReadReq)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -441,7 +455,25 @@ func _SceneLinkage_SceneInfoRead_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/rule.SceneLinkage/sceneInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SceneLinkageServer).SceneInfoRead(ctx, req.(*SceneInfoReadReq))
+		return srv.(SceneLinkageServer).SceneInfoRead(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SceneLinkage_SceneManuallyTrigger_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SceneLinkageServer).SceneManuallyTrigger(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rule.SceneLinkage/sceneManuallyTrigger",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SceneLinkageServer).SceneManuallyTrigger(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -473,6 +505,10 @@ var SceneLinkage_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "sceneInfoRead",
 			Handler:    _SceneLinkage_SceneInfoRead_Handler,
 		},
+		{
+			MethodName: "sceneManuallyTrigger",
+			Handler:    _SceneLinkage_SceneManuallyTrigger_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/rule.proto",
@@ -482,24 +518,24 @@ var SceneLinkage_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AlarmCenterClient interface {
-	AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
-	AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error)
-	AlarmInfoDelete(ctx context.Context, in *AlarmInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error)
+	AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error)
+	AlarmInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error)
-	AlarmInfoRead(ctx context.Context, in *AlarmInfoReadReq, opts ...grpc.CallOption) (*AlarmInfo, error)
+	AlarmInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*AlarmInfo, error)
 	//告警关联场景联动
-	AlarmSceneMultiUpdate(ctx context.Context, in *AlarmSceneMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmSceneMultiUpdate(ctx context.Context, in *AlarmSceneMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error)
+	AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	//告警记录
 	AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
 	//告警触发
-	AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*WithID, error)
 	//告警解除
-	AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*WithID, error)
 	//告警流水日志
 	AlarmLogIndex(ctx context.Context, in *AlarmLogIndexReq, opts ...grpc.CallOption) (*AlarmLogIndexResp, error)
 	//告警处理记录
-	AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*Response, error)
+	AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*WithID, error)
 	AlarmDealRecordIndex(ctx context.Context, in *AlarmDealRecordIndexReq, opts ...grpc.CallOption) (*AlarmDealRecordIndexResp, error)
 }
 
@@ -511,8 +547,8 @@ func NewAlarmCenterClient(cc grpc.ClientConnInterface) AlarmCenterClient {
 	return &alarmCenterClient{cc}
 }
 
-func (c *alarmCenterClient) AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *alarmCenterClient) AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -520,8 +556,8 @@ func (c *alarmCenterClient) AlarmInfoCreate(ctx context.Context, in *AlarmInfo, 
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *alarmCenterClient) AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -529,8 +565,8 @@ func (c *alarmCenterClient) AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, 
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmInfoDelete(ctx context.Context, in *AlarmInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *alarmCenterClient) AlarmInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -547,7 +583,7 @@ func (c *alarmCenterClient) AlarmInfoIndex(ctx context.Context, in *AlarmInfoInd
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmInfoRead(ctx context.Context, in *AlarmInfoReadReq, opts ...grpc.CallOption) (*AlarmInfo, error) {
+func (c *alarmCenterClient) AlarmInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*AlarmInfo, error) {
 	out := new(AlarmInfo)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmInfoRead", in, out, opts...)
 	if err != nil {
@@ -556,8 +592,8 @@ func (c *alarmCenterClient) AlarmInfoRead(ctx context.Context, in *AlarmInfoRead
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmSceneMultiUpdate(ctx context.Context, in *AlarmSceneMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *alarmCenterClient) AlarmSceneMultiUpdate(ctx context.Context, in *AlarmSceneMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmSceneMultiUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -565,8 +601,8 @@ func (c *alarmCenterClient) AlarmSceneMultiUpdate(ctx context.Context, in *Alarm
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *alarmCenterClient) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmSceneDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -583,8 +619,8 @@ func (c *alarmCenterClient) AlarmRecordIndex(ctx context.Context, in *AlarmRecor
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *alarmCenterClient) AlarmTrigger(ctx context.Context, in *AlarmTriggerReq, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmTrigger", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -592,8 +628,8 @@ func (c *alarmCenterClient) AlarmTrigger(ctx context.Context, in *AlarmTriggerRe
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *alarmCenterClient) AlarmRelieve(ctx context.Context, in *AlarmRelieveReq, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmRelieve", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -610,8 +646,8 @@ func (c *alarmCenterClient) AlarmLogIndex(ctx context.Context, in *AlarmLogIndex
 	return out, nil
 }
 
-func (c *alarmCenterClient) AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *alarmCenterClient) AlarmDealRecordCreate(ctx context.Context, in *AlarmDealRecordCreateReq, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, "/rule.alarmCenter/alarmDealRecordCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -632,24 +668,24 @@ func (c *alarmCenterClient) AlarmDealRecordIndex(ctx context.Context, in *AlarmD
 // All implementations must embed UnimplementedAlarmCenterServer
 // for forward compatibility
 type AlarmCenterServer interface {
-	AlarmInfoCreate(context.Context, *AlarmInfo) (*Response, error)
-	AlarmInfoUpdate(context.Context, *AlarmInfo) (*Response, error)
-	AlarmInfoDelete(context.Context, *AlarmInfoDeleteReq) (*Response, error)
+	AlarmInfoCreate(context.Context, *AlarmInfo) (*WithID, error)
+	AlarmInfoUpdate(context.Context, *AlarmInfo) (*Empty, error)
+	AlarmInfoDelete(context.Context, *WithID) (*Empty, error)
 	AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error)
-	AlarmInfoRead(context.Context, *AlarmInfoReadReq) (*AlarmInfo, error)
+	AlarmInfoRead(context.Context, *WithID) (*AlarmInfo, error)
 	//告警关联场景联动
-	AlarmSceneMultiUpdate(context.Context, *AlarmSceneMultiUpdateReq) (*Response, error)
-	AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Response, error)
+	AlarmSceneMultiUpdate(context.Context, *AlarmSceneMultiUpdateReq) (*Empty, error)
+	AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Empty, error)
 	//告警记录
 	AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error)
 	//告警触发
-	AlarmTrigger(context.Context, *AlarmTriggerReq) (*Response, error)
+	AlarmTrigger(context.Context, *AlarmTriggerReq) (*WithID, error)
 	//告警解除
-	AlarmRelieve(context.Context, *AlarmRelieveReq) (*Response, error)
+	AlarmRelieve(context.Context, *AlarmRelieveReq) (*WithID, error)
 	//告警流水日志
 	AlarmLogIndex(context.Context, *AlarmLogIndexReq) (*AlarmLogIndexResp, error)
 	//告警处理记录
-	AlarmDealRecordCreate(context.Context, *AlarmDealRecordCreateReq) (*Response, error)
+	AlarmDealRecordCreate(context.Context, *AlarmDealRecordCreateReq) (*WithID, error)
 	AlarmDealRecordIndex(context.Context, *AlarmDealRecordIndexReq) (*AlarmDealRecordIndexResp, error)
 	mustEmbedUnimplementedAlarmCenterServer()
 }
@@ -658,40 +694,40 @@ type AlarmCenterServer interface {
 type UnimplementedAlarmCenterServer struct {
 }
 
-func (UnimplementedAlarmCenterServer) AlarmInfoCreate(context.Context, *AlarmInfo) (*Response, error) {
+func (UnimplementedAlarmCenterServer) AlarmInfoCreate(context.Context, *AlarmInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoCreate not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmInfoUpdate(context.Context, *AlarmInfo) (*Response, error) {
+func (UnimplementedAlarmCenterServer) AlarmInfoUpdate(context.Context, *AlarmInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoUpdate not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmInfoDelete(context.Context, *AlarmInfoDeleteReq) (*Response, error) {
+func (UnimplementedAlarmCenterServer) AlarmInfoDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoDelete not implemented")
 }
 func (UnimplementedAlarmCenterServer) AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoIndex not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmInfoRead(context.Context, *AlarmInfoReadReq) (*AlarmInfo, error) {
+func (UnimplementedAlarmCenterServer) AlarmInfoRead(context.Context, *WithID) (*AlarmInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoRead not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmSceneMultiUpdate(context.Context, *AlarmSceneMultiUpdateReq) (*Response, error) {
+func (UnimplementedAlarmCenterServer) AlarmSceneMultiUpdate(context.Context, *AlarmSceneMultiUpdateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneMultiUpdate not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Response, error) {
+func (UnimplementedAlarmCenterServer) AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneDelete not implemented")
 }
 func (UnimplementedAlarmCenterServer) AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmRecordIndex not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmTrigger(context.Context, *AlarmTriggerReq) (*Response, error) {
+func (UnimplementedAlarmCenterServer) AlarmTrigger(context.Context, *AlarmTriggerReq) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmTrigger not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmRelieve(context.Context, *AlarmRelieveReq) (*Response, error) {
+func (UnimplementedAlarmCenterServer) AlarmRelieve(context.Context, *AlarmRelieveReq) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmRelieve not implemented")
 }
 func (UnimplementedAlarmCenterServer) AlarmLogIndex(context.Context, *AlarmLogIndexReq) (*AlarmLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmLogIndex not implemented")
 }
-func (UnimplementedAlarmCenterServer) AlarmDealRecordCreate(context.Context, *AlarmDealRecordCreateReq) (*Response, error) {
+func (UnimplementedAlarmCenterServer) AlarmDealRecordCreate(context.Context, *AlarmDealRecordCreateReq) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmDealRecordCreate not implemented")
 }
 func (UnimplementedAlarmCenterServer) AlarmDealRecordIndex(context.Context, *AlarmDealRecordIndexReq) (*AlarmDealRecordIndexResp, error) {
@@ -747,7 +783,7 @@ func _AlarmCenter_AlarmInfoUpdate_Handler(srv interface{}, ctx context.Context, 
 }
 
 func _AlarmCenter_AlarmInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AlarmInfoDeleteReq)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -759,7 +795,7 @@ func _AlarmCenter_AlarmInfoDelete_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/rule.alarmCenter/alarmInfoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AlarmCenterServer).AlarmInfoDelete(ctx, req.(*AlarmInfoDeleteReq))
+		return srv.(AlarmCenterServer).AlarmInfoDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -783,7 +819,7 @@ func _AlarmCenter_AlarmInfoIndex_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _AlarmCenter_AlarmInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AlarmInfoReadReq)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -795,7 +831,7 @@ func _AlarmCenter_AlarmInfoRead_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/rule.alarmCenter/alarmInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AlarmCenterServer).AlarmInfoRead(ctx, req.(*AlarmInfoReadReq))
+		return srv.(AlarmCenterServer).AlarmInfoRead(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }

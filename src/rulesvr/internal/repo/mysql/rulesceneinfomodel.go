@@ -35,6 +35,7 @@ func (c customRuleSceneInfoModel) Insert(ctx context.Context, info *scene.Info) 
 	if err != nil {
 		return 0, err
 	}
+	info.ID, err = rst.LastInsertId()
 	return rst.LastInsertId()
 }
 
@@ -68,8 +69,8 @@ func (c customRuleSceneInfoModel) FmtFilter(filter scene.InfoFilter, sql sq.Sele
 	if filter.TriggerType != "" {
 		sql = sql.Where("triggerType = ?", filter.TriggerType)
 	}
-	if filter.State != 0 {
-		sql = sql.Where("state = ?", filter.State)
+	if filter.Status != 0 {
+		sql = sql.Where("status = ?", filter.Status)
 	}
 	if filter.AlarmID != 0 {
 		sql = sql.LeftJoin(fmt.Sprintf("`rule_alarm_scene` as ras on ras.sceneID=%s.id", c.repo.table))

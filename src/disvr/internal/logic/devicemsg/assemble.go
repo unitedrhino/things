@@ -18,7 +18,7 @@ func ToDataHubLogIndex(log *msgHubLog.HubLog) *di.HubLogIndex {
 	}
 }
 
-//SDK调试日志
+// SDK调试日志
 func ToDataSdkLogIndex(log *msgSdkLog.SDKLog) *di.SdkLogIndex {
 	return &di.SdkLogIndex{
 		Timestamp: log.Timestamp.UnixMilli(),

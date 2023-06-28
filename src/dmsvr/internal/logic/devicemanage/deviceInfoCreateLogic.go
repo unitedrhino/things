@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -104,6 +105,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	}
 
 	di := mysql.DmDeviceInfo{
+		ProjectID:  userHeader.GetMetaProjectID(l.ctx),
 		ProductID:  in.ProductID,  // 产品id
 		DeviceName: in.DeviceName, // 设备名称
 		Secret:     utils.GetRandomBase64(20),
@@ -123,6 +125,23 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	}
 	if in.Address != nil {
 		di.Address = in.Address.Value
+	}
+
+	if in.DeviceAlias != nil {
+		di.DeviceAlias = in.DeviceAlias.Value
+	}
+	if in.Uid != 0 {
+		di.Uid = in.Uid
+	}
+	if in.MobileOperator != 0 {
+		di.MobileOperator = in.MobileOperator
+	}
+
+	if in.Iccid != nil {
+		di.Iccid = utils.AnyToNullString(in.Iccid)
+	}
+	if in.Phone != nil {
+		di.Phone = utils.AnyToNullString(in.Phone)
 	}
 
 	err = l.svcCtx.DeviceInfo.InsertDeviceInfo(l.ctx, &di)
