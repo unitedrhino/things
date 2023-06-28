@@ -35,11 +35,6 @@ DdEnable: true
 SysRpc:
   Enable: true
   Mode: direct
-  Conf:
-    Etcd:
-      Hosts:
-        - 127.0.0.1:2379
-      Key: sys.rpc
 DiRpc:
   Enable: true
   Mode: direct
@@ -53,11 +48,6 @@ DmRpc:
 RuleRpc:
   Enable: true
   Mode: direct
-  Conf:
-    Etcd:
-      Hosts:
-        - 127.0.0.1:2379
-      Key: rule.rpc
 OssConf:
   OssType: minio
   PublicBucketName: ithings-public
