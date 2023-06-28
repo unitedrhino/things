@@ -12,7 +12,7 @@ import "things/device/info.api"  //设备结构
 @server(
      group : things/group/info
      prefix: /api/v1/things/group/info
-     middleware: CheckToken
+     middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 
 service api {
@@ -40,7 +40,7 @@ service api {
 @server(
      group : things/group/device
      prefix: /api/v1/things/group/device
-     middleware: CheckToken
+     middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 service api {
     @doc "添加分组设备"
@@ -60,8 +60,11 @@ type (
 
     GroupInfo{
         GroupID   int64  `json:"groupID,string"`           //分组ID
-        GroupName string `json:"groupName"`                //分组名称
         ParentID  int64 `json:"parentID,string"`          //父组ID
+        ProjectID  int64 `json:"projectID,string"`         //项目ID
+        GroupName string `json:"groupName"`                //分组名称
+        ProductID string `json:"productID,optional"`       //产品ID
+        ProductName string `json:"productName,optional"`       //产品ID
         CreatedTime int64  `json:"createdTime,string"`     //创建时间
         Desc string `json:"desc,optional"`   //分组描述
         Tags []*Tag `json:"tags,optional"`                 //分组tag
@@ -70,12 +73,14 @@ type (
     GroupInfoCreateReq struct {
         GroupName string `json:"groupName"`                        //分组名称
         ParentID int64 `json:"parentID,string"`                  //父组ID
+        ProductID string `json:"productID,optional"`             //产品ID
         Desc string `json:"desc,optional"`           //分组描述
     }
 
     GroupInfoIndexReq struct {
-        Page PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         ParentID int64 `json:"parentID,string"`                  //父组ID
+        ProductID string `json:"productID,optional"`                         //产品ID
         GroupName string `json:"groupName,optional"`          //分组名称
         Tags []*Tag `json:"tags,optional"`                    //分组tag
     }
@@ -97,15 +102,17 @@ type (
     GroupInfoUpdateReq struct {
         GroupID   int64  `json:"groupID,string"` //分组ID
         GroupName *string `json:"groupName,optional"`               //分组名称
+        ProductID string `json:"productID,optional"`       //产品ID
         Desc *string `json:"desc,optional"`           //分组描述
         Tags []*Tag `json:"tags,optional"`                          //分组tag
     }
 
     GroupDeviceIndexReq struct {
-        Page PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         GroupID   int64  `json:"groupID,string"`                    //分组ID
         ProductID string `json:"productID,optional"`                         //产品ID
         DeviceName string `json:"deviceName,optional"`                       //设备名称
+        WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
     }
 
     GroupDeviceIndexResp struct {

@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
+	"math"
 )
 
 const (
@@ -53,34 +54,41 @@ func (tp *Param) SetByDefine(d *schema.Define, val any) (err error) {
 	return err
 }
 
-func ToVal(tp map[string]Param) map[string]any {
+func ToVal(tp map[string]Param) (map[string]any, error) {
 	ret := make(map[string]any, len(tp))
+	var err error
 	for k, v := range tp {
-		ret[k] = v.ToVal()
+		ret[k], err = v.ToVal()
+		if err != nil {
+			return nil, err
+		}
 	}
-	return ret
+	return ret, nil
 }
 
-func (tp *Param) ToVal() any {
+func (tp *Param) ToVal() (any, error) {
 	if tp == nil {
-		panic("Param is nil")
+		return nil, errors.Parameter.AddMsgf("Param is nil")
 	}
-
+	var err error
 	switch tp.Value.Type {
 	case schema.DataTypeStruct:
 		v, ok := tp.Value.Value.(map[string]Param)
 		if ok == false {
-			panic("struct Param is not find")
+			return nil, errors.Parameter.AddMsgf("struct Param is not find")
 		}
 		val := make(map[string]any, len(v)+1)
 		for _, tp := range v {
-			val[tp.Identifier] = tp.ToVal()
+			val[tp.Identifier], err = tp.ToVal()
+			if err != nil {
+				return nil, err
+			}
 		}
-		return val
+		return val, nil
 	case schema.DataTypeArray:
 		array, ok := tp.Value.Value.([]any)
 		if ok == false {
-			panic("array Param is not find")
+			return nil, errors.Parameter.AddMsgf("array Param is not find")
 		}
 		val := make([]any, 0, len(array)+1)
 		for _, value := range array {
@@ -88,16 +96,19 @@ func (tp *Param) ToVal() any {
 			case map[string]Param:
 				valMap := make(map[string]any, len(array)+1)
 				for _, tp := range value.(map[string]Param) {
-					valMap[tp.Identifier] = tp.ToVal()
+					valMap[tp.Identifier], err = tp.ToVal()
+					if err != nil {
+						return nil, err
+					}
 				}
 				val = append(val, valMap)
 			default:
 				val = append(val, value)
 			}
 		}
-		return val
+		return val, nil
 	default:
-		return tp.Value.Value
+		return tp.Value.Value, nil
 	}
 }
 
@@ -106,31 +117,31 @@ func GetVal(d *schema.Define, val any) (any, error) {
 	case schema.DataTypeBool:
 		return cast.ToBoolE(val)
 	case schema.DataTypeInt:
-		if num, ok := val.(json.Number); !ok {
+		if num, err := cast.ToInt64E(val); err != nil {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
-			ret, err := num.Int64()
-			if err != nil {
-				return nil, errors.Parameter.AddDetail(val)
-			}
-			if validateDataRange && (ret > cast.ToInt64(d.Max) || ret < cast.ToInt64(d.Min)) {
+			if validateDataRange && (num > cast.ToInt64(d.Max) || num < cast.ToInt64(d.Min)) {
 				return nil, errors.OutRange.AddDetailf("value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
-			return ret, nil
+			step := cast.ToInt64(d.Step)
+			if step != 0 {
+				num = num / step * step
+			}
+			return num, nil
 		}
 	case schema.DataTypeFloat:
-		if num, ok := val.(json.Number); !ok {
+		if num, err := cast.ToFloat64E(val); err != nil {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
-			ret, err := num.Float64()
-			if err != nil {
-				return nil, errors.Parameter.AddDetail(val)
-			}
-			if validateDataRange && (ret > cast.ToFloat64(d.Max) || ret < cast.ToFloat64(d.Min)) {
+			if validateDataRange && (num > cast.ToFloat64(d.Max) || num < cast.ToFloat64(d.Min)) {
 				return nil, errors.OutRange.AddDetailf(
 					"value %v out of range:[%s,%s]", val, d.Max, d.Min)
 			}
-			return ret, nil
+			step := cast.ToFloat64(d.Step)
+			if step != 0 && !math.IsNaN(step) && !math.IsInf(step, 0) {
+				num = math.Floor(num/step) * step
+			}
+			return num, nil
 		}
 	case schema.DataTypeString:
 		if str, ok := val.(string); !ok {

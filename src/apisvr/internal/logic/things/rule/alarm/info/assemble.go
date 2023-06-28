@@ -9,7 +9,7 @@ func AlarmInfoToApi(in *rule.AlarmInfo) *types.AlarmInfo {
 	pi := &types.AlarmInfo{
 		ID:          in.Id,
 		Name:        in.Name,
-		State:       in.State,
+		Status:      in.Status,
 		Desc:        in.Desc,
 		CreatedTime: in.CreatedTime,
 		Level:       in.Level,

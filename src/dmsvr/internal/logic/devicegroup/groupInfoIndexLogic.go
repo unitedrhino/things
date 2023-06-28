@@ -36,19 +36,30 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-
 	info := make([]*dm.GroupInfo, 0, len(ros))
+	//filterProductID :=
+	productFilter := &mysql.ProductFilter{}
 	for _, ro := range ros {
+		productFilter.ProductIDs = append(productFilter.ProductIDs, ro.ProductID)
 		info = append(info, &dm.GroupInfo{
 			GroupID:     ro.GroupID,
-			GroupName:   ro.GroupName,
 			ParentID:    ro.ParentID,
+			ProjectID:   ro.ProjectID,
+			GroupName:   ro.GroupName,
+			ProductID:   ro.ProductID,
 			Desc:        ro.Desc,
 			CreatedTime: ro.CreatedTime,
 			Tags:        in.Tags,
 		})
 	}
-
+	productList, _ := l.svcCtx.ProductInfo.FindByFilter(l.ctx, *productFilter, &def.PageInfo{Page: 0, Size: 20})
+	productMap := make(map[string]string, len(productList))
+	for _, p := range productList {
+		productMap[p.ProductID] = p.ProductName
+	}
+	for k, v := range productList {
+		productList[k].ProductName = productMap[v.ProductID]
+	}
 	rosAll, err := l.svcCtx.GroupDB.IndexAll(l.ctx, &mysql.GroupFilter{
 		Page:      &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
 		GroupName: in.GroupName,
@@ -62,8 +73,11 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 	for _, ro := range rosAll {
 		infoAll = append(infoAll, &dm.GroupInfo{
 			GroupID:     ro.GroupID,
-			GroupName:   ro.GroupName,
 			ParentID:    ro.ParentID,
+			ProjectID:   ro.ProjectID,
+			GroupName:   ro.GroupName,
+			ProductName: productMap[ro.ProductID],
+			ProductID:   ro.ProductID,
 			Desc:        ro.Desc,
 			CreatedTime: ro.CreatedTime,
 			Tags:        in.Tags,

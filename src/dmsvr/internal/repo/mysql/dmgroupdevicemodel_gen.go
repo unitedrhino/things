@@ -39,6 +39,7 @@ type (
 	DmGroupDevice struct {
 		Id          int64        `db:"id"`
 		GroupID     int64        `db:"groupID"`     // 分组ID
+		ProjectID   int64        `db:"projectID"`   // 项目ID(雪花ID)
 		ProductID   string       `db:"productID"`   // 产品id
 		DeviceName  string       `db:"deviceName"`  // 设备名称
 		CreatedTime time.Time    `db:"createdTime"` // 创建时间
@@ -89,14 +90,14 @@ func (m *defaultDmGroupDeviceModel) FindOneByGroupIDProductIDDeviceName(ctx cont
 }
 
 func (m *defaultDmGroupDeviceModel) Insert(ctx context.Context, data *DmGroupDevice) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, dmGroupDeviceRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.GroupID, data.ProductID, data.DeviceName)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, dmGroupDeviceRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.GroupID, data.ProjectID, data.ProductID, data.DeviceName)
 	return ret, err
 }
 
 func (m *defaultDmGroupDeviceModel) Update(ctx context.Context, newData *DmGroupDevice) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, dmGroupDeviceRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.GroupID, newData.ProductID, newData.DeviceName, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.GroupID, newData.ProjectID, newData.ProductID, newData.DeviceName, newData.Id)
 	return err
 }
 

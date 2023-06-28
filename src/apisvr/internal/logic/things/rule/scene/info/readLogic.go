@@ -26,8 +26,8 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 	}
 }
 
-func (l *ReadLogic) Read(req *types.SceneInfoReadReq) (resp *types.SceneInfo, err error) {
-	ruleResp, err := l.svcCtx.Scene.SceneInfoRead(l.ctx, &rule.SceneInfoReadReq{Id: req.ID})
+func (l *ReadLogic) Read(req *types.WithID) (resp *types.SceneInfo, err error) {
+	ruleResp, err := l.svcCtx.Scene.SceneInfoRead(l.ctx, &rule.WithID{Id: req.ID})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s rpc.SceneInfoRead req=%v err=%+v", utils.FuncName(), req, er)

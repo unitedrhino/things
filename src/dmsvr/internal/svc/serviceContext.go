@@ -2,6 +2,8 @@ package svc
 
 import (
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/shared/eventBus"
+	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
@@ -39,6 +41,8 @@ type ServiceContext struct {
 	Gateway          mysql.DmGatewayDeviceModel
 	RemoteConfigDB   mysql.DmRemoteConfigModel
 	RemoteConfigInfo mysql.DmProductRemoteConfigModel
+	OssClient        *oss.Client
+	Bus              eventBus.Bus
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -46,7 +50,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 
 	//TestTD(td)
-	conn := sqlx.NewMysql(c.Mysql.DataSource)
+	conn := sqlx.NewMysql(c.Database.DSN)
 	di := mysql.NewDmDeviceInfoModel(conn)
 	pi := mysql.NewDmProductInfoModel(conn)
 	pt := mysql.NewDmProductSchemaModel(conn)
@@ -72,8 +76,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	RemoteConfigInfo := mysql.NewDmProductRemoteConfigModel(conn)
 	mysql.NewDmProductRemoteConfigModel(conn)
 	gw := mysql.NewDmGatewayDeviceModel(conn)
+	ossClient := oss.NewOssClient(c.OssConf)
+	if ossClient == nil {
+		logx.Error("NewOss err")
+		os.Exit(-1)
+	}
+	bus := eventBus.NewEventBus()
+
 	return &ServiceContext{
+		Bus:              bus,
 		Config:           c,
+		OssClient:        ossClient,
 		DeviceInfo:       di,
 		ProductInfo:      pi,
 		ProductSchema:    pt,

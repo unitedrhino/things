@@ -14,14 +14,14 @@ CREATE TABLE if not exists `rule_scene_info`
     `when`  json       COMMENT '触发条件',
     `then`  json      COMMENT '满足条件时执行的动作',
     `desc`       varchar(512)          DEFAULT '' COMMENT '描述',
-    `state`           tinyint(1) NOT NULL DEFAULT 2 COMMENT '状态（1启用 2禁用）',
+    `status`      tinyint(1)                   default 1 null comment '状态  1:启用,2:禁用',
     `createdTime` datetime     not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime     NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime              DEFAULT NULL COMMENT '删除时间，默认为空，表示未删除，非空表示已删除',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `unique_name` (`name`) USING BTREE,
     KEY `triggerType` (`triggerType`) USING BTREE,
-    KEY `state` (`state`) USING BTREE,
+    KEY `status` (`status`) USING BTREE,
     KEY `deletedTime` (`deletedTime`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -47,7 +47,7 @@ CREATE TABLE if not exists `rule_alarm_info`
     `name`            varchar(100) NOT NULL DEFAULT '' comment '告警配置名称',
     `desc`            varchar(100) NOT NULL DEFAULT '' comment '告警配置说明',
     `level`           tinyint(1) NOT NULL COMMENT '告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）',
-    `state`           tinyint(1) NOT NULL DEFAULT 2 COMMENT '告警配置状态（1启用 2禁用）',
+    `status`      tinyint(1)                   default 1 null comment '状态  1:启用,2:禁用',
     `createdTime`     datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` 	  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` 	  datetime DEFAULT NULL,

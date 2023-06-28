@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
+	Database conf.Database
 	TDengine struct {
 		DataSource string
 	}

@@ -8,8 +8,10 @@ import (
 
 func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
 	define := PropertyDef{
-		Define: in.Define,
-		Mode:   in.Mode,
+		Define:      in.Define,
+		Mode:        in.Mode,
+		IsUseShadow: in.IsUseShadow,
+		IsNoRecord:  in.IsNoRecord,
 	}
 	defineStr, _ := json.Marshal(define)
 	return &DmProductSchema{
@@ -24,17 +26,27 @@ func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
 	}
 }
 
-func ToPropertyDo(in *DmProductSchema) *schema.Property {
-	affordance := PropertyDef{}
-	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
-	do := &schema.Property{
+func ToCommonParam(in *DmProductSchema) schema.CommonParam {
+	return schema.CommonParam{
 		Identifier: in.Identifier,
 		Name:       in.Name,
 		Desc:       in.Desc,
 		Required:   def.ToBool(in.Required),
-		Define:     affordance.Define,
-		Mode:       affordance.Mode,
 	}
+}
+
+func ToPropertyDo(in *DmProductSchema) *schema.Property {
+	affordance := PropertyDef{}
+	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
+	do := &schema.Property{
+		CommonParam: ToCommonParam(in),
+		Define:      affordance.Define,
+		Mode:        affordance.Mode,
+		IsUseShadow: affordance.IsUseShadow,
+		IsNoRecord:  affordance.IsNoRecord,
+	}
+	newAffordance, _ := json.Marshal(affordance)
+	in.Affordance = string(newAffordance)
 	do.ValidateWithFmt()
 	return do
 }
@@ -61,13 +73,12 @@ func ToEventDo(in *DmProductSchema) *schema.Event {
 	affordance := EventDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Event{
-		Identifier: in.Identifier,
-		Name:       in.Name,
-		Desc:       in.Desc,
-		Required:   def.ToBool(in.Required),
-		Type:       affordance.Type,
-		Params:     affordance.Params,
+		CommonParam: ToCommonParam(in),
+		Type:        affordance.Type,
+		Params:      affordance.Params,
 	}
+	newAffordance, _ := json.Marshal(affordance)
+	in.Affordance = string(newAffordance)
 	do.ValidateWithFmt()
 	return do
 }
@@ -94,13 +105,12 @@ func ToActionDo(in *DmProductSchema) *schema.Action {
 	affordance := ActionDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Action{
-		Identifier: in.Identifier,
-		Name:       in.Name,
-		Desc:       in.Desc,
-		Required:   def.ToBool(in.Required),
-		Input:      affordance.Input,
-		Output:     affordance.Output,
+		CommonParam: ToCommonParam(in),
+		Input:       affordance.Input,
+		Output:      affordance.Output,
 	}
+	newAffordance, _ := json.Marshal(affordance)
+	in.Affordance = string(newAffordance)
 	do.ValidateWithFmt()
 	return do
 }

@@ -22,16 +22,16 @@ cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ..
 
 # 系统管理模块-syssvr
 
-- 数据库文件生成
-
-```shell
-cd syssvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  --style=goZero -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
-```
-
 - rpc文件编译方法
 
 ```shell
 cd syssvr && goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m && cd ..
+```
+
+- model文件编译
+
+```shell
+cd syssvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/syssvr.sql"  --style=goZero -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
 ```
 
 # 设备管理模块-dmsvr
@@ -53,6 +53,12 @@ cd dmsvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/dmsvr.sql"  
 
 ```shell
 cd disvr && goctl rpc protoc  proto/di.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m && cd ..
+```
+
+- model文件编译
+
+```shell
+cd disvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/disvr.sql"  --style=goZero -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
 ```
 
 # 设备数据处理模块-ddsvr

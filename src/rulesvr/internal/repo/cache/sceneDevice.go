@@ -51,7 +51,7 @@ func (s *SceneDeviceRepo) Init(ctx context.Context) error {
 		return true
 	})
 	infos, err := s.scene.FindByFilter(ctx, scene.InfoFilter{
-		State:       def.Enable,
+		Status:      def.Enable,
 		TriggerType: scene.TriggerTypeDevice,
 	}, nil)
 	if err != nil {

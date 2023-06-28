@@ -2,7 +2,6 @@ package authlogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -30,7 +29,7 @@ func (l *AuthApiIndexLogic) AuthApiIndex(in *sys.AuthApiIndexReq) (*sys.AuthApiI
 	list := make([]*sys.AuthApiInfo, 0)
 	total := int64(len(data))
 	if total == 0 {
-		return nil, errors.NotFind.AddDetail("GetFilteredPolicy error")
+		return &sys.AuthApiIndexResp{Total: total, List: list}, nil
 	}
 
 	for _, v := range data {

@@ -8,10 +8,8 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
-	Event conf.EventConf //和things内部交互的设置
-	Mysql struct {
-		DataSource string
-	}
+	Event      conf.EventConf //和things内部交互的设置
+	Database   conf.Database
 	CacheRedis cache.ClusterConf
 	DmRpc      conf.RpcClientConf `json:",optional"`
 	DiRpc      conf.RpcClientConf `json:",optional"`

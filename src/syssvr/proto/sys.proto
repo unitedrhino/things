@@ -172,6 +172,7 @@ message UserInfo{
   int64  createdTime =15;
   int64  role = 16;
   int64  sex =17;
+  int64  isAllData =18;
 }
 
 message UserCreateReq{
@@ -189,6 +190,7 @@ message UserCreateReq{
   string headImgUrl =12;
   int64  role = 13;
   int64  sex =14;
+  int64  isAllData =15;
 }
 
 message UserCreateResp{
@@ -204,6 +206,7 @@ message UserCheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
   int64 uid = 2;
   int64 role = 3;
+  int64 isAllData = 4;
 }
 
 message CheckAuthReq{
@@ -241,8 +244,9 @@ message UserUpdateReq{
   string province =9;
   string language =10;
   string headImgUrl =11;
-  int64  sex =12;
-  int64  role =13;
+  int64  role =12;
+  int64  sex =13;
+  int64  isAllData =14;
 }
 
 message UserReadReq{
@@ -266,6 +270,7 @@ message UserReadResp{
   int64  createdTime =14;
   int64  role = 15;
   int64  sex =16;
+  int64  isAllData =17;
 }
 message UserDeleteReq{
   int64 uid = 1;
@@ -284,6 +289,7 @@ message UserLoginReq{
     string loginType =4;//验证类型 sms 短信验证码 pwd 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxmini 微信小程序
     string code = 5;//验证码    微信登录填code
     string codeID = 6;//验证码编号 微信登录填state
+    string ip = 7;//透传请求的 ip
 }
 
 message UserLoginResp{

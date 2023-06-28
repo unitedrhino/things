@@ -23,6 +23,8 @@ service DeviceMsg {
   rpc propertyLogIndex(PropertyLogIndexReq)     returns (PropertyIndexResp);
   //获取设备数据信息
   rpc eventLogIndex(EventLogIndexReq)     returns (EventIndexResp);
+  //获取设备影子列表
+  rpc shadowIndex(PropertyLatestIndexReq)     returns (ShadowIndexResp);
 }
 
 //设备交互
@@ -37,12 +39,23 @@ service DeviceInteract {
 
   //调用设备属性
   rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
+  //批量调用设备属性
+  rpc multiSendProperty(MultiSendPropertyReq)     returns(MultiSendPropertyResp);
   //获取异步调用设备属性的结果
   rpc propertyRead(RespReadReq)  returns(SendPropertyResp);
   //发送消息给设备
   rpc sendMsg(SendMsgReq)     returns(SendMsgResp);
 }
 
+message ShadowIndexResp{
+  repeated ShadowIndex  list = 1;
+}
+/*设备的日志数据*/
+message ShadowIndex{
+  string dataID = 1;//属性id
+  string value = 2;//获取到的值
+  int64 updatedDeviceTime = 3;//更新到设备的时间
+}
 
 message GetPropertyReplyReq{
   string productID = 1; //产品id (必填)
@@ -202,13 +215,13 @@ message SendPropertyReq{
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
   string data = 3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+  int64 shadowControl = 4;//设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
   bool isAsync = 6;//是否异步操作 异步情况通过获取接口来获取
 }
 message SendPropertyResp{
   int64   code = 1;//设备返回状态码
   string  status = 2;//返回状态
   string clientToken = 3;//调用id
-  string data = 4;//返回信息
 }
 
 message SendMsgReq{
@@ -220,3 +233,23 @@ message SendMsgResp{
 
 }
 
+
+
+message MultiSendPropertyReq{
+  string  productID = 1; //产品id
+  repeated string deviceNames = 2; //设备名
+  int64 shadowControl = 3;//设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+  string data = 4;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+}
+message SendPropertyMsg{
+  string  deviceName = 1; //设备名
+  int64   code = 2;//设备返回状态码
+  string  status = 3;//返回状态
+  string clientToken = 4;//调用id
+  string sysMsg = 5;//系统错误信息
+  int64  sysCode = 6;//系统错误码
+}
+
+message MultiSendPropertyResp{
+  repeated SendPropertyMsg list = 1; //批量设备返回结果列表
+}

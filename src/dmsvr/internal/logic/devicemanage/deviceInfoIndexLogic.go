@@ -42,11 +42,13 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 			cast.ToString(in.Position.Longitude)+" "+cast.ToString(in.Position.Latitude))
 	}
 	filter := mysql.DeviceFilter{
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
-		Tags:       in.Tags,
-		Range:      in.Range,
-		Position:   position,
+		ProductID:   in.ProductID,
+		AreaIDs:     in.AreaIDs,
+		DeviceName:  in.DeviceName,
+		Tags:        in.Tags,
+		Range:       in.Range,
+		Position:    position,
+		DeviceAlias: in.DeviceAlias,
 	}
 
 	size, err = l.svcCtx.DeviceInfo.CountByFilter(l.ctx, filter)

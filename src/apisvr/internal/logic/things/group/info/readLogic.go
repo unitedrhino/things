@@ -34,12 +34,5 @@ func (l *ReadLogic) Read(req *types.GroupInfoReadReq) (resp *types.GroupInfo, er
 		return nil, er
 	}
 
-	return &types.GroupInfo{
-		GroupID:     dgResp.GroupID,
-		ParentID:    dgResp.ParentID,
-		GroupName:   dgResp.GroupName,
-		CreatedTime: dgResp.CreatedTime,
-		Desc:        dgResp.Desc,
-		Tags:        toTagsType(dgResp.Tags),
-	}, err
+	return ToGroupInfoTypes(dgResp), err
 }

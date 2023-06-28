@@ -39,33 +39,41 @@ func ToDmDevicesBind(devices []*msgGateway.Device) (ret []*dm.DeviceGatewayBindD
 	return
 }
 
-func ToParamValues(tp map[string]msgThing.Param) map[string]application.ParamValue {
+func ToParamValues(tp map[string]msgThing.Param) (map[string]application.ParamValue, error) {
 	ret := make(map[string]application.ParamValue, len(tp))
+	var err error
 	for k, v := range tp {
-		ret[k] = ToParamValue(v)
+		ret[k], err = ToParamValue(v)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return ret
+	return ret, nil
 }
 
-func ToParamValue(p msgThing.Param) application.ParamValue {
+func ToParamValue(p msgThing.Param) (application.ParamValue, error) {
 	var ret application.ParamValue
+	var err error
 	ret.Type = p.Value.Type
 	switch p.Value.Type {
 	case schema.DataTypeStruct:
 		v, ok := p.Value.Value.(map[string]msgThing.Param)
 		if ok == false {
-			panic("struct Param is not find")
+			return ret, errors.Parameter.AddMsgf("struct Param is not find")
 		}
 		val := make(map[string]application.ParamValue, len(v)+1)
 		for _, tp := range v {
-			val[tp.Identifier] = ToParamValue(tp)
+			val[tp.Identifier], err = ToParamValue(tp)
+			if err != nil {
+				return ret, err
+			}
 		}
 		ret.Value = val
-		return ret
+		return ret, nil
 	case schema.DataTypeArray:
 		array, ok := p.Value.Value.([]any)
 		if ok == false {
-			panic("array Param is not find")
+			return ret, errors.Parameter.AddMsgf("array Param is not find")
 		}
 		val := make([]any, 0, len(array)+1)
 		for _, value := range array {
@@ -73,7 +81,8 @@ func ToParamValue(p msgThing.Param) application.ParamValue {
 			case map[string]msgThing.Param:
 				valMap := make(map[string]application.ParamValue, len(array)+1)
 				for _, tp := range value.(map[string]msgThing.Param) {
-					valMap[tp.Identifier] = ToParamValue(tp)
+					valMap[tp.Identifier], err = ToParamValue(tp)
+					return ret, err
 				}
 				val = append(val, valMap)
 			default:
@@ -81,18 +90,18 @@ func ToParamValue(p msgThing.Param) application.ParamValue {
 			}
 		}
 		ret.Value = val
-		return ret
+		return ret, nil
 	default:
 		ret.Value = p.Value.Value
-		return ret
+		return ret, nil
 	}
 }
 
 func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDeviceInfoReq *dm.DeviceInfo) {
 	var position *dm.Point
 	if p := diDeviceBasicInfoDo.Position; p != nil {
-		gcp := utils.PositionToBaidu(p.CoordinateSystem, p.Longitude, p.Latitude)
-		position = &dm.Point{Longitude: gcp.Lon, Latitude: gcp.Lat}
+		gcp := utils.PositionToBaidu(*p)
+		position = &dm.Point{Longitude: gcp.Longitude, Latitude: gcp.Latitude}
 	}
 
 	return &dm.DeviceInfo{

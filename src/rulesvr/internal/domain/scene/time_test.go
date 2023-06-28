@@ -6,6 +6,12 @@ import (
 )
 
 func TestTimeRange_IsHit(t1 *testing.T) {
+	var st = "123"
+	var aaa = "423425"
+	if st > aaa {
+
+	}
+
 	type fields struct {
 		Type string
 		Cron string

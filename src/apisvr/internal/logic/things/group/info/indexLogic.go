@@ -4,11 +4,10 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
-
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,36 +26,12 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 	}
 }
 
-func toTagsMap(tags []*types.Tag) map[string]string {
-	if tags == nil {
-		return nil
-	}
-	tagMap := make(map[string]string, len(tags))
-	for _, tag := range tags {
-		tagMap[tag.Key] = tag.Value
-	}
-	return tagMap
-}
-
-func toTagsType(tags map[string]string) (retTag []*types.Tag) {
-	for k, v := range tags {
-		retTag = append(retTag, &types.Tag{
-			Key:   k,
-			Value: v,
-		})
-	}
-	return
-}
-
 func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoIndexResp, err error) {
-	var page dm.PageInfo
-	copier.Copy(&page, req.Page)
-
 	res, err := l.svcCtx.DeviceG.GroupInfoIndex(l.ctx, &dm.GroupInfoIndexReq{
-		Page:      &page,
+		Page:      logic.ToDmPageRpc(req.Page),
 		ParentID:  req.ParentID,
 		GroupName: req.GroupName,
-		Tags:      toTagsMap(req.Tags),
+		Tags:      logic.ToTagsMap(req.Tags),
 	})
 	if err != nil {
 		er := errors.Fmt(err)
@@ -65,26 +40,12 @@ func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoI
 	}
 	glist := make([]*types.GroupInfo, 0, len(res.List))
 	for _, v := range res.List {
-		glist = append(glist, &types.GroupInfo{
-			GroupName:   v.GroupName,
-			GroupID:     v.GroupID,
-			ParentID:    v.ParentID,
-			CreatedTime: v.CreatedTime,
-			Desc:        v.Desc,
-			Tags:        toTagsType(v.Tags),
-		})
+		glist = append(glist, ToGroupInfoTypes(v))
 	}
 
 	glistAll := make([]*types.GroupInfo, 0, len(res.ListAll))
 	for _, v := range res.ListAll {
-		glistAll = append(glistAll, &types.GroupInfo{
-			GroupName:   v.GroupName,
-			GroupID:     v.GroupID,
-			ParentID:    v.ParentID,
-			CreatedTime: v.CreatedTime,
-			Desc:        v.Desc,
-			Tags:        toTagsType(v.Tags),
-		})
+		glistAll = append(glistAll, ToGroupInfoTypes(v))
 	}
 
 	return &types.GroupInfoIndexResp{

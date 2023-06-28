@@ -25,7 +25,7 @@ func NewAlarmInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ala
 	}
 }
 
-func (l *AlarmInfoReadLogic) AlarmInfoRead(in *rule.AlarmInfoReadReq) (*rule.AlarmInfo, error) {
+func (l *AlarmInfoReadLogic) AlarmInfoRead(in *rule.WithID) (*rule.AlarmInfo, error) {
 	di, err := l.svcCtx.AlarmInfoRepo.FindOne(l.ctx, in.Id)
 	if err != nil {
 		if err == mysql.ErrNotFound {
