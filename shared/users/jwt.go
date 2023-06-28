@@ -12,7 +12,7 @@ func CreateToken(secretKey string, claims jwt.Claims) (string, error) {
 }
 
 // 解析 token
-func ParseToken(claim jwt.Claims, tokenString string, secretKey string) *errors.CodeError {
+func ParseToken(claim jwt.Claims, tokenString string, secretKey string) error {
 	token, err := jwt.ParseWithClaims(tokenString, claim, func(token *jwt.Token) (i any, e error) {
 		return []byte(secretKey), nil
 	})
