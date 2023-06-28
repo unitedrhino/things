@@ -34,3 +34,24 @@ func UserInfoToApi(ui *sys.UserInfo) *types.UserInfo {
 		CreatedTime: ui.CreatedTime,
 	}
 }
+func UserInfoToRpc(ui *types.UserInfo) *sys.UserInfo {
+	return &sys.UserInfo{
+		UserID:      ui.UserID,
+		UserName:    ui.UserName,
+		Email:       ui.Email,
+		Phone:       ui.Phone,
+		Wechat:      ui.Wechat,
+		LastIP:      ui.LastIP,
+		RegIP:       ui.RegIP,
+		Role:        ui.Role,
+		NickName:    ui.NickName,
+		Sex:         ui.Sex,
+		IsAllData:   ui.IsAllData,
+		City:        ui.City,
+		Country:     ui.Country,
+		Province:    ui.Province,
+		Language:    ui.Language,
+		HeadImgUrl:  ui.HeadImgUrl,
+		CreatedTime: ui.CreatedTime,
+	}
+}

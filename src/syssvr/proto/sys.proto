@@ -46,6 +46,26 @@ service Api {
   rpc apiDelete(ApiDeleteReq) returns(Response);   //删除接口
 }
 
+//----------------------------------------------------------------------------------------------
+
+message Response {
+}
+
+message PageInfo {
+    int64 page = 1;
+    int64 size = 2;
+    //排序信息
+    repeated OrderBy orders = 3;
+    message OrderBy {
+        //排序的字段名
+        string filed = 1;
+        //排序方式：0 aes, 1 desc
+        int64 sort = 2;
+    }
+}
+
+//----------------------------------------------------------------------------------------------
+
 service Auth {
   rpc authApiCheck(CheckAuthReq) returns(Response);                               //角色API鉴权
   rpc authApiMultiUpdate(AuthApiMultiUpdateReq) returns (Response);  //更新API权限
@@ -199,10 +219,6 @@ message CheckAuthReq{
   string method = 3;
 }
 
-message PageInfo{
-  int64 page = 1;
-  int64 size = 2;
-}
 
 message UserIndexReq{
   PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: userID:用户id userName:登录用户名  email:邮箱  phone:手机号
@@ -248,8 +264,6 @@ message UserLoginResp{
   JwtToken token =2;
 }
 
-message Response {
-}
 
 //角色相关信息
 message RoleCreateReq{
