@@ -44,6 +44,7 @@ type (
 	OperLogIndexReq       = sys.OperLogIndexReq
 	OperLogIndexResp      = sys.OperLogIndexResp
 	PageInfo              = sys.PageInfo
+	PageInfo_OrderBy      = sys.PageInfo_OrderBy
 	Response              = sys.Response
 	RoleCreateReq         = sys.RoleCreateReq
 	RoleDeleteReq         = sys.RoleDeleteReq

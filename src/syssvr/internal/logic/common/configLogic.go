@@ -26,5 +26,6 @@ func NewConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ConfigLogi
 func (l *ConfigLogic) Config(in *sys.Response) (*sys.ConfigResp, error) {
 	return &sys.ConfigResp{Map: &sys.Map{
 		Mode:      l.svcCtx.Config.Map.Mode,
-		AccessKey: l.svcCtx.Config.Map.AccessKey}}, nil
+		AccessKey: l.svcCtx.Config.Map.AccessKey,
+	}}, nil
 }
