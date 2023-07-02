@@ -108,9 +108,15 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 		ProjectID:  userHeader.GetMetaProjectID(l.ctx),
 		ProductID:  in.ProductID,  // 产品id
 		DeviceName: in.DeviceName, // 设备名称
-		Secret:     utils.GetRandomBase64(20),
 		Position:   position,
 	}
+
+	if in.Secret != "" {
+		di.Secret = in.Secret
+	} else {
+		di.Secret = utils.GetRandomBase64(20)
+	}
+
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)
 		if err == nil {
