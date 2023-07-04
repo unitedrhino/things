@@ -2,8 +2,8 @@ package user
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -31,7 +31,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 func (l *UpdateLogic) Update(req *types.UserInfo) error {
 	//超管可以修改其他用户的角色，并且任何用户不能修改本身的角色
 	roleID := int64(0)
-	userCtx := userHeader.GetUserCtx(l.ctx)
+	userCtx := ctxs.GetUserCtx(l.ctx)
 	if !userCtx.IsOpen && userCtx.Role == int64(def.RoleIDSuper) && userCtx.UserID != req.UserID {
 		roleID = req.Role
 	}

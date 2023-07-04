@@ -2,8 +2,8 @@ package devicegrouplogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -89,7 +89,7 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 	_, err = l.svcCtx.GroupInfo.Insert(l.ctx, &mysql.DmGroupInfo{
 		GroupID:   l.svcCtx.GroupID.GetSnowflakeId(),
 		ParentID:  in.ParentID,
-		ProjectID: userHeader.GetMetaProjectID(l.ctx),
+		ProjectID: ctxs.GetMetaProjectID(l.ctx),
 		ProductID: in.ProductID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,

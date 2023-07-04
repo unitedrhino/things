@@ -141,6 +141,8 @@ type (
         Row int64 `json:"row"`                  //【提示】数据所在表格行
         ProductName string `json:"productName"` //【必填】产品名称
         DeviceName string `json:"deviceName"`   //【必填】设备名称
+        DeviceAlias string `json:"deviceAlias"` //【选填】设备别名
+        Secret string `json:"secret"`           //【选填】设备秘钥
         LogLevel string `json:"logLevel"`       //【选填】日志级别（关闭/错误/告警/信息/调试）
         Tags string `json:"tags"`               //【选填】设备标签（格式k1:v1;k2:v2;...）
         Position string `json:"position"`       //【选填】设备位置百度坐标（格式:经,纬）
