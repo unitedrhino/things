@@ -296,7 +296,7 @@ func (d *Define) ValidateWithFmtFloat() error {
 	if step > max {
 		d.Step = cast.ToString(max)
 	}
-	if step < 1 {
+	if step <= 0 {
 		d.Step = cast.ToString(1)
 	}
 
