@@ -26,14 +26,14 @@ func NewUserCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *CreateLogic) CheckPwd(in *sys.UserCreateReq) error {
+func (l *CreateLogic) CheckPwd(in *sys.UserInfo) error {
 	if l.svcCtx.Config.UserOpt.NeedPassWord &&
 		utils.CheckPasswordLever(in.Password) < l.svcCtx.Config.UserOpt.PassLevel {
 		return errors.PasswordLevel
 	}
 	return nil
 }
-func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp, error) {
+func (l *CreateLogic) handlePassword(in *sys.UserInfo) (*sys.UserCreateResp, error) {
 	//首先校验账号格式使用正则表达式，对用户账号做格式校验：只能是大小写字母，数字和下划线，减号
 	ret := false
 	if ret, _ = regexp.MatchString("^[a-zA-Z][a-zA-Z0-9_-]{6,19}$", in.UserName); !ret {
@@ -58,7 +58,7 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 		//2.对密码进行md5加密
 		password1 := utils.MakePwd(in.Password, uid_temp, false)
 		ui := mysql.SysUserInfo{
-			Uid:        uid_temp,
+			UserID:     uid_temp,
 			UserName:   sql.NullString{String: in.UserName, Valid: true},
 			Password:   password1,
 			LastIP:     in.LastIP,
@@ -83,20 +83,14 @@ func (l *CreateLogic) handlePassword(in *sys.UserCreateReq) (*sys.UserCreateResp
 			return nil, err
 		}
 
-		return &sys.UserCreateResp{Uid: ui.Uid}, nil
+		return &sys.UserCreateResp{UserID: ui.UserID}, nil
 	default:
 		break
 	}
 
 	return &sys.UserCreateResp{}, nil
 }
-func (l *CreateLogic) UserCreate(in *sys.UserCreateReq) (*sys.UserCreateResp, error) {
+func (l *CreateLogic) UserCreate(in *sys.UserInfo) (*sys.UserCreateResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
-	switch in.ReqType {
-	case "pwd":
-		return l.handlePassword(in)
-	default:
-		l.Errorf("%s ReqType=%s  not support yet", utils.FuncName(), in.ReqType)
-		return nil, errors.Parameter.AddDetail("reqType not support yet :" + in.ReqType)
-	}
+	return l.handlePassword(in)
 }

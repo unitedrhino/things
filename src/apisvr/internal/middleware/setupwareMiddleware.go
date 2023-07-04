@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/i-Things/things/shared/domain/userHeader"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	operLog "github.com/i-Things/things/src/syssvr/client/log"
@@ -22,7 +22,7 @@ func (m *SetupWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logx.WithContext(r.Context()).Infof("%s.Lifecycle.Before", utils.FuncName())
 
-		ctx2 := userHeader.SetMetaCtx(r.Context(), r.Header)
+		ctx2 := ctxs.SetMetaCtx(r.Context(), r.Header)
 		r = r.WithContext(ctx2)
 
 		next(w, r)

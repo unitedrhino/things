@@ -6,7 +6,7 @@ import (
 	"github.com/gogf/gf/v2/encoding/gcharset"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/i-Things/things/shared/domain/userHeader"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -57,7 +57,7 @@ func GetCityByIp(ip string) string {
 
 func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, err error) {
 
-	ua := user_agent.New(userHeader.GetUserCtx(l.ctx).Os)
+	ua := user_agent.New(ctxs.GetUserCtx(l.ctx).Os)
 	browser, _ := ua.Browser()
 	os := ua.OS()
 
@@ -74,17 +74,17 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		LoginType: req.LoginType,
 		Code:      req.Code,
 		CodeID:    req.CodeID,
-		Ip:        userHeader.GetUserCtx(l.ctx).IP,
+		Ip:        ctxs.GetUserCtx(l.ctx).IP,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, er)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-			Uid:           0,
+			UserID:        0,
 			UserName:      req.UserID,
-			IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
-			LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
+			IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
+			LoginLocation: GetCityByIp(ctxs.GetUserCtx(l.ctx).IP),
 			Browser:       browser,
 			Os:            os,
 			Msg:           er.Error(),
@@ -96,10 +96,10 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		l.Errorf("%s.rpc.Register return nil req=%v", utils.FuncName(), req)
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-			Uid:           0,
+			UserID:        0,
 			UserName:      req.UserID,
-			IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
-			LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
+			IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
+			LoginLocation: GetCityByIp(ctxs.GetUserCtx(l.ctx).IP),
 			Browser:       browser,
 			Os:            os,
 			Msg:           "register core rpc return nil",
@@ -109,10 +109,10 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	}
 	//登录成功记录
 	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-		Uid:           uResp.Info.Uid,
+		UserID:        uResp.Info.UserID,
 		UserName:      uResp.Info.UserName,
-		IpAddr:        userHeader.GetUserCtx(l.ctx).IP,
-		LoginLocation: GetCityByIp(userHeader.GetUserCtx(l.ctx).IP),
+		IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
+		LoginLocation: GetCityByIp(ctxs.GetUserCtx(l.ctx).IP),
 		Browser:       browser,
 		Os:            os,
 		Msg:           "登录成功",
@@ -121,7 +121,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 
 	return &types.UserLoginResp{
 		Info: types.UserInfo{
-			Uid:         uResp.Info.Uid,
+			UserID:      uResp.Info.UserID,
 			UserName:    uResp.Info.UserName,
 			Password:    "",
 			Email:       uResp.Info.Email,

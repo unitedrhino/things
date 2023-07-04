@@ -95,15 +95,17 @@ func (l *MultiImportLogic) deviceMultiImportRowToDto(idx int64, cell []string) *
 		Row:         idx,
 		ProductName: strings.TrimSpace(utils.SliceIndex(cell, 0, "")),
 		DeviceName:  strings.TrimSpace(utils.SliceIndex(cell, 1, "")),
-		LogLevel:    strings.TrimSpace(utils.SliceIndex(cell, 2, "")),
-		Tags:        strings.TrimSpace(utils.SliceIndex(cell, 3, "")),
-		Position:    strings.TrimSpace(utils.SliceIndex(cell, 4, "")),
-		Address:     strings.TrimSpace(utils.SliceIndex(cell, 5, "")),
-		Tips:        strings.TrimSpace(utils.SliceIndex(cell, 6, "")),
+		DeviceAlias: strings.TrimSpace(utils.SliceIndex(cell, 2, "")),
+		Secret:      strings.TrimSpace(utils.SliceIndex(cell, 3, "")),
+		LogLevel:    strings.TrimSpace(utils.SliceIndex(cell, 4, "")),
+		Tags:        strings.TrimSpace(utils.SliceIndex(cell, 5, "")),
+		Position:    strings.TrimSpace(utils.SliceIndex(cell, 6, "")),
+		Address:     strings.TrimSpace(utils.SliceIndex(cell, 7, "")),
+		Tips:        strings.TrimSpace(utils.SliceIndex(cell, 8, "")),
 	}
 }
 
-//deviceMultiImportRowToDeviceInfo cell转dto
+// deviceMultiImportRowToDeviceInfo cell转dto
 func (l *MultiImportLogic) deviceMultiImportRowToDeviceInfo(importRow *types.DeviceMultiImportRow) (info *dm.DeviceInfo, err error) {
 	var (
 		demoDataTag = "ithingsdemo"
@@ -120,6 +122,13 @@ func (l *MultiImportLogic) deviceMultiImportRowToDeviceInfo(importRow *types.Dev
 		return nil, errors.Parameter.WithMsg("缺少必填的设备名称")
 	} else {
 		deviceInfo.DeviceName = importRow.DeviceName
+	}
+
+	if importRow.DeviceAlias != "" {
+		deviceInfo.DeviceAlias = utils.ToRpcNullString(importRow.DeviceAlias)
+	}
+	if importRow.Secret != "" {
+		deviceInfo.Secret = importRow.Secret
 	}
 
 	if strings.Contains(strings.ToLower(importRow.ProductName), demoDataTag) ||

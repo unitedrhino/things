@@ -58,7 +58,7 @@ type (
 		Iccid          sql.NullString `db:"iccid"`          // SIM卡卡号
 		Address        string         `db:"address"`        // 所在地址
 		Tags           string         `db:"tags"`           // 设备标签
-		Uid            int64          `db:"uid"`            // 所属用户id
+		UserID         int64          `db:"userID"`         // 所属用户id
 		IsOnline       int64          `db:"isOnline"`       // 是否在线,1是2否
 		FirstLogin     sql.NullTime   `db:"firstLogin"`     // 激活时间
 		LastLogin      sql.NullTime   `db:"lastLogin"`      // 最后上线时间
@@ -140,13 +140,13 @@ func (m *defaultDmDeviceInfoModel) FindOneByProductIDDeviceName(ctx context.Cont
 
 func (m *defaultDmDeviceInfoModel) Insert(ctx context.Context, data *DmDeviceInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, dmDeviceInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProjectID, data.AreaID, data.ProductID, data.DeviceName, data.DeviceAlias, data.Secret, data.Cert, data.Position, data.Imei, data.Mac, data.Version, data.HardInfo, data.SoftInfo, data.MobileOperator, data.Phone, data.Iccid, data.Address, data.Tags, data.Uid, data.IsOnline, data.FirstLogin, data.LastLogin, data.LogLevel)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProjectID, data.AreaID, data.ProductID, data.DeviceName, data.DeviceAlias, data.Secret, data.Cert, data.Position, data.Imei, data.Mac, data.Version, data.HardInfo, data.SoftInfo, data.MobileOperator, data.Phone, data.Iccid, data.Address, data.Tags, data.UserID, data.IsOnline, data.FirstLogin, data.LastLogin, data.LogLevel)
 	return ret, err
 }
 
 func (m *defaultDmDeviceInfoModel) Update(ctx context.Context, newData *DmDeviceInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, dmDeviceInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ProjectID, newData.AreaID, newData.ProductID, newData.DeviceName, newData.DeviceAlias, newData.Secret, newData.Cert, newData.Position, newData.Imei, newData.Mac, newData.Version, newData.HardInfo, newData.SoftInfo, newData.MobileOperator, newData.Phone, newData.Iccid, newData.Address, newData.Tags, newData.Uid, newData.IsOnline, newData.FirstLogin, newData.LastLogin, newData.LogLevel, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ProjectID, newData.AreaID, newData.ProductID, newData.DeviceName, newData.DeviceAlias, newData.Secret, newData.Cert, newData.Position, newData.Imei, newData.Mac, newData.Version, newData.HardInfo, newData.SoftInfo, newData.MobileOperator, newData.Phone, newData.Iccid, newData.Address, newData.Tags, newData.UserID, newData.IsOnline, newData.FirstLogin, newData.LastLogin, newData.LogLevel, newData.Id)
 	return err
 }
 
