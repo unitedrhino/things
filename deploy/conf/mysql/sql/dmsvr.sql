@@ -95,7 +95,7 @@ CREATE TABLE if not exists `dm_device_info` (
     `iccid`       varchar(20)           DEFAULT NULL COMMENT 'SIM卡卡号',
     `address`     varchar(512) NOT NULL DEFAULT '' COMMENT '所在地址',
     `tags`        json         NOT NULL COMMENT '设备标签',
-    `uid`         bigint       NOT NULL COMMENT '所属用户id',
+    `userID`         bigint       NOT NULL COMMENT '所属用户id',
     `isOnline`    tinyint(1)   NOT NULL DEFAULT 2 COMMENT '是否在线,1是2否',
     `firstLogin`  datetime              DEFAULT NULL COMMENT '激活时间',
     `lastLogin`   datetime              DEFAULT NULL COMMENT '最后上线时间',

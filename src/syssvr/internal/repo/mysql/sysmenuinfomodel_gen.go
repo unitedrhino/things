@@ -26,7 +26,6 @@ type (
 	sysMenuInfoModel interface {
 		Insert(ctx context.Context, data *SysMenuInfo) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*SysMenuInfo, error)
-		FindOneByName(ctx context.Context, name string) (*SysMenuInfo, error)
 		Update(ctx context.Context, data *SysMenuInfo) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -81,29 +80,15 @@ func (m *defaultSysMenuInfoModel) FindOne(ctx context.Context, id int64) (*SysMe
 	}
 }
 
-func (m *defaultSysMenuInfoModel) FindOneByName(ctx context.Context, name string) (*SysMenuInfo, error) {
-	var resp SysMenuInfo
-	query := fmt.Sprintf("select %s from %s where `name` = ? limit 1", sysMenuInfoRows, m.table)
-	err := m.conn.QueryRowCtx(ctx, &resp, query, name)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
 func (m *defaultSysMenuInfoModel) Insert(ctx context.Context, data *SysMenuInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, sysMenuInfoRowsExpectAutoSet)
 	ret, err := m.conn.ExecCtx(ctx, query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl, data.HideInMenu)
 	return ret, err
 }
 
-func (m *defaultSysMenuInfoModel) Update(ctx context.Context, newData *SysMenuInfo) error {
+func (m *defaultSysMenuInfoModel) Update(ctx context.Context, data *SysMenuInfo) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, sysMenuInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ParentID, newData.Type, newData.Order, newData.Name, newData.Path, newData.Component, newData.Icon, newData.Redirect, newData.BackgroundUrl, newData.HideInMenu, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.ParentID, data.Type, data.Order, data.Name, data.Path, data.Component, data.Icon, data.Redirect, data.BackgroundUrl, data.HideInMenu, data.Id)
 	return err
 }
 

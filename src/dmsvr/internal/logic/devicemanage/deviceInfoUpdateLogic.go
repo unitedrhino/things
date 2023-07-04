@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
@@ -33,7 +33,7 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *dm.DeviceInfo) {
-	old.ProjectID = userHeader.GetMetaProjectID(l.ctx)
+	old.ProjectID = ctxs.GetMetaProjectID(l.ctx)
 	if data.AreaID != nil {
 		old.AreaID = utils.ToEmptyInt64(data.AreaID)
 	}
@@ -88,8 +88,8 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 	if data.DeviceAlias != nil {
 		old.DeviceAlias = data.DeviceAlias.Value
 	}
-	if data.Uid != 0 {
-		old.Uid = data.Uid
+	if data.UserID != 0 {
+		old.UserID = data.UserID
 	}
 	if data.MobileOperator != 0 {
 		old.MobileOperator = data.MobileOperator

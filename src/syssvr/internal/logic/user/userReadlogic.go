@@ -22,15 +22,15 @@ func NewUserReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogi
 	}
 }
 
-func (l *ReadLogic) UserRead(in *sys.UserReadReq) (*sys.UserReadResp, error) {
-	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.Uid))
+func (l *ReadLogic) UserRead(in *sys.UserReadReq) (*sys.UserInfo, error) {
+	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.UserID))
 	if err != nil {
 		l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)
 		return nil, err
 	}
 
-	return &sys.UserReadResp{
-		Uid:         ui.Uid,
+	return &sys.UserInfo{
+		UserID:      ui.UserID,
 		UserName:    ui.UserName.String,
 		Email:       ui.Email.String,
 		Phone:       ui.Phone.String,

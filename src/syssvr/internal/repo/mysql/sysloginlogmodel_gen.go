@@ -37,7 +37,7 @@ type (
 
 	SysLoginLog struct {
 		Id            int64     `db:"id"`            // 编号
-		Uid           int64     `db:"uid"`           // 用户id
+		UserID        int64     `db:"userID"`        // 用户id
 		UserName      string    `db:"userName"`      // 登录账号
 		IpAddr        string    `db:"ipAddr"`        // 登录IP地址
 		LoginLocation string    `db:"loginLocation"` // 登录地点
@@ -78,13 +78,13 @@ func (m *defaultSysLoginLogModel) FindOne(ctx context.Context, id int64) (*SysLo
 
 func (m *defaultSysLoginLogModel) Insert(ctx context.Context, data *SysLoginLog) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, sysLoginLogRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.IpAddr, data.LoginLocation, data.Browser, data.Os, data.Code, data.Msg)
+	ret, err := m.conn.ExecCtx(ctx, query, data.UserID, data.UserName, data.IpAddr, data.LoginLocation, data.Browser, data.Os, data.Code, data.Msg)
 	return ret, err
 }
 
 func (m *defaultSysLoginLogModel) Update(ctx context.Context, data *SysLoginLog) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, sysLoginLogRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.IpAddr, data.LoginLocation, data.Browser, data.Os, data.Code, data.Msg, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserID, data.UserName, data.IpAddr, data.LoginLocation, data.Browser, data.Os, data.Code, data.Msg, data.Id)
 	return err
 }
 

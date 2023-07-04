@@ -39,7 +39,7 @@ func (l *MenuCreateLogic) MenuCreate(in *sys.MenuCreateReq) (*sys.Response, erro
 	if in.HideInMenu == 0 {
 		in.HideInMenu = 1
 	}
-	_, err := l.svcCtx.MenuInfoModle.Insert(l.ctx, &mysql.SysMenuInfo{
+	_, err := l.svcCtx.MenuInfoModel.Insert(l.ctx, &mysql.SysMenuInfo{
 		ParentID:      in.ParentID,
 		Type:          in.Type,
 		Order:         in.Order,

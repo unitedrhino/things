@@ -4,10 +4,10 @@ option go_package = "pb/sys";
 package sys;
 
 service User {
-  rpc userCreate(UserCreateReq) returns(UserCreateResp);//创建用户信息
+  rpc userCreate(UserInfo) returns(UserCreateResp);//创建用户信息
   rpc userIndex(UserIndexReq) returns(UserIndexResp);
-  rpc userUpdate(UserUpdateReq) returns(Response);//更新用户基本数据
-  rpc userRead(UserReadReq) returns(UserReadResp);//获取用户信息
+  rpc userUpdate(UserInfo) returns(Response);//更新用户基本数据
+  rpc userRead(UserReadReq) returns(UserInfo);//获取用户信息
   rpc userDelete(UserDeleteReq) returns(Response);//刪除用戶
   rpc userLogin(UserLoginReq) returns(UserLoginResp);
   rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
@@ -45,6 +45,26 @@ service Api {
   rpc apiUpdate(ApiUpdateReq) returns(Response);   //更新接口
   rpc apiDelete(ApiDeleteReq) returns(Response);   //删除接口
 }
+
+//----------------------------------------------------------------------------------------------
+
+message Response {
+}
+
+message PageInfo {
+    int64 page = 1;
+    int64 size = 2;
+    //排序信息
+    repeated OrderBy orders = 3;
+    message OrderBy {
+        //排序的字段名
+        string filed = 1;
+        //排序方式：0 aes, 1 desc
+        int64 sort = 2;
+    }
+}
+
+//----------------------------------------------------------------------------------------------
 
 service Auth {
   rpc authApiCheck(CheckAuthReq) returns(Response);                               //角色API鉴权
@@ -84,7 +104,7 @@ message LoginLogIndexReq{
 }
 
 message LoginLogIndexData {
-  int64  uid = 1;           // 用户id
+  int64  userID = 1;           // 用户id
   string userName = 2;      // 登录账号
   string ipAddr = 3;        // 登录IP地址
   string loginLocation = 4; // 登录地点
@@ -108,7 +128,7 @@ message OperLogIndexReq{
 }
 
 message OperLogIndexData {
-    int64  uid = 1;                //用户id
+    int64  userID = 1;                //用户id
     string operUserName = 2;       //操作人员名称
     string operName = 3;           //操作名称
     int64  businessType = 4;       //业务类型（1新增 2修改 3删除 4查询）
@@ -128,7 +148,7 @@ message OperLogIndexResp{
 }
 
 message LoginLogCreateReq{
-  int64  uid = 1;           // 用户id
+  int64  userID = 1;           // 用户id
   string userName = 2;      // 登录账号
   string ipAddr = 3;        // 登录IP地址
   string loginLocation = 4; // 登录地点
@@ -139,7 +159,7 @@ message LoginLogCreateReq{
 }
 
 message OperLogCreateReq{
-  int64  uid = 1;                //用户id
+  int64  userID = 1;                //用户id
   string operUserName = 2;       //操作人员名称
   string operName = 3;           //操作名称
   int64  businessType = 4;       //业务类型（1新增 2修改 3删除 4查询）
@@ -155,7 +175,7 @@ message OperLogCreateReq{
 
 //用户属性信息
 message UserInfo{
-  int64  uid = 1;
+  int64  userID = 1;
   string userName =2;
   string password = 3;
   string email = 4;
@@ -175,26 +195,10 @@ message UserInfo{
   int64  isAllData =18;
 }
 
-message UserCreateReq{
-  string reqType = 1;//注册方式 phone|wxopen|wxin|wxminip|password| -> phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 密码方式 password 账密方式
-  string userName = 2;//手机号注册时填写手机号 或者用户账号
-  string password = 3;//明文密码
-  string wechat = 4;
-  string lastIP =5;
-  string regIP =6;
-  string nickName =7;
-  string city =8;
-  string country =9;
-  string province =10;
-  string language =11;
-  string headImgUrl =12;
-  int64  role = 13;
-  int64  sex =14;
-  int64  isAllData =15;
-}
+
 
 message UserCreateResp{
-  int64 uid = 1;//用户id
+  int64 userID = 1;//用户id
 }
 
 message UserCheckTokenReq{
@@ -204,7 +208,7 @@ message UserCheckTokenReq{
 
 message UserCheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
-  int64 uid = 2;
+  int64 userID = 2;
   int64 role = 3;
   int64 isAllData = 4;
 }
@@ -215,13 +219,9 @@ message CheckAuthReq{
   string method = 3;
 }
 
-message PageInfo{
-  int64 page = 1;
-  int64 size = 2;
-}
 
 message UserIndexReq{
-  PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: uid:用户id userName:登录用户名  email:邮箱  phone:手机号
+  PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: userID:用户id userName:登录用户名  email:邮箱  phone:手机号
   string userName = 2;
   string phone = 3;
   string email = 4;
@@ -232,48 +232,15 @@ message UserIndexResp{
   int64 total = 2;
 }
 
-message UserUpdateReq{
-  int64  uid = 1;
-  string userName =2;
-  string email = 3;
-  string phone =4;
-  string wechat = 5;
-  string nickName =6;
-  string city =7;
-  string country =8;
-  string province =9;
-  string language =10;
-  string headImgUrl =11;
-  int64  role =12;
-  int64  sex =13;
-  int64  isAllData =14;
-}
+
 
 message UserReadReq{
-  int64 uid=1;
+  int64 userID=1;
 }
 
-message UserReadResp{
-  int64  uid = 1;
-  string userName =2;
-  string email = 3;
-  string phone =4;
-  string wechat = 5;
-  string lastIP =6;
-  string regIP =7;
-  string nickName =8;
-  string city =9;
-  string country =10;
-  string province =11;
-  string language =12;
-  string headImgUrl =13;
-  int64  createdTime =14;
-  int64  role = 15;
-  int64  sex =16;
-  int64  isAllData =17;
-}
+
 message UserDeleteReq{
-  int64 uid = 1;
+  int64 userID = 1;
 }
 
 message JwtToken{
@@ -286,7 +253,7 @@ message UserLoginReq{
     string userID = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
     int32 pwdType = 2;//账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
     string password =3;//密码，建议md5转换 密码登录时需要填写
-    string loginType =4;//验证类型 sms 短信验证码 pwd 图形验证码加账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxmini 微信小程序
+    string loginType =4;//验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
     string code = 5;//验证码    微信登录填code
     string codeID = 6;//验证码编号 微信登录填state
     string ip = 7;//透传请求的 ip
@@ -297,8 +264,6 @@ message UserLoginResp{
   JwtToken token =2;
 }
 
-message Response {
-}
 
 //角色相关信息
 message RoleCreateReq{

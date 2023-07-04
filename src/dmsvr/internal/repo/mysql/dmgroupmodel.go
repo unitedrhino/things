@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -69,8 +69,8 @@ func NewDmGroupModel(conn sqlx.SqlConn) DmGroupModel {
 
 func (m *groupModel) FmtGroupSql(ctx context.Context, f GroupFilter, sql sq.SelectBuilder, parentFlag bool) sq.SelectBuilder {
 	//数据权限条件（企业版功能）
-	if uc := userHeader.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
-		mdProjectID := userHeader.GetMetaProjectID(ctx)
+	if uc := ctxs.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
+		mdProjectID := ctxs.GetMetaProjectID(ctx)
 		if mdProjectID != 0 {
 			sql = sql.Where("`projectID` = ?", mdProjectID)
 		}
@@ -95,8 +95,8 @@ func (m *groupModel) FmtGroupDeviceSql(ctx context.Context, f GroupDeviceFilter,
 	sql = sql.LeftJoin(fmt.Sprintf("%s as di on di.productID=gd.productID and di.deviceName=gd.deviceName", m.deviceInfo))
 
 	//数据权限条件（企业版功能）
-	if uc := userHeader.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
-		mdProjectID := userHeader.GetMetaProjectID(ctx)
+	if uc := ctxs.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
+		mdProjectID := ctxs.GetMetaProjectID(ctx)
 		if mdProjectID != 0 {
 			sql = sql.Where("di.`projectID` = ?", mdProjectID)
 		}
@@ -319,7 +319,7 @@ func (m *groupModel) GroupDeviceCreate(ctx context.Context, groupID int64, list 
 				return errors.Parameter.WithMsgf("设备不存在:产品ID:%v,设备名:%", v.ProductID, v.DeviceName)
 			}
 			query = fmt.Sprintf("insert into %s (projectID, groupID,productID,deviceName) values (%d, %d, '%s', '%s') ON duplicate KEY UPDATE id = id",
-				m.groupDevice, userHeader.GetMetaProjectID(ctx), groupID, v.ProductID, v.DeviceName)
+				m.groupDevice, ctxs.GetMetaProjectID(ctx), groupID, v.ProductID, v.DeviceName)
 			_, err = session.Exec(query)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("groupModel.GroupDeviceCreate data:%v err:%v", v, err)

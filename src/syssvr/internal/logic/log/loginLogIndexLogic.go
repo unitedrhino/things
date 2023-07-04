@@ -43,7 +43,7 @@ func (l *LoginLogIndexLogic) LoginLogIndex(in *sys.LoginLogIndexReq) (*sys.Login
 	info := make([]*sys.LoginLogIndexData, 0, len(resp))
 	for _, v := range resp {
 		info = append(info, &sys.LoginLogIndexData{
-			Uid:           v.Uid,
+			UserID:        v.UserID,
 			UserName:      v.UserName,
 			IpAddr:        v.IpAddr,
 			LoginLocation: v.LoginLocation,

@@ -1,4 +1,4 @@
-package userHeader
+package ctxs
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 
 type UserCtx struct {
 	IsOpen    bool   //是否开放认证用户
-	Uid       int64  //用户id（开放认证用户值为0）
+	UserID    int64  //用户id（开放认证用户值为0）
 	Role      int64  //用户角色（开放认证用户值为0）
 	IsAllData bool   //是否所有数据权限（开放认证用户值为true）
 	IP        string //用户的ip地址
@@ -15,12 +15,12 @@ type UserCtx struct {
 }
 
 func SetUserCtx(ctx context.Context, userCtx *UserCtx) context.Context {
-	return context.WithValue(ctx, UserUidKey, userCtx)
+	return context.WithValue(ctx, UserInfoKey, userCtx)
 }
 
 // 使用该函数前必须传了UserCtx
 func GetUserCtx(ctx context.Context) *UserCtx {
-	val, ok := ctx.Value(UserUidKey).(*UserCtx)
+	val, ok := ctx.Value(UserInfoKey).(*UserCtx)
 	if !ok { //这里线上不能获取不到
 		panic("GetUserCtx get UserCtx failed")
 	}
@@ -29,7 +29,7 @@ func GetUserCtx(ctx context.Context) *UserCtx {
 
 // 使用该函数前必须传了UserCtx
 func GetUserCtxOrNil(ctx context.Context) *UserCtx {
-	val, ok := ctx.Value(UserUidKey).(*UserCtx)
+	val, ok := ctx.Value(UserInfoKey).(*UserCtx)
 	if !ok { //这里线上不能获取不到
 		return nil
 	}
