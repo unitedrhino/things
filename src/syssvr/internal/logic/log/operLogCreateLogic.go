@@ -29,9 +29,9 @@ func NewOperLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ope
 
 func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Response, error) {
 	//OperUserName 用uid查用户表获得
-	resUser, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, in.Uid)
+	resUser, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, in.UserID)
 	if err != nil {
-		return nil, errors.Database.AddMsgf("UserInfoModel.FindOne is err, uid:%ld", in.Uid)
+		return nil, errors.Database.AddMsgf("UserInfoModel.FindOne is err, UserID:%ld", in.UserID)
 	}
 	//OperName，BusinessType 用Route查接口管理表获得
 	resApi, err := l.svcCtx.ApiModel.FindOneByRoute(l.ctx, in.Route)
@@ -40,7 +40,7 @@ func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Respo
 	}
 	if resApi.BusinessType != log.OptQuery {
 		_, err := l.svcCtx.LogOperModel.Insert(l.ctx, &mysql.SysOperLog{
-			OperUid:      in.Uid,
+			OperUserID:   in.UserID,
 			OperUserName: resUser.UserName.String,
 			OperName:     resApi.Name,
 			BusinessType: resApi.BusinessType,

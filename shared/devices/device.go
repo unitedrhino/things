@@ -1,5 +1,11 @@
 package devices
 
+const (
+	DeviceRegisterUnable   = 1
+	DeviceAutoCreateEnable = 3
+	EncryptionTypeCert     = 1
+)
+
 type Core struct {
 	ProductID  string `json:"productID"`  //产品id
 	DeviceName string `json:"deviceName"` //设备名称

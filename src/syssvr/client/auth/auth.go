@@ -44,6 +44,7 @@ type (
 	OperLogIndexReq       = sys.OperLogIndexReq
 	OperLogIndexResp      = sys.OperLogIndexResp
 	PageInfo              = sys.PageInfo
+	PageInfo_OrderBy      = sys.PageInfo_OrderBy
 	Response              = sys.Response
 	RoleCreateReq         = sys.RoleCreateReq
 	RoleDeleteReq         = sys.RoleDeleteReq
@@ -54,7 +55,6 @@ type (
 	RoleUpdateReq         = sys.RoleUpdateReq
 	UserCheckTokenReq     = sys.UserCheckTokenReq
 	UserCheckTokenResp    = sys.UserCheckTokenResp
-	UserCreateReq         = sys.UserCreateReq
 	UserCreateResp        = sys.UserCreateResp
 	UserDeleteReq         = sys.UserDeleteReq
 	UserIndexReq          = sys.UserIndexReq
@@ -63,8 +63,6 @@ type (
 	UserLoginReq          = sys.UserLoginReq
 	UserLoginResp         = sys.UserLoginResp
 	UserReadReq           = sys.UserReadReq
-	UserReadResp          = sys.UserReadResp
-	UserUpdateReq         = sys.UserUpdateReq
 
 	Auth interface {
 		AuthApiCheck(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*Response, error)

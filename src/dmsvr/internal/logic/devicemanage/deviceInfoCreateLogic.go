@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
@@ -105,12 +105,18 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	}
 
 	di := mysql.DmDeviceInfo{
-		ProjectID:  userHeader.GetMetaProjectID(l.ctx),
+		ProjectID:  ctxs.GetMetaProjectID(l.ctx),
 		ProductID:  in.ProductID,  // 产品id
 		DeviceName: in.DeviceName, // 设备名称
-		Secret:     utils.GetRandomBase64(20),
 		Position:   position,
 	}
+
+	if in.Secret != "" {
+		di.Secret = in.Secret
+	} else {
+		di.Secret = utils.GetRandomBase64(20)
+	}
+
 	if in.Tags != nil {
 		tags, err := json.Marshal(in.Tags)
 		if err == nil {
@@ -130,8 +136,8 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	if in.DeviceAlias != nil {
 		di.DeviceAlias = in.DeviceAlias.Value
 	}
-	if in.Uid != 0 {
-		di.Uid = in.Uid
+	if in.UserID != 0 {
+		di.UserID = in.UserID
 	}
 	if in.MobileOperator != 0 {
 		di.MobileOperator = in.MobileOperator

@@ -19,19 +19,19 @@ var (
 	sysUserInfoFieldNames          = builder.RawFieldNames(&SysUserInfo{})
 	sysUserInfoRows                = strings.Join(sysUserInfoFieldNames, ",")
 	sysUserInfoRowsExpectAutoSet   = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`createdTime`", "`deletedTime`", "`updatedTime`"), ",")
-	sysUserInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`uid`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
+	sysUserInfoRowsWithPlaceHolder = strings.Join(stringx.Remove(sysUserInfoFieldNames, "`userID`", "`createdTime`", "`deletedTime`", "`updatedTime`"), "=?,") + "=?"
 )
 
 type (
 	sysUserInfoModel interface {
 		Insert(ctx context.Context, data *SysUserInfo) (sql.Result, error)
-		FindOne(ctx context.Context, uid int64) (*SysUserInfo, error)
+		FindOne(ctx context.Context, userID int64) (*SysUserInfo, error)
 		FindOneByEmail(ctx context.Context, email sql.NullString) (*SysUserInfo, error)
 		FindOneByPhone(ctx context.Context, phone sql.NullString) (*SysUserInfo, error)
 		FindOneByUserName(ctx context.Context, userName sql.NullString) (*SysUserInfo, error)
 		FindOneByWechat(ctx context.Context, wechat sql.NullString) (*SysUserInfo, error)
 		Update(ctx context.Context, data *SysUserInfo) error
-		Delete(ctx context.Context, uid int64) error
+		Delete(ctx context.Context, userID int64) error
 	}
 
 	defaultSysUserInfoModel struct {
@@ -40,7 +40,7 @@ type (
 	}
 
 	SysUserInfo struct {
-		Uid         int64          `db:"uid"`         // 用户id
+		UserID      int64          `db:"userID"`      // 用户id
 		UserName    sql.NullString `db:"userName"`    // 登录用户名
 		Password    string         `db:"password"`    // 登录密码
 		Email       sql.NullString `db:"email"`       // 邮箱
@@ -70,16 +70,16 @@ func newSysUserInfoModel(conn sqlx.SqlConn) *defaultSysUserInfoModel {
 	}
 }
 
-func (m *defaultSysUserInfoModel) Delete(ctx context.Context, uid int64) error {
-	query := fmt.Sprintf("delete from %s where `uid` = ?", m.table)
-	_, err := m.conn.ExecCtx(ctx, query, uid)
+func (m *defaultSysUserInfoModel) Delete(ctx context.Context, userID int64) error {
+	query := fmt.Sprintf("delete from %s where `userID` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, userID)
 	return err
 }
 
-func (m *defaultSysUserInfoModel) FindOne(ctx context.Context, uid int64) (*SysUserInfo, error) {
-	query := fmt.Sprintf("select %s from %s where `uid` = ? limit 1", sysUserInfoRows, m.table)
+func (m *defaultSysUserInfoModel) FindOne(ctx context.Context, userID int64) (*SysUserInfo, error) {
+	query := fmt.Sprintf("select %s from %s where `userID` = ? limit 1", sysUserInfoRows, m.table)
 	var resp SysUserInfo
-	err := m.conn.QueryRowCtx(ctx, &resp, query, uid)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, userID)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -148,13 +148,13 @@ func (m *defaultSysUserInfoModel) FindOneByWechat(ctx context.Context, wechat sq
 
 func (m *defaultSysUserInfoModel) Insert(ctx context.Context, data *SysUserInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, sysUserInfoRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Uid, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.NickName, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.Role, data.IsAllData)
+	ret, err := m.conn.ExecCtx(ctx, query, data.UserID, data.UserName, data.Password, data.Email, data.Phone, data.Wechat, data.LastIP, data.RegIP, data.NickName, data.Sex, data.City, data.Country, data.Province, data.Language, data.HeadImgUrl, data.Role, data.IsAllData)
 	return ret, err
 }
 
 func (m *defaultSysUserInfoModel) Update(ctx context.Context, newData *SysUserInfo) error {
-	query := fmt.Sprintf("update %s set %s where `uid` = ?", m.table, sysUserInfoRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.UserName, newData.Password, newData.Email, newData.Phone, newData.Wechat, newData.LastIP, newData.RegIP, newData.NickName, newData.Sex, newData.City, newData.Country, newData.Province, newData.Language, newData.HeadImgUrl, newData.Role, newData.IsAllData, newData.Uid)
+	query := fmt.Sprintf("update %s set %s where `userID` = ?", m.table, sysUserInfoRowsWithPlaceHolder)
+	_, err := m.conn.ExecCtx(ctx, query, newData.UserName, newData.Password, newData.Email, newData.Phone, newData.Wechat, newData.LastIP, newData.RegIP, newData.NickName, newData.Sex, newData.City, newData.Country, newData.Province, newData.Language, newData.HeadImgUrl, newData.Role, newData.IsAllData, newData.UserID)
 	return err
 }
 

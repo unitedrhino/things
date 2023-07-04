@@ -6,8 +6,8 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/timex"
@@ -45,6 +45,7 @@ const (
 	TopicSDKLog  = ShareSubTopicPrefix + devices.TopicHeadLog + "/#"
 	TopicShadow  = ShareSubTopicPrefix + devices.TopicHeadShadow + "/#"
 	TopicGateway = ShareSubTopicPrefix + devices.TopicHeadGateway + "/#"
+	TopicExt     = ShareSubTopicPrefix + devices.TopicHeadExt + "/#"
 )
 
 func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
@@ -114,6 +115,13 @@ func (d *MqttClient) subDevMsg(handle Handle) error {
 	if err != nil {
 		return err
 	}
+
+	err = d.subscribeWithFunc(TopicExt, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).Msg(topic, payload)
+	})
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -166,7 +174,7 @@ func (d *MqttClient) subscribeWithFunc(topic string, handle func(ctx context.Con
 			defer cancel()
 			//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
 			//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
-			ctx, span := traces.StartSpan(ctx, message.Topic(), "")
+			ctx, span := ctxs.StartSpan(ctx, message.Topic(), "")
 			defer span.End()
 			startTime := timex.Now()
 			duration := timex.Since(startTime)

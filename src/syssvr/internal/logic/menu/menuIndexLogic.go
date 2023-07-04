@@ -44,7 +44,7 @@ func (l *MenuIndexLogic) checkMissingParentIdMenuIndex(menuInfos []*mysql.SysMen
 	missingParentIds := findMissingParentIds(menuInfos)
 	if len(missingParentIds) > 0 {
 		for k, _ := range missingParentIds {
-			menuInfo, err := l.svcCtx.MenuInfoModle.FindOne(l.ctx, k)
+			menuInfo, err := l.svcCtx.MenuInfoModel.FindOne(l.ctx, k)
 			if err != nil {
 				l.Errorf("MenuIndex find menu_info err,menuIds:%d,err:%v", k, err)
 				continue

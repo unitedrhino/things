@@ -29,6 +29,8 @@ type (
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq           = dm.DeviceInfoReadReq
+	DeviceRegisterReq           = dm.DeviceRegisterReq
+	DeviceRegisterResp          = dm.DeviceRegisterResp
 	DeviceTypeCountReq          = dm.DeviceTypeCountReq
 	DeviceTypeCountResp         = dm.DeviceTypeCountResp
 	GroupDeviceIndexReq         = dm.GroupDeviceIndexReq
@@ -79,6 +81,8 @@ type (
 		AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
 		// 鉴定是否是root账号
 		RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
+		// 设备动态注册
+		DeviceRegister(ctx context.Context, in *DeviceRegisterReq, opts ...grpc.CallOption) (*DeviceRegisterResp, error)
 	}
 
 	defaultDeviceAuth struct {
@@ -135,4 +139,15 @@ func (m *defaultDeviceAuth) RootCheck(ctx context.Context, in *RootCheckReq, opt
 // 鉴定是否是root账号
 func (d *directDeviceAuth) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.RootCheck(ctx, in)
+}
+
+// 设备动态注册
+func (m *defaultDeviceAuth) DeviceRegister(ctx context.Context, in *DeviceRegisterReq, opts ...grpc.CallOption) (*DeviceRegisterResp, error) {
+	client := dm.NewDeviceAuthClient(m.cli.Conn())
+	return client.DeviceRegister(ctx, in, opts...)
+}
+
+// 设备动态注册
+func (d *directDeviceAuth) DeviceRegister(ctx context.Context, in *DeviceRegisterReq, opts ...grpc.CallOption) (*DeviceRegisterResp, error) {
+	return d.svr.DeviceRegister(ctx, in)
 }

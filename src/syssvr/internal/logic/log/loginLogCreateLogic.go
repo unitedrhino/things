@@ -27,7 +27,7 @@ func NewLoginLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Lo
 
 func (l *LoginLogCreateLogic) LoginLogCreate(in *sys.LoginLogCreateReq) (*sys.Response, error) {
 	_, err := l.svcCtx.LogLoginModel.Insert(l.ctx, &mysql.SysLoginLog{
-		Uid:           in.Uid,
+		UserID:        in.UserID,
 		UserName:      in.UserName,
 		IpAddr:        in.IpAddr,
 		LoginLocation: in.LoginLocation,

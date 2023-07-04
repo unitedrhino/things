@@ -26,9 +26,9 @@ func NewRoleUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleUp
 }
 
 func (l *RoleUpdateLogic) RoleUpdate(in *sys.RoleUpdateReq) (*sys.Response, error) {
-	ro, err := l.svcCtx.RoleInfoModle.FindOne(l.ctx, in.Id)
+	ro, err := l.svcCtx.RoleInfoModel.FindOne(l.ctx, in.Id)
 	if err != nil {
-		l.Logger.Error("RoleInfoModle.FindOne err , sql:%s", l.svcCtx)
+		l.Logger.Error("RoleInfoModel.FindOne err , sql:%s", l.svcCtx)
 		return nil, err
 	}
 	if in.Name == "" {
@@ -43,7 +43,7 @@ func (l *RoleUpdateLogic) RoleUpdate(in *sys.RoleUpdateReq) (*sys.Response, erro
 		in.Status = ro.Status
 	}
 
-	err = l.svcCtx.RoleInfoModle.Update(l.ctx, &mysql.SysRoleInfo{
+	err = l.svcCtx.RoleInfoModel.Update(l.ctx, &mysql.SysRoleInfo{
 		Id:     in.Id,
 		Name:   in.Name,
 		Remark: in.Remark,

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -35,6 +35,7 @@ type (
 		ProductID     string
 		AreaIDs       []int64
 		DeviceName    string
+		DeviceNames   []string
 		Tags          map[string]string
 		LastLoginTime struct {
 			Start int64
@@ -49,24 +50,27 @@ type (
 
 func (d *DeviceFilter) FmtSql(ctx context.Context, sql sq.SelectBuilder) sq.SelectBuilder {
 	//数据权限条件（企业版功能）
-	if uc := userHeader.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
-		mdProjectID := userHeader.GetMetaProjectID(ctx)
+	if uc := ctxs.GetUserCtxOrNil(ctx); uc != nil && !uc.IsAllData { //存在用户态&&无所有数据权限
+		mdProjectID := ctxs.GetMetaProjectID(ctx)
 		if mdProjectID != 0 {
-			sql = sql.Where("`ProjectID` = ?", mdProjectID)
+			sql = sql.Where("`projectID` = ?", mdProjectID)
 		}
 	}
 	//业务过滤条件
 	if d.ProductID != "" {
-		sql = sql.Where("`ProductID` = ?", d.ProductID)
+		sql = sql.Where("`productID` = ?", d.ProductID)
 	}
 	if len(d.AreaIDs) != 0 {
 		sql = sql.Where(fmt.Sprintf("AreaID in (%v)", store.ArrayToSql(d.AreaIDs)))
 	}
 	if d.DeviceName != "" {
-		sql = sql.Where("`DeviceName` like ?", "%"+d.DeviceName+"%")
+		sql = sql.Where("`deviceName` like ?", "%"+d.DeviceName+"%")
+	}
+	if len(d.DeviceNames) != 0 {
+		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", store.ArrayToSql(d.DeviceNames)))
 	}
 	if d.DeviceAlias != "" {
-		sql = sql.Where("`DeviceAlias` like ?", "%"+d.DeviceAlias+"%")
+		sql = sql.Where("`deviceAlias` like ?", "%"+d.DeviceAlias+"%")
 	}
 	if d.Tags != nil {
 		for k, v := range d.Tags {
