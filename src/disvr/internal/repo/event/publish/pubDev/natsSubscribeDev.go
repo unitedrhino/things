@@ -1,9 +1,9 @@
 package pubDev
 
 import (
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
@@ -41,7 +41,7 @@ func (s *natsSubDev) GetMsg(timeout time.Duration) (ele *deviceMsg.PublishMsg, e
 	}
 	ctx := emsg.GetCtx()
 	//向jaeger推送当前节点信息，路径名为主题名
-	ctx, span := traces.StartSpan(ctx, msg.Subject, "")
+	ctx, span := ctxs.StartSpan(ctx, msg.Subject, "")
 	logx.Infof("%s trace:%s  spanID:%s topic:%s", utils.FuncName(),
 		span.SpanContext().TraceID(), span.SpanContext().SpanID(), msg.Subject)
 	defer span.End()
