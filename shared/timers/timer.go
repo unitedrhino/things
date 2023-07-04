@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-co-op/gocron"
-	"github.com/i-Things/things/shared/traces"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
@@ -75,7 +75,7 @@ func (s *Timer) Create(keys []string, cron string, runFunc RunFunc) error {
 		return nil
 	}
 	_, err := s.scheduler.Tag(keys...).CronWithSeconds(cron).Do(func() (err error) {
-		ctx, span := traces.StartSpan(s.ctx, fmt.Sprintf("SceneTimer.jobRun"), "")
+		ctx, span := ctxs.StartSpan(s.ctx, fmt.Sprintf("SceneTimer.jobRun"), "")
 		defer span.End()
 		defer utils.Recover(ctx)
 		startTime := time.Now().UnixMilli()
