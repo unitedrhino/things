@@ -3,7 +3,8 @@ package events
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/shared/traces"
+	"github.com/i-Things/things/shared/ctxs"
+
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/timex"
@@ -33,7 +34,7 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 			return
 		}
 		ctx := emsg.GetCtx()
-		ctx, span := traces.StartSpan(ctx, msg.Subject, "")
+		ctx, span := ctxs.StartSpan(ctx, msg.Subject, "")
 		defer span.End()
 		err := handle(ctx, emsg.GetData(), msg)
 		if err != nil {
