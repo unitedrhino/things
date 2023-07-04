@@ -2,7 +2,7 @@ package menu
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/domain/userHeader"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -38,7 +38,7 @@ func (l *MenuCreateLogic) MenuCreate(req *types.MenuCreateReq) error {
 		Redirect:   req.Redirect,
 		Order:      req.Order,
 		HideInMenu: req.HideInMenu,
-		Role:       userHeader.GetUserCtx(l.ctx).Role,
+		Role:       ctxs.GetUserCtx(l.ctx).Role,
 	})
 	if err != nil {
 		err := errors.Fmt(err)

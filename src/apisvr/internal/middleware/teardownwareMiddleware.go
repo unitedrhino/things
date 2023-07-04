@@ -7,7 +7,7 @@ import (
 	"github.com/gogf/gf/v2/encoding/gcharset"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/i-Things/things/shared/domain/userHeader"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	operLog "github.com/i-Things/things/src/syssvr/client/log"
@@ -32,10 +32,7 @@ func (m *TeardownWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc 
 		logx.WithContext(r.Context()).Infof("%s.Lifecycle.Before", utils.FuncName())
 
 		//记录 接口响应日志
-		err := m.OperationLogRecord(r)
-		if err != nil {
-			logx.WithContext(r.Context()).Errorf("%s.OperationLogRecord responseInfo error=%s", utils.FuncName(), err)
-		}
+		m.OperationLogRecord(r.Context(), r)
 
 		next(w, r)
 
@@ -44,12 +41,12 @@ func (m *TeardownWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc 
 }
 
 // 接口操作日志记录
-func (m *TeardownWareMiddleware) OperationLogRecord(r *http.Request) error {
-	useCtx := userHeader.GetUserCtx(r.Context())
+func (m *TeardownWareMiddleware) OperationLogRecord(ctx context.Context, r *http.Request) {
+	ctx = ctxs.CopyContext(ctx)
+	useCtx := ctxs.GetUserCtx(ctx)
 	if useCtx.IsOpen || useCtx.UserID == 0 {
-		return nil
+		return
 	}
-
 	reqBody, _ := io.ReadAll(r.Body)                //读取 reqBody
 	r.Body = io.NopCloser(bytes.NewReader(reqBody)) //重建 reqBody
 	reqBodyStr := string(reqBody)
@@ -73,28 +70,29 @@ func (m *TeardownWareMiddleware) OperationLogRecord(r *http.Request) error {
 
 	ipAddr, err := utils.GetIP(r)
 	if err != nil {
-		logx.WithContext(r.Context()).Errorf("%s.GetIP is error : %s req:%v",
+		logx.WithContext(ctx).Errorf("%s.GetIP is error : %s req:%v",
 			utils.FuncName(), err.Error(), utils.Fmt(r))
 		ipAddr = "0.0.0.0"
 	}
-
-	_, err = m.LogRpc.OperLogCreate(r.Context(), &user.OperLogCreateReq{
-		UserID:       userHeader.GetUserCtx(r.Context()).UserID,
-		Uri:          uri + r.Host + r.RequestURI,
-		Route:        r.RequestURI,
-		OperIpAddr:   ipAddr,
-		OperLocation: m.GetCityByIp(ipAddr),
-		Code:         int64(respStatusCode),
-		Msg:          respStatusMsg,
-		Req:          reqBodyStr,
-		Resp:         respBodyStr,
+	utils.Go(ctx, func() {
+		_, err = m.LogRpc.OperLogCreate(ctx, &user.OperLogCreateReq{
+			UserID:       ctxs.GetUserCtx(r.Context()).UserID,
+			Uri:          uri + r.Host + r.RequestURI,
+			Route:        r.RequestURI,
+			OperIpAddr:   ipAddr,
+			OperLocation: m.GetCityByIp(ipAddr),
+			Code:         int64(respStatusCode),
+			Msg:          respStatusMsg,
+			Req:          reqBodyStr,
+			Resp:         respBodyStr,
+		})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.OperationLogRecord is error : %s",
+				utils.FuncName(), err.Error())
+		}
+		return
 	})
-	if err != nil {
-		logx.WithContext(r.Context()).Errorf("%s.OperationLogRecord is error : %s",
-			utils.FuncName(), err.Error())
-	}
 
-	return nil
 }
 
 // 获取ip所属城市
