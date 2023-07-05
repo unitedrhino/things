@@ -9,7 +9,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/spf13/cast"
@@ -21,6 +21,7 @@ type DeviceGatewayMultiCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDb *relationDB.ProductInfoRepo
 }
 
 func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceGatewayMultiCreateLogic {
@@ -28,15 +29,16 @@ func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCo
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDb:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
 // 创建分组设备
 func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGatewayMultiCreateReq) (*dm.Response, error) {
 	{ //检查是否是网关类型
-		pi, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.GatewayProductID)
+		pi, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.GatewayProductID}})
 		if err != nil {
-			if err == mysql.ErrNotFound {
+			if errors.Cmp(err, errors.NotFind) {
 				return nil, errors.Parameter.AddDetail("not find GatewayProductID id:" + cast.ToString(in.GatewayProductID))
 			}
 			return nil, errors.Database.AddDetail(err)
@@ -54,7 +56,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			deviceProductMap[v.ProductID] = struct{}{}
 		}
 		deviceProductList = utils.SetToSlice(deviceProductMap)
-		products, err := l.svcCtx.ProductInfo.FindByFilter(l.ctx, mysql.ProductFilter{
+		products, err := l.PiDb.FindByFilter(l.ctx, relationDB.ProductFilter{
 			ProductIDs: deviceProductList,
 		}, nil)
 		if err != nil {
