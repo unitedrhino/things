@@ -20,6 +20,7 @@ type ProductSchemaUpdateLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	PiDb *relationDB.ProductInfoRepo
+	PsDb *relationDB.ProductSchemaRepo
 }
 
 func NewProductSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaUpdateLogic {
@@ -28,10 +29,11 @@ func NewProductSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 		PiDb:   relationDB.NewProductInfoRepo(ctx),
+		PsDb:   relationDB.NewProductSchemaRepo(ctx),
 	}
 }
 
-func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*mysql.DmProductSchema, *mysql.DmProductSchema, error) {
+func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*relationDB.DmProductSchema, *relationDB.DmProductSchema, error) {
 	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
 	if err != nil {
 		if err == mysql.ErrNotFound {
@@ -39,18 +41,20 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*my
 		}
 		return nil, nil, errors.Database.AddDetail(err)
 	}
-	po, err := l.svcCtx.ProductSchema.FindOneByProductIDIdentifier(l.ctx, in.Info.ProductID, in.Info.Identifier)
+	po, err := l.PsDb.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
+		ProductID: in.Info.ProductID, Identifiers: []string{in.Info.Identifier},
+	})
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, nil, errors.Parameter.AddMsgf("标识符不存在:" + in.Info.Identifier)
 		}
-		return nil, nil, errors.Database.AddDetail(err)
+		return nil, nil, err
 	}
 	if po.Tag != in.Info.Tag {
 		return nil, nil, errors.Parameter.AddMsg("功能标签不支持修改")
 	}
 	newPo := ToProductSchemaPo(in.Info)
-	newPo.Id = po.Id
+	newPo.ID = po.ID
 	newPo.Tag = po.Tag
 	if in.Info.Affordance == nil {
 		newPo.Affordance = po.Affordance
@@ -85,12 +89,12 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	}
 	if schema.AffordanceType(newPo.Type) == schema.AffordanceTypeProperty {
 		if err := l.svcCtx.SchemaManaRepo.CreateProperty(
-			l.ctx, mysql.ToPropertyDo(newPo), in.Info.ProductID); err != nil {
+			l.ctx, relationDB.ToPropertyDo(newPo), in.Info.ProductID); err != nil {
 			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
-	err = l.svcCtx.ProductSchema.Update(l.ctx, newPo)
+	err = l.PsDb.Update(l.ctx, newPo)
 	if err != nil {
 		return nil, err
 	}

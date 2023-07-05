@@ -31,5 +31,5 @@ func (l *ProductInfoReadLogic) ProductInfoRead(in *dm.ProductInfoReadReq) (*dm.P
 	if err != nil {
 		return nil, err
 	}
-	return ToProductInfo2(l.ctx, pi, l.svcCtx), nil
+	return ToProductInfo(l.ctx, pi, l.svcCtx), nil
 }

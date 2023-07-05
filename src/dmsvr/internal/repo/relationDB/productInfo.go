@@ -66,7 +66,7 @@ func (p ProductInfoRepo) Update(ctx context.Context, data *DmProductInfo) error 
 	return store.ErrFmt(err)
 }
 
-func (p ProductInfoRepo) DeleteWithFilter(ctx context.Context, f ProductFilter) error {
+func (p ProductInfoRepo) DeleteByFilter(ctx context.Context, f ProductFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&DmProductInfo{}).Error
 	return store.ErrFmt(err)
