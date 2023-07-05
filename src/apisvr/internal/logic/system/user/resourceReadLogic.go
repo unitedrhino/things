@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/domain/userHeader"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -26,7 +26,7 @@ func NewResourceReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Reso
 func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, err error) {
 	menuInfo := make([]*types.MenuData, 0)
 	info, err := l.svcCtx.MenuRpc.MenuIndex(l.ctx, &sys.MenuIndexReq{
-		Role: userHeader.GetUserCtx(l.ctx).Role,
+		Role: ctxs.GetUserCtx(l.ctx).Role,
 	})
 	if err != nil {
 		return nil, err

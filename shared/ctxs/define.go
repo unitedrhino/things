@@ -1,7 +1,7 @@
-package userHeader
+package ctxs
 
 const (
-	UserUidKey      string = "iThings-uid"
+	UserInfoKey     string = "iThings-user"
 	UserTokenKey    string = "iThings-token"
 	UserSetTokenKey string = "iThings-set-token"
 	MetadataKey     string = "iThings-meta"
