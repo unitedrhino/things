@@ -41,7 +41,7 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 	if err != nil {
 		return nil, err
 	}
-	err = l.PiDb.DeleteWithFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	err = l.PiDb.DeleteByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))
 		return nil, err
