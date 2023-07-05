@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/spf13/cast"
@@ -19,6 +20,7 @@ type DeviceInfoCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDb *relationDB.ProductInfoRepo
 }
 
 func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceInfoCreateLogic {
@@ -26,6 +28,7 @@ func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDb:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
@@ -48,15 +51,14 @@ func (l *DeviceInfoCreateLogic) CheckDevice(in *dm.DeviceInfo) (bool, error) {
 发现返回true 没有返回false
 */
 func (l *DeviceInfoCreateLogic) CheckProduct(in *dm.DeviceInfo) (bool, error) {
-	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
-	switch err {
-	case mysql.ErrNotFound:
-		return false, nil
-	case nil:
+	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}})
+	if err == nil {
 		return true, nil
-	default:
-		return false, err
 	}
+	if errors.Cmp(err, errors.NotFind) {
+		return false, nil
+	}
+	return false, err
 }
 
 // 新增设备
@@ -70,10 +72,10 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	}()
 
 	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
-		if pid, err := l.svcCtx.ProductInfo.GetIDByName(l.ctx, mysql.ProductFilter{ProductName: in.ProductName}, nil); err != nil {
+		if pid, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}}); err != nil {
 			return nil, err
 		} else {
-			in.ProductID = pid
+			in.ProductID = pid.ProductID
 		}
 	}
 

@@ -2,8 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -26,12 +25,11 @@ func NewProductInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *P
 
 // 获取设备信息详情
 func (l *ProductInfoReadLogic) ProductInfoRead(in *dm.ProductInfoReadReq) (*dm.ProductInfo, error) {
-	pi, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
+	pi, err := relationDB.NewProductInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.ProductFilter{
+		ProductIDs: []string{in.ProductID},
+	})
 	if err != nil {
-		if err == mysql.ErrNotFound {
-			return nil, errors.NotFind
-		}
 		return nil, err
 	}
-	return ToProductInfo(l.ctx, pi, l.svcCtx), nil
+	return ToProductInfo2(l.ctx, pi, l.svcCtx), nil
 }

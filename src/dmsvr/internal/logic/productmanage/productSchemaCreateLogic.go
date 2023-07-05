@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -18,6 +19,7 @@ type ProductSchemaCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDb *relationDB.ProductInfoRepo
 }
 
 func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaCreateLogic {
@@ -25,16 +27,17 @@ func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDb:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
 func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*mysql.DmProductSchema, error) {
-	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
+	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.Parameter.AddMsg("找不到该产品:" + in.Info.ProductID)
 		}
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	_, err = l.svcCtx.ProductSchema.FindOneByProductIDIdentifier(l.ctx, in.Info.ProductID, in.Info.Identifier)
 	if err != nil {

@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	devicemanagelogic "github.com/i-Things/things/src/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -19,6 +20,7 @@ type DeviceRegisterLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDb *relationDB.ProductInfoRepo
 }
 
 type DeviceRegisterPayload struct {
@@ -33,6 +35,7 @@ func NewDeviceRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDb:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
@@ -65,9 +68,9 @@ func getPayload(encryptionType int, psk string, productSecret string) (size int,
 func (l *DeviceRegisterLogic) DeviceRegister(in *dm.DeviceRegisterReq) (*dm.DeviceRegisterResp, error) {
 
 	//检查产品动态开关是否开启
-	pi, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
+	pi, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
-		return nil, errors.Database.AddMsg("产品查询失败")
+		return nil, err
 	}
 	if pi.AutoRegister == devices.DeviceRegisterUnable {
 		return nil, errors.NotEnable.AddMsg("设备动态注册未启动")

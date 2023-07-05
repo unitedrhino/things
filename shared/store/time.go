@@ -1,12 +1,12 @@
 package store
 
 import (
-	"gorm.io/gorm"
+	"database/sql"
 	"time"
 )
 
 type Time struct {
-	CreatedTime time.Time      `gorm:"column:createdTime;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL"`
-	UpdatedTime time.Time      `gorm:"column:updatedTime;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL"`
-	DeletedTime gorm.DeletedAt `gorm:"column:deletedTime;type:datetime"`
+	CreatedTime time.Time    `gorm:"column:createdTime;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL"`
+	UpdatedTime time.Time    `gorm:"column:updatedTime;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL"`
+	DeletedTime sql.NullTime `gorm:"column:deletedTime;type:datetime"`
 }

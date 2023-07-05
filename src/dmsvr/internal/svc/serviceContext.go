@@ -4,6 +4,7 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/eventBus"
 	"github.com/i-Things/things/shared/oss"
+	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
@@ -22,13 +23,12 @@ import (
 type ServiceContext struct {
 	Config           config.Config
 	DeviceInfo       mysql.DmDeviceInfoModel
-	ProductInfo      mysql.DmProductInfoModel
 	ProductCustom    mysql.DmProductCustomModel
 	ProductSchema    mysql.DmProductSchemaModel
 	DeviceID         *utils.SnowFlake
 	ProductID        *utils.SnowFlake
 	DataUpdate       dataUpdate.DataUpdate
-	Store            kv.Store
+	Cache            kv.Store
 	SchemaManaRepo   deviceMsgManage.SchemaDataRepo
 	HubLogRepo       deviceMsgManage.HubLogRepo
 	SchemaRepo       schema.Repo
@@ -52,13 +52,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	//TestTD(td)
 	conn := sqlx.NewMysql(c.Database.DSN)
 	di := mysql.NewDmDeviceInfoModel(conn)
-	pi := mysql.NewDmProductInfoModel(conn)
 	pt := mysql.NewDmProductSchemaModel(conn)
 	ps := mysql.NewDmProductCustomModel(conn)
 	tr := cache.NewSchemaRepo(pt)
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
 	fr := mysql.NewDmProductFirmwareModel(conn)
-	store := kv.NewStore(c.CacheRedis)
+	cache := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	DeviceID := utils.NewSnowFlake(nodeId)
 	ProductID := utils.NewSnowFlake(nodeId)
@@ -82,20 +81,19 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		os.Exit(-1)
 	}
 	bus := eventBus.NewEventBus()
-
+	store.InitConn(c.Database)
 	return &ServiceContext{
 		Bus:              bus,
 		Config:           c,
 		OssClient:        ossClient,
 		DeviceInfo:       di,
-		ProductInfo:      pi,
 		ProductSchema:    pt,
 		FirmwareInfo:     fr,
 		SchemaRepo:       tr,
 		DeviceID:         DeviceID,
 		ProductID:        ProductID,
 		DataUpdate:       du,
-		Store:            store,
+		Cache:            cache,
 		SchemaManaRepo:   deviceData,
 		HubLogRepo:       hubLog,
 		SDKLogRepo:       sdkLog,
