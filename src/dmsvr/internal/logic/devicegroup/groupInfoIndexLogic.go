@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -15,6 +16,7 @@ type GroupInfoIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDb *relationDB.ProductInfoRepo
 }
 
 func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupInfoIndexLogic {
@@ -22,6 +24,7 @@ func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gr
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDb:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
@@ -38,7 +41,7 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 	}
 	info := make([]*dm.GroupInfo, 0, len(ros))
 	//filterProductID :=
-	productFilter := &mysql.ProductFilter{}
+	productFilter := relationDB.ProductFilter{}
 	for _, ro := range ros {
 		productFilter.ProductIDs = append(productFilter.ProductIDs, ro.ProductID)
 		info = append(info, &dm.GroupInfo{
@@ -52,7 +55,7 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 			Tags:        in.Tags,
 		})
 	}
-	productList, _ := l.svcCtx.ProductInfo.FindByFilter(l.ctx, *productFilter, &def.PageInfo{Page: 0, Size: 20})
+	productList, _ := l.PiDb.FindByFilter(l.ctx, productFilter, nil)
 	productMap := make(map[string]string, len(productList))
 	for _, p := range productList {
 		productMap[p.ProductID] = p.ProductName

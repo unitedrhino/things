@@ -75,6 +75,12 @@ func (c CodeError) AddDetail(msg ...any) *CodeError {
 	c.Stack = append(c.Stack, string(debug.Stack()))
 	return &c
 }
+func (c CodeError) WithStack() *CodeError {
+	pc := make([]uintptr, 1)
+	runtime.Callers(2, pc)
+	c.Stack = append(c.Stack, string(debug.Stack()))
+	return &c
+}
 
 func (c CodeError) AddDetailf(format string, a ...any) *CodeError {
 	c.Details = append(c.Details, fmt.Sprintf(format, a...))
