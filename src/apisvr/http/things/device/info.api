@@ -103,6 +103,7 @@ type (
         Tags []*Tag `json:"tags,optional"`                // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
         AreaIDs []int64 `json:"areaIDs,optional"`                  //项目区域ids
+        IsOnline int64 `json:"isOnline,optional,range=[0:2]"`                                         // 在线状态过滤  1离线 2在线
     }
     DeviceInfoIndexResp struct {
         List []*DeviceInfo `json:"list"`    //设备信息

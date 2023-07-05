@@ -38,6 +38,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		Range:       req.Range,
 		Position:    logic.ToDmPointRpc(req.Position),
 		DeviceAlias: req.DeviceAlias,
+		IsOnline:    req.IsOnline,
 	}
 	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
 	if err != nil {
