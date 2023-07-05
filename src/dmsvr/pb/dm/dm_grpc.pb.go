@@ -22,13 +22,13 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DeviceAuthClient interface {
-	// 设备登录认证
+	//设备登录认证
 	LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error)
-	// 设备操作认证
+	//设备操作认证
 	AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
-	// 鉴定是否是root账号
+	//鉴定是否是root账号
 	RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
-	// 设备动态注册
+	//设备动态注册
 	DeviceRegister(ctx context.Context, in *DeviceRegisterReq, opts ...grpc.CallOption) (*DeviceRegisterResp, error)
 }
 
@@ -80,13 +80,13 @@ func (c *deviceAuthClient) DeviceRegister(ctx context.Context, in *DeviceRegiste
 // All implementations must embed UnimplementedDeviceAuthServer
 // for forward compatibility
 type DeviceAuthServer interface {
-	// 设备登录认证
+	//设备登录认证
 	LoginAuth(context.Context, *LoginAuthReq) (*Response, error)
-	// 设备操作认证
+	//设备操作认证
 	AccessAuth(context.Context, *AccessAuthReq) (*Response, error)
-	// 鉴定是否是root账号
+	//鉴定是否是root账号
 	RootCheck(context.Context, *RootCheckReq) (*Response, error)
-	// 设备动态注册
+	//设备动态注册
 	DeviceRegister(context.Context, *DeviceRegisterReq) (*DeviceRegisterResp, error)
 	mustEmbedUnimplementedDeviceAuthServer()
 }
@@ -224,25 +224,25 @@ var DeviceAuth_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DeviceManageClient interface {
-	// 新增设备
+	//新增设备
 	DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
-	// 更新设备
+	//更新设备
 	DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
-	// 删除设备
+	//删除设备
 	DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	// 获取设备信息列表
+	//获取设备信息列表
 	DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
-	// 获取设备信息详情
+	//获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
-	// 绑定网关下子设备设备
+	//绑定网关下子设备设备
 	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
-	// 获取绑定信息的设备信息列表
+	//获取绑定信息的设备信息列表
 	DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
-	// 删除网关下子设备
+	//删除网关下子设备
 	DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	// 设备计数
+	//设备计数
 	DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCountResp, error)
-	// 设备类型
+	//设备类型
 	DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error)
 }
 
@@ -348,25 +348,25 @@ func (c *deviceManageClient) DeviceTypeCount(ctx context.Context, in *DeviceType
 // All implementations must embed UnimplementedDeviceManageServer
 // for forward compatibility
 type DeviceManageServer interface {
-	// 新增设备
+	//新增设备
 	DeviceInfoCreate(context.Context, *DeviceInfo) (*Response, error)
-	// 更新设备
+	//更新设备
 	DeviceInfoUpdate(context.Context, *DeviceInfo) (*Response, error)
-	// 删除设备
+	//删除设备
 	DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Response, error)
-	// 获取设备信息列表
+	//获取设备信息列表
 	DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error)
-	// 获取设备信息详情
+	//获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
-	// 绑定网关下子设备设备
+	//绑定网关下子设备设备
 	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Response, error)
-	// 获取绑定信息的设备信息列表
+	//获取绑定信息的设备信息列表
 	DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error)
-	// 删除网关下子设备
+	//删除网关下子设备
 	DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Response, error)
-	// 设备计数
+	//设备计数
 	DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCountResp, error)
-	// 设备类型
+	//设备类型
 	DeviceTypeCount(context.Context, *DeviceTypeCountReq) (*DeviceTypeCountResp, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }
@@ -654,29 +654,29 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductManageClient interface {
-	// 新增产品
+	//新增产品
 	ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
-	// 更新产品
+	//更新产品
 	ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
-	// 删除产品
+	//删除产品
 	ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	// 获取产品信息列表
+	//获取产品信息列表
 	ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
-	// 获取产品信息详情
+	//获取产品信息详情
 	ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
-	// 更新产品物模型
+	//更新产品物模型
 	ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	// 新增产品
+	//新增产品
 	ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error)
-	// 删除产品
+	//删除产品
 	ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	// 获取产品信息列表
+	//获取产品信息列表
 	ProductSchemaIndex(ctx context.Context, in *ProductSchemaIndexReq, opts ...grpc.CallOption) (*ProductSchemaIndexResp, error)
-	// 删除产品
+	//删除产品
 	ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error)
-	// 获取产品信息列表
+	//获取产品信息列表
 	ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
-	// 脚本管理
+	//脚本管理
 	ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error)
 	ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error)
 }
@@ -810,29 +810,29 @@ func (c *productManageClient) ProductCustomUpdate(ctx context.Context, in *Produ
 // All implementations must embed UnimplementedProductManageServer
 // for forward compatibility
 type ProductManageServer interface {
-	// 新增产品
+	//新增产品
 	ProductInfoCreate(context.Context, *ProductInfo) (*Response, error)
-	// 更新产品
+	//更新产品
 	ProductInfoUpdate(context.Context, *ProductInfo) (*Response, error)
-	// 删除产品
+	//删除产品
 	ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Response, error)
-	// 获取产品信息列表
+	//获取产品信息列表
 	ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error)
-	// 获取产品信息详情
+	//获取产品信息详情
 	ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error)
-	// 更新产品物模型
+	//更新产品物模型
 	ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error)
-	// 新增产品
+	//新增产品
 	ProductSchemaCreate(context.Context, *ProductSchemaCreateReq) (*Response, error)
-	// 删除产品
+	//删除产品
 	ProductSchemaDelete(context.Context, *ProductSchemaDeleteReq) (*Response, error)
-	// 获取产品信息列表
+	//获取产品信息列表
 	ProductSchemaIndex(context.Context, *ProductSchemaIndexReq) (*ProductSchemaIndexResp, error)
-	// 删除产品
+	//删除产品
 	ProductSchemaTslImport(context.Context, *ProductSchemaTslImportReq) (*Response, error)
-	// 获取产品信息列表
+	//获取产品信息列表
 	ProductSchemaTslRead(context.Context, *ProductSchemaTslReadReq) (*ProductSchemaTslReadResp, error)
-	// 脚本管理
+	//脚本管理
 	ProductCustomRead(context.Context, *ProductCustomReadReq) (*ProductCustom, error)
 	ProductCustomUpdate(context.Context, *ProductCustom) (*Response, error)
 	mustEmbedUnimplementedProductManageServer()
@@ -1196,21 +1196,21 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DeviceGroupClient interface {
-	// 创建分组
+	//创建分组
 	GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
-	// 获取分组信息列表
+	//获取分组信息列表
 	GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
-	// 获取分组信息详情
+	//获取分组信息详情
 	GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error)
-	// 更新分组
+	//更新分组
 	GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	// 删除分组
+	//删除分组
 	GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	// 创建分组设备
+	//创建分组设备
 	GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
-	// 获取分组设备信息列表
+	//获取分组设备信息列表
 	GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
-	// 删除分组设备
+	//删除分组设备
 	GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 }
 
@@ -1298,21 +1298,21 @@ func (c *deviceGroupClient) GroupDeviceMultiDelete(ctx context.Context, in *Grou
 // All implementations must embed UnimplementedDeviceGroupServer
 // for forward compatibility
 type DeviceGroupServer interface {
-	// 创建分组
+	//创建分组
 	GroupInfoCreate(context.Context, *GroupInfoCreateReq) (*Response, error)
-	// 获取分组信息列表
+	//获取分组信息列表
 	GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error)
-	// 获取分组信息详情
+	//获取分组信息详情
 	GroupInfoRead(context.Context, *GroupInfoReadReq) (*GroupInfo, error)
-	// 更新分组
+	//更新分组
 	GroupInfoUpdate(context.Context, *GroupInfoUpdateReq) (*Response, error)
-	// 删除分组
+	//删除分组
 	GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error)
-	// 创建分组设备
+	//创建分组设备
 	GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiCreateReq) (*Response, error)
-	// 获取分组设备信息列表
+	//获取分组设备信息列表
 	GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error)
-	// 删除分组设备
+	//删除分组设备
 	GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Response, error)
 	mustEmbedUnimplementedDeviceGroupServer()
 }

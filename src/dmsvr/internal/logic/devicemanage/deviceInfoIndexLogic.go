@@ -50,6 +50,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		Range:       in.Range,
 		Position:    position,
 		DeviceAlias: in.DeviceAlias,
+		IsOnline:    in.IsOnline,
 	}
 
 	size, err = l.svcCtx.DeviceInfo.CountByFilter(l.ctx, filter)

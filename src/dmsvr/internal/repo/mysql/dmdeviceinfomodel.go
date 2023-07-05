@@ -41,7 +41,7 @@ type (
 			Start int64
 			End   int64
 		}
-		IsOnline    []int64
+		IsOnline    int64
 		Range       int64
 		Position    string
 		DeviceAlias string
@@ -79,13 +79,13 @@ func (d *DeviceFilter) FmtSql(ctx context.Context, sql sq.SelectBuilder) sq.Sele
 		}
 	}
 	if d.LastLoginTime.Start != 0 {
-		sql = sql.Where("lastLogin >= ?", utils.ToYYMMddHHSS(d.LastLoginTime.Start*1000))
+		sql = sql.Where("`lastLogin` >= ?", utils.ToYYMMddHHSS(d.LastLoginTime.Start*1000))
 	}
 	if d.LastLoginTime.End != 0 {
-		sql = sql.Where("lastLogin <= ?", utils.ToYYMMddHHSS(d.LastLoginTime.End*1000))
+		sql = sql.Where("`lastLogin` <= ?", utils.ToYYMMddHHSS(d.LastLoginTime.End*1000))
 	}
-	if len(d.IsOnline) != 0 {
-		sql = sql.Where(fmt.Sprintf("isOnline in (%v)", store.ArrayToSql(d.IsOnline)))
+	if d.IsOnline != 0 {
+		sql = sql.Where("`isOnline` = ?", d.IsOnline)
 	}
 
 	if d.Range > 0 {
