@@ -34,7 +34,7 @@ func (m *DmProductInfo) TableName() string {
 type DmProductCustom struct {
 	ID              int64          `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
 	ProductID       string         `gorm:"column:productID;type:char(11);NOT NULL"`     // 产品id
-	ScriptLang      int            `gorm:"column:scriptLang;type:tinyint(1);default:1"` // 脚本语言类型 1:JavaScript 2:lua 3:python
+	ScriptLang      int64          `gorm:"column:scriptLang;type:tinyint(1);default:1"` // 脚本语言类型 1:JavaScript 2:lua 3:python
 	CustomTopic     sql.NullString `gorm:"column:customTopic;type:json"`                // 自定义topic数组
 	TransformScript sql.NullString `gorm:"column:transformScript;type:text"`            // 协议转换脚本
 	LoginAuthScript sql.NullString `gorm:"column:loginAuthScript;type:text"`            // 登录认证脚本
@@ -49,12 +49,12 @@ func (m *DmProductCustom) TableName() string {
 type DmProductSchema struct {
 	ID         int64  `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
 	ProductID  string `gorm:"column:productID;type:char(11);NOT NULL"`      // 产品id
-	Tag        int    `gorm:"column:tag;type:tinyint(1);default:1"`         // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Type       int    `gorm:"column:type;type:tinyint(1);default:1"`        // 物模型类型 1:property属性 2:event事件 3:action行为
+	Tag        int64  `gorm:"column:tag;type:tinyint(1);default:1"`         // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Type       int64  `gorm:"column:type;type:tinyint(1);default:1"`        // 物模型类型 1:property属性 2:event事件 3:action行为
 	Identifier string `gorm:"column:identifier;type:varchar(100);NOT NULL"` // 标识符
 	Name       string `gorm:"column:name;type:varchar(100);NOT NULL"`       // 功能名称
 	Desc       string `gorm:"column:desc;type:varchar(200)"`                // 描述
-	Required   int    `gorm:"column:required;type:tinyint(1);default:2"`    // 是否必须,1是 2否
+	Required   int64  `gorm:"column:required;type:tinyint(1);default:2"`    // 是否必须,1是 2否
 	Affordance string `gorm:"column:affordance;type:json;NOT NULL"`         // 各类型的自定义功能定义
 	store.Time
 }
@@ -79,16 +79,16 @@ type DmDeviceInfo struct {
 	Version        string      `gorm:"column:version;type:varchar(64);NOT NULL"`                 // 固件版本
 	HardInfo       string      `gorm:"column:hardInfo;type:varchar(64);NOT NULL"`                // 模组硬件型号
 	SoftInfo       string      `gorm:"column:softInfo;type:varchar(64);NOT NULL"`                // 模组软件版本
-	MobileOperator int         `gorm:"column:mobileOperator;type:tinyint(1);default:1;NOT NULL"` // 移动运营商:1)移动 2)联通 3)电信 4)广电
+	MobileOperator int64       `gorm:"column:mobileOperator;type:tinyint(1);default:1;NOT NULL"` // 移动运营商:1)移动 2)联通 3)电信 4)广电
 	Phone          string      `gorm:"column:phone;type:varchar(20)"`                            // 手机号
 	Iccid          string      `gorm:"column:iccid;type:varchar(20)"`                            // SIM卡卡号
 	Address        string      `gorm:"column:address;type:varchar(512);NOT NULL"`                // 所在地址
 	Tags           string      `gorm:"column:tags;type:json;NOT NULL"`                           // 设备标签
 	UserID         int64       `gorm:"column:userID;type:bigint(20);NOT NULL"`                   // 所属用户id
-	IsOnline       int         `gorm:"column:isOnline;type:tinyint(1);default:2;NOT NULL"`       // 是否在线,1是2否
+	IsOnline       int64       `gorm:"column:isOnline;type:tinyint(1);default:2;NOT NULL"`       // 是否在线,1是2否
 	FirstLogin     time.Time   `gorm:"column:firstLogin;type:datetime"`                          // 激活时间
 	LastLogin      time.Time   `gorm:"column:lastLogin;type:datetime"`                           // 最后上线时间
-	LogLevel       int         `gorm:"column:logLevel;type:tinyint(1);default:1;NOT NULL"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+	LogLevel       int64       `gorm:"column:logLevel;type:tinyint(1);default:1;NOT NULL"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 	store.Time
 }
 
