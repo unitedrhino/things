@@ -374,6 +374,7 @@ message DeviceInfoIndexReq{
   Point Position = 7;   //设备定位,默认百度坐标系
   repeated int64 areaIDs = 8;//区域ids
   string deviceAlias = 9; //过滤条件:模糊查询 设备别名
+  int64 isOnline = 10; //在线状态过滤  1离线 2在线
 }
 
 message DeviceInfoIndexResp{
