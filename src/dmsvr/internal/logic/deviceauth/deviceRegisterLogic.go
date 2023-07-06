@@ -9,7 +9,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	devicemanagelogic "github.com/i-Things/things/src/dmsvr/internal/logic/devicemanage"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -20,7 +19,8 @@ type DeviceRegisterLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PiDb *relationDB.ProductInfoRepo
+	PiDB *relationDB.ProductInfoRepo
+	DiDB *relationDB.DeviceInfoRepo
 }
 
 type DeviceRegisterPayload struct {
@@ -35,7 +35,8 @@ func NewDeviceRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDb:   relationDB.NewProductInfoRepo(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 	}
 }
 
@@ -68,7 +69,7 @@ func getPayload(encryptionType int, psk string, productSecret string) (size int,
 func (l *DeviceRegisterLogic) DeviceRegister(in *dm.DeviceRegisterReq) (*dm.DeviceRegisterResp, error) {
 
 	//检查产品动态开关是否开启
-	pi, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
 		return nil, err
 	}
@@ -77,9 +78,9 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dm.DeviceRegisterReq) (*dm.Devi
 	}
 
 	//检查设备是否已注册
-	di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
+	di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			//检查设备自动创建是否开启， 开启则自动创建设备，未开启则返回错误
 			if pi.AutoRegister == devices.DeviceAutoCreateEnable {
 				//检查设备签名是否正确
@@ -94,7 +95,7 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dm.DeviceRegisterReq) (*dm.Devi
 				if err != nil {
 					return nil, errors.Database.AddMsg(fmt.Sprintf("设备注册失败: %s", err.Error()))
 				}
-				resp, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
+				resp, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 				if err != nil {
 					return nil, errors.Database.AddMsg(fmt.Sprintf("设备注册失败: %s", err.Error()))
 				}

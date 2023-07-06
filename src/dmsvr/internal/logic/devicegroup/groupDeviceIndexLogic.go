@@ -16,6 +16,7 @@ type GroupDeviceIndexLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	GdDB *relationDB.GroupDeviceRepo
+	DiDB *relationDB.DeviceInfoRepo
 }
 
 func NewGroupDeviceIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupDeviceIndexLogic {
@@ -24,6 +25,7 @@ func NewGroupDeviceIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 		GdDB:   relationDB.NewGroupDeviceRepo(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 	}
 }
 
@@ -45,7 +47,7 @@ func (l *GroupDeviceIndexLogic) GroupDeviceIndex(in *dm.GroupDeviceIndexReq) (*d
 		return nil, err
 	}
 	for _, v := range gd {
-		di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, v.ProductID, v.DeviceName)
+		di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: v.ProductID, DeviceNames: []string{v.DeviceName}})
 		if err != nil {
 			l.Errorf("%s.GroupInfo.DeviceInfoRead failure err=%+v", utils.FuncName(), err)
 			continue
