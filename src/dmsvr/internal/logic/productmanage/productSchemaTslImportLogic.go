@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -19,6 +20,7 @@ type ProductSchemaTslImportLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDb *relationDB.ProductInfoRepo
 }
 
 func NewProductSchemaTslImportLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaTslImportLogic {
@@ -26,18 +28,19 @@ func NewProductSchemaTslImportLogic(ctx context.Context, svcCtx *svc.ServiceCont
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDb:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
 // 删除产品
 func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchemaTslImportReq) (*dm.Response, error) {
 	l.Infof("%s req:%v", utils.FuncName(), in)
-	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
+	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
 		if err == mysql.ErrNotFound {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.ProductID))
 		}
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	t, err := schema.ValidateWithFmt([]byte(in.Tsl))
 	if err != nil {
@@ -46,21 +49,21 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 	if err := l.svcCtx.HubLogRepo.InitProduct(
 		l.ctx, in.ProductID); err != nil {
 		l.Errorf("%s.DeviceLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	{ //更新td物模型表
 		oldT, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
 		if err != nil {
 			l.Errorf("%s.SchemaManaRepo.GetSchemaModel failure,err:%v", utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
+			return nil, err
 		}
 		if err := l.svcCtx.SchemaManaRepo.DeleteProduct(l.ctx, oldT, in.ProductID); err != nil {
 			l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
+			return nil, err
 		}
 		if err := l.svcCtx.SchemaManaRepo.InitProduct(l.ctx, t, in.ProductID); err != nil {
 			l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
+			return nil, err
 		}
 		defer l.svcCtx.SchemaRepo.ClearCache(l.ctx, in.ProductID)
 	}
