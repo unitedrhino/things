@@ -3,26 +3,25 @@ package relationDB
 import (
 	"database/sql"
 	"github.com/i-Things/things/shared/store"
-	"time"
 )
 
 // 产品信息表
 
 type DmProductInfo struct {
-	ProductID    string `gorm:"column:productID;type:char(11);NOT NULL"`       // 产品id
-	ProductName  string `gorm:"column:productName;type:varchar(100);NOT NULL"` // 产品名称
-	ProductImg   string `gorm:"column:productImg;type:varchar(200)"`           // 产品图片
-	ProductType  int64  `gorm:"column:productType;type:tinyint(1);default:1"`  // 产品状态:1:开发中,2:审核中,3:已发布
-	AuthMode     int64  `gorm:"column:authMode;type:tinyint(1);default:1"`     // 认证方式:1:账密认证,2:秘钥认证
-	DeviceType   int64  `gorm:"column:deviceType;type:tinyint(1);default:1"`   // 设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64  `gorm:"column:categoryID;type:int(10);default:1"`      // 产品品类
-	NetType      int64  `gorm:"column:netType;type:tinyint(1);default:1"`      // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto    int64  `gorm:"column:dataProto;type:tinyint(1);default:1"`    // 数据协议:1:自定义,2:数据模板
-	AutoRegister int64  `gorm:"column:autoRegister;type:tinyint(1);default:1"` // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret       string `gorm:"column:secret;type:varchar(50)"`                // 动态注册产品秘钥
-	Desc         string `gorm:"column:desc;type:varchar(200)"`                 // 描述
-	DevStatus    string `gorm:"column:devStatus;type:varchar(20);NOT NULL"`    // 产品状态
-	Tags         string `gorm:"column:tags;type:json;NOT NULL"`                // 产品标签
+	ProductID    string            `gorm:"column:productID;type:char(11);NOT NULL"`                   // 产品id
+	ProductName  string            `gorm:"column:productName;type:varchar(100);NOT NULL"`             // 产品名称
+	ProductImg   string            `gorm:"column:productImg;type:varchar(200)"`                       // 产品图片
+	ProductType  int64             `gorm:"column:productType;type:tinyint(1);default:1"`              // 产品状态:1:开发中,2:审核中,3:已发布
+	AuthMode     int64             `gorm:"column:authMode;type:tinyint(1);default:1"`                 // 认证方式:1:账密认证,2:秘钥认证
+	DeviceType   int64             `gorm:"column:deviceType;type:tinyint(1);default:1"`               // 设备类型:1:设备,2:网关,3:子设备
+	CategoryID   int64             `gorm:"column:categoryID;type:int(10);default:1"`                  // 产品品类
+	NetType      int64             `gorm:"column:netType;type:tinyint(1);default:1"`                  // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	DataProto    int64             `gorm:"column:dataProto;type:tinyint(1);default:1"`                // 数据协议:1:自定义,2:数据模板
+	AutoRegister int64             `gorm:"column:autoRegister;type:tinyint(1);default:1"`             // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret       string            `gorm:"column:secret;type:varchar(50)"`                            // 动态注册产品秘钥
+	Desc         string            `gorm:"column:desc;type:varchar(200)"`                             // 描述
+	DevStatus    string            `gorm:"column:devStatus;type:varchar(20);NOT NULL"`                // 产品状态
+	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:{}"` // 产品标签
 	store.Time
 }
 
@@ -65,30 +64,30 @@ func (m *DmProductSchema) TableName() string {
 
 // 设备信息表
 type DmDeviceInfo struct {
-	ID             int64       `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
-	ProjectID      int64       `gorm:"column:projectID;type:bigint(20);default:0;NOT NULL"`      // 项目ID(雪花ID)
-	AreaID         int64       `gorm:"column:areaID;type:bigint(20);default:0;NOT NULL"`         // 项目区域ID(雪花ID)
-	ProductID      string      `gorm:"column:productID;type:char(11);NOT NULL"`                  // 产品id
-	DeviceName     string      `gorm:"column:deviceName;type:varchar(100);NOT NULL"`             // 设备名称
-	DeviceAlias    string      `gorm:"column:deviceAlias;type:varchar(100);NOT NULL"`            // 设备别名
-	Position       store.Point `gorm:"column:position;type:point;NOT NULL"`                      // 设备的位置(默认百度坐标系BD09)
-	Secret         string      `gorm:"column:secret;type:varchar(50);NOT NULL"`                  // 设备秘钥
-	Cert           string      `gorm:"column:cert;type:varchar(512);NOT NULL"`                   // 设备证书
-	Imei           string      `gorm:"column:imei;type:varchar(15);NOT NULL"`                    // IMEI号信息
-	Mac            string      `gorm:"column:mac;type:varchar(17);NOT NULL"`                     // MAC号信息
-	Version        string      `gorm:"column:version;type:varchar(64);NOT NULL"`                 // 固件版本
-	HardInfo       string      `gorm:"column:hardInfo;type:varchar(64);NOT NULL"`                // 模组硬件型号
-	SoftInfo       string      `gorm:"column:softInfo;type:varchar(64);NOT NULL"`                // 模组软件版本
-	MobileOperator int64       `gorm:"column:mobileOperator;type:tinyint(1);default:1;NOT NULL"` // 移动运营商:1)移动 2)联通 3)电信 4)广电
-	Phone          string      `gorm:"column:phone;type:varchar(20)"`                            // 手机号
-	Iccid          string      `gorm:"column:iccid;type:varchar(20)"`                            // SIM卡卡号
-	Address        string      `gorm:"column:address;type:varchar(512);NOT NULL"`                // 所在地址
-	Tags           string      `gorm:"column:tags;type:json;NOT NULL"`                           // 设备标签
-	UserID         int64       `gorm:"column:userID;type:bigint(20);NOT NULL"`                   // 所属用户id
-	IsOnline       int64       `gorm:"column:isOnline;type:tinyint(1);default:2;NOT NULL"`       // 是否在线,1是2否
-	FirstLogin     time.Time   `gorm:"column:firstLogin;type:datetime"`                          // 激活时间
-	LastLogin      time.Time   `gorm:"column:lastLogin;type:datetime"`                           // 最后上线时间
-	LogLevel       int64       `gorm:"column:logLevel;type:tinyint(1);default:1;NOT NULL"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+	ID             int64             `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
+	ProjectID      int64             `gorm:"column:projectID;type:bigint(20);default:0;NOT NULL"`       // 项目ID(雪花ID)
+	AreaID         int64             `gorm:"column:areaID;type:bigint(20);default:0;NOT NULL"`          // 项目区域ID(雪花ID)
+	ProductID      string            `gorm:"column:productID;type:char(11);NOT NULL"`                   // 产品id
+	DeviceName     string            `gorm:"column:deviceName;type:varchar(100);NOT NULL"`              // 设备名称
+	DeviceAlias    string            `gorm:"column:deviceAlias;type:varchar(100);NOT NULL"`             // 设备别名
+	Position       store.Point       `gorm:"column:position;type:point;NOT NULL"`                       // 设备的位置(默认百度坐标系BD09)
+	Secret         string            `gorm:"column:secret;type:varchar(50);NOT NULL"`                   // 设备秘钥
+	Cert           string            `gorm:"column:cert;type:varchar(512);NOT NULL"`                    // 设备证书
+	Imei           string            `gorm:"column:imei;type:varchar(15);NOT NULL"`                     // IMEI号信息
+	Mac            string            `gorm:"column:mac;type:varchar(17);NOT NULL"`                      // MAC号信息
+	Version        string            `gorm:"column:version;type:varchar(64);NOT NULL"`                  // 固件版本
+	HardInfo       string            `gorm:"column:hardInfo;type:varchar(64);NOT NULL"`                 // 模组硬件型号
+	SoftInfo       string            `gorm:"column:softInfo;type:varchar(64);NOT NULL"`                 // 模组软件版本
+	MobileOperator int64             `gorm:"column:mobileOperator;type:tinyint(1);default:1;NOT NULL"`  // 移动运营商:1)移动 2)联通 3)电信 4)广电
+	Phone          sql.NullString    `gorm:"column:phone;type:varchar(20)"`                             // 手机号
+	Iccid          sql.NullString    `gorm:"column:iccid;type:varchar(20)"`                             // SIM卡卡号
+	Address        string            `gorm:"column:address;type:varchar(512);NOT NULL"`                 // 所在地址
+	Tags           map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:{}"` // 设备标签
+	UserID         int64             `gorm:"column:userID;type:bigint(20);NOT NULL"`                    // 所属用户id
+	IsOnline       int64             `gorm:"column:isOnline;type:tinyint(1);default:2;NOT NULL"`        // 是否在线,1是2否
+	FirstLogin     sql.NullTime      `gorm:"column:firstLogin;type:datetime"`                           // 激活时间
+	LastLogin      sql.NullTime      `gorm:"column:lastLogin;type:datetime"`                            // 最后上线时间
+	LogLevel       int64             `gorm:"column:logLevel;type:tinyint(1);default:1;NOT NULL"`        // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 	store.Time
 }
 
@@ -134,6 +133,8 @@ type DmGatewayDevice struct {
 	ProductID         string `gorm:"column:productID;type:char(11);NOT NULL"`             // 子设备产品id
 	DeviceName        string `gorm:"column:deviceName;type:varchar(100);NOT NULL"`        // 子设备名称
 	store.Time
+	Device  *DmDeviceInfo `gorm:"foreignKey:productID,deviceName;references:productID,deviceName"`
+	Gateway *DmDeviceInfo `gorm:"foreignKey:productID,deviceName;references:gatewayProductID,gatewayDeviceName"`
 }
 
 func (m *DmGatewayDevice) TableName() string {

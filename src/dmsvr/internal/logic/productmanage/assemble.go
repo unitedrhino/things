@@ -2,7 +2,6 @@ package productmanagelogic
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/i-Things/things/shared/oss/common"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -15,11 +14,7 @@ import (
 )
 
 func ToProductInfo(ctx context.Context, pi *relationDB.DmProductInfo, svcCtx *svc.ServiceContext) *dm.ProductInfo {
-	var (
-		tags map[string]string
-	)
 
-	_ = json.Unmarshal([]byte(pi.Tags), &tags)
 	if pi.DeviceType == def.Unknown {
 		pi.DeviceType = def.DeviceTypeDevice
 	}
@@ -47,7 +42,7 @@ func ToProductInfo(ctx context.Context, pi *relationDB.DmProductInfo, svcCtx *sv
 		Secret:       pi.Secret,                             //动态注册产品秘钥 只读
 		Desc:         &wrappers.StringValue{Value: pi.Desc}, //描述
 		CreatedTime:  pi.CreatedTime.Unix(),                 //创建时间
-		Tags:         tags,                                  //产品tags
+		Tags:         pi.Tags,                               //产品tags
 		ProductImg:   pi.ProductImg,
 		//Model:     &wrappers.StringValue{Value: pi.Model},    //数据模板
 	}

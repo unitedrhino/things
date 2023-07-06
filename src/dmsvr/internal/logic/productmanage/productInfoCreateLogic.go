@@ -2,7 +2,6 @@ package productmanagelogic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"path"
@@ -106,14 +105,10 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 	} else {
 		pi.AuthMode = def.AuthModePwd
 	}
-	if in.Tags != nil {
-		tags, err := json.Marshal(in.Tags)
-		if err == nil {
-			pi.Tags = string(tags)
-		}
-	} else {
-		pi.Tags = "{}"
+	if in.Tags == nil {
+		in.Tags = map[string]string{}
 	}
+	pi.Tags = in.Tags
 	if in.ProductImg != "" { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		si, err := oss.GetSceneInfo(in.ProductImg)
 		if err != nil {
