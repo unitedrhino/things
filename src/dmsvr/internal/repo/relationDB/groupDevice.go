@@ -91,3 +91,8 @@ func (p GroupDeviceRepo) CountByFilter(ctx context.Context, f GroupDeviceFilter)
 	err = db.Count(&size).Error
 	return size, store.ErrFmt(err)
 }
+func (p GroupDeviceRepo) DeleteByFilter(ctx context.Context, f GroupDeviceFilter) error {
+	db := p.fmtFilter(ctx, f)
+	err := db.Delete(&DmProductInfo{}).Error
+	return store.ErrFmt(err)
+}

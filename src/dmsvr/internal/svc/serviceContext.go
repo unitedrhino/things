@@ -31,9 +31,7 @@ type ServiceContext struct {
 	HubLogRepo     deviceMsgManage.HubLogRepo
 	SchemaRepo     schema.Repo
 	SDKLogRepo     deviceMsgManage.SDKLogRepo
-	FirmwareInfo   mysql.DmProductFirmwareModel
 	GroupID        *utils.SnowFlake
-	GroupDB        mysql.DmGroupModel
 	Gateway        mysql.DmGatewayDeviceModel
 	OssClient      *oss.Client
 	Bus            eventBus.Bus
@@ -48,7 +46,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	di := mysql.NewDmDeviceInfoModel(conn)
 	tr := cache.NewSchemaRepo()
 	deviceData := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, tr.GetSchemaModel)
-	fr := mysql.NewDmProductFirmwareModel(conn)
 	cache := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	DeviceID := utils.NewSnowFlake(nodeId)
@@ -60,8 +57,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		os.Exit(-1)
 	}
 	GroupID := utils.NewSnowFlake(nodeId)
-	GroupDB := mysql.NewDmGroupModel(conn)
-	mysql.NewDmProductRemoteConfigModel(conn)
 	gw := mysql.NewDmGatewayDeviceModel(conn)
 	ossClient := oss.NewOssClient(c.OssConf)
 	if ossClient == nil {
@@ -75,7 +70,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		OssClient:      ossClient,
 		DeviceInfo:     di,
-		FirmwareInfo:   fr,
 		SchemaRepo:     tr,
 		DeviceID:       DeviceID,
 		ProductID:      ProductID,
@@ -85,7 +79,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		HubLogRepo:     hubLog,
 		SDKLogRepo:     sdkLog,
 		GroupID:        GroupID,
-		GroupDB:        GroupDB,
 		Gateway:        gw,
 	}
 }
