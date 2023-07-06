@@ -2,8 +2,7 @@ package devicegrouplogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -14,6 +13,7 @@ type GroupDeviceMultiDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	GdDB *relationDB.GroupDeviceRepo
 }
 
 func NewGroupDeviceMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupDeviceMultiDeleteLogic {
@@ -21,24 +21,25 @@ func NewGroupDeviceMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCont
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		GdDB:   relationDB.NewGroupDeviceRepo(ctx),
 	}
 }
 
 // 删除分组设备
 func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceMultiDeleteReq) (*dm.Response, error) {
-	list := make([]*devices.Core, len(in.List))
+	list := make([]*relationDB.DmGroupDevice, 0, len(in.List))
 	for _, v := range in.List {
 		if v == nil {
 			continue
 		}
-		list = append(list, &devices.Core{
+		list = append(list, &relationDB.DmGroupDevice{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 		})
 	}
-	err := l.svcCtx.GroupDB.GroupDeviceDelete(l.ctx, in.GroupID, list)
+	err := l.GdDB.MultiDelete(l.ctx, in.GroupID, list)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 
 	return &dm.Response{}, nil

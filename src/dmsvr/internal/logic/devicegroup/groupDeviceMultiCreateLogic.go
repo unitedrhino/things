@@ -2,8 +2,8 @@ package devicegrouplogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -14,6 +14,7 @@ type GroupDeviceMultiCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	GdDB *relationDB.GroupDeviceRepo
 }
 
 func NewGroupDeviceMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupDeviceMultiCreateLogic {
@@ -21,19 +22,23 @@ func NewGroupDeviceMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCont
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		GdDB:   relationDB.NewGroupDeviceRepo(ctx),
 	}
 }
 
 // 创建分组设备
 func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceMultiCreateReq) (*dm.Response, error) {
-	list := make([]*devices.Core, len(in.List))
+	//todo 需要检查设备是否存在
+
+	list := make([]*relationDB.DmGroupDevice, 0, len(in.List))
 	for _, v := range in.List {
-		list = append(list, &devices.Core{
+		list = append(list, &relationDB.DmGroupDevice{
+			GroupID:    in.GroupID,
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 		})
 	}
-	err := l.svcCtx.GroupDB.GroupDeviceCreate(l.ctx, in.GroupID, list)
+	err := l.GdDB.MultiInsert(l.ctx, list)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
