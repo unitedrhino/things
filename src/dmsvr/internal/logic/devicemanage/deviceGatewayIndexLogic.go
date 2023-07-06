@@ -3,7 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -15,6 +15,7 @@ type DeviceGatewayIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	GdDB *relationDB.GatewayDeviceRepo
 }
 
 func NewDeviceGatewayIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceGatewayIndexLogic {
@@ -22,22 +23,23 @@ func NewDeviceGatewayIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		GdDB:   relationDB.NewGatewayDeviceRepo(ctx),
 	}
 }
 
 // 获取分组设备信息列表
 func (l *DeviceGatewayIndexLogic) DeviceGatewayIndex(in *dm.DeviceGatewayIndexReq) (*dm.DeviceGatewayIndexResp, error) {
-	f := mysql.GatewayDeviceFilter{
+	f := relationDB.GatewayDeviceFilter{
 		Gateway:   ToDeviceCoreDo(in.Gateway),
 		SubDevice: ToDeviceCoreDo(in.SubDevice),
 	}
 
-	size, err := l.svcCtx.Gateway.CountByFilter(l.ctx, f)
+	size, err := l.GdDB.CountByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err
 	}
 
-	di, err := l.svcCtx.Gateway.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+	di, err := l.GdDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}

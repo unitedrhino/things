@@ -15,7 +15,7 @@ func (d *DeviceDataRepo) DeleteProduct(ctx context.Context, t *schema.Model, pro
 	for _, v := range tableList {
 		sql := fmt.Sprintf("drop stable if exists %s;", v)
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
-			return err
+			return errors.Database.AddDetail(err)
 		}
 	}
 	return nil
@@ -28,7 +28,7 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.createPropertyStable productID:%v,properties:%v,err:%v",
 					utils.FuncName(), productID, p, err)
-				return err
+				return errors.Database.AddDetail(err)
 			}
 		}
 	}
@@ -38,7 +38,7 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 			"TAGS (`productID` BINARY(50),`deviceName` BINARY(50));",
 			d.GetEventStableName())
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
-			return err
+			return errors.Database.AddDetail(err)
 		}
 	}
 
@@ -50,14 +50,14 @@ func (d *DeviceDataRepo) CreateProperty(ctx context.Context, p *schema.Property,
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.createPropertyStable productID:%v,properties:%v,err:%v",
 			utils.FuncName(), productID, p, err)
-		return err
+		return errors.Database.AddDetail(err)
 	}
 	return nil
 }
 func (d *DeviceDataRepo) DeleteProperty(ctx context.Context, productID string, identifier string) error {
 	sql := fmt.Sprintf("drop stable if exists %s;", d.GetPropertyStableName(productID, identifier))
 	if _, err := d.t.ExecContext(ctx, sql); err != nil {
-		return err
+		return errors.Database.AddDetail(err)
 	}
 	return nil
 }
@@ -83,7 +83,7 @@ func (d *DeviceDataRepo) UpdateProperty(
 			sql := fmt.Sprintf("ALTER STABLE %s ADD COLUMN %s %s; ",
 				d.GetPropertyStableName(productID, newP.Identifier), newS.Identifier, store.GetTdType(newS.DataType))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
-				return err
+				return errors.Database.AddDetail(err)
 			}
 		}
 	}
@@ -92,7 +92,7 @@ func (d *DeviceDataRepo) UpdateProperty(
 		sql := fmt.Sprintf("ALTER STABLE %s DROP COLUMN %s; ",
 			d.GetPropertyStableName(productID, newP.Identifier), oldS.Identifier)
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
-			return err
+			return errors.Database.AddDetail(err)
 		}
 	}
 	return nil
@@ -107,14 +107,14 @@ func (d *DeviceDataRepo) UpdateProduct(
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.UpdateProperty productID:%v,properties:%v,err:%v",
 					utils.FuncName(), productID, p, err)
-				return err
+				return errors.Database.AddDetail(err)
 			}
 		} else { //新增流程
 			err := d.createPropertyStable(ctx, p, productID)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.createPropertyStable productID:%v,properties:%v,err:%v",
 					utils.FuncName(), productID, p, err)
-				return err
+				return errors.Database.AddDetail(err)
 			}
 		}
 		//已经修改过的需要删除了,新增修改完了的就是需要删除的
@@ -126,7 +126,7 @@ func (d *DeviceDataRepo) UpdateProduct(
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			logx.WithContext(ctx).Errorf("%s drop table productID:%v,properties:%v,err:%v",
 				utils.FuncName(), productID, p, err)
-			return err
+			return errors.Database.AddDetail(err)
 		}
 	}
 	return nil
@@ -140,14 +140,14 @@ func (d *DeviceDataRepo) createPropertyStable(
 			" TAGS (`deviceName` BINARY(50),`"+PropertyType+"` BINARY(50));",
 			d.GetPropertyStableName(productID, p.Identifier), store.GetTdType(p.Define))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
-			return err
+			return errors.Database.AddDetail(err)
 		}
 	} else {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
 			" TAGS (`deviceName` BINARY(50),`"+PropertyType+"` BINARY(50));",
 			d.GetPropertyStableName(productID, p.Identifier), d.GetSpecsCreateColumn(p.Define.Specs))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
-			return err
+			return errors.Database.AddDetail(err)
 		}
 	}
 	return nil
