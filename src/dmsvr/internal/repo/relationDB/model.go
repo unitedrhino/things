@@ -98,13 +98,13 @@ func (m *DmDeviceInfo) TableName() string {
 
 // 设备分组信息表
 type DmGroupInfo struct {
-	GroupID   int64  `gorm:"column:groupID;type:bigint(20)"`                      // 分组ID
-	ParentID  int64  `gorm:"column:parentID;type:bigint(20);default:0;NOT NULL"`  // 父组ID 0-根组
-	ProjectID int64  `gorm:"column:projectID;type:bigint(20);default:0;NOT NULL"` // 项目ID(雪花ID)
-	ProductID string `gorm:"column:productID;type:char(11);NOT NULL"`             // 产品id,为空则不限定分组内的产品类型
-	GroupName string `gorm:"column:groupName;type:varchar(100);NOT NULL"`         // 分组名称
-	Desc      string `gorm:"column:desc;type:varchar(200)"`                       // 描述
-	Tags      string `gorm:"column:tags;type:json;NOT NULL"`                      // 分组标签
+	GroupID   int64             `gorm:"column:groupID;type:bigint(20)"`                            // 分组ID
+	ParentID  int64             `gorm:"column:parentID;type:bigint(20);default:0;NOT NULL"`        // 父组ID 0-根组
+	ProjectID int64             `gorm:"column:projectID;type:bigint(20);default:0;NOT NULL"`       // 项目ID(雪花ID)
+	ProductID string            `gorm:"column:productID;type:char(11);NOT NULL"`                   // 产品id,为空则不限定分组内的产品类型
+	GroupName string            `gorm:"column:groupName;type:varchar(100);NOT NULL"`               // 分组名称
+	Desc      string            `gorm:"column:desc;type:varchar(200)"`                             // 描述
+	Tags      map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:{}"` // 分组标签
 	store.Time
 }
 

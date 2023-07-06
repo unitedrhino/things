@@ -32,8 +32,6 @@ type ServiceContext struct {
 	SchemaRepo     schema.Repo
 	SDKLogRepo     deviceMsgManage.SDKLogRepo
 	FirmwareInfo   mysql.DmProductFirmwareModel
-	GroupInfo      mysql.DmGroupInfoModel
-	GroupDevice    mysql.DmGroupDeviceModel
 	GroupID        *utils.SnowFlake
 	GroupDB        mysql.DmGroupModel
 	Gateway        mysql.DmGatewayDeviceModel
@@ -61,8 +59,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
 	}
-	gi := mysql.NewDmGroupInfoModel(conn)
-	gd := mysql.NewDmGroupDeviceModel(conn)
 	GroupID := utils.NewSnowFlake(nodeId)
 	GroupDB := mysql.NewDmGroupModel(conn)
 	mysql.NewDmProductRemoteConfigModel(conn)
@@ -88,8 +84,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SchemaManaRepo: deviceData,
 		HubLogRepo:     hubLog,
 		SDKLogRepo:     sdkLog,
-		GroupInfo:      gi,
-		GroupDevice:    gd,
 		GroupID:        GroupID,
 		GroupDB:        GroupDB,
 		Gateway:        gw,
