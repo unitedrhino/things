@@ -8,7 +8,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"time"
@@ -20,8 +20,9 @@ type AccessAuthLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	ld *deviceAuth.LoginDevice
-	ti *devices.TopicInfo
+	ld   *deviceAuth.LoginDevice
+	ti   *devices.TopicInfo
+	GdDB *relationDB.GatewayDeviceRepo
 }
 
 func NewAccessAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AccessAuthLogic {
@@ -29,6 +30,7 @@ func NewAccessAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Access
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		GdDB:   relationDB.NewGatewayDeviceRepo(ctx),
 	}
 }
 
@@ -46,10 +48,18 @@ var (
 // SubSetAuth 网关代理子设备topic校验
 func (l *AccessAuthLogic) SubSetAuth(in *dm.AccessAuthReq,
 	ld *deviceAuth.LoginDevice, ti *devices.TopicInfo) (err error) {
-	_, err = l.svcCtx.Gateway.FindOneByGatewayProductIDGatewayDeviceNameProductIDDeviceName(
-		l.ctx, ld.ProductID, ld.DeviceName, ti.ProductID, ti.DeviceName)
+	_, err = l.GdDB.FindOneByFilter(l.ctx, relationDB.GatewayDeviceFilter{
+		Gateway: &devices.Core{
+			ProductID:  ld.ProductID,
+			DeviceName: ld.DeviceName,
+		},
+		SubDevice: &devices.Core{
+			ProductID:  ti.ProductID,
+			DeviceName: ti.DeviceName,
+		},
+	})
 	if err != nil {
-		if err != mysql.ErrNotFound {
+		if !errors.Cmp(err, errors.NotFind) {
 			return errors.Database.AddDetail(err)
 		}
 		return errors.Permissions

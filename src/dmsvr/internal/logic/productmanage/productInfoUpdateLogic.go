@@ -2,7 +2,6 @@ package productmanagelogic
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/oss"
@@ -35,10 +34,7 @@ func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *dm.ProductInfo) error {
 	if data.Tags != nil {
-		tags, err := json.Marshal(data.Tags)
-		if err == nil {
-			old.Tags = string(tags)
-		}
+		old.Tags = data.Tags
 	}
 	if data.ProductName != "" {
 		old.ProductName = data.ProductName

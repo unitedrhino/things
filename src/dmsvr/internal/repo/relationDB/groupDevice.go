@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"database/sql"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/store"
 	"gorm.io/gorm"
@@ -22,16 +21,6 @@ type (
 
 func NewGroupDeviceRepo(in any) *GroupDeviceRepo {
 	return &GroupDeviceRepo{db: store.GetCommonConn(in)}
-}
-
-func (g GroupDeviceRepo) Insert(ctx context.Context, data *DmGroupDevice) (sql.Result, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (g GroupDeviceRepo) FindOne(ctx context.Context, id int64) (*DmGroupDevice, error) {
-	//TODO implement me
-	panic("implement me")
 }
 
 // 批量插入 LightStrategyDevice 记录
@@ -60,6 +49,7 @@ func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []
 	err := db.Delete(&DmGroupDevice{}).Error
 	return store.ErrFmt(err)
 }
+
 func (p GroupDeviceRepo) fmtFilter(ctx context.Context, f GroupDeviceFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	//业务过滤条件
@@ -84,6 +74,16 @@ func (p GroupDeviceRepo) FindByFilter(ctx context.Context, f GroupDeviceFilter, 
 		return nil, store.ErrFmt(err)
 	}
 	return results, nil
+}
+
+func (p GroupDeviceRepo) FindOneByFilter(ctx context.Context, f GroupDeviceFilter) (*DmGroupDevice, error) {
+	var result DmGroupDevice
+	db := p.fmtFilter(ctx, f)
+	err := db.First(&result).Error
+	if err != nil {
+		return nil, store.ErrFmt(err)
+	}
+	return &result, nil
 }
 
 func (p GroupDeviceRepo) CountByFilter(ctx context.Context, f GroupDeviceFilter) (size int64, err error) {

@@ -2,63 +2,103 @@ package relationDB
 
 import (
 	"context"
-	"database/sql"
+	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/store"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type GatewayDeviceRepo struct {
 	db *gorm.DB
 }
 
+type (
+	GatewayDeviceFilter struct {
+		//网关和子设备 至少要有一个填写
+		Gateway *devices.Core
+		//网关和子设备 至少要有一个填写
+		SubDevice *devices.Core
+	}
+)
+
 func NewGatewayDeviceRepo(in any) *GatewayDeviceRepo {
 	return &GatewayDeviceRepo{db: store.GetCommonConn(in)}
 }
-
-func (g GatewayDeviceRepo) Insert(ctx context.Context, data *mysql.DmGatewayDevice) (sql.Result, error) {
-	//TODO implement me
-	panic("implement me")
+func (p GatewayDeviceRepo) fmtFilter(ctx context.Context, f GatewayDeviceFilter) *gorm.DB {
+	db := p.db.WithContext(ctx)
+	di := DmDeviceInfo{}
+	gd := DmGatewayDevice{}
+	if f.Gateway != nil { //通过网关获取旗下子设备列表
+		db = db.Table(gd.TableName()+" as gd").Joins(fmt.Sprintf(
+			"left join %s as di on di.productID=gd.productID and di.deviceName=gd.deviceName", di.TableName())).
+			Where("`gatewayProductID`=? and `gatewayDeviceName`=? and di.id IS NOT NULL", f.Gateway.ProductID, f.Gateway.DeviceName)
+	} else {
+		db = db.Table(gd.TableName()+" as gd").Joins(fmt.Sprintf(
+			"left join %s as di on di.productID=gd.gatewayProductID and di.deviceName=gd.gatewayDeviceName", di.TableName())).
+			Where("gd.`productID`=? and gd.`deviceName`=? and di.id IS NOT NULL", f.SubDevice.ProductID, f.SubDevice.DeviceName)
+	}
+	return db
 }
 
-func (g GatewayDeviceRepo) FindOne(ctx context.Context, id int64) (*mysql.DmGatewayDevice, error) {
-	//TODO implement me
-	panic("implement me")
+func (g GatewayDeviceRepo) FindByFilter(ctx context.Context, f GatewayDeviceFilter, page *def.PageInfo) ([]*DmDeviceInfo, error) {
+	var results []*DmDeviceInfo
+	db := g.fmtFilter(ctx, f)
+	db = page.ToGorm(db)
+	err := db.Select("di.*").Find(&results).Error
+	if err != nil {
+		return nil, store.ErrFmt(err)
+	}
+	return results, nil
 }
 
-func (g GatewayDeviceRepo) FindOneByGatewayProductIDGatewayDeviceNameProductIDDeviceName(ctx context.Context, gatewayProductID string, gatewayDeviceName string, productID string, deviceName string) (*mysql.DmGatewayDevice, error) {
-	//TODO implement me
-	panic("implement me")
+func (g GatewayDeviceRepo) CountByFilter(ctx context.Context, f GatewayDeviceFilter) (size int64, err error) {
+	db := g.fmtFilter(ctx, f)
+	err = db.Count(&size).Error
+	return size, store.ErrFmt(err)
+}
+func (p GatewayDeviceRepo) FindOneByFilter(ctx context.Context, f GatewayDeviceFilter) (*DmDeviceInfo, error) {
+	var result DmDeviceInfo
+	db := p.fmtFilter(ctx, f)
+	err := db.Select("di.*").First(&result).Error
+	if err != nil {
+		return nil, store.ErrFmt(err)
+	}
+	return &result, nil
 }
 
-func (g GatewayDeviceRepo) Update(ctx context.Context, data *mysql.DmGatewayDevice) error {
-	//TODO implement me
-	panic("implement me")
+func (m GatewayDeviceRepo) MultiInsert(ctx context.Context, gateway *devices.Core, subDevice []*devices.Core) error {
+	var data []*DmGatewayDevice
+	for _, v := range subDevice {
+		data = append(data, &DmGatewayDevice{
+			GatewayProductID:  gateway.ProductID,
+			GatewayDeviceName: gateway.DeviceName,
+			ProductID:         v.ProductID,
+			DeviceName:        v.DeviceName,
+		})
+	}
+	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmGatewayDevice{}).Create(data).Error
+	return store.ErrFmt(err)
 }
 
-func (g GatewayDeviceRepo) Delete(ctx context.Context, id int64) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (g GatewayDeviceRepo) CreateList(ctx context.Context, gateway *devices.Core, subDevices []*devices.Core) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (g GatewayDeviceRepo) DeleteList(ctx context.Context, gateway *devices.Core, subDevices []*devices.Core) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (g GatewayDeviceRepo) FindByFilter(ctx context.Context, filter mysql.GatewayDeviceFilter, page *def.PageInfo) ([]*mysql.DmDeviceInfo, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (g GatewayDeviceRepo) CountByFilter(ctx context.Context, filter mysql.GatewayDeviceFilter) (size int64, err error) {
-	//TODO implement me
-	panic("implement me")
+// 批量插入 LightStrategyDevice 记录
+func (m GatewayDeviceRepo) MultiDelete(ctx context.Context, gateway *devices.Core, subDevice []*devices.Core) error {
+	if len(subDevice) < 1 {
+		return nil
+	}
+	scope := func(db *gorm.DB) *gorm.DB {
+		for i, d := range subDevice {
+			if i == 0 {
+				db = db.Where("`productID` = ? and `deviceName` = ?", d.ProductID, d.DeviceName)
+				continue
+			}
+			db = db.Or("`productID` = ? and `deviceName` = ?", d.ProductID, d.DeviceName)
+		}
+		return db
+	}
+	db := m.db.WithContext(ctx).Model(&DmGatewayDevice{})
+	db = db.Where("`gatewayProductID`=? and `gatewayDeviceName`=?", gateway.ProductID, gateway.DeviceName).Where(scope(db))
+	err := db.Delete(&DmGatewayDevice{}).Error
+	return store.ErrFmt(err)
 }

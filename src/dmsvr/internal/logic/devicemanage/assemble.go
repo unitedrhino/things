@@ -7,7 +7,9 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
@@ -45,23 +47,13 @@ func FillDeviceInfo(in *dm.DeviceInfo, di *mysql.DmDeviceInfo) {
 	}
 }
 
-func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
-	var (
-		tags map[string]string
-	)
-
-	_ = json.Unmarshal([]byte(di.Tags), &tags)
-
+func ToDeviceInfo(di *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 	if di.IsOnline == def.Unknown {
 		di.IsOnline = def.False
 	}
 	if di.LogLevel == def.Unknown {
 		di.LogLevel = def.LogClose
 	}
-
-	var Longitude float64
-	var Latitude float64
-	Longitude, Latitude = utils.GetPositionValue(di.Position)
 
 	return &dm.DeviceInfo{
 		ProductID:      di.ProductID,
@@ -80,9 +72,9 @@ func ToDeviceInfo(di *mysql.DmDeviceInfo) *dm.DeviceInfo {
 		Version:        &wrappers.StringValue{Value: di.Version},
 		HardInfo:       di.HardInfo,
 		SoftInfo:       di.SoftInfo,
-		Position:       &dm.Point{Longitude: Longitude, Latitude: Latitude},
+		Position:       logic.ToDmPoint(&di.Position),
 		Address:        &wrappers.StringValue{Value: di.Address},
-		Tags:           tags,
+		Tags:           di.Tags,
 		IsOnline:       di.IsOnline,
 		FirstLogin:     utils.GetNullTime(di.FirstLogin),
 		LastLogin:      utils.GetNullTime(di.LastLogin),
@@ -135,6 +127,18 @@ func BindToDeviceCoreEvents(in []*dm.DeviceGatewayBindDevice) (ret []*events.Dev
 		ret = append(ret, &events.DeviceCore{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
+		})
+	}
+	return
+}
+
+func ToGatewayDevice(gateway *devices.Core, subDevice []*devices.Core) (ret []*relationDB.DmGatewayDevice) {
+	for _, v := range subDevice {
+		ret = append(ret, &relationDB.DmGatewayDevice{
+			GatewayProductID:  gateway.ProductID,
+			GatewayDeviceName: gateway.DeviceName,
+			ProductID:         v.ProductID,
+			DeviceName:        v.DeviceName,
 		})
 	}
 	return
