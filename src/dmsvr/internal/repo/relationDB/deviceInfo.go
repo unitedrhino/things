@@ -29,6 +29,7 @@ type (
 		Range       int64
 		Position    store.Point
 		DeviceAlias string
+		Versions    []string
 	}
 )
 
@@ -43,13 +44,16 @@ func (p DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		db = db.Where("`productID` = ?", f.ProductID)
 	}
 	if len(f.AreaIDs) != 0 {
-		db = db.Where(fmt.Sprintf("AreaID in (%v)", store.ArrayToSql(f.AreaIDs)))
+		db = db.Where("`areaID` in ?", f.AreaIDs)
+	}
+	if len(f.Versions) != 0 {
+		db = db.Where("`version` in ?", f.AreaIDs)
 	}
 	if f.DeviceName != "" {
 		db = db.Where("`deviceName` like ?", "%"+f.DeviceName+"%")
 	}
 	if len(f.DeviceNames) != 0 {
-		db = db.Where(fmt.Sprintf("`deviceName` in (%v)", store.ArrayToSql(f.DeviceNames)))
+		db = db.Where("`deviceName` in ?", f.DeviceNames)
 	}
 	if f.DeviceAlias != "" {
 		db = db.Where("`deviceAlias` like ?", "%"+f.DeviceAlias+"%")
