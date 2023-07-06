@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -18,6 +18,8 @@ type ProductSchemaCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDb *relationDB.ProductInfoRepo
+	PsDb *relationDB.ProductSchemaRepo
 }
 
 func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaCreateLogic {
@@ -25,20 +27,24 @@ func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDb:   relationDB.NewProductInfoRepo(ctx),
+		PsDb:   relationDB.NewProductSchemaRepo(ctx),
 	}
 }
 
-func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*mysql.DmProductSchema, error) {
-	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.Info.ProductID)
+func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*relationDB.DmProductSchema, error) {
+	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.Parameter.AddMsg("找不到该产品:" + in.Info.ProductID)
 		}
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
-	_, err = l.svcCtx.ProductSchema.FindOneByProductIDIdentifier(l.ctx, in.Info.ProductID, in.Info.Identifier)
+	_, err = l.PsDb.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
+		ProductID: in.Info.ProductID, Identifiers: []string{in.Info.Identifier},
+	})
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			po := ToProductSchemaPo(in.Info)
 			if po.Name == "" {
 				return nil, errors.Parameter.AddMsg("功能名称不能为空")
@@ -66,12 +72,12 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 	}
 
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
-		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, mysql.ToPropertyDo(po), in.Info.ProductID); err != nil {
+		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(po), in.Info.ProductID); err != nil {
 			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
-	_, err = l.svcCtx.ProductSchema.Insert(l.ctx, po)
+	err = l.PsDb.Insert(l.ctx, po)
 	if err != nil {
 		return nil, err
 	}

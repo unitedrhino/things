@@ -3,7 +3,7 @@ package remoteconfiglogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -15,6 +15,7 @@ type RemoteConfigCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	Prc *relationDB.ProductRemoteConfigRepo
 }
 
 func NewRemoteConfigCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoteConfigCreateLogic {
@@ -22,11 +23,12 @@ func NewRemoteConfigCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		Prc:    relationDB.NewProductRemoteConfigRepo(ctx),
 	}
 }
 
 func (l *RemoteConfigCreateLogic) RemoteConfigCreate(in *dm.RemoteConfigCreateReq) (*dm.Response, error) {
-	_, err := l.svcCtx.RemoteConfigInfo.Insert(l.ctx, &mysql.DmProductRemoteConfig{
+	err := l.Prc.Insert(l.ctx, &relationDB.DmProductRemoteConfig{
 		ProductID: in.ProductID,
 		Content:   in.Content,
 	})
