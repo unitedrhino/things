@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"time"
@@ -15,6 +16,7 @@ type CheckTokenLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	UiDB *relationDB.UserInfoRepo
 }
 
 func NewUserCheckTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CheckTokenLogic {
@@ -22,6 +24,7 @@ func NewUserCheckTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ch
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		UiDB:   relationDB.NewUserInfoRepo(ctx),
 	}
 }
 

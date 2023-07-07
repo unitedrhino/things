@@ -3,7 +3,7 @@ package menulogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -15,6 +15,8 @@ type MenuIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	MiDB *relationDB.MenuInfoRepo
+	RiDB *relationDB.RoleInfoRepo
 }
 
 func NewMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuIndexLogic {
@@ -22,14 +24,16 @@ func NewMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuInd
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		MiDB:   relationDB.NewMenuInfoRepo(ctx),
+		RiDB:   relationDB.NewRoleInfoRepo(ctx),
 	}
 }
 
-func findMissingParentIds(menuInfos []*mysql.SysMenuInfo) map[int64]bool {
+func findMissingParentIds(menuInfos []*relationDB.SysMenuInfo) map[int64]bool {
 	missingParentIds := make(map[int64]bool)
 	ids := make(map[int64]bool)
 	for _, menu := range menuInfos {
-		ids[menu.Id] = true
+		ids[menu.ID] = true
 	}
 	for _, menu := range menuInfos {
 		if !ids[menu.ParentID] && menu.ParentID != 1 {
@@ -39,12 +43,12 @@ func findMissingParentIds(menuInfos []*mysql.SysMenuInfo) map[int64]bool {
 	return missingParentIds
 }
 
-func (l *MenuIndexLogic) checkMissingParentIdMenuIndex(menuInfos []*mysql.SysMenuInfo) []*mysql.SysMenuInfo {
-	var MenuInfos []*mysql.SysMenuInfo
+func (l *MenuIndexLogic) checkMissingParentIdMenuIndex(menuInfos []*relationDB.SysMenuInfo) []*relationDB.SysMenuInfo {
+	var MenuInfos []*relationDB.SysMenuInfo
 	missingParentIds := findMissingParentIds(menuInfos)
 	if len(missingParentIds) > 0 {
 		for k, _ := range missingParentIds {
-			menuInfo, err := l.svcCtx.MenuInfoModel.FindOne(l.ctx, k)
+			menuInfo, err := l.MiDB.FindOne(l.ctx, k)
 			if err != nil {
 				l.Errorf("MenuIndex find menu_info err,menuIds:%d,err:%v", k, err)
 				continue
@@ -60,13 +64,22 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 	info := make([]*sys.MenuData, 0)
 	if in.Role != 0 {
 		//获取角色关联的菜单列表
-		menuIds, err := l.svcCtx.RoleModel.IndexRoleIDMenuID(in.Role)
+		role, err := l.RiDB.FindOne(l.ctx, in.Role, &relationDB.RoleInfoWith{WithMenus: true})
 		if err != nil {
 			return nil, errors.Database.AddDetail(err)
 		}
-		menuInfos, err := l.svcCtx.MenuModel.Index(l.ctx, &mysql.MenuIndexFilter{MenuIds: menuIds})
+		if len(role.Menus) == 0 { //没有菜单分配
+			return &sys.MenuIndexResp{}, nil
+		}
+		var menuIDs []int64
+		if len(role.Menus) != 0 {
+			for _, v := range role.Menus {
+				menuIDs = append(menuIDs, v.MenuID)
+			}
+		}
+		menuInfos, err := l.MiDB.FindByFilter(l.ctx, relationDB.MenuInfoFilter{MenuIds: menuIDs}, nil)
 		if err != nil {
-			l.Errorf("MenuIndex find menu_info err,menuIds:%v,err:%v", menuIds, err)
+			l.Errorf("MenuIndex find menu_info err,menuIds:%v,err:%v", menuIDs, err)
 			return nil, errors.Database.AddDetail(err)
 		}
 		for _, v := range menuInfos {
@@ -81,10 +94,10 @@ func (l *MenuIndexLogic) MenuIndex(in *sys.MenuIndexReq) (*sys.MenuIndexResp, er
 		}
 	} else {
 		//获取完整菜单列表
-		mes, err := l.svcCtx.MenuModel.Index(l.ctx, &mysql.MenuIndexFilter{
+		mes, err := l.MiDB.FindByFilter(l.ctx, relationDB.MenuInfoFilter{
 			Name: in.Name,
 			Path: in.Path,
-		})
+		}, nil)
 		if err != nil {
 			return nil, errors.Database.AddDetail(err)
 		}

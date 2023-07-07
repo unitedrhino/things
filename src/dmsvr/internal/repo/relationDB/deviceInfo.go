@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/store"
@@ -30,6 +29,7 @@ type (
 		Position    store.Point
 		DeviceAlias string
 		Versions    []string
+		WithProduct bool
 	}
 )
 
@@ -37,8 +37,11 @@ func NewDeviceInfoRepo(in any) *DeviceInfoRepo {
 	return &DeviceInfoRepo{db: store.GetCommonConn(in)}
 }
 
-func (p DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB {
-	db := p.db.WithContext(ctx)
+func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB {
+	db := d.db.WithContext(ctx)
+	if f.WithProduct {
+		db = db.Preload("ProductInfo")
+	}
 	//业务过滤条件
 	if f.ProductID != "" {
 		db = db.Where("`productID` = ?", f.ProductID)
@@ -93,21 +96,6 @@ func (d DeviceInfoRepo) FindOneByFilter(ctx context.Context, f DeviceFilter) (*D
 	return &result, nil
 }
 
-func (d DeviceInfoRepo) FindOneByIccid(ctx context.Context, iccid sql.NullString) (*DmDeviceInfo, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (d DeviceInfoRepo) FindOneByPhone(ctx context.Context, phone sql.NullString) (*DmDeviceInfo, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (d DeviceInfoRepo) FindOneByProductIDDeviceName(ctx context.Context, productID string, deviceName string) (*DmDeviceInfo, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (d DeviceInfoRepo) Update(ctx context.Context, data *DmDeviceInfo) error {
 	err := d.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return store.ErrFmt(err)
@@ -153,10 +141,5 @@ func (d DeviceInfoRepo) CountGroupByField(ctx context.Context, f DeviceFilter, c
 	for _, v := range countModelList {
 		result[v.CountKey] = v.Count
 	}
-	return result, err
-}
-
-func (d DeviceInfoRepo) UpdateDeviceInfo(ctx context.Context, data *DmDeviceInfo) error {
-	err := d.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
-	return store.ErrFmt(err)
+	return result, store.ErrFmt(err)
 }

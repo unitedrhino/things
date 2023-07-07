@@ -2,7 +2,7 @@ package menulogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -14,6 +14,7 @@ type MenuDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	MiDB *relationDB.MenuInfoRepo
 }
 
 func NewMenuDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuDeleteLogic {
@@ -21,13 +22,14 @@ func NewMenuDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuDe
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		MiDB:   relationDB.NewMenuInfoRepo(ctx),
 	}
 }
 
 func (l *MenuDeleteLogic) MenuDelete(in *sys.MenuDeleteReq) (*sys.Response, error) {
-	err := l.svcCtx.MenuModel.DeleteMenu(l.ctx, in.Id)
+	err := l.MiDB.Delete(l.ctx, in.Id)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	return &sys.Response{}, nil
 }

@@ -27,7 +27,7 @@ func NewDeviceInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 
 // 获取设备信息详情
 func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.DeviceInfo, error) {
-	di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
+	di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}, WithProduct: true})
 	if err != nil {
 		return nil, err
 	}

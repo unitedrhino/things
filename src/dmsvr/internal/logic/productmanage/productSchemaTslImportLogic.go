@@ -6,7 +6,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
 
@@ -20,7 +19,7 @@ type ProductSchemaTslImportLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PiDb *relationDB.ProductInfoRepo
+	PiDB *relationDB.ProductInfoRepo
 }
 
 func NewProductSchemaTslImportLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaTslImportLogic {
@@ -28,16 +27,16 @@ func NewProductSchemaTslImportLogic(ctx context.Context, svcCtx *svc.ServiceCont
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDb:   relationDB.NewProductInfoRepo(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
 // 删除产品
 func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchemaTslImportReq) (*dm.Response, error) {
 	l.Infof("%s req:%v", utils.FuncName(), in)
-	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.ProductID))
 		}
 		return nil, err
