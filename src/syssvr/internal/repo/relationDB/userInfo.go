@@ -26,8 +26,7 @@ type UserInfoFilter struct {
 func (p UserInfoRepo) accountsFilter(db *gorm.DB, accounts []string) *gorm.DB {
 	db = db.Where("`userName` in ?", accounts).
 		Or("`email` in ?", accounts).
-		Or("`phone` in ?", accounts).
-		Or("`wechat` in ?", accounts)
+		Or("`phone` in ?", accounts)
 	return db
 }
 
