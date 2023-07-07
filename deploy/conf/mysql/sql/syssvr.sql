@@ -65,8 +65,8 @@ INSERT IGNORE INTO sys_role_info (id, name) values (1, 'admin');
 CREATE TABLE if not exists `sys_role_menu`
 (
     `id`          bigint auto_increment comment 'id编号',
-    `roleID`      int      null comment '角色ID',
-    `menuID`      int      null comment '菜单ID',
+    `roleID`      int      not null comment '角色ID',
+    `menuID`      int      not null comment '菜单ID',
     `createdTime` datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime          DEFAULT NULL,

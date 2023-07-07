@@ -80,6 +80,7 @@ type JwtToken struct {
 
 type UserResourceReadResp struct {
 	Menu []*MenuData `json:"menu"` //菜单资源
+	Info *UserInfo   `json:"info"` //用户信息
 }
 
 type PageInfo struct {

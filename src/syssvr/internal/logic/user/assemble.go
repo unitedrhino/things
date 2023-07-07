@@ -1,11 +1,11 @@
 package userlogic
 
 import (
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
-func UserInfoToPb(ui *mysql.SysUserInfo) *sys.UserInfo {
+func UserInfoToPb(ui *relationDB.SysUserInfo) *sys.UserInfo {
 	return &sys.UserInfo{
 		UserID:      ui.UserID,
 		UserName:    ui.UserName.String,

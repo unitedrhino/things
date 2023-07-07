@@ -2,13 +2,12 @@ package userlogic
 
 import (
 	"context"
-	"database/sql"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/cache"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -20,6 +19,7 @@ type LoginLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	UiDB *relationDB.UserInfoRepo
 }
 
 func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
@@ -27,9 +27,10 @@ func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLo
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		UiDB:   relationDB.NewUserInfoRepo(ctx),
 	}
 }
-func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
+func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysUserInfo) error {
 	//根据密码类型不同做不同处理
 	if in.PwdType == 0 {
 		//空密码情况暂不考虑
@@ -53,21 +54,14 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
 	return nil
 }
 
-func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
+func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, store kv.Store, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 
-	jwtToken, err := users.GetLoginJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.UserID, uc.Role, uc.IsAllData)
+	jwtToken, err := users.GetLoginJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, ui.UserID, ui.Role, ui.IsAllData)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)
-	}
-
-	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, uc.UserID)
-	if err != nil {
-		l.Errorf("%s.FindOne.UserInfoModel ui=%v err=%v",
-			utils.FuncName(), utils.Fmt(ui), utils.Fmt(err))
-		return nil, errors.Database.AddDetail(err)
 	}
 
 	//登录成功，清除密码错误次数相关redis key
@@ -85,10 +79,10 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.
 	return resp, nil
 }
 
-func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *mysql.SysUserInfo, err error) {
+func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserInfo, err error) {
 	switch in.LoginType {
 	case users.RegPwd:
-		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserID, Valid: true})
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Accounts: []string{in.UserID}})
 		if err != nil {
 			return nil, err
 		}
@@ -106,7 +100,6 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *mysql.SysUserInfo, e
 
 func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
-
 	//检查账号是否冻结
 	list := l.svcCtx.Config.WrongPasswordCounter.ParseWrongPassConf(in.UserID, in.Ip)
 	if len(list) > 0 {
@@ -116,12 +109,13 @@ func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error)
 		}
 	}
 	uc, err := l.GetUserInfo(in)
-	switch err {
-	case nil:
+	if err == nil {
 		return l.getRet(uc, l.svcCtx.Store, list)
-	case mysql.ErrNotFound:
+	}
+	if errors.Cmp(err, errors.NotFind) {
 		return nil, errors.UnRegister
-	case errors.Password:
+	}
+	if errors.Cmp(err, errors.Password) {
 		ret, err := cache.CheckCaptchaTimes(l.ctx, l.svcCtx.Store, list)
 		if err != nil {
 			return nil, err
@@ -130,11 +124,6 @@ func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error)
 			return nil, errors.UseCaptcha
 		}
 		return nil, errors.Password
-
-	default:
-		l.Errorf("%s req=%v err=%+v", utils.FuncName(), utils.Fmt(in), err)
-		return nil, errors.Database.AddDetail(err)
 	}
-
-	return nil, nil
+	return nil, err
 }
