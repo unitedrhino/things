@@ -47,9 +47,12 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 			HideInMenu: me.HideInMenu,
 		})
 	}
-
+	userInfo, err := l.svcCtx.UserRpc.UserRead(l.ctx, &sys.UserReadReq{UserID: ctxs.GetUserCtx(l.ctx).UserID})
+	if err != nil {
+		return nil, err
+	}
 	return &types.UserResourceReadResp{
 		Menu: menuInfo,
+		Info: UserInfoToApi(userInfo),
 	}, nil
-
 }
