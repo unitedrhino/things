@@ -3,8 +3,7 @@ package rolelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
-
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
@@ -15,6 +14,7 @@ type RoleCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	RiDB *relationDB.RoleInfoRepo
 }
 
 func NewRoleCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleCreateLogic {
@@ -22,11 +22,12 @@ func NewRoleCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleCr
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		RiDB:   relationDB.NewRoleInfoRepo(ctx),
 	}
 }
 
 func (l *RoleCreateLogic) RoleCreate(in *sys.RoleCreateReq) (*sys.Response, error) {
-	_, err := l.svcCtx.RoleInfoModel.Insert(l.ctx, &mysql.SysRoleInfo{
+	err := l.RiDB.Insert(l.ctx, &relationDB.SysRoleInfo{
 		Name:   in.Name,
 		Remark: in.Remark,
 		Status: in.Status,

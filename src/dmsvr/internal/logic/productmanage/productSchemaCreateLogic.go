@@ -18,8 +18,8 @@ type ProductSchemaCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PiDb *relationDB.ProductInfoRepo
-	PsDb *relationDB.ProductSchemaRepo
+	PiDB *relationDB.ProductInfoRepo
+	PsDB *relationDB.ProductSchemaRepo
 }
 
 func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaCreateLogic {
@@ -27,20 +27,20 @@ func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDb:   relationDB.NewProductInfoRepo(ctx),
-		PsDb:   relationDB.NewProductSchemaRepo(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
+		PsDB:   relationDB.NewProductSchemaRepo(ctx),
 	}
 }
 
 func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*relationDB.DmProductSchema, error) {
-	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
+	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.Parameter.AddMsg("找不到该产品:" + in.Info.ProductID)
 		}
 		return nil, err
 	}
-	_, err = l.PsDb.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
+	_, err = l.PsDB.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
 		ProductID: in.Info.ProductID, Identifiers: []string{in.Info.Identifier},
 	})
 	if err != nil {
@@ -77,7 +77,7 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
-	err = l.PsDb.Insert(l.ctx, po)
+	err = l.PsDB.Insert(l.ctx, po)
 	if err != nil {
 		return nil, err
 	}

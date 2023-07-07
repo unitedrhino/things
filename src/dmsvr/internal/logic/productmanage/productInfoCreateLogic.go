@@ -24,7 +24,7 @@ type ProductInfoCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PiDb *relationDB.ProductInfoRepo
+	PiDB *relationDB.ProductInfoRepo
 }
 
 func NewProductInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductInfoCreateLogic {
@@ -32,7 +32,7 @@ func NewProductInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDb:   relationDB.NewProductInfoRepo(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
@@ -40,7 +40,7 @@ func NewProductInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 发现返回true 没有返回false
 */
 func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) {
-	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}})
+	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}})
 	if err == nil {
 		return true, nil
 	}
@@ -54,7 +54,7 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 检测productid,发现返回true 没有返回false
 */
 func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error) {
-	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err == nil {
 		return true, nil
 	}
@@ -166,7 +166,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 		return nil, err
 	}
 
-	err = l.PiDb.Insert(l.ctx, pi)
+	err = l.PiDB.Insert(l.ctx, pi)
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, err

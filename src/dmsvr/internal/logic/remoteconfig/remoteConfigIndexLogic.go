@@ -15,7 +15,7 @@ type RemoteConfigIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	Prc *relationDB.ProductRemoteConfigRepo
+	PrcDB *relationDB.ProductRemoteConfigRepo
 }
 
 func NewRemoteConfigIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoteConfigIndexLogic {
@@ -23,13 +23,13 @@ func NewRemoteConfigIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		Prc:    relationDB.NewProductRemoteConfigRepo(ctx),
+		PrcDB:  relationDB.NewProductRemoteConfigRepo(ctx),
 	}
 }
 
 func (l *RemoteConfigIndexLogic) RemoteConfigIndex(in *dm.RemoteConfigIndexReq) (*dm.RemoteConfigIndexResp, error) {
 	f := relationDB.RemoteConfigFilter{ProductID: in.ProductID}
-	rcs, err := l.Prc.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+	rcs, err := l.PrcDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (l *RemoteConfigIndexLogic) RemoteConfigIndex(in *dm.RemoteConfigIndexReq) 
 			CreatedTime: v.CreatedTime.Unix(),
 		})
 	}
-	total, err := l.Prc.CountByFilter(l.ctx, f)
+	total, err := l.PrcDB.CountByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err
 	}

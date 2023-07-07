@@ -15,7 +15,7 @@ type RemoteConfigCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	Prc *relationDB.ProductRemoteConfigRepo
+	PrcDB *relationDB.ProductRemoteConfigRepo
 }
 
 func NewRemoteConfigCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoteConfigCreateLogic {
@@ -23,12 +23,12 @@ func NewRemoteConfigCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		Prc:    relationDB.NewProductRemoteConfigRepo(ctx),
+		PrcDB:  relationDB.NewProductRemoteConfigRepo(ctx),
 	}
 }
 
 func (l *RemoteConfigCreateLogic) RemoteConfigCreate(in *dm.RemoteConfigCreateReq) (*dm.Response, error) {
-	err := l.Prc.Insert(l.ctx, &relationDB.DmProductRemoteConfig{
+	err := l.PrcDB.Insert(l.ctx, &relationDB.DmProductRemoteConfig{
 		ProductID: in.ProductID,
 		Content:   in.Content,
 	})
