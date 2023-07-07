@@ -17,7 +17,7 @@ type ProductCustomUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PcDb *relationDB.ProductCustomRepo
+	PcDB *relationDB.ProductCustomRepo
 }
 
 func NewProductCustomUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductCustomUpdateLogic {
@@ -25,18 +25,18 @@ func NewProductCustomUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PcDb:   relationDB.NewProductCustomRepo(ctx),
+		PcDB:   relationDB.NewProductCustomRepo(ctx),
 	}
 }
 
 func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*dm.Response, error) {
-	pi, err := l.PcDb.FindOneByProductID(l.ctx, in.ProductID)
+	pi, err := l.PcDB.FindOneByProductID(l.ctx, in.ProductID)
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			if in.ScriptLang == 0 {
 				in.ScriptLang = 1
 			}
-			err = l.PcDb.Insert(l.ctx, &relationDB.DmProductCustom{
+			err = l.PcDB.Insert(l.ctx, &relationDB.DmProductCustom{
 				ProductID:       in.ProductID,
 				ScriptLang:      in.ScriptLang,
 				CustomTopic:     utils.AnyToNullString(in.CustomTopic),
@@ -58,7 +58,7 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 	if in.CustomTopic != nil {
 		pi.CustomTopic = utils.AnyToNullString(in.CustomTopic)
 	}
-	err = l.PcDb.Update(l.ctx, pi)
+	err = l.PcDB.Update(l.ctx, pi)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

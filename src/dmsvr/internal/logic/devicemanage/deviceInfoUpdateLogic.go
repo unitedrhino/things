@@ -9,7 +9,6 @@ import (
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -114,7 +113,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 	}
 	dmDiPo, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.NotFind.AddDetailf("not find device productID=%s deviceName=%s",
 				in.ProductID, in.DeviceName)
 		}
@@ -123,7 +122,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 
 	l.SetDevicePoByDto(dmDiPo, in)
 
-	err = l.DiDB.UpdateDeviceInfo(l.ctx, dmDiPo)
+	err = l.DiDB.Update(l.ctx, dmDiPo)
 	if err != nil {
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, errors.System.AddDetail(err)

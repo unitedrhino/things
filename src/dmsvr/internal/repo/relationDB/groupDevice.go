@@ -13,9 +13,10 @@ type GroupDeviceRepo struct {
 }
 type (
 	GroupDeviceFilter struct {
-		GroupID    int64
-		ProductID  string
-		DeviceName string
+		GroupID     int64
+		ProductID   string
+		DeviceName  string
+		WithProduct bool
 	}
 )
 
@@ -52,6 +53,9 @@ func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []
 
 func (p GroupDeviceRepo) fmtFilter(ctx context.Context, f GroupDeviceFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.WithProduct {
+		db = db.Preload("ProductInfo")
+	}
 	//业务过滤条件
 	if f.GroupID != 0 {
 		db = db.Where("`groupID`=?", f.GroupID)

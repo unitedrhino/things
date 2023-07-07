@@ -16,7 +16,7 @@ type ProductCustomReadLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PcDb *relationDB.ProductCustomRepo
+	PcDB *relationDB.ProductCustomRepo
 }
 
 func NewProductCustomReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductCustomReadLogic {
@@ -24,13 +24,13 @@ func NewProductCustomReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PcDb:   relationDB.NewProductCustomRepo(ctx),
+		PcDB:   relationDB.NewProductCustomRepo(ctx),
 	}
 }
 
 // 脚本管理
 func (l *ProductCustomReadLogic) ProductCustomRead(in *dm.ProductCustomReadReq) (*dm.ProductCustom, error) {
-	pi, err := l.PcDb.FindOneByProductID(l.ctx, in.ProductID)
+	pi, err := l.PcDB.FindOneByProductID(l.ctx, in.ProductID)
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			return &dm.ProductCustom{

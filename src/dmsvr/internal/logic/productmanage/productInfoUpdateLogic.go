@@ -20,7 +20,7 @@ type ProductInfoUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PiDb *relationDB.ProductInfoRepo
+	PiDB *relationDB.ProductInfoRepo
 }
 
 func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductInfoUpdateLogic {
@@ -28,7 +28,7 @@ func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDb:   relationDB.NewProductInfoRepo(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
@@ -101,7 +101,7 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 
 // 更新设备
 func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Response, error) {
-	po, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	po, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.ProductID))
@@ -113,7 +113,7 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Resp
 	if err != nil {
 		return nil, err
 	}
-	err = l.PiDb.Update(l.ctx, po)
+	err = l.PiDB.Update(l.ctx, po)
 	if err != nil {
 		l.Errorf("%s.Update err=%+v", utils.FuncName(), err)
 		if errors.Cmp(err, errors.Duplicate) {
