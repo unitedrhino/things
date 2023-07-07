@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -42,7 +41,7 @@ func (l *DeviceInfoCountLogic) DeviceInfoCount(in *dm.DeviceInfoCountReq) (*dm.D
 		},
 		"isOnline")
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.NotFind
 		}
 		return nil, err

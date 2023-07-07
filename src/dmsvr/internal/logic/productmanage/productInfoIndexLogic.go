@@ -32,16 +32,16 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 		info []*dm.ProductInfo
 		size int64
 		err  error
-		piDb = relationDB.NewProductInfoRepo(l.ctx)
+		piDB = relationDB.NewProductInfoRepo(l.ctx)
 	)
 
 	filter := relationDB.ProductFilter{DeviceType: in.DeviceType, ProductName: in.ProductName, Tags: in.Tags, ProductIDs: in.ProductIDs}
-	size, err = piDb.CountByFilter(l.ctx, filter)
+	size, err = piDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
 	}
 
-	di, err := piDb.FindByFilter(l.ctx, filter,
+	di, err := piDB.FindByFilter(l.ctx, filter,
 		logic.ToPageInfoWithDefault(in.Page, &def.PageInfo{
 			Page: 1, Size: 20,
 			Orders: []def.OrderBy{{"createdTime", def.OrderDesc}, {"productID", def.OrderDesc}},

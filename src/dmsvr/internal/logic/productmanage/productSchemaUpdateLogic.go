@@ -6,7 +6,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -19,8 +18,8 @@ type ProductSchemaUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PiDb *relationDB.ProductInfoRepo
-	PsDb *relationDB.ProductSchemaRepo
+	PiDB *relationDB.ProductInfoRepo
+	PsDB *relationDB.ProductSchemaRepo
 }
 
 func NewProductSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaUpdateLogic {
@@ -28,20 +27,20 @@ func NewProductSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDb:   relationDB.NewProductInfoRepo(ctx),
-		PsDb:   relationDB.NewProductSchemaRepo(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
+		PsDB:   relationDB.NewProductSchemaRepo(ctx),
 	}
 }
 
 func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*relationDB.DmProductSchema, *relationDB.DmProductSchema, error) {
-	_, err := l.PiDb.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
+	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, nil, errors.Parameter.AddMsgf("产品id不存在:" + cast.ToString(in.Info.ProductID))
 		}
 		return nil, nil, errors.Database.AddDetail(err)
 	}
-	po, err := l.PsDb.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
+	po, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
 		ProductID: in.Info.ProductID, Identifiers: []string{in.Info.Identifier},
 	})
 	if err != nil {
@@ -94,7 +93,7 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
-	err = l.PsDb.Update(l.ctx, newPo)
+	err = l.PsDB.Update(l.ctx, newPo)
 	if err != nil {
 		return nil, err
 	}

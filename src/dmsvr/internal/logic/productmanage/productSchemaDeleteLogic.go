@@ -18,7 +18,7 @@ type ProductSchemaDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PsDb *relationDB.ProductSchemaRepo
+	PsDB *relationDB.ProductSchemaRepo
 }
 
 func NewProductSchemaDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaDeleteLogic {
@@ -26,14 +26,14 @@ func NewProductSchemaDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PsDb:   relationDB.NewProductSchemaRepo(ctx),
+		PsDB:   relationDB.NewProductSchemaRepo(ctx),
 	}
 }
 
 // 删除产品
 func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDeleteReq) (*dm.Response, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
-	po, err := l.PsDb.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
+	po, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
 		ProductID: in.ProductID, Identifiers: []string{in.Identifier},
 	})
 	if err != nil {
@@ -48,7 +48,7 @@ func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDelet
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
-	err = l.PsDb.DeleteByFilter(l.ctx, relationDB.ProductSchemaFilter{ID: po.ID})
+	err = l.PsDB.DeleteByFilter(l.ctx, relationDB.ProductSchemaFilter{ID: po.ID})
 	if err != nil {
 		return nil, err
 	}

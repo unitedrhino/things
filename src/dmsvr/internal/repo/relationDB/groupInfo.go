@@ -12,11 +12,12 @@ type GroupInfoRepo struct {
 }
 
 type GroupInfoFilter struct {
-	GroupID    int64
-	GroupNames []string
-	ParentID   int64
-	GroupName  string
-	Tags       map[string]string
+	GroupID     int64
+	GroupNames  []string
+	ParentID    int64
+	GroupName   string
+	Tags        map[string]string
+	WithProduct bool
 }
 
 func NewGroupInfoRepo(in any) *GroupInfoRepo {
@@ -25,6 +26,9 @@ func NewGroupInfoRepo(in any) *GroupInfoRepo {
 
 func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.WithProduct {
+		db = db.Preload("ProductInfo")
+	}
 	if f.GroupID != 0 {
 		db = db.Where("`groupID`=?", f.GroupID)
 	}
