@@ -15,7 +15,7 @@ type RemoteConfigLastReadLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	Prc *relationDB.ProductRemoteConfigRepo
+	PrcDB *relationDB.ProductRemoteConfigRepo
 }
 
 func NewRemoteConfigLastReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoteConfigLastReadLogic {
@@ -23,12 +23,12 @@ func NewRemoteConfigLastReadLogic(ctx context.Context, svcCtx *svc.ServiceContex
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		Prc:    relationDB.NewProductRemoteConfigRepo(ctx),
+		PrcDB:  relationDB.NewProductRemoteConfigRepo(ctx),
 	}
 }
 
 func (l *RemoteConfigLastReadLogic) RemoteConfigLastRead(in *dm.RemoteConfigLastReadReq) (*dm.RemoteConfigLastReadResp, error) {
-	res, err := l.Prc.FindOneByFilter(l.ctx, relationDB.RemoteConfigFilter{
+	res, err := l.PrcDB.FindOneByFilter(l.ctx, relationDB.RemoteConfigFilter{
 		ProductID: in.ProductID,
 	})
 	if err != nil && !errors.Cmp(err, errors.NotFind) {

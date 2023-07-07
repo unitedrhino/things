@@ -2,10 +2,8 @@ package productmanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -18,7 +16,7 @@ type ProductSchemaIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PsDb *relationDB.ProductSchemaRepo
+	PsDB *relationDB.ProductSchemaRepo
 }
 
 func NewProductSchemaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaIndexLogic {
@@ -26,7 +24,7 @@ func NewProductSchemaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PsDb:   relationDB.NewProductSchemaRepo(ctx),
+		PsDB:   relationDB.NewProductSchemaRepo(ctx),
 	}
 }
 
@@ -39,14 +37,11 @@ func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexRe
 		Tag:         in.Tag,
 		Identifiers: in.Identifiers,
 	}
-	schemas, err := l.PsDb.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
+	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
-		if err == mysql.ErrNotFound {
-			return nil, errors.NotFind
-		}
 		return nil, err
 	}
-	total, err := l.PsDb.CountByFilter(l.ctx, filter)
+	total, err := l.PsDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
 	}

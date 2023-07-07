@@ -1,51 +1,15 @@
 package devicemanagelogic
 
 import (
-	"encoding/json"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
-	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
-
-func FillDeviceInfo(in *dm.DeviceInfo, di *mysql.DmDeviceInfo) {
-	if in.Tags != nil {
-		tags, err := json.Marshal(in.Tags)
-		if err == nil {
-			di.Tags = string(tags)
-		}
-	} else {
-		di.Tags = "{}"
-	}
-
-	if in.LogLevel != def.Unknown {
-		di.LogLevel = def.LogClose
-	}
-	if in.Address != nil {
-		di.Address = in.Address.Value
-	}
-
-	if in.DeviceAlias != nil {
-		di.DeviceAlias = in.DeviceAlias.Value
-	}
-	if in.UserID != 0 {
-		di.UserID = in.UserID
-	}
-	if in.MobileOperator != 0 {
-		di.MobileOperator = in.MobileOperator
-	}
-	if in.Iccid != nil {
-		di.Iccid = utils.AnyToNullString(in.Iccid)
-	}
-	if in.Phone != nil {
-		di.Phone = utils.AnyToNullString(in.Phone)
-	}
-}
 
 func ToDeviceInfo(di *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 	if di.IsOnline == def.Unknown {

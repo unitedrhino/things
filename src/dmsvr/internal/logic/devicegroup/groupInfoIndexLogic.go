@@ -14,7 +14,6 @@ type GroupInfoIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PiDB *relationDB.ProductInfoRepo
 	GiDB *relationDB.GroupInfoRepo
 }
 
@@ -23,7 +22,6 @@ func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gr
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDB:   relationDB.NewProductInfoRepo(ctx),
 		GiDB:   relationDB.NewGroupInfoRepo(ctx),
 	}
 }
@@ -31,9 +29,10 @@ func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gr
 // 获取分组信息列表
 func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.GroupInfoIndexResp, error) {
 	f := relationDB.GroupInfoFilter{
-		GroupName: in.GroupName,
-		ParentID:  in.ParentID,
-		Tags:      in.Tags,
+		GroupName:   in.GroupName,
+		ParentID:    in.ParentID,
+		Tags:        in.Tags,
+		WithProduct: true,
 	}
 	ros, err := l.GiDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {
@@ -44,14 +43,8 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 		return nil, err
 	}
 	info := make([]*dm.GroupInfo, 0, len(ros))
-	productFilter := relationDB.ProductFilter{}
-	productList, _ := l.PiDB.FindByFilter(l.ctx, productFilter, nil)
-	productMap := make(map[string]string, len(productList))
-	for _, p := range productList {
-		productMap[p.ProductID] = p.ProductName
-	}
 	for _, ro := range ros {
-		info = append(info, ToGroupInfoPb(ro, productMap))
+		info = append(info, ToGroupInfoPb(ro))
 	}
 	f.ParentID = 0
 	rosAll, err := l.GiDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
@@ -60,7 +53,7 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 	}
 	infoAll := make([]*dm.GroupInfo, 0, len(rosAll))
 	for _, ro := range rosAll {
-		infoAll = append(infoAll, ToGroupInfoPb(ro, productMap))
+		infoAll = append(infoAll, ToGroupInfoPb(ro))
 	}
 	return &dm.GroupInfoIndexResp{List: info, Total: total, ListAll: infoAll}, nil
 }

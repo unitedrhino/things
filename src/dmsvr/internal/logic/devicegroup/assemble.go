@@ -5,15 +5,19 @@ import (
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func ToGroupInfoPb(ro *relationDB.DmGroupInfo, productMap map[string]string) *dm.GroupInfo {
+func ToGroupInfoPb(ro *relationDB.DmGroupInfo) *dm.GroupInfo {
 	if ro == nil {
 		return nil
+	}
+	productName := ""
+	if ro.ProductInfo != nil {
+		productName = ro.ProductInfo.ProductName
 	}
 	return &dm.GroupInfo{
 		GroupID:     ro.GroupID,
 		ParentID:    ro.ParentID,
 		ProjectID:   ro.ProjectID,
-		ProductName: productMap[ro.ProductID],
+		ProductName: productName,
 		GroupName:   ro.GroupName,
 		ProductID:   ro.ProductID,
 		Desc:        ro.Desc,
