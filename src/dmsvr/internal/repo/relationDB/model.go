@@ -86,7 +86,6 @@ type DmDeviceInfo struct {
 	Iccid          sql.NullString    `gorm:"column:iccid;type:varchar(20)"`                             // SIM卡卡号
 	Address        string            `gorm:"column:address;type:varchar(512);NOT NULL"`                 // 所在地址
 	Tags           map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:{}"` // 设备标签
-	UserID         int64             `gorm:"column:userID;type:bigint(20);NOT NULL"`                    // 所属用户id
 	IsOnline       int64             `gorm:"column:isOnline;type:tinyint(1);default:2;NOT NULL"`        // 是否在线,1是2否
 	FirstLogin     sql.NullTime      `gorm:"column:firstLogin;type:datetime"`                           // 激活时间
 	LastLogin      sql.NullTime      `gorm:"column:lastLogin;type:datetime"`                            // 最后上线时间
