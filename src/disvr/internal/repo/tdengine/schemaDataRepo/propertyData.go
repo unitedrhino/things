@@ -9,7 +9,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"time"
 )
@@ -17,7 +17,7 @@ import (
 func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model, productID string, deviceName string, property *msgThing.PropertyData) error {
 	switch property.Param.(type) {
 	case map[string]any:
-		paramPlaceholder, paramIds, paramValList, err := store.GenParams(property.Param.(map[string]any))
+		paramPlaceholder, paramIds, paramValList, err := stores.GenParams(property.Param.(map[string]any))
 		if err != nil {
 			return err
 		}
@@ -146,7 +146,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 		return nil, err
 	}
 	var datas []map[string]any
-	store.Scan(rows, &datas)
+	stores.Scan(rows, &datas)
 	retProperties := make([]*msgThing.PropertyData, 0, len(datas))
 	for _, v := range datas {
 		retProperties = append(retProperties, ToPropertyData(filter.DataID, v))
@@ -186,7 +186,7 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 func (d *SchemaDataRepo) fillFilter(
 	sql sq.SelectBuilder, filter msgThing.FilterOpt) sq.SelectBuilder {
 	if len(filter.DeviceNames) != 0 {
-		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", store.ArrayToSql(filter.DeviceNames)))
+		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", stores.ArrayToSql(filter.DeviceNames)))
 	}
 	return sql
 }

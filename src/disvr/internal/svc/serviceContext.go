@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/disvr/internal/config"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
@@ -48,7 +48,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
-	store.InitConn(c.Database)
+	stores.InitConn(c.Database)
 	//TestTD(td)
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {

@@ -2,7 +2,7 @@ package relationDB
 
 import (
 	"database/sql"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 )
 
 // 产品信息表
@@ -22,7 +22,7 @@ type DmProductInfo struct {
 	Desc         string            `gorm:"column:desc;type:varchar(200)"`                             // 描述
 	DevStatus    string            `gorm:"column:devStatus;type:varchar(20);NOT NULL"`                // 产品状态
 	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:{}"` // 产品标签
-	store.Time
+	stores.Time
 	Devices []*DmDeviceInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
@@ -38,7 +38,7 @@ type DmProductCustom struct {
 	CustomTopic     sql.NullString `gorm:"column:customTopic;type:json"`                // 自定义topic数组
 	TransformScript sql.NullString `gorm:"column:transformScript;type:text"`            // 协议转换脚本
 	LoginAuthScript sql.NullString `gorm:"column:loginAuthScript;type:text"`            // 登录认证脚本
-	store.Time
+	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
@@ -57,7 +57,7 @@ type DmProductSchema struct {
 	Desc       string `gorm:"column:desc;type:varchar(200)"`                // 描述
 	Required   int64  `gorm:"column:required;type:tinyint(1);default:2"`    // 是否必须,1是 2否
 	Affordance string `gorm:"column:affordance;type:json;NOT NULL"`         // 各类型的自定义功能定义
-	store.Time
+	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
@@ -73,7 +73,7 @@ type DmDeviceInfo struct {
 	ProductID      string            `gorm:"column:productID;type:char(11);NOT NULL"`                   // 产品id
 	DeviceName     string            `gorm:"column:deviceName;type:varchar(100);NOT NULL"`              // 设备名称
 	DeviceAlias    string            `gorm:"column:deviceAlias;type:varchar(100);NOT NULL"`             // 设备别名
-	Position       store.Point       `gorm:"column:position;type:point;NOT NULL"`                       // 设备的位置(默认百度坐标系BD09)
+	Position       stores.Point      `gorm:"column:position;type:point;NOT NULL"`                       // 设备的位置(默认百度坐标系BD09)
 	Secret         string            `gorm:"column:secret;type:varchar(50);NOT NULL"`                   // 设备秘钥
 	Cert           string            `gorm:"column:cert;type:varchar(512);NOT NULL"`                    // 设备证书
 	Imei           string            `gorm:"column:imei;type:varchar(15);NOT NULL"`                     // IMEI号信息
@@ -90,7 +90,7 @@ type DmDeviceInfo struct {
 	FirstLogin     sql.NullTime      `gorm:"column:firstLogin;type:datetime"`                           // 激活时间
 	LastLogin      sql.NullTime      `gorm:"column:lastLogin;type:datetime"`                            // 最后上线时间
 	LogLevel       int64             `gorm:"column:logLevel;type:tinyint(1);default:1;NOT NULL"`        // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
-	store.Time
+	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
@@ -107,7 +107,7 @@ type DmGroupInfo struct {
 	GroupName string            `gorm:"column:groupName;type:varchar(100);NOT NULL"`               // 分组名称
 	Desc      string            `gorm:"column:desc;type:varchar(200)"`                             // 描述
 	Tags      map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:{}"` // 分组标签
-	store.Time
+	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
@@ -122,7 +122,7 @@ type DmGroupDevice struct {
 	ProjectID  int64  `gorm:"column:projectID;type:bigint(20);default:0;NOT NULL"` // 项目ID(雪花ID)
 	ProductID  string `gorm:"column:productID;type:char(11);NOT NULL"`             // 产品id
 	DeviceName string `gorm:"column:deviceName;type:varchar(100);NOT NULL"`        // 设备名称
-	store.Time
+	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
@@ -137,7 +137,7 @@ type DmGatewayDevice struct {
 	GatewayDeviceName string `gorm:"column:gatewayDeviceName;type:varchar(100);NOT NULL"` // 网关设备名称
 	ProductID         string `gorm:"column:productID;type:char(11);NOT NULL"`             // 子设备产品id
 	DeviceName        string `gorm:"column:deviceName;type:varchar(100);NOT NULL"`        // 子设备名称
-	store.Time
+	stores.Time
 	Device  *DmDeviceInfo `gorm:"foreignKey:productID,deviceName;references:productID,deviceName"`
 	Gateway *DmDeviceInfo `gorm:"foreignKey:productID,deviceName;references:gatewayProductID,gatewayDeviceName"`
 }
@@ -151,7 +151,7 @@ type DmProductRemoteConfig struct {
 	ID        int64  `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
 	ProductID string `gorm:"column:productID;type:char(11);NOT NULL"` // 产品id
 	Content   string `gorm:"column:content;type:json;NOT NULL"`       // 配置内容
-	store.Time
+	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 

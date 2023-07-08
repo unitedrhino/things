@@ -4,11 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,7 +31,7 @@ func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,
 		}
 	}
 	var datas []map[string]any
-	store.Scan(rows, &datas)
+	stores.Scan(rows, &datas)
 	retLogs := make([]*msgSdkLog.SDKLog, 0, len(datas))
 	for _, v := range datas {
 		retLogs = append(retLogs, ToDeviceSDKLog(filter.ProductID, v))

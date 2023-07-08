@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"gorm.io/gorm"
 )
@@ -26,7 +26,7 @@ type (
 		}
 		IsOnline    int64
 		Range       int64
-		Position    store.Point
+		Position    stores.Point
 		DeviceAlias string
 		Versions    []string
 		WithProduct bool
@@ -34,7 +34,7 @@ type (
 )
 
 func NewDeviceInfoRepo(in any) *DeviceInfoRepo {
-	return &DeviceInfoRepo{db: store.GetCommonConn(in)}
+	return &DeviceInfoRepo{db: stores.GetCommonConn(in)}
 }
 
 func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB {
@@ -91,24 +91,24 @@ func (d DeviceInfoRepo) FindOneByFilter(ctx context.Context, f DeviceFilter) (*D
 	db := d.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
 
 func (d DeviceInfoRepo) Update(ctx context.Context, data *DmDeviceInfo) error {
 	err := d.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (d DeviceInfoRepo) Delete(ctx context.Context, id int64) error {
 	err := d.db.WithContext(ctx).Where("`id`=?", id).Delete(&DmDeviceInfo{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (d DeviceInfoRepo) Insert(ctx context.Context, data *DmDeviceInfo) error {
 	result := d.db.WithContext(ctx).Create(data)
-	return store.ErrFmt(result.Error)
+	return stores.ErrFmt(result.Error)
 }
 
 func (d DeviceInfoRepo) FindByFilter(ctx context.Context, f DeviceFilter, page *def.PageInfo) ([]*DmDeviceInfo, error) {
@@ -117,7 +117,7 @@ func (d DeviceInfoRepo) FindByFilter(ctx context.Context, f DeviceFilter, page *
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
 }
@@ -125,7 +125,7 @@ func (d DeviceInfoRepo) FindByFilter(ctx context.Context, f DeviceFilter, page *
 func (d DeviceInfoRepo) CountByFilter(ctx context.Context, f DeviceFilter) (size int64, err error) {
 	db := d.fmtFilter(ctx, f).Model(&DmDeviceInfo{})
 	err = db.Count(&size).Error
-	return size, store.ErrFmt(err)
+	return size, stores.ErrFmt(err)
 }
 
 type countModel struct {
@@ -141,5 +141,5 @@ func (d DeviceInfoRepo) CountGroupByField(ctx context.Context, f DeviceFilter, c
 	for _, v := range countModelList {
 		result[v.CountKey] = v.Count
 	}
-	return result, store.ErrFmt(err)
+	return result, stores.ErrFmt(err)
 }

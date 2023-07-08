@@ -3,7 +3,7 @@ package relationDB
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +12,7 @@ type LoginLogRepo struct {
 }
 
 func NewLoginLogRepo(in any) *LoginLogRepo {
-	return &LoginLogRepo{db: store.GetCommonConn(in)}
+	return &LoginLogRepo{db: stores.GetCommonConn(in)}
 }
 
 type DateRange struct {
@@ -41,7 +41,7 @@ func (p LoginLogRepo) fmtFilter(ctx context.Context, f LoginLogFilter) *gorm.DB 
 
 func (g LoginLogRepo) Insert(ctx context.Context, data *SysLoginLog) error {
 	result := g.db.WithContext(ctx).Create(data)
-	return store.ErrFmt(result.Error)
+	return stores.ErrFmt(result.Error)
 }
 
 func (g LoginLogRepo) FindOneByFilter(ctx context.Context, f LoginLogFilter) (*SysLoginLog, error) {
@@ -49,7 +49,7 @@ func (g LoginLogRepo) FindOneByFilter(ctx context.Context, f LoginLogFilter) (*S
 	db := g.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
@@ -59,7 +59,7 @@ func (p LoginLogRepo) FindByFilter(ctx context.Context, f LoginLogFilter, page *
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
 }
@@ -67,29 +67,29 @@ func (p LoginLogRepo) FindByFilter(ctx context.Context, f LoginLogFilter, page *
 func (p LoginLogRepo) CountByFilter(ctx context.Context, f LoginLogFilter) (size int64, err error) {
 	db := p.fmtFilter(ctx, f).Model(&SysLoginLog{})
 	err = db.Count(&size).Error
-	return size, store.ErrFmt(err)
+	return size, stores.ErrFmt(err)
 }
 
 func (g LoginLogRepo) Update(ctx context.Context, data *SysLoginLog) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (g LoginLogRepo) DeleteByFilter(ctx context.Context, f LoginLogFilter) error {
 	db := g.fmtFilter(ctx, f)
 	err := db.Delete(&SysLoginLog{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 func (g LoginLogRepo) Delete(ctx context.Context, id int64) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysLoginLog{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (g LoginLogRepo) FindOne(ctx context.Context, id int64) (*SysLoginLog, error) {
 	var result SysLoginLog
 	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }

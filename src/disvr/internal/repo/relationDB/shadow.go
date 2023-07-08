@@ -3,7 +3,7 @@ package relationDB
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/disvr/internal/domain/shadow"
 	"gorm.io/gorm"
 )
@@ -13,7 +13,7 @@ type ShadowRepo struct {
 }
 
 func NewShadowRepo(in any) shadow.Repo {
-	return &ShadowRepo{db: store.GetTenantConn(in)}
+	return &ShadowRepo{db: stores.GetTenantConn(in)}
 }
 
 func (s *ShadowRepo) FindByFilter(ctx context.Context, f shadow.Filter) ([]*shadow.Info, error) {

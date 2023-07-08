@@ -2,7 +2,7 @@ package logic
 
 import (
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
@@ -45,15 +45,15 @@ func ToPageInfoWithDefault(info *dm.PageInfo, defau *def.PageInfo) *def.PageInfo
 	}
 }
 
-func ToDmPoint(point *store.Point) *dm.Point {
+func ToDmPoint(point *stores.Point) *dm.Point {
 	if point == nil {
 		return nil
 	}
 	return &dm.Point{Longitude: point.Longitude, Latitude: point.Latitude}
 }
-func ToStorePoint(point *dm.Point) store.Point {
+func ToStorePoint(point *dm.Point) stores.Point {
 	if point == nil {
-		return store.Point{Longitude: 0, Latitude: 0}
+		return stores.Point{Longitude: 0, Latitude: 0}
 	}
-	return store.Point{Longitude: point.Longitude, Latitude: point.Latitude}
+	return stores.Point{Longitude: point.Longitude, Latitude: point.Latitude}
 }
