@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -81,7 +81,7 @@ func (d *DeviceDataRepo) UpdateProperty(
 		} else {
 			//新增
 			sql := fmt.Sprintf("ALTER STABLE %s ADD COLUMN %s %s; ",
-				d.GetPropertyStableName(productID, newP.Identifier), newS.Identifier, store.GetTdType(newS.DataType))
+				d.GetPropertyStableName(productID, newP.Identifier), newS.Identifier, stores.GetTdType(newS.DataType))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return errors.Database.AddDetail(err)
 			}
@@ -138,7 +138,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 	if p.Define.Type != schema.DataTypeStruct {
 		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
 			" TAGS (`deviceName` BINARY(50),`"+PropertyType+"` BINARY(50));",
-			d.GetPropertyStableName(productID, p.Identifier), store.GetTdType(p.Define))
+			d.GetPropertyStableName(productID, p.Identifier), stores.GetTdType(p.Define))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}

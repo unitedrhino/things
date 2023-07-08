@@ -1,7 +1,7 @@
 package relationDB
 
 import (
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"time"
 )
 
@@ -13,7 +13,7 @@ type DiDeviceShadow struct {
 	DataID            string     `gorm:"column:dataID;type:varchar(100);NOT NULL"`            // 属性id
 	Value             string     `gorm:"column:value;type:varchar(100);default:NULL"`         // 属性值
 	UpdatedDeviceTime *time.Time `gorm:"column:updatedDeviceTime;type:datetime;default:NULL"` //更新到设备时间
-	store.Time
+	stores.Time
 }
 
 func (m *DiDeviceShadow) TableName() string {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -24,7 +24,7 @@ type (
 )
 
 func NewGatewayDeviceRepo(in any) *GatewayDeviceRepo {
-	return &GatewayDeviceRepo{db: store.GetCommonConn(in)}
+	return &GatewayDeviceRepo{db: stores.GetCommonConn(in)}
 }
 func (p GatewayDeviceRepo) fmtFilter(ctx context.Context, f GatewayDeviceFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
@@ -48,7 +48,7 @@ func (g GatewayDeviceRepo) FindByFilter(ctx context.Context, f GatewayDeviceFilt
 	db = page.ToGorm(db)
 	err := db.Select("di.*").Find(&results).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
 }
@@ -56,14 +56,14 @@ func (g GatewayDeviceRepo) FindByFilter(ctx context.Context, f GatewayDeviceFilt
 func (g GatewayDeviceRepo) CountByFilter(ctx context.Context, f GatewayDeviceFilter) (size int64, err error) {
 	db := g.fmtFilter(ctx, f)
 	err = db.Count(&size).Error
-	return size, store.ErrFmt(err)
+	return size, stores.ErrFmt(err)
 }
 func (p GatewayDeviceRepo) FindOneByFilter(ctx context.Context, f GatewayDeviceFilter) (*DmDeviceInfo, error) {
 	var result DmDeviceInfo
 	db := p.fmtFilter(ctx, f)
 	err := db.Select("di.*").First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
@@ -79,7 +79,7 @@ func (m GatewayDeviceRepo) MultiInsert(ctx context.Context, gateway *devices.Cor
 		})
 	}
 	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmGatewayDevice{}).Create(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 // 批量插入 LightStrategyDevice 记录
@@ -100,5 +100,5 @@ func (m GatewayDeviceRepo) MultiDelete(ctx context.Context, gateway *devices.Cor
 	db := m.db.WithContext(ctx).Model(&DmGatewayDevice{})
 	db = db.Where("`gatewayProductID`=? and `gatewayDeviceName`=?", gateway.ProductID, gateway.DeviceName).Where(scope(db))
 	err := db.Delete(&DmGatewayDevice{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }

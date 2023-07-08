@@ -2,7 +2,7 @@ package relationDB
 
 import (
 	"database/sql"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"time"
 )
 
@@ -30,7 +30,7 @@ type SysUserInfo struct {
 	HeadImgUrl string         `gorm:"column:headImgUrl;type:varchar(256);NOT NULL"`                 // 用户头像
 	Role       int64          `gorm:"column:role;type:bigint(20);NOT NULL"`                         // 用户角色
 	IsAllData  int64          `gorm:"column:isAllData;type:tinyint(1) unsigned;default:2;NOT NULL"` // 是否所有数据权限（1是，2否）
-	store.Time
+	stores.Time
 }
 
 func (m *SysUserInfo) TableName() string {
@@ -42,7 +42,7 @@ type SysRoleInfo struct {
 	ID     int64  `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"` // id编号
 	Name   string `gorm:"column:name;type:varchar(100);NOT NULL"`               // 角色名称
 	Remark string `gorm:"column:remark;type:varchar(100);NOT NULL"`             // 备注
-	store.Time
+	stores.Time
 	Status int64          `gorm:"column:status;type:tinyint(1);default:1"` // 状态  1:启用,2:禁用
 	Menus  []*SysRoleMenu `gorm:"foreignKey:RoleID;references:ID"`
 }
@@ -56,7 +56,7 @@ type SysRoleMenu struct {
 	ID     int64 `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"` // id编号
 	RoleID int64 `gorm:"column:roleID;NOT NULL;type:int(11)"`                  // 角色ID
 	MenuID int64 `gorm:"column:menuID;NOT NULL;type:int(11)"`                  // 菜单ID
-	store.Time
+	stores.Time
 }
 
 func (m *SysRoleMenu) TableName() string {
@@ -76,7 +76,7 @@ type SysMenuInfo struct {
 	Redirect      string `gorm:"column:redirect;type:varchar(64);NOT NULL"`            // 路由重定向
 	BackgroundUrl string `gorm:"column:backgroundUrl;type:varchar(128);NOT NULL"`      // 后台地址
 	HideInMenu    int64  `gorm:"column:hideInMenu;type:int(11);default:2;NOT NULL"`    // 是否隐藏菜单 1-是 2-否
-	store.Time
+	stores.Time
 }
 
 func (m *SysMenuInfo) TableName() string {
@@ -131,7 +131,7 @@ type SysApiInfo struct {
 	BusinessType int64  `gorm:"column:businessType;type:int(11);NOT NULL"`            // 业务类型（1新增 2修改 3删除 4查询 5其它）
 	Group        string `gorm:"column:group;type:varchar(100);NOT NULL"`              // 接口组
 	Desc         string `gorm:"column:desc;type:varchar(100);NOT NULL"`               // 备注
-	store.Time
+	stores.Time
 }
 
 func (m *SysApiInfo) TableName() string {

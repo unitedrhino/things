@@ -3,7 +3,7 @@ package relationDB
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +21,7 @@ type GroupInfoFilter struct {
 }
 
 func NewGroupInfoRepo(in any) *GroupInfoRepo {
-	return &GroupInfoRepo{db: store.GetCommonConn(in)}
+	return &GroupInfoRepo{db: stores.GetCommonConn(in)}
 }
 
 func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.DB {
@@ -52,7 +52,7 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 
 func (g GroupInfoRepo) Insert(ctx context.Context, data *DmGroupInfo) error {
 	result := g.db.WithContext(ctx).Create(data)
-	return store.ErrFmt(result.Error)
+	return stores.ErrFmt(result.Error)
 }
 
 func (g GroupInfoRepo) FindOneByFilter(ctx context.Context, f GroupInfoFilter) (*DmGroupInfo, error) {
@@ -60,7 +60,7 @@ func (g GroupInfoRepo) FindOneByFilter(ctx context.Context, f GroupInfoFilter) (
 	db := g.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
@@ -70,7 +70,7 @@ func (p GroupInfoRepo) FindByFilter(ctx context.Context, f GroupInfoFilter, page
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
 }
@@ -78,16 +78,16 @@ func (p GroupInfoRepo) FindByFilter(ctx context.Context, f GroupInfoFilter, page
 func (p GroupInfoRepo) CountByFilter(ctx context.Context, f GroupInfoFilter) (size int64, err error) {
 	db := p.fmtFilter(ctx, f).Model(&DmGroupInfo{})
 	err = db.Count(&size).Error
-	return size, store.ErrFmt(err)
+	return size, stores.ErrFmt(err)
 }
 
 func (g GroupInfoRepo) Update(ctx context.Context, data *DmGroupInfo) error {
 	err := g.db.WithContext(ctx).Where("`groupID` = ?", data.GroupID).Save(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (g GroupInfoRepo) DeleteByFilter(ctx context.Context, f GroupInfoFilter) error {
 	db := g.fmtFilter(ctx, f)
 	err := db.Delete(&DmGroupInfo{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }

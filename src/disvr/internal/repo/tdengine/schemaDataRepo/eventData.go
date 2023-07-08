@@ -7,7 +7,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 )
 
@@ -31,13 +31,13 @@ func (d *SchemaDataRepo) fmtSql(f msgThing.FilterOpt, sql sq.SelectBuilder) sq.S
 		sql = sql.Where("`productID`=? ", f.ProductID)
 	}
 	if len(f.DeviceNames) != 0 {
-		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", store.ArrayToSql(f.DeviceNames)))
+		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", stores.ArrayToSql(f.DeviceNames)))
 	}
 	if f.DataID != "" {
 		sql = sql.Where("`eventID`=? ", f.DataID)
 	}
 	if len(f.Types) != 0 {
-		sql = sql.Where(fmt.Sprintf("`eventType` in (%v)", store.ArrayToSql(f.Types)))
+		sql = sql.Where(fmt.Sprintf("`eventType` in (%v)", stores.ArrayToSql(f.Types)))
 	}
 	return sql
 }
@@ -57,7 +57,7 @@ func (d *SchemaDataRepo) GetEventDataByFilter(
 		return nil, err
 	}
 	var datas []map[string]any
-	store.Scan(rows, &datas)
+	stores.Scan(rows, &datas)
 	retEvents := make([]*msgThing.EventData, 0, len(datas))
 	for _, v := range datas {
 		retEvents = append(retEvents, ToEventData(v))
