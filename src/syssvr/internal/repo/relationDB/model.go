@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+// 示例
+type SysExample struct {
+	ID int64 `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"` // id编号
+}
+
 // 用户登录信息表
 type SysUserInfo struct {
 	UserID     int64          `gorm:"column:userID;type:bigint(20);NOT NULL"`                       // 用户id
