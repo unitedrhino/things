@@ -82,7 +82,7 @@ func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, store kv.Store, list []*
 func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserInfo, err error) {
 	switch in.LoginType {
 	case users.RegPwd:
-		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Accounts: []string{in.UserID}})
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Accounts: []string{in.Account}})
 		if err != nil {
 			return nil, err
 		}
@@ -101,7 +101,7 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserIn
 func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	//检查账号是否冻结
-	list := l.svcCtx.Config.WrongPasswordCounter.ParseWrongPassConf(in.UserID, in.Ip)
+	list := l.svcCtx.Config.WrongPasswordCounter.ParseWrongPassConf(in.Account, in.Ip)
 	if len(list) > 0 {
 		forbiddenTime, f := cache.CheckAccountOrIpForbidden(l.ctx, l.svcCtx.Store, list)
 		if f {

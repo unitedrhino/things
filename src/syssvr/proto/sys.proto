@@ -250,7 +250,7 @@ message JwtToken{
 }
 
 message UserLoginReq{
-    string userID = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+    string account = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
     int32 pwdType = 2;//账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
     string password =3;//密码，建议md5转换 密码登录时需要填写
     string loginType =4;//验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码

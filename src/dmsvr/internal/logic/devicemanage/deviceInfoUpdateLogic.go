@@ -88,9 +88,6 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.DeviceAlias != nil {
 		old.DeviceAlias = data.DeviceAlias.Value
 	}
-	if data.UserID != 0 {
-		old.UserID = data.UserID
-	}
 	if data.MobileOperator != 0 {
 		old.MobileOperator = data.MobileOperator
 	}

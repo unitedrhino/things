@@ -25,7 +25,6 @@ func ToDeviceInfo(di *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 		ProjectID:      utils.ToRpcNullInt64(di.ProjectID),
 		AreaID:         utils.ToRpcNullInt64(di.AreaID),
 		DeviceAlias:    &wrappers.StringValue{Value: di.DeviceAlias},
-		UserID:         di.UserID,
 		MobileOperator: di.MobileOperator,
 		Phone:          utils.ToRpcNullString(di.Phone),
 		Iccid:          utils.ToRpcNullString(di.Iccid),
