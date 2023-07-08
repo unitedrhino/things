@@ -103,10 +103,13 @@ func (g RoleMenuRepo) MultiUpdate(ctx context.Context, roleID int64, menuIDs []i
 		if err != nil {
 			return err
 		}
-		err = rm.MultiInsert(ctx, datas)
-		if err != nil {
-			return err
+		if len(datas) != 0 {
+			err = rm.MultiInsert(ctx, datas)
+			if err != nil {
+				return err
+			}
 		}
+
 		return nil
 	})
 	return store.ErrFmt(err)
