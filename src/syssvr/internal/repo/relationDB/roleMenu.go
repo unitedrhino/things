@@ -3,7 +3,7 @@ package relationDB
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -13,7 +13,7 @@ type RoleMenuRepo struct {
 }
 
 func NewRoleMenuRepo(in any) *RoleMenuRepo {
-	return &RoleMenuRepo{db: store.GetCommonConn(in)}
+	return &RoleMenuRepo{db: stores.GetCommonConn(in)}
 }
 
 type RoleMenuFilter struct {
@@ -30,7 +30,7 @@ func (p RoleMenuRepo) fmtFilter(ctx context.Context, f RoleMenuFilter) *gorm.DB 
 
 func (g RoleMenuRepo) Insert(ctx context.Context, data *SysRoleMenu) error {
 	result := g.db.WithContext(ctx).Create(data)
-	return store.ErrFmt(result.Error)
+	return stores.ErrFmt(result.Error)
 }
 
 func (g RoleMenuRepo) FindOneByFilter(ctx context.Context, f RoleMenuFilter) (*SysRoleMenu, error) {
@@ -38,7 +38,7 @@ func (g RoleMenuRepo) FindOneByFilter(ctx context.Context, f RoleMenuFilter) (*S
 	db := g.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
@@ -48,7 +48,7 @@ func (p RoleMenuRepo) FindByFilter(ctx context.Context, f RoleMenuFilter, page *
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
 }
@@ -56,29 +56,29 @@ func (p RoleMenuRepo) FindByFilter(ctx context.Context, f RoleMenuFilter, page *
 func (p RoleMenuRepo) CountByFilter(ctx context.Context, f RoleMenuFilter) (size int64, err error) {
 	db := p.fmtFilter(ctx, f).Model(&SysRoleMenu{})
 	err = db.Count(&size).Error
-	return size, store.ErrFmt(err)
+	return size, stores.ErrFmt(err)
 }
 
 func (g RoleMenuRepo) Update(ctx context.Context, data *SysRoleMenu) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (g RoleMenuRepo) DeleteByFilter(ctx context.Context, f RoleMenuFilter) error {
 	db := g.fmtFilter(ctx, f)
 	err := db.Delete(&SysRoleMenu{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (g RoleMenuRepo) Delete(ctx context.Context, id int64) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysRoleMenu{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 func (g RoleMenuRepo) FindOne(ctx context.Context, id int64) (*SysRoleMenu, error) {
 	var result SysRoleMenu
 	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
@@ -86,7 +86,7 @@ func (g RoleMenuRepo) FindOne(ctx context.Context, id int64) (*SysRoleMenu, erro
 // 批量插入 LightStrategyDevice 记录
 func (m RoleMenuRepo) MultiInsert(ctx context.Context, data []*SysRoleMenu) error {
 	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysRoleMenu{}).Create(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (g RoleMenuRepo) MultiUpdate(ctx context.Context, roleID int64, menuIDs []int64) error {
@@ -112,5 +112,5 @@ func (g RoleMenuRepo) MultiUpdate(ctx context.Context, roleID int64, menuIDs []i
 
 		return nil
 	})
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }

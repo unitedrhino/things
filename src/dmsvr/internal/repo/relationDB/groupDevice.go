@@ -3,7 +3,7 @@ package relationDB
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -21,13 +21,13 @@ type (
 )
 
 func NewGroupDeviceRepo(in any) *GroupDeviceRepo {
-	return &GroupDeviceRepo{db: store.GetCommonConn(in)}
+	return &GroupDeviceRepo{db: stores.GetCommonConn(in)}
 }
 
 // 批量插入 LightStrategyDevice 记录
 func (m GroupDeviceRepo) MultiInsert(ctx context.Context, data []*DmGroupDevice) error {
 	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmGroupDevice{}).Create(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 // 批量插入 LightStrategyDevice 记录
@@ -48,7 +48,7 @@ func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []
 	db := m.db.WithContext(ctx).Model(&DmGroupDevice{})
 	db = db.Where("`groupID`=?", groupID).Where(scope(db))
 	err := db.Delete(&DmGroupDevice{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (p GroupDeviceRepo) fmtFilter(ctx context.Context, f GroupDeviceFilter) *gorm.DB {
@@ -75,7 +75,7 @@ func (p GroupDeviceRepo) FindByFilter(ctx context.Context, f GroupDeviceFilter, 
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
 }
@@ -85,7 +85,7 @@ func (p GroupDeviceRepo) FindOneByFilter(ctx context.Context, f GroupDeviceFilte
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
@@ -93,10 +93,10 @@ func (p GroupDeviceRepo) FindOneByFilter(ctx context.Context, f GroupDeviceFilte
 func (p GroupDeviceRepo) CountByFilter(ctx context.Context, f GroupDeviceFilter) (size int64, err error) {
 	db := p.fmtFilter(ctx, f).Model(&DmGroupDevice{})
 	err = db.Count(&size).Error
-	return size, store.ErrFmt(err)
+	return size, stores.ErrFmt(err)
 }
 func (p GroupDeviceRepo) DeleteByFilter(ctx context.Context, f GroupDeviceFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&DmProductInfo{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }

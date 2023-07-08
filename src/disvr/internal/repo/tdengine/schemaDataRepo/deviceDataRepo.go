@@ -3,7 +3,7 @@ package schemaDataRepo
 import (
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"os"
@@ -16,7 +16,7 @@ const (
 type SchemaDataRepo struct {
 	t              *clients.Td
 	getSchemaModel schema.GetSchemaModel
-	store.SchemaStore
+	stores.SchemaStore
 	kv kv.Store
 }
 

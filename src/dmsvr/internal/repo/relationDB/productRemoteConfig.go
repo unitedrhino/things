@@ -3,7 +3,7 @@ package relationDB
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +18,7 @@ type (
 )
 
 func NewProductRemoteConfigRepo(in any) *ProductRemoteConfigRepo {
-	return &ProductRemoteConfigRepo{db: store.GetCommonConn(in)}
+	return &ProductRemoteConfigRepo{db: stores.GetCommonConn(in)}
 }
 
 func (p ProductRemoteConfigRepo) fmtFilter(ctx context.Context, f RemoteConfigFilter) *gorm.DB {
@@ -32,7 +32,7 @@ func (p ProductRemoteConfigRepo) fmtFilter(ctx context.Context, f RemoteConfigFi
 
 func (p ProductRemoteConfigRepo) Insert(ctx context.Context, data *DmProductRemoteConfig) error {
 	result := p.db.WithContext(ctx).Create(data)
-	return store.ErrFmt(result.Error)
+	return stores.ErrFmt(result.Error)
 }
 
 func (p ProductRemoteConfigRepo) FindByFilter(ctx context.Context, f RemoteConfigFilter, page *def.PageInfo) ([]*DmProductRemoteConfig, error) {
@@ -41,7 +41,7 @@ func (p ProductRemoteConfigRepo) FindByFilter(ctx context.Context, f RemoteConfi
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
 }
@@ -51,23 +51,23 @@ func (p ProductRemoteConfigRepo) FindOneByFilter(ctx context.Context, f RemoteCo
 	db := p.fmtFilter(ctx, f)
 	err := db.Last(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
 
 func (p ProductRemoteConfigRepo) Update(ctx context.Context, data *DmProductRemoteConfig) error {
 	err := p.db.WithContext(ctx).Where("productID = ?", data.ProductID).Save(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (p ProductRemoteConfigRepo) DeleteByFilter(ctx context.Context, f RemoteConfigFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&DmProductRemoteConfig{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 func (p ProductRemoteConfigRepo) CountByFilter(ctx context.Context, f RemoteConfigFilter) (size int64, err error) {
 	db := p.fmtFilter(ctx, f).Model(&DmProductRemoteConfig{})
 	err = db.Count(&size).Error
-	return size, store.ErrFmt(err)
+	return size, stores.ErrFmt(err)
 }

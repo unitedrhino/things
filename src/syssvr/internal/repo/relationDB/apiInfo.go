@@ -3,7 +3,7 @@ package relationDB
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +12,7 @@ type ApiInfoRepo struct {
 }
 
 func NewApiInfoRepo(in any) *ApiInfoRepo {
-	return &ApiInfoRepo{db: store.GetCommonConn(in)}
+	return &ApiInfoRepo{db: stores.GetCommonConn(in)}
 }
 
 type ApiInfoFilter struct {
@@ -41,7 +41,7 @@ func (p ApiInfoRepo) fmtFilter(ctx context.Context, f ApiInfoFilter) *gorm.DB {
 
 func (g ApiInfoRepo) Insert(ctx context.Context, data *SysApiInfo) error {
 	result := g.db.WithContext(ctx).Create(data)
-	return store.ErrFmt(result.Error)
+	return stores.ErrFmt(result.Error)
 }
 
 func (g ApiInfoRepo) FindOneByFilter(ctx context.Context, f ApiInfoFilter) (*SysApiInfo, error) {
@@ -49,7 +49,7 @@ func (g ApiInfoRepo) FindOneByFilter(ctx context.Context, f ApiInfoFilter) (*Sys
 	db := g.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
@@ -60,7 +60,7 @@ func (p ApiInfoRepo) FindByFilter(ctx context.Context, f ApiInfoFilter, page *de
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
 }
@@ -68,29 +68,29 @@ func (p ApiInfoRepo) FindByFilter(ctx context.Context, f ApiInfoFilter, page *de
 func (p ApiInfoRepo) CountByFilter(ctx context.Context, f ApiInfoFilter) (size int64, err error) {
 	db := p.fmtFilter(ctx, f).Model(&SysApiInfo{})
 	err = db.Count(&size).Error
-	return size, store.ErrFmt(err)
+	return size, stores.ErrFmt(err)
 }
 
 func (g ApiInfoRepo) Update(ctx context.Context, data *SysApiInfo) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (g ApiInfoRepo) DeleteByFilter(ctx context.Context, f ApiInfoFilter) error {
 	db := g.fmtFilter(ctx, f)
 	err := db.Delete(&SysApiInfo{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 func (g ApiInfoRepo) Delete(ctx context.Context, id int64) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysApiInfo{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (g ApiInfoRepo) FindOne(ctx context.Context, id int64) (*SysApiInfo, error) {
 	var result SysApiInfo
 	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }

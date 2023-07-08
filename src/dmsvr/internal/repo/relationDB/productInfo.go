@@ -3,7 +3,7 @@ package relationDB
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +20,7 @@ type ProductFilter struct {
 }
 
 func NewProductInfoRepo(in any) *ProductInfoRepo {
-	return &ProductInfoRepo{db: store.GetCommonConn(in)}
+	return &ProductInfoRepo{db: stores.GetCommonConn(in)}
 }
 
 func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.DB {
@@ -48,7 +48,7 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 
 func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error {
 	result := p.db.WithContext(ctx).Create(data)
-	return store.ErrFmt(result.Error)
+	return stores.ErrFmt(result.Error)
 }
 
 func (p ProductInfoRepo) FindOneByFilter(ctx context.Context, f ProductFilter) (*DmProductInfo, error) {
@@ -56,20 +56,20 @@ func (p ProductInfoRepo) FindOneByFilter(ctx context.Context, f ProductFilter) (
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
 
 func (p ProductInfoRepo) Update(ctx context.Context, data *DmProductInfo) error {
 	err := p.db.WithContext(ctx).Where("productID = ?", data.ProductID).Save(data).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (p ProductInfoRepo) DeleteByFilter(ctx context.Context, f ProductFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&DmProductInfo{}).Error
-	return store.ErrFmt(err)
+	return stores.ErrFmt(err)
 }
 
 func (p ProductInfoRepo) FindByFilter(ctx context.Context, f ProductFilter, page *def.PageInfo) ([]*DmProductInfo, error) {
@@ -78,7 +78,7 @@ func (p ProductInfoRepo) FindByFilter(ctx context.Context, f ProductFilter, page
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
-		return nil, store.ErrFmt(err)
+		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
 }
@@ -86,5 +86,5 @@ func (p ProductInfoRepo) FindByFilter(ctx context.Context, f ProductFilter, page
 func (p ProductInfoRepo) CountByFilter(ctx context.Context, f ProductFilter) (size int64, err error) {
 	db := p.fmtFilter(ctx, f).Model(&DmProductInfo{})
 	err = db.Count(&size).Error
-	return size, store.ErrFmt(err)
+	return size, stores.ErrFmt(err)
 }

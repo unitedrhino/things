@@ -4,7 +4,7 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/eventBus"
 	"github.com/i-Things/things/shared/oss"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
@@ -56,7 +56,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		os.Exit(-1)
 	}
 	bus := eventBus.NewEventBus()
-	store.InitConn(c.Database)
+	stores.InitConn(c.Database)
 	return &ServiceContext{
 		Bus:            bus,
 		Config:         c,
