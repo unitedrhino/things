@@ -59,7 +59,7 @@ type UserDeleteReq struct {
 }
 
 type UserLoginReq struct {
-	UserID    string `json:"userID"`                                          //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+	Account   string `json:"account"`                                         //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
 	PwdType   int32  `json:"pwdType"`                                         //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
 	Password  string `json:"password"`                                        //密码，建议md5转换 密码登录时需要填写
 	LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
@@ -571,7 +571,6 @@ type DeviceInfo struct {
 	MobileOperator int64                              `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
 	Phone          *string                            `json:"phone,optional"`                      //手机号
 	Iccid          *string                            `json:"iccid,optional"`                      //SIM卡卡号
-	UserID         int64                              `json:"userID,string,optional"`              // 用户id
 	Position       *Point                             `json:"position,optional"`                   //设备定位,默认百度坐标系
 	Address        *string                            `json:"address,optional"`                    //所在地址
 	Tags           []*Tag                             `json:"tags,optional"`                       // 设备tag
