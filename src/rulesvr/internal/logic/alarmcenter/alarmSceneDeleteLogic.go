@@ -3,7 +3,7 @@ package alarmcenterlogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -15,6 +15,7 @@ type AlarmSceneDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	AsDB *relationDB.AlarmSceneRepo
 }
 
 func NewAlarmSceneDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmSceneDeleteLogic {
@@ -22,11 +23,12 @@ func NewAlarmSceneDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		AsDB:   relationDB.NewAlarmSceneRepo(ctx),
 	}
 }
 
 func (l *AlarmSceneDeleteLogic) AlarmSceneDelete(in *rule.AlarmSceneDeleteReq) (*rule.Empty, error) {
-	err := l.svcCtx.AlarmSceneRepo.DeleteByFilter(l.ctx, alarm.SceneFilter{
+	err := l.AsDB.DeleteByFilter(l.ctx, relationDB.AlarmSceneFilter{
 		AlarmID: in.AlarmID,
 		SceneID: in.SceneID,
 	})

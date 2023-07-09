@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events/topics"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
@@ -14,6 +15,7 @@ type SceneInfoUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	SiDB *relationDB.SceneInfoRepo
 }
 
 func NewSceneInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SceneInfoUpdateLogic {
@@ -21,6 +23,7 @@ func NewSceneInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		SiDB:   relationDB.NewSceneInfoRepo(ctx),
 	}
 }
 
@@ -29,7 +32,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *rule.SceneInfo) (*rule.Empty,
 	if err != nil {
 		return nil, err
 	}
-	_, err = l.svcCtx.SceneRepo.FindOne(l.ctx, do.ID)
+	_, err = l.SiDB.FindOne(l.ctx, do.ID)
 	if err != nil { //如果是数据库错误
 		return nil, errors.Database.AddDetail(err)
 	}
@@ -37,7 +40,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *rule.SceneInfo) (*rule.Empty,
 	if err != nil {
 		return nil, err
 	}
-	if err = l.svcCtx.SceneRepo.Update(l.ctx, do); err != nil {
+	if err = l.SiDB.Update(l.ctx, do); err != nil {
 		return nil, err
 	}
 	if err = l.svcCtx.SceneTimerControl.Update(do); err != nil {
