@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/logic"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -15,6 +16,7 @@ type SceneInfoIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	SiDB *relationDB.SceneInfoRepo
 }
 
 func NewSceneInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SceneInfoIndexLogic {
@@ -22,6 +24,7 @@ func NewSceneInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sc
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		SiDB:   relationDB.NewSceneInfoRepo(ctx),
 	}
 }
 
@@ -33,11 +36,11 @@ func (l *SceneInfoIndexLogic) SceneInfoIndex(in *rule.SceneInfoIndexReq) (*rule.
 	)
 	filter := scene.InfoFilter{Name: in.Name, Status: in.Status,
 		TriggerType: scene.TriggerType(in.TriggerType), AlarmID: in.AlarmID}
-	size, err = l.svcCtx.SceneRepo.CountByFilter(l.ctx, filter)
+	size, err = l.SiDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.svcCtx.SceneRepo.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
+	di, err := l.SiDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}

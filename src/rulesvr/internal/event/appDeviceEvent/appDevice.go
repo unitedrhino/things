@@ -99,7 +99,7 @@ func (a *AppDeviceHandle) executeActions(device devices.Core, serial scene.Seria
 			err = info.Then.Execute(ctx, scene.ActionRepo{
 				DeviceInteract: a.svcCtx.DeviceInteract,
 				DeviceM:        a.svcCtx.DeviceM,
-				Alarm:          repoComplex.NewSceneAlarm(a.svcCtx),
+				Alarm:          repoComplex.NewSceneAlarm(a.svcCtx, ctx),
 				Device:         device,
 				Serial:         serial,
 				Scene:          info,

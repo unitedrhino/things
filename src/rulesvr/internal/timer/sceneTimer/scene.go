@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/timers"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/repoComplex"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/internal/timer"
@@ -47,7 +48,7 @@ func NewSceneTimerControl() timer.SceneControl {
 
 func (s *SceneTimer) Start() {
 	s.timer.Start(func(ctx context.Context) {
-		infos, err := s.svcCtx.SceneRepo.FindByFilter(s.ctx, scene.InfoFilter{
+		infos, err := relationDB.NewSceneInfoRepo(ctx).FindByFilter(s.ctx, scene.InfoFilter{
 			Status:      def.Enable,
 			TriggerType: scene.TriggerTypeTimer,
 		}, nil)
@@ -115,7 +116,7 @@ func (s *SceneTimer) jobRun(ctx context.Context, info *scene.Info) (err error) {
 	err = info.Then.Execute(ctx, scene.ActionRepo{
 		DeviceInteract: s.svcCtx.DeviceInteract,
 		DeviceM:        s.svcCtx.DeviceM,
-		Alarm:          repoComplex.NewSceneAlarm(s.svcCtx),
+		Alarm:          repoComplex.NewSceneAlarm(s.svcCtx, ctx),
 		Scene:          info,
 	})
 	return err

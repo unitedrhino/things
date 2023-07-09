@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
@@ -15,6 +15,8 @@ type AlarmDealRecordCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	ArDB  *relationDB.AlarmRecordRepo
+	AdrDB *relationDB.AlarmDealRecordRepo
 }
 
 func NewAlarmDealRecordCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmDealRecordCreateLogic {
@@ -22,14 +24,16 @@ func NewAlarmDealRecordCreateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		ArDB:   relationDB.NewAlarmRecordRepo(ctx),
+		AdrDB:  relationDB.NewAlarmDealRecordRepo(ctx),
 	}
 }
 
 // 告警处理记录
 func (l *AlarmDealRecordCreateLogic) AlarmDealRecordCreate(in *rule.AlarmDealRecordCreateReq) (*rule.WithID, error) {
-	ai, err := l.svcCtx.AlarmRecordRepo.FindOne(l.ctx, in.AlarmRecordID)
+	ai, err := l.ArDB.FindOne(l.ctx, in.AlarmRecordID)
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.Parameter.AddMsg("该告警目前不处于告警中,不能处理告警")
 		}
 		return nil, errors.Database.AddDetail(err)
@@ -37,7 +41,7 @@ func (l *AlarmDealRecordCreateLogic) AlarmDealRecordCreate(in *rule.AlarmDealRec
 	if ai.DealState != alarm.DealStateAlarming {
 		return nil, errors.Parameter.AddMsg("该告警目前不处于告警中,不能处理告警")
 	}
-	_, err = l.svcCtx.AlarmDealRecordRepo.Insert(l.ctx, &mysql.RuleAlarmDealRecord{
+	err = l.AdrDB.Insert(l.ctx, &relationDB.RuleAlarmDealRecord{
 		AlarmRecordID: in.AlarmRecordID,
 		Result:        in.Result,
 		Type:          in.Type,
@@ -47,7 +51,7 @@ func (l *AlarmDealRecordCreateLogic) AlarmDealRecordCreate(in *rule.AlarmDealRec
 		return nil, errors.Database.AddDetail(err)
 	}
 	ai.DealState = alarm.DealStateAlarmed
-	err = l.svcCtx.AlarmRecordRepo.Update(l.ctx, ai)
+	err = l.ArDB.Update(l.ctx, ai)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

@@ -2,8 +2,7 @@ package alarmcenterlogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -15,6 +14,7 @@ type AlarmInfoReadLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	AiDB *relationDB.AlarmInfoRepo
 }
 
 func NewAlarmInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmInfoReadLogic {
@@ -22,15 +22,13 @@ func NewAlarmInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ala
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		AiDB:   relationDB.NewAlarmInfoRepo(ctx),
 	}
 }
 
 func (l *AlarmInfoReadLogic) AlarmInfoRead(in *rule.WithID) (*rule.AlarmInfo, error) {
-	di, err := l.svcCtx.AlarmInfoRepo.FindOne(l.ctx, in.Id)
+	di, err := l.AiDB.FindOne(l.ctx, in.Id)
 	if err != nil {
-		if err == mysql.ErrNotFound {
-			return nil, errors.NotFind
-		}
 		return nil, err
 	}
 	return ToAlarmInfo(di), nil
