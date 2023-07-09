@@ -36,14 +36,14 @@ func (p MenuInfoRepo) fmtFilter(ctx context.Context, f MenuInfoFilter) *gorm.DB 
 	return db
 }
 
-func (g MenuInfoRepo) Insert(ctx context.Context, data *SysMenuInfo) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p MenuInfoRepo) Insert(ctx context.Context, data *SysMenuInfo) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g MenuInfoRepo) FindOneByFilter(ctx context.Context, f MenuInfoFilter) (*SysMenuInfo, error) {
+func (p MenuInfoRepo) FindOneByFilter(ctx context.Context, f MenuInfoFilter) (*SysMenuInfo, error) {
 	var result SysMenuInfo
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -67,24 +67,24 @@ func (p MenuInfoRepo) CountByFilter(ctx context.Context, f MenuInfoFilter) (size
 	return size, stores.ErrFmt(err)
 }
 
-func (g MenuInfoRepo) Update(ctx context.Context, data *SysMenuInfo) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+func (p MenuInfoRepo) Update(ctx context.Context, data *SysMenuInfo) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g MenuInfoRepo) DeleteByFilter(ctx context.Context, f MenuInfoFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p MenuInfoRepo) DeleteByFilter(ctx context.Context, f MenuInfoFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&SysMenuInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g MenuInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysMenuInfo{}).Error
+func (p MenuInfoRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysMenuInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (g MenuInfoRepo) FindOne(ctx context.Context, id int64) (*SysMenuInfo, error) {
+func (p MenuInfoRepo) FindOne(ctx context.Context, id int64) (*SysMenuInfo, error) {
 	var result SysMenuInfo
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

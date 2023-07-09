@@ -39,14 +39,14 @@ func (p ApiInfoRepo) fmtFilter(ctx context.Context, f ApiInfoFilter) *gorm.DB {
 	return db
 }
 
-func (g ApiInfoRepo) Insert(ctx context.Context, data *SysApiInfo) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p ApiInfoRepo) Insert(ctx context.Context, data *SysApiInfo) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g ApiInfoRepo) FindOneByFilter(ctx context.Context, f ApiInfoFilter) (*SysApiInfo, error) {
+func (p ApiInfoRepo) FindOneByFilter(ctx context.Context, f ApiInfoFilter) (*SysApiInfo, error) {
 	var result SysApiInfo
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -71,24 +71,24 @@ func (p ApiInfoRepo) CountByFilter(ctx context.Context, f ApiInfoFilter) (size i
 	return size, stores.ErrFmt(err)
 }
 
-func (g ApiInfoRepo) Update(ctx context.Context, data *SysApiInfo) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+func (p ApiInfoRepo) Update(ctx context.Context, data *SysApiInfo) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g ApiInfoRepo) DeleteByFilter(ctx context.Context, f ApiInfoFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p ApiInfoRepo) DeleteByFilter(ctx context.Context, f ApiInfoFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&SysApiInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (g ApiInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysApiInfo{}).Error
+func (p ApiInfoRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysApiInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g ApiInfoRepo) FindOne(ctx context.Context, id int64) (*SysApiInfo, error) {
+func (p ApiInfoRepo) FindOne(ctx context.Context, id int64) (*SysApiInfo, error) {
 	var result SysApiInfo
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

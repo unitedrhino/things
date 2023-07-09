@@ -33,13 +33,13 @@ func (p ExampleRepo) fmtFilter(ctx context.Context, f ExampleFilter) *gorm.DB {
 	return db
 }
 
-func (p ExampleRepo) Insert(ctx context.Context, data *SysExample) error {
+func (p ExampleRepo) Insert(ctx context.Context, data *DmExample) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p ExampleRepo) FindOneByFilter(ctx context.Context, f ExampleFilter) (*SysExample, error) {
-	var result SysExample
+func (p ExampleRepo) FindOneByFilter(ctx context.Context, f ExampleFilter) (*DmExample, error) {
+	var result DmExample
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -47,9 +47,9 @@ func (p ExampleRepo) FindOneByFilter(ctx context.Context, f ExampleFilter) (*Sys
 	}
 	return &result, nil
 }
-func (p ExampleRepo) FindByFilter(ctx context.Context, f ExampleFilter, page *def.PageInfo) ([]*SysExample, error) {
-	var results []*SysExample
-	db := p.fmtFilter(ctx, f).Model(&SysExample{})
+func (p ExampleRepo) FindByFilter(ctx context.Context, f ExampleFilter, page *def.PageInfo) ([]*DmExample, error) {
+	var results []*DmExample
+	db := p.fmtFilter(ctx, f).Model(&DmExample{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -59,28 +59,28 @@ func (p ExampleRepo) FindByFilter(ctx context.Context, f ExampleFilter, page *de
 }
 
 func (p ExampleRepo) CountByFilter(ctx context.Context, f ExampleFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&SysExample{})
+	db := p.fmtFilter(ctx, f).Model(&DmExample{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p ExampleRepo) Update(ctx context.Context, data *SysExample) error {
+func (p ExampleRepo) Update(ctx context.Context, data *DmExample) error {
 	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p ExampleRepo) DeleteByFilter(ctx context.Context, f ExampleFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&SysExample{}).Error
+	err := db.Delete(&DmExample{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p ExampleRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysExample{}).Error
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmExample{}).Error
 	return stores.ErrFmt(err)
 }
-func (p ExampleRepo) FindOne(ctx context.Context, id int64) (*SysExample, error) {
-	var result SysExample
+func (p ExampleRepo) FindOne(ctx context.Context, id int64) (*DmExample, error) {
+	var result DmExample
 	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -89,7 +89,7 @@ func (p ExampleRepo) FindOne(ctx context.Context, id int64) (*SysExample, error)
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p ExampleRepo) MultiInsert(ctx context.Context, data []*SysExample) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysExample{}).Create(data).Error
+func (p ExampleRepo) MultiInsert(ctx context.Context, data []*DmExample) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmExample{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

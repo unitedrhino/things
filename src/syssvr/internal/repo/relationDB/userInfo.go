@@ -50,14 +50,14 @@ func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB 
 	return db
 }
 
-func (g UserInfoRepo) Insert(ctx context.Context, data *SysUserInfo) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p UserInfoRepo) Insert(ctx context.Context, data *SysUserInfo) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g UserInfoRepo) FindOneByFilter(ctx context.Context, f UserInfoFilter) (*SysUserInfo, error) {
+func (p UserInfoRepo) FindOneByFilter(ctx context.Context, f UserInfoFilter) (*SysUserInfo, error) {
 	var result SysUserInfo
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -81,23 +81,23 @@ func (p UserInfoRepo) CountByFilter(ctx context.Context, f UserInfoFilter) (size
 	return size, stores.ErrFmt(err)
 }
 
-func (g UserInfoRepo) Update(ctx context.Context, data *SysUserInfo) error {
-	err := g.db.WithContext(ctx).Where("`userID` = ?", data.UserID).Save(data).Error
+func (p UserInfoRepo) Update(ctx context.Context, data *SysUserInfo) error {
+	err := p.db.WithContext(ctx).Where("`userID` = ?", data.UserID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g UserInfoRepo) DeleteByFilter(ctx context.Context, f UserInfoFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p UserInfoRepo) DeleteByFilter(ctx context.Context, f UserInfoFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&SysUserInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g UserInfoRepo) Delete(ctx context.Context, userID int64) error {
-	err := g.db.WithContext(ctx).Where("`userID` = ?", userID).Delete(&SysUserInfo{}).Error
+func (p UserInfoRepo) Delete(ctx context.Context, userID int64) error {
+	err := p.db.WithContext(ctx).Where("`userID` = ?", userID).Delete(&SysUserInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (g UserInfoRepo) FindOne(ctx context.Context, userID int64) (*SysUserInfo, error) {
+func (p UserInfoRepo) FindOne(ctx context.Context, userID int64) (*SysUserInfo, error) {
 	var result SysUserInfo
-	err := g.db.WithContext(ctx).Where("`userID` = ?", userID).First(&result).Error
+	err := p.db.WithContext(ctx).Where("`userID` = ?", userID).First(&result).Error
 	return &result, stores.ErrFmt(err)
 }

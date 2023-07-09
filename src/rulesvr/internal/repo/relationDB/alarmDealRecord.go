@@ -36,14 +36,14 @@ func (p AlarmDealRecordRepo) fmtFilter(ctx context.Context, f AlarmDealRecordFil
 	return db
 }
 
-func (g AlarmDealRecordRepo) Insert(ctx context.Context, data *RuleAlarmDealRecord) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p AlarmDealRecordRepo) Insert(ctx context.Context, data *RuleAlarmDealRecord) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g AlarmDealRecordRepo) FindOneByFilter(ctx context.Context, f AlarmDealRecordFilter) (*RuleAlarmDealRecord, error) {
+func (p AlarmDealRecordRepo) FindOneByFilter(ctx context.Context, f AlarmDealRecordFilter) (*RuleAlarmDealRecord, error) {
 	var result RuleAlarmDealRecord
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -67,24 +67,24 @@ func (p AlarmDealRecordRepo) CountByFilter(ctx context.Context, f AlarmDealRecor
 	return size, stores.ErrFmt(err)
 }
 
-func (g AlarmDealRecordRepo) Update(ctx context.Context, data *RuleAlarmDealRecord) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+func (p AlarmDealRecordRepo) Update(ctx context.Context, data *RuleAlarmDealRecord) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g AlarmDealRecordRepo) DeleteByFilter(ctx context.Context, f AlarmDealRecordFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p AlarmDealRecordRepo) DeleteByFilter(ctx context.Context, f AlarmDealRecordFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&RuleAlarmDealRecord{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g AlarmDealRecordRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmDealRecord{}).Error
+func (p AlarmDealRecordRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmDealRecord{}).Error
 	return stores.ErrFmt(err)
 }
-func (g AlarmDealRecordRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmDealRecord, error) {
+func (p AlarmDealRecordRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmDealRecord, error) {
 	var result RuleAlarmDealRecord
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -92,7 +92,7 @@ func (g AlarmDealRecordRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmD
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m AlarmDealRecordRepo) MultiInsert(ctx context.Context, data []*RuleAlarmDealRecord) error {
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleAlarmDealRecord{}).Create(data).Error
+func (p AlarmDealRecordRepo) MultiInsert(ctx context.Context, data []*RuleAlarmDealRecord) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleAlarmDealRecord{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

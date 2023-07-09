@@ -46,14 +46,14 @@ func (p RoleInfoRepo) fmtFilter(ctx context.Context, f RoleInfoFilter) *gorm.DB 
 	return db
 }
 
-func (g RoleInfoRepo) Insert(ctx context.Context, data *SysRoleInfo) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p RoleInfoRepo) Insert(ctx context.Context, data *SysRoleInfo) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g RoleInfoRepo) FindOneByFilter(ctx context.Context, f RoleInfoFilter) (*SysRoleInfo, error) {
+func (p RoleInfoRepo) FindOneByFilter(ctx context.Context, f RoleInfoFilter) (*SysRoleInfo, error) {
 	var result SysRoleInfo
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -77,25 +77,25 @@ func (p RoleInfoRepo) CountByFilter(ctx context.Context, f RoleInfoFilter) (size
 	return size, stores.ErrFmt(err)
 }
 
-func (g RoleInfoRepo) Update(ctx context.Context, data *SysRoleInfo) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+func (p RoleInfoRepo) Update(ctx context.Context, data *SysRoleInfo) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g RoleInfoRepo) DeleteByFilter(ctx context.Context, f RoleInfoFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p RoleInfoRepo) DeleteByFilter(ctx context.Context, f RoleInfoFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&SysRoleInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g RoleInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysRoleInfo{}).Error
+func (p RoleInfoRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysRoleInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (g RoleInfoRepo) FindOne(ctx context.Context, id int64, with *RoleInfoWith) (*SysRoleInfo, error) {
+func (p RoleInfoRepo) FindOne(ctx context.Context, id int64, with *RoleInfoWith) (*SysRoleInfo, error) {
 	var result SysRoleInfo
-	db := g.db.WithContext(ctx)
-	db = g.fmtWith(db, with)
+	db := p.db.WithContext(ctx)
+	db = p.fmtWith(db, with)
 	err := db.Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
