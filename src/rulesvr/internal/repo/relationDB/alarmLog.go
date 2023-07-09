@@ -36,14 +36,14 @@ func (p AlarmLogRepo) fmtFilter(ctx context.Context, f AlarmLogFilter) *gorm.DB 
 	return db
 }
 
-func (g AlarmLogRepo) Insert(ctx context.Context, data *RuleAlarmLog) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p AlarmLogRepo) Insert(ctx context.Context, data *RuleAlarmLog) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g AlarmLogRepo) FindOneByFilter(ctx context.Context, f AlarmLogFilter) (*RuleAlarmLog, error) {
+func (p AlarmLogRepo) FindOneByFilter(ctx context.Context, f AlarmLogFilter) (*RuleAlarmLog, error) {
 	var result RuleAlarmLog
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -67,24 +67,24 @@ func (p AlarmLogRepo) CountByFilter(ctx context.Context, f AlarmLogFilter) (size
 	return size, stores.ErrFmt(err)
 }
 
-func (g AlarmLogRepo) Update(ctx context.Context, data *RuleAlarmLog) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+func (p AlarmLogRepo) Update(ctx context.Context, data *RuleAlarmLog) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g AlarmLogRepo) DeleteByFilter(ctx context.Context, f AlarmLogFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p AlarmLogRepo) DeleteByFilter(ctx context.Context, f AlarmLogFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&RuleAlarmLog{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g AlarmLogRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmLog{}).Error
+func (p AlarmLogRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmLog{}).Error
 	return stores.ErrFmt(err)
 }
-func (g AlarmLogRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmLog, error) {
+func (p AlarmLogRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmLog, error) {
 	var result RuleAlarmLog
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -92,7 +92,7 @@ func (g AlarmLogRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmLog, err
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m AlarmLogRepo) MultiInsert(ctx context.Context, data []*RuleAlarmLog) error {
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleAlarmLog{}).Create(data).Error
+func (p AlarmLogRepo) MultiInsert(ctx context.Context, data []*RuleAlarmLog) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleAlarmLog{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

@@ -46,14 +46,14 @@ func (p AlarmInfoRepo) fmtFilter(ctx context.Context, f AlarmInfoFilter) *gorm.D
 	return db
 }
 
-func (g AlarmInfoRepo) Insert(ctx context.Context, data *RuleAlarmInfo) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p AlarmInfoRepo) Insert(ctx context.Context, data *RuleAlarmInfo) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g AlarmInfoRepo) FindOneByFilter(ctx context.Context, f AlarmInfoFilter) (*RuleAlarmInfo, error) {
+func (p AlarmInfoRepo) FindOneByFilter(ctx context.Context, f AlarmInfoFilter) (*RuleAlarmInfo, error) {
 	var result RuleAlarmInfo
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	table := RuleAlarmInfo{}
 	err := db.Select(table.TableName() + ".*").First(&result).Error
 	if err != nil {
@@ -79,24 +79,24 @@ func (p AlarmInfoRepo) CountByFilter(ctx context.Context, f AlarmInfoFilter) (si
 	return size, stores.ErrFmt(err)
 }
 
-func (g AlarmInfoRepo) Update(ctx context.Context, data *RuleAlarmInfo) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+func (p AlarmInfoRepo) Update(ctx context.Context, data *RuleAlarmInfo) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g AlarmInfoRepo) DeleteByFilter(ctx context.Context, f AlarmInfoFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p AlarmInfoRepo) DeleteByFilter(ctx context.Context, f AlarmInfoFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&RuleAlarmInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g AlarmInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmInfo{}).Error
+func (p AlarmInfoRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (g AlarmInfoRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmInfo, error) {
+func (p AlarmInfoRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmInfo, error) {
 	var result RuleAlarmInfo
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -104,7 +104,7 @@ func (g AlarmInfoRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmInfo, e
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m AlarmInfoRepo) MultiInsert(ctx context.Context, data []*RuleAlarmInfo) error {
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleAlarmInfo{}).Create(data).Error
+func (p AlarmInfoRepo) MultiInsert(ctx context.Context, data []*RuleAlarmInfo) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleAlarmInfo{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

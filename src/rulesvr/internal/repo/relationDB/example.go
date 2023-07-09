@@ -33,14 +33,14 @@ func (p ExampleRepo) fmtFilter(ctx context.Context, f ExampleFilter) *gorm.DB {
 	return db
 }
 
-func (g ExampleRepo) Insert(ctx context.Context, data *RuleExample) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p ExampleRepo) Insert(ctx context.Context, data *RuleExample) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g ExampleRepo) FindOneByFilter(ctx context.Context, f ExampleFilter) (*RuleExample, error) {
+func (p ExampleRepo) FindOneByFilter(ctx context.Context, f ExampleFilter) (*RuleExample, error) {
 	var result RuleExample
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -64,24 +64,24 @@ func (p ExampleRepo) CountByFilter(ctx context.Context, f ExampleFilter) (size i
 	return size, stores.ErrFmt(err)
 }
 
-func (g ExampleRepo) Update(ctx context.Context, data *RuleExample) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+func (p ExampleRepo) Update(ctx context.Context, data *RuleExample) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g ExampleRepo) DeleteByFilter(ctx context.Context, f ExampleFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p ExampleRepo) DeleteByFilter(ctx context.Context, f ExampleFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&RuleExample{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g ExampleRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleExample{}).Error
+func (p ExampleRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleExample{}).Error
 	return stores.ErrFmt(err)
 }
-func (g ExampleRepo) FindOne(ctx context.Context, id int64) (*RuleExample, error) {
+func (p ExampleRepo) FindOne(ctx context.Context, id int64) (*RuleExample, error) {
 	var result RuleExample
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -89,7 +89,7 @@ func (g ExampleRepo) FindOne(ctx context.Context, id int64) (*RuleExample, error
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m ExampleRepo) MultiInsert(ctx context.Context, data []*RuleExample) error {
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleExample{}).Create(data).Error
+func (p ExampleRepo) MultiInsert(ctx context.Context, data []*RuleExample) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleExample{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
