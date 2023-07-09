@@ -5,6 +5,12 @@ import (
 	"github.com/i-Things/things/shared/stores"
 )
 
+
+type DmExample struct {
+	ID int64 `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"` // id编号
+}
+
+
 // 产品信息表
 
 type DmProductInfo struct {

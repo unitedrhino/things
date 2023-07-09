@@ -39,14 +39,14 @@ func (p AlarmSceneRepo) fmtFilter(ctx context.Context, f AlarmSceneFilter) *gorm
 	return db
 }
 
-func (g AlarmSceneRepo) Insert(ctx context.Context, data *RuleAlarmScene) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p AlarmSceneRepo) Insert(ctx context.Context, data *RuleAlarmScene) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g AlarmSceneRepo) FindOneByFilter(ctx context.Context, f AlarmSceneFilter) (*RuleAlarmScene, error) {
+func (p AlarmSceneRepo) FindOneByFilter(ctx context.Context, f AlarmSceneFilter) (*RuleAlarmScene, error) {
 	var result RuleAlarmScene
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -70,24 +70,24 @@ func (p AlarmSceneRepo) CountByFilter(ctx context.Context, f AlarmSceneFilter) (
 	return size, stores.ErrFmt(err)
 }
 
-func (g AlarmSceneRepo) Update(ctx context.Context, data *RuleAlarmScene) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+func (p AlarmSceneRepo) Update(ctx context.Context, data *RuleAlarmScene) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g AlarmSceneRepo) DeleteByFilter(ctx context.Context, f AlarmSceneFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p AlarmSceneRepo) DeleteByFilter(ctx context.Context, f AlarmSceneFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&RuleAlarmScene{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g AlarmSceneRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmScene{}).Error
+func (p AlarmSceneRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmScene{}).Error
 	return stores.ErrFmt(err)
 }
-func (g AlarmSceneRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmScene, error) {
+func (p AlarmSceneRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmScene, error) {
 	var result RuleAlarmScene
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -95,7 +95,7 @@ func (g AlarmSceneRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmScene,
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m AlarmSceneRepo) MultiInsert(ctx context.Context, alarmID int64, sceneIDs []int64) error {
+func (p AlarmSceneRepo) MultiInsert(ctx context.Context, alarmID int64, sceneIDs []int64) error {
 	var datas []*RuleAlarmScene
 	for _, v := range sceneIDs {
 		datas = append(datas, &RuleAlarmScene{
@@ -103,6 +103,6 @@ func (m AlarmSceneRepo) MultiInsert(ctx context.Context, alarmID int64, sceneIDs
 			SceneID: v,
 		})
 	}
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleAlarmScene{}).Create(datas).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&RuleAlarmScene{}).Create(datas).Error
 	return stores.ErrFmt(err)
 }

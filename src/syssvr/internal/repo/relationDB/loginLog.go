@@ -39,14 +39,14 @@ func (p LoginLogRepo) fmtFilter(ctx context.Context, f LoginLogFilter) *gorm.DB 
 	return db
 }
 
-func (g LoginLogRepo) Insert(ctx context.Context, data *SysLoginLog) error {
-	result := g.db.WithContext(ctx).Create(data)
+func (p LoginLogRepo) Insert(ctx context.Context, data *SysLoginLog) error {
+	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g LoginLogRepo) FindOneByFilter(ctx context.Context, f LoginLogFilter) (*SysLoginLog, error) {
+func (p LoginLogRepo) FindOneByFilter(ctx context.Context, f LoginLogFilter) (*SysLoginLog, error) {
 	var result SysLoginLog
-	db := g.fmtFilter(ctx, f)
+	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -70,24 +70,24 @@ func (p LoginLogRepo) CountByFilter(ctx context.Context, f LoginLogFilter) (size
 	return size, stores.ErrFmt(err)
 }
 
-func (g LoginLogRepo) Update(ctx context.Context, data *SysLoginLog) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+func (p LoginLogRepo) Update(ctx context.Context, data *SysLoginLog) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g LoginLogRepo) DeleteByFilter(ctx context.Context, f LoginLogFilter) error {
-	db := g.fmtFilter(ctx, f)
+func (p LoginLogRepo) DeleteByFilter(ctx context.Context, f LoginLogFilter) error {
+	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&SysLoginLog{}).Error
 	return stores.ErrFmt(err)
 }
-func (g LoginLogRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysLoginLog{}).Error
+func (p LoginLogRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysLoginLog{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g LoginLogRepo) FindOne(ctx context.Context, id int64) (*SysLoginLog, error) {
+func (p LoginLogRepo) FindOne(ctx context.Context, id int64) (*SysLoginLog, error) {
 	var result SysLoginLog
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
