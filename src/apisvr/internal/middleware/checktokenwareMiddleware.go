@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
-	auth "github.com/i-Things/things/src/syssvr/client/auth"
+	role "github.com/i-Things/things/src/syssvr/client/role"
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
@@ -15,10 +15,10 @@ import (
 type CheckTokenWareMiddleware struct {
 	cfg     config.Config
 	UserRpc user.User
-	AuthRpc auth.Auth
+	AuthRpc role.Role
 }
 
-func NewCheckTokenWareMiddleware(cfg config.Config, UserRpc user.User, AuthRpc auth.Auth) *CheckTokenWareMiddleware {
+func NewCheckTokenWareMiddleware(cfg config.Config, UserRpc user.User, AuthRpc role.Role) *CheckTokenWareMiddleware {
 	return &CheckTokenWareMiddleware{cfg: cfg, UserRpc: UserRpc, AuthRpc: AuthRpc}
 }
 
@@ -45,7 +45,7 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 			}
 
 			//校验 Casbin Rule
-			_, err = m.AuthRpc.AuthApiCheck(r.Context(), &user.CheckAuthReq{
+			_, err = m.AuthRpc.RoleApiAuth(r.Context(), &user.RoleApiAuthReq{
 				RoleID: userCtx.Role,
 				Path:   r.URL.Path,
 				Method: utils.MethodToNum(r.Method),

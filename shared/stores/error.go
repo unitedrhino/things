@@ -10,6 +10,9 @@ func ErrFmt(err error) error {
 	if err == nil {
 		return nil
 	}
+	if _, ok := err.(*errors.CodeError); ok {
+		return err
+	}
 	if err == gorm.ErrRecordNotFound {
 		return errors.NotFind.WithStack()
 	}

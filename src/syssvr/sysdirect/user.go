@@ -4,10 +4,11 @@ import (
 	client "github.com/i-Things/things/src/syssvr/client/user"
 	server "github.com/i-Things/things/src/syssvr/internal/server/user"
 
-	clientMenu "github.com/i-Things/things/src/syssvr/client/menu"
 	clientRole "github.com/i-Things/things/src/syssvr/client/role"
-	serverMenu "github.com/i-Things/things/src/syssvr/internal/server/menu"
 	serverRole "github.com/i-Things/things/src/syssvr/internal/server/role"
+
+	clientMenu "github.com/i-Things/things/src/syssvr/client/menu"
+	serverMenu "github.com/i-Things/things/src/syssvr/internal/server/menu"
 
 	clientLog "github.com/i-Things/things/src/syssvr/client/log"
 	serverLog "github.com/i-Things/things/src/syssvr/internal/server/log"
@@ -17,9 +18,6 @@ import (
 
 	clientApi "github.com/i-Things/things/src/syssvr/client/api"
 	serverApi "github.com/i-Things/things/src/syssvr/internal/server/api"
-
-	clientAuth "github.com/i-Things/things/src/syssvr/client/auth"
-	serverAuth "github.com/i-Things/things/src/syssvr/internal/server/auth"
 )
 
 func NewUser(runSvr bool) client.User {
@@ -68,9 +66,4 @@ func NewApi(runSvr bool) clientApi.Api {
 		RunServer(svcCtx)
 	}
 	return clientApi.NewDirectApi(svcCtx, serverApi.NewApiServer(svcCtx))
-}
-
-func NewAuth() clientAuth.Auth {
-	userSvc := GetSvcCtx()
-	return clientAuth.NewDirectAuth(userSvc, serverAuth.NewAuthServer(userSvc))
 }

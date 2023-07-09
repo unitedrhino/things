@@ -2,6 +2,7 @@ package logic
 
 import (
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
@@ -42,4 +43,14 @@ func ToPageInfoWithDefault(info *sys.PageInfo, defau *def.PageInfo) *def.PageInf
 		}
 		return page
 	}
+}
+
+func ToSysPoint(point stores.Point) *sys.Point {
+	return &sys.Point{Longitude: point.Longitude, Latitude: point.Latitude}
+}
+func ToStorePoint(point *sys.Point) stores.Point {
+	if point == nil {
+		return stores.Point{Longitude: 0, Latitude: 0}
+	}
+	return stores.Point{Longitude: point.Longitude, Latitude: point.Latitude}
 }

@@ -3,10 +3,13 @@ package user
 import (
 	"context"
 	"github.com/i-Things/things/shared/ctxs"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic/system"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/zeromicro/go-zero/core/logx"
+	"golang.org/x/sync/errgroup"
 )
 
 type ResourceReadLogic struct {
@@ -24,35 +27,38 @@ func NewResourceReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Reso
 }
 
 func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, err error) {
-	menuInfo := make([]*types.MenuData, 0)
-	info, err := l.svcCtx.MenuRpc.MenuIndex(l.ctx, &sys.MenuIndexReq{
-		Role: ctxs.GetUserCtx(l.ctx).Role,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	for _, me := range info.List {
-		menuInfo = append(menuInfo, &types.MenuData{
-			ID:         me.Id,
-			Name:       me.Name,
-			ParentID:   me.ParentID,
-			Type:       me.Type,
-			Path:       me.Path,
-			Component:  me.Component,
-			Icon:       me.Icon,
-			Redirect:   me.Redirect,
-			CreateTime: me.CreateTime,
-			Order:      me.Order,
-			HideInMenu: me.HideInMenu,
+	var (
+		menuInfo []*types.MenuData
+		userInfo *types.UserInfo
+		wait     errgroup.Group
+	)
+	wait.Go(func() error {
+		defer utils.Recover(l.ctx)
+		info, err := l.svcCtx.MenuRpc.MenuIndex(l.ctx, &sys.MenuIndexReq{
+			Role: ctxs.GetUserCtx(l.ctx).Role,
 		})
-	}
-	userInfo, err := l.svcCtx.UserRpc.UserRead(l.ctx, &sys.UserReadReq{UserID: ctxs.GetUserCtx(l.ctx).UserID})
+		if err != nil {
+			return err
+		}
+		for _, me := range info.List {
+			menuInfo = append(menuInfo, system.ToMenuInfoApi(me))
+		}
+		return nil
+	})
+	wait.Go(func() error {
+		ui, err := l.svcCtx.UserRpc.UserRead(l.ctx, &sys.UserReadReq{UserID: ctxs.GetUserCtx(l.ctx).UserID})
+		if err != nil {
+			return err
+		}
+		userInfo = UserInfoToApi(ui)
+		return nil
+	})
+	err = wait.Wait()
 	if err != nil {
 		return nil, err
 	}
 	return &types.UserResourceReadResp{
 		Menu: menuInfo,
-		Info: UserInfoToApi(userInfo),
+		Info: userInfo,
 	}, nil
 }
