@@ -33,3 +33,15 @@ OssConf:
 Event:
   Nats:
     Url: nats://172.19.0.2:4222
+OssConf:
+  OssType: minio
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  AccessKeyID: root
+  AccessKeySecret: password
+  Location: 172.19.0.10:9000
+  CustomHost: /api/v1/oss
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000
+  UseSSL: false

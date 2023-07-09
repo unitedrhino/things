@@ -5,6 +5,7 @@ import (
 	"github.com/casbin/casbin/v2"
 	cas "github.com/i-Things/things/shared/casbin"
 	"github.com/i-Things/things/shared/clients"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/config"
 	"github.com/zeromicro/go-zero/core/stores/kv"
@@ -21,6 +22,7 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Database.DSN)
+	stores.InitConn(c.Database)
 	WxMiniProgram := clients.NewWxMiniProgram(context.Background(), c.WxMiniProgram, c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	UserID := utils.NewSnowFlake(nodeId)

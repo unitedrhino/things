@@ -46,3 +46,18 @@ func (s *RoleServer) RoleMenuUpdate(ctx context.Context, in *sys.RoleMenuUpdateR
 	l := rolelogic.NewRoleMenuUpdateLogic(ctx, s.svcCtx)
 	return l.RoleMenuUpdate(in)
 }
+
+func (s *RoleServer) RoleApiAuth(ctx context.Context, in *sys.RoleApiAuthReq) (*sys.Response, error) {
+	l := rolelogic.NewRoleApiAuthLogic(ctx, s.svcCtx)
+	return l.RoleApiAuth(in)
+}
+
+func (s *RoleServer) RoleApiMultiUpdate(ctx context.Context, in *sys.RoleApiMultiUpdateReq) (*sys.Response, error) {
+	l := rolelogic.NewRoleApiMultiUpdateLogic(ctx, s.svcCtx)
+	return l.RoleApiMultiUpdate(in)
+}
+
+func (s *RoleServer) RoleApiIndex(ctx context.Context, in *sys.RoleApiIndexReq) (*sys.RoleApiIndexResp, error) {
+	l := rolelogic.NewRoleApiIndexLogic(ctx, s.svcCtx)
+	return l.RoleApiIndex(in)
+}

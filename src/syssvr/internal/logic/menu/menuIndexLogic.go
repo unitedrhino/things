@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
+	"github.com/samber/lo"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -47,14 +48,13 @@ func (l *MenuIndexLogic) checkMissingParentIdMenuIndex(menuInfos []*relationDB.S
 	var MenuInfos []*relationDB.SysMenuInfo
 	missingParentIds := findMissingParentIds(menuInfos)
 	if len(missingParentIds) > 0 {
-		for k, _ := range missingParentIds {
-			menuInfo, err := l.MiDB.FindOne(l.ctx, k)
-			if err != nil {
-				l.Errorf("MenuIndex find menu_info err,menuIds:%d,err:%v", k, err)
-				continue
-			}
-			MenuInfos = append(MenuInfos, menuInfo)
+		menuIDs := lo.Keys(missingParentIds)
+		menuInfo, err := l.MiDB.FindByFilter(l.ctx, relationDB.MenuInfoFilter{MenuIds: menuIDs}, nil)
+		if err != nil {
+			l.Errorf("MenuIndex find menu_info err,menuIds:%d,err:%v", menuIDs, err)
+			return MenuInfos
 		}
+		MenuInfos = append(MenuInfos, menuInfo...)
 	}
 
 	return MenuInfos

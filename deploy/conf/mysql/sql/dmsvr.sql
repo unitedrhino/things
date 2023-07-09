@@ -77,8 +77,8 @@ CREATE TABLE if not exists `dm_product_schema`
 
 CREATE TABLE if not exists `dm_device_info` (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
-    `projectID`   bigint       NOT NULL DEFAULT 0 COMMENT '项目ID(雪花ID)',
-    `areaID`      bigint       NOT NULL DEFAULT 0 COMMENT '项目区域ID(雪花ID)',
+    `projectID`   bigint       NOT NULL DEFAULT 2 COMMENT '项目ID(雪花ID)',
+    `areaID`      bigint       NOT NULL DEFAULT 2 COMMENT '项目区域ID(雪花ID)',
     `productID`   char(11)     NOT NULL COMMENT '产品id',
     `deviceName`  varchar(100) NOT NULL COMMENT '设备名称',
     `deviceAlias` varchar(100) NOT NULL DEFAULT '' COMMENT '设备别名',
@@ -136,7 +136,7 @@ CREATE TABLE if not exists `dm_group_info`
 (
     `groupID`     bigint COMMENT '分组ID',
     `parentID`    bigint NOT NULL DEFAULT 0 COMMENT '父组ID 0-根组',
-    `projectID`   bigint       NOT NULL DEFAULT 0 COMMENT '项目ID(雪花ID)',
+    `projectID`   bigint       NOT NULL DEFAULT 2 COMMENT '项目ID(雪花ID)',
     `productID`   char(11)     NOT NULL DEFAULT '' COMMENT '产品id,为空则不限定分组内的产品类型',
     `groupName`   VARCHAR(100) NOT NULL COMMENT '分组名称',
     `desc` VARCHAR(200) DEFAULT '' COMMENT '描述',
@@ -155,7 +155,7 @@ CREATE TABLE if not exists `dm_group_device`
 (
     `id`          bigint       NOT NULL AUTO_INCREMENT,
     `groupID`     bigint NOT NULL COMMENT '分组ID',
-    `projectID`   bigint       NOT NULL DEFAULT 0 COMMENT '项目ID(雪花ID)',
+    `projectID`   bigint       NOT NULL DEFAULT 2 COMMENT '项目ID(雪花ID)',
     `productID`   char(11) NOT NULL COMMENT '产品id',
     `deviceName`  varchar(100) NOT NULL COMMENT '设备名称',
     `createdTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
