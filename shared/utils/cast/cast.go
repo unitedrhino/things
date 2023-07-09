@@ -22,6 +22,9 @@ func Int8Tobool(i int8) bool {
 
 func ToInt64(i any) int64 {
 	switch i.(type) {
+	case []uint8:
+		t := i.([]uint8)
+		return cast.ToInt64(string(t))
 	case sql.NullTime:
 		t := i.(sql.NullTime)
 		if t.Valid == false {

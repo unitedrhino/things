@@ -21,6 +21,7 @@ type UserInfoFilter struct {
 	Phone     string
 	Email     string
 	Accounts  []string //账号查询 非模糊查询
+	Wechat    string
 }
 
 func (p UserInfoRepo) accountsFilter(db *gorm.DB, accounts []string) *gorm.DB {
@@ -46,6 +47,9 @@ func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB 
 	}
 	if f.Email != "" {
 		db = db.Where("`email` like ?", "%"+f.Email+"%")
+	}
+	if f.Wechat != "" {
+		db = db.Where("`wechat` = ?", f.Wechat)
 	}
 	return db
 }
