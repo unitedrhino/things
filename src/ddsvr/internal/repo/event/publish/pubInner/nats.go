@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/nats-io/nats.go"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type (
@@ -82,5 +83,8 @@ func (n *NatsClient) PubConn(ctx context.Context, conn ConnType, info *devices.D
 
 func (n *NatsClient) publish(ctx context.Context, topic string, payload []byte) error {
 	err := n.client.Publish(topic, events.NewEventMsg(ctx, payload))
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s nats publish failure err:%v topic:%v", err, topic)
+	}
 	return err
 }
