@@ -39,13 +39,13 @@ const (
 	// TopicConnectStatus emqx 客户端上下线通知 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/system-topic.html#客户端上下线事件
 	TopicConnectStatus = ShareSubTopicPrefix + "$SYS/brokers/+/clients/#"
 
-	TopicThing   = ShareSubTopicPrefix + devices.TopicHeadThing + "/#"
-	TopicOta     = ShareSubTopicPrefix + devices.TopicHeadOta + "/#"
-	TopicConfig  = ShareSubTopicPrefix + devices.TopicHeadConfig + "/#"
-	TopicSDKLog  = ShareSubTopicPrefix + devices.TopicHeadLog + "/#"
-	TopicShadow  = ShareSubTopicPrefix + devices.TopicHeadShadow + "/#"
-	TopicGateway = ShareSubTopicPrefix + devices.TopicHeadGateway + "/#"
-	TopicExt     = ShareSubTopicPrefix + devices.TopicHeadExt + "/#"
+	TopicThing   = ShareSubTopicPrefix + devices.TopicHeadThing + "/up/#"
+	TopicOta     = ShareSubTopicPrefix + devices.TopicHeadOta + "/up/#"
+	TopicConfig  = ShareSubTopicPrefix + devices.TopicHeadConfig + "/up/#"
+	TopicSDKLog  = ShareSubTopicPrefix + devices.TopicHeadLog + "/up/#"
+	TopicShadow  = ShareSubTopicPrefix + devices.TopicHeadShadow + "/up/#"
+	TopicGateway = ShareSubTopicPrefix + devices.TopicHeadGateway + "/up/#"
+	TopicExt     = ShareSubTopicPrefix + devices.TopicHeadExt + "/up/#"
 )
 
 func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
