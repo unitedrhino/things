@@ -39,7 +39,11 @@ func (n *NatsClient) SubToDevMsg(handle Handle) error {
 			logx.WithContext(ctx).Infof("ddsvr.mqtt.SubDevMsg Handle:%s Type:%v Payload:%v",
 				info.Handle, info.Type, string(info.Payload))
 			defer span.End()
-			return handle(ctx).PublishToDev(info)
+			err := handle(ctx).PublishToDev(info)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.PublishToDev failure err:%v", err)
+			}
+			return err
 		}))
 	return err
 }
