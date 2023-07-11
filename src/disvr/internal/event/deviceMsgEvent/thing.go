@@ -332,16 +332,18 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		respMsg = nil
 	}
 
-	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
-		ProductID:  msg.ProductID,
-		Action:     action,
-		Timestamp:  time.Now(), // 操作时间
-		DeviceName: msg.DeviceName,
-		TranceID:   utils.TraceIdFromContext(l.ctx),
-		RequestID:  l.dreq.ClientToken,
-		Content:    string(msg.Payload),
-		Topic:      msg.Topic,
-		ResultType: errors.Fmt(err).GetCode(),
+	utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+		_ = l.svcCtx.HubLogRepo.Insert(ctx, &msgHubLog.HubLog{
+			ProductID:  msg.ProductID,
+			Action:     action,
+			Timestamp:  time.Now(), // 操作时间
+			DeviceName: msg.DeviceName,
+			TranceID:   utils.TraceIdFromContext(ctx),
+			RequestID:  l.dreq.ClientToken,
+			Content:    string(msg.Payload),
+			Topic:      msg.Topic,
+			ResultType: errors.Fmt(err).GetCode(),
+		})
 	})
 	return
 }
