@@ -38,23 +38,23 @@ ${productID}/${deviceName}/xxxxx	订阅和发布   //自定义 暂不做支持
 */
 
 const (
-	TopicHeadThing   = "$thing"
+	TopicHeadThing   = "$thing/up"
 	Thing            = "thing"
-	TopicHeadOta     = "$ota"
+	TopicHeadOta     = "$ota/up"
 	Ota              = "ota"
-	TopicHeadConfig  = "$config"
+	TopicHeadConfig  = "$config/up"
 	Config           = "config"
-	TopicHeadLog     = "$log"
+	TopicHeadLog     = "$log/up"
 	Log              = "log"
-	TopicHeadShadow  = "$shadow"
+	TopicHeadShadow  = "$shadow/up"
 	Shadow           = "shadow"
-	TopicHeadGateway = "$gateway"
+	TopicHeadGateway = "$gateway/up"
 	Gateway          = "gateway"
-	TopicHeadExt     = "$ext"
+	TopicHeadExt     = "$ext/up"
 	Ext              = "ext"
 )
 
-//设备通信流向
+// 设备通信流向
 type Direction int
 
 const (
