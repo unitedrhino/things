@@ -17,7 +17,7 @@ import (
 
 type (
 	MqttClient struct {
-		client mqtt.Client
+		client *clients.MqttClient
 	}
 	//登录登出消息
 	ConnectMsg struct {
@@ -60,63 +60,63 @@ func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
 
 func (d *MqttClient) SubDevMsg(handle Handle) error {
 
-	err := d.subDevMsg(handle)
+	err := d.subDevMsg(nil, handle)
 	if err != nil {
 		return err
 	}
-	clients.MqttSetOnConnectHandler = func() {
-		err := d.subDevMsg(handle)
+	clients.SetMqttSetOnConnectHandler(func(cli mqtt.Client) {
+		err := d.subDevMsg(cli, handle)
 		if err != nil {
-			logx.Errorf("%s.MqttSetOnConnectHandler.subDevMsg err:%v", utils.FuncName(), err)
+			logx.Errorf("%s.mqttSetOnConnectHandler.subDevMsg err:%v", utils.FuncName(), err)
 		}
-	}
+	})
 	return nil
 }
 
-func (d *MqttClient) subDevMsg(handle Handle) error {
+func (d *MqttClient) subDevMsg(cli mqtt.Client, handle Handle) error {
 	logx.Infof("%s", utils.FuncName())
-	err := d.subscribeWithFunc(TopicConnectStatus, d.subscribeConnectStatus(handle))
+	err := d.subscribeWithFunc(cli, TopicConnectStatus, d.subscribeConnectStatus(handle))
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicThing, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicThing, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicConfig, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicConfig, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicOta, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicOta, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicSDKLog, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicSDKLog, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicShadow, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicShadow, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicGateway, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicGateway, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
 
-	err = d.subscribeWithFunc(TopicExt, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicExt, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
@@ -167,8 +167,8 @@ func (d *MqttClient) subscribeConnectStatus(handle Handle) func(ctx context.Cont
 
 }
 
-func (d *MqttClient) subscribeWithFunc(topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {
-	return d.client.Subscribe(topic,
+func (d *MqttClient) subscribeWithFunc(cli mqtt.Client, topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {
+	return d.client.Subscribe(cli, topic,
 		1, func(client mqtt.Client, message mqtt.Message) {
 			ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 			defer cancel()
@@ -182,5 +182,5 @@ func (d *MqttClient) subscribeWithFunc(topic string, handle func(ctx context.Con
 			logx.WithContext(ctx).WithDuration(duration).Infof(
 				"subscribeWithFunc.Subscribe.publish topic:%v message:%v err:%v",
 				message.Topic(), string(message.Payload()), err)
-		}).Error()
+		})
 }

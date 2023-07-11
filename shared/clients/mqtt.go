@@ -3,6 +3,8 @@ package clients
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/i-Things/things/shared/errors"
+	"math/rand"
 	"net/url"
 	"os"
 	"sync"
@@ -17,31 +19,67 @@ import (
 
 var (
 	mqttInitOnce sync.Once
-	mqttClient   mqtt.Client
-	// MqttSetOnConnectHandler 如果会话断开可以通过该回调函数来重新订阅消息
+	mqttClient   *MqttClient
+	// mqttSetOnConnectHandler 如果会话断开可以通过该回调函数来重新订阅消息
 	//不使用mqtt的clean session是因为会话保持期间共享订阅也会给离线的客户端,这会导致在线的客户端丢失消息
-	MqttSetOnConnectHandler func()
+	mqttSetOnConnectHandler func(cli mqtt.Client)
 )
 
-func NewMqttClient(conf *conf.MqttConf) (mc mqtt.Client, err error) {
+type MqttClient struct {
+	clients []mqtt.Client
+}
+
+func NewMqttClient(conf *conf.MqttConf) (mcs *MqttClient, err error) {
 	mqttInitOnce.Do(func() {
-		for i := 3; i > 0; i-- {
-			mc, err = initMqtt(conf)
-			if err != nil { //出现并发情况的时候可能iThings的http还没启动完毕
-				logx.Errorf("mqtt 连接失败 重试剩余次数:%v", i-1)
-				time.Sleep(time.Second)
-				continue
+		var clients []mqtt.Client
+		for len(clients) < conf.ConnNum {
+			var (
+				mc mqtt.Client
+			)
+			for i := 3; i > 0; i-- {
+				mc, err = initMqtt(conf)
+				if err != nil { //出现并发情况的时候可能iThings的http还没启动完毕
+					logx.Errorf("mqtt 连接失败 重试剩余次数:%v", i-1)
+					time.Sleep(time.Second)
+					continue
+				}
+				break
 			}
-			break
+			if err != nil {
+				logx.Errorf("mqtt 连接失败 conf:%#v  err:%v", conf, err)
+				os.Exit(-1)
+			}
+			clients = append(clients, mc)
+			var cli = MqttClient{clients: clients}
+			mqttClient = &cli
 		}
-		if err != nil {
-			logx.Errorf("mqtt 连接失败 conf:%#v  err:%v", conf, err)
-			os.Exit(-1)
-		}
-		mqttClient = mc
 	})
 	return mqttClient, err
 }
+
+func SetMqttSetOnConnectHandler(f func(cli mqtt.Client)) {
+	mqttSetOnConnectHandler = f
+}
+
+func (m MqttClient) Subscribe(cli mqtt.Client, topic string, qos byte, callback mqtt.MessageHandler) error {
+	var clients = m.clients
+	if cli != nil {
+		clients = []mqtt.Client{cli}
+	}
+	for _, c := range clients {
+		err := c.Subscribe(topic, qos, callback).Error()
+		if err != nil {
+			return errors.System.AddDetail(err)
+		}
+	}
+	return nil
+}
+
+func (m MqttClient) Publish(topic string, qos byte, retained bool, payload interface{}) error {
+	id := rand.Intn(len(m.clients))
+	return m.clients[id].Publish(topic, qos, retained, payload).Error()
+}
+
 func initMqtt(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 	opts := mqtt.NewClientOptions()
 	for _, broker := range conf.Brokers {
@@ -57,8 +95,8 @@ func initMqtt(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 		SetPassword(conf.Pass).SetAutoReconnect(true).SetConnectRetry(true)
 	opts.SetOnConnectHandler(func(client mqtt.Client) {
 		logx.Info("mqtt client Connected")
-		if MqttSetOnConnectHandler != nil {
-			MqttSetOnConnectHandler()
+		if mqttSetOnConnectHandler != nil {
+			mqttSetOnConnectHandler(client)
 		}
 	})
 	opts.SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
