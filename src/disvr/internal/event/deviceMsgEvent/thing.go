@@ -51,6 +51,9 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
+	if !errors.Cmp(err, errors.OK) {
+		l.Errorf("%s.DeviceResp err:%v, msg:%v", utils.FuncName(), err, msg)
+	}
 	resp := &deviceMsg.CommonMsg{
 		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
 		ClientToken: l.dreq.ClientToken,
@@ -91,16 +94,19 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
-	for identifier, param := range paramValues {
-		//应用事件通知-设备物模型属性上报通知 ↓↓↓
-		err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, application.PropertyReport{
-			Device: core, Timestamp: timeStamp.UnixMilli(),
-			Identifier: identifier, Param: param,
-		})
-		if err != nil {
-			l.Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
+	ctx := utils.CopyContext(l.ctx)
+	utils.Go(ctx, func() {
+		for identifier, param := range paramValues {
+			//应用事件通知-设备物模型属性上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, application.PropertyReport{
+				Device: core, Timestamp: timeStamp.UnixMilli(),
+				Identifier: identifier, Param: param,
+			})
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
+			}
 		}
-	}
+	})
 
 	//插入多条设备物模型属性数据
 	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
