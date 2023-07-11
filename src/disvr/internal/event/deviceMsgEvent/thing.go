@@ -112,7 +112,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
-		return l.DeviceResp(msg, errors.Database, nil), err
+		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 	}
 
 	return l.DeviceResp(msg, errors.OK, nil), nil
@@ -130,7 +130,7 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 	if err != nil {
 		l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
 			utils.FuncName(), dmDeviceInfoReq.ProductID, dmDeviceInfoReq.DeviceName, err)
-		return l.DeviceResp(msg, errors.Database, nil), err
+		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 	}
 
 	return l.DeviceResp(msg, errors.OK, nil), nil
@@ -158,7 +158,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, shadow.ToValues(shadows, l.schema.Property), time.Now())
 			if err != nil {
 				l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
-				return l.DeviceResp(msg, errors.Database, nil), err
+				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 			}
 			now := time.Now()
 			for _, v := range shadows {
@@ -167,7 +167,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 			err = sr.MultiUpdate(l.ctx, shadows)
 			if err != nil {
 				l.Errorf("%s.MultiUpdate err=%+v", utils.FuncName(), err)
-				return l.DeviceResp(msg, errors.Database, nil), err
+				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 			}
 		}
 	}
@@ -271,7 +271,7 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	err = l.repo.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
 		l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
-		return l.DeviceResp(msg, errors.Database, nil), errors.Database.AddDetail(err)
+		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), errors.Database.AddDetail(err)
 	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
