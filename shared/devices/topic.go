@@ -38,19 +38,19 @@ ${productID}/${deviceName}/xxxxx	订阅和发布   //自定义 暂不做支持
 */
 
 const (
-	TopicHeadThing   = "$thing/up"
+	TopicHeadThing   = "$thing"
 	Thing            = "thing"
-	TopicHeadOta     = "$ota/up"
+	TopicHeadOta     = "$ota"
 	Ota              = "ota"
-	TopicHeadConfig  = "$config/up"
+	TopicHeadConfig  = "$config"
 	Config           = "config"
-	TopicHeadLog     = "$log/up"
+	TopicHeadLog     = "$log"
 	Log              = "log"
-	TopicHeadShadow  = "$shadow/up"
+	TopicHeadShadow  = "$shadow"
 	Shadow           = "shadow"
-	TopicHeadGateway = "$gateway/up"
+	TopicHeadGateway = "$gateway"
 	Gateway          = "gateway"
-	TopicHeadExt     = "$ext/up"
+	TopicHeadExt     = "$ext"
 	Ext              = "ext"
 )
 
