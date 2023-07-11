@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/eventBus"
+	"github.com/i-Things/things/shared/stores"
 	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
 	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
@@ -51,6 +52,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceInteract deviceinteract.DeviceInteract
 		deviceMsg      devicemsg.DeviceMsg
 	)
+	stores.InitConn(c.Database)
 	store := kv.NewStore(c.CacheRedis)
 	sceneDevice := cache.NewSceneDeviceRepo(relationDB.NewSceneInfoRepo(context.TODO()))
 	err := sceneDevice.Init(context.TODO())
