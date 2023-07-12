@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/i-Things/things/shared/ctxs"
+	"github.com/i-Things/things/shared/utils"
 
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -25,24 +26,29 @@ func NatsSubWithType[msgType any](handle func(ctx context.Context, msgIn msgType
 
 func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 	return func(msg *nats.Msg) {
-		startTime := timex.Now()
-		duration := timex.Since(startTime)
-		msg.Ack()
-		emsg := GetEventMsg(msg.Data)
-		if emsg == nil {
-			logx.Error(msg.Subject, string(msg.Data))
-			return
-		}
-		ctx := emsg.GetCtx()
-		ctx, span := ctxs.StartSpan(ctx, msg.Subject, "")
-		defer span.End()
-		err := handle(ctx, emsg.GetData(), msg)
-		if err != nil {
-			logx.WithContext(ctx).WithDuration(duration).Errorf("nats subscription|subject:%v,body:%v,err:%v",
-				msg.Subject, string(emsg.GetData()), err)
-		} else {
-			logx.WithContext(ctx).WithDuration(duration).Infof("nats subscription|subject:%v",
-				msg.Subject)
-		}
+		go func() {
+			var ctx context.Context
+			utils.Recover(ctx)
+			startTime := timex.Now()
+			msg.Ack()
+			emsg := GetEventMsg(msg.Data)
+			if emsg == nil {
+				logx.Error(msg.Subject, string(msg.Data))
+				return
+			}
+			ctx = emsg.GetCtx()
+			ctx, span := ctxs.StartSpan(ctx, msg.Subject, "")
+			defer span.End()
+			err := handle(ctx, emsg.GetData(), msg)
+			duration := timex.Since(startTime)
+			if err != nil {
+				logx.WithContext(ctx).WithDuration(duration).Errorf("nats subscription|subject:%v,body:%v,err:%v",
+					msg.Subject, string(emsg.GetData()), err)
+			} else {
+				logx.WithContext(ctx).WithDuration(duration).Infof("nats subscription|subject:%v",
+					msg.Subject)
+			}
+		}()
+
 	}
 }
