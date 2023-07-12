@@ -85,6 +85,7 @@ func main() {
 	for true {
 		time.Sleep(time.Second * 5)
 		var unSubMsgCount int
+		var before = time.Now
 		func() {
 			msgRwMutex.RLock()
 			defer msgRwMutex.RUnlock()
@@ -94,7 +95,8 @@ func main() {
 		subRate := subCount.Load() - sub
 		pub = pubCount.Load()
 		sub = subCount.Load()
-		logx.Infof("errCount:%v pubCount:%v subCount:%v unSubMsgCount:%v delay:%vms pubRate:%v  subRate:%v",
+		useTime := time.Now().Sub(before())
+		logx.WithDuration(useTime).Infof("errCount:%v pubCount:%v subCount:%v unSubMsgCount:%v delay:%.2fms pubRate:%v  subRate:%v",
 			errCount.Load(), pubCount.Load(), subCount.Load(), unSubMsgCount, delay, float64(pubRate)/5, float64(subRate)/5)
 	}
 }
@@ -115,6 +117,7 @@ func Sub(id int64, mc mqtt.Client) {
 		var resp CommonMsg
 		var ok bool
 		var t time.Time
+		var now = time.Now()
 		json.Unmarshal(message.Payload(), &resp)
 		func() {
 			msgRwMutex.Lock()
@@ -122,7 +125,7 @@ func Sub(id int64, mc mqtt.Client) {
 			t, ok = msgMap[resp.ClientToken]
 			if ok {
 				delete(msgMap, resp.ClientToken)
-				delay = (delay + float64(time.Now().Sub(t).Milliseconds())) / 2
+				delay = delay*0.8 + float64(now.Sub(t).Milliseconds())*0.2
 			}
 		}()
 		if !ok { //已经获取过了或不是这里发的
@@ -153,7 +156,8 @@ func Pub(id int64, mc mqtt.Client) {
 	for range t.C {
 		i++
 		tk, _ := uuid.GenerateUUID()
-		payload := fmt.Sprintf(pushPayload, tk, i, time.Now().Format("2006-01-02 15:04"))
+		tk = fmt.Sprintf("%s:%d", tk, i)
+		payload := fmt.Sprintf(pushPayload, tk, i, time.Now().Format("2006-01-02 15:04:05.000"))
 		err := mc.Publish(topic, 1, false, payload).WaitTimeout(time.Second * 5)
 		if err != true {
 			logx.Errorf("publish error err:%v id:%v", err, id)
