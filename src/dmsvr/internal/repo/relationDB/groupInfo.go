@@ -27,19 +27,19 @@ func NewGroupInfoRepo(in any) *GroupInfoRepo {
 func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.WithProduct {
-		db = db.Preload("ProductInfo")
+		db = db.Preload("product_info")
 	}
 	if f.GroupID != 0 {
-		db = db.Where("`groupID`=?", f.GroupID)
+		db = db.Where("group_id=?", f.GroupID)
 	}
 	if len(f.GroupNames) != 0 {
-		db = db.Where("`groupName` in ?", f.GroupNames)
+		db = db.Where("group_name in ?", f.GroupNames)
 	}
 	if f.ParentID != 0 {
-		db = db.Where("`parentID`=?", f.ParentID)
+		db = db.Where("parent_id=?", f.ParentID)
 	}
 	if f.GroupName != "" {
-		db = db.Where("`groupName` like ?", "%"+f.GroupName+"%")
+		db = db.Where("group_name like ?", "%"+f.GroupName+"%")
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {
@@ -82,7 +82,7 @@ func (p GroupInfoRepo) CountByFilter(ctx context.Context, f GroupInfoFilter) (si
 }
 
 func (g GroupInfoRepo) Update(ctx context.Context, data *DmGroupInfo) error {
-	err := g.db.WithContext(ctx).Where("`groupID` = ?", data.GroupID).Save(data).Error
+	err := g.db.WithContext(ctx).Where("group_id = ?", data.GroupID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 

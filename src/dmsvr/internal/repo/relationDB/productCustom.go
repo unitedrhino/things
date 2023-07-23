@@ -21,7 +21,7 @@ func (p ProductCustomRepo) Insert(ctx context.Context, data *DmProductCustom) er
 
 func (p ProductCustomRepo) FindOneByProductID(ctx context.Context, productID string) (*DmProductCustom, error) {
 	var result DmProductCustom
-	err := p.db.WithContext(ctx).Where("productID = ?", productID).First(&result).Error
+	err := p.db.WithContext(ctx).Where("product_id = ?", productID).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

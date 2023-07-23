@@ -38,15 +38,15 @@ func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []
 	scope := func(db *gorm.DB) *gorm.DB {
 		for i, d := range data {
 			if i == 0 {
-				db = db.Where("`productID` = ? and `deviceName` = ?", d.ProductID, d.DeviceName)
+				db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
 				continue
 			}
-			db = db.Or("`productID` = ? and `deviceName` = ?", d.ProductID, d.DeviceName)
+			db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
 		}
 		return db
 	}
 	db := m.db.WithContext(ctx).Model(&DmGroupDevice{})
-	db = db.Where("`groupID`=?", groupID).Where(scope(db))
+	db = db.Where("group_id=?", groupID).Where(scope(db))
 	err := db.Delete(&DmGroupDevice{}).Error
 	return stores.ErrFmt(err)
 }
@@ -54,17 +54,17 @@ func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []
 func (p GroupDeviceRepo) fmtFilter(ctx context.Context, f GroupDeviceFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.WithProduct {
-		db = db.Preload("ProductInfo")
+		db = db.Preload("product_info")
 	}
 	//业务过滤条件
 	if f.GroupID != 0 {
-		db = db.Where("`groupID`=?", f.GroupID)
+		db = db.Where("group_id=?", f.GroupID)
 	}
 	if f.ProductID != "" {
-		db = db.Where("`productID`=?", f.ProductID)
+		db = db.Where("product_id=?", f.ProductID)
 	}
 	if f.DeviceName != "" {
-		db = db.Where("`deviceName`=?", f.DeviceName)
+		db = db.Where("device_name=?", f.DeviceName)
 	}
 	return db
 }
