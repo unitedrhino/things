@@ -23,7 +23,7 @@ type RoleMenuFilter struct {
 func (p RoleMenuRepo) fmtFilter(ctx context.Context, f RoleMenuFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if len(f.RoleIDs) != 0 {
-		db = db.Where("`roleID` in ?", f.RoleIDs)
+		db = db.Where("`role_id` in ?", f.RoleIDs)
 	}
 	return db
 }

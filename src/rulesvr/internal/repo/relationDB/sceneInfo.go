@@ -31,7 +31,7 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f scene.InfoFilter) *gorm.
 		db = db.Where("name like ?", "%"+f.Name+"%")
 	}
 	if f.TriggerType != "" {
-		db = db.Where("triggerType = ?", f.TriggerType)
+		db = db.Where("trigger_type = ?", f.TriggerType)
 	}
 	if f.Status != 0 {
 		db = db.Where("status = ?", f.Status)
@@ -39,7 +39,7 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f scene.InfoFilter) *gorm.
 	if f.AlarmID != 0 {
 		table := RuleSceneInfo{}
 		db = db.Joins(fmt.Sprintf("left join `rule_alarm_scene` as ras on ras.sceneID=%s.id", table.TableName()))
-		db = db.Where("ras.alarmID=?", f.AlarmID)
+		db = db.Where("ras.alarm_id=?", f.AlarmID)
 	}
 	return db
 }
@@ -79,7 +79,7 @@ func (p SceneInfoRepo) CountByFilter(ctx context.Context, f scene.InfoFilter) (s
 }
 
 func (p SceneInfoRepo) Update(ctx context.Context, data *scene.Info) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(SceneInfoDoToPo(data)).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(SceneInfoDoToPo(data)).Error
 	return stores.ErrFmt(err)
 }
 
@@ -90,12 +90,12 @@ func (p SceneInfoRepo) DeleteByFilter(ctx context.Context, f scene.InfoFilter) e
 }
 
 func (p SceneInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleSceneInfo{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&RuleSceneInfo{}).Error
 	return stores.ErrFmt(err)
 }
 func (p SceneInfoRepo) FindOne(ctx context.Context, id int64) (*scene.Info, error) {
 	var result RuleSceneInfo
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -104,7 +104,7 @@ func (p SceneInfoRepo) FindOne(ctx context.Context, id int64) (*scene.Info, erro
 
 func (p SceneInfoRepo) FindOneByName(ctx context.Context, name string) (*scene.Info, error) {
 	var result RuleSceneInfo
-	err := p.db.WithContext(ctx).Where("`name` = ?", name).First(&result).Error
+	err := p.db.WithContext(ctx).Where("name = ?", name).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

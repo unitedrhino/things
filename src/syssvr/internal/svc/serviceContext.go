@@ -8,8 +8,9 @@ import (
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/config"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 type ServiceContext struct {
@@ -21,13 +22,53 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	conn := sqlx.NewMysql(c.Database.DSN)
+	//conn := sqlx.NewMysql(c.Database.DSN)
 	stores.InitConn(c.Database)
+
+	// 自动迁移数据库
+	db := stores.GetCommonConn(context.Background())
+	errdb := db.AutoMigrate(&relationDB.SysUserInfo{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+	errdb = db.AutoMigrate(&relationDB.SysRoleInfo{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+	errdb = db.AutoMigrate(&relationDB.SysRoleMenu{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+	errdb = db.AutoMigrate(&relationDB.SysMenuInfo{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+	errdb = db.AutoMigrate(&relationDB.SysLoginLog{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+	errdb = db.AutoMigrate(&relationDB.SysOperLog{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+	errdb = db.AutoMigrate(&relationDB.SysApiInfo{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+	errdb = db.AutoMigrate(&relationDB.SysApiAuth{})
+
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+
 	WxMiniProgram := clients.NewWxMiniProgram(context.Background(), c.WxMiniProgram, c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	UserID := utils.NewSnowFlake(nodeId)
-	db, _ := conn.RawDB()
-	ca := cas.NewCasbinWithRedisWatcher(db, c.Database.DBType, c.CacheRedis[0].RedisConf)
+	dbRaw, err := db.DB()
+	if err != nil {
+		logx.Error("sys failed to  database err: %v", err)
+	}
+	ca := cas.NewCasbinWithRedisWatcher(dbRaw, c.Database.DBType, c.CacheRedis[0].RedisConf)
 	store := kv.NewStore(c.CacheRedis)
 
 	return &ServiceContext{

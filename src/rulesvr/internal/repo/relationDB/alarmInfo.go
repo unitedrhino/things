@@ -41,7 +41,7 @@ func (p AlarmInfoRepo) fmtFilter(ctx context.Context, f AlarmInfoFilter) *gorm.D
 	if f.SceneID != 0 {
 		table := RuleAlarmInfo{}
 		db = db.Joins(fmt.Sprintf("left join `rule_alarm_scene` as ras on ras.alarmID=%s.id", table.TableName()))
-		db = db.Where("ras.sceneID=?", f.SceneID)
+		db = db.Where("ras.scene_id=?", f.SceneID)
 	}
 	return db
 }
@@ -80,7 +80,7 @@ func (p AlarmInfoRepo) CountByFilter(ctx context.Context, f AlarmInfoFilter) (si
 }
 
 func (p AlarmInfoRepo) Update(ctx context.Context, data *RuleAlarmInfo) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -91,12 +91,12 @@ func (p AlarmInfoRepo) DeleteByFilter(ctx context.Context, f AlarmInfoFilter) er
 }
 
 func (p AlarmInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmInfo{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&RuleAlarmInfo{}).Error
 	return stores.ErrFmt(err)
 }
 func (p AlarmInfoRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmInfo, error) {
 	var result RuleAlarmInfo
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

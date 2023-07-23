@@ -28,13 +28,13 @@ type LoginLogFilter struct {
 func (p LoginLogRepo) fmtFilter(ctx context.Context, f LoginLogFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.IpAddr != "" {
-		db = db.Where("`ipAddr`= ?", f.IpAddr)
+		db = db.Where("`ip_addr`= ?", f.IpAddr)
 	}
 	if f.LoginLocation != "" {
-		db = db.Where("`loginLocation` like ?", "%"+f.LoginLocation+"%")
+		db = db.Where("`login_location` like ?", "%"+f.LoginLocation+"%")
 	}
 	if f.Data != nil && f.Data.Start != "" && f.Data.End != "" {
-		db = db.Where("`createdTime` >= ? and `createdTime` <= ?", f.Data.Start, f.Data.End)
+		db = db.Where("`created_time` >= ? and `created_time` <= ?", f.Data.Start, f.Data.End)
 	}
 	return db
 }
