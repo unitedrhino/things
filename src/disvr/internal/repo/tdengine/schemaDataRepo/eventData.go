@@ -28,13 +28,13 @@ func (d *SchemaDataRepo) InsertEventData(ctx context.Context, productID string,
 
 func (d *SchemaDataRepo) fmtSql(f msgThing.FilterOpt, sql sq.SelectBuilder) sq.SelectBuilder {
 	if f.ProductID != "" {
-		sql = sql.Where("`productID`=? ", f.ProductID)
+		sql = sql.Where("product_id=? ", f.ProductID)
 	}
 	if len(f.DeviceNames) != 0 {
 		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", stores.ArrayToSql(f.DeviceNames)))
 	}
 	if f.DataID != "" {
-		sql = sql.Where("`eventID`=? ", f.DataID)
+		sql = sql.Where("event_id=? ", f.DataID)
 	}
 	if len(f.Types) != 0 {
 		sql = sql.Where(fmt.Sprintf("`eventType` in (%v)", stores.ArrayToSql(f.Types)))

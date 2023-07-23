@@ -23,9 +23,9 @@ func NewProductRemoteConfigRepo(in any) *ProductRemoteConfigRepo {
 
 func (p ProductRemoteConfigRepo) fmtFilter(ctx context.Context, f RemoteConfigFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	db = db.Order("`createdTime` desc")
+	db = db.Order("created_time desc")
 	if f.ProductID != "" {
-		db = db.Where("`productID`=?", f.ProductID)
+		db = db.Where("product_id=?", f.ProductID)
 	}
 	return db
 }
@@ -57,7 +57,7 @@ func (p ProductRemoteConfigRepo) FindOneByFilter(ctx context.Context, f RemoteCo
 }
 
 func (p ProductRemoteConfigRepo) Update(ctx context.Context, data *DmProductRemoteConfig) error {
-	err := p.db.WithContext(ctx).Where("productID = ?", data.ProductID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("product_id = ?", data.ProductID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 

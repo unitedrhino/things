@@ -12,13 +12,13 @@ import (
 
 func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter msgHubLog.HubFilter) sq.SelectBuilder {
 	if len(filter.ProductID) != 0 {
-		sql = sql.Where("`productID`=?", filter.ProductID)
+		sql = sql.Where("product_id=?", filter.ProductID)
 	}
 	if len(filter.DeviceName) != 0 {
-		sql = sql.Where("`deviceName`=?", filter.DeviceName)
+		sql = sql.Where("device_name=?", filter.DeviceName)
 	}
 	if len(filter.Content) != 0 {
-		sql = sql.Where("`content`=?", filter.Content)
+		sql = sql.Where("content=?", filter.Content)
 	}
 	if len(filter.RequestID) != 0 {
 		sql = sql.Where("`requestID`=?", filter.RequestID)
