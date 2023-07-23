@@ -8,19 +8,19 @@ import (
 
 // 示例
 type RuleExample struct {
-	ID int64 `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"` // id编号
+	ID int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
 }
 
 // 规则引擎-场景联动信息表
 type RuleSceneInfo struct {
-	ID          int64         `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"` // id
-	Name        string        `gorm:"column:name;type:varchar(128)"`                        // 场景名称
-	TriggerType string        `gorm:"column:triggerType;type:varchar(24);NOT NULL"`         // 触发器类型 device: 设备触发 timer: 定时触发 manual:手动触发
-	Trigger     scene.Trigger `gorm:"column:trigger;type:json;serializer:json"`             // 触发器内容-根据触发器类型改变
-	When        scene.Terms   `gorm:"column:when;type:json;serializer:json"`                // 触发条件
-	Then        scene.Actions `gorm:"column:then;type:json;serializer:json"`                // 满足条件时执行的动作
-	Desc        string        `gorm:"column:desc;type:varchar(512)"`                        // 描述
-	Status      int64         `gorm:"column:status;type:tinyint(1);default:1"`              // 状态  1:启用,2:禁用
+	ID          int64         `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	Name        string        `gorm:"column:name;type:varchar(128)"`
+	TriggerType string        `gorm:"column:trigger_type;type:varchar(24);NOT NULL"`
+	Trigger     scene.Trigger `gorm:"column:trigger;type:json;serializer:json"`
+	When        scene.Terms   `gorm:"column:when;type:json;serializer:json"`
+	Then        scene.Actions `gorm:"column:then;type:json;serializer:json"`
+	Desc        string        `gorm:"column:desc;type:varchar(512)"`
+	Status      int64         `gorm:"column:status;type:BIGINT;default:1"`
 	stores.Time
 }
 
@@ -30,9 +30,9 @@ func (m *RuleSceneInfo) TableName() string {
 
 // 告警配置与场景关联表
 type RuleAlarmScene struct {
-	ID      int64 `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"` // id编号
-	AlarmID int64 `gorm:"column:alarmID;type:bigint(20);NOT NULL"`              // 告警配置ID
-	SceneID int64 `gorm:"column:sceneID;type:int(11);NOT NULL"`                 // 场景ID
+	ID      int64 `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	AlarmID int64 `gorm:"column:alarm_id;type:BIGINT;NOT NULL"`
+	SceneID int64 `gorm:"column:scene_id;type:BIGINT;NOT NULL"`
 	stores.Time
 }
 
@@ -42,11 +42,11 @@ func (m *RuleAlarmScene) TableName() string {
 
 // 告警配置信息表
 type RuleAlarmInfo struct {
-	ID     int64  `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"` // 编号
-	Name   string `gorm:"column:name;type:varchar(100);NOT NULL"`               // 告警配置名称
-	Desc   string `gorm:"column:desc;type:varchar(100);NOT NULL"`               // 告警配置说明
-	Level  int64  `gorm:"column:level;type:tinyint(1);NOT NULL"`                // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-	Status int64  `gorm:"column:status;type:tinyint(1);default:1"`              // 状态  1:启用,2:禁用
+	ID     int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	Name   string `gorm:"column:name;type:VARCHAR(100);NOT NULL"`
+	Desc   string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`
+	Level  int64  `gorm:"column:level;type:SMALLINT;NOT NULL"`   // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+	Status int64  `gorm:"column:status;type:SMALLINT;default:1"` // 状态 1:启用,2:禁用
 	stores.Time
 }
 
@@ -56,17 +56,17 @@ func (m *RuleAlarmInfo) TableName() string {
 
 // 告警记录表
 type RuleAlarmRecord struct {
-	ID          int64     `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`                // 编号
-	AlarmID     int64     `gorm:"column:alarmID;type:bigint(20);NOT NULL"`                             // 告警记录ID
-	TriggerType int64     `gorm:"column:triggerType;type:int(11);NOT NULL"`                            // 触发类型(设备触发1,其他2)
-	ProductID   string    `gorm:"column:productID;type:char(11);NOT NULL"`                             // 触发产品id
-	DeviceName  string    `gorm:"column:deviceName;type:varchar(100);NOT NULL"`                        // 触发设备名称
-	Level       int64     `gorm:"column:level;type:tinyint(1);NOT NULL"`                               // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-	SceneName   string    `gorm:"column:sceneName;type:varchar(100);NOT NULL"`                         // 场景名称
-	SceneID     int64     `gorm:"column:sceneID;type:int(11);NOT NULL"`                                // 场景ID
-	DealState   int64     `gorm:"column:dealState;type:tinyint(1);default:1;NOT NULL"`                 // 告警记录状态（1无告警 2告警中 3已处理）
-	LastAlarm   time.Time `gorm:"column:lastAlarm;type:datetime;NOT NULL"`                             // 最新告警时间
-	CreatedTime time.Time `gorm:"column:createdTime;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL"` // 告警时间
+	ID          int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	AlarmID     int64     `gorm:"column:alarm_id;type:BIGINT;NOT NULL"`
+	TriggerType int64     `gorm:"column:trigger_type;type:BIGINT;NOT NULL"`
+	ProductID   string    `gorm:"column:product_id;type:char(11);NOT NULL"`
+	DeviceName  string    `gorm:"column:device_name;type:varchar(100);NOT NULL"`
+	Level       int64     `gorm:"column:level;type:SMALLINT;NOT NULL"`
+	SceneName   string    `gorm:"column:scene_name;type:varchar(100);NOT NULL"`
+	SceneID     int64     `gorm:"column:scene_id;type:BIGINT;NOT NULL"`
+	DealState   int64     `gorm:"column:deal_state;type:SMALLINT;default:1;NOT NULL"`
+	LastAlarm   time.Time `gorm:"column:last_alarm;type:timestamp without time zone;NOT NULL"`
+	CreatedTime time.Time `gorm:"column:created_time;type:timestamp without time zone;default:CURRENT_TIMESTAMP;NOT NULL"`
 }
 
 func (m *RuleAlarmRecord) TableName() string {
@@ -75,13 +75,13 @@ func (m *RuleAlarmRecord) TableName() string {
 
 // 告警流水详情表
 type RuleAlarmLog struct {
-	ID            int64     `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`                // 编号
-	AlarmRecordID int64     `gorm:"column:alarmRecordID;type:bigint(20);NOT NULL"`                       // 告警记录ID
-	Serial        string    `gorm:"column:serial;type:varchar(1024);NOT NULL"`                           // 告警流水
-	SceneName     string    `gorm:"column:sceneName;type:varchar(100);NOT NULL"`                         // 场景名称
-	SceneID       int64     `gorm:"column:sceneID;type:int(11);NOT NULL"`                                // 场景ID
-	Desc          string    `gorm:"column:desc;type:varchar(1024);NOT NULL"`                             // 告警说明
-	CreatedTime   time.Time `gorm:"column:createdTime;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL"` // 告警时间
+	ID            int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	AlarmRecordID int64     `gorm:"column:alarm_record_id;type:BIGINT;NOT NULL"`
+	Serial        string    `gorm:"column:serial;type:varchar(1024);NOT NULL"`
+	SceneName     string    `gorm:"column:scene_name;type:varchar(100);NOT NULL"`
+	SceneID       int64     `gorm:"column:scene_id;type:BIGINT;NOT NULL"`
+	Desc          string    `gorm:"column:desc;type:varchar(1024);NOT NULL"`
+	CreatedTime   time.Time `gorm:"column:created_time;type:timestamp without time zone;default:CURRENT_TIMESTAMP;NOT NULL"`
 }
 
 func (m *RuleAlarmLog) TableName() string {
@@ -90,12 +90,12 @@ func (m *RuleAlarmLog) TableName() string {
 
 // 告警处理记录表
 type RuleAlarmDealRecord struct {
-	ID            int64     `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`                // 编号
-	AlarmRecordID int64     `gorm:"column:alarmRecordID;type:bigint(20);NOT NULL"`                       // 告警记录ID
-	Result        string    `gorm:"column:result;type:varchar(1024);NOT NULL"`                           // 告警处理结果
-	Type          int64     `gorm:"column:type;type:tinyint(1);NOT NULL"`                                // 告警处理类型（1人工 2系统）
-	AlarmTime     time.Time `gorm:"column:alarmTime;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL"`   // 告警时间
-	CreatedTime   time.Time `gorm:"column:createdTime;type:datetime;default:CURRENT_TIMESTAMP;NOT NULL"` // 告警处理时间
+	ID            int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	AlarmRecordID int64     `gorm:"column:alarm_record_id;type:BIGINT;NOT NULL"`
+	Result        string    `gorm:"column:result;type:varchar(1024);NOT NULL"`
+	Type          int64     `gorm:"column:type;type:SMALLINT;NOT NULL"`
+	AlarmTime     time.Time `gorm:"column:alarm_time;type:timestamp without time zone;default:CURRENT_TIMESTAMP;NOT NULL"`
+	CreatedTime   time.Time `gorm:"column:created_time;type:timestamp without time zone;default:CURRENT_TIMESTAMP;NOT NULL"`
 }
 
 func (m *RuleAlarmDealRecord) TableName() string {
