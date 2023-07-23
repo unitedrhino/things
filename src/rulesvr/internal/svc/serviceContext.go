@@ -57,14 +57,36 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	// 自动迁移数据库
 	db := stores.GetCommonConn(context.Background())
 	errdb := db.AutoMigrate(&relationDB.RuleAlarmLog{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
 	errdb = db.AutoMigrate(&relationDB.RuleAlarmDealRecord{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
 	errdb = db.AutoMigrate(&relationDB.RuleAlarmRecord{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
 	errdb = db.AutoMigrate(&relationDB.RuleAlarmInfo{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
 	errdb = db.AutoMigrate(&relationDB.RuleAlarmScene{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
 	errdb = db.AutoMigrate(&relationDB.RuleSceneInfo{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
+
 	logx.Info("NewPubDev db.AutoMigrate!")
 
 	store := kv.NewStore(c.CacheRedis)
