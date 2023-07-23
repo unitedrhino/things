@@ -67,7 +67,7 @@ func (p OperLogRepo) CountByFilter(ctx context.Context, f OperLogFilter) (size i
 }
 
 func (p OperLogRepo) Update(ctx context.Context, data *SysOperLog) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -78,12 +78,12 @@ func (p OperLogRepo) DeleteByFilter(ctx context.Context, f OperLogFilter) error 
 }
 
 func (p OperLogRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysOperLog{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysOperLog{}).Error
 	return stores.ErrFmt(err)
 }
 func (p OperLogRepo) FindOne(ctx context.Context, id int64) (*SysOperLog, error) {
 	var result SysOperLog
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
