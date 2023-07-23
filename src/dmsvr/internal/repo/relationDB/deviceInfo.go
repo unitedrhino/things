@@ -63,12 +63,12 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {
-			db = db.Where("JSON_CONTAINS(`tags`, JSON_OBJECT(?,?))",
+			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
 				k, v)
 		}
 	}
 	if f.LastLoginTime.Start != 0 {
-		db = db.Where("`last_login >= ?", utils.ToYYMMddHHSS(f.LastLoginTime.Start*1000))
+		db = db.Where("last_login >= ?", utils.ToYYMMddHHSS(f.LastLoginTime.Start*1000))
 	}
 	if f.LastLoginTime.End != 0 {
 		db = db.Where("last_login <= ?", utils.ToYYMMddHHSS(f.LastLoginTime.End*1000))
