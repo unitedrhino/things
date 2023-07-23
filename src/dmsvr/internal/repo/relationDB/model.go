@@ -12,20 +12,20 @@ type DmExample struct {
 // 产品信息表
 
 type DmProductInfo struct {
-	ProductID    string            `gorm:"column:product_id;type:char(11);NOT NULL"`                  // 产品id
-	ProductName  string            `gorm:"column:product_name;type:varchar(100);NOT NULL"`            // 产品名称
-	ProductImg   string            `gorm:"column:product_img;type:varchar(200)"`                      // 产品图片
-	ProductType  int64             `gorm:"column:product_type;type:smallint;default:1"`               // 产品状态:1:开发中,2:审核中,3:已发布
-	AuthMode     int64             `gorm:"column:auth_mode;type:smallint;default:1"`                  // 认证方式:1:账密认证,2:秘钥认证
-	DeviceType   int64             `gorm:"column:device_type;type:smallint;default:1"`                // 设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64             `gorm:"column:category_id;type:integer;default:1"`                 // 产品品类
-	NetType      int64             `gorm:"column:net_type;type:smallint;default:1"`                   // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto    int64             `gorm:"column:data_proto;type:smallint;default:1"`                 // 数据协议:1:自定义,2:数据模板
-	AutoRegister int64             `gorm:"column:auto_register;type:smallint;default:1"`              // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret       string            `gorm:"column:secret;type:varchar(50)"`                            // 动态注册产品秘钥
-	Desc         string            `gorm:"column:description;type:varchar(200)"`                      // 描述
-	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`               // 产品状态
-	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:{}"` // 产品标签
+	ProductID    string            `gorm:"column:product_id;type:char(11);NOT NULL"`                     // 产品id
+	ProductName  string            `gorm:"column:product_name;type:varchar(100);NOT NULL"`               // 产品名称
+	ProductImg   string            `gorm:"column:product_img;type:varchar(200)"`                         // 产品图片
+	ProductType  int64             `gorm:"column:product_type;type:smallint;default:1"`                  // 产品状态:1:开发中,2:审核中,3:已发布
+	AuthMode     int64             `gorm:"column:auth_mode;type:smallint;default:1"`                     // 认证方式:1:账密认证,2:秘钥认证
+	DeviceType   int64             `gorm:"column:device_type;type:smallint;default:1"`                   // 设备类型:1:设备,2:网关,3:子设备
+	CategoryID   int64             `gorm:"column:category_id;type:integer;default:1"`                    // 产品品类
+	NetType      int64             `gorm:"column:net_type;type:smallint;default:1"`                      // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	DataProto    int64             `gorm:"column:data_proto;type:smallint;default:1"`                    // 数据协议:1:自定义,2:数据模板
+	AutoRegister int64             `gorm:"column:auto_register;type:smallint;default:1"`                 // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret       string            `gorm:"column:secret;type:varchar(50)"`                               // 动态注册产品秘钥
+	Desc         string            `gorm:"column:description;type:varchar(200)"`                         // 描述
+	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`                  // 产品状态
+	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}''"` // 产品标签
 	stores.Time
 	Devices []*DmDeviceInfo `gorm:"foreignKey:product_id;references:product_id"`
 }
