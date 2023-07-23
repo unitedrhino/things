@@ -11,6 +11,7 @@ import (
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
+	"os"
 )
 
 type ServiceContext struct {
@@ -30,35 +31,43 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	errdb := db.AutoMigrate(&relationDB.SysUserInfo{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.SysRoleInfo{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.SysRoleMenu{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.SysMenuInfo{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.SysLoginLog{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.SysOperLog{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.SysApiInfo{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.SysApiAuth{})
 
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 
 	WxMiniProgram := clients.NewWxMiniProgram(context.Background(), c.WxMiniProgram, c.CacheRedis)
