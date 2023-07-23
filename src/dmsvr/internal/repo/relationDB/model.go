@@ -27,7 +27,7 @@ type DmProductInfo struct {
 	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`                 // 产品状态
 	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
 	stores.Time
-	Devices []*DmDeviceInfo `gorm:"foreignKey:product_id;references:product_id"`
+	//Devices []*DmDeviceInfo `gorm:"foreignKey:product_id;references:product_id"`
 }
 
 func (m *DmProductInfo) TableName() string {
@@ -62,7 +62,7 @@ type DmProductSchema struct {
 	Required   int64  `gorm:"column:required;type:smallint;default:2"`      // 是否必须,1是 2否
 	Affordance string `gorm:"column:affordance;type:json;NOT NULL"`         // 各类型的自定义功能定义
 	stores.Time
-	//ProductInfo *DmProductInfo `gorm:"foreignKey:product_id;references:product_id"`
+	ProductInfo *DmProductInfo `gorm:"foreignKey:product_id;references:product_id"`
 }
 
 func (m *DmProductSchema) TableName() string {
