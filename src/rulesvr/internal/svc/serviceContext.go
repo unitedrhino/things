@@ -53,6 +53,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg      devicemsg.DeviceMsg
 	)
 	stores.InitConn(c.Database)
+
+	// 自动迁移数据库
+	db := stores.GetCommonConn(context.Background())
+	errdb := db.AutoMigrate(&relationDB.RuleAlarmLog{})
+	errdb = db.AutoMigrate(&relationDB.RuleAlarmDealRecord{})
+	errdb = db.AutoMigrate(&relationDB.RuleAlarmRecord{})
+	errdb = db.AutoMigrate(&relationDB.RuleAlarmInfo{})
+	errdb = db.AutoMigrate(&relationDB.RuleAlarmScene{})
+	errdb = db.AutoMigrate(&relationDB.RuleSceneInfo{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+	logx.Info("NewPubDev db.AutoMigrate!")
+
 	store := kv.NewStore(c.CacheRedis)
 	sceneDevice := cache.NewSceneDeviceRepo(relationDB.NewSceneInfoRepo(context.TODO()))
 	err := sceneDevice.Init(context.TODO())

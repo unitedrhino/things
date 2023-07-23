@@ -31,10 +31,10 @@ type AlarmSceneFilter struct {
 func (p AlarmSceneRepo) fmtFilter(ctx context.Context, f AlarmSceneFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.SceneID != 0 {
-		db = db.Where("sceneID=?", f.SceneID)
+		db = db.Where("scene_id=?", f.SceneID)
 	}
 	if f.AlarmID != 0 {
-		db = db.Where("alarmID=?", f.AlarmID)
+		db = db.Where("alarm_id=?", f.AlarmID)
 	}
 	return db
 }
@@ -71,7 +71,7 @@ func (p AlarmSceneRepo) CountByFilter(ctx context.Context, f AlarmSceneFilter) (
 }
 
 func (p AlarmSceneRepo) Update(ctx context.Context, data *RuleAlarmScene) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -82,12 +82,12 @@ func (p AlarmSceneRepo) DeleteByFilter(ctx context.Context, f AlarmSceneFilter) 
 }
 
 func (p AlarmSceneRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmScene{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&RuleAlarmScene{}).Error
 	return stores.ErrFmt(err)
 }
 func (p AlarmSceneRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmScene, error) {
 	var result RuleAlarmScene
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
