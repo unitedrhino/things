@@ -42,34 +42,42 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	errdb := db.AutoMigrate(&relationDB.DmProductInfo{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.DmProductCustom{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.DmProductSchema{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.DmDeviceInfo{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.DmGroupInfo{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.DmGroupDevice{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.DmGatewayDevice{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 	errdb = db.AutoMigrate(&relationDB.DmProductRemoteConfig{})
 	if errdb != nil {
 		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
 	}
 
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
