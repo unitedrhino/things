@@ -59,7 +59,7 @@ func (p *PageInfo) GetOffset() int64 {
 func (p *PageInfo) GetOrders() (arr []string) {
 	if p != nil && len(p.Orders) > 0 {
 		for _, o := range p.Orders {
-			arr = append(arr, fmt.Sprintf("`%s` %s", o.Filed, orderMap[o.Sort]))
+			arr = append(arr, fmt.Sprintf("%s %s", o.Filed, orderMap[o.Sort]))
 		}
 	}
 	return
