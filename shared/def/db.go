@@ -125,10 +125,10 @@ func (p PageInfo2) FmtWhere(sql sq.SelectBuilder) sq.SelectBuilder {
 
 func (t TimeRange) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if t.Start != 0 {
-		sql = sql.Where("createdTime>=?", time.Unix(t.Start, 0))
+		sql = sql.Where("created_time>=?", time.Unix(t.Start, 0))
 	}
 	if t.End != 0 {
-		sql = sql.Where("createdTime<=?", time.Unix(t.End, 0))
+		sql = sql.Where("created_time<=?", time.Unix(t.End, 0))
 	}
 	return sql
 }
