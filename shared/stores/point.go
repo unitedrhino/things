@@ -64,7 +64,9 @@ func (p *Point) Scan(value interface{}) error {
 
 func (p Point) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
 	return clause.Expr{
-		SQL:  "ST_PointFromText(?)",
+		//SQL:  "ST_PointFromText(?)",
+		SQL: "ST_GeomFromText(ST_AsText(?),-1)::point", //如果你不知道 SRID 的值，可以使用 -1 来表示未知的空间参考系统。
+
 		Vars: []interface{}{fmt.Sprintf("POINT(%f %f)", p.Longitude, p.Latitude)},
 	}
 }
