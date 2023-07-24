@@ -35,7 +35,8 @@ type DmDeviceInfo struct {
 	LastLogin      sql.NullTime      `gorm:"column:last_login;type:TIMESTAMP WITH TIME ZONE"`             // 最后上线时间
 	LogLevel       int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 	stores.Time
-	//ProductInfo *DmProductInfo `gorm:"foreignKey:product_id;references:product_id"`
+	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
+
 }
 
 // 产品信息表
@@ -56,7 +57,7 @@ type DmProductInfo struct {
 	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
 
 	stores.Time
-	//Devices []*DmDeviceInfo `gorm:"foreignKey:product_id;references:product_id"`
+	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 }
 
 func (m *DmProductInfo) TableName() string {
@@ -72,7 +73,7 @@ type DmProductCustom struct {
 	TransformScript sql.NullString `gorm:"column:transform_script;type:text"`          // 协议转换脚本
 	LoginAuthScript sql.NullString `gorm:"column:login_auth_script;type:text"`         // 登录认证脚本
 	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:product_id;references:product_id"`
+	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmProductCustom) TableName() string {
@@ -91,7 +92,7 @@ type DmProductSchema struct {
 	Required   int64  `gorm:"column:required;type:smallint;default:2"`      // 是否必须,1是 2否
 	Affordance string `gorm:"column:affordance;type:json;NOT NULL"`         // 各类型的自定义功能定义
 	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:product_id;references:product_id"`
+	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmProductSchema) TableName() string {
@@ -112,7 +113,7 @@ type DmGroupInfo struct {
 	Desc      string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
 	Tags      map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 分组标签
 	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:product_id;references:product_id"`
+	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmGroupInfo) TableName() string {
@@ -127,7 +128,7 @@ type DmGroupDevice struct {
 	ProductID  string `gorm:"column:product_id;type:char(11);NOT NULL"`         // 产品id
 	DeviceName string `gorm:"column:device_name;type:varchar(100);NOT NULL"`    // 设备名称
 	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:product_id;references:product_id"`
+	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmGroupDevice) TableName() string {
@@ -142,8 +143,8 @@ type DmGatewayDevice struct {
 	ProductID         string `gorm:"column:product_id;type:char(11);NOT NULL"`              // 子设备产品id
 	DeviceName        string `gorm:"column:device_name;type:varchar(100);NOT NULL"`         // 子设备名称
 	stores.Time
-	Device  *DmDeviceInfo `gorm:"foreignKey:product_id,device_name;references:product_id,device_name"`
-	Gateway *DmDeviceInfo `gorm:"foreignKey:product_id,device_name;references:gateway_product_id,gateway_device_name"`
+	Device  *DmDeviceInfo `gorm:"foreignKey:ProductID,device_name;references:ProductID,DeviceName"`
+	Gateway *DmDeviceInfo `gorm:"foreignKey:ProductID,device_name;references:GatewayProductID,GatewayDeviceName"`
 }
 
 func (m *DmGatewayDevice) TableName() string {
@@ -156,7 +157,7 @@ type DmProductRemoteConfig struct {
 	ProductID string `gorm:"column:product_id;type:char(11);NOT NULL"` // 产品id
 	Content   string `gorm:"column:content;type:json;NOT NULL"`        // 配置内容
 	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:product_id;references:product_id"`
+	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmProductRemoteConfig) TableName() string {
