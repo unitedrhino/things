@@ -34,7 +34,7 @@ func (p UserInfoRepo) accountsFilter(db *gorm.DB, accounts []string) *gorm.DB {
 func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if len(f.UserNames) != 0 {
-		db = db.Where("user_name in ?", f.UserNames)
+		db = db.Where("user_name = ?", f.UserNames)
 	}
 	if len(f.Accounts) != 0 {
 		db = p.accountsFilter(db, f.Accounts)
