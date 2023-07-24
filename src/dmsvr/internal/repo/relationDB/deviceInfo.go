@@ -136,7 +136,7 @@ type countModel struct {
 func (d DeviceInfoRepo) CountGroupByField(ctx context.Context, f DeviceFilter, columnName string) (map[string]int64, error) {
 	db := d.fmtFilter(ctx, f).Model(&DmDeviceInfo{})
 	countModelList := make([]*countModel, 0)
-	err := db.Select(fmt.Sprintf("`%s` as CountKey", columnName), "count(1) as count").Group(columnName).Find(&countModelList).Error
+	err := db.Select(fmt.Sprintf("%s as CountKey", columnName), "count(1) as count").Group(columnName).Find(&countModelList).Error
 	result := make(map[string]int64, 0)
 	for _, v := range countModelList {
 		result[v.CountKey] = v.Count
