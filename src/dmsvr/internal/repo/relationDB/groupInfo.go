@@ -33,7 +33,7 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 		db = db.Where("group_id=?", f.GroupID)
 	}
 	if len(f.GroupNames) != 0 {
-		db = db.Where("group_name in ?", f.GroupNames)
+		db = db.Where("group_name = ?", f.GroupNames)
 	}
 	if f.ParentID != 0 {
 		db = db.Where("parent_id=?", f.ParentID)

@@ -55,7 +55,7 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 		db = db.Where("tag=?", f.Tag)
 	}
 	if len(f.Identifiers) != 0 {
-		db = db.Where("identifier in ?", f.Identifiers)
+		db = db.Where("identifier = ?", f.Identifiers)
 	}
 	return db
 }
