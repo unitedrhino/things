@@ -170,9 +170,9 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 	)
 
 	if p.Define.Type == schema.DataTypeStruct {
-		sql = sq.Select("FIRST(ts) AS `ts`", d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
+		sql = sq.Select("FIRST(ts) AS ts", d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
-		sql = sq.Select("FIRST(ts) AS `ts`", fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))
+		sql = sq.Select("FIRST(ts) AS ts", fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
 		sql = sql.Interval("?a", filter.Interval)
@@ -186,7 +186,7 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 func (d *SchemaDataRepo) fillFilter(
 	sql sq.SelectBuilder, filter msgThing.FilterOpt) sq.SelectBuilder {
 	if len(filter.DeviceNames) != 0 {
-		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", stores.ArrayToSql(filter.DeviceNames)))
+		sql = sql.Where(fmt.Sprintf("device_name= (%v)", stores.ArrayToSql(filter.DeviceNames)))
 	}
 	return sql
 }

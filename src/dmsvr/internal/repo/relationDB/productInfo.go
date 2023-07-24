@@ -32,10 +32,10 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 		db = db.Where("product_name like ?", "%"+f.ProductName+"%")
 	}
 	if len(f.ProductIDs) != 0 {
-		db = db.Where("product_id in ?", f.ProductIDs)
+		db = db.Where("product_id = ?", f.ProductIDs)
 	}
 	if len(f.ProductNames) != 0 {
-		db = db.Where("product_name in ?", f.ProductNames)
+		db = db.Where("product_name = ?", f.ProductNames)
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {
