@@ -39,7 +39,7 @@ func (l *DeviceInfoCountLogic) DeviceInfoCount(in *dm.DeviceInfoCountReq) (*dm.D
 				End   int64
 			}{Start: in.StartTime, End: in.EndTime},
 		},
-		"isOnline")
+		"is_online")
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.NotFind

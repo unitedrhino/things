@@ -34,16 +34,16 @@ type AlarmRecordFilter struct {
 func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.AlarmID != 0 {
-		db = db.Where("alarmID=?", f.AlarmID)
+		db = db.Where("alarm_id=?", f.AlarmID)
 	}
 	if f.TriggerType != 0 {
-		db = db.Where("triggerType=?", f.TriggerType)
+		db = db.Where("trigger_type=?", f.TriggerType)
 	}
 	if f.ProductID != "" {
-		db = db.Where("productID=?", f.ProductID)
+		db = db.Where("product_id=?", f.ProductID)
 	}
 	if f.DeviceName != "" {
-		db = db.Where("deviceName=?", f.DeviceName)
+		db = db.Where("device_name=?", f.DeviceName)
 	}
 	return db
 }
@@ -80,7 +80,7 @@ func (p AlarmRecordRepo) CountByFilter(ctx context.Context, f AlarmRecordFilter)
 }
 
 func (p AlarmRecordRepo) Update(ctx context.Context, data *RuleAlarmRecord) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -91,12 +91,12 @@ func (p AlarmRecordRepo) DeleteByFilter(ctx context.Context, f AlarmRecordFilter
 }
 
 func (p AlarmRecordRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmRecord{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&RuleAlarmRecord{}).Error
 	return stores.ErrFmt(err)
 }
 func (p AlarmRecordRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmRecord, error) {
 	var result RuleAlarmRecord
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

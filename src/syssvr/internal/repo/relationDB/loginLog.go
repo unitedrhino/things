@@ -28,13 +28,13 @@ type LoginLogFilter struct {
 func (p LoginLogRepo) fmtFilter(ctx context.Context, f LoginLogFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.IpAddr != "" {
-		db = db.Where("`ipAddr`= ?", f.IpAddr)
+		db = db.Where("ip_addr= ?", f.IpAddr)
 	}
 	if f.LoginLocation != "" {
-		db = db.Where("`loginLocation` like ?", "%"+f.LoginLocation+"%")
+		db = db.Where("login_location like ?", "%"+f.LoginLocation+"%")
 	}
 	if f.Data != nil && f.Data.Start != "" && f.Data.End != "" {
-		db = db.Where("`createdTime` >= ? and `createdTime` <= ?", f.Data.Start, f.Data.End)
+		db = db.Where("created_time >= ? and created_time <= ?", f.Data.Start, f.Data.End)
 	}
 	return db
 }
@@ -71,7 +71,7 @@ func (p LoginLogRepo) CountByFilter(ctx context.Context, f LoginLogFilter) (size
 }
 
 func (p LoginLogRepo) Update(ctx context.Context, data *SysLoginLog) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -81,13 +81,13 @@ func (p LoginLogRepo) DeleteByFilter(ctx context.Context, f LoginLogFilter) erro
 	return stores.ErrFmt(err)
 }
 func (p LoginLogRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysLoginLog{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysLoginLog{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p LoginLogRepo) FindOne(ctx context.Context, id int64) (*SysLoginLog, error) {
 	var result SysLoginLog
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
