@@ -31,7 +31,7 @@ type AlarmDealRecordFilter struct {
 func (p AlarmDealRecordRepo) fmtFilter(ctx context.Context, f AlarmDealRecordFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.AlarmRecordID != 0 {
-		db = db.Where("alarmRecordID=?", f.AlarmRecordID)
+		db = db.Where("alarm_record_id=?", f.AlarmRecordID)
 	}
 	return db
 }
@@ -68,7 +68,7 @@ func (p AlarmDealRecordRepo) CountByFilter(ctx context.Context, f AlarmDealRecor
 }
 
 func (p AlarmDealRecordRepo) Update(ctx context.Context, data *RuleAlarmDealRecord) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -79,12 +79,12 @@ func (p AlarmDealRecordRepo) DeleteByFilter(ctx context.Context, f AlarmDealReco
 }
 
 func (p AlarmDealRecordRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&RuleAlarmDealRecord{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&RuleAlarmDealRecord{}).Error
 	return stores.ErrFmt(err)
 }
 func (p AlarmDealRecordRepo) FindOne(ctx context.Context, id int64) (*RuleAlarmDealRecord, error) {
 	var result RuleAlarmDealRecord
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
