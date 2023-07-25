@@ -59,7 +59,7 @@ func (p *PageInfo) GetOffset() int64 {
 func (p *PageInfo) GetOrders() (arr []string) {
 	if p != nil && len(p.Orders) > 0 {
 		for _, o := range p.Orders {
-			arr = append(arr, fmt.Sprintf("`%s` %s", o.Filed, orderMap[o.Sort]))
+			arr = append(arr, fmt.Sprintf("%s %s", o.Filed, orderMap[o.Sort]))
 		}
 	}
 	return
@@ -125,10 +125,10 @@ func (p PageInfo2) FmtWhere(sql sq.SelectBuilder) sq.SelectBuilder {
 
 func (t TimeRange) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if t.Start != 0 {
-		sql = sql.Where("createdTime>=?", time.Unix(t.Start, 0))
+		sql = sql.Where("created_time>=?", time.Unix(t.Start, 0))
 	}
 	if t.End != 0 {
-		sql = sql.Where("createdTime<=?", time.Unix(t.End, 0))
+		sql = sql.Where("created_time<=?", time.Unix(t.End, 0))
 	}
 	return sql
 }

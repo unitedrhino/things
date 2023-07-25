@@ -33,11 +33,11 @@ func (p GatewayDeviceRepo) fmtFilter(ctx context.Context, f GatewayDeviceFilter)
 	if f.Gateway != nil { //通过网关获取旗下子设备列表
 		db = db.Table(gd.TableName()+" as gd").Joins(fmt.Sprintf(
 			"left join %s as di on di.productID=gd.productID and di.deviceName=gd.deviceName", di.TableName())).
-			Where("`gatewayProductID`=? and `gatewayDeviceName`=? and di.id IS NOT NULL", f.Gateway.ProductID, f.Gateway.DeviceName)
+			Where("gateway_product_id=? and gateway_device_name=? and di.id IS NOT NULL", f.Gateway.ProductID, f.Gateway.DeviceName)
 	} else {
 		db = db.Table(gd.TableName()+" as gd").Joins(fmt.Sprintf(
 			"left join %s as di on di.productID=gd.gatewayProductID and di.deviceName=gd.gatewayDeviceName", di.TableName())).
-			Where("gd.`productID`=? and gd.`deviceName`=? and di.id IS NOT NULL", f.SubDevice.ProductID, f.SubDevice.DeviceName)
+			Where("gd.product_id=? and gd.device_name=? and di.id IS NOT NULL", f.SubDevice.ProductID, f.SubDevice.DeviceName)
 	}
 	return db
 }
@@ -90,15 +90,15 @@ func (m GatewayDeviceRepo) MultiDelete(ctx context.Context, gateway *devices.Cor
 	scope := func(db *gorm.DB) *gorm.DB {
 		for i, d := range subDevice {
 			if i == 0 {
-				db = db.Where("`productID` = ? and `deviceName` = ?", d.ProductID, d.DeviceName)
+				db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
 				continue
 			}
-			db = db.Or("`productID` = ? and `deviceName` = ?", d.ProductID, d.DeviceName)
+			db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
 		}
 		return db
 	}
 	db := m.db.WithContext(ctx).Model(&DmGatewayDevice{})
-	db = db.Where("`gatewayProductID`=? and `gatewayDeviceName`=?", gateway.ProductID, gateway.DeviceName).Where(scope(db))
+	db = db.Where("gateway_product_id=? and gateway_device_name`=?", gateway.ProductID, gateway.DeviceName).Where(scope(db))
 	err := db.Delete(&DmGatewayDevice{}).Error
 	return stores.ErrFmt(err)
 }

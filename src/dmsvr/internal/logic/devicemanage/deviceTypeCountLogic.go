@@ -41,7 +41,7 @@ func (l *DeviceTypeCountLogic) DeviceTypeCount(in *dm.DeviceTypeCountReq) (*dm.D
 				End   int64
 			}{Start: in.StartTime, End: in.EndTime},
 		},
-		"productID",
+		"product_id",
 	)
 
 	if err != nil {

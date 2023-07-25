@@ -25,16 +25,16 @@ type ApiInfoFilter struct {
 func (p ApiInfoRepo) fmtFilter(ctx context.Context, f ApiInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.Route != "" {
-		db = db.Where("`route` like ?", "%"+f.Route+"%")
+		db = db.Where("route like ?", "%"+f.Route+"%")
 	}
 	if f.Method != 0 {
-		db = db.Where("`method` = ?", f.Method)
+		db = db.Where("method = ?", f.Method)
 	}
 	if f.Group != "" {
-		db = db.Where("`group` like ?", "%"+f.Group+"%")
+		db = db.Where("group like ?", "%"+f.Group+"%")
 	}
 	if f.Name != "" {
-		db = db.Where("`name` like ?", "%"+f.Name+"%")
+		db = db.Where("name like ?", "%"+f.Name+"%")
 	}
 	return db
 }
@@ -72,7 +72,7 @@ func (p ApiInfoRepo) CountByFilter(ctx context.Context, f ApiInfoFilter) (size i
 }
 
 func (p ApiInfoRepo) Update(ctx context.Context, data *SysApiInfo) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -82,13 +82,13 @@ func (p ApiInfoRepo) DeleteByFilter(ctx context.Context, f ApiInfoFilter) error 
 	return stores.ErrFmt(err)
 }
 func (p ApiInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysApiInfo{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysApiInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p ApiInfoRepo) FindOne(ctx context.Context, id int64) (*SysApiInfo, error) {
 	var result SysApiInfo
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
