@@ -65,7 +65,7 @@ func (p ExampleRepo) CountByFilter(ctx context.Context, f ExampleFilter) (size i
 }
 
 func (p ExampleRepo) Update(ctx context.Context, data *DmExample) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -76,12 +76,12 @@ func (p ExampleRepo) DeleteByFilter(ctx context.Context, f ExampleFilter) error 
 }
 
 func (p ExampleRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmExample{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&DmExample{}).Error
 	return stores.ErrFmt(err)
 }
 func (p ExampleRepo) FindOne(ctx context.Context, id int64) (*DmExample, error) {
 	var result DmExample
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

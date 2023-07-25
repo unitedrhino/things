@@ -26,7 +26,7 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 		for _, p := range t.Property {
 			err := d.createPropertyStable(ctx, p, productID)
 			if err != nil {
-				logx.WithContext(ctx).Errorf("%s.createPropertyStable productID:%v,properties:%v,err:%v",
+				logx.WithContext(ctx).Errorf("%s.createPropertyStable product_id:%v,properties:%v,err:%v",
 					utils.FuncName(), productID, p, err)
 				return errors.Database.AddDetail(err)
 			}
@@ -34,8 +34,8 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 	}
 	{
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
-			"(`ts` timestamp,`eventID` BINARY(50),`eventType` BINARY(20), `param` BINARY(5000)) "+
-			"TAGS (`productID` BINARY(50),`deviceName` BINARY(50));",
+			"(`ts` timestamp,`eventID` BINARY(50),`event_type` BINARY(20), `param` BINARY(5000)) "+
+			"TAGS (`product_id` BINARY(50),`device_name` BINARY(50));",
 			d.GetEventStableName())
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
@@ -48,7 +48,7 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 func (d *DeviceDataRepo) CreateProperty(ctx context.Context, p *schema.Property, productID string) error {
 	err := d.createPropertyStable(ctx, p, productID)
 	if err != nil {
-		logx.WithContext(ctx).Errorf("%s.createPropertyStable productID:%v,properties:%v,err:%v",
+		logx.WithContext(ctx).Errorf("%s.createPropertyStable product_id:%v,properties:%v,err:%v",
 			utils.FuncName(), productID, p, err)
 		return errors.Database.AddDetail(err)
 	}
@@ -105,7 +105,7 @@ func (d *DeviceDataRepo) UpdateProduct(
 			//这里需要走修改流程
 			err := d.UpdateProperty(ctx, oldP, p, productID)
 			if err != nil {
-				logx.WithContext(ctx).Errorf("%s.UpdateProperty productID:%v,properties:%v,err:%v",
+				logx.WithContext(ctx).Errorf("%s.UpdateProperty product_id:%v,properties:%v,err:%v",
 					utils.FuncName(), productID, p, err)
 				return errors.Database.AddDetail(err)
 			}
@@ -124,7 +124,7 @@ func (d *DeviceDataRepo) UpdateProduct(
 	for _, p := range oldT.Property {
 		sql := fmt.Sprintf("drop stable if exists %s;", d.GetPropertyStableName(productID, p.Identifier))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
-			logx.WithContext(ctx).Errorf("%s drop table productID:%v,properties:%v,err:%v",
+			logx.WithContext(ctx).Errorf("%s drop table product_id:%v,properties:%v,err:%v",
 				utils.FuncName(), productID, p, err)
 			return errors.Database.AddDetail(err)
 		}

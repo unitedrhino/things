@@ -11,6 +11,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubDev"
+	"github.com/i-Things/things/src/disvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/hubLogRepo"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/schemaDataRepo"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/sdkLogRepo"
@@ -49,6 +50,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 	stores.InitConn(c.Database)
+	// 自动迁移数据库
+	db := stores.GetCommonConn(context.Background())
+	errdb := db.AutoMigrate(&relationDB.DiDeviceShadow{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+	}
+	logx.Info("NewPubDev db.AutoMigrate!")
 	//TestTD(td)
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {

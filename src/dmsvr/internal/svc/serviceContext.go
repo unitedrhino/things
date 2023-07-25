@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"context"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/eventBus"
 	"github.com/i-Things/things/shared/oss"
@@ -10,6 +11,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/hubLogRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/sdkLogRepo"
@@ -34,6 +36,50 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	// 自动迁移数据库
+	stores.InitConn(c.Database)
+	db := stores.GetCommonConn(context.Background())
+	errdb := db.AutoMigrate(&relationDB.DmProductInfo{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
+	errdb = db.AutoMigrate(&relationDB.DmProductCustom{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
+	errdb = db.AutoMigrate(&relationDB.DmProductSchema{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
+	errdb = db.AutoMigrate(&relationDB.DmDeviceInfo{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
+	errdb = db.AutoMigrate(&relationDB.DmGroupInfo{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
+	errdb = db.AutoMigrate(&relationDB.DmGroupDevice{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
+	errdb = db.AutoMigrate(&relationDB.DmGatewayDevice{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
+	errdb = db.AutoMigrate(&relationDB.DmProductRemoteConfig{})
+	if errdb != nil {
+		logx.Error("failed to migrate database: %v", errdb)
+		os.Exit(-1)
+	}
+
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 
@@ -56,7 +102,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		os.Exit(-1)
 	}
 	bus := eventBus.NewEventBus()
-	stores.InitConn(c.Database)
+	//stores.InitConn(c.Database)
 	return &ServiceContext{
 		Bus:            bus,
 		Config:         c,
