@@ -26,20 +26,20 @@ func NewProductInfoRepo(in any) *ProductInfoRepo {
 func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.DeviceType != 0 {
-		db = db.Where("deviceType=?", f.DeviceType)
+		db = db.Where("device_type=?", f.DeviceType)
 	}
 	if f.ProductName != "" {
-		db = db.Where("productName like ?", "%"+f.ProductName+"%")
+		db = db.Where("product_name like ?", "%"+f.ProductName+"%")
 	}
 	if len(f.ProductIDs) != 0 {
-		db = db.Where("productID in ?", f.ProductIDs)
+		db = db.Where("product_id = ?", f.ProductIDs)
 	}
 	if len(f.ProductNames) != 0 {
-		db = db.Where("productName in ?", f.ProductNames)
+		db = db.Where("product_name = ?", f.ProductNames)
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {
-			db = db.Where("JSON_CONTAINS(`tags`, JSON_OBJECT(?,?))",
+			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
 				k, v)
 		}
 	}
@@ -62,7 +62,7 @@ func (p ProductInfoRepo) FindOneByFilter(ctx context.Context, f ProductFilter) (
 }
 
 func (p ProductInfoRepo) Update(ctx context.Context, data *DmProductInfo) error {
-	err := p.db.WithContext(ctx).Where("productID = ?", data.ProductID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("product_id = ?", data.ProductID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 

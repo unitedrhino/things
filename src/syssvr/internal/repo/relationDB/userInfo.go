@@ -25,31 +25,31 @@ type UserInfoFilter struct {
 }
 
 func (p UserInfoRepo) accountsFilter(db *gorm.DB, accounts []string) *gorm.DB {
-	db = db.Where("`userName` in ?", accounts).
-		Or("`email` in ?", accounts).
-		Or("`phone` in ?", accounts)
+	db = db.Where("user_name = ?", accounts).
+		Or("email = ?", accounts).
+		Or("phone = ?", accounts)
 	return db
 }
 
 func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if len(f.UserNames) != 0 {
-		db = db.Where("`userName` in ?", f.UserNames)
+		db = db.Where("user_name = ?", f.UserNames)
 	}
 	if len(f.Accounts) != 0 {
 		db = p.accountsFilter(db, f.Accounts)
 	}
 	if f.UserName != "" {
-		db = db.Where("`userName` like ?", "%"+f.UserName+"%")
+		db = db.Where("user_name like ?", "%"+f.UserName+"%")
 	}
 	if f.Phone != "" {
-		db = db.Where("`phone` like ?", "%"+f.Phone+"%")
+		db = db.Where("phone like ?", "%"+f.Phone+"%")
 	}
 	if f.Email != "" {
-		db = db.Where("`email` like ?", "%"+f.Email+"%")
+		db = db.Where("email like ?", "%"+f.Email+"%")
 	}
 	if f.Wechat != "" {
-		db = db.Where("`wechat` = ?", f.Wechat)
+		db = db.Where("wechat = ?", f.Wechat)
 	}
 	return db
 }
@@ -86,7 +86,7 @@ func (p UserInfoRepo) CountByFilter(ctx context.Context, f UserInfoFilter) (size
 }
 
 func (p UserInfoRepo) Update(ctx context.Context, data *SysUserInfo) error {
-	err := p.db.WithContext(ctx).Where("`userID` = ?", data.UserID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("user_id = ?", data.UserID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -97,11 +97,11 @@ func (p UserInfoRepo) DeleteByFilter(ctx context.Context, f UserInfoFilter) erro
 }
 
 func (p UserInfoRepo) Delete(ctx context.Context, userID int64) error {
-	err := p.db.WithContext(ctx).Where("`userID` = ?", userID).Delete(&SysUserInfo{}).Error
+	err := p.db.WithContext(ctx).Where("user_id = ?", userID).Delete(&SysUserInfo{}).Error
 	return stores.ErrFmt(err)
 }
 func (p UserInfoRepo) FindOne(ctx context.Context, userID int64) (*SysUserInfo, error) {
 	var result SysUserInfo
-	err := p.db.WithContext(ctx).Where("`userID` = ?", userID).First(&result).Error
+	err := p.db.WithContext(ctx).Where("user_id = ?", userID).First(&result).Error
 	return &result, stores.ErrFmt(err)
 }

@@ -104,7 +104,7 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Resp
 	po, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
-			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.ProductID))
+			return nil, errors.Parameter.AddDetail("not find Product_id id:" + cast.ToString(in.ProductID))
 		}
 		return nil, err
 	}
