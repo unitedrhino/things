@@ -32,7 +32,7 @@ func Migrate() error {
 	return err
 }
 func migrateTableColumn() error {
-	db := stores.GetCommonConn(nil).Clauses(clause.Insert{Modifier: "IGNORE"})
+	db := stores.GetCommonConn(nil).Clauses(clause.OnConflict{DoNothing: true})
 	if err := db.CreateInBatches(&MigrateUserInfo, 100).Error; err != nil {
 		return err
 	}
