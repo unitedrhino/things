@@ -56,7 +56,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")
 	}
 	if len(f.DeviceNames) != 0 {
-		db = db.Where("device_name = ?", f.DeviceNames)
+		db = db.Where("device_name in ?", f.DeviceNames)
 	}
 	if f.DeviceAlias != "" {
 		db = db.Where("device_alias like ?", "%"+f.DeviceAlias+"%")
