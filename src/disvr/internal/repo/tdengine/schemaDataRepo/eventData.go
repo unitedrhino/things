@@ -18,7 +18,7 @@ func (d *SchemaDataRepo) InsertEventData(ctx context.Context, productID string,
 		return errors.System.AddDetail("param json parse failure")
 	}
 	sql := fmt.Sprintf(
-		"insert into %s using %s tags('%s','%s') (ts,event_id,event_type, param) values (?,?,?,?);",
+		"insert into %s using %s tags('%s','%s') (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);",
 		d.GetEventTableName(productID, deviceName), d.GetEventStableName(), productID, deviceName)
 	if _, err := d.t.ExecContext(ctx, sql, event.TimeStamp, event.Identifier, event.Type, param); err != nil {
 		return err
@@ -28,16 +28,16 @@ func (d *SchemaDataRepo) InsertEventData(ctx context.Context, productID string,
 
 func (d *SchemaDataRepo) fmtSql(f msgThing.FilterOpt, sql sq.SelectBuilder) sq.SelectBuilder {
 	if f.ProductID != "" {
-		sql = sql.Where("product_id=? ", f.ProductID)
+		sql = sql.Where("`product_id`=? ", f.ProductID)
 	}
 	if len(f.DeviceNames) != 0 {
-		sql = sql.Where(fmt.Sprintf("device_name= (%v)", stores.ArrayToSql(f.DeviceNames)))
+		sql = sql.Where(fmt.Sprintf("`device_name`= (%v)", stores.ArrayToSql(f.DeviceNames)))
 	}
 	if f.DataID != "" {
-		sql = sql.Where("event_id=? ", f.DataID)
+		sql = sql.Where("`event_id`=? ", f.DataID)
 	}
 	if len(f.Types) != 0 {
-		sql = sql.Where(fmt.Sprintf("event_type = (%v)", stores.ArrayToSql(f.Types)))
+		sql = sql.Where(fmt.Sprintf("`event_type` = (%v)", stores.ArrayToSql(f.Types)))
 	}
 	return sql
 }

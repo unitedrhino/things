@@ -34,7 +34,7 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 	}
 	{
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
-			"(`ts` timestamp,`eventID` BINARY(50),`event_type` BINARY(20), `param` BINARY(5000)) "+
+			"(`ts` timestamp,`event_id` BINARY(50),`event_type` BINARY(20), `param` BINARY(5000)) "+
 			"TAGS (`product_id` BINARY(50),`device_name` BINARY(50));",
 			d.GetEventStableName())
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
@@ -80,7 +80,7 @@ func (d *DeviceDataRepo) UpdateProperty(
 			delete(oldP.Define.Spec, newS.Identifier)
 		} else {
 			//新增
-			sql := fmt.Sprintf("ALTER STABLE %s ADD COLUMN %s %s; ",
+			sql := fmt.Sprintf("ALTER STABLE %s ADD COLUMN `%s` %s; ",
 				d.GetPropertyStableName(productID, newP.Identifier), newS.Identifier, stores.GetTdType(newS.DataType))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return errors.Database.AddDetail(err)
@@ -89,7 +89,7 @@ func (d *DeviceDataRepo) UpdateProperty(
 	}
 	for _, oldS := range oldP.Define.Spec {
 		//这里是需要删除的字段
-		sql := fmt.Sprintf("ALTER STABLE %s DROP COLUMN %s; ",
+		sql := fmt.Sprintf("ALTER STABLE %s DROP COLUMN `%s`; ",
 			d.GetPropertyStableName(productID, newP.Identifier), oldS.Identifier)
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
@@ -137,14 +137,14 @@ func (d *DeviceDataRepo) createPropertyStable(
 	var sql string
 	if p.Define.Type != schema.DataTypeStruct {
 		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
-			" TAGS (`deviceName` BINARY(50),`"+PropertyType+"` BINARY(50));",
+			" TAGS (`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
 			d.GetPropertyStableName(productID, p.Identifier), stores.GetTdType(p.Define))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}
 	} else {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
-			" TAGS (`deviceName` BINARY(50),`"+PropertyType+"` BINARY(50));",
+			" TAGS (`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
 			d.GetPropertyStableName(productID, p.Identifier), d.GetSpecsCreateColumn(p.Define.Specs))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)

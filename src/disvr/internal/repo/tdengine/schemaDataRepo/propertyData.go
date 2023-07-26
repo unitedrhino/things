@@ -36,7 +36,7 @@ func (d *SchemaDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Mod
 		if err != nil {
 			return "", nil, err
 		}
-		sql = fmt.Sprintf(" %s using %s tags('%s','%s') (ts, %s) values (?,%s) ",
+		sql = fmt.Sprintf(" %s using %s tags('%s','%s') (`ts`, %s) values (?,%s) ",
 			d.GetPropertyTableName(productID, deviceName, property.Identifier),
 			d.GetPropertyStableName(productID, property.Identifier), deviceName, t.Property[property.Identifier].Define.Type,
 			paramIds, paramPlaceholder)
@@ -52,7 +52,7 @@ func (d *SchemaDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Mod
 				return "", nil, errors.System.AddDetail("param json parse failure")
 			}
 		}
-		sql = fmt.Sprintf(" %s using %s tags('%s','%s')(ts, param) values (?,?) ",
+		sql = fmt.Sprintf(" %s using %s tags('%s','%s')(`ts`, `param`) values (?,?) ",
 			d.GetPropertyTableName(productID, deviceName, property.Identifier),
 			d.GetPropertyStableName(productID, property.Identifier),
 			deviceName, t.Property[property.Identifier].Define.Type)
@@ -141,7 +141,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 	if filter.ArgFunc == "" {
 		sql = sq.Select("*")
 		if filter.Order != def.OrderAes {
-			sql = sql.OrderBy("ts desc")
+			sql = sql.OrderBy("`ts` desc")
 		}
 	} else {
 		sql, err = d.getPropertyArgFuncSelect(ctx, filter)
@@ -187,9 +187,9 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 	)
 
 	if p.Define.Type == schema.DataTypeStruct {
-		sql = sq.Select("FIRST(ts) AS ts", d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
+		sql = sq.Select("FIRST(`ts`) AS ts", d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
-		sql = sq.Select("FIRST(ts) AS ts", fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
+		sql = sq.Select("FIRST(`ts`) AS ts", fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
 		sql = sql.Interval("?a", filter.Interval)
