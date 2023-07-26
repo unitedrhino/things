@@ -17,8 +17,8 @@ func ToEventData(db map[string]any) *msgThing.EventData {
 		return nil
 	}
 	data := msgThing.EventData{
-		Identifier: cast.ToString(db["eventID"]),
-		Type:       cast.ToString(db["eventType"]),
+		Identifier: cast.ToString(db["event_id"]),
+		Type:       cast.ToString(db["event_type"]),
 		Params:     params,
 		TimeStamp:  cast.ToTime(db["ts"]),
 	}
@@ -35,7 +35,7 @@ func ToPropertyData(id string, db map[string]any) *msgThing.PropertyData {
 			TimeStamp:  cast.ToTime(db["ts"]),
 		}
 		delete(db, "ts")
-		delete(db, "deviceName")
+		delete(db, "device_name")
 		delete(db, PROPERTY_TYPE)
 		data.Param = db
 		return &data
