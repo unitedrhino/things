@@ -40,7 +40,7 @@ func NewDeviceInfoRepo(in any) *DeviceInfoRepo {
 func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB {
 	db := d.db.WithContext(ctx)
 	if f.WithProduct {
-		db = db.Preload("product_info")
+		db = db.Preload("ProductInfo")
 	}
 	//业务过滤条件
 	if f.ProductID != "" {
