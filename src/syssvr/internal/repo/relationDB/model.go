@@ -13,12 +13,12 @@ type SysExample struct {
 
 // 用户登录信息表
 type SysUserInfo struct {
-	UserID     int64          `gorm:"column:user_id;type:BIGINT;NOT NULL"`                 // 用户id
-	UserName   sql.NullString `gorm:"column:user_name;type:VARCHAR(20)"`                   // 登录用户名
+	UserID     int64          `gorm:"column:user_id;primary_key;type:BIGINT;NOT NULL"`     // 用户id
+	UserName   sql.NullString `gorm:"column:user_name;uniqueIndex;type:VARCHAR(20)"`       // 登录用户名
 	Password   string         `gorm:"column:password;type:CHAR(32);NOT NULL"`              // 登录密码
-	Email      sql.NullString `gorm:"column:email;type:VARCHAR(255)"`                      // 邮箱
-	Phone      sql.NullString `gorm:"column:phone;type:VARCHAR(20)"`                       // 手机号
-	Wechat     sql.NullString `gorm:"column:wechat;type:VARCHAR(20)"`                      // 微信union id
+	Email      sql.NullString `gorm:"column:email;uniqueIndex;type:VARCHAR(255)"`          // 邮箱
+	Phone      sql.NullString `gorm:"column:phone;uniqueIndex;type:VARCHAR(20)"`           // 手机号
+	Wechat     sql.NullString `gorm:"column:wechat;uniqueIndex;type:VARCHAR(20)"`          // 微信union id
 	LastIP     string         `gorm:"column:last_ip;type:VARCHAR(40);NOT NULL"`            // 最后登录ip
 	RegIP      string         `gorm:"column:reg_ip;type:VARCHAR(40);NOT NULL"`             // 注册ip
 	NickName   string         `gorm:"column:nick_name;type:VARCHAR(60);NOT NULL"`          // 用户的昵称
@@ -39,9 +39,9 @@ func (m *SysUserInfo) TableName() string {
 
 // 角色管理表
 type SysRoleInfo struct {
-	ID     int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"` // id编号
-	Name   string `gorm:"column:name;type:VARCHAR(100);NOT NULL"`           // 角色名称
-	Remark string `gorm:"column:remark;type:VARCHAR(100);NOT NULL"`         // 备注
+	ID     int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // id编号
+	Name   string `gorm:"column:name;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 角色名称
+	Remark string `gorm:"column:remark;type:VARCHAR(100);NOT NULL"`           // 备注
 	stores.Time
 	Status int64          `gorm:"column:status;type:SMALLINT;default:1"` // 状态  1:启用,2:禁用
 	Menus  []*SysRoleMenu `gorm:"foreignKey:role_id;references:id"`
@@ -53,9 +53,9 @@ func (m *SysRoleInfo) TableName() string {
 
 // 角色菜单关联表
 type SysRoleMenu struct {
-	ID     int64 `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"` // id编号
-	RoleID int64 `gorm:"column:role_id;NOT NULL;type:BIGINT"`              // 角色ID
-	MenuID int64 `gorm:"column:menu_id;NOT NULL;type:BIGINT"`              // 菜单ID
+	ID     int64 `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`      // id编号
+	RoleID int64 `gorm:"column:role_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"` // 角色ID
+	MenuID int64 `gorm:"column:menu_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"` // 菜单ID
 	stores.Time
 }
 
@@ -85,16 +85,16 @@ func (m *SysMenuInfo) TableName() string {
 
 // 登录日志管理
 type SysLoginLog struct {
-	ID            int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`                                     // 编号
-	UserID        int64     `gorm:"column:user_id;type:BIGINT;NOT NULL"`                                                  // 用户id
-	UserName      string    `gorm:"column:user_name;type:VARCHAR(50)"`                                                    // 登录账号
-	IpAddr        string    `gorm:"column:ip_addr;type:VARCHAR(50)"`                                                      // 登录IP地址
-	LoginLocation string    `gorm:"column:login_location;type:VARCHAR(100)"`                                              // 登录地点
-	Browser       string    `gorm:"column:browser;type:VARCHAR(50)"`                                                      // 浏览器类型
-	Os            string    `gorm:"column:os;type:VARCHAR(50)"`                                                           // 操作系统
-	Code          int64     `gorm:"column:code;type:BIGINT;default:200;NOT NULL"`                                         // 登录状态（200成功 其它失败）
-	Msg           string    `gorm:"column:msg;type:VARCHAR(255)"`                                                         // 提示消息
-	CreatedTime   time.Time `gorm:"column:created_time;type:TIMESTAMP WITH TIME ZONE;default:CURRENT_TIMESTAMP;NOT NULL"` // 登录时间
+	ID            int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`       // 编号
+	UserID        int64     `gorm:"column:user_id;type:BIGINT;NOT NULL"`                    // 用户id
+	UserName      string    `gorm:"column:user_name;type:VARCHAR(50)"`                      // 登录账号
+	IpAddr        string    `gorm:"column:ip_addr;type:VARCHAR(50)"`                        // 登录IP地址
+	LoginLocation string    `gorm:"column:login_location;type:VARCHAR(100)"`                // 登录地点
+	Browser       string    `gorm:"column:browser;type:VARCHAR(50)"`                        // 浏览器类型
+	Os            string    `gorm:"column:os;type:VARCHAR(50)"`                             // 操作系统
+	Code          int64     `gorm:"column:code;type:BIGINT;default:200;NOT NULL"`           // 登录状态（200成功 其它失败）
+	Msg           string    `gorm:"column:msg;type:VARCHAR(255)"`                           // 提示消息
+	CreatedTime   time.Time `gorm:"column:created_time;default:CURRENT_TIMESTAMP;NOT NULL"` // 登录时间
 }
 
 func (m *SysLoginLog) TableName() string {
@@ -103,19 +103,19 @@ func (m *SysLoginLog) TableName() string {
 
 // 操作日志管理
 type SysOperLog struct {
-	ID           int64          `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`                                     // 编号
-	OperUserID   int64          `gorm:"column:oper_user_id;type:BIGINT;NOT NULL"`                                             // 用户id
-	OperUserName string         `gorm:"column:oper_user_name;type:VARCHAR(50)"`                                               // 操作人员名称
-	OperName     string         `gorm:"column:oper_name;type:VARCHAR(50)"`                                                    // 操作名称
-	BusinessType int64          `gorm:"column:business_type;type:BIGINT;NOT NULL"`                                            // 业务类型（1新增 2修改 3删除 4查询 5其它）
-	Uri          string         `gorm:"column:uri;type:VARCHAR(100)"`                                                         // 请求地址
-	OperIpAddr   string         `gorm:"column:oper_ip_addr;type:VARCHAR(50)"`                                                 // 主机地址
-	OperLocation string         `gorm:"column:oper_location;type:VARCHAR(255)"`                                               // 操作地点
-	Req          sql.NullString `gorm:"column:req;type:TEXT"`                                                                 // 请求参数
-	Resp         sql.NullString `gorm:"column:resp;type:TEXT"`                                                                // 返回参数
-	Code         int64          `gorm:"column:code;type:BIGINT;default:200;NOT NULL"`                                         // 返回状态（200成功 其它失败）
-	Msg          string         `gorm:"column:msg;type:VARCHAR(255)"`                                                         // 提示消息
-	CreatedTime  time.Time      `gorm:"column:created_time;type:TIMESTAMP WITH TIME ZONE;default:CURRENT_TIMESTAMP;NOT NULL"` // 操作时间
+	ID           int64          `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`       // 编号
+	OperUserID   int64          `gorm:"column:oper_user_id;type:BIGINT;NOT NULL"`               // 用户id
+	OperUserName string         `gorm:"column:oper_user_name;type:VARCHAR(50)"`                 // 操作人员名称
+	OperName     string         `gorm:"column:oper_name;type:VARCHAR(50)"`                      // 操作名称
+	BusinessType int64          `gorm:"column:business_type;type:BIGINT;NOT NULL"`              // 业务类型（1新增 2修改 3删除 4查询 5其它）
+	Uri          string         `gorm:"column:uri;type:VARCHAR(100)"`                           // 请求地址
+	OperIpAddr   string         `gorm:"column:oper_ip_addr;type:VARCHAR(50)"`                   // 主机地址
+	OperLocation string         `gorm:"column:oper_location;type:VARCHAR(255)"`                 // 操作地点
+	Req          sql.NullString `gorm:"column:req;type:TEXT"`                                   // 请求参数
+	Resp         sql.NullString `gorm:"column:resp;type:TEXT"`                                  // 返回参数
+	Code         int64          `gorm:"column:code;type:BIGINT;default:200;NOT NULL"`           // 返回状态（200成功 其它失败）
+	Msg          string         `gorm:"column:msg;type:VARCHAR(255)"`                           // 提示消息
+	CreatedTime  time.Time      `gorm:"column:created_time;default:CURRENT_TIMESTAMP;NOT NULL"` // 操作时间
 }
 
 func (m *SysOperLog) TableName() string {
@@ -124,15 +124,14 @@ func (m *SysOperLog) TableName() string {
 
 // 接口管理
 type SysApiInfo struct {
-	ID           int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`         // 编号
-	Route        string    `gorm:"column:route;type:VARCHAR(100);NOT NULL"`                  // 路由
-	Method       int64     `gorm:"column:method;type:BIGINT;NOT NULL"`                       // 请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
-	Name         string    `gorm:"column:name;type:VARCHAR(100);NOT NULL"`                   // 请求名称
-	BusinessType int64     `gorm:"column:business_type;type:BIGINT;NOT NULL"`                // 业务类型（1新增 2修改 3删除 4查询 5其它）
-	Group        string    `gorm:"column:group;type:VARCHAR(100);NOT NULL"`                  // 接口组
-	Desc         string    `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                   // 备注
-	CreatedAt    time.Time `gorm:"column:created_at;type:TIMESTAMP WITH TIME ZONE;NOT NULL"` // 创建时间
-	UpdatedAt    time.Time `gorm:"column:updated_at;type:TIMESTAMP WITH TIME ZONE;NOT NULL"` // 更新时间
+	ID           int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`    // 编号
+	Route        string `gorm:"column:route;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 路由
+	Method       int64  `gorm:"column:method;type:BIGINT;NOT NULL"`                  // 请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Name         string `gorm:"column:name;type:VARCHAR(100);NOT NULL"`              // 请求名称
+	BusinessType int64  `gorm:"column:business_type;type:BIGINT;NOT NULL"`           // 业务类型（1新增 2修改 3删除 4查询 5其它）
+	Group        string `gorm:"column:group;type:VARCHAR(100);NOT NULL"`             // 接口组
+	Desc         string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`              // 备注
+	stores.Time
 }
 
 func (m *SysApiInfo) TableName() string {

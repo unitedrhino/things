@@ -50,14 +50,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 	stores.InitConn(c.Database)
-	// 自动迁移数据库
-	db := stores.GetCommonConn(context.Background())
-	errdb := db.AutoMigrate(&relationDB.DiDeviceShadow{})
-	if errdb != nil {
-		logx.Error("failed to migrate database: %v", errdb)
+	err := relationDB.Migrate()
+	if err != nil {
+		logx.Error("disvr 数据库初始化失败 err", err)
+		os.Exit(-1)
 	}
-	logx.Info("NewPubDev db.AutoMigrate!")
-	//TestTD(td)
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {
 		logx.Error("NewPubDev err", err)

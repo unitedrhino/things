@@ -1,20 +1,19 @@
 package relationDB
 
 import (
-	"context"
 	"github.com/i-Things/things/shared/stores"
 )
 
 func Migrate() error {
-	db := stores.GetCommonConn(context.Background())
+	db := stores.GetCommonConn(nil)
 	return db.AutoMigrate(
-		DmProductInfo{},
-		DmProductCustom{},
-		DmProductSchema{},
-		DmDeviceInfo{},
-		DmGroupInfo{},
-		DmGroupDevice{},
-		DmGatewayDevice{},
-		DmProductRemoteConfig{},
+		&DmProductInfo{},
+		&DmDeviceInfo{},
+		&DmProductCustom{},
+		&DmProductSchema{},
+		&DmGroupInfo{},
+		&DmGroupDevice{},
+		&DmGatewayDevice{},
+		&DmProductRemoteConfig{},
 	)
 }
