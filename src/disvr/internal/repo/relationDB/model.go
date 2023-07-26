@@ -19,6 +19,3 @@ type DiDeviceShadow struct {
 func (m *DiDeviceShadow) TableName() string {
 	return "di_device_shadow"
 }
-func (m *DiDeviceShadow) Comment() string {
-	return "di_device_shadow"
-}

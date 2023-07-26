@@ -31,7 +31,7 @@ func (d HubLogRepo) DropDevice(ctx context.Context, productID string, deviceName
 }
 func (d HubLogRepo) Insert(ctx context.Context, data *deviceMsgManage.HubLog) error {
 	sql := fmt.Sprintf("insert into %s using %s tags('%s','%s')(`ts`, `content`, `topic`, `action`,"+
-		" `requestID`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
+		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
 		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(), data.ProductID, data.DeviceName)
 	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.Topic, data.Action,
 		data.RequestID, data.TranceID, data.ResultType); err != nil {

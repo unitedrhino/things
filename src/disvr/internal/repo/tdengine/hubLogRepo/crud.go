@@ -12,19 +12,19 @@ import (
 
 func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter msgHubLog.HubFilter) sq.SelectBuilder {
 	if len(filter.ProductID) != 0 {
-		sql = sql.Where("product_id=?", filter.ProductID)
+		sql = sql.Where("`product_id`=?", filter.ProductID)
 	}
 	if len(filter.DeviceName) != 0 {
-		sql = sql.Where("device_name=?", filter.DeviceName)
+		sql = sql.Where("`device_name`=?", filter.DeviceName)
 	}
 	if len(filter.Content) != 0 {
-		sql = sql.Where("content=?", filter.Content)
+		sql = sql.Where("`content`=?", filter.Content)
 	}
 	if len(filter.RequestID) != 0 {
-		sql = sql.Where("request_id=?", filter.RequestID)
+		sql = sql.Where("`request_id`=?", filter.RequestID)
 	}
 	if len(filter.Actions) != 0 {
-		sql = sql.Where(fmt.Sprintf("action = (%v)", stores.ArrayToSql(filter.Actions)))
+		sql = sql.Where(fmt.Sprintf("`action` in (%v)", stores.ArrayToSql(filter.Actions)))
 	}
 	if len(filter.Topics) != 0 {
 		sql = sql.Where(fmt.Sprintf("`topic` in (%v)", stores.ArrayToSql(filter.Topics)))
@@ -78,8 +78,8 @@ func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter msgHubLog.HubFilter
 }
 
 func (d HubLogRepo) Insert(ctx context.Context, data *msgHubLog.HubLog) error {
-	sql := fmt.Sprintf("insert into %s using %s tags('%s','%s')(ts, content, topic, action,"+
-		" request_id, trance_id, result_type) values (?,?,?,?,?,?,?);",
+	sql := fmt.Sprintf("insert into %s using %s tags('%s','%s')(`ts`, `content`, `topic`, `action`,"+
+		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
 		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(), data.ProductID, data.DeviceName)
 	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.Topic, data.Action,
 		data.RequestID, data.TranceID, data.ResultType); err != nil {
