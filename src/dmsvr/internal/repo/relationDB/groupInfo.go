@@ -27,7 +27,7 @@ func NewGroupInfoRepo(in any) *GroupInfoRepo {
 func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.WithProduct {
-		db = db.Preload("product_info")
+		db = db.Preload("ProductInfo")
 	}
 	if f.GroupID != 0 {
 		db = db.Where("group_id=?", f.GroupID)

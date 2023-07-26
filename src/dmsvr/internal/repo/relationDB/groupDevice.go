@@ -54,7 +54,7 @@ func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []
 func (p GroupDeviceRepo) fmtFilter(ctx context.Context, f GroupDeviceFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.WithProduct {
-		db = db.Preload("product_info")
+		db = db.Preload("ProductInfo")
 	}
 	//业务过滤条件
 	if f.GroupID != 0 {
