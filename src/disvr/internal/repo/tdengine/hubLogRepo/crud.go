@@ -57,7 +57,7 @@ func (d HubLogRepo) GetCountLog(ctx context.Context, filter msgHubLog.HubFilter,
 
 func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter msgHubLog.HubFilter, page def.PageInfo2) (
 	[]*msgHubLog.HubLog, error) {
-	sql := sq.Select("*").From(d.GetLogStableName()).OrderBy("ts desc")
+	sql := sq.Select("*").From(d.GetLogStableName()).OrderBy("`ts` desc")
 	sql = d.fillFilter(sql, filter)
 	sql = page.FmtSql(sql)
 	sqlStr, value, err := sql.ToSql()
