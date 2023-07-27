@@ -30,6 +30,11 @@ func ToPoint(p def.Point) Point {
 }
 
 func (p *Point) parsePoint(binaryData []byte) error {
+	if dbType == conf.Pgsql {
+		_, err := fmt.Sscanf(string(binaryData), "(%f,%f)", &p.Longitude, &p.Latitude)
+		return err
+	}
+	//下面是mysql的方式
 	if len(binaryData) != 25 {
 		return nil
 	}
@@ -72,9 +77,7 @@ func (p Point) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
 	case conf.Pgsql:
 		return clause.Expr{
 			//SQL:  "ST_PointFromText(?)",
-			SQL: "ST_GeomFromText(ST_AsText(?),-1)::point", //如果你不知道 SRID 的值，可以使用 -1 来表示未知的空间参考系统。
-
-			Vars: []interface{}{fmt.Sprintf("POINT(%f %f)", p.Longitude, p.Latitude)},
+			SQL: fmt.Sprintf("point'(%f,%f)'", p.Longitude, p.Latitude), //如果你不知道 SRID 的值，可以使用 -1 来表示未知的空间参考系统。
 		}
 	default:
 		return clause.Expr{
