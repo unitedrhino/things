@@ -1,0 +1,17 @@
+Name: stock.rpc
+ListenOn: 0.0.0.0:8080
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: stock.rpc
+CacheConf:
+  - Host: "redis.host:6379"
+    Pass: "cQEuR4Htcv6t"
+
+SqlConf:
+  DataSource: postgres://gleke:gleke@119.29.238.113:5432/gleke?sslmode=disable
+
+Event:
+  Mode: nats
+  Nats:
+    Url: nats://172.19.0.2:4222

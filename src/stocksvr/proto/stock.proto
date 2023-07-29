@@ -1,0 +1,752 @@
+syntax = "proto3";
+option go_package = "pb/stock";
+
+package stocksvr;
+
+// ReqStockLocationCreate 新建入参
+message ReqStockLocationCreate {
+  uint64 user_id =1;
+  uint64 location_id =2;
+  int64  posx =3;
+  int64  posy =4;
+  int64  posz =5;
+  uint64 company_id =6;
+  uint64 removal_strategy_id =7;
+  int64  cyclic_inventory_frequency =8;
+  uint64 warehouse_id =9;
+  uint64 storage_category_id =10;
+  uint64 create_uid =11;
+  uint64 write_uid =12;
+  string name =13;
+  string complete_name =14;
+  string usage =15;
+  string parent_path =16;
+  string barcode =17;
+  int64  last_inventory_date =18;
+  int64  next_inventory_date =19;
+  string comment =20;
+  bool   active =21;
+  bool   scrap_location =22;
+  bool   return_location =23;
+  bool   replenish_location =24;
+  int64  create_date =25;
+  int64  write_date =26;
+  uint64 valuation_in_account_id =27;
+  uint64 valuation_out_account_id =28;
+
+}
+// ResStockLocationCreate 新建出参
+message ResStockLocationCreate {
+  uint64 id =1;
+}
+
+// ReqStockLocationUpdate 修改入参
+message ReqStockLocationUpdate {
+  uint64 user_id =1;
+  uint64 id =2;
+  uint64 location_id =3;
+  int64  posx =4;
+  int64  posy =5;
+  int64  posz =6;
+  uint64 company_id =7;
+  uint64 removal_strategy_id =8;
+  int64  cyclic_inventory_frequency =9;
+  uint64 warehouse_id =10;
+  uint64 storage_category_id =11;
+  uint64 create_uid =12;
+  uint64 write_uid =13;
+  string name =14;
+  string complete_name =15;
+  string usage =16;
+  string parent_path =17;
+  string barcode =18;
+  int64  last_inventory_date =19;
+  int64  next_inventory_date =20;
+  string comment =21;
+  bool   active =22;
+  bool   scrap_location =23;
+  bool   return_location =24;
+  bool   replenish_location =25;
+  int64  create_date =26;
+  int64  write_date =27;
+  uint64 valuation_in_account_id =28;
+  uint64 valuation_out_account_id =29;
+
+}
+// ResStockLocationUpdate 修改出参
+message ResStockLocationUpdate {
+  uint32 success = 1;
+}
+
+// ReqStockLocationDelete 删除
+message ReqStockLocationDelete {
+  uint64 user_id =1;
+  uint32 channel_id =2;
+  uint64 id = 3;
+}
+// ResStockLocationDelete 删除出参
+message ResStockLocationDelete {
+  uint32 success = 1;
+}
+
+// ReqStockLocationList 列表入参
+message ReqStockLocationList {
+  bool with_total = 1;
+  bool with_no_page = 2;
+  uint64 page =3;
+  uint64 per_page =4;
+  repeated string order_by =5;
+  uint64 id =6;
+  uint64 location_id =7;
+  int64  posx =8;
+  int64  posy =9;
+  int64  posz =10;
+  uint64 company_id =11;
+  uint64 removal_strategy_id =12;
+  int64  cyclic_inventory_frequency =13;
+  uint64 warehouse_id =14;
+  uint64 storage_category_id =15;
+  uint64 create_uid =16;
+  uint64 write_uid =17;
+  string name =18;
+  string complete_name =19;
+  string usage =20;
+  string parent_path =21;
+  string barcode =22;
+  int64  last_inventory_date =23;
+  int64  next_inventory_date =24;
+  string comment =25;
+  bool   active =26;
+  bool   scrap_location =27;
+  bool   return_location =28;
+  bool   replenish_location =29;
+  int64  create_date =30;
+  int64  write_date =31;
+  uint64 valuation_in_account_id =32;
+  uint64 valuation_out_account_id =33;
+
+}
+// ResStockLocationList 列表出参
+message ResStockLocationList {
+  uint64 total = 1;
+  repeated StockLocationItem items =2;
+}
+// StockLocationItem 列表内容
+message StockLocationItem {
+  uint64 id =1;
+  uint64 location_id =2;
+  int64  posx =3;
+  int64  posy =4;
+  int64  posz =5;
+  uint64 company_id =6;
+  uint64 removal_strategy_id =7;
+  int64  cyclic_inventory_frequency =8;
+  uint64 warehouse_id =9;
+  uint64 storage_category_id =10;
+  uint64 create_uid =11;
+  uint64 write_uid =12;
+  string name =13;
+  string complete_name =14;
+  string usage =15;
+  string parent_path =16;
+  string barcode =17;
+  int64  last_inventory_date =18;
+  int64  next_inventory_date =19;
+  string comment =20;
+  bool   active =21;
+  bool   scrap_location =22;
+  bool   return_location =23;
+  bool   replenish_location =24;
+  int64  create_date =25;
+  int64  write_date =26;
+  uint64 valuation_in_account_id =27;
+  uint64 valuation_out_account_id =28;
+
+}
+
+message ReqStockMoveCreate {
+  uint64 user_id =1;
+  int64  sequence =2;
+  uint64 company_id =3;
+  uint64 product_id =4;
+  int64  product_uom =5;
+  uint64 location_id =6;
+  uint64 location_dest_id =7;
+  uint64 partner_id =8;
+  uint64 picking_id =9;
+  uint64 group_id =10;
+  uint64 rule_id =11;
+  uint64 picking_type_id =12;
+  uint64 origin_returned_move_id =13;
+  uint64 restrict_partner_id =14;
+  uint64 warehouse_id =15;
+  uint64 package_level_id =16;
+  int64  next_serial_count =17;
+  uint64 orderpoint_id =18;
+  uint64 product_packaging_id =19;
+  uint64 create_uid =20;
+  uint64 write_uid =21;
+  string name =22;
+  string priority =23;
+  string state =24;
+  string origin =25;
+  string procure_method =26;
+  string reference =27;
+  string next_serial =28;
+  int64  reservation_date =29;
+  string description_picking =30;
+  double product_qty =31;
+  double product_uom_qty =32;
+  double quantity_done =33;
+  bool   scrapped =34;
+  bool   propagate_cancel =35;
+  bool   is_inventory =36;
+  bool   additional =37;
+  int64  date =38;
+  int64  date_deadline =39;
+  int64  delay_alert_date =40;
+  int64  create_date =41;
+  int64  write_date =42;
+  double price_unit =43;
+  uint64 analytic_account_line_id =44;
+  bool   to_refund =45;
+  uint64 sale_line_id =46;
+  uint64 purchase_line_id =47;
+  uint64 created_purchase_line_id =48;
+
+}
+// ResStockMoveCreate 新建出参
+message ResStockMoveCreate {
+  uint64 id =1;
+}
+
+// ReqStockMoveUpdate 修改入参
+message ReqStockMoveUpdate {
+  uint64 user_id =1;
+  uint64 id =2;
+  int64  sequence =3;
+  uint64 company_id =4;
+  uint64 product_id =5;
+  int64  product_uom =6;
+  uint64 location_id =7;
+  uint64 location_dest_id =8;
+  uint64 partner_id =9;
+  uint64 picking_id =10;
+  uint64 group_id =11;
+  uint64 rule_id =12;
+  uint64 picking_type_id =13;
+  uint64 origin_returned_move_id =14;
+  uint64 restrict_partner_id =15;
+  uint64 warehouse_id =16;
+  uint64 package_level_id =17;
+  int64  next_serial_count =18;
+  uint64 orderpoint_id =19;
+  uint64 product_packaging_id =20;
+  uint64 create_uid =21;
+  uint64 write_uid =22;
+  string name =23;
+  string priority =24;
+  string state =25;
+  string origin =26;
+  string procure_method =27;
+  string reference =28;
+  string next_serial =29;
+  int64  reservation_date =30;
+  string description_picking =31;
+  double product_qty =32;
+  double product_uom_qty =33;
+  double quantity_done =34;
+  bool   scrapped =35;
+  bool   propagate_cancel =36;
+  bool   is_inventory =37;
+  bool   additional =38;
+  int64  date =39;
+  int64  date_deadline =40;
+  int64  delay_alert_date =41;
+  int64  create_date =42;
+  int64  write_date =43;
+  double price_unit =44;
+  uint64 analytic_account_line_id =45;
+  bool   to_refund =46;
+  uint64 sale_line_id =47;
+  uint64 purchase_line_id =48;
+  uint64 created_purchase_line_id =49;
+
+}
+// ResStockMoveUpdate 修改出参
+message ResStockMoveUpdate {
+  uint32 success = 1;
+}
+
+// ReqStockMoveDelete 删除
+message ReqStockMoveDelete {
+  uint64 user_id =1;
+  uint32 channel_id =2;
+  uint64 id = 3;
+}
+// ResStockMoveDelete 删除出参
+message ResStockMoveDelete {
+  uint32 success = 1;
+}
+
+// ReqStockMoveList 列表入参
+message ReqStockMoveList {
+  bool with_total = 1;
+  bool with_no_page = 2;
+  uint64 page =3;
+  uint64 per_page =4;
+  repeated string order_by =5;
+  uint64 id =6;
+  int64  sequence =7;
+  uint64 company_id =8;
+  uint64 product_id =9;
+  int64  product_uom =10;
+  uint64 location_id =11;
+  uint64 location_dest_id =12;
+  uint64 partner_id =13;
+  uint64 picking_id =14;
+  uint64 group_id =15;
+  uint64 rule_id =16;
+  uint64 picking_type_id =17;
+  uint64 origin_returned_move_id =18;
+  uint64 restrict_partner_id =19;
+  uint64 warehouse_id =20;
+  uint64 package_level_id =21;
+  int64  next_serial_count =22;
+  uint64 orderpoint_id =23;
+  uint64 product_packaging_id =24;
+  uint64 create_uid =25;
+  uint64 write_uid =26;
+  string name =27;
+  string priority =28;
+  string state =29;
+  string origin =30;
+  string procure_method =31;
+  string reference =32;
+  string next_serial =33;
+  int64  reservation_date =34;
+  string description_picking =35;
+  double product_qty =36;
+  double product_uom_qty =37;
+  double quantity_done =38;
+  bool   scrapped =39;
+  bool   propagate_cancel =40;
+  bool   is_inventory =41;
+  bool   additional =42;
+  int64  date =43;
+  int64  date_deadline =44;
+  int64  delay_alert_date =45;
+  int64  create_date =46;
+  int64  write_date =47;
+  double price_unit =48;
+  uint64 analytic_account_line_id =49;
+  bool   to_refund =50;
+  uint64 sale_line_id =51;
+  uint64 purchase_line_id =52;
+  uint64 created_purchase_line_id =53;
+
+}
+// ResStockMoveList 列表出参
+message ResStockMoveList {
+  uint64 total = 1;
+  repeated StockMoveItem items =2;
+}
+// StockMoveItem 列表内容
+message StockMoveItem {
+  uint64 id =1;
+  int64  sequence =2;
+  uint64 company_id =3;
+  uint64 product_id =4;
+  int64  product_uom =5;
+  uint64 location_id =6;
+  uint64 location_dest_id =7;
+  uint64 partner_id =8;
+  uint64 picking_id =9;
+  uint64 group_id =10;
+  uint64 rule_id =11;
+  uint64 picking_type_id =12;
+  uint64 origin_returned_move_id =13;
+  uint64 restrict_partner_id =14;
+  uint64 warehouse_id =15;
+  uint64 package_level_id =16;
+  int64  next_serial_count =17;
+  uint64 orderpoint_id =18;
+  uint64 product_packaging_id =19;
+  uint64 create_uid =20;
+  uint64 write_uid =21;
+  string name =22;
+  string priority =23;
+  string state =24;
+  string origin =25;
+  string procure_method =26;
+  string reference =27;
+  string next_serial =28;
+  int64  reservation_date =29;
+  string description_picking =30;
+  double product_qty =31;
+  double product_uom_qty =32;
+  double quantity_done =33;
+  bool   scrapped =34;
+  bool   propagate_cancel =35;
+  bool   is_inventory =36;
+  bool   additional =37;
+  int64  date =38;
+  int64  date_deadline =39;
+  int64  delay_alert_date =40;
+  int64  create_date =41;
+  int64  write_date =42;
+  double price_unit =43;
+  uint64 analytic_account_line_id =44;
+  bool   to_refund =45;
+  uint64 sale_line_id =46;
+  uint64 purchase_line_id =47;
+  uint64 created_purchase_line_id =48;
+
+}
+
+// ReqStockMoveView 单个查询入参
+message ReqStockMoveView {
+  uint64 id =1;
+}
+// ResStockMoveView 单个查询出参
+message ResStockMoveView {
+  uint64 id =1;
+  int64  sequence =2;
+  uint64 company_id =3;
+  uint64 product_id =4;
+  int64  product_uom =5;
+  uint64 location_id =6;
+  uint64 location_dest_id =7;
+  uint64 partner_id =8;
+  uint64 picking_id =9;
+  uint64 group_id =10;
+  uint64 rule_id =11;
+  uint64 picking_type_id =12;
+  uint64 origin_returned_move_id =13;
+  uint64 restrict_partner_id =14;
+  uint64 warehouse_id =15;
+  uint64 package_level_id =16;
+  int64  next_serial_count =17;
+  uint64 orderpoint_id =18;
+  uint64 product_packaging_id =19;
+  uint64 create_uid =20;
+  uint64 write_uid =21;
+  string name =22;
+  string priority =23;
+  string state =24;
+  string origin =25;
+  string procure_method =26;
+  string reference =27;
+  string next_serial =28;
+  int64  reservation_date =29;
+  string description_picking =30;
+  double product_qty =31;
+  double product_uom_qty =32;
+  double quantity_done =33;
+  bool   scrapped =34;
+  bool   propagate_cancel =35;
+  bool   is_inventory =36;
+  bool   additional =37;
+  int64  date =38;
+  int64  date_deadline =39;
+  int64  delay_alert_date =40;
+  int64  create_date =41;
+  int64  write_date =42;
+  double price_unit =43;
+  uint64 analytic_account_line_id =44;
+  bool   to_refund =45;
+  uint64 sale_line_id =46;
+  uint64 purchase_line_id =47;
+  uint64 created_purchase_line_id =48;
+
+}
+
+// ReqStockMoveBatchCreate 批量新建入参
+message ReqStockMoveBatchCreate {
+  uint64 user_id =1;
+  uint32 channel_id =2;
+  repeated StockMoveBatchCreateItem items =3;
+}
+// ResStockMoveCreate 批量新建出参
+message ResStockMoveBatchCreate {
+  uint64 id =1;
+}
+// StockMoveBatchCreateItem 批量新增内容
+message StockMoveBatchCreateItem {
+  int64  sequence =1;
+  uint64 company_id =2;
+  uint64 product_id =3;
+  int64  product_uom =4;
+  uint64 location_id =5;
+  uint64 location_dest_id =6;
+  uint64 partner_id =7;
+  uint64 picking_id =8;
+  uint64 group_id =9;
+  uint64 rule_id =10;
+  uint64 picking_type_id =11;
+  uint64 origin_returned_move_id =12;
+  uint64 restrict_partner_id =13;
+  uint64 warehouse_id =14;
+  uint64 package_level_id =15;
+  int64  next_serial_count =16;
+  uint64 orderpoint_id =17;
+  uint64 product_packaging_id =18;
+  uint64 create_uid =19;
+  uint64 write_uid =20;
+  string name =21;
+  string priority =22;
+  string state =23;
+  string origin =24;
+  string procure_method =25;
+  string reference =26;
+  string next_serial =27;
+  int64  reservation_date =28;
+  string description_picking =29;
+  double product_qty =30;
+  double product_uom_qty =31;
+  double quantity_done =32;
+  bool   scrapped =33;
+  bool   propagate_cancel =34;
+  bool   is_inventory =35;
+  bool   additional =36;
+  int64  date =37;
+  int64  date_deadline =38;
+  int64  delay_alert_date =39;
+  int64  create_date =40;
+  int64  write_date =41;
+  double price_unit =42;
+  uint64 analytic_account_line_id =43;
+  bool   to_refund =44;
+  uint64 sale_line_id =45;
+  uint64 purchase_line_id =46;
+  uint64 created_purchase_line_id =47;
+
+}
+
+// ReqStockMoveBatchUpdate 批量修改入参
+message ReqStockMoveBatchUpdate {
+  uint64 user_id =1;
+  uint32 channel_id =2;
+  repeated uint64 ids =3;
+  int64  sequence =4;
+  uint64 company_id =5;
+  uint64 product_id =6;
+  int64  product_uom =7;
+  uint64 location_id =8;
+  uint64 location_dest_id =9;
+  uint64 partner_id =10;
+  uint64 picking_id =11;
+  uint64 group_id =12;
+  uint64 rule_id =13;
+  uint64 picking_type_id =14;
+  uint64 origin_returned_move_id =15;
+  uint64 restrict_partner_id =16;
+  uint64 warehouse_id =17;
+  uint64 package_level_id =18;
+  int64  next_serial_count =19;
+  uint64 orderpoint_id =20;
+  uint64 product_packaging_id =21;
+  uint64 create_uid =22;
+  uint64 write_uid =23;
+  string name =24;
+  string priority =25;
+  string state =26;
+  string origin =27;
+  string procure_method =28;
+  string reference =29;
+  string next_serial =30;
+  int64  reservation_date =31;
+  string description_picking =32;
+  double product_qty =33;
+  double product_uom_qty =34;
+  double quantity_done =35;
+  bool   scrapped =36;
+  bool   propagate_cancel =37;
+  bool   is_inventory =38;
+  bool   additional =39;
+  int64  date =40;
+  int64  date_deadline =41;
+  int64  delay_alert_date =42;
+  int64  create_date =43;
+  int64  write_date =44;
+  double price_unit =45;
+  uint64 analytic_account_line_id =46;
+  bool   to_refund =47;
+  uint64 sale_line_id =48;
+  uint64 purchase_line_id =49;
+  uint64 created_purchase_line_id =50;
+
+}
+// ResStockMoveBatchUpdate 批量修改出参
+message ResStockMoveBatchUpdate {
+  uint32 success = 1;
+}
+
+// ReqStockMoveBatchDelete 批量删除
+message ReqStockMoveBatchDelete {
+  uint64 user_id =1;
+  repeated uint64 ids = 2;
+  uint32 channel_id =3;
+}
+// ResStockMoveBatchDelete 批量删除出参
+message ResStockMoveBatchDelete {
+  uint32 success = 1;
+}
+
+message ReqStockMoveUpdatePartial {
+  uint64 user_id =1;
+  uint32 channel_id =2;
+  repeated uint64 ids =3;
+  repeated string fields =4;
+  int64  sequence =5;
+  uint64 company_id =6;
+  uint64 product_id =7;
+  int64  product_uom =8;
+  uint64 location_id =9;
+  uint64 location_dest_id =10;
+  uint64 partner_id =11;
+  uint64 picking_id =12;
+  uint64 group_id =13;
+  uint64 rule_id =14;
+  uint64 picking_type_id =15;
+  uint64 origin_returned_move_id =16;
+  uint64 restrict_partner_id =17;
+  uint64 warehouse_id =18;
+  uint64 package_level_id =19;
+  int64  next_serial_count =20;
+  uint64 orderpoint_id =21;
+  uint64 product_packaging_id =22;
+  uint64 create_uid =23;
+  uint64 write_uid =24;
+  string name =25;
+  string priority =26;
+  string state =27;
+  string origin =28;
+  string procure_method =29;
+  string reference =30;
+  string next_serial =31;
+  int64  reservation_date =32;
+  string description_picking =33;
+  double product_qty =34;
+  double product_uom_qty =35;
+  double quantity_done =36;
+  bool   scrapped =37;
+  bool   propagate_cancel =38;
+  bool   is_inventory =39;
+  bool   additional =40;
+  int64  date =41;
+  int64  date_deadline =42;
+  int64  delay_alert_date =43;
+  int64  create_date =44;
+  int64  write_date =45;
+  double price_unit =46;
+  uint64 analytic_account_line_id =47;
+  bool   to_refund =48;
+  uint64 sale_line_id =49;
+  uint64 purchase_line_id =50;
+  uint64 created_purchase_line_id =51;
+
+}
+// ResStockMoveBatchUpdate 批量修改出参
+message ResStockMoveUpdatePartial {
+  uint32 success = 1;
+}
+
+message TenantUpdateAutomatic {
+  int64  sequence =1;
+  uint64 company_id =2;
+  uint64 product_id =3;
+  int64  product_uom =4;
+  uint64 location_id =5;
+  uint64 location_dest_id =6;
+  uint64 partner_id =7;
+  uint64 picking_id =8;
+  uint64 group_id =9;
+  uint64 rule_id =10;
+  uint64 picking_type_id =11;
+  uint64 origin_returned_move_id =12;
+  uint64 restrict_partner_id =13;
+  uint64 warehouse_id =14;
+  uint64 package_level_id =15;
+  int64  next_serial_count =16;
+  uint64 orderpoint_id =17;
+  uint64 product_packaging_id =18;
+  uint64 create_uid =19;
+  uint64 write_uid =20;
+  string name =21;
+  string priority =22;
+  string state =23;
+  string origin =24;
+  string procure_method =25;
+  string reference =26;
+  string next_serial =27;
+  int64  reservation_date =28;
+  string description_picking =29;
+  double product_qty =30;
+  double product_uom_qty =31;
+  double quantity_done =32;
+  bool   scrapped =33;
+  bool   propagate_cancel =34;
+  bool   is_inventory =35;
+  bool   additional =36;
+  int64  date =37;
+  int64  date_deadline =38;
+  int64  delay_alert_date =39;
+  int64  create_date =40;
+  int64  write_date =41;
+  double price_unit =42;
+  uint64 analytic_account_line_id =43;
+  bool   to_refund =44;
+  uint64 sale_line_id =45;
+  uint64 purchase_line_id =46;
+  uint64 created_purchase_line_id =47;
+
+}
+message ReqStockMoveUpdateAutomaticPartial {
+  TenantUpdateAutomatic item = 1;
+  repeated string fields = 2;
+  uint64 id = 3;
+}
+message ResStockMoveUpdateAutomaticPartial {
+  uint32 success = 1;
+}
+
+message ReqSendMsg{
+  string topic =1;
+  string payload=2;
+}
+message ResSendMsg{
+
+}
+
+service stock {
+
+  rpc StockLocationCreate(ReqStockLocationCreate) returns (ResStockLocationCreate);
+
+  rpc StockLocationUpdate(ReqStockLocationUpdate) returns (ResStockLocationUpdate);
+
+  rpc StockLocationDelete(ReqStockLocationDelete) returns (ResStockLocationDelete);
+
+  rpc StockLocationList(ReqStockLocationList) returns (ResStockLocationList);
+
+  rpc StockMoveCreate(ReqStockMoveCreate) returns (ResStockMoveCreate);
+
+  rpc StockMoveUpdate(ReqStockMoveUpdate) returns (ResStockMoveUpdate);
+
+  rpc StockMoveDelete(ReqStockMoveDelete) returns (ResStockMoveDelete);
+
+  rpc StockMoveList(ReqStockMoveList) returns (ResStockMoveList);
+
+  rpc StockMoveView(ReqStockMoveView) returns (ResStockMoveView);
+
+  rpc StockMoveBatchCreate(ReqStockMoveBatchCreate) returns (ResStockMoveBatchCreate);
+
+  rpc StockMoveBatchUpdate(ReqStockMoveBatchUpdate) returns (ResStockMoveBatchUpdate);
+
+  rpc StockMoveBatchDelete(ReqStockMoveBatchDelete) returns (ResStockMoveBatchDelete);
+
+  rpc StockMoveUpdatePartial(ReqStockMoveUpdatePartial) returns (ResStockMoveUpdatePartial);
+
+  rpc StockMoveUpdateAutomaticPartial(ReqStockMoveUpdateAutomaticPartial) returns (ResStockMoveUpdateAutomaticPartial);
+  rpc SendMsg(ReqSendMsg) returns (ResSendMsg);
+}
