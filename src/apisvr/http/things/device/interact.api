@@ -75,7 +75,7 @@ type DeviceInteractRespReadReq struct{
 type DeviceInteractSendActionReq struct {
     ProductID   string `json:"productID"`   //产品id
     DeviceName  string `json:"deviceName"`  //设备名
-    ActionID    string `json:"actionId"`    //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+    ActionID    string `json:"actionID"`    //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
     InputParams string `json:"inputParams"` //输入参数
     IsAsync     bool `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
 }
