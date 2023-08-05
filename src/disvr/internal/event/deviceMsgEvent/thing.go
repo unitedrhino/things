@@ -226,7 +226,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 	case deviceMsg.GetStatus: //设备请求获取 云端记录的最新设备信息
 		return l.HandlePropertyGetStatus(msg)
 	case deviceMsg.ControlReply: //设备响应的 “云端下发控制指令” 的处理结果
-		return l.HandleResp(msg)
+		return l.HandleControl(msg)
 	default:
 		return nil, errors.Method.AddMsg(l.dreq.Method)
 	}
@@ -276,7 +276,39 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
-func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+	l.Debugf("%s req:%v", utils.FuncName(), msg)
+	switch l.dreq.Method {
+	case deviceMsg.Action: //设备请求云端
+		err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg, l.dreq.ClientToken)
+		if err != nil {
+			return nil, err
+		}
+
+	case deviceMsg.ActionReply: //云端请求设备的回复
+		var resp msgThing.Resp
+		err = utils.Unmarshal(msg.Payload, &resp)
+		if err != nil {
+			return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
+		}
+
+		req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg.Handle, msg.Type,
+			devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
+			resp.ClientToken)
+		if req == nil || err != nil {
+			return nil, err
+		}
+
+		err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.ClientToken)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return nil, nil
+}
+
+func (l *ThingLogic) HandleControl(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 
 	var resp msgThing.Resp
@@ -297,7 +329,7 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.P
 		return nil, err
 	}
 
-	if msg.Type == msgThing.TypeProperty && resp.Code == errors.OK.GetCode() { //如果设备回复了,且处理成功,需要入库
+	if resp.Code == errors.OK.GetCode() { //如果设备回复了,且处理成功,需要入库
 		_, err = l.HandlePropertyReport(msg, *req)
 		return nil, err
 	}
@@ -322,7 +354,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		case msgThing.TypeEvent: //设备上报的 事件
 			return l.HandleEvent(msg)
 		case msgThing.TypeAction: //设备响应的 “应用调用设备行为”的执行结果
-			return l.HandleResp(msg)
+			return l.HandleAction(msg)
 		default:
 			action = devices.Thing
 			return nil, errors.Parameter.AddDetailf("things types is err:%v", msg.Type)
