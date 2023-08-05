@@ -28,11 +28,20 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 	return &NatsClient{client: nc}, nil
 }
 
-//应用事件通知-设备物模型属性上报通知
+// 应用事件通知-设备物模型属性上报通知
 func (n *NatsClient) DeviceThingPropertyReport(ctx context.Context, msg application.PropertyReport) error {
 	data, _ := json.Marshal(msg)
 	pubMsg := events.NewEventMsg(ctx, data)
 	topic := fmt.Sprintf(topics.ApplicationDeviceReportThingProperty, msg.Device.ProductID, msg.Device.DeviceName, msg.Identifier)
+	err := n.client.Publish(topic, pubMsg)
+	return err
+}
+
+func (n *NatsClient) DeviceThingActionReport(ctx context.Context, msg application.ActionReport) error {
+	data, _ := json.Marshal(msg)
+	pubMsg := events.NewEventMsg(ctx, data)
+	topic := fmt.Sprintf(topics.ApplicationDeviceReportThingAction,
+		msg.Device.ProductID, msg.Device.DeviceName, msg.ActionID, msg.ReqType, msg.Dir)
 	err := n.client.Publish(topic, pubMsg)
 	return err
 }
