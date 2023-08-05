@@ -31,8 +31,9 @@ type (
 		Params schema.Params    `json:"params"` //事件参数
 	}
 	ActionDef struct {
-		Input  schema.Params `json:"input"`  //调用参数
-		Output schema.Params `json:"output"` //返回参数
+		Dir    schema.ActionDir `json:"dir"`    //调用方向
+		Input  schema.Params    `json:"input"`  //调用参数
+		Output schema.Params    `json:"output"` //返回参数
 	}
 )
 

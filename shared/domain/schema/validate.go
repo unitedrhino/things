@@ -2,6 +2,7 @@ package schema
 
 import (
 	"encoding/json"
+	"github.com/i-Things/things/shared/utils"
 
 	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
@@ -78,6 +79,12 @@ func (a *Action) ValidateWithFmt() error {
 	}
 	if err := NameValidate(a.Name); err != nil {
 		return err
+	}
+	if !utils.SliceIn(a.Dir, ActionDirDown, ActionDirUp, "") {
+		return errors.Parameter.WithMsgf("行为的控制方向只能为up及down,收到:%v", a.Dir)
+	}
+	if a.Dir == "" {
+		a.Dir = ActionDirDown
 	}
 	if err := DescValidate(a.Desc); err != nil {
 		return err

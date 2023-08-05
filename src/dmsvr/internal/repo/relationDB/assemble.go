@@ -108,6 +108,7 @@ func ToActionDo(in *DmProductSchema) *schema.Action {
 		CommonParam: ToCommonParam(in),
 		Input:       affordance.Input,
 		Output:      affordance.Output,
+		Dir:         affordance.Dir,
 	}
 	newAffordance, _ := json.Marshal(affordance)
 	in.Affordance = string(newAffordance)

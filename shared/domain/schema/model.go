@@ -63,6 +63,7 @@ type (
 	/*行为*/
 	Action struct {
 		CommonParam
+		Dir    ActionDir         `json:"dir"`    //调用方向
 		Input  Params            `json:"input"`  //调用参数
 		Output Params            `json:"output"` //返回参数
 		In     map[string]*Param `json:"-"`      //内部使用,使用map加速匹配,key为id
