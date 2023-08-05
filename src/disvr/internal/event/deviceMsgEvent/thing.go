@@ -284,7 +284,21 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 		if err != nil {
 			return nil, err
 		}
-
+		timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
+		core := devices.Core{
+			ProductID:  msg.ProductID,
+			DeviceName: msg.DeviceName,
+		}
+		utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+			//应用事件通知-设备物模型事件上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
+				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: "req", ClientToken: l.dreq.ClientToken,
+				ActionID: l.dreq.ActionID, Params: l.dreq.Params, Dir: schema.ActionDirUp,
+			})
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
+			}
+		})
 	case deviceMsg.ActionReply: //云端请求设备的回复
 		var resp msgThing.Resp
 		err = utils.Unmarshal(msg.Payload, &resp)

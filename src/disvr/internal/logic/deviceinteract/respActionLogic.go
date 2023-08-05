@@ -68,6 +68,10 @@ func (l *RespActionLogic) RespAction(in *di.RespActionReq) (*di.Response, error)
 		},
 		Response: param,
 	}
+	if resp.Code == 0 {
+		resp.Code = errors.OK.Code
+		resp.Status = errors.OK.Msg
+	}
 
 	err = resp.FmtRespParam(l.schema, req.ActionID, schema.ParamActionOutput)
 	if err != nil {
