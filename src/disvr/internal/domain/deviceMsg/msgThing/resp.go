@@ -9,7 +9,7 @@ import (
 
 type (
 	Resp struct {
-		*deviceMsg.CommonMsg
+		deviceMsg.CommonMsg
 		Version  string         `json:"version,omitempty"`  //协议版本，默认为1.0。
 		Type     string         `json:"type,omitempty"`     //	表示什么类型的信息。report:表示设备上报的信息
 		Response map[string]any `json:"response,omitempty"` //设备行为中定义的返回参数，设备行为执行成功后，向云端返回执行结果
@@ -21,6 +21,18 @@ func (d *Resp) GetTimeStamp(defaultTime time.Time) time.Time {
 		return defaultTime
 	}
 	return time.UnixMilli(d.Timestamp)
+}
+
+func (d *Resp) FmtRespParam(t *schema.Model, id string, tt schema.ParamType) error {
+	param, err := d.VerifyRespParam(t, id, tt)
+	if err != nil {
+		return err
+	}
+	d.Response, err = ToVal(param)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (d *Resp) VerifyRespParam(t *schema.Model, id string,

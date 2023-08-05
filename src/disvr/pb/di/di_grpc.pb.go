@@ -304,6 +304,8 @@ type DeviceInteractClient interface {
 	SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 	//获取异步调用设备行为的结果
 	ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error)
+	//回复调用设备行为
+	RespAction(ctx context.Context, in *RespActionReq, opts ...grpc.CallOption) (*Response, error)
 	//请求设备获取设备最新属性
 	GetPropertyReply(ctx context.Context, in *GetPropertyReplyReq, opts ...grpc.CallOption) (*GetPropertyReplyResp, error)
 	//调用设备属性
@@ -336,6 +338,15 @@ func (c *deviceInteractClient) SendAction(ctx context.Context, in *SendActionReq
 func (c *deviceInteractClient) ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error) {
 	out := new(SendActionResp)
 	err := c.cc.Invoke(ctx, "/di.DeviceInteract/actionRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceInteractClient) RespAction(ctx context.Context, in *RespActionReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/di.DeviceInteract/respAction", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -395,6 +406,8 @@ type DeviceInteractServer interface {
 	SendAction(context.Context, *SendActionReq) (*SendActionResp, error)
 	//获取异步调用设备行为的结果
 	ActionRead(context.Context, *RespReadReq) (*SendActionResp, error)
+	//回复调用设备行为
+	RespAction(context.Context, *RespActionReq) (*Response, error)
 	//请求设备获取设备最新属性
 	GetPropertyReply(context.Context, *GetPropertyReplyReq) (*GetPropertyReplyResp, error)
 	//调用设备属性
@@ -417,6 +430,9 @@ func (UnimplementedDeviceInteractServer) SendAction(context.Context, *SendAction
 }
 func (UnimplementedDeviceInteractServer) ActionRead(context.Context, *RespReadReq) (*SendActionResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ActionRead not implemented")
+}
+func (UnimplementedDeviceInteractServer) RespAction(context.Context, *RespActionReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RespAction not implemented")
 }
 func (UnimplementedDeviceInteractServer) GetPropertyReply(context.Context, *GetPropertyReplyReq) (*GetPropertyReplyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPropertyReply not implemented")
@@ -478,6 +494,24 @@ func _DeviceInteract_ActionRead_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceInteractServer).ActionRead(ctx, req.(*RespReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceInteract_RespAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RespActionReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).RespAction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/di.DeviceInteract/respAction",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).RespAction(ctx, req.(*RespActionReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -586,6 +620,10 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "actionRead",
 			Handler:    _DeviceInteract_ActionRead_Handler,
+		},
+		{
+			MethodName: "respAction",
+			Handler:    _DeviceInteract_RespAction_Handler,
 		},
 		{
 			MethodName: "getPropertyReply",
