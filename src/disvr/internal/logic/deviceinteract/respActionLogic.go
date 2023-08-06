@@ -53,11 +53,7 @@ func (l *RespActionLogic) RespAction(in *di.RespActionReq) (*di.Response, error)
 	if req == nil || err != nil {
 		return nil, err
 	}
-	param := map[string]any{}
-	err = utils.Unmarshal([]byte(in.OutputParams), &param)
-	if err != nil {
-		return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.OutputParams)
-	}
+
 	resp := msgThing.Resp{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:      deviceMsg.Action,
@@ -66,16 +62,22 @@ func (l *RespActionLogic) RespAction(in *di.RespActionReq) (*di.Response, error)
 			Status:      in.Status,
 			Code:        in.Code,
 		},
-		Response: param,
 	}
 	if resp.Code == 0 {
 		resp.Code = errors.OK.Code
 		resp.Status = errors.OK.Msg
 	}
-
-	err = resp.FmtRespParam(l.schema, req.ActionID, schema.ParamActionOutput)
-	if err != nil {
-		return nil, err
+	if resp.Code == errors.OK.GetCode() {
+		param := map[string]any{}
+		err = utils.Unmarshal([]byte(in.OutputParams), &param)
+		if err != nil {
+			return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.OutputParams)
+		}
+		resp.Response = param
+		err = resp.FmtRespParam(l.schema, req.ActionID, schema.ParamActionOutput)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	payload, _ := json.Marshal(resp)
