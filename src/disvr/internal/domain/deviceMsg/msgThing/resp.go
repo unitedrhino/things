@@ -13,6 +13,7 @@ type (
 		Version  string         `json:"version,omitempty"`  //协议版本，默认为1.0。
 		Type     string         `json:"type,omitempty"`     //	表示什么类型的信息。report:表示设备上报的信息
 		Response map[string]any `json:"response,omitempty"` //设备行为中定义的返回参数，设备行为执行成功后，向云端返回执行结果
+		ActionID string         `json:"actionID,omitempty"` //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
 	}
 )
 

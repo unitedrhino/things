@@ -62,6 +62,7 @@ func (l *RespActionLogic) RespAction(in *di.RespActionReq) (*di.Response, error)
 			Status:      in.Status,
 			Code:        in.Code,
 		},
+		ActionID: req.ActionID,
 	}
 	if resp.Code == 0 {
 		resp.Code = errors.OK.Code
