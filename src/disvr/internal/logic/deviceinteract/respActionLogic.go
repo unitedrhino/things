@@ -56,7 +56,7 @@ func (l *RespActionLogic) RespAction(in *di.RespActionReq) (*di.Response, error)
 
 	resp := msgThing.Resp{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:      deviceMsg.Action,
+			Method:      deviceMsg.ActionReply,
 			ClientToken: in.ClientToken,
 			Timestamp:   time.Now().UnixMilli(),
 			Status:      in.Status,
