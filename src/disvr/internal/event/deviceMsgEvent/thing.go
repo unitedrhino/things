@@ -311,6 +311,7 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 		}
 	}
 	utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+		l.Infof("DeviceThingActionReport device:%v,reqType:%v,req:%v", core, reqType, l.dreq)
 		//应用事件通知-设备物模型事件上报通知 ↓↓↓
 		err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
 			Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, ClientToken: l.dreq.ClientToken,
