@@ -8,6 +8,8 @@ Log:
 Database:
   DBType: mysql
   DSN: root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+#  DBType: pgsql
+#  DSN: postgres://postgres:password@localhost/ithings
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
