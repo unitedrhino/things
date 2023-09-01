@@ -15,8 +15,8 @@ type (
 		Params      map[string]any `json:"params,omitempty"`      //参数列表
 		Identifiers []string       `json:"identifiers,omitempty"` //内为希望设备上报的属性列表,不填为获取全部
 		Version     string         `json:"version,omitempty"`     //协议版本，默认为1.0。
-		EventID     string         `json:"eventId,omitempty"`     //事件的 Id，在数据模板事件中定义。
-		ActionID    string         `json:"actionId,omitempty"`    //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
+		EventID     string         `json:"eventID,omitempty"`     //事件的 Id，在数据模板事件中定义。
+		ActionID    string         `json:"actionID,omitempty"`    //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
 		Type        string         `json:"type,omitempty"`        //表示获取什么类型的信息（report:表示设备上报的信息 info:信息 alert:告警 fault:故障）
 	}
 	//设备基础信息

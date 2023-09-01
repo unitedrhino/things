@@ -54,7 +54,7 @@ const (
 	Ext              = "ext"
 )
 
-//设备通信流向
+// 设备通信流向
 type Direction int
 
 const (

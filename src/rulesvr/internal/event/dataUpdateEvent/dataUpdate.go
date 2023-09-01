@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -33,7 +34,7 @@ func (d *DataUpdateLogic) SceneInfoDelete(info *events.ChangeInfo) error {
 }
 func (d *DataUpdateLogic) SceneInfoUpdate(info *events.ChangeInfo) error {
 	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
-	do, err := d.svcCtx.SceneRepo.FindOne(d.ctx, info.ID)
+	do, err := relationDB.NewSceneInfoRepo(d.ctx).FindOne(d.ctx, info.ID)
 	if err != nil {
 		return err
 	}

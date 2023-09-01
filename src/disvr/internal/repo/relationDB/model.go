@@ -1,19 +1,19 @@
 package relationDB
 
 import (
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"time"
 )
 
 // 设备影子表
 type DiDeviceShadow struct {
-	ID                int64      `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
-	ProductID         string     `gorm:"column:productID;type:char(11);NOT NULL"`             // 产品id
-	DeviceName        string     `gorm:"column:deviceName;type:varchar(100);NOT NULL"`        // 设备名称
-	DataID            string     `gorm:"column:dataID;type:varchar(100);NOT NULL"`            // 属性id
-	Value             string     `gorm:"column:value;type:varchar(100);default:NULL"`         // 属性值
-	UpdatedDeviceTime *time.Time `gorm:"column:updatedDeviceTime;type:datetime;default:NULL"` //更新到设备时间
-	store.Time
+	ID                int64      `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	ProductID         string     `gorm:"column:product_id;uniqueIndex:pi_dn_di;type:CHAR(11);NOT NULL"`
+	DeviceName        string     `gorm:"column:device_name;uniqueIndex:pi_dn_di;type:VARCHAR(100);NOT NULL"`
+	DataID            string     `gorm:"column:data_id;uniqueIndex:pi_dn_di;type:VARCHAR(100);NOT NULL"`
+	Value             string     `gorm:"column:value;type:VARCHAR(100);default:NULL"`
+	UpdatedDeviceTime *time.Time `gorm:"column:updated_device_time;default:NULL"`
+	stores.Time
 }
 
 func (m *DiDeviceShadow) TableName() string {

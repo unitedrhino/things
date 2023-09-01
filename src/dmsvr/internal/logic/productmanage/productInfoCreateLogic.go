@@ -2,8 +2,8 @@ package productmanagelogic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"path"
 	"regexp"
 
@@ -14,7 +14,6 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -25,6 +24,7 @@ type ProductInfoCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDB *relationDB.ProductInfoRepo
 }
 
 func NewProductInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductInfoCreateLogic {
@@ -32,6 +32,7 @@ func NewProductInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
@@ -39,37 +40,35 @@ func NewProductInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 发现返回true 没有返回false
 */
 func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) {
-	_, err := l.svcCtx.ProductInfo.FindOneByProductName(l.ctx, in.ProductName)
-	switch err {
-	case mysql.ErrNotFound:
-		return false, nil
-	case nil:
+	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}})
+	if err == nil {
 		return true, nil
-	default:
-		return false, err
 	}
+	if errors.Cmp(err, errors.NotFind) {
+		return false, nil
+	}
+	return false, err
 }
 
 /*
 检测productid,发现返回true 没有返回false
 */
 func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error) {
-	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
-	switch err {
-	case mysql.ErrNotFound:
-		return false, nil
-	case nil:
+	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	if err == nil {
 		return true, nil
-	default:
-		return false, err
 	}
+	if errors.Cmp(err, errors.NotFind) {
+		return false, nil
+	}
+	return false, err
 }
 
 /*
 根据用户的输入生成对应的数据库数据
 */
-func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*mysql.DmProductInfo, error) {
-	pi := &mysql.DmProductInfo{
+func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relationDB.DmProductInfo, error) {
+	pi := &relationDB.DmProductInfo{
 		ProductID:   in.ProductID,   // 产品id
 		ProductName: in.ProductName, // 产品名称
 		Desc:        in.Desc.GetValue(),
@@ -106,14 +105,10 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*mysql.D
 	} else {
 		pi.AuthMode = def.AuthModePwd
 	}
-	if in.Tags != nil {
-		tags, err := json.Marshal(in.Tags)
-		if err == nil {
-			pi.Tags = string(tags)
-		}
-	} else {
-		pi.Tags = "{}"
+	if in.Tags == nil {
+		in.Tags = map[string]string{}
 	}
+	pi.Tags = in.Tags
 	if in.ProductImg != "" { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		si, err := oss.GetSceneInfo(in.ProductImg)
 		if err != nil {
@@ -171,15 +166,14 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 		return nil, err
 	}
 
-	_, err = l.svcCtx.ProductInfo.Insert(l.ctx, pi)
+	err = l.PiDB.Insert(l.ctx, pi)
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
-		return nil, errors.System.AddDetail(err)
+		return nil, err
 	}
-
 	return &dm.Response{}, nil
 }
-func (l *ProductInfoCreateLogic) InitProduct(pi *mysql.DmProductInfo) error {
+func (l *ProductInfoCreateLogic) InitProduct(pi *relationDB.DmProductInfo) error {
 	t, _ := schema.NewSchemaTsl([]byte(schema.DefaultSchema))
 	if err := l.svcCtx.SchemaManaRepo.InitProduct(
 		l.ctx, t, pi.ProductID); err != nil {

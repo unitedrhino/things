@@ -2,14 +2,14 @@ package pubDev
 
 import (
 	"context"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type (
 	MqttClient struct {
-		client mqtt.Client
+		client *clients.MqttClient
 	}
 )
 
@@ -24,5 +24,9 @@ func newEmqClient(conf *conf.MqttConf) (PubDev, error) {
 }
 
 func (d *MqttClient) Publish(ctx context.Context, topic string, payload []byte) error {
-	return d.client.Publish(topic, 1, false, payload).Error()
+	err := d.client.Publish(topic, 1, false, payload)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s.Publish failure err:%v topic:%v", err, topic)
+	}
+	return err
 }

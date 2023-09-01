@@ -38,6 +38,7 @@ SysRpc:
 DiRpc:
   Enable: true
   Mode: direct
+  RunProxy: true
   Conf:
     Timeout: 1000000
 DmRpc:

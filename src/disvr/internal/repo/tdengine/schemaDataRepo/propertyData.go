@@ -9,26 +9,38 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
+	"strings"
 	"time"
 )
 
 func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model, productID string, deviceName string, property *msgThing.PropertyData) error {
+	sql, args, err := d.GenInsertPropertySql(ctx, t, productID, deviceName, property)
+	if err != nil {
+		return err
+	}
+	sql = d.GenSql(sql)
+	if _, err := d.t.ExecContext(ctx, sql, args...); err != nil {
+		return err
+	}
+	return nil
+}
+func (d *SchemaDataRepo) GenSql(sql ...string) string {
+	return fmt.Sprintf("insert into %s;", strings.Join(sql, " "))
+}
+func (d *SchemaDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Model, productID string, deviceName string, property *msgThing.PropertyData) (sql string, args []any, err error) {
 	switch property.Param.(type) {
 	case map[string]any:
-		paramPlaceholder, paramIds, paramValList, err := store.GenParams(property.Param.(map[string]any))
+		paramPlaceholder, paramIds, paramValList, err := stores.GenParams(property.Param.(map[string]any))
 		if err != nil {
-			return err
+			return "", nil, err
 		}
-		sql := fmt.Sprintf("insert into %s using %s tags('%s','%s') (ts, %s) values (?,%s);",
+		sql = fmt.Sprintf(" %s using %s tags('%s','%s') (`ts`, %s) values (?,%s) ",
 			d.GetPropertyTableName(productID, deviceName, property.Identifier),
 			d.GetPropertyStableName(productID, property.Identifier), deviceName, t.Property[property.Identifier].Define.Type,
 			paramIds, paramPlaceholder)
-		param := append([]any{property.TimeStamp}, paramValList...)
-		if _, err := d.t.ExecContext(ctx, sql, param...); err != nil {
-			return err
-		}
+		args = append([]any{property.TimeStamp}, paramValList...)
 	default:
 		var (
 			param = property.Param
@@ -37,18 +49,16 @@ func (d *SchemaDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 		if _, ok := property.Param.([]any); ok { //如果是数组类型,需要先序列化为json
 			param, err = json.Marshal(property.Param)
 			if err != nil {
-				return errors.System.AddDetail("param json parse failure")
+				return "", nil, errors.System.AddDetail("param json parse failure")
 			}
 		}
-		sql := fmt.Sprintf("insert into %s using %s tags('%s','%s')(ts, param) values (?,?);",
+		sql = fmt.Sprintf(" %s using %s tags('%s','%s')(`ts`, `param`) values (?,?) ",
 			d.GetPropertyTableName(productID, deviceName, property.Identifier),
 			d.GetPropertyStableName(productID, property.Identifier),
 			deviceName, t.Property[property.Identifier].Define.Type)
-		if _, err := d.t.ExecContext(ctx, sql, property.TimeStamp, param); err != nil {
-			return err
-		}
+		args = append(args, property.TimeStamp, param)
 	}
-	return nil
+	return
 }
 
 func (d *SchemaDataRepo) genRedisPropertyKey(productID string, deviceName, identifier string) string {
@@ -84,7 +94,8 @@ func (d *SchemaDataRepo) GetLatestPropertyDataByID(ctx context.Context, filter m
 }
 
 func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error {
-	//todo 后续重构为一条sql插入 向多个表插入记录 参考:https://www.taosdata.com/docs/cn/v2.0/taos-sql#management
+	var sql []string
+	var args []any
 	for identifier, param := range params {
 		data := msgThing.PropertyData{
 			Identifier: identifier,
@@ -99,12 +110,18 @@ func (d *SchemaDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 				identifier, param, err)
 		}
 		//入库
-		err = d.InsertPropertyData(ctx, t, productID, deviceName, &data)
+		sql1, args1, err := d.GenInsertPropertySql(ctx, t, productID, deviceName, &data)
 		if err != nil {
 			return errors.Database.AddDetailf(
 				"SchemaDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
 				identifier, param, err)
 		}
+		sql = append(sql, sql1)
+		args = append(args, args1...)
+	}
+	sqlStr := d.GenSql(sql...)
+	if _, err := d.t.ExecContext(ctx, sqlStr, args...); err != nil {
+		return err
 	}
 	return nil
 }
@@ -124,7 +141,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 	if filter.ArgFunc == "" {
 		sql = sq.Select("*")
 		if filter.Order != def.OrderAes {
-			sql = sql.OrderBy("ts desc")
+			sql = sql.OrderBy("`ts` desc")
 		}
 	} else {
 		sql, err = d.getPropertyArgFuncSelect(ctx, filter)
@@ -146,7 +163,7 @@ func (d *SchemaDataRepo) GetPropertyDataByID(
 		return nil, err
 	}
 	var datas []map[string]any
-	store.Scan(rows, &datas)
+	stores.Scan(rows, &datas)
 	retProperties := make([]*msgThing.PropertyData, 0, len(datas))
 	for _, v := range datas {
 		retProperties = append(retProperties, ToPropertyData(filter.DataID, v))
@@ -170,9 +187,9 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 	)
 
 	if p.Define.Type == schema.DataTypeStruct {
-		sql = sq.Select("FIRST(ts) AS `ts`", d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
+		sql = sq.Select("FIRST(`ts`) AS ts", d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
-		sql = sq.Select("FIRST(ts) AS `ts`", fmt.Sprintf("%s(`param`) as `param`", filter.ArgFunc))
+		sql = sq.Select("FIRST(`ts`) AS ts", fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
 		sql = sql.Interval("?a", filter.Interval)
@@ -186,7 +203,7 @@ func (d *SchemaDataRepo) getPropertyArgFuncSelect(
 func (d *SchemaDataRepo) fillFilter(
 	sql sq.SelectBuilder, filter msgThing.FilterOpt) sq.SelectBuilder {
 	if len(filter.DeviceNames) != 0 {
-		sql = sql.Where(fmt.Sprintf("`deviceName` in (%v)", store.ArrayToSql(filter.DeviceNames)))
+		sql = sql.Where(fmt.Sprintf("device_name= (%v)", stores.ArrayToSql(filter.DeviceNames)))
 	}
 	return sql
 }

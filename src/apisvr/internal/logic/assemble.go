@@ -97,3 +97,24 @@ func ToDmPointApi(in *dm.Point) *types.Point {
 		Latitude:  in.Latitude,
 	}
 }
+
+func ToSysPointRpc(in *types.Point) *sys.Point {
+	if in == nil {
+		return nil
+	}
+	return &sys.Point{
+		Longitude: in.Longitude,
+		Latitude:  in.Latitude,
+	}
+}
+
+func ToSysPointApi(in *sys.Point) *types.Point {
+	if in == nil {
+		return nil
+	}
+	return &types.Point{
+		Longitude: in.Longitude,
+		Latitude:  in.Latitude,
+	}
+}
+

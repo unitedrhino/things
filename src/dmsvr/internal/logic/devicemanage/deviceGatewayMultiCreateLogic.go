@@ -9,7 +9,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/spf13/cast"
@@ -21,6 +21,9 @@ type DeviceGatewayMultiCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDB *relationDB.ProductInfoRepo
+	DiDB *relationDB.DeviceInfoRepo
+	GdDB *relationDB.GatewayDeviceRepo
 }
 
 func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceGatewayMultiCreateLogic {
@@ -28,15 +31,18 @@ func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCo
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
+		GdDB:   relationDB.NewGatewayDeviceRepo(ctx),
 	}
 }
 
 // 创建分组设备
 func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGatewayMultiCreateReq) (*dm.Response, error) {
 	{ //检查是否是网关类型
-		pi, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.GatewayProductID)
+		pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.GatewayProductID}})
 		if err != nil {
-			if err == mysql.ErrNotFound {
+			if errors.Cmp(err, errors.NotFind) {
 				return nil, errors.Parameter.AddDetail("not find GatewayProductID id:" + cast.ToString(in.GatewayProductID))
 			}
 			return nil, errors.Database.AddDetail(err)
@@ -54,7 +60,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			deviceProductMap[v.ProductID] = struct{}{}
 		}
 		deviceProductList = utils.SetToSlice(deviceProductMap)
-		products, err := l.svcCtx.ProductInfo.FindByFilter(l.ctx, mysql.ProductFilter{
+		products, err := l.PiDB.FindByFilter(l.ctx, relationDB.ProductFilter{
 			ProductIDs: deviceProductList,
 		}, nil)
 		if err != nil {
@@ -67,9 +73,9 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 		}
 	}
 	for _, device := range in.List {
-		di, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, device.ProductID, device.DeviceName)
+		di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: device.ProductID, DeviceNames: []string{device.DeviceName}})
 		if err != nil { //检查是否找到
-			return nil, errors.Database.AddDetail(err)
+			return nil, err
 		}
 		if in.IsAuthSign { //秘钥检查
 			if device.Sign == nil {
@@ -86,7 +92,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 		}
 	}
 
-	err := l.svcCtx.Gateway.CreateList(l.ctx, &devices.Core{
+	err := l.GdDB.MultiInsert(l.ctx, &devices.Core{
 		ProductID:  in.GatewayProductID,
 		DeviceName: in.GatewayDeviceName,
 	}, BindToDeviceCoreDos(in.List))

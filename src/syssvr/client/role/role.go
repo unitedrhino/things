@@ -20,11 +20,7 @@ type (
 	ApiIndexReq           = sys.ApiIndexReq
 	ApiIndexResp          = sys.ApiIndexResp
 	ApiUpdateReq          = sys.ApiUpdateReq
-	AuthApiIndexReq       = sys.AuthApiIndexReq
-	AuthApiIndexResp      = sys.AuthApiIndexResp
 	AuthApiInfo           = sys.AuthApiInfo
-	AuthApiMultiUpdateReq = sys.AuthApiMultiUpdateReq
-	CheckAuthReq          = sys.CheckAuthReq
 	ConfigResp            = sys.ConfigResp
 	DateRange             = sys.DateRange
 	JwtToken              = sys.JwtToken
@@ -45,7 +41,12 @@ type (
 	OperLogIndexResp      = sys.OperLogIndexResp
 	PageInfo              = sys.PageInfo
 	PageInfo_OrderBy      = sys.PageInfo_OrderBy
+	Point                 = sys.Point
 	Response              = sys.Response
+	RoleApiAuthReq        = sys.RoleApiAuthReq
+	RoleApiIndexReq       = sys.RoleApiIndexReq
+	RoleApiIndexResp      = sys.RoleApiIndexResp
+	RoleApiMultiUpdateReq = sys.RoleApiMultiUpdateReq
 	RoleCreateReq         = sys.RoleCreateReq
 	RoleDeleteReq         = sys.RoleDeleteReq
 	RoleIndexData         = sys.RoleIndexData
@@ -70,6 +71,9 @@ type (
 		RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error)
+		RoleApiMultiUpdate(ctx context.Context, in *RoleApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		RoleApiIndex(ctx context.Context, in *RoleApiIndexReq, opts ...grpc.CallOption) (*RoleApiIndexResp, error)
 	}
 
 	defaultRole struct {
@@ -138,4 +142,31 @@ func (m *defaultRole) RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq,
 
 func (d *directRole) RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.RoleMenuUpdate(ctx, in)
+}
+
+func (m *defaultRole) RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewRoleClient(m.cli.Conn())
+	return client.RoleApiAuth(ctx, in, opts...)
+}
+
+func (d *directRole) RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.RoleApiAuth(ctx, in)
+}
+
+func (m *defaultRole) RoleApiMultiUpdate(ctx context.Context, in *RoleApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewRoleClient(m.cli.Conn())
+	return client.RoleApiMultiUpdate(ctx, in, opts...)
+}
+
+func (d *directRole) RoleApiMultiUpdate(ctx context.Context, in *RoleApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.RoleApiMultiUpdate(ctx, in)
+}
+
+func (m *defaultRole) RoleApiIndex(ctx context.Context, in *RoleApiIndexReq, opts ...grpc.CallOption) (*RoleApiIndexResp, error) {
+	client := sys.NewRoleClient(m.cli.Conn())
+	return client.RoleApiIndex(ctx, in, opts...)
+}
+
+func (d *directRole) RoleApiIndex(ctx context.Context, in *RoleApiIndexReq, opts ...grpc.CallOption) (*RoleApiIndexResp, error) {
+	return d.svr.RoleApiIndex(ctx, in)
 }

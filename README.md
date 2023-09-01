@@ -62,7 +62,7 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 1. 微服务框架:[go-zero](https://go-zero.dev/)
 2. 高性能缓存:[redis](https://redis.io/)
 3. 高性能消息队列:[nats](https://docs.nats.io/)
-4. 关系型数据库:[mysql(请使用mariaDB或mysql5.7)](https://mariadb.com/)
+4. 关系型数据库:[mysql(请使用mariaDB或mysql5.7)](https://mariadb.com/)或pgsql
 5. 微服务注册中心(单体可不使用):`etcd`
 6. 云原生轻量级对象存储:[minio](https://min.io/)
 7. 开源、高性能、云原生,极简的时序数据处理平台:[tdengine](https://www.taosdata.com/)
@@ -162,15 +162,6 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 - tests #单元测试用例
 ```
 
-### 接口文档
-
-- apisvr: https://apifox.com/apidoc/shared-0fb2272b-5f25-4ce0-90ce-f5bf82958c6d/api-83891730
-
-### 本地运行步骤
-
-- 部署 需要的 组件服务，如 mysql、redis、nats、etcd、TDengine 等等，详见`ithings\src\apisvr\etc\*.yaml` 下的配置文件内容
-- 创建数据库`iThings`，并执行目录`ithings/deploy/conf/mysql/sql/`下所有SQL
-- 修改`IDE`工作目录为`ithings\src\apisvr`, 然后运行 `ithings/src/apisvr/api.go` 的 `main` 函数
 
 ### 前端架构
 

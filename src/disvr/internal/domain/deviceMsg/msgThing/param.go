@@ -41,10 +41,10 @@ func (tp *Param) SetByDefine(d *schema.Define, val any) (err error) {
 	tp.Value.Type = d.Type
 	tp.Value.Type = d.Type
 	tp.Value.Mapping = make(map[string]string)
-	for k, v := range d.Maping {
+	for k, v := range d.Mapping {
 		tp.Value.Mapping[k] = v
 	}
-	tp.Value.Mapping = d.Maping
+	tp.Value.Mapping = d.Mapping
 	tp.Value.Min = d.Min
 	tp.Value.Max = d.Max
 	tp.Value.Start = d.Start
@@ -160,7 +160,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			if err != nil {
 				return nil, errors.Parameter.AddDetail(val)
 			}
-			_, ok := d.Maping[string(num)]
+			_, ok := d.Mapping[string(num)]
 			if !ok {
 				return nil, errors.OutRange.AddDetailf("value %v not in enum", val)
 			}

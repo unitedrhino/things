@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -16,6 +16,8 @@ type DeviceTypeCountLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDB *relationDB.ProductInfoRepo
+	DiDB *relationDB.DeviceInfoRepo
 }
 
 func NewDeviceTypeCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceTypeCountLogic {
@@ -23,25 +25,27 @@ func NewDeviceTypeCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 	}
 }
 
 // 设备类型
 func (l *DeviceTypeCountLogic) DeviceTypeCount(in *dm.DeviceTypeCountReq) (*dm.DeviceTypeCountResp, error) {
 	// 获取 productID 统计
-	productCount, err := l.svcCtx.DeviceInfo.CountGroupByField(
+	productCount, err := l.DiDB.CountGroupByField(
 		l.ctx,
-		mysql.DeviceFilter{
+		relationDB.DeviceFilter{
 			LastLoginTime: struct {
 				Start int64
 				End   int64
 			}{Start: in.StartTime, End: in.EndTime},
 		},
-		"productID",
+		"product_id",
 	)
 
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.NotFind
 		}
 		return nil, err
@@ -52,12 +56,12 @@ func (l *DeviceTypeCountLogic) DeviceTypeCount(in *dm.DeviceTypeCountReq) (*dm.D
 	}
 
 	// 通过 productID 查找 DeviceType
-	productIDList, err := l.svcCtx.ProductInfo.FindByFilter(l.ctx, mysql.ProductFilter{
+	productIDList, err := l.PiDB.FindByFilter(l.ctx, relationDB.ProductFilter{
 		ProductIDs: productIDs,
 	}, nil)
 
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.NotFind
 		}
 		return nil, err

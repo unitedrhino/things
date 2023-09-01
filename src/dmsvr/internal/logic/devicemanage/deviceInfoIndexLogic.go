@@ -2,14 +2,12 @@ package devicemanagelogic
 
 import (
 	"context"
-	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
-	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -17,6 +15,7 @@ type DeviceInfoIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	DiDB *relationDB.DeviceInfoRepo
 }
 
 func NewDeviceInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceInfoIndexLogic {
@@ -24,6 +23,7 @@ func NewDeviceInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 	}
 }
 
@@ -36,32 +36,26 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		err  error
 	)
 
-	position := "POINT(0 0)"
-	if in.Position != nil {
-		position = fmt.Sprintf("POINT(%s)",
-			cast.ToString(in.Position.Longitude)+" "+cast.ToString(in.Position.Latitude))
-	}
-	filter := mysql.DeviceFilter{
+	filter := relationDB.DeviceFilter{
 		ProductID:   in.ProductID,
 		AreaIDs:     in.AreaIDs,
 		DeviceName:  in.DeviceName,
 		DeviceNames: in.DeviceNames,
 		Tags:        in.Tags,
 		Range:       in.Range,
-		Position:    position,
+		Position:    logic.ToStorePoint(in.Position),
 		DeviceAlias: in.DeviceAlias,
+		IsOnline:    in.IsOnline,
 	}
 
-	size, err = l.svcCtx.DeviceInfo.CountByFilter(l.ctx, filter)
+	size, err = l.DiDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
 	}
-
-	di, err := l.svcCtx.DeviceInfo.FindByFilter(l.ctx, filter,
-		logic.ToPageInfoWithDefault(in.Page, &def.PageInfo{
-			Page: 1, Size: 20,
-			Orders: []def.OrderBy{{"createdTime", def.OrderDesc}, {"productID", def.OrderDesc}},
-		}),
+	di, err := l.DiDB.FindByFilter(l.ctx, filter,
+		logic.ToPageInfoWithDefault(in.Page, logic.ToPageInfo(in.Page,
+			def.OrderBy{Filed: "created_time", Sort: def.OrderDesc},
+			def.OrderBy{Filed: "product_id", Sort: def.OrderDesc})),
 	)
 	if err != nil {
 		return nil, err

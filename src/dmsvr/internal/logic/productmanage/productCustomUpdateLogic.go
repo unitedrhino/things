@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -17,6 +17,7 @@ type ProductCustomUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PcDB *relationDB.ProductCustomRepo
 }
 
 func NewProductCustomUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductCustomUpdateLogic {
@@ -24,28 +25,29 @@ func NewProductCustomUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PcDB:   relationDB.NewProductCustomRepo(ctx),
 	}
 }
 
 func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*dm.Response, error) {
-	pi, err := l.svcCtx.ProductCustom.FindOneByProductID(l.ctx, in.ProductID)
+	pi, err := l.PcDB.FindOneByProductID(l.ctx, in.ProductID)
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			if in.ScriptLang == 0 {
 				in.ScriptLang = 1
 			}
-			_, err = l.svcCtx.ProductCustom.Insert(l.ctx, &mysql.DmProductCustom{
+			err = l.PcDB.Insert(l.ctx, &relationDB.DmProductCustom{
 				ProductID:       in.ProductID,
 				ScriptLang:      in.ScriptLang,
 				CustomTopic:     utils.AnyToNullString(in.CustomTopic),
 				TransformScript: utils.AnyToNullString(in.TransformScript),
 			})
 			if err != nil {
-				return nil, errors.Database.AddDetail(err)
+				return nil, err
 			}
 			return &dm.Response{}, nil
 		}
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	if in.TransformScript != nil {
 		pi.TransformScript = utils.AnyToNullString(in.TransformScript)
@@ -56,7 +58,7 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 	if in.CustomTopic != nil {
 		pi.CustomTopic = utils.AnyToNullString(in.CustomTopic)
 	}
-	err = l.svcCtx.ProductCustom.Update(l.ctx, pi)
+	err = l.PcDB.Update(l.ctx, pi)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

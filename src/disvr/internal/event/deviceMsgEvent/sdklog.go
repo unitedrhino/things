@@ -121,6 +121,9 @@ func (l *SDKLogLogic) GetLogLevel(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 }
 
 func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
+	if !errors.Cmp(err, errors.OK) {
+		l.Errorf("%s.DeviceResp err:%v, msg:%v", utils.FuncName(), err, msg)
+	}
 	resp := &deviceMsg.CommonMsg{
 		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
 		ClientToken: l.dreq.ClientToken,

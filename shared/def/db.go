@@ -2,6 +2,7 @@ package def
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -30,7 +31,7 @@ type PageInfo2 struct {
 	Orders    []OrderBy `json:"orderBy" form:"orderBy"` // 排序信息
 }
 
-//排序结构体
+// 排序结构体
 type OrderBy struct {
 	Filed string `json:"filed" form:"filed"` //要排序的字段名
 	Sort  int64  `json:"sort" form:"sort"`   //排序的方式：0 OrderAes、1 OrderDesc
@@ -54,14 +55,27 @@ func (p *PageInfo) GetOffset() int64 {
 	return p.Size * (p.Page - 1)
 }
 
-//获取排序参数
+// 获取排序参数
 func (p *PageInfo) GetOrders() (arr []string) {
 	if p != nil && len(p.Orders) > 0 {
 		for _, o := range p.Orders {
-			arr = append(arr, fmt.Sprintf("`%s` %s", o.Filed, orderMap[o.Sort]))
+			arr = append(arr, fmt.Sprintf("%s %s", o.Filed, orderMap[o.Sort]))
 		}
 	}
 	return
+}
+func (p *PageInfo) ToGorm(db *gorm.DB) *gorm.DB {
+	if p == nil {
+		return db
+	}
+	db = db.Offset(int(p.GetOffset())).Limit(int(p.GetLimit()))
+	if len(p.Orders) != 0 {
+		orders := p.GetOrders()
+		for _, o := range orders {
+			db = db.Order(o)
+		}
+	}
+	return db
 }
 
 func (p PageInfo2) GetLimit() int64 {
@@ -111,10 +125,10 @@ func (p PageInfo2) FmtWhere(sql sq.SelectBuilder) sq.SelectBuilder {
 
 func (t TimeRange) FmtSql(sql sq.SelectBuilder) sq.SelectBuilder {
 	if t.Start != 0 {
-		sql = sql.Where("createdTime>=?", time.Unix(t.Start, 0))
+		sql = sql.Where("created_time>=?", time.Unix(t.Start, 0))
 	}
 	if t.End != 0 {
-		sql = sql.Where("createdTime<=?", time.Unix(t.End, 0))
+		sql = sql.Where("created_time<=?", time.Unix(t.End, 0))
 	}
 	return sql
 }
