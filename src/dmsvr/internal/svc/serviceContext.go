@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/hubLogRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/sdkLogRepo"
@@ -57,6 +58,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	bus := eventBus.NewEventBus()
 	stores.InitConn(c.Database)
+	err = relationDB.Migrate()
+	if err != nil {
+		logx.Error("dmsvr 数据库初始化失败 err", err)
+		os.Exit(-1)
+	}
 	return &ServiceContext{
 		Bus:            bus,
 		Config:         c,

@@ -24,13 +24,13 @@ type OperLogFilter struct {
 func (p OperLogRepo) fmtFilter(ctx context.Context, f OperLogFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.OperName != "" {
-		db = db.Where("`operName` like ?", "%"+f.OperName+"%")
+		db = db.Where("`oper_name` like ?", "%"+f.OperName+"%")
 	}
 	if f.OperUserName != "" {
-		db = db.Where("`operUserName` like ?", "%"+f.OperUserName+"%")
+		db = db.Where("`oper_user_name` like ?", "%"+f.OperUserName+"%")
 	}
 	if f.BusinessType > 0 {
-		db = db.Where("`businessType`= ?", f.BusinessType)
+		db = db.Where("`business_type`= ?", f.BusinessType)
 	}
 	return db
 }
@@ -67,7 +67,7 @@ func (p OperLogRepo) CountByFilter(ctx context.Context, f OperLogFilter) (size i
 }
 
 func (p OperLogRepo) Update(ctx context.Context, data *SysOperLog) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -78,12 +78,12 @@ func (p OperLogRepo) DeleteByFilter(ctx context.Context, f OperLogFilter) error 
 }
 
 func (p OperLogRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysOperLog{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysOperLog{}).Error
 	return stores.ErrFmt(err)
 }
 func (p OperLogRepo) FindOne(ctx context.Context, id int64) (*SysOperLog, error) {
 	var result SysOperLog
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

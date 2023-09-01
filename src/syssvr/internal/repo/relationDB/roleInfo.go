@@ -78,7 +78,7 @@ func (p RoleInfoRepo) CountByFilter(ctx context.Context, f RoleInfoFilter) (size
 }
 
 func (p RoleInfoRepo) Update(ctx context.Context, data *SysRoleInfo) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -89,14 +89,14 @@ func (p RoleInfoRepo) DeleteByFilter(ctx context.Context, f RoleInfoFilter) erro
 }
 
 func (p RoleInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysRoleInfo{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysRoleInfo{}).Error
 	return stores.ErrFmt(err)
 }
 func (p RoleInfoRepo) FindOne(ctx context.Context, id int64, with *RoleInfoWith) (*SysRoleInfo, error) {
 	var result SysRoleInfo
 	db := p.db.WithContext(ctx)
 	db = p.fmtWith(db, with)
-	err := db.Where("`id` = ?", id).First(&result).Error
+	err := db.Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

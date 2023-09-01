@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/def"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -29,6 +30,11 @@ func ToPoint(p def.Point) Point {
 }
 
 func (p *Point) parsePoint(binaryData []byte) error {
+	if dbType == conf.Pgsql {
+		_, err := fmt.Sscanf(string(binaryData), "(%f,%f)", &p.Longitude, &p.Latitude)
+		return err
+	}
+	//下面是mysql的方式
 	if len(binaryData) != 25 {
 		return nil
 	}
@@ -52,6 +58,10 @@ func (p *Point) Scan(value interface{}) error {
 	case []byte:
 		va := value.([]byte)
 		return p.parsePoint(va)
+	case string:
+		va := value.(string)
+
+		return p.parsePoint([]byte(va))
 	default:
 		return fmt.Errorf("failed to scan point: invalid type: %T", value)
 	}
@@ -63,8 +73,16 @@ func (p *Point) Scan(value interface{}) error {
 //}
 
 func (p Point) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
-	return clause.Expr{
-		SQL:  "ST_PointFromText(?)",
-		Vars: []interface{}{fmt.Sprintf("POINT(%f %f)", p.Longitude, p.Latitude)},
+	switch dbType {
+	case conf.Pgsql:
+		return clause.Expr{
+			//SQL:  "ST_PointFromText(?)",
+			SQL: fmt.Sprintf("point'(%f,%f)'", p.Longitude, p.Latitude), //如果你不知道 SRID 的值，可以使用 -1 来表示未知的空间参考系统。
+		}
+	default:
+		return clause.Expr{
+			SQL:  "ST_PointFromText(?)",
+			Vars: []interface{}{fmt.Sprintf("POINT(%f %f)", p.Longitude, p.Latitude)},
+		}
 	}
 }

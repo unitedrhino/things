@@ -29,6 +29,7 @@ type (
 	PropertyIndexResp      = di.PropertyIndexResp
 	PropertyLatestIndexReq = di.PropertyLatestIndexReq
 	PropertyLogIndexReq    = di.PropertyLogIndexReq
+	RespActionReq          = di.RespActionReq
 	RespReadReq            = di.RespReadReq
 	Response               = di.Response
 	SdkLogIndex            = di.SdkLogIndex
@@ -49,6 +50,8 @@ type (
 		SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
 		// 获取异步调用设备行为的结果
 		ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error)
+		// 回复调用设备行为
+		RespAction(ctx context.Context, in *RespActionReq, opts ...grpc.CallOption) (*Response, error)
 		// 请求设备获取设备最新属性
 		GetPropertyReply(ctx context.Context, in *GetPropertyReplyReq, opts ...grpc.CallOption) (*GetPropertyReplyResp, error)
 		// 调用设备属性
@@ -104,6 +107,17 @@ func (m *defaultDeviceInteract) ActionRead(ctx context.Context, in *RespReadReq,
 // 获取异步调用设备行为的结果
 func (d *directDeviceInteract) ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error) {
 	return d.svr.ActionRead(ctx, in)
+}
+
+// 回复调用设备行为
+func (m *defaultDeviceInteract) RespAction(ctx context.Context, in *RespActionReq, opts ...grpc.CallOption) (*Response, error) {
+	client := di.NewDeviceInteractClient(m.cli.Conn())
+	return client.RespAction(ctx, in, opts...)
+}
+
+// 回复调用设备行为
+func (d *directDeviceInteract) RespAction(ctx context.Context, in *RespActionReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.RespAction(ctx, in)
 }
 
 // 请求设备获取设备最新属性

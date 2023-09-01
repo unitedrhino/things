@@ -31,8 +31,9 @@ type (
 		Params schema.Params    `json:"params"` //事件参数
 	}
 	ActionDef struct {
-		Input  schema.Params `json:"input"`  //调用参数
-		Output schema.Params `json:"output"` //返回参数
+		Dir    schema.ActionDir `json:"dir"`    //调用方向
+		Input  schema.Params    `json:"input"`  //调用参数
+		Output schema.Params    `json:"output"` //返回参数
 	}
 )
 
@@ -43,19 +44,19 @@ func NewProductSchemaRepo(in any) *ProductSchemaRepo {
 func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.ID != 0 {
-		db = db.Where("`id`=?", f.ID)
+		db = db.Where("id=?", f.ID)
 	}
 	if f.ProductID != "" {
-		db = db.Where("`productID`=?", f.ProductID)
+		db = db.Where("product_id=?", f.ProductID)
 	}
 	if f.Type != 0 {
-		db = db.Where("`type`=?", f.Type)
+		db = db.Where("type=?", f.Type)
 	}
 	if f.Tag != 0 {
-		db = db.Where("`tag`=?", f.Tag)
+		db = db.Where("tag=?", f.Tag)
 	}
 	if len(f.Identifiers) != 0 {
-		db = db.Where("`identifier` in ?", f.Identifiers)
+		db = db.Where("identifier = ?", f.Identifiers)
 	}
 	return db
 }
@@ -75,7 +76,7 @@ func (p ProductSchemaRepo) FindOneByFilter(ctx context.Context, f ProductSchemaF
 }
 
 func (p ProductSchemaRepo) Update(ctx context.Context, data *DmProductSchema) error {
-	err := p.db.WithContext(ctx).Where("productID = ?", data.ProductID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("product_id = ?", data.ProductID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
