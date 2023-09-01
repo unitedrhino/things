@@ -14,12 +14,23 @@ type ParamValue struct {
 
 type StructValue map[string]ParamValue
 
-//属性上报消息体
+// 属性上报消息体
 type PropertyReport struct {
 	Device     devices.Core `json:"device"`
 	Timestamp  int64        `json:"timestamp,string"` //毫秒时间戳
 	Identifier string       `json:"identifier"`       //推送属性的标识符
 	Param      ParamValue   `json:"param"`            //推送属性的参数
+}
+
+// 属性上报消息体
+type ActionReport struct {
+	Device      devices.Core     `json:"device"`
+	ClientToken string           `json:"clientToken,omitempty"` //调用id
+	Timestamp   int64            `json:"timestamp,string"`      //毫秒时间戳
+	ActionID    string           `json:"actionID,omitempty"`    //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
+	Params      map[string]any   `json:"params,omitempty"`      //参数列表
+	Dir         schema.ActionDir `json:"dir"`
+	ReqType     string           `json:"reqType"` //req resp
 }
 
 type EventReport struct {

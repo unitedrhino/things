@@ -30,16 +30,16 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 		db = db.Preload("ProductInfo")
 	}
 	if f.GroupID != 0 {
-		db = db.Where("`groupID`=?", f.GroupID)
+		db = db.Where("group_id=?", f.GroupID)
 	}
 	if len(f.GroupNames) != 0 {
-		db = db.Where("`groupName` in ?", f.GroupNames)
+		db = db.Where("group_name = ?", f.GroupNames)
 	}
 	if f.ParentID != 0 {
-		db = db.Where("`parentID`=?", f.ParentID)
+		db = db.Where("parent_id=?", f.ParentID)
 	}
 	if f.GroupName != "" {
-		db = db.Where("`groupName` like ?", "%"+f.GroupName+"%")
+		db = db.Where("group_name like ?", "%"+f.GroupName+"%")
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {
@@ -82,7 +82,7 @@ func (p GroupInfoRepo) CountByFilter(ctx context.Context, f GroupInfoFilter) (si
 }
 
 func (g GroupInfoRepo) Update(ctx context.Context, data *DmGroupInfo) error {
-	err := g.db.WithContext(ctx).Where("`groupID` = ?", data.GroupID).Save(data).Error
+	err := g.db.WithContext(ctx).Where("group_id = ?", data.GroupID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 

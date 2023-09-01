@@ -15,7 +15,7 @@ const (
 )
 
 func genDeviceMsgKey(msgType string, handle string, Type string, device devices.Core, clientToken string) string {
-	return fmt.Sprintf("device:%s:%s:%s:%s:%s:%s",
+	return fmt.Sprintf("deviceMsg:%s:%s:%s:%s:%s:%s",
 		handle, Type, msgType, device.ProductID, device.DeviceName, clientToken)
 }
 

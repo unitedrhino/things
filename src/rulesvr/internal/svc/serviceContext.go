@@ -53,9 +53,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg      devicemsg.DeviceMsg
 	)
 	stores.InitConn(c.Database)
+	err := relationDB.Migrate()
+	if err != nil {
+		logx.Error("rulesvr 数据库初始化失败 err", err)
+		os.Exit(-1)
+	}
+
 	store := kv.NewStore(c.CacheRedis)
 	sceneDevice := cache.NewSceneDeviceRepo(relationDB.NewSceneInfoRepo(context.TODO()))
-	err := sceneDevice.Init(context.TODO())
+	err = sceneDevice.Init(context.TODO())
 	if err != nil {
 		logx.Error("设备场景数据初始化失败 err:", err)
 		os.Exit(-1)
