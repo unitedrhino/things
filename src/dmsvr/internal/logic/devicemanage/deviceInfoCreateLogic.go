@@ -2,13 +2,12 @@ package devicemanagelogic
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/spf13/cast"
@@ -19,6 +18,8 @@ type DeviceInfoCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDB *relationDB.ProductInfoRepo
+	DiDB *relationDB.DeviceInfoRepo
 }
 
 func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceInfoCreateLogic {
@@ -26,6 +27,8 @@ func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 	}
 }
 
@@ -33,47 +36,38 @@ func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 发现返回true 没有返回false
 */
 func (l *DeviceInfoCreateLogic) CheckDevice(in *dm.DeviceInfo) (bool, error) {
-	_, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
-	switch err {
-	case mysql.ErrNotFound:
-		return false, nil
-	case nil:
+	_, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
+	if err == nil {
 		return true, nil
-	default:
-		return false, err
 	}
+	if errors.Cmp(err, errors.NotFind) {
+		return false, nil
+	}
+	return false, err
 }
 
 /*
 发现返回true 没有返回false
 */
 func (l *DeviceInfoCreateLogic) CheckProduct(in *dm.DeviceInfo) (bool, error) {
-	_, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
-	switch err {
-	case mysql.ErrNotFound:
-		return false, nil
-	case nil:
+	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	if err == nil {
 		return true, nil
-	default:
-		return false, err
 	}
+	if errors.Cmp(err, errors.NotFind) {
+		return false, nil
+	}
+	return false, err
 }
 
 // 新增设备
 func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Response, err error) {
-	defer func() {
-		if p := recover(); p != nil {
-			utils.HandleThrow(l.ctx, p)
-			err = errors.Panic
-			return
-		}
-	}()
 
 	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
-		if pid, err := l.svcCtx.ProductInfo.GetIDByName(l.ctx, mysql.ProductFilter{ProductName: in.ProductName}, nil); err != nil {
+		if pid, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}}); err != nil {
 			return nil, err
 		} else {
-			in.ProductID = pid
+			in.ProductID = pid.ProductID
 		}
 	}
 
@@ -98,17 +92,11 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 		return nil, err
 	}
 
-	position := "POINT(0 0)"
-	if in.Position != nil {
-		position = fmt.Sprintf("POINT(%s)",
-			cast.ToString(in.Position.Longitude)+" "+cast.ToString(in.Position.Latitude))
-	}
-
-	di := mysql.DmDeviceInfo{
+	di := relationDB.DmDeviceInfo{
 		ProjectID:  ctxs.GetMetaProjectID(l.ctx),
 		ProductID:  in.ProductID,  // 产品id
 		DeviceName: in.DeviceName, // 设备名称
-		Position:   position,
+		Position:   logic.ToStorePoint(in.Position),
 	}
 
 	if in.Secret != "" {
@@ -116,14 +104,9 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	} else {
 		di.Secret = utils.GetRandomBase64(20)
 	}
-
-	if in.Tags != nil {
-		tags, err := json.Marshal(in.Tags)
-		if err == nil {
-			di.Tags = string(tags)
-		}
-	} else {
-		di.Tags = "{}"
+	di.Tags = in.Tags
+	if di.Tags == nil {
+		di.Tags = map[string]string{}
 	}
 
 	if in.LogLevel != def.Unknown {
@@ -136,9 +119,6 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 	if in.DeviceAlias != nil {
 		di.DeviceAlias = in.DeviceAlias.Value
 	}
-	if in.UserID != 0 {
-		di.UserID = in.UserID
-	}
 	if in.MobileOperator != 0 {
 		di.MobileOperator = in.MobileOperator
 	}
@@ -150,7 +130,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 		di.Phone = utils.AnyToNullString(in.Phone)
 	}
 
-	err = l.svcCtx.DeviceInfo.InsertDeviceInfo(l.ctx, &di)
+	err = l.DiDB.Insert(l.ctx, &di)
 	if err != nil {
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
 		return nil, errors.Database.AddDetail(err)

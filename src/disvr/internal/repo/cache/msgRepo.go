@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 )
@@ -14,7 +15,7 @@ const (
 )
 
 func genDeviceMsgKey(msgType string, handle string, Type string, device devices.Core, clientToken string) string {
-	return fmt.Sprintf("device:%s:%s:%s:%s:%s:%s",
+	return fmt.Sprintf("deviceMsg:%s:%s:%s:%s:%s:%s",
 		handle, Type, msgType, device.ProductID, device.DeviceName, clientToken)
 }
 
@@ -40,10 +41,10 @@ func GetDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType stri
 	}
 	var req deviceMsg.PublishMsg
 	var ret reqType
-	err = json.Unmarshal([]byte(val), &req)
+	err = utils.Unmarshal([]byte(val), &req)
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(req.Payload, &ret)
+	err = utils.Unmarshal(req.Payload, &ret)
 	return &ret, err
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -17,6 +17,7 @@ type DeviceInfoCountLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	DiDB *relationDB.DeviceInfoRepo
 }
 
 func NewDeviceInfoCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceInfoCountLogic {
@@ -24,22 +25,23 @@ func NewDeviceInfoCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 	}
 }
 
 // 设备计数
 func (l *DeviceInfoCountLogic) DeviceInfoCount(in *dm.DeviceInfoCountReq) (*dm.DeviceInfoCountResp, error) {
-	diCount, err := l.svcCtx.DeviceInfo.CountGroupByField(
+	diCount, err := l.DiDB.CountGroupByField(
 		l.ctx,
-		mysql.DeviceFilter{
+		relationDB.DeviceFilter{
 			LastLoginTime: struct {
 				Start int64
 				End   int64
 			}{Start: in.StartTime, End: in.EndTime},
 		},
-		"isOnline")
+		"is_online")
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.NotFind
 		}
 		return nil, err

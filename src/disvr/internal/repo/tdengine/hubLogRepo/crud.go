@@ -6,28 +6,28 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 )
 
 func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter msgHubLog.HubFilter) sq.SelectBuilder {
 	if len(filter.ProductID) != 0 {
-		sql = sql.Where("`productID`=?", filter.ProductID)
+		sql = sql.Where("`product_id`=?", filter.ProductID)
 	}
 	if len(filter.DeviceName) != 0 {
-		sql = sql.Where("`deviceName`=?", filter.DeviceName)
+		sql = sql.Where("`device_name`=?", filter.DeviceName)
 	}
 	if len(filter.Content) != 0 {
 		sql = sql.Where("`content`=?", filter.Content)
 	}
 	if len(filter.RequestID) != 0 {
-		sql = sql.Where("`requestID`=?", filter.RequestID)
+		sql = sql.Where("`request_id`=?", filter.RequestID)
 	}
 	if len(filter.Actions) != 0 {
-		sql = sql.Where(fmt.Sprintf("`action` in (%v)", store.ArrayToSql(filter.Actions)))
+		sql = sql.Where(fmt.Sprintf("`action` in (%v)", stores.ArrayToSql(filter.Actions)))
 	}
 	if len(filter.Topics) != 0 {
-		sql = sql.Where(fmt.Sprintf("`topic` in (%v)", store.ArrayToSql(filter.Topics)))
+		sql = sql.Where(fmt.Sprintf("`topic` in (%v)", stores.ArrayToSql(filter.Topics)))
 	}
 	return sql
 }
@@ -69,7 +69,7 @@ func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter msgHubLog.HubFilter
 		return nil, err
 	}
 	var datas []map[string]any
-	store.Scan(rows, &datas)
+	stores.Scan(rows, &datas)
 	retLogs := make([]*msgHubLog.HubLog, 0, len(datas))
 	for _, v := range datas {
 		retLogs = append(retLogs, ToDeviceLog(filter.ProductID, v))
@@ -79,7 +79,7 @@ func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter msgHubLog.HubFilter
 
 func (d HubLogRepo) Insert(ctx context.Context, data *msgHubLog.HubLog) error {
 	sql := fmt.Sprintf("insert into %s using %s tags('%s','%s')(`ts`, `content`, `topic`, `action`,"+
-		" `requestID`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
+		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
 		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(), data.ProductID, data.DeviceName)
 	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.Topic, data.Action,
 		data.RequestID, data.TranceID, data.ResultType); err != nil {

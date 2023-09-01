@@ -22,7 +22,7 @@ func SetUserCtx(ctx context.Context, userCtx *UserCtx) context.Context {
 func GetUserCtx(ctx context.Context) *UserCtx {
 	val, ok := ctx.Value(UserInfoKey).(*UserCtx)
 	if !ok { //这里线上不能获取不到
-		panic("GetUserCtx get UserCtx failed")
+		return nil
 	}
 	return val
 }
@@ -36,13 +36,13 @@ func GetUserCtxOrNil(ctx context.Context) *UserCtx {
 	return val
 }
 
-type MetadataCtx map[string][]string
+type MetadataCtx = map[string][]string
 
-func SetMetaCtx(ctx context.Context, maps map[string][]string) context.Context {
+func SetMetaCtx(ctx context.Context, maps MetadataCtx) context.Context {
 	return context.WithValue(ctx, MetadataKey, maps)
 }
 func GetMetaCtx(ctx context.Context) MetadataCtx {
-	val, ok := ctx.Value(MetadataKey).(map[string][]string)
+	val, ok := ctx.Value(MetadataKey).(MetadataCtx)
 	if !ok {
 		return nil
 	}

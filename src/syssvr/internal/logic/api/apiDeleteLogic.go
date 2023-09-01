@@ -3,6 +3,7 @@ package apilogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -14,6 +15,7 @@ type ApiDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	AiDB *relationDB.ApiInfoRepo
 }
 
 func NewApiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ApiDeleteLogic {
@@ -21,11 +23,12 @@ func NewApiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ApiDele
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		AiDB:   relationDB.NewApiInfoRepo(ctx),
 	}
 }
 
 func (l *ApiDeleteLogic) ApiDelete(in *sys.ApiDeleteReq) (*sys.Response, error) {
-	err := l.svcCtx.ApiModel.Delete(l.ctx, in.Id)
+	err := l.AiDB.Delete(l.ctx, in.Id)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

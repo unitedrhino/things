@@ -2,9 +2,8 @@ package rolelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -16,6 +15,7 @@ type RoleIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	RiDB *relationDB.RoleInfoRepo
 }
 
 func NewRoleIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleIndexLogic {
@@ -23,36 +23,40 @@ func NewRoleIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleInd
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		RiDB:   relationDB.NewRoleInfoRepo(ctx),
 	}
 }
 
 func (l *RoleIndexLogic) RoleIndex(in *sys.RoleIndexReq) (*sys.RoleIndexResp, error) {
-	ros, total, err := l.svcCtx.RoleModel.Index(&mysql.RoleIndexFilter{
-		Page:   &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
-		Name:   in.Name,
-		Status: in.Status,
-	})
+	f := relationDB.RoleInfoFilter{
+		Name:         in.Name,
+		Status:       in.Status,
+		RoleInfoWith: &relationDB.RoleInfoWith{WithMenus: true},
+	}
+	ros, err := l.RiDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
+	}
+	total, err := l.RiDB.CountByFilter(l.ctx, f)
+	if err != nil {
+		return nil, err
 	}
 	info := make([]*sys.RoleIndexData, 0, len(ros))
 	for _, ro := range ros {
+		var menuIDs []int64
+		if len(ro.Menus) != 0 {
+			for _, v := range ro.Menus {
+				menuIDs = append(menuIDs, v.MenuID)
+			}
+		}
 		info = append(info, &sys.RoleIndexData{
-			Id:          ro.Id,
+			Id:          ro.ID,
 			Name:        ro.Name,
 			Remark:      ro.Remark,
 			CreatedTime: ro.CreatedTime.Unix(),
 			Status:      ro.Status,
+			RoleMenuID:  menuIDs,
 		})
-	}
-
-	for i, v := range info {
-		MmuIDs, err := l.svcCtx.RoleModel.IndexRoleIDMenuID(v.Id)
-		if err != nil {
-			info[i].RoleMenuID = nil
-			continue
-		}
-		info[i].RoleMenuID = MmuIDs
 	}
 
 	return &sys.RoleIndexResp{

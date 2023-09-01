@@ -51,6 +51,9 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
+	if !errors.Cmp(err, errors.OK) {
+		l.Errorf("%s.DeviceResp err:%v, msg:%v", utils.FuncName(), err, msg)
+	}
 	resp := &deviceMsg.CommonMsg{
 		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
 		ClientToken: l.dreq.ClientToken,
@@ -91,22 +94,25 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
-	for identifier, param := range paramValues {
-		//应用事件通知-设备物模型属性上报通知 ↓↓↓
-		err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, application.PropertyReport{
-			Device: core, Timestamp: timeStamp.UnixMilli(),
-			Identifier: identifier, Param: param,
-		})
-		if err != nil {
-			l.Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
+	ctx := utils.CopyContext(l.ctx)
+	utils.Go(ctx, func() {
+		for identifier, param := range paramValues {
+			//应用事件通知-设备物模型属性上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, application.PropertyReport{
+				Device: core, Timestamp: timeStamp.UnixMilli(),
+				Identifier: identifier, Param: param,
+			})
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
+			}
 		}
-	}
+	})
 
 	//插入多条设备物模型属性数据
 	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
 	if err != nil {
 		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
-		return l.DeviceResp(msg, errors.Database, nil), err
+		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 	}
 
 	return l.DeviceResp(msg, errors.OK, nil), nil
@@ -124,7 +130,7 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 	if err != nil {
 		l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
 			utils.FuncName(), dmDeviceInfoReq.ProductID, dmDeviceInfoReq.DeviceName, err)
-		return l.DeviceResp(msg, errors.Database, nil), err
+		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 	}
 
 	return l.DeviceResp(msg, errors.OK, nil), nil
@@ -152,7 +158,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, shadow.ToValues(shadows, l.schema.Property), time.Now())
 			if err != nil {
 				l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
-				return l.DeviceResp(msg, errors.Database, nil), err
+				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 			}
 			now := time.Now()
 			for _, v := range shadows {
@@ -161,7 +167,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 			err = sr.MultiUpdate(l.ctx, shadows)
 			if err != nil {
 				l.Errorf("%s.MultiUpdate err=%+v", utils.FuncName(), err)
-				return l.DeviceResp(msg, errors.Database, nil), err
+				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 			}
 		}
 	}
@@ -220,7 +226,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 	case deviceMsg.GetStatus: //设备请求获取 云端记录的最新设备信息
 		return l.HandlePropertyGetStatus(msg)
 	case deviceMsg.ControlReply: //设备响应的 “云端下发控制指令” 的处理结果
-		return l.HandleResp(msg)
+		return l.HandleControl(msg)
 	default:
 		return nil, errors.Method.AddMsg(l.dreq.Method)
 	}
@@ -265,12 +271,60 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	err = l.repo.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
 		l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
-		return l.DeviceResp(msg, errors.Database, nil), errors.Database.AddDetail(err)
+		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), errors.Database.AddDetail(err)
 	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
-func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+	l.Debugf("%s req:%v", utils.FuncName(), msg)
+	core := devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}
+	reqType := deviceMsg.ReqMsg
+	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
+	switch l.dreq.Method {
+	case deviceMsg.Action: //设备请求云端
+		err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg, l.dreq.ClientToken)
+		if err != nil {
+			return nil, err
+		}
+	case deviceMsg.ActionReply: //云端请求设备的回复
+		reqType = deviceMsg.RespMsg
+		var resp msgThing.Resp
+		err = utils.Unmarshal(msg.Payload, &resp)
+		if err != nil {
+			return nil, errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
+		}
+
+		req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg.Handle, msg.Type,
+			devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
+			resp.ClientToken)
+		if req == nil || err != nil {
+			return nil, err
+		}
+
+		err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.ClientToken)
+		if err != nil {
+			return nil, err
+		}
+	}
+	utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+		l.Infof("DeviceThingActionReport device:%v,reqType:%v,req:%v", core, reqType, l.dreq)
+		//应用事件通知-设备物模型事件上报通知 ↓↓↓
+		err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
+			Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, ClientToken: l.dreq.ClientToken,
+			ActionID: l.dreq.ActionID, Params: l.dreq.Params, Dir: schema.ActionDirUp,
+		})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
+		}
+	})
+	return nil, nil
+}
+
+func (l *ThingLogic) HandleControl(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 
 	var resp msgThing.Resp
@@ -291,7 +345,7 @@ func (l *ThingLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.P
 		return nil, err
 	}
 
-	if msg.Type == msgThing.TypeProperty && resp.Code == errors.OK.GetCode() { //如果设备回复了,且处理成功,需要入库
+	if resp.Code == errors.OK.GetCode() { //如果设备回复了,且处理成功,需要入库
 		_, err = l.HandlePropertyReport(msg, *req)
 		return nil, err
 	}
@@ -316,7 +370,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		case msgThing.TypeEvent: //设备上报的 事件
 			return l.HandleEvent(msg)
 		case msgThing.TypeAction: //设备响应的 “应用调用设备行为”的执行结果
-			return l.HandleResp(msg)
+			return l.HandleAction(msg)
 		default:
 			action = devices.Thing
 			return nil, errors.Parameter.AddDetailf("things types is err:%v", msg.Type)
@@ -326,16 +380,18 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		respMsg = nil
 	}
 
-	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
-		ProductID:  msg.ProductID,
-		Action:     action,
-		Timestamp:  time.Now(), // 操作时间
-		DeviceName: msg.DeviceName,
-		TranceID:   utils.TraceIdFromContext(l.ctx),
-		RequestID:  l.dreq.ClientToken,
-		Content:    string(msg.Payload),
-		Topic:      msg.Topic,
-		ResultType: errors.Fmt(err).GetCode(),
+	utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+		_ = l.svcCtx.HubLogRepo.Insert(ctx, &msgHubLog.HubLog{
+			ProductID:  msg.ProductID,
+			Action:     action,
+			Timestamp:  time.Now(), // 操作时间
+			DeviceName: msg.DeviceName,
+			TranceID:   utils.TraceIdFromContext(ctx),
+			RequestID:  l.dreq.ClientToken,
+			Content:    string(msg.Payload),
+			Topic:      msg.Topic,
+			ResultType: errors.Fmt(err).GetCode(),
+		})
 	})
 	return
 }

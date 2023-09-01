@@ -3,24 +3,21 @@ package alarmcenterlogic
 import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
-	"time"
 )
 
-func ToAlarmInfoPo(in *rule.AlarmInfo) *mysql.RuleAlarmInfo {
-	return &mysql.RuleAlarmInfo{
-		Id:          in.Id,
-		Name:        in.Name,
-		Desc:        in.Desc,
-		Level:       in.Level,
-		Status:      in.Status,
-		CreatedTime: time.Unix(in.CreatedTime, 0),
+func ToAlarmInfoPo(in *rule.AlarmInfo) *relationDB.RuleAlarmInfo {
+	return &relationDB.RuleAlarmInfo{
+		Name:   in.Name,
+		Desc:   in.Desc,
+		Level:  in.Level,
+		Status: in.Status,
 	}
 }
-func ToAlarmInfo(in *mysql.RuleAlarmInfo) *rule.AlarmInfo {
+func ToAlarmInfo(in *relationDB.RuleAlarmInfo) *rule.AlarmInfo {
 	return &rule.AlarmInfo{
-		Id:          in.Id,
+		Id:          in.ID,
 		Name:        in.Name,
 		Desc:        in.Desc,
 		Level:       in.Level,
@@ -34,9 +31,9 @@ func ToTimeRange(timeRange *rule.TimeRange) def.TimeRange {
 	}
 	return def.TimeRange{Start: timeRange.Start, End: timeRange.End}
 }
-func ToAlarmDealRecord(in *mysql.RuleAlarmDealRecord) *rule.AlarmDeal {
+func ToAlarmDealRecord(in *relationDB.RuleAlarmDealRecord) *rule.AlarmDeal {
 	return &rule.AlarmDeal{
-		Id:            in.Id,
+		Id:            in.ID,
 		AlarmRecordID: in.AlarmRecordID,
 		Result:        in.Result,
 		Type:          in.Type,
@@ -44,9 +41,9 @@ func ToAlarmDealRecord(in *mysql.RuleAlarmDealRecord) *rule.AlarmDeal {
 		CreatedTime:   utils.TimeToInt64(in.CreatedTime),
 	}
 }
-func ToAlarmLog(in *mysql.RuleAlarmLog) *rule.AlarmLog {
+func ToAlarmLog(in *relationDB.RuleAlarmLog) *rule.AlarmLog {
 	return &rule.AlarmLog{
-		Id:            in.Id,
+		Id:            in.ID,
 		AlarmRecordID: in.AlarmRecordID,
 		Serial:        in.Serial,
 		SceneName:     in.SceneName,
@@ -55,9 +52,9 @@ func ToAlarmLog(in *mysql.RuleAlarmLog) *rule.AlarmLog {
 		CreatedTime:   utils.TimeToInt64(in.CreatedTime),
 	}
 }
-func ToAlarmRecord(in *mysql.RuleAlarmRecord) *rule.AlarmRecord {
+func ToAlarmRecord(in *relationDB.RuleAlarmRecord) *rule.AlarmRecord {
 	return &rule.AlarmRecord{
-		Id:          in.Id,
+		Id:          in.ID,
 		AlarmID:     in.AlarmID,
 		TriggerType: in.TriggerType,
 		ProductID:   in.ProductID,

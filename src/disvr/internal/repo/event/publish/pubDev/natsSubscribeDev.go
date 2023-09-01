@@ -28,6 +28,7 @@ func (s *natsSubDev) UnSubscribe() error {
 func (s *natsSubDev) GetMsg(timeout time.Duration) (ele *deviceMsg.PublishMsg, err error) {
 	msg, err := s.subscription.NextMsg(timeout)
 	if err != nil {
+		logx.Errorf("%s.NextMsg failure err:%v", err)
 		if err == nats.ErrTimeout {
 			return nil, errors.TimeOut.AddMsg("设备回复超时")
 		}

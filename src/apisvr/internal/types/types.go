@@ -59,7 +59,7 @@ type UserDeleteReq struct {
 }
 
 type UserLoginReq struct {
-	UserID    string `json:"userID"`                                          //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+	Account   string `json:"account"`                                         //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
 	PwdType   int32  `json:"pwdType"`                                         //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
 	Password  string `json:"password"`                                        //密码，建议md5转换 密码登录时需要填写
 	LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
@@ -80,6 +80,7 @@ type JwtToken struct {
 
 type UserResourceReadResp struct {
 	Menu []*MenuData `json:"menu"` //菜单资源
+	Info *UserInfo   `json:"info"` //用户信息
 }
 
 type PageInfo struct {
@@ -570,7 +571,6 @@ type DeviceInfo struct {
 	MobileOperator int64                              `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
 	Phone          *string                            `json:"phone,optional"`                      //手机号
 	Iccid          *string                            `json:"iccid,optional"`                      //SIM卡卡号
-	UserID         int64                              `json:"userID,string,optional"`              // 用户id
 	Position       *Point                             `json:"position,optional"`                   //设备定位,默认百度坐标系
 	Address        *string                            `json:"address,optional"`                    //所在地址
 	Tags           []*Tag                             `json:"tags,optional"`                       // 设备tag
@@ -614,15 +614,16 @@ type DeviceInfoReadReq struct {
 }
 
 type DeviceInfoIndexReq struct {
-	Page           *PageInfo `json:"page,optional"`           //分页信息 只获取一个则不填
-	ProductID      string    `json:"productID,optional"`      //产品id 为空时获取所有产品
-	DeviceName     string    `json:"deviceName,optional"`     //过滤条件:模糊查询 设备名
-	DeviceAlias    string    `json:"deviceAlias,optional"`    //过滤条件:模糊查询 设备别名
-	Position       *Point    `json:"position,optional"`       //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
-	Range          int64     `json:"range,optional"`          //过滤条件:距离坐标点固定范围内的设备 单位：米
-	Tags           []*Tag    `json:"tags,optional"`           // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
-	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
-	AreaIDs        []int64   `json:"areaIDs,optional"`        //项目区域ids
+	Page           *PageInfo `json:"page,optional"`                 //分页信息 只获取一个则不填
+	ProductID      string    `json:"productID,optional"`            //产品id 为空时获取所有产品
+	DeviceName     string    `json:"deviceName,optional"`           //过滤条件:模糊查询 设备名
+	DeviceAlias    string    `json:"deviceAlias,optional"`          //过滤条件:模糊查询 设备别名
+	Position       *Point    `json:"position,optional"`             //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
+	Range          int64     `json:"range,optional"`                //过滤条件:距离坐标点固定范围内的设备 单位：米
+	Tags           []*Tag    `json:"tags,optional"`                 // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+	WithProperties []string  `json:"withProperties,optional"`       //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
+	AreaIDs        []int64   `json:"areaIDs,optional"`              //项目区域ids
+	IsOnline       int64     `json:"isOnline,optional,range=[0:2]"` // 在线状态过滤  1离线 2在线
 }
 
 type DeviceInfoIndexResp struct {
@@ -730,7 +731,7 @@ type DeviceInteractRespReadReq struct {
 type DeviceInteractSendActionReq struct {
 	ProductID   string `json:"productID"`        //产品id
 	DeviceName  string `json:"deviceName"`       //设备名
-	ActionID    string `json:"actionId"`         //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+	ActionID    string `json:"actionID"`         //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
 	InputParams string `json:"inputParams"`      //输入参数
 	IsAsync     bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
 }

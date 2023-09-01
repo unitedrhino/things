@@ -2,14 +2,14 @@ package hubLogRepo
 
 import (
 	"github.com/i-Things/things/shared/clients"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 )
 
 type HubLogRepo struct {
 	t *clients.Td
-	store.HubLogStore
+	stores.HubLogStore
 }
 
 func NewHubLogRepo(dataSource string) *HubLogRepo {
