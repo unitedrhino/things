@@ -62,7 +62,7 @@ iThings物联网平台提供跨不同设备和数据源的通用接入及管理�
 1. 微服务框架:[go-zero](https://go-zero.dev/)
 2. 高性能缓存:[redis](https://redis.io/)
 3. 高性能消息队列:[nats](https://docs.nats.io/)
-4. 关系型数据库:[mysql(请使用mariaDB或mysql5.7)](https://mariadb.com/)
+4. 关系型数据库:[mysql(请使用mariaDB或mysql5.7)](https://mariadb.com/)或pgsql
 5. 微服务注册中心(单体可不使用):`etcd`
 6. 云原生轻量级对象存储:[minio](https://min.io/)
 7. 开源、高性能、云原生,极简的时序数据处理平台:[tdengine](https://www.taosdata.com/)
