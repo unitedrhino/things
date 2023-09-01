@@ -15,18 +15,20 @@ var (
 	commonConn *gorm.DB
 	once       sync.Once
 	tenantConn sync.Map
+	dbType     string //数据库类型
 )
 
 func InitConn(database conf.Database) {
 	var err error
 	once.Do(func() {
+		dbType = database.DBType
 		switch database.DBType {
 		case conf.Mysql:
-			commonConn, err = gorm.Open(mysql.Open(database.DSN), &gorm.Config{})
+			commonConn, err = gorm.Open(mysql.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 		case conf.Pgsql:
-			commonConn, err = gorm.Open(postgres.Open(database.DSN), &gorm.Config{})
+			commonConn, err = gorm.Open(postgres.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 		case conf.Sqlite:
-			commonConn, err = gorm.Open(sqlite.Open(database.DSN), &gorm.Config{})
+			commonConn, err = gorm.Open(sqlite.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 		}
 		logx.Must(err)
 	})
@@ -45,6 +47,9 @@ func GetTenantConn(in any) *gorm.DB {
 func GetCommonConn(in any) *gorm.DB {
 	if db, ok := in.(*gorm.DB); ok {
 		return db
+	}
+	if in == nil {
+		return commonConn.Debug()
 	}
 	return commonConn.WithContext(in.(context.Context)).Debug()
 }

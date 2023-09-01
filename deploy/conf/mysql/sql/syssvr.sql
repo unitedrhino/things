@@ -115,6 +115,7 @@ VALUES (6, 2, 2, 1, '产品', '/deviceMangers/product/index', './deviceMangers/p
 INSERT IGNORE INTO `sys_menu_info`
 VALUES (7, 2, 0, 1, '产品详情', '/deviceMangers/product/detail/:id', './deviceMangers/product/detail/index',
         'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-10-13 23:02:39', NULL);
+
 INSERT IGNORE INTO `sys_menu_info`
 VALUES (8, 2, 0, 2, '设备', '/deviceMangers/device/index', './deviceMangers/device/index', 'icon_system', '', '', 2,
         '2022-09-24 15:38:54', '2022-10-13 23:02:46', NULL);
@@ -333,7 +334,7 @@ INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `g
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/rule/alarm/scene/multi-update',2,'更新告警和场景的关联',2,'','场景联动');
 
 CREATE TABLE if not exists `sys_api_auth` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT comment '编号',
+    `id` bigint NOT NULL AUTO_INCREMENT comment '编号',
     `p_type` varchar(255) NOT NULL DEFAULT '' comment '策略类型，即策略的分类，例如"p"表示主体（provider）访问资源（resource）的许可权，"g"表示主体（provider）之间的关系访问控制',
     `v0` varchar(255) NOT NULL DEFAULT '' comment '策略中的第一个参数，通常用于表示资源的归属范围（即限制访问的对象），例如资源所属的机构、部门、业务线、地域等',
     `v1` varchar(255) NOT NULL DEFAULT '' comment '策略中的第二个参数，通常用于表示主体（provider），即需要访问资源的用户或者服务',

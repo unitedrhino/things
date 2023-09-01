@@ -34,6 +34,9 @@ service DeviceInteract {
   //获取异步调用设备行为的结果
   rpc actionRead(RespReadReq)         returns(SendActionResp);
 
+  //回复调用设备行为
+  rpc respAction(RespActionReq)         returns(Response);
+
   //请求设备获取设备最新属性
   rpc getPropertyReply(GetPropertyReplyReq) returns(GetPropertyReplyResp);
 
@@ -218,6 +221,17 @@ message SendPropertyReq{
   int64 shadowControl = 4;//设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
   bool isAsync = 6;//是否异步操作 异步情况通过获取接口来获取
 }
+
+message RespActionReq{
+  string  productID = 1; //产品id 获取产品id下的所有设备信息
+  string  deviceName = 2; //设备名
+  string clientToken = 3;//调用id
+  string outputParams = 4;//输出参数 注意：此字段可能返回 null，表示取不到有效值。
+  string  status = 5;//返回状态
+  int64   code = 6;//设备返回状态码
+}
+
+
 message SendPropertyResp{
   int64   code = 1;//设备返回状态码
   string  status = 2;//返回状态

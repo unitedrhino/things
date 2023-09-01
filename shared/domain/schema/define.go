@@ -1,6 +1,6 @@
 package schema
 
-//数据类型
+// 数据类型
 type DataType string
 
 const (
@@ -27,7 +27,7 @@ const (
 	ParamEvent
 )
 
-//物模型标签
+// 物模型标签
 type Tag int64
 
 const (
@@ -36,7 +36,7 @@ const (
 	TagRequired Tag = 3 //必选 必选不可删除
 )
 
-//物模型功能类型 1:property属性 2:event事件 3:action行为
+// 物模型功能类型 1:property属性 2:event事件 3:action行为
 type AffordanceType int64
 
 const (
@@ -61,7 +61,7 @@ func (m AffordanceType) String() string {
 	return ""
 }
 
-//属性读写类型: r(只读) rw(可读可写)
+// 属性读写类型: r(只读) rw(可读可写)
 type PropertyMode string
 
 const (
@@ -69,11 +69,19 @@ const (
 	PropertyModeRW PropertyMode = "rw"
 )
 
-//事件类型: 信息:info  告警alert  故障:fault
+// 事件类型: 信息:info  告警alert  故障:fault
 type EventType string
 
 const (
 	EventTypeInfo  EventType = "info"
 	EventTypeAlert EventType = "alert"
 	EventTypeFault EventType = "fault"
+)
+
+// 行为的执行方向
+type ActionDir string
+
+const (
+	ActionDirUp   ActionDir = "up"   //向上调用
+	ActionDirDown ActionDir = "down" //向下调用
 )

@@ -8,9 +8,9 @@ import (
 func ToDeviceSDKLog(productID string, db map[string]any) *msgSdkLog.SDKLog {
 	return &msgSdkLog.SDKLog{
 		ProductID:  productID,
-		DeviceName: cast.ToString(db["deviceName"]),
+		DeviceName: cast.ToString(db["device_name"]),
 		Content:    cast.ToString(db["content"]),
 		Timestamp:  cast.ToTime(db["ts"]),
-		LogLevel:   cast.ToInt64(db["logLevel"]),
+		LogLevel:   cast.ToInt64(db["log_level"]),
 	}
 }

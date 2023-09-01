@@ -23,7 +23,7 @@ type RoleMenuFilter struct {
 func (p RoleMenuRepo) fmtFilter(ctx context.Context, f RoleMenuFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if len(f.RoleIDs) != 0 {
-		db = db.Where("`roleID` in ?", f.RoleIDs)
+		db = db.Where("role_id in ?", f.RoleIDs)
 	}
 	return db
 }
@@ -60,7 +60,7 @@ func (p RoleMenuRepo) CountByFilter(ctx context.Context, f RoleMenuFilter) (size
 }
 
 func (p RoleMenuRepo) Update(ctx context.Context, data *SysRoleMenu) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -71,12 +71,12 @@ func (p RoleMenuRepo) DeleteByFilter(ctx context.Context, f RoleMenuFilter) erro
 }
 
 func (p RoleMenuRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).Delete(&SysRoleMenu{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysRoleMenu{}).Error
 	return stores.ErrFmt(err)
 }
 func (p RoleMenuRepo) FindOne(ctx context.Context, id int64) (*SysRoleMenu, error) {
 	var result SysRoleMenu
-	err := p.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

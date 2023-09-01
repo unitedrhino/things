@@ -11,6 +11,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubDev"
+	"github.com/i-Things/things/src/disvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/hubLogRepo"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/schemaDataRepo"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/sdkLogRepo"
@@ -49,7 +50,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 	stores.InitConn(c.Database)
-	//TestTD(td)
+	err := relationDB.Migrate()
+	if err != nil {
+		logx.Error("disvr 数据库初始化失败 err", err)
+		os.Exit(-1)
+	}
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {
 		logx.Error("NewPubDev err", err)
