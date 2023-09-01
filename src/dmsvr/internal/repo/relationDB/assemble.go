@@ -101,6 +101,36 @@ func ToActionPo(productID string, in *schema.Action) *DmProductSchema {
 	}
 }
 
+func ToAffordancePo(in any) string {
+	var defineStr []byte
+	switch in.(type) {
+	case *schema.Event:
+		af := in.(*schema.Event)
+		define := EventDef{
+			Type:   af.Type,
+			Params: af.Params,
+		}
+		defineStr, _ = json.Marshal(define)
+	case *schema.Action:
+		af := in.(*schema.Action)
+		define := ActionDef{
+			Input:  af.Input,
+			Output: af.Output,
+		}
+		defineStr, _ = json.Marshal(define)
+	case *schema.Property:
+		af := in.(*schema.Property)
+		define := PropertyDef{
+			Define:      af.Define,
+			Mode:        af.Mode,
+			IsUseShadow: af.IsUseShadow,
+			IsNoRecord:  af.IsNoRecord,
+		}
+		defineStr, _ = json.Marshal(define)
+	}
+	return string(defineStr)
+}
+
 func ToActionDo(in *DmProductSchema) *schema.Action {
 	affordance := ActionDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
