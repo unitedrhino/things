@@ -3,7 +3,7 @@ package alarmcenterlogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
@@ -14,6 +14,7 @@ type AlarmLogCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	AlDB *relationDB.AlarmLogRepo
 }
 
 func NewAlarmLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmLogCreateLogic {
@@ -21,15 +22,12 @@ func NewAlarmLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Al
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		AlDB:   relationDB.NewAlarmLogRepo(ctx),
 	}
 }
 
 func (l *AlarmLogCreateLogic) AlarmLogCreate(in *rule.AlarmLog) (*rule.WithID, error) {
-	_, err := l.svcCtx.AlarmRecordRepo.FindOne(l.ctx, in.AlarmRecordID)
-	if !(err == mysql.ErrNotFound) {
-		return nil, errors.Parameter.AddMsg("告警名称重复").AddDetail(err)
-	}
-	_, err = l.svcCtx.AlarmLogRepo.Insert(l.ctx, &mysql.RuleAlarmLog{
+	err := l.AlDB.Insert(l.ctx, &relationDB.RuleAlarmLog{
 		AlarmRecordID: in.AlarmRecordID,
 		Serial:        in.Serial,
 		SceneName:     in.SceneName,

@@ -68,7 +68,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		}
 	}
 	uResp, err := l.svcCtx.UserRpc.UserLogin(l.ctx, &sys.UserLoginReq{
-		UserID:    req.UserID,
+		Account:   req.Account,
 		PwdType:   req.PwdType,
 		Password:  req.Password,
 		LoginType: req.LoginType,
@@ -82,7 +82,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
 			UserID:        0,
-			UserName:      req.UserID,
+			UserName:      req.Account, //todo 这里也要调整
 			IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(ctxs.GetUserCtx(l.ctx).IP),
 			Browser:       browser,
@@ -97,7 +97,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
 			UserID:        0,
-			UserName:      req.UserID,
+			UserName:      req.Account,
 			IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(ctxs.GetUserCtx(l.ctx).IP),
 			Browser:       browser,

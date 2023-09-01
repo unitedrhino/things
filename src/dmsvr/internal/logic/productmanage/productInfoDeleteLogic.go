@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -18,6 +18,8 @@ type ProductInfoDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDB *relationDB.ProductInfoRepo
+	DiDB *relationDB.DeviceInfoRepo
 }
 
 func NewProductInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductInfoDeleteLogic {
@@ -25,6 +27,8 @@ func NewProductInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 	}
 }
 
@@ -38,10 +42,10 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.ProductInfo.Delete(l.ctx, in.ProductID)
+	err = l.PiDB.DeleteByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	err = l.svcCtx.DataUpdate.ProductSchemaUpdate(l.ctx, &events.DeviceUpdateInfo{ProductID: in.ProductID})
 	if err != nil {
@@ -58,32 +62,32 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 	err = l.svcCtx.HubLogRepo.DropProduct(l.ctx, in.ProductID)
 	if err != nil {
 		l.Errorf("%s.HubLogRepo.DeleteProduct err=%v", utils.FuncName(), utils.Fmt(err))
-		return errors.Database.AddDetail(err)
+		return err
 	}
 	err = l.svcCtx.SDKLogRepo.DropProduct(l.ctx, in.ProductID)
 	if err != nil {
 		l.Errorf("%s.SDKLogRepo.DeleteProduct err=%v", utils.FuncName(), utils.Fmt(err))
-		return errors.Database.AddDetail(err)
+		return err
 	}
 	err = l.svcCtx.SchemaManaRepo.DeleteProduct(l.ctx, pt, in.ProductID)
 	if err != nil {
 		l.Errorf("%s.SchemaManaRepo.DeleteProduct err=%v", utils.FuncName(), utils.Fmt(err))
-		return errors.Database.AddDetail(err)
+		return err
 	}
 	//todo 需要删除物模型的数据
 	err = l.svcCtx.SchemaRepo.ClearCache(l.ctx, in.ProductID)
 	if err != nil {
 		l.Errorf("%s.SchemaRepo.ClearCache err=%v", utils.FuncName(), utils.Fmt(err))
-		return errors.Database.AddDetail(err)
+		return err
 	}
 	l.svcCtx.Bus.Publish(l.ctx, topics.DmProductInfoDelete, in.ProductID)
 	return nil
 }
 func (l *ProductInfoDeleteLogic) Check(in *dm.ProductInfoDeleteReq) error {
-	count, err := l.svcCtx.DeviceInfo.CountByFilter(l.ctx, mysql.DeviceFilter{ProductID: in.ProductID})
+	count, err := l.DiDB.CountByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID})
 	if err != nil {
 		l.Errorf("%s.CountByFilter err=%v", utils.FuncName(), utils.Fmt(err))
-		return errors.Database.AddDetail(err)
+		return err
 	}
 	if count > 0 {
 		return errors.NotEmpty.WithMsg("该产品下还有设备,不可删除")

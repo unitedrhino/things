@@ -2,15 +2,16 @@ package logic
 
 import (
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func ToPageInfo(info *dm.PageInfo) *def.PageInfo {
+func ToPageInfo(info *dm.PageInfo, defaultOrders ...def.OrderBy) *def.PageInfo {
 	if info == nil {
 		return nil
 	}
 
-	var orders []def.OrderBy
+	var orders = defaultOrders
 	if infoOrders := info.GetOrders(); len(infoOrders) > 0 {
 		orders = make([]def.OrderBy, 0, len(infoOrders))
 		for _, infoOd := range infoOrders {
@@ -42,4 +43,17 @@ func ToPageInfoWithDefault(info *dm.PageInfo, defau *def.PageInfo) *def.PageInfo
 		}
 		return page
 	}
+}
+
+func ToDmPoint(point *stores.Point) *dm.Point {
+	if point == nil {
+		return nil
+	}
+	return &dm.Point{Longitude: point.Longitude, Latitude: point.Latitude}
+}
+func ToStorePoint(point *dm.Point) stores.Point {
+	if point == nil {
+		return stores.Point{Longitude: 0, Latitude: 0}
+	}
+	return stores.Point{Longitude: point.Longitude, Latitude: point.Latitude}
 }

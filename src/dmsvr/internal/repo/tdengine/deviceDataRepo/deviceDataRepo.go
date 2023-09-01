@@ -3,7 +3,7 @@ package deviceDataRepo
 import (
 	"github.com/i-Things/things/shared/clients"
 	schema "github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 )
@@ -15,7 +15,7 @@ const (
 type DeviceDataRepo struct {
 	t              *clients.Td
 	getSchemaModel schema.GetSchemaModel
-	store.SchemaStore
+	stores.SchemaStore
 }
 
 func NewDeviceDataRepo(dataSource string, getSchemaModel schema.GetSchemaModel) *DeviceDataRepo {

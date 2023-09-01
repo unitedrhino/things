@@ -2,8 +2,8 @@ package alarmcenterlogic
 
 import (
 	"context"
-	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
 	"github.com/i-Things/things/src/rulesvr/internal/logic"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -15,6 +15,7 @@ type AlarmDealRecordIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	AdrDB *relationDB.AlarmDealRecordRepo
 }
 
 func NewAlarmDealRecordIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmDealRecordIndexLogic {
@@ -22,6 +23,7 @@ func NewAlarmDealRecordIndexLogic(ctx context.Context, svcCtx *svc.ServiceContex
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		AdrDB:  relationDB.NewAlarmDealRecordRepo(ctx),
 	}
 }
 
@@ -31,14 +33,14 @@ func (l *AlarmDealRecordIndexLogic) AlarmDealRecordIndex(in *rule.AlarmDealRecor
 		size int64
 		err  error
 	)
-	filter := alarm.DealRecordFilter{
+	filter := relationDB.AlarmDealRecordFilter{
 		AlarmRecordID: in.AlarmRecordID,
 		Time:          ToTimeRange(in.TimeRange)}
-	size, err = l.svcCtx.AlarmDealRecordRepo.CountByFilter(l.ctx, filter)
+	size, err = l.AdrDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.svcCtx.AlarmDealRecordRepo.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
+	di, err := l.AdrDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}

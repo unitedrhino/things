@@ -2,6 +2,7 @@ package schema
 
 import (
 	"encoding/json"
+	"github.com/i-Things/things/shared/utils"
 
 	"github.com/i-Things/things/shared/errors"
 	"github.com/spf13/cast"
@@ -78,6 +79,12 @@ func (a *Action) ValidateWithFmt() error {
 	}
 	if err := NameValidate(a.Name); err != nil {
 		return err
+	}
+	if !utils.SliceIn(a.Dir, ActionDirDown, ActionDirUp, "") {
+		return errors.Parameter.WithMsgf("行为的控制方向只能为up及down,收到:%v", a.Dir)
+	}
+	if a.Dir == "" {
+		a.Dir = ActionDirDown
 	}
 	if err := DescValidate(a.Desc); err != nil {
 		return err
@@ -169,21 +176,21 @@ func (d *Define) ValidateWithFmt() error {
 	return errors.Parameter.WithMsgf("定义的类型不支持:%v", d.Type)
 }
 func (d *Define) ValidateWithFmtBool() error {
-	if len(d.Maping) != 2 {
-		return errors.Parameter.WithMsgf("布尔的数据定义不正确:%v", d.Maping)
+	if len(d.Mapping) != 2 {
+		return errors.Parameter.WithMsgf("布尔的数据定义不正确:%v", d.Mapping)
 	}
-	if v, ok := d.Maping["0"]; !ok {
-		return errors.Parameter.WithMsgf("布尔的数据定义不正确:%v", d.Maping)
+	if v, ok := d.Mapping["0"]; !ok {
+		return errors.Parameter.WithMsgf("布尔的数据定义不正确:%v", d.Mapping)
 	} else {
 		if len(v) > DefineMappingLen {
-			return errors.Parameter.WithMsgf("布尔的0数据定义值长度过大:%v", d.Maping)
+			return errors.Parameter.WithMsgf("布尔的0数据定义值长度过大:%v", d.Mapping)
 		}
 	}
-	if v, ok := d.Maping["1"]; !ok {
-		return errors.Parameter.WithMsgf("布尔的数据定义不正确:%v", d.Maping)
+	if v, ok := d.Mapping["1"]; !ok {
+		return errors.Parameter.WithMsgf("布尔的数据定义不正确:%v", d.Mapping)
 	} else {
 		if len(v) > DefineMappingLen {
-			return errors.Parameter.WithMsgf("布尔的1数据定义值长度过大:%v", d.Maping)
+			return errors.Parameter.WithMsgf("布尔的1数据定义值长度过大:%v", d.Mapping)
 		}
 	}
 	d.Min = ""
@@ -231,7 +238,7 @@ func (d *Define) ValidateWithFmtInt() error {
 		d.Step = cast.ToString(1)
 	}
 
-	d.Maping = nil
+	d.Mapping = nil
 	d.Specs = nil
 	d.ArrayInfo = nil
 	d.Spec = nil
@@ -250,7 +257,7 @@ func (d *Define) ValidateWithFmtString() error {
 	d.Start = ""
 	d.Step = ""
 	d.Unit = ""
-	d.Maping = nil
+	d.Mapping = nil
 	d.Specs = nil
 	d.ArrayInfo = nil
 	d.Spec = nil
@@ -262,7 +269,7 @@ func (d *Define) ValidateWithFmtStruct() error {
 	d.Start = ""
 	d.Step = ""
 	d.Unit = ""
-	d.Maping = nil
+	d.Mapping = nil
 	d.ArrayInfo = nil
 	return d.Specs.ValidateWithFmt()
 }
@@ -296,11 +303,11 @@ func (d *Define) ValidateWithFmtFloat() error {
 	if step > max {
 		d.Step = cast.ToString(max)
 	}
-	if step < 1 {
+	if step <= 0 {
 		d.Step = cast.ToString(1)
 	}
 
-	d.Maping = nil
+	d.Mapping = nil
 	d.Specs = nil
 	d.ArrayInfo = nil
 	d.Spec = nil
@@ -312,7 +319,7 @@ func (d *Define) ValidateWithFmtTimeStamp() error {
 	d.Start = ""
 	d.Step = ""
 	d.Unit = ""
-	d.Maping = nil
+	d.Mapping = nil
 	d.Specs = nil
 	d.ArrayInfo = nil
 	d.Spec = nil
@@ -324,7 +331,7 @@ func (d *Define) ValidateWithFmtArray() error {
 	d.Start = ""
 	d.Step = ""
 	d.Unit = ""
-	d.Maping = nil
+	d.Mapping = nil
 	d.Specs = nil
 	d.Spec = nil
 	if d.ArrayInfo == nil {
@@ -333,10 +340,10 @@ func (d *Define) ValidateWithFmtArray() error {
 	return d.ArrayInfo.ValidateWithFmt()
 }
 func (d *Define) ValidateWithFmtEnum() error {
-	if len(d.Maping) == 0 {
+	if len(d.Mapping) == 0 {
 		return errors.Parameter.WithMsgf("枚举的数据定义长度不能为0")
 	}
-	for k, v := range d.Maping {
+	for k, v := range d.Mapping {
 		_, err := cast.ToInt64E(k)
 		if err != nil {
 			return errors.Parameter.WithMsgf("枚举的枚举键值定义不是数字:%v", k)

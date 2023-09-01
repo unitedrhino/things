@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -14,17 +14,25 @@ import (
 
 type SceneAlarm struct {
 	svcCtx *svc.ServiceContext
+	AiDB   *relationDB.AlarmInfoRepo
+	ArDB   *relationDB.AlarmRecordRepo
+	AdrDB  *relationDB.AlarmDealRecordRepo
+	AlDB   *relationDB.AlarmLogRepo
 }
 
-func NewSceneAlarm(svcCtx *svc.ServiceContext) *SceneAlarm {
+func NewSceneAlarm(svcCtx *svc.ServiceContext, ctx context.Context) *SceneAlarm {
 	return &SceneAlarm{
 		svcCtx: svcCtx,
+		AiDB:   relationDB.NewAlarmInfoRepo(ctx),
+		ArDB:   relationDB.NewAlarmRecordRepo(ctx),
+		AdrDB:  relationDB.NewAlarmDealRecordRepo(ctx),
+		AlDB:   relationDB.NewAlarmLogRepo(ctx),
 	}
 }
 
 func (l *SceneAlarm) AlarmTrigger(ctx context.Context, in scene.TriggerSerial) error {
 	//调这个接口默认都是场景联动调用的
-	alarms, err := l.svcCtx.AlarmInfoRepo.FindByFilter(ctx, alarm.InfoFilter{SceneID: in.SceneID}, nil)
+	alarms, err := l.AiDB.FindByFilter(ctx, relationDB.AlarmInfoFilter{SceneID: in.SceneID}, nil)
 	if err != nil {
 		return errors.Database.AddDetail(err)
 	}
@@ -39,7 +47,7 @@ func (l *SceneAlarm) AlarmTrigger(ctx context.Context, in scene.TriggerSerial) e
 
 func (l *SceneAlarm) AlarmRelieve(ctx context.Context, in scene.AlarmRelieve) error {
 	//调这个接口默认都是场景联动调用的
-	alarms, err := l.svcCtx.AlarmInfoRepo.FindByFilter(ctx, alarm.InfoFilter{SceneID: in.SceneID}, nil)
+	alarms, err := l.AiDB.FindByFilter(ctx, relationDB.AlarmInfoFilter{SceneID: in.SceneID}, nil)
 	if err != nil {
 		return errors.Database.AddDetail(err)
 	}
@@ -51,10 +59,10 @@ func (l *SceneAlarm) AlarmRelieve(ctx context.Context, in scene.AlarmRelieve) er
 	}
 	return nil
 }
-func (l *SceneAlarm) HandleRelieve(ctx context.Context, in scene.AlarmRelieve, alarmInfo *mysql.RuleAlarmInfo) error {
+func (l *SceneAlarm) HandleRelieve(ctx context.Context, in scene.AlarmRelieve, alarmInfo *relationDB.RuleAlarmInfo) error {
 	var recordID int64
-	ars, err := l.svcCtx.AlarmRecordRepo.FindByFilter(ctx, alarm.RecordFilter{
-		AlarmID: alarmInfo.Id,
+	ars, err := l.ArDB.FindByFilter(ctx, relationDB.AlarmRecordFilter{
+		AlarmID: alarmInfo.ID,
 	}, nil)
 	if err != nil {
 		return errors.Database.AddDetail(err)
@@ -67,11 +75,11 @@ func (l *SceneAlarm) HandleRelieve(ctx context.Context, in scene.AlarmRelieve, a
 			continue
 		}
 		ar.DealState = alarm.DealStateAlarmed
-		err := l.svcCtx.AlarmRecordRepo.Update(ctx, ar)
+		err := l.ArDB.Update(ctx, ar)
 		if err != nil {
 			return errors.Database.AddDetail(err)
 		}
-		_, err = l.svcCtx.AlarmDealRecordRepo.Insert(ctx, &mysql.RuleAlarmDealRecord{
+		err = l.AdrDB.Insert(ctx, &relationDB.RuleAlarmDealRecord{
 			AlarmRecordID: recordID,
 			Result:        "场景触发解除告警",
 			Type:          alarm.DealTypeSystem,
@@ -85,10 +93,10 @@ func (l *SceneAlarm) HandleRelieve(ctx context.Context, in scene.AlarmRelieve, a
 	return nil
 }
 
-func (l *SceneAlarm) HandleTrigger(ctx context.Context, in scene.TriggerSerial, alarmInfo *mysql.RuleAlarmInfo) error {
+func (l *SceneAlarm) HandleTrigger(ctx context.Context, in scene.TriggerSerial, alarmInfo *relationDB.RuleAlarmInfo) error {
 	var recordID int64
-	ars, err := l.svcCtx.AlarmRecordRepo.FindByFilter(ctx, alarm.RecordFilter{
-		AlarmID:     alarmInfo.Id,
+	ars, err := l.ArDB.FindByFilter(ctx, relationDB.AlarmRecordFilter{
+		AlarmID:     alarmInfo.ID,
 		TriggerType: in.TriggerType,
 		ProductID:   in.Device.ProductID,
 		DeviceName:  in.Device.DeviceName,
@@ -97,8 +105,8 @@ func (l *SceneAlarm) HandleTrigger(ctx context.Context, in scene.TriggerSerial, 
 		return errors.Database.AddDetail(err)
 	}
 	if len(ars) == 0 { //第一次触发
-		ret, err := l.svcCtx.AlarmRecordRepo.Insert(ctx, &mysql.RuleAlarmRecord{
-			AlarmID:     alarmInfo.Id,
+		db := relationDB.RuleAlarmRecord{
+			AlarmID:     alarmInfo.ID,
 			TriggerType: in.TriggerType,
 			ProductID:   in.Device.ProductID,
 			DeviceName:  in.Device.DeviceName,
@@ -107,18 +115,19 @@ func (l *SceneAlarm) HandleTrigger(ctx context.Context, in scene.TriggerSerial, 
 			SceneID:     in.SceneID,
 			DealState:   alarm.DealStateAlarming,
 			LastAlarm:   time.Now(),
-		})
+		}
+		err := l.ArDB.Insert(ctx, &db)
 		if err != nil {
 			return errors.Database.AddDetail(err)
 		}
-		recordID, _ = ret.RowsAffected()
+		recordID = db.ID
 	} else {
 		ar := ars[0]
 		ar.LastAlarm = time.Now()
 		ar.DealState = alarm.DealStateAlarming
-		l.svcCtx.AlarmRecordRepo.Update(ctx, ar)
+		l.ArDB.Update(ctx, ar)
 	}
-	_, err = l.svcCtx.AlarmLogRepo.Insert(ctx, &mysql.RuleAlarmLog{
+	err = l.AlDB.Insert(ctx, &relationDB.RuleAlarmLog{
 		AlarmRecordID: recordID,
 		Serial:        in.Serial,
 		SceneName:     in.SceneName,

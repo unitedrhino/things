@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
@@ -16,6 +16,7 @@ type SceneManuallyTriggerLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	SiDB *relationDB.SceneInfoRepo
 }
 
 func NewSceneManuallyTriggerLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SceneManuallyTriggerLogic {
@@ -23,15 +24,13 @@ func NewSceneManuallyTriggerLogic(ctx context.Context, svcCtx *svc.ServiceContex
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		SiDB:   relationDB.NewSceneInfoRepo(ctx),
 	}
 }
 
 func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *rule.WithID) (*rule.Empty, error) {
-	pi, err := l.svcCtx.SceneRepo.FindOne(l.ctx, in.Id)
+	pi, err := l.SiDB.FindOne(l.ctx, in.Id)
 	if err != nil {
-		if err == mysql.ErrNotFound {
-			return nil, errors.NotFind
-		}
 		return nil, err
 	}
 	if pi.Status != def.True {

@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/eventBus"
+	"github.com/i-Things/things/shared/stores"
 	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
 	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
@@ -16,11 +17,10 @@ import (
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/cache"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/event/dataUpdate"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/timer"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
 )
@@ -34,16 +34,9 @@ type ServiceContext struct {
 	DataUpdate        dataUpdate.DataUpdate
 }
 type Repo struct {
-	Store               kv.Store
-	SceneRepo           scene.Repo
-	SceneDeviceRepo     scene.DeviceRepo
-	SchemaRepo          schema.ReadRepo
-	SceneInfoRepo       mysql.RuleSceneInfoModel
-	AlarmInfoRepo       mysql.RuleAlarmInfoModel
-	AlarmRecordRepo     mysql.RuleAlarmRecordModel
-	AlarmSceneRepo      mysql.RuleAlarmSceneModel
-	AlarmDealRecordRepo mysql.RuleAlarmDealRecordModel
-	AlarmLogRepo        mysql.RuleAlarmLogModel
+	Store           kv.Store
+	SceneDeviceRepo scene.DeviceRepo
+	SchemaRepo      schema.ReadRepo
 }
 type SvrClient struct {
 	ProductM       productmanage.ProductManage
@@ -59,17 +52,16 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceInteract deviceinteract.DeviceInteract
 		deviceMsg      devicemsg.DeviceMsg
 	)
+	stores.InitConn(c.Database)
+	err := relationDB.Migrate()
+	if err != nil {
+		logx.Error("rulesvr 数据库初始化失败 err", err)
+		os.Exit(-1)
+	}
+
 	store := kv.NewStore(c.CacheRedis)
-	conn := sqlx.NewMysql(c.Database.DSN)
-	SceneInfoRepo := mysql.NewRuleSceneInfoModel(conn)
-	AlarmInfoRepo := mysql.NewRuleAlarmInfoModel(conn)
-	AlarmSceneRepo := mysql.NewRuleAlarmSceneModel(conn)
-	AlarmDealRecordRepo := mysql.NewRuleAlarmDealRecordModel(conn)
-	AlarmLogRepo := mysql.NewRuleAlarmLogModel(conn)
-	AlarmRecordRepo := mysql.NewRuleAlarmRecordModel(conn)
-	SceneRepo := mysql.NewRuleSceneInfoModel(conn)
-	sceneDevice := cache.NewSceneDeviceRepo(SceneRepo)
-	err := sceneDevice.Init(context.TODO())
+	sceneDevice := cache.NewSceneDeviceRepo(relationDB.NewSceneInfoRepo(context.TODO()))
+	err = sceneDevice.Init(context.TODO())
 	if err != nil {
 		logx.Error("设备场景数据初始化失败 err:", err)
 		os.Exit(-1)
@@ -110,16 +102,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceM:        deviceM,
 		},
 		Repo: Repo{
-			Store:               store,
-			SceneRepo:           SceneRepo,
-			SceneDeviceRepo:     sceneDevice,
-			SchemaRepo:          tr,
-			SceneInfoRepo:       SceneInfoRepo,
-			AlarmInfoRepo:       AlarmInfoRepo,
-			AlarmSceneRepo:      AlarmSceneRepo,
-			AlarmDealRecordRepo: AlarmDealRecordRepo,
-			AlarmLogRepo:        AlarmLogRepo,
-			AlarmRecordRepo:     AlarmRecordRepo,
+			Store:           store,
+			SceneDeviceRepo: sceneDevice,
+			SchemaRepo:      tr,
 		},
 	}
 }
