@@ -32,33 +32,33 @@ func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, erro
 		l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)
 		return nil, err
 	}
-	if in.Type != 1 && in.Type != 2 && in.Type != 3 {
-		in.Type = mi.Type
+	if in.Type != 0 {
+		mi.Type = in.Type
 	}
-	if in.Order == 0 {
-		in.Order = mi.Order
+	if in.Order != 0 {
+		mi.Order = in.Order
 	}
-	if in.HideInMenu == 0 {
-		in.HideInMenu = mi.HideInMenu
-	}
-
-	if in.ParentID == 0 {
-		in.ParentID = mi.ParentID
+	if in.HideInMenu != 0 {
+		mi.HideInMenu = in.HideInMenu
 	}
 
-	err = l.MiDB.Update(l.ctx, &relationDB.SysMenuInfo{
-		ID:            in.Id,
-		ParentID:      in.ParentID,
-		Type:          in.Type,
-		Order:         in.Order,
-		Name:          in.Name,
-		Path:          in.Path,
-		Component:     in.Component,
-		Icon:          in.Icon,
-		Redirect:      in.Redirect,
-		BackgroundUrl: "",
-		HideInMenu:    in.HideInMenu,
-	})
+	if in.ParentID != 0 {
+		mi.ParentID = in.ParentID
+	}
+	if in.Component != "" {
+		mi.Component = in.Component
+	}
+	if in.Name != "" {
+		mi.Name = in.Name
+	}
+	if in.Icon != "" {
+		mi.Icon = in.Icon
+	}
+	if in.Path != "" {
+		mi.Path = in.Path
+	}
+
+	err = l.MiDB.Update(l.ctx, mi)
 	if err != nil {
 		return nil, err
 	}
