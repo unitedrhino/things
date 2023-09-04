@@ -105,7 +105,7 @@ func (m *DmDeviceInfo) TableName() string {
 
 // 设备分组信息表
 type DmGroupInfo struct {
-	GroupID   int64             `gorm:"column:group_id;primary_key;type:bigint"`                     // 分组ID
+	GroupID   int64             `gorm:"column:group_id;primary_key;AUTO_INCREMENT;type:bigint"`      // 分组ID
 	ParentID  int64             `gorm:"column:parent_id;type:bigint;default:0;NOT NULL"`             // 父组ID 0-根组
 	ProjectID int64             `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`      // 项目ID(雪花ID)
 	ProductID string            `gorm:"column:product_id;type:char(11);NOT NULL"`                    // 产品id,为空则不限定分组内的产品类型
