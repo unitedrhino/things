@@ -13,7 +13,7 @@ type SysExample struct {
 
 // 用户登录信息表
 type SysUserInfo struct {
-	UserID     int64          `gorm:"column:user_id;primary_key;type:BIGINT;NOT NULL"`     // 用户id
+	UserID     int64          `gorm:"column:user_id;primary_key;AUTO_INCREMENT;type:BIGINT;NOT NULL"`     // 用户id
 	UserName   sql.NullString `gorm:"column:user_name;uniqueIndex;type:VARCHAR(20)"`       // 登录用户名
 	Password   string         `gorm:"column:password;type:CHAR(32);NOT NULL"`              // 登录密码
 	Email      sql.NullString `gorm:"column:email;uniqueIndex;type:VARCHAR(255)"`          // 邮箱
