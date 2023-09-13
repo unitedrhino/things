@@ -2,7 +2,6 @@ package productmanagelogic
 
 import (
 	"context"
-	"fmt"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"path"
 	"regexp"
@@ -142,7 +141,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 	if in.ProductID != "" {
 		expr := `[0-9A-Za-z]{11,11}`
 		match, _ := regexp.MatchString(expr, in.ProductID)
-		fmt.Println(match)
+		//fmt.Println(match)
 		if !match {
 			return nil, errors.Parameter.WithMsg("产品id格式不对,格式为11位数字和英文字母组成的字符串")
 		}
