@@ -76,7 +76,7 @@ var (
 		{ID: 6, ParentID: 2, Type: 2, Order: 1, Name: "产品", Path: "/deviceMangers/product/index", Component: "./deviceMangers/product/index", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 7, ParentID: 2, Type: 0, Order: 1, Name: "产品详情", Path: "/deviceMangers/product/detail/:id", Component: "./deviceMangers/product/detail/index", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
 		{ID: 8, ParentID: 2, Type: 0, Order: 2, Name: "设备", Path: "/deviceMangers/device/index", Component: "./deviceMangers/device/index", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 9, ParentID: 2, Type: 0, Order: 2, Name: "设备详情", Path: "/deviceMangers/device/detail/:id/:name", Component: "./deviceMangers/device/detail/index", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
+		{ID: 9, ParentID: 2, Type: 0, Order: 2, Name: "设备详情", Path: "/deviceMangers/device/detail/:id/:name/:type", Component: "./deviceMangers/device/detail/index", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
 		{ID: 10, ParentID: 3, Type: 0, Order: 1, Name: "用户管理", Path: "/systemMangers/user/index", Component: "./systemMangers/user/index", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 11, ParentID: 3, Type: 2, Order: 2, Name: "角色管理", Path: "/systemMangers/role/index", Component: "./systemMangers/role/index", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 12, ParentID: 3, Type: 2, Order: 3, Name: "菜单列表", Path: "/systemMangers/menu/index", Component: "./systemMangers/menu/index", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
