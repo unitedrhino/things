@@ -35,7 +35,7 @@ func (l *AuthApiMultiUpdateLogic) AuthApiMultiUpdate(req *types.AuthApiMultiUpda
 		})
 	}
 
-	resp, err := l.svcCtx.AuthRpc.AuthApiMultiUpdate(l.ctx, &sys.AuthApiMultiUpdateReq{
+	resp, err := l.svcCtx.RoleRpc.RoleApiMultiUpdate(l.ctx, &sys.RoleApiMultiUpdateReq{
 		RoleID: req.RoleID,
 		List:   m,
 	})

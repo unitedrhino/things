@@ -20,11 +20,7 @@ type (
 	ApiIndexReq           = sys.ApiIndexReq
 	ApiIndexResp          = sys.ApiIndexResp
 	ApiUpdateReq          = sys.ApiUpdateReq
-	AuthApiIndexReq       = sys.AuthApiIndexReq
-	AuthApiIndexResp      = sys.AuthApiIndexResp
 	AuthApiInfo           = sys.AuthApiInfo
-	AuthApiMultiUpdateReq = sys.AuthApiMultiUpdateReq
-	CheckAuthReq          = sys.CheckAuthReq
 	ConfigResp            = sys.ConfigResp
 	DateRange             = sys.DateRange
 	JwtToken              = sys.JwtToken
@@ -44,7 +40,13 @@ type (
 	OperLogIndexReq       = sys.OperLogIndexReq
 	OperLogIndexResp      = sys.OperLogIndexResp
 	PageInfo              = sys.PageInfo
+	PageInfo_OrderBy      = sys.PageInfo_OrderBy
+	Point                 = sys.Point
 	Response              = sys.Response
+	RoleApiAuthReq        = sys.RoleApiAuthReq
+	RoleApiIndexReq       = sys.RoleApiIndexReq
+	RoleApiIndexResp      = sys.RoleApiIndexResp
+	RoleApiMultiUpdateReq = sys.RoleApiMultiUpdateReq
 	RoleCreateReq         = sys.RoleCreateReq
 	RoleDeleteReq         = sys.RoleDeleteReq
 	RoleIndexData         = sys.RoleIndexData
@@ -54,7 +56,6 @@ type (
 	RoleUpdateReq         = sys.RoleUpdateReq
 	UserCheckTokenReq     = sys.UserCheckTokenReq
 	UserCheckTokenResp    = sys.UserCheckTokenResp
-	UserCreateReq         = sys.UserCreateReq
 	UserCreateResp        = sys.UserCreateResp
 	UserDeleteReq         = sys.UserDeleteReq
 	UserIndexReq          = sys.UserIndexReq
@@ -63,8 +64,6 @@ type (
 	UserLoginReq          = sys.UserLoginReq
 	UserLoginResp         = sys.UserLoginResp
 	UserReadReq           = sys.UserReadReq
-	UserReadResp          = sys.UserReadResp
-	UserUpdateReq         = sys.UserUpdateReq
 
 	Common interface {
 		Config(ctx context.Context, in *Response, opts ...grpc.CallOption) (*ConfigResp, error)

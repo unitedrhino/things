@@ -2,16 +2,13 @@ package productmanagelogic
 
 import (
 	"context"
-	"encoding/json"
-	"github.com/i-Things/things/shared/oss"
-	"path"
-	"strings"
-
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
+	"path"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -23,6 +20,7 @@ type ProductInfoUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDB *relationDB.ProductInfoRepo
 }
 
 func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductInfoUpdateLogic {
@@ -30,15 +28,13 @@ func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
 	}
 }
 
-func (l *ProductInfoUpdateLogic) setPoByPb(old *mysql.DmProductInfo, data *dm.ProductInfo) error {
+func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *dm.ProductInfo) error {
 	if data.Tags != nil {
-		tags, err := json.Marshal(data.Tags)
-		if err == nil {
-			old.Tags = string(tags)
-		}
+		old.Tags = data.Tags
 	}
 	if data.ProductName != "" {
 		old.ProductName = data.ProductName
@@ -105,25 +101,25 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *mysql.DmProductInfo, data *dm.Pr
 
 // 更新设备
 func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Response, error) {
-	po, err := l.svcCtx.ProductInfo.FindOne(l.ctx, in.ProductID)
+	po, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
-		if err == mysql.ErrNotFound {
-			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.ProductID))
+		if errors.Cmp(err, errors.NotFind) {
+			return nil, errors.Parameter.AddDetail("not find Product_id id:" + cast.ToString(in.ProductID))
 		}
-		if strings.Contains(err.Error(), "Duplicate entry") {
-			return nil, errors.Duplicate.WithMsgf("产品名重复:%s", in.ProductName)
-		}
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 
 	err = l.setPoByPb(po, in)
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.ProductInfo.Update(l.ctx, po)
+	err = l.PiDB.Update(l.ctx, po)
 	if err != nil {
 		l.Errorf("%s.Update err=%+v", utils.FuncName(), err)
-		return nil, errors.Database.AddDetail(err)
+		if errors.Cmp(err, errors.Duplicate) {
+			return nil, errors.Duplicate.WithMsgf("产品名称重复:%s", in.ProductName)
+		}
+		return nil, err
 	}
 
 	return &dm.Response{}, nil

@@ -29,6 +29,8 @@ service DeviceAuth{
   rpc accessAuth(AccessAuthReq)         returns (Response);
   //鉴定是否是root账号
   rpc rootCheck(RootCheckReq)           returns (Response);
+  //设备动态注册
+  rpc deviceRegister(DeviceRegisterReq) returns (DeviceRegisterResp);
 }
 
 //设备管理
@@ -206,17 +208,21 @@ message DeviceGatewayMultiDeleteReq{
 
 message GroupInfo{
   int64 groupID = 1;
-  string groupName = 2;
-  int64 parentID = 3;
-  string desc = 4;
-  int64 createdTime = 5;
-  map<string, string> tags = 6;
+  int64 parentID = 2;
+  int64 projectID = 3;
+  string groupName = 4;
+  string desc = 5;
+  int64 createdTime = 6;
+  map<string, string> tags = 7;
+  string productID = 8;
+  string productName = 9;
 }
 
 message GroupInfoCreateReq{
   string groupName = 1;
   int64 parentID = 2;
-  string desc = 3;
+  string productID = 3;
+  string desc = 4;
 }
 
 message GroupInfoIndexReq{
@@ -240,6 +246,7 @@ message GroupInfoUpdateReq{
   string groupName = 2;
   string desc = 3;
   map<string, string> tags = 4;
+  string productID = 5;
 }
 
 message GroupInfoDeleteReq{
@@ -297,8 +304,8 @@ message DeviceInfo {
   int64 mobileOperator = 22;//移动运营商:1)移动 2)联通 3)电信 4)广电
   google.protobuf.StringValue phone =23;//手机号
   google.protobuf.StringValue iccid = 24;//SIM卡卡号
-  int64 uid = 25;//所属用户id
 }
+
 message ProductInfo{
   int64   createdTime = 1; //创建时间 只读
   string   productID = 2; //产品id 只读
@@ -361,12 +368,13 @@ message DeviceInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string  productID = 2; //过滤条件: 产品id
   string deviceName = 3;//过滤条件:模糊查询 设备名
-  map<string, string> tags = 4;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
-  int64 range = 5; //过滤条件:取距离坐标点固定范围内的设备
-  Point Position = 6;   //设备定位,默认百度坐标系
-  repeated int64 projectIDs = 8;//项目ids
-  repeated int64 areaIDs = 10;//区域ids
-  string deviceAlias = 11; //过滤条件:模糊查询 设备别名
+  repeated string deviceNames = 4;//过滤条件:精准查询 设备名
+  map<string, string> tags = 5;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+  int64 range = 6; //过滤条件:取距离坐标点固定范围内的设备
+  Point Position = 7;   //设备定位,默认百度坐标系
+  repeated int64 areaIDs = 8;//区域ids
+  string deviceAlias = 9; //过滤条件:模糊查询 设备别名
+  int64 isOnline = 10; //在线状态过滤  1离线 2在线
 }
 
 message DeviceInfoIndexResp{
@@ -493,4 +501,26 @@ message DeviceTypeCountResp{
   int64 gateway = 2;
   int64 subset = 3;
   int64 unknown = 4;
+}
+
+message DeviceRegisterReq{
+  string productID = 1;  //产品id
+  string deviceName = 2; //设备名称
+  int64 nonce = 3;       //随机数
+  int64 timestamp = 4;   //秒级时间戳
+  string signature = 5;  //签名信息
+}
+
+message DeviceRegisterResp{
+  int64 len = 1;       //payload加密前信息的长度
+  /*
+  加密过程将原始 JSON 格式的 payload 转为字符串后进行 AES 加密，再进行 base64 加密。AES 加密算法为 CBC 模式，密钥长度128，取 productSecret 前16位，偏移量为长度16的字符“0”。
+  原始 payload 内容说明：
+  key                value               描述
+  encryptionType     1              加密类型，1表示证书认证，2表示签名认证。
+  psk                1239           设备密钥，当产品认证类型为签名认证时有此参数
+  clientCert         -              设备证书文件字符串格式，当产品认证类型为证书认证时有此参数。
+  clientKey          -              设备私钥文件字符串格式，当产品认证类型为证书认证时有此参数。
+  */
+  string payload = 2;
 }

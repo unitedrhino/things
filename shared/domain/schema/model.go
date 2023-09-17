@@ -63,6 +63,7 @@ type (
 	/*行为*/
 	Action struct {
 		CommonParam
+		Dir    ActionDir         `json:"dir"`    //调用方向
 		Input  Params            `json:"input"`  //调用参数
 		Output Params            `json:"output"` //返回参数
 		In     map[string]*Param `json:"-"`      //内部使用,使用map加速匹配,key为id
@@ -83,7 +84,7 @@ type (
 	/*数据类型定义*/
 	Define struct {
 		Type      DataType          `json:"type"`                //参数类型:bool int string struct float timestamp array enum
-		Maping    map[string]string `json:"mapping,omitempty"`   //枚举及bool类型:bool enum
+		Mapping   map[string]string `json:"mapping,omitempty"`   //枚举及bool类型:bool enum
 		Min       string            `json:"min,omitempty"`       //数值最小值:int  float
 		Max       string            `json:"max,omitempty"`       //数值最大值:int string float
 		Start     string            `json:"start,omitempty"`     //初始值:int float
@@ -115,32 +116,32 @@ func (p *PropertyMap) GetIDs() []string {
 	return ids
 }
 
-func (d *Define) GetDefaultValue() any {
+func (d *Define) GetDefaultValue() (retAny any, err error) {
 	switch d.Type {
 	case DataTypeBool:
-		return false
+		return false, nil
 	case DataTypeInt:
-		return cast.ToInt64(d.Start)
+		return cast.ToInt64(d.Start), nil
 	case DataTypeString:
-		return ""
+		return "", nil
 	case DataTypeStruct:
 		var ret = map[string]any{}
 		for _, v := range d.Specs {
-			ret[v.Identifier] = v.DataType.GetDefaultValue()
+			ret[v.Identifier], err = v.DataType.GetDefaultValue()
 		}
-		return ret
+		return ret, err
 	case DataTypeFloat:
-		return cast.ToFloat64(d.Start)
+		return cast.ToFloat64(d.Start), nil
 	case DataTypeTimestamp:
-		return int64(0)
+		return int64(0), nil
 	case DataTypeArray:
-		return []any{}
+		return []any{}, nil
 	case DataTypeEnum:
 		var keys []int64
-		for k := range d.Maping {
+		for k := range d.Mapping {
 			keys = append(keys, cast.ToInt64(k))
 		}
-		return utils.Min(keys)
+		return utils.Min(keys), nil
 	}
-	panic(errors.Parameter.AddMsgf("数据类型:%v 不支持", d.Type))
+	return nil, errors.Parameter.AddMsgf("数据类型:%v 不支持", d.Type)
 }

@@ -2,9 +2,9 @@
 package types
 
 type UserInfo struct {
-	Uid         int64  `json:"uid,string,optional"`         // 用户id
+	UserID      int64  `json:"userID,string,optional"`      // 用户id
 	UserName    string `json:"userName,optional"`           // 用户名(唯一)
-	Password    string `json:"password,omitempty"`          // 登录密码
+	Password    string `json:"password,optional,omitempty"` // 登录密码
 	Email       string `json:"email,optional"`              // 邮箱
 	Phone       string `json:"phone,optional"`              // 手机号
 	Wechat      string `json:"wechat,optional"`             // 微信UnionID
@@ -17,32 +17,13 @@ type UserInfo struct {
 	Language    string `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
 	HeadImgUrl  string `json:"headImgUrl,optional"`         // 用户头像
 	CreatedTime int64  `json:"createdTime,string,optional"` // 创建时间
-	Role        int64  `json:"role"`                        // 用户角色
+	Role        int64  `json:"role,optional"`               // 用户角色
 	Sex         int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
 	IsAllData   int64  `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
 }
 
-type UserCreateReq struct {
-	ReqType     string `json:"reqType,options=phone|wxopen|wxin|wxminip|pwd"` //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 密码方式 pwd 账密方式 必输
-	UserName    string `json:"userName"`                                      //手机号注册时填写手机号,账密登录时填写用户账号 必输
-	Password    string `json:"password"`                                      //明文密码 必输，且做大小写校验
-	Wechat      string `json:"wechat,optional"`                               // 微信UnionID
-	LastIP      string `json:"lastIP,optional"`                               // 最后登录ip
-	RegIP       string `json:"regIP,optional"`                                // 注册ip
-	NickName    string `json:"nickName,optional"`                             // 用户的昵称
-	City        string `json:"city,optional"`                                 // 用户所在城市
-	Country     string `json:"country,optional"`                              // 用户所在国家
-	Province    string `json:"province,optional"`                             // 用户所在省份
-	Language    string `json:"language,optional"`                             // 用户的语言，简体中文为zh_CN
-	HeadImgUrl  string `json:"headImgUrl,optional"`                           // 用户头像
-	CreatedTime int64  `json:"createdTime,string,optional"`                   // 创建时间
-	Role        int64  `json:"role"`                                          // 用户角色
-	Sex         int64  `json:"sex,optional"`                                  // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData   int64  `json:"isAllData,optional"`                            // 是否所有数据权限（1是，2否）
-}
-
 type UserCreateResp struct {
-	Uid int64 `json:"uid,string"` //用户id
+	UserID int64 `json:"userID,string,optional"` // 用户id
 }
 
 type UserCaptchaReq struct {
@@ -69,56 +50,21 @@ type UserIndexResp struct {
 	Total int64       `json:"total,optional,omitempty"` //总数
 }
 
-type UserUpdateReq struct {
-	Uid        int64  `json:"uid,string"`          // 用户id
-	UserName   string `json:"userName,optional"`   // 用户名(唯一)
-	Email      string `json:"email,optional"`      // 邮箱
-	NickName   string `json:"nickName,optional"`   // 用户的昵称
-	City       string `json:"city,optional"`       // 用户所在城市
-	Country    string `json:"country,optional"`    // 用户所在国家
-	Province   string `json:"province,optional"`   // 用户所在省份
-	Language   string `json:"language,optional"`   // 用户的语言，简体中文为zh_CN
-	HeadImgUrl string `json:"headImgUrl,optional"` // 用户头像
-	Role       int64  `json:"role,optional"`       // 用户角色
-	Sex        int64  `json:"sex,optional"`        // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData  int64  `json:"isAllData,optional"`  // 是否所有数据权限（1是，2否）
-}
-
 type UserReadReq struct {
-	Uid int64 `json:"uid,string"` // 用户id
-}
-
-type UserReadResp struct {
-	Uid         int64  `json:"uid,string,optional"`         // 用户id
-	UserName    string `json:"userName,optional"`           // 用户名(唯一)
-	Email       string `json:"email,optional"`              // 邮箱
-	Phone       string `json:"phone,optional"`              // 手机号
-	Wechat      string `json:"wechat,optional"`             // 微信UnionID
-	LastIP      string `json:"lastIP,optional"`             // 最后登录ip
-	RegIP       string `json:"regIP,optional"`              // 注册ip
-	NickName    string `json:"nickName,optional"`           // 用户的昵称
-	City        string `json:"city,optional"`               // 用户所在城市
-	Country     string `json:"country,optional"`            // 用户所在国家
-	Province    string `json:"province,optional"`           // 用户所在省份
-	Language    string `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
-	HeadImgUrl  string `json:"headImgUrl,optional"`         // 用户头像
-	CreatedTime int64  `json:"createdTime,string,optional"` // 创建时间
-	Role        int64  `json:"role"`                        // 用户角色
-	Sex         int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData   int64  `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
+	UserID int64 `json:"userID,string,optional"` // 用户id
 }
 
 type UserDeleteReq struct {
-	Uid string `json:"uid,omitempty"` //用户id
+	UserID int64 `json:"userID,string,optional"` // 用户id
 }
 
 type UserLoginReq struct {
-	UserID    string `json:"userID"`                                        //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
-	PwdType   int32  `json:"pwdType"`                                       //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
-	Password  string `json:"password"`                                      //密码，建议md5转换 密码登录时需要填写
-	LoginType string `json:"loginType,options=sms|pwd|wxopen|wxin|wxminip"` //验证类型 sms 短信验证码 pwd 账号密码登录 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序
-	Code      string `json:"code,optional"`                                 //验证码    微信登录填code
-	CodeID    string `json:"codeID,optional"`                               //验证码编号 微信登录填state
+	Account   string `json:"account"`                                         //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+	PwdType   int32  `json:"pwdType"`                                         //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
+	Password  string `json:"password"`                                        //密码，建议md5转换 密码登录时需要填写
+	LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
+	Code      string `json:"code,optional"`                                   //验证码    微信登录填code
+	CodeID    string `json:"codeID,optional"`                                 //验证码编号 微信登录填state
 }
 
 type UserLoginResp struct {
@@ -134,6 +80,7 @@ type JwtToken struct {
 
 type UserResourceReadResp struct {
 	Menu []*MenuData `json:"menu"` //菜单资源
+	Info *UserInfo   `json:"info"` //用户信息
 }
 
 type PageInfo struct {
@@ -170,15 +117,7 @@ type TimeRange struct {
 }
 
 type MenuCreateReq struct {
-	Name       string `json:"name"`                // 菜单名称
-	ParentID   int64  `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
-	Type       int64  `json:"type,optional"`       // 类型   1：目录   2：菜单   3：按钮
-	Path       string `json:"path,optional"`       // 系统的path
-	Component  string `json:"component,optional"`  // 页面
-	Icon       string `json:"icon,optional"`       // 菜单图标
-	Redirect   string `json:"redirect,optional"`   // 路由重定向
-	Order      int64  `json:"order,optional"`      // 左侧table排序序号
-	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
+	MenuData
 }
 
 type MenuIndexReq struct {
@@ -187,17 +126,17 @@ type MenuIndexReq struct {
 }
 
 type MenuData struct {
-	ID         int64  `json:"id"`                  // 编号
-	Name       string `json:"name"`                // 菜单名称
-	ParentID   int64  `json:"parentID"`            // 父菜单ID，一级菜单为1
-	Type       int64  `json:"type"`                // 类型   1：目录   2：菜单   3：按钮
-	Path       string `json:"path"`                // 系统的path
-	Component  string `json:"component"`           // 页面
-	Icon       string `json:"icon"`                // 菜单图标
-	Redirect   string `json:"redirect"`            // 路由重定向
-	CreateTime int64  `json:"createTime"`          // 创建时间
-	Order      int64  `json:"order"`               // 左侧table排序序号
+	ID         int64  `json:"id,optional"`         // 编号
+	Name       string `json:"name,optional"`       // 菜单名称
+	ParentID   int64  `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
+	Type       int64  `json:"type,optional"`       // 类型   1. 内部页面   2，iframe内嵌  3，外部链接跳转 4，微前端
+	Path       string `json:"path,optional"`       // 系统的path
+	Component  string `json:"component,optional"`  // 页面
+	Icon       string `json:"icon,optional"`       // 菜单图标
+	Redirect   string `json:"redirect,optional"`   // 路由重定向
+	Order      int64  `json:"order,optional"`      // 左侧table排序序号
 	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
+	CreateTime int64  `json:"createTime,optional"` // 创建时间
 }
 
 type MenuIndexResp struct {
@@ -205,16 +144,7 @@ type MenuIndexResp struct {
 }
 
 type MenuUpdateReq struct {
-	ID         int64  `json:"id"`                  // 编号
-	Name       string `json:"name"`                // 菜单名称
-	ParentID   int64  `json:"parentID"`            // 父菜单ID，一级菜单为1
-	Type       int64  `json:"type,optional"`       // 类型   1：目录   2：菜单   3：按钮
-	Path       string `json:"path,optional"`       // 系统的path
-	Component  string `json:"component,optional"`  // 页面
-	Icon       string `json:"icon,optional"`       // 菜单图标
-	Redirect   string `json:"redirect,optional"`   // 路由重定向
-	Order      int64  `json:"order"`               // 左侧table排序序号
-	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
+	MenuData
 }
 
 type MenuDeleteReq struct {
@@ -271,15 +201,15 @@ type SysLogLoginIndexReq struct {
 }
 
 type SysLogLoginIndexData struct {
-	Uid           int64  `json:"uid,string"`         // 用户id
-	UserName      string `json:"userName"`           // 登录账号
-	IpAddr        string `json:"ipAddr"`             // 登录IP地址
-	LoginLocation string `json:"loginLocation"`      // 登录地点
-	Browser       string `json:"browser"`            // 浏览器类型
-	Os            string `json:"os"`                 // 操作系统
-	Code          int64  `json:"code,string"`        // 登录状态（200成功 其它失败）
-	Msg           string `json:"msg"`                // 提示消息
-	CreatedTime   int64  `json:"createdTime,string"` // 登录时间
+	UserID        int64  `json:"userID,string,optional"` // 用户id
+	UserName      string `json:"userName"`               // 登录账号
+	IpAddr        string `json:"ipAddr"`                 // 登录IP地址
+	LoginLocation string `json:"loginLocation"`          // 登录地点
+	Browser       string `json:"browser"`                // 浏览器类型
+	Os            string `json:"os"`                     // 操作系统
+	Code          int64  `json:"code,string"`            // 登录状态（200成功 其它失败）
+	Msg           string `json:"msg"`                    // 提示消息
+	CreatedTime   int64  `json:"createdTime,string"`     // 登录时间
 }
 
 type SysLogLoginIndexResp struct {
@@ -295,18 +225,18 @@ type SysLogOperIndexReq struct {
 }
 
 type SysLogOperIndexData struct {
-	Uid          int64  `json:"uid,string"`          //用户id
-	OperUserName string `json:"operUserName"`        //操作人员名称
-	OperName     string `json:"operName"`            //操作名称
-	BusinessType int64  `json:"businessType,string"` //业务类型（1新增 2修改 3删除 4查询）
-	Uri          string `json:"uri"`                 //请求地址
-	OperIpAddr   string `json:"operIpAddr"`          //操作主机ip地址
-	OperLocation string `json:"operLocation"`        //操作地点
-	Req          string `json:"req"`                 //请求参数
-	Resp         string `json:"resp"`                //返回参数
-	Code         int64  `json:"code,string"`         //登录状态（200成功 其它失败）
-	Msg          string `json:"msg"`                 //提示消息
-	CreatedTime  int64  `json:"createdTime,string"`  //操作时间
+	UserID       int64  `json:"userID,string,optional"` // 用户id
+	OperUserName string `json:"operUserName"`           //操作人员名称
+	OperName     string `json:"operName"`               //操作名称
+	BusinessType int64  `json:"businessType,string"`    //业务类型（1新增 2修改 3删除 4查询）
+	Uri          string `json:"uri"`                    //请求地址
+	OperIpAddr   string `json:"operIpAddr"`             //操作主机ip地址
+	OperLocation string `json:"operLocation"`           //操作地点
+	Req          string `json:"req"`                    //请求参数
+	Resp         string `json:"resp"`                   //返回参数
+	Code         int64  `json:"code,string"`            //登录状态（200成功 其它失败）
+	Msg          string `json:"msg"`                    //提示消息
+	CreatedTime  int64  `json:"createdTime,string"`     //操作时间
 }
 
 type SysLogOperIndexResp struct {
@@ -436,6 +366,19 @@ type DeviceAuthRootCheckReq struct {
 	ClientID    string `json:"clientID,omitempty"`             //clientID
 	Ip          string `json:"ip,omitempty"`                   //访问的ip地址
 	Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
+}
+
+type DeviceRegisterReq struct {
+	ProductID  string `json:"productID"`  //产品id 只读
+	DeviceName string `json:"deviceName"` //设备名称 读写
+	Nonce      int64  `json:"nonce"`      //随机数
+	Timestamp  int64  `json:"timestamp"`  //秒级时间戳
+	Signature  string `json:"signature"`  //签名信息
+}
+
+type DeviceRegisterResp struct {
+	Len     int64  `json:"len"` //payload加密前信息的长度
+	Payload string `json:"payload"`
 }
 
 type DeviceAuth5LoginReq struct {
@@ -611,7 +554,6 @@ type DeviceInfo struct {
 	MobileOperator int64                              `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
 	Phone          *string                            `json:"phone,optional"`                      //手机号
 	Iccid          *string                            `json:"iccid,optional"`                      //SIM卡卡号
-	Uid            int64                              `json:"uid,string,optional"`                 //所属用户id
 	Position       *Point                             `json:"position,optional"`                   //设备定位,默认百度坐标系
 	Address        *string                            `json:"address,optional"`                    //所在地址
 	Tags           []*Tag                             `json:"tags,optional"`                       // 设备tag
@@ -638,9 +580,8 @@ type DeviceInfoSaveReq struct {
 	Tags           []*Tag  `json:"tags,optional"`                       // 设备tag
 	Phone          *string `json:"phone,optional"`                      //手机号
 	Iccid          *string `json:"iccid,optional"`                      //SIM卡卡号
-	Uid            int64   `json:"uid,string,optional"`                 //所属用户id
+	UserID         int64   `json:"userID,string,optional"`              // 用户id
 	MobileOperator int64   `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
-	ProjectID      *int64  `json:"projectID,string,optional"`           //项目id 只读（nil不更新，0为取消绑定，other则绑定）
 	AreaID         *int64  `json:"areaID,string,optional"`              //项目区域id 只读（nil不更新，0为取消绑定，other则绑定）
 }
 
@@ -656,16 +597,16 @@ type DeviceInfoReadReq struct {
 }
 
 type DeviceInfoIndexReq struct {
-	Page           *PageInfo `json:"page,optional"`           //分页信息 只获取一个则不填
-	ProductID      string    `json:"productID,optional"`      //产品id 为空时获取所有产品
-	DeviceName     string    `json:"deviceName,optional"`     //过滤条件:模糊查询 设备名
-	DeviceAlias    string    `json:"deviceAlias,optional"`    //过滤条件:模糊查询 设备别名
-	Position       *Point    `json:"position,optional"`       //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
-	Range          int64     `json:"range,optional"`          //过滤条件:距离坐标点固定范围内的设备 单位：米
-	Tags           []*Tag    `json:"tags,optional"`           // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
-	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
-	ProjectIDs     []int64   `json:"projectIDs,optional"`     //项目ids
-	AreaIDs        []int64   `json:"areaIDs,optional"`        //项目区域ids
+	Page           *PageInfo `json:"page,optional"`                 //分页信息 只获取一个则不填
+	ProductID      string    `json:"productID,optional"`            //产品id 为空时获取所有产品
+	DeviceName     string    `json:"deviceName,optional"`           //过滤条件:模糊查询 设备名
+	DeviceAlias    string    `json:"deviceAlias,optional"`          //过滤条件:模糊查询 设备别名
+	Position       *Point    `json:"position,optional"`             //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
+	Range          int64     `json:"range,optional"`                //过滤条件:距离坐标点固定范围内的设备 单位：米
+	Tags           []*Tag    `json:"tags,optional"`                 // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+	WithProperties []string  `json:"withProperties,optional"`       //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
+	AreaIDs        []int64   `json:"areaIDs,optional"`              //项目区域ids
+	IsOnline       int64     `json:"isOnline,optional,range=[0:2]"` // 在线状态过滤  1离线 2在线
 }
 
 type DeviceInfoIndexResp struct {
@@ -711,6 +652,8 @@ type DeviceMultiImportRow struct {
 	Row         int64  `json:"row"`         //【提示】数据所在表格行
 	ProductName string `json:"productName"` //【必填】产品名称
 	DeviceName  string `json:"deviceName"`  //【必填】设备名称
+	DeviceAlias string `json:"deviceAlias"` //【选填】设备别名
+	Secret      string `json:"secret"`      //【选填】设备秘钥
 	LogLevel    string `json:"logLevel"`    //【选填】日志级别（关闭/错误/告警/信息/调试）
 	Tags        string `json:"tags"`        //【选填】设备标签（格式k1:v1;k2:v2;...）
 	Position    string `json:"position"`    //【选填】设备位置百度坐标（格式:经,纬）
@@ -749,11 +692,11 @@ type DeviceInteractSendMsgReq struct {
 }
 
 type DeviceInteractSendPropertyReq struct {
-	ProductID     string `json:"productID"`        //产品id
-	DeviceName    string `json:"deviceName"`       //设备名
-	Data          string `json:"data"`             //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-	IsAsync       bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
-	ShadowControl int64  `json:"shadowControl"`    //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+	ProductID     string `json:"productID"`              //产品id
+	DeviceName    string `json:"deviceName"`             //设备名
+	Data          string `json:"data"`                   //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	IsAsync       bool   `json:"isAsync,optional"`       //是否异步操作 异步情况通过获取接口来获取
+	ShadowControl int64  `json:"shadowControl,optional"` //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
 }
 
 type DeviceInteractSendPropertyResp struct {
@@ -771,7 +714,7 @@ type DeviceInteractRespReadReq struct {
 type DeviceInteractSendActionReq struct {
 	ProductID   string `json:"productID"`        //产品id
 	DeviceName  string `json:"deviceName"`       //设备名
-	ActionID    string `json:"actionId"`         //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+	ActionID    string `json:"actionID"`         //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
 	InputParams string `json:"inputParams"`      //输入参数
 	IsAsync     bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
 }
@@ -788,7 +731,7 @@ type DeviceInteractMultiSendPropertyReq struct {
 	GroupID       int64    `json:"groupID,string,optional"` //分组ID,传了会从分组下获取设备
 	ProductID     string   `json:"productID,optional"`      //产品id
 	DeviceNames   []string `json:"deviceNames,optional"`    //设备名列表
-	ShadowControl int64    `json:"shadowControl"`           //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+	ShadowControl int64    `json:"shadowControl,optional"`  //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
 	Data          string   `json:"data"`                    //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
 }
 
@@ -1007,23 +950,28 @@ type ProductCustomReadReq struct {
 }
 
 type GroupInfo struct {
-	GroupID     int64  `json:"groupID,string"`     //分组ID
-	GroupName   string `json:"groupName"`          //分组名称
-	ParentID    int64  `json:"parentID,string"`    //父组ID
-	CreatedTime int64  `json:"createdTime,string"` //创建时间
-	Desc        string `json:"desc,optional"`      //分组描述
-	Tags        []*Tag `json:"tags,optional"`      //分组tag
+	GroupID     int64  `json:"groupID,string"`       //分组ID
+	ParentID    int64  `json:"parentID,string"`      //父组ID
+	ProjectID   int64  `json:"projectID,string"`     //项目ID
+	GroupName   string `json:"groupName"`            //分组名称
+	ProductID   string `json:"productID,optional"`   //产品ID
+	ProductName string `json:"productName,optional"` //产品ID
+	CreatedTime int64  `json:"createdTime,string"`   //创建时间
+	Desc        string `json:"desc,optional"`        //分组描述
+	Tags        []*Tag `json:"tags,optional"`        //分组tag
 }
 
 type GroupInfoCreateReq struct {
-	GroupName string `json:"groupName"`       //分组名称
-	ParentID  int64  `json:"parentID,string"` //父组ID
-	Desc      string `json:"desc,optional"`   //分组描述
+	GroupName string `json:"groupName"`          //分组名称
+	ParentID  int64  `json:"parentID,string"`    //父组ID
+	ProductID string `json:"productID,optional"` //产品ID
+	Desc      string `json:"desc,optional"`      //分组描述
 }
 
 type GroupInfoIndexReq struct {
 	Page      *PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
 	ParentID  int64     `json:"parentID,string"`    //父组ID
+	ProductID string    `json:"productID,optional"` //产品ID
 	GroupName string    `json:"groupName,optional"` //分组名称
 	Tags      []*Tag    `json:"tags,optional"`      //分组tag
 }
@@ -1045,6 +993,7 @@ type GroupInfoDeleteReq struct {
 type GroupInfoUpdateReq struct {
 	GroupID   int64   `json:"groupID,string"`     //分组ID
 	GroupName *string `json:"groupName,optional"` //分组名称
+	ProductID string  `json:"productID,optional"` //产品ID
 	Desc      *string `json:"desc,optional"`      //分组描述
 	Tags      []*Tag  `json:"tags,optional"`      //分组tag
 }

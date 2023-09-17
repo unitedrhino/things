@@ -6,8 +6,8 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/traces"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/timex"
@@ -17,7 +17,7 @@ import (
 
 type (
 	MqttClient struct {
-		client mqtt.Client
+		client *clients.MqttClient
 	}
 	//登录登出消息
 	ConnectMsg struct {
@@ -39,12 +39,13 @@ const (
 	// TopicConnectStatus emqx 客户端上下线通知 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/system-topic.html#客户端上下线事件
 	TopicConnectStatus = ShareSubTopicPrefix + "$SYS/brokers/+/clients/#"
 
-	TopicThing   = ShareSubTopicPrefix + devices.TopicHeadThing + "/#"
-	TopicOta     = ShareSubTopicPrefix + devices.TopicHeadOta + "/#"
-	TopicConfig  = ShareSubTopicPrefix + devices.TopicHeadConfig + "/#"
-	TopicSDKLog  = ShareSubTopicPrefix + devices.TopicHeadLog + "/#"
-	TopicShadow  = ShareSubTopicPrefix + devices.TopicHeadShadow + "/#"
-	TopicGateway = ShareSubTopicPrefix + devices.TopicHeadGateway + "/#"
+	TopicThing   = ShareSubTopicPrefix + devices.TopicHeadThing + "/up/#"
+	TopicOta     = ShareSubTopicPrefix + devices.TopicHeadOta + "/up/#"
+	TopicConfig  = ShareSubTopicPrefix + devices.TopicHeadConfig + "/up/#"
+	TopicSDKLog  = ShareSubTopicPrefix + devices.TopicHeadLog + "/up/#"
+	TopicShadow  = ShareSubTopicPrefix + devices.TopicHeadShadow + "/up/#"
+	TopicGateway = ShareSubTopicPrefix + devices.TopicHeadGateway + "/up/#"
+	TopicExt     = ShareSubTopicPrefix + devices.TopicHeadExt + "/up/#"
 )
 
 func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
@@ -59,56 +60,63 @@ func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
 
 func (d *MqttClient) SubDevMsg(handle Handle) error {
 
-	err := d.subDevMsg(handle)
+	err := d.subDevMsg(nil, handle)
 	if err != nil {
 		return err
 	}
-	clients.MqttSetOnConnectHandler = func() {
-		err := d.subDevMsg(handle)
+	clients.SetMqttSetOnConnectHandler(func(cli mqtt.Client) {
+		err := d.subDevMsg(cli, handle)
 		if err != nil {
-			logx.Errorf("%s.MqttSetOnConnectHandler.subDevMsg err:%v", utils.FuncName(), err)
+			logx.Errorf("%s.mqttSetOnConnectHandler.subDevMsg err:%v", utils.FuncName(), err)
 		}
-	}
+	})
 	return nil
 }
 
-func (d *MqttClient) subDevMsg(handle Handle) error {
+func (d *MqttClient) subDevMsg(cli mqtt.Client, handle Handle) error {
 	logx.Infof("%s", utils.FuncName())
-	err := d.subscribeWithFunc(TopicConnectStatus, d.subscribeConnectStatus(handle))
+	err := d.subscribeWithFunc(cli, TopicConnectStatus, d.subscribeConnectStatus(handle))
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicThing, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicThing, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicConfig, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicConfig, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicOta, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicOta, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicSDKLog, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicSDKLog, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicShadow, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicShadow, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
 		return err
 	}
-	err = d.subscribeWithFunc(TopicGateway, func(ctx context.Context, topic string, payload []byte) error {
+	err = d.subscribeWithFunc(cli, TopicGateway, func(ctx context.Context, topic string, payload []byte) error {
+		return handle(ctx).Msg(topic, payload)
+	})
+	if err != nil {
+		return err
+	}
+
+	err = d.subscribeWithFunc(cli, TopicExt, func(ctx context.Context, topic string, payload []byte) error {
 		return handle(ctx).Msg(topic, payload)
 	})
 	if err != nil {
@@ -159,20 +167,27 @@ func (d *MqttClient) subscribeConnectStatus(handle Handle) func(ctx context.Cont
 
 }
 
-func (d *MqttClient) subscribeWithFunc(topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {
-	return d.client.Subscribe(topic,
+func (d *MqttClient) subscribeWithFunc(cli mqtt.Client, topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {
+	return d.client.Subscribe(cli, topic,
 		1, func(client mqtt.Client, message mqtt.Message) {
-			ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
-			defer cancel()
-			//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
-			//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
-			ctx, span := traces.StartSpan(ctx, message.Topic(), "")
-			defer span.End()
-			startTime := timex.Now()
-			duration := timex.Since(startTime)
-			err := handle(ctx, message.Topic(), message.Payload())
-			logx.WithContext(ctx).WithDuration(duration).Infof(
-				"subscribeWithFunc.Subscribe.publish topic:%v message:%v err:%v",
-				message.Topic(), string(message.Payload()), err)
-		}).Error()
+			go func() {
+				ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
+				defer cancel()
+				utils.Recover(ctx)
+				//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
+				//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
+				ctx, span := ctxs.StartSpan(ctx, message.Topic(), "")
+				defer span.End()
+				startTime := timex.Now()
+				duration := timex.Since(startTime)
+				err := handle(ctx, message.Topic(), message.Payload())
+				if err != nil {
+					logx.WithContext(ctx).Errorf("%s.handle failure err:%v topic:%v", err, topic)
+				}
+				logx.WithContext(ctx).WithDuration(duration).Infof(
+					"subscribeWithFunc.Subscribe.publish topic:%v message:%v err:%v",
+					message.Topic(), string(message.Payload()), err)
+			}()
+
+		})
 }

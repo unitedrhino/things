@@ -3,7 +3,7 @@ package remoteconfiglogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -15,6 +15,7 @@ type RemoteConfigLastReadLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PrcDB *relationDB.ProductRemoteConfigRepo
 }
 
 func NewRemoteConfigLastReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoteConfigLastReadLogic {
@@ -22,15 +23,16 @@ func NewRemoteConfigLastReadLogic(ctx context.Context, svcCtx *svc.ServiceContex
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PrcDB:  relationDB.NewProductRemoteConfigRepo(ctx),
 	}
 }
 
 func (l *RemoteConfigLastReadLogic) RemoteConfigLastRead(in *dm.RemoteConfigLastReadReq) (*dm.RemoteConfigLastReadResp, error) {
-	res, err := l.svcCtx.RemoteConfigDB.GetLastRecord(l.ctx, &mysql.RemoteConfigFilter{
+	res, err := l.PrcDB.FindOneByFilter(l.ctx, relationDB.RemoteConfigFilter{
 		ProductID: in.ProductID,
 	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+	if err != nil && !errors.Cmp(err, errors.NotFind) {
+		return nil, err
 	}
 	if res == nil {
 		return &dm.RemoteConfigLastReadResp{Info: &dm.ProductRemoteConfig{
@@ -45,6 +47,6 @@ func (l *RemoteConfigLastReadLogic) RemoteConfigLastRead(in *dm.RemoteConfigLast
 		Id:          res.ID,
 		ProductID:   res.ProductID,
 		Content:     res.Content,
-		CreatedTime: res.CreatedTime,
+		CreatedTime: res.CreatedTime.Unix(),
 	}}, nil
 }

@@ -2,9 +2,8 @@ package loglogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -16,6 +15,7 @@ type OperLogIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	OlDB *relationDB.OperLogRepo
 }
 
 func NewOperLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OperLogIndexLogic {
@@ -23,24 +23,28 @@ func NewOperLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Oper
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		OlDB:   relationDB.NewOperLogRepo(ctx),
 	}
 }
 
 func (l *OperLogIndexLogic) OperLogIndex(in *sys.OperLogIndexReq) (*sys.OperLogIndexResp, error) {
-	resp, total, err := l.svcCtx.LogModel.OperLogIndex(l.ctx, &mysql.OperLogFilter{
-		Page:         &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
+	f := relationDB.OperLogFilter{
 		OperName:     in.OperName,
 		OperUserName: in.OperUserName,
 		BusinessType: in.BusinessType,
-	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
 	}
-
+	resp, err := l.OlDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+	if err != nil {
+		return nil, err
+	}
+	total, err := l.OlDB.CountByFilter(l.ctx, f)
+	if err != nil {
+		return nil, err
+	}
 	info := make([]*sys.OperLogIndexData, 0, len(resp))
 	for _, v := range resp {
 		info = append(info, &sys.OperLogIndexData{
-			Uid:          v.OperUid,
+			UserID:       v.OperUserID,
 			OperUserName: v.OperUserName,
 			OperName:     v.OperName,
 			BusinessType: v.BusinessType,

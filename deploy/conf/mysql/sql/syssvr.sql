@@ -7,7 +7,7 @@ use iThings;
 
 CREATE TABLE if not exists `sys_user_info`
 (
-    `uid`         bigint       NOT NULL COMMENT '用户id',
+    `userID`         bigint       NOT NULL COMMENT '用户id',
     `userName`    varchar(20)           DEFAULT NULL COMMENT '登录用户名',
     `password`    char(32)     NOT NULL DEFAULT '' COMMENT '登录密码',
     `email`       varchar(255)   CHARACTER SET utf8 COLLATE utf8_general_ci       DEFAULT NULL COMMENT '邮箱',
@@ -27,7 +27,7 @@ CREATE TABLE if not exists `sys_user_info`
     `createdTime` datetime     not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime     NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime              DEFAULT NULL COMMENT '删除时间，默认为空，表示未删除，非空表示已删除',
-    PRIMARY KEY (`uid`) USING BTREE,
+    PRIMARY KEY (`userID`) USING BTREE,
     UNIQUE KEY `user_username` (`userName`) USING BTREE,
     UNIQUE KEY `user_phone` (`phone`) USING BTREE,
     UNIQUE KEY `user_email` (`email`) USING BTREE,
@@ -38,7 +38,7 @@ CREATE TABLE if not exists `sys_user_info`
     ROW_FORMAT = COMPACT COMMENT ='用户登录信息表';
 
 # 新增root用户
-INSERT IGNORE INTO `sys_user_info`(`uid`, `userName`, `password`, `email`, `phone`, `wechat`, `lastIP`, `regIP`, `role`,
+INSERT IGNORE INTO `sys_user_info`(`userID`, `userName`, `password`, `email`, `phone`, `wechat`, `lastIP`, `regIP`, `role`,
                         `nickName`,
                         `sex`, `city`, `country`, `province`, `language`, `headImgUrl`, `deletedTime`)
 VALUES (1740358057038188544, 'administrator', '4f0fded4a38abe7a3ea32f898bb82298', '163', '13911110000', 'wechat',
@@ -65,8 +65,8 @@ INSERT IGNORE INTO sys_role_info (id, name) values (1, 'admin');
 CREATE TABLE if not exists `sys_role_menu`
 (
     `id`          bigint auto_increment comment 'id编号',
-    `roleID`      int      null comment '角色ID',
-    `menuID`      int      null comment '菜单ID',
+    `roleID`      int      not null comment '角色ID',
+    `menuID`      int      not null comment '菜单ID',
     `createdTime` datetime not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime` datetime NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime` datetime          DEFAULT NULL,
@@ -95,8 +95,7 @@ CREATE TABLE if not exists `sys_menu_info`
     `createdTime`   datetime     not NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedTime`   datetime     NULL     DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedTime`   datetime              DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE,
-    UNIQUE KEY `nameIndex` (`name`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE
     ) ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     ROW_FORMAT = COMPACT COMMENT ='菜单管理表';
@@ -116,6 +115,7 @@ VALUES (6, 2, 2, 1, '产品', '/deviceMangers/product/index', './deviceMangers/p
 INSERT IGNORE INTO `sys_menu_info`
 VALUES (7, 2, 0, 1, '产品详情', '/deviceMangers/product/detail/:id', './deviceMangers/product/detail/index',
         'icon_system', '', '', 1, '2022-09-24 15:38:54', '2022-10-13 23:02:39', NULL);
+
 INSERT IGNORE INTO `sys_menu_info`
 VALUES (8, 2, 0, 2, '设备', '/deviceMangers/device/index', './deviceMangers/device/index', 'icon_system', '', '', 2,
         '2022-09-24 15:38:54', '2022-10-13 23:02:46', NULL);
@@ -192,7 +192,7 @@ INSERT IGNORE INTO `sys_menu_info`
 DROP TABLE IF EXISTS `sys_login_log`;
 CREATE TABLE `sys_login_log` (
                                  `id` bigint auto_increment COMMENT '编号',
-                                 `uid`         bigint       NOT NULL COMMENT '用户id',
+                                 `userID`         bigint       NOT NULL COMMENT '用户id',
                                  `userName` varchar(50) DEFAULT '' COMMENT '登录账号',
                                  `ipAddr` varchar(50) DEFAULT '' COMMENT '登录IP地址',
                                  `loginLocation` varchar(100) DEFAULT '' COMMENT '登录地点',
@@ -207,7 +207,7 @@ CREATE TABLE `sys_login_log` (
 DROP TABLE IF EXISTS `sys_oper_log`;
 CREATE TABLE `sys_oper_log` (
     `id` bigint auto_increment COMMENT '编号',
-    `operUid`         bigint       NOT NULL COMMENT '用户id',
+    `operUserID`         bigint       NOT NULL COMMENT '用户id',
     `operUserName` varchar(50) DEFAULT '' COMMENT '操作人员名称',
     `operName` varchar(50) DEFAULT '' COMMENT '操作名称',
     `businessType` int(11) NOT NULL COMMENT '业务类型（1新增 2修改 3删除 4查询 5其它）',
@@ -334,7 +334,7 @@ INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `g
 INSERT IGNORE INTO sys_api_info (route, `method`, name, businessType, `desc`, `group`) VALUES('/api/v1/things/rule/alarm/scene/multi-update',2,'更新告警和场景的关联',2,'','场景联动');
 
 CREATE TABLE if not exists `sys_api_auth` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT comment '编号',
+    `id` bigint NOT NULL AUTO_INCREMENT comment '编号',
     `p_type` varchar(255) NOT NULL DEFAULT '' comment '策略类型，即策略的分类，例如"p"表示主体（provider）访问资源（resource）的许可权，"g"表示主体（provider）之间的关系访问控制',
     `v0` varchar(255) NOT NULL DEFAULT '' comment '策略中的第一个参数，通常用于表示资源的归属范围（即限制访问的对象），例如资源所属的机构、部门、业务线、地域等',
     `v1` varchar(255) NOT NULL DEFAULT '' comment '策略中的第二个参数，通常用于表示主体（provider），即需要访问资源的用户或者服务',
@@ -342,8 +342,7 @@ CREATE TABLE if not exists `sys_api_auth` (
     `v3` varchar(255) NOT NULL DEFAULT '' comment '策略中的第四个参数，通常用于表示访问操作（permission），例如 “read”, “write”, “execute” 等',
     `v4` varchar(255) NOT NULL DEFAULT '' comment '策略中的第五个参数，通常用于表示资源的类型（object type），例如表示是文件或者数据库表等',
     `v5` varchar(255) NOT NULL DEFAULT '' comment '策略中的第六个参数，通常用于表示扩展信息，例如 IP 地址、端口号等',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `roleId_path_index` (`v0`, `v1`) USING BTREE
+    PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='api权限管理';
 
 INSERT IGNORE INTO sys_api_auth (p_type, v0, v1, v2, v3, v4, v5) VALUES('p','1','/api/v1/things/product/info/update',2,'','','');

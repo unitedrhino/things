@@ -3,7 +3,7 @@ package loglogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -15,6 +15,7 @@ type LoginLogCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	LlDB *relationDB.LoginLogRepo
 }
 
 func NewLoginLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogCreateLogic {
@@ -22,12 +23,13 @@ func NewLoginLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Lo
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		LlDB:   relationDB.NewLoginLogRepo(ctx),
 	}
 }
 
 func (l *LoginLogCreateLogic) LoginLogCreate(in *sys.LoginLogCreateReq) (*sys.Response, error) {
-	_, err := l.svcCtx.LogLoginModel.Insert(l.ctx, &mysql.SysLoginLog{
-		Uid:           in.Uid,
+	err := l.LlDB.Insert(l.ctx, &relationDB.SysLoginLog{
+		UserID:        in.UserID,
 		UserName:      in.UserName,
 		IpAddr:        in.IpAddr,
 		LoginLocation: in.LoginLocation,

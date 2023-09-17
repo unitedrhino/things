@@ -4,11 +4,11 @@ package deviceMsg
 import (
 	"context"
 	"encoding/json"
-	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 )
 
@@ -55,9 +55,9 @@ func (p *PublishMsg) String() string {
 }
 
 // 如果clientToken为空,会使用uuid生成一个
-func NewRespCommonMsg(method, clientToken string) *CommonMsg {
+func NewRespCommonMsg(ctx context.Context, method, clientToken string) *CommonMsg {
 	if clientToken == "" {
-		clientToken, _ = uuid.GenerateUUID()
+		clientToken = trace.TraceIDFromContext(ctx)
 	}
 	return &CommonMsg{
 		Method:      GetRespMethod(method),

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events/topics"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
@@ -14,6 +15,7 @@ type SceneInfoDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	SiDB *relationDB.SceneInfoRepo
 }
 
 func NewSceneInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SceneInfoDeleteLogic {
@@ -21,11 +23,12 @@ func NewSceneInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		SiDB:   relationDB.NewSceneInfoRepo(ctx),
 	}
 }
 
 func (l *SceneInfoDeleteLogic) SceneInfoDelete(in *rule.WithID) (*rule.Empty, error) {
-	err := l.svcCtx.SceneRepo.Delete(l.ctx, in.Id)
+	err := l.SiDB.Delete(l.ctx, in.Id)
 	if err != nil { //如果是数据库错误
 		return nil, errors.Database.AddDetail(err)
 	}

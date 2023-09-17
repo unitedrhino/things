@@ -2,9 +2,8 @@ package devicegrouplogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -15,6 +14,7 @@ type GroupInfoIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	GiDB *relationDB.GroupInfoRepo
 }
 
 func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupInfoIndexLogic {
@@ -22,53 +22,38 @@ func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gr
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		GiDB:   relationDB.NewGroupInfoRepo(ctx),
 	}
 }
 
 // 获取分组信息列表
 func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.GroupInfoIndexResp, error) {
-	ros, total, err := l.svcCtx.GroupDB.Index(l.ctx, &mysql.GroupFilter{
-		Page:      &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
-		GroupName: in.GroupName,
-		ParentID:  in.ParentID,
-		Tags:      in.Tags,
-	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+	f := relationDB.GroupInfoFilter{
+		GroupName:   in.GroupName,
+		ParentID:    in.ParentID,
+		Tags:        in.Tags,
+		WithProduct: true,
 	}
-
+	ros, err := l.GiDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+	if err != nil {
+		return nil, err
+	}
+	total, err := l.GiDB.CountByFilter(l.ctx, f)
+	if err != nil {
+		return nil, err
+	}
 	info := make([]*dm.GroupInfo, 0, len(ros))
 	for _, ro := range ros {
-		info = append(info, &dm.GroupInfo{
-			GroupID:     ro.GroupID,
-			GroupName:   ro.GroupName,
-			ParentID:    ro.ParentID,
-			Desc:        ro.Desc,
-			CreatedTime: ro.CreatedTime,
-			Tags:        in.Tags,
-		})
+		info = append(info, ToGroupInfoPb(ro))
 	}
-
-	rosAll, err := l.svcCtx.GroupDB.IndexAll(l.ctx, &mysql.GroupFilter{
-		Page:      &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
-		GroupName: in.GroupName,
-		ParentID:  in.ParentID,
-		Tags:      in.Tags,
-	})
+	f.ParentID = 0
+	rosAll, err := l.GiDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	infoAll := make([]*dm.GroupInfo, 0, len(rosAll))
 	for _, ro := range rosAll {
-		infoAll = append(infoAll, &dm.GroupInfo{
-			GroupID:     ro.GroupID,
-			GroupName:   ro.GroupName,
-			ParentID:    ro.ParentID,
-			Desc:        ro.Desc,
-			CreatedTime: ro.CreatedTime,
-			Tags:        in.Tags,
-		})
+		infoAll = append(infoAll, ToGroupInfoPb(ro))
 	}
-
 	return &dm.GroupInfoIndexResp{List: info, Total: total, ListAll: infoAll}, nil
 }

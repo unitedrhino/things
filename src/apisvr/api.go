@@ -16,6 +16,6 @@ func main() {
 	apiCtx := apidirect.NewApi(apidirect.ApiCtx{})
 	apiCtx.Server.PrintRoutes()
 	fmt.Printf("Starting apiSvr at %s:%d...\n", apiCtx.SvcCtx.Config.Host, apiCtx.SvcCtx.Config.Port)
-	apiCtx.Server.Start()
 	defer apiCtx.Server.Stop()
+	apiCtx.Server.Start()
 }

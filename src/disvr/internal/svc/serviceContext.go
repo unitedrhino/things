@@ -4,13 +4,14 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/store"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/disvr/internal/config"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgSdkLog"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/src/disvr/internal/repo/event/publish/pubDev"
+	"github.com/i-Things/things/src/disvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/hubLogRepo"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/schemaDataRepo"
 	"github.com/i-Things/things/src/disvr/internal/repo/tdengine/sdkLogRepo"
@@ -48,8 +49,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
-	store.InitConn(c.Database)
-	//TestTD(td)
+	stores.InitConn(c.Database)
+	err := relationDB.Migrate()
+	if err != nil {
+		logx.Error("disvr 数据库初始化失败 err", err)
+		os.Exit(-1)
+	}
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {
 		logx.Error("NewPubDev err", err)

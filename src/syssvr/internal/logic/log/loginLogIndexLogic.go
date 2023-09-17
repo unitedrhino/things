@@ -2,9 +2,8 @@ package loglogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -16,6 +15,7 @@ type LoginLogIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	LlDB *relationDB.LoginLogRepo
 }
 
 func NewLoginLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogIndexLogic {
@@ -23,27 +23,31 @@ func NewLoginLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Log
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		LlDB:   relationDB.NewLoginLogRepo(ctx),
 	}
 }
 
 func (l *LoginLogIndexLogic) LoginLogIndex(in *sys.LoginLogIndexReq) (*sys.LoginLogIndexResp, error) {
-	resp, total, err := l.svcCtx.LogModel.LoginLogIndex(l.ctx, &mysql.LoginLogFilter{
-		Page:          &def.PageInfo{Page: in.Page.Page, Size: in.Page.Size},
+	f := relationDB.LoginLogFilter{
 		IpAddr:        in.IpAddr,
 		LoginLocation: in.LoginLocation,
-		Data: &mysql.DateRange{
+		Data: &relationDB.DateRange{
 			Start: in.Date.Start,
 			End:   in.Date.End,
 		},
-	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
 	}
-
+	resp, err := l.LlDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+	if err != nil {
+		return nil, err
+	}
+	total, err := l.LlDB.CountByFilter(l.ctx, f)
+	if err != nil {
+		return nil, err
+	}
 	info := make([]*sys.LoginLogIndexData, 0, len(resp))
 	for _, v := range resp {
 		info = append(info, &sys.LoginLogIndexData{
-			Uid:           v.Uid,
+			UserID:        v.UserID,
 			UserName:      v.UserName,
 			IpAddr:        v.IpAddr,
 			LoginLocation: v.LoginLocation,

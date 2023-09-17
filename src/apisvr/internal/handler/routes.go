@@ -258,6 +258,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/root-check",
 				Handler: thingsdeviceauth.RootCheckHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/register",
+				Handler: thingsdeviceauth.RegisterHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/api/v1/things/device/auth"),
 	)

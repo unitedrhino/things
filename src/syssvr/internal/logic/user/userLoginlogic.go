@@ -2,16 +2,14 @@ package userlogic
 
 import (
 	"context"
-	"database/sql"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/cache"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
-	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"time"
@@ -21,6 +19,7 @@ type LoginLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	UiDB *relationDB.UserInfoRepo
 }
 
 func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
@@ -28,9 +27,10 @@ func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLo
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		UiDB:   relationDB.NewUserInfoRepo(ctx),
 	}
 }
-func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
+func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysUserInfo) error {
 	//根据密码类型不同做不同处理
 	if in.PwdType == 0 {
 		//空密码情况暂不考虑
@@ -38,13 +38,13 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
 	} else if in.PwdType == 1 {
 		//明文密码，则对密码做MD5加密后再与数据库密码比对
 		//uid_temp := l.svcCtx.UserID.GetSnowflakeId()
-		password1 := utils.MakePwd(in.Password, uc.Uid, false) //对密码进行md5加密
+		password1 := utils.MakePwd(in.Password, uc.UserID, false) //对密码进行md5加密
 		if password1 != uc.Password {
 			return errors.Password
 		}
 	} else if in.PwdType == 2 {
 		//md5加密后的密码则通过二次md5加密再对比库中的密码
-		password1 := utils.MakePwd(in.Password, uc.Uid, true) //对密码进行md5加密
+		password1 := utils.MakePwd(in.Password, uc.UserID, true) //对密码进行md5加密
 		if password1 != uc.Password {
 			return errors.Password
 		}
@@ -54,46 +54,21 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *mysql.SysUserInfo) error {
 	return nil
 }
 
-func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
+func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, store kv.Store, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 
-	jwtToken, err := users.GetJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, uc.Uid, uc.Role, uc.IsAllData)
+	jwtToken, err := users.GetLoginJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire, ui.UserID, ui.Role, ui.IsAllData)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)
-	}
-
-	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, uc.Uid)
-	if err != nil {
-		l.Errorf("%s.FindOne.UserInfoModel ui=%v err=%v",
-			utils.FuncName(), utils.Fmt(ui), utils.Fmt(err))
-		return nil, errors.Database.AddDetail(err)
 	}
 
 	//登录成功，清除密码错误次数相关redis key
 	cache.ClearWrongpassKeys(l.ctx, store, list)
 
 	resp := &sys.UserLoginResp{
-		Info: &sys.UserInfo{
-			Uid:         ui.Uid,
-			UserName:    ui.UserName.String,
-			NickName:    ui.NickName,
-			City:        ui.City,
-			Country:     ui.Country,
-			Province:    ui.Province,
-			Language:    ui.Language,
-			HeadImgUrl:  ui.HeadImgUrl,
-			Email:       ui.Email.String,
-			Phone:       ui.Phone.String,
-			Wechat:      ui.Wechat.String,
-			LastIP:      ui.LastIP,
-			RegIP:       ui.RegIP,
-			CreatedTime: ui.CreatedTime.Unix(),
-			Role:        ui.Role,
-			Sex:         ui.Sex,
-			IsAllData:   ui.IsAllData,
-		},
+		Info: UserInfoToPb(ui),
 		Token: &sys.JwtToken{
 			AccessToken:  jwtToken,
 			AccessExpire: now + accessExpire,
@@ -104,16 +79,17 @@ func (l *LoginLogic) getRet(uc *mysql.SysUserInfo, store kv.Store, list []*conf.
 	return resp, nil
 }
 
-func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *mysql.SysUserInfo, err error) {
+func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserInfo, err error) {
 	switch in.LoginType {
-	case "pwd":
-		uc, err = l.svcCtx.UserInfoModel.FindOneByUserName(l.ctx, sql.NullString{String: in.UserID, Valid: true})
+	case users.RegPwd:
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Accounts: []string{in.Account}})
 		if err != nil {
 			return nil, err
 		}
 		if err = l.getPwd(in, uc); err != nil {
 			return nil, err
 		}
+	/*企业版*/
 	default:
 		l.Error("%s LoginType=%s not support", utils.FuncName(), in.LoginType)
 		return nil, errors.Parameter
@@ -122,56 +98,24 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *mysql.SysUserInfo, e
 	return uc, err
 }
 
-func parseWrongpassConf(counter conf.WrongPasswordCounter, userID string, ip string) []*conf.LoginSafeCtlInfo {
-	var res []*conf.LoginSafeCtlInfo
-	res = append(res, &conf.LoginSafeCtlInfo{
-		Prefix:  "login:wrongPassword:captcha:",
-		Key:     "login:wrongPassword:captcha:" + userID,
-		Timeout: 24 * 3600,
-		Times:   counter.Captcha,
-	})
-
-	for i, v := range counter.Account {
-		res = append(res, &conf.LoginSafeCtlInfo{
-			Prefix:    "login:wrongPassword:account:",
-			Key:       "login:wrongPassword:account:" + cast.ToString(i+1) + ":" + userID,
-			Timeout:   v.Statistics * 60,
-			Times:     v.TriggerTimes,
-			Forbidden: v.ForbiddenTime * 60,
-		})
-	}
-	for i, v := range counter.Ip {
-		res = append(res, &conf.LoginSafeCtlInfo{
-			Prefix:    "login:wrongPassword:ip:",
-			Key:       "login:wrongPassword:ip:" + cast.ToString(i+1) + ":" + ip,
-			Timeout:   v.Statistics * 60,
-			Times:     v.TriggerTimes,
-			Forbidden: v.ForbiddenTime * 60,
-		})
-	}
-
-	return res
-}
-
 func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
-
 	//检查账号是否冻结
-	list := parseWrongpassConf(l.svcCtx.Config.WrongPasswordCounter, in.UserID, in.Ip)
+	list := l.svcCtx.Config.WrongPasswordCounter.ParseWrongPassConf(in.Account, in.Ip)
 	if len(list) > 0 {
 		forbiddenTime, f := cache.CheckAccountOrIpForbidden(l.ctx, l.svcCtx.Store, list)
 		if f {
 			return nil, errors.Default.AddMsgf("%s %d 分钟", errors.AccountOrIpForbidden.Error(), forbiddenTime/60)
 		}
 	}
-
 	uc, err := l.GetUserInfo(in)
-	switch err {
-	case nil:
+	if err == nil {
 		return l.getRet(uc, l.svcCtx.Store, list)
-	case mysql.ErrNotFound:
+	}
+	if errors.Cmp(err, errors.NotFind) {
 		return nil, errors.UnRegister
-	case errors.Password:
+	}
+	if errors.Cmp(err, errors.Password) {
 		ret, err := cache.CheckCaptchaTimes(l.ctx, l.svcCtx.Store, list)
 		if err != nil {
 			return nil, err
@@ -180,11 +124,6 @@ func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error)
 			return nil, errors.UseCaptcha
 		}
 		return nil, errors.Password
-
-	default:
-		l.Errorf("%s req=%v err=%+v", utils.FuncName(), utils.Fmt(in), err)
-		return nil, errors.Database.AddDetail(err)
 	}
-
-	return nil, nil
+	return nil, err
 }

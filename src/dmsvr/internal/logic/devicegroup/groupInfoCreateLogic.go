@@ -2,10 +2,11 @@ package devicegrouplogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -16,6 +17,7 @@ type GroupInfoCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	GiDB *relationDB.GroupInfoRepo
 }
 
 func NewGroupInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupInfoCreateLogic {
@@ -23,6 +25,7 @@ func NewGroupInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		GiDB:   relationDB.NewGroupInfoRepo(ctx),
 	}
 }
 
@@ -30,19 +33,18 @@ func NewGroupInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 发现返回true 没有返回false
 */
 func (l *GroupInfoCreateLogic) CheckGroupInfo(in *dm.GroupInfoCreateReq) (bool, error) {
-	_, err := l.svcCtx.GroupInfo.FindOneByGroupName(l.ctx, in.GroupName)
-	switch err {
-	case mysql.ErrNotFound:
-		return false, nil
-	case nil:
+	_, err := l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{GroupNames: []string{in.GroupName}})
+	if err == nil {
 		return true, nil
-	default:
-		return false, err
 	}
+	if errors.Cmp(err, errors.NotFind) {
+		return false, nil
+	}
+	return false, err
 }
 
 /*
-	检查当前分组嵌套层数是否超限，是返回true 否则返回false
+检查当前分组嵌套层数是否超限，是返回true 否则返回false
 */
 func (l *GroupInfoCreateLogic) CheckGroupLevel(groupID int64, level int64) (bool, error) {
 	//采用递归方式，根据当前分组id和层数上限综合判断
@@ -55,7 +57,7 @@ func (l *GroupInfoCreateLogic) CheckGroupLevel(groupID int64, level int64) (bool
 		}
 	}
 
-	resp, err := l.svcCtx.GroupInfo.FindOne(l.ctx, groupID)
+	resp, err := l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{GroupID: groupID})
 	if err != nil {
 		l.Errorf("%s.CheckGroupInfo msg=not find group id is %d\n", utils.FuncName(), groupID)
 		return false, errors.Database.AddDetail(err)
@@ -85,12 +87,14 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 		return nil, errors.OutRange.WithMsgf("子分组嵌套不能超过%d层", def.DeviceGroupLevel)
 	}
 
-	_, err = l.svcCtx.GroupInfo.Insert(l.ctx, &mysql.DmGroupInfo{
+	err = l.GiDB.Insert(l.ctx, &relationDB.DmGroupInfo{
 		GroupID:   l.svcCtx.GroupID.GetSnowflakeId(),
 		ParentID:  in.ParentID,
+		ProjectID: ctxs.GetMetaProjectID(l.ctx),
+		ProductID: in.ProductID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,
-		Tags:      "{}",
+		Tags:      map[string]string{},
 	})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)

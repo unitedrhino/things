@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/domain/log"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -17,6 +17,9 @@ type OperLogCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	OlDB *relationDB.OperLogRepo
+	UiDB *relationDB.UserInfoRepo
+	AiDB *relationDB.ApiInfoRepo
 }
 
 func NewOperLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OperLogCreateLogic {
@@ -24,23 +27,26 @@ func NewOperLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ope
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		OlDB:   relationDB.NewOperLogRepo(ctx),
+		UiDB:   relationDB.NewUserInfoRepo(ctx),
+		AiDB:   relationDB.NewApiInfoRepo(ctx),
 	}
 }
 
 func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Response, error) {
 	//OperUserName 用uid查用户表获得
-	resUser, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, in.Uid)
+	resUser, err := l.UiDB.FindOne(l.ctx, in.UserID)
 	if err != nil {
-		return nil, errors.Database.AddMsgf("UserInfoModel.FindOne is err, uid:%ld", in.Uid)
+		return nil, errors.Database.AddMsgf("UserInfoModel.FindOne is err, UserID:%ld", in.UserID)
 	}
 	//OperName，BusinessType 用Route查接口管理表获得
-	resApi, err := l.svcCtx.ApiModel.FindOneByRoute(l.ctx, in.Route)
+	resApi, err := l.AiDB.FindOneByFilter(l.ctx, relationDB.ApiInfoFilter{Route: in.Route})
 	if err != nil {
 		return nil, errors.Database.AddMsgf("ApiModel.FindOneByRoute is err, url:%s", in.Route)
 	}
 	if resApi.BusinessType != log.OptQuery {
-		_, err := l.svcCtx.LogOperModel.Insert(l.ctx, &mysql.SysOperLog{
-			OperUid:      in.Uid,
+		err := l.OlDB.Insert(l.ctx, &relationDB.SysOperLog{
+			OperUserID:   in.UserID,
 			OperUserName: resUser.UserName.String,
 			OperName:     resApi.Name,
 			BusinessType: resApi.BusinessType,
@@ -53,7 +59,7 @@ func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Respo
 			Msg:          in.Msg,
 		})
 		if err != nil {
-			return nil, errors.Database.AddMsgf("LogOperModel.Insert is err:%s", err.Error())
+			return nil, err
 		}
 	}
 

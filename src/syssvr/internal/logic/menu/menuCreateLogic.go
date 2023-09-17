@@ -3,7 +3,7 @@ package menulogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -15,6 +15,7 @@ type MenuCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	MiDB *relationDB.MenuInfoRepo
 }
 
 func NewMenuCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuCreateLogic {
@@ -22,6 +23,7 @@ func NewMenuCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuCr
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		MiDB:   relationDB.NewMenuInfoRepo(ctx),
 	}
 }
 
@@ -39,7 +41,7 @@ func (l *MenuCreateLogic) MenuCreate(in *sys.MenuCreateReq) (*sys.Response, erro
 	if in.HideInMenu == 0 {
 		in.HideInMenu = 1
 	}
-	_, err := l.svcCtx.MenuInfoModle.Insert(l.ctx, &mysql.SysMenuInfo{
+	err := l.MiDB.Insert(l.ctx, &relationDB.SysMenuInfo{
 		ParentID:      in.ParentID,
 		Type:          in.Type,
 		Order:         in.Order,

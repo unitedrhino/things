@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/domain/userHeader"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/result"
 	"github.com/i-Things/things/shared/utils"
@@ -22,7 +22,7 @@ func LoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		strIP, _ := utils.GetIP(r)
-		c := context.WithValue(r.Context(), userHeader.UserUidKey, &userHeader.UserCtx{
+		c := context.WithValue(r.Context(), ctxs.UserInfoKey, &ctxs.UserCtx{
 			IP: strIP,
 			Os: r.Header.Get("User-Agent"),
 		})

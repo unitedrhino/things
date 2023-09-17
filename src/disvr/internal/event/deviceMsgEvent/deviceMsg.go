@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 type DeviceMsgHandle struct {
@@ -34,9 +35,13 @@ func (l *DeviceMsgHandle) Gateway(msg *deviceMsg.PublishMsg) error {
 
 func (l *DeviceMsgHandle) Thing(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
+	now := time.Now()
 	resp, err := NewThingLogic(l.ctx, l.svcCtx).Handle(msg)
+	useTime1 := time.Now().Sub(now)
+	l.WithDuration(useTime1).Infof("%s  1", utils.FuncName())
 	l.deviceResp(resp)
-	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
+	useTime2 := time.Now().Sub(now)
+	l.WithDuration(useTime2).Infof("%s  req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
 	return err
 }
 
@@ -61,6 +66,14 @@ func (l *DeviceMsgHandle) Config(msg *deviceMsg.PublishMsg) error {
 	respMsg, err := NewConfigLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(respMsg)
 	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, respMsg, err)
+	return err
+}
+
+func (l *DeviceMsgHandle) Ext(msg *deviceMsg.PublishMsg) error {
+	l.Infof("%s req=%v", utils.FuncName(), msg)
+	resp, err := NewExtLogic(l.ctx, l.svcCtx).Handle(msg)
+	l.deviceResp(resp)
+	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
 	return err
 }
 

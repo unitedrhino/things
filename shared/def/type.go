@@ -21,6 +21,11 @@ const (
 	Disable = 2 //禁用
 )
 
+const (
+	Male   = 1 //男性
+	Female = 2 //女鞋
+)
+
 func ToBool[boolType constraints.Integer](in boolType) bool {
 	if in == True {
 		return true

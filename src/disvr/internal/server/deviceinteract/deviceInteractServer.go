@@ -34,6 +34,12 @@ func (s *DeviceInteractServer) ActionRead(ctx context.Context, in *di.RespReadRe
 	return l.ActionRead(in)
 }
 
+// 回复调用设备行为
+func (s *DeviceInteractServer) RespAction(ctx context.Context, in *di.RespActionReq) (*di.Response, error) {
+	l := deviceinteractlogic.NewRespActionLogic(ctx, s.svcCtx)
+	return l.RespAction(in)
+}
+
 // 请求设备获取设备最新属性
 func (s *DeviceInteractServer) GetPropertyReply(ctx context.Context, in *di.GetPropertyReplyReq) (*di.GetPropertyReplyResp, error) {
 	l := deviceinteractlogic.NewGetPropertyReplyLogic(ctx, s.svcCtx)
