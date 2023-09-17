@@ -20,11 +20,7 @@ type (
 	ApiIndexReq           = sys.ApiIndexReq
 	ApiIndexResp          = sys.ApiIndexResp
 	ApiUpdateReq          = sys.ApiUpdateReq
-	AuthApiIndexReq       = sys.AuthApiIndexReq
-	AuthApiIndexResp      = sys.AuthApiIndexResp
 	AuthApiInfo           = sys.AuthApiInfo
-	AuthApiMultiUpdateReq = sys.AuthApiMultiUpdateReq
-	CheckAuthReq          = sys.CheckAuthReq
 	ConfigResp            = sys.ConfigResp
 	DateRange             = sys.DateRange
 	JwtToken              = sys.JwtToken
@@ -44,7 +40,13 @@ type (
 	OperLogIndexReq       = sys.OperLogIndexReq
 	OperLogIndexResp      = sys.OperLogIndexResp
 	PageInfo              = sys.PageInfo
+	PageInfo_OrderBy      = sys.PageInfo_OrderBy
+	Point                 = sys.Point
 	Response              = sys.Response
+	RoleApiAuthReq        = sys.RoleApiAuthReq
+	RoleApiIndexReq       = sys.RoleApiIndexReq
+	RoleApiIndexResp      = sys.RoleApiIndexResp
+	RoleApiMultiUpdateReq = sys.RoleApiMultiUpdateReq
 	RoleCreateReq         = sys.RoleCreateReq
 	RoleDeleteReq         = sys.RoleDeleteReq
 	RoleIndexData         = sys.RoleIndexData
@@ -54,7 +56,6 @@ type (
 	RoleUpdateReq         = sys.RoleUpdateReq
 	UserCheckTokenReq     = sys.UserCheckTokenReq
 	UserCheckTokenResp    = sys.UserCheckTokenResp
-	UserCreateReq         = sys.UserCreateReq
 	UserCreateResp        = sys.UserCreateResp
 	UserDeleteReq         = sys.UserDeleteReq
 	UserIndexReq          = sys.UserIndexReq
@@ -63,14 +64,12 @@ type (
 	UserLoginReq          = sys.UserLoginReq
 	UserLoginResp         = sys.UserLoginResp
 	UserReadReq           = sys.UserReadReq
-	UserReadResp          = sys.UserReadResp
-	UserUpdateReq         = sys.UserUpdateReq
 
 	User interface {
-		UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
+		UserCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error)
 		UserIndex(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error)
-		UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error)
-		UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error)
+		UserUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error)
+		UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserInfo, error)
 		UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
 		UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
@@ -99,12 +98,12 @@ func NewDirectUser(svcCtx *svc.ServiceContext, svr sys.UserServer) User {
 	}
 }
 
-func (m *defaultUser) UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
+func (m *defaultUser) UserCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	client := sys.NewUserClient(m.cli.Conn())
 	return client.UserCreate(ctx, in, opts...)
 }
 
-func (d *directUser) UserCreate(ctx context.Context, in *UserCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
+func (d *directUser) UserCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	return d.svr.UserCreate(ctx, in)
 }
 
@@ -117,21 +116,21 @@ func (d *directUser) UserIndex(ctx context.Context, in *UserIndexReq, opts ...gr
 	return d.svr.UserIndex(ctx, in)
 }
 
-func (m *defaultUser) UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultUser) UserUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewUserClient(m.cli.Conn())
 	return client.UserUpdate(ctx, in, opts...)
 }
 
-func (d *directUser) UserUpdate(ctx context.Context, in *UserUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directUser) UserUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.UserUpdate(ctx, in)
 }
 
-func (m *defaultUser) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
+func (m *defaultUser) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserInfo, error) {
 	client := sys.NewUserClient(m.cli.Conn())
 	return client.UserRead(ctx, in, opts...)
 }
 
-func (d *directUser) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserReadResp, error) {
+func (d *directUser) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserInfo, error) {
 	return d.svr.UserRead(ctx, in)
 }
 

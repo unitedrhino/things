@@ -25,7 +25,7 @@ func NewAuthApiIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Auth
 }
 
 func (l *AuthApiIndexLogic) AuthApiIndex(req *types.AuthApiIndexReq) (resp *types.AuthApiIndexResp, err error) {
-	info, err := l.svcCtx.AuthRpc.AuthApiIndex(l.ctx, &sys.AuthApiIndexReq{
+	info, err := l.svcCtx.RoleRpc.RoleApiIndex(l.ctx, &sys.RoleApiIndexReq{
 		RoleID: req.RoleID,
 	})
 	if err != nil {

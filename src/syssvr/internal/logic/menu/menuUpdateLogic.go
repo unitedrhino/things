@@ -2,8 +2,7 @@ package menulogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/syssvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -15,6 +14,7 @@ type MenuUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	MiDB *relationDB.MenuInfoRepo
 }
 
 func NewMenuUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuUpdateLogic {
@@ -22,40 +22,45 @@ func NewMenuUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuUp
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		MiDB:   relationDB.NewMenuInfoRepo(ctx),
 	}
 }
 
 func (l *MenuUpdateLogic) MenuUpdate(in *sys.MenuUpdateReq) (*sys.Response, error) {
-	mi, err := l.svcCtx.MenuInfoModle.FindOne(l.ctx, in.Id)
+	mi, err := l.MiDB.FindOne(l.ctx, in.Id)
 	if err != nil {
 		l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)
 		return nil, err
 	}
-	if in.Type != 1 && in.Type != 2 && in.Type != 3 {
-		in.Type = mi.Type
+	if in.Type != 0 {
+		mi.Type = in.Type
 	}
-	if in.Order == 0 {
-		in.Order = mi.Order
+	if in.Order != 0 {
+		mi.Order = in.Order
 	}
-	if in.HideInMenu == 0 {
-		in.HideInMenu = mi.HideInMenu
+	if in.HideInMenu != 0 {
+		mi.HideInMenu = in.HideInMenu
 	}
 
-	err = l.svcCtx.MenuInfoModle.Update(l.ctx, &mysql.SysMenuInfo{
-		Id:            in.Id,
-		ParentID:      mi.ParentID,
-		Type:          in.Type,
-		Order:         in.Order,
-		Name:          in.Name,
-		Path:          in.Path,
-		Component:     in.Component,
-		Icon:          in.Icon,
-		Redirect:      in.Redirect,
-		BackgroundUrl: "",
-		HideInMenu:    in.HideInMenu,
-	})
+	if in.ParentID != 0 {
+		mi.ParentID = in.ParentID
+	}
+	if in.Component != "" {
+		mi.Component = in.Component
+	}
+	if in.Name != "" {
+		mi.Name = in.Name
+	}
+	if in.Icon != "" {
+		mi.Icon = in.Icon
+	}
+	if in.Path != "" {
+		mi.Path = in.Path
+	}
+
+	err = l.MiDB.Update(l.ctx, mi)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	return &sys.Response{}, nil
 }

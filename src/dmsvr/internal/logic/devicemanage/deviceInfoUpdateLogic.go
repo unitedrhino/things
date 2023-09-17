@@ -3,13 +3,13 @@ package devicemanagelogic
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
-	"fmt"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"time"
@@ -21,6 +21,8 @@ type DeviceInfoUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PiDB *relationDB.ProductInfoRepo
+	DiDB *relationDB.DeviceInfoRepo
 }
 
 func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceInfoUpdateLogic {
@@ -28,22 +30,19 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PiDB:   relationDB.NewProductInfoRepo(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 	}
 }
 
-func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *dm.DeviceInfo) {
-	if data.ProjectID != nil {
-		old.ProjectID = utils.ToEmptyInt64(data.ProjectID)
-	}
+func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, data *dm.DeviceInfo) {
+	old.ProjectID = ctxs.GetMetaProjectID(l.ctx)
 	if data.AreaID != nil {
 		old.AreaID = utils.ToEmptyInt64(data.AreaID)
 	}
 
 	if data.Tags != nil {
-		tags, err := json.Marshal(data.Tags)
-		if err == nil {
-			old.Tags = string(tags)
-		}
+		old.Tags = data.Tags
 	}
 	if data.LogLevel != def.Unknown {
 		old.LogLevel = data.LogLevel
@@ -83,14 +82,11 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 		old.Address = data.Address.Value
 	}
 	if data.Position != nil {
-		old.Position = fmt.Sprintf("POINT(%f %f)", data.Position.Longitude, data.Position.Latitude)
+		old.Position = logic.ToStorePoint(data.Position)
 	}
 
 	if data.DeviceAlias != nil {
 		old.DeviceAlias = data.DeviceAlias.Value
-	}
-	if data.Uid != 0 {
-		old.Uid = data.Uid
 	}
 	if data.MobileOperator != 0 {
 		old.MobileOperator = data.MobileOperator
@@ -106,16 +102,15 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *mysql.DmDeviceInfo, data *
 // 更新设备
 func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Response, error) {
 	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
-		if pid, err := l.svcCtx.ProductInfo.GetIDByName(l.ctx, mysql.ProductFilter{ProductName: in.ProductName}, nil); err != nil {
+		if pid, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}}); err != nil {
 			return nil, err
 		} else {
-			in.ProductID = pid
+			in.ProductID = pid.ProductID
 		}
 	}
-
-	dmDiPo, err := l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, in.ProductID, in.DeviceName)
+	dmDiPo, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.NotFind.AddDetailf("not find device productID=%s deviceName=%s",
 				in.ProductID, in.DeviceName)
 		}
@@ -124,7 +119,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 
 	l.SetDevicePoByDto(dmDiPo, in)
 
-	err = l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, dmDiPo)
+	err = l.DiDB.Update(l.ctx, dmDiPo)
 	if err != nil {
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, errors.System.AddDetail(err)

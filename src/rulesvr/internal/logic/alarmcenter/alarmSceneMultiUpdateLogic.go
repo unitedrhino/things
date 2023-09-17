@@ -3,8 +3,7 @@ package alarmcenterlogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -16,6 +15,8 @@ type AlarmSceneMultiUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	AiDB *relationDB.AlarmInfoRepo
+	AsDB *relationDB.AlarmSceneRepo
 }
 
 func NewAlarmSceneMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmSceneMultiUpdateLogic {
@@ -23,22 +24,24 @@ func NewAlarmSceneMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		AiDB:   relationDB.NewAlarmInfoRepo(ctx),
+		AsDB:   relationDB.NewAlarmSceneRepo(ctx),
 	}
 }
 
 // 告警关联场景联动
 func (l *AlarmSceneMultiUpdateLogic) AlarmSceneMultiUpdate(in *rule.AlarmSceneMultiUpdateReq) (*rule.Empty, error) {
 	//检查数据是否存在
-	_, err := l.svcCtx.AlarmInfoRepo.FindOne(l.ctx, in.AlarmID)
+	_, err := l.AiDB.FindOne(l.ctx, in.AlarmID)
 	if err != nil {
-		return nil, mysql.ToError(err)
+		return nil, err
 	}
 	//先删除绑定的信息
-	err = l.svcCtx.AlarmSceneRepo.DeleteByFilter(l.ctx, alarm.SceneFilter{AlarmID: in.AlarmID})
+	err = l.AsDB.DeleteByFilter(l.ctx, relationDB.AlarmSceneFilter{AlarmID: in.AlarmID})
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.AlarmSceneRepo.InsertMulti(l.ctx, in.AlarmID, in.SceneIDs)
+	err = l.AsDB.MultiInsert(l.ctx, in.AlarmID, in.SceneIDs)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

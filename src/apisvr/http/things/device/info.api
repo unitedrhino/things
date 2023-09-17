@@ -54,7 +54,6 @@ type (
         MobileOperator int64    `json:"mobileOperator,optional,range=[0:4]"`                       //移动运营商:1)移动 2)联通 3)电信 4)广电
         Phone          *string   `json:"phone,optional"`                        //手机号
         Iccid          *string   `json:"iccid,optional"`                        //SIM卡卡号
-        Uid            int64    `json:"uid,string,optional"`                      //所属用户id
         Position *Point `json:"position,optional"`                                        //设备定位,默认百度坐标系
         Address *string `json:"address,optional"`                                         //所在地址
         Tags []*Tag `json:"tags,optional"`                                                // 设备tag
@@ -79,9 +78,8 @@ type (
         Tags []*Tag `json:"tags,optional"`                                               // 设备tag
         Phone          *string   `json:"phone,optional"`                        //手机号
         Iccid          *string   `json:"iccid,optional"`                        //SIM卡卡号
-        Uid            int64    `json:"uid,string,optional"`                      //所属用户id
+        UserID         int64  `json:"userID,string,optional"`        // 用户id
         MobileOperator int64    `json:"mobileOperator,optional,range=[0:4]"`                       //移动运营商:1)移动 2)联通 3)电信 4)广电
-        ProjectID *int64 `json:"projectID,string,optional"`//项目id 只读（nil不更新，0为取消绑定，other则绑定）
         AreaID *int64 `json:"areaID,string,optional"`      //项目区域id 只读（nil不更新，0为取消绑定，other则绑定）
     }
     DeviceInfoDeleteReq struct {
@@ -103,8 +101,8 @@ type (
         Range int64 `json:"range,optional"`               //过滤条件:距离坐标点固定范围内的设备 单位：米
         Tags []*Tag `json:"tags,optional"`                // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
-        ProjectIDs []int64 `json:"projectIDs,optional"`            //项目ids
         AreaIDs []int64 `json:"areaIDs,optional"`                  //项目区域ids
+        IsOnline int64 `json:"isOnline,optional,range=[0:2]"`                                         // 在线状态过滤  1离线 2在线
     }
     DeviceInfoIndexResp struct {
         List []*DeviceInfo `json:"list"`    //设备信息
@@ -143,6 +141,8 @@ type (
         Row int64 `json:"row"`                  //【提示】数据所在表格行
         ProductName string `json:"productName"` //【必填】产品名称
         DeviceName string `json:"deviceName"`   //【必填】设备名称
+        DeviceAlias string `json:"deviceAlias"` //【选填】设备别名
+        Secret string `json:"secret"`           //【选填】设备秘钥
         LogLevel string `json:"logLevel"`       //【选填】日志级别（关闭/错误/告警/信息/调试）
         Tags string `json:"tags"`               //【选填】设备标签（格式k1:v1;k2:v2;...）
         Position string `json:"position"`       //【选填】设备位置百度坐标（格式:经,纬）

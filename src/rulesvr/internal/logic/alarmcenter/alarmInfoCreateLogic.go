@@ -3,7 +3,7 @@ package alarmcenterlogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/rulesvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
@@ -15,6 +15,7 @@ type AlarmInfoCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	AiDB *relationDB.AlarmInfoRepo
 }
 
 func NewAlarmInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmInfoCreateLogic {
@@ -22,21 +23,19 @@ func NewAlarmInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *A
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		AiDB:   relationDB.NewAlarmInfoRepo(ctx),
 	}
 }
 
 func (l *AlarmInfoCreateLogic) AlarmInfoCreate(in *rule.AlarmInfo) (*rule.WithID, error) {
-	_, err := l.svcCtx.AlarmInfoRepo.FindOneByName(l.ctx, in.Name)
-	if !(err == mysql.ErrNotFound) {
+	_, err := l.AiDB.FindOneByFilter(l.ctx, relationDB.AlarmInfoFilter{Name: in.Name})
+	if !(errors.Cmp(err, errors.NotFind)) {
 		return nil, errors.Parameter.AddMsg("告警名称重复").AddDetail(err)
 	}
-	rst, err := l.svcCtx.AlarmInfoRepo.Insert(l.ctx, ToAlarmInfoPo(in))
+	db := ToAlarmInfoPo(in)
+	err = l.AiDB.Insert(l.ctx, db)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	id, err := rst.LastInsertId()
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
-	}
-	return &rule.WithID{Id: id}, nil
+	return &rule.WithID{Id: db.ID}, nil
 }

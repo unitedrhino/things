@@ -3,10 +3,10 @@ package userlogic
 import (
 	"context"
 	"database/sql"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/spf13/cast"
-
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
@@ -17,6 +17,7 @@ type UpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	UiDB *relationDB.UserInfoRepo
 }
 
 func NewUserUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogic {
@@ -24,23 +25,23 @@ func NewUserUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		UiDB:   relationDB.NewUserInfoRepo(ctx),
 	}
 }
 
-func (l *UpdateLogic) UserUpdate(in *sys.UserUpdateReq) (*sys.Response, error) {
-	ui, err := l.svcCtx.UserInfoModel.FindOne(l.ctx, cast.ToInt64(in.Uid))
+func (l *UpdateLogic) UserUpdate(in *sys.UserInfo) (*sys.Response, error) {
+	ui, err := l.UiDB.FindOne(l.ctx, in.UserID)
 	if err != nil {
-		l.Errorf("%s.FindOne uid=%d err=%v", utils.FuncName(), in.Uid, err)
+		l.Errorf("%s.FindOne UserID=%d err=%v", utils.FuncName(), in.UserID, err)
 		return nil, errors.Database.AddDetail(err)
 	}
 	ui.UserName = sql.NullString{String: in.UserName, Valid: true}
 	ui.NickName = in.NickName
 
 	//性別有效才賦值，否則使用旧值
-	if ui.Sex == 0 {
-		ui.Sex = 1
-	}
-	if in.Sex == 1 || in.Sex == 2 {
+	if ui.Sex == def.Unknown {
+		ui.Sex = def.Male
+	} else {
 		ui.Sex = in.Sex
 	}
 
@@ -58,7 +59,7 @@ func (l *UpdateLogic) UserUpdate(in *sys.UserUpdateReq) (*sys.Response, error) {
 		ui.Role = in.Role
 	}
 
-	err = l.svcCtx.UserInfoModel.Update(l.ctx, ui)
+	err = l.UiDB.Update(l.ctx, ui)
 	if err != nil {
 		l.Errorf("%s.Update ui=%v err=%v", utils.FuncName(), ui, err)
 		return nil, errors.Database.AddDetail(err)

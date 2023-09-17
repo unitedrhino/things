@@ -2,32 +2,19 @@ package productmanagelogic
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/i-Things/things/shared/oss/common"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
-	mysql "github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-//func ToProductSchema(pt *schema.Info) *dm.ProductSchema {
-//	return &dm.ProductSchema{
-//		CreatedTime: pt.CreatedTime.Unix(),
-//		ProductID:   pt.ProductID,
-//		Schema:      pt.Schema,
-//	}
-//}
+func ToProductInfo(ctx context.Context, pi *relationDB.DmProductInfo, svcCtx *svc.ServiceContext) *dm.ProductInfo {
 
-func ToProductInfo(ctx context.Context, pi *mysql.DmProductInfo, svcCtx *svc.ServiceContext) *dm.ProductInfo {
-	var (
-		tags map[string]string
-	)
-
-	_ = json.Unmarshal([]byte(pi.Tags), &tags)
 	if pi.DeviceType == def.Unknown {
 		pi.DeviceType = def.DeviceTypeDevice
 	}
@@ -55,7 +42,7 @@ func ToProductInfo(ctx context.Context, pi *mysql.DmProductInfo, svcCtx *svc.Ser
 		Secret:       pi.Secret,                             //动态注册产品秘钥 只读
 		Desc:         &wrappers.StringValue{Value: pi.Desc}, //描述
 		CreatedTime:  pi.CreatedTime.Unix(),                 //创建时间
-		Tags:         tags,                                  //产品tags
+		Tags:         pi.Tags,                               //产品tags
 		ProductImg:   pi.ProductImg,
 		//Model:     &wrappers.StringValue{Value: pi.Model},    //数据模板
 	}
@@ -69,7 +56,7 @@ func ToProductInfo(ctx context.Context, pi *mysql.DmProductInfo, svcCtx *svc.Ser
 	return dpi
 }
 
-func ToProductSchemaRpc(info *mysql.DmProductSchema) *dm.ProductSchemaInfo {
+func ToProductSchemaRpc(info *relationDB.DmProductSchema) *dm.ProductSchemaInfo {
 	db := &dm.ProductSchemaInfo{
 		ProductID:  info.ProductID,
 		Tag:        info.Tag,
@@ -83,8 +70,8 @@ func ToProductSchemaRpc(info *mysql.DmProductSchema) *dm.ProductSchemaInfo {
 	return db
 }
 
-func ToProductSchemaPo(info *dm.ProductSchemaInfo) *mysql.DmProductSchema {
-	db := &mysql.DmProductSchema{
+func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
+	db := &relationDB.DmProductSchema{
 		ProductID:  info.ProductID,
 		Tag:        info.Tag,
 		Type:       info.Type,

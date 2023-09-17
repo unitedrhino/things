@@ -2,8 +2,8 @@ package alarmcenterlogic
 
 import (
 	"context"
-	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
 	"github.com/i-Things/things/src/rulesvr/internal/logic"
+	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 
@@ -14,6 +14,7 @@ type AlarmInfoIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	AiDB *relationDB.AlarmInfoRepo
 }
 
 func NewAlarmInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlarmInfoIndexLogic {
@@ -21,6 +22,7 @@ func NewAlarmInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Al
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		AiDB:   relationDB.NewAlarmInfoRepo(ctx),
 	}
 }
 
@@ -30,13 +32,13 @@ func (l *AlarmInfoIndexLogic) AlarmInfoIndex(in *rule.AlarmInfoIndexReq) (*rule.
 		size int64
 		err  error
 	)
-	filter := alarm.InfoFilter{
+	filter := relationDB.AlarmInfoFilter{
 		Name: in.Name, SceneID: in.SceneID, AlarmIDs: in.AlarmIDs}
-	size, err = l.svcCtx.AlarmInfoRepo.CountByFilter(l.ctx, filter)
+	size, err = l.AiDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.svcCtx.AlarmInfoRepo.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
+	di, err := l.AiDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}

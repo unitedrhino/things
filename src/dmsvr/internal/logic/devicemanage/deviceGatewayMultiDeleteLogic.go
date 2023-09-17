@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -16,6 +17,7 @@ type DeviceGatewayMultiDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	GdDB *relationDB.GatewayDeviceRepo
 }
 
 func NewDeviceGatewayMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceGatewayMultiDeleteLogic {
@@ -23,12 +25,13 @@ func NewDeviceGatewayMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCo
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		GdDB:   relationDB.NewGatewayDeviceRepo(ctx),
 	}
 }
 
 // 删除分组设备
 func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGatewayMultiDeleteReq) (*dm.Response, error) {
-	err := l.svcCtx.Gateway.DeleteList(l.ctx, &devices.Core{
+	err := l.GdDB.MultiDelete(l.ctx, &devices.Core{
 		ProductID:  in.GatewayProductID,
 		DeviceName: in.GatewayDeviceName,
 	}, ToDeviceCoreDos(in.List))

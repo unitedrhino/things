@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
 	"github.com/nats-io/nats.go"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type (
@@ -19,7 +20,7 @@ type (
 )
 
 const (
-	ThingsDeliverGroup = "things_dm_yl_group"
+	ThingsDeliverGroup = "things_dm_group"
 )
 
 func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
@@ -34,6 +35,10 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	err := n.queueSubscribeDevPublish(topics.DeviceUpThingAll,
 		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 			err := handle(ctx).Thing(msg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+				return err
+			}
 			return err
 		})
 	if err != nil {
@@ -42,6 +47,10 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	err = n.queueSubscribeDevPublish(topics.DeviceUpOtaAll,
 		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 			err := handle(ctx).Ota(msg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.Ota failure err:%v", utils.FuncName(), err)
+				return err
+			}
 			return err
 		})
 	if err != nil {
@@ -50,6 +59,10 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	err = n.queueSubscribeDevPublish(topics.DeviceUpConfigAll,
 		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 			err := handle(ctx).Config(msg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.Config failure err:%v", utils.FuncName(), err)
+				return err
+			}
 			return err
 		})
 	if err != nil {
@@ -58,6 +71,10 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	err = n.queueSubscribeDevPublish(topics.DeviceUpSDKLogAll,
 		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 			err := handle(ctx).SDKLog(msg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.SDKLog failure err:%v", utils.FuncName(), err)
+				return err
+			}
 			return err
 		})
 	if err != nil {
@@ -66,6 +83,10 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	err = n.queueSubscribeDevPublish(topics.DeviceUpShadowAll,
 		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 			err := handle(ctx).Shadow(msg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.Shadow failure err:%v", utils.FuncName(), err)
+				return err
+			}
 			return err
 		})
 	if err != nil {
@@ -74,6 +95,10 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	err = n.queueSubscribeDevPublish(topics.DeviceUpGatewayAll,
 		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 			err := handle(ctx).Gateway(msg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.Gateway failure err:%v", utils.FuncName(), err)
+				return err
+			}
 			return err
 		})
 	if err != nil {
@@ -84,6 +109,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
 			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.GetDevConnMsg failure err:%v", utils.FuncName(), err)
 				return err
 			}
 			return handle(ctx).Connected(ele)
@@ -97,10 +123,24 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
 			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.GetDevConnMsg failure err:%v", utils.FuncName(), err)
 				return err
 			}
 			return handle(ctx).Disconnected(ele)
 		}))
+	if err != nil {
+		return err
+	}
+
+	err = n.queueSubscribeDevPublish(topics.DeviceUpExtAll,
+		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
+			err := handle(ctx).Ext(msg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.Ext failure err:%v", utils.FuncName(), err)
+				return err
+			}
+			return err
+		})
 	if err != nil {
 		return err
 	}
@@ -114,6 +154,7 @@ func (n *NatsClient) queueSubscribeDevPublish(topic string,
 			defer utils.Recover(ctx)
 			ele, err := deviceMsg.GetDevPublish(ctx, msg)
 			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.GetDevPublish failure err:%v", utils.FuncName(), err)
 				return err
 			}
 			return handleFunc(ctx, ele)

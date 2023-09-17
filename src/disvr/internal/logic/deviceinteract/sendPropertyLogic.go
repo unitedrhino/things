@@ -3,7 +3,6 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
-	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
@@ -13,6 +12,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/shadow"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
 	"github.com/i-Things/things/src/disvr/internal/repo/relationDB"
+	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 
 	"github.com/i-Things/things/src/disvr/internal/svc"
@@ -73,11 +73,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		return nil, errors.Parameter.AddDetail(
 			"SendProperty data not right:", in.Data)
 	}
-	clientToken, err := uuid.GenerateUUID()
-	if err != nil {
-		l.Errorf("%s.GenerateUUID err:%v", utils.FuncName(), err)
-		return nil, errors.System.AddDetail(err)
-	}
+	clientToken := trace.TraceIDFromContext(l.ctx)
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{

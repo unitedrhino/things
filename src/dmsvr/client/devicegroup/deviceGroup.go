@@ -29,6 +29,8 @@ type (
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq           = dm.DeviceInfoReadReq
+	DeviceRegisterReq           = dm.DeviceRegisterReq
+	DeviceRegisterResp          = dm.DeviceRegisterResp
 	DeviceTypeCountReq          = dm.DeviceTypeCountReq
 	DeviceTypeCountResp         = dm.DeviceTypeCountResp
 	GroupDeviceIndexReq         = dm.GroupDeviceIndexReq

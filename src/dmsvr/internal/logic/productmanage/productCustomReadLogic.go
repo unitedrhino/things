@@ -2,8 +2,9 @@ package productmanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -15,6 +16,7 @@ type ProductCustomReadLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	PcDB *relationDB.ProductCustomRepo
 }
 
 func NewProductCustomReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductCustomReadLogic {
@@ -22,14 +24,15 @@ func NewProductCustomReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		PcDB:   relationDB.NewProductCustomRepo(ctx),
 	}
 }
 
 // 脚本管理
 func (l *ProductCustomReadLogic) ProductCustomRead(in *dm.ProductCustomReadReq) (*dm.ProductCustom, error) {
-	pi, err := l.svcCtx.ProductCustom.FindOneByProductID(l.ctx, in.ProductID)
+	pi, err := l.PcDB.FindOneByProductID(l.ctx, in.ProductID)
 	if err != nil {
-		if err == mysql.ErrNotFound {
+		if errors.Cmp(err, errors.NotFind) {
 			return &dm.ProductCustom{
 				ProductID:       in.ProductID,
 				ScriptLang:      1,

@@ -1,12 +1,12 @@
 package middleware
 
 import (
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/userHeader"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
-	auth "github.com/i-Things/things/src/syssvr/client/auth"
+	role "github.com/i-Things/things/src/syssvr/client/role"
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
@@ -15,10 +15,10 @@ import (
 type CheckTokenWareMiddleware struct {
 	cfg     config.Config
 	UserRpc user.User
-	AuthRpc auth.Auth
+	AuthRpc role.Role
 }
 
-func NewCheckTokenWareMiddleware(cfg config.Config, UserRpc user.User, AuthRpc auth.Auth) *CheckTokenWareMiddleware {
+func NewCheckTokenWareMiddleware(cfg config.Config, UserRpc user.User, AuthRpc role.Role) *CheckTokenWareMiddleware {
 	return &CheckTokenWareMiddleware{cfg: cfg, UserRpc: UserRpc, AuthRpc: AuthRpc}
 }
 
@@ -26,7 +26,7 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 	return func(w http.ResponseWriter, r *http.Request) {
 		logx.WithContext(r.Context()).Infof("%s.Lifecycle.Before", utils.FuncName())
 
-		var userCtx *userHeader.UserCtx
+		var userCtx *ctxs.UserCtx
 
 		isOpen, userCtx, err := m.OpenAuth(w, r)
 		if isOpen { //如果是开放请求
@@ -45,7 +45,7 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 			}
 
 			//校验 Casbin Rule
-			_, err = m.AuthRpc.AuthApiCheck(r.Context(), &user.CheckAuthReq{
+			_, err = m.AuthRpc.RoleApiAuth(r.Context(), &user.RoleApiAuthReq{
 				RoleID: userCtx.Role,
 				Path:   r.URL.Path,
 				Method: utils.MethodToNum(r.Method),
@@ -58,7 +58,7 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 		}
 
 		//注入 用户信息 到 ctx
-		ctx2 := userHeader.SetUserCtx(r.Context(), userCtx)
+		ctx2 := ctxs.SetUserCtx(r.Context(), userCtx)
 		r = r.WithContext(ctx2)
 
 		next(w, r)
@@ -68,7 +68,7 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 }
 
 // 如果有开放认证的字段才进行认证
-func (m *CheckTokenWareMiddleware) OpenAuth(w http.ResponseWriter, r *http.Request) (bool, *userHeader.UserCtx, error) {
+func (m *CheckTokenWareMiddleware) OpenAuth(w http.ResponseWriter, r *http.Request) (bool, *ctxs.UserCtx, error) {
 	var isOpen bool
 	userName, password, ok := r.BasicAuth()
 	if !ok {
@@ -82,9 +82,9 @@ func (m *CheckTokenWareMiddleware) OpenAuth(w http.ResponseWriter, r *http.Reque
 		return isOpen, nil, errors.Permissions.AddMsg("开放认证没通过")
 	}
 
-	return isOpen, &userHeader.UserCtx{
+	return isOpen, &ctxs.UserCtx{
 		IsOpen:    isOpen,
-		Uid:       0,
+		UserID:    0,
 		Role:      0,
 		IsAllData: true,
 		IP:        strIP,
@@ -92,10 +92,10 @@ func (m *CheckTokenWareMiddleware) OpenAuth(w http.ResponseWriter, r *http.Reque
 	}, nil
 }
 
-func (m *CheckTokenWareMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) (*userHeader.UserCtx, error) {
+func (m *CheckTokenWareMiddleware) UserAuth(w http.ResponseWriter, r *http.Request) (*ctxs.UserCtx, error) {
 	strIP, _ := utils.GetIP(r)
 
-	strToken := r.Header.Get(userHeader.UserTokenKey)
+	strToken := r.Header.Get(ctxs.UserTokenKey)
 	if strToken == "" {
 		logx.WithContext(r.Context()).Errorf("%s.CheckTokenWare ip=%s not find token",
 			utils.FuncName(), strIP)
@@ -114,15 +114,15 @@ func (m *CheckTokenWareMiddleware) UserAuth(w http.ResponseWriter, r *http.Reque
 	}
 
 	if resp.Token != "" {
-		w.Header().Set("Access-Control-Expose-Headers", userHeader.UserSetTokenKey)
-		w.Header().Set(userHeader.UserSetTokenKey, resp.Token)
+		w.Header().Set("Access-Control-Expose-Headers", ctxs.UserSetTokenKey)
+		w.Header().Set(ctxs.UserSetTokenKey, resp.Token)
 	}
 	logx.WithContext(r.Context()).Infof("%s.CheckTokenWare ip:%v in.token=%s checkResp:%v",
 		utils.FuncName(), strIP, strToken, utils.Fmt(resp))
 
-	return &userHeader.UserCtx{
+	return &ctxs.UserCtx{
 		IsOpen:    false,
-		Uid:       resp.Uid,
+		UserID:    resp.UserID,
 		Role:      resp.Role,
 		IsAllData: resp.IsAllData == def.True,
 		IP:        strIP,

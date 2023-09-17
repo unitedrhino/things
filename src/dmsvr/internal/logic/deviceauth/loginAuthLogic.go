@@ -6,10 +6,11 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/mysql"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -22,7 +23,8 @@ type LoginAuthLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	di *mysql.DmDeviceInfo
+	DiDB *relationDB.DeviceInfoRepo
+	di   *relationDB.DmDeviceInfo
 }
 
 var clientCert string = `-----BEGIN CERTIFICATE-----
@@ -81,13 +83,11 @@ func NewLoginAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginAu
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 	}
 }
 
 func (l *LoginAuthLogic) UpdateLoginTime() {
-	if l.di == nil {
-		panic("need select device info db first")
-	}
 	now := sql.NullTime{
 		Valid: true,
 		Time:  time.Now(),
@@ -96,7 +96,8 @@ func (l *LoginAuthLogic) UpdateLoginTime() {
 		l.di.FirstLogin = now
 	}
 	l.di.LastLogin = now
-	l.svcCtx.DeviceInfo.UpdateDeviceInfo(l.ctx, l.di)
+	l.di.IsOnline = def.True
+	l.DiDB.Update(l.ctx, l.di)
 }
 
 func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
@@ -126,15 +127,9 @@ func (l *LoginAuthLogic) LoginAuth(in *dm.LoginAuthReq) (*dm.Response, error) {
 	if lg.Expiry < time.Now().Unix() {
 		return nil, errors.SignatureExpired
 	}
-	l.di, err = l.svcCtx.DeviceInfo.FindOneByProductIDDeviceName(l.ctx, lg.ProductID, lg.DeviceName)
+	l.di, err = l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: lg.ProductID, DeviceNames: []string{lg.DeviceName}})
 	if err != nil {
-		if err == mysql.ErrNotFound {
-			return nil, errors.Password
-		} else {
-			l.Errorf("%s.FindOneByProductIDDeviceName failure err=%+v",
-				utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
-		}
+		return nil, err
 	}
 	pwd, err := deviceAuth.NewPwdInfoWithPwd(in.Password)
 	if err != nil {

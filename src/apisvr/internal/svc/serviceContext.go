@@ -28,7 +28,6 @@ import (
 	menu "github.com/i-Things/things/src/syssvr/client/menu"
 	role "github.com/i-Things/things/src/syssvr/client/role"
 
-	auth "github.com/i-Things/things/src/syssvr/client/auth"
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/i-Things/things/src/syssvr/sysdirect"
 	"github.com/zeromicro/go-zero/rest"
@@ -58,7 +57,6 @@ type SvrClient struct {
 	ApiRpc         api.Api
 	Scene          scenelinkage.SceneLinkage
 	Alarm          alarmcenter.AlarmCenter
-	AuthRpc        auth.Auth
 }
 
 type ServiceContext struct {
@@ -89,12 +87,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var me menu.Menu
 	var lo log.Log
 	var ap api.Api
-	var au auth.Auth
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
-			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -122,16 +119,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			me = menu.NewMenu(zrpc.MustNewClient(c.SysRpc.Conf))
 			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
 			ap = api.NewApi(zrpc.MustNewClient(c.SysRpc.Conf))
-			sysCommon = common.NewCommon(zrpc.MustNewClient(c.DmRpc.Conf))
-			au = auth.NewAuth(zrpc.MustNewClient(c.SysRpc.Conf))
+			sysCommon = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
 			ur = sysdirect.NewUser(c.SysRpc.RunProxy)
 			ro = sysdirect.NewRole(c.SysRpc.RunProxy)
 			me = sysdirect.NewMenu(c.SysRpc.RunProxy)
 			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
 			ap = sysdirect.NewApi(c.SysRpc.RunProxy)
-			sysCommon = sysdirect.NewCommon(c.DmRpc.RunProxy)
-			au = sysdirect.NewAuth()
+			sysCommon = sysdirect.NewCommon(c.SysRpc.RunProxy)
 		}
 	}
 	if c.DiRpc.Enable {
@@ -156,7 +151,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:         c,
 		SetupWare:      middleware.NewSetupWareMiddleware(c, lo).Handle,
-		CheckTokenWare: middleware.NewCheckTokenWareMiddleware(c, ur, au).Handle,
+		CheckTokenWare: middleware.NewCheckTokenWareMiddleware(c, ur, ro).Handle,
 		TeardownWare:   middleware.NewTeardownWareMiddleware(c, lo).Handle,
 		Captcha:        captcha,
 		OssClient:      ossClient,
@@ -176,7 +171,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Alarm:          alarm,
 			LogRpc:         lo,
 			ApiRpc:         ap,
-			AuthRpc:        au,
 		},
 		//OSS:        ossClient,
 	}
