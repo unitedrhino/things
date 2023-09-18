@@ -29,6 +29,8 @@ type ActionReport struct {
 	Timestamp   int64            `json:"timestamp,string"`      //毫秒时间戳
 	ActionID    string           `json:"actionID,omitempty"`    //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
 	Params      map[string]any   `json:"params,omitempty"`      //参数列表
+	Code        int64            `json:"code,omitempty"`
+	Status      string           `json:"status,omitempty"`
 	Dir         schema.ActionDir `json:"dir"`
 	ReqType     string           `json:"reqType"` //req resp
 }
