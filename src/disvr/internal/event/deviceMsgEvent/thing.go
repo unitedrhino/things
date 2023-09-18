@@ -217,6 +217,9 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 		if l.dreq.Code != errors.OK.Code { //如果不成功,则记录日志即可
 			return nil, errors.DeviceError.AddMsg(l.dreq.Status).AddDetail(msg.Payload)
 		}
+		if param, ok := l.dreq.Data.(map[string]any); ok {
+			l.dreq.Params = param //新版通过data传递
+		}
 		_, err = l.HandlePropertyReport(msg, l.dreq)
 		return nil, err
 	case deviceMsg.Report: //设备属性上报

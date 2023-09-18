@@ -25,16 +25,16 @@ type UserInfoFilter struct {
 }
 
 func (p UserInfoRepo) accountsFilter(db *gorm.DB, accounts []string) *gorm.DB {
-	db = db.Where("user_name = ?", accounts).
-		Or("email = ?", accounts).
-		Or("phone = ?", accounts)
+	db = db.Where("user_name in ?", accounts).
+		Or("email in ?", accounts).
+		Or("phone in ?", accounts)
 	return db
 }
 
 func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if len(f.UserNames) != 0 {
-		db = db.Where("user_name = ?", f.UserNames)
+		db = db.Where("user_name in ?", f.UserNames)
 	}
 	if len(f.Accounts) != 0 {
 		db = p.accountsFilter(db, f.Accounts)
