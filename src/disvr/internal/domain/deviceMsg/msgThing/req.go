@@ -60,9 +60,7 @@ func (d *Req) FmtReqParam(t *schema.Model, tt schema.ParamType) error {
 
 // 校验设备上报的参数合法性
 func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]Param, error) {
-	if len(d.Params) == 0 {
-		return nil, errors.Parameter.AddDetail("need add params")
-	}
+
 	getParam := make(map[string]Param, len(d.Params))
 
 	switch tt {
