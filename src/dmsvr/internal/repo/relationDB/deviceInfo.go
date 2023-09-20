@@ -47,7 +47,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		db = db.Where("product_id = ?", f.ProductID)
 	}
 	if len(f.AreaIDs) != 0 {
-		db = db.Where("area_id = ?", f.AreaIDs)
+		db = db.Where("area_id in ?", f.AreaIDs)
 	}
 	if len(f.Versions) != 0 {
 		db = db.Where("version = ?", f.AreaIDs)
