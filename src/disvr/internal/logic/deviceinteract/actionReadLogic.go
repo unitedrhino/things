@@ -39,9 +39,9 @@ func (l *ActionReadLogic) ActionRead(in *di.RespReadReq) (*di.SendActionResp, er
 	if resp == nil {
 		return nil, errors.NotFind
 	}
-	respParam, err := json.Marshal(resp.Response)
+	respParam, err := json.Marshal(resp.Data)
 	if err != nil {
-		return nil, errors.RespParam.AddDetailf("SendAction get device resp not right:%+v", resp.Response)
+		return nil, errors.RespParam.AddDetailf("SendAction get device resp not right:%+v", resp.Data)
 	}
 	return &di.SendActionResp{
 		ClientToken:  resp.ClientToken,

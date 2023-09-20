@@ -33,7 +33,7 @@ func (p *ShadowRepo) MultiUpdate(ctx context.Context, data []*shadow.Info) error
 	}
 	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		for _, v := range vals {
-			err := tx.Unscoped().Delete(&DiDeviceShadow{}, "productID = ? and deviceName = ? and dataID = ?",
+			err := tx.Unscoped().Delete(&DiDeviceShadow{}, "product_id = ? and device_name = ? and data_id = ?",
 				v.ProductID, v.DeviceName, v.DataID).Error
 			if err != nil {
 				return errors.Database.AddDetail(err)
@@ -48,9 +48,9 @@ func (p *ShadowRepo) MultiUpdate(ctx context.Context, data []*shadow.Info) error
 	return err
 }
 func (p *ShadowRepo) fmtFilter(ctx context.Context, f shadow.Filter) *gorm.DB {
-	db := p.db.WithContext(ctx).Where("productID = ?", f.ProductID).Where("deviceName = ?", f.DeviceName)
+	db := p.db.WithContext(ctx).Where("product_id = ?", f.ProductID).Where("device_name = ?", f.DeviceName)
 	if len(f.DataIDs) != 0 {
-		db = db.Where("dataID in ?", f.DataIDs)
+		db = db.Where("data_id in ?", f.DataIDs)
 	}
 	if f.UpdatedDeviceStatus != 0 {
 		if f.UpdatedDeviceStatus == shadow.UpdatedDevice {
