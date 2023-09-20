@@ -20,6 +20,7 @@ func CheckAffordance(po *relationDB.DmProductSchema) error {
 	if err := affordance.ValidateWithFmt(); err != nil {
 		return err
 	}
-	po.Affordance = relationDB.ToAffordancePo(affordance)
+	//todo 规范化了之后前端会有问题
+	//po.Affordance = relationDB.ToAffordancePo(affordance)
 	return nil
 }
