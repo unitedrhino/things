@@ -56,3 +56,13 @@ func (s *UserServer) UserCheckToken(ctx context.Context, in *sys.UserCheckTokenR
 	l := userlogic.NewUserCheckTokenLogic(ctx, s.svcCtx)
 	return l.UserCheckToken(in)
 }
+
+func (s *UserServer) UserRegister1(ctx context.Context, in *sys.UserRegister1Req) (*sys.UserRegister1Resp, error) {
+	l := userlogic.NewUserRegister1Logic(ctx, s.svcCtx)
+	return l.UserRegister1(in)
+}
+
+func (s *UserServer) UserRegister2(ctx context.Context, in *sys.UserRegister2Req) (*sys.Response, error) {
+	l := userlogic.NewUserRegister2Logic(ctx, s.svcCtx)
+	return l.UserRegister2(in)
+}

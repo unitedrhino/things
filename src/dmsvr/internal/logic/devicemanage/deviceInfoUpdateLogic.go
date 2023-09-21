@@ -122,7 +122,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 	err = l.DiDB.Update(l.ctx, dmDiPo)
 	if err != nil {
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
-		return nil, errors.System.AddDetail(err)
+		return nil, err
 	}
 
 	if in.LogLevel != def.Unknown {

@@ -11,7 +11,7 @@ import "common.api"  //公共结构体定义
 @server(
     group : things/device/info
     prefix: /api/v1/things/device/info
-    middleware: SetupWare, CheckTokenWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "新增设备"
@@ -80,7 +80,7 @@ type (
         Iccid          *string   `json:"iccid,optional"`                        //SIM卡卡号
         UserID         int64  `json:"userID,string,optional"`        // 用户id
         MobileOperator int64    `json:"mobileOperator,optional,range=[0:4]"`                       //移动运营商:1)移动 2)联通 3)电信 4)广电
-        AreaID *int64 `json:"areaID,string,optional"`      //项目区域id 只读（nil不更新，0为取消绑定，other则绑定）
+        AreaID int64 `json:"areaID,string,optional"`      //项目区域id 只读（1: root节点 2: 未分类节点 其他:子节点）
     }
     DeviceInfoDeleteReq struct {
         ProductID string `json:"productID"`                                              //产品id 只读

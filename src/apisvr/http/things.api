@@ -5,7 +5,9 @@ info(
 	email: "603685348@qq.com"
 	version: "v1"
 )
-import "things/device.api"  //设备相关功能接口
+
 import "things/product.api"  //产品相关功能接口
+import "things/device.api"  //设备相关功能接口
 import "things/group.api"  //设备分组相关功能接口
 import "things/rule.api"  //规则引擎相关功能接口
+import "things/ota.api"  //ota相关功能接口

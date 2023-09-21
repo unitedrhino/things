@@ -118,6 +118,50 @@ service RemoteConfig {
   rpc RemoteConfigLastRead(RemoteConfigLastReadReq) returns (RemoteConfigLastReadResp);
 }
 
+//ota固件管理
+service FirmwareManage {
+  //新增固件升级包
+  rpc FirmwareInfoCreate(Firmware) returns (FirmwareResp);
+
+  rpc FirmwareInfoUpdate(FirmwareInfo) returns (OtaCommonResp);
+
+  rpc FirmwareInfoDelete(FirmwareInfoDeleteReq) returns (FirmwareInfoDeleteResp);
+
+  rpc FirmwareInfoIndex(FirmwareInfoIndexReq) returns (FirmwareInfoIndexResp);
+
+  rpc FirmwareInfoRead(FirmwareInfoReadReq) returns (FirmwareInfoReadResp);
+  //附件信息更新
+  rpc OtaFirmwareFileUpdate(OtaFirmwareFileReq) returns (OtaFirmwareFileResp);
+  //附件列表搜索
+  rpc OtaFirmwareFileIndex(OtaFirmwareFileIndexReq) returns (OtaFirmwareFileIndexResp);
+  //获取固件包对应设备版本列表
+  rpc OtaFirmwareDeviceInfo(OtaFirmwareDeviceInfoReq) returns (OtaFirmwareDeviceInfoResp);
+}
+
+//ota升级任务管理
+service OtaTaskManage {
+  //创建批量升级任务
+  rpc OtaTaskCreate(OtaTaskCreateReq) returns (OtaTaskCreatResp);
+
+  rpc OtaTaskUpdate(OtaTaskInfo) returns (OtaCommonResp);
+  //批量取消升级任务
+  rpc OtaTaskCancle(OtaTaskCancleReq) returns (OtaCommonResp);
+
+  rpc OtaTaskIndex(OtaTaskIndexReq) returns (OtaTaskIndexResp);
+  //升级任务详情
+  rpc OtaTaskRead(OtaTaskReadReq) returns (OtaTaskReadResp);
+  //升级批次详情列表
+  rpc OtaTaskDeviceIndex(OtaTaskDeviceIndexReq) returns (OtaTaskDeviceIndexResp);
+  //设备升级状态详情
+  rpc OtaTaskDeviceRead(OtaTaskDeviceReadReq) returns (OtaTaskDeviceInfo);
+  //获取当前可执行批次信息
+  rpc OtaTaskDeviceEnableBatch(OtaTaskBatchReq) returns (OtaTaskBatchResp);
+  //升级进度上报
+  rpc OtaTaskDeviceProcess(OtaTaskDeviceProcessReq) returns (OtaCommonResp);
+  //取消单个设备的升级
+  rpc OtaTaskDeviceCancle(OtaTaskDeviceCancleReq) returns (OtaCommonResp);
+}
+
 message ProductRemoteConfig{
   int64 id = 1;
   string productID = 2;
@@ -523,4 +567,230 @@ message DeviceRegisterResp{
   clientKey          -              设备私钥文件字符串格式，当产品认证类型为证书认证时有此参数。
   */
   string payload = 2;
+}
+
+//----------------------------------------------------------------------------------------------
+
+
+/*
+下面是ota固件管理模块的消息
+*/
+message Firmware {
+  int64   createdTime = 1; //创建时间 只读
+  int64 firmwareID = 2;
+  string productID = 3;
+  string name = 4; //升级包名称
+  string version = 5; //升级包版本
+  int32 isDiff = 6; //是否差分包,1:整包,2:差分
+  string signMethod = 7; //签名方法 MD5/SHA
+  google.protobuf.StringValue   desc = 8;//描述
+  google.protobuf.StringValue   extData = 9;//自定义数据
+  repeated OtaFirmwareFile files = 10;//产品信息
+}
+message FirmwareResp{
+  int64 firmwareID = 1;
+}
+message FirmwareInfo {
+  int64   createdTime = 1; //创建时间 只读
+  int64 firmwareID = 2;
+  string productID = 3;
+  string productName = 4;
+  string name = 5; //升级包名称
+  string version = 6; //升级包版本
+  int32 isDiff = 7; //是否差分包,1:整包,2:差分
+  string signMethod = 8; //签名方法 MD5/SHA
+  google.protobuf.StringValue   desc = 9;//描述
+  google.protobuf.StringValue   extData = 10;//自定义数据
+  repeated OtaFirmwareFile files = 11;//产品信息
+}
+message OtaFirmwareFile {
+  string filePath = 1;
+  string name = 2;
+}
+message FirmwareInfoDeleteReq {
+  int64 firmwareID = 1;
+}
+message FirmwareInfoDeleteResp {
+  repeated string path =1;
+}
+message FirmwareInfoIndexReq {
+  OtaPageInfo page = 1;//分页信息 只获取一个则不填
+  int64 firmwareID = 2;
+  string productID = 3;
+}
+message FirmwareInfoIndexResp {
+  repeated FirmwareInfo list = 1;//固件信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+message FirmwareInfoReadReq {
+  int64 firmwareID = 1;
+}
+message OtaFirmwareFileReq{
+  int64 fileID = 1; 
+  string name = 2;
+  string host = 3;
+  string filePath = 4;
+  int64 size = 5;
+  string storage = 6;
+  string signMethod = 7;
+  string signature = 8;
+}
+message OtaFirmwareFileInfo{
+  int64 fileID = 1; 
+  int64 firmwareID = 2;
+  string name = 3;
+  string host = 4;
+  string filePath = 5;
+  int64 size = 6;
+  string storage = 7;
+  string signMethod = 8;
+  string signature = 9;
+}
+message OtaFirmwareFileResp{
+  int64 fileID = 1; 
+  string name = 2;
+  string host = 3;
+  string filePath = 4;
+  int64 size = 5;
+  string storage = 6;
+  //string signMethod = 7;
+  string signature = 7;
+}
+message OtaFirmwareFileIndexReq{
+  OtaPageInfo page = 1;
+  int64 firmwareID = 2;
+  google.protobuf.Int64Value size = 3;
+}
+message OtaFirmwareFileIndexResp{
+  repeated OtaFirmwareFileInfo list = 1;
+  int64 total = 2;
+}
+message FirmwareInfoReadResp{
+  int64   createdTime = 1; //创建时间 只读
+  int64 firmwareID = 2;
+  string productID = 3;
+  string productName = 4;
+  string name = 5; //升级包名称
+  string version = 6; //升级包版本
+  int32 isDiff = 7; //是否差分包,1:整包,2:差分
+  string signMethod = 8;
+  google.protobuf.StringValue   desc = 10;//描述
+  google.protobuf.StringValue   extData = 11;//自定义数据
+  repeated OtaFirmwareFileResp files = 12;//产品信息
+}
+message OtaFirmwareDeviceInfoReq{
+  int64 firmwareID = 1;
+}
+message OtaFirmwareDeviceInfoResp{
+  string versions = 1;
+}
+/*
+下面是ota升级任务管理模块的消息
+*/
+message OtaTaskCreateReq {
+  int64 firmwareID = 1;
+  string taskUid = 2;
+  int32 type = 3;
+  int32 upgradeType=4;
+  int32 autoRepeat = 5;
+  google.protobuf.StringValue deviceList = 6;
+  google.protobuf.StringValue versionList = 7;
+}
+message OtaTaskCreatResp{
+  int64 taskID = 1;
+}
+message OtaTaskInfo {
+  int64 taskID = 1;
+  int64 firmwareID = 2;
+  string productID = 3;
+  string taskUid = 4;
+  int32 type = 5;
+  int32 upgradeType=6;
+  int32 autoRepeat = 7;
+  int32 status = 8; //升级状态:1未升级2升级中3完成4已取消
+  google.protobuf.StringValue deviceList = 9;
+  google.protobuf.StringValue versionList = 10;
+  int64   createdTime = 11; //创建时间 只读
+}
+message OtaTaskCancleReq{
+  int64 taskID = 1;
+}
+message OtaTaskIndexReq{
+  OtaPageInfo page = 1;
+  int64 firmwareID = 2;
+  int64 productID = 3;
+}
+message OtaTaskIndexResp{
+  repeated OtaTaskInfo list =1;
+  int64 total =2;
+}
+message OtaTaskReadReq{
+  int64 taskID = 1;
+}
+message OtaTaskReadResp{
+  int64 taskID = 1;
+  int64 firmwareID = 2;
+  string taskUid = 3; //批次号
+  int32 type = 4; //升级范围1全部设备2定向升级
+  int32 upgradeType=5; //升级策略:1静态升级2动态升级
+  int32 autoRepeat = 6; //是否自动重试,1:不,2自动重试
+  int32 status = 7; //升级状态:1未升级2升级中3完成4已取消
+  google.protobuf.StringValue deviceList = 8;
+  google.protobuf.StringValue versionList = 9;
+  int64   createdTime = 10;
+}
+
+message OtaTaskDeviceIndexReq {
+  OtaPageInfo page = 1;
+  int64 firmwareID = 2;
+  string taskUid = 3; //批次号
+  string deviceName = 4; //设备
+  int32 status = 5; //状态
+}
+message OtaTaskDeviceIndexResp {
+    repeated OtaTaskDeviceInfo list =1;
+    int64 total =2;
+}
+message OtaTaskDeviceInfo {
+  int64 ID = 1;
+  int64 firmwareID = 2;
+  string deviceName=3;
+  string productID=4;
+  string productName=5;
+  string taskUid = 6; //批次号
+  int32 status = 7; //升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
+  string version = 8; //当前版本号
+  string desc = 9; //状态详情
+  int64   retryCount = 10; //重试次数,计划最多20次
+  int64   updatedTime = 11; //创建时间 只读
+}
+message OtaTaskDeviceReadReq {
+  int64 ID = 1;
+}
+message OtaTaskBatchReq {
+  int64 ID = 1;
+  string productID = 2;
+  string deviceName=3;
+  string version=4;
+  string module=5;
+}
+message OtaTaskBatchResp {
+  int64 ID = 1;
+  string taskUid = 2;
+  int64 firmwareID = 3;
+}
+message OtaTaskDeviceProcessReq {
+  int64 ID = 1;
+  int64 step =2;
+  string module=3;
+  string desc=4;
+}
+message OtaTaskDeviceCancleReq {
+  int64 ID = 1;
+}
+message OtaPageInfo{
+  int64 page = 1;
+  int64 size = 2;
+}
+message OtaCommonResp {
 }

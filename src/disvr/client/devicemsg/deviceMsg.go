@@ -24,6 +24,8 @@ type (
 	HubLogIndexResp        = di.HubLogIndexResp
 	MultiSendPropertyReq   = di.MultiSendPropertyReq
 	MultiSendPropertyResp  = di.MultiSendPropertyResp
+	OtaPromptIndexReq      = di.OtaPromptIndexReq
+	OtaPromptIndexResp     = di.OtaPromptIndexResp
 	PageInfo               = di.PageInfo
 	PropertyIndex          = di.PropertyIndex
 	PropertyIndexResp      = di.PropertyIndexResp
@@ -58,6 +60,8 @@ type (
 		EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error)
 		// 获取设备影子列表
 		ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
+		// 主动触发单个设备ota升级推送
+		OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error)
 	}
 
 	defaultDeviceMsg struct {
@@ -147,4 +151,15 @@ func (m *defaultDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLatestIn
 // 获取设备影子列表
 func (d *directDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
 	return d.svr.ShadowIndex(ctx, in)
+}
+
+// 主动触发单个设备ota升级推送
+func (m *defaultDeviceMsg) OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error) {
+	client := di.NewDeviceMsgClient(m.cli.Conn())
+	return client.OtaPromptIndex(ctx, in, opts...)
+}
+
+// 主动触发单个设备ota升级推送
+func (d *directDeviceMsg) OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error) {
+	return d.svr.OtaPromptIndex(ctx, in)
 }

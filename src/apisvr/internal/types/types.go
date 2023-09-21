@@ -83,6 +83,22 @@ type UserResourceReadResp struct {
 	Info *UserInfo   `json:"info"` //用户信息
 }
 
+type UserRegister1Req struct {
+	RegType string `json:"regType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //注册方式:	phone手机号注册 wxOpen 微信开放平台登录 wxIn 微信内登录 wxMiniP 微信小程序 pwd 账号密码注册
+	Note    string `json:"note,optional"`                                 //手机号注册时填写手机号 账号密码注册时填写userName
+	Code    string `json:"code"`                                          //验证码    微信登录填code 账号密码登录时填写密码
+	CodeID  string `json:"codeID,optional"`                               //验证码编号 微信登录填state
+}
+
+type UserRegister1Resp struct {
+	Token string `json:"token,optional"` //如果返回token则需要第二步填写信息,如果为空则为注册成功
+}
+
+type UserRegister2Req struct {
+	Token    string   `json:"token"`    //注册第一步的token
+	UserInfo UserInfo `json:"userInfo"` //用户信息,特别需要填写账号和密码
+}
+
 type PageInfo struct {
 	Page int64 `json:"page,optional" form:"page,optional"` // 页码
 	Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
@@ -344,6 +360,206 @@ type AuthApiIndexResp struct {
 	Total int64          `json:"total"` //API列表总数
 }
 
+type ProductInfo struct {
+	CreatedTime  int64   `json:"createdTime,optional,string"`       //创建时间 只读
+	ProductID    string  `json:"productID,optional"`                //产品id 只读
+	ProductName  string  `json:"productName,optional"`              //产品名称
+	ProductImg   string  `json:"productImg,optional"`               //产品图片
+	AuthMode     int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
+	DeviceType   int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
+	CategoryID   int64   `json:"categoryID,optional"`               //产品品类
+	NetType      int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	DataProto    int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
+	AutoRegister int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret       string  `json:"secret,optional"`                   //动态注册产品秘钥 只读
+	Desc         *string `json:"desc,optional"`                     //描述
+	Tags         []*Tag  `json:"tags,optional"`                     // 产品tag
+}
+
+type ProductInfoReadReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type ProductInfoCreateReq struct {
+	ProductName  string  `json:"productName"`                       //产品名称
+	ProductID    string  `json:"productID,optional"`                //产品id
+	AuthMode     int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
+	DeviceType   int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
+	CategoryID   int64   `json:"categoryID,optional"`               //产品品类
+	NetType      int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	DataProto    int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
+	AutoRegister int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Desc         *string `json:"desc,optional"`                     //描述
+	Tags         []*Tag  `json:"tags,optional"`                     // 产品tag
+	ProductImg   string  `json:"productImg,optional"`               //产品图片 传参为产品图片的file path
+}
+
+type ProductInfoUpdateReq struct {
+	ProductID          string  `json:"productID"`                         //产品id 只读
+	ProductName        string  `json:"productName,optional"`              //产品名称
+	AuthMode           int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
+	DeviceType         int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
+	CategoryID         int64   `json:"categoryID,optional"`               //产品品类
+	NetType            int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	DataProto          int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
+	AutoRegister       int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Desc               *string `json:"desc,optional"`                     //描述
+	Tags               []*Tag  `json:"tags,optional"`                     // 产品tag
+	ProductImg         string  `json:"productImg,optional"`               //产品图片
+	IsUpdateProductImg bool    `json:"isUpdateProductImg,optional"`       //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+}
+
+type ProductInfoDeleteReq struct {
+	ProductID string `json:"productID"` //产品id 只读
+}
+
+type ProductInfoIndexReq struct {
+	Page        *PageInfo `json:"page,optional"`                   //分页信息,只获取一个则不填
+	ProductName string    `json:"productName,optional"`            //过滤产品名称
+	DeviceType  int64     `json:"deviceType,optional,range=[0:3]"` //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+	ProductIDs  []string  `json:"productIDs,optional"`             //过滤产品id列表
+	Tags        []*Tag    `json:"tags,optional"`                   // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+}
+
+type ProductInfoIndexResp struct {
+	List  []*ProductInfo `json:"list"`           //产品信息
+	Total int64          `json:"total,optional"` //拥有的总数
+	Num   int64          `json:"num,optional"`   //返回的数量
+}
+
+type ProductSchemaTslReadReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type ProductSchemaTslReadResp struct {
+	Tsl string `json:"tsl"` //物模型tsl
+}
+
+type ProductSchemaUpdateReq struct {
+	*ProductSchemaInfo
+}
+
+type ProductSchemaTslImportReq struct {
+	ProductID string `json:"productID"` //产品id 只读
+	Tsl       string `json:"tsl"`       //物模型tsl
+}
+
+type ProductSchemaCreateReq struct {
+	*ProductSchemaInfo
+}
+
+type ProductSchemaDeleteReq struct {
+	ProductID  string `json:"productID"`  //产品id
+	Identifier string `json:"identifier"` //标识符
+}
+
+type ProductSchemaIndexReq struct {
+	Page        *PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
+	ProductID   string    `json:"productID"`            //产品id
+	Type        int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag         int64     `json:"tag,optional"`         //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
+	Identifiers []string  `json:"identifiers,optional"` //过滤标识符列表
+}
+
+type ProductSchemaIndexResp struct {
+	List  []*ProductSchemaInfo `json:"list"`  //分页信息,只获取一个则不填
+	Total int64                `json:"total"` //总数(只有分页的时候会返回)
+}
+
+type ProductSchemaInfo struct {
+	ProductID  string  `json:"productID"`           //产品id 只读
+	Type       int64   `json:"type"`                //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag        int64   `json:"tag"`                 //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Identifier string  `json:"identifier"`          //标识符
+	Name       *string `json:"name,optional"`       //功能名称
+	Desc       *string `json:"desc,optional"`       //描述
+	Required   int64   `json:"required,optional"`   //是否必须 1:是 2:否
+	Affordance *string `json:"affordance,optional"` //各功能类型的详细参数定义
+}
+
+type SchemaAction struct {
+	Input  []*SchemaParam `json:"input,optional"`  //调用参数
+	Output []*SchemaParam `json:"output,optional"` //返回参数
+}
+
+type SchemaProperty struct {
+	Mode   string        `json:"mode,optional"` //读写类型: r(只读) rw(可读可写)
+	Define *SchemaDefine `json:"define"`        //参数定义
+}
+
+type SchemaEvent struct {
+	Type   string         `json:"type"`            //事件类型: 信息:info  告警alert  故障:fault
+	Params []*SchemaParam `json:"params,optional"` //事件参数
+}
+
+type SchemaDefine struct {
+	Type      string            `json:"type"`                //参数类型: bool int string struct float timestamp array enum
+	Mapping   map[string]string `json:"mapping,omitempty"`   //枚举及bool类型:bool enum
+	Min       string            `json:"min,omitempty"`       //数值最小值:int  float
+	Max       string            `json:"max,omitempty"`       //数值最大值:int string float
+	Start     string            `json:"start,omitempty"`     //初始值:int float
+	Step      string            `json:"step,omitempty"`      //步长:int float
+	Unit      string            `json:"unit,omitempty"`      //单位:int float
+	Specs     []*SchemaSpec     `json:"specs,omitempty"`     //结构体:struct
+	ArrayInfo *SchemaDefine     `json:"arrayInfo,omitempty"` //数组:array
+}
+
+type SchemaSpec struct {
+	Identifier string        `json:"identifier"` //参数标识符
+	Name       string        `json:"name"`       //参数名称
+	DataType   *SchemaDefine `json:"dataType"`   //参数定义
+}
+
+type SchemaParam struct {
+	Identifier string        `json:"identifier"`       //参数标识符
+	Name       string        `json:"name"`             //参数名称
+	Define     *SchemaDefine `json:"define,omitempty"` //参数定义
+}
+
+type ProductRemoteConfig struct {
+	ID         int64  `json:"id"`         //配置编号
+	Content    string `json:"content"`    //配置内容
+	CreateTime string `json:"createTime"` //创建时间
+}
+
+type ProductRemoteConfigCreateReq struct {
+	ProductID string `json:"productID"` //产品id
+	Content   string `json:"content"`   //配置内容
+}
+
+type ProductRemoteConfigIndexReq struct {
+	ProductID string    `json:"productID"`     //产品id
+	Page      *PageInfo `json:"page,optional"` //分页信息
+}
+
+type ProductRemoteConfigIndexResp struct {
+	List  []*ProductRemoteConfig `json:"list"`  //产品信息
+	Total int64                  `json:"total"` //拥有的总数
+}
+
+type ProductRemoteConfigPushAllReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type ProductRemoteConfigLastestReadReq struct {
+	ProductID string `json:"productID"` //产品id
+}
+
+type ProductRemoteConfigLastestReadResp struct {
+	ProductRemoteConfig
+}
+
+type ProductCustom struct {
+	ProductID       string   `json:"productID"`
+	TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
+	ScriptLang      int64    `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+	CustomTopic     []string `json:"customTopic,optional"`     //自定义topic数组
+}
+
+type ProductCustomReadReq struct {
+	ProductID string `json:"productID"` //产品id 只读
+}
+
 type DeviceAuthLoginReq struct {
 	Username    string `json:"username"`                       //用户名
 	Password    string `json:"password,optional"`              //密码
@@ -582,7 +798,7 @@ type DeviceInfoSaveReq struct {
 	Iccid          *string `json:"iccid,optional"`                      //SIM卡卡号
 	UserID         int64   `json:"userID,string,optional"`              // 用户id
 	MobileOperator int64   `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
-	AreaID         *int64  `json:"areaID,string,optional"`              //项目区域id 只读（nil不更新，0为取消绑定，other则绑定）
+	AreaID         int64   `json:"areaID,string,optional"`              //项目区域id 只读（1: root节点 2: 未分类节点 其他:子节点）
 }
 
 type DeviceInfoDeleteReq struct {
@@ -747,206 +963,6 @@ type DeviceInteractMultiSendPropertyMsg struct {
 
 type DeviceInteractMultiSendPropertyResp struct {
 	List []*DeviceInteractMultiSendPropertyMsg `json:"list"` //批量设备返回结果列表
-}
-
-type ProductInfo struct {
-	CreatedTime  int64   `json:"createdTime,optional,string"`       //创建时间 只读
-	ProductID    string  `json:"productID,optional"`                //产品id 只读
-	ProductName  string  `json:"productName,optional"`              //产品名称
-	ProductImg   string  `json:"productImg,optional"`               //产品图片
-	AuthMode     int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
-	DeviceType   int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64   `json:"categoryID,optional"`               //产品品类
-	NetType      int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto    int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
-	AutoRegister int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret       string  `json:"secret,optional"`                   //动态注册产品秘钥 只读
-	Desc         *string `json:"desc,optional"`                     //描述
-	Tags         []*Tag  `json:"tags,optional"`                     // 产品tag
-}
-
-type ProductInfoReadReq struct {
-	ProductID string `json:"productID"` //产品id
-}
-
-type ProductInfoCreateReq struct {
-	ProductName  string  `json:"productName"`                       //产品名称
-	ProductID    string  `json:"productID,optional"`                //产品id
-	AuthMode     int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
-	DeviceType   int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64   `json:"categoryID,optional"`               //产品品类
-	NetType      int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto    int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
-	AutoRegister int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Desc         *string `json:"desc,optional"`                     //描述
-	Tags         []*Tag  `json:"tags,optional"`                     // 产品tag
-	ProductImg   string  `json:"productImg,optional"`               //产品图片 传参为产品图片的file path
-}
-
-type ProductInfoUpdateReq struct {
-	ProductID          string  `json:"productID"`                         //产品id 只读
-	ProductName        string  `json:"productName,optional"`              //产品名称
-	AuthMode           int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
-	DeviceType         int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
-	CategoryID         int64   `json:"categoryID,optional"`               //产品品类
-	NetType            int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto          int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
-	AutoRegister       int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Desc               *string `json:"desc,optional"`                     //描述
-	Tags               []*Tag  `json:"tags,optional"`                     // 产品tag
-	ProductImg         string  `json:"productImg,optional"`               //产品图片
-	IsUpdateProductImg bool    `json:"isUpdateProductImg,optional"`       //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
-}
-
-type ProductInfoDeleteReq struct {
-	ProductID string `json:"productID"` //产品id 只读
-}
-
-type ProductInfoIndexReq struct {
-	Page        *PageInfo `json:"page,optional"`                   //分页信息,只获取一个则不填
-	ProductName string    `json:"productName,optional"`            //过滤产品名称
-	DeviceType  int64     `json:"deviceType,optional,range=[0:3]"` //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
-	ProductIDs  []string  `json:"productIDs,optional"`             //过滤产品id列表
-	Tags        []*Tag    `json:"tags,optional"`                   // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
-}
-
-type ProductInfoIndexResp struct {
-	List  []*ProductInfo `json:"list"`           //产品信息
-	Total int64          `json:"total,optional"` //拥有的总数
-	Num   int64          `json:"num,optional"`   //返回的数量
-}
-
-type ProductSchemaTslReadReq struct {
-	ProductID string `json:"productID"` //产品id
-}
-
-type ProductSchemaTslReadResp struct {
-	Tsl string `json:"tsl"` //物模型tsl
-}
-
-type ProductSchemaUpdateReq struct {
-	*ProductSchemaInfo
-}
-
-type ProductSchemaTslImportReq struct {
-	ProductID string `json:"productID"` //产品id 只读
-	Tsl       string `json:"tsl"`       //物模型tsl
-}
-
-type ProductSchemaCreateReq struct {
-	*ProductSchemaInfo
-}
-
-type ProductSchemaDeleteReq struct {
-	ProductID  string `json:"productID"`  //产品id
-	Identifier string `json:"identifier"` //标识符
-}
-
-type ProductSchemaIndexReq struct {
-	Page        *PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
-	ProductID   string    `json:"productID"`            //产品id
-	Type        int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag         int64     `json:"tag,optional"`         //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
-	Identifiers []string  `json:"identifiers,optional"` //过滤标识符列表
-}
-
-type ProductSchemaIndexResp struct {
-	List  []*ProductSchemaInfo `json:"list"`  //分页信息,只获取一个则不填
-	Total int64                `json:"total"` //总数(只有分页的时候会返回)
-}
-
-type ProductSchemaInfo struct {
-	ProductID  string  `json:"productID"`           //产品id 只读
-	Type       int64   `json:"type"`                //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag        int64   `json:"tag"`                 //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Identifier string  `json:"identifier"`          //标识符
-	Name       *string `json:"name,optional"`       //功能名称
-	Desc       *string `json:"desc,optional"`       //描述
-	Required   int64   `json:"required,optional"`   //是否必须 1:是 2:否
-	Affordance *string `json:"affordance,optional"` //各功能类型的详细参数定义
-}
-
-type SchemaAction struct {
-	Input  []*SchemaParam `json:"input,optional"`  //调用参数
-	Output []*SchemaParam `json:"output,optional"` //返回参数
-}
-
-type SchemaProperty struct {
-	Mode   string        `json:"mode,optional"` //读写类型: r(只读) rw(可读可写)
-	Define *SchemaDefine `json:"define"`        //参数定义
-}
-
-type SchemaEvent struct {
-	Type   string         `json:"type"`            //事件类型: 信息:info  告警alert  故障:fault
-	Params []*SchemaParam `json:"params,optional"` //事件参数
-}
-
-type SchemaDefine struct {
-	Type      string            `json:"type"`                //参数类型: bool int string struct float timestamp array enum
-	Mapping   map[string]string `json:"mapping,omitempty"`   //枚举及bool类型:bool enum
-	Min       string            `json:"min,omitempty"`       //数值最小值:int  float
-	Max       string            `json:"max,omitempty"`       //数值最大值:int string float
-	Start     string            `json:"start,omitempty"`     //初始值:int float
-	Step      string            `json:"step,omitempty"`      //步长:int float
-	Unit      string            `json:"unit,omitempty"`      //单位:int float
-	Specs     []*SchemaSpec     `json:"specs,omitempty"`     //结构体:struct
-	ArrayInfo *SchemaDefine     `json:"arrayInfo,omitempty"` //数组:array
-}
-
-type SchemaSpec struct {
-	Identifier string        `json:"identifier"` //参数标识符
-	Name       string        `json:"name"`       //参数名称
-	DataType   *SchemaDefine `json:"dataType"`   //参数定义
-}
-
-type SchemaParam struct {
-	Identifier string        `json:"identifier"`       //参数标识符
-	Name       string        `json:"name"`             //参数名称
-	Define     *SchemaDefine `json:"define,omitempty"` //参数定义
-}
-
-type ProductRemoteConfig struct {
-	ID         int64  `json:"id"`         //配置编号
-	Content    string `json:"content"`    //配置内容
-	CreateTime string `json:"createTime"` //创建时间
-}
-
-type ProductRemoteConfigCreateReq struct {
-	ProductID string `json:"productID"` //产品id
-	Content   string `json:"content"`   //配置内容
-}
-
-type ProductRemoteConfigIndexReq struct {
-	ProductID string    `json:"productID"`     //产品id
-	Page      *PageInfo `json:"page,optional"` //分页信息
-}
-
-type ProductRemoteConfigIndexResp struct {
-	List  []*ProductRemoteConfig `json:"list"`  //产品信息
-	Total int64                  `json:"total"` //拥有的总数
-}
-
-type ProductRemoteConfigPushAllReq struct {
-	ProductID string `json:"productID"` //产品id
-}
-
-type ProductRemoteConfigLastestReadReq struct {
-	ProductID string `json:"productID"` //产品id
-}
-
-type ProductRemoteConfigLastestReadResp struct {
-	ProductRemoteConfig
-}
-
-type ProductCustom struct {
-	ProductID       string   `json:"productID"`
-	TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
-	ScriptLang      int64    `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
-	CustomTopic     []string `json:"customTopic,optional"`     //自定义topic数组
-}
-
-type ProductCustomReadReq struct {
-	ProductID string `json:"productID"` //产品id 只读
 }
 
 type GroupInfo struct {
@@ -1175,4 +1191,188 @@ type AlarmSceneMultiUpdateReq struct {
 type AlarmSceneDeleteReq struct {
 	AlarmID int64 `json:"alarmID"` //告警配置ID
 	SceneID int64 `json:"sceneID"` //场景id
+}
+
+type OtaFirmwareIndexReq struct {
+	ProductID string    `json:"productID,optional,omitempty"`        //产品id 获取产品id下的所有升级包
+	TimeStart int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
+	TimeEnd   int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	Page      *PageInfo `json:"page,optional"`                       //分页信息
+}
+
+type OtaFirmwareIndexResp struct {
+	List  []*OtaFirmwareIndex `json:"list"`  //数据
+	Total int64               `json:"total"` //总数
+}
+
+type OtaFirmwareInfoUpdateReq struct {
+	FirmwareID int64   `json:"firmwareID"` //固件升级包编号
+	Name       string  `json:"name"`       //升级包名称
+	Desc       *string `json:"desc"`       //描述
+	ExtData    *string `json:"extData"`    //自定义数据
+}
+
+type OtaFirmwareIndex struct {
+	FirmwareID  int64  `json:"firmwareID"`         //固件升级包编号
+	Name        string `json:"name"`               //升级包名称
+	Version     string `json:"version"`            //升级包版本
+	ProductID   string `json:"productID"`          //产品id
+	ProductName string `json:"productName"`        //产品名称
+	IsDiff      int32  `json:"isDiff" enums:"1,2"` //是否差分包,1:整包,2:差分
+	CreatedTime int64  `json:"createdTime"`        //创建时间 只读
+	SignMethod  string `json:"signMethod"`         //签名方法
+}
+
+type OtaFirmwareReadReq struct {
+	FirmwareID int64 `json:"firmwareID"` //固件升级包编号
+}
+
+type OtaFirmwareReadResp struct {
+	FirmwareID  int64                  `json:"firmwareID"`         //固件升级包编号
+	Name        string                 `json:"name"`               //升级包名称
+	Version     string                 `json:"version"`            //升级包版本
+	ProductID   string                 `json:"productID"`          //产品id
+	ProductName string                 `json:"productName"`        //产品名称
+	IsDiff      int32                  `json:"isDiff" enums:"1,2"` //是否差分包,1:整包,2:差分
+	CreatedTime int64                  `json:"createdTime"`        //创建时间 只读
+	SignMethod  string                 `json:"signMethod"`         //签名方法
+	Desc        *string                `json:"desc"`               //描述
+	ExtData     *string                `json:"extData"`            //自定义数据
+	Files       []*OtaFirmwareFileInfo `json:"files"`
+}
+
+type OtaFirmwareInfo struct {
+	FirmwareID  int64   `json:"firmwareID"`         //固件升级包编号
+	Name        string  `json:"name"`               //升级包名称
+	Version     string  `json:"version"`            //升级包版本
+	ProductID   string  `json:"productID"`          //产品id
+	ProductName string  `json:"productName"`        //产品名称
+	IsDiff      int32   `json:"isDiff" enums:"1,2"` //是否差分包,1:整包,2:差分
+	CreatedTime int64   `json:"createdTime"`        //创建时间 只读
+	SignMethod  string  `json:"signMethod"`         //签名方法
+	Desc        *string `json:"desc"`               //描述
+	ExtData     *string `json:"extData"`            //自定义数据
+}
+
+type OtaFirmwareCreateReq struct {
+	Name       string             `json:"name"`               //升级包名称
+	ProductID  string             `json:"productID"`          //产品id
+	Version    string             `json:"version"`            //升级包版本
+	IsDiff     int32              `json:"isDiff" enums:"1,2"` //是否差分包,1:整包,2:差分
+	SignMethod string             `json:"signMethod"`         //签名方法 MD5/SHA@256
+	Desc       *string            `json:"desc"`               //描述
+	ExtData    *string            `json:"extData"`            //自定义数据
+	Files      []*OtaFirmwareFile `json:"files"`              //升级包附件列表，最多支持上传20个文件，总文件大小不能超过1,000 MB。
+}
+
+type OtaFirmwareFile struct {
+	Filepath string `json:"filePath"` //附件地址，上传附件后接口应该返回
+	Name     string `json:"name"`     //附件原名，上传附件后接口应该返回
+}
+
+type OtaFirmwareFileInfo struct {
+	Uri       string `json:"uri"`       //附件地址
+	Name      string `json:"name"`      //附件原名
+	Size      int64  `json:"size"`      //文件大小
+	Signature string `json:"signature"` //签名值
+}
+
+type OtaFirmwareDelReq struct {
+	FirmwareID int64 `json:"firmwareID"` //固件升级包编号
+}
+
+type OtaFirmwareDeviceInfoReq struct {
+	FirmwareID int64 `json:"firmwareID"` //固件升级包编号
+}
+
+type OtaFirmwareDeviceInfoResp struct {
+	Versions string `json:"versions"`
+}
+
+type OtaTaskIndexReq struct {
+	FirmwareID int64     `json:"firmwareID"` //固件升级包编号
+	TaskUid    string    `json:"taskUid,optional"`
+	Page       *PageInfo `json:"page,optional"` //分页信息
+}
+
+type OtaTaskIndexResp struct {
+	Total int64          `json:"total"` //总数
+	List  []*OtaTaskInfo `json:"list"`
+}
+
+type OtaTaskInfo struct {
+	TaskID      int64  `json:"taskID"`
+	TaskUid     string `json:"taskUid"`                 //批次号
+	Type        int32  `json:"type" enums:"1,2"`        //升级范围1全部设备2定向升级
+	UpgradeType int32  `json:"upgradeType" enums:"1,2"` //升级策略:1静态升级2动态升级
+	Status      int32  `json:"status"  enums:"1,2,3"`   //升级状态:1未升级2升级中3完成
+	CreatedTime int64  `json:"createdTime"`             //创建时间 只读
+}
+
+type OtaTaskReadReq struct {
+	TaskID int64 `json:"taskID"`
+}
+
+type OtaTaskReadResp struct {
+	TaskID      int64  `json:"taskID"`
+	TaskUid     string `json:"taskUid"`
+	Type        int32  `json:"type"  enums:"1,2"`       //升级范围1全部设备2定向升级
+	UpgradeType int32  `json:"upgradeType" enums:"1,2"` //升级策略:1静态升级2动态升级
+	Version     string `json:"version"`                 //升级包版本
+	SrcVersion  string `json:"srcVersion"`              //待升级版本号
+	SrcDevice   string `json:"srcDevice"`               //待升级设备
+	ProductID   string `json:"productID"`               //产品id
+	ProductName string `json:"productName"`             //产品名称
+	Status      int32  `json:"status" enums:"1,2,3"`    //升级状态:1未升级2升级中3完成
+	AutoRepeat  int32  `json:"autoRepeat"`              //是否自动重试,1:不,2自动重试,最多重试10次
+	CreatedTime int64  `json:"createdTime"`             //创建时间 只读
+}
+
+type OtaTaskCreateReq struct {
+	FirmwareID  int64  `json:"firmwareID"`  //固件升级包编号
+	Type        int32  `json:"type"`        //升级范围1全部设备2定向升级
+	UpgradeType int32  `json:"upgradeType"` //升级策略:1静态升级2动态升级
+	DeviceList  string `json:"deviceList"`  //待升级设备列表,["device1","device2",...]
+	VersionList string `json:"versionList"` //待升级版本,["version1","version2",...]
+}
+
+type OtaTaskCancleReq struct {
+	TaskID int64 `json:"taskID"`
+}
+
+type OtaTaskDeviceIndexReq struct {
+	TaskUid    string    `json:"taskUid"`
+	DeviceName string    `json:"deviceName,optional"` //设备编号
+	Status     int32     `json:"status,optional"`     //升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
+	Page       *PageInfo `json:"page,optional"`       //分页信息
+}
+
+type OtaTaskDeviceIndexResp struct {
+	List  []*OtaTaskDeviceInfo `json:"list"`
+	Total int64                `json:"total"` //总数
+}
+
+type OtaTaskDeviceInfo struct {
+	ID          int64  `json:"id"` //
+	TaskUid     string `json:"taskUid"`
+	DeviceName  string `json:"deviceName"`  //设备编号
+	Version     string `json:"version"`     //当前版本
+	Status      int32  `json:"status"`      //升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
+	UpdatedTime int64  `json:"updatedTime"` //状态更新时间 只读
+}
+
+type OtaTaskAnalysisReq struct {
+	TaskUid string `json:"taskUid"`
+}
+
+type OtaTaskAnalysisResp struct {
+	Result string `json:"result"` //统计结果,json格式
+}
+
+type OtaTaskDeviceCancleReq struct {
+	ID int64 `json:"id"` //特定设备的升级id
+}
+
+type OtaTaskDeviceRetryReq struct {
+	ID int64 `json:"id"` //特定设备的升级id
 }

@@ -19,6 +19,8 @@ import (
 
 	"github.com/i-Things/things/src/dmsvr/client/devicegroup"
 	"github.com/i-Things/things/src/dmsvr/client/devicemanage"
+	firmwaremanage "github.com/i-Things/things/src/dmsvr/client/firmwaremanage"
+	otataskmanage "github.com/i-Things/things/src/dmsvr/client/otataskmanage"
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
@@ -64,9 +66,13 @@ type ServiceContext struct {
 	Config         config.Config
 	SetupWare      rest.Middleware
 	CheckTokenWare rest.Middleware
+	DataAuthWare   rest.Middleware
 	TeardownWare   rest.Middleware
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
+	FirmwareM      firmwaremanage.FirmwareManage
+	OtaTaskM       otataskmanage.OtaTaskManage
+	FileChan       chan int64
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -81,6 +87,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		sysCommon      common.Common
 		scene          scenelinkage.SceneLinkage
 		alarm          alarmcenter.AlarmCenter
+		firmwareM      firmwaremanage.FirmwareManage
+		otaTaskM       otataskmanage.OtaTaskManage
 	)
 	var ur user.User
 	var ro role.Role
@@ -95,12 +103,16 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
-		} else {
+			firmwareM = firmwaremanage.NewFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			otaTaskM = otataskmanage.NewOtaTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
+		} else { //直连模式
 			deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 			productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 			deviceA = dmdirect.NewDeviceAuth(c.DmRpc.RunProxy)
 			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
+			firmwareM = dmdirect.NewFirmwareManage(c.DmRpc.RunProxy)
+			otaTaskM = dmdirect.NewOtaTaskManage(c.DmRpc.RunProxy)
 		}
 	}
 	if c.RuleRpc.Enable {
@@ -152,9 +164,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		SetupWare:      middleware.NewSetupWareMiddleware(c, lo).Handle,
 		CheckTokenWare: middleware.NewCheckTokenWareMiddleware(c, ur, ro).Handle,
+		DataAuthWare:   middleware.NewDataAuthWareMiddleware(c).Handle,
 		TeardownWare:   middleware.NewTeardownWareMiddleware(c, lo).Handle,
 		Captcha:        captcha,
 		OssClient:      ossClient,
+		FirmwareM:      firmwareM,
+		OtaTaskM:       otaTaskM,
 		SvrClient: SvrClient{
 			UserRpc:        ur,
 			RoleRpc:        ro,
