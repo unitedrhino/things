@@ -29,6 +29,8 @@ type UserClient interface {
 	UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
 	UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
+	UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error)
+	UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error)
 }
 
 type userClient struct {
@@ -102,6 +104,24 @@ func (c *userClient) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, 
 	return out, nil
 }
 
+func (c *userClient) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
+	out := new(UserRegister1Resp)
+	err := c.cc.Invoke(ctx, "/sys.User/userRegister1", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.User/userRegister2", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -113,6 +133,8 @@ type UserServer interface {
 	UserDelete(context.Context, *UserDeleteReq) (*Response, error)
 	UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error)
 	UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error)
+	UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error)
+	UserRegister2(context.Context, *UserRegister2Req) (*Response, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -140,6 +162,12 @@ func (UnimplementedUserServer) UserLogin(context.Context, *UserLoginReq) (*UserL
 }
 func (UnimplementedUserServer) UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCheckToken not implemented")
+}
+func (UnimplementedUserServer) UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRegister1 not implemented")
+}
+func (UnimplementedUserServer) UserRegister2(context.Context, *UserRegister2Req) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRegister2 not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -280,6 +308,42 @@ func _User_UserCheckToken_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserRegister1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRegister1Req)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserRegister1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.User/userRegister1",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserRegister1(ctx, req.(*UserRegister1Req))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserRegister2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRegister2Req)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserRegister2(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.User/userRegister2",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserRegister2(ctx, req.(*UserRegister2Req))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,6 +378,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "userCheckToken",
 			Handler:    _User_UserCheckToken_Handler,
+		},
+		{
+			MethodName: "userRegister1",
+			Handler:    _User_UserRegister1_Handler,
+		},
+		{
+			MethodName: "userRegister2",
+			Handler:    _User_UserRegister2_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

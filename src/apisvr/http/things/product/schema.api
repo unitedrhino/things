@@ -10,7 +10,7 @@ import "things/schema/info.api"
 @server(
     group : things/product/schema
     prefix: /api/v1/things/product/schema
-    middleware: SetupWare, CheckTokenWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
 )
     //物联网平台通过定义一种物的描述语言来描述物模型模块和功能，称为TSL（Thing Specification Language）
 service api {

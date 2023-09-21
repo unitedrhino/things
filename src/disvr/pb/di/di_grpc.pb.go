@@ -34,6 +34,8 @@ type DeviceMsgClient interface {
 	EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error)
 	//获取设备影子列表
 	ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
+	//主动触发单个设备ota升级推送
+	OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error)
 }
 
 type deviceMsgClient struct {
@@ -98,6 +100,15 @@ func (c *deviceMsgClient) ShadowIndex(ctx context.Context, in *PropertyLatestInd
 	return out, nil
 }
 
+func (c *deviceMsgClient) OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error) {
+	out := new(OtaPromptIndexResp)
+	err := c.cc.Invoke(ctx, "/di.DeviceMsg/otaPromptIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceMsgServer is the server API for DeviceMsg service.
 // All implementations must embed UnimplementedDeviceMsgServer
 // for forward compatibility
@@ -114,6 +125,8 @@ type DeviceMsgServer interface {
 	EventLogIndex(context.Context, *EventLogIndexReq) (*EventIndexResp, error)
 	//获取设备影子列表
 	ShadowIndex(context.Context, *PropertyLatestIndexReq) (*ShadowIndexResp, error)
+	//主动触发单个设备ota升级推送
+	OtaPromptIndex(context.Context, *OtaPromptIndexReq) (*OtaPromptIndexResp, error)
 	mustEmbedUnimplementedDeviceMsgServer()
 }
 
@@ -138,6 +151,9 @@ func (UnimplementedDeviceMsgServer) EventLogIndex(context.Context, *EventLogInde
 }
 func (UnimplementedDeviceMsgServer) ShadowIndex(context.Context, *PropertyLatestIndexReq) (*ShadowIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ShadowIndex not implemented")
+}
+func (UnimplementedDeviceMsgServer) OtaPromptIndex(context.Context, *OtaPromptIndexReq) (*OtaPromptIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaPromptIndex not implemented")
 }
 func (UnimplementedDeviceMsgServer) mustEmbedUnimplementedDeviceMsgServer() {}
 
@@ -260,6 +276,24 @@ func _DeviceMsg_ShadowIndex_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceMsg_OtaPromptIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaPromptIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceMsgServer).OtaPromptIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/di.DeviceMsg/otaPromptIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceMsgServer).OtaPromptIndex(ctx, req.(*OtaPromptIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceMsg_ServiceDesc is the grpc.ServiceDesc for DeviceMsg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -290,6 +324,10 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "shadowIndex",
 			Handler:    _DeviceMsg_ShadowIndex_Handler,
+		},
+		{
+			MethodName: "otaPromptIndex",
+			Handler:    _DeviceMsg_OtaPromptIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

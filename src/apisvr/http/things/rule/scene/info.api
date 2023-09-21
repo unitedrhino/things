@@ -9,7 +9,7 @@ import "common.api"  //公共结构体定义
 @server(
     group : things/rule/scene/info
     prefix: /api/v1/things/rule/scene/info
-    middleware: SetupWare, CheckTokenWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "新增场景"

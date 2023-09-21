@@ -1,0 +1,10 @@
+info(
+    title: "ota升级"
+    desc: "ota升级"
+    author: "zev"
+    email: "635665396@qq.com"
+    version: "v1"
+)
+
+import "things/ota/firmware.api" //ota附件接口
+import "things/ota/task.api" //ota升级任务接口

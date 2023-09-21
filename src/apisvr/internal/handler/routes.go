@@ -19,6 +19,8 @@ import (
 	thingsdevicemsg "github.com/i-Things/things/src/apisvr/internal/handler/things/device/msg"
 	thingsgroupdevice "github.com/i-Things/things/src/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/group/info"
+	thingsotafirmware "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/firmware"
+	thingsotatask "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/task"
 	thingsproductcustom "github.com/i-Things/things/src/apisvr/internal/handler/things/product/custom"
 	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
 	thingsproductremoteConfig "github.com/i-Things/things/src/apisvr/internal/handler/things/product/remoteConfig"
@@ -47,13 +49,23 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/login",
 				Handler: systemuser.LoginHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/register1",
+				Handler: systemuser.Register1Handler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/register2",
+				Handler: systemuser.Register2Handler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/api/v1/system/user"),
 	)
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -92,7 +104,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -121,7 +133,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -155,7 +167,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -174,7 +186,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -224,7 +236,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -239,6 +251,127 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/system/auth/api"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsproductinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsproductinfo.ReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/tsl-import",
+					Handler: thingsproductschema.TslImportHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/tsl-read",
+					Handler: thingsproductschema.TslReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductschema.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductschema.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsproductschema.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductschema.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/schema"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductremoteConfig.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductremoteConfig.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/push-all",
+					Handler: thingsproductremoteConfig.PushAllHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/lastest-read",
+					Handler: thingsproductremoteConfig.LastestReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/remote-config"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductcustom.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsproductcustom.ReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/custom"),
 	)
 
 	server.AddRoutes(
@@ -285,7 +418,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -324,7 +457,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -348,7 +481,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -392,7 +525,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -436,128 +569,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsproductinfo.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsproductinfo.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsproductinfo.DeleteHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsproductinfo.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/read",
-					Handler: thingsproductinfo.ReadHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/product/info"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/tsl-import",
-					Handler: thingsproductschema.TslImportHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/tsl-read",
-					Handler: thingsproductschema.TslReadHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsproductschema.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsproductschema.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsproductschema.DeleteHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsproductschema.IndexHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/product/schema"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsproductremoteConfig.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsproductremoteConfig.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/push-all",
-					Handler: thingsproductremoteConfig.PushAllHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/lastest-read",
-					Handler: thingsproductremoteConfig.LastestReadHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/product/remote-config"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsproductcustom.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/read",
-					Handler: thingsproductcustom.ReadHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/product/custom"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -591,7 +603,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -615,7 +627,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -654,7 +666,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -673,7 +685,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -707,7 +719,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -721,7 +733,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -735,7 +747,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -750,5 +762,87 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/rule/alarm/scene"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/index",
+				Handler: thingsotafirmware.IndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/update",
+				Handler: thingsotafirmware.UpdateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/read",
+				Handler: thingsotafirmware.ReadHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/create",
+				Handler: thingsotafirmware.CreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/delete",
+				Handler: thingsotafirmware.DeleteHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/device-info-read",
+				Handler: thingsotafirmware.DeviceInfoReadHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/firmware"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/index",
+				Handler: thingsotatask.IndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/read",
+				Handler: thingsotatask.ReadHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/create",
+				Handler: thingsotatask.CreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/cancel",
+				Handler: thingsotatask.CancelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/device-index",
+				Handler: thingsotatask.DeviceIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/analysis",
+				Handler: thingsotatask.AnalysisHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/device-cancel",
+				Handler: thingsotatask.DeviceCancleHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/device-retry",
+				Handler: thingsotatask.DeviceRetryHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/task"),
 	)
 }

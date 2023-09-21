@@ -15,5 +15,9 @@ func Migrate() error {
 		&DmGroupDevice{},
 		&DmGatewayDevice{},
 		&DmProductRemoteConfig{},
+		&DmOtaFirmware{},
+		&DmOtaTask{},
+		&DmOtaFirmwareFile{},
+		&DmOtaTaskDevices{},
 	)
 }

@@ -90,6 +90,16 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserIn
 			return nil, err
 		}
 	/*企业版*/
+	case users.RegWxMiniP:
+		auth := l.svcCtx.WxMiniProgram.GetAuth()
+		ret, er := auth.Code2SessionContext(l.ctx, in.Code)
+		if er != nil {
+			return nil, errors.System.AddDetail(er)
+		}
+		if ret.ErrCode != 0 {
+			return nil, errors.Parameter.AddMsgf(ret.ErrMsg)
+		}
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Wechat: ret.UnionID})
 	default:
 		l.Error("%s LoginType=%s not support", utils.FuncName(), in.LoginType)
 		return nil, errors.Parameter

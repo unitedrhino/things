@@ -2,6 +2,7 @@ package menu
 
 import (
 	"context"
+	"github.com/i-Things/things/src/apisvr/internal/logic/system"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -37,19 +38,7 @@ func (l *MenuIndexLogic) MenuIndex(req *types.MenuIndexReq) (resp *types.MenuInd
 
 	menuInfo = make([]*types.MenuData, 0, len(menuInfo))
 	for _, i := range info.List {
-		menuInfo = append(menuInfo, &types.MenuData{
-			ID:         i.Id,
-			Name:       i.Name,
-			ParentID:   i.ParentID,
-			Type:       i.Type,
-			Path:       i.Path,
-			Component:  i.Component,
-			Icon:       i.Icon,
-			Redirect:   i.Redirect,
-			CreateTime: i.CreateTime,
-			Order:      i.Order,
-			HideInMenu: i.HideInMenu,
-		})
+		menuInfo = append(menuInfo, system.ToMenuInfoApi(i))
 	}
 
 	return &types.MenuIndexResp{menuInfo}, nil

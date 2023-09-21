@@ -57,3 +57,9 @@ func (s *DeviceMsgServer) ShadowIndex(ctx context.Context, in *di.PropertyLatest
 	l := devicemsglogic.NewShadowIndexLogic(ctx, s.svcCtx)
 	return l.ShadowIndex(in)
 }
+
+// 主动触发单个设备ota升级推送
+func (s *DeviceMsgServer) OtaPromptIndex(ctx context.Context, in *di.OtaPromptIndexReq) (*di.OtaPromptIndexResp, error) {
+	l := devicemsglogic.NewOtaPromptIndexLogic(ctx, s.svcCtx)
+	return l.OtaPromptIndex(in)
+}

@@ -68,3 +68,10 @@ cd ddsvr && goctl api go -api http/dd.api  -dir ./ --style=goZero && cd ..
 #protoc  proto/* --go_out=. --go-grpc_out=.
 cd rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
+
+- model文件编译
+
+```shell
+cd rulesvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/rulesvr.sql"  --style=goZero -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
+```
+

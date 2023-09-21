@@ -24,6 +24,8 @@ type (
 	HubLogIndexResp        = di.HubLogIndexResp
 	MultiSendPropertyReq   = di.MultiSendPropertyReq
 	MultiSendPropertyResp  = di.MultiSendPropertyResp
+	OtaPromptIndexReq      = di.OtaPromptIndexReq
+	OtaPromptIndexResp     = di.OtaPromptIndexResp
 	PageInfo               = di.PageInfo
 	PropertyIndex          = di.PropertyIndex
 	PropertyIndexResp      = di.PropertyIndexResp

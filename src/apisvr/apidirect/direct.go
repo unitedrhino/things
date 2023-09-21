@@ -4,6 +4,7 @@ import (
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/handler"
 	"github.com/i-Things/things/src/apisvr/internal/handler/system/proxy"
+	"github.com/i-Things/things/src/apisvr/internal/startup"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/ddsvr/dddirect"
 	"github.com/zeromicro/go-zero/core/conf"
@@ -43,6 +44,8 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 		apiCtx.Server = server
 	}
 	handler.RegisterHandlers(server, ctx)
+	//ota附件处理
+	startup.StartOtaChanWalk(apiCtx.SvcCtx)
 	return apiCtx
 }
 func runDdSvr() {
