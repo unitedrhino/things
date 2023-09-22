@@ -3,6 +3,7 @@ module github.com/i-Things/things
 go 1.19
 
 require (
+	gitee.com/asktop_golib/util v1.5.2
 	github.com/Blank-Xu/sql-adapter v0.0.0-20210714092925-0bdd0d548758
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
@@ -18,6 +19,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gogf/gf/v2 v2.3.3
 	github.com/golang/protobuf v1.5.2
+	github.com/gorilla/websocket v1.5.0
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/jinzhu/copier v0.3.2
 	github.com/minio/minio-go/v7 v7.0.27
@@ -89,7 +91,6 @@ require (
 	github.com/google/pprof v0.0.0-20230207041349-798e818bf904 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1 // indirect
-	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grokify/html-strip-tags-go v0.0.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -131,6 +132,7 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rs/xid v1.2.1 // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
