@@ -24,11 +24,13 @@ type Config struct {
 	Rej        struct {
 		AccessSecret string
 		AccessExpire int64
-	}                             //注册token相关配置
+	} //注册token相关配置
 	Proxy                conf.ProxyConf `json:",optional"`
 	Captcha              Captcha
 	OssConf              conf.OssConf              `json:",optional"`
 	Map                  conf.MapConf              `json:",optional"`
 	OpenAuth             conf.AuthConf             `json:",optional"`
 	WrongPasswordCounter conf.WrongPasswordCounter `json:",optional"`
+	Event                conf.EventConf            //和things内部交互的设置
+
 }

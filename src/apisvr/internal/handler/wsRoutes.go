@@ -2,6 +2,7 @@
 package handler
 
 import (
+	ws "github.com/i-Things/things/shared/websocket"
 	"net/http"
 
 	systemapi "github.com/i-Things/things/src/apisvr/internal/handler/system/api"
@@ -34,7 +35,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
@@ -48,7 +49,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: systemuser.LoginHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/system/user"),
+		ws.WithPrefix("/api/v1/system/user"),
 	)
 
 	server.AddRoutes(
@@ -87,7 +88,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/system/user"),
+		ws.WithPrefix("/api/v1/system/user"),
 	)
 
 	server.AddRoutes(
@@ -116,7 +117,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/system/menu"),
+		ws.WithPrefix("/api/v1/system/menu"),
 	)
 
 	server.AddRoutes(
@@ -150,7 +151,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/system/role"),
+		ws.WithPrefix("/api/v1/system/role"),
 	)
 
 	server.AddRoutes(
@@ -169,7 +170,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/system/log"),
+		ws.WithPrefix("/api/v1/system/log"),
 	)
 
 	server.AddRoutes(
@@ -198,7 +199,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/system/api"),
+		ws.WithPrefix("/api/v1/system/api"),
 	)
 
 	server.AddRoutes(
@@ -227,7 +228,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/system/common"),
+		ws.WithPrefix("/api/v1/system/common"),
 	)
 
 	server.AddRoutes(
@@ -246,7 +247,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/system/auth/api"),
+		ws.WithPrefix("/api/v1/system/auth/api"),
 	)
 
 	server.AddRoutes(
@@ -272,7 +273,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: thingsdeviceauth.RegisterHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/things/device/auth"),
+		ws.WithPrefix("/api/v1/things/device/auth"),
 	)
 
 	server.AddRoutes(
@@ -288,7 +289,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: thingsdeviceauth5.AccessHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/things/device/auth5"),
+		ws.WithPrefix("/api/v1/things/device/auth5"),
 	)
 
 	server.AddRoutes(
@@ -327,7 +328,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/device/msg"),
+		ws.WithPrefix("/api/v1/things/device/msg"),
 	)
 
 	server.AddRoutes(
@@ -351,7 +352,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/device/gateway"),
+		ws.WithPrefix("/api/v1/things/device/gateway"),
 	)
 
 	server.AddRoutes(
@@ -395,7 +396,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/device/info"),
+		ws.WithPrefix("/api/v1/things/device/info"),
 	)
 
 	server.AddRoutes(
@@ -439,7 +440,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/device/interact"),
+		ws.WithPrefix("/api/v1/things/device/interact"),
 	)
 
 	server.AddRoutes(
@@ -473,7 +474,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/product/info"),
+		ws.WithPrefix("/api/v1/things/product/info"),
 	)
 
 	server.AddRoutes(
@@ -512,7 +513,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/product/schema"),
+		ws.WithPrefix("/api/v1/things/product/schema"),
 	)
 
 	server.AddRoutes(
@@ -541,7 +542,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/product/remote-config"),
+		ws.WithPrefix("/api/v1/things/product/remote-config"),
 	)
 
 	server.AddRoutes(
@@ -560,7 +561,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/product/custom"),
+		ws.WithPrefix("/api/v1/things/product/custom"),
 	)
 
 	server.AddRoutes(
@@ -594,7 +595,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/group/info"),
+		ws.WithPrefix("/api/v1/things/group/info"),
 	)
 
 	server.AddRoutes(
@@ -618,7 +619,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/group/device"),
+		ws.WithPrefix("/api/v1/things/group/device"),
 	)
 
 	server.AddRoutes(
@@ -657,7 +658,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/rule/scene/info"),
+		ws.WithPrefix("/api/v1/things/rule/scene/info"),
 	)
 
 	server.AddRoutes(
@@ -676,7 +677,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/deal-record"),
+		ws.WithPrefix("/api/v1/things/rule/alarm/deal-record"),
 	)
 
 	server.AddRoutes(
@@ -710,7 +711,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/info"),
+		ws.WithPrefix("/api/v1/things/rule/alarm/info"),
 	)
 
 	server.AddRoutes(
@@ -724,7 +725,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/log"),
+		ws.WithPrefix("/api/v1/things/rule/alarm/log"),
 	)
 
 	server.AddRoutes(
@@ -738,7 +739,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/record"),
+		ws.WithPrefix("/api/v1/things/rule/alarm/record"),
 	)
 
 	server.AddRoutes(
@@ -757,6 +758,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/scene"),
+		ws.WithPrefix("/api/v1/things/rule/alarm/scene"),
 	)
 }
