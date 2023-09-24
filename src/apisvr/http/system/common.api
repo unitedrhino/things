@@ -1,24 +1,28 @@
 info(
     desc: "系统配置"
-	author: "lbs"
-	email: "174805676@qq.com"
+    author: "lbs"
+    email: "174805676@qq.com"
 )
 import "common.api"  //公共结构体定义
 
 @server (
-	group : system/common
-	prefix: /api/v1/system/common
+    group : system/common
+    prefix: /api/v1/system/common
+    middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 service api {
-	@doc "获取系统配置"
-	@handler config
-	post /config () returns (ConfigResp)
+    @doc "获取系统配置"
+    @handler config
+    post /config () returns (ConfigResp)
     @doc "获取文件上传地址"
     @handler uploadUrlCreate
     post /upload-url/create (UploadUrlCreateReq) returns (UploadUrlCreateResp)
     @doc "文件直传"
     @handler uploadFile
     post /upload-file() returns (UploadFileResp)
+    @doc "websocket"
+    @handler websocket
+    get /ws () returns ()
 }
 
 type (
@@ -30,8 +34,8 @@ type (
         Host string `json:"host"` //oss访问前缀
     }
     ConfigResp struct {
-       Map Map `json:"map"`  //设备地图相关配置
-       Oss Oss `json:"oss"`//oss相关配置
+        Map Map `json:"map"`  //设备地图相关配置
+        Oss Oss `json:"oss"`//oss相关配置
     }
     UploadUrlCreateReq struct {
         Business string `json:"business"` //业务(如产品管理 productManage)
@@ -39,7 +43,7 @@ type (
         FilePath string `json:"filePath"` //文件路径(带文件名)
         Rename bool `json:"rename,optional"` //true 文件重命名，false 不重命名(默认)
     }
-    
+
     UploadUrlCreateResp struct {
         FilePath string `json:"filePath"` //文件路径(带文件名)
         UploadUri string `json:"uploadUri"` //附件直传地址

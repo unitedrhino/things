@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/verify"
+	ws "github.com/i-Things/things/shared/websocket"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/middleware"
 	"github.com/i-Things/things/src/disvr/client/deviceinteract"
@@ -61,6 +62,7 @@ type SvrClient struct {
 
 type ServiceContext struct {
 	SvrClient
+	Ws             *ws.Server
 	Config         config.Config
 	SetupWare      rest.Middleware
 	CheckTokenWare rest.Middleware
@@ -87,6 +89,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var me menu.Menu
 	var lo log.Log
 	var ap api.Api
+	ws.StartWsDp(false)
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
