@@ -66,3 +66,23 @@ func (s *UserServer) UserRegister2(ctx context.Context, in *sys.UserRegister2Req
 	l := userlogic.NewUserRegister2Logic(ctx, s.svcCtx)
 	return l.UserRegister2(in)
 }
+
+func (s *UserServer) UserAuthProjectMultiUpdate(ctx context.Context, in *sys.UserAuthProjectMultiUpdateReq) (*sys.Response, error) {
+	l := userlogic.NewUserAuthProjectMultiUpdateLogic(ctx, s.svcCtx)
+	return l.UserAuthProjectMultiUpdate(in)
+}
+
+func (s *UserServer) UserAuthProjectIndex(ctx context.Context, in *sys.UserAuthProjectIndexReq) (*sys.UserAuthProjectIndexResp, error) {
+	l := userlogic.NewUserAuthProjectIndexLogic(ctx, s.svcCtx)
+	return l.UserAuthProjectIndex(in)
+}
+
+func (s *UserServer) UserAuthAreaMultiUpdate(ctx context.Context, in *sys.UserAuthAreaMultiUpdateReq) (*sys.Response, error) {
+	l := userlogic.NewUserAuthAreaMultiUpdateLogic(ctx, s.svcCtx)
+	return l.UserAuthAreaMultiUpdate(in)
+}
+
+func (s *UserServer) UserAuthAreaIndex(ctx context.Context, in *sys.UserAuthAreaIndexReq) (*sys.UserAuthAreaIndexResp, error) {
+	l := userlogic.NewUserAuthAreaIndexLogic(ctx, s.svcCtx)
+	return l.UserAuthAreaIndex(in)
+}

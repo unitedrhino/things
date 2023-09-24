@@ -2,6 +2,7 @@ package svc
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"github.com/i-Things/things/shared/caches"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/verify"
@@ -11,12 +12,6 @@ import (
 	"github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
 	"github.com/i-Things/things/src/dmsvr/client/deviceauth"
-	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
-	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
-	"github.com/i-Things/things/src/rulesvr/ruledirect"
-	"github.com/zeromicro/go-zero/core/logx"
-	"os"
-
 	"github.com/i-Things/things/src/dmsvr/client/devicegroup"
 	"github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	firmwaremanage "github.com/i-Things/things/src/dmsvr/client/firmwaremanage"
@@ -24,16 +19,22 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
+	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
+	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
+	"github.com/i-Things/things/src/rulesvr/ruledirect"
 	api "github.com/i-Things/things/src/syssvr/client/api"
+	"github.com/i-Things/things/src/syssvr/client/areamanage"
 	common "github.com/i-Things/things/src/syssvr/client/common"
 	log "github.com/i-Things/things/src/syssvr/client/log"
 	menu "github.com/i-Things/things/src/syssvr/client/menu"
+	"github.com/i-Things/things/src/syssvr/client/projectmanage"
 	role "github.com/i-Things/things/src/syssvr/client/role"
-
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/i-Things/things/src/syssvr/sysdirect"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
+	"os"
 	"time"
 )
 
@@ -44,19 +45,23 @@ func init() {
 }
 
 type SvrClient struct {
-	UserRpc        user.User
-	RoleRpc        role.Role
-	MenuRpc        menu.Menu
-	DeviceM        devicemanage.DeviceManage
-	DeviceA        deviceauth.DeviceAuth
-	ProductM       productmanage.ProductManage
+	UserRpc user.User
+	RoleRpc role.Role
+	MenuRpc menu.Menu
+	LogRpc  log.Log
+	ApiRpc  api.Api
+
+	ProjectM projectmanage.ProjectManage
+	AreaM    areamanage.AreaManage
+	ProductM productmanage.ProductManage
+	DeviceM  devicemanage.DeviceManage
+	DeviceA  deviceauth.DeviceAuth
+	DeviceG  devicegroup.DeviceGroup
+
 	DeviceMsg      devicemsg.DeviceMsg
 	DeviceInteract deviceinteract.DeviceInteract
-	DeviceG        devicegroup.DeviceGroup
 	RemoteConfig   remoteconfig.RemoteConfig
 	Common         common.Common
-	LogRpc         log.Log
-	ApiRpc         api.Api
 	Scene          scenelinkage.SceneLinkage
 	Alarm          alarmcenter.AlarmCenter
 }
@@ -77,12 +82,15 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
-		deviceM        devicemanage.DeviceManage
-		productM       productmanage.ProductManage
-		deviceA        deviceauth.DeviceAuth
+		projectM projectmanage.ProjectManage
+		areaM    areamanage.AreaManage
+		productM productmanage.ProductManage
+		deviceM  devicemanage.DeviceManage
+		deviceA  deviceauth.DeviceAuth
+		deviceG  devicegroup.DeviceGroup
+
 		deviceMsg      devicemsg.DeviceMsg
 		deviceInteract deviceinteract.DeviceInteract
-		deviceG        devicegroup.DeviceGroup
 		remoteConfig   remoteconfig.RemoteConfig
 		sysCommon      common.Common
 		scene          scenelinkage.SceneLinkage
@@ -95,6 +103,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var me menu.Menu
 	var lo log.Log
 	var ap api.Api
+
+	caches.InitStore(c.CacheRedis)
+
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
@@ -126,6 +137,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	if c.SysRpc.Enable {
 		if c.SysRpc.Mode == conf.ClientModeGrpc {
+			projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			ur = user.NewUser(zrpc.MustNewClient(c.SysRpc.Conf))
 			ro = role.NewRole(zrpc.MustNewClient(c.SysRpc.Conf))
 			me = menu.NewMenu(zrpc.MustNewClient(c.SysRpc.Conf))
@@ -133,6 +146,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			ap = api.NewApi(zrpc.MustNewClient(c.SysRpc.Conf))
 			sysCommon = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
+			projectM = sysdirect.NewProjectManage(c.SysRpc.RunProxy)
+			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
 			ur = sysdirect.NewUser(c.SysRpc.RunProxy)
 			ro = sysdirect.NewRole(c.SysRpc.RunProxy)
 			me = sysdirect.NewMenu(c.SysRpc.RunProxy)
@@ -171,21 +186,25 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		FirmwareM:      firmwareM,
 		OtaTaskM:       otaTaskM,
 		SvrClient: SvrClient{
-			UserRpc:        ur,
-			RoleRpc:        ro,
-			MenuRpc:        me,
-			ProductM:       productM,
-			DeviceM:        deviceM,
-			DeviceInteract: deviceInteract,
+			UserRpc: ur,
+			RoleRpc: ro,
+			MenuRpc: me,
+			LogRpc:  lo,
+			ApiRpc:  ap,
+
+			ProjectM: projectM,
+			AreaM:    areaM,
+			ProductM: productM,
+			DeviceM:  deviceM,
+			DeviceA:  deviceA,
+			DeviceG:  deviceG,
+
 			DeviceMsg:      deviceMsg,
-			DeviceA:        deviceA,
-			DeviceG:        deviceG,
+			DeviceInteract: deviceInteract,
 			RemoteConfig:   remoteConfig,
 			Common:         sysCommon,
 			Scene:          scene,
 			Alarm:          alarm,
-			LogRpc:         lo,
-			ApiRpc:         ap,
 		},
 		//OSS:        ossClient,
 	}

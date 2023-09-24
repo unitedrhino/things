@@ -12,10 +12,31 @@ type UserCtx struct {
 	IsAllData bool   //是否所有数据权限（开放认证用户值为true）
 	IP        string //用户的ip地址
 	Os        string //操作系统
+	InnerCtx
+}
+
+type InnerCtx struct {
+	AllArea bool //内部使用,不限制区域
 }
 
 func SetUserCtx(ctx context.Context, userCtx *UserCtx) context.Context {
 	return context.WithValue(ctx, UserInfoKey, userCtx)
+}
+func SetInnerCtx(ctx context.Context, inner InnerCtx) context.Context {
+	uc := GetUserCtx(ctx)
+	if uc == nil {
+		return ctx
+	}
+	uc.InnerCtx = inner
+	return SetUserCtx(ctx, uc)
+}
+
+func GetInnerCtx(ctx context.Context) InnerCtx {
+	uc := GetUserCtx(ctx)
+	if uc == nil {
+		return InnerCtx{}
+	}
+	return uc.InnerCtx
 }
 
 // 使用该函数前必须传了UserCtx
@@ -66,4 +87,17 @@ func GetMetaProjectID(ctx context.Context) int64 {
 	} else {
 		return cast.ToInt64(items[0])
 	}
+}
+
+// 指定项目id（企业版功能）
+func SetMetaProjectID(ctx context.Context, projectID int64) {
+	mc := GetMetaCtx(ctx)
+	projectIDStr := cast.ToString(projectID)
+	mc[string(MetaFieldProjectID)] = []string{projectIDStr}
+}
+
+// 获取meta里的项目ID（企业版功能）
+func ClearMetaProjectID(ctx context.Context) {
+	mc := GetMetaCtx(ctx)
+	delete(mc, string(MetaFieldProjectID))
 }

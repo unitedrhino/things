@@ -325,8 +325,8 @@ message Point{
 }
 message DeviceInfo {
   string productID = 1; //产品id 只读
-  google.protobuf.Int64Value projectID = 2; //项目id 只读（nil不更新，0为未分类，other则更新）
-  google.protobuf.Int64Value areaID = 3; //项目区域id 只读（nil不更新，0为未分类，other则更新）
+  int64 projectID = 2; //项目id 只读（0不更新，2为未分类，other则更新）
+  int64 areaID = 3; //项目区域id 只读（0不更新，2为未分类，other则更新）
   string productName = 4; //产品名称 只读
   string deviceName = 5; //设备名称 读写
   int64 createdTime = 6; //创建时间 只读

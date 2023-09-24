@@ -2,7 +2,6 @@ package devicegrouplogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
@@ -38,7 +37,6 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.R
 	err = l.GiDB.Update(l.ctx, &relationDB.DmGroupInfo{
 		GroupID:   in.GroupID,
 		ParentID:  record.ParentID,
-		ProjectID: ctxs.GetMetaProjectID(l.ctx),
 		GroupName: in.GroupName,
 		Desc:      in.Desc,
 		Tags:      in.Tags,

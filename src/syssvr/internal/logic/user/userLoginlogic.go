@@ -67,6 +67,9 @@ func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, store kv.Store, list []*
 	//登录成功，清除密码错误次数相关redis key
 	cache.ClearWrongpassKeys(l.ctx, store, list)
 
+	InitCacheUserAuthProject(l.ctx, ui.UserID)
+	InitCacheUserAuthArea(l.ctx, ui.UserID)
+
 	resp := &sys.UserLoginResp{
 		Info: UserInfoToPb(ui),
 		Token: &sys.JwtToken{

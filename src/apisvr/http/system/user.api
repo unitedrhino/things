@@ -5,7 +5,8 @@ info(
 	email: "174805676@qq.com"
 	version: "v0.1.0"
 )
-import "common.api"  //公共结构体定义
+//import "common.api"  //公共结构体定义
+import "system/project.api"  //项目管理
 import "system/menu.api"  //菜单结构
 @server (
 	group : system/user
@@ -145,6 +146,7 @@ type (
     UserResourceReadResp{
         Menu   []*MenuData   `json:"menu"`           //菜单资源
 		Info  *UserInfo `json:"info"`//用户信息
+		Projects []*ProjectInfo `json:"projects"`    //项目列表
     }
 )
 

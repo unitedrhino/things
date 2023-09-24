@@ -18,6 +18,12 @@ import (
 
 	clientApi "github.com/i-Things/things/src/syssvr/client/api"
 	serverApi "github.com/i-Things/things/src/syssvr/internal/server/api"
+
+	clientProject "github.com/i-Things/things/src/syssvr/client/projectmanage"
+	serverProject "github.com/i-Things/things/src/syssvr/internal/server/projectmanage"
+
+	clientArea "github.com/i-Things/things/src/syssvr/client/areamanage"
+	serverArea "github.com/i-Things/things/src/syssvr/internal/server/areamanage"
 )
 
 func NewUser(runSvr bool) client.User {
@@ -66,4 +72,19 @@ func NewApi(runSvr bool) clientApi.Api {
 		RunServer(svcCtx)
 	}
 	return clientApi.NewDirectApi(svcCtx, serverApi.NewApiServer(svcCtx))
+}
+
+func NewProjectManage(runSvr bool) clientProject.ProjectManage {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return clientProject.NewDirectProjectManage(svcCtx, serverProject.NewProjectManageServer(svcCtx))
+}
+func NewAreaManage(runSvr bool) clientArea.AreaManage {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return clientArea.NewDirectAreaManage(svcCtx, serverArea.NewAreaManageServer(svcCtx))
 }
