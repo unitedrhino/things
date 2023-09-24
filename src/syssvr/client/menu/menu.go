@@ -20,6 +20,13 @@ type (
 	ApiIndexReq                   = sys.ApiIndexReq
 	ApiIndexResp                  = sys.ApiIndexResp
 	ApiUpdateReq                  = sys.ApiUpdateReq
+	AreaInfo                      = sys.AreaInfo
+	AreaInfoDeleteReq             = sys.AreaInfoDeleteReq
+	AreaInfoIndexReq              = sys.AreaInfoIndexReq
+	AreaInfoIndexResp             = sys.AreaInfoIndexResp
+	AreaInfoReadReq               = sys.AreaInfoReadReq
+	AreaInfoTreeReq               = sys.AreaInfoTreeReq
+	AreaInfoTreeResp              = sys.AreaInfoTreeResp
 	AuthApiInfo                   = sys.AuthApiInfo
 	ConfigResp                    = sys.ConfigResp
 	DateRange                     = sys.DateRange
@@ -42,6 +49,11 @@ type (
 	PageInfo                      = sys.PageInfo
 	PageInfo_OrderBy              = sys.PageInfo_OrderBy
 	Point                         = sys.Point
+	ProjectInfo                   = sys.ProjectInfo
+	ProjectInfoDeleteReq          = sys.ProjectInfoDeleteReq
+	ProjectInfoIndexReq           = sys.ProjectInfoIndexReq
+	ProjectInfoIndexResp          = sys.ProjectInfoIndexResp
+	ProjectInfoReadReq            = sys.ProjectInfoReadReq
 	Response                      = sys.Response
 	RoleApiAuthReq                = sys.RoleApiAuthReq
 	RoleApiIndexReq               = sys.RoleApiIndexReq

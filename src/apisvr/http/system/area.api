@@ -1,0 +1,78 @@
+info(
+    title: "项目区域管理模块"
+    desc: "项目区域管理模块"
+    author: "大绵羊"
+    email: "robotyang123@163.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group : system/area/info
+    prefix: /api/v1/system/area/info
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "新增项目区域"
+    @handler create
+    post /create (AreaInfo) returns ()
+    @doc "更新项目区域"
+    @handler update
+    post /update (AreaInfo) returns ()
+    @doc "删除项目区域"
+    @handler delete
+    post /delete (AreaInfoDeleteReq) returns ()
+    @doc "获取项目区域详情"
+    @handler read
+    post /read (AreaInfoReadReq) returns (AreaInfo)
+    @doc "获取项目区域列表"
+    @handler index
+    post /index (AreaInfoIndexReq) returns (AreaInfoIndexResp)
+    @doc "获取项目区域树"
+    @handler tree
+    post /tree (AreaInfoTreeReq) returns (AreaInfoTreeResp)
+}
+
+type (
+    AreaInfo struct {
+        CreatedTime int64 `json:"createdTime,optional,string"`   //创建时间（只读）
+        ProjectID int64 `json:"projectID,string,optional"`       //项目id（只读）
+        AreaID int64 `json:"areaID,string,optional"`             //项目区域id（只读）
+        ParentAreaID int64 `json:"parentAreaID,string,optional"` //上级项目区域id（只读）
+        AreaName string `json:"areaName,optional"`               //项目区域名称（读写）
+        Position *Point `json:"position,optional"`               //项目区域定位，默认百度坐标系（读写）
+        Desc *string `json:"desc,optional"`                      //项目区域备注（读写）
+        Children []*AreaInfo `json:"children,optional"`          //下级项目区域列表（只读）
+    }
+
+    AreaInfoDeleteReq struct {
+        AreaID int64 `json:"areaID,string"` //项目区域id 只读
+    }
+
+    AreaInfoReadReq struct {
+        AreaID int64 `json:"areaID,string"` //项目区域id
+        ProjectID int64 `json:"projectID,string,optional"` //项目id 不填选默认项目
+    }
+
+    AreaInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`            //进行数据分页（不传默认2000相当于全部）
+        ProjectID int64 `json:"projectID,string,optional"` //项目id
+        ProjectIDs []int64 `json:"projectIDs,optional"`    //项目ids
+        AreaID int64 `json:"areaID,string,optional"`       //项目区域id
+        AreaIDs []int64 `json:"areaIDs,optional"`          //项目区域ids
+    }
+
+    AreaInfoIndexResp struct {
+        Total int64 `json:"total,optional"`  //拥有的总数
+        List []*AreaInfo `json:"list"`    //项目区域列表
+    }
+
+    AreaInfoTreeReq struct {
+        ProjectID int64 `json:"projectID,string,optional"` //二选一条件: 项目id
+        AreaID int64 `json:"areaID,string,optional"`       //二选一条件: 项目id
+    }
+
+    AreaInfoTreeResp struct {
+        Tree *AreaInfo `json:"tree"`    //项目区域列表
+    }
+)

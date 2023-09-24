@@ -20,6 +20,13 @@ type (
 	ApiIndexReq                   = sys.ApiIndexReq
 	ApiIndexResp                  = sys.ApiIndexResp
 	ApiUpdateReq                  = sys.ApiUpdateReq
+	AreaInfo                      = sys.AreaInfo
+	AreaInfoDeleteReq             = sys.AreaInfoDeleteReq
+	AreaInfoIndexReq              = sys.AreaInfoIndexReq
+	AreaInfoIndexResp             = sys.AreaInfoIndexResp
+	AreaInfoReadReq               = sys.AreaInfoReadReq
+	AreaInfoTreeReq               = sys.AreaInfoTreeReq
+	AreaInfoTreeResp              = sys.AreaInfoTreeResp
 	AuthApiInfo                   = sys.AuthApiInfo
 	ConfigResp                    = sys.ConfigResp
 	DateRange                     = sys.DateRange
@@ -42,6 +49,11 @@ type (
 	PageInfo                      = sys.PageInfo
 	PageInfo_OrderBy              = sys.PageInfo_OrderBy
 	Point                         = sys.Point
+	ProjectInfo                   = sys.ProjectInfo
+	ProjectInfoDeleteReq          = sys.ProjectInfoDeleteReq
+	ProjectInfoIndexReq           = sys.ProjectInfoIndexReq
+	ProjectInfoIndexResp          = sys.ProjectInfoIndexResp
+	ProjectInfoReadReq            = sys.ProjectInfoReadReq
 	Response                      = sys.Response
 	RoleApiAuthReq                = sys.RoleApiAuthReq
 	RoleApiIndexReq               = sys.RoleApiIndexReq
@@ -86,6 +98,10 @@ type (
 		UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
 		UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error)
 		UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error)
+		UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error)
+		UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error)
 	}
 
 	defaultUser struct {
@@ -190,4 +206,40 @@ func (m *defaultUser) UserRegister2(ctx context.Context, in *UserRegister2Req, o
 
 func (d *directUser) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.UserRegister2(ctx, in)
+}
+
+func (m *defaultUser) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserAuthProjectMultiUpdate(ctx, in, opts...)
+}
+
+func (d *directUser) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserAuthProjectMultiUpdate(ctx, in)
+}
+
+func (m *defaultUser) UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserAuthProjectIndex(ctx, in, opts...)
+}
+
+func (d *directUser) UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error) {
+	return d.svr.UserAuthProjectIndex(ctx, in)
+}
+
+func (m *defaultUser) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserAuthAreaMultiUpdate(ctx, in, opts...)
+}
+
+func (d *directUser) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserAuthAreaMultiUpdate(ctx, in)
+}
+
+func (m *defaultUser) UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserAuthAreaIndex(ctx, in, opts...)
+}
+
+func (d *directUser) UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error) {
+	return d.svr.UserAuthAreaIndex(ctx, in)
 }

@@ -12,8 +12,8 @@ type DmExample struct {
 // 设备信息表
 type DmDeviceInfo struct {
 	ID             int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProjectID      int64             `gorm:"column:project_id;index:project_id_area_id;uniqueIndex:product_id_deviceName;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
-	AreaID         int64             `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                                      // 项目区域ID(雪花ID)
+	ProjectID      stores.ProjectID  `gorm:"column:project_id;index:project_id_area_id;uniqueIndex:product_id_deviceName;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
+	AreaID         stores.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                                      // 项目区域ID(雪花ID)
 	ProductID      string            `gorm:"column:product_id;type:char(11);NOT NULL"`                                                                    // 产品id
 	DeviceName     string            `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"`                             // 设备名称
 	DeviceAlias    string            `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                                              // 设备别名
@@ -107,7 +107,7 @@ func (m *DmDeviceInfo) TableName() string {
 type DmGroupInfo struct {
 	GroupID   int64             `gorm:"column:group_id;primary_key;AUTO_INCREMENT;type:bigint"`      // 分组ID
 	ParentID  int64             `gorm:"column:parent_id;type:bigint;default:0;NOT NULL"`             // 父组ID 0-根组
-	ProjectID int64             `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`      // 项目ID(雪花ID)
+	ProjectID stores.ProjectID  `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`      // 项目ID(雪花ID)
 	ProductID string            `gorm:"column:product_id;type:char(11);NOT NULL"`                    // 产品id,为空则不限定分组内的产品类型
 	GroupName string            `gorm:"column:group_name;uniqueIndex;type:varchar(100);NOT NULL"`    // 分组名称
 	Desc      string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
@@ -122,11 +122,11 @@ func (m *DmGroupInfo) TableName() string {
 
 // 分组与设备关系表
 type DmGroupDevice struct {
-	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	GroupID    int64  `gorm:"column:group_id;uniqueIndex:group_id_product_id_device_name;type:bigint;NOT NULL"`          // 分组ID
-	ProjectID  int64  `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`                                    // 项目ID(雪花ID)
-	ProductID  string `gorm:"column:product_id;uniqueIndex:group_id_product_id_device_name;type:char(11);NOT NULL"`      // 产品id
-	DeviceName string `gorm:"column:device_name;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"` // 设备名称
+	ID         int64            `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	GroupID    int64            `gorm:"column:group_id;uniqueIndex:group_id_product_id_device_name;type:bigint;NOT NULL"`          // 分组ID
+	ProjectID  stores.ProjectID `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`                                    // 项目ID(雪花ID)
+	ProductID  string           `gorm:"column:product_id;uniqueIndex:group_id_product_id_device_name;type:char(11);NOT NULL"`      // 产品id
+	DeviceName string           `gorm:"column:device_name;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"` // 设备名称
 	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }

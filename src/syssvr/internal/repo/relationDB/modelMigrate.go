@@ -22,6 +22,10 @@ func Migrate() error {
 		&SysOperLog{},
 		&SysApiInfo{},
 		&SysApiAuth{},
+		&SysAreaInfo{},
+		&SysProjectInfo{},
+		&SysUserAuthArea{},
+		&SysUserAuthProject{},
 	)
 	if err != nil {
 		return err

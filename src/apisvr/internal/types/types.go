@@ -79,8 +79,9 @@ type JwtToken struct {
 }
 
 type UserResourceReadResp struct {
-	Menu []*MenuData `json:"menu"` //菜单资源
-	Info *UserInfo   `json:"info"` //用户信息
+	Menu     []*MenuData    `json:"menu"`     //菜单资源
+	Info     *UserInfo      `json:"info"`     //用户信息
+	Projects []*ProjectInfo `json:"projects"` //项目列表
 }
 
 type UserRegister1Req struct {
@@ -97,6 +98,36 @@ type UserRegister1Resp struct {
 type UserRegister2Req struct {
 	Token    string   `json:"token"`    //注册第一步的token
 	UserInfo UserInfo `json:"userInfo"` //用户信息,特别需要填写账号和密码
+}
+
+type ProjectInfo struct {
+	CreatedTime int64   `json:"createdTime,optional,string"` //创建时间（只读）
+	ProjectID   int64   `json:"projectID,string,optional"`   //项目id（只读）
+	ProjectName string  `json:"projectName,optional"`        //项目名称（读写）
+	CompanyName *string `json:"companyName,optional"`        //项目所属公司名称（读写）
+	UserID      int64   `json:"userID,string,optional"`      // 管理员用户id（读写）
+	Region      *string `json:"region,optional"`             //项目省市区县（读写）
+	Address     *string `json:"address,optional"`            //项目详细地址（读写）
+	Desc        *string `json:"desc,optional"`               //项目备注（读写）
+}
+
+type ProjectInfoDeleteReq struct {
+	ProjectID int64 `json:"projectID,string"` //项目id 只读
+}
+
+type ProjectInfoReadReq struct {
+	ProjectID int64 `json:"projectID,string"` //项目id
+}
+
+type ProjectInfoIndexReq struct {
+	Page        *PageInfo `json:"page,optional"`        //进行数据分页（不传默认2000相当于全部）
+	ProjectName string    `json:"projectName,optional"` //过滤项目名称
+	ProjectIDs  []int64   `json:"projectIDs,optional"`  //过滤项目id列表
+}
+
+type ProjectInfoIndexResp struct {
+	Total int64          `json:"total,optional"` //拥有的总数
+	List  []*ProjectInfo `json:"list"`           //项目列表
 }
 
 type PageInfo struct {
@@ -207,6 +238,46 @@ type RoleDeleteReq struct {
 type RoleMenuUpdateReq struct {
 	ID     int64   `json:"id"`     //角色编号
 	MenuID []int64 `json:"menuID"` //菜单编号列表
+}
+
+type UserAuthProject struct {
+	ProjectID int64 `json:"projectID,string"` //权限数据ID
+}
+
+type UserAuthProjectMultiUpdateReq struct {
+	UserID   int64              `json:"userID,string"` //用户ID（必填，雪花ID）
+	Projects []*UserAuthProject `json:"projects"`      //权限数据IDs（必填）
+}
+
+type UserAuthProjectIndexReq struct {
+	Page   *PageInfo `json:"page,optional"` //进行数据分页（不传默认2000相当于全部）
+	UserID int64     `json:"userID,string"` //用户ID（必填，雪花ID）
+}
+
+type UserAuthProjectIndexResp struct {
+	Total int64              `json:"total"` //总数
+	List  []*UserAuthProject `json:"list"`  //用户数据权限列表
+}
+
+type UserAuthAreaMultiUpdateReq struct {
+	UserID    int64           `json:"userID,string"`    //用户ID（必填，雪花ID）
+	ProjectID int64           `json:"projectID,string"` //项目id
+	Areas     []*UserAuthArea `json:"areas"`            //权限数据IDs
+}
+
+type UserAuthArea struct {
+	AreaID int64 `json:"areaID,string"` //项目id
+}
+
+type UserAuthAreaIndexReq struct {
+	Page      *PageInfo `json:"page,optional"`    //进行数据分页（不传默认2000相当于全部）
+	UserID    int64     `json:"userID,string"`    //用户ID（必填，雪花ID）
+	ProjectID int64     `json:"projectID,string"` //项目id
+}
+
+type UserAuthAreaIndexResp struct {
+	Total int64           `json:"total"` //总数
+	List  []*UserAuthArea `json:"list"`  //用户数据权限列表
 }
 
 type SysLogLoginIndexReq struct {
@@ -358,6 +429,48 @@ type AuthApiIndexReq struct {
 type AuthApiIndexResp struct {
 	List  []*AuthApiInfo `json:"list"`  //API列表数据
 	Total int64          `json:"total"` //API列表总数
+}
+
+type AreaInfo struct {
+	CreatedTime  int64       `json:"createdTime,optional,string"`  //创建时间（只读）
+	ProjectID    int64       `json:"projectID,string,optional"`    //项目id（只读）
+	AreaID       int64       `json:"areaID,string,optional"`       //项目区域id（只读）
+	ParentAreaID int64       `json:"parentAreaID,string,optional"` //上级项目区域id（只读）
+	AreaName     string      `json:"areaName,optional"`            //项目区域名称（读写）
+	Position     *Point      `json:"position,optional"`            //项目区域定位，默认百度坐标系（读写）
+	Desc         *string     `json:"desc,optional"`                //项目区域备注（读写）
+	Children     []*AreaInfo `json:"children,optional"`            //下级项目区域列表（只读）
+}
+
+type AreaInfoDeleteReq struct {
+	AreaID int64 `json:"areaID,string"` //项目区域id 只读
+}
+
+type AreaInfoReadReq struct {
+	AreaID    int64 `json:"areaID,string"`             //项目区域id
+	ProjectID int64 `json:"projectID,string,optional"` //项目id 不填选默认项目
+}
+
+type AreaInfoIndexReq struct {
+	Page       *PageInfo `json:"page,optional"`             //进行数据分页（不传默认2000相当于全部）
+	ProjectID  int64     `json:"projectID,string,optional"` //项目id
+	ProjectIDs []int64   `json:"projectIDs,optional"`       //项目ids
+	AreaID     int64     `json:"areaID,string,optional"`    //项目区域id
+	AreaIDs    []int64   `json:"areaIDs,optional"`          //项目区域ids
+}
+
+type AreaInfoIndexResp struct {
+	Total int64       `json:"total,optional"` //拥有的总数
+	List  []*AreaInfo `json:"list"`           //项目区域列表
+}
+
+type AreaInfoTreeReq struct {
+	ProjectID int64 `json:"projectID,string,optional"` //二选一条件: 项目id
+	AreaID    int64 `json:"areaID,string,optional"`    //二选一条件: 项目id
+}
+
+type AreaInfoTreeResp struct {
+	Tree *AreaInfo `json:"tree"` //项目区域列表
 }
 
 type ProductInfo struct {

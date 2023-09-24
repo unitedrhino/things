@@ -1,0 +1,63 @@
+info(
+    title: "项目管理模块"
+    desc: "项目管理模块"
+    author: "大绵羊"
+    email: "robotyang123@163.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group : system/project/info
+    prefix: /api/v1/system/project/info
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "新增项目"
+    @handler create
+    post /create (ProjectInfo) returns ()
+    @doc "更新项目"
+    @handler update
+    post /update (ProjectInfo) returns ()
+    @doc "删除项目"
+    @handler delete
+    post /delete (ProjectInfoDeleteReq) returns ()
+    @doc "获取项目详情"
+    @handler read
+    post /read (ProjectInfoReadReq) returns (ProjectInfo)
+    @doc "获取项目列表"
+    @handler index
+    post /index (ProjectInfoIndexReq) returns (ProjectInfoIndexResp)
+}
+
+type (
+    ProjectInfo struct {
+        CreatedTime int64 `json:"createdTime,optional,string"` //创建时间（只读）
+        ProjectID int64 `json:"projectID,string,optional"`     //项目id（只读）
+        ProjectName string `json:"projectName,optional"`       //项目名称（读写）
+        CompanyName *string `json:"companyName,optional"`      //项目所属公司名称（读写）
+        UserID         int64  `json:"userID,string,optional"`  // 管理员用户id（读写）
+        Region *string `json:"region,optional"`                //项目省市区县（读写）
+        Address *string `json:"address,optional"`              //项目详细地址（读写）
+        Desc *string `json:"desc,optional"`                    //项目备注（读写）
+    }
+
+    ProjectInfoDeleteReq struct {
+        ProjectID int64 `json:"projectID,string"` //项目id 只读
+    }
+
+    ProjectInfoReadReq struct {
+        ProjectID int64 `json:"projectID,string"` //项目id
+    }
+
+    ProjectInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`            //进行数据分页（不传默认2000相当于全部）
+        ProjectName string `json:"projectName,optional"` //过滤项目名称
+        ProjectIDs []int64 `json:"projectIDs,optional"`  //过滤项目id列表
+    }
+
+    ProjectInfoIndexResp struct {
+        Total int64 `json:"total,optional"`  //拥有的总数
+        List []*ProjectInfo `json:"list"`    //项目列表
+    }
+)

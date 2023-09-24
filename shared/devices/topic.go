@@ -14,8 +14,10 @@ $thing/down/event/${productID}/${deviceName}	订阅	事件上报响应
 $thing/up/action/${productID}/${deviceName}	发布	设备响应行为执行结果
 $thing/down/action/${productID}/${deviceName}	订阅	应用调用设备行为
 系统级topic:
-$ota/report/${productID}/${deviceName}	发布	固件升级消息上行
-$ota/update/${productID}/${deviceName}	订阅	固件升级消息下行
+$ota/up/report/${productID}/${deviceName}	发布	固件升级消息上行
+$ota/down/upgrade/${productID}/${deviceName}	订阅	固件升级包详情消息下行
+$ota/up/progress/${productID}/${deviceName} 设备端上报升级进度
+
 $broadcast/rxd/${productID}/${deviceName}	订阅	广播消息下行
 $shadow/operation/up/{productID}/${deviceName}	发布	设备影子消息上行
 $shadow/operation/down/{productID}/${deviceName}	订阅	设备影子消息下行

@@ -16,6 +16,8 @@ import (
 
 type ServiceContext struct {
 	Config        config.Config
+	ProjectID     *utils.SnowFlake
+	AreaID        *utils.SnowFlake
 	WxMiniProgram *clients.MiniProgram
 	UserID        *utils.SnowFlake
 	Casbin        *casbin.Enforcer
@@ -32,7 +34,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	// 自动迁移数据库
 	db := stores.GetCommonConn(context.Background())
-
+	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
+	ProjectID := utils.NewSnowFlake(nodeID)
+	AreaID := utils.NewSnowFlake(nodeID)
 	WxMiniProgram := clients.NewWxMiniProgram(context.Background(), c.WxMiniProgram, c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	UserID := utils.NewSnowFlake(nodeId)
@@ -45,6 +49,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	return &ServiceContext{
 		Config:        c,
+		ProjectID:     ProjectID,
+		AreaID:        AreaID,
 		WxMiniProgram: WxMiniProgram,
 		UserID:        UserID,
 		Casbin:        ca,

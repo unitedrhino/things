@@ -9,6 +9,7 @@ const (
 	OptModify Opt = 1 //修改
 	OptDel    Opt = 2 //删除
 )
+
 const Unknown = 0
 
 const (

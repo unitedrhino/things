@@ -1,5 +1,6 @@
 syntax = "proto3";
 option go_package = "pb/sys";
+import "google/protobuf/wrappers.proto";
 
 package sys;
 
@@ -13,6 +14,12 @@ service User {
   rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
   rpc userRegister1(UserRegister1Req) returns(UserRegister1Resp);
   rpc userRegister2(UserRegister2Req) returns(Response);
+
+
+  rpc userAuthProjectMultiUpdate (UserAuthProjectMultiUpdateReq) returns (Response);   //授权用户数据权限
+  rpc userAuthProjectIndex (UserAuthProjectIndexReq) returns (UserAuthProjectIndexResp); //获取用户数据权限列表
+  rpc userAuthAreaMultiUpdate (UserAuthAreaMultiUpdateReq) returns (Response);   //授权用户数据权限
+  rpc userAuthAreaIndex (UserAuthAreaIndexReq) returns (UserAuthAreaIndexResp); //获取用户数据权限列表
 }
 
 service Role {
@@ -51,6 +58,40 @@ service Api {
   rpc apiDelete(ApiDeleteReq) returns(Response);   //删除接口
 }
 
+
+//项目管理
+service ProjectManage {
+  //新增项目
+  rpc projectInfoCreate (ProjectInfo) returns (Response);
+  //更新项目
+  rpc projectInfoUpdate (ProjectInfo) returns (Response);
+  //删除项目
+  rpc projectInfoDelete (ProjectInfoDeleteReq) returns (Response);
+  //获取项目信息详情
+  rpc projectInfoRead (ProjectInfoReadReq) returns (ProjectInfo);
+  //获取项目信息列表
+  rpc projectInfoIndex (ProjectInfoIndexReq) returns (ProjectInfoIndexResp);
+}
+
+
+//项目区域管理
+service AreaManage {
+  //新增区域
+  rpc areaInfoCreate (AreaInfo) returns (Response);
+  //更新区域
+  rpc areaInfoUpdate (AreaInfo) returns (Response);
+  //删除区域
+  rpc areaInfoDelete (AreaInfoDeleteReq) returns (Response);
+  //获取区域信息详情
+  rpc areaInfoRead (AreaInfoReadReq) returns (AreaInfo);
+  //获取区域信息列表
+  rpc areaInfoIndex (AreaInfoIndexReq) returns (AreaInfoIndexResp);
+  //获取区域信息树
+  rpc areaInfoTree (AreaInfoTreeReq) returns (AreaInfoTreeResp);
+}
+
+
+
 //----------------------------------------------------------------------------------------------
 
 message Point{
@@ -75,6 +116,87 @@ message PageInfo {
 }
 
 //----------------------------------------------------------------------------------------------
+
+
+message ProjectInfo {
+  int64 createdTime = 1; //创建时间（只读）
+  int64 projectID = 2; //项目id（只读）
+  string projectName = 3; //项目名称（读写）
+  google.protobuf.StringValue companyName = 4; //项目所属公司名称（读写）
+  int64 userID = 5;//所属用户id
+  google.protobuf.StringValue region = 6; //项目省市区县（读写）
+  google.protobuf.StringValue address = 7; //项目详细地址（读写）
+  google.protobuf.StringValue desc = 8; //项目备注（读写）
+}
+
+message ProjectInfoDeleteReq {
+  int64 projectID = 1; //项目id
+}
+
+message ProjectInfoReadReq {
+  int64 projectID = 1; //项目id
+}
+
+message ProjectInfoIndexReq {
+  PageInfo page = 1; //进行数据分页（不传默认2000相当于全部）
+  string projectName = 2; //过滤条件: 项目名称
+  repeated int64 projectIDs = 3; //过滤条件: 过滤项目id列表
+}
+
+message ProjectInfoIndexResp {
+  int64 total = 1; //总数
+  repeated ProjectInfo list = 2; //项目列表
+}
+
+//----------------------------------------------------------------------------------------------
+
+message AreaInfo {
+  int64 createdTime = 1; //创建时间（只读）
+  int64 areaID = 2; //项目区域id（只读）
+  int64 parentAreaID = 3; //上级项目区域id（只读）
+  int64 projectID = 4; //项目id（只读）
+  string areaName = 5; //项目区域名称（读写）
+  Point Position = 6; //项目区域定位，默认百度坐标系（读写）
+  google.protobuf.StringValue desc = 7; //项目区域备注（读写）
+  repeated AreaInfo children = 8; //下级项目区域列表（只读）
+}
+
+message AreaInfoDeleteReq {
+  int64 areaID = 1; //项目区域id
+}
+
+message AreaInfoReadReq {
+  int64 areaID = 1; //项目区域id
+}
+
+message AreaInfoIndexReq {
+  PageInfo page = 1; //进行数据分页（不传默认2000相当于全部）
+  int64 projectID = 2; //项目id
+  repeated int64 projectIDs = 3; //项目ids
+  int64 areaID = 4; //区域id
+  repeated int64 areaIDs = 5; //区域ids
+}
+
+message AreaInfoIndexResp {
+  int64 total = 1; //总数
+  repeated AreaInfo list = 2; //项目区域列表
+}
+
+message AreaInfoTreeReq {
+  int64 projectID = 1; //二选一条件: 项目id
+  int64 areaID = 2; //二选一条件: 区域id
+}
+
+message AreaInfoTreeResp {
+  AreaInfo tree = 1; //项目区域树
+}
+
+
+//----------------------------------------------------------------------------------------------
+
+
+
+
 
 message AuthApiInfo{
   string route = 1;
