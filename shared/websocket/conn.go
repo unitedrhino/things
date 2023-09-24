@@ -12,7 +12,6 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -279,15 +278,15 @@ func getRequestBody(body interface{}) (io.ReadCloser, error) {
 	if body != nil {
 		switch body.(type) {
 		case string:
-			reqBody = ioutil.NopCloser(bytes.NewBufferString(body.(string)))
+			reqBody = io.NopCloser(bytes.NewBufferString(body.(string)))
 		case []byte:
-			reqBody = ioutil.NopCloser(bytes.NewBuffer(body.([]byte)))
+			reqBody = io.NopCloser(bytes.NewBuffer(body.([]byte)))
 		case map[string]interface{}:
 			bodyBytes, err := json.Marshal(body)
 			if err != nil {
 				return nil, err
 			}
-			reqBody = ioutil.NopCloser(bytes.NewReader(bodyBytes))
+			reqBody = io.NopCloser(bytes.NewReader(bodyBytes))
 		default:
 			// 处理其他类型
 		}

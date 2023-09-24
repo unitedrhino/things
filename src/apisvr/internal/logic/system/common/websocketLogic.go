@@ -3,6 +3,7 @@ package common
 import (
 	"context"
 	"github.com/gorilla/websocket"
+	"github.com/i-Things/things/shared/utils"
 	ws "github.com/i-Things/things/shared/websocket"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"net/http"
@@ -29,8 +30,8 @@ func (l *WebsocketLogic) InitWebsocketConn(r *http.Request, conn *websocket.Conn
 	//创建ws连接
 	wsClient := ws.NewConn(l.svcCtx.Ws, r, conn)
 	//开启读取进程
-	go wsClient.StartRead()
+	utils.Go(l.ctx, wsClient.StartRead)
 	//开启发送进程
-	go wsClient.StartWrite()
+	utils.Go(l.ctx, wsClient.StartWrite)
 	return
 }

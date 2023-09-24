@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/shared/result"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system/common"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
-	"log"
+	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 )
 
@@ -25,7 +25,7 @@ func WebsocketHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		//ws连接失败
 		if err != nil {
 			result.Http(w, r, nil, err)
-			log.Println("[ws]连接失败", "RemoteAddr:", r.RemoteAddr, "err", err)
+			logx.WithContext(r.Context()).Error("[ws]连接失败", "RemoteAddr:", r.RemoteAddr, "err", err)
 			return
 		}
 		l := common.NewWebsocketLogic(r.Context(), svcCtx)
