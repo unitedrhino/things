@@ -35,10 +35,10 @@ const (
 	DeviceDownConfig    = "device.down.config.%s.%s"
 	DeviceDownConfigAll = "device.down.config.>"
 	// DeviceUpSDKLog 设备调试日志 最后两个是产品id和设备名称
-	DeviceUpSDKLog      = "device.up.sdkLog.%s.%s"
-	DeviceUpSDKLogAll   = "device.up.sdkLog.>"
-	DeviceDownSdkLog    = "device.down.sdkLog.%s.%s"
-	DeviceDownSDKLogAll = "device.down.sdkLog.>"
+	DeviceUpSDKLog      = "device.up.log.%s.%s"
+	DeviceUpSDKLogAll   = "device.up.log.>"
+	DeviceDownSdkLog    = "device.down.log.%s.%s"
+	DeviceDownSDKLogAll = "device.down.log.>"
 
 	// DeviceUpExt ext模块(包含ntp) 最后两个是产品id和设备名称
 	DeviceUpExt    = "device.up.ext.%s.%s"

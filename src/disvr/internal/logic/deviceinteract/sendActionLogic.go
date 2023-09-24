@@ -121,9 +121,9 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 	if err != nil {
 		return nil, err
 	}
-	respParam, err := json.Marshal(dresp.Response)
+	respParam, err := json.Marshal(dresp.Data)
 	if err != nil {
-		return nil, errors.RespParam.AddDetailf("SendAction get device resp not right:%+v", dresp.Response)
+		return nil, errors.RespParam.AddDetailf("SendAction get device resp not right:%+v", dresp.Data)
 	}
 	return &di.SendActionResp{
 		ClientToken:  dresp.ClientToken,

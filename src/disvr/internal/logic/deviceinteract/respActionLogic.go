@@ -74,7 +74,7 @@ func (l *RespActionLogic) RespAction(in *di.RespActionReq) (*di.Response, error)
 		if err != nil {
 			return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.OutputParams)
 		}
-		resp.Response = param
+		resp.Data = param
 		err = resp.FmtRespParam(l.schema, req.ActionID, schema.ParamActionOutput)
 		if err != nil {
 			return nil, err

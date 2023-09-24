@@ -32,11 +32,11 @@ func (p GatewayDeviceRepo) fmtFilter(ctx context.Context, f GatewayDeviceFilter)
 	gd := DmGatewayDevice{}
 	if f.Gateway != nil { //通过网关获取旗下子设备列表
 		db = db.Table(gd.TableName()+" as gd").Joins(fmt.Sprintf(
-			"left join %s as di on di.productID=gd.productID and di.deviceName=gd.deviceName", di.TableName())).
+			"left join %s as di on di.product_id=gd.product_id and di.device_name=gd.device_name", di.TableName())).
 			Where("gateway_product_id=? and gateway_device_name=? and di.id IS NOT NULL", f.Gateway.ProductID, f.Gateway.DeviceName)
 	} else {
 		db = db.Table(gd.TableName()+" as gd").Joins(fmt.Sprintf(
-			"left join %s as di on di.productID=gd.gatewayProductID and di.deviceName=gd.gatewayDeviceName", di.TableName())).
+			"left join %s as di on di.product_id=gd.gateway_product_id and di.device_name=gd.gateway_device_name", di.TableName())).
 			Where("gd.product_id=? and gd.device_name=? and di.id IS NOT NULL", f.SubDevice.ProductID, f.SubDevice.DeviceName)
 	}
 	return db
