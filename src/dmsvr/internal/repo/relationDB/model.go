@@ -143,8 +143,8 @@ type DmGatewayDevice struct {
 	ProductID         string `gorm:"column:product_id;uniqueIndex:gpi_pdn_pi_dn;type:char(11);NOT NULL"`              // 子设备产品id
 	DeviceName        string `gorm:"column:device_name;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"`         // 子设备名称
 	stores.Time
-	Device  *DmDeviceInfo `gorm:"foreignKey:ProductID,device_name;references:ProductID,DeviceName"`
-	Gateway *DmDeviceInfo `gorm:"foreignKey:ProductID,device_name;references:GatewayProductID,GatewayDeviceName"`
+	Device  *DmDeviceInfo `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
+	Gateway *DmDeviceInfo `gorm:"foreignKey:ProductID,DeviceName;references:GatewayProductID,GatewayDeviceName"`
 }
 
 func (m *DmGatewayDevice) TableName() string {
