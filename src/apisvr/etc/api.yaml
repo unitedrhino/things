@@ -47,7 +47,7 @@ DmRpc:
   Conf:
     Timeout: 1000000
 RuleRpc:
-  Enable: true
+  Enable: false
   Mode: direct
 OssConf:
   OssType: minio
