@@ -19,6 +19,7 @@ require (
 	github.com/gogf/gf/v2 v2.3.3
 	github.com/golang/protobuf v1.5.2
 	github.com/hashicorp/go-uuid v1.0.3
+	github.com/hibiken/asynq v0.24.1
 	github.com/jinzhu/copier v0.3.2
 	github.com/minio/minio-go/v7 v7.0.27
 	github.com/mojocn/base64Captcha v1.3.5
