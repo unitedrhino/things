@@ -44,8 +44,8 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 			logx.WithContext(ctx).WithDuration(duration).Errorf("nats subscription|subject:%v,body:%v,err:%v",
 				msg.Subject, string(emsg.GetData()), err)
 		} else {
-			logx.WithContext(ctx).WithDuration(duration).Infof("nats subscription|subject:%v",
-				msg.Subject)
+			logx.WithContext(ctx).WithDuration(duration).Infof("nats subscription|subject:%v,body:%v",
+				msg.Subject, string(emsg.GetData()))
 		}
 	}
 }

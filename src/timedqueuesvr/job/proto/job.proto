@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package job;
+option go_package="pb/job";
+
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1;
+}
+
+service Job {
+  rpc Ping(Request) returns(Response);
+}

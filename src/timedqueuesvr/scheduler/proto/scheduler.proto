@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package scheduler;
+option go_package="pb/scheduler";
+
+message Response {
+}
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+  //排序信息
+  repeated OrderBy orders = 3;
+  message OrderBy {
+    //排序的字段名
+    string filed = 1;
+    //排序方式：0 aes, 1 desc
+    int64 sort = 2;
+  }
+}
+
+service Job {
+  //新增任务
+  rpc jobInfoCreate(JobInfo)     returns (Response);
+  //更新任务
+  rpc jobInfoUpdate(JobInfo)     returns (Response);
+  //删除任务
+  rpc jobInfoDelete(JobInfoDeleteReq)     returns (Response);
+  //获取任务信息列表
+  rpc jobInfoIndex(JobInfoIndexReq)     returns (JobInfoIndexResp);
+  //获取任务信息详情
+  rpc jobInfoRead(JobInfoReadReq)     returns (JobInfo);
+}
+
+message JobInfo {
+  int64 id  =1;// 任务ID
+  string Group = 2; // 任务组名
+  string Type = 3; //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
+  string SubType = 4; //任务子类型 natsJs nats
+  string Name = 5; // 任务名称
+  string Code = 6; //任务编码
+  string Params = 7; // 任务参数
+  string CronExpression = 8; // cron执行表达式
+  int64 Status = 9; // 状态（1:正常运行 2:暂停 3:停止使用）
+  string EntryID = 10; //执行任务的id
+  string Priority = 11; //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+}
+
+message JobInfoDeleteReq{
+
+}
+
+message JobInfoIndexReq{
+
+}
+
+message JobInfoReadReq{
+
+}
+
+message JobInfoIndexResp{
+
+}
