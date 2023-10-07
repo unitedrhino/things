@@ -223,15 +223,15 @@ func (m *DmOtaTaskDevices) TableName() string {
 // 产品固件升级包信息表
 type DmOtaFirmware struct {
 	ID         int64          `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
-	ProductID  string         `gorm:"column:product_id;type:char(11);NOT NULL"`                 // 产品id
-	Version    string         `gorm:"column:version;type:varchar(64)"`                          // 固件版本
-	Module     string         `gorm:"column:module;type:varchar(64)"`                           // 模块名称
-	Name       string         `gorm:"column:name;type:varchar(64)"`                             // 固件名称
-	Desc       string         `gorm:"column:desc;type:varchar(200)"`                            // 描述
-	TotalSize  int64          `gorm:"column:total_size;type:bigint;NOT NULL"`                   // 升级包总大小
-	IsDiff     int64          `gorm:"column:is_diff;type:smallint unsigned;default:1;NOT NULL"` // 是否差分包,1:整包,2:差分
-	SignMethod string         `gorm:"column:sign_method;type:varchar(20);NOT NULL"`             // 签名方式:MD5/SHA256
-	Extra      sql.NullString `gorm:"column:extra;type:json"`                                   // 自定义推送参数
+	ProductID  string         `gorm:"column:product_id;type:char(11);NOT NULL"`        // 产品id
+	Version    string         `gorm:"column:version;type:varchar(64)"`                 // 固件版本
+	Module     string         `gorm:"column:module;type:varchar(64)"`                  // 模块名称
+	Name       string         `gorm:"column:name;type:varchar(64)"`                    // 固件名称
+	Desc       string         `gorm:"column:desc;type:varchar(200)"`                   // 描述
+	TotalSize  int64          `gorm:"column:total_size;type:bigint;NOT NULL"`          // 升级包总大小
+	IsDiff     int64          `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"` // 是否差分包,1:整包,2:差分
+	SignMethod string         `gorm:"column:sign_method;type:varchar(20);NOT NULL"`    // 签名方式:MD5/SHA256
+	Extra      sql.NullString `gorm:"column:extra;type:json"`                          // 自定义推送参数
 	stores.Time
 }
 
