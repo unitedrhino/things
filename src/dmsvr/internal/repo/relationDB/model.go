@@ -203,16 +203,16 @@ func (m *DmOtaFirmwareFile) TableName() string {
 // ota升级记录
 type DmOtaTaskDevices struct {
 	ID            int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	FirmwareID    int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`                      // 固件id
-	TaskUid       string `gorm:"column:task_uid;type:varchar(64);NOT NULL"`                    // 任务批次
-	ProductID     string `gorm:"column:product_id;type:char(11);NOT NULL"`                     // 产品id
-	DeviceName    string `gorm:"column:device_name;type:varchar(100);NOT NULL"`                // 设备编号
-	Version       string `gorm:"column:version;type:varchar(64)"`                              // 当前版本
-	TargetVersion string `gorm:"column:target_version;type:varchar(64);NOT NULL"`              // 升级包的版本
-	Status        int64  `gorm:"column:status;type:int(11);default:101"`                       // 升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
-	RetryCount    int64  `gorm:"column:retry_count;type:smallint unsigned;default:0;NOT NULL"` // 重试次数,计划最多20次
-	Step          int64  `gorm:"column:step;type:int(11) unsigned;default:0;NOT NULL"`         // OTA升级进度。1~100的整数升级进度百分比,-1升级失败,-2下载失败,-3校验失败,-4烧写失败
-	Desc          string `gorm:"column:desc;type:varchar(200)"`                                // 状态详情
+	FirmwareID    int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`             // 固件id
+	TaskUid       string `gorm:"column:task_uid;type:varchar(64);NOT NULL"`           // 任务批次
+	ProductID     string `gorm:"column:product_id;type:char(11);NOT NULL"`            // 产品id
+	DeviceName    string `gorm:"column:device_name;type:varchar(100);NOT NULL"`       // 设备编号
+	Version       string `gorm:"column:version;type:varchar(64)"`                     // 当前版本
+	TargetVersion string `gorm:"column:target_version;type:varchar(64);NOT NULL"`     // 升级包的版本
+	Status        int64  `gorm:"column:status;type:integer;default:101"`              // 升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
+	RetryCount    int64  `gorm:"column:retry_count;type:smallint;default:0;NOT NULL"` // 重试次数,计划最多20次
+	Step          int64  `gorm:"column:step;type:integer;default:0;NOT NULL"`         // OTA升级进度。1~100的整数升级进度百分比,-1升级失败,-2下载失败,-3校验失败,-4烧写失败
+	Desc          string `gorm:"column:desc;type:varchar(200)"`                       // 状态详情
 	stores.Time
 }
 
