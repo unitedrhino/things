@@ -166,16 +166,16 @@ func (m *DmProductRemoteConfig) TableName() string {
 
 // 升级任务表
 type DmOtaTask struct {
-	ID          int64  `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
-	ProductID   string `gorm:"column:product_id;type:char(11);NOT NULL"`                        // 产品id
-	FirmwareID  int64  `gorm:"column:firmware_id;type:bigint(20);NOT NULL"`                     // 固件id
-	TaskUid     string `gorm:"column:task_uid;type:varchar(64)"`                                // 任务编号
-	Type        int64  `gorm:"column:type;type:tinyint(1) unsigned;default:1;NOT NULL"`         // 升级范围1全部设备2定向升级
-	UpgradeType int64  `gorm:"column:upgrade_type;type:tinyint(1) unsigned;default:1;NOT NULL"` // 升级策略:1静态升级2动态升级
-	AutoRepeat  int64  `gorm:"column:auto_repeat;type:tinyint(1) unsigned;default:1;NOT NULL"`  // 是否自动重试,1:不,2自动重试
-	Status      int64  `gorm:"column:status;type:tinyint(4);default:1;NOT NULL"`                // 升级状态:1未升级2升级中3完成4已取消
-	DeviceList  string `gorm:"column:device_list;type:json;NOT NULL"`                           // 指定升级设备
-	VersionList string `gorm:"column:version_list;type:json;NOT NULL"`                          // 指定待升级版本
+	ID          int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID   string `gorm:"column:product_id;type:char(11);NOT NULL"`             // 产品id
+	FirmwareID  int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`              // 固件id
+	TaskUid     string `gorm:"column:task_uid;type:varchar(64)"`                     // 任务编号
+	Type        int64  `gorm:"column:type;type:smallint;default:1;NOT NULL"`         // 升级范围1全部设备2定向升级
+	UpgradeType int64  `gorm:"column:upgrade_type;type:smallint;default:1;NOT NULL"` // 升级策略:1静态升级2动态升级
+	AutoRepeat  int64  `gorm:"column:auto_repeat;type:smallint;default:1;NOT NULL"`  // 是否自动重试,1:不,2自动重试
+	Status      int64  `gorm:"column:status;type:smallint;default:1;NOT NULL"`       // 升级状态:1未升级2升级中3完成4已取消
+	DeviceList  string `gorm:"column:device_list;type:json;NOT NULL"`                // 指定升级设备
+	VersionList string `gorm:"column:version_list;type:json;NOT NULL"`               // 指定待升级版本
 	stores.Time
 }
 
@@ -185,10 +185,10 @@ func (m *DmOtaTask) TableName() string {
 
 // 升级包附件列表
 type DmOtaFirmwareFile struct {
-	ID         int64  `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
+	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	Name       string `gorm:"column:name;type:varchar(64)"`                // 附件名称
-	FirmwareID int64  `gorm:"column:firmware_id;type:bigint(20);NOT NULL"` // 固件id
-	Size       int64  `gorm:"column:size;type:bigint(20);NOT NULL"`        // 文件大小单位bit
+	FirmwareID int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`     // 固件id
+	Size       int64  `gorm:"column:size;type:bigint;NOT NULL"`            // 文件大小单位bit
 	Storage    string `gorm:"column:storage;type:varchar(15);NOT NULL"`    // 存储平台:minio/aliyun
 	Host       string `gorm:"column:host;type:varchar(100);NOT NULL"`      // host
 	FilePath   string `gorm:"column:file_path;type:varchar(100);NOT NULL"` // 文件路径,拿来下载文件
@@ -202,8 +202,8 @@ func (m *DmOtaFirmwareFile) TableName() string {
 
 // ota升级记录
 type DmOtaTaskDevices struct {
-	ID            int64  `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
-	FirmwareID    int64  `gorm:"column:firmware_id;type:bigint(20);NOT NULL"`                    // 固件id
+	ID            int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	FirmwareID    int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`                        // 固件id
 	TaskUid       string `gorm:"column:task_uid;type:varchar(64);NOT NULL"`                      // 任务批次
 	ProductID     string `gorm:"column:product_id;type:char(11);NOT NULL"`                       // 产品id
 	DeviceName    string `gorm:"column:device_name;type:varchar(100);NOT NULL"`                  // 设备编号
@@ -222,7 +222,7 @@ func (m *DmOtaTaskDevices) TableName() string {
 
 // 产品固件升级包信息表
 type DmOtaFirmware struct {
-	ID         int64          `gorm:"column:id;type:bigint(20);primary_key;AUTO_INCREMENT"`
+	ID         int64          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID  string         `gorm:"column:product_id;type:char(11);NOT NULL"`        // 产品id
 	Version    string         `gorm:"column:version;type:varchar(64)"`                 // 固件版本
 	Module     string         `gorm:"column:module;type:varchar(64)"`                  // 模块名称
