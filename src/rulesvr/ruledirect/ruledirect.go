@@ -45,23 +45,25 @@ func GetSvcCtx() *svc.ServiceContext {
 // RunServer 如果是直连模式,同时提供Grpc的能力
 func RunServer(svcCtx *svc.ServiceContext) {
 	runSvrOnce.Do(func() {
-		go func() {
-			c := svcCtx.Config
-
-			s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-				rule.RegisterSceneLinkageServer(grpcServer, scenelinkage.NewSceneLinkageServer(svcCtx))
-				rule.RegisterRuleEngineServer(grpcServer, ruleengine.NewRuleEngineServer(svcCtx))
-				rule.RegisterAlarmCenterServer(grpcServer, alarmcenter.NewAlarmCenterServer(svcCtx))
-				if c.Mode == service.DevMode || c.Mode == service.TestMode {
-					reflection.Register(grpcServer)
-				}
-			})
-			defer s.Stop()
-			s.AddUnaryInterceptors(errors.ErrorInterceptor)
-
-			fmt.Printf("Starting rulesvr server at %s...\n", c.ListenOn)
-			s.Start()
-		}()
+		go Run(svcCtx)
 	})
 
+}
+
+func Run(svcCtx *svc.ServiceContext) {
+	c := svcCtx.Config
+
+	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+		rule.RegisterSceneLinkageServer(grpcServer, scenelinkage.NewSceneLinkageServer(svcCtx))
+		rule.RegisterRuleEngineServer(grpcServer, ruleengine.NewRuleEngineServer(svcCtx))
+		rule.RegisterAlarmCenterServer(grpcServer, alarmcenter.NewAlarmCenterServer(svcCtx))
+		if c.Mode == service.DevMode || c.Mode == service.TestMode {
+			reflection.Register(grpcServer)
+		}
+	})
+	defer s.Stop()
+	s.AddUnaryInterceptors(errors.ErrorInterceptor)
+
+	fmt.Printf("Starting rulesvr server at %s...\n", c.ListenOn)
+	s.Start()
 }
