@@ -31,6 +31,10 @@ import (
 	role "github.com/i-Things/things/src/syssvr/client/role"
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/i-Things/things/src/syssvr/sysdirect"
+	"github.com/i-Things/things/src/timedjobsvr/client/timedjob"
+	"github.com/i-Things/things/src/timedjobsvr/timedjobdirect"
+	"github.com/i-Things/things/src/timedschedulersvr/client/timedscheduler"
+	"github.com/i-Things/things/src/timedschedulersvr/timedschedulerdirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -64,6 +68,8 @@ type SvrClient struct {
 	Common         common.Common
 	Scene          scenelinkage.SceneLinkage
 	Alarm          alarmcenter.AlarmCenter
+	Timedscheduler timedscheduler.Timedscheduler
+	TimedJob       timedjob.TimedJob
 }
 
 type ServiceContext struct {
@@ -97,6 +103,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		alarm          alarmcenter.AlarmCenter
 		firmwareM      firmwaremanage.FirmwareManage
 		otaTaskM       otataskmanage.OtaTaskManage
+		timedSchedule  timedscheduler.Timedscheduler
+		timedJob       timedjob.TimedJob
 	)
 	var ur user.User
 	var ro role.Role
@@ -166,6 +174,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceInteract = didirect.NewDeviceInteract(c.DiRpc.RunProxy)
 		}
 	}
+	if c.TimedSchedulerRpc.Enable {
+		if c.TimedSchedulerRpc.Mode == conf.ClientModeGrpc {
+			timedSchedule = timedscheduler.NewTimedscheduler(zrpc.MustNewClient(c.TimedSchedulerRpc.Conf))
+		} else {
+			timedSchedule = timedschedulerdirect.NewScheduler(c.TimedSchedulerRpc.RunProxy)
+		}
+	}
+	if c.TimedJobRpc.Enable {
+		if c.TimedJobRpc.Mode == conf.ClientModeGrpc {
+			timedJob = timedjob.NewTimedJob(zrpc.MustNewClient(c.TimedJobRpc.Conf))
+		} else {
+			timedJob = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
+		}
+	}
 
 	ossClient := oss.NewOssClient(c.OssConf)
 	if ossClient == nil {
@@ -186,11 +208,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		FirmwareM:      firmwareM,
 		OtaTaskM:       otaTaskM,
 		SvrClient: SvrClient{
-			UserRpc: ur,
-			RoleRpc: ro,
-			MenuRpc: me,
-			LogRpc:  lo,
-			ApiRpc:  ap,
+			UserRpc:        ur,
+			RoleRpc:        ro,
+			MenuRpc:        me,
+			LogRpc:         lo,
+			ApiRpc:         ap,
+			Timedscheduler: timedSchedule,
+			TimedJob:       timedJob,
 
 			ProjectM: projectM,
 			AreaM:    areaM,

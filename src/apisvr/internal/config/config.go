@@ -15,16 +15,18 @@ type Captcha struct {
 
 type Config struct {
 	rest.RestConf
-	CacheRedis cache.ClusterConf
-	DdEnable   bool               `json:",optional"`
-	SysRpc     conf.RpcClientConf `json:",optional"`
-	DiRpc      conf.RpcClientConf `json:",optional"`
-	DmRpc      conf.RpcClientConf `json:",optional"`
-	RuleRpc    conf.RpcClientConf `json:",optional"`
-	Rej        struct {
+	CacheRedis        cache.ClusterConf
+	DdEnable          bool               `json:",optional"`
+	SysRpc            conf.RpcClientConf `json:",optional"`
+	DiRpc             conf.RpcClientConf `json:",optional"`
+	DmRpc             conf.RpcClientConf `json:",optional"`
+	RuleRpc           conf.RpcClientConf `json:",optional"`
+	TimedJobRpc       conf.RpcClientConf `json:",optional"`
+	TimedSchedulerRpc conf.RpcClientConf `json:",optional"`
+	Rej               struct {
 		AccessSecret string
 		AccessExpire int64
-	}                             //注册token相关配置
+	} //注册token相关配置
 	Proxy                conf.ProxyConf `json:",optional"`
 	Captcha              Captcha
 	OssConf              conf.OssConf              `json:",optional"`

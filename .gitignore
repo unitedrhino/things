@@ -53,3 +53,4 @@ src/usersvr/usersvr*
 .history
 /src/timedqueuesvr/job/job
 /src/timedqueuesvr/scheduler/scheduler
+/src/timedjobsvr/job

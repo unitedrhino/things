@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"github.com/i-Things/things/src/timedjobsvr/internal/config"
-	jobServer "github.com/i-Things/things/src/timedjobsvr/internal/server/job"
+	jobServer "github.com/i-Things/things/src/timedjobsvr/internal/server/timedjob"
 	"github.com/i-Things/things/src/timedjobsvr/internal/startup"
 	"github.com/i-Things/things/src/timedjobsvr/internal/svc"
-	"github.com/i-Things/things/src/timedjobsvr/pb/job"
+	"github.com/i-Things/things/src/timedjobsvr/pb/timedjob"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -28,7 +28,7 @@ var (
 func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
 		flag.Parse()
-		conf.MustLoad("etc/di.yaml", &c)
+		conf.MustLoad("etc/timedjob.yaml", &c)
 		svcCtx = svc.NewServiceContext(c)
 		startup.Init(svcCtx)
 	})
@@ -45,7 +45,7 @@ func RunServer(svcCtx *svc.ServiceContext) {
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		job.RegisterJobServer(grpcServer, jobServer.NewJobServer(svcCtx))
+		timedjob.RegisterTimedJobServer(grpcServer, jobServer.NewTimedJobServer(svcCtx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

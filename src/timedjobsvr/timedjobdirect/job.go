@@ -1,19 +1,19 @@
 package timedjobdirect
 
 import (
-	client "github.com/i-Things/things/src/timedjobsvr/client/job"
-	server "github.com/i-Things/things/src/timedjobsvr/internal/server/job"
+	client "github.com/i-Things/things/src/timedjobsvr/client/timedjob"
+	server "github.com/i-Things/things/src/timedjobsvr/internal/server/timedjob"
 )
 
 var (
-	jobSvr client.Job
+	jobSvr client.TimedJob
 )
 
-func NewJob(runSvr bool) client.Job {
+func NewTimedJob(runSvr bool) client.TimedJob {
 	svcCtx := GetSvcCtx()
 	if runSvr {
 		RunServer(svcCtx)
 	}
-	dmSvr := client.NewDirectJob(svcCtx, server.NewJobServer(svcCtx))
-	return dmSvr
+	svr := client.NewDirectTimedJob(svcCtx, server.NewTimedJobServer(svcCtx))
+	return svr
 }

@@ -1,10 +1,10 @@
-package joblogic
+package timedjoblogic
 
 import (
 	"context"
 
 	"github.com/i-Things/things/src/timedjobsvr/internal/svc"
-	"github.com/i-Things/things/src/timedjobsvr/pb/job"
+	"github.com/i-Things/things/src/timedjobsvr/pb/timedjob"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,8 +23,8 @@ func NewPingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PingLogic {
 	}
 }
 
-func (l *PingLogic) Ping(in *job.Request) (*job.Response, error) {
+func (l *PingLogic) Ping(in *timedjob.Request) (*timedjob.Response, error) {
 	// todo: add your logic here and delete this line
 
-	return &job.Response{}, nil
+	return &timedjob.Response{}, nil
 }

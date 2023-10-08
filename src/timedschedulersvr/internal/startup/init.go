@@ -13,10 +13,16 @@ import (
 )
 
 func Init(svcCtx *svc.ServiceContext) error {
-	return InitTimer(svcCtx)
+	utils.SingletonRun(context.Background(), svcCtx.Store, "svr:timedschedulersvr", func(ctx2 context.Context) {
+		svcCtx.SchedulerRun = true
+		err := InitTimer(svcCtx)
+		logx.Must(err)
+	})
+	return nil
 }
 
 func InitTimer(svcCtx *svc.ServiceContext) error {
+
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
 	//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
