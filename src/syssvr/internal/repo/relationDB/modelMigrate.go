@@ -2,11 +2,15 @@ package relationDB
 
 import (
 	"database/sql"
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm/clause"
 )
 
-func Migrate() error {
+func Migrate(c conf.Database) error {
+	if c.IsInitTable == false {
+		return nil
+	}
 	db := stores.GetCommonConn(nil)
 	var needInitColumn bool
 	if !db.Migrator().HasTable(&SysUserInfo{}) {

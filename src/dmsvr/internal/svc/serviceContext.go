@@ -65,7 +65,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	bus := eventBus.NewEventBus()
 	stores.InitConn(c.Database)
-	err = relationDB.Migrate()
+	err = relationDB.Migrate(c.Database)
 	if err != nil {
 		logx.Error("dmsvr 初始化数据库错误 err", err)
 		os.Exit(-1)

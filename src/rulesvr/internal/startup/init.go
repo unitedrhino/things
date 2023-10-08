@@ -3,7 +3,6 @@ package startup
 import (
 	"context"
 	"github.com/i-Things/things/shared/events/topics"
-	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/event/appDeviceEvent"
 	"github.com/i-Things/things/src/rulesvr/internal/event/busEvent/sceneChange"
 	"github.com/i-Things/things/src/rulesvr/internal/event/dataUpdateEvent"
@@ -11,8 +10,6 @@ import (
 	"github.com/i-Things/things/src/rulesvr/internal/repo/event/subscribe/subApp"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
-	"log"
-	"os"
 )
 
 func Init(svcCtx *svc.ServiceContext) {
@@ -22,29 +19,17 @@ func Init(svcCtx *svc.ServiceContext) {
 
 func Subscribe(svcCtx *svc.ServiceContext) {
 	subAppCli, err := subApp.NewSubApp(svcCtx.Config.Event)
-	if err != nil {
-		logx.Error("NewSubApp err", err)
-		os.Exit(-1)
-	}
+	logx.Must(err)
 	err = subAppCli.Subscribe(func(ctx context.Context) subApp.AppSubEvent {
 		return appDeviceEvent.NewAppDeviceHandle(ctx, svcCtx)
 	})
-	if err != nil {
-		log.Fatalf("%v.subApp.Subscribe err:%v",
-			utils.FuncName(), err)
-	}
+	logx.Must(err)
 	dataUpdateCli, err := dataUpdate.NewDataUpdate(svcCtx.Config.Event)
-	if err != nil {
-		logx.Error("NewDataUpdate err", err)
-		os.Exit(-1)
-	}
+	logx.Must(err)
 	err = dataUpdateCli.Subscribe(func(ctx context.Context) dataUpdate.UpdateHandle {
 		return dataUpdateEvent.NewPublishLogic(ctx, svcCtx)
 	})
-	if err != nil {
-		log.Fatalf("%v.DataUpdate err:%v",
-			utils.FuncName(), err)
-	}
+	logx.Must(err)
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {

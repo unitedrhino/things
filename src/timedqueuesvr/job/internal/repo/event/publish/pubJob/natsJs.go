@@ -16,20 +16,8 @@ type (
 	}
 )
 
-const (
-	natsJsName = "timed"
-)
-
-var (
-	natsJsSubjects = []string{"timed.>"}
-)
-
 func newNatsJsClient(conf conf.NatsConf) (*natsJsClient, error) {
 	js, err := clients.NewNatsJetStreamClient(conf)
-	if err != nil {
-		return nil, err
-	}
-	err = clients.CreateStream(js, natsJsName, natsJsSubjects)
 	if err != nil {
 		return nil, err
 	}
