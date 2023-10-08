@@ -7,12 +7,15 @@ import (
 	"github.com/i-Things/things/src/timedschedulersvr/internal/config"
 	"github.com/i-Things/things/src/timedschedulersvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/kv"
 	"os"
 )
 
 type ServiceContext struct {
-	Config    config.Config
-	Scheduler *asynq.Scheduler
+	Config       config.Config
+	Scheduler    *asynq.Scheduler
+	Store        kv.Store
+	SchedulerRun bool //只启动单例
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -26,5 +29,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Scheduler: Scheduler,
 		Config:    c,
+		Store:     kv.NewStore(c.CacheRedis),
 	}
 }

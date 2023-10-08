@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"github.com/i-Things/things/src/timedschedulersvr/internal/config"
-	schedulerServer "github.com/i-Things/things/src/timedschedulersvr/internal/server/scheduler"
+	schedulerServer "github.com/i-Things/things/src/timedschedulersvr/internal/server/timedscheduler"
 	"github.com/i-Things/things/src/timedschedulersvr/internal/startup"
 	"github.com/i-Things/things/src/timedschedulersvr/internal/svc"
-	"github.com/i-Things/things/src/timedschedulersvr/pb/scheduler"
+	"github.com/i-Things/things/src/timedschedulersvr/pb/timedscheduler"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -28,7 +28,7 @@ var (
 func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
 		flag.Parse()
-		conf.MustLoad("etc/di.yaml", &c)
+		conf.MustLoad("etc/timedscheduler.yaml", &c)
 		svcCtx = svc.NewServiceContext(c)
 		startup.Init(svcCtx)
 	})
@@ -45,7 +45,7 @@ func RunServer(svcCtx *svc.ServiceContext) {
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		scheduler.RegisterSchedulerServer(grpcServer, schedulerServer.NewSchedulerServer(svcCtx))
+		timedscheduler.RegisterTimedschedulerServer(grpcServer, schedulerServer.NewTimedschedulerServer(svcCtx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

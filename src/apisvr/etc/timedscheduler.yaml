@@ -1,4 +1,4 @@
-Name: scheduler.rpc
+Name: timedscheduler.rpc
 ListenOn: 0.0.0.0:9284
 
 Event:

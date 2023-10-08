@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package scheduler;
-option go_package="pb/scheduler";
+package timedscheduler;
+option go_package="pb/timedscheduler";
 
 message Response {
 }
@@ -18,7 +18,7 @@ message PageInfo{
   }
 }
 
-service Job {
+service timedscheduler {
   //新增任务
   rpc jobInfoCreate(JobInfo)     returns (Response);
   //更新任务

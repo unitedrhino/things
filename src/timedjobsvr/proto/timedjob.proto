@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package job;
-option go_package="pb/job";
+package timedjob;
+option go_package="pb/timedjob";
 
 message Request {
   string ping = 1;
@@ -11,6 +11,6 @@ message Response {
   string pong = 1;
 }
 
-service Job {
+service timedJob {
   rpc Ping(Request) returns(Response);
 }

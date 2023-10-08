@@ -1,4 +1,4 @@
-Name: job.rpc
+Name: timedjob.rpc
 ListenOn: 0.0.0.0:3256
 Event:
   Mode: natsJs

@@ -1,19 +1,19 @@
 package timedschedulerdirect
 
 import (
-	client "github.com/i-Things/things/src/timedschedulersvr/client/scheduler"
-	server "github.com/i-Things/things/src/timedschedulersvr/internal/server/scheduler"
+	client "github.com/i-Things/things/src/timedschedulersvr/client/timedscheduler"
+	server "github.com/i-Things/things/src/timedschedulersvr/internal/server/timedscheduler"
 )
 
 var (
-	schedulerSvr client.Scheduler
+	schedulerSvr client.Timedscheduler
 )
 
-func NewSchedulerMsg(runSvr bool) client.Scheduler {
+func NewScheduler(runSvr bool) client.Timedscheduler {
 	svcCtx := GetSvcCtx()
 	if runSvr {
 		RunServer(svcCtx)
 	}
-	dmSvr := client.NewDirectScheduler(svcCtx, server.NewSchedulerServer(svcCtx))
-	return dmSvr
+	svr := client.NewDirectTimedscheduler(svcCtx, server.NewTimedschedulerServer(svcCtx))
+	return svr
 }
