@@ -20,7 +20,7 @@ type TimedQueueJob struct {
 	SubType        string `gorm:"column:sub_type;default:''"`                                         //任务子类型 natsJs nats
 	Name           string `gorm:"column:name;uniqueIndex:uni_group_name"`                             // 任务名称
 	Code           string `gorm:"column:code;uniqueIndex:uni_group_code"`                             //任务编码
-	Params         string `gorm:"column:params;type:json;serializer:json;NOT NULL;default:'{}'"`      // 任务参数
+	Params         string `gorm:"column:params;type:json;NOT NULL;default:'{}'"`                      // 任务参数
 	CronExpression string `gorm:"column:cron_expression"`                                             // cron执行表达式
 	Status         int64  `gorm:"column:status"`                                                      // 状态（1正常运行 2:暂停 3:停止使用）
 	EntryID        string `gorm:"column:entry_id"`                                                    //执行任务的id
