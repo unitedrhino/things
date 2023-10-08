@@ -1,15 +1,13 @@
-package dmdirect
+package timedjobdirect
 
 import (
+	"flag"
 	"fmt"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/src/dmsvr/internal/config"
-	deviceauth "github.com/i-Things/things/src/dmsvr/internal/server/deviceauth"
-	devicemanage "github.com/i-Things/things/src/dmsvr/internal/server/devicemanage"
-	productmanage "github.com/i-Things/things/src/dmsvr/internal/server/productmanage"
-	"github.com/i-Things/things/src/dmsvr/internal/startup"
-	"github.com/i-Things/things/src/dmsvr/internal/svc"
-	"github.com/i-Things/things/src/dmsvr/pb/dm"
+	"github.com/i-Things/things/src/timedjobsvr/internal/config"
+	jobServer "github.com/i-Things/things/src/timedjobsvr/internal/server/job"
+	"github.com/i-Things/things/src/timedjobsvr/internal/startup"
+	"github.com/i-Things/things/src/timedjobsvr/internal/svc"
+	"github.com/i-Things/things/src/timedjobsvr/pb/job"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -29,7 +27,8 @@ var (
 
 func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
-		conf.MustLoad("etc/dm.yaml", &c)
+		flag.Parse()
+		conf.MustLoad("etc/di.yaml", &c)
 		svcCtx = svc.NewServiceContext(c)
 		startup.Init(svcCtx)
 	})
@@ -41,20 +40,18 @@ func RunServer(svcCtx *svc.ServiceContext) {
 	runSvrOnce.Do(func() {
 		go Run(svcCtx)
 	})
-
 }
+
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		dm.RegisterDeviceAuthServer(grpcServer, deviceauth.NewDeviceAuthServer(svcCtx))
-		dm.RegisterDeviceManageServer(grpcServer, devicemanage.NewDeviceManageServer(svcCtx))
-		dm.RegisterProductManageServer(grpcServer, productmanage.NewProductManageServer(svcCtx))
+		job.RegisterJobServer(grpcServer, jobServer.NewJobServer(svcCtx))
+
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
 	})
 	defer s.Stop()
-	s.AddUnaryInterceptors(errors.ErrorInterceptor)
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

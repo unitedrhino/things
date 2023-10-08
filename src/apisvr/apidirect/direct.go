@@ -1,6 +1,8 @@
 package apidirect
 
 import (
+	"context"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/handler"
 	"github.com/i-Things/things/src/apisvr/internal/handler/system/proxy"
@@ -28,7 +30,7 @@ func NewApi(apiCtx ApiCtx) ApiCtx {
 	conf.MustLoad("etc/api.yaml", &c)
 	apiCtx = runApi(apiCtx)
 	if c.DdEnable == true {
-		go runDdSvr()
+		utils.Go(context.Background(), runDdSvr)
 	}
 	return apiCtx
 }

@@ -10,5 +10,5 @@ import (
 func main() {
 	defer utils.Recover(context.Background())
 	svcCtx := ruledirect.GetSvcCtx()
-	ruledirect.RunServer(svcCtx)
+	ruledirect.Run(svcCtx)
 }

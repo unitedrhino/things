@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/didirect"
+	"github.com/i-Things/things/src/timedjobsvr/timedjobdirect"
 )
 
 func main() {
 	defer utils.Recover(context.Background())
-	svcCtx := didirect.GetSvcCtx()
-	didirect.Run(svcCtx)
+	ctx := timedjobdirect.GetSvcCtx()
+	timedjobdirect.Run(ctx)
 }

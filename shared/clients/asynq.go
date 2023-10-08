@@ -3,17 +3,17 @@ package clients
 import (
 	"fmt"
 	"github.com/hibiken/asynq"
-	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/core/stores/cache"
 	"time"
 )
 
-func NewAsynqClient(c redis.RedisKeyConf) *asynq.Client {
-	return asynq.NewClient(asynq.RedisClientOpt{Addr: c.Host, Password: c.Pass})
+func NewAsynqClient(c cache.ClusterConf) *asynq.Client {
+	return asynq.NewClient(asynq.RedisClientOpt{Addr: c[0].Host, Password: c[0].Pass})
 }
 
-func NewAsynqServer(c redis.RedisKeyConf) *asynq.Server {
+func NewAsynqServer(c cache.ClusterConf) *asynq.Server {
 	return asynq.NewServer(
-		asynq.RedisClientOpt{Addr: c.Host, Password: c.Pass},
+		asynq.RedisClientOpt{Addr: c[0].Host, Password: c[0].Pass},
 		asynq.Config{
 			IsFailure: func(err error) bool {
 				fmt.Printf("asynq server exec task IsFailure ======== >>>>>>>>>>>  err : %+v \n", err)
@@ -31,12 +31,12 @@ func NewAsynqServer(c redis.RedisKeyConf) *asynq.Server {
 }
 
 // create scheduler
-func NewAsynqScheduler(c redis.RedisKeyConf) *asynq.Scheduler {
+func NewAsynqScheduler(c cache.ClusterConf) *asynq.Scheduler {
 	location, _ := time.LoadLocation("Asia/Shanghai")
 	return asynq.NewScheduler(
 		asynq.RedisClientOpt{
-			Addr:     c.Host,
-			Password: c.Pass,
+			Addr:     c[0].Host,
+			Password: c[0].Pass,
 		}, &asynq.SchedulerOpts{
 			Location: location,
 			PostEnqueueFunc: func(task *asynq.TaskInfo, err error) {
