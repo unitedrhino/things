@@ -2,6 +2,7 @@ package startup
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/timedqueuesvr/job/internal/svc"
@@ -20,7 +21,7 @@ func InitTimer(svcCtx *svc.ServiceContext) error {
 	//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
 	ctx, span := ctxs.StartSpan(ctx, "InitTimer", "")
 	defer span.End()
-	as := newAsynqServer(svcCtx.Config)
+	as := clients.NewAsynqServer(svcCtx.Config.Redis)
 	utils.Go(ctx, func() {
 		as.Run(timer.Timed{SvcCtx: svcCtx})
 	})
