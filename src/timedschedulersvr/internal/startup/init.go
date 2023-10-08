@@ -13,10 +13,12 @@ import (
 )
 
 func Init(svcCtx *svc.ServiceContext) error {
-	utils.SingletonRun(context.Background(), svcCtx.Store, "svr:timedschedulersvr", func(ctx2 context.Context) {
-		svcCtx.SchedulerRun = true
-		err := InitTimer(svcCtx)
-		logx.Must(err)
+	utils.Go(context.Background(), func() {
+		utils.SingletonRun(context.Background(), svcCtx.Store, "svr:timedschedulersvr", func(ctx2 context.Context) {
+			svcCtx.SchedulerRun = true
+			err := InitTimer(svcCtx)
+			logx.Must(err)
+		})
 	})
 	return nil
 }
