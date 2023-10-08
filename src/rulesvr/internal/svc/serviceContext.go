@@ -53,7 +53,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg      devicemsg.DeviceMsg
 	)
 	stores.InitConn(c.Database)
-	err := relationDB.Migrate()
+	err := relationDB.Migrate(c.Database)
 	if err != nil {
 		logx.Error("rulesvr 数据库初始化失败 err", err)
 		os.Exit(-1)

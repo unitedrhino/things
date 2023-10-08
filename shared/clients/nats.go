@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
+	"sync"
 )
 
 func NewNatsClient(conf conf.NatsConf) (nc *nats.Conn, err error) {
@@ -32,7 +33,12 @@ func NewNatsJetStreamClient(conf conf.NatsConf) (nats.JetStreamContext, error) {
 	if err != nil {
 		return nil, err
 	}
-	return nc.JetStream(nats.PublishAsyncMaxPending(256))
+	js, err := nc.JetStream(nats.PublishAsyncMaxPending(256))
+	if err != nil {
+		return nil, err
+	}
+
+	return js, JetStreamInit(js)
 }
 
 func CreateStream(jetStream nats.JetStreamContext, name string, subjects []string) error {
@@ -49,6 +55,28 @@ func CreateStream(jetStream nats.JetStreamContext, name string, subjects []strin
 	}
 	return nil
 }
+
+var jetStreamInitOnce sync.Once
+
+func JetStreamInit(jetStream nats.JetStreamContext) (err error) {
+	jetStreamInitOnce.Do(func() {
+		err = CreateStream(jetStream, "server", []string{"server.>"})
+		if err != nil {
+			return
+		}
+		err = CreateStream(jetStream, "device", []string{"device.>"})
+		if err != nil {
+			return
+		}
+		err = CreateStream(jetStream, "application", []string{"application.>"})
+		if err != nil {
+			return
+		}
+	})
+
+	return
+}
+
 func CreateConsumer(jetStream nats.JetStreamContext, stream, name string) error {
 	ConsumerInfo, err := jetStream.ConsumerInfo(stream, name)
 	// stream not found, create it

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/devices"
+	"github.com/i-Things/things/shared/errors"
 )
 
 type (
@@ -16,6 +17,12 @@ type (
 	}
 )
 
-func NewSubInner(conf conf.EventConf) (SubInner, error) {
-	return newNatsClient(conf.Nats)
+func NewSubInner(c conf.EventConf) (SubInner, error) {
+	switch c.Mode {
+	case conf.EventModeNats:
+		return newNatsClient(c.Nats)
+	case conf.EventModeNatsJs:
+		return newNatsJsClient(c.Nats)
+	}
+	return nil, errors.Parameter.AddMsgf("mode:%v not support", c.Mode)
 }

@@ -27,7 +27,7 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	//conn := sqlx.NewMysql(c.Database.DSN)
 	stores.InitConn(c.Database)
-	err := relationDB.Migrate()
+	err := relationDB.Migrate(c.Database)
 	if err != nil {
 		logx.Error("syssvr 数据库初始化失败 err", err)
 		os.Exit(-1)

@@ -59,7 +59,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLog := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 	stores.InitConn(c.Database)
-	err := relationDB.Migrate()
+	err := relationDB.Migrate(c.Database)
 	if err != nil {
 		logx.Error("disvr 数据库初始化失败 err", err)
 		os.Exit(-1)
