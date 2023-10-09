@@ -23,15 +23,15 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TimedschedulerClient interface {
 	//新增任务
-	JobInfoCreate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error)
+	TaskInfoCreate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error)
 	//更新任务
-	JobInfoUpdate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error)
+	TaskInfoUpdate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error)
 	//删除任务
-	JobInfoDelete(ctx context.Context, in *JobInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	TaskInfoDelete(ctx context.Context, in *TaskInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	//获取任务信息列表
-	JobInfoIndex(ctx context.Context, in *JobInfoIndexReq, opts ...grpc.CallOption) (*JobInfoIndexResp, error)
+	TaskInfoIndex(ctx context.Context, in *TaskInfoIndexReq, opts ...grpc.CallOption) (*TaskInfoIndexResp, error)
 	//获取任务信息详情
-	JobInfoRead(ctx context.Context, in *JobInfoReadReq, opts ...grpc.CallOption) (*JobInfo, error)
+	TaskInfoRead(ctx context.Context, in *TaskInfoReadReq, opts ...grpc.CallOption) (*TaskInfo, error)
 }
 
 type timedschedulerClient struct {
@@ -42,45 +42,45 @@ func NewTimedschedulerClient(cc grpc.ClientConnInterface) TimedschedulerClient {
 	return &timedschedulerClient{cc}
 }
 
-func (c *timedschedulerClient) JobInfoCreate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error) {
+func (c *timedschedulerClient) TaskInfoCreate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/jobInfoCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/taskInfoCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *timedschedulerClient) JobInfoUpdate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error) {
+func (c *timedschedulerClient) TaskInfoUpdate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/jobInfoUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/taskInfoUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *timedschedulerClient) JobInfoDelete(ctx context.Context, in *JobInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *timedschedulerClient) TaskInfoDelete(ctx context.Context, in *TaskInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/jobInfoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/taskInfoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *timedschedulerClient) JobInfoIndex(ctx context.Context, in *JobInfoIndexReq, opts ...grpc.CallOption) (*JobInfoIndexResp, error) {
-	out := new(JobInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/jobInfoIndex", in, out, opts...)
+func (c *timedschedulerClient) TaskInfoIndex(ctx context.Context, in *TaskInfoIndexReq, opts ...grpc.CallOption) (*TaskInfoIndexResp, error) {
+	out := new(TaskInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/taskInfoIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *timedschedulerClient) JobInfoRead(ctx context.Context, in *JobInfoReadReq, opts ...grpc.CallOption) (*JobInfo, error) {
-	out := new(JobInfo)
-	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/jobInfoRead", in, out, opts...)
+func (c *timedschedulerClient) TaskInfoRead(ctx context.Context, in *TaskInfoReadReq, opts ...grpc.CallOption) (*TaskInfo, error) {
+	out := new(TaskInfo)
+	err := c.cc.Invoke(ctx, "/timedscheduler.timedscheduler/taskInfoRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -92,15 +92,15 @@ func (c *timedschedulerClient) JobInfoRead(ctx context.Context, in *JobInfoReadR
 // for forward compatibility
 type TimedschedulerServer interface {
 	//新增任务
-	JobInfoCreate(context.Context, *JobInfo) (*Response, error)
+	TaskInfoCreate(context.Context, *TaskInfo) (*Response, error)
 	//更新任务
-	JobInfoUpdate(context.Context, *JobInfo) (*Response, error)
+	TaskInfoUpdate(context.Context, *TaskInfo) (*Response, error)
 	//删除任务
-	JobInfoDelete(context.Context, *JobInfoDeleteReq) (*Response, error)
+	TaskInfoDelete(context.Context, *TaskInfoDeleteReq) (*Response, error)
 	//获取任务信息列表
-	JobInfoIndex(context.Context, *JobInfoIndexReq) (*JobInfoIndexResp, error)
+	TaskInfoIndex(context.Context, *TaskInfoIndexReq) (*TaskInfoIndexResp, error)
 	//获取任务信息详情
-	JobInfoRead(context.Context, *JobInfoReadReq) (*JobInfo, error)
+	TaskInfoRead(context.Context, *TaskInfoReadReq) (*TaskInfo, error)
 	mustEmbedUnimplementedTimedschedulerServer()
 }
 
@@ -108,20 +108,20 @@ type TimedschedulerServer interface {
 type UnimplementedTimedschedulerServer struct {
 }
 
-func (UnimplementedTimedschedulerServer) JobInfoCreate(context.Context, *JobInfo) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method JobInfoCreate not implemented")
+func (UnimplementedTimedschedulerServer) TaskInfoCreate(context.Context, *TaskInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoCreate not implemented")
 }
-func (UnimplementedTimedschedulerServer) JobInfoUpdate(context.Context, *JobInfo) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method JobInfoUpdate not implemented")
+func (UnimplementedTimedschedulerServer) TaskInfoUpdate(context.Context, *TaskInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoUpdate not implemented")
 }
-func (UnimplementedTimedschedulerServer) JobInfoDelete(context.Context, *JobInfoDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method JobInfoDelete not implemented")
+func (UnimplementedTimedschedulerServer) TaskInfoDelete(context.Context, *TaskInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoDelete not implemented")
 }
-func (UnimplementedTimedschedulerServer) JobInfoIndex(context.Context, *JobInfoIndexReq) (*JobInfoIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method JobInfoIndex not implemented")
+func (UnimplementedTimedschedulerServer) TaskInfoIndex(context.Context, *TaskInfoIndexReq) (*TaskInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoIndex not implemented")
 }
-func (UnimplementedTimedschedulerServer) JobInfoRead(context.Context, *JobInfoReadReq) (*JobInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method JobInfoRead not implemented")
+func (UnimplementedTimedschedulerServer) TaskInfoRead(context.Context, *TaskInfoReadReq) (*TaskInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoRead not implemented")
 }
 func (UnimplementedTimedschedulerServer) mustEmbedUnimplementedTimedschedulerServer() {}
 
@@ -136,92 +136,92 @@ func RegisterTimedschedulerServer(s grpc.ServiceRegistrar, srv TimedschedulerSer
 	s.RegisterService(&Timedscheduler_ServiceDesc, srv)
 }
 
-func _Timedscheduler_JobInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(JobInfo)
+func _Timedscheduler_TaskInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TimedschedulerServer).JobInfoCreate(ctx, in)
+		return srv.(TimedschedulerServer).TaskInfoCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/timedscheduler.timedscheduler/jobInfoCreate",
+		FullMethod: "/timedscheduler.timedscheduler/taskInfoCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TimedschedulerServer).JobInfoCreate(ctx, req.(*JobInfo))
+		return srv.(TimedschedulerServer).TaskInfoCreate(ctx, req.(*TaskInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Timedscheduler_JobInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(JobInfo)
+func _Timedscheduler_TaskInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TimedschedulerServer).JobInfoUpdate(ctx, in)
+		return srv.(TimedschedulerServer).TaskInfoUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/timedscheduler.timedscheduler/jobInfoUpdate",
+		FullMethod: "/timedscheduler.timedscheduler/taskInfoUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TimedschedulerServer).JobInfoUpdate(ctx, req.(*JobInfo))
+		return srv.(TimedschedulerServer).TaskInfoUpdate(ctx, req.(*TaskInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Timedscheduler_JobInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(JobInfoDeleteReq)
+func _Timedscheduler_TaskInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskInfoDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TimedschedulerServer).JobInfoDelete(ctx, in)
+		return srv.(TimedschedulerServer).TaskInfoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/timedscheduler.timedscheduler/jobInfoDelete",
+		FullMethod: "/timedscheduler.timedscheduler/taskInfoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TimedschedulerServer).JobInfoDelete(ctx, req.(*JobInfoDeleteReq))
+		return srv.(TimedschedulerServer).TaskInfoDelete(ctx, req.(*TaskInfoDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Timedscheduler_JobInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(JobInfoIndexReq)
+func _Timedscheduler_TaskInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TimedschedulerServer).JobInfoIndex(ctx, in)
+		return srv.(TimedschedulerServer).TaskInfoIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/timedscheduler.timedscheduler/jobInfoIndex",
+		FullMethod: "/timedscheduler.timedscheduler/taskInfoIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TimedschedulerServer).JobInfoIndex(ctx, req.(*JobInfoIndexReq))
+		return srv.(TimedschedulerServer).TaskInfoIndex(ctx, req.(*TaskInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Timedscheduler_JobInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(JobInfoReadReq)
+func _Timedscheduler_TaskInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskInfoReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TimedschedulerServer).JobInfoRead(ctx, in)
+		return srv.(TimedschedulerServer).TaskInfoRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/timedscheduler.timedscheduler/jobInfoRead",
+		FullMethod: "/timedscheduler.timedscheduler/taskInfoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TimedschedulerServer).JobInfoRead(ctx, req.(*JobInfoReadReq))
+		return srv.(TimedschedulerServer).TaskInfoRead(ctx, req.(*TaskInfoReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -234,24 +234,24 @@ var Timedscheduler_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*TimedschedulerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "jobInfoCreate",
-			Handler:    _Timedscheduler_JobInfoCreate_Handler,
+			MethodName: "taskInfoCreate",
+			Handler:    _Timedscheduler_TaskInfoCreate_Handler,
 		},
 		{
-			MethodName: "jobInfoUpdate",
-			Handler:    _Timedscheduler_JobInfoUpdate_Handler,
+			MethodName: "taskInfoUpdate",
+			Handler:    _Timedscheduler_TaskInfoUpdate_Handler,
 		},
 		{
-			MethodName: "jobInfoDelete",
-			Handler:    _Timedscheduler_JobInfoDelete_Handler,
+			MethodName: "taskInfoDelete",
+			Handler:    _Timedscheduler_TaskInfoDelete_Handler,
 		},
 		{
-			MethodName: "jobInfoIndex",
-			Handler:    _Timedscheduler_JobInfoIndex_Handler,
+			MethodName: "taskInfoIndex",
+			Handler:    _Timedscheduler_TaskInfoIndex_Handler,
 		},
 		{
-			MethodName: "jobInfoRead",
-			Handler:    _Timedscheduler_JobInfoRead_Handler,
+			MethodName: "taskInfoRead",
+			Handler:    _Timedscheduler_TaskInfoRead_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

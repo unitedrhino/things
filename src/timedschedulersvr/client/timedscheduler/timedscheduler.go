@@ -14,26 +14,26 @@ import (
 )
 
 type (
-	JobInfo          = timedscheduler.JobInfo
-	JobInfoDeleteReq = timedscheduler.JobInfoDeleteReq
-	JobInfoIndexReq  = timedscheduler.JobInfoIndexReq
-	JobInfoIndexResp = timedscheduler.JobInfoIndexResp
-	JobInfoReadReq   = timedscheduler.JobInfoReadReq
-	PageInfo         = timedscheduler.PageInfo
-	PageInfo_OrderBy = timedscheduler.PageInfo_OrderBy
-	Response         = timedscheduler.Response
+	PageInfo          = timedscheduler.PageInfo
+	PageInfo_OrderBy  = timedscheduler.PageInfo_OrderBy
+	Response          = timedscheduler.Response
+	TaskInfo          = timedscheduler.TaskInfo
+	TaskInfoDeleteReq = timedscheduler.TaskInfoDeleteReq
+	TaskInfoIndexReq  = timedscheduler.TaskInfoIndexReq
+	TaskInfoIndexResp = timedscheduler.TaskInfoIndexResp
+	TaskInfoReadReq   = timedscheduler.TaskInfoReadReq
 
 	Timedscheduler interface {
 		// 新增任务
-		JobInfoCreate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error)
+		TaskInfoCreate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error)
 		// 更新任务
-		JobInfoUpdate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error)
+		TaskInfoUpdate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error)
 		// 删除任务
-		JobInfoDelete(ctx context.Context, in *JobInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		TaskInfoDelete(ctx context.Context, in *TaskInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 获取任务信息列表
-		JobInfoIndex(ctx context.Context, in *JobInfoIndexReq, opts ...grpc.CallOption) (*JobInfoIndexResp, error)
+		TaskInfoIndex(ctx context.Context, in *TaskInfoIndexReq, opts ...grpc.CallOption) (*TaskInfoIndexResp, error)
 		// 获取任务信息详情
-		JobInfoRead(ctx context.Context, in *JobInfoReadReq, opts ...grpc.CallOption) (*JobInfo, error)
+		TaskInfoRead(ctx context.Context, in *TaskInfoReadReq, opts ...grpc.CallOption) (*TaskInfo, error)
 	}
 
 	defaultTimedscheduler struct {
@@ -60,56 +60,56 @@ func NewDirectTimedscheduler(svcCtx *svc.ServiceContext, svr timedscheduler.Time
 }
 
 // 新增任务
-func (m *defaultTimedscheduler) JobInfoCreate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultTimedscheduler) TaskInfoCreate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error) {
 	client := timedscheduler.NewTimedschedulerClient(m.cli.Conn())
-	return client.JobInfoCreate(ctx, in, opts...)
+	return client.TaskInfoCreate(ctx, in, opts...)
 }
 
 // 新增任务
-func (d *directTimedscheduler) JobInfoCreate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.JobInfoCreate(ctx, in)
+func (d *directTimedscheduler) TaskInfoCreate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.TaskInfoCreate(ctx, in)
 }
 
 // 更新任务
-func (m *defaultTimedscheduler) JobInfoUpdate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultTimedscheduler) TaskInfoUpdate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error) {
 	client := timedscheduler.NewTimedschedulerClient(m.cli.Conn())
-	return client.JobInfoUpdate(ctx, in, opts...)
+	return client.TaskInfoUpdate(ctx, in, opts...)
 }
 
 // 更新任务
-func (d *directTimedscheduler) JobInfoUpdate(ctx context.Context, in *JobInfo, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.JobInfoUpdate(ctx, in)
+func (d *directTimedscheduler) TaskInfoUpdate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.TaskInfoUpdate(ctx, in)
 }
 
 // 删除任务
-func (m *defaultTimedscheduler) JobInfoDelete(ctx context.Context, in *JobInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultTimedscheduler) TaskInfoDelete(ctx context.Context, in *TaskInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	client := timedscheduler.NewTimedschedulerClient(m.cli.Conn())
-	return client.JobInfoDelete(ctx, in, opts...)
+	return client.TaskInfoDelete(ctx, in, opts...)
 }
 
 // 删除任务
-func (d *directTimedscheduler) JobInfoDelete(ctx context.Context, in *JobInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.JobInfoDelete(ctx, in)
+func (d *directTimedscheduler) TaskInfoDelete(ctx context.Context, in *TaskInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.TaskInfoDelete(ctx, in)
 }
 
 // 获取任务信息列表
-func (m *defaultTimedscheduler) JobInfoIndex(ctx context.Context, in *JobInfoIndexReq, opts ...grpc.CallOption) (*JobInfoIndexResp, error) {
+func (m *defaultTimedscheduler) TaskInfoIndex(ctx context.Context, in *TaskInfoIndexReq, opts ...grpc.CallOption) (*TaskInfoIndexResp, error) {
 	client := timedscheduler.NewTimedschedulerClient(m.cli.Conn())
-	return client.JobInfoIndex(ctx, in, opts...)
+	return client.TaskInfoIndex(ctx, in, opts...)
 }
 
 // 获取任务信息列表
-func (d *directTimedscheduler) JobInfoIndex(ctx context.Context, in *JobInfoIndexReq, opts ...grpc.CallOption) (*JobInfoIndexResp, error) {
-	return d.svr.JobInfoIndex(ctx, in)
+func (d *directTimedscheduler) TaskInfoIndex(ctx context.Context, in *TaskInfoIndexReq, opts ...grpc.CallOption) (*TaskInfoIndexResp, error) {
+	return d.svr.TaskInfoIndex(ctx, in)
 }
 
 // 获取任务信息详情
-func (m *defaultTimedscheduler) JobInfoRead(ctx context.Context, in *JobInfoReadReq, opts ...grpc.CallOption) (*JobInfo, error) {
+func (m *defaultTimedscheduler) TaskInfoRead(ctx context.Context, in *TaskInfoReadReq, opts ...grpc.CallOption) (*TaskInfo, error) {
 	client := timedscheduler.NewTimedschedulerClient(m.cli.Conn())
-	return client.JobInfoRead(ctx, in, opts...)
+	return client.TaskInfoRead(ctx, in, opts...)
 }
 
 // 获取任务信息详情
-func (d *directTimedscheduler) JobInfoRead(ctx context.Context, in *JobInfoReadReq, opts ...grpc.CallOption) (*JobInfo, error) {
-	return d.svr.JobInfoRead(ctx, in)
+func (d *directTimedscheduler) TaskInfoRead(ctx context.Context, in *TaskInfoReadReq, opts ...grpc.CallOption) (*TaskInfo, error) {
+	return d.svr.TaskInfoRead(ctx, in)
 }

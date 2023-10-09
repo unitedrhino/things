@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/job"
+	"github.com/i-Things/things/shared/domain/task"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/timedschedulersvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/timedschedulersvr/internal/svc"
@@ -31,21 +31,21 @@ func InitTimer(svcCtx *svc.ServiceContext) error {
 	//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
 	ctx, span := ctxs.StartSpan(ctx, "InitTimer", "")
 	defer span.End()
-	jobDB := relationDB.NewJobRepo(ctx)
+	jobDB := relationDB.NewTaskRepo(ctx)
 	//先把状态全部改成暂停状态
-	err := jobDB.UpdateByFilter(ctx, &relationDB.TimedQueueJob{Status: relationDB.JobStatusPause},
-		relationDB.JobFilter{Status: relationDB.JobStatusRun})
+	err := jobDB.UpdateByFilter(ctx, &relationDB.TimedTask{Status: relationDB.TaskStatusPause},
+		relationDB.TaskFilter{Status: relationDB.TaskStatusRun})
 	if err != nil {
 		return err
 	}
-	js, err := jobDB.FindByFilter(ctx, relationDB.JobFilter{Status: relationDB.JobStatusPause}, &def.PageInfo{
+	js, err := jobDB.FindByFilter(ctx, relationDB.TaskFilter{Status: relationDB.TaskStatusPause}, &def.PageInfo{
 		Orders: []def.OrderBy{{Filed: "priority", Sort: def.OrderDesc}},
 	})
 	if err != nil {
 		return err
 	}
 	for _, j := range js {
-		jb := job.Job{
+		jb := task.Info{
 			Group:    j.Group,
 			Type:     j.Type,
 			SubType:  j.SubType,
@@ -67,7 +67,7 @@ func InitTimer(svcCtx *svc.ServiceContext) error {
 			continue
 		}
 		j.EntryID = entryID
-		j.Status = relationDB.JobStatusRun
+		j.Status = relationDB.TaskStatusRun
 		err = jobDB.Update(ctx, j)
 		if err != nil {
 			logx.WithContext(ctx).Errorf("Scheduler.Update  err:%+v , task:%+v", err, task)

@@ -20,18 +20,18 @@ message PageInfo{
 
 service timedscheduler {
   //新增任务
-  rpc jobInfoCreate(JobInfo)     returns (Response);
+  rpc taskInfoCreate(TaskInfo)     returns (Response);
   //更新任务
-  rpc jobInfoUpdate(JobInfo)     returns (Response);
+  rpc taskInfoUpdate(TaskInfo)     returns (Response);
   //删除任务
-  rpc jobInfoDelete(JobInfoDeleteReq)     returns (Response);
+  rpc taskInfoDelete(TaskInfoDeleteReq)     returns (Response);
   //获取任务信息列表
-  rpc jobInfoIndex(JobInfoIndexReq)     returns (JobInfoIndexResp);
+  rpc taskInfoIndex(TaskInfoIndexReq)     returns (TaskInfoIndexResp);
   //获取任务信息详情
-  rpc jobInfoRead(JobInfoReadReq)     returns (JobInfo);
+  rpc taskInfoRead(TaskInfoReadReq)     returns (TaskInfo);
 }
 
-message JobInfo {
+message TaskInfo {
   int64 id  =1;// 任务ID
   string Group = 2; // 任务组名
   string Type = 3; //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
@@ -45,18 +45,26 @@ message JobInfo {
   string Priority = 11; //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 }
 
-message JobInfoDeleteReq{
-
+message TaskInfoDeleteReq{
+  int64 id  =1;// 任务ID
+  string Group = 2; // 任务组名
+  string Code = 3; //任务编码
 }
 
-message JobInfoIndexReq{
-
+message TaskInfoIndexReq{
+  PageInfo page = 1;//分页信息
+  string Group = 2; // 任务组名
+  string Type = 3; //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
+  string SubType = 4; //任务子类型 natsJs nats
+  string Name = 5; // 任务名称
+  string Code = 6; //任务编码
 }
 
-message JobInfoReadReq{
-
+message TaskInfoReadReq{
+  int64 id  =1;// 任务ID
 }
 
-message JobInfoIndexResp{
-
+message TaskInfoIndexResp{
+  repeated  TaskInfo list =1;
+  int64 total = 2;
 }

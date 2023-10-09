@@ -29,7 +29,7 @@ type SysUserInfo struct {
 	Language   string         `gorm:"column:language;type:VARCHAR(50);NOT NULL"`                      // 用户的语言，简体中文为zh_CN
 	HeadImgUrl string         `gorm:"column:head_img_url;type:VARCHAR(256);NOT NULL"`                 // 用户头像
 	Role       int64          `gorm:"column:role;type:BIGINT;NOT NULL"`                               // 用户角色
-	IsAllData  int64          `gorm:"column:is_all_data;type:SMALLINT;default:2;NOT NULL"`            // 是否所有数据权限（1是，2否）
+	IsAllData  int64          `gorm:"column:is_all_data;type:SMALLINT;default:1;NOT NULL"`            // 是否所有数据权限（1是，2否）
 	stores.Time
 }
 
