@@ -12,6 +12,7 @@ import (
 	systemmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/menu"
 	systemprojectinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/project/info"
 	systemrole "github.com/i-Things/things/src/apisvr/internal/handler/system/role"
+	systemtimedtask "github.com/i-Things/things/src/apisvr/internal/handler/system/timed/task"
 	systemuser "github.com/i-Things/things/src/apisvr/internal/handler/system/user"
 	systemuserauth "github.com/i-Things/things/src/apisvr/internal/handler/system/user/auth"
 	thingsdeviceauth "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth"
@@ -356,6 +357,40 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/system/area/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemtimedtask.TimedTaskCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemtimedtask.TimedTaskIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemtimedtask.TimedTaskUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemtimedtask.TimedTaskDeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: systemtimedtask.TimedTaskReadHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/timed/task"),
 	)
 
 	server.AddRoutes(
