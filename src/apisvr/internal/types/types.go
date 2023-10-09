@@ -473,6 +473,44 @@ type AreaInfoTreeResp struct {
 	Tree *AreaInfo `json:"tree"` //项目区域列表
 }
 
+type TimedTaskIndexReq struct {
+	Page    PageInfo `json:"page,optional"`    //分页信息,只获取一个则不填
+	Group   string   `json:"group,optional"`   // 任务组名
+	Type    string   `json:"type,optional"`    //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
+	SubType string   `json:"subType,optional"` //任务子类型 natsJs nats
+	Name    string   `json:"name,optional"`    // 任务名称
+	Code    string   `json:"code,optional"`    //任务编码
+}
+
+type TimedTaskInfo struct {
+	Id             int64  `json:"id,optional"`             // 任务ID
+	Group          string `json:"group,optional"`          // 任务组名
+	Type           string `json:"type,optional"`           //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
+	SubType        string `json:"subType,optional"`        //任务子类型 natsJs nats
+	Name           string `json:"name,optional"`           // 任务名称
+	Code           string `json:"code,optional"`           //任务编码
+	Params         string `json:"params,optional"`         // 任务参数
+	CronExpression string `json:"cronExpression,optional"` // cron执行表达式
+	Status         int64  `json:"status,optional"`         // 状态（1:正常运行 2:暂停 3:停止使用）
+	EntryID        string `json:"entryId,optional"`        //执行任务的id
+	Priority       string `json:"priority,optional"`       //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+}
+
+type TimedTaskIndexResp struct {
+	List  []*TimedTaskInfo `json:"list"`  //任务列表数据
+	Total int64            `json:"total"` //任务列表总数
+}
+
+type TaskInfoDeleteReq struct {
+	ID int64 `json:"id"` //编号
+}
+
+type TimedTaskReadReq struct {
+	ID    int64  `json:"id,optional"`    // 任务ID
+	Group string `json:"group,optional"` // 任务组名
+	Code  string `json:"code,optional"`  //任务编码
+}
+
 type ProductInfo struct {
 	CreatedTime  int64   `json:"createdTime,optional,string"`       //创建时间 只读
 	ProductID    string  `json:"productID,optional"`                //产品id 只读

@@ -16,3 +16,4 @@ import "system/common.api" //系统配置相关功能
 import "system/auth.api" //权限控制相关功能
 import "system/project.api" //项目管理相关功能
 import "system/area.api" //区域管理相关功能
+import "system/timed.api" //区域管理相关功能
