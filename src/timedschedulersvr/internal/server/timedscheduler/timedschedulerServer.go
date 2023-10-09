@@ -23,31 +23,31 @@ func NewTimedschedulerServer(svcCtx *svc.ServiceContext) *TimedschedulerServer {
 }
 
 // 新增任务
-func (s *TimedschedulerServer) JobInfoCreate(ctx context.Context, in *timedscheduler.JobInfo) (*timedscheduler.Response, error) {
-	l := timedschedulerlogic.NewJobInfoCreateLogic(ctx, s.svcCtx)
-	return l.JobInfoCreate(in)
+func (s *TimedschedulerServer) TaskInfoCreate(ctx context.Context, in *timedscheduler.TaskInfo) (*timedscheduler.Response, error) {
+	l := timedschedulerlogic.NewTaskInfoCreateLogic(ctx, s.svcCtx)
+	return l.TaskInfoCreate(in)
 }
 
 // 更新任务
-func (s *TimedschedulerServer) JobInfoUpdate(ctx context.Context, in *timedscheduler.JobInfo) (*timedscheduler.Response, error) {
-	l := timedschedulerlogic.NewJobInfoUpdateLogic(ctx, s.svcCtx)
-	return l.JobInfoUpdate(in)
+func (s *TimedschedulerServer) TaskInfoUpdate(ctx context.Context, in *timedscheduler.TaskInfo) (*timedscheduler.Response, error) {
+	l := timedschedulerlogic.NewTaskInfoUpdateLogic(ctx, s.svcCtx)
+	return l.TaskInfoUpdate(in)
 }
 
 // 删除任务
-func (s *TimedschedulerServer) JobInfoDelete(ctx context.Context, in *timedscheduler.JobInfoDeleteReq) (*timedscheduler.Response, error) {
-	l := timedschedulerlogic.NewJobInfoDeleteLogic(ctx, s.svcCtx)
-	return l.JobInfoDelete(in)
+func (s *TimedschedulerServer) TaskInfoDelete(ctx context.Context, in *timedscheduler.TaskInfoDeleteReq) (*timedscheduler.Response, error) {
+	l := timedschedulerlogic.NewTaskInfoDeleteLogic(ctx, s.svcCtx)
+	return l.TaskInfoDelete(in)
 }
 
 // 获取任务信息列表
-func (s *TimedschedulerServer) JobInfoIndex(ctx context.Context, in *timedscheduler.JobInfoIndexReq) (*timedscheduler.JobInfoIndexResp, error) {
-	l := timedschedulerlogic.NewJobInfoIndexLogic(ctx, s.svcCtx)
-	return l.JobInfoIndex(in)
+func (s *TimedschedulerServer) TaskInfoIndex(ctx context.Context, in *timedscheduler.TaskInfoIndexReq) (*timedscheduler.TaskInfoIndexResp, error) {
+	l := timedschedulerlogic.NewTaskInfoIndexLogic(ctx, s.svcCtx)
+	return l.TaskInfoIndex(in)
 }
 
 // 获取任务信息详情
-func (s *TimedschedulerServer) JobInfoRead(ctx context.Context, in *timedscheduler.JobInfoReadReq) (*timedscheduler.JobInfo, error) {
-	l := timedschedulerlogic.NewJobInfoReadLogic(ctx, s.svcCtx)
-	return l.JobInfoRead(in)
+func (s *TimedschedulerServer) TaskInfoRead(ctx context.Context, in *timedscheduler.TaskInfoReadReq) (*timedscheduler.TaskInfo, error) {
+	l := timedschedulerlogic.NewTaskInfoReadLogic(ctx, s.svcCtx)
+	return l.TaskInfoRead(in)
 }

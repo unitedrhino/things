@@ -1,5 +1,5 @@
 // 消息队列通知类型
-package job
+package task
 
 type Queue struct {
 	Topic   string `json:"topic"`

@@ -3,6 +3,7 @@ package relationDB
 import (
 	"database/sql"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm/clause"
 )
@@ -73,7 +74,7 @@ func init() {
 
 var (
 	MigrateUserInfo = []SysUserInfo{
-		{UserID: 1740358057038188544, UserName: sql.NullString{String: "administrator", Valid: true}, Password: "4f0fded4a38abe7a3ea32f898bb82298", Role: 1, NickName: "iThings管理员"},
+		{UserID: 1740358057038188544, UserName: sql.NullString{String: "administrator", Valid: true}, Password: "4f0fded4a38abe7a3ea32f898bb82298", Role: 1, NickName: "iThings管理员", IsAllData: def.True},
 	}
 	MigrateRoleInfo = []SysRoleInfo{{ID: 1, Name: "admin"}}
 	MigrateRoleMenu []SysRoleMenu

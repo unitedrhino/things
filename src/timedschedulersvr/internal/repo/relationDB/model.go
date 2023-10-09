@@ -8,12 +8,12 @@ type TimedQueueExample struct {
 }
 
 const (
-	JobStatusRun   = 1 //正常运行
-	JobStatusPause = 2 //暂停
-	JobStatusStop  = 3 //停用
+	TaskStatusRun   = 1 //正常运行
+	TaskStatusPause = 2 //暂停
+	TaskStatusStop  = 3 //停用
 )
 
-type TimedQueueJob struct {
+type TimedTask struct {
 	ID             int64  `gorm:"column:id;primary_key"`                                              // 任务ID
 	Group          string `gorm:"column:group;uniqueIndex:uni_group_name;uniqueIndex:uni_group_code"` // 任务组名
 	Type           string `gorm:"column:type"`                                                        //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
@@ -28,6 +28,6 @@ type TimedQueueJob struct {
 	stores.Time
 }
 
-func (t *TimedQueueJob) TableName() string {
-	return "timed_queue_job"
+func (t *TimedTask) TableName() string {
+	return "timed_task"
 }

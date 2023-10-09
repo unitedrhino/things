@@ -1,4 +1,4 @@
-package job
+package task
 
 import (
 	"encoding/json"
@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	JobTypeQueue = "queue"
-	JobTypeSql   = "sql"
+	TaskTypeQueue = "queue"
+	TaskTypeSql   = "sql"
 )
 
-type Job struct {
+type Info struct {
 	Group    string `json:"group"`    // 任务组名
 	Type     string `json:"type"`     //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
 	SubType  string `json:"subType"`  //任务子类型 natsJs nats
@@ -23,24 +23,24 @@ type Job struct {
 	Queue    *Queue `json:"-"`        //消息队列类型
 }
 
-func (j *Job) GetTypeName() string {
+func (j *Info) GetTypeName() string {
 	return fmt.Sprintf("%s:%s", j.Group, j.Code)
 }
 
-func (j *Job) ToPayload() []byte {
+func (j *Info) ToPayload() []byte {
 	ret, _ := json.Marshal(j)
 	return ret
 }
-func (j *Job) ToPriority() string {
+func (j *Info) ToPriority() string {
 	if j.Priority == "" {
 		return "default"
 	}
 	return j.Priority
 }
 
-func (j *Job) Init() error {
+func (j *Info) Init() error {
 	switch j.Type {
-	case JobTypeQueue:
+	case TaskTypeQueue:
 		var q Queue
 		err := json.Unmarshal([]byte(j.Params), &q)
 		if err != nil {
@@ -52,6 +52,6 @@ func (j *Job) Init() error {
 	return errors.Parameter.AddMsgf("job type not support:%v", j.Type)
 }
 
-func (j Job) ToTask() *asynq.Task {
+func (j Info) ToTask() *asynq.Task {
 	return asynq.NewTask(j.GetTypeName(), j.ToPayload(), asynq.Queue(j.ToPriority()))
 }

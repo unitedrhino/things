@@ -12,12 +12,12 @@ func Migrate(c conf.Database) error {
 	}
 	db := stores.GetCommonConn(nil)
 	var needInitColumn bool
-	if !db.Migrator().HasTable(&TimedQueueJob{}) {
+	if !db.Migrator().HasTable(&TimedTask{}) {
 		//需要初始化表
 		needInitColumn = true
 	}
 	err := db.AutoMigrate(
-		&TimedQueueJob{},
+		&TimedTask{},
 	)
 	if needInitColumn {
 		return migrateTableColumn()
@@ -33,7 +33,7 @@ func migrateTableColumn() error {
 }
 
 var (
-	MigrateTimedQueueJob = []TimedQueueJob{
+	MigrateTimedQueueJob = []TimedTask{
 		{
 			Group:          "order",
 			Type:           "queue",
@@ -42,7 +42,7 @@ var (
 			Code:           "order_check",
 			Params:         `{"topic":"timed.435","payload":"adfgawe"}`,
 			CronExpression: "@every 2s",
-			Status:         JobStatusPause,
+			Status:         TaskStatusPause,
 			Priority:       "critical",
 		},
 		{
@@ -52,7 +52,7 @@ var (
 			Code:           "order_check2",
 			Params:         `{"topic":"timed.123","payload":"sdfgarg"}`,
 			CronExpression: "@every 2s",
-			Status:         JobStatusPause,
+			Status:         TaskStatusPause,
 			Priority:       "low",
 		},
 	}
