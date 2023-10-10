@@ -2,6 +2,9 @@ package task
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/timedschedulersvr/pb/timedscheduler"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,7 +27,13 @@ func NewTimedTaskDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *T
 }
 
 func (l *TimedTaskDeleteLogic) TimedTaskDelete(req *types.TaskInfoDeleteReq) error {
-	// todo: add your logic here and delete this line
-
+	_, err := l.svcCtx.Timedscheduler.TaskInfoDelete(l.ctx, &timedscheduler.TaskInfoDeleteReq{
+		Id: req.ID,
+	})
+	if err != nil {
+		err := errors.Fmt(err)
+		l.Errorf("%s.rpc.TaskInfoDelete req=%v err=%+v", utils.FuncName(), req, err)
+		return err
+	}
 	return nil
 }

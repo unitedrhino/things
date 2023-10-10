@@ -49,7 +49,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}); err != nil {
-		return nil, err
+		//return nil, err
 	}
 
 	err := l.initMsg(in.ProductID)
@@ -76,7 +76,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 	}
 	err = req.FmtReqParam(l.schema, schema.ParamActionInput)
 	if err != nil {
-		return nil, err
+		//return nil, err
 	}
 
 	payload, _ := json.Marshal(req)
