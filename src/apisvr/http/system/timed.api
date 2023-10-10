@@ -47,7 +47,7 @@ type (
     }
 
     TimedTaskInfo struct {
-        Id             int64  `json:"id,optional"`                        // 任务ID
+        ID             int64  `json:"id,optional"`                        // 任务ID
         Group          string `json:"group,optional"`                   // 任务组名
         Type           string `json:"type,optional"`                     //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
         SubType        string `json:"subType,optional"`               //任务子类型 natsJs nats

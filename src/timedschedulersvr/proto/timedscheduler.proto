@@ -33,31 +33,31 @@ service timedscheduler {
 
 message TaskInfo {
   int64 id  =1;// 任务ID
-  string Group = 2; // 任务组名
-  string Type = 3; //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
-  string SubType = 4; //任务子类型 natsJs nats
-  string Name = 5; // 任务名称
-  string Code = 6; //任务编码
-  string Params = 7; // 任务参数
-  string CronExpression = 8; // cron执行表达式
-  int64 Status = 9; // 状态（1:正常运行 2:暂停 3:停止使用）
-  string EntryID = 10; //执行任务的id
-  string Priority = 11; //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+  string group = 2; // 任务组名
+  string type = 3; //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
+  string subType = 4; //任务子类型 natsJs nats
+  string name = 5; // 任务名称
+  string code = 6; //任务编码
+  string params = 7; // 任务参数
+  string cronExpression = 8; // cron执行表达式
+  int64 status = 9; // 状态（1:正常运行 2:暂停 3:停止使用）
+  string entryID = 10; //执行任务的id
+  string priority = 11; //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 }
 
 message TaskInfoDeleteReq{
   int64 id  =1;// 任务ID
-  string Group = 2; // 任务组名
-  string Code = 3; //任务编码
+  string group = 2; // 任务组名
+  string code = 3; //任务编码
 }
 
 message TaskInfoIndexReq{
   PageInfo page = 1;//分页信息
-  string Group = 2; // 任务组名
-  string Type = 3; //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
-  string SubType = 4; //任务子类型 natsJs nats
-  string Name = 5; // 任务名称
-  string Code = 6; //任务编码
+  string group = 2; // 任务组名
+  string type = 3; //任务类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
+  string subType = 4; //任务子类型 natsJs nats
+  string name = 5; // 任务名称
+  string code = 6; //任务编码
 }
 
 message TaskInfoReadReq{

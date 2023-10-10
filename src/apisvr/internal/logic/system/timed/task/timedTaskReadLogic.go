@@ -2,6 +2,9 @@ package task
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/timedschedulersvr/pb/timedscheduler"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,7 +27,11 @@ func NewTimedTaskReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Tim
 }
 
 func (l *TimedTaskReadLogic) TimedTaskRead(req *types.TimedTaskReadReq) (resp *types.TimedTaskInfo, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+	info, err := l.svcCtx.Timedscheduler.TaskInfoRead(l.ctx, &timedscheduler.TaskInfoReadReq{Id: req.ID})
+	if err != nil {
+		err := errors.Fmt(err)
+		l.Errorf("%s.rpc.TaskInfoUpdate req=%v err=%+v", utils.FuncName(), req, err)
+		return nil, err
+	}
+	return ToTaskInfoTypes(info), nil
 }

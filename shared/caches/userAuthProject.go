@@ -38,7 +38,7 @@ func GetUserAuthProject(ctx context.Context, userID int64) ([]*userDataAuth.Proj
 		}
 		return nil, errors.Database.AddDetail(err)
 	}
-	if ccJson == "" { //没有设置过
+	if ccJson == "" || ccJson == "null" { //没有设置过
 		return nil, nil
 	}
 	var dataIDs []*userDataAuth.Project
