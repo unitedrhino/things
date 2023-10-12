@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -27,6 +28,7 @@ func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
 		conf.MustLoad("etc/sys.yaml", &c)
 		ctxSvc = svc.NewServiceContext(c)
+		logx.Infof("enabled syssvr")
 	})
 	return ctxSvc
 }

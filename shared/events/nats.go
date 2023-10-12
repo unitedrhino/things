@@ -31,7 +31,6 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 		var ctx context.Context
 		utils.Recover(ctx)
 		startTime := timex.Now()
-		msg.Ack()
 		emsg := GetEventMsg(msg.Data)
 		if emsg == nil {
 			logx.Error(msg.Subject, string(msg.Data))
@@ -40,7 +39,12 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 		ctx = emsg.GetCtx()
 		ctx, span := ctxs.StartSpan(ctx, msg.Subject, "")
 		defer span.End()
-		err := handle(ctx, emsg.GetData(), msg)
+		err := msg.Ack()
+		if err != nil {
+			logx.WithContext(ctx).Errorf("nats subscription ack|subject:%v,body:%v,err:%v",
+				msg.Subject, string(emsg.GetData()), err)
+		}
+		err = handle(ctx, emsg.GetData(), msg)
 		duration := timex.Since(startTime)
 		if err != nil {
 			logx.WithContext(ctx).WithDuration(duration).Errorf("nats subscription|subject:%v,body:%v,err:%v",
