@@ -1,4 +1,4 @@
-package timed
+package timedDelay
 
 import (
 	"github.com/hibiken/asynq"
