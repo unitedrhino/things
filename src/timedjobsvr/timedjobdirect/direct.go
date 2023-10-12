@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/src/timedjobsvr/internal/svc"
 	"github.com/i-Things/things/src/timedjobsvr/pb/timedjob"
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -31,6 +32,7 @@ func GetSvcCtx() *svc.ServiceContext {
 		conf.MustLoad("etc/timedjob.yaml", &c)
 		svcCtx = svc.NewServiceContext(c)
 		startup.Init(svcCtx)
+		logx.Infof("enabled timedjobsvr")
 	})
 	return svcCtx
 }
