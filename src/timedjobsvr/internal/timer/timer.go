@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/shared/domain/task"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/timedjobsvr/internal/svc"
+	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
 
@@ -17,6 +18,7 @@ type Timed struct {
 }
 
 func (t Timed) ProcessTask(ctx context.Context, Task *asynq.Task) error {
+
 	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
 	defer cancel()
 	utils.Recover(ctx)
@@ -24,6 +26,7 @@ func (t Timed) ProcessTask(ctx context.Context, Task *asynq.Task) error {
 	json.Unmarshal(Task.Payload(), &jb)
 	ctx, span := ctxs.StartSpan(ctx, fmt.Sprintf("timedJob_%s", jb.Code), "")
 	defer span.End()
+	logx.WithContext(ctx).Infof("timedJob ProcessTask task:%v", jb)
 	err := jb.Init()
 	if err != nil {
 		return err
