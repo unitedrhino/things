@@ -21,7 +21,6 @@ services:
       - etcd
       - mariadb
       - redis
-      - init-db
       - emqx
     logging:
       options:
