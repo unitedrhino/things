@@ -21,6 +21,12 @@ type QueueMsg struct {
 // 延时发送消息
 func (t Timed) DelayQueue(msg QueueMsg) error {
 	payload, _ := json.Marshal(msg.Payload)
+	switch msg.Payload.(type) {
+	case string:
+		payload = []byte(msg.Payload.(string))
+	case []byte:
+		payload = msg.Payload.([]byte)
+	}
 	params, _ := json.Marshal(task.Queue{
 		Topic:   msg.Topic,
 		Payload: string(payload),
