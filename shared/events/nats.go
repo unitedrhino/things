@@ -10,8 +10,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/netx"
 	"github.com/zeromicro/go-zero/core/timex"
-	"runtime"
-	"runtime/debug"
 	"strings"
 )
 
@@ -43,18 +41,14 @@ func NatsSubscription(handle HandleFunc) func(msg *nats.Msg) {
 		defer span.End()
 		err := msg.Ack()
 		if err != nil {
-			pc := make([]uintptr, 1)
-			runtime.Callers(2, pc)
-			logx.WithContext(ctx).Errorf("nats subscription ack|subject:%v,body:%v,err:%v,stack:%v",
-				msg.Subject, string(emsg.GetData()), err, string(debug.Stack()))
+			logx.WithContext(ctx).Errorf("nats subscription ack|subject:%v,body:%v,err:%v",
+				msg.Subject, string(emsg.GetData()), err)
 		}
 		err = handle(ctx, emsg.GetData(), msg)
 		duration := timex.Since(startTime)
 		if err != nil {
-			pc := make([]uintptr, 1)
-			runtime.Callers(2, pc)
-			logx.WithContext(ctx).WithDuration(duration).Errorf("nats subscription|subject:%v,body:%v,err:%v,stack:%v",
-				msg.Subject, string(emsg.GetData()), err, string(debug.Stack()))
+			logx.WithContext(ctx).WithDuration(duration).Errorf("nats subscription|subject:%v,body:%v,err:%v",
+				msg.Subject, string(emsg.GetData()), err)
 		} else {
 			logx.WithContext(ctx).WithDuration(duration).Infof("nats subscription|subject:%v,body:%v",
 				msg.Subject, string(emsg.GetData()))
