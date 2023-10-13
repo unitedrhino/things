@@ -56,7 +56,7 @@ type (
         Params         string `json:"params,optional"`                 // 任务参数
         CronExpression string `json:"cronExpression,optional"` // cron执行表达式
         Status         int64  `json:"status,optional"`                // 状态（1:正常运行 2:暂停 3:停止使用）
-        EntryID        string `json:"entryId,optional"`              //执行任务的id
+        EntryID        string `json:"entryID,optional"`              //执行任务的id
         Priority       string `json:"priority,optional"`            //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
     }
 
