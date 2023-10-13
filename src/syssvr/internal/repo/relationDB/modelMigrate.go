@@ -99,6 +99,13 @@ var (
 		{ID: 62, ParentID: 43, Type: 1, Order: 5, Name: "告警记录", Path: "/alarmMangers/alarmConfiguration/log", Component: "./alarmMangers/alarmRecord/index", Icon: "icon_ap", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 50, ParentID: 1, Type: 1, Order: 5, Name: "规则引擎", Path: "/ruleEngine", Component: "./ruleEngine/index.tsx", Icon: "icon_dosing", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 51, ParentID: 50, Type: 1, Order: 1, Name: "场景联动", Path: "/ruleEngine/scene/index", Component: "./ruleEngine/scene/index.tsx", Icon: "icon_device", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		//视频服务菜单项
+		{ID: 63, ParentID: 1, Type: 1, Order: 2, Name: "视频服务", Path: "/videoMangers", Component: "./videoMangers", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 64, ParentID: 63, Type: 1, Order: 1, Name: "服务管理", Path: "/videoMangers/vidsrvmgr/index", Component: "./videoMangers/vidsrvmgr/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 65, ParentID: 63, Type: 1, Order: 3, Name: "视频广场", Path: "/videoMangers/plaza/index", Component: "./videoMangers/plaza/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 66, ParentID: 63, Type: 1, Order: 2, Name: "接入管理", Path: "/videoMangers/vdevice/index", Component: "./videoMangers/vdevice/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 67, ParentID: 63, Type: 1, Order: 4, Name: "视频回放", Path: "/videoMangers/playback/index", Component: "./videoMangers/playback/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 68, ParentID: 63, Type: 1, Order: 2, Name: "录像计划", Path: "/videoMangers/recordplan/index", Component: "./videoMangers/recordplan/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 	}
 	MigrateApiInfo = []SysApiInfo{
 		{Route: "/api/v1/things/product/info/update", Method: 2, Name: "更新产品", BusinessType: 2, Desc: "", Group: "产品管理"},
