@@ -13,23 +13,23 @@ type SysExample struct {
 
 // 用户登录信息表
 type SysUserInfo struct {
-	UserID     int64          `gorm:"column:user_id;primary_key;AUTO_INCREMENT;type:BIGINT;NOT NULL"`     // 用户id
-	UserName   sql.NullString `gorm:"column:user_name;uniqueIndex;type:VARCHAR(20)"`       // 登录用户名
-	Password   string         `gorm:"column:password;type:CHAR(32);NOT NULL"`              // 登录密码
-	Email      sql.NullString `gorm:"column:email;uniqueIndex;type:VARCHAR(255)"`          // 邮箱
-	Phone      sql.NullString `gorm:"column:phone;uniqueIndex;type:VARCHAR(20)"`           // 手机号
-	Wechat     sql.NullString `gorm:"column:wechat;uniqueIndex;type:VARCHAR(20)"`          // 微信union id
-	LastIP     string         `gorm:"column:last_ip;type:VARCHAR(40);NOT NULL"`            // 最后登录ip
-	RegIP      string         `gorm:"column:reg_ip;type:VARCHAR(40);NOT NULL"`             // 注册ip
-	NickName   string         `gorm:"column:nick_name;type:VARCHAR(60);NOT NULL"`          // 用户的昵称
-	Sex        int64          `gorm:"column:sex;type:SMALLINT;default:3;NOT NULL"`         // 用户的性别，值为1时是男性，值为2时是女性，其他值为未知
-	City       string         `gorm:"column:city;type:VARCHAR(50);NOT NULL"`               // 用户所在城市
-	Country    string         `gorm:"column:country;type:VARCHAR(50);NOT NULL"`            // 用户所在国家
-	Province   string         `gorm:"column:province;type:VARCHAR(50);NOT NULL"`           // 用户所在省份
-	Language   string         `gorm:"column:language;type:VARCHAR(50);NOT NULL"`           // 用户的语言，简体中文为zh_CN
-	HeadImgUrl string         `gorm:"column:head_img_url;type:VARCHAR(256);NOT NULL"`      // 用户头像
-	Role       int64          `gorm:"column:role;type:BIGINT;NOT NULL"`                    // 用户角色
-	IsAllData  int64          `gorm:"column:is_all_data;type:SMALLINT;default:2;NOT NULL"` // 是否所有数据权限（1是，2否）
+	UserID     int64          `gorm:"column:user_id;primary_key;AUTO_INCREMENT;type:BIGINT;NOT NULL"` // 用户id
+	UserName   sql.NullString `gorm:"column:user_name;uniqueIndex;type:VARCHAR(20)"`                  // 登录用户名
+	Password   string         `gorm:"column:password;type:CHAR(32);NOT NULL"`                         // 登录密码
+	Email      sql.NullString `gorm:"column:email;uniqueIndex;type:VARCHAR(255)"`                     // 邮箱
+	Phone      sql.NullString `gorm:"column:phone;uniqueIndex;type:VARCHAR(20)"`                      // 手机号
+	Wechat     sql.NullString `gorm:"column:wechat;uniqueIndex;type:VARCHAR(20)"`                     // 微信union id
+	LastIP     string         `gorm:"column:last_ip;type:VARCHAR(40);NOT NULL"`                       // 最后登录ip
+	RegIP      string         `gorm:"column:reg_ip;type:VARCHAR(40);NOT NULL"`                        // 注册ip
+	NickName   string         `gorm:"column:nick_name;type:VARCHAR(60);NOT NULL"`                     // 用户的昵称
+	Sex        int64          `gorm:"column:sex;type:SMALLINT;default:3;NOT NULL"`                    // 用户的性别，值为1时是男性，值为2时是女性，其他值为未知
+	City       string         `gorm:"column:city;type:VARCHAR(50);NOT NULL"`                          // 用户所在城市
+	Country    string         `gorm:"column:country;type:VARCHAR(50);NOT NULL"`                       // 用户所在国家
+	Province   string         `gorm:"column:province;type:VARCHAR(50);NOT NULL"`                      // 用户所在省份
+	Language   string         `gorm:"column:language;type:VARCHAR(50);NOT NULL"`                      // 用户的语言，简体中文为zh_CN
+	HeadImgUrl string         `gorm:"column:head_img_url;type:VARCHAR(256);NOT NULL"`                 // 用户头像
+	Role       int64          `gorm:"column:role;type:BIGINT;NOT NULL"`                               // 用户角色
+	IsAllData  int64          `gorm:"column:is_all_data;type:SMALLINT;default:1;NOT NULL"`            // 是否所有数据权限（1是，2否）
 	stores.Time
 }
 
