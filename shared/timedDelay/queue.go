@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/hibiken/asynq"
 	"github.com/i-Things/things/shared/domain/task"
-	"time"
 )
 
 type QueueMsg struct {
@@ -13,13 +12,10 @@ type QueueMsg struct {
 	Priority string //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 	Topic    string //发送的主题
 	Payload  any    //发送的消息内容
-	//以下两个参数优先使用ProcessIn
-	ProcessIn time.Duration //多久之后发
-	ProcessAt time.Time     // 固定时间发
 }
 
 // 延时发送消息
-func (t Timed) DelayQueue(msg QueueMsg) error {
+func (t Timed) DelayQueue(msg QueueMsg, option *Option) error {
 	payload, _ := json.Marshal(msg.Payload)
 	switch msg.Payload.(type) {
 	case string:
@@ -43,10 +39,21 @@ func (t Timed) DelayQueue(msg QueueMsg) error {
 	if err != nil {
 		return err
 	}
-	var opt = asynq.ProcessAt(msg.ProcessAt)
-	if msg.ProcessIn != 0 {
-		opt = asynq.ProcessIn(msg.ProcessIn)
+	var opts []asynq.Option
+	if option != nil {
+		var opt = asynq.ProcessAt(option.ProcessAt)
+		if option.ProcessIn != 0 {
+			opt = asynq.ProcessIn(option.ProcessIn)
+		}
+		opts = append(opts, opt)
+		if option.Timeout != 0 {
+			opts = append(opts, asynq.Timeout(option.Timeout))
+		}
+		if !option.Deadline.IsZero() {
+			opts = append(opts, asynq.Deadline(option.Deadline))
+		}
 	}
-	_, err = t.asynqClient.Enqueue(j.ToTask(), opt)
+
+	_, err = t.asynqClient.Enqueue(j.ToTask(), opts...)
 	return err
 }
