@@ -25,7 +25,8 @@ goctl env check -i -f
 # api网关接口代理模块-apisvr
 
 ```shell
-cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ..
+#cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ..
+cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero -ws && cd ..
 ```
 
 # 系统管理模块-syssvr
