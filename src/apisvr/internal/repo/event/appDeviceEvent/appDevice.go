@@ -37,7 +37,7 @@ func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) e
 	topic := fmt.Sprintf(topics.ApplicationDeviceReportThingPropertyDevice, in.Device.ProductID, in.Device.DeviceName)
 	clientToken := trace.TraceIDFromContext(a.ctx)
 	param := map[string]interface{}{
-		in.Identifier: in.Param.Value,
+		in.Identifier: in.Param,
 	}
 	data, _ := json.Marshal(param)
 	body := ws.WsBody{
