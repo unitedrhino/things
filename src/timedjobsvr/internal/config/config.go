@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
+	Database   conf.Database
 	CacheRedis cache.ClusterConf
 	Event      conf.EventConf
 }

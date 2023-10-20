@@ -21,17 +21,21 @@ var (
 func InitConn(database conf.Database) {
 	var err error
 	once.Do(func() {
-		dbType = database.DBType
-		switch database.DBType {
-		case conf.Mysql:
-			commonConn, err = gorm.Open(mysql.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-		case conf.Pgsql:
-			commonConn, err = gorm.Open(postgres.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-		case conf.Sqlite:
-			commonConn, err = gorm.Open(sqlite.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-		}
+		commonConn, err = GetConn(database)
 		logx.Must(err)
 	})
+	return
+}
+func GetConn(database conf.Database) (conn *gorm.DB, err error) {
+	dbType = database.DBType
+	switch database.DBType {
+	case conf.Pgsql:
+		conn, err = gorm.Open(postgres.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
+	case conf.Sqlite:
+		conn, err = gorm.Open(sqlite.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
+	default:
+		conn, err = gorm.Open(mysql.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
+	}
 	return
 }
 

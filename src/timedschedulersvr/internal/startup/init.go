@@ -24,7 +24,6 @@ func Init(svcCtx *svc.ServiceContext) error {
 }
 
 func InitTimer(svcCtx *svc.ServiceContext) error {
-
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
 	//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
