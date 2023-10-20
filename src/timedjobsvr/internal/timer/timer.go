@@ -18,22 +18,30 @@ type Timed struct {
 }
 
 func (t Timed) ProcessTask(ctx context.Context, Task *asynq.Task) error {
-
-	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
-	defer cancel()
-	utils.Recover(ctx)
-	var jb task.Info
-	json.Unmarshal(Task.Payload(), &jb)
-	ctx, span := ctxs.StartSpan(ctx, fmt.Sprintf("timedJob_%s", jb.Code), "")
-	defer span.End()
-	logx.WithContext(ctx).Infof("timedJob ProcessTask task:%v", jb)
-	err := jb.Init()
+	err := func() error {
+		ctx, cancel := context.WithTimeout(ctx, 500*time.Second)
+		defer cancel()
+		utils.Recover(ctx)
+		var jb task.Info
+		json.Unmarshal(Task.Payload(), &jb)
+		ctx, span := ctxs.StartSpan(ctx, fmt.Sprintf("timedJob_%s", jb.Code), "")
+		defer span.End()
+		logx.WithContext(ctx).Infof("timedJob ProcessTask task:%v", jb)
+		err := jb.Init()
+		if err != nil {
+			return err
+		}
+		switch jb.Type {
+		case task.TaskTypeQueue:
+			return t.SvcCtx.PubJob.Publish(ctx, jb.SubType, jb.Queue.Topic, []byte(jb.Queue.Payload))
+		case task.TaskTypeSql:
+			return t.SqlExec(ctx, &jb)
+		}
+		logx.WithContext(ctx).Errorf("not support job type:%v", jb.Type)
+		return nil
+	}()
 	if err != nil {
-		return err
-	}
-	switch jb.Type {
-	case task.TaskTypeQueue:
-		return t.SvcCtx.PubJob.Publish(ctx, jb.SubType, jb.Queue.Topic, []byte(jb.Queue.Payload))
+		logx.WithContext(ctx).Errorf("ProcessTask err:%v task:%v", err, utils.Fmt(Task))
 	}
 	return nil
 }

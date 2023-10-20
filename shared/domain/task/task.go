@@ -21,6 +21,7 @@ type Info struct {
 	Params   string `json:"params"`   // 任务参数
 	Priority string `json:"priority"` //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 	Queue    *Queue `json:"-"`        //消息队列类型
+	Sql      *Sql   `json:"-"`        //sql执行类型
 }
 
 func (j *Info) GetTypeName() string {
@@ -47,6 +48,14 @@ func (j *Info) Init() error {
 			return err
 		}
 		j.Queue = &q
+		return nil
+	case TaskTypeSql:
+		var s Sql
+		err := json.Unmarshal([]byte(j.Params), &s)
+		if err != nil {
+			return err
+		}
+		j.Sql = &s
 		return nil
 	}
 	return errors.Parameter.AddMsgf("job type not support:%v", j.Type)
