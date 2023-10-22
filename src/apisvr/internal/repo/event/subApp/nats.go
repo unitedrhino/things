@@ -19,7 +19,7 @@ type (
 )
 
 const (
-	ThingsDeliverGroup = "things_websocket_group"
+	ThingsDeliverGroup = "things_api_group"
 )
 
 func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {

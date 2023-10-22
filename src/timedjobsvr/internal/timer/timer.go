@@ -33,7 +33,7 @@ func (t Timed) ProcessTask(ctx context.Context, Task *asynq.Task) error {
 		}
 		switch jb.Type {
 		case task.TaskTypeQueue:
-			return t.SvcCtx.PubJob.Publish(ctx, jb.SubType, jb.Queue.Topic, []byte(jb.Queue.Payload))
+			return t.Queue(ctx, &jb)
 		case task.TaskTypeSql:
 			return t.SqlExec(ctx, &jb)
 		}

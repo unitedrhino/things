@@ -18,6 +18,10 @@ type (
 	}
 )
 
+var (
+	natsJsConsumerName = "apisvr"
+)
+
 func newNatsJsClient(conf conf.NatsConf) (*NatsJsClient, error) {
 	nc, err := clients.NewNatsJetStreamClient(conf)
 	if err != nil {
@@ -35,7 +39,7 @@ func (n *NatsJsClient) Subscribe(handle Handle) error {
 				logx.WithContext(ctx).Errorf("Subscribe.QueueSubscribe.[%s].Unmarshal err:%v", natsMsg.Subject, err)
 			}
 			return handle(ctx).DeviceEventReport(&stu)
-		}))
+		}), nats.Durable(events.GenNatsJsDurable(natsJsConsumerName, topics.ApplicationDeviceReportThingEventAllDevice)))
 	if err != nil {
 		return err
 	}
@@ -47,7 +51,7 @@ func (n *NatsJsClient) Subscribe(handle Handle) error {
 				logx.WithContext(ctx).Errorf("Subscribe.QueueSubscribe.[%s].Unmarshal err:%v", natsMsg.Subject, err)
 			}
 			return handle(ctx).DevicePropertyReport(&stu)
-		}))
+		}), nats.Durable(events.GenNatsJsDurable(natsJsConsumerName, topics.ApplicationDeviceReportThingPropertyAllDevice)))
 	if err != nil {
 		return err
 	}
@@ -59,7 +63,7 @@ func (n *NatsJsClient) Subscribe(handle Handle) error {
 				logx.WithContext(ctx).Errorf("Subscribe.QueueSubscribe.[%s].Unmarshal err:%v", natsMsg.Subject, err)
 			}
 			return handle(ctx).DeviceStatusConnected(&stu)
-		}))
+		}), nats.Durable(events.GenNatsJsDurable(natsJsConsumerName, topics.ApplicationDeviceStatusConnectedAllDevice)))
 	if err != nil {
 		return err
 	}
@@ -71,7 +75,7 @@ func (n *NatsJsClient) Subscribe(handle Handle) error {
 				logx.WithContext(ctx).Errorf("Subscribe.QueueSubscribe.[%s].Unmarshal err:%v", natsMsg.Subject, err)
 			}
 			return handle(ctx).DeviceStatusDisConnected(&stu)
-		}))
+		}), nats.Durable(events.GenNatsJsDurable(natsJsConsumerName, topics.ApplicationDeviceStatusDisConnectedAllDevice)))
 	if err != nil {
 		return err
 	}
