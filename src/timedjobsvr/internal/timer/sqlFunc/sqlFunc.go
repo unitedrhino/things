@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/domain/task"
 	"github.com/i-Things/things/shared/stores"
+	"github.com/i-Things/things/src/timedjobsvr/internal/domain"
 	"github.com/i-Things/things/src/timedjobsvr/internal/svc"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -14,11 +15,12 @@ import (
 )
 
 type SqlFunc struct {
-	SvcCtx   *svc.ServiceContext
-	ctx      context.Context
-	jb       *task.Info
-	vm       *goja.Runtime
-	kvKeyPre string
+	SvcCtx     *svc.ServiceContext
+	ctx        context.Context
+	jb         *task.Info
+	vm         *goja.Runtime
+	ExecuteLog []*domain.ScriptLog
+	kvKeyPre   string
 	logx.Logger
 }
 
@@ -38,7 +40,9 @@ func (s *SqlFunc) Register() error {
 		{"Set", s.Set()},
 		{"Get", s.Get()},
 		{"Select", s.Select()},
-		{"Log", s.Log()},
+		{"Exec", s.Exec()},
+		{"LogError", s.LogError()},
+		{"LogInfo", s.LogInfo()},
 		{"GetEnv", s.GetEnv()},
 		{"Hexists", s.Hexists()},
 		{"Hdel", s.Hdel()},

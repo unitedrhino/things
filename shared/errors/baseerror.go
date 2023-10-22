@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dop251/goja"
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -142,6 +143,9 @@ func Fmt(errs error) *CodeError {
 			return System.AddDetail(err)
 		}
 		return &ret
+	case *goja.Exception:
+		e := errs.(*goja.Exception)
+		return Script.AddMsg(e.Error())
 	default:
 		var ce CodeError
 		err := json.Unmarshal([]byte(errs.Error()), &ce)
