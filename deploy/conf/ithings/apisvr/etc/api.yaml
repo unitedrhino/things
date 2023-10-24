@@ -60,3 +60,7 @@ OssConf:
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false
+
+Event:
+  Nats:
+    Url: nats://172.19.0.2:4222
