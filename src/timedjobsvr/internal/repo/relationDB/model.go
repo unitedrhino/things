@@ -17,6 +17,7 @@ type TimedJobLog struct {
 	SubType     string              `gorm:"column:sub_type;default:''"`                //任务子类型 natsJs nats
 	Name        string              `gorm:"column:name"`                               // 任务名称
 	Code        string              `gorm:"column:code"`                               //任务编码
+	Explain     string              `gorm:"column:explain"`                            //运行明细
 	ResultCode  int64               `gorm:"column:return_code"`                        //结果code
 	ResultMsg   string              `gorm:"column:return_msg"`                         //结果消息
 	ExecLog     []*domain.ScriptLog `gorm:"column:exec_log;type:json;serializer:json"` //执行日志
