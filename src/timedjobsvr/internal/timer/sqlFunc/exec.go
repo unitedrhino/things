@@ -16,7 +16,8 @@ func (s *SqlFunc) Exec() func(in goja.FunctionCall) goja.Value {
 		sql := in.Arguments[0].String()
 		conn, close := s.getConn(in)
 		defer close()
-		err := conn.Exec(sql).Error
+		ret := conn.Exec(sql)
+		err := ret.Error
 		if err != nil {
 			panic(err)
 		}

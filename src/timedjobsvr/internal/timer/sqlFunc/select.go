@@ -15,7 +15,8 @@ func (s *SqlFunc) Select() func(in goja.FunctionCall) goja.Value {
 		conn, close := s.getConn(in)
 		defer close()
 		var ret []map[string]any
-		err := conn.Raw(sql).Scan(&ret).Error
+		v := conn.Raw(sql).Scan(&ret)
+		err := v.Error
 		if err != nil {
 			panic(err)
 		}
