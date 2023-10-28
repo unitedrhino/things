@@ -31,7 +31,14 @@ type RpcError interface {
 //}
 
 func (c CodeError) ToRpc() error {
-	s := status.New(codes.Unknown, c.Error())
+	code := codes.Unknown
+	switch c.Code {
+	case Failure.Code: //失败需要回滚
+		code = codes.Aborted
+	case OnGoing.Code: //任务还在执行中
+		code = codes.FailedPrecondition
+	}
+	s := status.New(code, c.Error())
 	return s.Err()
 }
 
