@@ -49,6 +49,7 @@ func (t Timed) SqlNormalExec(ctx context.Context, task *domain.TaskInfo) error {
 	}()
 	e := errors.Fmt(err)
 	er := relationDB.NewJobLogRepo(ctx).Insert(ctx, &relationDB.TimedTaskLog{
+		Params:     task.Params,
 		ResultCode: e.GetCode(),
 		ResultMsg:  e.GetMsg(),
 	})
@@ -111,6 +112,7 @@ func (t Timed) SqlJsExec(ctx context.Context, task *domain.TaskInfo) error {
 	er := relationDB.NewJobLogRepo(ctx).Insert(ctx, &relationDB.TimedTaskLog{
 		GroupCode:  task.GroupCode,
 		TaskCode:   task.Code,
+		Params:     task.Params,
 		ResultCode: code,
 		ResultMsg:  msg,
 		TimedTaskSqlScript: &relationDB.TimedTaskSqlScript{

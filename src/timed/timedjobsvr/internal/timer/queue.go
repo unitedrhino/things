@@ -14,6 +14,7 @@ func (t Timed) Queue(ctx context.Context, task *domain.TaskInfo) error {
 	er := relationDB.NewJobLogRepo(ctx).Insert(ctx, &relationDB.TimedTaskLog{
 		GroupCode:  task.GroupCode,
 		TaskCode:   task.Code,
+		Params:     task.Params,
 		ResultCode: e.GetCode(),
 		ResultMsg:  e.GetMsg(),
 	})

@@ -25,7 +25,7 @@ type TimedTaskLog struct {
 	ResultCode          int64     `gorm:"column:return_code"`                            //结果code
 	ResultMsg           string    `gorm:"column:return_msg"`                             //结果消息
 	CreatedTime         time.Time `gorm:"column:created_time;index;sort:desc;default:CURRENT_TIMESTAMP;NOT NULL"`
-	*TimedTaskSqlScript `gorm:"embedded;embeddedPrefix:sql_script"`
+	*TimedTaskSqlScript `gorm:"embedded;embeddedPrefix:sql_script_"`
 }
 
 func (t *TimedTaskLog) TableName() string {
