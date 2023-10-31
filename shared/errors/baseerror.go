@@ -112,7 +112,7 @@ func (c *CodeError) GetCode() int64 {
 
 func (c *CodeError) GetMsg() string {
 	if c == nil {
-		return ""
+		return OK.Msg
 	}
 	return c.Msg
 }
