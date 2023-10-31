@@ -1,0 +1,19 @@
+Name: timedjob.rpc
+ListenOn: 0.0.0.0:3256
+Event:
+  Mode: natsJs
+#Etcd:
+#  Hosts:
+#  - 127.0.0.1:2379
+#  Key: job.rpc
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+#Database:
+#  DBType: pgsql
+#  DSN: host=127.0.0.1 user= password= dbname=gleketest port=5432 sslmode=disable TimeZone=Asia/Shanghai
+Database:
+  IsInitTable: true
+  DBType: mysql
+  DSN: root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai

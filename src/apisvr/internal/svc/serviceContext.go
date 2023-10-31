@@ -32,10 +32,10 @@ import (
 	role "github.com/i-Things/things/src/syssvr/client/role"
 	user "github.com/i-Things/things/src/syssvr/client/user"
 	"github.com/i-Things/things/src/syssvr/sysdirect"
-	"github.com/i-Things/things/src/timedjobsvr/client/timedjob"
-	"github.com/i-Things/things/src/timedjobsvr/timedjobdirect"
-	"github.com/i-Things/things/src/timedschedulersvr/client/timedscheduler"
-	"github.com/i-Things/things/src/timedschedulersvr/timedschedulerdirect"
+	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
+	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
+	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
+	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -70,7 +70,7 @@ type SvrClient struct {
 	Scene          scenelinkage.SceneLinkage
 	Alarm          alarmcenter.AlarmCenter
 	Timedscheduler timedscheduler.Timedscheduler
-	TimedJob       timedjob.TimedJob
+	TimedJob       timedmanage.TimedManage
 }
 
 type ServiceContext struct {
@@ -106,7 +106,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		firmwareM      firmwaremanage.FirmwareManage
 		otaTaskM       otataskmanage.OtaTaskManage
 		timedSchedule  timedscheduler.Timedscheduler
-		timedJob       timedjob.TimedJob
+		timedJob       timedmanage.TimedManage
 	)
 	var ur user.User
 	var ro role.Role
@@ -186,7 +186,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	if c.TimedJobRpc.Enable {
 		if c.TimedJobRpc.Mode == conf.ClientModeGrpc {
-			timedJob = timedjob.NewTimedJob(zrpc.MustNewClient(c.TimedJobRpc.Conf))
+			timedJob = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 		} else {
 			timedJob = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
 		}

@@ -2,37 +2,25 @@ package task
 
 import (
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/timedschedulersvr/client/timedscheduler"
+	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
 )
 
-func ToTaskInfoPb(in *types.TimedTaskInfo) *timedscheduler.TaskInfo {
-	return &timedscheduler.TaskInfo{
-		Id:             in.ID,
-		Group:          in.Group,
-		Type:           in.Type,
-		SubType:        in.SubType,
-		Name:           in.Name,
-		Code:           in.Code,
-		Params:         in.Params,
-		CronExpression: in.CronExpression,
-		Status:         in.Status,
-		EntryID:        in.EntryID,
-		Priority:       in.Priority,
+func ToSendDelayReqPb(in *types.TimedTaskSendDelayReq) *timedmanage.TaskSendDelayReq {
+	ret := timedmanage.TaskSendDelayReq{GroupCode: in.GroupCode, Code: in.Code}
+	if in.Option != nil {
+		ret.Option = &timedmanage.TaskDelayOption{
+			Priority:  in.Option.Priority,
+			ProcessIn: in.Option.ProcessIn,
+			ProcessAt: in.Option.ProcessAt,
+			Timeout:   in.Option.Timeout,
+			Deadline:  in.Option.Deadline,
+		}
 	}
-}
-
-func ToTaskInfoTypes(in *timedscheduler.TaskInfo) *types.TimedTaskInfo {
-	return &types.TimedTaskInfo{
-		ID:             in.Id,
-		Group:          in.Group,
-		Type:           in.Type,
-		SubType:        in.SubType,
-		Name:           in.Name,
-		Code:           in.Code,
-		Params:         in.Params,
-		CronExpression: in.CronExpression,
-		Status:         in.Status,
-		EntryID:        in.EntryID,
-		Priority:       in.Priority,
+	if in.ParamSql != nil {
+		ret.ParamSql = &timedmanage.TaskDelaySql{ExecContent: in.ParamSql.ExecContent}
 	}
+	if in.ParamQueue != nil {
+		ret.ParamQueue = &timedmanage.TaskDelayQueue{Topic: in.ParamQueue.Topic, Payload: in.ParamQueue.Payload}
+	}
+	return &ret
 }

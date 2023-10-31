@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"os"
 	"runtime"
 	"runtime/debug"
 )
@@ -191,4 +192,14 @@ func IfNotNil(c *CodeError, err error) error {
 }
 func Is(err, target error) bool {
 	return errors.Is(err, target)
+}
+
+func Must(err error, msg string) {
+	if err != nil {
+		pc := make([]uintptr, 1)
+		runtime.Callers(2, pc)
+		stack := string(debug.Stack())
+		logx.Errorf("出现一个程序退出错误:%v,err:%v,stack:%v", msg, err, stack)
+		os.Exit(-1)
+	}
 }
