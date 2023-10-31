@@ -85,7 +85,7 @@ var (
 			Name:      "job服务.sql类型.脚本执行.Redis hash缓存清理",
 			Code:      "timedJobRedisHashClean",
 			Params:    `{"topic":"server.timedjob.cache.hash.clean","payload":""}`,
-			CronExpr:  "0 0 * * ?",
+			CronExpr:  "1 1 * * ?",
 			Status:    def.StatusWaitRun,
 			Priority:  3,
 		},
