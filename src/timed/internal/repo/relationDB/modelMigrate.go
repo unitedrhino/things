@@ -82,9 +82,9 @@ var (
 		{
 			GroupCode: "iThingsQueueTiming",
 			Type:      domain.TaskTypeTiming,
-			Name:      "job服务.sql类型.脚本执行.Redis hash缓存清理",
-			Code:      "timedJobRedisHashClean",
-			Params:    `{"topic":"server.timedjob.cache.hash.clean","payload":""}`,
+			Name:      "timedJob服务缓存及日志清理",
+			Code:      "timedJobClean",
+			Params:    `{"topic":"server.timedjob.clean","payload":""}`,
 			CronExpr:  "1 1 * * ?",
 			Status:    def.StatusWaitRun,
 			Priority:  3,

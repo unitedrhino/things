@@ -25,6 +25,7 @@ func (t Timed) SqlExec(ctx context.Context, task *domain.TaskInfo) error {
 	return nil
 }
 func (t Timed) SqlNormalExec(ctx context.Context, task *domain.TaskInfo) error {
+	var execNum int64
 	err := func() error {
 		dsn := cast.ToString(task.Sql.Env[domain.SqlEnvDsn])
 		dbType := cast.ToString(task.Sql.Env[domain.SqlEnvDBType])
@@ -44,14 +45,16 @@ func (t Timed) SqlNormalExec(ctx context.Context, task *domain.TaskInfo) error {
 			return err
 		}
 		defer db.Close()
-		err = conn.Exec(task.Sql.Param.ExecContent).Error
-		return stores.ErrFmt(err)
+		ret := conn.Exec(task.Sql.Param.ExecContent)
+		execNum = ret.RowsAffected
+		return stores.ErrFmt(ret.Error)
 	}()
 	e := errors.Fmt(err)
 	er := relationDB.NewJobLogRepo(ctx).Insert(ctx, &relationDB.TimedTaskLog{
-		Params:     task.Params,
-		ResultCode: e.GetCode(),
-		ResultMsg:  e.GetMsg(),
+		Params:       task.Params,
+		ResultCode:   e.GetCode(),
+		ResultMsg:    e.GetMsg(),
+		TimedTaskSql: &relationDB.TimedTaskSql{ExecNum: execNum},
 	})
 	if er != nil {
 		logx.WithContext(ctx).Errorf("SqlNormalExec.JobLog.Insert err:%v", er)
@@ -115,7 +118,7 @@ func (t Timed) SqlJsExec(ctx context.Context, task *domain.TaskInfo) error {
 		Params:     task.Params,
 		ResultCode: code,
 		ResultMsg:  msg,
-		TimedTaskSqlScript: &relationDB.TimedTaskSqlScript{
+		TimedTaskSql: &relationDB.TimedTaskSql{
 			ExecLog:   sf.ExecuteLog,
 			SelectNum: sf.SelectNum,
 			ExecNum:   sf.ExecNum,
