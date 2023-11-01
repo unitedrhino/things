@@ -38,11 +38,11 @@ build.rule:
 
 build.timedjob:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/timedjobsvr ./src/timedjobsvr
+	@go build  -o ./cmd/timedjobsvr ./src/timed/timedjobsvr
 
 build.timedscheduler:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/timedschedulersvr ./src/timedschedulersvr
+	@go build  -o ./cmd/timedschedulersvr ./src/timed/timedschedulersvr
 
 
 run.api:
@@ -71,8 +71,8 @@ run.rule:
 
 run.timedjob:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd src/timedjobsvr && go run .
+	@cd src/timed/timedjobsvr && go run .
 
 run.timedscheduler:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd src/timedschedulersvr && go run .
+	@cd src/timed/timedschedulersvr && go run .
