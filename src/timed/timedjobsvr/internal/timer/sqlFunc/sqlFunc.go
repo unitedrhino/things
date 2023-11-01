@@ -12,6 +12,8 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
+	"strings"
+	"time"
 )
 
 type SqlFunc struct {
@@ -48,9 +50,9 @@ func (s *SqlFunc) Register() error {
 		{"GetEnv", s.GetEnv()},
 		{"Hexists", s.Hexists()},
 		{"Hdel", s.Hdel()},
-		{"HGet", s.HGet()},
-		{"HSet", s.HSet()},
-		{"HGetAll", s.HGetAll()},
+		{"Hget", s.HGet()},
+		{"Hset", s.HSet()},
+		{"HgetAll", s.HGetAll()},
 	}
 	for _, f := range funcList {
 		err := s.vm.Set(f.Name, f.f)
@@ -95,4 +97,26 @@ func (s *SqlFunc) getConn(in goja.FunctionCall, tp string) (*gorm.DB, func() err
 		panic(errors.Database.AddMsgf("getConn.conn.DB failure dsn:%v dbType:%v err:%v", dsn, dbType, err))
 	}
 	return conn, db.Close
+}
+func (s *SqlFunc) GetStringKey(key string) string {
+	return s.kvKeyPre + "string:" + key
+}
+func (s *SqlFunc) GetHashKey(key string) string {
+	return s.kvKeyPre + "hash:" + key
+}
+
+func (s *SqlFunc) GetHashField(field string) string {
+	date := time.Now().Format("2006-01-02")
+	return fmt.Sprintf("%s:%s", date, field)
+}
+func (s *SqlFunc) GetHashFieldWithDay(field string, day int) string {
+	date := time.Now().Add(time.Hour * 24 * time.Duration(day)).Format("2006-01-02")
+	return fmt.Sprintf("%s:%s", date, field)
+}
+func (s *SqlFunc) ToRealHashField(field string) string {
+	_, ret, find := strings.Cut(field, ":")
+	if !find {
+		return field
+	}
+	return ret
 }

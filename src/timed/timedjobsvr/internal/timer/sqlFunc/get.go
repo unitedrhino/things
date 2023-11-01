@@ -12,7 +12,7 @@ func (s *SqlFunc) Get() func(in goja.FunctionCall) goja.Value {
 				s.Task.Code, s.Task.Sql.Param.ExecContent)
 			panic(errors.Parameter)
 		}
-		ret, err := s.SvcCtx.Store.GetCtx(s.ctx, s.kvKeyPre+in.Arguments[0].String())
+		ret, err := s.SvcCtx.Store.GetCtx(s.ctx, s.GetStringKey(in.Arguments[0].String()))
 		if err != nil {
 			s.Errorf("timed.SetFunc.Get script Store.GetCtx err:%v", err)
 			panic(errors.Database.AddDetail(err))
