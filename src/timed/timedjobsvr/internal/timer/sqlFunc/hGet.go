@@ -21,7 +21,7 @@ func (s *SqlFunc) HGet() func(in goja.FunctionCall) goja.Value {
 				ret, err = s.SvcCtx.Store.HgetCtx(s.ctx, s.GetHashKey(in.Arguments[0].String()),
 					s.GetHashFieldWithDay(in.Arguments[1].String(), -1))
 			}
-			if err != nil {
+			if err != nil && !strings.Contains(err.Error(), "redis: nil") {
 				s.Errorf("timed.SetFunc.Set script Store.HgetCtx err:%v", err)
 				panic(errors.Database.AddDetail(err))
 			}
