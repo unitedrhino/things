@@ -11,21 +11,21 @@ type TimedExample struct {
 	ID int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
 }
 
-type TimedTaskSqlScript struct {
+type TimedTaskSql struct {
 	ExecLog   []*domain.ScriptLog `gorm:"column:exec_log;type:json;serializer:json"` //执行日志
 	SelectNum int64               //查询的数量
 	ExecNum   int64               //执行的数量
 }
 
 type TimedTaskLog struct {
-	ID                  int64     `gorm:"column:id;primary_key"`                         //
-	GroupCode           string    `gorm:"column:group_code"`                             //组编码
-	TaskCode            string    `gorm:"column:task_code"`                              //任务编码
-	Params              string    `gorm:"column:params;type:json;NOT NULL;default:'{}'"` // 任务参数
-	ResultCode          int64     `gorm:"column:return_code"`                            //结果code
-	ResultMsg           string    `gorm:"column:return_msg"`                             //结果消息
-	CreatedTime         time.Time `gorm:"column:created_time;index;sort:desc;default:CURRENT_TIMESTAMP;NOT NULL"`
-	*TimedTaskSqlScript `gorm:"embedded;embeddedPrefix:sql_script_"`
+	ID            int64     `gorm:"column:id;primary_key"`                         //
+	GroupCode     string    `gorm:"column:group_code"`                             //组编码
+	TaskCode      string    `gorm:"column:task_code"`                              //任务编码
+	Params        string    `gorm:"column:params;type:json;NOT NULL;default:'{}'"` // 任务参数
+	ResultCode    int64     `gorm:"column:return_code"`                            //结果code
+	ResultMsg     string    `gorm:"column:return_msg"`                             //结果消息
+	CreatedTime   time.Time `gorm:"column:created_time;index;sort:desc;default:CURRENT_TIMESTAMP;NOT NULL"`
+	*TimedTaskSql `gorm:"embedded;embeddedPrefix:sql_"`
 }
 
 func (t *TimedTaskLog) TableName() string {
