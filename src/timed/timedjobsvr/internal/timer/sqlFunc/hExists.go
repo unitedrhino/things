@@ -13,11 +13,19 @@ func (s *SqlFunc) Hexists() func(in goja.FunctionCall) goja.Value {
 				s.Task.Code, s.Task.Sql.Param.ExecContent)
 			panic(errors.Parameter)
 		}
-		ret, err := s.SvcCtx.Store.HexistsCtx(s.ctx, s.kvKeyPre+in.Arguments[0].String(),
-			in.Arguments[1].String())
+		ret, err := s.SvcCtx.Store.HexistsCtx(s.ctx, s.GetHashKey(in.Arguments[0].String()),
+			s.GetHashField(in.Arguments[1].String()))
 		if err != nil {
 			s.Errorf("timed.SetFunc.Hexists script Store.HgetCtx err:%v", err)
 			panic(errors.Database.AddDetail(err))
+		}
+		if ret == false { //前一天的也需要看下
+			ret, err = s.SvcCtx.Store.HexistsCtx(s.ctx, s.GetHashKey(in.Arguments[0].String()),
+				s.GetHashFieldWithDay(in.Arguments[1].String(), -1))
+			if err != nil {
+				s.Errorf("timed.SetFunc.Hexists script Store.HgetCtx err:%v", err)
+				panic(errors.Database.AddDetail(err))
+			}
 		}
 		return s.vm.ToValue(ret)
 	}

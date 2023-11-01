@@ -2,12 +2,58 @@ package clients
 
 import (
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"sync"
 	"time"
 )
+
+type NatsClient struct {
+	mode         string
+	conf         conf.NatsConf
+	nc           *nats.Conn
+	js           nats.JetStreamContext
+	consumerName string
+}
+
+func NewNatsClient2(mode string, ConsumerName string, natsConf conf.NatsConf) (*NatsClient, error) {
+	client := NatsClient{
+		conf:         natsConf,
+		mode:         mode,
+		consumerName: ConsumerName,
+	}
+	if mode == conf.EventModeNatsJs {
+		js, err := NewNatsJetStreamClient(natsConf)
+		if err != nil {
+			return nil, err
+		}
+		client.js = js
+		return &NatsClient{
+			conf:         natsConf,
+			js:           js,
+			mode:         mode,
+			consumerName: ConsumerName,
+		}, nil
+	} else {
+		nc, err := NewNatsClient(natsConf)
+		if err != nil {
+			return nil, err
+		}
+		client.nc = nc
+	}
+	return &client, nil
+}
+
+func (n *NatsClient) QueueSubscribe(subj, queue string, cb events.HandleFunc) error {
+	if n.mode == conf.EventModeNatsJs {
+		_, err := n.js.QueueSubscribe(subj, queue, events.NatsSubscription(cb), nats.Durable(events.GenNatsJsDurable(n.consumerName, subj)))
+		return err
+	}
+	_, err := n.nc.QueueSubscribe(subj, queue, events.NatsSubscription(cb))
+	return err
+}
 
 func NewNatsClient(conf conf.NatsConf) (nc *nats.Conn, err error) {
 	connectOpts := nats.GetDefaultOptions()

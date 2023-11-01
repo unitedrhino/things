@@ -13,8 +13,8 @@ func (s *SqlFunc) HSet() func(in goja.FunctionCall) goja.Value {
 				s.Task.Code, s.Task.Sql.Param.ExecContent)
 			panic(errors.Parameter)
 		}
-		err := s.SvcCtx.Store.HsetCtx(s.ctx, s.kvKeyPre+in.Arguments[0].String(),
-			in.Arguments[1].String(), in.Arguments[2].String())
+		err := s.SvcCtx.Store.HsetCtx(s.ctx, s.GetHashKey(in.Arguments[0].String()),
+			s.GetHashField(in.Arguments[1].String()), in.Arguments[2].String())
 		if err != nil {
 			s.Errorf("timed.SetFunc.Set script Store.HsetCtx err:%v", err)
 			panic(errors.Database.AddDetail(err))

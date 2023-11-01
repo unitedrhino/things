@@ -9,12 +9,14 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/internal/config"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"os"
 )
 
 type ServiceContext struct {
 	Config      config.Config
 	Store       kv.Store
+	Redis       *redis.Redis
 	PubJob      *pubJob.PubJob
 	AsynqClient *asynq.Client
 }
@@ -34,6 +36,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:      c,
 		PubJob:      pj,
+		Redis:       redis.MustNewRedis(c.CacheRedis[0].RedisConf),
 		AsynqClient: clients.NewAsynqClient(c.CacheRedis),
 		Store:       kv.NewStore(c.CacheRedis),
 	}

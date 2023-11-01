@@ -5,13 +5,25 @@ import (
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/timed/timedjobsvr/internal/event"
+	"github.com/i-Things/things/src/timed/timedjobsvr/internal/repo/event/subscribe"
 	"github.com/i-Things/things/src/timed/timedjobsvr/internal/svc"
 	"github.com/i-Things/things/src/timed/timedjobsvr/internal/timer"
+	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
 
 func Init(svcCtx *svc.ServiceContext) error {
+	Subscribe(svcCtx)
 	return InitTimer(svcCtx)
+}
+
+func Subscribe(svcCtx *svc.ServiceContext) {
+	subAppCli, err := subscribe.NewSubServer(svcCtx.Config.Event)
+	logx.Must(err)
+	err = subAppCli.Subscribe(func(ctx context.Context) subscribe.ServerEvent {
+		return event.NewEventServer(ctx, svcCtx)
+	})
 }
 
 func InitTimer(svcCtx *svc.ServiceContext) error {

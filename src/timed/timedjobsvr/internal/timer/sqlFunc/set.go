@@ -14,14 +14,15 @@ func (s *SqlFunc) Set() func(in goja.FunctionCall) goja.Value {
 			panic(errors.Parameter)
 		}
 		if len(in.Arguments) > 2 {
-			err := s.SvcCtx.Store.SetexCtx(s.ctx, s.kvKeyPre+in.Arguments[0].String(),
+			err := s.SvcCtx.Store.SetexCtx(s.ctx, s.GetStringKey(in.Arguments[0].String()),
 				in.Arguments[1].String(), int(in.Arguments[2].ToInteger()))
 			if err != nil {
 				s.Errorf("timed.SetFunc.Set script Store.GetCtx err:%v", err)
 				panic(errors.Database.AddDetail(err))
 			}
 		}
-		err := s.SvcCtx.Store.SetCtx(s.ctx, s.kvKeyPre+in.Arguments[0].String(), in.Arguments[1].String())
+		//默认5天过期时间
+		err := s.SvcCtx.Store.SetexCtx(s.ctx, s.GetStringKey(in.Arguments[0].String()), in.Arguments[1].String(), 60*60*24*5)
 		if err != nil {
 			s.Errorf("timed.SetFunc.Set script Store.GetCtx err:%v", err)
 			panic(errors.Database.AddDetail(err))
