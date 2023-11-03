@@ -17,7 +17,6 @@ func CreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
-
 		l := firmware.NewCreateLogic(r.Context(), svcCtx)
 		err := l.Create(&req)
 		result.Http(w, r, nil, err)

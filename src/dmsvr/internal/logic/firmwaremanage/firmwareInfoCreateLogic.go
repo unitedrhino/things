@@ -74,6 +74,7 @@ func (l *FirmwareInfoCreateLogic) FirmwareInfoCreate(in *dm.Firmware) (*dm.Firmw
 				return nil, errors.Parameter.WithMsg("附件的路径不对")
 			}
 			si.FilePath = in.ProductID + path.Ext(si.FilePath)
+			logx.Info("file_path:", si.FilePath)
 			nwePath, err := oss.GetFilePath(si, false)
 			if err != nil {
 				return nil, err
@@ -109,6 +110,5 @@ func (l *FirmwareInfoCreateLogic) FirmwareInfoCreate(in *dm.Firmware) (*dm.Firmw
 		}
 		fileDB.Insert(l.ctx, &ff)
 	}
-
 	return &dm.FirmwareResp{FirmwareID: firmwareID}, nil
 }
