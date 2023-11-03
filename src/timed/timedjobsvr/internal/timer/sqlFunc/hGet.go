@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-func (s *SqlFunc) HGet() func(in goja.FunctionCall) goja.Value {
+func (s *SqlFunc) Hget() func(in goja.FunctionCall) goja.Value {
 	return func(in goja.FunctionCall) goja.Value {
 		if len(in.Arguments) < 2 {
-			s.Errorf("timed.SetFunc.HGet script use err,"+
+			s.Errorf("timed.SetFunc.Hget script use err,"+
 				"need (key, field string),code:%v,script:%v",
 				s.Task.Code, s.Task.Sql.Param.ExecContent)
 			panic(errors.Parameter)
