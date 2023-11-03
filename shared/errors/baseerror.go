@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"os"
 	"runtime"
 	"runtime/debug"
 )
@@ -31,7 +32,14 @@ type RpcError interface {
 //}
 
 func (c CodeError) ToRpc() error {
-	s := status.New(codes.Unknown, c.Error())
+	code := codes.Unknown
+	switch c.Code {
+	case Failure.Code: //失败需要回滚
+		code = codes.Aborted
+	case OnGoing.Code: //任务还在执行中
+		code = codes.FailedPrecondition
+	}
+	s := status.New(code, c.Error())
 	return s.Err()
 }
 
@@ -104,7 +112,7 @@ func (c *CodeError) GetCode() int64 {
 
 func (c *CodeError) GetMsg() string {
 	if c == nil {
-		return ""
+		return OK.Msg
 	}
 	return c.Msg
 }
@@ -184,4 +192,14 @@ func IfNotNil(c *CodeError, err error) error {
 }
 func Is(err, target error) bool {
 	return errors.Is(err, target)
+}
+
+func Must(err error, msg string) {
+	if err != nil {
+		pc := make([]uintptr, 1)
+		runtime.Callers(2, pc)
+		stack := string(debug.Stack())
+		logx.Errorf("出现一个程序退出错误:%v,err:%v,stack:%v", msg, err, stack)
+		os.Exit(-1)
+	}
 }
