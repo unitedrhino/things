@@ -46,16 +46,16 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
-TimedJobRpc:
-  Enable: true
-  Mode: direct
-  Conf:
-    Timeout: 1000000
-TimedSchedulerRpc:
-  Enable: true
-  Mode: direct
-  Conf:
-    Timeout: 1000000
+#TimedJobRpc:
+#  Enable: true
+#  Mode: direct
+#  Conf:
+#    Timeout: 1000000
+#TimedSchedulerRpc:
+#  Enable: true
+#  Mode: direct
+#  Conf:
+#    Timeout: 1000000
 RuleRpc:
   Enable: false
   Mode: direct

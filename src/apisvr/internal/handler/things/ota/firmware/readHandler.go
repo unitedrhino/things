@@ -17,7 +17,6 @@ func ReadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
-
 		l := firmware.NewReadLogic(r.Context(), svcCtx)
 		resp, err := l.Read(&req)
 		result.Http(w, r, resp, err)

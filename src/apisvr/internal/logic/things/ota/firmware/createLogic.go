@@ -59,7 +59,6 @@ func (l *CreateLogic) Create(req *types.OtaFirmwareCreateReq) error {
 		l.Errorf("%s|rpc.ManageDevice|req=%v|err=%+v", utils.FuncName(), req, er)
 		return er
 	}
-
 	l.svcCtx.FileChan <- FirmwareInfo.FirmwareID
 	return nil
 }
