@@ -50,9 +50,10 @@ func (s *SqlFunc) Register() error {
 		{"GetEnv", s.GetEnv()},
 		{"Hexists", s.Hexists()},
 		{"Hdel", s.Hdel()},
-		{"Hget", s.HGet()},
-		{"Hset", s.HSet()},
+		{"Hget", s.Hget()},
+		{"Hset", s.Hset()},
 		{"HgetAll", s.HGetAll()},
+		{"Create", s.Create()},
 	}
 	for _, f := range funcList {
 		err := s.vm.Set(f.Name, f.f)

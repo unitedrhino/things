@@ -11,7 +11,7 @@ func (s *SqlFunc) Hexists() func(in goja.FunctionCall) goja.Value {
 			s.Errorf("timed.SetFunc.Hexists script use err,"+
 				"need ( key, field string),code:%v,script:%v",
 				s.Task.Code, s.Task.Sql.Param.ExecContent)
-			panic(errors.Parameter.AddMsgf("need ( key, field string)"))
+			panic(errors.Parameter.AddMsgf("Hexists need ( key, field string)"))
 		}
 		ret, err := s.SvcCtx.Store.HexistsCtx(s.ctx, s.GetHashKey(in.Arguments[0].String()),
 			s.GetHashField(in.Arguments[1].String()))
