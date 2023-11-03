@@ -373,28 +373,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: systemtimedtask.TimedTaskCreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: systemtimedtask.TimedTaskIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: systemtimedtask.TimedTaskUpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: systemtimedtask.TimedTaskDeleteHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/read",
-					Handler: systemtimedtask.TimedTaskReadHandler(serverCtx),
+					Path:    "/send-delay",
+					Handler: systemtimedtask.SendDelayHandler(serverCtx),
 				},
 			}...,
 		),

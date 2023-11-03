@@ -6,6 +6,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"sync"
+	"time"
 )
 
 func NewNatsClient(conf conf.NatsConf) (nc *nats.Conn, err error) {
@@ -14,6 +15,7 @@ func NewNatsClient(conf conf.NatsConf) (nc *nats.Conn, err error) {
 	connectOpts.User = conf.User
 	connectOpts.Password = conf.Pass
 	connectOpts.Token = conf.Token
+	connectOpts.Timeout = 5 * time.Second
 	connectOpts.DisconnectedErrCB = func(conn *nats.Conn, err error) {
 		logx.Errorf("nats.DisconnectedErrCB  err:%v", err)
 	}

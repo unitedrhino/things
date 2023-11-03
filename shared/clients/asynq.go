@@ -31,9 +31,9 @@ func NewAsynqServer(c cache.ClusterConf) *asynq.Server {
 }
 
 // create scheduler
-func NewAsynqScheduler(c cache.ClusterConf) *asynq.Scheduler {
+func NewTimedScheduler(c cache.ClusterConf) *TimedScheduler {
 	location, _ := time.LoadLocation("Asia/Shanghai")
-	return asynq.NewScheduler(
+	return &TimedScheduler{Asynq: asynq.NewScheduler(
 		asynq.RedisClientOpt{
 			Addr:     c[0].Host,
 			Password: c[0].Pass,
@@ -45,5 +45,43 @@ func NewAsynqScheduler(c cache.ClusterConf) *asynq.Scheduler {
 				}
 				fmt.Printf("Scheduler PostEnqueueFunc  err : %+v , task : %+v", err, task)
 			},
-		})
+		}), run: make(map[string]string, 100)}
+}
+
+type TimedScheduler struct {
+	Asynq *asynq.Scheduler
+	run   map[string]string //key是任务code,value 是entryID
+}
+
+func (s *TimedScheduler) Register(cronspec string, taskCode string, payload []byte, opts ...asynq.Option) (err error) {
+	t, ok := s.run[taskCode]
+	if ok { //如果正在运行,需要先删除再注册
+		err = s.Unregister(t)
+		if err != nil {
+			return err
+		}
+	}
+	task := asynq.NewTask(taskCode, payload, opts...)
+	entryID, err := s.Asynq.Register(cronspec, task)
+	if err != nil {
+		return err
+	}
+	s.run[taskCode] = entryID
+	return
+}
+
+func (s *TimedScheduler) Unregister(taskCode string) error {
+	t, ok := s.run[taskCode]
+	if ok { //如果正在运行,需要先删除再注册
+		err := s.Asynq.Unregister(t)
+		if err != nil {
+			return err
+		}
+		delete(s.run, taskCode)
+	}
+	return nil
+}
+
+func (s *TimedScheduler) Run() error {
+	return s.Asynq.Run()
 }

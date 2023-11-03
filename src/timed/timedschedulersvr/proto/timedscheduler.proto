@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package timedscheduler;
+option go_package="pb/timedscheduler";
+
+message Empty {
+}
+
+
+service timedscheduler {
+  rpc ping(Empty)     returns (Empty);
+
+}

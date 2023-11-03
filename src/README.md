@@ -82,7 +82,7 @@ cd rulesvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/rulesvr.sq
 
 ```shell
 #protoc  proto/* --go_out=. --go-grpc_out=.
-cd timedschedulersvr && goctl rpc protoc  proto/timedscheduler.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
+cd timed/timedschedulersvr && goctl rpc protoc  proto/timedscheduler.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ../..
 ```
 
 # 定时消费者者引擎模块-timedjobsvr
@@ -91,5 +91,5 @@ cd timedschedulersvr && goctl rpc protoc  proto/timedscheduler.proto --go_out=./
 
 ```shell
 #protoc  proto/* --go_out=. --go-grpc_out=.
-cd timedjobsvr && goctl rpc protoc  proto/timedjob.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
+cd timed/timedjobsvr && goctl rpc protoc  proto/timedjob.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ../..
 ```
