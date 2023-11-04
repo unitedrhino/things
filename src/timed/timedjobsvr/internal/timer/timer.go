@@ -55,7 +55,7 @@ func (t Timed) ProcessTask(ctx context.Context, Task *asynq.Task) error {
 			return nil
 		}()
 		if err != nil {
-			logx.WithContext(ctx).Errorf("ProcessTask err:%v task:%v", err, utils.Fmt(Task))
+			logx.WithContext(ctx).Errorf("ProcessTask  task.Type:%v,task.Payload:%v err:%v", Task.Type(), string(Task.Payload()), err)
 		}
 	}()
 	return nil

@@ -58,15 +58,15 @@ func (t *TimedTaskGroup) TableName() string {
 }
 
 type TimedTask struct {
-	ID        int64  `gorm:"column:id;primary_key"`                                                 // 任务ID
-	GroupCode string `gorm:"column:group_code;uniqueIndex:uni_task_code;uniqueIndex:uni_task_name"` //组编码
-	Type      int64  `gorm:"column:type;default:1"`                                                 //任务类型 1 定时任务 2 延时任务
-	Name      string `gorm:"column:name;uniqueIndex:uni_task_name"`                                 // 任务名称
-	Code      string `gorm:"column:code;uniqueIndex:uni_task_code"`                                 //任务编码
-	Params    string `gorm:"column:params;type:json;NOT NULL;default:'{}'"`                         // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
-	CronExpr  string `gorm:"column:cron_expr"`                                                      // cron执行表达式
-	Status    int64  `gorm:"column:status"`                                                         // 状态
-	Priority  int64  `gorm:"column:priority;default:3"`                                             //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+	ID        int64  `gorm:"column:id;primary_key"`                         // 任务ID
+	GroupCode string `gorm:"column:group_code;uniqueIndex:uni_task_code"`   //组编码
+	Type      int64  `gorm:"column:type;default:1"`                         //任务类型 1 定时任务 2 延时任务
+	Name      string `gorm:"column:name"`                                   // 任务名称
+	Code      string `gorm:"column:code;uniqueIndex:uni_task_code"`         //任务编码
+	Params    string `gorm:"column:params;type:json;NOT NULL;default:'{}'"` // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
+	CronExpr  string `gorm:"column:cron_expr"`                              // cron执行表达式
+	Status    int64  `gorm:"column:status"`                                 // 状态
+	Priority  int64  `gorm:"column:priority;default:3"`                     //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 	stores.Time
 	Group *TimedTaskGroup `gorm:"foreignKey:Code;references:GroupCode"`
 }
