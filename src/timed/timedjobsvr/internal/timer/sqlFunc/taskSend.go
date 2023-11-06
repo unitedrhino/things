@@ -9,8 +9,9 @@ import (
 )
 
 type TaskSend struct {
-	Code  string            `json:"code"` //任务编码
-	Param map[string]string `json:"param"`
+	Code        string            `json:"code"` //任务编码
+	ExecContent string            `json:"execContent"`
+	Param       map[string]string `json:"param"`
 }
 
 func (s *SqlFunc) TaskSendSqlJs() func(in goja.FunctionCall) goja.Value {
@@ -36,7 +37,7 @@ func (s *SqlFunc) TaskSendSqlJs() func(in goja.FunctionCall) goja.Value {
 				if task.Param == nil {
 					return nil
 				}
-				return &timedjob.TaskDelaySql{Param: task.Param}
+				return &timedjob.TaskDelaySql{Param: task.Param, ExecContent: task.ExecContent}
 			}(),
 		})
 		if err != nil {
