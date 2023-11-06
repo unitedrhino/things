@@ -21,9 +21,9 @@ func (s *SqlFunc) Exec() func(in goja.FunctionCall) goja.Value {
 		err := ret.Error
 		s.ExecNum += ret.RowsAffected
 		if err != nil {
-			panic(stores.ErrFmt(err))
+			return s.vm.ToValue(ErrRet{Err: stores.ErrFmt(err)})
 		}
-		return nil
+		return s.vm.ToValue(ErrRet{})
 	}
 
 }

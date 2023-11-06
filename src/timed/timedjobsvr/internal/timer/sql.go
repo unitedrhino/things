@@ -27,8 +27,8 @@ func (t Timed) SqlExec(ctx context.Context, task *domain.TaskInfo) error {
 func (t Timed) SqlNormalExec(ctx context.Context, task *domain.TaskInfo) error {
 	var execNum int64
 	err := func() error {
-		dsn := cast.ToString(task.Sql.Env[domain.SqlEnvDsn])
-		dbType := cast.ToString(task.Sql.Env[domain.SqlEnvDBType])
+		dsn := cast.ToString(task.Env[domain.SqlEnvDsn])
+		dbType := cast.ToString(task.Env[domain.SqlEnvDBType])
 		if dsn == "" { //走默认值
 			err := stores.GetCommonConn(ctx).Exec(task.Sql.Param.ExecContent).Error
 			return stores.ErrFmt(err)
@@ -85,7 +85,7 @@ func (t Timed) SqlJsExec(ctx context.Context, task *domain.TaskInfo) error {
 				}
 			}
 		}()
-		var SqlJob func() map[string]any
+		var SqlJob func(map[string]string) map[string]any
 		err := func() error {
 			err := sf.Register()
 			if err != nil {
@@ -107,7 +107,7 @@ func (t Timed) SqlJsExec(ctx context.Context, task *domain.TaskInfo) error {
 			code = e.GetCode()
 			msg = e.GetMsg()
 		} else if SqlJob != nil {
-			ret := SqlJob()
+			ret := SqlJob(task.Sql.Param.Param)
 			code = cast.ToInt64(ret["code"])
 			msg = cast.ToString(ret["msg"])
 		}

@@ -17,13 +17,14 @@ service TimedManage {
 message TaskSendDelayReq{
   string groupCode =1;//组需要提前创建好
   string code =2;//任务code
-  TaskDelayOption option =3;//选项
-  TaskDelayQueue paramQueue =4;//消息队列发送类型配置,如果不传则使用数据库定义的
+  TaskDelayOption option = 3;//选项
+  TaskDelayQueue paramQueue = 4;//消息队列发送类型配置,如果不传则使用数据库定义的
   TaskDelaySql paramSql = 5;//数据库执行类型配置,如果不传则使用数据库定义的
 }
 
 message TaskDelaySql{
   string execContent =1;//如果是normal,填写执行的sql,如果是脚本,填写脚本内容,如果不填,则会使用数据库中第一次初始化的参数
+  map<string,string> param =2;//脚本参数,会通过函数入参传进去
 }
 
 message TaskDelayQueue{

@@ -17,7 +17,7 @@ func ToSendDelayReqPb(in *types.TimedTaskSendDelayReq) *timedmanage.TaskSendDela
 		}
 	}
 	if in.ParamSql != nil {
-		ret.ParamSql = &timedmanage.TaskDelaySql{ExecContent: in.ParamSql.ExecContent}
+		ret.ParamSql = &timedmanage.TaskDelaySql{ExecContent: in.ParamSql.ExecContent, Param: in.ParamSql.Param}
 	}
 	if in.ParamQueue != nil {
 		ret.ParamQueue = &timedmanage.TaskDelayQueue{Topic: in.ParamQueue.Topic, Payload: in.ParamQueue.Payload}

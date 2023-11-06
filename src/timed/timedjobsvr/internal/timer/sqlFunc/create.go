@@ -1,11 +1,19 @@
 package sqlFunc
 
 import (
+	sq "github.com/Masterminds/squirrel"
 	"github.com/dop251/goja"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils/cast"
 )
 
-func (s *SqlFunc) Create() func(in goja.FunctionCall) goja.Value {
+type CreateOneRet struct {
+	Err          error `json:"err"`
+	LastInsertId int64 `json:"lastInsertId"` //最后更新的id
+	RowsAffected int64 `json:"rowsAffected"` //受影响的行数
+}
+
+func (s *SqlFunc) CreateOne() func(in goja.FunctionCall) goja.Value {
 	return func(in goja.FunctionCall) goja.Value {
 		if len(in.Arguments) < 2 {
 			s.Errorf("timed.SetFunc.Exec script use err,"+
@@ -17,13 +25,33 @@ func (s *SqlFunc) Create() func(in goja.FunctionCall) goja.Value {
 		data := in.Arguments[1].Export()
 		conn, close := s.getConn(in, "exec")
 		defer close()
-		ret := conn.Table(table).Create(data)
-		err := ret.Error
-		s.ExecNum += ret.RowsAffected
-		if err != nil {
-			return s.vm.ToValue(err)
+		var cloumns []string
+		var values []any
+		datas := cast.ToStringMap(data)
+		for k, v := range datas {
+			cloumns = append(cloumns, k)
+			values = append(values, v)
 		}
-		return nil
+		sql, vals, err := sq.Insert(table).Columns(cloumns...).Values(values...).ToSql()
+		if err != nil {
+			return ToJsStu(s.vm, CreateOneRet{Err: errors.Fmt(err)})
+		}
+		db, err := conn.DB()
+		if err != nil {
+			return ToJsStu(s.vm, CreateOneRet{Err: errors.Fmt(err)})
+		}
+		ret, err := db.Exec(sql, vals...)
+		if err != nil {
+			return ToJsStu(s.vm, CreateOneRet{Err: errors.Fmt(err)})
+		}
+		//ret := conn.Table(table).CreateOne(data)
+		//	err := ret.Error
+		RowsAffected, _ := ret.RowsAffected()
+		LastInsertId, _ := ret.LastInsertId()
+		s.ExecNum += RowsAffected
+		if err != nil {
+			return ToJsStu(s.vm, CreateOneRet{Err: errors.Fmt(err)})
+		}
+		return ToJsStu(s.vm, CreateOneRet{RowsAffected: RowsAffected, LastInsertId: LastInsertId})
 	}
-
 }

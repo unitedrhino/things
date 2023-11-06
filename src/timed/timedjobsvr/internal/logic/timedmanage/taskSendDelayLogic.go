@@ -42,7 +42,7 @@ func (l *TaskSendDelayLogic) TaskSendDelay(in *timedjob.TaskSendDelayReq) (*time
 		return nil, err
 	}
 	ti := relationDB.NewTaskRepo(l.ctx)
-	task, err := ti.FindOneByFilter(l.ctx, relationDB.TaskFilter{Code: in.Code})
+	task, err := ti.FindOneByFilter(l.ctx, relationDB.TaskFilter{Code: in.Code, WithGroup: true})
 	if err != nil && !errors.Cmp(err, errors.NotFind) {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (l *TaskSendDelayLogic) TaskSendDelay(in *timedjob.TaskSendDelayReq) (*time
 			if in.ParamSql == nil {
 				return nil, errors.Parameter.AddMsg("任务组为sql执行类型,请填写sql执行参数")
 			}
-			p, _ := json.Marshal(domain.ParamSql{ExecContent: in.ParamSql.ExecContent})
+			p, _ := json.Marshal(domain.ParamSql{ExecContent: in.ParamSql.ExecContent, Param: in.ParamSql.Param})
 			param = string(p)
 		}
 		property := int64(3)
@@ -80,6 +80,7 @@ func (l *TaskSendDelayLogic) TaskSendDelay(in *timedjob.TaskSendDelayReq) (*time
 			return nil, err
 		}
 	} else { //如果传了参数需要更新参数内容
+		oldDo := relationDB.ToTaskInfoDo(task)
 		switch group.Type {
 		case domain.TaskGroupTypeQueue:
 			if in.ParamQueue != nil {
@@ -88,7 +89,14 @@ func (l *TaskSendDelayLogic) TaskSendDelay(in *timedjob.TaskSendDelayReq) (*time
 			}
 		case domain.TaskGroupTypeSql:
 			if in.ParamSql != nil {
-				p, _ := json.Marshal(domain.ParamSql{ExecContent: in.ParamSql.ExecContent})
+				ps := domain.ParamSql{ExecContent: oldDo.Sql.Param.ExecContent, Param: oldDo.Sql.Param.Param}
+				if in.ParamSql.ExecContent != "" {
+					ps.ExecContent = in.ParamSql.ExecContent
+				}
+				if in.ParamSql.Param != nil {
+					ps.Param = in.ParamSql.Param
+				}
+				p, _ := json.Marshal(ps)
 				task.Params = string(p)
 			}
 		}

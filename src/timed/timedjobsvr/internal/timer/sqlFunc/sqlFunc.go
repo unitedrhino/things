@@ -30,7 +30,7 @@ type SqlFunc struct {
 
 func NewSqlFunc(ctx context.Context, svcCtx *svc.ServiceContext, task *domain.TaskInfo, vm *goja.Runtime) *SqlFunc {
 	kvKeyPre := fmt.Sprintf("timed:sql:%s:", task.GroupCode)
-	if code := task.Sql.Env["code"]; code != "" {
+	if code := task.Env["code"]; code != "" {
 		kvKeyPre = fmt.Sprintf("timed:sql:%s:", task.GroupCode)
 	}
 	return &SqlFunc{SvcCtx: svcCtx, ctx: ctx, Logger: logx.WithContext(ctx), Task: task, vm: vm, kvKeyPre: kvKeyPre}
@@ -53,7 +53,8 @@ func (s *SqlFunc) Register() error {
 		{"Hget", s.Hget()},
 		{"Hset", s.Hset()},
 		{"HgetAll", s.HGetAll()},
-		{"Create", s.Create()},
+		{"CreateOne", s.CreateOne()},
+		{"TaskSendSqlJs", s.TaskSendSqlJs()},
 	}
 	for _, f := range funcList {
 		err := s.vm.Set(f.Name, f.f)
@@ -65,8 +66,8 @@ func (s *SqlFunc) Register() error {
 }
 
 func (s *SqlFunc) getConn(in goja.FunctionCall, tp string) (*gorm.DB, func() error) {
-	dsn := s.Task.Sql.Env[task.SqlEnvDsn]
-	dbType := s.Task.Sql.Env[task.SqlEnvDBType]
+	dsn := s.Task.Env[task.SqlEnvDsn]
+	dbType := s.Task.Env[task.SqlEnvDBType]
 	if len(in.Arguments) > 1 {
 		dbName := in.Arguments[1].String()
 		c, ok := s.Task.Sql.Config.Database[dbName]

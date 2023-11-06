@@ -487,7 +487,8 @@ type TimedTaskDelayQueue struct {
 }
 
 type TimedTaskDelaySql struct {
-	ExecContent string `json:"execContent"` //如果是normal,填写执行的sql,如果是脚本,填写脚本内容,如果不填,则会使用数据库中第一次初始化的参数
+	Param       map[string]string `json:"param"`
+	ExecContent string            `json:"execContent"` //如果是normal,填写执行的sql,如果是脚本,填写脚本内容,如果不填,则会使用数据库中第一次初始化的参数
 }
 
 type TimedTaskSendDelayReq struct {
