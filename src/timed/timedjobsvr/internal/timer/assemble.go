@@ -18,6 +18,7 @@ func FillTaskInfoDo(do *domain.TaskInfo, po *relationDB.TimedTask) error {
 	if do.Params == "" { //如果没有传,则用数据库里的
 		do.Params = po.Params
 	}
+	do.Env = po.Group.Env
 	switch po.Group.Type {
 	case domain.TaskGroupTypeQueue:
 		var param domain.ParamQueue
@@ -32,7 +33,7 @@ func FillTaskInfoDo(do *domain.TaskInfo, po *relationDB.TimedTask) error {
 		if err != nil {
 			return err
 		}
-		do.Sql = &domain.Sql{Param: sql, Env: po.Group.Env}
+		do.Sql = &domain.Sql{Param: sql}
 		err = json.Unmarshal([]byte(po.Group.Config), &do.Sql.Config)
 		if err != nil {
 			return err

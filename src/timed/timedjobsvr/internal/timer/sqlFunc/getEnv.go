@@ -12,6 +12,6 @@ func (s *SqlFunc) GetEnv() func(in goja.FunctionCall) goja.Value {
 				s.Task.Code, s.Task.Sql.Param.ExecContent)
 			panic(errors.Parameter)
 		}
-		return s.vm.ToValue(s.Task.Sql.Env[in.Arguments[0].String()])
+		return s.vm.ToValue(s.Task.Env[in.Arguments[0].String()])
 	}
 }
