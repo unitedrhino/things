@@ -1333,7 +1333,7 @@ type AlarmSceneDeleteReq struct {
 }
 
 type OtaFirmwareIndexReq struct {
-	ProductID string    `json:"productID,optional,omitempty"`        //产品id 获取产品id下的所有升级包
+	ProductID string    `json:"product_id,optional,omitempty"`        //产品id 获取产品id下的所有升级包
 	TimeStart int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
 	TimeEnd   int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
 	Page      *PageInfo `json:"page,optional"`                       //分页信息

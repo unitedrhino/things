@@ -36,7 +36,7 @@ func (p OtaFirmwareRepo) fmtFilter(ctx context.Context, f OtaFirmwareFilter) *go
 		db = db.Where("id=?", f.FirmwareID)
 	}
 	if f.ProductID != "" {
-		db = db.Where("ProductID=?", f.ProductID)
+		db = db.Where("product_id=?", f.ProductID)
 	}
 	if f.Version != "" {
 		db = db.Where("version=?", f.Version)

@@ -33,7 +33,7 @@ type OtaFirmwareFileFilter struct {
 func (p OtaFirmwareFileRepo) fmtFilter(ctx context.Context, f OtaFirmwareFileFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.FirmwareID != 0 {
-		db = db.Where("firmwareID=?", f.FirmwareID)
+		db = db.Where("firmware_id=?", f.FirmwareID)
 	}
 	if f.Size != nil {
 		db = db.Where("size=?", *f.Size)

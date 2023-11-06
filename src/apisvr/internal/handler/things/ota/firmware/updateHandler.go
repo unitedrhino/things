@@ -17,7 +17,6 @@ func UpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
-
 		l := firmware.NewUpdateLogic(r.Context(), svcCtx)
 		err := l.Update(&req)
 		result.Http(w, r, nil, err)
