@@ -5,3 +5,7 @@ var TimerPriority = map[int64]string{
 	3: "default",
 	1: "low",
 }
+
+const (
+	TimedIThingsQueueGroupCode = "iThings-queue"
+)

@@ -9,7 +9,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func checkIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices.Core) error {
+func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices.Core) error {
 	dev, err := svcCtx.DeviceM.DeviceInfoRead(ctx, &dm.DeviceInfoReadReq{
 		ProductID:  core.ProductID,
 		DeviceName: core.DeviceName,

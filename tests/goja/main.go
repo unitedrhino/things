@@ -7,10 +7,17 @@ import (
 
 func main() {
 	r := goja.New()
+	r.Set("getVal", func(in goja.FunctionCall) goja.Value {
+		var ret []map[string]any
+		return r.ToValue(ret)
+	})
 	v, err := r.RunString(`
-	let d = 1+2+3;
+	let d = getVal();
 	function sum(a,b){
-	return a+b+d;
+	if (d.length==0){
+		return d.length;
+	}
+	return 9999;
 }
 `)
 	fmt.Println(v, err)

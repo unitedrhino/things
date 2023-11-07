@@ -3,6 +3,7 @@ package pubDev
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/devices"
@@ -79,7 +80,7 @@ func (n *NatsJsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Pu
 }
 
 func (n *NatsJsClient) subscribeDevSync(ctx context.Context, topic string) (*natsSubDev, error) {
-	subscription, err := n.client.SubscribeSync(topic, nats.Durable(events.GenNatsJsDurable(natsJsConsumerName, topic)))
+	subscription, err := n.client.SubscribeSync(topic, nats.Durable(events.GenNatsJsDurable(natsJsConsumerName, topic+"--"+uuid.NewString())))
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.SubscribeSync failure err:%v", utils.FuncName(), err)
 		return nil, err

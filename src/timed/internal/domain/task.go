@@ -13,6 +13,12 @@ const (
 	SqlTypeNormal = "normal"
 	SqlTypeJs     = "js"
 )
+
+const (
+	QueueTypeNats   = "nats"
+	QueueTypeNatsJs = "natsJs"
+)
+
 const (
 	SqlEnvDsn    = "dsn"
 	SqlEnvDBType = "dbType"

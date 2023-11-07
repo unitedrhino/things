@@ -85,4 +85,6 @@ const (
 	RuleSceneInfoDelete = "server.rule.scene.info.delete" //场景联动有修改
 
 	TimedJobClean = "server.timedjob.clean" //定时任务服务缓存及日志定时清理
+
+	DiActionCheckDelay = "server.action.check.delay"
 )

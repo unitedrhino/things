@@ -48,10 +48,19 @@ func NewNatsClient2(mode string, ConsumerName string, natsConf conf.NatsConf) (*
 
 func (n *NatsClient) QueueSubscribe(subj, queue string, cb events.HandleFunc) error {
 	if n.mode == conf.EventModeNatsJs {
-		_, err := n.js.QueueSubscribe(subj, queue, events.NatsSubscription(cb), nats.Durable(events.GenNatsJsDurable(n.consumerName, subj)))
+		_, err := n.js.QueueSubscribe(subj, queue, events.NatsSubscription(cb), nats.Durable("queue_"+events.GenNatsJsDurable(n.consumerName, subj)))
 		return err
 	}
 	_, err := n.nc.QueueSubscribe(subj, queue, events.NatsSubscription(cb))
+	return err
+}
+
+func (n *NatsClient) Subscribe(subj string, cb events.HandleFunc) error {
+	if n.mode == conf.EventModeNatsJs {
+		_, err := n.js.Subscribe(subj, events.NatsSubscription(cb), nats.Durable("normal_"+events.GenNatsJsDurable(n.consumerName, subj)))
+		return err
+	}
+	_, err := n.nc.Subscribe(subj, events.NatsSubscription(cb))
 	return err
 }
 

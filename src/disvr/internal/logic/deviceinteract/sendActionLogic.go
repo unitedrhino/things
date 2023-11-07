@@ -3,13 +3,16 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
+	"github.com/i-Things/things/src/timed/timedjobsvr/pb/timedjob"
 	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 
@@ -45,11 +48,11 @@ func (l *SendActionLogic) initMsg(productID string) error {
 // 调用设备行为
 func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
-	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}); err != nil {
-		//return nil, err
+		return nil, err
 	}
 
 	err := l.initMsg(in.ProductID)
@@ -76,7 +79,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 	}
 	err = req.FmtReqParam(l.schema, schema.ParamActionInput)
 	if err != nil {
-		//return nil, err
+		return nil, err
 	}
 
 	payload, _ := json.Marshal(req)
@@ -87,6 +90,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
+		Explain:    ToSendOptionDo(in.Option).String(),
 	}
 	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
 	if err != nil {
@@ -97,6 +101,24 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		err := l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
 		if err != nil {
 			return nil, err
+		}
+		if in.Option != nil {
+			payload, _ := json.Marshal(reqMsg)
+			_, err := l.svcCtx.TimedM.TaskSendDelay(l.ctx, &timedjob.TaskSendDelayReq{
+				GroupCode: def.TimedIThingsQueueGroupCode,
+				Code:      "disvr-action-check-delay",
+				Option: &timedjob.TaskDelayOption{
+					ProcessIn: in.Option.RequestTimeout,
+					Timeout:   in.Option.TimeoutToFail,
+				},
+				ParamQueue: &timedjob.TaskDelayQueue{
+					Topic:   topics.DiActionCheckDelay,
+					Payload: string(payload),
+				},
+			})
+			if err != nil {
+				l.Errorf("TaskSendDelay err:%v", err)
+			}
 		}
 		return &di.SendActionResp{
 			ClientToken: req.ClientToken,

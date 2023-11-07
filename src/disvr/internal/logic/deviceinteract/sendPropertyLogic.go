@@ -48,7 +48,7 @@ func (l *SendPropertyLogic) initMsg(productID string) error {
 func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendPropertyResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	var isOnline = true
-	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}); err != nil { //如果是不启用设备影子的模式则直接返回

@@ -127,3 +127,14 @@ func ToOtaPageRpc(in *types.PageInfo) *dm.OtaPageInfo {
 		Size: in.Size,
 	}
 }
+
+func ToDiSendOption(in *types.SendOption) *di.SendOption {
+	if in == nil {
+		return nil
+	}
+	return &di.SendOption{
+		TimeoutToFail:  in.TimeoutToFail,
+		RequestTimeout: in.RequestTimeout,
+		RetryInterval:  in.RetryInterval,
+	}
+}
