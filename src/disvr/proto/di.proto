@@ -11,6 +11,13 @@ message PageInfo{
   int64 size = 2;
 }
 
+
+message SendOption {
+  int64  timeoutToFail = 1;//超时失败时间
+  int64  requestTimeout = 2;//请求超时,超时后会进行重试
+  int64  retryInterval = 3;//重试间隔
+}
+
 //设备消息
 service DeviceMsg {
   //获取设备sdk调试日志
@@ -201,7 +208,9 @@ message SendActionReq{
   string actionID = 3;//产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
   string inputParams = 4;//输入参数
   bool isAsync = 5;//是否异步获取
+  SendOption option = 6;//异步选项
 }
+
 message SendActionResp{
   string clientToken = 1;//调用id
   string outputParams = 2;//输出参数 注意：此字段可能返回 null，表示取不到有效值。

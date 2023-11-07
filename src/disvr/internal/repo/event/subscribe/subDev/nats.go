@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
@@ -15,16 +14,17 @@ import (
 
 type (
 	NatsClient struct {
-		client *nats.Conn
+		client *clients.NatsClient
 	}
 )
 
 const (
 	ThingsDeliverGroup = "things_dm_group"
+	natsJsConsumerName = "disvr"
 )
 
-func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
-	nc, err := clients.NewNatsClient(conf)
+func newNatsClient(conf conf.EventConf) (*NatsClient, error) {
+	nc, err := clients.NewNatsClient2(conf.Mode, natsJsConsumerName, conf.Nats)
 	if err != nil {
 		return nil, err
 	}
@@ -105,29 +105,29 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		return err
 	}
 
-	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusConnected, ThingsDeliverGroup,
-		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
+	err = n.client.QueueSubscribe(topics.DeviceUpStatusConnected, ThingsDeliverGroup,
+		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.GetDevConnMsg failure err:%v", utils.FuncName(), err)
 				return err
 			}
 			return handle(ctx).Connected(ele)
-		}))
+		})
 
 	if err != nil {
 		return err
 	}
 
-	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusDisconnected, ThingsDeliverGroup,
-		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
+	err = n.client.QueueSubscribe(topics.DeviceUpStatusDisconnected, ThingsDeliverGroup,
+		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.GetDevConnMsg failure err:%v", utils.FuncName(), err)
 				return err
 			}
 			return handle(ctx).Disconnected(ele)
-		}))
+		})
 	if err != nil {
 		return err
 	}
@@ -149,8 +149,8 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 
 func (n *NatsClient) queueSubscribeDevPublish(topic string,
 	handleFunc func(ctx context.Context, msg *deviceMsg.PublishMsg) error) error {
-	_, err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
-		events.NatsSubscription(func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
+	err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
+		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			defer utils.Recover(ctx)
 			ele, err := deviceMsg.GetDevPublish(ctx, msg)
 			if err != nil {
@@ -158,7 +158,7 @@ func (n *NatsClient) queueSubscribeDevPublish(topic string,
 				return err
 			}
 			return handleFunc(ctx, ele)
-		}))
+		})
 	if err != nil {
 		return err
 	}

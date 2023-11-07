@@ -45,7 +45,7 @@ func (l *GetPropertyReplyLogic) initMsg(productID string) error {
 // 请求设备获取设备最新属性
 func (l *GetPropertyReplyLogic) GetPropertyReply(in *di.GetPropertyReplyReq) (*di.GetPropertyReplyResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
-	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}); err != nil {

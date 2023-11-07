@@ -12,8 +12,9 @@ type Config struct {
 	TDengine struct {
 		DataSource string
 	}
-	DmRpc      conf.RpcClientConf `json:",optional"`
-	CacheRedis cache.ClusterConf
-	Event      conf.EventConf //和things内部交互的设置
-	OssConf    conf.OssConf   `json:",optional"`
+	DmRpc       conf.RpcClientConf `json:",optional"`
+	TimedJobRpc conf.RpcClientConf `json:",optional"`
+	CacheRedis  cache.ClusterConf
+	Event       conf.EventConf //和things内部交互的设置
+	OssConf     conf.OssConf   `json:",optional"`
 }

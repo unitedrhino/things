@@ -41,6 +41,7 @@ type (
 	SendActionResp         = di.SendActionResp
 	SendMsgReq             = di.SendMsgReq
 	SendMsgResp            = di.SendMsgResp
+	SendOption             = di.SendOption
 	SendPropertyMsg        = di.SendPropertyMsg
 	SendPropertyReq        = di.SendPropertyReq
 	SendPropertyResp       = di.SendPropertyResp

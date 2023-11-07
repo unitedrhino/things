@@ -163,6 +163,12 @@ type TimeRange struct {
 	End   int64 `json:"end,optional"`   //结束时间 unix时间戳
 }
 
+type SendOption struct {
+	TimeoutToFail  int64 `json:"timeoutToFail,optional"`  //超时失败时间
+	RequestTimeout int64 `json:"requestTimeout,optional"` //请求超时,超时后会进行重试
+	RetryInterval  int64 `json:"retryInterval,optional"`  //重试间隔
+}
+
 type MenuCreateReq struct {
 	MenuData
 }
@@ -1067,11 +1073,12 @@ type DeviceInteractRespReadReq struct {
 }
 
 type DeviceInteractSendActionReq struct {
-	ProductID   string `json:"productID"`        //产品id
-	DeviceName  string `json:"deviceName"`       //设备名
-	ActionID    string `json:"actionID"`         //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
-	InputParams string `json:"inputParams"`      //输入参数
-	IsAsync     bool   `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
+	ProductID   string      `json:"productID"`        //产品id
+	DeviceName  string      `json:"deviceName"`       //设备名
+	ActionID    string      `json:"actionID"`         //产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
+	InputParams string      `json:"inputParams"`      //输入参数
+	IsAsync     bool        `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
+	Option      *SendOption `json:"option,optional"`  //异步重试选项
 }
 
 type DeviceInteractSendActionResp struct {
@@ -1333,7 +1340,7 @@ type AlarmSceneDeleteReq struct {
 }
 
 type OtaFirmwareIndexReq struct {
-	ProductID string    `json:"product_id,optional,omitempty"`        //产品id 获取产品id下的所有升级包
+	ProductID string    `json:"productID,optional,omitempty"`        //产品id 获取产品id下的所有升级包
 	TimeStart int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
 	TimeEnd   int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
 	Page      *PageInfo `json:"page,optional"`                       //分页信息

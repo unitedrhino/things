@@ -2,6 +2,8 @@ package svc
 
 import (
 	"context"
+	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
+	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"os"
 
 	"github.com/i-Things/things/shared/conf"
@@ -45,6 +47,7 @@ type ServiceContext struct {
 	OssClient     *oss.Client
 	FirmwareM     firmwaremanage.FirmwareManage
 	OtaTaskM      otataskmanage.OtaTaskManage
+	TimedM        timedmanage.TimedManage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -54,6 +57,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		remoteConfig remoteconfig.RemoteConfig
 		otataskM     otataskmanage.OtaTaskManage
 		firmwareM    firmwaremanage.FirmwareManage
+		timedM       timedmanage.TimedManage
 	)
 
 	hubLog := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
@@ -87,6 +91,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		otataskM = dmdirect.NewOtaTaskManage(c.DmRpc.RunProxy)
 		firmwareM = dmdirect.NewFirmwareManage(c.DmRpc.RunProxy)
 	}
+	if c.TimedJobRpc.Mode == conf.ClientModeGrpc {
+		timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
+	} else {
+		timedM = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
+	}
 	tr := schema.NewReadRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
 		info, err := productM.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: productID})
 		if err != nil {
@@ -116,5 +125,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OssClient:     ossClient,
 		OtaTaskM:      otataskM,
 		FirmwareM:     firmwareM,
+		TimedM:        timedM,
 	}
 }
