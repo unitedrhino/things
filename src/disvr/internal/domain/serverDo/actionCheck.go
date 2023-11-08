@@ -8,7 +8,10 @@ type SendOption struct {
 	RetryInterval  int64 `json:"retryInterval,optional"`  //重试间隔
 }
 
-func (s SendOption) String() string {
+func (s *SendOption) String() string {
+	if s == nil {
+		return ""
+	}
 	ret, _ := json.Marshal(s)
 	return string(ret)
 }
