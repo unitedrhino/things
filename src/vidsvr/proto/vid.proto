@@ -1,0 +1,152 @@
+syntax = "proto3";
+option go_package="pb/vid";
+
+package vid;
+
+import "google/protobuf/wrappers.proto";
+
+message Response {
+}
+
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+  //排序信息
+  repeated OrderBy orders = 3;
+  message OrderBy {
+    //排序的字段名
+    string filed = 1;
+    //排序方式：0 aes, 1 desc
+    int64 sort = 2;
+  }
+}
+
+//服务管理
+service VidmgrMange{
+  //新建服务
+  rpc vidmgrInfoCreate(VidmgrInfo)    returns (Response);
+  //更新服务
+  rpc vidmgrInfoUpdate(VidmgrInfo)     returns (Response);
+  //删除服务
+  rpc vidmgrInfoDelete(VidmgrInfoDeleteReq)     returns (Response);
+  //获取服务列表
+  rpc vidmgrInfoIndex(VidmgrInfoIndexReq)     returns (VidmgrInfoIndexResp);
+  //获取服务信息详情
+  rpc vidmgrInfoRead(VidmgrInfoReadReq)     returns (VidmgrInfo);
+  //获取服务统计  在线，离线，未激活
+  rpc vidmgrInfoCount(VidmgrInfoCountReq)     returns (VidmgrInfoCountResp);
+}
+
+message VidmgrInfo{
+  int64   createdTime = 1; //创建时间 只读
+  string  vidmgrID = 2; //服务id 只读
+  string  vidmgrName = 3; //服务名称
+  string  vidmgrIpV4 = 4; //服务IP
+  int64   vidmgrPort = 5; //服务端口
+  int64   vidmgrType = 6; //服务类型:1:zlmediakit,2:srs,3:monibuca
+  string  vidmgrSecret = 7;//服务秘钥
+  int64   vidmgrStatus = 8;//服务状态: 0：未激活  1：在线  2：离线
+  int64   firstLogin = 9; //激活时间 只读
+  int64   lastLogin = 10; //最后上线时间 只读
+  google.protobuf.StringValue   desc = 11;//描述
+  map<string, string> tags = 12; //产品标签
+}
+
+message VidmgrInfoDeleteReq{
+  string   vidmgrtID = 1; //产品id
+}
+
+message VidmgrInfoReadReq{
+  string   vidmgrtID = 1; //产品id
+}
+
+message VidmgrInfoIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  int64  vidmgrType = 2; //vidmgrType = 6; //服务类型:1:zlmediakit,2:srs,3:monibuca
+  string  vidmgrtName = 3; //过滤条件: 服务名称
+  repeated string   vidmgrIDs = 4; //过滤服务id列表
+  map<string, string> tags = 5;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+}
+
+message VidmgrInfoIndexResp{
+  repeated VidmgrInfo list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message VidmgrInfoCountReq{
+  int64  startTime = 1; // 查询区间 开始
+  int64  endTime = 2;   // 查询区间 结束
+}
+
+message VidmgrInfoCountResp{
+  int64 online = 1;
+  int64 offline = 2;
+  int64 inactive = 3;
+}
+
+//设经纬度信息
+message Point{
+  double  longitude = 1;//经度
+  double  latitude = 2;//纬度
+}
+
+message VidstreamInfo{
+  int64   streamID = 1; //流ID
+  string  streamName = 2;
+  int64   netType = 3;
+  int64   devTye = 4;
+  int64   devsteamType = 5;
+  string  devUrl  = 6;
+  string  channelID = 7;
+  string  channelName = 8;
+  int64   lownetType = 9;
+  bool    isShareChannel = 10;
+  bool    isAutoPush = 11;
+  bool    isAutoRecord = 12;
+  bool    isPTZ = 13;
+  bool    isOnline = 14;
+  string  vidmgrID = 15; //流媒体服务器ID
+  int64   createdTime = 17; //创建时间 只读
+  google.protobuf.StringValue   desc = 18;//描述
+  map<string, string> tags = 19; //产品标签
+}
+
+//视频流通道管理
+service ViddevMange{
+  //流添加
+  //流更新
+  //删除流
+  //获取流列表
+  //获取流信息详情
+  //统计流 在线，离线，未激活
+}
+
+message VidPlanInfo{
+  int64 planID = 1;
+  string name = 2;
+  bool enable = 3;
+  int64 limitSpace = 4;
+  int64 limitDays = 5;
+  int64 overStepPlan = 6;
+  int64 weekDays = 7;
+  int64 startTime = 8;
+  int64 endTime = 9;
+  google.protobuf.StringValue   desc = 10;//描述
+  map<string, string> tags = 11; //产品标签
+}
+
+message VidrecordfileInfo{
+  int64 fileID  = 1;
+  int64 planID = 2;
+  int64 viddevID = 3;
+  string vidmgrID = 4;
+  int64 startTime = 5;
+  int64 endTime = 6;
+  int64 duration = 7 ;
+  int64 filesize = 8 ;
+  string videoPath = 9;
+  string downLoadUrl =10;
+  int64 createTime = 11;
+  int64 updateTime = 12;
+  int64 recordTime = 13;
+}

@@ -106,6 +106,7 @@ var (
 		{ID: 66, ParentID: 63, Type: 1, Order: 2, Name: "接入管理", Path: "/videoMangers/vdevice/index", Component: "./videoMangers/vdevice/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 67, ParentID: 63, Type: 1, Order: 4, Name: "视频回放", Path: "/videoMangers/playback/index", Component: "./videoMangers/playback/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 68, ParentID: 63, Type: 1, Order: 2, Name: "录像计划", Path: "/videoMangers/recordplan/index", Component: "./videoMangers/recordplan/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 70, ParentID: 63, Type: 1, Order: 1, Name: "服务详细", Path: "/videoMangers/vidsrvmgr/detail/:id", Component: "./videoMangers/vidsrvmgr/detail/index", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
 	}
 	MigrateApiInfo = []SysApiInfo{
 		{Route: "/api/v1/things/product/info/update", Method: 2, Name: "更新产品", BusinessType: 2, Desc: "", Group: "产品管理"},
@@ -202,6 +203,13 @@ var (
 		{Route: "/api/v1/things/rule/alarm/deal-record/create", Method: 2, Name: "新增告警处理记录", BusinessType: 1, Desc: "", Group: "处理记录"},
 		{Route: "/api/v1/things/rule/alarm/deal-record/index", Method: 2, Name: "获取告警处理记录列表", BusinessType: 4, Desc: "", Group: "处理记录"},
 		{Route: "/api/v1/things/rule/alarm/scene/multi-update", Method: 2, Name: "更新告警和场景的关联", BusinessType: 2, Desc: "", Group: "场景联动"},
+		//视频服务API接口
+		{Route: "/api/v1/things/vidmgr/info/count", Method: 2, Name: "流服务器统计", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/info/create", Method: 2, Name: "新增流服务器", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/info/delete", Method: 2, Name: "删除流服务器", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/info/index", Method: 2, Name: "获取流服务器列表", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/info/read", Method: 2, Name: "获取流服详细", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/info/update", Method: 2, Name: "更新流服务器", BusinessType: 1, Desc: "", Group: "视频服务"},
 	}
 	MigrateApiAuth = []SysApiAuth{
 		{PType: "p", V0: "1", V1: "/api/v1/things/product/info/update", V2: "2", V3: "", V4: "", V5: ""},
@@ -296,5 +304,13 @@ var (
 		{PType: "p", V0: "1", V1: "/api/v1/things/rule/alarm/deal-record/create", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/rule/alarm/deal-record/index", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/rule/alarm/scene/multi-update", V2: "2", V3: "", V4: "", V5: ""},
+
+		//视频服务API接口
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/count", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/create", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/delete", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/index", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/read", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/update", V2: "2", V3: "", V4: "", V5: ""},
 	}
 )

@@ -68,3 +68,12 @@ cd ddsvr && goctl api go -api http/dd.api  -dir ./ --style=goZero && cd ..
 #protoc  proto/* --go_out=. --go-grpc_out=.
 cd rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
+
+# 视频管理引擎模块-vidsvr
+
+- rpc文件编译
+
+```shell
+#protoc  proto/* --go_out=. --go-grpc_out=.
+cd vidsvr && goctl rpc protoc  proto/vid.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
+```
