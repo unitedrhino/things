@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
@@ -92,11 +93,16 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 		return nil, err
 	}
 
+	projectID := stores.ProjectID(ctxs.GetMetaProjectID(l.ctx))
+	if projectID == 0 { //如果没有传项目,则分配到未分类项目中
+		projectID = def.NotClassified
+	}
 	di := relationDB.DmDeviceInfo{
-		ProjectID:  ctxs.GetMetaProjectID(l.ctx),
+		ProjectID:  projectID,
 		ProductID:  in.ProductID,  // 产品id
 		DeviceName: in.DeviceName, // 设备名称
 		Position:   logic.ToStorePoint(in.Position),
+		AreaID:     def.NotClassified, //设备默认都是未分类
 	}
 
 	if in.Secret != "" {

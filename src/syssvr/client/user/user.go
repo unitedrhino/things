@@ -14,56 +14,79 @@ import (
 )
 
 type (
-	ApiCreateReq          = sys.ApiCreateReq
-	ApiData               = sys.ApiData
-	ApiDeleteReq          = sys.ApiDeleteReq
-	ApiIndexReq           = sys.ApiIndexReq
-	ApiIndexResp          = sys.ApiIndexResp
-	ApiUpdateReq          = sys.ApiUpdateReq
-	AuthApiInfo           = sys.AuthApiInfo
-	ConfigResp            = sys.ConfigResp
-	DateRange             = sys.DateRange
-	JwtToken              = sys.JwtToken
-	LoginLogCreateReq     = sys.LoginLogCreateReq
-	LoginLogIndexData     = sys.LoginLogIndexData
-	LoginLogIndexReq      = sys.LoginLogIndexReq
-	LoginLogIndexResp     = sys.LoginLogIndexResp
-	Map                   = sys.Map
-	MenuCreateReq         = sys.MenuCreateReq
-	MenuData              = sys.MenuData
-	MenuDeleteReq         = sys.MenuDeleteReq
-	MenuIndexReq          = sys.MenuIndexReq
-	MenuIndexResp         = sys.MenuIndexResp
-	MenuUpdateReq         = sys.MenuUpdateReq
-	OperLogCreateReq      = sys.OperLogCreateReq
-	OperLogIndexData      = sys.OperLogIndexData
-	OperLogIndexReq       = sys.OperLogIndexReq
-	OperLogIndexResp      = sys.OperLogIndexResp
-	PageInfo              = sys.PageInfo
-	PageInfo_OrderBy      = sys.PageInfo_OrderBy
-	Point                 = sys.Point
-	Response              = sys.Response
-	RoleApiAuthReq        = sys.RoleApiAuthReq
-	RoleApiIndexReq       = sys.RoleApiIndexReq
-	RoleApiIndexResp      = sys.RoleApiIndexResp
-	RoleApiMultiUpdateReq = sys.RoleApiMultiUpdateReq
-	RoleCreateReq         = sys.RoleCreateReq
-	RoleDeleteReq         = sys.RoleDeleteReq
-	RoleIndexData         = sys.RoleIndexData
-	RoleIndexReq          = sys.RoleIndexReq
-	RoleIndexResp         = sys.RoleIndexResp
-	RoleMenuUpdateReq     = sys.RoleMenuUpdateReq
-	RoleUpdateReq         = sys.RoleUpdateReq
-	UserCheckTokenReq     = sys.UserCheckTokenReq
-	UserCheckTokenResp    = sys.UserCheckTokenResp
-	UserCreateResp        = sys.UserCreateResp
-	UserDeleteReq         = sys.UserDeleteReq
-	UserIndexReq          = sys.UserIndexReq
-	UserIndexResp         = sys.UserIndexResp
-	UserInfo              = sys.UserInfo
-	UserLoginReq          = sys.UserLoginReq
-	UserLoginResp         = sys.UserLoginResp
-	UserReadReq           = sys.UserReadReq
+	ApiCreateReq                  = sys.ApiCreateReq
+	ApiData                       = sys.ApiData
+	ApiDeleteReq                  = sys.ApiDeleteReq
+	ApiIndexReq                   = sys.ApiIndexReq
+	ApiIndexResp                  = sys.ApiIndexResp
+	ApiUpdateReq                  = sys.ApiUpdateReq
+	AreaInfo                      = sys.AreaInfo
+	AreaInfoDeleteReq             = sys.AreaInfoDeleteReq
+	AreaInfoIndexReq              = sys.AreaInfoIndexReq
+	AreaInfoIndexResp             = sys.AreaInfoIndexResp
+	AreaInfoReadReq               = sys.AreaInfoReadReq
+	AreaInfoTreeReq               = sys.AreaInfoTreeReq
+	AreaInfoTreeResp              = sys.AreaInfoTreeResp
+	AuthApiInfo                   = sys.AuthApiInfo
+	ConfigResp                    = sys.ConfigResp
+	DateRange                     = sys.DateRange
+	JwtToken                      = sys.JwtToken
+	LoginLogCreateReq             = sys.LoginLogCreateReq
+	LoginLogIndexData             = sys.LoginLogIndexData
+	LoginLogIndexReq              = sys.LoginLogIndexReq
+	LoginLogIndexResp             = sys.LoginLogIndexResp
+	Map                           = sys.Map
+	MenuCreateReq                 = sys.MenuCreateReq
+	MenuData                      = sys.MenuData
+	MenuDeleteReq                 = sys.MenuDeleteReq
+	MenuIndexReq                  = sys.MenuIndexReq
+	MenuIndexResp                 = sys.MenuIndexResp
+	MenuUpdateReq                 = sys.MenuUpdateReq
+	OperLogCreateReq              = sys.OperLogCreateReq
+	OperLogIndexData              = sys.OperLogIndexData
+	OperLogIndexReq               = sys.OperLogIndexReq
+	OperLogIndexResp              = sys.OperLogIndexResp
+	PageInfo                      = sys.PageInfo
+	PageInfo_OrderBy              = sys.PageInfo_OrderBy
+	Point                         = sys.Point
+	ProjectInfo                   = sys.ProjectInfo
+	ProjectInfoDeleteReq          = sys.ProjectInfoDeleteReq
+	ProjectInfoIndexReq           = sys.ProjectInfoIndexReq
+	ProjectInfoIndexResp          = sys.ProjectInfoIndexResp
+	ProjectInfoReadReq            = sys.ProjectInfoReadReq
+	Response                      = sys.Response
+	RoleApiAuthReq                = sys.RoleApiAuthReq
+	RoleApiIndexReq               = sys.RoleApiIndexReq
+	RoleApiIndexResp              = sys.RoleApiIndexResp
+	RoleApiMultiUpdateReq         = sys.RoleApiMultiUpdateReq
+	RoleCreateReq                 = sys.RoleCreateReq
+	RoleDeleteReq                 = sys.RoleDeleteReq
+	RoleIndexData                 = sys.RoleIndexData
+	RoleIndexReq                  = sys.RoleIndexReq
+	RoleIndexResp                 = sys.RoleIndexResp
+	RoleMenuUpdateReq             = sys.RoleMenuUpdateReq
+	RoleUpdateReq                 = sys.RoleUpdateReq
+	UserAuthArea                  = sys.UserAuthArea
+	UserAuthAreaIndexReq          = sys.UserAuthAreaIndexReq
+	UserAuthAreaIndexResp         = sys.UserAuthAreaIndexResp
+	UserAuthAreaMultiUpdateReq    = sys.UserAuthAreaMultiUpdateReq
+	UserAuthProject               = sys.UserAuthProject
+	UserAuthProjectIndexReq       = sys.UserAuthProjectIndexReq
+	UserAuthProjectIndexResp      = sys.UserAuthProjectIndexResp
+	UserAuthProjectMultiUpdateReq = sys.UserAuthProjectMultiUpdateReq
+	UserCheckTokenReq             = sys.UserCheckTokenReq
+	UserCheckTokenResp            = sys.UserCheckTokenResp
+	UserCreateResp                = sys.UserCreateResp
+	UserDeleteReq                 = sys.UserDeleteReq
+	UserIndexReq                  = sys.UserIndexReq
+	UserIndexResp                 = sys.UserIndexResp
+	UserInfo                      = sys.UserInfo
+	UserLoginReq                  = sys.UserLoginReq
+	UserLoginResp                 = sys.UserLoginResp
+	UserReadReq                   = sys.UserReadReq
+	UserRegister1Req              = sys.UserRegister1Req
+	UserRegister1Resp             = sys.UserRegister1Resp
+	UserRegister2Req              = sys.UserRegister2Req
 
 	User interface {
 		UserCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error)
@@ -73,6 +96,12 @@ type (
 		UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
 		UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
+		UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error)
+		UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error)
+		UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error)
+		UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error)
 	}
 
 	defaultUser struct {
@@ -159,4 +188,58 @@ func (m *defaultUser) UserCheckToken(ctx context.Context, in *UserCheckTokenReq,
 
 func (d *directUser) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error) {
 	return d.svr.UserCheckToken(ctx, in)
+}
+
+func (m *defaultUser) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserRegister1(ctx, in, opts...)
+}
+
+func (d *directUser) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
+	return d.svr.UserRegister1(ctx, in)
+}
+
+func (m *defaultUser) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserRegister2(ctx, in, opts...)
+}
+
+func (d *directUser) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserRegister2(ctx, in)
+}
+
+func (m *defaultUser) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserAuthProjectMultiUpdate(ctx, in, opts...)
+}
+
+func (d *directUser) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserAuthProjectMultiUpdate(ctx, in)
+}
+
+func (m *defaultUser) UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserAuthProjectIndex(ctx, in, opts...)
+}
+
+func (d *directUser) UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error) {
+	return d.svr.UserAuthProjectIndex(ctx, in)
+}
+
+func (m *defaultUser) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserAuthAreaMultiUpdate(ctx, in, opts...)
+}
+
+func (d *directUser) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserAuthAreaMultiUpdate(ctx, in)
+}
+
+func (m *defaultUser) UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error) {
+	client := sys.NewUserClient(m.cli.Conn())
+	return client.UserAuthAreaIndex(ctx, in, opts...)
+}
+
+func (d *directUser) UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error) {
+	return d.svr.UserAuthAreaIndex(ctx, in)
 }

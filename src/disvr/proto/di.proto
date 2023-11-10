@@ -11,6 +11,13 @@ message PageInfo{
   int64 size = 2;
 }
 
+
+message SendOption {
+  int64  timeoutToFail = 1;//超时失败时间
+  int64  requestTimeout = 2;//请求超时,超时后会进行重试
+  int64  retryInterval = 3;//重试间隔
+}
+
 //设备消息
 service DeviceMsg {
   //获取设备sdk调试日志
@@ -25,6 +32,8 @@ service DeviceMsg {
   rpc eventLogIndex(EventLogIndexReq)     returns (EventIndexResp);
   //获取设备影子列表
   rpc shadowIndex(PropertyLatestIndexReq)     returns (ShadowIndexResp);
+  //主动触发单个设备ota升级推送
+  rpc otaPromptIndex(OtaPromptIndexReq) returns (OtaPromptIndexResp);
 }
 
 //设备交互
@@ -68,8 +77,8 @@ message GetPropertyReplyReq{
 
 message GetPropertyReplyResp{
   int64   code = 1;//设备返回状态码
-  string  status = 2;//返回状态
-  string clientToken = 3;//调用id
+  string  msg = 2;//返回状态
+  string msgToken = 3;//调用id
   int64 timestamp = 4;//上报时间戳(毫秒时间戳)
   string params = 5;//获取到的值
 }
@@ -199,11 +208,13 @@ message SendActionReq{
   string actionID = 3;//产品数据模板中行为功能的标识符，由开发者自行根据设备的应用场景定义
   string inputParams = 4;//输入参数
   bool isAsync = 5;//是否异步获取
+  SendOption option = 6;//异步选项
 }
+
 message SendActionResp{
-  string clientToken = 1;//调用id
+  string msgToken = 1;//调用id
   string outputParams = 2;//输出参数 注意：此字段可能返回 null，表示取不到有效值。
-  string  status = 3;//返回状态
+  string  msg = 3;//返回状态
   int64   code = 4;//设备返回状态码
 }
 
@@ -211,7 +222,7 @@ message SendActionResp{
 message RespReadReq{
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
-  string  clientToken = 3;//调用id
+  string  msgToken = 3;//调用id
 }
 
 message SendPropertyReq{
@@ -225,17 +236,17 @@ message SendPropertyReq{
 message RespActionReq{
   string  productID = 1; //产品id 获取产品id下的所有设备信息
   string  deviceName = 2; //设备名
-  string clientToken = 3;//调用id
+  string msgToken = 3;//调用id
   string outputParams = 4;//输出参数 注意：此字段可能返回 null，表示取不到有效值。
-  string  status = 5;//返回状态
+  string  msg = 5;//返回状态
   int64   code = 6;//设备返回状态码
 }
 
 
 message SendPropertyResp{
   int64   code = 1;//设备返回状态码
-  string  status = 2;//返回状态
-  string clientToken = 3;//调用id
+  string  msg = 2;//返回状态
+  string msgToken = 3;//调用id
 }
 
 message SendMsgReq{
@@ -258,12 +269,25 @@ message MultiSendPropertyReq{
 message SendPropertyMsg{
   string  deviceName = 1; //设备名
   int64   code = 2;//设备返回状态码
-  string  status = 3;//返回状态
-  string clientToken = 4;//调用id
+  string  msg = 3;//返回状态
+  string msgToken = 4;//调用id
   string sysMsg = 5;//系统错误信息
   int64  sysCode = 6;//系统错误码
 }
 
 message MultiSendPropertyResp{
   repeated SendPropertyMsg list = 1; //批量设备返回结果列表
+}
+
+message OtaPromptIndexReq {
+  int64 id = 1;
+  string version = 2;
+  string module = 3;
+  string productID = 4;
+  string deviceName = 5;
+}
+message OtaPromptIndexResp {
+  int64 id = 1;
+  string taskUid = 2;
+  int64 firmwareID =3;
 }

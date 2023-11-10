@@ -12,8 +12,8 @@ type DmExample struct {
 // 设备信息表
 type DmDeviceInfo struct {
 	ID             int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProjectID      int64             `gorm:"column:project_id;index:project_id_area_id;uniqueIndex:product_id_deviceName;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
-	AreaID         int64             `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                                      // 项目区域ID(雪花ID)
+	ProjectID      stores.ProjectID  `gorm:"column:project_id;index:project_id_area_id;uniqueIndex:product_id_deviceName;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
+	AreaID         stores.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                                      // 项目区域ID(雪花ID)
 	ProductID      string            `gorm:"column:product_id;type:char(11);NOT NULL"`                                                                    // 产品id
 	DeviceName     string            `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"`                             // 设备名称
 	DeviceAlias    string            `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                                              // 设备别名
@@ -107,7 +107,7 @@ func (m *DmDeviceInfo) TableName() string {
 type DmGroupInfo struct {
 	GroupID   int64             `gorm:"column:group_id;primary_key;AUTO_INCREMENT;type:bigint"`      // 分组ID
 	ParentID  int64             `gorm:"column:parent_id;type:bigint;default:0;NOT NULL"`             // 父组ID 0-根组
-	ProjectID int64             `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`      // 项目ID(雪花ID)
+	ProjectID stores.ProjectID  `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`      // 项目ID(雪花ID)
 	ProductID string            `gorm:"column:product_id;type:char(11);NOT NULL"`                    // 产品id,为空则不限定分组内的产品类型
 	GroupName string            `gorm:"column:group_name;uniqueIndex;type:varchar(100);NOT NULL"`    // 分组名称
 	Desc      string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
@@ -122,11 +122,11 @@ func (m *DmGroupInfo) TableName() string {
 
 // 分组与设备关系表
 type DmGroupDevice struct {
-	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	GroupID    int64  `gorm:"column:group_id;uniqueIndex:group_id_product_id_device_name;type:bigint;NOT NULL"`          // 分组ID
-	ProjectID  int64  `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`                                    // 项目ID(雪花ID)
-	ProductID  string `gorm:"column:product_id;uniqueIndex:group_id_product_id_device_name;type:char(11);NOT NULL"`      // 产品id
-	DeviceName string `gorm:"column:device_name;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"` // 设备名称
+	ID         int64            `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	GroupID    int64            `gorm:"column:group_id;uniqueIndex:group_id_product_id_device_name;type:bigint;NOT NULL"`          // 分组ID
+	ProjectID  stores.ProjectID `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`                                    // 项目ID(雪花ID)
+	ProductID  string           `gorm:"column:product_id;uniqueIndex:group_id_product_id_device_name;type:char(11);NOT NULL"`      // 产品id
+	DeviceName string           `gorm:"column:device_name;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"` // 设备名称
 	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
@@ -143,8 +143,8 @@ type DmGatewayDevice struct {
 	ProductID         string `gorm:"column:product_id;uniqueIndex:gpi_pdn_pi_dn;type:char(11);NOT NULL"`              // 子设备产品id
 	DeviceName        string `gorm:"column:device_name;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"`         // 子设备名称
 	stores.Time
-	Device  *DmDeviceInfo `gorm:"foreignKey:ProductID,device_name;references:ProductID,DeviceName"`
-	Gateway *DmDeviceInfo `gorm:"foreignKey:ProductID,device_name;references:GatewayProductID,GatewayDeviceName"`
+	Device  *DmDeviceInfo `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
+	Gateway *DmDeviceInfo `gorm:"foreignKey:ProductID,DeviceName;references:GatewayProductID,GatewayDeviceName"`
 }
 
 func (m *DmGatewayDevice) TableName() string {
@@ -162,4 +162,79 @@ type DmProductRemoteConfig struct {
 
 func (m *DmProductRemoteConfig) TableName() string {
 	return "dm_product_remote_config"
+}
+
+// 升级任务表
+type DmOtaTask struct {
+	ID          int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID   string `gorm:"column:product_id;type:char(11);NOT NULL"`             // 产品id
+	FirmwareID  int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`              // 固件id
+	TaskUid     string `gorm:"column:task_uid;type:varchar(64)"`                     // 任务编号
+	Type        int64  `gorm:"column:type;type:smallint;default:1;NOT NULL"`         // 升级范围1全部设备2定向升级
+	UpgradeType int64  `gorm:"column:upgrade_type;type:smallint;default:1;NOT NULL"` // 升级策略:1静态升级2动态升级
+	AutoRepeat  int64  `gorm:"column:auto_repeat;type:smallint;default:1;NOT NULL"`  // 是否自动重试,1:不,2自动重试
+	Status      int64  `gorm:"column:status;type:smallint;default:1;NOT NULL"`       // 升级状态:1未升级2升级中3完成4已取消
+	DeviceList  string `gorm:"column:device_list;type:json;NOT NULL"`                // 指定升级设备
+	VersionList string `gorm:"column:version_list;type:json;NOT NULL"`               // 指定待升级版本
+	stores.Time
+}
+
+func (m *DmOtaTask) TableName() string {
+	return "dm_ota_task"
+}
+
+// 升级包附件列表
+type DmOtaFirmwareFile struct {
+	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name       string `gorm:"column:name;type:varchar(64)"`                // 附件名称
+	FirmwareID int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`     // 固件id
+	Size       int64  `gorm:"column:size;type:bigint;NOT NULL"`            // 文件大小单位bit
+	Storage    string `gorm:"column:storage;type:varchar(15);NOT NULL"`    // 存储平台:minio/aliyun
+	Host       string `gorm:"column:host;type:varchar(100);NOT NULL"`      // host
+	FilePath   string `gorm:"column:file_path;type:varchar(100);NOT NULL"` // 文件路径,拿来下载文件
+	Signature  string `gorm:"column:signature;type:char(32);NOT NULL"`     // 签名值
+	stores.Time
+}
+
+func (m *DmOtaFirmwareFile) TableName() string {
+	return "dm_ota_firmware_file"
+}
+
+// ota升级记录
+type DmOtaTaskDevices struct {
+	ID            int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	FirmwareID    int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`             // 固件id
+	TaskUid       string `gorm:"column:task_uid;type:varchar(64);NOT NULL"`           // 任务批次
+	ProductID     string `gorm:"column:product_id;type:char(11);NOT NULL"`            // 产品id
+	DeviceName    string `gorm:"column:device_name;type:varchar(100);NOT NULL"`       // 设备编号
+	Version       string `gorm:"column:version;type:varchar(64)"`                     // 当前版本
+	TargetVersion string `gorm:"column:target_version;type:varchar(64);NOT NULL"`     // 升级包的版本
+	Status        int64  `gorm:"column:status;type:integer;default:101"`              // 升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
+	RetryCount    int64  `gorm:"column:retry_count;type:smallint;default:0;NOT NULL"` // 重试次数,计划最多20次
+	Step          int64  `gorm:"column:step;type:integer;default:0;NOT NULL"`         // OTA升级进度。1~100的整数升级进度百分比,-1升级失败,-2下载失败,-3校验失败,-4烧写失败
+	Desc          string `gorm:"column:desc;type:varchar(200)"`                       // 状态详情
+	stores.Time
+}
+
+func (m *DmOtaTaskDevices) TableName() string {
+	return "dm_ota_task_devices"
+}
+
+// 产品固件升级包信息表
+type DmOtaFirmware struct {
+	ID         int64          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID  string         `gorm:"column:product_id;type:char(11);NOT NULL"`        // 产品id
+	Version    string         `gorm:"column:version;type:varchar(64)"`                 // 固件版本
+	Module     string         `gorm:"column:module;type:varchar(64)"`                  // 模块名称
+	Name       string         `gorm:"column:name;type:varchar(64)"`                    // 固件名称
+	Desc       string         `gorm:"column:desc;type:varchar(200)"`                   // 描述
+	TotalSize  int64          `gorm:"column:total_size;type:bigint;NOT NULL"`          // 升级包总大小
+	IsDiff     int64          `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"` // 是否差分包,1:整包,2:差分
+	SignMethod string         `gorm:"column:sign_method;type:varchar(20);NOT NULL"`    // 签名方式:MD5/SHA256
+	Extra      sql.NullString `gorm:"column:extra;type:json"`                          // 自定义推送参数
+	stores.Time
+}
+
+func (m *DmOtaFirmware) TableName() string {
+	return "dm_ota_firmware"
 }

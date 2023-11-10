@@ -3,10 +3,10 @@ package devicemanagelogic
 import (
 	"context"
 	"database/sql"
-	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
@@ -36,9 +36,8 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, data *dm.DeviceInfo) {
-	old.ProjectID = ctxs.GetMetaProjectID(l.ctx)
-	if data.AreaID != nil {
-		old.AreaID = utils.ToEmptyInt64(data.AreaID)
+	if data.AreaID != 0 {
+		old.AreaID = stores.AreaID(data.AreaID)
 	}
 
 	if data.Tags != nil {
@@ -122,7 +121,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 	err = l.DiDB.Update(l.ctx, dmDiPo)
 	if err != nil {
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
-		return nil, errors.System.AddDetail(err)
+		return nil, err
 	}
 
 	if in.LogLevel != def.Unknown {

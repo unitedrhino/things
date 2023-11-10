@@ -1,0 +1,74 @@
+info(
+    title: "用户数据权限管理模块"
+    desc: "用户数据权限管理接口"
+    author: "大绵羊"
+    email: "robotyang123@163.com"
+    version: "v1"
+)
+
+import "common.api"  //公共结构体定义
+
+@server(
+    group : system/user/auth
+    prefix: /api/v1/system/user/auth
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "授权用户项目权限"
+    @handler projectMultiUpdate
+    post /project/multi-update (UserAuthProjectMultiUpdateReq) returns ()
+
+    @doc "获取用户项目权限列表"
+    @handler projectIndex
+    post /project/index (UserAuthProjectIndexReq) returns (UserAuthProjectIndexResp)
+
+    @doc "授权用户区域权限"
+    @handler areaMultiUpdate
+    post /area/multi-update (UserAuthAreaMultiUpdateReq) returns ()
+
+    @doc "获取用户区域权限列表"
+    @handler areaIndex
+    post /area/index (UserAuthAreaIndexReq) returns (UserAuthAreaIndexResp)
+}
+
+
+//用户级权限控制
+type (
+    UserAuthProject struct {
+        ProjectID   int64 `json:"projectID,string"`     //权限数据ID
+    }
+    UserAuthProjectMultiUpdateReq struct {
+        UserID   int64              `json:"userID,string"`    //用户ID（必填，雪花ID）
+        Projects []*UserAuthProject `json:"projects"` //权限数据IDs（必填）
+    }
+
+    UserAuthProjectIndexReq struct {
+        Page *PageInfo `json:"page,optional"`        //进行数据分页（不传默认2000相当于全部）
+        UserID   int64              `json:"userID,string"`    //用户ID（必填，雪花ID）
+    }
+    UserAuthProjectIndexResp struct {
+        Total int64           `json:"total"` //总数
+        List  []*UserAuthProject `json:"list"`    //用户数据权限列表
+    }
+
+    UserAuthAreaMultiUpdateReq struct {
+        UserID   int64              `json:"userID,string"`    //用户ID（必填，雪花ID）
+        ProjectID int64           `json:"projectID,string"` //项目id
+        Areas     []*UserAuthArea `json:"areas"`          //权限数据IDs
+    }
+    UserAuthArea struct {
+        AreaID int64 `json:"areaID,string"` //项目id
+    }
+
+    UserAuthAreaIndexReq struct {
+        Page *PageInfo `json:"page,optional"`        //进行数据分页（不传默认2000相当于全部）
+        UserID   int64              `json:"userID,string"`    //用户ID（必填，雪花ID）
+        ProjectID int64           `json:"projectID,string"` //项目id
+    }
+
+    UserAuthAreaIndexResp struct {
+        Total int64           `json:"total"` //总数
+        List  []*UserAuthArea `json:"list"`    //用户数据权限列表
+    }
+)

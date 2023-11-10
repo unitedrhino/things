@@ -26,4 +26,8 @@ var (
 	Panic            = NewCodeError(SYS_ERROR+20, "系统异常，请联系开发者")
 	NotEnable        = NewCodeError(SYS_ERROR+21, "未启用")
 	Company          = NewCodeError(SYS_ERROR+22, "该功能是企业版功能")
+	Script           = NewCodeError(SYS_ERROR+23, "脚本执行失败")
+	OnGoing          = NewCodeError(SYS_ERROR+24, "正在执行中")     //事务分布式事务中如果返回该错误码,分布式事务会定时重试
+	Failure          = NewCodeError(SYS_ERROR+25, "执行失败,需要回滚") //事务分布式事务中如果返回该错误码,分布式事务会进行回滚
+
 )

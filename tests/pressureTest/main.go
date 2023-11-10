@@ -23,7 +23,7 @@ const (
 	pushPayload = `
 {
   "method": "report",
-  "clientToken": "%s",
+  "msgToken": "%s",
   "params": {
     "bool": true,
     "int64": %v,
@@ -102,12 +102,12 @@ func main() {
 }
 
 type CommonMsg struct { //消息内容通用字段
-	Method      string `json:"method"`              //操作方法
-	ClientToken string `json:"clientToken"`         //方便排查随机数
-	Timestamp   int64  `json:"timestamp,omitempty"` //毫秒时间戳
-	Code        int64  `json:"code,omitempty"`      //状态码
-	Status      string `json:"status,omitempty"`    //返回信息
-	Data        any    `json:"data,omitempty"`      //返回具体设备上报的最新数据内容
+	Method    string `json:"method"`              //操作方法
+	MsgToken  string `json:"msgToken"`            //方便排查随机数
+	Timestamp int64  `json:"timestamp,omitempty"` //毫秒时间戳
+	Code      int64  `json:"code,omitempty"`      //状态码
+	Status    string `json:"status,omitempty"`    //返回信息
+	Data      any    `json:"data,omitempty"`      //返回具体设备上报的最新数据内容
 }
 
 func Sub(id int64, mc mqtt.Client) {
@@ -122,9 +122,9 @@ func Sub(id int64, mc mqtt.Client) {
 		func() {
 			msgRwMutex.Lock()
 			defer msgRwMutex.Unlock()
-			t, ok = msgMap[resp.ClientToken]
+			t, ok = msgMap[resp.MsgToken]
 			if ok {
-				delete(msgMap, resp.ClientToken)
+				delete(msgMap, resp.MsgToken)
 				delay = delay*0.8 + float64(now.Sub(t).Milliseconds())*0.2
 			}
 		}()

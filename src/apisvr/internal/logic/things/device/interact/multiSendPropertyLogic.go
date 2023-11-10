@@ -49,8 +49,13 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 			ds = dgRet.List
 		}
 		if req.AreaID != 0 {
-			//企业版功能
-			return nil, errors.Company
+			ret, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
+				AreaIDs: []int64{req.AreaID},
+			})
+			if err != nil {
+				return nil, err
+			}
+			ds = ret.List
 		}
 		var devices = map[string][]string{} //key 是产品id value是设备名列表
 		for _, v := range ds {
@@ -97,13 +102,13 @@ func (l *MultiSendPropertyLogic) SendProperty(productID string, deviceNames []st
 	if len(dmResp.List) > 0 {
 		for _, v := range dmResp.List {
 			list = append(list, &types.DeviceInteractMultiSendPropertyMsg{
-				ProductID:   productID,
-				DeviceName:  v.DeviceName,
-				Code:        v.Code,
-				Status:      v.Status,
-				ClientToken: v.ClientToken,
-				SysMsg:      v.SysMsg,
-				SysCode:     v.SysCode,
+				ProductID:  productID,
+				DeviceName: v.DeviceName,
+				Code:       v.Code,
+				Msg:        v.Msg,
+				MsgToken:   v.MsgToken,
+				SysMsg:     v.SysMsg,
+				SysCode:    v.SysCode,
 			})
 		}
 	}

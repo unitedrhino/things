@@ -39,7 +39,7 @@ func (l *SendMsgLogic) SendMsg(in *di.SendMsgReq) (*di.SendMsgResp, error) {
 	if topicInfo.Direction == devices.Up {
 		return nil, errors.Parameter.AddMsg("只能发给设备")
 	}
-	if err = checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+	if err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,
 	}); err != nil {

@@ -9,6 +9,15 @@ const (
 	OptModify Opt = 1 //修改
 	OptDel    Opt = 2 //删除
 )
+
+const (
+	StatusRunning    = 1 //正常运行
+	StatusWaitRun    = 2 //等待运行中
+	StatusWaitStop   = 3 //等待暂停中
+	StatusStopped    = 4 //已停用
+	StatusWaitDelete = 5 //等待删除(该状态会先删除定时任务再删除表里的任务)
+)
+
 const Unknown = 0
 
 const (

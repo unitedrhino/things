@@ -31,7 +31,7 @@ func NewPropertyReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Prop
 // 获取异步调用设备属性的结果
 func (l *PropertyReadLogic) PropertyRead(in *di.RespReadReq) (*di.SendPropertyResp, error) {
 	resp, err := cache.GetDeviceMsg[msgThing.Resp](l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, devices.Thing, msgThing.TypeProperty,
-		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, in.ClientToken)
+		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, in.MsgToken)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
@@ -39,8 +39,8 @@ func (l *PropertyReadLogic) PropertyRead(in *di.RespReadReq) (*di.SendPropertyRe
 		return nil, errors.NotFind
 	}
 	return &di.SendPropertyResp{
-		ClientToken: resp.ClientToken,
-		Status:      resp.Status,
-		Code:        resp.Code,
+		MsgToken: resp.MsgToken,
+		Msg:      resp.Msg,
+		Code:     resp.Code,
 	}, nil
 }

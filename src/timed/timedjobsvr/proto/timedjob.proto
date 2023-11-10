@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package timedjob;
+option go_package="pb/timedjob";
+
+
+
+message Response {
+}
+
+service TimedManage {
+  //发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
+  rpc TaskSendDelay(TaskSendDelayReq) returns(Response);
+}
+
+
+message TaskSendDelayReq{
+  string groupCode =1;//组需要提前创建好
+  string code =2;//任务code
+  TaskDelayOption option = 3;//选项
+  TaskDelayQueue paramQueue = 4;//消息队列发送类型配置,如果不传则使用数据库定义的
+  TaskDelaySql paramSql = 5;//数据库执行类型配置,如果不传则使用数据库定义的
+}
+
+message TaskDelaySql{
+  string execContent =1;//如果是normal,填写执行的sql,如果是脚本,填写脚本内容,如果不填,则会使用数据库中第一次初始化的参数
+  map<string,string> param =2;//脚本参数,会通过函数入参传进去
+}
+
+message TaskDelayQueue{
+  string topic =1;
+  string payload =2;
+}
+
+message TaskDelayOption{
+  int64 Priority =1; //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+  //以下两个参数优先使用ProcessIn
+  int64 ProcessIn =2;  //多久之后发 秒数
+  int64 ProcessAt =3;      // 固定时间发 秒时间戳
+  int64 Timeout =4;    //超时时间 优先使用 秒数
+  int64 Deadline =5;       //截止时间  秒时间戳
+}

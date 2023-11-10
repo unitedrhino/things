@@ -41,8 +41,8 @@ func (l *SendPropertyLogic) SendProperty(req *types.DeviceInteractSendPropertyRe
 		return nil, er
 	}
 	return &types.DeviceInteractSendPropertyResp{
-		Code:        dmResp.Code,
-		Status:      dmResp.Status,
-		ClientToken: dmResp.ClientToken,
+		Code:     dmResp.Code,
+		Msg:      dmResp.Msg,
+		MsgToken: dmResp.MsgToken,
 	}, nil
 }

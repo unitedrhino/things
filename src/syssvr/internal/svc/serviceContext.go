@@ -16,6 +16,8 @@ import (
 
 type ServiceContext struct {
 	Config        config.Config
+	ProjectID     *utils.SnowFlake
+	AreaID        *utils.SnowFlake
 	WxMiniProgram *clients.MiniProgram
 	UserID        *utils.SnowFlake
 	Casbin        *casbin.Enforcer
@@ -25,14 +27,16 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	//conn := sqlx.NewMysql(c.Database.DSN)
 	stores.InitConn(c.Database)
-	err := relationDB.Migrate()
+	err := relationDB.Migrate(c.Database)
 	if err != nil {
 		logx.Error("syssvr 数据库初始化失败 err", err)
 		os.Exit(-1)
 	}
 	// 自动迁移数据库
 	db := stores.GetCommonConn(context.Background())
-
+	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
+	ProjectID := utils.NewSnowFlake(nodeID)
+	AreaID := utils.NewSnowFlake(nodeID)
 	WxMiniProgram := clients.NewWxMiniProgram(context.Background(), c.WxMiniProgram, c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	UserID := utils.NewSnowFlake(nodeId)
@@ -45,6 +49,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	return &ServiceContext{
 		Config:        c,
+		ProjectID:     ProjectID,
+		AreaID:        AreaID,
 		WxMiniProgram: WxMiniProgram,
 		UserID:        UserID,
 		Casbin:        ca,

@@ -28,23 +28,5 @@ func (l *ReadLogic) Read(req *types.UserReadReq) (resp *types.UserInfo, err erro
 		return nil, err
 	}
 
-	return &types.UserInfo{UserID: info.UserID,
-		UserName:    info.UserName,
-		Email:       info.Email,
-		Phone:       info.Phone,
-		Wechat:      info.Wechat,
-		LastIP:      info.LastIP,
-		RegIP:       info.RegIP,
-		NickName:    info.NickName,
-		City:        info.City,
-		Country:     info.Country,
-		Province:    info.Province,
-		Language:    info.Language,
-		HeadImgUrl:  info.Wechat,
-		CreatedTime: info.CreatedTime,
-		Role:        info.Role,
-		Sex:         info.Sex,
-		IsAllData:   info.IsAllData,
-	}, nil
-	return nil, err
+	return UserInfoToApi(info), nil
 }

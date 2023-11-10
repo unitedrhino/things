@@ -62,9 +62,29 @@ const (
 	ApplicationDeviceReportThingEvent = "application.device.%s.%s.report.thing.event.%s.%s"
 	// ApplicationDeviceReportThingAction 设备物模型事件上报通知 中间两个是产品id和设备名称,最后三个是actionID,请求类型(req resp)和调用方向
 	ApplicationDeviceReportThingAction = "application.device.%s.%s.report.thing.action.%s.%s.%s"
+	// ApplicationDeviceReportThingPropertyDevice 设备物模型属性上报通知 中间两个是产品id和设备名称
+	ApplicationDeviceReportThingPropertyDevice = "application.device.%s.%s.report.thing.property"
 
 	ApplicationDeviceReportThingEventAllDevice    = "application.device.*.*.report.thing.event.>"
 	ApplicationDeviceReportThingPropertyAllDevice = "application.device.*.*.report.thing.property.>"
 	ApplicationDeviceStatusConnectedAllDevice     = "application.device.*.*.status.connected"
 	ApplicationDeviceStatusDisConnectedAllDevice  = "application.device.*.*.status.disconnected"
+)
+
+// 服务自己的消息
+const (
+	DmDeviceInfoDelete         = "server.dm.device.info.delete"
+	DmProductInfoDelete        = "server.dm.product.info.delete"
+	DmProductCustomUpdate      = "server.dm.product.custom.update"       //产品脚本有更新
+	DmProductSchemaUpdate      = "server.dm.product.schema.update"       //物模型有更新
+	DmDeviceLogLevelUpdate     = "server.dm.device.logLevel.update"      //设备日志级别有更新
+	DmDeviceGatewayUpdate      = "server.dm.device.gateway.update"       //网关下的子设备有改动
+	DmDeviceRemoteConfigUpdate = "server.dm.product.remoteConfig.update" //远程配置推送
+
+	RuleSceneInfoUpdate = "server.rule.scene.info.update" //场景联动有修改
+	RuleSceneInfoDelete = "server.rule.scene.info.delete" //场景联动有修改
+
+	TimedJobClean = "server.timedjob.clean" //定时任务服务缓存及日志定时清理
+
+	DiActionCheckDelay = "server.action.check.delay"
 )

@@ -35,8 +35,9 @@ type (
 )
 
 func NewSubDev(c conf.EventConf) (SubDev, error) {
-	if c.Mode == conf.EventModeNats {
-		return newNatsClient(c.Nats)
+	switch c.Mode {
+	case conf.EventModeNats, conf.EventModeNatsJs:
+		return newNatsClient(c)
 	}
 	return nil, errors.Parameter.AddMsgf("mode:%v not support", c.Mode)
 }

@@ -7,6 +7,10 @@ import (
 	"github.com/i-Things/things/shared/oss/common"
 )
 
+const (
+	SceneOta = "ota"
+)
+
 type Handle interface {
 	SignedPutUrl(ctx context.Context, objectName string, expiredSec int64, opKv common.OptionKv) (string, error)
 	SignedGetUrl(ctx context.Context, objectName string, expiredSec int64, opKv common.OptionKv) (string, error)

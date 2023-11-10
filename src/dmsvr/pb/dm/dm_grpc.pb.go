@@ -1795,3 +1795,775 @@ var RemoteConfig_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/dm.proto",
 }
+
+// FirmwareManageClient is the client API for FirmwareManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type FirmwareManageClient interface {
+	//新增固件升级包
+	FirmwareInfoCreate(ctx context.Context, in *Firmware, opts ...grpc.CallOption) (*FirmwareResp, error)
+	FirmwareInfoUpdate(ctx context.Context, in *FirmwareInfo, opts ...grpc.CallOption) (*OtaCommonResp, error)
+	FirmwareInfoDelete(ctx context.Context, in *FirmwareInfoDeleteReq, opts ...grpc.CallOption) (*FirmwareInfoDeleteResp, error)
+	FirmwareInfoIndex(ctx context.Context, in *FirmwareInfoIndexReq, opts ...grpc.CallOption) (*FirmwareInfoIndexResp, error)
+	FirmwareInfoRead(ctx context.Context, in *FirmwareInfoReadReq, opts ...grpc.CallOption) (*FirmwareInfoReadResp, error)
+	//附件信息更新
+	OtaFirmwareFileUpdate(ctx context.Context, in *OtaFirmwareFileReq, opts ...grpc.CallOption) (*OtaFirmwareFileResp, error)
+	//附件列表搜索
+	OtaFirmwareFileIndex(ctx context.Context, in *OtaFirmwareFileIndexReq, opts ...grpc.CallOption) (*OtaFirmwareFileIndexResp, error)
+	//获取固件包对应设备版本列表
+	OtaFirmwareDeviceInfo(ctx context.Context, in *OtaFirmwareDeviceInfoReq, opts ...grpc.CallOption) (*OtaFirmwareDeviceInfoResp, error)
+}
+
+type firmwareManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewFirmwareManageClient(cc grpc.ClientConnInterface) FirmwareManageClient {
+	return &firmwareManageClient{cc}
+}
+
+func (c *firmwareManageClient) FirmwareInfoCreate(ctx context.Context, in *Firmware, opts ...grpc.CallOption) (*FirmwareResp, error) {
+	out := new(FirmwareResp)
+	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *firmwareManageClient) FirmwareInfoUpdate(ctx context.Context, in *FirmwareInfo, opts ...grpc.CallOption) (*OtaCommonResp, error) {
+	out := new(OtaCommonResp)
+	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *firmwareManageClient) FirmwareInfoDelete(ctx context.Context, in *FirmwareInfoDeleteReq, opts ...grpc.CallOption) (*FirmwareInfoDeleteResp, error) {
+	out := new(FirmwareInfoDeleteResp)
+	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *firmwareManageClient) FirmwareInfoIndex(ctx context.Context, in *FirmwareInfoIndexReq, opts ...grpc.CallOption) (*FirmwareInfoIndexResp, error) {
+	out := new(FirmwareInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *firmwareManageClient) FirmwareInfoRead(ctx context.Context, in *FirmwareInfoReadReq, opts ...grpc.CallOption) (*FirmwareInfoReadResp, error) {
+	out := new(FirmwareInfoReadResp)
+	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *firmwareManageClient) OtaFirmwareFileUpdate(ctx context.Context, in *OtaFirmwareFileReq, opts ...grpc.CallOption) (*OtaFirmwareFileResp, error) {
+	out := new(OtaFirmwareFileResp)
+	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/OtaFirmwareFileUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *firmwareManageClient) OtaFirmwareFileIndex(ctx context.Context, in *OtaFirmwareFileIndexReq, opts ...grpc.CallOption) (*OtaFirmwareFileIndexResp, error) {
+	out := new(OtaFirmwareFileIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/OtaFirmwareFileIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *firmwareManageClient) OtaFirmwareDeviceInfo(ctx context.Context, in *OtaFirmwareDeviceInfoReq, opts ...grpc.CallOption) (*OtaFirmwareDeviceInfoResp, error) {
+	out := new(OtaFirmwareDeviceInfoResp)
+	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/OtaFirmwareDeviceInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// FirmwareManageServer is the server API for FirmwareManage service.
+// All implementations must embed UnimplementedFirmwareManageServer
+// for forward compatibility
+type FirmwareManageServer interface {
+	//新增固件升级包
+	FirmwareInfoCreate(context.Context, *Firmware) (*FirmwareResp, error)
+	FirmwareInfoUpdate(context.Context, *FirmwareInfo) (*OtaCommonResp, error)
+	FirmwareInfoDelete(context.Context, *FirmwareInfoDeleteReq) (*FirmwareInfoDeleteResp, error)
+	FirmwareInfoIndex(context.Context, *FirmwareInfoIndexReq) (*FirmwareInfoIndexResp, error)
+	FirmwareInfoRead(context.Context, *FirmwareInfoReadReq) (*FirmwareInfoReadResp, error)
+	//附件信息更新
+	OtaFirmwareFileUpdate(context.Context, *OtaFirmwareFileReq) (*OtaFirmwareFileResp, error)
+	//附件列表搜索
+	OtaFirmwareFileIndex(context.Context, *OtaFirmwareFileIndexReq) (*OtaFirmwareFileIndexResp, error)
+	//获取固件包对应设备版本列表
+	OtaFirmwareDeviceInfo(context.Context, *OtaFirmwareDeviceInfoReq) (*OtaFirmwareDeviceInfoResp, error)
+	mustEmbedUnimplementedFirmwareManageServer()
+}
+
+// UnimplementedFirmwareManageServer must be embedded to have forward compatible implementations.
+type UnimplementedFirmwareManageServer struct {
+}
+
+func (UnimplementedFirmwareManageServer) FirmwareInfoCreate(context.Context, *Firmware) (*FirmwareResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FirmwareInfoCreate not implemented")
+}
+func (UnimplementedFirmwareManageServer) FirmwareInfoUpdate(context.Context, *FirmwareInfo) (*OtaCommonResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FirmwareInfoUpdate not implemented")
+}
+func (UnimplementedFirmwareManageServer) FirmwareInfoDelete(context.Context, *FirmwareInfoDeleteReq) (*FirmwareInfoDeleteResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FirmwareInfoDelete not implemented")
+}
+func (UnimplementedFirmwareManageServer) FirmwareInfoIndex(context.Context, *FirmwareInfoIndexReq) (*FirmwareInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FirmwareInfoIndex not implemented")
+}
+func (UnimplementedFirmwareManageServer) FirmwareInfoRead(context.Context, *FirmwareInfoReadReq) (*FirmwareInfoReadResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FirmwareInfoRead not implemented")
+}
+func (UnimplementedFirmwareManageServer) OtaFirmwareFileUpdate(context.Context, *OtaFirmwareFileReq) (*OtaFirmwareFileResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareFileUpdate not implemented")
+}
+func (UnimplementedFirmwareManageServer) OtaFirmwareFileIndex(context.Context, *OtaFirmwareFileIndexReq) (*OtaFirmwareFileIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareFileIndex not implemented")
+}
+func (UnimplementedFirmwareManageServer) OtaFirmwareDeviceInfo(context.Context, *OtaFirmwareDeviceInfoReq) (*OtaFirmwareDeviceInfoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareDeviceInfo not implemented")
+}
+func (UnimplementedFirmwareManageServer) mustEmbedUnimplementedFirmwareManageServer() {}
+
+// UnsafeFirmwareManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to FirmwareManageServer will
+// result in compilation errors.
+type UnsafeFirmwareManageServer interface {
+	mustEmbedUnimplementedFirmwareManageServer()
+}
+
+func RegisterFirmwareManageServer(s grpc.ServiceRegistrar, srv FirmwareManageServer) {
+	s.RegisterService(&FirmwareManage_ServiceDesc, srv)
+}
+
+func _FirmwareManage_FirmwareInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Firmware)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FirmwareManageServer).FirmwareInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.FirmwareManage/FirmwareInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FirmwareManageServer).FirmwareInfoCreate(ctx, req.(*Firmware))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FirmwareManage_FirmwareInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FirmwareInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FirmwareManageServer).FirmwareInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.FirmwareManage/FirmwareInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FirmwareManageServer).FirmwareInfoUpdate(ctx, req.(*FirmwareInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FirmwareManage_FirmwareInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FirmwareInfoDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FirmwareManageServer).FirmwareInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.FirmwareManage/FirmwareInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FirmwareManageServer).FirmwareInfoDelete(ctx, req.(*FirmwareInfoDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FirmwareManage_FirmwareInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FirmwareInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FirmwareManageServer).FirmwareInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.FirmwareManage/FirmwareInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FirmwareManageServer).FirmwareInfoIndex(ctx, req.(*FirmwareInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FirmwareManage_FirmwareInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FirmwareInfoReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FirmwareManageServer).FirmwareInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.FirmwareManage/FirmwareInfoRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FirmwareManageServer).FirmwareInfoRead(ctx, req.(*FirmwareInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FirmwareManage_OtaFirmwareFileUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaFirmwareFileReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FirmwareManageServer).OtaFirmwareFileUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.FirmwareManage/OtaFirmwareFileUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FirmwareManageServer).OtaFirmwareFileUpdate(ctx, req.(*OtaFirmwareFileReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FirmwareManage_OtaFirmwareFileIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaFirmwareFileIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FirmwareManageServer).OtaFirmwareFileIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.FirmwareManage/OtaFirmwareFileIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FirmwareManageServer).OtaFirmwareFileIndex(ctx, req.(*OtaFirmwareFileIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FirmwareManage_OtaFirmwareDeviceInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaFirmwareDeviceInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FirmwareManageServer).OtaFirmwareDeviceInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.FirmwareManage/OtaFirmwareDeviceInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FirmwareManageServer).OtaFirmwareDeviceInfo(ctx, req.(*OtaFirmwareDeviceInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// FirmwareManage_ServiceDesc is the grpc.ServiceDesc for FirmwareManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var FirmwareManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.FirmwareManage",
+	HandlerType: (*FirmwareManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "FirmwareInfoCreate",
+			Handler:    _FirmwareManage_FirmwareInfoCreate_Handler,
+		},
+		{
+			MethodName: "FirmwareInfoUpdate",
+			Handler:    _FirmwareManage_FirmwareInfoUpdate_Handler,
+		},
+		{
+			MethodName: "FirmwareInfoDelete",
+			Handler:    _FirmwareManage_FirmwareInfoDelete_Handler,
+		},
+		{
+			MethodName: "FirmwareInfoIndex",
+			Handler:    _FirmwareManage_FirmwareInfoIndex_Handler,
+		},
+		{
+			MethodName: "FirmwareInfoRead",
+			Handler:    _FirmwareManage_FirmwareInfoRead_Handler,
+		},
+		{
+			MethodName: "OtaFirmwareFileUpdate",
+			Handler:    _FirmwareManage_OtaFirmwareFileUpdate_Handler,
+		},
+		{
+			MethodName: "OtaFirmwareFileIndex",
+			Handler:    _FirmwareManage_OtaFirmwareFileIndex_Handler,
+		},
+		{
+			MethodName: "OtaFirmwareDeviceInfo",
+			Handler:    _FirmwareManage_OtaFirmwareDeviceInfo_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
+
+// OtaTaskManageClient is the client API for OtaTaskManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type OtaTaskManageClient interface {
+	//创建批量升级任务
+	OtaTaskCreate(ctx context.Context, in *OtaTaskCreateReq, opts ...grpc.CallOption) (*OtaTaskCreatResp, error)
+	OtaTaskUpdate(ctx context.Context, in *OtaTaskInfo, opts ...grpc.CallOption) (*OtaCommonResp, error)
+	//批量取消升级任务
+	OtaTaskCancle(ctx context.Context, in *OtaTaskCancleReq, opts ...grpc.CallOption) (*OtaCommonResp, error)
+	OtaTaskIndex(ctx context.Context, in *OtaTaskIndexReq, opts ...grpc.CallOption) (*OtaTaskIndexResp, error)
+	//升级任务详情
+	OtaTaskRead(ctx context.Context, in *OtaTaskReadReq, opts ...grpc.CallOption) (*OtaTaskReadResp, error)
+	//升级批次详情列表
+	OtaTaskDeviceIndex(ctx context.Context, in *OtaTaskDeviceIndexReq, opts ...grpc.CallOption) (*OtaTaskDeviceIndexResp, error)
+	//设备升级状态详情
+	OtaTaskDeviceRead(ctx context.Context, in *OtaTaskDeviceReadReq, opts ...grpc.CallOption) (*OtaTaskDeviceInfo, error)
+	//获取当前可执行批次信息
+	OtaTaskDeviceEnableBatch(ctx context.Context, in *OtaTaskBatchReq, opts ...grpc.CallOption) (*OtaTaskBatchResp, error)
+	//升级进度上报
+	OtaTaskDeviceProcess(ctx context.Context, in *OtaTaskDeviceProcessReq, opts ...grpc.CallOption) (*OtaCommonResp, error)
+	//取消单个设备的升级
+	OtaTaskDeviceCancle(ctx context.Context, in *OtaTaskDeviceCancleReq, opts ...grpc.CallOption) (*OtaCommonResp, error)
+}
+
+type otaTaskManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewOtaTaskManageClient(cc grpc.ClientConnInterface) OtaTaskManageClient {
+	return &otaTaskManageClient{cc}
+}
+
+func (c *otaTaskManageClient) OtaTaskCreate(ctx context.Context, in *OtaTaskCreateReq, opts ...grpc.CallOption) (*OtaTaskCreatResp, error) {
+	out := new(OtaTaskCreatResp)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaTaskManageClient) OtaTaskUpdate(ctx context.Context, in *OtaTaskInfo, opts ...grpc.CallOption) (*OtaCommonResp, error) {
+	out := new(OtaCommonResp)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaTaskManageClient) OtaTaskCancle(ctx context.Context, in *OtaTaskCancleReq, opts ...grpc.CallOption) (*OtaCommonResp, error) {
+	out := new(OtaCommonResp)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskCancle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaTaskManageClient) OtaTaskIndex(ctx context.Context, in *OtaTaskIndexReq, opts ...grpc.CallOption) (*OtaTaskIndexResp, error) {
+	out := new(OtaTaskIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaTaskManageClient) OtaTaskRead(ctx context.Context, in *OtaTaskReadReq, opts ...grpc.CallOption) (*OtaTaskReadResp, error) {
+	out := new(OtaTaskReadResp)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaTaskManageClient) OtaTaskDeviceIndex(ctx context.Context, in *OtaTaskDeviceIndexReq, opts ...grpc.CallOption) (*OtaTaskDeviceIndexResp, error) {
+	out := new(OtaTaskDeviceIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaTaskManageClient) OtaTaskDeviceRead(ctx context.Context, in *OtaTaskDeviceReadReq, opts ...grpc.CallOption) (*OtaTaskDeviceInfo, error) {
+	out := new(OtaTaskDeviceInfo)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaTaskManageClient) OtaTaskDeviceEnableBatch(ctx context.Context, in *OtaTaskBatchReq, opts ...grpc.CallOption) (*OtaTaskBatchResp, error) {
+	out := new(OtaTaskBatchResp)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceEnableBatch", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaTaskManageClient) OtaTaskDeviceProcess(ctx context.Context, in *OtaTaskDeviceProcessReq, opts ...grpc.CallOption) (*OtaCommonResp, error) {
+	out := new(OtaCommonResp)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceProcess", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaTaskManageClient) OtaTaskDeviceCancle(ctx context.Context, in *OtaTaskDeviceCancleReq, opts ...grpc.CallOption) (*OtaCommonResp, error) {
+	out := new(OtaCommonResp)
+	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceCancle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// OtaTaskManageServer is the server API for OtaTaskManage service.
+// All implementations must embed UnimplementedOtaTaskManageServer
+// for forward compatibility
+type OtaTaskManageServer interface {
+	//创建批量升级任务
+	OtaTaskCreate(context.Context, *OtaTaskCreateReq) (*OtaTaskCreatResp, error)
+	OtaTaskUpdate(context.Context, *OtaTaskInfo) (*OtaCommonResp, error)
+	//批量取消升级任务
+	OtaTaskCancle(context.Context, *OtaTaskCancleReq) (*OtaCommonResp, error)
+	OtaTaskIndex(context.Context, *OtaTaskIndexReq) (*OtaTaskIndexResp, error)
+	//升级任务详情
+	OtaTaskRead(context.Context, *OtaTaskReadReq) (*OtaTaskReadResp, error)
+	//升级批次详情列表
+	OtaTaskDeviceIndex(context.Context, *OtaTaskDeviceIndexReq) (*OtaTaskDeviceIndexResp, error)
+	//设备升级状态详情
+	OtaTaskDeviceRead(context.Context, *OtaTaskDeviceReadReq) (*OtaTaskDeviceInfo, error)
+	//获取当前可执行批次信息
+	OtaTaskDeviceEnableBatch(context.Context, *OtaTaskBatchReq) (*OtaTaskBatchResp, error)
+	//升级进度上报
+	OtaTaskDeviceProcess(context.Context, *OtaTaskDeviceProcessReq) (*OtaCommonResp, error)
+	//取消单个设备的升级
+	OtaTaskDeviceCancle(context.Context, *OtaTaskDeviceCancleReq) (*OtaCommonResp, error)
+	mustEmbedUnimplementedOtaTaskManageServer()
+}
+
+// UnimplementedOtaTaskManageServer must be embedded to have forward compatible implementations.
+type UnimplementedOtaTaskManageServer struct {
+}
+
+func (UnimplementedOtaTaskManageServer) OtaTaskCreate(context.Context, *OtaTaskCreateReq) (*OtaTaskCreatResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskCreate not implemented")
+}
+func (UnimplementedOtaTaskManageServer) OtaTaskUpdate(context.Context, *OtaTaskInfo) (*OtaCommonResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskUpdate not implemented")
+}
+func (UnimplementedOtaTaskManageServer) OtaTaskCancle(context.Context, *OtaTaskCancleReq) (*OtaCommonResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskCancle not implemented")
+}
+func (UnimplementedOtaTaskManageServer) OtaTaskIndex(context.Context, *OtaTaskIndexReq) (*OtaTaskIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskIndex not implemented")
+}
+func (UnimplementedOtaTaskManageServer) OtaTaskRead(context.Context, *OtaTaskReadReq) (*OtaTaskReadResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskRead not implemented")
+}
+func (UnimplementedOtaTaskManageServer) OtaTaskDeviceIndex(context.Context, *OtaTaskDeviceIndexReq) (*OtaTaskDeviceIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskDeviceIndex not implemented")
+}
+func (UnimplementedOtaTaskManageServer) OtaTaskDeviceRead(context.Context, *OtaTaskDeviceReadReq) (*OtaTaskDeviceInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskDeviceRead not implemented")
+}
+func (UnimplementedOtaTaskManageServer) OtaTaskDeviceEnableBatch(context.Context, *OtaTaskBatchReq) (*OtaTaskBatchResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskDeviceEnableBatch not implemented")
+}
+func (UnimplementedOtaTaskManageServer) OtaTaskDeviceProcess(context.Context, *OtaTaskDeviceProcessReq) (*OtaCommonResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskDeviceProcess not implemented")
+}
+func (UnimplementedOtaTaskManageServer) OtaTaskDeviceCancle(context.Context, *OtaTaskDeviceCancleReq) (*OtaCommonResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskDeviceCancle not implemented")
+}
+func (UnimplementedOtaTaskManageServer) mustEmbedUnimplementedOtaTaskManageServer() {}
+
+// UnsafeOtaTaskManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to OtaTaskManageServer will
+// result in compilation errors.
+type UnsafeOtaTaskManageServer interface {
+	mustEmbedUnimplementedOtaTaskManageServer()
+}
+
+func RegisterOtaTaskManageServer(s grpc.ServiceRegistrar, srv OtaTaskManageServer) {
+	s.RegisterService(&OtaTaskManage_ServiceDesc, srv)
+}
+
+func _OtaTaskManage_OtaTaskCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskCreate(ctx, req.(*OtaTaskCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaTaskManage_OtaTaskUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskUpdate(ctx, req.(*OtaTaskInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaTaskManage_OtaTaskCancle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskCancleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskCancle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskCancle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskCancle(ctx, req.(*OtaTaskCancleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaTaskManage_OtaTaskIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskIndex(ctx, req.(*OtaTaskIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaTaskManage_OtaTaskRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskRead(ctx, req.(*OtaTaskReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaTaskManage_OtaTaskDeviceIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskDeviceIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceIndex(ctx, req.(*OtaTaskDeviceIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaTaskManage_OtaTaskDeviceRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskDeviceReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceRead(ctx, req.(*OtaTaskDeviceReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaTaskManage_OtaTaskDeviceEnableBatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskBatchReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceEnableBatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceEnableBatch",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceEnableBatch(ctx, req.(*OtaTaskBatchReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaTaskManage_OtaTaskDeviceProcess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskDeviceProcessReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceProcess(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceProcess",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceProcess(ctx, req.(*OtaTaskDeviceProcessReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaTaskManage_OtaTaskDeviceCancle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaTaskDeviceCancleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceCancle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceCancle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaTaskManageServer).OtaTaskDeviceCancle(ctx, req.(*OtaTaskDeviceCancleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// OtaTaskManage_ServiceDesc is the grpc.ServiceDesc for OtaTaskManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var OtaTaskManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.OtaTaskManage",
+	HandlerType: (*OtaTaskManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "OtaTaskCreate",
+			Handler:    _OtaTaskManage_OtaTaskCreate_Handler,
+		},
+		{
+			MethodName: "OtaTaskUpdate",
+			Handler:    _OtaTaskManage_OtaTaskUpdate_Handler,
+		},
+		{
+			MethodName: "OtaTaskCancle",
+			Handler:    _OtaTaskManage_OtaTaskCancle_Handler,
+		},
+		{
+			MethodName: "OtaTaskIndex",
+			Handler:    _OtaTaskManage_OtaTaskIndex_Handler,
+		},
+		{
+			MethodName: "OtaTaskRead",
+			Handler:    _OtaTaskManage_OtaTaskRead_Handler,
+		},
+		{
+			MethodName: "OtaTaskDeviceIndex",
+			Handler:    _OtaTaskManage_OtaTaskDeviceIndex_Handler,
+		},
+		{
+			MethodName: "OtaTaskDeviceRead",
+			Handler:    _OtaTaskManage_OtaTaskDeviceRead_Handler,
+		},
+		{
+			MethodName: "OtaTaskDeviceEnableBatch",
+			Handler:    _OtaTaskManage_OtaTaskDeviceEnableBatch_Handler,
+		},
+		{
+			MethodName: "OtaTaskDeviceProcess",
+			Handler:    _OtaTaskManage_OtaTaskDeviceProcess_Handler,
+		},
+		{
+			MethodName: "OtaTaskDeviceCancle",
+			Handler:    _OtaTaskManage_OtaTaskDeviceCancle_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
