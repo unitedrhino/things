@@ -9,7 +9,7 @@ import "common.api"  //公共结构体定义
 @server(
     group : things/rule/alarm/dealRecord
     prefix: /api/v1/things/rule/alarm/deal-record
-    middleware: SetupWare, CheckTokenWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "获取告警处理记录列表"

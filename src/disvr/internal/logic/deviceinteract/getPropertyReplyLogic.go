@@ -45,7 +45,7 @@ func (l *GetPropertyReplyLogic) initMsg(productID string) error {
 // 请求设备获取设备最新属性
 func (l *GetPropertyReplyLogic) GetPropertyReply(in *di.GetPropertyReplyReq) (*di.GetPropertyReplyResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
-	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}); err != nil {
@@ -57,13 +57,13 @@ func (l *GetPropertyReplyLogic) GetPropertyReply(in *di.GetPropertyReplyReq) (*d
 		return nil, err
 	}
 
-	clientToken := trace.TraceIDFromContext(l.ctx)
+	MsgToken := trace.TraceIDFromContext(l.ctx)
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:      deviceMsg.GetReport,
-			ClientToken: clientToken,
-			Timestamp:   time.Now().UnixMilli(),
+			Method:    deviceMsg.GetReport,
+			MsgToken:  MsgToken,
+			Timestamp: time.Now().UnixMilli(),
 		},
 		Identifiers: in.DataIDs,
 	}
@@ -77,7 +77,7 @@ func (l *GetPropertyReplyLogic) GetPropertyReply(in *di.GetPropertyReplyReq) (*d
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.MsgToken)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (l *GetPropertyReplyLogic) GetPropertyReply(in *di.GetPropertyReplyReq) (*d
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可
 			return false
 		}
-		if dresp.ClientToken != req.ClientToken { //不是该请求的回复.跳过
+		if dresp.MsgToken != req.MsgToken { //不是该请求的回复.跳过
 			return false
 		}
 		return true
@@ -107,10 +107,10 @@ func (l *GetPropertyReplyLogic) GetPropertyReply(in *di.GetPropertyReplyReq) (*d
 		params, _ = json.Marshal(dresp.Params)
 	}
 	return &di.GetPropertyReplyResp{
-		ClientToken: dresp.ClientToken,
-		Status:      dresp.Status,
-		Code:        dresp.Code,
-		Timestamp:   dresp.GetTimeStamp(time.Now().UnixMilli()).UnixMilli(),
-		Params:      string(params),
+		MsgToken:  dresp.MsgToken,
+		Msg:       dresp.Msg,
+		Code:      dresp.Code,
+		Timestamp: dresp.GetTimeStamp(time.Now().UnixMilli()).UnixMilli(),
+		Params:    string(params),
 	}, nil
 }

@@ -35,7 +35,7 @@ type (
 func (d Req) AddStatus(err error) Req {
 	e := errors.Fmt(err)
 	d.Code = e.Code
-	d.Status = e.GetDetailMsg()
+	d.Msg = e.GetDetailMsg()
 	return d
 }
 

@@ -39,6 +39,12 @@ type UserClient interface {
 	UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
 	UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
+	UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error)
+	UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error)
+	UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error)
+	UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error)
 }
 
 type userClient struct {
@@ -112,6 +118,60 @@ func (c *userClient) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, 
 	return out, nil
 }
 
+func (c *userClient) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
+	out := new(UserRegister1Resp)
+	err := c.cc.Invoke(ctx, "/sys.User/userRegister1", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.User/userRegister2", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.User/userAuthProjectMultiUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error) {
+	out := new(UserAuthProjectIndexResp)
+	err := c.cc.Invoke(ctx, "/sys.User/userAuthProjectIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.User/userAuthAreaMultiUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error) {
+	out := new(UserAuthAreaIndexResp)
+	err := c.cc.Invoke(ctx, "/sys.User/userAuthAreaIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -123,6 +183,12 @@ type UserServer interface {
 	UserDelete(context.Context, *UserDeleteReq) (*Response, error)
 	UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error)
 	UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error)
+	UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error)
+	UserRegister2(context.Context, *UserRegister2Req) (*Response, error)
+	UserAuthProjectMultiUpdate(context.Context, *UserAuthProjectMultiUpdateReq) (*Response, error)
+	UserAuthProjectIndex(context.Context, *UserAuthProjectIndexReq) (*UserAuthProjectIndexResp, error)
+	UserAuthAreaMultiUpdate(context.Context, *UserAuthAreaMultiUpdateReq) (*Response, error)
+	UserAuthAreaIndex(context.Context, *UserAuthAreaIndexReq) (*UserAuthAreaIndexResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -150,6 +216,24 @@ func (UnimplementedUserServer) UserLogin(context.Context, *UserLoginReq) (*UserL
 }
 func (UnimplementedUserServer) UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCheckToken not implemented")
+}
+func (UnimplementedUserServer) UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRegister1 not implemented")
+}
+func (UnimplementedUserServer) UserRegister2(context.Context, *UserRegister2Req) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRegister2 not implemented")
+}
+func (UnimplementedUserServer) UserAuthProjectMultiUpdate(context.Context, *UserAuthProjectMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAuthProjectMultiUpdate not implemented")
+}
+func (UnimplementedUserServer) UserAuthProjectIndex(context.Context, *UserAuthProjectIndexReq) (*UserAuthProjectIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAuthProjectIndex not implemented")
+}
+func (UnimplementedUserServer) UserAuthAreaMultiUpdate(context.Context, *UserAuthAreaMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAuthAreaMultiUpdate not implemented")
+}
+func (UnimplementedUserServer) UserAuthAreaIndex(context.Context, *UserAuthAreaIndexReq) (*UserAuthAreaIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAuthAreaIndex not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -290,6 +374,114 @@ func _User_UserCheckToken_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserRegister1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRegister1Req)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserRegister1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.User/userRegister1",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserRegister1(ctx, req.(*UserRegister1Req))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserRegister2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRegister2Req)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserRegister2(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.User/userRegister2",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserRegister2(ctx, req.(*UserRegister2Req))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserAuthProjectMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAuthProjectMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserAuthProjectMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.User/userAuthProjectMultiUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserAuthProjectMultiUpdate(ctx, req.(*UserAuthProjectMultiUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserAuthProjectIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAuthProjectIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserAuthProjectIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.User/userAuthProjectIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserAuthProjectIndex(ctx, req.(*UserAuthProjectIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserAuthAreaMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAuthAreaMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserAuthAreaMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.User/userAuthAreaMultiUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserAuthAreaMultiUpdate(ctx, req.(*UserAuthAreaMultiUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserAuthAreaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAuthAreaIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserAuthAreaIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.User/userAuthAreaIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserAuthAreaIndex(ctx, req.(*UserAuthAreaIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -324,6 +516,30 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "userCheckToken",
 			Handler:    _User_UserCheckToken_Handler,
+		},
+		{
+			MethodName: "userRegister1",
+			Handler:    _User_UserRegister1_Handler,
+		},
+		{
+			MethodName: "userRegister2",
+			Handler:    _User_UserRegister2_Handler,
+		},
+		{
+			MethodName: "userAuthProjectMultiUpdate",
+			Handler:    _User_UserAuthProjectMultiUpdate_Handler,
+		},
+		{
+			MethodName: "userAuthProjectIndex",
+			Handler:    _User_UserAuthProjectIndex_Handler,
+		},
+		{
+			MethodName: "userAuthAreaMultiUpdate",
+			Handler:    _User_UserAuthAreaMultiUpdate_Handler,
+		},
+		{
+			MethodName: "userAuthAreaIndex",
+			Handler:    _User_UserAuthAreaIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1366,6 +1582,524 @@ var Api_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "apiDelete",
 			Handler:    _Api_ApiDelete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}
+
+// ProjectManageClient is the client API for ProjectManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ProjectManageClient interface {
+	//新增项目
+	ProjectInfoCreate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error)
+	//更新项目
+	ProjectInfoUpdate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error)
+	//删除项目
+	ProjectInfoDelete(ctx context.Context, in *ProjectInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	//获取项目信息详情
+	ProjectInfoRead(ctx context.Context, in *ProjectInfoReadReq, opts ...grpc.CallOption) (*ProjectInfo, error)
+	//获取项目信息列表
+	ProjectInfoIndex(ctx context.Context, in *ProjectInfoIndexReq, opts ...grpc.CallOption) (*ProjectInfoIndexResp, error)
+}
+
+type projectManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewProjectManageClient(cc grpc.ClientConnInterface) ProjectManageClient {
+	return &projectManageClient{cc}
+}
+
+func (c *projectManageClient) ProjectInfoCreate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectManageClient) ProjectInfoUpdate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectManageClient) ProjectInfoDelete(ctx context.Context, in *ProjectInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectManageClient) ProjectInfoRead(ctx context.Context, in *ProjectInfoReadReq, opts ...grpc.CallOption) (*ProjectInfo, error) {
+	out := new(ProjectInfo)
+	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectManageClient) ProjectInfoIndex(ctx context.Context, in *ProjectInfoIndexReq, opts ...grpc.CallOption) (*ProjectInfoIndexResp, error) {
+	out := new(ProjectInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ProjectManageServer is the server API for ProjectManage service.
+// All implementations must embed UnimplementedProjectManageServer
+// for forward compatibility
+type ProjectManageServer interface {
+	//新增项目
+	ProjectInfoCreate(context.Context, *ProjectInfo) (*Response, error)
+	//更新项目
+	ProjectInfoUpdate(context.Context, *ProjectInfo) (*Response, error)
+	//删除项目
+	ProjectInfoDelete(context.Context, *ProjectInfoDeleteReq) (*Response, error)
+	//获取项目信息详情
+	ProjectInfoRead(context.Context, *ProjectInfoReadReq) (*ProjectInfo, error)
+	//获取项目信息列表
+	ProjectInfoIndex(context.Context, *ProjectInfoIndexReq) (*ProjectInfoIndexResp, error)
+	mustEmbedUnimplementedProjectManageServer()
+}
+
+// UnimplementedProjectManageServer must be embedded to have forward compatible implementations.
+type UnimplementedProjectManageServer struct {
+}
+
+func (UnimplementedProjectManageServer) ProjectInfoCreate(context.Context, *ProjectInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProjectInfoCreate not implemented")
+}
+func (UnimplementedProjectManageServer) ProjectInfoUpdate(context.Context, *ProjectInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProjectInfoUpdate not implemented")
+}
+func (UnimplementedProjectManageServer) ProjectInfoDelete(context.Context, *ProjectInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProjectInfoDelete not implemented")
+}
+func (UnimplementedProjectManageServer) ProjectInfoRead(context.Context, *ProjectInfoReadReq) (*ProjectInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProjectInfoRead not implemented")
+}
+func (UnimplementedProjectManageServer) ProjectInfoIndex(context.Context, *ProjectInfoIndexReq) (*ProjectInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProjectInfoIndex not implemented")
+}
+func (UnimplementedProjectManageServer) mustEmbedUnimplementedProjectManageServer() {}
+
+// UnsafeProjectManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProjectManageServer will
+// result in compilation errors.
+type UnsafeProjectManageServer interface {
+	mustEmbedUnimplementedProjectManageServer()
+}
+
+func RegisterProjectManageServer(s grpc.ServiceRegistrar, srv ProjectManageServer) {
+	s.RegisterService(&ProjectManage_ServiceDesc, srv)
+}
+
+func _ProjectManage_ProjectInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProjectInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectManageServer).ProjectInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.ProjectManage/projectInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectManageServer).ProjectInfoCreate(ctx, req.(*ProjectInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectManage_ProjectInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProjectInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectManageServer).ProjectInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.ProjectManage/projectInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectManageServer).ProjectInfoUpdate(ctx, req.(*ProjectInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectManage_ProjectInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProjectInfoDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectManageServer).ProjectInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.ProjectManage/projectInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectManageServer).ProjectInfoDelete(ctx, req.(*ProjectInfoDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectManage_ProjectInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProjectInfoReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectManageServer).ProjectInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.ProjectManage/projectInfoRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectManageServer).ProjectInfoRead(ctx, req.(*ProjectInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectManage_ProjectInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProjectInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectManageServer).ProjectInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.ProjectManage/projectInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectManageServer).ProjectInfoIndex(ctx, req.(*ProjectInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ProjectManage_ServiceDesc is the grpc.ServiceDesc for ProjectManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProjectManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.ProjectManage",
+	HandlerType: (*ProjectManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "projectInfoCreate",
+			Handler:    _ProjectManage_ProjectInfoCreate_Handler,
+		},
+		{
+			MethodName: "projectInfoUpdate",
+			Handler:    _ProjectManage_ProjectInfoUpdate_Handler,
+		},
+		{
+			MethodName: "projectInfoDelete",
+			Handler:    _ProjectManage_ProjectInfoDelete_Handler,
+		},
+		{
+			MethodName: "projectInfoRead",
+			Handler:    _ProjectManage_ProjectInfoRead_Handler,
+		},
+		{
+			MethodName: "projectInfoIndex",
+			Handler:    _ProjectManage_ProjectInfoIndex_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}
+
+// AreaManageClient is the client API for AreaManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type AreaManageClient interface {
+	//新增区域
+	AreaInfoCreate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error)
+	//更新区域
+	AreaInfoUpdate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error)
+	//删除区域
+	AreaInfoDelete(ctx context.Context, in *AreaInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	//获取区域信息详情
+	AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error)
+	//获取区域信息列表
+	AreaInfoIndex(ctx context.Context, in *AreaInfoIndexReq, opts ...grpc.CallOption) (*AreaInfoIndexResp, error)
+	//获取区域信息树
+	AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq, opts ...grpc.CallOption) (*AreaInfoTreeResp, error)
+}
+
+type areaManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAreaManageClient(cc grpc.ClientConnInterface) AreaManageClient {
+	return &areaManageClient{cc}
+}
+
+func (c *areaManageClient) AreaInfoCreate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *areaManageClient) AreaInfoUpdate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *areaManageClient) AreaInfoDelete(ctx context.Context, in *AreaInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *areaManageClient) AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error) {
+	out := new(AreaInfo)
+	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *areaManageClient) AreaInfoIndex(ctx context.Context, in *AreaInfoIndexReq, opts ...grpc.CallOption) (*AreaInfoIndexResp, error) {
+	out := new(AreaInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *areaManageClient) AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq, opts ...grpc.CallOption) (*AreaInfoTreeResp, error) {
+	out := new(AreaInfoTreeResp)
+	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoTree", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AreaManageServer is the server API for AreaManage service.
+// All implementations must embed UnimplementedAreaManageServer
+// for forward compatibility
+type AreaManageServer interface {
+	//新增区域
+	AreaInfoCreate(context.Context, *AreaInfo) (*Response, error)
+	//更新区域
+	AreaInfoUpdate(context.Context, *AreaInfo) (*Response, error)
+	//删除区域
+	AreaInfoDelete(context.Context, *AreaInfoDeleteReq) (*Response, error)
+	//获取区域信息详情
+	AreaInfoRead(context.Context, *AreaInfoReadReq) (*AreaInfo, error)
+	//获取区域信息列表
+	AreaInfoIndex(context.Context, *AreaInfoIndexReq) (*AreaInfoIndexResp, error)
+	//获取区域信息树
+	AreaInfoTree(context.Context, *AreaInfoTreeReq) (*AreaInfoTreeResp, error)
+	mustEmbedUnimplementedAreaManageServer()
+}
+
+// UnimplementedAreaManageServer must be embedded to have forward compatible implementations.
+type UnimplementedAreaManageServer struct {
+}
+
+func (UnimplementedAreaManageServer) AreaInfoCreate(context.Context, *AreaInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoCreate not implemented")
+}
+func (UnimplementedAreaManageServer) AreaInfoUpdate(context.Context, *AreaInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoUpdate not implemented")
+}
+func (UnimplementedAreaManageServer) AreaInfoDelete(context.Context, *AreaInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoDelete not implemented")
+}
+func (UnimplementedAreaManageServer) AreaInfoRead(context.Context, *AreaInfoReadReq) (*AreaInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoRead not implemented")
+}
+func (UnimplementedAreaManageServer) AreaInfoIndex(context.Context, *AreaInfoIndexReq) (*AreaInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoIndex not implemented")
+}
+func (UnimplementedAreaManageServer) AreaInfoTree(context.Context, *AreaInfoTreeReq) (*AreaInfoTreeResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoTree not implemented")
+}
+func (UnimplementedAreaManageServer) mustEmbedUnimplementedAreaManageServer() {}
+
+// UnsafeAreaManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AreaManageServer will
+// result in compilation errors.
+type UnsafeAreaManageServer interface {
+	mustEmbedUnimplementedAreaManageServer()
+}
+
+func RegisterAreaManageServer(s grpc.ServiceRegistrar, srv AreaManageServer) {
+	s.RegisterService(&AreaManage_ServiceDesc, srv)
+}
+
+func _AreaManage_AreaInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AreaInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AreaManageServer).AreaInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.AreaManage/areaInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AreaManageServer).AreaInfoCreate(ctx, req.(*AreaInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AreaManage_AreaInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AreaInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AreaManageServer).AreaInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.AreaManage/areaInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AreaManageServer).AreaInfoUpdate(ctx, req.(*AreaInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AreaManage_AreaInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AreaInfoDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AreaManageServer).AreaInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.AreaManage/areaInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AreaManageServer).AreaInfoDelete(ctx, req.(*AreaInfoDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AreaManage_AreaInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AreaInfoReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AreaManageServer).AreaInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.AreaManage/areaInfoRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AreaManageServer).AreaInfoRead(ctx, req.(*AreaInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AreaManage_AreaInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AreaInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AreaManageServer).AreaInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.AreaManage/areaInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AreaManageServer).AreaInfoIndex(ctx, req.(*AreaInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AreaManage_AreaInfoTree_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AreaInfoTreeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AreaManageServer).AreaInfoTree(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sys.AreaManage/areaInfoTree",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AreaManageServer).AreaInfoTree(ctx, req.(*AreaInfoTreeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// AreaManage_ServiceDesc is the grpc.ServiceDesc for AreaManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var AreaManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.AreaManage",
+	HandlerType: (*AreaManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "areaInfoCreate",
+			Handler:    _AreaManage_AreaInfoCreate_Handler,
+		},
+		{
+			MethodName: "areaInfoUpdate",
+			Handler:    _AreaManage_AreaInfoUpdate_Handler,
+		},
+		{
+			MethodName: "areaInfoDelete",
+			Handler:    _AreaManage_AreaInfoDelete_Handler,
+		},
+		{
+			MethodName: "areaInfoRead",
+			Handler:    _AreaManage_AreaInfoRead_Handler,
+		},
+		{
+			MethodName: "areaInfoIndex",
+			Handler:    _AreaManage_AreaInfoIndex_Handler,
+		},
+		{
+			MethodName: "areaInfoTree",
+			Handler:    _AreaManage_AreaInfoTree_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

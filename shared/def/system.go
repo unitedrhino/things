@@ -24,3 +24,22 @@ type Point struct {
 	Longitude        float64          `json:"longitude,range=[0:180]"`    //经度
 	Latitude         float64          `json:"latitude,range=[0:90]"`      //纬度
 }
+
+
+// 用户数据权限-数据类型
+type AuthDataType int64
+
+const (
+	AuthDataTypeProject AuthDataType = iota + 1 //项目权限类型
+	AuthDataTypeArea                            //区域权限类型
+)
+
+var AuthDataTypeFieldTextMap = map[AuthDataType]string{
+	AuthDataTypeProject: "项目数据权限",
+	AuthDataTypeArea:    "区域数据权限",
+}
+
+var AuthDataTypeFieldIDsMap = map[AuthDataType][]string{
+	AuthDataTypeProject: {"ProjectID", "ProjectIDs"},
+	AuthDataTypeArea:    {"AreaID", "AreaIDs"},
+}

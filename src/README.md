@@ -77,3 +77,23 @@ cd rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --
 #protoc  proto/* --go_out=. --go-grpc_out=.
 cd vidsvr && goctl rpc protoc  proto/vid.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
+
+
+
+# 定时生产者引擎模块-timedschedulersvr
+
+- rpc文件编译
+
+```shell
+#protoc  proto/* --go_out=. --go-grpc_out=.
+cd timed/timedschedulersvr && goctl rpc protoc  proto/timedscheduler.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ../..
+```
+
+# 定时消费者者引擎模块-timedjobsvr
+
+- rpc文件编译
+
+```shell
+#protoc  proto/* --go_out=. --go-grpc_out=.
+cd timed/timedjobsvr && goctl rpc protoc  proto/timedjob.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ../..
+```

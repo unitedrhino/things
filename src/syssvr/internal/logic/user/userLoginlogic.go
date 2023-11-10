@@ -67,6 +67,9 @@ func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, store kv.Store, list []*
 	//登录成功，清除密码错误次数相关redis key
 	cache.ClearWrongpassKeys(l.ctx, store, list)
 
+	InitCacheUserAuthProject(l.ctx, ui.UserID)
+	InitCacheUserAuthArea(l.ctx, ui.UserID)
+
 	resp := &sys.UserLoginResp{
 		Info: UserInfoToPb(ui),
 		Token: &sys.JwtToken{
@@ -90,6 +93,16 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserIn
 			return nil, err
 		}
 	/*企业版*/
+	case users.RegWxMiniP:
+		auth := l.svcCtx.WxMiniProgram.GetAuth()
+		ret, er := auth.Code2SessionContext(l.ctx, in.Code)
+		if er != nil {
+			return nil, errors.System.AddDetail(er)
+		}
+		if ret.ErrCode != 0 {
+			return nil, errors.Parameter.AddMsgf(ret.ErrMsg)
+		}
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Wechat: ret.UnionID})
 	default:
 		l.Error("%s LoginType=%s not support", utils.FuncName(), in.LoginType)
 		return nil, errors.Parameter

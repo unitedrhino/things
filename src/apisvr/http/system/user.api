@@ -5,7 +5,8 @@ info(
 	email: "174805676@qq.com"
 	version: "v0.1.0"
 )
-import "common.api"  //公共结构体定义
+//import "common.api"  //公共结构体定义
+import "system/project.api"  //项目管理
 import "system/menu.api"  //菜单结构
 @server (
 	group : system/user
@@ -19,11 +20,20 @@ service api {
 	@doc "用戶登录"
 	@handler login
 	post /login (UserLoginReq) returns (UserLoginResp)
+
+	@doc "用戶注册第一步"
+	@handler register1
+	post /register1 (UserRegister1Req) returns (UserRegister1Resp)
+
+	@doc "用戶注册第二步"
+	@handler register2
+	post /register2 (UserRegister2Req) returns ()
 }
+
 @server (
 	group : system/user
 	prefix: /api/v1/system/user
-	middleware: SetupWare, CheckTokenWare, TeardownWare
+	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
 )
 service api {
 	@doc "创建用户信息"
@@ -136,5 +146,26 @@ type (
     UserResourceReadResp{
         Menu   []*MenuData   `json:"menu"`           //菜单资源
 		Info  *UserInfo `json:"info"`//用户信息
+		Projects []*ProjectInfo `json:"projects"`    //项目列表
     }
+)
+
+type (
+	//登录信息注册,注册第一步(注册核心登录信息) 返回一个jwt用来第二步注册 第一步注册成功后就可以登录了,第二步注册是填写信息
+	UserRegister1Req {
+		RegType string `json:"regType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //注册方式:	phone手机号注册 wxOpen 微信开放平台登录 wxIn 微信内登录 wxMiniP 微信小程序 pwd 账号密码注册
+		Note    string `json:"note,optional"`                             //手机号注册时填写手机号 账号密码注册时填写userName
+		Code    string `json:"code"`                                      //验证码    微信登录填code 账号密码登录时填写密码
+		CodeID  string `json:"codeID,optional"`                           //验证码编号 微信登录填state
+	}
+//返回token token在第二步使用
+	UserRegister1Resp {
+		Token string `json:"token,optional"` //如果返回token则需要第二步填写信息,如果为空则为注册成功
+	}
+
+//第二步是需要填写用户信息,有些场景不需要则注册成功
+	UserRegister2Req {
+		Token    string `json:"token"`             //注册第一步的token
+		UserInfo UserInfo `json:"userInfo"` //用户信息,特别需要填写账号和密码
+	}
 )

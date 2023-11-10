@@ -14,7 +14,6 @@ import (
 	"github.com/i-Things/things/src/ddsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
-	"os"
 )
 
 func NewDd(c config.Config) {
@@ -30,36 +29,22 @@ func NewDd(c config.Config) {
 
 func Subscript(svcCtx *svc.ServiceContext) {
 	sd, err := subDev.NewSubDev(svcCtx.Config.DevLink)
-	if err != nil {
-		logx.Error("NewSubDev err", err)
-		os.Exit(-1)
-	}
+	logx.Must(err)
 	err = sd.SubDevMsg(func(ctx context.Context) subDev.DevSubHandle {
 		return deviceSub.NewDeviceSubServer(svcCtx, ctx)
 	})
-	if err != nil {
-		logx.Error("PubDev SubToDevMsg failure", err)
-		os.Exit(-1)
-	}
+	logx.Must(err)
 
 	si, err := subInner.NewSubInner(svcCtx.Config.Event)
-	if err != nil {
-		logx.Error("NewSubInner err", err)
-		os.Exit(-1)
-	}
+	logx.Must(err)
 	err = si.SubToDevMsg(func(ctx context.Context) subInner.InnerSubHandle {
 		return innerSub.NewInnerSubServer(svcCtx, ctx)
 	})
-	if err != nil {
-		logx.Error("DevPubInner SubToDevMsg failure", err)
-		os.Exit(-1)
-	}
+	logx.Must(err)
 	dataUpdateCli, err := dataUpdate.NewDataUpdate(svcCtx.Config.Event)
-	if err != nil {
-		logx.Error("NewDataUpdate err", err)
-		os.Exit(-1)
-	}
+	logx.Must(err)
 	err = dataUpdateCli.Subscribe(func(ctx context.Context) dataUpdate.UpdateHandle {
 		return dataUpdateEvent.NewDataUpdateLogic(ctx, svcCtx)
 	})
+	logx.Must(err)
 }

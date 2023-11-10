@@ -56,3 +56,33 @@ func (s *UserServer) UserCheckToken(ctx context.Context, in *sys.UserCheckTokenR
 	l := userlogic.NewUserCheckTokenLogic(ctx, s.svcCtx)
 	return l.UserCheckToken(in)
 }
+
+func (s *UserServer) UserRegister1(ctx context.Context, in *sys.UserRegister1Req) (*sys.UserRegister1Resp, error) {
+	l := userlogic.NewUserRegister1Logic(ctx, s.svcCtx)
+	return l.UserRegister1(in)
+}
+
+func (s *UserServer) UserRegister2(ctx context.Context, in *sys.UserRegister2Req) (*sys.Response, error) {
+	l := userlogic.NewUserRegister2Logic(ctx, s.svcCtx)
+	return l.UserRegister2(in)
+}
+
+func (s *UserServer) UserAuthProjectMultiUpdate(ctx context.Context, in *sys.UserAuthProjectMultiUpdateReq) (*sys.Response, error) {
+	l := userlogic.NewUserAuthProjectMultiUpdateLogic(ctx, s.svcCtx)
+	return l.UserAuthProjectMultiUpdate(in)
+}
+
+func (s *UserServer) UserAuthProjectIndex(ctx context.Context, in *sys.UserAuthProjectIndexReq) (*sys.UserAuthProjectIndexResp, error) {
+	l := userlogic.NewUserAuthProjectIndexLogic(ctx, s.svcCtx)
+	return l.UserAuthProjectIndex(in)
+}
+
+func (s *UserServer) UserAuthAreaMultiUpdate(ctx context.Context, in *sys.UserAuthAreaMultiUpdateReq) (*sys.Response, error) {
+	l := userlogic.NewUserAuthAreaMultiUpdateLogic(ctx, s.svcCtx)
+	return l.UserAuthAreaMultiUpdate(in)
+}
+
+func (s *UserServer) UserAuthAreaIndex(ctx context.Context, in *sys.UserAuthAreaIndexReq) (*sys.UserAuthAreaIndexResp, error) {
+	l := userlogic.NewUserAuthAreaIndexLogic(ctx, s.svcCtx)
+	return l.UserAuthAreaIndex(in)
+}

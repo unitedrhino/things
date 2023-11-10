@@ -13,23 +13,23 @@ type SysExample struct {
 
 // 用户登录信息表
 type SysUserInfo struct {
-	UserID     int64          `gorm:"column:user_id;primary_key;AUTO_INCREMENT;type:BIGINT;NOT NULL"`     // 用户id
-	UserName   sql.NullString `gorm:"column:user_name;uniqueIndex;type:VARCHAR(20)"`       // 登录用户名
-	Password   string         `gorm:"column:password;type:CHAR(32);NOT NULL"`              // 登录密码
-	Email      sql.NullString `gorm:"column:email;uniqueIndex;type:VARCHAR(255)"`          // 邮箱
-	Phone      sql.NullString `gorm:"column:phone;uniqueIndex;type:VARCHAR(20)"`           // 手机号
-	Wechat     sql.NullString `gorm:"column:wechat;uniqueIndex;type:VARCHAR(20)"`          // 微信union id
-	LastIP     string         `gorm:"column:last_ip;type:VARCHAR(40);NOT NULL"`            // 最后登录ip
-	RegIP      string         `gorm:"column:reg_ip;type:VARCHAR(40);NOT NULL"`             // 注册ip
-	NickName   string         `gorm:"column:nick_name;type:VARCHAR(60);NOT NULL"`          // 用户的昵称
-	Sex        int64          `gorm:"column:sex;type:SMALLINT;default:3;NOT NULL"`         // 用户的性别，值为1时是男性，值为2时是女性，其他值为未知
-	City       string         `gorm:"column:city;type:VARCHAR(50);NOT NULL"`               // 用户所在城市
-	Country    string         `gorm:"column:country;type:VARCHAR(50);NOT NULL"`            // 用户所在国家
-	Province   string         `gorm:"column:province;type:VARCHAR(50);NOT NULL"`           // 用户所在省份
-	Language   string         `gorm:"column:language;type:VARCHAR(50);NOT NULL"`           // 用户的语言，简体中文为zh_CN
-	HeadImgUrl string         `gorm:"column:head_img_url;type:VARCHAR(256);NOT NULL"`      // 用户头像
-	Role       int64          `gorm:"column:role;type:BIGINT;NOT NULL"`                    // 用户角色
-	IsAllData  int64          `gorm:"column:is_all_data;type:SMALLINT;default:2;NOT NULL"` // 是否所有数据权限（1是，2否）
+	UserID     int64          `gorm:"column:user_id;primary_key;AUTO_INCREMENT;type:BIGINT;NOT NULL"` // 用户id
+	UserName   sql.NullString `gorm:"column:user_name;uniqueIndex;type:VARCHAR(20)"`                  // 登录用户名
+	Password   string         `gorm:"column:password;type:CHAR(32);NOT NULL"`                         // 登录密码
+	Email      sql.NullString `gorm:"column:email;uniqueIndex;type:VARCHAR(255)"`                     // 邮箱
+	Phone      sql.NullString `gorm:"column:phone;uniqueIndex;type:VARCHAR(20)"`                      // 手机号
+	Wechat     sql.NullString `gorm:"column:wechat;uniqueIndex;type:VARCHAR(20)"`                     // 微信union id
+	LastIP     string         `gorm:"column:last_ip;type:VARCHAR(40);NOT NULL"`                       // 最后登录ip
+	RegIP      string         `gorm:"column:reg_ip;type:VARCHAR(40);NOT NULL"`                        // 注册ip
+	NickName   string         `gorm:"column:nick_name;type:VARCHAR(60);NOT NULL"`                     // 用户的昵称
+	Sex        int64          `gorm:"column:sex;type:SMALLINT;default:3;NOT NULL"`                    // 用户的性别，值为1时是男性，值为2时是女性，其他值为未知
+	City       string         `gorm:"column:city;type:VARCHAR(50);NOT NULL"`                          // 用户所在城市
+	Country    string         `gorm:"column:country;type:VARCHAR(50);NOT NULL"`                       // 用户所在国家
+	Province   string         `gorm:"column:province;type:VARCHAR(50);NOT NULL"`                      // 用户所在省份
+	Language   string         `gorm:"column:language;type:VARCHAR(50);NOT NULL"`                      // 用户的语言，简体中文为zh_CN
+	HeadImgUrl string         `gorm:"column:head_img_url;type:VARCHAR(256);NOT NULL"`                 // 用户头像
+	Role       int64          `gorm:"column:role;type:BIGINT;NOT NULL"`                               // 用户角色
+	IsAllData  int64          `gorm:"column:is_all_data;type:SMALLINT;default:1;NOT NULL"`            // 是否所有数据权限（1是，2否）
 	stores.Time
 }
 
@@ -152,4 +152,62 @@ type SysApiAuth struct {
 
 func (m *SysApiAuth) TableName() string {
 	return "sys_api_auth"
+}
+
+// 项目信息表
+type SysProjectInfo struct {
+	ProjectID   stores.ProjectID `gorm:"column:projectID;type:bigint;NOT NULL"`         // 项目ID(雪花ID)
+	ProjectName string           `gorm:"column:projectName;type:varchar(100);NOT NULL"` // 项目名称
+	CompanyName string           `gorm:"column:companyName;type:varchar(100);NOT NULL"` // 项目所属公司名称
+	UserID      int64            `gorm:"column:userID;type:bigint;NOT NULL"`            // 管理员用户id
+	Region      string           `gorm:"column:region;type:varchar(100);NOT NULL"`      // 项目省市区县
+	Address     string           `gorm:"column:address;type:varchar(512);NOT NULL"`     // 项目详细地址
+	Desc        string           `gorm:"column:desc;type:varchar(100);NOT NULL"`        // 项目备注
+	stores.Time
+}
+
+func (m *SysProjectInfo) TableName() string {
+	return "sys_project_info"
+}
+
+// 区域信息表
+type SysAreaInfo struct {
+	ProjectID    stores.ProjectID `gorm:"column:projectID;type:bigint;NOT NULL"`      // 所属项目ID(雪花ID)
+	AreaID       stores.AreaID    `gorm:"column:areaID;type:bigint;NOT NULL"`         // 区域ID(雪花ID)
+	ParentAreaID int64            `gorm:"column:parentAreaID;type:bigint;NOT NULL"`   // 上级区域ID(雪花ID)
+	AreaName     string           `gorm:"column:areaName;type:varchar(100);NOT NULL"` // 区域名称
+	Position     stores.Point     `gorm:"column:position;type:varchar(100);NOT NULL"` // 区域定位(默认百度坐标系BD09)
+	Desc         string           `gorm:"column:desc;type:varchar(100);NOT NULL"`     // 区域备注
+	stores.Time
+	Children []*SysAreaInfo `gorm:"foreignKey:ParentAreaID;references:AreaID"`
+	Parent   *SysAreaInfo   `gorm:"foreignKey:AreaID;references:ParentAreaID"`
+}
+
+func (m *SysAreaInfo) TableName() string {
+	return "sys_area_info"
+}
+
+// 用户区域权限表
+type SysUserAuthArea struct {
+	ID        int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	UserID    int64 `gorm:"column:userID;type:bigint;NOT NULL"`    // 用户ID(雪花id)
+	ProjectID int64 `gorm:"column:projectID;type:bigint;NOT NULL"` // 所属项目ID(雪花ID)
+	AreaID    int64 `gorm:"column:areaID;type:bigint;NOT NULL"`    // 区域ID(雪花ID) 5 是共享设备
+	stores.Time
+}
+
+func (m *SysUserAuthArea) TableName() string {
+	return "sys_user_auth_area"
+}
+
+// 用户项目权限表
+type SysUserAuthProject struct {
+	ID        int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	UserID    int64 `gorm:"column:userID;type:bigint;NOT NULL"`    // 用户ID(雪花id)
+	ProjectID int64 `gorm:"column:projectID;type:bigint;NOT NULL"` // 所属项目ID(雪花ID)
+	stores.Time
+}
+
+func (m *SysUserAuthProject) TableName() string {
+	return "sys_user_auth_project"
 }

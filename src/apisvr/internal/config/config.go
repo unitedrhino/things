@@ -20,8 +20,10 @@ type Config struct {
 	SysRpc     conf.RpcClientConf `json:",optional"`
 	DiRpc      conf.RpcClientConf `json:",optional"`
 	DmRpc      conf.RpcClientConf `json:",optional"`
-	VidRpc     conf.RpcClientConf `json:",optional"`
 	RuleRpc    conf.RpcClientConf `json:",optional"`
+	VidRpc     conf.RpcClientConf `json:",optional"`
+	TimedJobRpc       conf.RpcClientConf `json:",optional"`
+	TimedSchedulerRpc conf.RpcClientConf `json:",optional"`
 	Rej        struct {
 		AccessSecret string
 		AccessExpire int64
@@ -32,4 +34,5 @@ type Config struct {
 	Map                  conf.MapConf              `json:",optional"`
 	OpenAuth             conf.AuthConf             `json:",optional"`
 	WrongPasswordCounter conf.WrongPasswordCounter `json:",optional"`
+	Event                conf.EventConf            //和things内部交互的设置
 }

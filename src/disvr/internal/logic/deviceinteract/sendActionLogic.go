@@ -3,13 +3,16 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/disvr/internal/repo/cache"
+	"github.com/i-Things/things/src/timed/timedjobsvr/pb/timedjob"
 	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 
@@ -45,7 +48,7 @@ func (l *SendActionLogic) initMsg(productID string) error {
 // 调用设备行为
 func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
-	if err := checkIsOnline(l.ctx, l.svcCtx, devices.Core{
+	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}); err != nil {
@@ -63,13 +66,13 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.InputParams)
 	}
 
-	clientToken := trace.TraceIDFromContext(l.ctx)
+	MsgToken := trace.TraceIDFromContext(l.ctx)
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:      deviceMsg.Action,
-			ClientToken: clientToken,
-			Timestamp:   time.Now().UnixMilli(),
+			Method:    deviceMsg.Action,
+			MsgToken:  MsgToken,
+			Timestamp: time.Now().UnixMilli(),
 		},
 		ActionID: in.ActionID,
 		Params:   param,
@@ -87,8 +90,9 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
+		Explain:    ToSendOptionDo(in.Option).String(),
 	}
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.MsgToken)
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +102,26 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		if err != nil {
 			return nil, err
 		}
+		if in.Option != nil {
+			payload, _ := json.Marshal(reqMsg)
+			_, err := l.svcCtx.TimedM.TaskSendDelay(l.ctx, &timedjob.TaskSendDelayReq{
+				GroupCode: def.TimedIThingsQueueGroupCode,
+				Code:      "disvr-action-check-delay",
+				Option: &timedjob.TaskDelayOption{
+					ProcessIn: in.Option.RequestTimeout,
+					Timeout:   in.Option.TimeoutToFail,
+				},
+				ParamQueue: &timedjob.TaskDelayQueue{
+					Topic:   topics.DiActionCheckDelay,
+					Payload: string(payload),
+				},
+			})
+			if err != nil {
+				l.Errorf("TaskSendDelay err:%v", err)
+			}
+		}
 		return &di.SendActionResp{
-			ClientToken: req.ClientToken,
+			MsgToken: req.MsgToken,
 		}, nil
 	}
 	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, func(payload []byte) bool {
@@ -108,7 +130,7 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可
 			return false
 		}
-		if dresp.ClientToken != req.ClientToken { //不是该请求的回复.跳过
+		if dresp.MsgToken != req.MsgToken { //不是该请求的回复.跳过
 			return false
 		}
 		return true
@@ -126,8 +148,8 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		return nil, errors.RespParam.AddDetailf("SendAction get device resp not right:%+v", dresp.Data)
 	}
 	return &di.SendActionResp{
-		ClientToken:  dresp.ClientToken,
-		Status:       dresp.Status,
+		MsgToken:     dresp.MsgToken,
+		Msg:          dresp.Msg,
 		Code:         dresp.Code,
 		OutputParams: string(respParam),
 	}, nil

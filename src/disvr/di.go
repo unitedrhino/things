@@ -9,5 +9,5 @@ import (
 func main() {
 	defer utils.Recover(context.Background())
 	svcCtx := didirect.GetSvcCtx()
-	didirect.RunServer(svcCtx)
+	didirect.Run(svcCtx)
 }

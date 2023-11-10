@@ -2,7 +2,6 @@ package devicegrouplogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -90,7 +89,6 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 	err = l.GiDB.Insert(l.ctx, &relationDB.DmGroupInfo{
 		GroupID:   l.svcCtx.GroupID.GetSnowflakeId(),
 		ParentID:  in.ParentID,
-		ProjectID: ctxs.GetMetaProjectID(l.ctx),
 		ProductID: in.ProductID,
 		GroupName: in.GroupName,
 		Desc:      in.Desc,

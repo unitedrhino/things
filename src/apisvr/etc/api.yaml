@@ -46,8 +46,18 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
-RuleRpc:
+TimedJobRpc:
   Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+TimedSchedulerRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+RuleRpc:
+  Enable: false
   Mode: direct
 OssConf:
   OssType: minio

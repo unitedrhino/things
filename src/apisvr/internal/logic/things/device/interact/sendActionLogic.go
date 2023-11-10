@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/disvr/pb/di"
@@ -25,7 +26,7 @@ func NewSendActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendAc
 	}
 }
 
-//调用设备行为
+// 调用设备行为
 func (l *SendActionLogic) SendAction(req *types.DeviceInteractSendActionReq) (resp *types.DeviceInteractSendActionResp, err error) {
 	dmReq := &di.SendActionReq{
 		ProductID:   req.ProductID,
@@ -33,6 +34,7 @@ func (l *SendActionLogic) SendAction(req *types.DeviceInteractSendActionReq) (re
 		ActionID:    req.ActionID,
 		InputParams: req.InputParams,
 		IsAsync:     req.IsAsync,
+		Option:      logic.ToDiSendOption(req.Option),
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.SendAction(l.ctx, dmReq)
 	if err != nil {
@@ -41,9 +43,9 @@ func (l *SendActionLogic) SendAction(req *types.DeviceInteractSendActionReq) (re
 		return nil, er
 	}
 	return &types.DeviceInteractSendActionResp{
-		ClientToken:  dmResp.ClientToken,
+		MsgToken:     dmResp.MsgToken,
 		OutputParams: dmResp.OutputParams,
-		Status:       dmResp.Status,
+		Msg:          dmResp.Msg,
 		Code:         dmResp.Code,
 	}, nil
 }

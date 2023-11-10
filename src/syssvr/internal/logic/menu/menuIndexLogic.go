@@ -2,6 +2,7 @@ package menulogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/samber/lo"
@@ -37,7 +38,7 @@ func findMissingParentIds(menuInfos []*relationDB.SysMenuInfo) map[int64]bool {
 		ids[menu.ID] = true
 	}
 	for _, menu := range menuInfos {
-		if !ids[menu.ParentID] && menu.ParentID != 1 {
+		if !ids[menu.ParentID] && menu.ParentID != def.RootNode {
 			missingParentIds[menu.ParentID] = true
 		}
 	}

@@ -30,6 +30,7 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 	var (
 		menuInfo []*types.MenuData
 		userInfo *types.UserInfo
+		projects []*types.ProjectInfo
 		wait     errgroup.Group
 	)
 	wait.Go(func() error {
@@ -53,12 +54,23 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 		userInfo = UserInfoToApi(ui)
 		return nil
 	})
+	wait.Go(func() error {
+		pis, err := l.svcCtx.ProjectM.ProjectInfoIndex(l.ctx, &sys.ProjectInfoIndexReq{})
+		if err != nil {
+			return err
+		}
+		for _, pb := range pis.List {
+			projects = append(projects, system.ProjectInfoToApi(pb))
+		}
+		return nil
+	})
 	err = wait.Wait()
 	if err != nil {
 		return nil, err
 	}
 	return &types.UserResourceReadResp{
-		Menu: menuInfo,
-		Info: userInfo,
+		Menu:     menuInfo,
+		Info:     userInfo,
+		Projects: projects,
 	}, nil
 }

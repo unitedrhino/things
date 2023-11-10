@@ -2,6 +2,8 @@ package stores
 
 import (
 	"context"
+	"database/sql"
+	"github.com/dtm-labs/client/dtmgrpc"
 	"github.com/glebarez/sqlite"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -21,17 +23,21 @@ var (
 func InitConn(database conf.Database) {
 	var err error
 	once.Do(func() {
-		dbType = database.DBType
-		switch database.DBType {
-		case conf.Mysql:
-			commonConn, err = gorm.Open(mysql.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-		case conf.Pgsql:
-			commonConn, err = gorm.Open(postgres.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-		case conf.Sqlite:
-			commonConn, err = gorm.Open(sqlite.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-		}
+		commonConn, err = GetConn(database)
 		logx.Must(err)
 	})
+	return
+}
+func GetConn(database conf.Database) (conn *gorm.DB, err error) {
+	dbType = database.DBType
+	switch database.DBType {
+	case conf.Pgsql:
+		conn, err = gorm.Open(postgres.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
+	case conf.Sqlite:
+		conn, err = gorm.Open(sqlite.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
+	default:
+		conn, err = gorm.Open(mysql.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
+	}
 	return
 }
 
@@ -52,4 +58,20 @@ func GetCommonConn(in any) *gorm.DB {
 		return commonConn.Debug()
 	}
 	return commonConn.WithContext(in.(context.Context)).Debug()
+}
+
+// 屏障分布式事务
+func BarrierTransaction(ctx context.Context, fc func(tx *gorm.DB) error) error {
+	conn := GetCommonConn(ctx)
+	barrier, _ := dtmgrpc.BarrierFromGrpc(ctx)
+	if barrier == nil { //如果没有开启分布式事务,则直接走普通事务即可
+		return conn.Transaction(fc)
+	}
+	db, _ := conn.DB()
+	return barrier.CallWithDB(db, func(tx *sql.Tx) error {
+		gdb, _ := gorm.Open(mysql.New(mysql.Config{
+			Conn: tx,
+		}), &gorm.Config{})
+		return fc(gdb)
+	})
 }
