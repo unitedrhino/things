@@ -1,0 +1,394 @@
+syntax = "v1"
+
+info(
+    title: "ZLMediakit webhook"
+    desc: "ZLMediakit需要注册这些接口"
+    author: "airgens"
+    email: "wfjdemmye@163.com"
+    version: "v1"
+)
+
+@server(
+    group:things/vidmgr/hooks
+    prefix:/api/v1/things/vidmgr/hooks
+//    middleware: SetupWare, CheckTokenWare, TeardownWare
+)
+
+service api {
+    @doc "流量统计事件"
+    @handler onFlowReport
+    post /onFlowReport (HooksApiFlowReportReq) returns (HooksApiResp)
+
+    @doc "访问http文件服务器上hls之外的文件时触发"
+    @handler onHttpAccess
+    post /onHttpAccess (HooksApiHttpAccessReq) returns (HooksApiHttpAccessResp)
+
+    @doc "播放器鉴权事件"
+    @handler onPlay
+    post /onPlay (HooksApiPlayReq) returns (HooksApiResp)
+
+    @doc "rtsp/rtmp/rtp推流鉴权事件"
+    @handler onPublish
+    post /onPublish (HooksApiPublishReq) returns (HooksApiPublishResp)
+
+    @doc "录制mp4完成后通知事件；此事件对回复不敏感"
+    @handler onRecordMp4
+    post /onRecordMp4 (HooksApiRecordMp4Req) returns (HooksApiResp)
+
+    @doc "该rtsp流是否开启rtsp专用方式的鉴权事件，开启后才会触发on_rtsp_auth事件 需要指出的是rtsp也支持url参数鉴权，它支持两种方式鉴权"
+    @handler onRtspRealm
+    post /onRtspRealm (HooksApiRtspRealmReq) returns (HooksApiRtspRealmResp)
+
+    @doc "rtsp专用的鉴权事件，先触发on_rtsp_realm事件然后才会触发on_rtsp_auth事件"
+    @handler onRtspAuth
+    post /onRtspAuth (HooksApiPublishReq) returns (HooksApiPublishResp)
+
+    @doc "shell登录鉴权，ZLMediaKit提供简单的telnet调试方式"
+    @handler onShellLogin
+    post /onShellLogin (HooksApiShellLoginReq) returns (HooksApiResp)
+
+    @doc "rtsp/rtmp流注册或注销时触发此事件；此事件对回复不敏感"
+    @handler onStreamChanged
+    post /onStreamChanged (HooksApiStreamChangedRep) returns (HooksApiResp)
+
+    @doc "流无人观看时事件，用户可以通过此事件选择是否关闭无人看的流。 一个直播流注册上线了，如果一直没人观看也会触发一次无人观看事件，触发时的协议schema是随机的，看哪种协议最晚注册(一般为hls)。 后续从有人观看转为无人观看，触发协议schema为最后一名观看者使用何种协议。 目前mp4/hls录制不当做观看人数(mp4录制可以通过配置文件mp4_as_player控制，但是rtsp/rtmp/rtp转推算观看人数，也会触发该事件"
+    @handler onStreamNoneReader
+    post /onStreamNoneReader (HooksApiStreamNoneReaderReq) returns (HooksApiStreamNoneReaderResp)
+
+    @doc "流未找到事件，用户可以在此事件触发时，立即去拉流，这样可以实现按需拉流；此事件对回复不敏感"
+    @handler onStreamNotFound
+    post /onStreamNotFound (HooksApiStreamNotFoundReq) returns (HooksApiResp)
+
+    @doc "服务器启动事件，可以用于监听服务器崩溃重启；此事件对回复不敏感"
+    @handler onServerStarted
+    post /onServerStarted (HooksApiServerStartedReq) returns (HooksApiResp)
+
+//    @doc "服务器定时上报时间，上报间隔可配置，默认10s上报一次"
+//    @handler on_server_keepalive
+//    post /on_server_keepalive (HooksApiServerKeepaliveReq) returns (HooksApiResp)
+
+    @doc "服务器定时上报时间，上报间隔可配置，默认10s上报一次2"
+    @handler onServerKeepalive
+    post /onServerKeepalive (HooksApiServerKeepaliveReq) returns (HooksApiResp)
+
+    @doc "调用openRtpServer 接口，rtp server 长时间未收到数据,执行此web hook,对回复不敏感"
+    @handler onRtpServerTimeout
+    post /onRtpServerTimeout (HooksApiRtpServerTimeoutReq) returns (HooksApiResp)
+}
+
+type (
+    HooksApiResp struct {
+        Code int64 `json:"code"`            //状态码回复:0
+        Msg  string `json:"msg"`            //msg:success
+    }
+    HooksApiFlowReportReq struct{
+        MediaServerId string        `json:"mediaServerId"`
+        App string                  `json:"app"`
+        Duration int64              `json:"duration"`
+        Params string               `json:"params"`
+        Player bool                 `json:"player"`
+        Schema string               `json:"schema"`
+        Stream string               `json:"stream"`
+        TotalBytes int64            `json:"totalBytes"`
+        Vhost string                `json:"vhost"`
+        Ip string                   `json:"ip"`
+        Port int64                  `json:"port"`
+        Id string                   `json:"id"`
+    }
+    HooksApiHttpAccessReq struct{
+        MediaServerId string `json:"mediaServerId"`
+        HeaderAccept string `json:"header.Accept"`
+        HeaderAcceptEncod string `json:"header.Accept-Encoding"`
+        HeaderAcceptLanguage  string  `json:"header.Accept-Language"`
+        HeaderCacheControl string `json:"header.Cache-Control"`
+        HeaderConnection string  `json:"header.Connection"`
+        HeaderHost string `json:"header.Host"`
+        HeaderUpgradeInsecureRequests string `json:"header.Upgrade-Insecure-Requests"`
+        HeaderUserAgent string `json:"header.User-Agent"`
+        ID string `json:"id"`
+        IP string `json:"ip"`
+        IsDir bool `json:"is_dir"`
+        Params string `json:"params"`
+        Path string `json:"path"`
+        Port int64 `json:"port"`
+    }
+    HooksApiHttpAccessResp struct {
+        Code int64 `json:"code"`
+        Err  string `json:"err"`
+        Path string `json:"path"`
+        Second int64 `json:"second"`
+    }
+
+    HooksApiPlayReq struct{
+        MediaServerId string    `json:"mediaServerId"`
+        App string  `json:"app"`
+        Id string   `json:"id"`
+        Ip string   `json:"ip"`
+        Params string   `json:"params"`
+        Port int64  `json:"port"`
+        Schema string   `json:"schema"`
+        Stream string   `json:"stream"`
+        Vhost string    `json:"vhost"`
+    }
+    HooksApiPublishReq struct{
+        HooksApiPlayReq
+//        MustNoEncrypt   bool `json:"must_no_encrypt"`
+//        HooksApiPlayReq
+//        Realm string        `json:"realm"`
+//        UserName    string  `json:"user_name"`
+    }
+
+    HooksApiPublishResp struct {
+        Code int64  `json:"code"`
+        AddMuteAudio bool   `json:"add_mute_audio"`
+        ContinuePushMs int64    `json:"continue_push_ms"`
+        EnableAudio bool    `json:"enable_audio"`
+        EnableFmp4 bool    `json:"enable_fmp4"`
+        EnableHls   bool    `json:"enable_hls"`
+        EnableHlsFmp4 bool  `json:"enable_hls_fmp4"`
+        EnableMp4   bool    `json:"enable_mp4"`
+        EnableRtmp  bool    `json:"enable_rtmp"`
+        EnableRtsp  bool    `json:"enable_rtsp"`
+        EnableTs    bool    `json:"enable_ts"`
+        HlsSavePath string  `json:"hls_save_path"`
+        ModifyStamp bool    `json:"modify_stamp"`
+        Mp4AsPlayer bool    `json:"mp4_as_player"`
+        Mp4MaxSecond    int64    `json:"mp4_max_second"`
+        Mp4SavePath string  `json:"mp4_save_path"`
+        AutoClose   bool    `json:"auto_close"`
+        StreamReplace string    `json:"stream_replace"`
+    }
+
+    HooksApiRecordMp4Req struct{
+        MediaServerId string    `json:"mediaServerId"`
+        App string  `json:"app"`
+        FileName string `json:"file_name"`
+        FilePath string `json:"file_path"`
+        FileSize int64  `json:"file_size"`
+        Folder string   `json:"folder"`
+        StartTime int64 `json:"start_time"`
+        Stream string   `json:"stream"`
+        TimeLen float32 `json:"time_len"`
+        Url string  `json:"url"`
+        Vhost string    `json:"vhost"`
+    }
+
+    HooksApiRtspAuthReq struct{
+        MustNoEncrypt   bool `json:"must_no_encrypt"`
+        HooksApiPlayReq
+        Realm string        `json:"realm"`
+        UserName    string  `json:"user_name"`
+    }
+
+    HooksApiRtspAuthResp struct{
+        Code   int64 `json:"code"`
+        Encrypted   bool `json:"encrypted"`
+        Passwd  string  `json:"passwd"`
+    }
+
+    HooksApiRtspRealmReq struct{
+        HooksApiPlayReq
+    }
+
+    HooksApiRtspRealmResp struct{
+        Code int64 `json:"code"`
+        Realm string `json:"realm"`
+    }
+
+    HooksApiShellLoginReq struct{
+        MediaServerId string       `json:"mediaServerId"`
+        Id string   `json:"id"`
+        Ip string   `json:"ip"`
+        Passwd string   `json:"passwd"`
+        Port int64  `json:"port"`
+        User_name string    `json:"user_name"`
+    }
+
+    HooksApiStreamChangedReq struct{
+        MediaServerId string `json:"mediaServerId"`
+        App string  `json:"app"`
+        Regist  bool    `json:"regist"`
+        Schema string   `json:"schema"`
+        Stream string   `json:"stream"`
+        Vhost string    `json:"vhost"`
+    }
+    OriginSock struct {
+        Identifier string   `json:"identifier"`
+        LocalIp string `json:"local_ip"`
+        LocalPort int64 `json:"local_port""`
+        PeerIp string `json:"peer_ip"`
+        PeerPort int64 `json:"peer_port"`
+    }
+    StreamTrack struct {
+        Channels int64  `json:"channels"`
+        CodecId int64  `json:"codec_id"`
+        CodecIdName string    `json:"codec_id_name"`
+        CodecType   bool    `json:"codec_type"`
+        Ready bool      `json:"ready"`
+        Sample_bit int64    `json:"sample_bit"`
+        Sample_rate int64       `json:"sample_rate"`
+        Fps bool      `json:"fps"`
+        Height  int64 `json:"height"`
+        Width   int64 `json:"width"`
+    }
+
+    HooksApiStreamChangedRep struct{
+    //Register Post data
+        MediaServerId string `json:"mediaServerId"`
+        App string  `json:"app"`
+        Regist  bool    `json:"regist"`
+        Stream string   `json:"stream"`
+        Vhost string    `json:"vhost"`
+        AliveSecond int64 `json:"aliveSecond"`
+        BytesSpeed int64 `json:"bytesSpeed"`
+        CreateStamp int64 `json:"CreateStamp"`
+        OriginSock OriginSock  `json:"originSock"`
+        OriginType int64    `json:"originType"`
+        OriginTypeStr string    `json:"originTypeStr"`
+        OriginUrl string    `json:"originUrl"`
+        ReaderCount int64 `json:"readerCount"`
+        Schema string   `json:"schema"`
+        TotalReaderCount    int64 `json:"totalReaderCount"`
+        Tracks  []StreamTrack   `json:"tracks"`
+
+    //unregister post data
+
+    }
+
+    HooksApiStreamNoneReaderReq struct{
+            MediaServerId string `json:"mediaServerId"`
+            App string  `json:"app"`
+            Schema string   `json:"schema"`
+            Stream string   `json:"stream"`
+            Vhost string    `json:"vhost"`
+    }
+    HooksApiStreamNoneReaderResp struct {
+        Close   bool `json:"close"`
+        Code    bool    `json:"code"`
+    }
+    
+    HooksApiStreamNotFoundReq struct{
+        HooksApiPlayReq
+    }
+
+    ServerConfig struct{
+        ApiDebug string             `json:"api.apiDebug"`
+        ApiSecret string            `json:"api.secret"`
+        FfmpegBin  string           `json:"ffmpeg.bin"`
+        FfmpegCmd  string           `json:"ffmpeg.cmd"`
+        FfmpegLog string            `json:"ffmpeg.log"`
+        GenMediaServerId              string   `json:"general.mediaServerId"`
+        GenMuteAudio              string   `json:"general.addMuteAudio"`
+        GenEnableVhost              string   `json:"general.enableVhost"`
+        GenFlowThreadold            string   `json:"general.flowThreshold"`
+        GenMaxStreamWaitMs          string   `json:"general.maxStreamWaitMS"`
+        GenPublishToHls             string   `json:"general.publishToHls"`
+        GenPublishToMP4             string   `json:"general.publishToMP4"`
+        GenPublishToRtxp            string   `json:"general.publishToRtxp"`
+        GenResetWhenRePlay          string   `json:"general.resetWhenRePlay"`
+        GenStreamNoneReaderDelayMs  string   `json:"general.streamNoneReaderDelayMS"`
+        GenUltraLowDelay            string   `json:"general.ultraLowDelay"`
+
+        HlsFileBufSize string           `json:"hls.fileBufSize"`
+        HlsFilePath  string             `json:"hls.filePath"`
+        HlsSegDur    string             `json:"hls.segDur"`
+        HlsSegNum    string             `json:"hls.segNum"`
+        HlsSegRetain string             `json:"hls.segRetain"`
+
+        HookAcceFileExceptHls string        `json:"hook.access_file_except_hls"`
+        HookAdminParams string      `json:"hook.admin_params"`
+        HookEanble string           `json:"hook.enable"`
+        HookOnFlowReport string     `json:"hook.on_flow_report"`
+        HookOnHttpAccess string     `json:"hook.on_http_access"`
+        HookOnPlay string           `json:"hook.on_play"`
+        HookOnPublish string        `json:"hook.on_publish"`
+        HookOnRecordMp4 string      `json:"hook.on_record_mp4"`
+        HookOnRtspAuth string       `json:"hook.on_rtsp_auth"`
+        HookOnRtspRealm string      `json:"hook.on_rtsp_realm"`
+        HookOnShellLogin string     `json:"hook.on_shell_login"`
+        HookOnStreamChanged string  `json:"hook.on_stream_changed"`
+        HookOnStreamNoneReader string       `json:"hook.on_stream_none_reader"`
+        HookOnStreamNotFound string         `json:"hook.on_stream_not_found"`
+        HookTimeoutSec string       `json:"hook.timeoutSec"`
+
+        HttpCharSet string          `json:"http.charSet"`
+        HttpKeepAliveSecond string  `json:"http.keepAliveSecond"`
+        HttpMaxReqCount string      `json:"http.maxReqCount"`
+        HttpMaxReqSize string       `json:"http.maxReqSize"`
+        HttpNotFound string         `json:"http.notFound"`
+        HttpPort string             `json:"http.port"`
+        HttpRootPath string         `json:"http.rootPath"`
+        HttpSendBufSize string      `json:"http.sendBufSize"`
+        HttpSslport string          `json:"http.sslport"`
+
+        MulticastAddrMax string     `json:"multicast.addrMax"`
+        MulticastAddrMin string     `json:"multicast.addrMin"`
+        MulticastUdpTTL string      `json:"multicast.udpTTL"`
+
+        RecordAppName string        `json:"record.appName"`
+        RecordFastStart string        `json:"record.fastStart"`
+        RecordFileBufSize string        `json:"record.fileBufSize"`
+        RecordFilePath string       `json:"record.filePath"`
+        RecordFileSecond string     `json:"record.fileSecond"`
+        RecordFileRepeat string     `json:"record.fileRepeat"`
+        RecordSampleMs string       `json:"record.sampleMS"`
+
+
+        RtmpHandshakeSecond string  `json:"rtmp.handshakeSecond"`
+        RtmpKeepAliveSedond string  `json:"rtmp.keepAliveSecond"`
+        RtmpModifyStamp string      `json:"rtmp.modifyStamp"`
+        RtmpPort string             `json:"rtmp.port"`
+
+        RtpAutoMtuSize string       `json:"rtp.audioMtuSize"`
+        RtpClearCount string        `json:"rtp.clearCount"`
+        RtpCycleMs string           `json:"rtp.cycleMS"`
+        RtpMaxRtpCount string       `json:"rtp.maxRtpCount"`
+        RtpVideoMtuSize string      `json:"rtp.videoMtuSize"`
+
+        RtspAuthBasic string        `json:"rtsp.authBasic"`
+        RtspDirectProxy string      `json:"rtsp.directProxy"`
+        RtspHandshakeSecond string  `json:"rtsp.handshakeSecond"`
+        RtspKeepAliveSecond string  `json:"rtsp.keepAliveSecond"`
+        RtspModifyStamp string      `json:"rtsp.modifyStamp"`
+        RtspPort string             `json:"rtsp.port"`
+        RtspSslpPort string         `json:"rtsp.sslport"`
+
+        ShellMaxReqSize string      `json:"shell.maxReqSize"`
+        ShellPort string            `json:"shell.port"`
+    }
+    HooksApiServerStartedReq struct{
+        ServerConfig
+    }
+
+    Statistic struct {
+        Buffer  int `json:"Buffer"`
+        BufferLikeString int `json:"BufferLikeString"`
+        BufferList int  `json:"BufferList"`
+        BufferRaw int   `json:"BufferRaw"`
+        Frame int   `json:"Frame"`
+        FrameImp int    `json:"FrameImp"`
+        MediaSource int `json:"MediaSource"`
+        MultiMediaSourceMuxer int   `json:"MultiMediaSourceMuxer"`
+        RtmpPacket  int `json:"RtmpPacket"`
+        RtpPacket   int `json:"RtpPacket"`
+        Socket int  `json:"Socket"`
+        TcpClient int   `json:"TcpClient"`
+        TcpServer int   `json:"TcpServer"`
+        TcpSession int  `json:"TcpSession"`
+        UdpServer int   `json:"UdpServer"`
+        UdpSession  int    `json:"UdpSession"`
+    }
+    HooksApiServerKeepaliveReq struct{
+        data Statistic `json:"data"`
+        MediaServerId string `json:"mediaServerId"`
+    }
+    HooksApiRtpServerTimeoutReq struct{
+        LocalPort int `json:"local_port"`
+        ReUsePort bool  `json:"re_use_port"`
+        Ssrc  int   `json:"ssrc"`
+        StreamId string `json:"stream_id"`
+        TcpMode  int    `json:"tcp_mode"`
+        MediaServerId string `json:"mediaServerId"`
+    }
+)
+

@@ -1,0 +1,540 @@
+syntax = "v1"
+
+info(
+    title: "ZLMediakit webapi"
+    desc: "ZLMediakit proxy"
+    author: "airgens"
+    email: "wfjdemmye@163.com"
+    version: "v1"
+)
+
+@server(
+    group:things/vidmgr/indexapi
+    prefix:/api/v1/things/vidmgr/indexapi
+    //    middleware: SetupWare, CheckTokenWare, TeardownWare
+)
+
+service api {
+    @doc "获取API列表"
+    @handler getApiList
+    post /getApiList (IndexApiReq) returns (IndexApiListResp)
+
+    @doc "获取各epoll(或select)线程负载以及延时"
+    @handler getThreadsLoad
+    post /getThreadsLoad (IndexApiReq) returns (IndexApiThreadLoadResp)
+
+    @doc "获取各后台epoll(或select)线程负载以及延时"
+    @handler getWorkThreadsLoad
+    post /getWorkThreadsLoad (IndexApiReq) returns (IndexApiWorkThreadLoadResp)
+
+    @doc "获取服务器配置"
+    @handler getServerConfig
+    post /getServerConfig (IndexApiReq) returns (IndexApiServerConfigResp)
+
+    @doc "设置服务器配置"
+    @handler setServerConfig
+    post /setServerConfig (IndexApiReq) returns (IndexApiSetServerConfigResp)
+
+    @doc "重启服务器,只有Daemon方式才能重启，否则是直接关闭！"
+    @handler restartServer
+    post /restartServer (IndexApiReq) returns (IndexApiRestartServerResp)
+
+    @doc "获取流列表，可选筛选参数"
+    @handler getMediaList
+    post /getMediaList (IndexApiReq) returns (IndexApiMediaListResp)
+
+    @doc "关闭流(目前所有类型的流都支持关闭)"
+    @handler closeStream
+    post /closeStream (IndexApiReq) returns (IndexApiCloseStreamResp)
+
+    @doc "关闭流(目前所有类型的流都支持关闭)"
+    @handler closeStreams
+    post /closeStreams (IndexApiReq) returns (IndexApiCloseStreamsResp)
+
+    @doc "获取所有TcpSession列表(获取所有tcp客户端相关信息)"
+    @handler getAllSession
+    post /getAllSession (IndexApiReq) returns (IndexApiAllSessionResp)
+
+    @doc "断开tcp连接，比如说可以断开rtsp、rtmp播放器等"
+    @handler kickSession
+    post /kick_session (IndexApiReq) returns (IndexApiKickSessionResp)
+
+    @doc "断开tcp连接，比如说可以断开rtsp、rtmp播放器等"
+    @handler kickSessions
+    post /kickSessions (IndexApiReq) returns (IndexApiKickSessionsResp)
+
+    @doc "动态添加rtsp/rtmp/hls/http-ts/http-flv拉流代理(只支持H264/H265/aac/G711/opus负载)"
+    @handler addStreamProxy
+    post /addStreamProxy (IndexApiReq) returns (IndexApiAddStreamProxyResp)
+
+    @doc "关闭拉流代理(流注册成功后，也可以使用close_streams接口替代) "
+    @handler delStreamProxy
+    post /delStreamProxy (IndexApiReq) returns (IndexApiDelStreamProxyResp)
+
+    @doc "通过fork FFmpeg进程的方式拉流代理，支持任意协议"
+    @handler addFFmpegSource
+    post /addFFmpegSource (IndexApiReq) returns (IndexApiAddFFmpegSourceResp)
+
+    @doc "关闭ffmpeg拉流代理(流注册成功后，也可以使用close_streams接口替代)"
+    @handler delFFmpegSource
+    post /delFFmpegSource (IndexApiReq) returns (IndexApiDelFFmpegSourceResp)
+
+    @doc "判断直播流是否在线(已过期，请使用getMediaList接口替代) "
+    @handler isMediaOnline
+    post /isMediaOnline (IndexApiReq) returns (IndexApiIsMediaOnlineResp)
+
+    @doc "获取流相关信息(已过期，请使用getMediaList接口替代)"
+    @handler getMediaInfo
+    post /getMediaInfo (IndexApiReq) returns (IndexApiMediaInfoResp)
+
+    @doc "获取rtp代理时的某路ssrc rtp信息"
+    @handler getRtpInfo
+    post /getRtpInfo (IndexApiReq) returns (IndexApiRtpInfoResp)
+
+    @doc "搜索文件系统，获取流对应的录像文件列表或日期文件夹列表"
+    @handler getMp4RecordFile
+    post /getMp4RecordFile (IndexApiReq) returns (IndexApiMp4RecordFileResp)
+
+    @doc "开始录制hls或MP4"
+    @handler startRecord
+    post /startRecord (IndexApiReq) returns (IndexApiStartRecordResp)
+
+    @doc "停止录制流"
+    @handler stopRecord
+    post /stopRecord (IndexApiReq) returns (IndexApiStopRecordResp)
+
+    @doc "获取流录制状态"
+    @handler isRecording
+    post /isRecording (IndexApiReq) returns (IndexApiIsRecordingResp)
+
+    @doc "获取截图或生成实时截图并返回"
+    @handler getSnap
+    post /getSnap (IndexApiReq) returns (IndexApiSnapResp)
+
+    @doc "创建GB28181 RTP接收端口，如果该端口接收数据超时，则会自动被回收(不用调用closeRtpServer接口)"
+    @handler openRtpServer
+    post /openRtpServer (IndexApiReq) returns (IndexApiOpenRtpServerResp)
+
+    @doc "关闭GB28181 RTP接收端口"
+    @handler closeRtpServer
+    post /closeRtpServer (IndexApiReq) returns (IndexApiCloseRtpServerResp)
+
+    @doc "获取openRtpServer接口创建的所有RTP服务器"
+    @handler listRtpServer
+    post /listRtpServer (IndexApiReq) returns (IndexApiListRtpServerResp)
+
+    @doc "作为GB28181客户端，启动ps-rtp推流，支持rtp/udp方式；该接口支持rtsp/rtmp等协议转ps-rtp推流。第一次推流失败会直接返回错误，成功一次后，后续失败也将无限重试。"
+    @handler startSendRtp
+    post /startSendRtp (IndexApiReq) returns (IndexApiStartSendRtpResp)
+
+    @doc "作为GB28181 Passive TCP服务器 "
+    @handler startSendRtpPassive
+    post /startSendRtpPassive (IndexApiReq) returns (IndexApiStartSendRtpPassiveResp)
+
+    @doc "停止GB28181 ps-rtp推流"
+    @handler stopSendRtp
+    post /stopSendRtp (IndexApiReq) returns (IndexApiStopSendRtpResp)
+
+    @doc "获取主要对象个数统计，主要用于分析内存性能"
+    @handler getStatistic
+    post /getStatistic (IndexApiReq) returns (IndexApiStatisticResp)
+
+    @doc "添加rtsp/rtmp主动推流(把本服务器的直播流推送到其他服务器去)"
+    @handler addStreamPusherProxy
+    post /addStreamPusherProxy (IndexApiReq) returns (IndexApiAddStreamPusherProxyResp)
+
+    @doc "关闭推流(可以使用close_streams接口关闭源直播流也可以停止推流)"
+    @handler delStreamPusherProxy
+    post /delStreamPusherProxy (IndexApiReq) returns (IndexApiDelStreamProxyResp)
+
+    @doc "获取版本信息，如分支，commit id, 编译时间"
+    @handler version
+    post /version (IndexApiReq) returns (IndexApiVersionResp)
+
+    @doc "获取某个流观看者列表"
+    @handler getMediaPlayerList
+    post /getMediaPlayerList (IndexApiReq) returns (IndexApiMediaPlayerListResp)
+}
+
+type (
+    //Resquest  默认请求
+    IndexApiReq struct {
+        VidmgrID string     `json:"vidmgrID"`
+        Data string         `json:"data"`
+    }
+    //Respond   0/index/api/getApiList
+    //Resquest  默认请求
+    IndexApiListResp struct {
+        Code int64    `json:"code"`
+        Data []string `json:"data"`
+    }
+    //Respond   1/index/api/getThreadsLoad
+    //Resquest  默认请求
+    IndexApiThreadLoad struct {
+        Delay int64 `json:"delay"`
+        Load int64 `json:"load"`
+    }
+    IndexApiThreadLoadResp struct {
+        Code int64                          `json:"code"`
+        Data []IndexApiThreadLoad           `json:"data"`
+    }
+    //Respond   2/index/api/getWorkThreadsLoad
+    //Resquest 默认请求
+    IndexApiWorkThreadLoadResp struct {
+        Code int64                          `json:"code"`
+        Data []IndexApiThreadLoad           `json:"data"`
+    }
+    IndexApiServerConfig struct{
+        ApiDebug string             `json:"api.apiDebug"`
+        ApiSecret string            `json:"api.secret"`
+        FfmpegBin  string           `json:"ffmpeg.bin"`
+        FfmpegCmd  string           `json:"ffmpeg.cmd"`
+        FfmpegLog string            `json:"ffmpeg.log"`
+        GenEnableVhost string       `json:"general.enableVhost"`
+        GenFlowThreadold string     `json:"general.flowThreshold"`
+        GenMaxStreamWaitMs string           `json:"general.maxStreamWaitMS"`
+        GenStreamNoneReaderDelayMs string   `json:"general.streamNoneReaderDelayMS"`
+        HlsFileBufSize string       `json:"hls.fileBufSize"`
+        HlsFilePath string          `json:"hls.filePath"`
+        HlsSegDur   string          `json:"hls.segDur"`
+        HlsSegNum string            `json:"hls.segNum"`
+        HookAcceFileExceptHls string        `json:"hook.access_file_except_hls"`
+        HookAdminParams string      `json:"hook.admin_params"`
+        HookEanble string           `json:"hook.enable"`
+        HookOnFlowReport string     `json:"hook.on_flow_report"`
+        HookOnHttpAccess string     `json:"hook.on_http_access"`
+        HookOnPlay string           `json:"hook.on_play"`
+        HookOnPublish string        `json:"hook.on_publish"`
+        HookOnRecordMp4 string      `json:"hook.on_record_mp4"`
+        HookOnRtspAuth string       `json:"hook.on_rtsp_auth"`
+        HookOnRtspRealm string      `json:"hook.on_rtsp_realm"`
+        HookOnShellLogin string     `json:"hook.on_shell_login"`
+        HookOnStreamChanged string  `json:"hook.on_stream_changed"`
+        HookOnStreamNoneReader string       `json:"hook.on_stream_none_reader"`
+        HookOnStreamNotFound string         `json:"hook.on_stream_not_found"`
+        HookTimeoutSec string       `json:"hook.timeoutSec"`
+        HttpCharSet string          `json:"http.charSet"`
+        HttpKeepAliveSecond string  `json:"http.keepAliveSecond"`
+        HttpMaxReqCount string      `json:"http.maxReqCount"`
+        HttpMaxReqSize string       `json:"http.maxReqSize"`
+        HttpNotFound string         `json:"http.notFound"`
+        HttpPort string             `json:"http.port"`
+        HttpRootPath string         `json:"http.rootPath"`
+        HttpSendBufSize string      `json:"http.sendBufSize"`
+        HttpSslport string          `json:"http.sslport"`
+        MulticastAddrMax string     `json:"multicast.addrMax"`
+        MulticastAddrMin string     `json:"multicast.addrMin"`
+        MulticastUdpTTL string      `json:"multicast.udpTTL"`
+        RecordAppName string        `json:"record.appName"`
+        RecordFilePath string       `json:"record.filePath"`
+        RecordFileSecond string     `json:"record.fileSecond"`
+        RecordSampleMs string       `json:"record.sampleMS"`
+        RtmpHandshakeSecond string  `json:"rtmp.handshakeSecond"`
+        RtmpKeepAliveSedond string  `json:"rtmp.keepAliveSecond"`
+        RtmpModifyStamp string      `json:"rtmp.modifyStamp"`
+        RtmpPort string             `json:"rtmp.port"`
+        RtpAutoMtuSize string       `json:"rtp.audioMtuSize"`
+        RtpClearCount string        `json:"rtp.clearCount"`
+        RtpCycleMs string           `json:"rtp.cycleMS"`
+        RtpMaxRtpCount string       `json:"rtp.maxRtpCount"`
+        RtpVideoMtuSize string      `json:"rtp.videoMtuSize"`
+        RtspAuthBasic string        `json:"rtsp.authBasic"`
+        RtspHandshakeSecond string  `json:"rtsp.handshakeSecond"`
+        RtspKeepAliveSecond string  `json:"rtsp.keepAliveSecond"`
+        RtspPort string             `json:"rtsp.port"`
+        RtspSslpPort string         `json:"rtsp.sslport"`
+        ShellMaxReqSize string      `json:"shell.maxReqSize"`
+        ShellPort string            `json:"shell.port"`
+    }
+    //Respond   3/index/api/getServerConfig
+    IndexApiServerConfigResp struct {
+        Code int64                              `json:"code"`
+        Data []IndexApiServerConfig             `json:"data"`
+    }
+    //Respond   4/index/api/setServerConfig
+    IndexApiSetServerConfigResp struct {
+        Changed int64          `json:"changed"`
+        Code int64             `json:"code"`
+    }
+    //Request
+
+    //Respond   5/index/api/restartServer
+    //Resquest 默认请求
+    IndexApiRestartServerResp struct {
+        Code int64              `json:"code"`
+        Msg int64               `json:"msg"`
+    }
+
+    IndexApiOriginSock struct {
+        Identifier string   `json:"identifier"`
+        LocalIp string `json:"local_ip"`
+        LocalPort int64 `json:"local_port""`
+        PeerIp string `json:"peer_ip"`
+        PeerPort int64 `json:"peer_port"`
+    }
+
+    IndexApiStreamTrack struct {
+        Channels int64  `json:"channels"`
+        CodecId int64  `json:"codec_id"`
+        CodecIdName string    `json:"codec_id_name"`
+        CodecType   bool    `json:"codec_type"`
+        Ready bool      `json:"ready"`
+        Sample_bit int64    `json:"sample_bit"`
+        Sample_rate int64       `json:"sample_rate"`
+        Fps bool      `json:"fps"`
+        Height  int64 `json:"height"`
+        Width   int64 `json:"width"`
+    }
+
+    IndexApiMediaList struct {
+        App string  `json:"app"`
+        ReaderCount int64   `json:"readerCount"`
+        TotalReaderCount int64  `json:"totalReaderCount"`
+        Schema string       `json:"schema"`
+        Stream string       `json:"stream"`
+        OriginSock IndexApiOriginSock  `json:"originSock"`
+        OriginType int64    `json:"originType"`
+        OriginTypeStr string    `json:"originTypeStr"`
+        OriginUrl string    `json:"originUrl"`
+        CreateStamp string  `json:"createStamp"`
+        AliveSecond string      `json:"aliveSecond"`
+        BytesSpeed int64    `json:"bytesSpeed"`
+        Tracks []IndexApiStreamTrack    `json:"tracks"`
+        Vhost   string  `json:"vhost"`
+    }
+    //Respond   6/index/api/getMediaList
+    IndexApiMediaListResp struct {
+        Code int64                              `json:"code"`
+        Data []IndexApiMediaList                `json:"data"`
+    }
+
+    //Respond   7/index/api/close_stream(已过期，请使用close_streams接口替换)
+    IndexApiCloseStreamResp struct {
+        Code int64                              `json:"code"`
+        Result  int64 `json:"result"`
+        Msg string  `json:"msg"`
+    }
+
+    //Respond   8/index/api/close_streams
+    IndexApiCloseStreamsResp struct {
+        Code        int64       `json:"code"`
+        CountHit    int64       `json:"count_hit"`
+        CountClosed int64       `json:"count_closed"`
+    }
+
+    IndexApiAllSession struct {
+        Id string `json:"id"`
+        LocalIp string `json:"local_ip"`
+        LocalPort int64 `json:"local_port""`
+        PeerIp string `json:"peer_ip"`
+        PeerPort int64 `json:"peer_port"`
+        Typeid string `json:"typeid"`
+    }
+    //Respond   9/index/api/getAllSession
+    IndexApiAllSessionResp struct {
+        Code int64                      `json:"code"`
+        Data []IndexApiAllSession `json:"data"`
+    }
+
+    //Resond    10/index/api/kick_session
+    IndexApiKickSessionResp struct {
+        Code int64          `json:"code"`
+        Msg  string         `json:"msg"`
+    }
+    
+    //Respond    11/index/api/kick_sessions
+    IndexApiKickSessionsResp struct {
+        Code int64          `json:"code"`
+        CountHit    int64   `json:"count_hit"`
+        Msg  string         `json:"msg"`
+    }
+
+    IndexApiAddStreamKey struct{
+        Key string  `json:"key"`
+    }
+    //Respond   12/index/api/addStreamProxy
+    IndexApiAddStreamProxyResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamKey `json:"data"`
+    }
+
+    //Respond   13/index/api/delStreamProxy(流注册成功后，也可以使用close_streams接口替代)
+    IndexApiAddStreamFlag struct{
+        Flag bool  `json:"flag"`
+    }
+    IndexApiDelStreamProxyResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamFlag `json:"data"`
+    }
+
+    //Respond   14/index/api/addFFmpegSource 通过fork FFmpeg进程的方式拉流代理，支持任意协议
+    IndexApiAddFFmpegSourceResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamKey `json:"data"`
+    }
+    //Respond   15/index/api/delFFmpegSource(流注册成功后，也可以使用close_streams接口替代)
+    IndexApiDelFFmpegSourceResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamFlag `json:"data"`
+    }
+
+    //Respond   16/index/api/isMediaOnline(已过期，请使用getMediaList接口替代)
+    IndexApiIsMediaOnlineResp struct {
+        Code    int64 `json:"code"`
+        Online bool   `json:"online"`
+    }
+
+    //Respond   17/index/api/getMediaInfo(已过期，请使用getMediaList接口替代)
+    IndexApiMediaInfoResp struct {
+        Code    int64 `json:"code"`
+        Online bool   `json:"online"`
+        ReaderCount int64 `json:"readerCount"`
+        TotalReaderCount    int64 `json:"totalReaderCount"`
+        Tracks  []IndexApiStreamTrack `json:"tracks"`
+    }
+
+
+    //Respond   18/index/api/getRtpInfo
+    IndexApiRtpInfoResp struct {
+        Code    int64 `json:"code"`
+        Exist   bool    `json:"exist"`
+        PeerIp string `json:"peer_ip"`
+        PeerPort int64 `json:"peer_port"`
+        LocalIp string `json:"local_ip"`
+        LocalPort int64 `json:"local_port"`
+    }
+
+    //Respond   19/index/api/getMp4RecordFile
+    IndexApiRecord struct {
+        Paths       []string    `json:"paths"`
+        RootPath    string  `json:"rootPath"`
+    }
+    IndexApiMp4RecordFileResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiRecord  `json:"data"`
+    }
+
+    //Respond   20/index/api/startRecord
+    IndexApiStartRecordResp struct {
+        Code int64 `json:"code"`
+        Result  bool    `json:"result"`
+    }
+
+    //Respond   21/index/api/stopRecord
+    IndexApiStopRecordResp struct {
+        Code int64 `json:"code"`
+        Result  bool    `json:"result"`
+    }
+
+    //Respond   22/index/api/isRecording
+    IndexApiIsRecordingResp struct {
+        Code int64 `json:"code"`
+        Status  bool    `json:"status"`
+    }
+
+    //Respond   23/index/api/getSnap
+    IndexApiSnapResp struct {
+        Data []byte `json:"Data"`
+    }
+    
+    //Respond   24/index/api/openRtpServer 
+    IndexApiOpenRtpServerResp struct {
+        Code int64 `json:"code"`
+        Port    int64 `json:"port"`
+    }
+    
+    //Respond   25/index/api/closeRtpServer
+    IndexApiCloseRtpServerResp struct {
+        Code int64 `json:"code"`
+        Hit    int64 `json:"hit"`
+    }
+
+    IndexApiRtp struct {
+        Port    int64 `json:"port"`
+        StreamId    string  `json:"stream_id"`
+    }
+    //Respond   26/index/api/listRtpServer
+    IndexApiListRtpServerResp struct {
+        Code    int64 `json:"code"`
+        Data    []IndexApiRtp  `json:"data"`
+    }
+
+    //Respond   27/index/api/startSendRtp
+    IndexApiStartSendRtpResp struct {
+        Code    int64 `json:"code"`
+        LocalProt    int64  `json:"local_port"`
+    }
+
+    //Respond   27.1/index/api/startSendRtpPassive
+    IndexApiStartSendRtpPassiveResp struct {
+        Code    int64 `json:"code"`
+        LocalProt    int64  `json:"local_port"`
+    }
+
+    //Respond   28/index/api/stopSendRtp
+    IndexApiStopSendRtpResp struct {
+        Code    int64 `json:"code"`
+    }
+
+    IndexApiStatistic struct {
+        Buffer  int `json:"Buffer"`
+        BufferLikeString int `json:"BufferLikeString"`
+        BufferList int  `json:"BufferList"`
+        BufferRaw int   `json:"BufferRaw"`
+        Frame int   `json:"Frame"`
+        FrameImp int    `json:"FrameImp"`
+        MediaSource int `json:"MediaSource"`
+        MultiMediaSourceMuxer int   `json:"MultiMediaSourceMuxer"`
+        RtmpPacket  int `json:"RtmpPacket"`
+        RtpPacket   int `json:"RtpPacket"`
+        Socket int  `json:"Socket"`
+        TcpClient int   `json:"TcpClient"`
+        TcpServer int   `json:"TcpServer"`
+        TcpSession int  `json:"TcpSession"`
+        UdpServer int   `json:"UdpServer"`
+        UdpSession  int    `json:"UdpSession"`
+    }
+
+    //Respond   29/index/api/getStatistic
+    IndexApiStatisticResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiStatistic   `json:"data"`
+    }
+
+    //Respond   30/index/api/addStreamPusherProxy
+    IndexApiAddStreamPusherProxyResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamKey   `json:"data"`
+    }
+
+    //Respond   31/index/api/delStreamPusherProxy(可以使用close_streams接口关闭源直播流也可以停止推流)
+    IndexDelStreamPusherProxyResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamFlag   `json:"data"`
+    }
+
+    //Respond   32/index/api/version(获取版本信息)
+    IndexApiVersion struct {
+        branchName string `json:"branchName"`
+        buildTime string  `json:"buildTime"`
+        commitHash string `json:"commitHash"`
+    }
+    IndexApiVersionResp struct {
+        Code int64                     `json:"code"`
+        Data IndexApiVersion           `json:"data"`
+    }
+
+    IndexApiMediaPlayer struct {
+        IndexApiOriginSock
+        Typeid  string  `json:"typeid"`
+    }
+    //Respond   33/index/api/getMediaPlayerList
+    IndexApiMediaPlayerListResp struct {
+        Code int64                     `json:"code"`
+        Data IndexApiMediaPlayer           `json:"data"`
+    }
+
+    IndexApiResp struct {
+        data string         `json:"data"`
+    }
+)

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/carlmjohnson/versioninfo"
+	"math/big"
 	"net"
 	"net/http"
 	"regexp"
@@ -198,4 +199,16 @@ func MethodToNum(methond string) string {
 func PrintVersion() {
 	fmt.Printf("gitInfo: lastCommitTime:%v,lastCommitHash:%v\n",
 		versioninfo.LastCommit, versioninfo.Revision)
+}
+
+// IP_int64转stringx.x.x.x
+func InetNtoA(ip int64) string {
+	return fmt.Sprintf("%d.%d.%d.%d", byte(ip>>24), byte(ip>>16), byte(ip>>8), byte(ip))
+}
+
+// string转int64   x.x.x.x->int64
+func InetAtoN(ip string) int64 {
+	ret := big.NewInt(0)
+	ret.SetBytes(net.ParseIP(ip).To4())
+	return ret.Int64()
 }

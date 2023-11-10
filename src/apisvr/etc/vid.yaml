@@ -1,0 +1,22 @@
+Name: vid.rpc
+ListenOn: 0.0.0.0:9098
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: vid.rpc
+CpuThreshold: 0
+Timeout: 1000000
+Database:
+  DBType: mysql
+  DSN: root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+Log:
+  Encoding: plain
+Telemetry:
+    Name: dm.rpc
+    Endpoint: http://127.0.0.1:14268/api/traces
+    Sampler: 1.0
+    Batcher: jaeger
