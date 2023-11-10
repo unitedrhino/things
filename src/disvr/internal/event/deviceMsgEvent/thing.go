@@ -55,10 +55,10 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 		l.Errorf("%s.DeviceResp err:%v, msg:%v", utils.FuncName(), err, msg)
 	}
 	resp := &deviceMsg.CommonMsg{
-		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
-		ClientToken: l.dreq.ClientToken,
-		Timestamp:   time.Now().UnixMilli(),
-		Data:        data,
+		Method:    deviceMsg.GetRespMethod(l.dreq.Method),
+		MsgToken:  l.dreq.MsgToken,
+		Timestamp: time.Now().UnixMilli(),
+		Data:      data,
 	}
 	return &deviceMsg.PublishMsg{
 		Handle:     msg.Handle,
@@ -215,7 +215,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 	switch l.dreq.Method { //操作方法
 	case deviceMsg.GetReportReply:
 		if l.dreq.Code != errors.OK.Code { //如果不成功,则记录日志即可
-			return nil, errors.DeviceError.AddMsg(l.dreq.Status).AddDetail(msg.Payload)
+			return nil, errors.DeviceError.AddMsg(l.dreq.Msg).AddDetail(msg.Payload)
 		}
 		if param, ok := l.dreq.Data.(map[string]any); ok {
 			l.dreq.Params = param //新版通过data传递
@@ -289,7 +289,7 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 	timeStamp := l.dreq.GetTimeStamp(msg.Timestamp)
 	switch l.dreq.Method {
 	case deviceMsg.Action: //设备请求云端
-		err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg, l.dreq.ClientToken)
+		err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg, l.dreq.MsgToken)
 		if err != nil {
 			return nil, err
 		}
@@ -297,9 +297,9 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 			l.Infof("DeviceThingActionReport.Action device:%v,reqType:%v,req:%v", core, reqType, l.dreq)
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
-				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, ClientToken: l.dreq.ClientToken,
+				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, MsgToken: l.dreq.MsgToken,
 				ActionID: l.dreq.ActionID, Params: l.dreq.Params, Dir: schema.ActionDirUp,
-				Code: l.dreq.Code, Status: l.dreq.Status,
+				Code: l.dreq.Code, Status: l.dreq.Msg,
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport.Action  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
@@ -315,12 +315,12 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 
 		req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg.Handle, msg.Type,
 			devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
-			resp.ClientToken)
+			resp.MsgToken)
 		if req == nil || err != nil {
 			return nil, err
 		}
 
-		err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.ClientToken)
+		err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.MsgToken)
 		if err != nil {
 			return nil, err
 		}
@@ -329,8 +329,8 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 			param, _ := resp.Data.(map[string]any)
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
-				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, ClientToken: resp.ClientToken,
-				ActionID: resp.ActionID, Params: param, Dir: schema.ActionDirUp, Code: resp.Code, Status: resp.Status,
+				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, MsgToken: resp.MsgToken,
+				ActionID: resp.ActionID, Params: param, Dir: schema.ActionDirUp, Code: resp.Code, Status: resp.Msg,
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
@@ -352,12 +352,12 @@ func (l *ThingLogic) HandleControl(msg *deviceMsg.PublishMsg) (respMsg *deviceMs
 
 	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg.Handle, msg.Type,
 		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
-		resp.ClientToken)
+		resp.MsgToken)
 	if req == nil || err != nil {
 		return nil, err
 	}
 
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.MsgToken)
 	if err != nil {
 		return nil, err
 	}
@@ -404,7 +404,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 			Timestamp:  time.Now(), // 操作时间
 			DeviceName: msg.DeviceName,
 			TranceID:   utils.TraceIdFromContext(ctx),
-			RequestID:  l.dreq.ClientToken,
+			RequestID:  l.dreq.MsgToken,
 			Content:    string(msg.Payload),
 			Topic:      msg.Topic,
 			ResultType: errors.Fmt(err).GetCode(),

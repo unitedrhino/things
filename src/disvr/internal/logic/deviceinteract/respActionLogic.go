@@ -49,24 +49,24 @@ func (l *RespActionLogic) RespAction(in *di.RespActionReq) (*di.Response, error)
 	}
 	req, err := cache.GetDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, devices.Thing, deviceMsg.Action,
 		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName},
-		in.ClientToken)
+		in.MsgToken)
 	if req == nil || err != nil {
 		return nil, err
 	}
 
 	resp := msgThing.Resp{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:      deviceMsg.ActionReply,
-			ClientToken: in.ClientToken,
-			Timestamp:   time.Now().UnixMilli(),
-			Status:      in.Status,
-			Code:        in.Code,
+			Method:    deviceMsg.ActionReply,
+			MsgToken:  in.MsgToken,
+			Timestamp: time.Now().UnixMilli(),
+			Msg:       in.Msg,
+			Code:      in.Code,
 		},
 		ActionID: req.ActionID,
 	}
 	if resp.Code == 0 {
 		resp.Code = errors.OK.Code
-		resp.Status = errors.OK.Msg
+		resp.Msg = errors.OK.Msg
 	}
 	if resp.Code == errors.OK.GetCode() {
 		param := map[string]any{}

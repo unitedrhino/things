@@ -24,15 +24,15 @@ type PropertyReport struct {
 
 // 行为上报消息体
 type ActionReport struct {
-	Device      devices.Core     `json:"device"`
-	ClientToken string           `json:"clientToken,omitempty"` //调用id
-	Timestamp   int64            `json:"timestamp,string"`      //毫秒时间戳
-	ActionID    string           `json:"actionID,omitempty"`    //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
-	Params      map[string]any   `json:"params,omitempty"`      //参数列表
-	Code        int64            `json:"code,omitempty"`
-	Status      string           `json:"status,omitempty"`
-	Dir         schema.ActionDir `json:"dir"`
-	ReqType     string           `json:"reqType"` //req resp
+	Device    devices.Core     `json:"device"`
+	MsgToken  string           `json:"msgToken,omitempty"` //调用id
+	Timestamp int64            `json:"timestamp,string"`   //毫秒时间戳
+	ActionID  string           `json:"actionID,omitempty"` //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
+	Params    map[string]any   `json:"params,omitempty"`   //参数列表
+	Code      int64            `json:"code,omitempty"`
+	Status    string           `json:"status,omitempty"`
+	Dir       schema.ActionDir `json:"dir"`
+	ReqType   string           `json:"reqType"` //req resp
 }
 
 // 事件上报消息体

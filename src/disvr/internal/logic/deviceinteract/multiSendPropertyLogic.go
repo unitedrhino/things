@@ -63,12 +63,12 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(in *di.MultiSendPropertyReq) 
 			}
 
 			msg := &di.SendPropertyMsg{
-				DeviceName:  v,
-				SysCode:     errors.OK.Code,
-				SysMsg:      errors.OK.Msg,
-				Code:        ret.Code,
-				Status:      ret.Status,
-				ClientToken: ret.ClientToken,
+				DeviceName: v,
+				SysCode:    errors.OK.Code,
+				SysMsg:     errors.OK.Msg,
+				Code:       ret.Code,
+				Msg:        ret.Msg,
+				MsgToken:   ret.MsgToken,
 			}
 
 			mu.Lock()

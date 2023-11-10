@@ -40,7 +40,7 @@ func TestProperty(t *testing.T) {
 	pubPayload := `
 {                     
     "method": "report",            
-    "clientToken": "afwegafeegfa",   
+    "msgToken": "afwegafeegfa",   
     "params": 	{"GPS_Info":{"longtitude":0.125,"latitude":0.005}}
 }
 `

@@ -30,13 +30,13 @@ type (
 	}
 
 	CommonMsg struct { //消息内容通用字段
-		Method      string     `json:"method"`              //操作方法
-		ClientToken string     `json:"clientToken"`         //方便排查随机数
-		Timestamp   int64      `json:"timestamp,omitempty"` //毫秒时间戳
-		Code        int64      `json:"code,omitempty"`      //状态码
-		Status      string     `json:"status,omitempty"`    //返回信息
-		Data        any        `json:"data,omitempty"`      //返回具体设备上报的最新数据内容
-		Sys         *SysConfig `json:"sys,omitempty"`       //系统配置
+		Method    string     `json:"method"`              //操作方法
+		MsgToken  string     `json:"msgToken"`            //方便排查随机数
+		Timestamp int64      `json:"timestamp,omitempty"` //毫秒时间戳
+		Code      int64      `json:"code,omitempty"`      //状态码
+		Msg       string     `json:"msg,omitempty"`       //返回信息
+		Data      any        `json:"data,omitempty"`      //返回具体设备上报的最新数据内容
+		Sys       *SysConfig `json:"sys,omitempty"`       //系统配置
 	}
 	SysConfig struct {
 		NoAsk bool `json:"noAsk"` //云平台是否回复消息
@@ -55,15 +55,15 @@ func (p *PublishMsg) String() string {
 	return utils.Fmt(msgMap)
 }
 
-// 如果clientToken为空,会使用uuid生成一个
-func NewRespCommonMsg(ctx context.Context, method, clientToken string) *CommonMsg {
-	if clientToken == "" {
-		clientToken = trace.TraceIDFromContext(ctx)
+// 如果MsgToken为空,会使用uuid生成一个
+func NewRespCommonMsg(ctx context.Context, method, MsgToken string) *CommonMsg {
+	if MsgToken == "" {
+		MsgToken = trace.TraceIDFromContext(ctx)
 	}
 	return &CommonMsg{
-		Method:      GetRespMethod(method),
-		ClientToken: clientToken,
-		Timestamp:   time.Now().UnixMilli(),
+		Method:    GetRespMethod(method),
+		MsgToken:  MsgToken,
+		Timestamp: time.Now().UnixMilli(),
 	}
 }
 func (c *CommonMsg) NoAsk() bool {
@@ -82,7 +82,7 @@ func (c *CommonMsg) GetTimeStamp() time.Time {
 func (c *CommonMsg) AddStatus(err error) *CommonMsg {
 	e := errors.Fmt(err)
 	c.Code = e.Code
-	c.Status = e.GetDetailMsg()
+	c.Msg = e.GetDetailMsg()
 	return c
 }
 func (c *CommonMsg) Bytes() []byte {
