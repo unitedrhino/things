@@ -20,11 +20,12 @@ type Config struct {
 	SysRpc     conf.RpcClientConf `json:",optional"`
 	DiRpc      conf.RpcClientConf `json:",optional"`
 	DmRpc      conf.RpcClientConf `json:",optional"`
+	VidRpc     conf.RpcClientConf `json:",optional"`
 	RuleRpc    conf.RpcClientConf `json:",optional"`
 	Rej        struct {
 		AccessSecret string
 		AccessExpire int64
-	}                             //注册token相关配置
+	} //注册token相关配置
 	Proxy                conf.ProxyConf `json:",optional"`
 	Captcha              Captcha
 	OssConf              conf.OssConf              `json:",optional"`

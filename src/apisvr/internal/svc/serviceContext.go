@@ -14,6 +14,8 @@ import (
 	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
 	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
 	"github.com/i-Things/things/src/rulesvr/ruledirect"
+	"github.com/i-Things/things/src/vidsvr/client/vidmgrmange"
+	"github.com/i-Things/things/src/vidsvr/viddirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 
@@ -48,6 +50,7 @@ type SvrClient struct {
 	DeviceM        devicemanage.DeviceManage
 	DeviceA        deviceauth.DeviceAuth
 	ProductM       productmanage.ProductManage
+	VidmgrM        vidmgrmange.VidmgrMange
 	DeviceMsg      devicemsg.DeviceMsg
 	DeviceInteract deviceinteract.DeviceInteract
 	DeviceG        devicegroup.DeviceGroup
@@ -73,6 +76,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var (
 		deviceM        devicemanage.DeviceManage
 		productM       productmanage.ProductManage
+		vidmgrM        vidmgrmange.VidmgrMange
 		deviceA        deviceauth.DeviceAuth
 		deviceMsg      devicemsg.DeviceMsg
 		deviceInteract deviceinteract.DeviceInteract
@@ -91,6 +95,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
 			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			vidmgrM = vidmgrmange.NewVidmgrMange(zrpc.MustNewClient(c.VidRpc.Conf))
 			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -98,6 +103,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		} else {
 			deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 			productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
+			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
+			//vidmgrM = dmdirect.
 			deviceA = dmdirect.NewDeviceAuth(c.DmRpc.RunProxy)
 			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
@@ -160,6 +167,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			RoleRpc:        ro,
 			MenuRpc:        me,
 			ProductM:       productM,
+			VidmgrM:        vidmgrM,
 			DeviceM:        deviceM,
 			DeviceInteract: deviceInteract,
 			DeviceMsg:      deviceMsg,

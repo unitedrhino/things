@@ -1176,3 +1176,740 @@ type AlarmSceneDeleteReq struct {
 	AlarmID int64 `json:"alarmID"` //告警配置ID
 	SceneID int64 `json:"sceneID"` //场景id
 }
+
+type VidmgrInfo struct {
+	CreatedTime  int64   `json:"createdTime,optional,string"`     //创建时间 只读
+	VidmgrID     string  `json:"vidmgrID,optional"`               //服务id 只读
+	VidmgrName   string  `json:"vidmgrName,optional"`             //服务名称
+	VidmgrType   int64   `json:"vidmgrType,optional,range=[0:3]"` //服务类型:1:ZLMediakit,2:srs,3:monibuca
+	VidmgrIpV4   string  `json:"vidmgrIpV4,optional"`             //服务IP
+	VidmgrPort   int64   `json:"vidmgrPort,optional"`             //服务端口
+	VidmgrSecret string  `json:"vidmgrSecret,optional"`           //动态注册产品秘钥 只读
+	FirstLogin   int64   `json:"firstLogin,optional"`             //激活时间
+	LastLogin    int64   `json:"lastLogin,optional"`              ////最后上线时间
+	VidmgrStatus int64   `json:"vidsrvStatus,optional"`           //服务状态:0:未激活,1:在线,2:离线
+	Desc         *string `json:"desc,optional"`                   //描述
+	Tags         []*Tag  `json:"tags,optional"`                   //服务tag
+}
+
+type VidmgrInfoCreateReq struct {
+	VidmgrName   string  `json:"vidmgrName"`                      //服务名称
+	VidmgrID     string  `json:"vidmgrtID,optional"`              //服务id
+	VidmgrType   int64   `json:"vidmgrType,optional,range=[0:3]"` //服务类型:1:ZLMediakit,2:srs,3:monibuca
+	VidmgrIpV4   string  `json:"vidmgrIpV4,optional"`             //服务IP
+	VidmgrPort   int64   `json:"vidmgrPort,optional"`             //服务端口
+	VidmgrSecret string  `json:"vidmgrSecret,optional"`           //服务连接秘钥
+	VidmgrStatus int64   `json:"vidmgrStatus,optional"`           //服务状态:1:离线,2:在线,3:未激活
+	Desc         *string `json:"desc,optional"`                   //描述
+	Tags         []*Tag  `json:"tags,optional"`                   //产品tag
+}
+
+type VidmgrInfoUpdateReq struct {
+	VidmgrName   string  `json:"vidmgrName"`                      //服务名称
+	VidmgrID     string  `json:"vidmgrtID,optional"`              //服务id
+	VidmgrType   int64   `json:"vidmgrType,optional,range=[0:3]"` //服务类型:1:ZLMediakit,2:srs,3:monibuca
+	VidmgrIpV4   string  `json:"vidmgrIpV4,optional"`             //服务IP
+	VidmgrPort   int64   `json:"vidmgrPort,optional"`             //服务端口
+	VidmgrSecret string  `json:"vidsrvSecret,optional"`           //服务连接秘钥
+	VidmgrStatus int64   `json:"vidsrvStatus,optional"`           //服务状态:1:离线,2:在线,3:未激活
+	Desc         *string `json:"desc,optional"`                   //描述
+	Tags         []*Tag  `json:"tags,optional"`                   //产品tag
+}
+
+type VidmgrInfoDeleteReq struct {
+	VidmgrID string `json:"vidmgrID"` //服务id 只读
+}
+
+type VidmgrInfoIndexReq struct {
+	Page       *PageInfo `json:"page,optional"`                   //分页信息,只获取一个则不填
+	VidmgrName string    `json:"vidmgrName,optional"`             //过滤服务名称
+	VidmgrType int64     `json:"deviceType,optional,range=[0:3]"` //服务类型:1:ZLMediakit,2:srs,3:monibuca
+	VidmgrIDs  []string  `json:"vidmgrIDs,optional"`              //过滤服务id列表
+	Tags       []*Tag    `json:"tags,optional"`                   // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+}
+
+type VidmgrInfoReadReq struct {
+	VidmgrID string `json:"vidmgrID"` //服务id
+}
+
+type VidmgrCountReq struct {
+	StartTime int64 `json:"startTime,optional" form:"startTime,optional"` //查询区间的开始时间（秒）
+	EndTime   int64 `json:"endTime,optional" form:"endTime,optional"`     //查询区间的结束时间（秒）
+}
+
+type VidmgrInfoCount struct {
+	Online   int64 `json:"online"`   // 在线服务数
+	Offline  int64 `json:"offline"`  // 离线服务数
+	Inactive int64 `json:"inactive"` // 未激活服务数    （all = 在线+离线+未激活）
+}
+
+type VidmgrCountResp struct {
+	MgrInfoCount VidmgrInfoCount `json:"vidmgrCount"`
+}
+
+type VidmgrInfoIndexResp struct {
+	List  []*VidmgrInfo `json:"list"`           //服务信息
+	Total int64         `json:"total,optional"` //拥有的总数
+	Num   int64         `json:"num,optional"`   //返回的数量
+}
+
+type HooksApiResp struct {
+	Code int64  `json:"code"` //状态码回复:0
+	Msg  string `json:"msg"`  //msg:success
+}
+
+type HooksApiFlowReportReq struct {
+	MediaServerId string `json:"mediaServerId"`
+	App           string `json:"app"`
+	Duration      int64  `json:"duration"`
+	Params        string `json:"params"`
+	Player        bool   `json:"player"`
+	Schema        string `json:"schema"`
+	Stream        string `json:"stream"`
+	TotalBytes    int64  `json:"totalBytes"`
+	Vhost         string `json:"vhost"`
+	Ip            string `json:"ip"`
+	Port          int64  `json:"port"`
+	Id            string `json:"id"`
+}
+
+type HooksApiHttpAccessReq struct {
+	MediaServerId                 string `json:"mediaServerId"`
+	HeaderAccept                  string `json:"header.Accept"`
+	HeaderAcceptEncod             string `json:"header.Accept-Encoding"`
+	HeaderAcceptLanguage          string `json:"header.Accept-Language"`
+	HeaderCacheControl            string `json:"header.Cache-Control"`
+	HeaderConnection              string `json:"header.Connection"`
+	HeaderHost                    string `json:"header.Host"`
+	HeaderUpgradeInsecureRequests string `json:"header.Upgrade-Insecure-Requests"`
+	HeaderUserAgent               string `json:"header.User-Agent"`
+	ID                            string `json:"id"`
+	IP                            string `json:"ip"`
+	IsDir                         bool   `json:"is_dir"`
+	Params                        string `json:"params"`
+	Path                          string `json:"path"`
+	Port                          int64  `json:"port"`
+}
+
+type HooksApiHttpAccessResp struct {
+	Code   int64  `json:"code"`
+	Err    string `json:"err"`
+	Path   string `json:"path"`
+	Second int64  `json:"second"`
+}
+
+type HooksApiPlayReq struct {
+	MediaServerId string `json:"mediaServerId"`
+	App           string `json:"app"`
+	Id            string `json:"id"`
+	Ip            string `json:"ip"`
+	Params        string `json:"params"`
+	Port          int64  `json:"port"`
+	Schema        string `json:"schema"`
+	Stream        string `json:"stream"`
+	Vhost         string `json:"vhost"`
+}
+
+type HooksApiPublishReq struct {
+	HooksApiPlayReq
+}
+
+type HooksApiPublishResp struct {
+	Code           int64  `json:"code"`
+	AddMuteAudio   bool   `json:"add_mute_audio"`
+	ContinuePushMs int64  `json:"continue_push_ms"`
+	EnableAudio    bool   `json:"enable_audio"`
+	EnableFmp4     bool   `json:"enable_fmp4"`
+	EnableHls      bool   `json:"enable_hls"`
+	EnableHlsFmp4  bool   `json:"enable_hls_fmp4"`
+	EnableMp4      bool   `json:"enable_mp4"`
+	EnableRtmp     bool   `json:"enable_rtmp"`
+	EnableRtsp     bool   `json:"enable_rtsp"`
+	EnableTs       bool   `json:"enable_ts"`
+	HlsSavePath    string `json:"hls_save_path"`
+	ModifyStamp    bool   `json:"modify_stamp"`
+	Mp4AsPlayer    bool   `json:"mp4_as_player"`
+	Mp4MaxSecond   int64  `json:"mp4_max_second"`
+	Mp4SavePath    string `json:"mp4_save_path"`
+	AutoClose      bool   `json:"auto_close"`
+	StreamReplace  string `json:"stream_replace"`
+}
+
+type HooksApiRecordMp4Req struct {
+	MediaServerId string  `json:"mediaServerId"`
+	App           string  `json:"app"`
+	FileName      string  `json:"file_name"`
+	FilePath      string  `json:"file_path"`
+	FileSize      int64   `json:"file_size"`
+	Folder        string  `json:"folder"`
+	StartTime     int64   `json:"start_time"`
+	Stream        string  `json:"stream"`
+	TimeLen       float32 `json:"time_len"`
+	Url           string  `json:"url"`
+	Vhost         string  `json:"vhost"`
+}
+
+type HooksApiRtspAuthReq struct {
+	MustNoEncrypt bool `json:"must_no_encrypt"`
+	HooksApiPlayReq
+	Realm    string `json:"realm"`
+	UserName string `json:"user_name"`
+}
+
+type HooksApiRtspAuthResp struct {
+	Code      int64  `json:"code"`
+	Encrypted bool   `json:"encrypted"`
+	Passwd    string `json:"passwd"`
+}
+
+type HooksApiRtspRealmReq struct {
+	HooksApiPlayReq
+}
+
+type HooksApiRtspRealmResp struct {
+	Code  int64  `json:"code"`
+	Realm string `json:"realm"`
+}
+
+type HooksApiShellLoginReq struct {
+	MediaServerId string `json:"mediaServerId"`
+	Id            string `json:"id"`
+	Ip            string `json:"ip"`
+	Passwd        string `json:"passwd"`
+	Port          int64  `json:"port"`
+	User_name     string `json:"user_name"`
+}
+
+type HooksApiStreamChangedReq struct {
+	MediaServerId string `json:"mediaServerId"`
+	App           string `json:"app"`
+	Regist        bool   `json:"regist"`
+	Schema        string `json:"schema"`
+	Stream        string `json:"stream"`
+	Vhost         string `json:"vhost"`
+}
+
+type OriginSock struct {
+	Identifier string `json:"identifier"`
+	LocalIp    string `json:"local_ip"`
+	LocalPort  int64  `json:"local_port""`
+	PeerIp     string `json:"peer_ip"`
+	PeerPort   int64  `json:"peer_port"`
+}
+
+type StreamTrack struct {
+	Channels    int64  `json:"channels"`
+	CodecId     int64  `json:"codec_id"`
+	CodecIdName string `json:"codec_id_name"`
+	CodecType   bool   `json:"codec_type"`
+	Ready       bool   `json:"ready"`
+	Sample_bit  int64  `json:"sample_bit"`
+	Sample_rate int64  `json:"sample_rate"`
+	Fps         bool   `json:"fps"`
+	Height      int64  `json:"height"`
+	Width       int64  `json:"width"`
+}
+
+type HooksApiStreamChangedResp struct {
+	Regist           bool          `json:"regist"`
+	AliveSecond      int64         `json:"aliveSecond"`
+	App              string        `json:"app"`
+	BytesSpeed       int64         `json:"bytesSpeed"`
+	CreateStamp      int64         `json:"CreateStamp"`
+	MediaServerId    string        `json:"mediaServerId"`
+	OriginSock       OriginSock    `json:"originSock"`
+	OriginType       int64         `json:"originType"`
+	OriginTypeStr    string        `json:"originTypeStr"`
+	OriginUrl        string        `json:"originUrl"`
+	ReaderCount      int64         `json:"readerCount"`
+	Schema           string        `json:"schema"`
+	Stream           string        `json:"stream"`
+	TotalReaderCount int64         `json:"totalReaderCount"`
+	Tracks           []StreamTrack `json:"tracks"`
+	Vhost            string        `json:"vhost"`
+}
+
+type HooksApiStreamNoneReaderReq struct {
+	MediaServerId string `json:"mediaServerId"`
+	App           string `json:"app"`
+	Schema        string `json:"schema"`
+	Stream        string `json:"stream"`
+	Vhost         string `json:"vhost"`
+}
+
+type HooksApiStreamNoneReaderResp struct {
+	Close bool `json:"close"`
+	Code  bool `json:"code"`
+}
+
+type HooksApiStreamNotFoundReq struct {
+	HooksApiPlayReq
+}
+
+type ServerConfig struct {
+	ApiDebug                   string `json:"api.apiDebug"`
+	ApiSecret                  string `json:"api.secret"`
+	FfmpegBin                  string `json:"ffmpeg.bin"`
+	FfmpegCmd                  string `json:"ffmpeg.cmd"`
+	FfmpegLog                  string `json:"ffmpeg.log"`
+	GenMediaServerId           string `json:"general.mediaServerId"`
+	GenMuteAudio               string `json:"general.addMuteAudio"`
+	GenEnableVhost             string `json:"general.enableVhost"`
+	GenFlowThreadold           string `json:"general.flowThreshold"`
+	GenMaxStreamWaitMs         string `json:"general.maxStreamWaitMS"`
+	GenPublishToHls            string `json:"general.publishToHls"`
+	GenPublishToMP4            string `json:"general.publishToMP4"`
+	GenPublishToRtxp           string `json:"general.publishToRtxp"`
+	GenResetWhenRePlay         string `json:"general.resetWhenRePlay"`
+	GenStreamNoneReaderDelayMs string `json:"general.streamNoneReaderDelayMS"`
+	GenUltraLowDelay           string `json:"general.ultraLowDelay"`
+	HlsFileBufSize             string `json:"hls.fileBufSize"`
+	HlsFilePath                string `json:"hls.filePath"`
+	HlsSegDur                  string `json:"hls.segDur"`
+	HlsSegNum                  string `json:"hls.segNum"`
+	HlsSegRetain               string `json:"hls.segRetain"`
+	HookAcceFileExceptHls      string `json:"hook.access_file_except_hls"`
+	HookAdminParams            string `json:"hook.admin_params"`
+	HookEanble                 string `json:"hook.enable"`
+	HookOnFlowReport           string `json:"hook.on_flow_report"`
+	HookOnHttpAccess           string `json:"hook.on_http_access"`
+	HookOnPlay                 string `json:"hook.on_play"`
+	HookOnPublish              string `json:"hook.on_publish"`
+	HookOnRecordMp4            string `json:"hook.on_record_mp4"`
+	HookOnRtspAuth             string `json:"hook.on_rtsp_auth"`
+	HookOnRtspRealm            string `json:"hook.on_rtsp_realm"`
+	HookOnShellLogin           string `json:"hook.on_shell_login"`
+	HookOnStreamChanged        string `json:"hook.on_stream_changed"`
+	HookOnStreamNoneReader     string `json:"hook.on_stream_none_reader"`
+	HookOnStreamNotFound       string `json:"hook.on_stream_not_found"`
+	HookTimeoutSec             string `json:"hook.timeoutSec"`
+	HttpCharSet                string `json:"http.charSet"`
+	HttpKeepAliveSecond        string `json:"http.keepAliveSecond"`
+	HttpMaxReqCount            string `json:"http.maxReqCount"`
+	HttpMaxReqSize             string `json:"http.maxReqSize"`
+	HttpNotFound               string `json:"http.notFound"`
+	HttpPort                   string `json:"http.port"`
+	HttpRootPath               string `json:"http.rootPath"`
+	HttpSendBufSize            string `json:"http.sendBufSize"`
+	HttpSslport                string `json:"http.sslport"`
+	MulticastAddrMax           string `json:"multicast.addrMax"`
+	MulticastAddrMin           string `json:"multicast.addrMin"`
+	MulticastUdpTTL            string `json:"multicast.udpTTL"`
+	RecordAppName              string `json:"record.appName"`
+	RecordFastStart            string `json:"record.fastStart"`
+	RecordFileBufSize          string `json:"record.fileBufSize"`
+	RecordFilePath             string `json:"record.filePath"`
+	RecordFileSecond           string `json:"record.fileSecond"`
+	RecordFileRepeat           string `json:"record.fileRepeat"`
+	RecordSampleMs             string `json:"record.sampleMS"`
+	RtmpHandshakeSecond        string `json:"rtmp.handshakeSecond"`
+	RtmpKeepAliveSedond        string `json:"rtmp.keepAliveSecond"`
+	RtmpModifyStamp            string `json:"rtmp.modifyStamp"`
+	RtmpPort                   string `json:"rtmp.port"`
+	RtpAutoMtuSize             string `json:"rtp.audioMtuSize"`
+	RtpClearCount              string `json:"rtp.clearCount"`
+	RtpCycleMs                 string `json:"rtp.cycleMS"`
+	RtpMaxRtpCount             string `json:"rtp.maxRtpCount"`
+	RtpVideoMtuSize            string `json:"rtp.videoMtuSize"`
+	RtspAuthBasic              string `json:"rtsp.authBasic"`
+	RtspDirectProxy            string `json:"rtsp.directProxy"`
+	RtspHandshakeSecond        string `json:"rtsp.handshakeSecond"`
+	RtspKeepAliveSecond        string `json:"rtsp.keepAliveSecond"`
+	RtspModifyStamp            string `json:"rtsp.modifyStamp"`
+	RtspPort                   string `json:"rtsp.port"`
+	RtspSslpPort               string `json:"rtsp.sslport"`
+	ShellMaxReqSize            string `json:"shell.maxReqSize"`
+	ShellPort                  string `json:"shell.port"`
+}
+
+type HooksApiServerStartedReq struct {
+	ServerConfig
+}
+
+type Statistic struct {
+	Buffer                int `json:"Buffer"`
+	BufferLikeString      int `json:"BufferLikeString"`
+	BufferList            int `json:"BufferList"`
+	BufferRaw             int `json:"BufferRaw"`
+	Frame                 int `json:"Frame"`
+	FrameImp              int `json:"FrameImp"`
+	MediaSource           int `json:"MediaSource"`
+	MultiMediaSourceMuxer int `json:"MultiMediaSourceMuxer"`
+	RtmpPacket            int `json:"RtmpPacket"`
+	RtpPacket             int `json:"RtpPacket"`
+	Socket                int `json:"Socket"`
+	TcpClient             int `json:"TcpClient"`
+	TcpServer             int `json:"TcpServer"`
+	TcpSession            int `json:"TcpSession"`
+	UdpServer             int `json:"UdpServer"`
+	UdpSession            int `json:"UdpSession"`
+}
+
+type HooksApiServerKeepaliveReq struct {
+	Data          Statistic `json:"data"`
+	MediaServerId string    `json:"mediaServerId"`
+}
+
+type HooksApiRtpServerTimeoutReq struct {
+	LocalPort     int    `json:"local_port"`
+	ReUsePort     bool   `json:"re_use_port"`
+	Ssrc          int    `json:"ssrc"`
+	StreamId      string `json:"stream_id"`
+	TcpMode       int    `json:"tcp_mode"`
+	MediaServerId string `json:"mediaServerId"`
+}
+
+type IndexApiReq struct {
+	VidmgrID string `json:"vidmgrID"`
+	Data     string `json:"data"`
+}
+
+type IndexApiListResp struct {
+	Code int64    `json:"code"`
+	Data []string `json:"data"`
+}
+
+type IndexApiThreadLoad struct {
+	Delay int64 `json:"delay"`
+	Load  int64 `json:"load"`
+}
+
+type IndexApiThreadLoadResp struct {
+	Code int64                `json:"code"`
+	Data []IndexApiThreadLoad `json:"data"`
+}
+
+type IndexApiWorkThreadLoadResp struct {
+	Code int64                `json:"code"`
+	Data []IndexApiThreadLoad `json:"data"`
+}
+
+type IndexApiServerConfig struct {
+	ApiDebug                   string `json:"api.apiDebug"`
+	ApiSecret                  string `json:"api.secret"`
+	FfmpegBin                  string `json:"ffmpeg.bin"`
+	FfmpegCmd                  string `json:"ffmpeg.cmd"`
+	FfmpegLog                  string `json:"ffmpeg.log"`
+	GenEnableVhost             string `json:"general.enableVhost"`
+	GenFlowThreadold           string `json:"general.flowThreshold"`
+	GenMaxStreamWaitMs         string `json:"general.maxStreamWaitMS"`
+	GenStreamNoneReaderDelayMs string `json:"general.streamNoneReaderDelayMS"`
+	HlsFileBufSize             string `json:"hls.fileBufSize"`
+	HlsFilePath                string `json:"hls.filePath"`
+	HlsSegDur                  string `json:"hls.segDur"`
+	HlsSegNum                  string `json:"hls.segNum"`
+	HookAcceFileExceptHls      string `json:"hook.access_file_except_hls"`
+	HookAdminParams            string `json:"hook.admin_params"`
+	HookEanble                 string `json:"hook.enable"`
+	HookOnFlowReport           string `json:"hook.on_flow_report"`
+	HookOnHttpAccess           string `json:"hook.on_http_access"`
+	HookOnPlay                 string `json:"hook.on_play"`
+	HookOnPublish              string `json:"hook.on_publish"`
+	HookOnRecordMp4            string `json:"hook.on_record_mp4"`
+	HookOnRtspAuth             string `json:"hook.on_rtsp_auth"`
+	HookOnRtspRealm            string `json:"hook.on_rtsp_realm"`
+	HookOnShellLogin           string `json:"hook.on_shell_login"`
+	HookOnStreamChanged        string `json:"hook.on_stream_changed"`
+	HookOnStreamNoneReader     string `json:"hook.on_stream_none_reader"`
+	HookOnStreamNotFound       string `json:"hook.on_stream_not_found"`
+	HookTimeoutSec             string `json:"hook.timeoutSec"`
+	HttpCharSet                string `json:"http.charSet"`
+	HttpKeepAliveSecond        string `json:"http.keepAliveSecond"`
+	HttpMaxReqCount            string `json:"http.maxReqCount"`
+	HttpMaxReqSize             string `json:"http.maxReqSize"`
+	HttpNotFound               string `json:"http.notFound"`
+	HttpPort                   string `json:"http.port"`
+	HttpRootPath               string `json:"http.rootPath"`
+	HttpSendBufSize            string `json:"http.sendBufSize"`
+	HttpSslport                string `json:"http.sslport"`
+	MulticastAddrMax           string `json:"multicast.addrMax"`
+	MulticastAddrMin           string `json:"multicast.addrMin"`
+	MulticastUdpTTL            string `json:"multicast.udpTTL"`
+	RecordAppName              string `json:"record.appName"`
+	RecordFilePath             string `json:"record.filePath"`
+	RecordFileSecond           string `json:"record.fileSecond"`
+	RecordSampleMs             string `json:"record.sampleMS"`
+	RtmpHandshakeSecond        string `json:"rtmp.handshakeSecond"`
+	RtmpKeepAliveSedond        string `json:"rtmp.keepAliveSecond"`
+	RtmpModifyStamp            string `json:"rtmp.modifyStamp"`
+	RtmpPort                   string `json:"rtmp.port"`
+	RtpAutoMtuSize             string `json:"rtp.audioMtuSize"`
+	RtpClearCount              string `json:"rtp.clearCount"`
+	RtpCycleMs                 string `json:"rtp.cycleMS"`
+	RtpMaxRtpCount             string `json:"rtp.maxRtpCount"`
+	RtpVideoMtuSize            string `json:"rtp.videoMtuSize"`
+	RtspAuthBasic              string `json:"rtsp.authBasic"`
+	RtspHandshakeSecond        string `json:"rtsp.handshakeSecond"`
+	RtspKeepAliveSecond        string `json:"rtsp.keepAliveSecond"`
+	RtspPort                   string `json:"rtsp.port"`
+	RtspSslpPort               string `json:"rtsp.sslport"`
+	ShellMaxReqSize            string `json:"shell.maxReqSize"`
+	ShellPort                  string `json:"shell.port"`
+}
+
+type IndexApiServerConfigResp struct {
+	Code int64                  `json:"code"`
+	Data []IndexApiServerConfig `json:"data"`
+}
+
+type IndexApiSetServerConfigResp struct {
+	Changed int64 `json:"changed"`
+	Code    int64 `json:"code"`
+}
+
+type IndexApiRestartServerResp struct {
+	Code int64 `json:"code"`
+	Msg  int64 `json:"msg"`
+}
+
+type IndexApiOriginSock struct {
+	Identifier string `json:"identifier"`
+	LocalIp    string `json:"local_ip"`
+	LocalPort  int64  `json:"local_port""`
+	PeerIp     string `json:"peer_ip"`
+	PeerPort   int64  `json:"peer_port"`
+}
+
+type IndexApiStreamTrack struct {
+	Channels    int64  `json:"channels"`
+	CodecId     int64  `json:"codec_id"`
+	CodecIdName string `json:"codec_id_name"`
+	CodecType   bool   `json:"codec_type"`
+	Ready       bool   `json:"ready"`
+	Sample_bit  int64  `json:"sample_bit"`
+	Sample_rate int64  `json:"sample_rate"`
+	Fps         bool   `json:"fps"`
+	Height      int64  `json:"height"`
+	Width       int64  `json:"width"`
+}
+
+type IndexApiMediaList struct {
+	App              string                `json:"app"`
+	ReaderCount      int64                 `json:"readerCount"`
+	TotalReaderCount int64                 `json:"totalReaderCount"`
+	Schema           string                `json:"schema"`
+	Stream           string                `json:"stream"`
+	OriginSock       IndexApiOriginSock    `json:"originSock"`
+	OriginType       int64                 `json:"originType"`
+	OriginTypeStr    string                `json:"originTypeStr"`
+	OriginUrl        string                `json:"originUrl"`
+	CreateStamp      string                `json:"createStamp"`
+	AliveSecond      string                `json:"aliveSecond"`
+	BytesSpeed       int64                 `json:"bytesSpeed"`
+	Tracks           []IndexApiStreamTrack `json:"tracks"`
+	Vhost            string                `json:"vhost"`
+}
+
+type IndexApiMediaListResp struct {
+	Code int64               `json:"code"`
+	Data []IndexApiMediaList `json:"data"`
+}
+
+type IndexApiCloseStreamResp struct {
+	Code   int64  `json:"code"`
+	Result int64  `json:"result"`
+	Msg    string `json:"msg"`
+}
+
+type IndexApiCloseStreamsResp struct {
+	Code        int64 `json:"code"`
+	CountHit    int64 `json:"count_hit"`
+	CountClosed int64 `json:"count_closed"`
+}
+
+type IndexApiAllSession struct {
+	Id        string `json:"id"`
+	LocalIp   string `json:"local_ip"`
+	LocalPort int64  `json:"local_port""`
+	PeerIp    string `json:"peer_ip"`
+	PeerPort  int64  `json:"peer_port"`
+	Typeid    string `json:"typeid"`
+}
+
+type IndexApiAllSessionResp struct {
+	Code int64                `json:"code"`
+	Data []IndexApiAllSession `json:"data"`
+}
+
+type IndexApiKickSessionResp struct {
+	Code int64  `json:"code"`
+	Msg  string `json:"msg"`
+}
+
+type IndexApiKickSessionsResp struct {
+	Code     int64  `json:"code"`
+	CountHit int64  `json:"count_hit"`
+	Msg      string `json:"msg"`
+}
+
+type IndexApiAddStreamKey struct {
+	Key string `json:"key"`
+}
+
+type IndexApiAddStreamProxyResp struct {
+	Code int64                `json:"code"`
+	Data IndexApiAddStreamKey `json:"data"`
+}
+
+type IndexApiAddStreamFlag struct {
+	Flag bool `json:"flag"`
+}
+
+type IndexApiDelStreamProxyResp struct {
+	Code int64                 `json:"code"`
+	Data IndexApiAddStreamFlag `json:"data"`
+}
+
+type IndexApiAddFFmpegSourceResp struct {
+	Code int64                `json:"code"`
+	Data IndexApiAddStreamKey `json:"data"`
+}
+
+type IndexApiDelFFmpegSourceResp struct {
+	Code int64                 `json:"code"`
+	Data IndexApiAddStreamFlag `json:"data"`
+}
+
+type IndexApiIsMediaOnlineResp struct {
+	Code   int64 `json:"code"`
+	Online bool  `json:"online"`
+}
+
+type IndexApiMediaInfoResp struct {
+	Code             int64                 `json:"code"`
+	Online           bool                  `json:"online"`
+	ReaderCount      int64                 `json:"readerCount"`
+	TotalReaderCount int64                 `json:"totalReaderCount"`
+	Tracks           []IndexApiStreamTrack `json:"tracks"`
+}
+
+type IndexApiRtpInfoResp struct {
+	Code      int64  `json:"code"`
+	Exist     bool   `json:"exist"`
+	PeerIp    string `json:"peer_ip"`
+	PeerPort  int64  `json:"peer_port"`
+	LocalIp   string `json:"local_ip"`
+	LocalPort int64  `json:"local_port"`
+}
+
+type IndexApiRecord struct {
+	Paths    []string `json:"paths"`
+	RootPath string   `json:"rootPath"`
+}
+
+type IndexApiMp4RecordFileResp struct {
+	Code int64          `json:"code"`
+	Data IndexApiRecord `json:"data"`
+}
+
+type IndexApiStartRecordResp struct {
+	Code   int64 `json:"code"`
+	Result bool  `json:"result"`
+}
+
+type IndexApiStopRecordResp struct {
+	Code   int64 `json:"code"`
+	Result bool  `json:"result"`
+}
+
+type IndexApiIsRecordingResp struct {
+	Code   int64 `json:"code"`
+	Status bool  `json:"status"`
+}
+
+type IndexApiSnapResp struct {
+	Data []byte `json:"Data"`
+}
+
+type IndexApiOpenRtpServerResp struct {
+	Code int64 `json:"code"`
+	Port int64 `json:"port"`
+}
+
+type IndexApiCloseRtpServerResp struct {
+	Code int64 `json:"code"`
+	Hit  int64 `json:"hit"`
+}
+
+type IndexApiRtp struct {
+	Port     int64  `json:"port"`
+	StreamId string `json:"stream_id"`
+}
+
+type IndexApiListRtpServerResp struct {
+	Code int64         `json:"code"`
+	Data []IndexApiRtp `json:"data"`
+}
+
+type IndexApiStartSendRtpResp struct {
+	Code      int64 `json:"code"`
+	LocalProt int64 `json:"local_port"`
+}
+
+type IndexApiStartSendRtpPassiveResp struct {
+	Code      int64 `json:"code"`
+	LocalProt int64 `json:"local_port"`
+}
+
+type IndexApiStopSendRtpResp struct {
+	Code int64 `json:"code"`
+}
+
+type IndexApiStatistic struct {
+	Buffer                int `json:"Buffer"`
+	BufferLikeString      int `json:"BufferLikeString"`
+	BufferList            int `json:"BufferList"`
+	BufferRaw             int `json:"BufferRaw"`
+	Frame                 int `json:"Frame"`
+	FrameImp              int `json:"FrameImp"`
+	MediaSource           int `json:"MediaSource"`
+	MultiMediaSourceMuxer int `json:"MultiMediaSourceMuxer"`
+	RtmpPacket            int `json:"RtmpPacket"`
+	RtpPacket             int `json:"RtpPacket"`
+	Socket                int `json:"Socket"`
+	TcpClient             int `json:"TcpClient"`
+	TcpServer             int `json:"TcpServer"`
+	TcpSession            int `json:"TcpSession"`
+	UdpServer             int `json:"UdpServer"`
+	UdpSession            int `json:"UdpSession"`
+}
+
+type IndexApiStatisticResp struct {
+	Code int64             `json:"code"`
+	Data IndexApiStatistic `json:"data"`
+}
+
+type IndexApiAddStreamPusherProxyResp struct {
+	Code int64                `json:"code"`
+	Data IndexApiAddStreamKey `json:"data"`
+}
+
+type IndexDelStreamPusherProxyResp struct {
+	Code int64                 `json:"code"`
+	Data IndexApiAddStreamFlag `json:"data"`
+}
+
+type IndexApiVersion struct {
+	BranchName string `json:"branchName"`
+	BuildTime  string `json:"buildTime"`
+	CommitHash string `json:"commitHash"`
+}
+
+type IndexApiVersionResp struct {
+	Code int64           `json:"code"`
+	Data IndexApiVersion `json:"data"`
+}
+
+type IndexApiMediaPlayer struct {
+	IndexApiOriginSock
+	Typeid string `json:"typeid"`
+}
+
+type IndexApiMediaPlayerListResp struct {
+	Code int64               `json:"code"`
+	Data IndexApiMediaPlayer `json:"data"`
+}
+
+type IndexApiResp struct {
+	Data string `json:"data"`
+}
