@@ -73,13 +73,13 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		return nil, errors.Parameter.AddDetail(
 			"SendProperty data not right:", in.Data)
 	}
-	clientToken := trace.TraceIDFromContext(l.ctx)
+	MsgToken := trace.TraceIDFromContext(l.ctx)
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:      deviceMsg.Control,
-			ClientToken: clientToken,
-			Timestamp:   time.Now().UnixMilli(),
+			Method:    deviceMsg.Control,
+			MsgToken:  MsgToken,
+			Timestamp: time.Now().UnixMilli(),
 		},
 		Params: param,
 	}
@@ -109,7 +109,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
-	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.ClientToken)
+	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.MsgToken)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 			return nil, err
 		}
 		return &di.SendPropertyResp{
-			ClientToken: req.ClientToken,
+			MsgToken: req.MsgToken,
 		}, nil
 	}
 
@@ -130,7 +130,7 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可
 			return false
 		}
-		if dresp.ClientToken != req.ClientToken { //不是该请求的回复.跳过
+		if dresp.MsgToken != req.MsgToken { //不是该请求的回复.跳过
 			return false
 		}
 		return true
@@ -146,8 +146,8 @@ func (l *SendPropertyLogic) SendProperty(in *di.SendPropertyReq) (*di.SendProper
 	}
 
 	return &di.SendPropertyResp{
-		ClientToken: dresp.ClientToken,
-		Status:      dresp.Status,
-		Code:        dresp.Code,
+		MsgToken: dresp.MsgToken,
+		Msg:      dresp.Msg,
+		Code:     dresp.Code,
 	}, nil
 }

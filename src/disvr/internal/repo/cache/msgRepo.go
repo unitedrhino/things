@@ -14,12 +14,12 @@ const (
 	msgExpr = 10 * 60
 )
 
-func genDeviceMsgKey(msgType string, handle string, Type string, device devices.Core, clientToken string) string {
+func genDeviceMsgKey(msgType string, handle string, Type string, device devices.Core, MsgToken string) string {
 	return fmt.Sprintf("deviceMsg:%s:%s:%s:%s:%s:%s",
-		handle, Type, msgType, device.ProductID, device.DeviceName, clientToken)
+		handle, Type, msgType, device.ProductID, device.DeviceName, MsgToken)
 }
 
-func SetDeviceMsg(ctx context.Context, store kv.Store, msgType string, req *deviceMsg.PublishMsg, clientToken string) error {
+func SetDeviceMsg(ctx context.Context, store kv.Store, msgType string, req *deviceMsg.PublishMsg, MsgToken string) error {
 	payload, err := json.Marshal(req)
 	if err != nil {
 		return err
@@ -27,15 +27,15 @@ func SetDeviceMsg(ctx context.Context, store kv.Store, msgType string, req *devi
 	err = store.SetexCtx(ctx, genDeviceMsgKey(msgType, req.Handle, req.Type, devices.Core{
 		ProductID:  req.ProductID,
 		DeviceName: req.DeviceName,
-	}, clientToken), string(payload), msgExpr)
+	}, MsgToken), string(payload), msgExpr)
 	return err
 }
 
-func GetDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType string /*请求还是回复*/, handle string, Type string, device devices.Core, clientToken string) (*reqType, error) {
+func GetDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType string /*请求还是回复*/, handle string, Type string, device devices.Core, MsgToken string) (*reqType, error) {
 	val, err := store.GetCtx(ctx, genDeviceMsgKey(msgType, handle, Type, devices.Core{
 		ProductID:  device.ProductID,
 		DeviceName: device.DeviceName,
-	}, clientToken))
+	}, MsgToken))
 	if val == "" || err != nil {
 		return nil, err
 	}

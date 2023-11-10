@@ -35,7 +35,7 @@ func (a *AppDeviceHandle) DeviceEventReport(in *application.EventReport) error {
 
 func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) error {
 	topic := fmt.Sprintf(topics.ApplicationDeviceReportThingPropertyDevice, in.Device.ProductID, in.Device.DeviceName)
-	clientToken := trace.TraceIDFromContext(a.ctx)
+	MsgToken := trace.TraceIDFromContext(a.ctx)
 	param := map[string]interface{}{
 		in.Identifier: in.Param,
 	}
@@ -46,7 +46,7 @@ func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) e
 		Body: string(data),
 	}
 	body.Handler = make(http.Header)
-	body.Handler.Set("Traceparent", clientToken)
+	body.Handler.Set("Traceparent", MsgToken)
 	ws.SendSub(ws.WsResp{
 		StatusCode: http.StatusOK,
 		WsBody:     body,
@@ -56,14 +56,14 @@ func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) e
 
 func (a *AppDeviceHandle) DeviceStatusConnected(in *application.ConnectMsg) error {
 	topic := fmt.Sprintf(topics.ApplicationDeviceStatusConnected, in.Device.ProductID, in.Device.DeviceName)
-	clientToken := trace.TraceIDFromContext(a.ctx)
+	MsgToken := trace.TraceIDFromContext(a.ctx)
 	body := ws.WsBody{
 		Type: ws.Pub,
 		Path: topic,
 		Body: "connected",
 	}
 	body.Handler = make(http.Header)
-	body.Handler.Set("Traceparent", clientToken)
+	body.Handler.Set("Traceparent", MsgToken)
 	ws.SendSub(ws.WsResp{
 		StatusCode: http.StatusOK,
 		WsBody:     body,
@@ -73,14 +73,14 @@ func (a *AppDeviceHandle) DeviceStatusConnected(in *application.ConnectMsg) erro
 
 func (a *AppDeviceHandle) DeviceStatusDisConnected(in *application.ConnectMsg) error {
 	topic := fmt.Sprintf(topics.ApplicationDeviceStatusDisConnected, in.Device.ProductID, in.Device.DeviceName)
-	clientToken := trace.TraceIDFromContext(a.ctx)
+	MsgToken := trace.TraceIDFromContext(a.ctx)
 	body := ws.WsBody{
 		Type: ws.Pub,
 		Path: topic,
 		Body: "disconnected",
 	}
 	body.Handler = make(http.Header)
-	body.Handler.Set("Traceparent", clientToken)
+	body.Handler.Set("Traceparent", MsgToken)
 	ws.SendSub(ws.WsResp{
 		StatusCode: http.StatusOK,
 		WsBody:     body,

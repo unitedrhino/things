@@ -64,7 +64,7 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 		Timestamp:  time.Now(), // 记录当前时间
 		DeviceName: msg.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),
-		RequestID:  l.dreq.ClientToken,
+		RequestID:  l.dreq.MsgToken,
 		Content:    string(msg.Payload),
 		Topic:      msg.Handle, //todo 等待实现
 		ResultType: errors.Fmt(err).GetCode(),
@@ -125,10 +125,10 @@ func (l *SDKLogLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any)
 		l.Errorf("%s.DeviceResp err:%v, msg:%v", utils.FuncName(), err, msg)
 	}
 	resp := &deviceMsg.CommonMsg{
-		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
-		ClientToken: l.dreq.ClientToken,
-		Timestamp:   time.Now().UnixMilli(),
-		Data:        data,
+		Method:    deviceMsg.GetRespMethod(l.dreq.Method),
+		MsgToken:  l.dreq.MsgToken,
+		Timestamp: time.Now().UnixMilli(),
+		Data:      data,
 	}
 	return &deviceMsg.PublishMsg{
 		Handle:     msg.Handle,

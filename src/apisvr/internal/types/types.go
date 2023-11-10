@@ -1040,11 +1040,11 @@ type DeviceInteractGetPropertyReplyReq struct {
 }
 
 type DeviceInteractGetPropertyReplyResp struct {
-	Code        int64  `json:"code"`        //设备返回状态码
-	Status      string `json:"status"`      //返回状态
-	ClientToken string `json:"clientToken"` //调用id
-	Timestamp   int64  `json:"timestamp"`   //上报时间戳(毫秒时间戳)
-	Params      string `json:"params"`      //获取到的值
+	Code      int64  `json:"code"`      //设备返回状态码
+	Msg       string `json:"msg"`       //返回状态
+	MsgToken  string `json:"msgToken"`  //调用id
+	Timestamp int64  `json:"timestamp"` //上报时间戳(毫秒时间戳)
+	Params    string `json:"params"`    //获取到的值
 }
 
 type DeviceInteractSendMsgReq struct {
@@ -1061,15 +1061,15 @@ type DeviceInteractSendPropertyReq struct {
 }
 
 type DeviceInteractSendPropertyResp struct {
-	Code        int64  `json:"code"`        //设备返回状态码
-	Status      string `json:"status"`      //返回状态
-	ClientToken string `json:"clientToken"` //调用id
+	Code     int64  `json:"code"`     //设备返回状态码
+	Msg      string `json:"msg"`      //返回状态
+	MsgToken string `json:"msgToken"` //调用id
 }
 
 type DeviceInteractRespReadReq struct {
-	ProductID   string `json:"productID"`   //产品id
-	DeviceName  string `json:"deviceName"`  //设备名
-	ClientToken string `json:"clientToken"` //调用id
+	ProductID  string `json:"productID"`  //产品id
+	DeviceName string `json:"deviceName"` //设备名
+	MsgToken   string `json:"msgToken"`   //调用id
 }
 
 type DeviceInteractSendActionReq struct {
@@ -1082,9 +1082,9 @@ type DeviceInteractSendActionReq struct {
 }
 
 type DeviceInteractSendActionResp struct {
-	ClientToken  string `json:"clientToken"`  //调用id
+	MsgToken     string `json:"msgToken"`     //调用id
 	OutputParams string `json:"outputParams"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
-	Status       string `json:"status"`       //返回状态
+	Msg          string `json:"msg"`          //返回状态
 	Code         int64  `json:"code"`         //设备返回状态码
 }
 
@@ -1098,13 +1098,13 @@ type DeviceInteractMultiSendPropertyReq struct {
 }
 
 type DeviceInteractMultiSendPropertyMsg struct {
-	ProductID   string `json:"productID"`   //产品id
-	DeviceName  string `json:"deviceName"`  //设备名
-	Code        int64  `json:"code"`        //设备返回状态码
-	Status      string `json:"status"`      //返回状态
-	ClientToken string `json:"clientToken"` //调用id
-	SysCode     int64  `json:"sysCode"`     //系统错误码
-	SysMsg      string `json:"sysMsg"`      //系统错误信息
+	ProductID  string `json:"productID"`  //产品id
+	DeviceName string `json:"deviceName"` //设备名
+	Code       int64  `json:"code"`       //设备返回状态码
+	Msg        string `json:"msg"`        //返回状态
+	MsgToken   string `json:"msgToken"`   //调用id
+	SysCode    int64  `json:"sysCode"`    //系统错误码
+	SysMsg     string `json:"sysMsg"`     //系统错误信息
 }
 
 type DeviceInteractMultiSendPropertyResp struct {

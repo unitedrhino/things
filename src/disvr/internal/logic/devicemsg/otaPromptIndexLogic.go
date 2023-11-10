@@ -3,9 +3,9 @@ package devicemsglogic
 import (
 	"context"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 
-	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/oss/common"
 	"github.com/i-Things/things/shared/utils"
@@ -103,12 +103,12 @@ func (l *OtaPromptIndexLogic) OtaPromptIndex(in *di.OtaPromptIndexReq) (*di.OtaP
 	return &di.OtaPromptIndexResp{}, nil
 }
 func (l *OtaPromptIndexLogic) DeviceResp(msg *di.SendMsgReq, err error, data any) *di.SendMsgReq {
-	clientToken, _ := uuid.GenerateUUID()
+	MsgToken := trace.TraceIDFromContext(l.ctx)
 	resp := &deviceMsg.CommonMsg{
-		Method:      "reportInfo",
-		ClientToken: clientToken,
-		Timestamp:   time.Now().UnixMilli(),
-		Data:        data,
+		Method:    "reportInfo",
+		MsgToken:  MsgToken,
+		Timestamp: time.Now().UnixMilli(),
+		Data:      data,
 	}
 
 	return &di.SendMsgReq{

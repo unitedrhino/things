@@ -44,7 +44,7 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 		json.Unmarshal([]byte(in.Explain), &option)
 	}
 	resp, err := cache.GetDeviceMsg[msgThing.Resp](l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, devices.Thing, msgThing.TypeAction,
-		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, req.ClientToken)
+		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, req.MsgToken)
 	if err != nil {
 		l.Errorf("GetDeviceMsg err:%v", err)
 		return err
@@ -64,7 +64,7 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 			l.Infof("DeviceThingActionReport.Action device:%v,req:%v", core, req)
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
-				Device: core, Timestamp: now.UnixMilli(), ReqType: deviceMsg.ReqMsg, ClientToken: req.ClientToken,
+				Device: core, Timestamp: now.UnixMilli(), ReqType: deviceMsg.ReqMsg, MsgToken: req.MsgToken,
 				ActionID: req.ActionID, Dir: schema.ActionDirUp, Code: devErr.GetCode(), Status: devErr.Msg,
 			})
 			if err != nil {

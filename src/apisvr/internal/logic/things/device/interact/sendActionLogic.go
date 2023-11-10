@@ -43,9 +43,9 @@ func (l *SendActionLogic) SendAction(req *types.DeviceInteractSendActionReq) (re
 		return nil, er
 	}
 	return &types.DeviceInteractSendActionResp{
-		ClientToken:  dmResp.ClientToken,
+		MsgToken:     dmResp.MsgToken,
 		OutputParams: dmResp.OutputParams,
-		Status:       dmResp.Status,
+		Msg:          dmResp.Msg,
 		Code:         dmResp.Code,
 	}, nil
 }

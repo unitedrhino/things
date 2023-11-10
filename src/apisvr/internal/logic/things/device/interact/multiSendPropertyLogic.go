@@ -102,13 +102,13 @@ func (l *MultiSendPropertyLogic) SendProperty(productID string, deviceNames []st
 	if len(dmResp.List) > 0 {
 		for _, v := range dmResp.List {
 			list = append(list, &types.DeviceInteractMultiSendPropertyMsg{
-				ProductID:   productID,
-				DeviceName:  v.DeviceName,
-				Code:        v.Code,
-				Status:      v.Status,
-				ClientToken: v.ClientToken,
-				SysMsg:      v.SysMsg,
-				SysCode:     v.SysCode,
+				ProductID:  productID,
+				DeviceName: v.DeviceName,
+				Code:       v.Code,
+				Msg:        v.Msg,
+				MsgToken:   v.MsgToken,
+				SysMsg:     v.SysMsg,
+				SysCode:    v.SysCode,
 			})
 		}
 	}

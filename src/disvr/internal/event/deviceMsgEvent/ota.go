@@ -61,7 +61,7 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		Timestamp:  l.dreq.GetTimeStamp(), // 操作时间
 		DeviceName: msg.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),
-		RequestID:  l.dreq.ClientToken,
+		RequestID:  l.dreq.MsgToken,
 		Content:    string(msg.Payload),
 		Topic:      msg.Topic,
 		ResultType: errors.Fmt(err).GetCode(),
@@ -139,10 +139,10 @@ func (l *OtaLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 }
 func (l *OtaLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
 	resp := &deviceMsg.CommonMsg{
-		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
-		ClientToken: l.dreq.ClientToken,
-		Timestamp:   time.Now().UnixMilli(),
-		Data:        data,
+		Method:    deviceMsg.GetRespMethod(l.dreq.Method),
+		MsgToken:  l.dreq.MsgToken,
+		Timestamp: time.Now().UnixMilli(),
+		Data:      data,
 	}
 	if l.topics[2] == "report" {
 		l.topics[2] = "upgrade" //下行 升级包详情

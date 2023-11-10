@@ -39,10 +39,10 @@ func (l *GetPropertyReplyLogic) GetPropertyReply(req *types.DeviceInteractGetPro
 		return nil, er
 	}
 	return &types.DeviceInteractGetPropertyReplyResp{
-		Code:        dmResp.Code,
-		Status:      dmResp.Status,
-		ClientToken: dmResp.ClientToken,
-		Timestamp:   dmResp.Timestamp,
-		Params:      dmResp.Params,
+		Code:      dmResp.Code,
+		Msg:       dmResp.Msg,
+		MsgToken:  dmResp.MsgToken,
+		Timestamp: dmResp.Timestamp,
+		Params:    dmResp.Params,
 	}, nil
 }

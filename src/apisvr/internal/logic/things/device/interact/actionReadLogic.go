@@ -28,9 +28,9 @@ func NewActionReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Action
 
 func (l *ActionReadLogic) ActionRead(req *types.DeviceInteractRespReadReq) (resp *types.DeviceInteractSendActionResp, err error) {
 	dmReq := &di.RespReadReq{
-		ProductID:   req.ProductID,
-		DeviceName:  req.DeviceName,
-		ClientToken: req.ClientToken,
+		ProductID:  req.ProductID,
+		DeviceName: req.DeviceName,
+		MsgToken:   req.MsgToken,
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.ActionRead(l.ctx, dmReq)
 	if err != nil {
@@ -39,9 +39,9 @@ func (l *ActionReadLogic) ActionRead(req *types.DeviceInteractRespReadReq) (resp
 		return nil, er
 	}
 	return &types.DeviceInteractSendActionResp{
-		ClientToken:  dmResp.ClientToken,
+		MsgToken:     dmResp.MsgToken,
 		OutputParams: dmResp.OutputParams,
-		Status:       dmResp.Status,
+		Msg:          dmResp.Msg,
 		Code:         dmResp.Code,
 	}, nil
 }

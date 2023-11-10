@@ -28,9 +28,9 @@ func NewPropertyReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Prop
 
 func (l *PropertyReadLogic) PropertyRead(req *types.DeviceInteractRespReadReq) (resp *types.DeviceInteractSendPropertyResp, err error) {
 	dmReq := &di.RespReadReq{
-		ProductID:   req.ProductID,
-		DeviceName:  req.DeviceName,
-		ClientToken: req.ClientToken,
+		ProductID:  req.ProductID,
+		DeviceName: req.DeviceName,
+		MsgToken:   req.MsgToken,
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.PropertyRead(l.ctx, dmReq)
 	if err != nil {
@@ -39,8 +39,8 @@ func (l *PropertyReadLogic) PropertyRead(req *types.DeviceInteractRespReadReq) (
 		return nil, er
 	}
 	return &types.DeviceInteractSendPropertyResp{
-		Code:        dmResp.Code,
-		Status:      dmResp.Status,
-		ClientToken: dmResp.ClientToken,
+		Code:     dmResp.Code,
+		Msg:      dmResp.Msg,
+		MsgToken: dmResp.MsgToken,
 	}, nil
 }

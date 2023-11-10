@@ -41,10 +41,10 @@ func (l *ExtLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 
 func (l *ExtLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
 	resp := &deviceMsg.CommonMsg{
-		Method:      deviceMsg.GetRespMethod(l.dreq.Method),
-		ClientToken: l.dreq.ClientToken,
-		Timestamp:   time.Now().UnixMilli(),
-		Data:        data,
+		Method:    deviceMsg.GetRespMethod(l.dreq.Method),
+		MsgToken:  l.dreq.MsgToken,
+		Timestamp: time.Now().UnixMilli(),
+		Data:      data,
 	}
 	return &deviceMsg.PublishMsg{
 		Handle:     msg.Handle,
@@ -93,7 +93,7 @@ func (l *ExtLogic) HandleNtp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	switch l.dreq.Method { //操作方法
 	case deviceMsg.GetNtp:
 		//if l.dreq.Code != errors.OK.Code { //如果不成功,则记录日志即可
-		//	return nil, errors.DeviceError.AddMsg(l.dreq.Status).AddDetail(msg.Payload)
+		//	return nil, errors.DeviceError.AddMsg(l.dreq.Msg).AddDetail(msg.Payload)
 		//}
 		respMsg, err = l.HandleGetNtpReply(msg, l.dreq)
 		return respMsg, err
@@ -132,7 +132,7 @@ func (l *ExtLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		Timestamp:  time.Now(), // 操作时间
 		DeviceName: msg.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),
-		RequestID:  l.dreq.ClientToken,
+		RequestID:  l.dreq.MsgToken,
 		Content:    string(msg.Payload),
 		Topic:      msg.Topic,
 		ResultType: errors.Fmt(err).GetCode(),
