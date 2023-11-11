@@ -20,6 +20,6 @@ func GetMediaPlayerListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewGetMediaPlayerListLogic(r.Context(), svcCtx)
 		resp, err := l.GetMediaPlayerList(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

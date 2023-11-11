@@ -20,6 +20,6 @@ func IsRecordingHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewIsRecordingLogic(r.Context(), svcCtx)
 		resp, err := l.IsRecording(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

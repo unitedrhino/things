@@ -20,6 +20,6 @@ func GetWorkThreadsLoadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewGetWorkThreadsLoadLogic(r.Context(), svcCtx)
 		resp, err := l.GetWorkThreadsLoad(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

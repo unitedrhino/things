@@ -20,6 +20,6 @@ func StopRecordHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewStopRecordLogic(r.Context(), svcCtx)
 		resp, err := l.StopRecord(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

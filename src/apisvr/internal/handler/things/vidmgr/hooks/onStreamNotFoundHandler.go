@@ -20,6 +20,6 @@ func OnStreamNotFoundHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := hooks.NewOnStreamNotFoundLogic(r.Context(), svcCtx)
 		resp, err := l.OnStreamNotFound(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

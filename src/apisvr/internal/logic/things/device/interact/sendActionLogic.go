@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -32,6 +33,7 @@ func (l *SendActionLogic) SendAction(req *types.DeviceInteractSendActionReq) (re
 		ActionID:    req.ActionID,
 		InputParams: req.InputParams,
 		IsAsync:     req.IsAsync,
+		Option:      logic.ToDiSendOption(req.Option),
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.SendAction(l.ctx, dmReq)
 	if err != nil {
