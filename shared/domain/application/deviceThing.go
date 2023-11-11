@@ -31,6 +31,8 @@ type ActionReport struct {
 	Params      map[string]any   `json:"params,omitempty"`      //参数列表
 	Dir         schema.ActionDir `json:"dir"`
 	ReqType     string           `json:"reqType"` //req resp
+	Code        int64            `json:"code,omitempty"`
+	Status      string           `json:"status,omitempty"`
 }
 
 // 事件上报消息体
