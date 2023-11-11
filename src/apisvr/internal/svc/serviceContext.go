@@ -28,9 +28,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
-	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
-	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
-	"github.com/i-Things/things/src/rulesvr/ruledirect"
 	api "github.com/i-Things/things/src/syssvr/client/api"
 	"github.com/i-Things/things/src/syssvr/client/areamanage"
 	common "github.com/i-Things/things/src/syssvr/client/common"
@@ -44,10 +41,8 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
-	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
-	"os"
 	"time"
 )
 
@@ -58,10 +53,10 @@ func init() {
 }
 
 type SvrClient struct {
-	UserRpc        user.User
-	RoleRpc        role.Role
-	MenuRpc        menu.Menu
-	VidmgrM        vidmgrmange.VidmgrMange
+	UserRpc user.User
+	RoleRpc role.Role
+	MenuRpc menu.Menu
+	VidmgrM vidmgrmange.VidmgrMange
 
 	ProjectM projectmanage.ProjectManage
 	AreaM    areamanage.AreaManage
@@ -99,9 +94,10 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
-
-		vidmgrM        vidmgrmange.VidmgrMange
+		vidmgrM  vidmgrmange.VidmgrMange
+		projectM projectmanage.ProjectManage
 		productM productmanage.ProductManage
+		areaM    areamanage.AreaManage
 		deviceM  devicemanage.DeviceManage
 		deviceA  deviceauth.DeviceAuth
 

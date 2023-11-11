@@ -63,6 +63,7 @@ func (s *DeviceManageServer) DeviceGatewayIndex(ctx context.Context, in *dm.Devi
 	l := devicemanagelogic.NewDeviceGatewayIndexLogic(ctx, s.svcCtx)
 	return l.DeviceGatewayIndex(in)
 }
+
 // 删除网关下子设备
 func (s *DeviceManageServer) DeviceGatewayMultiDelete(ctx context.Context, in *dm.DeviceGatewayMultiDeleteReq) (*dm.Response, error) {
 	l := devicemanagelogic.NewDeviceGatewayMultiDeleteLogic(ctx, s.svcCtx)
