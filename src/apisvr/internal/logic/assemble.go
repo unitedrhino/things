@@ -128,3 +128,24 @@ func ToSysPointApi(in *sys.Point) *types.Point {
 		Latitude:  in.Latitude,
 	}
 }
+
+func ToOtaPageRpc(in *types.PageInfo) *dm.OtaPageInfo {
+	if in == nil {
+		return nil
+	}
+	return &dm.OtaPageInfo{
+		Page: in.Page,
+		Size: in.Size,
+	}
+}
+
+func ToDiSendOption(in *types.SendOption) *di.SendOption {
+	if in == nil {
+		return nil
+	}
+	return &di.SendOption{
+		TimeoutToFail:  in.TimeoutToFail,
+		RequestTimeout: in.RequestTimeout,
+		RetryInterval:  in.RetryInterval,
+	}
+}

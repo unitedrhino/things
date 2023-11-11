@@ -20,6 +20,6 @@ func OnPlayHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := hooks.NewOnPlayLogic(r.Context(), svcCtx)
 		resp, err := l.OnPlay(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

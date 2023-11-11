@@ -5,6 +5,7 @@ import (
 
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -31,6 +32,7 @@ func (l *DeviceIndexLogic) DeviceIndex(req *types.OtaTaskDeviceIndexReq) (resp *
 		TaskUid:    req.TaskUid,
 		DeviceName: req.DeviceName,
 		Status:     req.Status,
+		Page:       logic.ToOtaPageRpc(req.Page),
 	})
 	if err != nil {
 		er := errors.Fmt(err)

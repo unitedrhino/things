@@ -20,6 +20,6 @@ func KickSessionsHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewKickSessionsLogic(r.Context(), svcCtx)
 		resp, err := l.KickSessions(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

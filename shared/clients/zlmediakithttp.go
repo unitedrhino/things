@@ -1,4 +1,4 @@
-package zlmediakitapi
+package clients
 
 //部分门接口直接http访问
 import (

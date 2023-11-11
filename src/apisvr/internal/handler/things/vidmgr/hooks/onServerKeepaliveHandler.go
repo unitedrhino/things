@@ -20,7 +20,6 @@ func OnServerKeepaliveHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := hooks.NewOnServerKeepaliveLogic(r.Context(), svcCtx)
 		resp, err := l.OnServerKeepalive(&req)
-		//result.Http(w, r, resp, err)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

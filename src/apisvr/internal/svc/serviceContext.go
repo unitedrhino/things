@@ -13,14 +13,6 @@ import (
 	"github.com/i-Things/things/src/disvr/client/devicemsg"
 	"github.com/i-Things/things/src/disvr/didirect"
 	"github.com/i-Things/things/src/dmsvr/client/deviceauth"
-	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
-	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
-	"github.com/i-Things/things/src/rulesvr/ruledirect"
-	"github.com/i-Things/things/src/vidsvr/client/vidmgrmange"
-	"github.com/i-Things/things/src/vidsvr/viddirect"
-	"github.com/zeromicro/go-zero/core/logx"
-	"os"
-
 	"github.com/i-Things/things/src/dmsvr/client/devicegroup"
 	"github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	firmwaremanage "github.com/i-Things/things/src/dmsvr/client/firmwaremanage"
@@ -28,6 +20,9 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
+	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
+	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
+	"github.com/i-Things/things/src/rulesvr/ruledirect"
 	api "github.com/i-Things/things/src/syssvr/client/api"
 	"github.com/i-Things/things/src/syssvr/client/areamanage"
 	common "github.com/i-Things/things/src/syssvr/client/common"
@@ -41,8 +36,12 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
+	"github.com/i-Things/things/src/vidsvr/client/vidmgrmange"
+	"github.com/i-Things/things/src/vidsvr/viddirect"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
+	"os"
 	"time"
 )
 
@@ -56,6 +55,8 @@ type SvrClient struct {
 	UserRpc user.User
 	RoleRpc role.Role
 	MenuRpc menu.Menu
+	LogRpc  log.Log
+	ApiRpc  api.Api
 	VidmgrM vidmgrmange.VidmgrMange
 
 	ProjectM projectmanage.ProjectManage
@@ -63,14 +64,14 @@ type SvrClient struct {
 	ProductM productmanage.ProductManage
 	DeviceM  devicemanage.DeviceManage
 	DeviceA  deviceauth.DeviceAuth
+	DeviceG  devicegroup.DeviceGroup
 
 	DeviceMsg      devicemsg.DeviceMsg
 	DeviceInteract deviceinteract.DeviceInteract
-	DeviceG        devicegroup.DeviceGroup
-	RemoteConfig   remoteconfig.RemoteConfig
-	Common         common.Common
-	LogRpc         log.Log
-	ApiRpc         api.Api
+
+	RemoteConfig remoteconfig.RemoteConfig
+	Common       common.Common
+
 	Scene          scenelinkage.SceneLinkage
 	Alarm          alarmcenter.AlarmCenter
 	Timedscheduler timedscheduler.Timedscheduler
@@ -96,14 +97,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var (
 		vidmgrM  vidmgrmange.VidmgrMange
 		projectM projectmanage.ProjectManage
-		productM productmanage.ProductManage
 		areaM    areamanage.AreaManage
+		productM productmanage.ProductManage
 		deviceM  devicemanage.DeviceManage
 		deviceA  deviceauth.DeviceAuth
+		deviceG  devicegroup.DeviceGroup
 
 		deviceMsg      devicemsg.DeviceMsg
 		deviceInteract deviceinteract.DeviceInteract
-		deviceG        devicegroup.DeviceGroup
 		remoteConfig   remoteconfig.RemoteConfig
 		sysCommon      common.Common
 		scene          scenelinkage.SceneLinkage
@@ -137,7 +138,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 			productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
-			//vidmgrM = dmdirect.
 			deviceA = dmdirect.NewDeviceAuth(c.DmRpc.RunProxy)
 			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)

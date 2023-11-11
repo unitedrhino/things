@@ -20,6 +20,6 @@ func StartSendRtpPassiveHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewStartSendRtpPassiveLogic(r.Context(), svcCtx)
 		resp, err := l.StartSendRtpPassive(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

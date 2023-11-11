@@ -20,6 +20,6 @@ func DelStreamProxyHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewDelStreamProxyLogic(r.Context(), svcCtx)
 		resp, err := l.DelStreamProxy(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

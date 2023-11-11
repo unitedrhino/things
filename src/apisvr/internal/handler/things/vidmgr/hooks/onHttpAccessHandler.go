@@ -20,6 +20,6 @@ func OnHttpAccessHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := hooks.NewOnHttpAccessLogic(r.Context(), svcCtx)
 		resp, err := l.OnHttpAccess(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

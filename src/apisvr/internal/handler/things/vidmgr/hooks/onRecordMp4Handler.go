@@ -20,6 +20,6 @@ func OnRecordMp4Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := hooks.NewOnRecordMp4Logic(r.Context(), svcCtx)
 		resp, err := l.OnRecordMp4(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

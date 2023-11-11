@@ -20,6 +20,6 @@ func StartSendRtpHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewStartSendRtpLogic(r.Context(), svcCtx)
 		resp, err := l.StartSendRtp(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

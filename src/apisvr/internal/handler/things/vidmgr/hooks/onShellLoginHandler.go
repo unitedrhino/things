@@ -20,6 +20,6 @@ func OnShellLoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := hooks.NewOnShellLoginLogic(r.Context(), svcCtx)
 		resp, err := l.OnShellLogin(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

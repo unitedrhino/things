@@ -5,6 +5,7 @@ import (
 
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -29,6 +30,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 func (l *IndexLogic) Index(req *types.OtaFirmwareIndexReq) (resp *types.OtaFirmwareIndexResp, err error) {
 	indexReq := &dm.FirmwareInfoIndexReq{
 		ProductID: req.ProductID,
+		Page:      logic.ToOtaPageRpc(req.Page),
 	}
 	dmResp, err := l.svcCtx.FirmwareM.FirmwareInfoIndex(l.ctx, indexReq)
 	if err != nil {
