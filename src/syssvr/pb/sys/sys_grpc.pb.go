@@ -19,13 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	User_UserCreate_FullMethodName     = "/sys.User/userCreate"
-	User_UserIndex_FullMethodName      = "/sys.User/userIndex"
-	User_UserUpdate_FullMethodName     = "/sys.User/userUpdate"
-	User_UserRead_FullMethodName       = "/sys.User/userRead"
-	User_UserDelete_FullMethodName     = "/sys.User/userDelete"
-	User_UserLogin_FullMethodName      = "/sys.User/userLogin"
-	User_UserCheckToken_FullMethodName = "/sys.User/userCheckToken"
+	User_UserCreate_FullMethodName                 = "/sys.User/userCreate"
+	User_UserIndex_FullMethodName                  = "/sys.User/userIndex"
+	User_UserUpdate_FullMethodName                 = "/sys.User/userUpdate"
+	User_UserRead_FullMethodName                   = "/sys.User/userRead"
+	User_UserDelete_FullMethodName                 = "/sys.User/userDelete"
+	User_UserLogin_FullMethodName                  = "/sys.User/userLogin"
+	User_UserCheckToken_FullMethodName             = "/sys.User/userCheckToken"
+	User_UserRegister1_FullMethodName              = "/sys.User/userRegister1"
+	User_UserRegister2_FullMethodName              = "/sys.User/userRegister2"
+	User_UserAuthProjectMultiUpdate_FullMethodName = "/sys.User/userAuthProjectMultiUpdate"
+	User_UserAuthProjectIndex_FullMethodName       = "/sys.User/userAuthProjectIndex"
+	User_UserAuthAreaMultiUpdate_FullMethodName    = "/sys.User/userAuthAreaMultiUpdate"
+	User_UserAuthAreaIndex_FullMethodName          = "/sys.User/userAuthAreaIndex"
 )
 
 // UserClient is the client API for User service.
@@ -120,7 +126,7 @@ func (c *userClient) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, 
 
 func (c *userClient) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
 	out := new(UserRegister1Resp)
-	err := c.cc.Invoke(ctx, "/sys.User/userRegister1", in, out, opts...)
+	err := c.cc.Invoke(ctx, User_UserRegister1_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +135,7 @@ func (c *userClient) UserRegister1(ctx context.Context, in *UserRegister1Req, op
 
 func (c *userClient) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.User/userRegister2", in, out, opts...)
+	err := c.cc.Invoke(ctx, User_UserRegister2_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +144,7 @@ func (c *userClient) UserRegister2(ctx context.Context, in *UserRegister2Req, op
 
 func (c *userClient) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.User/userAuthProjectMultiUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, User_UserAuthProjectMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +153,7 @@ func (c *userClient) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAut
 
 func (c *userClient) UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error) {
 	out := new(UserAuthProjectIndexResp)
-	err := c.cc.Invoke(ctx, "/sys.User/userAuthProjectIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, User_UserAuthProjectIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -156,7 +162,7 @@ func (c *userClient) UserAuthProjectIndex(ctx context.Context, in *UserAuthProje
 
 func (c *userClient) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.User/userAuthAreaMultiUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, User_UserAuthAreaMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +171,7 @@ func (c *userClient) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAr
 
 func (c *userClient) UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error) {
 	out := new(UserAuthAreaIndexResp)
-	err := c.cc.Invoke(ctx, "/sys.User/userAuthAreaIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, User_UserAuthAreaIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -384,7 +390,7 @@ func _User_UserRegister1_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/userRegister1",
+		FullMethod: User_UserRegister1_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).UserRegister1(ctx, req.(*UserRegister1Req))
@@ -402,7 +408,7 @@ func _User_UserRegister2_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/userRegister2",
+		FullMethod: User_UserRegister2_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).UserRegister2(ctx, req.(*UserRegister2Req))
@@ -420,7 +426,7 @@ func _User_UserAuthProjectMultiUpdate_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/userAuthProjectMultiUpdate",
+		FullMethod: User_UserAuthProjectMultiUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).UserAuthProjectMultiUpdate(ctx, req.(*UserAuthProjectMultiUpdateReq))
@@ -438,7 +444,7 @@ func _User_UserAuthProjectIndex_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/userAuthProjectIndex",
+		FullMethod: User_UserAuthProjectIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).UserAuthProjectIndex(ctx, req.(*UserAuthProjectIndexReq))
@@ -456,7 +462,7 @@ func _User_UserAuthAreaMultiUpdate_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/userAuthAreaMultiUpdate",
+		FullMethod: User_UserAuthAreaMultiUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).UserAuthAreaMultiUpdate(ctx, req.(*UserAuthAreaMultiUpdateReq))
@@ -474,7 +480,7 @@ func _User_UserAuthAreaIndex_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.User/userAuthAreaIndex",
+		FullMethod: User_UserAuthAreaIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).UserAuthAreaIndex(ctx, req.(*UserAuthAreaIndexReq))
@@ -1588,19 +1594,27 @@ var Api_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "proto/sys.proto",
 }
 
+const (
+	ProjectManage_ProjectInfoCreate_FullMethodName = "/sys.ProjectManage/projectInfoCreate"
+	ProjectManage_ProjectInfoUpdate_FullMethodName = "/sys.ProjectManage/projectInfoUpdate"
+	ProjectManage_ProjectInfoDelete_FullMethodName = "/sys.ProjectManage/projectInfoDelete"
+	ProjectManage_ProjectInfoRead_FullMethodName   = "/sys.ProjectManage/projectInfoRead"
+	ProjectManage_ProjectInfoIndex_FullMethodName  = "/sys.ProjectManage/projectInfoIndex"
+)
+
 // ProjectManageClient is the client API for ProjectManage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProjectManageClient interface {
-	//新增项目
+	// 新增项目
 	ProjectInfoCreate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error)
-	//更新项目
+	// 更新项目
 	ProjectInfoUpdate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error)
-	//删除项目
+	// 删除项目
 	ProjectInfoDelete(ctx context.Context, in *ProjectInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	//获取项目信息详情
+	// 获取项目信息详情
 	ProjectInfoRead(ctx context.Context, in *ProjectInfoReadReq, opts ...grpc.CallOption) (*ProjectInfo, error)
-	//获取项目信息列表
+	// 获取项目信息列表
 	ProjectInfoIndex(ctx context.Context, in *ProjectInfoIndexReq, opts ...grpc.CallOption) (*ProjectInfoIndexResp, error)
 }
 
@@ -1614,7 +1628,7 @@ func NewProjectManageClient(cc grpc.ClientConnInterface) ProjectManageClient {
 
 func (c *projectManageClient) ProjectInfoCreate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, ProjectManage_ProjectInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1623,7 +1637,7 @@ func (c *projectManageClient) ProjectInfoCreate(ctx context.Context, in *Project
 
 func (c *projectManageClient) ProjectInfoUpdate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, ProjectManage_ProjectInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1632,7 +1646,7 @@ func (c *projectManageClient) ProjectInfoUpdate(ctx context.Context, in *Project
 
 func (c *projectManageClient) ProjectInfoDelete(ctx context.Context, in *ProjectInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, ProjectManage_ProjectInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1641,7 +1655,7 @@ func (c *projectManageClient) ProjectInfoDelete(ctx context.Context, in *Project
 
 func (c *projectManageClient) ProjectInfoRead(ctx context.Context, in *ProjectInfoReadReq, opts ...grpc.CallOption) (*ProjectInfo, error) {
 	out := new(ProjectInfo)
-	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, ProjectManage_ProjectInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1650,7 +1664,7 @@ func (c *projectManageClient) ProjectInfoRead(ctx context.Context, in *ProjectIn
 
 func (c *projectManageClient) ProjectInfoIndex(ctx context.Context, in *ProjectInfoIndexReq, opts ...grpc.CallOption) (*ProjectInfoIndexResp, error) {
 	out := new(ProjectInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/sys.ProjectManage/projectInfoIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, ProjectManage_ProjectInfoIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1661,15 +1675,15 @@ func (c *projectManageClient) ProjectInfoIndex(ctx context.Context, in *ProjectI
 // All implementations must embed UnimplementedProjectManageServer
 // for forward compatibility
 type ProjectManageServer interface {
-	//新增项目
+	// 新增项目
 	ProjectInfoCreate(context.Context, *ProjectInfo) (*Response, error)
-	//更新项目
+	// 更新项目
 	ProjectInfoUpdate(context.Context, *ProjectInfo) (*Response, error)
-	//删除项目
+	// 删除项目
 	ProjectInfoDelete(context.Context, *ProjectInfoDeleteReq) (*Response, error)
-	//获取项目信息详情
+	// 获取项目信息详情
 	ProjectInfoRead(context.Context, *ProjectInfoReadReq) (*ProjectInfo, error)
-	//获取项目信息列表
+	// 获取项目信息列表
 	ProjectInfoIndex(context.Context, *ProjectInfoIndexReq) (*ProjectInfoIndexResp, error)
 	mustEmbedUnimplementedProjectManageServer()
 }
@@ -1716,7 +1730,7 @@ func _ProjectManage_ProjectInfoCreate_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.ProjectManage/projectInfoCreate",
+		FullMethod: ProjectManage_ProjectInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProjectManageServer).ProjectInfoCreate(ctx, req.(*ProjectInfo))
@@ -1734,7 +1748,7 @@ func _ProjectManage_ProjectInfoUpdate_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.ProjectManage/projectInfoUpdate",
+		FullMethod: ProjectManage_ProjectInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProjectManageServer).ProjectInfoUpdate(ctx, req.(*ProjectInfo))
@@ -1752,7 +1766,7 @@ func _ProjectManage_ProjectInfoDelete_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.ProjectManage/projectInfoDelete",
+		FullMethod: ProjectManage_ProjectInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProjectManageServer).ProjectInfoDelete(ctx, req.(*ProjectInfoDeleteReq))
@@ -1770,7 +1784,7 @@ func _ProjectManage_ProjectInfoRead_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.ProjectManage/projectInfoRead",
+		FullMethod: ProjectManage_ProjectInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProjectManageServer).ProjectInfoRead(ctx, req.(*ProjectInfoReadReq))
@@ -1788,7 +1802,7 @@ func _ProjectManage_ProjectInfoIndex_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.ProjectManage/projectInfoIndex",
+		FullMethod: ProjectManage_ProjectInfoIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProjectManageServer).ProjectInfoIndex(ctx, req.(*ProjectInfoIndexReq))
@@ -1828,21 +1842,30 @@ var ProjectManage_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "proto/sys.proto",
 }
 
+const (
+	AreaManage_AreaInfoCreate_FullMethodName = "/sys.AreaManage/areaInfoCreate"
+	AreaManage_AreaInfoUpdate_FullMethodName = "/sys.AreaManage/areaInfoUpdate"
+	AreaManage_AreaInfoDelete_FullMethodName = "/sys.AreaManage/areaInfoDelete"
+	AreaManage_AreaInfoRead_FullMethodName   = "/sys.AreaManage/areaInfoRead"
+	AreaManage_AreaInfoIndex_FullMethodName  = "/sys.AreaManage/areaInfoIndex"
+	AreaManage_AreaInfoTree_FullMethodName   = "/sys.AreaManage/areaInfoTree"
+)
+
 // AreaManageClient is the client API for AreaManage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AreaManageClient interface {
-	//新增区域
+	// 新增区域
 	AreaInfoCreate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error)
-	//更新区域
+	// 更新区域
 	AreaInfoUpdate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error)
-	//删除区域
+	// 删除区域
 	AreaInfoDelete(ctx context.Context, in *AreaInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	//获取区域信息详情
+	// 获取区域信息详情
 	AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error)
-	//获取区域信息列表
+	// 获取区域信息列表
 	AreaInfoIndex(ctx context.Context, in *AreaInfoIndexReq, opts ...grpc.CallOption) (*AreaInfoIndexResp, error)
-	//获取区域信息树
+	// 获取区域信息树
 	AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq, opts ...grpc.CallOption) (*AreaInfoTreeResp, error)
 }
 
@@ -1856,7 +1879,7 @@ func NewAreaManageClient(cc grpc.ClientConnInterface) AreaManageClient {
 
 func (c *areaManageClient) AreaInfoCreate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, AreaManage_AreaInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1865,7 +1888,7 @@ func (c *areaManageClient) AreaInfoCreate(ctx context.Context, in *AreaInfo, opt
 
 func (c *areaManageClient) AreaInfoUpdate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, AreaManage_AreaInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1874,7 +1897,7 @@ func (c *areaManageClient) AreaInfoUpdate(ctx context.Context, in *AreaInfo, opt
 
 func (c *areaManageClient) AreaInfoDelete(ctx context.Context, in *AreaInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, AreaManage_AreaInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1883,7 +1906,7 @@ func (c *areaManageClient) AreaInfoDelete(ctx context.Context, in *AreaInfoDelet
 
 func (c *areaManageClient) AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error) {
 	out := new(AreaInfo)
-	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, AreaManage_AreaInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1892,7 +1915,7 @@ func (c *areaManageClient) AreaInfoRead(ctx context.Context, in *AreaInfoReadReq
 
 func (c *areaManageClient) AreaInfoIndex(ctx context.Context, in *AreaInfoIndexReq, opts ...grpc.CallOption) (*AreaInfoIndexResp, error) {
 	out := new(AreaInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, AreaManage_AreaInfoIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1901,7 +1924,7 @@ func (c *areaManageClient) AreaInfoIndex(ctx context.Context, in *AreaInfoIndexR
 
 func (c *areaManageClient) AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq, opts ...grpc.CallOption) (*AreaInfoTreeResp, error) {
 	out := new(AreaInfoTreeResp)
-	err := c.cc.Invoke(ctx, "/sys.AreaManage/areaInfoTree", in, out, opts...)
+	err := c.cc.Invoke(ctx, AreaManage_AreaInfoTree_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1912,17 +1935,17 @@ func (c *areaManageClient) AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq
 // All implementations must embed UnimplementedAreaManageServer
 // for forward compatibility
 type AreaManageServer interface {
-	//新增区域
+	// 新增区域
 	AreaInfoCreate(context.Context, *AreaInfo) (*Response, error)
-	//更新区域
+	// 更新区域
 	AreaInfoUpdate(context.Context, *AreaInfo) (*Response, error)
-	//删除区域
+	// 删除区域
 	AreaInfoDelete(context.Context, *AreaInfoDeleteReq) (*Response, error)
-	//获取区域信息详情
+	// 获取区域信息详情
 	AreaInfoRead(context.Context, *AreaInfoReadReq) (*AreaInfo, error)
-	//获取区域信息列表
+	// 获取区域信息列表
 	AreaInfoIndex(context.Context, *AreaInfoIndexReq) (*AreaInfoIndexResp, error)
-	//获取区域信息树
+	// 获取区域信息树
 	AreaInfoTree(context.Context, *AreaInfoTreeReq) (*AreaInfoTreeResp, error)
 	mustEmbedUnimplementedAreaManageServer()
 }
@@ -1972,7 +1995,7 @@ func _AreaManage_AreaInfoCreate_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.AreaManage/areaInfoCreate",
+		FullMethod: AreaManage_AreaInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AreaManageServer).AreaInfoCreate(ctx, req.(*AreaInfo))
@@ -1990,7 +2013,7 @@ func _AreaManage_AreaInfoUpdate_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.AreaManage/areaInfoUpdate",
+		FullMethod: AreaManage_AreaInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AreaManageServer).AreaInfoUpdate(ctx, req.(*AreaInfo))
@@ -2008,7 +2031,7 @@ func _AreaManage_AreaInfoDelete_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.AreaManage/areaInfoDelete",
+		FullMethod: AreaManage_AreaInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AreaManageServer).AreaInfoDelete(ctx, req.(*AreaInfoDeleteReq))
@@ -2026,7 +2049,7 @@ func _AreaManage_AreaInfoRead_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.AreaManage/areaInfoRead",
+		FullMethod: AreaManage_AreaInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AreaManageServer).AreaInfoRead(ctx, req.(*AreaInfoReadReq))
@@ -2044,7 +2067,7 @@ func _AreaManage_AreaInfoIndex_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.AreaManage/areaInfoIndex",
+		FullMethod: AreaManage_AreaInfoIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AreaManageServer).AreaInfoIndex(ctx, req.(*AreaInfoIndexReq))
@@ -2062,7 +2085,7 @@ func _AreaManage_AreaInfoTree_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sys.AreaManage/areaInfoTree",
+		FullMethod: AreaManage_AreaInfoTree_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AreaManageServer).AreaInfoTree(ctx, req.(*AreaInfoTreeReq))

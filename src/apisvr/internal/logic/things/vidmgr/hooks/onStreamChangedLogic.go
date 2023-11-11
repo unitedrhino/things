@@ -25,7 +25,7 @@ func NewOnStreamChangedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *O
 	}
 }
 
-func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedResp) (resp *types.HooksApiResp, err error) {
+func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedRep) (resp *types.HooksApiResp, err error) {
 	// todo: add your logic here and delete this line
 	reqStr, _ := json.Marshal(*req)
 
