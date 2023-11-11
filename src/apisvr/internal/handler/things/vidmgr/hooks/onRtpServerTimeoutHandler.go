@@ -20,6 +20,6 @@ func OnRtpServerTimeoutHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := hooks.NewOnRtpServerTimeoutLogic(r.Context(), svcCtx)
 		resp, err := l.OnRtpServerTimeout(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

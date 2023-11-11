@@ -48,9 +48,9 @@ func (l *VidmgrInfoCountLogic) VidmgrInfoCount(in *vid.VidmgrInfoCountReq) (*vid
 		return nil, err
 	}
 
-	onlineCount := VidmgrCount[fmt.Sprintf("%d", def.StatusOnline)]
-	offlineCount := VidmgrCount[fmt.Sprintf("%d", def.StatusOffline)]
-	InactiveCount := VidmgrCount[fmt.Sprintf("%d", def.StatusInactive)]
+	onlineCount := VidmgrCount[fmt.Sprintf("%d", def.DeviceStatusOnline)]
+	offlineCount := VidmgrCount[fmt.Sprintf("%d", def.DeviceStatusOffline)]
+	InactiveCount := VidmgrCount[fmt.Sprintf("%d", def.DeviceStatusInactive)]
 	var allCount int64
 	for _, v := range VidmgrCount {
 		allCount += v

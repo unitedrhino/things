@@ -20,6 +20,6 @@ func RestartServerHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewRestartServerLogic(r.Context(), svcCtx)
 		resp, err := l.RestartServer(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

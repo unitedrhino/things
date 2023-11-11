@@ -20,6 +20,6 @@ func GetServerConfigHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewGetServerConfigLogic(r.Context(), svcCtx)
 		resp, err := l.GetServerConfig(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

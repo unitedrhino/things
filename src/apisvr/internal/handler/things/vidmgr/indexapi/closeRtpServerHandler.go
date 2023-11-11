@@ -20,6 +20,6 @@ func CloseRtpServerHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewCloseRtpServerLogic(r.Context(), svcCtx)
 		resp, err := l.CloseRtpServer(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

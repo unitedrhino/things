@@ -3,7 +3,7 @@ package indexapi
 import (
 	"context"
 	"fmt"
-	zlmediakitapi "github.com/i-Things/things/shared/api/zlmediakit"
+	zlmediakitapi "github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/svc"

@@ -25,7 +25,8 @@ goctl env check -i -f
 # api网关接口代理模块-apisvr
 
 ```shell
-cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero -ws  && cd ..
+#cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ..
+cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero -ws && cd ..
 ```
 
 # 系统管理模块-syssvr
@@ -69,6 +70,12 @@ cd ddsvr && goctl api go -api http/dd.api  -dir ./ --style=goZero && cd ..
 cd rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
 
+- model文件编译
+
+```shell
+cd rulesvr && goctl model mysql ddl -src="../../deploy/conf/mysql/sql/rulesvr.sql"  --style=goZero -dir ./internal/repo/mysql -i updatedTime,deletedTime,createdTime && cd ..
+```
+
 # 视频管理引擎模块-vidsvr
 
 - rpc文件编译
@@ -77,7 +84,6 @@ cd rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --
 #protoc  proto/* --go_out=. --go-grpc_out=.
 cd vidsvr && goctl rpc protoc  proto/vid.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
-
 
 
 # 定时生产者引擎模块-timedschedulersvr

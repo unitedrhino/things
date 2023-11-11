@@ -20,6 +20,6 @@ func CloseStreamHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewCloseStreamLogic(r.Context(), svcCtx)
 		resp, err := l.CloseStream(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

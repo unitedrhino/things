@@ -30,10 +30,3 @@ const (
 	DeviceStatusOnline   DeviceStatus = 1 //在线
 	DeviceStatusOffline  DeviceStatus = 2 //离线
 )
-
-// 视频设备状态
-const (
-	StatusInactive int64 = 0 // 未激活
-	StatusOnline   int64 = 1 //在线
-	StatusOffline  int64 = 2 //离线
-)

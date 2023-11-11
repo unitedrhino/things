@@ -20,6 +20,6 @@ func GetRtpInfoHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewGetRtpInfoLogic(r.Context(), svcCtx)
 		resp, err := l.GetRtpInfo(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }
