@@ -25,6 +25,7 @@ const (
 	DeviceMsg_PropertyLogIndex_FullMethodName    = "/di.DeviceMsg/propertyLogIndex"
 	DeviceMsg_EventLogIndex_FullMethodName       = "/di.DeviceMsg/eventLogIndex"
 	DeviceMsg_ShadowIndex_FullMethodName         = "/di.DeviceMsg/shadowIndex"
+	DeviceMsg_OtaPromptIndex_FullMethodName      = "/di.DeviceMsg/otaPromptIndex"
 )
 
 // DeviceMsgClient is the client API for DeviceMsg service.
@@ -43,7 +44,7 @@ type DeviceMsgClient interface {
 	EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error)
 	// 获取设备影子列表
 	ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
-	//主动触发单个设备ota升级推送
+	// 主动触发单个设备ota升级推送
 	OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error)
 }
 
@@ -111,7 +112,7 @@ func (c *deviceMsgClient) ShadowIndex(ctx context.Context, in *PropertyLatestInd
 
 func (c *deviceMsgClient) OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error) {
 	out := new(OtaPromptIndexResp)
-	err := c.cc.Invoke(ctx, "/di.DeviceMsg/otaPromptIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, DeviceMsg_OtaPromptIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,7 @@ type DeviceMsgServer interface {
 	EventLogIndex(context.Context, *EventLogIndexReq) (*EventIndexResp, error)
 	// 获取设备影子列表
 	ShadowIndex(context.Context, *PropertyLatestIndexReq) (*ShadowIndexResp, error)
-	//主动触发单个设备ota升级推送
+	// 主动触发单个设备ota升级推送
 	OtaPromptIndex(context.Context, *OtaPromptIndexReq) (*OtaPromptIndexResp, error)
 	mustEmbedUnimplementedDeviceMsgServer()
 }
@@ -295,7 +296,7 @@ func _DeviceMsg_OtaPromptIndex_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/di.DeviceMsg/otaPromptIndex",
+		FullMethod: DeviceMsg_OtaPromptIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceMsgServer).OtaPromptIndex(ctx, req.(*OtaPromptIndexReq))

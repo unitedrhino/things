@@ -1796,21 +1796,32 @@ var RemoteConfig_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "proto/dm.proto",
 }
 
+const (
+	FirmwareManage_FirmwareInfoCreate_FullMethodName    = "/dm.FirmwareManage/FirmwareInfoCreate"
+	FirmwareManage_FirmwareInfoUpdate_FullMethodName    = "/dm.FirmwareManage/FirmwareInfoUpdate"
+	FirmwareManage_FirmwareInfoDelete_FullMethodName    = "/dm.FirmwareManage/FirmwareInfoDelete"
+	FirmwareManage_FirmwareInfoIndex_FullMethodName     = "/dm.FirmwareManage/FirmwareInfoIndex"
+	FirmwareManage_FirmwareInfoRead_FullMethodName      = "/dm.FirmwareManage/FirmwareInfoRead"
+	FirmwareManage_OtaFirmwareFileUpdate_FullMethodName = "/dm.FirmwareManage/OtaFirmwareFileUpdate"
+	FirmwareManage_OtaFirmwareFileIndex_FullMethodName  = "/dm.FirmwareManage/OtaFirmwareFileIndex"
+	FirmwareManage_OtaFirmwareDeviceInfo_FullMethodName = "/dm.FirmwareManage/OtaFirmwareDeviceInfo"
+)
+
 // FirmwareManageClient is the client API for FirmwareManage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FirmwareManageClient interface {
-	//新增固件升级包
+	// 新增固件升级包
 	FirmwareInfoCreate(ctx context.Context, in *Firmware, opts ...grpc.CallOption) (*FirmwareResp, error)
 	FirmwareInfoUpdate(ctx context.Context, in *FirmwareInfo, opts ...grpc.CallOption) (*OtaCommonResp, error)
 	FirmwareInfoDelete(ctx context.Context, in *FirmwareInfoDeleteReq, opts ...grpc.CallOption) (*FirmwareInfoDeleteResp, error)
 	FirmwareInfoIndex(ctx context.Context, in *FirmwareInfoIndexReq, opts ...grpc.CallOption) (*FirmwareInfoIndexResp, error)
 	FirmwareInfoRead(ctx context.Context, in *FirmwareInfoReadReq, opts ...grpc.CallOption) (*FirmwareInfoReadResp, error)
-	//附件信息更新
+	// 附件信息更新
 	OtaFirmwareFileUpdate(ctx context.Context, in *OtaFirmwareFileReq, opts ...grpc.CallOption) (*OtaFirmwareFileResp, error)
-	//附件列表搜索
+	// 附件列表搜索
 	OtaFirmwareFileIndex(ctx context.Context, in *OtaFirmwareFileIndexReq, opts ...grpc.CallOption) (*OtaFirmwareFileIndexResp, error)
-	//获取固件包对应设备版本列表
+	// 获取固件包对应设备版本列表
 	OtaFirmwareDeviceInfo(ctx context.Context, in *OtaFirmwareDeviceInfoReq, opts ...grpc.CallOption) (*OtaFirmwareDeviceInfoResp, error)
 }
 
@@ -1824,7 +1835,7 @@ func NewFirmwareManageClient(cc grpc.ClientConnInterface) FirmwareManageClient {
 
 func (c *firmwareManageClient) FirmwareInfoCreate(ctx context.Context, in *Firmware, opts ...grpc.CallOption) (*FirmwareResp, error) {
 	out := new(FirmwareResp)
-	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, FirmwareManage_FirmwareInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1833,7 +1844,7 @@ func (c *firmwareManageClient) FirmwareInfoCreate(ctx context.Context, in *Firmw
 
 func (c *firmwareManageClient) FirmwareInfoUpdate(ctx context.Context, in *FirmwareInfo, opts ...grpc.CallOption) (*OtaCommonResp, error) {
 	out := new(OtaCommonResp)
-	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, FirmwareManage_FirmwareInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1842,7 +1853,7 @@ func (c *firmwareManageClient) FirmwareInfoUpdate(ctx context.Context, in *Firmw
 
 func (c *firmwareManageClient) FirmwareInfoDelete(ctx context.Context, in *FirmwareInfoDeleteReq, opts ...grpc.CallOption) (*FirmwareInfoDeleteResp, error) {
 	out := new(FirmwareInfoDeleteResp)
-	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, FirmwareManage_FirmwareInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1851,7 +1862,7 @@ func (c *firmwareManageClient) FirmwareInfoDelete(ctx context.Context, in *Firmw
 
 func (c *firmwareManageClient) FirmwareInfoIndex(ctx context.Context, in *FirmwareInfoIndexReq, opts ...grpc.CallOption) (*FirmwareInfoIndexResp, error) {
 	out := new(FirmwareInfoIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, FirmwareManage_FirmwareInfoIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1860,7 +1871,7 @@ func (c *firmwareManageClient) FirmwareInfoIndex(ctx context.Context, in *Firmwa
 
 func (c *firmwareManageClient) FirmwareInfoRead(ctx context.Context, in *FirmwareInfoReadReq, opts ...grpc.CallOption) (*FirmwareInfoReadResp, error) {
 	out := new(FirmwareInfoReadResp)
-	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/FirmwareInfoRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, FirmwareManage_FirmwareInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1869,7 +1880,7 @@ func (c *firmwareManageClient) FirmwareInfoRead(ctx context.Context, in *Firmwar
 
 func (c *firmwareManageClient) OtaFirmwareFileUpdate(ctx context.Context, in *OtaFirmwareFileReq, opts ...grpc.CallOption) (*OtaFirmwareFileResp, error) {
 	out := new(OtaFirmwareFileResp)
-	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/OtaFirmwareFileUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, FirmwareManage_OtaFirmwareFileUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1878,7 +1889,7 @@ func (c *firmwareManageClient) OtaFirmwareFileUpdate(ctx context.Context, in *Ot
 
 func (c *firmwareManageClient) OtaFirmwareFileIndex(ctx context.Context, in *OtaFirmwareFileIndexReq, opts ...grpc.CallOption) (*OtaFirmwareFileIndexResp, error) {
 	out := new(OtaFirmwareFileIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/OtaFirmwareFileIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, FirmwareManage_OtaFirmwareFileIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1887,7 +1898,7 @@ func (c *firmwareManageClient) OtaFirmwareFileIndex(ctx context.Context, in *Ota
 
 func (c *firmwareManageClient) OtaFirmwareDeviceInfo(ctx context.Context, in *OtaFirmwareDeviceInfoReq, opts ...grpc.CallOption) (*OtaFirmwareDeviceInfoResp, error) {
 	out := new(OtaFirmwareDeviceInfoResp)
-	err := c.cc.Invoke(ctx, "/dm.FirmwareManage/OtaFirmwareDeviceInfo", in, out, opts...)
+	err := c.cc.Invoke(ctx, FirmwareManage_OtaFirmwareDeviceInfo_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1898,17 +1909,17 @@ func (c *firmwareManageClient) OtaFirmwareDeviceInfo(ctx context.Context, in *Ot
 // All implementations must embed UnimplementedFirmwareManageServer
 // for forward compatibility
 type FirmwareManageServer interface {
-	//新增固件升级包
+	// 新增固件升级包
 	FirmwareInfoCreate(context.Context, *Firmware) (*FirmwareResp, error)
 	FirmwareInfoUpdate(context.Context, *FirmwareInfo) (*OtaCommonResp, error)
 	FirmwareInfoDelete(context.Context, *FirmwareInfoDeleteReq) (*FirmwareInfoDeleteResp, error)
 	FirmwareInfoIndex(context.Context, *FirmwareInfoIndexReq) (*FirmwareInfoIndexResp, error)
 	FirmwareInfoRead(context.Context, *FirmwareInfoReadReq) (*FirmwareInfoReadResp, error)
-	//附件信息更新
+	// 附件信息更新
 	OtaFirmwareFileUpdate(context.Context, *OtaFirmwareFileReq) (*OtaFirmwareFileResp, error)
-	//附件列表搜索
+	// 附件列表搜索
 	OtaFirmwareFileIndex(context.Context, *OtaFirmwareFileIndexReq) (*OtaFirmwareFileIndexResp, error)
-	//获取固件包对应设备版本列表
+	// 获取固件包对应设备版本列表
 	OtaFirmwareDeviceInfo(context.Context, *OtaFirmwareDeviceInfoReq) (*OtaFirmwareDeviceInfoResp, error)
 	mustEmbedUnimplementedFirmwareManageServer()
 }
@@ -1964,7 +1975,7 @@ func _FirmwareManage_FirmwareInfoCreate_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.FirmwareManage/FirmwareInfoCreate",
+		FullMethod: FirmwareManage_FirmwareInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FirmwareManageServer).FirmwareInfoCreate(ctx, req.(*Firmware))
@@ -1982,7 +1993,7 @@ func _FirmwareManage_FirmwareInfoUpdate_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.FirmwareManage/FirmwareInfoUpdate",
+		FullMethod: FirmwareManage_FirmwareInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FirmwareManageServer).FirmwareInfoUpdate(ctx, req.(*FirmwareInfo))
@@ -2000,7 +2011,7 @@ func _FirmwareManage_FirmwareInfoDelete_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.FirmwareManage/FirmwareInfoDelete",
+		FullMethod: FirmwareManage_FirmwareInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FirmwareManageServer).FirmwareInfoDelete(ctx, req.(*FirmwareInfoDeleteReq))
@@ -2018,7 +2029,7 @@ func _FirmwareManage_FirmwareInfoIndex_Handler(srv interface{}, ctx context.Cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.FirmwareManage/FirmwareInfoIndex",
+		FullMethod: FirmwareManage_FirmwareInfoIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FirmwareManageServer).FirmwareInfoIndex(ctx, req.(*FirmwareInfoIndexReq))
@@ -2036,7 +2047,7 @@ func _FirmwareManage_FirmwareInfoRead_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.FirmwareManage/FirmwareInfoRead",
+		FullMethod: FirmwareManage_FirmwareInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FirmwareManageServer).FirmwareInfoRead(ctx, req.(*FirmwareInfoReadReq))
@@ -2054,7 +2065,7 @@ func _FirmwareManage_OtaFirmwareFileUpdate_Handler(srv interface{}, ctx context.
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.FirmwareManage/OtaFirmwareFileUpdate",
+		FullMethod: FirmwareManage_OtaFirmwareFileUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FirmwareManageServer).OtaFirmwareFileUpdate(ctx, req.(*OtaFirmwareFileReq))
@@ -2072,7 +2083,7 @@ func _FirmwareManage_OtaFirmwareFileIndex_Handler(srv interface{}, ctx context.C
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.FirmwareManage/OtaFirmwareFileIndex",
+		FullMethod: FirmwareManage_OtaFirmwareFileIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FirmwareManageServer).OtaFirmwareFileIndex(ctx, req.(*OtaFirmwareFileIndexReq))
@@ -2090,7 +2101,7 @@ func _FirmwareManage_OtaFirmwareDeviceInfo_Handler(srv interface{}, ctx context.
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.FirmwareManage/OtaFirmwareDeviceInfo",
+		FullMethod: FirmwareManage_OtaFirmwareDeviceInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FirmwareManageServer).OtaFirmwareDeviceInfo(ctx, req.(*OtaFirmwareDeviceInfoReq))
@@ -2142,27 +2153,40 @@ var FirmwareManage_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "proto/dm.proto",
 }
 
+const (
+	OtaTaskManage_OtaTaskCreate_FullMethodName            = "/dm.OtaTaskManage/OtaTaskCreate"
+	OtaTaskManage_OtaTaskUpdate_FullMethodName            = "/dm.OtaTaskManage/OtaTaskUpdate"
+	OtaTaskManage_OtaTaskCancle_FullMethodName            = "/dm.OtaTaskManage/OtaTaskCancle"
+	OtaTaskManage_OtaTaskIndex_FullMethodName             = "/dm.OtaTaskManage/OtaTaskIndex"
+	OtaTaskManage_OtaTaskRead_FullMethodName              = "/dm.OtaTaskManage/OtaTaskRead"
+	OtaTaskManage_OtaTaskDeviceIndex_FullMethodName       = "/dm.OtaTaskManage/OtaTaskDeviceIndex"
+	OtaTaskManage_OtaTaskDeviceRead_FullMethodName        = "/dm.OtaTaskManage/OtaTaskDeviceRead"
+	OtaTaskManage_OtaTaskDeviceEnableBatch_FullMethodName = "/dm.OtaTaskManage/OtaTaskDeviceEnableBatch"
+	OtaTaskManage_OtaTaskDeviceProcess_FullMethodName     = "/dm.OtaTaskManage/OtaTaskDeviceProcess"
+	OtaTaskManage_OtaTaskDeviceCancle_FullMethodName      = "/dm.OtaTaskManage/OtaTaskDeviceCancle"
+)
+
 // OtaTaskManageClient is the client API for OtaTaskManage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OtaTaskManageClient interface {
-	//创建批量升级任务
+	// 创建批量升级任务
 	OtaTaskCreate(ctx context.Context, in *OtaTaskCreateReq, opts ...grpc.CallOption) (*OtaTaskCreatResp, error)
 	OtaTaskUpdate(ctx context.Context, in *OtaTaskInfo, opts ...grpc.CallOption) (*OtaCommonResp, error)
-	//批量取消升级任务
+	// 批量取消升级任务
 	OtaTaskCancle(ctx context.Context, in *OtaTaskCancleReq, opts ...grpc.CallOption) (*OtaCommonResp, error)
 	OtaTaskIndex(ctx context.Context, in *OtaTaskIndexReq, opts ...grpc.CallOption) (*OtaTaskIndexResp, error)
-	//升级任务详情
+	// 升级任务详情
 	OtaTaskRead(ctx context.Context, in *OtaTaskReadReq, opts ...grpc.CallOption) (*OtaTaskReadResp, error)
-	//升级批次详情列表
+	// 升级批次详情列表
 	OtaTaskDeviceIndex(ctx context.Context, in *OtaTaskDeviceIndexReq, opts ...grpc.CallOption) (*OtaTaskDeviceIndexResp, error)
-	//设备升级状态详情
+	// 设备升级状态详情
 	OtaTaskDeviceRead(ctx context.Context, in *OtaTaskDeviceReadReq, opts ...grpc.CallOption) (*OtaTaskDeviceInfo, error)
-	//获取当前可执行批次信息
+	// 获取当前可执行批次信息
 	OtaTaskDeviceEnableBatch(ctx context.Context, in *OtaTaskBatchReq, opts ...grpc.CallOption) (*OtaTaskBatchResp, error)
-	//升级进度上报
+	// 升级进度上报
 	OtaTaskDeviceProcess(ctx context.Context, in *OtaTaskDeviceProcessReq, opts ...grpc.CallOption) (*OtaCommonResp, error)
-	//取消单个设备的升级
+	// 取消单个设备的升级
 	OtaTaskDeviceCancle(ctx context.Context, in *OtaTaskDeviceCancleReq, opts ...grpc.CallOption) (*OtaCommonResp, error)
 }
 
@@ -2176,7 +2200,7 @@ func NewOtaTaskManageClient(cc grpc.ClientConnInterface) OtaTaskManageClient {
 
 func (c *otaTaskManageClient) OtaTaskCreate(ctx context.Context, in *OtaTaskCreateReq, opts ...grpc.CallOption) (*OtaTaskCreatResp, error) {
 	out := new(OtaTaskCreatResp)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2185,7 +2209,7 @@ func (c *otaTaskManageClient) OtaTaskCreate(ctx context.Context, in *OtaTaskCrea
 
 func (c *otaTaskManageClient) OtaTaskUpdate(ctx context.Context, in *OtaTaskInfo, opts ...grpc.CallOption) (*OtaCommonResp, error) {
 	out := new(OtaCommonResp)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2194,7 +2218,7 @@ func (c *otaTaskManageClient) OtaTaskUpdate(ctx context.Context, in *OtaTaskInfo
 
 func (c *otaTaskManageClient) OtaTaskCancle(ctx context.Context, in *OtaTaskCancleReq, opts ...grpc.CallOption) (*OtaCommonResp, error) {
 	out := new(OtaCommonResp)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskCancle", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskCancle_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2203,7 +2227,7 @@ func (c *otaTaskManageClient) OtaTaskCancle(ctx context.Context, in *OtaTaskCanc
 
 func (c *otaTaskManageClient) OtaTaskIndex(ctx context.Context, in *OtaTaskIndexReq, opts ...grpc.CallOption) (*OtaTaskIndexResp, error) {
 	out := new(OtaTaskIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2212,7 +2236,7 @@ func (c *otaTaskManageClient) OtaTaskIndex(ctx context.Context, in *OtaTaskIndex
 
 func (c *otaTaskManageClient) OtaTaskRead(ctx context.Context, in *OtaTaskReadReq, opts ...grpc.CallOption) (*OtaTaskReadResp, error) {
 	out := new(OtaTaskReadResp)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2221,7 +2245,7 @@ func (c *otaTaskManageClient) OtaTaskRead(ctx context.Context, in *OtaTaskReadRe
 
 func (c *otaTaskManageClient) OtaTaskDeviceIndex(ctx context.Context, in *OtaTaskDeviceIndexReq, opts ...grpc.CallOption) (*OtaTaskDeviceIndexResp, error) {
 	out := new(OtaTaskDeviceIndexResp)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskDeviceIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2230,7 +2254,7 @@ func (c *otaTaskManageClient) OtaTaskDeviceIndex(ctx context.Context, in *OtaTas
 
 func (c *otaTaskManageClient) OtaTaskDeviceRead(ctx context.Context, in *OtaTaskDeviceReadReq, opts ...grpc.CallOption) (*OtaTaskDeviceInfo, error) {
 	out := new(OtaTaskDeviceInfo)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskDeviceRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2239,7 +2263,7 @@ func (c *otaTaskManageClient) OtaTaskDeviceRead(ctx context.Context, in *OtaTask
 
 func (c *otaTaskManageClient) OtaTaskDeviceEnableBatch(ctx context.Context, in *OtaTaskBatchReq, opts ...grpc.CallOption) (*OtaTaskBatchResp, error) {
 	out := new(OtaTaskBatchResp)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceEnableBatch", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskDeviceEnableBatch_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2248,7 +2272,7 @@ func (c *otaTaskManageClient) OtaTaskDeviceEnableBatch(ctx context.Context, in *
 
 func (c *otaTaskManageClient) OtaTaskDeviceProcess(ctx context.Context, in *OtaTaskDeviceProcessReq, opts ...grpc.CallOption) (*OtaCommonResp, error) {
 	out := new(OtaCommonResp)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceProcess", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskDeviceProcess_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2257,7 +2281,7 @@ func (c *otaTaskManageClient) OtaTaskDeviceProcess(ctx context.Context, in *OtaT
 
 func (c *otaTaskManageClient) OtaTaskDeviceCancle(ctx context.Context, in *OtaTaskDeviceCancleReq, opts ...grpc.CallOption) (*OtaCommonResp, error) {
 	out := new(OtaCommonResp)
-	err := c.cc.Invoke(ctx, "/dm.OtaTaskManage/OtaTaskDeviceCancle", in, out, opts...)
+	err := c.cc.Invoke(ctx, OtaTaskManage_OtaTaskDeviceCancle_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2268,23 +2292,23 @@ func (c *otaTaskManageClient) OtaTaskDeviceCancle(ctx context.Context, in *OtaTa
 // All implementations must embed UnimplementedOtaTaskManageServer
 // for forward compatibility
 type OtaTaskManageServer interface {
-	//创建批量升级任务
+	// 创建批量升级任务
 	OtaTaskCreate(context.Context, *OtaTaskCreateReq) (*OtaTaskCreatResp, error)
 	OtaTaskUpdate(context.Context, *OtaTaskInfo) (*OtaCommonResp, error)
-	//批量取消升级任务
+	// 批量取消升级任务
 	OtaTaskCancle(context.Context, *OtaTaskCancleReq) (*OtaCommonResp, error)
 	OtaTaskIndex(context.Context, *OtaTaskIndexReq) (*OtaTaskIndexResp, error)
-	//升级任务详情
+	// 升级任务详情
 	OtaTaskRead(context.Context, *OtaTaskReadReq) (*OtaTaskReadResp, error)
-	//升级批次详情列表
+	// 升级批次详情列表
 	OtaTaskDeviceIndex(context.Context, *OtaTaskDeviceIndexReq) (*OtaTaskDeviceIndexResp, error)
-	//设备升级状态详情
+	// 设备升级状态详情
 	OtaTaskDeviceRead(context.Context, *OtaTaskDeviceReadReq) (*OtaTaskDeviceInfo, error)
-	//获取当前可执行批次信息
+	// 获取当前可执行批次信息
 	OtaTaskDeviceEnableBatch(context.Context, *OtaTaskBatchReq) (*OtaTaskBatchResp, error)
-	//升级进度上报
+	// 升级进度上报
 	OtaTaskDeviceProcess(context.Context, *OtaTaskDeviceProcessReq) (*OtaCommonResp, error)
-	//取消单个设备的升级
+	// 取消单个设备的升级
 	OtaTaskDeviceCancle(context.Context, *OtaTaskDeviceCancleReq) (*OtaCommonResp, error)
 	mustEmbedUnimplementedOtaTaskManageServer()
 }
@@ -2346,7 +2370,7 @@ func _OtaTaskManage_OtaTaskCreate_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskCreate",
+		FullMethod: OtaTaskManage_OtaTaskCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskCreate(ctx, req.(*OtaTaskCreateReq))
@@ -2364,7 +2388,7 @@ func _OtaTaskManage_OtaTaskUpdate_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskUpdate",
+		FullMethod: OtaTaskManage_OtaTaskUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskUpdate(ctx, req.(*OtaTaskInfo))
@@ -2382,7 +2406,7 @@ func _OtaTaskManage_OtaTaskCancle_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskCancle",
+		FullMethod: OtaTaskManage_OtaTaskCancle_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskCancle(ctx, req.(*OtaTaskCancleReq))
@@ -2400,7 +2424,7 @@ func _OtaTaskManage_OtaTaskIndex_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskIndex",
+		FullMethod: OtaTaskManage_OtaTaskIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskIndex(ctx, req.(*OtaTaskIndexReq))
@@ -2418,7 +2442,7 @@ func _OtaTaskManage_OtaTaskRead_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskRead",
+		FullMethod: OtaTaskManage_OtaTaskRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskRead(ctx, req.(*OtaTaskReadReq))
@@ -2436,7 +2460,7 @@ func _OtaTaskManage_OtaTaskDeviceIndex_Handler(srv interface{}, ctx context.Cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceIndex",
+		FullMethod: OtaTaskManage_OtaTaskDeviceIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskDeviceIndex(ctx, req.(*OtaTaskDeviceIndexReq))
@@ -2454,7 +2478,7 @@ func _OtaTaskManage_OtaTaskDeviceRead_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceRead",
+		FullMethod: OtaTaskManage_OtaTaskDeviceRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskDeviceRead(ctx, req.(*OtaTaskDeviceReadReq))
@@ -2472,7 +2496,7 @@ func _OtaTaskManage_OtaTaskDeviceEnableBatch_Handler(srv interface{}, ctx contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceEnableBatch",
+		FullMethod: OtaTaskManage_OtaTaskDeviceEnableBatch_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskDeviceEnableBatch(ctx, req.(*OtaTaskBatchReq))
@@ -2490,7 +2514,7 @@ func _OtaTaskManage_OtaTaskDeviceProcess_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceProcess",
+		FullMethod: OtaTaskManage_OtaTaskDeviceProcess_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskDeviceProcess(ctx, req.(*OtaTaskDeviceProcessReq))
@@ -2508,7 +2532,7 @@ func _OtaTaskManage_OtaTaskDeviceCancle_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.OtaTaskManage/OtaTaskDeviceCancle",
+		FullMethod: OtaTaskManage_OtaTaskDeviceCancle_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaTaskManageServer).OtaTaskDeviceCancle(ctx, req.(*OtaTaskDeviceCancleReq))
