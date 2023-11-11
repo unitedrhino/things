@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -35,10 +34,5 @@ func (l *RootCheckLogic) RootCheck(req *types.DeviceAuthRootCheckReq) error {
 		Ip:          req.Ip,
 		Certificate: req.Certificate,
 	})
-	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.RootCheck req=%v err=%v", utils.FuncName(), req, er)
-		return er
-	}
-	return nil
+	return err
 }
