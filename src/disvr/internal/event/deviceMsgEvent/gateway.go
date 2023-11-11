@@ -11,6 +11,7 @@ import (
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgGateway"
 	"github.com/i-Things/things/src/disvr/internal/domain/deviceMsg/msgHubLog"
+	"github.com/i-Things/things/src/disvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/src/disvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -219,37 +220,51 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 	}
 	resp.AddStatus(errors.OK)
 	var (
-		isOnline   = int64(def.False)
+		isOnline   int64
 		payload    msgGateway.GatewayPayload
-		appConnMsg = application.ConnectMsg{
-			Device: devices.Core{
-				ProductID:  msg.ProductID,
-				DeviceName: msg.DeviceName,
-			},
-			Timestamp: msg.Timestamp,
-		}
+		appConnMsg = application.ConnectMsg{Timestamp: msg.Timestamp}
+		action     string
 	)
-
-	switch l.dreq.Method {
-	case deviceMsg.Online:
-		isOnline = def.True
-		err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, appConnMsg)
-		if err != nil {
-			l.Errorf("%s.DeviceStatusConnected productID:%v deviceName:%v err:%v",
-				utils.FuncName(), msg.ProductID, msg.DeviceName, err)
-		}
-	case deviceMsg.Offline:
-		err = l.svcCtx.PubApp.DeviceStatusDisConnected(l.ctx, appConnMsg)
-		if err != nil {
-			l.Errorf("%s.DeviceStatusDisConnected productID:%v deviceName:%v err:%v",
-				utils.FuncName(), msg.ProductID, msg.DeviceName, err)
-		}
-	default:
-		err := errors.Parameter.AddDetailf("not support method :%s", l.dreq.Method)
-		resp.AddStatus(err)
-		return &resp, err
-	}
 	for _, v := range l.dreq.Payload.Devices {
+		appConnMsg.Device = devices.Core{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		}
+		switch l.dreq.Method {
+		case deviceMsg.Online:
+			isOnline = def.True
+			action = deviceStatus.ConnectStatus
+			err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, appConnMsg)
+			if err != nil {
+				l.Errorf("%s.DeviceStatusConnected productID:%v deviceName:%v err:%v",
+					utils.FuncName(), msg.ProductID, msg.DeviceName, err)
+			}
+		case deviceMsg.Offline:
+			isOnline = def.False
+			action = deviceStatus.DisConnectStatus
+			err = l.svcCtx.PubApp.DeviceStatusDisConnected(l.ctx, appConnMsg)
+			if err != nil {
+				l.Errorf("%s.DeviceStatusDisConnected productID:%v deviceName:%v err:%v",
+					utils.FuncName(), msg.ProductID, msg.DeviceName, err)
+			}
+		default:
+			err := errors.Parameter.AddDetailf("not support method :%s", l.dreq.Method)
+			resp.AddStatus(err)
+			return &resp, err
+		}
+		//插入日志
+		err = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+			ProductID:  v.ProductID,
+			Action:     action,
+			Timestamp:  l.dreq.GetTimeStamp(),
+			DeviceName: v.DeviceName,
+			TranceID:   utils.TraceIdFromContext(l.ctx),
+			ResultType: errors.Fmt(err).GetCode(),
+		})
+		if err != nil {
+			l.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
+				utils.FuncName(), v.ProductID, v.DeviceName, err)
+		}
 		//更新对应设备的online状态
 		_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
 			ProductID:  v.ProductID,

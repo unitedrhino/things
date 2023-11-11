@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"reflect"
 )
 
 type DeviceSelector string
@@ -130,21 +131,22 @@ func (t TriggerDevices) IsTriggerWithProperty(reportInfo *application.PropertyRe
 	return false
 }
 
-func (o *OperationSchema) IsHit(dataID string, param application.ParamValue) bool {
+func (o *OperationSchema) IsHit(dataID string, param any) bool {
 	if o.DataID[0] != dataID {
 		return false
 	}
 	var val = param
-	if param.Type == schema.DataTypeStruct {
+	dataType := schema.DataType(reflect.TypeOf(param).String())
+	if dataType == schema.DataTypeStruct {
 		if len(o.DataID) < 2 { //必须指定到结构体的成员
 			return false
 		}
-		st := param.Value.(application.StructValue)
+		st := param.(application.StructValue)
 		v, ok := st[o.DataID[1]]
 		if !ok { //如果没有获取到该结构体的属性
 			return false
 		}
 		val = v
 	}
-	return o.TermType.IsHit(val.Type, val.Value, o.Values)
+	return o.TermType.IsHit(dataType, val, o.Values)
 }

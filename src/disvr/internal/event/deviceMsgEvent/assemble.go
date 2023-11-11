@@ -1,7 +1,6 @@
 package deviceMsgEvent
 
 import (
-	"github.com/i-Things/things/shared/domain/application"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -39,8 +38,8 @@ func ToDmDevicesBind(devices []*msgGateway.Device) (ret []*dm.DeviceGatewayBindD
 	return
 }
 
-func ToParamValues(tp map[string]msgThing.Param) (map[string]application.ParamValue, error) {
-	ret := make(map[string]application.ParamValue, len(tp))
+func ToParamValues(tp map[string]msgThing.Param) (map[string]any, error) {
+	ret := make(map[string]any, len(tp))
 	var err error
 	for k, v := range tp {
 		ret[k], err = ToParamValue(v)
@@ -51,24 +50,23 @@ func ToParamValues(tp map[string]msgThing.Param) (map[string]application.ParamVa
 	return ret, nil
 }
 
-func ToParamValue(p msgThing.Param) (application.ParamValue, error) {
-	var ret application.ParamValue
+func ToParamValue(p msgThing.Param) (any, error) {
+	var ret any
 	var err error
-	ret.Type = p.Value.Type
 	switch p.Value.Type {
 	case schema.DataTypeStruct:
 		v, ok := p.Value.Value.(map[string]msgThing.Param)
 		if ok == false {
 			return ret, errors.Parameter.AddMsgf("struct Param is not find")
 		}
-		val := make(map[string]application.ParamValue, len(v)+1)
+		val := make(map[string]any, len(v)+1)
 		for _, tp := range v {
 			val[tp.Identifier], err = ToParamValue(tp)
 			if err != nil {
 				return ret, err
 			}
 		}
-		ret.Value = val
+		ret = val
 		return ret, nil
 	case schema.DataTypeArray:
 		array, ok := p.Value.Value.([]any)
@@ -79,7 +77,7 @@ func ToParamValue(p msgThing.Param) (application.ParamValue, error) {
 		for _, value := range array {
 			switch value.(type) {
 			case map[string]msgThing.Param:
-				valMap := make(map[string]application.ParamValue, len(array)+1)
+				valMap := make(map[string]any, len(array)+1)
 				for _, tp := range value.(map[string]msgThing.Param) {
 					valMap[tp.Identifier], err = ToParamValue(tp)
 					return ret, err
@@ -89,10 +87,10 @@ func ToParamValue(p msgThing.Param) (application.ParamValue, error) {
 				val = append(val, value)
 			}
 		}
-		ret.Value = val
+		ret = val
 		return ret, nil
 	default:
-		ret.Value = p.Value.Value
+		ret = p.Value.Value
 		return ret, nil
 	}
 }
