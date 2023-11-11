@@ -20,6 +20,6 @@ func OnPublishHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := hooks.NewOnPublishLogic(r.Context(), svcCtx)
 		resp, err := l.OnPublish(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

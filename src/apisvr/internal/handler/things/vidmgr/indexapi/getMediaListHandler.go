@@ -20,6 +20,6 @@ func GetMediaListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewGetMediaListLogic(r.Context(), svcCtx)
 		resp, err := l.GetMediaList(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

@@ -20,6 +20,6 @@ func DelFFmpegSourceHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewDelFFmpegSourceLogic(r.Context(), svcCtx)
 		resp, err := l.DelFFmpegSource(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

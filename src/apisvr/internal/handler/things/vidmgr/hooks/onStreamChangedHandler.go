@@ -20,6 +20,6 @@ func OnStreamChangedHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := hooks.NewOnStreamChangedLogic(r.Context(), svcCtx)
 		resp, err := l.OnStreamChanged(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

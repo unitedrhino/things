@@ -20,6 +20,6 @@ func OpenRtpServerHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewOpenRtpServerLogic(r.Context(), svcCtx)
 		resp, err := l.OpenRtpServer(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

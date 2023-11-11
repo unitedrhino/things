@@ -20,6 +20,6 @@ func StartRecordHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewStartRecordLogic(r.Context(), svcCtx)
 		resp, err := l.StartRecord(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

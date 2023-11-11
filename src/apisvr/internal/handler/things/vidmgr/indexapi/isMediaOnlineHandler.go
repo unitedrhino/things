@@ -20,6 +20,6 @@ func IsMediaOnlineHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewIsMediaOnlineLogic(r.Context(), svcCtx)
 		resp, err := l.IsMediaOnline(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

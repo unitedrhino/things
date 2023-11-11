@@ -20,6 +20,6 @@ func AddFFmpegSourceHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewAddFFmpegSourceLogic(r.Context(), svcCtx)
 		resp, err := l.AddFFmpegSource(&req)
-		result.HooksApiHttp(w, r, resp, err)
+		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }
