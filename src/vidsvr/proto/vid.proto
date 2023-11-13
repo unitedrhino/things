@@ -114,11 +114,22 @@ message VidstreamInfo{
 //视频流通道管理
 service ViddevMange{
   //流添加
+  rpc videoaddInfroCreate(ViddevInfo) returns (Response);
   //流更新
+  rpc videoaddInfroUpdate(ViddevInfo) returns (Response);
   //删除流
+  rpc videoaddInfroDelete(ViddevInfo) returns (Response);
   //获取流列表
+  rpc videoaddInfroIndex(ViddevInfo) returns (Response);
   //获取流信息详情
+  rpc videoaddInfroRead(ViddevInfo) returns (Response);
   //统计流 在线，离线，未激活
+  rpc videoaddInfroCount(ViddevInfo) returns (Response);
+}
+
+message ViddevInfo{
+  int64   streamID = 1; //流ID
+  string  streamName = 2;
 }
 
 message VidPlanInfo{
