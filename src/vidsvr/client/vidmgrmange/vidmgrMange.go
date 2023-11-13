@@ -19,6 +19,7 @@ type (
 	Point               = vid.Point
 	Response            = vid.Response
 	VidPlanInfo         = vid.VidPlanInfo
+	ViddevInfo          = vid.ViddevInfo
 	VidmgrInfo          = vid.VidmgrInfo
 	VidmgrInfoCountReq  = vid.VidmgrInfoCountReq
 	VidmgrInfoCountResp = vid.VidmgrInfoCountResp
