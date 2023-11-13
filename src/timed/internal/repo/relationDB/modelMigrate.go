@@ -89,6 +89,16 @@ var (
 			Status:    def.StatusWaitRun,
 			Priority:  3,
 		},
+		{
+			GroupCode: "vidSrvStautusUpdate",
+			Type:      domain.TaskTypeTiming,
+			Name:      "流服务状态更新",
+			Code:      "timedJobClean",
+			Params:    `{"topic":"server.timedjob.clean","payload":""}`,
+			CronExpr:  "1 1 * * ?",
+			Status:    def.StatusWaitRun,
+			Priority:  1, //低优先级任务
+		},
 	}
 	MigrateTimedTaskGroup = []TimedTaskGroup{
 		{

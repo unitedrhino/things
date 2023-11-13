@@ -4,6 +4,7 @@
 package server
 
 import (
+	"context"
 	"github.com/i-Things/things/src/vidsvr/internal/logic/viddevmange"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
@@ -18,4 +19,40 @@ func NewViddevMangeServer(svcCtx *svc.ServiceContext) *ViddevMangeServer {
 	return &ViddevMangeServer{
 		svcCtx: svcCtx,
 	}
+}
+
+// 流添加
+func (s *ViddevMangeServer) VideoaddInfroCreate(ctx context.Context, in *vid.ViddevInfo) (*vid.Response, error) {
+	l := viddevmangelogic.NewVideoaddInfroCreateLogic(ctx, s.svcCtx)
+	return l.VideoaddInfroCreate(in)
+}
+
+// 流更新
+func (s *ViddevMangeServer) VideoaddInfroUpdate(ctx context.Context, in *vid.ViddevInfo) (*vid.Response, error) {
+	l := viddevmangelogic.NewVideoaddInfroUpdateLogic(ctx, s.svcCtx)
+	return l.VideoaddInfroUpdate(in)
+}
+
+// 删除流
+func (s *ViddevMangeServer) VideoaddInfroDelete(ctx context.Context, in *vid.ViddevInfo) (*vid.Response, error) {
+	l := viddevmangelogic.NewVideoaddInfroDeleteLogic(ctx, s.svcCtx)
+	return l.VideoaddInfroDelete(in)
+}
+
+// 获取流列表
+func (s *ViddevMangeServer) VideoaddInfroIndex(ctx context.Context, in *vid.ViddevInfo) (*vid.Response, error) {
+	l := viddevmangelogic.NewVideoaddInfroIndexLogic(ctx, s.svcCtx)
+	return l.VideoaddInfroIndex(in)
+}
+
+// 获取流信息详情
+func (s *ViddevMangeServer) VideoaddInfroRead(ctx context.Context, in *vid.ViddevInfo) (*vid.Response, error) {
+	l := viddevmangelogic.NewVideoaddInfroReadLogic(ctx, s.svcCtx)
+	return l.VideoaddInfroRead(in)
+}
+
+// 统计流 在线，离线，未激活
+func (s *ViddevMangeServer) VideoaddInfroCount(ctx context.Context, in *vid.ViddevInfo) (*vid.Response, error) {
+	l := viddevmangelogic.NewVideoaddInfroCountLogic(ctx, s.svcCtx)
+	return l.VideoaddInfroCount(in)
 }
