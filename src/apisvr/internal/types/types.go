@@ -1578,6 +1578,10 @@ type VidmgrInfoReadReq struct {
 	VidmgrID string `json:"vidmgrID"` //服务id
 }
 
+type VidmgrInfoActiveReq struct {
+	VidmgrID string `json:"vidmgrID"` //服务id
+}
+
 type VidmgrCountReq struct {
 	StartTime int64 `json:"startTime,optional" form:"startTime,optional"` //查询区间的开始时间（秒）
 	EndTime   int64 `json:"endTime,optional" form:"endTime,optional"`     //查询区间的结束时间（秒）

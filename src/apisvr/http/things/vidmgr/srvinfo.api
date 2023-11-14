@@ -19,6 +19,9 @@ service api {
     @doc "新增服务"
     @handler create
     post /create (VidmgrInfoCreateReq) returns ()
+    @doc "激活服务"
+    @handler active
+    post /active (VidmgrInfoActiveReq) returns ()
     @doc "更新服务"
     @handler update
     post /update (VidmgrInfoUpdateReq) returns ()
@@ -88,6 +91,10 @@ type (
     }
 
     VidmgrInfoReadReq struct {
+        VidmgrID string `json:"vidmgrID"`                                     //服务id
+    }
+
+    VidmgrInfoActiveReq struct {
         VidmgrID string `json:"vidmgrID"`                                     //服务id
     }
 

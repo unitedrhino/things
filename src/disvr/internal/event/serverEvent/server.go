@@ -3,6 +3,7 @@ package serverEvent
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/application"
@@ -37,6 +38,9 @@ func NewServerHandle(ctx context.Context, svcCtx *svc.ServiceContext) *ServerHan
 
 func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 	l.Infof("ActionCheck req:%v", in)
+	jsonStr, _ := json.Marshal(in)
+	fmt.Println("[---deviceMsg---] ", string(jsonStr))
+	//fmt.Println("[***]", "func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg)")
 	var req msgThing.Req
 	var option serverDo.SendOption
 	json.Unmarshal(in.Payload, &req)

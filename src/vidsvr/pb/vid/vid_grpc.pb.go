@@ -591,3 +591,251 @@ var ViddevMange_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/vid.proto",
 }
+
+const (
+	VidmgrConfigMange_VidmgrConfigCreate_FullMethodName = "/vid.VidmgrConfigMange/vidmgrConfigCreate"
+	VidmgrConfigMange_VidmgrConfigUpdate_FullMethodName = "/vid.VidmgrConfigMange/vidmgrConfigUpdate"
+	VidmgrConfigMange_VidmgrConfigDelete_FullMethodName = "/vid.VidmgrConfigMange/vidmgrConfigDelete"
+	VidmgrConfigMange_VidmgrConfigIndex_FullMethodName  = "/vid.VidmgrConfigMange/vidmgrConfigIndex"
+	VidmgrConfigMange_VidmgrConfigRead_FullMethodName   = "/vid.VidmgrConfigMange/vidmgrConfigRead"
+)
+
+// VidmgrConfigMangeClient is the client API for VidmgrConfigMange service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type VidmgrConfigMangeClient interface {
+	// 新建配置
+	VidmgrConfigCreate(ctx context.Context, in *VidmgrConfig, opts ...grpc.CallOption) (*Response, error)
+	// 更新配置
+	VidmgrConfigUpdate(ctx context.Context, in *VidmgrConfig, opts ...grpc.CallOption) (*Response, error)
+	// 删除配置
+	VidmgrConfigDelete(ctx context.Context, in *VidmgrConfigDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	// 配置列表
+	VidmgrConfigIndex(ctx context.Context, in *VidmgrConfigReadReq, opts ...grpc.CallOption) (*VidmgrConfigIndexResp, error)
+	// 获取配置信息详情
+	VidmgrConfigRead(ctx context.Context, in *VidmgrConfigReadReq, opts ...grpc.CallOption) (*VidmgrConfig, error)
+}
+
+type vidmgrConfigMangeClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewVidmgrConfigMangeClient(cc grpc.ClientConnInterface) VidmgrConfigMangeClient {
+	return &vidmgrConfigMangeClient{cc}
+}
+
+func (c *vidmgrConfigMangeClient) VidmgrConfigCreate(ctx context.Context, in *VidmgrConfig, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, VidmgrConfigMange_VidmgrConfigCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vidmgrConfigMangeClient) VidmgrConfigUpdate(ctx context.Context, in *VidmgrConfig, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, VidmgrConfigMange_VidmgrConfigUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vidmgrConfigMangeClient) VidmgrConfigDelete(ctx context.Context, in *VidmgrConfigDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, VidmgrConfigMange_VidmgrConfigDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vidmgrConfigMangeClient) VidmgrConfigIndex(ctx context.Context, in *VidmgrConfigReadReq, opts ...grpc.CallOption) (*VidmgrConfigIndexResp, error) {
+	out := new(VidmgrConfigIndexResp)
+	err := c.cc.Invoke(ctx, VidmgrConfigMange_VidmgrConfigIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vidmgrConfigMangeClient) VidmgrConfigRead(ctx context.Context, in *VidmgrConfigReadReq, opts ...grpc.CallOption) (*VidmgrConfig, error) {
+	out := new(VidmgrConfig)
+	err := c.cc.Invoke(ctx, VidmgrConfigMange_VidmgrConfigRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// VidmgrConfigMangeServer is the server API for VidmgrConfigMange service.
+// All implementations must embed UnimplementedVidmgrConfigMangeServer
+// for forward compatibility
+type VidmgrConfigMangeServer interface {
+	// 新建配置
+	VidmgrConfigCreate(context.Context, *VidmgrConfig) (*Response, error)
+	// 更新配置
+	VidmgrConfigUpdate(context.Context, *VidmgrConfig) (*Response, error)
+	// 删除配置
+	VidmgrConfigDelete(context.Context, *VidmgrConfigDeleteReq) (*Response, error)
+	// 配置列表
+	VidmgrConfigIndex(context.Context, *VidmgrConfigReadReq) (*VidmgrConfigIndexResp, error)
+	// 获取配置信息详情
+	VidmgrConfigRead(context.Context, *VidmgrConfigReadReq) (*VidmgrConfig, error)
+	mustEmbedUnimplementedVidmgrConfigMangeServer()
+}
+
+// UnimplementedVidmgrConfigMangeServer must be embedded to have forward compatible implementations.
+type UnimplementedVidmgrConfigMangeServer struct {
+}
+
+func (UnimplementedVidmgrConfigMangeServer) VidmgrConfigCreate(context.Context, *VidmgrConfig) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VidmgrConfigCreate not implemented")
+}
+func (UnimplementedVidmgrConfigMangeServer) VidmgrConfigUpdate(context.Context, *VidmgrConfig) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VidmgrConfigUpdate not implemented")
+}
+func (UnimplementedVidmgrConfigMangeServer) VidmgrConfigDelete(context.Context, *VidmgrConfigDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VidmgrConfigDelete not implemented")
+}
+func (UnimplementedVidmgrConfigMangeServer) VidmgrConfigIndex(context.Context, *VidmgrConfigReadReq) (*VidmgrConfigIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VidmgrConfigIndex not implemented")
+}
+func (UnimplementedVidmgrConfigMangeServer) VidmgrConfigRead(context.Context, *VidmgrConfigReadReq) (*VidmgrConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VidmgrConfigRead not implemented")
+}
+func (UnimplementedVidmgrConfigMangeServer) mustEmbedUnimplementedVidmgrConfigMangeServer() {}
+
+// UnsafeVidmgrConfigMangeServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to VidmgrConfigMangeServer will
+// result in compilation errors.
+type UnsafeVidmgrConfigMangeServer interface {
+	mustEmbedUnimplementedVidmgrConfigMangeServer()
+}
+
+func RegisterVidmgrConfigMangeServer(s grpc.ServiceRegistrar, srv VidmgrConfigMangeServer) {
+	s.RegisterService(&VidmgrConfigMange_ServiceDesc, srv)
+}
+
+func _VidmgrConfigMange_VidmgrConfigCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VidmgrConfig)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VidmgrConfigMange_VidmgrConfigCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigCreate(ctx, req.(*VidmgrConfig))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VidmgrConfigMange_VidmgrConfigUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VidmgrConfig)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VidmgrConfigMange_VidmgrConfigUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigUpdate(ctx, req.(*VidmgrConfig))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VidmgrConfigMange_VidmgrConfigDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VidmgrConfigDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VidmgrConfigMange_VidmgrConfigDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigDelete(ctx, req.(*VidmgrConfigDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VidmgrConfigMange_VidmgrConfigIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VidmgrConfigReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VidmgrConfigMange_VidmgrConfigIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigIndex(ctx, req.(*VidmgrConfigReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VidmgrConfigMange_VidmgrConfigRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VidmgrConfigReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VidmgrConfigMange_VidmgrConfigRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VidmgrConfigMangeServer).VidmgrConfigRead(ctx, req.(*VidmgrConfigReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// VidmgrConfigMange_ServiceDesc is the grpc.ServiceDesc for VidmgrConfigMange service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var VidmgrConfigMange_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "vid.VidmgrConfigMange",
+	HandlerType: (*VidmgrConfigMangeServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "vidmgrConfigCreate",
+			Handler:    _VidmgrConfigMange_VidmgrConfigCreate_Handler,
+		},
+		{
+			MethodName: "vidmgrConfigUpdate",
+			Handler:    _VidmgrConfigMange_VidmgrConfigUpdate_Handler,
+		},
+		{
+			MethodName: "vidmgrConfigDelete",
+			Handler:    _VidmgrConfigMange_VidmgrConfigDelete_Handler,
+		},
+		{
+			MethodName: "vidmgrConfigIndex",
+			Handler:    _VidmgrConfigMange_VidmgrConfigIndex_Handler,
+		},
+		{
+			MethodName: "vidmgrConfigRead",
+			Handler:    _VidmgrConfigMange_VidmgrConfigRead_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/vid.proto",
+}

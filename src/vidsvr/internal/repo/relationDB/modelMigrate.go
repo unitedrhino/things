@@ -16,5 +16,6 @@ func Migrate() error {
 		//&DmGatewayDevice{},
 		//&DmProductRemoteConfig{},
 		&VidmgrInfo{},
+		&VidmgrConfig{},
 	)
 }
