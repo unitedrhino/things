@@ -161,3 +161,169 @@ message VidrecordfileInfo{
   int64 updateTime = 12;
   int64 recordTime = 13;
 }
+
+message VidmgrConfig{
+  string 	apiApiDebug                      =   1  ;
+  string 	apiDefaultSnap                   =   2  ;
+  string 	apiSecret                        =   3  ;
+  string 	apiSnapRoot                      =   4  ;
+  string 	clusterOriginUrl                 =   5  ;
+  string 	clusterRetryCount                =   6  ;
+  string 	clusterTimeoutSec                =   7  ;
+  string 	ffmpegBin                        =   8  ;
+  string 	ffmpegCmd                        =   9  ;
+  string 	ffmpegLog                        =   10 ;
+  string 	ffmpegRestartSec                 =   11 ;
+  string 	ffmpegSnap                       =   12 ;
+  string 	generalCheckNvidiaDev            =   13 ;
+  string 	generalEnableVhost               =   14 ;
+  string 	generalEnableFfmpegLog           =   15 ;
+  string 	generalFlowThreshold             =   16 ;
+  string 	generalMaxStreamWaitMS           =   17 ;
+  string 	generalMediaServerId             =   18 ;
+  string 	generalMergeWriteMS              =   19 ;
+  string 	generalResetWhenRePlay           =   20 ;
+  string 	generalStreamNoneReaderDelayMS   =   21 ;
+  string 	generalUnreadyFrameCache         =   22 ;
+  string 	generalWaitAddTrackMs            =   23 ;
+  string 	generalWaitTrackReadyMs          =   24 ;
+  string 	hlsBroadcastRecordTs             =   25 ;
+  string 	hlsDeleteDelaySec                =   26 ;
+  string 	hlsFileBufSize                   =   27 ;
+  string 	hlsSegDur                        =   28 ;
+  string 	hlsSegKeep                       =   29 ;
+  string 	hlsSegNum                        =   30 ;
+  string 	hlsSegRetain                     =   31 ;
+  string 	hookAliveInterval                =   32 ;
+  string 	hookEnable                       =   33 ;
+  string 	hookOnFlowReport                 =   34 ;
+  string 	hookOnHttpAccess                 =   35 ;
+  string 	hookOnPlay                       =   36 ;
+  string 	hookOnPublish                    =   37 ;
+  string 	hookOnRecordMp4                  =   38 ;
+  string 	hookOnRecordTs                   =   39 ;
+  string 	hookOnRtpServerTimeout           =   40 ;
+  string 	hookOnRtspAuth                   =   41 ;
+  string 	hookOnRtspRealm                  =   42 ;
+  string 	hookOnSendRtpStopped             =   43 ;
+  string 	hookOnServerExited               =   44 ;
+  string 	hookOnServerKeepalive            =   45 ;
+  string 	hookOnServerStarted              =   46 ;
+  string 	hookOnShellLogin                 =   47 ;
+  string 	hookOnStreamChanged              =   48 ;
+  string 	hookOnStreamNoneReader           =   49 ;
+  string 	hookOnStreamNotFound             =   50 ;
+  string 	hookRetry                        =   51 ;
+  string 	hookRetryDelay                   =   52 ;
+  string 	hookStreamChangedSchemas         =   53 ;
+  string 	hookTimeoutSec                   =   54 ;
+  string 	httpAllowCrossDomains            =   55 ;
+  string 	httpAllowIpRange                 =   56 ;
+  string 	httpCharSet                      =   57 ;
+  string 	httpDirMenu                      =   58 ;
+  string 	httpForbidCacheSuffix            =   59 ;
+  string 	httpForwardedIpHeader            =   60 ;
+  string 	httpKeepAliveSecond              =   61 ;
+  string 	httpMaxReqSize                   =   62 ;
+  string 	httpNotFound                     =   63 ;
+  string 	httpPort                         =   64 ;
+  string 	httpRootPath                     =   65 ;
+  string 	httpSendBufSize                  =   66 ;
+  string 	httpSslport                      =   67 ;
+  string 	httpVirtualPath                  =   68 ;
+  string 	multicastAddrMax                 =   69 ;
+  string 	multicastAddrMin                 =   70 ;
+  string 	multicastUdpTTL                  =   71 ;
+  string 	protocolAddMuteAudio             =   72 ;
+  string 	protocolAutoClose                =   73 ;
+  string 	protocolContinuePushMs           =   74 ;
+  string 	protocolEnableAudio              =   75 ;
+  string 	protocolEnableFmp4               =   76 ;
+  string 	protocolEnableHls                =   77 ;
+  string 	protocolEnableHlsFmp4            =   78 ;
+  string 	protocolEnableMp4                =   79 ;
+  string 	protocolEnableRtmp               =   80 ;
+  string 	protocolEnableRtsp               =   81 ;
+  string 	protocolEnableTs                 =   82 ;
+  string 	protocolFmp4Demand               =   83 ;
+  string 	protocolHlsDemand                =   84 ;
+  string 	protocolHlsSavePath              =   85 ;
+  string 	protocolModifyStamp              =   86 ;
+  string 	protocolMp4AsPlayer              =   87 ;
+  string 	protocolMp4MaxSecond             =   88 ;
+  string 	protocolMp4SavePath              =   89 ;
+  string 	protocolRtmpDemand               =   90 ;
+  string 	protocolRtspDemand               =   91 ;
+  string 	protocolTsDemand                 =   92 ;
+  string 	recordAppName                    =   93 ;
+  string 	recordFastStart                  =   94 ;
+  string 	recordFileBufSize                =   95 ;
+  string 	recordFileRepeat                 =   96 ;
+  string 	recordSampleMS                   =   97 ;
+  string 	rtcExternIP                      =   98 ;
+  string 	rtcPort                          =   99 ;
+  string 	rtcPreferredCodecA               =   100;
+  string 	rtcPreferredCodecV               =   101;
+  string 	rtcRembBitRate                   =   102;
+  string 	rtcTcpPort                       =   103;
+  string 	rtcTimeoutSec                    =   104;
+  string 	rtmpHandshakeSecond              =   105;
+  string 	rtmpKeepAliveSecond              =   106;
+  string 	rtmpPort                         =   107;
+  string 	rtmpSslport                      =   108;
+  string 	rtpAudioMtuSize                  =   109;
+  string 	rtpH264StapA                     =   110;
+  string 	rtpLowLatency                    =   111;
+  string 	rtpRtpMaxSize                    =   112;
+  string 	rtpVideoMtuSize                  =   113;
+  string 	rtpProxyDumpDir                  =   114;
+  string 	rtpProxyGopCache                 =   115;
+  string 	rtpProxyH264Pt                   =   116;
+  string 	rtpProxyH265Pt                   =   117;
+  string 	rtpProxyOpusPt                   =   118;
+  string 	rtpProxyPort                     =   119;
+  string 	rtpProxyPortRange                =   120;
+  string 	rtpProxyPsPt                     =   121;
+  string 	rtpProxyTimeoutSec               =   122;
+  string 	rtspAuthBasic                    =   123;
+  string 	rtspDirectProxy                  =   124;
+  string 	rtspHandshakeSecond              =   125;
+  string 	rtspKeepAliveSecond              =   126;
+  string 	rtspLowLatency                   =   127;
+  string 	rtspPort                         =   128;
+  string 	rtspRtpTransportType             =   129;
+  string 	rtspSslport                      =   130;
+  string 	shellMaxReqSize                  =   131;
+  string 	shellPort                        =   132;
+  string 	srtLatencyMul                    =   133;
+  string 	srtPktBufSize                    =   134;
+  string 	srtPort                          =   135;
+  string 	srtTimeoutSec                    =   136;
+}
+
+message VidmgrConfigDeleteReq{
+  string   generalMediaServerId = 1; //产品id
+}
+
+message VidmgrConfigReadReq{
+  string   generalMediaServerId = 1; //产品id
+}
+
+message VidmgrConfigIndexResp{
+  repeated VidmgrConfig list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+//服务配置管理
+service VidmgrConfigMange{
+  //新建配置
+  rpc vidmgrConfigCreate(VidmgrConfig)    returns (Response);
+  //更新配置
+  rpc vidmgrConfigUpdate(VidmgrConfig)     returns (Response);
+  //删除配置
+  rpc vidmgrConfigDelete(VidmgrConfigDeleteReq)     returns (Response);
+  //配置列表
+  rpc vidmgrConfigIndex(VidmgrConfigReadReq)     returns (VidmgrConfigIndexResp);
+  //获取配置信息详情
+  rpc vidmgrConfigRead(VidmgrConfigReadReq)     returns (VidmgrConfig);
+}

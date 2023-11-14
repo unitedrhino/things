@@ -12,6 +12,10 @@ import (
 type VidmgrInfoRepo struct {
 	db *gorm.DB
 }
+type VidmgrConfigFilter struct {
+	ApiSecret      string
+	MediaServerIds []string
+}
 
 type VidmgrFilter struct {
 	VidmgrType    int64
@@ -55,16 +59,15 @@ func (p VidmgrInfoRepo) fmtFilter(ctx context.Context, f VidmgrFilter) *gorm.DB 
 				k, v)
 		}
 	}
+	if f.VidmgrStatus != 0 {
+		db = db.Where("status = ?", f.VidmgrStatus)
+	}
 	if f.LastLoginTime.Start != 0 {
 		db = db.Where("last_login >= ?", utils.ToYYMMddHHSS(f.LastLoginTime.Start*1000))
 	}
 	if f.LastLoginTime.End != 0 {
 		db = db.Where("last_login <= ?", utils.ToYYMMddHHSS(f.LastLoginTime.End*1000))
 	}
-	if f.VidmgrStatus != 0 {
-		db = db.Where("status = ?", f.VidmgrStatus)
-	}
-
 	return db
 }
 
@@ -92,6 +95,16 @@ func (p VidmgrInfoRepo) DeleteByFilter(ctx context.Context, f VidmgrFilter) erro
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&VidmgrInfo{}).Error
 	return stores.ErrFmt(err)
+}
+
+func (p VidmgrInfoRepo) FindAllFilter(ctx context.Context, f VidmgrFilter) ([]*VidmgrInfo, error) {
+	var results []*VidmgrInfo
+	db := p.fmtFilter(ctx, f).Model(&VidmgrInfo{})
+	err := db.Find(&results).Error
+	if err != nil {
+		return nil, stores.ErrFmt(err)
+	}
+	return results, nil
 }
 
 func (p VidmgrInfoRepo) FindByFilter(ctx context.Context, f VidmgrFilter, page *def.PageInfo) ([]*VidmgrInfo, error) {

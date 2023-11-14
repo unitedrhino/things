@@ -988,6 +988,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/active",
+					Handler: thingsvidmgrinfo.ActiveHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/update",
 					Handler: thingsvidmgrinfo.UpdateHandler(serverCtx),
 				},
