@@ -3,10 +3,10 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/events/topics"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 )
 
@@ -17,7 +17,7 @@ type (
 )
 
 var (
-	natsJsConsumerName = "dmsvr"
+	natsJsConsumerName = "vidsvr"
 )
 
 func newNatsClient(conf conf.EventConf) (*NatsClient, error) {
@@ -29,19 +29,11 @@ func newNatsClient(conf conf.EventConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	err := n.client.QueueSubscribe(topics.DmActionCheckDelay, natsJsConsumerName,
+	err := n.client.QueueSubscribe(topics.TimedJobVidsrv, natsJsConsumerName,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
-			tempInfo := deviceMsg.PublishMsg{}
-			err := json.Unmarshal(msg, &tempInfo)
-			//strInfo, err := json.Marshal(natsMsg)
-			//fmt.Println("[---Sub---]QueueSubscribe natsMsg:", string(strInfo))
-			//strTemp, _ := json.Marshal(&tempInfo)
-			//fmt.Println("[---Sub---]QueueSubscribe tempInfo=msg:", string(strTemp))
-			//fmt.Println("[---Sub---]QueueSubscribe msg:", string(msg))
-			if err != nil {
-				return err
-			}
-			return handle(ctx).ActionCheck(&tempInfo)
+			jsonStr, _ := json.Marshal(natsMsg)
+			fmt.Println("[******]   QueueSubscribe", "data:", string(jsonStr))
+			return handle(ctx).ActionCheck()
 		})
 	if err != nil {
 		return err

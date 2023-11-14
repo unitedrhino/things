@@ -24,6 +24,10 @@ type MediaConfig struct {
 	PreUrl string
 }
 
+const (
+	VIDMGRTIMEOUT = 60
+)
+
 func NewMeidaServer(vmgrInfo *vid.VidmgrInfo) *MediaConfig {
 	return &MediaConfig{
 		Ipv4:   vmgrInfo.VidmgrIpV4,

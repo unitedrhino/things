@@ -13,7 +13,7 @@ import (
 func ToVidmgrInfo(ctx context.Context, pi *relationDB.VidmgrInfo, svcCtx *svc.ServiceContext) *vid.VidmgrInfo {
 
 	if pi.VidmgrType == def.Unknown {
-		pi.VidmgrType = def.DeviceTypeDevice
+		pi.VidmgrType = def.VidmgrTypeZLMedia //当前默认仅支持zlmediakit
 	}
 	dpi := &vid.VidmgrInfo{
 		VidmgrID:     pi.VidmgrID,   //服务id
@@ -21,7 +21,7 @@ func ToVidmgrInfo(ctx context.Context, pi *relationDB.VidmgrInfo, svcCtx *svc.Se
 		VidmgrIpV4:   utils.InetNtoA(pi.VidmgrIpV4),
 		VidmgrPort:   pi.VidmgrPort,
 		VidmgrType:   pi.VidmgrType,                         //流服务器类型:1:zlmediakit,2:srs,3:monibuca
-		VidmgrStatus: pi.VidmgrStatus,                       //服务状态: 1：离线 2：在线  3：未激活
+		VidmgrStatus: pi.VidmgrStatus,                       //服务状态: 1：离线 2：在线  0：未激活
 		VidmgrSecret: pi.VidmgrSecret,                       //流服务器注秘钥 只读
 		Desc:         &wrappers.StringValue{Value: pi.Desc}, //描述
 		CreatedTime:  pi.CreatedTime.Unix(),                 //创建时间
