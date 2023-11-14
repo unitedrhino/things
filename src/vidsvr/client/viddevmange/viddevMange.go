@@ -14,21 +14,25 @@ import (
 )
 
 type (
-	PageInfo            = vid.PageInfo
-	PageInfo_OrderBy    = vid.PageInfo_OrderBy
-	Point               = vid.Point
-	Response            = vid.Response
-	VidPlanInfo         = vid.VidPlanInfo
-	ViddevInfo          = vid.ViddevInfo
-	VidmgrInfo          = vid.VidmgrInfo
-	VidmgrInfoCountReq  = vid.VidmgrInfoCountReq
-	VidmgrInfoCountResp = vid.VidmgrInfoCountResp
-	VidmgrInfoDeleteReq = vid.VidmgrInfoDeleteReq
-	VidmgrInfoIndexReq  = vid.VidmgrInfoIndexReq
-	VidmgrInfoIndexResp = vid.VidmgrInfoIndexResp
-	VidmgrInfoReadReq   = vid.VidmgrInfoReadReq
-	VidrecordfileInfo   = vid.VidrecordfileInfo
-	VidstreamInfo       = vid.VidstreamInfo
+	PageInfo              = vid.PageInfo
+	PageInfo_OrderBy      = vid.PageInfo_OrderBy
+	Point                 = vid.Point
+	Response              = vid.Response
+	VidPlanInfo           = vid.VidPlanInfo
+	ViddevInfo            = vid.ViddevInfo
+	VidmgrConfig          = vid.VidmgrConfig
+	VidmgrConfigDeleteReq = vid.VidmgrConfigDeleteReq
+	VidmgrConfigIndexResp = vid.VidmgrConfigIndexResp
+	VidmgrConfigReadReq   = vid.VidmgrConfigReadReq
+	VidmgrInfo            = vid.VidmgrInfo
+	VidmgrInfoCountReq    = vid.VidmgrInfoCountReq
+	VidmgrInfoCountResp   = vid.VidmgrInfoCountResp
+	VidmgrInfoDeleteReq   = vid.VidmgrInfoDeleteReq
+	VidmgrInfoIndexReq    = vid.VidmgrInfoIndexReq
+	VidmgrInfoIndexResp   = vid.VidmgrInfoIndexResp
+	VidmgrInfoReadReq     = vid.VidmgrInfoReadReq
+	VidrecordfileInfo     = vid.VidrecordfileInfo
+	VidstreamInfo         = vid.VidstreamInfo
 
 	ViddevMange interface {
 		// 流添加
