@@ -28,7 +28,6 @@ func NewVidmgrConfigDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 // 删除配置
 func (l *VidmgrConfigDeleteLogic) VidmgrConfigDelete(in *vid.VidmgrConfigDeleteReq) (*vid.Response, error) {
 	// todo: add your logic here and delete this line
-	//db := relationDB.VidmgrConfigFilter{}
 	err := l.PiDB.DeleteByFilter(l.ctx, relationDB.VidmgrConfigFilter{MediaServerIds: []string{in.GeneralMediaServerId}})
 	if err != nil {
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))

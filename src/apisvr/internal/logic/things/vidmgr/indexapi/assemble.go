@@ -2,6 +2,7 @@ package indexapi
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	zlmediakitapi "github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/errors"
@@ -59,12 +60,38 @@ func proxyMediaServer(ctx context.Context, svcCtx *svc.ServiceContext, preUrl st
 		fmt.Print("%s rpc.VidmgrInfoRead  err=%+v", utils.FuncName(), er)
 		return nil, er
 	}
-	//fmt.Println("---------vidResp-----", vidResp)
 	mediaSrv := zlmediakitapi.NewMeidaServer(vidResp)
-	//fmt.Println("______mediaSrv______", mediaSrv.PreUrl)
-	//var values url.Values
 	values := make(url.Values)
+	values.Add("secret", vidResp.VidmgrSecret)
 	vidRecv, error := mediaSrv.PostMediaServer(preUrl, values)
+	if error != nil {
+		er := errors.Fmt(error)
+		fmt.Print("%s rpc.PostMediaServer  err=%+v", utils.FuncName(), er)
+		return nil, er
+	}
+	return vidRecv, nil
+}
+
+func proxySetMediaServer(ctx context.Context, svcCtx *svc.ServiceContext, preUrl string, vidmgrID string, values []byte) (data []byte, err error) {
+	vidResp, err := svcCtx.VidmgrM.VidmgrInfoRead(ctx, &vid.VidmgrInfoReadReq{
+		VidmgrtID: vidmgrID,
+	})
+	if err != nil {
+		er := errors.Fmt(err)
+		fmt.Print("%s rpc.VidmgrInfoRead  err=%+v", utils.FuncName(), er)
+		return nil, er
+	}
+	mediaSrv := zlmediakitapi.NewMeidaServer(vidResp)
+	var tdata map[string]interface{}
+	err = json.Unmarshal(values, &tdata)
+	tdata["secret"] = vidResp.VidmgrSecret
+	values, err = json.Marshal(tdata)
+	if err != nil {
+		er := errors.Fmt(err)
+		fmt.Print("%s map string phares failed  err=%+v", utils.FuncName(), er)
+		return nil, er
+	}
+	vidRecv, error := mediaSrv.PostMediaServerJson(preUrl, values)
 	if error != nil {
 		er := errors.Fmt(error)
 		fmt.Print("%s rpc.PostMediaServer  err=%+v", utils.FuncName(), er)

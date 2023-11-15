@@ -163,7 +163,7 @@ message VidrecordfileInfo{
 }
 
 message VidmgrConfig{
-  string 	apiApiDebug                      =   1  ;
+  string 	apiDebug                         =   1  ;
   string 	apiDefaultSnap                   =   2  ;
   string 	apiSecret                        =   3  ;
   string 	apiSnapRoot                      =   4  ;
@@ -299,6 +299,7 @@ message VidmgrConfig{
   string 	srtPktBufSize                    =   134;
   string 	srtPort                          =   135;
   string 	srtTimeoutSec                    =   136;
+  int64   createdTime                      =   137; //创建时间 只读
 }
 
 message VidmgrConfigDeleteReq{
@@ -306,7 +307,12 @@ message VidmgrConfigDeleteReq{
 }
 
 message VidmgrConfigReadReq{
-  string   generalMediaServerId = 1; //产品id
+  string   MediaServerId = 1; //产品id
+}
+
+message VidmgrConfigIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  repeated string   MediaServerId = 2; //产品id
 }
 
 message VidmgrConfigIndexResp{
@@ -323,7 +329,7 @@ service VidmgrConfigMange{
   //删除配置
   rpc vidmgrConfigDelete(VidmgrConfigDeleteReq)     returns (Response);
   //配置列表
-  rpc vidmgrConfigIndex(VidmgrConfigReadReq)     returns (VidmgrConfigIndexResp);
+  rpc vidmgrConfigIndex(VidmgrConfigIndexReq)     returns (VidmgrConfigIndexResp);
   //获取配置信息详情
   rpc vidmgrConfigRead(VidmgrConfigReadReq)     returns (VidmgrConfig);
 }

@@ -22,6 +22,7 @@ type (
 	ViddevInfo            = vid.ViddevInfo
 	VidmgrConfig          = vid.VidmgrConfig
 	VidmgrConfigDeleteReq = vid.VidmgrConfigDeleteReq
+	VidmgrConfigIndexReq  = vid.VidmgrConfigIndexReq
 	VidmgrConfigIndexResp = vid.VidmgrConfigIndexResp
 	VidmgrConfigReadReq   = vid.VidmgrConfigReadReq
 	VidmgrInfo            = vid.VidmgrInfo
