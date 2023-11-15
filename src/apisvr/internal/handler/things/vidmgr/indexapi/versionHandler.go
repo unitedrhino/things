@@ -20,6 +20,7 @@ func VersionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := indexapi.NewVersionLogic(r.Context(), svcCtx)
 		resp, err := l.Version(&req)
+
 		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

@@ -41,7 +41,7 @@ func (s *VidmgrConfigMangeServer) VidmgrConfigDelete(ctx context.Context, in *vi
 }
 
 // 配置列表
-func (s *VidmgrConfigMangeServer) VidmgrConfigIndex(ctx context.Context, in *vid.VidmgrConfigReadReq) (*vid.VidmgrConfigIndexResp, error) {
+func (s *VidmgrConfigMangeServer) VidmgrConfigIndex(ctx context.Context, in *vid.VidmgrConfigIndexReq) (*vid.VidmgrConfigIndexResp, error) {
 	l := vidmgrconfigmangelogic.NewVidmgrConfigIndexLogic(ctx, s.svcCtx)
 	return l.VidmgrConfigIndex(in)
 }
