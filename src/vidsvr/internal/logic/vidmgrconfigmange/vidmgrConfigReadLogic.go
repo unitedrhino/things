@@ -31,10 +31,8 @@ func NewVidmgrConfigReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 func (l *VidmgrConfigReadLogic) VidmgrConfigRead(in *vid.VidmgrConfigReadReq) (*vid.VidmgrConfig, error) {
 	// todo: add your logic here and delete this line
 	pi, err := relationDB.NewVidmgrtConfigRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.VidmgrConfigFilter{
-		MediaServerIds: []string{in.GeneralMediaServerId},
+		MediaServerIds: []string{in.MediaServerId},
 	})
-
-	//err := l.PiDB.ConfigFindByFilter(l.ctx, relationDB.VidmgrConfigFilter{MediaServerIds: []string{in.GeneralMediaServerId}})
 	if err != nil {
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))
 		return nil, err

@@ -32,7 +32,7 @@ func (m *VidmgrInfo) TableName() string {
 // 流服务配置表
 type VidmgrConfig struct {
 	GeneralMediaServerId           string `gorm:"column:general_mediaServerId;primary_key;NOT NULL"`
-	ApiApiDebug                    string `gorm:"column:api_apiDebug"`
+	ApiDebug                       string `gorm:"column:api_apiDebug"`
 	ApiDefaultSnap                 string `gorm:"column:api_defaultSnap"`
 	ApiSecret                      string `gorm:"column:api_secret"`
 	ApiSnapRoot                    string `gorm:"column:api_snapRoot"`
@@ -167,6 +167,7 @@ type VidmgrConfig struct {
 	SrtPktBufSize                  string `gorm:"column:srt_pktBufSize"`
 	SrtPort                        string `gorm:"column:srt_port"`
 	SrtTimeoutSec                  string `gorm:"column:srt_timeoutSec"`
+	stores.Time
 }
 
 // 流服务激活之后创建该表

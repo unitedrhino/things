@@ -3,7 +3,7 @@ package indexapi
 import (
 	"context"
 	"encoding/json"
-
+	"fmt"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 
@@ -29,5 +29,6 @@ func (l *GetServerConfigLogic) GetServerConfig(req *types.IndexApiReq) (resp *ty
 	data, err := proxyMediaServer(l.ctx, l.svcCtx, GETSERVERCONFIG, req.VidmgrID)
 	dataRecv := new(types.IndexApiServerConfigResp)
 	json.Unmarshal(data, dataRecv)
+	fmt.Println("GetServerConfig:", dataRecv)
 	return dataRecv, err
 }
