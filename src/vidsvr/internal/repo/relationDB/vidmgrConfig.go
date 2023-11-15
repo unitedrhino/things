@@ -62,3 +62,9 @@ func (p VidmgrConfigRepo) FindByFilter(ctx context.Context, f VidmgrConfigFilter
 	}
 	return results, nil
 }
+
+func (p VidmgrConfigRepo) CountByFilter(ctx context.Context, f VidmgrConfigFilter) (size int64, err error) {
+	db := p.fmtFilter(ctx, f).Model(&VidmgrConfig{})
+	err = db.Count(&size).Error
+	return size, stores.ErrFmt(err)
+}

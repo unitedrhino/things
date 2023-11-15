@@ -22,6 +22,7 @@ type (
 	ViddevInfo            = vid.ViddevInfo
 	VidmgrConfig          = vid.VidmgrConfig
 	VidmgrConfigDeleteReq = vid.VidmgrConfigDeleteReq
+	VidmgrConfigIndexReq  = vid.VidmgrConfigIndexReq
 	VidmgrConfigIndexResp = vid.VidmgrConfigIndexResp
 	VidmgrConfigReadReq   = vid.VidmgrConfigReadReq
 	VidmgrInfo            = vid.VidmgrInfo
@@ -42,7 +43,7 @@ type (
 		// 删除配置
 		VidmgrConfigDelete(ctx context.Context, in *VidmgrConfigDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 配置列表
-		VidmgrConfigIndex(ctx context.Context, in *VidmgrConfigReadReq, opts ...grpc.CallOption) (*VidmgrConfigIndexResp, error)
+		VidmgrConfigIndex(ctx context.Context, in *VidmgrConfigIndexReq, opts ...grpc.CallOption) (*VidmgrConfigIndexResp, error)
 		// 获取配置信息详情
 		VidmgrConfigRead(ctx context.Context, in *VidmgrConfigReadReq, opts ...grpc.CallOption) (*VidmgrConfig, error)
 	}
@@ -104,13 +105,13 @@ func (d *directVidmgrConfigMange) VidmgrConfigDelete(ctx context.Context, in *Vi
 }
 
 // 配置列表
-func (m *defaultVidmgrConfigMange) VidmgrConfigIndex(ctx context.Context, in *VidmgrConfigReadReq, opts ...grpc.CallOption) (*VidmgrConfigIndexResp, error) {
+func (m *defaultVidmgrConfigMange) VidmgrConfigIndex(ctx context.Context, in *VidmgrConfigIndexReq, opts ...grpc.CallOption) (*VidmgrConfigIndexResp, error) {
 	client := vid.NewVidmgrConfigMangeClient(m.cli.Conn())
 	return client.VidmgrConfigIndex(ctx, in, opts...)
 }
 
 // 配置列表
-func (d *directVidmgrConfigMange) VidmgrConfigIndex(ctx context.Context, in *VidmgrConfigReadReq, opts ...grpc.CallOption) (*VidmgrConfigIndexResp, error) {
+func (d *directVidmgrConfigMange) VidmgrConfigIndex(ctx context.Context, in *VidmgrConfigIndexReq, opts ...grpc.CallOption) (*VidmgrConfigIndexResp, error) {
 	return d.svr.VidmgrConfigIndex(ctx, in)
 }
 
