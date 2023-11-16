@@ -36,8 +36,9 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
-	"github.com/i-Things/things/src/vidsvr/client/vidmgrconfigmange"
-	"github.com/i-Things/things/src/vidsvr/client/vidmgrmange"
+	"github.com/i-Things/things/src/vidsvr/client/vidmgrconfigmanage"
+	"github.com/i-Things/things/src/vidsvr/client/vidmgrinfomanage"
+	"github.com/i-Things/things/src/vidsvr/client/vidmgrstreammanage"
 	"github.com/i-Things/things/src/vidsvr/viddirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
@@ -58,8 +59,9 @@ type SvrClient struct {
 	MenuRpc menu.Menu
 	LogRpc  log.Log
 	ApiRpc  api.Api
-	VidmgrM vidmgrmange.VidmgrMange
-	VidmgrC vidmgrconfigmange.VidmgrConfigMange
+	VidmgrM vidmgrinfomanage.VidmgrInfoManage
+	VidmgrC vidmgrconfigmanage.VidmgrConfigManage
+	VidmgrS vidmgrstreammanage.VidmgrStreamManage
 
 	ProjectM projectmanage.ProjectManage
 	AreaM    areamanage.AreaManage
@@ -97,8 +99,9 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
-		vidmgrM vidmgrmange.VidmgrMange
-		vidmgrC vidmgrconfigmange.VidmgrConfigMange
+		vidmgrM vidmgrinfomanage.VidmgrInfoManage
+		vidmgrC vidmgrconfigmanage.VidmgrConfigManage
+		vidmgrS vidmgrstreammanage.VidmgrStreamManage
 
 		projectM projectmanage.ProjectManage
 		areaM    areamanage.AreaManage
@@ -131,8 +134,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
 			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			vidmgrM = vidmgrmange.NewVidmgrMange(zrpc.MustNewClient(c.VidRpc.Conf))
-			vidmgrC = vidmgrconfigmange.NewVidmgrConfigMange(zrpc.MustNewClient(c.VidRpc.Conf))
+			vidmgrM = vidmgrinfomanage.NewVidmgrInfoManage(zrpc.MustNewClient(c.VidRpc.Conf))
+			vidmgrC = vidmgrconfigmanage.NewVidmgrConfigManage(zrpc.MustNewClient(c.VidRpc.Conf))
+			vidmgrS = vidmgrstreammanage.NewVidmgrStreamManage(zrpc.MustNewClient(c.VidRpc.Conf))
+
 			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -144,6 +149,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
 			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
+			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
 			deviceA = dmdirect.NewDeviceAuth(c.DmRpc.RunProxy)
 			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
@@ -234,6 +240,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			TimedJob:       timedJob,
 			VidmgrM:        vidmgrM,
 			VidmgrC:        vidmgrC,
+			VidmgrS:        vidmgrS,
 
 			ProjectM: projectM,
 			AreaM:    areaM,
