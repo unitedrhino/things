@@ -4,6 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/pb/vid"
+	"time"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -27,16 +32,32 @@ func NewOnServerKeepaliveLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *OnServerKeepaliveLogic) OnServerKeepalive(req *types.HooksApiServerKeepaliveReq) (resp *types.HooksApiResp, err error) {
 	// todo: add your logic here and delete this line
-
-	//fmt.Println("________keepalive________:", req.Data, "MediaServerId:", req.MediaServerId)
-
 	reqStr, _ := json.Marshal(*req)
 	fmt.Println("---------OnServerKeepalive--------------:", string(reqStr))
-	//根据MediaServerId 值 判断流媒体服务器是否在线
-	//获取当前数据库中服务器的状态值 ,如果不在线侧更新
-	//设置一个超时时间,如果超过这个时间,未收到live包,则更新为下线状态
-	//起一个定时器，去检测在线的设备，如果设备在线则将对比设备的时间戳，是否超过30S，如果超过30S，则下线设备，没有超过，则不处理
-
+	//从hook data中解析出 MediaserverID值。
+	//hookactive中是保持在线状态  需要更新对应的数据库
+	vidmgrInfo, err := l.svcCtx.VidmgrM.VidmgrInfoRead(l.ctx, &vid.VidmgrInfoReadReq{
+		VidmgrtID: req.MediaServerId,
+	})
+	if err != nil {
+		er := errors.Fmt(err)
+		l.Errorf("%s rpc.ManageVidmgr req=%v err=%+v", utils.FuncName(), req, er)
+		return nil, er
+	}
+	if vidmgrInfo != nil {
+		//update info
+		//UPDATE
+		vidReq := &vid.VidmgrInfo{
+			VidmgrID:     vidmgrInfo.VidmgrID,
+			VidmgrStatus: def.DeviceStatusOnline,
+			LastLogin:    time.Now().Unix(),
+		}
+		_, err = l.svcCtx.VidmgrM.VidmgrInfoUpdate(l.ctx, vidReq)
+		if err != nil {
+			er := errors.Fmt(err)
+			l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), req, er)
+		}
+	}
 	return &types.HooksApiResp{
 		Code: 0,
 		Msg:  "success",

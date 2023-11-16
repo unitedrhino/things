@@ -24,7 +24,7 @@ func NewSetServerConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 	}
 }
 
-func setDefaultConfig(svcCtx *svc.ServiceContext, config *types.IndexApiServerConfig) {
+func setDefaultConfig(svcCtx *svc.ServiceContext, config *types.ServerConfig) {
 	config.ApiDebug = "1"
 	config.HookEnable = "1"
 	config.HookOnFlowReport = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onFlowReport", utils.GetHostIp(), svcCtx.Config.Port)
@@ -48,14 +48,8 @@ func setDefaultConfig(svcCtx *svc.ServiceContext, config *types.IndexApiServerCo
 
 func (l *SetServerConfigLogic) SetServerConfig(req *types.IndexApiSetServerConfigReq) (resp *types.IndexApiSetServerConfigResp, err error) {
 	// todo: add your logic here and delete this line
-	//serverConfig := types.IndexApiServerConfig{}
-	fmt.Println("[airgens] ID  ", req.VidmgrID)
-	fmt.Println("[airgens] Data", req.Data)
-	//json.Marshal()
-	////data, err := proxySetMediaServer(l.ctx, l.svcCtx, SETSERVERCONFIG, req.VidmgrID)
 	dataRecv := new(types.IndexApiSetServerConfigResp)
-
-	strmConfig := new(types.IndexApiServerConfig)
+	strmConfig := new(types.ServerConfig)
 	err = json.Unmarshal([]byte(req.Data), strmConfig)
 	if err != nil {
 		fmt.Println("parse Json failed:", err)
@@ -63,16 +57,9 @@ func (l *SetServerConfigLogic) SetServerConfig(req *types.IndexApiSetServerConfi
 	}
 	strmConfig.GeneralMediaServerId = req.VidmgrID
 	setDefaultConfig(l.svcCtx, strmConfig)
-	fmt.Println("[_______IndexApiServerConfig________]IndexApiServerConfig struct:", strmConfig)
 	//set default
 	byte4, err := json.Marshal(strmConfig)
-	fmt.Println("strmConfig TOjSON:", string(byte4))
-
 	mdata, err := proxySetMediaServer(l.ctx, l.svcCtx, SETSERVERCONFIG, req.VidmgrID, byte4)
-	fmt.Println("proxySetMediaServer:", string(mdata))
-
-	//fmt.Println("IP:", getHostIp() /*l.svcCtx.Config.Host*/, " Port:", l.svcCtx.Config.Port)
-	//json.Unmarshal(data, dataRecv)
 	err = json.Unmarshal(mdata, dataRecv)
 	if err != nil {
 		fmt.Println("parse Json failed:", err)

@@ -26,7 +26,7 @@ type MediaConfig struct {
 }
 
 const (
-	VIDMGRTIMEOUT = 60
+	VIDMGRTIMEOUT = 30
 )
 
 func NewMeidaServer(vmgrInfo *vid.VidmgrInfo) *MediaConfig {
