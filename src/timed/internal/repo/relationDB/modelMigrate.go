@@ -105,7 +105,7 @@ var (
 			Name:      "流服务状态态监测",
 			Code:      "timedJobVidSvrUpdata",
 			Params:    `{"topic":"server.vidsvr.monitoring","payload":""}`,
-			CronExpr:  "@every 60s",
+			CronExpr:  "@every 30s",
 			Status:    def.StatusWaitRun,
 			Priority:  1, //低优先级任务
 		},

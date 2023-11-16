@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic/things/vidmgr/indexapi"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
+	"time"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -30,7 +31,7 @@ func NewActiveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ActiveLogi
 	}
 }
 
-func (l *ActiveLogic) setMediaConfigDefault(data *types.IndexApiServerConfig) {
+func (l *ActiveLogic) setMediaConfigDefault(data *types.ServerConfig) {
 	if data != nil {
 		data.ApiDebug = "1"
 		data.HookEnable = "1"
@@ -108,15 +109,12 @@ func (l *ActiveLogic) Active(req *types.VidmgrInfoActiveReq) error {
 	if vidTmp.VidmgrStatus == def.DeviceStatusInactive {
 		//UPDATE
 		vidReq := &vid.VidmgrInfo{
-			VidmgrName:   vidTmp.VidmgrName,
 			VidmgrID:     vidTmp.VidmgrID,
-			VidmgrIpV4:   vidTmp.VidmgrIpV4,
-			VidmgrPort:   vidTmp.VidmgrPort,
-			VidmgrType:   vidTmp.VidmgrType,
-			VidmgrSecret: vidTmp.VidmgrSecret,
-			VidmgrStatus: def.DeviceStatusOffline,
+			VidmgrStatus: def.DeviceStatusOnline,
+			FirstLogin:   time.Now().Unix(),
+			LastLogin:    time.Now().Unix(),
 		}
-		vidTmp.VidmgrStatus = def.DeviceStatusOffline
+		vidTmp.VidmgrStatus = def.DeviceStatusOnline
 
 		_, err := l.svcCtx.VidmgrM.VidmgrInfoUpdate(l.ctx, vidReq)
 		if err != nil {
@@ -124,7 +122,6 @@ func (l *ActiveLogic) Active(req *types.VidmgrInfoActiveReq) error {
 			l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), req, er)
 			return er
 		}
-
 	}
 	return nil
 }

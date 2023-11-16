@@ -219,6 +219,7 @@ var (
 		{Route: "/api/v1/things/vidmgr/info/index", Method: 2, Name: "获取流服务器列表", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/info/read", Method: 2, Name: "获取流服详细", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/info/update", Method: 2, Name: "更新流服务器", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/info/active", Method: 2, Name: "激活流服务器", BusinessType: 1, Desc: "", Group: "视频服务"},
 	}
 	MigrateApiAuth = []SysApiAuth{
 		{PType: "p", V0: "1", V1: "/api/v1/things/product/info/update", V2: "2", V3: "", V4: "", V5: ""},
@@ -321,5 +322,6 @@ var (
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/index", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/read", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/update", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/active", V2: "2", V3: "", V4: "", V5: ""},
 	}
 )
