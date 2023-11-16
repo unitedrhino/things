@@ -2,16 +2,14 @@ package relationDB
 
 import (
 	"database/sql"
+	"database/sql/driver"
+	"encoding/json"
 	"github.com/i-Things/things/shared/stores"
 )
 
-type DmExample struct {
-	ID int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
-}
-
-// 流服务信息
+// 流服务信息  `gorm:"column:product_id;type:char(11);primary_key;NOT NULL"`
 type VidmgrInfo struct {
-	VidmgrID     string            `gorm:"column:id;type:char(11);primary_key;NOT NULL"`                // 服务id
+	VidmgrID     string            `gorm:"column:vidmgr_id;type:char(11);primary_key;NOT NULL"`         // 服务id
 	VidmgrName   string            `gorm:"column:name;type:varchar(100);NOT NULL"`                      // 服务名称
 	VidmgrIpV4   int64             `gorm:"column:ipv4;type:bigint"`                                     // 服务IP
 	VidmgrPort   int64             `gorm:"column:port;type:bigint"`                                     // 服务端口
@@ -29,13 +27,87 @@ func (m *VidmgrInfo) TableName() string {
 	return "vid_mgr_info"
 }
 
+type StreamTrack struct {
+	Channels    int64   `json:"channels"`
+	CodecId     int64   `json:"codec_id"`
+	CodecIdName string  `json:"codec_id_name"`
+	CodecType   int64   `json:"codec_type"`
+	Ready       bool    `json:"ready"`
+	Loss        float32 `json:"loss"`
+	Sample_bit  int64   `json:"sample_bit"`
+	Sample_rate int64   `json:"sample_rate"`
+	Fps         int64   `json:"fps"`
+	Height      int64   `json:"height"`
+	Width       int64   `json:"width"`
+}
+
+// type BList []*BStruct
+type STracks []StreamTrack
+
+func (b STracks) Value() (driver.Value, error) {
+	d, err := json.Marshal(b)
+	return string(d), err
+}
+
+// 注意，这里的接收器是指针类型，否则无法把数据从数据库读到结构体
+func (b *STracks) Scan(v interface{}) error {
+	return json.Unmarshal(v.([]byte), b)
+}
+
+// 视频流信息
+type VidmgrStream struct {
+	StreamID   int64  `gorm:"column:StreamID;type:bigint;primary_key;AUTO_INCREMENT"` // 视频流的id(主键唯一)
+	StreamName string `gorm:"column:name;type:varchar(63);NOT NULL"`                  // 视频流名称
+
+	App    string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
+	Schema string `gorm:"column:schema;type:varchar(31);NOT NULL"`
+	Stream string `gorm:"column:stream;type:varchar(31);NOT NULL"`
+	Vhost  string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
+
+	Identifier string `gorm:"column:identifier;type:varchar(31);NOT NULL"`
+	LocalIP    int64  `gorm:"column:local_ip;type:bigint;NOT NULL"`
+	LocalPort  int64  `gorm:"column:local_port;type:bigint;NOT NULL"`
+	PeerIP     int64  `gorm:"column:peer_ip;type:bigint;NOT NULL"`
+	PeerPort   int64  `gorm:"column:peer_port;type:bigint;NOT NULL"`
+	//产生源类型，包括 unknown = 0,rtmp_push=1,rtsp_push=2,rtp_push=3,pull=4,ffmpeg_pull=5,mp4_vod=6,device_chn=7,rtc_push=8
+	OriginType       int64  `gorm:"column:origin_type;type:smallint;NOT NULL"` // 源类型
+	OriginStr        string `gorm:"column:origin_str;type:char(15);NOT NULL"`
+	OriginUrl        string `gorm:"column:origin_url;type:char(63);NOT NULL"`         //产生源的url
+	ReaderCount      int64  `gorm:"column:reader_count;type:smallint;NOT NULL"`       // 本协议观看人数
+	TotalReaderCount int64  `gorm:"column:total_reader_count;type:smallint;NOT NULL"` //观看总人数，包括hls/rtsp/rtmp/http-flv/ws-flv/rtc
+	//流通道信息
+	Tracks         STracks `json:"tracks" gorm:"type:json;column:tracks"`
+	IsRecordingMp4 bool    `gorm:"column:is_recording_mp4;type:bit(1);default:0;NOT NULL"`
+	IsRecordingHLS bool    `gorm:"column:is_recording_hls;type:bit(1);default:0;NOT NULL"`
+	IsShareChannel bool    `gorm:"column:share_channel;type:bit(1);default:0;NOT NULL"`
+	IsAutoPush     bool    `gorm:"column:auto_push;type:bit(1);default:0;NOT NULL"`
+	IsAutoRecord   bool    `gorm:"column:auto_record;type:bit(1);default:0;NOT NULL"`
+	IsPTZ          bool    `gorm:"column:is_ptz;type:bit(1);default:0;NOT NULL"`
+	IsOnline       bool    `gorm:"column:is_online;type:bit(1);default:0;NOT NULL"`
+	//NetType        int64             `gorm:"column:net_type;type:smallint;NOT NULL"` // 网络类型
+	//DevType        int64             `gorm:"column:dev_type;type:smallint;default:1"`
+	//DevStreamType  int64             `gorm:"column:dev_streamtype;type:smallint;default:1"`
+	//ChannelID      string            `gorm:"column:channel_id;type:varchar(32)"`
+	//ChannelName    string            `gorm:"column:channel_name;type:varchar(32)"`
+	//LowNetType     int64             `gorm:"column:low_nettype;type:smallint;default:1"`
+	VidmgrID string            `gorm:"column:vidmgr_id;type:char(11);NOT NULL"`                     // 添加外键
+	Desc     string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
+	Tags     map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
+	stores.Time
+	VidmgrInfo *VidmgrInfo `gorm:"foreignKey:VidmgrID;references:VidmgrID"` // 添加外键
+}
+
+func (m *VidmgrStream) TableName() string {
+	return "vid_mgr_stream"
+}
+
 // 流服务配置表
 type VidmgrConfig struct {
-	GeneralMediaServerId           string `gorm:"column:general_mediaServerId;primary_key;NOT NULL"`
-	ApiDebug                       string `gorm:"column:api_apiDebug"`
-	ApiDefaultSnap                 string `gorm:"column:api_defaultSnap"`
-	ApiSecret                      string `gorm:"column:api_secret"`
-	ApiSnapRoot                    string `gorm:"column:api_snapRoot"`
+	GeneralMediaServerId           string `gorm:"column:mediaServerId;type:char(11);primary_key;NOT NULL"`
+	ApiDebug                       string `gorm:"column:apiDebug;char(1)"`
+	ApiDefaultSnap                 string `gorm:"column:defaultSnap"`
+	ApiSecret                      string `gorm:"column:secret"`
+	ApiSnapRoot                    string `gorm:"column:snapRoot"`
 	ClusterOriginUrl               string `gorm:"column:cluster_origin_url"`
 	ClusterRetryCount              string `gorm:"column:cluster_retry_count"`
 	ClusterTimeoutSec              string `gorm:"column:cluster_timeout_sec"`
@@ -44,17 +116,17 @@ type VidmgrConfig struct {
 	FfmpegLog                      string `gorm:"column:ffmpeg_log"`
 	FfmpegRestartSec               string `gorm:"column:ffmpeg_restart_sec"`
 	FfmpegSnap                     string `gorm:"column:ffmpeg_snap"`
-	GeneralCheckNvidiaDev          string `gorm:"column:general_check_nvidia_dev"`
-	GeneralEnableVhost             string `gorm:"column:general_enableVhost"`
-	GeneralEnableFfmpegLog         string `gorm:"column:general_enable_ffmpeg_log"`
-	GeneralFlowThreshold           string `gorm:"column:general_flowThreshold"`
-	GeneralMaxStreamWaitMS         string `gorm:"column:general_maxStreamWaitMS"`
-	GeneralMergeWriteMS            string `gorm:"column:general_mergeWriteMS"`
-	GeneralResetWhenRePlay         string `gorm:"column:general_resetWhenRePlay"`
-	GeneralStreamNoneReaderDelayMS string `gorm:"column:general_streamNoneReaderDelayMS"`
-	GeneralUnreadyFrameCache       string `gorm:"column:general_unready_frame_cache"`
-	GeneralWaitAddTrackMs          string `gorm:"column:general_wait_add_track_ms"`
-	GeneralWaitTrackReadyMs        string `gorm:"column:general_wait_track_ready_ms"`
+	GeneralCheckNvidiaDev          string `gorm:"column:check_nvidia_dev"`
+	GeneralEnableVhost             string `gorm:"column:enableVhost"`
+	GeneralEnableFfmpegLog         string `gorm:"column:enable_ffmpeg_log"`
+	GeneralFlowThreshold           string `gorm:"column:flowThreshold"`
+	GeneralMaxStreamWaitMS         string `gorm:"column:maxStreamWaitMS"`
+	GeneralMergeWriteMS            string `gorm:"column:mergeWriteMS"`
+	GeneralResetWhenRePlay         string `gorm:"column:resetWhenRePlay"`
+	GeneralStreamNoneReaderDelayMS string `gorm:"column:streamNoneReaderDelayMS"`
+	GeneralUnreadyFrameCache       string `gorm:"column:unready_frame_cache"`
+	GeneralWaitAddTrackMs          string `gorm:"column:wait_add_track_ms"`
+	GeneralWaitTrackReadyMs        string `gorm:"column:wait_track_ready_ms"`
 	HlsBroadcastRecordTs           string `gorm:"column:hls_broadcastRecordTs"`
 	HlsDeleteDelaySec              string `gorm:"column:hls_deleteDelaySec"`
 	HlsFileBufSize                 string `gorm:"column:hls_fileBufSize"`
@@ -173,29 +245,4 @@ type VidmgrConfig struct {
 // 流服务激活之后创建该表
 func (m *VidmgrConfig) TableName() string {
 	return "vid_mgr_config"
-}
-
-// 视频流信息
-type VidstreamInfo struct {
-	StreamID       string            `gorm:"column:id;type:bigint;primary_key;NOT NULL"` // 视频流的id
-	StreamName     string            `gorm:"column:name;type:varchar(100);NOT NULL"`     // 服务名称
-	NetType        int64             `gorm:"column:net_type;type:smallint;NOT NULL"`     // 服务名称
-	DevType        int64             `gorm:"column:dev_type;type:smallint;default:1"`
-	DevStreamType  int64             `gorm:"column:dev_streamtype;type:smallint;default:1"`
-	ChannelID      string            `gorm:"column:channel_id;type:varchar(32)"`
-	ChannelName    string            `gorm:"column:channel_name;type:varchar(32)"`
-	LowNetType     int64             `gorm:"column:low_nettype;type:smallint;default:1"`
-	IsShareChannel bool              `gorm:"column:share_channel;type:bit(1);default:0;NOT NULL"`
-	IsAutoPush     bool              `gorm:"column:auto_push;type:bit(1);default:0;NOT NULL"`
-	IsAutoRecord   bool              `gorm:"column:auto_record;type:bit(1);default:0;NOT NULL"`
-	IsPTZ          bool              `gorm:"column:is_ptz;type:bit(1);default:0;NOT NULL"`
-	IsOnline       bool              `gorm:"column:is_online;type:bit(1);default:0;NOT NULL"`
-	VidmgrInfo     *VidmgrInfo       `gorm:"foreignKey:VidmgrID;references:VidmgrID"`                     // 添加外键
-	Desc           string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
-	Tags           map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
-	stores.Time
-}
-
-func (m *VidstreamInfo) TableName() string {
-	return "vid_stream_info"
 }

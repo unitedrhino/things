@@ -1,0 +1,31 @@
+package vidmgrstreammanagelogic
+
+import (
+	"context"
+
+	"github.com/i-Things/things/src/vidsvr/internal/svc"
+	"github.com/i-Things/things/src/vidsvr/pb/vid"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
+
+type VidmgrStreamReadLogic struct {
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+	logx.Logger
+}
+
+func NewVidmgrStreamReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *VidmgrStreamReadLogic {
+	return &VidmgrStreamReadLogic{
+		ctx:    ctx,
+		svcCtx: svcCtx,
+		Logger: logx.WithContext(ctx),
+	}
+}
+
+// 获取流信息详情
+func (l *VidmgrStreamReadLogic) VidmgrStreamRead(in *vid.VidmgrStreamReadReq) (*vid.VidmgrStream, error) {
+	// todo: add your logic here and delete this line
+
+	return &vid.VidmgrStream{}, nil
+}

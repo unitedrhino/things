@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/vidsvr/internal/config"
-	vidmanage "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrmange"
+	mgrconfig "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrconfigmanage"
+	mgrinfo "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrinfomanage"
+	mgrstream "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrstreammanage"
 	"github.com/i-Things/things/src/vidsvr/internal/startup"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
@@ -48,7 +50,9 @@ func RunServer(svcCtx *svc.ServiceContext) {
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		vid.RegisterVidmgrMangeServer(grpcServer, vidmanage.NewVidmgrMangeServer(svcCtx))
+		vid.RegisterVidmgrInfoManageServer(grpcServer, mgrinfo.NewVidmgrInfoManageServer(svcCtx))
+		vid.RegisterVidmgrConfigManageServer(grpcServer, mgrconfig.NewVidmgrConfigManageServer(svcCtx))
+		vid.RegisterVidmgrStreamManageServer(grpcServer, mgrstream.NewVidmgrStreamManageServer(svcCtx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

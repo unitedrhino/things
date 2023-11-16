@@ -7,15 +7,8 @@ import (
 func Migrate() error {
 	db := stores.GetCommonConn(nil)
 	return db.AutoMigrate(
-		//&DmProductInfo{},
-		//&DmDeviceInfo{},
-		//&DmProductCustom{},
-		//&DmProductSchema{},
-		//&DmGroupInfo{},
-		//&DmGroupDevice{},
-		//&DmGatewayDevice{},
-		//&DmProductRemoteConfig{},
 		&VidmgrInfo{},
 		&VidmgrConfig{},
+		&VidmgrStream{},
 	)
 }
