@@ -39,10 +39,10 @@ type UserCaptchaResp struct {
 }
 
 type UserIndexReq struct {
-	Page     PageInfo `json:"page"`              //分页信息
-	UserName string   `json:"userName,optional"` //用户名(唯一)
-	Phone    string   `json:"phone,optional"`    // 手机号
-	Email    string   `json:"email,optional"`    // 邮箱
+	Page     *PageInfo `json:"page,optional"`     //分页信息
+	UserName string    `json:"userName,optional"` //用户名(唯一)
+	Phone    string    `json:"phone,optional"`    // 手机号
+	Email    string    `json:"email,optional"`    // 邮箱
 }
 
 type UserIndexResp struct {
@@ -169,6 +169,10 @@ type SendOption struct {
 	RetryInterval  int64 `json:"retryInterval,optional"`  //重试间隔
 }
 
+type CodeReq struct {
+	Code string `json:"code"`
+}
+
 type MenuCreateReq struct {
 	MenuData
 }
@@ -211,9 +215,9 @@ type RoleCreateReq struct {
 }
 
 type RoleIndexReq struct {
-	Page   PageInfo `json:"page"`             //分页信息,只获取一个则不填
-	Name   string   `json:"name,optional "`   //按名称查找角色
-	Status int64    `json:"status,optional "` //按状态查找角色
+	Page   *PageInfo `json:"page,optional"`    //分页信息,只获取一个则不填
+	Name   string    `json:"name,optional "`   //按名称查找角色
+	Status int64     `json:"status,optional "` //按状态查找角色
 }
 
 type RoleIndexData struct {
@@ -287,7 +291,7 @@ type UserAuthAreaIndexResp struct {
 }
 
 type SysLogLoginIndexReq struct {
-	Page          PageInfo  `json:"page"`                   //分页信息,只获取一个则不填
+	Page          *PageInfo `json:"page,optional"`          //分页信息,只获取一个则不填
 	IpAddr        string    `json:"ipAddr,optional"`        //按ip地址查找
 	LoginLocation string    `json:"loginLocation,optional"` //按登录地址查找
 	DateRange     DateRange `json:"dateRange,optional"`     //按时间范围查找
@@ -311,10 +315,10 @@ type SysLogLoginIndexResp struct {
 }
 
 type SysLogOperIndexReq struct {
-	Page         PageInfo `json:"page"`                          //分页信息,只获取一个则不填
-	OperName     string   `json:"operName,optional "`            //按操作名称查找
-	OperUserName string   `json:"operUserName,optional "`        //按操作人员名称查找
-	BusinessType int64    `json:"businessType,string,optional "` //按业务类型（1新增 2修改 3删除 4查询）查找
+	Page         *PageInfo `json:"page,optional"`                 //分页信息,只获取一个则不填
+	OperName     string    `json:"operName,optional "`            //按操作名称查找
+	OperUserName string    `json:"operUserName,optional "`        //按操作人员名称查找
+	BusinessType int64     `json:"businessType,string,optional "` //按业务类型（1新增 2修改 3删除 4查询）查找
 }
 
 type SysLogOperIndexData struct {
@@ -346,11 +350,11 @@ type ApiCreateReq struct {
 }
 
 type ApiIndexReq struct {
-	Page   PageInfo `json:"page,optional"`               // 分页信息,只获取一个则不填
-	Route  string   `json:"route,optional"`              // 接口路由
-	Method int64    `json:"method,range=[1:9],optional"` // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
-	Group  string   `json:"group,optional"`              // 接口分组
-	Name   string   `json:"name,optional"`               // 接口名称
+	Page   *PageInfo `json:"page,optional"`               // 分页信息,只获取一个则不填
+	Route  string    `json:"route,optional"`              // 接口路由
+	Method int64     `json:"method,range=[1:9],optional"` // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Group  string    `json:"group,optional"`              // 接口分组
+	Name   string    `json:"name,optional"`               // 接口名称
 }
 
 type ApiIndexData struct {
@@ -479,7 +483,46 @@ type AreaInfoTreeResp struct {
 	Tree *AreaInfo `json:"tree"` //项目区域列表
 }
 
-type TimedTaskDelayOption struct {
+type TimedTaskGroup struct {
+	Code     string            `json:"code"`              //任务组编码
+	Name     string            `json:"name,optional"`     // 组名
+	Type     string            `json:"type,optional"`     //组类型:queue(消息队列消息发送)  sql(执行sql) email(邮件发送) http(http请求)
+	SubType  string            `json:"subType,optional"`  //组子类型 natsJs nats         normal js
+	Priority int64             `json:"priority,optional"` //组优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+	Env      map[string]string `json:"env,optional"`      //环境变量
+	Config   string            `json:"config,optional"`
+}
+
+type TimedTaskGroupIndexReq struct {
+	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+}
+
+type TimedTaskGroupIndexResp struct {
+	List  []*TimedTaskGroup `json:"list"`
+	Total int64             `json:"total"`
+}
+
+type TimedTaskInfo struct {
+	GroupCode string `json:"groupCode"`         //组编码
+	Type      int64  `json:"type,optional"`     //任务类型 1 定时任务 2 延时任务
+	Name      string `json:"name,optional"`     // 任务名称
+	Code      string `json:"code"`              //任务编码
+	Params    string `json:"params,optional"`   // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
+	CronExpr  string `json:"cronExpr,optional"` // cron执行表达式
+	Status    int64  `json:"status,optional"`   // 状态
+	Priority  int64  `json:"priority,optional"` //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+}
+
+type TimedTaskInfoIndexReq struct {
+	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+}
+
+type TimedTaskInfoIndexResp struct {
+	List  []*TimedTaskInfo `json:"list"`
+	Total int64            `json:"total"`
+}
+
+type TimedTaskOption struct {
 	Priority  int64 `json:"priority,optional"`  //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级//以下两个参数优先使用ProcessIn
 	ProcessIn int64 `json:"processIn,optional"` //多久之后发 秒数
 	ProcessAt int64 `json:"processAt,optional"` // 固定时间发 秒时间戳
@@ -487,22 +530,22 @@ type TimedTaskDelayOption struct {
 	Deadline  int64 `json:"deadline,optional"`  //截止时间  秒时间戳
 }
 
-type TimedTaskDelayQueue struct {
+type TimedTaskParamQueue struct {
 	Topic   string `json:"topic"`
 	Payload string `json:"payload"`
 }
 
-type TimedTaskDelaySql struct {
+type TimedTaskParamSql struct {
 	Param       map[string]string `json:"param"`
 	ExecContent string            `json:"execContent"` //如果是normal,填写执行的sql,如果是脚本,填写脚本内容,如果不填,则会使用数据库中第一次初始化的参数
 }
 
-type TimedTaskSendDelayReq struct {
-	GroupCode  string                `json:"groupCode"`           //组需要提前创建好
-	Code       string                `json:"code"`                //任务code
-	Option     *TimedTaskDelayOption `json:"option,optional"`     //选项
-	ParamQueue *TimedTaskDelayQueue  `json:"paramQueue,optional"` //消息队列发送类型配置,如果不传则使用数据库定义的
-	ParamSql   *TimedTaskDelaySql    `json:"paramSql,optional"`   //数据库执行类型配置,如果不传则使用数据库定义的
+type TimedTaskSendReq struct {
+	GroupCode  string               `json:"groupCode"`           //组需要提前创建好
+	Code       string               `json:"code"`                //任务code
+	Option     *TimedTaskOption     `json:"option,optional"`     //选项
+	ParamQueue *TimedTaskParamQueue `json:"paramQueue,optional"` //消息队列发送类型配置,如果不传则使用数据库定义的
+	ParamSql   *TimedTaskParamSql   `json:"paramSql,optional"`   //数据库执行类型配置,如果不传则使用数据库定义的
 }
 
 type ProductInfo struct {

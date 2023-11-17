@@ -2,11 +2,10 @@ package api
 
 import (
 	"context"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
-	"github.com/jinzhu/copier"
-
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,10 +25,8 @@ func NewApiIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ApiIndex
 }
 
 func (l *ApiIndexLogic) ApiIndex(req *types.ApiIndexReq) (resp *types.ApiIndexResp, err error) {
-	var page sys.PageInfo
-	copier.Copy(&page, req.Page)
 	info, err := l.svcCtx.ApiRpc.ApiIndex(l.ctx, &sys.ApiIndexReq{
-		Page:   &page,
+		Page:   logic.ToSysPageRpc(req.Page),
 		Route:  req.Route,
 		Method: req.Method,
 		Group:  req.Group,

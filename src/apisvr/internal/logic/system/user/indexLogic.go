@@ -3,11 +3,10 @@ package user
 import (
 	"context"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
-	"github.com/jinzhu/copier"
-
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,10 +27,8 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.UserIndexReq) (resp *types.UserIndexResp, err error) {
 	l.Infof("%s req=%v", utils.FuncName(), req)
-	var page sys.PageInfo
-	copier.Copy(&page, req.Page)
 	info, err := l.svcCtx.UserRpc.UserIndex(l.ctx, &sys.UserIndexReq{
-		Page:     &page,
+		Page:     logic.ToSysPageRpc(req.Page),
 		UserName: req.UserName,
 		Phone:    req.Phone,
 		Email:    req.Email,

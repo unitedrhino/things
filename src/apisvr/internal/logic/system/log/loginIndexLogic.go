@@ -3,11 +3,10 @@ package log
 import (
 	"context"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
-	"github.com/jinzhu/copier"
-
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,10 +27,8 @@ func NewLoginIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginI
 
 func (l *LoginIndexLogic) LoginIndex(req *types.SysLogLoginIndexReq) (resp *types.SysLogLoginIndexResp, err error) {
 	l.Infof("%s req=%v", utils.FuncName(), req)
-	var page sys.PageInfo
-	copier.Copy(&page, req.Page)
 	info, err := l.svcCtx.LogRpc.LoginLogIndex(l.ctx, &sys.LoginLogIndexReq{
-		Page:          &page,
+		Page:          logic.ToSysPageRpc(req.Page),
 		IpAddr:        req.IpAddr,
 		LoginLocation: req.LoginLocation,
 		Date:          &sys.DateRange{Start: req.DateRange.Start, End: req.DateRange.End},

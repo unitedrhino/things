@@ -25,7 +25,7 @@ func Migrate(c conf.Database) (err error) {
 		err = db.AutoMigrate(
 			&TimedTaskLog{},
 			&TimedTaskGroup{},
-			&TimedTask{},
+			&TimedTaskInfo{},
 		)
 		if err != nil {
 			return
@@ -48,7 +48,7 @@ func migrateTableColumn() error {
 }
 
 var (
-	MigrateTimedTask = []TimedTask{
+	MigrateTimedTask = []TimedTaskInfo{
 		{
 			GroupCode: "queueTest",
 			Type:      domain.TaskTypeTiming,
@@ -59,16 +59,16 @@ var (
 			Status:    def.StatusWaitRun,
 			Priority:  2,
 		},
-		{
-			GroupCode: "sqlJsTest",
-			Type:      domain.TaskTypeTiming,
-			Name:      "脚本执行",
-			Code:      "sqlExec",
-			Params:    `{"execContent": "function SqlJob(){Set('123','sdafawef');let a = Get('123');LogInfo('get value:',a);let code = GetEnv('code');LogInfo('get code env:',code);Exec(\"insert into test_table(name) values('123123')\");let values = Select('select * from test_table limit 10');LogInfo('select get value :',values);return {code:200,msg:'ok'};}"}`,
-			CronExpr:  "@every 2s",
-			Status:    def.StatusWaitRun,
-			Priority:  4,
-		},
+		//{
+		//	GroupCode: "sqlJsTest",
+		//	Type:      domain.TaskTypeTiming,
+		//	Name:      "脚本执行",
+		//	Code:      "sqlExec",
+		//	Params:    `{"execContent": "function SqlJob(){Set('123','sdafawef');let a = Get('123');LogInfo('get value:',a);let code = GetEnv('code');LogInfo('get code env:',code);Exec(\"insert into test_table(name) values('123123')\");let values = Select('select * from test_table limit 10');LogInfo('select get value :',values);return {code:200,msg:'ok'};}"}`,
+		//	CronExpr:  "@every 2s",
+		//	Status:    def.StatusWaitRun,
+		//	Priority:  4,
+		//},
 		{
 			GroupCode: "queueTest",
 			Type:      domain.TaskTypeDelay,

@@ -22,8 +22,19 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TimedManageClient interface {
+	TaskGroupCreate(ctx context.Context, in *TaskGroup, opts ...grpc.CallOption) (*Response, error)
+	TaskGroupUpdate(ctx context.Context, in *TaskGroup, opts ...grpc.CallOption) (*Response, error)
+	TaskGroupDelete(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*Response, error)
+	TaskGroupIndex(ctx context.Context, in *TaskGroupIndexReq, opts ...grpc.CallOption) (*TaskGroupIndexResp, error)
+	TaskGroupRead(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*TaskGroup, error)
+	TaskInfoCreate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error)
+	TaskInfoUpdate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error)
+	TaskInfoDelete(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*Response, error)
+	TaskInfoIndex(ctx context.Context, in *TaskInfoIndexReq, opts ...grpc.CallOption) (*TaskInfoIndexResp, error)
+	TaskInfoRead(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*TaskInfo, error)
+	TaskLogIndex(ctx context.Context, in *TaskLogIndexReq, opts ...grpc.CallOption) (*TaskLogIndexResp, error)
 	//发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-	TaskSendDelay(ctx context.Context, in *TaskSendDelayReq, opts ...grpc.CallOption) (*Response, error)
+	TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*Response, error)
 }
 
 type timedManageClient struct {
@@ -34,9 +45,108 @@ func NewTimedManageClient(cc grpc.ClientConnInterface) TimedManageClient {
 	return &timedManageClient{cc}
 }
 
-func (c *timedManageClient) TaskSendDelay(ctx context.Context, in *TaskSendDelayReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *timedManageClient) TaskGroupCreate(ctx context.Context, in *TaskGroup, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskSendDelay", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskGroupCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskGroupUpdate(ctx context.Context, in *TaskGroup, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskGroupUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskGroupDelete(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskGroupDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskGroupIndex(ctx context.Context, in *TaskGroupIndexReq, opts ...grpc.CallOption) (*TaskGroupIndexResp, error) {
+	out := new(TaskGroupIndexResp)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskGroupIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskGroupRead(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*TaskGroup, error) {
+	out := new(TaskGroup)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskGroupRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskInfoCreate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskInfoCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskInfoUpdate(ctx context.Context, in *TaskInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskInfoUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskInfoDelete(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskInfoDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskInfoIndex(ctx context.Context, in *TaskInfoIndexReq, opts ...grpc.CallOption) (*TaskInfoIndexResp, error) {
+	out := new(TaskInfoIndexResp)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskInfoIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskInfoRead(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*TaskInfo, error) {
+	out := new(TaskInfo)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskInfoRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskLogIndex(ctx context.Context, in *TaskLogIndexReq, opts ...grpc.CallOption) (*TaskLogIndexResp, error) {
+	out := new(TaskLogIndexResp)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskLogIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskSend", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +157,19 @@ func (c *timedManageClient) TaskSendDelay(ctx context.Context, in *TaskSendDelay
 // All implementations must embed UnimplementedTimedManageServer
 // for forward compatibility
 type TimedManageServer interface {
+	TaskGroupCreate(context.Context, *TaskGroup) (*Response, error)
+	TaskGroupUpdate(context.Context, *TaskGroup) (*Response, error)
+	TaskGroupDelete(context.Context, *CodeReq) (*Response, error)
+	TaskGroupIndex(context.Context, *TaskGroupIndexReq) (*TaskGroupIndexResp, error)
+	TaskGroupRead(context.Context, *CodeReq) (*TaskGroup, error)
+	TaskInfoCreate(context.Context, *TaskInfo) (*Response, error)
+	TaskInfoUpdate(context.Context, *TaskInfo) (*Response, error)
+	TaskInfoDelete(context.Context, *CodeReq) (*Response, error)
+	TaskInfoIndex(context.Context, *TaskInfoIndexReq) (*TaskInfoIndexResp, error)
+	TaskInfoRead(context.Context, *CodeReq) (*TaskInfo, error)
+	TaskLogIndex(context.Context, *TaskLogIndexReq) (*TaskLogIndexResp, error)
 	//发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-	TaskSendDelay(context.Context, *TaskSendDelayReq) (*Response, error)
+	TaskSend(context.Context, *TaskSendReq) (*Response, error)
 	mustEmbedUnimplementedTimedManageServer()
 }
 
@@ -56,8 +177,41 @@ type TimedManageServer interface {
 type UnimplementedTimedManageServer struct {
 }
 
-func (UnimplementedTimedManageServer) TaskSendDelay(context.Context, *TaskSendDelayReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TaskSendDelay not implemented")
+func (UnimplementedTimedManageServer) TaskGroupCreate(context.Context, *TaskGroup) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskGroupCreate not implemented")
+}
+func (UnimplementedTimedManageServer) TaskGroupUpdate(context.Context, *TaskGroup) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskGroupUpdate not implemented")
+}
+func (UnimplementedTimedManageServer) TaskGroupDelete(context.Context, *CodeReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskGroupDelete not implemented")
+}
+func (UnimplementedTimedManageServer) TaskGroupIndex(context.Context, *TaskGroupIndexReq) (*TaskGroupIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskGroupIndex not implemented")
+}
+func (UnimplementedTimedManageServer) TaskGroupRead(context.Context, *CodeReq) (*TaskGroup, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskGroupRead not implemented")
+}
+func (UnimplementedTimedManageServer) TaskInfoCreate(context.Context, *TaskInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoCreate not implemented")
+}
+func (UnimplementedTimedManageServer) TaskInfoUpdate(context.Context, *TaskInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoUpdate not implemented")
+}
+func (UnimplementedTimedManageServer) TaskInfoDelete(context.Context, *CodeReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoDelete not implemented")
+}
+func (UnimplementedTimedManageServer) TaskInfoIndex(context.Context, *TaskInfoIndexReq) (*TaskInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoIndex not implemented")
+}
+func (UnimplementedTimedManageServer) TaskInfoRead(context.Context, *CodeReq) (*TaskInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskInfoRead not implemented")
+}
+func (UnimplementedTimedManageServer) TaskLogIndex(context.Context, *TaskLogIndexReq) (*TaskLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskLogIndex not implemented")
+}
+func (UnimplementedTimedManageServer) TaskSend(context.Context, *TaskSendReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskSend not implemented")
 }
 func (UnimplementedTimedManageServer) mustEmbedUnimplementedTimedManageServer() {}
 
@@ -72,20 +226,218 @@ func RegisterTimedManageServer(s grpc.ServiceRegistrar, srv TimedManageServer) {
 	s.RegisterService(&TimedManage_ServiceDesc, srv)
 }
 
-func _TimedManage_TaskSendDelay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TaskSendDelayReq)
+func _TimedManage_TaskGroupCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskGroup)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TimedManageServer).TaskSendDelay(ctx, in)
+		return srv.(TimedManageServer).TaskGroupCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/timedjob.TimedManage/TaskSendDelay",
+		FullMethod: "/timedjob.TimedManage/TaskGroupCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TimedManageServer).TaskSendDelay(ctx, req.(*TaskSendDelayReq))
+		return srv.(TimedManageServer).TaskGroupCreate(ctx, req.(*TaskGroup))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskGroupUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskGroup)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskGroupUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskGroupUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskGroupUpdate(ctx, req.(*TaskGroup))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskGroupDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CodeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskGroupDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskGroupDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskGroupDelete(ctx, req.(*CodeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskGroupIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskGroupIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskGroupIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskGroupIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskGroupIndex(ctx, req.(*TaskGroupIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskGroupRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CodeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskGroupRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskGroupRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskGroupRead(ctx, req.(*CodeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskInfoCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskInfoCreate(ctx, req.(*TaskInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskInfoUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskInfoUpdate(ctx, req.(*TaskInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CodeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskInfoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskInfoDelete(ctx, req.(*CodeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskInfoIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskInfoIndex(ctx, req.(*TaskInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CodeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskInfoRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskInfoRead(ctx, req.(*CodeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskLogIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskLogIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskLogIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskLogIndex(ctx, req.(*TaskLogIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimedManage_TaskSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskSendReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskSend",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskSend(ctx, req.(*TaskSendReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -98,8 +450,52 @@ var TimedManage_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*TimedManageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "TaskSendDelay",
-			Handler:    _TimedManage_TaskSendDelay_Handler,
+			MethodName: "TaskGroupCreate",
+			Handler:    _TimedManage_TaskGroupCreate_Handler,
+		},
+		{
+			MethodName: "TaskGroupUpdate",
+			Handler:    _TimedManage_TaskGroupUpdate_Handler,
+		},
+		{
+			MethodName: "TaskGroupDelete",
+			Handler:    _TimedManage_TaskGroupDelete_Handler,
+		},
+		{
+			MethodName: "TaskGroupIndex",
+			Handler:    _TimedManage_TaskGroupIndex_Handler,
+		},
+		{
+			MethodName: "TaskGroupRead",
+			Handler:    _TimedManage_TaskGroupRead_Handler,
+		},
+		{
+			MethodName: "TaskInfoCreate",
+			Handler:    _TimedManage_TaskInfoCreate_Handler,
+		},
+		{
+			MethodName: "TaskInfoUpdate",
+			Handler:    _TimedManage_TaskInfoUpdate_Handler,
+		},
+		{
+			MethodName: "TaskInfoDelete",
+			Handler:    _TimedManage_TaskInfoDelete_Handler,
+		},
+		{
+			MethodName: "TaskInfoIndex",
+			Handler:    _TimedManage_TaskInfoIndex_Handler,
+		},
+		{
+			MethodName: "TaskInfoRead",
+			Handler:    _TimedManage_TaskInfoRead_Handler,
+		},
+		{
+			MethodName: "TaskLogIndex",
+			Handler:    _TimedManage_TaskLogIndex_Handler,
+		},
+		{
+			MethodName: "TaskSend",
+			Handler:    _TimedManage_TaskSend_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -87,20 +87,20 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 		return err
 	}
 	payload, _ := json.Marshal(in)
-	_, err = l.svcCtx.TimedM.TaskSendDelay(l.ctx, &timedjob.TaskSendDelayReq{
+	_, err = l.svcCtx.TimedM.TaskSend(l.ctx, &timedjob.TaskSendReq{
 		GroupCode: def.TimedIThingsQueueGroupCode,
 		Code:      "disvr-action-check-delay",
-		Option: &timedjob.TaskDelayOption{
+		Option: &timedjob.TaskSendOption{
 			ProcessIn: option.RetryInterval,
 			Deadline:  sendTime.Add(time.Duration(option.TimeoutToFail) * time.Second).Unix(),
 		},
-		ParamQueue: &timedjob.TaskDelayQueue{
+		ParamQueue: &timedjob.TaskParamQueue{
 			Topic:   topics.DiActionCheckDelay,
 			Payload: string(payload),
 		},
 	})
 	if err != nil {
-		l.Errorf("TaskSendDelay err:%v", err)
+		l.Errorf("TaskSend err:%v", err)
 	}
 	return nil
 }

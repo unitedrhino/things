@@ -17,14 +17,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type TaskSendDelayLogic struct {
+type TaskSendLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewTaskSendDelayLogic(ctx context.Context, svcCtx *svc.ServiceContext) *TaskSendDelayLogic {
-	return &TaskSendDelayLogic{
+func NewTaskSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *TaskSendLogic {
+	return &TaskSendLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -32,17 +32,17 @@ func NewTaskSendDelayLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Tas
 }
 
 // 发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-func (l *TaskSendDelayLogic) TaskSendDelay(in *timedjob.TaskSendDelayReq) (*timedjob.Response, error) {
+func (l *TaskSendLogic) TaskSend(in *timedjob.TaskSendReq) (*timedjob.Response, error) {
 	tg := relationDB.NewTaskGroupRepo(l.ctx)
-	group, err := tg.FindOneByFilter(l.ctx, relationDB.TaskGroupFilter{Code: in.GroupCode})
+	group, err := tg.FindOneByFilter(l.ctx, relationDB.TaskGroupFilter{Codes: []string{in.GroupCode}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.Parameter.AddMsg("任务组未找到,请填写正确的任务组")
 		}
 		return nil, err
 	}
-	ti := relationDB.NewTaskRepo(l.ctx)
-	task, err := ti.FindOneByFilter(l.ctx, relationDB.TaskFilter{Code: in.Code, WithGroup: true})
+	ti := relationDB.NewTaskInfoRepo(l.ctx)
+	task, err := ti.FindOneByFilter(l.ctx, relationDB.TaskFilter{Codes: []string{in.Code}, WithGroup: true})
 	if err != nil && !errors.Cmp(err, errors.NotFind) {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (l *TaskSendDelayLogic) TaskSendDelay(in *timedjob.TaskSendDelayReq) (*time
 		if in.GetOption() != nil && in.GetOption().Priority != 0 {
 			property = in.Option.Priority
 		}
-		task = &relationDB.TimedTask{
+		task = &relationDB.TimedTaskInfo{
 			GroupCode: in.GroupCode,
 			Type:      domain.TaskTypeDelay,
 			Code:      in.Code,
@@ -127,6 +127,6 @@ func (l *TaskSendDelayLogic) TaskSendDelay(in *timedjob.TaskSendDelayReq) (*time
 	}
 	return &timedjob.Response{}, nil
 }
-func getTaskCode(j *relationDB.TimedTask) string {
+func getTaskCode(j *relationDB.TimedTaskInfo) string {
 	return fmt.Sprintf("delay:%v:%s", j.GroupCode, j.Code)
 }

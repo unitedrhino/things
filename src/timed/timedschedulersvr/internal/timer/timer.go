@@ -26,13 +26,13 @@ func Run(svcCtx *svc.ServiceContext) {
 	defer span.End()
 	{ //先初始化数据库状态
 		msg := "初始化数据库执行错误"
-		jobDB := relationDB.NewTaskRepo(ctx)
+		jobDB := relationDB.NewTaskInfoRepo(ctx)
 		//将运行中的任务修改为等待运行
-		err := jobDB.UpdateByFilter(ctx, &relationDB.TimedTask{Status: def.StatusWaitRun},
+		err := jobDB.UpdateByFilter(ctx, &relationDB.TimedTaskInfo{Status: def.StatusWaitRun},
 			relationDB.TaskFilter{Status: []int64{def.StatusRunning}, Types: []int64{domain.TaskTypeTiming}})
 		errors.Must(err, msg)
 		//将等待暂停的任务调整为已暂停
-		err = jobDB.UpdateByFilter(ctx, &relationDB.TimedTask{Status: def.StatusStopped},
+		err = jobDB.UpdateByFilter(ctx, &relationDB.TimedTaskInfo{Status: def.StatusStopped},
 			relationDB.TaskFilter{Status: []int64{def.StatusWaitStop}, Types: []int64{domain.TaskTypeTiming}})
 		errors.Must(err, msg)
 		//删除等待删除的任务
@@ -67,7 +67,7 @@ func TaskCheck(svcCtx *svc.ServiceContext) {
 	ctx, span := ctxs.StartSpan(ctx, "timedSchedulersvr.taskCheck", "")
 	defer span.End()
 	err := func() error {
-		jobDB := relationDB.NewTaskRepo(ctx)
+		jobDB := relationDB.NewTaskInfoRepo(ctx)
 		js, err := jobDB.FindByFilter(ctx, relationDB.TaskFilter{WithGroup: true,
 			Status: []int64{def.StatusWaitStop, def.StatusWaitDelete, def.StatusWaitRun},
 			Types:  []int64{domain.TaskTypeTiming}},
@@ -105,12 +105,12 @@ func TaskCheck(svcCtx *svc.ServiceContext) {
 	}
 }
 
-func getTaskCode(j *relationDB.TimedTask) string {
+func getTaskCode(j *relationDB.TimedTaskInfo) string {
 	return fmt.Sprintf("timing:%s:%s", j.GroupCode, j.Code)
 }
 
 // 需要检查任务是否启动,如果没有启动需要启动
-func TaskStatusRunCheck(ctx context.Context, svcCtx *svc.ServiceContext, wait *sync.WaitGroup, task *relationDB.TimedTask) error {
+func TaskStatusRunCheck(ctx context.Context, svcCtx *svc.ServiceContext, wait *sync.WaitGroup, task *relationDB.TimedTaskInfo) error {
 	defer wait.Done()
 	taskCode := getTaskCode(task)
 	taskInfo := domain.TaskInfo{
@@ -123,14 +123,14 @@ func TaskStatusRunCheck(ctx context.Context, svcCtx *svc.ServiceContext, wait *s
 		logx.WithContext(ctx).Errorf("TaskStatusRunCheck.Register err:%v task:%v", err, task)
 		return errors.System.AddDetail(err)
 	}
-	jobDB := relationDB.NewTaskRepo(ctx)
+	jobDB := relationDB.NewTaskInfoRepo(ctx)
 	task.Status = def.StatusRunning
 	err = jobDB.Update(ctx, task)
 	return err
 }
 
 // 如果处于运行状态需要停止
-func TaskStatusStopCheck(ctx context.Context, svcCtx *svc.ServiceContext, wait *sync.WaitGroup, task *relationDB.TimedTask) error {
+func TaskStatusStopCheck(ctx context.Context, svcCtx *svc.ServiceContext, wait *sync.WaitGroup, task *relationDB.TimedTaskInfo) error {
 	defer wait.Done()
 	taskCode := getTaskCode(task)
 	err := svcCtx.Scheduler.Unregister(taskCode)
@@ -138,7 +138,7 @@ func TaskStatusStopCheck(ctx context.Context, svcCtx *svc.ServiceContext, wait *
 		logx.WithContext(ctx).Errorf("TaskStatusStopCheck.Unregister err:%v task:%v", err, task)
 		return errors.System.AddDetail(err)
 	}
-	jobDB := relationDB.NewTaskRepo(ctx)
+	jobDB := relationDB.NewTaskInfoRepo(ctx)
 	switch task.Status {
 	case def.StatusWaitDelete:
 		err = jobDB.Delete(ctx, task.ID)
