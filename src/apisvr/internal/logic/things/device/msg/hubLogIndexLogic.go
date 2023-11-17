@@ -5,10 +5,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
-	"github.com/i-Things/things/src/disvr/pb/di"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +27,7 @@ func NewHubLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HubLo
 }
 
 func (l *HubLogIndexLogic) HubLogIndex(req *types.DeviceMsgHubLogIndexReq) (resp *types.DeviceMsgHubLogIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.HubLogIndex(l.ctx, &di.HubLogIndexReq{
+	dmResp, err := l.svcCtx.DeviceMsg.HubLogIndex(l.ctx, &dm.HubLogIndexReq{
 		DeviceName: req.DeviceName,
 		ProductID:  req.ProductID,
 		TimeStart:  req.TimeStart,

@@ -6,10 +6,9 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/eventBus"
 	"github.com/i-Things/things/shared/stores"
-	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
-	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
-	"github.com/i-Things/things/src/disvr/didirect"
+	deviceinteract "github.com/i-Things/things/src/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
+	devicemsg "github.com/i-Things/things/src/dmsvr/client/devicemsg"
 	productmanage "github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -69,9 +68,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.DmRpc.Mode == conf.ClientModeGrpc {
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
+		deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DmRpc.Conf))
+		deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DmRpc.Conf))
 	} else {
 		productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 		deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
+		deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
+		deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
 	}
 
 	tr := schema.NewReadRepo(func(ctx context.Context, productID string) (*schema.Model, error) {
@@ -81,13 +84,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 		return schema.ValidateWithFmt([]byte(info.Tsl))
 	})
-	if c.DiRpc.Mode == conf.ClientModeGrpc {
-		deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DiRpc.Conf))
-		deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DiRpc.Conf))
-	} else {
-		deviceMsg = didirect.NewDeviceMsg(c.DiRpc.RunProxy)
-		deviceInteract = didirect.NewDeviceInteract(c.DiRpc.RunProxy)
-	}
+
 	bus := eventBus.NewEventBus()
 	du, err := dataUpdate.NewDataUpdate(c.Event)
 	logx.Must(err)

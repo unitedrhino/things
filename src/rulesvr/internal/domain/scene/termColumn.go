@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
+	devicemsg "github.com/i-Things/things/src/dmsvr/client/devicemsg"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )

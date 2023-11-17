@@ -4,9 +4,9 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/domain/schema"
-	deviceinteract "github.com/i-Things/things/src/disvr/client/deviceinteract"
-	devicemsg "github.com/i-Things/things/src/disvr/client/devicemsg"
+	deviceinteract "github.com/i-Things/things/src/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
+	devicemsg "github.com/i-Things/things/src/dmsvr/client/devicemsg"
 )
 import "context"
 
