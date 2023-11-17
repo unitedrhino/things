@@ -2,6 +2,7 @@ package task
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/utils"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -9,21 +10,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SendDelayLogic struct {
+type SendLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewSendDelayLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendDelayLogic {
-	return &SendDelayLogic{
+func NewSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendLogic {
+	return &SendLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *SendDelayLogic) SendDelay(req *types.TimedTaskSendDelayReq) error {
-	_, err := l.svcCtx.TimedJob.TaskSendDelay(l.ctx, ToSendDelayReqPb(req))
+func (l *SendLogic) Send(req *types.TimedTaskSendReq) error {
+	l.Infof("req:%v", utils.Fmt(req))
+	_, err := l.svcCtx.TimedJob.TaskSend(l.ctx, ToSendDelayReqPb(req))
 	return err
 }

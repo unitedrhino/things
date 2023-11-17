@@ -104,20 +104,20 @@ func (l *SendActionLogic) SendAction(in *di.SendActionReq) (*di.SendActionResp, 
 		}
 		if in.Option != nil {
 			payload, _ := json.Marshal(reqMsg)
-			_, err := l.svcCtx.TimedM.TaskSendDelay(l.ctx, &timedjob.TaskSendDelayReq{
+			_, err := l.svcCtx.TimedM.TaskSend(l.ctx, &timedjob.TaskSendReq{
 				GroupCode: def.TimedIThingsQueueGroupCode,
 				Code:      "disvr-action-check-delay",
-				Option: &timedjob.TaskDelayOption{
+				Option: &timedjob.TaskSendOption{
 					ProcessIn: in.Option.RequestTimeout,
 					Timeout:   in.Option.TimeoutToFail,
 				},
-				ParamQueue: &timedjob.TaskDelayQueue{
+				ParamQueue: &timedjob.TaskParamQueue{
 					Topic:   topics.DiActionCheckDelay,
 					Payload: string(payload),
 				},
 			})
 			if err != nil {
-				l.Errorf("TaskSendDelay err:%v", err)
+				l.Errorf("TaskSend err:%v", err)
 			}
 		}
 		return &di.SendActionResp{

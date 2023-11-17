@@ -374,8 +374,58 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/send-delay",
-					Handler: systemtimedtask.SendDelayHandler(serverCtx),
+					Path:    "/send",
+					Handler: systemtimedtask.SendHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/info/create",
+					Handler: systemtimedtask.InfoCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/info/update",
+					Handler: systemtimedtask.InfoUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/info/delete",
+					Handler: systemtimedtask.InfoDeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/info/index",
+					Handler: systemtimedtask.InfoIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/info/read",
+					Handler: systemtimedtask.InfoReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/group/create",
+					Handler: systemtimedtask.GroupCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/group/update",
+					Handler: systemtimedtask.GroupUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/group/delete",
+					Handler: systemtimedtask.GroupDeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/group/index",
+					Handler: systemtimedtask.GroupIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/group/read",
+					Handler: systemtimedtask.GroupReadHandler(serverCtx),
 				},
 			}...,
 		),

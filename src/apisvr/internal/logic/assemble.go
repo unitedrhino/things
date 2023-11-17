@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/i-Things/things/src/timed/timedjobsvr/pb/timedjob"
 )
 
 func ToTagsMap(tags []*types.Tag) map[string]string {
@@ -44,6 +45,16 @@ func ToSysPageRpc(in *types.PageInfo) *sys.PageInfo {
 		return nil
 	}
 	return &sys.PageInfo{
+		Page: in.Page,
+		Size: in.Size,
+	}
+}
+
+func ToTimedJobPageRpc(in *types.PageInfo) *timedjob.PageInfo {
+	if in == nil {
+		return nil
+	}
+	return &timedjob.PageInfo{
 		Page: in.Page,
 		Size: in.Size,
 	}
