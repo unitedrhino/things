@@ -5,8 +5,14 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	deviceauth "github.com/i-Things/things/src/dmsvr/internal/server/deviceauth"
+	devicegroup "github.com/i-Things/things/src/dmsvr/internal/server/devicegroup"
+	deviceinteract "github.com/i-Things/things/src/dmsvr/internal/server/deviceinteract"
 	devicemanage "github.com/i-Things/things/src/dmsvr/internal/server/devicemanage"
+	devicemsg "github.com/i-Things/things/src/dmsvr/internal/server/devicemsg"
+	firmwaremanage "github.com/i-Things/things/src/dmsvr/internal/server/firmwaremanage"
+	otataskmanage "github.com/i-Things/things/src/dmsvr/internal/server/otataskmanage"
 	productmanage "github.com/i-Things/things/src/dmsvr/internal/server/productmanage"
+	remoteconfig "github.com/i-Things/things/src/dmsvr/internal/server/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/internal/startup"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -51,6 +57,13 @@ func Run(svcCtx *svc.ServiceContext) {
 		dm.RegisterDeviceAuthServer(grpcServer, deviceauth.NewDeviceAuthServer(svcCtx))
 		dm.RegisterDeviceManageServer(grpcServer, devicemanage.NewDeviceManageServer(svcCtx))
 		dm.RegisterProductManageServer(grpcServer, productmanage.NewProductManageServer(svcCtx))
+		dm.RegisterOtaTaskManageServer(grpcServer, otataskmanage.NewOtaTaskManageServer(svcCtx))
+		dm.RegisterFirmwareManageServer(grpcServer, firmwaremanage.NewFirmwareManageServer(svcCtx))
+		dm.RegisterRemoteConfigServer(grpcServer, remoteconfig.NewRemoteConfigServer(svcCtx))
+		dm.RegisterDeviceGroupServer(grpcServer, devicegroup.NewDeviceGroupServer(svcCtx))
+		dm.RegisterDeviceInteractServer(grpcServer, deviceinteract.NewDeviceInteractServer(svcCtx))
+		dm.RegisterDeviceMsgServer(grpcServer, devicemsg.NewDeviceMsgServer(svcCtx))
+
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

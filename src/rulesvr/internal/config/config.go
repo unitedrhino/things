@@ -12,5 +12,4 @@ type Config struct {
 	Database   conf.Database
 	CacheRedis cache.ClusterConf
 	DmRpc      conf.RpcClientConf `json:",optional"`
-	DiRpc      conf.RpcClientConf `json:",optional"`
 }

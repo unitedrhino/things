@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/shadow"
 )
 
 func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
@@ -165,4 +166,37 @@ func ToSchemaDo(productID string, in []*DmProductSchema) *schema.Model {
 	}
 	model.ValidateWithFmt()
 	return &model
+}
+
+func ToShadowPo(info *shadow.Info) *DmDeviceShadow {
+	return &DmDeviceShadow{
+		ID:                info.ID,
+		ProductID:         info.ProductID,
+		DeviceName:        info.DeviceName,
+		DataID:            info.DataID,
+		UpdatedDeviceTime: info.UpdatedDeviceTime,
+		Value:             info.Value,
+	}
+}
+func ToShadowDo(in *DmDeviceShadow) *shadow.Info {
+	return &shadow.Info{
+		ID:                in.ID,
+		ProductID:         in.ProductID,
+		DeviceName:        in.DeviceName,
+		DataID:            in.DataID,
+		Value:             in.Value,
+		UpdatedDeviceTime: in.UpdatedDeviceTime,
+		CreatedTime:       in.CreatedTime,
+		UpdatedTime:       in.UpdatedTime,
+	}
+}
+func ToShadowsDo(in []*DmDeviceShadow) []*shadow.Info {
+	if in == nil {
+		return nil
+	}
+	var ret []*shadow.Info
+	for _, v := range in {
+		ret = append(ret, ToShadowDo(v))
+	}
+	return ret
 }

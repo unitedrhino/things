@@ -4,10 +4,9 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/pb/di"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +26,7 @@ func NewPropertyLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *PropertyLatestIndexLogic) PropertyLatestIndex(req *types.DeviceMsgPropertyLatestIndexReq) (resp *types.DeviceMsgPropertyIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.PropertyLatestIndex(l.ctx, &di.PropertyLatestIndexReq{
+	dmResp, err := l.svcCtx.DeviceMsg.PropertyLatestIndex(l.ctx, &dm.PropertyLatestIndexReq{
 		DeviceName: req.DeviceName,
 		ProductID:  req.ProductID,
 		DataIDs:    req.DataIDs,

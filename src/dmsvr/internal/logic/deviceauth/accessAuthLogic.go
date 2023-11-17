@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -105,7 +105,7 @@ func (l *AccessAuthLogic) Auth(in *dm.AccessAuthReq) (err error) {
 		}
 		return l.SubSetAuth(in, ld, topicInfo)
 	}()
-	er := l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceMsgManage.HubLog{
+	er := l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  ld.ProductID,
 		Action:     AccessToActionMap[in.Access],
 		Timestamp:  time.Now(), // 操作时间

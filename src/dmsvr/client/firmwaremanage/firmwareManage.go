@@ -33,6 +33,9 @@ type (
 	DeviceRegisterResp          = dm.DeviceRegisterResp
 	DeviceTypeCountReq          = dm.DeviceTypeCountReq
 	DeviceTypeCountResp         = dm.DeviceTypeCountResp
+	EventIndex                  = dm.EventIndex
+	EventIndexResp              = dm.EventIndexResp
+	EventLogIndexReq            = dm.EventLogIndexReq
 	Firmware                    = dm.Firmware
 	FirmwareInfo                = dm.FirmwareInfo
 	FirmwareInfoDeleteReq       = dm.FirmwareInfoDeleteReq
@@ -42,6 +45,8 @@ type (
 	FirmwareInfoReadReq         = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp        = dm.FirmwareInfoReadResp
 	FirmwareResp                = dm.FirmwareResp
+	GetPropertyReplyReq         = dm.GetPropertyReplyReq
+	GetPropertyReplyResp        = dm.GetPropertyReplyResp
 	GroupDeviceIndexReq         = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp        = dm.GroupDeviceIndexResp
 	GroupDeviceMultiCreateReq   = dm.GroupDeviceMultiCreateReq
@@ -53,7 +58,12 @@ type (
 	GroupInfoIndexResp          = dm.GroupInfoIndexResp
 	GroupInfoReadReq            = dm.GroupInfoReadReq
 	GroupInfoUpdateReq          = dm.GroupInfoUpdateReq
+	HubLogIndex                 = dm.HubLogIndex
+	HubLogIndexReq              = dm.HubLogIndexReq
+	HubLogIndexResp             = dm.HubLogIndexResp
 	LoginAuthReq                = dm.LoginAuthReq
+	MultiSendPropertyReq        = dm.MultiSendPropertyReq
+	MultiSendPropertyResp       = dm.MultiSendPropertyResp
 	OtaCommonResp               = dm.OtaCommonResp
 	OtaFirmwareDeviceInfoReq    = dm.OtaFirmwareDeviceInfoReq
 	OtaFirmwareDeviceInfoResp   = dm.OtaFirmwareDeviceInfoResp
@@ -64,6 +74,8 @@ type (
 	OtaFirmwareFileReq          = dm.OtaFirmwareFileReq
 	OtaFirmwareFileResp         = dm.OtaFirmwareFileResp
 	OtaPageInfo                 = dm.OtaPageInfo
+	OtaPromptIndexReq           = dm.OtaPromptIndexReq
+	OtaPromptIndexResp          = dm.OtaPromptIndexResp
 	OtaTaskBatchReq             = dm.OtaTaskBatchReq
 	OtaTaskBatchResp            = dm.OtaTaskBatchResp
 	OtaTaskCancleReq            = dm.OtaTaskCancleReq
@@ -100,14 +112,33 @@ type (
 	ProductSchemaTslReadReq     = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp    = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq      = dm.ProductSchemaUpdateReq
+	PropertyIndex               = dm.PropertyIndex
+	PropertyIndexResp           = dm.PropertyIndexResp
+	PropertyLatestIndexReq      = dm.PropertyLatestIndexReq
+	PropertyLogIndexReq         = dm.PropertyLogIndexReq
 	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq        = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp       = dm.RemoteConfigIndexResp
 	RemoteConfigLastReadReq     = dm.RemoteConfigLastReadReq
 	RemoteConfigLastReadResp    = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq      = dm.RemoteConfigPushAllReq
+	RespActionReq               = dm.RespActionReq
+	RespReadReq                 = dm.RespReadReq
 	Response                    = dm.Response
 	RootCheckReq                = dm.RootCheckReq
+	SdkLogIndex                 = dm.SdkLogIndex
+	SdkLogIndexReq              = dm.SdkLogIndexReq
+	SdkLogIndexResp             = dm.SdkLogIndexResp
+	SendActionReq               = dm.SendActionReq
+	SendActionResp              = dm.SendActionResp
+	SendMsgReq                  = dm.SendMsgReq
+	SendMsgResp                 = dm.SendMsgResp
+	SendOption                  = dm.SendOption
+	SendPropertyMsg             = dm.SendPropertyMsg
+	SendPropertyReq             = dm.SendPropertyReq
+	SendPropertyResp            = dm.SendPropertyResp
+	ShadowIndex                 = dm.ShadowIndex
+	ShadowIndexResp             = dm.ShadowIndexResp
 
 	FirmwareManage interface {
 		// 新增固件升级包
