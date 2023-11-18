@@ -17,7 +17,7 @@ type (
 )
 
 var (
-	natsJsConsumerName = "disvr"
+	natsJsConsumerName = "dmsvr"
 )
 
 func newNatsClient(conf conf.EventConf) (*NatsClient, error) {
@@ -29,7 +29,7 @@ func newNatsClient(conf conf.EventConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	err := n.client.QueueSubscribe(topics.DiActionCheckDelay, natsJsConsumerName,
+	err := n.client.QueueSubscribe(topics.DmActionCheckDelay, natsJsConsumerName,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			tempInfo := deviceMsg.PublishMsg{}
 			err := json.Unmarshal(msg, &tempInfo)
