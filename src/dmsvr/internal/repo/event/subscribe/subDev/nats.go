@@ -20,7 +20,7 @@ type (
 
 const (
 	ThingsDeliverGroup = "things_dm_group"
-	natsJsConsumerName = "disvr"
+	natsJsConsumerName = "dmsvr"
 )
 
 func newNatsClient(conf conf.EventConf) (*NatsClient, error) {

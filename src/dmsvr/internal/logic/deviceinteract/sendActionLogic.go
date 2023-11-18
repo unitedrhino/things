@@ -111,7 +111,7 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 					Timeout:   in.Option.TimeoutToFail,
 				},
 				ParamQueue: &timedjob.TaskParamQueue{
-					Topic:   topics.DiActionCheckDelay,
+					Topic:   topics.DmActionCheckDelay,
 					Payload: string(payload),
 				},
 			})

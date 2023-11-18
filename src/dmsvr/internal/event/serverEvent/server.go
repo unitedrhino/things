@@ -95,7 +95,7 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 			Deadline:  sendTime.Add(time.Duration(option.TimeoutToFail) * time.Second).Unix(),
 		},
 		ParamQueue: &timedjob.TaskParamQueue{
-			Topic:   topics.DiActionCheckDelay,
+			Topic:   topics.DmActionCheckDelay,
 			Payload: string(payload),
 		},
 	})
