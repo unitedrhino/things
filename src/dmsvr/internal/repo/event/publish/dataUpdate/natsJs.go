@@ -47,36 +47,3 @@ func (n *NatsJsClient) ProductCustomUpdate(ctx context.Context, info *events.Dev
 		utils.Fmt(info), err)
 	return err
 }
-
-func (n *NatsJsClient) DeviceLogLevelUpdate(ctx context.Context, info *events.DeviceUpdateInfo) error {
-	data, err := json.Marshal(info)
-	if err != nil {
-		return err
-	}
-	_, err = n.client.Publish(topics.DmDeviceLogLevelUpdate, events.NewEventMsg(ctx, data))
-	logx.WithContext(ctx).Infof("%s info:%v,err:%v", utils.FuncName(),
-		info, err)
-	return err
-}
-
-func (n *NatsJsClient) DeviceGatewayUpdate(ctx context.Context, info *events.GatewayUpdateInfo) error {
-	data, err := json.Marshal(info)
-	if err != nil {
-		return err
-	}
-	_, err = n.client.Publish(topics.DmDeviceGatewayUpdate, events.NewEventMsg(ctx, data))
-	logx.WithContext(ctx).Infof("%s info:%v,err:%v", utils.FuncName(),
-		utils.Fmt(info), err)
-	return err
-}
-
-func (n *NatsJsClient) DeviceRemoteConfigUpdate(ctx context.Context, info *events.DeviceUpdateInfo) error {
-	data, err := json.Marshal(info)
-	if err != nil {
-		return err
-	}
-	_, err = n.client.Publish(topics.DmDeviceRemoteConfigUpdate, events.NewEventMsg(ctx, data))
-	logx.WithContext(ctx).Infof("%s info:%v,err:%v", utils.FuncName(),
-		utils.Fmt(info), err)
-	return err
-}

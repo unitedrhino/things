@@ -22,8 +22,63 @@ func NewTimedManageServer(svcCtx *svc.ServiceContext) *TimedManageServer {
 	}
 }
 
+func (s *TimedManageServer) TaskGroupCreate(ctx context.Context, in *timedjob.TaskGroup) (*timedjob.Response, error) {
+	l := timedmanagelogic.NewTaskGroupCreateLogic(ctx, s.svcCtx)
+	return l.TaskGroupCreate(in)
+}
+
+func (s *TimedManageServer) TaskGroupUpdate(ctx context.Context, in *timedjob.TaskGroup) (*timedjob.Response, error) {
+	l := timedmanagelogic.NewTaskGroupUpdateLogic(ctx, s.svcCtx)
+	return l.TaskGroupUpdate(in)
+}
+
+func (s *TimedManageServer) TaskGroupDelete(ctx context.Context, in *timedjob.CodeReq) (*timedjob.Response, error) {
+	l := timedmanagelogic.NewTaskGroupDeleteLogic(ctx, s.svcCtx)
+	return l.TaskGroupDelete(in)
+}
+
+func (s *TimedManageServer) TaskGroupIndex(ctx context.Context, in *timedjob.TaskGroupIndexReq) (*timedjob.TaskGroupIndexResp, error) {
+	l := timedmanagelogic.NewTaskGroupIndexLogic(ctx, s.svcCtx)
+	return l.TaskGroupIndex(in)
+}
+
+func (s *TimedManageServer) TaskGroupRead(ctx context.Context, in *timedjob.CodeReq) (*timedjob.TaskGroup, error) {
+	l := timedmanagelogic.NewTaskGroupReadLogic(ctx, s.svcCtx)
+	return l.TaskGroupRead(in)
+}
+
+func (s *TimedManageServer) TaskInfoCreate(ctx context.Context, in *timedjob.TaskInfo) (*timedjob.Response, error) {
+	l := timedmanagelogic.NewTaskInfoCreateLogic(ctx, s.svcCtx)
+	return l.TaskInfoCreate(in)
+}
+
+func (s *TimedManageServer) TaskInfoUpdate(ctx context.Context, in *timedjob.TaskInfo) (*timedjob.Response, error) {
+	l := timedmanagelogic.NewTaskInfoUpdateLogic(ctx, s.svcCtx)
+	return l.TaskInfoUpdate(in)
+}
+
+func (s *TimedManageServer) TaskInfoDelete(ctx context.Context, in *timedjob.CodeReq) (*timedjob.Response, error) {
+	l := timedmanagelogic.NewTaskInfoDeleteLogic(ctx, s.svcCtx)
+	return l.TaskInfoDelete(in)
+}
+
+func (s *TimedManageServer) TaskInfoIndex(ctx context.Context, in *timedjob.TaskInfoIndexReq) (*timedjob.TaskInfoIndexResp, error) {
+	l := timedmanagelogic.NewTaskInfoIndexLogic(ctx, s.svcCtx)
+	return l.TaskInfoIndex(in)
+}
+
+func (s *TimedManageServer) TaskInfoRead(ctx context.Context, in *timedjob.CodeReq) (*timedjob.TaskInfo, error) {
+	l := timedmanagelogic.NewTaskInfoReadLogic(ctx, s.svcCtx)
+	return l.TaskInfoRead(in)
+}
+
+func (s *TimedManageServer) TaskLogIndex(ctx context.Context, in *timedjob.TaskLogIndexReq) (*timedjob.TaskLogIndexResp, error) {
+	l := timedmanagelogic.NewTaskLogIndexLogic(ctx, s.svcCtx)
+	return l.TaskLogIndex(in)
+}
+
 // 发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-func (s *TimedManageServer) TaskSendDelay(ctx context.Context, in *timedjob.TaskSendDelayReq) (*timedjob.Response, error) {
-	l := timedmanagelogic.NewTaskSendDelayLogic(ctx, s.svcCtx)
-	return l.TaskSendDelay(in)
+func (s *TimedManageServer) TaskSend(ctx context.Context, in *timedjob.TaskSendReq) (*timedjob.Response, error) {
+	l := timedmanagelogic.NewTaskSendLogic(ctx, s.svcCtx)
+	return l.TaskSend(in)
 }

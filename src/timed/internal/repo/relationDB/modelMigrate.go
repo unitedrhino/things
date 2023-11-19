@@ -25,7 +25,7 @@ func Migrate(c conf.Database) (err error) {
 		err = db.AutoMigrate(
 			&TimedTaskLog{},
 			&TimedTaskGroup{},
-			&TimedTask{},
+			&TimedTaskInfo{},
 		)
 		if err != nil {
 			return
@@ -48,17 +48,17 @@ func migrateTableColumn() error {
 }
 
 var (
-	MigrateTimedTask = []TimedTask{
-		//{
-		//	GroupCode: "queueTest",
-		//	Type:      domain.TaskTypeTiming,
-		//	Name:      "消息发送",
-		//	Code:      "msgSendTest",
-		//	Params:    `{"topic":"server.435","payload":"adfgawe"}`,
-		//	CronExpr:  "@every 2s",
-		//	Status:    def.StatusWaitRun,
-		//	Priority:  2,
-		//},
+	MigrateTimedTask = []TimedTaskInfo{
+		{
+			GroupCode: "queueTest",
+			Type:      domain.TaskTypeTiming,
+			Name:      "消息发送",
+			Code:      "msgSendTest",
+			Params:    `{"topic":"server.435","payload":"adfgawe"}`,
+			CronExpr:  "@every 2s",
+			Status:    def.StatusWaitRun,
+			Priority:  2,
+		},
 		//{
 		//	GroupCode: "sqlJsTest",
 		//	Type:      domain.TaskTypeTiming,
@@ -69,55 +69,35 @@ var (
 		//	Status:    def.StatusWaitRun,
 		//	Priority:  4,
 		//},
-		//{
-		//	GroupCode: "queueTest",
-		//	Type:      domain.TaskTypeDelay,
-		//	Name:      "延时测试",
-		//	Code:      "delayTest",
-		//	Params:    `{"topic":"server.333","payload":"garegawef"}`,
-		//	CronExpr:  "",
-		//	Status:    def.StatusRunning,
-		//	Priority:  3,
-		//},
-		//{
-		//	GroupCode: def.TimedIThingsQueueGroupCode,
-		//	Type:      domain.TaskTypeTiming,
-		//	Name:      "一个测试用例",
-		//	Code:      "timedJobActionCheckDelay",
-		//	Params:    `{"topic":"server.action.check.delay","payload":""}`,
-		//	CronExpr:  "@every 5s",
-		//	Status:    def.StatusWaitRun,
-		//	Priority:  4,
-		//},
-		//{
-		//	GroupCode: def.TimedIThingsQueueGroupCode,
-		//	Type:      domain.TaskTypeTiming,
-		//	Name:      "timedJob服务缓存及日志清理",
-		//	Code:      "timedJobClean",
-		//	Params:    `{"topic":"server.timedjob.clean","payload":""}`,
-		//	CronExpr:  "1 1 * * ?",
-		//	Status:    def.StatusWaitRun,
-		//	Priority:  3,
-		//},
+		{
+			GroupCode: "queueTest",
+			Type:      domain.TaskTypeDelay,
+			Name:      "延时测试",
+			Code:      "delayTest",
+			Params:    `{"topic":"server.333","payload":"garegawef"}`,
+			CronExpr:  "",
+			Status:    def.StatusRunning,
+			Priority:  3,
+		},
 		{
 			GroupCode: def.TimedIThingsQueueGroupCode,
 			Type:      domain.TaskTypeTiming,
-			Name:      "流服务状态态监测",
-			Code:      "timedJobVidSvrUpdata",
-			Params:    `{"topic":"server.vidsvr.monitoring","payload":""}`,
-			CronExpr:  "@every 30s",
+			Name:      "timedJob服务缓存及日志清理",
+			Code:      "timedJobClean",
+			Params:    `{"topic":"server.timedjob.clean","payload":""}`,
+			CronExpr:  "1 1 * * ?",
 			Status:    def.StatusWaitRun,
-			Priority:  1, //低优先级任务
+			Priority:  3,
 		},
 	}
 	MigrateTimedTaskGroup = []TimedTaskGroup{
-		//{
-		//	Code:     "queueTest",
-		//	Name:     "消息队列测试",
-		//	Type:     domain.TaskGroupTypeQueue,
-		//	SubType:  domain.QueueTypeNatsJs,
-		//	Priority: 9,
-		//},
+		{
+			Code:     "queueTest",
+			Name:     "消息队列测试",
+			Type:     domain.TaskGroupTypeQueue,
+			SubType:  domain.QueueTypeNatsJs,
+			Priority: 9,
+		},
 		{
 			Code:     def.TimedIThingsQueueGroupCode,
 			Name:     "iThings系统定时消息任务组",
@@ -125,15 +105,14 @@ var (
 			SubType:  domain.QueueTypeNatsJs,
 			Priority: 9,
 		},
-
-		//{
-		//	Code:     "timedJobVidSvrUpdata",
-		//	Name:     "sqlJs模式测试",
-		//	Type:     domain.TaskGroupTypeSql,
-		//	SubType:  domain.SqlTypeJs,
-		//	Priority: 7,
-		//	Env:      map[string]string{"code": "66666"},
-		//	Config:   `{"database":{"select":{"dsn":"root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai","dbType":"mysql"}}}`,
-		//},
+		{
+			Code:     "sqlJsTest",
+			Name:     "sqlJs模式测试",
+			Type:     domain.TaskGroupTypeSql,
+			SubType:  domain.SqlTypeJs,
+			Priority: 7,
+			Env:      map[string]string{"code": "66666"},
+			Config:   `{"database":{"select":{"dsn":"root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai","dbType":"mysql"}}}`,
+		},
 	}
 )

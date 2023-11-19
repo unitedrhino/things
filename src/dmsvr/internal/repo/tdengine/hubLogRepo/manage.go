@@ -3,7 +3,6 @@ package hubLogRepo
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
 )
 
 func (d HubLogRepo) InitProduct(ctx context.Context, productID string) error {
@@ -25,16 +24,6 @@ func (d HubLogRepo) DropProduct(ctx context.Context, productID string) error {
 func (d HubLogRepo) DropDevice(ctx context.Context, productID string, deviceName string) error {
 	sql := fmt.Sprintf("drop table if exists %s;", d.GetLogTableName(productID, deviceName))
 	if _, err := d.t.ExecContext(ctx, sql); err != nil {
-		return err
-	}
-	return nil
-}
-func (d HubLogRepo) Insert(ctx context.Context, data *deviceMsgManage.HubLog) error {
-	sql := fmt.Sprintf("insert into %s using %s tags('%s','%s')(`ts`, `content`, `topic`, `action`,"+
-		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
-		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(), data.ProductID, data.DeviceName)
-	if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.Topic, data.Action,
-		data.RequestID, data.TranceID, data.ResultType); err != nil {
 		return err
 	}
 	return nil

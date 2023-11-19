@@ -5,10 +5,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
-	"github.com/i-Things/things/src/disvr/pb/di"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +27,7 @@ func NewPropertyLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *PropertyLogIndexLogic) PropertyLogIndex(req *types.DeviceMsgPropertyLogIndexReq) (resp *types.DeviceMsgPropertyIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.PropertyLogIndex(l.ctx, &di.PropertyLogIndexReq{
+	dmResp, err := l.svcCtx.DeviceMsg.PropertyLogIndex(l.ctx, &dm.PropertyLogIndexReq{
 		DeviceNames: req.DeviceNames,
 		ProductID:   req.ProductID,
 		DataID:      req.DataID,

@@ -2,13 +2,17 @@ package devicemanagelogic
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/events"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgGateway"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,21 +35,31 @@ func NewDeviceGatewayMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCo
 
 // 删除分组设备
 func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGatewayMultiDeleteReq) (*dm.Response, error) {
+	devicesDos := ToDeviceCoreDos(in.List)
 	err := l.GdDB.MultiDelete(l.ctx, &devices.Core{
 		ProductID:  in.GatewayProductID,
 		DeviceName: in.GatewayDeviceName,
-	}, ToDeviceCoreDos(in.List))
+	}, devicesDos)
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.DataUpdate.DeviceGatewayUpdate(l.ctx, &events.GatewayUpdateInfo{
-		GatewayProductID:  in.GatewayProductID,
-		GatewayDeviceName: in.GatewayDeviceName,
-		Status:            def.GatewayUnbind,
-		Devices:           ToDeviceCoreEvents(in.List),
-	})
-	if err != nil {
-		l.Errorf("%s.DeviceGatewayUpdate err=%+v", utils.FuncName(), err)
+	req := &msgGateway.Msg{
+		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, "").AddStatus(errors.OK),
+		Payload:   ToGatewayPayload(def.GatewayUnbind, devicesDos),
+	}
+	respBytes, _ := json.Marshal(req)
+	msg := deviceMsg.PublishMsg{
+		Handle:     devices.Gateway,
+		Type:       msgGateway.TypeOperation,
+		Payload:    respBytes,
+		Timestamp:  time.Now().UnixMilli(),
+		ProductID:  in.GatewayProductID,
+		DeviceName: in.GatewayDeviceName,
+	}
+	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
+	if er != nil {
+		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
+		return nil, er
 	}
 	return &dm.Response{}, nil
 }

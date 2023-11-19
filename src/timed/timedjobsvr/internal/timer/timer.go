@@ -28,7 +28,7 @@ func (t Timed) ProcessTask(ctx context.Context, Task *asynq.Task) error {
 		err := func() error {
 			var taskInfo domain.TaskInfo
 			json.Unmarshal(Task.Payload(), &taskInfo)
-			tr := relationDB.NewTaskRepo(ctx)
+			tr := relationDB.NewTaskInfoRepo(ctx)
 			task, err := tr.FindOneByFilter(ctx, relationDB.TaskFilter{
 				IDs:       []int64{taskInfo.ID},
 				WithGroup: true,

@@ -14,6 +14,6 @@ DevLink:
     Brokers:
       - tcp://172.19.0.7:1883
 Event:
-  Mode: nats
+  Mode: natsJs
   Nats:
     Url: nats://172.19.0.2:4222

@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/src/timed/internal/repo/relationDB"
 )
 
-func FillTaskInfoDo(do *domain.TaskInfo, po *relationDB.TimedTask) error {
+func FillTaskInfoDo(do *domain.TaskInfo, po *relationDB.TimedTaskInfo) error {
 	if po.Group == nil {
 		return errors.Parameter.AddMsg("任务没有找到任务组")
 	}

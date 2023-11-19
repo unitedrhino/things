@@ -9,12 +9,11 @@ import (
 	ws "github.com/i-Things/things/shared/websocket"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/middleware"
-	"github.com/i-Things/things/src/disvr/client/deviceinteract"
-	"github.com/i-Things/things/src/disvr/client/devicemsg"
-	"github.com/i-Things/things/src/disvr/didirect"
 	"github.com/i-Things/things/src/dmsvr/client/deviceauth"
 	"github.com/i-Things/things/src/dmsvr/client/devicegroup"
+	"github.com/i-Things/things/src/dmsvr/client/deviceinteract"
 	"github.com/i-Things/things/src/dmsvr/client/devicemanage"
+	"github.com/i-Things/things/src/dmsvr/client/devicemsg"
 	firmwaremanage "github.com/i-Things/things/src/dmsvr/client/firmwaremanage"
 	otataskmanage "github.com/i-Things/things/src/dmsvr/client/otataskmanage"
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
@@ -133,6 +132,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
+			deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DmRpc.Conf))
+			deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DmRpc.Conf))
 			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			vidmgrM = vidmgrinfomanage.NewVidmgrInfoManage(zrpc.MustNewClient(c.VidRpc.Conf))
 			vidmgrC = vidmgrconfigmanage.NewVidmgrConfigManage(zrpc.MustNewClient(c.VidRpc.Conf))
@@ -145,6 +146,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			firmwareM = firmwaremanage.NewFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			otaTaskM = otataskmanage.NewOtaTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else { //直连模式
+			deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
+			deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
 			deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 			productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
@@ -187,16 +190,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			sysCommon = sysdirect.NewCommon(c.SysRpc.RunProxy)
 		}
 	}
-	if c.DiRpc.Enable {
-		if c.DiRpc.Mode == conf.ClientModeGrpc {
-			deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DiRpc.Conf))
-			deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DiRpc.Conf))
 
-		} else {
-			deviceMsg = didirect.NewDeviceMsg(c.DiRpc.RunProxy)
-			deviceInteract = didirect.NewDeviceInteract(c.DiRpc.RunProxy)
-		}
-	}
 	if c.TimedSchedulerRpc.Enable {
 		if c.TimedSchedulerRpc.Mode == conf.ClientModeGrpc {
 			timedSchedule = timedscheduler.NewTimedscheduler(zrpc.MustNewClient(c.TimedSchedulerRpc.Conf))

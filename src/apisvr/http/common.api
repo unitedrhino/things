@@ -41,4 +41,7 @@ type(
         RequestTimeout int64 `json:"requestTimeout,optional"` //请求超时,超时后会进行重试
         RetryInterval  int64 `json:"retryInterval,optional"`   //重试间隔
     }
+    CodeReq {
+     Code string `json:"code"`
+    }
 )

@@ -67,7 +67,7 @@ func (m *SysRoleMenu) TableName() string {
 type SysMenuInfo struct {
 	ID            int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // 编号
 	ParentID      int64  `gorm:"column:parent_id;type:BIGINT;default:1;NOT NULL"`    // 父菜单ID，一级菜单为1
-	Type          int64  `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`         // 类型   1：目录   2：菜单   3：按钮
+	Type          int64  `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`         // 类型   1：菜单或者页面   2：iframe嵌入   3：外链跳转
 	Order         int64  `gorm:"column:order_num;type:BIGINT;default:1;NOT NULL"`    // 左侧table排序序号
 	Name          string `gorm:"column:name;type:VARCHAR(50);NOT NULL"`              // 菜单名称
 	Path          string `gorm:"column:path;type:VARCHAR(64);NOT NULL"`              // 系统的path
