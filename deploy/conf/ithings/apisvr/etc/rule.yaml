@@ -12,9 +12,3 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
-
-DiRpc:
-  Enable: true
-  Mode: direct
-  Conf:
-    Timeout: 1000000

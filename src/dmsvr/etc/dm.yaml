@@ -32,3 +32,8 @@ Telemetry:
   Endpoint: http://127.0.0.1:14268/api/traces
   Sampler: 1.0
   Batcher: jaeger
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000

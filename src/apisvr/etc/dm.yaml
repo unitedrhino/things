@@ -33,3 +33,8 @@ OssConf:
   ReadWriteTimeout: 60000
   UseSSL: false
 
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
