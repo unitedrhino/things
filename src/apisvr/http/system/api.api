@@ -41,7 +41,7 @@ type (
     }
 
     ApiIndexReq struct {
-        Page PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
+        Page *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
         Route string `json:"route,optional"`                   // 接口路由
         Method int64 `json:"method,range=[1:9],optional"`      // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
         Group string `json:"group,optional"`                   // 接口分组

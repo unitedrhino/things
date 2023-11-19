@@ -2,11 +2,10 @@ package logic
 
 import (
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/disvr/pb/di"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
-	"github.com/i-Things/things/src/vidsvr/pb/vid"
+	"github.com/i-Things/things/src/timed/timedjobsvr/pb/timedjob"
 )
 
 func ToTagsMap(tags []*types.Tag) map[string]string {
@@ -40,21 +39,21 @@ func ToDmPageRpc(in *types.PageInfo) *dm.PageInfo {
 	}
 }
 
-func ToVidPageRpc(in *types.PageInfo) *vid.PageInfo {
-	if in == nil {
-		return nil
-	}
-	return &vid.PageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
-}
-
 func ToSysPageRpc(in *types.PageInfo) *sys.PageInfo {
 	if in == nil {
 		return nil
 	}
 	return &sys.PageInfo{
+		Page: in.Page,
+		Size: in.Size,
+	}
+}
+
+func ToTimedJobPageRpc(in *types.PageInfo) *timedjob.PageInfo {
+	if in == nil {
+		return nil
+	}
+	return &timedjob.PageInfo{
 		Page: in.Page,
 		Size: in.Size,
 	}
@@ -79,11 +78,11 @@ func ToRuleTimeRangeRpc(in *types.TimeRange) *rule.TimeRange {
 	}
 }
 
-func ToDiPageRpc(in *types.PageInfo) *di.PageInfo {
+func ToDiPageRpc(in *types.PageInfo) *dm.PageInfo {
 	if in == nil {
 		return nil
 	}
-	return &di.PageInfo{
+	return &dm.PageInfo{
 		Page: in.Page,
 		Size: in.Size,
 	}
@@ -139,11 +138,11 @@ func ToOtaPageRpc(in *types.PageInfo) *dm.OtaPageInfo {
 	}
 }
 
-func ToDiSendOption(in *types.SendOption) *di.SendOption {
+func ToDiSendOption(in *types.SendOption) *dm.SendOption {
 	if in == nil {
 		return nil
 	}
-	return &di.SendOption{
+	return &dm.SendOption{
 		TimeoutToFail:  in.TimeoutToFail,
 		RequestTimeout: in.RequestTimeout,
 		RetryInterval:  in.RetryInterval,

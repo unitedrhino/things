@@ -6,7 +6,6 @@ import (
 	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/disvr/pb/di"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -19,7 +18,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	}
 	if withProperties != nil {
 		func() {
-			resp, err := svcCtx.DeviceMsg.PropertyLatestIndex(ctx, &di.PropertyLatestIndexReq{
+			resp, err := svcCtx.DeviceMsg.PropertyLatestIndex(ctx, &dm.PropertyLatestIndexReq{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 				DataIDs:    withProperties,

@@ -4,10 +4,9 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/pb/di"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +26,7 @@ func NewGetPropertyReplyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *GetPropertyReplyLogic) GetPropertyReply(req *types.DeviceInteractGetPropertyReplyReq) (resp *types.DeviceInteractGetPropertyReplyResp, err error) {
-	dmReq := &di.GetPropertyReplyReq{
+	dmReq := &dm.GetPropertyReplyReq{
 		ProductID:  req.ProductID,
 		DeviceName: req.DeviceName,
 		DataIDs:    req.DataIDs,

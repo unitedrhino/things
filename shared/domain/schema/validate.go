@@ -70,6 +70,8 @@ func (m *Model) ValidateWithFmt() error {
 			return err
 		}
 	}
+	m.init()
+
 	return nil
 }
 

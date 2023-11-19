@@ -1,7 +1,18 @@
 package svc
 
 import (
+	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgHubLog"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgSdkLog"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubApp"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/schemaDataRepo"
+	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
+	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
+	"github.com/zeromicro/go-zero/core/stores/kv"
+	"github.com/zeromicro/go-zero/zrpc"
 	"os"
 
 	"github.com/i-Things/things/shared/stores"
@@ -13,10 +24,8 @@ import (
 	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsgManage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/deviceDataRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/hubLogRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/sdkLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -25,22 +34,29 @@ import (
 type ServiceContext struct {
 	Config config.Config
 
-	ProjectID *utils.SnowFlake
-	AreaID    *utils.SnowFlake
-	ProductID *utils.SnowFlake
-	DeviceID  *utils.SnowFlake
-	GroupID   *utils.SnowFlake
-	OssClient *oss.Client
+	PubDev pubDev.PubDev
+	PubApp pubApp.PubApp
 
+	ProjectID      *utils.SnowFlake
+	AreaID         *utils.SnowFlake
+	ProductID      *utils.SnowFlake
+	DeviceID       *utils.SnowFlake
+	GroupID        *utils.SnowFlake
+	OssClient      *oss.Client
+	TimedM         timedmanage.TimedManage
 	SchemaRepo     schema.Repo
-	SchemaManaRepo deviceMsgManage.SchemaDataRepo
-	HubLogRepo     deviceMsgManage.HubLogRepo
-	SDKLogRepo     deviceMsgManage.SDKLogRepo
+	SchemaManaRepo msgThing.SchemaDataRepo
+	HubLogRepo     msgHubLog.HubLogRepo
+	SDKLogRepo     msgSdkLog.SDKLogRepo
 	DataUpdate     dataUpdate.DataUpdate
+	Cache          kv.Store
 	Bus            eventBus.Bus
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	var (
+		timedM timedmanage.TimedManage
+	)
 	caches.InitStore(c.CacheRedis)
 	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
 	ProjectID := utils.NewSnowFlake(nodeID)
@@ -48,9 +64,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	DeviceID := utils.NewSnowFlake(nodeID)
 	ProductID := utils.NewSnowFlake(nodeID)
 	GroupID := utils.NewSnowFlake(nodeID)
-
+	ca := kv.NewStore(c.CacheRedis)
 	ccSchemaR := cache.NewSchemaRepo()
-	deviceDataR := deviceDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, ccSchemaR.GetSchemaModel)
+	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, ccSchemaR.GetSchemaModel, ca)
 	hubLogR := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
 	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
 	duR, err := dataUpdate.NewDataUpdate(c.Event)
@@ -70,17 +86,34 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("dmsvr 初始化数据库错误 err", err)
 		os.Exit(-1)
 	}
+	pd, err := pubDev.NewPubDev(c.Event)
+	if err != nil {
+		logx.Error("NewPubDev err", err)
+		os.Exit(-1)
+	}
+	pa, err := pubApp.NewPubApp(c.Event)
+	if err != nil {
+		logx.Error("NewPubApp err", err)
+		os.Exit(-1)
+	}
+	if c.TimedJobRpc.Mode == conf.ClientModeGrpc {
+		timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
+	} else {
+		timedM = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
+	}
 	return &ServiceContext{
-		Bus:       bus,
-		Config:    c,
-		OssClient: ossClient,
-
-		ProjectID: ProjectID,
-		AreaID:    AreaID,
-		ProductID: ProductID,
-		DeviceID:  DeviceID,
-		GroupID:   GroupID,
-
+		Bus:            bus,
+		Config:         c,
+		OssClient:      ossClient,
+		TimedM:         timedM,
+		PubApp:         pa,
+		PubDev:         pd,
+		ProjectID:      ProjectID,
+		AreaID:         AreaID,
+		ProductID:      ProductID,
+		DeviceID:       DeviceID,
+		GroupID:        GroupID,
+		Cache:          ca,
 		SchemaRepo:     ccSchemaR,
 		SchemaManaRepo: deviceDataR,
 		HubLogRepo:     hubLogR,

@@ -2,12 +2,11 @@ package msg
 
 import (
 	"context"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
-	"github.com/i-Things/things/src/disvr/pb/di"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 
@@ -29,7 +28,7 @@ func NewSdkLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SdkLo
 }
 
 func (l *SdkLogIndexLogic) SdkLogIndex(req *types.DeviceMsgSdkLogIndexReq) (resp *types.DeviceMsgSdkIndexResp, err error) {
-	dmReq := &di.SdkLogIndexReq{
+	dmReq := &dm.SdkLogIndexReq{
 		DeviceName: req.DeviceName,
 		ProductID:  req.ProductID, //产品id
 		LogLevel:   int64(req.LogLevel),

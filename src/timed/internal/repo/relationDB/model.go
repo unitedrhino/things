@@ -57,12 +57,12 @@ func (t *TimedTaskGroup) TableName() string {
 	return "timed_task_group"
 }
 
-type TimedTask struct {
+type TimedTaskInfo struct {
 	ID        int64  `gorm:"column:id;primary_key"`                         // 任务ID
-	GroupCode string `gorm:"column:group_code;uniqueIndex:uni_task_code"`   //组编码
+	GroupCode string `gorm:"column:group_code"`                             //组编码
 	Type      int64  `gorm:"column:type;default:1"`                         //任务类型 1 定时任务 2 延时任务
 	Name      string `gorm:"column:name"`                                   // 任务名称
-	Code      string `gorm:"column:code;uniqueIndex:uni_task_code"`         //任务编码
+	Code      string `gorm:"column:code;unique"`                            //任务编码
 	Params    string `gorm:"column:params;type:json;NOT NULL;default:'{}'"` // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 	CronExpr  string `gorm:"column:cron_expr"`                              // cron执行表达式
 	Status    int64  `gorm:"column:status"`                                 // 状态
@@ -71,6 +71,6 @@ type TimedTask struct {
 	Group *TimedTaskGroup `gorm:"foreignKey:Code;references:GroupCode"`
 }
 
-func (t *TimedTask) TableName() string {
-	return "timed_task"
+func (t *TimedTaskInfo) TableName() string {
+	return "timed_task_info"
 }

@@ -5,10 +5,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
-	"github.com/i-Things/things/src/disvr/pb/di"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +27,7 @@ func NewEventLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Eve
 }
 
 func (l *EventLogIndexLogic) EventLogIndex(req *types.DeviceMsgEventLogIndexReq) (resp *types.DeviceMsgEventIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.EventLogIndex(l.ctx, &di.EventLogIndexReq{
+	dmResp, err := l.svcCtx.DeviceMsg.EventLogIndex(l.ctx, &dm.EventLogIndexReq{
 		DeviceNames: req.DeviceNames,
 		ProductID:   req.ProductID,
 		DataID:      req.DataID,

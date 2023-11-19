@@ -73,20 +73,15 @@ const (
 
 // 服务自己的消息
 const (
-	DmDeviceInfoDelete         = "server.dm.device.info.delete"
-	DmProductInfoDelete        = "server.dm.product.info.delete"
-	DmProductCustomUpdate      = "server.dm.product.custom.update"       //产品脚本有更新
-	DmProductSchemaUpdate      = "server.dm.product.schema.update"       //物模型有更新
-	DmDeviceLogLevelUpdate     = "server.dm.device.logLevel.update"      //设备日志级别有更新
-	DmDeviceGatewayUpdate      = "server.dm.device.gateway.update"       //网关下的子设备有改动
-	DmDeviceRemoteConfigUpdate = "server.dm.product.remoteConfig.update" //远程配置推送
+	DmDeviceInfoDelete    = "server.dm.device.info.delete"
+	DmProductInfoDelete   = "server.dm.product.info.delete"
+	DmProductCustomUpdate = "server.dm.product.custom.update" //产品脚本有更新
+	DmProductSchemaUpdate = "server.dm.product.schema.update" //物模型有更新
 
 	RuleSceneInfoUpdate = "server.rule.scene.info.update" //场景联动有修改
 	RuleSceneInfoDelete = "server.rule.scene.info.delete" //场景联动有修改
 
 	TimedJobClean = "server.timedjob.clean" //定时任务服务缓存及日志定时清理
 
-	DiActionCheckDelay = "server.action.check.delay"
-
-	TimedJobVidsrv = "server.vidsvr.monitoring" //定时任务 用于流服务状态更新
+	DmActionCheckDelay = "server.dm.action.check.delay"
 )

@@ -19,7 +19,7 @@ type TaskRepo struct {
 	db *gorm.DB
 }
 
-func NewTaskRepo(in any) *TaskRepo {
+func NewTaskInfoRepo(in any) *TaskRepo {
 	return &TaskRepo{db: stores.GetCommonConn(in)}
 }
 
@@ -27,7 +27,7 @@ type TaskFilter struct {
 	IDs       []int64
 	Types     []int64
 	Status    []int64
-	Code      string
+	Codes     []string
 	WithGroup bool
 }
 
@@ -42,8 +42,8 @@ func (p TaskRepo) fmtFilter(ctx context.Context, f TaskFilter) *gorm.DB {
 	if len(f.IDs) != 0 {
 		db = db.Where("id in ?", f.IDs)
 	}
-	if f.Code != "" {
-		db = db.Where("code = ?", f.Code)
+	if len(f.Codes) > 0 {
+		db = db.Where("code in ?", f.Codes)
 	}
 	if f.WithGroup {
 		db = db.Preload("Group")
@@ -51,13 +51,13 @@ func (p TaskRepo) fmtFilter(ctx context.Context, f TaskFilter) *gorm.DB {
 	return db
 }
 
-func (p TaskRepo) Insert(ctx context.Context, data *TimedTask) error {
+func (p TaskRepo) Insert(ctx context.Context, data *TimedTaskInfo) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p TaskRepo) FindOneByFilter(ctx context.Context, f TaskFilter) (*TimedTask, error) {
-	var result TimedTask
+func (p TaskRepo) FindOneByFilter(ctx context.Context, f TaskFilter) (*TimedTaskInfo, error) {
+	var result TimedTaskInfo
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -65,9 +65,9 @@ func (p TaskRepo) FindOneByFilter(ctx context.Context, f TaskFilter) (*TimedTask
 	}
 	return &result, nil
 }
-func (p TaskRepo) FindByFilter(ctx context.Context, f TaskFilter, page *def.PageInfo) ([]*TimedTask, error) {
-	var results []*TimedTask
-	db := p.fmtFilter(ctx, f).Model(&TimedTask{})
+func (p TaskRepo) FindByFilter(ctx context.Context, f TaskFilter, page *def.PageInfo) ([]*TimedTaskInfo, error) {
+	var results []*TimedTaskInfo
+	db := p.fmtFilter(ctx, f).Model(&TimedTaskInfo{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -77,17 +77,17 @@ func (p TaskRepo) FindByFilter(ctx context.Context, f TaskFilter, page *def.Page
 }
 
 func (p TaskRepo) CountByFilter(ctx context.Context, f TaskFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&TimedTask{})
+	db := p.fmtFilter(ctx, f).Model(&TimedTaskInfo{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p TaskRepo) Update(ctx context.Context, data *TimedTask) error {
+func (p TaskRepo) Update(ctx context.Context, data *TimedTaskInfo) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (p TaskRepo) UpdateByFilter(ctx context.Context, data *TimedTask, f TaskFilter) error {
+func (p TaskRepo) UpdateByFilter(ctx context.Context, data *TimedTaskInfo, f TaskFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Updates(data).Error
 	return stores.ErrFmt(err)
@@ -95,16 +95,16 @@ func (p TaskRepo) UpdateByFilter(ctx context.Context, data *TimedTask, f TaskFil
 
 func (p TaskRepo) DeleteByFilter(ctx context.Context, f TaskFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&TimedTask{}).Error
+	err := db.Delete(&TimedTaskInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p TaskRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&TimedTask{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&TimedTaskInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (p TaskRepo) FindOne(ctx context.Context, id int64) (*TimedTask, error) {
-	var result TimedTask
+func (p TaskRepo) FindOne(ctx context.Context, id int64) (*TimedTaskInfo, error) {
+	var result TimedTaskInfo
 	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -113,7 +113,7 @@ func (p TaskRepo) FindOne(ctx context.Context, id int64) (*TimedTask, error) {
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p TaskRepo) MultiInsert(ctx context.Context, data []*TimedTask) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&TimedTask{}).Create(data).Error
+func (p TaskRepo) MultiInsert(ctx context.Context, data []*TimedTaskInfo) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&TimedTaskInfo{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

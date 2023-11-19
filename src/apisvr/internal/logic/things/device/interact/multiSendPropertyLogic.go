@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/disvr/pb/di"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"golang.org/x/sync/errgroup"
 	"sync"
@@ -87,7 +86,7 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 }
 func (l *MultiSendPropertyLogic) SendProperty(productID string, deviceNames []string, data string, shadowControl int64) error {
 	list := make([]*types.DeviceInteractMultiSendPropertyMsg, 0)
-	dmReq := &di.MultiSendPropertyReq{
+	dmReq := &dm.MultiSendPropertyReq{
 		ProductID:     productID,
 		DeviceNames:   deviceNames,
 		Data:          data,

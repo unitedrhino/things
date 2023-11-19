@@ -2,11 +2,10 @@ package role
 
 import (
 	"context"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
-	"github.com/jinzhu/copier"
-
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,10 +25,8 @@ func NewRoleIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleInd
 }
 
 func (l *RoleIndexLogic) RoleIndex(req *types.RoleIndexReq) (resp *types.RoleIndexResp, err error) {
-	var page sys.PageInfo
-	copier.Copy(&page, req.Page)
 	info, err := l.svcCtx.RoleRpc.RoleIndex(l.ctx, &sys.RoleIndexReq{
-		Page:   &page,
+		Page:   logic.ToSysPageRpc(req.Page),
 		Name:   req.Name,
 		Status: req.Status,
 	})

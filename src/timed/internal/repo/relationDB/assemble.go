@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/src/timed/internal/domain"
 )
 
-func ToTaskInfoDo(po *TimedTask) *domain.TaskInfo {
+func ToTaskInfoDo(po *TimedTaskInfo) *domain.TaskInfo {
 	var do domain.TaskInfo
 	do.Code = po.Code
 	do.GroupType = po.Group.Type

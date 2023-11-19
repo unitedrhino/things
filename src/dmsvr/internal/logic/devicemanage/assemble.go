@@ -6,43 +6,44 @@ import (
 	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgGateway"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func ToDeviceInfo(di *relationDB.DmDeviceInfo) *dm.DeviceInfo {
-	if di.IsOnline == def.Unknown {
-		di.IsOnline = def.False
+func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
+	if in.IsOnline == def.Unknown {
+		in.IsOnline = def.False
 	}
-	if di.LogLevel == def.Unknown {
-		di.LogLevel = def.LogClose
+	if in.LogLevel == def.Unknown {
+		in.LogLevel = def.LogClose
 	}
 
 	return &dm.DeviceInfo{
-		ProductID:      di.ProductID,
-		DeviceName:     di.DeviceName,
-		ProjectID:      int64(di.ProjectID),
-		AreaID:         int64(di.AreaID),
-		DeviceAlias:    &wrappers.StringValue{Value: di.DeviceAlias},
-		MobileOperator: di.MobileOperator,
-		Phone:          utils.ToRpcNullString(di.Phone),
-		Iccid:          utils.ToRpcNullString(di.Iccid),
-		Secret:         di.Secret,
-		Cert:           di.Cert,
-		Imei:           di.Imei,
-		Mac:            di.Mac,
-		Version:        &wrappers.StringValue{Value: di.Version},
-		HardInfo:       di.HardInfo,
-		SoftInfo:       di.SoftInfo,
-		Position:       logic.ToDmPoint(&di.Position),
-		Address:        &wrappers.StringValue{Value: di.Address},
-		Tags:           di.Tags,
-		IsOnline:       di.IsOnline,
-		FirstLogin:     utils.GetNullTime(di.FirstLogin),
-		LastLogin:      utils.GetNullTime(di.LastLogin),
-		LogLevel:       di.LogLevel,
-		CreatedTime:    di.CreatedTime.Unix(),
+		ProductID:      in.ProductID,
+		DeviceName:     in.DeviceName,
+		ProjectID:      int64(in.ProjectID),
+		AreaID:         int64(in.AreaID),
+		DeviceAlias:    &wrappers.StringValue{Value: in.DeviceAlias},
+		MobileOperator: in.MobileOperator,
+		Phone:          utils.ToRpcNullString(in.Phone),
+		Iccid:          utils.ToRpcNullString(in.Iccid),
+		Secret:         in.Secret,
+		Cert:           in.Cert,
+		Imei:           in.Imei,
+		Mac:            in.Mac,
+		Version:        &wrappers.StringValue{Value: in.Version},
+		HardInfo:       in.HardInfo,
+		SoftInfo:       in.SoftInfo,
+		Position:       logic.ToDmPoint(&in.Position),
+		Address:        &wrappers.StringValue{Value: in.Address},
+		Tags:           in.Tags,
+		IsOnline:       in.IsOnline,
+		FirstLogin:     utils.GetNullTime(in.FirstLogin),
+		LastLogin:      utils.GetNullTime(in.LastLogin),
+		LogLevel:       in.LogLevel,
+		CreatedTime:    in.CreatedTime.Unix(),
 	}
 }
 
@@ -105,4 +106,15 @@ func ToGatewayDevice(gateway *devices.Core, subDevice []*devices.Core) (ret []*r
 		})
 	}
 	return
+}
+
+func ToGatewayPayload(status int32, in []*devices.Core) *msgGateway.GatewayPayload {
+	var ret = msgGateway.GatewayPayload{Status: status}
+	for _, v := range in {
+		ret.Devices = append(ret.Devices, &msgGateway.Device{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
+	}
+	return &ret
 }

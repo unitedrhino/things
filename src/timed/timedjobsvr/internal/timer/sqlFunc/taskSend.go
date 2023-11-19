@@ -30,14 +30,14 @@ func (s *SqlFunc) TaskSendSqlJs() func(in goja.FunctionCall) goja.Value {
 				err)
 			panic(errors.Parameter.AddMsg("TaskSend param not rigth"))
 		}
-		_, err = timedmanagelogic.NewTaskSendDelayLogic(s.ctx, s.SvcCtx).TaskSendDelay(&timedjob.TaskSendDelayReq{
+		_, err = timedmanagelogic.NewTaskSendLogic(s.ctx, s.SvcCtx).TaskSend(&timedjob.TaskSendReq{
 			GroupCode: s.Task.GroupCode,
 			Code:      task.Code,
-			ParamSql: func() *timedjob.TaskDelaySql {
+			ParamSql: func() *timedjob.TaskParamSql {
 				if task.Param == nil {
 					return nil
 				}
-				return &timedjob.TaskDelaySql{Param: task.Param, ExecContent: task.ExecContent}
+				return &timedjob.TaskParamSql{Param: task.Param, ExecContent: task.ExecContent}
 			}(),
 		})
 		if err != nil {

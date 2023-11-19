@@ -24,13 +24,13 @@ func NewTaskGroupRepo(in any) *TaskGroupRepo {
 }
 
 type TaskGroupFilter struct {
-	Code string
+	Codes []string
 }
 
 func (p TaskGroupRepo) fmtFilter(ctx context.Context, f TaskGroupFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	if f.Code != "" {
-		db = db.Where("code = ?", f.Code)
+	if len(f.Codes) > 0 {
+		db = db.Where("code in ?", f.Codes)
 	}
 	return db
 }

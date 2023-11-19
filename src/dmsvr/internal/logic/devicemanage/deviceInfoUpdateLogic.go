@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgSdkLog"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -125,12 +127,25 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 	}
 
 	if in.LogLevel != def.Unknown {
-		err := l.svcCtx.DataUpdate.DeviceLogLevelUpdate(l.ctx, &events.DeviceUpdateInfo{
-			ProductID:  in.ProductID,
-			DeviceName: in.DeviceName,
-		})
+		di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}, WithProduct: true})
 		if err != nil {
-			l.Errorf("DeviceInfoUpdate.DeviceLogLevelUpdate err=%+v", err)
+			return nil, err
+		}
+		resp := deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.GetStatus, "")
+		resp.Data = map[string]any{"logLevel": di.LogLevel}
+
+		msg := deviceMsg.PublishMsg{
+			Handle:     devices.Log,
+			Type:       msgSdkLog.TypeUpdate,
+			Payload:    resp.AddStatus(errors.OK).Bytes(),
+			Timestamp:  time.Now().UnixMilli(),
+			ProductID:  di.ProductID,
+			DeviceName: di.DeviceName,
+		}
+		er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
+		if er != nil {
+			l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
+			return nil, err
 		}
 	}
 	return &dm.Response{}, nil
