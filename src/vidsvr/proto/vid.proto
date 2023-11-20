@@ -1,0 +1,392 @@
+syntax = "proto3";
+option go_package="pb/vid";
+
+package vid;
+
+import "google/protobuf/wrappers.proto";
+
+message Response {
+}
+
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+  //排序信息
+  repeated OrderBy orders = 3;
+  message OrderBy {
+    //排序的字段名
+    string filed = 1;
+    //排序方式：0 aes, 1 desc
+    int64 sort = 2;
+  }
+}
+
+//服务管理
+service VidmgrInfoManage{
+  //新建服务
+  rpc vidmgrInfoCreate(VidmgrInfo)    returns (Response);
+  //更新服务
+  rpc vidmgrInfoUpdate(VidmgrInfo)     returns (Response);
+  //删除服务
+  rpc vidmgrInfoDelete(VidmgrInfoDeleteReq)     returns (Response);
+  //获取服务列表
+  rpc vidmgrInfoIndex(VidmgrInfoIndexReq)     returns (VidmgrInfoIndexResp);
+  //获取服务信息详情
+  rpc vidmgrInfoRead(VidmgrInfoReadReq)     returns (VidmgrInfo);
+  //获取服务统计  在线，离线，未激活
+  rpc vidmgrInfoCount(VidmgrInfoCountReq)     returns (VidmgrInfoCountResp);
+}
+
+message VidmgrInfo{
+  int64   createdTime = 1; //创建时间 只读
+  string  vidmgrID = 2; //服务id 只读
+  string  vidmgrName = 3; //服务名称
+  string  vidmgrIpV4 = 4; //服务IP
+  int64   vidmgrPort = 5; //服务端口
+  int64   vidmgrType = 6; //服务类型:1:zlmediakit,2:srs,3:monibuca
+  string  vidmgrSecret = 7;//服务秘钥
+  int64   vidmgrStatus = 8;//服务状态: 0：未激活  1：在线  2：离线
+  int64   firstLogin = 9; //激活时间 只读
+  int64   lastLogin = 10; //最后上线时间 只读
+  google.protobuf.StringValue   desc = 11;//描述
+  map<string, string> tags = 12; //产品标签
+}
+
+message VidmgrInfoDeleteReq{
+  string   vidmgrtID = 1; //产品id
+}
+
+message VidmgrInfoReadReq{
+  string   vidmgrtID = 1; //产品id
+}
+
+message VidmgrInfoIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  int64  vidmgrType = 2; //vidmgrType = 6; //服务类型:1:zlmediakit,2:srs,3:monibuca
+  string  vidmgrtName = 3; //过滤条件: 服务名称
+  repeated string   vidmgrIDs = 4; //过滤服务id列表
+  map<string, string> tags = 5;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+}
+
+message VidmgrInfoIndexResp{
+  repeated VidmgrInfo list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message VidmgrInfoCountReq{
+  int64  startTime = 1; // 查询区间 开始
+  int64  endTime = 2;   // 查询区间 结束
+}
+
+message VidmgrInfoCountResp{
+  int64 online = 1;
+  int64 offline = 2;
+  int64 inactive = 3;
+}
+
+//视频流通道管理
+service VidmgrStreamManage{
+  //流添加
+  rpc vidmgrStreamCreate(VidmgrStream) returns (Response);
+  //流更新
+  rpc vidmgrStreamUpdate(VidmgrStream) returns (Response);
+  //删除流
+  rpc vidmgrStreamDelete(VidmgrStreamDeleteReq) returns (Response);
+  //获取流列表
+  rpc vidmgrStreamIndex(VidmgrStreamIndexReq) returns (VidmgrStreamIndexResp);
+  //获取流信息详情
+  rpc vidmgrStreamRead(VidmgrStreamReadReq) returns (VidmgrStream);
+  //统计流 在线，离线，未激活
+  rpc vidmgrStreamCount(VidmgrStreamCountReq) returns (VidmgrStreamCountResp);
+}
+
+message VidmgrStreamCountReq{
+  int64  startTime = 1; // 查询区间 开始
+  int64  endTime = 2;   // 查询区间 结束
+}
+
+message VidmgrStreamIndexResp{
+  repeated VidmgrStream list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message VidmgrStreamCountResp{
+  int64 online = 1;
+  int64 offline = 2;
+}
+
+message VidmgrStreamDeleteReq{
+  int64   streamID = 1; //流ID
+}
+
+message VidmgrStreamReadReq{
+  int64   streamID = 1; //流ID
+}
+
+message VidmgrStreamIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  string  vidmgrID = 2; //过滤条件: 根据流服务ID来查流
+  repeated int64   streamIDs = 3; //过滤服务id列表
+  string app = 4;
+  string schema = 5;
+  string stream = 6;
+  string vhost = 7;
+
+  string identifier = 8;
+  string localIP = 9;
+  int64 LocalPort = 10;
+  string peerIP =11;
+  int64 PeerPort = 12;
+
+  map<string, string> tags = 13;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+}
+
+message StreamTrack{
+  int64 channels = 1;
+  int64 codecId = 2;
+  string codecIdName = 3;
+  int64 codecType = 4;
+  bool ready = 5;
+  double loss = 6;
+  int64 sampleBit = 7;
+  int64 sampleRate = 8;
+  int64 fps = 9;
+  int64 height = 10;
+  int64 width= 11;
+}
+
+message VidmgrStream{
+  int64    streamID = 1; //流ID
+  string    streamName = 2;
+
+  string  app = 3;
+  string schema = 4;
+  string stream = 5;
+  string vhost = 6;
+
+  string identifier = 7;
+  string localIP = 8;
+  int64 localPort = 9;
+  string peerIP = 10;
+  int64 peerPort = 11;
+  int64 originType = 12;
+  string originStr = 13;
+  string originUrl = 14;
+  int64 readerCount = 15;
+  int64 totalReaderCount = 16;
+  repeated StreamTrack tracks = 17;
+  bool isRecordingMp4 = 18;
+  bool isRecordingHLS = 19;
+  bool isShareChannel =20;
+  bool isAutoPush=21;
+  bool isAutoRecord=22;
+  bool isPTZ=23;
+  bool isOnline=24;
+  int64   lastLogin = 25; //最后上线时间 只读
+  string vidmgrID = 26;
+  google.protobuf.StringValue   desc = 27;//描述
+  map<string, string> tags = 28; //产品标签
+}
+
+
+message VidPlanInfo{
+  int64 planID = 1;
+  string name = 2;
+  bool enable = 3;
+  int64 limitSpace = 4;
+  int64 limitDays = 5;
+  int64 overStepPlan = 6;
+  int64 weekDays = 7;
+  int64 startTime = 8;
+  int64 endTime = 9;
+  google.protobuf.StringValue   desc = 10;//描述
+  map<string, string> tags = 11; //产品标签
+}
+
+message VidrecordfileInfo{
+  int64 fileID  = 1;
+  int64 planID = 2;
+  int64 viddevID = 3;
+  string vidmgrID = 4;
+  int64 startTime = 5;
+  int64 endTime = 6;
+  int64 duration = 7 ;
+  int64 filesize = 8 ;
+  string videoPath = 9;
+  string downLoadUrl =10;
+  int64 createTime = 11;
+  int64 updateTime = 12;
+  int64 recordTime = 13;
+}
+
+message VidmgrConfig{
+  string 	apiDebug                         =   1  ;
+  string 	apiDefaultSnap                   =   2  ;
+  string 	apiSecret                        =   3  ;
+  string 	apiSnapRoot                      =   4  ;
+  string 	clusterOriginUrl                 =   5  ;
+  string 	clusterRetryCount                =   6  ;
+  string 	clusterTimeoutSec                =   7  ;
+  string 	ffmpegBin                        =   8  ;
+  string 	ffmpegCmd                        =   9  ;
+  string 	ffmpegLog                        =   10 ;
+  string 	ffmpegRestartSec                 =   11 ;
+  string 	ffmpegSnap                       =   12 ;
+  string 	generalCheckNvidiaDev            =   13 ;
+  string 	generalEnableVhost               =   14 ;
+  string 	generalEnableFfmpegLog           =   15 ;
+  string 	generalFlowThreshold             =   16 ;
+  string 	generalMaxStreamWaitMS           =   17 ;
+  string 	generalMediaServerId             =   18 ;
+  string 	generalMergeWriteMS              =   19 ;
+  string 	generalResetWhenRePlay           =   20 ;
+  string 	generalStreamNoneReaderDelayMS   =   21 ;
+  string 	generalUnreadyFrameCache         =   22 ;
+  string 	generalWaitAddTrackMs            =   23 ;
+  string 	generalWaitTrackReadyMs          =   24 ;
+  string 	hlsBroadcastRecordTs             =   25 ;
+  string 	hlsDeleteDelaySec                =   26 ;
+  string 	hlsFileBufSize                   =   27 ;
+  string 	hlsSegDur                        =   28 ;
+  string 	hlsSegKeep                       =   29 ;
+  string 	hlsSegNum                        =   30 ;
+  string 	hlsSegRetain                     =   31 ;
+  string 	hookAliveInterval                =   32 ;
+  string 	hookEnable                       =   33 ;
+  string 	hookOnFlowReport                 =   34 ;
+  string 	hookOnHttpAccess                 =   35 ;
+  string 	hookOnPlay                       =   36 ;
+  string 	hookOnPublish                    =   37 ;
+  string 	hookOnRecordMp4                  =   38 ;
+  string 	hookOnRecordTs                   =   39 ;
+  string 	hookOnRtpServerTimeout           =   40 ;
+  string 	hookOnRtspAuth                   =   41 ;
+  string 	hookOnRtspRealm                  =   42 ;
+  string 	hookOnSendRtpStopped             =   43 ;
+  string 	hookOnServerExited               =   44 ;
+  string 	hookOnServerKeepalive            =   45 ;
+  string 	hookOnServerStarted              =   46 ;
+  string 	hookOnShellLogin                 =   47 ;
+  string 	hookOnStreamChanged              =   48 ;
+  string 	hookOnStreamNoneReader           =   49 ;
+  string 	hookOnStreamNotFound             =   50 ;
+  string 	hookRetry                        =   51 ;
+  string 	hookRetryDelay                   =   52 ;
+  string 	hookStreamChangedSchemas         =   53 ;
+  string 	hookTimeoutSec                   =   54 ;
+  string 	httpAllowCrossDomains            =   55 ;
+  string 	httpAllowIpRange                 =   56 ;
+  string 	httpCharSet                      =   57 ;
+  string 	httpDirMenu                      =   58 ;
+  string 	httpForbidCacheSuffix            =   59 ;
+  string 	httpForwardedIpHeader            =   60 ;
+  string 	httpKeepAliveSecond              =   61 ;
+  string 	httpMaxReqSize                   =   62 ;
+  string 	httpNotFound                     =   63 ;
+  string 	httpPort                         =   64 ;
+  string 	httpRootPath                     =   65 ;
+  string 	httpSendBufSize                  =   66 ;
+  string 	httpSslport                      =   67 ;
+  string 	httpVirtualPath                  =   68 ;
+  string 	multicastAddrMax                 =   69 ;
+  string 	multicastAddrMin                 =   70 ;
+  string 	multicastUdpTTL                  =   71 ;
+  string 	protocolAddMuteAudio             =   72 ;
+  string 	protocolAutoClose                =   73 ;
+  string 	protocolContinuePushMs           =   74 ;
+  string 	protocolEnableAudio              =   75 ;
+  string 	protocolEnableFmp4               =   76 ;
+  string 	protocolEnableHls                =   77 ;
+  string 	protocolEnableHlsFmp4            =   78 ;
+  string 	protocolEnableMp4                =   79 ;
+  string 	protocolEnableRtmp               =   80 ;
+  string 	protocolEnableRtsp               =   81 ;
+  string 	protocolEnableTs                 =   82 ;
+  string 	protocolFmp4Demand               =   83 ;
+  string 	protocolHlsDemand                =   84 ;
+  string 	protocolHlsSavePath              =   85 ;
+  string 	protocolModifyStamp              =   86 ;
+  string 	protocolMp4AsPlayer              =   87 ;
+  string 	protocolMp4MaxSecond             =   88 ;
+  string 	protocolMp4SavePath              =   89 ;
+  string 	protocolRtmpDemand               =   90 ;
+  string 	protocolRtspDemand               =   91 ;
+  string 	protocolTsDemand                 =   92 ;
+  string 	recordAppName                    =   93 ;
+  string 	recordFastStart                  =   94 ;
+  string 	recordFileBufSize                =   95 ;
+  string 	recordFileRepeat                 =   96 ;
+  string 	recordSampleMS                   =   97 ;
+  string 	rtcExternIP                      =   98 ;
+  string 	rtcPort                          =   99 ;
+  string 	rtcPreferredCodecA               =   100;
+  string 	rtcPreferredCodecV               =   101;
+  string 	rtcRembBitRate                   =   102;
+  string 	rtcTcpPort                       =   103;
+  string 	rtcTimeoutSec                    =   104;
+  string 	rtmpHandshakeSecond              =   105;
+  string 	rtmpKeepAliveSecond              =   106;
+  string 	rtmpPort                         =   107;
+  string 	rtmpSslport                      =   108;
+  string 	rtpAudioMtuSize                  =   109;
+  string 	rtpH264StapA                     =   110;
+  string 	rtpLowLatency                    =   111;
+  string 	rtpRtpMaxSize                    =   112;
+  string 	rtpVideoMtuSize                  =   113;
+  string 	rtpProxyDumpDir                  =   114;
+  string 	rtpProxyGopCache                 =   115;
+  string 	rtpProxyH264Pt                   =   116;
+  string 	rtpProxyH265Pt                   =   117;
+  string 	rtpProxyOpusPt                   =   118;
+  string 	rtpProxyPort                     =   119;
+  string 	rtpProxyPortRange                =   120;
+  string 	rtpProxyPsPt                     =   121;
+  string 	rtpProxyTimeoutSec               =   122;
+  string 	rtspAuthBasic                    =   123;
+  string 	rtspDirectProxy                  =   124;
+  string 	rtspHandshakeSecond              =   125;
+  string 	rtspKeepAliveSecond              =   126;
+  string 	rtspLowLatency                   =   127;
+  string 	rtspPort                         =   128;
+  string 	rtspRtpTransportType             =   129;
+  string 	rtspSslport                      =   130;
+  string 	shellMaxReqSize                  =   131;
+  string 	shellPort                        =   132;
+  string 	srtLatencyMul                    =   133;
+  string 	srtPktBufSize                    =   134;
+  string 	srtPort                          =   135;
+  string 	srtTimeoutSec                    =   136;
+  int64   createdTime                      =   137; //创建时间 只读
+}
+
+message VidmgrConfigDeleteReq{
+  string   generalMediaServerId = 1; //产品id
+}
+
+message VidmgrConfigReadReq{
+  string   MediaServerId = 1; //产品id
+}
+
+message VidmgrConfigIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  repeated string   MediaServerId = 2; //产品id
+}
+
+message VidmgrConfigIndexResp{
+  repeated VidmgrConfig list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+//服务配置管理
+service VidmgrConfigManage{
+  //新建配置
+  rpc vidmgrConfigCreate(VidmgrConfig)    returns (Response);
+  //删除配置
+  rpc vidmgrConfigDelete(VidmgrConfigDeleteReq)     returns (Response);
+  //更新配置
+  rpc vidmgrConfigUpdate(VidmgrConfig)     returns (Response);
+  //配置列表
+  rpc vidmgrConfigIndex(VidmgrConfigIndexReq)     returns (VidmgrConfigIndexResp);
+  //获取配置信息详情
+  rpc vidmgrConfigRead(VidmgrConfigReadReq)     returns (VidmgrConfig);
+}

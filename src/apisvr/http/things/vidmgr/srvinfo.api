@@ -1,0 +1,121 @@
+syntax = "v1"
+
+info(
+    title: "视频服务"
+    desc: "视频服务"
+    author: "airgens"
+    email: "wfjdemmye@163.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group:things/vidmgr/info
+    prefix:/api/v1/things/vidmgr/info
+    middleware: SetupWare, CheckTokenWare, TeardownWare
+)
+
+service api {
+    @doc "新增服务"
+    @handler create
+    post /create (VidmgrInfoCreateReq) returns ()
+    @doc "激活服务"
+    @handler active
+    post /active (VidmgrInfoActiveReq) returns ()
+    @doc "更新服务"
+    @handler update
+    post /update (VidmgrInfoUpdateReq) returns ()
+    @doc "删除服务"
+    @handler delete
+    post /delete (VidmgrInfoDeleteReq) returns ()
+    @doc "获取服务信息列表"
+    @handler index
+    post /index (VidmgrInfoIndexReq) returns (VidmgrInfoIndexResp)
+    @doc "获取服务详情"
+    @handler read
+    post /read (VidmgrInfoReadReq) returns (VidmgrInfo)
+    @doc "获取服务统计详情"
+    @handler count
+    post /count (VidmgrCountReq) returns (VidmgrCountResp)
+}
+type (
+    VidmgrInfo struct {
+        CreatedTime int64 `json:"createdTime,optional,string"`              //创建时间 只读
+        VidmgrID string `json:"vidmgrID,optional"`                          //服务id 只读
+        VidmgrName string `json:"vidmgrName,optional"`                      //服务名称
+        VidmgrType int64 `json:"vidmgrType,optional,range=[0:3]"`           //服务类型:1:ZLMediakit,2:srs,3:monibuca
+        VidmgrIpV4 string `json:"vidmgrIpV4,optional"`                      //服务IP
+        VidmgrPort int64  `json:"vidmgrPort,optional"`                      //服务端口
+        VidmgrSecret string `json:"vidmgrSecret,optional"`                  //动态注册产品秘钥 只读
+        FirstLogin  int64 `json:"firstLogin,optional"`  //激活时间
+        LastLogin  int64 `json:"lastLogin,optional"`  ////最后上线时间
+        VidmgrStatus int64 `json:"vidsrvStatus,optional"`                 //服务状态:0:未激活,1:在线,2:离线
+        Desc *string `json:"desc,optional"`                                 //描述
+        Tags []*Tag `json:"tags,optional"`                                  //服务tag
+    }
+
+    VidmgrInfoCreateReq struct{
+        VidmgrName string `json:"vidmgrName"`                               //服务名称
+        VidmgrID string `json:"vidmgrtID,optional"`                         //服务id
+        VidmgrType int64 `json:"vidmgrType,optional,range=[0:3]"`           //服务类型:1:ZLMediakit,2:srs,3:monibuca
+        VidmgrIpV4 string `json:"vidmgrIpV4,optional"`                      //服务IP
+        VidmgrPort int64  `json:"vidmgrPort,optional"`                      //服务端口
+        VidmgrSecret string `json:"vidmgrSecret,optional"`                  //服务连接秘钥
+        VidmgrStatus int64 `json:"vidmgrStatus,optional"`                 //服务状态:1:离线,2:在线,3:未激活
+        Desc *string `json:"desc,optional"`                                 //描述
+        Tags []*Tag `json:"tags,optional"`                                  //产品tag
+    }
+
+    VidmgrInfoUpdateReq struct {
+        VidmgrName string `json:"vidmgrName"`                               //服务名称
+        VidmgrID string `json:"vidmgrtID,optional"`                         //服务id
+        VidmgrType int64 `json:"vidmgrType,optional,range=[0:3]"`           //服务类型:1:ZLMediakit,2:srs,3:monibuca
+        VidmgrIpV4 string `json:"vidmgrIpV4,optional"`                      //服务IP
+        VidmgrPort int64  `json:"vidmgrPort,optional"`                      //服务端口
+        VidmgrSecret string `json:"vidsrvSecret,optional"`                  //服务连接秘钥
+        VidmgrStatus int64 `json:"vidsrvStatus,optional"`                 //服务状态:1:离线,2:在线,3:未激活
+        Desc *string `json:"desc,optional"`                                 //描述
+        Tags []*Tag `json:"tags,optional"`                                  //产品tag
+    }
+
+    VidmgrInfoDeleteReq struct {
+        VidmgrID string `json:"vidmgrID"`                            //服务id 只读
+    }
+
+    VidmgrInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`                       //分页信息,只获取一个则不填
+        VidmgrName string `json:"vidmgrName,optional"`              //过滤服务名称
+        VidmgrType int64 `json:"deviceType,optional,range=[0:3]"`    //服务类型:1:ZLMediakit,2:srs,3:monibuca
+        VidmgrIDs []string  `json:"vidmgrIDs,optional"`     //过滤服务id列表
+        Tags []*Tag `json:"tags,optional"`                  // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+    }
+
+    VidmgrInfoReadReq struct {
+        VidmgrID string `json:"vidmgrID"`                                     //服务id
+    }
+
+    VidmgrInfoActiveReq struct {
+        VidmgrID string `json:"vidmgrID"`                                     //服务id
+    }
+
+    VidmgrCountReq {
+        StartTime int64 `json:"startTime,optional" form:"startTime,optional"`  //查询区间的开始时间（秒）
+        EndTime int64 `json:"endTime,optional" form:"endTime,optional"`        //查询区间的结束时间（秒）
+    }
+
+    VidmgrInfoCount {
+        Online int64 `json:"online"`     // 在线服务数
+        Offline int64 `json:"offline"`   // 离线服务数
+        Inactive int64 `json:"inactive"` // 未激活服务数    （all = 在线+离线+未激活）
+    }
+
+    VidmgrCountResp {
+        MgrInfoCount VidmgrInfoCount `json:"vidmgrCount"`
+    }
+
+    VidmgrInfoIndexResp struct {
+        List []*VidmgrInfo `json:"list"`    //服务信息
+        Total int64 `json:"total,optional"`  //拥有的总数
+        Num int64 `json:"num,optional"`      //返回的数量
+    }
+)
