@@ -25,7 +25,6 @@ type Point struct {
 	Latitude         float64          `json:"latitude,range=[0:90]"`      //纬度
 }
 
-
 // 用户数据权限-数据类型
 type AuthDataType int64
 
