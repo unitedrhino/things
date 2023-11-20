@@ -24,7 +24,7 @@ func NewVidmgrInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDB:   relationDB.NewVidmgrtInfoRepo(ctx),
+		PiDB:   relationDB.NewVidmgrInfoRepo(ctx),
 	}
 }
 

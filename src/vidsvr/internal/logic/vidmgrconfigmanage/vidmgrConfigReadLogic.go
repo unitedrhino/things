@@ -23,15 +23,15 @@ func NewVidmgrConfigReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDB:   relationDB.NewVidmgrtConfigRepo(ctx),
+		PiDB:   relationDB.NewVidmgrConfigRepo(ctx),
 	}
 }
 
 // 获取配置信息详情
 func (l *VidmgrConfigReadLogic) VidmgrConfigRead(in *vid.VidmgrConfigReadReq) (*vid.VidmgrConfig, error) {
 	// todo: add your logic here and delete this line
-	pi, err := relationDB.NewVidmgrtConfigRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.VidmgrConfigFilter{
-		MediaServerIds: []string{in.MediaServerId},
+	pi, err := relationDB.NewVidmgrConfigRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.VidmgrConfigFilter{
+		VidmgrIDs: []string{in.MediaServerId},
 	})
 	if err != nil {
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))

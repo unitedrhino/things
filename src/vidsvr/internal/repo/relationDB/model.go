@@ -33,16 +33,16 @@ type StreamTrack struct {
 	CodecIdName string  `json:"codec_id_name"`
 	CodecType   int64   `json:"codec_type"`
 	Ready       bool    `json:"ready"`
-	Loss        float32 `json:"loss"`
-	Sample_bit  int64   `json:"sample_bit"`
-	Sample_rate int64   `json:"sample_rate"`
+	Loss        float64 `json:"loss"`
+	SampleBit   int64   `json:"sample_bit"`
+	SampleRate  int64   `json:"sample_rate"`
 	Fps         int64   `json:"fps"`
 	Height      int64   `json:"height"`
 	Width       int64   `json:"width"`
 }
 
 // type BList []*BStruct
-type STracks []StreamTrack
+type STracks []*StreamTrack
 
 func (b STracks) Value() (driver.Value, error) {
 	d, err := json.Marshal(b)
@@ -56,8 +56,9 @@ func (b *STracks) Scan(v interface{}) error {
 
 // 视频流信息
 type VidmgrStream struct {
-	StreamID   int64  `gorm:"column:StreamID;type:bigint;primary_key;AUTO_INCREMENT"` // 视频流的id(主键唯一)
-	StreamName string `gorm:"column:name;type:varchar(63);NOT NULL"`                  // 视频流名称
+	StreamID   int64  `gorm:"column:stream_id;type:bigint;primary_key;AUTO_INCREMENT"` // 视频流的id(主键唯一)
+	VidmgrID   string `gorm:"column:vidmgr_id;type:char(11);NOT NULL"`                 // 流服务ID  外键
+	StreamName string `gorm:"column:name;type:varchar(63);NOT NULL"`                   // 视频流名称
 
 	App    string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
 	Schema string `gorm:"column:schema;type:varchar(31);NOT NULL"`
@@ -83,16 +84,18 @@ type VidmgrStream struct {
 	IsAutoPush     bool    `gorm:"column:auto_push;type:bit(1);default:0;NOT NULL"`
 	IsAutoRecord   bool    `gorm:"column:auto_record;type:bit(1);default:0;NOT NULL"`
 	IsPTZ          bool    `gorm:"column:is_ptz;type:bit(1);default:0;NOT NULL"`
-	IsOnline       bool    `gorm:"column:is_online;type:bit(1);default:0;NOT NULL"`
+	//正常流程有注册和注销过程，注册后，该流进行更新；并上线，注销后就设置标志位进行下线。
+	//还需要有一个定时器用来检测异常断开的情况超时时间10S
+	IsOnline  bool         `gorm:"column:is_online;type:bit(1);default:0;NOT NULL"`
+	LastLogin sql.NullTime `gorm:"column:last_login"` // 最后登录时间
 	//NetType        int64             `gorm:"column:net_type;type:smallint;NOT NULL"` // 网络类型
 	//DevType        int64             `gorm:"column:dev_type;type:smallint;default:1"`
 	//DevStreamType  int64             `gorm:"column:dev_streamtype;type:smallint;default:1"`
 	//ChannelID      string            `gorm:"column:channel_id;type:varchar(32)"`
 	//ChannelName    string            `gorm:"column:channel_name;type:varchar(32)"`
 	//LowNetType     int64             `gorm:"column:low_nettype;type:smallint;default:1"`
-	VidmgrID string            `gorm:"column:vidmgr_id;type:char(11);NOT NULL"`                     // 添加外键
-	Desc     string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
-	Tags     map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
+	Desc string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
+	Tags map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
 	stores.Time
 	VidmgrInfo *VidmgrInfo `gorm:"foreignKey:VidmgrID;references:VidmgrID"` // 添加外键
 }
@@ -103,7 +106,8 @@ func (m *VidmgrStream) TableName() string {
 
 // 流服务配置表
 type VidmgrConfig struct {
-	GeneralMediaServerId           string `gorm:"column:mediaServerId;type:char(11);primary_key;NOT NULL"`
+	ConfigID                       int64  `gorm:"column:config_id;type:bigint;primary_key;AUTO_INCREMENT"` // 视频流的id(主键唯一)
+	VidmgrID                       string `gorm:"column:vidmgr_id;type:char(11);NOT NULL"`                 //generalMediaserverID
 	ApiDebug                       string `gorm:"column:apiDebug;char(1)"`
 	ApiDefaultSnap                 string `gorm:"column:defaultSnap"`
 	ApiSecret                      string `gorm:"column:secret"`
@@ -240,6 +244,8 @@ type VidmgrConfig struct {
 	SrtPort                        string `gorm:"column:srt_port"`
 	SrtTimeoutSec                  string `gorm:"column:srt_timeoutSec"`
 	stores.Time
+
+	VidmgrInfo *VidmgrInfo `gorm:"foreignKey:VidmgrID;references:VidmgrID"` // 添加外键
 }
 
 // 流服务激活之后创建该表

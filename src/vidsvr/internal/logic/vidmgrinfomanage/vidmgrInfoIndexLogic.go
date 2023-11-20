@@ -25,7 +25,7 @@ func NewVidmgrInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *V
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDB:   relationDB.NewVidmgrtInfoRepo(ctx),
+		PiDB:   relationDB.NewVidmgrInfoRepo(ctx),
 	}
 }
 
@@ -33,12 +33,11 @@ func NewVidmgrInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *V
 func (l *VidmgrInfoIndexLogic) VidmgrInfoIndex(in *vid.VidmgrInfoIndexReq) (*vid.VidmgrInfoIndexResp, error) {
 	// todo: add your logic here and delete this line
 	fmt.Printf("Vidsvr VidmgrInfoIndex \n")
-
 	var (
 		info []*vid.VidmgrInfo
 		size int64
 		err  error
-		piDB = relationDB.NewVidmgrtInfoRepo(l.ctx)
+		piDB = relationDB.NewVidmgrInfoRepo(l.ctx)
 	)
 	filter := relationDB.VidmgrFilter{VidmgrType: in.VidmgrType, VidmgrName: in.VidmgrtName, Tags: in.Tags, VidmgrIDs: in.VidmgrIDs}
 	size, err = piDB.CountByFilter(l.ctx, filter)
