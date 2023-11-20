@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-//连接和断连消息信息
+// 连接和断连消息信息
 type ConnectMsg struct {
 	ClientID  string
 	Username  string
