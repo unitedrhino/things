@@ -11,7 +11,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
-	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -56,7 +55,7 @@ func (l *GetPropertyReplyLogic) GetPropertyReply(in *dm.GetPropertyReplyReq) (*d
 		return nil, err
 	}
 
-	MsgToken := trace.TraceIDFromContext(l.ctx)
+	MsgToken := devices.GenMsgToken(l.ctx)
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{

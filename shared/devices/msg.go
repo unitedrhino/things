@@ -1,7 +1,11 @@
 package devices
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
+	"github.com/google/uuid"
+	"github.com/zeromicro/go-zero/core/trace"
 )
 
 type (
@@ -52,4 +56,13 @@ func GetPublish(data []byte) *InnerPublish {
 	pub := InnerPublish{}
 	_ = json.Unmarshal(data, &pub)
 	return &pub
+}
+
+func GenMsgToken(ctx context.Context) string {
+	tid := trace.TraceIDFromContext(ctx)
+	span := trace.SpanIDFromContext(ctx)
+	if tid == "" || span == "" {
+		return uuid.NewString()
+	}
+	return fmt.Sprintf("%s-%s", tid, span)
 }

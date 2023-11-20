@@ -8,7 +8,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 )
 
@@ -58,7 +57,7 @@ func (p *PublishMsg) String() string {
 // 如果MsgToken为空,会使用uuid生成一个
 func NewRespCommonMsg(ctx context.Context, method, MsgToken string) *CommonMsg {
 	if MsgToken == "" {
-		MsgToken = trace.TraceIDFromContext(ctx)
+		MsgToken = devices.GenMsgToken(ctx)
 	}
 	return &CommonMsg{
 		Method:    GetRespMethod(method),
