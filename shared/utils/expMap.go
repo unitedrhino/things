@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-//带过期时间的sync.map
+// 带过期时间的sync.map
 type ExpMap struct {
 	Map sync.Map
 }

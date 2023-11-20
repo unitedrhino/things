@@ -75,8 +75,8 @@ func AnyToDecimal(num string, n int) int64 {
 	return int64(new_num)
 }
 
-//a的n次方
-//超出uint64的部分会丢失
+// a的n次方
+// 超出uint64的部分会丢失
 func pow(a, n int64) int64 {
 	result := int64(1)
 	for i := n; i > 0; i >>= 1 {
