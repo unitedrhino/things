@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
@@ -29,6 +30,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.VidmgrInfoIndexReq) (resp *types.VidmgrInfoIndexResp, err error) {
 	// todo: add your logic here and delete this line
+	fmt.Println("[--airgens-]", req)
 	vidReq := &vid.VidmgrInfoIndexReq{
 		VidmgrType:  req.VidmgrType,
 		VidmgrIDs:   req.VidmgrIDs,
@@ -42,14 +44,23 @@ func (l *IndexLogic) Index(req *types.VidmgrInfoIndexReq) (resp *types.VidmgrInf
 		l.Errorf("%s.rpc.VidmgrInfoIndex req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	pis := make([]*types.VidmgrInfo, 0, len(vidResp.List))
-	for _, v := range vidResp.List {
-		pi := vidmgrInfoToApi(v)
-		pis = append(pis, pi)
+	if len(vidResp.List) > 0 {
+		pis := make([]*types.VidmgrInfo, 0, len(vidResp.List))
+		for _, v := range vidResp.List {
+			pi := vidmgrInfoToApi(v)
+			pis = append(pis, pi)
+		}
+		return &types.VidmgrInfoIndexResp{
+			Total: vidResp.Total,
+			List:  pis,
+			Num:   int64(len(pis)),
+		}, nil
+	} else {
+		return &types.VidmgrInfoIndexResp{
+			Total: 0,
+			List:  nil,
+			Num:   0,
+		}, nil
 	}
-	return &types.VidmgrInfoIndexResp{
-		Total: vidResp.Total,
-		List:  pis,
-		Num:   int64(len(pis)),
-	}, nil
+
 }
