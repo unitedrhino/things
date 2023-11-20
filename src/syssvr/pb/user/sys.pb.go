@@ -785,7 +785,7 @@ func (x *PageInfo) GetSize() int64 {
 	return 0
 }
 
-//用户属性信息
+// 用户属性信息
 type UserInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -921,7 +921,7 @@ func (x *UserInfo) GetCreateTime() int64 {
 	return 0
 }
 
-//用户信息
+// 用户信息
 type UserCore struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
