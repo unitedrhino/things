@@ -40,9 +40,11 @@ src/apisvr/apisvr*
 src/dcsvr/dcsvr*
 src/ddsvr/ddsvr*
 src/dmsvr/dmsvr*
+src/vidsvr/vidsvr*
 src/usersvr/usersvr*
 /src/disvr/disvr.exe
 /src/syssvr/syssvr.exe
+/src/vidsvr/vidsvr.exe
 /src/apisvr/dist/
 *.exe
 ### MacOS ###
