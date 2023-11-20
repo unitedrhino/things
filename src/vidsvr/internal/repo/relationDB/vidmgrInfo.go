@@ -12,10 +12,6 @@ import (
 type VidmgrInfoRepo struct {
 	db *gorm.DB
 }
-type VidmgrConfigFilter struct {
-	ApiSecret      string
-	MediaServerIds []string
-}
 
 type VidmgrFilter struct {
 	VidmgrType    int64
@@ -35,7 +31,7 @@ type countModel struct {
 	Count    int64
 }
 
-func NewVidmgrtInfoRepo(in any) *VidmgrInfoRepo {
+func NewVidmgrInfoRepo(in any) *VidmgrInfoRepo {
 	return &VidmgrInfoRepo{db: stores.GetCommonConn(in)}
 }
 
@@ -48,7 +44,7 @@ func (p VidmgrInfoRepo) fmtFilter(ctx context.Context, f VidmgrFilter) *gorm.DB 
 		db = db.Where("name like ?", "%"+f.VidmgrName+"%")
 	}
 	if len(f.VidmgrIDs) != 0 {
-		db = db.Where("id = ?", f.VidmgrIDs)
+		db = db.Where("vidmgr_id = ?", f.VidmgrIDs)
 	}
 	if len(f.VidmgrNames) != 0 {
 		db = db.Where("name = ?", f.VidmgrNames)
@@ -97,6 +93,7 @@ func (p VidmgrInfoRepo) DeleteByFilter(ctx context.Context, f VidmgrFilter) erro
 	return stores.ErrFmt(err)
 }
 
+// 用于定时check服务是否有在线状态
 func (p VidmgrInfoRepo) FindAllFilter(ctx context.Context, f VidmgrFilter) ([]*VidmgrInfo, error) {
 	var results []*VidmgrInfo
 	db := p.fmtFilter(ctx, f).Model(&VidmgrInfo{})

@@ -11,17 +11,27 @@ type VidmgrConfigRepo struct {
 	db *gorm.DB
 }
 
-func NewVidmgrtConfigRepo(in any) *VidmgrConfigRepo {
+func NewVidmgrConfigRepo(in any) *VidmgrConfigRepo {
 	return &VidmgrConfigRepo{db: stores.GetCommonConn(in)}
+}
+
+type VidmgrConfigFilter struct {
+	ApiSecret string
+	VidmgrIDs []string
+	ConfigIDs []string
 }
 
 func (p VidmgrConfigRepo) fmtFilter(ctx context.Context, f VidmgrConfigFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.ApiSecret != "" {
-		db = db.Where("api_secret=?", f.ApiSecret)
+		db = db.Where("secret=?", f.ApiSecret)
 	}
-	if len(f.MediaServerIds) != 0 {
-		db = db.Where("general_mediaServerId=?", f.MediaServerIds)
+	if len(f.VidmgrIDs) != 0 {
+		db = db.Where("vidmgr_id=?", f.VidmgrIDs)
+	}
+
+	if len(f.ConfigIDs) != 0 {
+		db = db.Where("config_id=?", f.ConfigIDs)
 	}
 	return db
 }
@@ -42,7 +52,7 @@ func (p VidmgrConfigRepo) FindOneByFilter(ctx context.Context, f VidmgrConfigFil
 }
 
 func (p VidmgrConfigRepo) Update(ctx context.Context, data *VidmgrConfig) error {
-	err := p.db.WithContext(ctx).Where("GeneralMediaServerId = ?", data.GeneralMediaServerId).Save(data).Error
+	err := p.db.WithContext(ctx).Where("vidmgr_id = ?", data.VidmgrID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
