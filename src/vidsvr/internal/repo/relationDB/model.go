@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/shared/stores"
 )
 
-// 流服务信息  `gorm:"column:product_id;type:char(11);primary_key;NOT NULL"`
+// 流服务信息
 type VidmgrInfo struct {
 	VidmgrID     string            `gorm:"column:vidmgr_id;type:char(11);primary_key;NOT NULL"`         // 服务id
 	VidmgrName   string            `gorm:"column:name;type:varchar(100);NOT NULL"`                      // 服务名称
