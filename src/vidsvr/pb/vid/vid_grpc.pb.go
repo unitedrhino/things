@@ -31,17 +31,17 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VidmgrInfoManageClient interface {
-	// 新建服务
+	//新建服务
 	VidmgrInfoCreate(ctx context.Context, in *VidmgrInfo, opts ...grpc.CallOption) (*Response, error)
-	// 更新服务
+	//更新服务
 	VidmgrInfoUpdate(ctx context.Context, in *VidmgrInfo, opts ...grpc.CallOption) (*Response, error)
-	// 删除服务
+	//删除服务
 	VidmgrInfoDelete(ctx context.Context, in *VidmgrInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	// 获取服务列表
+	//获取服务列表
 	VidmgrInfoIndex(ctx context.Context, in *VidmgrInfoIndexReq, opts ...grpc.CallOption) (*VidmgrInfoIndexResp, error)
-	// 获取服务信息详情
+	//获取服务信息详情
 	VidmgrInfoRead(ctx context.Context, in *VidmgrInfoReadReq, opts ...grpc.CallOption) (*VidmgrInfo, error)
-	// 获取服务统计  在线，离线，未激活
+	//获取服务统计  在线，离线，未激活
 	VidmgrInfoCount(ctx context.Context, in *VidmgrInfoCountReq, opts ...grpc.CallOption) (*VidmgrInfoCountResp, error)
 }
 
@@ -111,17 +111,17 @@ func (c *vidmgrInfoManageClient) VidmgrInfoCount(ctx context.Context, in *Vidmgr
 // All implementations must embed UnimplementedVidmgrInfoManageServer
 // for forward compatibility
 type VidmgrInfoManageServer interface {
-	// 新建服务
+	//新建服务
 	VidmgrInfoCreate(context.Context, *VidmgrInfo) (*Response, error)
-	// 更新服务
+	//更新服务
 	VidmgrInfoUpdate(context.Context, *VidmgrInfo) (*Response, error)
-	// 删除服务
+	//删除服务
 	VidmgrInfoDelete(context.Context, *VidmgrInfoDeleteReq) (*Response, error)
-	// 获取服务列表
+	//获取服务列表
 	VidmgrInfoIndex(context.Context, *VidmgrInfoIndexReq) (*VidmgrInfoIndexResp, error)
-	// 获取服务信息详情
+	//获取服务信息详情
 	VidmgrInfoRead(context.Context, *VidmgrInfoReadReq) (*VidmgrInfo, error)
-	// 获取服务统计  在线，离线，未激活
+	//获取服务统计  在线，离线，未激活
 	VidmgrInfoCount(context.Context, *VidmgrInfoCountReq) (*VidmgrInfoCountResp, error)
 	mustEmbedUnimplementedVidmgrInfoManageServer()
 }
@@ -318,17 +318,17 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VidmgrStreamManageClient interface {
-	// 流添加
+	//流添加
 	VidmgrStreamCreate(ctx context.Context, in *VidmgrStream, opts ...grpc.CallOption) (*Response, error)
-	// 流更新
+	//流更新
 	VidmgrStreamUpdate(ctx context.Context, in *VidmgrStream, opts ...grpc.CallOption) (*Response, error)
-	// 删除流
+	//删除流
 	VidmgrStreamDelete(ctx context.Context, in *VidmgrStreamDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	// 获取流列表
+	//获取流列表
 	VidmgrStreamIndex(ctx context.Context, in *VidmgrStreamIndexReq, opts ...grpc.CallOption) (*VidmgrStreamIndexResp, error)
-	// 获取流信息详情
+	//获取流信息详情
 	VidmgrStreamRead(ctx context.Context, in *VidmgrStreamReadReq, opts ...grpc.CallOption) (*VidmgrStream, error)
-	// 统计流 在线，离线，未激活
+	//统计流 在线，离线，未激活
 	VidmgrStreamCount(ctx context.Context, in *VidmgrStreamCountReq, opts ...grpc.CallOption) (*VidmgrStreamCountResp, error)
 }
 
@@ -398,17 +398,17 @@ func (c *vidmgrStreamManageClient) VidmgrStreamCount(ctx context.Context, in *Vi
 // All implementations must embed UnimplementedVidmgrStreamManageServer
 // for forward compatibility
 type VidmgrStreamManageServer interface {
-	// 流添加
+	//流添加
 	VidmgrStreamCreate(context.Context, *VidmgrStream) (*Response, error)
-	// 流更新
+	//流更新
 	VidmgrStreamUpdate(context.Context, *VidmgrStream) (*Response, error)
-	// 删除流
+	//删除流
 	VidmgrStreamDelete(context.Context, *VidmgrStreamDeleteReq) (*Response, error)
-	// 获取流列表
+	//获取流列表
 	VidmgrStreamIndex(context.Context, *VidmgrStreamIndexReq) (*VidmgrStreamIndexResp, error)
-	// 获取流信息详情
+	//获取流信息详情
 	VidmgrStreamRead(context.Context, *VidmgrStreamReadReq) (*VidmgrStream, error)
-	// 统计流 在线，离线，未激活
+	//统计流 在线，离线，未激活
 	VidmgrStreamCount(context.Context, *VidmgrStreamCountReq) (*VidmgrStreamCountResp, error)
 	mustEmbedUnimplementedVidmgrStreamManageServer()
 }
@@ -604,15 +604,15 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VidmgrConfigManageClient interface {
-	// 新建配置
+	//新建配置
 	VidmgrConfigCreate(ctx context.Context, in *VidmgrConfig, opts ...grpc.CallOption) (*Response, error)
-	// 删除配置
+	//删除配置
 	VidmgrConfigDelete(ctx context.Context, in *VidmgrConfigDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	// 更新配置
+	//更新配置
 	VidmgrConfigUpdate(ctx context.Context, in *VidmgrConfig, opts ...grpc.CallOption) (*Response, error)
-	// 配置列表
+	//配置列表
 	VidmgrConfigIndex(ctx context.Context, in *VidmgrConfigIndexReq, opts ...grpc.CallOption) (*VidmgrConfigIndexResp, error)
-	// 获取配置信息详情
+	//获取配置信息详情
 	VidmgrConfigRead(ctx context.Context, in *VidmgrConfigReadReq, opts ...grpc.CallOption) (*VidmgrConfig, error)
 }
 
@@ -673,15 +673,15 @@ func (c *vidmgrConfigManageClient) VidmgrConfigRead(ctx context.Context, in *Vid
 // All implementations must embed UnimplementedVidmgrConfigManageServer
 // for forward compatibility
 type VidmgrConfigManageServer interface {
-	// 新建配置
+	//新建配置
 	VidmgrConfigCreate(context.Context, *VidmgrConfig) (*Response, error)
-	// 删除配置
+	//删除配置
 	VidmgrConfigDelete(context.Context, *VidmgrConfigDeleteReq) (*Response, error)
-	// 更新配置
+	//更新配置
 	VidmgrConfigUpdate(context.Context, *VidmgrConfig) (*Response, error)
-	// 配置列表
+	//配置列表
 	VidmgrConfigIndex(context.Context, *VidmgrConfigIndexReq) (*VidmgrConfigIndexResp, error)
-	// 获取配置信息详情
+	//获取配置信息详情
 	VidmgrConfigRead(context.Context, *VidmgrConfigReadReq) (*VidmgrConfig, error)
 	mustEmbedUnimplementedVidmgrConfigManageServer()
 }

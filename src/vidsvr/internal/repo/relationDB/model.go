@@ -58,24 +58,24 @@ func (b *STracks) Scan(v interface{}) error {
 type VidmgrStream struct {
 	StreamID   int64  `gorm:"column:stream_id;type:bigint;primary_key;AUTO_INCREMENT"` // 视频流的id(主键唯一)
 	VidmgrID   string `gorm:"column:vidmgr_id;type:char(11);NOT NULL"`                 // 流服务ID  外键
-	StreamName string `gorm:"column:name;type:varchar(63);NOT NULL"`                   // 视频流名称
+	StreamName string `gorm:"column:name;type:varchar(63)"`                            // 视频流名称
 
 	App    string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
 	Schema string `gorm:"column:schema;type:varchar(31);NOT NULL"`
 	Stream string `gorm:"column:stream;type:varchar(31);NOT NULL"`
 	Vhost  string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
 
-	Identifier string `gorm:"column:identifier;type:varchar(31);NOT NULL"`
-	LocalIP    int64  `gorm:"column:local_ip;type:bigint;NOT NULL"`
-	LocalPort  int64  `gorm:"column:local_port;type:bigint;NOT NULL"`
-	PeerIP     int64  `gorm:"column:peer_ip;type:bigint;NOT NULL"`
-	PeerPort   int64  `gorm:"column:peer_port;type:bigint;NOT NULL"`
+	Identifier string `gorm:"column:identifier;type:varchar(31)"`
+	LocalIP    int64  `gorm:"column:local_ip;type:bigint"`
+	LocalPort  int64  `gorm:"column:local_port;type:bigint"`
+	PeerIP     int64  `gorm:"column:peer_ip;type:bigint"`
+	PeerPort   int64  `gorm:"column:peer_port;type:bigint"`
 	//产生源类型，包括 unknown = 0,rtmp_push=1,rtsp_push=2,rtp_push=3,pull=4,ffmpeg_pull=5,mp4_vod=6,device_chn=7,rtc_push=8
-	OriginType       int64  `gorm:"column:origin_type;type:smallint;NOT NULL"` // 源类型
-	OriginStr        string `gorm:"column:origin_str;type:char(15);NOT NULL"`
-	OriginUrl        string `gorm:"column:origin_url;type:char(63);NOT NULL"`         //产生源的url
-	ReaderCount      int64  `gorm:"column:reader_count;type:smallint;NOT NULL"`       // 本协议观看人数
-	TotalReaderCount int64  `gorm:"column:total_reader_count;type:smallint;NOT NULL"` //观看总人数，包括hls/rtsp/rtmp/http-flv/ws-flv/rtc
+	OriginType       int64  `gorm:"column:origin_type;type:smallint"` // 源类型
+	OriginStr        string `gorm:"column:origin_str;type:char(15)"`
+	OriginUrl        string `gorm:"column:origin_url;type:char(63)"`         //产生源的url
+	ReaderCount      int64  `gorm:"column:reader_count;type:smallint"`       // 本协议观看人数
+	TotalReaderCount int64  `gorm:"column:total_reader_count;type:smallint"` //观看总人数，包括hls/rtsp/rtmp/http-flv/ws-flv/rtc
 	//流通道信息
 	Tracks         STracks `json:"tracks" gorm:"type:json;column:tracks"`
 	IsRecordingMp4 bool    `gorm:"column:is_recording_mp4;type:bit(1);default:0;NOT NULL"`

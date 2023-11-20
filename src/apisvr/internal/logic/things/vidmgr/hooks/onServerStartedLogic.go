@@ -52,13 +52,16 @@ func (l *OnServerStartedLogic) OnServerStarted(req *types.HooksApiServerStartedR
 			})
 			if err1 != nil {
 				l.Errorf("%s.rpc.VidmgrConfigmange req=VidmgrConfigRead err=%v", utils.FuncName(), err1)
+				return nil, err1
 			}
 			if vidmgrConfig.GeneralMediaServerId != "" {
-				//we inster data.
+				//we inser data.
 				//_, err = l.svcCtx.VidmgrC.VidmgrConfigCreate(l.ctx, info.ToVidmgrConfigRpc(req))
+				//_, err = l.svcCtx.VidmgrS.VidmgrStreamCreate(l.ctx, ToVidmgrStreamRpc())
 				if err != nil {
 					er := errors.Fmt(err)
 					l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), req, er)
+					return nil, err
 				}
 			} else {
 				//we update data

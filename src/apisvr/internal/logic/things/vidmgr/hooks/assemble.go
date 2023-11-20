@@ -289,3 +289,56 @@ func ToVidmgrConfigApi(pi *vid.VidmgrConfig) *types.ServerConfig {
 	}
 	return dpi
 }
+func ToVidmgrTrack(in *types.StreamTrack) *vid.StreamTrack {
+	pi := &vid.StreamTrack{
+		Channels:    in.Channels,
+		CodecId:     in.CodecId,
+		CodecIdName: in.CodecIdName,
+		CodecType:   in.CodecType,
+		Ready:       in.Ready,
+		SampleBit:   in.SampleBit,
+		SampleRate:  in.SampleRate,
+		Fps:         in.Fps,
+		Height:      in.Height,
+		Width:       in.Width,
+	}
+	return pi
+}
+
+func TovidmgrTracksRpc(pi []types.StreamTrack) []*vid.StreamTrack {
+	if len(pi) > 0 {
+		info := make([]*vid.StreamTrack, 0, len(pi))
+		for _, v := range pi {
+			info = append(info, ToVidmgrTrack(&v))
+		}
+		return info
+	}
+	return nil
+
+}
+
+func ToVidmgrStreamRpc(pi *types.HooksApiStreamChangedRep) *vid.VidmgrStream {
+	dpi := &vid.VidmgrStream{
+		VidmgrID: pi.MediaServerId,
+
+		Stream: pi.Stream,
+		Vhost:  pi.Vhost,
+		App:    pi.App,
+		Schema: pi.Schema,
+
+		Identifier: pi.OriginSock.Identifier,
+		LocalIP:    pi.OriginSock.LocalIp,
+		LocalPort:  pi.OriginSock.LocalPort,
+		PeerIP:     pi.OriginSock.PeerIp,
+		PeerPort:   pi.OriginSock.PeerPort,
+
+		OriginType: pi.OriginType,
+		OriginUrl:  pi.OriginUrl,
+		OriginStr:  pi.OriginTypeStr,
+
+		ReaderCount:      pi.ReaderCount,
+		TotalReaderCount: pi.TotalReaderCount,
+		Tracks:           TovidmgrTracksRpc(pi.Tracks),
+	}
+	return dpi
+}
