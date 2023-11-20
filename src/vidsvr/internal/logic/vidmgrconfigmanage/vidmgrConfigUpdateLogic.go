@@ -23,7 +23,7 @@ func NewVidmgrConfigUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDB:   relationDB.NewVidmgrtConfigRepo(ctx),
+		PiDB:   relationDB.NewVidmgrConfigRepo(ctx),
 	}
 }
 
