@@ -66,7 +66,7 @@ type PageInfo struct {
 
 	Page int64 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
 	Size int64 `protobuf:"varint,2,opt,name=size,proto3" json:"size,omitempty"`
-	// 排序信息
+	//排序信息
 	Orders []*PageInfo_OrderBy `protobuf:"bytes,3,rep,name=orders,proto3" json:"orders,omitempty"`
 }
 
@@ -3010,9 +3010,9 @@ type PageInfo_OrderBy struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 排序的字段名
+	//排序的字段名
 	Filed string `protobuf:"bytes,1,opt,name=filed,proto3" json:"filed,omitempty"`
-	// 排序方式：0 aes, 1 desc
+	//排序方式：0 aes, 1 desc
 	Sort int64 `protobuf:"varint,2,opt,name=sort,proto3" json:"sort,omitempty"`
 }
 

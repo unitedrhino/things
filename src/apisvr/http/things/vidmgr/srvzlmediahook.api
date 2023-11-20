@@ -215,7 +215,7 @@ type (
         Vhost string    `json:"vhost"`
         AliveSecond int64 `json:"aliveSecond"`
         BytesSpeed int64 `json:"bytesSpeed"`
-        CreateStamp int64 `json:"CreateStamp"`
+        CreateStamp int64 `json:"createStamp"`
         OriginSock OriginSock  `json:"originSock"`
         OriginType int64    `json:"originType"`
         OriginTypeStr string    `json:"originTypeStr"`
@@ -224,15 +224,21 @@ type (
         Schema string   `json:"schema"`
         TotalReaderCount    int64 `json:"totalReaderCount"`
         Tracks  []StreamTrack   `json:"tracks"`
+        IsRecordingMp4 bool `json:"isRecordingMp4"`
+        IsRecordingHLS bool `json:"isRecordingHLS"`
+        IsShareChannel bool `json:"isShareChannel"`
+        IsAutoPush bool `json:"isAutoPush"`
+        IsAutoRecord bool  `json:"isAutoRecord"`
+        IsPTZ bool `json:"isPTZ"`
     //unregister post data
     }
 
     HooksApiStreamNoneReaderReq struct{
-            MediaServerId string `json:"mediaServerId"`
-            App string  `json:"app"`
-            Schema string   `json:"schema"`
-            Stream string   `json:"stream"`
-            Vhost string    `json:"vhost"`
+        MediaServerId string `json:"mediaServerId"`
+        App string  `json:"app"`
+        Schema string   `json:"schema"`
+        Stream string   `json:"stream"`
+        Vhost string    `json:"vhost"`
     }
     HooksApiStreamNoneReaderResp struct {
         Close   bool `json:"close"`
