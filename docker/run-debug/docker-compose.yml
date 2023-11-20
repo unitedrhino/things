@@ -1,0 +1,160 @@
+version: '3.2'
+# Network
+networks:
+  ithings_net:
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+
+services:
+  nats-server:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:nats-2.8-alpine
+    container_name: nats
+    restart: always
+    command: --jetstream  -m 8222 #启用jetstream
+    ports:
+      - "4222:4222"
+      - "6222:6222"#
+      - "8222:8222"#http监控端口
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.2
+
+  etcd:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:bitnami-etcd-3.5
+    container_name: etcd-v3
+    restart: always
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.3
+
+  mariadb:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:mariadb-10.7
+    container_name: mariadb
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      TZ: Asia/Shanghai
+    volumes:
+      - ../../deploy/conf/mysql/sql:/docker-entrypoint-initdb.d
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.4
+
+  redis:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:redis-7-alpine
+    container_name: redis
+    hostname: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.5
+
+  tdengine:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:tdengine-tdengine-3.0.4.2
+    container_name: tdengine
+    hostname: tdengine
+    ports:
+      - "6030:6030"
+      - "6035:6035"
+      - "6041:6041"
+      - "6030-6040:6030-6040/udp"
+    restart: always
+    tty: true
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.6
+#  init-db:
+#    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:tdengine-tdengine-3.0.4.2
+#    container_name: init-db
+#    depends_on:
+#      - tdengine
+#    volumes:
+#      - ./init-db.sh:/init-db.sh
+#    command: /bin/bash /init-db.sh
+#    networks:
+#      ithings_net:
+#        ipv4_address: 172.19.0.9
+
+  emqx:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:emqx-4.4.17
+    container_name: emqx
+    hostname: node1.emqx.io
+    restart: always
+    ports:
+      - "1883:1883"
+      - "8083:8083"
+      - "8883:8883"
+      - "8084:8084"
+      - "18083:18083"
+    volumes:
+      - ./emqx/etc/plugins/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf
+      - ./emqx/data/loaded_plugins:/opt/emqx/data/loaded_plugins
+    environment:
+      - "EMQX_NAME=emqx"
+      - "EMQX_HOST=node1.emqx.io"
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.7
+  minio:
+    image: minio/minio:latest
+    hostname: "minio"
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9090:9090" # 控制台端口
+    restart: always
+    command: server --console-address ':9090' /data  #指定容器中的目录 /data
+    environment:
+      MINIO_ACCESS_KEY: root
+      MINIO_SECRET_KEY: password #大于等于8位
+    logging:
+      options:
+        max-size: "50M" # 最大文件上传限制
+        max-file: "10"
+      driver: json-file
+    volumes:
+      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
+      - /docker/minio/config:/root/.minio/     #映射配置目录
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.10
