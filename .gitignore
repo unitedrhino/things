@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 /deploy/data/*
+/docker/run-debug
 
 ### STS ###
 .apt_generated
