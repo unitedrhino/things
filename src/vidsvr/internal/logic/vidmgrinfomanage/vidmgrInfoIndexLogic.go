@@ -47,7 +47,7 @@ func (l *VidmgrInfoIndexLogic) VidmgrInfoIndex(in *vid.VidmgrInfoIndexReq) (*vid
 
 	di, err := piDB.FindByFilter(l.ctx, filter, logic.ToPageInfoWithDefault(in.Page, &def.PageInfo{
 		Page: 1, Size: 20,
-		Orders: []def.OrderBy{{"created_time", def.OrderDesc}, {"id", def.OrderDesc}},
+		Orders: []def.OrderBy{{"created_time", def.OrderDesc}, {"vidmgr_id", def.OrderDesc}},
 	}))
 
 	if err != nil {

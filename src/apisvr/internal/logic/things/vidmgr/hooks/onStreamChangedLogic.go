@@ -31,9 +31,12 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 	fmt.Println("---------OnStreamChanged--------------:", string(reqStr))
 	//获取流注册时分支
 	if req.Regist {
+		//需要先判断该流服务是否有注册过，未注册过
+		//判断流路径是一样
 
 	} else { //注销时分支
-
+		//检查数据库是否存在，
+		//存在即删除该流
 	}
 
 	return &types.HooksApiResp{

@@ -49,12 +49,6 @@ func (p VidmgrInfoRepo) fmtFilter(ctx context.Context, f VidmgrFilter) *gorm.DB 
 	if len(f.VidmgrNames) != 0 {
 		db = db.Where("name = ?", f.VidmgrNames)
 	}
-	if f.Tags != nil {
-		for k, v := range f.Tags {
-			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
-				k, v)
-		}
-	}
 	if f.VidmgrStatus != 0 {
 		db = db.Where("status = ?", f.VidmgrStatus)
 	}
@@ -63,6 +57,12 @@ func (p VidmgrInfoRepo) fmtFilter(ctx context.Context, f VidmgrFilter) *gorm.DB 
 	}
 	if f.LastLoginTime.End != 0 {
 		db = db.Where("last_login <= ?", utils.ToYYMMddHHSS(f.LastLoginTime.End*1000))
+	}
+	if f.Tags != nil {
+		for k, v := range f.Tags {
+			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
+				k, v)
+		}
 	}
 	return db
 }
@@ -83,7 +83,7 @@ func (p VidmgrInfoRepo) FindOneByFilter(ctx context.Context, f VidmgrFilter) (*V
 }
 
 func (p VidmgrInfoRepo) Update(ctx context.Context, data *VidmgrInfo) error {
-	err := p.db.WithContext(ctx).Where("id = ?", data.VidmgrID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("vidmgr_id = ?", data.VidmgrID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
