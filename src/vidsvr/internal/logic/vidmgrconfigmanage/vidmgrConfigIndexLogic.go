@@ -24,7 +24,7 @@ func NewVidmgrConfigIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDB:   relationDB.NewVidmgrtConfigRepo(ctx),
+		PiDB:   relationDB.NewVidmgrConfigRepo(ctx),
 	}
 }
 
@@ -37,7 +37,7 @@ func (l *VidmgrConfigIndexLogic) VidmgrConfigIndex(in *vid.VidmgrConfigIndexReq)
 		size int64
 		err  error
 	)
-	filter := relationDB.VidmgrConfigFilter{MediaServerIds: in.MediaServerId}
+	filter := relationDB.VidmgrConfigFilter{VidmgrIDs: in.MediaServerId}
 	size, err = l.PiDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err

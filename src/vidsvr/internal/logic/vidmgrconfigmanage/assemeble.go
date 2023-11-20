@@ -7,7 +7,7 @@ import (
 
 func ToVidmgrConfig(pi *relationDB.VidmgrConfig) *vid.VidmgrConfig {
 	dpi := &vid.VidmgrConfig{
-		GeneralMediaServerId:           pi.GeneralMediaServerId,
+		GeneralMediaServerId:           pi.VidmgrID,
 		ApiDebug:                       pi.ApiDebug,
 		ApiDefaultSnap:                 pi.ApiDefaultSnap,
 		ApiSecret:                      pi.ApiSecret,
@@ -149,7 +149,7 @@ func ToVidmgrConfig(pi *relationDB.VidmgrConfig) *vid.VidmgrConfig {
 
 func ToVidmgrConfigDB(pi *vid.VidmgrConfig) *relationDB.VidmgrConfig {
 	dpi := &relationDB.VidmgrConfig{
-		GeneralMediaServerId:           pi.GeneralMediaServerId,
+		VidmgrID:                       pi.GeneralMediaServerId,
 		ApiDebug:                       pi.ApiDebug,
 		ApiDefaultSnap:                 pi.ApiDefaultSnap,
 		ApiSecret:                      pi.ApiSecret,

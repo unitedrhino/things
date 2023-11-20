@@ -23,7 +23,7 @@ func NewVidmgrInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Vi
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDB:   relationDB.NewVidmgrtInfoRepo(ctx),
+		PiDB:   relationDB.NewVidmgrInfoRepo(ctx),
 	}
 }
 
@@ -31,7 +31,7 @@ func NewVidmgrInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Vi
 func (l *VidmgrInfoReadLogic) VidmgrInfoRead(in *vid.VidmgrInfoReadReq) (*vid.VidmgrInfo, error) {
 	// todo: add your logic here and delete this line
 	fmt.Printf("Vidsvr VidmgrInfoRead \n")
-	pi, err := relationDB.NewVidmgrtInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.VidmgrFilter{
+	pi, err := relationDB.NewVidmgrInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.VidmgrFilter{
 		VidmgrIDs: []string{in.VidmgrtID},
 	})
 	if err != nil {

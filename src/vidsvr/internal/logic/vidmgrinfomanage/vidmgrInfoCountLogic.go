@@ -25,7 +25,7 @@ func NewVidmgrInfoCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *V
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDB:   relationDB.NewVidmgrtInfoRepo(ctx),
+		PiDB:   relationDB.NewVidmgrInfoRepo(ctx),
 	}
 }
 

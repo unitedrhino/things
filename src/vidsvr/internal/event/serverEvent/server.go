@@ -23,7 +23,7 @@ func NewServerHandle(ctx context.Context, svcCtx *svc.ServiceContext) *ServerHan
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
-		PiDB:   relationDB.NewVidmgrtInfoRepo(ctx),
+		PiDB:   relationDB.NewVidmgrInfoRepo(ctx),
 	}
 }
 

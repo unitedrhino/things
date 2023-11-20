@@ -16,9 +16,9 @@ type (
 	}
 )
 
-var (
-	natsJsConsumerName = "dmsvr"
-)
+//var (
+//	natsJsConsumerName = "dmsvr"
+//)
 
 func newNatsJsClient(conf conf.NatsConf) (*NatsJsClient, error) {
 	nc, err := clients.NewNatsJetStreamClient(conf)

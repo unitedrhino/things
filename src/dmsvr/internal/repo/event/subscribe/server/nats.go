@@ -33,11 +33,6 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			tempInfo := deviceMsg.PublishMsg{}
 			err := json.Unmarshal(msg, &tempInfo)
-			//strInfo, err := json.Marshal(natsMsg)
-			//fmt.Println("[---Sub---]QueueSubscribe natsMsg:", string(strInfo))
-			//strTemp, _ := json.Marshal(&tempInfo)
-			//fmt.Println("[---Sub---]QueueSubscribe tempInfo=msg:", string(strTemp))
-			//fmt.Println("[---Sub---]QueueSubscribe msg:", string(msg))
 			if err != nil {
 				return err
 			}

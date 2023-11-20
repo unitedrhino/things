@@ -24,10 +24,10 @@ func main() {
 //	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 //		vid.RegisterVidmgrMangeServer(grpcServer, vidmgrmangeServer.NewVidmgrMangeServer(ctx))
 //
-//		if c.Mode == service.DevMode || c.Mode == service.TestMode {
-//			fmt.Printf("Starting rpc serverc.Mode == service.DevMode\n")
-//			reflection.Register(grpcServer)
-//		}
+//
+//		}if c.Mode == service.DevMode || c.Mode == service.TestMode {
+////			fmt.Printf("Starting rpc serverc.Mode == service.DevMode\n")
+////			reflection.Register(grpcServer)
 //	})
 //	defer s.Stop()
 //
