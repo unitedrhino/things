@@ -14,7 +14,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/i-Things/things/src/timed/timedjobsvr/pb/timedjob"
-	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -65,12 +64,10 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 		return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.InputParams)
 	}
 
-	MsgToken := trace.TraceIDFromContext(l.ctx)
-
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:    deviceMsg.Action,
-			MsgToken:  MsgToken,
+			MsgToken:  devices.GenMsgToken(l.ctx),
 			Timestamp: time.Now().UnixMilli(),
 		},
 		ActionID: in.ActionID,

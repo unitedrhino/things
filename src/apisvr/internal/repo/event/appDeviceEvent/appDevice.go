@@ -35,7 +35,6 @@ func (a *AppDeviceHandle) DeviceEventReport(in *application.EventReport) error {
 
 func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) error {
 	topic := fmt.Sprintf(topics.ApplicationDeviceReportThingPropertyDevice, in.Device.ProductID, in.Device.DeviceName)
-	MsgToken := trace.TraceIDFromContext(a.ctx)
 	param := map[string]interface{}{
 		in.Identifier: in.Param,
 	}
@@ -46,7 +45,7 @@ func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) e
 		Body: string(data),
 	}
 	body.Handler = make(http.Header)
-	body.Handler.Set("Traceparent", MsgToken)
+	body.Handler.Set("Traceparent", trace.TraceIDFromContext(a.ctx))
 	ws.SendSub(ws.WsResp{
 		StatusCode: http.StatusOK,
 		WsBody:     body,

@@ -3,9 +3,9 @@ package devicemsglogic
 import (
 	"context"
 	"fmt"
+	"github.com/i-Things/things/shared/devices"
 	firmwaremanage "github.com/i-Things/things/src/dmsvr/internal/server/firmwaremanage"
 	otataskmanage "github.com/i-Things/things/src/dmsvr/internal/server/otataskmanage"
-	"github.com/zeromicro/go-zero/core/trace"
 	"time"
 
 	"github.com/i-Things/things/shared/errors"
@@ -104,7 +104,7 @@ func (l *OtaPromptIndexLogic) OtaPromptIndex(in *dm.OtaPromptIndexReq) (*dm.OtaP
 	return &dm.OtaPromptIndexResp{}, nil
 }
 func (l *OtaPromptIndexLogic) DeviceResp(msg *dm.SendMsgReq, err error, data any) *dm.SendMsgReq {
-	MsgToken := trace.TraceIDFromContext(l.ctx)
+	MsgToken := devices.GenMsgToken(l.ctx)
 	resp := &deviceMsg.CommonMsg{
 		Method:    "reportInfo",
 		MsgToken:  MsgToken,
