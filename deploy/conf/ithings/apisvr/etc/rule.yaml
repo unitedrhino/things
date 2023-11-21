@@ -12,3 +12,7 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
+
+Event:
+  Nats:
+    Url: nats://172.19.0.2:4222
