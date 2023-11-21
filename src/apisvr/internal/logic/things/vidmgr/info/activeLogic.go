@@ -31,30 +31,6 @@ func NewActiveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ActiveLogi
 	}
 }
 
-func (l *ActiveLogic) setMediaConfigDefault(data *types.ServerConfig) {
-	if data != nil {
-		data.ApiDebug = "1"
-		data.HookEnable = "1"
-		data.HookOnFlowReport = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onFlowReport", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnHttpAccess = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onHttpAccess", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnPlay = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onPlay", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnPublish = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onPublish", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnRecordMp4 = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onRecordMp4", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnRecordTs = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onRecordTs", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnRtpServerTimeout = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onRtpServerTimeout", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnRtspAuth = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onRtspAuth", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnRtspRealm = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onRtspRealm", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnSendRtpStopped = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onSendRtpStopped", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnServerExited = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onServerExited", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnServerKeepalive = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onServerKeepalive", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnServerStarted = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onServerStarted", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnShellLogin = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onShellLogin", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnStreamNoneReader = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onStreamChanged", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnStreamNoneReader = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onStreamNoneReader", utils.GetHostIp(), l.svcCtx.Config.Port)
-		data.HookOnStreamNotFound = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onStreamNotFound", utils.GetHostIp(), l.svcCtx.Config.Port)
-	}
-}
-
 func (l *ActiveLogic) Active(req *types.VidmgrInfoActiveReq) error {
 	// todo: add your logic here and delete this line
 	//read VidmgrInfo table and update table
@@ -84,7 +60,7 @@ func (l *ActiveLogic) Active(req *types.VidmgrInfoActiveReq) error {
 	fmt.Println("dataConfig:", dataConfig)
 	//STEP2 修改流媒体服务  //set default
 	if len(dataConfig.Data) > 0 {
-		l.setMediaConfigDefault(&dataConfig.Data[0])
+		indexapi.SetDefaultConfig(l.svcCtx, &dataConfig.Data[0])
 		dataConfig.Data[0].GeneralMediaServerId = req.VidmgrID
 	}
 	byteConfig, _ := json.Marshal(dataConfig.Data[0])

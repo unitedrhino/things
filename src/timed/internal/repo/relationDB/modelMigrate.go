@@ -90,11 +90,11 @@ var (
 			Priority:  3,
 		},
 		{
-			GroupCode: "vidSrvStautusUpdate",
+			GroupCode: def.TimedIThingsQueueGroupCode,
 			Type:      domain.TaskTypeTiming,
 			Name:      "流服务状态更新",
-			Code:      "timedJobClean",
-			Params:    `{"topic":"server.timedjob.clean","payload":""}`,
+			Code:      "VidInfoCheckStatus",
+			Params:    `{"topic":"server.vid.info.check.status","payload":""}`,
 			CronExpr:  "1 1 * * ?",
 			Status:    def.StatusWaitRun,
 			Priority:  1, //低优先级任务

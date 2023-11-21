@@ -135,10 +135,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DmRpc.Conf))
 			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			vidmgrM = vidmgrinfomanage.NewVidmgrInfoManage(zrpc.MustNewClient(c.VidRpc.Conf))
-			vidmgrC = vidmgrconfigmanage.NewVidmgrConfigManage(zrpc.MustNewClient(c.VidRpc.Conf))
-			vidmgrS = vidmgrstreammanage.NewVidmgrStreamManage(zrpc.MustNewClient(c.VidRpc.Conf))
-
 			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -150,9 +146,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
 			deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 			productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
-			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
-			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
-			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
 			deviceA = dmdirect.NewDeviceAuth(c.DmRpc.RunProxy)
 			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
@@ -188,6 +181,18 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
 			ap = sysdirect.NewApi(c.SysRpc.RunProxy)
 			sysCommon = sysdirect.NewCommon(c.SysRpc.RunProxy)
+		}
+	}
+
+	if c.VidRpc.Enable {
+		if c.VidRpc.Mode == conf.ClientModeGrpc {
+			vidmgrM = vidmgrinfomanage.NewVidmgrInfoManage(zrpc.MustNewClient(c.VidRpc.Conf))
+			vidmgrC = vidmgrconfigmanage.NewVidmgrConfigManage(zrpc.MustNewClient(c.VidRpc.Conf))
+			vidmgrS = vidmgrstreammanage.NewVidmgrStreamManage(zrpc.MustNewClient(c.VidRpc.Conf))
+		} else {
+			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
+			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
+			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
 		}
 	}
 
