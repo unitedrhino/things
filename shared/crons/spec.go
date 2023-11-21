@@ -53,7 +53,7 @@ const (
 	starBit = 1 << 63
 )
 
-//返回时间是否符合表达式 符合即可执行
+// 返回时间是否符合表达式 符合即可执行
 func (s *SpecSchedule) Parse(t time.Time) bool {
 	loc := s.Location
 	yearLimit := t.Year() + 5

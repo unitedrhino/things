@@ -235,7 +235,7 @@ func (x *ShadowIndexResp) GetList() []*ShadowIndex {
 	return nil
 }
 
-//设备的日志数据
+// 设备的日志数据
 type ShadowIndex struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -441,7 +441,7 @@ func (x *GetPropertyReplyResp) GetParams() string {
 	return ""
 }
 
-//获取对应日志信息
+// 获取对应日志信息
 type PropertyLogIndexReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -570,7 +570,7 @@ func (x *PropertyLogIndexReq) GetOrder() int32 {
 	return 0
 }
 
-//获取对应日志信息
+// 获取对应日志信息
 type PropertyLatestIndexReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -634,7 +634,7 @@ func (x *PropertyLatestIndexReq) GetDataIDs() []string {
 	return nil
 }
 
-//设备的日志数据
+// 设备的日志数据
 type PropertyIndex struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -698,7 +698,7 @@ func (x *PropertyIndex) GetValue() string {
 	return ""
 }
 
-//获取对应日志信息
+// 获取对应日志信息
 type PropertyIndexResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -754,7 +754,7 @@ func (x *PropertyIndexResp) GetList() []*PropertyIndex {
 	return nil
 }
 
-//获取对应日志信息
+// 获取对应日志信息
 type EventLogIndexReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -850,7 +850,7 @@ func (x *EventLogIndexReq) GetTypes() []string {
 	return nil
 }
 
-//设备的日志数据
+// 设备的日志数据
 type EventIndex struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -922,7 +922,7 @@ func (x *EventIndex) GetParams() string {
 	return ""
 }
 
-//获取对应日志信息
+// 获取对应日志信息
 type EventIndexResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -978,7 +978,7 @@ func (x *EventIndexResp) GetList() []*EventIndex {
 	return nil
 }
 
-//实时获取对应信息
+// 实时获取对应信息
 type HubLogIndexReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1090,7 +1090,7 @@ func (x *HubLogIndexReq) GetRequestID() string {
 	return ""
 }
 
-//实时获取对应信息
+// 实时获取对应信息
 type HubLogIndexResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1146,7 +1146,7 @@ func (x *HubLogIndexResp) GetList() []*HubLogIndex {
 	return nil
 }
 
-//设备的日志数据
+// 设备的日志数据
 type HubLogIndex struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1242,7 +1242,7 @@ func (x *HubLogIndex) GetResultType() int64 {
 	return 0
 }
 
-//获取sdk调试日志信息
+// 获取sdk调试日志信息
 type SdkLogIndexReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1330,7 +1330,7 @@ func (x *SdkLogIndexReq) GetPage() *PageInfo {
 	return nil
 }
 
-//sdk调试日志信息
+// sdk调试日志信息
 type SdkLogIndexResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1607,7 +1607,7 @@ func (x *SendActionResp) GetCode() int64 {
 	return 0
 }
 
-//获取异步消息的请求
+// 获取异步消息的请求
 type RespReadReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -4962,8 +4962,7 @@ func (x *DeviceInfoIndexResp) GetTotal() int64 {
 	return 0
 }
 
-//
-//下面是设备管理模块的消息
+// 下面是设备管理模块的消息
 type LoginAuthReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6130,8 +6129,7 @@ func (x *DeviceRegisterResp) GetPayload() string {
 	return ""
 }
 
-//
-//下面是ota固件管理模块的消息
+// 下面是ota固件管理模块的消息
 type Firmware struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -7388,8 +7386,7 @@ func (x *OtaFirmwareDeviceInfoResp) GetVersions() string {
 	return ""
 }
 
-//
-//下面是ota升级任务管理模块的消息
+// 下面是ota升级任务管理模块的消息
 type OtaTaskCreateReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
