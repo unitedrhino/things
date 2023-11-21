@@ -21,7 +21,7 @@ func VersionCompare(v1 string, v2 string) int {
 	return 0
 }
 
-//  补全切片
+// 补全切片
 func apeendZreo(s1 []string, s2 []string) ([]string, []string) {
 	var count int
 	if len(s1) > len(s2) {

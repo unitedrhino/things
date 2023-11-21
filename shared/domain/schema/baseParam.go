@@ -2,8 +2,8 @@
 package schema
 
 // BasicParam 小程序或 App 展示设备详细信息时，一般会展示设备的 MAC 地址、IMEI 号、时区等基础信息。设备信息上报使用的 Topic：
-//上行请求 Topic： $thing/up/property/{ProductID}/{DeviceName}
-//下行响应 Topic： $thing/down/property/{ProductID}/{DeviceName}
+// 上行请求 Topic： $thing/up/property/{ProductID}/{DeviceName}
+// 下行响应 Topic： $thing/down/property/{ProductID}/{DeviceName}
 type BasicParam struct {
 	Name           string            `json:"name"`           //设备名(是否保留待定)
 	Imei           string            `json:"imei"`           //设备的 IMEI 号信息，非必填项
