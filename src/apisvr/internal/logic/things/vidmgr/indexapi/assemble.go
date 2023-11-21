@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
+	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
 	"net/url"
 )
@@ -98,4 +99,28 @@ func proxySetMediaServer(ctx context.Context, svcCtx *svc.ServiceContext, preUrl
 		return nil, er
 	}
 	return vidRecv, nil
+}
+
+const HostIP = "192.168.10.33"
+
+func SetDefaultConfig(svcCtx *svc.ServiceContext, config *types.ServerConfig) {
+	config.ApiDebug = "1"
+	config.HookEnable = "1"
+	config.HookOnFlowReport = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onFlowReport", HostIP, svcCtx.Config.Port)
+	config.HookOnHttpAccess = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onHttpAccess", HostIP, svcCtx.Config.Port)
+	config.HookOnPlay = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onPlay", HostIP, svcCtx.Config.Port)
+	config.HookOnPublish = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onPublish", HostIP, svcCtx.Config.Port)
+	config.HookOnRecordMp4 = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onRecordMp4", HostIP, svcCtx.Config.Port)
+	config.HookOnRecordTs = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onRecordTs", HostIP, svcCtx.Config.Port)
+	config.HookOnRtpServerTimeout = fmt.Sprintf("https://%s:%d/api/v1/things/vidmgr/hooks/onRtpServerTimeout", HostIP, svcCtx.Config.Port)
+	config.HookOnRtspAuth = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onRtspAuth", HostIP, svcCtx.Config.Port)
+	config.HookOnRtspRealm = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onRtspRealm", HostIP, svcCtx.Config.Port)
+	config.HookOnSendRtpStopped = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onSendRtpStopped", HostIP, svcCtx.Config.Port)
+	config.HookOnServerExited = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onServerExited", HostIP, svcCtx.Config.Port)
+	config.HookOnServerKeepalive = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onServerKeepalive", HostIP, svcCtx.Config.Port)
+	config.HookOnServerStarted = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onServerStarted", HostIP, svcCtx.Config.Port)
+	config.HookOnShellLogin = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onShellLogin", HostIP, svcCtx.Config.Port)
+	config.HookOnStreamChanged = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onStreamChanged", HostIP, svcCtx.Config.Port)
+	config.HookOnStreamNoneReader = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onStreamNoneReader", HostIP, svcCtx.Config.Port)
+	config.HookOnStreamNotFound = fmt.Sprintf("http://%s:%d/api/v1/things/vidmgr/hooks/onStreamNotFound", HostIP, svcCtx.Config.Port)
 }
