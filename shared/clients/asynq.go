@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+func NewAsynqInspector(c cache.ClusterConf) *asynq.Inspector {
+	return asynq.NewInspector(asynq.RedisClientOpt{Addr: c[0].Host, Password: c[0].Pass})
+}
+
 func NewAsynqClient(c cache.ClusterConf) *asynq.Client {
 	return asynq.NewClient(asynq.RedisClientOpt{Addr: c[0].Host, Password: c[0].Pass})
 }

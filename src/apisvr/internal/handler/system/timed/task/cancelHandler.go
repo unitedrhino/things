@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func SendHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func CancelHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.TimedTaskSendReq
+		var req types.TimedTaskWithTaskID
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := task.NewSendLogic(r.Context(), svcCtx)
-		resp, err := l.Send(&req)
-		result.Http(w, r, resp, err)
+		l := task.NewCancelLogic(r.Context(), svcCtx)
+		err := l.Cancel(&req)
+		result.Http(w, r, nil, err)
 	}
 }

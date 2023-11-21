@@ -78,7 +78,12 @@ func (s *TimedManageServer) TaskLogIndex(ctx context.Context, in *timedjob.TaskL
 }
 
 // 发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-func (s *TimedManageServer) TaskSend(ctx context.Context, in *timedjob.TaskSendReq) (*timedjob.Response, error) {
+func (s *TimedManageServer) TaskSend(ctx context.Context, in *timedjob.TaskSendReq) (*timedjob.TaskWithTaskID, error) {
 	l := timedmanagelogic.NewTaskSendLogic(ctx, s.svcCtx)
 	return l.TaskSend(in)
+}
+
+func (s *TimedManageServer) TaskCancel(ctx context.Context, in *timedjob.TaskWithTaskID) (*timedjob.Response, error) {
+	l := timedmanagelogic.NewTaskCancelLogic(ctx, s.svcCtx)
+	return l.TaskCancel(in)
 }

@@ -34,7 +34,8 @@ type TimedManageClient interface {
 	TaskInfoRead(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*TaskInfo, error)
 	TaskLogIndex(ctx context.Context, in *TaskLogIndexReq, opts ...grpc.CallOption) (*TaskLogIndexResp, error)
 	//发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-	TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*Response, error)
+	TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*TaskWithTaskID, error)
+	TaskCancel(ctx context.Context, in *TaskWithTaskID, opts ...grpc.CallOption) (*Response, error)
 }
 
 type timedManageClient struct {
@@ -144,9 +145,18 @@ func (c *timedManageClient) TaskLogIndex(ctx context.Context, in *TaskLogIndexRe
 	return out, nil
 }
 
-func (c *timedManageClient) TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *timedManageClient) TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*TaskWithTaskID, error) {
+	out := new(TaskWithTaskID)
 	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskSend", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timedManageClient) TaskCancel(ctx context.Context, in *TaskWithTaskID, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/timedjob.TimedManage/TaskCancel", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +179,8 @@ type TimedManageServer interface {
 	TaskInfoRead(context.Context, *CodeReq) (*TaskInfo, error)
 	TaskLogIndex(context.Context, *TaskLogIndexReq) (*TaskLogIndexResp, error)
 	//发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-	TaskSend(context.Context, *TaskSendReq) (*Response, error)
+	TaskSend(context.Context, *TaskSendReq) (*TaskWithTaskID, error)
+	TaskCancel(context.Context, *TaskWithTaskID) (*Response, error)
 	mustEmbedUnimplementedTimedManageServer()
 }
 
@@ -210,8 +221,11 @@ func (UnimplementedTimedManageServer) TaskInfoRead(context.Context, *CodeReq) (*
 func (UnimplementedTimedManageServer) TaskLogIndex(context.Context, *TaskLogIndexReq) (*TaskLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TaskLogIndex not implemented")
 }
-func (UnimplementedTimedManageServer) TaskSend(context.Context, *TaskSendReq) (*Response, error) {
+func (UnimplementedTimedManageServer) TaskSend(context.Context, *TaskSendReq) (*TaskWithTaskID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TaskSend not implemented")
+}
+func (UnimplementedTimedManageServer) TaskCancel(context.Context, *TaskWithTaskID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskCancel not implemented")
 }
 func (UnimplementedTimedManageServer) mustEmbedUnimplementedTimedManageServer() {}
 
@@ -442,6 +456,24 @@ func _TimedManage_TaskSend_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TimedManage_TaskCancel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskWithTaskID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimedManageServer).TaskCancel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/timedjob.TimedManage/TaskCancel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimedManageServer).TaskCancel(ctx, req.(*TaskWithTaskID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TimedManage_ServiceDesc is the grpc.ServiceDesc for TimedManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -496,6 +528,10 @@ var TimedManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TaskSend",
 			Handler:    _TimedManage_TaskSend_Handler,
+		},
+		{
+			MethodName: "TaskCancel",
+			Handler:    _TimedManage_TaskCancel_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
