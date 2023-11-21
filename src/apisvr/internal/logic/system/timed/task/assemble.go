@@ -14,6 +14,7 @@ func ToSendDelayReqPb(in *types.TimedTaskSendReq) *timedmanage.TaskSendReq {
 			ProcessAt: in.Option.ProcessAt,
 			Timeout:   in.Option.Timeout,
 			Deadline:  in.Option.Deadline,
+			TaskID:    in.Option.TaskID,
 		}
 	}
 	if in.ParamSql != nil {
