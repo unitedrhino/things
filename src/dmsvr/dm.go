@@ -11,5 +11,5 @@ import (
 func main() {
 	defer utils.Recover(context.Background())
 	svcCtx := dmdirect.GetSvcCtx()
-	dmdirect.RunServer(svcCtx)
+	dmdirect.Run(svcCtx)
 }
