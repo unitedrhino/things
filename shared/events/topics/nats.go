@@ -84,4 +84,6 @@ const (
 	TimedJobClean      = "server.timedjob.clean" //定时任务服务缓存及日志定时清理
 	TimedJobVidsrv     = "server.timedjob.vidsrv"
 	DmActionCheckDelay = "server.dm.action.check.delay"
+
+	VidInfoCheckStatus = "server.vid.info.check.status"
 )

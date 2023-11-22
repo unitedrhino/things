@@ -92,12 +92,12 @@ var (
 		{
 			GroupCode: def.TimedIThingsQueueGroupCode,
 			Type:      domain.TaskTypeTiming,
-			Name:      "流媒体服务状态管理",
-			Code:      "timedJobVidsrv",
-			Params:    `{"topic":"server.timedjob.vidsrv","payload":""}`,
-			CronExpr:  "@every 30s",
+			Name:      "流服务状态更新",
+			Code:      "VidInfoCheckStatus",
+			Params:    `{"topic":"server.vid.info.check.status","payload":""}`,
+			CronExpr:  "1 1 * * ?",
 			Status:    def.StatusWaitRun,
-			Priority:  1,
+			Priority:  1, //低优先级任务
 		},
 	}
 	MigrateTimedTaskGroup = []TimedTaskGroup{
