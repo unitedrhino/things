@@ -32,7 +32,7 @@ func NewTaskSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *TaskSend
 }
 
 // 发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-func (l *TaskSendLogic) TaskSend(in *timedjob.TaskSendReq) (*timedjob.Response, error) {
+func (l *TaskSendLogic) TaskSend(in *timedjob.TaskSendReq) (*timedjob.TaskWithTaskID, error) {
 	tg := relationDB.NewTaskGroupRepo(l.ctx)
 	group, err := tg.FindOneByFilter(l.ctx, relationDB.TaskGroupFilter{Codes: []string{in.GroupCode}})
 	if err != nil {
@@ -120,12 +120,15 @@ func (l *TaskSendLogic) TaskSend(in *timedjob.TaskSendReq) (*timedjob.Response, 
 		if in.Option.Deadline != 0 {
 			opts = append(opts, asynq.Deadline(time.Unix(in.Option.Deadline, 0)))
 		}
+		if in.Option.TaskID != "" {
+			opts = append(opts, asynq.TaskID(in.Option.TaskID))
+		}
 	}
-	_, err = l.svcCtx.AsynqClient.Enqueue(aTask, opts...)
+	t, err := l.svcCtx.AsynqClient.Enqueue(aTask, opts...)
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	}
-	return &timedjob.Response{}, nil
+	return &timedjob.TaskWithTaskID{TaskID: t.ID}, nil
 }
 func getTaskCode(j *relationDB.TimedTaskInfo) string {
 	return fmt.Sprintf("delay:%v:%s", j.GroupCode, j.Code)

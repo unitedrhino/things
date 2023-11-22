@@ -26,6 +26,12 @@ const (
 	DeviceTypeSubset  DeviceType = 3 //子设备
 )
 
+const (
+	VidmgrTypeZLMedia  DeviceType = 1
+	VidmgrTypeSRS      DeviceType = 2
+	VidmgrTypeMonibuca DeviceType = 3
+)
+
 type DataProto = int64
 
 const (

@@ -24,6 +24,16 @@ const (
 	SqlEnvDBType = "dbType"
 )
 
+const (
+	PriorityCritical = "critical" //最高优先级
+	PriorityDefault  = "default"  //默认优先级
+	PriorityLow      = "low"      //最低优先级
+)
+
+var (
+	Prioritys = []string{PriorityCritical, PriorityDefault, PriorityLow}
+)
+
 type TaskInfo struct {
 	ID           int64  `json:"id"`               // 任务ID
 	Params       string `json:"params,omitempty"` // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
@@ -61,10 +71,10 @@ type Sql struct {
 
 func ToPriority(level int64) string {
 	if level >= 6 {
-		return "critical"
+		return PriorityCritical
 	}
 	if level >= 3 {
-		return "default"
+		return PriorityDefault
 	}
-	return "low"
+	return PriorityLow
 }

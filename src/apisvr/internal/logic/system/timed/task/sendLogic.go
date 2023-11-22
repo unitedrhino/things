@@ -24,8 +24,11 @@ func NewSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendLogic {
 	}
 }
 
-func (l *SendLogic) Send(req *types.TimedTaskSendReq) error {
+func (l *SendLogic) Send(req *types.TimedTaskSendReq) (*types.TimedTaskWithTaskID, error) {
 	l.Infof("req:%v", utils.Fmt(req))
-	_, err := l.svcCtx.TimedJob.TaskSend(l.ctx, ToSendDelayReqPb(req))
-	return err
+	ret, err := l.svcCtx.TimedJob.TaskSend(l.ctx, ToSendDelayReqPb(req))
+	if err != nil {
+		return nil, err
+	}
+	return &types.TimedTaskWithTaskID{TaskID: ret.TaskID}, nil
 }
