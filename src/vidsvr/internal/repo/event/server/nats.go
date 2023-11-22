@@ -29,7 +29,7 @@ func newNatsClient(conf conf.EventConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
-	err := n.client.QueueSubscribe(topics.TimedJobVidsrv, natsJsConsumerName,
+	err := n.client.QueueSubscribe(topics.VidInfoCheckStatus, natsJsConsumerName,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			jsonStr, _ := json.Marshal(natsMsg)
 			fmt.Println("[******]   QueueSubscribe", "data:", string(jsonStr))

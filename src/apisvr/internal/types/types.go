@@ -1795,7 +1795,7 @@ type HooksApiStreamChangedRep struct {
 	Vhost            string        `json:"vhost"`
 	AliveSecond      int64         `json:"aliveSecond"`
 	BytesSpeed       int64         `json:"bytesSpeed"`
-	CreateStamp      int64         `json:"createStamp"`
+	CreateStamp      int64         `json:"CreateStamp"`
 	OriginSock       OriginSock    `json:"originSock"`
 	OriginType       int64         `json:"originType"`
 	OriginTypeStr    string        `json:"originTypeStr"`
@@ -1804,12 +1804,7 @@ type HooksApiStreamChangedRep struct {
 	Schema           string        `json:"schema"`
 	TotalReaderCount int64         `json:"totalReaderCount"`
 	Tracks           []StreamTrack `json:"tracks"`
-	IsRecordingMp4   bool          `json:"isRecordingMp4"`
-	IsRecordingHLS   bool          `json:"isRecordingHLS"`
-	IsShareChannel   bool          `json:"isShareChannel"`
-	IsAutoPush       bool          `json:"isAutoPush"`
-	IsAutoRecord     bool          `json:"isAutoRecord"`
-	IsPTZ            bool          `json:"isPTZ"`
+
 }
 
 type HooksApiStreamNoneReaderReq struct {
@@ -1869,11 +1864,11 @@ type StreamTrack struct {
 	Channels    int64  `json:"channels"`
 	CodecId     int64  `json:"codec_id"`
 	CodecIdName string `json:"codec_id_name"`
-	CodecType   int64  `json:"codec_type"`
+	CodecType   bool   `json:"codec_type"`
 	Ready       bool   `json:"ready"`
-	SampleBit   int64  `json:"sample_bit"`
-	SampleRate  int64  `json:"sample_rate"`
-	Fps         int64  `json:"fps"`
+	Sample_bit  int64  `json:"sample_bit"`
+	Sample_rate int64  `json:"sample_rate"`
+	Fps         bool   `json:"fps"`
 	Height      int64  `json:"height"`
 	Width       int64  `json:"width"`
 }

@@ -183,3 +183,29 @@ services:
     networks:
       ithings_net:
         ipv4_address: 172.19.0.10
+
+  zlmediakit:
+    image: registry.cn-shenzhen.aliyuncs.com/airgens/zlmediakit:v1
+    container_name: zlmediakit
+    hostname: zlmediakit
+    restart: always
+    ports:
+      - "8088:80"
+      - "1935:1935"
+      - "8554:554"
+      - "10000:10000"
+      - "10000:10000/udp"
+      - "8000:8000/udp"
+      - "30000-30500:30000-30500"
+      - "30000-30500:30000-30500/udp"
+    volumes:
+      - ../../deploy/conf/zlmediakit/config:/root/zlmediakit/config
+      - ../../deploy/conf/zlmediakit/record:/root/zlmediakit/record
+    logging:
+      options:
+        max-size: "50M" # 最大文件上传限制
+        max-file: "10"
+      driver: json-file
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.11

@@ -191,6 +191,18 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 	}
 
+	if c.VidRpc.Enable {
+		if c.VidRpc.Mode == conf.ClientModeGrpc {
+			vidmgrM = vidmgrinfomanage.NewVidmgrInfoManage(zrpc.MustNewClient(c.VidRpc.Conf))
+			vidmgrC = vidmgrconfigmanage.NewVidmgrConfigManage(zrpc.MustNewClient(c.VidRpc.Conf))
+			vidmgrS = vidmgrstreammanage.NewVidmgrStreamManage(zrpc.MustNewClient(c.VidRpc.Conf))
+		} else {
+			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
+			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
+			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
+		}
+	}
+
 	if c.TimedSchedulerRpc.Enable {
 		if c.TimedSchedulerRpc.Mode == conf.ClientModeGrpc {
 			timedSchedule = timedscheduler.NewTimedscheduler(zrpc.MustNewClient(c.TimedSchedulerRpc.Conf))
