@@ -212,3 +212,4 @@ func InetAtoN(ip string) int64 {
 	ret.SetBytes(net.ParseIP(ip).To4())
 	return ret.Int64()
 }
+

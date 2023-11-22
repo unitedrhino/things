@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -22,6 +23,7 @@ func NewSetServerConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 		svcCtx: svcCtx,
 	}
 }
+
 
 func (l *SetServerConfigLogic) SetServerConfig(req *types.IndexApiSetServerConfigReq) (resp *types.IndexApiSetServerConfigResp, err error) {
 	// todo: add your logic here and delete this line

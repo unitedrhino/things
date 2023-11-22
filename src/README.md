@@ -48,13 +48,6 @@ cd dmsvr && goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc
 ```
 
 
-# 设备交互模块-disvr
-
-```shell
-cd disvr && goctl rpc protoc  proto/di.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m && cd ..
-```
-
-
 # 设备数据处理模块-ddsvr
 
 ```shell

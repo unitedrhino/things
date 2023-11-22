@@ -31,6 +31,7 @@ type (
 	TaskParamSql       = timedjob.TaskParamSql
 	TaskSendOption     = timedjob.TaskSendOption
 	TaskSendReq        = timedjob.TaskSendReq
+	TaskWithTaskID     = timedjob.TaskWithTaskID
 
 	TimedManage interface {
 		TaskGroupCreate(ctx context.Context, in *TaskGroup, opts ...grpc.CallOption) (*Response, error)
@@ -45,7 +46,8 @@ type (
 		TaskInfoRead(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*TaskInfo, error)
 		TaskLogIndex(ctx context.Context, in *TaskLogIndexReq, opts ...grpc.CallOption) (*TaskLogIndexResp, error)
 		// 发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-		TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*Response, error)
+		TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*TaskWithTaskID, error)
+		TaskCancel(ctx context.Context, in *TaskWithTaskID, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultTimedManage struct {
@@ -171,12 +173,21 @@ func (d *directTimedManage) TaskLogIndex(ctx context.Context, in *TaskLogIndexRe
 }
 
 // 发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-func (m *defaultTimedManage) TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultTimedManage) TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*TaskWithTaskID, error) {
 	client := timedjob.NewTimedManageClient(m.cli.Conn())
 	return client.TaskSend(ctx, in, opts...)
 }
 
 // 发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param
-func (d *directTimedManage) TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directTimedManage) TaskSend(ctx context.Context, in *TaskSendReq, opts ...grpc.CallOption) (*TaskWithTaskID, error) {
 	return d.svr.TaskSend(ctx, in)
+}
+
+func (m *defaultTimedManage) TaskCancel(ctx context.Context, in *TaskWithTaskID, opts ...grpc.CallOption) (*Response, error) {
+	client := timedjob.NewTimedManageClient(m.cli.Conn())
+	return client.TaskCancel(ctx, in, opts...)
+}
+
+func (d *directTimedManage) TaskCancel(ctx context.Context, in *TaskWithTaskID, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.TaskCancel(ctx, in)
 }
