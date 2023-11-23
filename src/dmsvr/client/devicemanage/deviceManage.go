@@ -15,6 +15,7 @@ import (
 
 type (
 	AccessAuthReq               = dm.AccessAuthReq
+	DeleteOtaFirmwareReq        = dm.DeleteOtaFirmwareReq
 	DeviceCore                  = dm.DeviceCore
 	DeviceGatewayBindDevice     = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq       = dm.DeviceGatewayIndexReq
@@ -37,6 +38,7 @@ type (
 	EventIndexResp              = dm.EventIndexResp
 	EventLogIndexReq            = dm.EventLogIndexReq
 	Firmware                    = dm.Firmware
+	FirmwareFile                = dm.FirmwareFile
 	FirmwareInfo                = dm.FirmwareInfo
 	FirmwareInfoDeleteReq       = dm.FirmwareInfoDeleteReq
 	FirmwareInfoDeleteResp      = dm.FirmwareInfoDeleteResp
@@ -61,7 +63,10 @@ type (
 	HubLogIndex                 = dm.HubLogIndex
 	HubLogIndexReq              = dm.HubLogIndexReq
 	HubLogIndexResp             = dm.HubLogIndexResp
+	ListOtaFirmwareReq          = dm.ListOtaFirmwareReq
+	ListOtaFirmwareResp         = dm.ListOtaFirmwareResp
 	LoginAuthReq                = dm.LoginAuthReq
+	ModifyOtaFirmwareReq        = dm.ModifyOtaFirmwareReq
 	MultiSendPropertyReq        = dm.MultiSendPropertyReq
 	MultiSendPropertyResp       = dm.MultiSendPropertyResp
 	OtaCommonResp               = dm.OtaCommonResp
@@ -73,6 +78,9 @@ type (
 	OtaFirmwareFileInfo         = dm.OtaFirmwareFileInfo
 	OtaFirmwareFileReq          = dm.OtaFirmwareFileReq
 	OtaFirmwareFileResp         = dm.OtaFirmwareFileResp
+	OtaFirmwareInfo             = dm.OtaFirmwareInfo
+	OtaFirmwareReq              = dm.OtaFirmwareReq
+	OtaFirmwareResp             = dm.OtaFirmwareResp
 	OtaPageInfo                 = dm.OtaPageInfo
 	OtaPromptIndexReq           = dm.OtaPromptIndexReq
 	OtaPromptIndexResp          = dm.OtaPromptIndexResp
@@ -116,6 +124,8 @@ type (
 	PropertyIndexResp           = dm.PropertyIndexResp
 	PropertyLatestIndexReq      = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq         = dm.PropertyLogIndexReq
+	QueryOtaFirmwareReq         = dm.QueryOtaFirmwareReq
+	QueryOtaFirmwareResp        = dm.QueryOtaFirmwareResp
 	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq        = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp       = dm.RemoteConfigIndexResp
@@ -139,6 +149,8 @@ type (
 	SendPropertyResp            = dm.SendPropertyResp
 	ShadowIndex                 = dm.ShadowIndex
 	ShadowIndexResp             = dm.ShadowIndexResp
+	Tag                         = dm.Tag
+	VerifyOtaFirmwareReq        = dm.VerifyOtaFirmwareReq
 
 	DeviceManage interface {
 		// 新增设备

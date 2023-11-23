@@ -25,9 +25,12 @@ func NewOtaFirmwareRepo(in any) *OtaFirmwareRepo {
 }
 
 type OtaFirmwareFilter struct {
-	ProductID  string
-	FirmwareID int64
-	Version    string
+	ProductID   string
+	ProductName string
+	Module      string
+	FirmwareID  int64
+	Version     string
+	WithProduct bool
 }
 
 func (p OtaFirmwareRepo) fmtFilter(ctx context.Context, f OtaFirmwareFilter) *gorm.DB {
