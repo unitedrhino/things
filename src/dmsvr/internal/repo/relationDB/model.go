@@ -229,6 +229,7 @@ type DmOtaFirmware struct {
 	Module     string         `gorm:"column:module;type:varchar(64)"`                  // 模块名称
 	Name       string         `gorm:"column:name;type:varchar(64)"`                    // 固件名称
 	Desc       string         `gorm:"column:desc;type:varchar(200)"`                   // 描述
+	Status     int64          `gorm:"column:status;type:bigint;NOT NULL"`              //升级包状态，-1：不需要验证，0：未验证，1：已验证，2：验证中，3：验证失败
 	TotalSize  int64          `gorm:"column:total_size;type:bigint;NOT NULL"`          // 升级包总大小
 	IsDiff     int64          `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"` // 是否差分包,1:整包,2:差分
 	SignMethod string         `gorm:"column:sign_method;type:varchar(20);NOT NULL"`    // 签名方式:MD5/SHA256

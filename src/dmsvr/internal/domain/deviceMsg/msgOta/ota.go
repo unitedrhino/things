@@ -52,3 +52,29 @@ func (d *Process) VerifyReqParam() error {
 	}
 	return nil
 }
+
+// 定义升级包状态常量
+const (
+	OtaFirmwareStatusNotRequired        = -1
+	OtaFirmwareStatusNotVerified        = 0
+	OtaFirmwareStatusVerified           = 1
+	OtaFirmwareStatusVerifying          = 2
+	OtaFirmwareStatusVerificationFailed = 3
+)
+
+// 定义升级包状态映射
+var OtaFirmwareStatusMap = map[int]string{
+	OtaFirmwareStatusNotRequired:        "不需要验证",
+	OtaFirmwareStatusNotVerified:        "未验证",
+	OtaFirmwareStatusVerified:           "已验证",
+	OtaFirmwareStatusVerifying:          "验证中",
+	OtaFirmwareStatusVerificationFailed: "验证失败",
+}
+
+// 根据状态值返回中文字符串
+func GetOtaFirmwareStatusString(status int) string {
+	if statusString, ok := OtaFirmwareStatusMap[status]; ok {
+		return statusString
+	}
+	return "未知状态"
+}
