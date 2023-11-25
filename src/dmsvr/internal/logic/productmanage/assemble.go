@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/oss/common"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/productCustom"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -82,4 +83,32 @@ func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
 		Affordance: info.Affordance.GetValue(),
 	}
 	return db
+}
+
+func ToCustomTopicPb(info *productCustom.CustomTopic) *dm.CustomTopic {
+	if info == nil {
+		return nil
+	}
+	return &dm.CustomTopic{Topic: info.Topic, Direction: info.Direction}
+}
+
+func ToCustomTopicsPb(info []*productCustom.CustomTopic) (ret []*dm.CustomTopic) {
+	for _, v := range info {
+		ret = append(ret, ToCustomTopicPb(v))
+	}
+	return
+}
+
+func ToCustomTopicDo(info *dm.CustomTopic) *productCustom.CustomTopic {
+	if info == nil {
+		return nil
+	}
+	return &productCustom.CustomTopic{Topic: info.Topic, Direction: info.Direction}
+}
+
+func ToCustomTopicsDo(info []*dm.CustomTopic) (ret []*productCustom.CustomTopic) {
+	for _, v := range info {
+		ret = append(ret, ToCustomTopicDo(v))
+	}
+	return
 }

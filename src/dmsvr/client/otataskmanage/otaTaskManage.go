@@ -15,6 +15,7 @@ import (
 
 type (
 	AccessAuthReq               = dm.AccessAuthReq
+	CustomTopic                 = dm.CustomTopic
 	DeviceCore                  = dm.DeviceCore
 	DeviceGatewayBindDevice     = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq       = dm.DeviceGatewayIndexReq

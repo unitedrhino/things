@@ -49,7 +49,7 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 	}
 	finalPayload := payload
 	handle := strings.TrimPrefix(topicInfo.TopicHead, "$")
-	if len(topicInfo.Types) > 1 && topicInfo.Types[1] == custom.CustomType {
+	if len(topicInfo.Types) > 1 && topicInfo.Types[1] == custom.CustomType { //协议转换脚本
 		//自定义协议
 		f, err := s.svcCtx.Script.GetProtoFunc(s.ctx, topicInfo.ProductID, custom.ConvertTypeUp, handle, topicInfo.Types[0])
 		if err != nil {
@@ -66,6 +66,34 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 			return nil, err
 		}
 		s.Infof("%s.transform success before:%#v after:%#v", utils.FuncName(), payload, finalPayload)
+	} else if handle == "custom" { //自定义topic
+		f, err := s.svcCtx.Script.GetTransFormFunc(s.ctx, topicInfo.ProductID, topicInfo.Direction)
+		if err != nil {
+			s.Errorf("%s.GetTransFormFunc topicInfo:%#v err:%v", utils.FuncName(), topicInfo, err)
+			return nil, err
+		}
+		if f == nil {
+			s.Errorf("%s.GetTransFormFunc topicInfo:%#v transform func not find", utils.FuncName(), topicInfo)
+			return nil, errors.Parameter.AddMsg("自定义topic转换函数未找到")
+		}
+		ret, err := f(topic, payload)
+		if err != nil {
+			s.Errorf("%s.TransFormFunc topic:%v payload:%v ret err:%v", utils.FuncName(), topic, string(payload), err)
+			return nil, err
+		}
+		if ret.Topic == "" || len(ret.PayLoad) == 0 {
+			s.Errorf("%s.TransFormFunc getEmpty topic:%v payload:%v  ret.Topic:%v,ret.PayLoad:%v err:%v",
+				utils.FuncName(), topic, string(payload), ret.Topic, string(ret.PayLoad), err)
+			return nil, err
+		}
+		ti, err := devices.GetTopicInfo(ret.Topic)
+		if err != nil {
+			return nil, err
+		}
+		if ti.TopicHead == "$custom" { //禁止循环嵌套
+			return nil, errors.Parameter.AddMsg("禁止topic循环嵌套")
+		}
+		return s.getDevPublish(ret.Topic, ret.PayLoad)
 	}
 	return &devices.DevPublish{
 		Topic:      topic,

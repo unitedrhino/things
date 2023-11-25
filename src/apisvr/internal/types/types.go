@@ -743,14 +743,20 @@ type ProductRemoteConfigLastestReadResp struct {
 }
 
 type ProductCustom struct {
-	ProductID       string   `json:"productID"`
-	TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
-	ScriptLang      int64    `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
-	CustomTopic     []string `json:"customTopic,optional"`     //自定义topic数组
+	ProductID       string                `json:"productID"`
+	TransformScript *string               `json:"transformScript,optional"` //协议转换脚本
+	LoginAuthScript *string               `json:"loginAuthScript,optional"` //登录认证脚本
+	ScriptLang      int64                 `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+	CustomTopics    []*ProductCustomTopic `json:"customTopics,optional"`    //自定义topic数组
 }
 
 type ProductCustomReadReq struct {
 	ProductID string `json:"productID"` //产品id 只读
+}
+
+type ProductCustomTopic struct {
+	Topic     string `json:"topic"`     //自定义主题需要以$custom 并包含设备名称{deviceName}及产品名称{productID}
+	Direction int64  `json:"direction"` //1:上行 2:下行 3:双向
 }
 
 type DeviceAuthLoginReq struct {

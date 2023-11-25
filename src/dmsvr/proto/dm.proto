@@ -489,7 +489,13 @@ message ProductCustom{
   string productID = 1;
   int64 scriptLang = 3;//脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
   google.protobuf.StringValue transformScript = 2;//协议转换脚本
-  repeated string customTopic = 4;//自定义topic数组
+  google.protobuf.StringValue loginAuthScript = 5;//登录认证脚本
+  repeated CustomTopic customTopics = 4;//自定义topic信息 只有mqtt协议有用
+}
+
+message CustomTopic{
+  string topic = 1;//自定义主题需要以$custom 并包含设备名称{deviceName}及产品名称{productID}
+  int64 direction = 2; //1:上行 2:下行 3:双向
 }
 
 message DeviceGatewayBindDevice{
