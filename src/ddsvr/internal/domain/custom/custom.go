@@ -46,9 +46,8 @@ const (
 type ConvertType int
 
 const (
-	ConvertTypeUp        ConvertType = iota //自定义协议转iThings协议
-	ConvertTypeDown                         //iThings协议转自定义协议
-	ConvertTypeTransform                    //自定义topic协议转换
+	ConvertTypeUp   ConvertType = iota //自定义协议转iThings协议
+	ConvertTypeDown                    //iThings协议转自定义协议
 )
 
 func (i *Info) InitScript() *Vm {

@@ -31,7 +31,8 @@ func (l *UpdateLogic) Update(req *types.ProductCustom) error {
 		ProductID:       req.ProductID,
 		TransformScript: utils.ToRpcNullString(req.TransformScript),
 		ScriptLang:      req.ScriptLang,
-		CustomTopic:     req.CustomTopic,
+		LoginAuthScript: utils.ToRpcNullString(req.LoginAuthScript),
+		CustomTopics:    ToCustomTopicsPb(req.CustomTopics),
 	}
 	_, err := l.svcCtx.ProductM.ProductCustomUpdate(l.ctx, dmReq)
 	if err != nil {
