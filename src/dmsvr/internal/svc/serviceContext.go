@@ -66,9 +66,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	GroupID := utils.NewSnowFlake(nodeID)
 	ca := kv.NewStore(c.CacheRedis)
 	ccSchemaR := cache.NewSchemaRepo()
-	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, ccSchemaR.GetSchemaModel, ca)
-	hubLogR := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
-	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
+	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetSchemaModel, ca)
+	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB)
+	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB)
 	duR, err := dataUpdate.NewDataUpdate(c.Event)
 	if err != nil {
 		logx.Error("NewDataUpdate err", err)

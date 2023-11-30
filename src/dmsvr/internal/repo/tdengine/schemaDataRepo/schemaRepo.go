@@ -2,6 +2,7 @@ package schemaDataRepo
 
 import (
 	"github.com/i-Things/things/shared/clients"
+	"github.com/i-Things/things/shared/conf"
 	schema "github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -20,7 +21,7 @@ type DeviceDataRepo struct {
 	kv kv.Store
 }
 
-func NewDeviceDataRepo(dataSource string, getSchemaModel schema.GetSchemaModel, kv kv.Store) *DeviceDataRepo {
+func NewDeviceDataRepo(dataSource conf.TSDB, getSchemaModel schema.GetSchemaModel, kv kv.Store) *DeviceDataRepo {
 	td, err := clients.NewTDengine(dataSource)
 	if err != nil {
 		logx.Error("NewTDengine err", err)
