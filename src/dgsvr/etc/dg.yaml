@@ -1,0 +1,28 @@
+Name: dg.rpc
+ListenOn: 0.0.0.0:6166
+#Etcd:
+#  Hosts:
+#  - 127.0.0.1:2379
+#  Key: dg.rpc
+
+DevLink:
+  Mode: mqtt
+  SubMode: emq
+  Mqtt:
+    ClientID: dd.rpc
+    Pass: iThings
+    User: ddsvr
+    Brokers:
+      - tcp://127.0.0.1:1883
+DmRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Endpoints:
+      - 127.0.0.1:9081
+Telemetry:
+  Name: dd
+  Endpoint: http://127.0.0.1:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger

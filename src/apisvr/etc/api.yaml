@@ -31,16 +31,14 @@ Proxy:
     - Router: /api/v1/oss/
       DeletePrefix: true
       Dest: http://127.0.0.1:9000
-DdEnable: true
 SysRpc:
   Enable: true
   Mode: direct
-#DiRpc:
-#  Enable: true
-#  Mode: direct
-#  RunProxy: true
-#  Conf:
-#    Timeout: 1000000
+DgRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
 DmRpc:
   Enable: true
   Mode: direct

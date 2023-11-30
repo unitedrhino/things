@@ -27,20 +27,12 @@ message SendOption {
   int64  retryInterval = 3;//重试间隔
 }
 
-//权限认证(提供给mqtt broker)
-service DeviceAuth{
-  //设备登录认证
-  rpc loginAuth(LoginAuthReq)           returns (Response);
-  //设备操作认证
-  rpc accessAuth(AccessAuthReq)         returns (Response);
-  //鉴定是否是root账号
-  rpc rootCheck(RootCheckReq)           returns (Response);
-  //设备动态注册
-  rpc deviceRegister(DeviceRegisterReq) returns (DeviceRegisterResp);
-}
+
 
 //设备管理
 service DeviceManage {
+  //鉴定是否是root账号(提供给mqtt broker)
+  rpc rootCheck(RootCheckReq)           returns (Response);
   //新增设备
   rpc deviceInfoCreate(DeviceInfo)     returns (Response);
   //更新设备
@@ -96,6 +88,19 @@ service ProductManage{
   /*脚本管理*/
   rpc productCustomRead(ProductCustomReadReq) returns (ProductCustom);
   rpc productCustomUpdate(ProductCustom) returns (Response);
+}
+
+service ProtocolManage {
+  //协议列表
+  rpc protocolInfoIndex(ProtocolInfoIndexReq)     returns (ProtocolInfoIndexResp);
+//  //协议详情
+//  rpc protocolRead(ProtocolReadReq)     returns (Protocol);
+//  //协议创建
+//  rpc protocolCreate(ProtocolCreateReq)     returns (Response);
+//  //协议更新
+//  rpc protocolUpdate(ProtocolUpdateReq)     returns (Response);
+//  //协议删除
+//  rpc protocolDelete(ProtocolDeleteReq)     returns (Response);
 }
 
 service DeviceGroup {
@@ -211,7 +216,24 @@ service OtaTaskManage {
 }
 
 
+message ProtocolInfoIndexReq{
+  PageInfo page = 1;
+  string protocol = 2;
+}
 
+message ProtocolInfoIndexResp{
+  repeated ProtocolInfo list = 1;
+  int64 total = 2;
+}
+message ProtocolInfo{
+  int64  id = 1;
+  string  name = 2;
+  string  protocol = 3;
+  string  protocol_type = 4;
+  string  desc = 5;
+  repeated string  endpoints = 6;
+  string  etcd_key = 7;
+}
 
 message ShadowIndexResp{
   repeated ShadowIndex  list = 1;
@@ -730,21 +752,7 @@ message DeviceInfoIndexResp{
 /*
 下面是设备管理模块的消息
 */
-message LoginAuthReq {
-  string username = 1;//用户名
-  string password = 2;//密码
-  string clientID = 3;//clientID
-  string ip = 4;//访问的ip地址
-  bytes certificate = 5;//客户端证书
-}
 
-message AccessAuthReq {
-  string username = 1; //用户名
-  string topic = 2;//主题
-  string clientID = 3;//clientID
-  string access = 4;//操作
-  string ip = 5; //访问的ip地址
-}
 
 message RootCheckReq{
   string username = 1;//用户名
@@ -838,27 +846,7 @@ message DeviceTypeCountResp{
   int64 unknown = 4;
 }
 
-message DeviceRegisterReq{
-  string productID = 1;  //产品id
-  string deviceName = 2; //设备名称
-  int64 nonce = 3;       //随机数
-  int64 timestamp = 4;   //秒级时间戳
-  string signature = 5;  //签名信息
-}
 
-message DeviceRegisterResp{
-  int64 len = 1;       //payload加密前信息的长度
-  /*
-  加密过程将原始 JSON 格式的 payload 转为字符串后进行 AES 加密，再进行 base64 加密。AES 加密算法为 CBC 模式，密钥长度128，取 productSecret 前16位，偏移量为长度16的字符“0”。
-  原始 payload 内容说明：
-  key                value               描述
-  encryptionType     1              加密类型，1表示证书认证，2表示签名认证。
-  psk                1239           设备密钥，当产品认证类型为签名认证时有此参数
-  clientCert         -              设备证书文件字符串格式，当产品认证类型为证书认证时有此参数。
-  clientKey          -              设备私钥文件字符串格式，当产品认证类型为证书认证时有此参数。
-  */
-  string payload = 2;
-}
 
 //----------------------------------------------------------------------------------------------
 

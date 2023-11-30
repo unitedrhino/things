@@ -27,7 +27,7 @@ func NewRootCheckLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RootChe
 
 func (l *RootCheckLogic) RootCheck(req *types.DeviceAuthRootCheckReq) error {
 	l.Infof("%s req=%v", utils.FuncName(), req)
-	_, err := l.svcCtx.DeviceA.RootCheck(l.ctx, &dm.RootCheckReq{
+	_, err := l.svcCtx.DeviceM.RootCheck(l.ctx, &dm.RootCheckReq{
 		Username:    req.Username,
 		Password:    req.Password,
 		ClientID:    req.ClientID,

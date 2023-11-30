@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
-	deviceauth "github.com/i-Things/things/src/dmsvr/internal/server/deviceauth"
 	devicegroup "github.com/i-Things/things/src/dmsvr/internal/server/devicegroup"
 	deviceinteract "github.com/i-Things/things/src/dmsvr/internal/server/deviceinteract"
 	devicemanage "github.com/i-Things/things/src/dmsvr/internal/server/devicemanage"
@@ -12,6 +11,7 @@ import (
 	firmwaremanage "github.com/i-Things/things/src/dmsvr/internal/server/firmwaremanage"
 	otataskmanage "github.com/i-Things/things/src/dmsvr/internal/server/otataskmanage"
 	productmanage "github.com/i-Things/things/src/dmsvr/internal/server/productmanage"
+	protocolmanage "github.com/i-Things/things/src/dmsvr/internal/server/protocolmanage"
 	remoteconfig "github.com/i-Things/things/src/dmsvr/internal/server/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/internal/startup"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -54,7 +54,7 @@ func RunServer(svcCtx *svc.ServiceContext) {
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		dm.RegisterDeviceAuthServer(grpcServer, deviceauth.NewDeviceAuthServer(svcCtx))
+		dm.RegisterProtocolManageServer(grpcServer, protocolmanage.NewProtocolManageServer(svcCtx))
 		dm.RegisterDeviceManageServer(grpcServer, devicemanage.NewDeviceManageServer(svcCtx))
 		dm.RegisterProductManageServer(grpcServer, productmanage.NewProductManageServer(svcCtx))
 		dm.RegisterOtaTaskManageServer(grpcServer, otataskmanage.NewOtaTaskManageServer(svcCtx))

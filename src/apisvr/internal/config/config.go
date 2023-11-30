@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/i-Things/things/shared/conf"
+	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -15,10 +16,10 @@ type Captcha struct {
 
 type Config struct {
 	rest.RestConf
+	Etcd              discov.EtcdConf `json:",optional,inherit"`
 	CacheRedis        cache.ClusterConf
-	DdEnable          bool               `json:",optional"`
 	SysRpc            conf.RpcClientConf `json:",optional"`
-	DiRpc             conf.RpcClientConf `json:",optional"`
+	DgRpc             conf.RpcClientConf `json:",optional"`
 	DmRpc             conf.RpcClientConf `json:",optional"`
 	RuleRpc           conf.RpcClientConf `json:",optional"`
 	VidRpc            conf.RpcClientConf `json:",optional"`

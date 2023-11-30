@@ -48,10 +48,10 @@ cd dmsvr && goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc
 ```
 
 
-# 设备数据处理模块-ddsvr
+# 设备网关模块-dgsvr
 
 ```shell
-cd ddsvr && goctl api go -api http/dd.api  -dir ./ --style=goZero && cd ..
+cd dgsvr && goctl rpc protoc  proto/dg.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
 
 # 协议规则引擎模块-rulesvr
