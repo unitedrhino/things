@@ -107,15 +107,16 @@ func (m *DmProductCustom) TableName() string {
 
 // 产品物模型表
 type DmProductSchema struct {
-	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID  string `gorm:"column:product_id;uniqueIndex:product_id_identifier;index:product_id_type;type:char(11);NOT NULL"` // 产品id
-	Tag        int64  `gorm:"column:tag;type:smallint;default:1"`                                                               // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Type       int64  `gorm:"column:type;index:product_id_type;type:smallint;default:1"`                                        // 物模型类型 1:property属性 2:event事件 3:action行为
-	Identifier string `gorm:"column:identifier;uniqueIndex:product_id_identifier;type:varchar(100);NOT NULL"`                   // 标识符
-	Name       string `gorm:"column:name;type:varchar(100);NOT NULL"`                                                           // 功能名称
-	Desc       string `gorm:"column:desc;type:varchar(200)"`                                                                    // 描述
-	Required   int64  `gorm:"column:required;type:smallint;default:2"`                                                          // 是否必须,1是 2否
-	Affordance string `gorm:"column:affordance;type:json;NOT NULL"`                                                             // 各类型的自定义功能定义
+	ID           int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID    string `gorm:"column:product_id;uniqueIndex:product_id_identifier;index:product_id_type;type:char(11);NOT NULL"` // 产品id
+	Tag          int64  `gorm:"column:tag;type:smallint;default:1"`                                                               // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Type         int64  `gorm:"column:type;index:product_id_type;type:smallint;default:1"`                                        // 物模型类型 1:property属性 2:event事件 3:action行为
+	Identifier   string `gorm:"column:identifier;uniqueIndex:product_id_identifier;type:varchar(100);NOT NULL"`                   // 标识符
+	ExtendConfig string `gorm:"column:extend_config;type:json"`                                                                   //拓展参数
+	Name         string `gorm:"column:name;type:varchar(100);NOT NULL"`                                                           // 功能名称
+	Desc         string `gorm:"column:desc;type:varchar(200)"`                                                                    // 描述
+	Required     int64  `gorm:"column:required;type:smallint;default:2"`                                                          // 是否必须,1是 2否
+	Affordance   string `gorm:"column:affordance;type:json;NOT NULL"`                                                             // 各类型的自定义功能定义
 	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }

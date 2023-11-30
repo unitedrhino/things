@@ -59,28 +59,30 @@ func ToProductInfo(ctx context.Context, pi *relationDB.DmProductInfo, svcCtx *sv
 
 func ToProductSchemaRpc(info *relationDB.DmProductSchema) *dm.ProductSchemaInfo {
 	db := &dm.ProductSchemaInfo{
-		ProductID:  info.ProductID,
-		Tag:        info.Tag,
-		Type:       info.Type,
-		Identifier: info.Identifier,
-		Name:       utils.ToRpcNullString(&info.Name),
-		Desc:       utils.ToRpcNullString(&info.Desc),
-		Required:   info.Required,
-		Affordance: utils.ToRpcNullString(&info.Affordance),
+		ProductID:    info.ProductID,
+		Tag:          info.Tag,
+		Type:         info.Type,
+		Identifier:   info.Identifier,
+		ExtendConfig: utils.ToRpcNullString(&info.ExtendConfig),
+		Name:         utils.ToRpcNullString(&info.Name),
+		Desc:         utils.ToRpcNullString(&info.Desc),
+		Required:     info.Required,
+		Affordance:   utils.ToRpcNullString(&info.Affordance),
 	}
 	return db
 }
 
 func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
 	db := &relationDB.DmProductSchema{
-		ProductID:  info.ProductID,
-		Tag:        info.Tag,
-		Type:       info.Type,
-		Identifier: info.Identifier,
-		Name:       info.Name.GetValue(),
-		Desc:       info.Desc.GetValue(),
-		Required:   info.Required,
-		Affordance: info.Affordance.GetValue(),
+		ProductID:    info.ProductID,
+		Tag:          info.Tag,
+		Type:         info.Type,
+		Identifier:   info.Identifier,
+		ExtendConfig: info.ExtendConfig.GetValue(),
+		Name:         info.Name.GetValue(),
+		Desc:         info.Desc.GetValue(),
+		Required:     info.Required,
+		Affordance:   info.Affordance.GetValue(),
 	}
 	return db
 }
