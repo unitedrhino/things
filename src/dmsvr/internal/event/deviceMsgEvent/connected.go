@@ -34,6 +34,7 @@ func NewConnectedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Connect
 	return &ConnectedLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
+		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
 		Logger: logx.WithContext(ctx),
 	}
 }

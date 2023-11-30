@@ -59,7 +59,6 @@ func newEmqClient(conf *conf.MqttConf) (SubDev, error) {
 }
 
 func (d *MqttClient) SubDevMsg(handle Handle) error {
-
 	err := d.subDevMsg(nil, handle)
 	if err != nil {
 		return err
