@@ -1,7 +1,5 @@
-#设备数据处理模块配置-ddsvr
-Name: dd
-Host: 0.0.0.0
-Port: 8848
+Name: dg.rpc
+ListenOn: 0.0.0.0:6166
 Log:
   Encoding: plain
 DevLink:
@@ -13,6 +11,11 @@ DevLink:
     User: ddsvr
     Brokers:
       - tcp://172.19.0.7:1883
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
 Event:
   Mode: natsJs
   Nats:

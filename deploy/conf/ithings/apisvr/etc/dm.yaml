@@ -12,8 +12,8 @@ CacheRedis:
   - Host: 172.19.0.5:6379
     Pass:
     Type: node
-TDengine:
-  DataSource: root:taosdata@http(172.19.0.6:6041)/iThings?readBufferSize=52428800
+TSDB:
+  DSN: root:taosdata@ws(172.19.0.6:6041)/ithings?readBufferSize=52428800
 AuthWhite:
   Users:
     - UserName: ddsvr
