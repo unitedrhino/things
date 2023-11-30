@@ -23,6 +23,7 @@ func ConvVidmgrPbToPo(in *vid.VidmgrInfo) (*relationDB.VidmgrInfo, error) {
 		VidmgrStatus: in.VidmgrStatus,
 		VidmgrSecret: in.VidmgrSecret,
 		VidmgrType:   in.VidmgrType,
+		MediasvrType: 2, //设置为独立主机
 		Desc:         in.Desc.GetValue(),
 	}
 	if in.Tags == nil {
@@ -76,6 +77,15 @@ func setPoByPb(old *relationDB.VidmgrInfo, data *vid.VidmgrInfo) error {
 	if data.LastLogin != 0 {
 		old.LastLogin.Valid = true
 		old.LastLogin.Time = time.Unix(data.LastLogin, 0)
+	}
+	if data.MediasvrType != 0 {
+		old.MediasvrType = data.MediasvrType
+	}
+	if data.ServerIP != 0 {
+		old.ServerIP = data.ServerIP
+	}
+	if data.ServerPort != 0 {
+		old.ServerPort = data.ServerPort
 	}
 	if data.VidmgrStatus != 0 {
 		old.VidmgrStatus = data.VidmgrStatus

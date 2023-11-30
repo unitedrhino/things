@@ -18,6 +18,9 @@ type VidmgrInfo struct {
 	VidmgrSecret string            `gorm:"column:secret;type:varchar(50)"`                              // 服务秘钥
 	FirstLogin   sql.NullTime      `gorm:"column:first_login"`                                          // 激活后首次登录时间
 	LastLogin    sql.NullTime      `gorm:"column:last_login"`                                           // 最后登录时间
+	MediasvrType int64             `gorm:"column:mediasvr_type;type:smallint;default:2"`                // 流服务部署类型:1,docker部署  2,独立主机
+	ServerIP     int64             `gorm:"column:server_ip;type:bigint"`                                // 当流服务类型为独立主机时：这个填iThings外网的访问IP
+	ServerPort   int64             `gorm:"column:server_port;type:bigint"`                              // 当流服务类型为独立主机时：这个填iThings外网的访问端口
 	Desc         string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
 	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
 	stores.Time
@@ -54,16 +57,25 @@ func (b *STracks) Scan(v interface{}) error {
 	return json.Unmarshal(v.([]byte), b)
 }
 
+/*
+ *Protocol为视频协议
+ *当前协议支持类型有 rtmp/rtsp/ts/fmp4/hls/hls.fmp4/
+ *分别用一个bit位来表示一个协议
+ *对应关系:
+ *          bit位        	5	          4   	  3   	  2      1      0
+ *                          hls.fmp4      hls     fmp4    ts     rtsp   rtmp
+ */
 // 视频流信息
 type VidmgrStream struct {
 	StreamID   int64  `gorm:"column:stream_id;type:bigint;primary_key;AUTO_INCREMENT"` // 视频流的id(主键唯一)
 	VidmgrID   string `gorm:"column:vidmgr_id;type:char(11);NOT NULL"`                 // 流服务ID  外键
 	StreamName string `gorm:"column:name;type:varchar(63)"`                            // 视频流名称
 
-	App    string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
-	Schema string `gorm:"column:schema;type:varchar(31);NOT NULL"`
-	Stream string `gorm:"column:stream;type:varchar(31);NOT NULL"`
-	Vhost  string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
+	App string `gorm:"column:app;type:varchar(31);NOT NULL"`
+	/*Protocol 为可支持的协议类型*/
+	Protocol uint32 `gorm:"column:protocol;type:uint;default:0;NOT NULL"`
+	Stream   string `gorm:"column:stream;type:varchar(31);NOT NULL"`
+	Vhost    string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
 
 	Identifier string `gorm:"column:identifier;type:varchar(31)"`
 	LocalIP    int64  `gorm:"column:local_ip;type:bigint"`
@@ -77,25 +89,21 @@ type VidmgrStream struct {
 	ReaderCount      int64  `gorm:"column:reader_count;type:smallint"`       // 本协议观看人数
 	TotalReaderCount int64  `gorm:"column:total_reader_count;type:smallint"` //观看总人数，包括hls/rtsp/rtmp/http-flv/ws-flv/rtc
 	//流通道信息
-	Tracks         STracks `json:"tracks" gorm:"type:json;column:tracks"`
-	IsRecordingMp4 bool    `gorm:"column:is_recording_mp4;type:bit(1);default:0;NOT NULL"`
-	IsRecordingHLS bool    `gorm:"column:is_recording_hls;type:bit(1);default:0;NOT NULL"`
-	IsShareChannel bool    `gorm:"column:share_channel;type:bit(1);default:0;NOT NULL"`
-	IsAutoPush     bool    `gorm:"column:auto_push;type:bit(1);default:0;NOT NULL"`
-	IsAutoRecord   bool    `gorm:"column:auto_record;type:bit(1);default:0;NOT NULL"`
-	IsPTZ          bool    `gorm:"column:is_ptz;type:bit(1);default:0;NOT NULL"`
+	Tracks STracks `json:"tracks" gorm:"type:json;column:tracks"`
+	//
+	IsRecordingMp4 bool `gorm:"column:is_recording_mp4;type:bool;default:0;NOT NULL"`
+	IsRecordingHLS bool `gorm:"column:is_recording_hls;type:bool;default:0;NOT NULL"`
+	IsShareChannel bool `gorm:"column:share_channel;type:bool;default:0;NOT NULL"`
+	IsAutoPush     bool `gorm:"column:auto_push;type:bool;default:0;NOT NULL"`
+	IsAutoRecord   bool `gorm:"column:auto_record;type:bool;default:0;NOT NULL"`
+	IsPTZ          bool `gorm:"column:is_ptz;type:bool;default:0;NOT NULL"`
 	//正常流程有注册和注销过程，注册后，该流进行更新；并上线，注销后就设置标志位进行下线。
 	//还需要有一个定时器用来检测异常断开的情况超时时间10S
-	IsOnline  bool         `gorm:"column:is_online;type:bit(1);default:0;NOT NULL"`
-	LastLogin sql.NullTime `gorm:"column:last_login"` // 最后登录时间
-	//NetType        int64             `gorm:"column:net_type;type:smallint;NOT NULL"` // 网络类型
-	//DevType        int64             `gorm:"column:dev_type;type:smallint;default:1"`
-	//DevStreamType  int64             `gorm:"column:dev_streamtype;type:smallint;default:1"`
-	//ChannelID      string            `gorm:"column:channel_id;type:varchar(32)"`
-	//ChannelName    string            `gorm:"column:channel_name;type:varchar(32)"`
-	//LowNetType     int64             `gorm:"column:low_nettype;type:smallint;default:1"`
-	Desc string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
-	Tags map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
+	IsOnline bool `gorm:"column:is_online;type:bool;default:0;NOT NULL"`
+
+	LastLogin sql.NullTime      `gorm:"column:last_login"`                                           // 最后登录时间
+	Desc      string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
+	Tags      map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
 	stores.Time
 	VidmgrInfo *VidmgrInfo `gorm:"foreignKey:VidmgrID;references:VidmgrID"` // 添加外键
 }
@@ -244,7 +252,6 @@ type VidmgrConfig struct {
 	SrtPort                        string `gorm:"column:srt_port"`
 	SrtTimeoutSec                  string `gorm:"column:srt_timeoutSec"`
 	stores.Time
-
 	VidmgrInfo *VidmgrInfo `gorm:"foreignKey:VidmgrID;references:VidmgrID"` // 添加外键
 }
 

@@ -4,7 +4,6 @@ package clients
 import (
 	"bytes"
 	"fmt"
-	"github.com/i-Things/things/src/vidsvr/pb/vid"
 	"io"
 	"net/http"
 	"net/url"
@@ -18,10 +17,8 @@ var PreUrl string
 
 // ZLMediakit初始化数据结构
 type MediaConfig struct {
-	ID     string
 	Ipv4   string
 	Port   int64
-	Secret string
 	PreUrl string
 }
 
@@ -29,12 +26,20 @@ const (
 	VIDMGRTIMEOUT = 30
 )
 
-func NewMeidaServer(vmgrInfo *vid.VidmgrInfo) *MediaConfig {
+//func NewMeidaServer(vmgrInfo *vid.VidmgrInfo) *MediaConfig {
+//	return &MediaConfig{
+//		Ipv4:   vmgrInfo.VidmgrIpV4,
+//		Port:   vmgrInfo.VidmgrPort,
+//		Secret: vmgrInfo.VidmgrSecret,
+//		PreUrl: fmt.Sprintf("http://%s:%d/index/api/", vmgrInfo.VidmgrIpV4, vmgrInfo.VidmgrPort),
+//	}
+//}
+
+func NewMeidaServer(ip string, port int64) *MediaConfig {
 	return &MediaConfig{
-		Ipv4:   vmgrInfo.VidmgrIpV4,
-		Port:   vmgrInfo.VidmgrPort,
-		Secret: vmgrInfo.VidmgrSecret,
-		PreUrl: fmt.Sprintf("http://%s:%d/index/api/", vmgrInfo.VidmgrIpV4, vmgrInfo.VidmgrPort),
+		Ipv4:   ip,
+		Port:   port,
+		PreUrl: fmt.Sprintf("http://%s:%d/index/api/", ip, port),
 	}
 }
 
@@ -54,8 +59,6 @@ func (f *MediaConfig) PostMediaServer(strurl string, values url.Values) (data []
 func (f *MediaConfig) PostMediaServerJson(strurl string, values []byte) (data []byte, err error) {
 
 	fmt.Println("[---------------]PostMediaServer -", f.PreUrl+strurl, "param:", values)
-	//resp, err := http.PostForm(f.PreUrl+strurl, values)
-
 	request, error := http.NewRequest("POST", f.PreUrl+strurl, bytes.NewBuffer(values))
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 	client := &http.Client{}
@@ -64,9 +67,6 @@ func (f *MediaConfig) PostMediaServerJson(strurl string, values []byte) (data []
 		fmt.Println(err)
 		return nil, err
 	}
-	//if error != nil {
-	//	panic(error)
-	//}
 
 	defer response.Body.Close()
 	fmt.Println("response Status:", response.Status)

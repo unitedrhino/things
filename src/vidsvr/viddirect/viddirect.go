@@ -49,12 +49,14 @@ func RunServer(svcCtx *svc.ServiceContext) {
 
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
+	fmt.Println("[---test--] vidsvr  svcCtx.Config  c.Mode:", c.Mode)
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		vid.RegisterVidmgrInfoManageServer(grpcServer, mgrinfo.NewVidmgrInfoManageServer(svcCtx))
 		vid.RegisterVidmgrConfigManageServer(grpcServer, mgrconfig.NewVidmgrConfigManageServer(svcCtx))
 		vid.RegisterVidmgrStreamManageServer(grpcServer, mgrstream.NewVidmgrStreamManageServer(svcCtx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
+			fmt.Println("[---test--] vidsvr  svcCtx.Config")
 		}
 	})
 	defer s.Stop()

@@ -289,7 +289,7 @@ func ToVidmgrConfigApi(pi *vid.VidmgrConfig) *types.ServerConfig {
 	}
 	return dpi
 }
-func ToVidmgrTrack(in *types.StreamTrack) *vid.StreamTrack {
+func ToVidmgrTrackRpc(in *types.StreamTrack) *vid.StreamTrack {
 	pi := &vid.StreamTrack{
 		Channels:    in.Channels,
 		CodecId:     in.CodecId,
@@ -309,7 +309,7 @@ func TovidmgrTracksRpc(pi []types.StreamTrack) []*vid.StreamTrack {
 	if len(pi) > 0 {
 		info := make([]*vid.StreamTrack, 0, len(pi))
 		for _, v := range pi {
-			info = append(info, ToVidmgrTrack(&v))
+			info = append(info, ToVidmgrTrackRpc(&v))
 		}
 		return info
 	}
@@ -324,7 +324,6 @@ func ToVidmgrStreamRpc(pi *types.HooksApiStreamChangedRep) *vid.VidmgrStream {
 		Stream: pi.Stream,
 		Vhost:  pi.Vhost,
 		App:    pi.App,
-		Schema: pi.Schema,
 
 		Identifier: pi.OriginSock.Identifier,
 		LocalIP:    pi.OriginSock.LocalIp,
@@ -341,4 +340,70 @@ func ToVidmgrStreamRpc(pi *types.HooksApiStreamChangedRep) *vid.VidmgrStream {
 		Tracks:           TovidmgrTracksRpc(pi.Tracks),
 	}
 	return dpi
+}
+
+func ToVidmgrTrackApi(in *vid.StreamTrack) *types.StreamTrack {
+	pi := &types.StreamTrack{
+		Channels:    in.Channels,
+		CodecId:     in.CodecId,
+		CodecIdName: in.CodecIdName,
+		CodecType:   in.CodecType,
+		Ready:       in.Ready,
+		SampleBit:   in.SampleBit,
+		SampleRate:  in.SampleRate,
+		Fps:         in.Fps,
+		Height:      in.Height,
+		Width:       in.Width,
+	}
+	return pi
+}
+
+func TovidmgrTracksApi(pi []vid.StreamTrack) []*types.StreamTrack {
+	if len(pi) > 0 {
+		info := make([]*types.StreamTrack, 0, len(pi))
+		for _, v := range pi {
+			info = append(info, ToVidmgrTrackApi(&v))
+		}
+		return info
+	}
+	return nil
+}
+
+/*
+ *Protocol为视频协议
+ *当前协议支持类型有 rtmp/rtsp/ts/fmp4/hls/hls.fmp4/
+ *分别用一个bit位来表示一个协议
+ *对应关系:
+ *          bit位        	5	          4   	  3   	  2      1      0
+ *                          hls.fmp4      hls     fmp4    ts     rtsp   rtmp
+ */
+//                          1            1        0      1      0      1
+const (
+	RTMP = 1 << iota
+	RTSP
+	TS
+	FMP4
+	HLS
+	HLS_FMP4
+)
+
+func GetProtocol(schema string) uint32 {
+	var val uint32
+	switch schema {
+	case "rtmp":
+		val = RTMP
+	case "rtsp":
+		val = RTSP
+	case "ts":
+		val = TS
+	case "fmp4":
+		val = FMP4
+	case "hls":
+		val = HLS
+	case "hls.fmp4":
+		val = HLS_FMP4
+	default:
+		val = 0
+	}
+	return val
 }

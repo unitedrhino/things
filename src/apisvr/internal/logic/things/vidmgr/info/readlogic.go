@@ -36,5 +36,5 @@ func (l *ReadLogic) Read(req *types.VidmgrInfoReadReq) (resp *types.VidmgrInfo, 
 		l.Errorf("%s rpc.ManageVidmgr req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return vidmgrInfoToApi(vidResp), nil
+	return VidmgrInfoToApi(vidResp), nil
 }

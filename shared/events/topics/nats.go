@@ -86,4 +86,6 @@ const (
 	DmActionCheckDelay = "server.dm.action.check.delay"
 
 	VidInfoCheckStatus = "server.vid.info.check.status"
+
+	VidInfoInitDatabase = "server.vid.info.init.database"
 )

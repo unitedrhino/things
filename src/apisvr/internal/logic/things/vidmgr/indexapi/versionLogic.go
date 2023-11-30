@@ -28,7 +28,8 @@ func NewVersionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *VersionLo
 
 func (l *VersionLogic) Version(req *types.IndexApiReq) (resp *types.IndexApiVersionResp, err error) {
 	// todo: add your logic here and delete this line
-	data, err := proxyMediaServer(l.ctx, l.svcCtx, VERSION, req.VidmgrID)
+	bytetmp := make([]byte, 0)
+	data, err := proxySetMediaServer(l.ctx, l.svcCtx, VERSION, req.VidmgrID, bytetmp)
 	if err != nil {
 		fmt.Println("***proxyMediaServer Error ****")
 		er := errors.Fmt(err)

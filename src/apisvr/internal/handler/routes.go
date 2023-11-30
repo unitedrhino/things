@@ -38,6 +38,7 @@ import (
 	thingsvidmgrhooks "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/hooks"
 	thingsvidmgrindexapi "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/indexapi"
 	thingsvidmgrinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/info"
+	thingsvidmgrstream "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/stream"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -1069,6 +1070,45 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/vidmgr/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsvidmgrstream.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsvidmgrstream.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsvidmgrstream.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsvidmgrstream.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsvidmgrstream.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/count",
+					Handler: thingsvidmgrstream.CountHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/vidmgr/stream"),
 	)
 
 	server.AddRoutes(

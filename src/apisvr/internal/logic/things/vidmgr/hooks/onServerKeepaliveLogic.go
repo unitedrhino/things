@@ -34,16 +34,19 @@ func (l *OnServerKeepaliveLogic) OnServerKeepalive(req *types.HooksApiServerKeep
 	// todo: add your logic here and delete this line
 	reqStr, _ := json.Marshal(*req)
 	fmt.Println("---------OnServerKeepalive--------------:", string(reqStr))
+
+	fmt.Sprintf("HOST:%s \n", l.svcCtx.Config.OssConf.CustomHost)
+	fmt.Sprintf("Port:%d \n", l.svcCtx.Config.Port)
 	//从hook data中解析出 MediaserverID值。
 	//hookactive中是保持在线状态  需要更新对应的数据库
 	vidmgrInfo, err := l.svcCtx.VidmgrM.VidmgrInfoRead(l.ctx, &vid.VidmgrInfoReadReq{
 		VidmgrtID: req.MediaServerId,
 	})
-	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s rpc.ManageVidmgr req=%v err=%+v", utils.FuncName(), req, er)
-		return nil, er
-	}
+	//if err != nil {
+	//	er := errors.Fmt(err)
+	//	l.Errorf("%s rpc.ManageVidmgr req=%v err=%+v", utils.FuncName(), req, er)
+	//	return nil, er
+	//}
 	if vidmgrInfo != nil {
 		//update info
 		//UPDATE

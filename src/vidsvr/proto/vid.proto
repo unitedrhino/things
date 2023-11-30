@@ -36,6 +36,9 @@ service VidmgrInfoManage{
   //获取服务统计  在线，离线，未激活
   rpc vidmgrInfoCount(VidmgrInfoCountReq)     returns (VidmgrInfoCountResp);
 }
+//    MediasvrType int64             `gorm:"column:mediasvr_type"`                                        // 流服务部署类型:1,docker部署  2,独立主机
+//    ServerIP     int64             `gorm:"column:server_ip;type:bigint"`
+//    ServerPort   int64             `gorm:"column:server_port;type:bigint"`
 
 message VidmgrInfo{
   int64   createdTime = 1; //创建时间 只读
@@ -48,8 +51,11 @@ message VidmgrInfo{
   int64   vidmgrStatus = 8;//服务状态: 0：未激活  1：在线  2：离线
   int64   firstLogin = 9; //激活时间 只读
   int64   lastLogin = 10; //最后上线时间 只读
-  google.protobuf.StringValue   desc = 11;//描述
-  map<string, string> tags = 12; //产品标签
+  int64   mediasvrType = 11;  // 流服务部署类型:1,docker部署  2,独立主机
+  int64   serverIP = 12; // 当流服务类型为独立主机时：这个填iThings外网的访问IP
+  int64   serverPort = 13; // 当流服务类型为独立主机时：这个填iThings外网的访问端口
+  google.protobuf.StringValue   desc = 14;//描述
+  map<string, string> tags = 15; //产品标签
 }
 
 message VidmgrInfoDeleteReq{
@@ -126,18 +132,16 @@ message VidmgrStreamReadReq{
 message VidmgrStreamIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string  vidmgrID = 2; //过滤条件: 根据流服务ID来查流
-  repeated int64   streamIDs = 3; //过滤服务id列表
-  string app = 4;
-  string schema = 5;
-  string stream = 6;
-  string vhost = 7;
-
-  string identifier = 8;
-  string localIP = 9;
-  int64 LocalPort = 10;
-  string peerIP =11;
-  int64 PeerPort = 12;
-
+  string app = 3;
+  string stream = 4;
+  string vhost = 5;
+  string identifier = 6;
+  string localIP = 7;
+  int64 localPort = 8;
+  string peerIP =9;
+  int64 peerPort = 10;
+  string streamName = 11;
+  repeated int64   streamIDs = 12; //过滤服务id列表
   map<string, string> tags = 13;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 }
 
@@ -160,8 +164,9 @@ message VidmgrStream{
   string    streamName = 2;
 
   string  app = 3;
-  string schema = 4;
+  uint32  protocol = 4;
   string stream = 5;
+
   string vhost = 6;
 
   string identifier = 7;

@@ -84,6 +84,7 @@ type (
         Duration int64              `json:"duration"`
         Params string               `json:"params"`
         Player bool                 `json:"player"`
+
         Schema string               `json:"schema"`
         Stream string               `json:"stream"`
         TotalBytes int64            `json:"totalBytes"`
@@ -232,7 +233,6 @@ type (
         IsPTZ bool `json:"isPTZ"`
     //unregister post data
     }
-
     HooksApiStreamNoneReaderReq struct{
         MediaServerId string `json:"mediaServerId"`
         App string  `json:"app"`
@@ -240,6 +240,7 @@ type (
         Stream string   `json:"stream"`
         Vhost string    `json:"vhost"`
     }
+
     HooksApiStreamNoneReaderResp struct {
         Close   bool `json:"close"`
         Code    bool    `json:"code"`
