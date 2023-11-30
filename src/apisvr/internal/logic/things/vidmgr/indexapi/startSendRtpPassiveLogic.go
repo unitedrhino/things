@@ -26,7 +26,8 @@ func NewStartSendRtpPassiveLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 func (l *StartSendRtpPassiveLogic) StartSendRtpPassive(req *types.IndexApiReq) (resp *types.IndexApiStartSendRtpPassiveResp, err error) {
 	// todo: add your logic here and delete this line
-	data, err := proxyMediaServer(l.ctx, l.svcCtx, STARTSENDRTPPASSIVE, req.VidmgrID)
+	bytetmp := make([]byte, 0)
+	data, err := proxySetMediaServer(l.ctx, l.svcCtx, STARTSENDRTPPASSIVE, req.VidmgrID, bytetmp)
 	dataRecv := new(types.IndexApiStartSendRtpPassiveResp)
 	json.Unmarshal(data, dataRecv)
 	return dataRecv, err

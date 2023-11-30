@@ -8,6 +8,7 @@ info(
     version: "v1"
 )
 
-import "things/vidmgr/srvinfo.api" //服务管理
+import "things/vidmgr/srvinfo.api" //流服务管理
+import "things/vidmgr/srvstream.api" //视频流管理
 import "things/vidmgr/srvzlmediahook.api" //zlemedia hook
 import "things/vidmgr/srvzlmediaapi.api" //zlemedia api

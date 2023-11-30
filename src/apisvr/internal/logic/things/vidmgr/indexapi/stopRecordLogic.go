@@ -26,7 +26,8 @@ func NewStopRecordLogic(ctx context.Context, svcCtx *svc.ServiceContext) *StopRe
 
 func (l *StopRecordLogic) StopRecord(req *types.IndexApiReq) (resp *types.IndexApiStopRecordResp, err error) {
 	// todo: add your logic here and delete this line
-	data, err := proxyMediaServer(l.ctx, l.svcCtx, STOPRECORD, req.VidmgrID)
+	bytetmp := make([]byte, 0)
+	data, err := proxySetMediaServer(l.ctx, l.svcCtx, STOPRECORD, req.VidmgrID, bytetmp)
 	dataRecv := new(types.IndexApiStopRecordResp)
 	json.Unmarshal(data, dataRecv)
 	return dataRecv, err

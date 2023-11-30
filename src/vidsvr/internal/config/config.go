@@ -12,4 +12,5 @@ type Config struct {
 	CacheRedis  cache.ClusterConf
 	Event       conf.EventConf     //和things内部交互的设置
 	TimedJobRpc conf.RpcClientConf `json:",optional"`
+	Mediakit    conf.MediaConf     `json:",optional"` //docker -zlemdiakit的连接
 }

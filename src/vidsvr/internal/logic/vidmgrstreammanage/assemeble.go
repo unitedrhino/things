@@ -46,13 +46,14 @@ func ToRpcConvVidmgrStream(in *relationDB.VidmgrStream) *vid.VidmgrStream {
 		info = append(info, ToRpcVidmgrStreamTrack(v))
 	}
 	pi := &vid.VidmgrStream{
+		StreamID:   in.StreamID,
 		VidmgrID:   in.VidmgrID,
 		StreamName: in.StreamName,
 
-		App:    in.App,
-		Schema: in.Schema,
-		Stream: in.Stream,
-		Vhost:  in.Vhost,
+		App:      in.App,
+		Protocol: in.Protocol,
+		Stream:   in.Stream,
+		Vhost:    in.Vhost,
 
 		Identifier: in.Identifier,
 		LocalIP:    utils.InetNtoA(in.LocalIP),
@@ -89,10 +90,11 @@ func ToDbConvVidmgrStream(in *vid.VidmgrStream) *relationDB.VidmgrStream {
 		VidmgrID:   in.VidmgrID,
 		StreamName: in.StreamName,
 
-		App:    in.App,
-		Schema: in.Schema,
-		Stream: in.Stream,
-		Vhost:  in.Vhost,
+		App: in.App,
+		//Schema: in.Schema,
+		Protocol: in.Protocol,
+		Stream:   in.Stream,
+		Vhost:    in.Vhost,
 
 		Identifier: in.Identifier,
 		LocalIP:    utils.InetAtoN(in.LocalIP),
@@ -131,8 +133,8 @@ func setPoByPb(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
 	if data.App != "" {
 		old.App = data.App
 	}
-	if data.Schema != "" {
-		old.Schema = data.Schema
+	if data.Protocol != 0 {
+		old.Protocol = data.Protocol
 	}
 	if data.Stream != "" {
 		old.Stream = data.Stream
@@ -178,6 +180,7 @@ func setPoByPb(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
 		old.LastLogin.Valid = true
 		old.LastLogin.Time = time.Unix(data.LastLogin, 0)
 	}
+
 	old.IsRecordingMp4 = data.IsRecordingMp4
 	old.IsRecordingHLS = data.IsRecordingHLS
 	old.IsShareChannel = data.IsShareChannel

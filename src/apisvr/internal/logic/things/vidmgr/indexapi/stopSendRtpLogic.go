@@ -26,7 +26,8 @@ func NewStopSendRtpLogic(ctx context.Context, svcCtx *svc.ServiceContext) *StopS
 
 func (l *StopSendRtpLogic) StopSendRtp(req *types.IndexApiReq) (resp *types.IndexApiStopSendRtpResp, err error) {
 	// todo: add your logic here and delete this line
-	data, err := proxyMediaServer(l.ctx, l.svcCtx, STOPSENDRTP, req.VidmgrID)
+	bytetmp := make([]byte, 0)
+	data, err := proxySetMediaServer(l.ctx, l.svcCtx, STOPSENDRTP, req.VidmgrID, bytetmp)
 	dataRecv := new(types.IndexApiStopSendRtpResp)
 	json.Unmarshal(data, dataRecv)
 	return dataRecv, err

@@ -34,6 +34,7 @@ func (l *SetServerConfigLogic) SetServerConfig(req *types.IndexApiSetServerConfi
 	}
 	strmConfig.GeneralMediaServerId = req.VidmgrID
 	SetDefaultConfig(l.svcCtx, strmConfig)
+
 	//set default
 	byte4, err := json.Marshal(strmConfig)
 	mdata, err := proxySetMediaServer(l.ctx, l.svcCtx, SETSERVERCONFIG, req.VidmgrID, byte4)
