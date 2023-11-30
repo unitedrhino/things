@@ -41,6 +41,10 @@ type DmDeviceInfo struct {
 
 }
 
+func (m *DmDeviceInfo) TableName() string {
+	return "dm_device_info"
+}
+
 // 产品信息表
 type DmProductInfo struct {
 	ProductID    string            `gorm:"column:product_id;type:char(11);primary_key;NOT NULL"`        // 产品id
@@ -52,18 +56,37 @@ type DmProductInfo struct {
 	CategoryID   int64             `gorm:"column:category_id;type:integer;default:1"`                   // 产品品类
 	NetType      int64             `gorm:"column:net_type;type:smallint;default:1"`                     // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
 	DataProto    int64             `gorm:"column:data_proto;type:smallint;default:1"`                   // 数据协议:1:自定义,2:数据模板
+	ProtocolID   int64             `gorm:"column:protocol_id;type:bigint;default:1"`                    // 协议名称: 如果为空则为iThings标准协议
 	AutoRegister int64             `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret       string            `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
 	Desc         string            `gorm:"column:description;type:varchar(200)"`                        // 描述
 	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`                 // 产品状态
 	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
-
 	stores.Time
+	ProtocolInfo *DmProtocolInfo `gorm:"foreignKey:ID;references:ProtocolID"` // 添加外键
+
 	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
+
 }
 
 func (m *DmProductInfo) TableName() string {
 	return "dm_product_info"
+}
+
+// 自定义协议表
+type DmProtocolInfo struct {
+	ID           int64    `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name         string   `gorm:"column:name;uniqueIndex;type:varchar(100);NOT NULL"`               // 协议名称
+	Protocol     string   `gorm:"column:protocol;type:varchar(100)"`                                // 协议: mqtt,tcp,udp
+	ProtocolType string   `gorm:"column:protocol_type;type:varchar(100);default:iThings"`           // 协议类型: iThings,iThings-thingsboard
+	Desc         string   `gorm:"column:desc;type:varchar(200)"`                                    // 描述
+	Endpoints    []string `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"` // 协议端点,如果填写了优先使用该字段
+	EtcdKey      string   `gorm:"column:etcd_key;type:varchar(200);default:null"`                   //服务etcd发现的key etcd key
+	stores.Time
+}
+
+func (m *DmProtocolInfo) TableName() string {
+	return "dm_protocol_info"
 }
 
 // 产品自定义协议表
@@ -99,10 +122,6 @@ type DmProductSchema struct {
 
 func (m *DmProductSchema) TableName() string {
 	return "dm_product_schema"
-}
-
-func (m *DmDeviceInfo) TableName() string {
-	return "dm_device_info"
 }
 
 // 设备分组信息表

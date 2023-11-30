@@ -22,6 +22,12 @@ func NewDeviceManageServer(svcCtx *svc.ServiceContext) *DeviceManageServer {
 	}
 }
 
+// 鉴定是否是root账号(提供给mqtt broker)
+func (s *DeviceManageServer) RootCheck(ctx context.Context, in *dm.RootCheckReq) (*dm.Response, error) {
+	l := devicemanagelogic.NewRootCheckLogic(ctx, s.svcCtx)
+	return l.RootCheck(in)
+}
+
 // 新增设备
 func (s *DeviceManageServer) DeviceInfoCreate(ctx context.Context, in *dm.DeviceInfo) (*dm.Response, error) {
 	l := devicemanagelogic.NewDeviceInfoCreateLogic(ctx, s.svcCtx)

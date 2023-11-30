@@ -12,6 +12,20 @@ mod:
 	@go mod download
 	@go mod tidy
 
+build.front:
+	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>make $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+ 	@echo "start update front"
+ 	@git submodule update --init --recursive
+ 	@git submodule foreach git checkout test
+ 	@git submodule foreach git pull
+ 	@echo "end update front"
+ 	@cd ./assets
+    @call yarn install
+    @call yarn build
+    @cd ..
+    @mkdir -p./cmd/dist/front/iThingsCore
+    @cp -rf ./assets/dist/* ./cmd/dist/front/iThingsCore
+
 build.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@go build -o ./cmd/apisvr ./src/apisvr
