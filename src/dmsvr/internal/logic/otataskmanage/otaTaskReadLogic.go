@@ -3,7 +3,6 @@ package otataskmanagelogic
 import (
 	"context"
 
-	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -26,9 +25,7 @@ func NewOtaTaskReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaTa
 
 // 升级任务详情
 func (l *OtaTaskReadLogic) OtaTaskRead(in *dm.OtaTaskReadReq) (*dm.OtaTaskReadResp, error) {
-	otd, err := relationDB.NewOtaTaskRepo(l.ctx).FindOne(l.ctx, in.TaskID)
-	if err != nil {
-		return nil, err
-	}
-	return ToOtaTaskReadResp(otd), nil
+	// todo: add your logic here and delete this line
+
+	return &dm.OtaTaskReadResp{}, nil
 }

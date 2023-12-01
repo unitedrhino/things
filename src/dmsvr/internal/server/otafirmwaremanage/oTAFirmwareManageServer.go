@@ -23,31 +23,31 @@ func NewOTAFirmwareManageServer(svcCtx *svc.ServiceContext) *OTAFirmwareManageSe
 }
 
 // 添加升级包
-func (s *OTAFirmwareManageServer) CreateOTAFirmware(ctx context.Context, in *dm.OtaFirmwareReq) (*dm.OtaFirmwareResp, error) {
-	l := otafirmwaremanagelogic.NewCreateOTAFirmwareLogic(ctx, s.svcCtx)
-	return l.CreateOTAFirmware(in)
+func (s *OTAFirmwareManageServer) OtaFirmwareCreate(ctx context.Context, in *dm.OtaFirmwareCreateReq) (*dm.OtaFirmwareResp, error) {
+	l := otafirmwaremanagelogic.NewOtaFirmwareCreateLogic(ctx, s.svcCtx)
+	return l.OtaFirmwareCreate(in)
 }
 
 // 修改升级包
-func (s *OTAFirmwareManageServer) ModifyOTAFirmware(ctx context.Context, in *dm.ModifyOtaFirmwareReq) (*dm.OtaFirmwareResp, error) {
-	l := otafirmwaremanagelogic.NewModifyOTAFirmwareLogic(ctx, s.svcCtx)
-	return l.ModifyOTAFirmware(in)
+func (s *OTAFirmwareManageServer) OtaFirmwareUpdate(ctx context.Context, in *dm.OtaFirmwareUpdateReq) (*dm.OtaFirmwareResp, error) {
+	l := otafirmwaremanagelogic.NewOtaFirmwareUpdateLogic(ctx, s.svcCtx)
+	return l.OtaFirmwareUpdate(in)
 }
 
 // 删除升级包
-func (s *OTAFirmwareManageServer) DeleteOTAFirmware(ctx context.Context, in *dm.DeleteOtaFirmwareReq) (*dm.Response, error) {
-	l := otafirmwaremanagelogic.NewDeleteOTAFirmwareLogic(ctx, s.svcCtx)
-	return l.DeleteOTAFirmware(in)
+func (s *OTAFirmwareManageServer) OtaFirmwareDelete(ctx context.Context, in *dm.OtaFirmwareDeleteReq) (*dm.Response, error) {
+	l := otafirmwaremanagelogic.NewOtaFirmwareDeleteLogic(ctx, s.svcCtx)
+	return l.OtaFirmwareDelete(in)
 }
 
 // 升级包列表
-func (s *OTAFirmwareManageServer) ListOTAFirmware(ctx context.Context, in *dm.ListOtaFirmwareReq) (*dm.ListOtaFirmwareResp, error) {
-	l := otafirmwaremanagelogic.NewListOTAFirmwareLogic(ctx, s.svcCtx)
-	return l.ListOTAFirmware(in)
+func (s *OTAFirmwareManageServer) OtaFirmwareIndex(ctx context.Context, in *dm.OtaFirmwareIndexReq) (*dm.OtaFirmwareIndexResp, error) {
+	l := otafirmwaremanagelogic.NewOtaFirmwareIndexLogic(ctx, s.svcCtx)
+	return l.OtaFirmwareIndex(in)
 }
 
 // 查询升级包
-func (s *OTAFirmwareManageServer) QueryOTAFirmware(ctx context.Context, in *dm.QueryOtaFirmwareReq) (*dm.QueryOtaFirmwareResp, error) {
-	l := otafirmwaremanagelogic.NewQueryOTAFirmwareLogic(ctx, s.svcCtx)
-	return l.QueryOTAFirmware(in)
+func (s *OTAFirmwareManageServer) OtaFirmwareRead(ctx context.Context, in *dm.OtaFirmwareReadReq) (*dm.OtaFirmwareReadResp, error) {
+	l := otafirmwaremanagelogic.NewOtaFirmwareReadLogic(ctx, s.svcCtx)
+	return l.OtaFirmwareRead(in)
 }

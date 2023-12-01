@@ -13,7 +13,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ListOTAFirmwareLogic struct {
+type OtaFirmwareIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
@@ -21,8 +21,8 @@ type ListOTAFirmwareLogic struct {
 	OfDB *relationDB.OtaFirmwareRepo
 }
 
-func NewListOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListOTAFirmwareLogic {
-	return &ListOTAFirmwareLogic{
+func NewOtaFirmwareIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaFirmwareIndexLogic {
+	return &OtaFirmwareIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -32,7 +32,7 @@ func NewListOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) *L
 }
 
 // 升级包列表
-func (l *ListOTAFirmwareLogic) ListOTAFirmware(in *dm.ListOtaFirmwareReq) (*dm.ListOtaFirmwareResp, error) {
+func (l *OtaFirmwareIndexLogic) OtaFirmwareIndex(in *dm.OtaFirmwareIndexReq) (*dm.OtaFirmwareIndexResp, error) {
 	var (
 		info []*dm.OtaFirmwareInfo
 		size int64
@@ -60,6 +60,5 @@ func (l *ListOTAFirmwareLogic) ListOTAFirmware(in *dm.ListOtaFirmwareReq) (*dm.L
 		logx.Errorf("DmOtaFirmware copy to OtaFirmwareInfo failed")
 		return nil, err
 	}
-	return &dm.ListOtaFirmwareResp{Total: size, List: info}, nil
-
+	return &dm.OtaFirmwareIndexResp{Total: size, List: info}, nil
 }

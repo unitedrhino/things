@@ -13,7 +13,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DeleteOTAFirmwareLogic struct {
+type OtaFirmwareDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
@@ -21,8 +21,8 @@ type DeleteOTAFirmwareLogic struct {
 	OfDB *relationDB.OtaFirmwareRepo
 }
 
-func NewDeleteOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteOTAFirmwareLogic {
-	return &DeleteOTAFirmwareLogic{
+func NewOtaFirmwareDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaFirmwareDeleteLogic {
+	return &OtaFirmwareDeleteLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -32,7 +32,7 @@ func NewDeleteOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 // 删除升级包
-func (l *DeleteOTAFirmwareLogic) DeleteOTAFirmware(in *dm.DeleteOtaFirmwareReq) (*dm.Response, error) {
+func (l *OtaFirmwareDeleteLogic) OtaFirmwareDelete(in *dm.OtaFirmwareDeleteReq) (*dm.Response, error) {
 	_, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareFilter{FirmwareID: in.FirmwareId})
 	if errors.Cmp(err, errors.NotFind) {
 		l.Errorf("not find firmware id:" + cast.ToString(in.FirmwareId))
@@ -46,4 +46,5 @@ func (l *DeleteOTAFirmwareLogic) DeleteOTAFirmware(in *dm.DeleteOtaFirmwareReq) 
 		return nil, errors.System.AddDetail(err)
 	}
 	return &dm.Response{}, nil
+
 }

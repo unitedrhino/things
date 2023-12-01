@@ -3,6 +3,7 @@ package relationDB
 import (
 	"database/sql"
 	"github.com/i-Things/things/shared/stores"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -254,4 +255,69 @@ type DmDeviceShadow struct {
 
 func (m *DmDeviceShadow) TableName() string {
 	return "dm_device_shadow"
+}
+
+// DMOTAjob 表示OTA升级任务的信息
+type DmOtaJob struct {
+	gorm.Model
+	FirmwareId         string `gorm:"column:firmware_id"`          // 升级包ID，升级包的唯一标识符。
+	ProductId          string `gorm:"column:product_id"`           // 升级包所属产品的ProductId。
+	UpgradeType        string `gorm:"column:upgrade_type"`         // 升级策略，0-静态，1-动态
+	TargetSelection    string `gorm:"column:target_selection"`     // 升级范围。可选值：0-ALL、1-SPECIFIC、2-GRAY、3-GROUP。
+	SrcVersion         string `gorm:"column:src_version"`          // 待升级版本号列表。最多可传入10个版本号。用逗号分隔多个版本号
+	ScheduleTime       int64  `gorm:"column:schedule_time"`        // 指定发起OTA升级的时间，单位为毫秒。
+	RetryInterval      int    `gorm:"column:retry_interval"`       // 设备升级失败后，自动重试的时间间隔，单位为分钟。
+	RetryCount         int    `gorm:"column:retry_count"`          // 自动重试次数。1/2/5次
+	TimeoutInMinutes   int    `gorm:"column:timeout_in_minutes"`   // 设备升级超时时间，单位为分钟。
+	MaximumPerMinute   int    `gorm:"column:maximum_per_minute"`   // 每分钟最多向多少个设备推送升级包下载URL。
+	GrayPercent        string `gorm:"column:gray_percent"`         // 灰度比例。设置灰度升级时有效。
+	TargetDeviceName   string `gorm:"column:target_device_name"`   // 定向升级的设备名称列表。最多可传入200个设备名称。以逗号分隔
+	ScheduleFinishTime int64  `gorm:"column:schedule_finish_time"` // 指定结束升级的时间，单位为毫秒。
+	OverwriteMode      int    `gorm:"column:overwrite_mode"`       // 是否覆盖之前的升级任务。取值：0（不覆盖）、1（覆盖）。
+	DnListFileUrl      string `gorm:"column:dn_list_file_url"`     // 定向升级设备列表文件的URL。发起定向升级任务时使用。
+	NeedPush           int    `gorm:"column:need_push"`            // 物联网平台是否主动向设备推送升级任务。
+	NeedConfirm        int    `gorm:"column:need_confirm"`         // 是否需要App确认OTA升级。
+	GroupId            string `gorm:"column:group_id"`             // 分组ID。仅发起分组升级任务时使用。
+	GroupType          string `gorm:"column:group_type"`           // 分组类型，仅可取值LINK_PLATFORM。仅发起分组升级任务时使用。
+	DownloadProtocol   string `gorm:"column:download_protocol"`    // 升级包下载协议。可选：0-HTTPS、1-MQTT。
+	MultiModuleMode    int    `gorm:"column:multi_module_mode"`    // 设备是否支持多模块同时升级。
+}
+
+func (m *DmOtaJob) TableName() string {
+	return "dm_ota_job"
+}
+
+type DmOtaUpgradeTask struct {
+	gorm.Model
+	TaskId      string    `gorm:"column:task_id"`       // 设备升级作业ID
+	DestVersion string    `gorm:"column:dest_version" ` // 升级的目标OTA升级包版本
+	DeviceName  string    `gorm:"column:device_name" `  // 设备名称
+	FirmwareId  string    `gorm:"column:firmware_id"`   // 升级包ID
+	JobId       string    `gorm:"column:job_id" `       // 升级批次ID
+	ProductId   string    `gorm:"column:product_id" `   // 设备所属产品的ProductKey
+	ProductName string    `gorm:"column:product_name"`  // 设备所属产品的名称
+	Progress    string    `gorm:"column:progress"`      // 当前的升级进度
+	SrcVersion  string    `gorm:"column:src_version"`   // 设备的原固件版本
+	TaskDesc    string    `gorm:"column:task_desc" `    // 升级作业描述信息
+	TaskStatus  string    `gorm:"column:task_status"`   // 设备升级状态
+	Timeout     string    `gorm:"column:timeout"`       // 设备升级超时时间，单位是分钟
+	UtcCreate   time.Time `gorm:"column:utc_create"`    // 升级作业创建时的时间，UTC格式
+	UtcModified time.Time `gorm:"column:utc_modified"`  // 升级作业最后一次修改时的时间，UTC格式
+}
+
+func (m *DmOtaUpgradeTask) TableName() string {
+	return "dm_ota_upgrade_task"
+}
+
+type DmOtaModule struct {
+	gorm.Model
+	ModuleId   string `gorm:"column:module_id"`   // OTA模块ID
+	ModuleName string `gorm:"column:module_name"` // OTA模块名称，产品下唯一且不可修改。仅支持英文字母、数字、英文句号（.）、短划线（-）和下划线（_）。长度限制为1~64个字符。
+	ProductId  string `gorm:"column:product_id"`  // OTA模块所属产品的ProductId。
+	AliasName  string `gorm:"column:alias_name"`  // OTA模块别名。支持中文、英文字母、数字、英文句号（.）、短划线（-）和下划线（_），长度限制为1~64个字符。
+	Desc       string `gorm:"column:desc"`        // OTA模块的描述信息，支持最多100个字符。
+}
+
+func (m *DmOtaModule) TableName() string {
+	return "dm_ota_module"
 }

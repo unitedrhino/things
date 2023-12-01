@@ -15,7 +15,6 @@ import (
 
 type (
 	AccessAuthReq               = dm.AccessAuthReq
-	DeleteOtaFirmwareReq        = dm.DeleteOtaFirmwareReq
 	DeviceCore                  = dm.DeviceCore
 	DeviceGatewayBindDevice     = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq       = dm.DeviceGatewayIndexReq
@@ -63,13 +62,12 @@ type (
 	HubLogIndex                 = dm.HubLogIndex
 	HubLogIndexReq              = dm.HubLogIndexReq
 	HubLogIndexResp             = dm.HubLogIndexResp
-	ListOtaFirmwareReq          = dm.ListOtaFirmwareReq
-	ListOtaFirmwareResp         = dm.ListOtaFirmwareResp
 	LoginAuthReq                = dm.LoginAuthReq
-	ModifyOtaFirmwareReq        = dm.ModifyOtaFirmwareReq
 	MultiSendPropertyReq        = dm.MultiSendPropertyReq
 	MultiSendPropertyResp       = dm.MultiSendPropertyResp
 	OtaCommonResp               = dm.OtaCommonResp
+	OtaFirmwareCreateReq        = dm.OtaFirmwareCreateReq
+	OtaFirmwareDeleteReq        = dm.OtaFirmwareDeleteReq
 	OtaFirmwareDeviceInfoReq    = dm.OtaFirmwareDeviceInfoReq
 	OtaFirmwareDeviceInfoResp   = dm.OtaFirmwareDeviceInfoResp
 	OtaFirmwareFile             = dm.OtaFirmwareFile
@@ -78,9 +76,13 @@ type (
 	OtaFirmwareFileInfo         = dm.OtaFirmwareFileInfo
 	OtaFirmwareFileReq          = dm.OtaFirmwareFileReq
 	OtaFirmwareFileResp         = dm.OtaFirmwareFileResp
+	OtaFirmwareIndexReq         = dm.OtaFirmwareIndexReq
+	OtaFirmwareIndexResp        = dm.OtaFirmwareIndexResp
 	OtaFirmwareInfo             = dm.OtaFirmwareInfo
-	OtaFirmwareReq              = dm.OtaFirmwareReq
+	OtaFirmwareReadReq          = dm.OtaFirmwareReadReq
+	OtaFirmwareReadResp         = dm.OtaFirmwareReadResp
 	OtaFirmwareResp             = dm.OtaFirmwareResp
+	OtaFirmwareUpdateReq        = dm.OtaFirmwareUpdateReq
 	OtaPageInfo                 = dm.OtaPageInfo
 	OtaPromptIndexReq           = dm.OtaPromptIndexReq
 	OtaPromptIndexResp          = dm.OtaPromptIndexResp
@@ -124,8 +126,6 @@ type (
 	PropertyIndexResp           = dm.PropertyIndexResp
 	PropertyLatestIndexReq      = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq         = dm.PropertyLogIndexReq
-	QueryOtaFirmwareReq         = dm.QueryOtaFirmwareReq
-	QueryOtaFirmwareResp        = dm.QueryOtaFirmwareResp
 	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq        = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp       = dm.RemoteConfigIndexResp
@@ -149,20 +149,18 @@ type (
 	SendPropertyResp            = dm.SendPropertyResp
 	ShadowIndex                 = dm.ShadowIndex
 	ShadowIndexResp             = dm.ShadowIndexResp
-	Tag                         = dm.Tag
-	VerifyOtaFirmwareReq        = dm.VerifyOtaFirmwareReq
 
 	OTAFirmwareManage interface {
 		// 添加升级包
-		CreateOTAFirmware(ctx context.Context, in *OtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
+		OtaFirmwareCreate(ctx context.Context, in *OtaFirmwareCreateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
 		// 修改升级包
-		ModifyOTAFirmware(ctx context.Context, in *ModifyOtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
+		OtaFirmwareUpdate(ctx context.Context, in *OtaFirmwareUpdateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
 		// 删除升级包
-		DeleteOTAFirmware(ctx context.Context, in *DeleteOtaFirmwareReq, opts ...grpc.CallOption) (*Response, error)
+		OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 升级包列表
-		ListOTAFirmware(ctx context.Context, in *ListOtaFirmwareReq, opts ...grpc.CallOption) (*ListOtaFirmwareResp, error)
+		OtaFirmwareIndex(ctx context.Context, in *OtaFirmwareIndexReq, opts ...grpc.CallOption) (*OtaFirmwareIndexResp, error)
 		// 查询升级包
-		QueryOTAFirmware(ctx context.Context, in *QueryOtaFirmwareReq, opts ...grpc.CallOption) (*QueryOtaFirmwareResp, error)
+		OtaFirmwareRead(ctx context.Context, in *OtaFirmwareReadReq, opts ...grpc.CallOption) (*OtaFirmwareReadResp, error)
 	}
 
 	defaultOTAFirmwareManage struct {
@@ -189,56 +187,56 @@ func NewDirectOTAFirmwareManage(svcCtx *svc.ServiceContext, svr dm.OTAFirmwareMa
 }
 
 // 添加升级包
-func (m *defaultOTAFirmwareManage) CreateOTAFirmware(ctx context.Context, in *OtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
+func (m *defaultOTAFirmwareManage) OtaFirmwareCreate(ctx context.Context, in *OtaFirmwareCreateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
 	client := dm.NewOTAFirmwareManageClient(m.cli.Conn())
-	return client.CreateOTAFirmware(ctx, in, opts...)
+	return client.OtaFirmwareCreate(ctx, in, opts...)
 }
 
 // 添加升级包
-func (d *directOTAFirmwareManage) CreateOTAFirmware(ctx context.Context, in *OtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
-	return d.svr.CreateOTAFirmware(ctx, in)
+func (d *directOTAFirmwareManage) OtaFirmwareCreate(ctx context.Context, in *OtaFirmwareCreateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
+	return d.svr.OtaFirmwareCreate(ctx, in)
 }
 
 // 修改升级包
-func (m *defaultOTAFirmwareManage) ModifyOTAFirmware(ctx context.Context, in *ModifyOtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
+func (m *defaultOTAFirmwareManage) OtaFirmwareUpdate(ctx context.Context, in *OtaFirmwareUpdateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
 	client := dm.NewOTAFirmwareManageClient(m.cli.Conn())
-	return client.ModifyOTAFirmware(ctx, in, opts...)
+	return client.OtaFirmwareUpdate(ctx, in, opts...)
 }
 
 // 修改升级包
-func (d *directOTAFirmwareManage) ModifyOTAFirmware(ctx context.Context, in *ModifyOtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
-	return d.svr.ModifyOTAFirmware(ctx, in)
+func (d *directOTAFirmwareManage) OtaFirmwareUpdate(ctx context.Context, in *OtaFirmwareUpdateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
+	return d.svr.OtaFirmwareUpdate(ctx, in)
 }
 
 // 删除升级包
-func (m *defaultOTAFirmwareManage) DeleteOTAFirmware(ctx context.Context, in *DeleteOtaFirmwareReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAFirmwareManage) OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewOTAFirmwareManageClient(m.cli.Conn())
-	return client.DeleteOTAFirmware(ctx, in, opts...)
+	return client.OtaFirmwareDelete(ctx, in, opts...)
 }
 
 // 删除升级包
-func (d *directOTAFirmwareManage) DeleteOTAFirmware(ctx context.Context, in *DeleteOtaFirmwareReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.DeleteOTAFirmware(ctx, in)
+func (d *directOTAFirmwareManage) OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.OtaFirmwareDelete(ctx, in)
 }
 
 // 升级包列表
-func (m *defaultOTAFirmwareManage) ListOTAFirmware(ctx context.Context, in *ListOtaFirmwareReq, opts ...grpc.CallOption) (*ListOtaFirmwareResp, error) {
+func (m *defaultOTAFirmwareManage) OtaFirmwareIndex(ctx context.Context, in *OtaFirmwareIndexReq, opts ...grpc.CallOption) (*OtaFirmwareIndexResp, error) {
 	client := dm.NewOTAFirmwareManageClient(m.cli.Conn())
-	return client.ListOTAFirmware(ctx, in, opts...)
+	return client.OtaFirmwareIndex(ctx, in, opts...)
 }
 
 // 升级包列表
-func (d *directOTAFirmwareManage) ListOTAFirmware(ctx context.Context, in *ListOtaFirmwareReq, opts ...grpc.CallOption) (*ListOtaFirmwareResp, error) {
-	return d.svr.ListOTAFirmware(ctx, in)
+func (d *directOTAFirmwareManage) OtaFirmwareIndex(ctx context.Context, in *OtaFirmwareIndexReq, opts ...grpc.CallOption) (*OtaFirmwareIndexResp, error) {
+	return d.svr.OtaFirmwareIndex(ctx, in)
 }
 
 // 查询升级包
-func (m *defaultOTAFirmwareManage) QueryOTAFirmware(ctx context.Context, in *QueryOtaFirmwareReq, opts ...grpc.CallOption) (*QueryOtaFirmwareResp, error) {
+func (m *defaultOTAFirmwareManage) OtaFirmwareRead(ctx context.Context, in *OtaFirmwareReadReq, opts ...grpc.CallOption) (*OtaFirmwareReadResp, error) {
 	client := dm.NewOTAFirmwareManageClient(m.cli.Conn())
-	return client.QueryOTAFirmware(ctx, in, opts...)
+	return client.OtaFirmwareRead(ctx, in, opts...)
 }
 
 // 查询升级包
-func (d *directOTAFirmwareManage) QueryOTAFirmware(ctx context.Context, in *QueryOtaFirmwareReq, opts ...grpc.CallOption) (*QueryOtaFirmwareResp, error) {
-	return d.svr.QueryOTAFirmware(ctx, in)
+func (d *directOTAFirmwareManage) OtaFirmwareRead(ctx context.Context, in *OtaFirmwareReadReq, opts ...grpc.CallOption) (*OtaFirmwareReadResp, error) {
+	return d.svr.OtaFirmwareRead(ctx, in)
 }

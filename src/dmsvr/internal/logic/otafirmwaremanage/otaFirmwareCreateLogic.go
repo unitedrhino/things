@@ -15,7 +15,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type CreateOTAFirmwareLogic struct {
+type OtaFirmwareCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
@@ -23,8 +23,8 @@ type CreateOTAFirmwareLogic struct {
 	OfDB *relationDB.OtaFirmwareRepo
 }
 
-func NewCreateOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateOTAFirmwareLogic {
-	return &CreateOTAFirmwareLogic{
+func NewOtaFirmwareCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaFirmwareCreateLogic {
+	return &OtaFirmwareCreateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -33,7 +33,7 @@ func NewCreateOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *CreateOTAFirmwareLogic) CheckOtaFirmware(in *dm.OtaFirmwareReq) (bool, error) {
+func (l *OtaFirmwareCreateLogic) CheckOtaFirmware(in *dm.OtaFirmwareCreateReq) (bool, error) {
 	//查询升级包是否存在
 	logx.Infof("in:%+v", in)
 	logx.Infof("productId:%+v", in.ProductID)
@@ -59,8 +59,7 @@ func (l *CreateOTAFirmwareLogic) CheckOtaFirmware(in *dm.OtaFirmwareReq) (bool, 
 }
 
 // 添加升级包
-func (l *CreateOTAFirmwareLogic) CreateOTAFirmware(in *dm.OtaFirmwareReq) (*dm.OtaFirmwareResp, error) {
-	// todo: add your logic here and delete this line
+func (l *OtaFirmwareCreateLogic) OtaFirmwareCreate(in *dm.OtaFirmwareCreateReq) (*dm.OtaFirmwareResp, error) {
 	//校验版本号是否重复
 	logx.Infof("ctx:%+v", l.ctx)
 	var fileDB = relationDB.NewOtaFirmwareFileRepo(l.ctx)
@@ -132,4 +131,5 @@ func (l *CreateOTAFirmwareLogic) CreateOTAFirmware(in *dm.OtaFirmwareReq) (*dm.O
 		fileDB.Insert(l.ctx, &ff)
 	}
 	return &dm.OtaFirmwareResp{FirmwareID: firmWareId}, nil
+
 }

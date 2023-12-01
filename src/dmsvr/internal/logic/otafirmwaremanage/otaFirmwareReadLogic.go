@@ -12,7 +12,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type QueryOTAFirmwareLogic struct {
+type OtaFirmwareReadLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
@@ -21,8 +21,8 @@ type QueryOTAFirmwareLogic struct {
 	OffDB *relationDB.OtaFirmwareFileRepo
 }
 
-func NewQueryOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) *QueryOTAFirmwareLogic {
-	return &QueryOTAFirmwareLogic{
+func NewOtaFirmwareReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaFirmwareReadLogic {
+	return &OtaFirmwareReadLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -33,7 +33,7 @@ func NewQueryOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 // 查询升级包
-func (l *QueryOTAFirmwareLogic) QueryOTAFirmware(in *dm.QueryOtaFirmwareReq) (*dm.QueryOtaFirmwareResp, error) {
+func (l *OtaFirmwareReadLogic) OtaFirmwareRead(in *dm.OtaFirmwareReadReq) (*dm.OtaFirmwareReadResp, error) {
 	otaFirmware, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareFilter{FirmwareID: in.FirmwareId})
 	if err != nil {
 		l.Errorf("%s.Query OTAFirmware err=%v", utils.FuncName(), err)
@@ -44,7 +44,7 @@ func (l *QueryOTAFirmwareLogic) QueryOTAFirmware(in *dm.QueryOtaFirmwareReq) (*d
 		l.Errorf("%s.Query OTAFirmwareFile err=%v", utils.FuncName(), err)
 		return nil, err
 	}
-	var result *dm.QueryOtaFirmwareResp
+	var result *dm.OtaFirmwareReadResp
 	err = copier.Copy(&result, &otaFirmware)
 	if err != nil {
 		l.Errorf("%s.Copy OTAFirmware err=%v", utils.FuncName(), err)
