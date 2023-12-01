@@ -26,6 +26,7 @@ func NewActiveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ActiveLogi
 	}
 }
 
+
 func (l *ActiveLogic) Active(req *types.VidmgrInfoActiveReq) error {
 	// todo: add your logic here and delete this line
 	//read VidmgrInfo table and update table

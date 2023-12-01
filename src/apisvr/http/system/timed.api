@@ -17,8 +17,9 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "发送延时请求,如果任务不存在,则会自动创建,但是自动创建的需要填写param"
     @handler send
-    post /send (TimedTaskSendReq) returns ()
-
+    post /send (TimedTaskSendReq) returns (TimedTaskWithTaskID)
+    @handler cancel
+    post /cancel (TimedTaskWithTaskID) returns ()
     @handler infoCreate
     post /info/create (TimedTaskInfo) returns ()
     @handler infoUpdate
@@ -81,12 +82,16 @@ type (
 )
 
 type (
+    TimedTaskWithTaskID {
+        TaskID string      `json:"taskID"` //运行的taskID
+    }
     TimedTaskOption struct {
         Priority int64 `json:"priority,optional"`   //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级//以下两个参数优先使用ProcessIn
         ProcessIn int64 `json:"processIn,optional"` //多久之后发 秒数
         ProcessAt int64 `json:"processAt,optional"` // 固定时间发 秒时间戳
         Timeout int64 `json:"timeout,optional"`     //超时时间 优先使用 秒数
         Deadline int64 `json:"deadline,optional"`   //截止时间  秒时间戳
+        TaskID string      `json:"taskID,optional"` //指定运行的taskID
     }
     TimedTaskParamQueue struct {
         Topic string `json:"topic"`

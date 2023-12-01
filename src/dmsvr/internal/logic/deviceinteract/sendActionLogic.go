@@ -106,6 +106,7 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 				Option: &timedjob.TaskSendOption{
 					ProcessIn: in.Option.RequestTimeout,
 					Timeout:   in.Option.TimeoutToFail,
+					TaskID:    req.MsgToken,
 				},
 				ParamQueue: &timedjob.TaskParamQueue{
 					Topic:   topics.DmActionCheckDelay,

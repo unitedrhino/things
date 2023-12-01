@@ -381,6 +381,11 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/cancel",
+					Handler: systemtimedtask.CancelHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/info/create",
 					Handler: systemtimedtask.InfoCreateHandler(serverCtx),
 				},
