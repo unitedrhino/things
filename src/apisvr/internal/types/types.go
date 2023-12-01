@@ -664,7 +664,7 @@ type ProductSchemaInfo struct {
 	Type         int64   `json:"type"`                  //物模型类型 1:property属性 2:event事件 3:action行为
 	Tag          int64   `json:"tag"`                   //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
 	Identifier   string  `json:"identifier"`            //标识符
-	ExtendConfig *string `json:"extendConfig,optional"` //拓展参数
+	ExtendConfig string  `json:"extendConfig,optional"` //拓展参数
 	Name         *string `json:"name,optional"`         //功能名称
 	Desc         *string `json:"desc,optional"`         //描述
 	Required     int64   `json:"required,optional"`     //是否必须 1:是 2:否

@@ -67,7 +67,7 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	if in.Info.Required == 0 {
 		newPo.Required = po.Required
 	}
-	if in.Info.ExtendConfig == nil {
+	if in.Info.ExtendConfig == "" {
 		newPo.ExtendConfig = po.ExtendConfig
 	}
 	if err := CheckAffordance(newPo); err != nil {
