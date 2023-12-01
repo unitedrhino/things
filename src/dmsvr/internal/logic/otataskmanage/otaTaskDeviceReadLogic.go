@@ -3,6 +3,7 @@ package otataskmanagelogic
 import (
 	"context"
 
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -25,7 +26,10 @@ func NewOtaTaskDeviceReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 // 设备升级状态详情
 func (l *OtaTaskDeviceReadLogic) OtaTaskDeviceRead(in *dm.OtaTaskDeviceReadReq) (*dm.OtaTaskDeviceInfo, error) {
-	// todo: add your logic here and delete this line
-
-	return &dm.OtaTaskDeviceInfo{}, nil
+	var otDB = relationDB.NewOtaTaskDevicesRepo(l.ctx)
+	otd, err := otDB.FindOne(l.ctx, in.ID)
+	if err != nil {
+		return nil, err
+	}
+	return ToOtaTaskDeviceInfo(otd), nil
 }

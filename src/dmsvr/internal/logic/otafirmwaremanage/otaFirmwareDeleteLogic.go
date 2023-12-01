@@ -46,5 +46,4 @@ func (l *OtaFirmwareDeleteLogic) OtaFirmwareDelete(in *dm.OtaFirmwareDeleteReq) 
 		return nil, errors.System.AddDetail(err)
 	}
 	return &dm.Response{}, nil
-
 }
