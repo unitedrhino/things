@@ -29,7 +29,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 func (l *ReadLogic) Read(req *types.VidmgrInfoReadReq) (resp *types.VidmgrInfo, err error) {
 	// todo: add your logic here and delete this line
 	vidResp, err := l.svcCtx.VidmgrM.VidmgrInfoRead(l.ctx, &vid.VidmgrInfoReadReq{
-		VidmgrtID: req.VidmgrID,
+		VidmgrID: req.VidmgrID,
 	})
 	if err != nil {
 		er := errors.Fmt(err)

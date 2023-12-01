@@ -1,5 +1,8 @@
 Name: vid.rpc
 ListenOn: 0.0.0.0:9098
+Mode: dev
+#restconf
+
 Etcd:
   Hosts:
   - 127.0.0.1:2379
@@ -15,6 +18,17 @@ CacheRedis:
     Type: node
 Log:
   Encoding: plain
-MediaConf:
-  Host: 127.0.0.1:8088
+
+Mediakit:
+  Host: 127.0.0.1
+  Port: 8088
   Secret: xbk47OBiqVfiAo6wBwSRJFcUDmppaytq
+Restconf:
+  Name: vid
+  Host: 0.0.0.0
+  Port: 8888
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000

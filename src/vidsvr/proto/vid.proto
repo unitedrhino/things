@@ -25,6 +25,8 @@ message PageInfo{
 service VidmgrInfoManage{
   //新建服务
   rpc vidmgrInfoCreate(VidmgrInfo)    returns (Response);
+  //激活服务
+  rpc vidmgrInfoActive(VidmgrInfoActiveReq)    returns (Response);
   //更新服务
   rpc vidmgrInfoUpdate(VidmgrInfo)     returns (Response);
   //删除服务
@@ -58,12 +60,16 @@ message VidmgrInfo{
   map<string, string> tags = 15; //产品标签
 }
 
+message VidmgrInfoActiveReq{
+  string   vidmgrID = 1; //产品id
+}
+
 message VidmgrInfoDeleteReq{
-  string   vidmgrtID = 1; //产品id
+  string   vidmgrID = 1; //产品id
 }
 
 message VidmgrInfoReadReq{
-  string   vidmgrtID = 1; //产品id
+  string   vidmgrID = 1; //产品id
 }
 
 message VidmgrInfoIndexReq{

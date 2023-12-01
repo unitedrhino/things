@@ -42,7 +42,7 @@ service api {
 type (
     InfoCommon struct {
         VidmgrName string `json:"vidmgrName"`                               //服务名称
-        VidmgrID string `json:"vidmgrtID,optional"`                         //服务id
+        VidmgrID string `json:"vidmgrID,optional"`                         //服务id
         VidmgrType int64 `json:"vidmgrType,optional,range=[0:3]"`           //服务类型:1:ZLMediakit,2:srs,3:monibuca
         VidmgrIpV4 string `json:"vidmgrIpV4,optional"`                      //服务IP
         VidmgrPort int64  `json:"vidmgrPort,optional"`                      //服务端口
