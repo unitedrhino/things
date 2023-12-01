@@ -16,6 +16,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
+	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -327,9 +328,13 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 		}
 		utils.GoNewCtx(l.ctx, func(ctx context.Context) {
 			l.Infof("DeviceThingActionReport.ActionReply device:%v,reqType:%v,req:%v", core, reqType, l.dreq)
+			_, err := l.svcCtx.TimedM.TaskCancel(l.ctx, &timedmanage.TaskWithTaskID{TaskID: resp.MsgToken})
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
 			param, _ := resp.Data.(map[string]any)
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
-			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
+			err = l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
 				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, MsgToken: resp.MsgToken,
 				ActionID: resp.ActionID, Params: param, Dir: schema.ActionDirUp, Code: resp.Code, Status: resp.Msg,
 			})

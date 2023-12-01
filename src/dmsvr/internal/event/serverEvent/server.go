@@ -16,6 +16,7 @@ import (
 	deviceinteractlogic "github.com/i-Things/things/src/dmsvr/internal/logic/deviceinteract"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
+	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
 	"github.com/i-Things/things/src/timed/timedjobsvr/pb/timedjob"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -87,12 +88,17 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 		return err
 	}
 	payload, _ := json.Marshal(in)
+	_, err = l.svcCtx.TimedM.TaskCancel(l.ctx, &timedmanage.TaskWithTaskID{TaskID: req.MsgToken})
+	if err != nil { //重复创建一个taskID会报错,需要先删除原来的任务
+		l.Errorf("TaskSend err:%v", err)
+	}
 	_, err = l.svcCtx.TimedM.TaskSend(l.ctx, &timedjob.TaskSendReq{
 		GroupCode: def.TimedIThingsQueueGroupCode,
 		Code:      "disvr-action-check-delay",
 		Option: &timedjob.TaskSendOption{
 			ProcessIn: option.RetryInterval,
 			Deadline:  sendTime.Add(time.Duration(option.TimeoutToFail) * time.Second).Unix(),
+			TaskID:    req.MsgToken,
 		},
 		ParamQueue: &timedjob.TaskParamQueue{
 			Topic:   topics.DmActionCheckDelay,
