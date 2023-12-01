@@ -8,7 +8,7 @@ info(
     version: "v1"
 )
 import "common.api"  //公共结构体定义
-import "things/vidmgr/zlmedia.api"
+
 
 @server(
     group:things/vidmgr/stream
@@ -66,6 +66,19 @@ type (
 
         Desc        *string `json:"desc,optional"`                    //描述
         Tags        []*Tag  `json:"tags,optional"`                    //流tag
+    }
+
+    StreamTrack struct {
+        Channels int64  `json:"channels"`
+        CodecId int64  `json:"codec_id"`
+        CodecIdName string    `json:"codec_id_name"`
+        CodecType   int64    `json:"codec_type"`
+        Ready bool      `json:"ready"`
+        SampleBit int64    `json:"sample_bit"`
+        SampleRate int64       `json:"sample_rate"`
+        Fps int64      `json:"fps"`
+        Height  int64 `json:"height"`
+        Width   int64 `json:"width"`
     }
 
     VidmgrStream struct{

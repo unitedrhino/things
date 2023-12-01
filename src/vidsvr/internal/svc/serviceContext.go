@@ -55,6 +55,5 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Bus:      bus,
 		TimedM:   timedM,
 	}
-	//relationDB.DbDelayWorkInit(svcCtx)
 	return svcCtx
 }

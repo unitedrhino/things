@@ -1,6 +1,7 @@
 Name: vid.rpc
 ListenOn: 0.0.0.0:9098
 Mode: dev
+#restconf
 Etcd:
   Hosts:
   - 127.0.0.1:2379
@@ -20,9 +21,16 @@ Log:
 Mediakit:
   Host: 127.0.0.1
   Port: 8088
-  HookPort: 7230
   Secret: xbk47OBiqVfiAo6wBwSRJFcUDmppaytq
-
+Restconf:
+  Name: vid
+  Host: 0.0.0.0
+  Port: 8888
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
 #Telemetry:
 #    Name: dm.rpc
 #    Endpoint: http://127.0.0.1:14268/api/traces
