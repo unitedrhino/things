@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -44,10 +43,8 @@ func (l *AccessLogic) Access(req *types.DeviceAuthAccessReq) error {
 		Access:   access,
 		Ip:       req.Ip,
 	})
-	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.AccessAuth req=%v err=%+v", utils.FuncName(), req, er)
-		return er
+	if err == nil {
+		return nil
 	}
 
 	return device.ThirdProtoAccessAuth(l.ctx, l.svcCtx, req, access)
