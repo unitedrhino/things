@@ -1177,7 +1177,115 @@ message OtaFirmwareReadResp{
   string firmwareUdi = 10; //推给设备端端消息
   repeated FirmwareFile firmwareFileList = 11; //文件列表
 }
+service OTAJobManage{
+  //验证升级包
+  rpc otaVerifyJobCreate(OtaFirmwareVerifyReq) returns (UpgradeJobResp);
+  //创建静态升级批次
+  rpc otaStaticUpgradeJobCreate(StaticUpgradeJobReq) returns(UpgradeJobResp);
+  //创建动态升级批次
+  rpc otaDynamicUpgradeJobCreate(DynamicUpgradeJobReq) returns (UpgradeJobResp);
+  //获取升级包下的升级任务批次列表
+  rpc otaJobByFirmwareIndex(OtaJobByFirmwareIndexReq) returns(OtaJobInfoIndexResp);
+  //获取设备所在的升级包升级批次列表
+  rpc otaJobByDeviceIndex(OtaJobByDeviceIndexReq) returns(OtaJobInfoIndexResp);
+  //查询指定升级批次的详情
+  rpc otaJobRead(JobReq) returns(OtaJobInfo);
+  //取消动态升级策略
+  rpc cancelOTAStrategyByJob(JobReq) returns (Response);
+}
 
+message OtaFirmwareVerifyReq{
+  string firmwareId = 1; //固件id
+  string productID = 2;//产品id
+  repeated Tag tags = 3; //标签
+  repeated string deviceNames = 4; //产品名称
+  int64 timeoutInMinutes = 5; //超时时间
+  int64 needPush = 6; //是否需要主动推送
+  int64 needConfirm = 7; //是否需要自主控制
+  string downloadProtocol = 8; //下载协议
+}
+message UpgradeJobResp{
+  string jobId = 1; //jobId
+  string UtcCreate = 2; //OTA升级包验证任务的创建时间，UTC格式。
+}
+message Tag{
+  string key = 1; //标签key
+  string value = 2; //标签value
+}
+message StaticUpgradeJobReq{
+  string firmwareId = 1;
+  string productId =2;
+  Tag tag = 3;
+  string targetSelection = 4;
+  repeated string srcVersion = 5;
+  int64 scheduleTime = 6;
+  int64 retryInterval = 7;
+  int64 retryCount = 8;
+  int64 timeoutInMinutes=9;
+  int64 maximumPerMinute=10;
+  int64 grayPercent=11;
+  repeated string deviceName = 12;
+  int64 scheduleFinishTime = 13;
+  int64 overwriteMode = 14;
+  repeated string dnListFileUrl = 15;
+  int64 needPush = 16;
+  int64 needConfirm = 17;
+  string groupId = 18;
+  string groupType = 19;
+  string downloadProtocol = 20;
+  string multiModuleMode = 21;
+}
+
+message DynamicUpgradeJobReq{
+  string firmwareId = 1;
+  string productId =2;
+  Tag tag = 3;
+  repeated string srcVersion = 4;
+  int64 retryInterval = 5;
+  int64 retryCount = 6;
+  int64 timeoutInMinutes=7;
+  int64 maximumPerMinute=8;
+  int64 overwriteMode = 9;
+  int64 dynamicMode = 10;
+  int64 needPush = 11;
+  int64 needConfirm = 12;
+  string groupId = 13;
+  string groupType = 14;
+  string downloadProtocol = 15;
+  string multiModuleMode = 16;
+}
+message OtaJobByFirmwareIndexReq{
+  PageInfo pageInfo = 1;
+  string firmwareId = 2;
+}
+message OtaJobInfo{
+  string firmwareId = 1;
+  string jobId =2 ;
+  string jobStatus = 3;
+  string jobType = 4;
+  string productId = 5;
+  string upgradeType = 6;
+  repeated Tag tagList = 7;
+  string targetSelection = 8;
+  string utcCreate = 9;
+  string utcEndTime = 10;
+  string utcModified = 11;
+  string utcStartTime = 12;
+}
+message OtaJobInfoIndexResp{
+  repeated OtaJobInfo otaJobInfo = 1;
+  int64 total = 2;
+}
+
+message OtaJobByDeviceIndexReq{
+  PageInfo pageInfo = 1;
+  string firmwareId = 2;
+  string productId = 3;
+  string deviceName = 4;
+}
+message JobReq{
+  string jobId = 1;
+}
 
 
 

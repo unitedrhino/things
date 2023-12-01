@@ -3,6 +3,8 @@ package otataskmanagelogic
 import (
 	"context"
 
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -25,7 +27,15 @@ func NewOtaTaskDeviceCancleLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 // 取消单个设备的升级
 func (l *OtaTaskDeviceCancleLogic) OtaTaskDeviceCancle(in *dm.OtaTaskDeviceCancleReq) (*dm.OtaCommonResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &dm.OtaCommonResp{}, nil
+	var otDB = relationDB.NewOtaTaskDevicesRepo(l.ctx)
+	otd, err := otDB.FindOne(l.ctx, in.ID)
+	if err != nil {
+		return nil, err
+	}
+	if otd.Status == 501 || otd.Status == 601 {
+		return nil, errors.OtaCancleStatusError
+	}
+	otd.Status = 701
+	err = otDB.Update(l.ctx, otd)
+	return &dm.OtaCommonResp{}, err
 }
