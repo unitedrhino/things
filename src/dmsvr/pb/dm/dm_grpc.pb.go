@@ -3284,11 +3284,11 @@ var OtaTaskManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	OTAFirmwareManage_CreateOTAFirmware_FullMethodName = "/dm.OTAFirmwareManage/createOTAFirmware"
-	OTAFirmwareManage_ModifyOTAFirmware_FullMethodName = "/dm.OTAFirmwareManage/modifyOTAFirmware"
-	OTAFirmwareManage_DeleteOTAFirmware_FullMethodName = "/dm.OTAFirmwareManage/deleteOTAFirmware"
-	OTAFirmwareManage_ListOTAFirmware_FullMethodName   = "/dm.OTAFirmwareManage/listOTAFirmware"
-	OTAFirmwareManage_QueryOTAFirmware_FullMethodName  = "/dm.OTAFirmwareManage/queryOTAFirmware"
+	OTAFirmwareManage_OtaFirmwareCreate_FullMethodName = "/dm.OTAFirmwareManage/otaFirmwareCreate"
+	OTAFirmwareManage_OtaFirmwareUpdate_FullMethodName = "/dm.OTAFirmwareManage/otaFirmwareUpdate"
+	OTAFirmwareManage_OtaFirmwareDelete_FullMethodName = "/dm.OTAFirmwareManage/otaFirmwareDelete"
+	OTAFirmwareManage_OtaFirmwareIndex_FullMethodName  = "/dm.OTAFirmwareManage/otaFirmwareIndex"
+	OTAFirmwareManage_OtaFirmwareRead_FullMethodName   = "/dm.OTAFirmwareManage/otaFirmwareRead"
 )
 
 // OTAFirmwareManageClient is the client API for OTAFirmwareManage service.
@@ -3296,15 +3296,15 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OTAFirmwareManageClient interface {
 	// 添加升级包
-	CreateOTAFirmware(ctx context.Context, in *OtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
+	OtaFirmwareCreate(ctx context.Context, in *OtaFirmwareCreateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
 	// 修改升级包
-	ModifyOTAFirmware(ctx context.Context, in *ModifyOtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
+	OtaFirmwareUpdate(ctx context.Context, in *OtaFirmwareUpdateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
 	// 删除升级包
-	DeleteOTAFirmware(ctx context.Context, in *DeleteOtaFirmwareReq, opts ...grpc.CallOption) (*Response, error)
+	OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	// 升级包列表
-	ListOTAFirmware(ctx context.Context, in *ListOtaFirmwareReq, opts ...grpc.CallOption) (*ListOtaFirmwareResp, error)
+	OtaFirmwareIndex(ctx context.Context, in *OtaFirmwareIndexReq, opts ...grpc.CallOption) (*OtaFirmwareIndexResp, error)
 	// 查询升级包
-	QueryOTAFirmware(ctx context.Context, in *QueryOtaFirmwareReq, opts ...grpc.CallOption) (*QueryOtaFirmwareResp, error)
+	OtaFirmwareRead(ctx context.Context, in *OtaFirmwareReadReq, opts ...grpc.CallOption) (*OtaFirmwareReadResp, error)
 }
 
 type oTAFirmwareManageClient struct {
@@ -3315,45 +3315,45 @@ func NewOTAFirmwareManageClient(cc grpc.ClientConnInterface) OTAFirmwareManageCl
 	return &oTAFirmwareManageClient{cc}
 }
 
-func (c *oTAFirmwareManageClient) CreateOTAFirmware(ctx context.Context, in *OtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
+func (c *oTAFirmwareManageClient) OtaFirmwareCreate(ctx context.Context, in *OtaFirmwareCreateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
 	out := new(OtaFirmwareResp)
-	err := c.cc.Invoke(ctx, OTAFirmwareManage_CreateOTAFirmware_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, OTAFirmwareManage_OtaFirmwareCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *oTAFirmwareManageClient) ModifyOTAFirmware(ctx context.Context, in *ModifyOtaFirmwareReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
+func (c *oTAFirmwareManageClient) OtaFirmwareUpdate(ctx context.Context, in *OtaFirmwareUpdateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error) {
 	out := new(OtaFirmwareResp)
-	err := c.cc.Invoke(ctx, OTAFirmwareManage_ModifyOTAFirmware_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, OTAFirmwareManage_OtaFirmwareUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *oTAFirmwareManageClient) DeleteOTAFirmware(ctx context.Context, in *DeleteOtaFirmwareReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *oTAFirmwareManageClient) OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, OTAFirmwareManage_DeleteOTAFirmware_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, OTAFirmwareManage_OtaFirmwareDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *oTAFirmwareManageClient) ListOTAFirmware(ctx context.Context, in *ListOtaFirmwareReq, opts ...grpc.CallOption) (*ListOtaFirmwareResp, error) {
-	out := new(ListOtaFirmwareResp)
-	err := c.cc.Invoke(ctx, OTAFirmwareManage_ListOTAFirmware_FullMethodName, in, out, opts...)
+func (c *oTAFirmwareManageClient) OtaFirmwareIndex(ctx context.Context, in *OtaFirmwareIndexReq, opts ...grpc.CallOption) (*OtaFirmwareIndexResp, error) {
+	out := new(OtaFirmwareIndexResp)
+	err := c.cc.Invoke(ctx, OTAFirmwareManage_OtaFirmwareIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *oTAFirmwareManageClient) QueryOTAFirmware(ctx context.Context, in *QueryOtaFirmwareReq, opts ...grpc.CallOption) (*QueryOtaFirmwareResp, error) {
-	out := new(QueryOtaFirmwareResp)
-	err := c.cc.Invoke(ctx, OTAFirmwareManage_QueryOTAFirmware_FullMethodName, in, out, opts...)
+func (c *oTAFirmwareManageClient) OtaFirmwareRead(ctx context.Context, in *OtaFirmwareReadReq, opts ...grpc.CallOption) (*OtaFirmwareReadResp, error) {
+	out := new(OtaFirmwareReadResp)
+	err := c.cc.Invoke(ctx, OTAFirmwareManage_OtaFirmwareRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3365,15 +3365,15 @@ func (c *oTAFirmwareManageClient) QueryOTAFirmware(ctx context.Context, in *Quer
 // for forward compatibility
 type OTAFirmwareManageServer interface {
 	// 添加升级包
-	CreateOTAFirmware(context.Context, *OtaFirmwareReq) (*OtaFirmwareResp, error)
+	OtaFirmwareCreate(context.Context, *OtaFirmwareCreateReq) (*OtaFirmwareResp, error)
 	// 修改升级包
-	ModifyOTAFirmware(context.Context, *ModifyOtaFirmwareReq) (*OtaFirmwareResp, error)
+	OtaFirmwareUpdate(context.Context, *OtaFirmwareUpdateReq) (*OtaFirmwareResp, error)
 	// 删除升级包
-	DeleteOTAFirmware(context.Context, *DeleteOtaFirmwareReq) (*Response, error)
+	OtaFirmwareDelete(context.Context, *OtaFirmwareDeleteReq) (*Response, error)
 	// 升级包列表
-	ListOTAFirmware(context.Context, *ListOtaFirmwareReq) (*ListOtaFirmwareResp, error)
+	OtaFirmwareIndex(context.Context, *OtaFirmwareIndexReq) (*OtaFirmwareIndexResp, error)
 	// 查询升级包
-	QueryOTAFirmware(context.Context, *QueryOtaFirmwareReq) (*QueryOtaFirmwareResp, error)
+	OtaFirmwareRead(context.Context, *OtaFirmwareReadReq) (*OtaFirmwareReadResp, error)
 	mustEmbedUnimplementedOTAFirmwareManageServer()
 }
 
@@ -3381,20 +3381,20 @@ type OTAFirmwareManageServer interface {
 type UnimplementedOTAFirmwareManageServer struct {
 }
 
-func (UnimplementedOTAFirmwareManageServer) CreateOTAFirmware(context.Context, *OtaFirmwareReq) (*OtaFirmwareResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOTAFirmware not implemented")
+func (UnimplementedOTAFirmwareManageServer) OtaFirmwareCreate(context.Context, *OtaFirmwareCreateReq) (*OtaFirmwareResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareCreate not implemented")
 }
-func (UnimplementedOTAFirmwareManageServer) ModifyOTAFirmware(context.Context, *ModifyOtaFirmwareReq) (*OtaFirmwareResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ModifyOTAFirmware not implemented")
+func (UnimplementedOTAFirmwareManageServer) OtaFirmwareUpdate(context.Context, *OtaFirmwareUpdateReq) (*OtaFirmwareResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareUpdate not implemented")
 }
-func (UnimplementedOTAFirmwareManageServer) DeleteOTAFirmware(context.Context, *DeleteOtaFirmwareReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteOTAFirmware not implemented")
+func (UnimplementedOTAFirmwareManageServer) OtaFirmwareDelete(context.Context, *OtaFirmwareDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareDelete not implemented")
 }
-func (UnimplementedOTAFirmwareManageServer) ListOTAFirmware(context.Context, *ListOtaFirmwareReq) (*ListOtaFirmwareResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListOTAFirmware not implemented")
+func (UnimplementedOTAFirmwareManageServer) OtaFirmwareIndex(context.Context, *OtaFirmwareIndexReq) (*OtaFirmwareIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareIndex not implemented")
 }
-func (UnimplementedOTAFirmwareManageServer) QueryOTAFirmware(context.Context, *QueryOtaFirmwareReq) (*QueryOtaFirmwareResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryOTAFirmware not implemented")
+func (UnimplementedOTAFirmwareManageServer) OtaFirmwareRead(context.Context, *OtaFirmwareReadReq) (*OtaFirmwareReadResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareRead not implemented")
 }
 func (UnimplementedOTAFirmwareManageServer) mustEmbedUnimplementedOTAFirmwareManageServer() {}
 
@@ -3409,92 +3409,92 @@ func RegisterOTAFirmwareManageServer(s grpc.ServiceRegistrar, srv OTAFirmwareMan
 	s.RegisterService(&OTAFirmwareManage_ServiceDesc, srv)
 }
 
-func _OTAFirmwareManage_CreateOTAFirmware_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OtaFirmwareReq)
+func _OTAFirmwareManage_OtaFirmwareCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaFirmwareCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OTAFirmwareManageServer).CreateOTAFirmware(ctx, in)
+		return srv.(OTAFirmwareManageServer).OtaFirmwareCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OTAFirmwareManage_CreateOTAFirmware_FullMethodName,
+		FullMethod: OTAFirmwareManage_OtaFirmwareCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OTAFirmwareManageServer).CreateOTAFirmware(ctx, req.(*OtaFirmwareReq))
+		return srv.(OTAFirmwareManageServer).OtaFirmwareCreate(ctx, req.(*OtaFirmwareCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OTAFirmwareManage_ModifyOTAFirmware_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ModifyOtaFirmwareReq)
+func _OTAFirmwareManage_OtaFirmwareUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaFirmwareUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OTAFirmwareManageServer).ModifyOTAFirmware(ctx, in)
+		return srv.(OTAFirmwareManageServer).OtaFirmwareUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OTAFirmwareManage_ModifyOTAFirmware_FullMethodName,
+		FullMethod: OTAFirmwareManage_OtaFirmwareUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OTAFirmwareManageServer).ModifyOTAFirmware(ctx, req.(*ModifyOtaFirmwareReq))
+		return srv.(OTAFirmwareManageServer).OtaFirmwareUpdate(ctx, req.(*OtaFirmwareUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OTAFirmwareManage_DeleteOTAFirmware_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteOtaFirmwareReq)
+func _OTAFirmwareManage_OtaFirmwareDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaFirmwareDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OTAFirmwareManageServer).DeleteOTAFirmware(ctx, in)
+		return srv.(OTAFirmwareManageServer).OtaFirmwareDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OTAFirmwareManage_DeleteOTAFirmware_FullMethodName,
+		FullMethod: OTAFirmwareManage_OtaFirmwareDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OTAFirmwareManageServer).DeleteOTAFirmware(ctx, req.(*DeleteOtaFirmwareReq))
+		return srv.(OTAFirmwareManageServer).OtaFirmwareDelete(ctx, req.(*OtaFirmwareDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OTAFirmwareManage_ListOTAFirmware_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListOtaFirmwareReq)
+func _OTAFirmwareManage_OtaFirmwareIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaFirmwareIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OTAFirmwareManageServer).ListOTAFirmware(ctx, in)
+		return srv.(OTAFirmwareManageServer).OtaFirmwareIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OTAFirmwareManage_ListOTAFirmware_FullMethodName,
+		FullMethod: OTAFirmwareManage_OtaFirmwareIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OTAFirmwareManageServer).ListOTAFirmware(ctx, req.(*ListOtaFirmwareReq))
+		return srv.(OTAFirmwareManageServer).OtaFirmwareIndex(ctx, req.(*OtaFirmwareIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OTAFirmwareManage_QueryOTAFirmware_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryOtaFirmwareReq)
+func _OTAFirmwareManage_OtaFirmwareRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaFirmwareReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OTAFirmwareManageServer).QueryOTAFirmware(ctx, in)
+		return srv.(OTAFirmwareManageServer).OtaFirmwareRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OTAFirmwareManage_QueryOTAFirmware_FullMethodName,
+		FullMethod: OTAFirmwareManage_OtaFirmwareRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OTAFirmwareManageServer).QueryOTAFirmware(ctx, req.(*QueryOtaFirmwareReq))
+		return srv.(OTAFirmwareManageServer).OtaFirmwareRead(ctx, req.(*OtaFirmwareReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3507,24 +3507,24 @@ var OTAFirmwareManage_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*OTAFirmwareManageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "createOTAFirmware",
-			Handler:    _OTAFirmwareManage_CreateOTAFirmware_Handler,
+			MethodName: "otaFirmwareCreate",
+			Handler:    _OTAFirmwareManage_OtaFirmwareCreate_Handler,
 		},
 		{
-			MethodName: "modifyOTAFirmware",
-			Handler:    _OTAFirmwareManage_ModifyOTAFirmware_Handler,
+			MethodName: "otaFirmwareUpdate",
+			Handler:    _OTAFirmwareManage_OtaFirmwareUpdate_Handler,
 		},
 		{
-			MethodName: "deleteOTAFirmware",
-			Handler:    _OTAFirmwareManage_DeleteOTAFirmware_Handler,
+			MethodName: "otaFirmwareDelete",
+			Handler:    _OTAFirmwareManage_OtaFirmwareDelete_Handler,
 		},
 		{
-			MethodName: "listOTAFirmware",
-			Handler:    _OTAFirmwareManage_ListOTAFirmware_Handler,
+			MethodName: "otaFirmwareIndex",
+			Handler:    _OTAFirmwareManage_OtaFirmwareIndex_Handler,
 		},
 		{
-			MethodName: "queryOTAFirmware",
-			Handler:    _OTAFirmwareManage_QueryOTAFirmware_Handler,
+			MethodName: "otaFirmwareRead",
+			Handler:    _OTAFirmwareManage_OtaFirmwareRead_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

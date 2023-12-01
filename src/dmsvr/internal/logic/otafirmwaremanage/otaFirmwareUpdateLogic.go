@@ -13,7 +13,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ModifyOTAFirmwareLogic struct {
+type OtaFirmwareUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
@@ -21,8 +21,8 @@ type ModifyOTAFirmwareLogic struct {
 	OfDB *relationDB.OtaFirmwareRepo
 }
 
-func NewModifyOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ModifyOTAFirmwareLogic {
-	return &ModifyOTAFirmwareLogic{
+func NewOtaFirmwareUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaFirmwareUpdateLogic {
+	return &OtaFirmwareUpdateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -32,7 +32,7 @@ func NewModifyOTAFirmwareLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 // 修改升级包
-func (l *ModifyOTAFirmwareLogic) ModifyOTAFirmware(in *dm.ModifyOtaFirmwareReq) (*dm.OtaFirmwareResp, error) {
+func (l *OtaFirmwareUpdateLogic) OtaFirmwareUpdate(in *dm.OtaFirmwareUpdateReq) (*dm.OtaFirmwareResp, error) {
 	var otaFirmware relationDB.DmOtaFirmware
 	copier.Copy(&otaFirmware, in)
 	logx.Infof("otaFirmware:%+v", otaFirmware)
@@ -42,5 +42,4 @@ func (l *ModifyOTAFirmwareLogic) ModifyOTAFirmware(in *dm.ModifyOtaFirmwareReq) 
 		return nil, errors.System.AddDetail(err)
 	}
 	return &dm.OtaFirmwareResp{FirmwareID: otaFirmware.ID}, nil
-
 }
