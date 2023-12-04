@@ -54,7 +54,7 @@ func ApiRun() {
 	fmt.Printf("Starting apiSvr at %s:%d...\n",
 		apiCtx.SvcCtx.Config.Restconf.Host, apiCtx.SvcCtx.Config.Restconf.Port)
 	defer apiCtx.Server.Stop()
-	//InitData()
+	InitData()
 	//初始化第一个流服务
 	apiCtx.Server.Start()
 }

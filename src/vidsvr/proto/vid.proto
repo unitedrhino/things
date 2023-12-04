@@ -195,8 +195,11 @@ message VidmgrStream{
   bool isOnline=24;
   int64   lastLogin = 25; //最后上线时间 只读
   string vidmgrID = 26;
-  google.protobuf.StringValue   desc = 27;//描述
-  map<string, string> tags = 28; //产品标签
+  int64 typeMedia = 27;
+  string mediaIP = 28;
+  int64  mediaPort = 29;
+  google.protobuf.StringValue   desc = 30;//描述
+  map<string, string> tags = 31; //产品标签
 }
 
 

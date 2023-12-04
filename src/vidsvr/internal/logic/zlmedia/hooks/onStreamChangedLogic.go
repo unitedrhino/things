@@ -89,7 +89,6 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 				vidStreamInfo := ToVidmgrStreamRpc(req)
 				vidStreamInfo.IsOnline = true //设置状态为在线
 				vidStreamInfo.Protocol = GetProtocol(req.Schema)
-
 				err := streamRepo.Insert(l.ctx, vidStreamInfo)
 				if err != nil {
 					l.Errorf("%s rpc.VidmgrStreamCreate  err=%+v", utils.FuncName(), err)

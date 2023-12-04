@@ -28,6 +28,8 @@ type VidmgrStreamFilter struct {
 	PeerIP     int64
 	PeerPort   int64
 
+	TypeMedia int64
+
 	IsOnline bool
 
 	LastLoginTime struct {

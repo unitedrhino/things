@@ -8,6 +8,12 @@ info(
     version: "v1"
 )
 type (
+    SvcZlmedia struct {
+        IP     string `json:"ip"`
+        Port   int64  `json:"port"`
+        Secret string `json:"Secret"`
+    }
+
     ThreadLoad struct {
         Delay int64 `json:"delay"`
         Load int64 `json:"load"`
@@ -222,5 +228,250 @@ type (
         SrtPort                        string `json:"srt.port,omitempty"`
         SrtTimeoutSec                  string `json:"srt.timeoutSec,omitempty"`
     }
+)
+type (
+    //Respond   0/index/api/getApiList
+    //Resquest  默认请求
+    IndexApiListResp struct {
+        Code int64    `json:"code"`
+        Data []string `json:"data"`
+    }
+        //Respond   1/index/api/getThreadsLoad
+        //Resquest  默认请求
+    IndexApiThreadLoadResp struct {
+        Code int64                          `json:"code"`
+        Data []ThreadLoad           `json:"data"`
+    }
+        //Respond   2/index/api/getWorkThreadsLoad
+        //Resquest 默认请求
+    IndexApiWorkThreadLoadResp struct {
+        Code int64                          `json:"code"`
+        Data []ThreadLoad           `json:"data"`
+    }
 
+
+        //Respond   3/index/api/getServerConfig
+    IndexApiServerConfigResp struct {
+        Code int64                              `json:"code"`
+        Data []ServerConfig             `json:"data"`
+    }
+        //Respond   4/index/api/setServerConfig
+    IndexApiSetServerConfigResp struct {
+        Changed int64          `json:"changed"`
+        Code int64             `json:"code"`
+    }
+        //Request
+
+        //Respond   5/index/api/restartServer
+        //Resquest 默认请求
+    IndexApiRestartServerResp struct {
+        Code int64              `json:"code"`
+        Msg  int64               `json:"msg"`
+    }
+
+        //Respond   6/index/api/getMediaList
+    IndexApiMediaListResp struct {
+        Code int64                              `json:"code"`
+        Data []MediaList                `json:"data"`
+    }
+
+        //Respond   7/index/api/close_stream(已过期，请使用close_streams接口替换)
+    IndexApiCloseStreamResp struct {
+        Code int64                              `json:"code"`
+        Result  int64 `json:"result"`
+        Msg string  `json:"msg"`
+    }
+
+        //Respond   8/index/api/close_streams
+    IndexApiCloseStreamsResp struct {
+        Code        int64       `json:"code"`
+        CountHit    int64       `json:"count_hit"`
+        CountClosed int64       `json:"count_closed"`
+    }
+
+    IndexApiAllSession struct {
+        Id string `json:"id"`
+        LocalIp string `json:"local_ip"`
+        LocalPort int64 `json:"local_port""`
+        PeerIp string `json:"peer_ip"`
+        PeerPort int64 `json:"peer_port"`
+        Typeid string `json:"typeid"`
+    }
+        //Respond   9/index/api/getAllSession
+    IndexApiAllSessionResp struct {
+        Code int64                      `json:"code"`
+        Data []IndexApiAllSession `json:"data"`
+    }
+
+        //Resond    10/index/api/kick_session
+    IndexApiKickSessionResp struct {
+        Code int64          `json:"code"`
+        Msg  string         `json:"msg"`
+    }
+
+        //Respond    11/index/api/kick_sessions
+    IndexApiKickSessionsResp struct {
+        Code int64          `json:"code"`
+        CountHit    int64   `json:"count_hit"`
+        Msg  string         `json:"msg"`
+    }
+
+    IndexApiAddStreamKey struct{
+        Key string  `json:"key"`
+    }
+        //Respond   12/index/api/addStreamProxy
+    IndexApiAddStreamProxyResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamKey `json:"data"`
+    }
+
+        //Respond   13/index/api/delStreamProxy(流注册成功后，也可以使用close_streams接口替代)
+    IndexApiAddStreamFlag struct{
+        Flag bool  `json:"flag"`
+    }
+    IndexApiDelStreamProxyResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamFlag `json:"data"`
+    }
+
+        //Respond   14/index/api/addFFmpegSource 通过fork FFmpeg进程的方式拉流代理，支持任意协议
+    IndexApiAddFFmpegSourceResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamKey `json:"data"`
+    }
+        //Respond   15/index/api/delFFmpegSource(流注册成功后，也可以使用close_streams接口替代)
+    IndexApiDelFFmpegSourceResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamFlag `json:"data"`
+    }
+
+        //Respond   16/index/api/isMediaOnline(已过期，请使用getMediaList接口替代)
+    IndexApiIsMediaOnlineResp struct {
+        Code    int64 `json:"code"`
+        Online bool   `json:"online"`
+    }
+
+        //Respond   17/index/api/getMediaInfo(已过期，请使用getMediaList接口替代)
+    IndexApiMediaInfoResp struct {
+        Code    int64 `json:"code"`
+        Online bool   `json:"online"`
+        ReaderCount int64 `json:"readerCount"`
+        TotalReaderCount    int64 `json:"totalReaderCount"`
+        Tracks  []StreamTrack `json:"tracks"`
+    }
+        //Respond   18/index/api/getRtpInfo
+    IndexApiRtpInfoResp struct {
+        Code    int64 `json:"code"`
+        Exist   bool    `json:"exist"`
+        PeerIp string `json:"peer_ip"`
+        PeerPort int64 `json:"peer_port"`
+        LocalIp string `json:"local_ip"`
+        LocalPort int64 `json:"local_port"`
+    }
+
+        //Respond   19/index/api/getMp4RecordFile
+    IndexApiRecord struct {
+        Paths       []string    `json:"paths"`
+        RootPath    string  `json:"rootPath"`
+    }
+    IndexApiMp4RecordFileResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiRecord  `json:"data"`
+    }
+
+        //Respond   20/index/api/startRecord
+    IndexApiStartRecordResp struct {
+        Code int64 `json:"code"`
+        Result  bool    `json:"result"`
+    }
+
+        //Respond   21/index/api/stopRecord
+    IndexApiStopRecordResp struct {
+        Code int64 `json:"code"`
+        Result  bool    `json:"result"`
+    }
+
+        //Respond   22/index/api/isRecording
+    IndexApiIsRecordingResp struct {
+        Code int64 `json:"code"`
+        Status  bool    `json:"status"`
+    }
+
+        //Respond   23/index/api/getSnap
+    IndexApiSnapResp struct {
+        Data []byte `json:"Data"`
+    }
+
+        //Respond   24/index/api/openRtpServer
+    IndexApiOpenRtpServerResp struct {
+        Code int64 `json:"code"`
+        Port    int64 `json:"port"`
+    }
+
+        //Respond   25/index/api/closeRtpServer
+    IndexApiCloseRtpServerResp struct {
+        Code int64 `json:"code"`
+        Hit    int64 `json:"hit"`
+    }
+
+    IndexApiRtp struct {
+        Port    int64 `json:"port"`
+        StreamId    string  `json:"stream_id"`
+    }
+        //Respond   26/index/api/listRtpServer
+    IndexApiListRtpServerResp struct {
+        Code    int64 `json:"code"`
+        Data    []IndexApiRtp  `json:"data"`
+    }
+
+        //Respond   27/index/api/startSendRtp
+    IndexApiStartSendRtpResp struct {
+        Code    int64 `json:"code"`
+        LocalProt    int64  `json:"local_port"`
+    }
+
+        //Respond   27.1/index/api/startSendRtpPassive
+    IndexApiStartSendRtpPassiveResp struct {
+        Code    int64 `json:"code"`
+        LocalProt    int64  `json:"local_port"`
+    }
+
+        //Respond   28/index/api/stopSendRtp
+    IndexApiStopSendRtpResp struct {
+        Code    int64 `json:"code"`
+    }
+
+        //Respond   29/index/api/getStatistic
+    IndexApiStatisticResp struct {
+        Code    int64 `json:"code"`
+        Data    Statistic   `json:"data"`
+    }
+
+        //Respond   30/index/api/addStreamPusherProxy
+    IndexApiAddStreamPusherProxyResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamKey   `json:"data"`
+    }
+
+        //Respond   31/index/api/delStreamPusherProxy(可以使用close_streams接口关闭源直播流也可以停止推流)
+    IndexDelStreamPusherProxyResp struct {
+        Code    int64 `json:"code"`
+        Data    IndexApiAddStreamFlag   `json:"data"`
+    }
+
+        //Respond   32/index/api/version(获取版本信息)
+    IndexApiVersion struct {
+        branchName string `json:"branchName"`
+        buildTime string  `json:"buildTime"`
+        commitHash string `json:"commitHash"`
+    }
+    IndexApiVersionResp struct {
+        Code int64                     `json:"code"`
+        Data IndexApiVersion           `json:"data"`
+    }
+        //Respond   33/index/api/getMediaPlayerList
+    IndexApiMediaPlayerListResp struct {
+        Code int64                     `json:"code"`
+        Data MediaPlayer           `json:"data"`
+    }
 )

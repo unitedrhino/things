@@ -199,8 +199,8 @@ services:
       - "30000-30500:30000-30500"
       - "30000-30500:30000-30500/udp"
     volumes:
-      - ../../deploy/conf/zlmediakit/config:/root/zlmediakit/config
-      - ../../deploy/conf/zlmediakit/record:/root/zlmediakit/record
+      - ../../deploy/conf/zlmediakit/config:/opt/media/conf
+      - ../../deploy/conf/zlmediakit/record:/opt/media/record
     logging:
       options:
         max-size: "50M" # 最大文件上传限制

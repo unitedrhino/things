@@ -9,4 +9,4 @@ info(
 )
 
 import "zlmedia/hooks.api" //zlemedia api
-import "zlmedia/index.api" //zlemedia api
+//import "zlmedia/index.api" //zlemedia api   de

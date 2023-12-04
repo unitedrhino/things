@@ -10,153 +10,153 @@ info(
 
 import "zlmedia/common.api" //zlemedia api
 
-@server(
-    group:zlmedia/index
-    prefix:/api/v1/zlmedia/index
-    //    middleware: SetupWare, CheckTokenWare, TeardownWare
-)
+//@server(
+//    group:zlmedia/index
+//    prefix:/api/v1/zlmedia/index
+//    //    middleware: SetupWare, CheckTokenWare, TeardownWare
+//)
 
-service api {
-    @doc "获取API列表"
-    @handler getApiList
-    post /getApiList (IndexApiReq) returns (IndexApiListResp)
-
-    @doc "获取各epoll(或select)线程负载以及延时"
-    @handler getThreadsLoad
-    post /getThreadsLoad (IndexApiReq) returns (IndexApiThreadLoadResp)
-
-    @doc "获取各后台epoll(或select)线程负载以及延时"
-    @handler getWorkThreadsLoad
-    post /getWorkThreadsLoad (IndexApiReq) returns (IndexApiWorkThreadLoadResp)
-
-    @doc "获取服务器配置"
-    @handler getServerConfig
-    post /getServerConfig (IndexApiReq) returns (IndexApiServerConfigResp)
-
-    @doc "设置服务器配置"
-    @handler setServerConfig
-    post /setServerConfig (IndexApiSetServerConfigReq) returns (IndexApiSetServerConfigResp)
-
-    @doc "重启服务器,只有Daemon方式才能重启，否则是直接关闭！"
-    @handler restartServer
-    post /restartServer (IndexApiReq) returns (IndexApiRestartServerResp)
-
-    @doc "获取流列表，可选筛选参数"
-    @handler getMediaList
-    post /getMediaList (IndexApiReq) returns (IndexApiMediaListResp)
-
-    @doc "关闭流(目前所有类型的流都支持关闭)"
-    @handler closeStream
-    post /closeStream (IndexApiReq) returns (IndexApiCloseStreamResp)
-
-    @doc "关闭流(目前所有类型的流都支持关闭)"
-    @handler closeStreams
-    post /closeStreams (IndexApiReq) returns (IndexApiCloseStreamsResp)
-
-    @doc "获取所有TcpSession列表(获取所有tcp客户端相关信息)"
-    @handler getAllSession
-    post /getAllSession (IndexApiReq) returns (IndexApiAllSessionResp)
-
-    @doc "断开tcp连接，比如说可以断开rtsp、rtmp播放器等"
-    @handler kickSession
-    post /kick_session (IndexApiReq) returns (IndexApiKickSessionResp)
-
-    @doc "断开tcp连接，比如说可以断开rtsp、rtmp播放器等"
-    @handler kickSessions
-    post /kickSessions (IndexApiReq) returns (IndexApiKickSessionsResp)
-
-    @doc "动态添加rtsp/rtmp/hls/http-ts/http-flv拉流代理(只支持H264/H265/aac/G711/opus负载)"
-    @handler addStreamProxy
-    post /addStreamProxy (IndexApiReq) returns (IndexApiAddStreamProxyResp)
-
-    @doc "关闭拉流代理(流注册成功后，也可以使用close_streams接口替代) "
-    @handler delStreamProxy
-    post /delStreamProxy (IndexApiReq) returns (IndexApiDelStreamProxyResp)
-
-    @doc "通过fork FFmpeg进程的方式拉流代理，支持任意协议"
-    @handler addFFmpegSource
-    post /addFFmpegSource (IndexApiReq) returns (IndexApiAddFFmpegSourceResp)
-
-    @doc "关闭ffmpeg拉流代理(流注册成功后，也可以使用close_streams接口替代)"
-    @handler delFFmpegSource
-    post /delFFmpegSource (IndexApiReq) returns (IndexApiDelFFmpegSourceResp)
-
-    @doc "判断直播流是否在线(已过期，请使用getMediaList接口替代) "
-    @handler isMediaOnline
-    post /isMediaOnline (IndexApiReq) returns (IndexApiIsMediaOnlineResp)
-
-    @doc "获取流相关信息(已过期，请使用getMediaList接口替代)"
-    @handler getMediaInfo
-    post /getMediaInfo (IndexApiReq) returns (IndexApiMediaInfoResp)
-
-    @doc "获取rtp代理时的某路ssrc rtp信息"
-    @handler getRtpInfo
-    post /getRtpInfo (IndexApiReq) returns (IndexApiRtpInfoResp)
-
-    @doc "搜索文件系统，获取流对应的录像文件列表或日期文件夹列表"
-    @handler getMp4RecordFile
-    post /getMp4RecordFile (IndexApiReq) returns (IndexApiMp4RecordFileResp)
-
-    @doc "开始录制hls或MP4"
-    @handler startRecord
-    post /startRecord (IndexApiReq) returns (IndexApiStartRecordResp)
-
-    @doc "停止录制流"
-    @handler stopRecord
-    post /stopRecord (IndexApiReq) returns (IndexApiStopRecordResp)
-
-    @doc "获取流录制状态"
-    @handler isRecording
-    post /isRecording (IndexApiReq) returns (IndexApiIsRecordingResp)
-
-    @doc "获取截图或生成实时截图并返回"
-    @handler getSnap
-    post /getSnap (IndexApiReq) returns (IndexApiSnapResp)
-
-    @doc "创建GB28181 RTP接收端口，如果该端口接收数据超时，则会自动被回收(不用调用closeRtpServer接口)"
-    @handler openRtpServer
-    post /openRtpServer (IndexApiReq) returns (IndexApiOpenRtpServerResp)
-
-    @doc "关闭GB28181 RTP接收端口"
-    @handler closeRtpServer
-    post /closeRtpServer (IndexApiReq) returns (IndexApiCloseRtpServerResp)
-
-    @doc "获取openRtpServer接口创建的所有RTP服务器"
-    @handler listRtpServer
-    post /listRtpServer (IndexApiReq) returns (IndexApiListRtpServerResp)
-
-    @doc "作为GB28181客户端，启动ps-rtp推流，支持rtp/udp方式；该接口支持rtsp/rtmp等协议转ps-rtp推流。第一次推流失败会直接返回错误，成功一次后，后续失败也将无限重试。"
-    @handler startSendRtp
-    post /startSendRtp (IndexApiReq) returns (IndexApiStartSendRtpResp)
-
-    @doc "作为GB28181 Passive TCP服务器 "
-    @handler startSendRtpPassive
-    post /startSendRtpPassive (IndexApiReq) returns (IndexApiStartSendRtpPassiveResp)
-
-    @doc "停止GB28181 ps-rtp推流"
-    @handler stopSendRtp
-    post /stopSendRtp (IndexApiReq) returns (IndexApiStopSendRtpResp)
-
-    @doc "获取主要对象个数统计，主要用于分析内存性能"
-    @handler getStatistic
-    post /getStatistic (IndexApiReq) returns (IndexApiStatisticResp)
-
-    @doc "添加rtsp/rtmp主动推流(把本服务器的直播流推送到其他服务器去)"
-    @handler addStreamPusherProxy
-    post /addStreamPusherProxy (IndexApiReq) returns (IndexApiAddStreamPusherProxyResp)
-
-    @doc "关闭推流(可以使用close_streams接口关闭源直播流也可以停止推流)"
-    @handler delStreamPusherProxy
-    post /delStreamPusherProxy (IndexApiReq) returns (IndexApiDelStreamProxyResp)
-
-    @doc "获取版本信息，如分支，commit id, 编译时间"
-    @handler version
-    post /version (IndexApiReq) returns (IndexApiVersionResp)
-
-    @doc "获取某个流观看者列表"
-    @handler getMediaPlayerList
-    post /getMediaPlayerList (IndexApiReq) returns (IndexApiMediaPlayerListResp)
-}
+//service api {
+//    @doc "获取API列表"
+//    @handler getApiList
+//    post /getApiList (IndexApiReq) returns (IndexApiListResp)
+//
+//    @doc "获取各epoll(或select)线程负载以及延时"
+//    @handler getThreadsLoad
+//    post /getThreadsLoad (IndexApiReq) returns (IndexApiThreadLoadResp)
+//
+//    @doc "获取各后台epoll(或select)线程负载以及延时"
+//    @handler getWorkThreadsLoad
+//    post /getWorkThreadsLoad (IndexApiReq) returns (IndexApiWorkThreadLoadResp)
+//
+//    @doc "获取服务器配置"
+//    @handler getServerConfig
+//    post /getServerConfig (IndexApiReq) returns (IndexApiServerConfigResp)
+//
+//    @doc "设置服务器配置"
+//    @handler setServerConfig
+//    post /setServerConfig (IndexApiSetServerConfigReq) returns (IndexApiSetServerConfigResp)
+//
+//    @doc "重启服务器,只有Daemon方式才能重启，否则是直接关闭！"
+//    @handler restartServer
+//    post /restartServer (IndexApiReq) returns (IndexApiRestartServerResp)
+//
+//    @doc "获取流列表，可选筛选参数"
+//    @handler getMediaList
+//    post /getMediaList (IndexApiReq) returns (IndexApiMediaListResp)
+//
+//    @doc "关闭流(目前所有类型的流都支持关闭)"
+//    @handler closeStream
+//    post /closeStream (IndexApiReq) returns (IndexApiCloseStreamResp)
+//
+//    @doc "关闭流(目前所有类型的流都支持关闭)"
+//    @handler closeStreams
+//    post /closeStreams (IndexApiReq) returns (IndexApiCloseStreamsResp)
+//
+//    @doc "获取所有TcpSession列表(获取所有tcp客户端相关信息)"
+//    @handler getAllSession
+//    post /getAllSession (IndexApiReq) returns (IndexApiAllSessionResp)
+//
+//    @doc "断开tcp连接，比如说可以断开rtsp、rtmp播放器等"
+//    @handler kickSession
+//    post /kick_session (IndexApiReq) returns (IndexApiKickSessionResp)
+//
+//    @doc "断开tcp连接，比如说可以断开rtsp、rtmp播放器等"
+//    @handler kickSessions
+//    post /kickSessions (IndexApiReq) returns (IndexApiKickSessionsResp)
+//
+//    @doc "动态添加rtsp/rtmp/hls/http-ts/http-flv拉流代理(只支持H264/H265/aac/G711/opus负载)"
+//    @handler addStreamProxy
+//    post /addStreamProxy (IndexApiReq) returns (IndexApiAddStreamProxyResp)
+//
+//    @doc "关闭拉流代理(流注册成功后，也可以使用close_streams接口替代) "
+//    @handler delStreamProxy
+//    post /delStreamProxy (IndexApiReq) returns (IndexApiDelStreamProxyResp)
+//
+//    @doc "通过fork FFmpeg进程的方式拉流代理，支持任意协议"
+//    @handler addFFmpegSource
+//    post /addFFmpegSource (IndexApiReq) returns (IndexApiAddFFmpegSourceResp)
+//
+//    @doc "关闭ffmpeg拉流代理(流注册成功后，也可以使用close_streams接口替代)"
+//    @handler delFFmpegSource
+//    post /delFFmpegSource (IndexApiReq) returns (IndexApiDelFFmpegSourceResp)
+//
+//    @doc "判断直播流是否在线(已过期，请使用getMediaList接口替代) "
+//    @handler isMediaOnline
+//    post /isMediaOnline (IndexApiReq) returns (IndexApiIsMediaOnlineResp)
+//
+//    @doc "获取流相关信息(已过期，请使用getMediaList接口替代)"
+//    @handler getMediaInfo
+//    post /getMediaInfo (IndexApiReq) returns (IndexApiMediaInfoResp)
+//
+//    @doc "获取rtp代理时的某路ssrc rtp信息"
+//    @handler getRtpInfo
+//    post /getRtpInfo (IndexApiReq) returns (IndexApiRtpInfoResp)
+//
+//    @doc "搜索文件系统，获取流对应的录像文件列表或日期文件夹列表"
+//    @handler getMp4RecordFile
+//    post /getMp4RecordFile (IndexApiReq) returns (IndexApiMp4RecordFileResp)
+//
+//    @doc "开始录制hls或MP4"
+//    @handler startRecord
+//    post /startRecord (IndexApiReq) returns (IndexApiStartRecordResp)
+//
+//    @doc "停止录制流"
+//    @handler stopRecord
+//    post /stopRecord (IndexApiReq) returns (IndexApiStopRecordResp)
+//
+//    @doc "获取流录制状态"
+//    @handler isRecording
+//    post /isRecording (IndexApiReq) returns (IndexApiIsRecordingResp)
+//
+//    @doc "获取截图或生成实时截图并返回"
+//    @handler getSnap
+//    post /getSnap (IndexApiReq) returns (IndexApiSnapResp)
+//
+//    @doc "创建GB28181 RTP接收端口，如果该端口接收数据超时，则会自动被回收(不用调用closeRtpServer接口)"
+//    @handler openRtpServer
+//    post /openRtpServer (IndexApiReq) returns (IndexApiOpenRtpServerResp)
+//
+//    @doc "关闭GB28181 RTP接收端口"
+//    @handler closeRtpServer
+//    post /closeRtpServer (IndexApiReq) returns (IndexApiCloseRtpServerResp)
+//
+//    @doc "获取openRtpServer接口创建的所有RTP服务器"
+//    @handler listRtpServer
+//    post /listRtpServer (IndexApiReq) returns (IndexApiListRtpServerResp)
+//
+//    @doc "作为GB28181客户端，启动ps-rtp推流，支持rtp/udp方式；该接口支持rtsp/rtmp等协议转ps-rtp推流。第一次推流失败会直接返回错误，成功一次后，后续失败也将无限重试。"
+//    @handler startSendRtp
+//    post /startSendRtp (IndexApiReq) returns (IndexApiStartSendRtpResp)
+//
+//    @doc "作为GB28181 Passive TCP服务器 "
+//    @handler startSendRtpPassive
+//    post /startSendRtpPassive (IndexApiReq) returns (IndexApiStartSendRtpPassiveResp)
+//
+//    @doc "停止GB28181 ps-rtp推流"
+//    @handler stopSendRtp
+//    post /stopSendRtp (IndexApiReq) returns (IndexApiStopSendRtpResp)
+//
+//    @doc "获取主要对象个数统计，主要用于分析内存性能"
+//    @handler getStatistic
+//    post /getStatistic (IndexApiReq) returns (IndexApiStatisticResp)
+//
+//    @doc "添加rtsp/rtmp主动推流(把本服务器的直播流推送到其他服务器去)"
+//    @handler addStreamPusherProxy
+//    post /addStreamPusherProxy (IndexApiReq) returns (IndexApiAddStreamPusherProxyResp)
+//
+//    @doc "关闭推流(可以使用close_streams接口关闭源直播流也可以停止推流)"
+//    @handler delStreamPusherProxy
+//    post /delStreamPusherProxy (IndexApiReq) returns (IndexApiDelStreamProxyResp)
+//
+//    @doc "获取版本信息，如分支，commit id, 编译时间"
+//    @handler version
+//    post /version (IndexApiReq) returns (IndexApiVersionResp)
+//
+//    @doc "获取某个流观看者列表"
+//    @handler getMediaPlayerList
+//    post /getMediaPlayerList (IndexApiReq) returns (IndexApiMediaPlayerListResp)
+//}
 
 type (
     //Resquest  默认请求

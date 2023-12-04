@@ -35,8 +35,9 @@ func VidmgrStreamToApi(v *vid.VidmgrStream) *types.VidmgrStream {
 			IsRecordingMp4: v.IsRecordingMp4,
 			IsRecordingHLS: v.IsRecordingHLS,
 			IsOnline:       v.IsOnline,
-			Tags:           logic.ToTagsType(v.Tags),
-			Desc:           utils.ToNullString(v.Desc),
+
+			Tags: logic.ToTagsType(v.Tags),
+			Desc: utils.ToNullString(v.Desc),
 		},
 		Tracks: TovidmgrTracksApi(v.Tracks),
 	}

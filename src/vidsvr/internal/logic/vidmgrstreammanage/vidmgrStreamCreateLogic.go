@@ -27,7 +27,7 @@ func NewVidmgrStreamCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 	}
 }
 
-// 流添加
+// 流添加 拉流添加接口
 func (l *VidmgrStreamCreateLogic) VidmgrStreamCreate(in *vid.VidmgrStream) (*vid.Response, error) {
 	// todo: add your logic here and delete this line
 

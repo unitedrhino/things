@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/vidsvr/internal/logic/zlmedia/index"
+	"github.com/i-Things/things/src/vidsvr/internal/logic/zlmedia"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/vidsvr/internal/types"
 	"time"
@@ -46,69 +47,58 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 		l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), in.VidmgrID, er)
 		return nil, er
 	}
-	fmt.Println("[*****test2*****]", utils.FuncName())
-	fmt.Println("[*****test2*****]", utils.FuncName(), infoData)
 	//STEP2  修改流媒体服务  //set default
+	bytetmp := make([]byte, 0)
+	mgr := &clients.SvcZlmedia{
+		Secret: l.svcCtx.Config.Mediakit.Secret,
+		Port:   l.svcCtx.Config.Mediakit.Port,
+		IP:     l.svcCtx.Config.Mediakit.Host,
+	}
 	if infoData.VidmgrID != "" {
-		fmt.Println("[*****test2.5*****]", utils.FuncName())
-		getServerConfig := index.NewGetServerConfigLogic(l.ctx, l.svcCtx)
-		setServerConfig := index.NewSetServerConfigLogic(l.ctx, l.svcCtx)
 		fmt.Println("[*****test2.6*****]", utils.FuncName())
-		currentConf, error := getServerConfig.GetServerConfig(&types.IndexApiReq{
-			VidmgrID: infoData.VidmgrID,
-			Data:     "",
-		})
-		fmt.Println("[*****test2.7*****]", utils.FuncName())
-		if error != nil {
+		mdata, err := clients.ProxyMediaServer(clients.GETSERVERCONFIG, mgr, bytetmp)
+		currentConf := new(types.IndexApiServerConfigResp)
+		json.Unmarshal(mdata, currentConf)
+		//fmt.Println("[*****test2.7*****]", utils.FuncName())
+		if err != nil {
 			fmt.Println("Server Activer failed")
-			return nil, error
+			return nil, err
 		}
-		fmt.Println("dataConfig:", currentConf)
-		fmt.Println("[*****test3*****]", utils.FuncName())
 		//STEP3  配置流服务
-		if len(currentConf.Data) > 0 {
-			if infoData.MediasvrType == 1 { //docker模式
-				index.SetDefaultConfig(l.svcCtx.Config.Mediakit.Host, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
-			} else { //独立主机模式
-				index.SetDefaultConfig(utils.InetNtoA(infoData.ServerIP), infoData.ServerPort, &currentConf.Data[0])
-			}
-			currentConf.Data[0].GeneralMediaServerId = infoData.VidmgrID
-			byteConfig, _ := json.Marshal(currentConf.Data[0])
-			//STEP3 配置流服务
-			configReq := &types.IndexApiSetServerConfigReq{
-				VidmgrID: infoData.VidmgrID,
-				Data:     string(byteConfig),
-			}
-			setConfig, error := setServerConfig.SetServerConfig(configReq)
-			if setConfig.Code != 0 {
-				fmt.Println("setServerConfig  配置流服务出错")
-				return nil, error
-			}
-			//STEP3  insert配置到数据库
-			fmt.Println("[*****test4*****]", utils.FuncName())
-			confRepo := relationDB.NewVidmgrConfigRepo(l.ctx)
-			confRepo.Insert(l.ctx, ToVidmgrConfigRpc(&currentConf.Data[0]))
-			//STEP4 更新状态
-			fmt.Println("[*****test4*****]", utils.FuncName())
-			if infoData.VidmgrStatus != def.DeviceStatusOnline {
-				//UPDATE
-				infoData.VidmgrStatus = def.DeviceStatusOnline
-				infoData.FirstLogin.Time = time.Now()
-				infoData.FirstLogin.Valid = true
-				infoData.LastLogin.Time = time.Now()
-				infoData.LastLogin.Valid = true
-
-				err := infoRepo.Insert(l.ctx, infoData)
-				if err != nil {
-					er := errors.Fmt(err)
-					l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), infoData, er)
-					return nil, er
-				}
-				fmt.Println("[*****test4*****] success", utils.FuncName())
-				return &vid.Response{}, nil
-			}
+		zlmedia.SetDefaultConfig(l.svcCtx.Config.Restconf.Host, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
+		currentConf.Data[0].GeneralMediaServerId = infoData.VidmgrID
+		byteConfig, _ := json.Marshal(currentConf.Data[0])
+		//STEP3 配置流服务
+		respConfig := &types.IndexApiSetServerConfigResp{}
+		mdata, err = clients.ProxyMediaServer(clients.SETSERVERCONFIG, mgr, byteConfig)
+		json.Unmarshal(mdata, respConfig)
+		if respConfig.Code != 0 {
+			fmt.Println("setServerConfig  配置流服务出错")
+			return nil, err
 		}
-		fmt.Println("[*****test5*****]", utils.FuncName())
+		//STEP3  insert配置到数据库
+		//fmt.Println("[*****test4*****]", utils.FuncName())
+		confRepo := relationDB.NewVidmgrConfigRepo(l.ctx)
+		confRepo.Insert(l.ctx, ToVidmgrConfigRpc(&currentConf.Data[0]))
+		//STEP4 更新状态
+		//fmt.Println("[*****test4*****]", utils.FuncName())
+		if infoData.VidmgrStatus != def.DeviceStatusOnline {
+			//UPDATE
+			infoData.VidmgrStatus = def.DeviceStatusOnline
+			infoData.FirstLogin.Time = time.Now()
+			infoData.FirstLogin.Valid = true
+			infoData.LastLogin.Time = time.Now()
+			infoData.LastLogin.Valid = true
+			err := infoRepo.Update(l.ctx, infoData)
+			if err != nil {
+				er := errors.Fmt(err)
+				l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), infoData, er)
+				return nil, er
+			}
+			//fmt.Println("[*****test4*****] success", utils.FuncName())
+			return &vid.Response{}, nil
+		}
+		//fmt.Println("[*****test5*****]", utils.FuncName())
 	}
 	return nil, errors.MediaNotfoundError.AddDetailf("The VidmgrID not found")
 }
