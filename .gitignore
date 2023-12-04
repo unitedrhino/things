@@ -42,11 +42,14 @@ src/dcsvr/dcsvr*
 src/ddsvr/ddsvr*
 src/dmsvr/dmsvr*
 src/vidsvr/vidsvr*
+src/vidsvr/vidsvr
+src/apisvr/go_build*
 src/usersvr/usersvr*
 /src/disvr/disvr.exe
 /src/syssvr/syssvr.exe
 /src/vidsvr/vidsvr.exe
 /src/apisvr/dist/
+
 *.exe
 ### MacOS ###
 .DS_Store

@@ -20,12 +20,12 @@ Log:
   Encoding: plain
 
 Mediakit:
-  Host: 127.0.0.1
+  Host: 172.26.14.242
   Port: 8088
-  Secret: xbk47OBiqVfiAo6wBwSRJFcUDmppaytq
+  Secret: WF8K4LJi2FZbd5Q2OJ3RYTACPZsprvM0
 Restconf:
   Name: vid
-  Host: 0.0.0.0
+  Host: 172.26.14.242
   Port: 8888
 TimedJobRpc:
   Enable: true

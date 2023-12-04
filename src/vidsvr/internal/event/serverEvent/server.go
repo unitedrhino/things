@@ -1,7 +1,6 @@
 package serverEvent
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -11,14 +10,13 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/logic"
-	"github.com/i-Things/things/src/vidsvr/internal/logic/zlmedia/index"
+	vidmgrinfomanagelogic "github.com/i-Things/things/src/vidsvr/internal/logic/vidmgrinfomanage"
+	"github.com/i-Things/things/src/vidsvr/internal/logic/zlmedia"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
 	"github.com/i-Things/things/src/vidsvr/internal/types"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
 	"github.com/zeromicro/go-zero/core/logx"
-	"io"
-	"net/http"
 	"time"
 )
 
@@ -67,18 +65,24 @@ func (l *ServerHandle) ActionCheck() error {
 
 func (l *ServerHandle) ActionInit() error {
 	//l.Infof("ActionCheck req:%v", in)
-	fmt.Println("[****] func (l *ServerHandle) ActionInit database() error ")
+	var vidInfo *relationDB.VidmgrInfo
+	fmt.Println("[**ActionInit**]0 ", utils.FuncName())
+	//查找流服务的数据库：根据IP和端口确定一个流服务
 	var (
 		c      = l.svcCtx.Config
 		filter = relationDB.VidmgrFilter{VidmgrIpV4: utils.InetAtoN(c.Mediakit.Host), VidmgrPort: c.Mediakit.Port}
 	)
+	fmt.Println("[**ActionInit**]1 ", utils.FuncName())
 	size, err := l.PiDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		fmt.Errorf("MediaServer init data countfilter error")
 		return err
 	}
+	fmt.Println("[**ActionInit**]2 ", utils.FuncName())
+	//找到存在一条流服务 更新这条服务
 	if size > 0 {
 		//update
+		fmt.Println("[**ActionInit**]3 ", utils.FuncName())
 		page := vid.PageInfo{}
 		di, err := l.PiDB.FindByFilter(l.ctx, filter, logic.ToPageInfoWithDefault(&page, &def.PageInfo{
 			Page: 1, Size: 20,
@@ -92,8 +96,10 @@ func (l *ServerHandle) ActionInit() error {
 			di[0].VidmgrSecret = c.Mediakit.Secret
 			err = l.PiDB.Update(l.ctx, di[0])
 		}
+		vidInfo = di[0]
 	} else {
-		//create
+		//流服务还未存在的情况就插入这条服务
+		fmt.Println("[**ActionInit**]4 ", utils.FuncName())
 		dbDocker := &relationDB.VidmgrInfo{
 			VidmgrID:     deviceAuth.GetStrProductID(l.svcCtx.VidmgrID.GetSnowflakeId()),
 			VidmgrName:   "default Docker",
@@ -111,35 +117,72 @@ func (l *ServerHandle) ActionInit() error {
 			l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 			return err
 		}
+		vidInfo = dbDocker
+		fmt.Println("[**ActionInit**]5 ", utils.FuncName())
 	}
-	//config dockerServer
-	config := new(types.ServerConfig)
-	index.SetDefaultConfig(c.Mediakit.Host, int64(c.Restconf.Port), config)
-	byte4, err := json.Marshal(config)
-	var tdata map[string]interface{}
-	err = json.Unmarshal(byte4, &tdata)
-	tdata["secret"] = c.Mediakit.Secret
-	byte4, err = json.Marshal(tdata)
-	if err != nil {
-		er := errors.Fmt(err)
-		fmt.Print("%s map string phares failed  err=%+v", utils.FuncName(), er)
-		return er
+	bytetmp := make([]byte, 0)
+	mgr := &clients.SvcZlmedia{
+		Secret: c.Mediakit.Secret,
+		Port:   c.Mediakit.Port,
+		IP:     c.Mediakit.Host,
 	}
-	preUrl := fmt.Sprintf("http://%s:%s/index/api/setServerConfig", c.Mediakit.Host, c.Mediakit.Port)
-	request, error := http.NewRequest("POST", preUrl, bytes.NewBuffer(byte4))
-	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	client := &http.Client{}
-	response, error := client.Do(request)
-	if error != nil {
-		fmt.Println(err)
-		return err
-	}
-	defer response.Body.Close()
-	fmt.Println("response Status:", response.Status)
-	fmt.Println("response Headers:", response.Header)
-	//body, _ := ioutil.ReadAll(response.Body)
-	body, err := io.ReadAll(response.Body)
-	fmt.Println("response Body:", string(body))
+	mdata, err := clients.ProxyMediaServer(clients.GETSERVERCONFIG, mgr, bytetmp)
+	currentConf := new(types.IndexApiServerConfigResp)
+	json.Unmarshal(mdata, currentConf)
 
+	//config dockerServer
+	fmt.Println("[**ActionInit**]6 ", utils.FuncName())
+	//仅考虑docker的模式
+
+	//STEP3  配置流服务
+	if len(currentConf.Data) > 0 {
+		currentConf.Data[0].GeneralMediaServerId = vidInfo.VidmgrID
+		//docker通信IP用eth0
+		zlmedia.SetDefaultConfig(l.svcCtx.Config.Restconf.Host, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
+		fmt.Println("[****setting****] ", l.svcCtx.Config.Mediakit.Host, int64(l.svcCtx.Config.Restconf.Port))
+		byteConfig, _ := json.Marshal(currentConf.Data[0])
+		//STEP3 配置流服务
+		mdata, err = clients.ProxyMediaServer(clients.SETSERVERCONFIG, mgr, byteConfig)
+		dataRecv := new(types.IndexApiSetServerConfigResp)
+		err = json.Unmarshal(mdata, dataRecv)
+		if err != nil {
+			fmt.Println("parse Json failed:", err)
+			return err
+		}
+		//STEP3  insert配置到数据库
+		fmt.Println("[*****test6*****]", utils.FuncName())
+		confRepo := relationDB.NewVidmgrConfigRepo(l.ctx)
+		//查找config配置
+		confRepo.FindOneByFilter(l.ctx, relationDB.VidmgrConfigFilter{
+			VidmgrIDs: []string{vidInfo.VidmgrID},
+		})
+		if err != nil {
+			l.Errorf("%s.Can find vidmgr config err=%v", utils.FuncName(), utils.Fmt(err))
+			confRepo.Insert(l.ctx, vidmgrinfomanagelogic.ToVidmgrConfigRpc(&currentConf.Data[0]))
+		}
+		//update
+		confRepo.Update(l.ctx, vidmgrinfomanagelogic.ToVidmgrConfigRpc(&currentConf.Data[0]))
+
+		//STEP4 更新状态
+		fmt.Println("[*****test7*****]", utils.FuncName())
+		if vidInfo.VidmgrStatus != def.DeviceStatusOnline {
+			//UPDATE
+			vidInfo.VidmgrStatus = def.DeviceStatusOnline
+			vidInfo.FirstLogin.Time = time.Now()
+			vidInfo.FirstLogin.Valid = true
+			vidInfo.LastLogin.Time = time.Now()
+			vidInfo.LastLogin.Valid = true
+
+			err := l.PiDB.Update(l.ctx, vidInfo)
+			if err != nil {
+				er := errors.Fmt(err)
+				l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), vidInfo, er)
+				return er
+			}
+			fmt.Println("[*****test8*****] success", utils.FuncName())
+			return nil
+		}
+	}
+	fmt.Println("[*****test9*****]error:配置错误", utils.FuncName())
 	return nil
 }

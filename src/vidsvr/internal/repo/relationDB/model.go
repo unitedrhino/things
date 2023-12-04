@@ -9,20 +9,21 @@ import (
 
 // 流服务信息
 type VidmgrInfo struct {
-	VidmgrID     string            `gorm:"column:vidmgr_id;type:char(11);primary_key;NOT NULL"`         // 服务id
-	VidmgrName   string            `gorm:"column:name;type:varchar(100);NOT NULL"`                      // 服务名称
-	VidmgrIpV4   int64             `gorm:"column:ipv4;type:bigint"`                                     // 服务IP
-	VidmgrPort   int64             `gorm:"column:port;type:bigint"`                                     // 服务端口
-	VidmgrType   int64             `gorm:"column:type;type:smallint;default:1"`                         // 服务类型:1:zlmediakit,2:srs,3:monibuca
-	VidmgrStatus int64             `gorm:"column:status;type:smallint;default:0;NOT NULL"`              //服务状态: 0：未激活 1：在线  2:离线
-	VidmgrSecret string            `gorm:"column:secret;type:varchar(50)"`                              // 服务秘钥
-	FirstLogin   sql.NullTime      `gorm:"column:first_login"`                                          // 激活后首次登录时间
-	LastLogin    sql.NullTime      `gorm:"column:last_login"`                                           // 最后登录时间
-	MediasvrType int64             `gorm:"column:mediasvr_type;type:smallint;default:2"`                // 流服务部署类型:1,docker部署  2,独立主机
-	ServerIP     int64             `gorm:"column:server_ip;type:bigint"`                                // 当流服务类型为独立主机时：这个填iThings外网的访问IP
-	ServerPort   int64             `gorm:"column:server_port;type:bigint"`                              // 当流服务类型为独立主机时：这个填iThings外网的访问端口
-	Desc         string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
-	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
+	VidmgrID     string       `gorm:"column:vidmgr_id;type:char(11);primary_key;NOT NULL"` // 服务id
+	VidmgrName   string       `gorm:"column:name;type:varchar(100);NOT NULL"`              // 服务名称
+	VidmgrIpV4   int64        `gorm:"column:ipv4;type:bigint"`                             // 服务IP
+	VidmgrPort   int64        `gorm:"column:port;type:bigint"`                             // 服务端口
+	VidmgrType   int64        `gorm:"column:type;type:smallint;default:1"`                 // 服务类型:1:zlmediakit,2:srs,3:monibuca
+	VidmgrStatus int64        `gorm:"column:status;type:smallint;default:0;NOT NULL"`      //服务状态: 0：未激活 1：在线  2:离线
+	VidmgrSecret string       `gorm:"column:secret;type:varchar(50)"`                      // 服务秘钥
+	FirstLogin   sql.NullTime `gorm:"column:first_login"`                                  // 激活后首次登录时间
+	LastLogin    sql.NullTime `gorm:"column:last_login"`                                   // 最后登录时间
+	MediasvrType int64        `gorm:"column:mediasvr_type;type:smallint;default:2"`        // 流服务部署类型:1,docker部署  2,独立主机
+	//ServerIP     int64             `gorm:"column:server_ip;type:bigint"`                                // 当流服务类型为独立主机时：这个填iThings外网的访问IP
+	//ServerPort   int64             `gorm:"column:server_port;type:bigint"`                              // 当流服务类型为独立主机时：这个填iThings外网的访问端口
+	//使用vid.yaml配置代替
+	Desc string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
+	Tags map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
 	stores.Time
 }
 

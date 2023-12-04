@@ -197,6 +197,12 @@ type HooksApiRtpServerTimeoutReq struct {
 	MediaServerId string `json:"mediaServerId"`
 }
 
+type SvcZlmedia struct {
+	IP     string `json:"ip"`
+	Port   int64  `json:"port"`
+	Secret string `json:"Secret"`
+}
+
 type ThreadLoad struct {
 	Delay int64 `json:"delay"`
 	Load  int64 `json:"load"`
@@ -418,11 +424,6 @@ type ServerConfig struct {
 	SrtTimeoutSec                  string `json:"srt.timeoutSec,omitempty"`
 }
 
-type IndexApiReq struct {
-	VidmgrID string `json:"vidmgrID"`
-	Data     string `json:"data"`
-}
-
 type IndexApiListResp struct {
 	Code int64    `json:"code"`
 	Data []string `json:"data"`
@@ -436,11 +437,6 @@ type IndexApiThreadLoadResp struct {
 type IndexApiWorkThreadLoadResp struct {
 	Code int64        `json:"code"`
 	Data []ThreadLoad `json:"data"`
-}
-
-type IndexApiSetServerConfigReq struct {
-	VidmgrID string `json:"vidmgrID"`
-	Data     string `json:"data"`
 }
 
 type IndexApiServerConfigResp struct {

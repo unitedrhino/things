@@ -522,12 +522,17 @@ type TimedTaskInfoIndexResp struct {
 	Total int64            `json:"total"`
 }
 
+type TimedTaskWithTaskID struct {
+	TaskID string `json:"taskID"` //运行的taskID
+}
+
 type TimedTaskOption struct {
-	Priority  int64 `json:"priority,optional"`  //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级//以下两个参数优先使用ProcessIn
-	ProcessIn int64 `json:"processIn,optional"` //多久之后发 秒数
-	ProcessAt int64 `json:"processAt,optional"` // 固定时间发 秒时间戳
-	Timeout   int64 `json:"timeout,optional"`   //超时时间 优先使用 秒数
-	Deadline  int64 `json:"deadline,optional"`  //截止时间  秒时间戳
+	Priority  int64  `json:"priority,optional"`  //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级//以下两个参数优先使用ProcessIn
+	ProcessIn int64  `json:"processIn,optional"` //多久之后发 秒数
+	ProcessAt int64  `json:"processAt,optional"` // 固定时间发 秒时间戳
+	Timeout   int64  `json:"timeout,optional"`   //超时时间 优先使用 秒数
+	Deadline  int64  `json:"deadline,optional"`  //截止时间  秒时间戳
+	TaskID    string `json:"taskID,optional"`    //指定运行的taskID
 }
 
 type TimedTaskParamQueue struct {
@@ -1653,6 +1658,9 @@ type StreamCommon struct {
 	IsAutoRecord   bool    `json:"isAutoRecord,optional"`
 	IsOnline       bool    `json:"isOnline,optional"`
 	IsPTZ          bool    `json:"isPTZ,optional"`
+	TypeMedia      int64   `json:"typeMedia,optional"`
+	MediaIP        int64   `json:"mediaIP,optional"`
+	MediaPort      int64   `json:"mediaPort,optional"`
 	Desc           *string `json:"desc,optional"` //描述
 	Tags           []*Tag  `json:"tags,optional"` //流tag
 }

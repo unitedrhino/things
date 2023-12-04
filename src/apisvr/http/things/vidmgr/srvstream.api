@@ -19,7 +19,7 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "新增流[拉流]"
     @handler create
-    post /create (VidmgrStreamCreateeReq) returns ()
+    post /create (VidmgrStreamCreateReq) returns ()
     @doc "更新服务"
     @handler update
     post /update (VidmgrStreamUpdateReq) returns ()
@@ -64,6 +64,11 @@ type (
         IsOnline       bool `json:"isOnline,optional"`
         IsPTZ          bool `json:"isPTZ,optional"`
 
+    //  额外添加字段，用于区别docker和独立主机
+        TypeMedia   int64 `json:"typeMedia,optional"`
+        MediaIP   int64 `json:"mediaIP,optional"`
+        MediaPort   int64 `json:"mediaPort,optional"`
+
         Desc        *string `json:"desc,optional"`                    //描述
         Tags        []*Tag  `json:"tags,optional"`                    //流tag
     }
@@ -90,7 +95,7 @@ type (
         Tracks []StreamTrack `json:"tracks,optional"`
         LastLogin   int64    `json:"lastLogin,optional,string"`
     }
-    VidmgrStreamCreateeReq{
+    VidmgrStreamCreateReq{
         StreamCommon
     }
 
