@@ -49,6 +49,8 @@ func ToVidmgrInfo(ctx context.Context, pi *relationDB.VidmgrInfo, svcCtx *svc.Se
 		VidmgrSecret: pi.VidmgrSecret,                       //流服务器注秘钥 只读
 		Desc:         &wrappers.StringValue{Value: pi.Desc}, //描述
 		CreatedTime:  pi.CreatedTime.Unix(),                 //创建时间
+		LastLogin:    pi.LastLogin.Unix(),                   //最后登录时间
+		FirstLogin:   pi.FirstLogin.Unix(),                  //首次登录时间
 		Tags:         pi.Tags,                               //产品tags
 	}
 
@@ -72,12 +74,10 @@ func setPoByPb(old *relationDB.VidmgrInfo, data *vid.VidmgrInfo) error {
 		old.VidmgrSecret = data.VidmgrSecret
 	}
 	if data.FirstLogin != 0 {
-		old.FirstLogin.Valid = true
-		old.FirstLogin.Time = time.Unix(data.FirstLogin, 0)
+		old.FirstLogin = time.Unix(data.FirstLogin, 0)
 	}
 	if data.LastLogin != 0 {
-		old.LastLogin.Valid = true
-		old.LastLogin.Time = time.Unix(data.LastLogin, 0)
+		old.LastLogin = time.Unix(data.LastLogin, 0)
 	}
 	if data.MediasvrType != 0 {
 		old.MediasvrType = data.MediasvrType

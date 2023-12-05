@@ -121,6 +121,7 @@ func (l *ServerHandle) ActionInit() error {
 		fmt.Println("[**ActionInit**]5 ", utils.FuncName())
 	}
 	bytetmp := make([]byte, 0)
+	//vidsvr->zlmediakit
 	mgr := &clients.SvcZlmedia{
 		Secret: c.Mediakit.Secret,
 		Port:   c.Mediakit.Port,
@@ -137,7 +138,7 @@ func (l *ServerHandle) ActionInit() error {
 	//STEP3  配置流服务
 	if len(currentConf.Data) > 0 {
 		currentConf.Data[0].GeneralMediaServerId = vidInfo.VidmgrID
-		//docker通信IP用eth0
+		//docker通信IP用eth0 从zlmediakit->vidsvr
 		zlmedia.SetDefaultConfig(l.svcCtx.Config.Restconf.Host, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
 		fmt.Println("[****setting****] ", l.svcCtx.Config.Mediakit.Host, int64(l.svcCtx.Config.Restconf.Port))
 		byteConfig, _ := json.Marshal(currentConf.Data[0])
@@ -168,10 +169,8 @@ func (l *ServerHandle) ActionInit() error {
 		if vidInfo.VidmgrStatus != def.DeviceStatusOnline {
 			//UPDATE
 			vidInfo.VidmgrStatus = def.DeviceStatusOnline
-			vidInfo.FirstLogin.Time = time.Now()
-			vidInfo.FirstLogin.Valid = true
-			vidInfo.LastLogin.Time = time.Now()
-			vidInfo.LastLogin.Valid = true
+			vidInfo.FirstLogin = time.Now()
+			vidInfo.LastLogin = time.Now()
 
 			err := l.PiDB.Update(l.ctx, vidInfo)
 			if err != nil {

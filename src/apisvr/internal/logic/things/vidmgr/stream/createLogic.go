@@ -27,7 +27,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.VidmgrStreamCreateeReq) error {
+func (l *CreateLogic) Create(req *types.VidmgrStreamCreateReq) error {
 	// todo: add your logic here and delete this line
 	vidReq := &vid.VidmgrStream{
 		StreamName: req.StreamName,

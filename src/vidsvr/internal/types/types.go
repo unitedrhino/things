@@ -424,49 +424,52 @@ type ServerConfig struct {
 	SrtTimeoutSec                  string `json:"srt.timeoutSec,omitempty"`
 }
 
+type IndexApiResp struct {
+	Code int64  `json:"code"`
+	Msg  string `json:"msg,omitempty"`
+}
+
 type IndexApiListResp struct {
-	Code int64    `json:"code"`
+	IndexApiResp
 	Data []string `json:"data"`
 }
 
 type IndexApiThreadLoadResp struct {
-	Code int64        `json:"code"`
+	IndexApiResp
 	Data []ThreadLoad `json:"data"`
 }
 
 type IndexApiWorkThreadLoadResp struct {
-	Code int64        `json:"code"`
+	IndexApiResp
 	Data []ThreadLoad `json:"data"`
 }
 
 type IndexApiServerConfigResp struct {
-	Code int64          `json:"code"`
-	Data []ServerConfig `json:"data"`
+	IndexApiResp
+	Data []ServerConfig `json:"data,omitempty"`
 }
 
 type IndexApiSetServerConfigResp struct {
 	Changed int64 `json:"changed"`
-	Code    int64 `json:"code"`
+	IndexApiResp
 }
 
 type IndexApiRestartServerResp struct {
-	Code int64 `json:"code"`
-	Msg  int64 `json:"msg"`
+	IndexApiResp
 }
 
 type IndexApiMediaListResp struct {
-	Code int64       `json:"code"`
+	IndexApiResp
 	Data []MediaList `json:"data"`
 }
 
 type IndexApiCloseStreamResp struct {
-	Code   int64  `json:"code"`
-	Result int64  `json:"result"`
-	Msg    string `json:"msg"`
+	IndexApiResp
+	Result int64 `json:"result"`
 }
 
 type IndexApiCloseStreamsResp struct {
-	Code        int64 `json:"code"`
+	IndexApiResp
 	CountHit    int64 `json:"count_hit"`
 	CountClosed int64 `json:"count_closed"`
 }
@@ -481,19 +484,17 @@ type IndexApiAllSession struct {
 }
 
 type IndexApiAllSessionResp struct {
-	Code int64                `json:"code"`
+	IndexApiResp
 	Data []IndexApiAllSession `json:"data"`
 }
 
 type IndexApiKickSessionResp struct {
-	Code int64  `json:"code"`
-	Msg  string `json:"msg"`
+	IndexApiResp
 }
 
 type IndexApiKickSessionsResp struct {
-	Code     int64  `json:"code"`
-	CountHit int64  `json:"count_hit"`
-	Msg      string `json:"msg"`
+	IndexApiResp
+	CountHit int64 `json:"count_hit"`
 }
 
 type IndexApiAddStreamKey struct {
@@ -501,7 +502,7 @@ type IndexApiAddStreamKey struct {
 }
 
 type IndexApiAddStreamProxyResp struct {
-	Code int64                `json:"code"`
+	IndexApiResp
 	Data IndexApiAddStreamKey `json:"data"`
 }
 
@@ -510,27 +511,27 @@ type IndexApiAddStreamFlag struct {
 }
 
 type IndexApiDelStreamProxyResp struct {
-	Code int64                 `json:"code"`
+	IndexApiResp
 	Data IndexApiAddStreamFlag `json:"data"`
 }
 
 type IndexApiAddFFmpegSourceResp struct {
-	Code int64                `json:"code"`
+	IndexApiResp
 	Data IndexApiAddStreamKey `json:"data"`
 }
 
 type IndexApiDelFFmpegSourceResp struct {
-	Code int64                 `json:"code"`
+	IndexApiResp
 	Data IndexApiAddStreamFlag `json:"data"`
 }
 
 type IndexApiIsMediaOnlineResp struct {
-	Code   int64 `json:"code"`
-	Online bool  `json:"online"`
+	IndexApiResp
+	Online bool `json:"online"`
 }
 
 type IndexApiMediaInfoResp struct {
-	Code             int64         `json:"code"`
+	IndexApiResp
 	Online           bool          `json:"online"`
 	ReaderCount      int64         `json:"readerCount"`
 	TotalReaderCount int64         `json:"totalReaderCount"`
@@ -538,7 +539,7 @@ type IndexApiMediaInfoResp struct {
 }
 
 type IndexApiRtpInfoResp struct {
-	Code      int64  `json:"code"`
+	IndexApiResp
 	Exist     bool   `json:"exist"`
 	PeerIp    string `json:"peer_ip"`
 	PeerPort  int64  `json:"peer_port"`
@@ -552,23 +553,23 @@ type IndexApiRecord struct {
 }
 
 type IndexApiMp4RecordFileResp struct {
-	Code int64          `json:"code"`
+	IndexApiResp
 	Data IndexApiRecord `json:"data"`
 }
 
 type IndexApiStartRecordResp struct {
-	Code   int64 `json:"code"`
-	Result bool  `json:"result"`
+	IndexApiResp
+	Result bool `json:"result"`
 }
 
 type IndexApiStopRecordResp struct {
-	Code   int64 `json:"code"`
-	Result bool  `json:"result"`
+	IndexApiResp
+	Result bool `json:"result"`
 }
 
 type IndexApiIsRecordingResp struct {
-	Code   int64 `json:"code"`
-	Status bool  `json:"status"`
+	IndexApiResp
+	Status bool `json:"status"`
 }
 
 type IndexApiSnapResp struct {
@@ -576,13 +577,13 @@ type IndexApiSnapResp struct {
 }
 
 type IndexApiOpenRtpServerResp struct {
-	Code int64 `json:"code"`
+	IndexApiResp
 	Port int64 `json:"port"`
 }
 
 type IndexApiCloseRtpServerResp struct {
-	Code int64 `json:"code"`
-	Hit  int64 `json:"hit"`
+	IndexApiResp
+	Hit int64 `json:"hit"`
 }
 
 type IndexApiRtp struct {
@@ -591,36 +592,36 @@ type IndexApiRtp struct {
 }
 
 type IndexApiListRtpServerResp struct {
-	Code int64         `json:"code"`
+	IndexApiResp
 	Data []IndexApiRtp `json:"data"`
 }
 
 type IndexApiStartSendRtpResp struct {
-	Code      int64 `json:"code"`
+	IndexApiResp
 	LocalProt int64 `json:"local_port"`
 }
 
 type IndexApiStartSendRtpPassiveResp struct {
-	Code      int64 `json:"code"`
+	IndexApiResp
 	LocalProt int64 `json:"local_port"`
 }
 
 type IndexApiStopSendRtpResp struct {
-	Code int64 `json:"code"`
+	IndexApiResp
 }
 
 type IndexApiStatisticResp struct {
-	Code int64     `json:"code"`
+	IndexApiResp
 	Data Statistic `json:"data"`
 }
 
 type IndexApiAddStreamPusherProxyResp struct {
-	Code int64                `json:"code"`
+	IndexApiResp
 	Data IndexApiAddStreamKey `json:"data"`
 }
 
 type IndexDelStreamPusherProxyResp struct {
-	Code int64                 `json:"code"`
+	IndexApiResp
 	Data IndexApiAddStreamFlag `json:"data"`
 }
 
@@ -631,11 +632,11 @@ type IndexApiVersion struct {
 }
 
 type IndexApiVersionResp struct {
-	Code int64           `json:"code"`
+	IndexApiResp
 	Data IndexApiVersion `json:"data"`
 }
 
 type IndexApiMediaPlayerListResp struct {
-	Code int64       `json:"code"`
+	IndexApiResp
 	Data MediaPlayer `json:"data"`
 }
