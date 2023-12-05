@@ -10,6 +10,8 @@ import (
 func VidmgrInfoToApi(v *vid.VidmgrInfo) *types.VidmgrInfo {
 	return &types.VidmgrInfo{
 		CreatedTime: v.CreatedTime, //创建时间 只读
+		FirstLogin:  v.FirstLogin,
+		LastLogin:   v.LastLogin,
 		InfoCommon: types.InfoCommon{
 			VidmgrID:     v.VidmgrID,                 //服务id 只读
 			VidmgrName:   v.VidmgrName,               //服务名称

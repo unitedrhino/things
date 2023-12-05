@@ -50,19 +50,29 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 	//STEP2  修改流媒体服务  //set default
 	bytetmp := make([]byte, 0)
 	mgr := &clients.SvcZlmedia{
-		Secret: l.svcCtx.Config.Mediakit.Secret,
-		Port:   l.svcCtx.Config.Mediakit.Port,
-		IP:     l.svcCtx.Config.Mediakit.Host,
+		Secret: infoData.VidmgrSecret,
+		Port:   infoData.VidmgrPort,
+		IP:     utils.InetNtoA(infoData.VidmgrIpV4),
+		//docker服务时
+		//Secret: l.svcCtx.Config.Mediakit.Secret,
+		//Port:   l.svcCtx.Config.Mediakit.Port,
+		//IP:     l.svcCtx.Config.Mediakit.Host,
 	}
 	if infoData.VidmgrID != "" {
 		fmt.Println("[*****test2.6*****]", utils.FuncName())
 		mdata, err := clients.ProxyMediaServer(clients.GETSERVERCONFIG, mgr, bytetmp)
 		currentConf := new(types.IndexApiServerConfigResp)
 		json.Unmarshal(mdata, currentConf)
+
+		fmt.Println("Server Activer getServerConfig:", currentConf)
 		//fmt.Println("[*****test2.7*****]", utils.FuncName())
 		if err != nil {
 			fmt.Println("Server Activer failed")
 			return nil, err
+		}
+		if currentConf.Code != 0 {
+			fmt.Println("Server Activer failed")
+			return nil, fmt.Errorf("Get MediaServer Config error：%s", currentConf.Msg)
 		}
 		//STEP3  配置流服务
 		zlmedia.SetDefaultConfig(l.svcCtx.Config.Restconf.Host, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
@@ -72,10 +82,15 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 		respConfig := &types.IndexApiSetServerConfigResp{}
 		mdata, err = clients.ProxyMediaServer(clients.SETSERVERCONFIG, mgr, byteConfig)
 		json.Unmarshal(mdata, respConfig)
-		if respConfig.Code != 0 {
-			fmt.Println("setServerConfig  配置流服务出错")
+		if err != nil {
+			fmt.Println("Server Activer failed")
 			return nil, err
 		}
+		if respConfig.Code != 0 {
+			fmt.Println("setServerConfig  配置流服务出错")
+			return nil, fmt.Errorf("setServerConfig  配置流服务出错 %s", respConfig.Msg)
+		}
+		//STEP3  insert配置到数据库
 		//STEP3  insert配置到数据库
 		//fmt.Println("[*****test4*****]", utils.FuncName())
 		confRepo := relationDB.NewVidmgrConfigRepo(l.ctx)
@@ -85,10 +100,8 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 		if infoData.VidmgrStatus != def.DeviceStatusOnline {
 			//UPDATE
 			infoData.VidmgrStatus = def.DeviceStatusOnline
-			infoData.FirstLogin.Time = time.Now()
-			infoData.FirstLogin.Valid = true
-			infoData.LastLogin.Time = time.Now()
-			infoData.LastLogin.Valid = true
+			infoData.FirstLogin = time.Now()
+			infoData.LastLogin = time.Now()
 			err := infoRepo.Update(l.ctx, infoData)
 			if err != nil {
 				er := errors.Fmt(err)

@@ -33,8 +33,9 @@ func (l *OnServerKeepaliveLogic) OnServerKeepalive(req *types.HooksApiServerKeep
 	reqStr, _ := json.Marshal(*req)
 	fmt.Println("---------OnServerKeepalive--------------:", string(reqStr))
 
-	fmt.Sprintf("HOST:%s \n", l.svcCtx.Config.Mediakit.Host)
-	fmt.Sprintf("Port:%d \n", l.svcCtx.Config.Restconf.Port)
+	//fmt.Println("HOST:%s \n", l.svcCtx.Config.Restconf.Host)
+	//fmt.Println("Port:%d \n", l.svcCtx.Config.Restconf.Port)
+	//fmt.Println("HooksApiServerKeepaliveReq:%v \n", req)
 	//从hook data中解析出 MediaserverID值。
 	//hookactive中是保持在线状态  需要更新对应的数据库
 	infoRepo := relationDB.NewVidmgrInfoRepo(l.ctx)
@@ -43,10 +44,10 @@ func (l *OnServerKeepaliveLogic) OnServerKeepalive(req *types.HooksApiServerKeep
 	})
 
 	if vidmgrInfo != nil {
+		//fmt.Println("Get vidmgrInfo:%v \n", vidmgrInfo)
 		//update info
 		vidmgrInfo.VidmgrStatus = def.DeviceStatusOnline
-		vidmgrInfo.LastLogin.Time = time.Now()
-		vidmgrInfo.LastLogin.Valid = true
+		vidmgrInfo.LastLogin = time.Now()
 
 		err := infoRepo.Update(l.ctx, vidmgrInfo)
 		if err != nil {

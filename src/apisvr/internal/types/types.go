@@ -1578,7 +1578,7 @@ type InfoCommon struct {
 	VidmgrIpV4   string  `json:"vidmgrIpV4,optional"`             //服务IP
 	VidmgrPort   int64   `json:"vidmgrPort,optional"`             //服务端口
 	VidmgrSecret string  `json:"vidmgrSecret,optional"`           //服务连接秘钥
-	VidmgrStatus int64   `json:"vidmgrStatus,optional"`           //服务状态:1:离线,2:在线,3:未激活
+	VidmgrStatus int64   `json:"vidmgrStatus,optional"`           //服务状态:0:未激活,1:离线,2:在线
 	Desc         *string `json:"desc,optional"`                   //描述
 	Tags         []*Tag  `json:"tags,optional"`                   //产品tag
 }
@@ -1586,6 +1586,8 @@ type InfoCommon struct {
 type VidmgrInfo struct {
 	InfoCommon
 	CreatedTime int64 `json:"createdTime,optional,string"` //创建时间 只读
+	FirstLogin  int64 `json:"firstLogin,optional,string"`  //首次登录时间 只读
+	LastLogin   int64 `json:"lastLogin,optional,string"`   //最后登录时间 只读
 }
 
 type VidmgrInfoCreateReq struct {
@@ -1658,9 +1660,6 @@ type StreamCommon struct {
 	IsAutoRecord   bool    `json:"isAutoRecord,optional"`
 	IsOnline       bool    `json:"isOnline,optional"`
 	IsPTZ          bool    `json:"isPTZ,optional"`
-	TypeMedia      int64   `json:"typeMedia,optional"`
-	MediaIP        int64   `json:"mediaIP,optional"`
-	MediaPort      int64   `json:"mediaPort,optional"`
 	Desc           *string `json:"desc,optional"` //描述
 	Tags           []*Tag  `json:"tags,optional"` //流tag
 }
@@ -1688,7 +1687,7 @@ type VidmgrStream struct {
 	LastLogin        int64         `json:"lastLogin,optional,string"`
 }
 
-type VidmgrStreamCreateeReq struct {
+type VidmgrStreamCreateReq struct {
 	StreamCommon
 }
 
