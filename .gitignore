@@ -43,6 +43,8 @@ src/ddsvr/ddsvr*
 src/dmsvr/dmsvr*
 src/vidsvr/vidsvr*
 src/vidsvr/vidsvr
+src/vidsvr/vidsvr/etc/api.yaml
+src/vidsvr/vidsvr/api.go
 src/apisvr/go_build*
 src/usersvr/usersvr*
 /src/disvr/disvr.exe
