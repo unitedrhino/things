@@ -3,7 +3,7 @@ module github.com/i-Things/things
 go 1.19
 
 require (
-	gitee.com/asktop_golib/util v1.5.2
+	gitee.com/asktop_golib/util v0.1.6
 	github.com/Blank-Xu/sql-adapter v0.0.0-20210714092925-0bdd0d548758
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
