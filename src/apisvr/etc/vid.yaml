@@ -1,5 +1,8 @@
 Name: vid.rpc
 ListenOn: 0.0.0.0:9098
+Mode: dev
+#restconf
+
 Etcd:
   Hosts:
   - 127.0.0.1:2379
@@ -15,8 +18,17 @@ CacheRedis:
     Type: node
 Log:
   Encoding: plain
-Telemetry:
-    Name: dm.rpc
-    Endpoint: http://127.0.0.1:14268/api/traces
-    Sampler: 1.0
-    Batcher: jaeger
+
+Mediakit:
+  Host: 172.26.14.242
+  Port: 8088
+  Secret: WF8K4LJi2FZbd5Q2OJ3RYTACPZsprvM0
+Restconf:
+  Name: vid
+  Host: 172.26.14.242
+  Port: 8888
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000

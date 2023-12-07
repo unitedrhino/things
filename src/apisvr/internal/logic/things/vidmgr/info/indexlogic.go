@@ -47,7 +47,7 @@ func (l *IndexLogic) Index(req *types.VidmgrInfoIndexReq) (resp *types.VidmgrInf
 	if len(vidResp.List) > 0 {
 		pis := make([]*types.VidmgrInfo, 0, len(vidResp.List))
 		for _, v := range vidResp.List {
-			pi := vidmgrInfoToApi(v)
+			pi := VidmgrInfoToApi(v)
 			pis = append(pis, pi)
 		}
 		return &types.VidmgrInfoIndexResp{
