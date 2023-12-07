@@ -119,6 +119,8 @@ func ToRpcConvVidmgrStream(in *relationDB.VidmgrStream) *vid.VidmgrStream {
 		IsAutoRecord:     in.IsAutoRecord,
 		IsPTZ:            in.IsPTZ,
 		IsOnline:         in.IsOnline,
+		LastLogin:        in.LastLogin.Unix(),
+		FirstLogin:       in.FirstLogin.Unix(),
 		Desc:             utils.ToRpcNullString(&in.Desc),
 		Tags:             in.Tags,
 	}
@@ -177,8 +179,7 @@ func setPoByPb(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
 		old.Tracks = info
 	}
 	if data.LastLogin != 0 {
-		old.LastLogin.Valid = true
-		old.LastLogin.Time = time.Unix(data.LastLogin, 0)
+		old.LastLogin = time.Unix(data.LastLogin, 0)
 	}
 
 	old.IsRecordingMp4 = data.IsRecordingMp4

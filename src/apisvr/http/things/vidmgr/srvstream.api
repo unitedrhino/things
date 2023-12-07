@@ -64,11 +64,6 @@ type (
         IsOnline       bool `json:"isOnline,optional"`
         IsPTZ          bool `json:"isPTZ,optional"`
 
-    //  额外添加字段，用于区别docker和独立主机
-//        TypeMedia   int64 `json:"typeMedia,optional"`
-//        MediaIP   int64 `json:"mediaIP,optional"`
-//        MediaPort   int64 `json:"mediaPort,optional"`
-
         Desc        *string `json:"desc,optional"`                    //描述
         Tags        []*Tag  `json:"tags,optional"`                    //流tag
     }
@@ -94,6 +89,7 @@ type (
         TotalReaderCount int64 `json:"totalReaderCount,optional"`
         Tracks []StreamTrack `json:"tracks,optional"`
         LastLogin   int64    `json:"lastLogin,optional,string"`
+        FirstLogin      int64 `json:"firstLogin,optional,string"`                //首次登录时间 只读
     }
     VidmgrStreamCreateReq{
         StreamCommon

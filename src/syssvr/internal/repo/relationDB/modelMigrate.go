@@ -117,12 +117,13 @@ var (
 		{ID: 74, ParentID: 70, Type: 1, Order: 1, Name: "任务详情", Path: "/systemManagers/timed/task/detail/:id", Component: "./systemManagers/timed/task/detail/index.tsx", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: def.True},
 		//视频服务菜单项
 		{ID: 63, ParentID: 1, Type: 1, Order: 2, Name: "视频服务", Path: "/videoManagers", Component: "./videoManagers", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 64, ParentID: 63, Type: 1, Order: 1, Name: "服务管理", Path: "/videoManagers/vidsrvmgr/index", Component: "./videoManagers/vidsrvmgr/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 65, ParentID: 63, Type: 1, Order: 3, Name: "视频广场", Path: "/videoManagers/plaza/index", Component: "./videoManagers/plaza/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 66, ParentID: 63, Type: 1, Order: 2, Name: "流管理", Path: "/videoManagers/vidstream/index", Component: "./videoManagers/vidstream/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 64, ParentID: 63, Type: 1, Order: 1, Name: "流服务管理", Path: "/videoManagers/vidsrvmgr/index", Component: "./videoManagers/vidsrvmgr/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 65, ParentID: 63, Type: 1, Order: 3, Name: "视频流广场", Path: "/videoManagers/plaza/index", Component: "./videoManagers/plaza/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 66, ParentID: 63, Type: 1, Order: 2, Name: "视频流管理", Path: "/videoManagers/vidstream/index", Component: "./videoManagers/vidstream/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 67, ParentID: 63, Type: 1, Order: 4, Name: "视频回放", Path: "/videoManagers/playback/index", Component: "./videoManagers/playback/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 68, ParentID: 63, Type: 1, Order: 2, Name: "录像计划", Path: "/videoManagers/recordplan/index", Component: "./videoManagers/recordplan/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 69, ParentID: 63, Type: 1, Order: 1, Name: "服务详细", Path: "/videoManagers/vidsrvmgr/detail/:id", Component: "./videoManagers/vidsrvmgr/detail/index", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
+		{ID: 69, ParentID: 63, Type: 1, Order: 1, Name: "流服务详细", Path: "/videoManagers/vidsrvmgr/detail/:id", Component: "./videoManagers/vidsrvmgr/detail/index", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
+		{ID: 75, ParentID: 63, Type: 1, Order: 1, Name: "视频流详细", Path: "/videoManagers/vidstream/detail/:id", Component: "./videoManagers/vidstream/detail/index", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
 	}
 	MigrateApiInfo = []SysApiInfo{
 		{Route: "/api/v1/things/product/info/update", Method: 2, Name: "更新产品", BusinessType: 2, Desc: "", Group: "产品管理"},
@@ -199,7 +200,6 @@ var (
 		{Route: "/api/v1/system/api/delete", Method: 2, Name: "删除接口", BusinessType: 3, Desc: "", Group: "接口管理"},
 		{Route: "/api/v1/system/auth/api/index", Method: 2, Name: "获取API权限列表", BusinessType: 4, Desc: "", Group: "权限管理"},
 		{Route: "/api/v1/system/auth/api/multiUpdate", Method: 2, Name: "更新API权限", BusinessType: 2, Desc: "", Group: "权限管理"},
-
 		{Route: "/api/v1/system/timed/task/info/create", Method: 2, Name: "新增任务", BusinessType: 1, Desc: "", Group: "定时任务管理"},
 		{Route: "/api/v1/system/timed/task/info/update", Method: 2, Name: "更新任务", BusinessType: 2, Desc: "", Group: "定时任务管理"},
 		{Route: "/api/v1/system/timed/task/info/delete", Method: 2, Name: "删除任务", BusinessType: 3, Desc: "", Group: "定时任务管理"},
@@ -239,6 +239,13 @@ var (
 		{Route: "/api/v1/things/vidmgr/info/index", Method: 2, Name: "获取流服务器列表", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/info/read", Method: 2, Name: "获取流服详细", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/info/update", Method: 2, Name: "更新流服务器", BusinessType: 1, Desc: "", Group: "视频服务"},
+		//视频流API接口
+		{Route: "/api/v1/things/vidmgr/stream/count", Method: 2, Name: "视频流统计", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/stream/create", Method: 2, Name: "新增视频流(拉流)", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/stream/delete", Method: 2, Name: "删除视频流", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/stream/index", Method: 2, Name: "获取视频流列表", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/stream/read", Method: 2, Name: "获取视频流详细", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/stream/update", Method: 2, Name: "更新视频流", BusinessType: 1, Desc: "", Group: "视频服务"},
 	}
 	MigrateApiAuth = []SysApiAuth{
 		{PType: "p", V0: "1", V1: "/api/v1/system/timed/task/info/create", V2: "2", V3: "", V4: "", V5: ""},
@@ -352,5 +359,12 @@ var (
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/index", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/read", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/info/update", V2: "2", V3: "", V4: "", V5: ""},
+		//视频流API接口
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/stream/count", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/stream/create", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/stream/delete", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/stream/index", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/stream/read", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/stream/update", V2: "2", V3: "", V4: "", V5: ""},
 	}
 )
