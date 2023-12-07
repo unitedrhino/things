@@ -81,6 +81,16 @@ var (
 		},
 		{
 			GroupCode: def.TimedIThingsQueueGroupCode,
+			Type:      domain.TaskTypeDelay, //定义一个延时任务
+			Name:      "流服务数据初始化(自动添加docker到数据库)",
+			Code:      "VidInfoInitDatabase",
+			Params:    `{"topic":"server.vid.info.init.database","payload":""}`,
+			CronExpr:  "",
+			Status:    def.StatusWaitRun,
+			Priority:  3,
+		},
+		{
+			GroupCode: def.TimedIThingsQueueGroupCode,
 			Type:      domain.TaskTypeTiming,
 			Name:      "timedJob服务缓存及日志清理",
 			Code:      "timedJobClean",
@@ -95,7 +105,7 @@ var (
 			Name:      "流服务状态更新",
 			Code:      "VidInfoCheckStatus",
 			Params:    `{"topic":"server.vid.info.check.status","payload":""}`,
-			CronExpr:  "1 1 * * ?",
+			CronExpr:  "@every 30s",
 			Status:    def.StatusWaitRun,
 			Priority:  1, //低优先级任务
 		},

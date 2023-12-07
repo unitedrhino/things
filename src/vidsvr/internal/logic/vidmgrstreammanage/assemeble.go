@@ -7,6 +7,51 @@ import (
 	"time"
 )
 
+func ToDbConvVidmgrStream(in *vid.VidmgrStream) *relationDB.VidmgrStream {
+	info := make([]*relationDB.StreamTrack, 0, len(in.Tracks))
+	for _, v := range in.Tracks {
+		info = append(info, ToDbVidmgrStreamTrack(v))
+	}
+	pi := &relationDB.VidmgrStream{
+		VidmgrID:   in.VidmgrID,
+		StreamName: in.StreamName,
+
+		App: in.App,
+		//Schema: in.Schema,
+		Protocol: in.Protocol,
+		Stream:   in.Stream,
+		Vhost:    in.Vhost,
+
+		Identifier: in.Identifier,
+		LocalIP:    utils.InetAtoN(in.LocalIP),
+		LocalPort:  in.LocalPort,
+		PeerIP:     utils.InetAtoN(in.PeerIP),
+		PeerPort:   in.PeerPort,
+
+		OriginType:       in.OriginType,
+		OriginStr:        in.OriginStr,
+		OriginUrl:        in.OriginUrl,
+		ReaderCount:      in.ReaderCount,
+		TotalReaderCount: in.TotalReaderCount,
+		Tracks:           info,
+		IsRecordingHLS:   in.IsRecordingHLS,
+		IsRecordingMp4:   in.IsRecordingMp4,
+		IsShareChannel:   in.IsShareChannel,
+		IsAutoPush:       in.IsAutoPush,
+		IsAutoRecord:     in.IsAutoRecord,
+		IsPTZ:            in.IsPTZ,
+		IsOnline:         in.IsOnline,
+		//LastLogin:        time.Unix(in.LastLogin, 0),
+		Desc: in.Desc.GetValue(),
+	}
+	if in.Tags == nil {
+		in.Tags = map[string]string{}
+	}
+	pi.Tags = in.Tags
+
+	return pi
+}
+
 func ToDbVidmgrStreamTrack(in *vid.StreamTrack) *relationDB.StreamTrack {
 	pi := &relationDB.StreamTrack{
 		Channels:    in.Channels,
@@ -46,13 +91,14 @@ func ToRpcConvVidmgrStream(in *relationDB.VidmgrStream) *vid.VidmgrStream {
 		info = append(info, ToRpcVidmgrStreamTrack(v))
 	}
 	pi := &vid.VidmgrStream{
+		StreamID:   in.StreamID,
 		VidmgrID:   in.VidmgrID,
 		StreamName: in.StreamName,
 
-		App:    in.App,
-		Schema: in.Schema,
-		Stream: in.Stream,
-		Vhost:  in.Vhost,
+		App:      in.App,
+		Protocol: in.Protocol,
+		Stream:   in.Stream,
+		Vhost:    in.Vhost,
 
 		Identifier: in.Identifier,
 		LocalIP:    utils.InetNtoA(in.LocalIP),
@@ -73,53 +119,9 @@ func ToRpcConvVidmgrStream(in *relationDB.VidmgrStream) *vid.VidmgrStream {
 		IsAutoRecord:     in.IsAutoRecord,
 		IsPTZ:            in.IsPTZ,
 		IsOnline:         in.IsOnline,
-		//LastLogin:        time.Unix(in.LastLogin, 0),
-		Desc: utils.ToRpcNullString(&in.Desc),
-		Tags: in.Tags,
+		Desc:             utils.ToRpcNullString(&in.Desc),
+		Tags:             in.Tags,
 	}
-	return pi
-}
-
-func ToDbConvVidmgrStream(in *vid.VidmgrStream) *relationDB.VidmgrStream {
-	info := make([]*relationDB.StreamTrack, 0, len(in.Tracks))
-	for _, v := range in.Tracks {
-		info = append(info, ToDbVidmgrStreamTrack(v))
-	}
-	pi := &relationDB.VidmgrStream{
-		VidmgrID:   in.VidmgrID,
-		StreamName: in.StreamName,
-
-		App:    in.App,
-		Schema: in.Schema,
-		Stream: in.Stream,
-		Vhost:  in.Vhost,
-
-		Identifier: in.Identifier,
-		LocalIP:    utils.InetAtoN(in.LocalIP),
-		LocalPort:  in.LocalPort,
-		PeerIP:     utils.InetAtoN(in.PeerIP),
-		PeerPort:   in.PeerPort,
-
-		OriginType:       in.OriginType,
-		OriginStr:        in.OriginStr,
-		OriginUrl:        in.OriginUrl,
-		ReaderCount:      in.ReaderCount,
-		TotalReaderCount: in.TotalReaderCount,
-		Tracks:           info,
-		IsRecordingHLS:   in.IsRecordingHLS,
-		IsRecordingMp4:   in.IsRecordingMp4,
-		IsShareChannel:   in.IsShareChannel,
-		IsAutoPush:       in.IsAutoPush,
-		IsAutoRecord:     in.IsAutoRecord,
-		IsPTZ:            in.IsPTZ,
-		IsOnline:         in.IsOnline,
-		//LastLogin:        time.Unix(in.LastLogin, 0),
-		Desc: in.Desc.GetValue(),
-	}
-	if in.Tags == nil {
-		in.Tags = map[string]string{}
-	}
-	pi.Tags = in.Tags
 
 	return pi
 }
@@ -131,8 +133,8 @@ func setPoByPb(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
 	if data.App != "" {
 		old.App = data.App
 	}
-	if data.Schema != "" {
-		old.Schema = data.Schema
+	if data.Protocol != 0 {
+		old.Protocol = data.Protocol
 	}
 	if data.Stream != "" {
 		old.Stream = data.Stream
@@ -178,6 +180,7 @@ func setPoByPb(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
 		old.LastLogin.Valid = true
 		old.LastLogin.Time = time.Unix(data.LastLogin, 0)
 	}
+
 	old.IsRecordingMp4 = data.IsRecordingMp4
 	old.IsRecordingHLS = data.IsRecordingHLS
 	old.IsShareChannel = data.IsShareChannel

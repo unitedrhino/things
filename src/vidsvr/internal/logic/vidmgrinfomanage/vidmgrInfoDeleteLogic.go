@@ -32,7 +32,7 @@ func NewVidmgrInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 func (l *VidmgrInfoDeleteLogic) VidmgrInfoDelete(in *vid.VidmgrInfoDeleteReq) (*vid.Response, error) {
 	// todo: add your logic here and delete this line
 	fmt.Printf("Vidsvr VidmgrInfoDelete \n")
-	err := l.PiDB.DeleteByFilter(l.ctx, relationDB.VidmgrFilter{VidmgrIDs: []string{in.VidmgrtID}})
+	err := l.PiDB.DeleteByFilter(l.ctx, relationDB.VidmgrFilter{VidmgrIDs: []string{in.VidmgrID}})
 	if err != nil {
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))
 		return nil, err
