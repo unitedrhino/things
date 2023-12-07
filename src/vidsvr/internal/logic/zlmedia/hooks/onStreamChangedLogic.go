@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
 	"github.com/i-Things/things/src/vidsvr/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 type OnStreamChangedLogic struct {
@@ -69,6 +70,7 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 			if req.Regist {
 				//对应位(bit)  置1
 				vidStreamIndex[0].Protocol |= GetProtocol(req.Schema)
+				vidStreamIndex[0].LastLogin = time.Now()
 				//fmt.Printf("ADD-Read[--airgens--]   0x:%x\n", vidStreamIndex.List[0].Protocol)
 				//fmt.Printf("ADD-Read[--airgnes--]  val:%d\n)", vidStreamIndex.List[0].Protocol)
 			} else {
@@ -88,6 +90,8 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 			if req.Regist { //注册请求
 				vidStreamInfo := ToVidmgrStreamRpc(req)
 				vidStreamInfo.IsOnline = true //设置状态为在线
+				vidStreamInfo.FirstLogin = time.Now()
+				vidStreamInfo.LastLogin = time.Now()
 				vidStreamInfo.Protocol = GetProtocol(req.Schema)
 				err := streamRepo.Insert(l.ctx, vidStreamInfo)
 				if err != nil {
