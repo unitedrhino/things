@@ -55,9 +55,6 @@ TimedSchedulerRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
-VidRpc:
-  Enable: false
-  Mode: direct
 RuleRpc:
   Enable: false
   Mode: direct
@@ -73,3 +70,8 @@ OssConf:
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false
+VidRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000

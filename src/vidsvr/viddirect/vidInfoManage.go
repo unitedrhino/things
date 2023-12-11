@@ -15,6 +15,5 @@ func NewVidmgrManage(runSvr bool) client.VidmgrInfoManage {
 		RunServer(svcCtx)
 	}
 	vidSvr := client.NewDirectVidmgrInfoManage(svcCtx, server.NewVidmgrInfoManageServer(svcCtx))
-	//dmSvr := client.NewDirectProductManage(svcCtx, server.NewProductManageServer(svcCtx))
 	return vidSvr
 }
