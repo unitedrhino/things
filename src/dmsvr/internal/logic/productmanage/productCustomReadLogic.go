@@ -36,18 +36,18 @@ func (l *ProductCustomReadLogic) ProductCustomRead(in *dm.ProductCustomReadReq) 
 			return &dm.ProductCustom{
 				ProductID:       in.ProductID,
 				ScriptLang:      1,
+				LoginAuthScript: nil,
 				TransformScript: nil,
-				CustomTopic:     nil,
+				CustomTopics:    nil,
 			}, nil
 		}
 		return nil, err
 	}
-	var customTopic []string
-	utils.SqlNullStringToAny(pi.CustomTopic, &customTopic)
 	return &dm.ProductCustom{
 		ProductID:       pi.ProductID,
 		ScriptLang:      pi.ScriptLang,
 		TransformScript: utils.ToRpcNullString(pi.TransformScript),
-		CustomTopic:     customTopic,
+		LoginAuthScript: utils.ToRpcNullString(pi.LoginAuthScript),
+		CustomTopics:    ToCustomTopicsPb(pi.CustomTopics),
 	}, nil
 }

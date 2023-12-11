@@ -284,6 +284,7 @@ var (
 		{PType: "p", V0: "1", V1: "/api/v1/things/device/info/update", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/device/info/count", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/device/auth/login", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/device/info/multi-import", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/device/auth/root-check", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/device/auth/access", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/device/msg/property-log/index", V2: "2", V3: "", V4: "", V5: ""},

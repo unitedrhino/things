@@ -8,10 +8,8 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
-	Database conf.Database
-	TDengine struct {
-		DataSource string
-	}
+	Database    conf.Database
+	TSDB        conf.TSDB
 	TimedJobRpc conf.RpcClientConf `json:",optional"`
 	CacheRedis  cache.ClusterConf
 	Event       conf.EventConf //和things内部交互的设置

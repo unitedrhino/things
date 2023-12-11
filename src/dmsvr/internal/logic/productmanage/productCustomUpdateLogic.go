@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -39,8 +38,8 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 			err = l.PcDB.Insert(l.ctx, &relationDB.DmProductCustom{
 				ProductID:       in.ProductID,
 				ScriptLang:      in.ScriptLang,
-				CustomTopic:     utils.AnyToNullString(in.CustomTopic),
-				TransformScript: utils.AnyToNullString(in.TransformScript),
+				CustomTopics:    ToCustomTopicsDo(in.CustomTopics),
+				TransformScript: in.TransformScript.GetValue(),
 			})
 			if err != nil {
 				return nil, err
@@ -50,13 +49,13 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 		return nil, err
 	}
 	if in.TransformScript != nil {
-		pi.TransformScript = utils.AnyToNullString(in.TransformScript)
+		pi.TransformScript = in.TransformScript.GetValue()
 	}
 	if in.ScriptLang != 0 {
 		pi.ScriptLang = in.ScriptLang
 	}
-	if in.CustomTopic != nil {
-		pi.CustomTopic = utils.AnyToNullString(in.CustomTopic)
+	if in.CustomTopics != nil {
+		pi.CustomTopics = ToCustomTopicsDo(in.CustomTopics)
 	}
 	err = l.PcDB.Update(l.ctx, pi)
 	if err != nil {

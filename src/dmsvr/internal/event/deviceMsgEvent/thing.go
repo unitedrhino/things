@@ -98,6 +98,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	}
 	ctx := utils.CopyContext(l.ctx)
 	utils.Go(ctx, func() {
+		startTime := time.Now()
 		for identifier, param := range paramValues {
 			//应用事件通知-设备物模型属性上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, application.PropertyReport{
@@ -108,6 +109,8 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
 			}
 		}
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
+			utils.FuncName(), startTime)
 	})
 
 	//插入多条设备物模型属性数据
