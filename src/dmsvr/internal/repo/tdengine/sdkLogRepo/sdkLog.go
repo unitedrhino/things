@@ -2,6 +2,7 @@ package sdkLogRepo
 
 import (
 	"github.com/i-Things/things/shared/clients"
+	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
@@ -12,7 +13,7 @@ type SDKLogRepo struct {
 	stores.SDKLogStore
 }
 
-func NewSDKLogRepo(dataSource string) *SDKLogRepo {
+func NewSDKLogRepo(dataSource conf.TSDB) *SDKLogRepo {
 	td, err := clients.NewTDengine(dataSource)
 	if err != nil {
 		logx.Error("tdengine 初始化错误 err", err)

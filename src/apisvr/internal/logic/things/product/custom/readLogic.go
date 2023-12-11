@@ -36,7 +36,8 @@ func (l *ReadLogic) Read(req *types.ProductCustomReadReq) (resp *types.ProductCu
 	return &types.ProductCustom{
 		ProductID:       dmResp.ProductID,
 		TransformScript: utils.ToNullString(dmResp.TransformScript),
+		LoginAuthScript: utils.ToNullString(dmResp.LoginAuthScript),
 		ScriptLang:      dmResp.ScriptLang,
-		CustomTopic:     dmResp.CustomTopic,
+		CustomTopics:    ToCustomTopicsTypes(dmResp.CustomTopics),
 	}, nil
 }

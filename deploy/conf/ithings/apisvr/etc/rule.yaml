@@ -2,9 +2,9 @@ Name: rule.rpc
 ListenOn: 127.0.0.1:9980
 Database:
   DBType: mysql
-  DSN: root:password@tcp(172.19.0.4:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DSN: root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
-  - Host: 172.19.0.5:6379
+  - Host: redis:6379
     Pass:
     Type: node
 DmRpc:
@@ -15,4 +15,4 @@ DmRpc:
 
 Event:
   Nats:
-    Url: nats://172.19.0.2:4222
+    Url: nats://nats:4222

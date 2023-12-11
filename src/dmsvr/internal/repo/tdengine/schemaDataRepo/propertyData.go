@@ -11,6 +11,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
+	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 	"time"
 )
@@ -96,6 +97,11 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, filter m
 func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error {
 	var sql []string
 	var args []any
+	var startTime = time.Now()
+	defer func() {
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
+			Infof("DeviceDataRepo.InsertPropertiesData")
+	}()
 	for identifier, param := range params {
 		data := msgThing.PropertyData{
 			Identifier: identifier,

@@ -35,13 +35,11 @@ func (l *DeviceMsgHandle) Gateway(msg *deviceMsg.PublishMsg) error {
 
 func (l *DeviceMsgHandle) Thing(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
-	now := time.Now()
+	startTime := time.Now()
 	resp, err := NewThingLogic(l.ctx, l.svcCtx).Handle(msg)
-	useTime1 := time.Now().Sub(now)
-	l.WithDuration(useTime1).Infof("%s  1", utils.FuncName())
 	l.deviceResp(resp)
-	useTime2 := time.Now().Sub(now)
-	l.WithDuration(useTime2).Infof("%s  req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
+	l.WithDuration(time.Now().Sub(startTime)).Infof("%s startTime:%v req:%v resp:%v err:%v",
+		utils.FuncName(), startTime, msg, resp, err)
 	return err
 }
 
@@ -97,10 +95,11 @@ func (l *DeviceMsgHandle) deviceResp(respMsg *deviceMsg.PublishMsg) {
 	if respMsg == nil {
 		return
 	}
+	startTime := time.Now()
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, respMsg)
 	if er != nil {
 		l.Errorf("DeviceMsgHandle.deviceResp.PublishToDev failure err:%v", er)
 		return
 	}
-	l.Infof("DeviceMsgHandle.deviceResp.PublishToDev msg:%v", respMsg)
+	l.WithDuration(time.Now().Sub(startTime)).Infof("DeviceMsgHandle.deviceResp startTime:%v msg:%v", startTime, respMsg)
 }

@@ -1,7 +1,18 @@
 # -*- coding:utf-8 -*-
 .PHOmakeNY: build
 
-build:build.clean mod build.api build.dd build.dm build.sys build.rule build.timedjob build.timedscheduler
+build:build.clean mod cp.etc build.api build.dg build.dm build.sys build.rule build.timedjob build.timedscheduler
+
+runall:  run.timedjob run.timedscheduler run.sys run.dm run.dg run.rule run.api
+
+killall:
+	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>killing all<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@killall  apisvr &
+	@killall  dgsvr &
+	@killall  syssvr &
+	@killall  dmsvr &
+	@killall  timedjob &
+	@killall  timedscheduler &
 
 build.clean:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>clean cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
@@ -12,13 +23,20 @@ mod:
 	@go mod download
 	@go mod tidy
 
+
+cp.etc:
+	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>copying etc<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@mkdir -p ./cmd/etc/
+	@cp -rf ./src/apisvr/etc/* ./cmd/etc/
+
+
 build.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@go build -o ./cmd/apisvr ./src/apisvr
 
-build.dd:
+build.dg:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/ddsvr ./src/ddsvr
+	@go build  -o ./cmd/dgsvr ./src/dgsvr
 
 build.dm:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
@@ -43,28 +61,28 @@ build.timedscheduler:
 
 run.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd src/apisvr && go run .
+	@cd cmd && nohup ./apisvr &  cd ..
 
-run.dd:
+run.dg:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd src/ddsvr && go run .
+	@cd cmd && nohup ./dgsvr &  cd ..
 
 run.dm:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd src/dmsvr && go run .
+	@cd cmd && nohup ./dmsvr &  cd ..
 
 run.sys:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd src/syssvr && go run .
+	@cd cmd && nohup ./syssvr &  cd ..
 
 run.rule:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd src/rulesvr && go run .
+	@cd cmd && nohup ./rulesvr &  cd ..
 
 run.timedjob:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd src/timed/timedjobsvr && go run .
+	@cd cd cmd && nohup ./timedjobsvr &  cd ..
 
 run.timedscheduler:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd src/timed/timedschedulersvr && go run .
+	@cd cd cmd && nohup ./timedschedulersvr &  cd ..
