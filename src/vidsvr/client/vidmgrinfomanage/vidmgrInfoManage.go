@@ -25,6 +25,7 @@ type (
 	VidmgrConfigIndexResp = vid.VidmgrConfigIndexResp
 	VidmgrConfigReadReq   = vid.VidmgrConfigReadReq
 	VidmgrInfo            = vid.VidmgrInfo
+	VidmgrInfoActiveReq   = vid.VidmgrInfoActiveReq
 	VidmgrInfoCountReq    = vid.VidmgrInfoCountReq
 	VidmgrInfoCountResp   = vid.VidmgrInfoCountResp
 	VidmgrInfoDeleteReq   = vid.VidmgrInfoDeleteReq
@@ -43,6 +44,8 @@ type (
 	VidmgrInfoManage interface {
 		// 新建服务
 		VidmgrInfoCreate(ctx context.Context, in *VidmgrInfo, opts ...grpc.CallOption) (*Response, error)
+		// 激活服务
+		VidmgrInfoActive(ctx context.Context, in *VidmgrInfoActiveReq, opts ...grpc.CallOption) (*Response, error)
 		// 更新服务
 		VidmgrInfoUpdate(ctx context.Context, in *VidmgrInfo, opts ...grpc.CallOption) (*Response, error)
 		// 删除服务
@@ -87,6 +90,17 @@ func (m *defaultVidmgrInfoManage) VidmgrInfoCreate(ctx context.Context, in *Vidm
 // 新建服务
 func (d *directVidmgrInfoManage) VidmgrInfoCreate(ctx context.Context, in *VidmgrInfo, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.VidmgrInfoCreate(ctx, in)
+}
+
+// 激活服务
+func (m *defaultVidmgrInfoManage) VidmgrInfoActive(ctx context.Context, in *VidmgrInfoActiveReq, opts ...grpc.CallOption) (*Response, error) {
+	client := vid.NewVidmgrInfoManageClient(m.cli.Conn())
+	return client.VidmgrInfoActive(ctx, in, opts...)
+}
+
+// 激活服务
+func (d *directVidmgrInfoManage) VidmgrInfoActive(ctx context.Context, in *VidmgrInfoActiveReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.VidmgrInfoActive(ctx, in)
 }
 
 // 更新服务

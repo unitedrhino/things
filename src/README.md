@@ -71,7 +71,9 @@ cd rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --
 ```shell
 #protoc  proto/* --go_out=. --go-grpc_out=.
 cd vidsvr && goctl rpc protoc  proto/vid.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
-```
+#mediaserver http-api
+cd vidsvr && goctl api go -api http/vid.api  -dir ./  --style=goZero && cd ..
+``` 
 
 
 # 定时生产者引擎模块-timedschedulersvr

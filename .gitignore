@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 /deploy/data/*
+/docker/run-debug/
 
 ### STS ###
 .apt_generated
@@ -41,11 +42,16 @@ src/dcsvr/dcsvr*
 src/ddsvr/ddsvr*
 src/dmsvr/dmsvr*
 src/vidsvr/vidsvr*
+src/vidsvr/vidsvr
+src/vidsvr/vidsvr/etc/api.yaml
+src/vidsvr/vidsvr/api.go
+src/apisvr/go_build*
 src/usersvr/usersvr*
 /src/disvr/disvr.exe
 /src/syssvr/syssvr.exe
 /src/vidsvr/vidsvr.exe
 /src/apisvr/dist/
+
 *.exe
 ### MacOS ###
 .DS_Store

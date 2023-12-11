@@ -1,0 +1,140 @@
+syntax = "v1"
+
+info(
+    title: "视频服务"
+    desc: "视频流管理"
+    author: "airgens"
+    email: "wfjdemmye@163.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+
+
+@server(
+    group:things/vidmgr/stream
+    prefix:/api/v1/things/vidmgr/stream
+    middleware: SetupWare, CheckTokenWare, TeardownWare
+)
+
+service api {
+    @doc "新增流[拉流]"
+    @handler create
+    post /create (VidmgrStreamCreateReq) returns ()
+    @doc "更新服务"
+    @handler update
+    post /update (VidmgrStreamUpdateReq) returns ()
+    @doc "删除流"
+    @handler delete
+    post /delete (VidmgrStreamDeleteReq) returns ()
+    @doc "获取所有流列表"
+    @handler index
+    post /index (VidmgrStreamIndexReq) returns (VidmgrStreamIndexResp)
+    @doc "获取流详细"
+    @handler read
+    post /read (VidmgrStreamReadReq) returns (VidmgrStream)
+    @doc "获取流在线情况"
+    @handler count
+    post /count (VidmgrStreamCountReq) returns (VidmgrStreamCountResp)
+}
+
+type (
+    StreamCommon struct{
+        VidmgrID string     `json:"vidmgrID,optional"`
+        StreamName string   `json:"streamName,optional"`
+
+        App string   `json:"app,optional"`
+        Stream string   `json:"stream,optional"`
+        Vhost string   `json:"vhost,optional"`
+
+        Identifier string `json:"identifier,optional"`
+        LocalIP string `json:"localIP,optional"`
+        LocalPort int64 `json:"localPort,optional"`
+        PeerIP string `json:"peerIP,optional"`
+        PeerPort int64 `json:"peerPort,optional"`
+
+        OriginType int64 `json:"originType,optional"`
+        OriginStr string `json:"originStr,optional"`
+        OriginUrl string `json:"originUrl,optional"`
+
+        IsRecordingMp4 bool `json:"isRecordingMp4,optional"`
+        IsRecordingHLS bool `json:"isRecordingHLS,optional"`
+        IsShareChannel bool `json:"isShareChannel,optional"`
+        IsAutoPush     bool `json:"isAutoPush,optional"`
+        IsAutoRecord   bool `json:"isAutoRecord,optional"`
+        IsOnline       bool `json:"isOnline,optional"`
+        IsPTZ          bool `json:"isPTZ,optional"`
+
+    //  额外添加字段，用于区别docker和独立主机
+//        TypeMedia   int64 `json:"typeMedia,optional"`
+//        MediaIP   int64 `json:"mediaIP,optional"`
+//        MediaPort   int64 `json:"mediaPort,optional"`
+
+        Desc        *string `json:"desc,optional"`                    //描述
+        Tags        []*Tag  `json:"tags,optional"`                    //流tag
+    }
+
+    StreamTrack struct {
+        Channels int64  `json:"channels"`
+        CodecId int64  `json:"codec_id"`
+        CodecIdName string    `json:"codec_id_name"`
+        CodecType   int64    `json:"codec_type"`
+        Ready bool      `json:"ready"`
+        SampleBit int64    `json:"sample_bit"`
+        SampleRate int64       `json:"sample_rate"`
+        Fps int64      `json:"fps"`
+        Height  int64 `json:"height"`
+        Width   int64 `json:"width"`
+    }
+
+    VidmgrStream struct{
+        StreamID int64      `json:"streamID,optional"`
+        StreamCommon
+        Protocol uint32  `json:"protocol,optional"`
+        ReaderCount int64 `json:"readerCount,optional"`
+        TotalReaderCount int64 `json:"totalReaderCount,optional"`
+        Tracks []StreamTrack `json:"tracks,optional"`
+        LastLogin   int64    `json:"lastLogin,optional,string"`
+    }
+    VidmgrStreamCreateReq{
+        StreamCommon
+    }
+
+    VidmgrStreamUpdateReq{
+        /*StreamID is Read only*/
+        StreamID int64      `json:"streamID,optional"`
+        StreamCommon
+    }
+
+    VidmgrStreamDeleteReq{
+        StreamID int64      `json:"streamID,optional"`
+    }
+
+    VidmgrStreamIndexReq{
+        Page *PageInfo `json:"page,optional"`                       //分页信息,只获取一个则不填
+        VidmgrID string `json:"vidmgrID,optional"`                  //通过vidmgrID获取这个流服务下的所有流
+        StreamName string  `json:"streamName,optional"`
+        StreamIDs []int64      `json:"streamIDs,optional"`
+        Tags []*Tag `json:"tags,optional"`                  // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+    }
+
+    VidmgrStreamIndexResp{
+        List []*VidmgrStream `json:"list"`    //服务信息
+        Total int64 `json:"total,optional"`  //拥有的总数
+        Num int64 `json:"num,optional"`      //返回的数量
+    }
+
+    VidmgrStreamReadReq{
+        StreamID int64      `json:"streamID,optional"`
+    }
+
+    //lastLogin
+    VidmgrStreamCountReq{
+        StartTime int64 `json:"startTime,optional" form:"startTime,optional"`  //查询区间的开始时间（秒）
+        EndTime int64 `json:"endTime,optional" form:"endTime,optional"`        //查询区间的结束时间（秒）
+    }
+
+    VidmgrStreamCountResp{
+        Online int64 `json:"online"`     // 在线服务数
+        Offline int64 `json:"offline"`   // 离线服务数
+    }
+)

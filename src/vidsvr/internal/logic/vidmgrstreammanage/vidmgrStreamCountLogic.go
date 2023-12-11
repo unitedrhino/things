@@ -60,5 +60,4 @@ func (l *VidmgrStreamCountLogic) VidmgrStreamCount(in *vid.VidmgrStreamCountReq)
 		Online:  onlineCount,
 		Offline: offlineCount,
 	}, nil
-
 }

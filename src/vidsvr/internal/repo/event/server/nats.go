@@ -32,8 +32,17 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 	err := n.client.QueueSubscribe(topics.VidInfoCheckStatus, natsJsConsumerName,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			jsonStr, _ := json.Marshal(natsMsg)
-			fmt.Println("[******]   QueueSubscribe", "data:", string(jsonStr))
+			fmt.Println("[***test***]   QueueSubscribe1", "data:", string(jsonStr))
 			return handle(ctx).ActionCheck()
+		})
+	if err != nil {
+		return err
+	}
+	err = n.client.QueueSubscribe(topics.VidInfoInitDatabase, natsJsConsumerName,
+		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
+			jsonStr, _ := json.Marshal(natsMsg)
+			fmt.Println("[***Once***]   QueueSubscribe2 ", "data:", string(jsonStr))
+			return handle(ctx).ActionInit()
 		})
 	if err != nil {
 		return err
