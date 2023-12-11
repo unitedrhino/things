@@ -36,9 +36,13 @@ func newNatsJsClient(conf conf.NatsConf) (*NatsJsClient, error) {
 }
 
 func (n *NatsJsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.PublishMsg) error {
+	startTime := time.Now()
 	msg := events.NewEventMsg(ctx, devices.PublishToDev(respMsg.Handle, respMsg.Type, respMsg.Payload, respMsg.ProductID, respMsg.DeviceName))
-	logx.WithContext(ctx).Infof("PublishToDev sendMsg:%s", string(msg))
+	defer func() {
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("PublishToDev startTime:%v sendMsg:%s", startTime, string(msg))
+	}()
 	_, err := n.client.Publish(fmt.Sprintf(topics.DeviceDownMsg, respMsg.Handle, respMsg.ProductID, respMsg.DeviceName), msg)
+
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s Publish failure err:%v", utils.FuncName(), err)
 	}

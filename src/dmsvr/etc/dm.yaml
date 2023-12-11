@@ -18,7 +18,7 @@ TSDB:
   DSN: root:taosdata@ws(localhost:6041)/ithings?readBufferSize=52428800
 AuthWhite:
   Users:
-    - UserName: ddsvr
+    - UserName: dgsvr
       Password: iThings
   IpRange:
     - 127.0.0.1

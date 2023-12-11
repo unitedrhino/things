@@ -8,6 +8,7 @@ Port: 7777
 NodeID: 1
 Log:
   Encoding: plain
+  #Mode: file
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:

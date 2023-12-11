@@ -223,9 +223,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 	}
 
-	ossClient := oss.NewOssClient(c.OssConf)
-	if ossClient == nil {
-		logx.Error("NewOss err")
+	ossClient, err := oss.NewOssClient(c.OssConf)
+	if err != nil {
+		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
 
