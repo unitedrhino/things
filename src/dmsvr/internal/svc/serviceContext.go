@@ -74,11 +74,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
 	}
-	ossClient := oss.NewOssClient(c.OssConf)
-	if ossClient == nil {
-		logx.Error("NewOss err")
+	ossClient, err := oss.NewOssClient(c.OssConf)
+	if err != nil {
+		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
+
 	bus := eventBus.NewEventBus()
 	stores.InitConn(c.Database)
 	err = relationDB.Migrate(c.Database)

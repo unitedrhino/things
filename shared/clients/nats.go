@@ -105,6 +105,8 @@ func CreateStream(jetStream nats.JetStreamContext, name string, subjects []strin
 		_, err = jetStream.AddStream(&nats.StreamConfig{
 			Name:     name,
 			Subjects: subjects,
+			Discard:  nats.DiscardOld,
+			MaxAge:   2 * time.Minute,
 		})
 		if err != nil {
 			return err

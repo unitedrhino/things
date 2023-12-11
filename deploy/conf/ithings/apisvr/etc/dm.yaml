@@ -13,7 +13,8 @@ CacheRedis:
     Pass:
     Type: node
 TSDB:
-  DSN: root:taosdata@ws(tdengine:6041)/ithings?readBufferSize=52428800
+  Driver: taosRestful
+  DSN: root:taosdata@http(tdengine:6041)/ithings?readBufferSize=52428800
 AuthWhite:
   Users:
     - UserName: ddsvr

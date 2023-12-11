@@ -5,6 +5,7 @@ CpuThreshold: 0
 Timeout: 1000000
 Log:
   Encoding: plain
+  #Mode: file
 Database:
   DBType: mysql
   DSN: root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
@@ -15,10 +16,14 @@ CacheRedis:
     Pass:
     Type: node
 TSDB:
+#  Driver: taosRestful
+#  DSN: root:taosdata@http(WIN-20231205QHE:6041)/ithings?readBufferSize=52428800
   DSN: root:taosdata@ws(localhost:6041)/ithings?readBufferSize=52428800
+#  Driver: taosSql
+#  DSN: root:taosdata@tcp(localhost:6030)/ithings
 AuthWhite:
   Users:
-    - UserName: ddsvr
+    - UserName: dgsvr
       Password: iThings
 OssConf:
   OssType: minio

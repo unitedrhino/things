@@ -35,7 +35,7 @@ const (
 )
 const (
 	// ShareSubTopicPrefix emqx 共享订阅前缀 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/shared-subscriptions.html
-	ShareSubTopicPrefix = "$share/dd.rpc/"
+	ShareSubTopicPrefix = "$share/dg.rpc/"
 	// TopicConnectStatus emqx 客户端上下线通知 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/system-topic.html#客户端上下线事件
 	TopicConnectStatus = ShareSubTopicPrefix + "$SYS/brokers/+/clients/#"
 
@@ -173,7 +173,7 @@ func (d *MqttClient) subscribeWithFunc(cli mqtt.Client, topic string, handle fun
 				ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 				defer cancel()
 				utils.Recover(ctx)
-				//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
+				//dgsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
 				//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
 				ctx, span := ctxs.StartSpan(ctx, message.Topic(), "")
 				defer span.End()
@@ -181,7 +181,7 @@ func (d *MqttClient) subscribeWithFunc(cli mqtt.Client, topic string, handle fun
 				duration := timex.Since(startTime)
 				err := handle(ctx, message.Topic(), message.Payload())
 				if err != nil {
-					logx.WithContext(ctx).Errorf("%s.handle failure err:%v topic:%v", err, topic)
+					logx.WithContext(ctx).Errorf("%s.handle failure err:%v topic:%v", utils.FuncName(), err, topic)
 				}
 				logx.WithContext(ctx).WithDuration(duration).Infof(
 					"subscribeWithFunc.Subscribe.publish topic:%v message:%v err:%v",

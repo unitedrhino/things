@@ -4,14 +4,16 @@ ListenOn: 0.0.0.0:6166
 #  Hosts:
 #  - 127.0.0.1:2379
 #  Key: dg.rpc
-
+Log:
+  Encoding: plain
+  #Mode: file
 DevLink:
   Mode: mqtt
   SubMode: emq
   Mqtt:
-    ClientID: dd.rpc
+    ClientID: dg.rpc
     Pass: iThings
-    User: ddsvr
+    User: dgsvr
     Brokers:
       - tcp://127.0.0.1:1883
 DmRpc:

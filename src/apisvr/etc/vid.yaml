@@ -15,6 +15,7 @@ CacheRedis:
     Type: node
 Log:
   Encoding: plain
+  #Mode: file
 Telemetry:
     Name: dm.rpc
     Endpoint: http://127.0.0.1:14268/api/traces

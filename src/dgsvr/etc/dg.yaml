@@ -9,9 +9,9 @@ DevLink:
   Mode: mqtt
   SubMode: emq
   Mqtt:
-    ClientID: dd.rpc
+    ClientID: dg.rpc
     Pass: iThings
-    User: ddsvr
+    User: dgsvr
     Brokers:
       - tcp://127.0.0.1:1883
 DmRpc:

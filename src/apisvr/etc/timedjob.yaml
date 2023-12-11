@@ -1,5 +1,8 @@
 Name: timedjob.rpc
 ListenOn: 0.0.0.0:3256
+Log:
+  Encoding: plain
+  #Mode: file
 Event:
   Mode: natsJs
 #Etcd:
