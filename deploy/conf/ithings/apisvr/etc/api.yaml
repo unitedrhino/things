@@ -9,7 +9,7 @@ NodeID: 1
 Log:
   Encoding: plain
 CacheRedis:
-  - Host: 172.19.0.5:6379
+  - Host: redis:6379
     Pass:
     Type: node
 Rej:
@@ -30,7 +30,7 @@ Proxy:
       Dest: http://127.0.0.1:8000
     - Router: /api/v1/oss/
       DeletePrefix: true
-      Dest: 172.19.0.10:9000
+      Dest: minio:9000
 DdEnable: true
 SysRpc:
   Enable: true
@@ -60,7 +60,7 @@ OssConf:
   TemporaryBucketName: ithings-temporary
   AccessKeyID: root
   AccessKeySecret: password
-  Location: 172.19.0.10:9000
+  Location: minio:9000
   CustomHost: /api/v1/oss
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
@@ -68,4 +68,4 @@ OssConf:
 Event:
   Mode: natsJs
   Nats:
-    Url: nats://172.19.0.2:4222
+    Url: nats://nats:4222

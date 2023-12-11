@@ -10,7 +10,7 @@ DevLink:
     Pass: iThings
     User: ddsvr
     Brokers:
-      - tcp://172.19.0.7:1883
+      - tcp://emqx:1883
 DmRpc:
   Enable: true
   Mode: direct
@@ -19,4 +19,4 @@ DmRpc:
 Event:
   Mode: natsJs
   Nats:
-    Url: nats://172.19.0.2:4222
+    Url: nats://nats:4222
