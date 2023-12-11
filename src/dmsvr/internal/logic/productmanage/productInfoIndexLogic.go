@@ -35,7 +35,10 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 		piDB = relationDB.NewProductInfoRepo(l.ctx)
 	)
 
-	filter := relationDB.ProductFilter{DeviceType: in.DeviceType, ProductName: in.ProductName, Tags: in.Tags, ProductIDs: in.ProductIDs}
+	filter := relationDB.ProductFilter{
+		DeviceType: in.DeviceType, ProductName: in.ProductName,
+		Tags: in.Tags, ProductIDs: in.ProductIDs, WithProtocolInfo: true,
+	}
 	size, err = piDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err

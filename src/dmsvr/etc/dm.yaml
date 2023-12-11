@@ -14,11 +14,11 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
-TDengine:
-  DataSource: root:taosdata@http(localhost:6041)/iThings?readBufferSize=52428800
+TSDB:
+  DSN: root:taosdata@ws(localhost:6041)/ithings?readBufferSize=52428800
 AuthWhite:
   Users:
-    - UserName: ddsvr
+    - UserName: dgsvr
       Password: iThings
   IpRange:
     - 127.0.0.1

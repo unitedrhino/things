@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"sync"
 	"time"
 )
 
@@ -49,18 +50,20 @@ func NewTimedScheduler(c cache.ClusterConf) *TimedScheduler {
 				}
 				fmt.Printf("Scheduler PostEnqueueFunc  err : %+v , task : %+v", err, task)
 			},
-		}), run: make(map[string]string, 100)}
+		})}
 }
 
 type TimedScheduler struct {
 	Asynq *asynq.Scheduler
-	run   map[string]string //key是任务code,value 是entryID
+	//run   map[string]string //key是任务code,value 是entryID
+	r sync.Map
 }
 
 func (s *TimedScheduler) Register(cronspec string, taskCode string, payload []byte, opts ...asynq.Option) (err error) {
-	t, ok := s.run[taskCode]
+	t, ok := s.r.Load(taskCode)
+	//	t, ok := s.run[taskCode]
 	if ok { //如果正在运行,需要先删除再注册
-		err = s.Unregister(t)
+		err = s.Unregister(t.(string))
 		if err != nil {
 			return err
 		}
@@ -70,18 +73,18 @@ func (s *TimedScheduler) Register(cronspec string, taskCode string, payload []by
 	if err != nil {
 		return err
 	}
-	s.run[taskCode] = entryID
+	s.r.Store(taskCode, entryID)
 	return
 }
 
 func (s *TimedScheduler) Unregister(taskCode string) error {
-	t, ok := s.run[taskCode]
+	t, ok := s.r.Load(taskCode)
 	if ok { //如果正在运行,需要先删除再注册
-		err := s.Asynq.Unregister(t)
+		err := s.Asynq.Unregister(t.(string))
 		if err != nil {
 			return err
 		}
-		delete(s.run, taskCode)
+		s.r.Delete(taskCode)
 	}
 	return nil
 }

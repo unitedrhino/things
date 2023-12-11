@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/oss/common"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/productCustom"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -58,28 +59,58 @@ func ToProductInfo(ctx context.Context, pi *relationDB.DmProductInfo, svcCtx *sv
 
 func ToProductSchemaRpc(info *relationDB.DmProductSchema) *dm.ProductSchemaInfo {
 	db := &dm.ProductSchemaInfo{
-		ProductID:  info.ProductID,
-		Tag:        info.Tag,
-		Type:       info.Type,
-		Identifier: info.Identifier,
-		Name:       utils.ToRpcNullString(&info.Name),
-		Desc:       utils.ToRpcNullString(&info.Desc),
-		Required:   info.Required,
-		Affordance: utils.ToRpcNullString(&info.Affordance),
+		ProductID:    info.ProductID,
+		Tag:          info.Tag,
+		Type:         info.Type,
+		Identifier:   info.Identifier,
+		ExtendConfig: info.ExtendConfig,
+		Name:         utils.ToRpcNullString(&info.Name),
+		Desc:         utils.ToRpcNullString(&info.Desc),
+		Required:     info.Required,
+		Affordance:   utils.ToRpcNullString(&info.Affordance),
 	}
 	return db
 }
 
 func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
 	db := &relationDB.DmProductSchema{
-		ProductID:  info.ProductID,
-		Tag:        info.Tag,
-		Type:       info.Type,
-		Identifier: info.Identifier,
-		Name:       info.Name.GetValue(),
-		Desc:       info.Desc.GetValue(),
-		Required:   info.Required,
-		Affordance: info.Affordance.GetValue(),
+		ProductID:    info.ProductID,
+		Tag:          info.Tag,
+		Type:         info.Type,
+		Identifier:   info.Identifier,
+		ExtendConfig: info.ExtendConfig,
+		Name:         info.Name.GetValue(),
+		Desc:         info.Desc.GetValue(),
+		Required:     info.Required,
+		Affordance:   info.Affordance.GetValue(),
 	}
 	return db
+}
+
+func ToCustomTopicPb(info *productCustom.CustomTopic) *dm.CustomTopic {
+	if info == nil {
+		return nil
+	}
+	return &dm.CustomTopic{Topic: info.Topic, Direction: info.Direction}
+}
+
+func ToCustomTopicsPb(info []*productCustom.CustomTopic) (ret []*dm.CustomTopic) {
+	for _, v := range info {
+		ret = append(ret, ToCustomTopicPb(v))
+	}
+	return
+}
+
+func ToCustomTopicDo(info *dm.CustomTopic) *productCustom.CustomTopic {
+	if info == nil {
+		return nil
+	}
+	return &productCustom.CustomTopic{Topic: info.Topic, Direction: info.Direction}
+}
+
+func ToCustomTopicsDo(info []*dm.CustomTopic) (ret []*productCustom.CustomTopic) {
+	for _, v := range info {
+		ret = append(ret, ToCustomTopicDo(v))
+	}
+	return
 }

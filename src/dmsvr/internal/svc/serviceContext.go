@@ -66,19 +66,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	GroupID := utils.NewSnowFlake(nodeID)
 	ca := kv.NewStore(c.CacheRedis)
 	ccSchemaR := cache.NewSchemaRepo()
-	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, ccSchemaR.GetSchemaModel, ca)
-	hubLogR := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
-	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
+	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetSchemaModel, ca)
+	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB)
+	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB)
 	duR, err := dataUpdate.NewDataUpdate(c.Event)
 	if err != nil {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
 	}
-	ossClient := oss.NewOssClient(c.OssConf)
-	if ossClient == nil {
-		logx.Error("NewOss err")
+	ossClient, err := oss.NewOssClient(c.OssConf)
+	if err != nil {
+		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
+
 	bus := eventBus.NewEventBus()
 	stores.InitConn(c.Database)
 	err = relationDB.Migrate(c.Database)

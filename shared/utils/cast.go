@@ -110,6 +110,9 @@ func ToRpcNullString(val any) *wrappers.StringValue {
 	switch val.(type) {
 	case string:
 		v := val.(string)
+		if v == "" {
+			return nil
+		}
 		return &wrappers.StringValue{
 			Value: v,
 		}
