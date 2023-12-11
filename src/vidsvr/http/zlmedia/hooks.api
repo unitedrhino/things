@@ -15,7 +15,7 @@ import "zlmedia/common.api" //zlemedia api
 //    middleware: SetupWare, CheckTokenWare, TeardownWare
 )
 
-service api {
+service vid {
     @doc "流量统计事件"
     @handler onFlowReport
     post /onFlowReport (HooksApiFlowReportReq) returns (HooksApiResp)

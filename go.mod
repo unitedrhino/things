@@ -3,7 +3,7 @@ module github.com/i-Things/things
 go 1.19
 
 require (
-	gitee.com/asktop_golib/util v1.5.2
+	gitee.com/asktop_golib/util v0.1.6
 	github.com/Blank-Xu/sql-adapter v0.0.0-20210714092925-0bdd0d548758
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
@@ -20,12 +20,10 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gogf/gf/v2 v2.3.3
 	github.com/golang/protobuf v1.5.2
-	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hibiken/asynq v0.24.1
-	github.com/jinzhu/copier v0.3.2
 	github.com/minio/minio-go/v7 v7.0.27
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/mssola/user_agent v0.5.3
