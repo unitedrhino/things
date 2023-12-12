@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package dg;
+option go_package="pb/dg";
+
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1;
+}
+
+service DeviceAuth{
+  //设备登录认证
+  rpc loginAuth(LoginAuthReq)           returns (Response);
+  //设备操作认证
+  rpc accessAuth(AccessAuthReq)         returns (Response);
+  //设备动态注册
+  rpc deviceRegister(DeviceRegisterReq) returns (DeviceRegisterResp);
+}
+
+message DeviceRegisterReq{
+  string productID = 1;  //产品id
+  string deviceName = 2; //设备名称
+  int64 nonce = 3;       //随机数
+  int64 timestamp = 4;   //秒级时间戳
+  string signature = 5;  //签名信息
+}
+
+message DeviceRegisterResp{
+  int64 len = 1;       //payload加密前信息的长度
+  /*
+  加密过程将原始 JSON 格式的 payload 转为字符串后进行 AES 加密，再进行 base64 加密。AES 加密算法为 CBC 模式，密钥长度128，取 productSecret 前16位，偏移量为长度16的字符“0”。
+  原始 payload 内容说明：
+  key                value               描述
+  encryptionType     1              加密类型，1表示证书认证，2表示签名认证。
+  psk                1239           设备密钥，当产品认证类型为签名认证时有此参数
+  clientCert         -              设备证书文件字符串格式，当产品认证类型为证书认证时有此参数。
+  clientKey          -              设备私钥文件字符串格式，当产品认证类型为证书认证时有此参数。
+  */
+  string payload = 2;
+}
+
+
+message LoginAuthReq {
+  string protocolType =1;           // 协议类型: iThings,iThings-thingsboard
+  string username = 2;//用户名
+  string password = 3;//密码
+  string clientID = 4;//clientID
+  string ip = 5;//访问的ip地址
+  bytes certificate = 6;//客户端证书
+}
+
+message AccessAuthReq {
+  string protocolType =1;           // 协议类型: iThings,iThings-thingsboard
+  string username = 2; //用户名
+  string topic = 3;//主题
+  string clientID = 4;//clientID
+  string access = 5;//操作
+  string ip = 6; //访问的ip地址
+}
+
+
