@@ -10,6 +10,8 @@ import (
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
 	"github.com/i-Things/things/src/vidsvr/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
+	"regexp"
+	"time"
 )
 
 type OnStreamChangedLogic struct {
@@ -50,12 +52,6 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 			VidmgrID: req.MediaServerId,
 			Stream:   req.Stream,
 			Vhost:    req.Vhost,
-			//具体连接
-			//Identifier: req.OriginSock.Identifier,
-			//LocalIP:    req.OriginSock.LocalIp,
-			//LocalPort:  req.OriginSock.LocalPort,
-			//PeerIP:     req.OriginSock.PeerIp,
-			//PeerPort:   req.OriginSock.PeerPort,
 		})
 
 		if err != nil {
@@ -69,11 +65,16 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 			if req.Regist {
 				//对应位(bit)  置1
 				vidStreamIndex[0].Protocol |= GetProtocol(req.Schema)
-				//fmt.Printf("ADD-Read[--airgens--]   0x:%x\n", vidStreamIndex.List[0].Protocol)
-				//fmt.Printf("ADD-Read[--airgnes--]  val:%d\n)", vidStreamIndex.List[0].Protocol)
+				vidStreamIndex[0].LastLogin = time.Now()
+				fmt.Printf("ADD-Read[--airgens--Register]   0x:%x\n", vidStreamIndex[0].Protocol)
+				fmt.Printf("ADD-Read[--airgnes--Register]  val:%d\n)", vidStreamIndex[0].Protocol)
 			} else {
 				//对应位(bit) 置0
+				fmt.Printf("ADD-Read[--airgnes--old       ]  val:%d\n)", vidStreamIndex[0].Protocol)
 				vidStreamIndex[0].Protocol = vidStreamIndex[0].Protocol &^ GetProtocol(req.Schema)
+				fmt.Printf("ADD-Read[--airgens--UnRegister]   0x:%x\n", GetProtocol(req.Schema))
+				fmt.Printf("ADD-Read[--airgens--UnRegister]   0x:%x\n", vidStreamIndex[0].Protocol)
+				fmt.Printf("ADD-Read[--airgnes--UnRegister]  val:%d\n)", vidStreamIndex[0].Protocol)
 			}
 			if vidStreamIndex[0].Protocol == 0 {
 				vidStreamIndex[0].IsOnline = false
@@ -88,7 +89,23 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 			if req.Regist { //注册请求
 				vidStreamInfo := ToVidmgrStreamRpc(req)
 				vidStreamInfo.IsOnline = true //设置状态为在线
+				vidStreamInfo.FirstLogin = time.Now()
+				vidStreamInfo.LastLogin = time.Now()
 				vidStreamInfo.Protocol = GetProtocol(req.Schema)
+
+				if vidStreamInfo.OriginType == RTMP_PUSH {
+					re := regexp.MustCompile(vidStreamInfo.Vhost)
+					if vidInfo.MediasvrType == 1 { //docker 模式
+						//l.svcCtx.Config.Restconf.Host
+						vidStreamInfo.OriginUrl =
+							re.ReplaceAllString(vidStreamInfo.OriginUrl, l.svcCtx.Config.Restconf.Host)
+					} else {
+						//vidStreamInfo.PeerIP
+						vidStreamInfo.OriginUrl =
+							re.ReplaceAllString(vidStreamInfo.OriginUrl, req.OriginSock.PeerIp)
+					}
+				}
+
 				err := streamRepo.Insert(l.ctx, vidStreamInfo)
 				if err != nil {
 					l.Errorf("%s rpc.VidmgrStreamCreate  err=%+v", utils.FuncName(), err)
