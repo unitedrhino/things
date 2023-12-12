@@ -1719,6 +1719,12 @@ type VidmgrStreamReadReq struct {
 	StreamID int64 `json:"streamID,optional"`
 }
 
+type VidmgrStreamReadResp struct {
+	VidmgrStream
+	MediaIP   string `json:"mediaIP,optional"`
+	MediaPort int64  `json:"mediaPort,optional"`
+}
+
 type VidmgrStreamCountReq struct {
 	StartTime int64 `json:"startTime,optional" form:"startTime,optional"` //查询区间的开始时间（秒）
 	EndTime   int64 `json:"endTime,optional" form:"endTime,optional"`     //查询区间的结束时间（秒）

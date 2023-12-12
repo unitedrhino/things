@@ -31,7 +31,7 @@ service api {
     post /index (VidmgrStreamIndexReq) returns (VidmgrStreamIndexResp)
     @doc "获取流详细"
     @handler read
-    post /read (VidmgrStreamReadReq) returns (VidmgrStream)
+    post /read (VidmgrStreamReadReq) returns (VidmgrStreamReadResp)
     @doc "获取流在线情况"
     @handler count
     post /count (VidmgrStreamCountReq) returns (VidmgrStreamCountResp)
@@ -121,6 +121,12 @@ type (
 
     VidmgrStreamReadReq{
         StreamID int64      `json:"streamID,optional"`
+    }
+
+    VidmgrStreamReadResp{
+        VidmgrStream
+        MediaIP string `json:"mediaIP,optional"`
+        MediaPort int64 `json:"mediaPort,optional"`
     }
 
     //lastLogin
