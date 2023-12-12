@@ -38,6 +38,11 @@ func GetConn(database conf.Database) (conn *gorm.DB, err error) {
 	default:
 		conn, err = gorm.Open(mysql.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 	}
+	if err != nil {
+		return nil, err
+	}
+	db, _ := conn.DB()
+	db.SetMaxIdleConns(20)
 	return
 }
 

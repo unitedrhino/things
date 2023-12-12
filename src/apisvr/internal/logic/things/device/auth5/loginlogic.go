@@ -5,6 +5,8 @@ import (
 	"encoding/base64"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic/things/device"
+	"github.com/i-Things/things/src/dgsvr/pb/dg"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -32,9 +34,16 @@ func (l *LoginLogic) Login(req *types.DeviceAuth5LoginReq) (resp *types.DeviceAu
 	var (
 		cert []byte
 	)
+	// device auth
+	if req.Certificate != "" {
+		cert, err = base64.StdEncoding.DecodeString(req.Certificate)
+		if err != nil {
+			return nil, errors.Parameter.AddDetail("certificate can base64 decode")
+		}
 
+	}
 	// superuser
-	_, err = l.svcCtx.DeviceA.RootCheck(l.ctx, &dm.RootCheckReq{
+	_, err = l.svcCtx.DeviceM.RootCheck(l.ctx, &dm.RootCheckReq{
 		Username:    req.Username,
 		Password:    req.Password,
 		ClientID:    req.ClientID,
@@ -47,24 +56,27 @@ func (l *LoginLogic) Login(req *types.DeviceAuth5LoginReq) (resp *types.DeviceAu
 			IsSuperuser: true,
 		}, nil
 	}
-	// device auth
-	if req.Certificate != "" {
-		cert, err = base64.StdEncoding.DecodeString(req.Certificate)
-		if err != nil {
-			return nil, errors.Parameter.AddDetail("certificate can base64 decode")
-		}
-
-	}
-	_, err = l.svcCtx.DeviceA.LoginAuth(l.ctx, &dm.LoginAuthReq{Username: req.Username, //用户名
+	_, err = l.svcCtx.DeviceA.LoginAuth(l.ctx, &dg.LoginAuthReq{Username: req.Username, //用户名
 		Password:    req.Password, //密码
 		ClientID:    req.ClientID, //clientID
 		Ip:          req.Ip,       //访问的ip地址
 		Certificate: cert,         //客户端证书
 	})
+	if err == nil {
+		return &types.DeviceAuth5LoginResp{
+			Result:      "allow",
+			IsSuperuser: false,
+		}, nil
+	}
+	err = device.ThirdProtoLoginAuth(l.ctx, l.svcCtx, &types.DeviceAuthLoginReq{
+		Username:    req.Username,
+		Password:    req.Password,
+		ClientID:    req.ClientID,
+		Ip:          req.Ip,
+		Certificate: req.Certificate,
+	}, cert)
 	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.ManageDevice req=%v err=%+v", utils.FuncName(), req, er)
-		return nil, er
+		return nil, err
 	}
 	return &types.DeviceAuth5LoginResp{
 		Result:      "allow",

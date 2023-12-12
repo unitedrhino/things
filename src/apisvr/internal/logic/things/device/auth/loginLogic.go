@@ -5,10 +5,11 @@ import (
 	"encoding/base64"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/pb/dm"
-
+	"github.com/i-Things/things/src/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/dgsvr/pb/dg"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -41,16 +42,24 @@ func (l *LoginLogic) Login(req *types.DeviceAuthLoginReq) error {
 		}
 
 	}
-	_, err = l.svcCtx.DeviceA.LoginAuth(l.ctx, &dm.LoginAuthReq{Username: req.Username, //用户名
+	_, err = l.svcCtx.DeviceM.RootCheck(l.ctx, &dm.RootCheckReq{
+		Username:    req.Username,
+		Password:    req.Password,
+		ClientID:    req.ClientID,
+		Ip:          req.Ip,
+		Certificate: cert,
+	})
+	if err == nil { //root权限
+		return nil
+	}
+	_, er := l.svcCtx.DeviceA.LoginAuth(l.ctx, &dg.LoginAuthReq{Username: req.Username, //用户名
 		Password:    req.Password, //密码
 		ClientID:    req.ClientID, //clientID
 		Ip:          req.Ip,       //访问的ip地址
 		Certificate: cert,         //客户端证书
 	})
-	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.ManageDevice req=%v err=%+v", utils.FuncName(), req, er)
-		return er
+	if er == nil {
+		return nil
 	}
-	return nil
+	return device.ThirdProtoLoginAuth(l.ctx, l.svcCtx, req, cert)
 }

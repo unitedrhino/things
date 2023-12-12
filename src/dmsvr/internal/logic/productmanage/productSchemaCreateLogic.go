@@ -52,6 +52,9 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 			if po.Required == 0 {
 				po.Required = def.False
 			}
+			if po.ExtendConfig == "" {
+				po.ExtendConfig = "{}"
+			}
 			if err := CheckAffordance(po); err != nil {
 				return nil, err
 			}

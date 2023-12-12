@@ -14,7 +14,7 @@ import (
 )
 
 type (
-	AccessAuthReq               = dm.AccessAuthReq
+	CustomTopic                 = dm.CustomTopic
 	DeviceCore                  = dm.DeviceCore
 	DeviceGatewayBindDevice     = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq       = dm.DeviceGatewayIndexReq
@@ -29,8 +29,6 @@ type (
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq           = dm.DeviceInfoReadReq
-	DeviceRegisterReq           = dm.DeviceRegisterReq
-	DeviceRegisterResp          = dm.DeviceRegisterResp
 	DeviceTypeCountReq          = dm.DeviceTypeCountReq
 	DeviceTypeCountResp         = dm.DeviceTypeCountResp
 	EventIndex                  = dm.EventIndex
@@ -61,7 +59,6 @@ type (
 	HubLogIndex                 = dm.HubLogIndex
 	HubLogIndexReq              = dm.HubLogIndexReq
 	HubLogIndexResp             = dm.HubLogIndexResp
-	LoginAuthReq                = dm.LoginAuthReq
 	MultiSendPropertyReq        = dm.MultiSendPropertyReq
 	MultiSendPropertyResp       = dm.MultiSendPropertyResp
 	OtaCommonResp               = dm.OtaCommonResp
@@ -116,6 +113,9 @@ type (
 	PropertyIndexResp           = dm.PropertyIndexResp
 	PropertyLatestIndexReq      = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq         = dm.PropertyLogIndexReq
+	ProtocolInfo                = dm.ProtocolInfo
+	ProtocolInfoIndexReq        = dm.ProtocolInfoIndexReq
+	ProtocolInfoIndexResp       = dm.ProtocolInfoIndexResp
 	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq        = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp       = dm.RemoteConfigIndexResp
