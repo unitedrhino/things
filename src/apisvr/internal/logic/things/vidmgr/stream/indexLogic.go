@@ -2,8 +2,6 @@ package stream
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
@@ -50,8 +48,6 @@ func (l *IndexLogic) Index(req *types.VidmgrStreamIndexReq) (resp *types.VidmgrS
 			pi := VidmgrStreamToApi(v)
 			pis = append(pis, pi)
 		}
-		str, _ := json.Marshal(pis)
-		fmt.Println("___StreamIndex___:", string(str))
 		return &types.VidmgrStreamIndexResp{
 			Total: vidResp.Total,
 			List:  pis,
