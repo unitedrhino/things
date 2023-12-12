@@ -14,5 +14,6 @@ type Config struct {
 	Event       conf.EventConf     //和things内部交互的设置
 	TimedJobRpc conf.RpcClientConf `json:",optional"`
 	Mediakit    conf.MediaConf     `json:",optional"` //docker -zlemdiakit的连接
-	Restconf    rest.RestConf
+	Restconf    rest.RestConf      //docker访问
+	RestConfExt conf.External      `json:",optional"`
 }

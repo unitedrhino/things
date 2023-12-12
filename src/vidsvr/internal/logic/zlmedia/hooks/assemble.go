@@ -149,7 +149,6 @@ func ToVidmgrConfigRpc(pi *types.ServerConfig) *vid.VidmgrConfig {
 	return dpi
 }
 
-// func ToVidmgrConfigRpc(pi *vid.VidmgrConfig) *types.ServerConfig {
 func ToVidmgrConfigApi(pi *vid.VidmgrConfig) *types.ServerConfig {
 	dpi := &types.ServerConfig{
 		GeneralMediaServerId:           pi.GeneralMediaServerId,
@@ -409,3 +408,17 @@ func GetProtocol(schema string) uint32 {
 	}
 	return val
 }
+
+const (
+	UNKNOWN = iota
+	RTMP_PUSH
+	RTSP_PUSH
+	RTP_PUSH
+	PULL
+	FFMPEG_PULL
+	MP4_VOD
+	DEVICE_CHN
+	RTC_PUSH
+)
+
+//产生源类型，包括 unknown = 0,rtmp_push=1,rtsp_push=2,rtp_push=3,pull=4,ffmpeg_pull=5,mp4_vod=6,device_chn=7,rtc_push=8

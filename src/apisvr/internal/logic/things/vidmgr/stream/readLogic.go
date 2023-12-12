@@ -26,7 +26,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 	}
 }
 
-func (l *ReadLogic) Read(req *types.VidmgrStreamReadReq) (resp *types.VidmgrStream, err error) {
+func (l *ReadLogic) Read(req *types.VidmgrStreamReadReq) (resp *types.VidmgrStreamReadResp, err error) {
 	// todo: add your logic here and delete this line
 	vidResp, err := l.svcCtx.VidmgrS.VidmgrStreamRead(l.ctx, &vidmgrinfomanage.VidmgrStreamReadReq{
 		StreamID: req.StreamID,
@@ -36,5 +36,11 @@ func (l *ReadLogic) Read(req *types.VidmgrStreamReadReq) (resp *types.VidmgrStre
 		l.Errorf("%s rpc.ManageVidmgr req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return VidmgrStreamToApi(vidResp), nil
+	apiResp := &types.VidmgrStreamReadResp{
+		VidmgrStream: *VidmgrStreamToApi(vidResp),
+		MediaPort:    vidResp.MediaPort,
+		MediaIP:      vidResp.MediaIP,
+	}
+
+	return apiResp, nil
 }
