@@ -660,14 +660,15 @@ type ProductSchemaIndexResp struct {
 }
 
 type ProductSchemaInfo struct {
-	ProductID  string  `json:"productID"`           //产品id 只读
-	Type       int64   `json:"type"`                //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag        int64   `json:"tag"`                 //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Identifier string  `json:"identifier"`          //标识符
-	Name       *string `json:"name,optional"`       //功能名称
-	Desc       *string `json:"desc,optional"`       //描述
-	Required   int64   `json:"required,optional"`   //是否必须 1:是 2:否
-	Affordance *string `json:"affordance,optional"` //各功能类型的详细参数定义
+	ProductID    string  `json:"productID"`             //产品id 只读
+	Type         int64   `json:"type"`                  //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag          int64   `json:"tag"`                   //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Identifier   string  `json:"identifier"`            //标识符
+	ExtendConfig string  `json:"extendConfig,optional"` //拓展参数
+	Name         *string `json:"name,optional"`         //功能名称
+	Desc         *string `json:"desc,optional"`         //描述
+	Required     int64   `json:"required,optional"`     //是否必须 1:是 2:否
+	Affordance   *string `json:"affordance,optional"`   //各功能类型的详细参数定义
 }
 
 type SchemaAction struct {
@@ -743,14 +744,20 @@ type ProductRemoteConfigLastestReadResp struct {
 }
 
 type ProductCustom struct {
-	ProductID       string   `json:"productID"`
-	TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
-	ScriptLang      int64    `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
-	CustomTopic     []string `json:"customTopic,optional"`     //自定义topic数组
+	ProductID       string                `json:"productID"`
+	TransformScript *string               `json:"transformScript,optional"` //协议转换脚本
+	LoginAuthScript *string               `json:"loginAuthScript,optional"` //登录认证脚本
+	ScriptLang      int64                 `json:"scriptLang,optional"`      //脚本语言类型（默认JavaScript） 1:JavaScript 2:lua 3:python
+	CustomTopics    []*ProductCustomTopic `json:"customTopics,optional"`    //自定义topic数组
 }
 
 type ProductCustomReadReq struct {
 	ProductID string `json:"productID"` //产品id 只读
+}
+
+type ProductCustomTopic struct {
+	Topic     string `json:"topic"`     //自定义主题需要以$custom 并包含设备名称{deviceName}及产品名称{productID}
+	Direction int64  `json:"direction"` //1:上行 2:下行 3:双向
 }
 
 type DeviceAuthLoginReq struct {
