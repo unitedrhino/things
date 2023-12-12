@@ -13,7 +13,8 @@ func VidmgrStreamToApi(v *vid.VidmgrStream) *types.VidmgrStream {
 		Protocol:         v.Protocol,
 		ReaderCount:      v.ReaderCount,
 		TotalReaderCount: v.TotalReaderCount,
-
+		LastLogin:        v.LastLogin,
+		FirstLogin:       v.FirstLogin,
 		StreamCommon: types.StreamCommon{
 			App:            v.App,
 			Stream:         v.Stream,
