@@ -67,8 +67,9 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 						vidStreamInfo.OriginUrl =
 							re.ReplaceAllString(vidStreamInfo.OriginUrl, l.svcCtx.Config.Restconf.Host)
 					} else {
+						//LocalIP为流服务IP，PeerIP为推流源地址
 						vidStreamInfo.OriginUrl =
-							re.ReplaceAllString(vidStreamInfo.OriginUrl, req.OriginSock.PeerIp)
+							re.ReplaceAllString(vidStreamInfo.OriginUrl, req.OriginSock.LocalIp)
 					}
 				}
 				err := streamRepo.Insert(l.ctx, vidStreamInfo)
