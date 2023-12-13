@@ -14,17 +14,28 @@ import (
 	"time"
 )
 
+const StreamUpTimeOut = 2 * time.Second
+
 type OnStreamChangedLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
+	//cache  cache.Cache
 }
+
+//var (
+//	// can't use one SharedCalls per conn, because multiple conns may share the same cache key.
+//	exclusiveCalls = syncx.NewSingleFlight()
+//	stats          = cache.NewStat("streamupdate")
+//	cachePrefix    = "streamupdate"
+//)
 
 func NewOnStreamChangedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OnStreamChangedLogic {
 	return &OnStreamChangedLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
+		//cache:  cache.New(svcCtx.Config.CacheRedis, exclusiveCalls, stats, errors.NotFind),
 	}
 }
 
@@ -45,54 +56,28 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 		return nil, er
 	}
 	if vidInfo != nil {
-		//查找四要素：vidmgr_id  app  stream   vhost
+		//查找要素：vidmgr_id  app  stream    peerIP
 		streamRepo := relationDB.NewVidmgrStreamRepo(l.ctx)
-		vidStreamIndex, err := streamRepo.FindAllFilter(l.ctx, relationDB.VidmgrStreamFilter{
-			App:      req.App,
-			VidmgrID: req.MediaServerId,
-			Stream:   req.Stream,
-			Vhost:    req.Vhost,
+		vidStreamInfo, err := streamRepo.FindOneByFilter(l.ctx, relationDB.VidmgrStreamFilter{
+			VidmgrID:   req.MediaServerId,
+			App:        req.App,
+			Stream:     req.Stream,
+			OriginType: req.OriginType,
+			PeerIP:     utils.InetAtoN(req.OriginSock.PeerIp),
 		})
-
+		//未找到流信息
 		if err != nil {
-			l.Errorf("%s rpc.VidmgrStreamIndex req=%v err=%+v", utils.FuncName(), req, err)
-			return nil, err
-		}
-		//fmt.Println("vidStreamIndex :", vidStreamIndex)
-		if len(vidStreamIndex) > 0 {
-			//查到流之后需要修改流
-			//判断Sock相同为同一流  	update
-			if req.Regist {
-				//对应位(bit)  置1
-				vidStreamIndex[0].Protocol |= GetProtocol(req.Schema)
-				vidStreamIndex[0].LastLogin = time.Now()
-				fmt.Printf("ADD-Read[--airgens--Register]   0x:%x\n", vidStreamIndex[0].Protocol)
-				fmt.Printf("ADD-Read[--airgnes--Register]  val:%d\n)", vidStreamIndex[0].Protocol)
-			} else {
-				//对应位(bit) 置0
-				fmt.Printf("ADD-Read[--airgnes--old       ]  val:%d\n)", vidStreamIndex[0].Protocol)
-				vidStreamIndex[0].Protocol = vidStreamIndex[0].Protocol &^ GetProtocol(req.Schema)
-				fmt.Printf("ADD-Read[--airgens--UnRegister]   0x:%x\n", GetProtocol(req.Schema))
-				fmt.Printf("ADD-Read[--airgens--UnRegister]   0x:%x\n", vidStreamIndex[0].Protocol)
-				fmt.Printf("ADD-Read[--airgnes--UnRegister]  val:%d\n)", vidStreamIndex[0].Protocol)
-			}
-			if vidStreamIndex[0].Protocol == 0 {
-				vidStreamIndex[0].IsOnline = false
-			}
-			err := streamRepo.Update(l.ctx, vidStreamIndex[0])
-			if err != nil {
-				l.Errorf("%s rpc.VidmgrStreamUpdate  err=%+v", utils.FuncName(), err)
-				return nil, err
-			}
-		} else {
-			//如果没有查到流
-			if req.Regist { //注册请求
-				vidStreamInfo := ToVidmgrStreamRpc(req)
+			//如何未查询到插入该流
+			erros := &types.IndexApiResp{}
+			json.Unmarshal([]byte(err.Error()), erros)
+			//未找到记录和注册回调同时满足时登录该流
+			if req.Regist && erros.Code == 100009 {
+				vidStreamInfo = ToVidmgrStreamRpc(req)
 				vidStreamInfo.IsOnline = true //设置状态为在线
 				vidStreamInfo.FirstLogin = time.Now()
 				vidStreamInfo.LastLogin = time.Now()
-				vidStreamInfo.Protocol = GetProtocol(req.Schema)
-
+				//不关心流类型了
+				//SetProtocol(req.Schema, vidStreamInfo)
 				if vidStreamInfo.OriginType == RTMP_PUSH {
 					re := regexp.MustCompile(vidStreamInfo.Vhost)
 					if vidInfo.MediasvrType == 1 { //docker 模式
@@ -100,20 +85,40 @@ func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedR
 						vidStreamInfo.OriginUrl =
 							re.ReplaceAllString(vidStreamInfo.OriginUrl, l.svcCtx.Config.Restconf.Host)
 					} else {
-						//vidStreamInfo.PeerIP
 						vidStreamInfo.OriginUrl =
 							re.ReplaceAllString(vidStreamInfo.OriginUrl, req.OriginSock.PeerIp)
 					}
 				}
-
 				err := streamRepo.Insert(l.ctx, vidStreamInfo)
 				if err != nil {
-					l.Errorf("%s rpc.VidmgrStreamCreate  err=%+v", utils.FuncName(), err)
+					l.Errorf("%s rpc.OnStreamChanged  err=%+v", utils.FuncName(), err)
 					return nil, err
 				}
+			} else { //ignore message
+				l.Errorf("ignore req=%v err=%+v", utils.FuncName(), err)
+				return nil, err
+			}
+		} else { //找到了一条流就直需要修改状态就可以了
+			//判断Sock相同为同一流  	update
+			if req.Regist {
+				//对应位(bit)  置1
+				//SetProtocol(req.Schema, vidStreamIndex)
+				vidStreamInfo.IsOnline = true
+				vidStreamInfo.LastLogin = time.Now()
+			} else {
+				//对应位(bit) 置0
+				vidStreamInfo.IsOnline = false
+				vidStreamInfo.LastLogin = time.Now()
+				//UnSetProtocol(req.Schema, vidStreamInfo)
+			}
+			err := streamRepo.Update(l.ctx, vidStreamInfo)
+			if err != nil {
+				l.Errorf("%s rpc.VidmgrStreamUpdate  err=%+v", utils.FuncName(), err)
+				return nil, err
 			}
 		}
 	}
+
 	return &types.HooksApiResp{
 		Code: 0,
 		Msg:  "success",

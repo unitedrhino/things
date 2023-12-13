@@ -16,11 +16,9 @@ func ToDbConvVidmgrStream(in *vid.VidmgrStream) *relationDB.VidmgrStream {
 		VidmgrID:   in.VidmgrID,
 		StreamName: in.StreamName,
 
-		App: in.App,
-		//Schema: in.Schema,
-		Protocol: in.Protocol,
-		Stream:   in.Stream,
-		Vhost:    in.Vhost,
+		App:    in.App,
+		Stream: in.Stream,
+		Vhost:  in.Vhost,
 
 		Identifier: in.Identifier,
 		LocalIP:    utils.InetAtoN(in.LocalIP),
@@ -95,10 +93,10 @@ func ToRpcConvVidmgrStream(in *relationDB.VidmgrStream) *vid.VidmgrStream {
 		VidmgrID:   in.VidmgrID,
 		StreamName: in.StreamName,
 
-		App:      in.App,
-		Protocol: in.Protocol,
-		Stream:   in.Stream,
-		Vhost:    in.Vhost,
+		App: in.App,
+		//Protocol: in.Protocol,
+		Stream: in.Stream,
+		Vhost:  in.Vhost,
 
 		Identifier: in.Identifier,
 		LocalIP:    utils.InetNtoA(in.LocalIP),
@@ -135,9 +133,9 @@ func setPoByPb(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
 	if data.App != "" {
 		old.App = data.App
 	}
-	if data.Protocol != 0 {
-		old.Protocol = data.Protocol
-	}
+	//if data.Protocol != 0 {
+	//	old.Protocol = data.Protocol
+	//}
 	if data.Stream != "" {
 		old.Stream = data.Stream
 	}
@@ -188,7 +186,9 @@ func setPoByPb(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
 	old.IsAutoPush = data.IsAutoPush
 	old.IsAutoRecord = data.IsAutoRecord
 	old.IsPTZ = data.IsPTZ
-	old.IsOnline = old.IsOnline
+	//old.IsOnline = old.IsOnline
+	//onRtsp OnRtmp xxxx这类状态只读
+
 	old.ReaderCount = data.ReaderCount
 	old.TotalReaderCount = data.TotalReaderCount
 	return nil

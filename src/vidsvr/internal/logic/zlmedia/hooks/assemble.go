@@ -388,25 +388,44 @@ const (
 	HLS_FMP4
 )
 
-func GetProtocol(schema string) uint32 {
-	var val uint32
+func SetProtocol(schema string, streamInfo *relationDB.VidmgrStream) {
 	switch schema {
 	case "rtmp":
-		val = RTMP
+		streamInfo.OnRtmp = true
 	case "rtsp":
-		val = RTSP
+		streamInfo.OnRtsp = true
 	case "ts":
-		val = TS
+		streamInfo.OnTs = true
 	case "fmp4":
-		val = FMP4
+		streamInfo.OnFmp4 = true
 	case "hls":
-		val = HLS
+		streamInfo.OnHls = true
 	case "hls.fmp4":
-		val = HLS_FMP4
+		streamInfo.OnHlsFmp4 = true
 	default:
-		val = 0
 	}
-	return val
+}
+
+func UnSetProtocol(schema string, streamInfo *relationDB.VidmgrStream) {
+	switch schema {
+	case "rtmp":
+		streamInfo.OnRtmp = false
+	case "rtsp":
+		streamInfo.OnRtsp = false
+	case "ts":
+		streamInfo.OnTs = false
+	case "fmp4":
+		streamInfo.OnFmp4 = false
+	case "hls":
+		streamInfo.OnHls = false
+	case "hls.fmp4":
+		streamInfo.OnHlsFmp4 = false
+	default:
+	}
+}
+
+func CheckProtocol(streamInfo *relationDB.VidmgrStream) bool {
+	return streamInfo.OnRtmp || streamInfo.OnRtsp || streamInfo.OnTs || streamInfo.OnFmp4 || streamInfo.OnHls || streamInfo.OnHlsFmp4
 }
 
 const (

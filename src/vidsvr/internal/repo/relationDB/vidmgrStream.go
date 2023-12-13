@@ -27,8 +27,8 @@ type VidmgrStreamFilter struct {
 	LocalPort  int64
 	PeerIP     int64
 	PeerPort   int64
-
-	TypeMedia int64
+	OriginType int64
+	TypeMedia  int64
 
 	IsOnline bool
 
@@ -53,13 +53,17 @@ func (p VidmgrStreamRepo) fmtFilter(ctx context.Context, f VidmgrStreamFilter) *
 	if f.StreamName != "" {
 		db = db.Where("stream = ?", f.Stream)
 	}
-
 	if f.App != "" {
 		db = db.Where("app = ?", f.App)
 	}
 	if f.Stream != "" {
 		db = db.Where("stream = ?", f.Stream)
 	}
+
+	if f.OriginType != 0 {
+		db = db.Where("origin_type = ?", f.OriginType)
+	}
+
 	if f.Vhost != "" {
 		db = db.Where("vhost = ?", f.Vhost)
 	}
