@@ -11,6 +11,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"sync"
+	"time"
 )
 
 var (
@@ -42,7 +43,10 @@ func GetConn(database conf.Database) (conn *gorm.DB, err error) {
 		return nil, err
 	}
 	db, _ := conn.DB()
-	db.SetMaxIdleConns(20)
+	db.SetMaxIdleConns(200)
+	db.SetMaxOpenConns(200)
+	db.SetConnMaxIdleTime(time.Hour)
+	db.SetConnMaxLifetime(time.Hour)
 	return
 }
 
