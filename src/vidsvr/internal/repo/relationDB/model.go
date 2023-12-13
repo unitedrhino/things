@@ -70,11 +70,9 @@ type VidmgrStream struct {
 	VidmgrID   string `gorm:"column:vidmgr_id;type:char(11);NOT NULL"`                 // 流服务ID  外键
 	StreamName string `gorm:"column:name;type:varchar(63)"`                            // 视频流名称
 
-	App string `gorm:"column:app;type:varchar(31);NOT NULL"`
-	/*Protocol 为可支持的协议类型*/
-	Protocol uint32 `gorm:"column:protocol;type:uint;default:0;NOT NULL"`
-	Stream   string `gorm:"column:stream;type:varchar(31);NOT NULL"`
-	Vhost    string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
+	App    string `gorm:"column:app;type:varchar(31);NOT NULL"`
+	Stream string `gorm:"column:stream;type:varchar(31);NOT NULL"`
+	Vhost  string `gorm:"column:vhost;type:varchar(31);NOT NULL"`
 
 	Identifier string `gorm:"column:identifier;type:varchar(31)"`
 	LocalIP    int64  `gorm:"column:local_ip;type:bigint"`
@@ -98,7 +96,18 @@ type VidmgrStream struct {
 	IsPTZ          bool `gorm:"column:is_ptz;type:bool;default:0;NOT NULL"`
 	//正常流程有注册和注销过程，注册后，该流进行更新；并上线，注销后就设置标志位进行下线。
 	//还需要有一个定时器用来检测异常断开的情况超时时间10S
-	IsOnline   bool              `gorm:"column:is_online;type:bool;default:0;NOT NULL"`
+	IsOnline bool `gorm:"column:is_online;type:bool;default:0;NOT NULL"`
+
+	/*Protocol 为可支持的协议类型*/
+	//Protocol uint32 `gorm:"column:protocol;type:uint;default:0;NOT NULL"`
+	//当前协议支持类型有 rtmp/rtsp/ts/fmp4/hls/hls.fmp4/
+	OnRtmp    bool `gorm:"column:on_rtmp;type:bool;default:0;NOT NULL"`
+	OnRtsp    bool `gorm:"column:on_rtsp;type:bool;default:0;NOT NULL"`
+	OnTs      bool `gorm:"column:on_ts;type:bool;default:0;NOT NULL"`
+	OnHls     bool `gorm:"column:on_hls;type:bool;default:0;NOT NULL"`
+	OnFmp4    bool `gorm:"column:on_fmp4;type:bool;default:0;NOT NULL"`
+	OnHlsFmp4 bool `gorm:"column:on_hls_fmp4;type:bool;default:0;NOT NULL"`
+
 	FirstLogin time.Time         `gorm:"column:first_login"`                                          // 最早登录时间
 	LastLogin  time.Time         `gorm:"column:last_login"`                                           // 最后登录时间
 	Desc       string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
