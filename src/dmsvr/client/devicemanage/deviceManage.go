@@ -14,7 +14,7 @@ import (
 )
 
 type (
-	AccessAuthReq               = dm.AccessAuthReq
+	CustomTopic                 = dm.CustomTopic
 	DeleteOtaFirmwareReq        = dm.DeleteOtaFirmwareReq
 	DeviceCore                  = dm.DeviceCore
 	DeviceGatewayBindDevice     = dm.DeviceGatewayBindDevice
@@ -30,8 +30,6 @@ type (
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq           = dm.DeviceInfoReadReq
-	DeviceRegisterReq           = dm.DeviceRegisterReq
-	DeviceRegisterResp          = dm.DeviceRegisterResp
 	DeviceTypeCountReq          = dm.DeviceTypeCountReq
 	DeviceTypeCountResp         = dm.DeviceTypeCountResp
 	EventIndex                  = dm.EventIndex
@@ -65,7 +63,6 @@ type (
 	HubLogIndexResp             = dm.HubLogIndexResp
 	ListOtaFirmwareReq          = dm.ListOtaFirmwareReq
 	ListOtaFirmwareResp         = dm.ListOtaFirmwareResp
-	LoginAuthReq                = dm.LoginAuthReq
 	ModifyOtaFirmwareReq        = dm.ModifyOtaFirmwareReq
 	MultiSendPropertyReq        = dm.MultiSendPropertyReq
 	MultiSendPropertyResp       = dm.MultiSendPropertyResp
@@ -124,6 +121,9 @@ type (
 	PropertyIndexResp           = dm.PropertyIndexResp
 	PropertyLatestIndexReq      = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq         = dm.PropertyLogIndexReq
+	ProtocolInfo                = dm.ProtocolInfo
+	ProtocolInfoIndexReq        = dm.ProtocolInfoIndexReq
+	ProtocolInfoIndexResp       = dm.ProtocolInfoIndexResp
 	QueryOtaFirmwareReq         = dm.QueryOtaFirmwareReq
 	QueryOtaFirmwareResp        = dm.QueryOtaFirmwareResp
 	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq
@@ -153,6 +153,8 @@ type (
 	VerifyOtaFirmwareReq        = dm.VerifyOtaFirmwareReq
 
 	DeviceManage interface {
+		// 鉴定是否是root账号(提供给mqtt broker)
+		RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
 		// 新增设备
 		DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
 		// 更新设备
@@ -196,6 +198,17 @@ func NewDirectDeviceManage(svcCtx *svc.ServiceContext, svr dm.DeviceManageServer
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
+}
+
+// 鉴定是否是root账号(提供给mqtt broker)
+func (m *defaultDeviceManage) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.RootCheck(ctx, in, opts...)
+}
+
+// 鉴定是否是root账号(提供给mqtt broker)
+func (d *directDeviceManage) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.RootCheck(ctx, in)
 }
 
 // 新增设备

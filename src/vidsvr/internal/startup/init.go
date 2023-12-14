@@ -15,6 +15,7 @@ func Subscribe(svcCtx *svc.ServiceContext) {
 		err = cli.Subscribe(func(ctx context.Context) server.ServerHandle {
 			return serverEvent.NewServerHandle(ctx, svcCtx)
 		})
+
 		logx.Must(err)
 	}
 }

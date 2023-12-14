@@ -18,7 +18,7 @@ type (
 	MsgHead struct {
 		Trace     []byte `json:"trace"`     //追踪tid
 		Timestamp int64  `json:"timestamp"` //发送时毫秒级时间戳
-		Data      []byte `json:"data"`      //传送的内容
+		Data      string `json:"data"`      //传送的内容
 	}
 
 	EventHandle interface {
@@ -36,7 +36,7 @@ func NewEventMsg(ctx context.Context, data []byte) []byte {
 	msg := MsgHead{
 		Trace:     traceinfo,
 		Timestamp: time.Now().UnixMilli(),
-		Data:      data,
+		Data:      string(data),
 	}
 	msgBytes, err := json.Marshal(msg)
 	if err != nil {
@@ -86,5 +86,5 @@ func (m *MsgHead) GetTs() time.Time {
 }
 
 func (m *MsgHead) GetData() []byte {
-	return m.Data
+	return []byte(m.Data)
 }

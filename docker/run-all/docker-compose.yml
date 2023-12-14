@@ -10,6 +10,7 @@ services:
   ithings:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:ithings-latest
     container_name: ithings
+    hostname: ithings
     restart: always
     ports:
       - "7777:7777"
@@ -34,6 +35,7 @@ services:
   nats-server:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:nats-2.8-alpine
     container_name: nats
+    hostname: nats
     restart: always
     command: --jetstream  -m 8222 #启用jetstream
     ports:
@@ -52,6 +54,7 @@ services:
   etcd:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:bitnami-etcd-3.5
     container_name: etcd-v3
+    hostname: etcd
     restart: always
     ports:
       - "2379:2379"
@@ -70,6 +73,7 @@ services:
   mariadb:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:mariadb-10.7
     container_name: mariadb
+    hostname: mariadb
     restart: always
     ports:
       - "3306:3306"
@@ -138,7 +142,7 @@ services:
   emqx:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:emqx-4.4.17
     container_name: emqx
-    hostname: node1.emqx.io
+    hostname: emqx
     restart: always
     ports:
       - "1883:1883"
@@ -151,7 +155,7 @@ services:
       - ../../deploy/conf/emqx/data/loaded_plugins:/opt/emqx/data/loaded_plugins
     environment:
       - "EMQX_NAME=emqx"
-      - "EMQX_HOST=node1.emqx.io"
+      - "EMQX_HOST=emqx"
     logging:
       options:
         max-size: "50M"
@@ -162,7 +166,7 @@ services:
         ipv4_address: 172.19.0.7
   minio:
     image: minio/minio:latest
-    hostname: "minio"
+    hostname: minio
     container_name: minio
     ports:
       - "9000:9000"
@@ -170,8 +174,8 @@ services:
     restart: always
     command: server --console-address ':9090' /data  #指定容器中的目录 /data
     environment:
-      MINIO_ACCESS_KEY: root
-      MINIO_SECRET_KEY: password #大于等于8位
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: password #大于等于8位
     logging:
       options:
         max-size: "50M" # 最大文件上传限制
@@ -199,8 +203,8 @@ services:
       - "30000-30500:30000-30500"
       - "30000-30500:30000-30500/udp"
     volumes:
-      - ../../deploy/conf/zlmediakit/config:/root/zlmediakit/config
-      - ../../deploy/conf/zlmediakit/record:/root/zlmediakit/record
+      - ../../deploy/conf/zlmediakit/config:/opt/media/conf
+      - ../../deploy/conf/zlmediakit/record:/opt/media/record
     logging:
       options:
         max-size: "50M" # 最大文件上传限制

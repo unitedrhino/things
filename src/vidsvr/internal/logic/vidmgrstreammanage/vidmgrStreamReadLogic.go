@@ -2,6 +2,8 @@ package vidmgrstreammanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/clients"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
@@ -35,5 +37,17 @@ func (l *VidmgrStreamReadLogic) VidmgrStreamRead(in *vid.VidmgrStreamReadReq) (*
 	if err != nil {
 		return nil, err
 	}
-	return ToRpcConvVidmgrStream(pi), nil
+	vidInfo, err := relationDB.NewVidmgrInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.VidmgrFilter{
+		VidmgrIDs: []string{pi.VidmgrID},
+	})
+	data := ToRpcConvVidmgrStream(pi)
+	//docker模式时，使用本地的RestCong的IP  端口还是使用配置的端口
+	if vidInfo.MediasvrType == clients.MEDIA_DOCKER {
+		data.MediaIP = l.svcCtx.Config.Restconf.Host
+		data.MediaPort = l.svcCtx.Config.Mediakit.Port
+	} else {
+		data.MediaIP = utils.InetNtoA(vidInfo.VidmgrIpV4)
+		data.MediaPort = vidInfo.VidmgrPort
+	}
+	return data, nil
 }

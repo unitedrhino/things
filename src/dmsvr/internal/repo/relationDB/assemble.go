@@ -16,23 +16,25 @@ func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
 	}
 	defineStr, _ := json.Marshal(define)
 	return &DmProductSchema{
-		ProductID:  productID,
-		Tag:        int64(schema.TagCustom),
-		Type:       int64(schema.AffordanceTypeProperty),
-		Identifier: in.Identifier,
-		Name:       in.Name,
-		Desc:       in.Desc,
-		Required:   def.ToIntBool[int64](in.Required),
-		Affordance: string(defineStr),
+		ProductID:    productID,
+		Tag:          int64(schema.TagCustom),
+		Type:         int64(schema.AffordanceTypeProperty),
+		Identifier:   in.Identifier,
+		Name:         in.Name,
+		ExtendConfig: in.ExtendConfig,
+		Desc:         in.Desc,
+		Required:     def.ToIntBool[int64](in.Required),
+		Affordance:   string(defineStr),
 	}
 }
 
 func ToCommonParam(in *DmProductSchema) schema.CommonParam {
 	return schema.CommonParam{
-		Identifier: in.Identifier,
-		Name:       in.Name,
-		Desc:       in.Desc,
-		Required:   def.ToBool(in.Required),
+		Identifier:   in.Identifier,
+		Name:         in.Name,
+		Desc:         in.Desc,
+		ExtendConfig: in.ExtendConfig,
+		Required:     def.ToBool(in.Required),
 	}
 }
 
@@ -59,14 +61,15 @@ func ToEventPo(productID string, in *schema.Event) *DmProductSchema {
 	}
 	defineStr, _ := json.Marshal(define)
 	return &DmProductSchema{
-		ProductID:  productID,
-		Tag:        int64(schema.TagCustom),
-		Type:       int64(schema.AffordanceTypeEvent),
-		Identifier: in.Identifier,
-		Name:       in.Name,
-		Desc:       in.Desc,
-		Required:   def.ToIntBool[int64](in.Required),
-		Affordance: string(defineStr),
+		ProductID:    productID,
+		Tag:          int64(schema.TagCustom),
+		Type:         int64(schema.AffordanceTypeEvent),
+		Identifier:   in.Identifier,
+		Name:         in.Name,
+		Desc:         in.Desc,
+		ExtendConfig: in.ExtendConfig,
+		Required:     def.ToIntBool[int64](in.Required),
+		Affordance:   string(defineStr),
 	}
 }
 
@@ -91,14 +94,15 @@ func ToActionPo(productID string, in *schema.Action) *DmProductSchema {
 	}
 	defineStr, _ := json.Marshal(define)
 	return &DmProductSchema{
-		ProductID:  productID,
-		Tag:        int64(schema.TagCustom),
-		Type:       int64(schema.AffordanceTypeAction),
-		Identifier: in.Identifier,
-		Name:       in.Name,
-		Desc:       in.Desc,
-		Required:   def.ToIntBool[int64](in.Required),
-		Affordance: string(defineStr),
+		ProductID:    productID,
+		Tag:          int64(schema.TagCustom),
+		Type:         int64(schema.AffordanceTypeAction),
+		Identifier:   in.Identifier,
+		Name:         in.Name,
+		ExtendConfig: in.ExtendConfig,
+		Desc:         in.Desc,
+		Required:     def.ToIntBool[int64](in.Required),
+		Affordance:   string(defineStr),
 	}
 }
 

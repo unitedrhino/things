@@ -16,8 +16,9 @@ type VidmgrStreamRepo struct {
 type VidmgrStreamFilter struct {
 	VidmgrID string //流服务ID
 
+	StreamName string
+
 	App    string
-	Schema string
 	Stream string
 	Vhost  string
 
@@ -27,13 +28,17 @@ type VidmgrStreamFilter struct {
 	PeerIP     int64
 	PeerPort   int64
 
-	IsOnline      bool
+	TypeMedia int64
+
+	IsOnline bool
+
 	LastLoginTime struct {
 		Start int64
 		End   int64
 	}
 
 	StreamIDs []int64 //流ID
+	Tags      map[string]string
 }
 
 func NewVidmgrStreamRepo(in any) *VidmgrStreamRepo {
@@ -43,46 +48,54 @@ func NewVidmgrStreamRepo(in any) *VidmgrStreamRepo {
 func (p VidmgrStreamRepo) fmtFilter(ctx context.Context, f VidmgrStreamFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.VidmgrID != "" {
-		db = db.Where("vidmgr_id=?", f.VidmgrID)
+		db = db.Where("vidmgr_id = ?", f.VidmgrID)
 	}
+	if f.StreamName != "" {
+		db = db.Where("stream = ?", f.Stream)
+	}
+
 	if f.App != "" {
-		db = db.Where("app=?", f.App)
-	}
-	if f.Schema != "" {
-		db = db.Where("schema=?", f.Schema)
+		db = db.Where("app = ?", f.App)
 	}
 	if f.Stream != "" {
-		db = db.Where("stream=?", f.Stream)
+		db = db.Where("stream = ?", f.Stream)
 	}
 	if f.Vhost != "" {
-		db = db.Where("vhost=?", f.Vhost)
+		db = db.Where("vhost = ?", f.Vhost)
 	}
 	if f.Identifier != "" {
-		db = db.Where("identifier=?", f.Identifier)
+		db = db.Where("identifier = ?", f.Identifier)
 	}
 	if f.LocalIP != 0 {
-		db = db.Where("local_ip=?", f.LocalIP)
+		db = db.Where("local_ip = ?", f.LocalIP)
 	}
 	if f.LocalPort != 0 {
-		db = db.Where("local_port=?", f.LocalPort)
+		db = db.Where("local_port = ?", f.LocalPort)
 	}
 	if f.PeerIP != 0 {
-		db = db.Where("peer_ip=?", f.PeerIP)
+		db = db.Where("peer_ip = ?", f.PeerIP)
 	}
 	if f.PeerPort != 0 {
-		db = db.Where("peer_port=?", f.PeerPort)
+		db = db.Where("peer_port = ?", f.PeerPort)
 	}
+
 	if len(f.StreamIDs) != 0 {
-		db = db.Where("stream_id=?", f.StreamIDs)
+		db = db.Where("stream_id in ?", f.StreamIDs)
 	}
 	if f.IsOnline {
-		db = db.Where("is_online=?", f.IsOnline)
+		db = db.Where("is_online = ?", f.IsOnline)
 	}
 	if f.LastLoginTime.Start != 0 {
 		db = db.Where("last_login >= ?", utils.ToYYMMddHHSS(f.LastLoginTime.Start*1000))
 	}
 	if f.LastLoginTime.End != 0 {
 		db = db.Where("last_login <= ?", utils.ToYYMMddHHSS(f.LastLoginTime.End*1000))
+	}
+	if f.Tags != nil {
+		for k, v := range f.Tags {
+			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
+				k, v)
+		}
 	}
 	return db
 }
@@ -103,7 +116,7 @@ func (p VidmgrStreamRepo) FindOneByFilter(ctx context.Context, f VidmgrStreamFil
 }
 
 func (p VidmgrStreamRepo) Update(ctx context.Context, data *VidmgrStream) error {
-	err := p.db.WithContext(ctx).Where("mediaServerId = ?", data.StreamID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("stream_id = ?", data.StreamID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -142,7 +155,7 @@ func (p VidmgrStreamRepo) CountByFilter(ctx context.Context, f VidmgrStreamFilte
 }
 
 func (d VidmgrStreamRepo) CountStreamByField(ctx context.Context, f VidmgrStreamFilter, columnName string) (map[string]int64, error) {
-	db := d.fmtFilter(ctx, f).Model(&VidmgrInfo{})
+	db := d.fmtFilter(ctx, f).Model(&VidmgrStream{})
 	countModelList := make([]*countModel, 0)
 	err := db.Select(fmt.Sprintf("%s as CountKey", columnName), "count(1) as count").Group(columnName).Find(&countModelList).Error
 	result := make(map[string]int64, 0)

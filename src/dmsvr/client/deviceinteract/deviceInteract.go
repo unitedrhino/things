@@ -14,7 +14,7 @@ import (
 )
 
 type (
-	AccessAuthReq               = dm.AccessAuthReq
+	CustomTopic                 = dm.CustomTopic
 	DeleteOtaFirmwareReq        = dm.DeleteOtaFirmwareReq
 	DeviceCore                  = dm.DeviceCore
 	DeviceGatewayBindDevice     = dm.DeviceGatewayBindDevice
@@ -30,8 +30,6 @@ type (
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq           = dm.DeviceInfoReadReq
-	DeviceRegisterReq           = dm.DeviceRegisterReq
-	DeviceRegisterResp          = dm.DeviceRegisterResp
 	DeviceTypeCountReq          = dm.DeviceTypeCountReq
 	DeviceTypeCountResp         = dm.DeviceTypeCountResp
 	EventIndex                  = dm.EventIndex
@@ -65,7 +63,6 @@ type (
 	HubLogIndexResp             = dm.HubLogIndexResp
 	ListOtaFirmwareReq          = dm.ListOtaFirmwareReq
 	ListOtaFirmwareResp         = dm.ListOtaFirmwareResp
-	LoginAuthReq                = dm.LoginAuthReq
 	ModifyOtaFirmwareReq        = dm.ModifyOtaFirmwareReq
 	MultiSendPropertyReq        = dm.MultiSendPropertyReq
 	MultiSendPropertyResp       = dm.MultiSendPropertyResp
@@ -124,6 +121,9 @@ type (
 	PropertyIndexResp           = dm.PropertyIndexResp
 	PropertyLatestIndexReq      = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq         = dm.PropertyLogIndexReq
+	ProtocolInfo                = dm.ProtocolInfo
+	ProtocolInfoIndexReq        = dm.ProtocolInfoIndexReq
+	ProtocolInfoIndexResp       = dm.ProtocolInfoIndexResp
 	QueryOtaFirmwareReq         = dm.QueryOtaFirmwareReq
 	QueryOtaFirmwareResp        = dm.QueryOtaFirmwareResp
 	RemoteConfigCreateReq       = dm.RemoteConfigCreateReq

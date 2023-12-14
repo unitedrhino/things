@@ -32,7 +32,7 @@ func (l *VidmgrInfoReadLogic) VidmgrInfoRead(in *vid.VidmgrInfoReadReq) (*vid.Vi
 	// todo: add your logic here and delete this line
 	fmt.Printf("Vidsvr VidmgrInfoRead \n")
 	pi, err := relationDB.NewVidmgrInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.VidmgrFilter{
-		VidmgrIDs: []string{in.VidmgrtID},
+		VidmgrIDs: []string{in.VidmgrID},
 	})
 	if err != nil {
 		return nil, err

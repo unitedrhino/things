@@ -199,14 +199,15 @@ func ToSchemaInfoRpc(in *types.ProductSchemaInfo) *dm.ProductSchemaInfo {
 		return nil
 	}
 	rpc := &dm.ProductSchemaInfo{
-		ProductID:  in.ProductID,
-		Type:       in.Type,
-		Tag:        in.Tag,
-		Identifier: in.Identifier,
-		Name:       utils.ToRpcNullString(in.Name),
-		Desc:       utils.ToRpcNullString(in.Desc),
-		Required:   in.Required,
-		Affordance: utils.ToRpcNullString(in.Affordance),
+		ProductID:    in.ProductID,
+		Type:         in.Type,
+		Tag:          in.Tag,
+		Identifier:   in.Identifier,
+		ExtendConfig: in.ExtendConfig,
+		Name:         utils.ToRpcNullString(in.Name),
+		Desc:         utils.ToRpcNullString(in.Desc),
+		Required:     in.Required,
+		Affordance:   utils.ToRpcNullString(in.Affordance),
 	}
 	return rpc
 }
@@ -216,14 +217,15 @@ func ToSchemaInfoTypes(in *dm.ProductSchemaInfo) *types.ProductSchemaInfo {
 		return nil
 	}
 	rpc := types.ProductSchemaInfo{
-		ProductID:  in.ProductID,
-		Type:       in.Type,
-		Tag:        in.Tag,
-		Identifier: in.Identifier,
-		Name:       utils.ToNullString(in.Name),
-		Desc:       utils.ToNullString(in.Desc),
-		Required:   in.Required,
-		Affordance: utils.ToNullString(in.Affordance),
+		ProductID:    in.ProductID,
+		Type:         in.Type,
+		Tag:          in.Tag,
+		Identifier:   in.Identifier,
+		ExtendConfig: in.ExtendConfig,
+		Name:         utils.ToNullString(in.Name),
+		Desc:         utils.ToNullString(in.Desc),
+		Required:     in.Required,
+		Affordance:   utils.ToNullString(in.Affordance),
 	}
 	return &rpc
 }

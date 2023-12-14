@@ -28,7 +28,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 
 func (l *DeleteLogic) Delete(req *types.VidmgrInfoDeleteReq) error {
 	// todo: add your logic here and delete this line
-	_, err := l.svcCtx.VidmgrM.VidmgrInfoDelete(l.ctx, &vid.VidmgrInfoDeleteReq{VidmgrtID: req.VidmgrID})
+	_, err := l.svcCtx.VidmgrM.VidmgrInfoDelete(l.ctx, &vid.VidmgrInfoDeleteReq{VidmgrID: req.VidmgrID})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), req, er)
