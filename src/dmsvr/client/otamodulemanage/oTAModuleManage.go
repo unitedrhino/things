@@ -14,180 +14,181 @@ import (
 )
 
 type (
-	AccessAuthReq                     = dm.AccessAuthReq
-	CancelOtaTaskByDevice             = dm.CancelOtaTaskByDevice
-	CancelOtaTaskByJobReq             = dm.CancelOtaTaskByJobReq
-	ConfirmOtaTaskReq                 = dm.ConfirmOtaTaskReq
-	CreateOrUpdateModuleReq           = dm.CreateOrUpdateModuleReq
-	DeleteModuleReq                   = dm.DeleteModuleReq
-	DeviceCore                        = dm.DeviceCore
-	DeviceGatewayBindDevice           = dm.DeviceGatewayBindDevice
-	DeviceGatewayIndexReq             = dm.DeviceGatewayIndexReq
-	DeviceGatewayIndexResp            = dm.DeviceGatewayIndexResp
-	DeviceGatewayMultiCreateReq       = dm.DeviceGatewayMultiCreateReq
-	DeviceGatewayMultiDeleteReq       = dm.DeviceGatewayMultiDeleteReq
-	DeviceGatewaySign                 = dm.DeviceGatewaySign
-	DeviceInfo                        = dm.DeviceInfo
-	DeviceInfoCountReq                = dm.DeviceInfoCountReq
-	DeviceInfoCountResp               = dm.DeviceInfoCountResp
-	DeviceInfoDeleteReq               = dm.DeviceInfoDeleteReq
-	DeviceInfoIndexReq                = dm.DeviceInfoIndexReq
-	DeviceInfoIndexResp               = dm.DeviceInfoIndexResp
-	DeviceInfoReadReq                 = dm.DeviceInfoReadReq
-	DeviceRegisterReq                 = dm.DeviceRegisterReq
-	DeviceRegisterResp                = dm.DeviceRegisterResp
-	DeviceTypeCountReq                = dm.DeviceTypeCountReq
-	DeviceTypeCountResp               = dm.DeviceTypeCountResp
-	DynamicUpgradeJobReq              = dm.DynamicUpgradeJobReq
-	EventIndex                        = dm.EventIndex
-	EventIndexResp                    = dm.EventIndexResp
-	EventLogIndexReq                  = dm.EventLogIndexReq
-	Firmware                          = dm.Firmware
-	FirmwareFile                      = dm.FirmwareFile
-	FirmwareInfo                      = dm.FirmwareInfo
-	FirmwareInfoDeleteReq             = dm.FirmwareInfoDeleteReq
-	FirmwareInfoDeleteResp            = dm.FirmwareInfoDeleteResp
-	FirmwareInfoIndexReq              = dm.FirmwareInfoIndexReq
-	FirmwareInfoIndexResp             = dm.FirmwareInfoIndexResp
-	FirmwareInfoReadReq               = dm.FirmwareInfoReadReq
-	FirmwareInfoReadResp              = dm.FirmwareInfoReadResp
-	FirmwareResp                      = dm.FirmwareResp
-	GetPropertyReplyReq               = dm.GetPropertyReplyReq
-	GetPropertyReplyResp              = dm.GetPropertyReplyResp
-	GroupDeviceIndexReq               = dm.GroupDeviceIndexReq
-	GroupDeviceIndexResp              = dm.GroupDeviceIndexResp
-	GroupDeviceMultiCreateReq         = dm.GroupDeviceMultiCreateReq
-	GroupDeviceMultiDeleteReq         = dm.GroupDeviceMultiDeleteReq
-	GroupInfo                         = dm.GroupInfo
-	GroupInfoCreateReq                = dm.GroupInfoCreateReq
-	GroupInfoDeleteReq                = dm.GroupInfoDeleteReq
-	GroupInfoIndexReq                 = dm.GroupInfoIndexReq
-	GroupInfoIndexResp                = dm.GroupInfoIndexResp
-	GroupInfoReadReq                  = dm.GroupInfoReadReq
-	GroupInfoUpdateReq                = dm.GroupInfoUpdateReq
-	HubLogIndex                       = dm.HubLogIndex
-	HubLogIndexReq                    = dm.HubLogIndexReq
-	HubLogIndexResp                   = dm.HubLogIndexResp
-	JobReq                            = dm.JobReq
-	ListOTAModuleByProductReq         = dm.ListOTAModuleByProductReq
-	ListOTAModuleByProductResp        = dm.ListOTAModuleByProductResp
-	ListOTAModuleVersionsByDeviceReq  = dm.ListOTAModuleVersionsByDeviceReq
-	ListOTAModuleVersionsByDeviceResp = dm.ListOTAModuleVersionsByDeviceResp
-	ListOTAUnfinishedTaskByDeviceReq  = dm.ListOTAUnfinishedTaskByDeviceReq
-	ListOTAUnfinishedTaskByDeviceResp = dm.ListOTAUnfinishedTaskByDeviceResp
-	ListOtaJobByDeviceReq             = dm.ListOtaJobByDeviceReq
-	ListOtaJobByFirmwareReq           = dm.ListOtaJobByFirmwareReq
-	ListOtaJobInfoResp                = dm.ListOtaJobInfoResp
-	ListOtaTaskByJobReq               = dm.ListOtaTaskByJobReq
-	ListOtaTaskByJobResp              = dm.ListOtaTaskByJobResp
-	LoginAuthReq                      = dm.LoginAuthReq
-	MultiSendPropertyReq              = dm.MultiSendPropertyReq
-	MultiSendPropertyResp             = dm.MultiSendPropertyResp
-	OTAModuleDetail                   = dm.OTAModuleDetail
-	OtaCommonResp                     = dm.OtaCommonResp
-	OtaFirmwareCreateReq              = dm.OtaFirmwareCreateReq
-	OtaFirmwareDeleteReq              = dm.OtaFirmwareDeleteReq
-	OtaFirmwareDeviceInfoReq          = dm.OtaFirmwareDeviceInfoReq
-	OtaFirmwareDeviceInfoResp         = dm.OtaFirmwareDeviceInfoResp
-	OtaFirmwareFile                   = dm.OtaFirmwareFile
-	OtaFirmwareFileIndexReq           = dm.OtaFirmwareFileIndexReq
-	OtaFirmwareFileIndexResp          = dm.OtaFirmwareFileIndexResp
-	OtaFirmwareFileInfo               = dm.OtaFirmwareFileInfo
-	OtaFirmwareFileReq                = dm.OtaFirmwareFileReq
-	OtaFirmwareFileResp               = dm.OtaFirmwareFileResp
-	OtaFirmwareIndexReq               = dm.OtaFirmwareIndexReq
-	OtaFirmwareIndexResp              = dm.OtaFirmwareIndexResp
-	OtaFirmwareInfo                   = dm.OtaFirmwareInfo
-	OtaFirmwareReadReq                = dm.OtaFirmwareReadReq
-	OtaFirmwareReadResp               = dm.OtaFirmwareReadResp
-	OtaFirmwareResp                   = dm.OtaFirmwareResp
-	OtaFirmwareUpdateReq              = dm.OtaFirmwareUpdateReq
-	OtaJobInfo                        = dm.OtaJobInfo
-	OtaModuleInfo                     = dm.OtaModuleInfo
-	OtaPageInfo                       = dm.OtaPageInfo
-	OtaPromptIndexReq                 = dm.OtaPromptIndexReq
-	OtaPromptIndexResp                = dm.OtaPromptIndexResp
-	OtaTaskBatchReq                   = dm.OtaTaskBatchReq
-	OtaTaskBatchResp                  = dm.OtaTaskBatchResp
-	OtaTaskCancleReq                  = dm.OtaTaskCancleReq
-	OtaTaskCreatResp                  = dm.OtaTaskCreatResp
-	OtaTaskCreateReq                  = dm.OtaTaskCreateReq
-	OtaTaskDeviceCancleReq            = dm.OtaTaskDeviceCancleReq
-	OtaTaskDeviceIndexReq             = dm.OtaTaskDeviceIndexReq
-	OtaTaskDeviceIndexResp            = dm.OtaTaskDeviceIndexResp
-	OtaTaskDeviceInfo                 = dm.OtaTaskDeviceInfo
-	OtaTaskDeviceProcessReq           = dm.OtaTaskDeviceProcessReq
-	OtaTaskDeviceReadReq              = dm.OtaTaskDeviceReadReq
-	OtaTaskIndexReq                   = dm.OtaTaskIndexReq
-	OtaTaskIndexResp                  = dm.OtaTaskIndexResp
-	OtaTaskInfo                       = dm.OtaTaskInfo
-	OtaTaskReadReq                    = dm.OtaTaskReadReq
-	OtaTaskReadResp                   = dm.OtaTaskReadResp
-	OtaUpTaskInfo                     = dm.OtaUpTaskInfo
-	PageInfo                          = dm.PageInfo
-	PageInfo_OrderBy                  = dm.PageInfo_OrderBy
-	Point                             = dm.Point
-	ProductCustom                     = dm.ProductCustom
-	ProductCustomReadReq              = dm.ProductCustomReadReq
-	ProductInfo                       = dm.ProductInfo
-	ProductInfoDeleteReq              = dm.ProductInfoDeleteReq
-	ProductInfoIndexReq               = dm.ProductInfoIndexReq
-	ProductInfoIndexResp              = dm.ProductInfoIndexResp
-	ProductInfoReadReq                = dm.ProductInfoReadReq
-	ProductRemoteConfig               = dm.ProductRemoteConfig
-	ProductSchemaCreateReq            = dm.ProductSchemaCreateReq
-	ProductSchemaDeleteReq            = dm.ProductSchemaDeleteReq
-	ProductSchemaIndexReq             = dm.ProductSchemaIndexReq
-	ProductSchemaIndexResp            = dm.ProductSchemaIndexResp
-	ProductSchemaInfo                 = dm.ProductSchemaInfo
-	ProductSchemaTslImportReq         = dm.ProductSchemaTslImportReq
-	ProductSchemaTslReadReq           = dm.ProductSchemaTslReadReq
-	ProductSchemaTslReadResp          = dm.ProductSchemaTslReadResp
-	ProductSchemaUpdateReq            = dm.ProductSchemaUpdateReq
-	PropertyIndex                     = dm.PropertyIndex
-	PropertyIndexResp                 = dm.PropertyIndexResp
-	PropertyLatestIndexReq            = dm.PropertyLatestIndexReq
-	PropertyLogIndexReq               = dm.PropertyLogIndexReq
-	ReUpgradeOTATaskReq               = dm.ReUpgradeOTATaskReq
-	RemoteConfigCreateReq             = dm.RemoteConfigCreateReq
-	RemoteConfigIndexReq              = dm.RemoteConfigIndexReq
-	RemoteConfigIndexResp             = dm.RemoteConfigIndexResp
-	RemoteConfigLastReadReq           = dm.RemoteConfigLastReadReq
-	RemoteConfigLastReadResp          = dm.RemoteConfigLastReadResp
-	RemoteConfigPushAllReq            = dm.RemoteConfigPushAllReq
-	RespActionReq                     = dm.RespActionReq
-	RespReadReq                       = dm.RespReadReq
-	Response                          = dm.Response
-	RootCheckReq                      = dm.RootCheckReq
-	SdkLogIndex                       = dm.SdkLogIndex
-	SdkLogIndexReq                    = dm.SdkLogIndexReq
-	SdkLogIndexResp                   = dm.SdkLogIndexResp
-	SendActionReq                     = dm.SendActionReq
-	SendActionResp                    = dm.SendActionResp
-	SendMsgReq                        = dm.SendMsgReq
-	SendMsgResp                       = dm.SendMsgResp
-	SendOption                        = dm.SendOption
-	SendPropertyMsg                   = dm.SendPropertyMsg
-	SendPropertyReq                   = dm.SendPropertyReq
-	SendPropertyResp                  = dm.SendPropertyResp
-	ShadowIndex                       = dm.ShadowIndex
-	ShadowIndexResp                   = dm.ShadowIndexResp
-	StaticUpgradeJobReq               = dm.StaticUpgradeJobReq
-	Tag                               = dm.Tag
-	UpgradeJobResp                    = dm.UpgradeJobResp
-	VerifyOtaFirmwareReq              = dm.VerifyOtaFirmwareReq
+	AccessAuthReq                      = dm.AccessAuthReq
+	DeviceCore                         = dm.DeviceCore
+	DeviceGatewayBindDevice            = dm.DeviceGatewayBindDevice
+	DeviceGatewayIndexReq              = dm.DeviceGatewayIndexReq
+	DeviceGatewayIndexResp             = dm.DeviceGatewayIndexResp
+	DeviceGatewayMultiCreateReq        = dm.DeviceGatewayMultiCreateReq
+	DeviceGatewayMultiDeleteReq        = dm.DeviceGatewayMultiDeleteReq
+	DeviceGatewaySign                  = dm.DeviceGatewaySign
+	DeviceInfo                         = dm.DeviceInfo
+	DeviceInfoCountReq                 = dm.DeviceInfoCountReq
+	DeviceInfoCountResp                = dm.DeviceInfoCountResp
+	DeviceInfoDeleteReq                = dm.DeviceInfoDeleteReq
+	DeviceInfoIndexReq                 = dm.DeviceInfoIndexReq
+	DeviceInfoIndexResp                = dm.DeviceInfoIndexResp
+	DeviceInfoReadReq                  = dm.DeviceInfoReadReq
+	DeviceRegisterReq                  = dm.DeviceRegisterReq
+	DeviceRegisterResp                 = dm.DeviceRegisterResp
+	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
+	DeviceTypeCountResp                = dm.DeviceTypeCountResp
+	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	EventIndex                         = dm.EventIndex
+	EventIndexResp                     = dm.EventIndexResp
+	EventLogIndexReq                   = dm.EventLogIndexReq
+	Firmware                           = dm.Firmware
+	FirmwareFile                       = dm.FirmwareFile
+	FirmwareInfo                       = dm.FirmwareInfo
+	FirmwareInfoDeleteReq              = dm.FirmwareInfoDeleteReq
+	FirmwareInfoDeleteResp             = dm.FirmwareInfoDeleteResp
+	FirmwareInfoIndexReq               = dm.FirmwareInfoIndexReq
+	FirmwareInfoIndexResp              = dm.FirmwareInfoIndexResp
+	FirmwareInfoReadReq                = dm.FirmwareInfoReadReq
+	FirmwareInfoReadResp               = dm.FirmwareInfoReadResp
+	FirmwareResp                       = dm.FirmwareResp
+	GetPropertyReplyReq                = dm.GetPropertyReplyReq
+	GetPropertyReplyResp               = dm.GetPropertyReplyResp
+	GroupDeviceIndexReq                = dm.GroupDeviceIndexReq
+	GroupDeviceIndexResp               = dm.GroupDeviceIndexResp
+	GroupDeviceMultiCreateReq          = dm.GroupDeviceMultiCreateReq
+	GroupDeviceMultiDeleteReq          = dm.GroupDeviceMultiDeleteReq
+	GroupInfo                          = dm.GroupInfo
+	GroupInfoCreateReq                 = dm.GroupInfoCreateReq
+	GroupInfoDeleteReq                 = dm.GroupInfoDeleteReq
+	GroupInfoIndexReq                  = dm.GroupInfoIndexReq
+	GroupInfoIndexResp                 = dm.GroupInfoIndexResp
+	GroupInfoReadReq                   = dm.GroupInfoReadReq
+	GroupInfoUpdateReq                 = dm.GroupInfoUpdateReq
+	HubLogIndex                        = dm.HubLogIndex
+	HubLogIndexReq                     = dm.HubLogIndexReq
+	HubLogIndexResp                    = dm.HubLogIndexResp
+	JobReq                             = dm.JobReq
+	LoginAuthReq                       = dm.LoginAuthReq
+	MultiSendPropertyReq               = dm.MultiSendPropertyReq
+	MultiSendPropertyResp              = dm.MultiSendPropertyResp
+	OTAModuleDeleteReq                 = dm.OTAModuleDeleteReq
+	OTAModuleDetail                    = dm.OTAModuleDetail
+	OTAModuleIndexReq                  = dm.OTAModuleIndexReq
+	OTAModuleIndexResp                 = dm.OTAModuleIndexResp
+	OTAModuleReq                       = dm.OTAModuleReq
+	OTAModuleVersionsIndexResp         = dm.OTAModuleVersionsIndexResp
+	OTATaskByDeviceCancelReq           = dm.OTATaskByDeviceCancelReq
+	OTATaskByJobCancelReq              = dm.OTATaskByJobCancelReq
+	OTATaskByJobIndexReq               = dm.OTATaskByJobIndexReq
+	OTATaskConfirmReq                  = dm.OTATaskConfirmReq
+	OTATaskReUpgradeReq                = dm.OTATaskReUpgradeReq
+	OTAUnfinishedTaskByDeviceIndexReq  = dm.OTAUnfinishedTaskByDeviceIndexReq
+	OTAUnfinishedTaskByDeviceIndexResp = dm.OTAUnfinishedTaskByDeviceIndexResp
+	OtaCommonResp                      = dm.OtaCommonResp
+	OtaFirmwareCreateReq               = dm.OtaFirmwareCreateReq
+	OtaFirmwareDeleteReq               = dm.OtaFirmwareDeleteReq
+	OtaFirmwareDeviceInfoReq           = dm.OtaFirmwareDeviceInfoReq
+	OtaFirmwareDeviceInfoResp          = dm.OtaFirmwareDeviceInfoResp
+	OtaFirmwareFile                    = dm.OtaFirmwareFile
+	OtaFirmwareFileIndexReq            = dm.OtaFirmwareFileIndexReq
+	OtaFirmwareFileIndexResp           = dm.OtaFirmwareFileIndexResp
+	OtaFirmwareFileInfo                = dm.OtaFirmwareFileInfo
+	OtaFirmwareFileReq                 = dm.OtaFirmwareFileReq
+	OtaFirmwareFileResp                = dm.OtaFirmwareFileResp
+	OtaFirmwareIndexReq                = dm.OtaFirmwareIndexReq
+	OtaFirmwareIndexResp               = dm.OtaFirmwareIndexResp
+	OtaFirmwareInfo                    = dm.OtaFirmwareInfo
+	OtaFirmwareReadReq                 = dm.OtaFirmwareReadReq
+	OtaFirmwareReadResp                = dm.OtaFirmwareReadResp
+	OtaFirmwareResp                    = dm.OtaFirmwareResp
+	OtaFirmwareUpdateReq               = dm.OtaFirmwareUpdateReq
+	OtaFirmwareVerifyReq               = dm.OtaFirmwareVerifyReq
+	OtaJobByDeviceIndexReq             = dm.OtaJobByDeviceIndexReq
+	OtaJobByFirmwareIndexReq           = dm.OtaJobByFirmwareIndexReq
+	OtaJobInfo                         = dm.OtaJobInfo
+	OtaJobInfoIndexResp                = dm.OtaJobInfoIndexResp
+	OtaModuleInfo                      = dm.OtaModuleInfo
+	OtaPageInfo                        = dm.OtaPageInfo
+	OtaPromptIndexReq                  = dm.OtaPromptIndexReq
+	OtaPromptIndexResp                 = dm.OtaPromptIndexResp
+	OtaTaskBatchReq                    = dm.OtaTaskBatchReq
+	OtaTaskBatchResp                   = dm.OtaTaskBatchResp
+	OtaTaskByJobIndexResp              = dm.OtaTaskByJobIndexResp
+	OtaTaskCancleReq                   = dm.OtaTaskCancleReq
+	OtaTaskCreatResp                   = dm.OtaTaskCreatResp
+	OtaTaskCreateReq                   = dm.OtaTaskCreateReq
+	OtaTaskDeviceCancleReq             = dm.OtaTaskDeviceCancleReq
+	OtaTaskDeviceIndexReq              = dm.OtaTaskDeviceIndexReq
+	OtaTaskDeviceIndexResp             = dm.OtaTaskDeviceIndexResp
+	OtaTaskDeviceInfo                  = dm.OtaTaskDeviceInfo
+	OtaTaskDeviceProcessReq            = dm.OtaTaskDeviceProcessReq
+	OtaTaskDeviceReadReq               = dm.OtaTaskDeviceReadReq
+	OtaTaskIndexReq                    = dm.OtaTaskIndexReq
+	OtaTaskIndexResp                   = dm.OtaTaskIndexResp
+	OtaTaskInfo                        = dm.OtaTaskInfo
+	OtaTaskReadReq                     = dm.OtaTaskReadReq
+	OtaTaskReadResp                    = dm.OtaTaskReadResp
+	OtaUpTaskInfo                      = dm.OtaUpTaskInfo
+	PageInfo                           = dm.PageInfo
+	PageInfo_OrderBy                   = dm.PageInfo_OrderBy
+	Point                              = dm.Point
+	ProductCustom                      = dm.ProductCustom
+	ProductCustomReadReq               = dm.ProductCustomReadReq
+	ProductInfo                        = dm.ProductInfo
+	ProductInfoDeleteReq               = dm.ProductInfoDeleteReq
+	ProductInfoIndexReq                = dm.ProductInfoIndexReq
+	ProductInfoIndexResp               = dm.ProductInfoIndexResp
+	ProductInfoReadReq                 = dm.ProductInfoReadReq
+	ProductRemoteConfig                = dm.ProductRemoteConfig
+	ProductSchemaCreateReq             = dm.ProductSchemaCreateReq
+	ProductSchemaDeleteReq             = dm.ProductSchemaDeleteReq
+	ProductSchemaIndexReq              = dm.ProductSchemaIndexReq
+	ProductSchemaIndexResp             = dm.ProductSchemaIndexResp
+	ProductSchemaInfo                  = dm.ProductSchemaInfo
+	ProductSchemaTslImportReq          = dm.ProductSchemaTslImportReq
+	ProductSchemaTslReadReq            = dm.ProductSchemaTslReadReq
+	ProductSchemaTslReadResp           = dm.ProductSchemaTslReadResp
+	ProductSchemaUpdateReq             = dm.ProductSchemaUpdateReq
+	PropertyIndex                      = dm.PropertyIndex
+	PropertyIndexResp                  = dm.PropertyIndexResp
+	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
+	PropertyLogIndexReq                = dm.PropertyLogIndexReq
+	RemoteConfigCreateReq              = dm.RemoteConfigCreateReq
+	RemoteConfigIndexReq               = dm.RemoteConfigIndexReq
+	RemoteConfigIndexResp              = dm.RemoteConfigIndexResp
+	RemoteConfigLastReadReq            = dm.RemoteConfigLastReadReq
+	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
+	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
+	RespActionReq                      = dm.RespActionReq
+	RespReadReq                        = dm.RespReadReq
+	Response                           = dm.Response
+	RootCheckReq                       = dm.RootCheckReq
+	SdkLogIndex                        = dm.SdkLogIndex
+	SdkLogIndexReq                     = dm.SdkLogIndexReq
+	SdkLogIndexResp                    = dm.SdkLogIndexResp
+	SendActionReq                      = dm.SendActionReq
+	SendActionResp                     = dm.SendActionResp
+	SendMsgReq                         = dm.SendMsgReq
+	SendMsgResp                        = dm.SendMsgResp
+	SendOption                         = dm.SendOption
+	SendPropertyMsg                    = dm.SendPropertyMsg
+	SendPropertyReq                    = dm.SendPropertyReq
+	SendPropertyResp                   = dm.SendPropertyResp
+	ShadowIndex                        = dm.ShadowIndex
+	ShadowIndexResp                    = dm.ShadowIndexResp
+	StaticUpgradeDeviceInfo            = dm.StaticUpgradeDeviceInfo
+	StaticUpgradeJobReq                = dm.StaticUpgradeJobReq
+	Tag                                = dm.Tag
+	UpgradeJobResp                     = dm.UpgradeJobResp
+	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 
 	OTAModuleManage interface {
 		// 创建产品的OTA模块
-		CreateOTAModule(ctx context.Context, in *CreateOrUpdateModuleReq, opts ...grpc.CallOption) (*Response, error)
+		OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error)
 		// 修改OTA模块别名、描述
-		UpdateOTAModule(ctx context.Context, in *CreateOrUpdateModuleReq, opts ...grpc.CallOption) (*Response, error)
+		OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error)
 		// 删除自定义OTA模块
-		DeleteOTAModule(ctx context.Context, in *DeleteModuleReq, opts ...grpc.CallOption) (*Response, error)
+		OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 查询产品下的OTA模块列表
-		ListOTAModuleByProduct(ctx context.Context, in *ListOTAModuleByProductReq, opts ...grpc.CallOption) (*Response, error)
+		OtaModuleByProductIndex(ctx context.Context, in *OTAModuleIndexReq, opts ...grpc.CallOption) (*OTAModuleIndexResp, error)
 		// 查询设备上报过的OTA模块版本列表
-		ListOTAModuleVersionsByDevice(ctx context.Context, in *ListOTAModuleVersionsByDeviceReq, opts ...grpc.CallOption) (*ListOTAModuleVersionsByDeviceResp, error)
+		OtaModuleVersionsByDeviceIndex(ctx context.Context, in *OTAModuleIndexReq, opts ...grpc.CallOption) (*OTAModuleVersionsIndexResp, error)
 	}
 
 	defaultOTAModuleManage struct {
@@ -214,56 +215,56 @@ func NewDirectOTAModuleManage(svcCtx *svc.ServiceContext, svr dm.OTAModuleManage
 }
 
 // 创建产品的OTA模块
-func (m *defaultOTAModuleManage) CreateOTAModule(ctx context.Context, in *CreateOrUpdateModuleReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAModuleManage) OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewOTAModuleManageClient(m.cli.Conn())
-	return client.CreateOTAModule(ctx, in, opts...)
+	return client.OtaModuleCreate(ctx, in, opts...)
 }
 
 // 创建产品的OTA模块
-func (d *directOTAModuleManage) CreateOTAModule(ctx context.Context, in *CreateOrUpdateModuleReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.CreateOTAModule(ctx, in)
+func (d *directOTAModuleManage) OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.OtaModuleCreate(ctx, in)
 }
 
 // 修改OTA模块别名、描述
-func (m *defaultOTAModuleManage) UpdateOTAModule(ctx context.Context, in *CreateOrUpdateModuleReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAModuleManage) OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewOTAModuleManageClient(m.cli.Conn())
-	return client.UpdateOTAModule(ctx, in, opts...)
+	return client.OtaModuleUpdate(ctx, in, opts...)
 }
 
 // 修改OTA模块别名、描述
-func (d *directOTAModuleManage) UpdateOTAModule(ctx context.Context, in *CreateOrUpdateModuleReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.UpdateOTAModule(ctx, in)
+func (d *directOTAModuleManage) OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.OtaModuleUpdate(ctx, in)
 }
 
 // 删除自定义OTA模块
-func (m *defaultOTAModuleManage) DeleteOTAModule(ctx context.Context, in *DeleteModuleReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAModuleManage) OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewOTAModuleManageClient(m.cli.Conn())
-	return client.DeleteOTAModule(ctx, in, opts...)
+	return client.OtaModuleDelete(ctx, in, opts...)
 }
 
 // 删除自定义OTA模块
-func (d *directOTAModuleManage) DeleteOTAModule(ctx context.Context, in *DeleteModuleReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.DeleteOTAModule(ctx, in)
+func (d *directOTAModuleManage) OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.OtaModuleDelete(ctx, in)
 }
 
 // 查询产品下的OTA模块列表
-func (m *defaultOTAModuleManage) ListOTAModuleByProduct(ctx context.Context, in *ListOTAModuleByProductReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAModuleManage) OtaModuleByProductIndex(ctx context.Context, in *OTAModuleIndexReq, opts ...grpc.CallOption) (*OTAModuleIndexResp, error) {
 	client := dm.NewOTAModuleManageClient(m.cli.Conn())
-	return client.ListOTAModuleByProduct(ctx, in, opts...)
+	return client.OtaModuleByProductIndex(ctx, in, opts...)
 }
 
 // 查询产品下的OTA模块列表
-func (d *directOTAModuleManage) ListOTAModuleByProduct(ctx context.Context, in *ListOTAModuleByProductReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.ListOTAModuleByProduct(ctx, in)
+func (d *directOTAModuleManage) OtaModuleByProductIndex(ctx context.Context, in *OTAModuleIndexReq, opts ...grpc.CallOption) (*OTAModuleIndexResp, error) {
+	return d.svr.OtaModuleByProductIndex(ctx, in)
 }
 
 // 查询设备上报过的OTA模块版本列表
-func (m *defaultOTAModuleManage) ListOTAModuleVersionsByDevice(ctx context.Context, in *ListOTAModuleVersionsByDeviceReq, opts ...grpc.CallOption) (*ListOTAModuleVersionsByDeviceResp, error) {
+func (m *defaultOTAModuleManage) OtaModuleVersionsByDeviceIndex(ctx context.Context, in *OTAModuleIndexReq, opts ...grpc.CallOption) (*OTAModuleVersionsIndexResp, error) {
 	client := dm.NewOTAModuleManageClient(m.cli.Conn())
-	return client.ListOTAModuleVersionsByDevice(ctx, in, opts...)
+	return client.OtaModuleVersionsByDeviceIndex(ctx, in, opts...)
 }
 
 // 查询设备上报过的OTA模块版本列表
-func (d *directOTAModuleManage) ListOTAModuleVersionsByDevice(ctx context.Context, in *ListOTAModuleVersionsByDeviceReq, opts ...grpc.CallOption) (*ListOTAModuleVersionsByDeviceResp, error) {
-	return d.svr.ListOTAModuleVersionsByDevice(ctx, in)
+func (d *directOTAModuleManage) OtaModuleVersionsByDeviceIndex(ctx context.Context, in *OTAModuleIndexReq, opts ...grpc.CallOption) (*OTAModuleVersionsIndexResp, error) {
+	return d.svr.OtaModuleVersionsByDeviceIndex(ctx, in)
 }

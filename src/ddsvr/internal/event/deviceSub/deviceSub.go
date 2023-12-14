@@ -31,10 +31,11 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 // Msg 设备发布物模型消息的信息通过nats转发给内部服务
 func (s *DeviceSubServer) Msg(topic string, payload []byte) error {
 	pub, err := s.getDevPublish(topic, payload)
+	logx.Infof("haa topic:%+v", topic)
+	logx.Infof("你好呀")
 	if pub == nil {
 		return err
 	}
-
 	return s.svcCtx.PubInner.DevPubMsg(s.ctx, pub)
 }
 

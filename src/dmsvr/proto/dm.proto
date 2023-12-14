@@ -443,7 +443,7 @@ message OtaPromptIndexReq {
 message OtaPromptIndexResp {
   int64 id = 1;
   string taskUid = 2;
-  int64 firmwareID =3;
+  int64 firmwareID = 3;
 }
 
 
@@ -631,7 +631,7 @@ message DeviceInfo {
   int64 logLevel = 20; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
   google.protobuf.StringValue  deviceAlias = 21; //设备别名 读写
   int64 mobileOperator = 22;//移动运营商:1)移动 2)联通 3)电信 4)广电
-  google.protobuf.StringValue phone =23;//手机号
+  google.protobuf.StringValue phone = 23;//手机号
   google.protobuf.StringValue iccid = 24;//SIM卡卡号
 }
 
@@ -892,7 +892,7 @@ message FirmwareInfoDeleteReq {
   int64 firmwareID = 1;
 }
 message FirmwareInfoDeleteResp {
-  repeated string path =1;
+  repeated string path = 1;
 }
 message FirmwareInfoIndexReq {
   OtaPageInfo page = 1;//分页信息 只获取一个则不填
@@ -907,7 +907,7 @@ message FirmwareInfoReadReq {
   int64 firmwareID = 1;
 }
 message OtaFirmwareFileReq{
-  int64 fileID = 1; 
+  int64 fileID = 1;
   string name = 2;
   string host = 3;
   string filePath = 4;
@@ -917,7 +917,7 @@ message OtaFirmwareFileReq{
   string signature = 8;
 }
 message OtaFirmwareFileInfo{
-  int64 fileID = 1; 
+  int64 fileID = 1;
   int64 firmwareID = 2;
   string name = 3;
   string host = 4;
@@ -928,7 +928,7 @@ message OtaFirmwareFileInfo{
   string signature = 9;
 }
 message OtaFirmwareFileResp{
-  int64 fileID = 1; 
+  int64 fileID = 1;
   string name = 2;
   string host = 3;
   string filePath = 4;
@@ -972,7 +972,7 @@ message OtaTaskCreateReq {
   int64 firmwareID = 1;
   string taskUid = 2;
   int32 type = 3;
-  int32 upgradeType=4;
+  int32 upgradeType = 4;
   int32 autoRepeat = 5;
   google.protobuf.StringValue deviceList = 6;
   google.protobuf.StringValue versionList = 7;
@@ -986,7 +986,7 @@ message OtaTaskInfo {
   string productID = 3;
   string taskUid = 4;
   int32 type = 5;
-  int32 upgradeType=6;
+  int32 upgradeType = 6;
   int32 autoRepeat = 7;
   int32 status = 8; //升级状态:1未升级2升级中3完成4已取消
   google.protobuf.StringValue deviceList = 9;
@@ -1002,8 +1002,8 @@ message OtaTaskIndexReq{
   int64 productID = 3;
 }
 message OtaTaskIndexResp{
-  repeated OtaTaskInfo list =1;
-  int64 total =2;
+  repeated OtaTaskInfo list = 1;
+  int64 total = 2;
 }
 message OtaTaskReadReq{
   int64 taskID = 1;
@@ -1013,7 +1013,7 @@ message OtaTaskReadResp{
   int64 firmwareID = 2;
   string taskUid = 3; //批次号
   int32 type = 4; //升级范围1全部设备2定向升级
-  int32 upgradeType=5; //升级策略:1静态升级2动态升级
+  int32 upgradeType = 5; //升级策略:1静态升级2动态升级
   int32 autoRepeat = 6; //是否自动重试,1:不,2自动重试
   int32 status = 7; //升级状态:1未升级2升级中3完成4已取消
   google.protobuf.StringValue deviceList = 8;
@@ -1029,15 +1029,15 @@ message OtaTaskDeviceIndexReq {
   int32 status = 5; //状态
 }
 message OtaTaskDeviceIndexResp {
-    repeated OtaTaskDeviceInfo list =1;
-    int64 total =2;
+  repeated OtaTaskDeviceInfo list = 1;
+  int64 total = 2;
 }
 message OtaTaskDeviceInfo {
   int64 ID = 1;
   int64 firmwareID = 2;
-  string deviceName=3;
-  string productID=4;
-  string productName=5;
+  string deviceName = 3;
+  string productID = 4;
+  string productName = 5;
   string taskUid = 6; //批次号
   int32 status = 7; //升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
   string version = 8; //当前版本号
@@ -1051,9 +1051,9 @@ message OtaTaskDeviceReadReq {
 message OtaTaskBatchReq {
   int64 ID = 1;
   string productID = 2;
-  string deviceName=3;
-  string version=4;
-  string module=5;
+  string deviceName = 3;
+  string version = 4;
+  string module = 5;
 }
 message OtaTaskBatchResp {
   int64 ID = 1;
@@ -1062,9 +1062,9 @@ message OtaTaskBatchResp {
 }
 message OtaTaskDeviceProcessReq {
   int64 ID = 1;
-  int64 step =2;
-  string module=3;
-  string desc=4;
+  int64 step = 2;
+  string module = 3;
+  string desc = 4;
 }
 message OtaTaskDeviceCancleReq {
   int64 ID = 1;
@@ -1120,9 +1120,10 @@ message OtaFirmwareCreateReq {
    */
   int64 isDiff = 10; //升级包类型
   string module = 11; //模块名称
-  bool needToVerify = 12;//是否需要验证
-  string firmwareUdi = 13; //推给设备端端消息
-  repeated FirmwareFile firmwareFiles = 14;
+  string srcVersion = 12;
+  bool needToVerify = 13;//是否需要验证
+  google.protobuf.StringValue firmwareUdi = 14;//自定义数据
+  repeated FirmwareFile firmwareFiles = 15;
 }
 message OtaFirmwareResp{
   int64 firmwareID = 1;
@@ -1156,7 +1157,7 @@ message OtaFirmwareInfo{
   string destVersion = 3; //版本号
   string productID = 4;//产品id
   string productName = 5; //产品名称
-  string status =6; //状态
+  string status = 6; //状态
   int64 createdTime = 7; //添加时间
 }
 
@@ -1170,7 +1171,7 @@ message OtaFirmwareReadResp{
   string destVersion = 3; //版本号
   string productID = 4;//产品id
   string productName = 5; //产品名称
-  string status =6; //状态
+  string status = 6; //状态
   int64 createdTime = 7; //添加时间
   string signMethod = 8; //签名方法
   string firmwareDesc = 9; //文件描述
@@ -1195,75 +1196,81 @@ service OTAJobManage{
 }
 
 message OtaFirmwareVerifyReq{
-  string firmwareId = 1; //固件id
+  int64 firmwareId = 1; //固件id
   string productID = 2;//产品id
   repeated Tag tags = 3; //标签
   repeated string deviceNames = 4; //产品名称
-  int64 timeoutInMinutes = 5; //超时时间
-  int64 needPush = 6; //是否需要主动推送
-  int64 needConfirm = 7; //是否需要自主控制
-  string downloadProtocol = 8; //下载协议
+  repeated string srcVersion = 5;
+  int64 timeoutInMinutes = 6; //超时时间
+  int64 needPush = 7; //是否需要主动推送
+  int64 needConfirm = 8; //是否需要自主控制
+  string downloadProtocol = 9; //下载协议
 }
 message UpgradeJobResp{
-  string jobId = 1; //jobId
+  int64 jobId = 1; //jobId
   string UtcCreate = 2; //OTA升级包验证任务的创建时间，UTC格式。
 }
 message Tag{
   string key = 1; //标签key
   string value = 2; //标签value
 }
+message StaticUpgradeDeviceInfo{
+  string deviceName = 1;
+  string srcVersion = 2;
+  string productId = 3;
+}
 message StaticUpgradeJobReq{
-  string firmwareId = 1;
-  string productId =2;
+  int64 firmwareId = 1;
+  string productId = 2;
   Tag tag = 3;
-  string targetSelection = 4;
-  repeated string srcVersion = 5;
-  int64 scheduleTime = 6;
-  int64 retryInterval = 7;
-  int64 retryCount = 8;
-  int64 timeoutInMinutes=9;
-  int64 maximumPerMinute=10;
-  int64 grayPercent=11;
-  repeated string deviceName = 12;
-  int64 scheduleFinishTime = 13;
-  int64 overwriteMode = 14;
-  repeated string dnListFileUrl = 15;
-  int64 needPush = 16;
-  int64 needConfirm = 17;
-  string groupId = 18;
-  string groupType = 19;
-  string downloadProtocol = 20;
-  string multiModuleMode = 21;
+  int64 targetSelection = 4;
+  int64 scheduleTime = 5;
+  int64 retryInterval = 6;
+  int64 retryCount = 7;
+  int64 timeoutInMinutes = 8;
+  int64 maximumPerMinute = 9;
+  int64 grayPercent = 10;
+  int64 scheduleFinishTime = 11;
+  int64 overwriteMode = 12;
+  int64 needPush = 13;
+  int64 needConfirm = 14;
+  int64 groupId = 15;
+  string groupType = 16;
+  string downloadProtocol = 17;
+  string multiModuleMode = 18;
+  repeated StaticUpgradeDeviceInfo deviceInfo = 19;
 }
 
+
 message DynamicUpgradeJobReq{
-  string firmwareId = 1;
-  string productId =2;
+  int64 firmwareId = 1;
+  string productId = 2;
   Tag tag = 3;
   repeated string srcVersion = 4;
   int64 retryInterval = 5;
   int64 retryCount = 6;
-  int64 timeoutInMinutes=7;
-  int64 maximumPerMinute=8;
+  int64 timeoutInMinutes = 7;
+  int64 maximumPerMinute = 8;
   int64 overwriteMode = 9;
   int64 dynamicMode = 10;
   int64 needPush = 11;
   int64 needConfirm = 12;
-  string groupId = 13;
+  int64 groupId = 13;
   string groupType = 14;
   string downloadProtocol = 15;
   string multiModuleMode = 16;
+  int64 targetSelection = 17;
 }
 message OtaJobByFirmwareIndexReq{
   PageInfo pageInfo = 1;
-  string firmwareId = 2;
+  int64 firmwareId = 2;
 }
 message OtaJobInfo{
-  string firmwareId = 1;
-  string jobId =2 ;
+  int64 firmwareId = 1;
+  int64 jobId = 2 ;
   string jobStatus = 3;
   string jobType = 4;
-  string productId = 5;
+  int64 productId = 5;
   string upgradeType = 6;
   repeated Tag tagList = 7;
   string targetSelection = 8;
@@ -1279,12 +1286,153 @@ message OtaJobInfoIndexResp{
 
 message OtaJobByDeviceIndexReq{
   PageInfo pageInfo = 1;
-  string firmwareId = 2;
+  int64 firmwareId = 2;
   string productId = 3;
   string deviceName = 4;
 }
 message JobReq{
-  string jobId = 1;
+  int64 jobId = 1;
+}
+
+service OTAUpgradeTaskManage{
+  //查询指定升级批次下的设备升级作业列表
+  rpc otaTaskByJobIndex(OTATaskByJobIndexReq) returns(OtaTaskByJobIndexResp);
+  //取消指定批次下的设备升级作业
+  rpc otaTaskByJobCancel(OTATaskByJobCancelReq) returns(Response);
+  //取消指定OTA升级包下状态为待确认、待推送、已推送、升级中状态的设备升级作业
+  rpc otaTaskByDeviceCancel(OTATaskByDeviceCancelReq) returns(Response);
+  //批量确认，处于待确认状态的设备升级作业
+  rpc otaTaskConfirm(OTATaskConfirmReq) returns(Response);
+  //查询指定设备下，未完成状态的设备升级作业
+  rpc otaUnfinishedTaskByDeviceIndex(OTAUnfinishedTaskByDeviceIndexReq) returns(OTAUnfinishedTaskByDeviceIndexResp);
+  //重新升级指定批次下升级失败或升级取消的设备升级作业
+  rpc otaTaskReUpgrade(OTATaskReUpgradeReq) returns(Response);
+}
+message OTATaskByJobIndexReq{
+  PageInfo pageInfo = 1;
+  int64 jobId = 2;
+  int64 taskStatus = 3;
+  repeated string deviceName = 4;
+}
+message OtaUpTaskInfo{
+  int64 firmwareId = 1;
+  int64 jobId =2 ;
+  int64 taskId = 3;
+  string productId = 4;
+  string productName = 5;
+  string progress = 6;
+  string srcVersion = 7;
+  string destVersion = 8;
+  string deviceName = 9;
+  string taskDesc = 10;
+  string taskStatus = 11;
+  string timeout = 12;
+  string utcCreate = 13;
+  string utcModified = 14;
+}
+message OtaTaskByJobIndexResp{
+  repeated OtaUpTaskInfo otaUpTaskInfo = 1;
+  int64 total=2;
+}
+
+message OTATaskByJobCancelReq{
+  int64 jobId = 1;
+  int64 cancelScheduledTask =2;
+  int64 cancelQueuedTask =3;
+  int64 cancelInProgressTask = 4;
+  int64 cancelNotifiedTask = 5;
+  int64 cancelUnconfirmedTask = 6;
+}
+message OTATaskByDeviceCancelReq{
+  string productId = 1;
+  int64 firmwareId = 2;
+  repeated string deviceName = 3;
+  int64 jobId = 4;
+}
+message OTATaskConfirmReq{
+  repeated int64 taskId = 1;
+}
+
+message OTAUnfinishedTaskByDeviceIndexReq{
+  string moduleName = 1;
+  repeated string taskStatusList = 2;
+  string productId = 3;
+  string deviceName = 4;
+}
+message OTAUnfinishedTaskByDeviceIndexResp{
+  repeated OtaUpTaskInfo otaUpTaskInfoList = 1;
+}
+
+message OTATaskReUpgradeReq{
+  int64 jobId = 1;
+  repeated int64 taskId = 2;
+}
+message VerifyOtaFirmwareReq{
+  int64 firmwareId = 1; //固件id
+  string productID = 2;//产品id
+  repeated Tag tags = 3; //标签
+  repeated string deviceNames = 4; //产品名称
+  int64 timeoutInMinutes = 5; //超时时间
+  int64 needPush = 6; //是否需要主动推送
+  int64 needConfirm = 7; //是否需要自主控制
+  string downloadProtocol = 8; //下载协议
+}
+
+service OTAModuleManage{
+  //创建产品的OTA模块
+  rpc otaModuleCreate(OTAModuleReq) returns(Response);
+  //修改OTA模块别名、描述
+  rpc otaModuleUpdate(OTAModuleReq) returns(Response);
+  //删除自定义OTA模块
+  rpc otaModuleDelete(OTAModuleDeleteReq) returns(Response);
+  //查询产品下的OTA模块列表
+  rpc otaModuleByProductIndex(OTAModuleIndexReq) returns(OTAModuleIndexResp);
+  //查询设备上报过的OTA模块版本列表
+  rpc otaModuleVersionsByDeviceIndex(OTAModuleIndexReq) returns(OTAModuleVersionsIndexResp);
+}
+
+message OTAModuleReq{
+  string moduleName = 1;
+  string productId = 2;
+  string aliasName = 3;
+  string desc = 4;
+}
+
+message OTAModuleDeleteReq{
+  string moduleName = 1;
+  string productId = 2;
+}
+
+message OTAModuleIndexResp{
+  repeated OtaModuleInfo otaModuleInfoList = 1;
+  int64 total=2;
+}
+
+message OtaModuleInfo{
+  string aliasName = 1;
+  string desc = 2;
+  string gmtCreate = 3;
+  string gmtModified = 4;
+  string moduleName = 5;
+  string productId = 6;
+}
+
+message OTAModuleIndexReq{
+  PageInfo pageInfo = 1;
+  string productId = 2;
+  string deviceName = 3;
+}
+
+message OTAModuleDetail{
+  string deviceName = 1;
+  string moduleName = 2;
+  string moduleVersion = 3;
+  string productId = 4;
+}
+
+message OTAModuleVersionsIndexResp{
+  repeated OTAModuleDetail otaModuleDetailList=1;
+  int64 total = 2;
 }
 
 

@@ -3,7 +3,6 @@ package relationDB
 import (
 	"database/sql"
 	"github.com/i-Things/things/shared/stores"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -131,6 +130,7 @@ type DmGroupDevice struct {
 	DeviceName string           `gorm:"column:device_name;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"` // 设备名称
 	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
+	Device      *DmDeviceInfo  `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
 }
 
 func (m *DmGroupDevice) TableName() string {
@@ -224,17 +224,18 @@ func (m *DmOtaTaskDevices) TableName() string {
 
 // 产品固件升级包信息表
 type DmOtaFirmware struct {
-	ID         int64          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID  string         `gorm:"column:product_id;type:char(11);NOT NULL"`        // 产品id
-	Version    string         `gorm:"column:version;type:varchar(64)"`                 // 固件版本
-	Module     string         `gorm:"column:module;type:varchar(64)"`                  // 模块名称
-	Name       string         `gorm:"column:name;type:varchar(64)"`                    // 固件名称
-	Desc       string         `gorm:"column:desc;type:varchar(200)"`                   // 描述
-	Status     int64          `gorm:"column:status;type:bigint;NOT NULL"`              //升级包状态，-1：不需要验证，0：未验证，1：已验证，2：验证中，3：验证失败
-	TotalSize  int64          `gorm:"column:total_size;type:bigint;NOT NULL"`          // 升级包总大小
-	IsDiff     int64          `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"` // 是否差分包,1:整包,2:差分
-	SignMethod string         `gorm:"column:sign_method;type:varchar(20);NOT NULL"`    // 签名方式:MD5/SHA256
-	Extra      sql.NullString `gorm:"column:extra;type:json"`                          // 自定义推送参数
+	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID  string `gorm:"column:product_id;type:char(11);NOT NULL"`        // 产品id
+	Version    string `gorm:"column:version;type:varchar(64)"`                 // 固件版本
+	SrcVersion string `gorm:"column:version;type:varchar(64)"`                 // 待升级版本号
+	Module     string `gorm:"column:module;type:varchar(64)"`                  // 模块名称
+	Name       string `gorm:"column:name;type:varchar(64)"`                    // 固件名称
+	Desc       string `gorm:"column:desc;type:varchar(200)"`                   // 描述
+	Status     int    `gorm:"column:status;type:bigint;NOT NULL"`              //升级包状态，-1：不需要验证，0：未验证，1：已验证，2：验证中，3：验证失败
+	TotalSize  int64  `gorm:"column:total_size;type:bigint;NOT NULL"`          // 升级包总大小
+	IsDiff     int64  `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"` // 是否差分包,1:整包,2:差分
+	SignMethod string `gorm:"column:sign_method;type:varchar(20);NOT NULL"`    // 签名方式:MD5/SHA256
+	Extra      string `gorm:"column:extra;type:varchar(256)"`                  // 自定义推送参数
 	stores.Time
 }
 
@@ -259,10 +260,12 @@ func (m *DmDeviceShadow) TableName() string {
 
 // DMOTAjob 表示OTA升级任务的信息
 type DmOtaJob struct {
-	gorm.Model
+	ID                 int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
 	FirmwareId         string `gorm:"column:firmware_id"`          // 升级包ID，升级包的唯一标识符。
 	ProductId          string `gorm:"column:product_id"`           // 升级包所属产品的ProductId。
-	UpgradeType        string `gorm:"column:upgrade_type"`         // 升级策略，0-静态，1-动态
+	JobType            int    `gorm:"column:job_type"`             // 升级包所属产品的JobType。
+	JobStatus          int    `gorm:"column:job_status"`           // 批次状态,PLANNED：计划中,IN_PROGRESS,执行中，COMPLETED，已完成，CANCELED，已经取消
+	UpgradeType        int    `gorm:"column:upgrade_type"`         // 升级策略，0-静态，1-动态
 	TargetSelection    string `gorm:"column:target_selection"`     // 升级范围。可选值：0-ALL、1-SPECIFIC、2-GRAY、3-GROUP。
 	SrcVersion         string `gorm:"column:src_version"`          // 待升级版本号列表。最多可传入10个版本号。用逗号分隔多个版本号
 	ScheduleTime       int64  `gorm:"column:schedule_time"`        // 指定发起OTA升级的时间，单位为毫秒。
@@ -281,6 +284,7 @@ type DmOtaJob struct {
 	GroupType          string `gorm:"column:group_type"`           // 分组类型，仅可取值LINK_PLATFORM。仅发起分组升级任务时使用。
 	DownloadProtocol   string `gorm:"column:download_protocol"`    // 升级包下载协议。可选：0-HTTPS、1-MQTT。
 	MultiModuleMode    int    `gorm:"column:multi_module_mode"`    // 设备是否支持多模块同时升级。
+	stores.Time
 }
 
 func (m *DmOtaJob) TableName() string {
@@ -288,21 +292,22 @@ func (m *DmOtaJob) TableName() string {
 }
 
 type DmOtaUpgradeTask struct {
-	gorm.Model
+	ID          int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
 	TaskId      string    `gorm:"column:task_id"`       // 设备升级作业ID
 	DestVersion string    `gorm:"column:dest_version" ` // 升级的目标OTA升级包版本
 	DeviceName  string    `gorm:"column:device_name" `  // 设备名称
-	FirmwareId  string    `gorm:"column:firmware_id"`   // 升级包ID
-	JobId       string    `gorm:"column:job_id" `       // 升级批次ID
+	FirmwareId  int64     `gorm:"column:firmware_id"`   // 升级包ID
+	JobId       int64     `gorm:"column:job_id" `       // 升级批次ID
 	ProductId   string    `gorm:"column:product_id" `   // 设备所属产品的ProductKey
 	ProductName string    `gorm:"column:product_name"`  // 设备所属产品的名称
 	Progress    string    `gorm:"column:progress"`      // 当前的升级进度
 	SrcVersion  string    `gorm:"column:src_version"`   // 设备的原固件版本
 	TaskDesc    string    `gorm:"column:task_desc" `    // 升级作业描述信息
-	TaskStatus  string    `gorm:"column:task_status"`   // 设备升级状态
+	TaskStatus  int       `gorm:"column:task_status"`   // 设备升级状态
 	Timeout     string    `gorm:"column:timeout"`       // 设备升级超时时间，单位是分钟
 	UtcCreate   time.Time `gorm:"column:utc_create"`    // 升级作业创建时的时间，UTC格式
 	UtcModified time.Time `gorm:"column:utc_modified"`  // 升级作业最后一次修改时的时间，UTC格式
+	stores.Time
 }
 
 func (m *DmOtaUpgradeTask) TableName() string {
@@ -310,12 +315,13 @@ func (m *DmOtaUpgradeTask) TableName() string {
 }
 
 type DmOtaModule struct {
-	gorm.Model
-	ModuleId   string `gorm:"column:module_id"`   // OTA模块ID
-	ModuleName string `gorm:"column:module_name"` // OTA模块名称，产品下唯一且不可修改。仅支持英文字母、数字、英文句号（.）、短划线（-）和下划线（_）。长度限制为1~64个字符。
-	ProductId  string `gorm:"column:product_id"`  // OTA模块所属产品的ProductId。
-	AliasName  string `gorm:"column:alias_name"`  // OTA模块别名。支持中文、英文字母、数字、英文句号（.）、短划线（-）和下划线（_），长度限制为1~64个字符。
-	Desc       string `gorm:"column:desc"`        // OTA模块的描述信息，支持最多100个字符。
+	ID            int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	ModuleName    string `gorm:"column:module_name"`    // OTA模块名称，产品下唯一且不可修改。仅支持英文字母、数字、英文句号（.）、短划线（-）和下划线（_）。长度限制为1~64个字符。
+	ProductId     string `gorm:"column:product_id"`     // OTA模块所属产品的ProductId。
+	ModuleVersion string `gorm:"column:module_version"` //模块版本
+	AliasName     string `gorm:"column:alias_name"`     // OTA模块别名。支持中文、英文字母、数字、英文句号（.）、短划线（-）和下划线（_），长度限制为1~64个字符。
+	Desc          string `gorm:"column:desc"`           // OTA模块的描述信息，支持最多100个字符。
+	stores.Time
 }
 
 func (m *DmOtaModule) TableName() string {
