@@ -20,10 +20,11 @@ type (
 		Action     ActionMap   `json:"-"`          //内部使用,使用map加速匹配,key为id
 	}
 	CommonParam struct {
-		Identifier string `json:"identifier"` //标识符
-		Name       string `json:"name"`       //功能名称
-		Desc       string `json:"desc"`       //描述
-		Required   bool   `json:"required"`   //是否必须
+		Identifier   string `json:"identifier"`   //标识符
+		Name         string `json:"name"`         //功能名称
+		Desc         string `json:"desc"`         //描述
+		Required     bool   `json:"required"`     //是否必须
+		ExtendConfig string `json:"extendConfig"` //拓展参数,json格式
 	}
 	/*配置信息*/
 	Profile struct {

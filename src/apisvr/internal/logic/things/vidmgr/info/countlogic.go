@@ -32,7 +32,6 @@ func (l *CountLogic) Count(req *types.VidmgrCountReq) (resp *types.VidmgrCountRe
 		StartTime: req.StartTime,
 		EndTime:   req.EndTime,
 	}
-
 	vidResp, err := l.svcCtx.VidmgrM.VidmgrInfoCount(l.ctx, vidReq)
 	if err != nil {
 		er := errors.Fmt(err)

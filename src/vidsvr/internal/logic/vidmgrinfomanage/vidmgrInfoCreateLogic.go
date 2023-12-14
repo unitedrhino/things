@@ -3,6 +3,7 @@ package vidmgrinfomanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/domain/deviceAuth"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
@@ -34,6 +35,15 @@ func (l *VidmgrInfoCreateLogic) VidmgrInfoCreate(in *vid.VidmgrInfo) (*vid.Respo
 	if in.VidmgrID == "" {
 		randId := l.svcCtx.VidmgrID.GetSnowflakeId()
 		in.VidmgrID = deviceAuth.GetStrProductID(randId)
+	}
+	//需要过滤相同配置 查找IP和端口相同的流服务，将错误
+	filter := relationDB.VidmgrFilter{VidmgrIpV4: utils.InetAtoN(in.VidmgrIpV4), VidmgrPort: in.VidmgrPort}
+	size, err := l.PiDB.CountByFilter(l.ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	if size > 0 {
+		return nil, errors.MediaCreateError.AddDetailf("The MediaServer IP and Port is repeated:%d", size)
 	}
 	pi, err := ConvVidmgrPbToPo(in)
 	if err != nil {

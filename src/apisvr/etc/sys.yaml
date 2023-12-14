@@ -4,6 +4,7 @@ ListenOn: 127.0.0.1:9180
 CpuThreshold: 0
 Log:
   Encoding: plain
+  #Mode: file
 Database:
   DBType: mysql
   DSN: root:password@tcp(127.0.0.1:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai

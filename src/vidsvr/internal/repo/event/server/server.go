@@ -13,6 +13,7 @@ type (
 	Handle       func(ctx context.Context) ServerHandle
 	ServerHandle interface {
 		ActionCheck() error
+		ActionInit() error
 	}
 )
 

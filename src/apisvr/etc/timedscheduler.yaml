@@ -1,6 +1,8 @@
 Name: timedscheduler.rpc
 ListenOn: 0.0.0.0:9284
-
+Log:
+  Encoding: plain
+  #Mode: file
 Event:
   Mode: natsJs
 CacheRedis:

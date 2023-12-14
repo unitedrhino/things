@@ -2,7 +2,7 @@ package oss
 
 import (
 	"context"
-	"fmt"
+	"github.com/i-Things/things/shared/errors"
 	"sync"
 
 	"github.com/i-Things/things/shared/conf"
@@ -18,18 +18,19 @@ var (
 	newOnce sync.Once
 )
 
-func NewOssClient(c conf.OssConf) *Client {
+func NewOssClient(c conf.OssConf) (cli *Client, err error) {
 	newOnce.Do(func() {
-		ossManager, err := newOssManager(c)
-		if err != nil {
-			panic(fmt.Sprintf("oss 初始化失败 err:%v", err))
+		ossManager, er := newOssManager(c)
+		if er != nil {
+			err = errors.Parameter.AddMsgf("oss 初始化失败 err:%v", err)
+			return
 		}
 		client = &Client{
 			ossManager,
 		}
 	})
 
-	return client
+	return client, err
 }
 
 type OpOption func(*common.OptionKv)

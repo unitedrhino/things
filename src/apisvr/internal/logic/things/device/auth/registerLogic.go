@@ -4,10 +4,9 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/dmsvr/pb/dm"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/dgsvr/pb/dg"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +26,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.DeviceRegisterReq) (resp *types.DeviceRegisterResp, err error) {
-	data, err := l.svcCtx.DeviceA.DeviceRegister(l.ctx, &dm.DeviceRegisterReq{
+	data, err := l.svcCtx.DeviceA.DeviceRegister(l.ctx, &dg.DeviceRegisterReq{
 		ProductID:  req.ProductID,
 		DeviceName: req.DeviceName,
 		Nonce:      req.Nonce,

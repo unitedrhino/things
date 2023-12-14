@@ -9,7 +9,8 @@ import (
 	ws "github.com/i-Things/things/shared/websocket"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/middleware"
-	"github.com/i-Things/things/src/dmsvr/client/deviceauth"
+	"github.com/i-Things/things/src/dgsvr/client/deviceauth"
+	"github.com/i-Things/things/src/dgsvr/dgdirect"
 	"github.com/i-Things/things/src/dmsvr/client/devicegroup"
 	"github.com/i-Things/things/src/dmsvr/client/deviceinteract"
 	"github.com/i-Things/things/src/dmsvr/client/devicemanage"
@@ -18,6 +19,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/otafirmwaremanage"
 	otataskmanage "github.com/i-Things/things/src/dmsvr/client/otataskmanage"
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
+	"github.com/i-Things/things/src/dmsvr/client/protocolmanage"
 	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
@@ -63,12 +65,13 @@ type SvrClient struct {
 	VidmgrC vidmgrconfigmanage.VidmgrConfigManage
 	VidmgrS vidmgrstreammanage.VidmgrStreamManage
 
-	ProjectM projectmanage.ProjectManage
-	AreaM    areamanage.AreaManage
-	ProductM productmanage.ProductManage
-	DeviceM  devicemanage.DeviceManage
-	DeviceA  deviceauth.DeviceAuth
-	DeviceG  devicegroup.DeviceGroup
+	ProjectM  projectmanage.ProjectManage
+	ProtocolM protocolmanage.ProtocolManage
+	AreaM     areamanage.AreaManage
+	ProductM  productmanage.ProductManage
+	DeviceM   devicemanage.DeviceManage
+	DeviceA   deviceauth.DeviceAuth
+	DeviceG   devicegroup.DeviceGroup
 
 	DeviceMsg      devicemsg.DeviceMsg
 	DeviceInteract deviceinteract.DeviceInteract
@@ -104,12 +107,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		vidmgrC vidmgrconfigmanage.VidmgrConfigManage
 		vidmgrS vidmgrstreammanage.VidmgrStreamManage
 
-		projectM projectmanage.ProjectManage
-		areaM    areamanage.AreaManage
-		productM productmanage.ProductManage
-		deviceM  devicemanage.DeviceManage
-		deviceA  deviceauth.DeviceAuth
-		deviceG  devicegroup.DeviceGroup
+		protocolM protocolmanage.ProtocolManage
+		projectM  projectmanage.ProjectManage
+		areaM     areamanage.AreaManage
+		productM  productmanage.ProductManage
+		deviceM   devicemanage.DeviceManage
+		deviceA   deviceauth.DeviceAuth
+		deviceG   devicegroup.DeviceGroup
 
 		deviceMsg      devicemsg.DeviceMsg
 		deviceInteract deviceinteract.DeviceInteract
@@ -138,31 +142,32 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DmRpc.Conf))
 			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			vidmgrM = vidmgrinfomanage.NewVidmgrInfoManage(zrpc.MustNewClient(c.VidRpc.Conf))
-			vidmgrC = vidmgrconfigmanage.NewVidmgrConfigManage(zrpc.MustNewClient(c.VidRpc.Conf))
-			vidmgrS = vidmgrstreammanage.NewVidmgrStreamManage(zrpc.MustNewClient(c.VidRpc.Conf))
-
 			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
 			firmwareM = firmwaremanage.NewFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			otaFirmwareM = otafirmwaremanage.NewOTAFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			otaTaskM = otataskmanage.NewOtaTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			protocolM = protocolmanage.NewProtocolManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else { //直连模式
 			deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
 			deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
 			deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 			productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
-			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
-			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
-			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
-			deviceA = dmdirect.NewDeviceAuth(c.DmRpc.RunProxy)
 			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
 			firmwareM = dmdirect.NewFirmwareManage(c.DmRpc.RunProxy)
 			otaFirmwareM = dmdirect.NewOTAFirmwareManage(c.DmRpc.RunProxy)
 			otaTaskM = dmdirect.NewOtaTaskManage(c.DmRpc.RunProxy)
+			protocolM = dmdirect.NewProtocolManage(c.DmRpc.RunProxy)
+		}
+	}
+	if c.DgRpc.Enable {
+		if c.DgRpc.Mode == conf.ClientModeGrpc { //服务模式
+			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DgRpc.Conf))
+
+		} else { //直连模式
+			deviceA = dgdirect.NewDeviceAuth(c.DgRpc.RunProxy)
 		}
 	}
 	if c.RuleRpc.Enable {
@@ -205,6 +210,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
 			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
 			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
+			viddirect.ApiDirectRun()
 		}
 	}
 
@@ -223,9 +229,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 	}
 
-	ossClient := oss.NewOssClient(c.OssConf)
-	if ossClient == nil {
-		logx.Error("NewOss err")
+	ossClient, err := oss.NewOssClient(c.OssConf)
+	if err != nil {
+		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
 
@@ -254,12 +260,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			VidmgrC:        vidmgrC,
 			VidmgrS:        vidmgrS,
 
-			ProjectM: projectM,
-			AreaM:    areaM,
-			ProductM: productM,
-			DeviceM:  deviceM,
-			DeviceA:  deviceA,
-			DeviceG:  deviceG,
+			ProtocolM: protocolM,
+			ProjectM:  projectM,
+			AreaM:     areaM,
+			ProductM:  productM,
+			DeviceM:   deviceM,
+			DeviceA:   deviceA,
+			DeviceG:   deviceG,
 
 			DeviceMsg:      deviceMsg,
 			DeviceInteract: deviceInteract,
