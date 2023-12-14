@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/utils/cast"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgOta"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"path"
 
@@ -109,10 +110,16 @@ func (l *OtaFirmwareCreateLogic) OtaFirmwareCreate(in *dm.OtaFirmwareCreateReq) 
 		SignMethod: in.SignMethod,
 		Module:     in.Module,
 		IsDiff:     in.IsDiff,
+		Extra:      in.FirmwareUdi.Value,
 	}
-	di.Status = 0
+	//是否需要平台验证
+	di.Status = msgOta.OtaFirmwareStatusNotVerified
 	if !in.NeedToVerify {
-		di.Status = -1
+		di.Status = msgOta.OtaFirmwareStatusNotRequired
+	}
+	//整包或差包
+	if in.IsDiff == msgOta.DiffPackage {
+		di.SrcVersion = in.SrcVersion
 	}
 	l.OfDB.Insert(l.ctx, &di)
 	if err != nil {

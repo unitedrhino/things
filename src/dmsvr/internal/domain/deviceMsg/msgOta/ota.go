@@ -31,13 +31,38 @@ type (
 		Desc   string `json:"desc"`
 		Module string `json:"module"`
 	}
+
+	//ota下行消息
+	Upgrade struct {
+		deviceMsg.CommonMsg
+		Params UpgradeParams
+	}
+	UpgradeParams struct {
+		Version    string  `json:"version"`
+		IsDiff     int     `json:"is_diff"`
+		SignMethod string  `json:"sign_method"`
+		Files      []File  `json:"files"`
+		Module     string  `json:"module"`
+		ExtData    ExtData `json:"ext_data"`
+	}
+	ExtData struct {
+		Key1       string `json:"key1"`
+		Key2       string `json:"key2"`
+		PackageUdi string `json:"_package_udi"`
+	}
+	File struct {
+		FileSize int64  `json:"file_size"`
+		FileName string `json:"file_name"`
+		FileUrl  string `json:"file_url"`
+		FileMd5  string `json:"file_md5"`
+		FileSign string `json:"file_sign"`
+	}
 )
 
 func (d *Req) VerifyReqParam() error {
 	if d.Params.Module == "" {
 		return errors.Parameter.AddDetail("need add module")
 	}
-
 	return nil
 }
 func (d *Req) GetVersion() string {
@@ -77,4 +102,87 @@ func GetOtaFirmwareStatusString(status int) string {
 		return statusString
 	}
 	return "未知状态"
+}
+
+// 定义升级批次常量
+const (
+	ValidateUpgrade = iota
+	BatchUpgrade
+)
+
+var JobTypeMap = map[int]string{
+	ValidateUpgrade: "验证升级包",
+	BatchUpgrade:    "批量升级",
+}
+
+// 定义升级任务常量
+const (
+	UpgradeStatusConfirm = iota
+	UpgradeStatusQueued
+	UpgradeStatusNotified
+	UpgradeStatusInProgress
+	UpgradeStatusSucceeded
+	UpgradeStatusFailed
+	UpgradeStatusCanceled
+)
+
+var TaskStatusMap = map[int]string{
+	UpgradeStatusConfirm:    "待确认",
+	UpgradeStatusQueued:     "待推送",
+	UpgradeStatusNotified:   "已推送",
+	UpgradeStatusInProgress: "升级中",
+	UpgradeStatusSucceeded:  "升级成功",
+	UpgradeStatusFailed:     "升级失败",
+	UpgradeStatusCanceled:   "已取消",
+}
+
+// 定义升级批次常量
+const (
+	StaticUpgrade = iota
+	DynamicUpgrade
+)
+
+var UpgradeTypeMap = map[int]string{
+	StaticUpgrade:  "静态升级",
+	DynamicUpgrade: "动态升级",
+}
+
+const (
+	AllUpgrade = iota
+	SpecificUpgrade
+	GrayUpgrade
+	GroupUpgrade
+	AreaUpgrade
+)
+
+var UpgradeModeMap = map[int]string{
+	AreaUpgrade:     "区域升级",
+	AllUpgrade:      "全量升级",
+	SpecificUpgrade: "定向升级",
+	GrayUpgrade:     "灰度升级",
+	GroupUpgrade:    "分组升级",
+}
+
+const (
+	DiffPackage = iota
+	FullPackage
+)
+
+var PackageTypeMap = map[int]string{
+	FullPackage: "整包",
+	DiffPackage: "差包",
+}
+
+const (
+	JobStatusPlanned = iota
+	JobStatusInProgress
+	JobStatusCompleted
+	JobStatusCanceled
+)
+
+var JobStatusMap = map[int]string{
+	JobStatusPlanned:    "计划中",
+	JobStatusInProgress: "执行中",
+	JobStatusCompleted:  "已完成",
+	JobStatusCanceled:   "已取消",
 }
