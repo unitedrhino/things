@@ -156,12 +156,13 @@ var (
 		{ID: 74, AppCode: def.AppCore, ParentID: 70, Type: 1, Order: 1, Name: "任务详情", Path: "/systemManagers/timed/task/detail/:id", Component: "./systemManagers/timed/task/detail/index.tsx", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: def.True},
 		//视频服务菜单项
 		{ID: 63, AppCode: def.AppCore, ParentID: 1, Type: 1, Order: 2, Name: "视频服务", Path: "/videoManagers", Component: "./videoManagers", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 64, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 1, Name: "服务管理", Path: "/videoManagers/vidsrvmgr/index", Component: "./videoManagers/vidsrvmgr/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 65, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 3, Name: "视频广场", Path: "/videoManagers/plaza/index", Component: "./videoManagers/plaza/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 66, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 2, Name: "流管理", Path: "/videoManagers/vidstream/index", Component: "./videoManagers/vidstream/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 64, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 1, Name: "流服务管理", Path: "/videoManagers/vidsrvmgr/index", Component: "./videoManagers/vidsrvmgr/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 65, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 3, Name: "视频流广场", Path: "/videoManagers/plaza/index", Component: "./videoManagers/plaza/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 66, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 2, Name: "视频流管理", Path: "/videoManagers/vidstream/index", Component: "./videoManagers/vidstream/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 67, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 4, Name: "视频回放", Path: "/videoManagers/playback/index", Component: "./videoManagers/playback/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 68, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 2, Name: "录像计划", Path: "/videoManagers/recordplan/index", Component: "./videoManagers/recordplan/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 69, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 1, Name: "服务详细", Path: "/videoManagers/vidsrvmgr/detail/:id", Component: "./videoManagers/vidsrvmgr/detail/index", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
+		{ID: 69, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 1, Name: "流服务详细", Path: "/videoManagers/vidsrvmgr/detail/:id", Component: "./videoManagers/vidsrvmgr/detail/index", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
+		{ID: 75, AppCode: def.AppCore, ParentID: 63, Type: 1, Order: 1, Name: "视频流详细", Path: "/videoManagers/vidstream/detail/:id", Component: "./videoManagers/vidstream/detail/index", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
 	}
 	MigrateApiInfo = []SysApiInfo{
 		{AppCode: def.AppCore, Route: "/api/v1/things/product/info/update", Method: "POST", Name: "更新产品", BusinessType: 2, Desc: "", Group: "产品管理"},
@@ -300,6 +301,13 @@ var (
 		{AppCode: def.AppCore, Route: "/api/v1/things/vidmgr/info/index", Method: "POST", Name: "获取流服务器列表", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{AppCode: def.AppCore, Route: "/api/v1/things/vidmgr/info/read", Method: "POST", Name: "获取流服详细", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{AppCode: def.AppCore, Route: "/api/v1/things/vidmgr/info/update", Method: "POST", Name: "更新流服务器", BusinessType: 1, Desc: "", Group: "视频服务"},
+		//视频流API接口
+		{AppCode: def.AppCore, Route: "/api/v1/things/vidmgr/stream/count", Method: "POST", Name: "视频流统计", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{AppCode: def.AppCore, Route: "/api/v1/things/vidmgr/stream/create", Method: "POST", Name: "新增视频流(拉流)", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{AppCode: def.AppCore, Route: "/api/v1/things/vidmgr/stream/delete", Method: "POST", Name: "删除视频流", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{AppCode: def.AppCore, Route: "/api/v1/things/vidmgr/stream/index", Method: "POST", Name: "获取视频流列表", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{AppCode: def.AppCore, Route: "/api/v1/things/vidmgr/stream/read", Method: "POST", Name: "获取视频流详细", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{AppCode: def.AppCore, Route: "/api/v1/things/vidmgr/stream/update", Method: "POST", Name: "更新视频流", BusinessType: 1, Desc: "", Group: "视频服务"},
 	}
 	MigrateRoleApi = []SysRoleApi{
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/product/info/update", V4: "POST", V5: ""},
@@ -377,7 +385,13 @@ var (
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/info/index", V4: "POST", V5: ""},
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/info/read", V4: "POST", V5: ""},
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/info/update", V4: "POST", V5: ""},
-		//系统管理接口
+		//视频流API接口
+		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/count", V4: "POST", V5: ""},
+		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/create", V4: "POST", V5: ""},
+		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/delete", V4: "POST", V5: ""},
+		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/index", V4: "POST", V5: ""},
+		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/read", V4: "POST", V5: ""},
+		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/update", V4: "POST", V5: ""}, //系统管理接口
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/system/timed/task/info/create", V4: "POST", V5: ""},
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/system/timed/task/info/update", V4: "POST", V5: ""},
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/system/timed/task/info/delete", V4: "POST", V5: ""},
