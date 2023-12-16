@@ -391,7 +391,9 @@ var (
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/delete", V4: "POST", V5: ""},
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/index", V4: "POST", V5: ""},
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/read", V4: "POST", V5: ""},
-		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/update", V4: "POST", V5: ""}, //系统管理接口
+		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/vidmgr/stream/update", V4: "POST", V5: ""},
+
+		//系统管理接口
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/system/timed/task/info/create", V4: "POST", V5: ""},
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/system/timed/task/info/update", V4: "POST", V5: ""},
 		{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/system/timed/task/info/delete", V4: "POST", V5: ""},
