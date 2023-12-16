@@ -29,10 +29,12 @@ type (
         IpAddr string `json:"ipAddr,optional"`                     //按ip地址查找
         LoginLocation string `json:"loginLocation,optional"`       //按登录地址查找
         DateRange DateRange `json:"dateRange,optional"`            //按时间范围查找
+         AppCode string `json:"appCode,optional"`                               // 应用编号
 	}
 
-    SysLogLoginIndexData {
+    SysLogLoginInfo {
         UserID         int64  `json:"userID,string,optional"`        // 用户id
+        AppCode string `json:"appCode"`                               // 应用编号
         UserName string `json:"userName"`                                // 登录账号
         IpAddr string `json:"ipAddr"`                                    // 登录IP地址
         LoginLocation string `json:"loginLocation"`                      // 登录地点
@@ -44,7 +46,7 @@ type (
     }
 
     SysLogLoginIndexResp {
-        List []*SysLogLoginIndexData `json:"list"`  //登录日志列表数据
+        List []*SysLogLoginInfo `json:"list"`  //登录日志列表数据
         Total int64 `json:"total"`                  //登录日志列表总记录数
     }
 
@@ -53,10 +55,12 @@ type (
         OperName string `json:"operName,optional "`                //按操作名称查找
         OperUserName string `json:"operUserName,optional "`        //按操作人员名称查找
         BusinessType int64 `json:"businessType,string,optional "`  //按业务类型（1新增 2修改 3删除 4查询）查找
+         AppCode string `json:"appCode,optional"`                               // 应用编号
     }
 
-    SysLogOperIndexData {
+    SysLogOperInfo {
         UserID         int64  `json:"userID,string,optional"`        // 用户id
+        AppCode string `json:"appCode"`                               // 应用编号
         operUserName string `json:"operUserName"`                  //操作人员名称
         operName string `json:"operName"`                          //操作名称
         businessType int64 `json:"businessType,string"`            //业务类型（1新增 2修改 3删除 4查询）
@@ -70,7 +74,7 @@ type (
         CreatedTime int64 `json:"createdTime,string"`              //操作时间
     }
     SysLogOperIndexResp {
-        List []*SysLogOperIndexData `json:"list"`  //操作日志列表数据
+        List []*SysLogOperInfo `json:"list"`  //操作日志列表数据
         Total int64 `json:"total"`                 //操作日志列表总记录数
     }
 )

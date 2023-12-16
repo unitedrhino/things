@@ -11,7 +11,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	operLog "github.com/i-Things/things/src/syssvr/client/log"
-	"github.com/i-Things/things/src/syssvr/client/user"
+	user "github.com/i-Things/things/src/syssvr/client/usermanage"
 	"github.com/zeromicro/go-zero/core/logx"
 	"io"
 	"net/http"

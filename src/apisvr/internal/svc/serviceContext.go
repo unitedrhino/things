@@ -24,14 +24,16 @@ import (
 	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
 	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
 	"github.com/i-Things/things/src/rulesvr/ruledirect"
-	api "github.com/i-Things/things/src/syssvr/client/api"
+	api "github.com/i-Things/things/src/syssvr/client/apimanage"
+	app "github.com/i-Things/things/src/syssvr/client/appmanage"
 	"github.com/i-Things/things/src/syssvr/client/areamanage"
 	common "github.com/i-Things/things/src/syssvr/client/common"
 	log "github.com/i-Things/things/src/syssvr/client/log"
-	menu "github.com/i-Things/things/src/syssvr/client/menu"
+	menu "github.com/i-Things/things/src/syssvr/client/menumanage"
 	"github.com/i-Things/things/src/syssvr/client/projectmanage"
-	role "github.com/i-Things/things/src/syssvr/client/role"
-	user "github.com/i-Things/things/src/syssvr/client/user"
+	role "github.com/i-Things/things/src/syssvr/client/rolemanage"
+	tenant "github.com/i-Things/things/src/syssvr/client/tenantmanage"
+	user "github.com/i-Things/things/src/syssvr/client/usermanage"
 	"github.com/i-Things/things/src/syssvr/sysdirect"
 	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
@@ -55,14 +57,16 @@ func init() {
 }
 
 type SvrClient struct {
-	UserRpc user.User
-	RoleRpc role.Role
-	MenuRpc menu.Menu
-	LogRpc  log.Log
-	ApiRpc  api.Api
-	VidmgrM vidmgrinfomanage.VidmgrInfoManage
-	VidmgrC vidmgrconfigmanage.VidmgrConfigManage
-	VidmgrS vidmgrstreammanage.VidmgrStreamManage
+	TenantRpc tenant.TenantManage
+	UserRpc   user.UserManage
+	RoleRpc   role.RoleManage
+	AppRpc    app.AppManage
+	MenuRpc   menu.MenuManage
+	LogRpc    log.Log
+	ApiRpc    api.ApiManage
+	VidmgrM   vidmgrinfomanage.VidmgrInfoManage
+	VidmgrC   vidmgrconfigmanage.VidmgrConfigManage
+	VidmgrS   vidmgrstreammanage.VidmgrStreamManage
 
 	ProjectM  projectmanage.ProjectManage
 	ProtocolM protocolmanage.ProtocolManage
@@ -105,14 +109,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		vidmgrC vidmgrconfigmanage.VidmgrConfigManage
 		vidmgrS vidmgrstreammanage.VidmgrStreamManage
 
-		protocolM protocolmanage.ProtocolManage
-		projectM  projectmanage.ProjectManage
-		areaM     areamanage.AreaManage
-		productM  productmanage.ProductManage
-		deviceM   devicemanage.DeviceManage
-		deviceA   deviceauth.DeviceAuth
-		deviceG   devicegroup.DeviceGroup
-
+		protocolM      protocolmanage.ProtocolManage
+		projectM       projectmanage.ProjectManage
+		areaM          areamanage.AreaManage
+		productM       productmanage.ProductManage
+		deviceM        devicemanage.DeviceManage
+		deviceA        deviceauth.DeviceAuth
+		deviceG        devicegroup.DeviceGroup
+		appRpc         app.AppManage
 		deviceMsg      devicemsg.DeviceMsg
 		deviceInteract deviceinteract.DeviceInteract
 		remoteConfig   remoteconfig.RemoteConfig
@@ -123,12 +127,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		otaTaskM       otataskmanage.OtaTaskManage
 		timedSchedule  timedscheduler.Timedscheduler
 		timedJob       timedmanage.TimedManage
+		tenantM        tenant.TenantManage
 	)
-	var ur user.User
-	var ro role.Role
-	var me menu.Menu
+	var ur user.UserManage
+	var ro role.RoleManage
+	var me menu.MenuManage
 	var lo log.Log
-	var ap api.Api
+	var ap api.ApiManage
 
 	caches.InitStore(c.CacheRedis)
 
@@ -178,12 +183,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		if c.SysRpc.Mode == conf.ClientModeGrpc {
 			projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			ur = user.NewUser(zrpc.MustNewClient(c.SysRpc.Conf))
-			ro = role.NewRole(zrpc.MustNewClient(c.SysRpc.Conf))
-			me = menu.NewMenu(zrpc.MustNewClient(c.SysRpc.Conf))
+			ur = user.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			me = menu.NewMenuManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
-			ap = api.NewApi(zrpc.MustNewClient(c.SysRpc.Conf))
+			ap = api.NewApiManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			sysCommon = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
+			appRpc = app.NewAppManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			tenantM = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
 			projectM = sysdirect.NewProjectManage(c.SysRpc.RunProxy)
 			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
@@ -193,6 +200,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
 			ap = sysdirect.NewApi(c.SysRpc.RunProxy)
 			sysCommon = sysdirect.NewCommon(c.SysRpc.RunProxy)
+			appRpc = sysdirect.NewApp(c.SysRpc.RunProxy)
+			tenantM = sysdirect.NewTenantManage(c.SysRpc.RunProxy)
 		}
 	}
 
@@ -243,6 +252,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		FirmwareM:      firmwareM,
 		OtaTaskM:       otaTaskM,
 		SvrClient: SvrClient{
+			TenantRpc:      tenantM,
+			AppRpc:         appRpc,
 			UserRpc:        ur,
 			RoleRpc:        ro,
 			MenuRpc:        me,

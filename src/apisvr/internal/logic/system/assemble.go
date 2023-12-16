@@ -19,8 +19,9 @@ func ProjectInfoToApi(pb *sys.ProjectInfo) *types.ProjectInfo {
 	}
 }
 
-func ToMenuInfoApi(i *sys.MenuData) *types.MenuData {
-	return &types.MenuData{
+func ToMenuInfoApi(i *sys.MenuInfo) *types.MenuInfo {
+	return &types.MenuInfo{
+		AppCode:    i.AppCode,
 		ID:         i.Id,
 		Name:       i.Name,
 		ParentID:   i.ParentID,
@@ -32,5 +33,18 @@ func ToMenuInfoApi(i *sys.MenuData) *types.MenuData {
 		CreateTime: i.CreateTime,
 		Order:      i.Order,
 		HideInMenu: i.HideInMenu,
+	}
+}
+func ToMenuInfosApi(i []*sys.MenuInfo) (ret []*types.MenuInfo) {
+	for _, v := range i {
+		ret = append(ret, ToMenuInfoApi(v))
+	}
+	return
+}
+
+func ToSysReqWithIDCode(in *types.WithIDOrCode) *sys.ReqWithIDCode {
+	return &sys.ReqWithIDCode{
+		Id:   in.ID,
+		Code: in.Code,
 	}
 }

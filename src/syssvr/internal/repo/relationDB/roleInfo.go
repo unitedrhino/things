@@ -16,32 +16,29 @@ func NewRoleInfoRepo(in any) *RoleInfoRepo {
 }
 
 type RoleInfoFilter struct {
-	Name   string
-	Status int64
-	*RoleInfoWith
-}
-type RoleInfoWith struct {
-	WithMenus bool
-}
-
-func (p RoleInfoRepo) fmtWith(db *gorm.DB, f *RoleInfoWith) *gorm.DB {
-	if f == nil {
-		return nil
-	}
-	if f.WithMenus {
-		db = db.Preload("Menus")
-	}
-	return db
+	IDs         []int64
+	WithAppInfo bool
+	AppCode     string
+	Name        string
+	Status      int64
 }
 
 func (p RoleInfoRepo) fmtFilter(ctx context.Context, f RoleInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	db = p.fmtWith(db, f.RoleInfoWith)
 	if f.Name != "" {
-		db = db.Where("`name` like ?", "%"+f.Name+"%")
+		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.AppCode != "" {
+		db = db.Where("app_code=?", f.AppCode)
+	}
+	if len(f.IDs) > 0 {
+		db = db.Where("id in ?", f.IDs)
+	}
+	if f.WithAppInfo {
+		db = db.Preload("Apps")
 	}
 	if f.Status > 0 {
-		db = db.Where("`status`= ?", f.Status)
+		db = db.Where("status= ?", f.Status)
 	}
 	return db
 }
@@ -92,10 +89,9 @@ func (p RoleInfoRepo) Delete(ctx context.Context, id int64) error {
 	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysRoleInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (p RoleInfoRepo) FindOne(ctx context.Context, id int64, with *RoleInfoWith) (*SysRoleInfo, error) {
+func (p RoleInfoRepo) FindOne(ctx context.Context, id int64) (*SysRoleInfo, error) {
 	var result SysRoleInfo
 	db := p.db.WithContext(ctx)
-	db = p.fmtWith(db, with)
 	err := db.Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)

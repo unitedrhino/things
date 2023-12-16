@@ -13,7 +13,7 @@ type ShadowRepo struct {
 }
 
 func NewShadowRepo(in any) shadow.Repo {
-	return &ShadowRepo{db: stores.GetTenantConn(in)}
+	return &ShadowRepo{db: stores.GetCommonConn(in)}
 }
 
 func (p *ShadowRepo) FindByFilter(ctx context.Context, f shadow.Filter) ([]*shadow.Info, error) {

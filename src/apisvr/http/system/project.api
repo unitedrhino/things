@@ -31,16 +31,7 @@ service api {
 }
 
 type (
-    ProjectInfo struct {
-        CreatedTime int64 `json:"createdTime,optional,string"` //创建时间（只读）
-        ProjectID int64 `json:"projectID,string,optional"`     //项目id（只读）
-        ProjectName string `json:"projectName,optional"`       //项目名称（读写）
-        CompanyName *string `json:"companyName,optional"`      //项目所属公司名称（读写）
-        UserID         int64  `json:"userID,string,optional"`  // 管理员用户id（读写）
-        Region *string `json:"region,optional"`                //项目省市区县（读写）
-        Address *string `json:"address,optional"`              //项目详细地址（读写）
-        Desc *string `json:"desc,optional"`                    //项目备注（读写）
-    }
+
 
     ProjectInfoDeleteReq struct {
         ProjectID int64 `json:"projectID,string"` //项目id 只读

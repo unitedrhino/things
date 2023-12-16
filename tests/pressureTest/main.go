@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/shared/utils/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
 	"net/url"
@@ -56,10 +55,10 @@ var (
 func main() {
 	args := os.Args
 	if len(args) > 1 {
-		deviceTotal = cast.ToInt64(args[1])
+		deviceTotal = utils.ToInt64(args[1])
 	}
 	if len(args) > 2 {
-		pubInterval = time.Duration(cast.ToInt(args[2])) * time.Second
+		pubInterval = time.Duration(utils.ToInt(args[2])) * time.Second
 	}
 	fmt.Println(deviceTotal, pubInterval)
 	var mcs = make([]mqtt.Client, 0, deviceTotal)

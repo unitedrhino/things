@@ -68,13 +68,15 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		}
 	}
 	uResp, err := l.svcCtx.UserRpc.UserLogin(l.ctx, &sys.UserLoginReq{
-		Account:   req.Account,
-		PwdType:   req.PwdType,
-		Password:  req.Password,
-		LoginType: req.LoginType,
-		Code:      req.Code,
-		CodeID:    req.CodeID,
-		Ip:        ctxs.GetUserCtx(l.ctx).IP,
+		Account:    req.Account,
+		PwdType:    req.PwdType,
+		Password:   req.Password,
+		LoginType:  req.LoginType,
+		Code:       req.Code,
+		CodeID:     req.CodeID,
+		AppCode:    req.AppCode,
+		TenantCode: req.TenantCode,
+		Ip:         ctxs.GetUserCtx(l.ctx).IP,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
@@ -126,7 +128,6 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			Password:    "",
 			Email:       uResp.Info.Email,
 			Phone:       uResp.Info.Phone,
-			Wechat:      uResp.Info.Wechat,
 			LastIP:      uResp.Info.LastIP,
 			RegIP:       uResp.Info.RegIP,
 			NickName:    uResp.Info.NickName,

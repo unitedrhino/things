@@ -4,17 +4,19 @@ import "google/protobuf/wrappers.proto";
 
 package sys;
 
-service User {
-  rpc userCreate(UserInfo) returns(UserCreateResp);//创建用户信息
-  rpc userIndex(UserIndexReq) returns(UserIndexResp);
-  rpc userUpdate(UserInfo) returns(Response);//更新用户基本数据
-  rpc userRead(UserReadReq) returns(UserInfo);//获取用户信息
-  rpc userDelete(UserDeleteReq) returns(Response);//刪除用戶
+service UserManage {
+  rpc userInfoCreate(UserInfo) returns(UserCreateResp);//创建用户信息
+  rpc userInfoIndex(UserInfoIndexReq) returns(UserInfoIndexResp);
+  rpc userInfoUpdate(UserInfo) returns(Response);//更新用户基本数据
+  rpc userInfoRead(UserInfoReadReq) returns(UserInfo);//获取用户信息
+  rpc userInfoDelete(UserInfoDeleteReq) returns(Response);//刪除用戶
   rpc userLogin(UserLoginReq) returns(UserLoginResp);
   rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
   rpc userRegister1(UserRegister1Req) returns(UserRegister1Resp);
   rpc userRegister2(UserRegister2Req) returns(Response);
 
+  rpc userRoleIndex(UserRoleIndexReq) returns (UserRoleIndexResp); //获取角色API权限列表
+  rpc userRoleMultiUpdate(UserRoleMultiUpdateReq) returns(Response); //添加角色
 
   rpc userAuthProjectMultiUpdate (UserAuthProjectMultiUpdateReq) returns (Response);   //授权用户数据权限
   rpc userAuthProjectIndex (UserAuthProjectIndexReq) returns (UserAuthProjectIndexResp); //获取用户数据权限列表
@@ -22,22 +24,38 @@ service User {
   rpc userAuthAreaIndex (UserAuthAreaIndexReq) returns (UserAuthAreaIndexResp); //获取用户数据权限列表
 }
 
-service Role {
-  rpc roleCreate(RoleCreateReq) returns(Response); //添加角色
-  rpc roleIndex(RoleIndexReq) returns(RoleIndexResp); //获取角色列表
-  rpc roleUpdate(RoleUpdateReq) returns(Response); //更新角色
-  rpc roleDelete(RoleDeleteReq) returns(Response); //删除角色
-  rpc roleMenuUpdate(RoleMenuUpdateReq) returns(Response); //添加角色
+service RoleManage {
+  rpc roleInfoCreate(RoleInfo) returns(Response); //添加角色
+  rpc roleInfoIndex(RoleInfoIndexReq) returns(RoleInfoIndexResp); //获取角色列表
+  rpc roleInfoUpdate(RoleInfo) returns(Response); //更新角色
+  rpc roleInfoDelete(ReqWithID) returns(Response); //删除角色
+
+  rpc roleMenuIndex(RoleMenuIndexReq) returns (RoleMenuIndexResp); //获取角色API权限列表
+  rpc roleMenuMultiUpdate(RoleMenuMultiUpdateReq) returns(Response); //添加角色
+
+  rpc roleAppIndex(RoleAppIndexReq) returns (RoleAppIndexResp); //获取角色API权限列表
+  rpc roleAppMultiUpdate(RoleAppMultiUpdateReq) returns (Response);  //更新角色API权限
+
   rpc roleApiAuth(RoleApiAuthReq) returns(Response);   //角色API鉴权
   rpc roleApiMultiUpdate(RoleApiMultiUpdateReq) returns (Response);  //更新角色API权限
   rpc roleApiIndex(RoleApiIndexReq) returns (RoleApiIndexResp); //获取角色API权限列表
 }
 
-service Menu {
-  rpc menuCreate(MenuCreateReq) returns(Response); //添加菜单
-  rpc menuIndex(MenuIndexReq) returns(MenuIndexResp); //获取菜单列表
-  rpc menuUpdate(MenuUpdateReq) returns(Response); //更新菜单
-  rpc menuDelete(MenuDeleteReq) returns(Response); //删除菜单
+
+service AppManage{
+  rpc appInfoCreate(AppInfo) returns(Response); //添加角色
+  rpc appInfoIndex(AppInfoIndexReq) returns(AppInfoIndexResp); //获取角色列表
+  rpc appInfoUpdate(AppInfo) returns(Response); //更新角色
+  rpc appInfoDelete(ReqWithIDCode) returns(Response); //删除角色
+  rpc appInfoRead(ReqWithIDCode) returns(AppInfo);   //获取详情接口
+
+}
+
+service MenuManage {
+  rpc menuInfoCreate(MenuInfo) returns(Response); //添加菜单
+  rpc menuInfoIndex(MenuInfoIndexReq) returns(MenuInfoIndexResp); //获取菜单列表
+  rpc menuInfoUpdate(MenuInfo) returns(Response); //更新菜单
+  rpc menuInfoDelete(ReqWithID) returns(Response); //删除菜单
 }
 
 service Common {
@@ -51,11 +69,11 @@ service Log {
   rpc operLogCreate(OperLogCreateReq) returns(Response);           //操作日志数据入库
 }
 
-service Api {
-  rpc apiCreate(ApiCreateReq) returns(Response);   //添加接口
-  rpc apiIndex(ApiIndexReq) returns(ApiIndexResp); //获取接口列表
-  rpc apiUpdate(ApiUpdateReq) returns(Response);   //更新接口
-  rpc apiDelete(ApiDeleteReq) returns(Response);   //删除接口
+service ApiManage {
+  rpc apiInfoCreate(ApiInfo) returns(Response);   //添加接口
+  rpc apiInfoIndex(ApiInfoIndexReq) returns(ApiInfoIndexResp); //获取接口列表
+  rpc apiInfoUpdate(ApiInfo) returns(Response);   //更新接口
+  rpc apiInfoDelete(ReqWithID) returns(Response);   //删除接口
 }
 
 
@@ -91,6 +109,58 @@ service AreaManage {
 }
 
 
+service TenantManage {
+  //新增区域
+  rpc tenantInfoCreate (TenantInfo) returns (Response);
+  //更新区域
+  rpc tenantInfoUpdate (TenantInfo) returns (Response);
+  //删除区域
+  rpc tenantInfoDelete (ReqWithIDCode) returns (Response);
+  //获取租户信息详情
+  rpc tenantInfoRead (ReqWithIDCode) returns (TenantInfo);
+  //获取租户信息列表
+  rpc tenantInfoIndex (TenantInfoIndexReq) returns (TenantInfoIndexResp);
+
+  rpc tenantAppIndex(TenantAppIndexReq) returns (TenantAppIndexResp); //获取租户APP权限列表
+  rpc tenantAppMultiUpdate(TenantAppMultiUpdateReq) returns (Response);  //更新租户APP权限
+}
+
+//--------------------租户管理------------------------
+
+message TenantInfo{
+  int64 id = 1;
+  string name = 2;
+  string code = 3;
+  int64 adminUserID = 4;
+  string baseUrl = 5;      // 基础URL
+  string logoUrl = 6;     // 应用logo地址
+  google.protobuf.StringValue desc = 7;
+}
+message TenantInfoIndexReq{
+  PageInfo page = 1;//分页信息
+  string name = 2;
+  string code = 3;
+}
+
+message TenantInfoIndexResp{
+  repeated  TenantInfo list =1;
+  int64 total = 2;
+}
+
+message TenantAppIndexReq{
+  string code = 1;
+}
+
+message TenantAppIndexResp{
+  int64 total = 1;
+  repeated AppInfo list = 2;//app列表数据
+}
+
+message TenantAppMultiUpdateReq{
+  string code = 2;
+  repeated string appCodes = 3;
+}
+
 
 //----------------------------------------------------------------------------------------------
 
@@ -113,6 +183,15 @@ message PageInfo {
         //排序方式：0 aes, 1 desc
         int64 sort = 2;
     }
+}
+
+message ReqWithID{
+  int64 id = 1;
+}
+
+message ReqWithIDCode{
+  int64 id = 1;
+  string code=2;
 }
 
 //----------------------------------------------------------------------------------------------
@@ -200,21 +279,45 @@ message AreaInfoTreeResp {
 
 message AuthApiInfo{
   string route = 1;
-  int64 method = 2;
+  string method = 2;//大写 http 方法
+
 }
 
 message RoleApiMultiUpdateReq{
-  uint64 roleID = 1;//角色ID
-  repeated AuthApiInfo list = 2;//API列表数据
+  int64 id = 1;//角色ID
+  string appCode = 2;//appCode
+  repeated AuthApiInfo list = 3;//API列表数据
 }
 
 message RoleApiIndexReq{
-  uint64 roleID = 1;//角色ID
+  int64 id = 1;//角色ID
+  string appCode = 2;//appCode
 }
 
 message RoleApiIndexResp{
   int64 total = 1;
   repeated AuthApiInfo list = 2;//API列表数据
+}
+
+
+
+message RoleMenuIndexReq{
+  int64 id = 1;//角色ID
+  string appCode = 2;//appCode
+}
+
+message RoleMenuIndexResp{
+  int64 total = 1;
+  repeated MenuInfo list = 2;//API列表数据
+}
+
+message RoleAppIndexReq{
+  int64 id = 1;//角色ID
+}
+
+message RoleAppIndexResp{
+  int64 total = 1;
+  repeated AppInfo list = 2;//app列表数据
 }
 
 
@@ -225,12 +328,13 @@ message DateRange{
 
 message LoginLogIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
-  string ipAddr = 2;        // 登录IP地址
-  string loginLocation = 3; // 登录地点
-  DateRange date = 4;       // 时间范围
+  string appCode = 2;//应用编码
+  string ipAddr = 3;        // 登录IP地址
+  string loginLocation = 4; // 登录地点
+  DateRange date = 5;       // 时间范围
 }
 
-message LoginLogIndexData {
+message LoginLogInfo {
   int64  userID = 1;           // 用户id
   string userName = 2;      // 登录账号
   string ipAddr = 3;        // 登录IP地址
@@ -240,10 +344,11 @@ message LoginLogIndexData {
   int64 code = 7;           // 登录状态（200成功 其它失败）
   string msg = 8;           // 提示消息
   int64  createdTime = 9;   // 登录时间
+  string appCode = 10;//应用编码
 }
 
 message LoginLogIndexResp{
-  repeated LoginLogIndexData info = 1;
+  repeated LoginLogInfo list = 1;
   int64 total = 2; //总记录数
 }
 
@@ -252,9 +357,10 @@ message OperLogIndexReq{
   string operName     = 2; //按操作名称查找
   string operUserName = 3; //按操作人员名称查找
   int64 businessType  = 4; //按业务类型（1新增 2修改 3删除 4查询）查找
+  string appCode = 5;//应用编码
 }
 
-message OperLogIndexData {
+message OperLogInfo {
     int64  userID = 1;                //用户id
     string operUserName = 2;       //操作人员名称
     string operName = 3;           //操作名称
@@ -267,10 +373,11 @@ message OperLogIndexData {
     int64  code = 10;               //登录状态（200成功 其它失败）
     string msg = 11;               //提示消息
     int64  createdTime = 12;       //操作时间
+    string appCode = 13;//应用编码
 }
 
 message OperLogIndexResp{
-  repeated OperLogIndexData info = 1;
+  repeated OperLogInfo list = 1;
   int64 total = 2; //总记录数
 }
 
@@ -283,6 +390,7 @@ message LoginLogCreateReq{
   string os = 6;            // 操作系统
   int64 code = 7;           // 登录状态（200成功 其它失败）
   string msg = 8;           // 提示消息
+  string appCode = 9;//应用编码
 }
 
 message OperLogCreateReq{
@@ -298,6 +406,7 @@ message OperLogCreateReq{
   string resp = 10;              //返回参数
   int64  code = 11;              //返回状态（200成功 其它失败）
   string msg = 12;               //提示消息
+  string appCode = 13;//应用编码
 }
 
 //用户属性信息
@@ -307,7 +416,7 @@ message UserInfo{
   string password = 3;
   string email = 4;
   string phone =5;
-  string wechat = 6;
+  string wechatUnionID = 6;
   string lastIP =7;
   string regIP =8;
   string nickName =9;
@@ -331,13 +440,26 @@ message UserCreateResp{
 message UserCheckTokenReq{
   string token = 1;
   string ip = 2;
+  string appCode = 3;
 }
 
 message UserCheckTokenResp{
   string token = 1;  //如果时间不多会更新jwt，需要判断jwt是否为“” 如果不为空，则需要更新用户的token
   int64 userID = 2;
-  int64 role = 3;
+  repeated int64 roleIDs = 3;
   int64 isAllData = 4;
+  string tenantCode = 5;//租户编码
+}
+
+message RoleAppMultiUpdateReq{
+  int64 id = 1;
+  repeated string appCodes = 3;
+}
+
+message RoleMenuMultiUpdateReq{
+  int64 id = 1;
+  string appCode = 2;
+  repeated int64 menuIDs = 3;
 }
 
 message RoleApiAuthReq{
@@ -347,26 +469,26 @@ message RoleApiAuthReq{
 }
 
 
-message UserIndexReq{
+message UserInfoIndexReq{
   PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: userID:用户id userName:登录用户名  email:邮箱  phone:手机号
   string userName = 2;
   string phone = 3;
   string email = 4;
 }
 
-message UserIndexResp{
-  repeated UserInfo info = 1;
+message UserInfoIndexResp{
+  repeated UserInfo list = 1;
   int64 total = 2;
 }
 
 
 
-message UserReadReq{
+message UserInfoReadReq{
   int64 userID=1;
 }
 
 
-message UserDeleteReq{
+message UserInfoDeleteReq{
   int64 userID = 1;
 }
 
@@ -384,6 +506,8 @@ message UserLoginReq{
     string code = 5;//验证码    微信登录填code
     string codeID = 6;//验证码编号 微信登录填state
     string ip = 7;//透传请求的 ip
+    string tenantCode = 8;//租户编码
+    string appCode = 9;//应用编码
 }
 
 message UserLoginResp{
@@ -393,6 +517,7 @@ message UserLoginResp{
 
 //登录信息注册,注册第一步(注册核心登录信息) 返回一个jwt用来第二步注册
 message UserRegister1Req{
+  string tenantCode = 8;//租户编码
   string regType =1; //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 pwd 账号密码注册
   string note =2;    //手机号注册时填写手机号 账号密码注册时填写userName
   string code =3;    //验证码    微信登录填code 账号密码登录时填写密码
@@ -409,6 +534,20 @@ message UserRegister2Req{
   string token = 1; //注册第一步的token
   string regIP =8;
   UserInfo info = 2;//填写用户信息
+}
+
+message UserRoleIndexReq{
+  int64 userID = 1;
+}
+
+message UserRoleIndexResp{
+  int64 total = 1;
+  repeated RoleInfo list = 2;//角色列表
+}
+
+message UserRoleMultiUpdateReq{
+  int64 userID = 1;
+  repeated int64 roleIDs = 2;//API列表数据
 }
 
 //----------------------------------------------------------------------------------------------
@@ -454,73 +593,66 @@ message UserAuthAreaIndexResp {
   int64 total = 1;           //总数
   repeated UserAuthArea list = 2; //用户数据权限列表
 }
+//----------------------------------------------------------------------------------------------
+//应用相关接口
+
+message AppInfo{
+  int64 id = 1;
+  string name= 2;          // 应用名称
+  string code = 3;          // 应用编码
+  google.protobuf.StringValue desc = 4;        // 应用描述
+  string baseUrl = 5;      // 基础URL
+  string logoUrl = 6;     // 应用logo地址
+}
+
+message AppInfoIndexReq{
+  PageInfo page = 1;//分页信息
+  string name = 2;
+  string code = 3;
+}
+
+message AppInfoIndexResp{
+  repeated  AppInfo list =1;
+  int64 total = 2;
+}
 
 
 //----------------------------------------------------------------------------------------------
 
-//角色相关信息
-message RoleCreateReq{
-  string name= 1;          // 角色名称
-  string remark = 2;       // 备注
-  int64  status = 3;       // 状态 1:启用,2:禁用
-}
 
-message RoleIndexReq{
+message RoleInfoIndexReq{
   PageInfo page = 1;//分页信息
   string name = 2;
   int64 status = 3;
 }
 
-message RoleIndexResp{
-  repeated  RoleIndexData list =1;
+message RoleInfoIndexResp{
+  repeated  RoleInfo list =1;
   int64 total = 2;
 }
 
-message RoleIndexData{
+message RoleInfo{
   int64   id = 1;
   string  name = 2;
-  string  remark = 3;
+  string  desc = 3;
   int64   createdTime  =4;
   int64   status = 5;
-  repeated int64  roleMenuID = 6;
 }
 
-message RoleUpdateReq{
+
+
+message RoleAppUpdateReq{
   int64 id = 1;
-  string name = 2;
-  string remark = 3;
-  int64 status = 4;
+  repeated string appCodes = 2;
 }
 
-message RoleDeleteReq{
-  int64 id = 1;
-}
-message RoleMenuUpdateReq{
-  int64 id = 1;
-  repeated int64 menuID = 2;
-}
-
-//菜单相关信息
-message MenuCreateReq{
-  string name = 1;
-  int64 parentID = 2;
-  int64 type = 3;
-  string path = 4;
-  string component = 5;
-  string icon = 6;
-  string redirect = 7;
-  int64 order = 8;
-  int64 hideInMenu = 9;
-  int64 role = 10;
-}
-
-message MenuIndexReq{
-  int64  role = 1;
+message MenuInfoIndexReq{
+  string  appCode = 1;
   string name = 2;
   string path = 3;
 
 }
-message MenuData{
+message MenuInfo{
   int64 id = 1;
   string name = 2;
   int64 parentID = 3;
@@ -532,26 +664,12 @@ message MenuData{
   int64 createTime = 9;
   int64 order = 10;
   int64 hideInMenu = 11;
+  string appCode = 12;
 }
-message MenuIndexResp{
-  repeated MenuData list = 1;
-}
-message MenuUpdateReq{
-  int64 id = 1;
-  string name = 2;
-  int64 parentID = 3;
-  int64 type = 4;
-  string path = 5;
-  string component = 6;
-  string icon = 7;
-  string redirect = 8;
-  int64 order = 9;
-  int64 hideInMenu = 10;
+message MenuInfoIndexResp{
+  repeated MenuInfo list = 1;
 }
 
-message MenuDeleteReq{
-  int64 id = 1;
-}
 
 message Map{
   string mode = 1;       //坐标系 默认百度坐标系
@@ -561,42 +679,27 @@ message configResp{
   Map map = 1;           //设备地图相关配置
 }
 
-//接口相关信息
-message ApiCreateReq{
-  string route = 1;         // 接口路由
-  int64 method = 2;         // 接口请求方式: POST GET
-  string group = 3;         // 接口分组
-  string name = 4;          // 接口名称
-  int64  businessType = 5;  // 业务类型（1新增 2修改 3删除 4查询 5其它)
-}
-
-message ApiIndexReq{
+message ApiInfoIndexReq{
   PageInfo page = 1;// 分页信息
   string route = 2; // 接口路由
-  int64 method = 3; // 接口请求方式: POST GET
+  string method = 3; // 接口请求方式: POST GET
   string group = 4; // 接口分组
   string name = 5;  // 接口名称
+  string appCode = 7;
 }
-message ApiData{
+message ApiInfo{
   int64 id = 1;            // 接口编号
   string route = 2;        // 接口路由
-  int64 method = 3;        // 接口请求方式: POST GET
+  string method = 3;        // 接口请求方式: POST GET
   string group = 4;        // 接口分组
   string name = 5;         // 接口名称
   int64  businessType = 6; // 业务类型（1新增 2修改 3删除 4查询 5其它)
+  string appCode = 7;
 }
 
-message ApiIndexResp{
-  repeated ApiData list = 1; // 接口列表数据
+message ApiInfoIndexResp{
+  repeated ApiInfo list = 1; // 接口列表数据
   int64 total = 2;           // 接口列表总记录数
-}
-
-message ApiUpdateReq{
-  int64 id = 1;            // 接口编号
-  string route = 2;        // 接口路由
-  int64 method = 3;        // 接口请求方式: POST GET
-  string group = 4;        // 接口分组
-  string name = 5;         // 接口名称
 }
 
 message ApiDeleteReq{

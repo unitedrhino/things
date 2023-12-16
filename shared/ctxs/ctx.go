@@ -2,16 +2,18 @@ package ctxs
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/utils/cast"
+	"github.com/i-Things/things/shared/utils"
 )
 
 type UserCtx struct {
-	IsOpen    bool   //是否开放认证用户
-	UserID    int64  //用户id（开放认证用户值为0）
-	Role      int64  //用户角色（开放认证用户值为0）
-	IsAllData bool   //是否所有数据权限（开放认证用户值为true）
-	IP        string //用户的ip地址
-	Os        string //操作系统
+	IsOpen     bool //是否开放认证用户
+	AppCode    string
+	TenantCode string //租户Code
+	UserID     int64  //用户id（开放认证用户值为0）
+	RoleID     int64  //用户使用的角色（开放认证用户值为0）
+	IsAllData  bool   //是否所有数据权限（开放认证用户值为true）
+	IP         string //用户的ip地址
+	Os         string //操作系统
 	InnerCtx
 }
 
@@ -85,14 +87,14 @@ func GetMetaProjectID(ctx context.Context) int64 {
 	if len(items) == 0 {
 		return 0
 	} else {
-		return cast.ToInt64(items[0])
+		return utils.ToInt64(items[0])
 	}
 }
 
 // 指定项目id（企业版功能）
 func SetMetaProjectID(ctx context.Context, projectID int64) {
 	mc := GetMetaCtx(ctx)
-	projectIDStr := cast.ToString(projectID)
+	projectIDStr := utils.ToString(projectID)
 	mc[string(MetaFieldProjectID)] = []string{projectIDStr}
 }
 

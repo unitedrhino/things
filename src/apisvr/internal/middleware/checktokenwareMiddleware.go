@@ -6,19 +6,20 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
-	role "github.com/i-Things/things/src/syssvr/client/role"
-	user "github.com/i-Things/things/src/syssvr/client/user"
+	role "github.com/i-Things/things/src/syssvr/client/rolemanage"
+	user "github.com/i-Things/things/src/syssvr/client/usermanage"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 )
 
 type CheckTokenWareMiddleware struct {
 	cfg     config.Config
-	UserRpc user.User
-	AuthRpc role.Role
+	UserRpc user.UserManage
+	AuthRpc role.RoleManage
 }
 
-func NewCheckTokenWareMiddleware(cfg config.Config, UserRpc user.User, AuthRpc role.Role) *CheckTokenWareMiddleware {
+func NewCheckTokenWareMiddleware(cfg config.Config, UserRpc user.UserManage, AuthRpc role.RoleManage) *CheckTokenWareMiddleware {
 	return &CheckTokenWareMiddleware{cfg: cfg, UserRpc: UserRpc, AuthRpc: AuthRpc}
 }
 
@@ -35,6 +36,9 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 				http.Error(w, "开放请求失败："+err.Error(), http.StatusUnauthorized)
 				return
 			}
+			//注入 用户信息 到 ctx
+			ctx2 := ctxs.SetUserCtx(r.Context(), userCtx)
+			r = r.WithContext(ctx2)
 		} else { //如果是用户请求
 			//校验 Jwt Token
 			userCtx, err = m.UserAuth(w, r)
@@ -43,12 +47,14 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 				http.Error(w, "用户请求失败："+err.Error(), http.StatusUnauthorized)
 				return
 			}
-
+			//注入 用户信息 到 ctx
+			ctx2 := ctxs.SetUserCtx(r.Context(), userCtx)
+			r = r.WithContext(ctx2)
 			//校验 Casbin Rule
 			_, err = m.AuthRpc.RoleApiAuth(r.Context(), &user.RoleApiAuthReq{
-				RoleID: userCtx.Role,
+				RoleID: userCtx.RoleID,
 				Path:   r.URL.Path,
-				Method: utils.MethodToNum(r.Method),
+				Method: r.Method,
 			})
 			if err != nil {
 				logx.WithContext(r.Context()).Errorf("%s.AuthApiCheck error=%s", utils.FuncName(), err)
@@ -56,10 +62,6 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 				return
 			}
 		}
-
-		//注入 用户信息 到 ctx
-		ctx2 := ctxs.SetUserCtx(r.Context(), userCtx)
-		r = r.WithContext(ctx2)
 
 		next(w, r)
 
@@ -85,7 +87,7 @@ func (m *CheckTokenWareMiddleware) OpenAuth(w http.ResponseWriter, r *http.Reque
 	return isOpen, &ctxs.UserCtx{
 		IsOpen:    isOpen,
 		UserID:    0,
-		Role:      0,
+		RoleID:    0,
 		IsAllData: true,
 		IP:        strIP,
 		Os:        r.Header.Get("User-Agent"),
@@ -101,6 +103,10 @@ func (m *CheckTokenWareMiddleware) UserAuth(w http.ResponseWriter, r *http.Reque
 			utils.FuncName(), strIP)
 		return nil, errors.NotLogin
 	}
+	strRoleID := r.Header.Get(ctxs.UserRoleKey)
+	roleID := cast.ToInt64(strRoleID)
+
+	appCode := r.Header.Get(ctxs.UserAppCodeKey)
 
 	resp, err := m.UserRpc.UserCheckToken(r.Context(), &user.UserCheckTokenReq{
 		Ip:    strIP,
@@ -117,15 +123,24 @@ func (m *CheckTokenWareMiddleware) UserAuth(w http.ResponseWriter, r *http.Reque
 		w.Header().Set("Access-Control-Expose-Headers", ctxs.UserSetTokenKey)
 		w.Header().Set(ctxs.UserSetTokenKey, resp.Token)
 	}
-	logx.WithContext(r.Context()).Infof("%s.CheckTokenWare ip:%v in.token=%s checkResp:%v",
-		utils.FuncName(), strIP, strToken, utils.Fmt(resp))
-
+	logx.WithContext(r.Context()).Infof("%s.CheckTokenWare ip:%v in.token=%s roleID：%v checkResp:%v",
+		utils.FuncName(), strIP, strToken, strRoleID, utils.Fmt(resp))
+	if roleID != 0 { //如果传了角色
+		if !utils.SliceIn(roleID, resp.RoleIDs...) {
+			err := errors.Parameter.AddMsgf("所选角色无权限")
+			return nil, err
+		}
+	} else {
+		roleID = resp.RoleIDs[0]
+	}
 	return &ctxs.UserCtx{
-		IsOpen:    false,
-		UserID:    resp.UserID,
-		Role:      resp.Role,
-		IsAllData: resp.IsAllData == def.True,
-		IP:        strIP,
-		Os:        r.Header.Get("User-Agent"),
+		IsOpen:     false,
+		TenantCode: resp.TenantCode,
+		AppCode:    appCode,
+		UserID:     resp.UserID,
+		RoleID:     roleID,
+		IsAllData:  resp.IsAllData == def.True,
+		IP:         strIP,
+		Os:         r.Header.Get("User-Agent"),
 	}, nil
 }

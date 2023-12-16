@@ -16,23 +16,33 @@ func NewUserInfoRepo(in any) *UserInfoRepo {
 }
 
 type UserInfoFilter struct {
-	UserNames []string
-	UserName  string
-	Phone     string
-	Email     string
-	Accounts  []string //账号查询 非模糊查询
-	Wechat    string
+	UserIDs       []int64
+	TenantCode    string
+	UserNames     []string
+	UserName      string
+	Phone         string
+	Email         string
+	Accounts      []string //账号查询 非模糊查询
+	WechatUnionID string
+	WechatOpenID  string
+	WithRoles     bool
 }
 
 func (p UserInfoRepo) accountsFilter(db *gorm.DB, accounts []string) *gorm.DB {
-	db = db.Where("user_name in ?", accounts).
+	db = db.Where(db.Or("user_name in ?", accounts).
 		Or("email in ?", accounts).
-		Or("phone in ?", accounts)
+		Or("phone in ?", accounts))
 	return db
 }
 
 func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.WithRoles {
+		db = db.Preload("Roles")
+	}
+	if len(f.UserIDs) != 0 {
+		db = db.Where("user_id in?", f.UserIDs)
+	}
 	if len(f.UserNames) != 0 {
 		db = db.Where("user_name in ?", f.UserNames)
 	}
@@ -48,8 +58,21 @@ func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB 
 	if f.Email != "" {
 		db = db.Where("email like ?", "%"+f.Email+"%")
 	}
-	if f.Wechat != "" {
-		db = db.Where("wechat = ?", f.Wechat)
+	wechatOr := db
+	var isWechat bool
+	if f.WechatUnionID != "" {
+		isWechat = true
+		wechatOr = wechatOr.Or("wechat_union_id = ?", f.WechatUnionID)
+	}
+	if f.WechatOpenID != "" {
+		isWechat = true
+		wechatOr = wechatOr.Or("wechat_open_id = ?", f.WechatOpenID)
+	}
+	if isWechat {
+		db = db.Where(wechatOr)
+	}
+	if f.TenantCode != "" {
+		db = db.Where("tenant_code =?", f.TenantCode)
 	}
 	return db
 }

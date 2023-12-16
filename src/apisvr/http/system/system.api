@@ -1,0 +1,56 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+
+type (
+    TenantInfo struct {
+        ID int64 `json:"id,optional"`                                      // 接口编号
+        Code string `json:"code"`                               // 应用编号
+        Name string `json:"name,optional"`                                 // 接口名称
+        AdminUserID int64   `json:"adminUserID,optional,string"`
+        Desc *string `json:"desc,optional"`                       // 备注
+        BaseUrl string `json:"baseUrl,optional"`                               // 应用编号
+        LogoUrl string `json:"logoUrl,optional"`
+    }
+
+    AppInfo struct {
+        ID int64 `json:"id,optional"`                                      // 接口编号
+        Code string `json:"code"`                               // 应用编号
+        Name string `json:"name,optional"`                                 // 接口名称
+        Desc *string `json:"desc,optional"`                       // 备注
+        BaseUrl string `json:"baseUrl,optional"`                               // 应用编号
+        LogoUrl string `json:"logoUrl,optional"`
+    }
+    MenuInfo struct {
+        ID int64 `json:"id,optional"`                                  // 编号
+        AppCode string `json:"appCode"`                               // 应用编号
+        Name string `json:"name,optional"`                             // 菜单名称
+        ParentID int64 `json:"parentID,optional"`                      // 父菜单ID，一级菜单为1
+        Type int64 `json:"type,optional"`                     // 类型   1. 内部页面   2，iframe内嵌  3，外部链接跳转 4，微前端
+        Path string `json:"path,optional"`                    // 系统的path
+        Component string `json:"component,optional"`          // 页面
+        Icon string `json:"icon,optional"`                    // 菜单图标
+        Redirect string `json:"redirect,optional"`            // 路由重定向
+        Order int64 `json:"order,optional"`                            // 左侧table排序序号
+        HideInMenu int64 `json:"hideInMenu,optional"`         // 菜单是否隐藏 1：是 2：否
+        CreateTime int64 `json:"createTime,optional"`           // 创建时间
+    }
+
+    ProjectInfo struct {
+        CreatedTime int64 `json:"createdTime,optional,string"` //创建时间（只读）
+        ProjectID int64 `json:"projectID,string,optional"`     //项目id（只读）
+        ProjectName string `json:"projectName,optional"`       //项目名称（读写）
+        CompanyName *string `json:"companyName,optional"`      //项目所属公司名称（读写）
+        UserID         int64  `json:"userID,string,optional"`  // 管理员用户id（读写）
+        Region *string `json:"region,optional"`                //项目省市区县（读写）
+        Address *string `json:"address,optional"`              //项目详细地址（读写）
+        Desc *string `json:"desc,optional"`                    //项目备注（读写）
+    }
+)

@@ -3,6 +3,7 @@ package logic
 import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
@@ -53,4 +54,20 @@ func ToStorePoint(point *sys.Point) stores.Point {
 		return stores.Point{Longitude: 0, Latitude: 0}
 	}
 	return stores.Point{Longitude: point.Longitude, Latitude: point.Latitude}
+}
+
+func MenuInfoToPb(ui *relationDB.SysMenuInfo) *sys.MenuInfo {
+	return &sys.MenuInfo{
+		Id:         ui.ID,
+		Name:       ui.Name,
+		ParentID:   ui.ParentID,
+		Type:       ui.Type,
+		Path:       ui.Path,
+		Component:  ui.Component,
+		Icon:       ui.Icon,
+		Redirect:   ui.Redirect,
+		CreateTime: ui.CreatedTime.Unix(),
+		Order:      ui.Order,
+		HideInMenu: ui.HideInMenu,
+	}
 }

@@ -19,533 +19,607 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	User_UserCreate_FullMethodName                 = "/sys.User/userCreate"
-	User_UserIndex_FullMethodName                  = "/sys.User/userIndex"
-	User_UserUpdate_FullMethodName                 = "/sys.User/userUpdate"
-	User_UserRead_FullMethodName                   = "/sys.User/userRead"
-	User_UserDelete_FullMethodName                 = "/sys.User/userDelete"
-	User_UserLogin_FullMethodName                  = "/sys.User/userLogin"
-	User_UserCheckToken_FullMethodName             = "/sys.User/userCheckToken"
-	User_UserRegister1_FullMethodName              = "/sys.User/userRegister1"
-	User_UserRegister2_FullMethodName              = "/sys.User/userRegister2"
-	User_UserAuthProjectMultiUpdate_FullMethodName = "/sys.User/userAuthProjectMultiUpdate"
-	User_UserAuthProjectIndex_FullMethodName       = "/sys.User/userAuthProjectIndex"
-	User_UserAuthAreaMultiUpdate_FullMethodName    = "/sys.User/userAuthAreaMultiUpdate"
-	User_UserAuthAreaIndex_FullMethodName          = "/sys.User/userAuthAreaIndex"
+	UserManage_UserInfoCreate_FullMethodName             = "/sys.UserManage/userInfoCreate"
+	UserManage_UserInfoIndex_FullMethodName              = "/sys.UserManage/userInfoIndex"
+	UserManage_UserInfoUpdate_FullMethodName             = "/sys.UserManage/userInfoUpdate"
+	UserManage_UserInfoRead_FullMethodName               = "/sys.UserManage/userInfoRead"
+	UserManage_UserInfoDelete_FullMethodName             = "/sys.UserManage/userInfoDelete"
+	UserManage_UserLogin_FullMethodName                  = "/sys.UserManage/userLogin"
+	UserManage_UserCheckToken_FullMethodName             = "/sys.UserManage/userCheckToken"
+	UserManage_UserRegister1_FullMethodName              = "/sys.UserManage/userRegister1"
+	UserManage_UserRegister2_FullMethodName              = "/sys.UserManage/userRegister2"
+	UserManage_UserRoleIndex_FullMethodName              = "/sys.UserManage/userRoleIndex"
+	UserManage_UserRoleMultiUpdate_FullMethodName        = "/sys.UserManage/userRoleMultiUpdate"
+	UserManage_UserAuthProjectMultiUpdate_FullMethodName = "/sys.UserManage/userAuthProjectMultiUpdate"
+	UserManage_UserAuthProjectIndex_FullMethodName       = "/sys.UserManage/userAuthProjectIndex"
+	UserManage_UserAuthAreaMultiUpdate_FullMethodName    = "/sys.UserManage/userAuthAreaMultiUpdate"
+	UserManage_UserAuthAreaIndex_FullMethodName          = "/sys.UserManage/userAuthAreaIndex"
 )
 
-// UserClient is the client API for User service.
+// UserManageClient is the client API for UserManage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type UserClient interface {
-	UserCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error)
-	UserIndex(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error)
-	UserUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error)
-	UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserInfo, error)
-	UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error)
+type UserManageClient interface {
+	UserInfoCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error)
+	UserInfoIndex(ctx context.Context, in *UserInfoIndexReq, opts ...grpc.CallOption) (*UserInfoIndexResp, error)
+	UserInfoUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error)
+	UserInfoRead(ctx context.Context, in *UserInfoReadReq, opts ...grpc.CallOption) (*UserInfo, error)
+	UserInfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
 	UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
 	UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error)
 	UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error)
+	UserRoleIndex(ctx context.Context, in *UserRoleIndexReq, opts ...grpc.CallOption) (*UserRoleIndexResp, error)
+	UserRoleMultiUpdate(ctx context.Context, in *UserRoleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error)
 	UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error)
 }
 
-type userClient struct {
+type userManageClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewUserClient(cc grpc.ClientConnInterface) UserClient {
-	return &userClient{cc}
+func NewUserManageClient(cc grpc.ClientConnInterface) UserManageClient {
+	return &userManageClient{cc}
 }
 
-func (c *userClient) UserCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error) {
+func (c *userManageClient) UserInfoCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	out := new(UserCreateResp)
-	err := c.cc.Invoke(ctx, User_UserCreate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserIndex(ctx context.Context, in *UserIndexReq, opts ...grpc.CallOption) (*UserIndexResp, error) {
-	out := new(UserIndexResp)
-	err := c.cc.Invoke(ctx, User_UserIndex_FullMethodName, in, out, opts...)
+func (c *userManageClient) UserInfoIndex(ctx context.Context, in *UserInfoIndexReq, opts ...grpc.CallOption) (*UserInfoIndexResp, error) {
+	out := new(UserInfoIndexResp)
+	err := c.cc.Invoke(ctx, UserManage_UserInfoIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error) {
+func (c *userManageClient) UserInfoUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, User_UserUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserRead(ctx context.Context, in *UserReadReq, opts ...grpc.CallOption) (*UserInfo, error) {
+func (c *userManageClient) UserInfoRead(ctx context.Context, in *UserInfoReadReq, opts ...grpc.CallOption) (*UserInfo, error) {
 	out := new(UserInfo)
-	err := c.cc.Invoke(ctx, User_UserRead_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserDelete(ctx context.Context, in *UserDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *userManageClient) UserInfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, User_UserDelete_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error) {
+func (c *userManageClient) UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error) {
 	out := new(UserLoginResp)
-	err := c.cc.Invoke(ctx, User_UserLogin_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserLogin_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error) {
+func (c *userManageClient) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error) {
 	out := new(UserCheckTokenResp)
-	err := c.cc.Invoke(ctx, User_UserCheckToken_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserCheckToken_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
+func (c *userManageClient) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
 	out := new(UserRegister1Resp)
-	err := c.cc.Invoke(ctx, User_UserRegister1_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserRegister1_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
+func (c *userManageClient) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, User_UserRegister2_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserRegister2_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *userManageClient) UserRoleIndex(ctx context.Context, in *UserRoleIndexReq, opts ...grpc.CallOption) (*UserRoleIndexResp, error) {
+	out := new(UserRoleIndexResp)
+	err := c.cc.Invoke(ctx, UserManage_UserRoleIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManageClient) UserRoleMultiUpdate(ctx context.Context, in *UserRoleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, User_UserAuthProjectMultiUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserRoleMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error) {
+func (c *userManageClient) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, UserManage_UserAuthProjectMultiUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManageClient) UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error) {
 	out := new(UserAuthProjectIndexResp)
-	err := c.cc.Invoke(ctx, User_UserAuthProjectIndex_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserAuthProjectIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *userManageClient) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, User_UserAuthAreaMultiUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserAuthAreaMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error) {
+func (c *userManageClient) UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error) {
 	out := new(UserAuthAreaIndexResp)
-	err := c.cc.Invoke(ctx, User_UserAuthAreaIndex_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserAuthAreaIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// UserServer is the server API for User service.
-// All implementations must embed UnimplementedUserServer
+// UserManageServer is the server API for UserManage service.
+// All implementations must embed UnimplementedUserManageServer
 // for forward compatibility
-type UserServer interface {
-	UserCreate(context.Context, *UserInfo) (*UserCreateResp, error)
-	UserIndex(context.Context, *UserIndexReq) (*UserIndexResp, error)
-	UserUpdate(context.Context, *UserInfo) (*Response, error)
-	UserRead(context.Context, *UserReadReq) (*UserInfo, error)
-	UserDelete(context.Context, *UserDeleteReq) (*Response, error)
+type UserManageServer interface {
+	UserInfoCreate(context.Context, *UserInfo) (*UserCreateResp, error)
+	UserInfoIndex(context.Context, *UserInfoIndexReq) (*UserInfoIndexResp, error)
+	UserInfoUpdate(context.Context, *UserInfo) (*Response, error)
+	UserInfoRead(context.Context, *UserInfoReadReq) (*UserInfo, error)
+	UserInfoDelete(context.Context, *UserInfoDeleteReq) (*Response, error)
 	UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error)
 	UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error)
 	UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error)
 	UserRegister2(context.Context, *UserRegister2Req) (*Response, error)
+	UserRoleIndex(context.Context, *UserRoleIndexReq) (*UserRoleIndexResp, error)
+	UserRoleMultiUpdate(context.Context, *UserRoleMultiUpdateReq) (*Response, error)
 	UserAuthProjectMultiUpdate(context.Context, *UserAuthProjectMultiUpdateReq) (*Response, error)
 	UserAuthProjectIndex(context.Context, *UserAuthProjectIndexReq) (*UserAuthProjectIndexResp, error)
 	UserAuthAreaMultiUpdate(context.Context, *UserAuthAreaMultiUpdateReq) (*Response, error)
 	UserAuthAreaIndex(context.Context, *UserAuthAreaIndexReq) (*UserAuthAreaIndexResp, error)
-	mustEmbedUnimplementedUserServer()
+	mustEmbedUnimplementedUserManageServer()
 }
 
-// UnimplementedUserServer must be embedded to have forward compatible implementations.
-type UnimplementedUserServer struct {
+// UnimplementedUserManageServer must be embedded to have forward compatible implementations.
+type UnimplementedUserManageServer struct {
 }
 
-func (UnimplementedUserServer) UserCreate(context.Context, *UserInfo) (*UserCreateResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserCreate not implemented")
+func (UnimplementedUserManageServer) UserInfoCreate(context.Context, *UserInfo) (*UserCreateResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserInfoCreate not implemented")
 }
-func (UnimplementedUserServer) UserIndex(context.Context, *UserIndexReq) (*UserIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserIndex not implemented")
+func (UnimplementedUserManageServer) UserInfoIndex(context.Context, *UserInfoIndexReq) (*UserInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserInfoIndex not implemented")
 }
-func (UnimplementedUserServer) UserUpdate(context.Context, *UserInfo) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserUpdate not implemented")
+func (UnimplementedUserManageServer) UserInfoUpdate(context.Context, *UserInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserInfoUpdate not implemented")
 }
-func (UnimplementedUserServer) UserRead(context.Context, *UserReadReq) (*UserInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserRead not implemented")
+func (UnimplementedUserManageServer) UserInfoRead(context.Context, *UserInfoReadReq) (*UserInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserInfoRead not implemented")
 }
-func (UnimplementedUserServer) UserDelete(context.Context, *UserDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserDelete not implemented")
+func (UnimplementedUserManageServer) UserInfoDelete(context.Context, *UserInfoDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserInfoDelete not implemented")
 }
-func (UnimplementedUserServer) UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error) {
+func (UnimplementedUserManageServer) UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
 }
-func (UnimplementedUserServer) UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error) {
+func (UnimplementedUserManageServer) UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCheckToken not implemented")
 }
-func (UnimplementedUserServer) UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error) {
+func (UnimplementedUserManageServer) UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserRegister1 not implemented")
 }
-func (UnimplementedUserServer) UserRegister2(context.Context, *UserRegister2Req) (*Response, error) {
+func (UnimplementedUserManageServer) UserRegister2(context.Context, *UserRegister2Req) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserRegister2 not implemented")
 }
-func (UnimplementedUserServer) UserAuthProjectMultiUpdate(context.Context, *UserAuthProjectMultiUpdateReq) (*Response, error) {
+func (UnimplementedUserManageServer) UserRoleIndex(context.Context, *UserRoleIndexReq) (*UserRoleIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRoleIndex not implemented")
+}
+func (UnimplementedUserManageServer) UserRoleMultiUpdate(context.Context, *UserRoleMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRoleMultiUpdate not implemented")
+}
+func (UnimplementedUserManageServer) UserAuthProjectMultiUpdate(context.Context, *UserAuthProjectMultiUpdateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserAuthProjectMultiUpdate not implemented")
 }
-func (UnimplementedUserServer) UserAuthProjectIndex(context.Context, *UserAuthProjectIndexReq) (*UserAuthProjectIndexResp, error) {
+func (UnimplementedUserManageServer) UserAuthProjectIndex(context.Context, *UserAuthProjectIndexReq) (*UserAuthProjectIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserAuthProjectIndex not implemented")
 }
-func (UnimplementedUserServer) UserAuthAreaMultiUpdate(context.Context, *UserAuthAreaMultiUpdateReq) (*Response, error) {
+func (UnimplementedUserManageServer) UserAuthAreaMultiUpdate(context.Context, *UserAuthAreaMultiUpdateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserAuthAreaMultiUpdate not implemented")
 }
-func (UnimplementedUserServer) UserAuthAreaIndex(context.Context, *UserAuthAreaIndexReq) (*UserAuthAreaIndexResp, error) {
+func (UnimplementedUserManageServer) UserAuthAreaIndex(context.Context, *UserAuthAreaIndexReq) (*UserAuthAreaIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserAuthAreaIndex not implemented")
 }
-func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
+func (UnimplementedUserManageServer) mustEmbedUnimplementedUserManageServer() {}
 
-// UnsafeUserServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to UserServer will
+// UnsafeUserManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserManageServer will
 // result in compilation errors.
-type UnsafeUserServer interface {
-	mustEmbedUnimplementedUserServer()
+type UnsafeUserManageServer interface {
+	mustEmbedUnimplementedUserManageServer()
 }
 
-func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
-	s.RegisterService(&User_ServiceDesc, srv)
+func RegisterUserManageServer(s grpc.ServiceRegistrar, srv UserManageServer) {
+	s.RegisterService(&UserManage_ServiceDesc, srv)
 }
 
-func _User_UserCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserCreate(ctx, in)
+		return srv.(UserManageServer).UserInfoCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserCreate_FullMethodName,
+		FullMethod: UserManage_UserInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserCreate(ctx, req.(*UserInfo))
+		return srv.(UserManageServer).UserInfoCreate(ctx, req.(*UserInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserIndexReq)
+func _UserManage_UserInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserIndex(ctx, in)
+		return srv.(UserManageServer).UserInfoIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserIndex_FullMethodName,
+		FullMethod: UserManage_UserInfoIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserIndex(ctx, req.(*UserIndexReq))
+		return srv.(UserManageServer).UserInfoIndex(ctx, req.(*UserInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserUpdate(ctx, in)
+		return srv.(UserManageServer).UserInfoUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserUpdate_FullMethodName,
+		FullMethod: UserManage_UserInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserUpdate(ctx, req.(*UserInfo))
+		return srv.(UserManageServer).UserInfoUpdate(ctx, req.(*UserInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserReadReq)
+func _UserManage_UserInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfoReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserRead(ctx, in)
+		return srv.(UserManageServer).UserInfoRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserRead_FullMethodName,
+		FullMethod: UserManage_UserInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserRead(ctx, req.(*UserReadReq))
+		return srv.(UserManageServer).UserInfoRead(ctx, req.(*UserInfoReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserDeleteReq)
+func _UserManage_UserInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfoDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserDelete(ctx, in)
+		return srv.(UserManageServer).UserInfoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserDelete_FullMethodName,
+		FullMethod: UserManage_UserInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserDelete(ctx, req.(*UserDeleteReq))
+		return srv.(UserManageServer).UserInfoDelete(ctx, req.(*UserInfoDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserLoginReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserLogin(ctx, in)
+		return srv.(UserManageServer).UserLogin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserLogin_FullMethodName,
+		FullMethod: UserManage_UserLogin_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserLogin(ctx, req.(*UserLoginReq))
+		return srv.(UserManageServer).UserLogin(ctx, req.(*UserLoginReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserCheckToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserCheckToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserCheckTokenReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserCheckToken(ctx, in)
+		return srv.(UserManageServer).UserCheckToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserCheckToken_FullMethodName,
+		FullMethod: UserManage_UserCheckToken_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserCheckToken(ctx, req.(*UserCheckTokenReq))
+		return srv.(UserManageServer).UserCheckToken(ctx, req.(*UserCheckTokenReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserRegister1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserRegister1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserRegister1Req)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserRegister1(ctx, in)
+		return srv.(UserManageServer).UserRegister1(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserRegister1_FullMethodName,
+		FullMethod: UserManage_UserRegister1_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserRegister1(ctx, req.(*UserRegister1Req))
+		return srv.(UserManageServer).UserRegister1(ctx, req.(*UserRegister1Req))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserRegister2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserRegister2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserRegister2Req)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserRegister2(ctx, in)
+		return srv.(UserManageServer).UserRegister2(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserRegister2_FullMethodName,
+		FullMethod: UserManage_UserRegister2_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserRegister2(ctx, req.(*UserRegister2Req))
+		return srv.(UserManageServer).UserRegister2(ctx, req.(*UserRegister2Req))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserAuthProjectMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserRoleIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRoleIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManageServer).UserRoleIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserManage_UserRoleIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManageServer).UserRoleIndex(ctx, req.(*UserRoleIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManage_UserRoleMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRoleMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManageServer).UserRoleMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserManage_UserRoleMultiUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManageServer).UserRoleMultiUpdate(ctx, req.(*UserRoleMultiUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManage_UserAuthProjectMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserAuthProjectMultiUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserAuthProjectMultiUpdate(ctx, in)
+		return srv.(UserManageServer).UserAuthProjectMultiUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserAuthProjectMultiUpdate_FullMethodName,
+		FullMethod: UserManage_UserAuthProjectMultiUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserAuthProjectMultiUpdate(ctx, req.(*UserAuthProjectMultiUpdateReq))
+		return srv.(UserManageServer).UserAuthProjectMultiUpdate(ctx, req.(*UserAuthProjectMultiUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserAuthProjectIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserAuthProjectIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserAuthProjectIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserAuthProjectIndex(ctx, in)
+		return srv.(UserManageServer).UserAuthProjectIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserAuthProjectIndex_FullMethodName,
+		FullMethod: UserManage_UserAuthProjectIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserAuthProjectIndex(ctx, req.(*UserAuthProjectIndexReq))
+		return srv.(UserManageServer).UserAuthProjectIndex(ctx, req.(*UserAuthProjectIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserAuthAreaMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserAuthAreaMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserAuthAreaMultiUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserAuthAreaMultiUpdate(ctx, in)
+		return srv.(UserManageServer).UserAuthAreaMultiUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserAuthAreaMultiUpdate_FullMethodName,
+		FullMethod: UserManage_UserAuthAreaMultiUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserAuthAreaMultiUpdate(ctx, req.(*UserAuthAreaMultiUpdateReq))
+		return srv.(UserManageServer).UserAuthAreaMultiUpdate(ctx, req.(*UserAuthAreaMultiUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserAuthAreaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManage_UserAuthAreaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserAuthAreaIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserAuthAreaIndex(ctx, in)
+		return srv.(UserManageServer).UserAuthAreaIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserAuthAreaIndex_FullMethodName,
+		FullMethod: UserManage_UserAuthAreaIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserAuthAreaIndex(ctx, req.(*UserAuthAreaIndexReq))
+		return srv.(UserManageServer).UserAuthAreaIndex(ctx, req.(*UserAuthAreaIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// User_ServiceDesc is the grpc.ServiceDesc for User service.
+// UserManage_ServiceDesc is the grpc.ServiceDesc for UserManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var User_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sys.User",
-	HandlerType: (*UserServer)(nil),
+var UserManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.UserManage",
+	HandlerType: (*UserManageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "userCreate",
-			Handler:    _User_UserCreate_Handler,
+			MethodName: "userInfoCreate",
+			Handler:    _UserManage_UserInfoCreate_Handler,
 		},
 		{
-			MethodName: "userIndex",
-			Handler:    _User_UserIndex_Handler,
+			MethodName: "userInfoIndex",
+			Handler:    _UserManage_UserInfoIndex_Handler,
 		},
 		{
-			MethodName: "userUpdate",
-			Handler:    _User_UserUpdate_Handler,
+			MethodName: "userInfoUpdate",
+			Handler:    _UserManage_UserInfoUpdate_Handler,
 		},
 		{
-			MethodName: "userRead",
-			Handler:    _User_UserRead_Handler,
+			MethodName: "userInfoRead",
+			Handler:    _UserManage_UserInfoRead_Handler,
 		},
 		{
-			MethodName: "userDelete",
-			Handler:    _User_UserDelete_Handler,
+			MethodName: "userInfoDelete",
+			Handler:    _UserManage_UserInfoDelete_Handler,
 		},
 		{
 			MethodName: "userLogin",
-			Handler:    _User_UserLogin_Handler,
+			Handler:    _UserManage_UserLogin_Handler,
 		},
 		{
 			MethodName: "userCheckToken",
-			Handler:    _User_UserCheckToken_Handler,
+			Handler:    _UserManage_UserCheckToken_Handler,
 		},
 		{
 			MethodName: "userRegister1",
-			Handler:    _User_UserRegister1_Handler,
+			Handler:    _UserManage_UserRegister1_Handler,
 		},
 		{
 			MethodName: "userRegister2",
-			Handler:    _User_UserRegister2_Handler,
+			Handler:    _UserManage_UserRegister2_Handler,
+		},
+		{
+			MethodName: "userRoleIndex",
+			Handler:    _UserManage_UserRoleIndex_Handler,
+		},
+		{
+			MethodName: "userRoleMultiUpdate",
+			Handler:    _UserManage_UserRoleMultiUpdate_Handler,
 		},
 		{
 			MethodName: "userAuthProjectMultiUpdate",
-			Handler:    _User_UserAuthProjectMultiUpdate_Handler,
+			Handler:    _UserManage_UserAuthProjectMultiUpdate_Handler,
 		},
 		{
 			MethodName: "userAuthProjectIndex",
-			Handler:    _User_UserAuthProjectIndex_Handler,
+			Handler:    _UserManage_UserAuthProjectIndex_Handler,
 		},
 		{
 			MethodName: "userAuthAreaMultiUpdate",
-			Handler:    _User_UserAuthAreaMultiUpdate_Handler,
+			Handler:    _UserManage_UserAuthAreaMultiUpdate_Handler,
 		},
 		{
 			MethodName: "userAuthAreaIndex",
-			Handler:    _User_UserAuthAreaIndex_Handler,
+			Handler:    _UserManage_UserAuthAreaIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -553,348 +627,459 @@ var User_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	Role_RoleCreate_FullMethodName         = "/sys.Role/roleCreate"
-	Role_RoleIndex_FullMethodName          = "/sys.Role/roleIndex"
-	Role_RoleUpdate_FullMethodName         = "/sys.Role/roleUpdate"
-	Role_RoleDelete_FullMethodName         = "/sys.Role/roleDelete"
-	Role_RoleMenuUpdate_FullMethodName     = "/sys.Role/roleMenuUpdate"
-	Role_RoleApiAuth_FullMethodName        = "/sys.Role/roleApiAuth"
-	Role_RoleApiMultiUpdate_FullMethodName = "/sys.Role/roleApiMultiUpdate"
-	Role_RoleApiIndex_FullMethodName       = "/sys.Role/roleApiIndex"
+	RoleManage_RoleInfoCreate_FullMethodName      = "/sys.RoleManage/roleInfoCreate"
+	RoleManage_RoleInfoIndex_FullMethodName       = "/sys.RoleManage/roleInfoIndex"
+	RoleManage_RoleInfoUpdate_FullMethodName      = "/sys.RoleManage/roleInfoUpdate"
+	RoleManage_RoleInfoDelete_FullMethodName      = "/sys.RoleManage/roleInfoDelete"
+	RoleManage_RoleMenuIndex_FullMethodName       = "/sys.RoleManage/roleMenuIndex"
+	RoleManage_RoleMenuMultiUpdate_FullMethodName = "/sys.RoleManage/roleMenuMultiUpdate"
+	RoleManage_RoleAppIndex_FullMethodName        = "/sys.RoleManage/roleAppIndex"
+	RoleManage_RoleAppMultiUpdate_FullMethodName  = "/sys.RoleManage/roleAppMultiUpdate"
+	RoleManage_RoleApiAuth_FullMethodName         = "/sys.RoleManage/roleApiAuth"
+	RoleManage_RoleApiMultiUpdate_FullMethodName  = "/sys.RoleManage/roleApiMultiUpdate"
+	RoleManage_RoleApiIndex_FullMethodName        = "/sys.RoleManage/roleApiIndex"
 )
 
-// RoleClient is the client API for Role service.
+// RoleManageClient is the client API for RoleManage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type RoleClient interface {
-	RoleCreate(ctx context.Context, in *RoleCreateReq, opts ...grpc.CallOption) (*Response, error)
-	RoleIndex(ctx context.Context, in *RoleIndexReq, opts ...grpc.CallOption) (*RoleIndexResp, error)
-	RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error)
+type RoleManageClient interface {
+	RoleInfoCreate(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*Response, error)
+	RoleInfoIndex(ctx context.Context, in *RoleInfoIndexReq, opts ...grpc.CallOption) (*RoleInfoIndexResp, error)
+	RoleInfoUpdate(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*Response, error)
+	RoleInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error)
+	RoleMenuIndex(ctx context.Context, in *RoleMenuIndexReq, opts ...grpc.CallOption) (*RoleMenuIndexResp, error)
+	RoleMenuMultiUpdate(ctx context.Context, in *RoleMenuMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	RoleAppIndex(ctx context.Context, in *RoleAppIndexReq, opts ...grpc.CallOption) (*RoleAppIndexResp, error)
+	RoleAppMultiUpdate(ctx context.Context, in *RoleAppMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error)
 	RoleApiMultiUpdate(ctx context.Context, in *RoleApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	RoleApiIndex(ctx context.Context, in *RoleApiIndexReq, opts ...grpc.CallOption) (*RoleApiIndexResp, error)
 }
 
-type roleClient struct {
+type roleManageClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewRoleClient(cc grpc.ClientConnInterface) RoleClient {
-	return &roleClient{cc}
+func NewRoleManageClient(cc grpc.ClientConnInterface) RoleManageClient {
+	return &roleManageClient{cc}
 }
 
-func (c *roleClient) RoleCreate(ctx context.Context, in *RoleCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *roleManageClient) RoleInfoCreate(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Role_RoleCreate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, RoleManage_RoleInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *roleClient) RoleIndex(ctx context.Context, in *RoleIndexReq, opts ...grpc.CallOption) (*RoleIndexResp, error) {
-	out := new(RoleIndexResp)
-	err := c.cc.Invoke(ctx, Role_RoleIndex_FullMethodName, in, out, opts...)
+func (c *roleManageClient) RoleInfoIndex(ctx context.Context, in *RoleInfoIndexReq, opts ...grpc.CallOption) (*RoleInfoIndexResp, error) {
+	out := new(RoleInfoIndexResp)
+	err := c.cc.Invoke(ctx, RoleManage_RoleInfoIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *roleClient) RoleUpdate(ctx context.Context, in *RoleUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *roleManageClient) RoleInfoUpdate(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Role_RoleUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, RoleManage_RoleInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *roleClient) RoleDelete(ctx context.Context, in *RoleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *roleManageClient) RoleInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Role_RoleDelete_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, RoleManage_RoleInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *roleClient) RoleMenuUpdate(ctx context.Context, in *RoleMenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *roleManageClient) RoleMenuIndex(ctx context.Context, in *RoleMenuIndexReq, opts ...grpc.CallOption) (*RoleMenuIndexResp, error) {
+	out := new(RoleMenuIndexResp)
+	err := c.cc.Invoke(ctx, RoleManage_RoleMenuIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleManageClient) RoleMenuMultiUpdate(ctx context.Context, in *RoleMenuMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Role_RoleMenuUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, RoleManage_RoleMenuMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *roleClient) RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *roleManageClient) RoleAppIndex(ctx context.Context, in *RoleAppIndexReq, opts ...grpc.CallOption) (*RoleAppIndexResp, error) {
+	out := new(RoleAppIndexResp)
+	err := c.cc.Invoke(ctx, RoleManage_RoleAppIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleManageClient) RoleAppMultiUpdate(ctx context.Context, in *RoleAppMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Role_RoleApiAuth_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, RoleManage_RoleAppMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *roleClient) RoleApiMultiUpdate(ctx context.Context, in *RoleApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *roleManageClient) RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Role_RoleApiMultiUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, RoleManage_RoleApiAuth_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *roleClient) RoleApiIndex(ctx context.Context, in *RoleApiIndexReq, opts ...grpc.CallOption) (*RoleApiIndexResp, error) {
+func (c *roleManageClient) RoleApiMultiUpdate(ctx context.Context, in *RoleApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, RoleManage_RoleApiMultiUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleManageClient) RoleApiIndex(ctx context.Context, in *RoleApiIndexReq, opts ...grpc.CallOption) (*RoleApiIndexResp, error) {
 	out := new(RoleApiIndexResp)
-	err := c.cc.Invoke(ctx, Role_RoleApiIndex_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, RoleManage_RoleApiIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// RoleServer is the server API for Role service.
-// All implementations must embed UnimplementedRoleServer
+// RoleManageServer is the server API for RoleManage service.
+// All implementations must embed UnimplementedRoleManageServer
 // for forward compatibility
-type RoleServer interface {
-	RoleCreate(context.Context, *RoleCreateReq) (*Response, error)
-	RoleIndex(context.Context, *RoleIndexReq) (*RoleIndexResp, error)
-	RoleUpdate(context.Context, *RoleUpdateReq) (*Response, error)
-	RoleDelete(context.Context, *RoleDeleteReq) (*Response, error)
-	RoleMenuUpdate(context.Context, *RoleMenuUpdateReq) (*Response, error)
+type RoleManageServer interface {
+	RoleInfoCreate(context.Context, *RoleInfo) (*Response, error)
+	RoleInfoIndex(context.Context, *RoleInfoIndexReq) (*RoleInfoIndexResp, error)
+	RoleInfoUpdate(context.Context, *RoleInfo) (*Response, error)
+	RoleInfoDelete(context.Context, *ReqWithID) (*Response, error)
+	RoleMenuIndex(context.Context, *RoleMenuIndexReq) (*RoleMenuIndexResp, error)
+	RoleMenuMultiUpdate(context.Context, *RoleMenuMultiUpdateReq) (*Response, error)
+	RoleAppIndex(context.Context, *RoleAppIndexReq) (*RoleAppIndexResp, error)
+	RoleAppMultiUpdate(context.Context, *RoleAppMultiUpdateReq) (*Response, error)
 	RoleApiAuth(context.Context, *RoleApiAuthReq) (*Response, error)
 	RoleApiMultiUpdate(context.Context, *RoleApiMultiUpdateReq) (*Response, error)
 	RoleApiIndex(context.Context, *RoleApiIndexReq) (*RoleApiIndexResp, error)
-	mustEmbedUnimplementedRoleServer()
+	mustEmbedUnimplementedRoleManageServer()
 }
 
-// UnimplementedRoleServer must be embedded to have forward compatible implementations.
-type UnimplementedRoleServer struct {
+// UnimplementedRoleManageServer must be embedded to have forward compatible implementations.
+type UnimplementedRoleManageServer struct {
 }
 
-func (UnimplementedRoleServer) RoleCreate(context.Context, *RoleCreateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RoleCreate not implemented")
+func (UnimplementedRoleManageServer) RoleInfoCreate(context.Context, *RoleInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleInfoCreate not implemented")
 }
-func (UnimplementedRoleServer) RoleIndex(context.Context, *RoleIndexReq) (*RoleIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RoleIndex not implemented")
+func (UnimplementedRoleManageServer) RoleInfoIndex(context.Context, *RoleInfoIndexReq) (*RoleInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleInfoIndex not implemented")
 }
-func (UnimplementedRoleServer) RoleUpdate(context.Context, *RoleUpdateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RoleUpdate not implemented")
+func (UnimplementedRoleManageServer) RoleInfoUpdate(context.Context, *RoleInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleInfoUpdate not implemented")
 }
-func (UnimplementedRoleServer) RoleDelete(context.Context, *RoleDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RoleDelete not implemented")
+func (UnimplementedRoleManageServer) RoleInfoDelete(context.Context, *ReqWithID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleInfoDelete not implemented")
 }
-func (UnimplementedRoleServer) RoleMenuUpdate(context.Context, *RoleMenuUpdateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RoleMenuUpdate not implemented")
+func (UnimplementedRoleManageServer) RoleMenuIndex(context.Context, *RoleMenuIndexReq) (*RoleMenuIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleMenuIndex not implemented")
 }
-func (UnimplementedRoleServer) RoleApiAuth(context.Context, *RoleApiAuthReq) (*Response, error) {
+func (UnimplementedRoleManageServer) RoleMenuMultiUpdate(context.Context, *RoleMenuMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleMenuMultiUpdate not implemented")
+}
+func (UnimplementedRoleManageServer) RoleAppIndex(context.Context, *RoleAppIndexReq) (*RoleAppIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleAppIndex not implemented")
+}
+func (UnimplementedRoleManageServer) RoleAppMultiUpdate(context.Context, *RoleAppMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleAppMultiUpdate not implemented")
+}
+func (UnimplementedRoleManageServer) RoleApiAuth(context.Context, *RoleApiAuthReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RoleApiAuth not implemented")
 }
-func (UnimplementedRoleServer) RoleApiMultiUpdate(context.Context, *RoleApiMultiUpdateReq) (*Response, error) {
+func (UnimplementedRoleManageServer) RoleApiMultiUpdate(context.Context, *RoleApiMultiUpdateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RoleApiMultiUpdate not implemented")
 }
-func (UnimplementedRoleServer) RoleApiIndex(context.Context, *RoleApiIndexReq) (*RoleApiIndexResp, error) {
+func (UnimplementedRoleManageServer) RoleApiIndex(context.Context, *RoleApiIndexReq) (*RoleApiIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RoleApiIndex not implemented")
 }
-func (UnimplementedRoleServer) mustEmbedUnimplementedRoleServer() {}
+func (UnimplementedRoleManageServer) mustEmbedUnimplementedRoleManageServer() {}
 
-// UnsafeRoleServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to RoleServer will
+// UnsafeRoleManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RoleManageServer will
 // result in compilation errors.
-type UnsafeRoleServer interface {
-	mustEmbedUnimplementedRoleServer()
+type UnsafeRoleManageServer interface {
+	mustEmbedUnimplementedRoleManageServer()
 }
 
-func RegisterRoleServer(s grpc.ServiceRegistrar, srv RoleServer) {
-	s.RegisterService(&Role_ServiceDesc, srv)
+func RegisterRoleManageServer(s grpc.ServiceRegistrar, srv RoleManageServer) {
+	s.RegisterService(&RoleManage_ServiceDesc, srv)
 }
 
-func _Role_RoleCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RoleCreateReq)
+func _RoleManage_RoleInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).RoleCreate(ctx, in)
+		return srv.(RoleManageServer).RoleInfoCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Role_RoleCreate_FullMethodName,
+		FullMethod: RoleManage_RoleInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).RoleCreate(ctx, req.(*RoleCreateReq))
+		return srv.(RoleManageServer).RoleInfoCreate(ctx, req.(*RoleInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Role_RoleIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RoleIndexReq)
+func _RoleManage_RoleInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).RoleIndex(ctx, in)
+		return srv.(RoleManageServer).RoleInfoIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Role_RoleIndex_FullMethodName,
+		FullMethod: RoleManage_RoleInfoIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).RoleIndex(ctx, req.(*RoleIndexReq))
+		return srv.(RoleManageServer).RoleInfoIndex(ctx, req.(*RoleInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Role_RoleUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RoleUpdateReq)
+func _RoleManage_RoleInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).RoleUpdate(ctx, in)
+		return srv.(RoleManageServer).RoleInfoUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Role_RoleUpdate_FullMethodName,
+		FullMethod: RoleManage_RoleInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).RoleUpdate(ctx, req.(*RoleUpdateReq))
+		return srv.(RoleManageServer).RoleInfoUpdate(ctx, req.(*RoleInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Role_RoleDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RoleDeleteReq)
+func _RoleManage_RoleInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqWithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).RoleDelete(ctx, in)
+		return srv.(RoleManageServer).RoleInfoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Role_RoleDelete_FullMethodName,
+		FullMethod: RoleManage_RoleInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).RoleDelete(ctx, req.(*RoleDeleteReq))
+		return srv.(RoleManageServer).RoleInfoDelete(ctx, req.(*ReqWithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Role_RoleMenuUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RoleMenuUpdateReq)
+func _RoleManage_RoleMenuIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleMenuIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).RoleMenuUpdate(ctx, in)
+		return srv.(RoleManageServer).RoleMenuIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Role_RoleMenuUpdate_FullMethodName,
+		FullMethod: RoleManage_RoleMenuIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).RoleMenuUpdate(ctx, req.(*RoleMenuUpdateReq))
+		return srv.(RoleManageServer).RoleMenuIndex(ctx, req.(*RoleMenuIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Role_RoleApiAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RoleManage_RoleMenuMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleMenuMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleManageServer).RoleMenuMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleManage_RoleMenuMultiUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleManageServer).RoleMenuMultiUpdate(ctx, req.(*RoleMenuMultiUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RoleManage_RoleAppIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleAppIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleManageServer).RoleAppIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleManage_RoleAppIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleManageServer).RoleAppIndex(ctx, req.(*RoleAppIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RoleManage_RoleAppMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleAppMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleManageServer).RoleAppMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleManage_RoleAppMultiUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleManageServer).RoleAppMultiUpdate(ctx, req.(*RoleAppMultiUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RoleManage_RoleApiAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RoleApiAuthReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).RoleApiAuth(ctx, in)
+		return srv.(RoleManageServer).RoleApiAuth(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Role_RoleApiAuth_FullMethodName,
+		FullMethod: RoleManage_RoleApiAuth_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).RoleApiAuth(ctx, req.(*RoleApiAuthReq))
+		return srv.(RoleManageServer).RoleApiAuth(ctx, req.(*RoleApiAuthReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Role_RoleApiMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RoleManage_RoleApiMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RoleApiMultiUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).RoleApiMultiUpdate(ctx, in)
+		return srv.(RoleManageServer).RoleApiMultiUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Role_RoleApiMultiUpdate_FullMethodName,
+		FullMethod: RoleManage_RoleApiMultiUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).RoleApiMultiUpdate(ctx, req.(*RoleApiMultiUpdateReq))
+		return srv.(RoleManageServer).RoleApiMultiUpdate(ctx, req.(*RoleApiMultiUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Role_RoleApiIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RoleManage_RoleApiIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RoleApiIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServer).RoleApiIndex(ctx, in)
+		return srv.(RoleManageServer).RoleApiIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Role_RoleApiIndex_FullMethodName,
+		FullMethod: RoleManage_RoleApiIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServer).RoleApiIndex(ctx, req.(*RoleApiIndexReq))
+		return srv.(RoleManageServer).RoleApiIndex(ctx, req.(*RoleApiIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Role_ServiceDesc is the grpc.ServiceDesc for Role service.
+// RoleManage_ServiceDesc is the grpc.ServiceDesc for RoleManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Role_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sys.Role",
-	HandlerType: (*RoleServer)(nil),
+var RoleManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.RoleManage",
+	HandlerType: (*RoleManageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "roleCreate",
-			Handler:    _Role_RoleCreate_Handler,
+			MethodName: "roleInfoCreate",
+			Handler:    _RoleManage_RoleInfoCreate_Handler,
 		},
 		{
-			MethodName: "roleIndex",
-			Handler:    _Role_RoleIndex_Handler,
+			MethodName: "roleInfoIndex",
+			Handler:    _RoleManage_RoleInfoIndex_Handler,
 		},
 		{
-			MethodName: "roleUpdate",
-			Handler:    _Role_RoleUpdate_Handler,
+			MethodName: "roleInfoUpdate",
+			Handler:    _RoleManage_RoleInfoUpdate_Handler,
 		},
 		{
-			MethodName: "roleDelete",
-			Handler:    _Role_RoleDelete_Handler,
+			MethodName: "roleInfoDelete",
+			Handler:    _RoleManage_RoleInfoDelete_Handler,
 		},
 		{
-			MethodName: "roleMenuUpdate",
-			Handler:    _Role_RoleMenuUpdate_Handler,
+			MethodName: "roleMenuIndex",
+			Handler:    _RoleManage_RoleMenuIndex_Handler,
+		},
+		{
+			MethodName: "roleMenuMultiUpdate",
+			Handler:    _RoleManage_RoleMenuMultiUpdate_Handler,
+		},
+		{
+			MethodName: "roleAppIndex",
+			Handler:    _RoleManage_RoleAppIndex_Handler,
+		},
+		{
+			MethodName: "roleAppMultiUpdate",
+			Handler:    _RoleManage_RoleAppMultiUpdate_Handler,
 		},
 		{
 			MethodName: "roleApiAuth",
-			Handler:    _Role_RoleApiAuth_Handler,
+			Handler:    _RoleManage_RoleApiAuth_Handler,
 		},
 		{
 			MethodName: "roleApiMultiUpdate",
-			Handler:    _Role_RoleApiMultiUpdate_Handler,
+			Handler:    _RoleManage_RoleApiMultiUpdate_Handler,
 		},
 		{
 			MethodName: "roleApiIndex",
-			Handler:    _Role_RoleApiIndex_Handler,
+			Handler:    _RoleManage_RoleApiIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -902,200 +1087,438 @@ var Role_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	Menu_MenuCreate_FullMethodName = "/sys.Menu/menuCreate"
-	Menu_MenuIndex_FullMethodName  = "/sys.Menu/menuIndex"
-	Menu_MenuUpdate_FullMethodName = "/sys.Menu/menuUpdate"
-	Menu_MenuDelete_FullMethodName = "/sys.Menu/menuDelete"
+	AppManage_AppInfoCreate_FullMethodName = "/sys.AppManage/appInfoCreate"
+	AppManage_AppInfoIndex_FullMethodName  = "/sys.AppManage/appInfoIndex"
+	AppManage_AppInfoUpdate_FullMethodName = "/sys.AppManage/appInfoUpdate"
+	AppManage_AppInfoDelete_FullMethodName = "/sys.AppManage/appInfoDelete"
+	AppManage_AppInfoRead_FullMethodName   = "/sys.AppManage/appInfoRead"
 )
 
-// MenuClient is the client API for Menu service.
+// AppManageClient is the client API for AppManage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MenuClient interface {
-	MenuCreate(ctx context.Context, in *MenuCreateReq, opts ...grpc.CallOption) (*Response, error)
-	MenuIndex(ctx context.Context, in *MenuIndexReq, opts ...grpc.CallOption) (*MenuIndexResp, error)
-	MenuUpdate(ctx context.Context, in *MenuUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	MenuDelete(ctx context.Context, in *MenuDeleteReq, opts ...grpc.CallOption) (*Response, error)
+type AppManageClient interface {
+	AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error)
+	AppInfoIndex(ctx context.Context, in *AppInfoIndexReq, opts ...grpc.CallOption) (*AppInfoIndexResp, error)
+	AppInfoUpdate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error)
+	AppInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error)
+	AppInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*AppInfo, error)
 }
 
-type menuClient struct {
+type appManageClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMenuClient(cc grpc.ClientConnInterface) MenuClient {
-	return &menuClient{cc}
+func NewAppManageClient(cc grpc.ClientConnInterface) AppManageClient {
+	return &appManageClient{cc}
 }
 
-func (c *menuClient) MenuCreate(ctx context.Context, in *MenuCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *appManageClient) AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Menu_MenuCreate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AppManage_AppInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *menuClient) MenuIndex(ctx context.Context, in *MenuIndexReq, opts ...grpc.CallOption) (*MenuIndexResp, error) {
-	out := new(MenuIndexResp)
-	err := c.cc.Invoke(ctx, Menu_MenuIndex_FullMethodName, in, out, opts...)
+func (c *appManageClient) AppInfoIndex(ctx context.Context, in *AppInfoIndexReq, opts ...grpc.CallOption) (*AppInfoIndexResp, error) {
+	out := new(AppInfoIndexResp)
+	err := c.cc.Invoke(ctx, AppManage_AppInfoIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *menuClient) MenuUpdate(ctx context.Context, in *MenuUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *appManageClient) AppInfoUpdate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Menu_MenuUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AppManage_AppInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *menuClient) MenuDelete(ctx context.Context, in *MenuDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *appManageClient) AppInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Menu_MenuDelete_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AppManage_AppInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MenuServer is the server API for Menu service.
-// All implementations must embed UnimplementedMenuServer
+func (c *appManageClient) AppInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*AppInfo, error) {
+	out := new(AppInfo)
+	err := c.cc.Invoke(ctx, AppManage_AppInfoRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AppManageServer is the server API for AppManage service.
+// All implementations must embed UnimplementedAppManageServer
 // for forward compatibility
-type MenuServer interface {
-	MenuCreate(context.Context, *MenuCreateReq) (*Response, error)
-	MenuIndex(context.Context, *MenuIndexReq) (*MenuIndexResp, error)
-	MenuUpdate(context.Context, *MenuUpdateReq) (*Response, error)
-	MenuDelete(context.Context, *MenuDeleteReq) (*Response, error)
-	mustEmbedUnimplementedMenuServer()
+type AppManageServer interface {
+	AppInfoCreate(context.Context, *AppInfo) (*Response, error)
+	AppInfoIndex(context.Context, *AppInfoIndexReq) (*AppInfoIndexResp, error)
+	AppInfoUpdate(context.Context, *AppInfo) (*Response, error)
+	AppInfoDelete(context.Context, *ReqWithIDCode) (*Response, error)
+	AppInfoRead(context.Context, *ReqWithIDCode) (*AppInfo, error)
+	mustEmbedUnimplementedAppManageServer()
 }
 
-// UnimplementedMenuServer must be embedded to have forward compatible implementations.
-type UnimplementedMenuServer struct {
+// UnimplementedAppManageServer must be embedded to have forward compatible implementations.
+type UnimplementedAppManageServer struct {
 }
 
-func (UnimplementedMenuServer) MenuCreate(context.Context, *MenuCreateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MenuCreate not implemented")
+func (UnimplementedAppManageServer) AppInfoCreate(context.Context, *AppInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AppInfoCreate not implemented")
 }
-func (UnimplementedMenuServer) MenuIndex(context.Context, *MenuIndexReq) (*MenuIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MenuIndex not implemented")
+func (UnimplementedAppManageServer) AppInfoIndex(context.Context, *AppInfoIndexReq) (*AppInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AppInfoIndex not implemented")
 }
-func (UnimplementedMenuServer) MenuUpdate(context.Context, *MenuUpdateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MenuUpdate not implemented")
+func (UnimplementedAppManageServer) AppInfoUpdate(context.Context, *AppInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AppInfoUpdate not implemented")
 }
-func (UnimplementedMenuServer) MenuDelete(context.Context, *MenuDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MenuDelete not implemented")
+func (UnimplementedAppManageServer) AppInfoDelete(context.Context, *ReqWithIDCode) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AppInfoDelete not implemented")
 }
-func (UnimplementedMenuServer) mustEmbedUnimplementedMenuServer() {}
+func (UnimplementedAppManageServer) AppInfoRead(context.Context, *ReqWithIDCode) (*AppInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AppInfoRead not implemented")
+}
+func (UnimplementedAppManageServer) mustEmbedUnimplementedAppManageServer() {}
 
-// UnsafeMenuServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MenuServer will
+// UnsafeAppManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AppManageServer will
 // result in compilation errors.
-type UnsafeMenuServer interface {
-	mustEmbedUnimplementedMenuServer()
+type UnsafeAppManageServer interface {
+	mustEmbedUnimplementedAppManageServer()
 }
 
-func RegisterMenuServer(s grpc.ServiceRegistrar, srv MenuServer) {
-	s.RegisterService(&Menu_ServiceDesc, srv)
+func RegisterAppManageServer(s grpc.ServiceRegistrar, srv AppManageServer) {
+	s.RegisterService(&AppManage_ServiceDesc, srv)
 }
 
-func _Menu_MenuCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MenuCreateReq)
+func _AppManage_AppInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MenuServer).MenuCreate(ctx, in)
+		return srv.(AppManageServer).AppInfoCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Menu_MenuCreate_FullMethodName,
+		FullMethod: AppManage_AppInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).MenuCreate(ctx, req.(*MenuCreateReq))
+		return srv.(AppManageServer).AppInfoCreate(ctx, req.(*AppInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Menu_MenuIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MenuIndexReq)
+func _AppManage_AppInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MenuServer).MenuIndex(ctx, in)
+		return srv.(AppManageServer).AppInfoIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Menu_MenuIndex_FullMethodName,
+		FullMethod: AppManage_AppInfoIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).MenuIndex(ctx, req.(*MenuIndexReq))
+		return srv.(AppManageServer).AppInfoIndex(ctx, req.(*AppInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Menu_MenuUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MenuUpdateReq)
+func _AppManage_AppInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MenuServer).MenuUpdate(ctx, in)
+		return srv.(AppManageServer).AppInfoUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Menu_MenuUpdate_FullMethodName,
+		FullMethod: AppManage_AppInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).MenuUpdate(ctx, req.(*MenuUpdateReq))
+		return srv.(AppManageServer).AppInfoUpdate(ctx, req.(*AppInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Menu_MenuDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MenuDeleteReq)
+func _AppManage_AppInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqWithIDCode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MenuServer).MenuDelete(ctx, in)
+		return srv.(AppManageServer).AppInfoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Menu_MenuDelete_FullMethodName,
+		FullMethod: AppManage_AppInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuServer).MenuDelete(ctx, req.(*MenuDeleteReq))
+		return srv.(AppManageServer).AppInfoDelete(ctx, req.(*ReqWithIDCode))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Menu_ServiceDesc is the grpc.ServiceDesc for Menu service.
+func _AppManage_AppInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqWithIDCode)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppManageServer).AppInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppManage_AppInfoRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppManageServer).AppInfoRead(ctx, req.(*ReqWithIDCode))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// AppManage_ServiceDesc is the grpc.ServiceDesc for AppManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Menu_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sys.Menu",
-	HandlerType: (*MenuServer)(nil),
+var AppManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.AppManage",
+	HandlerType: (*AppManageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "menuCreate",
-			Handler:    _Menu_MenuCreate_Handler,
+			MethodName: "appInfoCreate",
+			Handler:    _AppManage_AppInfoCreate_Handler,
 		},
 		{
-			MethodName: "menuIndex",
-			Handler:    _Menu_MenuIndex_Handler,
+			MethodName: "appInfoIndex",
+			Handler:    _AppManage_AppInfoIndex_Handler,
 		},
 		{
-			MethodName: "menuUpdate",
-			Handler:    _Menu_MenuUpdate_Handler,
+			MethodName: "appInfoUpdate",
+			Handler:    _AppManage_AppInfoUpdate_Handler,
 		},
 		{
-			MethodName: "menuDelete",
-			Handler:    _Menu_MenuDelete_Handler,
+			MethodName: "appInfoDelete",
+			Handler:    _AppManage_AppInfoDelete_Handler,
+		},
+		{
+			MethodName: "appInfoRead",
+			Handler:    _AppManage_AppInfoRead_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}
+
+const (
+	MenuManage_MenuInfoCreate_FullMethodName = "/sys.MenuManage/menuInfoCreate"
+	MenuManage_MenuInfoIndex_FullMethodName  = "/sys.MenuManage/menuInfoIndex"
+	MenuManage_MenuInfoUpdate_FullMethodName = "/sys.MenuManage/menuInfoUpdate"
+	MenuManage_MenuInfoDelete_FullMethodName = "/sys.MenuManage/menuInfoDelete"
+)
+
+// MenuManageClient is the client API for MenuManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type MenuManageClient interface {
+	MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error)
+	MenuInfoIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error)
+	MenuInfoUpdate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error)
+	MenuInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error)
+}
+
+type menuManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMenuManageClient(cc grpc.ClientConnInterface) MenuManageClient {
+	return &menuManageClient{cc}
+}
+
+func (c *menuManageClient) MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, MenuManage_MenuInfoCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuManageClient) MenuInfoIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error) {
+	out := new(MenuInfoIndexResp)
+	err := c.cc.Invoke(ctx, MenuManage_MenuInfoIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuManageClient) MenuInfoUpdate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, MenuManage_MenuInfoUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuManageClient) MenuInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, MenuManage_MenuInfoDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MenuManageServer is the server API for MenuManage service.
+// All implementations must embed UnimplementedMenuManageServer
+// for forward compatibility
+type MenuManageServer interface {
+	MenuInfoCreate(context.Context, *MenuInfo) (*Response, error)
+	MenuInfoIndex(context.Context, *MenuInfoIndexReq) (*MenuInfoIndexResp, error)
+	MenuInfoUpdate(context.Context, *MenuInfo) (*Response, error)
+	MenuInfoDelete(context.Context, *ReqWithID) (*Response, error)
+	mustEmbedUnimplementedMenuManageServer()
+}
+
+// UnimplementedMenuManageServer must be embedded to have forward compatible implementations.
+type UnimplementedMenuManageServer struct {
+}
+
+func (UnimplementedMenuManageServer) MenuInfoCreate(context.Context, *MenuInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoCreate not implemented")
+}
+func (UnimplementedMenuManageServer) MenuInfoIndex(context.Context, *MenuInfoIndexReq) (*MenuInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoIndex not implemented")
+}
+func (UnimplementedMenuManageServer) MenuInfoUpdate(context.Context, *MenuInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoUpdate not implemented")
+}
+func (UnimplementedMenuManageServer) MenuInfoDelete(context.Context, *ReqWithID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoDelete not implemented")
+}
+func (UnimplementedMenuManageServer) mustEmbedUnimplementedMenuManageServer() {}
+
+// UnsafeMenuManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MenuManageServer will
+// result in compilation errors.
+type UnsafeMenuManageServer interface {
+	mustEmbedUnimplementedMenuManageServer()
+}
+
+func RegisterMenuManageServer(s grpc.ServiceRegistrar, srv MenuManageServer) {
+	s.RegisterService(&MenuManage_ServiceDesc, srv)
+}
+
+func _MenuManage_MenuInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuManageServer).MenuInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MenuManage_MenuInfoCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuManageServer).MenuInfoCreate(ctx, req.(*MenuInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MenuManage_MenuInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuManageServer).MenuInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MenuManage_MenuInfoIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuManageServer).MenuInfoIndex(ctx, req.(*MenuInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MenuManage_MenuInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuManageServer).MenuInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MenuManage_MenuInfoUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuManageServer).MenuInfoUpdate(ctx, req.(*MenuInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MenuManage_MenuInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqWithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuManageServer).MenuInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MenuManage_MenuInfoDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuManageServer).MenuInfoDelete(ctx, req.(*ReqWithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// MenuManage_ServiceDesc is the grpc.ServiceDesc for MenuManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var MenuManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.MenuManage",
+	HandlerType: (*MenuManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "menuInfoCreate",
+			Handler:    _MenuManage_MenuInfoCreate_Handler,
+		},
+		{
+			MethodName: "menuInfoIndex",
+			Handler:    _MenuManage_MenuInfoIndex_Handler,
+		},
+		{
+			MethodName: "menuInfoUpdate",
+			Handler:    _MenuManage_MenuInfoUpdate_Handler,
+		},
+		{
+			MethodName: "menuInfoDelete",
+			Handler:    _MenuManage_MenuInfoDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1394,200 +1817,200 @@ var Log_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	Api_ApiCreate_FullMethodName = "/sys.Api/apiCreate"
-	Api_ApiIndex_FullMethodName  = "/sys.Api/apiIndex"
-	Api_ApiUpdate_FullMethodName = "/sys.Api/apiUpdate"
-	Api_ApiDelete_FullMethodName = "/sys.Api/apiDelete"
+	ApiManage_ApiInfoCreate_FullMethodName = "/sys.ApiManage/apiInfoCreate"
+	ApiManage_ApiInfoIndex_FullMethodName  = "/sys.ApiManage/apiInfoIndex"
+	ApiManage_ApiInfoUpdate_FullMethodName = "/sys.ApiManage/apiInfoUpdate"
+	ApiManage_ApiInfoDelete_FullMethodName = "/sys.ApiManage/apiInfoDelete"
 )
 
-// ApiClient is the client API for Api service.
+// ApiManageClient is the client API for ApiManage service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ApiClient interface {
-	ApiCreate(ctx context.Context, in *ApiCreateReq, opts ...grpc.CallOption) (*Response, error)
-	ApiIndex(ctx context.Context, in *ApiIndexReq, opts ...grpc.CallOption) (*ApiIndexResp, error)
-	ApiUpdate(ctx context.Context, in *ApiUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	ApiDelete(ctx context.Context, in *ApiDeleteReq, opts ...grpc.CallOption) (*Response, error)
+type ApiManageClient interface {
+	ApiInfoCreate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error)
+	ApiInfoIndex(ctx context.Context, in *ApiInfoIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error)
+	ApiInfoUpdate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error)
+	ApiInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error)
 }
 
-type apiClient struct {
+type apiManageClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewApiClient(cc grpc.ClientConnInterface) ApiClient {
-	return &apiClient{cc}
+func NewApiManageClient(cc grpc.ClientConnInterface) ApiManageClient {
+	return &apiManageClient{cc}
 }
 
-func (c *apiClient) ApiCreate(ctx context.Context, in *ApiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *apiManageClient) ApiInfoCreate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Api_ApiCreate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, ApiManage_ApiInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *apiClient) ApiIndex(ctx context.Context, in *ApiIndexReq, opts ...grpc.CallOption) (*ApiIndexResp, error) {
-	out := new(ApiIndexResp)
-	err := c.cc.Invoke(ctx, Api_ApiIndex_FullMethodName, in, out, opts...)
+func (c *apiManageClient) ApiInfoIndex(ctx context.Context, in *ApiInfoIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error) {
+	out := new(ApiInfoIndexResp)
+	err := c.cc.Invoke(ctx, ApiManage_ApiInfoIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *apiClient) ApiUpdate(ctx context.Context, in *ApiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *apiManageClient) ApiInfoUpdate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Api_ApiUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, ApiManage_ApiInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *apiClient) ApiDelete(ctx context.Context, in *ApiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *apiManageClient) ApiInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Api_ApiDelete_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, ApiManage_ApiInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ApiServer is the server API for Api service.
-// All implementations must embed UnimplementedApiServer
+// ApiManageServer is the server API for ApiManage service.
+// All implementations must embed UnimplementedApiManageServer
 // for forward compatibility
-type ApiServer interface {
-	ApiCreate(context.Context, *ApiCreateReq) (*Response, error)
-	ApiIndex(context.Context, *ApiIndexReq) (*ApiIndexResp, error)
-	ApiUpdate(context.Context, *ApiUpdateReq) (*Response, error)
-	ApiDelete(context.Context, *ApiDeleteReq) (*Response, error)
-	mustEmbedUnimplementedApiServer()
+type ApiManageServer interface {
+	ApiInfoCreate(context.Context, *ApiInfo) (*Response, error)
+	ApiInfoIndex(context.Context, *ApiInfoIndexReq) (*ApiInfoIndexResp, error)
+	ApiInfoUpdate(context.Context, *ApiInfo) (*Response, error)
+	ApiInfoDelete(context.Context, *ReqWithID) (*Response, error)
+	mustEmbedUnimplementedApiManageServer()
 }
 
-// UnimplementedApiServer must be embedded to have forward compatible implementations.
-type UnimplementedApiServer struct {
+// UnimplementedApiManageServer must be embedded to have forward compatible implementations.
+type UnimplementedApiManageServer struct {
 }
 
-func (UnimplementedApiServer) ApiCreate(context.Context, *ApiCreateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ApiCreate not implemented")
+func (UnimplementedApiManageServer) ApiInfoCreate(context.Context, *ApiInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoCreate not implemented")
 }
-func (UnimplementedApiServer) ApiIndex(context.Context, *ApiIndexReq) (*ApiIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ApiIndex not implemented")
+func (UnimplementedApiManageServer) ApiInfoIndex(context.Context, *ApiInfoIndexReq) (*ApiInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoIndex not implemented")
 }
-func (UnimplementedApiServer) ApiUpdate(context.Context, *ApiUpdateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ApiUpdate not implemented")
+func (UnimplementedApiManageServer) ApiInfoUpdate(context.Context, *ApiInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoUpdate not implemented")
 }
-func (UnimplementedApiServer) ApiDelete(context.Context, *ApiDeleteReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ApiDelete not implemented")
+func (UnimplementedApiManageServer) ApiInfoDelete(context.Context, *ReqWithID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoDelete not implemented")
 }
-func (UnimplementedApiServer) mustEmbedUnimplementedApiServer() {}
+func (UnimplementedApiManageServer) mustEmbedUnimplementedApiManageServer() {}
 
-// UnsafeApiServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ApiServer will
+// UnsafeApiManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ApiManageServer will
 // result in compilation errors.
-type UnsafeApiServer interface {
-	mustEmbedUnimplementedApiServer()
+type UnsafeApiManageServer interface {
+	mustEmbedUnimplementedApiManageServer()
 }
 
-func RegisterApiServer(s grpc.ServiceRegistrar, srv ApiServer) {
-	s.RegisterService(&Api_ServiceDesc, srv)
+func RegisterApiManageServer(s grpc.ServiceRegistrar, srv ApiManageServer) {
+	s.RegisterService(&ApiManage_ServiceDesc, srv)
 }
 
-func _Api_ApiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ApiCreateReq)
+func _ApiManage_ApiInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApiServer).ApiCreate(ctx, in)
+		return srv.(ApiManageServer).ApiInfoCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Api_ApiCreate_FullMethodName,
+		FullMethod: ApiManage_ApiInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApiServer).ApiCreate(ctx, req.(*ApiCreateReq))
+		return srv.(ApiManageServer).ApiInfoCreate(ctx, req.(*ApiInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Api_ApiIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ApiIndexReq)
+func _ApiManage_ApiInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApiServer).ApiIndex(ctx, in)
+		return srv.(ApiManageServer).ApiInfoIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Api_ApiIndex_FullMethodName,
+		FullMethod: ApiManage_ApiInfoIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApiServer).ApiIndex(ctx, req.(*ApiIndexReq))
+		return srv.(ApiManageServer).ApiInfoIndex(ctx, req.(*ApiInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Api_ApiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ApiUpdateReq)
+func _ApiManage_ApiInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApiServer).ApiUpdate(ctx, in)
+		return srv.(ApiManageServer).ApiInfoUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Api_ApiUpdate_FullMethodName,
+		FullMethod: ApiManage_ApiInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApiServer).ApiUpdate(ctx, req.(*ApiUpdateReq))
+		return srv.(ApiManageServer).ApiInfoUpdate(ctx, req.(*ApiInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Api_ApiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ApiDeleteReq)
+func _ApiManage_ApiInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqWithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApiServer).ApiDelete(ctx, in)
+		return srv.(ApiManageServer).ApiInfoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Api_ApiDelete_FullMethodName,
+		FullMethod: ApiManage_ApiInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApiServer).ApiDelete(ctx, req.(*ApiDeleteReq))
+		return srv.(ApiManageServer).ApiInfoDelete(ctx, req.(*ReqWithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Api_ServiceDesc is the grpc.ServiceDesc for Api service.
+// ApiManage_ServiceDesc is the grpc.ServiceDesc for ApiManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Api_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sys.Api",
-	HandlerType: (*ApiServer)(nil),
+var ApiManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.ApiManage",
+	HandlerType: (*ApiManageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "apiCreate",
-			Handler:    _Api_ApiCreate_Handler,
+			MethodName: "apiInfoCreate",
+			Handler:    _ApiManage_ApiInfoCreate_Handler,
 		},
 		{
-			MethodName: "apiIndex",
-			Handler:    _Api_ApiIndex_Handler,
+			MethodName: "apiInfoIndex",
+			Handler:    _ApiManage_ApiInfoIndex_Handler,
 		},
 		{
-			MethodName: "apiUpdate",
-			Handler:    _Api_ApiUpdate_Handler,
+			MethodName: "apiInfoUpdate",
+			Handler:    _ApiManage_ApiInfoUpdate_Handler,
 		},
 		{
-			MethodName: "apiDelete",
-			Handler:    _Api_ApiDelete_Handler,
+			MethodName: "apiInfoDelete",
+			Handler:    _ApiManage_ApiInfoDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -2123,6 +2546,328 @@ var AreaManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "areaInfoTree",
 			Handler:    _AreaManage_AreaInfoTree_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}
+
+const (
+	TenantManage_TenantInfoCreate_FullMethodName     = "/sys.TenantManage/tenantInfoCreate"
+	TenantManage_TenantInfoUpdate_FullMethodName     = "/sys.TenantManage/tenantInfoUpdate"
+	TenantManage_TenantInfoDelete_FullMethodName     = "/sys.TenantManage/tenantInfoDelete"
+	TenantManage_TenantInfoRead_FullMethodName       = "/sys.TenantManage/tenantInfoRead"
+	TenantManage_TenantInfoIndex_FullMethodName      = "/sys.TenantManage/tenantInfoIndex"
+	TenantManage_TenantAppIndex_FullMethodName       = "/sys.TenantManage/tenantAppIndex"
+	TenantManage_TenantAppMultiUpdate_FullMethodName = "/sys.TenantManage/tenantAppMultiUpdate"
+)
+
+// TenantManageClient is the client API for TenantManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type TenantManageClient interface {
+	// 新增区域
+	TenantInfoCreate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error)
+	// 更新区域
+	TenantInfoUpdate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error)
+	// 删除区域
+	TenantInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error)
+	// 获取租户信息详情
+	TenantInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*TenantInfo, error)
+	// 获取租户信息列表
+	TenantInfoIndex(ctx context.Context, in *TenantInfoIndexReq, opts ...grpc.CallOption) (*TenantInfoIndexResp, error)
+	TenantAppIndex(ctx context.Context, in *TenantAppIndexReq, opts ...grpc.CallOption) (*TenantAppIndexResp, error)
+	TenantAppMultiUpdate(ctx context.Context, in *TenantAppMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+}
+
+type tenantManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewTenantManageClient(cc grpc.ClientConnInterface) TenantManageClient {
+	return &tenantManageClient{cc}
+}
+
+func (c *tenantManageClient) TenantInfoCreate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, TenantManage_TenantInfoCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantManageClient) TenantInfoUpdate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, TenantManage_TenantInfoUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantManageClient) TenantInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, TenantManage_TenantInfoDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantManageClient) TenantInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*TenantInfo, error) {
+	out := new(TenantInfo)
+	err := c.cc.Invoke(ctx, TenantManage_TenantInfoRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantManageClient) TenantInfoIndex(ctx context.Context, in *TenantInfoIndexReq, opts ...grpc.CallOption) (*TenantInfoIndexResp, error) {
+	out := new(TenantInfoIndexResp)
+	err := c.cc.Invoke(ctx, TenantManage_TenantInfoIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantManageClient) TenantAppIndex(ctx context.Context, in *TenantAppIndexReq, opts ...grpc.CallOption) (*TenantAppIndexResp, error) {
+	out := new(TenantAppIndexResp)
+	err := c.cc.Invoke(ctx, TenantManage_TenantAppIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantManageClient) TenantAppMultiUpdate(ctx context.Context, in *TenantAppMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, TenantManage_TenantAppMultiUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// TenantManageServer is the server API for TenantManage service.
+// All implementations must embed UnimplementedTenantManageServer
+// for forward compatibility
+type TenantManageServer interface {
+	// 新增区域
+	TenantInfoCreate(context.Context, *TenantInfo) (*Response, error)
+	// 更新区域
+	TenantInfoUpdate(context.Context, *TenantInfo) (*Response, error)
+	// 删除区域
+	TenantInfoDelete(context.Context, *ReqWithIDCode) (*Response, error)
+	// 获取租户信息详情
+	TenantInfoRead(context.Context, *ReqWithIDCode) (*TenantInfo, error)
+	// 获取租户信息列表
+	TenantInfoIndex(context.Context, *TenantInfoIndexReq) (*TenantInfoIndexResp, error)
+	TenantAppIndex(context.Context, *TenantAppIndexReq) (*TenantAppIndexResp, error)
+	TenantAppMultiUpdate(context.Context, *TenantAppMultiUpdateReq) (*Response, error)
+	mustEmbedUnimplementedTenantManageServer()
+}
+
+// UnimplementedTenantManageServer must be embedded to have forward compatible implementations.
+type UnimplementedTenantManageServer struct {
+}
+
+func (UnimplementedTenantManageServer) TenantInfoCreate(context.Context, *TenantInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoCreate not implemented")
+}
+func (UnimplementedTenantManageServer) TenantInfoUpdate(context.Context, *TenantInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoUpdate not implemented")
+}
+func (UnimplementedTenantManageServer) TenantInfoDelete(context.Context, *ReqWithIDCode) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoDelete not implemented")
+}
+func (UnimplementedTenantManageServer) TenantInfoRead(context.Context, *ReqWithIDCode) (*TenantInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoRead not implemented")
+}
+func (UnimplementedTenantManageServer) TenantInfoIndex(context.Context, *TenantInfoIndexReq) (*TenantInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoIndex not implemented")
+}
+func (UnimplementedTenantManageServer) TenantAppIndex(context.Context, *TenantAppIndexReq) (*TenantAppIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TenantAppIndex not implemented")
+}
+func (UnimplementedTenantManageServer) TenantAppMultiUpdate(context.Context, *TenantAppMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TenantAppMultiUpdate not implemented")
+}
+func (UnimplementedTenantManageServer) mustEmbedUnimplementedTenantManageServer() {}
+
+// UnsafeTenantManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TenantManageServer will
+// result in compilation errors.
+type UnsafeTenantManageServer interface {
+	mustEmbedUnimplementedTenantManageServer()
+}
+
+func RegisterTenantManageServer(s grpc.ServiceRegistrar, srv TenantManageServer) {
+	s.RegisterService(&TenantManage_ServiceDesc, srv)
+}
+
+func _TenantManage_TenantInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TenantInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantManageServer).TenantInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TenantManage_TenantInfoCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantManageServer).TenantInfoCreate(ctx, req.(*TenantInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TenantManage_TenantInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TenantInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantManageServer).TenantInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TenantManage_TenantInfoUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantManageServer).TenantInfoUpdate(ctx, req.(*TenantInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TenantManage_TenantInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqWithIDCode)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantManageServer).TenantInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TenantManage_TenantInfoDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantManageServer).TenantInfoDelete(ctx, req.(*ReqWithIDCode))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TenantManage_TenantInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqWithIDCode)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantManageServer).TenantInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TenantManage_TenantInfoRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantManageServer).TenantInfoRead(ctx, req.(*ReqWithIDCode))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TenantManage_TenantInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TenantInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantManageServer).TenantInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TenantManage_TenantInfoIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantManageServer).TenantInfoIndex(ctx, req.(*TenantInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TenantManage_TenantAppIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TenantAppIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantManageServer).TenantAppIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TenantManage_TenantAppIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantManageServer).TenantAppIndex(ctx, req.(*TenantAppIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TenantManage_TenantAppMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TenantAppMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantManageServer).TenantAppMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TenantManage_TenantAppMultiUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantManageServer).TenantAppMultiUpdate(ctx, req.(*TenantAppMultiUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// TenantManage_ServiceDesc is the grpc.ServiceDesc for TenantManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var TenantManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.TenantManage",
+	HandlerType: (*TenantManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "tenantInfoCreate",
+			Handler:    _TenantManage_TenantInfoCreate_Handler,
+		},
+		{
+			MethodName: "tenantInfoUpdate",
+			Handler:    _TenantManage_TenantInfoUpdate_Handler,
+		},
+		{
+			MethodName: "tenantInfoDelete",
+			Handler:    _TenantManage_TenantInfoDelete_Handler,
+		},
+		{
+			MethodName: "tenantInfoRead",
+			Handler:    _TenantManage_TenantInfoRead_Handler,
+		},
+		{
+			MethodName: "tenantInfoIndex",
+			Handler:    _TenantManage_TenantInfoIndex_Handler,
+		},
+		{
+			MethodName: "tenantAppIndex",
+			Handler:    _TenantManage_TenantAppIndex_Handler,
+		},
+		{
+			MethodName: "tenantAppMultiUpdate",
+			Handler:    _TenantManage_TenantAppMultiUpdate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

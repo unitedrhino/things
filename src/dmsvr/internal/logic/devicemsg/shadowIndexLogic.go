@@ -2,7 +2,7 @@ package devicemsglogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/utils/cast"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/shadow"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -41,7 +41,7 @@ func (l *ShadowIndexLogic) ShadowIndex(in *dm.PropertyLatestIndexReq) (*dm.Shado
 		index = append(index, &dm.ShadowIndex{
 			DataID:            v.DataID,
 			Value:             v.Value,
-			UpdatedDeviceTime: cast.ToInt64(v.UpdatedDeviceTime),
+			UpdatedDeviceTime: utils.ToInt64(v.UpdatedDeviceTime),
 		})
 	}
 	return &dm.ShadowIndexResp{List: index}, nil

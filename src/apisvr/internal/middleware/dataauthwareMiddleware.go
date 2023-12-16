@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils/cast"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"io"
@@ -66,7 +66,7 @@ func (m *DataAuthWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc 
 			//全局项目ID
 			mdProjectID := ctxs.GetMetaProjectID(ctx)
 			if mdProjectID != 0 {
-				reqIDs = append(reqIDs, cast.ToString(mdProjectID))
+				reqIDs = append(reqIDs, utils.ToString(mdProjectID))
 			}
 			//参数项目ID
 			if param.ProjectID != "" {

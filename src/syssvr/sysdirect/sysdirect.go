@@ -3,7 +3,16 @@ package sysdirect
 import (
 	"fmt"
 	"github.com/i-Things/things/src/syssvr/internal/config"
-	userServer "github.com/i-Things/things/src/syssvr/internal/server/user"
+	apimanageServer "github.com/i-Things/things/src/syssvr/internal/server/apimanage"
+	appmanageServer "github.com/i-Things/things/src/syssvr/internal/server/appmanage"
+	areamanageServer "github.com/i-Things/things/src/syssvr/internal/server/areamanage"
+	commonServer "github.com/i-Things/things/src/syssvr/internal/server/common"
+	logServer "github.com/i-Things/things/src/syssvr/internal/server/log"
+	menumanageServer "github.com/i-Things/things/src/syssvr/internal/server/menumanage"
+	projectmanageServer "github.com/i-Things/things/src/syssvr/internal/server/projectmanage"
+	rolemanageServer "github.com/i-Things/things/src/syssvr/internal/server/rolemanage"
+	tenantmanageServer "github.com/i-Things/things/src/syssvr/internal/server/tenantmanage"
+	usermanageServer "github.com/i-Things/things/src/syssvr/internal/server/usermanage"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/zeromicro/go-zero/core/conf"
@@ -43,7 +52,16 @@ func RunServer(svcCtx *svc.ServiceContext) {
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		sys.RegisterUserServer(grpcServer, userServer.NewUserServer(svcCtx))
+		sys.RegisterUserManageServer(grpcServer, usermanageServer.NewUserManageServer(svcCtx))
+		sys.RegisterRoleManageServer(grpcServer, rolemanageServer.NewRoleManageServer(svcCtx))
+		sys.RegisterAppManageServer(grpcServer, appmanageServer.NewAppManageServer(svcCtx))
+		sys.RegisterMenuManageServer(grpcServer, menumanageServer.NewMenuManageServer(svcCtx))
+		sys.RegisterCommonServer(grpcServer, commonServer.NewCommonServer(svcCtx))
+		sys.RegisterLogServer(grpcServer, logServer.NewLogServer(svcCtx))
+		sys.RegisterApiManageServer(grpcServer, apimanageServer.NewApiManageServer(svcCtx))
+		sys.RegisterProjectManageServer(grpcServer, projectmanageServer.NewProjectManageServer(svcCtx))
+		sys.RegisterAreaManageServer(grpcServer, areamanageServer.NewAreaManageServer(svcCtx))
+		sys.RegisterTenantManageServer(grpcServer, tenantmanageServer.NewTenantManageServer(svcCtx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

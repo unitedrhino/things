@@ -29,6 +29,7 @@ func NewLoginLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Lo
 
 func (l *LoginLogCreateLogic) LoginLogCreate(in *sys.LoginLogCreateReq) (*sys.Response, error) {
 	err := l.LlDB.Insert(l.ctx, &relationDB.SysLoginLog{
+		AppCode:       in.AppCode,
 		UserID:        in.UserID,
 		UserName:      in.UserName,
 		IpAddr:        in.IpAddr,
