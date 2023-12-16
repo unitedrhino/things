@@ -12,7 +12,6 @@ import (
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 	"time"
 )
 
@@ -21,15 +20,10 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 	if err != nil {
 		return err
 	}
-	sql = d.GenSql(sql)
-	if _, err := d.t.ExecContext(ctx, sql, args...); err != nil {
-		return err
-	}
+	d.t.AsyncInsert(sql, args)
 	return nil
 }
-func (d *DeviceDataRepo) GenSql(sql ...string) string {
-	return fmt.Sprintf("insert into %s;", strings.Join(sql, " "))
-}
+
 func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Model, productID string, deviceName string, property *msgThing.PropertyData) (sql string, args []any, err error) {
 	switch property.Param.(type) {
 	case map[string]any:
@@ -95,8 +89,6 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, filter m
 }
 
 func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error {
-	var sql []string
-	var args []any
 	var startTime = time.Now()
 	defer func() {
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
@@ -122,12 +114,7 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 				"DeviceDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
 				identifier, param, err)
 		}
-		sql = append(sql, sql1)
-		args = append(args, args1...)
-	}
-	sqlStr := d.GenSql(sql...)
-	if _, err := d.t.ExecContext(ctx, sqlStr, args...); err != nil {
-		return err
+		d.t.AsyncInsert(sql1, args1)
 	}
 	return nil
 }

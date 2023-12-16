@@ -134,7 +134,6 @@ func (l *ServerHandle) ActionInit() error {
 	//config dockerServer
 	fmt.Println("[**ActionInit**]6 ", utils.FuncName())
 	//仅考虑docker的模式
-
 	//STEP3  配置流服务
 	if len(currentConf.Data) > 0 {
 		currentConf.Data[0].GeneralMediaServerId = vidInfo.VidmgrID

@@ -1764,6 +1764,7 @@ type VidmgrStream struct {
 	TotalReaderCount int64         `json:"totalReaderCount,optional"`
 	Tracks           []StreamTrack `json:"tracks,optional"`
 	LastLogin        int64         `json:"lastLogin,optional,string"`
+	FirstLogin       int64         `json:"firstLogin,optional,string"` //首次登录时间 只读
 }
 
 type VidmgrStreamCreateReq struct {
@@ -1795,6 +1796,12 @@ type VidmgrStreamIndexResp struct {
 
 type VidmgrStreamReadReq struct {
 	StreamID int64 `json:"streamID,optional"`
+}
+
+type VidmgrStreamReadResp struct {
+	VidmgrStream
+	MediaIP   string `json:"mediaIP,optional"`
+	MediaPort int64  `json:"mediaPort,optional"`
 }
 
 type VidmgrStreamCountReq struct {
