@@ -1,7 +1,6 @@
 package relationDB
 
 import (
-	"database/sql"
 	"database/sql/driver"
 	"encoding/json"
 	"github.com/i-Things/things/shared/stores"
@@ -20,8 +19,6 @@ type VidmgrInfo struct {
 	FirstLogin   time.Time `gorm:"column:first_login"`                                  // 激活后首次登录时间
 	LastLogin    time.Time `gorm:"column:last_login"`                                   // 最后登录时间
 	MediasvrType int64     `gorm:"column:mediasvr_type;type:smallint;default:2"`        // 流服务部署类型:1,docker部署  2,独立主机
-	//ServerIP     int64             `gorm:"column:server_ip;type:bigint"`                                // 当流服务类型为独立主机时：这个填iThings外网的访问IP
-	//ServerPort   int64             `gorm:"column:server_port;type:bigint"`                              // 当流服务类型为独立主机时：这个填iThings外网的访问端口
 	//使用vid.yaml配置代替
 	Desc string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
 	Tags map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
@@ -101,11 +98,11 @@ type VidmgrStream struct {
 	IsPTZ          bool `gorm:"column:is_ptz;type:bool;default:0;NOT NULL"`
 	//正常流程有注册和注销过程，注册后，该流进行更新；并上线，注销后就设置标志位进行下线。
 	//还需要有一个定时器用来检测异常断开的情况超时时间10S
-	IsOnline bool `gorm:"column:is_online;type:bool;default:0;NOT NULL"`
-
-	LastLogin sql.NullTime      `gorm:"column:last_login"`                                           // 最后登录时间
-	Desc      string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
-	Tags      map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
+	IsOnline   bool              `gorm:"column:is_online;type:bool;default:0;NOT NULL"`
+	FirstLogin time.Time         `gorm:"column:first_login"`                                          // 最早登录时间
+	LastLogin  time.Time         `gorm:"column:last_login"`                                           // 最后登录时间
+	Desc       string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
+	Tags       map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
 	stores.Time
 	VidmgrInfo *VidmgrInfo `gorm:"foreignKey:VidmgrID;references:VidmgrID"` // 添加外键
 }
