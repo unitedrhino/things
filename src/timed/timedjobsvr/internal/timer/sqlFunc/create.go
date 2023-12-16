@@ -4,7 +4,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/dop251/goja"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils/cast"
+	"github.com/i-Things/things/shared/utils"
 )
 
 type CreateOneRet struct {
@@ -27,7 +27,7 @@ func (s *SqlFunc) CreateOne() func(in goja.FunctionCall) goja.Value {
 		defer close()
 		var cloumns []string
 		var values []any
-		datas := cast.ToStringMap(data)
+		datas := utils.ToStringMap(data)
 		for k, v := range datas {
 			cloumns = append(cloumns, k)
 			values = append(values, v)

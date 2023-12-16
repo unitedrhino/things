@@ -6,59 +6,38 @@ info(
 import "common.api"  //公共结构体定义
 
 @server(
-    group: system/menu
-    prefix: /api/v1/system/menu
+    group: system/menu/info
+    prefix: /api/v1/system/menu/info
     middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "添加菜单"
-    @handler MenuCreate
-    post /create (MenuCreateReq) returns ()
+    @handler create
+    post /create (MenuInfo) returns ()
 
     @doc "获取菜单列表"
-    @handler MenuIndex
-    post /index (MenuIndexReq) returns (MenuIndexResp)
+    @handler index
+    post /index (MenuInfoIndexReq) returns (MenuInfoIndexResp)
 
     @doc "更新菜单"
-    @handler MenuUpdate
-    post /update (MenuUpdateReq) returns ()
+    @handler update
+    post /update (MenuInfo) returns ()
 
     @doc "删除菜单"
-    @handler MenuDelete
-    post /delete (MenuDeleteReq) returns ()
+    @handler delete
+    post /delete (WithID) returns ()
 }
 type (
-    MenuCreateReq struct {
-        MenuData
-    }
 
-    MenuIndexReq struct {
+    MenuInfoIndexReq struct {
+        AppCode string `json:"appCode,optional"`                               // 应用编号
         Name string `json:"name,optional"` // 按菜单名称筛选
         Path string `json:"path,optional"` // 按菜单路径筛选
     }
-    MenuData struct {
-        ID int64 `json:"id,optional"`                                  // 编号
-        Name string `json:"name,optional"`                             // 菜单名称
-        ParentID int64 `json:"parentID,optional"`                      // 父菜单ID，一级菜单为1
-        Type int64 `json:"type,optional"`                     // 类型   1. 内部页面   2，iframe内嵌  3，外部链接跳转 4，微前端
-        Path string `json:"path,optional"`                    // 系统的path
-        Component string `json:"component,optional"`          // 页面
-        Icon string `json:"icon,optional"`                    // 菜单图标
-        Redirect string `json:"redirect,optional"`            // 路由重定向
-        Order int64 `json:"order,optional"`                            // 左侧table排序序号
-        HideInMenu int64 `json:"hideInMenu,optional"`         // 菜单是否隐藏 1：是 2：否
-        CreateTime int64 `json:"createTime,optional"`           // 创建时间
-    }
-    MenuIndexResp struct {
-        List []*MenuData `json:"list"` //菜单列表
 
-    }
-    MenuUpdateReq struct {
-        MenuData
+    MenuInfoIndexResp struct {
+        List []*MenuInfo `json:"list"` //菜单列表
 
     }
 
-    MenuDeleteReq struct {
-        ID int64 `json:"id"`    // 编号
-    }
 )

@@ -41,10 +41,11 @@ func (l *OperLogIndexLogic) OperLogIndex(in *sys.OperLogIndexReq) (*sys.OperLogI
 	if err != nil {
 		return nil, err
 	}
-	info := make([]*sys.OperLogIndexData, 0, len(resp))
+	info := make([]*sys.OperLogInfo, 0, len(resp))
 	for _, v := range resp {
-		info = append(info, &sys.OperLogIndexData{
+		info = append(info, &sys.OperLogInfo{
 			UserID:       v.OperUserID,
+			AppCode:      v.AppCode,
 			OperUserName: v.OperUserName,
 			OperName:     v.OperName,
 			BusinessType: v.BusinessType,
@@ -59,5 +60,5 @@ func (l *OperLogIndexLogic) OperLogIndex(in *sys.OperLogIndexReq) (*sys.OperLogI
 		})
 	}
 
-	return &sys.OperLogIndexResp{Info: info, Total: total}, nil
+	return &sys.OperLogIndexResp{List: info, Total: total}, nil
 }

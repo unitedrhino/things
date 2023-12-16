@@ -3,13 +3,13 @@ package firmwaremanagelogic
 import (
 	"context"
 	"fmt"
+	"github.com/i-Things/things/shared/utils"
 	"path"
 
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/oss"
-	"github.com/i-Things/things/shared/utils/cast"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -62,7 +62,7 @@ func (l *FirmwareInfoCreateLogic) FirmwareInfoCreate(in *dm.Firmware) (*dm.Firmw
 		l.Errorf("AddDevice|CheckProduct|in=%v\n", in)
 		return nil, errors.Database.AddDetail(err)
 	} else if find == false {
-		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.ProductID))
+		return nil, errors.Parameter.AddDetail("not find product id:" + utils.ToString(in.ProductID))
 	}
 	if len(in.Files) > 0 {
 		for k, file := range in.Files {

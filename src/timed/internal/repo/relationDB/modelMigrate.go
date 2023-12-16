@@ -49,16 +49,16 @@ func migrateTableColumn() error {
 
 var (
 	MigrateTimedTask = []TimedTaskInfo{
-		{
-			GroupCode: "queueTest",
-			Type:      domain.TaskTypeTiming,
-			Name:      "消息发送",
-			Code:      "msgSendTest",
-			Params:    `{"topic":"server.435","payload":"adfgawe"}`,
-			CronExpr:  "@every 2s",
-			Status:    def.StatusWaitRun,
-			Priority:  2,
-		},
+		//{
+		//	GroupCode: "queueTest",
+		//	Type:      domain.TaskTypeTiming,
+		//	Name:      "消息发送",
+		//	Code:      "msgSendTest",
+		//	Params:    `{"topic":"server.435","payload":"adfgawe"}`,
+		//	CronExpr:  "@every 2s",
+		//	Status:    def.StatusWaitRun,
+		//	Priority:  2,
+		//},
 		//{
 		//	GroupCode: "sqlJsTest",
 		//	Type:      domain.TaskTypeTiming,
@@ -69,16 +69,16 @@ var (
 		//	Status:    def.StatusWaitRun,
 		//	Priority:  4,
 		//},
-		{
-			GroupCode: "queueTest",
-			Type:      domain.TaskTypeDelay,
-			Name:      "延时测试",
-			Code:      "delayTest",
-			Params:    `{"topic":"server.333","payload":"garegawef"}`,
-			CronExpr:  "",
-			Status:    def.StatusRunning,
-			Priority:  3,
-		},
+		//{
+		//	GroupCode: "queueTest",
+		//	Type:      domain.TaskTypeDelay,
+		//	Name:      "延时测试",
+		//	Code:      "delayTest",
+		//	Params:    `{"topic":"server.333","payload":"garegawef"}`,
+		//	CronExpr:  "",
+		//	Status:    def.StatusRunning,
+		//	Priority:  3,
+		//},
 		{
 			GroupCode: def.TimedIThingsQueueGroupCode,
 			Type:      domain.TaskTypeDelay, //定义一个延时任务

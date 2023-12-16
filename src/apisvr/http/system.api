@@ -5,15 +5,16 @@ info(
 	email: "603685348@qq.com"
 	version: "v1"
 )
-
+import "system/system.api" //用户相关功能
 import "system/user.api" //用户相关功能
 import "system/role.api" //角色相关功能
 import "system/menu.api" //菜单相关功能
 import "system/userAuth.api" //用户数据权限相关功能
 import "system/log.api" //日志相关功能
-import "system/api.api" //系统配置相关功能
+import "system/api.api" //接口相关功能
+import "system/app.api" //应用相关功能
 import "system/common.api" //系统配置相关功能
-import "system/auth.api" //权限控制相关功能
 import "system/project.api" //项目管理相关功能
 import "system/area.api" //区域管理相关功能
 import "system/timed.api" //区域管理相关功能
+import "system/tenant.api" //租户管理相关功能

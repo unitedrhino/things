@@ -51,7 +51,7 @@ TimedJobRpc:
   Conf:
     Timeout: 1000000
 TimedSchedulerRpc:
-  Enable: true
+  Enable: false
   Mode: direct
   Conf:
     Timeout: 1000000
@@ -71,7 +71,7 @@ OssConf:
   ReadWriteTimeout: 60000
   UseSSL: false
 VidRpc:
-  Enable: true
+  Enable: false
   Mode: direct
   Conf:
     Timeout: 1000000

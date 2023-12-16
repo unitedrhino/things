@@ -1,0 +1,80 @@
+info(
+	title: "租户管理模块"
+	desc: "租户管理"
+	author: "L"
+	email: "174805676@qq.com"
+	version: "v0.1.0"
+)
+import "common.api"  //公共结构体定义
+
+@server (
+	group : system/tenant/info
+	prefix: /api/v1/system/tenant/info
+	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "添加租户"
+    @handler create
+    post /create (TenantInfo) returns ()
+
+    @doc "获取租户列表"
+    @handler index
+    post /index (TenantInfoIndexReq) returns (TenantInfoIndexResp)
+
+    @doc "更新租户"
+    @handler read
+    post /read (WithIDOrCode) returns (TenantInfo)
+
+    @doc "更新租户"
+    @handler update
+    post /update (TenantInfo) returns ()
+
+    @doc "删除租户"
+    @handler delete
+    post /delete (WithIDOrCode) returns ()
+}
+
+@server (
+    group : system/tenant/app
+    prefix: /api/v1/system/tenant/app
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "获取租户列表"
+    @handler index
+    post /index (TenantAppIndexReq) returns (TenantAppIndexResp)
+
+    @doc "更新租户"
+    @handler multiUpdate
+    post /multi-update (TenantAppMultiUpdateReq) returns ()
+}
+
+
+type (
+    TenantAppIndexReq{
+        Code string `json:"code,optional"`                     // 应用编号
+    }
+    TenantAppIndexResp{
+        List []*AppInfo `json:"list"`            // 租户列表数据
+    }
+
+    TenantAppMultiUpdateReq {
+        Code string `json:"code,optional"`                     // 应用编号
+        AppCodes []string `json:"appCodes"`
+    }
+
+    TenantInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
+        Name string `json:"name,optional"`                     // 应用名称
+        Code string `json:"code,optional"`                     // 应用编号
+    }
+
+
+    TenantInfoIndexResp struct {
+        List []*TenantInfo `json:"list"`            // 租户列表数据
+        Total int64 `json:"total"`                    // 租户列表总记录数
+    }
+
+)

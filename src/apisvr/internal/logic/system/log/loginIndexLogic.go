@@ -28,6 +28,7 @@ func NewLoginIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginI
 func (l *LoginIndexLogic) LoginIndex(req *types.SysLogLoginIndexReq) (resp *types.SysLogLoginIndexResp, err error) {
 	l.Infof("%s req=%v", utils.FuncName(), req)
 	info, err := l.svcCtx.LogRpc.LoginLogIndex(l.ctx, &sys.LoginLogIndexReq{
+		AppCode:       req.AppCode,
 		Page:          logic.ToSysPageRpc(req.Page),
 		IpAddr:        req.IpAddr,
 		LoginLocation: req.LoginLocation,
@@ -40,11 +41,12 @@ func (l *LoginIndexLogic) LoginIndex(req *types.SysLogLoginIndexReq) (resp *type
 	var total int64
 	total = info.Total
 
-	var logLoginInfo []*types.SysLogLoginIndexData
-	logLoginInfo = make([]*types.SysLogLoginIndexData, 0, len(logLoginInfo))
+	var logLoginInfo []*types.SysLogLoginInfo
+	logLoginInfo = make([]*types.SysLogLoginInfo, 0, len(logLoginInfo))
 
-	for _, i := range info.Info {
-		logLoginInfo = append(logLoginInfo, &types.SysLogLoginIndexData{
+	for _, i := range info.List {
+		logLoginInfo = append(logLoginInfo, &types.SysLogLoginInfo{
+			AppCode:       i.AppCode,
 			UserID:        i.UserID,
 			UserName:      i.UserName,
 			IpAddr:        i.IpAddr,

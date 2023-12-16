@@ -29,6 +29,7 @@ func (l *OperIndexLogic) OperIndex(req *types.SysLogOperIndexReq) (resp *types.S
 	l.Infof("%s req=%v", utils.FuncName(), req)
 	info, err := l.svcCtx.LogRpc.OperLogIndex(l.ctx, &sys.OperLogIndexReq{
 		Page:         logic.ToSysPageRpc(req.Page),
+		AppCode:      req.AppCode,
 		OperName:     req.OperName,
 		OperUserName: req.OperUserName,
 		BusinessType: req.BusinessType,
@@ -40,11 +41,12 @@ func (l *OperIndexLogic) OperIndex(req *types.SysLogOperIndexReq) (resp *types.S
 	var total int64
 	total = info.Total
 
-	var logOperInfo []*types.SysLogOperIndexData
-	logOperInfo = make([]*types.SysLogOperIndexData, 0, len(logOperInfo))
+	var logOperInfo []*types.SysLogOperInfo
+	logOperInfo = make([]*types.SysLogOperInfo, 0, len(logOperInfo))
 
-	for _, i := range info.Info {
-		logOperInfo = append(logOperInfo, &types.SysLogOperIndexData{
+	for _, i := range info.List {
+		logOperInfo = append(logOperInfo, &types.SysLogOperInfo{
+			AppCode:      i.AppCode,
 			UserID:       i.UserID,
 			OperUserName: i.OperUserName,
 			OperName:     i.OperName,

@@ -6,71 +6,149 @@ info(
 import "common.api"  //公共结构体定义
 
 @server(
-    group: system/role
-    prefix: /api/v1/system/role
+    group: system/role/info
+    prefix: /api/v1/system/role/info
     middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "添加角色"
-    @handler RoleCreate
-    post /create (RoleCreateReq) returns ()
+    @handler create
+    post /create (RoleInfo) returns ()
 
     @doc "获取角色列表"
-    @handler RoleIndex
-    post /index (RoleIndexReq) returns (RoleIndexResp)
+    @handler index
+    post /index (RoleInfoIndexReq) returns (RoleInfoIndexResp)
 
     @doc "更新角色"
-    @handler RoleUpdate
-    post /update (RoleUpdateReq) returns ()
+    @handler update
+    post /update (RoleInfo) returns ()
 
     @doc "删除角色"
-    @handler RoleDelete
-    post /delete (RoleDeleteReq) returns ()
-
-    @doc "更新角色对应菜单列表"
-    @handler RoleMenuUpdate
-    post /role-menu/update (RoleMenuUpdateReq) returns ()
+    @handler delete
+    post /delete (RoleInfoDeleteReq) returns ()
 }
+
+
+@server(
+    group: system/role/app
+    prefix: /api/v1/system/role/app
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "更新APP权限"
+    @handler multiUpdate
+    post /multi-update (RoleAppMultiUpdateReq) returns ()
+
+    @doc "获取APP权限列表"
+    @handler index
+    post /index (RoleAppIndexReq) returns (RoleAppIndexResp)
+}
+
+
+@server(
+    group: system/role/api
+    prefix: /api/v1/system/role/api
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "更新API权限"
+    @handler multiUpdate
+    post /multi-update (RoleApiMultiUpdateReq) returns ()
+
+    @doc "获取API权限列表"
+    @handler index
+    post /index (RoleApiIndexReq) returns (RoleApiIndexResp)
+
+}
+
+
+@server(
+    group: system/role/menu
+    prefix: /api/v1/system/role/menu
+    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "更新角色对应菜单列表"
+    @handler mulitUpdate
+    post /multi-update (RoleMenuMultiUpdateReq) returns ()
+
+    @doc "获取角色对应菜单列表"
+    @handler index
+    post /index (RoleMenuIndexReq) returns (RoleMenuIndexResp)
+}
+
+
 type (
-    RoleCreateReq struct {
-        Name string `json:"name"`                     // 角色名称
-        Remark string `json:"remark,optional"`        // 备注
-        Status int64 `json:"status,optional"`         // 状态 1:启用,2:禁用
+
+    RoleAppMultiUpdateReq{
+        ID int64 `json:"id"`      //角色ID
+        AppCodes []string `json:"appCodes"`  //App列表数据
+    }
+    RoleAppIndexReq{
+        ID int64 `json:"id"`      //角色ID
+    }
+    RoleAppIndexResp{
+        List []*AppInfo `json:"list"`  //App列表数据
+        Total int64 `json:"total"`         //App列表总数
     }
 
-    RoleIndexReq struct {
+
+    AuthApiInfo {
+        Route string `json:"route"`                          // 接口路由
+        Method string `json:"method"`             // 接口请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+    }
+
+    RoleApiMultiUpdateReq {
+        ID int64 `json:"id"`      //角色ID
+        AppCode string `json:"appCode"`                               // 应用编号
+        Apis []*AuthApiInfo `json:"apis"`  //API列表数据
+    }
+
+    RoleApiIndexReq{
+        ID int64 `json:"id"`      //角色ID
+        AppCode string `json:"appCode"`                               // 应用编号
+    }
+
+    RoleApiIndexResp {
+        List []*AuthApiInfo `json:"list"`  //API列表数据
+        Total int64 `json:"total"`         //API列表总数
+    }
+
+    RoleMenuIndexReq{
+        ID int64 `json:"id"`   //角色编号
+        AppCode string `json:"appCode"`                               // 应用编号
+    }
+    RoleMenuIndexResp{
+        List []*MenuInfo `json:"list"`  //角色列表数据
+        Total int64 `json:"total"`           //角色列表总数
+    }
+
+    RoleInfoIndexReq struct {
         Page *PageInfo `json:"page,optional"`//分页信息,只获取一个则不填
         Name string `json:"name,optional "`           //按名称查找角色
         Status int64 `json:"status,optional "`        //按状态查找角色
     }
 
-    RoleIndexData struct {
-        ID int64 `json:"id"`                                // 编号
-        Name string `json:"name"`                           // 角色名称
-        Remark string `json:"remark"`                       // 备注
-        CreatedTime int64 `json:"createdTime"`              // 创建时间
-        Status int64 `json:"status"`                        // 角色状态
-        RoleMenuID []int64 `json:"roleMenuID"`              // 角色对应的菜单id列表
+    RoleInfo struct {
+        ID int64 `json:"id,optional"`                                // 编号
+        Name string `json:"name,optional"`                           // 角色名称
+        Desc string `json:"desc,optional"`                       // 备注
+        CreatedTime int64 `json:"createdTime,optional"`              // 创建时间
+        Status int64 `json:"status,optional"`                        // 角色状态
     }
 
-    RoleIndexResp struct {
-        List []*RoleIndexData `json:"list"`  //角色列表数据
+    RoleInfoIndexResp struct {
+        List []*RoleInfo `json:"list"`  //角色列表数据
         Total int64 `json:"total"`           //角色列表总数
     }
 
-    RoleUpdateReq struct {
-        ID int64 `json:"id"`                                        // 编号
-        Name string `json:"name,optional"`                          // 角色名称
-        Remark string `json:"remark,optional"`                      // 备注
-        Status int64 `json:"status,optional,options=1|2"`           // 状态
-    }
-
-    RoleDeleteReq struct {
+    RoleInfoDeleteReq struct {
         ID int64 `json:"id"`  //编号
     }
 
-    RoleMenuUpdateReq struct {
+    RoleMenuMultiUpdateReq struct {
         ID int64 `json:"id"`   //角色编号
-        MenuID []int64 `json:"menuID"` //菜单编号列表
+        AppCode string `json:"appCode"`                               // 应用编号
+        MenuIDs []int64 `json:"menuIDs"` //菜单编号列表
     }
 )

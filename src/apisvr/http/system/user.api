@@ -6,8 +6,8 @@ info(
 	version: "v0.1.0"
 )
 //import "common.api"  //公共结构体定义
-import "system/project.api"  //项目管理
-import "system/menu.api"  //菜单结构
+import "system/system.api"
+
 @server (
 	group : system/user
 	prefix: /api/v1/system/user
@@ -31,8 +31,8 @@ service api {
 }
 
 @server (
-	group : system/user
-	prefix: /api/v1/system/user
+	group : system/user/info
+	prefix: /api/v1/system/user/info
 	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
 )
 service api {
@@ -42,7 +42,7 @@ service api {
 
 	@doc "查询用户信息列表"
 	@handler Index
-	post /index (UserIndexReq) returns (UserIndexResp)
+	post /index (UserInfoIndexReq) returns (UserInfoIndexResp)
 
 	@doc "更新用户基本数据"
 	@handler update
@@ -50,16 +50,32 @@ service api {
 
 	@doc "获取用户信息"
 	@handler read
-	post /read (UserReadReq) returns (UserInfo)
+	post /read (UserInfoReadReq) returns (UserInfo)
 
 	@doc "刪除用戶"
 	@handler delete
-	post /delete (UserDeleteReq) returns ()
+	post /delete (UserInfoDeleteReq) returns ()
 
-    @doc "获取用戶资源"
-    @handler resourceRead
-    post /resource-read () returns (UserResourceReadResp)
 }
+
+@server (
+	group : system/user
+	prefix: /api/v1/system/user
+	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+service api {
+	@doc "获取用戶资源"
+	@handler resourceRead
+	post /resource/read () returns (UserResourceReadResp)
+
+	@doc "获取用戶角色列表"
+	@handler roleIndex
+	post /role/index (UserRoleIndexReq) returns (UserRoleIndexResp)
+	@doc "更新用戶的角色列表"
+	@handler roleMultiUpdate
+	post /role/multi-update (UserRoleMultiUpdateReq) returns ()
+}
+
 type (
 	 UserInfo {
 		UserID         int64  `json:"userID,string,optional"`        // 用户id
@@ -67,7 +83,6 @@ type (
 		Password    string `json:"password,optional,omitempty"`         // 登录密码
         Email       string `json:"email,optional"`             // 邮箱
         Phone       string `json:"phone,optional"`             // 手机号
-        Wechat      string `json:"wechat,optional"`            // 微信UnionID
         LastIP      string `json:"lastIP,optional"`            // 最后登录ip
         RegIP       string `json:"regIP,optional"`             // 注册ip
 		NickName    string `json:"nickName,optional"`          // 用户的昵称
@@ -77,11 +92,23 @@ type (
 		Language    string `json:"language,optional"`          // 用户的语言，简体中文为zh_CN
 		HeadImgUrl  string `json:"headImgUrl,optional"`        // 用户头像
 		CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
-        Role        int64  `json:"role,optional"`                       // 用户角色
+        Role        int64  `json:"role,optional"`                       // 用户角色默认
         Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
 		IsAllData   int64  `json:"isAllData,optional"`  	   // 是否所有数据权限（1是，2否）
 	}
 
+	 UserRoleIndexReq{
+		 UserID         int64  `json:"userID,string"`        // 用户id
+	 }
+	 UserRoleIndexResp{
+	 	Total int64 `json:"total"`
+	 	List  []*RoleInfo `json:"list"`           //用户角色列表
+	 }
+
+	 UserRoleMultiUpdateReq{
+		 UserID         int64  `json:"userID,string"`        // 用户id
+		 RoleIDs 		[]int64 `json:"roleIDs"` //角色编号列表
+	 }
 
 	UserCreateResp {
 		UserID         int64  `json:"userID,string,optional"`        // 用户id
@@ -99,37 +126,39 @@ type (
 		Expire int64  `json:"expire"`       //过期时间
 	}
 
-	UserIndexReq {
+	UserInfoIndexReq {
 		Page *PageInfo `json:"page,optional"` //分页信息
 		UserName    string `json:"userName,optional"`          //用户名(唯一)
 		Phone       string `json:"phone,optional"`             // 手机号
 		Email       string `json:"email,optional"`             // 邮箱
 	}
 
-	UserIndexResp {
+	UserInfoIndexResp {
 		List  []*UserInfo `json:"list,omitempty"`           //用户信息列表
 		Total int64       `json:"total,optional,omitempty"` //总数
 	}
 
 
 
-	UserReadReq{
+	UserInfoReadReq{
 		UserID         int64  `json:"userID,string,optional"`        // 用户id
 	}
 
 
 
-	UserDeleteReq {
+	UserInfoDeleteReq {
 		UserID         int64  `json:"userID,string,optional"`        // 用户id
 	}
 
 	UserLoginReq {
-		Account    string `json:"account"`                               //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
-		PwdType   int32  `json:"pwdType"`                              //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
-		Password  string `json:"password"`                             //密码，建议md5转换 密码登录时需要填写
+		Account    string `json:"account,optional"`                               //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+		PwdType   int32  `json:"pwdType,optional"`                              //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
+		Password  string `json:"password,optional"`                             //密码，建议md5转换 密码登录时需要填写
 		LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
 		Code      string `json:"code,optional"`                                 //验证码    微信登录填code
 		CodeID    string `json:"codeID,optional"`                               //验证码编号 微信登录填state
+		AppCode string `json:"appCode,default=core"`                               // 应用编号
+		TenantCode string `json:"tenantCode,default=default"` //租户号
 	}
 
 	UserLoginResp {
@@ -144,8 +173,9 @@ type (
 	}
 
     UserResourceReadResp{
-        Menu   []*MenuData   `json:"menu"`           //菜单资源
+        Menu   []*MenuInfo   `json:"menu"`           //菜单资源
 		Info  *UserInfo `json:"info"`//用户信息
+		App 	*AppInfo 	`json:"app"`
 		Projects []*ProjectInfo `json:"projects"`    //项目列表
     }
 )

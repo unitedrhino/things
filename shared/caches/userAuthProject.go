@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/domain/userDataAuth"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils/cast"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 )
 
@@ -69,7 +69,7 @@ func GatherUserAuthProjectIDs(ctx context.Context) (bool, []int64, error) {
 		return false, nil, errors.Permissions.WithMsg(errMsg)
 	}
 	for _, c := range ccAuthIDs {
-		authIDs = append(authIDs, cast.ToInt64(c.ProjectID))
+		authIDs = append(authIDs, utils.ToInt64(c.ProjectID))
 	}
 
 	return true, authIDs, nil

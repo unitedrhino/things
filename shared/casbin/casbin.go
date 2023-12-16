@@ -17,22 +17,19 @@ import (
 const (
 	// casbin rule
 	rule = `
-		[request_definition]
-		r = sub, obj, act
-		
-		[policy_definition]
-		p = sub, obj, act
-		
-		[role_definition]
-		g = _, _
-		
-		[policy_effect]
-		e = some(where (p.eft == allow))
-		
-		[matchers]
-		m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act
+	[request_definition]
+	r = sub,tenant, app, path, method
+	
+	[policy_definition]
+	p = sub,tenant, app, path, method
+	
+	[policy_effect]
+	e = some(where (p.eft == allow))
+	
+	[matchers]
+	m =  r.sub == p.sub &&r.tenant == p.tenant && r.app == p.app && r.path == p.path && r.method == p.method
 		`
-	tableName = "sys_api_auth"
+	tableName = "sys_role_api"
 )
 
 func NewCasbin(conn *sql.DB, driver string) (*casbin.Enforcer, error) {

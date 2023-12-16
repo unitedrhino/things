@@ -17,6 +17,10 @@ type(
     WithID{
         ID int64 `json:"id,optional"`         // id
     }
+    WithIDOrCode{
+        ID int64 `json:"id,optional"`         // id
+        Code string `json:"code,optional"`
+    }
     Tag struct {
         Key string `json:"key"`
         Value string `json:"value"`

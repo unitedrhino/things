@@ -18,12 +18,16 @@ func NewRoleMenuRepo(in any) *RoleMenuRepo {
 
 type RoleMenuFilter struct {
 	RoleIDs []int64
+	AppCode string
 }
 
 func (p RoleMenuRepo) fmtFilter(ctx context.Context, f RoleMenuFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if len(f.RoleIDs) != 0 {
 		db = db.Where("role_id in ?", f.RoleIDs)
+	}
+	if f.AppCode != "" {
+		db = db.Where("app_code =?", f.AppCode)
 	}
 	return db
 }
@@ -89,17 +93,18 @@ func (p RoleMenuRepo) MultiInsert(ctx context.Context, data []*SysRoleMenu) erro
 	return stores.ErrFmt(err)
 }
 
-func (p RoleMenuRepo) MultiUpdate(ctx context.Context, roleID int64, menuIDs []int64) error {
+func (p RoleMenuRepo) MultiUpdate(ctx context.Context, roleID int64, appCode string, menuIDs []int64) error {
 	var datas []*SysRoleMenu
 	for _, v := range menuIDs {
 		datas = append(datas, &SysRoleMenu{
-			RoleID: roleID,
-			MenuID: v,
+			AppCode: appCode,
+			RoleID:  roleID,
+			MenuID:  v,
 		})
 	}
 	err := p.db.Transaction(func(tx *gorm.DB) error {
 		rm := NewRoleMenuRepo(tx)
-		err := rm.DeleteByFilter(ctx, RoleMenuFilter{RoleIDs: []int64{roleID}})
+		err := rm.DeleteByFilter(ctx, RoleMenuFilter{RoleIDs: []int64{roleID}, AppCode: appCode})
 		if err != nil {
 			return err
 		}

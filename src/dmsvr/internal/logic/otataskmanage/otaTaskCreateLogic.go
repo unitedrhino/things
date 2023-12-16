@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/i-Things/things/shared/utils"
 
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/def"
 	thingsError "github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils/cast"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -98,7 +98,7 @@ func (l *OtaTaskCreateLogic) OtaTaskCreate(in *dm.OtaTaskCreateReq) (*dm.OtaTask
 		l.Errorf("AddOtaTask|CheckFirmware|in=%v\n", in)
 		return nil, thingsError.Database.AddDetail(err)
 	} else if find == false {
-		return nil, thingsError.Parameter.AddDetail("not find firmware id:" + cast.ToString(in.FirmwareID))
+		return nil, thingsError.Parameter.AddDetail("not find firmware id:" + utils.ToString(in.FirmwareID))
 	}
 	taskUid, _ := uuid.GenerateUUID()
 	di := relationDB.DmOtaTask{

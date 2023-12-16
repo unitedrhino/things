@@ -16,10 +16,11 @@ func NewApiInfoRepo(in any) *ApiInfoRepo {
 }
 
 type ApiInfoFilter struct {
-	Route  string
-	Method int64
-	Group  string
-	Name   string
+	Route   string
+	Method  string
+	Group   string
+	Name    string
+	AppCode string
 }
 
 func (p ApiInfoRepo) fmtFilter(ctx context.Context, f ApiInfoFilter) *gorm.DB {
@@ -27,7 +28,10 @@ func (p ApiInfoRepo) fmtFilter(ctx context.Context, f ApiInfoFilter) *gorm.DB {
 	if f.Route != "" {
 		db = db.Where("route like ?", "%"+f.Route+"%")
 	}
-	if f.Method != 0 {
+	if f.AppCode != "" {
+		db = db.Where("app_code =?", f.AppCode)
+	}
+	if f.Method != "" {
 		db = db.Where("method = ?", f.Method)
 	}
 	if f.Group != "" {

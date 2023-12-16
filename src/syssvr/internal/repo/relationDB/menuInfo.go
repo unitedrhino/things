@@ -16,7 +16,7 @@ func NewMenuInfoRepo(in any) *MenuInfoRepo {
 }
 
 type MenuInfoFilter struct {
-	Role    int64
+	AppCode string
 	Name    string
 	Path    string
 	MenuIds []int64
@@ -24,6 +24,9 @@ type MenuInfoFilter struct {
 
 func (p MenuInfoRepo) fmtFilter(ctx context.Context, f MenuInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.AppCode != "" {
+		db = db.Where("app_code =?", f.AppCode)
+	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
 	}

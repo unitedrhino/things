@@ -44,9 +44,10 @@ func (l *LoginLogIndexLogic) LoginLogIndex(in *sys.LoginLogIndexReq) (*sys.Login
 	if err != nil {
 		return nil, err
 	}
-	info := make([]*sys.LoginLogIndexData, 0, len(resp))
+	info := make([]*sys.LoginLogInfo, 0, len(resp))
 	for _, v := range resp {
-		info = append(info, &sys.LoginLogIndexData{
+		info = append(info, &sys.LoginLogInfo{
+			AppCode:       v.AppCode,
 			UserID:        v.UserID,
 			UserName:      v.UserName,
 			IpAddr:        v.IpAddr,
@@ -59,5 +60,5 @@ func (l *LoginLogIndexLogic) LoginLogIndex(in *sys.LoginLogIndexReq) (*sys.Login
 		})
 	}
 
-	return &sys.LoginLogIndexResp{Info: info, Total: total}, nil
+	return &sys.LoginLogIndexResp{List: info, Total: total}, nil
 }

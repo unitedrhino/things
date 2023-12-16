@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/shared/utils/cast"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -32,7 +31,7 @@ func (t AreaID) GormValue(ctx context.Context, db *gorm.DB) (expr clause.Expr) {
 	return
 }
 func (t *AreaID) Scan(value interface{}) error {
-	ret := cast.ToInt64(value)
+	ret := utils.ToInt64(value)
 	p := AreaID(ret)
 	*t = p
 	return nil
