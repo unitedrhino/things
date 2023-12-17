@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
@@ -102,9 +103,13 @@ func (p TenantAppRepo) MultiUpdate(ctx context.Context, tenantCode string, appCo
 	for _, v := range appCodes {
 		datas = append(datas, &SysTenantApp{
 			AppCode:    v,
-			TenantCode: tenantCode,
+			TenantCode: stores.TenantCode(tenantCode),
 		})
 	}
+	ctxs.GetUserCtx(ctx).AllData = true //只有这样才能改为其他租户
+	defer func() {
+		ctxs.GetUserCtx(ctx).AllData = false
+	}()
 	err := p.db.Transaction(func(tx *gorm.DB) error {
 		rm := NewTenantAppRepo(tx)
 		err := rm.DeleteByFilter(ctx, TenantAppFilter{TenantCode: tenantCode})

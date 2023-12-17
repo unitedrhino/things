@@ -18,7 +18,7 @@ type UserCtx struct {
 }
 
 type InnerCtx struct {
-	AllArea bool //内部使用,不限制区域
+	AllData bool //内部使用,不限制区域
 }
 
 func SetUserCtx(ctx context.Context, userCtx *UserCtx) context.Context {

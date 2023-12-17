@@ -18,10 +18,10 @@ type SysUserInfo struct {
 	UserName      sql.NullString    `gorm:"column:user_name;uniqueIndex:tc_un;type:VARCHAR(20)"`                                                                                            // 登录用户名
 	NickName      string            `gorm:"column:nick_name;type:VARCHAR(60);NOT NULL"`                                                                                                     // 用户的昵称
 	Password      string            `gorm:"column:password;type:CHAR(32);NOT NULL"`                                                                                                         // 登录密码
-	Email         sql.NullString    `gorm:"column:email;uniqueIndex;type:VARCHAR(255)"`                                                                                                     // 邮箱
-	Phone         sql.NullString    `gorm:"column:phone;uniqueIndex;type:VARCHAR(20)"`                                                                                                      // 手机号
-	WechatUnionID sql.NullString    `gorm:"column:wechat_union_id;uniqueIndex;type:VARCHAR(20)"`                                                                                            // 微信union id
-	WechatOpenID  sql.NullString    `gorm:"column:wechat_open_id;uniqueIndex;type:VARCHAR(20)"`                                                                                             // 微信union id
+	Email         sql.NullString    `gorm:"column:email;uniqueIndex:tc_email;type:VARCHAR(255)"`                                                                                            // 邮箱
+	Phone         sql.NullString    `gorm:"column:phone;uniqueIndex:tc_phone;type:VARCHAR(20)"`                                                                                             // 手机号
+	WechatUnionID sql.NullString    `gorm:"column:wechat_union_id;uniqueIndex:tc_wui;type:VARCHAR(20)"`                                                                                     // 微信union id
+	WechatOpenID  sql.NullString    `gorm:"column:wechat_open_id;uniqueIndex:tc_woi;type:VARCHAR(20)"`                                                                                      // 微信union id
 	LastIP        string            `gorm:"column:last_ip;type:VARCHAR(40);NOT NULL"`                                                                                                       // 最后登录ip
 	RegIP         string            `gorm:"column:reg_ip;type:VARCHAR(40);NOT NULL"`                                                                                                        // 注册ip
 	Sex           int64             `gorm:"column:sex;type:SMALLINT;default:3;NOT NULL"`                                                                                                    // 用户的性别，值为1时是男性，值为2时是女性，其他值为未知
