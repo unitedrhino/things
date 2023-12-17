@@ -16,7 +16,7 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "添加租户"
     @handler create
-    post /create (TenantInfo) returns ()
+    post /create (TenantInfoCreateReq) returns ()
 
     @doc "获取租户列表"
     @handler index
@@ -53,6 +53,16 @@ service api {
 
 
 type (
+
+    TenantInfoCreateReq{
+        Info *TenantInfo `json:"info"`
+        AdminUserInfo *UserInfo `json:"adminUserInfo"`
+    }
+
+    TenantInfoCreateResp{
+        Code string `json:"code"`
+    }
+
     TenantAppIndexReq{
         Code string `json:"code,optional"`                     // 应用编号
     }

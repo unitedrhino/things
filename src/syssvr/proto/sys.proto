@@ -5,7 +5,7 @@ import "google/protobuf/wrappers.proto";
 package sys;
 
 service UserManage {
-  rpc userInfoCreate(UserInfo) returns(UserCreateResp);//创建用户信息
+  rpc userInfoCreate(UserInfoCreateReq) returns(UserCreateResp);//创建用户信息
   rpc userInfoIndex(UserInfoIndexReq) returns(UserInfoIndexResp);
   rpc userInfoUpdate(UserInfo) returns(Response);//更新用户基本数据
   rpc userInfoRead(UserInfoReadReq) returns(UserInfo);//获取用户信息
@@ -111,7 +111,7 @@ service AreaManage {
 
 service TenantManage {
   //新增区域
-  rpc tenantInfoCreate (TenantInfo) returns (Response);
+  rpc tenantInfoCreate (TenantInfoCreateReq) returns (Response);
   //更新区域
   rpc tenantInfoUpdate (TenantInfo) returns (Response);
   //删除区域
@@ -126,6 +126,11 @@ service TenantManage {
 }
 
 //--------------------租户管理------------------------
+
+message TenantInfoCreateReq{
+  TenantInfo info = 1;
+  UserInfo adminUserInfo = 2;
+}
 
 message TenantInfo{
   int64 id = 1;
@@ -468,6 +473,10 @@ message RoleApiAuthReq{
   string method = 3;
 }
 
+message UserInfoCreateReq{
+  UserInfo info = 1;
+  repeated int64 roleIDs =2;
+}
 
 message UserInfoIndexReq{
   PageInfo page       = 1;//分页信息 只获取一个则不填 搜索的字段: userID:用户id userName:登录用户名  email:邮箱  phone:手机号

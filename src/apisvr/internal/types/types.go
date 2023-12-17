@@ -85,15 +85,20 @@ type UserCreateResp struct {
 }
 
 type UserCaptchaReq struct {
-	Data string `json:"data,optional"`              //短信验证时填写手机号
-	Type string `json:"type,options=sms|image"`     //验证方式:短信验证,图片验证码
-	Use  string `json:"use,options=login|register"` //用途
+	Account string `json:"account,optional"`             //短信验证时填写手机号,邮箱验证时填写邮箱
+	Type    string `json:"type,options=sms|image|email"` //验证方式:短信验证,图片验证码
+	Use     string `json:"use,options=login|register"`   //用途
 }
 
 type UserCaptchaResp struct {
 	CodeID string `json:"codeID"`       //验证码编号
 	Url    string `json:"url,optional"` //图片验证码url
 	Expire int64  `json:"expire"`       //过期时间
+}
+
+type UserInfoCreateReq struct {
+	Info    *UserInfo `json:"info"`
+	RoleIDs []int64   `json:"roleIDs,range=(0:120]"` //角色编号列表
 }
 
 type UserInfoIndexReq struct {
@@ -117,14 +122,14 @@ type UserInfoDeleteReq struct {
 }
 
 type UserLoginReq struct {
-	Account    string `json:"account,optional"`                                //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
-	PwdType    int32  `json:"pwdType,optional"`                                //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
-	Password   string `json:"password,optional"`                               //密码，建议md5转换 密码登录时需要填写
-	LoginType  string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
-	Code       string `json:"code,optional"`                                   //验证码    微信登录填code
-	CodeID     string `json:"codeID,optional"`                                 //验证码编号 微信登录填state
-	AppCode    string `json:"appCode,default=core"`                            // 应用编号
-	TenantCode string `json:"tenantCode,default=default"`                      //租户号
+	Account    string `json:"account,optional"`                                      //登录账号(支持用户名,手机号,邮箱) 账号密码登录时需要填写
+	PwdType    int32  `json:"pwdType,optional"`                                      //账号密码登录时需要填写.0或1,无密码 2，明文 3，md5加密
+	Password   string `json:"password,optional"`                                     //密码，建议md5转换 密码登录时需要填写
+	LoginType  string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd|email"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码 email 邮箱
+	Code       string `json:"code,optional"`                                         //验证码    微信邮箱验证登录填code
+	CodeID     string `json:"codeID,optional"`                                       //验证码编号 微信邮箱验证登录填state
+	AppCode    string `json:"appCode,default=core"`                                  // 应用编号
+	TenantCode string `json:"tenantCode,default=default"`                            //租户号
 }
 
 type UserLoginResp struct {
@@ -139,8 +144,9 @@ type JwtToken struct {
 }
 
 type UserResourceReadResp struct {
-	Menu     []*MenuInfo    `json:"menu"` //菜单资源
-	Info     *UserInfo      `json:"info"` //用户信息
+	Menus    []*MenuInfo    `json:"menus"` //菜单资源
+	Roles    []*RoleInfo    `json:"roles"` //角色列表
+	Info     *UserInfo      `json:"info"`  //用户信息
 	App      *AppInfo       `json:"app"`
 	Projects []*ProjectInfo `json:"projects"` //项目列表
 }
@@ -599,6 +605,15 @@ type TimedTaskSendReq struct {
 	Option     *TimedTaskOption     `json:"option,optional"`     //选项
 	ParamQueue *TimedTaskParamQueue `json:"paramQueue,optional"` //消息队列发送类型配置,如果不传则使用数据库定义的
 	ParamSql   *TimedTaskParamSql   `json:"paramSql,optional"`   //数据库执行类型配置,如果不传则使用数据库定义的
+}
+
+type TenantInfoCreateReq struct {
+	Info          *TenantInfo `json:"info"`
+	AdminUserInfo *UserInfo   `json:"adminUserInfo"`
+}
+
+type TenantInfoCreateResp struct {
+	Code string `json:"code"`
 }
 
 type TenantAppIndexReq struct {

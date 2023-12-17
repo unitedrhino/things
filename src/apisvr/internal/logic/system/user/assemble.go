@@ -50,6 +50,7 @@ func UserInfoToRpc(ui *types.UserInfo) *sys.UserInfo {
 		Province:    ui.Province,
 		Language:    ui.Language,
 		HeadImgUrl:  ui.HeadImgUrl,
+		Password:    ui.Password,
 		CreatedTime: ui.CreatedTime,
 	}
 }

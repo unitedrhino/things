@@ -23,7 +23,7 @@ func NewTenantManageServer(svcCtx *svc.ServiceContext) *TenantManageServer {
 }
 
 // 新增区域
-func (s *TenantManageServer) TenantInfoCreate(ctx context.Context, in *sys.TenantInfo) (*sys.Response, error) {
+func (s *TenantManageServer) TenantInfoCreate(ctx context.Context, in *sys.TenantInfoCreateReq) (*sys.Response, error) {
 	l := tenantmanagelogic.NewTenantInfoCreateLogic(ctx, s.svcCtx)
 	return l.TenantInfoCreate(in)
 }

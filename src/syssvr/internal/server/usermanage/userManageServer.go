@@ -22,7 +22,7 @@ func NewUserManageServer(svcCtx *svc.ServiceContext) *UserManageServer {
 	}
 }
 
-func (s *UserManageServer) UserInfoCreate(ctx context.Context, in *sys.UserInfo) (*sys.UserCreateResp, error) {
+func (s *UserManageServer) UserInfoCreate(ctx context.Context, in *sys.UserInfoCreateReq) (*sys.UserCreateResp, error) {
 	l := usermanagelogic.NewUserInfoCreateLogic(ctx, s.svcCtx)
 	return l.UserInfoCreate(in)
 }

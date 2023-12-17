@@ -4,8 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
-
+	"github.com/i-Things/things/src/apisvr/internal/logic/system/user"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 
@@ -27,20 +26,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 }
 
 func (l *UpdateLogic) Update(req *types.UserInfo) error {
-	_, err := l.svcCtx.UserRpc.UserInfoUpdate(l.ctx, &sys.UserInfo{
-		UserID:     req.UserID,
-		UserName:   req.UserName,
-		Email:      req.Email,
-		NickName:   req.NickName,
-		City:       req.City,
-		Country:    req.Country,
-		Province:   req.Province,
-		Language:   req.Language,
-		HeadImgUrl: req.HeadImgUrl,
-		Role:       req.Role,
-		Sex:        req.Sex,
-		IsAllData:  req.IsAllData,
-	})
+	_, err := l.svcCtx.UserRpc.UserInfoUpdate(l.ctx, user.UserInfoToRpc(req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.user.upadte failure err=%+v", utils.FuncName(), er)

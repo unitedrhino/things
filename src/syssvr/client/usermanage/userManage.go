@@ -73,6 +73,7 @@ type (
 	TenantAppIndexResp            = sys.TenantAppIndexResp
 	TenantAppMultiUpdateReq       = sys.TenantAppMultiUpdateReq
 	TenantInfo                    = sys.TenantInfo
+	TenantInfoCreateReq           = sys.TenantInfoCreateReq
 	TenantInfoIndexReq            = sys.TenantInfoIndexReq
 	TenantInfoIndexResp           = sys.TenantInfoIndexResp
 	UserAuthArea                  = sys.UserAuthArea
@@ -87,6 +88,7 @@ type (
 	UserCheckTokenResp            = sys.UserCheckTokenResp
 	UserCreateResp                = sys.UserCreateResp
 	UserInfo                      = sys.UserInfo
+	UserInfoCreateReq             = sys.UserInfoCreateReq
 	UserInfoDeleteReq             = sys.UserInfoDeleteReq
 	UserInfoIndexReq              = sys.UserInfoIndexReq
 	UserInfoIndexResp             = sys.UserInfoIndexResp
@@ -101,7 +103,7 @@ type (
 	UserRoleMultiUpdateReq        = sys.UserRoleMultiUpdateReq
 
 	UserManage interface {
-		UserInfoCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error)
+		UserInfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
 		UserInfoIndex(ctx context.Context, in *UserInfoIndexReq, opts ...grpc.CallOption) (*UserInfoIndexResp, error)
 		UserInfoUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error)
 		UserInfoRead(ctx context.Context, in *UserInfoReadReq, opts ...grpc.CallOption) (*UserInfo, error)
@@ -141,12 +143,12 @@ func NewDirectUserManage(svcCtx *svc.ServiceContext, svr sys.UserManageServer) U
 	}
 }
 
-func (m *defaultUserManage) UserInfoCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error) {
+func (m *defaultUserManage) UserInfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	client := sys.NewUserManageClient(m.cli.Conn())
 	return client.UserInfoCreate(ctx, in, opts...)
 }
 
-func (d *directUserManage) UserInfoCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error) {
+func (d *directUserManage) UserInfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	return d.svr.UserInfoCreate(ctx, in)
 }
 
