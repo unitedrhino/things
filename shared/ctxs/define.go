@@ -5,8 +5,8 @@ import "strings"
 const (
 	UserInfoKey     string = "iThings-user"
 	UserTokenKey    string = "iThings-token"
-	UserAppCodeKey  string = "Ithings-App-Code" //用户正在访问的app
-	UserRoleKey     string = "Ithings-User-Role"
+	UserAppCodeKey  string = "iThings-app-code" //用户正在访问的app
+	UserRoleKey     string = "iThings-user-role"
 	UserSetTokenKey string = "iThings-set-token"
 	MetadataKey     string = "iThings-meta"
 )

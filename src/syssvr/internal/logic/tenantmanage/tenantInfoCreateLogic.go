@@ -3,6 +3,7 @@ package tenantmanagelogic
 import (
 	"context"
 	"database/sql"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
@@ -53,7 +54,7 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 	//2.对密码进行md5加密
 	password := utils.MakePwd(userInfo.Password, userID, false)
 	ui := relationDB.SysUserInfo{
-		TenantCode: in.Info.Code,
+		TenantCode: stores.TenantCode(in.Info.Code),
 		UserID:     userID,
 		Phone:      utils.AnyToNullString(userInfo.Phone),
 		Email:      utils.AnyToNullString(userInfo.Email),
@@ -69,8 +70,12 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 		Sex:        userInfo.Sex,
 		IsAllData:  def.True,
 	}
+	ctxs.GetUserCtx(l.ctx).AllData = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllData = false
+	}()
 	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
-		ri := relationDB.SysRoleInfo{TenantCode: in.Info.Code, Name: "超级管理员"}
+		ri := relationDB.SysRoleInfo{TenantCode: stores.TenantCode(in.Info.Code), Name: "超级管理员"}
 		err = relationDB.NewRoleInfoRepo(tx).Insert(l.ctx, &ri)
 		ui.Role = ri.ID
 		err = relationDB.NewUserInfoRepo(tx).Insert(l.ctx, &ui)

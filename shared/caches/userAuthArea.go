@@ -53,7 +53,7 @@ func GetUserAuthArea(ctx context.Context, userID int64, projectID int64) ([]*use
 func GatherUserAuthAreaIDs(ctx context.Context) (bool, []int64, error) {
 	//检查是否有所有数据权限
 	uc := ctxs.GetUserCtxOrNil(ctx)
-	if uc == nil || uc.IsAllData || uc.InnerCtx.AllArea {
+	if uc == nil || uc.IsAllData || uc.InnerCtx.AllData {
 		return false, nil, nil
 	}
 

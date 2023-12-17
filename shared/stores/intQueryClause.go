@@ -24,7 +24,7 @@ func (sd AuthQueryClause) Build(clause.Builder) {
 func (sd AuthQueryClause) MergeClause(*clause.Clause) {
 }
 
-const AuthModify = "authModify%v"
+const AuthModify = "authModify:%v"
 
 func (sd AuthQueryClause) GenAuthKey() string { //查询的时候会调用此接口
 	return fmt.Sprintf(AuthModify, sd.AuthDataType)

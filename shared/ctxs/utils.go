@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var ContextKeys = []string{UserInfoKey, UserTokenKey, UserSetTokenKey, UserRoleKey, MetadataKey}
+var ContextKeys = []string{UserInfoKey, UserTokenKey, UserSetTokenKey, UserRoleKey, MetadataKey, UserAppCodeKey}
 
 func CopyContext(ctx context.Context) context.Context {
 	newCtx := context.Background()
