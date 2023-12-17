@@ -5,6 +5,9 @@ build:build.clean mod cp.etc build.api build.dg build.dm build.sys build.rule bu
 
 runall:  run.timedjob run.timedscheduler run.sys run.dm run.dg run.rule run.api
 
+buildone:build.clean mod cp.etc build.api
+
+
 killall:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>killing all<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@killall  apisvr &
