@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system"
 	app "github.com/i-Things/things/src/apisvr/internal/logic/system/app/info"
+	"github.com/i-Things/things/src/apisvr/internal/logic/system/role"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"golang.org/x/sync/errgroup"
 
@@ -35,13 +36,15 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 		userInfo *types.UserInfo
 		projects []*types.ProjectInfo
 		appInfo  *types.AppInfo
+		roles    []*types.RoleInfo
 		wait     errgroup.Group
+		uc       = ctxs.GetUserCtx(l.ctx)
 	)
 	wait.Go(func() error {
 		defer utils.Recover(l.ctx)
 		info, err := l.svcCtx.RoleRpc.RoleMenuIndex(l.ctx, &sys.RoleMenuIndexReq{
-			Id:      ctxs.GetUserCtx(l.ctx).RoleID,
-			AppCode: ctxs.GetUserCtx(l.ctx).AppCode,
+			Id:      uc.RoleID,
+			AppCode: uc.AppCode,
 		})
 		if err != nil {
 			return err
@@ -49,6 +52,17 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 		for _, me := range info.List {
 			menuInfo = append(menuInfo, system.ToMenuInfoApi(me))
 		}
+		return nil
+	})
+	wait.Go(func() error {
+		defer utils.Recover(l.ctx)
+		info, err := l.svcCtx.UserRpc.UserRoleIndex(l.ctx, &sys.UserRoleIndexReq{
+			UserID: uc.UserID,
+		})
+		if err != nil {
+			return err
+		}
+		roles = role.ToRoleInfosTypes(info.List)
 		return nil
 	})
 	wait.Go(func() error {
@@ -82,9 +96,10 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 		return nil, err
 	}
 	return &types.UserResourceReadResp{
-		Menu:     menuInfo,
+		Menus:    menuInfo,
 		Info:     userInfo,
 		App:      appInfo,
+		Roles:    roles,
 		Projects: projects,
 	}, nil
 }

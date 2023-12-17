@@ -73,6 +73,7 @@ type (
 	TenantAppIndexResp            = sys.TenantAppIndexResp
 	TenantAppMultiUpdateReq       = sys.TenantAppMultiUpdateReq
 	TenantInfo                    = sys.TenantInfo
+	TenantInfoCreateReq           = sys.TenantInfoCreateReq
 	TenantInfoIndexReq            = sys.TenantInfoIndexReq
 	TenantInfoIndexResp           = sys.TenantInfoIndexResp
 	UserAuthArea                  = sys.UserAuthArea
@@ -87,6 +88,7 @@ type (
 	UserCheckTokenResp            = sys.UserCheckTokenResp
 	UserCreateResp                = sys.UserCreateResp
 	UserInfo                      = sys.UserInfo
+	UserInfoCreateReq             = sys.UserInfoCreateReq
 	UserInfoDeleteReq             = sys.UserInfoDeleteReq
 	UserInfoIndexReq              = sys.UserInfoIndexReq
 	UserInfoIndexResp             = sys.UserInfoIndexResp
@@ -102,7 +104,7 @@ type (
 
 	TenantManage interface {
 		// 新增区域
-		TenantInfoCreate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error)
+		TenantInfoCreate(ctx context.Context, in *TenantInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
 		// 更新区域
 		TenantInfoUpdate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error)
 		// 删除区域
@@ -139,13 +141,13 @@ func NewDirectTenantManage(svcCtx *svc.ServiceContext, svr sys.TenantManageServe
 }
 
 // 新增区域
-func (m *defaultTenantManage) TenantInfoCreate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultTenantManage) TenantInfoCreate(ctx context.Context, in *TenantInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewTenantManageClient(m.cli.Conn())
 	return client.TenantInfoCreate(ctx, in, opts...)
 }
 
 // 新增区域
-func (d *directTenantManage) TenantInfoCreate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error) {
+func (d *directTenantManage) TenantInfoCreate(ctx context.Context, in *TenantInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.TenantInfoCreate(ctx, in)
 }
 

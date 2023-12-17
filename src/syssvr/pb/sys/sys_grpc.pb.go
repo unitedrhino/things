@@ -40,7 +40,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserManageClient interface {
-	UserInfoCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error)
+	UserInfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error)
 	UserInfoIndex(ctx context.Context, in *UserInfoIndexReq, opts ...grpc.CallOption) (*UserInfoIndexResp, error)
 	UserInfoUpdate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*Response, error)
 	UserInfoRead(ctx context.Context, in *UserInfoReadReq, opts ...grpc.CallOption) (*UserInfo, error)
@@ -65,7 +65,7 @@ func NewUserManageClient(cc grpc.ClientConnInterface) UserManageClient {
 	return &userManageClient{cc}
 }
 
-func (c *userManageClient) UserInfoCreate(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserCreateResp, error) {
+func (c *userManageClient) UserInfoCreate(ctx context.Context, in *UserInfoCreateReq, opts ...grpc.CallOption) (*UserCreateResp, error) {
 	out := new(UserCreateResp)
 	err := c.cc.Invoke(ctx, UserManage_UserInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -204,7 +204,7 @@ func (c *userManageClient) UserAuthAreaIndex(ctx context.Context, in *UserAuthAr
 // All implementations must embed UnimplementedUserManageServer
 // for forward compatibility
 type UserManageServer interface {
-	UserInfoCreate(context.Context, *UserInfo) (*UserCreateResp, error)
+	UserInfoCreate(context.Context, *UserInfoCreateReq) (*UserCreateResp, error)
 	UserInfoIndex(context.Context, *UserInfoIndexReq) (*UserInfoIndexResp, error)
 	UserInfoUpdate(context.Context, *UserInfo) (*Response, error)
 	UserInfoRead(context.Context, *UserInfoReadReq) (*UserInfo, error)
@@ -226,7 +226,7 @@ type UserManageServer interface {
 type UnimplementedUserManageServer struct {
 }
 
-func (UnimplementedUserManageServer) UserInfoCreate(context.Context, *UserInfo) (*UserCreateResp, error) {
+func (UnimplementedUserManageServer) UserInfoCreate(context.Context, *UserInfoCreateReq) (*UserCreateResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserInfoCreate not implemented")
 }
 func (UnimplementedUserManageServer) UserInfoIndex(context.Context, *UserInfoIndexReq) (*UserInfoIndexResp, error) {
@@ -285,7 +285,7 @@ func RegisterUserManageServer(s grpc.ServiceRegistrar, srv UserManageServer) {
 }
 
 func _UserManage_UserInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserInfo)
+	in := new(UserInfoCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -297,7 +297,7 @@ func _UserManage_UserInfoCreate_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: UserManage_UserInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManageServer).UserInfoCreate(ctx, req.(*UserInfo))
+		return srv.(UserManageServer).UserInfoCreate(ctx, req.(*UserInfoCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2567,7 +2567,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TenantManageClient interface {
 	// 新增区域
-	TenantInfoCreate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error)
+	TenantInfoCreate(ctx context.Context, in *TenantInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
 	// 更新区域
 	TenantInfoUpdate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error)
 	// 删除区域
@@ -2588,7 +2588,7 @@ func NewTenantManageClient(cc grpc.ClientConnInterface) TenantManageClient {
 	return &tenantManageClient{cc}
 }
 
-func (c *tenantManageClient) TenantInfoCreate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error) {
+func (c *tenantManageClient) TenantInfoCreate(ctx context.Context, in *TenantInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, TenantManage_TenantInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2656,7 +2656,7 @@ func (c *tenantManageClient) TenantAppMultiUpdate(ctx context.Context, in *Tenan
 // for forward compatibility
 type TenantManageServer interface {
 	// 新增区域
-	TenantInfoCreate(context.Context, *TenantInfo) (*Response, error)
+	TenantInfoCreate(context.Context, *TenantInfoCreateReq) (*Response, error)
 	// 更新区域
 	TenantInfoUpdate(context.Context, *TenantInfo) (*Response, error)
 	// 删除区域
@@ -2674,7 +2674,7 @@ type TenantManageServer interface {
 type UnimplementedTenantManageServer struct {
 }
 
-func (UnimplementedTenantManageServer) TenantInfoCreate(context.Context, *TenantInfo) (*Response, error) {
+func (UnimplementedTenantManageServer) TenantInfoCreate(context.Context, *TenantInfoCreateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoCreate not implemented")
 }
 func (UnimplementedTenantManageServer) TenantInfoUpdate(context.Context, *TenantInfo) (*Response, error) {
@@ -2709,7 +2709,7 @@ func RegisterTenantManageServer(s grpc.ServiceRegistrar, srv TenantManageServer)
 }
 
 func _TenantManage_TenantInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TenantInfo)
+	in := new(TenantInfoCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2721,7 +2721,7 @@ func _TenantManage_TenantInfoCreate_Handler(srv interface{}, ctx context.Context
 		FullMethod: TenantManage_TenantInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantManageServer).TenantInfoCreate(ctx, req.(*TenantInfo))
+		return srv.(TenantManageServer).TenantInfoCreate(ctx, req.(*TenantInfoCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

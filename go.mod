@@ -24,6 +24,7 @@ require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hibiken/asynq v0.24.1
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/minio/minio-go/v7 v7.0.27
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/mssola/user_agent v0.5.3

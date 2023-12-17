@@ -62,7 +62,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	os := ua.OS()
 
 	l.Infof("%s req=%+v", utils.FuncName(), req)
-	if req.LoginType == "pwd" && req.Code != "" && req.CodeID != "" {
+	if req.LoginType == "pwd" {
 		if l.svcCtx.Captcha.Verify(req.CodeID, req.Code) == false {
 			return nil, errors.Captcha
 		}

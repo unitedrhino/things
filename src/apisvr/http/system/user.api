@@ -38,7 +38,7 @@ service api {
 service api {
 	@doc "创建用户信息"
 	@handler create
-	post /create (UserInfo) returns (UserCreateResp)
+	post /create (UserInfoCreateReq) returns (UserCreateResp)
 
 	@doc "查询用户信息列表"
 	@handler Index
@@ -115,8 +115,8 @@ type (
 	}
 
 	UserCaptchaReq {
-		Data string `json:"data,optional"`              //短信验证时填写手机号
-		Type string `json:"type,options=sms|image"`     //验证方式:短信验证,图片验证码
+		Account string `json:"account,optional"`              //短信验证时填写手机号,邮箱验证时填写邮箱
+		Type string `json:"type,options=sms|image|email"`     //验证方式:短信验证,图片验证码
 		Use  string `json:"use,options=login|register"` //用途
 	}
 
@@ -125,7 +125,10 @@ type (
 		Url    string `json:"url,optional"` //图片验证码url
 		Expire int64  `json:"expire"`       //过期时间
 	}
-
+	 UserInfoCreateReq{
+	 	Info *UserInfo `json:"info"`
+	 	RoleIDs 		[]int64 `json:"roleIDs,range=(0:120]"` //角色编号列表
+	 }
 	UserInfoIndexReq {
 		Page *PageInfo `json:"page,optional"` //分页信息
 		UserName    string `json:"userName,optional"`          //用户名(唯一)
@@ -151,12 +154,12 @@ type (
 	}
 
 	UserLoginReq {
-		Account    string `json:"account,optional"`                               //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
-		PwdType   int32  `json:"pwdType,optional"`                              //账号密码登录时需要填写.1,无密码 2，明文 3，md5加密
+		Account    string `json:"account,optional"`                               //登录账号(支持用户名,手机号,邮箱) 账号密码登录时需要填写
+		PwdType   int32  `json:"pwdType,optional"`                              //账号密码登录时需要填写.0或1,无密码 2，明文 3，md5加密
 		Password  string `json:"password,optional"`                             //密码，建议md5转换 密码登录时需要填写
-		LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码
-		Code      string `json:"code,optional"`                                 //验证码    微信登录填code
-		CodeID    string `json:"codeID,optional"`                               //验证码编号 微信登录填state
+		LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd|email"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码 email 邮箱
+		Code      string `json:"code,optional"`                                 //验证码    微信邮箱验证登录填code
+		CodeID    string `json:"codeID,optional"`                               //验证码编号 微信邮箱验证登录填state
 		AppCode string `json:"appCode,default=core"`                               // 应用编号
 		TenantCode string `json:"tenantCode,default=default"` //租户号
 	}
@@ -173,7 +176,8 @@ type (
 	}
 
     UserResourceReadResp{
-        Menu   []*MenuInfo   `json:"menu"`           //菜单资源
+        Menus   []*MenuInfo   `json:"menus"`           //菜单资源
+		Roles []*RoleInfo `json:"roles"` //角色列表
 		Info  *UserInfo `json:"info"`//用户信息
 		App 	*AppInfo 	`json:"app"`
 		Projects []*ProjectInfo `json:"projects"`    //项目列表

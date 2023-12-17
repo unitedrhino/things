@@ -80,7 +80,7 @@ func (m *CheckTokenWareMiddleware) OpenAuth(w http.ResponseWriter, r *http.Reque
 	}
 
 	strIP, _ := utils.GetIP(r)
-	if !m.cfg.OpenAuth.Auth(userName, password, strIP) {
+	if !utils.Auth(m.cfg.OpenAuth, userName, password, strIP) {
 		return isOpen, nil, errors.Permissions.AddMsg("开放认证没通过")
 	}
 
