@@ -3,7 +3,7 @@ package usermanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
@@ -55,7 +55,7 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysUserInfo) er
 	return nil
 }
 
-func (l *LoginLogic) getRet(tenantCode string, ui *relationDB.SysUserInfo, store kv.Store, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
+func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, store kv.Store, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	var rolses []int64
@@ -63,7 +63,7 @@ func (l *LoginLogic) getRet(tenantCode string, ui *relationDB.SysUserInfo, store
 		rolses = append(rolses, v.RoleID)
 	}
 	jwtToken, err := users.GetLoginJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire,
-		ui.UserID, tenantCode, rolses, ui.IsAllData)
+		ui.UserID, ctxs.GetUserCtx(l.ctx).TenantCode, rolses, ui.IsAllData)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)
@@ -88,12 +88,10 @@ func (l *LoginLogic) getRet(tenantCode string, ui *relationDB.SysUserInfo, store
 }
 
 func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserInfo, err error) {
-	if in.TenantCode == "" {
-		in.TenantCode = def.TenantCodeDefault
-	}
+	uci := ctxs.GetUserCtx(l.ctx)
 	switch in.LoginType {
 	case users.RegPwd:
-		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{TenantCode: in.TenantCode, Accounts: []string{in.Account}, WithRoles: true})
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{TenantCode: uci.TenantCode, Accounts: []string{in.Account}, WithRoles: true})
 		if err != nil {
 			return nil, err
 		}
@@ -109,7 +107,7 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserIn
 		if ret.ErrCode != 0 {
 			return nil, errors.Parameter.AddMsgf(ret.ErrMsg)
 		}
-		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{TenantCode: in.TenantCode, WechatUnionID: ret.UnionID, WechatOpenID: ret.OpenID, WithRoles: true})
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{TenantCode: uci.TenantCode, WechatUnionID: ret.UnionID, WechatOpenID: ret.OpenID, WithRoles: true})
 	default:
 		l.Error("%s LoginType=%s not support", utils.FuncName(), in.LoginType)
 		return nil, errors.Parameter
@@ -130,7 +128,7 @@ func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error)
 	}
 	uc, err := l.GetUserInfo(in)
 	if err == nil {
-		return l.getRet(in.TenantCode, uc, l.svcCtx.Store, list)
+		return l.getRet(uc, l.svcCtx.Store, list)
 	}
 	if errors.Cmp(err, errors.NotFind) {
 		return nil, errors.UnRegister

@@ -56,7 +56,9 @@ func GetCityByIp(ip string) string {
 }
 
 func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, err error) {
-	ctxs.GetUserCtx(l.ctx).TenantCode = req.TenantCode
+	uc := ctxs.GetUserCtx(l.ctx)
+	uc.TenantCode = req.TenantCode
+	uc.AppCode = req.AppCode
 	ua := user_agent.New(ctxs.GetUserCtx(l.ctx).Os)
 	browser, _ := ua.Browser()
 	os := ua.OS()
@@ -68,15 +70,13 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		}
 	}
 	uResp, err := l.svcCtx.UserRpc.UserLogin(l.ctx, &sys.UserLoginReq{
-		Account:    req.Account,
-		PwdType:    req.PwdType,
-		Password:   req.Password,
-		LoginType:  req.LoginType,
-		Code:       req.Code,
-		CodeID:     req.CodeID,
-		AppCode:    req.AppCode,
-		TenantCode: req.TenantCode,
-		Ip:         ctxs.GetUserCtx(l.ctx).IP,
+		Account:   req.Account,
+		PwdType:   req.PwdType,
+		Password:  req.Password,
+		LoginType: req.LoginType,
+		Code:      req.Code,
+		CodeID:    req.CodeID,
+		Ip:        ctxs.GetUserCtx(l.ctx).IP,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
@@ -84,6 +84,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
 			UserID:        0,
+			AppCode:       req.AppCode,
 			UserName:      req.Account, //todo 这里也要调整
 			IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(ctxs.GetUserCtx(l.ctx).IP),
@@ -100,6 +101,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
 			UserID:        0,
 			UserName:      req.Account,
+			AppCode:       req.AppCode,
 			IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(ctxs.GetUserCtx(l.ctx).IP),
 			Browser:       browser,
@@ -111,6 +113,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	}
 	//登录成功记录
 	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
+		AppCode:       req.AppCode,
 		UserID:        uResp.Info.UserID,
 		UserName:      uResp.Info.UserName,
 		IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
