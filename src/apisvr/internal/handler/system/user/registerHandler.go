@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/result"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system/user"
@@ -10,16 +11,16 @@ import (
 	"net/http"
 )
 
-func Register1Handler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func RegisterHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UserRegister1Req
+		var req types.UserRegisterReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
-
-		l := user.NewRegister1Logic(r.Context(), svcCtx)
-		resp, err := l.Register1(&req)
-		result.Http(w, r, resp, err)
+		r = ctxs.NotLoginedInit(r)
+		l := user.NewRegisterLogic(r.Context(), svcCtx)
+		err := l.Register(&req)
+		result.Http(w, r, nil, err)
 	}
 }

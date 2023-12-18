@@ -25,10 +25,10 @@ const (
 	UserManage_UserInfoRead_FullMethodName               = "/sys.UserManage/userInfoRead"
 	UserManage_UserInfoDelete_FullMethodName             = "/sys.UserManage/userInfoDelete"
 	UserManage_UserLogin_FullMethodName                  = "/sys.UserManage/userLogin"
+	UserManage_UserForgetPwd_FullMethodName              = "/sys.UserManage/userForgetPwd"
 	UserManage_UserCaptcha_FullMethodName                = "/sys.UserManage/userCaptcha"
 	UserManage_UserCheckToken_FullMethodName             = "/sys.UserManage/userCheckToken"
-	UserManage_UserRegister1_FullMethodName              = "/sys.UserManage/userRegister1"
-	UserManage_UserRegister2_FullMethodName              = "/sys.UserManage/userRegister2"
+	UserManage_UserRegister_FullMethodName               = "/sys.UserManage/userRegister"
 	UserManage_UserRoleIndex_FullMethodName              = "/sys.UserManage/userRoleIndex"
 	UserManage_UserRoleMultiUpdate_FullMethodName        = "/sys.UserManage/userRoleMultiUpdate"
 	UserManage_UserAuthProjectMultiUpdate_FullMethodName = "/sys.UserManage/userAuthProjectMultiUpdate"
@@ -47,10 +47,10 @@ type UserManageClient interface {
 	UserInfoRead(ctx context.Context, in *UserInfoReadReq, opts ...grpc.CallOption) (*UserInfo, error)
 	UserInfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
+	UserForgetPwd(ctx context.Context, in *UserForgetPwdReq, opts ...grpc.CallOption) (*Response, error)
 	UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error)
 	UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
-	UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error)
-	UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error)
+	UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error)
 	UserRoleIndex(ctx context.Context, in *UserRoleIndexReq, opts ...grpc.CallOption) (*UserRoleIndexResp, error)
 	UserRoleMultiUpdate(ctx context.Context, in *UserRoleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
@@ -121,6 +121,15 @@ func (c *userManageClient) UserLogin(ctx context.Context, in *UserLoginReq, opts
 	return out, nil
 }
 
+func (c *userManageClient) UserForgetPwd(ctx context.Context, in *UserForgetPwdReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, UserManage_UserForgetPwd_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userManageClient) UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error) {
 	out := new(UserCaptchaResp)
 	err := c.cc.Invoke(ctx, UserManage_UserCaptcha_FullMethodName, in, out, opts...)
@@ -139,18 +148,9 @@ func (c *userManageClient) UserCheckToken(ctx context.Context, in *UserCheckToke
 	return out, nil
 }
 
-func (c *userManageClient) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
-	out := new(UserRegister1Resp)
-	err := c.cc.Invoke(ctx, UserManage_UserRegister1_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userManageClient) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, UserManage_UserRegister2_FullMethodName, in, out, opts...)
+func (c *userManageClient) UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error) {
+	out := new(UserRegisterResp)
+	err := c.cc.Invoke(ctx, UserManage_UserRegister_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -221,10 +221,10 @@ type UserManageServer interface {
 	UserInfoRead(context.Context, *UserInfoReadReq) (*UserInfo, error)
 	UserInfoDelete(context.Context, *UserInfoDeleteReq) (*Response, error)
 	UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error)
+	UserForgetPwd(context.Context, *UserForgetPwdReq) (*Response, error)
 	UserCaptcha(context.Context, *UserCaptchaReq) (*UserCaptchaResp, error)
 	UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error)
-	UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error)
-	UserRegister2(context.Context, *UserRegister2Req) (*Response, error)
+	UserRegister(context.Context, *UserRegisterReq) (*UserRegisterResp, error)
 	UserRoleIndex(context.Context, *UserRoleIndexReq) (*UserRoleIndexResp, error)
 	UserRoleMultiUpdate(context.Context, *UserRoleMultiUpdateReq) (*Response, error)
 	UserAuthProjectMultiUpdate(context.Context, *UserAuthProjectMultiUpdateReq) (*Response, error)
@@ -256,17 +256,17 @@ func (UnimplementedUserManageServer) UserInfoDelete(context.Context, *UserInfoDe
 func (UnimplementedUserManageServer) UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
 }
+func (UnimplementedUserManageServer) UserForgetPwd(context.Context, *UserForgetPwdReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserForgetPwd not implemented")
+}
 func (UnimplementedUserManageServer) UserCaptcha(context.Context, *UserCaptchaReq) (*UserCaptchaResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCaptcha not implemented")
 }
 func (UnimplementedUserManageServer) UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCheckToken not implemented")
 }
-func (UnimplementedUserManageServer) UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserRegister1 not implemented")
-}
-func (UnimplementedUserManageServer) UserRegister2(context.Context, *UserRegister2Req) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserRegister2 not implemented")
+func (UnimplementedUserManageServer) UserRegister(context.Context, *UserRegisterReq) (*UserRegisterResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRegister not implemented")
 }
 func (UnimplementedUserManageServer) UserRoleIndex(context.Context, *UserRoleIndexReq) (*UserRoleIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserRoleIndex not implemented")
@@ -407,6 +407,24 @@ func _UserManage_UserLogin_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserManage_UserForgetPwd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserForgetPwdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManageServer).UserForgetPwd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserManage_UserForgetPwd_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManageServer).UserForgetPwd(ctx, req.(*UserForgetPwdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserManage_UserCaptcha_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserCaptchaReq)
 	if err := dec(in); err != nil {
@@ -443,38 +461,20 @@ func _UserManage_UserCheckToken_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserManage_UserRegister1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRegister1Req)
+func _UserManage_UserRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRegisterReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserManageServer).UserRegister1(ctx, in)
+		return srv.(UserManageServer).UserRegister(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserManage_UserRegister1_FullMethodName,
+		FullMethod: UserManage_UserRegister_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManageServer).UserRegister1(ctx, req.(*UserRegister1Req))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserManage_UserRegister2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRegister2Req)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserManageServer).UserRegister2(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UserManage_UserRegister2_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManageServer).UserRegister2(ctx, req.(*UserRegister2Req))
+		return srv.(UserManageServer).UserRegister(ctx, req.(*UserRegisterReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -619,6 +619,10 @@ var UserManage_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserManage_UserLogin_Handler,
 		},
 		{
+			MethodName: "userForgetPwd",
+			Handler:    _UserManage_UserForgetPwd_Handler,
+		},
+		{
 			MethodName: "userCaptcha",
 			Handler:    _UserManage_UserCaptcha_Handler,
 		},
@@ -627,12 +631,8 @@ var UserManage_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserManage_UserCheckToken_Handler,
 		},
 		{
-			MethodName: "userRegister1",
-			Handler:    _UserManage_UserRegister1_Handler,
-		},
-		{
-			MethodName: "userRegister2",
-			Handler:    _UserManage_UserRegister2_Handler,
+			MethodName: "userRegister",
+			Handler:    _UserManage_UserRegister_Handler,
 		},
 		{
 			MethodName: "userRoleIndex",

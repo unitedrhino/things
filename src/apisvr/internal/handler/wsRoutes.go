@@ -64,13 +64,8 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/register1",
-				Handler: systemuser.Register1Handler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/register2",
-				Handler: systemuser.Register2Handler(serverCtx),
+				Path:    "/register",
+				Handler: systemuser.RegisterHandler(serverCtx),
 			},
 		},
 		ws.WithPrefix("/api/v1/system/user"),

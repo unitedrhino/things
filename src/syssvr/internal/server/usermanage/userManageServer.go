@@ -52,6 +52,11 @@ func (s *UserManageServer) UserLogin(ctx context.Context, in *sys.UserLoginReq) 
 	return l.UserLogin(in)
 }
 
+func (s *UserManageServer) UserForgetPwd(ctx context.Context, in *sys.UserForgetPwdReq) (*sys.Response, error) {
+	l := usermanagelogic.NewUserForgetPwdLogic(ctx, s.svcCtx)
+	return l.UserForgetPwd(in)
+}
+
 func (s *UserManageServer) UserCaptcha(ctx context.Context, in *sys.UserCaptchaReq) (*sys.UserCaptchaResp, error) {
 	l := usermanagelogic.NewUserCaptchaLogic(ctx, s.svcCtx)
 	return l.UserCaptcha(in)
@@ -62,14 +67,9 @@ func (s *UserManageServer) UserCheckToken(ctx context.Context, in *sys.UserCheck
 	return l.UserCheckToken(in)
 }
 
-func (s *UserManageServer) UserRegister1(ctx context.Context, in *sys.UserRegister1Req) (*sys.UserRegister1Resp, error) {
-	l := usermanagelogic.NewUserRegister1Logic(ctx, s.svcCtx)
-	return l.UserRegister1(in)
-}
-
-func (s *UserManageServer) UserRegister2(ctx context.Context, in *sys.UserRegister2Req) (*sys.Response, error) {
-	l := usermanagelogic.NewUserRegister2Logic(ctx, s.svcCtx)
-	return l.UserRegister2(in)
+func (s *UserManageServer) UserRegister(ctx context.Context, in *sys.UserRegisterReq) (*sys.UserRegisterResp, error) {
+	l := usermanagelogic.NewUserRegisterLogic(ctx, s.svcCtx)
+	return l.UserRegister(in)
 }
 
 func (s *UserManageServer) UserRoleIndex(ctx context.Context, in *sys.UserRoleIndexReq) (*sys.UserRoleIndexResp, error) {

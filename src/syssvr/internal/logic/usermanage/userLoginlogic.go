@@ -87,13 +87,12 @@ func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, list []*conf.LoginSafeCt
 }
 
 func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserInfo, err error) {
-	uci := ctxs.GetUserCtx(l.ctx)
 	switch in.LoginType {
 	case users.RegPwd:
-		if !l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeImage, in.CodeID, in.Code) {
+		if l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeImage, in.CodeID, in.Code) != "" {
 			return nil, errors.Captcha
 		}
-		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{TenantCode: uci.TenantCode, Accounts: []string{in.Account}, WithRoles: true})
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Accounts: []string{in.Account}, WithRoles: true})
 		if err != nil {
 			return nil, err
 		}
@@ -109,7 +108,13 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserIn
 		if ret.ErrCode != 0 {
 			return nil, errors.Parameter.AddMsgf(ret.ErrMsg)
 		}
-		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{TenantCode: uci.TenantCode, WechatUnionID: ret.UnionID, WechatOpenID: ret.OpenID, WithRoles: true})
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{WechatUnionID: ret.UnionID, WechatOpenID: ret.OpenID, WithRoles: true})
+	case users.RegEmail:
+		email := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, in.CodeID, in.Code)
+		if email == "" || email != in.Account {
+			return nil, errors.Captcha
+		}
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Emails: []string{in.Account}, WithRoles: true})
 	default:
 		l.Error("%s LoginType=%s not support", utils.FuncName(), in.LoginType)
 		return nil, errors.Parameter
