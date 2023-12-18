@@ -149,20 +149,13 @@ type UserResourceReadResp struct {
 	Projects []*ProjectInfo `json:"projects"` //项目列表
 }
 
-type UserRegister1Req struct {
-	RegType string `json:"regType,options=phone|wxOpen|wxIn|wxMiniP|pwd"` //注册方式:	phone手机号注册 wxOpen 微信开放平台登录 wxIn 微信内登录 wxMiniP 微信小程序 pwd 账号密码注册
-	Note    string `json:"note,optional"`                                 //手机号注册时填写手机号 账号密码注册时填写userName
-	Code    string `json:"code"`                                          //验证码    微信登录填code 账号密码登录时填写密码
-	CodeID  string `json:"codeID,optional"`                               //验证码编号 微信登录填state
-}
-
-type UserRegister1Resp struct {
-	Token string `json:"token,optional"` //如果返回token则需要第二步填写信息,如果为空则为注册成功
-}
-
-type UserRegister2Req struct {
-	Token    string   `json:"token"`    //注册第一步的token
-	UserInfo UserInfo `json:"userInfo"` //用户信息,特别需要填写账号和密码
+type UserRegisterReq struct {
+	RegType  string    `json:"regType,options=phone|email|wxOpen|wxIn|wxMiniP|pwd"` //注册方式:	phone手机号注册 wxOpen 微信开放平台登录 wxIn 微信内登录 wxMiniP 微信小程序 pwd 账号密码注册
+	Account  string    `json:"account,optional"`                                    //手机号注册时填写手机号 账号密码注册时填写userName
+	Code     string    `json:"code"`                                                //验证码    微信登录填code 账号密码登录时填写密码
+	CodeID   string    `json:"codeID,optional"`                                     //验证码编号 微信登录填state
+	Password string    `json:"password,optional"`                                   //密码
+	Info     *UserInfo `json:"info,optional"`                                       //用户信息
 }
 
 type RoleAppMultiUpdateReq struct {

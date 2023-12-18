@@ -105,7 +105,7 @@ const (
 // 子应用管理员可以配置自己子应用的角色
 var (
 	MigrateTenantConfig = []SysTenantConfig{
-		{TenantCode: def.TenantCodeDefault, RegisterRoleID: 1, Email: &SysTenantEmail{
+		{TenantCode: def.TenantCodeDefault, RegisterRoleID: 2, Email: &SysTenantEmail{
 			From:     "godlei6@qq.com",
 			Host:     "smtp.qq.com",
 			Secret:   "xxx",
@@ -122,7 +122,9 @@ var (
 	MigrateUserRole = []SysUserRole{
 		{TenantCode: def.TenantCodeDefault, UserID: adminUserID, RoleID: 1},
 	}
-	MigrateRoleInfo = []SysRoleInfo{{ID: 1, TenantCode: def.TenantCodeDefault, Name: "admin"}}
+	MigrateRoleInfo = []SysRoleInfo{
+		{ID: 1, TenantCode: def.TenantCodeDefault, Name: "admin"},
+		{ID: 2, TenantCode: def.TenantCodeDefault, Name: "client", Desc: "C端用户"}}
 	MigrateRoleMenu []SysRoleMenu
 	MigrateRoleApp  = []SysRoleApp{
 		{RoleID: 1, TenantCode: def.TenantCodeDefault, AppCode: def.AppCore},

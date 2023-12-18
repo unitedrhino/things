@@ -89,6 +89,7 @@ type (
 	UserCheckTokenReq             = sys.UserCheckTokenReq
 	UserCheckTokenResp            = sys.UserCheckTokenResp
 	UserCreateResp                = sys.UserCreateResp
+	UserForgetPwdReq              = sys.UserForgetPwdReq
 	UserInfo                      = sys.UserInfo
 	UserInfoCreateReq             = sys.UserInfoCreateReq
 	UserInfoDeleteReq             = sys.UserInfoDeleteReq
@@ -97,9 +98,8 @@ type (
 	UserInfoReadReq               = sys.UserInfoReadReq
 	UserLoginReq                  = sys.UserLoginReq
 	UserLoginResp                 = sys.UserLoginResp
-	UserRegister1Req              = sys.UserRegister1Req
-	UserRegister1Resp             = sys.UserRegister1Resp
-	UserRegister2Req              = sys.UserRegister2Req
+	UserRegisterReq               = sys.UserRegisterReq
+	UserRegisterResp              = sys.UserRegisterResp
 	UserRoleIndexReq              = sys.UserRoleIndexReq
 	UserRoleIndexResp             = sys.UserRoleIndexResp
 	UserRoleMultiUpdateReq        = sys.UserRoleMultiUpdateReq

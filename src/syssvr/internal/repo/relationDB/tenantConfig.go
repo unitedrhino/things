@@ -79,9 +79,9 @@ func (p TenantConfigRepo) Delete(ctx context.Context, id int64) error {
 	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysTenantConfig{}).Error
 	return stores.ErrFmt(err)
 }
-func (p TenantConfigRepo) FindOne(ctx context.Context, id int64) (*SysTenantConfig, error) {
+func (p TenantConfigRepo) FindOne(ctx context.Context) (*SysTenantConfig, error) {
 	var result SysTenantConfig
-	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

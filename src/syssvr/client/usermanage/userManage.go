@@ -89,6 +89,7 @@ type (
 	UserCheckTokenReq             = sys.UserCheckTokenReq
 	UserCheckTokenResp            = sys.UserCheckTokenResp
 	UserCreateResp                = sys.UserCreateResp
+	UserForgetPwdReq              = sys.UserForgetPwdReq
 	UserInfo                      = sys.UserInfo
 	UserInfoCreateReq             = sys.UserInfoCreateReq
 	UserInfoDeleteReq             = sys.UserInfoDeleteReq
@@ -97,9 +98,8 @@ type (
 	UserInfoReadReq               = sys.UserInfoReadReq
 	UserLoginReq                  = sys.UserLoginReq
 	UserLoginResp                 = sys.UserLoginResp
-	UserRegister1Req              = sys.UserRegister1Req
-	UserRegister1Resp             = sys.UserRegister1Resp
-	UserRegister2Req              = sys.UserRegister2Req
+	UserRegisterReq               = sys.UserRegisterReq
+	UserRegisterResp              = sys.UserRegisterResp
 	UserRoleIndexReq              = sys.UserRoleIndexReq
 	UserRoleIndexResp             = sys.UserRoleIndexResp
 	UserRoleMultiUpdateReq        = sys.UserRoleMultiUpdateReq
@@ -111,10 +111,10 @@ type (
 		UserInfoRead(ctx context.Context, in *UserInfoReadReq, opts ...grpc.CallOption) (*UserInfo, error)
 		UserInfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
+		UserForgetPwd(ctx context.Context, in *UserForgetPwdReq, opts ...grpc.CallOption) (*Response, error)
 		UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error)
 		UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
-		UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error)
-		UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error)
+		UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error)
 		UserRoleIndex(ctx context.Context, in *UserRoleIndexReq, opts ...grpc.CallOption) (*UserRoleIndexResp, error)
 		UserRoleMultiUpdate(ctx context.Context, in *UserRoleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
@@ -200,6 +200,15 @@ func (d *directUserManage) UserLogin(ctx context.Context, in *UserLoginReq, opts
 	return d.svr.UserLogin(ctx, in)
 }
 
+func (m *defaultUserManage) UserForgetPwd(ctx context.Context, in *UserForgetPwdReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserManageClient(m.cli.Conn())
+	return client.UserForgetPwd(ctx, in, opts...)
+}
+
+func (d *directUserManage) UserForgetPwd(ctx context.Context, in *UserForgetPwdReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserForgetPwd(ctx, in)
+}
+
 func (m *defaultUserManage) UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error) {
 	client := sys.NewUserManageClient(m.cli.Conn())
 	return client.UserCaptcha(ctx, in, opts...)
@@ -218,22 +227,13 @@ func (d *directUserManage) UserCheckToken(ctx context.Context, in *UserCheckToke
 	return d.svr.UserCheckToken(ctx, in)
 }
 
-func (m *defaultUserManage) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
+func (m *defaultUserManage) UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error) {
 	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserRegister1(ctx, in, opts...)
+	return client.UserRegister(ctx, in, opts...)
 }
 
-func (d *directUserManage) UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error) {
-	return d.svr.UserRegister1(ctx, in)
-}
-
-func (m *defaultUserManage) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserRegister2(ctx, in, opts...)
-}
-
-func (d *directUserManage) UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.UserRegister2(ctx, in)
+func (d *directUserManage) UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error) {
+	return d.svr.UserRegister(ctx, in)
 }
 
 func (m *defaultUserManage) UserRoleIndex(ctx context.Context, in *UserRoleIndexReq, opts ...grpc.CallOption) (*UserRoleIndexResp, error) {

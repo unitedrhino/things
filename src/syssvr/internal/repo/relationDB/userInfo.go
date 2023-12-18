@@ -22,6 +22,8 @@ type UserInfoFilter struct {
 	UserName      string
 	Phone         string
 	Email         string
+	Emails        []string
+	WechatOpenIDs []string
 	Accounts      []string //账号查询 非模糊查询
 	WechatUnionID string
 	WechatOpenID  string
@@ -57,6 +59,9 @@ func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB 
 	}
 	if f.Email != "" {
 		db = db.Where("email like ?", "%"+f.Email+"%")
+	}
+	if len(f.Emails) != 0 {
+		db = db.Where("email in ?", f.Emails)
 	}
 	wechatOr := db
 	var isWechat bool

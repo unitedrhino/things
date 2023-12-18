@@ -63,13 +63,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/register1",
-				Handler: systemuser.Register1Handler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/register2",
-				Handler: systemuser.Register2Handler(serverCtx),
+				Path:    "/register",
+				Handler: systemuser.RegisterHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api/v1/system/user"),

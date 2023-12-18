@@ -11,10 +11,10 @@ service UserManage {
   rpc userInfoRead(UserInfoReadReq) returns(UserInfo);//获取用户信息
   rpc userInfoDelete(UserInfoDeleteReq) returns(Response);//刪除用戶
   rpc userLogin(UserLoginReq) returns(UserLoginResp);
+  rpc userForgetPwd(UserForgetPwdReq)returns(Response);
   rpc userCaptcha(UserCaptchaReq)returns(UserCaptchaResp);
   rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
-  rpc userRegister1(UserRegister1Req) returns(UserRegister1Resp);
-  rpc userRegister2(UserRegister2Req) returns(Response);
+  rpc userRegister(UserRegisterReq) returns(UserRegisterResp);
 
   rpc userRoleIndex(UserRoleIndexReq) returns (UserRoleIndexResp); //获取角色API权限列表
   rpc userRoleMultiUpdate(UserRoleMultiUpdateReq) returns(Response); //添加角色
@@ -419,7 +419,7 @@ message OperLogCreateReq{
 message UserInfo{
   int64  userID = 1;
   string userName =2;
-  string password = 3;
+  string password =3;
   string email = 4;
   string phone =5;
   string wechatUnionID = 6;
@@ -520,6 +520,15 @@ message UserCaptchaResp{
   int64 expire = 3;//过期时间
 }
 
+
+message UserForgetPwdReq{
+  string account = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
+  int32  accountType = 2;//账号类型: email:邮箱 phone:手机号
+  string password =3;//密码
+  string code = 5;//验证码    微信登录填code
+  string codeID = 6;//验证码编号 微信登录填state
+}
+
 message UserLoginReq{
     string account = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
     int32 pwdType = 2;//账号密码登录时需要填写.0,无密码 1，明文 2，md5加密
@@ -536,25 +545,19 @@ message UserLoginResp{
 }
 
 //登录信息注册,注册第一步(注册核心登录信息) 返回一个jwt用来第二步注册
-message UserRegister1Req{
-  string tenantCode = 8;//租户编码
-  string regType =1; //注册方式:	phone手机号注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 pwd 账号密码注册
-  string note =2;    //手机号注册时填写手机号 账号密码注册时填写userName
-  string code =3;    //验证码    微信登录填code 账号密码登录时填写密码
-  string codeID =4;  //验证码编号 微信登录填state
-  string regIP =5;
+message UserRegisterReq{
+  string regType =1; //注册方式:	phone手机号注册 email邮箱注册 wxopen 微信开放平台登录 wxin 微信内登录 wxminip 微信小程序 pwd 账号密码注册
+  string account =2;    //手机号注册时填写手机号 账号密码注册时填写userName
+  string code =3;    //验证码    微信注册填code
+  string codeID =4;  //验证码编号 微信注册填state
+  string password =5;
+  UserInfo info = 6;//填写用户信息
 }
 
-//返回token token在第二步使用
-message UserRegister1Resp{
-  string token = 1;//如果返回token则需要第二步填写信息,如果为空则为注册成功
+message UserRegisterResp{
+  int64 userID = 1;
 }
 
-message UserRegister2Req{
-  string token = 1; //注册第一步的token
-  string regIP =8;
-  UserInfo info = 2;//填写用户信息
-}
 
 message UserRoleIndexReq{
   int64 userID = 1;
