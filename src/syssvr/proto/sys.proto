@@ -523,7 +523,7 @@ message UserCaptchaResp{
 
 message UserForgetPwdReq{
   string account = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
-  int32  accountType = 2;//账号类型: email:邮箱 phone:手机号
+  string  type = 2;//账号类型: email:邮箱 phone:手机号
   string password =3;//密码
   string code = 5;//验证码    微信登录填code
   string codeID = 6;//验证码编号 微信登录填state
