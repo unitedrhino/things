@@ -1,7 +1,7 @@
 package def
 
 const (
-	CaptchaTypeSms   = "sms"
+	CaptchaTypePhone = "phone"
 	CaptchaTypeImage = "image" //图形验证码
 	CaptchaTypeEmail = "email"
 )

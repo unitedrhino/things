@@ -66,6 +66,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/register",
 				Handler: systemuser.RegisterHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/forget-pwd",
+				Handler: systemuser.ForgetPwdHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/api/v1/system/user"),
 	)

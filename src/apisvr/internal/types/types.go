@@ -85,9 +85,9 @@ type UserCreateResp struct {
 }
 
 type UserCaptchaReq struct {
-	Account string `json:"account,optional"`             //短信验证时填写手机号,邮箱验证时填写邮箱
-	Type    string `json:"type,options=sms|image|email"` //验证方式:短信验证,图片验证码
-	Use     string `json:"use,options=login|register"`   //用途
+	Account string `json:"account,optional"`               //短信验证时填写手机号,邮箱验证时填写邮箱
+	Type    string `json:"type,options=phone|image|email"` //验证方式:短信验证,图片验证码
+	Use     string `json:"use,options=login|register"`     //用途
 }
 
 type UserCaptchaResp struct {
@@ -156,6 +156,14 @@ type UserRegisterReq struct {
 	CodeID   string    `json:"codeID,optional"`                                     //验证码编号 微信登录填state
 	Password string    `json:"password,optional"`                                   //密码
 	Info     *UserInfo `json:"info,optional"`                                       //用户信息
+}
+
+type UserForgetPwdReq struct {
+	Type     string `json:"type,options=phone|email"` //验证方式:	phone手机号 email邮箱
+	Account  string `json:"account,optional"`         //手机号注册时填写手机号 账号密码注册时填写userName
+	Code     string `json:"code,optional"`            //验证码    微信登录填code 账号密码登录时填写密码
+	CodeID   string `json:"codeID,optional"`          //验证码编号 微信登录填state
+	Password string `json:"password"`                 //密码
 }
 
 type RoleAppMultiUpdateReq struct {
