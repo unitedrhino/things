@@ -2,8 +2,6 @@ package hooks
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -30,13 +28,6 @@ func NewOnServerKeepaliveLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *OnServerKeepaliveLogic) OnServerKeepalive(req *types.HooksApiServerKeepaliveReq) (resp *types.HooksApiResp, err error) {
 	// todo: add your logic here and delete this line
-	reqStr, _ := json.Marshal(*req)
-	fmt.Println("---------OnServerKeepalive--------------:", string(reqStr))
-
-	//fmt.Println("HOST:%s \n", l.svcCtx.Config.Restconf.Host)
-	//fmt.Println("Port:%d \n", l.svcCtx.Config.Restconf.Port)
-	//fmt.Println("HooksApiServerKeepaliveReq:%v \n", req)
-	//从hook data中解析出 MediaserverID值。
 	//hookactive中是保持在线状态  需要更新对应的数据库
 	infoRepo := relationDB.NewVidmgrInfoRepo(l.ctx)
 	vidmgrInfo, err := infoRepo.FindOneByFilter(l.ctx, relationDB.VidmgrFilter{
@@ -44,7 +35,6 @@ func (l *OnServerKeepaliveLogic) OnServerKeepalive(req *types.HooksApiServerKeep
 	})
 
 	if vidmgrInfo != nil {
-		//fmt.Println("Get vidmgrInfo:%v \n", vidmgrInfo)
 		//update info
 		vidmgrInfo.VidmgrStatus = def.DeviceStatusOnline
 		vidmgrInfo.LastLogin = time.Now()

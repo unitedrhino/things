@@ -1741,3 +1741,16 @@ type VidmgrStreamCountResp struct {
 	Online  int64 `json:"online"`  // 在线服务数
 	Offline int64 `json:"offline"` // 离线服务数
 }
+
+type CtrlApiReq struct {
+	SrvType int64  `json:"svrtype"`
+	IP      string `json:"ip"`
+	Port    int64  `json:"port"`
+	Secret  string `json:"secret"`
+	Cmd     string `json:"cmd"`
+}
+
+type CtrlApiResp struct {
+	Code int64  `json:"code"`
+	Data string `json:"data,optional"`
+}

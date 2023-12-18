@@ -66,19 +66,18 @@ func (l *ServerHandle) ActionCheck() error {
 func (l *ServerHandle) ActionInit() error {
 	//l.Infof("ActionCheck req:%v", in)
 	var vidInfo *relationDB.VidmgrInfo
-	fmt.Println("[**ActionInit**]0 ", utils.FuncName())
+	//fmt.Println("[**ActionInit**]0 ", utils.FuncName())
 	//查找流服务的数据库：根据IP和端口确定一个流服务
 	var (
 		c      = l.svcCtx.Config
 		filter = relationDB.VidmgrFilter{VidmgrIpV4: utils.InetAtoN(c.Mediakit.Host), VidmgrPort: c.Mediakit.Port}
 	)
-	fmt.Println("[**ActionInit**]1 ", utils.FuncName())
+	//fmt.Println("[**ActionInit**]1 ", utils.FuncName())
 	size, err := l.PiDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		fmt.Errorf("MediaServer init data countfilter error")
 		return err
 	}
-	fmt.Println("[**ActionInit**]2 ", utils.FuncName())
 	//找到存在一条流服务 更新这条服务
 	if size > 0 {
 		//update
@@ -154,14 +153,18 @@ func (l *ServerHandle) ActionInit() error {
 		confRepo := relationDB.NewVidmgrConfigRepo(l.ctx)
 		//查找config配置
 		confRepo.FindOneByFilter(l.ctx, relationDB.VidmgrConfigFilter{
-			VidmgrIDs: []string{vidInfo.VidmgrID},
+			VidmgrIPv4: vidInfo.VidmgrIpV4,
+			VidmgrPort: vidInfo.VidmgrPort,
+			Secret:     vidInfo.VidmgrSecret,
+			//VidmgrIDs: []string{vidInfo.VidmgrID},
 		})
 		if err != nil {
 			l.Errorf("%s.Can find vidmgr config err=%v", utils.FuncName(), utils.Fmt(err))
 			confRepo.Insert(l.ctx, vidmgrinfomanagelogic.ToVidmgrConfigRpc(&currentConf.Data[0]))
+		} else {
+			//update
+			confRepo.Update(l.ctx, vidmgrinfomanagelogic.ToVidmgrConfigRpc(&currentConf.Data[0]))
 		}
-		//update
-		confRepo.Update(l.ctx, vidmgrinfomanagelogic.ToVidmgrConfigRpc(&currentConf.Data[0]))
 
 		//STEP4 更新状态
 		fmt.Println("[*****test7*****]", utils.FuncName())

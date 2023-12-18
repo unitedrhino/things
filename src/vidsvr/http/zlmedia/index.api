@@ -164,6 +164,7 @@ type (
         VidmgrID string     `json:"vidmgrID"`
         Data string         `json:"data"`
     }
+
     //Respond   0/index/api/getApiList
     //Resquest  默认请求
     IndexApiListResp struct {
