@@ -2,7 +2,9 @@ package ctxs
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
+	"net/http"
 )
 
 type UserCtx struct {
@@ -19,6 +21,25 @@ type UserCtx struct {
 
 type InnerCtx struct {
 	AllData bool //内部使用,不限制区域
+}
+
+func NotLoginedInit(r *http.Request) *http.Request {
+	strIP, _ := utils.GetIP(r)
+	appCode := r.Header.Get(UserAppCodeKey)
+	if appCode == "" {
+		appCode = def.AppCore
+	}
+	tenantCode := r.Header.Get(UserTenantCodeKey)
+	if tenantCode == "" {
+		tenantCode = def.TenantCodeDefault
+	}
+	c := context.WithValue(r.Context(), UserInfoKey, &UserCtx{
+		AppCode:    appCode,
+		TenantCode: tenantCode,
+		IP:         strIP,
+		Os:         r.Header.Get("User-Agent"),
+	})
+	return r.WithContext(c)
 }
 
 func SetUserCtx(ctx context.Context, userCtx *UserCtx) context.Context {

@@ -1,11 +1,9 @@
 package user
 
 import (
-	"context"
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/result"
-	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system/user"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -20,12 +18,8 @@ func LoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
-		strIP, _ := utils.GetIP(r)
-		c := context.WithValue(r.Context(), ctxs.UserInfoKey, &ctxs.UserCtx{
-			IP: strIP,
-			Os: r.Header.Get("User-Agent"),
-		})
-		l := user.NewLoginLogic(c, svcCtx)
+		r = ctxs.NotLoginedInit(r)
+		l := user.NewLoginLogic(r.Context(), svcCtx)
 		resp, err := l.Login(&req)
 		result.Http(w, r, resp, err)
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/config"
+	"github.com/i-Things/things/src/syssvr/internal/repo/cache"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
@@ -22,6 +23,8 @@ type ServiceContext struct {
 	UserID        *utils.SnowFlake
 	Casbin        *casbin.Enforcer
 	Store         kv.Store
+	PwdCheck      *cache.PwdCheck
+	Captcha       *cache.Captcha
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -48,6 +51,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	store := kv.NewStore(c.CacheRedis)
 
 	return &ServiceContext{
+		Captcha:       cache.NewCaptcha(store),
+		PwdCheck:      cache.NewPwdCheck(store),
 		Config:        c,
 		ProjectID:     ProjectID,
 		AreaID:        AreaID,

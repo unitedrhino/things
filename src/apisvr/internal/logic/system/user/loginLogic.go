@@ -57,18 +57,10 @@ func GetCityByIp(ip string) string {
 
 func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, err error) {
 	uc := ctxs.GetUserCtx(l.ctx)
-	uc.TenantCode = req.TenantCode
-	uc.AppCode = req.AppCode
 	ua := user_agent.New(ctxs.GetUserCtx(l.ctx).Os)
 	browser, _ := ua.Browser()
 	os := ua.OS()
 
-	l.Infof("%s req=%+v", utils.FuncName(), req)
-	if req.LoginType == "pwd" {
-		if l.svcCtx.Captcha.Verify(req.CodeID, req.Code) == false {
-			return nil, errors.Captcha
-		}
-	}
 	uResp, err := l.svcCtx.UserRpc.UserLogin(l.ctx, &sys.UserLoginReq{
 		Account:   req.Account,
 		PwdType:   req.PwdType,
@@ -85,7 +77,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		//登录失败记录
 		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
 			UserID:        0,
-			AppCode:       req.AppCode,
+			AppCode:       uc.AppCode,
 			UserName:      req.Account, //todo 这里也要调整
 			IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
 			LoginLocation: GetCityByIp(ctxs.GetUserCtx(l.ctx).IP),
@@ -98,7 +90,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 	}
 	//登录成功记录
 	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-		AppCode:       req.AppCode,
+		AppCode:       uc.AppCode,
 		UserID:        uResp.Info.UserID,
 		UserName:      uResp.Info.UserName,
 		IpAddr:        ctxs.GetUserCtx(l.ctx).IP,

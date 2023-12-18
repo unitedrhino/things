@@ -52,6 +52,11 @@ func (s *UserManageServer) UserLogin(ctx context.Context, in *sys.UserLoginReq) 
 	return l.UserLogin(in)
 }
 
+func (s *UserManageServer) UserCaptcha(ctx context.Context, in *sys.UserCaptchaReq) (*sys.UserCaptchaResp, error) {
+	l := usermanagelogic.NewUserCaptchaLogic(ctx, s.svcCtx)
+	return l.UserCaptcha(in)
+}
+
 func (s *UserManageServer) UserCheckToken(ctx context.Context, in *sys.UserCheckTokenReq) (*sys.UserCheckTokenResp, error) {
 	l := usermanagelogic.NewUserCheckTokenLogic(ctx, s.svcCtx)
 	return l.UserCheckToken(in)

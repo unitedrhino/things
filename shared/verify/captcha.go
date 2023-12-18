@@ -76,3 +76,10 @@ func (c *Captcha) Get() (string, string, string, error) {
 	}
 	return id, b64s, answer, err
 }
+
+func (c *Captcha) GetB64(code string) string {
+	driver := base64Captcha.NewDriverDigit(c.height, c.width, c.length, c.maxSkew, c.dotCount)
+	item, _ := driver.DrawCaptcha(code)
+	b64s := item.EncodeB64string()
+	return b64s
+}

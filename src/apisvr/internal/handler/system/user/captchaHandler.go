@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/result"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system/user"
@@ -17,7 +18,7 @@ func CaptchaHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
-
+		r = ctxs.NotLoginedInit(r)
 		l := user.NewCaptchaLogic(r.Context(), svcCtx)
 		resp, err := l.Captcha(&req)
 		result.Http(w, r, resp, err)

@@ -122,14 +122,12 @@ type UserInfoDeleteReq struct {
 }
 
 type UserLoginReq struct {
-	Account    string `json:"account,optional"`                                      //登录账号(支持用户名,手机号,邮箱) 账号密码登录时需要填写
-	PwdType    int32  `json:"pwdType,optional"`                                      //账号密码登录时需要填写.0或1,无密码 2，明文 3，md5加密
-	Password   string `json:"password,optional"`                                     //密码，建议md5转换 密码登录时需要填写
-	LoginType  string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd|email"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码 email 邮箱
-	Code       string `json:"code,optional"`                                         //验证码    微信邮箱验证登录填code
-	CodeID     string `json:"codeID,optional"`                                       //验证码编号 微信邮箱验证登录填state
-	AppCode    string `json:"appCode,default=core"`                                  // 应用编号
-	TenantCode string `json:"tenantCode,default=default"`                            //租户号
+	Account   string `json:"account,optional"`                                      //登录账号(支持用户名,手机号,邮箱) 账号密码登录时需要填写
+	PwdType   int32  `json:"pwdType,optional"`                                      //账号密码登录时需要填写.0或1,无密码 2，明文 3，md5加密
+	Password  string `json:"password,optional"`                                     //密码，建议md5转换 密码登录时需要填写
+	LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|pwd|email"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码 email 邮箱
+	Code      string `json:"code,optional"`                                         //验证码    微信邮箱验证登录填code
+	CodeID    string `json:"codeID,optional"`                                       //验证码编号 微信邮箱验证登录填state
 }
 
 type UserLoginResp struct {

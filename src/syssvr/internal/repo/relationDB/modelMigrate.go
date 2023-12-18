@@ -36,6 +36,7 @@ func Migrate(c conf.Database) error {
 		&SysUserRole{},
 		&SysTenantInfo{},
 		&SysTenantApp{},
+		&SysTenantConfig{},
 	)
 	if err != nil {
 		return err
@@ -78,6 +79,9 @@ func migrateTableColumn() error {
 		return err
 	}
 	if err := db.CreateInBatches(&MigrateTenantApp, 100).Error; err != nil {
+		return err
+	}
+	if err := db.CreateInBatches(&MigrateTenantConfig, 100).Error; err != nil {
 		return err
 	}
 	return nil
