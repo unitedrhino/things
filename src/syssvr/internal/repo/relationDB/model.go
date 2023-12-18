@@ -162,17 +162,18 @@ func (m *SysMenuInfo) TableName() string {
 
 // 登录日志管理
 type SysLoginLog struct {
-	ID            int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`       // 编号
-	AppCode       string    `gorm:"column:app_code;NOT NULL;type:VARCHAR(50)"`              // 应用ID
-	UserID        int64     `gorm:"column:user_id;type:BIGINT;NOT NULL"`                    // 用户id
-	UserName      string    `gorm:"column:user_name;type:VARCHAR(50)"`                      // 登录账号
-	IpAddr        string    `gorm:"column:ip_addr;type:VARCHAR(50)"`                        // 登录IP地址
-	LoginLocation string    `gorm:"column:login_location;type:VARCHAR(100)"`                // 登录地点
-	Browser       string    `gorm:"column:browser;type:VARCHAR(50)"`                        // 浏览器类型
-	Os            string    `gorm:"column:os;type:VARCHAR(50)"`                             // 操作系统
-	Code          int64     `gorm:"column:code;type:BIGINT;default:200;NOT NULL"`           // 登录状态（200成功 其它失败）
-	Msg           string    `gorm:"column:msg;type:VARCHAR(255)"`                           // 提示消息
-	CreatedTime   time.Time `gorm:"column:created_time;default:CURRENT_TIMESTAMP;NOT NULL"` // 登录时间
+	ID            int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`       // 编号
+	TenantCode    stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`           // 租户编码
+	AppCode       string            `gorm:"column:app_code;NOT NULL;type:VARCHAR(50)"`              // 应用ID
+	UserID        int64             `gorm:"column:user_id;type:BIGINT;NOT NULL"`                    // 用户id
+	UserName      string            `gorm:"column:user_name;type:VARCHAR(50)"`                      // 登录账号
+	IpAddr        string            `gorm:"column:ip_addr;type:VARCHAR(50)"`                        // 登录IP地址
+	LoginLocation string            `gorm:"column:login_location;type:VARCHAR(100)"`                // 登录地点
+	Browser       string            `gorm:"column:browser;type:VARCHAR(50)"`                        // 浏览器类型
+	Os            string            `gorm:"column:os;type:VARCHAR(50)"`                             // 操作系统
+	Code          int64             `gorm:"column:code;type:BIGINT;default:200;NOT NULL"`           // 登录状态（200成功 其它失败）
+	Msg           string            `gorm:"column:msg;type:VARCHAR(255)"`                           // 提示消息
+	CreatedTime   time.Time         `gorm:"column:created_time;default:CURRENT_TIMESTAMP;NOT NULL"` // 登录时间
 }
 
 func (m *SysLoginLog) TableName() string {

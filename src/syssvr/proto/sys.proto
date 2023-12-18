@@ -515,8 +515,6 @@ message UserLoginReq{
     string code = 5;//验证码    微信登录填code
     string codeID = 6;//验证码编号 微信登录填state
     string ip = 7;//透传请求的 ip
-    string tenantCode = 8;//租户编码
-    string appCode = 9;//应用编码
 }
 
 message UserLoginResp{
