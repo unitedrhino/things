@@ -4,15 +4,14 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/ctxs"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/users"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/syssvr/internal/repo/cache"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/core/stores/kv"
 	"time"
 )
 
@@ -55,7 +54,7 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysUserInfo) er
 	return nil
 }
 
-func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, store kv.Store, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
+func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	var rolses []int64
@@ -70,7 +69,7 @@ func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, store kv.Store, list []*
 	}
 
 	//登录成功，清除密码错误次数相关redis key
-	cache.ClearWrongpassKeys(l.ctx, store, list)
+	l.svcCtx.PwdCheck.ClearWrongpassKeys(l.ctx, list)
 
 	InitCacheUserAuthProject(l.ctx, ui.UserID)
 	InitCacheUserAuthArea(l.ctx, ui.UserID)
@@ -91,6 +90,9 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserIn
 	uci := ctxs.GetUserCtx(l.ctx)
 	switch in.LoginType {
 	case users.RegPwd:
+		if !l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeImage, in.CodeID, in.Code) {
+			return nil, errors.Captcha
+		}
 		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{TenantCode: uci.TenantCode, Accounts: []string{in.Account}, WithRoles: true})
 		if err != nil {
 			return nil, err
@@ -121,20 +123,20 @@ func (l *LoginLogic) UserLogin(in *sys.UserLoginReq) (*sys.UserLoginResp, error)
 	//检查账号是否冻结
 	list := l.svcCtx.Config.WrongPasswordCounter.ParseWrongPassConf(in.Account, in.Ip)
 	if len(list) > 0 {
-		forbiddenTime, f := cache.CheckAccountOrIpForbidden(l.ctx, l.svcCtx.Store, list)
+		forbiddenTime, f := l.svcCtx.PwdCheck.CheckAccountOrIpForbidden(l.ctx, list)
 		if f {
 			return nil, errors.Default.AddMsgf("%s %d 分钟", errors.AccountOrIpForbidden.Error(), forbiddenTime/60)
 		}
 	}
 	uc, err := l.GetUserInfo(in)
 	if err == nil {
-		return l.getRet(uc, l.svcCtx.Store, list)
+		return l.getRet(uc, list)
 	}
 	if errors.Cmp(err, errors.NotFind) {
 		return nil, errors.UnRegister
 	}
 	if errors.Cmp(err, errors.Password) {
-		ret, err := cache.CheckCaptchaTimes(l.ctx, l.svcCtx.Store, list)
+		ret, err := l.svcCtx.PwdCheck.CheckPasswordTimes(l.ctx, list)
 		if err != nil {
 			return nil, err
 		}

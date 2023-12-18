@@ -84,6 +84,8 @@ type (
 	UserAuthProjectIndexReq       = sys.UserAuthProjectIndexReq
 	UserAuthProjectIndexResp      = sys.UserAuthProjectIndexResp
 	UserAuthProjectMultiUpdateReq = sys.UserAuthProjectMultiUpdateReq
+	UserCaptchaReq                = sys.UserCaptchaReq
+	UserCaptchaResp               = sys.UserCaptchaResp
 	UserCheckTokenReq             = sys.UserCheckTokenReq
 	UserCheckTokenResp            = sys.UserCheckTokenResp
 	UserCreateResp                = sys.UserCreateResp
@@ -109,6 +111,7 @@ type (
 		UserInfoRead(ctx context.Context, in *UserInfoReadReq, opts ...grpc.CallOption) (*UserInfo, error)
 		UserInfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
+		UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error)
 		UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
 		UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error)
 		UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error)
@@ -195,6 +198,15 @@ func (m *defaultUserManage) UserLogin(ctx context.Context, in *UserLoginReq, opt
 
 func (d *directUserManage) UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error) {
 	return d.svr.UserLogin(ctx, in)
+}
+
+func (m *defaultUserManage) UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error) {
+	client := sys.NewUserManageClient(m.cli.Conn())
+	return client.UserCaptcha(ctx, in, opts...)
+}
+
+func (d *directUserManage) UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error) {
+	return d.svr.UserCaptcha(ctx, in)
 }
 
 func (m *defaultUserManage) UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error) {

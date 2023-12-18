@@ -11,6 +11,7 @@ service UserManage {
   rpc userInfoRead(UserInfoReadReq) returns(UserInfo);//获取用户信息
   rpc userInfoDelete(UserInfoDeleteReq) returns(Response);//刪除用戶
   rpc userLogin(UserLoginReq) returns(UserLoginResp);
+  rpc userCaptcha(UserCaptchaReq)returns(UserCaptchaResp);
   rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
   rpc userRegister1(UserRegister1Req) returns(UserRegister1Resp);
   rpc userRegister2(UserRegister2Req) returns(Response);
@@ -505,6 +506,18 @@ message JwtToken{
   string accessToken = 1;
   int64 accessExpire = 2;
   int64 refreshAfter = 3;
+}
+
+message UserCaptchaReq{
+  string account = 1;//短信验证时填写手机号,邮箱验证时填写邮箱
+  string type = 2;//验证方式:短信验证,图片验证码,邮箱验证
+  string use = 3;//用途
+}
+
+message UserCaptchaResp{
+  string codeID = 1;//验证码编码
+  string code = 2;//验证码--只有图片验证码由apisvr生成,其他方式返回空
+  int64 expire = 3;//过期时间
 }
 
 message UserLoginReq{

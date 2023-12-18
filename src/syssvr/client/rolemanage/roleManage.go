@@ -84,6 +84,8 @@ type (
 	UserAuthProjectIndexReq       = sys.UserAuthProjectIndexReq
 	UserAuthProjectIndexResp      = sys.UserAuthProjectIndexResp
 	UserAuthProjectMultiUpdateReq = sys.UserAuthProjectMultiUpdateReq
+	UserCaptchaReq                = sys.UserCaptchaReq
+	UserCaptchaResp               = sys.UserCaptchaResp
 	UserCheckTokenReq             = sys.UserCheckTokenReq
 	UserCheckTokenResp            = sys.UserCheckTokenResp
 	UserCreateResp                = sys.UserCreateResp

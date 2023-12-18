@@ -25,6 +25,7 @@ const (
 	UserManage_UserInfoRead_FullMethodName               = "/sys.UserManage/userInfoRead"
 	UserManage_UserInfoDelete_FullMethodName             = "/sys.UserManage/userInfoDelete"
 	UserManage_UserLogin_FullMethodName                  = "/sys.UserManage/userLogin"
+	UserManage_UserCaptcha_FullMethodName                = "/sys.UserManage/userCaptcha"
 	UserManage_UserCheckToken_FullMethodName             = "/sys.UserManage/userCheckToken"
 	UserManage_UserRegister1_FullMethodName              = "/sys.UserManage/userRegister1"
 	UserManage_UserRegister2_FullMethodName              = "/sys.UserManage/userRegister2"
@@ -46,6 +47,7 @@ type UserManageClient interface {
 	UserInfoRead(ctx context.Context, in *UserInfoReadReq, opts ...grpc.CallOption) (*UserInfo, error)
 	UserInfoDelete(ctx context.Context, in *UserInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
+	UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error)
 	UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
 	UserRegister1(ctx context.Context, in *UserRegister1Req, opts ...grpc.CallOption) (*UserRegister1Resp, error)
 	UserRegister2(ctx context.Context, in *UserRegister2Req, opts ...grpc.CallOption) (*Response, error)
@@ -113,6 +115,15 @@ func (c *userManageClient) UserInfoDelete(ctx context.Context, in *UserInfoDelet
 func (c *userManageClient) UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error) {
 	out := new(UserLoginResp)
 	err := c.cc.Invoke(ctx, UserManage_UserLogin_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManageClient) UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error) {
+	out := new(UserCaptchaResp)
+	err := c.cc.Invoke(ctx, UserManage_UserCaptcha_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -210,6 +221,7 @@ type UserManageServer interface {
 	UserInfoRead(context.Context, *UserInfoReadReq) (*UserInfo, error)
 	UserInfoDelete(context.Context, *UserInfoDeleteReq) (*Response, error)
 	UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error)
+	UserCaptcha(context.Context, *UserCaptchaReq) (*UserCaptchaResp, error)
 	UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error)
 	UserRegister1(context.Context, *UserRegister1Req) (*UserRegister1Resp, error)
 	UserRegister2(context.Context, *UserRegister2Req) (*Response, error)
@@ -243,6 +255,9 @@ func (UnimplementedUserManageServer) UserInfoDelete(context.Context, *UserInfoDe
 }
 func (UnimplementedUserManageServer) UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
+}
+func (UnimplementedUserManageServer) UserCaptcha(context.Context, *UserCaptchaReq) (*UserCaptchaResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCaptcha not implemented")
 }
 func (UnimplementedUserManageServer) UserCheckToken(context.Context, *UserCheckTokenReq) (*UserCheckTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCheckToken not implemented")
@@ -388,6 +403,24 @@ func _UserManage_UserLogin_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserManageServer).UserLogin(ctx, req.(*UserLoginReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManage_UserCaptcha_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserCaptchaReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManageServer).UserCaptcha(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserManage_UserCaptcha_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManageServer).UserCaptcha(ctx, req.(*UserCaptchaReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -584,6 +617,10 @@ var UserManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "userLogin",
 			Handler:    _UserManage_UserLogin_Handler,
+		},
+		{
+			MethodName: "userCaptcha",
+			Handler:    _UserManage_UserCaptcha_Handler,
 		},
 		{
 			MethodName: "userCheckToken",
