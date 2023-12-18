@@ -31,7 +31,6 @@ type Config struct {
 	} //注册token相关配置
 	Proxy                conf.ProxyConf `json:",optional"`
 	Captcha              Captcha
-	Email                conf.Email                `json:",optional"`
 	OssConf              conf.OssConf              `json:",optional"`
 	Map                  conf.MapConf              `json:",optional"`
 	OpenAuth             conf.AuthConf             `json:",optional"`

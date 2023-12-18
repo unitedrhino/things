@@ -78,6 +78,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		CodeID:    req.CodeID,
 		Ip:        ctxs.GetUserCtx(l.ctx).IP,
 	})
+
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.Login req=%v err=%+v", utils.FuncName(), req, er)
@@ -94,22 +95,6 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			Code:          400,
 		})
 		return nil, er
-	}
-	if uResp == nil {
-		l.Errorf("%s.rpc.Register return nil req=%v", utils.FuncName(), req)
-		//登录失败记录
-		l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
-			UserID:        0,
-			UserName:      req.Account,
-			AppCode:       req.AppCode,
-			IpAddr:        ctxs.GetUserCtx(l.ctx).IP,
-			LoginLocation: GetCityByIp(ctxs.GetUserCtx(l.ctx).IP),
-			Browser:       browser,
-			Os:            os,
-			Msg:           "register core rpc return nil",
-			Code:          400,
-		})
-		return nil, errors.System.AddDetail("register core rpc return nil")
 	}
 	//登录成功记录
 	l.svcCtx.LogRpc.LoginLogCreate(l.ctx, &sys.LoginLogCreateReq{
@@ -150,6 +135,4 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			RefreshAfter: uResp.Token.RefreshAfter,
 		},
 	}, nil
-
-	return
 }
