@@ -95,34 +95,6 @@ func (m *SysRoleMenu) TableName() string {
 	return "sys_role_menu"
 }
 
-// 租户信息表
-type SysTenantInfo struct {
-	ID          int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // id编号
-	Code        string `gorm:"column:code;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 租户编码
-	Name        string `gorm:"column:name;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 租户名称
-	AdminUserID int64  `gorm:"column:admin_user_id;type:BIGINT;NOT NULL"`          // 超级管理员id
-	BaseUrl     string `gorm:"column:base_url;type:VARCHAR(100);NOT NULL"`         //应用首页
-	LogoUrl     string `gorm:"column:logo_url;type:VARCHAR(100);NOT NULL"`         //应用logo地址
-	Desc        string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`             //应用描述
-	stores.Time
-}
-
-func (m *SysTenantInfo) TableName() string {
-	return "sys_tenant_info"
-}
-
-// 租户下的应用列表
-type SysTenantApp struct {
-	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 租户编码
-	AppCode    string            `gorm:"column:app_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"`    // 应用编码 这里只关联主应用,主应用授权,子应用也授权了
-	stores.Time
-}
-
-func (m *SysTenantApp) TableName() string {
-	return "sys_tenant_app"
-}
-
 type SysAppInfo struct {
 	ID         int64       `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // id编号
 	Code       string      `gorm:"column:code;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 应用编码

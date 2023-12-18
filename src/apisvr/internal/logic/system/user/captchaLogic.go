@@ -42,8 +42,8 @@ func (l *CaptchaLogic) Captcha(req *types.UserCaptchaReq) (resp *types.UserCaptc
 			Url:    url,
 		}, nil
 	case def.CaptchaTypeEmail:
-		err := utils.SenEmail(l.svcCtx.Config.Email, []string{req.Account}, "邮箱验证码测试", "验证码为123123")
-		return nil, err
+		//err := utils.SenEmail(l.svcCtx.Config.Email, []string{req.Account}, "邮箱验证码测试", "验证码为123123")
+		//return nil, err
 	}
 	return nil, errors.Parameter.AddDetail("type参数错误,暂不支持")
 }

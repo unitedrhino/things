@@ -100,6 +100,16 @@ const (
 
 // 子应用管理员可以配置自己子应用的角色
 var (
+	MigrateTenantConfig = []SysTenantConfig{
+		{TenantCode: def.TenantCodeDefault, RegisterRoleID: 1, Email: &SysTenantEmail{
+			From:     "godlei6@qq.com",
+			Host:     "smtp.qq.com",
+			Secret:   "xxx",
+			Nickname: "验证码机器人",
+			Port:     465,
+			IsSSL:    def.True},
+		},
+	}
 	MigrateTenantInfo = []SysTenantInfo{{Code: def.TenantCodeDefault, Name: "默认租户", AdminUserID: adminUserID}}
 	MigrateTenantApp  = []SysTenantApp{{TenantCode: def.TenantCodeDefault, AppCode: def.AppCore}}
 	MigrateUserInfo   = []SysUserInfo{

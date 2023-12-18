@@ -13,13 +13,7 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
-Email:
-  From: godlei6@qq.com
-  Host: smtp.qq.com
-  Secret:
-  Nickname: 验证码机器人
-  Port: 465
-  IsSSL: true
+
 Rej:
   AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
   AccessExpire: 600     #过期时间单位秒
