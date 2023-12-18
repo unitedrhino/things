@@ -63,7 +63,6 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 		mdata, err := clients.ProxyMediaServer(clients.GETSERVERCONFIG, mgr, bytetmp)
 		currentConf := new(types.IndexApiServerConfigResp)
 		json.Unmarshal(mdata, currentConf)
-
 		fmt.Println("Server Activer getServerConfig:", currentConf)
 		//fmt.Println("[*****test2.7*****]", utils.FuncName())
 		if err != nil {
@@ -98,9 +97,22 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 		}
 		//STEP3  insert配置到数据库
 		//STEP3  insert配置到数据库
-		//fmt.Println("[*****test4*****]", utils.FuncName())
 		confRepo := relationDB.NewVidmgrConfigRepo(l.ctx)
-		confRepo.Insert(l.ctx, ToVidmgrConfigRpc(&currentConf.Data[0]))
+
+		confRepo.FindOneByFilter(l.ctx, relationDB.VidmgrConfigFilter{
+			VidmgrIPv4: infoData.VidmgrIpV4,
+			VidmgrPort: infoData.VidmgrPort,
+			Secret:     infoData.VidmgrSecret,
+			//VidmgrIDs: []string{vidInfo.VidmgrID},
+		})
+		if err != nil {
+			l.Errorf("%s.Can find vidmgr config err=%v", utils.FuncName(), utils.Fmt(err))
+			confRepo.Insert(l.ctx, ToVidmgrConfigRpc(&currentConf.Data[0]))
+		} else {
+			//查询配置数据库，未找到旰做
+			confRepo.Insert(l.ctx, ToVidmgrConfigRpc(&currentConf.Data[0]))
+		}
+
 		//STEP4 更新状态
 		//fmt.Println("[*****test4*****]", utils.FuncName())
 		if infoData.VidmgrStatus != def.DeviceStatusOnline {
@@ -108,6 +120,7 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 			infoData.VidmgrStatus = def.DeviceStatusOnline
 			infoData.FirstLogin = time.Now()
 			infoData.LastLogin = time.Now()
+
 			err := infoRepo.Update(l.ctx, infoData)
 			if err != nil {
 				er := errors.Fmt(err)

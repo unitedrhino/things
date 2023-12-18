@@ -36,6 +36,12 @@ func (l *IndexLogic) Index(req *types.VidmgrStreamIndexReq) (resp *types.VidmgrS
 		Tags:       logic.ToTagsMap(req.Tags),
 		Page:       logic.ToVidPageRpc(req.Page),
 	}
+	//tmpByte, _ := json.Marshal(req)
+	//fmt.Println("HttpReq_VidmgrStreamIndex:", string(tmpByte))
+	//
+	//tmpByte1, _ := json.Marshal(vidReq)
+	//fmt.Println("VidReq_VidmgrStreamIndex:", string(tmpByte1))
+
 	vidResp, err := l.svcCtx.VidmgrS.VidmgrStreamIndex(l.ctx, vidReq)
 	if err != nil {
 		er := errors.Fmt(err)
