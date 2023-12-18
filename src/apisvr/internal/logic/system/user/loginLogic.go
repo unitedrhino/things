@@ -56,7 +56,7 @@ func GetCityByIp(ip string) string {
 }
 
 func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, err error) {
-
+	ctxs.GetUserCtx(l.ctx).TenantCode = req.TenantCode
 	ua := user_agent.New(ctxs.GetUserCtx(l.ctx).Os)
 	browser, _ := ua.Browser()
 	os := ua.OS()
