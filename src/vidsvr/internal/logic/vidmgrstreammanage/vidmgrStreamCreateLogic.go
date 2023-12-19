@@ -3,6 +3,7 @@ package vidmgrstreammanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
@@ -31,7 +32,7 @@ func NewVidmgrStreamCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 func (l *VidmgrStreamCreateLogic) VidmgrStreamCreate(in *vid.VidmgrStream) (*vid.Response, error) {
 	// todo: add your logic here and delete this line
 
-	err := l.PiDB.Insert(l.ctx, ToDbConvVidmgrStream(in))
+	err := l.PiDB.Insert(l.ctx, common.ToVidmgrStreamDB(in))
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, err

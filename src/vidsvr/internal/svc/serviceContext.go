@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/vidsvr/internal/config"
+	"github.com/i-Things/things/src/vidsvr/internal/media"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
@@ -48,6 +49,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			timedM = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
 		}
 	}
+
+	media.NewMediaChan(c)
+
 	svcCtx := &ServiceContext{
 		Config:   c,
 		VidmgrID: VidmgrID,

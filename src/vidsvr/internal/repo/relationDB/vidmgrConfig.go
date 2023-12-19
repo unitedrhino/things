@@ -16,22 +16,22 @@ func NewVidmgrConfigRepo(in any) *VidmgrConfigRepo {
 }
 
 type VidmgrConfigFilter struct {
-	ApiSecret  string
-	VidmgrIDs  []string
-	ConfigIDs  []string
-	VidmgrIPv4 int64
+	ApiSecret string
+	VidmgrIDs []string
+	ConfigIDs []string
+	//VidmgrIPv4 int64
 	VidmgrPort int64
 	Secret     string
 }
 
 func (p VidmgrConfigRepo) fmtFilter(ctx context.Context, f VidmgrConfigFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	if f.VidmgrIPv4 != 0 {
-		db = db.Where("ipv4=?", f.VidmgrIPv4)
-	}
-	if f.VidmgrPort != 0 {
-		db = db.Where("port=?", f.VidmgrPort)
-	}
+	//if f.VidmgrIPv4 != 0 {
+	//	db = db.Where("ipv4=?", f.VidmgrIPv4)
+	//}
+	//if f.VidmgrPort != 0 {
+	//	db = db.Where("port=?", f.VidmgrPort)
+	//}
 	if f.Secret != "" {
 		db = db.Where("secret=?", f.Secret)
 	}
