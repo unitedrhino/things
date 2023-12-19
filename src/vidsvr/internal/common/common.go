@@ -1,4 +1,4 @@
-package logic
+package common
 
 import (
 	"github.com/i-Things/things/shared/def"
@@ -43,16 +43,3 @@ func ToPageInfoWithDefault(info *vid.PageInfo, defau *def.PageInfo) *def.PageInf
 		return page
 	}
 }
-
-//func ToVidPoint(point *stores.Point) *vid.Point {
-//	if point == nil {
-//		return nil
-//	}
-//	return &vid.Point{Longitude: point.Longitude, Latitude: point.Latitude}
-//}
-//func ToStorePoint(point *vid.Point) stores.Point {
-//	if point == nil {
-//		return stores.Point{Longitude: 0, Latitude: 0}
-//	}
-//	return stores.Point{Longitude: point.Longitude, Latitude: point.Latitude}
-//}

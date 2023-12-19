@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
@@ -45,7 +46,7 @@ func (l *VidmgrInfoCreateLogic) VidmgrInfoCreate(in *vid.VidmgrInfo) (*vid.Respo
 	if size > 0 {
 		return nil, errors.MediaCreateError.AddDetailf("The MediaServer IP and Port is repeated:%d", size)
 	}
-	pi, err := ConvVidmgrPbToPo(in)
+	pi, err := common.ToVidmgrInfoDB(in)
 	if err != nil {
 		return nil, err
 	}

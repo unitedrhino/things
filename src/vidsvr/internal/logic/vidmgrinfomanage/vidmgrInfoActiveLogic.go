@@ -8,7 +8,7 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/vidsvr/internal/logic/zlmedia"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/vidsvr/internal/types"
 	"time"
@@ -80,7 +80,7 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 		} else {
 			hostIP = l.svcCtx.Config.RestConfExt.Host
 		}
-		zlmedia.SetDefaultConfig(hostIP, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
+		common.SetDefaultConfig(hostIP, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
 		currentConf.Data[0].GeneralMediaServerId = infoData.VidmgrID
 		byteConfig, _ := json.Marshal(currentConf.Data[0])
 		//STEP3 配置流服务
@@ -100,17 +100,17 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 		confRepo := relationDB.NewVidmgrConfigRepo(l.ctx)
 
 		confRepo.FindOneByFilter(l.ctx, relationDB.VidmgrConfigFilter{
-			VidmgrIPv4: infoData.VidmgrIpV4,
-			VidmgrPort: infoData.VidmgrPort,
-			Secret:     infoData.VidmgrSecret,
+			//VidmgrIPv4: infoData.VidmgrIpV4,
+			//VidmgrPort: infoData.VidmgrPort,
+			Secret: infoData.VidmgrSecret,
 			//VidmgrIDs: []string{vidInfo.VidmgrID},
 		})
 		if err != nil {
 			l.Errorf("%s.Can find vidmgr config err=%v", utils.FuncName(), utils.Fmt(err))
-			confRepo.Insert(l.ctx, ToVidmgrConfigRpc(&currentConf.Data[0]))
+			confRepo.Insert(l.ctx, common.ToVidmgrConfigDB1(&currentConf.Data[0]))
 		} else {
 			//查询配置数据库，未找到旰做
-			confRepo.Insert(l.ctx, ToVidmgrConfigRpc(&currentConf.Data[0]))
+			confRepo.Insert(l.ctx, common.ToVidmgrConfigDB1(&currentConf.Data[0]))
 		}
 
 		//STEP4 更新状态

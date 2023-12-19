@@ -17,6 +17,8 @@ import (
 	"sync"
 )
 
+// vidsvr构建一个http server 以便于zlmediakit hooks访问
+
 type (
 	ServiceContext = svc.ServiceContext
 	ApiCtx         struct {
@@ -28,6 +30,7 @@ type (
 var (
 	timeObj    timedmanage.TimedManage
 	runApiOnce sync.Once
+	threadOnce sync.Once
 )
 
 func NewApi(apiCtx ApiCtx) ApiCtx {
@@ -55,6 +58,7 @@ func ApiRun() {
 		apiCtx.SvcCtx.Config.Restconf.Host, apiCtx.SvcCtx.Config.Restconf.Port)
 	defer apiCtx.Server.Stop()
 	InitData()
+
 	//初始化第一个流服务
 	apiCtx.Server.Start()
 }
@@ -71,6 +75,7 @@ func InitData() {
 		} else {
 			timeObj = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
 		}
+		//发步一个延时任务  初始化docker-zlmediakit
 		timeObj.TaskSend(context.Background(), &timedjob.TaskSendReq{
 			GroupCode: def.TimedIThingsQueueGroupCode,
 			Code:      "VidInfoInitDatabase",

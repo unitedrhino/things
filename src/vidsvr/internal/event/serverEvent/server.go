@@ -9,9 +9,7 @@ import (
 	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/vidsvr/internal/logic"
-	vidmgrinfomanagelogic "github.com/i-Things/things/src/vidsvr/internal/logic/vidmgrinfomanage"
-	"github.com/i-Things/things/src/vidsvr/internal/logic/zlmedia"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
 	"github.com/i-Things/things/src/vidsvr/internal/types"
@@ -83,7 +81,7 @@ func (l *ServerHandle) ActionInit() error {
 		//update
 		fmt.Println("[**ActionInit**]3 ", utils.FuncName())
 		page := vid.PageInfo{}
-		di, err := l.PiDB.FindByFilter(l.ctx, filter, logic.ToPageInfoWithDefault(&page, &def.PageInfo{
+		di, err := l.PiDB.FindByFilter(l.ctx, filter, common.ToPageInfoWithDefault(&page, &def.PageInfo{
 			Page: 1, Size: 20,
 			Orders: []def.OrderBy{{"created_time", def.OrderDesc}, {"vidmgr_id", def.OrderDesc}},
 		}))
@@ -137,7 +135,7 @@ func (l *ServerHandle) ActionInit() error {
 	if len(currentConf.Data) > 0 {
 		currentConf.Data[0].GeneralMediaServerId = vidInfo.VidmgrID
 		//docker通信IP用eth0 从zlmediakit->vidsvr
-		zlmedia.SetDefaultConfig(l.svcCtx.Config.Restconf.Host, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
+		common.SetDefaultConfig(l.svcCtx.Config.Restconf.Host, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
 		fmt.Println("[****setting****] ", l.svcCtx.Config.Mediakit.Host, int64(l.svcCtx.Config.Restconf.Port))
 		byteConfig, _ := json.Marshal(currentConf.Data[0])
 		//STEP3 配置流服务
@@ -153,17 +151,17 @@ func (l *ServerHandle) ActionInit() error {
 		confRepo := relationDB.NewVidmgrConfigRepo(l.ctx)
 		//查找config配置
 		confRepo.FindOneByFilter(l.ctx, relationDB.VidmgrConfigFilter{
-			VidmgrIPv4: vidInfo.VidmgrIpV4,
-			VidmgrPort: vidInfo.VidmgrPort,
-			Secret:     vidInfo.VidmgrSecret,
+			//VidmgrIPv4: vidInfo.VidmgrIpV4,
+			//VidmgrPort: vidInfo.VidmgrPort,
+			Secret: vidInfo.VidmgrSecret,
 			//VidmgrIDs: []string{vidInfo.VidmgrID},
 		})
 		if err != nil {
 			l.Errorf("%s.Can find vidmgr config err=%v", utils.FuncName(), utils.Fmt(err))
-			confRepo.Insert(l.ctx, vidmgrinfomanagelogic.ToVidmgrConfigRpc(&currentConf.Data[0]))
+			confRepo.Insert(l.ctx, common.ToVidmgrConfigDB1(&currentConf.Data[0]))
 		} else {
 			//update
-			confRepo.Update(l.ctx, vidmgrinfomanagelogic.ToVidmgrConfigRpc(&currentConf.Data[0]))
+			confRepo.Update(l.ctx, common.ToVidmgrConfigDB1(&currentConf.Data[0]))
 		}
 
 		//STEP4 更新状态

@@ -9,6 +9,7 @@ var (
 	vidmgrInfoSvr client.VidmgrInfoManage
 )
 
+// 服务信息管理
 func NewVidmgrManage(runSvr bool) client.VidmgrInfoManage {
 	svcCtx := GetSvcCtx()
 	if runSvr {

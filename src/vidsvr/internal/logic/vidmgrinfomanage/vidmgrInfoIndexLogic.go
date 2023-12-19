@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/src/vidsvr/internal/logic"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
@@ -45,7 +45,7 @@ func (l *VidmgrInfoIndexLogic) VidmgrInfoIndex(in *vid.VidmgrInfoIndexReq) (*vid
 		return nil, err
 	}
 
-	di, err := piDB.FindByFilter(l.ctx, filter, logic.ToPageInfoWithDefault(in.Page, &def.PageInfo{
+	di, err := piDB.FindByFilter(l.ctx, filter, common.ToPageInfoWithDefault(in.Page, &def.PageInfo{
 		Page: 1, Size: 20,
 		Orders: []def.OrderBy{{"created_time", def.OrderDesc}, {"vidmgr_id", def.OrderDesc}},
 	}))
@@ -56,7 +56,7 @@ func (l *VidmgrInfoIndexLogic) VidmgrInfoIndex(in *vid.VidmgrInfoIndexReq) (*vid
 
 	info = make([]*vid.VidmgrInfo, 0, len(di))
 	for _, v := range di {
-		info = append(info, ToVidmgrInfo(l.ctx, v, l.svcCtx))
+		info = append(info, common.ToVidmgrInfoRPC(v))
 	}
 
 	return &vid.VidmgrInfoIndexResp{List: info, Total: size}, nil

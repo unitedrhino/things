@@ -1,16 +1,97 @@
-package vidmgrstreammanagelogic
+package common
 
 import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
+	"github.com/i-Things/things/src/vidsvr/internal/types"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
 	"time"
 )
 
-func ToDbConvVidmgrStream(in *vid.VidmgrStream) *relationDB.VidmgrStream {
+func ToVidmgrTrackRpc(in *types.StreamTrack) *relationDB.StreamTrack {
+	pi := &relationDB.StreamTrack{
+		Channels:    in.Channels,
+		CodecId:     in.CodecId,
+		CodecIdName: in.CodecIdName,
+		CodecType:   in.CodecType,
+		Ready:       in.Ready,
+		SampleBit:   in.SampleBit,
+		SampleRate:  in.SampleRate,
+		Fps:         in.Fps,
+		Height:      in.Height,
+		Width:       in.Width,
+	}
+	return pi
+}
+
+func TovidmgrTracksRpc(pi []types.StreamTrack) []*relationDB.StreamTrack {
+	if len(pi) > 0 {
+		info := make([]*relationDB.StreamTrack, 0, len(pi))
+		for _, v := range pi {
+			info = append(info, ToVidmgrTrackRpc(&v))
+		}
+		return info
+	}
+	return nil
+
+}
+
+func ToVidmgrStreamRpc1(pi *types.HooksApiStreamChangedRep) *relationDB.VidmgrStream {
+	dpi := &relationDB.VidmgrStream{
+		VidmgrID: pi.MediaServerId,
+
+		Stream: pi.Stream,
+		Vhost:  pi.Vhost,
+		App:    pi.App,
+
+		Identifier: pi.OriginSock.Identifier,
+		LocalIP:    utils.InetAtoN(pi.OriginSock.LocalIp),
+		LocalPort:  pi.OriginSock.LocalPort,
+		PeerIP:     utils.InetAtoN(pi.OriginSock.PeerIp),
+		PeerPort:   pi.OriginSock.PeerPort,
+
+		OriginType: pi.OriginType,
+		OriginUrl:  pi.OriginUrl,
+		OriginStr:  pi.OriginTypeStr,
+
+		ReaderCount:      pi.ReaderCount,
+		TotalReaderCount: pi.TotalReaderCount,
+		Tracks:           TovidmgrTracksRpc(pi.Tracks),
+	}
+	return dpi
+}
+
+func ToVidmgrTrackApi(in *vid.StreamTrack) *types.StreamTrack {
+	pi := &types.StreamTrack{
+		Channels:    in.Channels,
+		CodecId:     in.CodecId,
+		CodecIdName: in.CodecIdName,
+		CodecType:   in.CodecType,
+		Ready:       in.Ready,
+		SampleBit:   in.SampleBit,
+		SampleRate:  in.SampleRate,
+		Fps:         in.Fps,
+		Height:      in.Height,
+		Width:       in.Width,
+	}
+	return pi
+}
+
+func TovidmgrTracksApi(pi []vid.StreamTrack) []*types.StreamTrack {
+	if len(pi) > 0 {
+		info := make([]*types.StreamTrack, 0, len(pi))
+		for _, v := range pi {
+			info = append(info, ToVidmgrTrackApi(&v))
+		}
+		return info
+	}
+	return nil
+}
+
+func ToVidmgrStreamDB(in *vid.VidmgrStream) *relationDB.VidmgrStream {
 	info := make([]*relationDB.StreamTrack, 0, len(in.Tracks))
 	for _, v := range in.Tracks {
-		info = append(info, ToDbVidmgrStreamTrack(v))
+		info = append(info, ToVidmgrStreamTrackDB(v))
 	}
 	pi := &relationDB.VidmgrStream{
 		VidmgrID:   in.VidmgrID,
@@ -50,7 +131,7 @@ func ToDbConvVidmgrStream(in *vid.VidmgrStream) *relationDB.VidmgrStream {
 	return pi
 }
 
-func ToDbVidmgrStreamTrack(in *vid.StreamTrack) *relationDB.StreamTrack {
+func ToVidmgrStreamTrackDB(in *vid.StreamTrack) *relationDB.StreamTrack {
 	pi := &relationDB.StreamTrack{
 		Channels:    in.Channels,
 		CodecId:     in.CodecId,
@@ -66,7 +147,7 @@ func ToDbVidmgrStreamTrack(in *vid.StreamTrack) *relationDB.StreamTrack {
 	return pi
 }
 
-func ToRpcVidmgrStreamTrack(in *relationDB.StreamTrack) *vid.StreamTrack {
+func ToVidmgrStreamTrackRpc(in *relationDB.StreamTrack) *vid.StreamTrack {
 	pi := &vid.StreamTrack{
 		Channels:    in.Channels,
 		CodecId:     in.CodecId,
@@ -82,11 +163,11 @@ func ToRpcVidmgrStreamTrack(in *relationDB.StreamTrack) *vid.StreamTrack {
 	return pi
 }
 
-func ToRpcConvVidmgrStream(in *relationDB.VidmgrStream) *vid.VidmgrStream {
+func ToVidmgrStreamRpc(in *relationDB.VidmgrStream) *vid.VidmgrStream {
 
 	info := make([]*vid.StreamTrack, 0, len(in.Tracks))
 	for _, v := range in.Tracks {
-		info = append(info, ToRpcVidmgrStreamTrack(v))
+		info = append(info, ToVidmgrStreamTrackRpc(v))
 	}
 	pi := &vid.VidmgrStream{
 		StreamID:   in.StreamID,
@@ -126,7 +207,7 @@ func ToRpcConvVidmgrStream(in *relationDB.VidmgrStream) *vid.VidmgrStream {
 	return pi
 }
 
-func setPoByPb(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
+func UpdateVidmgrStreamDB(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
 	if data.StreamName != "" {
 		old.StreamName = data.StreamName
 	}
@@ -172,7 +253,7 @@ func setPoByPb(old *relationDB.VidmgrStream, data *vid.VidmgrStream) error {
 	if len(data.Tracks) > 0 {
 		info := make([]*relationDB.StreamTrack, 0, len(data.Tracks))
 		for _, v := range data.Tracks {
-			info = append(info, ToDbVidmgrStreamTrack(v))
+			info = append(info, ToVidmgrStreamTrackDB(v))
 		}
 		old.Tracks = info
 	}
