@@ -2,6 +2,7 @@ package menumanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -57,7 +58,9 @@ func (l *MenuInfoUpdateLogic) MenuInfoUpdate(in *sys.MenuInfo) (*sys.Response, e
 	if in.Path != "" {
 		mi.Path = in.Path
 	}
-
+	if in.Body != nil {
+		mi.Body = utils.ToEmptyString(in.Body)
+	}
 	err = l.MiDB.Update(l.ctx, mi)
 	if err != nil {
 		return nil, err

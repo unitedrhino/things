@@ -21,18 +21,20 @@ type AppInfo struct {
 }
 
 type MenuInfo struct {
-	ID         int64  `json:"id,optional"`         // 编号
-	AppCode    string `json:"appCode"`             // 应用编号
-	Name       string `json:"name,optional"`       // 菜单名称
-	ParentID   int64  `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
-	Type       int64  `json:"type,optional"`       // 类型   1. 内部页面   2，iframe内嵌  3，外部链接跳转 4，微前端
-	Path       string `json:"path,optional"`       // 系统的path
-	Component  string `json:"component,optional"`  // 页面
-	Icon       string `json:"icon,optional"`       // 菜单图标
-	Redirect   string `json:"redirect,optional"`   // 路由重定向
-	Order      int64  `json:"order,optional"`      // 左侧table排序序号
-	HideInMenu int64  `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
-	CreateTime int64  `json:"createTime,optional"` // 创建时间
+	ID         int64       `json:"id,optional"`         // 编号
+	AppCode    string      `json:"appCode"`             // 应用编号
+	Name       string      `json:"name,optional"`       // 菜单名称
+	ParentID   int64       `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
+	Type       int64       `json:"type,optional"`       // 类型   1. 内部页面   2，iframe内嵌  3，外部链接跳转 4，微前端
+	Path       string      `json:"path,optional"`       // 系统的path
+	Component  string      `json:"component,optional"`  // 页面
+	Icon       string      `json:"icon,optional"`       // 菜单图标
+	Redirect   string      `json:"redirect,optional"`   // 路由重定向
+	Order      int64       `json:"order,optional"`      // 左侧table排序序号
+	HideInMenu int64       `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
+	Body       *string     `json:"body,optional"`       //前端自定义字段
+	CreateTime int64       `json:"createTime,optional"` // 创建时间
+	Children   []*MenuInfo `json:"children,optional"`   //子节点
 }
 
 type ProjectInfo struct {
@@ -285,9 +287,10 @@ type CodeReq struct {
 }
 
 type MenuInfoIndexReq struct {
-	AppCode string `json:"appCode,optional"` // 应用编号
-	Name    string `json:"name,optional"`    // 按菜单名称筛选
-	Path    string `json:"path,optional"`    // 按菜单路径筛选
+	AppCode   string `json:"appCode,optional"`   // 应用编号
+	Name      string `json:"name,optional"`      // 按菜单名称筛选
+	Path      string `json:"path,optional"`      // 按菜单路径筛选
+	IsRetTree bool   `json:"isRetTree,optional"` // 是否返回树形结构
 }
 
 type MenuInfoIndexResp struct {

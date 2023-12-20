@@ -67,17 +67,43 @@ func (l *MenuInfoIndexLogic) MenuInfoIndex(in *sys.MenuInfoIndexReq) (*sys.MenuI
 	//获取完整菜单列表
 	mes, err := l.MiDB.FindByFilter(l.ctx, relationDB.MenuInfoFilter{
 		AppCode: in.AppCode,
-		Name:    in.Name,
-		Path:    in.Path,
 	}, nil)
 	if err != nil {
 		return nil, err
 	}
-	for _, me := range mes {
-		info = append(info, logic.MenuInfoToPb(me))
+	if !in.IsRetTree {
+		for _, me := range mes {
+			info = append(info, logic.MenuInfoToPb(me))
+		}
+		return &sys.MenuInfoIndexResp{
+			List: info,
+		}, nil
 	}
+	var idMap = make(map[int64]*sys.MenuInfo, len(mes))
+	var pidMap = make(map[int64][]*sys.MenuInfo, len(mes))
 
+	for _, me := range mes {
+		idMap[me.ID] = logic.MenuInfoToPb(me)
+		if me.ParentID == def.RootNode { //root节点
+			info = append(info, idMap[me.ID])
+		}
+	}
+	for _, me := range idMap {
+		pidMap[me.ParentID] = append(pidMap[me.ParentID], me)
+	}
+	for _, v := range info {
+		FillChildren(v, pidMap)
+	}
 	return &sys.MenuInfoIndexResp{
 		List: info,
 	}, nil
+}
+func FillChildren(node *sys.MenuInfo, pidMap map[int64][]*sys.MenuInfo) {
+	cs := pidMap[node.Id]
+	if len(cs) != 0 { //如果子节点不为空
+		node.Children = cs
+		for _, c := range cs {
+			FillChildren(c, pidMap)
+		}
+	}
 }

@@ -27,9 +27,10 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.MenuInfoIndexReq) (resp *types.MenuInfoIndexResp, err error) {
 	info, err := l.svcCtx.MenuRpc.MenuInfoIndex(l.ctx, &sys.MenuInfoIndexReq{
-		Name:    req.Name,
-		Path:    req.Path,
-		AppCode: req.AppCode,
+		Name:      req.Name,
+		Path:      req.Path,
+		AppCode:   req.AppCode,
+		IsRetTree: req.IsRetTree,
 	})
 	if err != nil {
 		return nil, err

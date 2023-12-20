@@ -41,16 +41,16 @@ func (l *MenuInfoCreateLogic) MenuInfoCreate(in *sys.MenuInfo) (*sys.WithID, err
 		in.HideInMenu = 1
 	}
 	po := relationDB.SysMenuInfo{
-		ParentID:      in.ParentID,
-		Type:          in.Type,
-		Order:         in.Order,
-		Name:          in.Name,
-		Path:          in.Path,
-		Component:     in.Component,
-		Icon:          in.Icon,
-		Redirect:      in.Redirect,
-		BackgroundUrl: "",
-		HideInMenu:    in.HideInMenu,
+		ParentID:   in.ParentID,
+		Type:       in.Type,
+		Order:      in.Order,
+		Name:       in.Name,
+		Path:       in.Path,
+		Component:  in.Component,
+		Icon:       in.Icon,
+		Redirect:   in.Redirect,
+		Body:       in.Body.Value,
+		HideInMenu: in.HideInMenu,
 	}
 	err := l.MiDB.Insert(l.ctx, &po)
 	if err != nil {

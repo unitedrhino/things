@@ -3,6 +3,7 @@ package logic
 import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
@@ -59,6 +60,8 @@ func ToStorePoint(point *sys.Point) stores.Point {
 func MenuInfoToPb(ui *relationDB.SysMenuInfo) *sys.MenuInfo {
 	return &sys.MenuInfo{
 		Id:         ui.ID,
+		Body:       utils.ToRpcNullString(ui.Body),
+		AppCode:    ui.AppCode,
 		Name:       ui.Name,
 		ParentID:   ui.ParentID,
 		Type:       ui.Type,

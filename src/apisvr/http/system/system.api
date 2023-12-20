@@ -40,7 +40,9 @@ type (
         Redirect string `json:"redirect,optional"`            // 路由重定向
         Order int64 `json:"order,optional"`                            // 左侧table排序序号
         HideInMenu int64 `json:"hideInMenu,optional"`         // 菜单是否隐藏 1：是 2：否
+        Body *string  `json:"body,optional"` //前端自定义字段
         CreateTime int64 `json:"createTime,optional"`           // 创建时间
+        Children []*MenuInfo `json:"children,optional"` //子节点
     }
 
     ProjectInfo struct {
