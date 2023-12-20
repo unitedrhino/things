@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/common"
@@ -15,8 +16,6 @@ import (
 	"sync"
 	"time"
 )
-
-const STREAMCHANGESIZE = 20
 
 // 用于流改变状态记录的结构
 type LastStreamInfo struct {
@@ -45,7 +44,7 @@ func NewMediaChan(config config.Config) *MediaChan {
 		Old = LastStreamInfo{}
 		SvcMediaChan = &MediaChan{
 			Logger:       logx.WithContext(Ctx),
-			ChangeStream: make(chan LastStreamInfo, STREAMCHANGESIZE),
+			ChangeStream: make(chan LastStreamInfo, clients.STREAMCHANGESIZE),
 		}
 		//初始化一个协程
 		utils.Go(Ctx, MediaThreadRun) //后台执行
@@ -99,15 +98,21 @@ func QueueOnChangeStream(qreq LastStreamInfo) {
 		return
 	}
 	if vidInfo != nil {
-		//查找要素：vidmgr_id  app  stream    peerIP
+		//查找要素：vidmgr_id  app  stream    peerIP OriginUrl(push时依据)
 		streamRepo := relationDB.NewVidmgrStreamRepo(Ctx)
-		vidStreamInfo, err := streamRepo.FindOneByFilter(Ctx, relationDB.VidmgrStreamFilter{
+		filter := &relationDB.VidmgrStreamFilter{
 			VidmgrID:   qreq.Req.MediaServerId,
 			App:        qreq.Req.App,
 			Stream:     qreq.Req.Stream,
 			OriginType: qreq.Req.OriginType,
-			PeerIP:     utils.InetAtoN(qreq.Req.OriginSock.PeerIp),
-		})
+		}
+		if qreq.Req.OriginType == clients.PULL {
+			filter.OriginUrl = qreq.Req.OriginUrl
+		} else { //Push stream
+			filter.PeerIP = utils.InetAtoN(qreq.Req.OriginSock.PeerIp)
+		}
+
+		vidStreamInfo, err := streamRepo.FindOneByFilter(Ctx, *filter)
 		//未找到流信息
 		if err != nil {
 			//如何未查询到插入该流
@@ -120,8 +125,8 @@ func QueueOnChangeStream(qreq LastStreamInfo) {
 				vidStreamInfo.FirstLogin = time.Now()
 				vidStreamInfo.LastLogin = time.Now()
 				//根据流类型，确定
-				if vidStreamInfo.OriginType == common.RTMP_PUSH || vidStreamInfo.OriginType == common.RTSP_PUSH ||
-					vidStreamInfo.OriginType == common.RTP_PUSH {
+				if vidStreamInfo.OriginType == clients.RTMP_PUSH || vidStreamInfo.OriginType == clients.RTSP_PUSH ||
+					vidStreamInfo.OriginType == clients.RTP_PUSH {
 					re := regexp.MustCompile(vidStreamInfo.Vhost)
 					if vidInfo.MediasvrType == 1 { //docker 模式
 						vidStreamInfo.OriginUrl =

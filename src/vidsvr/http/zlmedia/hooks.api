@@ -8,6 +8,7 @@ info(
     version: "v1"
 )
 import "zlmedia/common.api" //zlemedia api
+//import "zlmedia/index.api"
 
 @server(
     group:zlmedia/hooks
