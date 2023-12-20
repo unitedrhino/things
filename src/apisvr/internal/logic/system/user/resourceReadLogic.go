@@ -74,7 +74,7 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 		return nil
 	})
 	wait.Go(func() error {
-		ret, err := l.svcCtx.AppRpc.AppInfoRead(l.ctx, &sys.ReqWithIDCode{Code: ctxs.GetUserCtx(l.ctx).AppCode})
+		ret, err := l.svcCtx.AppRpc.AppInfoRead(l.ctx, &sys.WithIDCode{Code: ctxs.GetUserCtx(l.ctx).AppCode})
 		if err != nil {
 			return err
 		}

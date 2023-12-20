@@ -159,3 +159,12 @@ func ToDiSendOption(in *types.SendOption) *dm.SendOption {
 		RetryInterval:  in.RetryInterval,
 	}
 }
+
+func SysToWithIDTypes(in *sys.WithID) *types.WithID {
+	if in == nil {
+		return nil
+	}
+	return &types.WithID{
+		ID: in.Id,
+	}
+}

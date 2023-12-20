@@ -30,7 +30,7 @@ func NewUserAuthAreaMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceCon
 	}
 }
 
-func (l *UserAuthAreaMultiUpdateLogic) UserAuthAreaMultiUpdate(in *sys.UserAuthAreaMultiUpdateReq) (*sys.Response, error) {
+func (l *UserAuthAreaMultiUpdateLogic) UserAuthAreaMultiUpdate(in *sys.UserAreaMultiUpdateReq) (*sys.Response, error) {
 	if in.UserID == 0 {
 		return nil, errors.Parameter.AddDetail(in.UserID).WithMsg("用户ID参数必填")
 	}
@@ -45,14 +45,14 @@ func (l *UserAuthAreaMultiUpdateLogic) UserAuthAreaMultiUpdate(in *sys.UserAuthA
 	}
 	po, err := checkUser(l.ctx, in.UserID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查用户出错")
+		return nil, errors.Fmt(err).WithMsg("检查用户出错")
 	} else if po == nil {
 		return nil, errors.Parameter.AddDetail(err).WithMsg("检查用户不存在")
 	}
 	areas := ToAuthAreaDos(in.Areas)
 	err = l.UaaDB.MultiUpdate(l.ctx, in.UserID, in.ProjectID, areas)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("用户数据权限保存失败")
+		return nil, errors.Fmt(err).WithMsg("用户数据权限保存失败")
 	}
 	if len(areas) == 0 && project != nil { //如果把项目下所有区域权限取消了,则项目权限默认也取消
 		l.UapDB.Delete(l.ctx, in.UserID, in.ProjectID)

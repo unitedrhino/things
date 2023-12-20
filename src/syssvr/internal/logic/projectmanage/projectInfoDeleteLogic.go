@@ -30,26 +30,26 @@ func NewProjectInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 // 删除项目
-func (l *ProjectInfoDeleteLogic) ProjectInfoDelete(in *sys.ProjectInfoDeleteReq) (*sys.Response, error) {
+func (l *ProjectInfoDeleteLogic) ProjectInfoDelete(in *sys.ProjectWithID) (*sys.Response, error) {
 	if in.ProjectID == 0 {
 		return nil, errors.Parameter.AddDetail(in.ProjectID).WithMsg("项目ID参数必填")
 	}
 
 	po, err := checkProject(l.ctx, in.ProjectID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查项目出错")
+		return nil, errors.Fmt(err).WithMsg("检查项目出错")
 	} else if po == nil {
 		return nil, errors.Parameter.AddDetail(in.ProjectID).WithMsg("检查项目不存在")
 	}
 
 	err = l.AiDB.DeleteByFilter(l.ctx, relationDB.AreaInfoFilter{ProjectID: in.ProjectID})
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("删除项目区域出错")
+		return nil, errors.Fmt(err).WithMsg("删除项目区域出错")
 	}
 
 	err = l.PiDB.Delete(l.ctx, in.ProjectID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("删除项目出错")
+		return nil, errors.Fmt(err).WithMsg("删除项目出错")
 	}
 
 	return &sys.Response{}, nil

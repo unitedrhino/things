@@ -26,7 +26,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.ProjectInfo) error {
+func (l *CreateLogic) Create(req *types.ProjectInfo) (*types.ProjectWithID, error) {
 	rpcReq := &sys.ProjectInfo{
 		ProjectName: req.ProjectName,
 		CompanyName: utils.ToRpcNullString(req.CompanyName),
@@ -35,11 +35,11 @@ func (l *CreateLogic) Create(req *types.ProjectInfo) error {
 		Address:     utils.ToRpcNullString(req.Address),
 		Desc:        utils.ToRpcNullString(req.Desc),
 	}
-	_, err := l.svcCtx.ProjectM.ProjectInfoCreate(l.ctx, rpcReq)
+	resp, err := l.svcCtx.ProjectM.ProjectInfoCreate(l.ctx, rpcReq)
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.ProjectManage req=%v err=%v", utils.FuncName(), req, er)
-		return er
+		return nil, er
 	}
-	return nil
+	return &types.ProjectWithID{ProjectID: resp.ProjectID}, nil
 }

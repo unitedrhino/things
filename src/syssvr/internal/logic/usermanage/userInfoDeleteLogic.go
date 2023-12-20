@@ -2,7 +2,6 @@ package usermanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
@@ -33,7 +32,7 @@ func (l *UserInfoDeleteLogic) UserInfoDelete(in *sys.UserInfoDeleteReq) (*sys.Re
 	err := l.UiDB.Delete(l.ctx, cast.ToInt64(in.UserID))
 	if err != nil {
 		l.Errorf("%s.Delete uid=%d err=%+v", utils.FuncName(), in.UserID, err)
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 
 	l.Infof("%s.delete uid=%v", utils.FuncName(), in.UserID)

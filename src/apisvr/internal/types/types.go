@@ -230,10 +230,6 @@ type RoleInfoIndexResp struct {
 	Total int64       `json:"total"` //角色列表总数
 }
 
-type RoleInfoDeleteReq struct {
-	ID int64 `json:"id"` //编号
-}
-
 type RoleMenuMultiUpdateReq struct {
 	ID      int64   `json:"id"`      //角色编号
 	AppCode string  `json:"appCode"` // 应用编号
@@ -475,12 +471,8 @@ type UploadFileResp struct {
 	FileUri  string `json:"fileUri"`  //文件uri 相对路径
 }
 
-type ProjectInfoDeleteReq struct {
+type ProjectWithID struct {
 	ProjectID int64 `json:"projectID,string"` //项目id 只读
-}
-
-type ProjectInfoReadReq struct {
-	ProjectID int64 `json:"projectID,string"` //项目id
 }
 
 type ProjectInfoIndexReq struct {
@@ -505,7 +497,7 @@ type AreaInfo struct {
 	Children     []*AreaInfo `json:"children,optional"`            //下级项目区域列表（只读）
 }
 
-type AreaInfoDeleteReq struct {
+type AreaWithID struct {
 	AreaID int64 `json:"areaID,string"` //项目区域id 只读
 }
 

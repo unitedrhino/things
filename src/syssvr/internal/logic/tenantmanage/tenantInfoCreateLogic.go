@@ -33,7 +33,7 @@ func NewTenantInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 // 新增区域
-func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*sys.Response, error) {
+func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*sys.WithID, error) {
 	err := logic.IsSupperAdmin(l.ctx, def.TenantCodeDefault)
 	if err != nil {
 		return nil, err
@@ -74,6 +74,7 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 	defer func() {
 		ctxs.GetUserCtx(l.ctx).AllData = false
 	}()
+	po := ToTenantInfoPo(in.Info)
 	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		ri := relationDB.SysRoleInfo{TenantCode: stores.TenantCode(in.Info.Code), Name: "超级管理员"}
 		err = relationDB.NewRoleInfoRepo(tx).Insert(l.ctx, &ri)
@@ -82,7 +83,6 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 		if err != nil {
 			return err
 		}
-		po := ToTenantInfoPo(in.Info)
 		po.AdminUserID = ui.UserID
 		err = relationDB.NewTenantInfoRepo(l.ctx).Insert(l.ctx, po)
 		if err != nil {
@@ -93,5 +93,5 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 	if err != nil {
 		return nil, err
 	}
-	return &sys.Response{}, err
+	return &sys.WithID{Id: po.ID}, err
 }

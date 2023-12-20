@@ -26,8 +26,8 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
-func (l *DeleteLogic) Delete(req *types.RoleInfoDeleteReq) error {
-	resp, err := l.svcCtx.RoleRpc.RoleInfoDelete(l.ctx, &sys.ReqWithID{
+func (l *DeleteLogic) Delete(req *types.WithID) error {
+	resp, err := l.svcCtx.RoleRpc.RoleInfoDelete(l.ctx, &sys.WithID{
 		Id: req.ID,
 	})
 	if err != nil {

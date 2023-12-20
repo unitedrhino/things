@@ -37,7 +37,7 @@ func (l *AreaInfoUpdateLogic) AreaInfoUpdate(in *sys.AreaInfo) (*sys.Response, e
 
 	areaPo, err := checkArea(l.ctx, in.AreaID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查区域出错")
+		return nil, errors.Fmt(err).WithMsg("检查区域出错")
 	} else if areaPo == nil {
 		return nil, errors.Parameter.AddDetail(in.AreaID).WithMsg("检查区域不存在")
 	}
@@ -50,7 +50,7 @@ func (l *AreaInfoUpdateLogic) AreaInfoUpdate(in *sys.AreaInfo) (*sys.Response, e
 
 	projPo, err := checkProject(l.ctx, in.ProjectID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查项目出错")
+		return nil, errors.Fmt(err).WithMsg("检查项目出错")
 	} else if projPo == nil {
 		return nil, errors.Parameter.AddDetail(in.ProjectID).WithMsg("检查项目不存在")
 	}
@@ -59,7 +59,7 @@ func (l *AreaInfoUpdateLogic) AreaInfoUpdate(in *sys.AreaInfo) (*sys.Response, e
 
 	err = l.AiDB.Update(l.ctx, areaPo)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查出错")
+		return nil, errors.Fmt(err).WithMsg("检查出错")
 	}
 
 	return &sys.Response{}, nil

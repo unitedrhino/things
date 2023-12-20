@@ -35,7 +35,7 @@ func getAreaIDs(in *sys.AreaInfo, areaIDs []int64) []int64 {
 	return areaIDs
 }
 
-func (l *DeleteLogic) Delete(req *types.AreaInfoDeleteReq) error {
+func (l *DeleteLogic) Delete(req *types.AreaWithID) error {
 	treeResp, err := l.svcCtx.AreaM.AreaInfoTree(l.ctx, &sys.AreaInfoTreeReq{AreaID: req.AreaID})
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (l *DeleteLogic) Delete(req *types.AreaInfoDeleteReq) error {
 	if len(dmRep.List) != 0 {
 		return errors.Parameter.AddMsg("该区域或其子区域已绑定了设备，不允许删除")
 	}
-	_, err = l.svcCtx.AreaM.AreaInfoDelete(l.ctx, &sys.AreaInfoDeleteReq{AreaID: req.AreaID})
+	_, err = l.svcCtx.AreaM.AreaInfoDelete(l.ctx, &sys.AreaWithID{AreaID: req.AreaID})
 	if er := errors.Fmt(err); er != nil {
 		l.Errorf("%s.rpc.AreaManage req=%v err=%+v", utils.FuncName(), req, er)
 		return er

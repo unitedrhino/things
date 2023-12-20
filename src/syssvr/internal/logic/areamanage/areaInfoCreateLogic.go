@@ -30,7 +30,7 @@ func NewAreaInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ar
 }
 
 // 新增区域
-func (l *AreaInfoCreateLogic) AreaInfoCreate(in *sys.AreaInfo) (*sys.Response, error) {
+func (l *AreaInfoCreateLogic) AreaInfoCreate(in *sys.AreaInfo) (*sys.AreaWithID, error) {
 	if in.ProjectID == 0 || in.AreaName == "" || in.ParentAreaID == 0 || ////root节点不为0
 		in.ParentAreaID == def.NotClassified { //未分类不能有下属的区域
 		return nil, errors.Parameter
@@ -38,7 +38,7 @@ func (l *AreaInfoCreateLogic) AreaInfoCreate(in *sys.AreaInfo) (*sys.Response, e
 
 	projPo, err := checkProject(l.ctx, in.ProjectID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查项目出错")
+		return nil, errors.Fmt(err).WithMsg("检查项目出错")
 	} else if projPo == nil {
 		return nil, errors.Parameter.AddDetail(in.ProjectID).WithMsg("检查项目不存在")
 	}
@@ -64,5 +64,5 @@ func (l *AreaInfoCreateLogic) AreaInfoCreate(in *sys.AreaInfo) (*sys.Response, e
 		return nil, errors.System.AddDetail(err)
 	}
 
-	return &sys.Response{}, nil
+	return &sys.AreaWithID{AreaID: int64(areaPo.AreaID)}, nil
 }

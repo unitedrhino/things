@@ -22,7 +22,7 @@ func NewApiManageServer(svcCtx *svc.ServiceContext) *ApiManageServer {
 	}
 }
 
-func (s *ApiManageServer) ApiInfoCreate(ctx context.Context, in *sys.ApiInfo) (*sys.Response, error) {
+func (s *ApiManageServer) ApiInfoCreate(ctx context.Context, in *sys.ApiInfo) (*sys.WithID, error) {
 	l := apimanagelogic.NewApiInfoCreateLogic(ctx, s.svcCtx)
 	return l.ApiInfoCreate(in)
 }
@@ -37,7 +37,7 @@ func (s *ApiManageServer) ApiInfoUpdate(ctx context.Context, in *sys.ApiInfo) (*
 	return l.ApiInfoUpdate(in)
 }
 
-func (s *ApiManageServer) ApiInfoDelete(ctx context.Context, in *sys.ReqWithID) (*sys.Response, error) {
+func (s *ApiManageServer) ApiInfoDelete(ctx context.Context, in *sys.WithID) (*sys.Response, error) {
 	l := apimanagelogic.NewApiInfoDeleteLogic(ctx, s.svcCtx)
 	return l.ApiInfoDelete(in)
 }

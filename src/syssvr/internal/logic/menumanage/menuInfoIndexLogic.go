@@ -3,7 +3,6 @@ package menumanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/samber/lo"
@@ -72,7 +71,7 @@ func (l *MenuInfoIndexLogic) MenuInfoIndex(in *sys.MenuInfoIndexReq) (*sys.MenuI
 		Path:    in.Path,
 	}, nil)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	for _, me := range mes {
 		info = append(info, logic.MenuInfoToPb(me))

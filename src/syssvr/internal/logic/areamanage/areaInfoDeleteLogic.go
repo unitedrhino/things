@@ -28,26 +28,26 @@ func NewAreaInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ar
 }
 
 // 删除区域
-func (l *AreaInfoDeleteLogic) AreaInfoDelete(in *sys.AreaInfoDeleteReq) (*sys.Response, error) {
+func (l *AreaInfoDeleteLogic) AreaInfoDelete(in *sys.AreaWithID) (*sys.Response, error) {
 	if in.AreaID == 0 {
 		return nil, errors.Parameter
 	}
 
 	areaPo, err := checkArea(l.ctx, in.AreaID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查区域出错")
+		return nil, errors.Fmt(err).WithMsg("检查区域出错")
 	} else if areaPo == nil {
 		return nil, errors.Parameter.AddDetail(in.AreaID).WithMsg("检查区域不存在")
 	}
 
 	areaAndChildIDs, err := l.AiDB.FindIDsWithChildren(l.ctx, in.AreaID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("查询区域及子区域出错")
+		return nil, errors.Fmt(err).WithMsg("查询区域及子区域出错")
 	}
 
 	err = l.AiDB.DeleteByFilter(l.ctx, relationDB.AreaInfoFilter{AreaIDs: areaAndChildIDs})
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("删除区域及子区域出错")
+		return nil, errors.Fmt(err).WithMsg("删除区域及子区域出错")
 	}
 
 	return &sys.Response{}, nil

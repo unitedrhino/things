@@ -2,7 +2,6 @@ package apimanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -27,17 +26,18 @@ func NewApiInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Api
 	}
 }
 
-func (l *ApiInfoCreateLogic) ApiInfoCreate(in *sys.ApiInfo) (*sys.Response, error) {
-	err := l.AiDB.Insert(l.ctx, &relationDB.SysApiInfo{
+func (l *ApiInfoCreateLogic) ApiInfoCreate(in *sys.ApiInfo) (*sys.WithID, error) {
+	po := relationDB.SysApiInfo{
 		Route:        in.Route,
 		Method:       in.Method,
 		Name:         in.Name,
 		BusinessType: in.BusinessType,
 		Group:        in.Group,
 		AppCode:      in.AppCode,
-	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
 	}
-	return &sys.Response{}, nil
+	err := l.AiDB.Insert(l.ctx, &po)
+	if err != nil {
+		return nil, err
+	}
+	return &sys.WithID{Id: po.ID}, nil
 }

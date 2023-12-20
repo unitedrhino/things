@@ -13,7 +13,7 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "添加角色"
     @handler create
-    post /create (RoleInfo) returns ()
+    post /create (RoleInfo) returns (WithID)
 
     @doc "获取角色列表"
     @handler index
@@ -25,7 +25,7 @@ service api {
 
     @doc "删除角色"
     @handler delete
-    post /delete (RoleInfoDeleteReq) returns ()
+    post /delete (WithID) returns ()
 }
 
 
@@ -140,10 +140,6 @@ type (
     RoleInfoIndexResp struct {
         List []*RoleInfo `json:"list"`  //角色列表数据
         Total int64 `json:"total"`           //角色列表总数
-    }
-
-    RoleInfoDeleteReq struct {
-        ID int64 `json:"id"`  //编号
     }
 
     RoleMenuMultiUpdateReq struct {

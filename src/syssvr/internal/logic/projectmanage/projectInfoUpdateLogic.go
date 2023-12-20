@@ -34,7 +34,7 @@ func (l *ProjectInfoUpdateLogic) ProjectInfoUpdate(in *sys.ProjectInfo) (*sys.Re
 
 	po, err := checkProject(l.ctx, in.ProjectID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查项目出错")
+		return nil, errors.Fmt(err).WithMsg("检查项目出错")
 	} else if po == nil {
 		return nil, errors.Parameter.AddDetail(in.ProjectID).WithMsg("检查项目不存在")
 	}
@@ -43,7 +43,7 @@ func (l *ProjectInfoUpdateLogic) ProjectInfoUpdate(in *sys.ProjectInfo) (*sys.Re
 
 	err = l.PiDB.Update(l.ctx, po)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	return &sys.Response{}, nil
 }

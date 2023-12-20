@@ -28,7 +28,7 @@ func NewAreaInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Area
 }
 
 // 获取区域信息详情
-func (l *AreaInfoReadLogic) AreaInfoRead(in *sys.AreaInfoReadReq) (*sys.AreaInfo, error) {
+func (l *AreaInfoReadLogic) AreaInfoRead(in *sys.AreaWithID) (*sys.AreaInfo, error) {
 	po, err := l.AiDB.FindOne(l.ctx, in.AreaID, nil)
 	if err == nil {
 		return transPoToPb(po), nil

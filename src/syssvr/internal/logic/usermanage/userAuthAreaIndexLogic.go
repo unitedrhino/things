@@ -28,9 +28,9 @@ func NewUserAuthAreaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *UserAuthAreaIndexLogic) UserAuthAreaIndex(in *sys.UserAuthAreaIndexReq) (*sys.UserAuthAreaIndexResp, error) {
+func (l *UserAuthAreaIndexLogic) UserAuthAreaIndex(in *sys.UserAreaIndexReq) (*sys.UserAreaIndexResp, error) {
 	var (
-		list  []*sys.UserAuthArea
+		list  []*sys.UserArea
 		total int64
 		err   error
 	)
@@ -53,9 +53,9 @@ func (l *UserAuthAreaIndexLogic) UserAuthAreaIndex(in *sys.UserAuthAreaIndexReq)
 		return nil, err
 	}
 
-	list = make([]*sys.UserAuthArea, 0, len(poArr))
+	list = make([]*sys.UserArea, 0, len(poArr))
 	for _, po := range poArr {
 		list = append(list, transAreaPoToPb(po))
 	}
-	return &sys.UserAuthAreaIndexResp{List: list, Total: total}, nil
+	return &sys.UserAreaIndexResp{List: list, Total: total}, nil
 }

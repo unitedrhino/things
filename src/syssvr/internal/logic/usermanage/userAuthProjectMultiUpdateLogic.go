@@ -28,20 +28,20 @@ func NewUserAuthProjectMultiUpdateLogic(ctx context.Context, svcCtx *svc.Service
 	}
 }
 
-func (l *UserAuthProjectMultiUpdateLogic) UserAuthProjectMultiUpdate(in *sys.UserAuthProjectMultiUpdateReq) (*sys.Response, error) {
+func (l *UserAuthProjectMultiUpdateLogic) UserAuthProjectMultiUpdate(in *sys.UserProjectMultiUpdateReq) (*sys.Response, error) {
 	if in.UserID == 0 {
 		return nil, errors.Parameter.AddDetail(in.UserID).WithMsg("用户ID参数必填")
 	}
 	po, err := checkUser(l.ctx, in.UserID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查用户出错")
+		return nil, errors.Fmt(err).WithMsg("检查用户出错")
 	} else if po == nil {
 		return nil, errors.Parameter.AddDetail(err).WithMsg("检查用户不存在")
 	}
 	projects := ToAuthProjectDos(in.Projects)
 	err = l.UapDB.MultiUpdate(l.ctx, in.UserID, projects)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("用户数据权限保存失败")
+		return nil, errors.Fmt(err).WithMsg("用户数据权限保存失败")
 	}
 
 	//更新 用户数据权限 缓存

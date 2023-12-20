@@ -27,7 +27,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 }
 
 func (l *DeleteLogic) Delete(req *types.WithID) error {
-	resp, err := l.svcCtx.ApiRpc.ApiInfoDelete(l.ctx, &sys.ReqWithID{
+	resp, err := l.svcCtx.ApiRpc.ApiInfoDelete(l.ctx, &sys.WithID{
 		Id: req.ID,
 	})
 	if err != nil {

@@ -23,7 +23,7 @@ func NewTenantManageServer(svcCtx *svc.ServiceContext) *TenantManageServer {
 }
 
 // 新增区域
-func (s *TenantManageServer) TenantInfoCreate(ctx context.Context, in *sys.TenantInfoCreateReq) (*sys.Response, error) {
+func (s *TenantManageServer) TenantInfoCreate(ctx context.Context, in *sys.TenantInfoCreateReq) (*sys.WithID, error) {
 	l := tenantmanagelogic.NewTenantInfoCreateLogic(ctx, s.svcCtx)
 	return l.TenantInfoCreate(in)
 }
@@ -35,13 +35,13 @@ func (s *TenantManageServer) TenantInfoUpdate(ctx context.Context, in *sys.Tenan
 }
 
 // 删除区域
-func (s *TenantManageServer) TenantInfoDelete(ctx context.Context, in *sys.ReqWithIDCode) (*sys.Response, error) {
+func (s *TenantManageServer) TenantInfoDelete(ctx context.Context, in *sys.WithIDCode) (*sys.Response, error) {
 	l := tenantmanagelogic.NewTenantInfoDeleteLogic(ctx, s.svcCtx)
 	return l.TenantInfoDelete(in)
 }
 
 // 获取租户信息详情
-func (s *TenantManageServer) TenantInfoRead(ctx context.Context, in *sys.ReqWithIDCode) (*sys.TenantInfo, error) {
+func (s *TenantManageServer) TenantInfoRead(ctx context.Context, in *sys.WithIDCode) (*sys.TenantInfo, error) {
 	l := tenantmanagelogic.NewTenantInfoReadLogic(ctx, s.svcCtx)
 	return l.TenantInfoRead(in)
 }

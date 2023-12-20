@@ -15,13 +15,13 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "新增项目区域"
     @handler create
-    post /create (AreaInfo) returns ()
+    post /create (AreaInfo) returns (AreaWithID)
     @doc "更新项目区域"
     @handler update
     post /update (AreaInfo) returns ()
     @doc "删除项目区域"
     @handler delete
-    post /delete (AreaInfoDeleteReq) returns ()
+    post /delete (AreaWithID) returns ()
     @doc "获取项目区域详情"
     @handler read
     post /read (AreaInfoReadReq) returns (AreaInfo)
@@ -45,7 +45,7 @@ type (
         Children []*AreaInfo `json:"children,optional"`          //下级项目区域列表（只读）
     }
 
-    AreaInfoDeleteReq struct {
+    AreaWithID struct {
         AreaID int64 `json:"areaID,string"` //项目区域id 只读
     }
 

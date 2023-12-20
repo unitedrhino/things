@@ -2,7 +2,6 @@ package menumanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -27,7 +26,7 @@ func NewMenuInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Me
 	}
 }
 
-func (l *MenuInfoCreateLogic) MenuInfoCreate(in *sys.MenuInfo) (*sys.Response, error) {
+func (l *MenuInfoCreateLogic) MenuInfoCreate(in *sys.MenuInfo) (*sys.WithID, error) {
 
 	if in.Type == 0 {
 		in.Type = 1
@@ -41,7 +40,7 @@ func (l *MenuInfoCreateLogic) MenuInfoCreate(in *sys.MenuInfo) (*sys.Response, e
 	if in.HideInMenu == 0 {
 		in.HideInMenu = 1
 	}
-	err := l.MiDB.Insert(l.ctx, &relationDB.SysMenuInfo{
+	po := relationDB.SysMenuInfo{
 		ParentID:      in.ParentID,
 		Type:          in.Type,
 		Order:         in.Order,
@@ -52,9 +51,10 @@ func (l *MenuInfoCreateLogic) MenuInfoCreate(in *sys.MenuInfo) (*sys.Response, e
 		Redirect:      in.Redirect,
 		BackgroundUrl: "",
 		HideInMenu:    in.HideInMenu,
-	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
 	}
-	return &sys.Response{}, nil
+	err := l.MiDB.Insert(l.ctx, &po)
+	if err != nil {
+		return nil, err
+	}
+	return &sys.WithID{Id: po.ID}, nil
 }

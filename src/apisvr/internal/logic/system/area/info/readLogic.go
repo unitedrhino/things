@@ -27,7 +27,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 }
 
 func (l *ReadLogic) Read(req *types.AreaInfoReadReq) (resp *types.AreaInfo, err error) {
-	dmResp, err := l.svcCtx.AreaM.AreaInfoRead(l.ctx, &sys.AreaInfoReadReq{AreaID: req.AreaID})
+	dmResp, err := l.svcCtx.AreaM.AreaInfoRead(l.ctx, &sys.AreaWithID{AreaID: req.AreaID})
 	if er := errors.Fmt(err); er != nil {
 		l.Errorf("%s.rpc.AreaManage req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er

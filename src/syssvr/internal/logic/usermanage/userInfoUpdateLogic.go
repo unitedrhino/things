@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -33,7 +32,7 @@ func (l *UserInfoUpdateLogic) UserInfoUpdate(in *sys.UserInfo) (*sys.Response, e
 	ui, err := l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{UserIDs: []int64{in.UserID}, WithRoles: true})
 	if err != nil {
 		l.Errorf("%s.FindOne UserID=%d err=%v", utils.FuncName(), in.UserID, err)
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	ui.UserName = sql.NullString{String: in.UserName, Valid: true}
 	ui.NickName = in.NickName
@@ -69,7 +68,7 @@ func (l *UserInfoUpdateLogic) UserInfoUpdate(in *sys.UserInfo) (*sys.Response, e
 	err = l.UiDB.Update(l.ctx, ui)
 	if err != nil {
 		l.Errorf("%s.Update ui=%v err=%v", utils.FuncName(), ui, err)
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	l.Infof("%s.modified usersvr info = %+v", utils.FuncName(), ui)
 

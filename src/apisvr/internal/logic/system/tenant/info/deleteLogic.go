@@ -25,6 +25,6 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 }
 
 func (l *DeleteLogic) Delete(req *types.WithIDOrCode) error {
-	_, err := l.svcCtx.TenantRpc.TenantInfoDelete(l.ctx, &sys.ReqWithIDCode{Id: req.ID})
+	_, err := l.svcCtx.TenantRpc.TenantInfoDelete(l.ctx, &sys.WithIDCode{Id: req.ID})
 	return err
 }

@@ -16,7 +16,7 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "添加租户"
     @handler create
-    post /create (TenantInfoCreateReq) returns ()
+    post /create (TenantInfoCreateReq) returns (WithID)
 
     @doc "获取租户列表"
     @handler index

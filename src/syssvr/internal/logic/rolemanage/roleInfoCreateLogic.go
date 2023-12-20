@@ -2,7 +2,6 @@ package rolemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -27,14 +26,15 @@ func NewRoleInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ro
 	}
 }
 
-func (l *RoleInfoCreateLogic) RoleInfoCreate(in *sys.RoleInfo) (*sys.Response, error) {
-	err := l.RiDB.Insert(l.ctx, &relationDB.SysRoleInfo{
+func (l *RoleInfoCreateLogic) RoleInfoCreate(in *sys.RoleInfo) (*sys.WithID, error) {
+	po := relationDB.SysRoleInfo{
 		Name:   in.Name,
 		Desc:   in.Desc,
 		Status: in.Status,
-	})
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
 	}
-	return &sys.Response{}, nil
+	err := l.RiDB.Insert(l.ctx, &po)
+	if err != nil {
+		return nil, err
+	}
+	return &sys.WithID{Id: po.ID}, nil
 }

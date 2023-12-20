@@ -25,7 +25,7 @@ func NewTenantInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Te
 }
 
 // 获取区域信息详情
-func (l *TenantInfoReadLogic) TenantInfoRead(in *sys.ReqWithIDCode) (*sys.TenantInfo, error) {
+func (l *TenantInfoReadLogic) TenantInfoRead(in *sys.WithIDCode) (*sys.TenantInfo, error) {
 	ti, err := relationDB.NewTenantInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.TenantInfoFilter{Codes: []string{in.Code}, ID: in.Id})
 
 	return ToTenantInfoRpc(ti), err

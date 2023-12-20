@@ -23,7 +23,7 @@ func NewProjectManageServer(svcCtx *svc.ServiceContext) *ProjectManageServer {
 }
 
 // 新增项目
-func (s *ProjectManageServer) ProjectInfoCreate(ctx context.Context, in *sys.ProjectInfo) (*sys.Response, error) {
+func (s *ProjectManageServer) ProjectInfoCreate(ctx context.Context, in *sys.ProjectInfo) (*sys.ProjectWithID, error) {
 	l := projectmanagelogic.NewProjectInfoCreateLogic(ctx, s.svcCtx)
 	return l.ProjectInfoCreate(in)
 }
@@ -35,13 +35,13 @@ func (s *ProjectManageServer) ProjectInfoUpdate(ctx context.Context, in *sys.Pro
 }
 
 // 删除项目
-func (s *ProjectManageServer) ProjectInfoDelete(ctx context.Context, in *sys.ProjectInfoDeleteReq) (*sys.Response, error) {
+func (s *ProjectManageServer) ProjectInfoDelete(ctx context.Context, in *sys.ProjectWithID) (*sys.Response, error) {
 	l := projectmanagelogic.NewProjectInfoDeleteLogic(ctx, s.svcCtx)
 	return l.ProjectInfoDelete(in)
 }
 
 // 获取项目信息详情
-func (s *ProjectManageServer) ProjectInfoRead(ctx context.Context, in *sys.ProjectInfoReadReq) (*sys.ProjectInfo, error) {
+func (s *ProjectManageServer) ProjectInfoRead(ctx context.Context, in *sys.ProjectWithID) (*sys.ProjectInfo, error) {
 	l := projectmanagelogic.NewProjectInfoReadLogic(ctx, s.svcCtx)
 	return l.ProjectInfoRead(in)
 }

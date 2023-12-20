@@ -19,17 +19,17 @@ service UserManage {
   rpc userRoleIndex(UserRoleIndexReq) returns (UserRoleIndexResp); //获取角色API权限列表
   rpc userRoleMultiUpdate(UserRoleMultiUpdateReq) returns(Response); //添加角色
 
-  rpc userAuthProjectMultiUpdate (UserAuthProjectMultiUpdateReq) returns (Response);   //授权用户数据权限
-  rpc userAuthProjectIndex (UserAuthProjectIndexReq) returns (UserAuthProjectIndexResp); //获取用户数据权限列表
-  rpc userAuthAreaMultiUpdate (UserAuthAreaMultiUpdateReq) returns (Response);   //授权用户数据权限
-  rpc userAuthAreaIndex (UserAuthAreaIndexReq) returns (UserAuthAreaIndexResp); //获取用户数据权限列表
+  rpc userProjectMultiUpdate (UserProjectMultiUpdateReq) returns (Response);   //授权用户数据权限
+  rpc userProjectIndex (UserProjectIndexReq) returns (UserProjectIndexResp); //获取用户数据权限列表
+  rpc userAreaMultiUpdate (UserAreaMultiUpdateReq) returns (Response);   //授权用户数据权限
+  rpc userAreaIndex (UserAreaIndexReq) returns (UserAreaIndexResp); //获取用户数据权限列表
 }
 
 service RoleManage {
-  rpc roleInfoCreate(RoleInfo) returns(Response); //添加角色
+  rpc roleInfoCreate(RoleInfo) returns(WithID); //添加角色
   rpc roleInfoIndex(RoleInfoIndexReq) returns(RoleInfoIndexResp); //获取角色列表
   rpc roleInfoUpdate(RoleInfo) returns(Response); //更新角色
-  rpc roleInfoDelete(ReqWithID) returns(Response); //删除角色
+  rpc roleInfoDelete(WithID) returns(Response); //删除角色
 
   rpc roleMenuIndex(RoleMenuIndexReq) returns (RoleMenuIndexResp); //获取角色API权限列表
   rpc roleMenuMultiUpdate(RoleMenuMultiUpdateReq) returns(Response); //添加角色
@@ -44,19 +44,19 @@ service RoleManage {
 
 
 service AppManage{
-  rpc appInfoCreate(AppInfo) returns(Response); //添加角色
+  rpc appInfoCreate(AppInfo) returns(WithID); //添加角色
   rpc appInfoIndex(AppInfoIndexReq) returns(AppInfoIndexResp); //获取角色列表
   rpc appInfoUpdate(AppInfo) returns(Response); //更新角色
-  rpc appInfoDelete(ReqWithIDCode) returns(Response); //删除角色
-  rpc appInfoRead(ReqWithIDCode) returns(AppInfo);   //获取详情接口
+  rpc appInfoDelete(WithIDCode) returns(Response); //删除角色
+  rpc appInfoRead(WithIDCode) returns(AppInfo);   //获取详情接口
 
 }
 
 service MenuManage {
-  rpc menuInfoCreate(MenuInfo) returns(Response); //添加菜单
+  rpc menuInfoCreate(MenuInfo) returns(WithID); //添加菜单
   rpc menuInfoIndex(MenuInfoIndexReq) returns(MenuInfoIndexResp); //获取菜单列表
   rpc menuInfoUpdate(MenuInfo) returns(Response); //更新菜单
-  rpc menuInfoDelete(ReqWithID) returns(Response); //删除菜单
+  rpc menuInfoDelete(WithID) returns(Response); //删除菜单
 }
 
 service Common {
@@ -71,23 +71,23 @@ service Log {
 }
 
 service ApiManage {
-  rpc apiInfoCreate(ApiInfo) returns(Response);   //添加接口
+  rpc apiInfoCreate(ApiInfo) returns(WithID);   //添加接口
   rpc apiInfoIndex(ApiInfoIndexReq) returns(ApiInfoIndexResp); //获取接口列表
   rpc apiInfoUpdate(ApiInfo) returns(Response);   //更新接口
-  rpc apiInfoDelete(ReqWithID) returns(Response);   //删除接口
+  rpc apiInfoDelete(WithID) returns(Response);   //删除接口
 }
 
 
 //项目管理
 service ProjectManage {
   //新增项目
-  rpc projectInfoCreate (ProjectInfo) returns (Response);
+  rpc projectInfoCreate (ProjectInfo) returns (ProjectWithID);
   //更新项目
   rpc projectInfoUpdate (ProjectInfo) returns (Response);
   //删除项目
-  rpc projectInfoDelete (ProjectInfoDeleteReq) returns (Response);
+  rpc projectInfoDelete (ProjectWithID) returns (Response);
   //获取项目信息详情
-  rpc projectInfoRead (ProjectInfoReadReq) returns (ProjectInfo);
+  rpc projectInfoRead (ProjectWithID) returns (ProjectInfo);
   //获取项目信息列表
   rpc projectInfoIndex (ProjectInfoIndexReq) returns (ProjectInfoIndexResp);
 }
@@ -96,13 +96,13 @@ service ProjectManage {
 //项目区域管理
 service AreaManage {
   //新增区域
-  rpc areaInfoCreate (AreaInfo) returns (Response);
+  rpc areaInfoCreate (AreaInfo) returns (AreaWithID);
   //更新区域
   rpc areaInfoUpdate (AreaInfo) returns (Response);
   //删除区域
-  rpc areaInfoDelete (AreaInfoDeleteReq) returns (Response);
+  rpc areaInfoDelete (AreaWithID) returns (Response);
   //获取区域信息详情
-  rpc areaInfoRead (AreaInfoReadReq) returns (AreaInfo);
+  rpc areaInfoRead (AreaWithID) returns (AreaInfo);
   //获取区域信息列表
   rpc areaInfoIndex (AreaInfoIndexReq) returns (AreaInfoIndexResp);
   //获取区域信息树
@@ -112,13 +112,13 @@ service AreaManage {
 
 service TenantManage {
   //新增区域
-  rpc tenantInfoCreate (TenantInfoCreateReq) returns (Response);
+  rpc tenantInfoCreate (TenantInfoCreateReq) returns (WithID);
   //更新区域
   rpc tenantInfoUpdate (TenantInfo) returns (Response);
   //删除区域
-  rpc tenantInfoDelete (ReqWithIDCode) returns (Response);
+  rpc tenantInfoDelete (WithIDCode) returns (Response);
   //获取租户信息详情
-  rpc tenantInfoRead (ReqWithIDCode) returns (TenantInfo);
+  rpc tenantInfoRead (WithIDCode) returns (TenantInfo);
   //获取租户信息列表
   rpc tenantInfoIndex (TenantInfoIndexReq) returns (TenantInfoIndexResp);
 
@@ -191,17 +191,20 @@ message PageInfo {
     }
 }
 
-message ReqWithID{
+message WithID{
   int64 id = 1;
 }
 
-message ReqWithIDCode{
+message WithIDCode{
   int64 id = 1;
   string code=2;
 }
 
 //----------------------------------------------------------------------------------------------
 
+message ProjectWithID{
+  int64 projectID = 1; //项目id（只读）
+}
 
 message ProjectInfo {
   int64 createdTime = 1; //创建时间（只读）
@@ -212,14 +215,6 @@ message ProjectInfo {
   google.protobuf.StringValue region = 6; //项目省市区县（读写）
   google.protobuf.StringValue address = 7; //项目详细地址（读写）
   google.protobuf.StringValue desc = 8; //项目备注（读写）
-}
-
-message ProjectInfoDeleteReq {
-  int64 projectID = 1; //项目id
-}
-
-message ProjectInfoReadReq {
-  int64 projectID = 1; //项目id
 }
 
 message ProjectInfoIndexReq {
@@ -235,6 +230,8 @@ message ProjectInfoIndexResp {
 
 //----------------------------------------------------------------------------------------------
 
+
+
 message AreaInfo {
   int64 createdTime = 1; //创建时间（只读）
   int64 areaID = 2; //项目区域id（只读）
@@ -246,13 +243,10 @@ message AreaInfo {
   repeated AreaInfo children = 8; //下级项目区域列表（只读）
 }
 
-message AreaInfoDeleteReq {
+message AreaWithID {
   int64 areaID = 1; //项目区域id
 }
 
-message AreaInfoReadReq {
-  int64 areaID = 1; //项目区域id
-}
 
 message AreaInfoIndexReq {
   PageInfo page = 1; //进行数据分页（不传默认2000相当于全部）
@@ -575,46 +569,46 @@ message UserRoleMultiUpdateReq{
 
 //----------------------------------------------------------------------------------------------
 
-message UserAuthProject {
+message UserProject {
     int64 createdTime = 1; //创建时间（只读）
     int64 projectID = 5; //权限数据ID
 }
 
-message UserAuthProjectMultiUpdateReq {
+message UserProjectMultiUpdateReq {
     int64 userID = 1; //用户ID（必填，雪花ID）
-    repeated UserAuthProject projects = 3; //权限数据IDs（必填）
+    repeated UserProject projects = 3; //权限数据IDs（必填）
 }
 
-message UserAuthProjectIndexReq {
+message UserProjectIndexReq {
     PageInfo page = 1 ; //进行数据分页（不传默认2000相当于全部）
     int64 userID = 2; //用户ID（必填，雪花ID）
 }
 
-message UserAuthProjectIndexResp {
+message UserProjectIndexResp {
     int64 total = 1;           //总数
-    repeated UserAuthProject list = 2; //用户数据权限列表
+    repeated UserProject list = 2; //用户数据权限列表
 }
 
 
-message UserAuthArea {
+message UserArea {
   int64 areaID = 1; //项目id
 }
 
-message UserAuthAreaMultiUpdateReq {
+message UserAreaMultiUpdateReq {
   int64 userID = 1; //用户ID（必填，雪花ID）
   int64 projectID = 3; //项目id
-  repeated UserAuthArea areas = 4; //权限数据IDs
+  repeated UserArea areas = 4; //权限数据IDs
 }
 
-message UserAuthAreaIndexReq {
+message UserAreaIndexReq {
   PageInfo page = 1 ; //进行数据分页（不传默认2000相当于全部）
   int64 userID = 2; //用户ID（必填，雪花ID）
   int64 projectID = 3; //项目id 可选
 
 }
-message UserAuthAreaIndexResp {
+message UserAreaIndexResp {
   int64 total = 1;           //总数
-  repeated UserAuthArea list = 2; //用户数据权限列表
+  repeated UserArea list = 2; //用户数据权限列表
 }
 //----------------------------------------------------------------------------------------------
 //应用相关接口

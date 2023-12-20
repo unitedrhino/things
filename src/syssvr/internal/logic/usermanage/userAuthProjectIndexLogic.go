@@ -28,9 +28,9 @@ func NewUserAuthProjectIndexLogic(ctx context.Context, svcCtx *svc.ServiceContex
 	}
 }
 
-func (l *UserAuthProjectIndexLogic) UserAuthProjectIndex(in *sys.UserAuthProjectIndexReq) (*sys.UserAuthProjectIndexResp, error) {
+func (l *UserAuthProjectIndexLogic) UserAuthProjectIndex(in *sys.UserProjectIndexReq) (*sys.UserProjectIndexResp, error) {
 	var (
-		list  []*sys.UserAuthProject
+		list  []*sys.UserProject
 		total int64
 		err   error
 	)
@@ -52,9 +52,9 @@ func (l *UserAuthProjectIndexLogic) UserAuthProjectIndex(in *sys.UserAuthProject
 		return nil, err
 	}
 
-	list = make([]*sys.UserAuthProject, 0, len(poArr))
+	list = make([]*sys.UserProject, 0, len(poArr))
 	for _, po := range poArr {
 		list = append(list, transProjectPoToPb(po))
 	}
-	return &sys.UserAuthProjectIndexResp{List: list, Total: total}, nil
+	return &sys.UserProjectIndexResp{List: list, Total: total}, nil
 }

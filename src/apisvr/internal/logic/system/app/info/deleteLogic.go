@@ -24,7 +24,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
-func (l *DeleteLogic) Delete(req *types.WithID) error {
-	_, err := l.svcCtx.AppRpc.AppInfoDelete(l.ctx, &sys.ReqWithIDCode{Id: req.ID})
+func (l *DeleteLogic) Delete(req *types.WithIDOrCode) error {
+	_, err := l.svcCtx.AppRpc.AppInfoDelete(l.ctx, &sys.WithIDCode{Id: req.ID, Code: req.Code})
 	return err
 }
