@@ -69,17 +69,3 @@ func UnSetProtocol(schema string, streamInfo *relationDB.VidmgrStream) {
 func CheckProtocol(streamInfo *relationDB.VidmgrStream) bool {
 	return streamInfo.OnRtmp || streamInfo.OnRtsp || streamInfo.OnTs || streamInfo.OnFmp4 || streamInfo.OnHls || streamInfo.OnHlsFmp4
 }
-
-const (
-	UNKNOWN = iota
-	RTMP_PUSH
-	RTSP_PUSH
-	RTP_PUSH
-	PULL
-	FFMPEG_PULL
-	MP4_VOD
-	DEVICE_CHN
-	RTC_PUSH
-)
-
-//产生源类型，包括 unknown = 0,rtmp_push=1,rtsp_push=2,rtp_push=3,pull=4,ffmpeg_pull=5,mp4_vod=6,device_chn=7,rtc_push=8

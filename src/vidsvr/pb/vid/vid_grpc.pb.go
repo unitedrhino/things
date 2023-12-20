@@ -358,7 +358,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VidmgrStreamManageClient interface {
 	//流添加
-	VidmgrStreamCreate(ctx context.Context, in *VidmgrStream, opts ...grpc.CallOption) (*Response, error)
+	VidmgrStreamCreate(ctx context.Context, in *VidmgrStreamCreateReq, opts ...grpc.CallOption) (*Response, error)
 	//流更新
 	VidmgrStreamUpdate(ctx context.Context, in *VidmgrStream, opts ...grpc.CallOption) (*Response, error)
 	//删除流
@@ -379,7 +379,7 @@ func NewVidmgrStreamManageClient(cc grpc.ClientConnInterface) VidmgrStreamManage
 	return &vidmgrStreamManageClient{cc}
 }
 
-func (c *vidmgrStreamManageClient) VidmgrStreamCreate(ctx context.Context, in *VidmgrStream, opts ...grpc.CallOption) (*Response, error) {
+func (c *vidmgrStreamManageClient) VidmgrStreamCreate(ctx context.Context, in *VidmgrStreamCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, VidmgrStreamManage_VidmgrStreamCreate_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -438,7 +438,7 @@ func (c *vidmgrStreamManageClient) VidmgrStreamCount(ctx context.Context, in *Vi
 // for forward compatibility
 type VidmgrStreamManageServer interface {
 	//流添加
-	VidmgrStreamCreate(context.Context, *VidmgrStream) (*Response, error)
+	VidmgrStreamCreate(context.Context, *VidmgrStreamCreateReq) (*Response, error)
 	//流更新
 	VidmgrStreamUpdate(context.Context, *VidmgrStream) (*Response, error)
 	//删除流
@@ -456,7 +456,7 @@ type VidmgrStreamManageServer interface {
 type UnimplementedVidmgrStreamManageServer struct {
 }
 
-func (UnimplementedVidmgrStreamManageServer) VidmgrStreamCreate(context.Context, *VidmgrStream) (*Response, error) {
+func (UnimplementedVidmgrStreamManageServer) VidmgrStreamCreate(context.Context, *VidmgrStreamCreateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VidmgrStreamCreate not implemented")
 }
 func (UnimplementedVidmgrStreamManageServer) VidmgrStreamUpdate(context.Context, *VidmgrStream) (*Response, error) {
@@ -488,7 +488,7 @@ func RegisterVidmgrStreamManageServer(s grpc.ServiceRegistrar, srv VidmgrStreamM
 }
 
 func _VidmgrStreamManage_VidmgrStreamCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VidmgrStream)
+	in := new(VidmgrStreamCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -500,7 +500,7 @@ func _VidmgrStreamManage_VidmgrStreamCreate_Handler(srv interface{}, ctx context
 		FullMethod: VidmgrStreamManage_VidmgrStreamCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VidmgrStreamManageServer).VidmgrStreamCreate(ctx, req.(*VidmgrStream))
+		return srv.(VidmgrStreamManageServer).VidmgrStreamCreate(ctx, req.(*VidmgrStreamCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

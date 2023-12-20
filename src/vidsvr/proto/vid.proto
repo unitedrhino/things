@@ -99,7 +99,7 @@ message VidmgrInfoCountResp{
 //视频流通道管理
 service VidmgrStreamManage{
   //流添加
-  rpc vidmgrStreamCreate(VidmgrStream) returns (Response);
+  rpc vidmgrStreamCreate(VidmgrStreamCreateReq) returns (Response);
   //流更新
   rpc vidmgrStreamUpdate(VidmgrStream) returns (Response);
   //删除流
@@ -110,6 +110,11 @@ service VidmgrStreamManage{
   rpc vidmgrStreamRead(VidmgrStreamReadReq) returns (VidmgrStream);
   //统计流 在线，离线，未激活
   rpc vidmgrStreamCount(VidmgrStreamCountReq) returns (VidmgrStreamCountResp);
+}
+
+message VidmgrStreamCreateReq{
+   VidmgrStream  streamInfo = 1;
+   int32 rtpType = 2;
 }
 
 message VidmgrStreamCountReq{

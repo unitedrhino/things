@@ -42,9 +42,9 @@ func (p VidmgrConfigRepo) fmtFilter(ctx context.Context, f VidmgrConfigFilter) *
 		db = db.Where("vidmgr_id in?", f.VidmgrIDs)
 	}
 
-	if len(f.ConfigIDs) != 0 {
-		db = db.Where("config_id=?", f.ConfigIDs)
-	}
+	//if len(f.ConfigIDs) != 0 {
+	//	db = db.Where("config_id=?", f.ConfigIDs)
+	//}
 	return db
 }
 

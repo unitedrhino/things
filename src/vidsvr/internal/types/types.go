@@ -501,6 +501,18 @@ type IndexApiAddStreamKey struct {
 	Key string `json:"key"`
 }
 
+type IndexApiAddStreamProxy struct {
+	Vhost   string `json:"vhost"`
+	App     string `json:"app"`
+	Stream  string `json:"stream"`
+	Url     string `json:"url"`
+	RtpType int32  `json:"rtp_type"`
+}
+
+type IndexApiDelStreamProxy struct {
+	Key string `json:"key"`
+}
+
 type IndexApiAddStreamProxyResp struct {
 	IndexApiResp
 	Data IndexApiAddStreamKey `json:"data"`

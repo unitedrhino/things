@@ -80,7 +80,10 @@ type VidmgrStream struct {
 	PeerIP     int64  `gorm:"column:peer_ip;type:bigint"`
 	PeerPort   int64  `gorm:"column:peer_port;type:bigint"`
 	//产生源类型，包括 unknown = 0,rtmp_push=1,rtsp_push=2,rtp_push=3,pull=4,ffmpeg_pull=5,mp4_vod=6,device_chn=7,rtc_push=8
-	OriginType       int64  `gorm:"column:origin_type;type:smallint"` // 源类型
+	OriginType int64  `gorm:"column:origin_type;type:smallint"` // 源类型
+	PullKey    string `gorm:"column:key;type:varchar(50)"`      //仅PULL当为拉流代理模式时会有Key 其它时间为空
+	RtpType    int32  `gorm:"column:rtp_type;type:smallint"`    //仅PULL当为拉流代理模式时会有RtpType 其它时间为空
+
 	OriginStr        string `gorm:"column:origin_str;type:char(15)"`
 	OriginUrl        string `gorm:"column:origin_url;type:char(63)"`         //产生源的url
 	ReaderCount      int64  `gorm:"column:reader_count;type:smallint"`       // 本协议观看人数
@@ -122,8 +125,8 @@ func (m *VidmgrStream) TableName() string {
 
 // 流服务配置表
 type VidmgrConfig struct {
-	ConfigID                       int64  `gorm:"column:config_id;type:bigint;primary_key;AUTO_INCREMENT"` // 视频流的id(主键唯一)
-	VidmgrID                       string `gorm:"column:vidmgr_id;type:char(11);NOT NULL"`                 //generalMediaserverID
+	//ConfigID                       int64  `gorm:"column:config_id;type:bigint;primary_key;AUTO_INCREMENT"` // 视频流的id(主键唯一)
+	VidmgrID                       string `gorm:"column:vidmgr_id;type:char(11);primary_key;NOT NULL"` //generalMediaserverID
 	ApiDebug                       string `gorm:"column:apiDebug;char(1)"`
 	ApiDefaultSnap                 string `gorm:"column:defaultSnap"`
 	ApiSecret                      string `gorm:"column:secret"`
@@ -260,7 +263,7 @@ type VidmgrConfig struct {
 	SrtPort                        string `gorm:"column:srt_port"`
 	SrtTimeoutSec                  string `gorm:"column:srt_timeoutSec"`
 	stores.Time
-	VidmgrInfo *VidmgrInfo `gorm:"foreignKey:VidmgrID;references:VidmgrID"` // 添加外键
+	//VidmgrInfo *VidmgrInfo `gorm:"foreignKey:VidmgrID;references:VidmgrID"` // 添加外键
 }
 
 // 流服务激活之后创建该表
