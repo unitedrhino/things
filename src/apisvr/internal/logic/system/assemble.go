@@ -42,8 +42,8 @@ func ToMenuInfosApi(i []*sys.MenuInfo) (ret []*types.MenuInfo) {
 	return
 }
 
-func ToSysReqWithIDCode(in *types.WithIDOrCode) *sys.ReqWithIDCode {
-	return &sys.ReqWithIDCode{
+func ToSysReqWithIDCode(in *types.WithIDOrCode) *sys.WithIDCode {
+	return &sys.WithIDCode{
 		Id:   in.ID,
 		Code: in.Code,
 	}

@@ -27,11 +27,11 @@ func NewProjectIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Proj
 }
 
 func (l *ProjectIndexLogic) ProjectIndex(req *types.UserAuthProjectIndexReq) (resp *types.UserAuthProjectIndexResp, err error) {
-	dto := &sys.UserAuthProjectIndexReq{
+	dto := &sys.UserProjectIndexReq{
 		Page:   logic.ToSysPageRpc(req.Page),
 		UserID: req.UserID,
 	}
-	dmResp, err := l.svcCtx.UserRpc.UserAuthProjectIndex(l.ctx, dto)
+	dmResp, err := l.svcCtx.UserRpc.UserProjectIndex(l.ctx, dto)
 	if err != nil {
 		l.Errorf("%s.rpc.UserAuthProjectIndex req=%v err=%+v", utils.FuncName(), req, err)
 		return nil, err

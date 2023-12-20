@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 
@@ -25,16 +25,12 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.ApiInfo) error {
+func (l *CreateLogic) Create(req *types.ApiInfo) (*types.WithID, error) {
 	resp, err := l.svcCtx.ApiRpc.ApiInfoCreate(l.ctx, ToApiInfoRpc(req))
 	if err != nil {
 		err := errors.Fmt(err)
 		l.Errorf("%s.rpc.ApiCreate req=%v err=%+v", utils.FuncName(), req, err)
-		return err
+		return nil, err
 	}
-	if resp == nil {
-		l.Errorf("%s rpc.ApiCreate return nil req=%+v", utils.FuncName(), req)
-		return errors.System.AddDetail("ApiCreate rpc return nil")
-	}
-	return nil
+	return logic.SysToWithIDTypes(resp), nil
 }

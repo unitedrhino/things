@@ -2,7 +2,6 @@ package rolemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
@@ -49,7 +48,7 @@ func (l *RoleMenuIndexLogic) RoleMenuIndex(in *sys.RoleMenuIndexReq) (*sys.RoleM
 	menuInfos, err := l.MiDB.FindByFilter(l.ctx, relationDB.MenuInfoFilter{MenuIds: menuIDs}, nil)
 	if err != nil {
 		l.Errorf("MenuIndex find menu_info err,menuIds:%v,err:%v", menuIDs, err)
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	for _, v := range menuInfos {
 		info = append(info, logic.MenuInfoToPb(v))

@@ -24,8 +24,9 @@ func NewAppInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *App
 	}
 }
 
-func (l *AppInfoCreateLogic) AppInfoCreate(in *sys.AppInfo) (*sys.Response, error) {
+func (l *AppInfoCreateLogic) AppInfoCreate(in *sys.AppInfo) (*sys.WithID, error) {
 	in.Id = 0
-	err := relationDB.NewAppInfoRepo(l.ctx).Insert(l.ctx, ToAppInfoPo(in))
-	return &sys.Response{}, err
+	po := ToAppInfoPo(in)
+	err := relationDB.NewAppInfoRepo(l.ctx).Insert(l.ctx, po)
+	return &sys.WithID{Id: po.ID}, err
 }

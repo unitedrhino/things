@@ -19,7 +19,7 @@ func CreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := info.NewCreateLogic(r.Context(), svcCtx)
-		err := l.Create(&req)
-		result.Http(w, r, nil, err)
+		resp, err := l.Create(&req)
+		result.Http(w, r, resp, err)
 	}
 }

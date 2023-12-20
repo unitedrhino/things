@@ -2,7 +2,6 @@ package loglogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -40,7 +39,7 @@ func (l *LoginLogCreateLogic) LoginLogCreate(in *sys.LoginLogCreateReq) (*sys.Re
 		Msg:           in.Msg,
 	})
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	return &sys.Response{}, nil
 }

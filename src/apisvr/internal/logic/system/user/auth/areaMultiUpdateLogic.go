@@ -26,12 +26,12 @@ func NewAreaMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *A
 }
 
 func (l *AreaMultiUpdateLogic) AreaMultiUpdate(req *types.UserAuthAreaMultiUpdateReq) error {
-	dto := &sys.UserAuthAreaMultiUpdateReq{
+	dto := &sys.UserAreaMultiUpdateReq{
 		UserID:    req.UserID,
 		ProjectID: req.ProjectID,
 		Areas:     ToAreaPbs(req.Areas),
 	}
-	_, err := l.svcCtx.UserRpc.UserAuthAreaMultiUpdate(l.ctx, dto)
+	_, err := l.svcCtx.UserRpc.UserAreaMultiUpdate(l.ctx, dto)
 	if err != nil {
 		l.Errorf("%s.rpc.UserDataAuthManage req=%v err=%v", utils.FuncName(), req, err)
 		return err

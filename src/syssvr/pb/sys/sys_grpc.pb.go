@@ -19,22 +19,22 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserManage_UserInfoCreate_FullMethodName             = "/sys.UserManage/userInfoCreate"
-	UserManage_UserInfoIndex_FullMethodName              = "/sys.UserManage/userInfoIndex"
-	UserManage_UserInfoUpdate_FullMethodName             = "/sys.UserManage/userInfoUpdate"
-	UserManage_UserInfoRead_FullMethodName               = "/sys.UserManage/userInfoRead"
-	UserManage_UserInfoDelete_FullMethodName             = "/sys.UserManage/userInfoDelete"
-	UserManage_UserLogin_FullMethodName                  = "/sys.UserManage/userLogin"
-	UserManage_UserForgetPwd_FullMethodName              = "/sys.UserManage/userForgetPwd"
-	UserManage_UserCaptcha_FullMethodName                = "/sys.UserManage/userCaptcha"
-	UserManage_UserCheckToken_FullMethodName             = "/sys.UserManage/userCheckToken"
-	UserManage_UserRegister_FullMethodName               = "/sys.UserManage/userRegister"
-	UserManage_UserRoleIndex_FullMethodName              = "/sys.UserManage/userRoleIndex"
-	UserManage_UserRoleMultiUpdate_FullMethodName        = "/sys.UserManage/userRoleMultiUpdate"
-	UserManage_UserAuthProjectMultiUpdate_FullMethodName = "/sys.UserManage/userAuthProjectMultiUpdate"
-	UserManage_UserAuthProjectIndex_FullMethodName       = "/sys.UserManage/userAuthProjectIndex"
-	UserManage_UserAuthAreaMultiUpdate_FullMethodName    = "/sys.UserManage/userAuthAreaMultiUpdate"
-	UserManage_UserAuthAreaIndex_FullMethodName          = "/sys.UserManage/userAuthAreaIndex"
+	UserManage_UserInfoCreate_FullMethodName         = "/sys.UserManage/userInfoCreate"
+	UserManage_UserInfoIndex_FullMethodName          = "/sys.UserManage/userInfoIndex"
+	UserManage_UserInfoUpdate_FullMethodName         = "/sys.UserManage/userInfoUpdate"
+	UserManage_UserInfoRead_FullMethodName           = "/sys.UserManage/userInfoRead"
+	UserManage_UserInfoDelete_FullMethodName         = "/sys.UserManage/userInfoDelete"
+	UserManage_UserLogin_FullMethodName              = "/sys.UserManage/userLogin"
+	UserManage_UserForgetPwd_FullMethodName          = "/sys.UserManage/userForgetPwd"
+	UserManage_UserCaptcha_FullMethodName            = "/sys.UserManage/userCaptcha"
+	UserManage_UserCheckToken_FullMethodName         = "/sys.UserManage/userCheckToken"
+	UserManage_UserRegister_FullMethodName           = "/sys.UserManage/userRegister"
+	UserManage_UserRoleIndex_FullMethodName          = "/sys.UserManage/userRoleIndex"
+	UserManage_UserRoleMultiUpdate_FullMethodName    = "/sys.UserManage/userRoleMultiUpdate"
+	UserManage_UserProjectMultiUpdate_FullMethodName = "/sys.UserManage/userProjectMultiUpdate"
+	UserManage_UserProjectIndex_FullMethodName       = "/sys.UserManage/userProjectIndex"
+	UserManage_UserAreaMultiUpdate_FullMethodName    = "/sys.UserManage/userAreaMultiUpdate"
+	UserManage_UserAreaIndex_FullMethodName          = "/sys.UserManage/userAreaIndex"
 )
 
 // UserManageClient is the client API for UserManage service.
@@ -53,10 +53,10 @@ type UserManageClient interface {
 	UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error)
 	UserRoleIndex(ctx context.Context, in *UserRoleIndexReq, opts ...grpc.CallOption) (*UserRoleIndexResp, error)
 	UserRoleMultiUpdate(ctx context.Context, in *UserRoleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error)
-	UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error)
+	UserProjectMultiUpdate(ctx context.Context, in *UserProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	UserProjectIndex(ctx context.Context, in *UserProjectIndexReq, opts ...grpc.CallOption) (*UserProjectIndexResp, error)
+	UserAreaMultiUpdate(ctx context.Context, in *UserAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	UserAreaIndex(ctx context.Context, in *UserAreaIndexReq, opts ...grpc.CallOption) (*UserAreaIndexResp, error)
 }
 
 type userManageClient struct {
@@ -175,36 +175,36 @@ func (c *userManageClient) UserRoleMultiUpdate(ctx context.Context, in *UserRole
 	return out, nil
 }
 
-func (c *userManageClient) UserAuthProjectMultiUpdate(ctx context.Context, in *UserAuthProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *userManageClient) UserProjectMultiUpdate(ctx context.Context, in *UserProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, UserManage_UserAuthProjectMultiUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserProjectMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userManageClient) UserAuthProjectIndex(ctx context.Context, in *UserAuthProjectIndexReq, opts ...grpc.CallOption) (*UserAuthProjectIndexResp, error) {
-	out := new(UserAuthProjectIndexResp)
-	err := c.cc.Invoke(ctx, UserManage_UserAuthProjectIndex_FullMethodName, in, out, opts...)
+func (c *userManageClient) UserProjectIndex(ctx context.Context, in *UserProjectIndexReq, opts ...grpc.CallOption) (*UserProjectIndexResp, error) {
+	out := new(UserProjectIndexResp)
+	err := c.cc.Invoke(ctx, UserManage_UserProjectIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userManageClient) UserAuthAreaMultiUpdate(ctx context.Context, in *UserAuthAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *userManageClient) UserAreaMultiUpdate(ctx context.Context, in *UserAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, UserManage_UserAuthAreaMultiUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserManage_UserAreaMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userManageClient) UserAuthAreaIndex(ctx context.Context, in *UserAuthAreaIndexReq, opts ...grpc.CallOption) (*UserAuthAreaIndexResp, error) {
-	out := new(UserAuthAreaIndexResp)
-	err := c.cc.Invoke(ctx, UserManage_UserAuthAreaIndex_FullMethodName, in, out, opts...)
+func (c *userManageClient) UserAreaIndex(ctx context.Context, in *UserAreaIndexReq, opts ...grpc.CallOption) (*UserAreaIndexResp, error) {
+	out := new(UserAreaIndexResp)
+	err := c.cc.Invoke(ctx, UserManage_UserAreaIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -227,10 +227,10 @@ type UserManageServer interface {
 	UserRegister(context.Context, *UserRegisterReq) (*UserRegisterResp, error)
 	UserRoleIndex(context.Context, *UserRoleIndexReq) (*UserRoleIndexResp, error)
 	UserRoleMultiUpdate(context.Context, *UserRoleMultiUpdateReq) (*Response, error)
-	UserAuthProjectMultiUpdate(context.Context, *UserAuthProjectMultiUpdateReq) (*Response, error)
-	UserAuthProjectIndex(context.Context, *UserAuthProjectIndexReq) (*UserAuthProjectIndexResp, error)
-	UserAuthAreaMultiUpdate(context.Context, *UserAuthAreaMultiUpdateReq) (*Response, error)
-	UserAuthAreaIndex(context.Context, *UserAuthAreaIndexReq) (*UserAuthAreaIndexResp, error)
+	UserProjectMultiUpdate(context.Context, *UserProjectMultiUpdateReq) (*Response, error)
+	UserProjectIndex(context.Context, *UserProjectIndexReq) (*UserProjectIndexResp, error)
+	UserAreaMultiUpdate(context.Context, *UserAreaMultiUpdateReq) (*Response, error)
+	UserAreaIndex(context.Context, *UserAreaIndexReq) (*UserAreaIndexResp, error)
 	mustEmbedUnimplementedUserManageServer()
 }
 
@@ -274,17 +274,17 @@ func (UnimplementedUserManageServer) UserRoleIndex(context.Context, *UserRoleInd
 func (UnimplementedUserManageServer) UserRoleMultiUpdate(context.Context, *UserRoleMultiUpdateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserRoleMultiUpdate not implemented")
 }
-func (UnimplementedUserManageServer) UserAuthProjectMultiUpdate(context.Context, *UserAuthProjectMultiUpdateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserAuthProjectMultiUpdate not implemented")
+func (UnimplementedUserManageServer) UserProjectMultiUpdate(context.Context, *UserProjectMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserProjectMultiUpdate not implemented")
 }
-func (UnimplementedUserManageServer) UserAuthProjectIndex(context.Context, *UserAuthProjectIndexReq) (*UserAuthProjectIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserAuthProjectIndex not implemented")
+func (UnimplementedUserManageServer) UserProjectIndex(context.Context, *UserProjectIndexReq) (*UserProjectIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserProjectIndex not implemented")
 }
-func (UnimplementedUserManageServer) UserAuthAreaMultiUpdate(context.Context, *UserAuthAreaMultiUpdateReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserAuthAreaMultiUpdate not implemented")
+func (UnimplementedUserManageServer) UserAreaMultiUpdate(context.Context, *UserAreaMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAreaMultiUpdate not implemented")
 }
-func (UnimplementedUserManageServer) UserAuthAreaIndex(context.Context, *UserAuthAreaIndexReq) (*UserAuthAreaIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserAuthAreaIndex not implemented")
+func (UnimplementedUserManageServer) UserAreaIndex(context.Context, *UserAreaIndexReq) (*UserAreaIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAreaIndex not implemented")
 }
 func (UnimplementedUserManageServer) mustEmbedUnimplementedUserManageServer() {}
 
@@ -515,74 +515,74 @@ func _UserManage_UserRoleMultiUpdate_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserManage_UserAuthProjectMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserAuthProjectMultiUpdateReq)
+func _UserManage_UserProjectMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserProjectMultiUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserManageServer).UserAuthProjectMultiUpdate(ctx, in)
+		return srv.(UserManageServer).UserProjectMultiUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserManage_UserAuthProjectMultiUpdate_FullMethodName,
+		FullMethod: UserManage_UserProjectMultiUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManageServer).UserAuthProjectMultiUpdate(ctx, req.(*UserAuthProjectMultiUpdateReq))
+		return srv.(UserManageServer).UserProjectMultiUpdate(ctx, req.(*UserProjectMultiUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserManage_UserAuthProjectIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserAuthProjectIndexReq)
+func _UserManage_UserProjectIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserProjectIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserManageServer).UserAuthProjectIndex(ctx, in)
+		return srv.(UserManageServer).UserProjectIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserManage_UserAuthProjectIndex_FullMethodName,
+		FullMethod: UserManage_UserProjectIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManageServer).UserAuthProjectIndex(ctx, req.(*UserAuthProjectIndexReq))
+		return srv.(UserManageServer).UserProjectIndex(ctx, req.(*UserProjectIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserManage_UserAuthAreaMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserAuthAreaMultiUpdateReq)
+func _UserManage_UserAreaMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAreaMultiUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserManageServer).UserAuthAreaMultiUpdate(ctx, in)
+		return srv.(UserManageServer).UserAreaMultiUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserManage_UserAuthAreaMultiUpdate_FullMethodName,
+		FullMethod: UserManage_UserAreaMultiUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManageServer).UserAuthAreaMultiUpdate(ctx, req.(*UserAuthAreaMultiUpdateReq))
+		return srv.(UserManageServer).UserAreaMultiUpdate(ctx, req.(*UserAreaMultiUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserManage_UserAuthAreaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserAuthAreaIndexReq)
+func _UserManage_UserAreaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAreaIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserManageServer).UserAuthAreaIndex(ctx, in)
+		return srv.(UserManageServer).UserAreaIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserManage_UserAuthAreaIndex_FullMethodName,
+		FullMethod: UserManage_UserAreaIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManageServer).UserAuthAreaIndex(ctx, req.(*UserAuthAreaIndexReq))
+		return srv.(UserManageServer).UserAreaIndex(ctx, req.(*UserAreaIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -643,20 +643,20 @@ var UserManage_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserManage_UserRoleMultiUpdate_Handler,
 		},
 		{
-			MethodName: "userAuthProjectMultiUpdate",
-			Handler:    _UserManage_UserAuthProjectMultiUpdate_Handler,
+			MethodName: "userProjectMultiUpdate",
+			Handler:    _UserManage_UserProjectMultiUpdate_Handler,
 		},
 		{
-			MethodName: "userAuthProjectIndex",
-			Handler:    _UserManage_UserAuthProjectIndex_Handler,
+			MethodName: "userProjectIndex",
+			Handler:    _UserManage_UserProjectIndex_Handler,
 		},
 		{
-			MethodName: "userAuthAreaMultiUpdate",
-			Handler:    _UserManage_UserAuthAreaMultiUpdate_Handler,
+			MethodName: "userAreaMultiUpdate",
+			Handler:    _UserManage_UserAreaMultiUpdate_Handler,
 		},
 		{
-			MethodName: "userAuthAreaIndex",
-			Handler:    _UserManage_UserAuthAreaIndex_Handler,
+			MethodName: "userAreaIndex",
+			Handler:    _UserManage_UserAreaIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -681,10 +681,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RoleManageClient interface {
-	RoleInfoCreate(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*Response, error)
+	RoleInfoCreate(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*WithID, error)
 	RoleInfoIndex(ctx context.Context, in *RoleInfoIndexReq, opts ...grpc.CallOption) (*RoleInfoIndexResp, error)
 	RoleInfoUpdate(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*Response, error)
-	RoleInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error)
+	RoleInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
 	RoleMenuIndex(ctx context.Context, in *RoleMenuIndexReq, opts ...grpc.CallOption) (*RoleMenuIndexResp, error)
 	RoleMenuMultiUpdate(ctx context.Context, in *RoleMenuMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	RoleAppIndex(ctx context.Context, in *RoleAppIndexReq, opts ...grpc.CallOption) (*RoleAppIndexResp, error)
@@ -702,8 +702,8 @@ func NewRoleManageClient(cc grpc.ClientConnInterface) RoleManageClient {
 	return &roleManageClient{cc}
 }
 
-func (c *roleManageClient) RoleInfoCreate(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *roleManageClient) RoleInfoCreate(ctx context.Context, in *RoleInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, RoleManage_RoleInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -729,7 +729,7 @@ func (c *roleManageClient) RoleInfoUpdate(ctx context.Context, in *RoleInfo, opt
 	return out, nil
 }
 
-func (c *roleManageClient) RoleInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error) {
+func (c *roleManageClient) RoleInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, RoleManage_RoleInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -805,10 +805,10 @@ func (c *roleManageClient) RoleApiIndex(ctx context.Context, in *RoleApiIndexReq
 // All implementations must embed UnimplementedRoleManageServer
 // for forward compatibility
 type RoleManageServer interface {
-	RoleInfoCreate(context.Context, *RoleInfo) (*Response, error)
+	RoleInfoCreate(context.Context, *RoleInfo) (*WithID, error)
 	RoleInfoIndex(context.Context, *RoleInfoIndexReq) (*RoleInfoIndexResp, error)
 	RoleInfoUpdate(context.Context, *RoleInfo) (*Response, error)
-	RoleInfoDelete(context.Context, *ReqWithID) (*Response, error)
+	RoleInfoDelete(context.Context, *WithID) (*Response, error)
 	RoleMenuIndex(context.Context, *RoleMenuIndexReq) (*RoleMenuIndexResp, error)
 	RoleMenuMultiUpdate(context.Context, *RoleMenuMultiUpdateReq) (*Response, error)
 	RoleAppIndex(context.Context, *RoleAppIndexReq) (*RoleAppIndexResp, error)
@@ -823,7 +823,7 @@ type RoleManageServer interface {
 type UnimplementedRoleManageServer struct {
 }
 
-func (UnimplementedRoleManageServer) RoleInfoCreate(context.Context, *RoleInfo) (*Response, error) {
+func (UnimplementedRoleManageServer) RoleInfoCreate(context.Context, *RoleInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RoleInfoCreate not implemented")
 }
 func (UnimplementedRoleManageServer) RoleInfoIndex(context.Context, *RoleInfoIndexReq) (*RoleInfoIndexResp, error) {
@@ -832,7 +832,7 @@ func (UnimplementedRoleManageServer) RoleInfoIndex(context.Context, *RoleInfoInd
 func (UnimplementedRoleManageServer) RoleInfoUpdate(context.Context, *RoleInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RoleInfoUpdate not implemented")
 }
-func (UnimplementedRoleManageServer) RoleInfoDelete(context.Context, *ReqWithID) (*Response, error) {
+func (UnimplementedRoleManageServer) RoleInfoDelete(context.Context, *WithID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RoleInfoDelete not implemented")
 }
 func (UnimplementedRoleManageServer) RoleMenuIndex(context.Context, *RoleMenuIndexReq) (*RoleMenuIndexResp, error) {
@@ -924,7 +924,7 @@ func _RoleManage_RoleInfoUpdate_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _RoleManage_RoleInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReqWithID)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -936,7 +936,7 @@ func _RoleManage_RoleInfoDelete_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: RoleManage_RoleInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleManageServer).RoleInfoDelete(ctx, req.(*ReqWithID))
+		return srv.(RoleManageServer).RoleInfoDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1135,11 +1135,11 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AppManageClient interface {
-	AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error)
+	AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*WithID, error)
 	AppInfoIndex(ctx context.Context, in *AppInfoIndexReq, opts ...grpc.CallOption) (*AppInfoIndexResp, error)
 	AppInfoUpdate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error)
-	AppInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error)
-	AppInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*AppInfo, error)
+	AppInfoDelete(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*Response, error)
+	AppInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*AppInfo, error)
 }
 
 type appManageClient struct {
@@ -1150,8 +1150,8 @@ func NewAppManageClient(cc grpc.ClientConnInterface) AppManageClient {
 	return &appManageClient{cc}
 }
 
-func (c *appManageClient) AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *appManageClient) AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, AppManage_AppInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1177,7 +1177,7 @@ func (c *appManageClient) AppInfoUpdate(ctx context.Context, in *AppInfo, opts .
 	return out, nil
 }
 
-func (c *appManageClient) AppInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error) {
+func (c *appManageClient) AppInfoDelete(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, AppManage_AppInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1186,7 +1186,7 @@ func (c *appManageClient) AppInfoDelete(ctx context.Context, in *ReqWithIDCode, 
 	return out, nil
 }
 
-func (c *appManageClient) AppInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*AppInfo, error) {
+func (c *appManageClient) AppInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*AppInfo, error) {
 	out := new(AppInfo)
 	err := c.cc.Invoke(ctx, AppManage_AppInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1199,11 +1199,11 @@ func (c *appManageClient) AppInfoRead(ctx context.Context, in *ReqWithIDCode, op
 // All implementations must embed UnimplementedAppManageServer
 // for forward compatibility
 type AppManageServer interface {
-	AppInfoCreate(context.Context, *AppInfo) (*Response, error)
+	AppInfoCreate(context.Context, *AppInfo) (*WithID, error)
 	AppInfoIndex(context.Context, *AppInfoIndexReq) (*AppInfoIndexResp, error)
 	AppInfoUpdate(context.Context, *AppInfo) (*Response, error)
-	AppInfoDelete(context.Context, *ReqWithIDCode) (*Response, error)
-	AppInfoRead(context.Context, *ReqWithIDCode) (*AppInfo, error)
+	AppInfoDelete(context.Context, *WithIDCode) (*Response, error)
+	AppInfoRead(context.Context, *WithIDCode) (*AppInfo, error)
 	mustEmbedUnimplementedAppManageServer()
 }
 
@@ -1211,7 +1211,7 @@ type AppManageServer interface {
 type UnimplementedAppManageServer struct {
 }
 
-func (UnimplementedAppManageServer) AppInfoCreate(context.Context, *AppInfo) (*Response, error) {
+func (UnimplementedAppManageServer) AppInfoCreate(context.Context, *AppInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppInfoCreate not implemented")
 }
 func (UnimplementedAppManageServer) AppInfoIndex(context.Context, *AppInfoIndexReq) (*AppInfoIndexResp, error) {
@@ -1220,10 +1220,10 @@ func (UnimplementedAppManageServer) AppInfoIndex(context.Context, *AppInfoIndexR
 func (UnimplementedAppManageServer) AppInfoUpdate(context.Context, *AppInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppInfoUpdate not implemented")
 }
-func (UnimplementedAppManageServer) AppInfoDelete(context.Context, *ReqWithIDCode) (*Response, error) {
+func (UnimplementedAppManageServer) AppInfoDelete(context.Context, *WithIDCode) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppInfoDelete not implemented")
 }
-func (UnimplementedAppManageServer) AppInfoRead(context.Context, *ReqWithIDCode) (*AppInfo, error) {
+func (UnimplementedAppManageServer) AppInfoRead(context.Context, *WithIDCode) (*AppInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppInfoRead not implemented")
 }
 func (UnimplementedAppManageServer) mustEmbedUnimplementedAppManageServer() {}
@@ -1294,7 +1294,7 @@ func _AppManage_AppInfoUpdate_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _AppManage_AppInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReqWithIDCode)
+	in := new(WithIDCode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1306,13 +1306,13 @@ func _AppManage_AppInfoDelete_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: AppManage_AppInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AppManageServer).AppInfoDelete(ctx, req.(*ReqWithIDCode))
+		return srv.(AppManageServer).AppInfoDelete(ctx, req.(*WithIDCode))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AppManage_AppInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReqWithIDCode)
+	in := new(WithIDCode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1324,7 +1324,7 @@ func _AppManage_AppInfoRead_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: AppManage_AppInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AppManageServer).AppInfoRead(ctx, req.(*ReqWithIDCode))
+		return srv.(AppManageServer).AppInfoRead(ctx, req.(*WithIDCode))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1372,10 +1372,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MenuManageClient interface {
-	MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error)
+	MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*WithID, error)
 	MenuInfoIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error)
 	MenuInfoUpdate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error)
-	MenuInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error)
+	MenuInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
 }
 
 type menuManageClient struct {
@@ -1386,8 +1386,8 @@ func NewMenuManageClient(cc grpc.ClientConnInterface) MenuManageClient {
 	return &menuManageClient{cc}
 }
 
-func (c *menuManageClient) MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *menuManageClient) MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, MenuManage_MenuInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1413,7 +1413,7 @@ func (c *menuManageClient) MenuInfoUpdate(ctx context.Context, in *MenuInfo, opt
 	return out, nil
 }
 
-func (c *menuManageClient) MenuInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error) {
+func (c *menuManageClient) MenuInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, MenuManage_MenuInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1426,10 +1426,10 @@ func (c *menuManageClient) MenuInfoDelete(ctx context.Context, in *ReqWithID, op
 // All implementations must embed UnimplementedMenuManageServer
 // for forward compatibility
 type MenuManageServer interface {
-	MenuInfoCreate(context.Context, *MenuInfo) (*Response, error)
+	MenuInfoCreate(context.Context, *MenuInfo) (*WithID, error)
 	MenuInfoIndex(context.Context, *MenuInfoIndexReq) (*MenuInfoIndexResp, error)
 	MenuInfoUpdate(context.Context, *MenuInfo) (*Response, error)
-	MenuInfoDelete(context.Context, *ReqWithID) (*Response, error)
+	MenuInfoDelete(context.Context, *WithID) (*Response, error)
 	mustEmbedUnimplementedMenuManageServer()
 }
 
@@ -1437,7 +1437,7 @@ type MenuManageServer interface {
 type UnimplementedMenuManageServer struct {
 }
 
-func (UnimplementedMenuManageServer) MenuInfoCreate(context.Context, *MenuInfo) (*Response, error) {
+func (UnimplementedMenuManageServer) MenuInfoCreate(context.Context, *MenuInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoCreate not implemented")
 }
 func (UnimplementedMenuManageServer) MenuInfoIndex(context.Context, *MenuInfoIndexReq) (*MenuInfoIndexResp, error) {
@@ -1446,7 +1446,7 @@ func (UnimplementedMenuManageServer) MenuInfoIndex(context.Context, *MenuInfoInd
 func (UnimplementedMenuManageServer) MenuInfoUpdate(context.Context, *MenuInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoUpdate not implemented")
 }
-func (UnimplementedMenuManageServer) MenuInfoDelete(context.Context, *ReqWithID) (*Response, error) {
+func (UnimplementedMenuManageServer) MenuInfoDelete(context.Context, *WithID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoDelete not implemented")
 }
 func (UnimplementedMenuManageServer) mustEmbedUnimplementedMenuManageServer() {}
@@ -1517,7 +1517,7 @@ func _MenuManage_MenuInfoUpdate_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _MenuManage_MenuInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReqWithID)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1529,7 +1529,7 @@ func _MenuManage_MenuInfoDelete_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: MenuManage_MenuInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuManageServer).MenuInfoDelete(ctx, req.(*ReqWithID))
+		return srv.(MenuManageServer).MenuInfoDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1864,10 +1864,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ApiManageClient interface {
-	ApiInfoCreate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error)
+	ApiInfoCreate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*WithID, error)
 	ApiInfoIndex(ctx context.Context, in *ApiInfoIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error)
 	ApiInfoUpdate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error)
-	ApiInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error)
+	ApiInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
 }
 
 type apiManageClient struct {
@@ -1878,8 +1878,8 @@ func NewApiManageClient(cc grpc.ClientConnInterface) ApiManageClient {
 	return &apiManageClient{cc}
 }
 
-func (c *apiManageClient) ApiInfoCreate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *apiManageClient) ApiInfoCreate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, ApiManage_ApiInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1905,7 +1905,7 @@ func (c *apiManageClient) ApiInfoUpdate(ctx context.Context, in *ApiInfo, opts .
 	return out, nil
 }
 
-func (c *apiManageClient) ApiInfoDelete(ctx context.Context, in *ReqWithID, opts ...grpc.CallOption) (*Response, error) {
+func (c *apiManageClient) ApiInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, ApiManage_ApiInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1918,10 +1918,10 @@ func (c *apiManageClient) ApiInfoDelete(ctx context.Context, in *ReqWithID, opts
 // All implementations must embed UnimplementedApiManageServer
 // for forward compatibility
 type ApiManageServer interface {
-	ApiInfoCreate(context.Context, *ApiInfo) (*Response, error)
+	ApiInfoCreate(context.Context, *ApiInfo) (*WithID, error)
 	ApiInfoIndex(context.Context, *ApiInfoIndexReq) (*ApiInfoIndexResp, error)
 	ApiInfoUpdate(context.Context, *ApiInfo) (*Response, error)
-	ApiInfoDelete(context.Context, *ReqWithID) (*Response, error)
+	ApiInfoDelete(context.Context, *WithID) (*Response, error)
 	mustEmbedUnimplementedApiManageServer()
 }
 
@@ -1929,7 +1929,7 @@ type ApiManageServer interface {
 type UnimplementedApiManageServer struct {
 }
 
-func (UnimplementedApiManageServer) ApiInfoCreate(context.Context, *ApiInfo) (*Response, error) {
+func (UnimplementedApiManageServer) ApiInfoCreate(context.Context, *ApiInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoCreate not implemented")
 }
 func (UnimplementedApiManageServer) ApiInfoIndex(context.Context, *ApiInfoIndexReq) (*ApiInfoIndexResp, error) {
@@ -1938,7 +1938,7 @@ func (UnimplementedApiManageServer) ApiInfoIndex(context.Context, *ApiInfoIndexR
 func (UnimplementedApiManageServer) ApiInfoUpdate(context.Context, *ApiInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoUpdate not implemented")
 }
-func (UnimplementedApiManageServer) ApiInfoDelete(context.Context, *ReqWithID) (*Response, error) {
+func (UnimplementedApiManageServer) ApiInfoDelete(context.Context, *WithID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoDelete not implemented")
 }
 func (UnimplementedApiManageServer) mustEmbedUnimplementedApiManageServer() {}
@@ -2009,7 +2009,7 @@ func _ApiManage_ApiInfoUpdate_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _ApiManage_ApiInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReqWithID)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2021,7 +2021,7 @@ func _ApiManage_ApiInfoDelete_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: ApiManage_ApiInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApiManageServer).ApiInfoDelete(ctx, req.(*ReqWithID))
+		return srv.(ApiManageServer).ApiInfoDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2067,13 +2067,13 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProjectManageClient interface {
 	// 新增项目
-	ProjectInfoCreate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error)
+	ProjectInfoCreate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*ProjectWithID, error)
 	// 更新项目
 	ProjectInfoUpdate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error)
 	// 删除项目
-	ProjectInfoDelete(ctx context.Context, in *ProjectInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	ProjectInfoDelete(ctx context.Context, in *ProjectWithID, opts ...grpc.CallOption) (*Response, error)
 	// 获取项目信息详情
-	ProjectInfoRead(ctx context.Context, in *ProjectInfoReadReq, opts ...grpc.CallOption) (*ProjectInfo, error)
+	ProjectInfoRead(ctx context.Context, in *ProjectWithID, opts ...grpc.CallOption) (*ProjectInfo, error)
 	// 获取项目信息列表
 	ProjectInfoIndex(ctx context.Context, in *ProjectInfoIndexReq, opts ...grpc.CallOption) (*ProjectInfoIndexResp, error)
 }
@@ -2086,8 +2086,8 @@ func NewProjectManageClient(cc grpc.ClientConnInterface) ProjectManageClient {
 	return &projectManageClient{cc}
 }
 
-func (c *projectManageClient) ProjectInfoCreate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *projectManageClient) ProjectInfoCreate(ctx context.Context, in *ProjectInfo, opts ...grpc.CallOption) (*ProjectWithID, error) {
+	out := new(ProjectWithID)
 	err := c.cc.Invoke(ctx, ProjectManage_ProjectInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2104,7 +2104,7 @@ func (c *projectManageClient) ProjectInfoUpdate(ctx context.Context, in *Project
 	return out, nil
 }
 
-func (c *projectManageClient) ProjectInfoDelete(ctx context.Context, in *ProjectInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *projectManageClient) ProjectInfoDelete(ctx context.Context, in *ProjectWithID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, ProjectManage_ProjectInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2113,7 +2113,7 @@ func (c *projectManageClient) ProjectInfoDelete(ctx context.Context, in *Project
 	return out, nil
 }
 
-func (c *projectManageClient) ProjectInfoRead(ctx context.Context, in *ProjectInfoReadReq, opts ...grpc.CallOption) (*ProjectInfo, error) {
+func (c *projectManageClient) ProjectInfoRead(ctx context.Context, in *ProjectWithID, opts ...grpc.CallOption) (*ProjectInfo, error) {
 	out := new(ProjectInfo)
 	err := c.cc.Invoke(ctx, ProjectManage_ProjectInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2136,13 +2136,13 @@ func (c *projectManageClient) ProjectInfoIndex(ctx context.Context, in *ProjectI
 // for forward compatibility
 type ProjectManageServer interface {
 	// 新增项目
-	ProjectInfoCreate(context.Context, *ProjectInfo) (*Response, error)
+	ProjectInfoCreate(context.Context, *ProjectInfo) (*ProjectWithID, error)
 	// 更新项目
 	ProjectInfoUpdate(context.Context, *ProjectInfo) (*Response, error)
 	// 删除项目
-	ProjectInfoDelete(context.Context, *ProjectInfoDeleteReq) (*Response, error)
+	ProjectInfoDelete(context.Context, *ProjectWithID) (*Response, error)
 	// 获取项目信息详情
-	ProjectInfoRead(context.Context, *ProjectInfoReadReq) (*ProjectInfo, error)
+	ProjectInfoRead(context.Context, *ProjectWithID) (*ProjectInfo, error)
 	// 获取项目信息列表
 	ProjectInfoIndex(context.Context, *ProjectInfoIndexReq) (*ProjectInfoIndexResp, error)
 	mustEmbedUnimplementedProjectManageServer()
@@ -2152,16 +2152,16 @@ type ProjectManageServer interface {
 type UnimplementedProjectManageServer struct {
 }
 
-func (UnimplementedProjectManageServer) ProjectInfoCreate(context.Context, *ProjectInfo) (*Response, error) {
+func (UnimplementedProjectManageServer) ProjectInfoCreate(context.Context, *ProjectInfo) (*ProjectWithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProjectInfoCreate not implemented")
 }
 func (UnimplementedProjectManageServer) ProjectInfoUpdate(context.Context, *ProjectInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProjectInfoUpdate not implemented")
 }
-func (UnimplementedProjectManageServer) ProjectInfoDelete(context.Context, *ProjectInfoDeleteReq) (*Response, error) {
+func (UnimplementedProjectManageServer) ProjectInfoDelete(context.Context, *ProjectWithID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProjectInfoDelete not implemented")
 }
-func (UnimplementedProjectManageServer) ProjectInfoRead(context.Context, *ProjectInfoReadReq) (*ProjectInfo, error) {
+func (UnimplementedProjectManageServer) ProjectInfoRead(context.Context, *ProjectWithID) (*ProjectInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProjectInfoRead not implemented")
 }
 func (UnimplementedProjectManageServer) ProjectInfoIndex(context.Context, *ProjectInfoIndexReq) (*ProjectInfoIndexResp, error) {
@@ -2217,7 +2217,7 @@ func _ProjectManage_ProjectInfoUpdate_Handler(srv interface{}, ctx context.Conte
 }
 
 func _ProjectManage_ProjectInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProjectInfoDeleteReq)
+	in := new(ProjectWithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2229,13 +2229,13 @@ func _ProjectManage_ProjectInfoDelete_Handler(srv interface{}, ctx context.Conte
 		FullMethod: ProjectManage_ProjectInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProjectManageServer).ProjectInfoDelete(ctx, req.(*ProjectInfoDeleteReq))
+		return srv.(ProjectManageServer).ProjectInfoDelete(ctx, req.(*ProjectWithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ProjectManage_ProjectInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProjectInfoReadReq)
+	in := new(ProjectWithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2247,7 +2247,7 @@ func _ProjectManage_ProjectInfoRead_Handler(srv interface{}, ctx context.Context
 		FullMethod: ProjectManage_ProjectInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProjectManageServer).ProjectInfoRead(ctx, req.(*ProjectInfoReadReq))
+		return srv.(ProjectManageServer).ProjectInfoRead(ctx, req.(*ProjectWithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2316,13 +2316,13 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AreaManageClient interface {
 	// 新增区域
-	AreaInfoCreate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error)
+	AreaInfoCreate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*AreaWithID, error)
 	// 更新区域
 	AreaInfoUpdate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error)
 	// 删除区域
-	AreaInfoDelete(ctx context.Context, in *AreaInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	AreaInfoDelete(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*Response, error)
 	// 获取区域信息详情
-	AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error)
+	AreaInfoRead(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*AreaInfo, error)
 	// 获取区域信息列表
 	AreaInfoIndex(ctx context.Context, in *AreaInfoIndexReq, opts ...grpc.CallOption) (*AreaInfoIndexResp, error)
 	// 获取区域信息树
@@ -2337,8 +2337,8 @@ func NewAreaManageClient(cc grpc.ClientConnInterface) AreaManageClient {
 	return &areaManageClient{cc}
 }
 
-func (c *areaManageClient) AreaInfoCreate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *areaManageClient) AreaInfoCreate(ctx context.Context, in *AreaInfo, opts ...grpc.CallOption) (*AreaWithID, error) {
+	out := new(AreaWithID)
 	err := c.cc.Invoke(ctx, AreaManage_AreaInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2355,7 +2355,7 @@ func (c *areaManageClient) AreaInfoUpdate(ctx context.Context, in *AreaInfo, opt
 	return out, nil
 }
 
-func (c *areaManageClient) AreaInfoDelete(ctx context.Context, in *AreaInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *areaManageClient) AreaInfoDelete(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, AreaManage_AreaInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2364,7 +2364,7 @@ func (c *areaManageClient) AreaInfoDelete(ctx context.Context, in *AreaInfoDelet
 	return out, nil
 }
 
-func (c *areaManageClient) AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error) {
+func (c *areaManageClient) AreaInfoRead(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*AreaInfo, error) {
 	out := new(AreaInfo)
 	err := c.cc.Invoke(ctx, AreaManage_AreaInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2396,13 +2396,13 @@ func (c *areaManageClient) AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq
 // for forward compatibility
 type AreaManageServer interface {
 	// 新增区域
-	AreaInfoCreate(context.Context, *AreaInfo) (*Response, error)
+	AreaInfoCreate(context.Context, *AreaInfo) (*AreaWithID, error)
 	// 更新区域
 	AreaInfoUpdate(context.Context, *AreaInfo) (*Response, error)
 	// 删除区域
-	AreaInfoDelete(context.Context, *AreaInfoDeleteReq) (*Response, error)
+	AreaInfoDelete(context.Context, *AreaWithID) (*Response, error)
 	// 获取区域信息详情
-	AreaInfoRead(context.Context, *AreaInfoReadReq) (*AreaInfo, error)
+	AreaInfoRead(context.Context, *AreaWithID) (*AreaInfo, error)
 	// 获取区域信息列表
 	AreaInfoIndex(context.Context, *AreaInfoIndexReq) (*AreaInfoIndexResp, error)
 	// 获取区域信息树
@@ -2414,16 +2414,16 @@ type AreaManageServer interface {
 type UnimplementedAreaManageServer struct {
 }
 
-func (UnimplementedAreaManageServer) AreaInfoCreate(context.Context, *AreaInfo) (*Response, error) {
+func (UnimplementedAreaManageServer) AreaInfoCreate(context.Context, *AreaInfo) (*AreaWithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoCreate not implemented")
 }
 func (UnimplementedAreaManageServer) AreaInfoUpdate(context.Context, *AreaInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoUpdate not implemented")
 }
-func (UnimplementedAreaManageServer) AreaInfoDelete(context.Context, *AreaInfoDeleteReq) (*Response, error) {
+func (UnimplementedAreaManageServer) AreaInfoDelete(context.Context, *AreaWithID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoDelete not implemented")
 }
-func (UnimplementedAreaManageServer) AreaInfoRead(context.Context, *AreaInfoReadReq) (*AreaInfo, error) {
+func (UnimplementedAreaManageServer) AreaInfoRead(context.Context, *AreaWithID) (*AreaInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoRead not implemented")
 }
 func (UnimplementedAreaManageServer) AreaInfoIndex(context.Context, *AreaInfoIndexReq) (*AreaInfoIndexResp, error) {
@@ -2482,7 +2482,7 @@ func _AreaManage_AreaInfoUpdate_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _AreaManage_AreaInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AreaInfoDeleteReq)
+	in := new(AreaWithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2494,13 +2494,13 @@ func _AreaManage_AreaInfoDelete_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: AreaManage_AreaInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AreaManageServer).AreaInfoDelete(ctx, req.(*AreaInfoDeleteReq))
+		return srv.(AreaManageServer).AreaInfoDelete(ctx, req.(*AreaWithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AreaManage_AreaInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AreaInfoReadReq)
+	in := new(AreaWithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2512,7 +2512,7 @@ func _AreaManage_AreaInfoRead_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: AreaManage_AreaInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AreaManageServer).AreaInfoRead(ctx, req.(*AreaInfoReadReq))
+		return srv.(AreaManageServer).AreaInfoRead(ctx, req.(*AreaWithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2604,13 +2604,13 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TenantManageClient interface {
 	// 新增区域
-	TenantInfoCreate(ctx context.Context, in *TenantInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
+	TenantInfoCreate(ctx context.Context, in *TenantInfoCreateReq, opts ...grpc.CallOption) (*WithID, error)
 	// 更新区域
 	TenantInfoUpdate(ctx context.Context, in *TenantInfo, opts ...grpc.CallOption) (*Response, error)
 	// 删除区域
-	TenantInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error)
+	TenantInfoDelete(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*Response, error)
 	// 获取租户信息详情
-	TenantInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*TenantInfo, error)
+	TenantInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*TenantInfo, error)
 	// 获取租户信息列表
 	TenantInfoIndex(ctx context.Context, in *TenantInfoIndexReq, opts ...grpc.CallOption) (*TenantInfoIndexResp, error)
 	TenantAppIndex(ctx context.Context, in *TenantAppIndexReq, opts ...grpc.CallOption) (*TenantAppIndexResp, error)
@@ -2625,8 +2625,8 @@ func NewTenantManageClient(cc grpc.ClientConnInterface) TenantManageClient {
 	return &tenantManageClient{cc}
 }
 
-func (c *tenantManageClient) TenantInfoCreate(ctx context.Context, in *TenantInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *tenantManageClient) TenantInfoCreate(ctx context.Context, in *TenantInfoCreateReq, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, TenantManage_TenantInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2643,7 +2643,7 @@ func (c *tenantManageClient) TenantInfoUpdate(ctx context.Context, in *TenantInf
 	return out, nil
 }
 
-func (c *tenantManageClient) TenantInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error) {
+func (c *tenantManageClient) TenantInfoDelete(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, TenantManage_TenantInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2652,7 +2652,7 @@ func (c *tenantManageClient) TenantInfoDelete(ctx context.Context, in *ReqWithID
 	return out, nil
 }
 
-func (c *tenantManageClient) TenantInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*TenantInfo, error) {
+func (c *tenantManageClient) TenantInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*TenantInfo, error) {
 	out := new(TenantInfo)
 	err := c.cc.Invoke(ctx, TenantManage_TenantInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2693,13 +2693,13 @@ func (c *tenantManageClient) TenantAppMultiUpdate(ctx context.Context, in *Tenan
 // for forward compatibility
 type TenantManageServer interface {
 	// 新增区域
-	TenantInfoCreate(context.Context, *TenantInfoCreateReq) (*Response, error)
+	TenantInfoCreate(context.Context, *TenantInfoCreateReq) (*WithID, error)
 	// 更新区域
 	TenantInfoUpdate(context.Context, *TenantInfo) (*Response, error)
 	// 删除区域
-	TenantInfoDelete(context.Context, *ReqWithIDCode) (*Response, error)
+	TenantInfoDelete(context.Context, *WithIDCode) (*Response, error)
 	// 获取租户信息详情
-	TenantInfoRead(context.Context, *ReqWithIDCode) (*TenantInfo, error)
+	TenantInfoRead(context.Context, *WithIDCode) (*TenantInfo, error)
 	// 获取租户信息列表
 	TenantInfoIndex(context.Context, *TenantInfoIndexReq) (*TenantInfoIndexResp, error)
 	TenantAppIndex(context.Context, *TenantAppIndexReq) (*TenantAppIndexResp, error)
@@ -2711,16 +2711,16 @@ type TenantManageServer interface {
 type UnimplementedTenantManageServer struct {
 }
 
-func (UnimplementedTenantManageServer) TenantInfoCreate(context.Context, *TenantInfoCreateReq) (*Response, error) {
+func (UnimplementedTenantManageServer) TenantInfoCreate(context.Context, *TenantInfoCreateReq) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoCreate not implemented")
 }
 func (UnimplementedTenantManageServer) TenantInfoUpdate(context.Context, *TenantInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoUpdate not implemented")
 }
-func (UnimplementedTenantManageServer) TenantInfoDelete(context.Context, *ReqWithIDCode) (*Response, error) {
+func (UnimplementedTenantManageServer) TenantInfoDelete(context.Context, *WithIDCode) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoDelete not implemented")
 }
-func (UnimplementedTenantManageServer) TenantInfoRead(context.Context, *ReqWithIDCode) (*TenantInfo, error) {
+func (UnimplementedTenantManageServer) TenantInfoRead(context.Context, *WithIDCode) (*TenantInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantInfoRead not implemented")
 }
 func (UnimplementedTenantManageServer) TenantInfoIndex(context.Context, *TenantInfoIndexReq) (*TenantInfoIndexResp, error) {
@@ -2782,7 +2782,7 @@ func _TenantManage_TenantInfoUpdate_Handler(srv interface{}, ctx context.Context
 }
 
 func _TenantManage_TenantInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReqWithIDCode)
+	in := new(WithIDCode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2794,13 +2794,13 @@ func _TenantManage_TenantInfoDelete_Handler(srv interface{}, ctx context.Context
 		FullMethod: TenantManage_TenantInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantManageServer).TenantInfoDelete(ctx, req.(*ReqWithIDCode))
+		return srv.(TenantManageServer).TenantInfoDelete(ctx, req.(*WithIDCode))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TenantManage_TenantInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReqWithIDCode)
+	in := new(WithIDCode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2812,7 +2812,7 @@ func _TenantManage_TenantInfoRead_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: TenantManage_TenantInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantManageServer).TenantInfoRead(ctx, req.(*ReqWithIDCode))
+		return srv.(TenantManageServer).TenantInfoRead(ctx, req.(*WithIDCode))
 	}
 	return interceptor(ctx, in, info, handler)
 }

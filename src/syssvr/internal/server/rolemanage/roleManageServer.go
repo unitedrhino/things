@@ -22,7 +22,7 @@ func NewRoleManageServer(svcCtx *svc.ServiceContext) *RoleManageServer {
 	}
 }
 
-func (s *RoleManageServer) RoleInfoCreate(ctx context.Context, in *sys.RoleInfo) (*sys.Response, error) {
+func (s *RoleManageServer) RoleInfoCreate(ctx context.Context, in *sys.RoleInfo) (*sys.WithID, error) {
 	l := rolemanagelogic.NewRoleInfoCreateLogic(ctx, s.svcCtx)
 	return l.RoleInfoCreate(in)
 }
@@ -37,7 +37,7 @@ func (s *RoleManageServer) RoleInfoUpdate(ctx context.Context, in *sys.RoleInfo)
 	return l.RoleInfoUpdate(in)
 }
 
-func (s *RoleManageServer) RoleInfoDelete(ctx context.Context, in *sys.ReqWithID) (*sys.Response, error) {
+func (s *RoleManageServer) RoleInfoDelete(ctx context.Context, in *sys.WithID) (*sys.Response, error) {
 	l := rolemanagelogic.NewRoleInfoDeleteLogic(ctx, s.svcCtx)
 	return l.RoleInfoDelete(in)
 }

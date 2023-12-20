@@ -32,7 +32,7 @@ func checkParentArea(ctx context.Context, parentAreaID int64, checkDevice bool) 
 	//检查父级区域是否存在
 	parentAreaPo, err := checkArea(ctx, parentAreaID)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err).WithMsg("检查区域出错")
+		return nil, errors.Fmt(err).WithMsg("检查区域出错")
 	} else if parentAreaPo == nil {
 		return nil, errors.Parameter.AddDetail(parentAreaID).WithMsg("检查区域不存在")
 	}

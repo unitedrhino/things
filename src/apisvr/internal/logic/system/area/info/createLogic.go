@@ -28,15 +28,15 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.AreaInfo) error {
+func (l *CreateLogic) Create(req *types.AreaInfo) (*types.AreaWithID, error) {
 	dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
 		Page:    &dm.PageInfo{Page: 1, Size: 2}, //只需要知道是否有设备即可
 		AreaIDs: []int64{req.ParentAreaID}})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(dmRep.List) != 0 {
-		return errors.Parameter.AddMsg("父级区域已绑定了设备，不允许再添加子区域")
+		return nil, errors.Parameter.AddMsg("父级区域已绑定了设备，不允许再添加子区域")
 	}
 	dmReq := &sys.AreaInfo{
 		ParentAreaID: req.ParentAreaID,
@@ -45,10 +45,10 @@ func (l *CreateLogic) Create(req *types.AreaInfo) error {
 		Position:     logic.ToSysPointRpc(req.Position),
 		Desc:         utils.ToRpcNullString(req.Desc),
 	}
-	_, err = l.svcCtx.AreaM.AreaInfoCreate(l.ctx, dmReq)
+	resp, err := l.svcCtx.AreaM.AreaInfoCreate(l.ctx, dmReq)
 	if er := errors.Fmt(err); er != nil {
 		l.Errorf("%s.rpc.AreaManage req=%v err=%v", utils.FuncName(), req, er)
-		return er
+		return nil, er
 	}
-	return nil
+	return &types.AreaWithID{AreaID: resp.AreaID}, nil
 }

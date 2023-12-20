@@ -14,102 +14,100 @@ import (
 )
 
 type (
-	ApiDeleteReq                  = sys.ApiDeleteReq
-	ApiInfo                       = sys.ApiInfo
-	ApiInfoIndexReq               = sys.ApiInfoIndexReq
-	ApiInfoIndexResp              = sys.ApiInfoIndexResp
-	AppInfo                       = sys.AppInfo
-	AppInfoIndexReq               = sys.AppInfoIndexReq
-	AppInfoIndexResp              = sys.AppInfoIndexResp
-	AreaInfo                      = sys.AreaInfo
-	AreaInfoDeleteReq             = sys.AreaInfoDeleteReq
-	AreaInfoIndexReq              = sys.AreaInfoIndexReq
-	AreaInfoIndexResp             = sys.AreaInfoIndexResp
-	AreaInfoReadReq               = sys.AreaInfoReadReq
-	AreaInfoTreeReq               = sys.AreaInfoTreeReq
-	AreaInfoTreeResp              = sys.AreaInfoTreeResp
-	AuthApiInfo                   = sys.AuthApiInfo
-	ConfigResp                    = sys.ConfigResp
-	DateRange                     = sys.DateRange
-	JwtToken                      = sys.JwtToken
-	LoginLogCreateReq             = sys.LoginLogCreateReq
-	LoginLogIndexReq              = sys.LoginLogIndexReq
-	LoginLogIndexResp             = sys.LoginLogIndexResp
-	LoginLogInfo                  = sys.LoginLogInfo
-	Map                           = sys.Map
-	MenuInfo                      = sys.MenuInfo
-	MenuInfoIndexReq              = sys.MenuInfoIndexReq
-	MenuInfoIndexResp             = sys.MenuInfoIndexResp
-	OperLogCreateReq              = sys.OperLogCreateReq
-	OperLogIndexReq               = sys.OperLogIndexReq
-	OperLogIndexResp              = sys.OperLogIndexResp
-	OperLogInfo                   = sys.OperLogInfo
-	PageInfo                      = sys.PageInfo
-	PageInfo_OrderBy              = sys.PageInfo_OrderBy
-	Point                         = sys.Point
-	ProjectInfo                   = sys.ProjectInfo
-	ProjectInfoDeleteReq          = sys.ProjectInfoDeleteReq
-	ProjectInfoIndexReq           = sys.ProjectInfoIndexReq
-	ProjectInfoIndexResp          = sys.ProjectInfoIndexResp
-	ProjectInfoReadReq            = sys.ProjectInfoReadReq
-	ReqWithID                     = sys.ReqWithID
-	ReqWithIDCode                 = sys.ReqWithIDCode
-	Response                      = sys.Response
-	RoleApiAuthReq                = sys.RoleApiAuthReq
-	RoleApiIndexReq               = sys.RoleApiIndexReq
-	RoleApiIndexResp              = sys.RoleApiIndexResp
-	RoleApiMultiUpdateReq         = sys.RoleApiMultiUpdateReq
-	RoleAppIndexReq               = sys.RoleAppIndexReq
-	RoleAppIndexResp              = sys.RoleAppIndexResp
-	RoleAppMultiUpdateReq         = sys.RoleAppMultiUpdateReq
-	RoleAppUpdateReq              = sys.RoleAppUpdateReq
-	RoleInfo                      = sys.RoleInfo
-	RoleInfoIndexReq              = sys.RoleInfoIndexReq
-	RoleInfoIndexResp             = sys.RoleInfoIndexResp
-	RoleMenuIndexReq              = sys.RoleMenuIndexReq
-	RoleMenuIndexResp             = sys.RoleMenuIndexResp
-	RoleMenuMultiUpdateReq        = sys.RoleMenuMultiUpdateReq
-	TenantAppIndexReq             = sys.TenantAppIndexReq
-	TenantAppIndexResp            = sys.TenantAppIndexResp
-	TenantAppMultiUpdateReq       = sys.TenantAppMultiUpdateReq
-	TenantInfo                    = sys.TenantInfo
-	TenantInfoCreateReq           = sys.TenantInfoCreateReq
-	TenantInfoIndexReq            = sys.TenantInfoIndexReq
-	TenantInfoIndexResp           = sys.TenantInfoIndexResp
-	UserAuthArea                  = sys.UserAuthArea
-	UserAuthAreaIndexReq          = sys.UserAuthAreaIndexReq
-	UserAuthAreaIndexResp         = sys.UserAuthAreaIndexResp
-	UserAuthAreaMultiUpdateReq    = sys.UserAuthAreaMultiUpdateReq
-	UserAuthProject               = sys.UserAuthProject
-	UserAuthProjectIndexReq       = sys.UserAuthProjectIndexReq
-	UserAuthProjectIndexResp      = sys.UserAuthProjectIndexResp
-	UserAuthProjectMultiUpdateReq = sys.UserAuthProjectMultiUpdateReq
-	UserCaptchaReq                = sys.UserCaptchaReq
-	UserCaptchaResp               = sys.UserCaptchaResp
-	UserCheckTokenReq             = sys.UserCheckTokenReq
-	UserCheckTokenResp            = sys.UserCheckTokenResp
-	UserCreateResp                = sys.UserCreateResp
-	UserForgetPwdReq              = sys.UserForgetPwdReq
-	UserInfo                      = sys.UserInfo
-	UserInfoCreateReq             = sys.UserInfoCreateReq
-	UserInfoDeleteReq             = sys.UserInfoDeleteReq
-	UserInfoIndexReq              = sys.UserInfoIndexReq
-	UserInfoIndexResp             = sys.UserInfoIndexResp
-	UserInfoReadReq               = sys.UserInfoReadReq
-	UserLoginReq                  = sys.UserLoginReq
-	UserLoginResp                 = sys.UserLoginResp
-	UserRegisterReq               = sys.UserRegisterReq
-	UserRegisterResp              = sys.UserRegisterResp
-	UserRoleIndexReq              = sys.UserRoleIndexReq
-	UserRoleIndexResp             = sys.UserRoleIndexResp
-	UserRoleMultiUpdateReq        = sys.UserRoleMultiUpdateReq
+	ApiDeleteReq              = sys.ApiDeleteReq
+	ApiInfo                   = sys.ApiInfo
+	ApiInfoIndexReq           = sys.ApiInfoIndexReq
+	ApiInfoIndexResp          = sys.ApiInfoIndexResp
+	AppInfo                   = sys.AppInfo
+	AppInfoIndexReq           = sys.AppInfoIndexReq
+	AppInfoIndexResp          = sys.AppInfoIndexResp
+	AreaInfo                  = sys.AreaInfo
+	AreaInfoIndexReq          = sys.AreaInfoIndexReq
+	AreaInfoIndexResp         = sys.AreaInfoIndexResp
+	AreaInfoTreeReq           = sys.AreaInfoTreeReq
+	AreaInfoTreeResp          = sys.AreaInfoTreeResp
+	AreaWithID                = sys.AreaWithID
+	AuthApiInfo               = sys.AuthApiInfo
+	ConfigResp                = sys.ConfigResp
+	DateRange                 = sys.DateRange
+	JwtToken                  = sys.JwtToken
+	LoginLogCreateReq         = sys.LoginLogCreateReq
+	LoginLogIndexReq          = sys.LoginLogIndexReq
+	LoginLogIndexResp         = sys.LoginLogIndexResp
+	LoginLogInfo              = sys.LoginLogInfo
+	Map                       = sys.Map
+	MenuInfo                  = sys.MenuInfo
+	MenuInfoIndexReq          = sys.MenuInfoIndexReq
+	MenuInfoIndexResp         = sys.MenuInfoIndexResp
+	OperLogCreateReq          = sys.OperLogCreateReq
+	OperLogIndexReq           = sys.OperLogIndexReq
+	OperLogIndexResp          = sys.OperLogIndexResp
+	OperLogInfo               = sys.OperLogInfo
+	PageInfo                  = sys.PageInfo
+	PageInfo_OrderBy          = sys.PageInfo_OrderBy
+	Point                     = sys.Point
+	ProjectInfo               = sys.ProjectInfo
+	ProjectInfoIndexReq       = sys.ProjectInfoIndexReq
+	ProjectInfoIndexResp      = sys.ProjectInfoIndexResp
+	ProjectWithID             = sys.ProjectWithID
+	Response                  = sys.Response
+	RoleApiAuthReq            = sys.RoleApiAuthReq
+	RoleApiIndexReq           = sys.RoleApiIndexReq
+	RoleApiIndexResp          = sys.RoleApiIndexResp
+	RoleApiMultiUpdateReq     = sys.RoleApiMultiUpdateReq
+	RoleAppIndexReq           = sys.RoleAppIndexReq
+	RoleAppIndexResp          = sys.RoleAppIndexResp
+	RoleAppMultiUpdateReq     = sys.RoleAppMultiUpdateReq
+	RoleAppUpdateReq          = sys.RoleAppUpdateReq
+	RoleInfo                  = sys.RoleInfo
+	RoleInfoIndexReq          = sys.RoleInfoIndexReq
+	RoleInfoIndexResp         = sys.RoleInfoIndexResp
+	RoleMenuIndexReq          = sys.RoleMenuIndexReq
+	RoleMenuIndexResp         = sys.RoleMenuIndexResp
+	RoleMenuMultiUpdateReq    = sys.RoleMenuMultiUpdateReq
+	TenantAppIndexReq         = sys.TenantAppIndexReq
+	TenantAppIndexResp        = sys.TenantAppIndexResp
+	TenantAppMultiUpdateReq   = sys.TenantAppMultiUpdateReq
+	TenantInfo                = sys.TenantInfo
+	TenantInfoCreateReq       = sys.TenantInfoCreateReq
+	TenantInfoIndexReq        = sys.TenantInfoIndexReq
+	TenantInfoIndexResp       = sys.TenantInfoIndexResp
+	UserArea                  = sys.UserArea
+	UserAreaIndexReq          = sys.UserAreaIndexReq
+	UserAreaIndexResp         = sys.UserAreaIndexResp
+	UserAreaMultiUpdateReq    = sys.UserAreaMultiUpdateReq
+	UserCaptchaReq            = sys.UserCaptchaReq
+	UserCaptchaResp           = sys.UserCaptchaResp
+	UserCheckTokenReq         = sys.UserCheckTokenReq
+	UserCheckTokenResp        = sys.UserCheckTokenResp
+	UserCreateResp            = sys.UserCreateResp
+	UserForgetPwdReq          = sys.UserForgetPwdReq
+	UserInfo                  = sys.UserInfo
+	UserInfoCreateReq         = sys.UserInfoCreateReq
+	UserInfoDeleteReq         = sys.UserInfoDeleteReq
+	UserInfoIndexReq          = sys.UserInfoIndexReq
+	UserInfoIndexResp         = sys.UserInfoIndexResp
+	UserInfoReadReq           = sys.UserInfoReadReq
+	UserLoginReq              = sys.UserLoginReq
+	UserLoginResp             = sys.UserLoginResp
+	UserProject               = sys.UserProject
+	UserProjectIndexReq       = sys.UserProjectIndexReq
+	UserProjectIndexResp      = sys.UserProjectIndexResp
+	UserProjectMultiUpdateReq = sys.UserProjectMultiUpdateReq
+	UserRegisterReq           = sys.UserRegisterReq
+	UserRegisterResp          = sys.UserRegisterResp
+	UserRoleIndexReq          = sys.UserRoleIndexReq
+	UserRoleIndexResp         = sys.UserRoleIndexResp
+	UserRoleMultiUpdateReq    = sys.UserRoleMultiUpdateReq
+	WithID                    = sys.WithID
+	WithIDCode                = sys.WithIDCode
 
 	AppManage interface {
-		AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error)
+		AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*WithID, error)
 		AppInfoIndex(ctx context.Context, in *AppInfoIndexReq, opts ...grpc.CallOption) (*AppInfoIndexResp, error)
 		AppInfoUpdate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error)
-		AppInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error)
-		AppInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*AppInfo, error)
+		AppInfoDelete(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*Response, error)
+		AppInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*AppInfo, error)
 	}
 
 	defaultAppManage struct {
@@ -135,12 +133,12 @@ func NewDirectAppManage(svcCtx *svc.ServiceContext, svr sys.AppManageServer) App
 	}
 }
 
-func (m *defaultAppManage) AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultAppManage) AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*WithID, error) {
 	client := sys.NewAppManageClient(m.cli.Conn())
 	return client.AppInfoCreate(ctx, in, opts...)
 }
 
-func (d *directAppManage) AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error) {
+func (d *directAppManage) AppInfoCreate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*WithID, error) {
 	return d.svr.AppInfoCreate(ctx, in)
 }
 
@@ -162,20 +160,20 @@ func (d *directAppManage) AppInfoUpdate(ctx context.Context, in *AppInfo, opts .
 	return d.svr.AppInfoUpdate(ctx, in)
 }
 
-func (m *defaultAppManage) AppInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultAppManage) AppInfoDelete(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewAppManageClient(m.cli.Conn())
 	return client.AppInfoDelete(ctx, in, opts...)
 }
 
-func (d *directAppManage) AppInfoDelete(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*Response, error) {
+func (d *directAppManage) AppInfoDelete(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.AppInfoDelete(ctx, in)
 }
 
-func (m *defaultAppManage) AppInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*AppInfo, error) {
+func (m *defaultAppManage) AppInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*AppInfo, error) {
 	client := sys.NewAppManageClient(m.cli.Conn())
 	return client.AppInfoRead(ctx, in, opts...)
 }
 
-func (d *directAppManage) AppInfoRead(ctx context.Context, in *ReqWithIDCode, opts ...grpc.CallOption) (*AppInfo, error) {
+func (d *directAppManage) AppInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*AppInfo, error) {
 	return d.svr.AppInfoRead(ctx, in)
 }

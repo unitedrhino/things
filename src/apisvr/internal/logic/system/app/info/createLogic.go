@@ -2,9 +2,9 @@ package info
 
 import (
 	"context"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -22,7 +22,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.AppInfo) error {
-	_, err := l.svcCtx.AppRpc.AppInfoCreate(l.ctx, ToAppInfoRpc(req))
-	return err
+func (l *CreateLogic) Create(req *types.AppInfo) (*types.WithID, error) {
+	resp, err := l.svcCtx.AppRpc.AppInfoCreate(l.ctx, ToAppInfoRpc(req))
+	return logic.SysToWithIDTypes(resp), err
 }

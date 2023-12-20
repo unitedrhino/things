@@ -27,7 +27,7 @@ func NewProjectInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *P
 }
 
 // 获取项目信息详情
-func (l *ProjectInfoReadLogic) ProjectInfoRead(in *sys.ProjectInfoReadReq) (*sys.ProjectInfo, error) {
+func (l *ProjectInfoReadLogic) ProjectInfoRead(in *sys.ProjectWithID) (*sys.ProjectInfo, error) {
 	po, err := l.PiDB.FindOne(l.ctx, in.ProjectID)
 	if err != nil {
 		return nil, err

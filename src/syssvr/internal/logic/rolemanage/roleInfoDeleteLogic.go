@@ -2,7 +2,6 @@ package rolemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -27,10 +26,10 @@ func NewRoleInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ro
 	}
 }
 
-func (l *RoleInfoDeleteLogic) RoleInfoDelete(in *sys.ReqWithID) (*sys.Response, error) {
+func (l *RoleInfoDeleteLogic) RoleInfoDelete(in *sys.WithID) (*sys.Response, error) {
 	err := l.RiDB.Delete(l.ctx, in.Id)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	return &sys.Response{}, nil
 }

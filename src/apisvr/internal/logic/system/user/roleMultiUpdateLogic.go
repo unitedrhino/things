@@ -29,7 +29,7 @@ func NewRoleMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *R
 func (l *RoleMultiUpdateLogic) RoleMultiUpdate(req *types.UserRoleMultiUpdateReq) error {
 	uc := ctxs.GetUserCtx(l.ctx)
 	//这里需要判断是否是租户下的超级管理员,只有租户下的超级管理员才能修改角色
-	ti, err := l.svcCtx.TenantRpc.TenantInfoRead(l.ctx, &sys.ReqWithIDCode{Code: uc.TenantCode})
+	ti, err := l.svcCtx.TenantRpc.TenantInfoRead(l.ctx, &sys.WithIDCode{Code: uc.TenantCode})
 	if err != nil {
 		return err
 	}

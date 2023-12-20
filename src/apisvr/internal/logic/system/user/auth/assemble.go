@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
-func ToAreaApis(in []*sys.UserAuthArea) (ret []*types.UserAuthArea) {
+func ToAreaApis(in []*sys.UserArea) (ret []*types.UserAuthArea) {
 	if in == nil {
 		return
 	}
@@ -15,17 +15,17 @@ func ToAreaApis(in []*sys.UserAuthArea) (ret []*types.UserAuthArea) {
 	return
 }
 
-func ToAreaPbs(in []*types.UserAuthArea) (ret []*sys.UserAuthArea) {
+func ToAreaPbs(in []*types.UserAuthArea) (ret []*sys.UserArea) {
 	if in == nil {
 		return
 	}
 	for _, v := range in {
-		ret = append(ret, &sys.UserAuthArea{AreaID: v.AreaID})
+		ret = append(ret, &sys.UserArea{AreaID: v.AreaID})
 	}
 	return
 }
 
-func ToProjectApis(in []*sys.UserAuthProject) (ret []*types.UserAuthProject) {
+func ToProjectApis(in []*sys.UserProject) (ret []*types.UserAuthProject) {
 	if in == nil {
 		return
 	}
@@ -35,12 +35,12 @@ func ToProjectApis(in []*sys.UserAuthProject) (ret []*types.UserAuthProject) {
 	return
 }
 
-func ToProjectPbs(in []*types.UserAuthProject) (ret []*sys.UserAuthProject) {
+func ToProjectPbs(in []*types.UserAuthProject) (ret []*sys.UserProject) {
 	if in == nil {
 		return
 	}
 	for _, v := range in {
-		ret = append(ret, &sys.UserAuthProject{ProjectID: v.ProjectID})
+		ret = append(ret, &sys.UserProject{ProjectID: v.ProjectID})
 	}
 	return
 }

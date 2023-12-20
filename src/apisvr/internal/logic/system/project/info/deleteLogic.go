@@ -27,7 +27,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
-func (l *DeleteLogic) Delete(req *types.ProjectInfoDeleteReq) error {
+func (l *DeleteLogic) Delete(req *types.ProjectWithID) error {
 	dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
 		Page: &dm.PageInfo{Page: 1, Size: 2}, //只需要知道是否有设备即可
 	})
@@ -37,7 +37,7 @@ func (l *DeleteLogic) Delete(req *types.ProjectInfoDeleteReq) error {
 	if len(dmRep.List) != 0 {
 		return errors.Parameter.AddMsg("该项目已绑定了设备，不允许删除")
 	}
-	_, err = l.svcCtx.ProjectM.ProjectInfoDelete(l.ctx, &sys.ProjectInfoDeleteReq{ProjectID: req.ProjectID})
+	_, err = l.svcCtx.ProjectM.ProjectInfoDelete(l.ctx, &sys.ProjectWithID{ProjectID: req.ProjectID})
 	if er := errors.Fmt(err); er != nil {
 		l.Errorf("%s.rpc.ProjectManage req=%v err=%+v", utils.FuncName(), req, er)
 		return er

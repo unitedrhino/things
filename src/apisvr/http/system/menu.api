@@ -13,7 +13,7 @@ import "common.api"  //公共结构体定义
 service api {
     @doc "添加菜单"
     @handler create
-    post /create (MenuInfo) returns ()
+    post /create (MenuInfo) returns (WithID)
 
     @doc "获取菜单列表"
     @handler index

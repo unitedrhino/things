@@ -26,11 +26,11 @@ func NewProjectMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *ProjectMultiUpdateLogic) ProjectMultiUpdate(req *types.UserAuthProjectMultiUpdateReq) error {
-	dto := &sys.UserAuthProjectMultiUpdateReq{
+	dto := &sys.UserProjectMultiUpdateReq{
 		UserID:   req.UserID,
 		Projects: ToProjectPbs(req.Projects),
 	}
-	_, err := l.svcCtx.UserRpc.UserAuthProjectMultiUpdate(l.ctx, dto)
+	_, err := l.svcCtx.UserRpc.UserProjectMultiUpdate(l.ctx, dto)
 	if err != nil {
 		l.Errorf("%s.rpc.UserAuthProjectMultiUpdate req=%v err=%v", utils.FuncName(), req, err)
 		return err

@@ -23,7 +23,7 @@ func NewAreaManageServer(svcCtx *svc.ServiceContext) *AreaManageServer {
 }
 
 // 新增区域
-func (s *AreaManageServer) AreaInfoCreate(ctx context.Context, in *sys.AreaInfo) (*sys.Response, error) {
+func (s *AreaManageServer) AreaInfoCreate(ctx context.Context, in *sys.AreaInfo) (*sys.AreaWithID, error) {
 	l := areamanagelogic.NewAreaInfoCreateLogic(ctx, s.svcCtx)
 	return l.AreaInfoCreate(in)
 }
@@ -35,13 +35,13 @@ func (s *AreaManageServer) AreaInfoUpdate(ctx context.Context, in *sys.AreaInfo)
 }
 
 // 删除区域
-func (s *AreaManageServer) AreaInfoDelete(ctx context.Context, in *sys.AreaInfoDeleteReq) (*sys.Response, error) {
+func (s *AreaManageServer) AreaInfoDelete(ctx context.Context, in *sys.AreaWithID) (*sys.Response, error) {
 	l := areamanagelogic.NewAreaInfoDeleteLogic(ctx, s.svcCtx)
 	return l.AreaInfoDelete(in)
 }
 
 // 获取区域信息详情
-func (s *AreaManageServer) AreaInfoRead(ctx context.Context, in *sys.AreaInfoReadReq) (*sys.AreaInfo, error) {
+func (s *AreaManageServer) AreaInfoRead(ctx context.Context, in *sys.AreaWithID) (*sys.AreaInfo, error) {
 	l := areamanagelogic.NewAreaInfoReadLogic(ctx, s.svcCtx)
 	return l.AreaInfoRead(in)
 }

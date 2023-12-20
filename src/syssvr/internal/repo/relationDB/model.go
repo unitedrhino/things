@@ -57,7 +57,7 @@ func (m *SysUserRole) TableName() string {
 type SysRoleInfo struct {
 	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 角色所属租户编码
-	Name       string            `gorm:"column:name;uniqueIndex;type:VARCHAR(100);NOT NULL"`             // 角色名称
+	Name       string            `gorm:"column:name;uniqueIndex:tc_ac;type:VARCHAR(100);NOT NULL"`       // 角色名称
 	Desc       string            `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                         //描述
 	stores.Time
 	Status int64         `gorm:"column:status;type:SMALLINT;default:1"` // 状态  1:启用,2:禁用

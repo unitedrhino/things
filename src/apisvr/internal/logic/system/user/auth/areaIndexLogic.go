@@ -27,12 +27,12 @@ func NewAreaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AreaInd
 }
 
 func (l *AreaIndexLogic) AreaIndex(req *types.UserAuthAreaIndexReq) (resp *types.UserAuthAreaIndexResp, err error) {
-	dto := &sys.UserAuthAreaIndexReq{
+	dto := &sys.UserAreaIndexReq{
 		Page:      logic.ToSysPageRpc(req.Page),
 		UserID:    req.UserID,
 		ProjectID: req.ProjectID,
 	}
-	dmResp, err := l.svcCtx.UserRpc.UserAuthAreaIndex(l.ctx, dto)
+	dmResp, err := l.svcCtx.UserRpc.UserAreaIndex(l.ctx, dto)
 	if err != nil {
 		l.Errorf("%s.rpc.UserAuthAreaIndex req=%v err=%+v", utils.FuncName(), req, err)
 		return nil, err

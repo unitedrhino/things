@@ -22,7 +22,7 @@ func NewAppManageServer(svcCtx *svc.ServiceContext) *AppManageServer {
 	}
 }
 
-func (s *AppManageServer) AppInfoCreate(ctx context.Context, in *sys.AppInfo) (*sys.Response, error) {
+func (s *AppManageServer) AppInfoCreate(ctx context.Context, in *sys.AppInfo) (*sys.WithID, error) {
 	l := appmanagelogic.NewAppInfoCreateLogic(ctx, s.svcCtx)
 	return l.AppInfoCreate(in)
 }
@@ -37,12 +37,12 @@ func (s *AppManageServer) AppInfoUpdate(ctx context.Context, in *sys.AppInfo) (*
 	return l.AppInfoUpdate(in)
 }
 
-func (s *AppManageServer) AppInfoDelete(ctx context.Context, in *sys.ReqWithIDCode) (*sys.Response, error) {
+func (s *AppManageServer) AppInfoDelete(ctx context.Context, in *sys.WithIDCode) (*sys.Response, error) {
 	l := appmanagelogic.NewAppInfoDeleteLogic(ctx, s.svcCtx)
 	return l.AppInfoDelete(in)
 }
 
-func (s *AppManageServer) AppInfoRead(ctx context.Context, in *sys.ReqWithIDCode) (*sys.AppInfo, error) {
+func (s *AppManageServer) AppInfoRead(ctx context.Context, in *sys.WithIDCode) (*sys.AppInfo, error) {
 	l := appmanagelogic.NewAppInfoReadLogic(ctx, s.svcCtx)
 	return l.AppInfoRead(in)
 }

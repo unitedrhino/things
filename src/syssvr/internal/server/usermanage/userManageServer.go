@@ -82,22 +82,22 @@ func (s *UserManageServer) UserRoleMultiUpdate(ctx context.Context, in *sys.User
 	return l.UserRoleMultiUpdate(in)
 }
 
-func (s *UserManageServer) UserAuthProjectMultiUpdate(ctx context.Context, in *sys.UserAuthProjectMultiUpdateReq) (*sys.Response, error) {
-	l := usermanagelogic.NewUserAuthProjectMultiUpdateLogic(ctx, s.svcCtx)
-	return l.UserAuthProjectMultiUpdate(in)
+func (s *UserManageServer) UserProjectMultiUpdate(ctx context.Context, in *sys.UserProjectMultiUpdateReq) (*sys.Response, error) {
+	l := usermanagelogic.NewUserProjectMultiUpdateLogic(ctx, s.svcCtx)
+	return l.UserProjectMultiUpdate(in)
 }
 
-func (s *UserManageServer) UserAuthProjectIndex(ctx context.Context, in *sys.UserAuthProjectIndexReq) (*sys.UserAuthProjectIndexResp, error) {
-	l := usermanagelogic.NewUserAuthProjectIndexLogic(ctx, s.svcCtx)
-	return l.UserAuthProjectIndex(in)
+func (s *UserManageServer) UserProjectIndex(ctx context.Context, in *sys.UserProjectIndexReq) (*sys.UserProjectIndexResp, error) {
+	l := usermanagelogic.NewUserProjectIndexLogic(ctx, s.svcCtx)
+	return l.UserProjectIndex(in)
 }
 
-func (s *UserManageServer) UserAuthAreaMultiUpdate(ctx context.Context, in *sys.UserAuthAreaMultiUpdateReq) (*sys.Response, error) {
-	l := usermanagelogic.NewUserAuthAreaMultiUpdateLogic(ctx, s.svcCtx)
-	return l.UserAuthAreaMultiUpdate(in)
+func (s *UserManageServer) UserAreaMultiUpdate(ctx context.Context, in *sys.UserAreaMultiUpdateReq) (*sys.Response, error) {
+	l := usermanagelogic.NewUserAreaMultiUpdateLogic(ctx, s.svcCtx)
+	return l.UserAreaMultiUpdate(in)
 }
 
-func (s *UserManageServer) UserAuthAreaIndex(ctx context.Context, in *sys.UserAuthAreaIndexReq) (*sys.UserAuthAreaIndexResp, error) {
-	l := usermanagelogic.NewUserAuthAreaIndexLogic(ctx, s.svcCtx)
-	return l.UserAuthAreaIndex(in)
+func (s *UserManageServer) UserAreaIndex(ctx context.Context, in *sys.UserAreaIndexReq) (*sys.UserAreaIndexResp, error) {
+	l := usermanagelogic.NewUserAreaIndexLogic(ctx, s.svcCtx)
+	return l.UserAreaIndex(in)
 }

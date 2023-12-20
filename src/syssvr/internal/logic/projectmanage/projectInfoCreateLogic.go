@@ -28,7 +28,7 @@ func NewProjectInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 // 新增项目
-func (l *ProjectInfoCreateLogic) ProjectInfoCreate(in *sys.ProjectInfo) (*sys.Response, error) {
+func (l *ProjectInfoCreateLogic) ProjectInfoCreate(in *sys.ProjectInfo) (*sys.ProjectWithID, error) {
 	if in.ProjectName == "" {
 		return nil, errors.Parameter
 	}
@@ -49,5 +49,5 @@ func (l *ProjectInfoCreateLogic) ProjectInfoCreate(in *sys.ProjectInfo) (*sys.Re
 		return nil, errors.System.AddDetail(err)
 	}
 
-	return &sys.Response{}, nil
+	return &sys.ProjectWithID{ProjectID: int64(po.ProjectID)}, nil
 }

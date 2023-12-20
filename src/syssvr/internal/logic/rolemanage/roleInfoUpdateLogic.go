@@ -2,7 +2,6 @@ package rolemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -52,7 +51,7 @@ func (l *RoleInfoUpdateLogic) RoleInfoUpdate(in *sys.RoleInfo) (*sys.Response, e
 		Status: in.Status,
 	})
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	return &sys.Response{}, nil
 }

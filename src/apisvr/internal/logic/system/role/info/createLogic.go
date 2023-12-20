@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -26,7 +27,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.RoleInfo) error {
+func (l *CreateLogic) Create(req *types.RoleInfo) (*types.WithID, error) {
 	if req.Status == 0 {
 		req.Status = 1
 	}
@@ -38,11 +39,7 @@ func (l *CreateLogic) Create(req *types.RoleInfo) error {
 	if err != nil {
 		err := errors.Fmt(err)
 		l.Errorf("%s.rpc.RoleCreate req=%v err=%+v", utils.FuncName(), req, err)
-		return err
+		return nil, err
 	}
-	if resp == nil {
-		l.Errorf("%s.rpc.RoleCreate return nil req=%+v", utils.FuncName(), req)
-		return errors.System.AddDetail("RoleCreate rpc return nil")
-	}
-	return nil
+	return logic.SysToWithIDTypes(resp), nil
 }

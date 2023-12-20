@@ -27,7 +27,7 @@ func NewTenantInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 // 删除区域
-func (l *TenantInfoDeleteLogic) TenantInfoDelete(in *sys.ReqWithIDCode) (*sys.Response, error) {
+func (l *TenantInfoDeleteLogic) TenantInfoDelete(in *sys.WithIDCode) (*sys.Response, error) {
 	err := logic.IsSupperAdmin(l.ctx, def.TenantCodeDefault)
 	if err != nil {
 		return nil, err

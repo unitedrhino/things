@@ -26,7 +26,7 @@ func NewMenuInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Me
 	}
 }
 
-func (l *MenuInfoDeleteLogic) MenuInfoDelete(in *sys.ReqWithID) (*sys.Response, error) {
+func (l *MenuInfoDeleteLogic) MenuInfoDelete(in *sys.WithID) (*sys.Response, error) {
 	err := l.MiDB.Delete(l.ctx, in.Id)
 	if err != nil {
 		return nil, err

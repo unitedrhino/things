@@ -2,7 +2,6 @@ package apimanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -30,7 +29,7 @@ func NewApiInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Api
 func (l *ApiInfoUpdateLogic) ApiInfoUpdate(in *sys.ApiInfo) (*sys.Response, error) {
 	res, err := l.AiDB.FindOne(l.ctx, in.Id)
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 
 	err = l.AiDB.Update(l.ctx, &relationDB.SysApiInfo{
@@ -43,7 +42,7 @@ func (l *ApiInfoUpdateLogic) ApiInfoUpdate(in *sys.ApiInfo) (*sys.Response, erro
 		AppCode:      res.AppCode,
 	})
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	return &sys.Response{}, nil
 }

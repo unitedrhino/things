@@ -22,7 +22,7 @@ func NewMenuManageServer(svcCtx *svc.ServiceContext) *MenuManageServer {
 	}
 }
 
-func (s *MenuManageServer) MenuInfoCreate(ctx context.Context, in *sys.MenuInfo) (*sys.Response, error) {
+func (s *MenuManageServer) MenuInfoCreate(ctx context.Context, in *sys.MenuInfo) (*sys.WithID, error) {
 	l := menumanagelogic.NewMenuInfoCreateLogic(ctx, s.svcCtx)
 	return l.MenuInfoCreate(in)
 }
@@ -37,7 +37,7 @@ func (s *MenuManageServer) MenuInfoUpdate(ctx context.Context, in *sys.MenuInfo)
 	return l.MenuInfoUpdate(in)
 }
 
-func (s *MenuManageServer) MenuInfoDelete(ctx context.Context, in *sys.ReqWithID) (*sys.Response, error) {
+func (s *MenuManageServer) MenuInfoDelete(ctx context.Context, in *sys.WithID) (*sys.Response, error) {
 	l := menumanagelogic.NewMenuInfoDeleteLogic(ctx, s.svcCtx)
 	return l.MenuInfoDelete(in)
 }
