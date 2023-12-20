@@ -1,6 +1,7 @@
 package info
 
 import (
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
@@ -20,6 +21,7 @@ func ToMenuInfoRpc(in *types.MenuInfo) *sys.MenuInfo {
 		Redirect:   in.Redirect,
 		Order:      in.Order,
 		HideInMenu: in.HideInMenu,
+		Body:       utils.ToRpcNullString(in.Body),
 		AppCode:    in.AppCode,
 	}
 }

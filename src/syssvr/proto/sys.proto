@@ -667,7 +667,7 @@ message MenuInfoIndexReq{
   string  appCode = 1;
   string name = 2;
   string path = 3;
-
+  bool isRetTree = 4;
 }
 message MenuInfo{
   int64 id = 1;
@@ -682,6 +682,8 @@ message MenuInfo{
   int64 order = 10;
   int64 hideInMenu = 11;
   string appCode = 12;
+  google.protobuf.StringValue body = 13;
+  repeated MenuInfo children = 14;
 }
 message MenuInfoIndexResp{
   repeated MenuInfo list = 1;

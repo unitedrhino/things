@@ -33,9 +33,14 @@ func ToMenuInfoApi(i *sys.MenuInfo) *types.MenuInfo {
 		CreateTime: i.CreateTime,
 		Order:      i.Order,
 		HideInMenu: i.HideInMenu,
+		Body:       utils.ToNullString(i.Body),
+		Children:   ToMenuInfosApi(i.Children),
 	}
 }
 func ToMenuInfosApi(i []*sys.MenuInfo) (ret []*types.MenuInfo) {
+	if i == nil {
+		return nil
+	}
 	for _, v := range i {
 		ret = append(ret, ToMenuInfoApi(v))
 	}

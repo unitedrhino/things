@@ -113,18 +113,18 @@ func (m *SysAppInfo) TableName() string {
 
 // 菜单管理表
 type SysMenuInfo struct {
-	ID            int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // 编号
-	AppCode       string `gorm:"column:app_code;NOT NULL;type:VARCHAR(50)"`          // 应用ID
-	ParentID      int64  `gorm:"column:parent_id;type:BIGINT;default:1;NOT NULL"`    // 父菜单ID，一级菜单为1
-	Type          int64  `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`         // 类型   1：菜单或者页面   2：iframe嵌入   3：外链跳转
-	Order         int64  `gorm:"column:order_num;type:BIGINT;default:1;NOT NULL"`    // 左侧table排序序号
-	Name          string `gorm:"column:name;type:VARCHAR(50);NOT NULL"`              // 菜单名称
-	Path          string `gorm:"column:path;type:VARCHAR(64);NOT NULL"`              // 系统的path
-	Component     string `gorm:"column:component;type:VARCHAR(64);NOT NULL"`         // 页面
-	Icon          string `gorm:"column:icon;type:VARCHAR(64);NOT NULL"`              // 图标
-	Redirect      string `gorm:"column:redirect;type:VARCHAR(64);NOT NULL"`          // 路由重定向
-	BackgroundUrl string `gorm:"column:background_url;type:VARCHAR(128);NOT NULL"`   // 后台地址
-	HideInMenu    int64  `gorm:"column:hide_in_menu;type:BIGINT;default:2;NOT NULL"` // 是否隐藏菜单 1-是 2-否
+	ID         int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // 编号
+	AppCode    string `gorm:"column:app_code;NOT NULL;type:VARCHAR(50)"`          // 应用ID
+	ParentID   int64  `gorm:"column:parent_id;type:BIGINT;default:1;NOT NULL"`    // 父菜单ID，一级菜单为1
+	Type       int64  `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`         // 类型   1：菜单或者页面   2：iframe嵌入   3：外链跳转
+	Order      int64  `gorm:"column:order_num;type:BIGINT;default:1;NOT NULL"`    // 左侧table排序序号
+	Name       string `gorm:"column:name;type:VARCHAR(50);NOT NULL"`              // 菜单名称
+	Path       string `gorm:"column:path;type:VARCHAR(64);NOT NULL"`              // 系统的path
+	Component  string `gorm:"column:component;type:VARCHAR(64);NOT NULL"`         // 页面
+	Icon       string `gorm:"column:icon;type:VARCHAR(64);NOT NULL"`              // 图标
+	Redirect   string `gorm:"column:redirect;type:VARCHAR(64);NOT NULL"`          // 路由重定向
+	Body       string `gorm:"column:body;type:VARCHAR(1024)"`                     // 菜单自定义数据
+	HideInMenu int64  `gorm:"column:hide_in_menu;type:BIGINT;default:2;NOT NULL"` // 是否隐藏菜单 1-是 2-否
 	stores.Time
 }
 
