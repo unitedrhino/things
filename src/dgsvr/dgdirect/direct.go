@@ -28,14 +28,18 @@ var (
 	c          config.Config
 )
 
-func GetSvcCtx() *svc.ServiceContext {
+func GetSvcCtx(runSvr bool) *svc.ServiceContext {
 	svcOnce.Do(func() {
 		conf.MustLoad("etc/dg.yaml", &c)
 		utils.Go(context.Background(), func() {
 			svcCtxNew := svc.NewServiceContext(c)
-			startup.Init(svcCtxNew)
 			svcCtx = *svcCtxNew
+
+			startup.Init(svcCtxNew)
 			logx.Infof("enabled dgsvr")
+			if runSvr {
+				RunServer(svcCtxNew)
+			}
 		})
 	})
 	return &svcCtx
