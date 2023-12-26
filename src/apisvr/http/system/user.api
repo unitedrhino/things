@@ -32,7 +32,7 @@ service api {
 @server (
 	group : system/user/info
 	prefix: /api/v1/system/user/info
-	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+	middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
 	@doc "创建用户信息"
@@ -54,25 +54,38 @@ service api {
 	@doc "刪除用戶"
 	@handler delete
 	post /delete (UserInfoDeleteReq) returns ()
-
 }
 
 @server (
 	group : system/user
 	prefix: /api/v1/system/user
-	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+	middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
-	@doc "获取用戶资源"
-	@handler resourceRead
-	post /resource/read () returns (UserResourceReadResp)
-
 	@doc "获取用戶角色列表"
 	@handler roleIndex
 	post /role/index (UserRoleIndexReq) returns (UserRoleIndexResp)
 	@doc "更新用戶的角色列表"
 	@handler roleMultiUpdate
 	post /role/multi-update (UserRoleMultiUpdateReq) returns ()
+
+}
+
+@server (
+	group : system/user/self
+	prefix: /api/v1/system/user/self
+	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+service api {
+	@doc "获取用戶资源"
+	@handler resourceRead
+	post /resource/read () returns (UserResourceReadResp)
+	@doc "获取用户信息"
+	@handler read
+	post /read () returns (UserInfo)
+	@doc "更新用户基本数据"
+	@handler update
+	post /update (UserInfo) returns ()
 }
 
 type (
@@ -175,6 +188,7 @@ type (
     UserResourceReadResp{
         Menus   []*MenuInfo   `json:"menus"`           //菜单资源
 		Roles []*RoleInfo `json:"roles"` //角色列表
+		Apis   []*ApiGroupInfo   `json:"apis"` //接口资源
 		Info  *UserInfo `json:"info"`//用户信息
 		App 	*AppInfo 	`json:"app"`
 		Projects []*ProjectInfo `json:"projects"`    //项目列表

@@ -21,6 +21,9 @@ type (
 	AppInfo                   = sys.AppInfo
 	AppInfoIndexReq           = sys.AppInfoIndexReq
 	AppInfoIndexResp          = sys.AppInfoIndexResp
+	AppModuleIndexReq         = sys.AppModuleIndexReq
+	AppModuleIndexResp        = sys.AppModuleIndexResp
+	AppModuleMultiUpdateReq   = sys.AppModuleMultiUpdateReq
 	AreaInfo                  = sys.AreaInfo
 	AreaInfoIndexReq          = sys.AreaInfoIndexReq
 	AreaInfoIndexResp         = sys.AreaInfoIndexResp
@@ -39,6 +42,9 @@ type (
 	MenuInfo                  = sys.MenuInfo
 	MenuInfoIndexReq          = sys.MenuInfoIndexReq
 	MenuInfoIndexResp         = sys.MenuInfoIndexResp
+	ModuleInfo                = sys.ModuleInfo
+	ModuleInfoIndexReq        = sys.ModuleInfoIndexReq
+	ModuleInfoIndexResp       = sys.ModuleInfoIndexResp
 	OperLogCreateReq          = sys.OperLogCreateReq
 	OperLogIndexReq           = sys.OperLogIndexReq
 	OperLogIndexResp          = sys.OperLogIndexResp
@@ -65,13 +71,24 @@ type (
 	RoleMenuIndexReq          = sys.RoleMenuIndexReq
 	RoleMenuIndexResp         = sys.RoleMenuIndexResp
 	RoleMenuMultiUpdateReq    = sys.RoleMenuMultiUpdateReq
+	TenantApiInfo             = sys.TenantApiInfo
+	TenantAppApiIndexReq      = sys.TenantAppApiIndexReq
+	TenantAppCreateReq        = sys.TenantAppCreateReq
 	TenantAppIndexReq         = sys.TenantAppIndexReq
 	TenantAppIndexResp        = sys.TenantAppIndexResp
+	TenantAppMenuIndexReq     = sys.TenantAppMenuIndexReq
+	TenantAppModule           = sys.TenantAppModule
 	TenantAppMultiUpdateReq   = sys.TenantAppMultiUpdateReq
+	TenantAppWithIDOrCode     = sys.TenantAppWithIDOrCode
 	TenantInfo                = sys.TenantInfo
 	TenantInfoCreateReq       = sys.TenantInfoCreateReq
 	TenantInfoIndexReq        = sys.TenantInfoIndexReq
 	TenantInfoIndexResp       = sys.TenantInfoIndexResp
+	TenantMenuInfo            = sys.TenantMenuInfo
+	TenantModuleCreateReq     = sys.TenantModuleCreateReq
+	TenantModuleIndexReq      = sys.TenantModuleIndexReq
+	TenantModuleIndexResp     = sys.TenantModuleIndexResp
+	TenantModuleWithIDOrCode  = sys.TenantModuleWithIDOrCode
 	UserArea                  = sys.UserArea
 	UserAreaIndexReq          = sys.UserAreaIndexReq
 	UserAreaIndexResp         = sys.UserAreaIndexResp
@@ -103,10 +120,6 @@ type (
 	WithIDCode                = sys.WithIDCode
 
 	MenuManage interface {
-		MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*WithID, error)
-		MenuInfoIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error)
-		MenuInfoUpdate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error)
-		MenuInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultMenuManage struct {
@@ -130,40 +143,4 @@ func NewDirectMenuManage(svcCtx *svc.ServiceContext, svr sys.MenuManageServer) M
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
-}
-
-func (m *defaultMenuManage) MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*WithID, error) {
-	client := sys.NewMenuManageClient(m.cli.Conn())
-	return client.MenuInfoCreate(ctx, in, opts...)
-}
-
-func (d *directMenuManage) MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*WithID, error) {
-	return d.svr.MenuInfoCreate(ctx, in)
-}
-
-func (m *defaultMenuManage) MenuInfoIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error) {
-	client := sys.NewMenuManageClient(m.cli.Conn())
-	return client.MenuInfoIndex(ctx, in, opts...)
-}
-
-func (d *directMenuManage) MenuInfoIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error) {
-	return d.svr.MenuInfoIndex(ctx, in)
-}
-
-func (m *defaultMenuManage) MenuInfoUpdate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewMenuManageClient(m.cli.Conn())
-	return client.MenuInfoUpdate(ctx, in, opts...)
-}
-
-func (d *directMenuManage) MenuInfoUpdate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.MenuInfoUpdate(ctx, in)
-}
-
-func (m *defaultMenuManage) MenuInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewMenuManageClient(m.cli.Conn())
-	return client.MenuInfoDelete(ctx, in, opts...)
-}
-
-func (d *directMenuManage) MenuInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.MenuInfoDelete(ctx, in)
 }

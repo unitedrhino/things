@@ -41,7 +41,7 @@ func (l *UserInfoIndexLogic) UserInfoIndex(in *sys.UserInfoIndexReq) (*sys.UserI
 	total, err := l.UiDB.CountByFilter(l.ctx, f)
 	info := make([]*sys.UserInfo, 0, len(ucs))
 	for _, uc := range ucs {
-		info = append(info, UserInfoToPb(uc))
+		info = append(info, UserInfoToPb(l.ctx, uc, l.svcCtx))
 	}
 	if err != nil {
 		return nil, err

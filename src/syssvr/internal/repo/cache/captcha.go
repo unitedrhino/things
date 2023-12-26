@@ -29,6 +29,9 @@ func (c *Captcha) Verify(ctx context.Context, Type, codeID, code string) string 
 	body := map[string]string{}
 	json.Unmarshal([]byte(val), &body)
 	if body["code"] == code {
+		if body["account"] == "" {
+			return " "
+		}
 		return body["account"]
 	}
 	return ""

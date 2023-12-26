@@ -35,13 +35,13 @@ func (p RoleAppRepo) fmtFilter(ctx context.Context, f RoleAppFilter) *gorm.DB {
 	return db
 }
 
-func (p RoleAppRepo) Insert(ctx context.Context, data *SysRoleApp) error {
+func (p RoleAppRepo) Insert(ctx context.Context, data *SysTenantRoleApp) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p RoleAppRepo) FindOneByFilter(ctx context.Context, f RoleAppFilter) (*SysRoleApp, error) {
-	var result SysRoleApp
+func (p RoleAppRepo) FindOneByFilter(ctx context.Context, f RoleAppFilter) (*SysTenantRoleApp, error) {
+	var result SysTenantRoleApp
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -49,9 +49,9 @@ func (p RoleAppRepo) FindOneByFilter(ctx context.Context, f RoleAppFilter) (*Sys
 	}
 	return &result, nil
 }
-func (p RoleAppRepo) FindByFilter(ctx context.Context, f RoleAppFilter, page *def.PageInfo) ([]*SysRoleApp, error) {
-	var results []*SysRoleApp
-	db := p.fmtFilter(ctx, f).Model(&SysRoleApp{})
+func (p RoleAppRepo) FindByFilter(ctx context.Context, f RoleAppFilter, page *def.PageInfo) ([]*SysTenantRoleApp, error) {
+	var results []*SysTenantRoleApp
+	db := p.fmtFilter(ctx, f).Model(&SysTenantRoleApp{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -61,28 +61,28 @@ func (p RoleAppRepo) FindByFilter(ctx context.Context, f RoleAppFilter, page *de
 }
 
 func (p RoleAppRepo) CountByFilter(ctx context.Context, f RoleAppFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&SysRoleApp{})
+	db := p.fmtFilter(ctx, f).Model(&SysTenantRoleApp{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p RoleAppRepo) Update(ctx context.Context, data *SysRoleApp) error {
+func (p RoleAppRepo) Update(ctx context.Context, data *SysTenantRoleApp) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleAppRepo) DeleteByFilter(ctx context.Context, f RoleAppFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&SysRoleApp{}).Error
+	err := db.Delete(&SysTenantRoleApp{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleAppRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysRoleApp{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysTenantRoleApp{}).Error
 	return stores.ErrFmt(err)
 }
-func (p RoleAppRepo) FindOne(ctx context.Context, id int64) (*SysRoleApp, error) {
-	var result SysRoleApp
+func (p RoleAppRepo) FindOne(ctx context.Context, id int64) (*SysTenantRoleApp, error) {
+	var result SysTenantRoleApp
 	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -91,15 +91,15 @@ func (p RoleAppRepo) FindOne(ctx context.Context, id int64) (*SysRoleApp, error)
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p RoleAppRepo) MultiInsert(ctx context.Context, data []*SysRoleApp) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysRoleApp{}).Create(data).Error
+func (p RoleAppRepo) MultiInsert(ctx context.Context, data []*SysTenantRoleApp) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysTenantRoleApp{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleAppRepo) MultiUpdate(ctx context.Context, roleID int64, appCodes []string) error {
-	var datas []*SysRoleApp
+	var datas []*SysTenantRoleApp
 	for _, v := range appCodes {
-		datas = append(datas, &SysRoleApp{
+		datas = append(datas, &SysTenantRoleApp{
 			AppCode: v,
 			RoleID:  roleID,
 		})

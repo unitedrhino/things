@@ -57,11 +57,11 @@ func ToStorePoint(point *sys.Point) stores.Point {
 	return stores.Point{Longitude: point.Longitude, Latitude: point.Latitude}
 }
 
-func MenuInfoToPb(ui *relationDB.SysMenuInfo) *sys.MenuInfo {
+func MenuInfoToPb(ui *relationDB.SysModuleMenu) *sys.MenuInfo {
 	return &sys.MenuInfo{
 		Id:         ui.ID,
 		Body:       utils.ToRpcNullString(ui.Body),
-		AppCode:    ui.AppCode,
+		ModuleCode: ui.ModuleCode,
 		Name:       ui.Name,
 		ParentID:   ui.ParentID,
 		Type:       ui.Type,

@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	app "github.com/i-Things/things/src/apisvr/internal/logic/system/app/info"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -31,7 +30,7 @@ func (l *IndexLogic) Index(req *types.RoleAppIndexReq) (resp *types.RoleAppIndex
 		return nil, err
 	}
 	return &types.RoleAppIndexResp{
-		List:  app.ToAppInfosTypes(ret.List),
-		Total: ret.Total,
+		AppCodes: ret.AppCodes,
+		Total:    ret.Total,
 	}, err
 }

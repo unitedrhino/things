@@ -11,7 +11,7 @@ import (
 	"regexp"
 )
 
-func checkUser(ctx context.Context, userID int64) (*relationDB.SysUserInfo, error) {
+func checkUser(ctx context.Context, userID int64) (*relationDB.SysTenantUserInfo, error) {
 	po, err := relationDB.NewUserInfoRepo(ctx).FindOne(ctx, userID)
 	if err == nil {
 		return po, nil

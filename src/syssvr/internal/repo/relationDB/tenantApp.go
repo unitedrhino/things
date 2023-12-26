@@ -26,6 +26,8 @@ func NewTenantAppRepo(in any) *TenantAppRepo {
 
 type TenantAppFilter struct {
 	TenantCode string
+	IDs        []int64
+	Codes      []string
 	//todo 添加过滤字段
 }
 
@@ -33,6 +35,12 @@ func (p TenantAppRepo) fmtFilter(ctx context.Context, f TenantAppFilter) *gorm.D
 	db := p.db.WithContext(ctx)
 	if f.TenantCode != "" {
 		db = db.Where("tenant_code =?", f.TenantCode)
+	}
+	if len(f.IDs) > 0 {
+		db = db.Where("id in ?", f.IDs)
+	}
+	if len(f.Codes) > 0 {
+		db = db.Where("code in ?", f.Codes)
 	}
 	return db
 }
@@ -106,9 +114,9 @@ func (p TenantAppRepo) MultiUpdate(ctx context.Context, tenantCode string, appCo
 			TenantCode: stores.TenantCode(tenantCode),
 		})
 	}
-	ctxs.GetUserCtx(ctx).AllData = true //只有这样才能改为其他租户
+	ctxs.GetUserCtx(ctx).AllTenant = true //只有这样才能改为其他租户
 	defer func() {
-		ctxs.GetUserCtx(ctx).AllData = false
+		ctxs.GetUserCtx(ctx).AllTenant = false
 	}()
 	err := p.db.Transaction(func(tx *gorm.DB) error {
 		rm := NewTenantAppRepo(tx)

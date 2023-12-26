@@ -56,9 +56,6 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.ProductName != "" {
 		old.ProductName = data.ProductName
 	}
-	if data.ProductImg != "" {
-		old.ProductImg = data.ProductImg
-	}
 	if data.ProductImg != "" && data.IsUpdateProductImg == true { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		si, err := oss.GetSceneInfo(data.ProductImg)
 		if err != nil {

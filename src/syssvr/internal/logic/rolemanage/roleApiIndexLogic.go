@@ -2,11 +2,9 @@ package rolemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
-	"github.com/spf13/cast"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -25,18 +23,19 @@ func NewRoleApiIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Role
 }
 
 func (l *RoleApiIndexLogic) RoleApiIndex(in *sys.RoleApiIndexReq) (*sys.RoleApiIndexResp, error) {
-	data := l.svcCtx.Casbin.GetFilteredPolicy(0, cast.ToString(in.Id), ctxs.GetUserCtx(l.ctx).TenantCode, in.AppCode)
-	list := make([]*sys.AuthApiInfo, 0)
-	total := int64(len(data))
-	if total == 0 {
-		return &sys.RoleApiIndexResp{Total: total, List: list}, nil
+	ms, err := relationDB.NewRoleApiRepo(l.ctx).FindByFilter(l.ctx,
+		relationDB.RoleApiFilter{RoleIDs: []int64{in.Id}, AppCode: in.AppCode}, nil)
+	if err != nil {
+		return nil, err
 	}
-
-	for _, v := range data {
-		list = append(list, &sys.AuthApiInfo{
-			Route:  v[3],
-			Method: v[4],
-		})
+	if len(ms) == 0 { //没有菜单分配
+		return &sys.RoleApiIndexResp{}, nil
 	}
-	return &sys.RoleApiIndexResp{Total: total, List: list}, nil
+	var ids []int64
+	if len(ms) != 0 {
+		for _, v := range ms {
+			ids = append(ids, v.ApiID)
+		}
+	}
+	return &sys.RoleApiIndexResp{ApiIDs: ids}, nil
 }

@@ -3,12 +3,11 @@ package sysdirect
 import (
 	"fmt"
 	"github.com/i-Things/things/src/syssvr/internal/config"
-	apimanageServer "github.com/i-Things/things/src/syssvr/internal/server/apimanage"
 	appmanageServer "github.com/i-Things/things/src/syssvr/internal/server/appmanage"
 	areamanageServer "github.com/i-Things/things/src/syssvr/internal/server/areamanage"
 	commonServer "github.com/i-Things/things/src/syssvr/internal/server/common"
 	logServer "github.com/i-Things/things/src/syssvr/internal/server/log"
-	menumanageServer "github.com/i-Things/things/src/syssvr/internal/server/menumanage"
+	modulemanageServer "github.com/i-Things/things/src/syssvr/internal/server/modulemanage"
 	projectmanageServer "github.com/i-Things/things/src/syssvr/internal/server/projectmanage"
 	rolemanageServer "github.com/i-Things/things/src/syssvr/internal/server/rolemanage"
 	tenantmanageServer "github.com/i-Things/things/src/syssvr/internal/server/tenantmanage"
@@ -55,10 +54,9 @@ func Run(svcCtx *svc.ServiceContext) {
 		sys.RegisterUserManageServer(grpcServer, usermanageServer.NewUserManageServer(svcCtx))
 		sys.RegisterRoleManageServer(grpcServer, rolemanageServer.NewRoleManageServer(svcCtx))
 		sys.RegisterAppManageServer(grpcServer, appmanageServer.NewAppManageServer(svcCtx))
-		sys.RegisterMenuManageServer(grpcServer, menumanageServer.NewMenuManageServer(svcCtx))
 		sys.RegisterCommonServer(grpcServer, commonServer.NewCommonServer(svcCtx))
 		sys.RegisterLogServer(grpcServer, logServer.NewLogServer(svcCtx))
-		sys.RegisterApiManageServer(grpcServer, apimanageServer.NewApiManageServer(svcCtx))
+		sys.RegisterModuleManageServer(grpcServer, modulemanageServer.NewModuleManageServer(svcCtx))
 		sys.RegisterProjectManageServer(grpcServer, projectmanageServer.NewProjectManageServer(svcCtx))
 		sys.RegisterAreaManageServer(grpcServer, areamanageServer.NewAreaManageServer(svcCtx))
 		sys.RegisterTenantManageServer(grpcServer, tenantmanageServer.NewTenantManageServer(svcCtx))

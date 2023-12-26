@@ -56,7 +56,7 @@ func (l *UserInfoUpdateLogic) UserInfoUpdate(in *sys.UserInfo) (*sys.Response, e
 	ui.Country = in.Country
 	ui.Province = in.Province
 	ui.Language = in.Language
-	ui.HeadImgUrl = in.GetHeadImgUrl()
+	ui.HeadImg = in.HeadImg
 	if in.Role != 0 { //默认角色只能修改为授权的角色
 		for _, r := range ui.Roles {
 			if r.RoleID == in.Role {

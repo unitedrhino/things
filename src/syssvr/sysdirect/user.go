@@ -7,17 +7,14 @@ import (
 	clientRole "github.com/i-Things/things/src/syssvr/client/rolemanage"
 	serverRole "github.com/i-Things/things/src/syssvr/internal/server/rolemanage"
 
-	clientMenu "github.com/i-Things/things/src/syssvr/client/menumanage"
-	serverMenu "github.com/i-Things/things/src/syssvr/internal/server/menumanage"
+	clientModule "github.com/i-Things/things/src/syssvr/client/modulemanage"
+	serverModule "github.com/i-Things/things/src/syssvr/internal/server/modulemanage"
 
 	clientLog "github.com/i-Things/things/src/syssvr/client/log"
 	serverLog "github.com/i-Things/things/src/syssvr/internal/server/log"
 
 	clientCommon "github.com/i-Things/things/src/syssvr/client/common"
 	serverCommon "github.com/i-Things/things/src/syssvr/internal/server/common"
-
-	clientApi "github.com/i-Things/things/src/syssvr/client/apimanage"
-	serverApi "github.com/i-Things/things/src/syssvr/internal/server/apimanage"
 
 	clientApp "github.com/i-Things/things/src/syssvr/client/appmanage"
 	serverApp "github.com/i-Things/things/src/syssvr/internal/server/appmanage"
@@ -48,12 +45,12 @@ func NewRole(runSvr bool) clientRole.RoleManage {
 	return clientRole.NewDirectRoleManage(svcCtx, serverRole.NewRoleManageServer(svcCtx))
 }
 
-func NewMenu(runSvr bool) clientMenu.MenuManage {
+func NewModule(runSvr bool) clientModule.ModuleManage {
 	svcCtx := GetSvcCtx()
 	if runSvr {
 		RunServer(svcCtx)
 	}
-	return clientMenu.NewDirectMenuManage(svcCtx, serverMenu.NewMenuManageServer(svcCtx))
+	return clientModule.NewDirectModuleManage(svcCtx, serverModule.NewModuleManageServer(svcCtx))
 }
 
 func NewCommon(runSvr bool) clientCommon.Common {
@@ -70,14 +67,6 @@ func NewLog(runSvr bool) clientLog.Log {
 		RunServer(svcCtx)
 	}
 	return clientLog.NewDirectLog(svcCtx, serverLog.NewLogServer(svcCtx))
-}
-
-func NewApi(runSvr bool) clientApi.ApiManage {
-	svcCtx := GetSvcCtx()
-	if runSvr {
-		RunServer(svcCtx)
-	}
-	return clientApi.NewDirectApiManage(svcCtx, serverApi.NewApiManageServer(svcCtx))
 }
 
 func NewApp(runSvr bool) clientApp.AppManage {

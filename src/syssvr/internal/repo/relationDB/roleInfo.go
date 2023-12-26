@@ -43,13 +43,13 @@ func (p RoleInfoRepo) fmtFilter(ctx context.Context, f RoleInfoFilter) *gorm.DB 
 	return db
 }
 
-func (p RoleInfoRepo) Insert(ctx context.Context, data *SysRoleInfo) error {
+func (p RoleInfoRepo) Insert(ctx context.Context, data *SysTenantRoleInfo) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p RoleInfoRepo) FindOneByFilter(ctx context.Context, f RoleInfoFilter) (*SysRoleInfo, error) {
-	var result SysRoleInfo
+func (p RoleInfoRepo) FindOneByFilter(ctx context.Context, f RoleInfoFilter) (*SysTenantRoleInfo, error) {
+	var result SysTenantRoleInfo
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -57,9 +57,9 @@ func (p RoleInfoRepo) FindOneByFilter(ctx context.Context, f RoleInfoFilter) (*S
 	}
 	return &result, nil
 }
-func (p RoleInfoRepo) FindByFilter(ctx context.Context, f RoleInfoFilter, page *def.PageInfo) ([]*SysRoleInfo, error) {
-	var results []*SysRoleInfo
-	db := p.fmtFilter(ctx, f).Model(&SysRoleInfo{})
+func (p RoleInfoRepo) FindByFilter(ctx context.Context, f RoleInfoFilter, page *def.PageInfo) ([]*SysTenantRoleInfo, error) {
+	var results []*SysTenantRoleInfo
+	db := p.fmtFilter(ctx, f).Model(&SysTenantRoleInfo{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -69,28 +69,28 @@ func (p RoleInfoRepo) FindByFilter(ctx context.Context, f RoleInfoFilter, page *
 }
 
 func (p RoleInfoRepo) CountByFilter(ctx context.Context, f RoleInfoFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&SysRoleInfo{})
+	db := p.fmtFilter(ctx, f).Model(&SysTenantRoleInfo{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p RoleInfoRepo) Update(ctx context.Context, data *SysRoleInfo) error {
+func (p RoleInfoRepo) Update(ctx context.Context, data *SysTenantRoleInfo) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleInfoRepo) DeleteByFilter(ctx context.Context, f RoleInfoFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&SysRoleInfo{}).Error
+	err := db.Delete(&SysTenantRoleInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysRoleInfo{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysTenantRoleInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (p RoleInfoRepo) FindOne(ctx context.Context, id int64) (*SysRoleInfo, error) {
-	var result SysRoleInfo
+func (p RoleInfoRepo) FindOne(ctx context.Context, id int64) (*SysTenantRoleInfo, error) {
+	var result SysTenantRoleInfo
 	db := p.db.WithContext(ctx)
 	err := db.Where("id = ?", id).First(&result).Error
 	if err != nil {

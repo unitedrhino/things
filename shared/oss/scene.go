@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/oss/common"
+	"github.com/zeromicro/go-zero/core/logx"
 	"path"
 	"strings"
 )
@@ -36,6 +38,36 @@ func GetSceneInfo(filePath string) (*SceneInfo, error) {
 		FileName: paths[len(paths)-1],
 	}
 	return scene, nil
+}
+
+func SceneToNewPath(ctx context.Context, ossClient *Client, business, scene, filePath, oldFilePath, newFilePath string) (string, error) {
+	si, err := GetSceneInfo(newFilePath)
+	if err != nil {
+		return "", err
+	}
+	if !(si.Business == business && si.Scene == scene && strings.HasPrefix(si.FilePath, filePath)) {
+		return "", errors.Parameter.WithMsgf("图片的路径不对,路径要为/%s/%s/%s开头", business, scene, si.FilePath)
+	}
+	si.FilePath = filePath
+	newPath, err := GetFilePath(si, false)
+	if err != nil {
+		return "", err
+	}
+	path, err := ossClient.PrivateBucket().CopyFromTempBucket(newFilePath, newPath)
+	if err != nil {
+		return "", errors.System.AddDetail(err)
+	}
+	err = ossClient.TemporaryBucket().Delete(ctx, newFilePath, common.OptionKv{})
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+	}
+	if oldFilePath != "" {
+		err = ossClient.PrivateBucket().Delete(ctx, oldFilePath, common.OptionKv{})
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+		}
+	}
+	return path, nil
 }
 
 func GetFilePath(scene *SceneInfo, rename bool) (string, error) {

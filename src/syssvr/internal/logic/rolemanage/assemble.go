@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
-func ToRoleInfoRpc(in *relationDB.SysRoleInfo) *sys.RoleInfo {
+func ToRoleInfoRpc(in *relationDB.SysTenantRoleInfo) *sys.RoleInfo {
 	if in == nil {
 		return nil
 	}
@@ -17,7 +17,7 @@ func ToRoleInfoRpc(in *relationDB.SysRoleInfo) *sys.RoleInfo {
 		Status:      in.Status,
 	}
 }
-func ToRoleInfosRpc(in []*relationDB.SysRoleInfo) []*sys.RoleInfo {
+func ToRoleInfosRpc(in []*relationDB.SysTenantRoleInfo) []*sys.RoleInfo {
 	var ret []*sys.RoleInfo
 	for _, v := range in {
 		ret = append(ret, ToRoleInfoRpc(v))

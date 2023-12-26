@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -25,6 +26,9 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 }
 
 func (l *DeleteLogic) Delete(req *types.WithIDOrCode) error {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return err
+	}
 	_, err := l.svcCtx.AppRpc.AppInfoDelete(l.ctx, &sys.WithIDCode{Id: req.ID, Code: req.Code})
 	return err
 }

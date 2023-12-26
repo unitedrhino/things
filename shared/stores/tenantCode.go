@@ -61,6 +61,6 @@ func (t TenantCode) GetAuthIDs(f *schema.Field) GetValues {
 		if uc.TenantCode == def.TenantCodeDefault { //只有core租户的可以修改其他租户的租户号
 			isRoot = true
 		}
-		return []any{TenantCode(uc.TenantCode)}, isRoot, uc.AllData, nil
+		return []any{TenantCode(uc.TenantCode)}, isRoot, uc.AllTenant, nil
 	}
 }

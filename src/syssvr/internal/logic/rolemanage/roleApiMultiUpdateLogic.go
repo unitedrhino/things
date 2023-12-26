@@ -2,11 +2,7 @@ package rolemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
-	"github.com/spf13/cast"
-
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
@@ -28,36 +24,9 @@ func NewRoleApiMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *RoleApiMultiUpdateLogic) RoleApiMultiUpdate(in *sys.RoleApiMultiUpdateReq) (*sys.Response, error) {
-	// clear old policies
-	var oldPolicies [][]string
-	oldPolicies = l.svcCtx.Casbin.GetFilteredPolicy(0, cast.ToString(in.Id), ctxs.GetUserCtx(l.ctx).TenantCode, in.AppCode)
-	if len(oldPolicies) != 0 {
-		removeResult, err := l.svcCtx.Casbin.RemoveFilteredPolicy(0, cast.ToString(in.Id), ctxs.GetUserCtx(l.ctx).TenantCode, in.AppCode)
-		if err != nil {
-			l.Errorf("%s.Casbin.RemoveFilteredPolicy req=%v err=%+v", utils.FuncName(), in, err)
-			return nil, errors.Permissions.AddDetail(err)
-		}
-		if !removeResult {
-			l.Errorf("%s.Casbin.RemoveFilteredPolicy req=%v", utils.FuncName(), in)
-			return nil, errors.System.AddDetail("RemoveFilteredPolicy Failed")
-		}
-	}
-
-	// add new policies
-	var policies [][]string
-	for _, v := range in.List {
-		policies = append(policies, []string{cast.ToString(in.Id), ctxs.GetUserCtx(l.ctx).TenantCode, in.AppCode, v.Route, cast.ToString(v.Method)})
-	}
-	addResult, err := l.svcCtx.Casbin.AddPolicies(policies)
+	err := relationDB.NewRoleApiRepo(l.ctx).MultiUpdate(l.ctx, in.Id, in.AppCode, in.ApiIDs)
 	if err != nil {
-		err := errors.Fmt(err)
-		l.Errorf("%s.Casbin.AddPolicies req=%v err=%+v", utils.FuncName(), in, err)
-		return nil, errors.Permissions.AddDetail(err)
+		return nil, err
 	}
-	if !addResult {
-		l.Errorf("%s Casbin.AddPolicies return nil req=%+v", utils.FuncName(), in)
-		return nil, errors.System.AddDetail(err)
-	}
-
 	return &sys.Response{}, nil
 }

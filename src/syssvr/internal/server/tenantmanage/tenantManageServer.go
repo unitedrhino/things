@@ -57,7 +57,67 @@ func (s *TenantManageServer) TenantAppIndex(ctx context.Context, in *sys.TenantA
 	return l.TenantAppIndex(in)
 }
 
-func (s *TenantManageServer) TenantAppMultiUpdate(ctx context.Context, in *sys.TenantAppMultiUpdateReq) (*sys.Response, error) {
-	l := tenantmanagelogic.NewTenantAppMultiUpdateLogic(ctx, s.svcCtx)
-	return l.TenantAppMultiUpdate(in)
+func (s *TenantManageServer) TenantAppCreate(ctx context.Context, in *sys.TenantAppCreateReq) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAppCreateLogic(ctx, s.svcCtx)
+	return l.TenantAppCreate(in)
+}
+
+func (s *TenantManageServer) TenantAppDelete(ctx context.Context, in *sys.TenantAppWithIDOrCode) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAppDeleteLogic(ctx, s.svcCtx)
+	return l.TenantAppDelete(in)
+}
+
+func (s *TenantManageServer) TenantAppModuleCreate(ctx context.Context, in *sys.TenantModuleCreateReq) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAppModuleCreateLogic(ctx, s.svcCtx)
+	return l.TenantAppModuleCreate(in)
+}
+
+func (s *TenantManageServer) TenantAppModuleIndex(ctx context.Context, in *sys.TenantModuleIndexReq) (*sys.TenantModuleIndexResp, error) {
+	l := tenantmanagelogic.NewTenantAppModuleIndexLogic(ctx, s.svcCtx)
+	return l.TenantAppModuleIndex(in)
+}
+
+func (s *TenantManageServer) TenantAppModuleDelete(ctx context.Context, in *sys.TenantModuleWithIDOrCode) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAppModuleDeleteLogic(ctx, s.svcCtx)
+	return l.TenantAppModuleDelete(in)
+}
+
+func (s *TenantManageServer) TenantAppMenuCreate(ctx context.Context, in *sys.TenantMenuInfo) (*sys.WithID, error) {
+	l := tenantmanagelogic.NewTenantAppMenuCreateLogic(ctx, s.svcCtx)
+	return l.TenantAppMenuCreate(in)
+}
+
+func (s *TenantManageServer) TenantAppMenuIndex(ctx context.Context, in *sys.MenuInfoIndexReq) (*sys.MenuInfoIndexResp, error) {
+	l := tenantmanagelogic.NewTenantAppMenuIndexLogic(ctx, s.svcCtx)
+	return l.TenantAppMenuIndex(in)
+}
+
+func (s *TenantManageServer) TenantAppMenuUpdate(ctx context.Context, in *sys.TenantMenuInfo) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAppMenuUpdateLogic(ctx, s.svcCtx)
+	return l.TenantAppMenuUpdate(in)
+}
+
+func (s *TenantManageServer) TenantAppMenuDelete(ctx context.Context, in *sys.WithID) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAppMenuDeleteLogic(ctx, s.svcCtx)
+	return l.TenantAppMenuDelete(in)
+}
+
+func (s *TenantManageServer) TenantAppApiCreate(ctx context.Context, in *sys.TenantApiInfo) (*sys.WithID, error) {
+	l := tenantmanagelogic.NewTenantAppApiCreateLogic(ctx, s.svcCtx)
+	return l.TenantAppApiCreate(in)
+}
+
+func (s *TenantManageServer) TenantAppApiIndex(ctx context.Context, in *sys.TenantAppApiIndexReq) (*sys.ApiInfoIndexResp, error) {
+	l := tenantmanagelogic.NewTenantAppApiIndexLogic(ctx, s.svcCtx)
+	return l.TenantAppApiIndex(in)
+}
+
+func (s *TenantManageServer) TenantAppApiUpdate(ctx context.Context, in *sys.TenantApiInfo) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAppApiUpdateLogic(ctx, s.svcCtx)
+	return l.TenantAppApiUpdate(in)
+}
+
+func (s *TenantManageServer) TenantAppApiDelete(ctx context.Context, in *sys.WithID) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAppApiDeleteLogic(ctx, s.svcCtx)
+	return l.TenantAppApiDelete(in)
 }

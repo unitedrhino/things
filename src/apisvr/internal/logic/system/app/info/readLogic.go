@@ -24,6 +24,6 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 }
 
 func (l *ReadLogic) Read(req *types.WithIDOrCode) (resp *types.AppInfo, err error) {
-	ret, err := l.svcCtx.AppRpc.AppInfoRead(l.ctx, system.ToSysReqWithIDCode(req))
+	ret, err := l.svcCtx.AppRpc.AppInfoRead(l.ctx, system.ToSysWithIDCode(req))
 	return ToAppInfoTypes(ret), err
 }

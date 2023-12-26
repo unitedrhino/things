@@ -82,8 +82,8 @@ func (m *Minio) SignedGetUrl(ctx context.Context, fileDir string, expiredSec int
 }
 
 // 删除
-func (m *Minio) Delete(ctx context.Context, fileDir string, opKv common.OptionKv) error {
-	return m.client.RemoveObject(ctx, m.currentBucketName, fileDir, minio.RemoveObjectOptions{})
+func (m *Minio) Delete(ctx context.Context, filePath string, opKv common.OptionKv) error {
+	return m.client.RemoveObject(ctx, m.currentBucketName, filePath, minio.RemoveObjectOptions{})
 }
 
 // 重名文件检查

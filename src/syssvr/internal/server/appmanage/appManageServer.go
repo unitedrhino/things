@@ -46,3 +46,13 @@ func (s *AppManageServer) AppInfoRead(ctx context.Context, in *sys.WithIDCode) (
 	l := appmanagelogic.NewAppInfoReadLogic(ctx, s.svcCtx)
 	return l.AppInfoRead(in)
 }
+
+func (s *AppManageServer) AppModuleIndex(ctx context.Context, in *sys.AppModuleIndexReq) (*sys.AppModuleIndexResp, error) {
+	l := appmanagelogic.NewAppModuleIndexLogic(ctx, s.svcCtx)
+	return l.AppModuleIndex(in)
+}
+
+func (s *AppManageServer) AppModuleMultiUpdate(ctx context.Context, in *sys.AppModuleMultiUpdateReq) (*sys.Response, error) {
+	l := appmanagelogic.NewAppModuleMultiUpdateLogic(ctx, s.svcCtx)
+	return l.AppModuleMultiUpdate(in)
+}

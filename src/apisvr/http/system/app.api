@@ -10,7 +10,7 @@ import "common.api"  //公共结构体定义
 @server (
 	group : system/app/info
 	prefix: /api/v1/system/app/info
-	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+	middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 
 service api {
@@ -35,7 +35,33 @@ service api {
     post /delete (WithIDOrCode) returns ()
 }
 
+@server(
+    group: system/app/module
+    prefix: /api/v1/system/app/module
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "更新APP权限"
+    @handler multiUpdate
+    post /multi-update (AppModuleMultiUpdateReq) returns ()
+
+    @doc "获取APP权限列表"
+    @handler index
+    post /index (AppModuleIndexReq) returns (AppModuleIndexResp)
+}
+
 type (
+
+    AppModuleMultiUpdateReq{
+        Code string `json:"code"`                     // 应用编号
+        ModuleCodes []string `json:"moduleCodes"`  //App列表数据
+    }
+    AppModuleIndexReq{
+        Code string `json:"code"`                     // 应用编号
+    }
+    AppModuleIndexResp{
+        ModuleCodes []string `json:"moduleCodes"`  //App列表数据
+    }
 
     AppInfoIndexReq struct {
         Page *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填

@@ -13,7 +13,7 @@ import "common.api"  //公共结构体定义
 @server(
     group:things/vidmgr/stream
     prefix:/api/v1/things/vidmgr/stream
-    middleware: SetupWare, CheckTokenWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, TeardownWare
 )
 
 service api {

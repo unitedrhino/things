@@ -50,14 +50,29 @@ service AppManage{
   rpc appInfoDelete(WithIDCode) returns(Response); //删除角色
   rpc appInfoRead(WithIDCode) returns(AppInfo);   //获取详情接口
 
+  rpc appModuleIndex(AppModuleIndexReq) returns (AppModuleIndexResp); //获取角色API权限列表
+  rpc appModuleMultiUpdate(AppModuleMultiUpdateReq) returns (Response);  //更新角色API权限
 }
 
-service MenuManage {
-  rpc menuInfoCreate(MenuInfo) returns(WithID); //添加菜单
-  rpc menuInfoIndex(MenuInfoIndexReq) returns(MenuInfoIndexResp); //获取菜单列表
-  rpc menuInfoUpdate(MenuInfo) returns(Response); //更新菜单
-  rpc menuInfoDelete(WithID) returns(Response); //删除菜单
+service ModuleManage{
+  rpc moduleInfoCreate(ModuleInfo) returns(WithID); //添加角色
+  rpc moduleInfoIndex(ModuleInfoIndexReq) returns(ModuleInfoIndexResp); //获取角色列表
+  rpc moduleInfoUpdate(ModuleInfo) returns(Response); //更新角色
+  rpc moduleInfoDelete(WithIDCode) returns(Response); //删除角色
+  rpc moduleInfoRead(WithIDCode) returns(ModuleInfo);   //获取详情接口
+
+  rpc moduleMenuCreate(MenuInfo) returns(WithID); //添加菜单
+  rpc moduleMenuIndex(MenuInfoIndexReq) returns(MenuInfoIndexResp); //获取菜单列表
+  rpc moduleMenuUpdate(MenuInfo) returns(Response); //更新菜单
+  rpc moduleMenuDelete(WithID) returns(Response); //删除菜单
+
+  rpc moduleApiCreate(ApiInfo) returns(WithID);   //添加接口
+  rpc moduleApiIndex(ApiInfoIndexReq) returns(ApiInfoIndexResp); //获取接口列表
+  rpc moduleApiUpdate(ApiInfo) returns(Response);   //更新接口
+  rpc moduleApiDelete(WithID) returns(Response);   //删除接口
 }
+
+
 
 service Common {
   rpc config(Response) returns(configResp); //添加菜单
@@ -68,13 +83,6 @@ service Log {
   rpc operLogIndex(OperLogIndexReq) returns (OperLogIndexResp);    //获取操作日志列表
   rpc loginLogCreate(LoginLogCreateReq) returns(Response);         //登录日志数据入库
   rpc operLogCreate(OperLogCreateReq) returns(Response);           //操作日志数据入库
-}
-
-service ApiManage {
-  rpc apiInfoCreate(ApiInfo) returns(WithID);   //添加接口
-  rpc apiInfoIndex(ApiInfoIndexReq) returns(ApiInfoIndexResp); //获取接口列表
-  rpc apiInfoUpdate(ApiInfo) returns(Response);   //更新接口
-  rpc apiInfoDelete(WithID) returns(Response);   //删除接口
 }
 
 
@@ -123,7 +131,22 @@ service TenantManage {
   rpc tenantInfoIndex (TenantInfoIndexReq) returns (TenantInfoIndexResp);
 
   rpc tenantAppIndex(TenantAppIndexReq) returns (TenantAppIndexResp); //获取租户APP权限列表
-  rpc tenantAppMultiUpdate(TenantAppMultiUpdateReq) returns (Response);  //更新租户APP权限
+  rpc tenantAppCreate(TenantAppCreateReq) returns(Response); //添加角色
+  rpc tenantAppDelete(TenantAppWithIDOrCode) returns(Response); //删除角色
+
+  rpc tenantAppModuleCreate(TenantModuleCreateReq) returns(Response); //添加角色
+  rpc tenantAppModuleIndex(TenantModuleIndexReq) returns(TenantModuleIndexResp); //获取角色列表
+  rpc tenantAppModuleDelete(TenantModuleWithIDOrCode) returns(Response); //删除角色
+
+  rpc tenantAppMenuCreate(TenantMenuInfo) returns(WithID); //添加菜单
+  rpc tenantAppMenuIndex(MenuInfoIndexReq) returns(MenuInfoIndexResp); //获取菜单列表
+  rpc tenantAppMenuUpdate(TenantMenuInfo) returns(Response); //更新菜单
+  rpc tenantAppMenuDelete(WithID) returns(Response); //删除菜单
+
+  rpc tenantAppApiCreate(TenantApiInfo) returns(WithID);   //添加接口
+  rpc tenantAppApiIndex(TenantAppApiIndexReq) returns(ApiInfoIndexResp); //获取接口列表
+  rpc tenantAppApiUpdate(TenantApiInfo) returns(Response);   //更新接口
+  rpc tenantAppApiDelete(WithID) returns(Response);   //删除接口
 }
 
 //--------------------租户管理------------------------
@@ -153,8 +176,27 @@ message TenantInfoIndexResp{
   int64 total = 2;
 }
 
-message TenantAppIndexReq{
+message TenantAppCreateReq{
   string code = 1;
+  string appCode = 2;
+  repeated TenantAppModule modules = 3;//模块列表
+}
+
+message TenantAppWithIDOrCode{
+  string code = 1;
+  string appCode = 2;
+  int64 id = 3;
+}
+
+message TenantAppModule{
+  string code = 1;
+  repeated int64 menuIDs =2;
+  repeated int64 apiIDs =3;
+}
+
+message TenantAppIndexReq{
+  PageInfo page = 1;//分页信息
+  string code = 2;
 }
 
 message TenantAppIndexResp{
@@ -167,6 +209,57 @@ message TenantAppMultiUpdateReq{
   repeated string appCodes = 3;
 }
 
+message TenantModuleIndexReq{
+  PageInfo page = 1;//分页信息
+  string code = 2;
+  string appCode =3;
+}
+
+message TenantModuleIndexResp{
+  repeated string moduleCodes = 1;
+}
+
+message TenantAppMenuIndexReq{
+  PageInfo page = 1;//分页信息
+  string code = 2;
+  string appCode =3;
+  string moduleCode =4;
+  bool isRetTree = 5;
+}
+
+message TenantMenuInfo{
+  string code = 2;
+  string appCode =3;
+  MenuInfo info=4;
+}
+
+message TenantApiInfo{
+  string code = 2;
+  string appCode =3;
+  ApiInfo info=4;
+}
+
+message TenantAppApiIndexReq{
+  PageInfo page = 1;//分页信息
+  string code = 2;
+  string appCode =3;
+  string moduleCode =4;
+  bool isRetTree = 5;
+}
+
+message TenantModuleCreateReq{
+  string code = 1;
+  string appCode =2;
+  string moduleCode = 3;
+  repeated int64 menuIDs =4;
+  repeated int64 apiIDs =5;
+}
+message TenantModuleWithIDOrCode{
+  string code = 1;
+  string appCode = 2;
+  string moduleCode = 3;
+  int64 id = 4;
+}
 
 //----------------------------------------------------------------------------------------------
 
@@ -286,7 +379,7 @@ message AuthApiInfo{
 message RoleApiMultiUpdateReq{
   int64 id = 1;//角色ID
   string appCode = 2;//appCode
-  repeated AuthApiInfo list = 3;//API列表数据
+  repeated int64 apiIDs = 3;
 }
 
 message RoleApiIndexReq{
@@ -296,7 +389,7 @@ message RoleApiIndexReq{
 
 message RoleApiIndexResp{
   int64 total = 1;
-  repeated AuthApiInfo list = 2;//API列表数据
+  repeated int64 apiIDs = 3;
 }
 
 
@@ -308,7 +401,7 @@ message RoleMenuIndexReq{
 
 message RoleMenuIndexResp{
   int64 total = 1;
-  repeated MenuInfo list = 2;//API列表数据
+  repeated int64 menuIDs = 3;
 }
 
 message RoleAppIndexReq{
@@ -317,7 +410,7 @@ message RoleAppIndexReq{
 
 message RoleAppIndexResp{
   int64 total = 1;
-  repeated AppInfo list = 2;//app列表数据
+  repeated string appCodes = 3;
 }
 
 
@@ -424,11 +517,13 @@ message UserInfo{
   string country =11;
   string province =12;
   string language =13;
-  string headImgUrl =14;
   int64  createdTime =15;
   int64  role = 16;
   int64  sex =17;
   int64  isAllData =18;
+  string headImg =19;
+  bool isUpdateHeadImg = 20;//只有这个参数为true的时候才会更新图片,传参为图片的file path
+
 }
 
 
@@ -449,6 +544,7 @@ message UserCheckTokenResp{
   repeated int64 roleIDs = 3;
   int64 isAllData = 4;
   string tenantCode = 5;//租户编码
+  int64 isAdmin = 6;//是否是超级管理员
 }
 
 message RoleAppMultiUpdateReq{
@@ -604,12 +700,40 @@ message UserAreaIndexReq {
   PageInfo page = 1 ; //进行数据分页（不传默认2000相当于全部）
   int64 userID = 2; //用户ID（必填，雪花ID）
   int64 projectID = 3; //项目id 可选
-
 }
 message UserAreaIndexResp {
   int64 total = 1;           //总数
   repeated UserArea list = 2; //用户数据权限列表
 }
+
+
+//模块相关接口
+
+message ModuleInfo{
+  int64 id = 1;
+  string name= 2;          // 模块名称
+  string code = 3;          // 模块编码
+  google.protobuf.StringValue desc = 4;        // 模块描述
+  int64 type = 5;
+  string path = 6;
+  string url = 7;
+  string icon = 8;
+  int64 order = 9;
+  int64 hideInMenu = 10;
+  google.protobuf.StringValue body = 11;
+}
+
+message ModuleInfoIndexReq{
+  PageInfo page = 1;//分页信息
+  string name = 2;
+  string code = 3;
+}
+
+message ModuleInfoIndexResp{
+  repeated  ModuleInfo list =1;
+  int64 total = 2;
+}
+
 //----------------------------------------------------------------------------------------------
 //应用相关接口
 
@@ -631,6 +755,19 @@ message AppInfoIndexReq{
 message AppInfoIndexResp{
   repeated  AppInfo list =1;
   int64 total = 2;
+}
+
+message AppModuleMultiUpdateReq{
+  string code = 1;//应用code
+  repeated string moduleCodes = 3;
+}
+
+message AppModuleIndexReq{
+  string code = 1;//应用code
+}
+
+message AppModuleIndexResp{
+  repeated string moduleCodes = 3;
 }
 
 
@@ -664,12 +801,13 @@ message RoleAppUpdateReq{
 }
 
 message MenuInfoIndexReq{
-  string  appCode = 1;
-  string name = 2;
-  string path = 3;
-  bool isRetTree = 4;
+  string  moduleCode = 1;
+  repeated int64 menuIDs = 2;
+  bool isRetTree = 3;
 }
+
 message MenuInfo{
+  string moduleCode = 12;
   int64 id = 1;
   string name = 2;
   int64 parentID = 3;
@@ -681,7 +819,6 @@ message MenuInfo{
   int64 createTime = 9;
   int64 order = 10;
   int64 hideInMenu = 11;
-  string appCode = 12;
   google.protobuf.StringValue body = 13;
   repeated MenuInfo children = 14;
 }
@@ -704,16 +841,20 @@ message ApiInfoIndexReq{
   string method = 3; // 接口请求方式: POST GET
   string group = 4; // 接口分组
   string name = 5;  // 接口名称
-  string appCode = 7;
+  string moduleCode = 7;
+  int64 isNeedAuth = 8;//是否需要权限认证 1是 2否
+  repeated int64 apiIDs = 9;//API列表数据
 }
 message ApiInfo{
+  string moduleCode = 7;
   int64 id = 1;            // 接口编号
   string route = 2;        // 接口路由
   string method = 3;        // 接口请求方式: POST GET
   string group = 4;        // 接口分组
   string name = 5;         // 接口名称
   int64  businessType = 6; // 业务类型（1新增 2修改 3删除 4查询 5其它)
-  string appCode = 7;
+  int64 isNeedAuth = 8;//是否需要权限认证 1是 2否
+  string desc = 9;//描述
 }
 
 message ApiInfoIndexResp{

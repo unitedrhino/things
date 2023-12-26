@@ -30,7 +30,7 @@ func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLo
 		UiDB:   relationDB.NewUserInfoRepo(ctx),
 	}
 }
-func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysUserInfo) error {
+func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysTenantUserInfo) error {
 	//根据密码类型不同做不同处理
 	if in.PwdType == 0 {
 		//空密码情况暂不考虑
@@ -54,15 +54,20 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysUserInfo) er
 	return nil
 }
 
-func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
+func (l *LoginLogic) getRet(ui *relationDB.SysTenantUserInfo, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	var rolses []int64
+	var isAdmin int64 = def.False
 	for _, v := range ui.Roles {
 		rolses = append(rolses, v.RoleID)
 	}
+
+	if ui.Tenant != nil && ui.Tenant.AdminUserID == ui.UserID {
+		isAdmin = def.True
+	}
 	jwtToken, err := users.GetLoginJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire,
-		ui.UserID, ctxs.GetUserCtx(l.ctx).TenantCode, rolses, ui.IsAllData)
+		ui.UserID, ctxs.GetUserCtx(l.ctx).TenantCode, rolses, ui.IsAllData, isAdmin)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)
@@ -75,7 +80,7 @@ func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, list []*conf.LoginSafeCt
 	InitCacheUserAuthArea(l.ctx, ui.UserID)
 
 	resp := &sys.UserLoginResp{
-		Info: UserInfoToPb(ui),
+		Info: UserInfoToPb(l.ctx, ui, l.svcCtx),
 		Token: &sys.JwtToken{
 			AccessToken:  jwtToken,
 			AccessExpire: now + accessExpire,
@@ -86,13 +91,13 @@ func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, list []*conf.LoginSafeCt
 	return resp, nil
 }
 
-func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserInfo, err error) {
+func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysTenantUserInfo, err error) {
 	switch in.LoginType {
 	case users.RegPwd:
-		if l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeImage, in.CodeID, in.Code) != "" {
+		if l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeImage, in.CodeID, in.Code) == "" {
 			return nil, errors.Captcha
 		}
-		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Accounts: []string{in.Account}, WithRoles: true})
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Accounts: []string{in.Account}, WithRoles: true, WithTenant: true})
 		if err != nil {
 			return nil, err
 		}
@@ -108,13 +113,13 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserIn
 		if ret.ErrCode != 0 {
 			return nil, errors.Parameter.AddMsgf(ret.ErrMsg)
 		}
-		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{WechatUnionID: ret.UnionID, WechatOpenID: ret.OpenID, WithRoles: true})
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{WechatUnionID: ret.UnionID, WechatOpenID: ret.OpenID, WithRoles: true, WithTenant: true})
 	case users.RegEmail:
 		email := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, in.CodeID, in.Code)
 		if email == "" || email != in.Account {
 			return nil, errors.Captcha
 		}
-		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Emails: []string{in.Account}, WithRoles: true})
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Emails: []string{in.Account}, WithRoles: true, WithTenant: true})
 	default:
 		l.Error("%s LoginType=%s not support", utils.FuncName(), in.LoginType)
 		return nil, errors.Parameter

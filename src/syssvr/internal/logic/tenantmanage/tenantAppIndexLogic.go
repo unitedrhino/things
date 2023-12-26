@@ -31,8 +31,8 @@ func (l *TenantAppIndexLogic) TenantAppIndex(in *sys.TenantAppIndexReq) (*sys.Te
 	if uc.TenantCode != def.TenantCodeDefault {
 		in.Code = uc.TenantCode
 	} else {
-		uc.AllData = true
-		defer func() { uc.AllData = false }()
+		uc.AllTenant = true
+		defer func() { uc.AllTenant = false }()
 	}
 	f := relationDB.TenantAppFilter{TenantCode: in.Code}
 	list, err := relationDB.NewTenantAppRepo(l.ctx).FindByFilter(l.ctx, f, nil)

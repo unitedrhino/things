@@ -29,7 +29,7 @@ const (
 	[matchers]
 	m =  r.sub == p.sub &&r.tenant == p.tenant && r.app == p.app && r.path == p.path && r.method == p.method
 		`
-	tableName = "sys_role_api"
+	tableName = "sys_role_api2"
 )
 
 func NewCasbin(conn *sql.DB, driver string) (*casbin.Enforcer, error) {
