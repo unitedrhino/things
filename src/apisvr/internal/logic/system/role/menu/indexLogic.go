@@ -2,7 +2,6 @@ package menu
 
 import (
 	"context"
-	"github.com/i-Things/things/src/apisvr/internal/logic/system"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -32,7 +31,6 @@ func (l *IndexLogic) Index(req *types.RoleMenuIndexReq) (resp *types.RoleMenuInd
 	})
 
 	return &types.RoleMenuIndexResp{
-		List:  system.ToMenuInfosApi(ret.List),
-		Total: ret.Total,
+		MenuIDs: ret.MenuIDs,
 	}, nil
 }

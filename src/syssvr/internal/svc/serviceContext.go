@@ -5,6 +5,7 @@ import (
 	"github.com/casbin/casbin/v2"
 	cas "github.com/i-Things/things/shared/casbin"
 	"github.com/i-Things/things/shared/clients"
+	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/config"
@@ -22,6 +23,7 @@ type ServiceContext struct {
 	WxMiniProgram *clients.MiniProgram
 	UserID        *utils.SnowFlake
 	Casbin        *casbin.Enforcer
+	OssClient     *oss.Client
 	Store         kv.Store
 	PwdCheck      *cache.PwdCheck
 	Captcha       *cache.Captcha
@@ -49,12 +51,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	ca := cas.NewCasbinWithRedisWatcher(dbRaw, c.Database.DBType, c.CacheRedis[0].RedisConf)
 	store := kv.NewStore(c.CacheRedis)
-
+	ossClient, err := oss.NewOssClient(c.OssConf)
+	if err != nil {
+		logx.Errorf("NewOss err err:%v", err)
+		os.Exit(-1)
+	}
 	return &ServiceContext{
 		Captcha:       cache.NewCaptcha(store),
 		PwdCheck:      cache.NewPwdCheck(store),
 		Config:        c,
 		ProjectID:     ProjectID,
+		OssClient:     ossClient,
 		AreaID:        AreaID,
 		WxMiniProgram: WxMiniProgram,
 		UserID:        UserID,

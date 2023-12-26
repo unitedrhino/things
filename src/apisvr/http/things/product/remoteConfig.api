@@ -9,7 +9,7 @@ import "common.api"  //公共结构体定义
 @server(
     group : things/product/remoteConfig
     prefix: /api/v1/things/product/remote-config
-    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "创建配置"

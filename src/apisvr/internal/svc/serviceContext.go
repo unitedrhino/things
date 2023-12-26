@@ -24,12 +24,11 @@ import (
 	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
 	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
 	"github.com/i-Things/things/src/rulesvr/ruledirect"
-	api "github.com/i-Things/things/src/syssvr/client/apimanage"
 	app "github.com/i-Things/things/src/syssvr/client/appmanage"
 	"github.com/i-Things/things/src/syssvr/client/areamanage"
 	common "github.com/i-Things/things/src/syssvr/client/common"
 	log "github.com/i-Things/things/src/syssvr/client/log"
-	menu "github.com/i-Things/things/src/syssvr/client/menumanage"
+	module "github.com/i-Things/things/src/syssvr/client/modulemanage"
 	"github.com/i-Things/things/src/syssvr/client/projectmanage"
 	role "github.com/i-Things/things/src/syssvr/client/rolemanage"
 	tenant "github.com/i-Things/things/src/syssvr/client/tenantmanage"
@@ -61,9 +60,8 @@ type SvrClient struct {
 	UserRpc   user.UserManage
 	RoleRpc   role.RoleManage
 	AppRpc    app.AppManage
-	MenuRpc   menu.MenuManage
+	ModuleRpc module.ModuleManage
 	LogRpc    log.Log
-	ApiRpc    api.ApiManage
 	VidmgrM   vidmgrinfomanage.VidmgrInfoManage
 	VidmgrC   vidmgrconfigmanage.VidmgrConfigManage
 	VidmgrS   vidmgrstreammanage.VidmgrStreamManage
@@ -96,6 +94,7 @@ type ServiceContext struct {
 	CheckTokenWare rest.Middleware
 	DataAuthWare   rest.Middleware
 	TeardownWare   rest.Middleware
+	CheckApiWare   rest.Middleware
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
 	FirmwareM      firmwaremanage.FirmwareManage
@@ -131,9 +130,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	)
 	var ur user.UserManage
 	var ro role.RoleManage
-	var me menu.MenuManage
+	var me module.ModuleManage
 	var lo log.Log
-	var ap api.ApiManage
 
 	caches.InitStore(c.CacheRedis)
 
@@ -185,9 +183,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			ur = user.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			me = menu.NewMenuManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			me = module.NewModuleManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
-			ap = api.NewApiManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			sysCommon = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
 			appRpc = app.NewAppManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			tenantM = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
@@ -196,9 +193,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
 			ur = sysdirect.NewUser(c.SysRpc.RunProxy)
 			ro = sysdirect.NewRole(c.SysRpc.RunProxy)
-			me = sysdirect.NewMenu(c.SysRpc.RunProxy)
+			me = sysdirect.NewModule(c.SysRpc.RunProxy)
 			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
-			ap = sysdirect.NewApi(c.SysRpc.RunProxy)
 			sysCommon = sysdirect.NewCommon(c.SysRpc.RunProxy)
 			appRpc = sysdirect.NewApp(c.SysRpc.RunProxy)
 			tenantM = sysdirect.NewTenantManage(c.SysRpc.RunProxy)
@@ -247,6 +243,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		CheckTokenWare: middleware.NewCheckTokenWareMiddleware(c, ur, ro).Handle,
 		DataAuthWare:   middleware.NewDataAuthWareMiddleware(c).Handle,
 		TeardownWare:   middleware.NewTeardownWareMiddleware(c, lo).Handle,
+		CheckApiWare:   middleware.NewCheckApiWareMiddleware().Handle,
 		Captcha:        captcha,
 		OssClient:      ossClient,
 		FirmwareM:      firmwareM,
@@ -256,9 +253,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			AppRpc:         appRpc,
 			UserRpc:        ur,
 			RoleRpc:        ro,
-			MenuRpc:        me,
+			ModuleRpc:      me,
 			LogRpc:         lo,
-			ApiRpc:         ap,
 			Timedscheduler: timedSchedule,
 			TimedJob:       timedJob,
 			VidmgrM:        vidmgrM,

@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -24,6 +25,9 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 }
 
 func (l *UpdateLogic) Update(req *types.AppInfo) error {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return err
+	}
 	_, err := l.svcCtx.AppRpc.AppInfoUpdate(l.ctx, ToAppInfoRpc(req))
 	return err
 }

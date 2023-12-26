@@ -32,12 +32,5 @@ func (l *IndexLogic) Index(req *types.RoleApiIndexReq) (resp *types.RoleApiIndex
 	if err != nil {
 		return nil, err
 	}
-	authInfo := make([]*types.AuthApiInfo, 0, len(info.List))
-	for _, i := range info.List {
-		authInfo = append(authInfo, &types.AuthApiInfo{
-			Route:  i.Route,
-			Method: i.Method,
-		})
-	}
-	return &types.RoleApiIndexResp{List: authInfo, Total: info.Total}, nil
+	return &types.RoleApiIndexResp{ApiIDs: info.ApiIDs}, nil
 }

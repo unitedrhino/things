@@ -21,6 +21,9 @@ type (
 	AppInfo                   = sys.AppInfo
 	AppInfoIndexReq           = sys.AppInfoIndexReq
 	AppInfoIndexResp          = sys.AppInfoIndexResp
+	AppModuleIndexReq         = sys.AppModuleIndexReq
+	AppModuleIndexResp        = sys.AppModuleIndexResp
+	AppModuleMultiUpdateReq   = sys.AppModuleMultiUpdateReq
 	AreaInfo                  = sys.AreaInfo
 	AreaInfoIndexReq          = sys.AreaInfoIndexReq
 	AreaInfoIndexResp         = sys.AreaInfoIndexResp
@@ -39,6 +42,9 @@ type (
 	MenuInfo                  = sys.MenuInfo
 	MenuInfoIndexReq          = sys.MenuInfoIndexReq
 	MenuInfoIndexResp         = sys.MenuInfoIndexResp
+	ModuleInfo                = sys.ModuleInfo
+	ModuleInfoIndexReq        = sys.ModuleInfoIndexReq
+	ModuleInfoIndexResp       = sys.ModuleInfoIndexResp
 	OperLogCreateReq          = sys.OperLogCreateReq
 	OperLogIndexReq           = sys.OperLogIndexReq
 	OperLogIndexResp          = sys.OperLogIndexResp
@@ -65,13 +71,24 @@ type (
 	RoleMenuIndexReq          = sys.RoleMenuIndexReq
 	RoleMenuIndexResp         = sys.RoleMenuIndexResp
 	RoleMenuMultiUpdateReq    = sys.RoleMenuMultiUpdateReq
+	TenantApiInfo             = sys.TenantApiInfo
+	TenantAppApiIndexReq      = sys.TenantAppApiIndexReq
+	TenantAppCreateReq        = sys.TenantAppCreateReq
 	TenantAppIndexReq         = sys.TenantAppIndexReq
 	TenantAppIndexResp        = sys.TenantAppIndexResp
+	TenantAppMenuIndexReq     = sys.TenantAppMenuIndexReq
+	TenantAppModule           = sys.TenantAppModule
 	TenantAppMultiUpdateReq   = sys.TenantAppMultiUpdateReq
+	TenantAppWithIDOrCode     = sys.TenantAppWithIDOrCode
 	TenantInfo                = sys.TenantInfo
 	TenantInfoCreateReq       = sys.TenantInfoCreateReq
 	TenantInfoIndexReq        = sys.TenantInfoIndexReq
 	TenantInfoIndexResp       = sys.TenantInfoIndexResp
+	TenantMenuInfo            = sys.TenantMenuInfo
+	TenantModuleCreateReq     = sys.TenantModuleCreateReq
+	TenantModuleIndexReq      = sys.TenantModuleIndexReq
+	TenantModuleIndexResp     = sys.TenantModuleIndexResp
+	TenantModuleWithIDOrCode  = sys.TenantModuleWithIDOrCode
 	UserArea                  = sys.UserArea
 	UserAreaIndexReq          = sys.UserAreaIndexReq
 	UserAreaIndexResp         = sys.UserAreaIndexResp
@@ -108,6 +125,8 @@ type (
 		AppInfoUpdate(ctx context.Context, in *AppInfo, opts ...grpc.CallOption) (*Response, error)
 		AppInfoDelete(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*Response, error)
 		AppInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*AppInfo, error)
+		AppModuleIndex(ctx context.Context, in *AppModuleIndexReq, opts ...grpc.CallOption) (*AppModuleIndexResp, error)
+		AppModuleMultiUpdate(ctx context.Context, in *AppModuleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultAppManage struct {
@@ -176,4 +195,22 @@ func (m *defaultAppManage) AppInfoRead(ctx context.Context, in *WithIDCode, opts
 
 func (d *directAppManage) AppInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*AppInfo, error) {
 	return d.svr.AppInfoRead(ctx, in)
+}
+
+func (m *defaultAppManage) AppModuleIndex(ctx context.Context, in *AppModuleIndexReq, opts ...grpc.CallOption) (*AppModuleIndexResp, error) {
+	client := sys.NewAppManageClient(m.cli.Conn())
+	return client.AppModuleIndex(ctx, in, opts...)
+}
+
+func (d *directAppManage) AppModuleIndex(ctx context.Context, in *AppModuleIndexReq, opts ...grpc.CallOption) (*AppModuleIndexResp, error) {
+	return d.svr.AppModuleIndex(ctx, in)
+}
+
+func (m *defaultAppManage) AppModuleMultiUpdate(ctx context.Context, in *AppModuleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewAppManageClient(m.cli.Conn())
+	return client.AppModuleMultiUpdate(ctx, in, opts...)
+}
+
+func (d *directAppManage) AppModuleMultiUpdate(ctx context.Context, in *AppModuleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AppModuleMultiUpdate(ctx, in)
 }

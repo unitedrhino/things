@@ -46,7 +46,7 @@ func (l *UserRegisterLogic) UserRegister(in *sys.UserRegisterReq) (*sys.UserRegi
 }
 
 func (l *UserRegisterLogic) handleEmailOrPhone(in *sys.UserRegisterReq) (*sys.UserRegisterResp, error) {
-	ui := relationDB.SysUserInfo{
+	ui := relationDB.SysTenantUserInfo{
 		UserID: l.svcCtx.UserID.GetSnowflakeId(),
 	}
 	ui.Password = utils.MakePwd(in.Info.Password, ui.UserID, false)
@@ -97,7 +97,7 @@ func (l *UserRegisterLogic) handleWxminip(in *sys.UserRegisterReq) (*sys.UserReg
 		if !errors.Cmp(err, errors.NotFind) {
 			return err
 		}
-		ui := relationDB.SysUserInfo{
+		ui := relationDB.SysTenantUserInfo{
 			UserID:        userID,
 			WechatUnionID: sql.NullString{Valid: true, String: ret.UnionID},
 		}
@@ -107,7 +107,7 @@ func (l *UserRegisterLogic) handleWxminip(in *sys.UserRegisterReq) (*sys.UserReg
 
 	return &sys.UserRegisterResp{UserID: userID}, err
 }
-func (l *UserRegisterLogic) FillUserInfo(in *relationDB.SysUserInfo, tx *gorm.DB) error {
+func (l *UserRegisterLogic) FillUserInfo(in *relationDB.SysTenantUserInfo, tx *gorm.DB) error {
 	err := tx.Transaction(func(tx *gorm.DB) error {
 		cfg, err := relationDB.NewTenantConfigRepo(tx).FindOne(l.ctx)
 		if err != nil {
@@ -120,7 +120,7 @@ func (l *UserRegisterLogic) FillUserInfo(in *relationDB.SysUserInfo, tx *gorm.DB
 		if err != nil {
 			return err
 		}
-		err = relationDB.NewUserRoleRepo(tx).Insert(l.ctx, &relationDB.SysUserRole{
+		err = relationDB.NewUserRoleRepo(tx).Insert(l.ctx, &relationDB.SysTenantUserRole{
 			UserID: in.UserID,
 			RoleID: cfg.RegisterRoleID,
 		})

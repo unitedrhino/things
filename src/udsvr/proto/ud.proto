@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package ud;
+option go_package="pb/ud";
+
+message WithID {
+  int64 id = 1;
+}
+message Empty{
+}
+
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+}
+message TimeRange{
+  int64 start = 1;
+  int64 end = 2;
+}
+
+
+//智能控制
+service intelligentControl {
+  //场景
+  rpc sceneInfoCreate(SceneInfo) returns(WithID);
+  rpc sceneInfoUpdate(SceneInfo) returns(Empty);
+  rpc sceneInfoDelete(WithID) returns(Empty);
+  rpc sceneInfoIndex(SceneInfoIndexReq) returns(SceneInfoIndexResp);
+  rpc sceneInfoRead(WithID) returns(SceneInfo);
+
+  rpc sceneDeviceCreate(SceneDevice) returns(WithID);
+  rpc sceneDeviceUpdate(SceneDevice) returns(Empty);
+  rpc sceneDeviceDelete(WithID) returns(Empty);
+  rpc sceneDeviceIndex(SceneDeviceIndexReq) returns(SceneDeviceIndexResp);
+  rpc sceneDeviceRead(WithID) returns(SceneDevice);
+  //自动化
+  rpc autoInfoCreate(AutoInfo) returns(WithID);
+  rpc autoInfoUpdate(AutoInfo) returns(Empty);
+  rpc autoInfoDelete(WithID) returns(Empty);
+  rpc autoInfoIndex(AutoInfoIndexReq) returns(AutoInfoIndexResp);
+  rpc autoInfoRead(WithID) returns(AutoInfo);
+}
+
+//鉴权管理
+service AuthManage{
+  //用户设备列表
+  rpc userDeviceIndex(Empty) returns(Empty);
+
+
+}
+
+
+message AutoInfoIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  string name =2;//场景名 模糊查询
+  int64 status = 3;//状态: 1启用 2禁用
+  string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+  int64 alarmID = 5;//告警配置ID过滤
+}
+
+message AutoInfoIndexResp{
+  repeated AutoInfo list = 1;//设备信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+
+message AutoInfo{
+  int64 id = 1;//场景id
+  string name =2;//场景名
+  int64 status = 3;//状态: 1启用 2禁用
+  string desc = 4;//描述
+  int64 createdTime = 5;//创建时间 秒级时间戳 只读
+  string triggerType = 6;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+  string trigger = 7;//触发器
+  string when = 8;//触发条件
+  string then = 9;//满足条件时执行的动作
+}
+
+
+
+message SceneInfoIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  string name =2;//场景名 模糊查询
+  int64 status = 3;//状态: 1启用 2禁用
+  string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+  int64 alarmID = 5;//告警配置ID过滤
+}
+
+message SceneInfoIndexResp{
+  repeated SceneInfo list = 1;//设备信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+
+message SceneInfo{
+  int64 id = 1;//场景id
+  int64 userID = 2;//创建用户
+  string name =3;//场景名
+  string desc = 4;//描述
+  int64 createdTime = 5;//创建时间 秒级时间戳 只读
+  int64 delay = 6;
+  string delayUnit = 7;//单位 s:秒 m:分钟 h:小时 d:天
+  string headImg = 8;//触发器
+  bool isUpdateHeadImg = 9;//只有这个参数为true的时候才会更新图片,传参为图片的file path
+}
+
+message SceneDeviceIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  string name =2;//场景名 模糊查询
+  int64 status = 3;//状态: 1启用 2禁用
+  string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+  int64 alarmID = 5;//告警配置ID过滤
+}
+
+message SceneDeviceIndexResp{
+  repeated SceneDevice list = 1;//设备信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+
+message SceneDevice{
+  int64 id = 1;//场景id
+  string senseID =2;
+  string productID =3;
+  string deviceName =4;
+  string params =5;
+  int64 delay = 6;
+  string delayUnit = 7;//单位 s:秒 m:分钟 h:小时 d:天
+}

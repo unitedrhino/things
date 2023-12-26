@@ -3,6 +3,7 @@ package ctxs
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"net/http"
 )
@@ -11,6 +12,7 @@ type UserCtx struct {
 	IsOpen     bool //是否开放认证用户
 	AppCode    string
 	TenantCode string //租户Code
+	IsAdmin    bool   //是否是超级管理员
 	UserID     int64  //用户id（开放认证用户值为0）
 	RoleID     int64  //用户使用的角色（开放认证用户值为0）
 	IsAllData  bool   //是否所有数据权限（开放认证用户值为true）
@@ -20,7 +22,8 @@ type UserCtx struct {
 }
 
 type InnerCtx struct {
-	AllData bool //内部使用,不限制区域
+	AllArea   bool //内部使用,不限制区域
+	AllTenant bool //所有租户的权限
 }
 
 func NotLoginedInit(r *http.Request) *http.Request {
@@ -69,6 +72,13 @@ func GetUserCtx(ctx context.Context) *UserCtx {
 		return nil
 	}
 	return val
+}
+func IsRoot(ctx context.Context) error {
+	uc := GetUserCtx(ctx)
+	if uc == nil || uc.TenantCode != def.TenantCodeDefault {
+		return errors.Permissions.AddDetailf("需要主租户才能操作")
+	}
+	return nil
 }
 
 // 使用该函数前必须传了UserCtx

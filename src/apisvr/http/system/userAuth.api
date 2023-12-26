@@ -11,7 +11,7 @@ import "common.api"  //公共结构体定义
 @server(
     group : system/user/auth
     prefix: /api/v1/system/user/auth
-    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 
 service api {

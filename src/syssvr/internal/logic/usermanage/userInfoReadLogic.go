@@ -33,5 +33,5 @@ func (l *UserInfoReadLogic) UserInfoRead(in *sys.UserInfoReadReq) (*sys.UserInfo
 		return nil, err
 	}
 
-	return UserInfoToPb(ui), nil
+	return UserInfoToPb(l.ctx, ui, l.svcCtx), nil
 }

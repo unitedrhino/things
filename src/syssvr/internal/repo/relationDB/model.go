@@ -1,109 +1,20 @@
 package relationDB
 
-import (
-	"database/sql"
-	"github.com/i-Things/things/shared/stores"
-	"time"
-)
+import "github.com/i-Things/things/shared/stores"
 
 // 示例
 type SysExample struct {
 	ID int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
 }
 
-// 用户登录信息表
-type SysUserInfo struct {
-	TenantCode    stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL;uniqueIndex:tc_un;uniqueIndex:tc_email;uniqueIndex:tc_phone;uniqueIndex:tc_wui;uniqueIndex:tc_woi"` // 租户编码
-	UserID        int64             `gorm:"column:user_id;primary_key;AUTO_INCREMENT;type:BIGINT;NOT NULL"`                                                                                 // 用户id
-	UserName      sql.NullString    `gorm:"column:user_name;uniqueIndex:tc_un;type:VARCHAR(20)"`                                                                                            // 登录用户名
-	NickName      string            `gorm:"column:nick_name;type:VARCHAR(60);NOT NULL"`                                                                                                     // 用户的昵称
-	Password      string            `gorm:"column:password;type:CHAR(32);NOT NULL"`                                                                                                         // 登录密码
-	Email         sql.NullString    `gorm:"column:email;uniqueIndex:tc_email;type:VARCHAR(255)"`                                                                                            // 邮箱
-	Phone         sql.NullString    `gorm:"column:phone;uniqueIndex:tc_phone;type:VARCHAR(20)"`                                                                                             // 手机号
-	WechatUnionID sql.NullString    `gorm:"column:wechat_union_id;uniqueIndex:tc_wui;type:VARCHAR(20)"`                                                                                     // 微信union id
-	WechatOpenID  sql.NullString    `gorm:"column:wechat_open_id;uniqueIndex:tc_woi;type:VARCHAR(20)"`                                                                                      // 微信union id
-	LastIP        string            `gorm:"column:last_ip;type:VARCHAR(40);NOT NULL"`                                                                                                       // 最后登录ip
-	RegIP         string            `gorm:"column:reg_ip;type:VARCHAR(40);NOT NULL"`                                                                                                        // 注册ip
-	Sex           int64             `gorm:"column:sex;type:SMALLINT;default:3;NOT NULL"`                                                                                                    // 用户的性别，值为1时是男性，值为2时是女性，其他值为未知
-	City          string            `gorm:"column:city;type:VARCHAR(50);NOT NULL"`                                                                                                          // 用户所在城市
-	Country       string            `gorm:"column:country;type:VARCHAR(50);NOT NULL"`                                                                                                       // 用户所在国家
-	Province      string            `gorm:"column:province;type:VARCHAR(50);NOT NULL"`                                                                                                      // 用户所在省份
-	Language      string            `gorm:"column:language;type:VARCHAR(50);NOT NULL"`                                                                                                      // 用户的语言，简体中文为zh_CN
-	HeadImgUrl    string            `gorm:"column:head_img_url;type:VARCHAR(256);NOT NULL"`                                                                                                 // 用户头像
-	Role          int64             `gorm:"column:role;type:BIGINT;NOT NULL"`                                                                                                               // 用户默认角色（默认使用该角色）
-	IsAllData     int64             `gorm:"column:is_all_data;type:SMALLINT;default:1;NOT NULL"`                                                                                            // 是否所有数据权限（1是，2否）
-	Roles         []*SysUserRole    `gorm:"foreignKey:UserID;references:UserID"`
-	stores.Time
-}
-
-func (m *SysUserInfo) TableName() string {
-	return "sys_user_info"
-}
-
-// 应用菜单关联表
-type SysUserRole struct {
-	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`      // id编号
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL;"`         // 租户编码
-	UserID     int64             `gorm:"column:user_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"` // 用户ID
-	RoleID     int64             `gorm:"column:role_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"` // 角色ID
-	stores.Time
-}
-
-func (m *SysUserRole) TableName() string {
-	return "sys_user_role"
-}
-
-// 角色管理表
-type SysRoleInfo struct {
-	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 角色所属租户编码
-	Name       string            `gorm:"column:name;uniqueIndex:tc_ac;type:VARCHAR(100);NOT NULL"`       // 角色名称
-	Desc       string            `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                         //描述
-	stores.Time
-	Status int64         `gorm:"column:status;type:SMALLINT;default:1"` // 状态  1:启用,2:禁用
-	Apps   []*SysRoleApp `gorm:"foreignKey:RoleID;references:ID"`
-}
-
-func (m *SysRoleInfo) TableName() string {
-	return "sys_role_info"
-}
-
-// 应用菜单关联表
-type SysRoleApp struct {
-	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 角色所属租户编码
-	RoleID     int64             `gorm:"column:role_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"`          // 角色ID
-	AppCode    string            `gorm:"column:app_code;uniqueIndex;type:VARCHAR(50);NOT NULL"`          // 应用编码
-	stores.Time
-}
-
-func (m *SysRoleApp) TableName() string {
-	return "sys_role_app"
-}
-
-// 应用菜单关联表
-type SysRoleMenu struct {
-	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"` // 角色所属租户编码
-	RoleID     int64             `gorm:"column:role_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"`          // 角色ID
-	AppCode    string            `gorm:"column:app_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"`    // 应用编码
-	MenuID     int64             `gorm:"column:menu_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"`          // 菜单ID
-	stores.Time
-}
-
-func (m *SysRoleMenu) TableName() string {
-	return "sys_role_menu"
-}
-
+// 应用信息
 type SysAppInfo struct {
-	ID         int64       `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // id编号
-	Code       string      `gorm:"column:code;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 应用编码
-	ParentCode string      `gorm:"column:parent_code;type:VARCHAR(100);default:core"`  // 父应用code，最多两层，如果是主应用，该参数为空
-	Name       string      `gorm:"column:name;type:VARCHAR(100);NOT NULL"`             //应用名称
-	Desc       string      `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`             //应用描述
-	BaseUrl    string      `gorm:"column:base_url;type:VARCHAR(100);NOT NULL"`         //应用首页
-	LogoUrl    string      `gorm:"column:logo_url;type:VARCHAR(100);NOT NULL"`         //应用logo地址
-	ParentApp  *SysAppInfo `gorm:"foreignKey:Code;references:ParentCode"`              // 父应用信息
+	ID      int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // id编号
+	Code    string `gorm:"column:code;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 应用编码
+	Name    string `gorm:"column:name;uniqueIndex;type:VARCHAR(100);NOT NULL"` //应用名称
+	Desc    string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`             //应用描述
+	BaseUrl string `gorm:"column:base_url;type:VARCHAR(100);NOT NULL"`         //应用首页
+	LogoUrl string `gorm:"column:logo_url;type:VARCHAR(100);NOT NULL"`         //应用logo地址
 	stores.Time
 }
 
@@ -111,10 +22,62 @@ func (m *SysAppInfo) TableName() string {
 	return "sys_app_info"
 }
 
+// 应用默认绑定的模块
+type SysAppModule struct {
+	ID         int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
+	AppCode    string `gorm:"column:app_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"`    // 应用编码 这里只关联主应用,主应用授权,子应用也授权了
+	ModuleCode string `gorm:"column:module_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 模块编码
+	stores.Time
+}
+
+func (m *SysAppModule) TableName() string {
+	return "sys_app_module"
+}
+
+// 模块管理表 模块是菜单和接口的集合体
+type SysModuleInfo struct {
+	ID         int64            `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // 编号
+	Code       string           `gorm:"column:code;uniqueIndex;NOT NULL;type:VARCHAR(50)"`  // 编码
+	Type       int64            `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`         // 类型   1：菜单或者页面   2：iframe嵌入   3：外链跳转
+	Order      int64            `gorm:"column:order_num;type:BIGINT;default:1;NOT NULL"`    // 左侧table排序序号
+	Name       string           `gorm:"column:name;type:VARCHAR(50);NOT NULL"`              // 菜单名称
+	Path       string           `gorm:"column:path;type:VARCHAR(64);NOT NULL"`              // 系统的path
+	Url        string           `gorm:"column:url;type:VARCHAR(200);NOT NULL"`              // 页面
+	Icon       string           `gorm:"column:icon;type:VARCHAR(64);NOT NULL"`              // 图标
+	Body       string           `gorm:"column:body;type:VARCHAR(1024)"`                     // 菜单自定义数据
+	HideInMenu int64            `gorm:"column:hide_in_menu;type:BIGINT;default:2;NOT NULL"` // 是否隐藏菜单 1-是 2-否
+	Desc       string           `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`             // 备注
+	Apis       []*SysModuleApi  `gorm:"foreignKey:ModuleCode;references:Code"`
+	Menus      []*SysModuleMenu `gorm:"foreignKey:ModuleCode;references:Code"`
+	stores.Time
+}
+
+func (m *SysModuleInfo) TableName() string {
+	return "sys_module_info"
+}
+
+// 接口管理
+type SysModuleApi struct {
+	ID           int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`                   // 编号
+	ModuleCode   string `gorm:"column:module_code;uniqueIndex:app_route;type:VARCHAR(50);NOT NULL"` // 模块编码
+	Route        string `gorm:"column:route;uniqueIndex:app_route;type:VARCHAR(100);NOT NULL"`      // 路由
+	Method       string `gorm:"column:method;type:VARCHAR(50);NOT NULL"`                            // 请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Name         string `gorm:"column:name;type:VARCHAR(100);NOT NULL"`                             // 请求名称
+	BusinessType int64  `gorm:"column:business_type;type:BIGINT;NOT NULL"`                          // 业务类型（1新增 2修改 3删除 4查询 5其它）
+	Group        string `gorm:"column:group;type:VARCHAR(100);NOT NULL"`                            // 接口组
+	IsNeedAuth   int64  `gorm:"column:is_need_auth;type:BIGINT;default:1;NOT NULL"`                 // 是否需要认证（1是 2否）
+	Desc         string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                             // 备注
+	stores.Time
+}
+
+func (m *SysModuleApi) TableName() string {
+	return "sys_module_api"
+}
+
 // 菜单管理表
-type SysMenuInfo struct {
+type SysModuleMenu struct {
 	ID         int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // 编号
-	AppCode    string `gorm:"column:app_code;NOT NULL;type:VARCHAR(50)"`          // 应用ID
+	ModuleCode string `gorm:"column:module_code;type:VARCHAR(50);NOT NULL"`       // 模块编码
 	ParentID   int64  `gorm:"column:parent_id;type:BIGINT;default:1;NOT NULL"`    // 父菜单ID，一级菜单为1
 	Type       int64  `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`         // 类型   1：菜单或者页面   2：iframe嵌入   3：外链跳转
 	Order      int64  `gorm:"column:order_num;type:BIGINT;default:1;NOT NULL"`    // 左侧table排序序号
@@ -128,140 +91,6 @@ type SysMenuInfo struct {
 	stores.Time
 }
 
-func (m *SysMenuInfo) TableName() string {
-	return "sys_menu_info"
-}
-
-// 登录日志管理
-type SysLoginLog struct {
-	ID            int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`       // 编号
-	TenantCode    stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`           // 租户编码
-	AppCode       string            `gorm:"column:app_code;NOT NULL;type:VARCHAR(50)"`              // 应用ID
-	UserID        int64             `gorm:"column:user_id;type:BIGINT;NOT NULL"`                    // 用户id
-	UserName      string            `gorm:"column:user_name;type:VARCHAR(50)"`                      // 登录账号
-	IpAddr        string            `gorm:"column:ip_addr;type:VARCHAR(50)"`                        // 登录IP地址
-	LoginLocation string            `gorm:"column:login_location;type:VARCHAR(100)"`                // 登录地点
-	Browser       string            `gorm:"column:browser;type:VARCHAR(50)"`                        // 浏览器类型
-	Os            string            `gorm:"column:os;type:VARCHAR(50)"`                             // 操作系统
-	Code          int64             `gorm:"column:code;type:BIGINT;default:200;NOT NULL"`           // 登录状态（200成功 其它失败）
-	Msg           string            `gorm:"column:msg;type:VARCHAR(255)"`                           // 提示消息
-	CreatedTime   time.Time         `gorm:"column:created_time;default:CURRENT_TIMESTAMP;NOT NULL"` // 登录时间
-}
-
-func (m *SysLoginLog) TableName() string {
-	return "sys_login_log"
-}
-
-// 操作日志管理
-type SysOperLog struct {
-	ID           int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`       // 编号
-	TenantCode   stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`           // 租户编码
-	AppCode      string            `gorm:"column:app_code;NOT NULL;type:VARCHAR(50)"`              // 应用ID
-	OperUserID   int64             `gorm:"column:oper_user_id;type:BIGINT;NOT NULL"`               // 用户id
-	OperUserName string            `gorm:"column:oper_user_name;type:VARCHAR(50)"`                 // 操作人员名称
-	OperName     string            `gorm:"column:oper_name;type:VARCHAR(50)"`                      // 操作名称
-	BusinessType int64             `gorm:"column:business_type;type:BIGINT;NOT NULL"`              // 业务类型（1新增 2修改 3删除 4查询 5其它）
-	Uri          string            `gorm:"column:uri;type:VARCHAR(100)"`                           // 请求地址
-	OperIpAddr   string            `gorm:"column:oper_ip_addr;type:VARCHAR(50)"`                   // 主机地址
-	OperLocation string            `gorm:"column:oper_location;type:VARCHAR(255)"`                 // 操作地点
-	Req          sql.NullString    `gorm:"column:req;type:TEXT"`                                   // 请求参数
-	Resp         sql.NullString    `gorm:"column:resp;type:TEXT"`                                  // 返回参数
-	Code         int64             `gorm:"column:code;type:BIGINT;default:200;NOT NULL"`           // 返回状态（200成功 其它失败）
-	Msg          string            `gorm:"column:msg;type:VARCHAR(255)"`                           // 提示消息
-	CreatedTime  time.Time         `gorm:"column:created_time;default:CURRENT_TIMESTAMP;NOT NULL"` // 操作时间
-}
-
-func (m *SysOperLog) TableName() string {
-	return "sys_oper_log"
-}
-
-// 接口管理
-type SysApiInfo struct {
-	ID           int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`                // 编号
-	AppCode      string `gorm:"column:app_code;uniqueIndex:app_route;NOT NULL;type:VARCHAR(50)"` // 应用ID
-	Route        string `gorm:"column:route;uniqueIndex:app_route;type:VARCHAR(100);NOT NULL"`   // 路由
-	Method       string `gorm:"column:method;type:VARCHAR(50);NOT NULL"`                         // 请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
-	Name         string `gorm:"column:name;type:VARCHAR(100);NOT NULL"`                          // 请求名称
-	BusinessType int64  `gorm:"column:business_type;type:BIGINT;NOT NULL"`                       // 业务类型（1新增 2修改 3删除 4查询 5其它）
-	Group        string `gorm:"column:group;type:VARCHAR(100);NOT NULL"`                         // 接口组
-	Desc         string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                          // 备注
-	stores.Time
-}
-
-func (m *SysApiInfo) TableName() string {
-	return "sys_api_info"
-}
-
-// api权限管理
-type SysRoleApi struct {
-	ID    int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"` // 编号
-	PType string `gorm:"column:p_type;type:VARCHAR(255);NOT NULL"`         // 策略类型，即策略的分类，例如"p"表示主体（provider）访问资源（resource）的许可权，"g"表示主体（provider）之间的关系访问控制
-	V0    string `gorm:"column:v0;type:VARCHAR(255);NOT NULL"`             // 租户 策略中的第一个参数，通常用于表示资源的归属范围（即限制访问的对象），例如资源所属的机构、部门、业务线、地域等 应用
-	V1    string `gorm:"column:v1;type:VARCHAR(255);NOT NULL"`             // 应用 策略中的第二个参数，通常用于表示主体（provider），即需要访问资源的用户或者服务 角色
-	V2    string `gorm:"column:v2;type:VARCHAR(255);NOT NULL"`             // 角色 策略中的第三个参数，通常用于表示资源（resource），即需要进行访问的对象 路由
-	V3    string `gorm:"column:v3;type:VARCHAR(255);NOT NULL"`             // 路由 策略中的第四个参数，通常用于表示访问操作（permission），例如 “read”, “write”, “execute” 等 方法
-	V4    string `gorm:"column:v4;type:VARCHAR(255);NOT NULL"`             // http方法 策略中的第五个参数，通常用于表示资源的类型（object type），例如表示是文件或者数据库表等
-	V5    string `gorm:"column:v5;type:VARCHAR(255);NOT NULL"`             // 策略中的第六个参数，通常用于表示扩展信息，例如 IP 地址、端口号等
-}
-
-func (m *SysRoleApi) TableName() string {
-	return "sys_role_api"
-}
-
-// 项目信息表
-type SysProjectInfo struct {
-	ProjectID   stores.ProjectID `gorm:"column:projectID;type:bigint;NOT NULL"`         // 项目ID(雪花ID)
-	ProjectName string           `gorm:"column:projectName;type:varchar(100);NOT NULL"` // 项目名称
-	CompanyName string           `gorm:"column:companyName;type:varchar(100);NOT NULL"` // 项目所属公司名称
-	UserID      int64            `gorm:"column:userID;type:bigint;NOT NULL"`            // 管理员用户id
-	Region      string           `gorm:"column:region;type:varchar(100);NOT NULL"`      // 项目省市区县
-	Address     string           `gorm:"column:address;type:varchar(512);NOT NULL"`     // 项目详细地址
-	Desc        string           `gorm:"column:desc;type:varchar(100);NOT NULL"`        // 项目备注
-	stores.Time
-}
-
-func (m *SysProjectInfo) TableName() string {
-	return "sys_project_info"
-}
-
-// 区域信息表
-type SysAreaInfo struct {
-	ProjectID    stores.ProjectID `gorm:"column:projectID;type:bigint;NOT NULL"`      // 所属项目ID(雪花ID)
-	AreaID       stores.AreaID    `gorm:"column:areaID;type:bigint;NOT NULL"`         // 区域ID(雪花ID)
-	ParentAreaID int64            `gorm:"column:parentAreaID;type:bigint;NOT NULL"`   // 上级区域ID(雪花ID)
-	AreaName     string           `gorm:"column:areaName;type:varchar(100);NOT NULL"` // 区域名称
-	Position     stores.Point     `gorm:"column:position;type:varchar(100);NOT NULL"` // 区域定位(默认百度坐标系BD09)
-	Desc         string           `gorm:"column:desc;type:varchar(100);NOT NULL"`     // 区域备注
-	stores.Time
-	Children []*SysAreaInfo `gorm:"foreignKey:ParentAreaID;references:AreaID"`
-	Parent   *SysAreaInfo   `gorm:"foreignKey:AreaID;references:ParentAreaID"`
-}
-
-func (m *SysAreaInfo) TableName() string {
-	return "sys_area_info"
-}
-
-// 用户区域权限表
-type SysUserAuthArea struct {
-	ID        int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	UserID    int64 `gorm:"column:userID;type:bigint;NOT NULL"`    // 用户ID(雪花id)
-	ProjectID int64 `gorm:"column:projectID;type:bigint;NOT NULL"` // 所属项目ID(雪花ID)
-	AreaID    int64 `gorm:"column:areaID;type:bigint;NOT NULL"`    // 区域ID(雪花ID) 5 是共享设备
-	stores.Time
-}
-
-func (m *SysUserAuthArea) TableName() string {
-	return "sys_user_auth_area"
-}
-
-// 用户项目权限表
-type SysUserAuthProject struct {
-	ID        int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	UserID    int64 `gorm:"column:userID;type:bigint;NOT NULL"`    // 用户ID(雪花id)
-	ProjectID int64 `gorm:"column:projectID;type:bigint;NOT NULL"` // 所属项目ID(雪花ID)
-	stores.Time
-}
-
-func (m *SysUserAuthProject) TableName() string {
-	return "sys_user_auth_project"
+func (m *SysModuleMenu) TableName() string {
+	return "sys_module_menu"
 }

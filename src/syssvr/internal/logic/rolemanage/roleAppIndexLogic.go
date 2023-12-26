@@ -2,7 +2,6 @@ package rolemanagelogic
 
 import (
 	"context"
-	appmanagelogic "github.com/i-Things/things/src/syssvr/internal/logic/appmanage"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -34,10 +33,5 @@ func (l *RoleAppIndexLogic) RoleAppIndex(in *sys.RoleAppIndexReq) (*sys.RoleAppI
 	for _, v := range ra {
 		appCodes = append(appCodes, v.AppCode)
 	}
-	ais, err := relationDB.NewAppInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.AppInfoFilter{Codes: appCodes}, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return &sys.RoleAppIndexResp{List: appmanagelogic.ToAppInfosPb(ais), Total: int64(len(appCodes))}, nil
+	return &sys.RoleAppIndexResp{AppCodes: appCodes, Total: int64(len(appCodes))}, nil
 }

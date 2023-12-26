@@ -1,0 +1,63 @@
+info(
+	title: "接口管理模块"
+	desc: "接口管理"
+	author: "L"
+	email: "174805676@qq.com"
+	version: "v0.1.0"
+)
+import "common.api"  //公共结构体定义
+
+@server (
+	group : system/module/api
+	prefix: /api/v1/system/module/api
+	middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "添加接口"
+    @handler create
+    post /create (ApiInfo) returns (WithID)
+
+    @doc "获取接口列表"
+    @handler index
+    post /index (ApiInfoIndexReq) returns (ApiInfoIndexResp)
+
+    @doc "获取接口树型"
+    @handler tree
+    post /tree (ApiInfoIndexReq) returns (ApiInfoTreeResp)
+
+    @doc "更新接口"
+    @handler update
+    post /update (ApiInfo) returns ()
+
+    @doc "删除接口"
+    @handler delete
+    post /delete (WithID) returns ()
+}
+
+type (
+
+    ApiInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
+        Route string `json:"route,optional"`                   // 接口路由
+        Method string `json:"method,optional"`      // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+        Group string `json:"group,optional"`                   // 接口分组
+        Name string `json:"name,optional"`                     // 接口名称
+        ModuleCode string `json:"moduleCode,optional"`                               // 应用编号
+        IsNeedAuth int64 `json:"isNeedAuth,optional,range=[0:2]"`        // 是否需要认证（ 1需要 2不需要）
+    }
+
+
+    ApiInfoIndexResp struct {
+        List []*ApiInfo `json:"list"`            // 接口列表数据
+        Total int64 `json:"total"`                    // 接口列表总记录数
+    }
+    ApiInfoTreeResp struct {
+        List []*ApiGroupInfo `json:"list"`            // 接口列表数据
+    }
+
+
+    ApiDeleteReq struct {
+        ID int64 `json:"id"`                          // 接口编号
+    }
+)

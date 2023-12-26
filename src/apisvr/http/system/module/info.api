@@ -1,0 +1,47 @@
+info(
+    desc: "菜单权限"
+	author: "lbs"
+	email: "174805676@qq.com"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group: system/module/info
+    prefix: /api/v1/system/module/info
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "添加模块"
+    @handler create
+    post /create (ModuleInfo) returns (WithID)
+
+    @doc "获取模块列表"
+    @handler index
+    post /index (ModuleInfoIndexReq) returns (ModuleInfoIndexResp)
+
+    @doc "更新模块"
+    @handler update
+    post /update (ModuleInfo) returns ()
+
+    @doc "获取模块详情"
+    @handler read
+    post /read (WithIDOrCode) returns (ModuleInfo)
+
+    @doc "删除模块"
+    @handler delete
+    post /delete (WithIDOrCode) returns ()
+}
+type (
+
+    ModuleInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
+        code string `json:"code,optional"`                               // 应用编号
+        Name string `json:"name,optional"` // 按菜单名称筛选
+    }
+
+    ModuleInfoIndexResp struct {
+        Total int64 `json:"total"` //总数
+        List []*ModuleInfo `json:"list"` //菜单列表
+    }
+
+)

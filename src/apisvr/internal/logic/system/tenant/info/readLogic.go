@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -25,6 +26,9 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 }
 
 func (l *ReadLogic) Read(req *types.WithIDOrCode) (resp *types.TenantInfo, err error) {
-	ret, err := l.svcCtx.TenantRpc.TenantInfoRead(l.ctx, system.ToSysReqWithIDCode(req))
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	ret, err := l.svcCtx.TenantRpc.TenantInfoRead(l.ctx, system.ToSysWithIDCode(req))
 	return ToTenantInfoTypes(ret), err
 }

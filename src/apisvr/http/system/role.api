@@ -8,7 +8,7 @@ import "common.api"  //公共结构体定义
 @server(
     group: system/role/info
     prefix: /api/v1/system/role/info
-    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "添加角色"
@@ -32,7 +32,7 @@ service api {
 @server(
     group: system/role/app
     prefix: /api/v1/system/role/app
-    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "更新APP权限"
@@ -48,7 +48,7 @@ service api {
 @server(
     group: system/role/api
     prefix: /api/v1/system/role/api
-    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "更新API权限"
@@ -65,7 +65,7 @@ service api {
 @server(
     group: system/role/menu
     prefix: /api/v1/system/role/menu
-    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "更新角色对应菜单列表"
@@ -88,20 +88,14 @@ type (
         ID int64 `json:"id"`      //角色ID
     }
     RoleAppIndexResp{
-        List []*AppInfo `json:"list"`  //App列表数据
+        AppCodes []string `json:"appCodes"`  //App列表数据
         Total int64 `json:"total"`         //App列表总数
-    }
-
-
-    AuthApiInfo {
-        Route string `json:"route"`                          // 接口路由
-        Method string `json:"method"`             // 接口请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
     }
 
     RoleApiMultiUpdateReq {
         ID int64 `json:"id"`      //角色ID
         AppCode string `json:"appCode"`                               // 应用编号
-        Apis []*AuthApiInfo `json:"apis"`  //API列表数据
+        ApiIDs []int64 `json:"apiIDs"`  //API列表数据
     }
 
     RoleApiIndexReq{
@@ -110,8 +104,7 @@ type (
     }
 
     RoleApiIndexResp {
-        List []*AuthApiInfo `json:"list"`  //API列表数据
-        Total int64 `json:"total"`         //API列表总数
+        ApiIDs []int64 `json:"apiIDs"`  //API列表数据
     }
 
     RoleMenuIndexReq{
@@ -119,8 +112,7 @@ type (
         AppCode string `json:"appCode"`                               // 应用编号
     }
     RoleMenuIndexResp{
-        List []*MenuInfo `json:"list"`  //角色列表数据
-        Total int64 `json:"total"`           //角色列表总数
+        MenuIDs []int64 `json:"menuIDs"` //菜单编号列表
     }
 
     RoleInfoIndexReq struct {

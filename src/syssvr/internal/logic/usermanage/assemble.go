@@ -1,12 +1,24 @@
 package usermanagelogic
 
 import (
+	"context"
 	"github.com/i-Things/things/shared/domain/userDataAuth"
+	"github.com/i-Things/things/shared/oss/common"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
+	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func UserInfoToPb(ui *relationDB.SysUserInfo) *sys.UserInfo {
+func UserInfoToPb(ctx context.Context, ui *relationDB.SysTenantUserInfo, svcCtx *svc.ServiceContext) *sys.UserInfo {
+	if ui.HeadImg != "" {
+		var err error
+		ui.HeadImg, err = svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, ui.HeadImg, 24*60, common.OptionKv{})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
+		}
+	}
 	return &sys.UserInfo{
 		UserID:        ui.UserID,
 		UserName:      ui.UserName.String,
@@ -23,7 +35,7 @@ func UserInfoToPb(ui *relationDB.SysUserInfo) *sys.UserInfo {
 		Country:       ui.Country,
 		Province:      ui.Province,
 		Language:      ui.Language,
-		HeadImgUrl:    ui.HeadImgUrl,
+		HeadImg:       ui.HeadImg,
 		CreatedTime:   ui.CreatedTime.Unix(),
 	}
 }

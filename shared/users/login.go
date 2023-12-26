@@ -11,15 +11,17 @@ type LoginClaims struct {
 	UserID     int64 `json:",string"`
 	RoleIDs    []int64
 	TenantCode string `json:",string"`
+	IsAdmin    int64
 	IsAllData  int64
 	jwt.StandardClaims
 }
 
-func GetLoginJwtToken(secretKey string, iat, seconds, userID int64, tenantCode string, roleIDs []int64, isAllData int64) (string, error) {
+func GetLoginJwtToken(secretKey string, iat, seconds, userID int64, tenantCode string, roleIDs []int64, isAllData int64, isAdmin int64) (string, error) {
 	claims := LoginClaims{
 		UserID:     userID,
 		RoleIDs:    roleIDs,
 		TenantCode: tenantCode,
+		IsAdmin:    isAdmin,
 		IsAllData:  isAllData,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: iat + seconds,

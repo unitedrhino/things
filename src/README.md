@@ -11,7 +11,13 @@
 `protoc/protoc-gen-go/protoc-gen-grpc-go` 依赖可以通过下列命令 一键安装
 
 ```shell
-goctl env check -i -f
+$ goctl env check --install --verbose --force
+```
+
+# 服务器新增方案
+
+```
+goctl rpc new rpcsvr  --style=goZero -m
 ```
 
 # 库表新增方案
@@ -54,13 +60,13 @@ cd dmsvr && goctl rpc protoc  proto/dm.proto --go_out=./ --go-grpc_out=./ --zrpc
 cd dgsvr && goctl rpc protoc  proto/dg.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
 
-# 协议规则引擎模块-rulesvr
+# 用户设备模块-udsvr
 
 - rpc文件编译
 
 ```shell
 #protoc  proto/* --go_out=. --go-grpc_out=.
-cd rulesvr && goctl rpc protoc  proto/rule.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
+cd udsvr && goctl rpc protoc  proto/ud.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
 ```
 
 

@@ -21,7 +21,7 @@ func ProjectInfoToApi(pb *sys.ProjectInfo) *types.ProjectInfo {
 
 func ToMenuInfoApi(i *sys.MenuInfo) *types.MenuInfo {
 	return &types.MenuInfo{
-		AppCode:    i.AppCode,
+		ModuleCode: i.ModuleCode,
 		ID:         i.Id,
 		Name:       i.Name,
 		ParentID:   i.ParentID,
@@ -47,7 +47,7 @@ func ToMenuInfosApi(i []*sys.MenuInfo) (ret []*types.MenuInfo) {
 	return
 }
 
-func ToSysReqWithIDCode(in *types.WithIDOrCode) *sys.WithIDCode {
+func ToSysWithIDCode(in *types.WithIDOrCode) *sys.WithIDCode {
 	return &sys.WithIDCode{
 		Id:   in.ID,
 		Code: in.Code,

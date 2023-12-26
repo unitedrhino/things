@@ -73,19 +73,19 @@ func (l *UserInfoCreateLogic) UserInfoInsert(in *sys.UserInfoCreateReq) (int64, 
 
 		//2.对密码进行md5加密
 		password := utils.MakePwd(info.Password, userID, false)
-		ui := relationDB.SysUserInfo{
-			UserID:     userID,
-			UserName:   sql.NullString{String: info.UserName, Valid: true},
-			Password:   password,
-			NickName:   info.NickName,
-			City:       info.City,
-			Country:    info.Country,
-			Province:   info.Province,
-			Language:   info.Language,
-			HeadImgUrl: info.HeadImgUrl,
-			Role:       info.Role,
-			Sex:        info.Sex,
-			IsAllData:  info.IsAllData,
+		ui := relationDB.SysTenantUserInfo{
+			UserID:    userID,
+			UserName:  sql.NullString{String: info.UserName, Valid: true},
+			Password:  password,
+			NickName:  info.NickName,
+			City:      info.City,
+			Country:   info.Country,
+			Province:  info.Province,
+			Language:  info.Language,
+			HeadImg:   info.HeadImg,
+			Role:      info.Role,
+			Sex:       info.Sex,
+			IsAllData: info.IsAllData,
 		}
 		if info.Email != "" {
 			ui.Email = sql.NullString{String: info.Email, Valid: true}

@@ -8,7 +8,7 @@ import "common.api"  //公共结构体定义
 @server (
     group : system/common
     prefix: /api/v1/system/common
-    middleware: SetupWare, CheckTokenWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, TeardownWare
 )
 service api {
     @doc "获取系统配置"

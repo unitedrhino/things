@@ -12,11 +12,11 @@ const (
 )
 
 type Handle interface {
-	SignedPutUrl(ctx context.Context, objectName string, expiredSec int64, opKv common.OptionKv) (string, error)
-	SignedGetUrl(ctx context.Context, objectName string, expiredSec int64, opKv common.OptionKv) (string, error)
-	Delete(ctx context.Context, objectName string, opKv common.OptionKv) error
-	Upload(ctx context.Context, objectName string, reader io.Reader, opKv common.OptionKv) (string, error)
-	GetObjectInfo(ctx context.Context, objectName string) (*common.StorageObjectInfo, error)
+	SignedPutUrl(ctx context.Context, filePath string, expiredSec int64, opKv common.OptionKv) (string, error)
+	SignedGetUrl(ctx context.Context, filePath string, expiredSec int64, opKv common.OptionKv) (string, error)
+	Delete(ctx context.Context, filePath string, opKv common.OptionKv) error
+	Upload(ctx context.Context, filePath string, reader io.Reader, opKv common.OptionKv) (string, error)
+	GetObjectInfo(ctx context.Context, filePath string) (*common.StorageObjectInfo, error)
 	PrivateBucket() Handle
 	PublicBucket() Handle
 	TemporaryBucket() Handle

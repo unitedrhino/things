@@ -10,7 +10,7 @@ import "common.api"  //公共结构体定义
 @server (
 	group : system/log
 	prefix: /api/v1/system/log
-	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+	middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 
 service api {

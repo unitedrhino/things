@@ -65,6 +65,6 @@ func (l *UserCaptchaLogic) UserCaptcha(in *sys.UserCaptchaReq) (*sys.UserCaptcha
 	if err != nil {
 		return nil, err
 	}
-
+	l.Infof("code:%v codeID:%v", code, codeID)
 	return &sys.UserCaptchaResp{Code: code, CodeID: codeID, Expire: def.CaptchaExpire}, nil
 }

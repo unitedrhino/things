@@ -2,8 +2,7 @@ package app
 
 import (
 	"context"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
-
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 
@@ -25,6 +24,10 @@ func NewMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 }
 
 func (l *MultiUpdateLogic) MultiUpdate(req *types.TenantAppMultiUpdateReq) error {
-	_, err := l.svcCtx.TenantRpc.TenantAppMultiUpdate(l.ctx, &sys.TenantAppMultiUpdateReq{Code: req.Code, AppCodes: req.AppCodes})
-	return err
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return err
+	}
+	//_, err := l.svcCtx.TenantRpc.TenantAppMultiUpdate(l.ctx, &sys.TenantAppMultiUpdateReq{Code: req.Code, AppCodes: req.AppCodes})
+	//return err
+	return nil
 }

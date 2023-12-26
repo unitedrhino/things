@@ -29,7 +29,7 @@ func UserInfoToApi(ui *sys.UserInfo) *types.UserInfo {
 		Country:     ui.Country,
 		Province:    ui.Province,
 		Language:    ui.Language,
-		HeadImgUrl:  ui.HeadImgUrl,
+		HeadImgUrl:  ui.HeadImg,
 		CreatedTime: ui.CreatedTime,
 	}
 }
@@ -49,7 +49,7 @@ func UserInfoToRpc(ui *types.UserInfo) *sys.UserInfo {
 		Country:     ui.Country,
 		Province:    ui.Province,
 		Language:    ui.Language,
-		HeadImgUrl:  ui.HeadImgUrl,
+		HeadImg:     ui.HeadImgUrl,
 		Password:    ui.Password,
 		CreatedTime: ui.CreatedTime,
 	}

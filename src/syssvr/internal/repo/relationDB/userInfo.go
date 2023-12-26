@@ -28,6 +28,7 @@ type UserInfoFilter struct {
 	WechatUnionID string
 	WechatOpenID  string
 	WithRoles     bool
+	WithTenant    bool
 }
 
 func (p UserInfoRepo) accountsFilter(db *gorm.DB, accounts []string) *gorm.DB {
@@ -41,6 +42,9 @@ func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB 
 	db := p.db.WithContext(ctx)
 	if f.WithRoles {
 		db = db.Preload("Roles")
+	}
+	if f.WithTenant {
+		db = db.Preload("Tenant")
 	}
 	if len(f.UserIDs) != 0 {
 		db = db.Where("user_id in?", f.UserIDs)
@@ -82,13 +86,13 @@ func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB 
 	return db
 }
 
-func (p UserInfoRepo) Insert(ctx context.Context, data *SysUserInfo) error {
+func (p UserInfoRepo) Insert(ctx context.Context, data *SysTenantUserInfo) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p UserInfoRepo) FindOneByFilter(ctx context.Context, f UserInfoFilter) (*SysUserInfo, error) {
-	var result SysUserInfo
+func (p UserInfoRepo) FindOneByFilter(ctx context.Context, f UserInfoFilter) (*SysTenantUserInfo, error) {
+	var result SysTenantUserInfo
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -96,9 +100,9 @@ func (p UserInfoRepo) FindOneByFilter(ctx context.Context, f UserInfoFilter) (*S
 	}
 	return &result, nil
 }
-func (p UserInfoRepo) FindByFilter(ctx context.Context, f UserInfoFilter, page *def.PageInfo) ([]*SysUserInfo, error) {
-	var results []*SysUserInfo
-	db := p.fmtFilter(ctx, f).Model(&SysUserInfo{})
+func (p UserInfoRepo) FindByFilter(ctx context.Context, f UserInfoFilter, page *def.PageInfo) ([]*SysTenantUserInfo, error) {
+	var results []*SysTenantUserInfo
+	db := p.fmtFilter(ctx, f).Model(&SysTenantUserInfo{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -108,28 +112,28 @@ func (p UserInfoRepo) FindByFilter(ctx context.Context, f UserInfoFilter, page *
 }
 
 func (p UserInfoRepo) CountByFilter(ctx context.Context, f UserInfoFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&SysUserInfo{})
+	db := p.fmtFilter(ctx, f).Model(&SysTenantUserInfo{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p UserInfoRepo) Update(ctx context.Context, data *SysUserInfo) error {
+func (p UserInfoRepo) Update(ctx context.Context, data *SysTenantUserInfo) error {
 	err := p.db.WithContext(ctx).Where("user_id = ?", data.UserID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p UserInfoRepo) DeleteByFilter(ctx context.Context, f UserInfoFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&SysUserInfo{}).Error
+	err := db.Delete(&SysTenantUserInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p UserInfoRepo) Delete(ctx context.Context, userID int64) error {
-	err := p.db.WithContext(ctx).Where("user_id = ?", userID).Delete(&SysUserInfo{}).Error
+	err := p.db.WithContext(ctx).Where("user_id = ?", userID).Delete(&SysTenantUserInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (p UserInfoRepo) FindOne(ctx context.Context, userID int64) (*SysUserInfo, error) {
-	var result SysUserInfo
+func (p UserInfoRepo) FindOne(ctx context.Context, userID int64) (*SysTenantUserInfo, error) {
+	var result SysTenantUserInfo
 	err := p.db.WithContext(ctx).Where("user_id = ?", userID).First(&result).Error
 	return &result, stores.ErrFmt(err)
 }

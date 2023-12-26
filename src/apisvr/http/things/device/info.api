@@ -11,7 +11,7 @@ import "common.api"  //公共结构体定义
 @server(
     group : things/device/info
     prefix: /api/v1/things/device/info
-    middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "新增设备"

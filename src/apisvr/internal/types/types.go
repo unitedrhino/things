@@ -22,7 +22,7 @@ type AppInfo struct {
 
 type MenuInfo struct {
 	ID         int64       `json:"id,optional"`         // 编号
-	AppCode    string      `json:"appCode"`             // 应用编号
+	ModuleCode string      `json:"moduleCode"`          // 模块编号
 	Name       string      `json:"name,optional"`       // 菜单名称
 	ParentID   int64       `json:"parentID,optional"`   // 父菜单ID，一级菜单为1
 	Type       int64       `json:"type,optional"`       // 类型   1. 内部页面   2，iframe内嵌  3，外部链接跳转 4，微前端
@@ -37,6 +37,20 @@ type MenuInfo struct {
 	Children   []*MenuInfo `json:"children,optional"`   //子节点
 }
 
+type ModuleInfo struct {
+	ID         int64   `json:"id,optional"`         // 编号
+	Code       string  `json:"code"`                // 应用编号
+	Name       string  `json:"name,optional"`       // 菜单名称
+	Type       int64   `json:"type,optional"`       // 类型   1. 内部页面   2，iframe内嵌  3，外部链接跳转 4，微前端
+	Path       string  `json:"path,optional"`       // 系统的path
+	Desc       *string `json:"desc,optional"`       // 页面
+	Icon       string  `json:"icon,optional"`       // 菜单图标
+	Url        string  `json:"url,optional"`        // 路由重定向
+	Order      int64   `json:"order,optional"`      // 左侧table排序序号
+	HideInMenu int64   `json:"hideInMenu,optional"` // 菜单是否隐藏 1：是 2：否
+	Body       *string `json:"body,optional"`       //前端自定义字段
+}
+
 type ProjectInfo struct {
 	CreatedTime int64   `json:"createdTime,optional,string"` //创建时间（只读）
 	ProjectID   int64   `json:"projectID,string,optional"`   //项目id（只读）
@@ -46,6 +60,24 @@ type ProjectInfo struct {
 	Region      *string `json:"region,optional"`             //项目省市区县（读写）
 	Address     *string `json:"address,optional"`            //项目详细地址（读写）
 	Desc        *string `json:"desc,optional"`               //项目备注（读写）
+}
+
+type ApiGroupInfo struct {
+	ID       string     `json:"id,optional"`   // id
+	Name     string     `json:"name,optional"` // 接口分组
+	Children []*ApiInfo `json:"children"`      // 接口列表数据
+}
+
+type ApiInfo struct {
+	ID           int64  `json:"id,optional"`                       // 接口编号
+	ModuleCode   string `json:"moduleCode"`                        // 模块编号
+	Route        string `json:"route,optional"`                    // 接口路由
+	Method       string `json:"method,optional"`                   // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Group        string `json:"group,optional"`                    // 接口分组
+	Name         string `json:"name,optional"`                     // 接口名称
+	BusinessType int64  `json:"businessType,optional,range=[1:5]"` // 业务类型（1新增 2修改 3删除 4查询 5其它)
+	IsNeedAuth   int64  `json:"isNeedAuth,optional,range=[1:2]"`   // 是否需要认证（ 1需要 2不需要）
+	Desc         string `json:"desc,optional"`                     // 备注
 }
 
 type UserInfo struct {
@@ -144,11 +176,12 @@ type JwtToken struct {
 }
 
 type UserResourceReadResp struct {
-	Menus    []*MenuInfo    `json:"menus"` //菜单资源
-	Roles    []*RoleInfo    `json:"roles"` //角色列表
-	Info     *UserInfo      `json:"info"`  //用户信息
-	App      *AppInfo       `json:"app"`
-	Projects []*ProjectInfo `json:"projects"` //项目列表
+	Menus    []*MenuInfo     `json:"menus"` //菜单资源
+	Roles    []*RoleInfo     `json:"roles"` //角色列表
+	Apis     []*ApiGroupInfo `json:"apis"`  //接口资源
+	Info     *UserInfo       `json:"info"`  //用户信息
+	App      *AppInfo        `json:"app"`
+	Projects []*ProjectInfo  `json:"projects"` //项目列表
 }
 
 type UserRegisterReq struct {
@@ -178,19 +211,14 @@ type RoleAppIndexReq struct {
 }
 
 type RoleAppIndexResp struct {
-	List  []*AppInfo `json:"list"`  //App列表数据
-	Total int64      `json:"total"` //App列表总数
-}
-
-type AuthApiInfo struct {
-	Route  string `json:"route"`  // 接口路由
-	Method string `json:"method"` // 接口请求方式（1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	AppCodes []string `json:"appCodes"` //App列表数据
+	Total    int64    `json:"total"`    //App列表总数
 }
 
 type RoleApiMultiUpdateReq struct {
-	ID      int64          `json:"id"`      //角色ID
-	AppCode string         `json:"appCode"` // 应用编号
-	Apis    []*AuthApiInfo `json:"apis"`    //API列表数据
+	ID      int64   `json:"id"`      //角色ID
+	AppCode string  `json:"appCode"` // 应用编号
+	ApiIDs  []int64 `json:"apiIDs"`  //API列表数据
 }
 
 type RoleApiIndexReq struct {
@@ -199,8 +227,7 @@ type RoleApiIndexReq struct {
 }
 
 type RoleApiIndexResp struct {
-	List  []*AuthApiInfo `json:"list"`  //API列表数据
-	Total int64          `json:"total"` //API列表总数
+	ApiIDs []int64 `json:"apiIDs"` //API列表数据
 }
 
 type RoleMenuIndexReq struct {
@@ -209,8 +236,7 @@ type RoleMenuIndexReq struct {
 }
 
 type RoleMenuIndexResp struct {
-	List  []*MenuInfo `json:"list"`  //角色列表数据
-	Total int64       `json:"total"` //角色列表总数
+	MenuIDs []int64 `json:"menuIDs"` //菜单编号列表
 }
 
 type RoleInfoIndexReq struct {
@@ -284,17 +310,6 @@ type SendOption struct {
 
 type CodeReq struct {
 	Code string `json:"code"`
-}
-
-type MenuInfoIndexReq struct {
-	AppCode   string `json:"appCode,optional"`   // 应用编号
-	Name      string `json:"name,optional"`      // 按菜单名称筛选
-	Path      string `json:"path,optional"`      // 按菜单路径筛选
-	IsRetTree bool   `json:"isRetTree,optional"` // 是否返回树形结构
-}
-
-type MenuInfoIndexResp struct {
-	List []*MenuInfo `json:"list"` //菜单列表
 }
 
 type UserAuthProject struct {
@@ -392,23 +407,25 @@ type SysLogOperIndexResp struct {
 	Total int64             `json:"total"` //操作日志列表总记录数
 }
 
-type ApiInfoIndexReq struct {
-	Page    *PageInfo `json:"page,optional"`    // 分页信息,只获取一个则不填
-	Route   string    `json:"route,optional"`   // 接口路由
-	Method  string    `json:"method,optional"`  // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
-	Group   string    `json:"group,optional"`   // 接口分组
-	Name    string    `json:"name,optional"`    // 接口名称
-	AppCode string    `json:"appCode,optional"` // 应用编号
+type ModuleInfoIndexReq struct {
+	Page *PageInfo `json:"page,optional"` // 分页信息,只获取一个则不填
+	Code string    `json:"code,optional"` // 应用编号
+	Name string    `json:"name,optional"` // 按菜单名称筛选
 }
 
-type ApiInfo struct {
-	ID           int64  `json:"id,optional"`                       // 接口编号
-	AppCode      string `json:"appCode"`                           // 应用编号
-	Route        string `json:"route,optional"`                    // 接口路由
-	Method       string `json:"method,optional"`                   // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
-	Group        string `json:"group,optional"`                    // 接口分组
-	Name         string `json:"name,optional"`                     // 接口名称
-	BusinessType int64  `json:"businessType,optional,range=[1:5]"` // 业务类型（1新增 2修改 3删除 4查询 5其它)
+type ModuleInfoIndexResp struct {
+	Total int64         `json:"total"` //总数
+	List  []*ModuleInfo `json:"list"`  //菜单列表
+}
+
+type ApiInfoIndexReq struct {
+	Page       *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
+	Route      string    `json:"route,optional"`                  // 接口路由
+	Method     string    `json:"method,optional"`                 // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Group      string    `json:"group,optional"`                  // 接口分组
+	Name       string    `json:"name,optional"`                   // 接口名称
+	ModuleCode string    `json:"moduleCode,optional"`             // 应用编号
+	IsNeedAuth int64     `json:"isNeedAuth,optional,range=[0:2]"` // 是否需要认证（ 1需要 2不需要）
 }
 
 type ApiInfoIndexResp struct {
@@ -416,8 +433,36 @@ type ApiInfoIndexResp struct {
 	Total int64      `json:"total"` // 接口列表总记录数
 }
 
+type ApiInfoTreeResp struct {
+	List []*ApiGroupInfo `json:"list"` // 接口列表数据
+}
+
 type ApiDeleteReq struct {
 	ID int64 `json:"id"` // 接口编号
+}
+
+type MenuInfoIndexReq struct {
+	ModuleCode string `json:"moduleCode,optional"` // 应用编号
+	Name       string `json:"name,optional"`       // 按菜单名称筛选
+	Path       string `json:"path,optional"`       // 按菜单路径筛选
+	IsRetTree  bool   `json:"isRetTree,optional"`  // 是否返回树形结构
+}
+
+type MenuInfoIndexResp struct {
+	List []*MenuInfo `json:"list"` //菜单列表
+}
+
+type AppModuleMultiUpdateReq struct {
+	Code        string   `json:"code"`        // 应用编号
+	ModuleCodes []string `json:"moduleCodes"` //App列表数据
+}
+
+type AppModuleIndexReq struct {
+	Code string `json:"code"` // 应用编号
+}
+
+type AppModuleIndexResp struct {
+	ModuleCodes []string `json:"moduleCodes"` //App列表数据
 }
 
 type AppInfoIndexReq struct {
