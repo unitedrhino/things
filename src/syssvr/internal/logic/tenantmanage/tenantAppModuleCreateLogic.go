@@ -2,6 +2,7 @@ package tenantmanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 
@@ -26,6 +27,13 @@ func NewTenantAppModuleCreateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 func (l *TenantAppModuleCreateLogic) TenantAppModuleCreate(in *sys.TenantModuleCreateReq) (*sys.Response, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	ctxs.GetUserCtx(l.ctx).AllTenant = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllTenant = false
+	}()
 	conn := stores.GetTenantConn(l.ctx)
 	err := conn.Transaction(func(tx *gorm.DB) error {
 		err := ModuleCreate(l.ctx, tx, in.Code, in.AppCode, in.ModuleCode, in.MenuIDs, in.ApiIDs)

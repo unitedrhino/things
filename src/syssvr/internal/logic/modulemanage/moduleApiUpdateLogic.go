@@ -2,6 +2,7 @@ package modulemanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -25,6 +26,6 @@ func NewModuleApiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *M
 }
 
 func (l *ModuleApiUpdateLogic) ModuleApiUpdate(in *sys.ApiInfo) (*sys.Response, error) {
-	err := relationDB.NewApiInfoRepo(l.ctx).Update(l.ctx, ToApiInfoPo(in))
+	err := relationDB.NewApiInfoRepo(l.ctx).Update(l.ctx, logic.ToApiInfoPo(in))
 	return &sys.Response{}, err
 }

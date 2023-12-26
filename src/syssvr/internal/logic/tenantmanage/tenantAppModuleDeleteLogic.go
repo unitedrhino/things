@@ -2,6 +2,7 @@ package tenantmanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -25,6 +26,13 @@ func NewTenantAppModuleDeleteLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 func (l *TenantAppModuleDeleteLogic) TenantAppModuleDelete(in *sys.TenantModuleWithIDOrCode) (*sys.Response, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	ctxs.GetUserCtx(l.ctx).AllTenant = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllTenant = false
+	}()
 	f := relationDB.TenantAppModuleFilter{ID: in.Id, TenantCode: in.Code}
 	if in.AppCode != "" {
 		f.AppCodes = []string{in.AppCode}

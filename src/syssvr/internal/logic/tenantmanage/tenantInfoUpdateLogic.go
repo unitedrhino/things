@@ -2,6 +2,7 @@ package tenantmanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/logic"
@@ -29,6 +30,13 @@ func NewTenantInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 更新区域
 func (l *TenantInfoUpdateLogic) TenantInfoUpdate(in *sys.TenantInfo) (*sys.Response, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	ctxs.GetUserCtx(l.ctx).AllTenant = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllTenant = false
+	}()
 	repo := relationDB.NewTenantInfoRepo(l.ctx)
 	old, err := repo.FindOne(l.ctx, in.Id)
 	if err != nil {

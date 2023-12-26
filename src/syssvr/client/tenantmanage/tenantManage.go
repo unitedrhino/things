@@ -73,10 +73,13 @@ type (
 	RoleMenuMultiUpdateReq    = sys.RoleMenuMultiUpdateReq
 	TenantApiInfo             = sys.TenantApiInfo
 	TenantAppApiIndexReq      = sys.TenantAppApiIndexReq
+	TenantAppApiIndexResp     = sys.TenantAppApiIndexResp
 	TenantAppCreateReq        = sys.TenantAppCreateReq
 	TenantAppIndexReq         = sys.TenantAppIndexReq
 	TenantAppIndexResp        = sys.TenantAppIndexResp
+	TenantAppMenu             = sys.TenantAppMenu
 	TenantAppMenuIndexReq     = sys.TenantAppMenuIndexReq
+	TenantAppMenuIndexResp    = sys.TenantAppMenuIndexResp
 	TenantAppModule           = sys.TenantAppModule
 	TenantAppMultiUpdateReq   = sys.TenantAppMultiUpdateReq
 	TenantAppWithIDOrCode     = sys.TenantAppWithIDOrCode
@@ -84,7 +87,6 @@ type (
 	TenantInfoCreateReq       = sys.TenantInfoCreateReq
 	TenantInfoIndexReq        = sys.TenantInfoIndexReq
 	TenantInfoIndexResp       = sys.TenantInfoIndexResp
-	TenantMenuInfo            = sys.TenantMenuInfo
 	TenantModuleCreateReq     = sys.TenantModuleCreateReq
 	TenantModuleIndexReq      = sys.TenantModuleIndexReq
 	TenantModuleIndexResp     = sys.TenantModuleIndexResp
@@ -116,6 +118,7 @@ type (
 	UserRoleIndexReq          = sys.UserRoleIndexReq
 	UserRoleIndexResp         = sys.UserRoleIndexResp
 	UserRoleMultiUpdateReq    = sys.UserRoleMultiUpdateReq
+	WithAppCodeID             = sys.WithAppCodeID
 	WithID                    = sys.WithID
 	WithIDCode                = sys.WithIDCode
 
@@ -136,14 +139,14 @@ type (
 		TenantAppModuleCreate(ctx context.Context, in *TenantModuleCreateReq, opts ...grpc.CallOption) (*Response, error)
 		TenantAppModuleIndex(ctx context.Context, in *TenantModuleIndexReq, opts ...grpc.CallOption) (*TenantModuleIndexResp, error)
 		TenantAppModuleDelete(ctx context.Context, in *TenantModuleWithIDOrCode, opts ...grpc.CallOption) (*Response, error)
-		TenantAppMenuCreate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*WithID, error)
-		TenantAppMenuIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error)
-		TenantAppMenuUpdate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*Response, error)
-		TenantAppMenuDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+		TenantAppMenuCreate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*WithID, error)
+		TenantAppMenuIndex(ctx context.Context, in *TenantAppMenuIndexReq, opts ...grpc.CallOption) (*TenantAppMenuIndexResp, error)
+		TenantAppMenuUpdate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*Response, error)
+		TenantAppMenuDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error)
 		TenantAppApiCreate(ctx context.Context, in *TenantApiInfo, opts ...grpc.CallOption) (*WithID, error)
-		TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error)
+		TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*TenantAppApiIndexResp, error)
 		TenantAppApiUpdate(ctx context.Context, in *TenantApiInfo, opts ...grpc.CallOption) (*Response, error)
-		TenantAppApiDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+		TenantAppApiDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultTenantManage struct {
@@ -278,39 +281,39 @@ func (d *directTenantManage) TenantAppModuleDelete(ctx context.Context, in *Tena
 	return d.svr.TenantAppModuleDelete(ctx, in)
 }
 
-func (m *defaultTenantManage) TenantAppMenuCreate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*WithID, error) {
+func (m *defaultTenantManage) TenantAppMenuCreate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*WithID, error) {
 	client := sys.NewTenantManageClient(m.cli.Conn())
 	return client.TenantAppMenuCreate(ctx, in, opts...)
 }
 
-func (d *directTenantManage) TenantAppMenuCreate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*WithID, error) {
+func (d *directTenantManage) TenantAppMenuCreate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*WithID, error) {
 	return d.svr.TenantAppMenuCreate(ctx, in)
 }
 
-func (m *defaultTenantManage) TenantAppMenuIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error) {
+func (m *defaultTenantManage) TenantAppMenuIndex(ctx context.Context, in *TenantAppMenuIndexReq, opts ...grpc.CallOption) (*TenantAppMenuIndexResp, error) {
 	client := sys.NewTenantManageClient(m.cli.Conn())
 	return client.TenantAppMenuIndex(ctx, in, opts...)
 }
 
-func (d *directTenantManage) TenantAppMenuIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error) {
+func (d *directTenantManage) TenantAppMenuIndex(ctx context.Context, in *TenantAppMenuIndexReq, opts ...grpc.CallOption) (*TenantAppMenuIndexResp, error) {
 	return d.svr.TenantAppMenuIndex(ctx, in)
 }
 
-func (m *defaultTenantManage) TenantAppMenuUpdate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultTenantManage) TenantAppMenuUpdate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewTenantManageClient(m.cli.Conn())
 	return client.TenantAppMenuUpdate(ctx, in, opts...)
 }
 
-func (d *directTenantManage) TenantAppMenuUpdate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*Response, error) {
+func (d *directTenantManage) TenantAppMenuUpdate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.TenantAppMenuUpdate(ctx, in)
 }
 
-func (m *defaultTenantManage) TenantAppMenuDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultTenantManage) TenantAppMenuDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewTenantManageClient(m.cli.Conn())
 	return client.TenantAppMenuDelete(ctx, in, opts...)
 }
 
-func (d *directTenantManage) TenantAppMenuDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (d *directTenantManage) TenantAppMenuDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.TenantAppMenuDelete(ctx, in)
 }
 
@@ -323,12 +326,12 @@ func (d *directTenantManage) TenantAppApiCreate(ctx context.Context, in *TenantA
 	return d.svr.TenantAppApiCreate(ctx, in)
 }
 
-func (m *defaultTenantManage) TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error) {
+func (m *defaultTenantManage) TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*TenantAppApiIndexResp, error) {
 	client := sys.NewTenantManageClient(m.cli.Conn())
 	return client.TenantAppApiIndex(ctx, in, opts...)
 }
 
-func (d *directTenantManage) TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error) {
+func (d *directTenantManage) TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*TenantAppApiIndexResp, error) {
 	return d.svr.TenantAppApiIndex(ctx, in)
 }
 
@@ -341,11 +344,11 @@ func (d *directTenantManage) TenantAppApiUpdate(ctx context.Context, in *TenantA
 	return d.svr.TenantAppApiUpdate(ctx, in)
 }
 
-func (m *defaultTenantManage) TenantAppApiDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultTenantManage) TenantAppApiDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewTenantManageClient(m.cli.Conn())
 	return client.TenantAppApiDelete(ctx, in, opts...)
 }
 
-func (d *directTenantManage) TenantAppApiDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (d *directTenantManage) TenantAppApiDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.TenantAppApiDelete(ctx, in)
 }

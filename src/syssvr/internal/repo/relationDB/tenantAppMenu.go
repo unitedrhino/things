@@ -105,6 +105,9 @@ func (p TenantAppMenuRepo) FindOne(ctx context.Context, id int64) (*SysTenantApp
 
 // 批量插入 LightStrategyDevice 记录
 func (p TenantAppMenuRepo) MultiInsert(ctx context.Context, data []*SysTenantAppMenu) error {
+	if len(data) == 0 {
+		return nil
+	}
 	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysTenantAppMenu{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

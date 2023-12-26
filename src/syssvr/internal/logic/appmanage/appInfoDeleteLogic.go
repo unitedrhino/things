@@ -25,6 +25,10 @@ func NewAppInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *App
 }
 
 func (l *AppInfoDeleteLogic) AppInfoDelete(in *sys.WithIDCode) (*sys.Response, error) {
-	err := relationDB.NewAppInfoRepo(l.ctx).DeleteByFilter(l.ctx, relationDB.AppInfoFilter{Codes: []string{in.Code}, ID: in.Id})
+	f := relationDB.AppInfoFilter{ID: in.Id}
+	if in.Code != "" {
+		f.Codes = []string{in.Code}
+	}
+	err := relationDB.NewAppInfoRepo(l.ctx).DeleteByFilter(l.ctx, f)
 	return &sys.Response{}, err
 }

@@ -2,6 +2,7 @@ package modulemanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -34,7 +35,7 @@ func (l *ModuleInfoCreateLogic) ModuleInfoCreate(in *sys.ModuleInfo) (*sys.WithI
 	if in.HideInMenu == 0 {
 		in.HideInMenu = 1
 	}
-	po := ToModuleInfoPo(in)
+	po := logic.ToModuleInfoPo(in)
 	relationDB.NewModuleInfoRepo(l.ctx).Insert(l.ctx, po)
 	return &sys.WithID{Id: po.ID}, nil
 }

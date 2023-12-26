@@ -2,6 +2,7 @@ package modulemanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -40,7 +41,7 @@ func (l *ModuleMenuIndexLogic) ModuleMenuIndex(in *sys.MenuInfoIndexReq) (*sys.M
 	info := make([]*sys.MenuInfo, 0, len(resp))
 	if !in.IsRetTree {
 		for _, v := range resp {
-			i := ToMenuInfoPb(v)
+			i := logic.ToMenuInfoPb(v)
 			info = append(info, i)
 		}
 		return &sys.MenuInfoIndexResp{List: info}, nil
@@ -51,7 +52,7 @@ func (l *ModuleMenuIndexLogic) ModuleMenuIndex(in *sys.MenuInfoIndexReq) (*sys.M
 		idMap  = make(map[int64]*sys.MenuInfo, len(resp))
 	)
 	for _, v := range resp {
-		i := ToMenuInfoPb(v)
+		i := logic.ToMenuInfoPb(v)
 		idMap[i.Id] = i
 		if i.ParentID == 1 { //根节点
 			info = append(info, i)

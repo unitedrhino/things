@@ -25,6 +25,10 @@ func NewAppInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AppIn
 }
 
 func (l *AppInfoReadLogic) AppInfoRead(in *sys.WithIDCode) (*sys.AppInfo, error) {
-	ret, err := relationDB.NewAppInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.AppInfoFilter{Codes: []string{in.Code}, ID: in.Id})
+	f := relationDB.AppInfoFilter{ID: in.Id}
+	if in.Code != "" {
+		f.Codes = []string{in.Code}
+	}
+	ret, err := relationDB.NewAppInfoRepo(l.ctx).FindOneByFilter(l.ctx, f)
 	return ToAppInfoPb(ret), err
 }

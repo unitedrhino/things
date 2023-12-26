@@ -71,7 +71,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB)
 	duR, err := dataUpdate.NewDataUpdate(c.Event)
 	if err != nil {
-		logx.Error("NewDataUpdate err", err)
+		logx.Error("NewDataUpdate err:", err)
 		os.Exit(-1)
 	}
 	ossClient, err := oss.NewOssClient(c.OssConf)

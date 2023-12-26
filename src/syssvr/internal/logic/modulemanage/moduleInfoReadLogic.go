@@ -2,6 +2,7 @@ package modulemanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -26,5 +27,5 @@ func NewModuleInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mo
 
 func (l *ModuleInfoReadLogic) ModuleInfoRead(in *sys.WithIDCode) (*sys.ModuleInfo, error) {
 	ret, err := relationDB.NewModuleInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.ModuleInfoFilter{Codes: []string{in.Code}, ID: in.Id})
-	return ToModuleInfoPb(ret), err
+	return logic.ToModuleInfoPb(ret), err
 }

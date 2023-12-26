@@ -118,6 +118,9 @@ func (p TenantAppApiRepo) FindOne(ctx context.Context, id int64) (*SysTenantAppA
 
 // 批量插入 LightStrategyDevice 记录
 func (p TenantAppApiRepo) MultiInsert(ctx context.Context, data []*SysTenantAppApi) error {
+	if len(data) == 0 {
+		return nil
+	}
 	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysTenantAppApi{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

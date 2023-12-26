@@ -25,7 +25,7 @@ func NewAppModuleIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ap
 }
 
 func (l *AppModuleIndexLogic) AppModuleIndex(in *sys.AppModuleIndexReq) (*sys.AppModuleIndexResp, error) {
-	list, err := relationDB.NewAppModuleRepo(l.ctx).FindByFilter(l.ctx, relationDB.AppModuleFilter{AppCode: []string{in.Code}}, nil)
+	list, err := relationDB.NewAppModuleRepo(l.ctx).FindByFilter(l.ctx, relationDB.AppModuleFilter{AppCodes: []string{in.Code}}, nil)
 	if err != nil {
 		return nil, err
 	}

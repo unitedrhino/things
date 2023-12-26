@@ -2,6 +2,9 @@ package tenantmanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
+	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -24,7 +27,22 @@ func NewTenantAppApiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *TenantAppApiCreateLogic) TenantAppApiCreate(in *sys.TenantApiInfo) (*sys.WithID, error) {
-	// todo: add your logic here and delete this line
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	ctxs.GetUserCtx(l.ctx).AllTenant = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllTenant = false
+	}()
+	if err := CheckModule(l.ctx, in.Code, in.AppCode, in.Info.ModuleCode); err != nil {
+		return nil, err
+	}
+	po := logic.ToTenantApiInfoPo(in)
 
-	return &sys.WithID{}, nil
+	po.ID = 0
+	err := relationDB.NewTenantAppApiRepo(l.ctx).Insert(l.ctx, po)
+	if err != nil {
+		return nil, err
+	}
+	return &sys.WithID{Id: po.ID}, nil
 }

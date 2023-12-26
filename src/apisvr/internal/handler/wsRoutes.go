@@ -19,6 +19,9 @@ import (
 	systemroleinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/role/info"
 	systemrolemenu "github.com/i-Things/things/src/apisvr/internal/handler/system/role/menu"
 	systemtenantapp "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app"
+	systemtenantappapi "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/api"
+	systemtenantappmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/menu"
+	systemtenantappmodule "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/module"
 	systemtenantinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/info"
 	systemtimedtask "github.com/i-Things/things/src/apisvr/internal/handler/system/timed/task"
 	systemuser "github.com/i-Things/things/src/apisvr/internal/handler/system/user"
@@ -656,12 +659,104 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/multi-update",
-					Handler: systemtenantapp.MultiUpdateHandler(serverCtx),
+					Path:    "/create",
+					Handler: systemtenantapp.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemtenantapp.DeleteHandler(serverCtx),
 				},
 			}...,
 		),
 		ws.WithPrefix("/api/v1/system/tenant/app"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemtenantappmodule.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemtenantappmodule.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemtenantappmodule.DeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/system/tenant/app/module"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemtenantappmenu.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemtenantappmenu.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemtenantappmenu.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemtenantappmenu.DeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/system/tenant/app/menu"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemtenantappapi.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/tree",
+					Handler: systemtenantappapi.TreeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemtenantappapi.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemtenantappapi.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemtenantappapi.DeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/system/tenant/app/api"),
 	)
 
 	server.AddRoutes(

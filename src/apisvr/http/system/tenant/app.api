@@ -1,0 +1,206 @@
+info(
+	title: "租户管理模块"
+	desc: "租户管理"
+	author: "L"
+	email: "174805676@qq.com"
+	version: "v0.1.0"
+)
+import "common.api"  //公共结构体定义
+
+@server (
+    group : system/tenant/app
+    prefix: /api/v1/system/tenant/app
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "获取租户应用列表"
+    @handler index
+    post /index (TenantAppIndexReq) returns (TenantAppIndexResp)
+
+    @doc "更新租户应用"
+    @handler create
+    post /create (TenantAppCreateReq) returns ()
+
+    @doc "删除租户应用"
+    @handler delete
+    post /delete (TenantAppWithIDOrCode) returns ()
+}
+
+@server (
+    group : system/tenant/app/module
+    prefix: /api/v1/system/tenant/app/module
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "获取租户应用模块列表"
+    @handler index
+    post /index (TenantModuleIndexReq) returns (TenantModuleIndexResp)
+
+    @doc "更新租户应用模块"
+    @handler create
+    post /create (TenantModuleCreateReq) returns ()
+
+    @doc "删除租户应用模块"
+    @handler delete
+    post /delete (TenantModuleWithIDOrCode) returns ()
+}
+
+@server (
+    group : system/tenant/app/menu
+    prefix: /api/v1/system/tenant/app/menu
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "获取租户应用菜单列表"
+    @handler index
+    post /index (TenantAppMenuIndexReq) returns (TenantAppMenuIndexResp)
+
+    @doc "创建租户应用菜单"
+    @handler create
+    post /create (TenantAppMenu) returns (WithID)
+
+    @doc "更新租户应用菜单"
+    @handler update
+    post /update (TenantAppMenu) returns (WithID)
+
+    @doc "删除租户应用菜单"
+    @handler delete
+    post /delete (WithAppCodeID) returns ()
+}
+
+@server (
+    group : system/tenant/app/api
+    prefix: /api/v1/system/tenant/app/api
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "获取租户应用接口列表"
+    @handler index
+    post /index (TenantAppApiIndexReq) returns (TenantAppApiIndexResp)
+
+    @doc "获取租户应用接口树"
+    @handler tree
+    post /tree (TenantAppApiIndexReq) returns (TenantAppApiTreeResp)
+
+    @doc "创建租户应用接口"
+    @handler create
+    post /create (TenantApiInfo) returns (WithID)
+
+    @doc "更新租户应用接口"
+    @handler update
+    post /update (TenantApiInfo) returns (WithID)
+
+    @doc "删除租户应用接口"
+    @handler delete
+    post /delete (WithAppCodeID) returns ()
+}
+
+type (
+    WithAppCodeID{
+        AppCode string `json:"appCode"`
+        ID int64 `json:"id"`
+        Code string `json:"code"`
+    }
+    TenantAppApiIndexReq{
+        Code string `json:"code"`                     // 应用编号
+        AppCode string `json:"appCode"`
+        ModuleCode string `json:"moduleCode"`
+        Page *PageInfo `json:"page,optional"`
+    }
+    TenantAppApiGroupInfo struct {
+        ID string `json:"id,optional"`                               // id
+        name  string `json:"name,optional"`                               // 接口分组
+        Children []*TenantApiInfo `json:"children"`            // 接口列表数据
+    }
+    TenantAppApiTreeResp{
+        List []*TenantAppApiGroupInfo `json:"list"`
+    }
+    TenantAppApiIndexResp{
+        List []*TenantApiInfo `json:"list"`
+        Total int64 `json:"total"`
+    }
+    TenantApiInfo{
+        TemplateID int64 `json:"templateID,optional"`                                // 编号
+        Code string `json:"code,optional"`                             // 应用编号
+        AppCode string `json:"appCode,optional"`                         // 应用编号
+        ApiInfo
+    }
+)
+
+type (
+    TenantAppMenuIndexReq{
+        Code string `json:"code"`                     // 应用编号
+        AppCode string `json:"appCode"`
+        ModuleCode string `json:"moduleCode"`
+        IsRetTree bool `json:"isRetTree,optional"`
+    }
+    TenantAppMenuIndexResp{
+        List []*TenantAppMenu `json:"list"`
+    }
+    TenantAppMenu{
+        TemplateID int64 `json:"templateID"`
+        Code string `json:"code,optional"`                             // 应用编号
+        AppCode string `json:"appCode,optional"`                         // 应用编号
+        MenuInfo
+        Children []*TenantAppMenu `json:"children,optional"`
+    }
+)
+
+type (
+    TenantModuleCreateReq{
+        Code string `json:"code"`                     // 应用编号
+        AppCode string `json:"appCode"`
+        ModuleCode string `json:"moduleCode"`
+        MenuIDs []int64 `json:"menuIDs"`
+        ApiIDs []int64 `json:"apiIDs"`
+    }
+    TenantModuleIndexReq{
+        Code string `json:"code"`                     // 应用编号
+        AppCode string `json:"appCode"`
+        Page *PageInfo `json:"page,optional"`
+    }
+
+    TenantModuleIndexResp{
+        ModuleCodes []string `json:"moduleCodes"`
+    }
+    TenantModuleWithIDOrCode{
+        ID int64 `json:"id,optional"`                                // 编号
+        Code string `json:"code,optional"`                             // 应用编号
+        AppCode string `json:"appCode,optional"`                         // 应用编号
+        ModuleCode string `json:"moduleCode,optional"`
+    }
+
+)
+
+
+type(
+    TenantAppWithIDOrCode{
+        ID int64 `json:"id,optional"`                                // 编号
+        Code string `json:"code,optional"`                             // 应用编号
+        AppCode string `json:"appCode,optional"`                         // 应用编号
+    }
+
+    TenantAppIndexReq{
+        Code string `json:"code,optional"`                     // 应用编号
+    }
+    TenantAppIndexResp{
+        List []*AppInfo `json:"list"`            // 租户列表数据
+        Total int64 `json:"total"`                    // 租户列表总记录数
+    }
+
+    TenantAppCreateReq {
+        Code string `json:"code,optional"`                     // 应用编号
+        AppCode string `json:"appCode"`
+        Modules []*TenantAppModule `json:"modules"`
+    }
+
+    TenantAppModule{
+        Code string `json:"code"`                     // 应用编号
+        MenuIDs []int64 `json:"menuIDs"`
+        ApiIDs []int64 `json:"apiIDs"`
+    }
+)

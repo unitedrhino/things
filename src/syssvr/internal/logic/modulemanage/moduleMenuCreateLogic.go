@@ -2,6 +2,7 @@ package modulemanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -40,7 +41,7 @@ func (l *ModuleMenuCreateLogic) ModuleMenuCreate(in *sys.MenuInfo) (*sys.WithID,
 	if in.HideInMenu == 0 {
 		in.HideInMenu = 1
 	}
-	po := ToMenuInfoPo(in)
+	po := logic.ToMenuInfoPo(in)
 	relationDB.NewMenuInfoRepo(l.ctx).Insert(l.ctx, po)
 	return &sys.WithID{Id: po.ID}, nil
 }
