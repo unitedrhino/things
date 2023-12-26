@@ -655,19 +655,6 @@ type TenantInfoCreateResp struct {
 	Code string `json:"code"`
 }
 
-type TenantAppIndexReq struct {
-	Code string `json:"code,optional"` // 应用编号
-}
-
-type TenantAppIndexResp struct {
-	List []*AppInfo `json:"list"` // 租户列表数据
-}
-
-type TenantAppMultiUpdateReq struct {
-	Code     string   `json:"code,optional"` // 应用编号
-	AppCodes []string `json:"appCodes"`
-}
-
 type TenantInfoIndexReq struct {
 	Page *PageInfo `json:"page,optional"` // 分页信息,只获取一个则不填
 	Name string    `json:"name,optional"` // 应用名称
@@ -677,6 +664,112 @@ type TenantInfoIndexReq struct {
 type TenantInfoIndexResp struct {
 	List  []*TenantInfo `json:"list"`  // 租户列表数据
 	Total int64         `json:"total"` // 租户列表总记录数
+}
+
+type WithAppCodeID struct {
+	AppCode string `json:"appCode"`
+	ID      int64  `json:"id"`
+	Code    string `json:"code"`
+}
+
+type TenantAppApiIndexReq struct {
+	Code       string    `json:"code"` // 应用编号
+	AppCode    string    `json:"appCode"`
+	ModuleCode string    `json:"moduleCode"`
+	Page       *PageInfo `json:"page,optional"`
+}
+
+type TenantAppApiGroupInfo struct {
+	ID       string           `json:"id,optional"`   // id
+	Name     string           `json:"name,optional"` // 接口分组
+	Children []*TenantApiInfo `json:"children"`      // 接口列表数据
+}
+
+type TenantAppApiTreeResp struct {
+	List []*TenantAppApiGroupInfo `json:"list"`
+}
+
+type TenantAppApiIndexResp struct {
+	List  []*TenantApiInfo `json:"list"`
+	Total int64            `json:"total"`
+}
+
+type TenantApiInfo struct {
+	TemplateID int64  `json:"templateID,optional"` // 编号
+	Code       string `json:"code,optional"`       // 应用编号
+	AppCode    string `json:"appCode,optional"`    // 应用编号
+	ApiInfo
+}
+
+type TenantAppMenuIndexReq struct {
+	Code       string `json:"code"` // 应用编号
+	AppCode    string `json:"appCode"`
+	ModuleCode string `json:"moduleCode"`
+	IsRetTree  bool   `json:"isRetTree,optional"`
+}
+
+type TenantAppMenuIndexResp struct {
+	List []*TenantAppMenu `json:"list"`
+}
+
+type TenantAppMenu struct {
+	TemplateID int64  `json:"templateID"`
+	Code       string `json:"code,optional"`    // 应用编号
+	AppCode    string `json:"appCode,optional"` // 应用编号
+	MenuInfo
+	Children []*TenantAppMenu `json:"children,optional"`
+}
+
+type TenantModuleCreateReq struct {
+	Code       string  `json:"code"` // 应用编号
+	AppCode    string  `json:"appCode"`
+	ModuleCode string  `json:"moduleCode"`
+	MenuIDs    []int64 `json:"menuIDs"`
+	ApiIDs     []int64 `json:"apiIDs"`
+}
+
+type TenantModuleIndexReq struct {
+	Code    string    `json:"code"` // 应用编号
+	AppCode string    `json:"appCode"`
+	Page    *PageInfo `json:"page,optional"`
+}
+
+type TenantModuleIndexResp struct {
+	ModuleCodes []string `json:"moduleCodes"`
+}
+
+type TenantModuleWithIDOrCode struct {
+	ID         int64  `json:"id,optional"`      // 编号
+	Code       string `json:"code,optional"`    // 应用编号
+	AppCode    string `json:"appCode,optional"` // 应用编号
+	ModuleCode string `json:"moduleCode,optional"`
+}
+
+type TenantAppWithIDOrCode struct {
+	ID      int64  `json:"id,optional"`      // 编号
+	Code    string `json:"code,optional"`    // 应用编号
+	AppCode string `json:"appCode,optional"` // 应用编号
+}
+
+type TenantAppIndexReq struct {
+	Code string `json:"code,optional"` // 应用编号
+}
+
+type TenantAppIndexResp struct {
+	List  []*AppInfo `json:"list"`  // 租户列表数据
+	Total int64      `json:"total"` // 租户列表总记录数
+}
+
+type TenantAppCreateReq struct {
+	Code    string             `json:"code,optional"` // 应用编号
+	AppCode string             `json:"appCode"`
+	Modules []*TenantAppModule `json:"modules"`
+}
+
+type TenantAppModule struct {
+	Code    string  `json:"code"` // 应用编号
+	MenuIDs []int64 `json:"menuIDs"`
+	ApiIDs  []int64 `json:"apiIDs"`
 }
 
 type ProductInfo struct {

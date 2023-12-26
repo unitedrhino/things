@@ -2,6 +2,7 @@ package tenantmanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
@@ -27,6 +28,13 @@ func NewTenantInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *T
 
 // 获取区域信息列表
 func (l *TenantInfoIndexLogic) TenantInfoIndex(in *sys.TenantInfoIndexReq) (*sys.TenantInfoIndexResp, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	ctxs.GetUserCtx(l.ctx).AllTenant = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllTenant = false
+	}()
 	f := relationDB.TenantInfoFilter{
 		Code: in.Code,
 		Name: in.Name,

@@ -1,6 +1,7 @@
-package modulemanagelogic
+package logic
 
 import (
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -68,6 +69,18 @@ func ToApiInfoPo(in *sys.ApiInfo) *relationDB.SysModuleApi {
 	}
 }
 
+func ToTenantApiInfoPo(in *sys.TenantApiInfo) *relationDB.SysTenantAppApi {
+	if in == nil || in.Info == nil {
+		return nil
+	}
+	return &relationDB.SysTenantAppApi{
+		TempLateID:   in.TemplateID,
+		TenantCode:   stores.TenantCode(in.Code),
+		AppCode:      in.AppCode,
+		SysModuleApi: *ToApiInfoPo(in.Info),
+	}
+}
+
 func ToApiInfoPb(in *relationDB.SysModuleApi) *sys.ApiInfo {
 	if in == nil {
 		return nil
@@ -82,6 +95,18 @@ func ToApiInfoPb(in *relationDB.SysModuleApi) *sys.ApiInfo {
 		Group:        in.Group,
 		IsNeedAuth:   in.IsNeedAuth,
 		Desc:         in.Desc,
+	}
+}
+
+func ToTenantAppApiInfoPb(in *relationDB.SysTenantAppApi) *sys.TenantApiInfo {
+	if in == nil {
+		return nil
+	}
+	return &sys.TenantApiInfo{
+		TemplateID: in.TempLateID,
+		Code:       string(in.TenantCode),
+		AppCode:    in.AppCode,
+		Info:       ToApiInfoPb(&in.SysModuleApi),
 	}
 }
 
@@ -105,6 +130,18 @@ func ToMenuInfoPo(in *sys.MenuInfo) *relationDB.SysModuleMenu {
 	}
 }
 
+func ToTenantAppMenuPo(in *sys.TenantAppMenu) *relationDB.SysTenantAppMenu {
+	if in == nil || in.Info == nil {
+		return nil
+	}
+	return &relationDB.SysTenantAppMenu{
+		TempLateID:    in.TemplateID,
+		TenantCode:    stores.TenantCode(in.Code),
+		AppCode:       in.AppCode,
+		SysModuleMenu: *ToMenuInfoPo(in.Info),
+	}
+}
+
 func ToMenuInfoPb(in *relationDB.SysModuleMenu) *sys.MenuInfo {
 	if in == nil {
 		return nil
@@ -122,5 +159,17 @@ func ToMenuInfoPb(in *relationDB.SysModuleMenu) *sys.MenuInfo {
 		Redirect:   in.Redirect,
 		Body:       utils.ToRpcNullString(in.Body),
 		HideInMenu: in.HideInMenu,
+	}
+}
+
+func ToTenantAppMenuInfoPb(in *relationDB.SysTenantAppMenu) *sys.TenantAppMenu {
+	if in == nil {
+		return nil
+	}
+	return &sys.TenantAppMenu{
+		TemplateID: in.TempLateID,
+		Code:       string(in.TenantCode),
+		AppCode:    in.AppCode,
+		Info:       ToMenuInfoPb(&in.SysModuleMenu),
 	}
 }

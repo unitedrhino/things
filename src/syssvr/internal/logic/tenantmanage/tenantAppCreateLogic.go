@@ -79,7 +79,9 @@ func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, 
 			continue
 		}
 		insertMenus = append(insertMenus, &relationDB.SysTenantAppMenu{
-			TenantCode: stores.TenantCode(tenantCode), AppCode: appCode, SysModuleMenu: *m})
+			TempLateID: m.ID,
+			TenantCode: stores.TenantCode(tenantCode),
+			AppCode:    appCode, SysModuleMenu: *m})
 	}
 	for _, id := range apiIDs {
 		a := apiMap[id]
@@ -87,7 +89,9 @@ func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, 
 			continue
 		}
 		insertApis = append(insertApis, &relationDB.SysTenantAppApi{
-			TenantCode: stores.TenantCode(tenantCode), AppCode: appCode, SysModuleApi: *a})
+			TempLateID: a.ID,
+			TenantCode: stores.TenantCode(tenantCode),
+			AppCode:    appCode, SysModuleApi: *a})
 	}
 	err = relationDB.NewTenantAppMenuRepo(tx).MultiInsert(ctx, insertMenus)
 	if err != nil {

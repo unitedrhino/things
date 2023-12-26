@@ -2,8 +2,7 @@ package tenantmanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/src/syssvr/internal/logic"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -27,11 +26,14 @@ func NewTenantAppMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *TenantAppMultiUpdateLogic) TenantAppMultiUpdate(in *sys.TenantAppMultiUpdateReq) (*sys.Response, error) {
-	err := logic.IsSupperAdmin(l.ctx, def.TenantCodeDefault)
-	if err != nil {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
 		return nil, err
 	}
-	err = relationDB.NewTenantAppRepo(l.ctx).MultiUpdate(l.ctx, in.Code, in.AppCodes)
+	ctxs.GetUserCtx(l.ctx).AllTenant = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllTenant = false
+	}()
+	err := relationDB.NewTenantAppRepo(l.ctx).MultiUpdate(l.ctx, in.Code, in.AppCodes)
 
 	return &sys.Response{}, err
 }

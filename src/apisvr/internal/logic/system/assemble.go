@@ -47,6 +47,25 @@ func ToMenuInfosApi(i []*sys.MenuInfo) (ret []*types.MenuInfo) {
 	return
 }
 
+func ToTenantAppMenuApi(i *sys.TenantAppMenu) *types.TenantAppMenu {
+	if i == nil {
+		return nil
+	}
+	return &types.TenantAppMenu{
+		TemplateID: i.TemplateID,
+		Code:       i.Code,
+		AppCode:    i.AppCode,
+		MenuInfo:   *ToMenuInfoApi(i.Info),
+		Children:   ToTenantAppMenusApi(i.Children),
+	}
+}
+func ToTenantAppMenusApi(i []*sys.TenantAppMenu) (ret []*types.TenantAppMenu) {
+	for _, v := range i {
+		ret = append(ret, ToTenantAppMenuApi(v))
+	}
+	return
+}
+
 func ToSysWithIDCode(in *types.WithIDOrCode) *sys.WithIDCode {
 	return &sys.WithIDCode{
 		Id:   in.ID,

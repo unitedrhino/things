@@ -2,6 +2,7 @@ package modulemanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -28,7 +29,7 @@ func (l *ModuleApiCreateLogic) ModuleApiCreate(in *sys.ApiInfo) (*sys.WithID, er
 	if err := CheckModule(l.ctx, in.ModuleCode); err != nil {
 		return nil, err
 	}
-	po := ToApiInfoPo(in)
+	po := logic.ToApiInfoPo(in)
 	po.ID = 0
 	err := relationDB.NewApiInfoRepo(l.ctx).Insert(l.ctx, po)
 	if err != nil {

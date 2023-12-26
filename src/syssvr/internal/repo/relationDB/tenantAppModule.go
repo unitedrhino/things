@@ -105,6 +105,9 @@ func (p TenantAppModuleRepo) FindOne(ctx context.Context, id int64) (*SysTenantA
 
 // 批量插入 LightStrategyDevice 记录
 func (p TenantAppModuleRepo) MultiInsert(ctx context.Context, data []*SysTenantAppModule) error {
+	if len(data) == 0 {
+		return nil
+	}
 	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysTenantAppModule{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
@@ -113,13 +116,13 @@ func (p TenantAppModuleRepo) MultiInsert(ctx context.Context, data []*SysTenantA
 //	var datas []*SysTenantAppModule
 //	for _, v := range moduleCodes {
 //		datas = append(datas, &SysTenantAppModule{
-//			AppCode:    appCode,
+//			AppCodes:    appCode,
 //			ModuleCode: v,
 //		})
 //	}
 //	err := p.db.Transaction(func(tx *gorm.DB) error {
 //		rm := NewTenantAppModuleRepo(tx)
-//		err := rm.DeleteByFilter(ctx, TenantAppModuleFilter{AppCode: []string{appCode}})
+//		err := rm.DeleteByFilter(ctx, TenantAppModuleFilter{AppCodes: []string{appCode}})
 //		if err != nil {
 //			return err
 //		}

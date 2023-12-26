@@ -36,5 +36,5 @@ func (l *ModuleInfoIndexLogic) ModuleInfoIndex(in *sys.ModuleInfoIndexReq) (*sys
 	if err != nil {
 		return nil, err
 	}
-	return &sys.ModuleInfoIndexResp{List: ToModuleInfosPb(ret), Total: total}, nil
+	return &sys.ModuleInfoIndexResp{List: logic.ToModuleInfosPb(ret), Total: total}, nil
 }

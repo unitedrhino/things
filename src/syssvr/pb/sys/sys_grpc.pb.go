@@ -2837,14 +2837,14 @@ type TenantManageClient interface {
 	TenantAppModuleCreate(ctx context.Context, in *TenantModuleCreateReq, opts ...grpc.CallOption) (*Response, error)
 	TenantAppModuleIndex(ctx context.Context, in *TenantModuleIndexReq, opts ...grpc.CallOption) (*TenantModuleIndexResp, error)
 	TenantAppModuleDelete(ctx context.Context, in *TenantModuleWithIDOrCode, opts ...grpc.CallOption) (*Response, error)
-	TenantAppMenuCreate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*WithID, error)
-	TenantAppMenuIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error)
-	TenantAppMenuUpdate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*Response, error)
-	TenantAppMenuDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+	TenantAppMenuCreate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*WithID, error)
+	TenantAppMenuIndex(ctx context.Context, in *TenantAppMenuIndexReq, opts ...grpc.CallOption) (*TenantAppMenuIndexResp, error)
+	TenantAppMenuUpdate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*Response, error)
+	TenantAppMenuDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error)
 	TenantAppApiCreate(ctx context.Context, in *TenantApiInfo, opts ...grpc.CallOption) (*WithID, error)
-	TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error)
+	TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*TenantAppApiIndexResp, error)
 	TenantAppApiUpdate(ctx context.Context, in *TenantApiInfo, opts ...grpc.CallOption) (*Response, error)
-	TenantAppApiDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+	TenantAppApiDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error)
 }
 
 type tenantManageClient struct {
@@ -2954,7 +2954,7 @@ func (c *tenantManageClient) TenantAppModuleDelete(ctx context.Context, in *Tena
 	return out, nil
 }
 
-func (c *tenantManageClient) TenantAppMenuCreate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*WithID, error) {
+func (c *tenantManageClient) TenantAppMenuCreate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*WithID, error) {
 	out := new(WithID)
 	err := c.cc.Invoke(ctx, TenantManage_TenantAppMenuCreate_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2963,8 +2963,8 @@ func (c *tenantManageClient) TenantAppMenuCreate(ctx context.Context, in *Tenant
 	return out, nil
 }
 
-func (c *tenantManageClient) TenantAppMenuIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error) {
-	out := new(MenuInfoIndexResp)
+func (c *tenantManageClient) TenantAppMenuIndex(ctx context.Context, in *TenantAppMenuIndexReq, opts ...grpc.CallOption) (*TenantAppMenuIndexResp, error) {
+	out := new(TenantAppMenuIndexResp)
 	err := c.cc.Invoke(ctx, TenantManage_TenantAppMenuIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2972,7 +2972,7 @@ func (c *tenantManageClient) TenantAppMenuIndex(ctx context.Context, in *MenuInf
 	return out, nil
 }
 
-func (c *tenantManageClient) TenantAppMenuUpdate(ctx context.Context, in *TenantMenuInfo, opts ...grpc.CallOption) (*Response, error) {
+func (c *tenantManageClient) TenantAppMenuUpdate(ctx context.Context, in *TenantAppMenu, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, TenantManage_TenantAppMenuUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2981,7 +2981,7 @@ func (c *tenantManageClient) TenantAppMenuUpdate(ctx context.Context, in *Tenant
 	return out, nil
 }
 
-func (c *tenantManageClient) TenantAppMenuDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (c *tenantManageClient) TenantAppMenuDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, TenantManage_TenantAppMenuDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2999,8 +2999,8 @@ func (c *tenantManageClient) TenantAppApiCreate(ctx context.Context, in *TenantA
 	return out, nil
 }
 
-func (c *tenantManageClient) TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error) {
-	out := new(ApiInfoIndexResp)
+func (c *tenantManageClient) TenantAppApiIndex(ctx context.Context, in *TenantAppApiIndexReq, opts ...grpc.CallOption) (*TenantAppApiIndexResp, error) {
+	out := new(TenantAppApiIndexResp)
 	err := c.cc.Invoke(ctx, TenantManage_TenantAppApiIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -3017,7 +3017,7 @@ func (c *tenantManageClient) TenantAppApiUpdate(ctx context.Context, in *TenantA
 	return out, nil
 }
 
-func (c *tenantManageClient) TenantAppApiDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (c *tenantManageClient) TenantAppApiDelete(ctx context.Context, in *WithAppCodeID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, TenantManage_TenantAppApiDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -3046,14 +3046,14 @@ type TenantManageServer interface {
 	TenantAppModuleCreate(context.Context, *TenantModuleCreateReq) (*Response, error)
 	TenantAppModuleIndex(context.Context, *TenantModuleIndexReq) (*TenantModuleIndexResp, error)
 	TenantAppModuleDelete(context.Context, *TenantModuleWithIDOrCode) (*Response, error)
-	TenantAppMenuCreate(context.Context, *TenantMenuInfo) (*WithID, error)
-	TenantAppMenuIndex(context.Context, *MenuInfoIndexReq) (*MenuInfoIndexResp, error)
-	TenantAppMenuUpdate(context.Context, *TenantMenuInfo) (*Response, error)
-	TenantAppMenuDelete(context.Context, *WithID) (*Response, error)
+	TenantAppMenuCreate(context.Context, *TenantAppMenu) (*WithID, error)
+	TenantAppMenuIndex(context.Context, *TenantAppMenuIndexReq) (*TenantAppMenuIndexResp, error)
+	TenantAppMenuUpdate(context.Context, *TenantAppMenu) (*Response, error)
+	TenantAppMenuDelete(context.Context, *WithAppCodeID) (*Response, error)
 	TenantAppApiCreate(context.Context, *TenantApiInfo) (*WithID, error)
-	TenantAppApiIndex(context.Context, *TenantAppApiIndexReq) (*ApiInfoIndexResp, error)
+	TenantAppApiIndex(context.Context, *TenantAppApiIndexReq) (*TenantAppApiIndexResp, error)
 	TenantAppApiUpdate(context.Context, *TenantApiInfo) (*Response, error)
-	TenantAppApiDelete(context.Context, *WithID) (*Response, error)
+	TenantAppApiDelete(context.Context, *WithAppCodeID) (*Response, error)
 	mustEmbedUnimplementedTenantManageServer()
 }
 
@@ -3094,28 +3094,28 @@ func (UnimplementedTenantManageServer) TenantAppModuleIndex(context.Context, *Te
 func (UnimplementedTenantManageServer) TenantAppModuleDelete(context.Context, *TenantModuleWithIDOrCode) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppModuleDelete not implemented")
 }
-func (UnimplementedTenantManageServer) TenantAppMenuCreate(context.Context, *TenantMenuInfo) (*WithID, error) {
+func (UnimplementedTenantManageServer) TenantAppMenuCreate(context.Context, *TenantAppMenu) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppMenuCreate not implemented")
 }
-func (UnimplementedTenantManageServer) TenantAppMenuIndex(context.Context, *MenuInfoIndexReq) (*MenuInfoIndexResp, error) {
+func (UnimplementedTenantManageServer) TenantAppMenuIndex(context.Context, *TenantAppMenuIndexReq) (*TenantAppMenuIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppMenuIndex not implemented")
 }
-func (UnimplementedTenantManageServer) TenantAppMenuUpdate(context.Context, *TenantMenuInfo) (*Response, error) {
+func (UnimplementedTenantManageServer) TenantAppMenuUpdate(context.Context, *TenantAppMenu) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppMenuUpdate not implemented")
 }
-func (UnimplementedTenantManageServer) TenantAppMenuDelete(context.Context, *WithID) (*Response, error) {
+func (UnimplementedTenantManageServer) TenantAppMenuDelete(context.Context, *WithAppCodeID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppMenuDelete not implemented")
 }
 func (UnimplementedTenantManageServer) TenantAppApiCreate(context.Context, *TenantApiInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppApiCreate not implemented")
 }
-func (UnimplementedTenantManageServer) TenantAppApiIndex(context.Context, *TenantAppApiIndexReq) (*ApiInfoIndexResp, error) {
+func (UnimplementedTenantManageServer) TenantAppApiIndex(context.Context, *TenantAppApiIndexReq) (*TenantAppApiIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppApiIndex not implemented")
 }
 func (UnimplementedTenantManageServer) TenantAppApiUpdate(context.Context, *TenantApiInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppApiUpdate not implemented")
 }
-func (UnimplementedTenantManageServer) TenantAppApiDelete(context.Context, *WithID) (*Response, error) {
+func (UnimplementedTenantManageServer) TenantAppApiDelete(context.Context, *WithAppCodeID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppApiDelete not implemented")
 }
 func (UnimplementedTenantManageServer) mustEmbedUnimplementedTenantManageServer() {}
@@ -3330,7 +3330,7 @@ func _TenantManage_TenantAppModuleDelete_Handler(srv interface{}, ctx context.Co
 }
 
 func _TenantManage_TenantAppMenuCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TenantMenuInfo)
+	in := new(TenantAppMenu)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -3342,13 +3342,13 @@ func _TenantManage_TenantAppMenuCreate_Handler(srv interface{}, ctx context.Cont
 		FullMethod: TenantManage_TenantAppMenuCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantManageServer).TenantAppMenuCreate(ctx, req.(*TenantMenuInfo))
+		return srv.(TenantManageServer).TenantAppMenuCreate(ctx, req.(*TenantAppMenu))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TenantManage_TenantAppMenuIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MenuInfoIndexReq)
+	in := new(TenantAppMenuIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -3360,13 +3360,13 @@ func _TenantManage_TenantAppMenuIndex_Handler(srv interface{}, ctx context.Conte
 		FullMethod: TenantManage_TenantAppMenuIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantManageServer).TenantAppMenuIndex(ctx, req.(*MenuInfoIndexReq))
+		return srv.(TenantManageServer).TenantAppMenuIndex(ctx, req.(*TenantAppMenuIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TenantManage_TenantAppMenuUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TenantMenuInfo)
+	in := new(TenantAppMenu)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -3378,13 +3378,13 @@ func _TenantManage_TenantAppMenuUpdate_Handler(srv interface{}, ctx context.Cont
 		FullMethod: TenantManage_TenantAppMenuUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantManageServer).TenantAppMenuUpdate(ctx, req.(*TenantMenuInfo))
+		return srv.(TenantManageServer).TenantAppMenuUpdate(ctx, req.(*TenantAppMenu))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TenantManage_TenantAppMenuDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WithID)
+	in := new(WithAppCodeID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -3396,7 +3396,7 @@ func _TenantManage_TenantAppMenuDelete_Handler(srv interface{}, ctx context.Cont
 		FullMethod: TenantManage_TenantAppMenuDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantManageServer).TenantAppMenuDelete(ctx, req.(*WithID))
+		return srv.(TenantManageServer).TenantAppMenuDelete(ctx, req.(*WithAppCodeID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3456,7 +3456,7 @@ func _TenantManage_TenantAppApiUpdate_Handler(srv interface{}, ctx context.Conte
 }
 
 func _TenantManage_TenantAppApiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WithID)
+	in := new(WithAppCodeID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -3468,7 +3468,7 @@ func _TenantManage_TenantAppApiDelete_Handler(srv interface{}, ctx context.Conte
 		FullMethod: TenantManage_TenantAppApiDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantManageServer).TenantAppApiDelete(ctx, req.(*WithID))
+		return srv.(TenantManageServer).TenantAppApiDelete(ctx, req.(*WithAppCodeID))
 	}
 	return interceptor(ctx, in, info, handler)
 }

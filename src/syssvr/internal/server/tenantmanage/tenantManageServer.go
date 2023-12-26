@@ -82,22 +82,22 @@ func (s *TenantManageServer) TenantAppModuleDelete(ctx context.Context, in *sys.
 	return l.TenantAppModuleDelete(in)
 }
 
-func (s *TenantManageServer) TenantAppMenuCreate(ctx context.Context, in *sys.TenantMenuInfo) (*sys.WithID, error) {
+func (s *TenantManageServer) TenantAppMenuCreate(ctx context.Context, in *sys.TenantAppMenu) (*sys.WithID, error) {
 	l := tenantmanagelogic.NewTenantAppMenuCreateLogic(ctx, s.svcCtx)
 	return l.TenantAppMenuCreate(in)
 }
 
-func (s *TenantManageServer) TenantAppMenuIndex(ctx context.Context, in *sys.MenuInfoIndexReq) (*sys.MenuInfoIndexResp, error) {
+func (s *TenantManageServer) TenantAppMenuIndex(ctx context.Context, in *sys.TenantAppMenuIndexReq) (*sys.TenantAppMenuIndexResp, error) {
 	l := tenantmanagelogic.NewTenantAppMenuIndexLogic(ctx, s.svcCtx)
 	return l.TenantAppMenuIndex(in)
 }
 
-func (s *TenantManageServer) TenantAppMenuUpdate(ctx context.Context, in *sys.TenantMenuInfo) (*sys.Response, error) {
+func (s *TenantManageServer) TenantAppMenuUpdate(ctx context.Context, in *sys.TenantAppMenu) (*sys.Response, error) {
 	l := tenantmanagelogic.NewTenantAppMenuUpdateLogic(ctx, s.svcCtx)
 	return l.TenantAppMenuUpdate(in)
 }
 
-func (s *TenantManageServer) TenantAppMenuDelete(ctx context.Context, in *sys.WithID) (*sys.Response, error) {
+func (s *TenantManageServer) TenantAppMenuDelete(ctx context.Context, in *sys.WithAppCodeID) (*sys.Response, error) {
 	l := tenantmanagelogic.NewTenantAppMenuDeleteLogic(ctx, s.svcCtx)
 	return l.TenantAppMenuDelete(in)
 }
@@ -107,7 +107,7 @@ func (s *TenantManageServer) TenantAppApiCreate(ctx context.Context, in *sys.Ten
 	return l.TenantAppApiCreate(in)
 }
 
-func (s *TenantManageServer) TenantAppApiIndex(ctx context.Context, in *sys.TenantAppApiIndexReq) (*sys.ApiInfoIndexResp, error) {
+func (s *TenantManageServer) TenantAppApiIndex(ctx context.Context, in *sys.TenantAppApiIndexReq) (*sys.TenantAppApiIndexResp, error) {
 	l := tenantmanagelogic.NewTenantAppApiIndexLogic(ctx, s.svcCtx)
 	return l.TenantAppApiIndex(in)
 }
@@ -117,7 +117,7 @@ func (s *TenantManageServer) TenantAppApiUpdate(ctx context.Context, in *sys.Ten
 	return l.TenantAppApiUpdate(in)
 }
 
-func (s *TenantManageServer) TenantAppApiDelete(ctx context.Context, in *sys.WithID) (*sys.Response, error) {
+func (s *TenantManageServer) TenantAppApiDelete(ctx context.Context, in *sys.WithAppCodeID) (*sys.Response, error) {
 	l := tenantmanagelogic.NewTenantAppApiDeleteLogic(ctx, s.svcCtx)
 	return l.TenantAppApiDelete(in)
 }

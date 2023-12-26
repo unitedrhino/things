@@ -24,13 +24,17 @@ func NewAppModuleRepo(in any) *AppModuleRepo {
 }
 
 type AppModuleFilter struct {
-	AppCode []string
+	ModuleCodes []string
+	AppCodes    []string
 }
 
 func (p AppModuleRepo) fmtFilter(ctx context.Context, f AppModuleFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	if len(f.AppCode) != 0 {
-		db = db.Where("app_code in ?", f.AppCode)
+	if len(f.AppCodes) != 0 {
+		db = db.Where("app_code in ?", f.AppCodes)
+	}
+	if len(f.ModuleCodes) != 0 {
+		db = db.Where("module_code in ?", f.ModuleCodes)
 	}
 	return db
 }
@@ -106,7 +110,7 @@ func (p AppModuleRepo) MultiUpdate(ctx context.Context, appCode string, moduleCo
 	}
 	err := p.db.Transaction(func(tx *gorm.DB) error {
 		rm := NewAppModuleRepo(tx)
-		err := rm.DeleteByFilter(ctx, AppModuleFilter{AppCode: []string{appCode}})
+		err := rm.DeleteByFilter(ctx, AppModuleFilter{AppCodes: []string{appCode}})
 		if err != nil {
 			return err
 		}

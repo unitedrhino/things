@@ -138,15 +138,15 @@ service TenantManage {
   rpc tenantAppModuleIndex(TenantModuleIndexReq) returns(TenantModuleIndexResp); //获取角色列表
   rpc tenantAppModuleDelete(TenantModuleWithIDOrCode) returns(Response); //删除角色
 
-  rpc tenantAppMenuCreate(TenantMenuInfo) returns(WithID); //添加菜单
-  rpc tenantAppMenuIndex(MenuInfoIndexReq) returns(MenuInfoIndexResp); //获取菜单列表
-  rpc tenantAppMenuUpdate(TenantMenuInfo) returns(Response); //更新菜单
-  rpc tenantAppMenuDelete(WithID) returns(Response); //删除菜单
+  rpc tenantAppMenuCreate(TenantAppMenu) returns(WithID); //添加菜单
+  rpc tenantAppMenuIndex(TenantAppMenuIndexReq) returns(TenantAppMenuIndexResp); //获取菜单列表
+  rpc tenantAppMenuUpdate(TenantAppMenu) returns(Response); //更新菜单
+  rpc tenantAppMenuDelete(WithAppCodeID) returns(Response); //删除菜单
 
   rpc tenantAppApiCreate(TenantApiInfo) returns(WithID);   //添加接口
-  rpc tenantAppApiIndex(TenantAppApiIndexReq) returns(ApiInfoIndexResp); //获取接口列表
+  rpc tenantAppApiIndex(TenantAppApiIndexReq) returns(TenantAppApiIndexResp); //获取接口列表
   rpc tenantAppApiUpdate(TenantApiInfo) returns(Response);   //更新接口
-  rpc tenantAppApiDelete(WithID) returns(Response);   //删除接口
+  rpc tenantAppApiDelete(WithAppCodeID) returns(Response);   //删除接口
 }
 
 //--------------------租户管理------------------------
@@ -226,14 +226,21 @@ message TenantAppMenuIndexReq{
   string moduleCode =4;
   bool isRetTree = 5;
 }
+message TenantAppMenuIndexResp{
+  repeated TenantAppMenu list = 1;
+}
 
-message TenantMenuInfo{
+message TenantAppMenu{
+  int64 templateID = 1;
   string code = 2;
   string appCode =3;
   MenuInfo info=4;
+  repeated TenantAppMenu children = 5;
 }
 
+
 message TenantApiInfo{
+  int64 templateID = 1;
   string code = 2;
   string appCode =3;
   ApiInfo info=4;
@@ -244,7 +251,10 @@ message TenantAppApiIndexReq{
   string code = 2;
   string appCode =3;
   string moduleCode =4;
-  bool isRetTree = 5;
+}
+message TenantAppApiIndexResp{
+  repeated TenantApiInfo list = 1; // 接口列表数据
+  int64 total = 2;           // 接口列表总记录数
 }
 
 message TenantModuleCreateReq{
@@ -291,6 +301,12 @@ message WithID{
 message WithIDCode{
   int64 id = 1;
   string code=2;
+}
+
+message WithAppCodeID{
+  int64 id = 1;
+  string appCode=2;
+  string code =3;//租户code
 }
 
 //----------------------------------------------------------------------------------------------

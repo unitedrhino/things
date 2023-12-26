@@ -73,10 +73,13 @@ type (
 	RoleMenuMultiUpdateReq    = sys.RoleMenuMultiUpdateReq
 	TenantApiInfo             = sys.TenantApiInfo
 	TenantAppApiIndexReq      = sys.TenantAppApiIndexReq
+	TenantAppApiIndexResp     = sys.TenantAppApiIndexResp
 	TenantAppCreateReq        = sys.TenantAppCreateReq
 	TenantAppIndexReq         = sys.TenantAppIndexReq
 	TenantAppIndexResp        = sys.TenantAppIndexResp
+	TenantAppMenu             = sys.TenantAppMenu
 	TenantAppMenuIndexReq     = sys.TenantAppMenuIndexReq
+	TenantAppMenuIndexResp    = sys.TenantAppMenuIndexResp
 	TenantAppModule           = sys.TenantAppModule
 	TenantAppMultiUpdateReq   = sys.TenantAppMultiUpdateReq
 	TenantAppWithIDOrCode     = sys.TenantAppWithIDOrCode
@@ -84,7 +87,6 @@ type (
 	TenantInfoCreateReq       = sys.TenantInfoCreateReq
 	TenantInfoIndexReq        = sys.TenantInfoIndexReq
 	TenantInfoIndexResp       = sys.TenantInfoIndexResp
-	TenantMenuInfo            = sys.TenantMenuInfo
 	TenantModuleCreateReq     = sys.TenantModuleCreateReq
 	TenantModuleIndexReq      = sys.TenantModuleIndexReq
 	TenantModuleIndexResp     = sys.TenantModuleIndexResp
@@ -116,6 +118,7 @@ type (
 	UserRoleIndexReq          = sys.UserRoleIndexReq
 	UserRoleIndexResp         = sys.UserRoleIndexResp
 	UserRoleMultiUpdateReq    = sys.UserRoleMultiUpdateReq
+	WithAppCodeID             = sys.WithAppCodeID
 	WithID                    = sys.WithID
 	WithIDCode                = sys.WithIDCode
 

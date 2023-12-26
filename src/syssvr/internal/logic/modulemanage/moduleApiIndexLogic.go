@@ -45,7 +45,7 @@ func (l *ModuleApiIndexLogic) ModuleApiIndex(in *sys.ApiInfoIndexReq) (*sys.ApiI
 	}
 	info := make([]*sys.ApiInfo, 0, len(resp))
 	for _, v := range resp {
-		info = append(info, ToApiInfoPb(v))
+		info = append(info, logic.ToApiInfoPb(v))
 	}
 
 	return &sys.ApiInfoIndexResp{

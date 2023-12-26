@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/syssvr/internal/logic"
 	usermanagelogic "github.com/i-Things/things/src/syssvr/internal/logic/usermanage"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"gorm.io/gorm"
@@ -34,13 +33,16 @@ func NewTenantInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 新增区域
 func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*sys.WithID, error) {
-	err := logic.IsSupperAdmin(l.ctx, def.TenantCodeDefault)
-	if err != nil {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
 		return nil, err
 	}
+	ctxs.GetUserCtx(l.ctx).AllTenant = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllTenant = false
+	}()
 	userInfo := in.AdminUserInfo
 	//首先校验账号格式使用正则表达式，对用户账号做格式校验：只能是大小写字母，数字和下划线，减号
-	err = usermanagelogic.CheckUserName(userInfo.UserName)
+	err := usermanagelogic.CheckUserName(userInfo.UserName)
 	if err != nil {
 		return nil, err
 	}
@@ -70,10 +72,7 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 		Sex:        userInfo.Sex,
 		IsAllData:  def.True,
 	}
-	ctxs.GetUserCtx(l.ctx).AllTenant = true
-	defer func() {
-		ctxs.GetUserCtx(l.ctx).AllTenant = false
-	}()
+
 	po := ToTenantInfoPo(in.Info)
 	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		ri := relationDB.SysTenantRoleInfo{TenantCode: stores.TenantCode(in.Info.Code), Name: "超级管理员"}
