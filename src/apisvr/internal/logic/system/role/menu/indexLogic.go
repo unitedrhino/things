@@ -26,8 +26,9 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.RoleMenuIndexReq) (resp *types.RoleMenuIndexResp, err error) {
 	ret, err := l.svcCtx.RoleRpc.RoleMenuIndex(l.ctx, &sys.RoleMenuIndexReq{
-		Id:      req.ID,
-		AppCode: req.AppCode,
+		Id:         req.ID,
+		AppCode:    req.AppCode,
+		ModuleCode: req.ModuleCode,
 	})
 
 	return &types.RoleMenuIndexResp{

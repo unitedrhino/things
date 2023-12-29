@@ -200,7 +200,7 @@ type(
 
     TenantAppModule{
         Code string `json:"code"`                     // 应用编号
-        MenuIDs []int64 `json:"menuIDs"`
-        ApiIDs []int64 `json:"apiIDs"`
+        MenuIDs []int64 `json:"menuIDs,optional"`
+        ApiIDs []int64 `json:"apiIDs,optional"`
     }
 )

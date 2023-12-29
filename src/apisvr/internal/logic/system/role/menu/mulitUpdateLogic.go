@@ -28,9 +28,10 @@ func NewMulitUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mulit
 
 func (l *MulitUpdateLogic) MulitUpdate(req *types.RoleMenuMultiUpdateReq) error {
 	resp, err := l.svcCtx.RoleRpc.RoleMenuMultiUpdate(l.ctx, &sys.RoleMenuMultiUpdateReq{
-		Id:      req.ID,
-		AppCode: req.AppCode,
-		MenuIDs: req.MenuIDs,
+		Id:         req.ID,
+		AppCode:    req.AppCode,
+		ModuleCode: req.ModuleCode,
+		MenuIDs:    req.MenuIDs,
 	})
 	if err != nil {
 		err := errors.Fmt(err)

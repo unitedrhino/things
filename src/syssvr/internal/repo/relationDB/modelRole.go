@@ -8,9 +8,11 @@ type SysTenantRoleInfo struct {
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 角色所属租户编码
 	Name       string            `gorm:"column:name;uniqueIndex:tc_ac;type:VARCHAR(100);NOT NULL"`       // 角色名称
 	Desc       string            `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                         //描述
-	stores.Time
+
 	Status int64               `gorm:"column:status;type:SMALLINT;default:1"` // 状态  1:启用,2:禁用
 	Apps   []*SysTenantRoleApp `gorm:"foreignKey:RoleID;references:ID"`
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;:tc_ac"`
 }
 
 func (m *SysTenantRoleInfo) TableName() string {
@@ -23,7 +25,8 @@ type SysTenantRoleApp struct {
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 角色所属租户编码
 	RoleID     int64             `gorm:"column:role_id;uniqueIndex:tc_ac;NOT NULL;type:BIGINT"`          // 角色ID
 	AppCode    string            `gorm:"column:app_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"`    // 应用编码
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:tc_ac"`
 }
 
 func (m *SysTenantRoleApp) TableName() string {
@@ -37,7 +40,8 @@ type SysTenantRoleModule struct {
 	RoleID     int64             `gorm:"column:role_id;uniqueIndex:tc_ac;NOT NULL;type:BIGINT"`          // 角色ID
 	AppCode    string            `gorm:"column:app_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"`    // 应用编码
 	ModuleCode string            `gorm:"column:module_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 模块编码
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:tc_ac"`
 }
 
 func (m *SysTenantRoleModule) TableName() string {
@@ -52,7 +56,8 @@ type SysTenantRoleMenu struct {
 	AppCode    string            `gorm:"column:app_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"`    // 应用编码
 	ModuleCode string            `gorm:"column:module_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"` // 模块编码
 	MenuID     int64             `gorm:"column:menu_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"`          // 菜单ID
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:ri_mi"`
 }
 
 func (m *SysTenantRoleMenu) TableName() string {
@@ -67,7 +72,8 @@ type SysTenantRoleApi struct {
 	AppCode    string            `gorm:"column:app_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"`    // 应用编码
 	ModuleCode string            `gorm:"column:module_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"` // 模块编码
 	ApiID      int64             `gorm:"column:api_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"`           // 接口ID
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:ri_mi"`
 }
 
 func (m *SysTenantRoleApi) TableName() string {

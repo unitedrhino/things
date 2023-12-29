@@ -25,6 +25,13 @@ service UserManage {
   rpc userAreaIndex (UserAreaIndexReq) returns (UserAreaIndexResp); //获取用户数据权限列表
 }
 
+service MenuManage {
+  rpc menuInfoCreate(MenuInfo) returns(WithID); //添加菜单
+  rpc menuInfoIndex(MenuInfoIndexReq) returns(MenuInfoIndexResp); //获取菜单列表
+  rpc menuInfoUpdate(MenuInfo) returns(Response); //更新菜单
+  rpc menuInfoDelete(WithID) returns(Response); //删除菜单
+}
+
 service RoleManage {
   rpc roleInfoCreate(RoleInfo) returns(WithID); //添加角色
   rpc roleInfoIndex(RoleInfoIndexReq) returns(RoleInfoIndexResp); //获取角色列表
@@ -36,6 +43,10 @@ service RoleManage {
 
   rpc roleAppIndex(RoleAppIndexReq) returns (RoleAppIndexResp); //获取角色API权限列表
   rpc roleAppMultiUpdate(RoleAppMultiUpdateReq) returns (Response);  //更新角色API权限
+
+  rpc roleModuleIndex(RoleModuleIndexReq) returns (RoleModuleIndexResp); //获取角色API权限列表
+  rpc roleModuleMultiUpdate(RoleModuleMultiUpdateReq) returns (Response);  //更新角色API权限
+
 
   rpc roleApiAuth(RoleApiAuthReq) returns(Response);   //角色API鉴权
   rpc roleApiMultiUpdate(RoleApiMultiUpdateReq) returns (Response);  //更新角色API权限
@@ -85,6 +96,12 @@ service Log {
   rpc operLogCreate(OperLogCreateReq) returns(Response);           //操作日志数据入库
 }
 
+service ApiManage {
+  rpc apiInfoCreate(ApiInfo) returns(WithID);   //添加接口
+  rpc apiInfoIndex(ApiInfoIndexReq) returns(ApiInfoIndexResp); //获取接口列表
+  rpc apiInfoUpdate(ApiInfo) returns(Response);   //更新接口
+  rpc apiInfoDelete(WithID) returns(Response);   //删除接口
+}
 
 //项目管理
 service ProjectManage {
@@ -395,12 +412,14 @@ message AuthApiInfo{
 message RoleApiMultiUpdateReq{
   int64 id = 1;//角色ID
   string appCode = 2;//appCode
-  repeated int64 apiIDs = 3;
+  string moduleCode = 3;//模块编码
+  repeated int64 apiIDs = 4;
 }
 
 message RoleApiIndexReq{
   int64 id = 1;//角色ID
   string appCode = 2;//appCode
+  string moduleCode = 3;//模块编码
 }
 
 message RoleApiIndexResp{
@@ -413,6 +432,7 @@ message RoleApiIndexResp{
 message RoleMenuIndexReq{
   int64 id = 1;//角色ID
   string appCode = 2;//appCode
+  string moduleCode = 3;//模块编码
 }
 
 message RoleMenuIndexResp{
@@ -427,6 +447,16 @@ message RoleAppIndexReq{
 message RoleAppIndexResp{
   int64 total = 1;
   repeated string appCodes = 3;
+}
+
+message RoleModuleIndexReq{
+  int64 id = 1;//角色ID
+  string appCode = 2;//appCode
+}
+
+message RoleModuleIndexResp{
+  int64 total = 1;
+  repeated string moduleCodes = 3;
 }
 
 
@@ -568,10 +598,17 @@ message RoleAppMultiUpdateReq{
   repeated string appCodes = 3;
 }
 
+message RoleModuleMultiUpdateReq{
+  int64 id = 1;
+  string appCode = 2;
+  repeated string moduleCodes = 3;
+}
+
 message RoleMenuMultiUpdateReq{
   int64 id = 1;
   string appCode = 2;
-  repeated int64 menuIDs = 3;
+  string moduleCode = 3;//模块编码
+  repeated int64 menuIDs = 4;
 }
 
 message RoleApiAuthReq{
@@ -618,6 +655,8 @@ message UserCaptchaReq{
   string account = 1;//短信验证时填写手机号,邮箱验证时填写邮箱
   string type = 2;//验证方式:短信验证,图片验证码,邮箱验证
   string use = 3;//用途
+  string codeID = 4;//验证码编码
+  string code = 5;//验证码
 }
 
 message UserCaptchaResp{

@@ -24,7 +24,7 @@ func NewRoleApiMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *RoleApiMultiUpdateLogic) RoleApiMultiUpdate(in *sys.RoleApiMultiUpdateReq) (*sys.Response, error) {
-	err := relationDB.NewRoleApiRepo(l.ctx).MultiUpdate(l.ctx, in.Id, in.AppCode, in.ApiIDs)
+	err := relationDB.NewRoleApiRepo(l.ctx).MultiUpdate(l.ctx, in.Id, in.AppCode, in.ModuleCode, in.ApiIDs)
 	if err != nil {
 		return nil, err
 	}

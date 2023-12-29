@@ -71,6 +71,9 @@ type (
 	RoleMenuIndexReq          = sys.RoleMenuIndexReq
 	RoleMenuIndexResp         = sys.RoleMenuIndexResp
 	RoleMenuMultiUpdateReq    = sys.RoleMenuMultiUpdateReq
+	RoleModuleIndexReq        = sys.RoleModuleIndexReq
+	RoleModuleIndexResp       = sys.RoleModuleIndexResp
+	RoleModuleMultiUpdateReq  = sys.RoleModuleMultiUpdateReq
 	TenantApiInfo             = sys.TenantApiInfo
 	TenantAppApiIndexReq      = sys.TenantAppApiIndexReq
 	TenantAppApiIndexResp     = sys.TenantAppApiIndexResp

@@ -27,7 +27,7 @@ func NewRoleMenuMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *RoleMenuMultiUpdateLogic) RoleMenuMultiUpdate(in *sys.RoleMenuMultiUpdateReq) (*sys.Response, error) {
-	err := l.RmDB.MultiUpdate(l.ctx, in.Id, in.AppCode, in.MenuIDs)
+	err := l.RmDB.MultiUpdate(l.ctx, in.Id, in.AppCode, in.ModuleCode, in.MenuIDs)
 	if err != nil {
 		return nil, err
 	}

@@ -30,7 +30,7 @@ func NewRoleMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Rol
 
 func (l *RoleMenuIndexLogic) RoleMenuIndex(in *sys.RoleMenuIndexReq) (*sys.RoleMenuIndexResp, error) {
 	ms, err := relationDB.NewRoleMenuRepo(l.ctx).FindByFilter(l.ctx,
-		relationDB.RoleMenuFilter{RoleIDs: []int64{in.Id}, AppCode: in.AppCode}, nil)
+		relationDB.RoleMenuFilter{RoleIDs: []int64{in.Id}, AppCode: in.AppCode, ModuleCode: in.ModuleCode}, nil)
 	if err != nil {
 		return nil, err
 	}

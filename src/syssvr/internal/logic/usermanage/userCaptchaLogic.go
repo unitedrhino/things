@@ -37,6 +37,10 @@ func (l *UserCaptchaLogic) UserCaptcha(in *sys.UserCaptchaReq) (*sys.UserCaptcha
 	case def.CaptchaTypeImage:
 
 	case def.CaptchaTypeEmail:
+		account := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, in.CodeID, in.Code)
+		if account == "" {
+			return nil, errors.Captcha
+		}
 		count, err := relationDB.NewUserInfoRepo(l.ctx).CountByFilter(l.ctx, relationDB.UserInfoFilter{Emails: []string{in.Account}})
 		if err != nil {
 			return nil, err

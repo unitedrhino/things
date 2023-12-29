@@ -22,6 +22,7 @@ func Migrate(c conf.Database) error {
 		&SysTenantUserInfo{},
 		&SysTenantRoleInfo{},
 		&SysTenantRoleMenu{},
+		&SysTenantRoleModule{},
 		&SysModuleMenu{},
 		&SysTenantLoginLog{},
 		&SysTenantOperLog{},

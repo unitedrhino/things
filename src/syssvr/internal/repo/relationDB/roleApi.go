@@ -24,12 +24,20 @@ func NewRoleApiRepo(in any) *RoleApiRepo {
 }
 
 type RoleApiFilter struct {
-	RoleIDs []int64
-	AppCode string
+	TenantCode string
+	RoleIDs    []int64
+	AppCode    string
+	ModuleCode string
 }
 
 func (p RoleApiRepo) fmtFilter(ctx context.Context, f RoleApiFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.TenantCode != "" {
+		db = db.Where("tenant_code =?", f.TenantCode)
+	}
+	if f.ModuleCode != "" {
+		db = db.Where("module_code =?", f.ModuleCode)
+	}
 	if len(f.RoleIDs) != 0 {
 		db = db.Where("role_id in ?", f.RoleIDs)
 	}
@@ -100,18 +108,19 @@ func (p RoleApiRepo) MultiInsert(ctx context.Context, data []*SysTenantRoleApi) 
 	return stores.ErrFmt(err)
 }
 
-func (p RoleApiRepo) MultiUpdate(ctx context.Context, roleID int64, appCode string, apiIDs []int64) error {
+func (p RoleApiRepo) MultiUpdate(ctx context.Context, roleID int64, appCode string, moduleCode string, apiIDs []int64) error {
 	var datas []*SysTenantRoleApi
 	for _, v := range apiIDs {
 		datas = append(datas, &SysTenantRoleApi{
-			AppCode: appCode,
-			RoleID:  roleID,
-			ApiID:   v,
+			AppCode:    appCode,
+			ModuleCode: moduleCode,
+			RoleID:     roleID,
+			ApiID:      v,
 		})
 	}
 	err := p.db.Transaction(func(tx *gorm.DB) error {
 		rm := NewRoleApiRepo(tx)
-		err := rm.DeleteByFilter(ctx, RoleApiFilter{RoleIDs: []int64{roleID}, AppCode: appCode})
+		err := rm.DeleteByFilter(ctx, RoleApiFilter{RoleIDs: []int64{roleID}, AppCode: appCode, ModuleCode: moduleCode})
 		if err != nil {
 			return err
 		}

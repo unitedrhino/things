@@ -77,6 +77,22 @@ service api {
     post /index (RoleMenuIndexReq) returns (RoleMenuIndexResp)
 }
 
+@server(
+    group: system/role/module
+    prefix: /api/v1/system/role/module
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "更新角色对应模块列表"
+    @handler mulitUpdate
+    post /multi-update (RoleModuleMultiUpdateReq) returns ()
+
+    @doc "获取角色对应模块列表"
+    @handler index
+    post /index (RoleModuleIndexReq) returns (RoleModuleIndexResp)
+}
+
+
 
 type (
 
@@ -95,25 +111,21 @@ type (
     RoleApiMultiUpdateReq {
         ID int64 `json:"id"`      //角色ID
         AppCode string `json:"appCode"`                               // 应用编号
+        ModuleCode string `json:"moduleCode"`
         ApiIDs []int64 `json:"apiIDs"`  //API列表数据
     }
 
     RoleApiIndexReq{
         ID int64 `json:"id"`      //角色ID
         AppCode string `json:"appCode"`                               // 应用编号
+        ModuleCode string `json:"moduleCode"`
     }
 
     RoleApiIndexResp {
         ApiIDs []int64 `json:"apiIDs"`  //API列表数据
     }
 
-    RoleMenuIndexReq{
-        ID int64 `json:"id"`   //角色编号
-        AppCode string `json:"appCode"`                               // 应用编号
-    }
-    RoleMenuIndexResp{
-        MenuIDs []int64 `json:"menuIDs"` //菜单编号列表
-    }
+
 
     RoleInfoIndexReq struct {
         Page *PageInfo `json:"page,optional"`//分页信息,只获取一个则不填
@@ -137,6 +149,30 @@ type (
     RoleMenuMultiUpdateReq struct {
         ID int64 `json:"id"`   //角色编号
         AppCode string `json:"appCode"`                               // 应用编号
+        ModuleCode string `json:"moduleCode"`
         MenuIDs []int64 `json:"menuIDs"` //菜单编号列表
+    }
+    RoleMenuIndexReq{
+        ID int64 `json:"id"`   //角色编号
+        AppCode string `json:"appCode"`                               // 应用编号
+        ModuleCode string `json:"moduleCode"`
+    }
+    RoleMenuIndexResp{
+        MenuIDs []int64 `json:"menuIDs"` //菜单编号列表
+    }
+)
+
+type (
+    RoleModuleMultiUpdateReq struct {
+        ID int64 `json:"id"`   //角色编号
+        AppCode string `json:"appCode"`                               // 应用编号
+        ModuleCodes []string `json:"moduleCodes"`
+    }
+    RoleModuleIndexReq{
+        ID int64 `json:"id"`   //角色编号
+        AppCode string `json:"appCode"`                               // 应用编号
+    }
+    RoleModuleIndexResp{
+        ModuleCodes []string `json:"moduleCodes"` //菜单编号列表
     }
 )

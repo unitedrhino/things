@@ -112,6 +112,7 @@ type (
 	 UserRoleIndexReq{
 		 UserID         int64  `json:"userID,string"`        // 用户id
 	 }
+
 	 UserRoleIndexResp{
 	 	Total int64 `json:"total"`
 	 	List  []*RoleInfo `json:"list"`           //用户角色列表
@@ -130,6 +131,8 @@ type (
 		Account string `json:"account,optional"`              //短信验证时填写手机号,邮箱验证时填写邮箱
 		Type string `json:"type,options=phone|image|email"`     //验证方式:短信验证,图片验证码
 		Use  string `json:"use,options=login|register"` //用途
+		Code      string `json:"code,optional"`                                 //验证码    微信邮箱验证登录填code
+		CodeID    string `json:"codeID,optional"`                               //验证码编号 微信邮箱验证登录填state
 	}
 
 	UserCaptchaResp {
@@ -153,13 +156,9 @@ type (
 		Total int64       `json:"total,optional,omitempty"` //总数
 	}
 
-
-
 	UserInfoReadReq{
 		UserID         int64  `json:"userID,string,optional"`        // 用户id
 	}
-
-
 
 	UserInfoDeleteReq {
 		UserID         int64  `json:"userID,string,optional"`        // 用户id
@@ -198,19 +197,20 @@ type (
 type (
 	//登录信息注册,注册第一步(注册核心登录信息) 返回一个jwt用来第二步注册 第一步注册成功后就可以登录了,第二步注册是填写信息
 	UserRegisterReq {
-		RegType string `json:"regType,options=phone|email|wxOpen|wxIn|wxMiniP|pwd"` //注册方式:	phone手机号注册 wxOpen 微信开放平台登录 wxIn 微信内登录 wxMiniP 微信小程序 pwd 账号密码注册
-		Account    string `json:"account,optional"`                             //手机号注册时填写手机号 账号密码注册时填写userName
-		Code    string `json:"code"`                                      //验证码    微信登录填code 账号密码登录时填写密码
-		CodeID  string `json:"codeID,optional"`                           //验证码编号 微信登录填state
-		Password  string `json:"password,optional"`                           //密码
+		//注册方式:	phone手机号注册 wxOpen 微信开放平台登录 wxIn 微信内登录 wxMiniP 微信小程序 pwd 账号密码注册
+		RegType string `json:"regType,options=phone|email|wxOpen|wxIn|wxMiniP|pwd"`
+		Account    string `json:"account,optional"`	//手机号注册时填写手机号 账号密码注册时填写userName
+		Code    string `json:"code"`	//验证码    微信登录填code 账号密码登录时填写密码
+		CodeID  string `json:"codeID,optional"`	//验证码编号 微信登录填state
+		Password  string `json:"password,optional"`	//密码
 		Info *UserInfo `json:"info,optional"` //用户信息
 	}
 
 	UserForgetPwdReq{
-		Type string `json:"type,options=phone|email"` //验证方式:	phone手机号 email邮箱
-		Account    string `json:"account,optional"`                             //手机号注册时填写手机号 账号密码注册时填写userName
-		Code    string `json:"code,optional"`                                      //验证码    微信登录填code 账号密码登录时填写密码
-		CodeID  string `json:"codeID,optional"`                           //验证码编号 微信登录填state
-		Password  string `json:"password"`                           //密码
+		Type string `json:"type,options=phone|email"` 	//验证方式:	phone手机号 email邮箱
+		Account    string `json:"account,optional"`		//手机号注册时填写手机号 账号密码注册时填写userName
+		Code    string `json:"code,optional"`  			//验证码    微信登录填code 账号密码登录时填写密码
+		CodeID  string `json:"codeID,optional"`   		//验证码编号 微信登录填state
+		Password  string `json:"password"`           	//密码
 	}
 )

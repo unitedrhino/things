@@ -24,7 +24,7 @@ func NewRoleApiIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Role
 
 func (l *RoleApiIndexLogic) RoleApiIndex(in *sys.RoleApiIndexReq) (*sys.RoleApiIndexResp, error) {
 	ms, err := relationDB.NewRoleApiRepo(l.ctx).FindByFilter(l.ctx,
-		relationDB.RoleApiFilter{RoleIDs: []int64{in.Id}, AppCode: in.AppCode}, nil)
+		relationDB.RoleApiFilter{RoleIDs: []int64{in.Id}, AppCode: in.AppCode, ModuleCode: in.ModuleCode}, nil)
 	if err != nil {
 		return nil, err
 	}

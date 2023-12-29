@@ -26,8 +26,9 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.RoleApiIndexReq) (resp *types.RoleApiIndexResp, err error) {
 	info, err := l.svcCtx.RoleRpc.RoleApiIndex(l.ctx, &sys.RoleApiIndexReq{
-		Id:      req.ID,
-		AppCode: req.AppCode,
+		Id:         req.ID,
+		AppCode:    req.AppCode,
+		ModuleCode: req.ModuleCode,
 	})
 	if err != nil {
 		return nil, err

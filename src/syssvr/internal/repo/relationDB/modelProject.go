@@ -15,7 +15,8 @@ type SysProjectInfo struct {
 	Region      string           `gorm:"column:region;type:varchar(100);NOT NULL"`      // 项目省市区县
 	Address     string           `gorm:"column:address;type:varchar(512);NOT NULL"`     // 项目详细地址
 	Desc        string           `gorm:"column:desc;type:varchar(100);NOT NULL"`        // 项目备注
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;index"`
 }
 
 func (m *SysProjectInfo) TableName() string {
@@ -31,9 +32,10 @@ type SysAreaInfo struct {
 	AreaName     string           `gorm:"column:areaName;type:varchar(100);NOT NULL"` // 区域名称
 	Position     stores.Point     `gorm:"column:position;type:varchar(100);NOT NULL"` // 区域定位(默认百度坐标系BD09)
 	Desc         string           `gorm:"column:desc;type:varchar(100);NOT NULL"`     // 区域备注
-	stores.Time
-	Children []*SysAreaInfo `gorm:"foreignKey:ParentAreaID;references:AreaID"`
-	Parent   *SysAreaInfo   `gorm:"foreignKey:AreaID;references:ParentAreaID"`
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;index"`
+	Children    []*SysAreaInfo     `gorm:"foreignKey:ParentAreaID;references:AreaID"`
+	Parent      *SysAreaInfo       `gorm:"foreignKey:AreaID;references:ParentAreaID"`
 }
 
 func (m *SysAreaInfo) TableName() string {
@@ -48,7 +50,8 @@ type SysUserAuthArea struct {
 	AreaID      int64     `gorm:"column:areaID;type:bigint;NOT NULL"`    // 区域ID(雪花ID)
 	AuthType    int64     `gorm:"column:roleType;type:bigint;NOT NULL"`  // 角色类型 1 管理员  2 读写授权 3 临时授权 4 只读授权
 	AuthExpires time.Time `gorm:"column:expires;NOT NULL"`               // 授权过期时间
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;index"`
 }
 
 func (m *SysUserAuthArea) TableName() string {
@@ -60,7 +63,8 @@ type SysUserAuthProject struct {
 	ID        int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	UserID    int64 `gorm:"column:userID;type:bigint;NOT NULL"`    // 用户ID(雪花id)
 	ProjectID int64 `gorm:"column:projectID;type:bigint;NOT NULL"` // 所属项目ID(雪花ID)
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;index"`
 }
 
 func (m *SysUserAuthProject) TableName() string {

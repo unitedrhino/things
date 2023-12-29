@@ -29,6 +29,6 @@ func (l *DeleteLogic) Delete(req *types.WithIDOrCode) error {
 	if err := ctxs.IsRoot(l.ctx); err != nil {
 		return err
 	}
-	_, err := l.svcCtx.TenantRpc.TenantInfoDelete(l.ctx, &sys.WithIDCode{Id: req.ID})
+	_, err := l.svcCtx.TenantRpc.TenantInfoDelete(l.ctx, &sys.WithIDCode{Id: req.ID, Code: req.Code})
 	return err
 }
