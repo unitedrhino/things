@@ -8,6 +8,6 @@ import (
 
 func main() {
 	defer utils.Recover(context.Background())
-	svcCtx := dgdirect.GetSvcCtx(false)
+	svcCtx := dgdirect.GetSvcCtx()
 	dgdirect.Run(svcCtx)
 }
