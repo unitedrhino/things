@@ -30,6 +30,7 @@ func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLo
 		UiDB:   relationDB.NewUserInfoRepo(ctx),
 	}
 }
+
 func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysTenantUserInfo) error {
 	//根据密码类型不同做不同处理
 	if in.PwdType == 0 {

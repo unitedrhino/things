@@ -27,9 +27,10 @@ func NewMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 
 func (l *MultiUpdateLogic) MultiUpdate(req *types.RoleApiMultiUpdateReq) error {
 	_, err := l.svcCtx.RoleRpc.RoleApiMultiUpdate(l.ctx, &sys.RoleApiMultiUpdateReq{
-		Id:      req.ID,
-		AppCode: req.AppCode,
-		ApiIDs:  req.ApiIDs,
+		Id:         req.ID,
+		AppCode:    req.AppCode,
+		ApiIDs:     req.ApiIDs,
+		ModuleCode: req.ModuleCode,
 	})
 	if err != nil {
 		l.Errorf("%s.rpc.AuthApiMultiUpdate req=%v err=%v", utils.FuncName(), req, err)

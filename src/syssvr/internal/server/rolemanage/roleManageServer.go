@@ -62,6 +62,16 @@ func (s *RoleManageServer) RoleAppMultiUpdate(ctx context.Context, in *sys.RoleA
 	return l.RoleAppMultiUpdate(in)
 }
 
+func (s *RoleManageServer) RoleModuleIndex(ctx context.Context, in *sys.RoleModuleIndexReq) (*sys.RoleModuleIndexResp, error) {
+	l := rolemanagelogic.NewRoleModuleIndexLogic(ctx, s.svcCtx)
+	return l.RoleModuleIndex(in)
+}
+
+func (s *RoleManageServer) RoleModuleMultiUpdate(ctx context.Context, in *sys.RoleModuleMultiUpdateReq) (*sys.Response, error) {
+	l := rolemanagelogic.NewRoleModuleMultiUpdateLogic(ctx, s.svcCtx)
+	return l.RoleModuleMultiUpdate(in)
+}
+
 func (s *RoleManageServer) RoleApiAuth(ctx context.Context, in *sys.RoleApiAuthReq) (*sys.Response, error) {
 	l := rolemanagelogic.NewRoleApiAuthLogic(ctx, s.svcCtx)
 	return l.RoleApiAuth(in)

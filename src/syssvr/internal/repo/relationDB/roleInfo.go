@@ -21,10 +21,14 @@ type RoleInfoFilter struct {
 	AppCode     string
 	Name        string
 	Status      int64
+	TenantCode  string
 }
 
 func (p RoleInfoRepo) fmtFilter(ctx context.Context, f RoleInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.TenantCode != "" {
+		db = db.Where("tenant_code=?", f.TenantCode)
+	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
 	}

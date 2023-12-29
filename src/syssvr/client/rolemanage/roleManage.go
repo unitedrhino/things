@@ -71,6 +71,9 @@ type (
 	RoleMenuIndexReq          = sys.RoleMenuIndexReq
 	RoleMenuIndexResp         = sys.RoleMenuIndexResp
 	RoleMenuMultiUpdateReq    = sys.RoleMenuMultiUpdateReq
+	RoleModuleIndexReq        = sys.RoleModuleIndexReq
+	RoleModuleIndexResp       = sys.RoleModuleIndexResp
+	RoleModuleMultiUpdateReq  = sys.RoleModuleMultiUpdateReq
 	TenantApiInfo             = sys.TenantApiInfo
 	TenantAppApiIndexReq      = sys.TenantAppApiIndexReq
 	TenantAppApiIndexResp     = sys.TenantAppApiIndexResp
@@ -131,6 +134,8 @@ type (
 		RoleMenuMultiUpdate(ctx context.Context, in *RoleMenuMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		RoleAppIndex(ctx context.Context, in *RoleAppIndexReq, opts ...grpc.CallOption) (*RoleAppIndexResp, error)
 		RoleAppMultiUpdate(ctx context.Context, in *RoleAppMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		RoleModuleIndex(ctx context.Context, in *RoleModuleIndexReq, opts ...grpc.CallOption) (*RoleModuleIndexResp, error)
+		RoleModuleMultiUpdate(ctx context.Context, in *RoleModuleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error)
 		RoleApiMultiUpdate(ctx context.Context, in *RoleApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		RoleApiIndex(ctx context.Context, in *RoleApiIndexReq, opts ...grpc.CallOption) (*RoleApiIndexResp, error)
@@ -229,6 +234,24 @@ func (m *defaultRoleManage) RoleAppMultiUpdate(ctx context.Context, in *RoleAppM
 
 func (d *directRoleManage) RoleAppMultiUpdate(ctx context.Context, in *RoleAppMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.RoleAppMultiUpdate(ctx, in)
+}
+
+func (m *defaultRoleManage) RoleModuleIndex(ctx context.Context, in *RoleModuleIndexReq, opts ...grpc.CallOption) (*RoleModuleIndexResp, error) {
+	client := sys.NewRoleManageClient(m.cli.Conn())
+	return client.RoleModuleIndex(ctx, in, opts...)
+}
+
+func (d *directRoleManage) RoleModuleIndex(ctx context.Context, in *RoleModuleIndexReq, opts ...grpc.CallOption) (*RoleModuleIndexResp, error) {
+	return d.svr.RoleModuleIndex(ctx, in)
+}
+
+func (m *defaultRoleManage) RoleModuleMultiUpdate(ctx context.Context, in *RoleModuleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewRoleManageClient(m.cli.Conn())
+	return client.RoleModuleMultiUpdate(ctx, in, opts...)
+}
+
+func (d *directRoleManage) RoleModuleMultiUpdate(ctx context.Context, in *RoleModuleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.RoleModuleMultiUpdate(ctx, in)
 }
 
 func (m *defaultRoleManage) RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error) {

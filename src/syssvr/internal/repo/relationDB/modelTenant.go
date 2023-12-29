@@ -8,14 +8,15 @@ import (
 
 // 租户信息表
 type SysTenantInfo struct {
-	ID          int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // id编号
-	Code        string `gorm:"column:code;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 租户编码
-	Name        string `gorm:"column:name;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 租户名称
-	AdminUserID int64  `gorm:"column:admin_user_id;type:BIGINT;NOT NULL"`          // 超级管理员id
-	BaseUrl     string `gorm:"column:base_url;type:VARCHAR(100);NOT NULL"`         //应用首页
-	LogoUrl     string `gorm:"column:logo_url;type:VARCHAR(100);NOT NULL"`         //应用logo地址
-	Desc        string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`             //应用描述
-	stores.Time
+	ID          int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`        // id编号
+	Code        string `gorm:"column:code;uniqueIndex:code;type:VARCHAR(100);NOT NULL"` // 租户编码
+	Name        string `gorm:"column:name;uniqueIndex:name;type:VARCHAR(100);NOT NULL"` // 租户名称
+	AdminUserID int64  `gorm:"column:admin_user_id;type:BIGINT;NOT NULL"`               // 超级管理员id
+	BaseUrl     string `gorm:"column:base_url;type:VARCHAR(100);NOT NULL"`              //应用首页
+	LogoUrl     string `gorm:"column:logo_url;type:VARCHAR(100);NOT NULL"`              //应用logo地址
+	Desc        string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                  //应用描述
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:code;uniqueIndex:name"`
 }
 
 func (m *SysTenantInfo) TableName() string {
@@ -27,7 +28,8 @@ type SysTenantApp struct {
 	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 租户编码
 	AppCode    string            `gorm:"column:app_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"`    // 应用编码 这里只关联主应用,主应用授权,子应用也授权了
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:ri_mi"`
 }
 
 func (m *SysTenantApp) TableName() string {
@@ -46,9 +48,9 @@ func (m *SysTenantAppModule) TableName() string {
 
 // 接口管理
 type SysTenantAppApi struct {
-	TempLateID int64             `gorm:"column:template_id;type:BIGINT;NOT NULL"`                        // 模板id
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 租户编码
-	AppCode    string            `gorm:"column:app_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"`    // 应用编码 这里只关联主应用,主应用授权,子应用也授权了
+	TempLateID int64             `gorm:"column:template_id;type:BIGINT;NOT NULL"`                            // 模板id
+	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:app_route;type:VARCHAR(50);NOT NULL"` // 租户编码
+	AppCode    string            `gorm:"column:app_code;uniqueIndex:app_route;type:VARCHAR(50);NOT NULL"`    // 应用编码 这里只关联主应用,主应用授权,子应用也授权了
 	SysModuleApi
 }
 
@@ -58,9 +60,9 @@ func (m *SysTenantAppApi) TableName() string {
 
 // 菜单管理表
 type SysTenantAppMenu struct {
-	TempLateID int64             `gorm:"column:template_id;type:BIGINT;NOT NULL"`                        // 模板id
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 租户编码
-	AppCode    string            `gorm:"column:app_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"`    // 应用编码 这里只关联主应用,主应用授权,子应用也授权了
+	TempLateID int64             `gorm:"column:template_id;type:BIGINT;NOT NULL"`      // 模板id
+	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"` // 租户编码
+	AppCode    string            `gorm:"column:app_code;type:VARCHAR(50);NOT NULL"`    // 应用编码 这里只关联主应用,主应用授权,子应用也授权了
 	SysModuleMenu
 }
 
@@ -91,7 +93,8 @@ type SysTenantUserInfo struct {
 	IsAllData     int64                `gorm:"column:is_all_data;type:SMALLINT;default:1;NOT NULL"`                                                                                            // 是否所有数据权限（1是，2否）
 	Roles         []*SysTenantUserRole `gorm:"foreignKey:UserID;references:UserID"`
 	Tenant        *SysTenantInfo       `gorm:"foreignKey:Code;references:TenantCode"`
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:tc_un;uniqueIndex:tc_email;uniqueIndex:tc_phone;uniqueIndex:tc_wui;uniqueIndex:tc_woi"`
 }
 
 func (m *SysTenantUserInfo) TableName() string {
@@ -104,7 +107,8 @@ type SysTenantUserRole struct {
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL;"`         // 租户编码
 	UserID     int64             `gorm:"column:user_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"` // 用户ID
 	RoleID     int64             `gorm:"column:role_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"` // 角色ID
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:ri_mi"`
 }
 
 func (m *SysTenantUserRole) TableName() string {
@@ -156,11 +160,12 @@ func (m *SysTenantOperLog) TableName() string {
 
 // 租户下的邮箱配置
 type SysTenantConfig struct {
-	ID             int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`         // id编号
-	TenantCode     stores.TenantCode `gorm:"column:tenant_code;uniqueIndex;type:VARCHAR(50);NOT NULL"` // 租户编码
+	ID             int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
+	TenantCode     stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"` // 租户编码
 	Email          *SysTenantEmail   `gorm:"embedded;embeddedPrefix:email_"`
 	RegisterRoleID int64             `gorm:"column:register_role_id;type:BIGINT;NOT NULL"` //注册分配的角色id
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:ri_mi"`
 }
 
 type SysTenantEmail struct {
@@ -170,6 +175,8 @@ type SysTenantEmail struct {
 	Nickname string `gorm:"column:nickname;type:VARCHAR(50);NOT NULL"` // 昵称    发件人昵称 通常为自己的邮箱
 	Port     int64  `gorm:"column:port;type:int;default:465"`          // 端口     请前往QQ或者你要发邮件的邮箱查看其smtp协议 大多为 465
 	IsSSL    int64  `gorm:"column:is_ssl;type:int;default:2"`          // 是否SSL   是否开启SSL
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;index"`
 }
 
 func (m *SysTenantConfig) TableName() string {

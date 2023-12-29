@@ -664,17 +664,220 @@ var UserManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	RoleManage_RoleInfoCreate_FullMethodName      = "/sys.RoleManage/roleInfoCreate"
-	RoleManage_RoleInfoIndex_FullMethodName       = "/sys.RoleManage/roleInfoIndex"
-	RoleManage_RoleInfoUpdate_FullMethodName      = "/sys.RoleManage/roleInfoUpdate"
-	RoleManage_RoleInfoDelete_FullMethodName      = "/sys.RoleManage/roleInfoDelete"
-	RoleManage_RoleMenuIndex_FullMethodName       = "/sys.RoleManage/roleMenuIndex"
-	RoleManage_RoleMenuMultiUpdate_FullMethodName = "/sys.RoleManage/roleMenuMultiUpdate"
-	RoleManage_RoleAppIndex_FullMethodName        = "/sys.RoleManage/roleAppIndex"
-	RoleManage_RoleAppMultiUpdate_FullMethodName  = "/sys.RoleManage/roleAppMultiUpdate"
-	RoleManage_RoleApiAuth_FullMethodName         = "/sys.RoleManage/roleApiAuth"
-	RoleManage_RoleApiMultiUpdate_FullMethodName  = "/sys.RoleManage/roleApiMultiUpdate"
-	RoleManage_RoleApiIndex_FullMethodName        = "/sys.RoleManage/roleApiIndex"
+	MenuManage_MenuInfoCreate_FullMethodName = "/sys.MenuManage/menuInfoCreate"
+	MenuManage_MenuInfoIndex_FullMethodName  = "/sys.MenuManage/menuInfoIndex"
+	MenuManage_MenuInfoUpdate_FullMethodName = "/sys.MenuManage/menuInfoUpdate"
+	MenuManage_MenuInfoDelete_FullMethodName = "/sys.MenuManage/menuInfoDelete"
+)
+
+// MenuManageClient is the client API for MenuManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type MenuManageClient interface {
+	MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*WithID, error)
+	MenuInfoIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error)
+	MenuInfoUpdate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error)
+	MenuInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+}
+
+type menuManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMenuManageClient(cc grpc.ClientConnInterface) MenuManageClient {
+	return &menuManageClient{cc}
+}
+
+func (c *menuManageClient) MenuInfoCreate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
+	err := c.cc.Invoke(ctx, MenuManage_MenuInfoCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuManageClient) MenuInfoIndex(ctx context.Context, in *MenuInfoIndexReq, opts ...grpc.CallOption) (*MenuInfoIndexResp, error) {
+	out := new(MenuInfoIndexResp)
+	err := c.cc.Invoke(ctx, MenuManage_MenuInfoIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuManageClient) MenuInfoUpdate(ctx context.Context, in *MenuInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, MenuManage_MenuInfoUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *menuManageClient) MenuInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, MenuManage_MenuInfoDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MenuManageServer is the server API for MenuManage service.
+// All implementations must embed UnimplementedMenuManageServer
+// for forward compatibility
+type MenuManageServer interface {
+	MenuInfoCreate(context.Context, *MenuInfo) (*WithID, error)
+	MenuInfoIndex(context.Context, *MenuInfoIndexReq) (*MenuInfoIndexResp, error)
+	MenuInfoUpdate(context.Context, *MenuInfo) (*Response, error)
+	MenuInfoDelete(context.Context, *WithID) (*Response, error)
+	mustEmbedUnimplementedMenuManageServer()
+}
+
+// UnimplementedMenuManageServer must be embedded to have forward compatible implementations.
+type UnimplementedMenuManageServer struct {
+}
+
+func (UnimplementedMenuManageServer) MenuInfoCreate(context.Context, *MenuInfo) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoCreate not implemented")
+}
+func (UnimplementedMenuManageServer) MenuInfoIndex(context.Context, *MenuInfoIndexReq) (*MenuInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoIndex not implemented")
+}
+func (UnimplementedMenuManageServer) MenuInfoUpdate(context.Context, *MenuInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoUpdate not implemented")
+}
+func (UnimplementedMenuManageServer) MenuInfoDelete(context.Context, *WithID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuInfoDelete not implemented")
+}
+func (UnimplementedMenuManageServer) mustEmbedUnimplementedMenuManageServer() {}
+
+// UnsafeMenuManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MenuManageServer will
+// result in compilation errors.
+type UnsafeMenuManageServer interface {
+	mustEmbedUnimplementedMenuManageServer()
+}
+
+func RegisterMenuManageServer(s grpc.ServiceRegistrar, srv MenuManageServer) {
+	s.RegisterService(&MenuManage_ServiceDesc, srv)
+}
+
+func _MenuManage_MenuInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuManageServer).MenuInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MenuManage_MenuInfoCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuManageServer).MenuInfoCreate(ctx, req.(*MenuInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MenuManage_MenuInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuManageServer).MenuInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MenuManage_MenuInfoIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuManageServer).MenuInfoIndex(ctx, req.(*MenuInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MenuManage_MenuInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuManageServer).MenuInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MenuManage_MenuInfoUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuManageServer).MenuInfoUpdate(ctx, req.(*MenuInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MenuManage_MenuInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuManageServer).MenuInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MenuManage_MenuInfoDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuManageServer).MenuInfoDelete(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// MenuManage_ServiceDesc is the grpc.ServiceDesc for MenuManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var MenuManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.MenuManage",
+	HandlerType: (*MenuManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "menuInfoCreate",
+			Handler:    _MenuManage_MenuInfoCreate_Handler,
+		},
+		{
+			MethodName: "menuInfoIndex",
+			Handler:    _MenuManage_MenuInfoIndex_Handler,
+		},
+		{
+			MethodName: "menuInfoUpdate",
+			Handler:    _MenuManage_MenuInfoUpdate_Handler,
+		},
+		{
+			MethodName: "menuInfoDelete",
+			Handler:    _MenuManage_MenuInfoDelete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}
+
+const (
+	RoleManage_RoleInfoCreate_FullMethodName        = "/sys.RoleManage/roleInfoCreate"
+	RoleManage_RoleInfoIndex_FullMethodName         = "/sys.RoleManage/roleInfoIndex"
+	RoleManage_RoleInfoUpdate_FullMethodName        = "/sys.RoleManage/roleInfoUpdate"
+	RoleManage_RoleInfoDelete_FullMethodName        = "/sys.RoleManage/roleInfoDelete"
+	RoleManage_RoleMenuIndex_FullMethodName         = "/sys.RoleManage/roleMenuIndex"
+	RoleManage_RoleMenuMultiUpdate_FullMethodName   = "/sys.RoleManage/roleMenuMultiUpdate"
+	RoleManage_RoleAppIndex_FullMethodName          = "/sys.RoleManage/roleAppIndex"
+	RoleManage_RoleAppMultiUpdate_FullMethodName    = "/sys.RoleManage/roleAppMultiUpdate"
+	RoleManage_RoleModuleIndex_FullMethodName       = "/sys.RoleManage/roleModuleIndex"
+	RoleManage_RoleModuleMultiUpdate_FullMethodName = "/sys.RoleManage/roleModuleMultiUpdate"
+	RoleManage_RoleApiAuth_FullMethodName           = "/sys.RoleManage/roleApiAuth"
+	RoleManage_RoleApiMultiUpdate_FullMethodName    = "/sys.RoleManage/roleApiMultiUpdate"
+	RoleManage_RoleApiIndex_FullMethodName          = "/sys.RoleManage/roleApiIndex"
 )
 
 // RoleManageClient is the client API for RoleManage service.
@@ -689,6 +892,8 @@ type RoleManageClient interface {
 	RoleMenuMultiUpdate(ctx context.Context, in *RoleMenuMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	RoleAppIndex(ctx context.Context, in *RoleAppIndexReq, opts ...grpc.CallOption) (*RoleAppIndexResp, error)
 	RoleAppMultiUpdate(ctx context.Context, in *RoleAppMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	RoleModuleIndex(ctx context.Context, in *RoleModuleIndexReq, opts ...grpc.CallOption) (*RoleModuleIndexResp, error)
+	RoleModuleMultiUpdate(ctx context.Context, in *RoleModuleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error)
 	RoleApiMultiUpdate(ctx context.Context, in *RoleApiMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	RoleApiIndex(ctx context.Context, in *RoleApiIndexReq, opts ...grpc.CallOption) (*RoleApiIndexResp, error)
@@ -774,6 +979,24 @@ func (c *roleManageClient) RoleAppMultiUpdate(ctx context.Context, in *RoleAppMu
 	return out, nil
 }
 
+func (c *roleManageClient) RoleModuleIndex(ctx context.Context, in *RoleModuleIndexReq, opts ...grpc.CallOption) (*RoleModuleIndexResp, error) {
+	out := new(RoleModuleIndexResp)
+	err := c.cc.Invoke(ctx, RoleManage_RoleModuleIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleManageClient) RoleModuleMultiUpdate(ctx context.Context, in *RoleModuleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, RoleManage_RoleModuleMultiUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *roleManageClient) RoleApiAuth(ctx context.Context, in *RoleApiAuthReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, RoleManage_RoleApiAuth_FullMethodName, in, out, opts...)
@@ -813,6 +1036,8 @@ type RoleManageServer interface {
 	RoleMenuMultiUpdate(context.Context, *RoleMenuMultiUpdateReq) (*Response, error)
 	RoleAppIndex(context.Context, *RoleAppIndexReq) (*RoleAppIndexResp, error)
 	RoleAppMultiUpdate(context.Context, *RoleAppMultiUpdateReq) (*Response, error)
+	RoleModuleIndex(context.Context, *RoleModuleIndexReq) (*RoleModuleIndexResp, error)
+	RoleModuleMultiUpdate(context.Context, *RoleModuleMultiUpdateReq) (*Response, error)
 	RoleApiAuth(context.Context, *RoleApiAuthReq) (*Response, error)
 	RoleApiMultiUpdate(context.Context, *RoleApiMultiUpdateReq) (*Response, error)
 	RoleApiIndex(context.Context, *RoleApiIndexReq) (*RoleApiIndexResp, error)
@@ -846,6 +1071,12 @@ func (UnimplementedRoleManageServer) RoleAppIndex(context.Context, *RoleAppIndex
 }
 func (UnimplementedRoleManageServer) RoleAppMultiUpdate(context.Context, *RoleAppMultiUpdateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RoleAppMultiUpdate not implemented")
+}
+func (UnimplementedRoleManageServer) RoleModuleIndex(context.Context, *RoleModuleIndexReq) (*RoleModuleIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleModuleIndex not implemented")
+}
+func (UnimplementedRoleManageServer) RoleModuleMultiUpdate(context.Context, *RoleModuleMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleModuleMultiUpdate not implemented")
 }
 func (UnimplementedRoleManageServer) RoleApiAuth(context.Context, *RoleApiAuthReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RoleApiAuth not implemented")
@@ -1013,6 +1244,42 @@ func _RoleManage_RoleAppMultiUpdate_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RoleManage_RoleModuleIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleModuleIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleManageServer).RoleModuleIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleManage_RoleModuleIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleManageServer).RoleModuleIndex(ctx, req.(*RoleModuleIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RoleManage_RoleModuleMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleModuleMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleManageServer).RoleModuleMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleManage_RoleModuleMultiUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleManageServer).RoleModuleMultiUpdate(ctx, req.(*RoleModuleMultiUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RoleManage_RoleApiAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RoleApiAuthReq)
 	if err := dec(in); err != nil {
@@ -1105,6 +1372,14 @@ var RoleManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "roleAppMultiUpdate",
 			Handler:    _RoleManage_RoleAppMultiUpdate_Handler,
+		},
+		{
+			MethodName: "roleModuleIndex",
+			Handler:    _RoleManage_RoleModuleIndex_Handler,
+		},
+		{
+			MethodName: "roleModuleMultiUpdate",
+			Handler:    _RoleManage_RoleModuleMultiUpdate_Handler,
 		},
 		{
 			MethodName: "roleApiAuth",
@@ -2254,6 +2529,207 @@ var Log_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "operLogCreate",
 			Handler:    _Log_OperLogCreate_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/sys.proto",
+}
+
+const (
+	ApiManage_ApiInfoCreate_FullMethodName = "/sys.ApiManage/apiInfoCreate"
+	ApiManage_ApiInfoIndex_FullMethodName  = "/sys.ApiManage/apiInfoIndex"
+	ApiManage_ApiInfoUpdate_FullMethodName = "/sys.ApiManage/apiInfoUpdate"
+	ApiManage_ApiInfoDelete_FullMethodName = "/sys.ApiManage/apiInfoDelete"
+)
+
+// ApiManageClient is the client API for ApiManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ApiManageClient interface {
+	ApiInfoCreate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*WithID, error)
+	ApiInfoIndex(ctx context.Context, in *ApiInfoIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error)
+	ApiInfoUpdate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error)
+	ApiInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+}
+
+type apiManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewApiManageClient(cc grpc.ClientConnInterface) ApiManageClient {
+	return &apiManageClient{cc}
+}
+
+func (c *apiManageClient) ApiInfoCreate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
+	err := c.cc.Invoke(ctx, ApiManage_ApiInfoCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *apiManageClient) ApiInfoIndex(ctx context.Context, in *ApiInfoIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error) {
+	out := new(ApiInfoIndexResp)
+	err := c.cc.Invoke(ctx, ApiManage_ApiInfoIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *apiManageClient) ApiInfoUpdate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ApiManage_ApiInfoUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *apiManageClient) ApiInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ApiManage_ApiInfoDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ApiManageServer is the server API for ApiManage service.
+// All implementations must embed UnimplementedApiManageServer
+// for forward compatibility
+type ApiManageServer interface {
+	ApiInfoCreate(context.Context, *ApiInfo) (*WithID, error)
+	ApiInfoIndex(context.Context, *ApiInfoIndexReq) (*ApiInfoIndexResp, error)
+	ApiInfoUpdate(context.Context, *ApiInfo) (*Response, error)
+	ApiInfoDelete(context.Context, *WithID) (*Response, error)
+	mustEmbedUnimplementedApiManageServer()
+}
+
+// UnimplementedApiManageServer must be embedded to have forward compatible implementations.
+type UnimplementedApiManageServer struct {
+}
+
+func (UnimplementedApiManageServer) ApiInfoCreate(context.Context, *ApiInfo) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoCreate not implemented")
+}
+func (UnimplementedApiManageServer) ApiInfoIndex(context.Context, *ApiInfoIndexReq) (*ApiInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoIndex not implemented")
+}
+func (UnimplementedApiManageServer) ApiInfoUpdate(context.Context, *ApiInfo) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoUpdate not implemented")
+}
+func (UnimplementedApiManageServer) ApiInfoDelete(context.Context, *WithID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiInfoDelete not implemented")
+}
+func (UnimplementedApiManageServer) mustEmbedUnimplementedApiManageServer() {}
+
+// UnsafeApiManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ApiManageServer will
+// result in compilation errors.
+type UnsafeApiManageServer interface {
+	mustEmbedUnimplementedApiManageServer()
+}
+
+func RegisterApiManageServer(s grpc.ServiceRegistrar, srv ApiManageServer) {
+	s.RegisterService(&ApiManage_ServiceDesc, srv)
+}
+
+func _ApiManage_ApiInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApiManageServer).ApiInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ApiManage_ApiInfoCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApiManageServer).ApiInfoCreate(ctx, req.(*ApiInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ApiManage_ApiInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApiManageServer).ApiInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ApiManage_ApiInfoIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApiManageServer).ApiInfoIndex(ctx, req.(*ApiInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ApiManage_ApiInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApiManageServer).ApiInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ApiManage_ApiInfoUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApiManageServer).ApiInfoUpdate(ctx, req.(*ApiInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ApiManage_ApiInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApiManageServer).ApiInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ApiManage_ApiInfoDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApiManageServer).ApiInfoDelete(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ApiManage_ServiceDesc is the grpc.ServiceDesc for ApiManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ApiManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sys.ApiManage",
+	HandlerType: (*ApiManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "apiInfoCreate",
+			Handler:    _ApiManage_ApiInfoCreate_Handler,
+		},
+		{
+			MethodName: "apiInfoIndex",
+			Handler:    _ApiManage_ApiInfoIndex_Handler,
+		},
+		{
+			MethodName: "apiInfoUpdate",
+			Handler:    _ApiManage_ApiInfoUpdate_Handler,
+		},
+		{
+			MethodName: "apiInfoDelete",
+			Handler:    _ApiManage_ApiInfoDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

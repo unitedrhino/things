@@ -18,6 +18,7 @@ import (
 	systemroleapp "github.com/i-Things/things/src/apisvr/internal/handler/system/role/app"
 	systemroleinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/role/info"
 	systemrolemenu "github.com/i-Things/things/src/apisvr/internal/handler/system/role/menu"
+	systemrolemodule "github.com/i-Things/things/src/apisvr/internal/handler/system/role/module"
 	systemtenantapp "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app"
 	systemtenantappapi "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/api"
 	systemtenantappmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/menu"
@@ -243,6 +244,25 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		ws.WithPrefix("/api/v1/system/role/menu"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-update",
+					Handler: systemrolemodule.MulitUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemrolemodule.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/system/role/module"),
 	)
 
 	server.AddRoutes(

@@ -122,6 +122,8 @@ type UserCaptchaReq struct {
 	Account string `json:"account,optional"`               //短信验证时填写手机号,邮箱验证时填写邮箱
 	Type    string `json:"type,options=phone|image|email"` //验证方式:短信验证,图片验证码
 	Use     string `json:"use,options=login|register"`     //用途
+	Code    string `json:"code,optional"`                  //验证码    微信邮箱验证登录填code
+	CodeID  string `json:"codeID,optional"`                //验证码编号 微信邮箱验证登录填state
 }
 
 type UserCaptchaResp struct {
@@ -185,12 +187,12 @@ type UserResourceReadResp struct {
 }
 
 type UserRegisterReq struct {
-	RegType  string    `json:"regType,options=phone|email|wxOpen|wxIn|wxMiniP|pwd"` //注册方式:	phone手机号注册 wxOpen 微信开放平台登录 wxIn 微信内登录 wxMiniP 微信小程序 pwd 账号密码注册
-	Account  string    `json:"account,optional"`                                    //手机号注册时填写手机号 账号密码注册时填写userName
-	Code     string    `json:"code"`                                                //验证码    微信登录填code 账号密码登录时填写密码
-	CodeID   string    `json:"codeID,optional"`                                     //验证码编号 微信登录填state
-	Password string    `json:"password,optional"`                                   //密码
-	Info     *UserInfo `json:"info,optional"`                                       //用户信息
+	RegType  string    `json:"regType,options=phone|email|wxOpen|wxIn|wxMiniP|pwd"`
+	Account  string    `json:"account,optional"`  //手机号注册时填写手机号 账号密码注册时填写userName
+	Code     string    `json:"code"`              //验证码    微信登录填code 账号密码登录时填写密码
+	CodeID   string    `json:"codeID,optional"`   //验证码编号 微信登录填state
+	Password string    `json:"password,optional"` //密码
+	Info     *UserInfo `json:"info,optional"`     //用户信息
 }
 
 type UserForgetPwdReq struct {
@@ -216,27 +218,20 @@ type RoleAppIndexResp struct {
 }
 
 type RoleApiMultiUpdateReq struct {
-	ID      int64   `json:"id"`      //角色ID
-	AppCode string  `json:"appCode"` // 应用编号
-	ApiIDs  []int64 `json:"apiIDs"`  //API列表数据
+	ID         int64   `json:"id"`      //角色ID
+	AppCode    string  `json:"appCode"` // 应用编号
+	ModuleCode string  `json:"moduleCode"`
+	ApiIDs     []int64 `json:"apiIDs"` //API列表数据
 }
 
 type RoleApiIndexReq struct {
-	ID      int64  `json:"id"`      //角色ID
-	AppCode string `json:"appCode"` // 应用编号
+	ID         int64  `json:"id"`      //角色ID
+	AppCode    string `json:"appCode"` // 应用编号
+	ModuleCode string `json:"moduleCode"`
 }
 
 type RoleApiIndexResp struct {
 	ApiIDs []int64 `json:"apiIDs"` //API列表数据
-}
-
-type RoleMenuIndexReq struct {
-	ID      int64  `json:"id"`      //角色编号
-	AppCode string `json:"appCode"` // 应用编号
-}
-
-type RoleMenuIndexResp struct {
-	MenuIDs []int64 `json:"menuIDs"` //菜单编号列表
 }
 
 type RoleInfoIndexReq struct {
@@ -259,9 +254,35 @@ type RoleInfoIndexResp struct {
 }
 
 type RoleMenuMultiUpdateReq struct {
-	ID      int64   `json:"id"`      //角色编号
-	AppCode string  `json:"appCode"` // 应用编号
+	ID         int64   `json:"id"`      //角色编号
+	AppCode    string  `json:"appCode"` // 应用编号
+	ModuleCode string  `json:"moduleCode"`
+	MenuIDs    []int64 `json:"menuIDs"` //菜单编号列表
+}
+
+type RoleMenuIndexReq struct {
+	ID         int64  `json:"id"`      //角色编号
+	AppCode    string `json:"appCode"` // 应用编号
+	ModuleCode string `json:"moduleCode"`
+}
+
+type RoleMenuIndexResp struct {
 	MenuIDs []int64 `json:"menuIDs"` //菜单编号列表
+}
+
+type RoleModuleMultiUpdateReq struct {
+	ID          int64    `json:"id"`      //角色编号
+	AppCode     string   `json:"appCode"` // 应用编号
+	ModuleCodes []string `json:"moduleCodes"`
+}
+
+type RoleModuleIndexReq struct {
+	ID      int64  `json:"id"`      //角色编号
+	AppCode string `json:"appCode"` // 应用编号
+}
+
+type RoleModuleIndexResp struct {
+	ModuleCodes []string `json:"moduleCodes"` //菜单编号列表
 }
 
 type PageInfo struct {
@@ -768,8 +789,8 @@ type TenantAppCreateReq struct {
 
 type TenantAppModule struct {
 	Code    string  `json:"code"` // 应用编号
-	MenuIDs []int64 `json:"menuIDs"`
-	ApiIDs  []int64 `json:"apiIDs"`
+	MenuIDs []int64 `json:"menuIDs,optional"`
+	ApiIDs  []int64 `json:"apiIDs,optional"`
 }
 
 type ProductInfo struct {

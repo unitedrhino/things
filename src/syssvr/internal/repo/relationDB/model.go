@@ -9,13 +9,14 @@ type SysExample struct {
 
 // 应用信息
 type SysAppInfo struct {
-	ID      int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // id编号
-	Code    string `gorm:"column:code;uniqueIndex;type:VARCHAR(100);NOT NULL"` // 应用编码
-	Name    string `gorm:"column:name;uniqueIndex;type:VARCHAR(100);NOT NULL"` //应用名称
-	Desc    string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`             //应用描述
-	BaseUrl string `gorm:"column:base_url;type:VARCHAR(100);NOT NULL"`         //应用首页
-	LogoUrl string `gorm:"column:logo_url;type:VARCHAR(100);NOT NULL"`         //应用logo地址
-	stores.Time
+	ID      int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`        // id编号
+	Code    string `gorm:"column:code;uniqueIndex:code;type:VARCHAR(100);NOT NULL"` // 应用编码
+	Name    string `gorm:"column:name;uniqueIndex:name;type:VARCHAR(100);NOT NULL"` //应用名称
+	Desc    string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                  //应用描述
+	BaseUrl string `gorm:"column:base_url;type:VARCHAR(100);NOT NULL"`              //应用首页
+	LogoUrl string `gorm:"column:logo_url;type:VARCHAR(100);NOT NULL"`              //应用logo地址
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:code;uniqueIndex:name"`
 }
 
 func (m *SysAppInfo) TableName() string {
@@ -27,7 +28,8 @@ type SysAppModule struct {
 	ID         int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
 	AppCode    string `gorm:"column:app_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"`    // 应用编码 这里只关联主应用,主应用授权,子应用也授权了
 	ModuleCode string `gorm:"column:module_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 模块编码
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:tc_ac"`
 }
 
 func (m *SysAppModule) TableName() string {
@@ -36,20 +38,21 @@ func (m *SysAppModule) TableName() string {
 
 // 模块管理表 模块是菜单和接口的集合体
 type SysModuleInfo struct {
-	ID         int64            `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`   // 编号
-	Code       string           `gorm:"column:code;uniqueIndex;NOT NULL;type:VARCHAR(50)"`  // 编码
-	Type       int64            `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`         // 类型   1：菜单或者页面   2：iframe嵌入   3：外链跳转
-	Order      int64            `gorm:"column:order_num;type:BIGINT;default:1;NOT NULL"`    // 左侧table排序序号
-	Name       string           `gorm:"column:name;type:VARCHAR(50);NOT NULL"`              // 菜单名称
-	Path       string           `gorm:"column:path;type:VARCHAR(64);NOT NULL"`              // 系统的path
-	Url        string           `gorm:"column:url;type:VARCHAR(200);NOT NULL"`              // 页面
-	Icon       string           `gorm:"column:icon;type:VARCHAR(64);NOT NULL"`              // 图标
-	Body       string           `gorm:"column:body;type:VARCHAR(1024)"`                     // 菜单自定义数据
-	HideInMenu int64            `gorm:"column:hide_in_menu;type:BIGINT;default:2;NOT NULL"` // 是否隐藏菜单 1-是 2-否
-	Desc       string           `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`             // 备注
+	ID         int64            `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`       // 编号
+	Code       string           `gorm:"column:code;uniqueIndex:code;NOT NULL;type:VARCHAR(50)"` // 编码
+	Type       int64            `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`             // 类型   1：菜单或者页面   2：iframe嵌入   3：外链跳转
+	Order      int64            `gorm:"column:order_num;type:BIGINT;default:1;NOT NULL"`        // 左侧table排序序号
+	Name       string           `gorm:"column:name;type:VARCHAR(50);NOT NULL"`                  // 菜单名称
+	Path       string           `gorm:"column:path;type:VARCHAR(64);NOT NULL"`                  // 系统的path
+	Url        string           `gorm:"column:url;type:VARCHAR(200);NOT NULL"`                  // 页面
+	Icon       string           `gorm:"column:icon;type:VARCHAR(64);NOT NULL"`                  // 图标
+	Body       string           `gorm:"column:body;type:VARCHAR(1024)"`                         // 菜单自定义数据
+	HideInMenu int64            `gorm:"column:hide_in_menu;type:BIGINT;default:2;NOT NULL"`     // 是否隐藏菜单 1-是 2-否
+	Desc       string           `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                 // 备注
 	Apis       []*SysModuleApi  `gorm:"foreignKey:ModuleCode;references:Code"`
 	Menus      []*SysModuleMenu `gorm:"foreignKey:ModuleCode;references:Code"`
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:code"`
 }
 
 func (m *SysModuleInfo) TableName() string {
@@ -67,7 +70,8 @@ type SysModuleApi struct {
 	Group        string `gorm:"column:group;type:VARCHAR(100);NOT NULL"`                            // 接口组
 	IsNeedAuth   int64  `gorm:"column:is_need_auth;type:BIGINT;default:1;NOT NULL"`                 // 是否需要认证（1是 2否）
 	Desc         string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                             // 备注
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:app_route"`
 }
 
 func (m *SysModuleApi) TableName() string {
@@ -88,7 +92,8 @@ type SysModuleMenu struct {
 	Redirect   string `gorm:"column:redirect;type:VARCHAR(64);NOT NULL"`          // 路由重定向
 	Body       string `gorm:"column:body;type:VARCHAR(1024)"`                     // 菜单自定义数据
 	HideInMenu int64  `gorm:"column:hide_in_menu;type:BIGINT;default:2;NOT NULL"` // 是否隐藏菜单 1-是 2-否
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;index"`
 }
 
 func (m *SysModuleMenu) TableName() string {
