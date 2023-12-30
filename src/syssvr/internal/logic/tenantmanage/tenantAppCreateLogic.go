@@ -62,17 +62,32 @@ func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, 
 	var (
 		menuMap = make(map[int64]*relationDB.SysModuleMenu)
 		apiMap  = make(map[int64]*relationDB.SysModuleApi)
+		allMenu = false
+		allApi  = false
 	)
+	if len(menuIDs) == 0 {
+		allMenu = true
+	}
+	if len(apiIDs) == 0 {
+		allApi = true
+	}
 	for _, m := range mi.Menus {
 		menuMap[m.ID] = m
+		if allMenu {
+			menuIDs = append(menuIDs, m.ID)
+		}
 	}
 	for _, a := range mi.Apis {
 		apiMap[a.ID] = a
+		if allApi {
+			apiIDs = append(apiIDs, a.ID)
+		}
 	}
 	var (
 		insertMenus []*relationDB.SysTenantAppMenu
 		insertApis  []*relationDB.SysTenantAppApi
 	)
+
 	for _, id := range menuIDs {
 		m := menuMap[id]
 		if m == nil { //模板里不存在无法添加

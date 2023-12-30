@@ -4,11 +4,15 @@ import (
 	"context"
 	"fmt"
 	"github.com/hashicorp/go-uuid"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/oss/common"
+	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
+	"mime/multipart"
 	"path"
 	"strings"
+	"time"
 )
 
 type (
@@ -26,6 +30,12 @@ const (
 	SceneProductImg       = "productImg"    //产品图片
 )
 
+// 产品管理
+const (
+	BusinessUserManage = "userManage" //产品管理
+	SceneUserInfo      = "userInfo"   //产品图片
+)
+
 func GetSceneInfo(filePath string) (*SceneInfo, error) {
 	paths := strings.Split(filePath, "/")
 	if len(paths) < 3 {
@@ -38,6 +48,16 @@ func GetSceneInfo(filePath string) (*SceneInfo, error) {
 		FileName: paths[len(paths)-1],
 	}
 	return scene, nil
+}
+
+func GenFilePath(ctx context.Context, svrName, business, scene, filePath string) string {
+	uc := ctxs.GetUserCtx(ctx)
+	return fmt.Sprintf("%s/%s/%s/%s/%s/%s", svrName, uc.TenantCode, uc.AppCode, business, scene, filePath)
+}
+
+func GetFileNameWithPath(path string) string {
+	fs := strings.Split(path, "/")
+	return fs[len(fs)-1]
 }
 
 func SceneToNewPath(ctx context.Context, ossClient *Client, business, scene, filePath, oldFilePath, newFilePath string) (string, error) {
@@ -68,6 +88,21 @@ func SceneToNewPath(ctx context.Context, ossClient *Client, business, scene, fil
 		}
 	}
 	return path, nil
+}
+
+func GetFilePath2(ctx context.Context, fh *multipart.FileHeader) (string, error) {
+	fileName := fh.Filename
+	spcChar := []string{`,`, `?`, `*`, `|`, `{`, `}`, `\`, `$`, `、`, `·`, "`", `'`, `"`}
+	if strings.ContainsAny(fileName, strings.Join(spcChar, "")) {
+		return "", errors.Parameter.WithMsg("包含特殊字符")
+	}
+	uc := ctxs.GetUserCtx(ctx)
+	if uc == nil {
+		return "", errors.Permissions.WithMsg("需要登录")
+	}
+	return fmt.Sprintf("%s/%s/%s/%d/%s/%s", utils.ToYYMMdd2(time.Now().UnixMilli()), uc.TenantCode, uc.AppCode, uc.UserID,
+		utils.ToddHHSS(time.Now().UnixMilli()), fileName), nil
+
 }
 
 func GetFilePath(scene *SceneInfo, rename bool) (string, error) {

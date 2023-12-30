@@ -3,7 +3,11 @@ package usermanagelogic
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/oss"
+	"github.com/i-Things/things/shared/oss/common"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -51,12 +55,21 @@ func (l *UserInfoUpdateLogic) UserInfoUpdate(in *sys.UserInfo) (*sys.Response, e
 	if in.Role != 0 && in.Role != ui.Role {
 		ui.Role = in.Role
 	}
+	if in.IsUpdateHeadImg == def.True && in.HeadImg != "" {
+		if ui.HeadImg != "" {
+			err := l.svcCtx.OssClient.PrivateBucket().Delete(l.ctx, ui.HeadImg, common.OptionKv{})
+			if err != nil {
+				l.Errorf("Delete file err path:%v,err:%v", ui.HeadImg, err)
+			}
+		}
+		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessUserManage, oss.SceneUserInfo, fmt.Sprintf("%d/%s", ui.UserID, oss.GetFileNameWithPath(in.HeadImg)))
+		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(in.HeadImg, nwePath)
+		if err != nil {
+			return nil, errors.System.AddDetail(err)
+		}
+		ui.HeadImg = path
+	}
 
-	ui.City = in.City
-	ui.Country = in.Country
-	ui.Province = in.Province
-	ui.Language = in.Language
-	ui.HeadImg = in.HeadImg
 	if in.Role != 0 { //默认角色只能修改为授权的角色
 		for _, r := range ui.Roles {
 			if r.RoleID == in.Role {

@@ -34,7 +34,11 @@ func (l *TenantInfoReadLogic) TenantInfoRead(in *sys.WithIDCode) (*sys.TenantInf
 	defer func() {
 		ctxs.GetUserCtx(l.ctx).AllTenant = false
 	}()
-	ti, err := relationDB.NewTenantInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.TenantInfoFilter{Codes: []string{in.Code}, ID: in.Id})
+	f := relationDB.TenantInfoFilter{ID: in.Id}
+	if in.Code != "" {
+		f.Codes = []string{in.Code}
+	}
+	ti, err := relationDB.NewTenantInfoRepo(l.ctx).FindOneByFilter(l.ctx, f)
 
 	return ToTenantInfoRpc(ti), err
 }

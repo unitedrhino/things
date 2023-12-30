@@ -78,13 +78,7 @@ func (l *UserInfoCreateLogic) UserInfoInsert(in *sys.UserInfoCreateReq) (int64, 
 			UserName:  sql.NullString{String: info.UserName, Valid: true},
 			Password:  password,
 			NickName:  info.NickName,
-			City:      info.City,
-			Country:   info.Country,
-			Province:  info.Province,
-			Language:  info.Language,
-			HeadImg:   info.HeadImg,
 			Role:      info.Role,
-			Sex:       info.Sex,
 			IsAllData: info.IsAllData,
 		}
 		if info.Email != "" {
