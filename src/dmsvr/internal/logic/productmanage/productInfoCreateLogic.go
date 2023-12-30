@@ -2,8 +2,8 @@ package productmanagelogic
 
 import (
 	"context"
+	"fmt"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
-	"path"
 	"regexp"
 
 	"github.com/i-Things/things/shared/oss"
@@ -109,18 +109,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 	}
 	pi.Tags = in.Tags
 	if in.ProductImg != "" { //如果填了参数且不等于原来的,说明修改头像,需要处理
-		si, err := oss.GetSceneInfo(in.ProductImg)
-		if err != nil {
-			return nil, err
-		}
-		if !(si.Business == oss.BusinessProductManage && si.Scene == oss.SceneProductImg) {
-			return nil, errors.Parameter.WithMsg("产品图片的路径不对")
-		}
-		si.FilePath = pi.ProductID + path.Ext(si.FilePath)
-		nwePath, err := oss.GetFilePath(si, false)
-		if err != nil {
-			return nil, err
-		}
+		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessProductManage, oss.SceneProductImg, fmt.Sprintf("%s/%s", in.ProductID, oss.GetFileNameWithPath(in.ProductImg)))
 		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(in.ProductImg, nwePath)
 		if err != nil {
 			return nil, errors.System.AddDetail(err)

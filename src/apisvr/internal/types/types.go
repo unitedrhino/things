@@ -81,23 +81,24 @@ type ApiInfo struct {
 }
 
 type UserInfo struct {
-	UserID      int64  `json:"userID,string,optional"`      // 用户id
-	UserName    string `json:"userName,optional"`           // 用户名(唯一)
-	Password    string `json:"password,optional,omitempty"` // 登录密码
-	Email       string `json:"email,optional"`              // 邮箱
-	Phone       string `json:"phone,optional"`              // 手机号
-	LastIP      string `json:"lastIP,optional"`             // 最后登录ip
-	RegIP       string `json:"regIP,optional"`              // 注册ip
-	NickName    string `json:"nickName,optional"`           // 用户的昵称
-	City        string `json:"city,optional"`               // 用户所在城市
-	Country     string `json:"country,optional"`            // 用户所在国家
-	Province    string `json:"province,optional"`           // 用户所在省份
-	Language    string `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
-	HeadImgUrl  string `json:"headImgUrl,optional"`         // 用户头像
-	CreatedTime int64  `json:"createdTime,string,optional"` // 创建时间
-	Role        int64  `json:"role,optional"`               // 用户角色默认
-	Sex         int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData   int64  `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
+	UserID          int64  `json:"userID,string,optional"`      // 用户id
+	UserName        string `json:"userName,optional"`           // 用户名(唯一)
+	Password        string `json:"password,optional,omitempty"` // 登录密码
+	Email           string `json:"email,optional"`              // 邮箱
+	Phone           string `json:"phone,optional"`              // 手机号
+	LastIP          string `json:"lastIP,optional"`             // 最后登录ip
+	RegIP           string `json:"regIP,optional"`              // 注册ip
+	NickName        string `json:"nickName,optional"`           // 用户的昵称
+	City            string `json:"city,optional"`               // 用户所在城市
+	Country         string `json:"country,optional"`            // 用户所在国家
+	Province        string `json:"province,optional"`           // 用户所在省份
+	Language        string `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
+	HeadImg         string `json:"headImg,optional"`            // 用户头像
+	IsUpdateHeadImg int64  `json:"isUpdateHeadImg,optional"`    // 用户头像
+	CreatedTime     int64  `json:"createdTime,string,optional"` // 创建时间
+	Role            int64  `json:"role,optional"`               // 用户角色默认
+	Sex             int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	IsAllData       int64  `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
 }
 
 type UserRoleIndexReq struct {
