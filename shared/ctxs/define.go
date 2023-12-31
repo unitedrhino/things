@@ -3,14 +3,14 @@ package ctxs
 import "strings"
 
 const (
-	UserInfoKey       string = "iThings-user"
-	UserTokenKey      string = "iThings-token"
-	UserAppCodeKey    string = "iThings-app-code"    //用户正在访问的app
-	UserTenantCodeKey string = "iThings-tenant-code" //用户租户号
+	UserInfoKey       string = "ithings-user"
+	UserTokenKey      string = "ithings-token"
+	UserAppCodeKey    string = "ithings-app-code"    //用户正在访问的app
+	UserTenantCodeKey string = "ithings-tenant-code" //用户租户号
 
-	UserRoleKey     string = "iThings-user-role"
-	UserSetTokenKey string = "iThings-set-token"
-	MetadataKey     string = "iThings-meta"
+	UserRoleKey     string = "ithings-user-role"
+	UserSetTokenKey string = "ithings-set-token"
+	MetadataKey     string = "ithings-meta"
 )
 
 type MetaField string

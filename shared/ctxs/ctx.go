@@ -2,9 +2,12 @@ package ctxs
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"net/http"
 )
 
@@ -46,6 +49,10 @@ func NotLoginedInit(r *http.Request) *http.Request {
 }
 
 func SetUserCtx(ctx context.Context, userCtx *UserCtx) context.Context {
+	info, _ := json.Marshal(userCtx)
+	ctx = metadata.NewOutgoingContext(context.Background(), metadata.Pairs(
+		UserInfoKey, string(info),
+	))
 	return context.WithValue(ctx, UserInfoKey, userCtx)
 }
 func SetInnerCtx(ctx context.Context, inner InnerCtx) context.Context {
@@ -73,6 +80,27 @@ func GetUserCtx(ctx context.Context) *UserCtx {
 	}
 	return val
 }
+
+func GrpcInterceptor(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+	ctx = func() context.Context {
+		md, ok := metadata.FromIncomingContext(ctx)
+		if !ok {
+			return ctx
+		}
+		info := md[UserInfoKey]
+		if len(info) == 0 {
+			return ctx
+		}
+		var val UserCtx
+		if err := json.Unmarshal([]byte(info[0]), &val); err != nil {
+			return ctx
+		}
+		return SetUserCtx(ctx, &val)
+	}()
+	resp, err := handler(ctx, req)
+	return resp, err
+}
+
 func IsRoot(ctx context.Context) error {
 	uc := GetUserCtx(ctx)
 	if uc == nil || uc.TenantCode != def.TenantCodeDefault {

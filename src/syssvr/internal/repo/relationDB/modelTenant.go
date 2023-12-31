@@ -88,7 +88,7 @@ type SysTenantUserInfo struct {
 	Country       string               `gorm:"column:country;type:VARCHAR(50);NOT NULL"`                                                                                                       // 用户所在国家
 	Province      string               `gorm:"column:province;type:VARCHAR(50);NOT NULL"`                                                                                                      // 用户所在省份
 	Language      string               `gorm:"column:language;type:VARCHAR(50);NOT NULL"`                                                                                                      // 用户的语言，简体中文为zh_CN
-	HeadImg       string               `gorm:"column:head_img_url;type:VARCHAR(256);NOT NULL"`                                                                                                 // 用户头像
+	HeadImg       string               `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`                                                                                                     // 用户头像
 	Role          int64                `gorm:"column:role;type:BIGINT;NOT NULL"`                                                                                                               // 用户默认角色（默认使用该角色）
 	IsAllData     int64                `gorm:"column:is_all_data;type:SMALLINT;default:1;NOT NULL"`                                                                                            // 是否所有数据权限（1是，2否）
 	Roles         []*SysTenantUserRole `gorm:"foreignKey:UserID;references:UserID"`
