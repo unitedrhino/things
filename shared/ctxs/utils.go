@@ -16,6 +16,7 @@ func CopyContext(ctx context.Context) context.Context {
 			newCtx = context.WithValue(newCtx, k, v)
 		}
 	}
+	newCtx = SetUserCtx(newCtx, GetUserCtx(ctx))
 	return newCtx
 }
 

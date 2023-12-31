@@ -2,6 +2,8 @@ package sysdirect
 
 import (
 	"fmt"
+	"github.com/i-Things/things/shared/ctxs"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/config"
 	appmanageServer "github.com/i-Things/things/src/syssvr/internal/server/appmanage"
 	areamanageServer "github.com/i-Things/things/src/syssvr/internal/server/areamanage"
@@ -65,7 +67,7 @@ func Run(svcCtx *svc.ServiceContext) {
 		}
 	})
 	defer s.Stop()
-
+	s.AddUnaryInterceptors(errors.ErrorInterceptor, ctxs.GrpcInterceptor)
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

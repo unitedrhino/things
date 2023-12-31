@@ -3,6 +3,7 @@ package dgdirect
 import (
 	"context"
 	"fmt"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dgsvr/internal/config"
@@ -58,7 +59,7 @@ func Run(svcCtx *svc.ServiceContext) {
 		}
 	})
 	defer s.Stop()
-	s.AddUnaryInterceptors(errors.ErrorInterceptor)
+	s.AddUnaryInterceptors(errors.ErrorInterceptor, ctxs.GrpcInterceptor)
 
 	fmt.Printf("Starting dgrpc server at %s...\n", c.ListenOn)
 	s.Start()

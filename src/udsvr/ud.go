@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/i-Things/things/shared/ctxs"
+	"github.com/i-Things/things/shared/errors"
 
 	"github.com/i-Things/things/src/udsvr/internal/config"
 	udServer "github.com/i-Things/things/src/udsvr/internal/server/ud"
@@ -33,7 +35,7 @@ func main() {
 		}
 	})
 	defer s.Stop()
-
+	s.AddUnaryInterceptors(errors.ErrorInterceptor, ctxs.GrpcInterceptor)
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }
