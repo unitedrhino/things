@@ -3,7 +3,6 @@ package tenantmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/def"
 	appmanagelogic "github.com/i-Things/things/src/syssvr/internal/logic/appmanage"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -27,12 +26,11 @@ func NewTenantAppIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Te
 }
 
 func (l *TenantAppIndexLogic) TenantAppIndex(in *sys.TenantAppIndexReq) (*sys.TenantAppIndexResp, error) {
-	uc := ctxs.GetUserCtx(l.ctx)
-	if uc.TenantCode != def.TenantCodeDefault {
-		in.Code = uc.TenantCode
-	} else {
-		uc.AllTenant = true
-		defer func() { uc.AllTenant = false }()
+	if err := ctxs.IsRoot(l.ctx); err == nil {
+		ctxs.GetUserCtx(l.ctx).AllTenant = true
+		defer func() {
+			ctxs.GetUserCtx(l.ctx).AllTenant = false
+		}()
 	}
 	f := relationDB.TenantAppFilter{TenantCode: in.Code}
 	list, err := relationDB.NewTenantAppRepo(l.ctx).FindByFilter(l.ctx, f, nil)

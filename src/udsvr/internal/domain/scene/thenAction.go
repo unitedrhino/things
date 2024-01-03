@@ -1,11 +1,12 @@
 // Package scene 执行动作
-package automation
+package scene
 
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 // 操作执行器类型
@@ -24,6 +25,7 @@ type Action struct {
 	Executor ActionExecutor `json:"executor"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
 	Delay    int64          `json:"delay"`
 	Alarm    *ActionAlarm   `json:"alarm"`
+	Notify   *ActionNotify  `json:"notify"` //消息通知
 	Device   *ActionDevice  `json:"device"`
 }
 
@@ -46,12 +48,14 @@ func (a *Action) Validate() error {
 	}
 	switch a.Executor {
 	case ActionExecutorNotify:
-		return errors.Parameter.AddMsg("暂不支持的操作类型:" + string(a.Executor))
-	case ActionExecutorDelay:
-		if a.Delay == nil {
+		if a.Notify == nil {
 			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
 		}
-		return a.Delay.Validate()
+		return a.Notify.Validate()
+	case ActionExecutorDelay:
+		if a.Delay == 0 {
+			return errors.Parameter.AddMsg("延时不能为0")
+		}
 	case ActionExecutorDevice:
 		if a.Device == nil {
 			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
@@ -65,13 +69,14 @@ func (a *Action) Validate() error {
 	default:
 		return errors.Parameter.AddMsg("操作类型不支持:" + string(a.Executor))
 	}
+	return nil
 }
 
 // 执行操作
 func (a *Action) Execute(ctx context.Context, repo ActionRepo) error {
 	switch a.Executor {
 	case ActionExecutorDelay:
-		a.Delay.Execute()
+		time.Sleep(time.Second * time.Duration(a.Delay))
 	case ActionExecutorDevice:
 		err := a.Device.Execute(ctx, repo)
 		if err != nil {

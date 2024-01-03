@@ -47,10 +47,13 @@ func (l *UserRegisterLogic) UserRegister(in *sys.UserRegisterReq) (*sys.UserRegi
 
 func (l *UserRegisterLogic) handleEmailOrPhone(in *sys.UserRegisterReq) (*sys.UserRegisterResp, error) {
 	ui := relationDB.SysTenantUserInfo{
-		UserID: l.svcCtx.UserID.GetSnowflakeId(),
+		UserID:   l.svcCtx.UserID.GetSnowflakeId(),
+		NickName: in.Info.NickName,
 	}
 	ui.Password = utils.MakePwd(in.Info.Password, ui.UserID, false)
-
+	if in.Info.UserName != "" {
+		ui.UserName = utils.AnyToNullString(in.Info.UserName)
+	}
 	switch in.RegType {
 	case users.RegEmail:
 		email := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, in.CodeID, in.Code)
@@ -100,6 +103,10 @@ func (l *UserRegisterLogic) handleWxminip(in *sys.UserRegisterReq) (*sys.UserReg
 		ui := relationDB.SysTenantUserInfo{
 			UserID:        userID,
 			WechatUnionID: sql.NullString{Valid: true, String: ret.UnionID},
+			NickName:      in.Info.NickName,
+		}
+		if in.Info.UserName != "" {
+			ui.UserName = utils.AnyToNullString(in.Info.UserName)
 		}
 		err = l.FillUserInfo(&ui, tx)
 		return err

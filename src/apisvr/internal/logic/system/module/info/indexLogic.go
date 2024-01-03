@@ -27,9 +27,11 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.ModuleInfoIndexReq) (resp *types.ModuleInfoIndexResp, err error) {
 	ret, err := l.svcCtx.ModuleRpc.ModuleInfoIndex(l.ctx, &sys.ModuleInfoIndexReq{
-		Name: req.Name,
-		Page: logic.ToSysPageRpc(req.Page),
-		Code: req.Code,
+		Name:    req.Name,
+		Page:    logic.ToSysPageRpc(req.Page),
+		Code:    req.Code,
+		Codes:   req.Codes,
+		AppCode: req.AppCode,
 	})
 	if err != nil {
 		return nil, err

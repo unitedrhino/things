@@ -591,6 +591,7 @@ message UserCheckTokenResp{
   int64 isAllData = 4;
   string tenantCode = 5;//租户编码
   int64 isAdmin = 6;//是否是超级管理员
+  string userName = 7;//用户名
 }
 
 message RoleAppMultiUpdateReq{
@@ -782,6 +783,8 @@ message ModuleInfoIndexReq{
   PageInfo page = 1;//分页信息
   string name = 2;
   string code = 3;
+  repeated string codes =4;
+  string appCode = 5;
 }
 
 message ModuleInfoIndexResp{

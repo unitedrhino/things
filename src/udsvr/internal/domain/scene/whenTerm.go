@@ -1,5 +1,5 @@
 // Package scene 触发条件
-package automation
+package scene
 
 import (
 	"context"
@@ -9,16 +9,17 @@ import (
 
 type Terms []*Term
 
-type TermConditionType string
+type TermCondType string
 
 const (
-	TermConditionTypeOr  TermConditionType = "or"
-	TermConditionTypeAnd TermConditionType = "and"
+	TermConditionTypeOr  TermCondType = "or"
+	TermConditionTypeAnd TermCondType = "and"
 )
 
 type Term struct {
 	ColumnType TermColumnType `json:"columnType"` //字段类型 property:属性 weather:天气
-	Property   *TermProperty  `json:"property"`   //属性类型
+
+	Property *TermProperty `json:"property"` //属性类型
 	//todo 天气状态处于xxx
 	Weather any `json:"weather"`
 }

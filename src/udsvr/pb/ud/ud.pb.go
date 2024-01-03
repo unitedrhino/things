@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.31.0
 // 	protoc        v3.19.4
-// source: ud.proto
+// source: proto/ud.proto
 
 package ud
 
@@ -20,31 +20,31 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Request struct {
+type WithID struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Ping string `protobuf:"bytes,1,opt,name=ping,proto3" json:"ping,omitempty"`
+	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (x *Request) Reset() {
-	*x = Request{}
+func (x *WithID) Reset() {
+	*x = WithID{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_ud_proto_msgTypes[0]
+		mi := &file_proto_ud_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *Request) String() string {
+func (x *WithID) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Request) ProtoMessage() {}
+func (*WithID) ProtoMessage() {}
 
-func (x *Request) ProtoReflect() protoreflect.Message {
-	mi := &file_ud_proto_msgTypes[0]
+func (x *WithID) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,43 +55,41 @@ func (x *Request) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Request.ProtoReflect.Descriptor instead.
-func (*Request) Descriptor() ([]byte, []int) {
-	return file_ud_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use WithID.ProtoReflect.Descriptor instead.
+func (*WithID) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Request) GetPing() string {
+func (x *WithID) GetId() int64 {
 	if x != nil {
-		return x.Ping
+		return x.Id
 	}
-	return ""
+	return 0
 }
 
-type Response struct {
+type Empty struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Pong string `protobuf:"bytes,1,opt,name=pong,proto3" json:"pong,omitempty"`
 }
 
-func (x *Response) Reset() {
-	*x = Response{}
+func (x *Empty) Reset() {
+	*x = Empty{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_ud_proto_msgTypes[1]
+		mi := &file_proto_ud_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *Response) String() string {
+func (x *Empty) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Response) ProtoMessage() {}
+func (*Empty) ProtoMessage() {}
 
-func (x *Response) ProtoReflect() protoreflect.Message {
-	mi := &file_ud_proto_msgTypes[1]
+func (x *Empty) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -102,67 +100,1030 @@ func (x *Response) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Response.ProtoReflect.Descriptor instead.
-func (*Response) Descriptor() ([]byte, []int) {
-	return file_ud_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
+func (*Empty) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Response) GetPong() string {
+type PageInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page int64 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Size int64 `protobuf:"varint,2,opt,name=size,proto3" json:"size,omitempty"`
+}
+
+func (x *PageInfo) Reset() {
+	*x = PageInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PageInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PageInfo) ProtoMessage() {}
+
+func (x *PageInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PageInfo.ProtoReflect.Descriptor instead.
+func (*PageInfo) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PageInfo) GetPage() int64 {
 	if x != nil {
-		return x.Pong
+		return x.Page
+	}
+	return 0
+}
+
+func (x *PageInfo) GetSize() int64 {
+	if x != nil {
+		return x.Size
+	}
+	return 0
+}
+
+type TimeRange struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Start int64 `protobuf:"varint,1,opt,name=start,proto3" json:"start,omitempty"`
+	End   int64 `protobuf:"varint,2,opt,name=end,proto3" json:"end,omitempty"`
+}
+
+func (x *TimeRange) Reset() {
+	*x = TimeRange{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TimeRange) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TimeRange) ProtoMessage() {}
+
+func (x *TimeRange) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TimeRange.ProtoReflect.Descriptor instead.
+func (*TimeRange) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *TimeRange) GetStart() int64 {
+	if x != nil {
+		return x.Start
+	}
+	return 0
+}
+
+func (x *TimeRange) GetEnd() int64 {
+	if x != nil {
+		return x.End
+	}
+	return 0
+}
+
+type AutoInfoIndexReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page        *PageInfo `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`               //分页信息 只获取一个则不填
+	Name        string    `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`               //场景名 模糊查询
+	Status      int64     `protobuf:"varint,3,opt,name=status,proto3" json:"status,omitempty"`          //状态: 1启用 2禁用
+	TriggerType string    `protobuf:"bytes,4,opt,name=triggerType,proto3" json:"triggerType,omitempty"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	AlarmID     int64     `protobuf:"varint,5,opt,name=alarmID,proto3" json:"alarmID,omitempty"`        //告警配置ID过滤
+}
+
+func (x *AutoInfoIndexReq) Reset() {
+	*x = AutoInfoIndexReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AutoInfoIndexReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AutoInfoIndexReq) ProtoMessage() {}
+
+func (x *AutoInfoIndexReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AutoInfoIndexReq.ProtoReflect.Descriptor instead.
+func (*AutoInfoIndexReq) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *AutoInfoIndexReq) GetPage() *PageInfo {
+	if x != nil {
+		return x.Page
+	}
+	return nil
+}
+
+func (x *AutoInfoIndexReq) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-var File_ud_proto protoreflect.FileDescriptor
+func (x *AutoInfoIndexReq) GetStatus() int64 {
+	if x != nil {
+		return x.Status
+	}
+	return 0
+}
 
-var file_ud_proto_rawDesc = []byte{
-	0x0a, 0x08, 0x75, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x02, 0x75, 0x64, 0x22, 0x1d,
-	0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x69, 0x6e,
-	0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x69, 0x6e, 0x67, 0x22, 0x1e, 0x0a,
-	0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x6f, 0x6e,
-	0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x6f, 0x6e, 0x67, 0x32, 0x27, 0x0a,
-	0x02, 0x55, 0x64, 0x12, 0x21, 0x0a, 0x04, 0x50, 0x69, 0x6e, 0x67, 0x12, 0x0b, 0x2e, 0x75, 0x64,
-	0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0c, 0x2e, 0x75, 0x64, 0x2e, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x07, 0x5a, 0x05, 0x70, 0x62, 0x2f, 0x75, 0x64, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+func (x *AutoInfoIndexReq) GetTriggerType() string {
+	if x != nil {
+		return x.TriggerType
+	}
+	return ""
+}
+
+func (x *AutoInfoIndexReq) GetAlarmID() int64 {
+	if x != nil {
+		return x.AlarmID
+	}
+	return 0
+}
+
+type AutoInfoIndexResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	List  []*AutoInfo `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`    //设备信息
+	Total int64       `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` //总数(只有分页的时候会返回)
+}
+
+func (x *AutoInfoIndexResp) Reset() {
+	*x = AutoInfoIndexResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AutoInfoIndexResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AutoInfoIndexResp) ProtoMessage() {}
+
+func (x *AutoInfoIndexResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AutoInfoIndexResp.ProtoReflect.Descriptor instead.
+func (*AutoInfoIndexResp) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *AutoInfoIndexResp) GetList() []*AutoInfo {
+	if x != nil {
+		return x.List
+	}
+	return nil
+}
+
+func (x *AutoInfoIndexResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+type AutoInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id          int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                   //场景id
+	Name        string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                //场景名
+	Status      int64  `protobuf:"varint,3,opt,name=status,proto3" json:"status,omitempty"`           //状态: 1启用 2禁用
+	Desc        string `protobuf:"bytes,4,opt,name=desc,proto3" json:"desc,omitempty"`                //描述
+	CreatedTime int64  `protobuf:"varint,5,opt,name=createdTime,proto3" json:"createdTime,omitempty"` //创建时间 秒级时间戳 只读
+	TriggerType string `protobuf:"bytes,6,opt,name=triggerType,proto3" json:"triggerType,omitempty"`  //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	Trigger     string `protobuf:"bytes,7,opt,name=trigger,proto3" json:"trigger,omitempty"`          //触发器
+	When        string `protobuf:"bytes,8,opt,name=when,proto3" json:"when,omitempty"`                //触发条件
+	Then        string `protobuf:"bytes,9,opt,name=then,proto3" json:"then,omitempty"`                //满足条件时执行的动作
+}
+
+func (x *AutoInfo) Reset() {
+	*x = AutoInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AutoInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AutoInfo) ProtoMessage() {}
+
+func (x *AutoInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AutoInfo.ProtoReflect.Descriptor instead.
+func (*AutoInfo) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *AutoInfo) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *AutoInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *AutoInfo) GetStatus() int64 {
+	if x != nil {
+		return x.Status
+	}
+	return 0
+}
+
+func (x *AutoInfo) GetDesc() string {
+	if x != nil {
+		return x.Desc
+	}
+	return ""
+}
+
+func (x *AutoInfo) GetCreatedTime() int64 {
+	if x != nil {
+		return x.CreatedTime
+	}
+	return 0
+}
+
+func (x *AutoInfo) GetTriggerType() string {
+	if x != nil {
+		return x.TriggerType
+	}
+	return ""
+}
+
+func (x *AutoInfo) GetTrigger() string {
+	if x != nil {
+		return x.Trigger
+	}
+	return ""
+}
+
+func (x *AutoInfo) GetWhen() string {
+	if x != nil {
+		return x.When
+	}
+	return ""
+}
+
+func (x *AutoInfo) GetThen() string {
+	if x != nil {
+		return x.Then
+	}
+	return ""
+}
+
+type SceneInfoIndexReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page        *PageInfo `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`               //分页信息 只获取一个则不填
+	Name        string    `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`               //场景名 模糊查询
+	Status      int64     `protobuf:"varint,3,opt,name=status,proto3" json:"status,omitempty"`          //状态: 1启用 2禁用
+	TriggerType string    `protobuf:"bytes,4,opt,name=triggerType,proto3" json:"triggerType,omitempty"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	AlarmID     int64     `protobuf:"varint,5,opt,name=alarmID,proto3" json:"alarmID,omitempty"`        //告警配置ID过滤
+}
+
+func (x *SceneInfoIndexReq) Reset() {
+	*x = SceneInfoIndexReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SceneInfoIndexReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SceneInfoIndexReq) ProtoMessage() {}
+
+func (x *SceneInfoIndexReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SceneInfoIndexReq.ProtoReflect.Descriptor instead.
+func (*SceneInfoIndexReq) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *SceneInfoIndexReq) GetPage() *PageInfo {
+	if x != nil {
+		return x.Page
+	}
+	return nil
+}
+
+func (x *SceneInfoIndexReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *SceneInfoIndexReq) GetStatus() int64 {
+	if x != nil {
+		return x.Status
+	}
+	return 0
+}
+
+func (x *SceneInfoIndexReq) GetTriggerType() string {
+	if x != nil {
+		return x.TriggerType
+	}
+	return ""
+}
+
+func (x *SceneInfoIndexReq) GetAlarmID() int64 {
+	if x != nil {
+		return x.AlarmID
+	}
+	return 0
+}
+
+type SceneInfoIndexResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	List  []*SceneInfo `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`    //设备信息
+	Total int64        `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` //总数(只有分页的时候会返回)
+}
+
+func (x *SceneInfoIndexResp) Reset() {
+	*x = SceneInfoIndexResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SceneInfoIndexResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SceneInfoIndexResp) ProtoMessage() {}
+
+func (x *SceneInfoIndexResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SceneInfoIndexResp.ProtoReflect.Descriptor instead.
+func (*SceneInfoIndexResp) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *SceneInfoIndexResp) GetList() []*SceneInfo {
+	if x != nil {
+		return x.List
+	}
+	return nil
+}
+
+func (x *SceneInfoIndexResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+type SceneInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id              int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                   //场景id
+	UserID          int64  `protobuf:"varint,2,opt,name=userID,proto3" json:"userID,omitempty"`           //创建用户
+	Name            string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`                //场景名
+	Desc            string `protobuf:"bytes,4,opt,name=desc,proto3" json:"desc,omitempty"`                //描述
+	CreatedTime     int64  `protobuf:"varint,5,opt,name=createdTime,proto3" json:"createdTime,omitempty"` //创建时间 秒级时间戳 只读
+	Delay           int64  `protobuf:"varint,6,opt,name=delay,proto3" json:"delay,omitempty"`
+	DelayUnit       string `protobuf:"bytes,7,opt,name=delayUnit,proto3" json:"delayUnit,omitempty"`              //单位 s:秒 m:分钟 h:小时 d:天
+	HeadImg         string `protobuf:"bytes,8,opt,name=headImg,proto3" json:"headImg,omitempty"`                  //触发器
+	IsUpdateHeadImg bool   `protobuf:"varint,9,opt,name=isUpdateHeadImg,proto3" json:"isUpdateHeadImg,omitempty"` //只有这个参数为true的时候才会更新图片,传参为图片的file path
+}
+
+func (x *SceneInfo) Reset() {
+	*x = SceneInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SceneInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SceneInfo) ProtoMessage() {}
+
+func (x *SceneInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SceneInfo.ProtoReflect.Descriptor instead.
+func (*SceneInfo) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *SceneInfo) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *SceneInfo) GetUserID() int64 {
+	if x != nil {
+		return x.UserID
+	}
+	return 0
+}
+
+func (x *SceneInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *SceneInfo) GetDesc() string {
+	if x != nil {
+		return x.Desc
+	}
+	return ""
+}
+
+func (x *SceneInfo) GetCreatedTime() int64 {
+	if x != nil {
+		return x.CreatedTime
+	}
+	return 0
+}
+
+func (x *SceneInfo) GetDelay() int64 {
+	if x != nil {
+		return x.Delay
+	}
+	return 0
+}
+
+func (x *SceneInfo) GetDelayUnit() string {
+	if x != nil {
+		return x.DelayUnit
+	}
+	return ""
+}
+
+func (x *SceneInfo) GetHeadImg() string {
+	if x != nil {
+		return x.HeadImg
+	}
+	return ""
+}
+
+func (x *SceneInfo) GetIsUpdateHeadImg() bool {
+	if x != nil {
+		return x.IsUpdateHeadImg
+	}
+	return false
+}
+
+type SceneDeviceIndexReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page        *PageInfo `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`               //分页信息 只获取一个则不填
+	Name        string    `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`               //场景名 模糊查询
+	Status      int64     `protobuf:"varint,3,opt,name=status,proto3" json:"status,omitempty"`          //状态: 1启用 2禁用
+	TriggerType string    `protobuf:"bytes,4,opt,name=triggerType,proto3" json:"triggerType,omitempty"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	AlarmID     int64     `protobuf:"varint,5,opt,name=alarmID,proto3" json:"alarmID,omitempty"`        //告警配置ID过滤
+}
+
+func (x *SceneDeviceIndexReq) Reset() {
+	*x = SceneDeviceIndexReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SceneDeviceIndexReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SceneDeviceIndexReq) ProtoMessage() {}
+
+func (x *SceneDeviceIndexReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SceneDeviceIndexReq.ProtoReflect.Descriptor instead.
+func (*SceneDeviceIndexReq) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *SceneDeviceIndexReq) GetPage() *PageInfo {
+	if x != nil {
+		return x.Page
+	}
+	return nil
+}
+
+func (x *SceneDeviceIndexReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *SceneDeviceIndexReq) GetStatus() int64 {
+	if x != nil {
+		return x.Status
+	}
+	return 0
+}
+
+func (x *SceneDeviceIndexReq) GetTriggerType() string {
+	if x != nil {
+		return x.TriggerType
+	}
+	return ""
+}
+
+func (x *SceneDeviceIndexReq) GetAlarmID() int64 {
+	if x != nil {
+		return x.AlarmID
+	}
+	return 0
+}
+
+type SceneDeviceIndexResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	List  []*SceneDevice `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`    //设备信息
+	Total int64          `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` //总数(只有分页的时候会返回)
+}
+
+func (x *SceneDeviceIndexResp) Reset() {
+	*x = SceneDeviceIndexResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SceneDeviceIndexResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SceneDeviceIndexResp) ProtoMessage() {}
+
+func (x *SceneDeviceIndexResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SceneDeviceIndexResp.ProtoReflect.Descriptor instead.
+func (*SceneDeviceIndexResp) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *SceneDeviceIndexResp) GetList() []*SceneDevice {
+	if x != nil {
+		return x.List
+	}
+	return nil
+}
+
+func (x *SceneDeviceIndexResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+type SceneDevice struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id         int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"` //场景id
+	SenseID    string `protobuf:"bytes,2,opt,name=senseID,proto3" json:"senseID,omitempty"`
+	ProductID  string `protobuf:"bytes,3,opt,name=productID,proto3" json:"productID,omitempty"`
+	DeviceName string `protobuf:"bytes,4,opt,name=deviceName,proto3" json:"deviceName,omitempty"`
+	Params     string `protobuf:"bytes,5,opt,name=params,proto3" json:"params,omitempty"`
+	Delay      int64  `protobuf:"varint,6,opt,name=delay,proto3" json:"delay,omitempty"`
+	DelayUnit  string `protobuf:"bytes,7,opt,name=delayUnit,proto3" json:"delayUnit,omitempty"` //单位 s:秒 m:分钟 h:小时 d:天
+}
+
+func (x *SceneDevice) Reset() {
+	*x = SceneDevice{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ud_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SceneDevice) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SceneDevice) ProtoMessage() {}
+
+func (x *SceneDevice) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ud_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SceneDevice.ProtoReflect.Descriptor instead.
+func (*SceneDevice) Descriptor() ([]byte, []int) {
+	return file_proto_ud_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *SceneDevice) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *SceneDevice) GetSenseID() string {
+	if x != nil {
+		return x.SenseID
+	}
+	return ""
+}
+
+func (x *SceneDevice) GetProductID() string {
+	if x != nil {
+		return x.ProductID
+	}
+	return ""
+}
+
+func (x *SceneDevice) GetDeviceName() string {
+	if x != nil {
+		return x.DeviceName
+	}
+	return ""
+}
+
+func (x *SceneDevice) GetParams() string {
+	if x != nil {
+		return x.Params
+	}
+	return ""
+}
+
+func (x *SceneDevice) GetDelay() int64 {
+	if x != nil {
+		return x.Delay
+	}
+	return 0
+}
+
+func (x *SceneDevice) GetDelayUnit() string {
+	if x != nil {
+		return x.DelayUnit
+	}
+	return ""
+}
+
+var File_proto_ud_proto protoreflect.FileDescriptor
+
+var file_proto_ud_proto_rawDesc = []byte{
+	0x0a, 0x0e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x75, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x12, 0x02, 0x75, 0x64, 0x22, 0x18, 0x0a, 0x06, 0x57, 0x69, 0x74, 0x68, 0x49, 0x44, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x22, 0x07,
+	0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x32, 0x0a, 0x08, 0x50, 0x61, 0x67, 0x65, 0x49,
+	0x6e, 0x66, 0x6f, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x22, 0x33, 0x0a, 0x09, 0x54,
+	0x69, 0x6d, 0x65, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x72,
+	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x73, 0x74, 0x61, 0x72, 0x74, 0x12, 0x10,
+	0x0a, 0x03, 0x65, 0x6e, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x65, 0x6e, 0x64,
+	0x22, 0x9c, 0x01, 0x0a, 0x10, 0x41, 0x75, 0x74, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64,
+	0x65, 0x78, 0x52, 0x65, 0x71, 0x12, 0x20, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x75, 0x64, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66,
+	0x6f, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73,
+	0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x73, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x12, 0x20, 0x0a, 0x0b, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x54, 0x79,
+	0x70, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65,
+	0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x44,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x44, 0x22,
+	0x4b, 0x0a, 0x11, 0x41, 0x75, 0x74, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65, 0x78,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x20, 0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x75, 0x64, 0x2e, 0x41, 0x75, 0x74, 0x6f, 0x49, 0x6e, 0x66, 0x6f,
+	0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x22, 0xe0, 0x01, 0x0a,
+	0x08, 0x41, 0x75, 0x74, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a,
+	0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x73,
+	0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x65, 0x73, 0x63, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x64, 0x65, 0x73, 0x63, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x74,
+	0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0b, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a,
+	0x07, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x77, 0x68, 0x65, 0x6e, 0x18,
+	0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x77, 0x68, 0x65, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x74,
+	0x68, 0x65, 0x6e, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x68, 0x65, 0x6e, 0x22,
+	0x9d, 0x01, 0x0a, 0x11, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64,
+	0x65, 0x78, 0x52, 0x65, 0x71, 0x12, 0x20, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x75, 0x64, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66,
+	0x6f, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73,
+	0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x73, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x12, 0x20, 0x0a, 0x0b, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x54, 0x79,
+	0x70, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65,
+	0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x44,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x44, 0x22,
+	0x4d, 0x0a, 0x12, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65,
+	0x78, 0x52, 0x65, 0x73, 0x70, 0x12, 0x21, 0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x75, 0x64, 0x2e, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e,
+	0x66, 0x6f, 0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61,
+	0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x22, 0xf5,
+	0x01, 0x0a, 0x09, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x16, 0x0a, 0x06,
+	0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73,
+	0x65, 0x72, 0x49, 0x44, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x65, 0x73, 0x63,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x64, 0x65, 0x73, 0x63, 0x12, 0x20, 0x0a, 0x0b,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x14,
+	0x0a, 0x05, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x64,
+	0x65, 0x6c, 0x61, 0x79, 0x12, 0x1c, 0x0a, 0x09, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x55, 0x6e, 0x69,
+	0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x55, 0x6e,
+	0x69, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x68, 0x65, 0x61, 0x64, 0x49, 0x6d, 0x67, 0x18, 0x08, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x68, 0x65, 0x61, 0x64, 0x49, 0x6d, 0x67, 0x12, 0x28, 0x0a, 0x0f,
+	0x69, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x48, 0x65, 0x61, 0x64, 0x49, 0x6d, 0x67, 0x18,
+	0x09, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0f, 0x69, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x48,
+	0x65, 0x61, 0x64, 0x49, 0x6d, 0x67, 0x22, 0x9f, 0x01, 0x0a, 0x13, 0x53, 0x63, 0x65, 0x6e, 0x65,
+	0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x71, 0x12, 0x20,
+	0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x75,
+	0x64, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x6e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x20, 0x0a, 0x0b,
+	0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x44, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x07, 0x61, 0x6c, 0x61, 0x72, 0x6d, 0x49, 0x44, 0x22, 0x51, 0x0a, 0x14, 0x53, 0x63, 0x65, 0x6e,
+	0x65, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x23, 0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f,
+	0x2e, 0x75, 0x64, 0x2e, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x52,
+	0x04, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x22, 0xc1, 0x01, 0x0a, 0x0b,
+	0x53, 0x63, 0x65, 0x6e, 0x65, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x73,
+	0x65, 0x6e, 0x73, 0x65, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x65,
+	0x6e, 0x73, 0x65, 0x49, 0x44, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
+	0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63,
+	0x74, 0x49, 0x44, 0x12, 0x1e, 0x0a, 0x0a, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x4e, 0x61, 0x6d,
+	0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x4e,
+	0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x05, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64,
+	0x65, 0x6c, 0x61, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x64, 0x65, 0x6c, 0x61,
+	0x79, 0x12, 0x1c, 0x0a, 0x09, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x55, 0x6e, 0x69, 0x74, 0x18, 0x07,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x55, 0x6e, 0x69, 0x74, 0x32,
+	0xb5, 0x02, 0x0a, 0x12, 0x69, 0x6e, 0x74, 0x65, 0x6c, 0x6c, 0x69, 0x67, 0x65, 0x6e, 0x74, 0x43,
+	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x12, 0x2c, 0x0a, 0x0f, 0x73, 0x63, 0x65, 0x6e, 0x65, 0x49,
+	0x6e, 0x66, 0x6f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0x0d, 0x2e, 0x75, 0x64, 0x2e, 0x53,
+	0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x0a, 0x2e, 0x75, 0x64, 0x2e, 0x57, 0x69,
+	0x74, 0x68, 0x49, 0x44, 0x12, 0x2b, 0x0a, 0x0f, 0x73, 0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66,
+	0x6f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x0d, 0x2e, 0x75, 0x64, 0x2e, 0x53, 0x63, 0x65,
+	0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x09, 0x2e, 0x75, 0x64, 0x2e, 0x45, 0x6d, 0x70, 0x74,
+	0x79, 0x12, 0x28, 0x0a, 0x0f, 0x73, 0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x12, 0x0a, 0x2e, 0x75, 0x64, 0x2e, 0x57, 0x69, 0x74, 0x68, 0x49, 0x44,
+	0x1a, 0x09, 0x2e, 0x75, 0x64, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x3f, 0x0a, 0x0e, 0x73,
+	0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x15, 0x2e,
+	0x75, 0x64, 0x2e, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65,
+	0x78, 0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x75, 0x64, 0x2e, 0x53, 0x63, 0x65, 0x6e, 0x65, 0x49,
+	0x6e, 0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2a, 0x0a, 0x0d,
+	0x73, 0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x61, 0x64, 0x12, 0x0a, 0x2e,
+	0x75, 0x64, 0x2e, 0x57, 0x69, 0x74, 0x68, 0x49, 0x44, 0x1a, 0x0d, 0x2e, 0x75, 0x64, 0x2e, 0x53,
+	0x63, 0x65, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x2d, 0x0a, 0x14, 0x73, 0x63, 0x65, 0x6e,
+	0x65, 0x4d, 0x61, 0x6e, 0x75, 0x61, 0x6c, 0x6c, 0x79, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72,
+	0x12, 0x0a, 0x2e, 0x75, 0x64, 0x2e, 0x57, 0x69, 0x74, 0x68, 0x49, 0x44, 0x1a, 0x09, 0x2e, 0x75,
+	0x64, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x32, 0x35, 0x0a, 0x0a, 0x41, 0x75, 0x74, 0x68, 0x4d,
+	0x61, 0x6e, 0x61, 0x67, 0x65, 0x12, 0x27, 0x0a, 0x0f, 0x75, 0x73, 0x65, 0x72, 0x44, 0x65, 0x76,
+	0x69, 0x63, 0x65, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x09, 0x2e, 0x75, 0x64, 0x2e, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x1a, 0x09, 0x2e, 0x75, 0x64, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x42, 0x07,
+	0x5a, 0x05, 0x70, 0x62, 0x2f, 0x75, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_ud_proto_rawDescOnce sync.Once
-	file_ud_proto_rawDescData = file_ud_proto_rawDesc
+	file_proto_ud_proto_rawDescOnce sync.Once
+	file_proto_ud_proto_rawDescData = file_proto_ud_proto_rawDesc
 )
 
-func file_ud_proto_rawDescGZIP() []byte {
-	file_ud_proto_rawDescOnce.Do(func() {
-		file_ud_proto_rawDescData = protoimpl.X.CompressGZIP(file_ud_proto_rawDescData)
+func file_proto_ud_proto_rawDescGZIP() []byte {
+	file_proto_ud_proto_rawDescOnce.Do(func() {
+		file_proto_ud_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_ud_proto_rawDescData)
 	})
-	return file_ud_proto_rawDescData
+	return file_proto_ud_proto_rawDescData
 }
 
-var file_ud_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_ud_proto_goTypes = []interface{}{
-	(*Request)(nil),  // 0: ud.Request
-	(*Response)(nil), // 1: ud.Response
+var file_proto_ud_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_proto_ud_proto_goTypes = []interface{}{
+	(*WithID)(nil),               // 0: ud.WithID
+	(*Empty)(nil),                // 1: ud.Empty
+	(*PageInfo)(nil),             // 2: ud.PageInfo
+	(*TimeRange)(nil),            // 3: ud.TimeRange
+	(*AutoInfoIndexReq)(nil),     // 4: ud.AutoInfoIndexReq
+	(*AutoInfoIndexResp)(nil),    // 5: ud.AutoInfoIndexResp
+	(*AutoInfo)(nil),             // 6: ud.AutoInfo
+	(*SceneInfoIndexReq)(nil),    // 7: ud.SceneInfoIndexReq
+	(*SceneInfoIndexResp)(nil),   // 8: ud.SceneInfoIndexResp
+	(*SceneInfo)(nil),            // 9: ud.SceneInfo
+	(*SceneDeviceIndexReq)(nil),  // 10: ud.SceneDeviceIndexReq
+	(*SceneDeviceIndexResp)(nil), // 11: ud.SceneDeviceIndexResp
+	(*SceneDevice)(nil),          // 12: ud.SceneDevice
 }
-var file_ud_proto_depIdxs = []int32{
-	0, // 0: ud.Ud.Ping:input_type -> ud.Request
-	1, // 1: ud.Ud.Ping:output_type -> ud.Response
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+var file_proto_ud_proto_depIdxs = []int32{
+	2,  // 0: ud.AutoInfoIndexReq.page:type_name -> ud.PageInfo
+	6,  // 1: ud.AutoInfoIndexResp.list:type_name -> ud.AutoInfo
+	2,  // 2: ud.SceneInfoIndexReq.page:type_name -> ud.PageInfo
+	9,  // 3: ud.SceneInfoIndexResp.list:type_name -> ud.SceneInfo
+	2,  // 4: ud.SceneDeviceIndexReq.page:type_name -> ud.PageInfo
+	12, // 5: ud.SceneDeviceIndexResp.list:type_name -> ud.SceneDevice
+	9,  // 6: ud.intelligentControl.sceneInfoCreate:input_type -> ud.SceneInfo
+	9,  // 7: ud.intelligentControl.sceneInfoUpdate:input_type -> ud.SceneInfo
+	0,  // 8: ud.intelligentControl.sceneInfoDelete:input_type -> ud.WithID
+	7,  // 9: ud.intelligentControl.sceneInfoIndex:input_type -> ud.SceneInfoIndexReq
+	0,  // 10: ud.intelligentControl.sceneInfoRead:input_type -> ud.WithID
+	0,  // 11: ud.intelligentControl.sceneManuallyTrigger:input_type -> ud.WithID
+	1,  // 12: ud.AuthManage.userDeviceIndex:input_type -> ud.Empty
+	0,  // 13: ud.intelligentControl.sceneInfoCreate:output_type -> ud.WithID
+	1,  // 14: ud.intelligentControl.sceneInfoUpdate:output_type -> ud.Empty
+	1,  // 15: ud.intelligentControl.sceneInfoDelete:output_type -> ud.Empty
+	8,  // 16: ud.intelligentControl.sceneInfoIndex:output_type -> ud.SceneInfoIndexResp
+	9,  // 17: ud.intelligentControl.sceneInfoRead:output_type -> ud.SceneInfo
+	1,  // 18: ud.intelligentControl.sceneManuallyTrigger:output_type -> ud.Empty
+	1,  // 19: ud.AuthManage.userDeviceIndex:output_type -> ud.Empty
+	13, // [13:20] is the sub-list for method output_type
+	6,  // [6:13] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
-func init() { file_ud_proto_init() }
-func file_ud_proto_init() {
-	if File_ud_proto != nil {
+func init() { file_proto_ud_proto_init() }
+func file_proto_ud_proto_init() {
+	if File_proto_ud_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_ud_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Request); i {
+		file_proto_ud_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*WithID); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -173,8 +1134,140 @@ func file_ud_proto_init() {
 				return nil
 			}
 		}
-		file_ud_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Response); i {
+		file_proto_ud_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Empty); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PageInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TimeRange); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AutoInfoIndexReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AutoInfoIndexResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AutoInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SceneInfoIndexReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SceneInfoIndexResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SceneInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SceneDeviceIndexReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SceneDeviceIndexResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ud_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SceneDevice); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -190,18 +1283,18 @@ func file_ud_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_ud_proto_rawDesc,
+			RawDescriptor: file_proto_ud_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   13,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
-		GoTypes:           file_ud_proto_goTypes,
-		DependencyIndexes: file_ud_proto_depIdxs,
-		MessageInfos:      file_ud_proto_msgTypes,
+		GoTypes:           file_proto_ud_proto_goTypes,
+		DependencyIndexes: file_proto_ud_proto_depIdxs,
+		MessageInfos:      file_proto_ud_proto_msgTypes,
 	}.Build()
-	File_ud_proto = out.File
-	file_ud_proto_rawDesc = nil
-	file_ud_proto_goTypes = nil
-	file_ud_proto_depIdxs = nil
+	File_proto_ud_proto = out.File
+	file_proto_ud_proto_rawDesc = nil
+	file_proto_ud_proto_goTypes = nil
+	file_proto_ud_proto_depIdxs = nil
 }

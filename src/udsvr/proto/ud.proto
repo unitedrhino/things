@@ -27,18 +27,7 @@ service intelligentControl {
   rpc sceneInfoDelete(WithID) returns(Empty);
   rpc sceneInfoIndex(SceneInfoIndexReq) returns(SceneInfoIndexResp);
   rpc sceneInfoRead(WithID) returns(SceneInfo);
-
-  rpc sceneDeviceCreate(SceneDevice) returns(WithID);
-  rpc sceneDeviceUpdate(SceneDevice) returns(Empty);
-  rpc sceneDeviceDelete(WithID) returns(Empty);
-  rpc sceneDeviceIndex(SceneDeviceIndexReq) returns(SceneDeviceIndexResp);
-  rpc sceneDeviceRead(WithID) returns(SceneDevice);
-  //自动化
-  rpc autoInfoCreate(AutoInfo) returns(WithID);
-  rpc autoInfoUpdate(AutoInfo) returns(Empty);
-  rpc autoInfoDelete(WithID) returns(Empty);
-  rpc autoInfoIndex(AutoInfoIndexReq) returns(AutoInfoIndexResp);
-  rpc autoInfoRead(WithID) returns(AutoInfo);
+  rpc sceneManuallyTrigger(WithID) returns (Empty);//手动触发场景
 }
 
 //鉴权管理

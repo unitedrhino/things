@@ -21,9 +21,8 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/protocolmanage"
 	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
-	alarmcenter "github.com/i-Things/things/src/rulesvr/client/alarmcenter"
-	scenelinkage "github.com/i-Things/things/src/rulesvr/client/scenelinkage"
-	"github.com/i-Things/things/src/rulesvr/ruledirect"
+	"github.com/i-Things/things/src/rulesvr/client/alarmcenter"
+	"github.com/i-Things/things/src/rulesvr/client/scenelinkage"
 	app "github.com/i-Things/things/src/syssvr/client/appmanage"
 	"github.com/i-Things/things/src/syssvr/client/areamanage"
 	common "github.com/i-Things/things/src/syssvr/client/common"
@@ -38,6 +37,8 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
+	"github.com/i-Things/things/src/udsvr/client/intelligentcontrol"
+	"github.com/i-Things/things/src/udsvr/uddirect"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrconfigmanage"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrinfomanage"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrstreammanage"
@@ -80,10 +81,11 @@ type SvrClient struct {
 	RemoteConfig remoteconfig.RemoteConfig
 	Common       common.Common
 
-	Scene          scenelinkage.SceneLinkage
-	Alarm          alarmcenter.AlarmCenter
-	Timedscheduler timedscheduler.Timedscheduler
-	TimedJob       timedmanage.TimedManage
+	IntelligentControl intelligentcontrol.IntelligentControl
+	Scene              scenelinkage.SceneLinkage
+	Alarm              alarmcenter.AlarmCenter
+	Timedscheduler     timedscheduler.Timedscheduler
+	TimedJob           timedmanage.TimedManage
 }
 
 type ServiceContext struct {
@@ -120,13 +122,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceInteract deviceinteract.DeviceInteract
 		remoteConfig   remoteconfig.RemoteConfig
 		sysCommon      common.Common
-		scene          scenelinkage.SceneLinkage
-		alarm          alarmcenter.AlarmCenter
 		firmwareM      firmwaremanage.FirmwareManage
 		otaTaskM       otataskmanage.OtaTaskManage
 		timedSchedule  timedscheduler.Timedscheduler
 		timedJob       timedmanage.TimedManage
 		tenantM        tenant.TenantManage
+
+		ic intelligentcontrol.IntelligentControl
 	)
 	var ur user.UserManage
 	var ro role.RoleManage
@@ -168,13 +170,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceA = dgdirect.NewDeviceAuth(c.DgRpc.RunProxy)
 		}
 	}
-	if c.RuleRpc.Enable {
-		if c.RuleRpc.Mode == conf.ClientModeGrpc {
-			scene = scenelinkage.NewSceneLinkage(zrpc.MustNewClient(c.RuleRpc.Conf))
-			alarm = alarmcenter.NewAlarmCenter(zrpc.MustNewClient(c.RuleRpc.Conf))
+	if c.UdRpc.Enable {
+		if c.UdRpc.Mode == conf.ClientModeGrpc {
+			ic = intelligentcontrol.NewIntelligentControl(zrpc.MustNewClient(c.UdRpc.Conf))
 		} else {
-			scene = ruledirect.NewSceneLinkage(c.RuleRpc.RunProxy)
-			alarm = ruledirect.NewAlarmCenter(c.RuleRpc.RunProxy)
+			ic = uddirect.NewIntelligentControl(c.UdRpc.RunProxy)
 		}
 	}
 	if c.SysRpc.Enable {
@@ -269,12 +269,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceA:   deviceA,
 			DeviceG:   deviceG,
 
-			DeviceMsg:      deviceMsg,
-			DeviceInteract: deviceInteract,
-			RemoteConfig:   remoteConfig,
-			Common:         sysCommon,
-			Scene:          scene,
-			Alarm:          alarm,
+			DeviceMsg:          deviceMsg,
+			DeviceInteract:     deviceInteract,
+			RemoteConfig:       remoteConfig,
+			Common:             sysCommon,
+			IntelligentControl: ic,
 		},
 		//OSS:        ossClient,
 	}

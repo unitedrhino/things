@@ -59,7 +59,7 @@ func (l *UserAuthAreaMultiUpdateLogic) UserAuthAreaMultiUpdate(in *sys.UserAreaM
 		InitCacheUserAuthProject(l.ctx, in.UserID)
 	}
 	if len(areas) != 0 && project == nil {
-		l.UapDB.Insert(l.ctx, &relationDB.SysUserAuthProject{UserID: in.UserID, ProjectID: in.ProjectID})
+		l.UapDB.Insert(l.ctx, &relationDB.SysUserProject{UserID: in.UserID, ProjectID: in.ProjectID})
 		InitCacheUserAuthProject(l.ctx, in.UserID)
 	}
 	//更新 用户数据权限 缓存

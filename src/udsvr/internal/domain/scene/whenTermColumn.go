@@ -8,6 +8,7 @@ import (
 	devicemsg "github.com/i-Things/things/src/dmsvr/client/devicemsg"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"strings"
 )
 
 type TermColumnType string
@@ -19,11 +20,11 @@ const (
 	TermColumnTypeSysTime TermColumnType = "sysTime"
 )
 
-// ColumnSchema 物模型类型 属性,事件
-type ColumnSchema struct {
+// TermProperty 物模型类型 属性
+type TermProperty struct {
 	ProductID  string   `json:"productID"` //产品id
 	DeviceName string   `json:"deviceName"`
-	DataID     []string `json:"dataID"`   //属性的id及事件的id aa.bb.cc
+	DataID     string   `json:"dataID"`   //属性的id   aa.bb.cc
 	TermType   CmpType  `json:"termType"` //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
 	Values     []string `json:"values"`   //条件值 参数根据动态条件类型会有多个参数
 }
@@ -35,7 +36,7 @@ func (t TermColumnType) Validate() error {
 	return nil
 }
 
-func (c *ColumnSchema) Validate() error {
+func (c *TermProperty) Validate() error {
 	if c == nil {
 		return nil
 	}
@@ -54,7 +55,7 @@ func (c *ColumnSchema) Validate() error {
 
 	return nil
 }
-func (c *ColumnSchema) IsHit(ctx context.Context, columnType TermColumnType, repo TermRepo) bool {
+func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo TermRepo) bool {
 	sm, err := repo.SchemaRepo.GetSchemaModel(ctx, c.ProductID)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err:%v", utils.FuncName(), err)
@@ -64,7 +65,8 @@ func (c *ColumnSchema) IsHit(ctx context.Context, columnType TermColumnType, rep
 	var dataType schema.DataType
 	switch columnType {
 	case TermColumnTypeProperty:
-		info, err := repo.DeviceMsg.PropertyLatestIndex(ctx, &devicemsg.PropertyLatestIndexReq{ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: c.DataID[:1]})
+		dataID := strings.Split(c.DataID, ".")
+		info, err := repo.DeviceMsg.PropertyLatestIndex(ctx, &devicemsg.PropertyLatestIndexReq{ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: dataID[:1]})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", utils.FuncName(), err)
 			return false
@@ -74,19 +76,19 @@ func (c *ColumnSchema) IsHit(ctx context.Context, columnType TermColumnType, rep
 			return false
 		}
 		if info.List[0].Timestamp != 0 { //如果有值
-			dataType = sm.Property[c.DataID[0]].Define.Type
-			def := sm.Property[c.DataID[0]].Define
+			dataType = sm.Property[dataID[0]].Define.Type
+			def := sm.Property[dataID[0]].Define
 			switch def.Type {
 			case schema.DataTypeStruct:
-				if len(c.DataID) < 2 { //必须指定到结构体的成员
+				if len(dataID) < 2 { //必须指定到结构体的成员
 					return false
 				}
 				var dataMap = map[string]any{}
 				utils.Unmarshal([]byte(info.List[0].Value), &dataMap)
-				v, ok := dataMap[c.DataID[1]]
+				v, ok := dataMap[dataID[1]]
 				if ok {
 					val = cast.ToString(v)
-					dataType = def.Spec[c.DataID[1]].DataType.Type
+					dataType = def.Spec[dataID[1]].DataType.Type
 				}
 			case schema.DataTypeArray:
 				logx.WithContext(ctx).Errorf("%s scene not support array yet", utils.FuncName())

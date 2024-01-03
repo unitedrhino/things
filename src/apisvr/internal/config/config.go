@@ -21,7 +21,7 @@ type Config struct {
 	SysRpc            conf.RpcClientConf `json:",optional"`
 	DgRpc             conf.RpcClientConf `json:",optional"`
 	DmRpc             conf.RpcClientConf `json:",optional"`
-	RuleRpc           conf.RpcClientConf `json:",optional"`
+	UdRpc             conf.RpcClientConf `json:",optional"`
 	VidRpc            conf.RpcClientConf `json:",optional"`
 	TimedJobRpc       conf.RpcClientConf `json:",optional"`
 	TimedSchedulerRpc conf.RpcClientConf `json:",optional"`

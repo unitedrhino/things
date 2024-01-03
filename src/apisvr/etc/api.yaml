@@ -56,9 +56,11 @@ TimedSchedulerRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
-RuleRpc:
-  Enable: false
+UdRpc:
+  Enable: true
   Mode: direct
+  Conf:
+    Timeout: 1000000
 OssConf:
   OssType: minio
   PublicBucketName: ithings-public

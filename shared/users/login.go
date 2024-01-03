@@ -8,7 +8,8 @@ import (
 
 // Custom claims structure
 type LoginClaims struct {
-	UserID     int64 `json:",string"`
+	UserID     int64  `json:",string"`
+	Account    string //账号
 	RoleIDs    []int64
 	TenantCode string `json:",string"`
 	IsAdmin    int64
@@ -16,12 +17,13 @@ type LoginClaims struct {
 	jwt.StandardClaims
 }
 
-func GetLoginJwtToken(secretKey string, iat, seconds, userID int64, tenantCode string, roleIDs []int64, isAllData int64, isAdmin int64) (string, error) {
+func GetLoginJwtToken(secretKey string, iat, seconds, userID int64, account string, tenantCode string, roleIDs []int64, isAllData int64, isAdmin int64) (string, error) {
 	claims := LoginClaims{
 		UserID:     userID,
 		RoleIDs:    roleIDs,
 		TenantCode: tenantCode,
 		IsAdmin:    isAdmin,
+		Account:    account,
 		IsAllData:  isAllData,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: iat + seconds,

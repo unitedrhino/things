@@ -11,6 +11,7 @@ import (
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -67,8 +68,18 @@ func (l *LoginLogic) getRet(ui *relationDB.SysTenantUserInfo, list []*conf.Login
 	if ui.Tenant != nil && ui.Tenant.AdminUserID == ui.UserID {
 		isAdmin = def.True
 	}
+	var account = ui.UserName.String
+	if account == "" {
+		account = ui.Phone.String
+	}
+	if account == "" {
+		account = ui.Email.String
+	}
+	if account == "" {
+		account = cast.ToString(ui.UserID)
+	}
 	jwtToken, err := users.GetLoginJwtToken(l.svcCtx.Config.UserToken.AccessSecret, now, accessExpire,
-		ui.UserID, ctxs.GetUserCtx(l.ctx).TenantCode, rolses, ui.IsAllData, isAdmin)
+		ui.UserID, account, ctxs.GetUserCtx(l.ctx).TenantCode, rolses, ui.IsAllData, isAdmin)
 	if err != nil {
 		l.Error(err)
 		return nil, errors.System.AddDetail(err)
