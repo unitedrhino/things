@@ -1,5 +1,5 @@
 // Package scene 执行动作
-package automation
+package scene
 
 import (
 	"context"
@@ -43,6 +43,7 @@ func (a *ActionAlarm) Validate() error {
 	}
 	return nil
 }
+
 func (a *ActionAlarm) Execute(ctx context.Context, repo ActionRepo) error {
 	switch a.Mode {
 	case ActionAlarmModeRelieve:

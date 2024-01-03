@@ -3,38 +3,25 @@ package scene
 import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
 	"time"
-)
-
-type TriggerType string
-
-const (
-	TriggerTypeDevice TriggerType = "device"
-	TriggerTypeTimer  TriggerType = "timer"
-	TriggerTypeManual TriggerType = "manual"
 )
 
 type Infos []*Info
 
 type Info struct {
-	ID          int64       `json:"id"`
-	Name        string      `json:"name"`
-	Desc        string      `json:"desc"`
-	CreatedTime time.Time   `json:"createdTime"`
-	TriggerType TriggerType `json:"triggerType"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
-	Trigger     Trigger     `json:"trigger"`     //多种触发方式
-	When        Terms       `json:"when"`
-	Then        Actions     `json:"then"`
-	Status      int64       `json:"state"` // 状态（1启用 2禁用）
+	ID          int64     `json:"id"`
+	Name        string    `json:"name"`
+	Desc        string    `json:"desc"`
+	CreatedTime time.Time `json:"createdTime"`
+	Trigger     Trigger   `json:"trigger"` //多种触发方式
+	When        When      `json:"when"`    //手动触发模式不生效
+	Then        Then      `json:"then"`    //触发后执行的动作
+	Status      int64     `json:"state"`   // 状态（1启用 2禁用）
 }
 
 func (i *Info) Validate() error {
-	if !utils.SliceIn(i.TriggerType, TriggerTypeDevice, TriggerTypeTimer, TriggerTypeManual) {
-		return errors.Parameter.AddMsg("触发器不支持的类型:" + string(i.TriggerType))
-	}
-	err := i.Trigger.Validate(i.TriggerType)
+
+	err := i.Trigger.Validate()
 	if err != nil {
 		return err
 	}

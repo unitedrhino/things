@@ -430,9 +430,11 @@ type SysLogOperIndexResp struct {
 }
 
 type ModuleInfoIndexReq struct {
-	Page *PageInfo `json:"page,optional"` // 分页信息,只获取一个则不填
-	Code string    `json:"code,optional"` // 应用编号
-	Name string    `json:"name,optional"` // 按菜单名称筛选
+	Page    *PageInfo `json:"page,optional"` // 分页信息,只获取一个则不填
+	Codes   []string  `json:"codes,optional"`
+	AppCode string    `json:"appCode,optional"` //应用绑定的code列表
+	Code    string    `json:"code,optional"`    // 应用编号模糊查询
+	Name    string    `json:"name,optional"`    // 按菜单名称筛选
 }
 
 type ModuleInfoIndexResp struct {

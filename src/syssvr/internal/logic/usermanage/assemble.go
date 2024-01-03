@@ -40,13 +40,13 @@ func UserInfoToPb(ctx context.Context, ui *relationDB.SysTenantUserInfo, svcCtx 
 	}
 }
 
-func transAreaPoToPb(po *relationDB.SysUserAuthArea) *sys.UserArea {
+func transAreaPoToPb(po *relationDB.SysUserArea) *sys.UserArea {
 	return &sys.UserArea{
 		AreaID: int64(po.AreaID),
 	}
 }
 
-func transProjectPoToPb(po *relationDB.SysUserAuthProject) *sys.UserProject {
+func transProjectPoToPb(po *relationDB.SysUserProject) *sys.UserProject {
 	return &sys.UserProject{
 		ProjectID: int64(po.ProjectID),
 	}
@@ -68,13 +68,13 @@ func ToAuthAreaDos(areas []*sys.UserArea) (ret []*userDataAuth.Area) {
 	return
 }
 
-func DBToAuthAreaDo(area *relationDB.SysUserAuthArea) *userDataAuth.Area {
+func DBToAuthAreaDo(area *relationDB.SysUserArea) *userDataAuth.Area {
 	if area == nil {
 		return nil
 	}
 	return &userDataAuth.Area{AreaID: int64(area.AreaID)}
 }
-func DBToAuthAreaDos(areas []*relationDB.SysUserAuthArea) (ret []*userDataAuth.Area) {
+func DBToAuthAreaDos(areas []*relationDB.SysUserArea) (ret []*userDataAuth.Area) {
 	if len(areas) == 0 {
 		return
 	}
@@ -100,13 +100,13 @@ func ToAuthProjectDos(areas []*sys.UserProject) (ret []*userDataAuth.Project) {
 	return
 }
 
-func DBToAuthProjectDo(area *relationDB.SysUserAuthProject) *userDataAuth.Project {
+func DBToAuthProjectDo(area *relationDB.SysUserProject) *userDataAuth.Project {
 	if area == nil {
 		return nil
 	}
 	return &userDataAuth.Project{ProjectID: int64(area.ProjectID)}
 }
-func DBToAuthProjectDos(areas []*relationDB.SysUserAuthProject) (ret []*userDataAuth.Project) {
+func DBToAuthProjectDos(areas []*relationDB.SysUserProject) (ret []*userDataAuth.Project) {
 	if len(areas) == 0 {
 		return
 	}

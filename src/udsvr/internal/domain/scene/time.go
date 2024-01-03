@@ -9,10 +9,18 @@ import (
 
 var secondParser = crons.NewParser(crons.Second | crons.Minute | crons.Hour | crons.Dom | crons.Month | crons.DowOptional | crons.Descriptor)
 
+const (
+	TimeRangeTypeAllDay = "allDay"
+	TimeRangeTypeLight  = "light"
+	TimeRangeTypeNight  = "night"
+	TimeRangeTypeCustom = "custom"
+)
+
 // TimeRange 时间范围 只支持后面几种特殊字符:*  - ,
 type TimeRange struct {
-	Type string `json:"type"` //时间类型 cron
-	Cron string `json:"cron"` //  cron表达式
+	Type      string `json:"type"`      //时间类型  allDay:全天 light:白天(从日出到日落) night:夜间(从日落到日出) custom:自定义
+	StartTime int64  `json:"startTime"` //自定义开始时间 从0点加起来的秒数
+	EndTime   int64  `json:"endTime"`   //自定义结束时间 从0点加起来的秒数
 }
 
 // Timer 定时器类型
@@ -35,18 +43,19 @@ type UnitTime struct {
 }
 
 func (t *TimeRange) Validate() error {
-	_, err := secondParser.Parse(t.Cron)
-	if err != nil {
-		return errors.Parameter.AddMsgf("cron表达式检验不通过:%v", t.Cron).AddDetail(err)
+	if t == nil {
+		return errors.Parameter.AddMsg("时间触发模式需要填写时间内容")
+	}
+	if t.Type == TimeRangeTypeCustom {
+		if t.StartTime < 0 || t.StartTime > 24*60*60 || t.EndTime < 0 || t.EndTime > 24*60*60 || t.StartTime > t.EndTime {
+			return errors.Parameter.AddMsg("自定义时间范围只能在0到24小时之间")
+		}
 	}
 	return nil
 }
 func (t *TimeRange) IsHit(tim time.Time) bool {
-	s, err := secondParser.Parse(t.Cron)
-	if err != nil {
-		return false
-	}
-	return s.Parse(tim)
+	//todo 等待实现
+	return true
 }
 
 func (t *Timer) Validate() error {
@@ -75,6 +84,7 @@ func (a *UnitTime) Validate() error {
 	}
 	return a.Unit.Validate()
 }
+
 func (a *UnitTime) Execute() {
 	var delayTime = time.Duration(a.Time)
 	switch a.Unit {

@@ -36,13 +36,13 @@ func (p UserAuthProjectRepo) fmtFilter(ctx context.Context, f UserAuthProjectFil
 	return db
 }
 
-func (g UserAuthProjectRepo) Insert(ctx context.Context, data *SysUserAuthProject) error {
+func (g UserAuthProjectRepo) Insert(ctx context.Context, data *SysUserProject) error {
 	result := g.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g UserAuthProjectRepo) FindOneByFilter(ctx context.Context, f UserAuthProjectFilter) (*SysUserAuthProject, error) {
-	var result SysUserAuthProject
+func (g UserAuthProjectRepo) FindOneByFilter(ctx context.Context, f UserAuthProjectFilter) (*SysUserProject, error) {
+	var result SysUserProject
 	db := g.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -50,9 +50,9 @@ func (g UserAuthProjectRepo) FindOneByFilter(ctx context.Context, f UserAuthProj
 	}
 	return &result, nil
 }
-func (p UserAuthProjectRepo) FindByFilter(ctx context.Context, f UserAuthProjectFilter, page *def.PageInfo) ([]*SysUserAuthProject, error) {
-	var results []*SysUserAuthProject
-	db := p.fmtFilter(ctx, f).Model(&SysUserAuthProject{})
+func (p UserAuthProjectRepo) FindByFilter(ctx context.Context, f UserAuthProjectFilter, page *def.PageInfo) ([]*SysUserProject, error) {
+	var results []*SysUserProject
+	db := p.fmtFilter(ctx, f).Model(&SysUserProject{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -62,29 +62,29 @@ func (p UserAuthProjectRepo) FindByFilter(ctx context.Context, f UserAuthProject
 }
 
 func (p UserAuthProjectRepo) CountByFilter(ctx context.Context, f UserAuthProjectFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&SysUserAuthProject{})
+	db := p.fmtFilter(ctx, f).Model(&SysUserProject{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (g UserAuthProjectRepo) Update(ctx context.Context, data *SysUserAuthProject) error {
+func (g UserAuthProjectRepo) Update(ctx context.Context, data *SysUserProject) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (g UserAuthProjectRepo) DeleteByFilter(ctx context.Context, f UserAuthProjectFilter) error {
 	db := g.fmtFilter(ctx, f)
-	err := db.Delete(&SysUserAuthProject{}).Error
+	err := db.Delete(&SysUserProject{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (g UserAuthProjectRepo) Delete(ctx context.Context, userID int64, projectID int64) error {
 	err := g.db.WithContext(ctx).Where("`userID` = ? and `projectID`=?", userID, projectID).
-		Delete(&SysUserAuthProject{}).Error
+		Delete(&SysUserProject{}).Error
 	return stores.ErrFmt(err)
 }
-func (g UserAuthProjectRepo) FindOne(ctx context.Context, userID int64, projectID int64) (*SysUserAuthProject, error) {
-	var result SysUserAuthProject
+func (g UserAuthProjectRepo) FindOne(ctx context.Context, userID int64, projectID int64) (*SysUserProject, error) {
+	var result SysUserProject
 	err := g.db.WithContext(ctx).Where("`userID` = ? and `projectID`=?", userID, projectID).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -93,15 +93,15 @@ func (g UserAuthProjectRepo) FindOne(ctx context.Context, userID int64, projectI
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m UserAuthProjectRepo) MultiInsert(ctx context.Context, data []*SysUserAuthProject) error {
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysUserAuthProject{}).Create(data).Error
+func (m UserAuthProjectRepo) MultiInsert(ctx context.Context, data []*SysUserProject) error {
+	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysUserProject{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (g UserAuthProjectRepo) MultiUpdate(ctx context.Context, userID int64, projects []*userDataAuth.Project) error {
-	var datas []*SysUserAuthProject
+	var datas []*SysUserProject
 	for _, v := range projects {
-		datas = append(datas, &SysUserAuthProject{
+		datas = append(datas, &SysUserProject{
 			UserID:    userID,
 			ProjectID: v.ProjectID,
 		})

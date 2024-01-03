@@ -27,13 +27,12 @@ func NewTenantAppModuleIndexLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *TenantAppModuleIndexLogic) TenantAppModuleIndex(in *sys.TenantModuleIndexReq) (*sys.TenantModuleIndexResp, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
-		return nil, err
+	if err := ctxs.IsRoot(l.ctx); err == nil {
+		ctxs.GetUserCtx(l.ctx).AllTenant = true
+		defer func() {
+			ctxs.GetUserCtx(l.ctx).AllTenant = false
+		}()
 	}
-	ctxs.GetUserCtx(l.ctx).AllTenant = true
-	defer func() {
-		ctxs.GetUserCtx(l.ctx).AllTenant = false
-	}()
 	ret, err := relationDB.NewTenantAppModuleRepo(l.ctx).FindByFilter(l.ctx, relationDB.TenantAppModuleFilter{TenantCode: in.Code, AppCodes: []string{in.AppCode}}, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
