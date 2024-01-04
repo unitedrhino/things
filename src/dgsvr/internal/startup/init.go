@@ -6,6 +6,8 @@ import (
 	"github.com/i-Things/things/src/dgsvr/internal/event/deviceSub"
 	"github.com/i-Things/things/src/dgsvr/internal/event/innerSub"
 	"github.com/i-Things/things/src/dgsvr/internal/repo/event/subscribe/dataUpdate"
+	"github.com/i-Things/things/src/dgsvr/internal/repo/event/publish/pubDev"
+	"github.com/i-Things/things/src/dgsvr/internal/repo/event/publish/pubInner"
 	"github.com/i-Things/things/src/dgsvr/internal/repo/event/subscribe/subDev"
 	"github.com/i-Things/things/src/dgsvr/internal/repo/event/subscribe/subInner"
 	"github.com/i-Things/things/src/dgsvr/internal/svc"
@@ -13,10 +15,20 @@ import (
 )
 
 func Init(svcCtx *svc.ServiceContext) {
-	Subscript(svcCtx)
+	//some init for serviceContext
 }
 
-func Subscript(svcCtx *svc.ServiceContext) {
+// mqtt and nats client
+func PostInit(svcCtx *svc.ServiceContext) {
+	dl, err := pubDev.NewPubDev(svcCtx.Config.DevLink)
+	logx.Must(err)
+
+	il, err := pubInner.NewPubInner(svcCtx.Config.Event)
+	logx.Must(err)
+
+	svcCtx.PubDev = dl
+	svcCtx.PubInner = il
+
 	sd, err := subDev.NewSubDev(svcCtx.Config.DevLink)
 	logx.Must(err)
 	err = sd.SubDevMsg(func(ctx context.Context) subDev.DevSubHandle {
