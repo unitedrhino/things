@@ -3272,25 +3272,26 @@ var AreaManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	TenantManage_TenantInfoCreate_FullMethodName      = "/sys.TenantManage/tenantInfoCreate"
-	TenantManage_TenantInfoUpdate_FullMethodName      = "/sys.TenantManage/tenantInfoUpdate"
-	TenantManage_TenantInfoDelete_FullMethodName      = "/sys.TenantManage/tenantInfoDelete"
-	TenantManage_TenantInfoRead_FullMethodName        = "/sys.TenantManage/tenantInfoRead"
-	TenantManage_TenantInfoIndex_FullMethodName       = "/sys.TenantManage/tenantInfoIndex"
-	TenantManage_TenantAppIndex_FullMethodName        = "/sys.TenantManage/tenantAppIndex"
-	TenantManage_TenantAppCreate_FullMethodName       = "/sys.TenantManage/tenantAppCreate"
-	TenantManage_TenantAppDelete_FullMethodName       = "/sys.TenantManage/tenantAppDelete"
-	TenantManage_TenantAppModuleCreate_FullMethodName = "/sys.TenantManage/tenantAppModuleCreate"
-	TenantManage_TenantAppModuleIndex_FullMethodName  = "/sys.TenantManage/tenantAppModuleIndex"
-	TenantManage_TenantAppModuleDelete_FullMethodName = "/sys.TenantManage/tenantAppModuleDelete"
-	TenantManage_TenantAppMenuCreate_FullMethodName   = "/sys.TenantManage/tenantAppMenuCreate"
-	TenantManage_TenantAppMenuIndex_FullMethodName    = "/sys.TenantManage/tenantAppMenuIndex"
-	TenantManage_TenantAppMenuUpdate_FullMethodName   = "/sys.TenantManage/tenantAppMenuUpdate"
-	TenantManage_TenantAppMenuDelete_FullMethodName   = "/sys.TenantManage/tenantAppMenuDelete"
-	TenantManage_TenantAppApiCreate_FullMethodName    = "/sys.TenantManage/tenantAppApiCreate"
-	TenantManage_TenantAppApiIndex_FullMethodName     = "/sys.TenantManage/tenantAppApiIndex"
-	TenantManage_TenantAppApiUpdate_FullMethodName    = "/sys.TenantManage/tenantAppApiUpdate"
-	TenantManage_TenantAppApiDelete_FullMethodName    = "/sys.TenantManage/tenantAppApiDelete"
+	TenantManage_TenantInfoCreate_FullMethodName           = "/sys.TenantManage/tenantInfoCreate"
+	TenantManage_TenantInfoUpdate_FullMethodName           = "/sys.TenantManage/tenantInfoUpdate"
+	TenantManage_TenantInfoDelete_FullMethodName           = "/sys.TenantManage/tenantInfoDelete"
+	TenantManage_TenantInfoRead_FullMethodName             = "/sys.TenantManage/tenantInfoRead"
+	TenantManage_TenantInfoIndex_FullMethodName            = "/sys.TenantManage/tenantInfoIndex"
+	TenantManage_TenantAppIndex_FullMethodName             = "/sys.TenantManage/tenantAppIndex"
+	TenantManage_TenantAppCreate_FullMethodName            = "/sys.TenantManage/tenantAppCreate"
+	TenantManage_TenantAppDelete_FullMethodName            = "/sys.TenantManage/tenantAppDelete"
+	TenantManage_TenantAppModuleMultiCreate_FullMethodName = "/sys.TenantManage/tenantAppModuleMultiCreate"
+	TenantManage_TenantAppModuleCreate_FullMethodName      = "/sys.TenantManage/tenantAppModuleCreate"
+	TenantManage_TenantAppModuleIndex_FullMethodName       = "/sys.TenantManage/tenantAppModuleIndex"
+	TenantManage_TenantAppModuleDelete_FullMethodName      = "/sys.TenantManage/tenantAppModuleDelete"
+	TenantManage_TenantAppMenuCreate_FullMethodName        = "/sys.TenantManage/tenantAppMenuCreate"
+	TenantManage_TenantAppMenuIndex_FullMethodName         = "/sys.TenantManage/tenantAppMenuIndex"
+	TenantManage_TenantAppMenuUpdate_FullMethodName        = "/sys.TenantManage/tenantAppMenuUpdate"
+	TenantManage_TenantAppMenuDelete_FullMethodName        = "/sys.TenantManage/tenantAppMenuDelete"
+	TenantManage_TenantAppApiCreate_FullMethodName         = "/sys.TenantManage/tenantAppApiCreate"
+	TenantManage_TenantAppApiIndex_FullMethodName          = "/sys.TenantManage/tenantAppApiIndex"
+	TenantManage_TenantAppApiUpdate_FullMethodName         = "/sys.TenantManage/tenantAppApiUpdate"
+	TenantManage_TenantAppApiDelete_FullMethodName         = "/sys.TenantManage/tenantAppApiDelete"
 )
 
 // TenantManageClient is the client API for TenantManage service.
@@ -3310,6 +3311,7 @@ type TenantManageClient interface {
 	TenantAppIndex(ctx context.Context, in *TenantAppIndexReq, opts ...grpc.CallOption) (*TenantAppIndexResp, error)
 	TenantAppCreate(ctx context.Context, in *TenantAppCreateReq, opts ...grpc.CallOption) (*Response, error)
 	TenantAppDelete(ctx context.Context, in *TenantAppWithIDOrCode, opts ...grpc.CallOption) (*Response, error)
+	TenantAppModuleMultiCreate(ctx context.Context, in *TenantAppCreateReq, opts ...grpc.CallOption) (*Response, error)
 	TenantAppModuleCreate(ctx context.Context, in *TenantModuleCreateReq, opts ...grpc.CallOption) (*Response, error)
 	TenantAppModuleIndex(ctx context.Context, in *TenantModuleIndexReq, opts ...grpc.CallOption) (*TenantModuleIndexResp, error)
 	TenantAppModuleDelete(ctx context.Context, in *TenantModuleWithIDOrCode, opts ...grpc.CallOption) (*Response, error)
@@ -3397,6 +3399,15 @@ func (c *tenantManageClient) TenantAppCreate(ctx context.Context, in *TenantAppC
 func (c *tenantManageClient) TenantAppDelete(ctx context.Context, in *TenantAppWithIDOrCode, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, TenantManage_TenantAppDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tenantManageClient) TenantAppModuleMultiCreate(ctx context.Context, in *TenantAppCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, TenantManage_TenantAppModuleMultiCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3519,6 +3530,7 @@ type TenantManageServer interface {
 	TenantAppIndex(context.Context, *TenantAppIndexReq) (*TenantAppIndexResp, error)
 	TenantAppCreate(context.Context, *TenantAppCreateReq) (*Response, error)
 	TenantAppDelete(context.Context, *TenantAppWithIDOrCode) (*Response, error)
+	TenantAppModuleMultiCreate(context.Context, *TenantAppCreateReq) (*Response, error)
 	TenantAppModuleCreate(context.Context, *TenantModuleCreateReq) (*Response, error)
 	TenantAppModuleIndex(context.Context, *TenantModuleIndexReq) (*TenantModuleIndexResp, error)
 	TenantAppModuleDelete(context.Context, *TenantModuleWithIDOrCode) (*Response, error)
@@ -3560,6 +3572,9 @@ func (UnimplementedTenantManageServer) TenantAppCreate(context.Context, *TenantA
 }
 func (UnimplementedTenantManageServer) TenantAppDelete(context.Context, *TenantAppWithIDOrCode) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppDelete not implemented")
+}
+func (UnimplementedTenantManageServer) TenantAppModuleMultiCreate(context.Context, *TenantAppCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TenantAppModuleMultiCreate not implemented")
 }
 func (UnimplementedTenantManageServer) TenantAppModuleCreate(context.Context, *TenantModuleCreateReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TenantAppModuleCreate not implemented")
@@ -3747,6 +3762,24 @@ func _TenantManage_TenantAppDelete_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TenantManageServer).TenantAppDelete(ctx, req.(*TenantAppWithIDOrCode))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TenantManage_TenantAppModuleMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TenantAppCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantManageServer).TenantAppModuleMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TenantManage_TenantAppModuleMultiCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantManageServer).TenantAppModuleMultiCreate(ctx, req.(*TenantAppCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3987,6 +4020,10 @@ var TenantManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "tenantAppDelete",
 			Handler:    _TenantManage_TenantAppDelete_Handler,
+		},
+		{
+			MethodName: "tenantAppModuleMultiCreate",
+			Handler:    _TenantManage_TenantAppModuleMultiCreate_Handler,
 		},
 		{
 			MethodName: "tenantAppModuleCreate",

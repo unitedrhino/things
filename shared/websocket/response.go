@@ -11,7 +11,11 @@ type response struct {
 }
 
 func (r *response) Header() http.Header {
-	return r.resp.Handler
+	ret := make(http.Header)
+	for k, v := range r.resp.Handler {
+		ret[k] = []string{v}
+	}
+	return ret
 }
 
 func (r *response) Write(buf []byte) (int, error) {

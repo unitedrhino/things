@@ -708,6 +708,11 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: systemtenantappmodule.MultiCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/delete",
 					Handler: systemtenantappmodule.DeleteHandler(serverCtx),
 				},

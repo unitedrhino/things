@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/utils"
-	ws "github.com/i-Things/things/shared/websocket"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/handler"
 	"github.com/i-Things/things/src/apisvr/internal/handler/system/proxy"
@@ -50,9 +49,6 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 			rest.WithNotFoundHandler(proxy.Handler(ctx)),
 		)
 		apiCtx.Server = server
-	}
-	if apiCtx.SvcCtx.Ws == nil {
-		apiCtx.SvcCtx.Ws = ws.MustNewServer(c.RestConf)
 	}
 	handler.RegisterHandlers(server, ctx)
 	handler.RegisterWsHandlers(apiCtx.SvcCtx.Ws, ctx)

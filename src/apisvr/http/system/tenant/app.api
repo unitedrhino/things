@@ -38,9 +38,13 @@ service api {
     @handler index
     post /index (TenantModuleIndexReq) returns (TenantModuleIndexResp)
 
-    @doc "更新租户应用模块"
+    @doc "新增租户应用模块"
     @handler create
     post /create (TenantModuleCreateReq) returns ()
+
+    @doc "批量新增租户应用模块"
+    @handler multiCreate
+    post /multi-create (TenantAppCreateReq) returns ()
 
     @doc "删除租户应用模块"
     @handler delete

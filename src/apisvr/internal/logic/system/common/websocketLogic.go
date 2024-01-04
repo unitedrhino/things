@@ -28,7 +28,7 @@ func NewWebsocketLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Websock
 func (l *WebsocketLogic) InitWebsocketConn(r *http.Request, conn *websocket.Conn) {
 
 	//创建ws连接
-	wsClient := ws.NewConn(l.svcCtx.Ws, r, conn)
+	wsClient := ws.NewConn(l.ctx, l.svcCtx.Ws, r, conn)
 	//开启读取进程
 	utils.Go(l.ctx, wsClient.StartRead)
 	//开启发送进程

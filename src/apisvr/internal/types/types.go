@@ -697,7 +697,7 @@ type WithAppCodeID struct {
 }
 
 type TenantAppApiIndexReq struct {
-	Code       string    `json:"code"` // 应用编号
+	Code       string    `json:"code"` // 租户编号
 	AppCode    string    `json:"appCode"`
 	ModuleCode string    `json:"moduleCode"`
 	Page       *PageInfo `json:"page,optional"`

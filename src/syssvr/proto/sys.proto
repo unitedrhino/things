@@ -151,6 +151,7 @@ service TenantManage {
   rpc tenantAppCreate(TenantAppCreateReq) returns(Response); //添加角色
   rpc tenantAppDelete(TenantAppWithIDOrCode) returns(Response); //删除角色
 
+  rpc tenantAppModuleMultiCreate(TenantAppCreateReq) returns(Response); //添加角色
   rpc tenantAppModuleCreate(TenantModuleCreateReq) returns(Response); //添加角色
   rpc tenantAppModuleIndex(TenantModuleIndexReq) returns(TenantModuleIndexResp); //获取角色列表
   rpc tenantAppModuleDelete(TenantModuleWithIDOrCode) returns(Response); //删除角色

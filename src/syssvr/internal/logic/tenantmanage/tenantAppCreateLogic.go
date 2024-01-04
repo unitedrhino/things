@@ -3,6 +3,7 @@ package tenantmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/ctxs"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -54,6 +55,10 @@ func (l *TenantAppCreateLogic) TenantAppCreate(in *sys.TenantAppCreateReq) (*sys
 	return &sys.Response{}, err
 }
 func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, moduleCode string, menuIDs []int64, apiIDs []int64) error {
+	if _, err := relationDB.NewTenantAppModuleRepo(tx).FindOneByFilter(ctx,
+		relationDB.TenantAppModuleFilter{TenantCode: tenantCode, AppCode: appCode, ModuleCodes: []string{moduleCode}}); err == nil || err != errors.NotFind { //如果报错或者已经有了则跳过
+		return err
+	}
 	mi, err := relationDB.NewModuleInfoRepo(tx).FindOneByFilter(ctx,
 		relationDB.ModuleInfoFilter{Codes: []string{moduleCode}, WithApis: true, WithMenus: true})
 	if err != nil {
@@ -61,6 +66,7 @@ func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, 
 	}
 	var (
 		menuMap = make(map[int64]*relationDB.SysModuleMenu)
+		//menuTree = make(map[int64]*relationDB.SysModuleMenu)
 		apiMap  = make(map[int64]*relationDB.SysModuleApi)
 		allMenu = false
 		allApi  = false

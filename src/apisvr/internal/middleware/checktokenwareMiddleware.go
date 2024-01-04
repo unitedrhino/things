@@ -103,6 +103,11 @@ func (m *CheckTokenWareMiddleware) UserAuth(w http.ResponseWriter, r *http.Reque
 			utils.FuncName(), strIP)
 		return nil, errors.NotLogin
 	}
+	strProjectID := r.Header.Get(ctxs.UserProjectID)
+	projectID := cast.ToInt64(strProjectID)
+	if projectID == 0 {
+		projectID = def.NotClassified
+	}
 	strRoleID := r.Header.Get(ctxs.UserRoleKey)
 	roleID := cast.ToInt64(strRoleID)
 
@@ -136,6 +141,7 @@ func (m *CheckTokenWareMiddleware) UserAuth(w http.ResponseWriter, r *http.Reque
 	return &ctxs.UserCtx{
 		IsOpen:     false,
 		TenantCode: resp.TenantCode,
+		ProjectID:  projectID,
 		AppCode:    appCode,
 		UserID:     resp.UserID,
 		RoleID:     roleID,
