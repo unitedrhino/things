@@ -62,14 +62,13 @@ func MediaThreadRun() {
 		select {
 		//查询执行函数
 		case v := <-SvcMediaChan.ChangeStream:
-			fmt.Println("-------取出数据1---------:", v)
+			fmt.Println("-------取出数据 start---------:", v)
 			QueueOnChangeStream(v)
-			fmt.Println("-------取出数据2---------:", v)
+			fmt.Println("-------取出数据 end  ---------:", v)
 		default:
 			//fmt.Println("*********************MediaThreadRun wait-300ms************************")
 			time.Sleep(300 * time.Microsecond)
 		}
-		//fmt.Println("*********************Thread Run Test 300ms************************")
 	}
 }
 

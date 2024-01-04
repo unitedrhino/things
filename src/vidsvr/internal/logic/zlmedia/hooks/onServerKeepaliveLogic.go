@@ -2,6 +2,7 @@ package hooks
 
 import (
 	"context"
+	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -29,6 +30,7 @@ func NewOnServerKeepaliveLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 func (l *OnServerKeepaliveLogic) OnServerKeepalive(req *types.HooksApiServerKeepaliveReq) (resp *types.HooksApiResp, err error) {
 	// todo: add your logic here and delete this line
 	//hookactive中是保持在线状态  需要更新对应的数据库
+	fmt.Println("---------OnServerKeepalive--------------  ")
 	infoRepo := relationDB.NewVidmgrInfoRepo(l.ctx)
 	vidmgrInfo, err := infoRepo.FindOneByFilter(l.ctx, relationDB.VidmgrFilter{
 		VidmgrIDs: []string{req.MediaServerId},

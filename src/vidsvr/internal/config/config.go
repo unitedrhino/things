@@ -16,4 +16,6 @@ type Config struct {
 	Mediakit    conf.MediaConf     `json:",optional"` //docker -zlemdiakit的连接
 	Restconf    rest.RestConf      //docker访问
 	RestConfExt conf.External      `json:",optional"`
+	GbsipConf   conf.Gbsip         `json:",optional"`
+	Notify      map[string]string  `json:",optional"`
 }

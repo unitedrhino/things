@@ -51,6 +51,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	media.NewMediaChan(c)
+	media.NewSipServer(c)
 
 	svcCtx := &ServiceContext{
 		Config:   c,

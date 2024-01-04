@@ -29,7 +29,7 @@ func NewOnStreamChangedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *O
 func (l *OnStreamChangedLogic) OnStreamChanged(req *types.HooksApiStreamChangedRep) (resp *types.HooksApiResp, err error) {
 	// todo: add your logic here and delete this line
 	//需要先判断该流服务是否有注册过，未注册过忽略消息
-	fmt.Println("____________onStreamChanged_________")
+	fmt.Println("____________onStreamChanged_________ ")
 	tmp, _ := json.Marshal(req)
 
 	fmt.Println(string(tmp))

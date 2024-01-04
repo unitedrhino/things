@@ -4,6 +4,8 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"github.com/i-Things/things/shared/stores"
+	"github.com/i-Things/things/src/vidsvr/gosip/sip"
+	"net"
 	"time"
 )
 
@@ -28,6 +30,131 @@ type VidmgrInfo struct {
 func (m *VidmgrInfo) TableName() string {
 	return "vid_mgr_info"
 }
+
+/********************************** GB28181 数据 ***********************************/
+type VidmgrChannels struct {
+	ID int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	// ChannelID 通道编码
+	ChannelID string `gorm:"column:channel_id;type:char(24);NOT NULL"`
+	// DeviceID 设备编号
+	DeviceID string `gorm:"column:device_id;type:char(24);NOT NULL"`
+	// Memo 备注（用来标示通道信息）
+	Memo string `gorm:"column:memo"`
+	// Name 通道名称（设备端设置名称）
+	Name         string `gorm:"column:name"`
+	Manufacturer string `gorm:"column:manufacturer"`
+	Model        string `gorm:"column:model"`
+	Owner        string `gorm:"column:owner"`
+	CivilCode    string `gorm:"column:civilcode"`
+	// Address ip地址
+	Address     string `gorm:"column:address"`
+	Parental    int32  `gorm:"column:parental"`
+	SafetyWay   int32  `gorm:"column:safetyway"`
+	RegisterWay int32  `gorm:"column:registerway"`
+	Secrecy     int32  `gorm:"column:secrecy"`
+	// Status 状态  on 在线
+	Status string `gorm:"column:status"`
+	// Active 最后活跃时间
+	Active int64  `gorm:"column:active"`
+	URIStr string `gorm:"column:uri"`
+	// 视频编码格式
+	VF string `gorm:"column:vf"`
+	// 视频高
+	Height int32 `gorm:"column:height"`
+	// 视频宽
+	Width int32 `gorm:"column:width"`
+	// 视频FPS
+	FPS int32 `gorm:"column:fps"`
+	//  pull 媒体服务器主动拉流，push 监控设备主动推流
+	StreamType string `gorm:"column:streamtype"`
+	// streamtype=pull时，拉流地址
+	URL  string       `gorm:"column:url"`
+	addr *sip.Address `gorm:"-"`
+	stores.Time
+	Owener    string
+	LastLogin time.Time `gorm:"column:last_login"` // 最后登录时间
+}
+
+func (m *VidmgrChannels) TableName() string {
+	return "vid_mgr_channels"
+}
+
+type VidmgrDevices struct {
+	ID int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	// DeviceID 设备id
+	DeviceID string `gorm:"column:device_id;type:char(24);NOT NULL"`
+	// Name 设备名称
+	Name string `gorm:"column:name" `
+	// Region 设备域
+	Region string `gorm:"column:region"`
+	// Host Via 地址
+	Host string `gorm:"column:host"`
+	// Port via 端口
+	Port string `gorm:"column:port"`
+	// TransPort via transport
+	TransPort string `gorm:"column:transport"`
+	// Proto 协议
+	Proto string `gorm:"column:proto"`
+	// Rport via rport
+	Rport string `gorm:"column:report"`
+	// RAddr via recevied
+	RAddr string `gorm:"column:raddr"`
+	// Manufacturer 制造厂商
+	Manufacturer string `gorm:"column:manufacturer"`
+	// 设备类型DVR，NVR
+	DeviceType string `gorm:"column:devicetype"`
+	// Firmware 固件版本
+	Firmware string `gorm:"column:firmware"`
+	// Model 型号
+	Model  string `gorm:"column:model"`
+	URIStr string `gorm:"column:uri"`
+	//  最后心跳检测时间
+	LastLogin time.Time `gorm:"column:last_login"`
+	// Regist 是否注册
+	Regist bool `gorm:"column:regist"`
+	// PWD 密码
+	PWD string `gorm:"column:pwd"`
+	// Source
+	SourceStr string        `gorm:"column:source"`
+	Sys       VidmgrSipInfo `gorm:"-"`
+	Addr      *sip.Address  `gorm:"-"`
+	Source    net.Addr      `gorm:"-"`
+	stores.Time
+}
+
+func (m *VidmgrDevices) TableName() string {
+	return "vid_mgr_devices"
+}
+
+type VidmgrSipInfo struct {
+	ID int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	// Region 当前域
+	Region string `gorm:"column:region"`
+	// CID 通道id固定头部
+	CID string `gorm:"column:cid"`
+	// CNUM 当前通道数
+	CNUM int `gorm:"column:cnum"`
+	// DID 设备id固定头部
+	DID string `gorm:"column:did"`
+	// DNUM 当前设备数
+	DNUM int `gorm:"column:dnum"`
+	// LID 当前服务id
+	LID      string `gorm:"column:lid"`
+	VidmgrID string `gorm:"column:vidmgr_id;type:char(11)"` // 流服务ID
+
+	IsOpenServer bool
+	// 媒体服务器接流地址
+	MediaServerRtpIP int64 `gorm:"-"`
+	// 媒体服务器接流端口
+	MediaServerRtpPort int64 `gorm:"-"`
+	stores.Time
+}
+
+func (m *VidmgrSipInfo) TableName() string {
+	return "vid_mgr_sipinfo"
+}
+
+/********************************** GB28181 数据 ***********************************/
 
 type StreamTrack struct {
 	Channels    int64   `json:"channels"`

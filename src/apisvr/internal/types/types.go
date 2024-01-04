@@ -1776,3 +1776,123 @@ type CtrlApiResp struct {
 	Code int64  `json:"code"`
 	Data string `json:"data,optional"`
 }
+
+type CommonSipChannel struct {
+	ID           int64  `json:"ID"`
+	ChannelID    string `json:"channelID"`
+	DeviceID     string `json:"DeviceID"`
+	Memo         string `json:"memo"`
+	Name         string `json:"Name"`
+	Manufacturer string `json:"manufacturer"`
+	Model        string `json:"model"`
+	Owner        string `json:"owner"`
+	CivilCode    string `json:"civilCode"`
+	Address      string `json:"address"`
+	Parental     int32  `json:"parental"`
+	SafetyWay    int32  `json:"safetyWay"`
+	RegisterWay  int32  `json:"registerWay"`
+	Secrecy      int32  `json:"secrecy"`
+	Status       string `json:"status"`
+	URIStr       string `json:"uriStr"`
+	VF           string `json:"vf"`
+	Height       int32  `json:"height"`
+	Width        int32  `json:"width"`
+	FPS          int32  `json:"fps"`
+	StreamType   string `json:"streamType"`
+	URL          string `json:"url"`
+	LastLogin    int64  `json:"lastLogin"`
+}
+
+type CommonSipDevice struct {
+	ID           int64  `json:"id"`
+	DeviceID     string `json:"deviceid"`
+	Name         string `json:"name"`
+	Region       string `json:"region"`
+	Host         string `json:"host"`
+	Port         string `json:"port"`
+	TransPort    string `json:"transport"`
+	Proto        string `json:"proto"`
+	Rport        string `json:"report"`
+	RAddr        string `json:"raddr"`
+	Manufacturer string `json:"manufacturer"`
+	DeviceType   string `json:"devicetype"`
+	Firmware     string `json:"firmware"`
+	Model        string `json:"model"`
+	URIStr       string `json:"uri"`
+	Regist       bool   `json:"regist"`
+	PWD          string `json:"pwd"`
+	Source       string `json:"source"`
+	LastLogin    int64  `json:"lastLogin"`
+}
+
+type VidmgrSipCreateChnReq struct {
+	DeviceID   string `json:"deviceID"`
+	Memo       string `json:"memo"`
+	StreamType string `json:"streamType"`
+	URL        string `json:"url"`
+}
+
+type VidmgrSipDeleteChnReq struct {
+	ID int64 `json:"ID"`
+}
+
+type VidmgrSipUpdateChnReq struct {
+	ID         int64  `json:"ID"`
+	ChannelID  string `json:"channelID,optional"`
+	Memo       string `json:"memo"`
+	StreamType string `json:"streamType"`
+	URL        string `json:"url"`
+}
+
+type VidmgrSipIndexChnReq struct {
+	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+	IDs  []int64   `json:"IDs,optional"`  //过滤服务id列表
+}
+
+type VidmgrSipIndexChnResp struct {
+	List  []*CommonSipChannel `json:"list"`           //服务信息
+	Total int64               `json:"total,optional"` //拥有的总数
+	Num   int64               `json:"num,optional"`   //返回的数量
+}
+
+type VidmgrSipReadChnReq struct {
+	ID int64 `json:"ID"`
+}
+
+type VidmgrSipReadChnResp struct {
+	CommonSipChannel
+}
+
+type VidmgrSipCreateDevReq struct {
+	PWD  string `json:"pwd"`
+	Name string `json:"name"`
+}
+
+type VidmgrSipDeleteDevReq struct {
+	ID int64 `json:"ID"`
+}
+
+type VidmgrSipUpdateDevReq struct {
+	ID   int64  `json:"ID"`
+	PWD  string `json:"pwd"`
+	Name string `json:"name"`
+}
+
+type VidmgrSipIndexDevReq struct {
+	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+	IDs  []int64   `json:"IDs,optional"`  //过滤服务id列表
+}
+
+type VidmgrSipIndexDevResp struct {
+	List  []*CommonSipDevice `json:"list"`           //服务信息
+	Total int64              `json:"total,optional"` //拥有的总数
+	Num   int64              `json:"num,optional"`   //返回的数量
+}
+
+type VidmgrSipReadDevReq struct {
+	ID int64 `json:"ID"`
+}
+
+type VidmgrSipReadDevResp struct {
+	CommonSipDevice
+}
