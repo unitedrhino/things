@@ -38,6 +38,7 @@ import (
 	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrconfigmanage"
+	"github.com/i-Things/things/src/vidsvr/client/vidmgrgbsipmanage"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrinfomanage"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrstreammanage"
 	"github.com/i-Things/things/src/vidsvr/viddirect"
@@ -63,6 +64,7 @@ type SvrClient struct {
 	VidmgrM vidmgrinfomanage.VidmgrInfoManage
 	VidmgrC vidmgrconfigmanage.VidmgrConfigManage
 	VidmgrS vidmgrstreammanage.VidmgrStreamManage
+	VidmgrG vidmgrgbsipmanage.VidmgrGbsipManage
 
 	ProjectM  projectmanage.ProjectManage
 	ProtocolM protocolmanage.ProtocolManage
@@ -104,6 +106,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		vidmgrM vidmgrinfomanage.VidmgrInfoManage
 		vidmgrC vidmgrconfigmanage.VidmgrConfigManage
 		vidmgrS vidmgrstreammanage.VidmgrStreamManage
+		vidmgrG vidmgrgbsipmanage.VidmgrGbsipManage
 
 		protocolM protocolmanage.ProtocolManage
 		projectM  projectmanage.ProjectManage
@@ -201,12 +204,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			vidmgrM = vidmgrinfomanage.NewVidmgrInfoManage(zrpc.MustNewClient(c.VidRpc.Conf))
 			vidmgrC = vidmgrconfigmanage.NewVidmgrConfigManage(zrpc.MustNewClient(c.VidRpc.Conf))
 			vidmgrS = vidmgrstreammanage.NewVidmgrStreamManage(zrpc.MustNewClient(c.VidRpc.Conf))
+			vidmgrG = vidmgrgbsipmanage.NewVidmgrGbsipManage(zrpc.MustNewClient(c.VidRpc.Conf))
 		} else {
 			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
 			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
 			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
+			vidmgrG = viddirect.NewVidmgrGbsipManage(c.VidRpc.RunProxy)
 			viddirect.ApiDirectRun()
-
 		}
 	}
 
@@ -254,6 +258,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			VidmgrM:        vidmgrM,
 			VidmgrC:        vidmgrC,
 			VidmgrS:        vidmgrS,
+			VidmgrG:        vidmgrG,
 
 			ProtocolM: protocolM,
 			ProjectM:  projectM,

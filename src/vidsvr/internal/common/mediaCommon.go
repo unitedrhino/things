@@ -66,6 +66,6 @@ func UnSetProtocol(schema string, streamInfo *relationDB.VidmgrStream) {
 	}
 }
 
-func CheckProtocol(streamInfo *relationDB.VidmgrStream) bool {
-	return streamInfo.OnRtmp || streamInfo.OnRtsp || streamInfo.OnTs || streamInfo.OnFmp4 || streamInfo.OnHls || streamInfo.OnHlsFmp4
-}
+//func CheckProtocol(streamInfo *relationDB.VidmgrStream) bool {
+//	return streamInfo.OnRtmp || streamInfo.OnRtsp || streamInfo.OnTs || streamInfo.OnFmp4 || streamInfo.OnHls || streamInfo.OnHlsFmp4
+//}

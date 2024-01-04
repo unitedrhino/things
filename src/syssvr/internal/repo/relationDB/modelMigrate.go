@@ -250,6 +250,17 @@ var (
 		{Route: "/api/v1/things/vidmgr/ctrl/getsvr", Method: 2, Name: "获取流服务信息", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/ctrl/setsvr", Method: 2, Name: "设备流服务", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/ctrl/restart", Method: 2, Name: "重启流服务", BusinessType: 1, Desc: "", Group: "视频服务"},
+		//gb28181控制接口
+		{Route: "/api/v1/things/vidmgr/gbsip/createchn", Method: 2, Name: "创建通道", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/createdev", Method: 2, Name: "创建设备", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/deletechn", Method: 2, Name: "删除通道", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/deletedev", Method: 2, Name: "删除设备", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/indexchn", Method: 2, Name: "获取通道列表", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/indexdev", Method: 2, Name: "获取设备列表", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/readchn", Method: 2, Name: "获取通道详细", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/readdev", Method: 2, Name: "获取设备详细", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/updatechn", Method: 2, Name: "更新通道信息", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/updatedev", Method: 2, Name: "更新设备信息", BusinessType: 1, Desc: "", Group: "视频服务"},
 	}
 	MigrateApiAuth = []SysApiAuth{
 		{PType: "p", V0: "1", V1: "/api/v1/system/timed/task/info/create", V2: "2", V3: "", V4: "", V5: ""},
@@ -374,5 +385,16 @@ var (
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/ctrl/getsvr", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/ctrl/setsvr", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/ctrl/restart", V2: "2", V3: "", V4: "", V5: ""},
+		//gb28181控制接口
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/createchn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/createdev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/deletechn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/deletedev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/indexchn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/indexdev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/readchn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/readdev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/updatechn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/updatedev", V2: "2", V3: "", V4: "", V5: ""},
 	}
 )

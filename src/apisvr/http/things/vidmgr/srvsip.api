@@ -1,0 +1,175 @@
+syntax = "v1"
+
+info(
+    title: "视频服务"
+    desc: "GB28181信息管理"
+    author: "airgens"
+    email: "wfjdemmye@163.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group:things/vidmgr/gbsip
+    prefix:/api/v1/things/vidmgr/gbsip
+    middleware: SetupWare, CheckTokenWare, TeardownWare
+)
+
+service api {
+    @doc "新增通道"
+    @handler createchn
+    post /createchn (VidmgrSipCreateChnReq) returns ()
+    @doc "删除通道"
+    @handler deletechn
+    post /deletechn (VidmgrSipDeleteChnReq) returns ()
+    @doc "更新通道"
+    @handler updatechn
+    post /updatechn (VidmgrSipUpdateChnReq) returns ()
+    @doc "获取通道列表"
+    @handler indexchn
+    post /indexchn (VidmgrSipIndexChnReq) returns (VidmgrSipIndexChnResp)
+    @doc "获取通道详情"
+    @handler readchn
+    post /readchn (VidmgrSipReadChnReq) returns (VidmgrSipReadChnResp)
+    @doc "新建GB28181设备"
+    @handler createdev
+    post /createdev (VidmgrSipCreateDevReq) returns ()
+    @doc "删除GB28181设备"
+    @handler deletedev
+    post /deletedev (VidmgrSipDeleteDevReq) returns ()
+    @doc "更新GB28181设备"
+    @handler updatedev
+    post /updatedev (VidmgrSipUpdateDevReq) returns ()
+    @doc "获取GB28181设备列表"
+    @handler indexdev
+    post /indexdev (VidmgrSipIndexDevReq) returns (VidmgrSipIndexDevResp)
+    @doc "获取GB28181设备详情"
+    @handler readdev
+    post /readdev (VidmgrSipReadDevReq) returns (VidmgrSipReadDevResp)
+}
+
+type (
+    CommonSipChannel{
+        ID  int64 `json:"ID"`
+        ChannelID string  `json:"channelID"`
+        DeviceID string `json:"DeviceID"`
+        Memo string `json:"memo"`
+        Name string `json:"Name"`
+        Manufacturer string `json:"manufacturer"`
+        Model string `json:"model"`
+        Owner string `json:"owner"`
+        CivilCode string `json:"civilCode"`
+        Address string `json:"address"`
+        Parental int32 `json:"parental"`
+        SafetyWay int32 `json:"safetyWay"`
+        RegisterWay int32 `json:"registerWay"`
+        Secrecy int32 `json:"secrecy"`
+        Status string `json:"status"`
+        URIStr string `json:"uriStr"`
+        VF string `json:"vf"`
+        Height int32 `json:"height"`
+        Width int32 `json:"width"`
+        FPS int32 `json:"fps"`
+        StreamType string `json:"streamType"`
+        URL string `json:"url"`
+        LastLogin int64 `json:"lastLogin"`
+    }
+    CommonSipDevice{
+        ID int64 `json:"id"`
+        // DeviceID 设备id
+        DeviceID string `json:"deviceid"`
+        // Name 设备名称
+        Name string `json:"name"`
+        // Region 设备域
+        Region string `json:"region"`
+        // Host Via 地址
+        Host string `json:"host"`
+        // Port via 端口
+        Port string `json:"port"`
+        // TransPort via transport
+        TransPort string `json:"transport"`
+        // Proto 协议
+        Proto string `json:"proto"`
+        // Rport via rport
+        Rport string `json:"report"`
+        // RAddr via recevied
+        RAddr string `json:"raddr"`
+        // Manufacturer 制造厂商
+        Manufacturer string `json:"manufacturer"`
+        // 设备类型DVR，NVR
+        DeviceType string `json:"devicetype"`
+        // Firmware 固件版本
+        Firmware string `json:"firmware"`
+        // Model 型号
+        Model  string `json:"model"`
+        URIStr string `json:"uri"`
+        // Regist 是否注册
+        Regist bool `json:"regist"`
+        // PWD 密码
+        PWD string `json:"pwd"`
+        // Source
+        Source string        `json:"source"`
+        LastLogin int64 `json:"lastLogin"`
+    }
+
+    VidmgrSipCreateChnReq struct{
+        DeviceID string  `json:"deviceID"`
+        Memo string `json:"memo"`
+        StreamType string `json:"streamType"`
+        URL string `json:"url"`
+    }
+    VidmgrSipDeleteChnReq struct{
+        ID  int64 `json:"ID"`
+    }
+    VidmgrSipUpdateChnReq struct{
+        ID int64  `json:"ID"`
+        ChannelID string  `json:"channelID,optional"`
+        Memo string `json:"memo"`
+        StreamType string `json:"streamType"`
+        URL string `json:"url"`
+    }
+    VidmgrSipIndexChnReq struct{
+        Page *PageInfo `json:"page,optional"`                       //分页信息,只获取一个则不填
+        IDs []int64  `json:"IDs,optional"`     //过滤服务id列表
+    }
+    VidmgrSipIndexChnResp struct{
+        List []*CommonSipChannel `json:"list"`    //服务信息
+        Total int64 `json:"total,optional"`  //拥有的总数
+        Num int64 `json:"num,optional"`      //返回的数量
+    }
+    VidmgrSipReadChnReq struct{
+        ID  int64 `json:"ID"`
+    }
+    VidmgrSipReadChnResp struct{
+        CommonSipChannel
+    }
+    VidmgrSipCreateDevReq struct{
+//        DeviceID string `json:"deviceID"`
+//        Region string `json:"region"`
+        PWD string `json:"pwd"`
+        Name string `json:"name"`
+    }
+    VidmgrSipDeleteDevReq struct{
+        ID  int64 `json:"ID"`
+    }
+    VidmgrSipUpdateDevReq struct{
+        ID int64 `json:"ID"`
+        PWD string `json:"pwd"`
+        Name string `json:"name"`
+    }
+    VidmgrSipIndexDevReq struct{
+        Page *PageInfo `json:"page,optional"`                       //分页信息,只获取一个则不填
+        IDs []int64  `json:"IDs,optional"`     //过滤服务id列表
+    }
+    VidmgrSipIndexDevResp struct{
+        List []*CommonSipDevice `json:"list"`    //服务信息
+        Total int64 `json:"total,optional"`  //拥有的总数
+        Num int64 `json:"num,optional"`      //返回的数量
+    }
+    VidmgrSipReadDevReq struct{
+        ID  int64 `json:"ID"`
+    }
+    VidmgrSipReadDevResp struct{
+        CommonSipDevice
+    }
+)

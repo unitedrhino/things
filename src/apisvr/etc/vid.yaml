@@ -21,18 +21,18 @@ Log:
 
 #用于配置docker中zlmediakit---访问vidsvr的IP和端口
 Mediakit:
-  Host: 172.26.14.242  #IP和当前环境host上eth0的IP，用于
+  Host: 192.168.10.125  #IP和当前环境host上eth0的IP，用于
   Port: 8088
   Secret: WF8K4LJi2FZbd5Q2OJ3RYTACPZsprvM0
 
 Restconf:
   Name: vid
-  Host: 172.26.14.242
+  Host: 192.168.10.125
   Port: 8888
 
 #用于配置外部网络环境的zlmediakit的网络连接
 RestconfExt:
-  Host: 192.168.10.80 #当前主机IP访问外网的IP，未配置时使用默认使用RestCconf的IP
+  Host: 192.168.10.125 #当前主机IP访问外网的IP，未配置时使用默认使用RestCconf的IP
   Port: 8888 #访问外网的Port(如果有映射端口在此处填写)，未配置时使用默认使用RestCconf的Port
 
 TimedJobRpc:
@@ -40,3 +40,17 @@ TimedJobRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
+
+GbsipConf: # gb28181 域，系统id，用户id，通道id，用户数量，初次运行使用配置，之后保存数据库，如果数据库不存在使用配置文件内容
+  Lid:    "33020000082008000001" # 系统ID
+  Region: "330200000"           # 系统域
+  Did:    "33020000081118"       # 设备前缀
+  Cid:    "33020000081318"       # 通道前缀
+  Dnum:   0 # 设备id = did + dnum
+  Cnum:   0 # 通道id = cid + cnum
+  UDP:    "0.0.0.0:5060"                   #gb28181使用的UDP端口
+
+Notify:
+  devices_active:   # 设备活跃通知   开启为true
+  devices_regiest:  #设备注册成功通知 开启为true
+  channels_active:  # 通道活跃通知 开启为true

@@ -413,3 +413,138 @@ service VidmgrConfigManage{
   //获取配置信息详情
   rpc vidmgrConfigRead(VidmgrConfigReadReq)     returns (VidmgrConfig);
 }
+
+//gb28181管理
+service VidmgrGbsipManage{
+  //新建通道
+  rpc vidmgrGbsipChannelCreate(VidmgrGbsipChannelCreate)    returns (Response);
+  //删除通道
+  rpc vidmgrGbsipChannelDelete(VidmgrGbsipChannelDelete)     returns (Response);
+  //更新通道
+  rpc vidmgrGbsipChannelUpdate(VidmgrGbsipChannelUpdate)     returns (Response);
+  //获取通道列表
+  rpc vidmgrGbsipChannelIndex(VidmgrGbsipChannelIndexReq)     returns (VidmgrGbsipChannelIndexResp);
+  //获取通道详情
+  rpc vidmgrGbsipChannelRead(VidmgrGbsipChannelRead)     returns (VidmgrGbsipChannel);
+
+  //新建GB28181设备
+  rpc vidmgrGbsipDeviceCreate(vidmgrGbsipDeviceCreateReq)    returns (Response);
+  //删除GB28181设备
+  rpc vidmgrGbsipDeviceDelete(VidmgrGbsipDeviceDeleteReq)     returns (Response);
+  //更新GB28181设备
+  rpc vidmgrGbsipDeviceUpdate(vidmgrGbsipDeviceUpdateReq)     returns (Response);
+  //获取GB28181设备列表
+  rpc vidmgrGbsipDeviceIndex(VidmgrGbsipDeviceIndexReq)     returns (VidmgrGbsipDeviceIndexResp);
+  //获取GB28181设备详情
+  rpc vidmgrGbsipDeviceRead(VidmgrGbsipDeviceReadReq)     returns (VidmgrGbsipDevice);
+}
+
+message VidmgrGbsipChannel{
+  int64 ID = 1;
+  string ChannelID = 2;
+  string DeviceID = 3;
+  string Memo = 4;
+  string Name = 5;
+  string Manufacturer = 6;
+  string Model = 7;
+  string Owner = 8;
+  string CivilCode = 9;
+  string Address = 10;
+  int32 Parental = 11;
+  int32 SafetyWay = 12;
+  int32 RegisterWay = 13;
+  int32 Secrecy =14;
+  string Status = 15;
+  string URIStr = 16;
+  string VF = 17;//编码格式
+  int32 Height = 18;
+  int32 Width = 19;
+  int32 FPS = 20;
+  string StreamType = 21;
+  string URL = 22;
+  int64 LastLogin = 23;
+}
+
+message VidmgrGbsipChannelCreate{
+  string DeviceID = 1;//设备ID
+  string Memo = 2;
+  string StreamType = 3;
+  string Url = 4;
+}
+
+message VidmgrGbsipChannelUpdate{
+  int64 ID = 1;
+  string ChannelID = 2;
+  string Memo = 3;
+  string StreamType = 4;
+  string Url = 5;
+}
+
+message VidmgrGbsipChannelIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  repeated int64   IDs = 2; //通道id
+}
+message VidmgrGbsipChannelIndexResp{
+  repeated VidmgrGbsipChannel list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+
+message VidmgrGbsipChannelDelete{
+  int64 ID = 1;
+}
+
+message VidmgrGbsipChannelRead{
+  int64 ID = 1;
+}
+
+message vidmgrGbsipDeviceCreateReq{
+  string PWD=1;
+  string Name=2;
+}
+
+message vidmgrGbsipDeviceUpdateReq{
+  int64 ID=1;
+  string PWD=2;
+  string Name=3;
+}
+
+
+message VidmgrGbsipDeviceIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  repeated int64   IDs = 2; //设备id
+}
+
+message VidmgrGbsipDeviceIndexResp{
+  repeated VidmgrGbsipDevice list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message VidmgrGbsipDevice{
+  int64 ID = 1;
+  string DeviceID = 2;
+  string Name = 3;
+  string Region = 4;
+  string Host = 5;
+  string Port = 6;
+  string TransPort = 7;
+  string Proto = 8;
+  string Rport = 9;
+  string RAddr = 10;
+  string Manufacturer = 11;
+  string DeviceType = 12;
+  string Firmware = 13;
+  string Model = 14;
+  string URIStr = 15;
+  int64  LastLogin = 16;
+  bool Regist = 17;
+  string PWD = 18;
+  string Source = 19;
+}
+
+message VidmgrGbsipDeviceReadReq{
+  int64 ID = 1;
+}
+message VidmgrGbsipDeviceDeleteReq{
+  int64 ID = 1;
+}
