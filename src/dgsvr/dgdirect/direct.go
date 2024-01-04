@@ -23,23 +23,30 @@ import (
 type Config = config.Config
 
 var (
-	svcCtx     svc.ServiceContext
-	svcOnce    sync.Once
-	runSvrOnce sync.Once
-	c          config.Config
+	svcCtx       *svc.ServiceContext
+	svcOnce      sync.Once
+	postInitOnce sync.Once
+	runSvrOnce   sync.Once
+	c            config.Config
 )
 
 func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
 		conf.MustLoad("etc/dg.yaml", &c)
-		utils.Go(context.Background(), func() {
-			svcCtxNew := svc.NewServiceContext(c)
-			startup.Init(svcCtxNew)
-			svcCtx = *svcCtxNew
-			logx.Infof("enabled dgsvr")
+		svcCtx = svc.NewServiceContext(c)
+
+		startup.Init(svcCtx)
+		logx.Infof("enabled dgsvr")
+	})
+
+	// 让 svcCtx 先返回，延迟执行 mqtt client 的 connect 操作.
+	utils.Go(context.Background(), func() {
+		postInitOnce.Do(func() {
+			startup.PostInit(svcCtx)
 		})
 	})
-	return &svcCtx
+
+	return svcCtx
 }
 
 // RunServer 如果是直连模式,同时提供Grpc的能力
