@@ -67,6 +67,11 @@ func (s *TenantManageServer) TenantAppDelete(ctx context.Context, in *sys.Tenant
 	return l.TenantAppDelete(in)
 }
 
+func (s *TenantManageServer) TenantAppModuleMultiCreate(ctx context.Context, in *sys.TenantAppCreateReq) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAppModuleMultiCreateLogic(ctx, s.svcCtx)
+	return l.TenantAppModuleMultiCreate(in)
+}
+
 func (s *TenantManageServer) TenantAppModuleCreate(ctx context.Context, in *sys.TenantModuleCreateReq) (*sys.Response, error) {
 	l := tenantmanagelogic.NewTenantAppModuleCreateLogic(ctx, s.svcCtx)
 	return l.TenantAppModuleCreate(in)

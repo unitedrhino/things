@@ -27,7 +27,7 @@ func NewTenantAppRepo(in any) *TenantAppRepo {
 type TenantAppFilter struct {
 	TenantCode string
 	IDs        []int64
-	Codes      []string
+	AppCodes   []string
 	//todo 添加过滤字段
 }
 
@@ -39,8 +39,8 @@ func (p TenantAppRepo) fmtFilter(ctx context.Context, f TenantAppFilter) *gorm.D
 	if len(f.IDs) > 0 {
 		db = db.Where("id in ?", f.IDs)
 	}
-	if len(f.Codes) > 0 {
-		db = db.Where("code in ?", f.Codes)
+	if len(f.AppCodes) > 0 {
+		db = db.Where("app_code in ?", f.AppCodes)
 	}
 	return db
 }

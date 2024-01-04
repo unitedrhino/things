@@ -25,6 +25,10 @@ func (t TenantCode) GormValue(ctx context.Context, db *gorm.DB) (expr clause.Exp
 		stmt.Error = errors.Parameter.AddDetail("tenantCode is empty")
 		return
 	}
+	if t != "" && uc.TenantCode == def.TenantCodeDefault && uc.AllTenant {
+		expr = clause.Expr{SQL: "?", Vars: []interface{}{string(t)}}
+		return
+	}
 	expr = clause.Expr{SQL: "?", Vars: []interface{}{uc.TenantCode}}
 	return
 }

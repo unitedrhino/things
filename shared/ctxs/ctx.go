@@ -15,8 +15,9 @@ type UserCtx struct {
 	IsOpen     bool //是否开放认证用户
 	AppCode    string
 	TenantCode string //租户Code
+	ProjectID  int64  `json:",string"`
 	IsAdmin    bool   //是否是超级管理员
-	UserID     int64  //用户id（开放认证用户值为0）
+	UserID     int64  `json:",string"` //用户id（开放认证用户值为0）
 	RoleID     int64  //用户使用的角色（开放认证用户值为0）
 	IsAllData  bool   //是否所有数据权限（开放认证用户值为true）
 	IP         string //用户的ip地址
@@ -25,8 +26,9 @@ type UserCtx struct {
 }
 
 type InnerCtx struct {
-	AllArea   bool //内部使用,不限制区域
-	AllTenant bool //所有租户的权限
+	AllProject bool
+	AllArea    bool //内部使用,不限制区域
+	AllTenant  bool //所有租户的权限
 }
 
 func NotLoginedInit(r *http.Request) *http.Request {

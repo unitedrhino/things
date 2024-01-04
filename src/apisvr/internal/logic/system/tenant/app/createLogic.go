@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -26,9 +25,6 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 }
 
 func (l *CreateLogic) Create(req *types.TenantAppCreateReq) error {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
-		return err
-	}
 	_, err := l.svcCtx.TenantRpc.TenantAppCreate(l.ctx, &sys.TenantAppCreateReq{
 		Code:    req.Code,
 		AppCode: req.AppCode,

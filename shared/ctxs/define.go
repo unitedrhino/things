@@ -9,6 +9,7 @@ const (
 	UserTenantCodeKey string = "ithings-tenant-code" //用户租户号
 
 	UserRoleKey     string = "ithings-user-role"
+	UserProjectID   string = "ithings-project-id"
 	UserSetTokenKey string = "ithings-set-token"
 	MetadataKey     string = "ithings-meta"
 )

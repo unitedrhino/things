@@ -29,14 +29,14 @@ func NewTeardownWareMiddleware(cfg config.Config, LogRpc operLog.Log) *TeardownW
 
 func (m *TeardownWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logx.WithContext(r.Context()).Infof("%s.Lifecycle.Before", utils.FuncName())
+		//logx.WithContext(r.Context()).Infof("%s.Lifecycle.Before", utils.FuncName())
 
 		//记录 接口响应日志
-		m.OperationLogRecord(r.Context(), r)
+		//m.OperationLogRecord(r.Context(), r)
 
 		next(w, r)
 
-		logx.WithContext(r.Context()).Infof("%s.Lifecycle.After", utils.FuncName())
+		//logx.WithContext(r.Context()).Infof("%s.Lifecycle.After", utils.FuncName())
 	}
 }
 

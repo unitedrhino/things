@@ -139,6 +139,7 @@ type (
 		TenantAppIndex(ctx context.Context, in *TenantAppIndexReq, opts ...grpc.CallOption) (*TenantAppIndexResp, error)
 		TenantAppCreate(ctx context.Context, in *TenantAppCreateReq, opts ...grpc.CallOption) (*Response, error)
 		TenantAppDelete(ctx context.Context, in *TenantAppWithIDOrCode, opts ...grpc.CallOption) (*Response, error)
+		TenantAppModuleMultiCreate(ctx context.Context, in *TenantAppCreateReq, opts ...grpc.CallOption) (*Response, error)
 		TenantAppModuleCreate(ctx context.Context, in *TenantModuleCreateReq, opts ...grpc.CallOption) (*Response, error)
 		TenantAppModuleIndex(ctx context.Context, in *TenantModuleIndexReq, opts ...grpc.CallOption) (*TenantModuleIndexResp, error)
 		TenantAppModuleDelete(ctx context.Context, in *TenantModuleWithIDOrCode, opts ...grpc.CallOption) (*Response, error)
@@ -255,6 +256,15 @@ func (m *defaultTenantManage) TenantAppDelete(ctx context.Context, in *TenantApp
 
 func (d *directTenantManage) TenantAppDelete(ctx context.Context, in *TenantAppWithIDOrCode, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.TenantAppDelete(ctx, in)
+}
+
+func (m *defaultTenantManage) TenantAppModuleMultiCreate(ctx context.Context, in *TenantAppCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewTenantManageClient(m.cli.Conn())
+	return client.TenantAppModuleMultiCreate(ctx, in, opts...)
+}
+
+func (d *directTenantManage) TenantAppModuleMultiCreate(ctx context.Context, in *TenantAppCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.TenantAppModuleMultiCreate(ctx, in)
 }
 
 func (m *defaultTenantManage) TenantAppModuleCreate(ctx context.Context, in *TenantModuleCreateReq, opts ...grpc.CallOption) (*Response, error) {

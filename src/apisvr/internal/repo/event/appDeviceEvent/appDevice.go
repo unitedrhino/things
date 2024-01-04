@@ -10,7 +10,6 @@ import (
 	ws "github.com/i-Things/things/shared/websocket"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/core/trace"
 	"net/http"
 )
 
@@ -35,7 +34,6 @@ func (a *AppDeviceHandle) DeviceEventReport(in *application.EventReport) error {
 
 func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) error {
 	topic := fmt.Sprintf(topics.ApplicationDeviceReportThingPropertyDevice, in.Device.ProductID, in.Device.DeviceName)
-	clientToken := trace.TraceIDFromContext(a.ctx)
 	param := map[string]any{
 		in.Identifier: in.Param,
 	}
@@ -45,9 +43,7 @@ func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) e
 		Path: topic,
 		Body: string(data),
 	}
-	body.Handler = make(http.Header)
-	body.Handler.Set("Traceparent", clientToken)
-	ws.SendSub(ws.WsResp{
+	ws.SendSub(a.ctx, ws.WsResp{
 		StatusCode: http.StatusOK,
 		WsBody:     body,
 	})
@@ -56,15 +52,12 @@ func (a *AppDeviceHandle) DevicePropertyReport(in *application.PropertyReport) e
 
 func (a *AppDeviceHandle) DeviceStatusConnected(in *application.ConnectMsg) error {
 	topic := fmt.Sprintf(topics.ApplicationDeviceStatusConnected, in.Device.ProductID, in.Device.DeviceName)
-	clientToken := trace.TraceIDFromContext(a.ctx)
 	body := ws.WsBody{
 		Type: ws.Pub,
 		Path: topic,
 		Body: "connected",
 	}
-	body.Handler = make(http.Header)
-	body.Handler.Set("Traceparent", clientToken)
-	ws.SendSub(ws.WsResp{
+	ws.SendSub(a.ctx, ws.WsResp{
 		StatusCode: http.StatusOK,
 		WsBody:     body,
 	})
@@ -73,17 +66,14 @@ func (a *AppDeviceHandle) DeviceStatusConnected(in *application.ConnectMsg) erro
 
 func (a *AppDeviceHandle) DeviceStatusDisConnected(in *application.ConnectMsg) error {
 	topic := fmt.Sprintf(topics.ApplicationDeviceStatusDisConnected, in.Device.ProductID, in.Device.DeviceName)
-	clientToken := trace.TraceIDFromContext(a.ctx)
 	body := ws.WsBody{
 		Type: ws.Pub,
 		Path: topic,
 		Body: "disconnected",
 	}
-	body.Handler = make(http.Header)
-	body.Handler.Set("Traceparent", clientToken)
-	ws.SendSub(ws.WsResp{
-		StatusCode: http.StatusOK,
-		WsBody:     body,
-	})
+	ws.SendSub(a.ctx,
+		ws.WsResp{StatusCode: http.StatusOK,
+			WsBody: body,
+		})
 	return nil
 }

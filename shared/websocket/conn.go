@@ -2,15 +2,18 @@ package websocket
 
 import (
 	"bytes"
+	"context"
 	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"gitee.com/asktop_golib/util/aslice"
 	"github.com/gorilla/websocket"
 	"github.com/hashicorp/go-uuid"
+	"github.com/i-Things/things/shared/ctxs"
 	e "github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/trace"
 	"io"
 	"net/http"
 	"net/url"
@@ -140,13 +143,14 @@ func (c *connection) pongSend() error {
 }
 
 // 发送订阅信息
-func SendSub(body WsResp) {
-	//判断
+func SendSub(ctx context.Context, body WsResp) {
+	clientToken := trace.TraceIDFromContext(ctx)
+	body.Handler = map[string]string{"Traceparent": clientToken}
 	dp.sendSub <- body
 }
 
 // 创建ws连接
-func NewConn(server *Server, r *http.Request, wsConn *websocket.Conn) *connection {
+func NewConn(ctx context.Context, server *Server, r *http.Request, wsConn *websocket.Conn) *connection {
 	var clientId string
 	for {
 		clientId, _ = uuid.GenerateUUID()
@@ -154,6 +158,7 @@ func NewConn(server *Server, r *http.Request, wsConn *websocket.Conn) *connectio
 			break
 		}
 	}
+
 	conn := &connection{
 		server:   server,
 		ws:       wsConn,
@@ -165,6 +170,8 @@ func NewConn(server *Server, r *http.Request, wsConn *websocket.Conn) *connectio
 	dp.connPool[clientId] = conn
 	logx.Infof("%s.[ws]创建连接成功 RemoteAddr::%s clientId:%s", utils.FuncName(), wsConn.RemoteAddr().String(), clientId)
 	resp := WsResp{StatusCode: http.StatusOK}
+	clientToken := trace.TraceIDFromContext(ctx)
+	resp.Handler = map[string]string{"Traceparent": clientToken}
 	conn.sendMessage(resp)
 	return conn
 }
@@ -215,6 +222,11 @@ func (c *connection) handleRequest(message []byte) {
 	if err := isDataComplete(body.Type, body); err != nil {
 		c.errorSend(err)
 		return
+	}
+	if len(body.Handler) > 0 {
+		for k, v := range body.Handler {
+			c.r.Header.Set(k, v)
+		}
 	}
 	switch body.Type {
 	case Control:
@@ -267,8 +279,11 @@ func downControl(c *connection, body WsReq) {
 		Body:          reqBody,
 		ContentLength: int64(length),
 	}
-	w := response{req: &body, resp: WsResp{WsBody: WsBody{Handler: map[string][]string{}, Type: ControlRet}}}
+	w := response{req: &body, resp: WsResp{WsBody: WsBody{Handler: map[string]string{}, Type: ControlRet}}}
 	c.server.ServeHTTP(&w, r)
+	if token := w.Header().Get(ctxs.UserSetTokenKey); token != "" { //登录态保持更新
+		c.r.Header.Set(ctxs.UserSetTokenKey, token)
+	}
 	c.sendMessage(w.resp)
 }
 
@@ -345,80 +360,6 @@ func (c *connection) Close(msg string) {
 		}
 		c.ws.Close()
 		logx.Infof("%s.[ws]关闭连接  clientId:%s", utils.FuncName(), c.clientId)
-	}
-}
-
-func subscribeHandle(c *connection, bd WsReq) {
-	//校验订阅topic
-	topic, err := wsCheckSub(bd.Path)
-	var resp WsResp
-	resp.WsBody = bd.WsBody
-	resp.WsBody.Type = SubRet
-	if err != nil {
-		c.errorSend(e.Default.AddDetail("error  subscribe  topic"))
-	} else {
-		c.addSubscribe(topic) //添加订阅
-		resp.StatusCode = http.StatusOK
-	}
-	c.sendMessage(resp)
-}
-
-// 处理取消订阅
-func unSubscribeHandle(c *connection, bd WsReq) {
-	//校验订阅topic
-	topic, err := wsCheckSub(bd.Path)
-	var resp WsResp
-	resp.WsBody = bd.WsBody
-	resp.WsBody.Type = UnSubRet
-	if err != nil {
-		c.errorSend(e.Default.AddDetail("error  unSubscribe  topic"))
-		return
-	} else {
-		c.unSubscribe(topic) //取消订阅
-		resp.StatusCode = http.StatusOK
-		c.sendMessage(resp)
-		return
-	}
-}
-
-// 校验订阅topic合法性
-func wsCheckSub(sub string) (topic string, err error) {
-	//代码逻辑
-	return sub, nil
-}
-
-// 添加订阅
-func (c *connection) addSubscribe(topic string) {
-	dp.mu.Lock()
-	defer dp.mu.Unlock()
-	_, ok := dp.connPool[c.clientId]
-	if !ok {
-		return
-	}
-	subs, ok := dp.subPool[topic]
-	if !ok {
-		subs = make(map[string]*connection)
-		dp.subPool[topic] = subs
-	}
-	subs[c.clientId] = c
-	c.topics[topic] = topic
-}
-
-// 取消订阅
-func (c *connection) unSubscribe(topic string) {
-	dp.mu.Lock()
-	defer dp.mu.Unlock()
-	delete(c.topics, topic)
-	_, ok := dp.connPool[c.clientId]
-	if !ok {
-		return
-	}
-	subs, ok := dp.subPool[topic]
-	if ok {
-		delete(subs, c.clientId)
-		if len(subs) == 0 {
-			delete(dp.subPool, topic)
-		}
 	}
 }
 

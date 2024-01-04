@@ -41,8 +41,8 @@ func RunServer(svcCtx *svc.ServiceContext) {
 	runSvrOnce.Do(func() {
 		go Run(svcCtx)
 	})
-
 }
+
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {

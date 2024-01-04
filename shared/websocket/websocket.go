@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"github.com/zeromicro/go-zero/rest"
-	"net/http"
 	"time"
 )
 
@@ -20,10 +19,10 @@ const (
 
 type (
 	WsBody struct {
-		Handler http.Header `json:"handler,omitempty"`
-		Type    WsType      `json:"type,omitempty"` //req 请求类型
-		Path    string      `json:"path,omitempty"` //url路径或发布及订阅的主题
-		Body    any         `json:"body,omitempty"` //消息体
+		Handler map[string]string `json:"handler,omitempty"`
+		Type    WsType            `json:"type,omitempty"` //req 请求类型
+		Path    string            `json:"path,omitempty"` //url路径或发布及订阅的主题
+		Body    any               `json:"body,omitempty"` //消息体
 	}
 	WsReq struct {
 		// Method specifies the HTTP method (GET, POST, PUT, etc.).

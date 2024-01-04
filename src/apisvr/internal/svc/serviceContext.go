@@ -248,6 +248,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OssClient:      ossClient,
 		FirmwareM:      firmwareM,
 		OtaTaskM:       otaTaskM,
+		Ws:             ws.MustNewServer(c.RestConf),
 		SvrClient: SvrClient{
 			TenantRpc:      tenantM,
 			AppRpc:         appRpc,

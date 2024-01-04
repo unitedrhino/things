@@ -35,10 +35,10 @@ func (l *TenantAppDeleteLogic) TenantAppDelete(in *sys.TenantAppWithIDOrCode) (*
 	}()
 	f := relationDB.TenantAppFilter{
 		TenantCode: in.Code,
-		Codes:      []string{in.AppCode},
+		AppCodes:   []string{in.AppCode},
 	}
 	if in.AppCode != "" {
-		f.Codes = []string{in.AppCode}
+		f.AppCodes = []string{in.AppCode}
 	}
 	if in.Id != 0 {
 		f.IDs = []int64{in.Id}

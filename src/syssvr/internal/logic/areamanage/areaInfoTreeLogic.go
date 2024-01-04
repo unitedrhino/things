@@ -54,7 +54,10 @@ func (l *AreaInfoTreeLogic) AreaInfoTree(in *sys.AreaInfoTreeReq) (*sys.AreaInfo
 			return nil, err
 		}
 	}
-	ctxs.SetInnerCtx(l.ctx, ctxs.InnerCtx{AllArea: true})
+	ctxs.GetUserCtx(l.ctx).AllArea = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllArea = false
+	}()
 	poArr = l.checkMissingParentIdMenuIndex(poArr)
 	return &sys.AreaInfoTreeResp{Tree: transPoArrToPbTree(root, poArr)}, nil
 }
