@@ -67,6 +67,9 @@ func (l *GroupInfoCreateLogic) CheckGroupLevel(groupID int64, level int64) (bool
 
 // 创建分组
 func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.Response, error) {
+	if in.AreaID == 0 {
+		in.AreaID = def.NotClassified
+	}
 	find, err := l.CheckGroupInfo(in)
 	if err != nil {
 		l.Errorf("%s.CheckGroupInfo in=%v\n", utils.FuncName(), in)

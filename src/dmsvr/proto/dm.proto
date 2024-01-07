@@ -115,7 +115,9 @@ service DeviceGroup {
   //删除分组
   rpc groupInfoDelete(GroupInfoDeleteReq)     returns (Response);
   //创建分组设备
-  rpc groupDeviceMultiCreate(GroupDeviceMultiCreateReq)     returns (Response);
+  rpc groupDeviceMultiCreate(GroupDeviceMultiSaveReq)     returns (Response);
+  //更新分组设备
+  rpc groupDeviceMultiUpdate(GroupDeviceMultiSaveReq)     returns (Response);
   //获取分组设备信息列表
   rpc groupDeviceIndex(GroupDeviceIndexReq)     returns (GroupDeviceIndexResp);
   //删除分组设备
@@ -564,9 +566,10 @@ message DeviceGatewayMultiDeleteReq{
 }
 
 message GroupInfo{
+  int64 areaID = 10;//分组可以属于某个区域下
+  int64 projectID = 3;
   int64 groupID = 1;
   int64 parentID = 2;
-  int64 projectID = 3;
   string groupName = 4;
   string desc = 5;
   int64 createdTime = 6;
@@ -576,6 +579,7 @@ message GroupInfo{
 }
 
 message GroupInfoCreateReq{
+  int64 areaID = 5;//分组可以属于某个区域下
   string groupName = 1;
   int64 parentID = 2;
   string productID = 3;
@@ -583,6 +587,7 @@ message GroupInfoCreateReq{
 }
 
 message GroupInfoIndexReq{
+  int64 areaID = 5;//分组可以属于某个区域下
   PageInfo page = 1;
   string groupName = 2;
   int64 parentID = 3;
@@ -610,7 +615,7 @@ message GroupInfoDeleteReq{
   int64 groupID = 1;
 }
 
-message GroupDeviceMultiCreateReq{
+message GroupDeviceMultiSaveReq{
   int64 groupID = 1;
   repeated DeviceCore list = 2;
 }
@@ -636,6 +641,7 @@ message Point{
   double  longitude = 1;//经度
   double  latitude = 2;//纬度
 }
+
 message DeviceInfo {
   string productID = 1; //产品id 只读
   int64 projectID = 2; //项目id 只读（0不更新，2为未分类，other则更新）

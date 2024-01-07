@@ -29,6 +29,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 func (l *CreateLogic) Create(req *types.GroupInfoCreateReq) error {
 
 	_, err := l.svcCtx.DeviceG.GroupInfoCreate(l.ctx, &dm.GroupInfoCreateReq{
+		AreaID:    req.AreaID,
 		GroupName: req.GroupName,
 		ParentID:  req.ParentID,
 		ProductID: req.ProductID,

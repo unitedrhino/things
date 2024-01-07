@@ -169,8 +169,9 @@ type UserLoginReq struct {
 }
 
 type UserLoginResp struct {
-	Info  UserInfo `json:"info"`  //用户信息
-	Token JwtToken `json:"token"` //用户token
+	Info  UserInfo    `json:"info"`  //用户信息
+	Roles []*RoleInfo `json:"roles"` //角色列表
+	Token JwtToken    `json:"token"` //用户token
 }
 
 type JwtToken struct {
@@ -1411,30 +1412,33 @@ type DeviceInteractMultiSendPropertyResp struct {
 }
 
 type GroupInfo struct {
-	GroupID     int64  `json:"groupID,string"`       //分组ID
-	ParentID    int64  `json:"parentID,string"`      //父组ID
-	ProjectID   int64  `json:"projectID,string"`     //项目ID
-	GroupName   string `json:"groupName"`            //分组名称
-	ProductID   string `json:"productID,optional"`   //产品ID
-	ProductName string `json:"productName,optional"` //产品ID
-	CreatedTime int64  `json:"createdTime,string"`   //创建时间
-	Desc        string `json:"desc,optional"`        //分组描述
-	Tags        []*Tag `json:"tags,optional"`        //分组tag
+	GroupID     int64  `json:"groupID,string"`         //分组ID
+	ParentID    int64  `json:"parentID,string"`        //父组ID
+	ProjectID   int64  `json:"projectID,string"`       //项目ID
+	AreaID      int64  `json:"areaID,string,optional"` //区域ID
+	GroupName   string `json:"groupName"`              //分组名称
+	ProductID   string `json:"productID,optional"`     //产品ID
+	ProductName string `json:"productName,optional"`   //产品ID
+	CreatedTime int64  `json:"createdTime,string"`     //创建时间
+	Desc        string `json:"desc,optional"`          //分组描述
+	Tags        []*Tag `json:"tags,optional"`          //分组tag
 }
 
 type GroupInfoCreateReq struct {
-	GroupName string `json:"groupName"`          //分组名称
-	ParentID  int64  `json:"parentID,string"`    //父组ID
-	ProductID string `json:"productID,optional"` //产品ID
-	Desc      string `json:"desc,optional"`      //分组描述
+	AreaID    int64  `json:"areaID,string,optional"` //区域ID
+	GroupName string `json:"groupName"`              //分组名称
+	ParentID  int64  `json:"parentID,string"`        //父组ID
+	ProductID string `json:"productID,optional"`     //产品ID
+	Desc      string `json:"desc,optional"`          //分组描述
 }
 
 type GroupInfoIndexReq struct {
-	Page      *PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
-	ParentID  int64     `json:"parentID,string"`    //父组ID
-	ProductID string    `json:"productID,optional"` //产品ID
-	GroupName string    `json:"groupName,optional"` //分组名称
-	Tags      []*Tag    `json:"tags,optional"`      //分组tag
+	Page      *PageInfo `json:"page,optional"`          //分页信息 只获取一个则不填
+	AreaID    int64     `json:"areaID,string,optional"` //区域ID
+	ParentID  int64     `json:"parentID,string"`        //父组ID
+	ProductID string    `json:"productID,optional"`     //产品ID
+	GroupName string    `json:"groupName,optional"`     //分组名称
+	Tags      []*Tag    `json:"tags,optional"`          //分组tag
 }
 
 type GroupInfoIndexResp struct {
@@ -1472,7 +1476,7 @@ type GroupDeviceIndexResp struct {
 	Total int64         `json:"total"` //总数(只有分页的时候会返回)
 }
 
-type GroupDeviceMultiCreateReq struct {
+type GroupDeviceMultiSaveReq struct {
 	GroupID int64         `json:"groupID,string"` //分组ID
 	List    []*DeviceCore `json:"list,optional"`  //分组tag
 }

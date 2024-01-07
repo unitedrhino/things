@@ -45,7 +45,11 @@ service api {
 service api {
     @doc "添加分组设备"
     @handler multiCreate
-    post /multi-create (GroupDeviceMultiCreateReq) returns ()
+    post /multi-create (GroupDeviceMultiSaveReq) returns ()
+
+    @doc "更新分组设备"
+    @handler multiUpdate
+    post /multi-update (GroupDeviceMultiSaveReq) returns ()
 
     @doc "获取分组设备列表"
     @handler index
@@ -62,6 +66,7 @@ type (
         GroupID   int64  `json:"groupID,string"`           //分组ID
         ParentID  int64 `json:"parentID,string"`          //父组ID
         ProjectID  int64 `json:"projectID,string"`         //项目ID
+        AreaID int64 `json:"areaID,string,optional"`                    //区域ID
         GroupName string `json:"groupName"`                //分组名称
         ProductID string `json:"productID,optional"`       //产品ID
         ProductName string `json:"productName,optional"`       //产品ID
@@ -71,6 +76,7 @@ type (
     }
 
     GroupInfoCreateReq struct {
+        AreaID int64 `json:"areaID,string,optional"`                    //区域ID
         GroupName string `json:"groupName"`                        //分组名称
         ParentID int64 `json:"parentID,string"`                  //父组ID
         ProductID string `json:"productID,optional"`             //产品ID
@@ -79,6 +85,7 @@ type (
 
     GroupInfoIndexReq struct {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        AreaID int64 `json:"areaID,string,optional"`                    //区域ID
         ParentID int64 `json:"parentID,string"`                  //父组ID
         ProductID string `json:"productID,optional"`                         //产品ID
         GroupName string `json:"groupName,optional"`          //分组名称
@@ -120,7 +127,7 @@ type (
         Total int64 `json:"total"`         //总数(只有分页的时候会返回)
     }
 
-    GroupDeviceMultiCreateReq struct {
+    GroupDeviceMultiSaveReq struct {
         GroupID   int64  `json:"groupID,string"`            //分组ID
         List []*DeviceCore `json:"list,optional"`   //分组tag
     }

@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -31,7 +32,7 @@ func (m GroupDeviceRepo) MultiInsert(ctx context.Context, data []*DmGroupDevice)
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []*DmGroupDevice) error {
+func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []*devices.Core) error {
 	if len(data) < 1 {
 		return nil
 	}
@@ -48,6 +49,25 @@ func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []
 	db := m.db.WithContext(ctx).Model(&DmGroupDevice{})
 	db = db.Where("group_id=?", groupID).Where(scope(db))
 	err := db.Delete(&DmGroupDevice{}).Error
+	return stores.ErrFmt(err)
+}
+
+func (p GroupDeviceRepo) MultiUpdate(ctx context.Context, groupID int64, devices []*DmGroupDevice) error {
+	err := p.db.Transaction(func(tx *gorm.DB) error {
+		rm := NewGroupDeviceRepo(tx)
+		err := rm.DeleteByFilter(ctx, GroupDeviceFilter{GroupID: groupID})
+		if err != nil {
+			return err
+		}
+		if len(devices) != 0 {
+			err = rm.MultiInsert(ctx, devices)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 	return stores.ErrFmt(err)
 }
 

@@ -47,8 +47,8 @@ type (
 	GetPropertyReplyResp        = dm.GetPropertyReplyResp
 	GroupDeviceIndexReq         = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp        = dm.GroupDeviceIndexResp
-	GroupDeviceMultiCreateReq   = dm.GroupDeviceMultiCreateReq
 	GroupDeviceMultiDeleteReq   = dm.GroupDeviceMultiDeleteReq
+	GroupDeviceMultiSaveReq     = dm.GroupDeviceMultiSaveReq
 	GroupInfo                   = dm.GroupInfo
 	GroupInfoCreateReq          = dm.GroupInfoCreateReq
 	GroupInfoDeleteReq          = dm.GroupInfoDeleteReq

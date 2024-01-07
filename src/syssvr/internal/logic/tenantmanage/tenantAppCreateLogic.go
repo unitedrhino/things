@@ -60,7 +60,7 @@ func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, 
 		return err
 	}
 	mi, err := relationDB.NewModuleInfoRepo(tx).FindOneByFilter(ctx,
-		relationDB.ModuleInfoFilter{Codes: []string{moduleCode}, WithApis: true, WithMenus: true})
+		relationDB.ModuleInfoFilter{TenantCode: tenantCode, Codes: []string{moduleCode}, WithApis: true, WithMenus: true})
 	if err != nil {
 		return err
 	}

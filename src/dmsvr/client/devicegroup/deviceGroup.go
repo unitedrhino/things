@@ -47,8 +47,8 @@ type (
 	GetPropertyReplyResp        = dm.GetPropertyReplyResp
 	GroupDeviceIndexReq         = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp        = dm.GroupDeviceIndexResp
-	GroupDeviceMultiCreateReq   = dm.GroupDeviceMultiCreateReq
 	GroupDeviceMultiDeleteReq   = dm.GroupDeviceMultiDeleteReq
+	GroupDeviceMultiSaveReq     = dm.GroupDeviceMultiSaveReq
 	GroupInfo                   = dm.GroupInfo
 	GroupInfoCreateReq          = dm.GroupInfoCreateReq
 	GroupInfoDeleteReq          = dm.GroupInfoDeleteReq
@@ -152,7 +152,9 @@ type (
 		// 删除分组
 		GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 创建分组设备
-		GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
+		GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error)
+		// 更新分组设备
+		GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error)
 		// 获取分组设备信息列表
 		GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
 		// 删除分组设备
@@ -238,14 +240,25 @@ func (d *directDeviceGroup) GroupInfoDelete(ctx context.Context, in *GroupInfoDe
 }
 
 // 创建分组设备
-func (m *defaultDeviceGroup) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceGroup) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewDeviceGroupClient(m.cli.Conn())
 	return client.GroupDeviceMultiCreate(ctx, in, opts...)
 }
 
 // 创建分组设备
-func (d *directDeviceGroup) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceGroup) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.GroupDeviceMultiCreate(ctx, in)
+}
+
+// 更新分组设备
+func (m *defaultDeviceGroup) GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewDeviceGroupClient(m.cli.Conn())
+	return client.GroupDeviceMultiUpdate(ctx, in, opts...)
+}
+
+// 更新分组设备
+func (d *directDeviceGroup) GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.GroupDeviceMultiUpdate(ctx, in)
 }
 
 // 获取分组设备信息列表

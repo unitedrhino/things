@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
 	"gorm.io/gorm"
@@ -29,6 +30,7 @@ type (
 		Position    stores.Point
 		DeviceAlias string
 		Versions    []string
+		Cores       []*devices.Core
 		WithProduct bool
 	}
 )
@@ -54,6 +56,19 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")
+	}
+	if len(f.Cores) != 0 {
+		scope := func(db *gorm.DB) *gorm.DB {
+			for i, d := range f.Cores {
+				if i == 0 {
+					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+					continue
+				}
+				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+			}
+			return db
+		}
+		db = db.Where(scope(db))
 	}
 	if len(f.DeviceNames) != 0 {
 		db = db.Where("device_name in ?", f.DeviceNames)

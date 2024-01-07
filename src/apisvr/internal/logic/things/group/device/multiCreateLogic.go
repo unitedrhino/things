@@ -26,7 +26,7 @@ func NewMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 	}
 }
 
-func (l *MultiCreateLogic) MultiCreate(req *types.GroupDeviceMultiCreateReq) error {
+func (l *MultiCreateLogic) MultiCreate(req *types.GroupDeviceMultiSaveReq) error {
 	m := make([]*dm.DeviceCore, 0, len(req.List))
 	for _, v := range req.List {
 		m = append(m, &dm.DeviceCore{
@@ -34,7 +34,7 @@ func (l *MultiCreateLogic) MultiCreate(req *types.GroupDeviceMultiCreateReq) err
 			DeviceName: v.DeviceName,
 		})
 	}
-	_, err := l.svcCtx.DeviceG.GroupDeviceMultiCreate(l.ctx, &dm.GroupDeviceMultiCreateReq{GroupID: req.GroupID, List: m})
+	_, err := l.svcCtx.DeviceG.GroupDeviceMultiCreate(l.ctx, &dm.GroupDeviceMultiSaveReq{GroupID: req.GroupID, List: m})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.GroupDeviceMultiCreate req=%v err=%+v", utils.FuncName(), req, er)
