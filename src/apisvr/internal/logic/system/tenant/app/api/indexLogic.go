@@ -34,13 +34,8 @@ func (l *IndexLogic) Index(req *types.TenantAppApiIndexReq) (resp *types.TenantA
 	if err != nil {
 		return nil, err
 	}
-	var apiInfo []*types.TenantApiInfo
-	apiInfo = make([]*types.TenantApiInfo, 0, len(apiInfo))
-	for _, i := range ret.List {
-		apiInfo = append(apiInfo, ToTenantAppApiTypes(i))
-	}
 	return &types.TenantAppApiIndexResp{
 		Total: ret.Total,
-		List:  apiInfo,
+		List:  ToTenantAppApisTypes(ret.List),
 	}, nil
 }

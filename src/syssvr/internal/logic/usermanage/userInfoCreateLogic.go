@@ -37,6 +37,16 @@ func (l *UserInfoCreateLogic) UserInfoInsert(in *sys.UserInfoCreateReq) (int64, 
 	if err != nil {
 		return 0, err
 	}
+	if info.Email != "" {
+		if !utils.IsEmail(info.Email) {
+			return 0, errors.Parameter.AddMsgf("邮箱格式错误")
+		}
+	}
+	if info.Phone != "" {
+		if !utils.IsPhone(info.Phone) {
+			return 0, errors.Parameter.AddMsgf("手机号格式错误")
+		}
+	}
 	//校验密码强度
 	err = CheckPwd(l.svcCtx, info.Password)
 	if info.Role == 0 {

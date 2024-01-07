@@ -27,7 +27,7 @@ func NewTenantAppApiIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *TenantAppApiIndexLogic) TenantAppApiIndex(in *sys.TenantAppApiIndexReq) (*sys.TenantAppApiIndexResp, error) {
-	if err := ctxs.IsRoot(l.ctx); err == nil {
+	if err := ctxs.IsRoot(l.ctx); err == nil && in.Code != "" {
 		ctxs.GetUserCtx(l.ctx).AllTenant = true
 		defer func() {
 			ctxs.GetUserCtx(l.ctx).AllTenant = false
@@ -38,6 +38,7 @@ func (l *TenantAppApiIndexLogic) TenantAppApiIndex(in *sys.TenantAppApiIndexReq)
 		TenantCode: in.Code,
 		AppCode:    in.AppCode,
 		ModuleCode: in.ModuleCode,
+		ApiIDs:     in.ApiIDs,
 	}
 	resp, err := relationDB.NewTenantAppApiRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {

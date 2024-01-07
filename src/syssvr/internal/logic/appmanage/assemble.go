@@ -14,6 +14,7 @@ func ToAppInfoPo(in *sys.AppInfo) *relationDB.SysAppInfo {
 		ID:      in.Id,
 		Code:    in.Code,
 		Name:    in.Name,
+		Type:    in.Type,
 		Desc:    utils.ToEmptyString(in.Desc),
 		BaseUrl: in.BaseUrl,
 		LogoUrl: in.LogoUrl,
@@ -27,6 +28,7 @@ func ToAppInfoPb(in *relationDB.SysAppInfo) *sys.AppInfo {
 	return &sys.AppInfo{
 		Id:      in.ID,
 		Code:    in.Code,
+		Type:    in.Type,
 		Name:    in.Name,
 		Desc:    utils.ToRpcNullString(in.Desc),
 		BaseUrl: in.BaseUrl,

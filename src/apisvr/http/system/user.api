@@ -71,23 +71,6 @@ service api {
 
 }
 
-@server (
-	group : system/user/self
-	prefix: /api/v1/system/user/self
-	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
-)
-service api {
-	@doc "获取用戶资源"
-	@handler resourceRead
-	post /resource/read () returns (UserResourceReadResp)
-	@doc "获取用户信息"
-	@handler read
-	post /read () returns (UserInfo)
-	@doc "更新用户基本数据"
-	@handler update
-	post /update (UserInfo) returns ()
-}
-
 type (
 	 UserInfo {
 		UserID         int64  `json:"userID,string,optional"`        // 用户id
@@ -184,15 +167,6 @@ type (
 		AccessExpire int64  `json:"accessExpire,string,omitempty"`//token过期时间
 		RefreshAfter int64  `json:"refreshAfter,string,omitempty"`//token刷新时间
 	}
-
-    UserResourceReadResp{
-        Menus   []*MenuInfo   `json:"menus"`           //菜单资源
-		Roles []*RoleInfo `json:"roles"` //角色列表
-		Apis   []*ApiGroupInfo   `json:"apis"` //接口资源
-		Info  *UserInfo `json:"info"`//用户信息
-		App 	*AppInfo 	`json:"app"`
-		Projects []*ProjectInfo `json:"projects"`    //项目列表
-    }
 )
 
 type (

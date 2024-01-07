@@ -27,7 +27,7 @@ func NewTenantAppMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *TenantAppMenuIndexLogic) TenantAppMenuIndex(in *sys.TenantAppMenuIndexReq) (*sys.TenantAppMenuIndexResp, error) {
-	if err := ctxs.IsRoot(l.ctx); err == nil {
+	if err := ctxs.IsRoot(l.ctx); err == nil && in.Code != "" {
 		ctxs.GetUserCtx(l.ctx).AllTenant = true
 		defer func() {
 			ctxs.GetUserCtx(l.ctx).AllTenant = false
@@ -37,6 +37,7 @@ func (l *TenantAppMenuIndexLogic) TenantAppMenuIndex(in *sys.TenantAppMenuIndexR
 		ModuleCode: in.ModuleCode,
 		TenantCode: in.Code,
 		AppCode:    in.AppCode,
+		MenuIDs:    in.MenuIDs,
 	}
 	resp, err := relationDB.NewTenantAppMenuRepo(l.ctx).FindByFilter(l.ctx, f, nil)
 	if err != nil {

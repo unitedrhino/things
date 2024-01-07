@@ -28,6 +28,8 @@ Proxy:
     - FrontDir: ./dist
       FrontDefaultPage: front/iThingsCore/index.html
   StaticProxy:
+    - Router: /api/v1/view/
+      Dest: http://127.0.0.1:7789
     - Router: /api/v1/app/
       Dest: http://127.0.0.1:8000
     - Router: /api/v1/oss/

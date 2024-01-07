@@ -30,7 +30,7 @@ func (l *IndexLogic) Index(req *types.TenantAppMenuIndexReq) (resp *types.Tenant
 		AppCode:    req.AppCode,
 		Code:       req.Code,
 		ModuleCode: req.ModuleCode,
-		IsRetTree:  true,
+		IsRetTree:  req.IsRetTree,
 	})
 
 	return &types.TenantAppMenuIndexResp{

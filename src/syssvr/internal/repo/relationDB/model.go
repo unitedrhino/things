@@ -12,6 +12,7 @@ type SysAppInfo struct {
 	ID      int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`        // id编号
 	Code    string `gorm:"column:code;uniqueIndex:code;type:VARCHAR(100);NOT NULL"` // 应用编码
 	Name    string `gorm:"column:name;uniqueIndex:name;type:VARCHAR(100);NOT NULL"` //应用名称
+	Type    string `gorm:"column:type;type:VARCHAR(100);default:web;NOT NULL"`      //应用类型 web:web页面  app:应用  mini:小程序
 	Desc    string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                  //应用描述
 	BaseUrl string `gorm:"column:base_url;type:VARCHAR(100);NOT NULL"`              //应用首页
 	LogoUrl string `gorm:"column:logo_url;type:VARCHAR(100);NOT NULL"`              //应用logo地址
@@ -30,6 +31,8 @@ type SysAppModule struct {
 	ModuleCode string `gorm:"column:module_code;uniqueIndex:tc_ac;type:VARCHAR(50);NOT NULL"` // 模块编码
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:tc_ac"`
+	Module      *SysModuleInfo     `gorm:"foreignKey:Code;references:ModuleCode"`
+	App         *SysAppInfo        `gorm:"foreignKey:Code;references:AppCode"`
 }
 
 func (m *SysAppModule) TableName() string {

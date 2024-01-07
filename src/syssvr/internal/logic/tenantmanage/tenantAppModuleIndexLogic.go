@@ -27,19 +27,23 @@ func NewTenantAppModuleIndexLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *TenantAppModuleIndexLogic) TenantAppModuleIndex(in *sys.TenantModuleIndexReq) (*sys.TenantModuleIndexResp, error) {
-	if err := ctxs.IsRoot(l.ctx); err == nil {
+	if err := ctxs.IsRoot(l.ctx); err == nil && in.Code != "" {
 		ctxs.GetUserCtx(l.ctx).AllTenant = true
 		defer func() {
 			ctxs.GetUserCtx(l.ctx).AllTenant = false
 		}()
 	}
-	ret, err := relationDB.NewTenantAppModuleRepo(l.ctx).FindByFilter(l.ctx, relationDB.TenantAppModuleFilter{TenantCode: in.Code, AppCodes: []string{in.AppCode}}, logic.ToPageInfo(in.Page))
+	ret, err := relationDB.NewTenantAppModuleRepo(l.ctx).FindByFilter(l.ctx,
+		relationDB.TenantAppModuleFilter{TenantCode: in.Code, AppCodes: []string{in.AppCode}, ModuleCodes: in.ModuleCodes, WithModule: true}, nil)
 	if err != nil {
 		return nil, err
 	}
-	var moduleCodes []string
+	var modules []*relationDB.SysModuleInfo
 	for _, v := range ret {
-		moduleCodes = append(moduleCodes, v.ModuleCode)
+		if v.Module == nil {
+			continue
+		}
+		modules = append(modules, v.Module)
 	}
-	return &sys.TenantModuleIndexResp{ModuleCodes: moduleCodes}, nil
+	return &sys.TenantModuleIndexResp{List: logic.ToModuleInfosPb(modules)}, nil
 }

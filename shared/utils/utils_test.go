@@ -159,8 +159,8 @@ func TestIsMobile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsMobile(tt.args.mobile); got != tt.want {
-				t.Errorf("IsMobile() = %v, want %v", got, tt.want)
+			if got := IsPhone(tt.args.mobile); got != tt.want {
+				t.Errorf("IsPhone() = %v, want %v", got, tt.want)
 			}
 		})
 	}

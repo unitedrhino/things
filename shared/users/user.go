@@ -34,7 +34,7 @@ const (
 )
 
 func GetLoginNameType(userName string) UserInfoType {
-	if utils.IsMobile(userName) == true {
+	if utils.IsPhone(userName) == true {
 		return Phone
 	}
 	return UserName
