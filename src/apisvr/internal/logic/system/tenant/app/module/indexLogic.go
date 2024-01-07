@@ -3,6 +3,7 @@ package module
 import (
 	"context"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
+	"github.com/i-Things/things/src/apisvr/internal/logic/system/module/info"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -35,6 +36,6 @@ func (l *IndexLogic) Index(req *types.TenantModuleIndexReq) (resp *types.TenantM
 		return nil, err
 	}
 	return &types.TenantModuleIndexResp{
-		ModuleCodes: ret.ModuleCodes,
+		List: info.ToModuleInfosApi(ret.List),
 	}, nil
 }

@@ -14,10 +14,15 @@
 $ goctl env check --install --verbose --force
 ```
 
-# 服务器新增方案
+# 服务新增方案
 
+## rpc服务
 ```
 goctl rpc new rpcsvr  --style=goZero -m
+```
+## api服务
+```
+goctl api new viewsvr  --style=goZero 
 ```
 
 # 库表新增方案
@@ -33,6 +38,13 @@ goctl rpc new rpcsvr  --style=goZero -m
 ```shell
 #cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ..
 cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero -ws && cd ..
+```
+
+# view大屏goview模块-viewsvr
+
+```shell
+#cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ..
+cd viewsvr && goctl api go -api http/view.api  -dir ./  --style=goZero  && cd ..
 ```
 
 # 系统管理模块-syssvr

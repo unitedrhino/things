@@ -215,6 +215,7 @@ message TenantAppModule{
 message TenantAppIndexReq{
   PageInfo page = 1;//分页信息
   string code = 2;
+  repeated string appCodes = 3;
 }
 
 message TenantAppIndexResp{
@@ -231,10 +232,11 @@ message TenantModuleIndexReq{
   PageInfo page = 1;//分页信息
   string code = 2;
   string appCode =3;
+  repeated string moduleCodes = 4;
 }
 
 message TenantModuleIndexResp{
-  repeated string moduleCodes = 1;
+  repeated ModuleInfo list = 1;
 }
 
 message TenantAppMenuIndexReq{
@@ -243,6 +245,7 @@ message TenantAppMenuIndexReq{
   string appCode =3;
   string moduleCode =4;
   bool isRetTree = 5;
+  repeated int64 menuIDs = 6;
 }
 message TenantAppMenuIndexResp{
   repeated TenantAppMenu list = 1;
@@ -269,6 +272,7 @@ message TenantAppApiIndexReq{
   string code = 2;
   string appCode =3;
   string moduleCode =4;
+  repeated int64 apiIDs = 5;
 }
 message TenantAppApiIndexResp{
   repeated TenantApiInfo list = 1; // 接口列表数据
@@ -799,6 +803,7 @@ message ModuleInfoIndexResp{
 message AppInfo{
   int64 id = 1;
   string name= 2;          // 应用名称
+  string type=7;//应用类型 web:web页面  app:应用  mini:小程序
   string code = 3;          // 应用编码
   google.protobuf.StringValue desc = 4;        // 应用描述
   string baseUrl = 5;      // 基础URL

@@ -4,8 +4,6 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/apisvr/internal/logic/system"
-	app "github.com/i-Things/things/src/apisvr/internal/logic/system/app/info"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system/role"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system/user"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -33,14 +31,14 @@ func NewResourceReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Reso
 
 func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, err error) {
 	var (
-		menuInfo []*types.MenuInfo
+		//menuInfo []*types.MenuInfo
 		userInfo *types.UserInfo
-		projects []*types.ProjectInfo
-		appInfo  *types.AppInfo
-		roles    []*types.RoleInfo
-		apis     []*types.ApiGroupInfo
-		wait     errgroup.Group
-		uc       = ctxs.GetUserCtx(l.ctx)
+		//projects []*types.ProjectInfo
+		//appInfo  *types.AppInfo
+		roles []*types.RoleInfo
+		//apis     []*types.ApiGroupInfo
+		wait errgroup.Group
+		uc   = ctxs.GetUserCtx(l.ctx)
 	)
 	//wait.Go(func() error {
 	//	defer utils.Recover(l.ctx)
@@ -112,36 +110,32 @@ func (l *ResourceReadLogic) ResourceRead() (resp *types.UserResourceReadResp, er
 		userInfo = user.UserInfoToApi(ui)
 		return nil
 	})
-	wait.Go(func() error {
-		defer utils.Recover(l.ctx)
-		ret, err := l.svcCtx.AppRpc.AppInfoRead(l.ctx, &sys.WithIDCode{Code: ctxs.GetUserCtx(l.ctx).AppCode})
-		if err != nil {
-			return err
-		}
-		appInfo = app.ToAppInfoTypes(ret)
-		return nil
-	})
-	wait.Go(func() error {
-		defer utils.Recover(l.ctx)
-		pis, err := l.svcCtx.ProjectM.ProjectInfoIndex(l.ctx, &sys.ProjectInfoIndexReq{})
-		if err != nil {
-			return err
-		}
-		for _, pb := range pis.List {
-			projects = append(projects, system.ProjectInfoToApi(pb))
-		}
-		return nil
-	})
+	//wait.Go(func() error {
+	//	defer utils.Recover(l.ctx)
+	//	ret, err := l.svcCtx.AppRpc.AppInfoRead(l.ctx, &sys.WithIDCode{Code: ctxs.GetUserCtx(l.ctx).AppCode})
+	//	if err != nil {
+	//		return err
+	//	}
+	//	appInfo = app.ToAppInfoTypes(ret)
+	//	return nil
+	//})
+	//wait.Go(func() error {
+	//	defer utils.Recover(l.ctx)
+	//	pis, err := l.svcCtx.ProjectM.ProjectInfoIndex(l.ctx, &sys.ProjectInfoIndexReq{})
+	//	if err != nil {
+	//		return err
+	//	}
+	//	for _, pb := range pis.List {
+	//		projects = append(projects, system.ProjectInfoToApi(pb))
+	//	}
+	//	return nil
+	//})
 	err = wait.Wait()
 	if err != nil {
 		return nil, err
 	}
 	return &types.UserResourceReadResp{
-		Menus:    menuInfo,
-		Apis:     apis,
-		Info:     userInfo,
-		App:      appInfo,
-		Roles:    roles,
-		Projects: projects,
+		Info:  userInfo,
+		Roles: roles,
 	}, nil
 }

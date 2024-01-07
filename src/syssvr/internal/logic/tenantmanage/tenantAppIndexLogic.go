@@ -26,13 +26,13 @@ func NewTenantAppIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Te
 }
 
 func (l *TenantAppIndexLogic) TenantAppIndex(in *sys.TenantAppIndexReq) (*sys.TenantAppIndexResp, error) {
-	if err := ctxs.IsRoot(l.ctx); err == nil {
+	if err := ctxs.IsRoot(l.ctx); err == nil && in.Code != "" {
 		ctxs.GetUserCtx(l.ctx).AllTenant = true
 		defer func() {
 			ctxs.GetUserCtx(l.ctx).AllTenant = false
 		}()
 	}
-	f := relationDB.TenantAppFilter{TenantCode: in.Code}
+	f := relationDB.TenantAppFilter{TenantCode: in.Code, AppCodes: in.AppCodes}
 	list, err := relationDB.NewTenantAppRepo(l.ctx).FindByFilter(l.ctx, f, nil)
 	if err != nil {
 		return nil, err

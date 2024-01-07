@@ -79,6 +79,8 @@ func (p *PageInfo) ToGorm(db *gorm.DB) *gorm.DB {
 		for _, o := range orders {
 			db = db.Order(o)
 		}
+	} else {
+		db.Order("created_time desc")
 	}
 	return db
 }

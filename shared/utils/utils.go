@@ -30,13 +30,13 @@ func MD5V(str []byte) string {
 */
 func CheckUserName(name string) error {
 	if len(name) > 30 {
-		return errors.New("pwd len more than 30")
+		return errors.New("userName len more than 30")
 	}
-	if IsMobile(name) {
-		return errors.New("pwd can't be phone number")
+	if IsPhone(name) {
+		return errors.New("userName can't be phone number")
 	}
 	if IsEmail(name) {
-		return errors.New("pwd can't be email")
+		return errors.New("userName can't be email")
 	}
 	return nil
 }
@@ -71,7 +71,7 @@ func CheckPasswordLever(ps string) int32 {
 }
 
 // 识别手机号码
-func IsMobile(mobile string) bool {
+func IsPhone(mobile string) bool {
 	result, _ := regexp.MatchString(`^(1[0-9][0-9]\d{4,8})$`, mobile)
 	if result {
 		return true
@@ -212,4 +212,3 @@ func InetAtoN(ip string) int64 {
 	ret.SetBytes(net.ParseIP(ip).To4())
 	return ret.Int64()
 }
-

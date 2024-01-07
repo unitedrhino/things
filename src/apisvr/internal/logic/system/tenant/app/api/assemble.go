@@ -17,3 +17,9 @@ func ToTenantAppApiTypes(in *sys.TenantApiInfo) *types.TenantApiInfo {
 		ApiInfo:    *api.ToApiInfoTypes(in.Info),
 	}
 }
+func ToTenantAppApisTypes(in []*sys.TenantApiInfo) (ret []*types.TenantApiInfo) {
+	for _, v := range in {
+		ret = append(ret, ToTenantAppApiTypes(v))
+	}
+	return
+}

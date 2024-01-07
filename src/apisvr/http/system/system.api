@@ -23,6 +23,7 @@ type (
     AppInfo struct {
         ID int64 `json:"id,optional"`                                      // 接口编号
         Code string `json:"code"`                               // 应用编号
+        Type string `json:"type"` //应用类型 web:web页面  app:应用  mini:小程序
         Name string `json:"name,optional"`                                 // 接口名称
         Desc *string `json:"desc,optional"`                       // 备注
         BaseUrl string `json:"baseUrl,optional"`                               // 应用编号

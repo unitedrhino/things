@@ -169,7 +169,7 @@ type (
     }
 
     TenantModuleIndexResp{
-        ModuleCodes []string `json:"moduleCodes"`
+        List []*ModuleInfo `json:"list"`
     }
     TenantModuleWithIDOrCode{
         ID int64 `json:"id,optional"`                                // 编号

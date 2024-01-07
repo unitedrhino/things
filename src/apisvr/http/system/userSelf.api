@@ -1,0 +1,46 @@
+info(
+	title: "用户管理模块"
+	desc: "用户管理相关接口，包括创建账号，登录，获取验证码，获取用户列表，获取单个用户信息，更新用户信息，删除用户"
+	author: "L"
+	email: "174805676@qq.com"
+	version: "v0.1.0"
+)
+
+@server (
+	group : system/user/self
+	prefix: /api/v1/system/user/self
+	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+)
+service api {
+	@doc "获取用户资源"
+	@handler resourceRead
+	post /resource/read () returns (UserResourceReadResp)
+	@doc "获取用户应用列表"
+	@handler resourceAppIndex
+	post /resource/app/index () returns (AppInfoIndexResp)
+	@doc "获取用户模块列表"
+	@handler resourceModuleIndex
+	post /resource/module/index () returns (ModuleInfoIndexResp)
+	@doc "获取用户菜单列表"
+	@handler resourceMenuIndex
+	post /resource/menu/index (UserResourceWithModuleReq) returns (TenantAppMenuIndexResp)
+	@doc "获取用户接口列表"
+	@handler resourceApiIndex
+	post /resource/api/index (UserResourceWithModuleReq) returns (TenantAppApiIndexResp)
+	@doc "获取用户信息"
+	@handler read
+	post /read () returns (UserInfo)
+	@doc "更新用户基本数据"
+	@handler update
+	post /update (UserInfo) returns ()
+}
+
+type (
+	UserResourceWithModuleReq{
+		ModuleCode string `json:"moduleCode,optional"`                               // 应用编号
+	}
+    UserResourceReadResp{
+		Roles []*RoleInfo `json:"roles"` //角色列表
+		Info  *UserInfo `json:"info"`//用户信息
+    }
+)

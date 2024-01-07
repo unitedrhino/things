@@ -2,7 +2,7 @@ package stores
 
 import (
 	"database/sql"
-	"gorm.io/gorm"
+	"gorm.io/plugin/soft_delete"
 	"time"
 )
 
@@ -17,7 +17,7 @@ type NoDelTime struct {
 	UpdatedTime time.Time `gorm:"column:updated_time;autoUpdateTime;default:CURRENT_TIMESTAMP;NOT NULL"`
 }
 
-type DeletedTime = gorm.DeletedAt
+type DeletedTime = soft_delete.DeletedAt
 
 type SoftTime struct {
 	CreatedTime time.Time   `gorm:"column:created_time;index;sort:desc;default:CURRENT_TIMESTAMP;NOT NULL"`

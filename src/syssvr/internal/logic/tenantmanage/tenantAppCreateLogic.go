@@ -56,7 +56,7 @@ func (l *TenantAppCreateLogic) TenantAppCreate(in *sys.TenantAppCreateReq) (*sys
 }
 func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, moduleCode string, menuIDs []int64, apiIDs []int64) error {
 	if _, err := relationDB.NewTenantAppModuleRepo(tx).FindOneByFilter(ctx,
-		relationDB.TenantAppModuleFilter{TenantCode: tenantCode, AppCode: appCode, ModuleCodes: []string{moduleCode}}); err == nil || err != errors.NotFind { //如果报错或者已经有了则跳过
+		relationDB.TenantAppModuleFilter{TenantCode: tenantCode, AppCode: appCode, ModuleCodes: []string{moduleCode}}); err == nil || !errors.Cmp(err, errors.NotFind) { //如果报错或者已经有了则跳过
 		return err
 	}
 	mi, err := relationDB.NewModuleInfoRepo(tx).FindOneByFilter(ctx,

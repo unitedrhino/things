@@ -13,6 +13,7 @@ func ToAppInfoRpc(in *types.AppInfo) *sys.AppInfo {
 	return &sys.AppInfo{
 		Id:      in.ID,
 		Name:    in.Name,
+		Type:    in.Type,
 		Code:    in.Code,
 		Desc:    utils.ToRpcNullString(in.Desc),
 		BaseUrl: in.BaseUrl,
@@ -27,6 +28,7 @@ func ToAppInfoTypes(in *sys.AppInfo) *types.AppInfo {
 	return &types.AppInfo{
 		ID:      in.Id,
 		Name:    in.Name,
+		Type:    in.Type,
 		Code:    in.Code,
 		Desc:    utils.ToNullString(in.Desc),
 		BaseUrl: in.BaseUrl,

@@ -14,6 +14,7 @@ type TenantInfo struct {
 type AppInfo struct {
 	ID      int64   `json:"id,optional"`      // 接口编号
 	Code    string  `json:"code"`             // 应用编号
+	Type    string  `json:"type"`             //应用类型 web:web页面  app:应用  mini:小程序
 	Name    string  `json:"name,optional"`    // 接口名称
 	Desc    *string `json:"desc,optional"`    // 备注
 	BaseUrl string  `json:"baseUrl,optional"` // 应用编号
@@ -176,15 +177,6 @@ type JwtToken struct {
 	AccessToken  string `json:"accessToken,omitempty"`         //用户token
 	AccessExpire int64  `json:"accessExpire,string,omitempty"` //token过期时间
 	RefreshAfter int64  `json:"refreshAfter,string,omitempty"` //token刷新时间
-}
-
-type UserResourceReadResp struct {
-	Menus    []*MenuInfo     `json:"menus"` //菜单资源
-	Roles    []*RoleInfo     `json:"roles"` //角色列表
-	Apis     []*ApiGroupInfo `json:"apis"`  //接口资源
-	Info     *UserInfo       `json:"info"`  //用户信息
-	App      *AppInfo        `json:"app"`
-	Projects []*ProjectInfo  `json:"projects"` //项目列表
 }
 
 type UserRegisterReq struct {
@@ -759,7 +751,7 @@ type TenantModuleIndexReq struct {
 }
 
 type TenantModuleIndexResp struct {
-	ModuleCodes []string `json:"moduleCodes"`
+	List []*ModuleInfo `json:"list"`
 }
 
 type TenantModuleWithIDOrCode struct {
@@ -794,6 +786,15 @@ type TenantAppModule struct {
 	Code    string  `json:"code"` // 应用编号
 	MenuIDs []int64 `json:"menuIDs,optional"`
 	ApiIDs  []int64 `json:"apiIDs,optional"`
+}
+
+type UserResourceWithModuleReq struct {
+	ModuleCode string `json:"moduleCode,optional"` // 应用编号
+}
+
+type UserResourceReadResp struct {
+	Roles []*RoleInfo `json:"roles"` //角色列表
+	Info  *UserInfo   `json:"info"`  //用户信息
 }
 
 type ProductInfo struct {

@@ -29,10 +29,14 @@ type TenantAppModuleFilter struct {
 	AppCode     string
 	ModuleCodes []string
 	TenantCode  string
+	WithModule  bool
 }
 
 func (p TenantAppModuleRepo) fmtFilter(ctx context.Context, f TenantAppModuleFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.WithModule {
+		db = db.Preload("Module")
+	}
 	if f.AppCode != "" {
 		db = db.Where("app_code like ?", "%"+f.AppCode+"%")
 	}
@@ -44,6 +48,9 @@ func (p TenantAppModuleRepo) fmtFilter(ctx context.Context, f TenantAppModuleFil
 	}
 	if len(f.AppCodes) != 0 {
 		db = db.Where("app_code in ?", f.AppCodes)
+	}
+	if len(f.ModuleCodes) != 0 {
+		db = db.Where("module_code in?", f.ModuleCodes)
 	}
 	return db
 }
