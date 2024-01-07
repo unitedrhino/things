@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic/system/role"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -100,7 +101,17 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 		Msg:           "登录成功",
 		Code:          200,
 	})
+	info, err := l.svcCtx.UserRpc.UserRoleIndex(l.ctx, &sys.UserRoleIndexReq{
+		UserID: uc.UserID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	var (
+		roles []*types.RoleInfo
+	)
 
+	roles = role.ToRoleInfosTypes(info.List)
 	return &types.UserLoginResp{
 		Info: types.UserInfo{
 			UserID:      uResp.Info.UserID,
@@ -121,6 +132,7 @@ func (l *LoginLogic) Login(req *types.UserLoginReq) (resp *types.UserLoginResp, 
 			Sex:         uResp.Info.Sex,
 			IsAllData:   uResp.Info.IsAllData,
 		},
+		Roles: roles,
 		Token: types.JwtToken{
 			AccessToken:  uResp.Token.AccessToken,
 			AccessExpire: uResp.Token.AccessExpire,

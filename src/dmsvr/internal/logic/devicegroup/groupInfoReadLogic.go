@@ -33,6 +33,7 @@ func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.GroupInfoReadReq) (*dm.GroupIn
 		return nil, err
 	}
 	return &dm.GroupInfo{
+		AreaID:      int64(dg.AreaID),
 		GroupID:     dg.GroupID,
 		GroupName:   dg.GroupName,
 		ParentID:    dg.ParentID,

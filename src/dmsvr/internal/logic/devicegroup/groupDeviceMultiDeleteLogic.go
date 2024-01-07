@@ -2,6 +2,7 @@ package devicegrouplogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -27,17 +28,7 @@ func NewGroupDeviceMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 // 删除分组设备
 func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceMultiDeleteReq) (*dm.Response, error) {
-	list := make([]*relationDB.DmGroupDevice, 0, len(in.List))
-	for _, v := range in.List {
-		if v == nil {
-			continue
-		}
-		list = append(list, &relationDB.DmGroupDevice{
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-		})
-	}
-	err := l.GdDB.MultiDelete(l.ctx, in.GroupID, list)
+	err := l.GdDB.MultiDelete(l.ctx, in.GroupID, logic.ToDeviceCores(in.List))
 	if err != nil {
 		return nil, err
 	}

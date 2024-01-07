@@ -24,16 +24,20 @@ func NewModuleInfoRepo(in any) *ModuleInfoRepo {
 }
 
 type ModuleInfoFilter struct {
-	ID        int64
-	Codes     []string
-	Code      string
-	Name      string
-	WithApis  bool
-	WithMenus bool
+	ID         int64
+	Codes      []string
+	Code       string
+	Name       string
+	TenantCode string
+	WithApis   bool
+	WithMenus  bool
 }
 
 func (p ModuleInfoRepo) fmtFilter(ctx context.Context, f ModuleInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.TenantCode != "" {
+		db = db.Where("tenant_code =?", f.TenantCode)
+	}
 	if f.WithApis {
 		db = db.Preload("Apis")
 	}

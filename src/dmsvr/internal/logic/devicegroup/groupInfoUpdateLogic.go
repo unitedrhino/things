@@ -33,14 +33,10 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.R
 	if err != nil {
 		return nil, err
 	}
-
-	err = l.GiDB.Update(l.ctx, &relationDB.DmGroupInfo{
-		GroupID:   in.GroupID,
-		ParentID:  record.ParentID,
-		GroupName: in.GroupName,
-		Desc:      in.Desc,
-		Tags:      in.Tags,
-	})
+	record.Desc = in.Desc
+	record.GroupName = in.GroupName
+	record.Tags = in.Tags
+	err = l.GiDB.Update(l.ctx, record)
 	if err != nil {
 		return nil, errors.Parameter.AddMsg(err.Error())
 	}

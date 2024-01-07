@@ -33,6 +33,7 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 		ParentID:    in.ParentID,
 		Tags:        in.Tags,
 		WithProduct: true,
+		AreaID:      in.AreaID,
 	}
 	ros, err := l.GiDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {

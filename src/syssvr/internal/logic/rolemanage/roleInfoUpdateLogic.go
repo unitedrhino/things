@@ -32,7 +32,7 @@ func (l *RoleInfoUpdateLogic) RoleInfoUpdate(in *sys.RoleInfo) (*sys.Response, e
 		l.Logger.Error("RoleInfoModel.FindOne err , sql:%s", l.svcCtx)
 		return nil, err
 	}
-	if in.Name == "" {
+	if in.Name == "" || ro.Name == "超级管理员" {
 		in.Name = ro.Name
 	}
 

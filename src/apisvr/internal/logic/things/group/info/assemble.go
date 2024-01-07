@@ -8,6 +8,7 @@ import (
 
 func ToGroupInfoTypes(in *dm.GroupInfo) *types.GroupInfo {
 	return &types.GroupInfo{
+		AreaID:      in.AreaID,
 		ProductID:   in.ProductID,
 		ProductName: in.ProductName,
 		GroupID:     in.GroupID,

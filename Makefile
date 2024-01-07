@@ -5,7 +5,7 @@ build:build.clean mod cp.etc build.api build.dg build.dm build.sys build.rule bu
 
 runall:  run.timedjob run.timedscheduler run.sys run.dm run.dg run.rule run.api
 
-buildone:build.clean mod cp.etc build.api
+buildone:build.clean mod cp.etc build.api build.view
 
 
 killall:
@@ -31,11 +31,16 @@ cp.etc:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>copying etc<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@mkdir -p ./cmd/etc/
 	@cp -rf ./src/apisvr/etc/* ./cmd/etc/
+	@cp -rf ./src/viewsvr/etc/* ./cmd/etc/
 
 
 build.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@go build -o ./cmd/apisvr ./src/apisvr
+
+build.view:
+	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@go build -o ./cmd/viewsvr ./src/viewsvr
 
 build.dg:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
@@ -65,6 +70,11 @@ build.timedscheduler:
 run.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@cd cmd && nohup ./apisvr &  cd ..
+
+run.view:
+	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@cd cmd && nohup ./viewsvr &  cd ..
+
 
 run.dg:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"

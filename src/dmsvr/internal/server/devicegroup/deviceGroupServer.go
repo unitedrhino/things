@@ -53,9 +53,15 @@ func (s *DeviceGroupServer) GroupInfoDelete(ctx context.Context, in *dm.GroupInf
 }
 
 // 创建分组设备
-func (s *DeviceGroupServer) GroupDeviceMultiCreate(ctx context.Context, in *dm.GroupDeviceMultiCreateReq) (*dm.Response, error) {
+func (s *DeviceGroupServer) GroupDeviceMultiCreate(ctx context.Context, in *dm.GroupDeviceMultiSaveReq) (*dm.Response, error) {
 	l := devicegrouplogic.NewGroupDeviceMultiCreateLogic(ctx, s.svcCtx)
 	return l.GroupDeviceMultiCreate(in)
+}
+
+// 更新分组设备
+func (s *DeviceGroupServer) GroupDeviceMultiUpdate(ctx context.Context, in *dm.GroupDeviceMultiSaveReq) (*dm.Response, error) {
+	l := devicegrouplogic.NewGroupDeviceMultiUpdateLogic(ctx, s.svcCtx)
+	return l.GroupDeviceMultiUpdate(in)
 }
 
 // 获取分组设备信息列表
