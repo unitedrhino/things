@@ -24,12 +24,14 @@ func NewTenantConfigRepo(in any) *TenantConfigRepo {
 }
 
 type TenantConfigFilter struct {
-	//todo 添加过滤字段
+	TenantCode string
 }
 
 func (p TenantConfigRepo) fmtFilter(ctx context.Context, f TenantConfigFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	//todo 添加条件
+	if f.TenantCode != "" {
+		db = db.Where("tenant_code = ?", f.TenantCode)
+	}
 	return db
 }
 

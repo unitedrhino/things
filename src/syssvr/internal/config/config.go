@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -22,7 +21,7 @@ type Config struct {
 		SecondSecret string //第二步需要的token秘钥
 		SecondExpire int64  //token过期时间 单位:秒
 	} `json:",optional"`
-	WxMiniProgram clients.WxMiniProgram `json:",optional"` // 微信小程序，可选
+	WxMiniProgram *conf.ThirdConf `json:",optional"` // 微信小程序，可选
 	UserOpt       struct {
 		NeedUserName bool  `json:",default=true"` //注册是否必须填写账号密码
 		NeedPassWord bool  `json:",default=true"` //注册是否必须填写账号密码

@@ -2,6 +2,7 @@ package clients
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/conf"
 	"github.com/silenceper/wechat/v2"
 	"github.com/silenceper/wechat/v2/cache"
 	"github.com/silenceper/wechat/v2/miniprogram"
@@ -9,17 +10,11 @@ import (
 	zeroCache "github.com/zeromicro/go-zero/core/stores/cache"
 )
 
-type WxMiniProgram struct {
-	Open      bool //如果开启则需要初始化为true
-	AppID     string
-	AppSecret string
-}
-
 type MiniProgram = miniprogram.MiniProgram
 
-func NewWxMiniProgram(ctx context.Context, conf WxMiniProgram, redisConf zeroCache.ClusterConf) *MiniProgram {
-	if conf.Open == false {
-		return nil
+func NewWxMiniProgram(ctx context.Context, conf *conf.ThirdConf, redisConf zeroCache.ClusterConf) (*MiniProgram, error) {
+	if conf == nil {
+		return nil, nil
 	}
 	wc := wechat.NewWechat()
 	memory := cache.NewRedis(ctx, &cache.RedisOpts{
@@ -31,6 +26,6 @@ func NewWxMiniProgram(ctx context.Context, conf WxMiniProgram, redisConf zeroCac
 		AppSecret: conf.AppSecret,
 		Cache:     memory,
 	}
-	miniprogram := wc.GetMiniProgram(cfg)
-	return miniprogram
+	program := wc.GetMiniProgram(cfg)
+	return program, nil
 }

@@ -9,6 +9,7 @@ const (
 	RegWxOpen  = "wxOpen"  //微信开放平台登录
 	RegWxIn    = "wxIn"    //微信内登录
 	RegWxMiniP = "wxMiniP" //微信小程序
+	RegDingApp = "dingApp" //钉钉应用(包含小程序,h5等方式)
 	RegPwd     = "pwd"     //账号密码注册
 )
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/casbin/casbin/v2"
 	cas "github.com/i-Things/things/shared/casbin"
-	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/oss"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
@@ -17,16 +16,16 @@ import (
 )
 
 type ServiceContext struct {
-	Config        config.Config
-	ProjectID     *utils.SnowFlake
-	AreaID        *utils.SnowFlake
-	WxMiniProgram *clients.MiniProgram
-	UserID        *utils.SnowFlake
-	Casbin        *casbin.Enforcer
-	OssClient     *oss.Client
-	Store         kv.Store
-	PwdCheck      *cache.PwdCheck
-	Captcha       *cache.Captcha
+	Config    config.Config
+	ProjectID *utils.SnowFlake
+	AreaID    *utils.SnowFlake
+	UserID    *utils.SnowFlake
+	Casbin    *casbin.Enforcer
+	OssClient *oss.Client
+	Store     kv.Store
+	PwdCheck  *cache.PwdCheck
+	Captcha   *cache.Captcha
+	Cm        *ClientsManage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -42,7 +41,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
 	ProjectID := utils.NewSnowFlake(nodeID)
 	AreaID := utils.NewSnowFlake(nodeID)
-	WxMiniProgram := clients.NewWxMiniProgram(context.Background(), c.WxMiniProgram, c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	UserID := utils.NewSnowFlake(nodeId)
 	dbRaw, err := db.DB()
@@ -57,15 +55,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		os.Exit(-1)
 	}
 	return &ServiceContext{
-		Captcha:       cache.NewCaptcha(store),
-		PwdCheck:      cache.NewPwdCheck(store),
-		Config:        c,
-		ProjectID:     ProjectID,
-		OssClient:     ossClient,
-		AreaID:        AreaID,
-		WxMiniProgram: WxMiniProgram,
-		UserID:        UserID,
-		Casbin:        ca,
-		Store:         store,
+		Captcha:   cache.NewCaptcha(store),
+		PwdCheck:  cache.NewPwdCheck(store),
+		Cm:        NewClients(c),
+		Config:    c,
+		ProjectID: ProjectID,
+		OssClient: ossClient,
+		AreaID:    AreaID,
+		UserID:    UserID,
+		Casbin:    ca,
+		Store:     store,
 	}
 }
