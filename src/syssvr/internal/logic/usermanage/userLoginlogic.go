@@ -116,8 +116,25 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysTenant
 		if err = l.getPwd(in, uc); err != nil {
 			return nil, err
 		}
+	case users.RegDingApp:
+		cli, err := l.svcCtx.Cm.GetClients(l.ctx, "")
+		if err != nil || cli.MiniProgram == nil {
+			return nil, errors.System.AddDetail(err)
+		}
+		ret, er := cli.DingTalk.GetUserInfoByCode(in.Code)
+		if er != nil {
+			return nil, errors.System.AddDetail(er)
+		}
+		if ret.Code != 0 {
+			return nil, errors.Parameter.AddMsgf(ret.Msg)
+		}
+		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{DingTalkUserID: ret.UserInfo.UserId, WithRoles: true, WithTenant: true})
 	case users.RegWxMiniP:
-		auth := l.svcCtx.WxMiniProgram.GetAuth()
+		cli, err := l.svcCtx.Cm.GetClients(l.ctx, "")
+		if err != nil || cli.MiniProgram == nil {
+			return nil, errors.System.AddDetail(err)
+		}
+		auth := cli.MiniProgram.GetAuth()
 		ret, er := auth.Code2SessionContext(l.ctx, in.Code)
 		if er != nil {
 			return nil, errors.System.AddDetail(er)

@@ -16,19 +16,20 @@ func NewUserInfoRepo(in any) *UserInfoRepo {
 }
 
 type UserInfoFilter struct {
-	UserIDs       []int64
-	TenantCode    string
-	UserNames     []string
-	UserName      string
-	Phone         string
-	Email         string
-	Emails        []string
-	WechatOpenIDs []string
-	Accounts      []string //账号查询 非模糊查询
-	WechatUnionID string
-	WechatOpenID  string
-	WithRoles     bool
-	WithTenant    bool
+	UserIDs        []int64
+	TenantCode     string
+	UserNames      []string
+	UserName       string
+	Phone          string
+	Email          string
+	Emails         []string
+	WechatOpenIDs  []string
+	Accounts       []string //账号查询 非模糊查询
+	WechatUnionID  string
+	WechatOpenID   string
+	DingTalkUserID string
+	WithRoles      bool
+	WithTenant     bool
 }
 
 func (p UserInfoRepo) accountsFilter(db *gorm.DB, accounts []string) *gorm.DB {
@@ -40,6 +41,9 @@ func (p UserInfoRepo) accountsFilter(db *gorm.DB, accounts []string) *gorm.DB {
 
 func (p UserInfoRepo) fmtFilter(ctx context.Context, f UserInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.DingTalkUserID != "" {
+		db = db.Where("ding_talk_user_id = ?", f.DingTalkUserID)
+	}
 	if f.WithRoles {
 		db = db.Preload("Roles")
 	}

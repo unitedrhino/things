@@ -35,6 +35,8 @@ func NewUserRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 
 func (l *UserRegisterLogic) UserRegister(in *sys.UserRegisterReq) (*sys.UserRegisterResp, error) {
 	switch in.RegType {
+	case users.RegDingApp:
+		return l.handleDingApp(in)
 	case users.RegWxMiniP:
 		return l.handleWxminip(in)
 	case users.RegEmail, users.RegPhone:
@@ -77,7 +79,11 @@ func (l *UserRegisterLogic) handleEmailOrPhone(in *sys.UserRegisterReq) (*sys.Us
 }
 
 func (l *UserRegisterLogic) handleWxminip(in *sys.UserRegisterReq) (*sys.UserRegisterResp, error) {
-	auth := l.svcCtx.WxMiniProgram.GetAuth()
+	cli, err := l.svcCtx.Cm.GetClients(l.ctx, "")
+	if err != nil || cli.MiniProgram == nil {
+		return nil, errors.System.AddDetail(err)
+	}
+	auth := cli.MiniProgram.GetAuth()
 	ret, err := auth.Code2SessionContext(l.ctx, in.Code)
 	if err != nil {
 		l.Errorf("%v.Code2SessionContext err:%v", err)
@@ -114,6 +120,49 @@ func (l *UserRegisterLogic) handleWxminip(in *sys.UserRegisterReq) (*sys.UserReg
 
 	return &sys.UserRegisterResp{UserID: userID}, err
 }
+
+func (l *UserRegisterLogic) handleDingApp(in *sys.UserRegisterReq) (*sys.UserRegisterResp, error) {
+	cli, err := l.svcCtx.Cm.GetClients(l.ctx, "")
+	if err != nil || cli.MiniProgram == nil {
+		return nil, errors.System.AddDetail(err)
+	}
+	ret, err := cli.DingTalk.GetUserInfoByCode(in.Code)
+	if err != nil {
+		l.Errorf("%v.Code2SessionContext err:%v", err)
+		if ret.Code != 0 {
+			return nil, errors.System.AddDetail(ret.Msg)
+		}
+		return nil, errors.System.AddDetail(err)
+	} else if ret.Code != 0 {
+		return nil, errors.Parameter.AddDetail(ret.Msg)
+	}
+	userID := l.svcCtx.UserID.GetSnowflakeId()
+
+	conn := stores.GetTenantConn(l.ctx)
+	err = conn.Transaction(func(tx *gorm.DB) error {
+		uidb := relationDB.NewUserInfoRepo(tx)
+		_, err = uidb.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{DingTalkUserID: ret.UserInfo.UserId})
+		if err == nil { //已经注册过
+			return errors.DuplicateRegister
+		}
+		if !errors.Cmp(err, errors.NotFind) {
+			return err
+		}
+		ui := relationDB.SysTenantUserInfo{
+			UserID:         userID,
+			DingTalkUserID: sql.NullString{Valid: true, String: ret.UserInfo.UserId},
+			NickName:       in.Info.NickName,
+		}
+		if in.Info.UserName != "" {
+			ui.UserName = utils.AnyToNullString(in.Info.UserName)
+		}
+		err = l.FillUserInfo(&ui, tx)
+		return err
+	})
+
+	return &sys.UserRegisterResp{UserID: userID}, err
+}
+
 func (l *UserRegisterLogic) FillUserInfo(in *relationDB.SysTenantUserInfo, tx *gorm.DB) error {
 	err := tx.Transaction(func(tx *gorm.DB) error {
 		cfg, err := relationDB.NewTenantConfigRepo(tx).FindOne(l.ctx)
