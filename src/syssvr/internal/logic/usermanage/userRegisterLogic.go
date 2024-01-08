@@ -151,7 +151,7 @@ func (l *UserRegisterLogic) handleDingApp(in *sys.UserRegisterReq) (*sys.UserReg
 		ui := relationDB.SysTenantUserInfo{
 			UserID:         userID,
 			DingTalkUserID: sql.NullString{Valid: true, String: ret.UserInfo.UserId},
-			NickName:       in.Info.NickName,
+			NickName:       ret.UserInfo.Name,
 		}
 		if in.Info.UserName != "" {
 			ui.UserName = utils.AnyToNullString(in.Info.UserName)
