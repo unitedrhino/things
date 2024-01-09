@@ -1,7 +1,9 @@
-package intelligentcontrollogic
+package rulelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/udsvr/internal/logic"
+	"github.com/i-Things/things/src/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/udsvr/internal/svc"
 	"github.com/i-Things/things/src/udsvr/pb/ud"
@@ -24,7 +26,15 @@ func NewSceneInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sc
 }
 
 func (l *SceneInfoIndexLogic) SceneInfoIndex(in *ud.SceneInfoIndexReq) (*ud.SceneInfoIndexResp, error) {
-	// todo: add your logic here and delete this line
+	f := relationDB.SceneInfoFilter{AreaID: in.AreaID, Status: in.Status, Name: in.Name}
+	list, err := relationDB.NewSceneInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+	if err != nil {
+		return nil, err
+	}
+	total, err := relationDB.NewSceneInfoRepo(l.ctx).CountByFilter(l.ctx, f)
+	if err != nil {
+		return nil, err
+	}
 
-	return &ud.SceneInfoIndexResp{}, nil
+	return &ud.SceneInfoIndexResp{List: PoToSceneInfoPbs(list), Total: total}, nil
 }

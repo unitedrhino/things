@@ -1,7 +1,8 @@
-package intelligentcontrollogic
+package rulelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/udsvr/internal/svc"
 	"github.com/i-Things/things/src/udsvr/pb/ud"
@@ -24,7 +25,6 @@ func NewSceneInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 }
 
 func (l *SceneInfoDeleteLogic) SceneInfoDelete(in *ud.WithID) (*ud.Empty, error) {
-	// todo: add your logic here and delete this line
-
-	return &ud.Empty{}, nil
+	err := relationDB.NewSceneInfoRepo(l.ctx).Delete(l.ctx, in.Id)
+	return &ud.Empty{}, err
 }

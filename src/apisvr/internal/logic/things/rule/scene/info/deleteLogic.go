@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/rulesvr/pb/rule"
+	"github.com/i-Things/things/src/udsvr/pb/ud"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -27,7 +27,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 }
 
 func (l *DeleteLogic) Delete(req *types.WithID) error {
-	_, err := l.svcCtx.Scene.SceneInfoDelete(l.ctx, &rule.WithID{Id: req.ID})
+	_, err := l.svcCtx.Rule.SceneInfoDelete(l.ctx, &ud.WithID{Id: req.ID})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.SceneInfoDelete req=%v err=%v", utils.FuncName(), req, er)

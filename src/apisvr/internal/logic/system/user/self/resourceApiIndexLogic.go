@@ -32,18 +32,26 @@ func (l *ResourceApiIndexLogic) ResourceApiIndex(req *types.UserResourceWithModu
 	if roleID == 0 {
 		return nil, nil
 	}
-	ids, err := l.svcCtx.RoleRpc.RoleApiIndex(l.ctx, &sys.RoleApiIndexReq{
-		Id:         roleID,
-		AppCode:    uc.AppCode,
-		ModuleCode: req.ModuleCode,
-	})
-	if err != nil {
-		return nil, err
+	var apiIDs []int64
+	if !uc.IsAdmin {
+		ids, err := l.svcCtx.RoleRpc.RoleApiIndex(l.ctx, &sys.RoleApiIndexReq{
+			Id:         roleID,
+			AppCode:    uc.AppCode,
+			ModuleCode: req.ModuleCode,
+		})
+		if err != nil {
+			return nil, err
+		}
+		apiIDs = ids.ApiIDs
+		if len(apiIDs) == 0 {
+			return nil, nil
+		}
 	}
+
 	ret, err := l.svcCtx.TenantRpc.TenantAppApiIndex(l.ctx, &sys.TenantAppApiIndexReq{
 		AppCode:    uc.AppCode,
 		ModuleCode: req.ModuleCode,
-		ApiIDs:     ids.ApiIDs,
+		ApiIDs:     apiIDs,
 	})
 	if err != nil {
 		return nil, err

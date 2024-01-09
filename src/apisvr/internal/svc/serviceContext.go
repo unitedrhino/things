@@ -37,7 +37,7 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
-	"github.com/i-Things/things/src/udsvr/client/intelligentcontrol"
+	"github.com/i-Things/things/src/udsvr/client/rule"
 	"github.com/i-Things/things/src/udsvr/uddirect"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrconfigmanage"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrinfomanage"
@@ -81,11 +81,11 @@ type SvrClient struct {
 	RemoteConfig remoteconfig.RemoteConfig
 	Common       common.Common
 
-	IntelligentControl intelligentcontrol.IntelligentControl
-	Scene              scenelinkage.SceneLinkage
-	Alarm              alarmcenter.AlarmCenter
-	Timedscheduler     timedscheduler.Timedscheduler
-	TimedJob           timedmanage.TimedManage
+	Rule           rule.Rule
+	Scene          scenelinkage.SceneLinkage
+	Alarm          alarmcenter.AlarmCenter
+	Timedscheduler timedscheduler.Timedscheduler
+	TimedJob       timedmanage.TimedManage
 }
 
 type ServiceContext struct {
@@ -128,7 +128,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		timedJob       timedmanage.TimedManage
 		tenantM        tenant.TenantManage
 
-		ic intelligentcontrol.IntelligentControl
+		ic rule.Rule
 	)
 	var ur user.UserManage
 	var ro role.RoleManage
@@ -172,9 +172,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	if c.UdRpc.Enable {
 		if c.UdRpc.Mode == conf.ClientModeGrpc {
-			ic = intelligentcontrol.NewIntelligentControl(zrpc.MustNewClient(c.UdRpc.Conf))
+			ic = rule.NewRule(zrpc.MustNewClient(c.UdRpc.Conf))
 		} else {
-			ic = uddirect.NewIntelligentControl(c.UdRpc.RunProxy)
+			ic = uddirect.NewRule(c.UdRpc.RunProxy)
 		}
 	}
 	if c.SysRpc.Enable {
@@ -270,11 +270,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceA:   deviceA,
 			DeviceG:   deviceG,
 
-			DeviceMsg:          deviceMsg,
-			DeviceInteract:     deviceInteract,
-			RemoteConfig:       remoteConfig,
-			Common:             sysCommon,
-			IntelligentControl: ic,
+			DeviceMsg:      deviceMsg,
+			DeviceInteract: deviceInteract,
+			RemoteConfig:   remoteConfig,
+			Common:         sysCommon,
+			Rule:           ic,
 		},
 		//OSS:        ossClient,
 	}

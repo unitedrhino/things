@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/rulesvr/pb/rule"
+	"github.com/i-Things/things/src/udsvr/pb/ud"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -27,7 +27,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 }
 
 func (l *ReadLogic) Read(req *types.WithID) (resp *types.SceneInfo, err error) {
-	ruleResp, err := l.svcCtx.Scene.SceneInfoRead(l.ctx, &rule.WithID{Id: req.ID})
+	ruleResp, err := l.svcCtx.Rule.SceneInfoRead(l.ctx, &ud.WithID{Id: req.ID})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s rpc.SceneInfoRead req=%v err=%+v", utils.FuncName(), req, er)

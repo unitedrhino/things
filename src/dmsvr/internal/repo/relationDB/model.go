@@ -48,23 +48,24 @@ func (m *DmDeviceInfo) TableName() string {
 
 // 产品信息表
 type DmProductInfo struct {
-	ProductID    string            `gorm:"column:product_id;type:char(11);primary_key;NOT NULL"`        // 产品id
-	ProductName  string            `gorm:"column:product_name;uniqueIndex;type:varchar(100);NOT NULL"`  // 产品名称
-	ProductImg   string            `gorm:"column:product_img;type:varchar(200)"`                        // 产品图片
-	ProductType  int64             `gorm:"column:product_type;type:smallint;default:1"`                 // 产品状态:1:开发中,2:审核中,3:已发布
-	AuthMode     int64             `gorm:"column:auth_mode;type:smallint;default:1"`                    // 认证方式:1:账密认证,2:秘钥认证
-	DeviceType   int64             `gorm:"column:device_type;index;type:smallint;default:1"`            // 设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64             `gorm:"column:category_id;type:integer;default:1"`                   // 产品品类
-	NetType      int64             `gorm:"column:net_type;type:smallint;default:1"`                     // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto    int64             `gorm:"column:data_proto;type:smallint;default:1"`                   // 数据协议:1:自定义,2:数据模板
-	ProtocolID   int64             `gorm:"column:protocol_id;type:bigint;default:1"`                    // 协议名称: 如果为空则为iThings标准协议
-	AutoRegister int64             `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret       string            `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
-	Desc         string            `gorm:"column:description;type:varchar(200)"`                        // 描述
-	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`                 // 产品状态
-	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
-	stores.Time
-	ProtocolInfo *DmProtocolInfo `gorm:"foreignKey:ID;references:ProtocolID"` // 添加外键
+	ProductID    string            `gorm:"column:product_id;type:char(11);primary_key;NOT NULL"`          // 产品id
+	ProductName  string            `gorm:"column:product_name;uniqueIndex:pn;type:varchar(100);NOT NULL"` // 产品名称
+	ProductImg   string            `gorm:"column:product_img;type:varchar(200)"`                          // 产品图片
+	ProductType  int64             `gorm:"column:product_type;type:smallint;default:1"`                   // 产品状态:1:开发中,2:审核中,3:已发布
+	AuthMode     int64             `gorm:"column:auth_mode;type:smallint;default:1"`                      // 认证方式:1:账密认证,2:秘钥认证
+	DeviceType   int64             `gorm:"column:device_type;index;type:smallint;default:1"`              // 设备类型:1:设备,2:网关,3:子设备
+	CategoryID   int64             `gorm:"column:category_id;type:integer;default:1"`                     // 产品品类
+	NetType      int64             `gorm:"column:net_type;type:smallint;default:1"`                       // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	DataProto    int64             `gorm:"column:data_proto;type:smallint;default:1"`                     // 数据协议:1:自定义,2:数据模板
+	ProtocolID   int64             `gorm:"column:protocol_id;type:bigint;default:1"`                      // 协议名称: 如果为空则为iThings标准协议
+	AutoRegister int64             `gorm:"column:auto_register;type:smallint;default:1"`                  // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret       string            `gorm:"column:secret;type:varchar(50)"`                                // 动态注册产品秘钥
+	Desc         string            `gorm:"column:description;type:varchar(200)"`                          // 描述
+	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`                   // 产品状态
+	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`   // 产品标签
+	stores.NoDelTime
+	DeletedTime  stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
+	ProtocolInfo *DmProtocolInfo    `gorm:"foreignKey:ID;references:ProtocolID"` // 添加外键
 
 	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 
@@ -77,13 +78,14 @@ func (m *DmProductInfo) TableName() string {
 // 自定义协议表
 type DmProtocolInfo struct {
 	ID           int64    `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	Name         string   `gorm:"column:name;uniqueIndex;type:varchar(100);NOT NULL"`               // 协议名称
+	Name         string   `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"`            // 协议名称
 	Protocol     string   `gorm:"column:protocol;type:varchar(100)"`                                // 协议: mqtt,tcp,udp
 	ProtocolType string   `gorm:"column:protocol_type;type:varchar(100);default:iThings"`           // 协议类型: iThings,iThings-thingsboard
 	Desc         string   `gorm:"column:desc;type:varchar(200)"`                                    // 描述
 	Endpoints    []string `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"` // 协议端点,如果填写了优先使用该字段
 	EtcdKey      string   `gorm:"column:etcd_key;type:varchar(200);default:null"`                   //服务etcd发现的key etcd key
-	stores.Time
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
 }
 
 func (m *DmProtocolInfo) TableName() string {
@@ -93,13 +95,14 @@ func (m *DmProtocolInfo) TableName() string {
 // 产品自定义协议表
 type DmProductCustom struct {
 	ID              int64                        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID       string                       `gorm:"column:product_id;uniqueIndex;type:char(11);NOT NULL"` // 产品id
-	ScriptLang      int64                        `gorm:"column:script_lang;type:smallint;default:1"`           // 脚本语言类型 1:JavaScript 2:lua 3:python
-	CustomTopics    []*productCustom.CustomTopic `gorm:"column:custom_topics;type:json"`                       // 自定义topic数组
-	TransformScript string                       `gorm:"column:transform_script;type:text"`                    // 协议转换脚本
-	LoginAuthScript string                       `gorm:"column:login_auth_script;type:text"`                   // 登录认证脚本
-	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
+	ProductID       string                       `gorm:"column:product_id;uniqueIndex:pn;type:char(11);NOT NULL"` // 产品id
+	ScriptLang      int64                        `gorm:"column:script_lang;type:smallint;default:1"`              // 脚本语言类型 1:JavaScript 2:lua 3:python
+	CustomTopics    []*productCustom.CustomTopic `gorm:"column:custom_topics;type:json"`                          // 自定义topic数组
+	TransformScript string                       `gorm:"column:transform_script;type:text"`                       // 协议转换脚本
+	LoginAuthScript string                       `gorm:"column:login_auth_script;type:text"`                      // 登录认证脚本
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
+	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmProductCustom) TableName() string {
@@ -118,8 +121,9 @@ type DmProductSchema struct {
 	Desc         string `gorm:"column:desc;type:varchar(200)"`                                                                    // 描述
 	Required     int64  `gorm:"column:required;type:smallint;default:2"`                                                          // 是否必须,1是 2否
 	Affordance   string `gorm:"column:affordance;type:json;NOT NULL"`                                                             // 各类型的自定义功能定义
-	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:product_id_identifier"`
+	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmProductSchema) TableName() string {
@@ -137,8 +141,9 @@ type DmGroupInfo struct {
 	GroupName  string            `gorm:"column:group_name;uniqueIndex:tc_ac;type:varchar(100);NOT NULL"`         // 分组名称
 	Desc       string            `gorm:"column:desc;type:varchar(200)"`                                          // 描述
 	Tags       map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`            // 分组标签
-	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:tc_ac"`
+	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmGroupInfo) TableName() string {
@@ -154,8 +159,9 @@ type DmGroupDevice struct {
 	GroupID    int64             `gorm:"column:group_id;uniqueIndex:group_id_product_id_device_name;type:bigint;NOT NULL"`          // 分组ID
 	ProductID  string            `gorm:"column:product_id;uniqueIndex:group_id_product_id_device_name;type:char(11);NOT NULL"`      // 产品id
 	DeviceName string            `gorm:"column:device_name;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"` // 设备名称
-	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:group_id_product_id_device_name"`
+	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmGroupDevice) TableName() string {
@@ -170,9 +176,10 @@ type DmGatewayDevice struct {
 	GatewayDeviceName string            `gorm:"column:gateway_device_name;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"` // 网关设备名称
 	ProductID         string            `gorm:"column:product_id;uniqueIndex:gpi_pdn_pi_dn;type:char(11);NOT NULL"`              // 子设备产品id
 	DeviceName        string            `gorm:"column:device_name;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"`         // 子设备名称
-	stores.Time
-	Device  *DmDeviceInfo `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
-	Gateway *DmDeviceInfo `gorm:"foreignKey:ProductID,DeviceName;references:GatewayProductID,GatewayDeviceName"`
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:gpi_pdn_pi_dn"`
+	Device      *DmDeviceInfo      `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
+	Gateway     *DmDeviceInfo      `gorm:"foreignKey:ProductID,DeviceName;references:GatewayProductID,GatewayDeviceName"`
 }
 
 func (m *DmGatewayDevice) TableName() string {
@@ -182,10 +189,11 @@ func (m *DmGatewayDevice) TableName() string {
 // 产品远程配置表
 type DmProductRemoteConfig struct {
 	ID        int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID string `gorm:"column:product_id;index;type:char(11);NOT NULL"` // 产品id
-	Content   string `gorm:"column:content;type:json;NOT NULL"`              // 配置内容
-	stores.Time
-	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
+	ProductID string `gorm:"column:product_id;uniqueIndex:pn;type:char(11);NOT NULL"` // 产品id
+	Content   string `gorm:"column:content;type:json;NOT NULL"`                       // 配置内容
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
+	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmProductRemoteConfig) TableName() string {
