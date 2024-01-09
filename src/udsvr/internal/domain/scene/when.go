@@ -2,10 +2,12 @@ package scene
 
 type When struct {
 	TermCondType TermCondType `json:"termCondType"` //触发条件类型 and: 与 or: 或
-	ValidRange   WhenRange    `json:"validRange"`   //生效时间段
+	ValidRange   *WhenRange   `json:"validRange"`   //生效时间段
+	InvalidRange *WhenRange   `json:"invalidRange"` //无效时间段(最高优先级)
 	Terms        Terms        `json:"terms"`        //条件
 }
 type WhenRange struct {
+	DateRange DateRange `json:"dateRange"`
 	TimeRange TimeRange `json:"timeRange"`
 	Repeat    Timer     `json:"repeat"`
 }

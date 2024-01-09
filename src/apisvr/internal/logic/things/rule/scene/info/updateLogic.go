@@ -26,7 +26,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 }
 
 func (l *UpdateLogic) Update(req *types.SceneInfoUpdateReq) error {
-	_, err := l.svcCtx.Scene.SceneInfoUpdate(l.ctx, ToScenePb(&req.SceneInfo))
+	_, err := l.svcCtx.Rule.SceneInfoUpdate(l.ctx, ToScenePb(&req.SceneInfo))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.SceneInfoUpdate req=%v err=%v", utils.FuncName(), req, er)

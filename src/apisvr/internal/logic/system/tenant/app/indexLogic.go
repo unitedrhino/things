@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system/app/info"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
@@ -27,9 +26,6 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.TenantAppIndexReq) (resp *types.TenantAppIndexResp, err error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
-		return nil, err
-	}
 	ret, err := l.svcCtx.TenantRpc.TenantAppIndex(l.ctx, &sys.TenantAppIndexReq{Code: req.Code})
 	return &types.TenantAppIndexResp{
 		List: info.ToAppInfosTypes(ret.List),

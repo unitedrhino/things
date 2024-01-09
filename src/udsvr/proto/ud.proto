@@ -19,8 +19,8 @@ message TimeRange{
 }
 
 
-//智能控制
-service intelligentControl {
+//规则控制
+service rule {
   //场景
   rpc sceneInfoCreate(SceneInfo) returns(WithID);
   rpc sceneInfoUpdate(SceneInfo) returns(Empty);
@@ -30,13 +30,7 @@ service intelligentControl {
   rpc sceneManuallyTrigger(WithID) returns (Empty);//手动触发场景
 }
 
-//鉴权管理
-service AuthManage{
-  //用户设备列表
-  rpc userDeviceIndex(Empty) returns(Empty);
 
-
-}
 
 
 message AutoInfoIndexReq{
@@ -69,6 +63,7 @@ message AutoInfo{
 
 message SceneInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
+  int64 areaID = 6;//所属区域
   string name =2;//场景名 模糊查询
   int64 status = 3;//状态: 1启用 2禁用
   string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
@@ -83,14 +78,14 @@ message SceneInfoIndexResp{
 
 message SceneInfo{
   int64 id = 1;//场景id
-  int64 userID = 2;//创建用户
+  int64 areaID = 2;//所属区域
   string name =3;//场景名
   string desc = 4;//描述
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
-  int64 delay = 6;
-  string delayUnit = 7;//单位 s:秒 m:分钟 h:小时 d:天
-  string headImg = 8;//触发器
-  bool isUpdateHeadImg = 9;//只有这个参数为true的时候才会更新图片,传参为图片的file path
+  string trigger = 6;//多种触发方式
+  string when = 7;//手动触发模式不生效
+  string then = 8; //触发后执行的动作
+  int64 status = 9;// 状态（1启用 2禁用）
 }
 
 message SceneDeviceIndexReq{

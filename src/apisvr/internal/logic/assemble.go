@@ -6,6 +6,7 @@ import (
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 	"github.com/i-Things/things/src/timed/timedjobsvr/pb/timedjob"
+	"github.com/i-Things/things/src/udsvr/pb/ud"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
 )
 
@@ -65,6 +66,16 @@ func ToTimedJobPageRpc(in *types.PageInfo) *timedjob.PageInfo {
 		return nil
 	}
 	return &timedjob.PageInfo{
+		Page: in.Page,
+		Size: in.Size,
+	}
+}
+
+func ToUdPageRpc(in *types.PageInfo) *ud.PageInfo {
+	if in == nil {
+		return nil
+	}
+	return &ud.PageInfo{
 		Page: in.Page,
 		Size: in.Size,
 	}

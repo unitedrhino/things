@@ -23,6 +23,12 @@ type TimeRange struct {
 	EndTime   int64  `json:"endTime"`   //自定义结束时间 从0点加起来的秒数
 }
 
+type DateRange struct {
+	Type      string `json:"type"`      //日期类型 workday: 工作日 weekend: 周末 holiday: 节假日 custom:自定义
+	StartDate int64  `json:"startDate"` //开始日期 unix时间戳
+	EndDate   int64  `json:"endDate"`   //结束日期 unix时间戳
+}
+
 // Timer 定时器类型
 type Timer struct {
 	Exec   int64 `json:"exec"`   //从0点加起来的秒数 如 1点就是 1*60*60

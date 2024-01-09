@@ -1,14 +1,14 @@
 package uddirect
 
 import (
-	"github.com/i-Things/things/src/udsvr/client/intelligentcontrol"
-	server "github.com/i-Things/things/src/udsvr/internal/server/intelligentcontrol"
+	"github.com/i-Things/things/src/udsvr/client/rule"
+	server "github.com/i-Things/things/src/udsvr/internal/server/rule"
 )
 
-func NewIntelligentControl(runSvr bool) intelligentcontrol.IntelligentControl {
+func NewRule(runSvr bool) rule.Rule {
 	svcCtx := GetSvcCtx()
 	if runSvr {
 		RunServer(svcCtx)
 	}
-	return intelligentcontrol.NewDirectIntelligentControl(svcCtx, server.NewIntelligentControlServer(svcCtx))
+	return rule.NewDirectRule(svcCtx, server.NewRuleServer(svcCtx))
 }

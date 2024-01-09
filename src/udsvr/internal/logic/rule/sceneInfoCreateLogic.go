@@ -1,7 +1,8 @@
-package intelligentcontrollogic
+package rulelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/udsvr/internal/svc"
 	"github.com/i-Things/things/src/udsvr/pb/ud"
@@ -25,7 +26,15 @@ func NewSceneInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 
 // 场景
 func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, error) {
-	// todo: add your logic here and delete this line
+	do := ToSceneInfoDo(in)
+	err := do.Validate()
+	if err != nil {
+		return nil, err
+	}
+	//校验数据权限 todo
 
-	return &ud.WithID{}, nil
+	po := ToSceneInfoPo(do)
+	relationDB.NewSceneInfoRepo(l.ctx).Insert(l.ctx, po)
+
+	return &ud.WithID{Id: po.ID}, nil
 }

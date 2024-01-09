@@ -93,7 +93,7 @@ func (l *ExtLogic) HandleNtp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	switch l.dreq.Method { //操作方法
 	case deviceMsg.GetNtp:
 		//if l.dreq.Code != errors.OK.Code { //如果不成功,则记录日志即可
-		//	return nil, errors.DeviceError.AddMsg(l.dreq.Msg).AddDetail(msg.Payload)
+		//	return nil, errors.DeviceResp.AddMsg(l.dreq.Msg).AddDetail(msg.Payload)
 		//}
 		respMsg, err = l.HandleGetNtpReply(msg, l.dreq)
 		return respMsg, err

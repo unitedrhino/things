@@ -1,7 +1,8 @@
-package intelligentcontrollogic
+package rulelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/src/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/udsvr/internal/svc"
 	"github.com/i-Things/things/src/udsvr/pb/ud"
@@ -24,7 +25,6 @@ func NewSceneInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sce
 }
 
 func (l *SceneInfoReadLogic) SceneInfoRead(in *ud.WithID) (*ud.SceneInfo, error) {
-	// todo: add your logic here and delete this line
-
-	return &ud.SceneInfo{}, nil
+	po, err := relationDB.NewSceneInfoRepo(l.ctx).FindOne(l.ctx, in.Id)
+	return PoToSceneInfoPb(po), err
 }

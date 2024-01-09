@@ -32,11 +32,19 @@ func (l *ResourceAppIndexLogic) ResourceAppIndex() (resp *types.AppInfoIndexResp
 	if roleID == 0 {
 		return nil, nil
 	}
-	as, err := l.svcCtx.RoleRpc.RoleAppIndex(l.ctx, &sys.RoleAppIndexReq{Id: roleID})
-	if err != nil {
-		return nil, err
+	var appCodes []string
+	if !uc.IsAdmin {
+		as, err := l.svcCtx.RoleRpc.RoleAppIndex(l.ctx, &sys.RoleAppIndexReq{Id: roleID})
+		if err != nil {
+			return nil, err
+		}
+		appCodes = as.AppCodes
+		if len(appCodes) == 0 {
+			return nil, nil
+		}
 	}
-	ret, err := l.svcCtx.TenantRpc.TenantAppIndex(l.ctx, &sys.TenantAppIndexReq{AppCodes: as.AppCodes})
+
+	ret, err := l.svcCtx.TenantRpc.TenantAppIndex(l.ctx, &sys.TenantAppIndexReq{AppCodes: appCodes})
 
 	return &types.AppInfoIndexResp{
 		List: info.ToAppInfosTypes(ret.List),

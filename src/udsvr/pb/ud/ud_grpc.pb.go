@@ -19,18 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	IntelligentControl_SceneInfoCreate_FullMethodName      = "/ud.intelligentControl/sceneInfoCreate"
-	IntelligentControl_SceneInfoUpdate_FullMethodName      = "/ud.intelligentControl/sceneInfoUpdate"
-	IntelligentControl_SceneInfoDelete_FullMethodName      = "/ud.intelligentControl/sceneInfoDelete"
-	IntelligentControl_SceneInfoIndex_FullMethodName       = "/ud.intelligentControl/sceneInfoIndex"
-	IntelligentControl_SceneInfoRead_FullMethodName        = "/ud.intelligentControl/sceneInfoRead"
-	IntelligentControl_SceneManuallyTrigger_FullMethodName = "/ud.intelligentControl/sceneManuallyTrigger"
+	Rule_SceneInfoCreate_FullMethodName      = "/ud.rule/sceneInfoCreate"
+	Rule_SceneInfoUpdate_FullMethodName      = "/ud.rule/sceneInfoUpdate"
+	Rule_SceneInfoDelete_FullMethodName      = "/ud.rule/sceneInfoDelete"
+	Rule_SceneInfoIndex_FullMethodName       = "/ud.rule/sceneInfoIndex"
+	Rule_SceneInfoRead_FullMethodName        = "/ud.rule/sceneInfoRead"
+	Rule_SceneManuallyTrigger_FullMethodName = "/ud.rule/sceneManuallyTrigger"
 )
 
-// IntelligentControlClient is the client API for IntelligentControl service.
+// RuleClient is the client API for Rule service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type IntelligentControlClient interface {
+type RuleClient interface {
 	// 场景
 	SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*WithID, error)
 	SceneInfoUpdate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Empty, error)
@@ -40,72 +40,72 @@ type IntelligentControlClient interface {
 	SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 }
 
-type intelligentControlClient struct {
+type ruleClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewIntelligentControlClient(cc grpc.ClientConnInterface) IntelligentControlClient {
-	return &intelligentControlClient{cc}
+func NewRuleClient(cc grpc.ClientConnInterface) RuleClient {
+	return &ruleClient{cc}
 }
 
-func (c *intelligentControlClient) SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*WithID, error) {
+func (c *ruleClient) SceneInfoCreate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*WithID, error) {
 	out := new(WithID)
-	err := c.cc.Invoke(ctx, IntelligentControl_SceneInfoCreate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_SceneInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *intelligentControlClient) SceneInfoUpdate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Empty, error) {
+func (c *ruleClient) SceneInfoUpdate(ctx context.Context, in *SceneInfo, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, IntelligentControl_SceneInfoUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_SceneInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *intelligentControlClient) SceneInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (c *ruleClient) SceneInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, IntelligentControl_SceneInfoDelete_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_SceneInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *intelligentControlClient) SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error) {
+func (c *ruleClient) SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error) {
 	out := new(SceneInfoIndexResp)
-	err := c.cc.Invoke(ctx, IntelligentControl_SceneInfoIndex_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_SceneInfoIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *intelligentControlClient) SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error) {
+func (c *ruleClient) SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error) {
 	out := new(SceneInfo)
-	err := c.cc.Invoke(ctx, IntelligentControl_SceneInfoRead_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_SceneInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *intelligentControlClient) SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (c *ruleClient) SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, IntelligentControl_SceneManuallyTrigger_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_SceneManuallyTrigger_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// IntelligentControlServer is the server API for IntelligentControl service.
-// All implementations must embed UnimplementedIntelligentControlServer
+// RuleServer is the server API for Rule service.
+// All implementations must embed UnimplementedRuleServer
 // for forward compatibility
-type IntelligentControlServer interface {
+type RuleServer interface {
 	// 场景
 	SceneInfoCreate(context.Context, *SceneInfo) (*WithID, error)
 	SceneInfoUpdate(context.Context, *SceneInfo) (*Empty, error)
@@ -113,274 +113,182 @@ type IntelligentControlServer interface {
 	SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error)
 	SceneInfoRead(context.Context, *WithID) (*SceneInfo, error)
 	SceneManuallyTrigger(context.Context, *WithID) (*Empty, error)
-	mustEmbedUnimplementedIntelligentControlServer()
+	mustEmbedUnimplementedRuleServer()
 }
 
-// UnimplementedIntelligentControlServer must be embedded to have forward compatible implementations.
-type UnimplementedIntelligentControlServer struct {
+// UnimplementedRuleServer must be embedded to have forward compatible implementations.
+type UnimplementedRuleServer struct {
 }
 
-func (UnimplementedIntelligentControlServer) SceneInfoCreate(context.Context, *SceneInfo) (*WithID, error) {
+func (UnimplementedRuleServer) SceneInfoCreate(context.Context, *SceneInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoCreate not implemented")
 }
-func (UnimplementedIntelligentControlServer) SceneInfoUpdate(context.Context, *SceneInfo) (*Empty, error) {
+func (UnimplementedRuleServer) SceneInfoUpdate(context.Context, *SceneInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoUpdate not implemented")
 }
-func (UnimplementedIntelligentControlServer) SceneInfoDelete(context.Context, *WithID) (*Empty, error) {
+func (UnimplementedRuleServer) SceneInfoDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoDelete not implemented")
 }
-func (UnimplementedIntelligentControlServer) SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error) {
+func (UnimplementedRuleServer) SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoIndex not implemented")
 }
-func (UnimplementedIntelligentControlServer) SceneInfoRead(context.Context, *WithID) (*SceneInfo, error) {
+func (UnimplementedRuleServer) SceneInfoRead(context.Context, *WithID) (*SceneInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoRead not implemented")
 }
-func (UnimplementedIntelligentControlServer) SceneManuallyTrigger(context.Context, *WithID) (*Empty, error) {
+func (UnimplementedRuleServer) SceneManuallyTrigger(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneManuallyTrigger not implemented")
 }
-func (UnimplementedIntelligentControlServer) mustEmbedUnimplementedIntelligentControlServer() {}
+func (UnimplementedRuleServer) mustEmbedUnimplementedRuleServer() {}
 
-// UnsafeIntelligentControlServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to IntelligentControlServer will
+// UnsafeRuleServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RuleServer will
 // result in compilation errors.
-type UnsafeIntelligentControlServer interface {
-	mustEmbedUnimplementedIntelligentControlServer()
+type UnsafeRuleServer interface {
+	mustEmbedUnimplementedRuleServer()
 }
 
-func RegisterIntelligentControlServer(s grpc.ServiceRegistrar, srv IntelligentControlServer) {
-	s.RegisterService(&IntelligentControl_ServiceDesc, srv)
+func RegisterRuleServer(s grpc.ServiceRegistrar, srv RuleServer) {
+	s.RegisterService(&Rule_ServiceDesc, srv)
 }
 
-func _IntelligentControl_SceneInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rule_SceneInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SceneInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IntelligentControlServer).SceneInfoCreate(ctx, in)
+		return srv.(RuleServer).SceneInfoCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: IntelligentControl_SceneInfoCreate_FullMethodName,
+		FullMethod: Rule_SceneInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntelligentControlServer).SceneInfoCreate(ctx, req.(*SceneInfo))
+		return srv.(RuleServer).SceneInfoCreate(ctx, req.(*SceneInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntelligentControl_SceneInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rule_SceneInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SceneInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IntelligentControlServer).SceneInfoUpdate(ctx, in)
+		return srv.(RuleServer).SceneInfoUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: IntelligentControl_SceneInfoUpdate_FullMethodName,
+		FullMethod: Rule_SceneInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntelligentControlServer).SceneInfoUpdate(ctx, req.(*SceneInfo))
+		return srv.(RuleServer).SceneInfoUpdate(ctx, req.(*SceneInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntelligentControl_SceneInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rule_SceneInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IntelligentControlServer).SceneInfoDelete(ctx, in)
+		return srv.(RuleServer).SceneInfoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: IntelligentControl_SceneInfoDelete_FullMethodName,
+		FullMethod: Rule_SceneInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntelligentControlServer).SceneInfoDelete(ctx, req.(*WithID))
+		return srv.(RuleServer).SceneInfoDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntelligentControl_SceneInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rule_SceneInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SceneInfoIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IntelligentControlServer).SceneInfoIndex(ctx, in)
+		return srv.(RuleServer).SceneInfoIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: IntelligentControl_SceneInfoIndex_FullMethodName,
+		FullMethod: Rule_SceneInfoIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntelligentControlServer).SceneInfoIndex(ctx, req.(*SceneInfoIndexReq))
+		return srv.(RuleServer).SceneInfoIndex(ctx, req.(*SceneInfoIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntelligentControl_SceneInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rule_SceneInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IntelligentControlServer).SceneInfoRead(ctx, in)
+		return srv.(RuleServer).SceneInfoRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: IntelligentControl_SceneInfoRead_FullMethodName,
+		FullMethod: Rule_SceneInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntelligentControlServer).SceneInfoRead(ctx, req.(*WithID))
+		return srv.(RuleServer).SceneInfoRead(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntelligentControl_SceneManuallyTrigger_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rule_SceneManuallyTrigger_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IntelligentControlServer).SceneManuallyTrigger(ctx, in)
+		return srv.(RuleServer).SceneManuallyTrigger(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: IntelligentControl_SceneManuallyTrigger_FullMethodName,
+		FullMethod: Rule_SceneManuallyTrigger_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntelligentControlServer).SceneManuallyTrigger(ctx, req.(*WithID))
+		return srv.(RuleServer).SceneManuallyTrigger(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// IntelligentControl_ServiceDesc is the grpc.ServiceDesc for IntelligentControl service.
+// Rule_ServiceDesc is the grpc.ServiceDesc for Rule service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var IntelligentControl_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "ud.intelligentControl",
-	HandlerType: (*IntelligentControlServer)(nil),
+var Rule_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "ud.rule",
+	HandlerType: (*RuleServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "sceneInfoCreate",
-			Handler:    _IntelligentControl_SceneInfoCreate_Handler,
+			Handler:    _Rule_SceneInfoCreate_Handler,
 		},
 		{
 			MethodName: "sceneInfoUpdate",
-			Handler:    _IntelligentControl_SceneInfoUpdate_Handler,
+			Handler:    _Rule_SceneInfoUpdate_Handler,
 		},
 		{
 			MethodName: "sceneInfoDelete",
-			Handler:    _IntelligentControl_SceneInfoDelete_Handler,
+			Handler:    _Rule_SceneInfoDelete_Handler,
 		},
 		{
 			MethodName: "sceneInfoIndex",
-			Handler:    _IntelligentControl_SceneInfoIndex_Handler,
+			Handler:    _Rule_SceneInfoIndex_Handler,
 		},
 		{
 			MethodName: "sceneInfoRead",
-			Handler:    _IntelligentControl_SceneInfoRead_Handler,
+			Handler:    _Rule_SceneInfoRead_Handler,
 		},
 		{
 			MethodName: "sceneManuallyTrigger",
-			Handler:    _IntelligentControl_SceneManuallyTrigger_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/ud.proto",
-}
-
-const (
-	AuthManage_UserDeviceIndex_FullMethodName = "/ud.AuthManage/userDeviceIndex"
-)
-
-// AuthManageClient is the client API for AuthManage service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AuthManageClient interface {
-	// 用户设备列表
-	UserDeviceIndex(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
-}
-
-type authManageClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewAuthManageClient(cc grpc.ClientConnInterface) AuthManageClient {
-	return &authManageClient{cc}
-}
-
-func (c *authManageClient) UserDeviceIndex(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, AuthManage_UserDeviceIndex_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// AuthManageServer is the server API for AuthManage service.
-// All implementations must embed UnimplementedAuthManageServer
-// for forward compatibility
-type AuthManageServer interface {
-	// 用户设备列表
-	UserDeviceIndex(context.Context, *Empty) (*Empty, error)
-	mustEmbedUnimplementedAuthManageServer()
-}
-
-// UnimplementedAuthManageServer must be embedded to have forward compatible implementations.
-type UnimplementedAuthManageServer struct {
-}
-
-func (UnimplementedAuthManageServer) UserDeviceIndex(context.Context, *Empty) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceIndex not implemented")
-}
-func (UnimplementedAuthManageServer) mustEmbedUnimplementedAuthManageServer() {}
-
-// UnsafeAuthManageServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AuthManageServer will
-// result in compilation errors.
-type UnsafeAuthManageServer interface {
-	mustEmbedUnimplementedAuthManageServer()
-}
-
-func RegisterAuthManageServer(s grpc.ServiceRegistrar, srv AuthManageServer) {
-	s.RegisterService(&AuthManage_ServiceDesc, srv)
-}
-
-func _AuthManage_UserDeviceIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthManageServer).UserDeviceIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthManage_UserDeviceIndex_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthManageServer).UserDeviceIndex(ctx, req.(*Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// AuthManage_ServiceDesc is the grpc.ServiceDesc for AuthManage service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var AuthManage_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "ud.AuthManage",
-	HandlerType: (*AuthManageServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "userDeviceIndex",
-			Handler:    _AuthManage_UserDeviceIndex_Handler,
+			Handler:    _Rule_SceneManuallyTrigger_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

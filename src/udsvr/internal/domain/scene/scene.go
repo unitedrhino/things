@@ -10,13 +10,14 @@ type Infos []*Info
 
 type Info struct {
 	ID          int64     `json:"id"`
+	AreaID      int64     `json:"areaID"`
 	Name        string    `json:"name"`
 	Desc        string    `json:"desc"`
 	CreatedTime time.Time `json:"createdTime"`
 	Trigger     Trigger   `json:"trigger"` //多种触发方式
 	When        When      `json:"when"`    //手动触发模式不生效
 	Then        Then      `json:"then"`    //触发后执行的动作
-	Status      int64     `json:"state"`   // 状态（1启用 2禁用）
+	Status      int64     `json:"status"`  // 状态（1启用 2禁用）
 }
 
 func (i *Info) Validate() error {

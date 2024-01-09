@@ -28,6 +28,11 @@ func Migrate(c conf.Database) error {
 		&SysTenantOperLog{},
 		&SysModuleApi{},
 		&SysTenantRoleApi{},
+	)
+	if err != nil {
+		return err
+	}
+	err = db.AutoMigrate(
 		&SysAreaInfo{},
 		&SysProjectInfo{},
 		&SysUserArea{},
@@ -35,6 +40,11 @@ func Migrate(c conf.Database) error {
 		&SysAppInfo{},
 		&SysTenantRoleApp{},
 		&SysTenantUserRole{},
+	)
+	if err != nil {
+		return err
+	}
+	err = db.AutoMigrate(
 		&SysTenantInfo{},
 		&SysTenantApp{},
 		&SysTenantConfig{},

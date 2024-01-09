@@ -2,24 +2,25 @@ package info
 
 import (
 	"github.com/i-Things/things/src/apisvr/internal/types"
-	"github.com/i-Things/things/src/rulesvr/pb/rule"
+	"github.com/i-Things/things/src/udsvr/pb/ud"
 )
 
-func ToSceneTypes(in *rule.SceneInfo) *types.SceneInfo {
+func ToSceneTypes(in *ud.SceneInfo) *types.SceneInfo {
 	return &types.SceneInfo{
 		ID:          in.Id,
 		Name:        in.Name,
+		AreaID:      in.AreaID,
 		Desc:        in.Desc,
 		Trigger:     in.Trigger,
 		When:        in.When,
 		Then:        in.Then,
 		Status:      in.Status,
-		TriggerType: in.TriggerType,
 		CreatedTime: in.CreatedTime,
 	}
 }
-func ToScenePb(in *types.SceneInfo) *rule.SceneInfo {
-	return &rule.SceneInfo{
+func ToScenePb(in *types.SceneInfo) *ud.SceneInfo {
+	return &ud.SceneInfo{
+		AreaID:      in.AreaID,
 		Id:          in.ID,
 		Name:        in.Name,
 		Desc:        in.Desc,
@@ -27,7 +28,6 @@ func ToScenePb(in *types.SceneInfo) *rule.SceneInfo {
 		When:        in.When,
 		Then:        in.Then,
 		Status:      in.Status,
-		TriggerType: in.TriggerType,
 		CreatedTime: in.CreatedTime,
 	}
 }

@@ -5,8 +5,7 @@ import (
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/udsvr/internal/config"
-	authmanageServer "github.com/i-Things/things/src/udsvr/internal/server/authmanage"
-	intelligentcontrolServer "github.com/i-Things/things/src/udsvr/internal/server/intelligentcontrol"
+	ruleServer "github.com/i-Things/things/src/udsvr/internal/server/rule"
 	"github.com/i-Things/things/src/udsvr/internal/svc"
 	"github.com/i-Things/things/src/udsvr/pb/ud"
 	"github.com/zeromicro/go-zero/core/conf"
@@ -46,8 +45,7 @@ func RunServer(svcCtx *svc.ServiceContext) {
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		ud.RegisterIntelligentControlServer(grpcServer, intelligentcontrolServer.NewIntelligentControlServer(svcCtx))
-		ud.RegisterAuthManageServer(grpcServer, authmanageServer.NewAuthManageServer(svcCtx))
+		ud.RegisterRuleServer(grpcServer, ruleServer.NewRuleServer(svcCtx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

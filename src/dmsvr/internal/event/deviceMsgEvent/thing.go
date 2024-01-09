@@ -220,7 +220,7 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 	switch l.dreq.Method { //操作方法
 	case deviceMsg.GetReportReply:
 		if l.dreq.Code != errors.OK.Code { //如果不成功,则记录日志即可
-			return nil, errors.DeviceError.AddMsg(l.dreq.Msg).AddDetail(msg.Payload)
+			return nil, errors.DeviceResp.AddMsg(l.dreq.Msg).AddDetail(msg.Payload)
 		}
 		if param, ok := l.dreq.Data.(map[string]any); ok {
 			l.dreq.Params = param //新版通过data传递

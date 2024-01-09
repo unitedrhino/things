@@ -33,14 +33,19 @@ func (l *ResourceModuleIndexLogic) ResourceModuleIndex() (resp *types.ModuleInfo
 	if roleID == 0 {
 		return nil, nil
 	}
-	codes, err := l.svcCtx.RoleRpc.RoleModuleIndex(l.ctx, &role.RoleModuleIndexReq{AppCode: uc.AppCode, Id: roleID})
-	if err != nil {
-		return nil, err
+	var moduleCodes []string
+	if !uc.IsAdmin {
+		codes, err := l.svcCtx.RoleRpc.RoleModuleIndex(l.ctx, &role.RoleModuleIndexReq{AppCode: uc.AppCode, Id: roleID})
+		if err != nil {
+			return nil, err
+		}
+		if len(codes.ModuleCodes) == 0 {
+			return nil, nil
+		}
+		moduleCodes = codes.ModuleCodes
 	}
-	if len(codes.ModuleCodes) == 0 {
-		return nil, nil
-	}
-	ret, err := l.svcCtx.TenantRpc.TenantAppModuleIndex(l.ctx, &sys.TenantModuleIndexReq{AppCode: uc.AppCode, ModuleCodes: codes.ModuleCodes})
+
+	ret, err := l.svcCtx.TenantRpc.TenantAppModuleIndex(l.ctx, &sys.TenantModuleIndexReq{AppCode: uc.AppCode, ModuleCodes: moduleCodes})
 	if err != nil {
 		return nil, err
 	}

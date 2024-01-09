@@ -32,10 +32,18 @@ func (l *ResourceMenuIndexLogic) ResourceMenuIndex(req *types.UserResourceWithMo
 	if roleID == 0 {
 		return nil, nil
 	}
-	ids, err := l.svcCtx.RoleRpc.RoleMenuIndex(l.ctx, &sys.RoleMenuIndexReq{AppCode: uc.AppCode, ModuleCode: req.ModuleCode})
-	if err != nil {
-		return nil, err
+	var menuIDs []int64
+	if !uc.IsAdmin {
+		ids, err := l.svcCtx.RoleRpc.RoleMenuIndex(l.ctx, &sys.RoleMenuIndexReq{AppCode: uc.AppCode, ModuleCode: req.ModuleCode})
+		if err != nil {
+			return nil, err
+		}
+		menuIDs = ids.MenuIDs
+		if len(menuIDs) == 0 {
+			return nil, nil
+		}
 	}
-	ret, err := l.svcCtx.TenantRpc.TenantAppMenuIndex(l.ctx, &sys.TenantAppMenuIndexReq{ModuleCode: req.ModuleCode, MenuIDs: ids.MenuIDs, IsRetTree: true})
+
+	ret, err := l.svcCtx.TenantRpc.TenantAppMenuIndex(l.ctx, &sys.TenantAppMenuIndexReq{ModuleCode: req.ModuleCode, MenuIDs: menuIDs, IsRetTree: true})
 	return &types.TenantAppMenuIndexResp{List: system.ToTenantAppMenusApi(ret.List)}, nil
 }

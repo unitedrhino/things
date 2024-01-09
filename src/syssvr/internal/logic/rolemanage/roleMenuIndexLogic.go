@@ -2,7 +2,6 @@ package rolemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -30,19 +29,6 @@ func NewRoleMenuIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Rol
 }
 
 func (l *RoleMenuIndexLogic) RoleMenuIndex(in *sys.RoleMenuIndexReq) (*sys.RoleMenuIndexResp, error) {
-	uc := ctxs.GetUserCtx(l.ctx)
-	if uc.IsAdmin { //超级管理员默认全部勾选
-		ms, err := relationDB.NewTenantAppMenuRepo(l.ctx).FindByFilter(l.ctx, relationDB.TenantAppMenuFilter{
-			AppCode: in.AppCode, ModuleCode: in.ModuleCode}, nil)
-		var menuIDs []int64
-		if err != nil {
-			return nil, err
-		}
-		for _, v := range ms {
-			menuIDs = append(menuIDs, v.ID)
-		}
-		return &sys.RoleMenuIndexResp{MenuIDs: menuIDs}, nil
-	}
 	ms, err := relationDB.NewRoleMenuRepo(l.ctx).FindByFilter(l.ctx,
 		relationDB.RoleMenuFilter{RoleIDs: []int64{in.Id}, AppCode: in.AppCode, ModuleCode: in.ModuleCode}, nil)
 	if err != nil {

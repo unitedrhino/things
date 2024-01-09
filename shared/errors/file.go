@@ -1,7 +1,7 @@
 package errors
 
-const FILE_ERROR = 1000000
+const FileError = 1000000
 
 var (
-	Upload = NewCodeError(FILE_ERROR+1, "上传失败")
+	Upload = NewCodeError(FileError+1, "上传失败")
 )

@@ -24,12 +24,26 @@ func NewSceneInfoRepo(in any) *SceneInfoRepo {
 }
 
 type SceneInfoFilter struct {
-	//todo 添加过滤字段
+	Name        string `json:"name"`
+	Status      int64
+	TriggerType string
+	AreaID      int64
 }
 
 func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	//todo 添加条件
+	if f.AreaID != 0 {
+		db = db.Where("area_id = ?", f.AreaID)
+	}
+	if f.Name != "" {
+		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.TriggerType != "" {
+		db = db.Where("trigger_type = ?", f.TriggerType)
+	}
+	if f.Status != 0 {
+		db = db.Where("status = ?", f.Status)
+	}
 	return db
 }
 
