@@ -3,7 +3,9 @@ package tenantmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/ctxs"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
+	"gorm.io/gorm"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -40,7 +42,30 @@ func (l *TenantAppModuleDeleteLogic) TenantAppModuleDelete(in *sys.TenantModuleW
 	if in.ModuleCode != "" {
 		f.ModuleCodes = []string{in.ModuleCode}
 	}
-	err := relationDB.NewTenantAppModuleRepo(l.ctx).DeleteByFilter(l.ctx, f)
+	conn := stores.GetTenantConn(l.ctx)
+	err := conn.Transaction(func(tx *gorm.DB) error {
+		err := relationDB.NewTenantAppModuleRepo(tx).DeleteByFilter(l.ctx, f)
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewTenantAppMenuRepo(tx).DeleteByFilter(l.ctx, relationDB.TenantAppMenuFilter{
+			ModuleCode: in.ModuleCode,
+			TenantCode: in.Code,
+			AppCode:    in.AppCode,
+		})
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewTenantAppApiRepo(tx).DeleteByFilter(l.ctx, relationDB.TenantAppApiFilter{
+			ModuleCode: in.ModuleCode,
+			TenantCode: in.Code,
+			AppCode:    in.AppCode,
+		})
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 
 	return &sys.Response{}, err
 }

@@ -25,11 +25,15 @@ type TenantAppApiFilter struct {
 	Group      string
 	Name       string
 	ModuleCode string
+	WithRoles  bool
 	IsNeedAuth int64
 }
 
 func (p TenantAppApiRepo) fmtFilter(ctx context.Context, f TenantAppApiFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.WithRoles {
+		db = db.Preload("Roles")
+	}
 	if f.TenantCode != "" {
 		db = db.Where("tenant_code =?", f.TenantCode)
 	}

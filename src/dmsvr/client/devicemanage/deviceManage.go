@@ -92,6 +92,9 @@ type (
 	PageInfo                    = dm.PageInfo
 	PageInfo_OrderBy            = dm.PageInfo_OrderBy
 	Point                       = dm.Point
+	ProductCategory             = dm.ProductCategory
+	ProductCategoryIndexReq     = dm.ProductCategoryIndexReq
+	ProductCategoryIndexResp    = dm.ProductCategoryIndexResp
 	ProductCustom               = dm.ProductCustom
 	ProductCustomReadReq        = dm.ProductCustomReadReq
 	ProductInfo                 = dm.ProductInfo
@@ -139,6 +142,7 @@ type (
 	SendPropertyResp            = dm.SendPropertyResp
 	ShadowIndex                 = dm.ShadowIndex
 	ShadowIndexResp             = dm.ShadowIndexResp
+	WithID                      = dm.WithID
 
 	DeviceManage interface {
 		// 鉴定是否是root账号(提供给mqtt broker)

@@ -66,13 +66,25 @@ type DmProductInfo struct {
 	stores.NoDelTime
 	DeletedTime  stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
 	ProtocolInfo *DmProtocolInfo    `gorm:"foreignKey:ID;references:ProtocolID"` // 添加外键
-
+	Category     *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"` // 添加外键
 	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 
 }
 
 func (m *DmProductInfo) TableName() string {
 	return "dm_product_info"
+}
+
+type DmProductCategory struct {
+	ID   int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name string `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"` // 产品品类名称
+	Desc string `gorm:"column:desc;type:varchar(200)"`                         // 描述
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
+}
+
+func (m *DmProductCategory) TableName() string {
+	return "dm_product_category"
 }
 
 // 自定义协议表

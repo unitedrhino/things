@@ -47,7 +47,7 @@ func (l *TenantInfoDeleteLogic) TenantInfoDelete(in *sys.WithIDCode) (*sys.Respo
 		if err != nil {
 			return err
 		}
-		err = relationDB.NewAppInfoRepo(tx).DeleteByFilter(l.ctx, relationDB.AppInfoFilter{Codes: []string{ti.Code}})
+		err = relationDB.NewTenantAppRepo(tx).DeleteByFilter(l.ctx, relationDB.TenantAppFilter{TenantCode: ti.Code})
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ func (l *TenantInfoDeleteLogic) TenantInfoDelete(in *sys.WithIDCode) (*sys.Respo
 		if err != nil {
 			return err
 		}
-		err = relationDB.NewRoleApiRepo(tx).DeleteByFilter(l.ctx, relationDB.RoleApiFilter{TenantCode: ti.Code})
+		err = relationDB.NewRoleAppRepo(tx).DeleteByFilter(l.ctx, relationDB.RoleAppFilter{TenantCode: ti.Code})
 		if err != nil {
 			return err
 		}

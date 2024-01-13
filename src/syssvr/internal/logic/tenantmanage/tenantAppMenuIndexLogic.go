@@ -75,7 +75,11 @@ func (l *TenantAppMenuIndexLogic) TenantAppMenuIndex(in *sys.TenantAppMenuIndexR
 
 func fillChildren(in []*sys.TenantAppMenu, pidMap map[int64][]*sys.TenantAppMenu) {
 	for _, v := range in {
-		cs := pidMap[v.Info.Id]
+		id := v.TemplateID
+		if id == 0 { //如果id为0,则是自定义节点,自定义节点的父节点是id
+			id = v.Info.Id
+		}
+		cs := pidMap[id]
 		if cs != nil {
 			v.Children = cs
 			fillChildren(cs, pidMap)

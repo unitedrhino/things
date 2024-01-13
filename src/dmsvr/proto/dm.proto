@@ -27,7 +27,9 @@ message SendOption {
   int64  retryInterval = 3;//重试间隔
 }
 
-
+message WithID{
+  int64 id = 1;
+}
 
 //设备管理
 service DeviceManage {
@@ -88,6 +90,21 @@ service ProductManage{
   /*脚本管理*/
   rpc productCustomRead(ProductCustomReadReq) returns (ProductCustom);
   rpc productCustomUpdate(ProductCustom) returns (Response);
+
+
+  /*产品类型*/
+  //新增产品
+  rpc productCategoryCreate(ProductCategory)     returns (WithID);
+  //更新产品
+  rpc productCategoryUpdate(ProductCategory)     returns (Response);
+  //删除产品
+  rpc productCategoryDelete(WithID)     returns (Response);
+  //获取产品信息列表
+  rpc productCategoryIndex(ProductCategoryIndexReq)     returns (ProductCategoryIndexResp);
+  //获取产品信息详情
+  rpc productCategoryRead(WithID)     returns (ProductCategory);
+
+
 }
 
 service ProtocolManage {
@@ -215,6 +232,23 @@ service OtaTaskManage {
   rpc OtaTaskDeviceProcess(OtaTaskDeviceProcessReq) returns (OtaCommonResp);
   //取消单个设备的升级
   rpc OtaTaskDeviceCancle(OtaTaskDeviceCancleReq) returns (OtaCommonResp);
+}
+
+
+message ProductCategory{
+  int64 id = 1;
+  string name = 2;
+  google.protobuf.StringValue desc = 3;
+}
+
+message ProductCategoryIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  string  name = 2; //过滤名字
+}
+
+message ProductCategoryIndexResp{
+  repeated ProductCategory list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
 }
 
 

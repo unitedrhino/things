@@ -16,11 +16,21 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 type TeardownWareMiddleware struct {
 	cfg    config.Config
 	LogRpc operLog.Log
+}
+
+var respPool sync.Pool
+var bufferSize = 1024
+
+func init() {
+	respPool.New = func() interface{} {
+		return make([]byte, bufferSize)
+	}
 }
 
 func NewTeardownWareMiddleware(cfg config.Config, LogRpc operLog.Log) *TeardownWareMiddleware {
@@ -32,7 +42,7 @@ func (m *TeardownWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc 
 		//logx.WithContext(r.Context()).Infof("%s.Lifecycle.Before", utils.FuncName())
 
 		//记录 接口响应日志
-		//m.OperationLogRecord(r.Context(), r)
+		m.OperationLogRecord(r.Context(), r)
 
 		next(w, r)
 
@@ -49,6 +59,14 @@ func (m *TeardownWareMiddleware) OperationLogRecord(ctx context.Context, r *http
 	}
 	reqBody, _ := io.ReadAll(r.Body)                //读取 reqBody
 	r.Body = io.NopCloser(bytes.NewReader(reqBody)) //重建 reqBody
+	if strings.Contains(r.Header.Get("Content-Type"), "multipart/form-data") {
+		if len(reqBody) > bufferSize {
+			// 截断
+			newBody := respPool.Get().([]byte)
+			copy(newBody, reqBody)
+			defer respPool.Put(newBody)
+		}
+	}
 	reqBodyStr := string(reqBody)
 
 	respStatusCode := http.StatusOK
@@ -85,6 +103,7 @@ func (m *TeardownWareMiddleware) OperationLogRecord(ctx context.Context, r *http
 			Msg:          respStatusMsg,
 			Req:          reqBodyStr,
 			Resp:         respBodyStr,
+			AppCode:      ctxs.GetUserCtx(r.Context()).AppCode,
 		})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.OperationLogRecord is error : %s",
