@@ -1,0 +1,51 @@
+info(
+    title: "产品管理模块"
+    desc: "产品管理模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+import "common.api"  //公共结构体定义
+
+@server(
+    group : things/product/category
+    prefix: /api/v1/things/product/category
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "新增产品品类"
+    @handler create
+    post /create (ProductCategory) returns ()
+    @doc "更新产品品类"
+    @handler update
+    post /update (ProductCategory) returns ()
+    @doc "删除产品品类"
+    @handler delete
+    post /delete (WithID) returns ()
+    @doc "获取产品品类列表"
+    @handler index
+    post /index (ProductCategoryIndexReq) returns (ProductCategoryIndexResp)
+    @doc "获取产品品类详情"
+    @handler read
+    post /read (WithID) returns (ProductCategory)
+}
+
+type (
+    ProductCategory struct {
+        ID int64 `json:"id,optional"`
+        Name string `json:"name,optional"`
+        Desc *string `json:"desc,optional"`                       //描述
+    }
+
+
+    ProductCategoryIndexReq struct {
+        Page *PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
+        Name string `json:"name,optional"` //过滤产品名称
+    }
+
+    ProductCategoryIndexResp struct {
+        List []*ProductCategory `json:"list"`    //产品信息
+        Total int64 `json:"total,optional"`  //拥有的总数
+        Num int64 `json:"num,optional"`      //返回的数量
+    }
+)

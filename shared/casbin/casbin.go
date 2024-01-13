@@ -27,7 +27,7 @@ const (
 	e = some(where (p.eft == allow))
 	
 	[matchers]
-	m =  r.sub == p.sub &&r.tenant == p.tenant && r.app == p.app && r.path == p.path && r.method == p.method
+	m =  r.sub == p.sub &&r.tenant == p.tenant && r.app == p.app && keyMatch2(r.path,p.path) && r.method == p.method
 		`
 	tableName = "sys_role_api2"
 )

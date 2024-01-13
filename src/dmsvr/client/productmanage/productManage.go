@@ -92,6 +92,9 @@ type (
 	PageInfo                    = dm.PageInfo
 	PageInfo_OrderBy            = dm.PageInfo_OrderBy
 	Point                       = dm.Point
+	ProductCategory             = dm.ProductCategory
+	ProductCategoryIndexReq     = dm.ProductCategoryIndexReq
+	ProductCategoryIndexResp    = dm.ProductCategoryIndexResp
 	ProductCustom               = dm.ProductCustom
 	ProductCustomReadReq        = dm.ProductCustomReadReq
 	ProductInfo                 = dm.ProductInfo
@@ -139,6 +142,7 @@ type (
 	SendPropertyResp            = dm.SendPropertyResp
 	ShadowIndex                 = dm.ShadowIndex
 	ShadowIndexResp             = dm.ShadowIndexResp
+	WithID                      = dm.WithID
 
 	ProductManage interface {
 		// 新增产品
@@ -166,6 +170,16 @@ type (
 		// 脚本管理
 		ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error)
 		ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error)
+		// 新增产品
+		ProductCategoryCreate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*WithID, error)
+		// 更新产品
+		ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error)
+		// 删除产品
+		ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+		// 获取产品信息列表
+		ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error)
+		// 获取产品信息详情
+		ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error)
 	}
 
 	defaultProductManage struct {
@@ -330,4 +344,59 @@ func (m *defaultProductManage) ProductCustomUpdate(ctx context.Context, in *Prod
 
 func (d *directProductManage) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.ProductCustomUpdate(ctx, in)
+}
+
+// 新增产品
+func (m *defaultProductManage) ProductCategoryCreate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*WithID, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCategoryCreate(ctx, in, opts...)
+}
+
+// 新增产品
+func (d *directProductManage) ProductCategoryCreate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*WithID, error) {
+	return d.svr.ProductCategoryCreate(ctx, in)
+}
+
+// 更新产品
+func (m *defaultProductManage) ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCategoryUpdate(ctx, in, opts...)
+}
+
+// 更新产品
+func (d *directProductManage) ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ProductCategoryUpdate(ctx, in)
+}
+
+// 删除产品
+func (m *defaultProductManage) ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCategoryDelete(ctx, in, opts...)
+}
+
+// 删除产品
+func (d *directProductManage) ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ProductCategoryDelete(ctx, in)
+}
+
+// 获取产品信息列表
+func (m *defaultProductManage) ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCategoryIndex(ctx, in, opts...)
+}
+
+// 获取产品信息列表
+func (d *directProductManage) ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error) {
+	return d.svr.ProductCategoryIndex(ctx, in)
+}
+
+// 获取产品信息详情
+func (m *defaultProductManage) ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCategoryRead(ctx, in, opts...)
+}
+
+// 获取产品信息详情
+func (d *directProductManage) ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error) {
+	return d.svr.ProductCategoryRead(ctx, in)
 }

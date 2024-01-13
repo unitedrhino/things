@@ -51,16 +51,16 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 			ctx2 := ctxs.SetUserCtx(r.Context(), userCtx)
 			r = r.WithContext(ctx2)
 			////校验 Casbin Rule
-			//_, err = m.AuthRpc.RoleApiAuth(r.Context(), &user.RoleApiAuthReq{
-			//	RoleID: userCtx.RoleID,
-			//	Path:   r.URL.Path,
-			//	Method: r.Method,
-			//})
-			//if err != nil {
-			//	logx.WithContext(r.Context()).Errorf("%s.AuthApiCheck error=%s", utils.FuncName(), err)
-			//	http.Error(w, "接口权限不足："+err.Error(), http.StatusUnauthorized)
-			//	return
-			//}
+			_, err = m.AuthRpc.RoleApiAuth(r.Context(), &user.RoleApiAuthReq{
+				RoleID: userCtx.RoleID,
+				Path:   r.URL.Path,
+				Method: r.Method,
+			})
+			if err != nil {
+				logx.WithContext(r.Context()).Errorf("%s.AuthApiCheck error=%s", utils.FuncName(), err)
+				http.Error(w, "接口权限不足："+err.Error(), http.StatusUnauthorized)
+				return
+			}
 		}
 
 		next(w, r)

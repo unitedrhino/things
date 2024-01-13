@@ -516,6 +516,11 @@ const (
 	ProductManage_ProductSchemaTslRead_FullMethodName   = "/dm.ProductManage/productSchemaTslRead"
 	ProductManage_ProductCustomRead_FullMethodName      = "/dm.ProductManage/productCustomRead"
 	ProductManage_ProductCustomUpdate_FullMethodName    = "/dm.ProductManage/productCustomUpdate"
+	ProductManage_ProductCategoryCreate_FullMethodName  = "/dm.ProductManage/productCategoryCreate"
+	ProductManage_ProductCategoryUpdate_FullMethodName  = "/dm.ProductManage/productCategoryUpdate"
+	ProductManage_ProductCategoryDelete_FullMethodName  = "/dm.ProductManage/productCategoryDelete"
+	ProductManage_ProductCategoryIndex_FullMethodName   = "/dm.ProductManage/productCategoryIndex"
+	ProductManage_ProductCategoryRead_FullMethodName    = "/dm.ProductManage/productCategoryRead"
 )
 
 // ProductManageClient is the client API for ProductManage service.
@@ -547,6 +552,16 @@ type ProductManageClient interface {
 	// 脚本管理
 	ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error)
 	ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error)
+	// 新增产品
+	ProductCategoryCreate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*WithID, error)
+	// 更新产品
+	ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error)
+	// 删除产品
+	ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+	// 获取产品信息列表
+	ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error)
+	// 获取产品信息详情
+	ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error)
 }
 
 type productManageClient struct {
@@ -674,6 +689,51 @@ func (c *productManageClient) ProductCustomUpdate(ctx context.Context, in *Produ
 	return out, nil
 }
 
+func (c *productManageClient) ProductCategoryCreate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error) {
+	out := new(ProductCategoryIndexResp)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error) {
+	out := new(ProductCategory)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductManageServer is the server API for ProductManage service.
 // All implementations must embed UnimplementedProductManageServer
 // for forward compatibility
@@ -703,6 +763,16 @@ type ProductManageServer interface {
 	// 脚本管理
 	ProductCustomRead(context.Context, *ProductCustomReadReq) (*ProductCustom, error)
 	ProductCustomUpdate(context.Context, *ProductCustom) (*Response, error)
+	// 新增产品
+	ProductCategoryCreate(context.Context, *ProductCategory) (*WithID, error)
+	// 更新产品
+	ProductCategoryUpdate(context.Context, *ProductCategory) (*Response, error)
+	// 删除产品
+	ProductCategoryDelete(context.Context, *WithID) (*Response, error)
+	// 获取产品信息列表
+	ProductCategoryIndex(context.Context, *ProductCategoryIndexReq) (*ProductCategoryIndexResp, error)
+	// 获取产品信息详情
+	ProductCategoryRead(context.Context, *WithID) (*ProductCategory, error)
 	mustEmbedUnimplementedProductManageServer()
 }
 
@@ -748,6 +818,21 @@ func (UnimplementedProductManageServer) ProductCustomRead(context.Context, *Prod
 }
 func (UnimplementedProductManageServer) ProductCustomUpdate(context.Context, *ProductCustom) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCustomUpdate not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategoryCreate(context.Context, *ProductCategory) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryCreate not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategoryUpdate(context.Context, *ProductCategory) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryUpdate not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategoryDelete(context.Context, *WithID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryDelete not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategoryIndex(context.Context, *ProductCategoryIndexReq) (*ProductCategoryIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryIndex not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategoryRead(context.Context, *WithID) (*ProductCategory, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryRead not implemented")
 }
 func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
 
@@ -996,6 +1081,96 @@ func _ProductManage_ProductCustomUpdate_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductManage_ProductCategoryCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCategory)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategoryCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategoryCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategoryCreate(ctx, req.(*ProductCategory))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCategoryUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCategory)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategoryUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategoryUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategoryUpdate(ctx, req.(*ProductCategory))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCategoryDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategoryDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategoryDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategoryDelete(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCategoryIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCategoryIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategoryIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategoryIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategoryIndex(ctx, req.(*ProductCategoryIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCategoryRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategoryRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategoryRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategoryRead(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductManage_ServiceDesc is the grpc.ServiceDesc for ProductManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1054,6 +1229,26 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "productCustomUpdate",
 			Handler:    _ProductManage_ProductCustomUpdate_Handler,
+		},
+		{
+			MethodName: "productCategoryCreate",
+			Handler:    _ProductManage_ProductCategoryCreate_Handler,
+		},
+		{
+			MethodName: "productCategoryUpdate",
+			Handler:    _ProductManage_ProductCategoryUpdate_Handler,
+		},
+		{
+			MethodName: "productCategoryDelete",
+			Handler:    _ProductManage_ProductCategoryDelete_Handler,
+		},
+		{
+			MethodName: "productCategoryIndex",
+			Handler:    _ProductManage_ProductCategoryIndex_Handler,
+		},
+		{
+			MethodName: "productCategoryRead",
+			Handler:    _ProductManage_ProductCategoryRead_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -5,6 +5,7 @@ go 1.19
 require (
 	gitee.com/asktop_golib/util v0.1.6
 	github.com/Blank-Xu/sql-adapter v0.0.0-20210714092925-0bdd0d548758
+	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
 	github.com/carlmjohnson/versioninfo v0.22.4
@@ -17,6 +18,7 @@ require (
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/glebarez/sqlite v1.8.0
 	github.com/go-co-op/gocron v1.18.1
+	github.com/go-openapi/spec v0.20.14
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gogf/gf/v2 v2.3.3
 	github.com/golang/protobuf v1.5.3
@@ -59,7 +61,6 @@ replace (
 
 require (
 	github.com/BurntSushi/toml v1.2.0 // indirect
-	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d // indirect
 	github.com/cenkalti/backoff/v4 v4.2.0 // indirect
@@ -81,9 +82,9 @@ require (
 	github.com/glebarez/go-sqlite v1.21.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-openapi/jsonpointer v0.19.6 // indirect
-	github.com/go-openapi/jsonreference v0.20.1 // indirect
-	github.com/go-openapi/swag v0.22.3 // indirect
+	github.com/go-openapi/jsonpointer v0.20.2 // indirect
+	github.com/go-openapi/jsonreference v0.20.4 // indirect
+	github.com/go-openapi/swag v0.22.6 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.9.0 // indirect

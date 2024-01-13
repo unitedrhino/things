@@ -2,6 +2,7 @@ package usermanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -27,9 +28,15 @@ func NewUserInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 }
 
 func (l *UserInfoReadLogic) UserInfoRead(in *sys.UserInfoReadReq) (*sys.UserInfo, error) {
+	if err := ctxs.IsRoot(l.ctx); err == nil {
+		ctxs.GetUserCtx(l.ctx).AllTenant = true
+		defer func() {
+			ctxs.GetUserCtx(l.ctx).AllTenant = false
+		}()
+	}
 	ui, err := l.UiDB.FindOne(l.ctx, in.UserID)
 	if err != nil {
-		l.Logger.Error("UserInfoModel.FindOne err , sql:%s", l.svcCtx)
+		l.Logger.Error("UserInfoModel.FindOne err:%v", err)
 		return nil, err
 	}
 

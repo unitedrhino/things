@@ -72,7 +72,7 @@ type SysModuleApi struct {
 	BusinessType int64  `gorm:"column:business_type;type:BIGINT;NOT NULL"`                          // 业务类型（1新增 2修改 3删除 4查询 5其它）
 	Group        string `gorm:"column:group;type:VARCHAR(100);NOT NULL"`                            // 接口组
 	IsNeedAuth   int64  `gorm:"column:is_need_auth;type:BIGINT;default:1;NOT NULL"`                 // 是否需要认证（1是 2否）
-	Desc         string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                             // 备注
+	Desc         string `gorm:"column:desc;type:VARCHAR(500);NOT NULL"`                             // 备注
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:app_route"`
 }

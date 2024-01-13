@@ -799,52 +799,24 @@ type UserResourceReadResp struct {
 }
 
 type ProductInfo struct {
-	CreatedTime  int64   `json:"createdTime,optional,string"`       //创建时间 只读
-	ProductID    string  `json:"productID,optional"`                //产品id 只读
-	ProductName  string  `json:"productName,optional"`              //产品名称
-	ProductImg   string  `json:"productImg,optional"`               //产品图片
-	AuthMode     int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
-	DeviceType   int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64   `json:"categoryID,optional"`               //产品品类
-	NetType      int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto    int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
-	AutoRegister int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret       string  `json:"secret,optional"`                   //动态注册产品秘钥 只读
-	Desc         *string `json:"desc,optional"`                     //描述
-	Tags         []*Tag  `json:"tags,optional"`                     // 产品tag
-}
-
-type ProductInfoReadReq struct {
-	ProductID string `json:"productID"` //产品id
-}
-
-type ProductInfoCreateReq struct {
-	ProductName  string  `json:"productName"`                       //产品名称
-	ProductID    string  `json:"productID,optional"`                //产品id
-	AuthMode     int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
-	DeviceType   int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64   `json:"categoryID,optional"`               //产品品类
-	NetType      int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto    int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
-	AutoRegister int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Desc         *string `json:"desc,optional"`                     //描述
-	Tags         []*Tag  `json:"tags,optional"`                     // 产品tag
-	ProductImg   string  `json:"productImg,optional"`               //产品图片 传参为产品图片的file path
-}
-
-type ProductInfoUpdateReq struct {
-	ProductID          string  `json:"productID"`                         //产品id 只读
+	CreatedTime        int64   `json:"createdTime,optional,string"`       //创建时间 只读
+	ProductID          string  `json:"productID,optional"`                //产品id 只读
 	ProductName        string  `json:"productName,optional"`              //产品名称
+	ProductImg         string  `json:"productImg,optional"`               //产品图片
+	IsUpdateProductImg bool    `json:"isUpdateProductImg,optional"`       //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
 	AuthMode           int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
 	DeviceType         int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
 	CategoryID         int64   `json:"categoryID,optional"`               //产品品类
 	NetType            int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
 	DataProto          int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
 	AutoRegister       int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret             string  `json:"secret,optional"`                   //动态注册产品秘钥 只读
 	Desc               *string `json:"desc,optional"`                     //描述
 	Tags               []*Tag  `json:"tags,optional"`                     // 产品tag
-	ProductImg         string  `json:"productImg,optional"`               //产品图片
-	IsUpdateProductImg bool    `json:"isUpdateProductImg,optional"`       //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+}
+
+type ProductInfoReadReq struct {
+	ProductID string `json:"productID"` //产品id
 }
 
 type ProductInfoDeleteReq struct {
@@ -1003,6 +975,23 @@ type ProductCustomReadReq struct {
 type ProductCustomTopic struct {
 	Topic     string `json:"topic"`     //自定义主题需要以$custom 并包含设备名称{deviceName}及产品名称{productID}
 	Direction int64  `json:"direction"` //1:上行 2:下行 3:双向
+}
+
+type ProductCategory struct {
+	ID   int64   `json:"id,optional"`
+	Name string  `json:"name,optional"`
+	Desc *string `json:"desc,optional"` //描述
+}
+
+type ProductCategoryIndexReq struct {
+	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+	Name string    `json:"name,optional"` //过滤产品名称
+}
+
+type ProductCategoryIndexResp struct {
+	List  []*ProductCategory `json:"list"`           //产品信息
+	Total int64              `json:"total,optional"` //拥有的总数
+	Num   int64              `json:"num,optional"`   //返回的数量
 }
 
 type DeviceAuthLoginReq struct {

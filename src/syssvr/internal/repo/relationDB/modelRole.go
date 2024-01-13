@@ -74,6 +74,7 @@ type SysTenantRoleApi struct {
 	ApiID      int64             `gorm:"column:api_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"`           // 接口ID
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:ri_mi"`
+	Api         *SysTenantAppApi   `gorm:"foreignKey:ID;references:ApiID"`
 }
 
 func (m *SysTenantRoleApi) TableName() string {

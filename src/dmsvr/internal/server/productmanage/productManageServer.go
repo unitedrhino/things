@@ -98,3 +98,33 @@ func (s *ProductManageServer) ProductCustomUpdate(ctx context.Context, in *dm.Pr
 	l := productmanagelogic.NewProductCustomUpdateLogic(ctx, s.svcCtx)
 	return l.ProductCustomUpdate(in)
 }
+
+// 新增产品
+func (s *ProductManageServer) ProductCategoryCreate(ctx context.Context, in *dm.ProductCategory) (*dm.WithID, error) {
+	l := productmanagelogic.NewProductCategoryCreateLogic(ctx, s.svcCtx)
+	return l.ProductCategoryCreate(in)
+}
+
+// 更新产品
+func (s *ProductManageServer) ProductCategoryUpdate(ctx context.Context, in *dm.ProductCategory) (*dm.Response, error) {
+	l := productmanagelogic.NewProductCategoryUpdateLogic(ctx, s.svcCtx)
+	return l.ProductCategoryUpdate(in)
+}
+
+// 删除产品
+func (s *ProductManageServer) ProductCategoryDelete(ctx context.Context, in *dm.WithID) (*dm.Response, error) {
+	l := productmanagelogic.NewProductCategoryDeleteLogic(ctx, s.svcCtx)
+	return l.ProductCategoryDelete(in)
+}
+
+// 获取产品信息列表
+func (s *ProductManageServer) ProductCategoryIndex(ctx context.Context, in *dm.ProductCategoryIndexReq) (*dm.ProductCategoryIndexResp, error) {
+	l := productmanagelogic.NewProductCategoryIndexLogic(ctx, s.svcCtx)
+	return l.ProductCategoryIndex(in)
+}
+
+// 获取产品信息详情
+func (s *ProductManageServer) ProductCategoryRead(ctx context.Context, in *dm.WithID) (*dm.ProductCategory, error) {
+	l := productmanagelogic.NewProductCategoryReadLogic(ctx, s.svcCtx)
+	return l.ProductCategoryRead(in)
+}

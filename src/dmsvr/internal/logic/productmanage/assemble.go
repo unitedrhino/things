@@ -114,3 +114,13 @@ func ToCustomTopicsDo(info []*dm.CustomTopic) (ret []*productCustom.CustomTopic)
 	}
 	return
 }
+func ToProductCategoryRpc(info *relationDB.DmProductCategory) *dm.ProductCategory {
+	if info == nil {
+		return nil
+	}
+	return &dm.ProductCategory{
+		Id:   info.ID,
+		Name: info.Name,
+		Desc: utils.ToRpcNullString(info.Desc),
+	}
+}

@@ -99,20 +99,24 @@ func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, 
 		if m == nil { //模板里不存在无法添加
 			continue
 		}
-		insertMenus = append(insertMenus, &relationDB.SysTenantAppMenu{
+		v := relationDB.SysTenantAppMenu{
 			TempLateID: m.ID,
 			TenantCode: stores.TenantCode(tenantCode),
-			AppCode:    appCode, SysModuleMenu: *m})
+			AppCode:    appCode, SysModuleMenu: *m}
+		v.ID = 0
+		insertMenus = append(insertMenus, &v)
 	}
 	for _, id := range apiIDs {
 		a := apiMap[id]
 		if a == nil { //模板里不存在无法添加
 			continue
 		}
-		insertApis = append(insertApis, &relationDB.SysTenantAppApi{
+		v := relationDB.SysTenantAppApi{
 			TempLateID: a.ID,
 			TenantCode: stores.TenantCode(tenantCode),
-			AppCode:    appCode, SysModuleApi: *a})
+			AppCode:    appCode, SysModuleApi: *a}
+		v.ID = 0
+		insertApis = append(insertApis, &v)
 	}
 	err = relationDB.NewTenantAppMenuRepo(tx).MultiInsert(ctx, insertMenus)
 	if err != nil {

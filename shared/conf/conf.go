@@ -2,8 +2,8 @@ package conf
 
 // 文件反向代理
 type FileProxyConf struct {
-	FrontDir         string `json:",default=./dist"`                       //前端文件路径
-	FrontDefaultPage string `json:",default=front/iThingsCore/index.html"` //前端默认文件地址
+	FrontDir string `json:",default=./dist"` //前端文件路径
+	CoreDir  string `json:",default=app/core/"`
 }
 
 // http反向代理
@@ -14,6 +14,6 @@ type StaticProxyConf struct {
 }
 
 type ProxyConf struct {
-	FileProxy   []*FileProxyConf   `json:",optional"`
+	FileProxy   *FileProxyConf     `json:",optional"`
 	StaticProxy []*StaticProxyConf `json:",optional"`
 }

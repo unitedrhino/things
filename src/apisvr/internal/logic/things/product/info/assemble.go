@@ -24,3 +24,24 @@ func productInfoToApi(v *dm.ProductInfo) *types.ProductInfo {
 		ProductImg:   v.ProductImg, //产品图片
 	}
 }
+
+func productInfoToRpc(req *types.ProductInfo) *dm.ProductInfo {
+	if req == nil {
+		return nil
+	}
+	return &dm.ProductInfo{
+		ProductName:        req.ProductName,
+		ProductID:          req.ProductID,
+		AuthMode:           req.AuthMode,
+		DeviceType:         req.DeviceType,
+		CategoryID:         req.CategoryID,
+		NetType:            req.NetType,
+		Secret:             req.Secret, //动态注册产品秘钥 只读
+		DataProto:          req.DataProto,
+		AutoRegister:       req.AutoRegister,
+		Desc:               utils.ToRpcNullString(req.Desc),
+		Tags:               logic.ToTagsMap(req.Tags),
+		ProductImg:         req.ProductImg,
+		IsUpdateProductImg: req.IsUpdateProductImg,
+	}
+}
