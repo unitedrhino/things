@@ -34,10 +34,9 @@ type UdSceneTrigger struct {
 }
 
 type UdSceneWhen struct {
-	TermCondType string           `gorm:"column:type;type:VARCHAR(25);NOT NULL"` //条件类型 and: 与 or: 或
-	ValidRange   *scene.WhenRange `gorm:"column:validRange;type:json;serializer:json"`
-	InvalidRange *scene.WhenRange `gorm:"column:invalidRange;type:json;serializer:json"`
-	Terms        scene.Terms      `gorm:"column:terms;type:json;serializer:json"`
+	ValidRanges   scene.WhenRanges `gorm:"column:validRanges;type:json;serializer:json"`
+	InvalidRanges scene.WhenRanges `gorm:"column:invalidRanges;type:json;serializer:json"`
+	Conditions    scene.Conditions `gorm:"column:conditions;type:json;serializer:json"`
 }
 
 type UdSceneThen struct {

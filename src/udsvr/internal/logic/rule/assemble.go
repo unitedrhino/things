@@ -36,10 +36,9 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 			Timer:  in.Trigger.Timer,
 		},
 		UdSceneWhen: relationDB.UdSceneWhen{
-			TermCondType: string(in.When.TermCondType),
-			ValidRange:   in.When.ValidRange,
-			InvalidRange: in.When.InvalidRange,
-			Terms:        in.When.Terms,
+			ValidRanges:   in.When.ValidRanges,
+			InvalidRanges: in.When.InvalidRanges,
+			Conditions:    in.When.Conditions,
 		},
 		UdSceneThen: relationDB.UdSceneThen{Actions: in.Then.Actions},
 	}
@@ -61,10 +60,9 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 			Timer:  in.UdSceneTrigger.Timer,
 		},
 		When: scene.When{
-			TermCondType: scene.TermCondType(in.UdSceneWhen.TermCondType),
-			ValidRange:   in.UdSceneWhen.ValidRange,
-			InvalidRange: in.UdSceneWhen.InvalidRange,
-			Terms:        in.UdSceneWhen.Terms,
+			ValidRanges:   in.UdSceneWhen.ValidRanges,
+			InvalidRanges: in.UdSceneWhen.InvalidRanges,
+			Conditions:    in.UdSceneWhen.Conditions,
 		},
 		Then: scene.Then{
 			Actions: in.UdSceneThen.Actions,
