@@ -7,7 +7,10 @@ import (
 	"github.com/i-Things/things/shared/utils"
 )
 
-type Terms []*Term
+type Conditions struct {
+	Terms []Term       `json:"terms"`
+	Type  TermCondType `json:"type"`
+}
 
 type TermCondType string
 
@@ -24,11 +27,14 @@ type Term struct {
 	Weather any `json:"weather"`
 }
 
-func (t Terms) Validate() error {
+func (t *Conditions) Validate() error {
 	if t == nil {
 		return nil
 	}
-	for _, v := range t {
+	if len(t.Terms) > 1 && !utils.SliceIn(t.Type, TermConditionTypeOr, TermConditionTypeAnd) {
+		return errors.Parameter.AddMsg("填写多个条件需要填写条件类型:" + string(t.Type))
+	}
+	for _, v := range t.Terms {
 		err := v.Validate()
 		if err != nil {
 			return err
@@ -67,13 +73,16 @@ func (t CmpType) Validate(values []string) error {
 }
 
 // 判断条件是否成立
-func (t Terms) IsHit(ctx context.Context, repo TermRepo) bool {
-	if len(t) == 0 {
+func (t Conditions) IsHit(ctx context.Context, repo TermRepo) bool {
+	if len(t.Terms) == 0 {
 		return true
 	}
 	var finalIsHit = false
-	for _, v := range t {
+	for _, v := range t.Terms {
 		isHit := v.IsHit(ctx, repo)
+		if isHit && t.Type == TermConditionTypeOr {
+			return true
+		}
 		//如果没有命中又是or条件,或者命中了但是是and条件,则需要继续判断
 		finalIsHit = isHit //如果是or,每个都返回false那就是false
 	}

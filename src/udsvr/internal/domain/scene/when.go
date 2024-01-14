@@ -1,11 +1,13 @@
 package scene
 
 type When struct {
-	TermCondType TermCondType `json:"termCondType"` //触发条件类型 and: 与 or: 或
-	ValidRange   *WhenRange   `json:"validRange"`   //生效时间段
-	InvalidRange *WhenRange   `json:"invalidRange"` //无效时间段(最高优先级)
-	Terms        Terms        `json:"terms"`        //条件
+	ValidRanges   WhenRanges `json:"validRanges"`   //生效时间段
+	InvalidRanges WhenRanges `json:"invalidRanges"` //无效时间段(最高优先级)
+	Conditions    Conditions `json:"conditions"`    //条件
 }
+
+type WhenRanges []WhenRange
+
 type WhenRange struct {
 	DateRange DateRange `json:"dateRange"`
 	TimeRange TimeRange `json:"timeRange"`
@@ -16,10 +18,13 @@ func (w *When) Validate() error {
 	if w == nil {
 		return nil
 	}
-	if err := w.ValidRange.Validate(); err != nil {
+	if err := w.ValidRanges.Validate(); err != nil {
 		return err
 	}
-	if err := w.Terms.Validate(); err != nil {
+	if err := w.InvalidRanges.Validate(); err != nil {
+		return err
+	}
+	if err := w.Conditions.Validate(); err != nil {
 		return err
 	}
 	return nil
@@ -31,6 +36,17 @@ func (w WhenRange) Validate() error {
 	}
 	if err := w.Repeat.Validate(); err != nil {
 		return err
+	}
+	return nil
+}
+func (w WhenRanges) Validate() error {
+	if len(w) == 0 {
+		return nil
+	}
+	for _, v := range w {
+		if err := v.Validate(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

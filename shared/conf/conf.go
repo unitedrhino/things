@@ -14,6 +14,6 @@ type StaticProxyConf struct {
 }
 
 type ProxyConf struct {
-	FileProxy   *FileProxyConf     `json:",optional"`
+	FileProxy   FileProxyConf      `json:""`
 	StaticProxy []*StaticProxyConf `json:",optional"`
 }
