@@ -15,11 +15,11 @@ func NewCaptcha(store kv.Store) *Captcha {
 		store: store,
 	}
 }
-func (c *Captcha) GenKey(Type, codeID string) string {
-	return "captcha:" + Type + ":" + codeID
+func (c *Captcha) GenKey(Type, Use, codeID string) string {
+	return "captcha:" + Type + ":" + Use + ":" + codeID
 }
-func (c *Captcha) Verify(ctx context.Context, Type, codeID, code string) string {
-	key := c.GenKey(Type, codeID)
+func (c *Captcha) Verify(ctx context.Context, Type, Use, codeID, code string) string {
+	key := c.GenKey(Type, Use, codeID)
 	val, err := c.store.GetCtx(ctx, key)
 	if err != nil || val == "" {
 		return ""
@@ -37,11 +37,11 @@ func (c *Captcha) Verify(ctx context.Context, Type, codeID, code string) string 
 	return ""
 }
 
-func (c *Captcha) Store(ctx context.Context, Type, codeID, code string, account string, expire int64) error {
+func (c *Captcha) Store(ctx context.Context, Type, Use, codeID, code string, account string, expire int64) error {
 	body := map[string]interface{}{
 		"code":    code,
 		"account": account,
 	}
 	bodytStr, _ := json.Marshal(body)
-	return c.store.SetexCtx(ctx, c.GenKey(Type, codeID), string(bodytStr), int(expire))
+	return c.store.SetexCtx(ctx, c.GenKey(Type, Use, codeID), string(bodytStr), int(expire))
 }

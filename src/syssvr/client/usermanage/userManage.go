@@ -100,6 +100,7 @@ type (
 	UserAreaMultiUpdateReq    = sys.UserAreaMultiUpdateReq
 	UserCaptchaReq            = sys.UserCaptchaReq
 	UserCaptchaResp           = sys.UserCaptchaResp
+	UserChangePwdReq          = sys.UserChangePwdReq
 	UserCheckTokenReq         = sys.UserCheckTokenReq
 	UserCheckTokenResp        = sys.UserCheckTokenResp
 	UserCreateResp            = sys.UserCreateResp
@@ -136,6 +137,7 @@ type (
 		UserCaptcha(ctx context.Context, in *UserCaptchaReq, opts ...grpc.CallOption) (*UserCaptchaResp, error)
 		UserCheckToken(ctx context.Context, in *UserCheckTokenReq, opts ...grpc.CallOption) (*UserCheckTokenResp, error)
 		UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error)
+		UserChangePwd(ctx context.Context, in *UserChangePwdReq, opts ...grpc.CallOption) (*Response, error)
 		UserRoleIndex(ctx context.Context, in *UserRoleIndexReq, opts ...grpc.CallOption) (*UserRoleIndexResp, error)
 		UserRoleMultiUpdate(ctx context.Context, in *UserRoleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		UserProjectMultiUpdate(ctx context.Context, in *UserProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
@@ -255,6 +257,15 @@ func (m *defaultUserManage) UserRegister(ctx context.Context, in *UserRegisterRe
 
 func (d *directUserManage) UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error) {
 	return d.svr.UserRegister(ctx, in)
+}
+
+func (m *defaultUserManage) UserChangePwd(ctx context.Context, in *UserChangePwdReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserManageClient(m.cli.Conn())
+	return client.UserChangePwd(ctx, in, opts...)
+}
+
+func (d *directUserManage) UserChangePwd(ctx context.Context, in *UserChangePwdReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserChangePwd(ctx, in)
 }
 
 func (m *defaultUserManage) UserRoleIndex(ctx context.Context, in *UserRoleIndexReq, opts ...grpc.CallOption) (*UserRoleIndexResp, error) {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -33,25 +34,47 @@ func (l *UserCaptchaLogic) UserCaptcha(in *sys.UserCaptchaReq) (*sys.UserCaptcha
 		codeID = utils.Random(20, 1)
 		code   = utils.Random(6, 0)
 	)
+	uc := ctxs.GetUserCtx(l.ctx)
 	switch in.Type {
 	case def.CaptchaTypeImage:
-
+	case def.CaptchaTypePhone:
+		if uc == nil {
+			account := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypePhone, in.Use, in.CodeID, in.Code)
+			if account == "" {
+				return nil, errors.Captcha
+			}
+		}
+		if !utils.SliceIn(in.Use, def.CaptchaUseRegister) {
+			count, err := relationDB.NewUserInfoRepo(l.ctx).CountByFilter(l.ctx, relationDB.UserInfoFilter{Phones: []string{in.Account}})
+			if err != nil {
+				return nil, err
+			}
+			if count == 0 && in.Use == def.CaptchaUseLogin {
+				return nil, errors.UnRegister
+			}
+		}
+		code = "123456"
 	case def.CaptchaTypeEmail:
-		account := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, in.CodeID, in.Code)
-		if account == "" {
-			return nil, errors.Captcha
+		if uc == nil {
+			account := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, in.Use, in.CodeID, in.Code)
+			if account == "" {
+				return nil, errors.Captcha
+			}
 		}
-		count, err := relationDB.NewUserInfoRepo(l.ctx).CountByFilter(l.ctx, relationDB.UserInfoFilter{Emails: []string{in.Account}})
-		if err != nil {
-			return nil, err
-		}
-		if count == 0 && in.Use == def.CaptchaUseLogin {
-			return nil, errors.UnRegister
+		if !utils.SliceIn(in.Use, def.CaptchaUseRegister) {
+			count, err := relationDB.NewUserInfoRepo(l.ctx).CountByFilter(l.ctx, relationDB.UserInfoFilter{Emails: []string{in.Account}})
+			if err != nil {
+				return nil, err
+			}
+			if count == 0 && in.Use == def.CaptchaUseLogin {
+				return nil, errors.UnRegister
+			}
 		}
 		c, err := relationDB.NewTenantConfigRepo(l.ctx).FindOne(l.ctx)
 		if err != nil {
 			return nil, err
 		}
+		code = "123456"
 		err = utils.SenEmail(conf.Email{
 			From:     c.Email.From,
 			Host:     c.Email.Host,
@@ -64,8 +87,10 @@ func (l *UserCaptchaLogic) UserCaptcha(in *sys.UserCaptchaReq) (*sys.UserCaptcha
 		if err != nil {
 			return nil, err
 		}
+	default:
+		return nil, errors.Parameter.AddMsgf("不支持的验证方式:%v", in.Type)
 	}
-	err := l.svcCtx.Captcha.Store(l.ctx, in.Type, codeID, code, in.Account, def.CaptchaExpire)
+	err := l.svcCtx.Captcha.Store(l.ctx, in.Type, in.Use, codeID, code, in.Account, def.CaptchaExpire)
 	if err != nil {
 		return nil, err
 	}

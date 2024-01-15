@@ -2,6 +2,7 @@ package usermanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
@@ -13,26 +14,27 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type UserForgetPwdLogic struct {
+type UserChangePwdLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewUserForgetPwdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserForgetPwdLogic {
-	return &UserForgetPwdLogic{
+func NewUserChangePwdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserChangePwdLogic {
+	return &UserChangePwdLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *UserForgetPwdLogic) UserForgetPwd(in *sys.UserForgetPwdReq) (*sys.Response, error) {
+func (l *UserChangePwdLogic) UserChangePwd(in *sys.UserChangePwdReq) (*sys.Response, error) {
 	var account string
+	uc := ctxs.GetUserCtx(l.ctx)
 	var oldUi *relationDB.SysTenantUserInfo
 	switch in.Type {
 	case def.CaptchaTypeEmail:
-		account = l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, def.CaptchaUseForgetPwd, in.CodeID, in.Code)
+		account = l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, def.CaptchaUseChangePwd, in.CodeID, in.Code)
 		if account == "" {
 			return nil, errors.Captcha
 		}
@@ -42,7 +44,7 @@ func (l *UserForgetPwdLogic) UserForgetPwd(in *sys.UserForgetPwdReq) (*sys.Respo
 		}
 		oldUi = ui
 	case def.CaptchaTypePhone:
-		account = l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypePhone, def.CaptchaUseForgetPwd, in.CodeID, in.Code)
+		account = l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypePhone, def.CaptchaUseChangePwd, in.CodeID, in.Code)
 		if account == "" {
 			return nil, errors.Captcha
 		}
@@ -51,6 +53,9 @@ func (l *UserForgetPwdLogic) UserForgetPwd(in *sys.UserForgetPwdReq) (*sys.Respo
 			return nil, err
 		}
 		oldUi = ui
+	}
+	if oldUi.UserID != uc.UserID {
+		return nil, errors.Permissions.AddMsgf("只能修改自己的密码")
 	}
 	err := CheckPwd(l.svcCtx, in.Password)
 	if err != nil {

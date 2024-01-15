@@ -15,6 +15,7 @@ service UserManage {
   rpc userCaptcha(UserCaptchaReq)returns(UserCaptchaResp);
   rpc userCheckToken(UserCheckTokenReq) returns(UserCheckTokenResp);
   rpc userRegister(UserRegisterReq) returns(UserRegisterResp);
+  rpc userChangePwd(UserChangePwdReq) returns(Response);
 
   rpc userRoleIndex(UserRoleIndexReq) returns (UserRoleIndexResp); //获取角色API权限列表
   rpc userRoleMultiUpdate(UserRoleMultiUpdateReq) returns(Response); //添加角色
@@ -675,6 +676,13 @@ message UserCaptchaResp{
 message UserForgetPwdReq{
   string account = 1; //登录账号(支持用户名,手机号登录) 账号密码登录时需要填写
   string  type = 2;//账号类型: email:邮箱 phone:手机号
+  string password =3;//密码
+  string code = 5;//验证码    微信登录填code
+  string codeID = 6;//验证码编号 微信登录填state
+}
+
+message  UserChangePwdReq{
+  string  type = 1;//验证类型: email:邮箱 phone:手机号
   string password =3;//密码
   string code = 5;//验证码    微信登录填code
   string codeID = 6;//验证码编号 微信登录填state

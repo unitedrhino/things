@@ -1,26 +1,25 @@
-package user
+package self
 
 import (
-	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/result"
-	"github.com/i-Things/things/src/apisvr/internal/logic/system/user"
+	"github.com/i-Things/things/src/apisvr/internal/logic/system/user/self"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 )
 
-func ForgetPwdHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func ApiIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UserForgetPwdReq
+		var req types.UserResourceWithModuleReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
-		r = ctxs.NotLoginedInit(r)
-		l := user.NewForgetPwdLogic(r.Context(), svcCtx)
-		err := l.ForgetPwd(&req)
-		result.Http(w, r, nil, err)
+
+		l := self.NewApiIndexLogic(r.Context(), svcCtx)
+		resp, err := l.ApiIndex(&req)
+		result.Http(w, r, resp, err)
 	}
 }

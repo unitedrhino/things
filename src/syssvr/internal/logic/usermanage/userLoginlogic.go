@@ -106,7 +106,7 @@ func (l *LoginLogic) getRet(ui *relationDB.SysTenantUserInfo, list []*conf.Login
 func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysTenantUserInfo, err error) {
 	switch in.LoginType {
 	case users.RegPwd:
-		if l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeImage, in.CodeID, in.Code) == "" {
+		if l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeImage, def.CaptchaUseLogin, in.CodeID, in.Code) == "" {
 			return nil, errors.Captcha
 		}
 		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{Accounts: []string{in.Account}, WithRoles: true, WithTenant: true})
@@ -144,7 +144,7 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysTenant
 		}
 		uc, err = l.UiDB.FindOneByFilter(l.ctx, relationDB.UserInfoFilter{WechatUnionID: ret.UnionID, WechatOpenID: ret.OpenID, WithRoles: true, WithTenant: true})
 	case users.RegEmail:
-		email := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, in.CodeID, in.Code)
+		email := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, def.CaptchaUseLogin, in.CodeID, in.Code)
 		if email == "" || email != in.Account {
 			return nil, errors.Captcha
 		}

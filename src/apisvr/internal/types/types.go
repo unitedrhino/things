@@ -120,20 +120,6 @@ type UserCreateResp struct {
 	UserID int64 `json:"userID,string,optional"` // 用户id
 }
 
-type UserCaptchaReq struct {
-	Account string `json:"account,optional"`               //短信验证时填写手机号,邮箱验证时填写邮箱
-	Type    string `json:"type,options=phone|image|email"` //验证方式:短信验证,图片验证码
-	Use     string `json:"use,options=login|register"`     //用途
-	Code    string `json:"code,optional"`                  //验证码    微信邮箱验证登录填code
-	CodeID  string `json:"codeID,optional"`                //验证码编号 微信邮箱验证登录填state
-}
-
-type UserCaptchaResp struct {
-	CodeID string `json:"codeID"`       //验证码编号
-	Url    string `json:"url,optional"` //图片验证码url
-	Expire int64  `json:"expire"`       //过期时间
-}
-
 type UserInfoCreateReq struct {
 	Info    *UserInfo `json:"info"`
 	RoleIDs []int64   `json:"roleIDs,range=(0:120]"` //角色编号列表
@@ -157,44 +143,6 @@ type UserInfoReadReq struct {
 
 type UserInfoDeleteReq struct {
 	UserID int64 `json:"userID,string,optional"` // 用户id
-}
-
-type UserLoginReq struct {
-	Account   string `json:"account,optional"`                                              //登录账号(支持用户名,手机号,邮箱) 账号密码登录时需要填写
-	PwdType   int32  `json:"pwdType,optional"`                                              //账号密码登录时需要填写.0或1,无密码 2，明文 3，md5加密
-	Password  string `json:"password,optional"`                                             //密码，建议md5转换 密码登录时需要填写
-	LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|dingApp|pwd|email"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码 email 邮箱
-	Code      string `json:"code,optional"`                                                 //验证码    微信邮箱验证登录填code
-	CodeID    string `json:"codeID,optional"`                                               //验证码编号 微信邮箱验证登录填state
-}
-
-type UserLoginResp struct {
-	Info  UserInfo    `json:"info"`  //用户信息
-	Roles []*RoleInfo `json:"roles"` //角色列表
-	Token JwtToken    `json:"token"` //用户token
-}
-
-type JwtToken struct {
-	AccessToken  string `json:"accessToken,omitempty"`         //用户token
-	AccessExpire int64  `json:"accessExpire,string,omitempty"` //token过期时间
-	RefreshAfter int64  `json:"refreshAfter,string,omitempty"` //token刷新时间
-}
-
-type UserRegisterReq struct {
-	RegType  string    `json:"regType,options=phone|email|wxOpen|wxIn|wxMiniP|pwd|dingApp"`
-	Account  string    `json:"account,optional"`  //手机号注册时填写手机号 账号密码注册时填写userName
-	Code     string    `json:"code"`              //验证码    微信登录填code 账号密码登录时填写密码
-	CodeID   string    `json:"codeID,optional"`   //验证码编号 微信登录填state
-	Password string    `json:"password,optional"` //密码
-	Info     *UserInfo `json:"info,optional"`     //用户信息
-}
-
-type UserForgetPwdReq struct {
-	Type     string `json:"type,options=phone|email"` //验证方式:	phone手机号 email邮箱
-	Account  string `json:"account,optional"`         //手机号注册时填写手机号 账号密码注册时填写userName
-	Code     string `json:"code,optional"`            //验证码    微信登录填code 账号密码登录时填写密码
-	CodeID   string `json:"codeID,optional"`          //验证码编号 微信登录填state
-	Password string `json:"password"`                 //密码
 }
 
 type RoleAppMultiUpdateReq struct {
@@ -796,6 +744,65 @@ type UserResourceWithModuleReq struct {
 type UserResourceReadResp struct {
 	Roles []*RoleInfo `json:"roles"` //角色列表
 	Info  *UserInfo   `json:"info"`  //用户信息
+}
+
+type UserChangePwdReq struct {
+	Type     string `json:"type,options=phone|email"` //验证方式:	phone手机号 email邮箱
+	Code     string `json:"code"`                     //验证码    微信登录填code 账号密码登录时填写密码
+	CodeID   string `json:"codeID,optional"`          //验证码编号 微信登录填state
+	Password string `json:"password,optional"`        //密码
+}
+
+type UserCaptchaReq struct {
+	Account string `json:"account,optional"`                               //短信验证时填写手机号,邮箱验证时填写邮箱
+	Type    string `json:"type,options=phone|image|email"`                 //验证方式:短信验证,图片验证码
+	Use     string `json:"use,options=login|register|changePwd|forgetPwd"` //用途
+	Code    string `json:"code,optional"`                                  //验证码    微信邮箱验证登录填code
+	CodeID  string `json:"codeID,optional"`                                //验证码编号 微信邮箱验证登录填state
+}
+
+type UserCaptchaResp struct {
+	CodeID string `json:"codeID"`       //验证码编号
+	Url    string `json:"url,optional"` //图片验证码url
+	Expire int64  `json:"expire"`       //过期时间
+}
+
+type UserLoginReq struct {
+	Account   string `json:"account,optional"`                                              //登录账号(支持用户名,手机号,邮箱) 账号密码登录时需要填写
+	PwdType   int32  `json:"pwdType,optional"`                                              //账号密码登录时需要填写.0或1,无密码 2，明文 3，md5加密
+	Password  string `json:"password,optional"`                                             //密码，建议md5转换 密码登录时需要填写
+	LoginType string `json:"loginType,options=phone|wxOpen|wxIn|wxMiniP|dingApp|pwd|email"` //验证类型 phone 手机号 wxOpen 微信开放平台 wxIn 微信内 wxMiniP 微信小程序 pwd 账号密码 email 邮箱
+	Code      string `json:"code,optional"`                                                 //验证码    微信邮箱验证登录填code
+	CodeID    string `json:"codeID,optional"`                                               //验证码编号 微信邮箱验证登录填state
+}
+
+type UserLoginResp struct {
+	Info  UserInfo    `json:"info"`  //用户信息
+	Roles []*RoleInfo `json:"roles"` //角色列表
+	Token JwtToken    `json:"token"` //用户token
+}
+
+type JwtToken struct {
+	AccessToken  string `json:"accessToken,omitempty"`         //用户token
+	AccessExpire int64  `json:"accessExpire,string,omitempty"` //token过期时间
+	RefreshAfter int64  `json:"refreshAfter,string,omitempty"` //token刷新时间
+}
+
+type UserRegisterReq struct {
+	RegType  string    `json:"regType,options=phone|email|wxOpen|wxIn|wxMiniP|pwd|dingApp"`
+	Account  string    `json:"account,optional"`  //手机号注册时填写手机号 账号密码注册时填写userName
+	Code     string    `json:"code"`              //验证码    微信登录填code 账号密码登录时填写密码
+	CodeID   string    `json:"codeID,optional"`   //验证码编号 微信登录填state
+	Password string    `json:"password,optional"` //密码
+	Info     *UserInfo `json:"info,optional"`     //用户信息
+}
+
+type UserForgetPwdReq struct {
+	Type     string `json:"type,options=phone|email"` //验证方式:	phone手机号 email邮箱
+	Account  string `json:"account,optional"`         //手机号注册时填写手机号 账号密码注册时填写userName
+	Code     string `json:"code,optional"`            //验证码    微信登录填code 账号密码登录时填写密码
+	CodeID   string `json:"codeID,optional"`          //验证码编号 微信登录填state
+	Password string `json:"password"`                 //密码
 }
 
 type ProductInfo struct {

@@ -5,11 +5,14 @@ const (
 	CaptchaTypeImage = "image" //图形验证码
 	CaptchaTypeEmail = "email"
 )
+
 const (
-	CaptchaExpire = 180
+	CaptchaUseLogin     = "login"
+	CaptchaUseRegister  = "register"
+	CaptchaUseChangePwd = "changePwd"
+	CaptchaUseForgetPwd = "forgetPwd"
 )
 
 const (
-	CaptchaUseLogin    = "login"
-	CaptchaUseRegister = "register"
+	CaptchaExpire = 180
 )
