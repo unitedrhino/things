@@ -59,32 +59,6 @@ import (
 
 func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/captcha",
-				Handler: systemuser.CaptchaHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/login",
-				Handler: systemuser.LoginHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/register",
-				Handler: systemuser.RegisterHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/forget-pwd",
-				Handler: systemuser.ForgetPwdHandler(serverCtx),
-			},
-		},
-		ws.WithPrefix("/api/v1/system/user"),
-	)
-
-	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
@@ -767,28 +741,23 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/resource/read",
-					Handler: systemuserself.ResourceReadHandler(serverCtx),
+					Path:    "/app/index",
+					Handler: systemuserself.AppIndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/resource/app/index",
-					Handler: systemuserself.ResourceAppIndexHandler(serverCtx),
+					Path:    "/module/index",
+					Handler: systemuserself.ModuleIndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/resource/module/index",
-					Handler: systemuserself.ResourceModuleIndexHandler(serverCtx),
+					Path:    "/menu/index",
+					Handler: systemuserself.MenuIndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/resource/menu/index",
-					Handler: systemuserself.ResourceMenuIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/resource/api/index",
-					Handler: systemuserself.ResourceApiIndexHandler(serverCtx),
+					Path:    "/api/index",
+					Handler: systemuserself.ApiIndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -800,8 +769,39 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/update",
 					Handler: systemuserself.UpdateHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/change-pwd",
+					Handler: systemuserself.ChangePwdHandler(serverCtx),
+				},
 			}...,
 		),
+		ws.WithPrefix("/api/v1/system/user/self"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/captcha",
+				Handler: systemuserself.CaptchaHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/login",
+				Handler: systemuserself.LoginHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/register",
+				Handler: systemuserself.RegisterHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/forget-pwd",
+				Handler: systemuserself.ForgetPwdHandler(serverCtx),
+			},
+		},
 		ws.WithPrefix("/api/v1/system/user/self"),
 	)
 

@@ -100,6 +100,7 @@ type (
 	UserAreaMultiUpdateReq    = sys.UserAreaMultiUpdateReq
 	UserCaptchaReq            = sys.UserCaptchaReq
 	UserCaptchaResp           = sys.UserCaptchaResp
+	UserChangePwdReq          = sys.UserChangePwdReq
 	UserCheckTokenReq         = sys.UserCheckTokenReq
 	UserCheckTokenResp        = sys.UserCheckTokenResp
 	UserCreateResp            = sys.UserCreateResp

@@ -39,7 +39,7 @@ type SoftTime struct {
 type DeletedTime int64
 
 var (
-	FlagActived = 0
+	FlagActivated = 0
 )
 
 func (DeletedTime) QueryClauses(f *schema.Field) []clause.Interface {
@@ -81,7 +81,7 @@ func (sd SoftDeleteQueryClause) ModifyStatement(stmt *gorm.Statement) {
 			}})
 		} else {
 			stmt.AddClause(clause.Where{Exprs: []clause.Expression{
-				clause.Eq{Column: clause.Column{Table: clause.CurrentTable, Name: sd.Field.DBName}, Value: FlagActived},
+				clause.Eq{Column: clause.Column{Table: clause.CurrentTable, Name: sd.Field.DBName}, Value: FlagActivated},
 			}})
 		}
 		stmt.Clauses["soft_delete_enabled"] = clause.Clause{}
