@@ -210,7 +210,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
 			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
 			vidmgrG = viddirect.NewVidmgrGbsipManage(c.VidRpc.RunProxy)
-			viddirect.ApiDirectRun()
+			//viddirect.ApiDirectRun()
 		}
 	}
 
