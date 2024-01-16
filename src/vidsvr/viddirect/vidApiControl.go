@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/domain/deviceAuth"
 	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
 	"github.com/i-Things/things/src/timed/timedjobsvr/pb/timedjob"
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/vidsvr/internal/handler"
+	"github.com/i-Things/things/src/vidsvr/internal/media"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
 	"github.com/robfig/cron/v3"
 	"github.com/zeromicro/go-zero/rest"
@@ -62,7 +64,9 @@ func ApiRun() {
 		apiCtx.SvcCtx.Config.Restconf.Host, apiCtx.SvcCtx.Config.Restconf.Port)
 	defer apiCtx.Server.Stop()
 	initSvrOnce.Do(func() {
-		InitData()
+		//InitData()
+		utils.Go(context.Background(), DelayTask)
+		utils.Go(context.Background(), CronTask)
 	})
 
 	//初始化第一个流服务
@@ -73,8 +77,9 @@ func CronTask() {
 	cronTask = cron.New(cron.WithSeconds())
 	fmt.Println(time.Now())
 	//cronTask.AddFunc("*/30 * * * * *",func)
-	cronTask.AddFunc("*/7 * * * * *", func() { fmt.Println(time.Now(), "====== 建造完成： 投石车 +1 =======") })
-	cronTask.AddFunc("*/3 * * * * *", func() { fmt.Println(time.Now(), "====== 招募完成： 士兵   +1 =======") })
+	cronTask.AddFunc("*/30 * * * * *", func() {
+		media.SrvInfoStatusCheck()
+	})
 	cronTask.Start()
 	select {}
 }
@@ -105,4 +110,10 @@ func InitData() {
 			},
 		})
 	}
+}
+
+func DelayTask() {
+	time.Sleep(5 * time.Second) //5 秒后执行
+	id := deviceAuth.GetStrProductID(svcCtx.VidmgrID.GetSnowflakeId())
+	media.InitDockerSrv(c, id)
 }

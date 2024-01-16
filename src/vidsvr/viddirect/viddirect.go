@@ -41,7 +41,6 @@ func GetSvcCtx() *svc.ServiceContext {
 // RunServer 如果是直连模式,同时提供Grpc的能力
 func RunServer(svcCtx *svc.ServiceContext) {
 	runSvrOnce.Do(func() {
-
 		go Run(svcCtx)
 		ApiDirectRun() //golang 后台执行
 	})
