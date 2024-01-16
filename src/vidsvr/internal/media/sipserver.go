@@ -3,15 +3,15 @@ package media
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
 	sip "github.com/i-Things/things/src/vidsvr/gosip/sip"
 	"github.com/i-Things/things/src/vidsvr/internal/config"
-	db "github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"strings"
 	"sync"
+	"time"
 )
 
+// todoWFJ 注册一个流媒体，也会跟着注册一个gb服务
 type SipServer struct {
 	Conf config.Config
 	Srv  *sip.Server
@@ -25,6 +25,7 @@ var (
 
 func NewSipServer(config config.Config) *SipServer {
 	ServerOnce.Do(func() {
+
 		SipSrv = &SipServer{
 			Conf: config,
 			Srv:  sip.NewServer(context.Background()),
@@ -36,59 +37,39 @@ func NewSipServer(config config.Config) *SipServer {
 				}
 			}
 		}
+		_recordList = &sync.Map{}
+
 		uri, _ := sip.ParseSipURI(fmt.Sprintf("sip:%s@%s", config.GbsipConf.Lid, config.GbsipConf.Region))
-		_serverDevices = &db.VidmgrDevices{
+		_serverDevices = &GbSipDevice{
 			DeviceID: config.GbsipConf.Lid,
 			Region:   config.GbsipConf.Region,
-			Addr: &sip.Address{
+			addr: &sip.Address{
 				DisplayName: sip.String{Str: "sipserver"},
 				URI:         &uri,
 				Params:      sip.NewParams(),
 			},
 		}
-
-		SipInfo = &db.VidmgrSipInfo{
+		_serverDevices.RandomStr = utils.NewSnowFlake(time.Now().Unix())
+		SipInfo = &GbSipInfo{
 			DID: Config.GbsipConf.Did,
 			CID: Config.GbsipConf.Cid,
+			LID: Config.GbsipConf.Lid,
 		}
-
 		//初始化一个携程监听UDP SIP
 		utils.Go(context.Background(), func() {
 			SipSrv.Srv.RegistHandler(sip.REGISTER, handlerRegister)
 			SipSrv.Srv.RegistHandler(sip.MESSAGE, handlerMessage)
-			SipSrv.Srv.ListenUDPServer(config.GbsipConf.UDP)
+
+			SipSrv.Srv.ListenUDPServer(fmt.Sprintf("0.0.0.0:%d", config.GbsipConf.UDP))
 		})
 	})
-
 	//
 	fmt.Println("_______airgens read gb28181_____", config.GbsipConf)
 	//init Gb28181 sipInfo Data
-	sipInfoRepo := db.NewVidmgrSipInfoRepo(Ctx)
-	filter := db.VidmgrSipInfoFilter{}
-	size, err := sipInfoRepo.CountByFilter(Ctx, filter)
-	if err != nil {
-		fmt.Sprintf("---NewSipServer ERROR----has no data")
-	}
-	if size > 0 {
-		diInfo, _ := sipInfoRepo.FindByFilter(Ctx, filter, &def.PageInfo{
-			Page: 1, Size: 20,
-			Orders: []def.OrderBy{{"created_time", def.OrderDesc}, {"id", def.OrderDesc}},
-		})
-		//GetData  取第一个组数据
-		// = diInfo[0].DID
-		SipInfo = diInfo[0]
-	} else {
-		//SipInfo = config.GbsipConf
-		//insert Data
-		SipInfo.Region = config.GbsipConf.Region
-		SipInfo.LID = config.GbsipConf.Lid
-		SipInfo.DID = config.GbsipConf.Did
-		SipInfo.CID = config.GbsipConf.Cid
-		SipInfo.IsOpenServer = true
-		SipInfo.MediaServerRtpIP = utils.InetAtoN(config.Restconf.Host)
-		SipInfo.MediaServerRtpPort = 10000
-		sipInfoRepo.Insert(Ctx, SipInfo)
-	}
-
 	return SipSrv
+}
+
+func SipPlay() error {
+
+	return nil
 }

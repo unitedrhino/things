@@ -119,7 +119,7 @@ func (s *Server) handlerListen(msgs chan Message) {
 }
 func (s *Server) handlerRequest(msg *Request) {
 	tx := s.mustTX(getTXKey(msg))
-	s.Logger.Info("receive request from:", msg.Source(), ",method:", msg.Method(), "txKey:", tx.key, "message: \n", msg.String())
+	fmt.Sprintln("[airgens-sip] receive request from:", msg.Source(), ",method:", msg.Method(), "txKey:", tx.key, "message: \n", msg.String())
 	s.hmu.RLock()
 	handler, ok := s.requestHandlers[msg.Method()]
 	s.hmu.RUnlock()

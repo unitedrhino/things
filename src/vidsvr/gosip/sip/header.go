@@ -230,9 +230,9 @@ type Params interface {
 
 // Address Address
 type Address struct {
-	DisplayName MaybeString
-	URI         *URI
-	Params      Params
+	DisplayName MaybeString `json:"DisplayName"`
+	URI         *URI        `json:"URI"`
+	Params      Params      `json:"Params"`
 }
 
 // Clone Clone

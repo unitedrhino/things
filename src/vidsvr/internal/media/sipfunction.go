@@ -2,15 +2,19 @@ package media
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/gosip/sdp"
 	"github.com/i-Things/things/src/vidsvr/gosip/sip"
 	db "github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
+	"github.com/i-Things/things/src/vidsvr/internal/types"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"sort"
 	"strconv"
@@ -18,8 +22,8 @@ import (
 )
 
 // 从请求中解析出设备信息
-func parserDevicesFromReqeust(req *sip.Request) (db.VidmgrDevices, bool) {
-	u := db.VidmgrDevices{}
+func parserDevicesFromReqeust(req *sip.Request) (GbSipDevice, bool) {
+	u := GbSipDevice{}
 	header, ok := req.From()
 	if !ok {
 		logrus.Warningln("not found from header from request", req.String())
@@ -53,19 +57,22 @@ func parserDevicesFromReqeust(req *sip.Request) (db.VidmgrDevices, bool) {
 
 	u.TransPort = via.Transport
 	u.URIStr = header.Address.String()
-	u.Addr = sip.NewAddressFromFromHeader(header)
-	u.SourceStr = req.Source().String()
-	u.Source = req.Source()
+	//byteTmp, _ := json.Marshal()
+	fmt.Println("[airgens-sip] --------:", sip.NewAddressFromFromHeader(header))
+	u.addr = sip.NewAddressFromFromHeader(header)
+	u.Source = req.Source().String()
+	u.source = req.Source()
 	return u, true
 }
 
 // 获取设备信息（注册设备）
-func sipDeviceInfo(to db.VidmgrDevices) {
-	hb := sip.NewHeaderBuilder().SetTo(to.Addr).SetFrom(_serverDevices.Addr).AddVia(&sip.ViaHop{
+func sipDeviceInfo(to GbSipDevice) {
+
+	hb := sip.NewHeaderBuilder().SetTo(to.addr).SetFrom(_serverDevices.addr).AddVia(&sip.ViaHop{
 		Params: sip.NewParams().Add("branch", sip.String{Str: sip.GenerateBranch()}),
 	}).SetContentType(&sip.ContentTypeXML).SetMethod(sip.MESSAGE)
-	req := sip.NewRequest("", sip.MESSAGE, to.Addr.URI, sip.DefaultSipVersion, hb.Build(), sip.GetDeviceInfoXML(to.DeviceID))
-	req.SetDestination(to.Source)
+	req := sip.NewRequest("", sip.MESSAGE, to.addr.URI, sip.DefaultSipVersion, hb.Build(), sip.GetDeviceInfoXML(to.DeviceID))
+	req.SetDestination(to.source)
 	tx, err := SipSrv.Srv.Request(req)
 	if err != nil {
 		logrus.Warnln("sipDeviceInfo  error,", err)
@@ -89,30 +96,54 @@ func sipResponse(tx *sip.Transaction) (*sip.Response, error) {
 	return response, nil
 }
 
-// zlm接收到的ssrc为16进制。发起请求的ssrc为10进制
-func ssrc2stream(ssrc string) string {
-	if ssrc[0:1] == "0" {
-		ssrc = ssrc[1:]
-	}
-	num, _ := strconv.Atoi(ssrc)
-	return fmt.Sprintf("%08X", num)
-}
-
-func sipMessageCatalog(u db.VidmgrDevices, body []byte) error {
+func sipMessageCatalog(body []byte) error {
 	message := &MessageDeviceListResponse{}
 	if err := utils.XMLDecode(body, message); err != nil {
 		logrus.Errorln("Message Unmarshal xml err:", err, "body:", string(body))
 		return err
 	}
 	channelsRepo := db.NewVidmgrChannelsRepo(Ctx)
+	fmt.Println("[airgens-sip] sipMessageCatalog-message:", message)
 	if message.SumNum > 0 {
+		fmt.Println("[airgens-sip] message:", message)
 		for _, d := range message.Item {
 			filter := db.VidmgrChannelsFilter{
-				DeviceIDs:  []string{d.DeviceID},
-				ChannelIDs: []string{d.ChannelID},
+				DeviceIDs: []string{message.DeviceID},
+				ChannelID: d.ChannelID,
 			}
+			tmpStr, _ := json.Marshal(d)
+
+			fmt.Println("[airgens-sip] filter_SIP devices:", filter)
+			fmt.Println("[airgens-sip] filter_SIP Item-d:", d)
+			fmt.Println("[airgens-sip] filter_SIP d.ChannelID:", d.ChannelID)
+			fmt.Println("[airgens-sip] filter_SIP json.tmpStr:", string(tmpStr))
 			channel, err := channelsRepo.FindOneByFilter(Ctx, filter)
-			if err == nil {
+			if err != nil {
+				errosType := &types.IndexApiResp{}
+				json.Unmarshal([]byte(err.Error()), errosType)
+				//not found  and set default
+				if errosType.Code == 100009 {
+					channel = &db.VidmgrChannels{}
+					channel.DeviceID = message.DeviceID
+					channel.ChannelID = d.ChannelID
+					channel.Active = time.Now().Unix()
+					channel.URIStr = fmt.Sprintf("sip:%s@%s", d.ChannelID, SipInfo.Region)
+					channel.Status = transDeviceStatus(d.Status)
+					channel.Name = d.Name
+					channel.Manufacturer = d.Manufacturer
+					channel.Model = d.Model
+					channel.Owner = d.Owner
+					channel.CivilCode = d.CivilCode
+					// Address ip地址
+					channel.Address = d.Address
+					channel.Parental = d.Parental
+					channel.SafetyWay = d.SafetyWay
+					channel.RegisterWay = d.RegisterWay
+					channel.Secrecy = d.Secrecy
+					channel.LastLogin = time.Now()
+					channelsRepo.Insert(Ctx, channel)
+				}
+			} else { //正常查询到设备
 				channel.Active = time.Now().Unix()
 				channel.URIStr = fmt.Sprintf("sip:%s@%s", d.ChannelID, SipInfo.Region)
 				channel.Status = transDeviceStatus(d.Status)
@@ -128,54 +159,45 @@ func sipMessageCatalog(u db.VidmgrDevices, body []byte) error {
 				channel.RegisterWay = d.RegisterWay
 				channel.Secrecy = d.Secrecy
 				channelsRepo.Update(Ctx, channel)
-				go notify(notifyChannelsActive(*channel))
-			} else {
-				logrus.Infoln("deviceid not found,deviceid:", d.DeviceID, "pdid:", message.DeviceID, "err", err)
 			}
+			go notify(notifyChannelsActive(*channel))
 		}
 	}
 	return nil
 }
-func sipMessageKeepalive(u db.VidmgrDevices, body []byte) error {
+func sipMessageKeepalive(u GbSipDevice, body []byte) error {
 	message := &MessageNotify{}
 	if err := utils.XMLDecode(body, message); err != nil {
 		logrus.Errorln("Message Unmarshal xml err:", err, "body:", string(body))
 		return err
 	}
-	device, ok := _activeDevices.Get(u.DeviceID)
 	deviceRepo := db.NewVidmgrDevicesRepo(Ctx)
-	if !ok {
-		//device = db.VidmgrDevices{DeviceID: u.DeviceID}
-		filter := db.VidmgrDevicesFilter{
-			DeviceIDs: []string{u.DeviceID},
-		}
-		device1, err := deviceRepo.FindOneByFilter(Ctx, filter)
-		if err != nil {
-			logrus.Warnln("Device Keepalive not found ", u.DeviceID, err)
-		}
-		device = *device1
+	filter := db.VidmgrDevicesFilter{
+		DeviceID: u.DeviceID,
 	}
-	if message.Status == "OK" {
-		device.LastLogin = time.Now()
-		_activeDevices.Store(u.DeviceID, u)
-	} else {
-		//device.LastLogin = -1
-		_activeDevices.Delete(u.DeviceID)
+	device, err := deviceRepo.FindOneByFilter(Ctx, filter)
+	if err != nil {
+		logrus.Warnln("Device Keepalive not found ", u.DeviceID, err)
+		return err
 	}
-	go notify(notifyDevicesAcitve(u.DeviceID, message.Status))
-	device.Host = u.Host
-	device.Port = u.Port
-	device.Rport = u.Rport
-	device.RAddr = u.RAddr
-	device.Source = u.Source
-	device.URIStr = u.URIStr
-
-	err := deviceRepo.Update(Ctx, &device)
+	if device != nil {
+		device.Host = u.Host
+		device.Port = u.Port
+		device.Rport = u.Rport
+		device.RAddr = u.RAddr
+		device.Source = u.Source
+		device.URIStr = u.URIStr
+		if message.Status == "OK" {
+			device.LastLogin = time.Now()
+		}
+		err = deviceRepo.Update(Ctx, device)
+	}
+	go notify(notifyDevicesAcitve(device.DeviceID, message.Status))
 
 	return err
 }
 
-func sipMessageRecordInfo(u db.VidmgrDevices, body []byte) error {
+func sipMessageRecordInfo(u GbSipDevice, body []byte) error {
 	message := &MessageRecordInfoResponse{}
 	if err := utils.XMLDecode(body, message); err != nil {
 		logrus.Errorln("Message Unmarshal xml err:", err, "body:", string(body))
@@ -207,33 +229,40 @@ func sipMessageRecordInfo(u db.VidmgrDevices, body []byte) error {
 		}
 		_recordList.Store(recordKey, info)
 		return nil
-
 	}
 	return errors.MediaRecordNotFound.AddDetail("recordlist devices not found")
 }
 
-func sipMessageDeviceInfo(u db.VidmgrDevices, body []byte) error {
+func sipMessageDeviceInfo(body []byte) error {
 	message := &MessageDeviceInfoResponse{}
 	if err := utils.XMLDecode([]byte(body), message); err != nil {
 		logrus.Errorln("sipMessageDeviceInfo Unmarshal xml err:", err, "body:", body)
 		return err
 	}
 	deviceRepo := db.NewVidmgrDevicesRepo(Ctx)
-	u.Model = message.Model
-	u.DeviceType = message.DeviceType
-	u.Firmware = message.Firmware
-	u.Manufacturer = message.Manufacturer
-	deviceRepo.Update(Ctx, &u)
+	dev, err := deviceRepo.FindOneByFilter(Ctx, db.VidmgrDevicesFilter{
+		DeviceID: message.DeviceID,
+	})
+	if err != nil {
+		fmt.Println("_____sipMessageDeviceInfo error___ not found data")
+		return nil
+	}
+	dev.Model = message.Model
+	dev.DeviceType = message.DeviceType
+	dev.Firmware = message.Firmware
+	dev.Manufacturer = message.Manufacturer
+	dev.LastLogin = time.Now()
+	deviceRepo.Update(Ctx, dev)
 	return nil
 }
 
 // sipCatalog 获取注册设备包含的列表
-func sipCatalog(to db.VidmgrDevices) {
-	hb := sip.NewHeaderBuilder().SetTo(to.Addr).SetFrom(_serverDevices.Addr).AddVia(&sip.ViaHop{
+func sipCatalog(to GbSipDevice) {
+	hb := sip.NewHeaderBuilder().SetTo(to.addr).SetFrom(_serverDevices.addr).AddVia(&sip.ViaHop{
 		Params: sip.NewParams().Add("branch", sip.String{Str: sip.GenerateBranch()}),
 	}).SetContentType(&sip.ContentTypeXML).SetMethod(sip.MESSAGE)
-	req := sip.NewRequest("", sip.MESSAGE, to.Addr.URI, sip.DefaultSipVersion, hb.Build(), sip.GetCatalogXML(to.DeviceID))
-	req.SetDestination(to.Source)
+	req := sip.NewRequest("", sip.MESSAGE, to.addr.URI, sip.DefaultSipVersion, hb.Build(), sip.GetCatalogXML(to.DeviceID))
+	req.SetDestination(to.source)
 	tx, err := SipSrv.Srv.Request(req)
 	if err != nil {
 		logrus.Warnln("sipCatalog  error,", err)
@@ -357,4 +386,97 @@ func Utf8ToGbk(s []byte) ([]byte, error) {
 		return nil, e
 	}
 	return d, nil
+}
+
+func sipPlayPush(data *Stream) (*Stream, error) {
+	var (
+		s sdp.Session
+		b []byte
+	)
+	name := "Play"
+	protocal := "TCP/RTP/AVP"
+	if data.Type == 1 { // 0  直播 1 历史
+		name = "Playback"
+		protocal = "RTP/RTCP"
+	}
+	video := sdp.Media{
+		Description: sdp.MediaDescription{
+			Type:     "video",
+			Port:     data.MediaPort,
+			Formats:  []string{"96", "98", "97"},
+			Protocol: protocal,
+		},
+	}
+	video.AddAttribute("recvonly")
+	if data.Type == 0 {
+		video.AddAttribute("setup", "passive")
+		video.AddAttribute("connection", "new")
+	}
+	video.AddAttribute("rtpmap", "96", "PS/90000")
+	video.AddAttribute("rtpmap", "98", "H264/90000")
+	video.AddAttribute("rtpmap", "97", "MPEG4/90000")
+	// defining message
+	msg := &sdp.Message{
+		Origin: sdp.Origin{
+			Username: data.DeviceID, // 媒体服务器id
+			Address:  data.MediaIP,
+		},
+		Name: name,
+		Connection: sdp.ConnectionData{
+			IP:  net.ParseIP(data.MediaIP),
+			TTL: 0,
+		},
+		Timing: []sdp.Timing{
+			{
+				Start: time.Time{},
+				End:   time.Time{},
+			},
+		},
+		Medias: []sdp.Media{video},
+		SSRC:   getSSRC(data.Type),
+	}
+	if data.Type == 1 {
+		msg.URI = fmt.Sprintf("%s:0", data.ChannelID)
+	}
+	// appending message to session
+	s = msg.Append(s)
+	// appending session to byte buffer
+	b = s.AppendTo(b)
+	uri, _ := sip.ParseURI(data.ChnURIStr)
+	ChnAddr := &sip.Address{URI: uri}
+	_serverDevices.addr.Params.Add("tag", sip.String{Str: utils.RandString(20)})
+	hb := sip.NewHeaderBuilder().SetTo(ChnAddr).SetFrom(_serverDevices.addr).AddVia(&sip.ViaHop{
+		Params: sip.NewParams().Add("branch", sip.String{Str: sip.GenerateBranch()}),
+	}).SetContentType(&sip.ContentTypeSDP).SetMethod(sip.INVITE).SetContact(_serverDevices.addr)
+	req := sip.NewRequest("", sip.INVITE, ChnAddr.URI, sip.DefaultSipVersion, hb.Build(), b)
+	Source, _ := net.ResolveUDPAddr("udp", data.DevSource)
+	req.SetDestination(Source)
+	req.AppendHeader(&sip.GenericHeader{HeaderName: "Subject", Contents: fmt.Sprintf("%s:%s,%s:%s", data.ChannelID, data.Stream, _serverDevices.DeviceID, data.Stream)})
+	req.SetRecipient(ChnAddr.URI)
+	tx, err := SipSrv.Srv.Request(req)
+	if err != nil {
+		logrus.Warningln("sipPlayPush fail.id:", data.DeviceID, data.ChannelID, "err:", err)
+		return data, err
+	}
+	response, err := sipResponse(tx)
+	if err != nil {
+		logrus.Warningln("sipPlayPush response fail.id:", data.DeviceID, data.ChannelID, "err:", err)
+		return data, err
+	}
+	tx.Request(sip.NewRequestFromResponse(sip.ACK, response))
+	return data, err
+}
+
+// 这个地方需要再研究一下
+func getSSRC(t int) string {
+	return fmt.Sprintf("%d%s%04d", t, SipInfo.Region[3:8], _serverDevices.RandomStr.GetSnowflakeId()%10000)
+}
+
+// zlm接收到的ssrc为16进制。发起请求的ssrc为10进制
+func ssrc2stream(ssrc string) string {
+	if ssrc[0:1] == "0" {
+		ssrc = ssrc[1:]
+	}
+	num, _ := strconv.Atoi(ssrc)
+	return fmt.Sprintf("%08X", num)
 }

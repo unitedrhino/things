@@ -51,6 +51,7 @@ func (p VidmgrStreamRepo) fmtFilter(ctx context.Context, f VidmgrStreamFilter) *
 	if f.VidmgrID != "" {
 		db = db.Where("vidmgr_id = ?", f.VidmgrID)
 	}
+
 	if f.StreamName != "" {
 		db = db.Where("stream = ?", f.Stream)
 	}

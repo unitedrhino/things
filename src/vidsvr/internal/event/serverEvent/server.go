@@ -64,7 +64,7 @@ func (l *ServerHandle) ActionCheck() error {
 func (l *ServerHandle) ActionInit() error {
 	//l.Infof("ActionCheck req:%v", in)
 	var vidInfo *relationDB.VidmgrInfo
-	//fmt.Println("[**ActionInit**]0 ", utils.FuncName())
+	fmt.Println("[**ActionInit**]0 ", utils.FuncName())
 	//查找流服务的数据库：根据IP和端口确定一个流服务
 	var (
 		c      = l.svcCtx.Config
@@ -130,6 +130,7 @@ func (l *ServerHandle) ActionInit() error {
 
 	//config dockerServer
 	fmt.Println("[**ActionInit**]6 ", utils.FuncName())
+	fmt.Println("[**ActionInit**]6.1 ProxyMediaServer: ", string(mdata))
 	//仅考虑docker的模式
 	//STEP3  配置流服务
 	if len(currentConf.Data) > 0 {

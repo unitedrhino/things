@@ -17,9 +17,9 @@ func NewVidmgrChannelsRepo(in any) *VidmgrChannelsRepo {
 }
 
 type VidmgrChannelsFilter struct {
-	IDs        []int64
 	ChannelIDs []string
 	DeviceIDs  []string
+	ChannelID  string
 	MeMeo      string
 	Model      string
 }
@@ -27,14 +27,14 @@ type VidmgrChannelsFilter struct {
 func (p VidmgrChannelsRepo) fmtFilter(ctx context.Context, f VidmgrChannelsFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 
-	if len(f.IDs) != 0 {
-		db = db.Where("id in?", f.IDs)
-	}
 	if len(f.ChannelIDs) != 0 {
 		db = db.Where("channel_id in?", f.ChannelIDs)
-	}
-	if len(f.DeviceIDs) != 0 {
+	} else if len(f.DeviceIDs) != 0 {
 		db = db.Where("device_id in?", f.DeviceIDs)
+	}
+
+	if f.ChannelID != "" {
+		db = db.Where("channel_id =?", f.ChannelID)
 	}
 	if f.MeMeo != "" {
 		db = db.Where("memo =?", f.MeMeo)

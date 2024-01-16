@@ -1,59 +1,80 @@
 package media
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/i-Things/things/shared/utils"
 	sip "github.com/i-Things/things/src/vidsvr/gosip/sip"
 	db "github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
+	"github.com/i-Things/things/src/vidsvr/internal/types"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"time"
 )
 
 func handlerRegister(req *sip.Request, tx *sip.Transaction) {
 	// 判断是否存在授权字段
 	if hdrs := req.GetHeaders("Authorization"); len(hdrs) > 0 {
+		fmt.Println("--------------handlerRegister  Authorization-------------------")
 		fromUser, ok := parserDevicesFromReqeust(req)
 		if !ok {
 			return
 		}
 		//查找该DvicesID
 		deviceRepo := db.NewVidmgrDevicesRepo(Ctx)
-		user, err := deviceRepo.FindOneByFilter(Ctx, db.VidmgrDevicesFilter{
-			DeviceIDs: []string{fromUser.DeviceID},
+		dev, err := deviceRepo.FindOneByFilter(Ctx, db.VidmgrDevicesFilter{
+			DeviceID: fromUser.DeviceID,
 		})
-		if err == nil {
-			if !user.Regist {
-				// 如果数据库里用户未激活，替换user数据
-				fromUser.ID = user.ID
-				fromUser.Name = user.Name
-				fromUser.PWD = user.PWD
-				user = &fromUser
+		if err != nil {
+			//没有查到数据推出
+			fmt.Println("____handlerRegister_errror____handlerRegister_errror:", err)
+			//没有查到数据的话，直接进行录入数据库
+			errosType := &types.IndexApiResp{}
+			json.Unmarshal([]byte(err.Error()), errosType)
+			//not found  and set default
+			if errosType.Code == 100009 {
+				dev = &db.VidmgrDevices{}
+				fromUser.Name = Config.GbsipConf.DefaultDevName
+				fromUser.PWD = Config.GbsipConf.DefaultDevPswd
+				dev.PWD = fromUser.PWD
+				dev.Name = fromUser.Name
+				SipDeviceToDB(&fromUser, dev)
+				dev.DeviceID = fromUser.DeviceID
+				dev.LastLogin = time.Now()
+				deviceRepo.Insert(Ctx, dev)
+			} else {
+				return
 			}
-			user.Addr = fromUser.Addr
+		}
+		//查到数据之后，对数据进行修改
+		if dev != nil {
+			if !dev.Regist {
+				// 如果数据库里用户未激活，替换user数据
+				fromUser.Name = dev.Name
+				fromUser.PWD = dev.PWD
+				//dev = &fromUser
+				SipDeviceToDB(&fromUser, dev)
+				dev.Regist = true
+			}
+			fmt.Println("[airgens-sip] fromUser:", fromUser)
+			fmt.Println("[airgens-sip] dev:", dev)
+
 			authenticateHeader := hdrs[0].(*sip.GenericHeader)
 			auth := sip.AuthFromValue(authenticateHeader.Contents)
-			auth.SetPassword(user.PWD)
-			auth.SetUsername(user.DeviceID)
+			auth.SetPassword(dev.PWD)
+			auth.SetUsername(dev.DeviceID)
 			auth.SetMethod(string(req.Method()))
 			auth.SetURI(auth.Get("uri"))
-
 			if auth.CalcResponse() == auth.Get("response") {
 				// 验证成功
 				// 记录活跃设备
-				user.Source = fromUser.Source
-				user.Addr = fromUser.Addr
-				//
-				_activeDevices.Store(user.DeviceID, user)
-				if !user.Regist {
-					// 第一次激活，保存数据库
-					user.Regist = true
-					deviceRepo.Insert(Ctx, user)
-					//db.DBClient.Save(&user)
-					logrus.Infoln("new user regist,id:", user.DeviceID)
-				}
+				dev.LastLogin = time.Now()
+				dev.Source = fromUser.source.String()
+				//dev. = fromUser.addr
+				deviceRepo.Update(Ctx, dev)
 				tx.Respond(sip.NewResponseFromRequest("", req, http.StatusOK, "OK", nil))
 				// 注册成功后查询设备信息，获取制作厂商等信息
-				go notify(notifyDevicesRegister(*user))
+				go notify(notifyDevicesRegister(fromUser))
 				go sipDeviceInfo(fromUser)
 				return
 			}
@@ -96,11 +117,13 @@ func handlerMessage(req *sip.Request, tx *sip.Transaction) {
 	switch message.CmdType {
 	case "Catalog":
 		// 设备列表
-		sipMessageCatalog(u, body)
+		fmt.Println("--------------handlerMessage  Catalog 通道登记-------------------")
+		sipMessageCatalog(body)
 		tx.Respond(sip.NewResponseFromRequest("", req, http.StatusOK, "OK", nil))
 		return
 	case "Keepalive":
 		// heardbeat
+		fmt.Println("--------------handlerMessage  Keepalive-------------------")
 		if err := sipMessageKeepalive(u, body); err == nil {
 			tx.Respond(sip.NewResponseFromRequest("", req, http.StatusOK, "OK", nil))
 			// 心跳后同步注册设备列表信息
@@ -108,12 +131,14 @@ func handlerMessage(req *sip.Request, tx *sip.Transaction) {
 			return
 		}
 	case "RecordInfo":
+		fmt.Println("--------------handlerMessage  RecordInfo-------------------")
 		// 设备音视频文件列表
 		sipMessageRecordInfo(u, body)
 		tx.Respond(sip.NewResponseFromRequest("", req, http.StatusOK, "OK", nil))
 	case "DeviceInfo":
 		// 主设备信息
-		sipMessageDeviceInfo(u, body)
+		fmt.Println("--------------handlerMessage  DeviceInfo-------------------")
+		sipMessageDeviceInfo(body)
 		tx.Respond(sip.NewResponseFromRequest("", req, http.StatusOK, "OK", nil))
 		return
 	}

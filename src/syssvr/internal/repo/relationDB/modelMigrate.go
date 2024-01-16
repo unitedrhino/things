@@ -259,8 +259,11 @@ var (
 		{Route: "/api/v1/things/vidmgr/gbsip/indexdev", Method: 2, Name: "获取设备列表", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/gbsip/readchn", Method: 2, Name: "获取通道详细", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/gbsip/readdev", Method: 2, Name: "获取设备详细", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/readinfo", Method: 2, Name: "获取国标服务详细", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/gbsip/updatechn", Method: 2, Name: "更新通道信息", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/gbsip/updatedev", Method: 2, Name: "更新设备信息", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/playchn", Method: 2, Name: "通道播放", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/stopchn", Method: 2, Name: "通道暂停播放", BusinessType: 1, Desc: "", Group: "视频服务"},
 	}
 	MigrateApiAuth = []SysApiAuth{
 		{PType: "p", V0: "1", V1: "/api/v1/system/timed/task/info/create", V2: "2", V3: "", V4: "", V5: ""},
@@ -394,7 +397,10 @@ var (
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/indexdev", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/readchn", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/readdev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/readinfo", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/updatechn", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/updatedev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/playchn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/stopchn", V2: "2", V3: "", V4: "", V5: ""},
 	}
 )

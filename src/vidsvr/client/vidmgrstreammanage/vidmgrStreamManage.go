@@ -29,7 +29,9 @@ type (
 	VidmgrGbsipChannelDelete    = vid.VidmgrGbsipChannelDelete
 	VidmgrGbsipChannelIndexReq  = vid.VidmgrGbsipChannelIndexReq
 	VidmgrGbsipChannelIndexResp = vid.VidmgrGbsipChannelIndexResp
+	VidmgrGbsipChannelPlay      = vid.VidmgrGbsipChannelPlay
 	VidmgrGbsipChannelRead      = vid.VidmgrGbsipChannelRead
+	VidmgrGbsipChannelStop      = vid.VidmgrGbsipChannelStop
 	VidmgrGbsipChannelUpdate    = vid.VidmgrGbsipChannelUpdate
 	VidmgrGbsipDevice           = vid.VidmgrGbsipDevice
 	VidmgrGbsipDeviceCreateReq  = vid.VidmgrGbsipDeviceCreateReq
@@ -38,6 +40,8 @@ type (
 	VidmgrGbsipDeviceIndexResp  = vid.VidmgrGbsipDeviceIndexResp
 	VidmgrGbsipDeviceReadReq    = vid.VidmgrGbsipDeviceReadReq
 	VidmgrGbsipDeviceUpdateReq  = vid.VidmgrGbsipDeviceUpdateReq
+	VidmgrGbsipInfo             = vid.VidmgrGbsipInfo
+	VidmgrGbsipInfoReadReq      = vid.VidmgrGbsipInfoReadReq
 	VidmgrInfo                  = vid.VidmgrInfo
 	VidmgrInfoActiveReq         = vid.VidmgrInfoActiveReq
 	VidmgrInfoCountReq          = vid.VidmgrInfoCountReq

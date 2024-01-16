@@ -2,8 +2,13 @@ package media
 
 import (
 	"encoding/xml"
+	"github.com/i-Things/things/shared/stores"
+	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/gosip/sip"
 	db "github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
+	"net"
 	"sync"
+	"time"
 )
 
 const (
@@ -75,12 +80,28 @@ type MessageDeviceInfoResponse struct {
 
 // MessageDeviceListResponse 设备明细列表返回结构
 type MessageDeviceListResponse struct {
-	XMLName  xml.Name            `xml:"Response"`
-	CmdType  string              `xml:"CmdType"`
-	SN       int                 `xml:"SN"`
-	DeviceID string              `xml:"DeviceID"`
-	SumNum   int                 `xml:"SumNum"`
-	Item     []db.VidmgrChannels `xml:"DeviceList>Item"`
+	XMLName  xml.Name         `xml:"Response"`
+	CmdType  string           `xml:"CmdType"`
+	SN       int              `xml:"SN"`
+	DeviceID string           `xml:"DeviceID"`
+	SumNum   int              `xml:"SumNum"`
+	Item     []MessageChannel `xml:"DeviceList>Item"`
+}
+
+type MessageChannel struct {
+	ChannelID    string `xml:"DeviceID"`
+	DeviceID     string `xml:"-"`
+	Name         string `xml:"Name" `
+	Manufacturer string `xml:"Manufacturer" `
+	Model        string `xml:"Model" `
+	Owner        string `xml:"Owner"`
+	CivilCode    string `xml:"CivilCode"`
+	Address      string `xml:"Address"` // Address ip地址
+	Parental     int32  `xml:"Parental"`
+	SafetyWay    int32  `xml:"SafetyWay"`
+	RegisterWay  int32  `xml:"RegisterWay"`
+	Secrecy      int32  `xml:"Secrecy"`
+	Status       string `xml:"Status"` // Status 状态  on 在线
 }
 
 var deviceStatusMap = map[string]string{
@@ -103,9 +124,8 @@ type ActiveDevices struct {
 }
 
 var (
-	_activeDevices ActiveDevices
-	_serverDevices *db.VidmgrDevices
-	SipInfo        *db.VidmgrSipInfo
+	_serverDevices *GbSipDevice
+	SipInfo        *GbSipInfo
 	_recordList    *sync.Map
 )
 
@@ -116,6 +136,114 @@ type recordList struct {
 	data      [][]int64
 	l         *sync.Mutex
 	s, e      int64
+}
+
+type GbSipDevice struct {
+	RandomStr    *utils.SnowFlake
+	DeviceID     string // DeviceID 设备id
+	Name         string // Name 设备名称
+	Region       string // Region 设备域
+	Host         string // Host Via 地址
+	Port         string // Port via 端口
+	TransPort    string // TransPort via transport
+	Proto        string // Proto 协议
+	Rport        string // Rport via rport
+	RAddr        string // RAddr via recevied
+	Manufacturer string // Manufacturer 制造厂商
+	DeviceType   string // 设备类型DVR，NVR
+	Firmware     string // Firmware 固件版本
+	Model        string // Model 型号
+	URIStr       string
+	PWD          string // PWD 密码
+	Source       string
+	addr         *sip.Address
+	source       net.Addr
+	Sys          *GbSipInfo
+}
+
+// 存放GBSIP通用信息
+type GbSipInfo struct {
+	Region string // Region 当前域
+	CID    string // CID 通道id固定头部
+	CNUM   int32  // CNUM 当前通道数
+	DID    string // DID 设备id固定头部
+	DNUM   int32  // DNUM 当前设备数
+	LID    string `gorm:"column:lid"` // LID 当前服务id
+}
+
+// 请求是的直播还还是历史
+type Stream struct {
+	Type       int    //流类型  0直播 1录像回放
+	ChannelID  string //通道ID
+	DeviceID   string //设备ID
+	Stream     string //ssrc
+	ChnURIStr  string //如：sip:33020000081318000006@330200000
+	DevNetType string //设备SIP(udp或者tcp类型)
+	DevSource  string //设备SIP端口:如192.168.10.117:5060
+	MediaPort  int    //流服务的IP
+	MediaIP    string //流服务的端口
+}
+
+/********************************** GB28181 数据 ***********************************/
+type SipChannel struct {
+	ID int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	// ChannelID 通道编码
+	ChannelID string `gorm:"column:channel_id;type:char(24);NOT NULL"`
+	// DeviceID 设备编号
+	DeviceID string `gorm:"column:device_id;type:char(24);NOT NULL"`
+	// Memo 备注（用来标示通道信息）
+	Memo string `gorm:"column:memo"`
+	// Name 通道名称（设备端设置名称）
+	Name         string `gorm:"column:name"`
+	Manufacturer string `gorm:"column:manufacturer"`
+	Model        string `gorm:"column:model"`
+	Owner        string `gorm:"column:owner"`
+	CivilCode    string `gorm:"column:civilcode"`
+	// Address ip地址
+	Address     string `gorm:"column:address"`
+	Parental    int32  `gorm:"column:parental"`
+	SafetyWay   int32  `gorm:"column:safetyway"`
+	RegisterWay int32  `gorm:"column:registerway"`
+	Secrecy     int32  `gorm:"column:secrecy"`
+	// Status 状态  on 在线
+	Status string `gorm:"column:status"`
+	// Active 最后活跃时间
+	Active int64  `gorm:"column:active"`
+	URIStr string `gorm:"column:uri"`
+	// 视频编码格式
+	VF string `gorm:"column:vf"`
+	// 视频高
+	Height int32 `gorm:"column:height"`
+	// 视频宽
+	Width int32 `gorm:"column:width"`
+	// 视频FPS
+	FPS int32 `gorm:"column:fps"`
+	//  pull 媒体服务器主动拉流，push 监控设备主动推流
+	StreamType string `gorm:"column:streamtype"`
+	// streamtype=pull时，拉流地址
+	URL  string       `gorm:"column:url"`
+	addr *sip.Address `gorm:"-"`
+	stores.Time
+	Owener    string
+	LastLogin time.Time `gorm:"column:last_login"` // 最后登录时间
+}
+
+func SipDeviceToDB(s *GbSipDevice, db *db.VidmgrDevices) {
+	db.Region = s.Region
+	db.Host = s.Host
+	db.Port = s.Port
+	db.TransPort = s.TransPort
+	db.Proto = s.Proto
+	db.Rport = s.Rport
+	db.RAddr = s.RAddr
+	db.Manufacturer = s.Manufacturer
+	db.DeviceType = s.DeviceType
+	db.Firmware = s.Firmware
+	db.Model = s.Model
+	db.URIStr = s.URIStr
+	db.Source = s.Source
+	//db.Source = s.Source
+	//db.Addr = s.Addr
 }
 
 // Records Records

@@ -1181,6 +1181,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/playchn",
+					Handler: thingsvidmgrgbsip.PlaychnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/stopchn",
+					Handler: thingsvidmgrgbsip.StopchnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/updatedev",
 					Handler: thingsvidmgrgbsip.UpdatedevHandler(serverCtx),
 				},
@@ -1193,6 +1203,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/readdev",
 					Handler: thingsvidmgrgbsip.ReaddevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/readinfo",
+					Handler: thingsvidmgrgbsip.ReadinfoHandler(serverCtx),
 				},
 			}...,
 		),

@@ -28,5 +28,18 @@ func (l *OnStreamNoneReaderLogic) OnStreamNoneReader(req *types.HooksApiStreamNo
 	reqStr, _ := json.Marshal(*req)
 
 	fmt.Println("---------OnStreamNoneReader--------------:", string(reqStr))
-	return &types.HooksApiStreamNoneReaderResp{}, nil
+	/*
+		streamRepo := db.NewVidmgrStreamRepo(l.ctx)
+		filter := db.VidmgrStreamFilter{
+			Stream: req.Stream,
+		}
+		stream, err := streamRepo.FindOneByFilter(l.ctx, filter)
+		if stream != nil {
+			media.SipStopPlay(req.Stream)
+		}
+	*/
+	return &types.HooksApiStreamNoneReaderResp{
+		Code:  0,
+		Close: true,
+	}, nil
 }

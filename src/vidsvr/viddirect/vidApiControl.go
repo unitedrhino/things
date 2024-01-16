@@ -12,9 +12,11 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/vidsvr/internal/handler"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
+	"github.com/robfig/cron/v3"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"sync"
+	"time"
 )
 
 // vidsvr构建一个http server 以便于zlmediakit hooks访问
@@ -30,7 +32,9 @@ type (
 var (
 	timeObj    timedmanage.TimedManage
 	runApiOnce sync.Once
-	threadOnce sync.Once
+	//threadOnce  sync.Once
+	initSvrOnce sync.Once
+	cronTask    *cron.Cron
 )
 
 func NewApi(apiCtx ApiCtx) ApiCtx {
@@ -57,10 +61,22 @@ func ApiRun() {
 	fmt.Printf("Starting apiSvr at %s:%d...\n",
 		apiCtx.SvcCtx.Config.Restconf.Host, apiCtx.SvcCtx.Config.Restconf.Port)
 	defer apiCtx.Server.Stop()
-	InitData()
+	initSvrOnce.Do(func() {
+		InitData()
+	})
 
 	//初始化第一个流服务
 	apiCtx.Server.Start()
+}
+
+func CronTask() {
+	cronTask = cron.New(cron.WithSeconds())
+	fmt.Println(time.Now())
+	//cronTask.AddFunc("*/30 * * * * *",func)
+	cronTask.AddFunc("*/7 * * * * *", func() { fmt.Println(time.Now(), "====== 建造完成： 投石车 +1 =======") })
+	cronTask.AddFunc("*/3 * * * * *", func() { fmt.Println(time.Now(), "====== 招募完成： 士兵   +1 =======") })
+	cronTask.Start()
+	select {}
 }
 
 func InitData() {
@@ -80,7 +96,7 @@ func InitData() {
 			GroupCode: def.TimedIThingsQueueGroupCode,
 			Code:      "VidInfoInitDatabase",
 			Option: &timedjob.TaskSendOption{
-				ProcessIn: 0,
+				ProcessIn: 2,
 				Deadline:  0,
 			},
 			ParamQueue: &timedjob.TaskParamQueue{
