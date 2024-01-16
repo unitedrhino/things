@@ -1,16 +1,13 @@
 package viddirect
 
 import (
-	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/config"
 	mgrconfig "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrconfigmanage"
 	mgrgbsip "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrgbsipmanage"
 	mgrinfo "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrinfomanage"
 	mgrstream "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrstreammanage"
-	"github.com/i-Things/things/src/vidsvr/internal/startup"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
 	"github.com/zeromicro/go-zero/core/conf"
@@ -35,8 +32,7 @@ func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
 		conf.MustLoad("etc/vid.yaml", &c)
 		svcCtx = svc.NewServiceContext(c)
-
-		startup.Subscribe(svcCtx)
+		//startup.Subscribe(svcCtx)
 		logx.Infof("enabled vidsvr")
 	})
 	return svcCtx
@@ -45,8 +41,9 @@ func GetSvcCtx() *svc.ServiceContext {
 // RunServer 如果是直连模式,同时提供Grpc的能力
 func RunServer(svcCtx *svc.ServiceContext) {
 	runSvrOnce.Do(func() {
-		utils.Go(context.Background(), ApiRun) //golang 后台执行
+
 		go Run(svcCtx)
+		ApiDirectRun() //golang 后台执行
 	})
 }
 

@@ -422,6 +422,10 @@ service VidmgrGbsipManage{
   rpc vidmgrGbsipChannelDelete(VidmgrGbsipChannelDelete)     returns (Response);
   //更新通道
   rpc vidmgrGbsipChannelUpdate(VidmgrGbsipChannelUpdate)     returns (Response);
+  //播放通道
+  rpc vidmgrGbsipChannelPlay(VidmgrGbsipChannelPlay)     returns (Response);
+  //暂停通道
+  rpc vidmgrGbsipChannelStop(VidmgrGbsipChannelStop)     returns (Response);
   //获取通道列表
   rpc vidmgrGbsipChannelIndex(VidmgrGbsipChannelIndexReq)     returns (VidmgrGbsipChannelIndexResp);
   //获取通道详情
@@ -437,52 +441,79 @@ service VidmgrGbsipManage{
   rpc vidmgrGbsipDeviceIndex(VidmgrGbsipDeviceIndexReq)     returns (VidmgrGbsipDeviceIndexResp);
   //获取GB28181设备详情
   rpc vidmgrGbsipDeviceRead(VidmgrGbsipDeviceReadReq)     returns (VidmgrGbsipDevice);
+
+  //获取国标服务信息
+  rpc vidgmrGbsipInfoRead(VidmgrGbsipInfoReadReq) returns(VidmgrGbsipInfo);
 }
 
 message VidmgrGbsipChannel{
+  string ChannelID = 1;
+  string DeviceID = 2;
+  string Memo = 3;
+  string Name = 4;
+  string Manufacturer = 5;
+  string Model = 6;
+  string Owner = 7;
+  string CivilCode = 8;
+  string Address = 9;
+  int32 Parental = 10;
+  int32 SafetyWay = 11;
+  int32 RegisterWay = 12;
+  int32 Secrecy =13;
+  string Status = 14;
+  string URIStr = 15;
+  string VF = 16;//编码格式
+  int32 Height = 17;
+  int32 Width = 18;
+  int32 FPS = 19;
+  string StreamType = 20;
+  string URL = 21;
+  int64 LastLogin = 22;
+  bool IsPlay = 23;
+}
+
+message VidmgrGbsipInfo{
   int64 ID = 1;
-  string ChannelID = 2;
-  string DeviceID = 3;
-  string Memo = 4;
-  string Name = 5;
-  string Manufacturer = 6;
-  string Model = 7;
-  string Owner = 8;
-  string CivilCode = 9;
-  string Address = 10;
-  int32 Parental = 11;
-  int32 SafetyWay = 12;
-  int32 RegisterWay = 13;
-  int32 Secrecy =14;
-  string Status = 15;
-  string URIStr = 16;
-  string VF = 17;//编码格式
-  int32 Height = 18;
-  int32 Width = 19;
-  int32 FPS = 20;
-  string StreamType = 21;
-  string URL = 22;
-  int64 LastLogin = 23;
+  string Region = 2;
+  string CID = 3;
+  int32 CNUM = 4;
+  string DID = 5;
+  int32 DNUM = 6;
+  string LID = 7;
+  string VidmgrID = 8;
+  bool IsOpen = 9;
+  int64 MediaRtpIP =10;
+  int64 MediaRtpPort= 11;
+  string IP = 12;
+  int64 Port = 13;
 }
 
 message VidmgrGbsipChannelCreate{
-  string DeviceID = 1;//设备ID
-  string Memo = 2;
-  string StreamType = 3;
-  string Url = 4;
-}
-
-message VidmgrGbsipChannelUpdate{
-  int64 ID = 1;
-  string ChannelID = 2;
+  string ChannelID =1;
+  string DeviceID = 2;//设备ID
   string Memo = 3;
   string StreamType = 4;
   string Url = 5;
 }
 
+message VidmgrGbsipChannelUpdate{
+  string ChannelID = 1;
+  string Memo = 2;
+  string StreamType = 3;
+  string Url = 4;
+}
+
+message VidmgrGbsipChannelPlay{
+  string ChannelID = 1;
+}
+
+message VidmgrGbsipChannelStop{
+  string ChannelID=1;
+}
+
 message VidmgrGbsipChannelIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
-  repeated int64   IDs = 2; //通道id
+  repeated string   ChannelIDs = 2; //通道id
 }
 message VidmgrGbsipChannelIndexResp{
   repeated VidmgrGbsipChannel list = 1;//产品信息
@@ -491,20 +522,21 @@ message VidmgrGbsipChannelIndexResp{
 
 
 message VidmgrGbsipChannelDelete{
-  int64 ID = 1;
+  string ChannelID = 1;
 }
 
 message VidmgrGbsipChannelRead{
-  int64 ID = 1;
+  string ChannelID = 1;
 }
 
 message vidmgrGbsipDeviceCreateReq{
-  string PWD=1;
-  string Name=2;
+  string DeviceID=1;
+  string PWD=2;
+  string Name=3;
 }
 
 message vidmgrGbsipDeviceUpdateReq{
-  int64 ID=1;
+  string DeviceID=1;
   string PWD=2;
   string Name=3;
 }
@@ -512,7 +544,7 @@ message vidmgrGbsipDeviceUpdateReq{
 
 message VidmgrGbsipDeviceIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
-  repeated int64   IDs = 2; //设备id
+  repeated string   DeviceIDs = 2; //设备id
 }
 
 message VidmgrGbsipDeviceIndexResp{
@@ -521,30 +553,33 @@ message VidmgrGbsipDeviceIndexResp{
 }
 
 message VidmgrGbsipDevice{
-  int64 ID = 1;
-  string DeviceID = 2;
-  string Name = 3;
-  string Region = 4;
-  string Host = 5;
-  string Port = 6;
-  string TransPort = 7;
-  string Proto = 8;
-  string Rport = 9;
-  string RAddr = 10;
-  string Manufacturer = 11;
-  string DeviceType = 12;
-  string Firmware = 13;
-  string Model = 14;
-  string URIStr = 15;
-  int64  LastLogin = 16;
-  bool Regist = 17;
-  string PWD = 18;
-  string Source = 19;
+  string DeviceID = 1;
+  string Name = 2;
+  string Region = 3;
+  string Host = 4;
+  string Port = 5;
+  string TransPort = 6;
+  string Proto = 7;
+  string Rport = 8;
+  string RAddr = 9;
+  string Manufacturer = 10;
+  string DeviceType = 11;
+  string Firmware = 12;
+  string Model = 13;
+  string URIStr = 14;
+  int64  LastLogin = 15;
+  bool Regist = 16;
+  string PWD = 17;
+  string Source = 18;
 }
 
 message VidmgrGbsipDeviceReadReq{
-  int64 ID = 1;
+  string  DeviceID= 1;
 }
 message VidmgrGbsipDeviceDeleteReq{
-  int64 ID = 1;
+  string  DeviceID = 1;
+}
+
+message VidmgrGbsipInfoReadReq{
+  string VidmgrID = 1;//流服务ID
 }

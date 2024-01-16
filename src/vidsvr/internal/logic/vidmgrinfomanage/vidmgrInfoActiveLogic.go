@@ -75,11 +75,7 @@ func (l *VidmgrInfoActiveLogic) VidmgrInfoActive(in *vid.VidmgrInfoActiveReq) (*
 		}
 		//STEP3  配置流服务
 		var hostIP string
-		if l.svcCtx.Config.RestConfExt.Host == "" {
-			hostIP = l.svcCtx.Config.Restconf.Host
-		} else {
-			hostIP = l.svcCtx.Config.RestConfExt.Host
-		}
+		hostIP = l.svcCtx.Config.Restconf.Host
 		common.SetDefaultConfig(hostIP, int64(l.svcCtx.Config.Restconf.Port), &currentConf.Data[0])
 		currentConf.Data[0].GeneralMediaServerId = infoData.VidmgrID
 		byteConfig, _ := json.Marshal(currentConf.Data[0])

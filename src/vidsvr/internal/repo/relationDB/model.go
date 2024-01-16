@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/vidsvr/gosip/sip"
-	"net"
 	"time"
 )
 
@@ -20,6 +19,8 @@ type VidmgrInfo struct {
 	VidmgrSecret string    `gorm:"column:secret;type:varchar(50)"`                      // 服务秘钥
 	FirstLogin   time.Time `gorm:"column:first_login"`                                  // 激活后首次登录时间
 	LastLogin    time.Time `gorm:"column:last_login"`                                   // 最后登录时间
+	IsOpenGbSip  bool      `gorm:"column:open_gbsip;type:smallint;default:1"`           // 国标服务是否开启
+	RtpPort      int64     `gorm:"column:rtpport;type:bigint"`                          // 国标服务RTP端口(10000)
 	MediasvrType int64     `gorm:"column:mediasvr_type;type:smallint;default:2"`        // 流服务部署类型:1,docker部署  2,独立主机
 	//使用vid.yaml配置代替
 	Desc string            `gorm:"column:desc;type:varchar(200)"`                               // 描述
@@ -33,11 +34,11 @@ func (m *VidmgrInfo) TableName() string {
 
 /********************************** GB28181 数据 ***********************************/
 type VidmgrChannels struct {
-	ID int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	//ID int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	// ChannelID 通道编码
-	ChannelID string `gorm:"column:channel_id;type:char(24);NOT NULL"`
+	ChannelID string `gorm:"column:channel_id;primary_key;type:char(20);NOT NULL"`
 	// DeviceID 设备编号
-	DeviceID string `gorm:"column:device_id;type:char(24);NOT NULL"`
+	DeviceID string `gorm:"column:device_id;type:char(20);NOT NULL"`
 	// Memo 备注（用来标示通道信息）
 	Memo string `gorm:"column:memo"`
 	// Name 通道名称（设备端设置名称）
@@ -46,6 +47,8 @@ type VidmgrChannels struct {
 	Model        string `gorm:"column:model"`
 	Owner        string `gorm:"column:owner"`
 	CivilCode    string `gorm:"column:civilcode"`
+	//是否是播放状态
+	IsPlay bool `gorm:"column:isplay;type:smallint;default:0;NOT NULL"`
 	// Address ip地址
 	Address     string `gorm:"column:address"`
 	Parental    int32  `gorm:"column:parental"`
@@ -80,9 +83,10 @@ func (m *VidmgrChannels) TableName() string {
 }
 
 type VidmgrDevices struct {
-	ID int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	//ID int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	// DeviceID 设备id
-	DeviceID string `gorm:"column:device_id;type:char(24);NOT NULL"`
+	DeviceID string `gorm:"column:device_id;primary_key;type:char(20);NOT NULL"`
+	VidmgrID string `gorm:"column:vidmgr_id;type:char(11);NOT NULL"` // 流服务ID
 	// Name 设备名称
 	Name string `gorm:"column:name" `
 	// Region 设备域
@@ -115,17 +119,17 @@ type VidmgrDevices struct {
 	// PWD 密码
 	PWD string `gorm:"column:pwd"`
 	// Source
-	SourceStr string        `gorm:"column:source"`
-	Sys       VidmgrSipInfo `gorm:"-"`
-	Addr      *sip.Address  `gorm:"-"`
-	Source    net.Addr      `gorm:"-"`
+	Source string `gorm:"column:source"`
+	//Sys    VidmgrSipInfo `gorm:"-"`
 	stores.Time
+	VidmgrInfo *VidmgrInfo `gorm:"foreignKey:VidmgrID;references:VidmgrID"` // 添加外键
 }
 
 func (m *VidmgrDevices) TableName() string {
 	return "vid_mgr_devices"
 }
 
+/*
 type VidmgrSipInfo struct {
 	ID int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	// Region 当前域
@@ -133,29 +137,27 @@ type VidmgrSipInfo struct {
 	// CID 通道id固定头部
 	CID string `gorm:"column:cid"`
 	// CNUM 当前通道数
-	CNUM int `gorm:"column:cnum"`
+	CNUM int32 `gorm:"column:cnum"`
 	// DID 设备id固定头部
 	DID string `gorm:"column:did"`
 	// DNUM 当前设备数
-	DNUM int `gorm:"column:dnum"`
+	DNUM int32 `gorm:"column:dnum"`
 	// LID 当前服务id
-	LID      string `gorm:"column:lid"`
-	VidmgrID string `gorm:"column:vidmgr_id;type:char(11)"` // 流服务ID
-
-	IsOpenServer bool
+	LID          string `gorm:"column:lid"`
+	VidmgrID     string `gorm:"column:vidmgr_id;type:char(11)"` // 流服务ID
+	IsOpenServer bool   `gorm:"column:isopen"`
 	// 媒体服务器接流地址
-	MediaServerRtpIP int64 `gorm:"-"`
+	MediaServerRtpIP int64 `gorm:"column:media_rtp_ip"`
 	// 媒体服务器接流端口
-	MediaServerRtpPort int64 `gorm:"-"`
+	MediaServerRtpPort int64 `gorm:"column:media_rtp_port"`
 	stores.Time
 }
 
 func (m *VidmgrSipInfo) TableName() string {
 	return "vid_mgr_sipinfo"
 }
-
+*/
 /********************************** GB28181 数据 ***********************************/
-
 type StreamTrack struct {
 	Channels    int64   `json:"channels"`
 	CodecId     int64   `json:"codec_id"`

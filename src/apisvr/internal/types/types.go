@@ -1778,9 +1778,8 @@ type CtrlApiResp struct {
 }
 
 type CommonSipChannel struct {
-	ID           int64  `json:"ID"`
 	ChannelID    string `json:"channelID"`
-	DeviceID     string `json:"DeviceID"`
+	DeviceID     string `json:"deviceID"`
 	Memo         string `json:"memo"`
 	Name         string `json:"Name"`
 	Manufacturer string `json:"manufacturer"`
@@ -1801,11 +1800,11 @@ type CommonSipChannel struct {
 	StreamType   string `json:"streamType"`
 	URL          string `json:"url"`
 	LastLogin    int64  `json:"lastLogin"`
+	IsPlay       bool   `json:"isPlay"`
 }
 
 type CommonSipDevice struct {
-	ID           int64  `json:"id"`
-	DeviceID     string `json:"deviceid"`
+	DeviceID     string `json:"deviceID"`
 	Name         string `json:"name"`
 	Region       string `json:"region"`
 	Host         string `json:"host"`
@@ -1825,28 +1824,44 @@ type CommonSipDevice struct {
 	LastLogin    int64  `json:"lastLogin"`
 }
 
+type CommonSipInfo struct {
+	ID           int64  `json:"id"`     // Region 当前域
+	Region       string `json:"region"` // CID 通道id固定头部
+	CID          string `json:"cid"`    // CNUM 当前通道数
+	CNUM         int32  `json:"cnum"`   // DID 设备id固定头部
+	DID          string `json:"did"`    // DNUM 当前设备数
+	DNUM         int32  `json:"dnum"`   // LID 当前服务id
+	LID          string `json:"lid"`
+	VidmgrID     string `json:"vidmgrID,optional"` // 流服务ID
+	IsOpen       bool   `json:"isopen"`            // 是否开启
+	IP           string `json:"ip"`                //GB28181 服务的IP
+	Port         int64  `json:"port"`              //GB28181 服务的端口
+	MediaRtpIP   string `json:"media_ip"`          // 媒体服务器接流地址
+	MediaRtpPort int64  `json:"media_port"`        // 媒体服务器接流端口
+}
+
 type VidmgrSipCreateChnReq struct {
+	ChannelID  string `json:"channelID"`
 	DeviceID   string `json:"deviceID"`
-	Memo       string `json:"memo"`
-	StreamType string `json:"streamType"`
-	URL        string `json:"url"`
+	Memo       string `json:"memo,optional"`
+	StreamType string `json:"streamType,optional"`
+	URL        string `json:"url,optional"`
 }
 
 type VidmgrSipDeleteChnReq struct {
-	ID int64 `json:"ID"`
+	ChannelID string `json:"channelID"`
 }
 
 type VidmgrSipUpdateChnReq struct {
-	ID         int64  `json:"ID"`
-	ChannelID  string `json:"channelID,optional"`
+	ChannelID  string `json:"channelID"`
 	Memo       string `json:"memo"`
 	StreamType string `json:"streamType"`
 	URL        string `json:"url"`
 }
 
 type VidmgrSipIndexChnReq struct {
-	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
-	IDs  []int64   `json:"IDs,optional"`  //过滤服务id列表
+	Page       *PageInfo `json:"page,optional"`       //分页信息,只获取一个则不填
+	ChannelIDs []string  `json:"channelIDs,optional"` //过滤服务id列表
 }
 
 type VidmgrSipIndexChnResp struct {
@@ -1856,7 +1871,7 @@ type VidmgrSipIndexChnResp struct {
 }
 
 type VidmgrSipReadChnReq struct {
-	ID int64 `json:"ID"`
+	ChannelID string `json:"channelID"`
 }
 
 type VidmgrSipReadChnResp struct {
@@ -1864,23 +1879,32 @@ type VidmgrSipReadChnResp struct {
 }
 
 type VidmgrSipCreateDevReq struct {
-	PWD  string `json:"pwd"`
-	Name string `json:"name"`
+	DeviceID string `json:"deviceID"`
+	PWD      string `json:"pwd"`
+	Name     string `json:"name"`
 }
 
 type VidmgrSipDeleteDevReq struct {
-	ID int64 `json:"ID"`
+	DeviceID string `json:"deviceID"`
+}
+
+type VidmgrSipPlayChnReq struct {
+	ChannelID string `json:"channelID"`
+}
+
+type VidmgrSipStopChnReq struct {
+	ChannelID string `json:"channelID"`
 }
 
 type VidmgrSipUpdateDevReq struct {
-	ID   int64  `json:"ID"`
-	PWD  string `json:"pwd"`
-	Name string `json:"name"`
+	DeviceID string `json:"deviceID"`
+	PWD      string `json:"pwd"`
+	Name     string `json:"name"`
 }
 
 type VidmgrSipIndexDevReq struct {
-	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
-	IDs  []int64   `json:"IDs,optional"`  //过滤服务id列表
+	Page      *PageInfo `json:"page,optional"`      //分页信息,只获取一个则不填
+	DeviceIDs []string  `json:"deviceIDs,optional"` //过滤服务id列表
 }
 
 type VidmgrSipIndexDevResp struct {
@@ -1890,9 +1914,17 @@ type VidmgrSipIndexDevResp struct {
 }
 
 type VidmgrSipReadDevReq struct {
-	ID int64 `json:"ID"`
+	DeviceID string `json:"deviceID"`
 }
 
 type VidmgrSipReadDevResp struct {
 	CommonSipDevice
+}
+
+type VidmgrSipReadInfoReq struct {
+	VidmgrID string `json:"vidmgrID"` //ignore
+}
+
+type VidmgrSipReadInfoResp struct {
+	CommonSipInfo
 }

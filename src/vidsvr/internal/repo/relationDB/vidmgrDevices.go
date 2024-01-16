@@ -17,8 +17,8 @@ func NewVidmgrDevicesRepo(in any) *VidmgrDevicesRepo {
 }
 
 type VidmgrDevicesFilter struct {
-	IDs       []int64
 	DeviceIDs []string
+	DeviceID  string
 	Name      string
 	Host      string
 }
@@ -26,11 +26,12 @@ type VidmgrDevicesFilter struct {
 func (p VidmgrDevicesRepo) fmtFilter(ctx context.Context, f VidmgrDevicesFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 
-	if len(f.IDs) != 0 {
-		db = db.Where("id in?", f.IDs)
-	}
 	if len(f.DeviceIDs) != 0 {
 		db = db.Where("device_id in?", f.DeviceIDs)
+	}
+
+	if f.DeviceID != "" {
+		db = db.Where("device_id  =?", f.DeviceID)
 	}
 	if f.Name != "" {
 		db = db.Where("name =?", f.Name)
@@ -57,7 +58,7 @@ func (p VidmgrDevicesRepo) FindOneByFilter(ctx context.Context, f VidmgrDevicesF
 }
 
 func (p VidmgrDevicesRepo) Update(ctx context.Context, data *VidmgrDevices) error {
-	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Where("device_id = ?", data.DeviceID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 

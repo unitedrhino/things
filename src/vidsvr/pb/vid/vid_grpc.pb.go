@@ -883,6 +883,8 @@ const (
 	VidmgrGbsipManage_VidmgrGbsipChannelCreate_FullMethodName = "/vid.VidmgrGbsipManage/vidmgrGbsipChannelCreate"
 	VidmgrGbsipManage_VidmgrGbsipChannelDelete_FullMethodName = "/vid.VidmgrGbsipManage/vidmgrGbsipChannelDelete"
 	VidmgrGbsipManage_VidmgrGbsipChannelUpdate_FullMethodName = "/vid.VidmgrGbsipManage/vidmgrGbsipChannelUpdate"
+	VidmgrGbsipManage_VidmgrGbsipChannelPlay_FullMethodName   = "/vid.VidmgrGbsipManage/vidmgrGbsipChannelPlay"
+	VidmgrGbsipManage_VidmgrGbsipChannelStop_FullMethodName   = "/vid.VidmgrGbsipManage/vidmgrGbsipChannelStop"
 	VidmgrGbsipManage_VidmgrGbsipChannelIndex_FullMethodName  = "/vid.VidmgrGbsipManage/vidmgrGbsipChannelIndex"
 	VidmgrGbsipManage_VidmgrGbsipChannelRead_FullMethodName   = "/vid.VidmgrGbsipManage/vidmgrGbsipChannelRead"
 	VidmgrGbsipManage_VidmgrGbsipDeviceCreate_FullMethodName  = "/vid.VidmgrGbsipManage/vidmgrGbsipDeviceCreate"
@@ -890,6 +892,7 @@ const (
 	VidmgrGbsipManage_VidmgrGbsipDeviceUpdate_FullMethodName  = "/vid.VidmgrGbsipManage/vidmgrGbsipDeviceUpdate"
 	VidmgrGbsipManage_VidmgrGbsipDeviceIndex_FullMethodName   = "/vid.VidmgrGbsipManage/vidmgrGbsipDeviceIndex"
 	VidmgrGbsipManage_VidmgrGbsipDeviceRead_FullMethodName    = "/vid.VidmgrGbsipManage/vidmgrGbsipDeviceRead"
+	VidmgrGbsipManage_VidgmrGbsipInfoRead_FullMethodName      = "/vid.VidmgrGbsipManage/vidgmrGbsipInfoRead"
 )
 
 // VidmgrGbsipManageClient is the client API for VidmgrGbsipManage service.
@@ -902,6 +905,10 @@ type VidmgrGbsipManageClient interface {
 	VidmgrGbsipChannelDelete(ctx context.Context, in *VidmgrGbsipChannelDelete, opts ...grpc.CallOption) (*Response, error)
 	//更新通道
 	VidmgrGbsipChannelUpdate(ctx context.Context, in *VidmgrGbsipChannelUpdate, opts ...grpc.CallOption) (*Response, error)
+	//播放通道
+	VidmgrGbsipChannelPlay(ctx context.Context, in *VidmgrGbsipChannelPlay, opts ...grpc.CallOption) (*Response, error)
+	//暂停通道
+	VidmgrGbsipChannelStop(ctx context.Context, in *VidmgrGbsipChannelStop, opts ...grpc.CallOption) (*Response, error)
 	//获取通道列表
 	VidmgrGbsipChannelIndex(ctx context.Context, in *VidmgrGbsipChannelIndexReq, opts ...grpc.CallOption) (*VidmgrGbsipChannelIndexResp, error)
 	//获取通道详情
@@ -916,6 +923,8 @@ type VidmgrGbsipManageClient interface {
 	VidmgrGbsipDeviceIndex(ctx context.Context, in *VidmgrGbsipDeviceIndexReq, opts ...grpc.CallOption) (*VidmgrGbsipDeviceIndexResp, error)
 	//获取GB28181设备详情
 	VidmgrGbsipDeviceRead(ctx context.Context, in *VidmgrGbsipDeviceReadReq, opts ...grpc.CallOption) (*VidmgrGbsipDevice, error)
+	//获取国标服务信息
+	VidgmrGbsipInfoRead(ctx context.Context, in *VidmgrGbsipInfoReadReq, opts ...grpc.CallOption) (*VidmgrGbsipInfo, error)
 }
 
 type vidmgrGbsipManageClient struct {
@@ -947,6 +956,24 @@ func (c *vidmgrGbsipManageClient) VidmgrGbsipChannelDelete(ctx context.Context, 
 func (c *vidmgrGbsipManageClient) VidmgrGbsipChannelUpdate(ctx context.Context, in *VidmgrGbsipChannelUpdate, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, VidmgrGbsipManage_VidmgrGbsipChannelUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vidmgrGbsipManageClient) VidmgrGbsipChannelPlay(ctx context.Context, in *VidmgrGbsipChannelPlay, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, VidmgrGbsipManage_VidmgrGbsipChannelPlay_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vidmgrGbsipManageClient) VidmgrGbsipChannelStop(ctx context.Context, in *VidmgrGbsipChannelStop, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, VidmgrGbsipManage_VidmgrGbsipChannelStop_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1016,6 +1043,15 @@ func (c *vidmgrGbsipManageClient) VidmgrGbsipDeviceRead(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *vidmgrGbsipManageClient) VidgmrGbsipInfoRead(ctx context.Context, in *VidmgrGbsipInfoReadReq, opts ...grpc.CallOption) (*VidmgrGbsipInfo, error) {
+	out := new(VidmgrGbsipInfo)
+	err := c.cc.Invoke(ctx, VidmgrGbsipManage_VidgmrGbsipInfoRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VidmgrGbsipManageServer is the server API for VidmgrGbsipManage service.
 // All implementations must embed UnimplementedVidmgrGbsipManageServer
 // for forward compatibility
@@ -1026,6 +1062,10 @@ type VidmgrGbsipManageServer interface {
 	VidmgrGbsipChannelDelete(context.Context, *VidmgrGbsipChannelDelete) (*Response, error)
 	//更新通道
 	VidmgrGbsipChannelUpdate(context.Context, *VidmgrGbsipChannelUpdate) (*Response, error)
+	//播放通道
+	VidmgrGbsipChannelPlay(context.Context, *VidmgrGbsipChannelPlay) (*Response, error)
+	//暂停通道
+	VidmgrGbsipChannelStop(context.Context, *VidmgrGbsipChannelStop) (*Response, error)
 	//获取通道列表
 	VidmgrGbsipChannelIndex(context.Context, *VidmgrGbsipChannelIndexReq) (*VidmgrGbsipChannelIndexResp, error)
 	//获取通道详情
@@ -1040,6 +1080,8 @@ type VidmgrGbsipManageServer interface {
 	VidmgrGbsipDeviceIndex(context.Context, *VidmgrGbsipDeviceIndexReq) (*VidmgrGbsipDeviceIndexResp, error)
 	//获取GB28181设备详情
 	VidmgrGbsipDeviceRead(context.Context, *VidmgrGbsipDeviceReadReq) (*VidmgrGbsipDevice, error)
+	//获取国标服务信息
+	VidgmrGbsipInfoRead(context.Context, *VidmgrGbsipInfoReadReq) (*VidmgrGbsipInfo, error)
 	mustEmbedUnimplementedVidmgrGbsipManageServer()
 }
 
@@ -1055,6 +1097,12 @@ func (UnimplementedVidmgrGbsipManageServer) VidmgrGbsipChannelDelete(context.Con
 }
 func (UnimplementedVidmgrGbsipManageServer) VidmgrGbsipChannelUpdate(context.Context, *VidmgrGbsipChannelUpdate) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VidmgrGbsipChannelUpdate not implemented")
+}
+func (UnimplementedVidmgrGbsipManageServer) VidmgrGbsipChannelPlay(context.Context, *VidmgrGbsipChannelPlay) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VidmgrGbsipChannelPlay not implemented")
+}
+func (UnimplementedVidmgrGbsipManageServer) VidmgrGbsipChannelStop(context.Context, *VidmgrGbsipChannelStop) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VidmgrGbsipChannelStop not implemented")
 }
 func (UnimplementedVidmgrGbsipManageServer) VidmgrGbsipChannelIndex(context.Context, *VidmgrGbsipChannelIndexReq) (*VidmgrGbsipChannelIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VidmgrGbsipChannelIndex not implemented")
@@ -1076,6 +1124,9 @@ func (UnimplementedVidmgrGbsipManageServer) VidmgrGbsipDeviceIndex(context.Conte
 }
 func (UnimplementedVidmgrGbsipManageServer) VidmgrGbsipDeviceRead(context.Context, *VidmgrGbsipDeviceReadReq) (*VidmgrGbsipDevice, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VidmgrGbsipDeviceRead not implemented")
+}
+func (UnimplementedVidmgrGbsipManageServer) VidgmrGbsipInfoRead(context.Context, *VidmgrGbsipInfoReadReq) (*VidmgrGbsipInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VidgmrGbsipInfoRead not implemented")
 }
 func (UnimplementedVidmgrGbsipManageServer) mustEmbedUnimplementedVidmgrGbsipManageServer() {}
 
@@ -1140,6 +1191,42 @@ func _VidmgrGbsipManage_VidmgrGbsipChannelUpdate_Handler(srv interface{}, ctx co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VidmgrGbsipManageServer).VidmgrGbsipChannelUpdate(ctx, req.(*VidmgrGbsipChannelUpdate))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VidmgrGbsipManage_VidmgrGbsipChannelPlay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VidmgrGbsipChannelPlay)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VidmgrGbsipManageServer).VidmgrGbsipChannelPlay(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VidmgrGbsipManage_VidmgrGbsipChannelPlay_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VidmgrGbsipManageServer).VidmgrGbsipChannelPlay(ctx, req.(*VidmgrGbsipChannelPlay))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VidmgrGbsipManage_VidmgrGbsipChannelStop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VidmgrGbsipChannelStop)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VidmgrGbsipManageServer).VidmgrGbsipChannelStop(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VidmgrGbsipManage_VidmgrGbsipChannelStop_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VidmgrGbsipManageServer).VidmgrGbsipChannelStop(ctx, req.(*VidmgrGbsipChannelStop))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1270,6 +1357,24 @@ func _VidmgrGbsipManage_VidmgrGbsipDeviceRead_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VidmgrGbsipManage_VidgmrGbsipInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VidmgrGbsipInfoReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VidmgrGbsipManageServer).VidgmrGbsipInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VidmgrGbsipManage_VidgmrGbsipInfoRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VidmgrGbsipManageServer).VidgmrGbsipInfoRead(ctx, req.(*VidmgrGbsipInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VidmgrGbsipManage_ServiceDesc is the grpc.ServiceDesc for VidmgrGbsipManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1288,6 +1393,14 @@ var VidmgrGbsipManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "vidmgrGbsipChannelUpdate",
 			Handler:    _VidmgrGbsipManage_VidmgrGbsipChannelUpdate_Handler,
+		},
+		{
+			MethodName: "vidmgrGbsipChannelPlay",
+			Handler:    _VidmgrGbsipManage_VidmgrGbsipChannelPlay_Handler,
+		},
+		{
+			MethodName: "vidmgrGbsipChannelStop",
+			Handler:    _VidmgrGbsipManage_VidmgrGbsipChannelStop_Handler,
 		},
 		{
 			MethodName: "vidmgrGbsipChannelIndex",
@@ -1316,6 +1429,10 @@ var VidmgrGbsipManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "vidmgrGbsipDeviceRead",
 			Handler:    _VidmgrGbsipManage_VidmgrGbsipDeviceRead_Handler,
+		},
+		{
+			MethodName: "vidgmrGbsipInfoRead",
+			Handler:    _VidmgrGbsipManage_VidgmrGbsipInfoRead_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

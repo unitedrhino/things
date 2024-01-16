@@ -19,18 +19,13 @@ Log:
   Encoding: plain
 
 Mediakit:
-  Host: 192.168.10.125
+  Host: 127.0.0.1
   Port: 8088
   Secret: WF8K4LJi2FZbd5Q2OJ3RYTACPZsprvM0
 Restconf:
   Name: vid
   Host: 192.168.10.125
   Port: 8888
-
-#用于配置外部网络环境的zlmediakit的网络连接(根据是docker模式还是外主机模式确定)
-RestconfExt:
-  Host: 192.168.10.125 #当前主机IP访问外网的IP，未配置时使用默认使用RestCconf的IP
-  Port: 8888 #访问外网的Port(如果有映射端口在此处填写)，未配置时使用默认使用RestCconf的Port
 
 TimedJobRpc:
   Enable: true
@@ -43,6 +38,7 @@ TimedJobRpc:
 #    Sampler: 1.0
 #    Batcher: jaeger
 #gb28181配置
+#该配置修改后，需要重置vidmgr数据库
 GbsipConf: # gb28181 域，系统id，用户id，通道id，用户数量，初次运行使用配置，之后保存数据库，如果数据库不存在使用配置文件内容
   Lid:    "33020000082008000001" # 系统ID
   Region: "330200000"           # 系统域
@@ -50,7 +46,9 @@ GbsipConf: # gb28181 域，系统id，用户id，通道id，用户数量，初�
   Cid:    "33020000081318"       # 通道前缀
   Dnum:   0 # 设备id = did + dnum
   Cnum:   0 # 通道id = cid + cnum
-  UDP:    "0.0.0.0:5060"                   #gb28181使用的UDP端口
+  UDP:    5060                  #gb28181使用的UDP端口
+  DefaultDevName: "iThings"      #国标设备可以直接配置   默认用户名：
+  DefaultDevPswd: "123456"       #                   默认密码
 
 Notify:
   devices_active:   # 设备活跃通知   开启为true

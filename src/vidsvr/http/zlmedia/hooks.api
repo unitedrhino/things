@@ -244,7 +244,7 @@ type (
 
     HooksApiStreamNoneReaderResp struct {
         Close   bool `json:"close"`
-        Code    bool    `json:"code"`
+        Code    int64    `json:"code"`
     }
     
     HooksApiStreamNotFoundReq struct{

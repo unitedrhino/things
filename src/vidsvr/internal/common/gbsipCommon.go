@@ -3,7 +3,6 @@ package common
 import (
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
-	"net"
 	"time"
 )
 
@@ -12,7 +11,6 @@ import (
 */
 func ToVidmgrGbsipChannelDB(v *vid.VidmgrGbsipChannel) (*relationDB.VidmgrChannels, error) {
 	pi := &relationDB.VidmgrChannels{
-		ID:           v.ID,
 		ChannelID:    v.ChannelID,
 		DeviceID:     v.DeviceID,
 		Memo:         v.Memo,
@@ -35,15 +33,15 @@ func ToVidmgrGbsipChannelDB(v *vid.VidmgrGbsipChannel) (*relationDB.VidmgrChanne
 		StreamType:   v.StreamType,
 		URL:          v.URL,
 		LastLogin:    time.Unix(v.LastLogin, 0),
+		IsPlay:       v.IsPlay,
 	}
 	return pi, nil
 }
 
 func ToVidmgrGbsipDeviceDB(v *vid.VidmgrGbsipDevice) (*relationDB.VidmgrDevices, error) {
 	// 调用 ResolveTCPAddr() 函数进行转换
-	natAddr, _ := net.ResolveTCPAddr("tcp", v.Source)
+	//natAddr, _ := net.ResolveTCPAddr("tcp", v.Source)
 	pi := &relationDB.VidmgrDevices{
-		ID:           v.ID,
 		DeviceID:     v.DeviceID,
 		Name:         v.Name,
 		Region:       v.Region,
@@ -60,8 +58,8 @@ func ToVidmgrGbsipDeviceDB(v *vid.VidmgrGbsipDevice) (*relationDB.VidmgrDevices,
 		URIStr:       v.URIStr,
 		Regist:       v.Regist,
 		PWD:          v.PWD,
-		Source:       natAddr,
-		LastLogin:    time.Unix(v.LastLogin, 0),
+		//Source:       natAddr,
+		LastLogin: time.Unix(v.LastLogin, 0),
 	}
 	return pi, nil
 }
@@ -71,7 +69,6 @@ func ToVidmgrGbsipDeviceDB(v *vid.VidmgrGbsipDevice) (*relationDB.VidmgrDevices,
 */
 func ToVidmgrGbsipChannelRpc(v *relationDB.VidmgrChannels) *vid.VidmgrGbsipChannel {
 	pi := &vid.VidmgrGbsipChannel{
-		ID:           v.ID,
 		ChannelID:    v.ChannelID,
 		DeviceID:     v.DeviceID,
 		Memo:         v.Memo,
@@ -88,6 +85,7 @@ func ToVidmgrGbsipChannelRpc(v *relationDB.VidmgrChannels) *vid.VidmgrGbsipChann
 		Status:       v.Status,
 		URIStr:       v.URIStr,
 		VF:           v.VF,
+		IsPlay:       v.IsPlay,
 		Height:       v.Height,
 		Width:        v.Width,
 		FPS:          v.FPS,
@@ -100,7 +98,6 @@ func ToVidmgrGbsipChannelRpc(v *relationDB.VidmgrChannels) *vid.VidmgrGbsipChann
 
 func ToVidmgrGbsipDeviceRpc(v *relationDB.VidmgrDevices) *vid.VidmgrGbsipDevice {
 	pi := &vid.VidmgrGbsipDevice{
-		ID:           v.ID,
 		DeviceID:     v.DeviceID,
 		Name:         v.Name,
 		Region:       v.Region,
@@ -117,8 +114,8 @@ func ToVidmgrGbsipDeviceRpc(v *relationDB.VidmgrDevices) *vid.VidmgrGbsipDevice 
 		URIStr:       v.URIStr,
 		Regist:       v.Regist,
 		PWD:          v.PWD,
-		Source:       v.Source.String(),
-		LastLogin:    v.LastLogin.Unix(),
+		//Source:       v.Source.String(),
+		LastLogin: v.LastLogin.Unix(),
 	}
 	return pi
 }
@@ -133,6 +130,7 @@ func UpdatVidmgrChannelDB(old *relationDB.VidmgrChannels, data *vid.VidmgrGbsipC
 	if data.Url != "" {
 		old.URL = data.Url
 	}
+
 	return nil
 }
 

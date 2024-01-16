@@ -21,7 +21,9 @@ func ToVidmgrInfoDB(in *vid.VidmgrInfo) (*relationDB.VidmgrInfo, error) {
 		VidmgrStatus: in.VidmgrStatus,
 		VidmgrSecret: in.VidmgrSecret,
 		VidmgrType:   in.VidmgrType,
-		MediasvrType: 2, //设置为独立主机
+		IsOpenGbSip:  true,  //默认开启
+		RtpPort:      10000, //默认RTP端口为10000
+		MediasvrType: 2,     //设置为独立主机
 		Desc:         in.Desc.GetValue(),
 	}
 	if in.Tags == nil {

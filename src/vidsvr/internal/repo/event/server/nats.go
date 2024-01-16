@@ -29,10 +29,12 @@ func newNatsClient(conf conf.EventConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
+	fmt.Println("[airgens-subscribe].....test")
 	err := n.client.QueueSubscribe(topics.VidInfoCheckStatus, natsJsConsumerName,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			jsonStr, _ := json.Marshal(natsMsg)
 			fmt.Println("[***test***]   QueueSubscribe1", "data:", string(jsonStr))
+			fmt.Println("[airgens-subscribe2].....QueueSubscribe1 ActionCheck")
 			return handle(ctx).ActionCheck()
 		})
 	if err != nil {
@@ -42,10 +44,13 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			jsonStr, _ := json.Marshal(natsMsg)
 			fmt.Println("[***Once***]   QueueSubscribe2 ", "data:", string(jsonStr))
+			fmt.Println("[airgens-subscribe2].....QueueSubscribe2 ActionInit")
 			return handle(ctx).ActionInit()
+
 		})
 	if err != nil {
 		return err
 	}
+	fmt.Println("[airgens-subscribe2].....test")
 	return nil
 }

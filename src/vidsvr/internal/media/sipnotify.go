@@ -36,8 +36,8 @@ func notifyDevicesAcitve(id, status string) *Notify {
 		},
 	}
 }
-func notifyDevicesRegister(u db.VidmgrDevices) *Notify {
-	u.Sys = *SipInfo
+func notifyDevicesRegister(u GbSipDevice) *Notify {
+	u.Sys = SipInfo
 	return &Notify{
 		Method: NotifyMethodDevicesRegister,
 		Data:   u,

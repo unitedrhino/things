@@ -1,13 +1,13 @@
 package gbsip
 
 import (
+	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
 )
 
 func VidmgrGbsipDeviceToApi(v *vid.VidmgrGbsipDevice) *types.CommonSipDevice {
 	return &types.CommonSipDevice{
-		ID:           v.ID,
 		DeviceID:     v.DeviceID,
 		Name:         v.Name,
 		Region:       v.Region,
@@ -31,7 +31,6 @@ func VidmgrGbsipDeviceToApi(v *vid.VidmgrGbsipDevice) *types.CommonSipDevice {
 
 func VidmgrGbsipChanneloApi(v *vid.VidmgrGbsipChannel) *types.CommonSipChannel {
 	return &types.CommonSipChannel{
-		ID:           v.ID,
 		ChannelID:    v.ChannelID,
 		DeviceID:     v.DeviceID,
 		Memo:         v.Memo,
@@ -54,5 +53,24 @@ func VidmgrGbsipChanneloApi(v *vid.VidmgrGbsipChannel) *types.CommonSipChannel {
 		StreamType:   v.StreamType,
 		URL:          v.URL,
 		LastLogin:    v.LastLogin,
+		IsPlay:       v.IsPlay,
+	}
+}
+
+func ToVidmgrGbsipInfoApi(v *vid.VidmgrGbsipInfo) *types.CommonSipInfo {
+	return &types.CommonSipInfo{
+		VidmgrID:     v.VidmgrID,
+		ID:           v.ID,
+		Region:       v.Region,
+		CID:          v.CID,
+		CNUM:         v.CNUM,
+		DID:          v.DID,
+		DNUM:         v.DNUM,
+		LID:          v.LID,
+		IsOpen:       v.IsOpen,
+		MediaRtpIP:   utils.InetNtoA(v.MediaRtpIP),
+		MediaRtpPort: v.MediaRtpPort,
+		IP:           v.IP,
+		Port:         v.Port,
 	}
 }

@@ -9,13 +9,10 @@ import (
 )
 
 func Subscribe(svcCtx *svc.ServiceContext) {
-	{
-		cli, err := server.NewServer(svcCtx.Config.Event)
-		logx.Must(err)
-		err = cli.Subscribe(func(ctx context.Context) server.ServerHandle {
-			return serverEvent.NewServerHandle(ctx, svcCtx)
-		})
-
-		logx.Must(err)
-	}
+	natsCli, err := server.NewServer(svcCtx.Config.Event)
+	logx.Must(err)
+	err = natsCli.Subscribe(func(ctx context.Context) server.ServerHandle {
+		return serverEvent.NewServerHandle(ctx, svcCtx)
+	})
+	logx.Must(err)
 }
