@@ -46,6 +46,7 @@ func (l *VidgmrGbsipInfoReadLogic) VidgmrGbsipInfoRead(in *vid.VidmgrGbsipInfoRe
 		Port:         l.svcCtx.Config.GbsipConf.UDP,
 		MediaRtpPort: pi.RtpPort,
 		MediaRtpIP:   pi.VidmgrIpV4,
+		IsOpen:       pi.IsOpenGbSip,
 	}
 	return resp, nil
 }
