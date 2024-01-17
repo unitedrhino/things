@@ -43,6 +43,8 @@ service DeviceManage {
   rpc deviceInfoDelete(DeviceInfoDeleteReq)     returns (Response);
   //获取设备信息列表
   rpc deviceInfoIndex(DeviceInfoIndexReq)     returns (DeviceInfoIndexResp);
+  //批量更新设备状态
+  rpc DeviceInfoMultiUpdate(DeviceInfoMultiUpdateReq)     returns (Response);
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
 
@@ -678,8 +680,8 @@ message Point{
 
 message DeviceInfo {
   string productID = 1; //产品id 只读
-  int64 projectID = 2; //项目id 只读（0不更新，2为未分类，other则更新）
-  int64 areaID = 3; //项目区域id 只读（0不更新，2为未分类，other则更新）
+  int64 projectID = 2; //项目id 只读
+  int64 areaID = 3; //项目区域id
   string productName = 4; //产品名称 只读
   string deviceName = 5; //设备名称 读写
   int64 createdTime = 6; //创建时间 只读
@@ -761,6 +763,11 @@ message DeviceInfoReadReq{
   string  deviceName = 2; //设备名称
 }
 
+message DeviceInfoMultiUpdateReq{
+  repeated DeviceCore   devices = 1; //产品id
+  int64 areaID = 2; //项目区域id
+}
+
 message DeviceInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string  productID = 2; //过滤条件: 产品id
@@ -772,6 +779,7 @@ message DeviceInfoIndexReq{
   repeated int64 areaIDs = 8;//区域ids
   string deviceAlias = 9; //过滤条件:模糊查询 设备别名
   int64 isOnline = 10; //在线状态过滤  1离线 2在线
+  int64  productCategoryID = 11;//产品品类id
 }
 
 message DeviceInfoIndexResp{

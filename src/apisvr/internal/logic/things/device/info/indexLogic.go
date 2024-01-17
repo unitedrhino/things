@@ -31,15 +31,16 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInfoIndexResp, err error) {
 	dmReq := &dm.DeviceInfoIndexReq{
-		ProductID:   req.ProductID, //产品id
-		AreaIDs:     req.AreaIDs,   //项目区域ids
-		DeviceName:  req.DeviceName,
-		Tags:        logic.ToTagsMap(req.Tags),
-		Page:        logic.ToDmPageRpc(req.Page),
-		Range:       req.Range,
-		Position:    logic.ToDmPointRpc(req.Position),
-		DeviceAlias: req.DeviceAlias,
-		IsOnline:    req.IsOnline,
+		ProductID:         req.ProductID, //产品id
+		AreaIDs:           req.AreaIDs,   //项目区域ids
+		DeviceName:        req.DeviceName,
+		Tags:              logic.ToTagsMap(req.Tags),
+		Page:              logic.ToDmPageRpc(req.Page),
+		Range:             req.Range,
+		Position:          logic.ToDmPointRpc(req.Position),
+		DeviceAlias:       req.DeviceAlias,
+		IsOnline:          req.IsOnline,
+		ProductCategoryID: req.ProductCategoryID,
 	}
 	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
 	if err != nil {

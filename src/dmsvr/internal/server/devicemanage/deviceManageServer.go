@@ -52,6 +52,12 @@ func (s *DeviceManageServer) DeviceInfoIndex(ctx context.Context, in *dm.DeviceI
 	return l.DeviceInfoIndex(in)
 }
 
+// 批量更新设备状态
+func (s *DeviceManageServer) DeviceInfoMultiUpdate(ctx context.Context, in *dm.DeviceInfoMultiUpdateReq) (*dm.Response, error) {
+	l := devicemanagelogic.NewDeviceInfoMultiUpdateLogic(ctx, s.svcCtx)
+	return l.DeviceInfoMultiUpdate(in)
+}
+
 // 获取设备信息详情
 func (s *DeviceManageServer) DeviceInfoRead(ctx context.Context, in *dm.DeviceInfoReadReq) (*dm.DeviceInfo, error) {
 	l := devicemanagelogic.NewDeviceInfoReadLogic(ctx, s.svcCtx)

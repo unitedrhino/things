@@ -26,6 +26,7 @@ const (
 	DeviceManage_DeviceInfoUpdate_FullMethodName         = "/dm.DeviceManage/deviceInfoUpdate"
 	DeviceManage_DeviceInfoDelete_FullMethodName         = "/dm.DeviceManage/deviceInfoDelete"
 	DeviceManage_DeviceInfoIndex_FullMethodName          = "/dm.DeviceManage/deviceInfoIndex"
+	DeviceManage_DeviceInfoMultiUpdate_FullMethodName    = "/dm.DeviceManage/DeviceInfoMultiUpdate"
 	DeviceManage_DeviceInfoRead_FullMethodName           = "/dm.DeviceManage/deviceInfoRead"
 	DeviceManage_DeviceGatewayMultiCreate_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiCreate"
 	DeviceManage_DeviceGatewayIndex_FullMethodName       = "/dm.DeviceManage/deviceGatewayIndex"
@@ -48,6 +49,8 @@ type DeviceManageClient interface {
 	DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	// 获取设备信息列表
 	DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
+	// 批量更新设备状态
+	DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	// 获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 	// 绑定网关下子设备设备
@@ -109,6 +112,15 @@ func (c *deviceManageClient) DeviceInfoDelete(ctx context.Context, in *DeviceInf
 func (c *deviceManageClient) DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error) {
 	out := new(DeviceInfoIndexResp)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -183,6 +195,8 @@ type DeviceManageServer interface {
 	DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Response, error)
 	// 获取设备信息列表
 	DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error)
+	// 批量更新设备状态
+	DeviceInfoMultiUpdate(context.Context, *DeviceInfoMultiUpdateReq) (*Response, error)
 	// 获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
 	// 绑定网关下子设备设备
@@ -216,6 +230,9 @@ func (UnimplementedDeviceManageServer) DeviceInfoDelete(context.Context, *Device
 }
 func (UnimplementedDeviceManageServer) DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoIndex not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceInfoMultiUpdate(context.Context, *DeviceInfoMultiUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoMultiUpdate not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoRead not implemented")
@@ -334,6 +351,24 @@ func _DeviceManage_DeviceInfoIndex_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoIndex(ctx, req.(*DeviceInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceInfoMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceInfoMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceInfoMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceInfoMultiUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceInfoMultiUpdate(ctx, req.(*DeviceInfoMultiUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -472,6 +507,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceInfoIndex",
 			Handler:    _DeviceManage_DeviceInfoIndex_Handler,
+		},
+		{
+			MethodName: "DeviceInfoMultiUpdate",
+			Handler:    _DeviceManage_DeviceInfoMultiUpdate_Handler,
 		},
 		{
 			MethodName: "deviceInfoRead",

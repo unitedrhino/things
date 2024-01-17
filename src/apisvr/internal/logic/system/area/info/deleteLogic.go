@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -36,22 +37,32 @@ func getAreaIDs(in *sys.AreaInfo, areaIDs []int64) []int64 {
 }
 
 func (l *DeleteLogic) Delete(req *types.AreaWithID) error {
-	treeResp, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{AreaIDs: []int64{req.AreaID}})
+	treeResp, err := l.svcCtx.AreaM.AreaInfoRead(l.ctx, &sys.AreaInfoReadReq{AreaID: req.AreaID, IsRetTree: true})
 	if err != nil {
 		return err
 	}
-	var areaIDs []int64
-	for _, v := range treeResp.List {
-		areaIDs = append(areaIDs, getAreaIDs(v, nil)...)
-	}
+	var areaIDs []int64 = getAreaIDs(treeResp, nil)
 	dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
-		Page:    &dm.PageInfo{Page: 1, Size: 2}, //只需要知道是否有设备即可
 		AreaIDs: areaIDs})
 	if err != nil {
 		return err
 	}
 	if len(dmRep.List) != 0 {
-		return errors.Parameter.AddMsg("该区域或其子区域已绑定了设备，不允许删除")
+		var devices []*dm.DeviceCore
+		for _, v := range dmRep.List {
+			devices = append(devices, &dm.DeviceCore{
+				DeviceName: v.DeviceName,
+				ProductID:  v.ProductID,
+			})
+		}
+		//全部放到未分类中
+		_, err := l.svcCtx.DeviceM.DeviceInfoMultiUpdate(l.ctx, &dm.DeviceInfoMultiUpdateReq{
+			Devices: devices,
+			AreaID:  def.NotClassified,
+		})
+		if err != nil {
+			return err
+		}
 	}
 	_, err = l.svcCtx.AreaM.AreaInfoDelete(l.ctx, &sys.AreaWithID{AreaID: req.AreaID})
 	if er := errors.Fmt(err); er != nil {

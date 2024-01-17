@@ -30,7 +30,7 @@ func NewAreaInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Are
 func (l *AreaInfoIndexLogic) AreaInfoIndex(in *sys.AreaInfoIndexReq) (*sys.AreaInfoIndexResp, error) {
 	var (
 		poArr []*relationDB.SysAreaInfo
-		f     = relationDB.AreaInfoFilter{ProjectID: in.ProjectID, AreaIDs: in.AreaIDs}
+		f     = relationDB.AreaInfoFilter{ProjectID: in.ProjectID, AreaIDs: in.AreaIDs, ParentAreaID: in.ParentAreaID}
 	)
 
 	poArr, err := l.AiDB.FindByFilter(l.ctx,

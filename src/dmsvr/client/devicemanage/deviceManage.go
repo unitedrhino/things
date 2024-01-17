@@ -28,6 +28,7 @@ type (
 	DeviceInfoDeleteReq         = dm.DeviceInfoDeleteReq
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
+	DeviceInfoMultiUpdateReq    = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq           = dm.DeviceInfoReadReq
 	DeviceTypeCountReq          = dm.DeviceTypeCountReq
 	DeviceTypeCountResp         = dm.DeviceTypeCountResp
@@ -155,6 +156,8 @@ type (
 		DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 获取设备信息列表
 		DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
+		// 批量更新设备状态
+		DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		// 获取设备信息详情
 		DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 		// 绑定网关下子设备设备
@@ -245,6 +248,17 @@ func (m *defaultDeviceManage) DeviceInfoIndex(ctx context.Context, in *DeviceInf
 // 获取设备信息列表
 func (d *directDeviceManage) DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error) {
 	return d.svr.DeviceInfoIndex(ctx, in)
+}
+
+// 批量更新设备状态
+func (m *defaultDeviceManage) DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceInfoMultiUpdate(ctx, in, opts...)
+}
+
+// 批量更新设备状态
+func (d *directDeviceManage) DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.DeviceInfoMultiUpdate(ctx, in)
 }
 
 // 获取设备信息详情
