@@ -30,11 +30,11 @@ func (l *UpdateLogic) Update(req *types.ProjectInfo) error {
 	dmReq := &sys.ProjectInfo{
 		ProjectID:   req.ProjectID,
 		ProjectName: req.ProjectName,
-		CompanyName: utils.ToRpcNullString(req.CompanyName),
-		UserID:      req.UserID,
-		Region:      utils.ToRpcNullString(req.Region),
-		Address:     utils.ToRpcNullString(req.Address),
-		Desc:        utils.ToRpcNullString(req.Desc),
+		//CompanyName: utils.ToRpcNullString(req.CompanyName),
+		AdminUserID: req.AdminUserID,
+		//Region:      utils.ToRpcNullString(req.Region),
+		//Address:     utils.ToRpcNullString(req.Address),
+		Desc: utils.ToRpcNullString(req.Desc),
 	}
 	_, err := l.svcCtx.ProjectM.ProjectInfoUpdate(l.ctx, dmReq)
 	if err != nil {

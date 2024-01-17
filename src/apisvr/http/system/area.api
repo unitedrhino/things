@@ -28,9 +28,9 @@ service api {
     @doc "获取项目区域列表"
     @handler index
     post /index (AreaInfoIndexReq) returns (AreaInfoIndexResp)
-    @doc "获取项目区域树"
-    @handler tree
-    post /tree (AreaInfoTreeReq) returns (AreaInfoTreeResp)
+//    @doc "获取项目区域树"
+//    @handler tree
+//    post /tree (AreaInfoTreeReq) returns (AreaInfoTreeResp)
 }
 
 type (
@@ -52,27 +52,17 @@ type (
     AreaInfoReadReq struct {
         AreaID int64 `json:"areaID,string"` //项目区域id
         ProjectID int64 `json:"projectID,string,optional"` //项目id 不填选默认项目
+        IsRetTree bool `json:"isRetTree,optional"`
     }
 
     AreaInfoIndexReq struct {
         Page *PageInfo `json:"page,optional"`            //进行数据分页（不传默认2000相当于全部）
         ProjectID int64 `json:"projectID,string,optional"` //项目id
-        ProjectIDs []int64 `json:"projectIDs,optional"`    //项目ids
-        AreaID int64 `json:"areaID,string,optional"`       //项目区域id
         AreaIDs []int64 `json:"areaIDs,optional"`          //项目区域ids
     }
 
     AreaInfoIndexResp struct {
         Total int64 `json:"total,optional"`  //拥有的总数
         List []*AreaInfo `json:"list"`    //项目区域列表
-    }
-
-    AreaInfoTreeReq struct {
-        ProjectID int64 `json:"projectID,string,optional"` //二选一条件: 项目id
-        AreaID int64 `json:"areaID,string,optional"`       //二选一条件: 项目id
-    }
-
-    AreaInfoTreeResp struct {
-        Tree *AreaInfo `json:"tree"`    //项目区域列表
     }
 )

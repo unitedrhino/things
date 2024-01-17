@@ -144,9 +144,9 @@ services:
         max-size: "50M" # 最大文件上传限制
         max-file: "10"
       driver: json-file
-    volumes:
-      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
-      - /docker/minio/config:/root/.minio/     #映射配置目录
+#    volumes:
+#      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
+#      - /docker/minio/config:/root/.minio/     #映射配置目录
     networks:
       ithings_env_net:
         ipv4_address: 172.20.0.10

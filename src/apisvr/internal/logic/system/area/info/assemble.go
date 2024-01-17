@@ -7,7 +7,7 @@ import (
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
-func transPbToApi(root *sys.AreaInfo) *types.AreaInfo {
+func ToAreaInfoTypes(root *sys.AreaInfo) *types.AreaInfo {
 	api := &types.AreaInfo{
 		CreatedTime:  root.CreatedTime,
 		ProjectID:    root.ProjectID,
@@ -20,8 +20,14 @@ func transPbToApi(root *sys.AreaInfo) *types.AreaInfo {
 	}
 	if len(root.Children) > 0 {
 		for _, child := range root.Children {
-			api.Children = append(api.Children, transPbToApi(child))
+			api.Children = append(api.Children, ToAreaInfoTypes(child))
 		}
 	}
 	return api
+}
+func ToAreaInfosTypes(in []*sys.AreaInfo) (ret []*types.AreaInfo) {
+	for _, v := range in {
+		ret = append(ret, ToAreaInfoTypes(v))
+	}
+	return
 }

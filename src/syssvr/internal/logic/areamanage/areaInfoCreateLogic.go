@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -42,17 +43,21 @@ func (l *AreaInfoCreateLogic) AreaInfoCreate(in *sys.AreaInfo) (*sys.AreaWithID,
 	} else if projPo == nil {
 		return nil, errors.Parameter.AddDetail(in.ProjectID).WithMsg("检查项目不存在")
 	}
-
+	var areaID = l.svcCtx.AreaID.GetSnowflakeId()
+	var areaIDPath string = "1-" + cast.ToString(areaID)
 	if in.ParentAreaID != def.RootNode { //有选了父级项目区域
-		if _, err := checkParentArea(l.ctx, in.ParentAreaID, true); err != nil {
+		pa, err := checkParentArea(l.ctx, in.ParentAreaID, true)
+		if err != nil {
 			return nil, err
 		}
+		areaIDPath = pa.AreaIDPath + "-" + cast.ToString(areaID)
 	}
 
 	areaPo := &relationDB.SysAreaInfo{
-		AreaID:       stores.AreaID(l.svcCtx.AreaID.GetSnowflakeId()),
+		AreaID:       stores.AreaID(areaID),
 		ParentAreaID: in.ParentAreaID,                //创建时必填
 		ProjectID:    stores.ProjectID(in.ProjectID), //创建时必填
+		AreaIDPath:   areaIDPath,
 		AreaName:     in.AreaName,
 		Position:     logic.ToStorePoint(in.Position),
 		Desc:         utils.ToEmptyString(in.Desc),

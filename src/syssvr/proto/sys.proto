@@ -128,11 +128,9 @@ service AreaManage {
   //删除区域
   rpc areaInfoDelete (AreaWithID) returns (Response);
   //获取区域信息详情
-  rpc areaInfoRead (AreaWithID) returns (AreaInfo);
+  rpc areaInfoRead (AreaInfoReadReq) returns (AreaInfo);
   //获取区域信息列表
   rpc areaInfoIndex (AreaInfoIndexReq) returns (AreaInfoIndexResp);
-  //获取区域信息树
-  rpc areaInfoTree (AreaInfoTreeReq) returns (AreaInfoTreeResp);
 }
 
 
@@ -342,10 +340,9 @@ message ProjectInfo {
   int64 createdTime = 1; //创建时间（只读）
   int64 projectID = 2; //项目id（只读）
   string projectName = 3; //项目名称（读写）
-  google.protobuf.StringValue companyName = 4; //项目所属公司名称（读写）
-  int64 userID = 5;//所属用户id
-  google.protobuf.StringValue region = 6; //项目省市区县（读写）
-  google.protobuf.StringValue address = 7; //项目详细地址（读写）
+  int64 adminUserID = 5;//管理员
+//  google.protobuf.StringValue region = 6; //项目省市区县（读写）
+//  google.protobuf.StringValue address = 7; //项目详细地址（读写）
   google.protobuf.StringValue desc = 8; //项目备注（读写）
 }
 
@@ -380,11 +377,15 @@ message AreaWithID {
 }
 
 
+message AreaInfoReadReq {
+  int64 projectID = 1; //项目ids
+  int64 areaID = 2; //项目区域id
+  bool isRetTree = 3;//是否返回子节点
+}
+
 message AreaInfoIndexReq {
   PageInfo page = 1; //进行数据分页（不传默认2000相当于全部）
-  int64 projectID = 2; //项目id
-  repeated int64 projectIDs = 3; //项目ids
-  int64 areaID = 4; //区域id
+  int64 projectID = 3; //项目ids
   repeated int64 areaIDs = 5; //区域ids
 }
 
@@ -393,14 +394,14 @@ message AreaInfoIndexResp {
   repeated AreaInfo list = 2; //项目区域列表
 }
 
-message AreaInfoTreeReq {
-  int64 projectID = 1; //二选一条件: 项目id
-  int64 areaID = 2; //二选一条件: 区域id
-}
-
-message AreaInfoTreeResp {
-  AreaInfo tree = 1; //项目区域树
-}
+//message AreaInfoTreeReq {
+//  int64 projectID = 1; //二选一条件: 项目id
+//  int64 areaID = 2; //二选一条件: 区域id
+//}
+//
+//message AreaInfoTreeResp {
+//  AreaInfo tree = 1; //项目区域树
+//}
 
 
 //----------------------------------------------------------------------------------------------

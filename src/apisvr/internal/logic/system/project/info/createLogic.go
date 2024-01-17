@@ -29,11 +29,11 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 func (l *CreateLogic) Create(req *types.ProjectInfo) (*types.ProjectWithID, error) {
 	rpcReq := &sys.ProjectInfo{
 		ProjectName: req.ProjectName,
-		CompanyName: utils.ToRpcNullString(req.CompanyName),
-		UserID:      req.UserID,
-		Region:      utils.ToRpcNullString(req.Region),
-		Address:     utils.ToRpcNullString(req.Address),
-		Desc:        utils.ToRpcNullString(req.Desc),
+		//CompanyName: utils.ToRpcNullString(req.CompanyName),
+		AdminUserID: req.AdminUserID,
+		//Region:      utils.ToRpcNullString(req.Region),
+		//Address:     utils.ToRpcNullString(req.Address),
+		Desc: utils.ToRpcNullString(req.Desc),
 	}
 	resp, err := l.svcCtx.ProjectM.ProjectInfoCreate(l.ctx, rpcReq)
 	if err != nil {

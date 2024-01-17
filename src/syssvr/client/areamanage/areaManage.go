@@ -27,8 +27,7 @@ type (
 	AreaInfo                  = sys.AreaInfo
 	AreaInfoIndexReq          = sys.AreaInfoIndexReq
 	AreaInfoIndexResp         = sys.AreaInfoIndexResp
-	AreaInfoTreeReq           = sys.AreaInfoTreeReq
-	AreaInfoTreeResp          = sys.AreaInfoTreeResp
+	AreaInfoReadReq           = sys.AreaInfoReadReq
 	AreaWithID                = sys.AreaWithID
 	AuthApiInfo               = sys.AuthApiInfo
 	ConfigResp                = sys.ConfigResp
@@ -134,11 +133,9 @@ type (
 		// 删除区域
 		AreaInfoDelete(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*Response, error)
 		// 获取区域信息详情
-		AreaInfoRead(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*AreaInfo, error)
+		AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error)
 		// 获取区域信息列表
 		AreaInfoIndex(ctx context.Context, in *AreaInfoIndexReq, opts ...grpc.CallOption) (*AreaInfoIndexResp, error)
-		// 获取区域信息树
-		AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq, opts ...grpc.CallOption) (*AreaInfoTreeResp, error)
 	}
 
 	defaultAreaManage struct {
@@ -198,13 +195,13 @@ func (d *directAreaManage) AreaInfoDelete(ctx context.Context, in *AreaWithID, o
 }
 
 // 获取区域信息详情
-func (m *defaultAreaManage) AreaInfoRead(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*AreaInfo, error) {
+func (m *defaultAreaManage) AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error) {
 	client := sys.NewAreaManageClient(m.cli.Conn())
 	return client.AreaInfoRead(ctx, in, opts...)
 }
 
 // 获取区域信息详情
-func (d *directAreaManage) AreaInfoRead(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*AreaInfo, error) {
+func (d *directAreaManage) AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error) {
 	return d.svr.AreaInfoRead(ctx, in)
 }
 
@@ -217,15 +214,4 @@ func (m *defaultAreaManage) AreaInfoIndex(ctx context.Context, in *AreaInfoIndex
 // 获取区域信息列表
 func (d *directAreaManage) AreaInfoIndex(ctx context.Context, in *AreaInfoIndexReq, opts ...grpc.CallOption) (*AreaInfoIndexResp, error) {
 	return d.svr.AreaInfoIndex(ctx, in)
-}
-
-// 获取区域信息树
-func (m *defaultAreaManage) AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq, opts ...grpc.CallOption) (*AreaInfoTreeResp, error) {
-	client := sys.NewAreaManageClient(m.cli.Conn())
-	return client.AreaInfoTree(ctx, in, opts...)
-}
-
-// 获取区域信息树
-func (d *directAreaManage) AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq, opts ...grpc.CallOption) (*AreaInfoTreeResp, error) {
-	return d.svr.AreaInfoTree(ctx, in)
 }

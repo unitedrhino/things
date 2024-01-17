@@ -68,7 +68,7 @@ func (l *AreaInfoUpdateLogic) setPoByPb(po *relationDB.SysAreaInfo, pb *sys.Area
 	//不支持更改 区域所属项目，因此不进行赋值
 
 	//支持区域 改为 第一级区域（改字段前端必填）
-	po.ParentAreaID = pb.ParentAreaID
+	//po.ParentAreaID = pb.ParentAreaID
 
 	if pb.AreaName != "" {
 		po.AreaName = pb.AreaName

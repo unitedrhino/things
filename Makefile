@@ -30,7 +30,9 @@ mod:
 cp.etc:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>copying etc<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@mkdir -p ./cmd/etc/
+	@mkdir -p ./cmd/dist/
 	@cp -rf ./src/apisvr/etc/* ./cmd/etc/
+	@cp -rf ./src/apisvr/dist/* ./cmd/dist/
 	@cp -rf ./src/viewsvr/etc/* ./cmd/etc/
 
 

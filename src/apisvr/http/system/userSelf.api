@@ -26,13 +26,21 @@ service api {
 	post /api/index (UserResourceWithModuleReq) returns (TenantAppApiIndexResp)
 	@doc "获取用户信息"
 	@handler read
-	post /read () returns (UserInfo)
+	post /read (UserSelfReadReq) returns (UserInfo)
 	@doc "更新用户基本数据"
 	@handler update
 	post /update (UserInfo) returns ()
 	@doc "更新用户密码"
 	@handler changePwd
 	post /change-pwd (UserChangePwdReq) returns ()
+
+	@doc "获取用户区域列表"
+	@handler areaIndex
+	post /area/index () returns (AreaInfoIndexResp)
+	@doc "获取用户项目列表"
+	@handler projectIndex
+	post /project/index () returns (ProjectInfoIndexResp)
+
 }
 
 @server (
@@ -57,6 +65,9 @@ service api {
 }
 
 type (
+	UserSelfReadReq{
+		WithRoles bool  `json:"withRoles,optional"`
+	}
 	UserResourceWithModuleReq{
 		ModuleCode string `json:"moduleCode,optional"`                               // 应用编号
 	}

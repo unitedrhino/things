@@ -505,11 +505,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/index",
 					Handler: systemareainfo.IndexHandler(serverCtx),
 				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/tree",
-					Handler: systemareainfo.TreeHandler(serverCtx),
-				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/system/area/info"),
@@ -772,6 +767,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/change-pwd",
 					Handler: systemuserself.ChangePwdHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/area/index",
+					Handler: systemuserself.AreaIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/project/index",
+					Handler: systemuserself.ProjectIndexHandler(serverCtx),
 				},
 			}...,
 		),
