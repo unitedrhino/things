@@ -14,7 +14,5 @@ func Migrate(c conf.Database) error {
 		&VidmgrInfo{},
 		&VidmgrConfig{},
 		&VidmgrStream{},
-		&VidmgrDevices{},  //GB 设备信息
-		&VidmgrChannels{}, //GB 通道信息
 	)
 }

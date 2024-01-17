@@ -23,6 +23,7 @@ type Config struct {
 	DmRpc             conf.RpcClientConf `json:",optional"`
 	RuleRpc           conf.RpcClientConf `json:",optional"`
 	VidRpc            conf.RpcClientConf `json:",optional"`
+	VidSip            conf.RpcClientConf `json:",optional"`
 	TimedJobRpc       conf.RpcClientConf `json:",optional"`
 	TimedSchedulerRpc conf.RpcClientConf `json:",optional"`
 	Rej               struct {

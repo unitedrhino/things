@@ -16,9 +16,11 @@ type Gbsip struct {
 	Region         string `json:",optional"`
 	Did            string `json:",optional"`
 	Cid            string `json:",optional"`
-	Dnum           int64  `json:",optional"`
-	Cnum           int64  `json:",optional"`
-	UDP            int64  `json:",optional"`
+	Dnum           int32  `json:",optional"`
+	Cnum           int32  `json:",optional"`
+	NetT           string `json:",optional"` //使用UDP或者TCP
+	Host           string `json:",optional"` //gb28181平台IP
+	Port           int32  `json:",optional"` //gb28181使用的UDP端口
 	DefaultDevName string `json:",optional"` // 国标设备可以直接配置   默认用户名：
 	DefaultDevPswd string `json:",optional"` //                    默认密码
 }

@@ -1586,6 +1586,8 @@ type InfoCommon struct {
 	VidmgrPort   int64   `json:"vidmgrPort,optional"`             //服务端口
 	VidmgrSecret string  `json:"vidmgrSecret,optional"`           //服务连接秘钥
 	VidmgrStatus int64   `json:"vidmgrStatus,optional"`           //服务状态:0:未激活,1:离线,2:在线
+	RtpPort      int64   `json:"rtpPort,optional"`                //rtp的端口号
+	IsOpenSip    int64   `json:"isOpenSip,optional"`              //国标协议是否开启
 	Desc         *string `json:"desc,optional"`                   //描述
 	Tags         []*Tag  `json:"tags,optional"`                   //产品tag
 }
@@ -1880,6 +1882,7 @@ type VidmgrSipReadChnResp struct {
 
 type VidmgrSipCreateDevReq struct {
 	DeviceID string `json:"deviceID"`
+	VidmgrID string `json:"vidmgrID"`
 	PWD      string `json:"pwd"`
 	Name     string `json:"name"`
 }

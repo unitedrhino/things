@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/vidsvr/pb/vid"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/vidsip/pb/sip"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,14 +29,14 @@ func NewUpdatedevLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Updated
 
 func (l *UpdatedevLogic) Updatedev(req *types.VidmgrSipUpdateDevReq) error {
 	// todo: add your logic here and delete this line
-	vidReq := &vid.VidmgrGbsipDeviceUpdateReq{
+	vidReq := &sip.SipDevUpdateReq{
 		DeviceID: req.DeviceID,
 		Name:     req.Name,
 		PWD:      req.PWD,
 	}
 	jsonStr, _ := json.Marshal(req)
 	fmt.Println("airgens Updatedev:", string(jsonStr))
-	_, err := l.svcCtx.VidmgrG.VidmgrGbsipDeviceUpdate(l.ctx, vidReq)
+	_, err := l.svcCtx.SipRpc.SipDeviceUpdate(l.ctx, vidReq)
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), req, er)

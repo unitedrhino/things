@@ -245,6 +245,7 @@ func InitDockerSrv(c config.Config, vidmgrID string) error {
 			Desc:         "",
 			Tags:         map[string]string{},
 		}
+
 		err = InfoRepo.Insert(Ctx, dbDocker)
 		if err != nil {
 			fmt.Printf("%s.Insert err=%+v", utils.FuncName(), err)
