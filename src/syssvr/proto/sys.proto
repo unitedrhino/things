@@ -386,6 +386,7 @@ message AreaInfoReadReq {
 message AreaInfoIndexReq {
   PageInfo page = 1; //进行数据分页（不传默认2000相当于全部）
   int64 projectID = 3; //项目ids
+  int64 parentAreaID = 4;
   repeated int64 areaIDs = 5; //区域ids
 }
 

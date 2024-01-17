@@ -25,13 +25,14 @@ type (
 			Start int64
 			End   int64
 		}
-		IsOnline    int64
-		Range       int64
-		Position    stores.Point
-		DeviceAlias string
-		Versions    []string
-		Cores       []*devices.Core
-		WithProduct bool
+		IsOnline          int64
+		Range             int64
+		Position          stores.Point
+		DeviceAlias       string
+		Versions          []string
+		Cores             []*devices.Core
+		WithProduct       bool
+		ProductCategoryID int64
 	}
 )
 
@@ -43,6 +44,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	db := d.db.WithContext(ctx)
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
+	}
+	if f.ProductCategoryID != 0 {
+		db = db.Where("product_id in (?)", db.Select("product_id").Model(DmProductInfo{}).Where("category_id=?", f.ProductCategoryID))
 	}
 	//业务过滤条件
 	if f.ProductID != "" {
@@ -157,4 +161,10 @@ func (d DeviceInfoRepo) CountGroupByField(ctx context.Context, f DeviceFilter, c
 		result[v.CountKey] = v.Count
 	}
 	return result, stores.ErrFmt(err)
+}
+
+func (d DeviceInfoRepo) MultiUpdate(ctx context.Context, devices []*devices.Core, info *DmDeviceInfo) error {
+	db := d.fmtFilter(ctx, DeviceFilter{Cores: devices}).Model(&DmDeviceInfo{})
+	err := db.Updates(info).Error
+	return stores.ErrFmt(err)
 }

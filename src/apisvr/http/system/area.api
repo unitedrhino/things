@@ -59,6 +59,7 @@ type (
         Page *PageInfo `json:"page,optional"`            //进行数据分页（不传默认2000相当于全部）
         ProjectID int64 `json:"projectID,string,optional"` //项目id
         AreaIDs []int64 `json:"areaIDs,optional"`          //项目区域ids
+        ParentAreaID int64 `json:"parentAreaID,string,optional"`
     }
 
     AreaInfoIndexResp struct {

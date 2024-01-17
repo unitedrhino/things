@@ -28,6 +28,7 @@ type (
 	DeviceInfoDeleteReq         = dm.DeviceInfoDeleteReq
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
+	DeviceInfoMultiUpdateReq    = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq           = dm.DeviceInfoReadReq
 	DeviceTypeCountReq          = dm.DeviceTypeCountReq
 	DeviceTypeCountResp         = dm.DeviceTypeCountResp

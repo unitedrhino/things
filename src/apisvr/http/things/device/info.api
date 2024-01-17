@@ -20,6 +20,10 @@ service api {
     @doc "更新设备"
     @handler update
     post /update (DeviceInfoSaveReq) returns ()
+    @doc "批量更新设备"
+    @handler multiUpdate
+    post /multi-update (DeviceInfoMultiUpdateReq) returns ()
+
     @doc "删除设备"
     @handler delete
     post /delete (DeviceInfoDeleteReq) returns ()
@@ -91,6 +95,10 @@ type (
         DeviceName string `json:"deviceName"`                                            //设备名称 读写
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
     }
+    DeviceInfoMultiUpdateReq struct {
+           Devices []*DeviceCore `json:"devices"`
+            AreaID int64 `json:"areaID,string,optional"`
+    }
 
     DeviceInfoIndexReq struct {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
@@ -103,6 +111,7 @@ type (
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
         AreaIDs []int64 `json:"areaIDs,optional"`                  //项目区域ids
         IsOnline int64 `json:"isOnline,optional,range=[0:2]"`                                         // 在线状态过滤  1离线 2在线
+        ProductCategoryID int64 `json:"productCategoryID,optional"`
     }
     DeviceInfoIndexResp struct {
         List []*DeviceInfo `json:"list"`    //设备信息

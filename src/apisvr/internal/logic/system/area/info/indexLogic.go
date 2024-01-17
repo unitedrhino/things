@@ -29,9 +29,10 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.AreaInfoIndexReq) (resp *types.AreaInfoIndexResp, err error) {
 	dmReq := &sys.AreaInfoIndexReq{
-		Page:      logic.ToSysPageRpc(req.Page),
-		ProjectID: req.ProjectID,
-		AreaIDs:   req.AreaIDs,
+		Page:         logic.ToSysPageRpc(req.Page),
+		ProjectID:    req.ProjectID,
+		AreaIDs:      req.AreaIDs,
+		ParentAreaID: req.ParentAreaID,
 	}
 	dmResp, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, dmReq)
 	if err != nil {

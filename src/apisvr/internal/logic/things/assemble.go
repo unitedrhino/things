@@ -66,3 +66,17 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		WithProperties: properties,
 	}
 }
+
+func ToDmDeviceCoresPb(in []*types.DeviceCore) []*dm.DeviceCore {
+	if in == nil {
+		return nil
+	}
+	var ret []*dm.DeviceCore
+	for _, v := range in {
+		ret = append(ret, &dm.DeviceCore{
+			DeviceName: v.DeviceName,
+			ProductID:  v.ProductID,
+		})
+	}
+	return ret
+}

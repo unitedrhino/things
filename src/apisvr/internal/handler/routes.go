@@ -1085,6 +1085,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/multi-update",
+					Handler: thingsdeviceinfo.MultiUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/delete",
 					Handler: thingsdeviceinfo.DeleteHandler(serverCtx),
 				},

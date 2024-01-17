@@ -37,15 +37,16 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	)
 
 	filter := relationDB.DeviceFilter{
-		ProductID:   in.ProductID,
-		AreaIDs:     in.AreaIDs,
-		DeviceName:  in.DeviceName,
-		DeviceNames: in.DeviceNames,
-		Tags:        in.Tags,
-		Range:       in.Range,
-		Position:    logic.ToStorePoint(in.Position),
-		DeviceAlias: in.DeviceAlias,
-		IsOnline:    in.IsOnline,
+		ProductID:         in.ProductID,
+		AreaIDs:           in.AreaIDs,
+		DeviceName:        in.DeviceName,
+		DeviceNames:       in.DeviceNames,
+		Tags:              in.Tags,
+		Range:             in.Range,
+		Position:          logic.ToStorePoint(in.Position),
+		DeviceAlias:       in.DeviceAlias,
+		IsOnline:          in.IsOnline,
+		ProductCategoryID: in.ProductCategoryID,
 	}
 
 	size, err = l.DiDB.CountByFilter(l.ctx, filter)

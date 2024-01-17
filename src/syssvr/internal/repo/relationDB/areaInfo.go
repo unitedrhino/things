@@ -26,9 +26,10 @@ func NewAreaInfoRepo(in any) *AreaInfoRepo {
 }
 
 type AreaInfoFilter struct {
-	ProjectID  int64
-	AreaIDs    []int64
-	AreaIDPath string
+	ProjectID    int64
+	ParentAreaID int64
+	AreaIDs      []int64
+	AreaIDPath   string
 	*AreaInfoWith
 }
 
@@ -56,6 +57,9 @@ func (p AreaInfoRepo) fmtFilter(ctx context.Context, f AreaInfoFilter) *gorm.DB 
 	if f.ProjectID != 0 {
 		db = db.Where("project_id = ?", f.ProjectID)
 		ctxs.SetMetaProjectID(ctx, f.ProjectID) //指定项目id的时候需要清除项目id
+	}
+	if f.ParentAreaID != 0 {
+		db = db.Where("parent_area_id = ?", f.ParentAreaID)
 	}
 	if len(f.AreaIDs) != 0 {
 		db = db.Where("area_id in ?", f.AreaIDs)
