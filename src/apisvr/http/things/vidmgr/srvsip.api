@@ -168,6 +168,7 @@ type (
     }
     VidmgrSipCreateDevReq struct{
         DeviceID string `json:"deviceID"`
+        VidmgrID string `json:"vidmgrID"`
 //        Region string `json:"region"`
         PWD string `json:"pwd"`
         Name string `json:"name"`

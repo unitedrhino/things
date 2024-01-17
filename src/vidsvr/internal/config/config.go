@@ -9,12 +9,9 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
-	Database    conf.Database
-	CacheRedis  cache.ClusterConf
-	Event       conf.EventConf     //和things内部交互的设置
-	TimedJobRpc conf.RpcClientConf `json:",optional"`
-	Mediakit    conf.MediaConf     `json:",optional"` //docker -zlemdiakit的连接
-	Restconf    rest.RestConf      //docker访问
-	GbsipConf   conf.Gbsip         `json:",optional"`
-	Notify      map[string]string  `json:",optional"`
+	Database   conf.Database
+	CacheRedis cache.ClusterConf
+	Event      conf.EventConf //和things内部交互的设置
+	Mediakit   conf.MediaConf `json:",optional"` //docker -zlemdiakit的连接
+	Restconf   rest.RestConf  //docker访问
 }

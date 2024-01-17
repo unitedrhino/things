@@ -5,7 +5,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/vidsvr/internal/config"
 	mgrconfig "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrconfigmanage"
-	mgrgbsip "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrgbsipmanage"
 	mgrinfo "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrinfomanage"
 	mgrstream "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrstreammanage"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
@@ -53,7 +52,6 @@ func Run(svcCtx *svc.ServiceContext) {
 		vid.RegisterVidmgrInfoManageServer(grpcServer, mgrinfo.NewVidmgrInfoManageServer(svcCtx))
 		vid.RegisterVidmgrConfigManageServer(grpcServer, mgrconfig.NewVidmgrConfigManageServer(svcCtx))
 		vid.RegisterVidmgrStreamManageServer(grpcServer, mgrstream.NewVidmgrStreamManageServer(svcCtx))
-		vid.RegisterVidmgrGbsipManageServer(grpcServer, mgrgbsip.NewVidmgrGbsipManageServer(svcCtx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 			fmt.Println("[---test--] vidsvr  svcCtx.Config")

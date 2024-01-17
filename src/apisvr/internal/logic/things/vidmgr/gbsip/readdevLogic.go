@@ -4,10 +4,9 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/vidsvr/pb/vid"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/vidsip/pb/sip"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +27,7 @@ func NewReaddevLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReaddevLo
 
 func (l *ReaddevLogic) Readdev(req *types.VidmgrSipReadDevReq) (resp *types.VidmgrSipReadDevResp, err error) {
 	// todo: add your logic here and delete this line
-	vidResp, err := l.svcCtx.VidmgrG.VidmgrGbsipDeviceRead(l.ctx, &vid.VidmgrGbsipDeviceReadReq{
+	vidResp, err := l.svcCtx.SipRpc.SipDeviceRead(l.ctx, &sip.SipDevReadReq{
 		DeviceID: req.DeviceID,
 	})
 	if err != nil {

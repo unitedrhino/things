@@ -7,10 +7,9 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
-	"github.com/i-Things/things/src/vidsvr/pb/vid"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/vidsip/pb/sip"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,13 +30,13 @@ func NewIndexdevLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Indexdev
 
 func (l *IndexdevLogic) Indexdev(req *types.VidmgrSipIndexDevReq) (resp *types.VidmgrSipIndexDevResp, err error) {
 	// todo: add your logic here and delete this line
-	vidReq := &vid.VidmgrGbsipDeviceIndexReq{
+	vidReq := &sip.SipDevIndexReq{
 		DeviceIDs: req.DeviceIDs,
-		Page:      logic.ToVidPageRpc(req.Page),
+		Page:      logic.ToSipPageRpc(req.Page),
 	}
 	jsonStr, _ := json.Marshal(req)
 	fmt.Println("airgens Indexdev:", string(jsonStr))
-	vidResp, err := l.svcCtx.VidmgrG.VidmgrGbsipDeviceIndex(l.ctx, vidReq)
+	vidResp, err := l.svcCtx.SipRpc.SipDeviceIndex(l.ctx, vidReq)
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.Indexdev req=%v err=%v", utils.FuncName(), req, er)

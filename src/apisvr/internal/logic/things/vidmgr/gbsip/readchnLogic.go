@@ -4,10 +4,9 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/vidsvr/pb/vid"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/vidsip/pb/sip"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +27,7 @@ func NewReadchnLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadchnLo
 
 func (l *ReadchnLogic) Readchn(req *types.VidmgrSipReadChnReq) (resp *types.VidmgrSipReadChnResp, err error) {
 	// todo: add your logic here and delete this line
-	vidResp, err := l.svcCtx.VidmgrG.VidmgrGbsipChannelRead(l.ctx, &vid.VidmgrGbsipChannelRead{
+	vidResp, err := l.svcCtx.SipRpc.SipChannelRead(l.ctx, &sip.SipChnReadReq{
 		ChannelID: req.ChannelID,
 	})
 	if err != nil {

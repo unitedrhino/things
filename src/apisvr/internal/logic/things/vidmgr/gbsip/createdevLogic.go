@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/vidsvr/pb/vid"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
+	"github.com/i-Things/things/src/vidsip/pb/sip"
+	"github.com/i-Things/things/src/vidsvr/pb/vid"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,18 +30,31 @@ func NewCreatedevLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Created
 
 func (l *CreatedevLogic) Createdev(req *types.VidmgrSipCreateDevReq) error {
 	// todo: add your logic here and delete this line
-	vidReq := &vid.VidmgrGbsipDeviceCreateReq{
-		DeviceID: req.DeviceID,
-		Name:     req.Name,
-		PWD:      req.PWD,
-	}
 	jsonStr, _ := json.Marshal(req)
 	fmt.Println("airgens create dev:", string(jsonStr))
-	_, err := l.svcCtx.VidmgrG.VidmgrGbsipDeviceCreate(l.ctx, vidReq)
+	//查询流服务ID
+	vidResp, err := l.svcCtx.VidmgrM.VidmgrInfoRead(l.ctx, &vid.VidmgrInfoReadReq{
+		VidmgrID: req.VidmgrID,
+	})
+	if err != nil {
+		er := errors.Fmt(err)
+		l.Errorf("%s rpc.ManageVidmgr req=%v err=%+v", utils.FuncName(), req, er)
+		return errors.MediaSipDevCreateError.AddDetail("流服务不存在！")
+	}
+
+	sipReq := &sip.SipDevCreateReq{
+		DeviceID:  req.DeviceID,
+		VidmgrID:  req.VidmgrID,
+		Name:      req.Name,
+		PWD:       req.PWD,
+		MediaPort: 10000,
+		MediaIP:   vidResp.VidmgrIpV4,
+	}
+	_, err = l.svcCtx.SipRpc.SipDeviceCreate(l.ctx, sipReq)
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.ManageVidmgr req=%v err=%v", utils.FuncName(), req, er)
-		return er
+		return errors.MediaSipDevCreateError.AddDetail("RPC服务调用失败！")
 	}
 	return nil
 }

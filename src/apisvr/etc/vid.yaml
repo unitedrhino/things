@@ -21,34 +21,12 @@ Log:
 
 #用于配置docker中zlmediakit---访问vidsvr的IP和端口
 Mediakit:
-  Host: 192.168.10.125  #IP和当前环境host上eth0的IP，用于
+  Host: 192.168.10.126  #IP和当前环境host上eth0的IP，用于
   Port: 8088
   Secret: WF8K4LJi2FZbd5Q2OJ3RYTACPZsprvM0
 
 #用于配置zlmediakit的hook
 Restconf:
   Name: vid
-  Host: 192.168.10.125
+  Host: 192.168.10.126
   Port: 8888
-
-TimedJobRpc:
-  Enable: true
-  Mode: direct
-  Conf:
-    Timeout: 1000000
-
-GbsipConf: # gb28181 域，系统id，用户id，通道id，用户数量，初次运行使用配置，之后保存数据库，如果数据库不存在使用配置文件内容
-  Lid:    "37070000082008000001" # 系统ID
-  Region: "3707000008"           # 系统域
-  Did:    "37070000081118"       # 设备前缀
-  Cid:    "37070000081318"       # 通道前缀
-  Dnum:   0 # 设备id = did + dnum
-  Cnum:   0 # 通道id = cid + cnum
-  UDP:    5060                   #gb28181使用的UDP端口
-  DefaultDevName: "iThings"      #国标设备可以直接配置   默认用户名：
-  DefaultDevPswd: "123456"       #                   默认密码
-
-Notify:
-  devices_active:   # 设备活跃通知   开启为true
-  devices_regiest:  #设备注册成功通知 开启为true
-  channels_active:  # 通道活跃通知 开启为true
