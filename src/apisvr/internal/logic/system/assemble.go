@@ -11,12 +11,15 @@ func ProjectInfoToApi(pb *sys.ProjectInfo) *types.ProjectInfo {
 		CreatedTime: pb.CreatedTime,
 		ProjectID:   pb.ProjectID,
 		ProjectName: pb.ProjectName,
-		CompanyName: utils.ToNullString(pb.CompanyName),
-		UserID:      pb.UserID,
-		Region:      utils.ToNullString(pb.Region),
-		Address:     utils.ToNullString(pb.Address),
+		AdminUserID: pb.AdminUserID,
 		Desc:        utils.ToNullString(pb.Desc),
 	}
+}
+func ProjectInfosToApi(pb []*sys.ProjectInfo) (ret []*types.ProjectInfo) {
+	for _, v := range pb {
+		ret = append(ret, ProjectInfoToApi(v))
+	}
+	return
 }
 
 func ToMenuInfoApi(i *sys.MenuInfo) *types.MenuInfo {

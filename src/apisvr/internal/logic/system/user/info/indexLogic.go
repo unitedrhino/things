@@ -44,7 +44,7 @@ func (l *IndexLogic) Index(req *types.UserInfoIndexReq) (resp *types.UserInfoInd
 
 	userInfo = make([]*types.UserInfo, 0, len(userInfo))
 	for _, i := range info.List {
-		userInfo = append(userInfo, user.UserInfoToApi(i))
+		userInfo = append(userInfo, user.UserInfoToApi(i, nil))
 	}
 
 	return &types.UserInfoIndexResp{userInfo, total}, nil

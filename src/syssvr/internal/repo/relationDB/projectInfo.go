@@ -25,10 +25,10 @@ type ProjectInfoFilter struct {
 func (p ProjectInfoRepo) fmtFilter(ctx context.Context, f ProjectInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.ProjectName != "" {
-		db = db.Where("projectName like ?", "%"+f.ProjectName+"%")
+		db = db.Where("project_name like ?", "%"+f.ProjectName+"%")
 	}
 	if len(f.ProjectIDs) != 0 {
-		db = db.Where("projectID in ?", f.ProjectIDs)
+		db = db.Where("project_id in ?", f.ProjectIDs)
 	}
 	return db
 }
@@ -69,7 +69,7 @@ func (p ProjectInfoRepo) CountByFilter(ctx context.Context, f ProjectInfoFilter)
 
 func (g ProjectInfoRepo) Update(ctx context.Context, data *SysProjectInfo) error {
 	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
-	err := g.db.WithContext(ctx).Where("`projectID` = ?", data.ProjectID).Save(data).Error
+	err := g.db.WithContext(ctx).Where("project_id = ?", data.ProjectID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -82,14 +82,14 @@ func (g ProjectInfoRepo) DeleteByFilter(ctx context.Context, f ProjectInfoFilter
 
 func (g ProjectInfoRepo) Delete(ctx context.Context, projectID int64) error {
 	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
-	err := g.db.WithContext(ctx).Where("`projectID` = ?", projectID).Delete(&SysProjectInfo{}).Error
+	err := g.db.WithContext(ctx).Where("project_id = ?", projectID).Delete(&SysProjectInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (g ProjectInfoRepo) FindOne(ctx context.Context, projectID int64) (*SysProjectInfo, error) {
 	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
 	var result SysProjectInfo
-	err := g.db.WithContext(ctx).Where("`projectID` = ?", projectID).First(&result).Error
+	err := g.db.WithContext(ctx).Where("project_id = ?", projectID).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

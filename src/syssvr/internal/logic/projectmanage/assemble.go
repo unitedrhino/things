@@ -11,10 +11,7 @@ func transPoToPb(po *relationDB.SysProjectInfo) *sys.ProjectInfo {
 		CreatedTime: po.CreatedTime.Unix(),
 		ProjectID:   int64(po.ProjectID),
 		ProjectName: po.ProjectName,
-		CompanyName: utils.ToRpcNullString(po.CompanyName),
-		UserID:      po.UserID,
-		Region:      utils.ToRpcNullString(po.Region),
-		Address:     utils.ToRpcNullString(po.Address),
+		AdminUserID: po.AdminUserID,
 		Desc:        utils.ToRpcNullString(po.Desc),
 	}
 	return pb

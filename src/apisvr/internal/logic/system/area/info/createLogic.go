@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
@@ -29,15 +30,21 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 }
 
 func (l *CreateLogic) Create(req *types.AreaInfo) (*types.AreaWithID, error) {
-	dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
-		Page:    &dm.PageInfo{Page: 1, Size: 2}, //只需要知道是否有设备即可
-		AreaIDs: []int64{req.ParentAreaID}})
-	if err != nil {
-		return nil, err
+	if req.ParentAreaID == 0 {
+		req.ParentAreaID = def.RootNode
 	}
-	if len(dmRep.List) != 0 {
-		return nil, errors.Parameter.AddMsg("父级区域已绑定了设备，不允许再添加子区域")
+	if req.ParentAreaID != def.RootNode {
+		dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
+			Page:    &dm.PageInfo{Page: 1, Size: 2}, //只需要知道是否有设备即可
+			AreaIDs: []int64{req.ParentAreaID}})
+		if err != nil {
+			return nil, err
+		}
+		if len(dmRep.List) != 0 {
+			return nil, errors.Parameter.AddMsg("父级区域已绑定了设备，不允许再添加子区域")
+		}
 	}
+
 	dmReq := &sys.AreaInfo{
 		ParentAreaID: req.ParentAreaID,
 		ProjectID:    req.ProjectID,

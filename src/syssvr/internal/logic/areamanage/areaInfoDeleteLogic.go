@@ -40,15 +40,18 @@ func (l *AreaInfoDeleteLogic) AreaInfoDelete(in *sys.AreaWithID) (*sys.Response,
 		return nil, errors.Parameter.AddDetail(in.AreaID).WithMsg("检查区域不存在")
 	}
 
-	areaAndChildIDs, err := l.AiDB.FindIDsWithChildren(l.ctx, in.AreaID)
+	areas, err := l.AiDB.FindByFilter(l.ctx, relationDB.AreaInfoFilter{AreaIDPath: areaPo.AreaIDPath}, nil)
 	if err != nil {
 		return nil, errors.Fmt(err).WithMsg("查询区域及子区域出错")
 	}
 
-	err = l.AiDB.DeleteByFilter(l.ctx, relationDB.AreaInfoFilter{AreaIDs: areaAndChildIDs})
+	var areaIDs []int64
+	for _, area := range areas {
+		areaIDs = append(areaIDs, int64(area.AreaID))
+	}
+	err = l.AiDB.DeleteByFilter(l.ctx, relationDB.AreaInfoFilter{AreaIDs: areaIDs})
 	if err != nil {
 		return nil, errors.Fmt(err).WithMsg("删除区域及子区域出错")
 	}
-
 	return &sys.Response{}, nil
 }

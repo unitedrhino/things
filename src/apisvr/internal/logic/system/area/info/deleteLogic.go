@@ -36,12 +36,14 @@ func getAreaIDs(in *sys.AreaInfo, areaIDs []int64) []int64 {
 }
 
 func (l *DeleteLogic) Delete(req *types.AreaWithID) error {
-	treeResp, err := l.svcCtx.AreaM.AreaInfoTree(l.ctx, &sys.AreaInfoTreeReq{AreaID: req.AreaID})
+	treeResp, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{AreaIDs: []int64{req.AreaID}})
 	if err != nil {
 		return err
 	}
-	areaIDs := getAreaIDs(treeResp.Tree, nil)
-
+	var areaIDs []int64
+	for _, v := range treeResp.List {
+		areaIDs = append(areaIDs, getAreaIDs(v, nil)...)
+	}
 	dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
 		Page:    &dm.PageInfo{Page: 1, Size: 2}, //只需要知道是否有设备即可
 		AreaIDs: areaIDs})

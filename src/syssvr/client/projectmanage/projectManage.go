@@ -27,8 +27,7 @@ type (
 	AreaInfo                  = sys.AreaInfo
 	AreaInfoIndexReq          = sys.AreaInfoIndexReq
 	AreaInfoIndexResp         = sys.AreaInfoIndexResp
-	AreaInfoTreeReq           = sys.AreaInfoTreeReq
-	AreaInfoTreeResp          = sys.AreaInfoTreeResp
+	AreaInfoReadReq           = sys.AreaInfoReadReq
 	AreaWithID                = sys.AreaWithID
 	AuthApiInfo               = sys.AuthApiInfo
 	ConfigResp                = sys.ConfigResp

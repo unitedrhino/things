@@ -56,10 +56,7 @@ type ProjectInfo struct {
 	CreatedTime int64   `json:"createdTime,optional,string"` //创建时间（只读）
 	ProjectID   int64   `json:"projectID,string,optional"`   //项目id（只读）
 	ProjectName string  `json:"projectName,optional"`        //项目名称（读写）
-	CompanyName *string `json:"companyName,optional"`        //项目所属公司名称（读写）
-	UserID      int64   `json:"userID,string,optional"`      // 管理员用户id（读写）
-	Region      *string `json:"region,optional"`             //项目省市区县（读写）
-	Address     *string `json:"address,optional"`            //项目详细地址（读写）
+	AdminUserID int64   `json:"adminUserID,string,optional"` // 管理员用户id（读写）
 	Desc        *string `json:"desc,optional"`               //项目备注（读写）
 }
 
@@ -82,24 +79,25 @@ type ApiInfo struct {
 }
 
 type UserInfo struct {
-	UserID          int64  `json:"userID,string,optional"`      // 用户id
-	UserName        string `json:"userName,optional"`           // 用户名(唯一)
-	Password        string `json:"password,optional,omitempty"` // 登录密码
-	Email           string `json:"email,optional"`              // 邮箱
-	Phone           string `json:"phone,optional"`              // 手机号
-	LastIP          string `json:"lastIP,optional"`             // 最后登录ip
-	RegIP           string `json:"regIP,optional"`              // 注册ip
-	NickName        string `json:"nickName,optional"`           // 用户的昵称
-	City            string `json:"city,optional"`               // 用户所在城市
-	Country         string `json:"country,optional"`            // 用户所在国家
-	Province        string `json:"province,optional"`           // 用户所在省份
-	Language        string `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
-	HeadImg         string `json:"headImg,optional"`            // 用户头像
-	IsUpdateHeadImg int64  `json:"isUpdateHeadImg,optional"`    // 用户头像
-	CreatedTime     int64  `json:"createdTime,string,optional"` // 创建时间
-	Role            int64  `json:"role,optional"`               // 用户角色默认
-	Sex             int64  `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData       int64  `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
+	UserID          int64       `json:"userID,string,optional"`      // 用户id
+	UserName        string      `json:"userName,optional"`           // 用户名(唯一)
+	Password        string      `json:"password,optional,omitempty"` // 登录密码
+	Email           string      `json:"email,optional"`              // 邮箱
+	Phone           string      `json:"phone,optional"`              // 手机号
+	LastIP          string      `json:"lastIP,optional"`             // 最后登录ip
+	RegIP           string      `json:"regIP,optional"`              // 注册ip
+	NickName        string      `json:"nickName,optional"`           // 用户的昵称
+	City            string      `json:"city,optional"`               // 用户所在城市
+	Country         string      `json:"country,optional"`            // 用户所在国家
+	Province        string      `json:"province,optional"`           // 用户所在省份
+	Language        string      `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
+	HeadImg         string      `json:"headImg,optional"`            // 用户头像
+	IsUpdateHeadImg int64       `json:"isUpdateHeadImg,optional"`    // 用户头像
+	CreatedTime     int64       `json:"createdTime,string,optional"` // 创建时间
+	Role            int64       `json:"role,optional"`               // 用户角色默认
+	Sex             int64       `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	IsAllData       int64       `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
+	Roles           []*RoleInfo `json:"roles,optional"`
 }
 
 type UserRoleIndexReq struct {
@@ -138,7 +136,8 @@ type UserInfoIndexResp struct {
 }
 
 type UserInfoReadReq struct {
-	UserID int64 `json:"userID,string,optional"` // 用户id
+	UserID    int64 `json:"userID,string,optional"` // 用户id
+	WithRoles bool  `json:"withRoles,optional"`
 }
 
 type UserInfoDeleteReq struct {
@@ -517,28 +516,18 @@ type AreaWithID struct {
 type AreaInfoReadReq struct {
 	AreaID    int64 `json:"areaID,string"`             //项目区域id
 	ProjectID int64 `json:"projectID,string,optional"` //项目id 不填选默认项目
+	IsRetTree bool  `json:"isRetTree,optional"`
 }
 
 type AreaInfoIndexReq struct {
-	Page       *PageInfo `json:"page,optional"`             //进行数据分页（不传默认2000相当于全部）
-	ProjectID  int64     `json:"projectID,string,optional"` //项目id
-	ProjectIDs []int64   `json:"projectIDs,optional"`       //项目ids
-	AreaID     int64     `json:"areaID,string,optional"`    //项目区域id
-	AreaIDs    []int64   `json:"areaIDs,optional"`          //项目区域ids
+	Page      *PageInfo `json:"page,optional"`             //进行数据分页（不传默认2000相当于全部）
+	ProjectID int64     `json:"projectID,string,optional"` //项目id
+	AreaIDs   []int64   `json:"areaIDs,optional"`          //项目区域ids
 }
 
 type AreaInfoIndexResp struct {
 	Total int64       `json:"total,optional"` //拥有的总数
 	List  []*AreaInfo `json:"list"`           //项目区域列表
-}
-
-type AreaInfoTreeReq struct {
-	ProjectID int64 `json:"projectID,string,optional"` //二选一条件: 项目id
-	AreaID    int64 `json:"areaID,string,optional"`    //二选一条件: 项目id
-}
-
-type AreaInfoTreeResp struct {
-	Tree *AreaInfo `json:"tree"` //项目区域列表
 }
 
 type TimedTaskGroup struct {
@@ -735,6 +724,10 @@ type TenantAppModule struct {
 	Code    string  `json:"code"` // 应用编号
 	MenuIDs []int64 `json:"menuIDs,optional"`
 	ApiIDs  []int64 `json:"apiIDs,optional"`
+}
+
+type UserSelfReadReq struct {
+	WithRoles bool `json:"withRoles,optional"`
 }
 
 type UserResourceWithModuleReq struct {

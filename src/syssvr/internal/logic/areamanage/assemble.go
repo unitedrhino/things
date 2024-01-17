@@ -3,18 +3,30 @@ package areamanagelogic
 import (
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/syssvr/domain/area"
 	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
 
-func transPoArrToPbTree(rootAreaID int64, poArr []*relationDB.SysAreaInfo) *sys.AreaInfo {
+func transPoArrToPbTree(root *relationDB.SysAreaInfo, poArr []*relationDB.SysAreaInfo) *sys.AreaInfo {
 	pbList := make([]*sys.AreaInfo, 0, len(poArr))
 	for _, po := range poArr {
 		pbList = append(pbList, transPoToPb(po))
 	}
-	return buildPbTree(rootAreaID, pbList)
+	return buildPbTree(transPoToPb(root), pbList)
+}
+
+func buildPbTree(rootArea *sys.AreaInfo, pbList []*sys.AreaInfo) *sys.AreaInfo {
+	// 将所有节点按照 parentID 分组
+	nodeMap := make(map[int64][]*sys.AreaInfo)
+	for _, pbOne := range pbList {
+		nodeMap[pbOne.ParentAreaID] = append(nodeMap[pbOne.ParentAreaID], pbOne)
+	}
+
+	// 递归生成子树
+	buildPbSubtree(rootArea, nodeMap)
+
+	return rootArea
 }
 
 func transPoToPb(po *relationDB.SysAreaInfo) *sys.AreaInfo {
@@ -32,26 +44,11 @@ func transPoToPb(po *relationDB.SysAreaInfo) *sys.AreaInfo {
 		Desc:         utils.ToRpcNullString(po.Desc),
 	}
 }
-
-func buildPbTree(rootAreaID int64, pbList []*sys.AreaInfo) *sys.AreaInfo {
-	var root *sys.AreaInfo
-	// 将所有节点按照 parentID 分组
-	nodeMap := make(map[int64][]*sys.AreaInfo)
-	for _, pbOne := range pbList {
-		if pbOne.AreaID == rootAreaID { // 找到根节点
-			root = pbOne
-		}
-		nodeMap[pbOne.ParentAreaID] = append(nodeMap[pbOne.ParentAreaID], pbOne)
+func AreaInfosToPb(po []*relationDB.SysAreaInfo) (ret []*sys.AreaInfo) {
+	for _, po := range po {
+		ret = append(ret, transPoToPb(po))
 	}
-
-	if root == nil { // 未找到根节点
-		root = transPoToPb(&area.RootNode)
-	}
-
-	// 递归生成子树
-	buildPbSubtree(root, nodeMap)
-
-	return root
+	return
 }
 
 func buildPbSubtree(node *sys.AreaInfo, nodeMap map[int64][]*sys.AreaInfo) {

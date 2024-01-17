@@ -28,6 +28,37 @@ func (l *ReadLogic) Read(req *types.UserInfoReadReq) (resp *types.UserInfo, err 
 	if err != nil {
 		return nil, err
 	}
+	var (
+		roles []*sys.RoleInfo
+	)
+	if req.WithRoles == true {
+		ret, err := l.svcCtx.UserRpc.UserRoleIndex(l.ctx, &sys.UserRoleIndexReq{
+			UserID: req.UserID,
+		})
+		if err != nil {
+			return nil, err
+		}
+		roles = ret.List
+	}
+	//if req.WithAreas {
+	//	ret, err := l.svcCtx.UserRpc.UserAreaIndex(l.ctx, &sys.UserAreaIndexReq{
+	//		UserID: req.UserID,
+	//	})
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//	if len(ret.List) != 0 {
+	//		var areaIDs []int64
+	//		for _, v := range ret.List {
+	//			areaIDs = append(areaIDs, v.AreaID)
+	//		}
+	//		ret2, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{AreaIDs: areaIDs})
+	//		if err != nil {
+	//			return nil, err
+	//		}
+	//		areas = ret2.List
+	//	}
+	//}
 
-	return user.UserInfoToApi(info), nil
+	return user.UserInfoToApi(info, roles), nil
 }

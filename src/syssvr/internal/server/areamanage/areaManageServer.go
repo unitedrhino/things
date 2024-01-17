@@ -41,7 +41,7 @@ func (s *AreaManageServer) AreaInfoDelete(ctx context.Context, in *sys.AreaWithI
 }
 
 // 获取区域信息详情
-func (s *AreaManageServer) AreaInfoRead(ctx context.Context, in *sys.AreaWithID) (*sys.AreaInfo, error) {
+func (s *AreaManageServer) AreaInfoRead(ctx context.Context, in *sys.AreaInfoReadReq) (*sys.AreaInfo, error) {
 	l := areamanagelogic.NewAreaInfoReadLogic(ctx, s.svcCtx)
 	return l.AreaInfoRead(in)
 }
@@ -50,10 +50,4 @@ func (s *AreaManageServer) AreaInfoRead(ctx context.Context, in *sys.AreaWithID)
 func (s *AreaManageServer) AreaInfoIndex(ctx context.Context, in *sys.AreaInfoIndexReq) (*sys.AreaInfoIndexResp, error) {
 	l := areamanagelogic.NewAreaInfoIndexLogic(ctx, s.svcCtx)
 	return l.AreaInfoIndex(in)
-}
-
-// 获取区域信息树
-func (s *AreaManageServer) AreaInfoTree(ctx context.Context, in *sys.AreaInfoTreeReq) (*sys.AreaInfoTreeResp, error) {
-	l := areamanagelogic.NewAreaInfoTreeLogic(ctx, s.svcCtx)
-	return l.AreaInfoTree(in)
 }

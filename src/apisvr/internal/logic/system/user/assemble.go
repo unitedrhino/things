@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/i-Things/things/src/apisvr/internal/logic/system/role"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
@@ -13,7 +14,7 @@ func GetNullVal(val *wrappers.StringValue) *string {
 	return &val.Value
 }
 
-func UserInfoToApi(ui *sys.UserInfo) *types.UserInfo {
+func UserInfoToApi(ui *sys.UserInfo, roles []*sys.RoleInfo) *types.UserInfo {
 	return &types.UserInfo{
 		UserID:      ui.UserID,
 		UserName:    ui.UserName,
@@ -31,6 +32,7 @@ func UserInfoToApi(ui *sys.UserInfo) *types.UserInfo {
 		Language:    ui.Language,
 		HeadImg:     ui.HeadImg,
 		CreatedTime: ui.CreatedTime,
+		Roles:       role.ToRoleInfosTypes(roles),
 	}
 }
 func UserInfoToRpc(ui *types.UserInfo) *sys.UserInfo {

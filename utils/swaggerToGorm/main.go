@@ -17,7 +17,7 @@ var template = `{ModuleCode: %s,IsNeedAuth: %v, Route: "%v", Method: %v, Name: "
 var (
 	groupPrefix = map[string]string{
 		"iThings-apisvr/物联网相关接口": "def.ModuleThings",
-		"iThings-apisvr/系统管理new": "def.ModuleTenantSystemManage",
+		"iThings-apisvr/系统管理new": "def.ModuleTenantManage",
 		"iThings-apisvr/大屏管理":    "def.ModuleView",
 	}
 	BusinessTypeSuffix = map[string]int64{

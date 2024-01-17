@@ -26,8 +26,9 @@ func NewAreaInfoRepo(in any) *AreaInfoRepo {
 }
 
 type AreaInfoFilter struct {
-	ProjectID int64
-	AreaIDs   []int64
+	ProjectID  int64
+	AreaIDs    []int64
+	AreaIDPath string
 	*AreaInfoWith
 }
 
@@ -53,11 +54,14 @@ func (p AreaInfoRepo) fmtFilter(ctx context.Context, f AreaInfoFilter) *gorm.DB 
 	db := p.db.WithContext(ctx)
 	db = p.With(db, f.AreaInfoWith)
 	if f.ProjectID != 0 {
-		db = db.Where("`projectID` = ?", f.ProjectID)
+		db = db.Where("project_id = ?", f.ProjectID)
 		ctxs.SetMetaProjectID(ctx, f.ProjectID) //指定项目id的时候需要清除项目id
 	}
 	if len(f.AreaIDs) != 0 {
-		db = db.Where("`areaID` in ?", f.AreaIDs)
+		db = db.Where("area_id in ?", f.AreaIDs)
+	}
+	if f.AreaIDPath != "" {
+		db = db.Where("area_id_path like ?", f.AreaIDPath+"%")
 	}
 	return db
 }
@@ -94,7 +98,7 @@ func (p AreaInfoRepo) CountByFilter(ctx context.Context, f AreaInfoFilter) (size
 }
 
 func (g AreaInfoRepo) Update(ctx context.Context, data *SysAreaInfo) error {
-	err := g.db.WithContext(ctx).Where("`areaID` = ?", data.AreaID).Save(data).Error
+	err := g.db.WithContext(ctx).Where("area_id = ?", data.AreaID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -105,39 +109,39 @@ func (g AreaInfoRepo) DeleteByFilter(ctx context.Context, f AreaInfoFilter) erro
 }
 
 func (g AreaInfoRepo) Delete(ctx context.Context, areaID int64) error {
-	err := g.db.WithContext(ctx).Where("`areaID` = ?", areaID).Delete(&SysAreaInfo{}).Error
+	err := g.db.WithContext(ctx).Where("area_id = ?", areaID).Delete(&SysAreaInfo{}).Error
 	return stores.ErrFmt(err)
 }
 func (g AreaInfoRepo) FindOne(ctx context.Context, areaID int64, with *AreaInfoWith) (*SysAreaInfo, error) {
 	var result SysAreaInfo
 	db := g.db.WithContext(ctx)
 	db = g.With(db, with)
-	err := db.Where("`areaID` = ?", areaID).First(&result).Error
+	err := db.Where("area_id = ?", areaID).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
 	return &result, nil
 }
 
-func (g AreaInfoRepo) FindIDsWithChildren(ctx context.Context, areaID int64) ([]int64, error) {
+func (g AreaInfoRepo) FindIDsWithChildren(ctx context.Context, areaIDs []int64) ([]int64, error) {
 	var resp []int64
 	table := SysAreaInfo{}
 	db := g.db.WithContext(ctx)
 	sql := fmt.Sprintf(`
 		WITH RECURSIVE cte AS (
-		  SELECT areaID
+		  SELECT area_id
 		  FROM %s
-		  WHERE areaID = ?
+		  WHERE area_id in ?
 		  UNION ALL
-		  SELECT t.areaID
+		  SELECT t.area_id
 		  FROM %s t
-		  INNER JOIN cte ON t.parentAreaID = cte.areaID
+		  INNER JOIN cte ON t.parent_area_id = cte.area_id
 		)
-		SELECT areaID
+		SELECT area_id
 		FROM cte`,
 		table.TableName(), table.TableName())
 
-	err := db.Raw(sql, areaID).Scan(&resp).Error
+	err := db.Raw(sql, areaIDs).Scan(&resp).Error
 	return resp, stores.ErrFmt(err)
 
 }

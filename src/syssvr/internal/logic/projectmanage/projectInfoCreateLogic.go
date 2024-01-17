@@ -36,17 +36,17 @@ func (l *ProjectInfoCreateLogic) ProjectInfoCreate(in *sys.ProjectInfo) (*sys.Pr
 	po := &relationDB.SysProjectInfo{
 		ProjectID:   stores.ProjectID(l.svcCtx.ProjectID.GetSnowflakeId()),
 		ProjectName: in.ProjectName,
-		CompanyName: utils.ToEmptyString(in.CompanyName),
-		UserID:      in.UserID,
-		Region:      utils.ToEmptyString(in.Region),
-		Address:     utils.ToEmptyString(in.Address),
-		Desc:        utils.ToEmptyString(in.Desc),
+		//CompanyName: utils.ToEmptyString(in.CompanyName),
+		AdminUserID: in.AdminUserID,
+		//Region:      utils.ToEmptyString(in.Region),
+		//Address:     utils.ToEmptyString(in.Address),
+		Desc: utils.ToEmptyString(in.Desc),
 	}
 
 	err := l.PiDB.Insert(l.ctx, po)
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
-		return nil, errors.System.AddDetail(err)
+		return nil, err
 	}
 
 	return &sys.ProjectWithID{ProjectID: int64(po.ProjectID)}, nil

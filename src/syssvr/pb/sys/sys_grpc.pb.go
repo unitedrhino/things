@@ -3027,7 +3027,6 @@ const (
 	AreaManage_AreaInfoDelete_FullMethodName = "/sys.AreaManage/areaInfoDelete"
 	AreaManage_AreaInfoRead_FullMethodName   = "/sys.AreaManage/areaInfoRead"
 	AreaManage_AreaInfoIndex_FullMethodName  = "/sys.AreaManage/areaInfoIndex"
-	AreaManage_AreaInfoTree_FullMethodName   = "/sys.AreaManage/areaInfoTree"
 )
 
 // AreaManageClient is the client API for AreaManage service.
@@ -3041,11 +3040,9 @@ type AreaManageClient interface {
 	// 删除区域
 	AreaInfoDelete(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*Response, error)
 	// 获取区域信息详情
-	AreaInfoRead(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*AreaInfo, error)
+	AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error)
 	// 获取区域信息列表
 	AreaInfoIndex(ctx context.Context, in *AreaInfoIndexReq, opts ...grpc.CallOption) (*AreaInfoIndexResp, error)
-	// 获取区域信息树
-	AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq, opts ...grpc.CallOption) (*AreaInfoTreeResp, error)
 }
 
 type areaManageClient struct {
@@ -3083,7 +3080,7 @@ func (c *areaManageClient) AreaInfoDelete(ctx context.Context, in *AreaWithID, o
 	return out, nil
 }
 
-func (c *areaManageClient) AreaInfoRead(ctx context.Context, in *AreaWithID, opts ...grpc.CallOption) (*AreaInfo, error) {
+func (c *areaManageClient) AreaInfoRead(ctx context.Context, in *AreaInfoReadReq, opts ...grpc.CallOption) (*AreaInfo, error) {
 	out := new(AreaInfo)
 	err := c.cc.Invoke(ctx, AreaManage_AreaInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -3101,15 +3098,6 @@ func (c *areaManageClient) AreaInfoIndex(ctx context.Context, in *AreaInfoIndexR
 	return out, nil
 }
 
-func (c *areaManageClient) AreaInfoTree(ctx context.Context, in *AreaInfoTreeReq, opts ...grpc.CallOption) (*AreaInfoTreeResp, error) {
-	out := new(AreaInfoTreeResp)
-	err := c.cc.Invoke(ctx, AreaManage_AreaInfoTree_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // AreaManageServer is the server API for AreaManage service.
 // All implementations must embed UnimplementedAreaManageServer
 // for forward compatibility
@@ -3121,11 +3109,9 @@ type AreaManageServer interface {
 	// 删除区域
 	AreaInfoDelete(context.Context, *AreaWithID) (*Response, error)
 	// 获取区域信息详情
-	AreaInfoRead(context.Context, *AreaWithID) (*AreaInfo, error)
+	AreaInfoRead(context.Context, *AreaInfoReadReq) (*AreaInfo, error)
 	// 获取区域信息列表
 	AreaInfoIndex(context.Context, *AreaInfoIndexReq) (*AreaInfoIndexResp, error)
-	// 获取区域信息树
-	AreaInfoTree(context.Context, *AreaInfoTreeReq) (*AreaInfoTreeResp, error)
 	mustEmbedUnimplementedAreaManageServer()
 }
 
@@ -3142,14 +3128,11 @@ func (UnimplementedAreaManageServer) AreaInfoUpdate(context.Context, *AreaInfo) 
 func (UnimplementedAreaManageServer) AreaInfoDelete(context.Context, *AreaWithID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoDelete not implemented")
 }
-func (UnimplementedAreaManageServer) AreaInfoRead(context.Context, *AreaWithID) (*AreaInfo, error) {
+func (UnimplementedAreaManageServer) AreaInfoRead(context.Context, *AreaInfoReadReq) (*AreaInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoRead not implemented")
 }
 func (UnimplementedAreaManageServer) AreaInfoIndex(context.Context, *AreaInfoIndexReq) (*AreaInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoIndex not implemented")
-}
-func (UnimplementedAreaManageServer) AreaInfoTree(context.Context, *AreaInfoTreeReq) (*AreaInfoTreeResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AreaInfoTree not implemented")
 }
 func (UnimplementedAreaManageServer) mustEmbedUnimplementedAreaManageServer() {}
 
@@ -3219,7 +3202,7 @@ func _AreaManage_AreaInfoDelete_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _AreaManage_AreaInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AreaWithID)
+	in := new(AreaInfoReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -3231,7 +3214,7 @@ func _AreaManage_AreaInfoRead_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: AreaManage_AreaInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AreaManageServer).AreaInfoRead(ctx, req.(*AreaWithID))
+		return srv.(AreaManageServer).AreaInfoRead(ctx, req.(*AreaInfoReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3250,24 +3233,6 @@ func _AreaManage_AreaInfoIndex_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AreaManageServer).AreaInfoIndex(ctx, req.(*AreaInfoIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AreaManage_AreaInfoTree_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AreaInfoTreeReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AreaManageServer).AreaInfoTree(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AreaManage_AreaInfoTree_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AreaManageServer).AreaInfoTree(ctx, req.(*AreaInfoTreeReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3298,10 +3263,6 @@ var AreaManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "areaInfoIndex",
 			Handler:    _AreaManage_AreaInfoIndex_Handler,
-		},
-		{
-			MethodName: "areaInfoTree",
-			Handler:    _AreaManage_AreaInfoTree_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -51,18 +51,18 @@ func (l *ProjectInfoUpdateLogic) setPoByPb(po *relationDB.SysProjectInfo, pb *sy
 	if pb.ProjectName != "" {
 		po.ProjectName = pb.ProjectName
 	}
-	if pb.CompanyName != nil {
-		po.CompanyName = pb.CompanyName.GetValue()
+	//if pb.CompanyName != nil {
+	//	po.CompanyName = pb.CompanyName.GetValue()
+	//}
+	if pb.AdminUserID != 0 {
+		po.AdminUserID = pb.AdminUserID
 	}
-	if pb.UserID != 0 {
-		po.UserID = pb.UserID
-	}
-	if pb.Region != nil {
-		po.Region = pb.Region.GetValue()
-	}
-	if pb.Address != nil {
-		po.Address = pb.Address.GetValue()
-	}
+	//if pb.Region != nil {
+	//	po.Region = pb.Region.GetValue()
+	//}
+	//if pb.Address != nil {
+	//	po.Address = pb.Address.GetValue()
+	//}
 	if pb.Desc != nil {
 		po.Desc = pb.Desc.GetValue()
 	}
