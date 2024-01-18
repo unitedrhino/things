@@ -1,0 +1,49 @@
+info(
+    title: "用户数据权限管理模块"
+    desc: "用户数据权限管理接口"
+    author: "大绵羊"
+    email: "robotyang123@163.com"
+    version: "v1"
+)
+
+import "common.api"  //公共结构体定义
+
+@server(
+    group : system/user/area
+    prefix: /api/v1/system/user/area
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "授权用户区域权限"
+    @handler areaMultiUpdate
+    post /multi-update (UserAreaMultiUpdateReq) returns ()
+
+    @doc "获取用户区域权限列表"
+    @handler areaIndex
+    post /index (UserAreaIndexReq) returns (UserAreaIndexResp)
+}
+
+
+//用户级权限控制
+type (
+    UserAreaMultiUpdateReq struct {
+        UserID   int64              `json:"userID,string"`    //用户ID（必填，雪花ID）
+        ProjectID int64           `json:"projectID,string"` //项目id
+        Areas     []*UserArea `json:"areas"`          //权限数据IDs
+    }
+    UserArea struct {
+        AreaID int64 `json:"areaID,string"` //项目id
+    }
+
+    UserAreaIndexReq struct {
+        Page *PageInfo `json:"page,optional"`        //进行数据分页（不传默认2000相当于全部）
+        UserID   int64              `json:"userID,string"`    //用户ID（必填，雪花ID）
+        ProjectID int64           `json:"projectID,string"` //项目id
+    }
+
+    UserAreaIndexResp struct {
+        Total int64           `json:"total"` //总数
+        List  []*UserArea `json:"list"`    //用户数据权限列表
+    }
+)

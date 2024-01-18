@@ -8,6 +8,15 @@ const (
 	RoleIDSuper RoleID = 1
 )
 
+type Auth = int64
+
+const (
+	AuthRead      Auth = 1 //读权限,只能读,不能写
+	AuthWrite     Auth = 2 //写权限，可以写，不能读
+	AuthReadWrite Auth = 3 //读写权限
+	AuthAdmin     Auth = 4 //管理权限,可以修改别人的权限
+)
+
 type CoordinateSystem string
 
 var SystemCoordinate = CoordinateSystemBaidu //默认坐标系

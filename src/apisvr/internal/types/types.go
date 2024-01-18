@@ -100,20 +100,6 @@ type UserInfo struct {
 	Roles           []*RoleInfo `json:"roles,optional"`
 }
 
-type UserRoleIndexReq struct {
-	UserID int64 `json:"userID,string"` // 用户id
-}
-
-type UserRoleIndexResp struct {
-	Total int64       `json:"total"`
-	List  []*RoleInfo `json:"list"` //用户角色列表
-}
-
-type UserRoleMultiUpdateReq struct {
-	UserID  int64   `json:"userID,string"` // 用户id
-	RoleIDs []int64 `json:"roleIDs"`       //角色编号列表
-}
-
 type UserCreateResp struct {
 	UserID int64 `json:"userID,string,optional"` // 用户id
 }
@@ -274,44 +260,58 @@ type CodeReq struct {
 	Code string `json:"code"`
 }
 
-type UserAuthProject struct {
+type UserProject struct {
 	ProjectID int64 `json:"projectID,string"` //权限数据ID
 }
 
-type UserAuthProjectMultiUpdateReq struct {
-	UserID   int64              `json:"userID,string"` //用户ID（必填，雪花ID）
-	Projects []*UserAuthProject `json:"projects"`      //权限数据IDs（必填）
+type UserProjectMultiUpdateReq struct {
+	UserID   int64          `json:"userID,string"` //用户ID（必填，雪花ID）
+	Projects []*UserProject `json:"projects"`      //权限数据IDs（必填）
 }
 
-type UserAuthProjectIndexReq struct {
+type UserProjectIndexReq struct {
 	Page   *PageInfo `json:"page,optional"` //进行数据分页（不传默认2000相当于全部）
 	UserID int64     `json:"userID,string"` //用户ID（必填，雪花ID）
 }
 
-type UserAuthProjectIndexResp struct {
-	Total int64              `json:"total"` //总数
-	List  []*UserAuthProject `json:"list"`  //用户数据权限列表
+type UserProjectIndexResp struct {
+	Total int64          `json:"total"` //总数
+	List  []*UserProject `json:"list"`  //用户数据权限列表
 }
 
-type UserAuthAreaMultiUpdateReq struct {
-	UserID    int64           `json:"userID,string"`    //用户ID（必填，雪花ID）
-	ProjectID int64           `json:"projectID,string"` //项目id
-	Areas     []*UserAuthArea `json:"areas"`            //权限数据IDs
+type UserAreaMultiUpdateReq struct {
+	UserID    int64       `json:"userID,string"`    //用户ID（必填，雪花ID）
+	ProjectID int64       `json:"projectID,string"` //项目id
+	Areas     []*UserArea `json:"areas"`            //权限数据IDs
 }
 
-type UserAuthArea struct {
+type UserArea struct {
 	AreaID int64 `json:"areaID,string"` //项目id
 }
 
-type UserAuthAreaIndexReq struct {
+type UserAreaIndexReq struct {
 	Page      *PageInfo `json:"page,optional"`    //进行数据分页（不传默认2000相当于全部）
 	UserID    int64     `json:"userID,string"`    //用户ID（必填，雪花ID）
 	ProjectID int64     `json:"projectID,string"` //项目id
 }
 
-type UserAuthAreaIndexResp struct {
-	Total int64           `json:"total"` //总数
-	List  []*UserAuthArea `json:"list"`  //用户数据权限列表
+type UserAreaIndexResp struct {
+	Total int64       `json:"total"` //总数
+	List  []*UserArea `json:"list"`  //用户数据权限列表
+}
+
+type UserRoleIndexReq struct {
+	UserID int64 `json:"userID,string"` // 用户id
+}
+
+type UserRoleIndexResp struct {
+	Total int64       `json:"total"`
+	List  []*RoleInfo `json:"list"` //用户角色列表
+}
+
+type UserRoleMultiUpdateReq struct {
+	UserID  int64   `json:"userID,string"` // 用户id
+	RoleIDs []int64 `json:"roleIDs"`       //角色编号列表
 }
 
 type SysLogLoginIndexReq struct {

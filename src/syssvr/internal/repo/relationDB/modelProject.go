@@ -1,6 +1,7 @@
 package relationDB
 
 import (
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
 )
 
@@ -49,13 +50,29 @@ type SysUserArea struct {
 	UserID     int64             `gorm:"column:user_id;uniqueIndex:ri_mi;type:bigint;NOT NULL"`          // 用户ID(雪花id)
 	ProjectID  int64             `gorm:"column:project_id;uniqueIndex:ri_mi;type:bigint;NOT NULL"`       // 所属项目ID(雪花ID)
 	AreaID     int64             `gorm:"column:area_id;uniqueIndex:ri_mi;type:bigint;NOT NULL"`          // 区域ID(雪花ID)
-	RoleType   int64             `gorm:"column:role_type;type:bigint;NOT NULL"`                          // 角色类型 1 管理员(可以调整本区域及旗下区域的设备区域规划)  2 读写授权(可以对区域下的设备进行操作,但是不能新增或删除)
+	AuthType   def.Auth          `gorm:"column:auth_type;type:bigint;NOT NULL"`                          // 授权类型 1 管理员(可以调整本区域及旗下区域的设备区域规划)  2 读写授权(可以对区域下的设备进行操作,但是不能新增或删除)
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;index"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:ri_mi"`
 }
 
 func (m *SysUserArea) TableName() string {
 	return "sys_user_area"
+}
+
+// 用户区域权限授权表
+type SysUserAreaApply struct {
+	ID         int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"` // 租户编码
+	UserID     int64             `gorm:"column:user_id;uniqueIndex:ri_mi;type:bigint;NOT NULL"`          // 用户ID(雪花id)
+	ProjectID  stores.ProjectID  `gorm:"column:project_id;uniqueIndex:ri_mi;type:bigint;NOT NULL"`       // 所属项目ID(雪花ID)
+	AreaID     stores.AreaID     `gorm:"column:area_id;uniqueIndex:ri_mi;type:bigint;NOT NULL"`          // 区域ID(雪花ID)
+	AuthType   def.Auth          `gorm:"column:auth_type;type:bigint;NOT NULL"`                          // 授权类型 1 管理员(可以调整本区域及旗下区域的设备区域规划)  2 读写授权(可以对区域下的设备进行操作,但是不能新增或删除)
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:ri_mi"`
+}
+
+func (m *SysUserAreaApply) TableName() string {
+	return "sys_user_area_apply"
 }
 
 // 用户项目权限表

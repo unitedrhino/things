@@ -94,8 +94,14 @@ type (
 	TenantModuleIndexResp     = sys.TenantModuleIndexResp
 	TenantModuleWithIDOrCode  = sys.TenantModuleWithIDOrCode
 	UserArea                  = sys.UserArea
+	UserAreaApplyDealReq      = sys.UserAreaApplyDealReq
+	UserAreaApplyIndexReq     = sys.UserAreaApplyIndexReq
+	UserAreaApplyIndexResp    = sys.UserAreaApplyIndexResp
+	UserAreaApplyInfo         = sys.UserAreaApplyInfo
+	UserAreaApplyReq          = sys.UserAreaApplyReq
 	UserAreaIndexReq          = sys.UserAreaIndexReq
 	UserAreaIndexResp         = sys.UserAreaIndexResp
+	UserAreaMultiDeleteReq    = sys.UserAreaMultiDeleteReq
 	UserAreaMultiUpdateReq    = sys.UserAreaMultiUpdateReq
 	UserCaptchaReq            = sys.UserCaptchaReq
 	UserCaptchaResp           = sys.UserCaptchaResp
@@ -143,6 +149,10 @@ type (
 		UserProjectIndex(ctx context.Context, in *UserProjectIndexReq, opts ...grpc.CallOption) (*UserProjectIndexResp, error)
 		UserAreaMultiUpdate(ctx context.Context, in *UserAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		UserAreaIndex(ctx context.Context, in *UserAreaIndexReq, opts ...grpc.CallOption) (*UserAreaIndexResp, error)
+		UserAreaMultiDelete(ctx context.Context, in *UserAreaMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		UserAreaApply(ctx context.Context, in *UserAreaApplyReq, opts ...grpc.CallOption) (*Response, error)
+		UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error)
+		UserAreaApplyDeal(ctx context.Context, in *UserAreaApplyDealReq, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultUserManage struct {
@@ -319,4 +329,40 @@ func (m *defaultUserManage) UserAreaIndex(ctx context.Context, in *UserAreaIndex
 
 func (d *directUserManage) UserAreaIndex(ctx context.Context, in *UserAreaIndexReq, opts ...grpc.CallOption) (*UserAreaIndexResp, error) {
 	return d.svr.UserAreaIndex(ctx, in)
+}
+
+func (m *defaultUserManage) UserAreaMultiDelete(ctx context.Context, in *UserAreaMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserManageClient(m.cli.Conn())
+	return client.UserAreaMultiDelete(ctx, in, opts...)
+}
+
+func (d *directUserManage) UserAreaMultiDelete(ctx context.Context, in *UserAreaMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserAreaMultiDelete(ctx, in)
+}
+
+func (m *defaultUserManage) UserAreaApply(ctx context.Context, in *UserAreaApplyReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserManageClient(m.cli.Conn())
+	return client.UserAreaApply(ctx, in, opts...)
+}
+
+func (d *directUserManage) UserAreaApply(ctx context.Context, in *UserAreaApplyReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserAreaApply(ctx, in)
+}
+
+func (m *defaultUserManage) UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error) {
+	client := sys.NewUserManageClient(m.cli.Conn())
+	return client.UserAreaApplyIndex(ctx, in, opts...)
+}
+
+func (d *directUserManage) UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error) {
+	return d.svr.UserAreaApplyIndex(ctx, in)
+}
+
+func (m *defaultUserManage) UserAreaApplyDeal(ctx context.Context, in *UserAreaApplyDealReq, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewUserManageClient(m.cli.Conn())
+	return client.UserAreaApplyDeal(ctx, in, opts...)
+}
+
+func (d *directUserManage) UserAreaApplyDeal(ctx context.Context, in *UserAreaApplyDealReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserAreaApplyDeal(ctx, in)
 }

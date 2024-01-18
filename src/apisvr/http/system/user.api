@@ -37,20 +37,7 @@ service api {
 	post /delete (UserInfoDeleteReq) returns ()
 }
 
-@server (
-	group : system/user
-	prefix: /api/v1/system/user
-	middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
-)
-service api {
-	@doc "获取用戶角色列表"
-	@handler roleIndex
-	post /role/index (UserRoleIndexReq) returns (UserRoleIndexResp)
-	@doc "更新用戶的角色列表"
-	@handler roleMultiUpdate
-	post /role/multi-update (UserRoleMultiUpdateReq) returns ()
 
-}
 
 type (
 	 UserInfo {
@@ -75,19 +62,7 @@ type (
 	 	Roles []*RoleInfo `json:"roles,optional"`
 	}
 
-	 UserRoleIndexReq{
-		 UserID         int64  `json:"userID,string"`        // 用户id
-	 }
 
-	 UserRoleIndexResp{
-	 	Total int64 `json:"total"`
-	 	List  []*RoleInfo `json:"list"`           //用户角色列表
-	 }
-
-	 UserRoleMultiUpdateReq{
-		 UserID         int64  `json:"userID,string"`        // 用户id
-		 RoleIDs 		[]int64 `json:"roleIDs"` //角色编号列表
-	 }
 
 	UserCreateResp {
 		UserID         int64  `json:"userID,string,optional"`        // 用户id
