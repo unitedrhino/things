@@ -23,14 +23,14 @@ func checkUser(ctx context.Context, userID int64) (*relationDB.SysTenantUserInfo
 }
 
 func InitCacheUserAuthProject(ctx context.Context, userID int64) error {
-	projects, err := relationDB.NewUserAuthProjectRepo(ctx).FindByFilter(ctx, relationDB.UserAuthProjectFilter{UserID: userID}, nil)
+	projects, err := relationDB.NewUserProjectRepo(ctx).FindByFilter(ctx, relationDB.UserProjectFilter{UserID: userID}, nil)
 	if err != nil {
 		return err
 	}
 	return caches.SetUserAuthProject(ctx, userID, DBToAuthProjectDos(projects))
 }
 func InitCacheUserAuthArea(ctx context.Context, userID int64) error {
-	areas, err := relationDB.NewUserAuthAreaRepo(ctx).FindByFilter(ctx, relationDB.UserAuthAreaFilter{UserID: userID}, nil)
+	areas, err := relationDB.NewUserAreaRepo(ctx).FindByFilter(ctx, relationDB.UserAreaFilter{UserID: userID}, nil)
 	if err != nil {
 		return err
 	}

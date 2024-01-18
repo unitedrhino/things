@@ -106,3 +106,23 @@ func (s *UserManageServer) UserAreaIndex(ctx context.Context, in *sys.UserAreaIn
 	l := usermanagelogic.NewUserAreaIndexLogic(ctx, s.svcCtx)
 	return l.UserAreaIndex(in)
 }
+
+func (s *UserManageServer) UserAreaMultiDelete(ctx context.Context, in *sys.UserAreaMultiDeleteReq) (*sys.Response, error) {
+	l := usermanagelogic.NewUserAreaMultiDeleteLogic(ctx, s.svcCtx)
+	return l.UserAreaMultiDelete(in)
+}
+
+func (s *UserManageServer) UserAreaApply(ctx context.Context, in *sys.UserAreaApplyReq) (*sys.Response, error) {
+	l := usermanagelogic.NewUserAreaApplyLogic(ctx, s.svcCtx)
+	return l.UserAreaApply(in)
+}
+
+func (s *UserManageServer) UserAreaApplyIndex(ctx context.Context, in *sys.UserAreaApplyIndexReq) (*sys.UserAreaApplyIndexResp, error) {
+	l := usermanagelogic.NewUserAreaApplyIndexLogic(ctx, s.svcCtx)
+	return l.UserAreaApplyIndex(in)
+}
+
+func (s *UserManageServer) UserAreaApplyDeal(ctx context.Context, in *sys.UserAreaApplyDealReq) (*sys.Response, error) {
+	l := usermanagelogic.NewUserAreaApplyDealLogic(ctx, s.svcCtx)
+	return l.UserAreaApplyDeal(in)
+}

@@ -22,8 +22,16 @@ service UserManage {
 
   rpc userProjectMultiUpdate (UserProjectMultiUpdateReq) returns (Response);   //授权用户数据权限
   rpc userProjectIndex (UserProjectIndexReq) returns (UserProjectIndexResp); //获取用户数据权限列表
+
   rpc userAreaMultiUpdate (UserAreaMultiUpdateReq) returns (Response);   //授权用户数据权限
   rpc userAreaIndex (UserAreaIndexReq) returns (UserAreaIndexResp); //获取用户数据权限列表
+
+  rpc userAreaMultiDelete (UserAreaMultiDeleteReq) returns (Response); //删除用户授权
+  rpc userAreaApply(UserAreaApplyReq) returns(Response);//申请区域权限
+  rpc userAreaApplyIndex(UserAreaApplyIndexReq)returns(UserAreaApplyIndexResp);
+  rpc userAreaApplyDeal(UserAreaApplyDealReq)returns(Response);//处理区域权限申请
+
+
 }
 
 service MenuManage {
@@ -772,6 +780,40 @@ message UserAreaIndexReq {
   int64 userID = 2; //用户ID（必填，雪花ID）
   int64 projectID = 3; //项目id 可选
 }
+
+message UserAreaMultiDeleteReq{
+  int64 userID = 1;
+  repeated int64 areaIDs = 2;
+}
+
+message UserAreaApplyReq{
+  int64 areaID = 1; //项目id
+  int64 authType =2;// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+}
+
+message UserAreaApplyIndexReq{
+  PageInfo page = 1 ; //进行数据分页（不传默认2000相当于全部）
+  repeated int64 authTypes =2;// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+}
+
+message UserAreaApplyInfo{
+  int64 id = 1; //项目id
+  int64 areaID = 2; //项目id
+  int64 authType =3;// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+  int64 createdTime = 4;
+}
+
+message UserAreaApplyIndexResp{
+  int64 total = 1;           //总数
+  repeated UserAreaApplyInfo list = 2; //用户数据权限列表
+}
+
+message UserAreaApplyDealReq{
+  bool isApprove = 1;//是否同意
+  repeated int64 ids = 2; //授权申请的id列表
+}
+
+
 message UserAreaIndexResp {
   int64 total = 1;           //总数
   repeated UserArea list = 2; //用户数据权限列表

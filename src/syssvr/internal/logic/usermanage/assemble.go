@@ -115,3 +115,15 @@ func DBToAuthProjectDos(areas []*relationDB.SysUserProject) (ret []*userDataAuth
 	}
 	return
 }
+
+func ToUserAreaApplyInfos(in []*relationDB.SysUserAreaApply) (ret []*sys.UserAreaApplyInfo) {
+	for _, v := range in {
+		ret = append(ret, &sys.UserAreaApplyInfo{
+			Id:          v.ID,
+			AreaID:      int64(v.AreaID),
+			AuthType:    v.AuthType,
+			CreatedTime: v.CreatedTime.Unix(),
+		})
+	}
+	return
+}

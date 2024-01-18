@@ -36,6 +36,10 @@ const (
 	UserManage_UserProjectIndex_FullMethodName       = "/sys.UserManage/userProjectIndex"
 	UserManage_UserAreaMultiUpdate_FullMethodName    = "/sys.UserManage/userAreaMultiUpdate"
 	UserManage_UserAreaIndex_FullMethodName          = "/sys.UserManage/userAreaIndex"
+	UserManage_UserAreaMultiDelete_FullMethodName    = "/sys.UserManage/userAreaMultiDelete"
+	UserManage_UserAreaApply_FullMethodName          = "/sys.UserManage/userAreaApply"
+	UserManage_UserAreaApplyIndex_FullMethodName     = "/sys.UserManage/userAreaApplyIndex"
+	UserManage_UserAreaApplyDeal_FullMethodName      = "/sys.UserManage/userAreaApplyDeal"
 )
 
 // UserManageClient is the client API for UserManage service.
@@ -59,6 +63,10 @@ type UserManageClient interface {
 	UserProjectIndex(ctx context.Context, in *UserProjectIndexReq, opts ...grpc.CallOption) (*UserProjectIndexResp, error)
 	UserAreaMultiUpdate(ctx context.Context, in *UserAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 	UserAreaIndex(ctx context.Context, in *UserAreaIndexReq, opts ...grpc.CallOption) (*UserAreaIndexResp, error)
+	UserAreaMultiDelete(ctx context.Context, in *UserAreaMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	UserAreaApply(ctx context.Context, in *UserAreaApplyReq, opts ...grpc.CallOption) (*Response, error)
+	UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error)
+	UserAreaApplyDeal(ctx context.Context, in *UserAreaApplyDealReq, opts ...grpc.CallOption) (*Response, error)
 }
 
 type userManageClient struct {
@@ -222,6 +230,42 @@ func (c *userManageClient) UserAreaIndex(ctx context.Context, in *UserAreaIndexR
 	return out, nil
 }
 
+func (c *userManageClient) UserAreaMultiDelete(ctx context.Context, in *UserAreaMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, UserManage_UserAreaMultiDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManageClient) UserAreaApply(ctx context.Context, in *UserAreaApplyReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, UserManage_UserAreaApply_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManageClient) UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error) {
+	out := new(UserAreaApplyIndexResp)
+	err := c.cc.Invoke(ctx, UserManage_UserAreaApplyIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManageClient) UserAreaApplyDeal(ctx context.Context, in *UserAreaApplyDealReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, UserManage_UserAreaApplyDeal_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserManageServer is the server API for UserManage service.
 // All implementations must embed UnimplementedUserManageServer
 // for forward compatibility
@@ -243,6 +287,10 @@ type UserManageServer interface {
 	UserProjectIndex(context.Context, *UserProjectIndexReq) (*UserProjectIndexResp, error)
 	UserAreaMultiUpdate(context.Context, *UserAreaMultiUpdateReq) (*Response, error)
 	UserAreaIndex(context.Context, *UserAreaIndexReq) (*UserAreaIndexResp, error)
+	UserAreaMultiDelete(context.Context, *UserAreaMultiDeleteReq) (*Response, error)
+	UserAreaApply(context.Context, *UserAreaApplyReq) (*Response, error)
+	UserAreaApplyIndex(context.Context, *UserAreaApplyIndexReq) (*UserAreaApplyIndexResp, error)
+	UserAreaApplyDeal(context.Context, *UserAreaApplyDealReq) (*Response, error)
 	mustEmbedUnimplementedUserManageServer()
 }
 
@@ -300,6 +348,18 @@ func (UnimplementedUserManageServer) UserAreaMultiUpdate(context.Context, *UserA
 }
 func (UnimplementedUserManageServer) UserAreaIndex(context.Context, *UserAreaIndexReq) (*UserAreaIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserAreaIndex not implemented")
+}
+func (UnimplementedUserManageServer) UserAreaMultiDelete(context.Context, *UserAreaMultiDeleteReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAreaMultiDelete not implemented")
+}
+func (UnimplementedUserManageServer) UserAreaApply(context.Context, *UserAreaApplyReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAreaApply not implemented")
+}
+func (UnimplementedUserManageServer) UserAreaApplyIndex(context.Context, *UserAreaApplyIndexReq) (*UserAreaApplyIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAreaApplyIndex not implemented")
+}
+func (UnimplementedUserManageServer) UserAreaApplyDeal(context.Context, *UserAreaApplyDealReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAreaApplyDeal not implemented")
 }
 func (UnimplementedUserManageServer) mustEmbedUnimplementedUserManageServer() {}
 
@@ -620,6 +680,78 @@ func _UserManage_UserAreaIndex_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserManage_UserAreaMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAreaMultiDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManageServer).UserAreaMultiDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserManage_UserAreaMultiDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManageServer).UserAreaMultiDelete(ctx, req.(*UserAreaMultiDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManage_UserAreaApply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAreaApplyReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManageServer).UserAreaApply(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserManage_UserAreaApply_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManageServer).UserAreaApply(ctx, req.(*UserAreaApplyReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManage_UserAreaApplyIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAreaApplyIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManageServer).UserAreaApplyIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserManage_UserAreaApplyIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManageServer).UserAreaApplyIndex(ctx, req.(*UserAreaApplyIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManage_UserAreaApplyDeal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAreaApplyDealReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManageServer).UserAreaApplyDeal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserManage_UserAreaApplyDeal_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManageServer).UserAreaApplyDeal(ctx, req.(*UserAreaApplyDealReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserManage_ServiceDesc is the grpc.ServiceDesc for UserManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -694,6 +826,22 @@ var UserManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "userAreaIndex",
 			Handler:    _UserManage_UserAreaIndex_Handler,
+		},
+		{
+			MethodName: "userAreaMultiDelete",
+			Handler:    _UserManage_UserAreaMultiDelete_Handler,
+		},
+		{
+			MethodName: "userAreaApply",
+			Handler:    _UserManage_UserAreaApply_Handler,
+		},
+		{
+			MethodName: "userAreaApplyIndex",
+			Handler:    _UserManage_UserAreaApplyIndex_Handler,
+		},
+		{
+			MethodName: "userAreaApplyDeal",
+			Handler:    _UserManage_UserAreaApplyDeal_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

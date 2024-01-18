@@ -28,9 +28,6 @@ service api {
     @doc "获取项目区域列表"
     @handler index
     post /index (AreaInfoIndexReq) returns (AreaInfoIndexResp)
-//    @doc "获取项目区域树"
-//    @handler tree
-//    post /tree (AreaInfoTreeReq) returns (AreaInfoTreeResp)
 }
 
 type (

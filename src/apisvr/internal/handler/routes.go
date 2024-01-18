@@ -24,9 +24,10 @@ import (
 	systemtenantappmodule "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/module"
 	systemtenantinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/info"
 	systemtimedtask "github.com/i-Things/things/src/apisvr/internal/handler/system/timed/task"
-	systemuser "github.com/i-Things/things/src/apisvr/internal/handler/system/user"
-	systemuserauth "github.com/i-Things/things/src/apisvr/internal/handler/system/user/auth"
+	systemuserarea "github.com/i-Things/things/src/apisvr/internal/handler/system/user/area"
 	systemuserinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/user/info"
+	systemuserproject "github.com/i-Things/things/src/apisvr/internal/handler/system/user/project"
+	systemuserrole "github.com/i-Things/things/src/apisvr/internal/handler/system/user/role"
 	systemuserself "github.com/i-Things/things/src/apisvr/internal/handler/system/user/self"
 	thingsdeviceauth "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth"
 	thingsdeviceauth5 "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth5"
@@ -89,25 +90,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/system/user/info"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/role/index",
-					Handler: systemuser.RoleIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/role/multi-update",
-					Handler: systemuser.RoleMultiUpdateHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/system/user"),
 	)
 
 	server.AddRoutes(
@@ -222,26 +204,54 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/project/multi-update",
-					Handler: systemuserauth.ProjectMultiUpdateHandler(serverCtx),
+					Handler: systemuserproject.ProjectMultiUpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/project/index",
-					Handler: systemuserauth.ProjectIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/area/multi-update",
-					Handler: systemuserauth.AreaMultiUpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/area/index",
-					Handler: systemuserauth.AreaIndexHandler(serverCtx),
+					Handler: systemuserproject.ProjectIndexHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/system/user/auth"),
+		rest.WithPrefix("/api/v1/system/user/project"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-update",
+					Handler: systemuserarea.AreaMultiUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemuserarea.AreaIndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/user/area"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemuserrole.RoleIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-update",
+					Handler: systemuserrole.RoleMultiUpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/user/role"),
 	)
 
 	server.AddRoutes(
