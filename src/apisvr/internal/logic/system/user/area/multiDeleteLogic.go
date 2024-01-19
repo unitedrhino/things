@@ -11,27 +11,26 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AreaMultiUpdateLogic struct {
+type MultiDeleteLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewAreaMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AreaMultiUpdateLogic {
-	return &AreaMultiUpdateLogic{
+func NewMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiDeleteLogic {
+	return &MultiDeleteLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *AreaMultiUpdateLogic) AreaMultiUpdate(req *types.UserAreaMultiUpdateReq) error {
-	dto := &sys.UserAreaMultiUpdateReq{
-		UserID:    req.UserID,
-		ProjectID: req.ProjectID,
-		Areas:     ToAreaPbs(req.Areas),
+func (l *MultiDeleteLogic) MultiDelete(req *types.UserAreaMultiDeleteReq) error {
+	dto := &sys.UserAreaMultiDeleteReq{
+		UserID:  req.UserID,
+		AreaIDs: req.AreaIDs,
 	}
-	_, err := l.svcCtx.UserRpc.UserAreaMultiUpdate(l.ctx, dto)
+	_, err := l.svcCtx.UserRpc.UserAreaMultiDelete(l.ctx, dto)
 	if err != nil {
 		l.Errorf("%s.rpc.UserDataAuthManage req=%v err=%v", utils.FuncName(), req, err)
 		return err

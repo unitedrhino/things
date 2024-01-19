@@ -31,7 +31,7 @@ type UserProjectFilter struct {
 func (p UserProjectRepo) fmtFilter(ctx context.Context, f UserProjectFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.UserID != 0 {
-		db = db.Where("`userID`= ?", f.UserID)
+		db = db.Where("user_id= ?", f.UserID)
 	}
 	return db
 }

@@ -2,6 +2,7 @@ package areamanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/stores"
@@ -32,11 +33,13 @@ func NewAreaInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ar
 
 // 新增区域
 func (l *AreaInfoCreateLogic) AreaInfoCreate(in *sys.AreaInfo) (*sys.AreaWithID, error) {
-	if in.ProjectID == 0 || in.AreaName == "" || in.ParentAreaID == 0 || ////root节点不为0
+	if in.AreaName == "" || in.ParentAreaID == 0 || ////root节点不为0
 		in.ParentAreaID == def.NotClassified { //未分类不能有下属的区域
 		return nil, errors.Parameter
 	}
-
+	if in.ProjectID == 0 {
+		in.ProjectID = ctxs.GetUserCtx(l.ctx).ProjectID
+	}
 	projPo, err := checkProject(l.ctx, in.ProjectID)
 	if err != nil {
 		return nil, errors.Fmt(err).WithMsg("检查项目出错")

@@ -111,8 +111,9 @@ func (g UserAreaRepo) MultiUpdate(ctx context.Context, userID, projectID int64, 
 	for _, v := range areas {
 		datas = append(datas, &SysUserArea{
 			UserID:    userID,
-			ProjectID: projectID,
+			ProjectID: stores.ProjectID(projectID),
 			AreaID:    v.AreaID,
+			//AuthType: v.
 		})
 	}
 	err := g.db.Transaction(func(tx *gorm.DB) error {

@@ -24,8 +24,10 @@ func NewUserAreaApplyRepo(in any) *UserAreaApplyRepo {
 }
 
 type UserAreaApplyFilter struct {
+	ProjectID int64
 	AuthTypes []int64
 	IDs       []int64
+	AreaIDs   []int64
 }
 
 func (p UserAreaApplyRepo) fmtFilter(ctx context.Context, f UserAreaApplyFilter) *gorm.DB {
@@ -33,8 +35,14 @@ func (p UserAreaApplyRepo) fmtFilter(ctx context.Context, f UserAreaApplyFilter)
 	if len(f.AuthTypes) != 0 {
 		db = db.Where("auth_type IN ?", f.AuthTypes)
 	}
+	if f.ProjectID != 0 {
+		db = db.Where("project_id = ?", f.ProjectID)
+	}
 	if len(f.IDs) != 0 {
 		db = db.Where("id IN ?", f.IDs)
+	}
+	if len(f.AreaIDs) != 0 {
+		db = db.Where("area_id in ?", f.AreaIDs)
 	}
 	return db
 }

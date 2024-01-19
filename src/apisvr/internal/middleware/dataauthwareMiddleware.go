@@ -64,7 +64,7 @@ func (m *DataAuthWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc 
 			dataType := def.AuthDataTypeProject
 			reqIDs := param.ProjectIDs
 			//全局项目ID
-			mdProjectID := ctxs.GetMetaProjectID(ctx)
+			mdProjectID := ctxs.GetUserCtx(ctx).ProjectID
 			if mdProjectID != 0 {
 				reqIDs = append(reqIDs, utils.ToString(mdProjectID))
 			}

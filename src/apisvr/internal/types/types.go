@@ -279,6 +279,33 @@ type UserProjectIndexResp struct {
 	List  []*UserProject `json:"list"`  //用户数据权限列表
 }
 
+type UserAreaApplyIndexReq struct {
+	Page      *PageInfo `json:"page,optional"`      //进行数据分页（不传默认2000相当于全部）
+	AuthTypes []int64   `json:"authTypes,optional"` //权限类型 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+}
+
+type UserAreaApplyIndexResp struct {
+	List  []*UserAreaApplyInfo `json:"list"`
+	Total int64                `json:"total"`
+}
+
+type UserAreaApplyInfo struct {
+	ID          int64 `json:"id"`            //项目id
+	AreaID      int64 `json:"areaID,string"` //项目id
+	AuthType    int64 `json:"authType"`      // 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+	CreatedTime int64 `json:"createdTime"`
+}
+
+type UserAreaApplyDealReq struct {
+	IsApprove bool    `json:"isApprove"` //是否同意
+	IDs       []int64 `json:"ids"`       //权限数据IDs
+}
+
+type UserAreaMultiDeleteReq struct {
+	UserID  int64   `json:"userID,string"` //用户ID（必填，雪花ID）
+	AreaIDs []int64 `json:"areaIDs,string"`
+}
+
 type UserAreaMultiUpdateReq struct {
 	UserID    int64       `json:"userID,string"`    //用户ID（必填，雪花ID）
 	ProjectID int64       `json:"projectID,string"` //项目id
@@ -725,6 +752,11 @@ type TenantAppModule struct {
 	Code    string  `json:"code"` // 应用编号
 	MenuIDs []int64 `json:"menuIDs,optional"`
 	ApiIDs  []int64 `json:"apiIDs,optional"`
+}
+
+type UserAreaApplyCreateReq struct {
+	AreaID   int64 `json:"areaID,string"`
+	AuthType int64 `json:"authType"` //1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
 }
 
 type UserSelfReadReq struct {

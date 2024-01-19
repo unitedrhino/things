@@ -50,27 +50,26 @@ func GetUserAuthProject(ctx context.Context, userID int64) ([]*userDataAuth.Proj
 }
 
 // 聚合用户数据权限情况
-func GatherUserAuthProjectIDs(ctx context.Context) (bool, []int64, error) {
+func GatherUserAuthProjectIDs(ctx context.Context) ([]int64, error) {
 	//检查是否有所有数据权限
 	uc := ctxs.GetUserCtxOrNil(ctx)
-	if uc == nil || uc.IsAllData {
-		return false, nil, nil
+	if uc == nil || uc.AllProject || uc.IsAllData {
+		return nil, nil
 	}
 	//读取权限项目ID入参
 	var authIDs []int64
-
 	//读取用户数据权限ID
 	ccAuthIDs, err := GetUserAuthProject(ctx, uc.UserID)
 	if err != nil {
-		return false, nil, err
+		return nil, err
 	}
 	if len(ccAuthIDs) == 0 {
 		errMsg := "项目权限不足"
-		return false, nil, errors.Permissions.WithMsg(errMsg)
+		return nil, errors.Permissions.WithMsg(errMsg)
 	}
 	for _, c := range ccAuthIDs {
 		authIDs = append(authIDs, utils.ToInt64(c.ProjectID))
 	}
 
-	return true, authIDs, nil
+	return authIDs, nil
 }

@@ -142,16 +142,6 @@ func GetMetaVal(ctx context.Context, field string) []string {
 	}
 }
 
-// 获取meta里的项目ID（企业版功能）
-func GetMetaProjectID(ctx context.Context) int64 {
-	items := GetMetaVal(ctx, string(MetaFieldProjectID))
-	if len(items) == 0 {
-		return 0
-	} else {
-		return utils.ToInt64(items[0])
-	}
-}
-
 // 指定项目id（企业版功能）
 func SetMetaProjectID(ctx context.Context, projectID int64) {
 	mc := GetMetaCtx(ctx)

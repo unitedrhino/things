@@ -58,7 +58,7 @@ func (m *CheckTokenWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFun
 			})
 			if err != nil {
 				logx.WithContext(r.Context()).Errorf("%s.AuthApiCheck error=%s", utils.FuncName(), err)
-				http.Error(w, "接口权限不足："+err.Error(), http.StatusUnauthorized)
+				//http.Error(w, "接口权限不足："+err.Error(), http.StatusUnauthorized)
 				//return
 			}
 		}
