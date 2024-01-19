@@ -25,6 +25,7 @@ import (
 	systemtenantinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/info"
 	systemtimedtask "github.com/i-Things/things/src/apisvr/internal/handler/system/timed/task"
 	systemuserarea "github.com/i-Things/things/src/apisvr/internal/handler/system/user/area"
+	systemuserareaapply "github.com/i-Things/things/src/apisvr/internal/handler/system/user/area/apply"
 	systemuserinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/user/info"
 	systemuserproject "github.com/i-Things/things/src/apisvr/internal/handler/system/user/project"
 	systemuserrole "github.com/i-Things/things/src/apisvr/internal/handler/system/user/role"
@@ -223,16 +224,40 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/multi-update",
-					Handler: systemuserarea.AreaMultiUpdateHandler(serverCtx),
+					Handler: systemuserarea.MultiUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-delete",
+					Handler: systemuserarea.MultiDeleteHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/index",
-					Handler: systemuserarea.AreaIndexHandler(serverCtx),
+					Handler: systemuserarea.IndexHandler(serverCtx),
 				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/system/user/area"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/deal",
+					Handler: systemuserareaapply.DealHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemuserareaapply.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/user/area/apply"),
 	)
 
 	server.AddRoutes(
@@ -782,6 +807,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/area/index",
 					Handler: systemuserself.AreaIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/area/apply/create",
+					Handler: systemuserself.AreaApplyCreateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,

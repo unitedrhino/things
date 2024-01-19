@@ -2,6 +2,7 @@ package usermanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"gorm.io/gorm"
@@ -39,11 +40,14 @@ func (l *UserAreaApplyDealLogic) UserAreaApplyDeal(in *sys.UserAreaApplyDealReq)
 		if err != nil {
 			return err
 		}
+		if len(uaas) == 0 {
+			return errors.Parameter.AddMsgf("未查询到授权的id")
+		}
 		var uas []*relationDB.SysUserArea
 		for _, v := range uaas {
 			uas = append(uas, &relationDB.SysUserArea{
 				UserID:    v.UserID,
-				ProjectID: int64(v.ProjectID),
+				ProjectID: v.ProjectID,
 				AreaID:    int64(v.AreaID),
 				AuthType:  v.AuthType,
 			})

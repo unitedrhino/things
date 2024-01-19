@@ -37,6 +37,11 @@ service api {
 	@doc "获取用户区域列表"
 	@handler areaIndex
 	post /area/index () returns (AreaInfoIndexResp)
+
+	@doc "申请用户区域权限"
+	@handler areaApplyCreate
+	post /area/apply/create (UserAreaApplyCreateReq) returns ()
+
 	@doc "获取用户项目列表"
 	@handler projectIndex
 	post /project/index () returns (ProjectInfoIndexResp)
@@ -65,9 +70,15 @@ service api {
 }
 
 type (
+	UserAreaApplyCreateReq{
+		AreaID int64 `json:"areaID,string"`
+		AuthType int64 `json:"authType"` //1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+	}
+
 	UserSelfReadReq{
 		WithRoles bool  `json:"withRoles,optional"`
 	}
+
 	UserResourceWithModuleReq{
 		ModuleCode string `json:"moduleCode,optional"`                               // 应用编号
 	}

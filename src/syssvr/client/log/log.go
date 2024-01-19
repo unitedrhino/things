@@ -94,11 +94,11 @@ type (
 	TenantModuleIndexResp     = sys.TenantModuleIndexResp
 	TenantModuleWithIDOrCode  = sys.TenantModuleWithIDOrCode
 	UserArea                  = sys.UserArea
+	UserAreaApplyCreateReq    = sys.UserAreaApplyCreateReq
 	UserAreaApplyDealReq      = sys.UserAreaApplyDealReq
 	UserAreaApplyIndexReq     = sys.UserAreaApplyIndexReq
 	UserAreaApplyIndexResp    = sys.UserAreaApplyIndexResp
 	UserAreaApplyInfo         = sys.UserAreaApplyInfo
-	UserAreaApplyReq          = sys.UserAreaApplyReq
 	UserAreaIndexReq          = sys.UserAreaIndexReq
 	UserAreaIndexResp         = sys.UserAreaIndexResp
 	UserAreaMultiDeleteReq    = sys.UserAreaMultiDeleteReq

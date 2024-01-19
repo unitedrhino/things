@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func AreaMultiUpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func IndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UserAreaMultiUpdateReq
+		var req types.UserAreaIndexReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := area.NewAreaMultiUpdateLogic(r.Context(), svcCtx)
-		err := l.AreaMultiUpdate(&req)
-		result.Http(w, r, nil, err)
+		l := area.NewIndexLogic(r.Context(), svcCtx)
+		resp, err := l.Index(&req)
+		result.Http(w, r, resp, err)
 	}
 }

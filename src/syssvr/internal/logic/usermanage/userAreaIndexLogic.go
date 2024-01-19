@@ -34,8 +34,8 @@ func (l *UserAreaIndexLogic) UserAreaIndex(in *sys.UserAreaIndexReq) (*sys.UserA
 		total int64
 		err   error
 	)
-	if in.UserID == 0 || in.ProjectID == 0 {
-		return nil, errors.Parameter.AddDetail(in.UserID).WithMsg("用户id及项目id必填")
+	if in.UserID == 0 {
+		return nil, errors.Parameter.AddDetail(in.UserID).WithMsg("用户id必填")
 	}
 
 	filter := relationDB.UserAreaFilter{

@@ -12,21 +12,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AreaIndexLogic struct {
+type IndexLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewAreaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AreaIndexLogic {
-	return &AreaIndexLogic{
+func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic {
+	return &IndexLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *AreaIndexLogic) AreaIndex(req *types.UserAreaIndexReq) (resp *types.UserAreaIndexResp, err error) {
+func (l *IndexLogic) Index(req *types.UserAreaIndexReq) (resp *types.UserAreaIndexResp, err error) {
 	dto := &sys.UserAreaIndexReq{
 		Page:      logic.ToSysPageRpc(req.Page),
 		UserID:    req.UserID,

@@ -2,6 +2,7 @@ package projectmanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/logic"
@@ -34,7 +35,10 @@ func (l *ProjectInfoIndexLogic) ProjectInfoIndex(in *sys.ProjectInfoIndexReq) (*
 		total int64
 		err   error
 	)
-
+	ctxs.GetUserCtx(l.ctx).AllProject = true
+	defer func() {
+		ctxs.GetUserCtx(l.ctx).AllProject = false
+	}()
 	filter := relationDB.ProjectInfoFilter{
 		ProjectIDs:  in.ProjectIDs,
 		ProjectName: in.ProjectName,

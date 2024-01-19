@@ -2,6 +2,7 @@ package usermanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
@@ -12,22 +13,30 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type UserAreaApplyLogic struct {
+type UserAreaApplyCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewUserAreaApplyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserAreaApplyLogic {
-	return &UserAreaApplyLogic{
+func NewUserAreaApplyCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserAreaApplyCreateLogic {
+	return &UserAreaApplyCreateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *UserAreaApplyLogic) UserAreaApply(in *sys.UserAreaApplyReq) (*sys.Response, error) {
-	err := relationDB.NewUserAreaApplyRepo(l.ctx).Insert(l.ctx, &relationDB.SysUserAreaApply{
+func (l *UserAreaApplyCreateLogic) UserAreaApplyCreate(in *sys.UserAreaApplyCreateReq) (*sys.Response, error) {
+	_, err := relationDB.NewAreaInfoRepo(l.ctx).FindOne(l.ctx, in.AreaID, nil)
+	if err != nil {
+		if errors.Cmp(err, errors.NotFind) {
+			return nil, errors.Parameter.AddMsgf("区域不存在")
+		}
+		return nil, err
+	}
+	err = relationDB.NewUserAreaApplyRepo(l.ctx).Insert(l.ctx, &relationDB.SysUserAreaApply{
+		UserID:   ctxs.GetUserCtx(l.ctx).UserID,
 		AreaID:   stores.AreaID(in.AreaID),
 		AuthType: in.AuthType,
 	})
@@ -35,6 +44,7 @@ func (l *UserAreaApplyLogic) UserAreaApply(in *sys.UserAreaApplyReq) (*sys.Respo
 		if errors.Cmp(err, errors.Duplicate) {
 			return &sys.Response{}, nil
 		}
+
 		return nil, err
 	}
 	return &sys.Response{}, nil

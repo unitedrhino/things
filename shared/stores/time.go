@@ -47,17 +47,8 @@ func (DeletedTime) QueryClauses(f *schema.Field) []clause.Interface {
 }
 
 type SoftDeleteQueryClause struct {
+	clauseInterface
 	Field *schema.Field
-}
-
-func (sd SoftDeleteQueryClause) Name() string {
-	return ""
-}
-
-func (sd SoftDeleteQueryClause) Build(clause.Builder) {
-}
-
-func (sd SoftDeleteQueryClause) MergeClause(*clause.Clause) {
 }
 
 func (sd SoftDeleteQueryClause) ModifyStatement(stmt *gorm.Statement) {
@@ -107,21 +98,12 @@ func (DeletedTime) UpdateClauses(f *schema.Field) []clause.Interface {
 
 type SoftDeleteUpdateClause struct {
 	Field *schema.Field
-}
-
-func (sd SoftDeleteUpdateClause) Name() string {
-	return ""
-}
-
-func (sd SoftDeleteUpdateClause) Build(clause.Builder) {
-}
-
-func (sd SoftDeleteUpdateClause) MergeClause(*clause.Clause) {
+	clauseInterface
 }
 
 func (sd SoftDeleteUpdateClause) ModifyStatement(stmt *gorm.Statement) {
 	if stmt.SQL.Len() == 0 && !stmt.Statement.Unscoped {
-		SoftDeleteQueryClause(sd).ModifyStatement(stmt)
+		SoftDeleteQueryClause{Field: sd.Field}.ModifyStatement(stmt)
 	}
 }
 
@@ -130,16 +112,7 @@ type SoftDeleteDeleteClause struct {
 	Flag          bool
 	TimeType      schema.TimeType
 	DeleteAtField *schema.Field
-}
-
-func (sd SoftDeleteDeleteClause) Name() string {
-	return ""
-}
-
-func (sd SoftDeleteDeleteClause) Build(clause.Builder) {
-}
-
-func (sd SoftDeleteDeleteClause) MergeClause(*clause.Clause) {
+	clauseInterface
 }
 
 func (sd SoftDeleteDeleteClause) ModifyStatement(stmt *gorm.Statement) {

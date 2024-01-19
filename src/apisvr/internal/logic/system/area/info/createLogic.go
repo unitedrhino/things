@@ -30,8 +30,9 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 }
 
 func (l *CreateLogic) Create(req *types.AreaInfo) (*types.AreaWithID, error) {
-	if req.ParentAreaID == 0 {
-		req.ParentAreaID = def.RootNode
+	if req.AreaName == "" || req.ParentAreaID == 0 || ////root节点不为0
+		req.ParentAreaID == def.NotClassified { //未分类不能有下属的区域
+		return nil, errors.Parameter
 	}
 	if req.ParentAreaID != def.RootNode {
 		dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{

@@ -16,17 +16,60 @@ import "common.api"  //公共结构体定义
 
 service api {
     @doc "授权用户区域权限"
-    @handler areaMultiUpdate
+    @handler multiUpdate
     post /multi-update (UserAreaMultiUpdateReq) returns ()
 
+    @doc "授权用户区域权限"
+    @handler multiDelete
+    post /multi-delete (UserAreaMultiDeleteReq) returns ()
+
     @doc "获取用户区域权限列表"
-    @handler areaIndex
+    @handler index
     post /index (UserAreaIndexReq) returns (UserAreaIndexResp)
+}
+
+@server(
+    group : system/user/area/apply
+    prefix: /api/v1/system/user/area/apply
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+
+    @doc "授权用户区域权限"
+    @handler deal
+    post /deal (UserAreaApplyDealReq) returns ()
+
+    @doc "获取用户区域权限列表"
+    @handler index
+    post /index (UserAreaApplyIndexReq) returns (UserAreaApplyIndexResp)
 }
 
 
 //用户级权限控制
 type (
+    UserAreaApplyIndexReq {
+        Page *PageInfo `json:"page,optional"`        //进行数据分页（不传默认2000相当于全部）
+        AuthTypes []int64 `json:"authTypes,optional"` //权限类型 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+    }
+    UserAreaApplyIndexResp{
+        List []*UserAreaApplyInfo `json:"list"`
+        Total int64 `json:"total"`
+    }
+    UserAreaApplyInfo{
+        ID  int64 `json:"id"` //项目id
+        AreaID  int64 `json:"areaID,string"` //项目id
+        AuthType  int64 `json:"authType"`// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+        CreatedTime  int64 `json:"createdTime"`
+    }
+    UserAreaApplyDealReq{
+        IsApprove bool `json:"isApprove"` //是否同意
+        IDs     []int64 `json:"ids"`          //权限数据IDs
+    }
+    UserAreaMultiDeleteReq{
+        UserID   int64              `json:"userID,string"`    //用户ID（必填，雪花ID）
+        AreaIDs []int64         `json:"areaIDs,string"`
+    }
     UserAreaMultiUpdateReq struct {
         UserID   int64              `json:"userID,string"`    //用户ID（必填，雪花ID）
         ProjectID int64           `json:"projectID,string"` //项目id

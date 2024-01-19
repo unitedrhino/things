@@ -3,7 +3,9 @@ package areamanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
+	"gorm.io/gorm"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -32,7 +34,6 @@ func (l *AreaInfoDeleteLogic) AreaInfoDelete(in *sys.AreaWithID) (*sys.Response,
 	if in.AreaID == 0 {
 		return nil, errors.Parameter
 	}
-
 	areaPo, err := checkArea(l.ctx, in.AreaID)
 	if err != nil {
 		return nil, errors.Fmt(err).WithMsg("检查区域出错")
@@ -49,9 +50,21 @@ func (l *AreaInfoDeleteLogic) AreaInfoDelete(in *sys.AreaWithID) (*sys.Response,
 	for _, area := range areas {
 		areaIDs = append(areaIDs, int64(area.AreaID))
 	}
-	err = l.AiDB.DeleteByFilter(l.ctx, relationDB.AreaInfoFilter{AreaIDs: areaIDs})
-	if err != nil {
-		return nil, errors.Fmt(err).WithMsg("删除区域及子区域出错")
-	}
-	return &sys.Response{}, nil
+	conn := stores.GetTenantConn(l.ctx)
+	err = conn.Transaction(func(tx *gorm.DB) error {
+		err = relationDB.NewAreaInfoRepo(tx).DeleteByFilter(l.ctx, relationDB.AreaInfoFilter{AreaIDs: areaIDs})
+		if err != nil {
+			return errors.Fmt(err).WithMsg("删除区域及子区域出错")
+		}
+		err = relationDB.NewUserAreaRepo(tx).DeleteByFilter(l.ctx, relationDB.UserAreaFilter{AreaIDs: areaIDs})
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewUserAreaApplyRepo(tx).DeleteByFilter(l.ctx, relationDB.UserAreaApplyFilter{AreaIDs: areaIDs})
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	return &sys.Response{}, err
 }

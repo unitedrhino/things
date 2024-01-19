@@ -94,11 +94,11 @@ type (
 	TenantModuleIndexResp     = sys.TenantModuleIndexResp
 	TenantModuleWithIDOrCode  = sys.TenantModuleWithIDOrCode
 	UserArea                  = sys.UserArea
+	UserAreaApplyCreateReq    = sys.UserAreaApplyCreateReq
 	UserAreaApplyDealReq      = sys.UserAreaApplyDealReq
 	UserAreaApplyIndexReq     = sys.UserAreaApplyIndexReq
 	UserAreaApplyIndexResp    = sys.UserAreaApplyIndexResp
 	UserAreaApplyInfo         = sys.UserAreaApplyInfo
-	UserAreaApplyReq          = sys.UserAreaApplyReq
 	UserAreaIndexReq          = sys.UserAreaIndexReq
 	UserAreaIndexResp         = sys.UserAreaIndexResp
 	UserAreaMultiDeleteReq    = sys.UserAreaMultiDeleteReq
@@ -150,7 +150,7 @@ type (
 		UserAreaMultiUpdate(ctx context.Context, in *UserAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
 		UserAreaIndex(ctx context.Context, in *UserAreaIndexReq, opts ...grpc.CallOption) (*UserAreaIndexResp, error)
 		UserAreaMultiDelete(ctx context.Context, in *UserAreaMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
-		UserAreaApply(ctx context.Context, in *UserAreaApplyReq, opts ...grpc.CallOption) (*Response, error)
+		UserAreaApplyCreate(ctx context.Context, in *UserAreaApplyCreateReq, opts ...grpc.CallOption) (*Response, error)
 		UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error)
 		UserAreaApplyDeal(ctx context.Context, in *UserAreaApplyDealReq, opts ...grpc.CallOption) (*Response, error)
 	}
@@ -340,13 +340,13 @@ func (d *directUserManage) UserAreaMultiDelete(ctx context.Context, in *UserArea
 	return d.svr.UserAreaMultiDelete(ctx, in)
 }
 
-func (m *defaultUserManage) UserAreaApply(ctx context.Context, in *UserAreaApplyReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultUserManage) UserAreaApplyCreate(ctx context.Context, in *UserAreaApplyCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserAreaApply(ctx, in, opts...)
+	return client.UserAreaApplyCreate(ctx, in, opts...)
 }
 
-func (d *directUserManage) UserAreaApply(ctx context.Context, in *UserAreaApplyReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.UserAreaApply(ctx, in)
+func (d *directUserManage) UserAreaApplyCreate(ctx context.Context, in *UserAreaApplyCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.UserAreaApplyCreate(ctx, in)
 }
 
 func (m *defaultUserManage) UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error) {

@@ -25,9 +25,9 @@ service UserManage {
 
   rpc userAreaMultiUpdate (UserAreaMultiUpdateReq) returns (Response);   //授权用户数据权限
   rpc userAreaIndex (UserAreaIndexReq) returns (UserAreaIndexResp); //获取用户数据权限列表
-
   rpc userAreaMultiDelete (UserAreaMultiDeleteReq) returns (Response); //删除用户授权
-  rpc userAreaApply(UserAreaApplyReq) returns(Response);//申请区域权限
+
+  rpc userAreaApplyCreate(UserAreaApplyCreateReq) returns(Response);//申请区域权限
   rpc userAreaApplyIndex(UserAreaApplyIndexReq)returns(UserAreaApplyIndexResp);
   rpc userAreaApplyDeal(UserAreaApplyDealReq)returns(Response);//处理区域权限申请
 
@@ -786,7 +786,7 @@ message UserAreaMultiDeleteReq{
   repeated int64 areaIDs = 2;
 }
 
-message UserAreaApplyReq{
+message UserAreaApplyCreateReq{
   int64 areaID = 1; //项目id
   int64 authType =2;// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
 }
