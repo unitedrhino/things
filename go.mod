@@ -33,7 +33,7 @@ require (
 	github.com/nats-io/nats.go v1.27.0
 	github.com/redis/go-redis/v9 v9.0.4
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/samber/lo v1.38.1
+	github.com/samber/lo v1.39.0
 	github.com/silenceper/wechat/v2 v2.1.5
 	github.com/spf13/cast v1.5.0
 	github.com/stretchr/testify v1.8.4

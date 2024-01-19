@@ -644,6 +644,7 @@ message UserInfoIndexReq{
   string userName = 2;
   string phone = 3;
   string email = 4;
+  repeated int64 userIDs =5;
 }
 
 message UserInfoIndexResp{
@@ -798,9 +799,10 @@ message UserAreaApplyIndexReq{
 
 message UserAreaApplyInfo{
   int64 id = 1; //项目id
-  int64 areaID = 2; //项目id
-  int64 authType =3;// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
-  int64 createdTime = 4;
+  int64 userID = 2;
+  int64 areaID = 3; //项目id
+  int64 authType =4;// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+  int64 createdTime = 5;
 }
 
 message UserAreaApplyIndexResp{

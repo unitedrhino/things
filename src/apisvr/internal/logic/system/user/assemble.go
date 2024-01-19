@@ -15,6 +15,9 @@ func GetNullVal(val *wrappers.StringValue) *string {
 }
 
 func UserInfoToApi(ui *sys.UserInfo, roles []*sys.RoleInfo) *types.UserInfo {
+	if ui == nil {
+		return nil
+	}
 	return &types.UserInfo{
 		UserID:      ui.UserID,
 		UserName:    ui.UserName,

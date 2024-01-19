@@ -120,6 +120,7 @@ func ToUserAreaApplyInfos(in []*relationDB.SysUserAreaApply) (ret []*sys.UserAre
 	for _, v := range in {
 		ret = append(ret, &sys.UserAreaApplyInfo{
 			Id:          v.ID,
+			UserID:      v.UserID,
 			AreaID:      int64(v.AreaID),
 			AuthType:    v.AuthType,
 			CreatedTime: v.CreatedTime.Unix(),
