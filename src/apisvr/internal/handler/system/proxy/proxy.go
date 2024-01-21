@@ -69,7 +69,8 @@ func defaultHandle(svcCtx *svc.ServiceContext, upath string, w http.ResponseWrit
 			f, err = dir.Open(upath + "/index.html")
 		}
 	}
-	if err != nil {
+	if err != nil || f == nil {
+		http.NotFound(w, r)
 		return
 	}
 	indexFile, err := io.ReadAll(f)
