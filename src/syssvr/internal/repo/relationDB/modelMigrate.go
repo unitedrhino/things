@@ -15,18 +15,18 @@ func Migrate(c conf.Database) error {
 	}
 	db := stores.GetCommonConn(nil)
 	var needInitColumn bool
-	if !db.Migrator().HasTable(&SysTenantUserInfo{}) {
+	if !db.Migrator().HasTable(&SysUserInfo{}) {
 		//需要初始化表
 		needInitColumn = true
 	}
 	err := db.AutoMigrate(
-		&SysTenantUserInfo{},
+		&SysUserInfo{},
 		&SysTenantRoleInfo{},
 		&SysTenantRoleMenu{},
 		&SysTenantRoleModule{},
 		&SysModuleMenu{},
-		&SysTenantLoginLog{},
-		&SysTenantOperLog{},
+		&SysLoginLog{},
+		&SysOperLog{},
 		&SysModuleApi{},
 		&SysTenantRoleApi{},
 		&SysAreaInfo{},
@@ -35,7 +35,7 @@ func Migrate(c conf.Database) error {
 		&SysUserProject{},
 		&SysAppInfo{},
 		&SysTenantRoleApp{},
-		&SysTenantUserRole{},
+		&SysUserRole{},
 		&SysTenantInfo{},
 		&SysTenantApp{},
 		&SysTenantConfig{},
@@ -218,10 +218,10 @@ var (
 	}
 	MigrateTenantInfo = []SysTenantInfo{{Code: def.TenantCodeDefault, Name: "默认租户", AdminUserID: adminUserID}}
 	MigrateTenantApp  = []SysTenantApp{{TenantCode: def.TenantCodeDefault, AppCode: def.AppCore}}
-	MigrateUserInfo   = []SysTenantUserInfo{
+	MigrateUserInfo   = []SysUserInfo{
 		{TenantCode: def.TenantCodeDefault, UserID: adminUserID, UserName: sql.NullString{String: "administrator", Valid: true}, Password: "4f0fded4a38abe7a3ea32f898bb82298", Role: 1, NickName: "iThings管理员", IsAllData: def.True},
 	}
-	MigrateUserRole = []SysTenantUserRole{
+	MigrateUserRole = []SysUserRole{
 		{TenantCode: def.TenantCodeDefault, UserID: adminUserID, RoleID: 1},
 	}
 	MigrateRoleInfo = []SysTenantRoleInfo{

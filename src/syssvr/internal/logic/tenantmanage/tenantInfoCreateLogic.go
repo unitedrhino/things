@@ -55,7 +55,7 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 	userID := l.svcCtx.UserID.GetSnowflakeId()
 	//2.对密码进行md5加密
 	password := utils.MakePwd(userInfo.Password, userID, false)
-	ui := relationDB.SysTenantUserInfo{
+	ui := relationDB.SysUserInfo{
 		TenantCode: stores.TenantCode(in.Info.Code),
 		UserID:     userID,
 		Phone:      utils.AnyToNullString(userInfo.Phone),
@@ -77,7 +77,7 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		ri := relationDB.SysTenantRoleInfo{TenantCode: stores.TenantCode(in.Info.Code), Name: "超级管理员"}
 		err = relationDB.NewRoleInfoRepo(tx).Insert(l.ctx, &ri)
-		err := relationDB.NewUserRoleRepo(tx).Insert(l.ctx, &relationDB.SysTenantUserRole{
+		err := relationDB.NewUserRoleRepo(tx).Insert(l.ctx, &relationDB.SysUserRole{
 			TenantCode: stores.TenantCode(in.Info.Code),
 			UserID:     ui.UserID,
 			RoleID:     ri.ID,

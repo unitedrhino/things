@@ -30,33 +30,12 @@ service rule {
   rpc sceneManuallyTrigger(WithID) returns (Empty);//手动触发场景
 }
 
-
-
-
-message AutoInfoIndexReq{
-  PageInfo page = 1;//分页信息 只获取一个则不填
-  string name =2;//场景名 模糊查询
-  int64 status = 3;//状态: 1启用 2禁用
-  string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
-  int64 alarmID = 5;//告警配置ID过滤
-}
-
-message AutoInfoIndexResp{
-  repeated AutoInfo list = 1;//设备信息
-  int64  total = 2;//总数(只有分页的时候会返回)
-}
-
-
-message AutoInfo{
-  int64 id = 1;//场景id
-  string name =2;//场景名
-  int64 status = 3;//状态: 1启用 2禁用
-  string desc = 4;//描述
-  int64 createdTime = 5;//创建时间 秒级时间戳 只读
-  string triggerType = 6;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
-  string trigger = 7;//触发器
-  string when = 8;//触发条件
-  string then = 9;//满足条件时执行的动作
+//设备维护
+service deviceOps{
+  //设备维护工单 device Maintenance Work Order
+  rpc deviceMwoCreate(DeviceMwo) returns(WithID);
+  rpc deviceMwoUpdate(DeviceMwo) returns(Empty);
+  rpc deviceMwoIndex(DeviceMwoIndexReq) returns(DeviceMwoIndexResp);
 }
 
 
@@ -88,26 +67,29 @@ message SceneInfo{
   int64 status = 9;// 状态（1启用 2禁用）
 }
 
-message SceneDeviceIndexReq{
+
+message DeviceMwo{
+  int64 id = 1;
+  int64 number =2;//编号
+  int64 raiseUserID=3;//问题提出的用户
+  string productID = 4; //产品id 只读
+  int64 areaID = 5; //项目区域id
+  string productName = 6; //产品名称 只读
+  string deviceName = 7; //设备名称 读写
+  string issueDesc =8;//问题描述
+  int64 status = 10;// 状态（1 待处理 2:处理中 3:已完成）
+}
+
+message DeviceMwoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
+  int64 areaID = 6;//所属区域
   string name =2;//场景名 模糊查询
   int64 status = 3;//状态: 1启用 2禁用
   string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
   int64 alarmID = 5;//告警配置ID过滤
 }
 
-message SceneDeviceIndexResp{
-  repeated SceneDevice list = 1;//设备信息
+message DeviceMwoIndexResp{
+  repeated DeviceMwo list = 1;//设备信息
   int64  total = 2;//总数(只有分页的时候会返回)
-}
-
-
-message SceneDevice{
-  int64 id = 1;//场景id
-  string senseID =2;
-  string productID =3;
-  string deviceName =4;
-  string params =5;
-  int64 delay = 6;
-  string delayUnit = 7;//单位 s:秒 m:分钟 h:小时 d:天
 }

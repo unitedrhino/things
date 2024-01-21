@@ -45,7 +45,7 @@ func (l *OperLogCreateLogic) OperLogCreate(in *sys.OperLogCreateReq) (*sys.Respo
 		return nil, errors.Database.AddMsgf("ApiModel.FindOneByRoute is err, url:%s", in.Route)
 	}
 	if resApi.BusinessType != log.OptQuery {
-		err := l.OlDB.Insert(l.ctx, &relationDB.SysTenantOperLog{
+		err := l.OlDB.Insert(l.ctx, &relationDB.SysOperLog{
 			AppCode:      in.AppCode,
 			OperUserID:   in.UserID,
 			OperUserName: resUser.UserName.String,
