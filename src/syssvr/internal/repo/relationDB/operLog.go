@@ -35,13 +35,13 @@ func (p OperLogRepo) fmtFilter(ctx context.Context, f OperLogFilter) *gorm.DB {
 	return db
 }
 
-func (p OperLogRepo) Insert(ctx context.Context, data *SysTenantOperLog) error {
+func (p OperLogRepo) Insert(ctx context.Context, data *SysOperLog) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p OperLogRepo) FindOneByFilter(ctx context.Context, f OperLogFilter) (*SysTenantOperLog, error) {
-	var result SysTenantOperLog
+func (p OperLogRepo) FindOneByFilter(ctx context.Context, f OperLogFilter) (*SysOperLog, error) {
+	var result SysOperLog
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -49,9 +49,9 @@ func (p OperLogRepo) FindOneByFilter(ctx context.Context, f OperLogFilter) (*Sys
 	}
 	return &result, nil
 }
-func (p OperLogRepo) FindByFilter(ctx context.Context, f OperLogFilter, page *def.PageInfo) ([]*SysTenantOperLog, error) {
-	var results []*SysTenantOperLog
-	db := p.fmtFilter(ctx, f).Model(&SysTenantOperLog{})
+func (p OperLogRepo) FindByFilter(ctx context.Context, f OperLogFilter, page *def.PageInfo) ([]*SysOperLog, error) {
+	var results []*SysOperLog
+	db := p.fmtFilter(ctx, f).Model(&SysOperLog{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -61,28 +61,28 @@ func (p OperLogRepo) FindByFilter(ctx context.Context, f OperLogFilter, page *de
 }
 
 func (p OperLogRepo) CountByFilter(ctx context.Context, f OperLogFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&SysTenantOperLog{})
+	db := p.fmtFilter(ctx, f).Model(&SysOperLog{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p OperLogRepo) Update(ctx context.Context, data *SysTenantOperLog) error {
+func (p OperLogRepo) Update(ctx context.Context, data *SysOperLog) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p OperLogRepo) DeleteByFilter(ctx context.Context, f OperLogFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&SysTenantOperLog{}).Error
+	err := db.Delete(&SysOperLog{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p OperLogRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysTenantOperLog{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysOperLog{}).Error
 	return stores.ErrFmt(err)
 }
-func (p OperLogRepo) FindOne(ctx context.Context, id int64) (*SysTenantOperLog, error) {
-	var result SysTenantOperLog
+func (p OperLogRepo) FindOne(ctx context.Context, id int64) (*SysOperLog, error) {
+	var result SysOperLog
 	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)

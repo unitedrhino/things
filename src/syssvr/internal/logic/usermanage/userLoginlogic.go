@@ -32,7 +32,7 @@ func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLo
 	}
 }
 
-func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysTenantUserInfo) error {
+func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysUserInfo) error {
 	//根据密码类型不同做不同处理
 	if in.PwdType == 0 {
 		//空密码情况暂不考虑
@@ -56,7 +56,7 @@ func (l *LoginLogic) getPwd(in *sys.UserLoginReq, uc *relationDB.SysTenantUserIn
 	return nil
 }
 
-func (l *LoginLogic) getRet(ui *relationDB.SysTenantUserInfo, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
+func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, list []*conf.LoginSafeCtlInfo) (*sys.UserLoginResp, error) {
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.UserToken.AccessExpire
 	var rolses []int64
@@ -103,7 +103,7 @@ func (l *LoginLogic) getRet(ui *relationDB.SysTenantUserInfo, list []*conf.Login
 	return resp, nil
 }
 
-func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysTenantUserInfo, err error) {
+func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserInfo, err error) {
 	switch in.LoginType {
 	case users.RegPwd:
 		if l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeImage, def.CaptchaUseLogin, in.CodeID, in.Code) == "" {

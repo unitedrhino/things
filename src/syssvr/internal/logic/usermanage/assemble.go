@@ -11,7 +11,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func UserInfoToPb(ctx context.Context, ui *relationDB.SysTenantUserInfo, svcCtx *svc.ServiceContext) *sys.UserInfo {
+func UserInfoToPb(ctx context.Context, ui *relationDB.SysUserInfo, svcCtx *svc.ServiceContext) *sys.UserInfo {
 	if ui.HeadImg != "" {
 		var err error
 		ui.HeadImg, err = svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, ui.HeadImg, 24*60, common.OptionKv{})

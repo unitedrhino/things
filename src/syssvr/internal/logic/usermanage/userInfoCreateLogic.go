@@ -83,7 +83,7 @@ func (l *UserInfoCreateLogic) UserInfoInsert(in *sys.UserInfoCreateReq) (int64, 
 
 		//2.对密码进行md5加密
 		password := utils.MakePwd(info.Password, userID, false)
-		ui := relationDB.SysTenantUserInfo{
+		ui := relationDB.SysUserInfo{
 			UserID:    userID,
 			UserName:  sql.NullString{String: info.UserName, Valid: true},
 			Password:  password,

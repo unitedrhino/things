@@ -31,7 +31,7 @@ func NewUserChangePwdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Use
 func (l *UserChangePwdLogic) UserChangePwd(in *sys.UserChangePwdReq) (*sys.Response, error) {
 	var account string
 	uc := ctxs.GetUserCtx(l.ctx)
-	var oldUi *relationDB.SysTenantUserInfo
+	var oldUi *relationDB.SysUserInfo
 	switch in.Type {
 	case def.CaptchaTypeEmail:
 		account = l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, def.CaptchaUseChangePwd, in.CodeID, in.Code)

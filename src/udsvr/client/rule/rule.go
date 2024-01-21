@@ -14,19 +14,16 @@ import (
 )
 
 type (
-	AutoInfo             = ud.AutoInfo
-	AutoInfoIndexReq     = ud.AutoInfoIndexReq
-	AutoInfoIndexResp    = ud.AutoInfoIndexResp
-	Empty                = ud.Empty
-	PageInfo             = ud.PageInfo
-	SceneDevice          = ud.SceneDevice
-	SceneDeviceIndexReq  = ud.SceneDeviceIndexReq
-	SceneDeviceIndexResp = ud.SceneDeviceIndexResp
-	SceneInfo            = ud.SceneInfo
-	SceneInfoIndexReq    = ud.SceneInfoIndexReq
-	SceneInfoIndexResp   = ud.SceneInfoIndexResp
-	TimeRange            = ud.TimeRange
-	WithID               = ud.WithID
+	DeviceMwo          = ud.DeviceMwo
+	DeviceMwoIndexReq  = ud.DeviceMwoIndexReq
+	DeviceMwoIndexResp = ud.DeviceMwoIndexResp
+	Empty              = ud.Empty
+	PageInfo           = ud.PageInfo
+	SceneInfo          = ud.SceneInfo
+	SceneInfoIndexReq  = ud.SceneInfoIndexReq
+	SceneInfoIndexResp = ud.SceneInfoIndexResp
+	TimeRange          = ud.TimeRange
+	WithID             = ud.WithID
 
 	Rule interface {
 		// 场景

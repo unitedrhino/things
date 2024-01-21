@@ -48,7 +48,7 @@ func (l *UserRegisterLogic) UserRegister(in *sys.UserRegisterReq) (*sys.UserRegi
 }
 
 func (l *UserRegisterLogic) handleEmailOrPhone(in *sys.UserRegisterReq) (*sys.UserRegisterResp, error) {
-	ui := relationDB.SysTenantUserInfo{
+	ui := relationDB.SysUserInfo{
 		UserID:   l.svcCtx.UserID.GetSnowflakeId(),
 		NickName: in.Info.NickName,
 	}
@@ -112,7 +112,7 @@ func (l *UserRegisterLogic) handleWxminip(in *sys.UserRegisterReq) (*sys.UserReg
 		if !errors.Cmp(err, errors.NotFind) {
 			return err
 		}
-		ui := relationDB.SysTenantUserInfo{
+		ui := relationDB.SysUserInfo{
 			UserID:        userID,
 			WechatUnionID: sql.NullString{Valid: true, String: ret.UnionID},
 			NickName:      in.Info.NickName,
@@ -154,7 +154,7 @@ func (l *UserRegisterLogic) handleDingApp(in *sys.UserRegisterReq) (*sys.UserReg
 		if !errors.Cmp(err, errors.NotFind) {
 			return err
 		}
-		ui := relationDB.SysTenantUserInfo{
+		ui := relationDB.SysUserInfo{
 			UserID:         userID,
 			DingTalkUserID: sql.NullString{Valid: true, String: ret.UserInfo.UserId},
 			NickName:       ret.UserInfo.Name,
@@ -169,7 +169,7 @@ func (l *UserRegisterLogic) handleDingApp(in *sys.UserRegisterReq) (*sys.UserReg
 	return &sys.UserRegisterResp{UserID: userID}, err
 }
 
-func (l *UserRegisterLogic) FillUserInfo(in *relationDB.SysTenantUserInfo, tx *gorm.DB) error {
+func (l *UserRegisterLogic) FillUserInfo(in *relationDB.SysUserInfo, tx *gorm.DB) error {
 	err := tx.Transaction(func(tx *gorm.DB) error {
 		cfg, err := relationDB.NewTenantConfigRepo(tx).FindOne(l.ctx)
 		if err != nil {
@@ -182,7 +182,7 @@ func (l *UserRegisterLogic) FillUserInfo(in *relationDB.SysTenantUserInfo, tx *g
 		if err != nil {
 			return err
 		}
-		err = relationDB.NewUserRoleRepo(tx).Insert(l.ctx, &relationDB.SysTenantUserRole{
+		err = relationDB.NewUserRoleRepo(tx).Insert(l.ctx, &relationDB.SysUserRole{
 			UserID: in.UserID,
 			RoleID: cfg.RegisterRoleID,
 		})

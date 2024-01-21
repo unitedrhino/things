@@ -29,7 +29,7 @@ func NewUserForgetPwdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Use
 
 func (l *UserForgetPwdLogic) UserForgetPwd(in *sys.UserForgetPwdReq) (*sys.Response, error) {
 	var account string
-	var oldUi *relationDB.SysTenantUserInfo
+	var oldUi *relationDB.SysUserInfo
 	switch in.Type {
 	case def.CaptchaTypeEmail:
 		account = l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, def.CaptchaUseForgetPwd, in.CodeID, in.Code)
