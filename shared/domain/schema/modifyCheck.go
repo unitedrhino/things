@@ -49,3 +49,45 @@ func CheckDefine(oldDef *Define, newDef *Define) bool {
 	}
 	return true
 }
+
+func EventFromCommonSchema(product *Event, common *Event) *Event {
+	if common == nil {
+		return product
+	}
+	newCommon := *common
+	newCommon.CommonParam = CommonParamFromCommonSchema(product.CommonParam, common.CommonParam)
+	return &newCommon
+}
+
+func PropertyFromCommonSchema(product *Property, common *Property) *Property {
+	if common == nil {
+		return product
+	}
+	newCommon := *common
+	newCommon.CommonParam = CommonParamFromCommonSchema(product.CommonParam, common.CommonParam)
+	return &newCommon
+}
+
+func ActionFromCommonSchema(product *Action, common *Action) *Action {
+	if common == nil {
+		return product
+	}
+	newCommon := *common
+	newCommon.CommonParam = CommonParamFromCommonSchema(product.CommonParam, common.CommonParam)
+	return &newCommon
+}
+
+func CommonParamFromCommonSchema(product CommonParam, common CommonParam) CommonParam {
+	newCommon := common
+	if product.Name != "" && product.Name != newCommon.Name {
+		newCommon.Name = product.Name
+	}
+	if product.ExtendConfig != "" {
+		newCommon.ExtendConfig = product.ExtendConfig
+	}
+	if product.Desc != "" {
+		newCommon.Desc = product.Desc
+	}
+	newCommon.Required = product.Required
+	return newCommon
+}

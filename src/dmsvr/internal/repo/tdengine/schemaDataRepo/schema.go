@@ -1,8 +1,9 @@
-package stores
+package schemaDataRepo
 
 import (
 	"fmt"
 	"github.com/i-Things/things/shared/domain/schema"
+	"github.com/i-Things/things/shared/stores"
 	"strings"
 )
 
@@ -12,7 +13,7 @@ type SchemaStore struct {
 func (S *SchemaStore) GetSpecsCreateColumn(s schema.Specs) string {
 	var column []string
 	for _, v := range s {
-		column = append(column, fmt.Sprintf("`%s` %s", v.Identifier, GetTdType(v.DataType)))
+		column = append(column, fmt.Sprintf("`%s` %s", v.Identifier, stores.GetTdType(v.DataType)))
 	}
 	return strings.Join(column, ",")
 }
@@ -26,7 +27,10 @@ func (S *SchemaStore) GetSpecsColumnWithArgFunc(s schema.Specs, argFunc string) 
 }
 
 func (S *SchemaStore) GetPropertyStableName(productID, identifier string) string {
-	return fmt.Sprintf("`model_custom_property_%s_%s`", productID, identifier)
+	if productID != "" {
+		return fmt.Sprintf("`model_custom_property_%s_%s`", productID, identifier)
+	}
+	return fmt.Sprintf("`model_common_property_%s`", identifier)
 }
 func (S *SchemaStore) GetEventStableName() string {
 	return fmt.Sprintf("`model_common_event`")

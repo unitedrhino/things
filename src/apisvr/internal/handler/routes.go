@@ -51,6 +51,7 @@ import (
 	thingsrulealarmrecord "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/alarm/record"
 	thingsrulealarmscene "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/alarm/scene"
 	thingsrulesceneinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/scene/info"
+	thingsschemacommon "github.com/i-Things/things/src/apisvr/internal/handler/things/schema/common"
 	thingsvidmgrinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/info"
 	thingsvidmgrstream "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/stream"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -1567,5 +1568,34 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/vidmgr/stream"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsschemacommon.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsschemacommon.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsschemacommon.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsschemacommon.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/schema/common"),
 	)
 }

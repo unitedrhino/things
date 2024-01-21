@@ -74,15 +74,17 @@ func ToProductSchemaRpc(info *relationDB.DmProductSchema) *dm.ProductSchemaInfo 
 
 func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
 	db := &relationDB.DmProductSchema{
-		ProductID:    info.ProductID,
-		Tag:          info.Tag,
-		Type:         info.Type,
-		Identifier:   info.Identifier,
-		ExtendConfig: info.ExtendConfig,
-		Name:         info.Name.GetValue(),
-		Desc:         info.Desc.GetValue(),
-		Required:     info.Required,
-		Affordance:   info.Affordance.GetValue(),
+		ProductID: info.ProductID,
+		Tag:       info.Tag,
+		DmSchemaCore: relationDB.DmSchemaCore{
+			Type:         info.Type,
+			Identifier:   info.Identifier,
+			ExtendConfig: info.ExtendConfig,
+			Name:         info.Name.GetValue(),
+			Desc:         info.Desc.GetValue(),
+			Required:     info.Required,
+			Affordance:   info.Affordance.GetValue(),
+		},
 	}
 	return db
 }

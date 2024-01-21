@@ -20,6 +20,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/client/protocolmanage"
 	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
+	"github.com/i-Things/things/src/dmsvr/client/schemamanage"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/rulesvr/client/alarmcenter"
 	"github.com/i-Things/things/src/rulesvr/client/scenelinkage"
@@ -71,6 +72,7 @@ type SvrClient struct {
 	ProtocolM protocolmanage.ProtocolManage
 	AreaM     areamanage.AreaManage
 	ProductM  productmanage.ProductManage
+	SchemaM   schemamanage.SchemaManage
 	DeviceM   devicemanage.DeviceManage
 	DeviceA   deviceauth.DeviceAuth
 	DeviceG   devicegroup.DeviceGroup
@@ -111,6 +113,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		vidmgrS vidmgrstreammanage.VidmgrStreamManage
 
 		protocolM      protocolmanage.ProtocolManage
+		schemaM        schemamanage.SchemaManage
 		projectM       projectmanage.ProjectManage
 		areaM          areamanage.AreaManage
 		productM       productmanage.ProductManage
@@ -150,6 +153,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			firmwareM = firmwaremanage.NewFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			otaTaskM = otataskmanage.NewOtaTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			protocolM = protocolmanage.NewProtocolManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			schemaM = schemamanage.NewSchemaManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else { //直连模式
 			deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
 			deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
@@ -160,6 +164,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			firmwareM = dmdirect.NewFirmwareManage(c.DmRpc.RunProxy)
 			otaTaskM = dmdirect.NewOtaTaskManage(c.DmRpc.RunProxy)
 			protocolM = dmdirect.NewProtocolManage(c.DmRpc.RunProxy)
+			schemaM = dmdirect.NewSchemaManage(c.DmRpc.RunProxy)
 		}
 	}
 	if c.DgRpc.Enable {
@@ -264,6 +269,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 			ProtocolM: protocolM,
 			ProjectM:  projectM,
+			SchemaM:   schemaM,
 			AreaM:     areaM,
 			ProductM:  productM,
 			DeviceM:   deviceM,

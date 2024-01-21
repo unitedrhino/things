@@ -14,6 +14,11 @@ import (
 )
 
 type (
+	CommonSchemaCreateReq       = dm.CommonSchemaCreateReq
+	CommonSchemaIndexReq        = dm.CommonSchemaIndexReq
+	CommonSchemaIndexResp       = dm.CommonSchemaIndexResp
+	CommonSchemaInfo            = dm.CommonSchemaInfo
+	CommonSchemaUpdateReq       = dm.CommonSchemaUpdateReq
 	CustomTopic                 = dm.CustomTopic
 	DeviceCore                  = dm.DeviceCore
 	DeviceGatewayBindDevice     = dm.DeviceGatewayBindDevice

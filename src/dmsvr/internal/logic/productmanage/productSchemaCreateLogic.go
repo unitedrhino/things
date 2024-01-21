@@ -2,7 +2,6 @@ package productmanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/events"
@@ -43,26 +42,39 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 	_, err = l.PsDB.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
 		ProductID: in.Info.ProductID, Identifiers: []string{in.Info.Identifier},
 	})
-	if err != nil {
-		if errors.Cmp(err, errors.NotFind) {
-			po := ToProductSchemaPo(in.Info)
-			if po.Name == "" {
-				return nil, errors.Parameter.AddMsg("功能名称不能为空")
-			}
-			if po.Required == 0 {
-				po.Required = def.False
-			}
-			if po.ExtendConfig == "" {
-				po.ExtendConfig = "{}"
-			}
-			if err := CheckAffordance(po); err != nil {
-				return nil, err
-			}
-			return po, nil
-		}
-		return nil, errors.Database.AddDetail(err)
+	if err == nil {
+		return nil, errors.Parameter.AddMsgf("标识符在该产品中已经被使用:%s", in.Info.Identifier)
 	}
-	return nil, errors.Parameter.AddMsg("标识符在该产品中已经被使用:" + in.Info.Identifier)
+	if err != nil {
+		if !errors.Cmp(err, errors.NotFind) {
+			return nil, err
+		}
+	}
+	var cs *relationDB.DmCommonSchema
+	if in.Info.Tag != int64(schema.TagCustom) {
+		cs, err = relationDB.NewCommonSchemaRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{Identifiers: []string{in.Info.Identifier}})
+		if err != nil {
+			return nil, err
+		}
+	}
+	po := ToProductSchemaPo(in.Info)
+	if po.Name == "" {
+		if cs == nil {
+			return nil, errors.Parameter.AddMsg("功能名称不能为空")
+		}
+		po.Name = cs.Name
+	}
+	if po.Required == 0 && cs != nil {
+		po.Required = cs.Required
+	}
+	if po.ExtendConfig == "" && cs != nil {
+		po.ExtendConfig = cs.ExtendConfig
+	}
+	if err = CheckAffordance(&po.DmSchemaCore, cs); err != nil {
+		return nil, err
+	}
+	return po, nil
+
 }
 
 // 新增产品
@@ -74,8 +86,8 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 		return nil, err
 	}
 
-	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
-		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(po), in.Info.ProductID); err != nil {
+	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty && po.Tag == int64(schema.TagCustom) {
+		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(&po.DmSchemaCore), in.Info.ProductID); err != nil {
 			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}

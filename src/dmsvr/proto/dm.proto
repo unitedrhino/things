@@ -109,6 +109,19 @@ service ProductManage{
 
 }
 
+
+//公共物模型管理
+service SchemaManage{
+  //更新产品物模型
+  rpc commonSchemaUpdate(CommonSchemaUpdateReq)returns (Response);
+  //新增产品
+  rpc commonSchemaCreate(CommonSchemaCreateReq)     returns (Response);
+  //删除产品
+  rpc commonSchemaDelete(WithID)     returns (Response);
+  //获取产品信息列表
+  rpc commonSchemaIndex(CommonSchemaIndexReq)     returns (CommonSchemaIndexResp);
+}
+
 service ProtocolManage {
   //协议列表
   rpc protocolInfoIndex(ProtocolInfoIndexReq)     returns (ProtocolInfoIndexResp);
@@ -810,7 +823,44 @@ message RootCheckReq{
   bytes certificate = 5;//客户端证书
 }
 
+message CommonSchemaUpdateReq{
+  CommonSchemaInfo info = 1;//物模型信息
 
+}
+
+
+
+message CommonSchemaCreateReq{
+  CommonSchemaInfo info = 1;//物模型信息
+}
+
+
+
+message CommonSchemaIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  repeated string productIDs = 2; //有这个属性的产品id列表
+  int64  type = 3; //物模型类型 1:property属性 2:event事件 3:action行为
+  repeated string   identifiers = 5; //过滤标识符列表
+}
+
+message CommonSchemaIndexResp{
+  repeated CommonSchemaInfo list = 1;
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+
+message CommonSchemaInfo{
+  int64 id =1;
+  int64 type = 2;         //物模型类型 1:property属性 2:event事件 3:action行为
+  string identifier = 4;           //标识符
+  google.protobuf.StringValue name = 5;       //功能名称
+  google.protobuf.StringValue desc = 6;       //描述
+  int64 required = 7;  //是否必须 1:是 2:否
+  google.protobuf.StringValue affordance = 8;//各功能类型的详细参数定义
+  string extendConfig = 9; //拓展参数
+}
+
+/*********************************/
 
 
 message ProductSchemaUpdateReq{
@@ -853,10 +903,9 @@ message ProductSchemaInfo{
   int64 required = 7;  //是否必须 1:是 2:否
   google.protobuf.StringValue affordance = 8;//各功能类型的详细参数定义
   string extendConfig = 9; //拓展参数
-  //  SchemaAction action =8;
-  //  SchemaProperty property =9;
-  //  SchemaEvent event =10;
 }
+
+
 
 message ProductSchemaTslImportReq{
   string   productID = 1; //产品id

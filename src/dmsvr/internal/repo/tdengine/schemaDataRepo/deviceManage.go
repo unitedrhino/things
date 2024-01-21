@@ -49,9 +49,9 @@ func (d *DeviceDataRepo) DeleteDevice(
 func (d *DeviceDataRepo) createPropertyTable(
 	ctx context.Context, p schema.PropertyMap, productID string, deviceName string) error {
 	for _, v := range p {
-		sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s');",
+		sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s','%s');",
 			d.GetPropertyTableName(productID, deviceName, v.Identifier),
-			d.GetPropertyStableName(productID, v.Identifier), deviceName, v.Define.Type)
+			d.GetPropertyStableName(productID, v.Identifier), productID, deviceName, v.Define.Type)
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return err
 		}

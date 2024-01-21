@@ -16,19 +16,21 @@ func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
 	}
 	defineStr, _ := json.Marshal(define)
 	return &DmProductSchema{
-		ProductID:    productID,
-		Tag:          int64(schema.TagCustom),
-		Type:         int64(schema.AffordanceTypeProperty),
-		Identifier:   in.Identifier,
-		Name:         in.Name,
-		ExtendConfig: in.ExtendConfig,
-		Desc:         in.Desc,
-		Required:     def.ToIntBool[int64](in.Required),
-		Affordance:   string(defineStr),
+		ProductID: productID,
+		DmSchemaCore: DmSchemaCore{
+			Type:         int64(schema.AffordanceTypeProperty),
+			Identifier:   in.Identifier,
+			Name:         in.Name,
+			ExtendConfig: in.ExtendConfig,
+			Desc:         in.Desc,
+			Required:     def.ToIntBool[int64](in.Required),
+			Affordance:   string(defineStr),
+		},
+		Tag: int64(schema.TagCustom),
 	}
 }
 
-func ToCommonParam(in *DmProductSchema) schema.CommonParam {
+func ToCommonParam(in *DmSchemaCore) schema.CommonParam {
 	return schema.CommonParam{
 		Identifier:   in.Identifier,
 		Name:         in.Name,
@@ -38,7 +40,7 @@ func ToCommonParam(in *DmProductSchema) schema.CommonParam {
 	}
 }
 
-func ToPropertyDo(in *DmProductSchema) *schema.Property {
+func ToPropertyDo(in *DmSchemaCore) *schema.Property {
 	affordance := PropertyDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Property{
@@ -61,19 +63,21 @@ func ToEventPo(productID string, in *schema.Event) *DmProductSchema {
 	}
 	defineStr, _ := json.Marshal(define)
 	return &DmProductSchema{
-		ProductID:    productID,
-		Tag:          int64(schema.TagCustom),
-		Type:         int64(schema.AffordanceTypeEvent),
-		Identifier:   in.Identifier,
-		Name:         in.Name,
-		Desc:         in.Desc,
-		ExtendConfig: in.ExtendConfig,
-		Required:     def.ToIntBool[int64](in.Required),
-		Affordance:   string(defineStr),
+		ProductID: productID,
+		DmSchemaCore: DmSchemaCore{
+			Type:         int64(schema.AffordanceTypeEvent),
+			Identifier:   in.Identifier,
+			Name:         in.Name,
+			Desc:         in.Desc,
+			ExtendConfig: in.ExtendConfig,
+			Required:     def.ToIntBool[int64](in.Required),
+			Affordance:   string(defineStr),
+		},
+		Tag: int64(schema.TagCustom),
 	}
 }
 
-func ToEventDo(in *DmProductSchema) *schema.Event {
+func ToEventDo(in *DmSchemaCore) *schema.Event {
 	affordance := EventDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Event{
@@ -94,15 +98,17 @@ func ToActionPo(productID string, in *schema.Action) *DmProductSchema {
 	}
 	defineStr, _ := json.Marshal(define)
 	return &DmProductSchema{
-		ProductID:    productID,
-		Tag:          int64(schema.TagCustom),
-		Type:         int64(schema.AffordanceTypeAction),
-		Identifier:   in.Identifier,
-		Name:         in.Name,
-		ExtendConfig: in.ExtendConfig,
-		Desc:         in.Desc,
-		Required:     def.ToIntBool[int64](in.Required),
-		Affordance:   string(defineStr),
+		ProductID: productID,
+		Tag:       int64(schema.TagCustom),
+		DmSchemaCore: DmSchemaCore{
+			Identifier:   in.Identifier,
+			Type:         int64(schema.AffordanceTypeAction),
+			Name:         in.Name,
+			ExtendConfig: in.ExtendConfig,
+			Desc:         in.Desc,
+			Required:     def.ToIntBool[int64](in.Required),
+			Affordance:   string(defineStr),
+		},
 	}
 }
 
@@ -136,7 +142,7 @@ func ToAffordancePo(in any) string {
 	return string(defineStr)
 }
 
-func ToActionDo(in *DmProductSchema) *schema.Action {
+func ToActionDo(in *DmSchemaCore) *schema.Action {
 	affordance := ActionDef{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Action{
@@ -161,11 +167,11 @@ func ToSchemaDo(productID string, in []*DmProductSchema) *schema.Model {
 	for _, v := range in {
 		switch schema.AffordanceType(v.Type) {
 		case schema.AffordanceTypeProperty:
-			model.Properties = append(model.Properties, *ToPropertyDo(v))
+			model.Properties = append(model.Properties, *ToPropertyDo(&v.DmSchemaCore))
 		case schema.AffordanceTypeEvent:
-			model.Events = append(model.Events, *ToEventDo(v))
+			model.Events = append(model.Events, *ToEventDo(&v.DmSchemaCore))
 		case schema.AffordanceTypeAction:
-			model.Actions = append(model.Actions, *ToActionDo(v))
+			model.Actions = append(model.Actions, *ToActionDo(&v.DmSchemaCore))
 		}
 	}
 	model.ValidateWithFmt()
