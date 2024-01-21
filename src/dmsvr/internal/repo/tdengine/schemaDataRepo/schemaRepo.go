@@ -4,7 +4,6 @@ import (
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
 	schema "github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/stores"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"os"
@@ -17,7 +16,7 @@ const (
 type DeviceDataRepo struct {
 	t              *clients.Td
 	getSchemaModel schema.GetSchemaModel
-	stores.SchemaStore
+	SchemaStore
 	kv kv.Store
 }
 

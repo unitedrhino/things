@@ -12,3 +12,4 @@ import "things/group.api"  //设备分组相关功能接口
 import "things/rule.api"  //规则引擎相关功能接口
 import "things/ota.api"  //ota相关功能接口
 import "things/vidmgr.api"  //视频服务相关功能接口
+import "things/schema/common.api"  //物模型相关接口

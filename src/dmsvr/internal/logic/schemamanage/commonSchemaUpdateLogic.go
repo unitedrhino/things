@@ -1,48 +1,37 @@
-package productmanagelogic
+package schemamanagelogic
 
 import (
 	"context"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/events/topics"
 	"github.com/i-Things/things/shared/utils"
-	commonschemalogic "github.com/i-Things/things/src/dmsvr/internal/logic/schemamanage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
+
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
-	"github.com/spf13/cast"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ProductSchemaUpdateLogic struct {
+type CommonSchemaUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	PiDB *relationDB.ProductInfoRepo
-	PsDB *relationDB.ProductSchemaRepo
+	PsDB *relationDB.CommonSchemaRepo
 }
 
-func NewProductSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductSchemaUpdateLogic {
-	return &ProductSchemaUpdateLogic{
+func NewCommonSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CommonSchemaUpdateLogic {
+	return &CommonSchemaUpdateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		PiDB:   relationDB.NewProductInfoRepo(ctx),
-		PsDB:   relationDB.NewProductSchemaRepo(ctx),
+		PsDB:   relationDB.NewCommonSchemaRepo(ctx),
 	}
 }
 
-func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*relationDB.DmProductSchema, *relationDB.DmProductSchema, error) {
-	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
-	if err != nil {
-		if errors.Cmp(err, errors.NotFind) {
-			return nil, nil, errors.Parameter.AddMsgf("产品id不存在:" + cast.ToString(in.Info.ProductID))
-		}
-		return nil, nil, errors.Database.AddDetail(err)
-	}
-	po, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
-		ProductID: in.Info.ProductID, Identifiers: []string{in.Info.Identifier},
+func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*relationDB.DmCommonSchema, *relationDB.DmCommonSchema, error) {
+	po, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{
+		Identifiers: []string{in.Info.Identifier},
 	})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
@@ -50,12 +39,8 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 		}
 		return nil, nil, err
 	}
-	if po.Tag != in.Info.Tag {
-		return nil, nil, errors.Parameter.AddMsg("功能标签不支持修改")
-	}
-	newPo := ToProductSchemaPo(in.Info)
+	newPo := ToCommonSchemaPo(in.Info)
 	newPo.ID = po.ID
-	newPo.Tag = po.Tag
 	if in.Info.Affordance == nil {
 		newPo.Affordance = po.Affordance
 	}
@@ -74,28 +59,28 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 			newPo.ExtendConfig = "{}"
 		}
 	}
-	if err := commonschemalogic.CheckAffordance(&newPo.DmSchemaCore); err != nil {
+	if err := CheckAffordance(&newPo.DmSchemaCore); err != nil {
 		return nil, nil, err
 	}
 	return po, newPo, nil
 }
 
 // 更新产品物模型
-func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdateReq) (*dm.Response, error) {
+func (l *CommonSchemaUpdateLogic) CommonSchemaUpdate(in *dm.CommonSchemaUpdateReq) (*dm.Response, error) {
 	po, newPo, err := l.ruleCheck(in)
 	if err != nil {
 		return nil, err
 	}
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
 		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(
-			l.ctx, in.Info.ProductID, in.Info.Identifier); err != nil {
+			l.ctx, "", in.Info.Identifier); err != nil {
 			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
 	if schema.AffordanceType(newPo.Type) == schema.AffordanceTypeProperty {
 		if err := l.svcCtx.SchemaManaRepo.CreateProperty(
-			l.ctx, relationDB.ToPropertyDo(&newPo.DmSchemaCore), in.Info.ProductID); err != nil {
+			l.ctx, relationDB.ToPropertyDo(&newPo.DmSchemaCore), ""); err != nil {
 			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
@@ -104,7 +89,5 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	if err != nil {
 		return nil, err
 	}
-	l.svcCtx.Bus.Publish(l.ctx, topics.DmProductSchemaUpdate, in.Info.ProductID)
-
 	return &dm.Response{}, nil
 }

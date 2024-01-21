@@ -2023,3 +2023,37 @@ type VidmgrStreamCountResp struct {
 	Online  int64 `json:"online"`  // 在线服务数
 	Offline int64 `json:"offline"` // 离线服务数
 }
+
+type CommonSchemaUpdateReq struct {
+	*CommonSchemaInfo
+}
+
+type CommonSchemaCreateReq struct {
+	*CommonSchemaInfo
+}
+
+type CommonSchemaDeleteReq struct {
+	ID int64 `json:"id"` //产品id
+}
+
+type CommonSchemaIndexReq struct {
+	Page        *PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
+	Type        int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
+	Identifiers []string  `json:"identifiers,optional"` //过滤标识符列表
+}
+
+type CommonSchemaIndexResp struct {
+	List  []*CommonSchemaInfo `json:"list"`  //分页信息,只获取一个则不填
+	Total int64               `json:"total"` //总数(只有分页的时候会返回)
+}
+
+type CommonSchemaInfo struct {
+	ID           int64   `json:"id,optional"`           //产品id
+	Type         int64   `json:"type,optional"`         //物模型类型 1:property属性 2:event事件 3:action行为
+	Identifier   string  `json:"identifier,optional"`   //标识符
+	ExtendConfig string  `json:"extendConfig,optional"` //拓展参数
+	Name         *string `json:"name,optional"`         //功能名称
+	Desc         *string `json:"desc,optional"`         //描述
+	Required     int64   `json:"required,optional"`     //是否必须 1:是 2:否
+	Affordance   *string `json:"affordance,optional"`   //各功能类型的详细参数定义
+}

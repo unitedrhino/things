@@ -95,8 +95,8 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dg.DeviceRegisterReq) (*dg.Devi
 					return nil, errors.Database.AddMsg(fmt.Sprintf("设备注册失败: %s", err.Error()))
 				}
 				//将应答信息封装json 并加密
-				len, payload, err := getPayload(devices.EncryptionTypeCert, resp.Secret, pi.Secret)
-				return &dg.DeviceRegisterResp{Len: int64(len), Payload: payload}, nil
+				length, payload, err := getPayload(devices.EncryptionTypeCert, resp.Secret, pi.Secret)
+				return &dg.DeviceRegisterResp{Len: int64(length), Payload: payload}, nil
 			}
 			return nil, errors.NotFind.AddMsg("设备注册失败，无效设备")
 		} else {
@@ -115,6 +115,6 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dg.DeviceRegisterReq) (*dg.Devi
 	}
 
 	//将应答信息封装json 并加密
-	len, payload, err := getPayload(devices.EncryptionTypeCert, di.Secret, pi.Secret)
-	return &dg.DeviceRegisterResp{Len: int64(len), Payload: payload}, nil
+	length, payload, err := getPayload(devices.EncryptionTypeCert, di.Secret, pi.Secret)
+	return &dg.DeviceRegisterResp{Len: int64(length), Payload: payload}, nil
 }

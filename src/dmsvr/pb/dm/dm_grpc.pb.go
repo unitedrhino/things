@@ -1295,6 +1295,215 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
+	SchemaManage_CommonSchemaUpdate_FullMethodName = "/dm.SchemaManage/commonSchemaUpdate"
+	SchemaManage_CommonSchemaCreate_FullMethodName = "/dm.SchemaManage/commonSchemaCreate"
+	SchemaManage_CommonSchemaDelete_FullMethodName = "/dm.SchemaManage/commonSchemaDelete"
+	SchemaManage_CommonSchemaIndex_FullMethodName  = "/dm.SchemaManage/commonSchemaIndex"
+)
+
+// SchemaManageClient is the client API for SchemaManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type SchemaManageClient interface {
+	// 更新产品物模型
+	CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	// 新增产品
+	CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Response, error)
+	// 删除产品
+	CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+	// 获取产品信息列表
+	CommonSchemaIndex(ctx context.Context, in *CommonSchemaIndexReq, opts ...grpc.CallOption) (*CommonSchemaIndexResp, error)
+}
+
+type schemaManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewSchemaManageClient(cc grpc.ClientConnInterface) SchemaManageClient {
+	return &schemaManageClient{cc}
+}
+
+func (c *schemaManageClient) CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *schemaManageClient) CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *schemaManageClient) CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *schemaManageClient) CommonSchemaIndex(ctx context.Context, in *CommonSchemaIndexReq, opts ...grpc.CallOption) (*CommonSchemaIndexResp, error) {
+	out := new(CommonSchemaIndexResp)
+	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// SchemaManageServer is the server API for SchemaManage service.
+// All implementations must embed UnimplementedSchemaManageServer
+// for forward compatibility
+type SchemaManageServer interface {
+	// 更新产品物模型
+	CommonSchemaUpdate(context.Context, *CommonSchemaUpdateReq) (*Response, error)
+	// 新增产品
+	CommonSchemaCreate(context.Context, *CommonSchemaCreateReq) (*Response, error)
+	// 删除产品
+	CommonSchemaDelete(context.Context, *WithID) (*Response, error)
+	// 获取产品信息列表
+	CommonSchemaIndex(context.Context, *CommonSchemaIndexReq) (*CommonSchemaIndexResp, error)
+	mustEmbedUnimplementedSchemaManageServer()
+}
+
+// UnimplementedSchemaManageServer must be embedded to have forward compatible implementations.
+type UnimplementedSchemaManageServer struct {
+}
+
+func (UnimplementedSchemaManageServer) CommonSchemaUpdate(context.Context, *CommonSchemaUpdateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaUpdate not implemented")
+}
+func (UnimplementedSchemaManageServer) CommonSchemaCreate(context.Context, *CommonSchemaCreateReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaCreate not implemented")
+}
+func (UnimplementedSchemaManageServer) CommonSchemaDelete(context.Context, *WithID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaDelete not implemented")
+}
+func (UnimplementedSchemaManageServer) CommonSchemaIndex(context.Context, *CommonSchemaIndexReq) (*CommonSchemaIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaIndex not implemented")
+}
+func (UnimplementedSchemaManageServer) mustEmbedUnimplementedSchemaManageServer() {}
+
+// UnsafeSchemaManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to SchemaManageServer will
+// result in compilation errors.
+type UnsafeSchemaManageServer interface {
+	mustEmbedUnimplementedSchemaManageServer()
+}
+
+func RegisterSchemaManageServer(s grpc.ServiceRegistrar, srv SchemaManageServer) {
+	s.RegisterService(&SchemaManage_ServiceDesc, srv)
+}
+
+func _SchemaManage_CommonSchemaUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommonSchemaUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SchemaManageServer).CommonSchemaUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SchemaManage_CommonSchemaUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SchemaManageServer).CommonSchemaUpdate(ctx, req.(*CommonSchemaUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SchemaManage_CommonSchemaCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommonSchemaCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SchemaManageServer).CommonSchemaCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SchemaManage_CommonSchemaCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SchemaManageServer).CommonSchemaCreate(ctx, req.(*CommonSchemaCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SchemaManage_CommonSchemaDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SchemaManageServer).CommonSchemaDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SchemaManage_CommonSchemaDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SchemaManageServer).CommonSchemaDelete(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SchemaManage_CommonSchemaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommonSchemaIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SchemaManageServer).CommonSchemaIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SchemaManage_CommonSchemaIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SchemaManageServer).CommonSchemaIndex(ctx, req.(*CommonSchemaIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// SchemaManage_ServiceDesc is the grpc.ServiceDesc for SchemaManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var SchemaManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.SchemaManage",
+	HandlerType: (*SchemaManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "commonSchemaUpdate",
+			Handler:    _SchemaManage_CommonSchemaUpdate_Handler,
+		},
+		{
+			MethodName: "commonSchemaCreate",
+			Handler:    _SchemaManage_CommonSchemaCreate_Handler,
+		},
+		{
+			MethodName: "commonSchemaDelete",
+			Handler:    _SchemaManage_CommonSchemaDelete_Handler,
+		},
+		{
+			MethodName: "commonSchemaIndex",
+			Handler:    _SchemaManage_CommonSchemaIndex_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
+
+const (
 	ProtocolManage_ProtocolInfoIndex_FullMethodName = "/dm.ProtocolManage/protocolInfoIndex"
 )
 
