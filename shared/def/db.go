@@ -18,6 +18,11 @@ var orderMap = map[int64]string{
 	OrderDesc: "desc",
 }
 
+type ExecArgs struct {
+	Query string
+	Args  []any
+}
+
 type PageInfo struct {
 	Page   int64     `json:"page" form:"page"`         // 页码
 	Size   int64     `json:"pageSize" form:"pageSize"` // 每页大小

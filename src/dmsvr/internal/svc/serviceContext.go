@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubDev"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/schemaDataRepo"
 	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
@@ -66,26 +65,27 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	GroupID := utils.NewSnowFlake(nodeID)
 	ca := kv.NewStore(c.CacheRedis)
 	ccSchemaR := cache.NewSchemaRepo()
-	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TDengine.DataSource, ccSchemaR.GetSchemaModel, ca)
-	hubLogR := hubLogRepo.NewHubLogRepo(c.TDengine.DataSource)
-	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TDengine.DataSource)
+	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetSchemaModel, ca)
+	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB)
+	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB)
 	duR, err := dataUpdate.NewDataUpdate(c.Event)
 	if err != nil {
 		logx.Error("NewDataUpdate err", err)
 		os.Exit(-1)
 	}
-	ossClient := oss.NewOssClient(c.OssConf)
-	if ossClient == nil {
-		logx.Error("NewOss err")
+	ossClient, err := oss.NewOssClient(c.OssConf)
+	if err != nil {
+		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
+
 	bus := eventBus.NewEventBus()
 	stores.InitConn(c.Database)
-	err = relationDB.Migrate(c.Database)
-	if err != nil {
-		logx.Error("dmsvr 初始化数据库错误 err", err)
-		os.Exit(-1)
-	}
+	//err = relationDB.Migrate(c.Database)
+	//if err != nil {
+	//	logx.Error("dmsvr 初始化数据库错误 err", err)
+	//	os.Exit(-1)
+	//}
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {
 		logx.Error("NewPubDev err", err)

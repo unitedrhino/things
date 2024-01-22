@@ -245,3 +245,34 @@ func TestRecover(t *testing.T) {
 		})
 	}
 }
+
+type MyStruct struct {
+	Name  string `json:"name"`
+	Value int    `json:"value"`
+}
+
+func TestStructToMap(t *testing.T) {
+	//data := MyStruct{
+	//	Name:  "John",
+	//	Value: 42,
+	//}
+
+	var data MyStruct
+	data.Name = "John"
+	data.Value = 42
+
+	// Convert struct to map
+	result := StructToMap(&data)
+
+	// Check if the map has the expected values
+	expected := map[string]interface{}{
+		"name":  "John",
+		"value": 42,
+	}
+
+	for key, val := range expected {
+		if result[key] != val {
+			t.Errorf("Expected %s to be %v, got %v", key, val, result[key])
+		}
+	}
+}

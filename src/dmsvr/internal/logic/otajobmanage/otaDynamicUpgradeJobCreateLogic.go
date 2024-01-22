@@ -22,6 +22,7 @@ type OtaDynamicUpgradeJobCreateLogic struct {
 	GdDB *relationDB.GroupDeviceRepo
 	OtDB *relationDB.OtaUpgradeTaskRepo
 	OjDB *relationDB.OtaJobRepo
+	OfDB *relationDB.OtaFirmwareRepo
 }
 
 func NewOtaDynamicUpgradeJobCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaDynamicUpgradeJobCreateLogic {
@@ -33,6 +34,7 @@ func NewOtaDynamicUpgradeJobCreateLogic(ctx context.Context, svcCtx *svc.Service
 		GdDB:   relationDB.NewGroupDeviceRepo(ctx),
 		OtDB:   relationDB.NewOtaUpgradeTaskRepo(ctx),
 		OjDB:   relationDB.NewOtaJobRepo(ctx),
+		OfDB:   relationDB.NewOtaFirmwareRepo(ctx),
 	}
 }
 
@@ -47,10 +49,12 @@ func (l *OtaDynamicUpgradeJobCreateLogic) OtaDynamicUpgradeJobCreate(in *dm.Dyna
 	dmOtaJob.JobType = msgOta.BatchUpgrade
 	dmOtaJob.UpgradeType = msgOta.DynamicUpgrade
 	selection := in.TargetSelection
-
 	var deviceInfoList []*relationDB.DmDeviceInfo
-	//区域升级
-	if selection == msgOta.AreaUpgrade {
+	//定向升级
+	if selection == msgOta.SpecificUpgrade {
+		_ = copier.Copy(&deviceInfoList, &in.DeviceInfo)
+		//区域升级
+	} else if selection == msgOta.AreaUpgrade {
 		//todo
 		//全量升级
 	} else if selection == msgOta.AllUpgrade {
@@ -66,7 +70,6 @@ func (l *OtaDynamicUpgradeJobCreateLogic) OtaDynamicUpgradeJobCreate(in *dm.Dyna
 			deviceInfoList = append(deviceInfoList, v.Device)
 		}
 	}
-
 	for _, device := range deviceInfoList {
 		dmOtaTask := relationDB.DmOtaUpgradeTask{
 			FirmwareId: in.FirmwareId,
@@ -82,6 +85,11 @@ func (l *OtaDynamicUpgradeJobCreateLogic) OtaDynamicUpgradeJobCreate(in *dm.Dyna
 			return nil, errors.System.AddDetail(err)
 		}
 	}
+	//发送消息给设备
+	firmware, err := l.OfDB.FindOne(l.ctx, in.FirmwareId)
+	err = NewSendMessageToDevicesLogic(l.ctx, l.svcCtx).PushMessageToDevices(deviceInfoList, firmware)
+	if err != nil {
+		return nil, err
+	}
 	return &dm.UpgradeJobResp{JobId: dmOtaJob.ID, UtcCreate: utils.ToYYMMddHHSSByTime(dmOtaJob.CreatedTime)}, nil
-
 }

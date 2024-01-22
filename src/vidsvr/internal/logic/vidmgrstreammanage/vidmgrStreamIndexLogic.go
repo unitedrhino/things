@@ -2,6 +2,7 @@ package vidmgrstreammanagelogic
 
 import (
 	"context"
+	"fmt"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/logic"
@@ -41,7 +42,7 @@ func (l *VidmgrStreamIndexLogic) VidmgrStreamIndex(in *vid.VidmgrStreamIndexReq)
 		VidmgrID:   in.VidmgrID,
 		StreamIDs:  in.StreamIDs,
 		App:        in.App,
-		Schema:     in.Schema,
+		StreamName: in.StreamName,
 		Stream:     in.Stream,
 		Vhost:      in.Vhost,
 		Identifier: in.Identifier,
@@ -67,5 +68,6 @@ func (l *VidmgrStreamIndexLogic) VidmgrStreamIndex(in *vid.VidmgrStreamIndexReq)
 	for _, v := range di {
 		info = append(info, ToRpcConvVidmgrStream(v))
 	}
+	fmt.Println("VidmgrStreamIndex:", info)
 	return &vid.VidmgrStreamIndexResp{List: info, Total: size}, nil
 }

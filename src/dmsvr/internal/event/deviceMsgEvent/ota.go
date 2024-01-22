@@ -2,8 +2,11 @@ package deviceMsgEvent
 
 import (
 	"context"
+	otafirmwarelogic "github.com/i-Things/things/src/dmsvr/internal/logic/otafirmwaremanage"
+	otatasklogic "github.com/i-Things/things/src/dmsvr/internal/logic/otaupgradetaskmanage"
 	firmwaremanage "github.com/i-Things/things/src/dmsvr/internal/server/firmwaremanage"
 	otataskmanage "github.com/i-Things/things/src/dmsvr/internal/server/otataskmanage"
+	"github.com/jinzhu/copier"
 	"strings"
 	"time"
 
@@ -50,7 +53,7 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 	respMsg, err = func() (respMsg *deviceMsg.PublishMsg, err error) {
 		switch l.topics[2] {
 		case msgOta.TypeReport: //固件升级消息上行 上报版本、模块信息
-			return l.HandleReport(msg)
+			return l.HandleDynamicReport(msg)
 		case msgOta.TypeProgress: //设备端上报升级进度
 			return l.HandleResp(msg)
 		default:
@@ -70,6 +73,41 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 	})
 	return
 }
+
+func (l *OtaLogic) HandleDynamicReport(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+	//固件升级消息上行 上报版本、模块信息
+	err = utils.Unmarshal([]byte(msg.Payload), &l.dreq)
+	if err != nil {
+		return nil, errors.Parameter.AddDetail("ota topic is err:" + msg.Topic)
+	}
+	err = l.dreq.VerifyReqParam()
+	if err != nil {
+		return nil, err
+	}
+	//获取当前设备是否在动态可执行批次
+	di := &dm.OTATaskByDeviceNameReq{
+		ProductId:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}
+	taskInfo, err := otatasklogic.NewOtaTaskByDeviceNameLogic(l.ctx, l.svcCtx).OtaTaskByDeviceName(di)
+	if err != nil {
+		//没有找到可执行的升级任务
+		return nil, err
+	}
+	firmware, err := otafirmwarelogic.NewOtaFirmwareReadLogic(l.ctx, l.svcCtx).OtaFirmwareRead(&dm.OtaFirmwareReadReq{FirmwareId: taskInfo.FirmwareId})
+	var files []msgOta.File
+	_ = copier.Copy(&files, &firmware.FirmwareFileList)
+	data := msgOta.UpgradeParams{
+		Version:          firmware.DestVersion,
+		IsDiff:           firmware.IsDiff,
+		SignMethod:       firmware.SignMethod,
+		DownloadProtocol: "https",
+		Module:           firmware.Module,
+		Files:            files,
+	}
+	return l.DeviceResp(msg, errors.OK, data), nil
+}
+
 func (l *OtaLogic) HandleReport(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	//固件升级消息上行 上报版本、模块信息
 	err = utils.Unmarshal([]byte(msg.Payload), &l.dreq)
@@ -128,12 +166,13 @@ func (l *OtaLogic) HandleResp(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 	if err != nil {
 		return nil, err
 	}
-	_, err = otataskmanage.NewOtaTaskManageServer(l.svcCtx).OtaTaskDeviceProcess(l.ctx, &dm.OtaTaskDeviceProcessReq{
-		ID:     l.preq.Params.ID,
-		Module: l.preq.Params.Module,
-		Step:   l.preq.Params.Step,
-		Desc:   l.preq.Params.Desc,
-	})
+	req := dm.OtaTaskDeviceProcessReq{
+		ProductId:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+		Step:       l.preq.Params.Step,
+		Module:     l.preq.Params.Module,
+	}
+	_, err = otatasklogic.NewOtaTaskDeviceProcessLogic(l.ctx, l.svcCtx).OtaTaskDeviceProcess(&req)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail("ota process rpc is err:" + msg.Topic)
 	}

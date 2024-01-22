@@ -3,6 +3,7 @@ package relationDB
 import (
 	"database/sql"
 	"github.com/i-Things/things/shared/stores"
+	"github.com/i-Things/things/src/dmsvr/internal/domain/productCustom"
 	"time"
 )
 
@@ -40,6 +41,10 @@ type DmDeviceInfo struct {
 
 }
 
+func (m *DmDeviceInfo) TableName() string {
+	return "dm_device_info"
+}
+
 // 产品信息表
 type DmProductInfo struct {
 	ProductID    string            `gorm:"column:product_id;type:char(11);primary_key;NOT NULL"`        // 产品id
@@ -51,28 +56,47 @@ type DmProductInfo struct {
 	CategoryID   int64             `gorm:"column:category_id;type:integer;default:1"`                   // 产品品类
 	NetType      int64             `gorm:"column:net_type;type:smallint;default:1"`                     // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
 	DataProto    int64             `gorm:"column:data_proto;type:smallint;default:1"`                   // 数据协议:1:自定义,2:数据模板
+	ProtocolID   int64             `gorm:"column:protocol_id;type:bigint;default:1"`                    // 协议名称: 如果为空则为iThings标准协议
 	AutoRegister int64             `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret       string            `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
 	Desc         string            `gorm:"column:description;type:varchar(200)"`                        // 描述
 	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`                 // 产品状态
 	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"` // 产品标签
-
 	stores.Time
+	ProtocolInfo *DmProtocolInfo `gorm:"foreignKey:ID;references:ProtocolID"` // 添加外键
+
 	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
+
 }
 
 func (m *DmProductInfo) TableName() string {
 	return "dm_product_info"
 }
 
+// 自定义协议表
+type DmProtocolInfo struct {
+	ID           int64    `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name         string   `gorm:"column:name;uniqueIndex;type:varchar(100);NOT NULL"`               // 协议名称
+	Protocol     string   `gorm:"column:protocol;type:varchar(100)"`                                // 协议: mqtt,tcp,udp
+	ProtocolType string   `gorm:"column:protocol_type;type:varchar(100);default:iThings"`           // 协议类型: iThings,iThings-thingsboard
+	Desc         string   `gorm:"column:desc;type:varchar(200)"`                                    // 描述
+	Endpoints    []string `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"` // 协议端点,如果填写了优先使用该字段
+	EtcdKey      string   `gorm:"column:etcd_key;type:varchar(200);default:null"`                   //服务etcd发现的key etcd key
+	stores.Time
+}
+
+func (m *DmProtocolInfo) TableName() string {
+	return "dm_protocol_info"
+}
+
 // 产品自定义协议表
 type DmProductCustom struct {
-	ID              int64          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID       string         `gorm:"column:product_id;uniqueIndex;type:char(11);NOT NULL"` // 产品id
-	ScriptLang      int64          `gorm:"column:script_lang;type:smallint;default:1"`           // 脚本语言类型 1:JavaScript 2:lua 3:python
-	CustomTopic     sql.NullString `gorm:"column:custom_topic;type:json"`                        // 自定义topic数组
-	TransformScript sql.NullString `gorm:"column:transform_script;type:text"`                    // 协议转换脚本
-	LoginAuthScript sql.NullString `gorm:"column:login_auth_script;type:text"`                   // 登录认证脚本
+	ID              int64                        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID       string                       `gorm:"column:product_id;uniqueIndex;type:char(11);NOT NULL"` // 产品id
+	ScriptLang      int64                        `gorm:"column:script_lang;type:smallint;default:1"`           // 脚本语言类型 1:JavaScript 2:lua 3:python
+	CustomTopics    []*productCustom.CustomTopic `gorm:"column:custom_topics;type:json"`                       // 自定义topic数组
+	TransformScript string                       `gorm:"column:transform_script;type:text"`                    // 协议转换脚本
+	LoginAuthScript string                       `gorm:"column:login_auth_script;type:text"`                   // 登录认证脚本
 	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
@@ -83,25 +107,22 @@ func (m *DmProductCustom) TableName() string {
 
 // 产品物模型表
 type DmProductSchema struct {
-	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID  string `gorm:"column:product_id;uniqueIndex:product_id_identifier;index:product_id_type;type:char(11);NOT NULL"` // 产品id
-	Tag        int64  `gorm:"column:tag;type:smallint;default:1"`                                                               // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Type       int64  `gorm:"column:type;index:product_id_type;type:smallint;default:1"`                                        // 物模型类型 1:property属性 2:event事件 3:action行为
-	Identifier string `gorm:"column:identifier;uniqueIndex:product_id_identifier;type:varchar(100);NOT NULL"`                   // 标识符
-	Name       string `gorm:"column:name;type:varchar(100);NOT NULL"`                                                           // 功能名称
-	Desc       string `gorm:"column:desc;type:varchar(200)"`                                                                    // 描述
-	Required   int64  `gorm:"column:required;type:smallint;default:2"`                                                          // 是否必须,1是 2否
-	Affordance string `gorm:"column:affordance;type:json;NOT NULL"`                                                             // 各类型的自定义功能定义
+	ID           int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID    string `gorm:"column:product_id;uniqueIndex:product_id_identifier;index:product_id_type;type:char(11);NOT NULL"` // 产品id
+	Tag          int64  `gorm:"column:tag;type:smallint;default:1"`                                                               // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Type         int64  `gorm:"column:type;index:product_id_type;type:smallint;default:1"`                                        // 物模型类型 1:property属性 2:event事件 3:action行为
+	Identifier   string `gorm:"column:identifier;uniqueIndex:product_id_identifier;type:varchar(100);NOT NULL"`                   // 标识符
+	ExtendConfig string `gorm:"column:extend_config;type:json;default:'{}'"`                                                      //拓展参数
+	Name         string `gorm:"column:name;type:varchar(100);NOT NULL"`                                                           // 功能名称
+	Desc         string `gorm:"column:desc;type:varchar(200)"`                                                                    // 描述
+	Required     int64  `gorm:"column:required;type:smallint;default:2"`                                                          // 是否必须,1是 2否
+	Affordance   string `gorm:"column:affordance;type:json;NOT NULL"`                                                             // 各类型的自定义功能定义
 	stores.Time
 	ProductInfo *DmProductInfo `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
 func (m *DmProductSchema) TableName() string {
 	return "dm_product_schema"
-}
-
-func (m *DmDeviceInfo) TableName() string {
-	return "dm_device_info"
 }
 
 // 设备分组信息表
@@ -227,11 +248,11 @@ type DmOtaFirmware struct {
 	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID  string `gorm:"column:product_id;type:char(11);NOT NULL"`        // 产品id
 	Version    string `gorm:"column:version;type:varchar(64)"`                 // 固件版本
-	SrcVersion string `gorm:"column:version;type:varchar(64)"`                 // 待升级版本号
+	SrcVersion string `gorm:"column:src_version;type:varchar(64)"`             // 待升级版本号
 	Module     string `gorm:"column:module;type:varchar(64)"`                  // 模块名称
 	Name       string `gorm:"column:name;type:varchar(64)"`                    // 固件名称
 	Desc       string `gorm:"column:desc;type:varchar(200)"`                   // 描述
-	Status     int    `gorm:"column:status;type:bigint;NOT NULL"`              //升级包状态，-1：不需要验证，0：未验证，1：已验证，2：验证中，3：验证失败
+	Status     int64  `gorm:"column:status;type:bigint;NOT NULL"`              //升级包状态，-1：不需要验证，0：未验证，1：已验证，2：验证中，3：验证失败
 	TotalSize  int64  `gorm:"column:total_size;type:bigint;NOT NULL"`          // 升级包总大小
 	IsDiff     int64  `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"` // 是否差分包,1:整包,2:差分
 	SignMethod string `gorm:"column:sign_method;type:varchar(20);NOT NULL"`    // 签名方式:MD5/SHA256
@@ -261,7 +282,7 @@ func (m *DmDeviceShadow) TableName() string {
 // DMOTAjob 表示OTA升级任务的信息
 type DmOtaJob struct {
 	ID                 int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	FirmwareId         string `gorm:"column:firmware_id"`          // 升级包ID，升级包的唯一标识符。
+	FirmwareId         int64  `gorm:"column:firmware_id"`          // 升级包ID，升级包的唯一标识符。
 	ProductId          string `gorm:"column:product_id"`           // 升级包所属产品的ProductId。
 	JobType            int    `gorm:"column:job_type"`             // 升级包所属产品的JobType。
 	JobStatus          int    `gorm:"column:job_status"`           // 批次状态,PLANNED：计划中,IN_PROGRESS,执行中，COMPLETED，已完成，CANCELED，已经取消
@@ -293,14 +314,14 @@ func (m *DmOtaJob) TableName() string {
 
 type DmOtaUpgradeTask struct {
 	ID          int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	TaskId      string    `gorm:"column:task_id"`       // 设备升级作业ID
 	DestVersion string    `gorm:"column:dest_version" ` // 升级的目标OTA升级包版本
 	DeviceName  string    `gorm:"column:device_name" `  // 设备名称
 	FirmwareId  int64     `gorm:"column:firmware_id"`   // 升级包ID
 	JobId       int64     `gorm:"column:job_id" `       // 升级批次ID
 	ProductId   string    `gorm:"column:product_id" `   // 设备所属产品的ProductKey
 	ProductName string    `gorm:"column:product_name"`  // 设备所属产品的名称
-	Progress    string    `gorm:"column:progress"`      // 当前的升级进度
+	Step        int64     `gorm:"column:step"`          // 当前的升级进度
+	Module      string    `gorm:"column:module"`        //模块名称
 	SrcVersion  string    `gorm:"column:src_version"`   // 设备的原固件版本
 	TaskDesc    string    `gorm:"column:task_desc" `    // 升级作业描述信息
 	TaskStatus  int       `gorm:"column:task_status"`   // 设备升级状态

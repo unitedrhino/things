@@ -1,0 +1,121 @@
+syntax = "v1"
+
+info(
+    title: "ota升级附件接口"
+    desc: "ota升级附件接口"
+    author: "Hya"
+    email: "1943965929@qq.com"
+    version: "v1"
+)
+
+import "common.api"  //公共结构体定义
+@server(
+    group : things/ota/otaFirmware
+    prefix: /api/v1/things/ota/otaFirmware
+)
+service api {
+    //添加升级包
+    @doc "添加升级包"
+    @handler create
+    post /create (FirmwareCreateReq) returns (FirmwareResp)
+    //修改升级包
+    @doc "修改升级包"
+    @handler update
+    post /update (FirmwareUpdateReq) returns (FirmwareResp)
+    //删除升级包
+    @doc "删除升级包"
+    @handler del
+    post /delete (FirmwareDeleteReq) returns ()
+    //升级包列表
+    @doc "升级包列表"
+    @handler index
+    post /index (FirmwareIndexReq) returns (FirmwareIndexResp)
+    //查询升级包
+    @doc "查询升级包"
+    @handler read
+    post /read (FirmwareReadReq) returns (FirmwareReadResp)
+}
+
+// FirmwareFile 表示升级包中的文件信息
+type FirmwareFile struct {
+    Name string `json:"name"`
+    FilePath string `json:"filePath"`
+}
+
+// FirmwareCreateReq 表示创建升级包的请求结构
+type FirmwareCreateReq struct {
+    ProductID string `json:"productID"`
+    FirmwareName string `json:"firmwareName"`
+    DestVersion string `json:"destVersion"`
+    SignMethod string `json:"signMethod"`
+    FirmwareDesc string `json:"firmwareDesc"`
+    IsDiff int64 `json:"isDiff"`
+    Module string `json:"module"`
+    SrcVersion string `json:"srcVersion"`
+    NeedToVerify bool `json:"needToVerify"`
+    FirmwareUdi string `json:"firmwareUdi"`
+    FirmwareFiles []*FirmwareFile `json:"firmwareFiles"`
+}
+
+// OtaFirmwareResp 表示升级包相关的响应结构
+type FirmwareResp struct {
+    FirmwareID int64 `json:"firmwareID"`
+}
+
+// OtaFirmwareUpdateReq 表示更新升级包的请求结构
+type FirmwareUpdateReq struct {
+    FirmwareID int64 `json:"firmwareId"`
+    FirmwareName string `json:"firmwareName"`
+    FirmwareDesc string `json:"firmwareDesc"`
+    FirmwareUdi string `json:"firmwareUdi"`
+}
+
+// OtaFirmwareDeleteReq 表示删除升级包的请求结构
+type FirmwareDeleteReq struct {
+    FirmwareID int64 `json:"firmwareId"`
+}
+
+// OtaFirmwareIndexReq 表示获取升级包列表的请求结构
+type FirmwareIndexReq struct {
+    Page *PageInfo `json:"page"`
+    ProductID string `json:"productID"`
+    FirmwareName string `json:"firmwareName"`
+    ModuleName string `json:"moduleName"`
+}
+
+// OtaFirmwareIndexResp 表示获取升级包列表的响应结构
+type FirmwareIndexResp struct {
+    List []FirmwareInfo `json:"list"`
+    Total int64 `json:"total"`
+}
+
+// OtaFirmwareInfo 表示升级包的信息结构
+type FirmwareInfo struct {
+    FirmwareID int64 `json:"firmwareId"`
+    FirmwareName string `json:"firmwareName"`
+    DestVersion string `json:"destVersion"`
+    ProductID string `json:"productID"`
+    ProductName string `json:"productName"`
+    Status int `json:"status"`
+    CreatedTime int64 `json:"createdTime"`
+}
+
+// OtaFirmwareReadReq 表示获取升级包详情的请求结构
+type FirmwareReadReq struct {
+    FirmwareID int64 `json:"firmwareId"`
+}
+
+// OtaFirmwareReadResp 表示获取升级包详情的响应结构
+type FirmwareReadResp struct {
+    FirmwareID int64 `json:"firmwareId"`
+    FirmwareName string `json:"firmwareName"`
+    DestVersion string `json:"destVersion"`
+    ProductID string `json:"productID"`
+    ProductName string `json:"productName"`
+    Status int `json:"status"`
+    CreatedTime int64 `json:"createdTime"`
+    SignMethod string `json:"signMethod"`
+    FirmwareDesc string `json:"firmwareDesc"`
+    FirmwareUdi string `json:"firmwareUdi"`
+    FirmwareFileList []*FirmwareFile `json:"firmwareFileList"`
+}

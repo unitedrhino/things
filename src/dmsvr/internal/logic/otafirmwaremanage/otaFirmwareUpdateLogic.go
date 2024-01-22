@@ -5,8 +5,6 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
-	"github.com/jinzhu/copier"
-
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
@@ -33,10 +31,15 @@ func NewOtaFirmwareUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 // 修改升级包
 func (l *OtaFirmwareUpdateLogic) OtaFirmwareUpdate(in *dm.OtaFirmwareUpdateReq) (*dm.OtaFirmwareResp, error) {
-	var otaFirmware relationDB.DmOtaFirmware
-	copier.Copy(&otaFirmware, in)
-	logx.Infof("otaFirmware:%+v", otaFirmware)
-	err := l.OfDB.Update(l.ctx, &otaFirmware)
+	otaFirmware, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareFilter{FirmwareID: in.FirmwareId})
+	if err != nil {
+		return nil, err
+	}
+	//更新相关字段
+	otaFirmware.Desc = in.FirmwareDesc
+	otaFirmware.Name = in.FirmwareName
+	otaFirmware.Extra = in.FirmwareUdi.Value
+	err = l.OfDB.Update(l.ctx, otaFirmware)
 	if err != nil {
 		l.Errorf("%s.Update err=%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)

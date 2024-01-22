@@ -29,7 +29,7 @@ func Subscribe(svcCtx *svc.ServiceContext) {
 func InitTimer(svcCtx *svc.ServiceContext) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
-	//ddsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
+	//dgsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
 	//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
 	ctx, span := ctxs.StartSpan(ctx, "InitTimer", "")
 	defer span.End()

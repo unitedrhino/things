@@ -12,11 +12,12 @@ type ProductInfoRepo struct {
 }
 
 type ProductFilter struct {
-	DeviceType   int64
-	ProductName  string
-	ProductIDs   []string
-	ProductNames []string
-	Tags         map[string]string
+	DeviceType       int64
+	ProductName      string
+	ProductIDs       []string
+	ProductNames     []string
+	Tags             map[string]string
+	WithProtocolInfo bool
 }
 
 func NewProductInfoRepo(in any) *ProductInfoRepo {
@@ -27,6 +28,9 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	db := p.db.WithContext(ctx)
 	if f.DeviceType != 0 {
 		db = db.Where("device_type=?", f.DeviceType)
+	}
+	if f.WithProtocolInfo {
+		db = db.Preload("ProtocolInfo")
 	}
 	if f.ProductName != "" {
 		db = db.Where("product_name like ?", "%"+f.ProductName+"%")

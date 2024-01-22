@@ -7,7 +7,7 @@ import (
 
 const (
 	TypeReport   = "report"
-	TypeUpdate   = "update" //固件升级消息下行  返回升级信息，版本、固件地址
+	TypeUpgrade  = "upgrade" //固件升级消息下行  返回升级信息，版本、固件地址
 	TypeProgress = "progress"
 )
 
@@ -38,24 +38,24 @@ type (
 		Params UpgradeParams
 	}
 	UpgradeParams struct {
-		Version    string  `json:"version"`
-		IsDiff     int     `json:"is_diff"`
-		SignMethod string  `json:"sign_method"`
-		Files      []File  `json:"files"`
-		Module     string  `json:"module"`
-		ExtData    ExtData `json:"ext_data"`
+		Version          string    `json:"version"`
+		IsDiff           int64     `json:"is_diff"`
+		SignMethod       string    `json:"sign_method"`
+		Files            []File    `json:"files"`
+		Module           string    `json:"module"`
+		DownloadProtocol string    `json:"download_protocol"`
+		ExtData          []ExtData `json:"ext_data"`
 	}
 	ExtData struct {
-		Key1       string `json:"key1"`
-		Key2       string `json:"key2"`
-		PackageUdi string `json:"_package_udi"`
+		Key   string `json:"key"`
+		Value string `json:"value"`
 	}
 	File struct {
-		FileSize int64  `json:"file_size"`
-		FileName string `json:"file_name"`
-		FileUrl  string `json:"file_url"`
-		FileMd5  string `json:"file_md5"`
-		FileSign string `json:"file_sign"`
+		Size      int64  `json:"size"`
+		Name      string `json:"name"`
+		FilePath  string `json:"file_path"`
+		FileMd5   string `json:"file_md5"`
+		Signature string `json:"signature"`
 	}
 )
 

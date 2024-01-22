@@ -57,6 +57,15 @@ func GetLoginDevice(userName string) (*LoginDevice, error) {
 }
 
 func GetClientIDInfo(ClientID string) (*LoginDevice, error) {
+	clientIDs := strings.Split(ClientID, "&")
+	if len(clientIDs) == 2 {
+		lg := &LoginDevice{
+			ProductID:  clientIDs[0],
+			DeviceName: clientIDs[1],
+		}
+		return lg, nil
+	}
+	// 兼容老的clientID
 	if len(ClientID) < ProductIdLen {
 		return nil, errors.Parameter.AddDetail("clientID length not enough")
 	}
@@ -65,6 +74,7 @@ func GetClientIDInfo(ClientID string) (*LoginDevice, error) {
 		DeviceName: ClientID[ProductIdLen:],
 	}
 	return lg, nil
+
 }
 
 // 先将 10进制 转为 62进制

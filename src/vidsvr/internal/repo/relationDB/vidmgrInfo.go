@@ -18,6 +18,10 @@ type VidmgrFilter struct {
 	VidmgrName    string
 	VidmgrIDs     []string
 	VidmgrNames   []string
+	VidmgrIpV4    int64
+	VidmgrPort    int64
+	VidmgrSecret  string
+	MediasvrType  string
 	Tags          map[string]string
 	LastLoginTime struct {
 		Start int64
@@ -44,10 +48,20 @@ func (p VidmgrInfoRepo) fmtFilter(ctx context.Context, f VidmgrFilter) *gorm.DB 
 		db = db.Where("name like ?", "%"+f.VidmgrName+"%")
 	}
 	if len(f.VidmgrIDs) != 0 {
-		db = db.Where("vidmgr_id = ?", f.VidmgrIDs)
+		db = db.Where("vidmgr_id in ?", f.VidmgrIDs)
 	}
 	if len(f.VidmgrNames) != 0 {
-		db = db.Where("name = ?", f.VidmgrNames)
+		db = db.Where("name in ?", f.VidmgrNames)
+	}
+	/****************ip,port,secret为确定流服务的三要素*********************************/
+	if f.VidmgrIpV4 != 0 {
+		db = db.Where("ipv4 = ?", f.VidmgrIpV4)
+	}
+	if f.VidmgrPort != 0 {
+		db = db.Where("port = ?", f.VidmgrPort)
+	}
+	if f.VidmgrSecret != "" {
+		db = db.Where("secret = ?", f.VidmgrSecret)
 	}
 	if f.VidmgrStatus != 0 {
 		db = db.Where("status = ?", f.VidmgrStatus)

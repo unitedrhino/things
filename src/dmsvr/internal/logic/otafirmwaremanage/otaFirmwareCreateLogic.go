@@ -36,11 +36,7 @@ func NewOtaFirmwareCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *OtaFirmwareCreateLogic) CheckOtaFirmware(in *dm.OtaFirmwareCreateReq) (bool, error) {
 	//查询升级包是否存在
-	logx.Infof("in:%+v", in)
-	logx.Infof("productId:%+v", in.ProductID)
-	logx.Infof("lctx:%+v", l.ctx)
 	logx.Infof("relationDB:%+v", relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
-	logx.Infof("PiDB:%+v", l.PiDB)
 	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if errors.Cmp(err, errors.NotFind) {
 		l.Errorf("not find product id:" + cast.ToString(in.ProductID))
@@ -64,7 +60,7 @@ func (l *OtaFirmwareCreateLogic) OtaFirmwareCreate(in *dm.OtaFirmwareCreateReq) 
 	//校验版本号是否重复
 	logx.Infof("ctx:%+v", l.ctx)
 	var fileDB = relationDB.NewOtaFirmwareFileRepo(l.ctx)
-	logx.Infof("%+v", &in)
+	logx.Infof("%+v", in)
 	find, err := l.CheckOtaFirmware(in)
 	if errors.Cmp(err, errors.Parameter) {
 		return nil, err
@@ -74,6 +70,7 @@ func (l *OtaFirmwareCreateLogic) OtaFirmwareCreate(in *dm.OtaFirmwareCreateReq) 
 	} else if find == false {
 		return nil, err
 	}
+	var total_size int64
 	if len(in.FirmwareFiles) > 0 {
 		for k, firmwareFile := range in.FirmwareFiles {
 			//阿里云寻找scene
@@ -99,18 +96,32 @@ func (l *OtaFirmwareCreateLogic) OtaFirmwareCreate(in *dm.OtaFirmwareCreateReq) 
 				logx.Error(err)
 				return nil, errors.System.AddDetail(err)
 			}
+			otaFirmwareFileInfo, err := l.svcCtx.OssClient.PrivateBucket().GetObjectInfo(l.ctx, path)
+			if err != nil {
+				logx.Error(err)
+				return nil, errors.System.AddDetail(err)
+			}
+			total_size += otaFirmwareFileInfo.Size
 			in.FirmwareFiles[k].FilePath = path
+			in.FirmwareFiles[k].Size = otaFirmwareFileInfo.Size
+			//in.FirmwareFiles[k].FileMd5 = otaFirmwareFileInfo.Md5
+			in.FirmwareFiles[k].Signature = otaFirmwareFileInfo.Md5
 		}
 	}
+	logx.Infof("req:%+v", in)
+	logx.Infof("extra:%+v", in.FirmwareUdi)
+	logx.Infof("extra:%+v", in.FirmwareUdi.Value)
 	di := relationDB.DmOtaFirmware{
 		ProductID:  in.ProductID,
 		Version:    in.DestVersion,
 		Name:       in.FirmwareName,
 		Desc:       in.FirmwareDesc,
 		SignMethod: in.SignMethod,
+		SrcVersion: in.SrcVersion,
 		Module:     in.Module,
 		IsDiff:     in.IsDiff,
 		Extra:      in.FirmwareUdi.Value,
+		TotalSize:  total_size,
 	}
 	//是否需要平台验证
 	di.Status = msgOta.OtaFirmwareStatusNotVerified
@@ -134,6 +145,8 @@ func (l *OtaFirmwareCreateLogic) OtaFirmwareCreate(in *dm.OtaFirmwareCreateReq) 
 			FilePath:   firmWareFile.FilePath,
 			Name:       firmWareFile.Name,
 			Size:       firmWareFile.Size,
+			Storage:    "minio",
+			Signature:  firmWareFile.Signature,
 		}
 		fileDB.Insert(l.ctx, &ff)
 	}
