@@ -28,6 +28,12 @@ func (s *VidmgrInfoManageServer) VidmgrInfoCreate(ctx context.Context, in *vid.V
 	return l.VidmgrInfoCreate(in)
 }
 
+// 激活服务
+func (s *VidmgrInfoManageServer) VidmgrInfoActive(ctx context.Context, in *vid.VidmgrInfoActiveReq) (*vid.Response, error) {
+	l := vidmgrinfomanagelogic.NewVidmgrInfoActiveLogic(ctx, s.svcCtx)
+	return l.VidmgrInfoActive(in)
+}
+
 // 更新服务
 func (s *VidmgrInfoManageServer) VidmgrInfoUpdate(ctx context.Context, in *vid.VidmgrInfo) (*vid.Response, error) {
 	l := vidmgrinfomanagelogic.NewVidmgrInfoUpdateLogic(ctx, s.svcCtx)

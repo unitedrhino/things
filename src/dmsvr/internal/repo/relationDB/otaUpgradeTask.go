@@ -32,7 +32,7 @@ type OtaUpgradeTaskFilter struct {
 	WithScheduleTime bool
 	//TaskStatus     int64
 	TaskStatusList []int
-	ModuleName     string
+	Module         string
 }
 
 func (p OtaUpgradeTaskRepo) fmtFilter(ctx context.Context, f OtaUpgradeTaskFilter) *gorm.DB {
@@ -56,8 +56,8 @@ func (p OtaUpgradeTaskRepo) fmtFilter(ctx context.Context, f OtaUpgradeTaskFilte
 	if len(f.TaskStatusList) != 0 {
 		db = db.Where("task_status in ?", f.TaskStatusList)
 	}
-	if f.ModuleName != "" {
-		db = db.Where("module_name = ?", f.ModuleName)
+	if f.Module != "" {
+		db = db.Where("module = ?", f.Module)
 	}
 
 	return db

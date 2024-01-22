@@ -59,6 +59,9 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 		egg.Go(func() error {
 			_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, dmDeviceInfoReq)
 			if err != nil {
+				if errors.Cmp(err, errors.Duplicate) {
+					return nil
+				}
 				sm.Store(idx, errors.Fmt(err).GetMsg())
 			}
 			return nil

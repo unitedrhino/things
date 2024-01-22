@@ -8,6 +8,7 @@ Port: 7777
 NodeID: 1
 Log:
   Encoding: plain
+  #Mode: file
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
@@ -31,16 +32,14 @@ Proxy:
     - Router: /api/v1/oss/
       DeletePrefix: true
       Dest: http://127.0.0.1:9000
-DdEnable: true
-SysRpc:
-  Enable: true
-  Mode: direct
-#DiRpc:
+#SysRpc:
 #  Enable: true
 #  Mode: direct
-#  RunProxy: true
-#  Conf:
-#    Timeout: 1000000
+DgRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
 DmRpc:
   Enable: true
   Mode: direct
@@ -59,6 +58,16 @@ DmRpc:
 #VidRpc:
 #  Enable: false
 #  Mode: direct
+#TimedJobRpc:
+#  Enable: true
+#  Mode: direct
+#  Conf:
+#    Timeout: 1000000
+#TimedSchedulerRpc:
+#  Enable: true
+#  Mode: direct
+#  Conf:
+#    Timeout: 1000000
 RuleRpc:
   Enable: false
   Mode: direct
@@ -74,3 +83,8 @@ OssConf:
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false
+#VidRpc:
+#  Enable: true
+#  Mode: direct
+#  Conf:
+#    Timeout: 1000000

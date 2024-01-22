@@ -11,6 +11,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"sync"
+	"time"
 )
 
 var (
@@ -38,6 +39,14 @@ func GetConn(database conf.Database) (conn *gorm.DB, err error) {
 	default:
 		conn, err = gorm.Open(mysql.Open(database.DSN), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 	}
+	if err != nil {
+		return nil, err
+	}
+	db, _ := conn.DB()
+	db.SetMaxIdleConns(200)
+	db.SetMaxOpenConns(200)
+	db.SetConnMaxIdleTime(time.Hour)
+	db.SetConnMaxLifetime(time.Hour)
 	return
 }
 

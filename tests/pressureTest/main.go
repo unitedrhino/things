@@ -38,12 +38,12 @@ const (
 `
 	pushTopic = "$thing/up/property/26GOsI5N0vS/test%v"
 	subTopic  = "$thing/down/property/26GOsI5N0vS/test%v"
-	userName  = "ddsvr"
+	userName  = "dgsvr"
 	password  = "iThings"
 )
 
 var (
-	deviceTotal int64 = 1000
+	deviceTotal int64 = 100
 	pubInterval       = time.Second
 	pubCount          = atomic.NewInt64(0)
 	subCount          = atomic.NewInt64(0)

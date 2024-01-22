@@ -1,5 +1,8 @@
 Name: vid.rpc
 ListenOn: 0.0.0.0:9098
+Mode: dev
+#restconf
+
 Etcd:
   Hosts:
   - 127.0.0.1:2379
@@ -15,8 +18,25 @@ CacheRedis:
     Type: node
 Log:
   Encoding: plain
-Telemetry:
-    Name: dm.rpc
-    Endpoint: http://127.0.0.1:14268/api/traces
-    Sampler: 1.0
-    Batcher: jaeger
+
+#用于配置docker中zlmediakit---访问vidsvr的IP和端口
+Mediakit:
+  Host: 172.26.14.242  #IP和当前环境host上eth0的IP，用于
+  Port: 8088
+  Secret: WF8K4LJi2FZbd5Q2OJ3RYTACPZsprvM0
+
+Restconf:
+  Name: vid
+  Host: 172.26.14.242
+  Port: 8888
+
+#用于配置外部网络环境的zlmediakit的网络连接
+RestconfExt:
+  Host: 192.168.10.80 #当前主机IP访问外网的IP，未配置时使用默认使用RestCconf的IP
+  Port: 8888 #访问外网的Port(如果有映射端口在此处填写)，未配置时使用默认使用RestCconf的Port
+
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000

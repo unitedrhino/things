@@ -28,32 +28,32 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var (
 		timedM timedmanage.TimedManage
 	)
-
 	//pd, err := pubDev
 	cache := kv.NewStore(c.CacheRedis)
 	nodeId := utils.GetNodeID(c.CacheRedis, c.Name)
 	VidmgrID := utils.NewSnowFlake(nodeId)
 	bus := eventBus.NewEventBus()
 	stores.InitConn(c.Database)
-	err := relationDB.Migrate()
+	err := relationDB.Migrate(c.Database)
 	if err != nil {
 		logx.Error("vidsvr 数据库初始化失败 err", err)
 		os.Exit(-1)
 	} else {
 		fmt.Printf("Vidsvr 数据库初始化成功 \n")
 	}
-
-	if c.TimedJobRpc.Mode == conf.ClientModeGrpc {
-		timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
-	} else {
-		timedM = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
+	if c.TimedJobRpc.Enable {
+		if c.TimedJobRpc.Mode == conf.ClientModeGrpc {
+			timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
+		} else {
+			timedM = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
+		}
 	}
-
-	return &ServiceContext{
+	svcCtx := &ServiceContext{
 		Config:   c,
 		VidmgrID: VidmgrID,
 		Cache:    cache,
 		Bus:      bus,
 		TimedM:   timedM,
 	}
+	return svcCtx
 }

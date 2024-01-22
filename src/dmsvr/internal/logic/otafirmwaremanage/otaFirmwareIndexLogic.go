@@ -39,9 +39,10 @@ func (l *OtaFirmwareIndexLogic) OtaFirmwareIndex(in *dm.OtaFirmwareIndexReq) (*d
 		err  error
 	)
 	filter := relationDB.OtaFirmwareFilter{
-		ProductID:   in.ProductID,
-		Module:      in.ModuleName,
-		WithProduct: true,
+		ProductID:    in.ProductID,
+		Module:       in.ModuleName,
+		FirmwareName: in.FirmwareName,
+		WithProduct:  true,
 	}
 	size, err = l.OfDB.CountByFilter(l.ctx, filter)
 	if err != nil {
@@ -54,8 +55,14 @@ func (l *OtaFirmwareIndexLogic) OtaFirmwareIndex(in *dm.OtaFirmwareIndexReq) (*d
 	if err != nil {
 		return nil, err
 	}
-	info = make([]*dm.OtaFirmwareInfo, len(list))
 	err = copier.Copy(&info, &list)
+	for k, v := range list {
+		info[k].FirmwareId = v.ID
+		info[k].FirmwareName = v.Name
+		info[k].DestVersion = v.Version
+		info[k].Status = v.Status
+	}
+	logx.Infof("info:%+v", info)
 	if err != nil {
 		logx.Errorf("DmOtaFirmware copy to OtaFirmwareInfo failed")
 		return nil, err

@@ -44,8 +44,13 @@ func (l *OtaFirmwareReadLogic) OtaFirmwareRead(in *dm.OtaFirmwareReadReq) (*dm.O
 		l.Errorf("%s.Query OTAFirmwareFile err=%v", utils.FuncName(), err)
 		return nil, err
 	}
-	var result *dm.OtaFirmwareReadResp
+	var result dm.OtaFirmwareReadResp
 	err = copier.Copy(&result, &otaFirmware)
+	result.FirmwareId = otaFirmware.ID
+	result.FirmwareName = otaFirmware.Name
+	result.DestVersion = otaFirmware.Version
+	result.FirmwareDesc = otaFirmware.Desc
+	result.FirmwareUdi = otaFirmware.Extra
 	if err != nil {
 		l.Errorf("%s.Copy OTAFirmware err=%v", utils.FuncName(), err)
 		return nil, err
@@ -55,5 +60,6 @@ func (l *OtaFirmwareReadLogic) OtaFirmwareRead(in *dm.OtaFirmwareReadReq) (*dm.O
 		l.Errorf("%s.Copy OTAFirmwareFile err=%v", utils.FuncName(), err)
 		return nil, err
 	}
-	return result, nil
+	logx.Infof("result:%+v", &result)
+	return &result, nil
 }

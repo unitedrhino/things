@@ -21,215 +21,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	DeviceAuth_LoginAuth_FullMethodName      = "/dm.DeviceAuth/loginAuth"
-	DeviceAuth_AccessAuth_FullMethodName     = "/dm.DeviceAuth/accessAuth"
-	DeviceAuth_RootCheck_FullMethodName      = "/dm.DeviceAuth/rootCheck"
-	DeviceAuth_DeviceRegister_FullMethodName = "/dm.DeviceAuth/deviceRegister"
-)
-
-// DeviceAuthClient is the client API for DeviceAuth service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type DeviceAuthClient interface {
-	// 设备登录认证
-	LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error)
-	// 设备操作认证
-	AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error)
-	// 鉴定是否是root账号
-	RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
-	// 设备动态注册
-	DeviceRegister(ctx context.Context, in *DeviceRegisterReq, opts ...grpc.CallOption) (*DeviceRegisterResp, error)
-}
-
-type deviceAuthClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewDeviceAuthClient(cc grpc.ClientConnInterface) DeviceAuthClient {
-	return &deviceAuthClient{cc}
-}
-
-func (c *deviceAuthClient) LoginAuth(ctx context.Context, in *LoginAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, DeviceAuth_LoginAuth_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *deviceAuthClient) AccessAuth(ctx context.Context, in *AccessAuthReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, DeviceAuth_AccessAuth_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *deviceAuthClient) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, DeviceAuth_RootCheck_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *deviceAuthClient) DeviceRegister(ctx context.Context, in *DeviceRegisterReq, opts ...grpc.CallOption) (*DeviceRegisterResp, error) {
-	out := new(DeviceRegisterResp)
-	err := c.cc.Invoke(ctx, DeviceAuth_DeviceRegister_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// DeviceAuthServer is the server API for DeviceAuth service.
-// All implementations must embed UnimplementedDeviceAuthServer
-// for forward compatibility
-type DeviceAuthServer interface {
-	// 设备登录认证
-	LoginAuth(context.Context, *LoginAuthReq) (*Response, error)
-	// 设备操作认证
-	AccessAuth(context.Context, *AccessAuthReq) (*Response, error)
-	// 鉴定是否是root账号
-	RootCheck(context.Context, *RootCheckReq) (*Response, error)
-	// 设备动态注册
-	DeviceRegister(context.Context, *DeviceRegisterReq) (*DeviceRegisterResp, error)
-	mustEmbedUnimplementedDeviceAuthServer()
-}
-
-// UnimplementedDeviceAuthServer must be embedded to have forward compatible implementations.
-type UnimplementedDeviceAuthServer struct {
-}
-
-func (UnimplementedDeviceAuthServer) LoginAuth(context.Context, *LoginAuthReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LoginAuth not implemented")
-}
-func (UnimplementedDeviceAuthServer) AccessAuth(context.Context, *AccessAuthReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccessAuth not implemented")
-}
-func (UnimplementedDeviceAuthServer) RootCheck(context.Context, *RootCheckReq) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RootCheck not implemented")
-}
-func (UnimplementedDeviceAuthServer) DeviceRegister(context.Context, *DeviceRegisterReq) (*DeviceRegisterResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceRegister not implemented")
-}
-func (UnimplementedDeviceAuthServer) mustEmbedUnimplementedDeviceAuthServer() {}
-
-// UnsafeDeviceAuthServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to DeviceAuthServer will
-// result in compilation errors.
-type UnsafeDeviceAuthServer interface {
-	mustEmbedUnimplementedDeviceAuthServer()
-}
-
-func RegisterDeviceAuthServer(s grpc.ServiceRegistrar, srv DeviceAuthServer) {
-	s.RegisterService(&DeviceAuth_ServiceDesc, srv)
-}
-
-func _DeviceAuth_LoginAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginAuthReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DeviceAuthServer).LoginAuth(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DeviceAuth_LoginAuth_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceAuthServer).LoginAuth(ctx, req.(*LoginAuthReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DeviceAuth_AccessAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccessAuthReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DeviceAuthServer).AccessAuth(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DeviceAuth_AccessAuth_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceAuthServer).AccessAuth(ctx, req.(*AccessAuthReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DeviceAuth_RootCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RootCheckReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DeviceAuthServer).RootCheck(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DeviceAuth_RootCheck_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceAuthServer).RootCheck(ctx, req.(*RootCheckReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DeviceAuth_DeviceRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceRegisterReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DeviceAuthServer).DeviceRegister(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DeviceAuth_DeviceRegister_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceAuthServer).DeviceRegister(ctx, req.(*DeviceRegisterReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// DeviceAuth_ServiceDesc is the grpc.ServiceDesc for DeviceAuth service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var DeviceAuth_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "dm.DeviceAuth",
-	HandlerType: (*DeviceAuthServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "loginAuth",
-			Handler:    _DeviceAuth_LoginAuth_Handler,
-		},
-		{
-			MethodName: "accessAuth",
-			Handler:    _DeviceAuth_AccessAuth_Handler,
-		},
-		{
-			MethodName: "rootCheck",
-			Handler:    _DeviceAuth_RootCheck_Handler,
-		},
-		{
-			MethodName: "deviceRegister",
-			Handler:    _DeviceAuth_DeviceRegister_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/dm.proto",
-}
-
-const (
+	DeviceManage_RootCheck_FullMethodName                = "/dm.DeviceManage/rootCheck"
 	DeviceManage_DeviceInfoCreate_FullMethodName         = "/dm.DeviceManage/deviceInfoCreate"
 	DeviceManage_DeviceInfoUpdate_FullMethodName         = "/dm.DeviceManage/deviceInfoUpdate"
 	DeviceManage_DeviceInfoDelete_FullMethodName         = "/dm.DeviceManage/deviceInfoDelete"
@@ -246,6 +38,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DeviceManageClient interface {
+	// 鉴定是否是root账号(提供给mqtt broker)
+	RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
 	// 新增设备
 	DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
 	// 更新设备
@@ -274,6 +68,15 @@ type deviceManageClient struct {
 
 func NewDeviceManageClient(cc grpc.ClientConnInterface) DeviceManageClient {
 	return &deviceManageClient{cc}
+}
+
+func (c *deviceManageClient) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, DeviceManage_RootCheck_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *deviceManageClient) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
@@ -370,6 +173,8 @@ func (c *deviceManageClient) DeviceTypeCount(ctx context.Context, in *DeviceType
 // All implementations must embed UnimplementedDeviceManageServer
 // for forward compatibility
 type DeviceManageServer interface {
+	// 鉴定是否是root账号(提供给mqtt broker)
+	RootCheck(context.Context, *RootCheckReq) (*Response, error)
 	// 新增设备
 	DeviceInfoCreate(context.Context, *DeviceInfo) (*Response, error)
 	// 更新设备
@@ -397,6 +202,9 @@ type DeviceManageServer interface {
 type UnimplementedDeviceManageServer struct {
 }
 
+func (UnimplementedDeviceManageServer) RootCheck(context.Context, *RootCheckReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RootCheck not implemented")
+}
 func (UnimplementedDeviceManageServer) DeviceInfoCreate(context.Context, *DeviceInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoCreate not implemented")
 }
@@ -438,6 +246,24 @@ type UnsafeDeviceManageServer interface {
 
 func RegisterDeviceManageServer(s grpc.ServiceRegistrar, srv DeviceManageServer) {
 	s.RegisterService(&DeviceManage_ServiceDesc, srv)
+}
+
+func _DeviceManage_RootCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RootCheckReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).RootCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_RootCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).RootCheck(ctx, req.(*RootCheckReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _DeviceManage_DeviceInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -627,6 +453,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "dm.DeviceManage",
 	HandlerType: (*DeviceManageServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "rootCheck",
+			Handler:    _DeviceManage_RootCheck_Handler,
+		},
 		{
 			MethodName: "deviceInfoCreate",
 			Handler:    _DeviceManage_DeviceInfoCreate_Handler,
@@ -1224,6 +1054,98 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "productCustomUpdate",
 			Handler:    _ProductManage_ProductCustomUpdate_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
+
+const (
+	ProtocolManage_ProtocolInfoIndex_FullMethodName = "/dm.ProtocolManage/protocolInfoIndex"
+)
+
+// ProtocolManageClient is the client API for ProtocolManage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ProtocolManageClient interface {
+	// 协议列表
+	ProtocolInfoIndex(ctx context.Context, in *ProtocolInfoIndexReq, opts ...grpc.CallOption) (*ProtocolInfoIndexResp, error)
+}
+
+type protocolManageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewProtocolManageClient(cc grpc.ClientConnInterface) ProtocolManageClient {
+	return &protocolManageClient{cc}
+}
+
+func (c *protocolManageClient) ProtocolInfoIndex(ctx context.Context, in *ProtocolInfoIndexReq, opts ...grpc.CallOption) (*ProtocolInfoIndexResp, error) {
+	out := new(ProtocolInfoIndexResp)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolInfoIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ProtocolManageServer is the server API for ProtocolManage service.
+// All implementations must embed UnimplementedProtocolManageServer
+// for forward compatibility
+type ProtocolManageServer interface {
+	// 协议列表
+	ProtocolInfoIndex(context.Context, *ProtocolInfoIndexReq) (*ProtocolInfoIndexResp, error)
+	mustEmbedUnimplementedProtocolManageServer()
+}
+
+// UnimplementedProtocolManageServer must be embedded to have forward compatible implementations.
+type UnimplementedProtocolManageServer struct {
+}
+
+func (UnimplementedProtocolManageServer) ProtocolInfoIndex(context.Context, *ProtocolInfoIndexReq) (*ProtocolInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolInfoIndex not implemented")
+}
+func (UnimplementedProtocolManageServer) mustEmbedUnimplementedProtocolManageServer() {}
+
+// UnsafeProtocolManageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProtocolManageServer will
+// result in compilation errors.
+type UnsafeProtocolManageServer interface {
+	mustEmbedUnimplementedProtocolManageServer()
+}
+
+func RegisterProtocolManageServer(s grpc.ServiceRegistrar, srv ProtocolManageServer) {
+	s.RegisterService(&ProtocolManage_ServiceDesc, srv)
+}
+
+func _ProtocolManage_ProtocolInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProtocolManage_ProtocolInfoIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolInfoIndex(ctx, req.(*ProtocolInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ProtocolManage_ServiceDesc is the grpc.ServiceDesc for ProtocolManage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProtocolManage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.ProtocolManage",
+	HandlerType: (*ProtocolManageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "protocolInfoIndex",
+			Handler:    _ProtocolManage_ProtocolInfoIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

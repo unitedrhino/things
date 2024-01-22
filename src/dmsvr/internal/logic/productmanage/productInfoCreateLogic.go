@@ -139,11 +139,11 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 		return nil, errors.Duplicate.WithMsgf("产品名称重复:%s", in.ProductName).AddDetail("ProductName:" + in.ProductName)
 	}
 	if in.ProductID != "" {
-		expr := `[0-9A-Za-z]{11,11}`
+		expr := `[0-9A-Za-z]{5,20}`
 		match, _ := regexp.MatchString(expr, in.ProductID)
 		//fmt.Println(match)
 		if !match {
-			return nil, errors.Parameter.WithMsg("产品id格式不对,格式为11位数字和英文字母组成的字符串")
+			return nil, errors.Parameter.WithMsg("产品id格式不对,格式为5到20位数字和英文字母组成的字符串")
 		}
 		find, err := l.CheckProductID(in)
 		if err != nil {

@@ -14,7 +14,7 @@ import (
 )
 
 type (
-	AccessAuthReq                      = dm.AccessAuthReq
+	CustomTopic                        = dm.CustomTopic
 	DeviceCore                         = dm.DeviceCore
 	DeviceGatewayBindDevice            = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq              = dm.DeviceGatewayIndexReq
@@ -29,8 +29,6 @@ type (
 	DeviceInfoIndexReq                 = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp                = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq                  = dm.DeviceInfoReadReq
-	DeviceRegisterReq                  = dm.DeviceRegisterReq
-	DeviceRegisterResp                 = dm.DeviceRegisterResp
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
@@ -64,7 +62,6 @@ type (
 	HubLogIndexReq                     = dm.HubLogIndexReq
 	HubLogIndexResp                    = dm.HubLogIndexResp
 	JobReq                             = dm.JobReq
-	LoginAuthReq                       = dm.LoginAuthReq
 	MultiSendPropertyReq               = dm.MultiSendPropertyReq
 	MultiSendPropertyResp              = dm.MultiSendPropertyResp
 	OTAModuleDeleteReq                 = dm.OTAModuleDeleteReq
@@ -74,6 +71,7 @@ type (
 	OTAModuleReq                       = dm.OTAModuleReq
 	OTAModuleVersionsIndexResp         = dm.OTAModuleVersionsIndexResp
 	OTATaskByDeviceCancelReq           = dm.OTATaskByDeviceCancelReq
+	OTATaskByDeviceNameReq             = dm.OTATaskByDeviceNameReq
 	OTATaskByJobCancelReq              = dm.OTATaskByJobCancelReq
 	OTATaskByJobIndexReq               = dm.OTATaskByJobIndexReq
 	OTATaskConfirmReq                  = dm.OTATaskConfirmReq
@@ -149,6 +147,9 @@ type (
 	PropertyIndexResp                  = dm.PropertyIndexResp
 	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq                = dm.PropertyLogIndexReq
+	ProtocolInfo                       = dm.ProtocolInfo
+	ProtocolInfoIndexReq               = dm.ProtocolInfoIndexReq
+	ProtocolInfoIndexResp              = dm.ProtocolInfoIndexResp
 	RemoteConfigCreateReq              = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq               = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp              = dm.RemoteConfigIndexResp

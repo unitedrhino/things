@@ -14,7 +14,7 @@ import (
 )
 
 type (
-	AccessAuthReq                      = dm.AccessAuthReq
+	CustomTopic                        = dm.CustomTopic
 	DeviceCore                         = dm.DeviceCore
 	DeviceGatewayBindDevice            = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq              = dm.DeviceGatewayIndexReq
@@ -29,8 +29,6 @@ type (
 	DeviceInfoIndexReq                 = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp                = dm.DeviceInfoIndexResp
 	DeviceInfoReadReq                  = dm.DeviceInfoReadReq
-	DeviceRegisterReq                  = dm.DeviceRegisterReq
-	DeviceRegisterResp                 = dm.DeviceRegisterResp
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
@@ -64,7 +62,6 @@ type (
 	HubLogIndexReq                     = dm.HubLogIndexReq
 	HubLogIndexResp                    = dm.HubLogIndexResp
 	JobReq                             = dm.JobReq
-	LoginAuthReq                       = dm.LoginAuthReq
 	MultiSendPropertyReq               = dm.MultiSendPropertyReq
 	MultiSendPropertyResp              = dm.MultiSendPropertyResp
 	OTAModuleDeleteReq                 = dm.OTAModuleDeleteReq
@@ -74,6 +71,7 @@ type (
 	OTAModuleReq                       = dm.OTAModuleReq
 	OTAModuleVersionsIndexResp         = dm.OTAModuleVersionsIndexResp
 	OTATaskByDeviceCancelReq           = dm.OTATaskByDeviceCancelReq
+	OTATaskByDeviceNameReq             = dm.OTATaskByDeviceNameReq
 	OTATaskByJobCancelReq              = dm.OTATaskByJobCancelReq
 	OTATaskByJobIndexReq               = dm.OTATaskByJobIndexReq
 	OTATaskConfirmReq                  = dm.OTATaskConfirmReq
@@ -149,6 +147,9 @@ type (
 	PropertyIndexResp                  = dm.PropertyIndexResp
 	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq                = dm.PropertyLogIndexReq
+	ProtocolInfo                       = dm.ProtocolInfo
+	ProtocolInfoIndexReq               = dm.ProtocolInfoIndexReq
+	ProtocolInfoIndexResp              = dm.ProtocolInfoIndexResp
 	RemoteConfigCreateReq              = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq               = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp              = dm.RemoteConfigIndexResp
@@ -179,6 +180,8 @@ type (
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 
 	DeviceManage interface {
+		// 鉴定是否是root账号(提供给mqtt broker)
+		RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
 		// 新增设备
 		DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
 		// 更新设备
@@ -222,6 +225,17 @@ func NewDirectDeviceManage(svcCtx *svc.ServiceContext, svr dm.DeviceManageServer
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
+}
+
+// 鉴定是否是root账号(提供给mqtt broker)
+func (m *defaultDeviceManage) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.RootCheck(ctx, in, opts...)
+}
+
+// 鉴定是否是root账号(提供给mqtt broker)
+func (d *directDeviceManage) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.RootCheck(ctx, in)
 }
 
 // 新增设备
