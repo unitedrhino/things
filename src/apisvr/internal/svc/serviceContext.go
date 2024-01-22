@@ -38,6 +38,7 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
+	"github.com/i-Things/things/src/udsvr/client/ops"
 	"github.com/i-Things/things/src/udsvr/client/rule"
 	"github.com/i-Things/things/src/udsvr/uddirect"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrconfigmanage"
@@ -84,6 +85,7 @@ type SvrClient struct {
 	Common       common.Common
 
 	Rule           rule.Rule
+	Ops            ops.Ops
 	Scene          scenelinkage.SceneLinkage
 	Alarm          alarmcenter.AlarmCenter
 	Timedscheduler timedscheduler.Timedscheduler
@@ -108,10 +110,10 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
-		vidmgrM vidmgrinfomanage.VidmgrInfoManage
-		vidmgrC vidmgrconfigmanage.VidmgrConfigManage
-		vidmgrS vidmgrstreammanage.VidmgrStreamManage
-
+		vidmgrM        vidmgrinfomanage.VidmgrInfoManage
+		vidmgrC        vidmgrconfigmanage.VidmgrConfigManage
+		vidmgrS        vidmgrstreammanage.VidmgrStreamManage
+		Ops            ops.Ops
 		protocolM      protocolmanage.ProtocolManage
 		schemaM        schemamanage.SchemaManage
 		projectM       projectmanage.ProjectManage
@@ -178,8 +180,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.UdRpc.Enable {
 		if c.UdRpc.Mode == conf.ClientModeGrpc {
 			ic = rule.NewRule(zrpc.MustNewClient(c.UdRpc.Conf))
+			Ops = ops.NewOps(zrpc.MustNewClient(c.UdRpc.Conf))
 		} else {
 			ic = uddirect.NewRule(c.UdRpc.RunProxy)
+			Ops = uddirect.NewOps(c.UdRpc.RunProxy)
 		}
 	}
 	if c.SysRpc.Enable {
@@ -281,6 +285,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			RemoteConfig:   remoteConfig,
 			Common:         sysCommon,
 			Rule:           ic,
+			Ops:            Ops,
 		},
 		//OSS:        ossClient,
 	}

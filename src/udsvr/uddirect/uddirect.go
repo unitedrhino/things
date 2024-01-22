@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/udsvr/internal/config"
+	opsServer "github.com/i-Things/things/src/udsvr/internal/server/ops"
 	ruleServer "github.com/i-Things/things/src/udsvr/internal/server/rule"
 	"github.com/i-Things/things/src/udsvr/internal/svc"
 	"github.com/i-Things/things/src/udsvr/pb/ud"
@@ -46,7 +47,7 @@ func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		ud.RegisterRuleServer(grpcServer, ruleServer.NewRuleServer(svcCtx))
-
+		ud.RegisterOpsServer(grpcServer, opsServer.NewOpsServer(svcCtx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
