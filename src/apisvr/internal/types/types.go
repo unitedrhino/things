@@ -2057,3 +2057,26 @@ type CommonSchemaInfo struct {
 	Required     int64   `json:"required,optional"`     //是否必须 1:是 2:否
 	Affordance   *string `json:"affordance,optional"`   //各功能类型的详细参数定义
 }
+
+type OpsWorkOrder struct {
+	ID          int64  `json:"id,optional"`
+	Number      string `json:"number,optional"`                           //编号
+	RaiseUserID int64  `json:"raiseUserID,string,optional"`               //问题提出的用户
+	AreaID      int64  `json:"areaID,string,optional"`                    //项目区域id
+	Type        string `json:"type,optional,options=[deviceMaintenance]"` //工单类型: deviceMaintenance:设备维修工单
+	Params      string `json:"params,optional"`                           //参数 json格式
+	IssueDesc   string `json:"issueDesc,optional"`                        //问题描述
+	Status      int64  `json:"status,optional,range=[0:3]"`               // 状态（1 待处理 2:处理中 3:已完成）
+	CreatedTime int64  `json:"createdTime,optional"`                      //创建时间
+}
+
+type OpsWorkOrderIndexReq struct {
+	Page   *PageInfo `json:"page,optional"` // 分页信息,只获取一个则不填
+	Status int64     `json:"status,optional"`
+	Type   string    `json:"type"` //工单类型: deviceMaintenance:设备维修工单
+}
+
+type OpsWorkOrderIndexResp struct {
+	Total int64           `json:"total"` //总数
+	List  []*OpsWorkOrder `json:"list"`  //菜单列表
+}

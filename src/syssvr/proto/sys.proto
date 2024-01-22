@@ -30,8 +30,6 @@ service UserManage {
   rpc userAreaApplyCreate(UserAreaApplyCreateReq) returns(Response);//申请区域权限
   rpc userAreaApplyIndex(UserAreaApplyIndexReq)returns(UserAreaApplyIndexResp);
   rpc userAreaApplyDeal(UserAreaApplyDealReq)returns(Response);//处理区域权限申请
-
-
 }
 
 service MenuManage {

@@ -296,165 +296,165 @@ var Rule_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	DeviceOps_DeviceMwoCreate_FullMethodName = "/ud.deviceOps/deviceMwoCreate"
-	DeviceOps_DeviceMwoUpdate_FullMethodName = "/ud.deviceOps/deviceMwoUpdate"
-	DeviceOps_DeviceMwoIndex_FullMethodName  = "/ud.deviceOps/deviceMwoIndex"
+	Ops_OpsWorkOrderCreate_FullMethodName = "/ud.ops/opsWorkOrderCreate"
+	Ops_OpsWorkOrderUpdate_FullMethodName = "/ud.ops/opsWorkOrderUpdate"
+	Ops_OpsWorkOrderIndex_FullMethodName  = "/ud.ops/opsWorkOrderIndex"
 )
 
-// DeviceOpsClient is the client API for DeviceOps service.
+// OpsClient is the client API for Ops service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type DeviceOpsClient interface {
-	// 设备维护工单 device Maintenance Work Order
-	DeviceMwoCreate(ctx context.Context, in *DeviceMwo, opts ...grpc.CallOption) (*WithID, error)
-	DeviceMwoUpdate(ctx context.Context, in *DeviceMwo, opts ...grpc.CallOption) (*Empty, error)
-	DeviceMwoIndex(ctx context.Context, in *DeviceMwoIndexReq, opts ...grpc.CallOption) (*DeviceMwoIndexResp, error)
+type OpsClient interface {
+	// 维护工单  Work Order
+	OpsWorkOrderCreate(ctx context.Context, in *OpsWorkOrder, opts ...grpc.CallOption) (*WithID, error)
+	OpsWorkOrderUpdate(ctx context.Context, in *OpsWorkOrder, opts ...grpc.CallOption) (*Empty, error)
+	OpsWorkOrderIndex(ctx context.Context, in *OpsWorkOrderIndexReq, opts ...grpc.CallOption) (*OpsWorkOrderIndexResp, error)
 }
 
-type deviceOpsClient struct {
+type opsClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewDeviceOpsClient(cc grpc.ClientConnInterface) DeviceOpsClient {
-	return &deviceOpsClient{cc}
+func NewOpsClient(cc grpc.ClientConnInterface) OpsClient {
+	return &opsClient{cc}
 }
 
-func (c *deviceOpsClient) DeviceMwoCreate(ctx context.Context, in *DeviceMwo, opts ...grpc.CallOption) (*WithID, error) {
+func (c *opsClient) OpsWorkOrderCreate(ctx context.Context, in *OpsWorkOrder, opts ...grpc.CallOption) (*WithID, error) {
 	out := new(WithID)
-	err := c.cc.Invoke(ctx, DeviceOps_DeviceMwoCreate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Ops_OpsWorkOrderCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceOpsClient) DeviceMwoUpdate(ctx context.Context, in *DeviceMwo, opts ...grpc.CallOption) (*Empty, error) {
+func (c *opsClient) OpsWorkOrderUpdate(ctx context.Context, in *OpsWorkOrder, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, DeviceOps_DeviceMwoUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Ops_OpsWorkOrderUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceOpsClient) DeviceMwoIndex(ctx context.Context, in *DeviceMwoIndexReq, opts ...grpc.CallOption) (*DeviceMwoIndexResp, error) {
-	out := new(DeviceMwoIndexResp)
-	err := c.cc.Invoke(ctx, DeviceOps_DeviceMwoIndex_FullMethodName, in, out, opts...)
+func (c *opsClient) OpsWorkOrderIndex(ctx context.Context, in *OpsWorkOrderIndexReq, opts ...grpc.CallOption) (*OpsWorkOrderIndexResp, error) {
+	out := new(OpsWorkOrderIndexResp)
+	err := c.cc.Invoke(ctx, Ops_OpsWorkOrderIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// DeviceOpsServer is the server API for DeviceOps service.
-// All implementations must embed UnimplementedDeviceOpsServer
+// OpsServer is the server API for Ops service.
+// All implementations must embed UnimplementedOpsServer
 // for forward compatibility
-type DeviceOpsServer interface {
-	// 设备维护工单 device Maintenance Work Order
-	DeviceMwoCreate(context.Context, *DeviceMwo) (*WithID, error)
-	DeviceMwoUpdate(context.Context, *DeviceMwo) (*Empty, error)
-	DeviceMwoIndex(context.Context, *DeviceMwoIndexReq) (*DeviceMwoIndexResp, error)
-	mustEmbedUnimplementedDeviceOpsServer()
+type OpsServer interface {
+	// 维护工单  Work Order
+	OpsWorkOrderCreate(context.Context, *OpsWorkOrder) (*WithID, error)
+	OpsWorkOrderUpdate(context.Context, *OpsWorkOrder) (*Empty, error)
+	OpsWorkOrderIndex(context.Context, *OpsWorkOrderIndexReq) (*OpsWorkOrderIndexResp, error)
+	mustEmbedUnimplementedOpsServer()
 }
 
-// UnimplementedDeviceOpsServer must be embedded to have forward compatible implementations.
-type UnimplementedDeviceOpsServer struct {
+// UnimplementedOpsServer must be embedded to have forward compatible implementations.
+type UnimplementedOpsServer struct {
 }
 
-func (UnimplementedDeviceOpsServer) DeviceMwoCreate(context.Context, *DeviceMwo) (*WithID, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceMwoCreate not implemented")
+func (UnimplementedOpsServer) OpsWorkOrderCreate(context.Context, *OpsWorkOrder) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpsWorkOrderCreate not implemented")
 }
-func (UnimplementedDeviceOpsServer) DeviceMwoUpdate(context.Context, *DeviceMwo) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceMwoUpdate not implemented")
+func (UnimplementedOpsServer) OpsWorkOrderUpdate(context.Context, *OpsWorkOrder) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpsWorkOrderUpdate not implemented")
 }
-func (UnimplementedDeviceOpsServer) DeviceMwoIndex(context.Context, *DeviceMwoIndexReq) (*DeviceMwoIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceMwoIndex not implemented")
+func (UnimplementedOpsServer) OpsWorkOrderIndex(context.Context, *OpsWorkOrderIndexReq) (*OpsWorkOrderIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpsWorkOrderIndex not implemented")
 }
-func (UnimplementedDeviceOpsServer) mustEmbedUnimplementedDeviceOpsServer() {}
+func (UnimplementedOpsServer) mustEmbedUnimplementedOpsServer() {}
 
-// UnsafeDeviceOpsServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to DeviceOpsServer will
+// UnsafeOpsServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to OpsServer will
 // result in compilation errors.
-type UnsafeDeviceOpsServer interface {
-	mustEmbedUnimplementedDeviceOpsServer()
+type UnsafeOpsServer interface {
+	mustEmbedUnimplementedOpsServer()
 }
 
-func RegisterDeviceOpsServer(s grpc.ServiceRegistrar, srv DeviceOpsServer) {
-	s.RegisterService(&DeviceOps_ServiceDesc, srv)
+func RegisterOpsServer(s grpc.ServiceRegistrar, srv OpsServer) {
+	s.RegisterService(&Ops_ServiceDesc, srv)
 }
 
-func _DeviceOps_DeviceMwoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceMwo)
+func _Ops_OpsWorkOrderCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OpsWorkOrder)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceOpsServer).DeviceMwoCreate(ctx, in)
+		return srv.(OpsServer).OpsWorkOrderCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceOps_DeviceMwoCreate_FullMethodName,
+		FullMethod: Ops_OpsWorkOrderCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceOpsServer).DeviceMwoCreate(ctx, req.(*DeviceMwo))
+		return srv.(OpsServer).OpsWorkOrderCreate(ctx, req.(*OpsWorkOrder))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceOps_DeviceMwoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceMwo)
+func _Ops_OpsWorkOrderUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OpsWorkOrder)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceOpsServer).DeviceMwoUpdate(ctx, in)
+		return srv.(OpsServer).OpsWorkOrderUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceOps_DeviceMwoUpdate_FullMethodName,
+		FullMethod: Ops_OpsWorkOrderUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceOpsServer).DeviceMwoUpdate(ctx, req.(*DeviceMwo))
+		return srv.(OpsServer).OpsWorkOrderUpdate(ctx, req.(*OpsWorkOrder))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceOps_DeviceMwoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceMwoIndexReq)
+func _Ops_OpsWorkOrderIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OpsWorkOrderIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceOpsServer).DeviceMwoIndex(ctx, in)
+		return srv.(OpsServer).OpsWorkOrderIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceOps_DeviceMwoIndex_FullMethodName,
+		FullMethod: Ops_OpsWorkOrderIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceOpsServer).DeviceMwoIndex(ctx, req.(*DeviceMwoIndexReq))
+		return srv.(OpsServer).OpsWorkOrderIndex(ctx, req.(*OpsWorkOrderIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// DeviceOps_ServiceDesc is the grpc.ServiceDesc for DeviceOps service.
+// Ops_ServiceDesc is the grpc.ServiceDesc for Ops service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var DeviceOps_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "ud.deviceOps",
-	HandlerType: (*DeviceOpsServer)(nil),
+var Ops_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "ud.ops",
+	HandlerType: (*OpsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "deviceMwoCreate",
-			Handler:    _DeviceOps_DeviceMwoCreate_Handler,
+			MethodName: "opsWorkOrderCreate",
+			Handler:    _Ops_OpsWorkOrderCreate_Handler,
 		},
 		{
-			MethodName: "deviceMwoUpdate",
-			Handler:    _DeviceOps_DeviceMwoUpdate_Handler,
+			MethodName: "opsWorkOrderUpdate",
+			Handler:    _Ops_OpsWorkOrderUpdate_Handler,
 		},
 		{
-			MethodName: "deviceMwoIndex",
-			Handler:    _DeviceOps_DeviceMwoIndex_Handler,
+			MethodName: "opsWorkOrderIndex",
+			Handler:    _Ops_OpsWorkOrderIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
