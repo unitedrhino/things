@@ -2,7 +2,6 @@ package modulemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -26,6 +25,19 @@ func NewModuleMenuUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *ModuleMenuUpdateLogic) ModuleMenuUpdate(in *sys.MenuInfo) (*sys.Response, error) {
-	err := relationDB.NewMenuInfoRepo(l.ctx).Update(l.ctx, logic.ToMenuInfoPo(in))
+	old, err := relationDB.NewMenuInfoRepo(l.ctx).FindOne(l.ctx, in.Id)
+	if err != nil {
+		return nil, err
+	}
+	old.Type = in.Type
+	old.Order = in.Order
+	old.Name = in.Name
+	old.Path = in.Path
+	old.Component = in.Component
+	old.Icon = in.Icon
+	old.Redirect = in.Redirect
+	old.Body = in.Body.Value
+	old.HideInMenu = in.HideInMenu
+	err = relationDB.NewMenuInfoRepo(l.ctx).Update(l.ctx, old)
 	return &sys.Response{}, err
 }
