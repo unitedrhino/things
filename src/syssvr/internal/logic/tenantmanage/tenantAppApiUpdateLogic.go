@@ -3,7 +3,6 @@ package tenantmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/syssvr/internal/svc"
@@ -34,6 +33,16 @@ func (l *TenantAppApiUpdateLogic) TenantAppApiUpdate(in *sys.TenantApiInfo) (*sy
 	defer func() {
 		ctxs.GetUserCtx(l.ctx).AllTenant = false
 	}()
-	err := relationDB.NewTenantAppApiRepo(l.ctx).Update(l.ctx, logic.ToTenantApiInfoPo(in))
+	old, err := relationDB.NewTenantAppApiRepo(l.ctx).FindOne(l.ctx, in.Info.Id)
+	if err != nil {
+		return nil, err
+	}
+	old.Route = in.Info.Route
+	old.Method = in.Info.Method
+	old.Name = in.Info.Name
+	old.BusinessType = in.Info.BusinessType
+	old.Group = in.Info.Group
+	old.Desc = in.Info.Desc
+	err = relationDB.NewTenantAppApiRepo(l.ctx).Update(l.ctx, old)
 	return &sys.Response{}, err
 }
