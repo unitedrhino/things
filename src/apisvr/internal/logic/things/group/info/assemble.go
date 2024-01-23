@@ -11,12 +11,26 @@ func ToGroupInfoTypes(in *dm.GroupInfo) *types.GroupInfo {
 		AreaID:      in.AreaID,
 		ProductID:   in.ProductID,
 		ProductName: in.ProductName,
-		GroupID:     in.GroupID,
+		ID:          in.Id,
 		ParentID:    in.ParentID,
 		ProjectID:   in.ProjectID,
-		GroupName:   in.GroupName,
+		Name:        in.Name,
 		CreatedTime: in.CreatedTime,
 		Desc:        in.Desc,
 		Tags:        logic.ToTagsType(in.Tags),
+	}
+}
+func ToGroupInfoPbTypes(in *types.GroupInfo) *dm.GroupInfo {
+	return &dm.GroupInfo{
+		AreaID:      in.AreaID,
+		ProductID:   in.ProductID,
+		ProductName: in.ProductName,
+		Id:          in.ID,
+		ParentID:    in.ParentID,
+		ProjectID:   in.ProjectID,
+		Name:        in.Name,
+		CreatedTime: in.CreatedTime,
+		Desc:        in.Desc,
+		Tags:        logic.ToTagsMap(in.Tags),
 	}
 }

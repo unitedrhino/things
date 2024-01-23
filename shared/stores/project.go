@@ -106,7 +106,7 @@ func (sd ProjectClause) ModifyStatement(stmt *gorm.Statement) { //查询的时�
 			field.Set(reflect.ValueOf(v))
 		}
 	case Update, Delete, Select:
-		if len(ids) == 0 && uc.AllProject { //root 权限不用管
+		if uc == nil || (len(ids) == 0 && uc.AllProject) { //root 权限不用管
 			return
 		}
 		if _, ok := stmt.Clauses[sd.GenAuthKey()]; !ok {

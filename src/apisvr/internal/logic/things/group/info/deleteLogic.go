@@ -26,8 +26,8 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
-func (l *DeleteLogic) Delete(req *types.GroupInfoDeleteReq) error {
-	_, err := l.svcCtx.DeviceG.GroupInfoDelete(l.ctx, &dm.GroupInfoDeleteReq{GroupID: req.GroupID})
+func (l *DeleteLogic) Delete(req *types.WithID) error {
+	_, err := l.svcCtx.DeviceG.GroupInfoDelete(l.ctx, &dm.WithID{Id: req.ID})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.GroupInfoDelete req=%v err=%+v", utils.FuncName(), req, er)

@@ -65,7 +65,7 @@ func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, list []*conf.LoginSafeCt
 		rolses = append(rolses, v.RoleID)
 	}
 
-	if ui.Tenant != nil && ui.Tenant.AdminUserID == ui.UserID {
+	if ui.Tenant != nil && (utils.SliceIn(ui.Tenant.AdminRoleID, rolses...) || ui.Tenant.AdminUserID == ui.UserID) {
 		isAdmin = def.True
 	}
 	var account = ui.UserName.String

@@ -6,6 +6,7 @@ type TenantInfo struct {
 	Code        string  `json:"code"`          // 应用编号
 	Name        string  `json:"name,optional"` // 接口名称
 	AdminUserID int64   `json:"adminUserID,optional,string"`
+	AdminRoleID int64   `json:"adminRoleID,optional"`
 	Desc        *string `json:"desc,optional"`    // 备注
 	BaseUrl     string  `json:"baseUrl,optional"` // 应用编号
 	LogoUrl     string  `json:"logoUrl,optional"`
@@ -98,6 +99,7 @@ type UserInfo struct {
 	Sex             int64       `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
 	IsAllData       int64       `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
 	Roles           []*RoleInfo `json:"roles,optional"`
+	Tenant          *TenantInfo `json:"tenant,optional"`
 }
 
 type UserCreateResp struct {
@@ -122,8 +124,9 @@ type UserInfoIndexResp struct {
 }
 
 type UserInfoReadReq struct {
-	UserID    int64 `json:"userID,string,optional"` // 用户id
-	WithRoles bool  `json:"withRoles,optional"`
+	UserID     int64 `json:"userID,string,optional"` // 用户id
+	WithRoles  bool  `json:"withRoles,optional"`
+	WithTenant bool  `json:"withTenant,optional"`
 }
 
 type UserInfoDeleteReq struct {
@@ -765,7 +768,8 @@ type UserAreaApplyCreateReq struct {
 }
 
 type UserSelfReadReq struct {
-	WithRoles bool `json:"withRoles,optional"`
+	WithRoles  bool `json:"withRoles,optional"`
+	WithTenant bool `json:"withTenant,optional"`
 }
 
 type UserResourceWithModuleReq struct {
@@ -1445,24 +1449,16 @@ type DeviceInteractMultiSendPropertyResp struct {
 }
 
 type GroupInfo struct {
-	GroupID     int64  `json:"groupID,string"`         //分组ID
-	ParentID    int64  `json:"parentID,string"`        //父组ID
-	ProjectID   int64  `json:"projectID,string"`       //项目ID
-	AreaID      int64  `json:"areaID,string,optional"` //区域ID
-	GroupName   string `json:"groupName"`              //分组名称
-	ProductID   string `json:"productID,optional"`     //产品ID
-	ProductName string `json:"productName,optional"`   //产品ID
-	CreatedTime int64  `json:"createdTime,string"`     //创建时间
-	Desc        string `json:"desc,optional"`          //分组描述
-	Tags        []*Tag `json:"tags,optional"`          //分组tag
-}
-
-type GroupInfoCreateReq struct {
-	AreaID    int64  `json:"areaID,string,optional"` //区域ID
-	GroupName string `json:"groupName"`              //分组名称
-	ParentID  int64  `json:"parentID,string"`        //父组ID
-	ProductID string `json:"productID,optional"`     //产品ID
-	Desc      string `json:"desc,optional"`          //分组描述
+	ID          int64  `json:"id,string,optional"`        //分组ID
+	ParentID    int64  `json:"parentID,string,optional"`  //父组ID
+	ProjectID   int64  `json:"projectID,string,optional"` //项目ID
+	AreaID      int64  `json:"areaID,string,optional"`    //区域ID
+	Name        string `json:"name,optional"`             //分组名称
+	ProductID   string `json:"productID,optional"`        //产品ID
+	ProductName string `json:"productName,optional"`      //产品ID
+	CreatedTime int64  `json:"createdTime,string"`        //创建时间
+	Desc        string `json:"desc,optional"`             //分组描述
+	Tags        []*Tag `json:"tags,optional"`             //分组tag
 }
 
 type GroupInfoIndexReq struct {
@@ -1470,30 +1466,13 @@ type GroupInfoIndexReq struct {
 	AreaID    int64     `json:"areaID,string,optional"` //区域ID
 	ParentID  int64     `json:"parentID,string"`        //父组ID
 	ProductID string    `json:"productID,optional"`     //产品ID
-	GroupName string    `json:"groupName,optional"`     //分组名称
+	Name      string    `json:"name,optional"`          //分组名称
 	Tags      []*Tag    `json:"tags,optional"`          //分组tag
 }
 
 type GroupInfoIndexResp struct {
-	List    []*GroupInfo `json:"list"`    //分组信息
-	Total   int64        `json:"total"`   //总数(只有分页的时候会返回)
-	ListAll []*GroupInfo `json:"listAll"` //完整分分组信息
-}
-
-type GroupInfoReadReq struct {
-	GroupID int64 `json:"groupID,string"` //分组ID
-}
-
-type GroupInfoDeleteReq struct {
-	GroupID int64 `json:"groupID,string"` //分组ID
-}
-
-type GroupInfoUpdateReq struct {
-	GroupID   int64   `json:"groupID,string"`     //分组ID
-	GroupName *string `json:"groupName,optional"` //分组名称
-	ProductID string  `json:"productID,optional"` //产品ID
-	Desc      *string `json:"desc,optional"`      //分组描述
-	Tags      []*Tag  `json:"tags,optional"`      //分组tag
+	List  []*GroupInfo `json:"list"`  //分组信息
+	Total int64        `json:"total"` //总数(只有分页的时候会返回)
 }
 
 type GroupDeviceIndexReq struct {

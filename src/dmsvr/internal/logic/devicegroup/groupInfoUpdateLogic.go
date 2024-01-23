@@ -28,13 +28,13 @@ func NewGroupInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 // 更新分组
-func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfoUpdateReq) (*dm.Response, error) {
-	record, err := l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{GroupID: in.GroupID})
+func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfo) (*dm.Response, error) {
+	record, err := l.GiDB.FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
 	}
 	record.Desc = in.Desc
-	record.GroupName = in.GroupName
+	record.Name = in.Name
 	record.Tags = in.Tags
 	err = l.GiDB.Update(l.ctx, record)
 	if err != nil {

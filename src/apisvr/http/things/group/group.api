@@ -18,7 +18,7 @@ import "things/device/info.api"  //设备结构
 service api {
     @doc "创建分组"
     @handler create
-    post /create (GroupInfoCreateReq) returns ()
+    post /create (GroupInfo) returns ()
 
     @doc "获取分组列表"
     @handler index
@@ -26,15 +26,15 @@ service api {
 
     @doc "获取分组详情信息"
     @handler read
-    post /read (GroupInfoReadReq) returns (GroupInfo)
+    post /read (WithID) returns (GroupInfo)
 
     @doc "更新分组信息"
     @handler update
-    post /update (GroupInfoUpdateReq) returns ()
+    post /update (GroupInfo) returns ()
 
     @doc "删除分组"
     @handler delete
-    post /delete (GroupInfoDeleteReq) returns ()
+    post /delete (WithID) returns ()
 }
 
 @server(
@@ -63,11 +63,11 @@ service api {
 type (
 
     GroupInfo{
-        GroupID   int64  `json:"groupID,string"`           //分组ID
-        ParentID  int64 `json:"parentID,string"`          //父组ID
-        ProjectID  int64 `json:"projectID,string"`         //项目ID
+        ID   int64  `json:"id,string,optional"`           //分组ID
+        ParentID  int64 `json:"parentID,string,optional"`          //父组ID
+        ProjectID  int64 `json:"projectID,string,optional"`         //项目ID
         AreaID int64 `json:"areaID,string,optional"`                    //区域ID
-        GroupName string `json:"groupName"`                //分组名称
+        Name string `json:"name,optional"`                //分组名称
         ProductID string `json:"productID,optional"`       //产品ID
         ProductName string `json:"productName,optional"`       //产品ID
         CreatedTime int64  `json:"createdTime,string"`     //创建时间
@@ -75,44 +75,21 @@ type (
         Tags []*Tag `json:"tags,optional"`                 //分组tag
     }
 
-    GroupInfoCreateReq struct {
-        AreaID int64 `json:"areaID,string,optional"`                    //区域ID
-        GroupName string `json:"groupName"`                        //分组名称
-        ParentID int64 `json:"parentID,string"`                  //父组ID
-        ProductID string `json:"productID,optional"`             //产品ID
-        Desc string `json:"desc,optional"`           //分组描述
-    }
 
     GroupInfoIndexReq struct {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         AreaID int64 `json:"areaID,string,optional"`                    //区域ID
         ParentID int64 `json:"parentID,string"`                  //父组ID
         ProductID string `json:"productID,optional"`                         //产品ID
-        GroupName string `json:"groupName,optional"`          //分组名称
+        Name string `json:"name,optional"`          //分组名称
         Tags []*Tag `json:"tags,optional"`                    //分组tag
     }
 
     GroupInfoIndexResp struct {
         List []*GroupInfo `json:"list"`    //分组信息
         Total int64 `json:"total"`         //总数(只有分页的时候会返回)
-        ListAll []*GroupInfo `json:"listAll"`    //完整分分组信息
     }
 
-    GroupInfoReadReq struct {
-        GroupID   int64  `json:"groupID,string"`           //分组ID
-    }
-
-    GroupInfoDeleteReq struct {
-        GroupID   int64  `json:"groupID,string"`           //分组ID
-    }
-
-    GroupInfoUpdateReq struct {
-        GroupID   int64  `json:"groupID,string"` //分组ID
-        GroupName *string `json:"groupName,optional"`               //分组名称
-        ProductID string `json:"productID,optional"`       //产品ID
-        Desc *string `json:"desc,optional"`           //分组描述
-        Tags []*Tag `json:"tags,optional"`                          //分组tag
-    }
 
     GroupDeviceIndexReq struct {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填

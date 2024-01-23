@@ -91,6 +91,7 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 			return err
 		}
 		po.AdminUserID = ui.UserID
+		po.AdminRoleID = ri.ID
 		err = relationDB.NewTenantInfoRepo(l.ctx).Insert(l.ctx, po)
 		if err != nil {
 			return err

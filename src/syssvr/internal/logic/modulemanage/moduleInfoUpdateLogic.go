@@ -35,7 +35,10 @@ func (l *ModuleInfoUpdateLogic) ModuleInfoUpdate(in *sys.ModuleInfo) (*sys.Respo
 	old.Icon = in.Icon
 	old.Body = in.Body.Value
 	old.HideInMenu = in.HideInMenu
-	old.Desc = in.Desc.Value
+	if in.Desc != nil {
+		old.Desc = in.Desc.Value
+	}
+
 	err = relationDB.NewModuleInfoRepo(l.ctx).Update(l.ctx, old)
 	return &sys.Response{}, err
 }

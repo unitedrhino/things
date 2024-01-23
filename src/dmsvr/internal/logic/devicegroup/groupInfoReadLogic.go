@@ -27,15 +27,15 @@ func NewGroupInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gro
 }
 
 // 获取分组信息详情
-func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.GroupInfoReadReq) (*dm.GroupInfo, error) {
-	dg, err := l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{GroupID: in.GroupID})
+func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.WithID) (*dm.GroupInfo, error) {
+	dg, err := l.GiDB.FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
 	}
 	return &dm.GroupInfo{
 		AreaID:      int64(dg.AreaID),
-		GroupID:     dg.GroupID,
-		GroupName:   dg.GroupName,
+		Id:          dg.ID,
+		Name:        dg.Name,
 		ParentID:    dg.ParentID,
 		Desc:        dg.Desc,
 		CreatedTime: dg.CreatedTime.Unix(),

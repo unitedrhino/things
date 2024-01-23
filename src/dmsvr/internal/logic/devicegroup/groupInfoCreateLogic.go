@@ -31,8 +31,8 @@ func NewGroupInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 /*
 发现返回true 没有返回false
 */
-func (l *GroupInfoCreateLogic) CheckGroupInfo(in *dm.GroupInfoCreateReq) (bool, error) {
-	_, err := l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{GroupNames: []string{in.GroupName}})
+func (l *GroupInfoCreateLogic) CheckGroupInfo(in *dm.GroupInfo) (bool, error) {
+	_, err := l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{Names: []string{in.Name}})
 	if err == nil {
 		return true, nil
 	}
@@ -45,9 +45,9 @@ func (l *GroupInfoCreateLogic) CheckGroupInfo(in *dm.GroupInfoCreateReq) (bool, 
 /*
 检查当前分组嵌套层数是否超限，是返回true 否则返回false
 */
-func (l *GroupInfoCreateLogic) CheckGroupLevel(groupID int64, level int64) (bool, error) {
+func (l *GroupInfoCreateLogic) CheckGroupLevel(ID int64, level int64) (bool, error) {
 	//采用递归方式，根据当前分组id和层数上限综合判断
-	if groupID == 1 {
+	if ID == 1 {
 		if level <= def.DeviceGroupLevel && level > 1 {
 			return false, nil
 		}
@@ -56,9 +56,9 @@ func (l *GroupInfoCreateLogic) CheckGroupLevel(groupID int64, level int64) (bool
 		}
 	}
 
-	resp, err := l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{GroupID: groupID})
+	resp, err := l.GiDB.FindOne(l.ctx, ID)
 	if err != nil {
-		l.Errorf("%s.CheckGroupInfo msg=not find group id is %d\n", utils.FuncName(), groupID)
+		l.Errorf("%s.CheckGroupInfo msg=not find group id is %d\n", utils.FuncName(), ID)
 		return false, errors.Database.AddDetail(err)
 	}
 
@@ -66,7 +66,7 @@ func (l *GroupInfoCreateLogic) CheckGroupLevel(groupID int64, level int64) (bool
 }
 
 // 创建分组
-func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.Response, error) {
+func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, error) {
 	if in.AreaID == 0 {
 		in.AreaID = def.NotClassified
 	}
@@ -75,7 +75,7 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 		l.Errorf("%s.CheckGroupInfo in=%v\n", utils.FuncName(), in)
 		return nil, errors.Database.AddDetail(err)
 	} else if find == true {
-		return nil, errors.Duplicate.WithMsgf("组名重复:%s", in.GroupName).AddDetail("GroupName:" + in.GroupName)
+		return nil, errors.Duplicate.WithMsgf("组名重复:%s", in.Name).AddDetail("Name:" + in.Name)
 	}
 
 	//判断当前分组parentid 层数是否达到指定层数，达到则不允许创建分组
@@ -88,18 +88,17 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfoCreateReq) (*dm.R
 		l.Errorf("%s.CheckGroupInfo msg=group level is over %d \n", utils.FuncName(), def.DeviceGroupLevel)
 		return nil, errors.OutRange.WithMsgf("子分组嵌套不能超过%d层", def.DeviceGroupLevel)
 	}
-
-	err = l.GiDB.Insert(l.ctx, &relationDB.DmGroupInfo{
-		GroupID:   l.svcCtx.GroupID.GetSnowflakeId(),
+	po := relationDB.DmGroupInfo{
 		ParentID:  in.ParentID,
 		ProductID: in.ProductID,
-		GroupName: in.GroupName,
+		Name:      in.Name,
 		Desc:      in.Desc,
-		Tags:      map[string]string{},
-	})
+		Tags:      in.Tags,
+	}
+	err = l.GiDB.Insert(l.ctx, &po)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	return &dm.Response{}, nil
+	return &dm.WithID{Id: po.ID}, nil
 }

@@ -49,6 +49,7 @@ func (l *ApiIndexLogic) ApiIndex(req *types.UserResourceWithModuleReq) (resp *ty
 	}
 
 	ret, err := l.svcCtx.TenantRpc.TenantAppApiIndex(l.ctx, &sys.TenantAppApiIndexReq{
+		Code:       uc.TenantCode,
 		AppCode:    uc.AppCode,
 		ModuleCode: req.ModuleCode,
 		ApiIDs:     apiIDs,

@@ -60,6 +60,7 @@ type (
         Sex         int64  `json:"sex,optional"`               // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
 		IsAllData   int64  `json:"isAllData,optional"`  	   // 是否所有数据权限（1是，2否）
 	 	Roles []*RoleInfo `json:"roles,optional"`
+		Tenant *TenantInfo `json:"tenant,optional"`
 	}
 
 
@@ -88,6 +89,7 @@ type (
 	UserInfoReadReq{
 		UserID         int64  `json:"userID,string,optional"`        // 用户id
 		WithRoles bool  `json:"withRoles,optional"`
+		WithTenant bool `json:"withTenant,optional"`
 	}
 
 	UserInfoDeleteReq {

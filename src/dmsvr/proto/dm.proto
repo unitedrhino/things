@@ -137,15 +137,15 @@ service ProtocolManage {
 
 service DeviceGroup {
   //创建分组
-  rpc groupInfoCreate(GroupInfoCreateReq)     returns (Response);
+  rpc groupInfoCreate(GroupInfo)     returns (WithID);
   //获取分组信息列表
   rpc groupInfoIndex(GroupInfoIndexReq)     returns (GroupInfoIndexResp);
   //获取分组信息详情
-  rpc groupInfoRead(GroupInfoReadReq)     returns (GroupInfo);
+  rpc groupInfoRead(WithID)     returns (GroupInfo);
   //更新分组
-  rpc groupInfoUpdate(GroupInfoUpdateReq)     returns (Response);
+  rpc groupInfoUpdate(GroupInfo)     returns (Response);
   //删除分组
-  rpc groupInfoDelete(GroupInfoDeleteReq)     returns (Response);
+  rpc groupInfoDelete(WithID)     returns (Response);
   //创建分组设备
   rpc groupDeviceMultiCreate(GroupDeviceMultiSaveReq)     returns (Response);
   //更新分组设备
@@ -618,9 +618,9 @@ message DeviceGatewayMultiDeleteReq{
 message GroupInfo{
   int64 areaID = 10;//分组可以属于某个区域下
   int64 projectID = 3;
-  int64 groupID = 1;
+  int64 id = 1;
   int64 parentID = 2;
-  string groupName = 4;
+  string name = 4;
   string desc = 5;
   int64 createdTime = 6;
   map<string, string> tags = 7;
@@ -630,7 +630,7 @@ message GroupInfo{
 
 message GroupInfoCreateReq{
   int64 areaID = 5;//分组可以属于某个区域下
-  string groupName = 1;
+  string name = 1;
   int64 parentID = 2;
   string productID = 3;
   string desc = 4;
@@ -639,31 +639,27 @@ message GroupInfoCreateReq{
 message GroupInfoIndexReq{
   int64 areaID = 5;//分组可以属于某个区域下
   PageInfo page = 1;
-  string groupName = 2;
+  string name = 2;
   int64 parentID = 3;
   map<string, string> tags = 4;
 }
 message GroupInfoIndexResp{
   repeated GroupInfo list = 1;
   int64 total = 2;
-  repeated GroupInfo listAll = 3;
+ // repeated GroupInfo listAll = 3;
 }
 
-message GroupInfoReadReq{
-  int64 groupID = 1;
-}
+
 
 message GroupInfoUpdateReq{
-  int64 groupID = 1;
-  string groupName = 2;
+  int64 id = 1;
+  string name = 2;
   string desc = 3;
   map<string, string> tags = 4;
   string productID = 5;
 }
 
-message GroupInfoDeleteReq{
-  int64 groupID = 1;
-}
+
 
 message GroupDeviceMultiSaveReq{
   int64 groupID = 1;

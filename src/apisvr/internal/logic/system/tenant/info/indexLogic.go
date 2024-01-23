@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
+	"github.com/i-Things/things/src/apisvr/internal/logic/system"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -40,6 +41,6 @@ func (l *IndexLogic) Index(req *types.TenantInfoIndexReq) (resp *types.TenantInf
 	}
 	return &types.TenantInfoIndexResp{
 		Total: ret.Total,
-		List:  ToTenantInfosTypes(ret.List),
+		List:  system.ToTenantInfosTypes(ret.List),
 	}, nil
 }

@@ -57,10 +57,8 @@ type (
 	GroupDeviceMultiSaveReq     = dm.GroupDeviceMultiSaveReq
 	GroupInfo                   = dm.GroupInfo
 	GroupInfoCreateReq          = dm.GroupInfoCreateReq
-	GroupInfoDeleteReq          = dm.GroupInfoDeleteReq
 	GroupInfoIndexReq           = dm.GroupInfoIndexReq
 	GroupInfoIndexResp          = dm.GroupInfoIndexResp
-	GroupInfoReadReq            = dm.GroupInfoReadReq
 	GroupInfoUpdateReq          = dm.GroupInfoUpdateReq
 	HubLogIndex                 = dm.HubLogIndex
 	HubLogIndexReq              = dm.HubLogIndexReq
@@ -152,15 +150,15 @@ type (
 
 	DeviceGroup interface {
 		// 创建分组
-		GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
+		GroupInfoCreate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*WithID, error)
 		// 获取分组信息列表
 		GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
 		// 获取分组信息详情
-		GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error)
+		GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error)
 		// 更新分组
-		GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Response, error)
 		// 删除分组
-		GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		GroupInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
 		// 创建分组设备
 		GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error)
 		// 更新分组设备
@@ -195,13 +193,13 @@ func NewDirectDeviceGroup(svcCtx *svc.ServiceContext, svr dm.DeviceGroupServer) 
 }
 
 // 创建分组
-func (m *defaultDeviceGroup) GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceGroup) GroupInfoCreate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*WithID, error) {
 	client := dm.NewDeviceGroupClient(m.cli.Conn())
 	return client.GroupInfoCreate(ctx, in, opts...)
 }
 
 // 创建分组
-func (d *directDeviceGroup) GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceGroup) GroupInfoCreate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*WithID, error) {
 	return d.svr.GroupInfoCreate(ctx, in)
 }
 
@@ -217,35 +215,35 @@ func (d *directDeviceGroup) GroupInfoIndex(ctx context.Context, in *GroupInfoInd
 }
 
 // 获取分组信息详情
-func (m *defaultDeviceGroup) GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error) {
+func (m *defaultDeviceGroup) GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error) {
 	client := dm.NewDeviceGroupClient(m.cli.Conn())
 	return client.GroupInfoRead(ctx, in, opts...)
 }
 
 // 获取分组信息详情
-func (d *directDeviceGroup) GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error) {
+func (d *directDeviceGroup) GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error) {
 	return d.svr.GroupInfoRead(ctx, in)
 }
 
 // 更新分组
-func (m *defaultDeviceGroup) GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceGroup) GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewDeviceGroupClient(m.cli.Conn())
 	return client.GroupInfoUpdate(ctx, in, opts...)
 }
 
 // 更新分组
-func (d *directDeviceGroup) GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceGroup) GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.GroupInfoUpdate(ctx, in)
 }
 
 // 删除分组
-func (m *defaultDeviceGroup) GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceGroup) GroupInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewDeviceGroupClient(m.cli.Conn())
 	return client.GroupInfoDelete(ctx, in, opts...)
 }
 
 // 删除分组
-func (d *directDeviceGroup) GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceGroup) GroupInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.GroupInfoDelete(ctx, in)
 }
 

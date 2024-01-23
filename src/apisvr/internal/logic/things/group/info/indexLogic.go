@@ -28,10 +28,10 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoIndexResp, err error) {
 	res, err := l.svcCtx.DeviceG.GroupInfoIndex(l.ctx, &dm.GroupInfoIndexReq{
-		Page:      logic.ToDmPageRpc(req.Page),
-		ParentID:  req.ParentID,
-		GroupName: req.GroupName,
-		Tags:      logic.ToTagsMap(req.Tags),
+		Page:     logic.ToDmPageRpc(req.Page),
+		ParentID: req.ParentID,
+		Name:     req.Name,
+		Tags:     logic.ToTagsMap(req.Tags),
 	})
 	if err != nil {
 		er := errors.Fmt(err)
@@ -43,14 +43,8 @@ func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoI
 		glist = append(glist, ToGroupInfoTypes(v))
 	}
 
-	glistAll := make([]*types.GroupInfo, 0, len(res.ListAll))
-	for _, v := range res.ListAll {
-		glistAll = append(glistAll, ToGroupInfoTypes(v))
-	}
-
 	return &types.GroupInfoIndexResp{
-		List:    glist,
-		Total:   res.Total,
-		ListAll: glistAll,
+		List:  glist,
+		Total: res.Total,
 	}, nil
 }

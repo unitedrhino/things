@@ -13,10 +13,9 @@ type GroupInfoRepo struct {
 
 type GroupInfoFilter struct {
 	AreaID      int64
-	GroupID     int64
-	GroupNames  []string
+	Names       []string
 	ParentID    int64
-	GroupName   string
+	Name        string
 	Tags        map[string]string
 	WithProduct bool
 }
@@ -33,17 +32,14 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 	if f.AreaID != 0 {
 		db = db.Where("area_id=?", f.AreaID)
 	}
-	if f.GroupID != 0 {
-		db = db.Where("group_id=?", f.GroupID)
-	}
-	if len(f.GroupNames) != 0 {
-		db = db.Where("group_name in ?", f.GroupNames)
+	if len(f.Names) != 0 {
+		db = db.Where("name in ?", f.Names)
 	}
 	if f.ParentID != 0 {
 		db = db.Where("parent_id=?", f.ParentID)
 	}
-	if f.GroupName != "" {
-		db = db.Where("group_name like ?", "%"+f.GroupName+"%")
+	if f.Name != "" {
+		db = db.Where("name like ?", "%"+f.Name+"%")
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {
@@ -68,6 +64,16 @@ func (g GroupInfoRepo) FindOneByFilter(ctx context.Context, f GroupInfoFilter) (
 	}
 	return &result, nil
 }
+
+func (p GroupInfoRepo) FindOne(ctx context.Context, id int64) (*DmGroupInfo, error) {
+	var result DmGroupInfo
+	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
+	if err != nil {
+		return nil, stores.ErrFmt(err)
+	}
+	return &result, nil
+}
+
 func (p GroupInfoRepo) FindByFilter(ctx context.Context, f GroupInfoFilter, page *def.PageInfo) ([]*DmGroupInfo, error) {
 	var results []*DmGroupInfo
 	db := p.fmtFilter(ctx, f).Model(&DmGroupInfo{})
@@ -86,12 +92,16 @@ func (p GroupInfoRepo) CountByFilter(ctx context.Context, f GroupInfoFilter) (si
 }
 
 func (g GroupInfoRepo) Update(ctx context.Context, data *DmGroupInfo) error {
-	err := g.db.WithContext(ctx).Where("group_id = ?", data.GroupID).Save(data).Error
+	err := g.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (g GroupInfoRepo) DeleteByFilter(ctx context.Context, f GroupInfoFilter) error {
 	db := g.fmtFilter(ctx, f)
 	err := db.Delete(&DmGroupInfo{}).Error
+	return stores.ErrFmt(err)
+}
+func (p GroupInfoRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&DmGroupInfo{}).Error
 	return stores.ErrFmt(err)
 }

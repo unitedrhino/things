@@ -30,5 +30,5 @@ func (l *ReadLogic) Read(req *types.WithIDOrCode) (resp *types.TenantInfo, err e
 		return nil, err
 	}
 	ret, err := l.svcCtx.TenantRpc.TenantInfoRead(l.ctx, system.ToSysWithIDCode(req))
-	return ToTenantInfoTypes(ret), err
+	return system.ToTenantInfoTypes(ret), err
 }

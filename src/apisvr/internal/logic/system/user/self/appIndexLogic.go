@@ -44,7 +44,7 @@ func (l *AppIndexLogic) AppIndex() (resp *types.AppInfoIndexResp, err error) {
 		}
 	}
 
-	ret, err := l.svcCtx.TenantRpc.TenantAppIndex(l.ctx, &sys.TenantAppIndexReq{AppCodes: appCodes})
+	ret, err := l.svcCtx.TenantRpc.TenantAppIndex(l.ctx, &sys.TenantAppIndexReq{Code: uc.TenantCode, AppCodes: appCodes})
 
 	return &types.AppInfoIndexResp{
 		List: info.ToAppInfosTypes(ret.List),

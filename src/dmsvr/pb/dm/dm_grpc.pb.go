@@ -1612,15 +1612,15 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DeviceGroupClient interface {
 	// 创建分组
-	GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error)
+	GroupInfoCreate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*WithID, error)
 	// 获取分组信息列表
 	GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
 	// 获取分组信息详情
-	GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error)
+	GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error)
 	// 更新分组
-	GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Response, error)
 	// 删除分组
-	GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	GroupInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
 	// 创建分组设备
 	GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error)
 	// 更新分组设备
@@ -1639,8 +1639,8 @@ func NewDeviceGroupClient(cc grpc.ClientConnInterface) DeviceGroupClient {
 	return &deviceGroupClient{cc}
 }
 
-func (c *deviceGroupClient) GroupInfoCreate(ctx context.Context, in *GroupInfoCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceGroupClient) GroupInfoCreate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1657,7 +1657,7 @@ func (c *deviceGroupClient) GroupInfoIndex(ctx context.Context, in *GroupInfoInd
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error) {
+func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error) {
 	out := new(GroupInfo)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1666,7 +1666,7 @@ func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *GroupInfoRead
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfoUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1675,7 +1675,7 @@ func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfoUp
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupInfoDelete(ctx context.Context, in *GroupInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *deviceGroupClient) GroupInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1725,15 +1725,15 @@ func (c *deviceGroupClient) GroupDeviceMultiDelete(ctx context.Context, in *Grou
 // for forward compatibility
 type DeviceGroupServer interface {
 	// 创建分组
-	GroupInfoCreate(context.Context, *GroupInfoCreateReq) (*Response, error)
+	GroupInfoCreate(context.Context, *GroupInfo) (*WithID, error)
 	// 获取分组信息列表
 	GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error)
 	// 获取分组信息详情
-	GroupInfoRead(context.Context, *GroupInfoReadReq) (*GroupInfo, error)
+	GroupInfoRead(context.Context, *WithID) (*GroupInfo, error)
 	// 更新分组
-	GroupInfoUpdate(context.Context, *GroupInfoUpdateReq) (*Response, error)
+	GroupInfoUpdate(context.Context, *GroupInfo) (*Response, error)
 	// 删除分组
-	GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error)
+	GroupInfoDelete(context.Context, *WithID) (*Response, error)
 	// 创建分组设备
 	GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiSaveReq) (*Response, error)
 	// 更新分组设备
@@ -1749,19 +1749,19 @@ type DeviceGroupServer interface {
 type UnimplementedDeviceGroupServer struct {
 }
 
-func (UnimplementedDeviceGroupServer) GroupInfoCreate(context.Context, *GroupInfoCreateReq) (*Response, error) {
+func (UnimplementedDeviceGroupServer) GroupInfoCreate(context.Context, *GroupInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoCreate not implemented")
 }
 func (UnimplementedDeviceGroupServer) GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoIndex not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupInfoRead(context.Context, *GroupInfoReadReq) (*GroupInfo, error) {
+func (UnimplementedDeviceGroupServer) GroupInfoRead(context.Context, *WithID) (*GroupInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoRead not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInfoUpdateReq) (*Response, error) {
+func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInfo) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoUpdate not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupInfoDelete(context.Context, *GroupInfoDeleteReq) (*Response, error) {
+func (UnimplementedDeviceGroupServer) GroupInfoDelete(context.Context, *WithID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoDelete not implemented")
 }
 func (UnimplementedDeviceGroupServer) GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiSaveReq) (*Response, error) {
@@ -1790,7 +1790,7 @@ func RegisterDeviceGroupServer(s grpc.ServiceRegistrar, srv DeviceGroupServer) {
 }
 
 func _DeviceGroup_GroupInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupInfoCreateReq)
+	in := new(GroupInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1802,7 +1802,7 @@ func _DeviceGroup_GroupInfoCreate_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: DeviceGroup_GroupInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupInfoCreate(ctx, req.(*GroupInfoCreateReq))
+		return srv.(DeviceGroupServer).GroupInfoCreate(ctx, req.(*GroupInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1826,7 +1826,7 @@ func _DeviceGroup_GroupInfoIndex_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _DeviceGroup_GroupInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupInfoReadReq)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1838,13 +1838,13 @@ func _DeviceGroup_GroupInfoRead_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: DeviceGroup_GroupInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupInfoRead(ctx, req.(*GroupInfoReadReq))
+		return srv.(DeviceGroupServer).GroupInfoRead(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DeviceGroup_GroupInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupInfoUpdateReq)
+	in := new(GroupInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1856,13 +1856,13 @@ func _DeviceGroup_GroupInfoUpdate_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: DeviceGroup_GroupInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupInfoUpdate(ctx, req.(*GroupInfoUpdateReq))
+		return srv.(DeviceGroupServer).GroupInfoUpdate(ctx, req.(*GroupInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DeviceGroup_GroupInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupInfoDeleteReq)
+	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1874,7 +1874,7 @@ func _DeviceGroup_GroupInfoDelete_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: DeviceGroup_GroupInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupInfoDelete(ctx, req.(*GroupInfoDeleteReq))
+		return srv.(DeviceGroupServer).GroupInfoDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }

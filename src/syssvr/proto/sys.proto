@@ -184,6 +184,7 @@ message TenantInfo{
   string name = 2;
   string code = 3;
   int64 adminUserID = 4;
+  int64 adminRoleID = 8;
   string baseUrl = 5;      // 基础URL
   string logoUrl = 6;     // 应用logo地址
   google.protobuf.StringValue desc = 7;
