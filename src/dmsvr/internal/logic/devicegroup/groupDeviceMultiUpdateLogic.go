@@ -35,7 +35,7 @@ func (l *GroupDeviceMultiUpdateLogic) GroupDeviceMultiUpdate(in *dm.GroupDeviceM
 	if int(t) != len(in.List) {
 		return nil, errors.Duplicate.AddMsg("有被删除的设备请重试")
 	}
-	gi, err := relationDB.NewGroupInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{GroupID: in.GroupID})
+	gi, err := relationDB.NewGroupInfoRepo(l.ctx).FindOne(l.ctx, in.GroupID)
 	if err != nil {
 		return nil, err
 	}

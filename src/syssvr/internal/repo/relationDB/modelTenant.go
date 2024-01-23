@@ -10,6 +10,7 @@ type SysTenantInfo struct {
 	Code        string `gorm:"column:code;uniqueIndex:code;type:VARCHAR(100);NOT NULL"` // 租户编码
 	Name        string `gorm:"column:name;uniqueIndex:name;type:VARCHAR(100);NOT NULL"` // 租户名称
 	AdminUserID int64  `gorm:"column:admin_user_id;type:BIGINT;NOT NULL"`               // 超级管理员id
+	AdminRoleID int64  `gorm:"column:admin_role_id;type:BIGINT;NOT NULL"`               // 超级管理员id
 	BaseUrl     string `gorm:"column:base_url;type:VARCHAR(100);NOT NULL"`              //应用首页
 	LogoUrl     string `gorm:"column:logo_url;type:VARCHAR(100);NOT NULL"`              //应用logo地址
 	Desc        string `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`                  //应用描述

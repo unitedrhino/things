@@ -23,7 +23,7 @@ func NewDeviceGroupServer(svcCtx *svc.ServiceContext) *DeviceGroupServer {
 }
 
 // 创建分组
-func (s *DeviceGroupServer) GroupInfoCreate(ctx context.Context, in *dm.GroupInfoCreateReq) (*dm.Response, error) {
+func (s *DeviceGroupServer) GroupInfoCreate(ctx context.Context, in *dm.GroupInfo) (*dm.WithID, error) {
 	l := devicegrouplogic.NewGroupInfoCreateLogic(ctx, s.svcCtx)
 	return l.GroupInfoCreate(in)
 }
@@ -35,19 +35,19 @@ func (s *DeviceGroupServer) GroupInfoIndex(ctx context.Context, in *dm.GroupInfo
 }
 
 // 获取分组信息详情
-func (s *DeviceGroupServer) GroupInfoRead(ctx context.Context, in *dm.GroupInfoReadReq) (*dm.GroupInfo, error) {
+func (s *DeviceGroupServer) GroupInfoRead(ctx context.Context, in *dm.WithID) (*dm.GroupInfo, error) {
 	l := devicegrouplogic.NewGroupInfoReadLogic(ctx, s.svcCtx)
 	return l.GroupInfoRead(in)
 }
 
 // 更新分组
-func (s *DeviceGroupServer) GroupInfoUpdate(ctx context.Context, in *dm.GroupInfoUpdateReq) (*dm.Response, error) {
+func (s *DeviceGroupServer) GroupInfoUpdate(ctx context.Context, in *dm.GroupInfo) (*dm.Response, error) {
 	l := devicegrouplogic.NewGroupInfoUpdateLogic(ctx, s.svcCtx)
 	return l.GroupInfoUpdate(in)
 }
 
 // 删除分组
-func (s *DeviceGroupServer) GroupInfoDelete(ctx context.Context, in *dm.GroupInfoDeleteReq) (*dm.Response, error) {
+func (s *DeviceGroupServer) GroupInfoDelete(ctx context.Context, in *dm.WithID) (*dm.Response, error) {
 	l := devicegrouplogic.NewGroupInfoDeleteLogic(ctx, s.svcCtx)
 	return l.GroupInfoDelete(in)
 }

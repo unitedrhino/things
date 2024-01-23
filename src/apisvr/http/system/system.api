@@ -15,6 +15,7 @@ type (
         Code string `json:"code"`                               // 应用编号
         Name string `json:"name,optional"`                                 // 接口名称
         AdminUserID int64   `json:"adminUserID,optional,string"`
+        AdminRoleID int64   `json:"adminRoleID,optional"`
         Desc *string `json:"desc,optional"`                       // 备注
         BaseUrl string `json:"baseUrl,optional"`                               // 应用编号
         LogoUrl string `json:"logoUrl,optional"`

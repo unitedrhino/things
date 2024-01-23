@@ -75,3 +75,43 @@ func ToSysWithIDCode(in *types.WithIDOrCode) *sys.WithIDCode {
 		Code: in.Code,
 	}
 }
+
+func ToTenantInfoRpc(in *types.TenantInfo) *sys.TenantInfo {
+	if in == nil {
+		return nil
+	}
+	return &sys.TenantInfo{
+		Id:          in.ID,
+		Name:        in.Name,
+		Code:        in.Code,
+		AdminUserID: in.AdminUserID,
+		AdminRoleID: in.AdminRoleID,
+		Desc:        utils.ToRpcNullString(in.Desc),
+		BaseUrl:     in.BaseUrl,
+		LogoUrl:     in.LogoUrl,
+	}
+}
+
+func ToTenantInfoTypes(in *sys.TenantInfo) *types.TenantInfo {
+	if in == nil {
+		return nil
+	}
+	return &types.TenantInfo{
+		ID:          in.Id,
+		Name:        in.Name,
+		Code:        in.Code,
+		AdminUserID: in.AdminUserID,
+		AdminRoleID: in.AdminRoleID,
+		Desc:        utils.ToNullString(in.Desc),
+		BaseUrl:     in.BaseUrl,
+		LogoUrl:     in.LogoUrl,
+	}
+}
+
+func ToTenantInfosTypes(in []*sys.TenantInfo) []*types.TenantInfo {
+	var ret []*types.TenantInfo
+	for _, v := range in {
+		ret = append(ret, ToTenantInfoTypes(v))
+	}
+	return ret
+}

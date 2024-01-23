@@ -36,6 +36,7 @@ func Migrate(c conf.Database) error {
 	if err != nil {
 		return err
 	}
+	//stores.SetAuthIncrement(db, &DmGroupInfo{ID: 10})
 	if needInitColumn {
 		return migrateTableColumn()
 	}

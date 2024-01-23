@@ -3,6 +3,7 @@ package stores
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/dtm-labs/client/dtmgrpc"
 	"github.com/glebarez/sqlite"
 	"github.com/i-Things/things/shared/conf"
@@ -10,6 +11,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"sync"
 	"time"
 )
@@ -83,4 +85,28 @@ func BarrierTransaction(ctx context.Context, fc func(tx *gorm.DB) error) error {
 		}), &gorm.Config{})
 		return fc(gdb)
 	})
+}
+
+func SetAuthIncrement(conn *gorm.DB, table schema.Tabler) error {
+	var count int64
+	err := conn.Model(table).Count(&count).Error
+	if err != nil {
+		return ErrFmt(err)
+	}
+	if count > 0 {
+		return nil
+	}
+	if err := conn.Statement.Parse(table); err != nil {
+		return err
+	}
+	err = conn.Model(table).Create(table).Error
+	if err != nil {
+		return err
+	}
+	prioritizedPrimaryField := conn.Statement.Schema.PrioritizedPrimaryField
+	if prioritizedPrimaryField == nil {
+		return nil
+	}
+	err = conn.Model(table).Delete(table).Where(fmt.Sprintf("%s = ?", prioritizedPrimaryField.DBName), 10).Error
+	return err
 }

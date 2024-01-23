@@ -57,10 +57,8 @@ type (
 	GroupDeviceMultiSaveReq     = dm.GroupDeviceMultiSaveReq
 	GroupInfo                   = dm.GroupInfo
 	GroupInfoCreateReq          = dm.GroupInfoCreateReq
-	GroupInfoDeleteReq          = dm.GroupInfoDeleteReq
 	GroupInfoIndexReq           = dm.GroupInfoIndexReq
 	GroupInfoIndexResp          = dm.GroupInfoIndexResp
-	GroupInfoReadReq            = dm.GroupInfoReadReq
 	GroupInfoUpdateReq          = dm.GroupInfoUpdateReq
 	HubLogIndex                 = dm.HubLogIndex
 	HubLogIndexReq              = dm.HubLogIndexReq

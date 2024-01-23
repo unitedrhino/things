@@ -26,9 +26,9 @@ func NewGroupInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 // 删除分组
-func (l *GroupInfoDeleteLogic) GroupInfoDelete(in *dm.GroupInfoDeleteReq) (*dm.Response, error) {
+func (l *GroupInfoDeleteLogic) GroupInfoDelete(in *dm.WithID) (*dm.Response, error) {
 	//删除两表数据
-	err := l.GiDB.DeleteByFilter(l.ctx, relationDB.GroupInfoFilter{GroupID: in.GroupID})
+	err := l.GiDB.Delete(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
 	}

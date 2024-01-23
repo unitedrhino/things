@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/apisvr/internal/logic/system/user"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
@@ -29,7 +30,8 @@ func (l *ReadLogic) Read(req *types.UserInfoReadReq) (resp *types.UserInfo, err 
 		return nil, err
 	}
 	var (
-		roles []*sys.RoleInfo
+		roles  []*sys.RoleInfo
+		tenant *sys.TenantInfo
 	)
 	if req.WithRoles == true {
 		ret, err := l.svcCtx.UserRpc.UserRoleIndex(l.ctx, &sys.UserRoleIndexReq{
@@ -39,6 +41,13 @@ func (l *ReadLogic) Read(req *types.UserInfoReadReq) (resp *types.UserInfo, err 
 			return nil, err
 		}
 		roles = ret.List
+	}
+	if req.WithTenant == true {
+		ret, err := l.svcCtx.TenantRpc.TenantInfoRead(l.ctx, &sys.WithIDCode{Code: ctxs.GetUserCtx(l.ctx).TenantCode})
+		if err != nil {
+			return nil, err
+		}
+		tenant = ret
 	}
 	//if req.WithAreas {
 	//	ret, err := l.svcCtx.UserRpc.UserAreaIndex(l.ctx, &sys.UserAreaIndexReq{
@@ -60,5 +69,5 @@ func (l *ReadLogic) Read(req *types.UserInfoReadReq) (resp *types.UserInfo, err 
 	//	}
 	//}
 
-	return user.UserInfoToApi(info, roles), nil
+	return user.UserInfoToApi(info, roles, tenant), nil
 }

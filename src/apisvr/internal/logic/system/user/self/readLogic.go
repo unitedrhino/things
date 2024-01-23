@@ -27,7 +27,8 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 func (l *ReadLogic) Read(req *types.UserSelfReadReq) (resp *types.UserInfo, err error) {
 	var uc = ctxs.GetUserCtx(l.ctx)
 	return info.NewReadLogic(l.ctx, l.svcCtx).Read(&types.UserInfoReadReq{
-		UserID:    uc.UserID,
-		WithRoles: req.WithRoles,
+		UserID:     uc.UserID,
+		WithRoles:  req.WithRoles,
+		WithTenant: req.WithTenant,
 	})
 }

@@ -45,7 +45,7 @@ func (l *ModuleIndexLogic) ModuleIndex() (resp *types.ModuleInfoIndexResp, err e
 		moduleCodes = codes.ModuleCodes
 	}
 
-	ret, err := l.svcCtx.TenantRpc.TenantAppModuleIndex(l.ctx, &sys.TenantModuleIndexReq{AppCode: uc.AppCode, ModuleCodes: moduleCodes})
+	ret, err := l.svcCtx.TenantRpc.TenantAppModuleIndex(l.ctx, &sys.TenantModuleIndexReq{Code: uc.TenantCode, AppCode: uc.AppCode, ModuleCodes: moduleCodes})
 	if err != nil {
 		return nil, err
 	}

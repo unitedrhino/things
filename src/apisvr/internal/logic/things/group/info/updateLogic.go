@@ -4,9 +4,6 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/apisvr/internal/logic"
-	"github.com/i-Things/things/src/dmsvr/pb/dm"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 
@@ -27,14 +24,8 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
-func (l *UpdateLogic) Update(req *types.GroupInfoUpdateReq) error {
-	_, err := l.svcCtx.DeviceG.GroupInfoUpdate(l.ctx, &dm.GroupInfoUpdateReq{
-		ProductID: req.ProductID,
-		GroupID:   req.GroupID,
-		GroupName: *req.GroupName,
-		Desc:      *req.Desc,
-		Tags:      logic.ToTagsMap(req.Tags),
-	})
+func (l *UpdateLogic) Update(req *types.GroupInfo) error {
+	_, err := l.svcCtx.DeviceG.GroupInfoUpdate(l.ctx, ToGroupInfoPbTypes(req))
 
 	if err != nil {
 		er := errors.Fmt(err)

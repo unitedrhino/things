@@ -36,14 +36,14 @@ func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceM
 	if int(t) != len(in.List) {
 		return nil, errors.Duplicate.AddMsg("有被删除的设备请重试")
 	}
-	gi, err := relationDB.NewGroupInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{GroupID: in.GroupID})
+	gi, err := relationDB.NewGroupInfoRepo(l.ctx).FindOne(l.ctx, in.GroupID)
 	if err != nil {
 		return nil, err
 	}
 	list := make([]*relationDB.DmGroupDevice, 0, len(in.List))
 	for _, v := range in.List {
 		list = append(list, &relationDB.DmGroupDevice{
-			GroupID:    in.GroupID,
+			ID:         in.GroupID,
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 			AreaID:     gi.AreaID,
