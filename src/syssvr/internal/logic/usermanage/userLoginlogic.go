@@ -118,7 +118,7 @@ func (l *LoginLogic) GetUserInfo(in *sys.UserLoginReq) (uc *relationDB.SysUserIn
 		}
 	case users.RegDingApp:
 		cli, err := l.svcCtx.Cm.GetClients(l.ctx, "")
-		if err != nil || cli.MiniProgram == nil {
+		if err != nil || cli.DingTalk == nil {
 			return nil, errors.System.AddDetail(err)
 		}
 		ret, er := cli.DingTalk.GetUserInfoByCode(in.Code)

@@ -35,6 +35,8 @@ func (l *ModuleInfoUpdateLogic) ModuleInfoUpdate(in *sys.ModuleInfo) (*sys.Respo
 	old.Icon = in.Icon
 	old.Body = in.Body.Value
 	old.HideInMenu = in.HideInMenu
+	old.Type = in.Type
+	old.SubType = in.SubType
 	if in.Desc != nil {
 		old.Desc = in.Desc.Value
 	}

@@ -49,13 +49,16 @@ func (l *UserRegisterLogic) UserRegister(in *sys.UserRegisterReq) (*sys.UserRegi
 
 func (l *UserRegisterLogic) handleEmailOrPhone(in *sys.UserRegisterReq) (*sys.UserRegisterResp, error) {
 	ui := relationDB.SysUserInfo{
-		UserID:   l.svcCtx.UserID.GetSnowflakeId(),
-		NickName: in.Info.NickName,
+		UserID: l.svcCtx.UserID.GetSnowflakeId(),
 	}
-	ui.Password = utils.MakePwd(in.Info.Password, ui.UserID, false)
-	if in.Info.UserName != "" {
-		ui.UserName = utils.AnyToNullString(in.Info.UserName)
+	ui.Password = utils.MakePwd(in.Password, ui.UserID, false)
+	if in.Info != nil {
+		ui.NickName = in.Info.NickName
+		if in.Info.UserName != "" {
+			ui.UserName = utils.AnyToNullString(in.Info.UserName)
+		}
 	}
+
 	switch in.RegType {
 	case users.RegEmail:
 		email := l.svcCtx.Captcha.Verify(l.ctx, def.CaptchaTypeEmail, def.CaptchaUseRegister, in.CodeID, in.Code)
@@ -115,10 +118,12 @@ func (l *UserRegisterLogic) handleWxminip(in *sys.UserRegisterReq) (*sys.UserReg
 		ui := relationDB.SysUserInfo{
 			UserID:        userID,
 			WechatUnionID: sql.NullString{Valid: true, String: ret.UnionID},
-			NickName:      in.Info.NickName,
 		}
-		if in.Info.UserName != "" {
-			ui.UserName = utils.AnyToNullString(in.Info.UserName)
+		if in.Info != nil {
+			ui.NickName = in.Info.NickName
+			if in.Info.UserName != "" {
+				ui.UserName = utils.AnyToNullString(in.Info.UserName)
+			}
 		}
 		err = l.FillUserInfo(&ui, tx)
 		return err
@@ -129,7 +134,7 @@ func (l *UserRegisterLogic) handleWxminip(in *sys.UserRegisterReq) (*sys.UserReg
 
 func (l *UserRegisterLogic) handleDingApp(in *sys.UserRegisterReq) (*sys.UserRegisterResp, error) {
 	cli, err := l.svcCtx.Cm.GetClients(l.ctx, "")
-	if err != nil || cli.MiniProgram == nil {
+	if err != nil || cli.DingTalk == nil {
 		return nil, errors.System.AddDetail(err)
 	}
 	ret, err := cli.DingTalk.GetUserInfoByCode(in.Code)
@@ -159,8 +164,11 @@ func (l *UserRegisterLogic) handleDingApp(in *sys.UserRegisterReq) (*sys.UserReg
 			DingTalkUserID: sql.NullString{Valid: true, String: ret.UserInfo.UserId},
 			NickName:       ret.UserInfo.Name,
 		}
-		if in.Info.UserName != "" {
-			ui.UserName = utils.AnyToNullString(in.Info.UserName)
+		if in.Info != nil {
+			ui.NickName = in.Info.NickName
+			if in.Info.UserName != "" {
+				ui.UserName = utils.AnyToNullString(in.Info.UserName)
+			}
 		}
 		err = l.FillUserInfo(&ui, tx)
 		return err
@@ -188,5 +196,8 @@ func (l *UserRegisterLogic) FillUserInfo(in *relationDB.SysUserInfo, tx *gorm.DB
 		})
 		return err
 	})
+	if err != nil && errors.Cmp(err, errors.Duplicate) { //已经注册过
+		return errors.DuplicateRegister
+	}
 	return err
 }

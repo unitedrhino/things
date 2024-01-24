@@ -47,7 +47,8 @@ func (m *SysAppModule) TableName() string {
 type SysModuleInfo struct {
 	ID         int64            `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`       // 编号
 	Code       string           `gorm:"column:code;uniqueIndex:code;NOT NULL;type:VARCHAR(50)"` // 编码
-	Type       int64            `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`             // 类型   1：菜单或者页面   2：iframe嵌入   3：外链跳转
+	Type       int64            `gorm:"column:type;type:BIGINT;default:1;NOT NULL"`             // 类型   1:web页面  2:应用  3:小程序
+	SubType    int64            `gorm:"column:sub_type;type:BIGINT;default:1;NOT NULL"`         // 类型   1：微应用   2：iframe内嵌 3: 原生菜单
 	Order      int64            `gorm:"column:order_num;type:BIGINT;default:1;NOT NULL"`        // 左侧table排序序号
 	Name       string           `gorm:"column:name;type:VARCHAR(50);NOT NULL"`                  // 菜单名称
 	Path       string           `gorm:"column:path;type:VARCHAR(64);NOT NULL"`                  // 系统的path
