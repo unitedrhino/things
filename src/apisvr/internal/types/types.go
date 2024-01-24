@@ -44,6 +44,7 @@ type ModuleInfo struct {
 	Code       string  `json:"code"`                // 应用编号
 	Name       string  `json:"name,optional"`       // 菜单名称
 	Type       int64   `json:"type,optional"`       // 类型   1. 内部页面   2，iframe内嵌  3，外部链接跳转 4，微前端
+	SubType    int64   `json:"subType,optional"`    // 子类型   1. 内部页面   2，iframe内嵌  3，外部链接跳转 4，微前端
 	Path       string  `json:"path,optional"`       // 系统的path
 	Desc       *string `json:"desc,optional"`       // 页面
 	Icon       string  `json:"icon,optional"`       // 菜单图标

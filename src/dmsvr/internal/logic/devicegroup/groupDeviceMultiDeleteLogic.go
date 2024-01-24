@@ -32,6 +32,5 @@ func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceM
 	if err != nil {
 		return nil, err
 	}
-
 	return &dm.Response{}, nil
 }

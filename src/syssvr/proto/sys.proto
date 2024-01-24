@@ -829,6 +829,7 @@ message ModuleInfo{
   string code = 3;          // 模块编码
   google.protobuf.StringValue desc = 4;        // 模块描述
   int64 type = 5;
+  int64 subType=12;
   string path = 6;
   string url = 7;
   string icon = 8;

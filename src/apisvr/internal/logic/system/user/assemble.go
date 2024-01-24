@@ -41,6 +41,9 @@ func UserInfoToApi(ui *sys.UserInfo, roles []*sys.RoleInfo, tenant *sys.TenantIn
 	}
 }
 func UserInfoToRpc(ui *types.UserInfo) *sys.UserInfo {
+	if ui == nil {
+		return nil
+	}
 	return &sys.UserInfo{
 		UserID:          ui.UserID,
 		UserName:        ui.UserName,

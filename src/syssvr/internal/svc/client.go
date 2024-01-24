@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/clients"
 	"github.com/i-Things/things/shared/conf"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/src/syssvr/internal/config"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"sync"
@@ -26,6 +27,9 @@ func NewClients(c config.Config) *ClientsManage {
 }
 
 func (c *ClientsManage) GetClients(ctx context.Context, tenantCode string) (Clients, error) {
+	if tenantCode == "" {
+		tenantCode = ctxs.GetUserCtx(ctx).TenantCode
+	}
 	val, ok := tc.Load(tenantCode)
 	if ok {
 		return val.(Clients), nil

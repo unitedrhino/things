@@ -75,28 +75,35 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 
 	po := ToTenantInfoPo(in.Info)
 	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
-		ri := relationDB.SysRoleInfo{TenantCode: stores.TenantCode(in.Info.Code), Name: "超级管理员"}
-		err = relationDB.NewRoleInfoRepo(tx).Insert(l.ctx, &ri)
+		ris := []*relationDB.SysRoleInfo{{TenantCode: stores.TenantCode(in.Info.Code), Name: "超级管理员"}, {TenantCode: stores.TenantCode(in.Info.Code), Name: "普通用户"}}
+		err = relationDB.NewRoleInfoRepo(tx).MultiInsert(l.ctx, ris)
+		if err != nil {
+			return err
+		}
 		err := relationDB.NewUserRoleRepo(tx).Insert(l.ctx, &relationDB.SysUserRole{
 			TenantCode: stores.TenantCode(in.Info.Code),
 			UserID:     ui.UserID,
-			RoleID:     ri.ID,
+			RoleID:     ris[0].ID,
 		})
 		if err != nil {
 			return err
 		}
-		ui.Role = ri.ID
+		ui.Role = ris[0].ID
 		err = relationDB.NewUserInfoRepo(tx).Insert(l.ctx, &ui)
 		if err != nil {
 			return err
 		}
 		po.AdminUserID = ui.UserID
-		po.AdminRoleID = ri.ID
+		po.AdminRoleID = ris[0].ID
 		err = relationDB.NewTenantInfoRepo(l.ctx).Insert(l.ctx, po)
 		if err != nil {
 			return err
 		}
-		return nil
+		err = relationDB.NewTenantConfigRepo(l.ctx).Insert(l.ctx, &relationDB.SysTenantConfig{
+			TenantCode:     stores.TenantCode(in.Info.Code),
+			RegisterRoleID: ris[1].ID,
+		})
+		return err
 	})
 	if err != nil {
 		return nil, err
