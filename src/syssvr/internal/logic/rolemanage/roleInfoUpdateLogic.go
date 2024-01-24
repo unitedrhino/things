@@ -44,7 +44,7 @@ func (l *RoleInfoUpdateLogic) RoleInfoUpdate(in *sys.RoleInfo) (*sys.Response, e
 		in.Status = ro.Status
 	}
 
-	err = l.RiDB.Update(l.ctx, &relationDB.SysTenantRoleInfo{
+	err = l.RiDB.Update(l.ctx, &relationDB.SysRoleInfo{
 		ID:     in.Id,
 		Name:   in.Name,
 		Desc:   in.Desc,

@@ -21,20 +21,20 @@ func Migrate(c conf.Database) error {
 	}
 	err := db.AutoMigrate(
 		&SysUserInfo{},
-		&SysTenantRoleInfo{},
-		&SysTenantRoleMenu{},
-		&SysTenantRoleModule{},
+		&SysRoleInfo{},
+		&SysRoleMenu{},
+		&SysRoleModule{},
 		&SysModuleMenu{},
 		&SysLoginLog{},
 		&SysOperLog{},
 		&SysModuleApi{},
-		&SysTenantRoleApi{},
+		&SysRoleApi{},
 		&SysAreaInfo{},
 		&SysProjectInfo{},
 		&SysUserArea{},
 		&SysUserProject{},
 		&SysAppInfo{},
-		&SysTenantRoleApp{},
+		&SysRoleApp{},
 		&SysUserRole{},
 		&SysTenantInfo{},
 		&SysTenantApp{},
@@ -162,7 +162,7 @@ func migrateTableColumn() error {
 
 func init() {
 	for i := int64(1); i <= 100; i++ {
-		MigrateRoleMenu = append(MigrateRoleMenu, SysTenantRoleMenu{
+		MigrateRoleMenu = append(MigrateRoleMenu, SysRoleMenu{
 			TenantCode: def.TenantCodeDefault,
 			RoleID:     1,
 			AppCode:    def.AppCore,
@@ -224,11 +224,11 @@ var (
 	MigrateUserRole = []SysUserRole{
 		{TenantCode: def.TenantCodeDefault, UserID: adminUserID, RoleID: 1},
 	}
-	MigrateRoleInfo = []SysTenantRoleInfo{
+	MigrateRoleInfo = []SysRoleInfo{
 		{ID: 1, TenantCode: def.TenantCodeDefault, Name: "admin"},
 		{ID: 2, TenantCode: def.TenantCodeDefault, Name: "client", Desc: "C端用户"}}
-	MigrateRoleMenu []SysTenantRoleMenu
-	MigrateRoleApp  = []SysTenantRoleApp{
+	MigrateRoleMenu []SysRoleMenu
+	MigrateRoleApp  = []SysRoleApp{
 		{RoleID: 1, TenantCode: def.TenantCodeDefault, AppCode: def.AppCore},
 	}
 	MigrateAppInfo = []SysAppInfo{
@@ -732,7 +732,7 @@ var (
 	//	{ModuleCode: def.AppCore, Route: "/api/v1/things/vidmgr/stream/read", Method: "POST", Name: "获取视频流详细", BusinessType: 1, Desc: "", Group: "视频服务"},
 	//	{ModuleCode: def.AppCore, Route: "/api/v1/things/vidmgr/stream/update", Method: "POST", Name: "更新视频流", BusinessType: 1, Desc: "", Group: "视频服务"},
 	//}
-	//MigrateRoleApi = []SysTenantRoleApi{
+	//MigrateRoleApi = []SysRoleApi{
 	//	{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/product/info/update", V4: "POST", V5: ""},
 	//	{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/product/info/create", V4: "POST", V5: ""},
 	//	{PType: "p", V0: "1", V1: def.TenantCodeDefault, V2: def.AppCore, V3: "/api/v1/things/product/info/read", V4: "POST", V5: ""},

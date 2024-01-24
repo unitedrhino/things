@@ -40,13 +40,13 @@ func (p RoleMenuRepo) fmtFilter(ctx context.Context, f RoleMenuFilter) *gorm.DB 
 	return db
 }
 
-func (p RoleMenuRepo) Insert(ctx context.Context, data *SysTenantRoleMenu) error {
+func (p RoleMenuRepo) Insert(ctx context.Context, data *SysRoleMenu) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p RoleMenuRepo) FindOneByFilter(ctx context.Context, f RoleMenuFilter) (*SysTenantRoleMenu, error) {
-	var result SysTenantRoleMenu
+func (p RoleMenuRepo) FindOneByFilter(ctx context.Context, f RoleMenuFilter) (*SysRoleMenu, error) {
+	var result SysRoleMenu
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -54,9 +54,9 @@ func (p RoleMenuRepo) FindOneByFilter(ctx context.Context, f RoleMenuFilter) (*S
 	}
 	return &result, nil
 }
-func (p RoleMenuRepo) FindByFilter(ctx context.Context, f RoleMenuFilter, page *def.PageInfo) ([]*SysTenantRoleMenu, error) {
-	var results []*SysTenantRoleMenu
-	db := p.fmtFilter(ctx, f).Model(&SysTenantRoleMenu{})
+func (p RoleMenuRepo) FindByFilter(ctx context.Context, f RoleMenuFilter, page *def.PageInfo) ([]*SysRoleMenu, error) {
+	var results []*SysRoleMenu
+	db := p.fmtFilter(ctx, f).Model(&SysRoleMenu{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -66,28 +66,28 @@ func (p RoleMenuRepo) FindByFilter(ctx context.Context, f RoleMenuFilter, page *
 }
 
 func (p RoleMenuRepo) CountByFilter(ctx context.Context, f RoleMenuFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&SysTenantRoleMenu{})
+	db := p.fmtFilter(ctx, f).Model(&SysRoleMenu{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p RoleMenuRepo) Update(ctx context.Context, data *SysTenantRoleMenu) error {
+func (p RoleMenuRepo) Update(ctx context.Context, data *SysRoleMenu) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleMenuRepo) DeleteByFilter(ctx context.Context, f RoleMenuFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&SysTenantRoleMenu{}).Error
+	err := db.Delete(&SysRoleMenu{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleMenuRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysTenantRoleMenu{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysRoleMenu{}).Error
 	return stores.ErrFmt(err)
 }
-func (p RoleMenuRepo) FindOne(ctx context.Context, id int64) (*SysTenantRoleMenu, error) {
-	var result SysTenantRoleMenu
+func (p RoleMenuRepo) FindOne(ctx context.Context, id int64) (*SysRoleMenu, error) {
+	var result SysRoleMenu
 	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -96,15 +96,15 @@ func (p RoleMenuRepo) FindOne(ctx context.Context, id int64) (*SysTenantRoleMenu
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p RoleMenuRepo) MultiInsert(ctx context.Context, data []*SysTenantRoleMenu) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysTenantRoleMenu{}).Create(data).Error
+func (p RoleMenuRepo) MultiInsert(ctx context.Context, data []*SysRoleMenu) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysRoleMenu{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleMenuRepo) MultiUpdate(ctx context.Context, roleID int64, appCode string, moduleCode string, menuIDs []int64) error {
-	var datas []*SysTenantRoleMenu
+	var datas []*SysRoleMenu
 	for _, v := range menuIDs {
-		datas = append(datas, &SysTenantRoleMenu{
+		datas = append(datas, &SysRoleMenu{
 			AppCode:    appCode,
 			ModuleCode: moduleCode,
 			RoleID:     roleID,

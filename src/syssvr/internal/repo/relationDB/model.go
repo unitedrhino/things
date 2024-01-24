@@ -133,7 +133,7 @@ type SysUserInfo struct {
 	Roles          []*SysUserRole    `gorm:"foreignKey:UserID;references:UserID"`
 	Tenant         *SysTenantInfo    `gorm:"foreignKey:Code;references:TenantCode"`
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:tc_un;uniqueIndex:tc_email;uniqueIndex:tc_phone;uniqueIndex:tc_wui;uniqueIndex:tc_woi"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:tc_un;uniqueIndex:tc_doi;uniqueIndex:tc_email;uniqueIndex:tc_phone;uniqueIndex:tc_wui;uniqueIndex:tc_woi"`
 }
 
 func (m *SysUserInfo) TableName() string {

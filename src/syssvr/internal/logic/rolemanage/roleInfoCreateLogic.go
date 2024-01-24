@@ -27,7 +27,7 @@ func NewRoleInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ro
 }
 
 func (l *RoleInfoCreateLogic) RoleInfoCreate(in *sys.RoleInfo) (*sys.WithID, error) {
-	po := relationDB.SysTenantRoleInfo{
+	po := relationDB.SysRoleInfo{
 		Name:   in.Name,
 		Desc:   in.Desc,
 		Status: in.Status,
