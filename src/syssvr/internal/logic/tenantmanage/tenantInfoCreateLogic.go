@@ -75,7 +75,7 @@ func (l *TenantInfoCreateLogic) TenantInfoCreate(in *sys.TenantInfoCreateReq) (*
 
 	po := ToTenantInfoPo(in.Info)
 	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
-		ri := relationDB.SysTenantRoleInfo{TenantCode: stores.TenantCode(in.Info.Code), Name: "超级管理员"}
+		ri := relationDB.SysRoleInfo{TenantCode: stores.TenantCode(in.Info.Code), Name: "超级管理员"}
 		err = relationDB.NewRoleInfoRepo(tx).Insert(l.ctx, &ri)
 		err := relationDB.NewUserRoleRepo(tx).Insert(l.ctx, &relationDB.SysUserRole{
 			TenantCode: stores.TenantCode(in.Info.Code),

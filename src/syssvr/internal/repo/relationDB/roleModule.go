@@ -36,13 +36,13 @@ func (p RoleModuleRepo) fmtFilter(ctx context.Context, f RoleModuleFilter) *gorm
 	return db
 }
 
-func (p RoleModuleRepo) Insert(ctx context.Context, data *SysTenantRoleModule) error {
+func (p RoleModuleRepo) Insert(ctx context.Context, data *SysRoleModule) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p RoleModuleRepo) FindOneByFilter(ctx context.Context, f RoleModuleFilter) (*SysTenantRoleModule, error) {
-	var result SysTenantRoleModule
+func (p RoleModuleRepo) FindOneByFilter(ctx context.Context, f RoleModuleFilter) (*SysRoleModule, error) {
+	var result SysRoleModule
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -50,9 +50,9 @@ func (p RoleModuleRepo) FindOneByFilter(ctx context.Context, f RoleModuleFilter)
 	}
 	return &result, nil
 }
-func (p RoleModuleRepo) FindByFilter(ctx context.Context, f RoleModuleFilter, page *def.PageInfo) ([]*SysTenantRoleModule, error) {
-	var results []*SysTenantRoleModule
-	db := p.fmtFilter(ctx, f).Model(&SysTenantRoleModule{})
+func (p RoleModuleRepo) FindByFilter(ctx context.Context, f RoleModuleFilter, page *def.PageInfo) ([]*SysRoleModule, error) {
+	var results []*SysRoleModule
+	db := p.fmtFilter(ctx, f).Model(&SysRoleModule{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -62,28 +62,28 @@ func (p RoleModuleRepo) FindByFilter(ctx context.Context, f RoleModuleFilter, pa
 }
 
 func (p RoleModuleRepo) CountByFilter(ctx context.Context, f RoleModuleFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&SysTenantRoleModule{})
+	db := p.fmtFilter(ctx, f).Model(&SysRoleModule{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p RoleModuleRepo) Update(ctx context.Context, data *SysTenantRoleModule) error {
+func (p RoleModuleRepo) Update(ctx context.Context, data *SysRoleModule) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleModuleRepo) DeleteByFilter(ctx context.Context, f RoleModuleFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&SysTenantRoleModule{}).Error
+	err := db.Delete(&SysRoleModule{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleModuleRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysTenantRoleModule{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&SysRoleModule{}).Error
 	return stores.ErrFmt(err)
 }
-func (p RoleModuleRepo) FindOne(ctx context.Context, id int64) (*SysTenantRoleModule, error) {
-	var result SysTenantRoleModule
+func (p RoleModuleRepo) FindOne(ctx context.Context, id int64) (*SysRoleModule, error) {
+	var result SysRoleModule
 	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -92,15 +92,15 @@ func (p RoleModuleRepo) FindOne(ctx context.Context, id int64) (*SysTenantRoleMo
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p RoleModuleRepo) MultiInsert(ctx context.Context, data []*SysTenantRoleModule) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysTenantRoleModule{}).Create(data).Error
+func (p RoleModuleRepo) MultiInsert(ctx context.Context, data []*SysRoleModule) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&SysRoleModule{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (p RoleModuleRepo) MultiUpdate(ctx context.Context, roleID int64, appCode string, moduleCodes []string) error {
-	var datas []*SysTenantRoleModule
+	var datas []*SysRoleModule
 	for _, v := range moduleCodes {
-		datas = append(datas, &SysTenantRoleModule{
+		datas = append(datas, &SysRoleModule{
 			AppCode:    appCode,
 			RoleID:     roleID,
 			ModuleCode: v,
