@@ -82,16 +82,21 @@ type (
     }
     UserArea struct {
         AreaID int64 `json:"areaID,string"` //项目id
+        AuthType  int64 `json:"authType"`// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
     }
 
     UserAreaIndexReq struct {
         Page *PageInfo `json:"page,optional"`        //进行数据分页（不传默认2000相当于全部）
         UserID   int64              `json:"userID,string"`    //用户ID（必填，雪花ID）
-        ProjectID int64           `json:"projectID,string"` //项目id
+        ProjectID int64           `json:"projectID,string,optional"` //项目id
     }
 
+    UserAreaDetail struct {
+        *AreaInfo
+        AuthType  int64 `json:"authType"`// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+    }
     UserAreaIndexResp struct {
         Total int64           `json:"total"` //总数
-        List  []*UserArea `json:"list"`    //用户数据权限列表
+        List  []*UserAreaDetail `json:"list"`    //用户数据权限列表
     }
 )

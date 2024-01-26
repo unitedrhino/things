@@ -60,7 +60,7 @@ type DeviceManageClient interface {
 	// 删除网关下子设备
 	DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 	// 设备计数
-	DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCountResp, error)
+	DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error)
 	// 设备类型
 	DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error)
 }
@@ -163,8 +163,8 @@ func (c *deviceManageClient) DeviceGatewayMultiDelete(ctx context.Context, in *D
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCountResp, error) {
-	out := new(DeviceInfoCountResp)
+func (c *deviceManageClient) DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error) {
+	out := new(DeviceInfoCount)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoCount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -206,7 +206,7 @@ type DeviceManageServer interface {
 	// 删除网关下子设备
 	DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Response, error)
 	// 设备计数
-	DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCountResp, error)
+	DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCount, error)
 	// 设备类型
 	DeviceTypeCount(context.Context, *DeviceTypeCountReq) (*DeviceTypeCountResp, error)
 	mustEmbedUnimplementedDeviceManageServer()
@@ -246,7 +246,7 @@ func (UnimplementedDeviceManageServer) DeviceGatewayIndex(context.Context, *Devi
 func (UnimplementedDeviceManageServer) DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiDelete not implemented")
 }
-func (UnimplementedDeviceManageServer) DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCountResp, error) {
+func (UnimplementedDeviceManageServer) DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCount, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoCount not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceTypeCount(context.Context, *DeviceTypeCountReq) (*DeviceTypeCountResp, error) {

@@ -35,13 +35,17 @@ func transPoToPb(po *relationDB.SysAreaInfo) *sys.AreaInfo {
 		parentAreaID = def.RootNode
 	}
 	return &sys.AreaInfo{
-		CreatedTime:  po.CreatedTime.Unix(),
-		AreaID:       int64(po.AreaID),
-		ParentAreaID: parentAreaID,
-		ProjectID:    int64(po.ProjectID),
-		AreaName:     po.AreaName,
-		Position:     logic.ToSysPoint(po.Position),
-		Desc:         utils.ToRpcNullString(po.Desc),
+		CreatedTime:     po.CreatedTime.Unix(),
+		AreaID:          int64(po.AreaID),
+		ParentAreaID:    parentAreaID,
+		ProjectID:       int64(po.ProjectID),
+		AreaName:        po.AreaName,
+		AreaNamePath:    GetNamePath(po.AreaNamePath),
+		AreaIDPath:      GetIDPath(po.AreaIDPath),
+		Position:        logic.ToSysPoint(po.Position),
+		Desc:            utils.ToRpcNullString(po.Desc),
+		LowerLevelCount: po.LowerLevelCount,
+		ChildrenAreaIDs: po.ChildrenAreaIDs,
 	}
 }
 func AreaInfosToPb(po []*relationDB.SysAreaInfo) (ret []*sys.AreaInfo) {

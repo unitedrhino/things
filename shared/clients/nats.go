@@ -63,6 +63,14 @@ func (n *NatsClient) Subscribe(subj string, cb events.HandleFunc) error {
 	_, err := n.nc.Subscribe(subj, events.NatsSubscription(cb))
 	return err
 }
+func (n *NatsClient) Publish(subj string, data []byte) error {
+	if n.mode == conf.EventModeNatsJs {
+		_, err := n.js.Publish(subj, data)
+		return err
+	}
+	err := n.nc.Publish(subj, data)
+	return err
+}
 
 func NewNatsClient(conf conf.NatsConf) (nc *nats.Conn, err error) {
 	connectOpts := nats.GetDefaultOptions()

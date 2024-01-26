@@ -8,6 +8,12 @@ import "google/protobuf/wrappers.proto";
 
 message Response {
 }
+
+message TimeRange{
+  int64 start = 1;
+  int64 end = 2;
+}
+
 message PageInfo{
   int64 page = 1;
   int64 size = 2;
@@ -56,7 +62,7 @@ service DeviceManage {
   rpc deviceGatewayMultiDelete(DeviceGatewayMultiDeleteReq)     returns (Response);
 
   //设备计数
-  rpc deviceInfoCount(DeviceInfoCountReq) returns (DeviceInfoCountResp);
+  rpc deviceInfoCount(DeviceInfoCountReq) returns (DeviceInfoCount);
   //设备类型
   rpc deviceTypeCount(DeviceTypeCountReq) returns (DeviceTypeCountResp);
 }
@@ -626,6 +632,7 @@ message GroupInfo{
   map<string, string> tags = 7;
   string productID = 8;
   string productName = 9;
+  DeviceInfoCount deviceInfoCount =11;
 }
 
 message GroupInfoCreateReq{
@@ -918,20 +925,23 @@ message ProductSchemaTslReadResp{
 }
 
 message DeviceInfoCountReq {
-  int64  startTime = 1; // 查询区间 开始
-  int64  endTime = 2;   // 查询区间 结束
+    TimeRange timeRange =1;
+    repeated int64  areaIDs =2;
+    repeated int64  groupIDs =3;
 }
 
 message DeviceTypeCountReq{
-  int64  startTime = 1; // 查询区间 开始
-  int64  endTime = 2;   // 查询区间 结束
+  TimeRange timeRange =1;
+  repeated int64  areaIDs =2;
+  repeated int64  groupIDs =3;
 }
 
-message DeviceInfoCountResp{
+message DeviceInfoCount{
   int64 online = 1;
   int64 offline = 2;
   int64 inactive = 3;
   int64 unknown = 4;
+  int64 total =5;
 }
 
 message DeviceTypeCountResp{

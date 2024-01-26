@@ -28,8 +28,8 @@ type (
 	DeviceGatewayMultiDeleteReq = dm.DeviceGatewayMultiDeleteReq
 	DeviceGatewaySign           = dm.DeviceGatewaySign
 	DeviceInfo                  = dm.DeviceInfo
+	DeviceInfoCount             = dm.DeviceInfoCount
 	DeviceInfoCountReq          = dm.DeviceInfoCountReq
-	DeviceInfoCountResp         = dm.DeviceInfoCountResp
 	DeviceInfoDeleteReq         = dm.DeviceInfoDeleteReq
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
@@ -146,6 +146,7 @@ type (
 	SendPropertyResp            = dm.SendPropertyResp
 	ShadowIndex                 = dm.ShadowIndex
 	ShadowIndexResp             = dm.ShadowIndexResp
+	TimeRange                   = dm.TimeRange
 	WithID                      = dm.WithID
 
 	DeviceGroup interface {

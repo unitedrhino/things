@@ -28,8 +28,8 @@ type (
 	DeviceGatewayMultiDeleteReq = dm.DeviceGatewayMultiDeleteReq
 	DeviceGatewaySign           = dm.DeviceGatewaySign
 	DeviceInfo                  = dm.DeviceInfo
+	DeviceInfoCount             = dm.DeviceInfoCount
 	DeviceInfoCountReq          = dm.DeviceInfoCountReq
-	DeviceInfoCountResp         = dm.DeviceInfoCountResp
 	DeviceInfoDeleteReq         = dm.DeviceInfoDeleteReq
 	DeviceInfoIndexReq          = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp         = dm.DeviceInfoIndexResp
@@ -146,6 +146,7 @@ type (
 	SendPropertyResp            = dm.SendPropertyResp
 	ShadowIndex                 = dm.ShadowIndex
 	ShadowIndexResp             = dm.ShadowIndexResp
+	TimeRange                   = dm.TimeRange
 	WithID                      = dm.WithID
 
 	DeviceManage interface {
@@ -170,7 +171,7 @@ type (
 		// 删除网关下子设备
 		DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		// 设备计数
-		DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCountResp, error)
+		DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error)
 		// 设备类型
 		DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error)
 	}
@@ -309,13 +310,13 @@ func (d *directDeviceManage) DeviceGatewayMultiDelete(ctx context.Context, in *D
 }
 
 // 设备计数
-func (m *defaultDeviceManage) DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCountResp, error) {
+func (m *defaultDeviceManage) DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceInfoCount(ctx, in, opts...)
 }
 
 // 设备计数
-func (d *directDeviceManage) DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCountResp, error) {
+func (d *directDeviceManage) DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error) {
 	return d.svr.DeviceInfoCount(ctx, in)
 }
 

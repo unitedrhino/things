@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/conf"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/eventBus"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dgsvr/internal/config"
 	"github.com/i-Things/things/src/dgsvr/internal/domain/custom"
@@ -14,16 +15,18 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
-	Config   config.Config
-	PubDev   pubDev.PubDev
-	PubInner pubInner.PubInner
-	ProductM productmanage.ProductManage
-	DeviceM  devicemanage.DeviceManage
-	Script   custom.Repo
+	Config    config.Config
+	PubDev    pubDev.PubDev
+	PubInner  pubInner.PubInner
+	ServerMsg *eventBus.ServerMsg
+	ProductM  productmanage.ProductManage
+	DeviceM   devicemanage.DeviceManage
+	Script    custom.Repo
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -32,18 +35,18 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceM  devicemanage.DeviceManage
 	)
 	/*
-	// move to startup.PostInit()
-		dl, err := pubDev.NewPubDev(c.DevLink)
-		if err != nil {
-			logx.Error("NewDevClient err", err)
-			os.Exit(-1)
-		}
+		// move to startup.PostInit()
+			dl, err := pubDev.NewPubDev(c.DevLink)
+			if err != nil {
+				logx.Error("NewDevClient err", err)
+				os.Exit(-1)
+			}
 
-		il, err := pubInner.NewPubInner(c.Event)
-		if err != nil {
-			logx.Error("NewInnerDevPub err", err)
-			os.Exit(-1)
-		}
+			il, err := pubInner.NewPubInner(c.Event)
+			if err != nil {
+				logx.Error("NewInnerDevPub err", err)
+				os.Exit(-1)
+			}
 	*/
 	if c.DmRpc.Mode == conf.ClientModeGrpc {
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -66,12 +69,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			ScriptLang:      ret.ScriptLang,
 		}, nil
 	})
+	serverMsg, err := eventBus.NewServerMsg(c.Event, c.Name)
+	logx.Must(err)
 	return &ServiceContext{
-		Config:   c,
+		Config: c,
 		// PubDev:   dl,
 		// PubInner: il,
-		ProductM: productM,
-		DeviceM:  deviceM,
-		Script:   scriptCache,
+		ServerMsg: serverMsg,
+		ProductM:  productM,
+		DeviceM:   deviceM,
+		Script:    scriptCache,
 	}
 }

@@ -30,14 +30,16 @@ func NewAreaInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Area
 
 var (
 	rootNode = relationDB.SysAreaInfo{
-		AreaID:     def.RootNode,
-		AreaIDPath: "1-",
-		AreaName:   "全部区域",
+		AreaID:       def.RootNode,
+		AreaIDPath:   "",
+		AreaNamePath: "全部区域",
+		AreaName:     "全部区域",
 	}
 	notClassifiedNode = relationDB.SysAreaInfo{
-		AreaID:     def.NotClassified,
-		AreaIDPath: "2-",
-		AreaName:   "未分类的区域",
+		AreaID:       def.NotClassified,
+		AreaIDPath:   "2-",
+		AreaNamePath: "未分类的区域",
+		AreaName:     "未分类的区域",
 	}
 )
 
@@ -67,6 +69,7 @@ func (l *AreaInfoReadLogic) AreaInfoRead(in *sys.AreaInfoReadReq) (*sys.AreaInfo
 	if err != nil {
 		return nil, err
 	}
+
 	return transPoArrToPbTree(po, poArr), err
 }
 

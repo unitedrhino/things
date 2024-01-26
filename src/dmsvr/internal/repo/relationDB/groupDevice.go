@@ -14,7 +14,7 @@ type GroupDeviceRepo struct {
 }
 type (
 	GroupDeviceFilter struct {
-		GroupID     int64
+		GroupIDs    []int64
 		ProductID   string
 		DeviceName  string
 		WithProduct bool
@@ -55,7 +55,7 @@ func (m GroupDeviceRepo) MultiDelete(ctx context.Context, groupID int64, data []
 func (p GroupDeviceRepo) MultiUpdate(ctx context.Context, groupID int64, devices []*DmGroupDevice) error {
 	err := p.db.Transaction(func(tx *gorm.DB) error {
 		rm := NewGroupDeviceRepo(tx)
-		err := rm.DeleteByFilter(ctx, GroupDeviceFilter{GroupID: groupID})
+		err := rm.DeleteByFilter(ctx, GroupDeviceFilter{GroupIDs: []int64{groupID}})
 		if err != nil {
 			return err
 		}
@@ -77,8 +77,8 @@ func (p GroupDeviceRepo) fmtFilter(ctx context.Context, f GroupDeviceFilter) *go
 		db = db.Preload("ProductInfo")
 	}
 	//业务过滤条件
-	if f.GroupID != 0 {
-		db = db.Where("group_id=?", f.GroupID)
+	if len(f.GroupIDs) != 0 {
+		db = db.Where("group_id in ?", f.GroupIDs)
 	}
 	if f.ProductID != "" {
 		db = db.Where("product_id=?", f.ProductID)

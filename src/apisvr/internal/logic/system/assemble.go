@@ -2,6 +2,7 @@ package system
 
 import (
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/apisvr/internal/logic"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 )
@@ -13,6 +14,7 @@ func ProjectInfoToApi(pb *sys.ProjectInfo) *types.ProjectInfo {
 		ProjectName: pb.ProjectName,
 		AdminUserID: pb.AdminUserID,
 		Desc:        utils.ToNullString(pb.Desc),
+		Position:    logic.ToSysPointApi(pb.Position),
 	}
 }
 func ProjectInfosToApi(pb []*sys.ProjectInfo) (ret []*types.ProjectInfo) {

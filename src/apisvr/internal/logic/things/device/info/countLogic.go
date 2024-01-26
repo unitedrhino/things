@@ -28,8 +28,10 @@ func NewCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CountLogic 
 
 func (l *CountLogic) Count(req *types.DeviceCountReq) (resp *types.DeviceCountResp, err error) {
 	diReq := &dm.DeviceInfoCountReq{
-		StartTime: req.StartTime,
-		EndTime:   req.EndTime,
+		TimeRange: &dm.TimeRange{
+			Start: req.StartTime,
+			End:   req.EndTime,
+		},
 	}
 	diResp, err := l.svcCtx.DeviceM.DeviceInfoCount(l.ctx, diReq)
 	if err != nil {
@@ -38,8 +40,10 @@ func (l *CountLogic) Count(req *types.DeviceCountReq) (resp *types.DeviceCountRe
 		return nil, er
 	}
 	dtReq := &dm.DeviceTypeCountReq{
-		StartTime: req.StartTime,
-		EndTime:   req.EndTime,
+		TimeRange: &dm.TimeRange{
+			Start: req.StartTime,
+			End:   req.EndTime,
+		},
 	}
 	dtResp, err := l.svcCtx.DeviceM.DeviceTypeCount(l.ctx, dtReq)
 	if err != nil {

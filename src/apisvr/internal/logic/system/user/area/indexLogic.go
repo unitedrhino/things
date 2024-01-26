@@ -37,7 +37,22 @@ func (l *IndexLogic) Index(req *types.UserAreaIndexReq) (resp *types.UserAreaInd
 		l.Errorf("%s.rpc.UserAreaIndex req=%v err=%+v", utils.FuncName(), req, err)
 		return nil, err
 	}
-	list := ToAreaApis(dmResp.List)
+	if len(dmResp.List) == 0 {
+		return &types.UserAreaIndexResp{}, nil
+	}
+	var areaIDs []int64
+	for _, v := range dmResp.List {
+		areaIDs = append(areaIDs, v.AreaID)
+	}
+	areaInfos, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{AreaIDs: areaIDs})
+	if err != nil {
+		return nil, err
+	}
+	var areaMap = map[int64]*sys.AreaInfo{}
+	for _, v := range areaInfos.List {
+		areaMap[v.AreaID] = v
+	}
+	list := ToUserAreaDetail(dmResp.List, areaMap)
 	return &types.UserAreaIndexResp{
 		Total: dmResp.Total,
 		List:  list,

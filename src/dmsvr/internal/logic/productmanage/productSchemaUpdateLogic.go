@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/domain/schema"
 	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/events/topics"
+	"github.com/i-Things/things/shared/eventBus"
 	"github.com/i-Things/things/shared/utils"
 	commonschemalogic "github.com/i-Things/things/src/dmsvr/internal/logic/schemamanage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
@@ -104,7 +104,7 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	if err != nil {
 		return nil, err
 	}
-	l.svcCtx.Bus.Publish(l.ctx, topics.DmProductSchemaUpdate, in.Info.ProductID)
+	l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductSchemaUpdate, in.Info.ProductID)
 
 	return &dm.Response{}, nil
 }

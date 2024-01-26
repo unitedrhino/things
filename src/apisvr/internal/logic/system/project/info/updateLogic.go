@@ -4,8 +4,6 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/syssvr/pb/sys"
-
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 
@@ -27,16 +25,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 }
 
 func (l *UpdateLogic) Update(req *types.ProjectInfo) error {
-	dmReq := &sys.ProjectInfo{
-		ProjectID:   req.ProjectID,
-		ProjectName: req.ProjectName,
-		//CompanyName: utils.ToRpcNullString(req.CompanyName),
-		AdminUserID: req.AdminUserID,
-		//Region:      utils.ToRpcNullString(req.Region),
-		//Address:     utils.ToRpcNullString(req.Address),
-		Desc: utils.ToRpcNullString(req.Desc),
-	}
-	_, err := l.svcCtx.ProjectM.ProjectInfoUpdate(l.ctx, dmReq)
+	_, err := l.svcCtx.ProjectM.ProjectInfoUpdate(l.ctx, ToProjectPb(req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.ProjectManage req=%v err=%v", utils.FuncName(), req, er)

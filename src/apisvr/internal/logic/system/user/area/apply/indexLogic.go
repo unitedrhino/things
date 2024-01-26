@@ -78,7 +78,7 @@ func (l *IndexLogic) Index(req *types.UserAreaApplyIndexReq) (resp *types.UserAr
 	if req.WithAreaInfo || req.WithUserInfo {
 		for _, v := range list {
 			v.UserInfo = user.UserInfoToApi(userInfoMap[v.UserID], nil, nil)
-			v.AreaInfo = info.ToAreaInfoTypes(areaInfoMap[v.AreaID])
+			v.AreaInfo = info.ToAreaInfoTypes(areaInfoMap[v.AreaID], nil)
 		}
 	}
 	return &types.UserAreaApplyIndexResp{

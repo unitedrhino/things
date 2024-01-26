@@ -16,15 +16,12 @@ type DeviceInfoRepo struct {
 
 type (
 	DeviceFilter struct {
-		ProductID     string
-		AreaIDs       []int64
-		DeviceName    string
-		DeviceNames   []string
-		Tags          map[string]string
-		LastLoginTime struct {
-			Start int64
-			End   int64
-		}
+		ProductID         string
+		AreaIDs           []int64
+		DeviceName        string
+		DeviceNames       []string
+		Tags              map[string]string
+		LastLoginTime     *def.TimeRange
 		IsOnline          int64
 		Range             int64
 		Position          stores.Point
@@ -86,12 +83,15 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 				k, v)
 		}
 	}
-	if f.LastLoginTime.Start != 0 {
-		db = db.Where("last_login >= ?", utils.ToYYMMddHHSS(f.LastLoginTime.Start*1000))
+	if f.LastLoginTime != nil {
+		if f.LastLoginTime.Start != 0 {
+			db = db.Where("last_login >= ?", utils.ToYYMMddHHSS(f.LastLoginTime.Start*1000))
+		}
+		if f.LastLoginTime.End != 0 {
+			db = db.Where("last_login <= ?", utils.ToYYMMddHHSS(f.LastLoginTime.End*1000))
+		}
 	}
-	if f.LastLoginTime.End != 0 {
-		db = db.Where("last_login <= ?", utils.ToYYMMddHHSS(f.LastLoginTime.End*1000))
-	}
+
 	if f.IsOnline != 0 {
 		db = db.Where("is_online = ?", f.IsOnline)
 	}

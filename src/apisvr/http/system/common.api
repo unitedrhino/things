@@ -20,6 +20,9 @@ service api {
     @doc "文件直传"
     @handler uploadFile
     post /upload-file() returns (UploadFileResp)
+    @doc "获取天气情况"
+    @handler weatherRead
+    post /weather/read(WeatherReadReq) returns (WeatherReadResp)
     @doc "websocket"
     @handler websocket
     get /ws () returns ()
@@ -59,4 +62,38 @@ type (
         FilePath string `json:"filePath"` //文件路径(带文件名)
         FileUri string `json:"fileUri"` //文件uri 相对路径
     }
+    WeatherAir {
+        Aqi      string `json:"aqi"`
+        Level    string `json:"level"`
+        Category string `json:"category"`
+        Primary  string `json:"primary"`
+        Pm10     string `json:"pm10"`
+        Pm2P5    string `json:"pm2p5"`
+        No2      string `json:"no2"`
+        So2      string `json:"so2"`
+        Co       string `json:"co"`
+        O3       string `json:"o3"`
+    }
+  WeatherReadResp{
+        ObsTime   string `json:"obsTime"`
+        Temp      string `json:"temp"`
+        FeelsLike string `json:"feelsLike"`
+        Icon      string `json:"icon"`
+        Text      string `json:"text"`
+        Wind360   string `json:"wind360"`
+        WindDir   string `json:"windDir"`
+        WindScale string `json:"windScale"`
+        WindSpeed string `json:"windSpeed"`
+        Humidity  string `json:"humidity"`
+        Precip    string `json:"precip"`
+        Pressure  string `json:"pressure"`
+        Vis       string `json:"vis"`
+        Cloud     string `json:"cloud"`
+        Dew       string `json:"dew"`
+        Air   WeatherAir     `json:"air"`
+    }
+    WeatherReadReq{
+        Position Point `json:"position"`
+    }
 )
+

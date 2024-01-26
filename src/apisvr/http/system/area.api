@@ -39,6 +39,10 @@ type (
         AreaName string `json:"areaName,optional"`               //项目区域名称（读写）
         Position *Point `json:"position,optional"`               //项目区域定位，默认百度坐标系（读写）
         Desc *string `json:"desc,optional"`                      //项目区域备注（读写）
+        LowerLevelCount int64 `json:"lowerLevelCount,optional"` //下级的数量统计（只读）
+        AreaIDPath []int64 `json:"areaIDPath,optional"`          //项目区域ids（只读）
+        AreaNamePath []string `json:"areaNamePath,optional"`//（只读）
+        DeviceInfoCount *DeviceInfoCount `json:"deviceInfoCount,optional"`//（只读）
         Children []*AreaInfo `json:"children,optional"`          //下级项目区域列表（只读）
     }
 
@@ -50,6 +54,7 @@ type (
         AreaID int64 `json:"areaID,string"` //项目区域id
         ProjectID int64 `json:"projectID,string,optional"` //项目id 不填选默认项目
         IsRetTree bool `json:"isRetTree,optional"`
+        WithDeviceInfoCount bool `json:"withDeviceInfoCount,optional"`//同时返回设备统计信息
     }
 
     AreaInfoIndexReq struct {
@@ -57,6 +62,8 @@ type (
         ProjectID int64 `json:"projectID,string,optional"` //项目id
         AreaIDs []int64 `json:"areaIDs,optional"`          //项目区域ids
         ParentAreaID int64 `json:"parentAreaID,string,optional"`
+        IsRetTopLevel bool  `json:"isRetTopLevel,optional"`//如果该参数为true则返回除了root节点的有权限的最高层的区域列表
+        WithDeviceInfoCount bool `json:"withDeviceInfoCount,optional"`//同时返回设备统计信息
     }
 
     AreaInfoIndexResp struct {

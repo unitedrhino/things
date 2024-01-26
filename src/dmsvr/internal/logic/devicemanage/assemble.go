@@ -118,3 +118,13 @@ func ToGatewayPayload(status int32, in []*devices.Core) *msgGateway.GatewayPaylo
 	}
 	return &ret
 }
+
+func ToTimeRange(in *dm.TimeRange) *def.TimeRange {
+	if in == nil {
+		return nil
+	}
+	return &def.TimeRange{
+		Start: in.Start,
+		End:   in.End,
+	}
+}

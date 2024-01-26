@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
-func ToGroupInfoPb(ro *relationDB.DmGroupInfo) *dm.GroupInfo {
+func ToGroupInfoPb(ro *relationDB.DmGroupInfo, c *dm.DeviceInfoCount) *dm.GroupInfo {
 	if ro == nil {
 		return nil
 	}
@@ -14,15 +14,16 @@ func ToGroupInfoPb(ro *relationDB.DmGroupInfo) *dm.GroupInfo {
 		productName = ro.ProductInfo.ProductName
 	}
 	return &dm.GroupInfo{
-		AreaID:      int64(ro.AreaID),
-		Id:          ro.ID,
-		ParentID:    ro.ParentID,
-		ProjectID:   int64(ro.ProjectID),
-		ProductName: productName,
-		Name:        ro.Name,
-		ProductID:   ro.ProductID,
-		Desc:        ro.Desc,
-		CreatedTime: ro.CreatedTime.Unix(),
-		Tags:        ro.Tags,
+		AreaID:          int64(ro.AreaID),
+		Id:              ro.ID,
+		ParentID:        ro.ParentID,
+		ProjectID:       int64(ro.ProjectID),
+		ProductName:     productName,
+		Name:            ro.Name,
+		ProductID:       ro.ProductID,
+		Desc:            ro.Desc,
+		CreatedTime:     ro.CreatedTime.Unix(),
+		Tags:            ro.Tags,
+		DeviceInfoCount: c,
 	}
 }

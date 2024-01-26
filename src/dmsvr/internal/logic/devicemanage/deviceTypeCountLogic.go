@@ -36,10 +36,7 @@ func (l *DeviceTypeCountLogic) DeviceTypeCount(in *dm.DeviceTypeCountReq) (*dm.D
 	productCount, err := l.DiDB.CountGroupByField(
 		l.ctx,
 		relationDB.DeviceFilter{
-			LastLoginTime: struct {
-				Start int64
-				End   int64
-			}{Start: in.StartTime, End: in.EndTime},
+			LastLoginTime: ToTimeRange(in.TimeRange),
 		},
 		"product_id",
 	)

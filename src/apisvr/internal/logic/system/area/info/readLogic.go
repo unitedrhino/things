@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -32,5 +33,22 @@ func (l *ReadLogic) Read(req *types.AreaInfoReadReq) (resp *types.AreaInfo, err 
 		l.Errorf("%s.rpc.AreaManage req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return ToAreaInfoTypes(dmResp), nil
+	var deviceCount *types.DeviceInfoCount
+	if req.WithDeviceInfoCount {
+		ret, err := l.svcCtx.DeviceM.DeviceInfoCount(l.ctx, &dm.DeviceInfoCountReq{
+			TimeRange: nil,
+			AreaIDs:   append(dmResp.ChildrenAreaIDs, dmResp.AreaID),
+			GroupIDs:  nil,
+		})
+		if err == nil {
+			deviceCount = &types.DeviceInfoCount{
+				Total:    ret.Total,
+				Online:   ret.Online,
+				Offline:  ret.Offline,
+				Inactive: ret.Inactive,
+				Unknown:  ret.Unknown,
+			}
+		}
+	}
+	return ToAreaInfoTypes(dmResp, deviceCount), nil
 }

@@ -349,7 +349,7 @@ message ProjectInfo {
   string projectName = 3; //项目名称（读写）
   int64 adminUserID = 5;//管理员
 //  google.protobuf.StringValue region = 6; //项目省市区县（读写）
-//  google.protobuf.StringValue address = 7; //项目详细地址（读写）
+  Point Position = 6; //项目区域定位
   google.protobuf.StringValue desc = 8; //项目备注（读写）
 }
 
@@ -377,7 +377,12 @@ message AreaInfo {
   Point Position = 6; //项目区域定位，默认百度坐标系（读写）
   google.protobuf.StringValue desc = 7; //项目区域备注（读写）
   repeated AreaInfo children = 8; //下级项目区域列表（只读）
+  repeated int64 areaIDPath =9;
+  repeated string areaNamePath =10;
+  int64 lowerLevelCount =11;//下级区域的数量
+  repeated int64 childrenAreaIDs =12;//所属的子区域id列表
 }
+
 
 message AreaWithID {
   int64 areaID = 1; //项目区域id
@@ -395,6 +400,7 @@ message AreaInfoIndexReq {
   int64 projectID = 3; //项目ids
   int64 parentAreaID = 4;
   repeated int64 areaIDs = 5; //区域ids
+  bool  isRetTopLevel = 6;//如果该参数为true则返回除了root节点的有权限的最高层的区域列表
 }
 
 message AreaInfoIndexResp {
@@ -767,6 +773,7 @@ message UserProjectIndexResp {
 
 message UserArea {
   int64 areaID = 1; //项目id
+  int64 authType =2;// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
 }
 
 message UserAreaMultiUpdateReq {
