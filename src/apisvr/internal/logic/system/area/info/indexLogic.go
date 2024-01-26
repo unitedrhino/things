@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic"
+	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -43,7 +44,25 @@ func (l *IndexLogic) Index(req *types.AreaInfoIndexReq) (resp *types.AreaInfoInd
 
 	list := make([]*types.AreaInfo, 0, len(dmResp.List))
 	for _, pb := range dmResp.List {
-		list = append(list, ToAreaInfoTypes(pb))
+		var deviceCount *types.DeviceInfoCount
+		if req.WithDeviceInfoCount {
+			ret, err := l.svcCtx.DeviceM.DeviceInfoCount(l.ctx, &dm.DeviceInfoCountReq{
+				TimeRange: nil,
+				AreaIDs:   []int64{pb.AreaID},
+				GroupIDs:  nil,
+			})
+			if err == nil {
+				deviceCount = &types.DeviceInfoCount{
+					Total:    ret.Total,
+					Online:   ret.Online,
+					Offline:  ret.Offline,
+					Inactive: ret.Inactive,
+					Unknown:  ret.Unknown,
+				}
+			}
+		}
+
+		list = append(list, ToAreaInfoTypes(pb, deviceCount))
 	}
 
 	return &types.AreaInfoIndexResp{

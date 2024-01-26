@@ -2,6 +2,7 @@ package devicegrouplogic
 
 import (
 	"context"
+	devicemanagelogic "github.com/i-Things/things/src/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -29,16 +30,12 @@ func NewGroupInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gro
 // 获取分组信息详情
 func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.WithID) (*dm.GroupInfo, error) {
 	dg, err := l.GiDB.FindOne(l.ctx, in.Id)
+	c, err := devicemanagelogic.NewDeviceInfoCountLogic(l.ctx, l.svcCtx).DeviceInfoCount(&dm.DeviceInfoCountReq{GroupIDs: []int64{dg.ID}})
+	if err != nil {
+		l.Error(err)
+	}
 	if err != nil {
 		return nil, err
 	}
-	return &dm.GroupInfo{
-		AreaID:      int64(dg.AreaID),
-		Id:          dg.ID,
-		Name:        dg.Name,
-		ParentID:    dg.ParentID,
-		Desc:        dg.Desc,
-		CreatedTime: dg.CreatedTime.Unix(),
-		Tags:        dg.Tags,
-	}, nil
+	return ToGroupInfoPb(dg, c), nil
 }

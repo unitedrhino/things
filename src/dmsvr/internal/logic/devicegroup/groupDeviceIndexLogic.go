@@ -34,7 +34,7 @@ func (l *GroupDeviceIndexLogic) GroupDeviceIndex(in *dm.GroupDeviceIndexReq) (*d
 
 	var list []*dm.DeviceInfo
 	f := relationDB.GroupDeviceFilter{
-		GroupID:    in.GroupID,
+		GroupIDs:   []int64{in.GroupID},
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}

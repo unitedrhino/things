@@ -42,7 +42,8 @@ func UserInfoToPb(ctx context.Context, ui *relationDB.SysUserInfo, svcCtx *svc.S
 
 func transAreaPoToPb(po *relationDB.SysUserArea) *sys.UserArea {
 	return &sys.UserArea{
-		AreaID: int64(po.AreaID),
+		AreaID:   int64(po.AreaID),
+		AuthType: po.AuthType,
 	}
 }
 

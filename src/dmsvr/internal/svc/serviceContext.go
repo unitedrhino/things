@@ -25,7 +25,6 @@ import (
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/dataUpdate"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/hubLogRepo"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/sdkLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -48,9 +47,8 @@ type ServiceContext struct {
 	SchemaManaRepo msgThing.SchemaDataRepo
 	HubLogRepo     msgHubLog.HubLogRepo
 	SDKLogRepo     msgSdkLog.SDKLogRepo
-	DataUpdate     dataUpdate.DataUpdate
 	Cache          kv.Store
-	Bus            eventBus.Bus
+	ServerMsg      *eventBus.ServerMsg
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -69,18 +67,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetSchemaModel, ca)
 	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB)
 	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB)
-	duR, err := dataUpdate.NewDataUpdate(c.Event)
-	if err != nil {
-		logx.Error("NewDataUpdate err:", err)
-		os.Exit(-1)
-	}
+
 	ossClient, err := oss.NewOssClient(c.OssConf)
 	if err != nil {
 		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
-
-	bus := eventBus.NewEventBus()
+	serverMsg, err := eventBus.NewServerMsg(c.Event, c.Name)
+	logx.Must(err)
 	stores.InitConn(c.Database)
 	err = relationDB.Migrate(c.Database)
 	if err != nil {
@@ -103,7 +97,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		timedM = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
 	}
 	return &ServiceContext{
-		Bus:            bus,
+		ServerMsg:      serverMsg,
 		Config:         c,
 		OssClient:      ossClient,
 		TimedM:         timedM,
@@ -119,6 +113,5 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SchemaManaRepo: deviceDataR,
 		HubLogRepo:     hubLogR,
 		SDKLogRepo:     sdkLogR,
-		DataUpdate:     duR,
 	}
 }

@@ -6,18 +6,32 @@ import (
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 )
 
+func ToDeviceInfoCount(in *dm.DeviceInfoCount) *types.DeviceInfoCount {
+	if in == nil {
+		return nil
+	}
+	return &types.DeviceInfoCount{
+		Total:    in.Total,
+		Online:   in.Online,
+		Offline:  in.Offline,
+		Inactive: in.Inactive,
+		Unknown:  in.Unknown,
+	}
+}
+
 func ToGroupInfoTypes(in *dm.GroupInfo) *types.GroupInfo {
 	return &types.GroupInfo{
-		AreaID:      in.AreaID,
-		ProductID:   in.ProductID,
-		ProductName: in.ProductName,
-		ID:          in.Id,
-		ParentID:    in.ParentID,
-		ProjectID:   in.ProjectID,
-		Name:        in.Name,
-		CreatedTime: in.CreatedTime,
-		Desc:        in.Desc,
-		Tags:        logic.ToTagsType(in.Tags),
+		AreaID:          in.AreaID,
+		ProductID:       in.ProductID,
+		ProductName:     in.ProductName,
+		ID:              in.Id,
+		ParentID:        in.ParentID,
+		ProjectID:       in.ProjectID,
+		Name:            in.Name,
+		CreatedTime:     in.CreatedTime,
+		Desc:            in.Desc,
+		Tags:            logic.ToTagsType(in.Tags),
+		DeviceInfoCount: ToDeviceInfoCount(in.DeviceInfoCount),
 	}
 }
 func ToGroupInfoPbTypes(in *types.GroupInfo) *dm.GroupInfo {

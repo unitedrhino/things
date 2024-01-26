@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/internal/svc"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
@@ -40,7 +41,8 @@ func (l *ProjectInfoCreateLogic) ProjectInfoCreate(in *sys.ProjectInfo) (*sys.Pr
 		AdminUserID: in.AdminUserID,
 		//Region:      utils.ToEmptyString(in.Region),
 		//Address:     utils.ToEmptyString(in.Address),
-		Desc: utils.ToEmptyString(in.Desc),
+		Position: logic.ToStorePoint(in.Position),
+		Desc:     utils.ToEmptyString(in.Desc),
 	}
 
 	err := l.PiDB.Insert(l.ctx, po)

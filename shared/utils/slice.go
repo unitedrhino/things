@@ -48,3 +48,12 @@ func SliceLeftContain[T comparable](bases, childs []T) bool {
 		return true
 	}
 }
+
+func SliceDelete[T comparable](base []T, val T) []T {
+	for i, v := range base {
+		if v == val {
+			return append(base[:i], base[i+1:]...)
+		}
+	}
+	return base
+}

@@ -36,15 +36,20 @@ type PageInfo2 struct {
 	Orders    []OrderBy `json:"orderBy" form:"orderBy"` // 排序信息
 }
 
+type TimeRange struct {
+	Start int64 `json:"start,optional"` //开始时间 unix时间戳
+	End   int64 `json:"end,optional"`   //结束时间 unix时间戳
+}
+
+type DateRange struct {
+	Start string `json:"start,optional"` //开始时间 格式：yyyy-mm-dd
+	End   string `json:"end,optional"`   //结束时间 格式：yyyy-mm-dd
+}
+
 // 排序结构体
 type OrderBy struct {
 	Filed string `json:"filed" form:"filed"` //要排序的字段名
 	Sort  int64  `json:"sort" form:"sort"`   //排序的方式：0 OrderAes、1 OrderDesc
-}
-
-type TimeRange struct {
-	Start int64
-	End   int64
 }
 
 func (p *PageInfo) GetLimit() int64 {

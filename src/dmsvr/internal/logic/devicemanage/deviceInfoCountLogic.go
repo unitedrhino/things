@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
@@ -30,16 +31,27 @@ func NewDeviceInfoCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 }
 
 // 设备计数
-func (l *DeviceInfoCountLogic) DeviceInfoCount(in *dm.DeviceInfoCountReq) (*dm.DeviceInfoCountResp, error) {
+func (l *DeviceInfoCountLogic) DeviceInfoCount(in *dm.DeviceInfoCountReq) (*dm.DeviceInfoCount, error) {
+	f := relationDB.DeviceFilter{
+		LastLoginTime: ToTimeRange(in.TimeRange),
+		AreaIDs:       in.AreaIDs,
+	}
+	if len(in.GroupIDs) != 0 {
+		gds, err := relationDB.NewGroupDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GroupDeviceFilter{
+			GroupIDs: in.GroupIDs,
+		}, nil)
+		if err != nil || len(gds) == 0 {
+			return &dm.DeviceInfoCount{}, err
+		}
+		for _, v := range gds {
+			f.Cores = append(f.Cores, &devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+		}
+	}
 	diCount, err := l.DiDB.CountGroupByField(
-		l.ctx,
-		relationDB.DeviceFilter{
-			LastLoginTime: struct {
-				Start int64
-				End   int64
-			}{Start: in.StartTime, End: in.EndTime},
-		},
-		"is_online")
+		l.ctx, f, "is_online")
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.NotFind
@@ -55,7 +67,8 @@ func (l *DeviceInfoCountLogic) DeviceInfoCount(in *dm.DeviceInfoCountReq) (*dm.D
 		allCount += v
 	}
 
-	return &dm.DeviceInfoCountResp{
+	return &dm.DeviceInfoCount{
+		Total:    allCount,
 		Online:   onlineCount,
 		Offline:  offlineCount,
 		Inactive: InactiveCount,

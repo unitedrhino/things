@@ -2,10 +2,11 @@ package startup
 
 import (
 	"context"
-	"github.com/i-Things/things/src/dgsvr/internal/event/dataUpdateEvent"
+	"encoding/json"
+	"github.com/i-Things/things/shared/eventBus"
+	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/src/dgsvr/internal/event/deviceSub"
 	"github.com/i-Things/things/src/dgsvr/internal/event/innerSub"
-	"github.com/i-Things/things/src/dgsvr/internal/repo/event/subscribe/dataUpdate"
 	"github.com/i-Things/things/src/dgsvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/src/dgsvr/internal/repo/event/publish/pubInner"
 	"github.com/i-Things/things/src/dgsvr/internal/repo/event/subscribe/subDev"
@@ -42,10 +43,17 @@ func PostInit(svcCtx *svc.ServiceContext) {
 		return innerSub.NewInnerSubServer(svcCtx, ctx)
 	})
 	logx.Must(err)
-	dataUpdateCli, err := dataUpdate.NewDataUpdate(svcCtx.Config.Event)
-	logx.Must(err)
-	err = dataUpdateCli.Subscribe(func(ctx context.Context) dataUpdate.UpdateHandle {
-		return dataUpdateEvent.NewDataUpdateLogic(ctx, svcCtx)
+	InitEventBus(svcCtx)
+}
+func InitEventBus(svcCtx *svc.ServiceContext) {
+	svcCtx.ServerMsg.Subscribe(eventBus.DmProductCustomUpdate, func(ctx context.Context, body []byte) error {
+		info := events.DeviceUpdateInfo{}
+		err := json.Unmarshal(body, &info)
+		if err != nil {
+			return err
+		}
+		return svcCtx.Script.ClearCache(ctx, info.ProductID)
 	})
+	err := svcCtx.ServerMsg.Start()
 	logx.Must(err)
 }

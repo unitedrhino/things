@@ -3,6 +3,7 @@ package projectmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/src/syssvr/internal/logic"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/syssvr/pb/sys"
 
@@ -56,6 +57,9 @@ func (l *ProjectInfoUpdateLogic) setPoByPb(po *relationDB.SysProjectInfo, pb *sy
 	//}
 	if pb.AdminUserID != 0 {
 		po.AdminUserID = pb.AdminUserID
+	}
+	if pb.Position != nil {
+		po.Position = logic.ToStorePoint(pb.Position)
 	}
 	//if pb.Region != nil {
 	//	po.Region = pb.Region.GetValue()

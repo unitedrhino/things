@@ -67,6 +67,7 @@ type (
         ProjectName string `json:"projectName,optional"`       //项目名称（读写）
        // CompanyName *string `json:"companyName,optional"`      //项目所属公司名称（读写）
         AdminUserID         int64  `json:"adminUserID,string,optional"`  // 管理员用户id（读写）
+        Position *Point `json:"position,optional"`               //项目定位
 //        Region *string `json:"region,optional"`                //项目省市区县（读写）
 //        Address *string `json:"address,optional"`              //项目详细地址（读写）
         Desc *string `json:"desc,optional"`                    //项目备注（读写）

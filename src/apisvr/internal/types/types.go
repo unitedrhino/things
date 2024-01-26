@@ -59,6 +59,7 @@ type ProjectInfo struct {
 	ProjectID   int64   `json:"projectID,string,optional"`   //项目id（只读）
 	ProjectName string  `json:"projectName,optional"`        //项目名称（读写）
 	AdminUserID int64   `json:"adminUserID,string,optional"` // 管理员用户id（读写）
+	Position    *Point  `json:"position,optional"`           //项目定位
 	Desc        *string `json:"desc,optional"`               //项目备注（读写）
 }
 
@@ -322,18 +323,24 @@ type UserAreaMultiUpdateReq struct {
 }
 
 type UserArea struct {
-	AreaID int64 `json:"areaID,string"` //项目id
+	AreaID   int64 `json:"areaID,string"` //项目id
+	AuthType int64 `json:"authType"`      // 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
 }
 
 type UserAreaIndexReq struct {
-	Page      *PageInfo `json:"page,optional"`    //进行数据分页（不传默认2000相当于全部）
-	UserID    int64     `json:"userID,string"`    //用户ID（必填，雪花ID）
-	ProjectID int64     `json:"projectID,string"` //项目id
+	Page      *PageInfo `json:"page,optional"`             //进行数据分页（不传默认2000相当于全部）
+	UserID    int64     `json:"userID,string"`             //用户ID（必填，雪花ID）
+	ProjectID int64     `json:"projectID,string,optional"` //项目id
+}
+
+type UserAreaDetail struct {
+	*AreaInfo
+	AuthType int64 `json:"authType"` // 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
 }
 
 type UserAreaIndexResp struct {
-	Total int64       `json:"total"` //总数
-	List  []*UserArea `json:"list"`  //用户数据权限列表
+	Total int64             `json:"total"` //总数
+	List  []*UserAreaDetail `json:"list"`  //用户数据权限列表
 }
 
 type UserRoleIndexReq struct {
@@ -519,6 +526,42 @@ type UploadFileResp struct {
 	FileUri  string `json:"fileUri"`  //文件uri 相对路径
 }
 
+type WeatherAir struct {
+	Aqi      string `json:"aqi"`
+	Level    string `json:"level"`
+	Category string `json:"category"`
+	Primary  string `json:"primary"`
+	Pm10     string `json:"pm10"`
+	Pm2P5    string `json:"pm2p5"`
+	No2      string `json:"no2"`
+	So2      string `json:"so2"`
+	Co       string `json:"co"`
+	O3       string `json:"o3"`
+}
+
+type WeatherReadResp struct {
+	ObsTime   string     `json:"obsTime"`
+	Temp      string     `json:"temp"`
+	FeelsLike string     `json:"feelsLike"`
+	Icon      string     `json:"icon"`
+	Text      string     `json:"text"`
+	Wind360   string     `json:"wind360"`
+	WindDir   string     `json:"windDir"`
+	WindScale string     `json:"windScale"`
+	WindSpeed string     `json:"windSpeed"`
+	Humidity  string     `json:"humidity"`
+	Precip    string     `json:"precip"`
+	Pressure  string     `json:"pressure"`
+	Vis       string     `json:"vis"`
+	Cloud     string     `json:"cloud"`
+	Dew       string     `json:"dew"`
+	Air       WeatherAir `json:"air"`
+}
+
+type WeatherReadReq struct {
+	Position Point `json:"position"`
+}
+
 type ProjectWithID struct {
 	ProjectID int64 `json:"projectID,string"` //项目id 只读
 }
@@ -535,14 +578,18 @@ type ProjectInfoIndexResp struct {
 }
 
 type AreaInfo struct {
-	CreatedTime  int64       `json:"createdTime,optional,string"`  //创建时间（只读）
-	ProjectID    int64       `json:"projectID,string,optional"`    //项目id（只读）
-	AreaID       int64       `json:"areaID,string,optional"`       //项目区域id（只读）
-	ParentAreaID int64       `json:"parentAreaID,string,optional"` //上级项目区域id（只读）
-	AreaName     string      `json:"areaName,optional"`            //项目区域名称（读写）
-	Position     *Point      `json:"position,optional"`            //项目区域定位，默认百度坐标系（读写）
-	Desc         *string     `json:"desc,optional"`                //项目区域备注（读写）
-	Children     []*AreaInfo `json:"children,optional"`            //下级项目区域列表（只读）
+	CreatedTime     int64            `json:"createdTime,optional,string"`  //创建时间（只读）
+	ProjectID       int64            `json:"projectID,string,optional"`    //项目id（只读）
+	AreaID          int64            `json:"areaID,string,optional"`       //项目区域id（只读）
+	ParentAreaID    int64            `json:"parentAreaID,string,optional"` //上级项目区域id（只读）
+	AreaName        string           `json:"areaName,optional"`            //项目区域名称（读写）
+	Position        *Point           `json:"position,optional"`            //项目区域定位，默认百度坐标系（读写）
+	Desc            *string          `json:"desc,optional"`                //项目区域备注（读写）
+	LowerLevelCount int64            `json:"lowerLevelCount,optional"`     //下级的数量统计（只读）
+	AreaIDPath      []int64          `json:"areaIDPath,optional"`          //项目区域ids（只读）
+	AreaNamePath    []string         `json:"areaNamePath,optional"`        //（只读）
+	DeviceInfoCount *DeviceInfoCount `json:"deviceInfoCount,optional"`     //（只读）
+	Children        []*AreaInfo      `json:"children,optional"`            //下级项目区域列表（只读）
 }
 
 type AreaWithID struct {
@@ -550,16 +597,19 @@ type AreaWithID struct {
 }
 
 type AreaInfoReadReq struct {
-	AreaID    int64 `json:"areaID,string"`             //项目区域id
-	ProjectID int64 `json:"projectID,string,optional"` //项目id 不填选默认项目
-	IsRetTree bool  `json:"isRetTree,optional"`
+	AreaID              int64 `json:"areaID,string"`             //项目区域id
+	ProjectID           int64 `json:"projectID,string,optional"` //项目id 不填选默认项目
+	IsRetTree           bool  `json:"isRetTree,optional"`
+	WithDeviceInfoCount bool  `json:"withDeviceInfoCount,optional"` //同时返回设备统计信息
 }
 
 type AreaInfoIndexReq struct {
-	Page         *PageInfo `json:"page,optional"`             //进行数据分页（不传默认2000相当于全部）
-	ProjectID    int64     `json:"projectID,string,optional"` //项目id
-	AreaIDs      []int64   `json:"areaIDs,optional"`          //项目区域ids
-	ParentAreaID int64     `json:"parentAreaID,string,optional"`
+	Page                *PageInfo `json:"page,optional"`             //进行数据分页（不传默认2000相当于全部）
+	ProjectID           int64     `json:"projectID,string,optional"` //项目id
+	AreaIDs             []int64   `json:"areaIDs,optional"`          //项目区域ids
+	ParentAreaID        int64     `json:"parentAreaID,string,optional"`
+	IsRetTopLevel       bool      `json:"isRetTopLevel,optional"`       //如果该参数为true则返回除了root节点的有权限的最高层的区域列表
+	WithDeviceInfoCount bool      `json:"withDeviceInfoCount,optional"` //同时返回设备统计信息
 }
 
 type AreaInfoIndexResp struct {
@@ -1325,6 +1375,7 @@ type DeviceCountReq struct {
 }
 
 type DeviceInfoCount struct {
+	Total    int64 `json:"total"`    //总数
 	Online   int64 `json:"online"`   // 在线设备数
 	Offline  int64 `json:"offline"`  // 离线设备数
 	Inactive int64 `json:"inactive"` // 未激活设备数
@@ -1450,22 +1501,23 @@ type DeviceInteractMultiSendPropertyResp struct {
 }
 
 type GroupInfo struct {
-	ID          int64  `json:"id,string,optional"`        //分组ID
-	ParentID    int64  `json:"parentID,string,optional"`  //父组ID
-	ProjectID   int64  `json:"projectID,string,optional"` //项目ID
-	AreaID      int64  `json:"areaID,string,optional"`    //区域ID
-	Name        string `json:"name,optional"`             //分组名称
-	ProductID   string `json:"productID,optional"`        //产品ID
-	ProductName string `json:"productName,optional"`      //产品ID
-	CreatedTime int64  `json:"createdTime,string"`        //创建时间
-	Desc        string `json:"desc,optional"`             //分组描述
-	Tags        []*Tag `json:"tags,optional"`             //分组tag
+	ID              int64            `json:"id,optional"`                 //分组ID
+	ParentID        int64            `json:"parentID,optional"`           //父组ID
+	ProjectID       int64            `json:"projectID,string,optional"`   //项目ID
+	AreaID          int64            `json:"areaID,string,optional"`      //区域ID
+	Name            string           `json:"name,optional"`               //分组名称
+	ProductID       string           `json:"productID,optional"`          //产品ID
+	ProductName     string           `json:"productName,optional"`        //产品ID
+	CreatedTime     int64            `json:"createdTime,string,optional"` //创建时间
+	Desc            string           `json:"desc,optional"`               //分组描述
+	Tags            []*Tag           `json:"tags,optional"`               //分组tag
+	DeviceInfoCount *DeviceInfoCount `json:"deviceInfoCount,optional"`
 }
 
 type GroupInfoIndexReq struct {
 	Page      *PageInfo `json:"page,optional"`          //分页信息 只获取一个则不填
 	AreaID    int64     `json:"areaID,string,optional"` //区域ID
-	ParentID  int64     `json:"parentID,string"`        //父组ID
+	ParentID  int64     `json:"parentID,optional"`      //父组ID
 	ProductID string    `json:"productID,optional"`     //产品ID
 	Name      string    `json:"name,optional"`          //分组名称
 	Tags      []*Tag    `json:"tags,optional"`          //分组tag
@@ -1478,7 +1530,7 @@ type GroupInfoIndexResp struct {
 
 type GroupDeviceIndexReq struct {
 	Page           *PageInfo `json:"page,optional"`           //分页信息 只获取一个则不填
-	GroupID        int64     `json:"groupID,string"`          //分组ID
+	GroupID        int64     `json:"groupID"`                 //分组ID
 	ProductID      string    `json:"productID,optional"`      //产品ID
 	DeviceName     string    `json:"deviceName,optional"`     //设备名称
 	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
@@ -1490,13 +1542,13 @@ type GroupDeviceIndexResp struct {
 }
 
 type GroupDeviceMultiSaveReq struct {
-	GroupID int64         `json:"groupID,string"` //分组ID
-	List    []*DeviceCore `json:"list,optional"`  //分组tag
+	GroupID int64         `json:"groupID"`       //分组ID
+	List    []*DeviceCore `json:"list,optional"` //分组tag
 }
 
 type GroupDeviceMultiDeleteReq struct {
-	GroupID int64         `json:"groupID,string"` //分组ID
-	List    []*DeviceCore `json:"list,optional"`  //分组tag
+	GroupID int64         `json:"groupID"`       //分组ID
+	List    []*DeviceCore `json:"list,optional"` //分组tag
 }
 
 type SceneInfoCreateReq struct {

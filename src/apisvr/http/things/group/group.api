@@ -63,23 +63,24 @@ service api {
 type (
 
     GroupInfo{
-        ID   int64  `json:"id,string,optional"`           //分组ID
-        ParentID  int64 `json:"parentID,string,optional"`          //父组ID
+        ID   int64  `json:"id,optional"`           //分组ID
+        ParentID  int64 `json:"parentID,optional"`          //父组ID
         ProjectID  int64 `json:"projectID,string,optional"`         //项目ID
         AreaID int64 `json:"areaID,string,optional"`                    //区域ID
         Name string `json:"name,optional"`                //分组名称
         ProductID string `json:"productID,optional"`       //产品ID
         ProductName string `json:"productName,optional"`       //产品ID
-        CreatedTime int64  `json:"createdTime,string"`     //创建时间
+        CreatedTime int64  `json:"createdTime,string,optional"`     //创建时间
         Desc string `json:"desc,optional"`   //分组描述
         Tags []*Tag `json:"tags,optional"`                 //分组tag
+        DeviceInfoCount *DeviceInfoCount `json:"deviceInfoCount,optional"`
     }
 
 
     GroupInfoIndexReq struct {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         AreaID int64 `json:"areaID,string,optional"`                    //区域ID
-        ParentID int64 `json:"parentID,string"`                  //父组ID
+        ParentID int64 `json:"parentID,optional"`                  //父组ID
         ProductID string `json:"productID,optional"`                         //产品ID
         Name string `json:"name,optional"`          //分组名称
         Tags []*Tag `json:"tags,optional"`                    //分组tag
@@ -93,7 +94,7 @@ type (
 
     GroupDeviceIndexReq struct {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
-        GroupID   int64  `json:"groupID,string"`                    //分组ID
+        GroupID   int64  `json:"groupID"`                    //分组ID
         ProductID string `json:"productID,optional"`                         //产品ID
         DeviceName string `json:"deviceName,optional"`                       //设备名称
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
@@ -105,12 +106,12 @@ type (
     }
 
     GroupDeviceMultiSaveReq struct {
-        GroupID   int64  `json:"groupID,string"`            //分组ID
+        GroupID   int64  `json:"groupID"`            //分组ID
         List []*DeviceCore `json:"list,optional"`   //分组tag
     }
 
     GroupDeviceMultiDeleteReq struct {
-        GroupID   int64  `json:"groupID,string"`            //分组ID
+        GroupID   int64  `json:"groupID"`            //分组ID
         List []*DeviceCore `json:"list,optional"`   //分组tag
     }
 )

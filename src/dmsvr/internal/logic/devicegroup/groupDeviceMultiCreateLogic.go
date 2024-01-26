@@ -43,7 +43,7 @@ func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceM
 	list := make([]*relationDB.DmGroupDevice, 0, len(in.List))
 	for _, v := range in.List {
 		list = append(list, &relationDB.DmGroupDevice{
-			ID:         in.GroupID,
+			GroupID:    in.GroupID,
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 			AreaID:     gi.AreaID,

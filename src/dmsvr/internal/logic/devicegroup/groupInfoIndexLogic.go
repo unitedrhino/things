@@ -3,6 +3,7 @@ package devicegrouplogic
 import (
 	"context"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
+	devicemanagelogic "github.com/i-Things/things/src/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
@@ -45,7 +46,11 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 	}
 	info := make([]*dm.GroupInfo, 0, len(ros))
 	for _, ro := range ros {
-		info = append(info, ToGroupInfoPb(ro))
+		c, err := devicemanagelogic.NewDeviceInfoCountLogic(l.ctx, l.svcCtx).DeviceInfoCount(&dm.DeviceInfoCountReq{GroupIDs: []int64{ro.ID}})
+		if err != nil {
+			l.Error(err)
+		}
+		info = append(info, ToGroupInfoPb(ro, c))
 	}
 	return &dm.GroupInfoIndexResp{List: info, Total: total}, nil
 }

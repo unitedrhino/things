@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/eventBus"
 	"github.com/i-Things/things/shared/events"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
@@ -61,7 +62,7 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.DataUpdate.ProductCustomUpdate(l.ctx, &events.DeviceUpdateInfo{ProductID: in.ProductID})
+	err = l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductCustomUpdate, &events.DeviceUpdateInfo{ProductID: in.ProductID})
 	if err != nil {
 		return nil, err
 	}

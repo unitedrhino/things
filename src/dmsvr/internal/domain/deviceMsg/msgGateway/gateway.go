@@ -23,7 +23,7 @@ type (
 	Register struct {
 		/*
 			子设备绑定签名串。 签名算法：
-			1. 签名原串，将产品 GroupID 设备名称，随机数，时间戳拼接：text=${product_id};${device_name};${random};${expiration_time}
+			1. 签名原串，将产品 GroupIDs 设备名称，随机数，时间戳拼接：text=${product_id};${device_name};${random};${expiration_time}
 			2. 使用设备 Psk 密钥，或者证书的 Sha1 摘要，进行签名：hmac_sha1(device_secret, text)
 		*/
 		Signature  string `json:"signature,omitempty"`

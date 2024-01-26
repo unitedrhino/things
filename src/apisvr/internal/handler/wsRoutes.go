@@ -471,6 +471,11 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 					Handler: systemcommon.UploadFileHandler(serverCtx),
 				},
 				{
+					Method:  http.MethodPost,
+					Path:    "/weather/read",
+					Handler: systemcommon.WeatherReadHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodGet,
 					Path:    "/ws",
 					Handler: systemcommon.WebsocketHandler(serverCtx),
