@@ -38,8 +38,12 @@ func (l *UserInfoUpdateLogic) UserInfoUpdate(in *sys.UserInfo) (*sys.Response, e
 		l.Errorf("%s.FindOne UserID=%d err=%v", utils.FuncName(), in.UserID, err)
 		return nil, err
 	}
-	ui.UserName = sql.NullString{String: in.UserName, Valid: true}
-	ui.NickName = in.NickName
+	if in.UserName != "" {
+		ui.UserName = sql.NullString{String: in.UserName, Valid: true}
+	}
+	if in.NickName != "" {
+		ui.NickName = in.NickName
+	}
 
 	//性別有效才賦值，否則使用旧值
 	if ui.Sex == def.Unknown {
