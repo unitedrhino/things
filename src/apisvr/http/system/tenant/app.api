@@ -75,33 +75,7 @@ service api {
     post /delete (WithAppCodeID) returns ()
 }
 
-@server (
-    group : system/tenant/app/api
-    prefix: /api/v1/system/tenant/app/api
-    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
-)
 
-service api {
-    @doc "获取租户应用接口列表"
-    @handler index
-    post /index (TenantAppApiIndexReq) returns (TenantAppApiIndexResp)
-
-    @doc "获取租户应用接口树"
-    @handler tree
-    post /tree (TenantAppApiIndexReq) returns (TenantAppApiTreeResp)
-
-    @doc "创建租户应用接口"
-    @handler create
-    post /create (TenantApiInfo) returns (WithID)
-
-    @doc "更新租户应用接口"
-    @handler update
-    post /update (TenantApiInfo) returns (WithID)
-
-    @doc "删除租户应用接口"
-    @handler delete
-    post /delete (WithAppCodeID) returns ()
-}
 
 type (
     WithAppCodeID{
@@ -109,33 +83,6 @@ type (
         ID int64 `json:"id"`
         Code string `json:"code"`
     }
-    TenantAppApiIndexReq{
-        Code string `json:"code"`                     // 租户编号
-        AppCode string `json:"appCode"`
-        ModuleCode string `json:"moduleCode"`
-        Page *PageInfo `json:"page,optional"`
-    }
-    TenantAppApiGroupInfo struct {
-        ID string `json:"id,optional"`                               // id
-        name  string `json:"name,optional"`                               // 接口分组
-        Children []*TenantApiInfo `json:"children"`            // 接口列表数据
-    }
-    TenantAppApiTreeResp{
-        List []*TenantAppApiGroupInfo `json:"list"`
-    }
-    TenantAppApiIndexResp{
-        List []*TenantApiInfo `json:"list"`
-        Total int64 `json:"total"`
-    }
-    TenantApiInfo{
-        TemplateID int64 `json:"templateID,optional"`                                // 编号
-        Code string `json:"code,optional"`                             // 应用编号
-        AppCode string `json:"appCode,optional"`                         // 应用编号
-        ApiInfo
-    }
-)
-
-type (
     TenantAppMenuIndexReq{
         Code string `json:"code"`                     // 应用编号
         AppCode string `json:"appCode"`

@@ -20,10 +20,10 @@ service api {
 	post /module/index () returns (ModuleInfoIndexResp)
 	@doc "获取用户菜单列表"
 	@handler menuIndex
-	post /menu/index (UserResourceWithModuleReq) returns (TenantAppMenuIndexResp)
-	@doc "获取用户接口列表"
-	@handler apiIndex
-	post /api/index (UserResourceWithModuleReq) returns (TenantAppApiIndexResp)
+	post /menu/index () returns (TenantAppMenuIndexResp)
+	@doc "获取用户授权树"
+	@handler accessTree
+	post /access/tree () returns (AccessTreeResp)
 	@doc "获取用户信息"
 	@handler read
 	post /read (UserSelfReadReq) returns (UserInfo)

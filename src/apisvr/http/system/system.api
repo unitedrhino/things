@@ -73,21 +73,29 @@ type (
         Desc *string `json:"desc,optional"`                    //项目备注（读写）
     }
 
-    ApiGroupInfo struct {
-        ID string `json:"id,optional"`                               // id
-        name  string `json:"name,optional"`                               // 接口分组
-        Children []*ApiInfo `json:"children"`            // 接口列表数据
-    }
 
     ApiInfo struct {
         ID int64 `json:"id,optional"`                                      // 接口编号
-        ModuleCode string `json:"moduleCode"`                               // 模块编号
+        AccessCode string `json:"accessCode"`                               // 模块编号
         Route string `json:"route,optional"`                               // 接口路由
         Method string `json:"method,optional"`                  // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
-        Group string `json:"group,optional"`                               // 接口分组
         Name string `json:"name,optional"`                                 // 接口名称
         BusinessType int64 `json:"businessType,optional,range=[1:5]"`      // 业务类型（1新增 2修改 3删除 4查询 5其它)
+        IsAuthTenant int64 `json:"isAuthTenant,optional,range=[1:2]"`        // 是否可以授权给普通租户
+        Desc string `json:"desc,optional"`                       // 备注
+    }
+    AccessGroupInfo struct {
+        ID string `json:"id,optional"`                               // id
+        name  string `json:"name,optional"`                               // 接口分组
+        Children []*AccessInfo `json:"children"`            // 列表数据
+    }
+    AccessInfo struct {
+        ID int64 `json:"id,optional"`                                      // 接口编号
+        Code string `json:"code"`                               // 模块编号
+        Group string `json:"group,optional"`                  // 分组
+        Name string `json:"name,optional"`                                 // 接口名称
         IsNeedAuth int64 `json:"isNeedAuth,optional,range=[1:2]"`        // 是否需要认证（ 1需要 2不需要）
         Desc string `json:"desc,optional"`                       // 备注
+        Apis []*ApiInfo `json:"apis,optional"` //接口信息
     }
 )

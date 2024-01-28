@@ -63,22 +63,31 @@ type ProjectInfo struct {
 	Desc        *string `json:"desc,optional"`               //项目备注（读写）
 }
 
-type ApiGroupInfo struct {
-	ID       string     `json:"id,optional"`   // id
-	Name     string     `json:"name,optional"` // 接口分组
-	Children []*ApiInfo `json:"children"`      // 接口列表数据
-}
-
 type ApiInfo struct {
 	ID           int64  `json:"id,optional"`                       // 接口编号
-	ModuleCode   string `json:"moduleCode"`                        // 模块编号
+	AccessCode   string `json:"accessCode"`                        // 模块编号
 	Route        string `json:"route,optional"`                    // 接口路由
 	Method       string `json:"method,optional"`                   // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
-	Group        string `json:"group,optional"`                    // 接口分组
 	Name         string `json:"name,optional"`                     // 接口名称
 	BusinessType int64  `json:"businessType,optional,range=[1:5]"` // 业务类型（1新增 2修改 3删除 4查询 5其它)
-	IsNeedAuth   int64  `json:"isNeedAuth,optional,range=[1:2]"`   // 是否需要认证（ 1需要 2不需要）
+	IsAuthTenant int64  `json:"isAuthTenant,optional,range=[1:2]"` // 是否可以授权给普通租户
 	Desc         string `json:"desc,optional"`                     // 备注
+}
+
+type AccessGroupInfo struct {
+	ID       string        `json:"id,optional"`   // id
+	Name     string        `json:"name,optional"` // 接口分组
+	Children []*AccessInfo `json:"children"`      // 列表数据
+}
+
+type AccessInfo struct {
+	ID         int64      `json:"id,optional"`                     // 接口编号
+	Code       string     `json:"code"`                            // 模块编号
+	Group      string     `json:"group,optional"`                  // 分组
+	Name       string     `json:"name,optional"`                   // 接口名称
+	IsNeedAuth int64      `json:"isNeedAuth,optional,range=[1:2]"` // 是否需要认证（ 1需要 2不需要）
+	Desc       string     `json:"desc,optional"`                   // 备注
+	Apis       []*ApiInfo `json:"apis,optional"`                   //接口信息
 }
 
 type UserInfo struct {
@@ -149,21 +158,17 @@ type RoleAppIndexResp struct {
 	Total    int64    `json:"total"`    //App列表总数
 }
 
-type RoleApiMultiUpdateReq struct {
-	ID         int64   `json:"id"`      //角色ID
-	AppCode    string  `json:"appCode"` // 应用编号
-	ModuleCode string  `json:"moduleCode"`
-	ApiIDs     []int64 `json:"apiIDs"` //API列表数据
+type RoleAccessMultiUpdateReq struct {
+	ID          int64    `json:"id"`          //角色ID
+	AccessCodes []string `json:"accessCodes"` // 模块编号
 }
 
-type RoleApiIndexReq struct {
-	ID         int64  `json:"id"`      //角色ID
-	AppCode    string `json:"appCode"` // 应用编号
-	ModuleCode string `json:"moduleCode"`
+type RoleAccessIndexReq struct {
+	ID int64 `json:"id"` //角色ID
 }
 
-type RoleApiIndexResp struct {
-	ApiIDs []int64 `json:"apiIDs"` //API列表数据
+type RoleAccessIndexResp struct {
+	AccessCodes []string `json:"accessCodes"` // 模块编号
 }
 
 type RoleInfoIndexReq struct {
@@ -263,6 +268,39 @@ type SendOption struct {
 
 type CodeReq struct {
 	Code string `json:"code"`
+}
+
+type ApiInfoIndexReq struct {
+	Page         *PageInfo `json:"page,optional"`                     // 分页信息,只获取一个则不填
+	Route        string    `json:"route,optional"`                    // 接口路由
+	Method       string    `json:"method,optional"`                   // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+	Name         string    `json:"name,optional"`                     // 接口名称
+	AccessCode   string    `json:"accessCode,optional"`               // 应用编号
+	IsAuthTenant int64     `json:"isAuthTenant,optional,range=[0:2]"` // 是否可以授权给普通租户
+}
+
+type ApiInfoIndexResp struct {
+	List  []*ApiInfo `json:"list"`  // 接口列表数据
+	Total int64      `json:"total"` // 接口列表总记录数
+}
+
+type AccessIndexReq struct {
+	Page       *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
+	Group      string    `json:"group,optional"`                  // 接口路由
+	Name       string    `json:"name,optional"`                   // 接口名称
+	Code       string    `json:"code,optional"`                   // 应用编号
+	IsNeedAuth int64     `json:"isNeedAuth,optional,range=[0:2]"` // 是否需要权限认证 1是 2否
+	WithApis   bool      `json:"withApis,optional"`
+}
+
+type AccessIndexResp struct {
+	List  []*AccessInfo `json:"list"`  // 接口列表数据
+	Total int64         `json:"total"` // 接口列表总记录数
+}
+
+type AccessTreeResp struct {
+	List  []*AccessGroupInfo `json:"list"`  // 接口列表数据
+	Total int64              `json:"total"` // 接口列表总记录数
 }
 
 type UserProject struct {
@@ -423,29 +461,6 @@ type ModuleInfoIndexReq struct {
 type ModuleInfoIndexResp struct {
 	Total int64         `json:"total"` //总数
 	List  []*ModuleInfo `json:"list"`  //菜单列表
-}
-
-type ApiInfoIndexReq struct {
-	Page       *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
-	Route      string    `json:"route,optional"`                  // 接口路由
-	Method     string    `json:"method,optional"`                 // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
-	Group      string    `json:"group,optional"`                  // 接口分组
-	Name       string    `json:"name,optional"`                   // 接口名称
-	ModuleCode string    `json:"moduleCode,optional"`             // 应用编号
-	IsNeedAuth int64     `json:"isNeedAuth,optional,range=[0:2]"` // 是否需要认证（ 1需要 2不需要）
-}
-
-type ApiInfoIndexResp struct {
-	List  []*ApiInfo `json:"list"`  // 接口列表数据
-	Total int64      `json:"total"` // 接口列表总记录数
-}
-
-type ApiInfoTreeResp struct {
-	List []*ApiGroupInfo `json:"list"` // 接口列表数据
-}
-
-type ApiDeleteReq struct {
-	ID int64 `json:"id"` // 接口编号
 }
 
 type MenuInfoIndexReq struct {
@@ -687,6 +702,20 @@ type TimedTaskSendReq struct {
 	ParamSql   *TimedTaskParamSql   `json:"paramSql,optional"`   //数据库执行类型配置,如果不传则使用数据库定义的
 }
 
+type TenantAccessInfoUpdateReq struct {
+	Code        string   `json:"code"`        // 租户编号
+	AccessCodes []string `json:"accessCodes"` // 模块编号
+}
+
+type TenantAccessInfoIndexReq struct {
+	Code string `json:"code"` // 租户编号
+}
+
+type TenantAccessInfoTreeResp struct {
+	List  []*AccessGroupInfo `json:"list"`
+	Total int64              `json:"total"`
+}
+
 type TenantInfoCreateReq struct {
 	Info          *TenantInfo `json:"info"`
 	AdminUserInfo *UserInfo   `json:"adminUserInfo"`
@@ -711,35 +740,6 @@ type WithAppCodeID struct {
 	AppCode string `json:"appCode"`
 	ID      int64  `json:"id"`
 	Code    string `json:"code"`
-}
-
-type TenantAppApiIndexReq struct {
-	Code       string    `json:"code"` // 租户编号
-	AppCode    string    `json:"appCode"`
-	ModuleCode string    `json:"moduleCode"`
-	Page       *PageInfo `json:"page,optional"`
-}
-
-type TenantAppApiGroupInfo struct {
-	ID       string           `json:"id,optional"`   // id
-	Name     string           `json:"name,optional"` // 接口分组
-	Children []*TenantApiInfo `json:"children"`      // 接口列表数据
-}
-
-type TenantAppApiTreeResp struct {
-	List []*TenantAppApiGroupInfo `json:"list"`
-}
-
-type TenantAppApiIndexResp struct {
-	List  []*TenantApiInfo `json:"list"`
-	Total int64            `json:"total"`
-}
-
-type TenantApiInfo struct {
-	TemplateID int64  `json:"templateID,optional"` // 编号
-	Code       string `json:"code,optional"`       // 应用编号
-	AppCode    string `json:"appCode,optional"`    // 应用编号
-	ApiInfo
 }
 
 type TenantAppMenuIndexReq struct {

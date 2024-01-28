@@ -66,23 +66,3 @@ func (s *ModuleManageServer) ModuleMenuDelete(ctx context.Context, in *sys.WithI
 	l := modulemanagelogic.NewModuleMenuDeleteLogic(ctx, s.svcCtx)
 	return l.ModuleMenuDelete(in)
 }
-
-func (s *ModuleManageServer) ModuleApiCreate(ctx context.Context, in *sys.ApiInfo) (*sys.WithID, error) {
-	l := modulemanagelogic.NewModuleApiCreateLogic(ctx, s.svcCtx)
-	return l.ModuleApiCreate(in)
-}
-
-func (s *ModuleManageServer) ModuleApiIndex(ctx context.Context, in *sys.ApiInfoIndexReq) (*sys.ApiInfoIndexResp, error) {
-	l := modulemanagelogic.NewModuleApiIndexLogic(ctx, s.svcCtx)
-	return l.ModuleApiIndex(in)
-}
-
-func (s *ModuleManageServer) ModuleApiUpdate(ctx context.Context, in *sys.ApiInfo) (*sys.Response, error) {
-	l := modulemanagelogic.NewModuleApiUpdateLogic(ctx, s.svcCtx)
-	return l.ModuleApiUpdate(in)
-}
-
-func (s *ModuleManageServer) ModuleApiDelete(ctx context.Context, in *sys.WithID) (*sys.Response, error) {
-	l := modulemanagelogic.NewModuleApiDeleteLogic(ctx, s.svcCtx)
-	return l.ModuleApiDelete(in)
-}

@@ -35,30 +35,35 @@ service api {
     post /delete (WithIDOrCode) returns ()
 }
 
+@server (
+    group : system/tenant/access/info
+    prefix: /api/v1/system/tenant/access/info
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
 
-//@server (
-//    group : system/tenant/app/module
-//    prefix: /api/v1/system/app/module
-//    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
-//)
-//
-//service api {
-//    @doc "获取租户应用列表"
-//    @handler index
-//    post /index (TenantAppIndexReq) returns (TenantAppIndexResp)
-//
-//    @doc "更新租户应用"
-//    @handler create
-//    post /create (TenantAppCreateReq) returns ()
-//
-//    @doc "删除租户应用"
-//    @handler delete
-//    post /delete (TenantAppWithIDOrCode) returns ()
-//}
-//
-//type (
-//
-//)
+service api {
+    @doc "获取租户操作权限树"
+    @handler tree
+    post /tree (TenantAccessInfoIndexReq) returns (TenantAccessInfoTreeResp)
+    @doc "批量更新租户操作权限"
+    @handler multiUpdate
+    post /multi-update (TenantAccessInfoUpdateReq) returns ()
+}
+
+
+type(
+    TenantAccessInfoUpdateReq{
+        Code string `json:"code"`                     // 租户编号
+        AccessCodes []string `json:"accessCodes"`                               // 模块编号
+    }
+    TenantAccessInfoIndexReq{
+        Code string `json:"code"`                     // 租户编号
+    }
+    TenantAccessInfoTreeResp{
+        List []*AccessGroupInfo `json:"list"`
+        Total int64 `json:"total"`
+    }
+)
 
 type (
 

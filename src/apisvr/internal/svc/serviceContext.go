@@ -24,6 +24,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/rulesvr/client/alarmcenter"
 	"github.com/i-Things/things/src/rulesvr/client/scenelinkage"
+	accesssManage "github.com/i-Things/things/src/syssvr/client/accessmanage"
 	app "github.com/i-Things/things/src/syssvr/client/appmanage"
 	"github.com/i-Things/things/src/syssvr/client/areamanage"
 	common "github.com/i-Things/things/src/syssvr/client/common"
@@ -62,6 +63,7 @@ type SvrClient struct {
 	TenantRpc tenant.TenantManage
 	UserRpc   user.UserManage
 	RoleRpc   role.RoleManage
+	AccessRpc accesssManage.AccessManage
 	AppRpc    app.AppManage
 	ModuleRpc module.ModuleManage
 	LogRpc    log.Log
@@ -132,8 +134,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		timedSchedule  timedscheduler.Timedscheduler
 		timedJob       timedmanage.TimedManage
 		tenantM        tenant.TenantManage
-
-		ic rule.Rule
+		accessM        accesssManage.AccessManage
+		ic             rule.Rule
 	)
 	var ur user.UserManage
 	var ro role.RoleManage
@@ -143,6 +145,33 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	caches.InitStore(c.CacheRedis)
 
 	ws.StartWsDp(false)
+
+	if c.SysRpc.Enable {
+		if c.SysRpc.Mode == conf.ClientModeGrpc {
+			projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			ur = user.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			me = module.NewModuleManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
+			sysCommon = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
+			appRpc = app.NewAppManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			tenantM = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			accessM = accesssManage.NewAccessManage(zrpc.MustNewClient(c.SysRpc.Conf))
+		} else {
+			projectM = sysdirect.NewProjectManage(c.SysRpc.RunProxy)
+			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
+			ur = sysdirect.NewUser(c.SysRpc.RunProxy)
+			ro = sysdirect.NewRole(c.SysRpc.RunProxy)
+			me = sysdirect.NewModule(c.SysRpc.RunProxy)
+			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
+			sysCommon = sysdirect.NewCommon(c.SysRpc.RunProxy)
+			appRpc = sysdirect.NewApp(c.SysRpc.RunProxy)
+			tenantM = sysdirect.NewTenantManage(c.SysRpc.RunProxy)
+			accessM = sysdirect.NewAccess(c.SysRpc.RunProxy)
+		}
+	}
+
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
@@ -184,29 +213,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		} else {
 			ic = uddirect.NewRule(c.UdRpc.RunProxy)
 			Ops = uddirect.NewOps(c.UdRpc.RunProxy)
-		}
-	}
-	if c.SysRpc.Enable {
-		if c.SysRpc.Mode == conf.ClientModeGrpc {
-			projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			ur = user.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			me = module.NewModuleManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
-			sysCommon = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
-			appRpc = app.NewAppManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			tenantM = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
-		} else {
-			projectM = sysdirect.NewProjectManage(c.SysRpc.RunProxy)
-			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
-			ur = sysdirect.NewUser(c.SysRpc.RunProxy)
-			ro = sysdirect.NewRole(c.SysRpc.RunProxy)
-			me = sysdirect.NewModule(c.SysRpc.RunProxy)
-			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
-			sysCommon = sysdirect.NewCommon(c.SysRpc.RunProxy)
-			appRpc = sysdirect.NewApp(c.SysRpc.RunProxy)
-			tenantM = sysdirect.NewTenantManage(c.SysRpc.RunProxy)
 		}
 	}
 
@@ -263,6 +269,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			AppRpc:         appRpc,
 			UserRpc:        ur,
 			RoleRpc:        ro,
+			AccessRpc:      accessM,
 			ModuleRpc:      me,
 			LogRpc:         lo,
 			Timedscheduler: timedSchedule,

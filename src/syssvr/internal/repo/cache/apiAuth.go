@@ -26,7 +26,7 @@ func NewApiAuth(store kv.Store) *ApiAuth {
 //	list, err := relationDB.NewRoleApiRepo(ctx).FindByFilter(ctx, relationDB.RoleApiFilter{
 //		TenantCode: tenantCode,
 //		AppCode:    appCode,
-//		ModuleCode: moduleCode,
+//		AccessCode: moduleCode,
 //		RoleIDs:    []int64{roleID},
 //	}, nil)
 //	if err != nil {

@@ -8,6 +8,7 @@ info(
 import "system/system.api" //用户相关功能
 import "system/user.api" //用户相关功能
 import "system/role.api" //角色相关功能
+import "system/access.api"//访问权限
 import "system/userProject.api" //用户数据权限相关功能
 import "system/userArea.api" //用户数据权限相关功能
 import "system/userRole.api" //用户数据权限相关功能

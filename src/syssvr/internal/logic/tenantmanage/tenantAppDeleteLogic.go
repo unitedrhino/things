@@ -66,13 +66,6 @@ func (l *TenantAppDeleteLogic) TenantAppDelete(in *sys.TenantAppWithIDOrCode) (*
 		if err != nil {
 			return err
 		}
-		err = relationDB.NewTenantAppApiRepo(tx).DeleteByFilter(l.ctx, relationDB.TenantAppApiFilter{
-			TenantCode: in.Code,
-			AppCode:    in.AppCode,
-		})
-		if err != nil {
-			return err
-		}
 		return nil
 	})
 	return &sys.Response{}, err
