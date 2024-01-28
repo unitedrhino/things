@@ -126,6 +126,7 @@ service SchemaManage{
   rpc commonSchemaDelete(WithID)     returns (Response);
   //获取产品信息列表
   rpc commonSchemaIndex(CommonSchemaIndexReq)     returns (CommonSchemaIndexResp);
+
 }
 
 service ProtocolManage {

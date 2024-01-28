@@ -33,6 +33,22 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 		Type:        in.Type,
 		Identifiers: in.Identifiers,
 	}
+	if len(in.ProductIDs) != 0 {
+		rst, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductSchemaFilter{ProductIDs: in.ProductIDs, Tag: 2}, nil)
+		if err != nil {
+			return nil, err
+		}
+		var identifyMap = map[string]int{}
+		for _, v := range rst {
+			identifyMap[v.Identifier]++
+		}
+		for k, v := range identifyMap {
+			if v == len(in.ProductIDs) { //每个产品都有的物模型
+				filter.Identifiers = append(filter.Identifiers, k)
+			}
+		}
+	}
+
 	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err

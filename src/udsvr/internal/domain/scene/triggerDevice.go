@@ -57,7 +57,7 @@ func (t *TriggerDevice) Validate() error {
 	return nil
 }
 func (t TriggerDevices) Validate() error {
-	if t == nil {
+	if len(t) == 0 {
 		return nil
 	}
 	for _, v := range t {

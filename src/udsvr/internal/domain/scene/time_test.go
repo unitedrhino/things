@@ -55,7 +55,6 @@ func TestTimeRange_IsHit(t1 *testing.T) {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &TimeRange{
 				Type: tt.fields.Type,
-				Cron: tt.fields.Cron,
 			}
 			if got := t.IsHit(tt.args.tim); got != tt.want {
 				t1.Errorf("IsHit() = %v, want %v", got, tt.want)

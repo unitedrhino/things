@@ -10,6 +10,7 @@ type Infos []*Info
 
 type Info struct {
 	ID          int64     `json:"id"`
+	HeadImg     string    `json:"headImg"` // 头像
 	AreaID      int64     `json:"areaID"`
 	Name        string    `json:"name"`
 	Desc        string    `json:"desc"`
