@@ -5,22 +5,23 @@ import (
 	ws "github.com/i-Things/things/shared/websocket"
 	"net/http"
 
+	systemaccessapi "github.com/i-Things/things/src/apisvr/internal/handler/system/access/api"
+	systemaccessinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/access/info"
 	systemappinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/app/info"
 	systemappmodule "github.com/i-Things/things/src/apisvr/internal/handler/system/app/module"
 	systemareainfo "github.com/i-Things/things/src/apisvr/internal/handler/system/area/info"
 	systemcommon "github.com/i-Things/things/src/apisvr/internal/handler/system/common"
 	systemlog "github.com/i-Things/things/src/apisvr/internal/handler/system/log"
-	systemmoduleapi "github.com/i-Things/things/src/apisvr/internal/handler/system/module/api"
 	systemmoduleinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/module/info"
 	systemmodulemenu "github.com/i-Things/things/src/apisvr/internal/handler/system/module/menu"
 	systemprojectinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/project/info"
-	systemroleapi "github.com/i-Things/things/src/apisvr/internal/handler/system/role/api"
+	systemroleaccess "github.com/i-Things/things/src/apisvr/internal/handler/system/role/access"
 	systemroleapp "github.com/i-Things/things/src/apisvr/internal/handler/system/role/app"
 	systemroleinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/role/info"
 	systemrolemenu "github.com/i-Things/things/src/apisvr/internal/handler/system/role/menu"
 	systemrolemodule "github.com/i-Things/things/src/apisvr/internal/handler/system/role/module"
+	systemtenantaccessinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/access/info"
 	systemtenantapp "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app"
-	systemtenantappapi "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/api"
 	systemtenantappmenu "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/menu"
 	systemtenantappmodule "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/module"
 	systemtenantinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/info"
@@ -151,16 +152,16 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/multi-update",
-					Handler: systemroleapi.MultiUpdateHandler(serverCtx),
+					Handler: systemroleaccess.MultiUpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/index",
-					Handler: systemroleapi.IndexHandler(serverCtx),
+					Handler: systemroleaccess.IndexHandler(serverCtx),
 				},
 			}...,
 		),
-		ws.WithPrefix("/api/v1/system/role/api"),
+		ws.WithPrefix("/api/v1/system/role/access"),
 	)
 
 	server.AddRoutes(
@@ -199,6 +200,69 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		ws.WithPrefix("/api/v1/system/role/module"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemaccessapi.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemaccessapi.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemaccessapi.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemaccessapi.DeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/system/access/api"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: systemaccessinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemaccessinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/tree",
+					Handler: systemaccessinfo.TreeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: systemaccessinfo.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: systemaccessinfo.DeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/system/access/info"),
 	)
 
 	server.AddRoutes(
@@ -333,40 +397,6 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		ws.WithPrefix("/api/v1/system/module/info"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: systemmoduleapi.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: systemmoduleapi.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/tree",
-					Handler: systemmoduleapi.TreeHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: systemmoduleapi.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: systemmoduleapi.DeleteHandler(serverCtx),
-				},
-			}...,
-		),
-		ws.WithPrefix("/api/v1/system/module/api"),
 	)
 
 	server.AddRoutes(
@@ -662,6 +692,25 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/tree",
+					Handler: systemtenantaccessinfo.TreeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-update",
+					Handler: systemtenantaccessinfo.MultiUpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/system/tenant/access/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
 					Path:    "/index",
 					Handler: systemtenantapp.IndexHandler(serverCtx),
 				},
@@ -740,40 +789,6 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: systemtenantappapi.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/tree",
-					Handler: systemtenantappapi.TreeHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: systemtenantappapi.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: systemtenantappapi.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: systemtenantappapi.DeleteHandler(serverCtx),
-				},
-			}...,
-		),
-		ws.WithPrefix("/api/v1/system/tenant/app/api"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
@@ -793,8 +808,8 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/api/index",
-					Handler: systemuserself.ApiIndexHandler(serverCtx),
+					Path:    "/access/tree",
+					Handler: systemuserself.AccessTreeHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,

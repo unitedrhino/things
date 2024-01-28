@@ -5,6 +5,7 @@ import (
 	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/syssvr/internal/config"
+	accessmanageServer "github.com/i-Things/things/src/syssvr/internal/server/accessmanage"
 	appmanageServer "github.com/i-Things/things/src/syssvr/internal/server/appmanage"
 	areamanageServer "github.com/i-Things/things/src/syssvr/internal/server/areamanage"
 	commonServer "github.com/i-Things/things/src/syssvr/internal/server/common"
@@ -54,11 +55,12 @@ func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		sys.RegisterUserManageServer(grpcServer, usermanageServer.NewUserManageServer(svcCtx))
+		sys.RegisterAccessManageServer(grpcServer, accessmanageServer.NewAccessManageServer(svcCtx))
 		sys.RegisterRoleManageServer(grpcServer, rolemanageServer.NewRoleManageServer(svcCtx))
 		sys.RegisterAppManageServer(grpcServer, appmanageServer.NewAppManageServer(svcCtx))
+		sys.RegisterModuleManageServer(grpcServer, modulemanageServer.NewModuleManageServer(svcCtx))
 		sys.RegisterCommonServer(grpcServer, commonServer.NewCommonServer(svcCtx))
 		sys.RegisterLogServer(grpcServer, logServer.NewLogServer(svcCtx))
-		sys.RegisterModuleManageServer(grpcServer, modulemanageServer.NewModuleManageServer(svcCtx))
 		sys.RegisterProjectManageServer(grpcServer, projectmanageServer.NewProjectManageServer(svcCtx))
 		sys.RegisterAreaManageServer(grpcServer, areamanageServer.NewAreaManageServer(svcCtx))
 		sys.RegisterTenantManageServer(grpcServer, tenantmanageServer.NewTenantManageServer(svcCtx))

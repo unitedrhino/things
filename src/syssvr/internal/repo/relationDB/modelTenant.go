@@ -45,19 +45,6 @@ func (m *SysTenantAppModule) TableName() string {
 	return "sys_tenant_app_module"
 }
 
-// 接口管理
-type SysTenantAppApi struct {
-	TempLateID int64             `gorm:"column:template_id;type:BIGINT;NOT NULL"`                            // 模板id
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:app_route;type:VARCHAR(50);NOT NULL"` // 租户编码
-	AppCode    string            `gorm:"column:app_code;uniqueIndex:app_route;type:VARCHAR(50);NOT NULL"`    // 应用编码 这里只关联主应用,主应用授权,子应用也授权了
-	SysModuleApi
-	Roles []SysRoleApi `gorm:"foreignKey:ApiID;references:ID"`
-}
-
-func (m *SysTenantAppApi) TableName() string {
-	return "sys_tenant_app_api"
-}
-
 // 菜单管理表
 type SysTenantAppMenu struct {
 	TempLateID int64             `gorm:"column:template_id;type:BIGINT;NOT NULL"`      // 模板id

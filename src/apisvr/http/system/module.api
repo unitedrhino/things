@@ -9,5 +9,4 @@ info(
 )
 
 import "system/module/info.api"
-import "system/module/api.api"
 import "system/module/menu.api"

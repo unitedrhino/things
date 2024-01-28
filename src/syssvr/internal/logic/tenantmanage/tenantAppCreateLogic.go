@@ -45,7 +45,7 @@ func (l *TenantAppCreateLogic) TenantAppCreate(in *sys.TenantAppCreateReq) (*sys
 			return err
 		}
 		for _, module := range in.Modules {
-			err := ModuleCreate(l.ctx, tx, in.Code, in.AppCode, module.Code, module.MenuIDs, module.ApiIDs)
+			err := ModuleCreate(l.ctx, tx, in.Code, in.AppCode, module.Code, module.MenuIDs)
 			if err != nil {
 				return err
 			}
@@ -54,7 +54,7 @@ func (l *TenantAppCreateLogic) TenantAppCreate(in *sys.TenantAppCreateReq) (*sys
 	})
 	return &sys.Response{}, err
 }
-func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, moduleCode string, menuIDs []int64, apiIDs []int64) error {
+func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, moduleCode string, menuIDs []int64) error {
 	if _, err := relationDB.NewTenantAppModuleRepo(tx).FindOneByFilter(ctx,
 		relationDB.TenantAppModuleFilter{TenantCode: tenantCode, AppCode: appCode, ModuleCodes: []string{moduleCode}}); err == nil || !errors.Cmp(err, errors.NotFind) { //如果报错或者已经有了则跳过
 		return err
@@ -67,15 +67,10 @@ func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, 
 	var (
 		menuMap = make(map[int64]*relationDB.SysModuleMenu)
 		//menuTree = make(map[int64]*relationDB.SysModuleMenu)
-		apiMap  = make(map[int64]*relationDB.SysModuleApi)
 		allMenu = false
-		allApi  = false
 	)
 	if len(menuIDs) == 0 {
 		allMenu = true
-	}
-	if len(apiIDs) == 0 {
-		allApi = true
 	}
 	for _, m := range mi.Menus {
 		menuMap[m.ID] = m
@@ -83,15 +78,8 @@ func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, 
 			menuIDs = append(menuIDs, m.ID)
 		}
 	}
-	for _, a := range mi.Apis {
-		apiMap[a.ID] = a
-		if allApi {
-			apiIDs = append(apiIDs, a.ID)
-		}
-	}
 	var (
 		insertMenus []*relationDB.SysTenantAppMenu
-		insertApis  []*relationDB.SysTenantAppApi
 	)
 
 	for _, id := range menuIDs {
@@ -106,23 +94,7 @@ func ModuleCreate(ctx context.Context, tx *gorm.DB, tenantCode, appCode string, 
 		v.ID = 0
 		insertMenus = append(insertMenus, &v)
 	}
-	for _, id := range apiIDs {
-		a := apiMap[id]
-		if a == nil { //模板里不存在无法添加
-			continue
-		}
-		v := relationDB.SysTenantAppApi{
-			TempLateID: a.ID,
-			TenantCode: stores.TenantCode(tenantCode),
-			AppCode:    appCode, SysModuleApi: *a}
-		v.ID = 0
-		insertApis = append(insertApis, &v)
-	}
 	err = relationDB.NewTenantAppMenuRepo(tx).MultiInsert(ctx, insertMenus)
-	if err != nil {
-		return err
-	}
-	err = relationDB.NewTenantAppApiRepo(tx).MultiInsert(ctx, insertApis)
 	if err != nil {
 		return err
 	}

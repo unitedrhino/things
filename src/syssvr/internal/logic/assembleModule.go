@@ -54,61 +54,47 @@ func ToModuleInfosPb(in []*relationDB.SysModuleInfo) (ret []*sys.ModuleInfo) {
 	return
 }
 
-func ToApiInfoPo(in *sys.ApiInfo) *relationDB.SysModuleApi {
+func ToApiInfoPo(in *sys.ApiInfo) *relationDB.SysApiInfo {
 	if in == nil {
 		return nil
 	}
-	return &relationDB.SysModuleApi{
+	return &relationDB.SysApiInfo{
 		ID:           in.Id,
-		ModuleCode:   in.ModuleCode,
+		AccessCode:   in.AccessCode,
 		Route:        in.Route,
 		Method:       in.Method,
 		Name:         in.Name,
 		BusinessType: in.BusinessType,
-		Group:        in.Group,
-		IsNeedAuth:   in.IsNeedAuth,
+		IsAuthTenant: in.IsAuthTenant,
 		Desc:         in.Desc,
 	}
 }
 
-func ToTenantApiInfoPo(in *sys.TenantApiInfo) *relationDB.SysTenantAppApi {
-	if in == nil || in.Info == nil {
-		return nil
-	}
-	return &relationDB.SysTenantAppApi{
-		TempLateID:   in.TemplateID,
-		TenantCode:   stores.TenantCode(in.Code),
-		AppCode:      in.AppCode,
-		SysModuleApi: *ToApiInfoPo(in.Info),
-	}
-}
+//func ToTenantApiInfoPo(in *sys.TenantApiInfo) *relationDB.SysTenantAppApi {
+//	if in == nil || in.Info == nil {
+//		return nil
+//	}
+//	return &relationDB.SysTenantAppApi{
+//		TempLateID:   in.TemplateID,
+//		TenantCode:   stores.TenantCode(in.Code),
+//		AppCode:      in.AppCode,
+//		SysModuleApi: *ToApiInfoPo(in.Info),
+//	}
+//}
 
-func ToApiInfoPb(in *relationDB.SysModuleApi) *sys.ApiInfo {
+func ToApiInfoPb(in *relationDB.SysApiInfo) *sys.ApiInfo {
 	if in == nil {
 		return nil
 	}
 	return &sys.ApiInfo{
 		Id:           in.ID,
-		ModuleCode:   in.ModuleCode,
+		AccessCode:   in.AccessCode,
 		Route:        in.Route,
 		Method:       in.Method,
 		Name:         in.Name,
 		BusinessType: in.BusinessType,
-		Group:        in.Group,
-		IsNeedAuth:   in.IsNeedAuth,
+		IsAuthTenant: in.IsAuthTenant,
 		Desc:         in.Desc,
-	}
-}
-
-func ToTenantAppApiInfoPb(in *relationDB.SysTenantAppApi) *sys.TenantApiInfo {
-	if in == nil {
-		return nil
-	}
-	return &sys.TenantApiInfo{
-		TemplateID: in.TempLateID,
-		Code:       string(in.TenantCode),
-		AppCode:    in.AppCode,
-		Info:       ToApiInfoPb(&in.SysModuleApi),
 	}
 }
 

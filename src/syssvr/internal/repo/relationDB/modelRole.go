@@ -65,18 +65,16 @@ func (m *SysRoleMenu) TableName() string {
 }
 
 // api权限管理
-type SysRoleApi struct {
+type SysRoleAccess struct {
 	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`               // id编号
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"` // 角色所属租户编码
 	RoleID     int64             `gorm:"column:role_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"`          // 角色ID
-	AppCode    string            `gorm:"column:app_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"`    // 应用编码
-	ModuleCode string            `gorm:"column:module_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"` // 模块编码
-	ApiID      int64             `gorm:"column:api_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"`           // 接口ID
+	AccessCode string            `gorm:"column:access_code;uniqueIndex:ri_mi;type:VARCHAR(50);NOT NULL"` // 范围编码
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:ri_mi"`
-	Api         *SysTenantAppApi   `gorm:"foreignKey:ID;references:ApiID"`
+	Api         *SysAccessInfo     `gorm:"foreignKey:AccessCode;references:Code"`
 }
 
-func (m *SysRoleApi) TableName() string {
-	return "sys_role_api"
+func (m *SysRoleAccess) TableName() string {
+	return "sys_role_access"
 }

@@ -124,7 +124,7 @@ func (p TenantAppModuleRepo) MultiInsert(ctx context.Context, data []*SysTenantA
 //	for _, v := range moduleCodes {
 //		datas = append(datas, &SysTenantAppModule{
 //			AppCodes:    appCode,
-//			ModuleCode: v,
+//			AccessCode: v,
 //		})
 //	}
 //	err := p.db.Transaction(func(tx *gorm.DB) error {
