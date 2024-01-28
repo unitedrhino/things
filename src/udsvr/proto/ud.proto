@@ -65,6 +65,8 @@ message SceneInfo{
   string when = 7;//手动触发模式不生效
   string then = 8; //触发后执行的动作
   int64 status = 9;// 状态（1启用 2禁用）
+  string headImg = 10;
+  int64 isUpdateHeadImg = 11;//只有这个参数为true的时候才会更新图片,传参为图片的file path
 }
 
 

@@ -15,6 +15,12 @@ const (
 	TimeRangeTypeNight  = "night"
 	TimeRangeTypeCustom = "custom"
 )
+const (
+	DateRangeTypeWorkDay = "workday"
+	DateRangeTypeWeekend = "weekend"
+	DateRangeTypeHoliday = "holiday"
+	DateRangeTypeCustom  = "custom"
+)
 
 // TimeRange 时间范围 只支持后面几种特殊字符:*  - ,
 type TimeRange struct {
@@ -25,9 +31,11 @@ type TimeRange struct {
 
 type DateRange struct {
 	Type      string `json:"type"`      //日期类型 workday: 工作日 weekend: 周末 holiday: 节假日 custom:自定义
-	StartDate int64  `json:"startDate"` //开始日期 unix时间戳
-	EndDate   int64  `json:"endDate"`   //结束日期 unix时间戳
+	StartDate string `json:"startDate"` //开始日期 2006-01-02
+	EndDate   string `json:"endDate"`   //结束日期 2006-01-02
 }
+
+type Timers []*Timer
 
 // Timer 定时器类型
 type Timer struct {
@@ -50,11 +58,34 @@ type UnitTime struct {
 
 func (t *TimeRange) Validate() error {
 	if t == nil {
-		return errors.Parameter.AddMsg("时间触发模式需要填写时间内容")
+		return errors.Parameter.AddMsg("时间范围需要填写时间内容")
+	}
+	if !utils.SliceIn(t.Type, TimeRangeTypeAllDay, TimeRangeTypeLight, TimeRangeTypeNight, TimeRangeTypeCustom) {
+		return errors.Parameter.AddMsg("时间范围类型不正确")
 	}
 	if t.Type == TimeRangeTypeCustom {
 		if t.StartTime < 0 || t.StartTime > 24*60*60 || t.EndTime < 0 || t.EndTime > 24*60*60 || t.StartTime > t.EndTime {
 			return errors.Parameter.AddMsg("自定义时间范围只能在0到24小时之间")
+		}
+	}
+	return nil
+}
+
+func (t *DateRange) Validate() error {
+	if t == nil {
+		return errors.Parameter.AddMsg("日期范围需要填写日期内容")
+	}
+	if !utils.SliceIn(t.Type, DateRangeTypeWorkDay, DateRangeTypeWeekend, DateRangeTypeHoliday, DateRangeTypeCustom) {
+		return errors.Parameter.AddMsg("日期范围类型不正确")
+	}
+	if t.Type == DateRangeTypeCustom {
+		start := utils.FmtNilDateStr(t.StartDate)
+		if start == nil {
+			return errors.Parameter.AddMsg("日期范围开始时间的格式为:2006-01-02")
+		}
+		end := utils.FmtNilDateStr(t.EndDate)
+		if end == nil {
+			return errors.Parameter.AddMsg("日期范围结束时间的格式为:2006-01-02")
 		}
 	}
 	return nil
@@ -73,6 +104,19 @@ func (t *Timer) Validate() error {
 	}
 	if t.Repeat > 0b1111111 {
 		return errors.Parameter.AddMsg("时间重复模式只能在0 7个二进制为高位")
+	}
+	return nil
+}
+
+func (t Timers) Validate() error {
+	if len(t) == 0 {
+		return nil
+	}
+	for _, v := range t {
+		err := v.Validate()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

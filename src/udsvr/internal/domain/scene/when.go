@@ -1,5 +1,7 @@
 package scene
 
+import "github.com/i-Things/things/shared/errors"
+
 type When struct {
 	ValidRanges   WhenRanges `json:"validRanges"`   //生效时间段
 	InvalidRanges WhenRanges `json:"invalidRanges"` //无效时间段(最高优先级)
@@ -8,10 +10,15 @@ type When struct {
 
 type WhenRanges []WhenRange
 
+const (
+	WhenRangeTypeDate = "date"
+	WhenRangeTypeTime = "time"
+)
+
 type WhenRange struct {
+	Type      string    `json:"type"` //范围类型 date: 日期范围 time: 时间范围
 	DateRange DateRange `json:"dateRange"`
 	TimeRange TimeRange `json:"timeRange"`
-	Repeat    Timer     `json:"repeat"`
 }
 
 func (w *When) Validate() error {
@@ -30,12 +37,18 @@ func (w *When) Validate() error {
 	return nil
 }
 
-func (w WhenRange) Validate() error {
-	if err := w.TimeRange.Validate(); err != nil {
-		return err
-	}
-	if err := w.Repeat.Validate(); err != nil {
-		return err
+func (w *WhenRange) Validate() error {
+	switch w.Type {
+	case WhenRangeTypeDate:
+		if err := w.DateRange.Validate(); err != nil {
+			return err
+		}
+	case WhenRangeTypeTime:
+		if err := w.TimeRange.Validate(); err != nil {
+			return err
+		}
+	default:
+		return errors.Parameter.AddMsg("WhenRange type not right")
 	}
 	return nil
 }

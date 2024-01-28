@@ -8,6 +8,7 @@ import (
 type UdSceneInfo struct {
 	ID             int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
 	AreaID         int64             `gorm:"column:area_id;type:BIGINT;NOT NULL"`              // 用户id
+	HeadImg        string            `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`       // 头像
 	TenantCode     stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
 	Name           string            `gorm:"column:name;type:varchar(100);NOT NULL"`           // 名称
 	Desc           string            `gorm:"column:desc;type:varchar(200);NOT NULL"`           // 描述
@@ -23,9 +24,9 @@ func (m *UdSceneInfo) TableName() string {
 }
 
 type UdSceneTrigger struct {
-	Type   string               `gorm:"column:type;type:VARCHAR(25);NOT NULL"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
-	Device scene.TriggerDevices `gorm:"column:device;type:json;serializer:json"`
-	Timer  *scene.Timer         `gorm:"column:timer;type:json;serializer:json"`
+	Type    string               `gorm:"column:type;type:VARCHAR(25);NOT NULL"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	Devices scene.TriggerDevices `gorm:"column:devices;type:json;serializer:json"`
+	Timers  scene.Timers         `gorm:"column:timers;type:json;serializer:json"`
 }
 
 type UdSceneWhen struct {

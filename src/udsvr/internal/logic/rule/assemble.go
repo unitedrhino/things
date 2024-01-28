@@ -15,6 +15,7 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 	return &scene.Info{
 		ID:      in.Id,
 		Name:    in.Name,
+		HeadImg: in.HeadImg,
 		Desc:    in.Desc,
 		AreaID:  in.AreaID,
 		Trigger: utils.UnmarshalNoErr[scene.Trigger](in.Trigger),
@@ -26,14 +27,15 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 
 func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 	return &relationDB.UdSceneInfo{
-		ID:     in.ID,
-		AreaID: in.AreaID,
-		Name:   in.Name,
-		Desc:   in.Desc,
+		ID:      in.ID,
+		AreaID:  in.AreaID,
+		Name:    in.Name,
+		Desc:    in.Desc,
+		HeadImg: in.HeadImg,
 		UdSceneTrigger: relationDB.UdSceneTrigger{
-			Type:   string(in.Trigger.Type),
-			Device: in.Trigger.Device,
-			Timer:  in.Trigger.Timer,
+			Type:    string(in.Trigger.Type),
+			Devices: in.Trigger.Devices,
+			Timers:  in.Trigger.Timers,
 		},
 		UdSceneWhen: relationDB.UdSceneWhen{
 			ValidRanges:   in.When.ValidRanges,
@@ -52,12 +54,13 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		ID:          in.ID,
 		AreaID:      in.AreaID,
 		Name:        in.Name,
+		HeadImg:     in.HeadImg,
 		Desc:        in.Desc,
 		CreatedTime: in.CreatedTime,
 		Trigger: scene.Trigger{
-			Type:   scene.TriggerType(in.UdSceneTrigger.Type),
-			Device: in.UdSceneTrigger.Device,
-			Timer:  in.UdSceneTrigger.Timer,
+			Type:    scene.TriggerType(in.UdSceneTrigger.Type),
+			Devices: in.UdSceneTrigger.Devices,
+			Timers:  in.UdSceneTrigger.Timers,
 		},
 		When: scene.When{
 			ValidRanges:   in.UdSceneWhen.ValidRanges,
@@ -80,6 +83,7 @@ func PoToSceneInfoPb(in *relationDB.UdSceneInfo) *ud.SceneInfo {
 		Id:      in.ID,
 		Name:    in.Name,
 		Desc:    in.Desc,
+		HeadImg: in.HeadImg,
 		AreaID:  in.AreaID,
 		Trigger: utils.MarshalNoErr(do.Trigger),
 		When:    utils.MarshalNoErr(do.When),

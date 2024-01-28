@@ -16,6 +16,7 @@ type (
 	ProductSchemaFilter struct {
 		ID          int64
 		ProductID   string   //产品id  必填
+		ProductIDs  []string //产品id列表
 		Type        int64    //物模型类型 1:property属性 2:event事件 3:action行为
 		Tag         int64    //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
 		Identifiers []string //过滤标识符列表
@@ -45,6 +46,9 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 	db := p.db.WithContext(ctx)
 	if f.ID != 0 {
 		db = db.Where("id=?", f.ID)
+	}
+	if len(f.ProductIDs) != 0 {
+		db = db.Where("product_id in ?", f.ProductIDs)
 	}
 	if f.ProductID != "" {
 		db = db.Where("product_id=?", f.ProductID)

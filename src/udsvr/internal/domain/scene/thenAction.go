@@ -23,7 +23,7 @@ type Actions []*Action
 
 type Action struct {
 	Executor ActionExecutor `json:"executor"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
-	Delay    int64          `json:"delay"`
+	Delay    int64          `json:"delay"`    //秒数
 	Alarm    *ActionAlarm   `json:"alarm"`
 	Notify   *ActionNotify  `json:"notify"` //消息通知
 	Device   *ActionDevice  `json:"device"`
