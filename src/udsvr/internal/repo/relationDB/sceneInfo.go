@@ -27,13 +27,17 @@ type SceneInfoFilter struct {
 	Name        string `json:"name"`
 	Status      int64
 	TriggerType string
+	Tag         string
 	AreaID      int64
 }
 
 func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	if f.AreaID != 0 {
-		db = db.Where("area_id = ?", f.AreaID)
+	//if f.AreaID != 0 {
+	//	db = db.Where("area_id = ?", f.AreaID)
+	//}
+	if f.Tag != "" {
+		db = db.Where("tag=?", f.Tag)
 	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")

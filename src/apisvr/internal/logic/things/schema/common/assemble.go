@@ -11,14 +11,15 @@ func ToSchemaInfoRpc(in *types.CommonSchemaInfo) *dm.CommonSchemaInfo {
 		return nil
 	}
 	rpc := &dm.CommonSchemaInfo{
-		Id:           in.ID,
-		Type:         in.Type,
-		Identifier:   in.Identifier,
-		ExtendConfig: in.ExtendConfig,
-		Name:         utils.ToRpcNullString(in.Name),
-		Desc:         utils.ToRpcNullString(in.Desc),
-		Required:     in.Required,
-		Affordance:   utils.ToRpcNullString(in.Affordance),
+		Id:                in.ID,
+		Type:              in.Type,
+		Identifier:        in.Identifier,
+		ExtendConfig:      in.ExtendConfig,
+		Name:              utils.ToRpcNullString(in.Name),
+		Desc:              utils.ToRpcNullString(in.Desc),
+		Required:          in.Required,
+		IsCanSceneLinkage: in.IsCanSceneLinkage,
+		Affordance:        utils.ToRpcNullString(in.Affordance),
 	}
 	return rpc
 }
@@ -28,14 +29,15 @@ func ToSchemaInfoTypes(in *dm.CommonSchemaInfo) *types.CommonSchemaInfo {
 		return nil
 	}
 	rpc := types.CommonSchemaInfo{
-		ID:           in.Id,
-		Type:         in.Type,
-		Identifier:   in.Identifier,
-		ExtendConfig: in.ExtendConfig,
-		Name:         utils.ToNullString(in.Name),
-		Desc:         utils.ToNullString(in.Desc),
-		Required:     in.Required,
-		Affordance:   utils.ToNullString(in.Affordance),
+		ID:                in.Id,
+		Type:              in.Type,
+		Identifier:        in.Identifier,
+		ExtendConfig:      in.ExtendConfig,
+		Name:              utils.ToNullString(in.Name),
+		Desc:              utils.ToNullString(in.Desc),
+		Required:          in.Required,
+		IsCanSceneLinkage: in.IsCanSceneLinkage,
+		Affordance:        utils.ToNullString(in.Affordance),
 	}
 	return &rpc
 }

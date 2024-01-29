@@ -3,6 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/def"
+	"github.com/i-Things/things/shared/devices"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
@@ -31,16 +32,25 @@ func NewDeviceInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.DeviceInfoIndexResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	var (
-		info []*dm.DeviceInfo
-		size int64
-		err  error
+		info  []*dm.DeviceInfo
+		size  int64
+		err   error
+		cores []*devices.Core
 	)
-
+	if len(in.Devices) != 0 {
+		for _, v := range in.Devices {
+			cores = append(cores, &devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+		}
+	}
 	filter := relationDB.DeviceFilter{
 		ProductID:         in.ProductID,
 		AreaIDs:           in.AreaIDs,
 		DeviceName:        in.DeviceName,
 		DeviceNames:       in.DeviceNames,
+		Cores:             cores,
 		Tags:              in.Tags,
 		Range:             in.Range,
 		Position:          logic.ToStorePoint(in.Position),

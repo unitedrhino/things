@@ -17,6 +17,10 @@ message TimeRange{
   int64 start = 1;
   int64 end = 2;
 }
+message DeviceCore{
+  string   productID = 1; //产品id
+  string  deviceName = 2; //设备名称
+}
 
 
 //规则控制
@@ -38,11 +42,20 @@ service ops{
   rpc opsWorkOrderIndex(OpsWorkOrderIndexReq) returns(OpsWorkOrderIndexResp);
 }
 
+service userDevice{
+  rpc userCollectDeviceMultiCreate(UserCollectDeviceSave)returns(Empty);
+  rpc userCollectDeviceMultiDelete(UserCollectDeviceSave)returns(Empty);
+  rpc userCollectDeviceIndex(Empty)returns(UserCollectDeviceSave);
+}
 
+message UserCollectDeviceSave{
+  repeated DeviceCore devices = 1;
+}
 
 message SceneInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   int64 areaID = 6;//所属区域
+  string tag =7;//标签 admin: 管理员 normal: 普通
   string name =2;//场景名 模糊查询
   int64 status = 3;//状态: 1启用 2禁用
   string triggerType = 4;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
@@ -57,16 +70,17 @@ message SceneInfoIndexResp{
 
 message SceneInfo{
   int64 id = 1;//场景id
-  int64 areaID = 2;//所属区域
+  repeated int64 areaIDs = 2;//所属区域
   string name =3;//场景名
   string desc = 4;//描述
+  string tag =12;//标签 admin: 管理员 normal: 普通
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
   string trigger = 6;//多种触发方式
   string when = 7;//手动触发模式不生效
   string then = 8; //触发后执行的动作
   int64 status = 9;// 状态（1启用 2禁用）
   string headImg = 10;
-  int64 isUpdateHeadImg = 11;//只有这个参数为true的时候才会更新图片,传参为图片的file path
+  bool isUpdateHeadImg = 11;//只有这个参数为true的时候才会更新图片,传参为图片的file path
 }
 
 

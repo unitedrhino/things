@@ -11,7 +11,8 @@ type Infos []*Info
 type Info struct {
 	ID          int64     `json:"id"`
 	HeadImg     string    `json:"headImg"` // 头像
-	AreaID      int64     `json:"areaID"`
+	AreaIDs     []int64   `json:"areaIDs"`
+	Tag         string    `json:"tag"`
 	Name        string    `json:"name"`
 	Desc        string    `json:"desc"`
 	CreatedTime time.Time `json:"createdTime"`

@@ -2,6 +2,10 @@ package productmanagelogic
 
 import (
 	"context"
+	"fmt"
+	"github.com/i-Things/things/shared/errors"
+	"github.com/i-Things/things/shared/oss"
+	"github.com/i-Things/things/shared/oss/common"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
@@ -37,6 +41,21 @@ func (l *ProductCategoryUpdateLogic) ProductCategoryUpdate(in *dm.ProductCategor
 	if in.Desc != nil {
 		old.Desc = utils.ToEmptyString(in.Desc)
 	}
+	if in.IsUpdateHeadImg && in.HeadImg != "" {
+		if old.HeadImg != "" {
+			err := l.svcCtx.OssClient.PrivateBucket().Delete(l.ctx, old.HeadImg, common.OptionKv{})
+			if err != nil {
+				l.Errorf("Delete file err path:%v,err:%v", old.HeadImg, err)
+			}
+		}
+		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessProductManage, oss.SceneCategoryImg, fmt.Sprintf("%d/%s", in.Id, oss.GetFileNameWithPath(in.HeadImg)))
+		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(in.HeadImg, nwePath)
+		if err != nil {
+			return nil, errors.System.AddDetail(err)
+		}
+		old.HeadImg = path
+	}
+
 	err = relationDB.NewProductCategoryRepo(l.ctx).Update(l.ctx, old)
 	return &dm.Response{}, err
 }

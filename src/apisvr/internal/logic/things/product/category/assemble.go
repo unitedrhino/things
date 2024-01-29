@@ -11,9 +11,11 @@ func productCategoryToApi(v *dm.ProductCategory) *types.ProductCategory {
 		return nil
 	}
 	return &types.ProductCategory{
-		ID:   v.Id,
-		Name: v.Name,
-		Desc: utils.ToNullString(v.Desc),
+		ID:              v.Id,
+		Name:            v.Name,
+		Desc:            utils.ToNullString(v.Desc),
+		HeadImg:         v.HeadImg,
+		IsUpdateHeadImg: v.IsUpdateHeadImg,
 	}
 }
 func productCategoryToRpc(in *types.ProductCategory) *dm.ProductCategory {
@@ -21,8 +23,10 @@ func productCategoryToRpc(in *types.ProductCategory) *dm.ProductCategory {
 		return nil
 	}
 	return &dm.ProductCategory{
-		Id:   in.ID,
-		Name: in.Name,
-		Desc: utils.ToRpcNullString(in.Desc),
+		Id:              in.ID,
+		Name:            in.Name,
+		Desc:            utils.ToRpcNullString(in.Desc),
+		HeadImg:         in.HeadImg,
+		IsUpdateHeadImg: in.IsUpdateHeadImg,
 	}
 }

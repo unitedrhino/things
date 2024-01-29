@@ -30,6 +30,7 @@ import (
 	systemuserproject "github.com/i-Things/things/src/apisvr/internal/handler/system/user/project"
 	systemuserrole "github.com/i-Things/things/src/apisvr/internal/handler/system/user/role"
 	systemuserself "github.com/i-Things/things/src/apisvr/internal/handler/system/user/self"
+	systemuserselfdevicecollect "github.com/i-Things/things/src/apisvr/internal/handler/system/user/self/device/collect"
 	thingsdeviceauth "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth"
 	thingsdeviceauth5 "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth5"
 	thingsdevicegateway "github.com/i-Things/things/src/apisvr/internal/handler/things/device/gateway"
@@ -854,6 +855,30 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/api/v1/system/user/self"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: systemuserselfdevicecollect.MultiCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-delete",
+					Handler: systemuserselfdevicecollect.MultiDeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: systemuserselfdevicecollect.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/system/user/self/device/collect"),
 	)
 
 	server.AddRoutes(

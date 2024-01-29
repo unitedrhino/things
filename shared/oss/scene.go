@@ -28,9 +28,9 @@ type (
 const (
 	BusinessProductManage = "productManage" //产品管理
 	SceneProductImg       = "productImg"    //产品图片
+	SceneCategoryImg      = "categoryImg"   //产品图片
 )
 
-// 产品管理
 const (
 	BusinessUserManage = "userManage" //产品管理
 	SceneUserInfo      = "userInfo"   //产品图片

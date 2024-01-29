@@ -16,8 +16,9 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 		ID:      in.Id,
 		Name:    in.Name,
 		HeadImg: in.HeadImg,
+		Tag:     in.Tag,
 		Desc:    in.Desc,
-		AreaID:  in.AreaID,
+		AreaIDs: in.AreaIDs,
 		Trigger: utils.UnmarshalNoErr[scene.Trigger](in.Trigger),
 		When:    utils.UnmarshalNoErr[scene.When](in.When),
 		Then:    utils.UnmarshalNoErr[scene.Then](in.Then),
@@ -28,9 +29,10 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 	return &relationDB.UdSceneInfo{
 		ID:      in.ID,
-		AreaID:  in.AreaID,
+		AreaIDs: in.AreaIDs,
 		Name:    in.Name,
 		Desc:    in.Desc,
+		Tag:     in.Tag,
 		HeadImg: in.HeadImg,
 		UdSceneTrigger: relationDB.UdSceneTrigger{
 			Type:    string(in.Trigger.Type),
@@ -52,8 +54,9 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 	}
 	return &scene.Info{
 		ID:          in.ID,
-		AreaID:      in.AreaID,
+		AreaIDs:     in.AreaIDs,
 		Name:        in.Name,
+		Tag:         in.Tag,
 		HeadImg:     in.HeadImg,
 		Desc:        in.Desc,
 		CreatedTime: in.CreatedTime,
@@ -83,8 +86,9 @@ func PoToSceneInfoPb(in *relationDB.UdSceneInfo) *ud.SceneInfo {
 		Id:      in.ID,
 		Name:    in.Name,
 		Desc:    in.Desc,
+		Tag:     in.Tag,
 		HeadImg: in.HeadImg,
-		AreaID:  in.AreaID,
+		AreaIDs: in.AreaIDs,
 		Trigger: utils.MarshalNoErr(do.Trigger),
 		When:    utils.MarshalNoErr(do.When),
 		Then:    utils.MarshalNoErr(do.Then),

@@ -460,3 +460,167 @@ var Ops_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/ud.proto",
 }
+
+const (
+	UserDevice_UserCollectDeviceMultiCreate_FullMethodName = "/ud.userDevice/userCollectDeviceMultiCreate"
+	UserDevice_UserCollectDeviceMultiDelete_FullMethodName = "/ud.userDevice/userCollectDeviceMultiDelete"
+	UserDevice_UserCollectDeviceIndex_FullMethodName       = "/ud.userDevice/userCollectDeviceIndex"
+)
+
+// UserDeviceClient is the client API for UserDevice service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type UserDeviceClient interface {
+	UserCollectDeviceMultiCreate(ctx context.Context, in *UserCollectDeviceSave, opts ...grpc.CallOption) (*Empty, error)
+	UserCollectDeviceMultiDelete(ctx context.Context, in *UserCollectDeviceSave, opts ...grpc.CallOption) (*Empty, error)
+	UserCollectDeviceIndex(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserCollectDeviceSave, error)
+}
+
+type userDeviceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewUserDeviceClient(cc grpc.ClientConnInterface) UserDeviceClient {
+	return &userDeviceClient{cc}
+}
+
+func (c *userDeviceClient) UserCollectDeviceMultiCreate(ctx context.Context, in *UserCollectDeviceSave, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserDevice_UserCollectDeviceMultiCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userDeviceClient) UserCollectDeviceMultiDelete(ctx context.Context, in *UserCollectDeviceSave, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserDevice_UserCollectDeviceMultiDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userDeviceClient) UserCollectDeviceIndex(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserCollectDeviceSave, error) {
+	out := new(UserCollectDeviceSave)
+	err := c.cc.Invoke(ctx, UserDevice_UserCollectDeviceIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// UserDeviceServer is the server API for UserDevice service.
+// All implementations must embed UnimplementedUserDeviceServer
+// for forward compatibility
+type UserDeviceServer interface {
+	UserCollectDeviceMultiCreate(context.Context, *UserCollectDeviceSave) (*Empty, error)
+	UserCollectDeviceMultiDelete(context.Context, *UserCollectDeviceSave) (*Empty, error)
+	UserCollectDeviceIndex(context.Context, *Empty) (*UserCollectDeviceSave, error)
+	mustEmbedUnimplementedUserDeviceServer()
+}
+
+// UnimplementedUserDeviceServer must be embedded to have forward compatible implementations.
+type UnimplementedUserDeviceServer struct {
+}
+
+func (UnimplementedUserDeviceServer) UserCollectDeviceMultiCreate(context.Context, *UserCollectDeviceSave) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCollectDeviceMultiCreate not implemented")
+}
+func (UnimplementedUserDeviceServer) UserCollectDeviceMultiDelete(context.Context, *UserCollectDeviceSave) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCollectDeviceMultiDelete not implemented")
+}
+func (UnimplementedUserDeviceServer) UserCollectDeviceIndex(context.Context, *Empty) (*UserCollectDeviceSave, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCollectDeviceIndex not implemented")
+}
+func (UnimplementedUserDeviceServer) mustEmbedUnimplementedUserDeviceServer() {}
+
+// UnsafeUserDeviceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserDeviceServer will
+// result in compilation errors.
+type UnsafeUserDeviceServer interface {
+	mustEmbedUnimplementedUserDeviceServer()
+}
+
+func RegisterUserDeviceServer(s grpc.ServiceRegistrar, srv UserDeviceServer) {
+	s.RegisterService(&UserDevice_ServiceDesc, srv)
+}
+
+func _UserDevice_UserCollectDeviceMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserCollectDeviceSave)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserCollectDeviceMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserCollectDeviceMultiCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserCollectDeviceMultiCreate(ctx, req.(*UserCollectDeviceSave))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserDevice_UserCollectDeviceMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserCollectDeviceSave)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserCollectDeviceMultiDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserCollectDeviceMultiDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserCollectDeviceMultiDelete(ctx, req.(*UserCollectDeviceSave))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserDevice_UserCollectDeviceIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserCollectDeviceIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserCollectDeviceIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserCollectDeviceIndex(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// UserDevice_ServiceDesc is the grpc.ServiceDesc for UserDevice service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var UserDevice_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "ud.userDevice",
+	HandlerType: (*UserDeviceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "userCollectDeviceMultiCreate",
+			Handler:    _UserDevice_UserCollectDeviceMultiCreate_Handler,
+		},
+		{
+			MethodName: "userCollectDeviceMultiDelete",
+			Handler:    _UserDevice_UserCollectDeviceMultiDelete_Handler,
+		},
+		{
+			MethodName: "userCollectDeviceIndex",
+			Handler:    _UserDevice_UserCollectDeviceIndex_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/ud.proto",
+}
