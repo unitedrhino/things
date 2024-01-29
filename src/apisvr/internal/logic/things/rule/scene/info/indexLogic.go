@@ -31,6 +31,7 @@ func (l *IndexLogic) Index(req *types.SceneInfoIndexReq) (resp *types.SceneInfoI
 	pbReq := &ud.SceneInfoIndexReq{
 		Page:        logic.ToUdPageRpc(req.Page),
 		AreaID:      req.AreaID,
+		Tag:         req.Tag,
 		Name:        req.Name,
 		Status:      req.Status,
 		TriggerType: req.TriggerType,

@@ -82,24 +82,24 @@ type ApiInfo struct {
 }
 
 type UserInfo struct {
-	UserID          int64       `json:"userID,string,optional"`      // 用户id
-	UserName        string      `json:"userName,optional"`           // 用户名(唯一)
-	Password        string      `json:"password,optional,omitempty"` // 登录密码
-	Email           string      `json:"email,optional"`              // 邮箱
-	Phone           string      `json:"phone,optional"`              // 手机号
-	LastIP          string      `json:"lastIP,optional"`             // 最后登录ip
-	RegIP           string      `json:"regIP,optional"`              // 注册ip
-	NickName        string      `json:"nickName,optional"`           // 用户的昵称
-	City            string      `json:"city,optional"`               // 用户所在城市
-	Country         string      `json:"country,optional"`            // 用户所在国家
-	Province        string      `json:"province,optional"`           // 用户所在省份
-	Language        string      `json:"language,optional"`           // 用户的语言，简体中文为zh_CN
-	HeadImg         string      `json:"headImg,optional"`            // 用户头像
-	IsUpdateHeadImg int64       `json:"isUpdateHeadImg,optional"`    // 用户头像
-	CreatedTime     int64       `json:"createdTime,string,optional"` // 创建时间
-	Role            int64       `json:"role,optional"`               // 用户角色默认
-	Sex             int64       `json:"sex,optional"`                // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-	IsAllData       int64       `json:"isAllData,optional"`          // 是否所有数据权限（1是，2否）
+	UserID          int64       `json:"userID,string,optional"`             // 用户id
+	UserName        string      `json:"userName,optional"`                  // 用户名(唯一)
+	Password        string      `json:"password,optional,omitempty"`        // 登录密码
+	Email           string      `json:"email,optional"`                     // 邮箱
+	Phone           string      `json:"phone,optional"`                     // 手机号
+	LastIP          string      `json:"lastIP,optional"`                    // 最后登录ip
+	RegIP           string      `json:"regIP,optional"`                     // 注册ip
+	NickName        string      `json:"nickName,optional"`                  // 用户的昵称
+	City            string      `json:"city,optional"`                      // 用户所在城市
+	Country         string      `json:"country,optional"`                   // 用户所在国家
+	Province        string      `json:"province,optional"`                  // 用户所在省份
+	Language        string      `json:"language,optional"`                  // 用户的语言，简体中文为zh_CN
+	HeadImg         string      `json:"headImg,optional"`                   // 用户头像
+	IsUpdateHeadImg bool        `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
+	CreatedTime     int64       `json:"createdTime,string,optional"`        // 创建时间
+	Role            int64       `json:"role,optional"`                      // 用户角色默认
+	Sex             int64       `json:"sex,optional"`                       // 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+	IsAllData       int64       `json:"isAllData,optional"`                 // 是否所有数据权限（1是，2否）
 	Roles           []*RoleInfo `json:"roles,optional"`
 	Tenant          *TenantInfo `json:"tenant,optional"`
 }
@@ -263,6 +263,11 @@ type SendOption struct {
 
 type CodeReq struct {
 	Code string `json:"code"`
+}
+
+type DeviceCore struct {
+	ProductID  string `json:"productID"`  //产品ID
+	DeviceName string `json:"deviceName"` //设备名称
 }
 
 type UserProject struct {
@@ -891,21 +896,29 @@ type UserForgetPwdReq struct {
 	Password string `json:"password"`                 //密码
 }
 
+type UserCollectDeviceSave struct {
+	Devices []*DeviceCore `json:"devices"`
+}
+
+type UserCollectDeviceInfo struct {
+	Devices []*DeviceInfo `json:"devices"`
+}
+
 type ProductInfo struct {
-	CreatedTime        int64   `json:"createdTime,optional,string"`       //创建时间 只读
-	ProductID          string  `json:"productID,optional"`                //产品id 只读
-	ProductName        string  `json:"productName,optional"`              //产品名称
-	ProductImg         string  `json:"productImg,optional"`               //产品图片
-	IsUpdateProductImg bool    `json:"isUpdateProductImg,optional"`       //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
-	AuthMode           int64   `json:"authMode,optional,range=[0:2]"`     //认证方式:1:账密认证,2:秘钥认证
-	DeviceType         int64   `json:"deviceType,optional,range=[0:3]"`   //设备类型:1:设备,2:网关,3:子设备
-	CategoryID         int64   `json:"categoryID,optional"`               //产品品类
-	NetType            int64   `json:"netType,optional,range=[0:6]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto          int64   `json:"dataProto,optional,range=[0:2]"`    //数据协议:1:自定义,2:数据模板
-	AutoRegister       int64   `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret             string  `json:"secret,optional"`                   //动态注册产品秘钥 只读
-	Desc               *string `json:"desc,optional"`                     //描述
-	Tags               []*Tag  `json:"tags,optional"`                     // 产品tag
+	CreatedTime        int64   `json:"createdTime,optional,string"`           //创建时间 只读
+	ProductID          string  `json:"productID,optional"`                    //产品id 只读
+	ProductName        string  `json:"productName,optional"`                  //产品名称
+	ProductImg         string  `json:"productImg,optional"`                   //产品图片
+	IsUpdateProductImg bool    `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+	AuthMode           int64   `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
+	DeviceType         int64   `json:"deviceType,optional,range=[0:3]"`       //设备类型:1:设备,2:网关,3:子设备
+	CategoryID         int64   `json:"categoryID,optional"`                   //产品品类
+	NetType            int64   `json:"netType,optional,range=[0:6]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	DataProto          int64   `json:"dataProto,optional,range=[0:2]"`        //数据协议:1:自定义,2:数据模板
+	AutoRegister       int64   `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret             string  `json:"secret,optional"`                       //动态注册产品秘钥 只读
+	Desc               *string `json:"desc,optional"`                         //描述
+	Tags               []*Tag  `json:"tags,optional"`                         // 产品tag
 }
 
 type ProductInfoReadReq struct {
@@ -970,15 +983,16 @@ type ProductSchemaIndexResp struct {
 }
 
 type ProductSchemaInfo struct {
-	ProductID    string  `json:"productID"`             //产品id 只读
-	Type         int64   `json:"type"`                  //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag          int64   `json:"tag"`                   //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Identifier   string  `json:"identifier"`            //标识符
-	ExtendConfig string  `json:"extendConfig,optional"` //拓展参数
-	Name         *string `json:"name,optional"`         //功能名称
-	Desc         *string `json:"desc,optional"`         //描述
-	Required     int64   `json:"required,optional"`     //是否必须 1:是 2:否
-	Affordance   *string `json:"affordance,optional"`   //各功能类型的详细参数定义
+	ProductID         string  `json:"productID"`                  //产品id 只读
+	Type              int64   `json:"type"`                       //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag               int64   `json:"tag"`                        //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Identifier        string  `json:"identifier"`                 //标识符
+	ExtendConfig      string  `json:"extendConfig,optional"`      //拓展参数
+	Name              *string `json:"name,optional"`              //功能名称
+	Desc              *string `json:"desc,optional"`              //描述
+	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
+	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
+	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 }
 
 type SchemaAction struct {
@@ -1071,9 +1085,11 @@ type ProductCustomTopic struct {
 }
 
 type ProductCategory struct {
-	ID   int64   `json:"id,optional"`
-	Name string  `json:"name,optional"`
-	Desc *string `json:"desc,optional"` //描述
+	ID              int64   `json:"id,optional"`
+	Name            string  `json:"name,optional"`
+	Desc            *string `json:"desc,optional"`                      //描述
+	HeadImg         string  `json:"headImg,optional"`                   // 用户头像
+	IsUpdateHeadImg bool    `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
 }
 
 type ProductCategoryIndexReq struct {
@@ -1364,11 +1380,6 @@ type DeviceInfoIndexResp struct {
 	Num   int64         `json:"num"`   //返回的数量
 }
 
-type DeviceCore struct {
-	ProductID  string `json:"productID"`  //产品ID
-	DeviceName string `json:"deviceName"` //设备名称
-}
-
 type DeviceCountReq struct {
 	StartTime int64 `json:"startTime,optional" form:"startTime,optional"` //查询区间的开始时间（秒）
 	EndTime   int64 `json:"endTime,optional" form:"endTime,optional"`     //查询区间的结束时间（秒）
@@ -1562,6 +1573,7 @@ type SceneInfoUpdateReq struct {
 type SceneInfoIndexReq struct {
 	Page        *PageInfo `json:"page,optional"` //分页信息 只获取一个则不填
 	Name        string    `json:"name,optional"` //场景名模糊查询
+	Tag         string    `json:"tag,optional"`  //标签 admin: 管理员 normal: 普通
 	AreaID      int64     `json:"areaID,optional"`
 	TriggerType string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
 	Status      int64     `json:"status,optional"`      //状态: 1启用 2禁用
@@ -1575,15 +1587,18 @@ type SceneInfoIndexResp struct {
 }
 
 type SceneInfo struct {
-	ID          int64  `json:"id,optional"`
-	Name        string `json:"name,optional"`
-	AreaID      int64  `json:"areaID,optional"`
-	Status      int64  `json:"status,optional"` //状态: 1启用 2禁用
-	Desc        string `json:"desc,optional"`
-	CreatedTime int64  `json:"createdTime,optional"`
-	Trigger     string `json:"trigger,optional"`
-	When        string `json:"when,optional"`
-	Then        string `json:"then"`
+	ID              int64   `json:"id,optional"`
+	Name            string  `json:"name,optional"`
+	AreaIDs         []int64 `json:"areaIDs,string,optional"`
+	Status          int64   `json:"status,optional"` //状态: 1启用 2禁用
+	Tag             string  `json:"tag,optional"`    //标签 admin: 管理员 normal: 普通
+	Desc            string  `json:"desc,optional"`
+	CreatedTime     int64   `json:"createdTime,optional"`
+	Trigger         string  `json:"trigger,optional"`
+	When            string  `json:"when,optional"`
+	Then            string  `json:"then,optional"`
+	HeadImg         string  `json:"headImg,optional"`                   // 用户头像
+	IsUpdateHeadImg bool    `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
 }
 
 type AlarmDealRecordCreateReq struct {
@@ -2081,14 +2096,15 @@ type CommonSchemaIndexResp struct {
 }
 
 type CommonSchemaInfo struct {
-	ID           int64   `json:"id,optional"`           //产品id
-	Type         int64   `json:"type,optional"`         //物模型类型 1:property属性 2:event事件 3:action行为
-	Identifier   string  `json:"identifier,optional"`   //标识符
-	ExtendConfig string  `json:"extendConfig,optional"` //拓展参数
-	Name         *string `json:"name,optional"`         //功能名称
-	Desc         *string `json:"desc,optional"`         //描述
-	Required     int64   `json:"required,optional"`     //是否必须 1:是 2:否
-	Affordance   *string `json:"affordance,optional"`   //各功能类型的详细参数定义
+	ID                int64   `json:"id,optional"`                //产品id
+	Type              int64   `json:"type,optional"`              //物模型类型 1:property属性 2:event事件 3:action行为
+	Identifier        string  `json:"identifier,optional"`        //标识符
+	ExtendConfig      string  `json:"extendConfig,optional"`      //拓展参数
+	Name              *string `json:"name,optional"`              //功能名称
+	Desc              *string `json:"desc,optional"`              //描述
+	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
+	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
+	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 }
 
 type OpsWorkOrder struct {

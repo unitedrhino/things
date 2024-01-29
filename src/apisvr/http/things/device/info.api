@@ -118,10 +118,7 @@ type (
         Total int64 `json:"total"`          //总数(只有分页的时候会返回)
         Num int64 `json:"num"`              //返回的数量
     }
-    DeviceCore {
-        ProductID string `json:"productID"`      //产品ID
-        DeviceName string `json:"deviceName"`    //设备名称
-    }
+
     DeviceCountReq {
         StartTime int64 `json:"startTime,optional" form:"startTime,optional"`  //查询区间的开始时间（秒）
         EndTime int64 `json:"endTime,optional" form:"endTime,optional"`        //查询区间的结束时间（秒）

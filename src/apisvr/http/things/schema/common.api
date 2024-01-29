@@ -62,6 +62,7 @@ type (
         Desc *string `json:"desc,optional"`                           //描述
         Required int64 `json:"required,optional"`                     //是否必须 1:是 2:否
         Affordance *string `json:"affordance,optional"`                //各功能类型的详细参数定义
+        IsCanSceneLinkage int64  `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 //        Event *SchemaEvent `json:"event,optional"`           //事件参数定义
 //        Property *SchemaProperty `json:"property,optional"`  //属性参数定义
 //        Action *SchemaAction `json:"action,optional"`        //行为参数定义

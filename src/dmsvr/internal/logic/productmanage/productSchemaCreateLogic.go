@@ -51,14 +51,16 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 			return nil, err
 		}
 	}
+	po := ToProductSchemaPo(in.Info)
+
 	var cs *relationDB.DmCommonSchema
 	if in.Info.Tag != int64(schema.TagCustom) {
 		cs, err = relationDB.NewCommonSchemaRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{Identifiers: []string{in.Info.Identifier}})
 		if err != nil {
 			return nil, err
 		}
+		po.IsCanSceneLinkage = cs.IsCanSceneLinkage
 	}
-	po := ToProductSchemaPo(in.Info)
 	if po.Name == "" {
 		if cs == nil {
 			return nil, errors.Parameter.AddMsg("功能名称不能为空")
@@ -71,11 +73,11 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 	if po.ExtendConfig == "" && cs != nil {
 		po.ExtendConfig = cs.ExtendConfig
 	}
+
 	if err = CheckAffordance(&po.DmSchemaCore, cs); err != nil {
 		return nil, err
 	}
 	return po, nil
-
 }
 
 // 新增产品

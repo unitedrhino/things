@@ -59,7 +59,7 @@ func (l *UserInfoUpdateLogic) UserInfoUpdate(in *sys.UserInfo) (*sys.Response, e
 	if in.Role != 0 && in.Role != ui.Role {
 		ui.Role = in.Role
 	}
-	if in.IsUpdateHeadImg == def.True && in.HeadImg != "" {
+	if in.IsUpdateHeadImg && in.HeadImg != "" {
 		if ui.HeadImg != "" {
 			err := l.svcCtx.OssClient.PrivateBucket().Delete(l.ctx, ui.HeadImg, common.OptionKv{})
 			if err != nil {

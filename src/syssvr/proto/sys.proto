@@ -589,7 +589,7 @@ message UserInfo{
   int64  sex =17;
   int64  isAllData =18;
   string headImg =19;
-  int64 isUpdateHeadImg = 20;//只有这个参数为true的时候才会更新图片,传参为图片的file path
+  bool isUpdateHeadImg = 20;//只有这个参数为true的时候才会更新图片,传参为图片的file path
 
 }
 

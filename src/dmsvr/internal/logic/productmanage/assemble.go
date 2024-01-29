@@ -116,13 +116,21 @@ func ToCustomTopicsDo(info []*dm.CustomTopic) (ret []*productCustom.CustomTopic)
 	}
 	return
 }
-func ToProductCategoryRpc(info *relationDB.DmProductCategory) *dm.ProductCategory {
+func ToProductCategoryRpc(ctx context.Context, info *relationDB.DmProductCategory, svcCtx *svc.ServiceContext) *dm.ProductCategory {
 	if info == nil {
 		return nil
 	}
+	if info.HeadImg != "" {
+		var err error
+		info.HeadImg, err = svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, info.HeadImg, 24*60*60, common.OptionKv{})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
+		}
+	}
 	return &dm.ProductCategory{
-		Id:   info.ID,
-		Name: info.Name,
-		Desc: utils.ToRpcNullString(info.Desc),
+		Id:      info.ID,
+		Name:    info.Name,
+		HeadImg: info.HeadImg,
+		Desc:    utils.ToRpcNullString(info.Desc),
 	}
 }

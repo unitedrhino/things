@@ -45,7 +45,6 @@ service api {
 	@doc "获取用户项目列表"
 	@handler projectIndex
 	post /project/index () returns (ProjectInfoIndexResp)
-
 }
 
 @server (

@@ -26,8 +26,8 @@ import (
 	"github.com/i-Things/things/src/rulesvr/client/scenelinkage"
 	app "github.com/i-Things/things/src/syssvr/client/appmanage"
 	"github.com/i-Things/things/src/syssvr/client/areamanage"
-	common "github.com/i-Things/things/src/syssvr/client/common"
-	log "github.com/i-Things/things/src/syssvr/client/log"
+	"github.com/i-Things/things/src/syssvr/client/common"
+	"github.com/i-Things/things/src/syssvr/client/log"
 	module "github.com/i-Things/things/src/syssvr/client/modulemanage"
 	"github.com/i-Things/things/src/syssvr/client/projectmanage"
 	role "github.com/i-Things/things/src/syssvr/client/rolemanage"
@@ -40,6 +40,7 @@ import (
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
 	"github.com/i-Things/things/src/udsvr/client/ops"
 	"github.com/i-Things/things/src/udsvr/client/rule"
+	"github.com/i-Things/things/src/udsvr/client/userdevice"
 	"github.com/i-Things/things/src/udsvr/uddirect"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrconfigmanage"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrinfomanage"
@@ -86,6 +87,7 @@ type SvrClient struct {
 
 	Rule           rule.Rule
 	Ops            ops.Ops
+	UserDevice     userdevice.UserDevice
 	Scene          scenelinkage.SceneLinkage
 	Alarm          alarmcenter.AlarmCenter
 	Timedscheduler timedscheduler.Timedscheduler
@@ -132,8 +134,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		timedSchedule  timedscheduler.Timedscheduler
 		timedJob       timedmanage.TimedManage
 		tenantM        tenant.TenantManage
-
-		ic rule.Rule
+		UserDevice     userdevice.UserDevice
+		Rule           rule.Rule
 	)
 	var ur user.UserManage
 	var ro role.RoleManage
@@ -179,11 +181,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	if c.UdRpc.Enable {
 		if c.UdRpc.Mode == conf.ClientModeGrpc {
-			ic = rule.NewRule(zrpc.MustNewClient(c.UdRpc.Conf))
+			Rule = rule.NewRule(zrpc.MustNewClient(c.UdRpc.Conf))
 			Ops = ops.NewOps(zrpc.MustNewClient(c.UdRpc.Conf))
+			UserDevice = userdevice.NewUserDevice(zrpc.MustNewClient(c.UdRpc.Conf))
 		} else {
-			ic = uddirect.NewRule(c.UdRpc.RunProxy)
+			Rule = uddirect.NewRule(c.UdRpc.RunProxy)
 			Ops = uddirect.NewOps(c.UdRpc.RunProxy)
+			UserDevice = uddirect.NewUserDevice(c.UdRpc.RunProxy)
 		}
 	}
 	if c.SysRpc.Enable {
@@ -284,7 +288,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceInteract: deviceInteract,
 			RemoteConfig:   remoteConfig,
 			Common:         sysCommon,
-			Rule:           ic,
+			Rule:           Rule,
+			UserDevice:     UserDevice,
 			Ops:            Ops,
 		},
 		//OSS:        ossClient,

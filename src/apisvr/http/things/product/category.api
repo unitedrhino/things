@@ -35,6 +35,8 @@ type (
         ID int64 `json:"id,optional"`
         Name string `json:"name,optional"`
         Desc *string `json:"desc,optional"`                       //描述
+        HeadImg  string `json:"headImg,optional"`        // 用户头像
+        IsUpdateHeadImg  bool `json:"isUpdateHeadImg,omitempty,optional"`        // 用户头像
     }
 
 

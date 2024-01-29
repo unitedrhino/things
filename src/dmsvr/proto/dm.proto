@@ -260,7 +260,9 @@ service OtaTaskManage {
 message ProductCategory{
   int64 id = 1;
   string name = 2;
-  google.protobuf.StringValue desc = 3;
+  string headImg =3;
+  bool isUpdateHeadImg = 4;//只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+  google.protobuf.StringValue desc = 5;
 }
 
 message ProductCategoryIndexReq{
@@ -798,6 +800,7 @@ message DeviceInfoIndexReq{
   string deviceAlias = 9; //过滤条件:模糊查询 设备别名
   int64 isOnline = 10; //在线状态过滤  1离线 2在线
   int64  productCategoryID = 11;//产品品类id
+  repeated DeviceCore devices =12;
 }
 
 message DeviceInfoIndexResp{
@@ -861,8 +864,9 @@ message CommonSchemaInfo{
   google.protobuf.StringValue name = 5;       //功能名称
   google.protobuf.StringValue desc = 6;       //描述
   int64 required = 7;  //是否必须 1:是 2:否
-  google.protobuf.StringValue affordance = 8;//各功能类型的详细参数定义
-  string extendConfig = 9; //拓展参数
+  int64 isCanSceneLinkage =8;//是否支持场景联动控制
+  google.protobuf.StringValue affordance = 9;//各功能类型的详细参数定义
+  string extendConfig = 10; //拓展参数
 }
 
 /*********************************/
@@ -906,8 +910,9 @@ message ProductSchemaInfo{
   google.protobuf.StringValue name = 5;       //功能名称
   google.protobuf.StringValue desc = 6;       //描述
   int64 required = 7;  //是否必须 1:是 2:否
-  google.protobuf.StringValue affordance = 8;//各功能类型的详细参数定义
-  string extendConfig = 9; //拓展参数
+  int64 isCanSceneLinkage =8;//是否支持场景联动控制
+  google.protobuf.StringValue affordance = 9;//各功能类型的详细参数定义
+  string extendConfig = 10; //拓展参数
 }
 
 

@@ -19,10 +19,24 @@ type UdOpsWorkOrder struct {
 	Type        string            `gorm:"column:type;type:varchar(100);NOT NULL"`                     // 工单类型: deviceMaintenance:设备维修工单
 	IssueDesc   string            `gorm:"column:issue_desc;type:varchar(2000);NOT NULL"`
 	Status      int64             `gorm:"column:status;type:BIGINT;default:1"` //状态 1:待处理 2:处理中 3:已完成
-	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;index"`
+	stores.SoftTime
 }
 
 func (m *UdOpsWorkOrder) TableName() string {
 	return "ud_ops_work_order"
+}
+
+type UdUserCollectDevice struct {
+	ID         int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	TenantCode stores.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                              // 租户编码
+	ProjectID  stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`                                // 项目ID(雪花ID)
+	UserID     int64             `gorm:"column:user_id;type:BIGINT;uniqueIndex:product_id_deviceName;NOT NULL"`           // 问题提出的用户
+	ProductID  string            `gorm:"column:product_id;type:char(11);uniqueIndex:product_id_deviceName;NOT NULL"`      // 产品id
+	DeviceName string            `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:product_id_deviceName"`
+}
+
+func (m *UdUserCollectDevice) TableName() string {
+	return "ud_user_collect_device"
 }

@@ -27,5 +27,5 @@ func NewProductCategoryReadLogic(ctx context.Context, svcCtx *svc.ServiceContext
 // 获取产品信息详情
 func (l *ProductCategoryReadLogic) ProductCategoryRead(in *dm.WithID) (*dm.ProductCategory, error) {
 	po, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.Id)
-	return ToProductCategoryRpc(po), err
+	return ToProductCategoryRpc(l.ctx, po, l.svcCtx), err
 }

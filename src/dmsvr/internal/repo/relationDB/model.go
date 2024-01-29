@@ -76,9 +76,10 @@ func (m *DmProductInfo) TableName() string {
 }
 
 type DmProductCategory struct {
-	ID   int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	Name string `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"` // 产品品类名称
-	Desc string `gorm:"column:desc;type:varchar(200)"`                         // 描述
+	ID      int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name    string `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"` // 产品品类名称
+	Desc    string `gorm:"column:desc;type:varchar(200)"`                         // 描述
+	HeadImg string `gorm:"column:head_img;type:varchar(200)"`                     // 图片
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
 }
@@ -137,13 +138,14 @@ func (m *DmProductSchema) TableName() string {
 }
 
 type DmSchemaCore struct {
-	Type         int64  `gorm:"column:type;index:product_id_type;type:smallint;default:1"`           // 物模型类型 1:property属性 2:event事件 3:action行为
-	Identifier   string `gorm:"column:identifier;uniqueIndex:identifier;type:varchar(100);NOT NULL"` // 标识符
-	ExtendConfig string `gorm:"column:extend_config;type:json;default:'{}'"`                         //拓展参数
-	Required     int64  `gorm:"column:required;type:smallint;default:2"`                             // 是否必须,1是 2否
-	Name         string `gorm:"column:name;type:varchar(100);NOT NULL"`                              // 功能名称
-	Desc         string `gorm:"column:desc;type:varchar(200)"`                                       // 描述
-	Affordance   string `gorm:"column:affordance;type:json;NOT NULL"`                                // 各类型的自定义功能定义
+	Type              int64  `gorm:"column:type;index:product_id_type;type:smallint;default:1"`           // 物模型类型 1:property属性 2:event事件 3:action行为
+	Identifier        string `gorm:"column:identifier;uniqueIndex:identifier;type:varchar(100);NOT NULL"` // 标识符
+	ExtendConfig      string `gorm:"column:extend_config;type:json;default:'{}'"`                         //拓展参数
+	Required          int64  `gorm:"column:required;type:smallint;default:2"`                             // 是否必须,1是 2否
+	Name              string `gorm:"column:name;type:varchar(100);NOT NULL"`                              // 功能名称
+	Desc              string `gorm:"column:desc;type:varchar(200)"`                                       // 描述
+	IsCanSceneLinkage int64  `gorm:"column:is_can_scene_linkage;type:smallint;default:1"`                 // 是否放到场景联动中
+	Affordance        string `gorm:"column:affordance;type:json;NOT NULL"`                                // 各类型的自定义功能定义
 }
 
 // 通用物模型表
