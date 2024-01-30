@@ -171,8 +171,8 @@ type HooksApiStreamNoneReaderReq struct {
 }
 
 type HooksApiStreamNoneReaderResp struct {
-	Close bool `json:"close"`
-	Code  bool `json:"code"`
+	Close bool  `json:"close"`
+	Code  int64 `json:"code"`
 }
 
 type HooksApiStreamNotFoundReq struct {
@@ -498,6 +498,18 @@ type IndexApiKickSessionsResp struct {
 }
 
 type IndexApiAddStreamKey struct {
+	Key string `json:"key"`
+}
+
+type IndexApiAddStreamProxy struct {
+	Vhost   string `json:"vhost"`
+	App     string `json:"app"`
+	Stream  string `json:"stream"`
+	Url     string `json:"url"`
+	RtpType int32  `json:"rtp_type"`
+}
+
+type IndexApiDelStreamProxy struct {
 	Key string `json:"key"`
 }
 

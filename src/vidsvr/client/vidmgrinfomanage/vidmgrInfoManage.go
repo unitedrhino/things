@@ -35,6 +35,7 @@ type (
 	VidmgrStream          = vid.VidmgrStream
 	VidmgrStreamCountReq  = vid.VidmgrStreamCountReq
 	VidmgrStreamCountResp = vid.VidmgrStreamCountResp
+	VidmgrStreamCreateReq = vid.VidmgrStreamCreateReq
 	VidmgrStreamDeleteReq = vid.VidmgrStreamDeleteReq
 	VidmgrStreamIndexReq  = vid.VidmgrStreamIndexReq
 	VidmgrStreamIndexResp = vid.VidmgrStreamIndexResp

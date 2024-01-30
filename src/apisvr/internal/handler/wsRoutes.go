@@ -36,6 +36,8 @@ import (
 	thingsrulealarmrecord "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/alarm/record"
 	thingsrulealarmscene "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/alarm/scene"
 	thingsrulesceneinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/scene/info"
+	thingsvidmgrctrl "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/ctrl"
+	thingsvidmgrgbsip "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/gbsip"
 	thingsvidmgrinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/info"
 	thingsvidmgrstream "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/stream"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -1113,5 +1115,103 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		ws.WithPrefix("/api/v1/things/vidmgr/stream"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/restart",
+					Handler: thingsvidmgrctrl.RestartHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/getsvr",
+					Handler: thingsvidmgrctrl.GetsvrHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/setsvr",
+					Handler: thingsvidmgrctrl.SetsvrHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/things/vidmgr/ctrl"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/createchn",
+					Handler: thingsvidmgrgbsip.CreatechnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/deletechn",
+					Handler: thingsvidmgrgbsip.DeletechnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/updatechn",
+					Handler: thingsvidmgrgbsip.UpdatechnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/indexchn",
+					Handler: thingsvidmgrgbsip.IndexchnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/readchn",
+					Handler: thingsvidmgrgbsip.ReadchnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/createdev",
+					Handler: thingsvidmgrgbsip.CreatedevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/deletedev",
+					Handler: thingsvidmgrgbsip.DeletedevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/playchn",
+					Handler: thingsvidmgrgbsip.PlaychnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/stopchn",
+					Handler: thingsvidmgrgbsip.StopchnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/updatedev",
+					Handler: thingsvidmgrgbsip.UpdatedevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/indexdev",
+					Handler: thingsvidmgrgbsip.IndexdevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/readdev",
+					Handler: thingsvidmgrgbsip.ReaddevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/readinfo",
+					Handler: thingsvidmgrgbsip.ReadinfoHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/things/vidmgr/gbsip"),
 	)
 }

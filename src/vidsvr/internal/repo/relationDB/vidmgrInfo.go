@@ -15,13 +15,13 @@ type VidmgrInfoRepo struct {
 
 type VidmgrFilter struct {
 	VidmgrType    int64
-	VidmgrName    string
 	VidmgrIDs     []string
-	VidmgrNames   []string
+	VidmgrID      string
+	VidmgrName    string
 	VidmgrIpV4    int64
 	VidmgrPort    int64
 	VidmgrSecret  string
-	MediasvrType  string
+	MediasvrType  int64
 	Tags          map[string]string
 	LastLoginTime struct {
 		Start int64
@@ -41,18 +41,26 @@ func NewVidmgrInfoRepo(in any) *VidmgrInfoRepo {
 
 func (p VidmgrInfoRepo) fmtFilter(ctx context.Context, f VidmgrFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	if f.VidmgrType != 0 {
-		db = db.Where("type=?", f.VidmgrType)
-	}
-	if f.VidmgrName != "" {
-		db = db.Where("name like ?", "%"+f.VidmgrName+"%")
-	}
 	if len(f.VidmgrIDs) != 0 {
 		db = db.Where("vidmgr_id in ?", f.VidmgrIDs)
 	}
-	if len(f.VidmgrNames) != 0 {
-		db = db.Where("name in ?", f.VidmgrNames)
+
+	if f.VidmgrID != "" {
+		db = db.Where("vidmgr_id = ?", f.VidmgrID)
 	}
+
+	if f.VidmgrName != "" {
+		db = db.Where("name = ?", f.VidmgrName)
+	}
+	if f.VidmgrType != 0 {
+		db = db.Where("type = ?", f.VidmgrType)
+	}
+
+	//查到为docker模式的 流服务
+	if f.MediasvrType != 0 {
+		db = db.Where("mediasvr_type = ?", f.MediasvrType)
+	}
+
 	/****************ip,port,secret为确定流服务的三要素*********************************/
 	if f.VidmgrIpV4 != 0 {
 		db = db.Where("ipv4 = ?", f.VidmgrIpV4)
@@ -72,6 +80,7 @@ func (p VidmgrInfoRepo) fmtFilter(ctx context.Context, f VidmgrFilter) *gorm.DB 
 	if f.LastLoginTime.End != 0 {
 		db = db.Where("last_login <= ?", utils.ToYYMMddHHSS(f.LastLoginTime.End*1000))
 	}
+
 	if f.Tags != nil {
 		for k, v := range f.Tags {
 			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
