@@ -9,6 +9,9 @@ import (
 	systemappmodule "github.com/i-Things/things/src/apisvr/internal/handler/system/app/module"
 	systemareainfo "github.com/i-Things/things/src/apisvr/internal/handler/system/area/info"
 	systemcommon "github.com/i-Things/things/src/apisvr/internal/handler/system/common"
+	systemdataarea "github.com/i-Things/things/src/apisvr/internal/handler/system/data/area"
+	systemdataareauserapply "github.com/i-Things/things/src/apisvr/internal/handler/system/data/area/user/apply"
+	systemdataproject "github.com/i-Things/things/src/apisvr/internal/handler/system/data/project"
 	systemlog "github.com/i-Things/things/src/apisvr/internal/handler/system/log"
 	systemmoduleapi "github.com/i-Things/things/src/apisvr/internal/handler/system/module/api"
 	systemmoduleinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/module/info"
@@ -25,13 +28,9 @@ import (
 	systemtenantappmodule "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/app/module"
 	systemtenantinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/tenant/info"
 	systemtimedtask "github.com/i-Things/things/src/apisvr/internal/handler/system/timed/task"
-	systemuserarea "github.com/i-Things/things/src/apisvr/internal/handler/system/user/area"
-	systemuserareaapply "github.com/i-Things/things/src/apisvr/internal/handler/system/user/area/apply"
 	systemuserinfo "github.com/i-Things/things/src/apisvr/internal/handler/system/user/info"
-	systemuserproject "github.com/i-Things/things/src/apisvr/internal/handler/system/user/project"
 	systemuserrole "github.com/i-Things/things/src/apisvr/internal/handler/system/user/role"
 	systemuserself "github.com/i-Things/things/src/apisvr/internal/handler/system/user/self"
-	systemuserselfdevicecollect "github.com/i-Things/things/src/apisvr/internal/handler/system/user/self/device/collect"
 	thingsdeviceauth "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth"
 	thingsdeviceauth5 "github.com/i-Things/things/src/apisvr/internal/handler/things/device/auth5"
 	thingsdevicegateway "github.com/i-Things/things/src/apisvr/internal/handler/things/device/gateway"
@@ -55,6 +54,7 @@ import (
 	thingsrulealarmscene "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/alarm/scene"
 	thingsrulesceneinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/scene/info"
 	thingsschemacommon "github.com/i-Things/things/src/apisvr/internal/handler/things/schema/common"
+	thingsuserdevicecollect "github.com/i-Things/things/src/apisvr/internal/handler/things/user/device/collect"
 	thingsvidmgrinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/info"
 	thingsvidmgrstream "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/stream"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -208,17 +208,17 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/project/multi-update",
-					Handler: systemuserproject.ProjectMultiUpdateHandler(serverCtx),
+					Path:    "/multi-update",
+					Handler: systemdataproject.ProjectMultiUpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/project/index",
-					Handler: systemuserproject.ProjectIndexHandler(serverCtx),
+					Path:    "/index",
+					Handler: systemdataproject.ProjectIndexHandler(serverCtx),
 				},
 			}...,
 		),
-		ws.WithPrefix("/api/v1/system/user/project"),
+		ws.WithPrefix("/api/v1/system/data/project"),
 	)
 
 	server.AddRoutes(
@@ -228,21 +228,21 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/multi-update",
-					Handler: systemuserarea.MultiUpdateHandler(serverCtx),
+					Handler: systemdataarea.MultiUpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/multi-delete",
-					Handler: systemuserarea.MultiDeleteHandler(serverCtx),
+					Handler: systemdataarea.MultiDeleteHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/index",
-					Handler: systemuserarea.IndexHandler(serverCtx),
+					Handler: systemdataarea.IndexHandler(serverCtx),
 				},
 			}...,
 		),
-		ws.WithPrefix("/api/v1/system/user/area"),
+		ws.WithPrefix("/api/v1/system/data/area"),
 	)
 
 	server.AddRoutes(
@@ -252,16 +252,16 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/deal",
-					Handler: systemuserareaapply.DealHandler(serverCtx),
+					Handler: systemdataareauserapply.DealHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/index",
-					Handler: systemuserareaapply.IndexHandler(serverCtx),
+					Handler: systemdataareauserapply.IndexHandler(serverCtx),
 				},
 			}...,
 		),
-		ws.WithPrefix("/api/v1/system/user/area/apply"),
+		ws.WithPrefix("/api/v1/system/data/area/user/apply"),
 	)
 
 	server.AddRoutes(
@@ -814,18 +814,8 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/area/index",
-					Handler: systemuserself.AreaIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
 					Path:    "/area/apply/create",
 					Handler: systemuserself.AreaApplyCreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/project/index",
-					Handler: systemuserself.ProjectIndexHandler(serverCtx),
 				},
 			}...,
 		),
@@ -856,30 +846,6 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		ws.WithPrefix("/api/v1/system/user/self"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/multi-create",
-					Handler: systemuserselfdevicecollect.MultiCreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/multi-delete",
-					Handler: systemuserselfdevicecollect.MultiDeleteHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: systemuserselfdevicecollect.IndexHandler(serverCtx),
-				},
-			}...,
-		),
-		ws.WithPrefix("/api/v1/system/user/self/device/collect"),
 	)
 
 	server.AddRoutes(
@@ -1653,5 +1619,29 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		ws.WithPrefix("/api/v1/things/ops/work-order"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: thingsuserdevicecollect.MultiCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-delete",
+					Handler: thingsuserdevicecollect.MultiDeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsuserdevicecollect.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/things/user/device/collect"),
 	)
 }

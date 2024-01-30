@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
@@ -39,7 +38,7 @@ func (g ProjectInfoRepo) Insert(ctx context.Context, data *SysProjectInfo) error
 }
 
 func (g ProjectInfoRepo) FindOneByFilter(ctx context.Context, f ProjectInfoFilter) (*SysProjectInfo, error) {
-	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
+	//ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
 	var result SysProjectInfo
 	db := g.fmtFilter(ctx, f)
 	err := db.First(&result).Error
@@ -49,7 +48,7 @@ func (g ProjectInfoRepo) FindOneByFilter(ctx context.Context, f ProjectInfoFilte
 	return &result, nil
 }
 func (p ProjectInfoRepo) FindByFilter(ctx context.Context, f ProjectInfoFilter, page *def.PageInfo) ([]*SysProjectInfo, error) {
-	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
+	//ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
 	var results []*SysProjectInfo
 	db := p.fmtFilter(ctx, f).Model(&SysProjectInfo{})
 	db = page.ToGorm(db)
@@ -61,33 +60,33 @@ func (p ProjectInfoRepo) FindByFilter(ctx context.Context, f ProjectInfoFilter, 
 }
 
 func (p ProjectInfoRepo) CountByFilter(ctx context.Context, f ProjectInfoFilter) (size int64, err error) {
-	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
+	//ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
 	db := p.fmtFilter(ctx, f).Model(&SysProjectInfo{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
 func (g ProjectInfoRepo) Update(ctx context.Context, data *SysProjectInfo) error {
-	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
+	//ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
 	err := g.db.WithContext(ctx).Where("project_id = ?", data.ProjectID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (g ProjectInfoRepo) DeleteByFilter(ctx context.Context, f ProjectInfoFilter) error {
-	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
+	//ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
 	db := g.fmtFilter(ctx, f)
 	err := db.Delete(&SysProjectInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (g ProjectInfoRepo) Delete(ctx context.Context, projectID int64) error {
-	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
+	//ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
 	err := g.db.WithContext(ctx).Where("project_id = ?", projectID).Delete(&SysProjectInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (g ProjectInfoRepo) FindOne(ctx context.Context, projectID int64) (*SysProjectInfo, error) {
-	ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
+	//ctxs.ClearMetaProjectID(ctx) //默认情况下只返回当前项目,需要清除当前项目
 	var result SysProjectInfo
 	err := g.db.WithContext(ctx).Where("project_id = ?", projectID).First(&result).Error
 	if err != nil {

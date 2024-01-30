@@ -1,0 +1,150 @@
+info(
+    title: "用户数据权限管理模块"
+    desc: "用户数据权限管理接口"
+    author: "大绵羊"
+    email: "robotyang123@163.com"
+    version: "v1"
+)
+
+import "common.api"  //公共结构体定义
+
+@server(
+    group : system/data/project
+    prefix: /api/v1/system/data/project
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "授权用户项目权限"
+    @handler projectMultiUpdate
+    post /multi-update (DataProjectMultiUpdateReq) returns ()
+
+    @doc "获取用户项目权限列表"
+    @handler projectIndex
+    post /index (DataProjectIndexReq) returns (DataProjectIndexResp)
+
+}
+
+@server(
+    group : system/data/area
+    prefix: /api/v1/system/data/area
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "授权用户区域权限"
+    @handler multiUpdate
+    post /multi-update (DataAreaMultiUpdateReq) returns ()
+
+    @doc "授权用户区域权限"
+    @handler multiDelete
+    post /multi-delete (DataAreaMultiDeleteReq) returns ()
+
+    @doc "获取用户区域权限列表"
+    @handler index
+    post /index (DataAreaIndexReq) returns (DataAreaIndexResp)
+}
+
+@server(
+    group : system/data/area/user/apply
+    prefix: /api/v1/system/data/area/user/apply
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "授权用户区域权限"
+    @handler deal
+    post /deal (UserAreaApplyDealReq) returns ()
+
+    @doc "获取用户区域权限列表"
+    @handler index
+    post /index (UserAreaApplyIndexReq) returns (UserAreaApplyIndexResp)
+}
+
+
+//用户级权限控制
+type (
+    DataProject struct {
+        ProjectID   int64 `json:"projectID,string"`     //权限数据ID
+        AuthType  int64 `json:"authType"`// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+    }
+    DataProjectMultiUpdateReq struct {
+        TargetID   int64 `json:"targetID,string"`    //用户ID
+        TargetType string `json:"targetType"`
+        Projects []*DataProject `json:"projects"` //权限数据IDs（必填）
+    }
+
+    DataProjectIndexReq struct {
+        Page *PageInfo `json:"page,optional"`        //进行数据分页（不传默认2000相当于全部）
+        UserID   int64   `json:"userID,string,optional"`    //用户ID（必填，雪花ID）
+        TargetID   int64 `json:"targetID,string,optional"`    //用户ID
+        TargetType string `json:"targetType,optional"`
+    }
+    DataProjectIndexResp struct {
+        Total int64           `json:"total"` //总数
+        List  []*DataProject `json:"list"`    //用户数据权限列表
+    }
+
+    DataAreaMultiDeleteReq{
+        ProjectID int64           `json:"projectID,string"` //项目id
+        TargetID   int64 `json:"targetID,string"`    //用户ID
+        TargetType string `json:"targetType"`
+        AreaIDs []int64         `json:"areaIDs,string"`
+    }
+    DataAreaMultiUpdateReq struct {
+        TargetID   int64 `json:"targetID,string"`    //用户ID
+        TargetType string `json:"targetType"`
+        ProjectID int64           `json:"projectID,string"` //项目id
+        Areas     []*DataArea `json:"areas"`          //权限数据IDs
+    }
+    DataArea struct {
+        AreaID int64 `json:"areaID,string"` //项目id
+        AuthType  int64 `json:"authType"`// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+    }
+
+    DataAreaIndexReq struct {
+        Page *PageInfo `json:"page,optional"`        //进行数据分页（不传默认2000相当于全部）
+        UserID   int64              `json:"userID,string,optional"`    //用户ID（必填，雪花ID）
+        TargetID   int64 `json:"targetID,string,optional"`    //用户ID
+        TargetType string `json:"targetType,optional"`
+        ProjectID int64           `json:"projectID,string,optional"` //项目id
+    }
+
+    DataAreaDetail struct {
+        *AreaInfo
+        AuthType  int64 `json:"authType"`// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+    }
+    DataAreaIndexResp struct {
+        Total int64           `json:"total"` //总数
+        List  []*DataAreaDetail `json:"list"`    //用户数据权限列表
+    }
+)
+
+
+//用户级权限控制
+type (
+    UserAreaApplyIndexReq {
+        Page *PageInfo `json:"page,optional"`        //进行数据分页（不传默认2000相当于全部）
+        AuthTypes []int64 `json:"authTypes,optional"` //权限类型 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+        WithAreaInfo bool `json:"withAreaInfo,optional"`//把区域信息附带上
+        WithUserInfo bool  `json:"withUserInfo,optional"`//把用户信息带上
+    }
+    UserAreaApplyIndexResp{
+        List []*UserAreaApplyInfo `json:"list"`
+        Total int64 `json:"total"`
+    }
+    UserAreaApplyInfo{
+        ID  int64 `json:"id"` //项目id
+        UserID   int64 `json:"userID,string"`    //用户ID
+        AreaID  int64 `json:"areaID,string"` //项目id
+        AuthType  int64 `json:"authType"`// 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+        CreatedTime  int64 `json:"createdTime"`
+        AreaInfo *AreaInfo `json:"areaInfo"`
+        UserInfo *UserInfo `json:"userInfo"`
+    }
+    UserAreaApplyDealReq{
+        IsApprove bool `json:"isApprove"` //是否同意
+        IDs     []int64 `json:"ids"`          //权限数据IDs
+    }
+
+)

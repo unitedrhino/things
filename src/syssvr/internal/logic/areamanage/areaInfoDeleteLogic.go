@@ -68,7 +68,7 @@ func (l *AreaInfoDeleteLogic) AreaInfoDelete(in *sys.AreaWithID) (*sys.Response,
 		if err != nil {
 			return errors.Fmt(err).WithMsg("删除区域及子区域出错")
 		}
-		err = relationDB.NewUserAreaRepo(tx).DeleteByFilter(l.ctx, relationDB.UserAreaFilter{AreaIDs: areaIDs})
+		err = relationDB.NewDataAreaRepo(tx).DeleteByFilter(l.ctx, relationDB.DataAreaFilter{AreaIDs: areaIDs})
 		if err != nil {
 			return err
 		}

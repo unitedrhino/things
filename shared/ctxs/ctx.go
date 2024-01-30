@@ -142,15 +142,15 @@ func GetMetaVal(ctx context.Context, field string) []string {
 	}
 }
 
-// 指定项目id（企业版功能）
-func SetMetaProjectID(ctx context.Context, projectID int64) {
-	mc := GetMetaCtx(ctx)
-	projectIDStr := utils.ToString(projectID)
-	mc[string(MetaFieldProjectID)] = []string{projectIDStr}
-}
-
-// 获取meta里的项目ID（企业版功能）
-func ClearMetaProjectID(ctx context.Context) {
-	mc := GetMetaCtx(ctx)
-	delete(mc, string(MetaFieldProjectID))
-}
+//// 指定项目id（企业版功能）
+//func SetMetaProjectID(ctx context.Context, projectID int64) {
+//	mc := GetMetaCtx(ctx)
+//	projectIDStr := utils.ToString(projectID)
+//	mc[string(MetaFieldProjectID)] = []string{projectIDStr}
+//}
+//
+//// 获取meta里的项目ID（企业版功能）
+//func ClearMetaProjectID(ctx context.Context) {
+//	mc := GetMetaCtx(ctx)
+//	delete(mc, string(MetaFieldProjectID))
+//}

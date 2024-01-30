@@ -54,7 +54,7 @@ func (l *ProjectInfoDeleteLogic) ProjectInfoDelete(in *sys.ProjectWithID) (*sys.
 		if err != nil {
 			return errors.Fmt(err).WithMsg("删除区域及子区域出错")
 		}
-		err = relationDB.NewUserAreaRepo(tx).DeleteByFilter(l.ctx, relationDB.UserAreaFilter{ProjectID: in.ProjectID})
+		err = relationDB.NewDataAreaRepo(tx).DeleteByFilter(l.ctx, relationDB.DataAreaFilter{ProjectID: in.ProjectID})
 		if err != nil {
 			return err
 		}

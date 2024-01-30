@@ -27,6 +27,7 @@ import (
 	app "github.com/i-Things/things/src/syssvr/client/appmanage"
 	"github.com/i-Things/things/src/syssvr/client/areamanage"
 	"github.com/i-Things/things/src/syssvr/client/common"
+	"github.com/i-Things/things/src/syssvr/client/datamanage"
 	"github.com/i-Things/things/src/syssvr/client/log"
 	module "github.com/i-Things/things/src/syssvr/client/modulemanage"
 	"github.com/i-Things/things/src/syssvr/client/projectmanage"
@@ -86,6 +87,7 @@ type SvrClient struct {
 	Common       common.Common
 
 	Rule           rule.Rule
+	DataM          datamanage.DataManage
 	Ops            ops.Ops
 	UserDevice     userdevice.UserDevice
 	Scene          scenelinkage.SceneLinkage
@@ -136,6 +138,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		tenantM        tenant.TenantManage
 		UserDevice     userdevice.UserDevice
 		Rule           rule.Rule
+		DataM          datamanage.DataManage
 	)
 	var ur user.UserManage
 	var ro role.RoleManage
@@ -201,6 +204,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			sysCommon = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
 			appRpc = app.NewAppManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			tenantM = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			DataM = datamanage.NewDataManage(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
 			projectM = sysdirect.NewProjectManage(c.SysRpc.RunProxy)
 			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
@@ -211,6 +215,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			sysCommon = sysdirect.NewCommon(c.SysRpc.RunProxy)
 			appRpc = sysdirect.NewApp(c.SysRpc.RunProxy)
 			tenantM = sysdirect.NewTenantManage(c.SysRpc.RunProxy)
+			DataM = sysdirect.NewData(c.SysRpc.RunProxy)
 		}
 	}
 
@@ -283,6 +288,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceM:   deviceM,
 			DeviceA:   deviceA,
 			DeviceG:   deviceG,
+			DataM:     DataM,
 
 			DeviceMsg:      deviceMsg,
 			DeviceInteract: deviceInteract,
