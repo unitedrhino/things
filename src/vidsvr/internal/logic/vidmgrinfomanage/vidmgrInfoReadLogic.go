@@ -3,6 +3,7 @@ package vidmgrinfomanagelogic
 import (
 	"context"
 	"fmt"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
@@ -37,5 +38,5 @@ func (l *VidmgrInfoReadLogic) VidmgrInfoRead(in *vid.VidmgrInfoReadReq) (*vid.Vi
 	if err != nil {
 		return nil, err
 	}
-	return ToVidmgrInfo(l.ctx, pi, l.svcCtx), nil
+	return common.ToVidmgrInfoRPC(pi), nil
 }

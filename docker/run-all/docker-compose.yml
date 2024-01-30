@@ -40,8 +40,8 @@ services:
     command: --jetstream  -m 8222 #启用jetstream
     ports:
       - "4222:4222"
-      - "6222:6222"#
-      - "8222:8222"#http监控端口
+      - "6222:6222" #
+      - "8222:8222" # http监控端口
     logging:
       options:
         max-size: "50M"
@@ -139,8 +139,35 @@ services:
 #      ithings_net:
 #        ipv4_address: 172.19.0.9
 
+# emqx:
+#   image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:emqx-4.4.17
+#   container_name: emqx
+#   hostname: emqx
+#   restart: always
+#   ports:
+#     - "1883:1883"
+#     - "8083:8083"
+#     - "8883:8883"
+#     - "8084:8084"
+#     - "18083:18083"
+#   volumes:
+#     - ../../deploy/conf/emqx/etc/plugins/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf
+#     - ../../deploy/conf/emqx/data/loaded_plugins:/opt/emqx/data/loaded_plugins
+#   environment:
+#     - "EMQX_NAME=emqx"
+#     - "EMQX_HOST=emqx"
+#   logging:
+#     options:
+#       max-size: "50M"
+#       max-file: "10"
+#     driver: json-file
+#   networks:
+#     ithings_net:
+#       ipv4_address: 172.19.0.7
+
+
   emqx:
-    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:emqx-4.4.17
+    image: emqx/emqx:5.4.0
     container_name: emqx
     hostname: emqx
     restart: always
@@ -151,11 +178,11 @@ services:
       - "8084:8084"
       - "18083:18083"
     volumes:
-      - ../../deploy/conf/emqx/etc/plugins/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf
-      - ../../deploy/conf/emqx/data/loaded_plugins:/opt/emqx/data/loaded_plugins
+      - /etc/localtime:/etc/localtime
+      - ../../deploy/conf/emqx5/etc:/opt/emqx/etc
     environment:
-      - "EMQX_NAME=emqx"
-      - "EMQX_HOST=emqx"
+      - EMQX_NAME=emqx
+      - EMQX_HOST=emqx
     logging:
       options:
         max-size: "50M"
@@ -164,6 +191,7 @@ services:
     networks:
       ithings_net:
         ipv4_address: 172.19.0.7
+
   minio:
     image: minio/minio:latest
     hostname: minio

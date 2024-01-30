@@ -35,6 +35,7 @@ type (
 	VidmgrStream          = vid.VidmgrStream
 	VidmgrStreamCountReq  = vid.VidmgrStreamCountReq
 	VidmgrStreamCountResp = vid.VidmgrStreamCountResp
+	VidmgrStreamCreateReq = vid.VidmgrStreamCreateReq
 	VidmgrStreamDeleteReq = vid.VidmgrStreamDeleteReq
 	VidmgrStreamIndexReq  = vid.VidmgrStreamIndexReq
 	VidmgrStreamIndexResp = vid.VidmgrStreamIndexResp
@@ -43,7 +44,7 @@ type (
 
 	VidmgrStreamManage interface {
 		// 流添加
-		VidmgrStreamCreate(ctx context.Context, in *VidmgrStream, opts ...grpc.CallOption) (*Response, error)
+		VidmgrStreamCreate(ctx context.Context, in *VidmgrStreamCreateReq, opts ...grpc.CallOption) (*Response, error)
 		// 流更新
 		VidmgrStreamUpdate(ctx context.Context, in *VidmgrStream, opts ...grpc.CallOption) (*Response, error)
 		// 删除流
@@ -80,13 +81,13 @@ func NewDirectVidmgrStreamManage(svcCtx *svc.ServiceContext, svr vid.VidmgrStrea
 }
 
 // 流添加
-func (m *defaultVidmgrStreamManage) VidmgrStreamCreate(ctx context.Context, in *VidmgrStream, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultVidmgrStreamManage) VidmgrStreamCreate(ctx context.Context, in *VidmgrStreamCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := vid.NewVidmgrStreamManageClient(m.cli.Conn())
 	return client.VidmgrStreamCreate(ctx, in, opts...)
 }
 
 // 流添加
-func (d *directVidmgrStreamManage) VidmgrStreamCreate(ctx context.Context, in *VidmgrStream, opts ...grpc.CallOption) (*Response, error) {
+func (d *directVidmgrStreamManage) VidmgrStreamCreate(ctx context.Context, in *VidmgrStreamCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.VidmgrStreamCreate(ctx, in)
 }
 
