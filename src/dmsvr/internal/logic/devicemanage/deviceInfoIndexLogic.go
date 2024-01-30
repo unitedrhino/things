@@ -35,7 +35,6 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		size int64
 		err  error
 	)
-
 	filter := relationDB.DeviceFilter{
 		ProductID:   in.ProductID,
 		AreaIDs:     in.AreaIDs,
@@ -60,11 +59,9 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	if err != nil {
 		return nil, err
 	}
-
 	info = make([]*dm.DeviceInfo, 0, len(di))
 	for _, v := range di {
 		info = append(info, ToDeviceInfo(v))
 	}
-
 	return &dm.DeviceInfoIndexResp{List: info, Total: size}, nil
 }

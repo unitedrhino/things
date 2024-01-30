@@ -84,7 +84,7 @@ func (g OtaFirmwareFileRepo) DeleteByFilter(ctx context.Context, f OtaFirmwareFi
 }
 
 func (g OtaFirmwareFileRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmOtaFirmwareFile{}).Error
+	err := g.db.WithContext(ctx).Where("`firmware_id` = ?", id).Delete(&DmOtaFirmwareFile{}).Error
 	return stores.ErrFmt(err)
 }
 func (g OtaFirmwareFileRepo) FindOne(ctx context.Context, id int64) (*DmOtaFirmwareFile, error) {
