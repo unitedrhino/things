@@ -13,9 +13,16 @@ import (
 
 var PreUrl string
 
+// 定时更新流服务状态时间
 const (
 	VIDMGRTIMEOUT = 30
 )
+
+// 默认使用的虚拟主机名
+const VHOSTNAME = "__defaultVhost__"
+
+// 流改变时最大通道缓冲为20条
+const STREAMCHANGESIZE = 20
 
 // 外部用
 type SvcZlmedia struct {
@@ -66,6 +73,19 @@ var (
 	DELSTREAMPUSHERPROXY = "delStreamPusherProxy"
 	VERSION              = "version"
 	GETMEDIAPLAYERLIST   = "getMediaPlayerList"
+)
+
+// 产生源类型，包括 unknown = 0,rtmp_push=1,rtsp_push=2,rtp_push=3,pull=4,ffmpeg_pull=5,mp4_vod=6,device_chn=7,rtc_push=8
+const (
+	UNKNOWN = iota
+	RTMP_PUSH
+	RTSP_PUSH
+	RTP_PUSH
+	PULL
+	FFMPEG_PULL
+	MP4_VOD
+	DEVICE_CHN
+	RTC_PUSH
 )
 
 // 内部用 ZLMediakit初始化数据结构

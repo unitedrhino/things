@@ -56,8 +56,10 @@ message VidmgrInfo{
   int64   mediasvrType = 11;  // 流服务部署类型:1,docker部署  2,独立主机
   int64   serverIP = 12; // 当流服务类型为独立主机时：这个填iThings外网的访问IP
   int64   serverPort = 13; // 当流服务类型为独立主机时：这个填iThings外网的访问端口
-  google.protobuf.StringValue   desc = 14;//描述
-  map<string, string> tags = 15; //产品标签
+  int64   rtpPort = 14;
+  bool    IsOpenSip = 15;
+  google.protobuf.StringValue   desc = 16;//描述
+  map<string, string> tags = 17; //产品标签
 }
 
 message VidmgrInfoActiveReq{
@@ -99,7 +101,7 @@ message VidmgrInfoCountResp{
 //视频流通道管理
 service VidmgrStreamManage{
   //流添加
-  rpc vidmgrStreamCreate(VidmgrStream) returns (Response);
+  rpc vidmgrStreamCreate(VidmgrStreamCreateReq) returns (Response);
   //流更新
   rpc vidmgrStreamUpdate(VidmgrStream) returns (Response);
   //删除流
@@ -110,6 +112,11 @@ service VidmgrStreamManage{
   rpc vidmgrStreamRead(VidmgrStreamReadReq) returns (VidmgrStream);
   //统计流 在线，离线，未激活
   rpc vidmgrStreamCount(VidmgrStreamCountReq) returns (VidmgrStreamCountResp);
+}
+
+message VidmgrStreamCreateReq{
+   VidmgrStream  streamInfo = 1;
+   int32 rtpType = 2;
 }
 
 message VidmgrStreamCountReq{
@@ -408,3 +415,4 @@ service VidmgrConfigManage{
   //获取配置信息详情
   rpc vidmgrConfigRead(VidmgrConfigReadReq)     returns (VidmgrConfig);
 }
+

@@ -1,9 +1,0 @@
-syntax = "v1"
-
-info(
-    title: "用于支持gp28181信令服务器"
-    desc: "type desc here"
-    author: "type author here"
-    email: "type email here"
-    version: "type version here"
-)

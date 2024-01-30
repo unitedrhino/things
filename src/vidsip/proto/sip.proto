@@ -1,0 +1,197 @@
+syntax = "proto3";
+option go_package="pb/sip";
+
+package sip;
+
+import "google/protobuf/wrappers.proto";
+
+message Response {
+}
+
+message PageInfo{
+  int64 page = 1;
+  int64 size = 2;
+  //排序信息
+  repeated OrderBy orders = 3;
+  message OrderBy {
+    //排序的字段名
+    string filed = 1;
+    //排序方式：0 aes, 1 desc
+    int64 sort = 2;
+  }
+}
+
+//gb28181管理
+service SipManage{
+  //新建通道
+  rpc SipChannelCreate(SipChnCreateReq)    returns (Response);
+  //删除通道
+  rpc SipChannelDelete(SipChnDeleteReq)     returns (Response);
+  //更新通道
+  rpc SipChannelUpdate(SipChnUpdateReq)     returns (Response);
+  //播放通道
+  rpc SipChannelPlay(SipChnPlayReq)     returns (Response);
+  //暂停通道
+  rpc SipChannelStop(SipChnStopReq)     returns (Response);
+  //获取通道列表
+  rpc SipChannelIndex(SipChnIndexReq)     returns (SipChnIndexResp);
+  //获取通道详情
+  rpc SipChannelRead(SipChnReadReq)     returns (SipChannel);
+
+  //新建GB28181设备
+  rpc SipDeviceCreate(SipDevCreateReq)    returns (Response);
+  //删除GB28181设备
+  rpc SipDeviceDelete(SipDevDeleteReq)     returns (Response);
+  //更新GB28181设备
+  rpc SipDeviceUpdate(SipDevUpdateReq)     returns (Response);
+  //获取GB28181设备列表
+  rpc SipDeviceIndex(SipDevIndexReq)     returns (SipDevIndexResp);
+  //获取GB28181设备详情
+  rpc SipDeviceRead(SipDevReadReq)     returns (SipDevice);
+
+  //获取国标服务信息
+  rpc SipInfoRead(SipInfoReadReq) returns(SipInfo);
+}
+
+message SipChannel{
+  string ChannelID = 1;
+  string DeviceID = 2;
+  string Memo = 3;
+  string Name = 4;
+  string Manufacturer = 5;
+  string Model = 6;
+  string Owner = 7;
+  string CivilCode = 8;
+  string Address = 9;
+  int32 Parental = 10;
+  int32 SafetyWay = 11;
+  int32 RegisterWay = 12;
+  int32 Secrecy =13;
+  string Status = 14;
+  string URIStr = 15;
+  string VF = 16;//编码格式
+  int32 Height = 17;
+  int32 Width = 18;
+  int32 FPS = 19;
+  string StreamType = 20;
+  string URL = 21;
+  int64 LastLogin = 22;
+  bool IsPlay = 23;
+}
+
+message SipInfo{
+  int64 ID = 1;
+  string Region = 2;
+  string CID = 3;
+  int32 CNUM = 4;
+  string DID = 5;
+  int32 DNUM = 6;
+  string LID = 7;
+  string VidmgrID = 8;
+  bool IsOpen = 9;
+  int64 MediaRtpIP =10;
+  int64 MediaRtpPort= 11;
+  string IP = 12;
+  int64 Port = 13;
+}
+
+message SipChnCreateReq{
+  string ChannelID =1;
+  string DeviceID = 2;//设备ID
+  string Memo = 3;
+  string StreamType = 4;
+  string Url = 5;
+}
+
+message SipChnUpdateReq{
+  string ChannelID = 1;
+  string Memo = 2;
+  string StreamType = 3;
+  string Url = 4;
+}
+
+message SipChnPlayReq{
+  string ChannelID = 1;
+  int32 Replay = 2;
+  int64 Start = 3;
+  int64 End = 4;
+}
+
+message SipChnStopReq{
+  string ChannelID=1;
+}
+
+message SipChnIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  repeated string   ChannelIDs = 2; //通道id
+}
+message SipChnIndexResp{
+  repeated SipChannel list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message SipChnDeleteReq{
+  string ChannelID = 1;
+}
+
+message SipChnReadReq{
+  string ChannelID = 1;
+}
+
+message SipDevCreateReq{
+  string DeviceID=1;
+  string PWD=2;
+  string Name=3;
+  string VidmgrID=4;
+  string MediaIP=5;
+  int64 MediaPort=6;
+}
+
+message SipDevUpdateReq{
+  string DeviceID=1;
+  string PWD=2;
+  string Name=3;
+  string VidmgrID=4;
+}
+
+message SipDevIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  repeated string   DeviceIDs = 2; //设备id
+}
+
+message SipDevIndexResp{
+  repeated SipDevice list = 1;//产品信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message SipDevice{
+  string DeviceID = 1;
+  string Name = 2;
+  string Region = 3;
+  string Host = 4;
+  string Port = 5;
+  string TransPort = 6;
+  string Proto = 7;
+  string Rport = 8;
+  string RAddr = 9;
+  string Manufacturer = 10;
+  string DeviceType = 11;
+  string Firmware = 12;
+  string Model = 13;
+  string URIStr = 14;
+  int64  LastLogin = 15;
+  bool Regist = 16;
+  string PWD = 17;
+  string Source = 18;
+}
+
+message SipDevReadReq{
+  string  DeviceID= 1;
+}
+message SipDevDeleteReq{
+  string  DeviceID = 1;
+}
+
+message SipInfoReadReq{
+  string VidmgrID = 1;//流服务ID
+}

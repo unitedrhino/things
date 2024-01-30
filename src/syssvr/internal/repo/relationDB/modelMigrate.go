@@ -117,11 +117,11 @@ var (
 		{ID: 74, ParentID: 70, Type: 1, Order: 1, Name: "任务详情", Path: "/systemManagers/timed/task/detail/:id", Component: "./systemManagers/timed/task/detail/index.tsx", Icon: "icon_system", Redirect: "", BackgroundUrl: "", HideInMenu: def.True},
 		//视频服务菜单项
 		{ID: 63, ParentID: 1, Type: 1, Order: 2, Name: "视频服务", Path: "/videoManagers", Component: "./videoManagers", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 64, ParentID: 63, Type: 1, Order: 1, Name: "流服务管理", Path: "/videoManagers/vidsrvmgr/index", Component: "./videoManagers/vidsrvmgr/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 65, ParentID: 63, Type: 1, Order: 3, Name: "视频流广场", Path: "/videoManagers/plaza/index", Component: "./videoManagers/plaza/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 66, ParentID: 63, Type: 1, Order: 2, Name: "视频流管理", Path: "/videoManagers/vidstream/index", Component: "./videoManagers/vidstream/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 67, ParentID: 63, Type: 1, Order: 4, Name: "视频回放", Path: "/videoManagers/playback/index", Component: "./videoManagers/playback/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
-		{ID: 68, ParentID: 63, Type: 1, Order: 2, Name: "录像计划", Path: "/videoManagers/recordplan/index", Component: "./videoManagers/recordplan/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 64, ParentID: 63, Type: 1, Order: 1, Name: "流服务", Path: "/videoManagers/vidsrvmgr/index", Component: "./videoManagers/vidsrvmgr/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 65, ParentID: 63, Type: 1, Order: 3, Name: "流广场", Path: "/videoManagers/streamplaza/index", Component: "./videoManagers/streamplaza/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		{ID: 66, ParentID: 63, Type: 1, Order: 2, Name: "流管理", Path: "/videoManagers/vidstream/index", Component: "./videoManagers/vidstream/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		//{ID: 67, ParentID: 63, Type: 1, Order: 4, Name: "视频回放", Path: "/videoManagers/playback/index", Component: "./videoManagers/playback/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
+		//{ID: 68, ParentID: 63, Type: 1, Order: 5, Name: "录像计划", Path: "/videoManagers/recordplan/index", Component: "./videoManagers/recordplan/index.tsx", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 2},
 		{ID: 69, ParentID: 63, Type: 1, Order: 1, Name: "流服务详细", Path: "/videoManagers/vidsrvmgr/detail/:id", Component: "./videoManagers/vidsrvmgr/detail/index", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
 		{ID: 75, ParentID: 63, Type: 1, Order: 1, Name: "视频流详细", Path: "/videoManagers/vidstream/detail/:id", Component: "./videoManagers/vidstream/detail/index", Icon: "icon_heat", Redirect: "", BackgroundUrl: "", HideInMenu: 1},
 	}
@@ -246,6 +246,24 @@ var (
 		{Route: "/api/v1/things/vidmgr/stream/index", Method: 2, Name: "获取视频流列表", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/stream/read", Method: 2, Name: "获取视频流详细", BusinessType: 1, Desc: "", Group: "视频服务"},
 		{Route: "/api/v1/things/vidmgr/stream/update", Method: 2, Name: "更新视频流", BusinessType: 1, Desc: "", Group: "视频服务"},
+		//流服务控制接口
+		{Route: "/api/v1/things/vidmgr/ctrl/getsvr", Method: 2, Name: "获取流服务信息", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/ctrl/setsvr", Method: 2, Name: "设备流服务", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/ctrl/restart", Method: 2, Name: "重启流服务", BusinessType: 1, Desc: "", Group: "视频服务"},
+		//gb28181控制接口
+		{Route: "/api/v1/things/vidmgr/gbsip/createchn", Method: 2, Name: "创建通道", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/createdev", Method: 2, Name: "创建设备", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/deletechn", Method: 2, Name: "删除通道", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/deletedev", Method: 2, Name: "删除设备", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/indexchn", Method: 2, Name: "获取通道列表", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/indexdev", Method: 2, Name: "获取设备列表", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/readchn", Method: 2, Name: "获取通道详细", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/readdev", Method: 2, Name: "获取设备详细", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/readinfo", Method: 2, Name: "获取国标服务详细", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/updatechn", Method: 2, Name: "更新通道信息", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/updatedev", Method: 2, Name: "更新设备信息", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/playchn", Method: 2, Name: "通道播放", BusinessType: 1, Desc: "", Group: "视频服务"},
+		{Route: "/api/v1/things/vidmgr/gbsip/stopchn", Method: 2, Name: "通道暂停播放", BusinessType: 1, Desc: "", Group: "视频服务"},
 	}
 	MigrateApiAuth = []SysApiAuth{
 		{PType: "p", V0: "1", V1: "/api/v1/system/timed/task/info/create", V2: "2", V3: "", V4: "", V5: ""},
@@ -367,5 +385,23 @@ var (
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/stream/index", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/stream/read", V2: "2", V3: "", V4: "", V5: ""},
 		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/stream/update", V2: "2", V3: "", V4: "", V5: ""},
+		//流服务控制接口
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/ctrl/getsvr", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/ctrl/setsvr", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/ctrl/restart", V2: "2", V3: "", V4: "", V5: ""},
+		//gb28181控制接口
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/createchn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/createdev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/deletechn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/deletedev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/indexchn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/indexdev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/readchn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/readdev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/readinfo", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/updatechn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/updatedev", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/playchn", V2: "2", V3: "", V4: "", V5: ""},
+		{PType: "p", V0: "1", V1: "/api/v1/things/vidmgr/gbsip/stopchn", V2: "2", V3: "", V4: "", V5: ""},
 	}
 )

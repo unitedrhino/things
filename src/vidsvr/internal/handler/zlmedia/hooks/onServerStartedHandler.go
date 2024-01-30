@@ -17,7 +17,6 @@ func OnServerStartedHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		//	result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 		//	return
 		//}
-
 		//httpx.Parse在解析XXXX.XXXX的json数据格式会出错，go-zero框架代码问题。
 		//采用如下代码
 		bodyByte, err := io.ReadAll(r.Body)

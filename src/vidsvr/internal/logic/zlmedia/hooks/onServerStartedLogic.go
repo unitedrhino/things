@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
 	"github.com/i-Things/things/src/vidsvr/internal/types"
@@ -38,12 +38,22 @@ func (l *OnServerStartedLogic) OnServerStarted(req *types.HooksApiServerStartedR
 		VidmgrIDs: []string{req.GeneralMediaServerId},
 	})
 
-	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.ManageVidmgr req=VidmgrInfoRead err=%v", utils.FuncName(), er)
-	}
-	if vidTmp.VidmgrID != "" {
-		//查到数据，更新服务状态为在线
+	if vidTmp != nil {
+		//流服务注册过，就将配置信息记录更新到数据库
+		//1 查表config配置表
+		confRepo := relationDB.NewVidmgrConfigRepo(l.ctx)
+		confRepo.FindOneByFilter(l.ctx, relationDB.VidmgrConfigFilter{
+			Secret: vidTmp.VidmgrSecret,
+		})
+		if err != nil {
+			l.Errorf("%s.Can find vidmgr config err=%v", utils.FuncName(), utils.Fmt(err))
+			confRepo.Insert(l.ctx, common.ToVidmgrConfigDB2(req))
+		} else {
+			//update
+			confRepo.Update(l.ctx, common.ToVidmgrConfigDB2(req))
+		}
+	} else {
+		l.Errorf("%s.rpc.ManageVidmgr req=VidmgrInfoRead err=%v", utils.FuncName(), err)
 	}
 
 	return &types.HooksApiResp{
