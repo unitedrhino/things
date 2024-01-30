@@ -8,6 +8,7 @@ info(
     version: "v1"
 )
 import "zlmedia/common.api" //zlemedia api
+//import "zlmedia/index.api"
 
 @server(
     group:zlmedia/hooks
@@ -243,7 +244,7 @@ type (
 
     HooksApiStreamNoneReaderResp struct {
         Close   bool `json:"close"`
-        Code    bool    `json:"code"`
+        Code    int64    `json:"code"`
     }
     
     HooksApiStreamNotFoundReq struct{

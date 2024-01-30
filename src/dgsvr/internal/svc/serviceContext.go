@@ -14,9 +14,7 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
-	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
-	"os"
 )
 
 type ServiceContext struct {
@@ -33,17 +31,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		productM productmanage.ProductManage
 		deviceM  devicemanage.DeviceManage
 	)
-	dl, err := pubDev.NewPubDev(c.DevLink)
-	if err != nil {
-		logx.Error("NewDevClient err", err)
-		os.Exit(-1)
-	}
+	/*
+	// move to startup.PostInit()
+		dl, err := pubDev.NewPubDev(c.DevLink)
+		if err != nil {
+			logx.Error("NewDevClient err", err)
+			os.Exit(-1)
+		}
 
-	il, err := pubInner.NewPubInner(c.Event)
-	if err != nil {
-		logx.Error("NewInnerDevPub err", err)
-		os.Exit(-1)
-	}
+		il, err := pubInner.NewPubInner(c.Event)
+		if err != nil {
+			logx.Error("NewInnerDevPub err", err)
+			os.Exit(-1)
+		}
+	*/
 	if c.DmRpc.Mode == conf.ClientModeGrpc {
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -67,8 +68,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	})
 	return &ServiceContext{
 		Config:   c,
-		PubDev:   dl,
-		PubInner: il,
+		// PubDev:   dl,
+		// PubInner: il,
 		ProductM: productM,
 		DeviceM:  deviceM,
 		Script:   scriptCache,

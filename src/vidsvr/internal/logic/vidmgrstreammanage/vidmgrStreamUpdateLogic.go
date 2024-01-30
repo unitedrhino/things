@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
 
@@ -41,7 +42,7 @@ func (l *VidmgrStreamUpdateLogic) VidmgrStreamUpdate(in *vid.VidmgrStream) (*vid
 		}
 		return nil, err
 	}
-	err = setPoByPb(po, in)
+	err = common.UpdateVidmgrStreamDB(po, in)
 	if err != nil {
 		return nil, err
 	}

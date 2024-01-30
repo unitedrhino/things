@@ -45,6 +45,7 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
+<<<<<<< HEAD
 #TimedJobRpc:
 #  Enable: true
 #  Mode: direct
@@ -68,6 +69,18 @@ DmRpc:
 #  Mode: direct
 #  Conf:
 #    Timeout: 1000000
+=======
+TimedJobRpc:
+  Enable: false
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+TimedSchedulerRpc:
+  Enable: false
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+>>>>>>> origin/test
 RuleRpc:
   Enable: false
   Mode: direct
@@ -83,8 +96,23 @@ OssConf:
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false
+<<<<<<< HEAD
 #VidRpc:
 #  Enable: true
 #  Mode: direct
 #  Conf:
 #    Timeout: 1000000
+=======
+
+VidRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+
+VidSip:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+>>>>>>> origin/test

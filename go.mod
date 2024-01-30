@@ -29,10 +29,12 @@ require (
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/mssola/user_agent v0.5.3
 	github.com/nats-io/nats.go v1.27.0
+	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.0.4
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/samber/lo v1.38.1
 	github.com/silenceper/wechat/v2 v2.1.5
+	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cast v1.5.0
 	github.com/stretchr/testify v1.8.4
 	github.com/suifengtec/gocoord v0.0.0-20210116135606-a0cd8c71c959
@@ -42,6 +44,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.14.0
 	go.uber.org/atomic v1.10.0
 	golang.org/x/exp v0.0.0-20220713135740-79cabaa25d75
+	golang.org/x/net v0.10.0
 	golang.org/x/sync v0.1.0
 	golang.org/x/text v0.11.0
 	google.golang.org/grpc v1.54.0
@@ -135,7 +138,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.7 // indirect
 	github.com/pilu/config v0.0.0-20131214182432-3eb99e6c0b9a // indirect
 	github.com/pilu/fresh v0.0.0-20190826141211-0fa698148017 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.15.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
@@ -145,7 +147,6 @@ require (
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rs/xid v1.2.1 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/tidwall/gjson v1.14.1 // indirect
@@ -172,7 +173,6 @@ require (
 	go.uber.org/zap v1.24.0 // indirect
 	golang.org/x/crypto v0.11.0 // indirect
 	golang.org/x/image v0.0.0-20220902085622-e7cb96979f69 // indirect
-	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/oauth2 v0.5.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/term v0.10.0 // indirect
