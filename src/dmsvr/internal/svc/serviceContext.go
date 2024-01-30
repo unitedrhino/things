@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubDev"
-	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/schemaDataRepo"
 	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
@@ -82,11 +81,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	bus := eventBus.NewEventBus()
 	stores.InitConn(c.Database)
-	err = relationDB.Migrate(c.Database)
-	if err != nil {
-		logx.Error("dmsvr 初始化数据库错误 err", err)
-		os.Exit(-1)
-	}
+	//err = relationDB.Migrate(c.Database)
+	//if err != nil {
+	//	logx.Error("dmsvr 初始化数据库错误 err", err)
+	//	os.Exit(-1)
+	//}
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {
 		logx.Error("NewPubDev err", err)

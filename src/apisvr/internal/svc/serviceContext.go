@@ -16,7 +16,11 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/src/dmsvr/client/devicemsg"
 	firmwaremanage "github.com/i-Things/things/src/dmsvr/client/firmwaremanage"
+	"github.com/i-Things/things/src/dmsvr/client/otafirmwaremanage"
+	"github.com/i-Things/things/src/dmsvr/client/otajobmanage"
+	"github.com/i-Things/things/src/dmsvr/client/otamodulemanage"
 	otataskmanage "github.com/i-Things/things/src/dmsvr/client/otataskmanage"
+	"github.com/i-Things/things/src/dmsvr/client/otaupgradetaskmanage"
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/client/protocolmanage"
 	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
@@ -98,8 +102,12 @@ type ServiceContext struct {
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
 	FirmwareM      firmwaremanage.FirmwareManage
+	OtaFirmwareM   otafirmwaremanage.OTAFirmwareManage
 	OtaTaskM       otataskmanage.OtaTaskManage
 	FileChan       chan int64
+	OtaJobM        otajobmanage.OTAJobManage
+	TaskM          otaupgradetaskmanage.OTAUpgradeTaskManage
+	OtaModuleM     otamodulemanage.OTAModuleManage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -125,7 +133,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		scene          scenelinkage.SceneLinkage
 		alarm          alarmcenter.AlarmCenter
 		firmwareM      firmwaremanage.FirmwareManage
+		otaFirmwareM   otafirmwaremanage.OTAFirmwareManage
 		otaTaskM       otataskmanage.OtaTaskManage
+		otaJobM        otajobmanage.OTAJobManage
+		taskM          otaupgradetaskmanage.OTAUpgradeTaskManage
+		otaModuleM     otamodulemanage.OTAModuleManage
 		timedSchedule  timedscheduler.Timedscheduler
 		timedJob       timedmanage.TimedManage
 	)
@@ -148,8 +160,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
 			firmwareM = firmwaremanage.NewFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			otaFirmwareM = otafirmwaremanage.NewOTAFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			otaTaskM = otataskmanage.NewOtaTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			protocolM = protocolmanage.NewProtocolManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			otaJobM = otajobmanage.NewOTAJobManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			taskM = otaupgradetaskmanage.NewOTAUpgradeTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			otaModuleM = otamodulemanage.NewOTAModuleManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else { //直连模式
 			deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
 			deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
@@ -158,8 +174,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
 			firmwareM = dmdirect.NewFirmwareManage(c.DmRpc.RunProxy)
+			otaFirmwareM = dmdirect.NewOTAFirmwareManage(c.DmRpc.RunProxy)
 			otaTaskM = dmdirect.NewOtaTaskManage(c.DmRpc.RunProxy)
 			protocolM = dmdirect.NewProtocolManage(c.DmRpc.RunProxy)
+			otaJobM = dmdirect.NewOTAJobManage(c.DmRpc.RunProxy)
+			otaModuleM = dmdirect.NewOTAModuleManage(c.DmRpc.RunProxy)
+			taskM = dmdirect.NewOTAUpgradeTaskManage(c.DmRpc.RunProxy)
 		}
 	}
 	if c.DgRpc.Enable {
@@ -255,7 +275,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Captcha:        captcha,
 		OssClient:      ossClient,
 		FirmwareM:      firmwareM,
+		OtaFirmwareM:   otaFirmwareM,
 		OtaTaskM:       otaTaskM,
+		OtaJobM:        otaJobM,
+		OtaModuleM:     otaModuleM,
+		TaskM:          taskM,
 		SvrClient: SvrClient{
 			UserRpc:        ur,
 			RoleRpc:        ro,

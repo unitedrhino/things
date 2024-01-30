@@ -24,6 +24,10 @@ import (
 	thingsgroupdevice "github.com/i-Things/things/src/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/group/info"
 	thingsotafirmware "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/firmware"
+	thingsotajob "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/job"
+	thingsotamodule "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/module"
+	thingsotaotaFirmware "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/otaFirmware"
+	thingsotaotaTask "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/otaTask"
 	thingsotatask "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/task"
 	thingsproductcustom "github.com/i-Things/things/src/apisvr/internal/handler/things/product/custom"
 	thingsproductinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/product/info"
@@ -975,11 +979,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/delete",
-				Handler: thingsotafirmware.DeleteHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
 				Path:    "/device-info-read",
 				Handler: thingsotafirmware.DeviceInfoReadHandler(serverCtx),
 			},
@@ -1031,6 +1030,145 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/api/v1/things/ota/task"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/create",
+				Handler: thingsotaotaFirmware.CreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/update",
+				Handler: thingsotaotaFirmware.UpdateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/delete",
+				Handler: thingsotaotaFirmware.DelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/index",
+				Handler: thingsotaotaFirmware.IndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/read",
+				Handler: thingsotaotaFirmware.ReadHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/otaFirmware"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/jobIndex",
+				Handler: thingsotaotaTask.JobIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/jobCancel",
+				Handler: thingsotaotaTask.JobCancelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/deviceCancel",
+				Handler: thingsotaotaTask.DeviceCancelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/confirm",
+				Handler: thingsotaotaTask.ConfirmHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/unfinishedIndex",
+				Handler: thingsotaotaTask.UnfinishedIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/upgrade",
+				Handler: thingsotaotaTask.UpgradeHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/otaTask"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/verify",
+				Handler: thingsotajob.VerifyHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/staticCreate",
+				Handler: thingsotajob.StaticCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/dynamicCreate",
+				Handler: thingsotajob.DynamicCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/firmwareIndex",
+				Handler: thingsotajob.FirmwareIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/deviceIndex",
+				Handler: thingsotajob.DeviceIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/read",
+				Handler: thingsotajob.ReadHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/cancel",
+				Handler: thingsotajob.CancelHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/job"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/create",
+				Handler: thingsotamodule.CreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/update",
+				Handler: thingsotamodule.UpdateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/delete",
+				Handler: thingsotamodule.DelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/index",
+				Handler: thingsotamodule.IndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/versionIndex",
+				Handler: thingsotamodule.VersionIndexHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/module"),
 	)
 
 	server.AddRoutes(

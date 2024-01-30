@@ -23,9 +23,9 @@ func ToFirmwareInfo(di *relationDB.DmOtaFirmware, df ...*relationDB.DmOtaFirmwar
 		IsDiff:      int32(di.IsDiff),
 		CreatedTime: di.CreatedTime.Unix(),
 		Desc:        &wrapperspb.StringValue{Value: di.Desc},
-		ExtData:     &wrapperspb.StringValue{Value: di.Extra.String},
-		Files:       dd,
-		SignMethod:  di.SignMethod,
+		//ExtData:     &wrapperspb.StringValue{Value: di.Extra.String},
+		Files:      dd,
+		SignMethod: di.SignMethod,
 	}
 }
 func ToFirmwareRespInfo(di *relationDB.DmOtaFirmware, df ...*relationDB.DmOtaFirmwareFile) *dm.FirmwareInfoReadResp {
@@ -51,9 +51,9 @@ func ToFirmwareRespInfo(di *relationDB.DmOtaFirmware, df ...*relationDB.DmOtaFir
 		CreatedTime: di.CreatedTime.Unix(),
 		IsDiff:      int32(di.IsDiff),
 		Desc:        &wrapperspb.StringValue{Value: di.Desc},
-		ExtData:     &wrapperspb.StringValue{Value: di.Extra.String},
-		SignMethod:  di.SignMethod,
-		Files:       dd,
+		//ExtData:     &wrapperspb.StringValue{Value: di.Extra.String},
+		SignMethod: di.SignMethod,
+		Files:      dd,
 	}
 }
 func ToFirmwareFileResp(df *relationDB.DmOtaFirmwareFile) *dm.OtaFirmwareFileInfo {
