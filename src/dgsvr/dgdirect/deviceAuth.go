@@ -14,6 +14,6 @@ func NewDeviceAuth(runSvr bool) client.DeviceAuth {
 	if runSvr {
 		RunServer(svcCtx)
 	}
-	dmSvr := client.NewDirectDeviceAuth(svcCtx, server.NewDeviceAuthServer(svcCtx))
-	return dmSvr
+	dgSvr := client.NewDirectDeviceAuth(svcCtx, server.NewDeviceAuthServer(svcCtx))
+	return dgSvr
 }

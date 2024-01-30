@@ -33,19 +33,7 @@ func NewMqttClient(conf *conf.MqttConf) (mcs *MqttClient, err error) {
 	mqttInitOnce.Do(func() {
 		var clients []mqtt.Client
 		for len(clients) < conf.ConnNum {
-			var (
-				mc mqtt.Client
-			)
-			var tryTime = 5
-			for i := tryTime; i > 0; i-- {
-				mc, err = initMqtt(conf)
-				if err != nil { //出现并发情况的时候可能iThings的http还没启动完毕
-					logx.Errorf("mqtt 连接失败 重试剩余次数:%v", i-1)
-					time.Sleep(time.Second * time.Duration(tryTime) / time.Duration(i))
-					continue
-				}
-				break
-			}
+			mc, err := initMqtt(conf)
 			if err != nil {
 				logx.Errorf("mqtt 连接失败 conf:%#v  err:%v", conf, err)
 				os.Exit(-1)
@@ -92,14 +80,17 @@ func initMqtt(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 		err = er
 		return
 	}
-	opts.SetClientID(conf.ClientID + "/" + uuid).SetUsername(conf.User).
-		SetPassword(conf.Pass).SetAutoReconnect(true).SetConnectRetry(true)
+	opts.SetClientID(conf.ClientID + "/" + uuid).SetUsername(conf.User).SetPassword(conf.Pass)
 	opts.SetOnConnectHandler(func(client mqtt.Client) {
 		logx.Info("mqtt client Connected")
 		if mqttSetOnConnectHandler != nil {
 			mqttSetOnConnectHandler(client)
 		}
 	})
+
+	opts.SetAutoReconnect(true).SetMaxReconnectInterval(5 * time.Second) //意外离线的重连参数
+	opts.SetConnectRetry(true).SetConnectRetryInterval(1 * time.Second)  //首次连接的重连参数
+
 	opts.SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
 		logx.Infof("mqtt 正在尝试连接 broker:%v", utils.Fmt(broker))
 		return tlsCfg
