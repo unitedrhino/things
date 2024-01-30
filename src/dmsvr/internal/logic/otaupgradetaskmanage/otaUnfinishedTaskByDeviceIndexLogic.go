@@ -35,8 +35,8 @@ func (l *OtaUnfinishedTaskByDeviceIndexLogic) OtaUnfinishedTaskByDeviceIndex(in 
 	filter := relationDB.OtaUpgradeTaskFilter{
 		ProductId:      in.ProductId,
 		TaskStatusList: taskStatusList,
-		ModuleName:     in.ModuleName,
-		DeviceName:     in.DeviceName,
+		//ModuleName:     in.ModuleName,
+		DeviceName: in.DeviceName,
 	}
 	var otaUpTaskInfo []*dm.OtaUpTaskInfo
 	otaTask, err := l.OtDB.FindByFilter(l.ctx, filter, nil)
