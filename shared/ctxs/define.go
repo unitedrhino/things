@@ -1,5 +1,7 @@
 package ctxs
 
+import "strings"
+
 const (
 	UserInfoKey     string = "iThings-user"
 	UserTokenKey    string = "iThings-token"
@@ -13,3 +15,9 @@ type MetaField string
 const (
 	MetaFieldProjectID MetaField = "Ithings-Project-Id" //meta里的项目权限控制ID字段（企业版功能）
 )
+
+var HttpAllowHeader string
+
+func init() {
+	HttpAllowHeader = "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With," + strings.Join(ContextKeys, ",")
+}

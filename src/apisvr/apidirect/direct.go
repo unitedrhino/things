@@ -2,6 +2,7 @@ package apidirect
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/utils"
 	ws "github.com/i-Things/things/shared/websocket"
 	"github.com/i-Things/things/src/apisvr/internal/config"
@@ -15,6 +16,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -42,7 +44,9 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 	ctx := svc.NewServiceContext(c)
 	apiCtx.SvcCtx = ctx
 	if server == nil {
-		server = rest.MustNewServer(c.RestConf, rest.WithCors("*"),
+		server = rest.MustNewServer(c.RestConf, rest.WithCustomCors(func(header http.Header) {
+			header.Set("Access-Control-Allow-Headers", ctxs.HttpAllowHeader)
+		}, nil, "*"),
 			rest.WithNotFoundHandler(proxy.Handler(ctx)),
 		)
 		apiCtx.Server = server
