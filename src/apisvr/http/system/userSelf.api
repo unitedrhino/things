@@ -34,17 +34,10 @@ service api {
 	@handler changePwd
 	post /change-pwd (UserChangePwdReq) returns ()
 
-	@doc "获取用户区域列表"
-	@handler areaIndex
-	post /area/index () returns (AreaInfoIndexResp)
-
 	@doc "申请用户区域权限"
 	@handler areaApplyCreate
 	post /area/apply/create (UserAreaApplyCreateReq) returns ()
 
-	@doc "获取用户项目列表"
-	@handler projectIndex
-	post /project/index () returns (ProjectInfoIndexResp)
 }
 
 @server (

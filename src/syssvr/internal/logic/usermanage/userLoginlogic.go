@@ -88,8 +88,8 @@ func (l *LoginLogic) getRet(ui *relationDB.SysUserInfo, list []*conf.LoginSafeCt
 	//登录成功，清除密码错误次数相关redis key
 	l.svcCtx.PwdCheck.ClearWrongpassKeys(l.ctx, list)
 
-	InitCacheUserAuthProject(l.ctx, ui.UserID)
-	InitCacheUserAuthArea(l.ctx, ui.UserID)
+	//InitCacheUserAuthProject(l.ctx, ui.UserID)
+	//InitCacheUserAuthArea(l.ctx, ui.UserID)
 
 	resp := &sys.UserLoginResp{
 		Info: UserInfoToPb(l.ctx, ui, l.svcCtx),

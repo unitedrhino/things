@@ -270,23 +270,64 @@ type DeviceCore struct {
 	DeviceName string `json:"deviceName"` //设备名称
 }
 
-type UserProject struct {
+type DataProject struct {
 	ProjectID int64 `json:"projectID,string"` //权限数据ID
+	AuthType  int64 `json:"authType"`         // 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
 }
 
-type UserProjectMultiUpdateReq struct {
-	UserID   int64          `json:"userID,string"` //用户ID（必填，雪花ID）
-	Projects []*UserProject `json:"projects"`      //权限数据IDs（必填）
+type DataProjectMultiUpdateReq struct {
+	TargetID   int64          `json:"targetID,string"` //用户ID
+	TargetType string         `json:"targetType"`
+	Projects   []*DataProject `json:"projects"` //权限数据IDs（必填）
 }
 
-type UserProjectIndexReq struct {
-	Page   *PageInfo `json:"page,optional"` //进行数据分页（不传默认2000相当于全部）
-	UserID int64     `json:"userID,string"` //用户ID（必填，雪花ID）
+type DataProjectIndexReq struct {
+	Page       *PageInfo `json:"page,optional"`            //进行数据分页（不传默认2000相当于全部）
+	UserID     int64     `json:"userID,string,optional"`   //用户ID（必填，雪花ID）
+	TargetID   int64     `json:"targetID,string,optional"` //用户ID
+	TargetType string    `json:"targetType,optional"`
 }
 
-type UserProjectIndexResp struct {
+type DataProjectIndexResp struct {
 	Total int64          `json:"total"` //总数
-	List  []*UserProject `json:"list"`  //用户数据权限列表
+	List  []*DataProject `json:"list"`  //用户数据权限列表
+}
+
+type DataAreaMultiDeleteReq struct {
+	ProjectID  int64   `json:"projectID,string"` //项目id
+	TargetID   int64   `json:"targetID,string"`  //用户ID
+	TargetType string  `json:"targetType"`
+	AreaIDs    []int64 `json:"areaIDs,string"`
+}
+
+type DataAreaMultiUpdateReq struct {
+	TargetID   int64       `json:"targetID,string"` //用户ID
+	TargetType string      `json:"targetType"`
+	ProjectID  int64       `json:"projectID,string"` //项目id
+	Areas      []*DataArea `json:"areas"`            //权限数据IDs
+}
+
+type DataArea struct {
+	AreaID   int64 `json:"areaID,string"` //项目id
+	AuthType int64 `json:"authType"`      // 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+}
+
+type DataAreaIndexReq struct {
+	Page       *PageInfo `json:"page,optional"`            //进行数据分页（不传默认2000相当于全部）
+	UserID     int64     `json:"userID,string,optional"`   //用户ID（必填，雪花ID）
+	TargetID   int64     `json:"targetID,string,optional"` //用户ID
+	TargetType string    `json:"targetType,optional"`
+	ProjectID  int64     `json:"projectID,string,optional"` //项目id
+}
+
+type DataAreaDetail struct {
+	*AreaInfo
+	AuthType int64 `json:"authType"` // 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
+}
+
+type DataAreaIndexResp struct {
+	Total int64             `json:"total"` //总数
+	List  []*DataAreaDetail `json:"list"`  //用户数据权限列表
 }
 
 type UserAreaApplyIndexReq struct {
@@ -314,38 +355,6 @@ type UserAreaApplyInfo struct {
 type UserAreaApplyDealReq struct {
 	IsApprove bool    `json:"isApprove"` //是否同意
 	IDs       []int64 `json:"ids"`       //权限数据IDs
-}
-
-type UserAreaMultiDeleteReq struct {
-	UserID  int64   `json:"userID,string"` //用户ID（必填，雪花ID）
-	AreaIDs []int64 `json:"areaIDs,string"`
-}
-
-type UserAreaMultiUpdateReq struct {
-	UserID    int64       `json:"userID,string"`    //用户ID（必填，雪花ID）
-	ProjectID int64       `json:"projectID,string"` //项目id
-	Areas     []*UserArea `json:"areas"`            //权限数据IDs
-}
-
-type UserArea struct {
-	AreaID   int64 `json:"areaID,string"` //项目id
-	AuthType int64 `json:"authType"`      // 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
-}
-
-type UserAreaIndexReq struct {
-	Page      *PageInfo `json:"page,optional"`             //进行数据分页（不传默认2000相当于全部）
-	UserID    int64     `json:"userID,string"`             //用户ID（必填，雪花ID）
-	ProjectID int64     `json:"projectID,string,optional"` //项目id
-}
-
-type UserAreaDetail struct {
-	*AreaInfo
-	AuthType int64 `json:"authType"` // 1:读权限,只能读,不能写 4:管理权限,可以修改别人的权限
-}
-
-type UserAreaIndexResp struct {
-	Total int64             `json:"total"` //总数
-	List  []*UserAreaDetail `json:"list"`  //用户数据权限列表
 }
 
 type UserRoleIndexReq struct {
@@ -894,14 +903,6 @@ type UserForgetPwdReq struct {
 	Code     string `json:"code,optional"`            //验证码    微信登录填code 账号密码登录时填写密码
 	CodeID   string `json:"codeID,optional"`          //验证码编号 微信登录填state
 	Password string `json:"password"`                 //密码
-}
-
-type UserCollectDeviceSave struct {
-	Devices []*DeviceCore `json:"devices"`
-}
-
-type UserCollectDeviceInfo struct {
-	Devices []*DeviceInfo `json:"devices"`
 }
 
 type ProductInfo struct {
@@ -2128,4 +2129,12 @@ type OpsWorkOrderIndexReq struct {
 type OpsWorkOrderIndexResp struct {
 	Total int64           `json:"total"` //总数
 	List  []*OpsWorkOrder `json:"list"`  //菜单列表
+}
+
+type UserCollectDeviceSave struct {
+	Devices []*DeviceCore `json:"devices"`
+}
+
+type UserCollectDeviceInfo struct {
+	Devices []*DeviceInfo `json:"devices"`
 }

@@ -3,7 +3,6 @@ package relationDB
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/ctxs"
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
@@ -56,7 +55,7 @@ func (p AreaInfoRepo) fmtFilter(ctx context.Context, f AreaInfoFilter) *gorm.DB 
 	db = p.With(db, f.AreaInfoWith)
 	if f.ProjectID != 0 {
 		db = db.Where("project_id = ?", f.ProjectID)
-		ctxs.SetMetaProjectID(ctx, f.ProjectID) //指定项目id的时候需要清除项目id
+		//ctxs.SetMetaProjectID(ctx, f.ProjectID) //指定项目id的时候需要清除项目id
 	}
 	if f.ParentAreaID != 0 {
 		db = db.Where("parent_area_id = ?", f.ParentAreaID)

@@ -87,42 +87,7 @@ func (s *UserManageServer) UserRoleMultiUpdate(ctx context.Context, in *sys.User
 	return l.UserRoleMultiUpdate(in)
 }
 
-func (s *UserManageServer) UserProjectMultiUpdate(ctx context.Context, in *sys.UserProjectMultiUpdateReq) (*sys.Response, error) {
-	l := usermanagelogic.NewUserProjectMultiUpdateLogic(ctx, s.svcCtx)
-	return l.UserProjectMultiUpdate(in)
-}
-
-func (s *UserManageServer) UserProjectIndex(ctx context.Context, in *sys.UserProjectIndexReq) (*sys.UserProjectIndexResp, error) {
-	l := usermanagelogic.NewUserProjectIndexLogic(ctx, s.svcCtx)
-	return l.UserProjectIndex(in)
-}
-
-func (s *UserManageServer) UserAreaMultiUpdate(ctx context.Context, in *sys.UserAreaMultiUpdateReq) (*sys.Response, error) {
-	l := usermanagelogic.NewUserAreaMultiUpdateLogic(ctx, s.svcCtx)
-	return l.UserAreaMultiUpdate(in)
-}
-
-func (s *UserManageServer) UserAreaIndex(ctx context.Context, in *sys.UserAreaIndexReq) (*sys.UserAreaIndexResp, error) {
-	l := usermanagelogic.NewUserAreaIndexLogic(ctx, s.svcCtx)
-	return l.UserAreaIndex(in)
-}
-
-func (s *UserManageServer) UserAreaMultiDelete(ctx context.Context, in *sys.UserAreaMultiDeleteReq) (*sys.Response, error) {
-	l := usermanagelogic.NewUserAreaMultiDeleteLogic(ctx, s.svcCtx)
-	return l.UserAreaMultiDelete(in)
-}
-
 func (s *UserManageServer) UserAreaApplyCreate(ctx context.Context, in *sys.UserAreaApplyCreateReq) (*sys.Response, error) {
 	l := usermanagelogic.NewUserAreaApplyCreateLogic(ctx, s.svcCtx)
 	return l.UserAreaApplyCreate(in)
-}
-
-func (s *UserManageServer) UserAreaApplyIndex(ctx context.Context, in *sys.UserAreaApplyIndexReq) (*sys.UserAreaApplyIndexResp, error) {
-	l := usermanagelogic.NewUserAreaApplyIndexLogic(ctx, s.svcCtx)
-	return l.UserAreaApplyIndex(in)
-}
-
-func (s *UserManageServer) UserAreaApplyDeal(ctx context.Context, in *sys.UserAreaApplyDealReq) (*sys.Response, error) {
-	l := usermanagelogic.NewUserAreaApplyDealLogic(ctx, s.svcCtx)
-	return l.UserAreaApplyDeal(in)
 }

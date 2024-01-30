@@ -31,6 +31,15 @@ type (
 	AreaWithID                = sys.AreaWithID
 	AuthApiInfo               = sys.AuthApiInfo
 	ConfigResp                = sys.ConfigResp
+	DataArea                  = sys.DataArea
+	DataAreaIndexReq          = sys.DataAreaIndexReq
+	DataAreaIndexResp         = sys.DataAreaIndexResp
+	DataAreaMultiDeleteReq    = sys.DataAreaMultiDeleteReq
+	DataAreaMultiUpdateReq    = sys.DataAreaMultiUpdateReq
+	DataProject               = sys.DataProject
+	DataProjectIndexReq       = sys.DataProjectIndexReq
+	DataProjectIndexResp      = sys.DataProjectIndexResp
+	DataProjectMultiUpdateReq = sys.DataProjectMultiUpdateReq
 	DateRange                 = sys.DateRange
 	JwtToken                  = sys.JwtToken
 	LoginLogCreateReq         = sys.LoginLogCreateReq
@@ -93,16 +102,11 @@ type (
 	TenantModuleIndexReq      = sys.TenantModuleIndexReq
 	TenantModuleIndexResp     = sys.TenantModuleIndexResp
 	TenantModuleWithIDOrCode  = sys.TenantModuleWithIDOrCode
-	UserArea                  = sys.UserArea
 	UserAreaApplyCreateReq    = sys.UserAreaApplyCreateReq
 	UserAreaApplyDealReq      = sys.UserAreaApplyDealReq
 	UserAreaApplyIndexReq     = sys.UserAreaApplyIndexReq
 	UserAreaApplyIndexResp    = sys.UserAreaApplyIndexResp
 	UserAreaApplyInfo         = sys.UserAreaApplyInfo
-	UserAreaIndexReq          = sys.UserAreaIndexReq
-	UserAreaIndexResp         = sys.UserAreaIndexResp
-	UserAreaMultiDeleteReq    = sys.UserAreaMultiDeleteReq
-	UserAreaMultiUpdateReq    = sys.UserAreaMultiUpdateReq
 	UserCaptchaReq            = sys.UserCaptchaReq
 	UserCaptchaResp           = sys.UserCaptchaResp
 	UserChangePwdReq          = sys.UserChangePwdReq
@@ -118,10 +122,6 @@ type (
 	UserInfoReadReq           = sys.UserInfoReadReq
 	UserLoginReq              = sys.UserLoginReq
 	UserLoginResp             = sys.UserLoginResp
-	UserProject               = sys.UserProject
-	UserProjectIndexReq       = sys.UserProjectIndexReq
-	UserProjectIndexResp      = sys.UserProjectIndexResp
-	UserProjectMultiUpdateReq = sys.UserProjectMultiUpdateReq
 	UserRegisterReq           = sys.UserRegisterReq
 	UserRegisterResp          = sys.UserRegisterResp
 	UserRoleIndexReq          = sys.UserRoleIndexReq
@@ -145,14 +145,7 @@ type (
 		UserChangePwd(ctx context.Context, in *UserChangePwdReq, opts ...grpc.CallOption) (*Response, error)
 		UserRoleIndex(ctx context.Context, in *UserRoleIndexReq, opts ...grpc.CallOption) (*UserRoleIndexResp, error)
 		UserRoleMultiUpdate(ctx context.Context, in *UserRoleMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
-		UserProjectMultiUpdate(ctx context.Context, in *UserProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
-		UserProjectIndex(ctx context.Context, in *UserProjectIndexReq, opts ...grpc.CallOption) (*UserProjectIndexResp, error)
-		UserAreaMultiUpdate(ctx context.Context, in *UserAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
-		UserAreaIndex(ctx context.Context, in *UserAreaIndexReq, opts ...grpc.CallOption) (*UserAreaIndexResp, error)
-		UserAreaMultiDelete(ctx context.Context, in *UserAreaMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
 		UserAreaApplyCreate(ctx context.Context, in *UserAreaApplyCreateReq, opts ...grpc.CallOption) (*Response, error)
-		UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error)
-		UserAreaApplyDeal(ctx context.Context, in *UserAreaApplyDealReq, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultUserManage struct {
@@ -295,51 +288,6 @@ func (d *directUserManage) UserRoleMultiUpdate(ctx context.Context, in *UserRole
 	return d.svr.UserRoleMultiUpdate(ctx, in)
 }
 
-func (m *defaultUserManage) UserProjectMultiUpdate(ctx context.Context, in *UserProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserProjectMultiUpdate(ctx, in, opts...)
-}
-
-func (d *directUserManage) UserProjectMultiUpdate(ctx context.Context, in *UserProjectMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.UserProjectMultiUpdate(ctx, in)
-}
-
-func (m *defaultUserManage) UserProjectIndex(ctx context.Context, in *UserProjectIndexReq, opts ...grpc.CallOption) (*UserProjectIndexResp, error) {
-	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserProjectIndex(ctx, in, opts...)
-}
-
-func (d *directUserManage) UserProjectIndex(ctx context.Context, in *UserProjectIndexReq, opts ...grpc.CallOption) (*UserProjectIndexResp, error) {
-	return d.svr.UserProjectIndex(ctx, in)
-}
-
-func (m *defaultUserManage) UserAreaMultiUpdate(ctx context.Context, in *UserAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserAreaMultiUpdate(ctx, in, opts...)
-}
-
-func (d *directUserManage) UserAreaMultiUpdate(ctx context.Context, in *UserAreaMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.UserAreaMultiUpdate(ctx, in)
-}
-
-func (m *defaultUserManage) UserAreaIndex(ctx context.Context, in *UserAreaIndexReq, opts ...grpc.CallOption) (*UserAreaIndexResp, error) {
-	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserAreaIndex(ctx, in, opts...)
-}
-
-func (d *directUserManage) UserAreaIndex(ctx context.Context, in *UserAreaIndexReq, opts ...grpc.CallOption) (*UserAreaIndexResp, error) {
-	return d.svr.UserAreaIndex(ctx, in)
-}
-
-func (m *defaultUserManage) UserAreaMultiDelete(ctx context.Context, in *UserAreaMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserAreaMultiDelete(ctx, in, opts...)
-}
-
-func (d *directUserManage) UserAreaMultiDelete(ctx context.Context, in *UserAreaMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.UserAreaMultiDelete(ctx, in)
-}
-
 func (m *defaultUserManage) UserAreaApplyCreate(ctx context.Context, in *UserAreaApplyCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	client := sys.NewUserManageClient(m.cli.Conn())
 	return client.UserAreaApplyCreate(ctx, in, opts...)
@@ -347,22 +295,4 @@ func (m *defaultUserManage) UserAreaApplyCreate(ctx context.Context, in *UserAre
 
 func (d *directUserManage) UserAreaApplyCreate(ctx context.Context, in *UserAreaApplyCreateReq, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.UserAreaApplyCreate(ctx, in)
-}
-
-func (m *defaultUserManage) UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error) {
-	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserAreaApplyIndex(ctx, in, opts...)
-}
-
-func (d *directUserManage) UserAreaApplyIndex(ctx context.Context, in *UserAreaApplyIndexReq, opts ...grpc.CallOption) (*UserAreaApplyIndexResp, error) {
-	return d.svr.UserAreaApplyIndex(ctx, in)
-}
-
-func (m *defaultUserManage) UserAreaApplyDeal(ctx context.Context, in *UserAreaApplyDealReq, opts ...grpc.CallOption) (*Response, error) {
-	client := sys.NewUserManageClient(m.cli.Conn())
-	return client.UserAreaApplyDeal(ctx, in, opts...)
-}
-
-func (d *directUserManage) UserAreaApplyDeal(ctx context.Context, in *UserAreaApplyDealReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.UserAreaApplyDeal(ctx, in)
 }

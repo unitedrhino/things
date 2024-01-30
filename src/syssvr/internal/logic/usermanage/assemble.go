@@ -2,7 +2,6 @@ package usermanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/domain/userDataAuth"
 	"github.com/i-Things/things/shared/oss/common"
 	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
@@ -38,83 +37,6 @@ func UserInfoToPb(ctx context.Context, ui *relationDB.SysUserInfo, svcCtx *svc.S
 		HeadImg:       ui.HeadImg,
 		CreatedTime:   ui.CreatedTime.Unix(),
 	}
-}
-
-func transAreaPoToPb(po *relationDB.SysUserArea) *sys.UserArea {
-	return &sys.UserArea{
-		AreaID:   int64(po.AreaID),
-		AuthType: po.AuthType,
-	}
-}
-
-func transProjectPoToPb(po *relationDB.SysUserProject) *sys.UserProject {
-	return &sys.UserProject{
-		ProjectID: int64(po.ProjectID),
-	}
-}
-
-func ToAuthAreaDo(area *sys.UserArea) *userDataAuth.Area {
-	if area == nil {
-		return nil
-	}
-	return &userDataAuth.Area{AreaID: area.AreaID}
-}
-func ToAuthAreaDos(areas []*sys.UserArea) (ret []*userDataAuth.Area) {
-	if len(areas) == 0 {
-		return
-	}
-	for _, v := range areas {
-		ret = append(ret, ToAuthAreaDo(v))
-	}
-	return
-}
-
-func DBToAuthAreaDo(area *relationDB.SysUserArea) *userDataAuth.Area {
-	if area == nil {
-		return nil
-	}
-	return &userDataAuth.Area{AreaID: int64(area.AreaID)}
-}
-func DBToAuthAreaDos(areas []*relationDB.SysUserArea) (ret []*userDataAuth.Area) {
-	if len(areas) == 0 {
-		return
-	}
-	for _, v := range areas {
-		ret = append(ret, DBToAuthAreaDo(v))
-	}
-	return
-}
-
-func ToAuthProjectDo(area *sys.UserProject) *userDataAuth.Project {
-	if area == nil {
-		return nil
-	}
-	return &userDataAuth.Project{ProjectID: area.ProjectID}
-}
-func ToAuthProjectDos(areas []*sys.UserProject) (ret []*userDataAuth.Project) {
-	if len(areas) == 0 {
-		return
-	}
-	for _, v := range areas {
-		ret = append(ret, ToAuthProjectDo(v))
-	}
-	return
-}
-
-func DBToAuthProjectDo(area *relationDB.SysUserProject) *userDataAuth.Project {
-	if area == nil {
-		return nil
-	}
-	return &userDataAuth.Project{ProjectID: int64(area.ProjectID)}
-}
-func DBToAuthProjectDos(areas []*relationDB.SysUserProject) (ret []*userDataAuth.Project) {
-	if len(areas) == 0 {
-		return
-	}
-	for _, v := range areas {
-		ret = append(ret, DBToAuthProjectDo(v))
-	}
-	return
 }
 
 func ToUserAreaApplyInfos(in []*relationDB.SysUserAreaApply) (ret []*sys.UserAreaApplyInfo) {

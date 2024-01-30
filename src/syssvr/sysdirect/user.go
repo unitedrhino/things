@@ -7,6 +7,9 @@ import (
 	clientRole "github.com/i-Things/things/src/syssvr/client/rolemanage"
 	serverRole "github.com/i-Things/things/src/syssvr/internal/server/rolemanage"
 
+	clientData "github.com/i-Things/things/src/syssvr/client/datamanage"
+	serverData "github.com/i-Things/things/src/syssvr/internal/server/datamanage"
+
 	clientModule "github.com/i-Things/things/src/syssvr/client/modulemanage"
 	serverModule "github.com/i-Things/things/src/syssvr/internal/server/modulemanage"
 
@@ -43,6 +46,14 @@ func NewRole(runSvr bool) clientRole.RoleManage {
 		RunServer(svcCtx)
 	}
 	return clientRole.NewDirectRoleManage(svcCtx, serverRole.NewRoleManageServer(svcCtx))
+}
+
+func NewData(runSvr bool) clientData.DataManage {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return clientData.NewDirectDataManage(svcCtx, serverData.NewDataManageServer(svcCtx))
 }
 
 func NewModule(runSvr bool) clientModule.ModuleManage {

@@ -2,19 +2,19 @@ package def
 
 const DeviceGroupLevel = 3
 
-type RoleID int64
+type AuthType = int64
 
 const (
-	RoleIDSuper RoleID = 1
+	AuthAdmin     AuthType = 1 //管理权限,可以修改别人的权限,及读写权限
+	AuthRead      AuthType = 2 //读权限,只能读,不能修改
+	AuthReadWrite AuthType = 3 //读写权限,可以读写该权限
 )
 
-type Auth = int64
+type TargetType = string
 
 const (
-	AuthRead      Auth = 1 //读权限,只能读,不能写
-	AuthWrite     Auth = 2 //写权限，可以写，不能读
-	AuthReadWrite Auth = 3 //读写权限
-	AuthAdmin     Auth = 4 //管理权限,可以修改别人的权限
+	TargetUser = "user" //授权给用户
+	TargetRole = "role" //授权给角色
 )
 
 type CoordinateSystem string

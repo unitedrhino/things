@@ -2,6 +2,7 @@ package usermanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/syssvr/internal/repo/relationDB"
@@ -17,6 +18,8 @@ type UserAreaApplyDealLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	UaaDB *relationDB.DataAreaRepo
+	UapDB *relationDB.DataProjectRepo
 }
 
 func NewUserAreaApplyDealLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserAreaApplyDealLogic {
@@ -24,6 +27,8 @@ func NewUserAreaApplyDealLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
+		UaaDB:  relationDB.NewDataAreaRepo(ctx),
+		UapDB:  relationDB.NewDataProjectRepo(ctx),
 	}
 }
 
@@ -35,7 +40,7 @@ func (l *UserAreaApplyDealLogic) UserAreaApplyDeal(in *sys.UserAreaApplyDealReq)
 	db := stores.GetTenantConn(l.ctx)
 	err := db.Transaction(func(tx *gorm.DB) error {
 		uaa := relationDB.NewUserAreaApplyRepo(tx)
-		ua := relationDB.NewUserAreaRepo(tx)
+		ua := relationDB.NewDataAreaRepo(tx)
 		uaas, err := uaa.FindByFilter(l.ctx, relationDB.UserAreaApplyFilter{IDs: in.Ids}, nil)
 		if err != nil {
 			return err
@@ -43,13 +48,14 @@ func (l *UserAreaApplyDealLogic) UserAreaApplyDeal(in *sys.UserAreaApplyDealReq)
 		if len(uaas) == 0 {
 			return errors.Parameter.AddMsgf("未查询到授权的id")
 		}
-		var uas []*relationDB.SysUserArea
+		var uas []*relationDB.SysDataArea
 		for _, v := range uaas {
-			uas = append(uas, &relationDB.SysUserArea{
-				UserID:    v.UserID,
-				ProjectID: v.ProjectID,
-				AreaID:    int64(v.AreaID),
-				AuthType:  v.AuthType,
+			uas = append(uas, &relationDB.SysDataArea{
+				TargetType: def.TargetUser,
+				TargetID:   v.UserID,
+				ProjectID:  v.ProjectID,
+				AreaID:     int64(v.AreaID),
+				AuthType:   v.AuthType,
 			})
 		}
 		err = ua.MultiInsert(l.ctx, uas)
