@@ -1,9 +1,0 @@
-info(
-    title: "设备分组"
-    desc: "设备分组"
-    author: "lbs"
-    email: "174805676@qq.com"
-    version: "v1"
-)
-
-import "things/group/group.api" //设备分组接口

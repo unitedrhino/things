@@ -1,0 +1,73 @@
+info(
+    title: "认证管理(p2)"
+    desc: "认证管理(p2)"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+@server(
+    group : things/device/auth
+    prefix: /api/v1/things/device/auth
+)
+service api {
+    @doc "设备登录认证"
+    @handler login
+    post /login (DeviceAuthLoginReq) returns ()
+    @doc "设备操作认证"
+    @handler access
+    post /access (DeviceAuthAccessReq) returns ()
+    @doc "鉴定是否是root账号"
+    @handler rootCheck
+    post /root-check (DeviceAuthRootCheckReq) returns ()
+    @doc "设备自动注册"
+    @handler register
+    post /register (DeviceRegisterReq) returns (DeviceRegisterResp)
+}
+
+
+type DeviceAuthLoginReq struct {
+    Username string `json:"username"`                          //用户名
+    Password string `json:"password,optional"`                 //密码
+    ClientID string `json:"clientID"`                          //clientID
+    Ip string `json:"ip"`                                      //访问的ip地址
+    Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
+}
+
+type DeviceAuthAccessReq struct {
+    Username string `json:"username,omitempty"`//用户名
+    Topic string `json:"topic,omitempty"`      //主题
+    ClientID string `json:"clientID,omitempty"`//clientID
+    Access string `json:"access,omitempty"`    //操作
+    Ip string `json:"ip,omitempty"`            //访问的ip地址
+}
+
+type DeviceAuthRootCheckReq struct {
+    Username string `json:"username,omitempty"`                //用户名
+    Password string `json:"password,optional,omitempty"`       //密码
+    ClientID string `json:"clientID,omitempty"`                //clientID
+    Ip string `json:"ip,omitempty"`                            //访问的ip地址
+    Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
+}
+
+type DeviceRegisterReq struct {
+    ProductID string `json:"productID"`   //产品id 只读
+    DeviceName string `json:"deviceName"` //设备名称 读写
+    Nonce int64 `json:"nonce"`            //随机数
+    Timestamp int64 `json:"timestamp"`    //秒级时间戳
+    Signature string `json:"signature"`   //签名信息
+}
+
+type DeviceRegisterResp struct {
+    Len int64  `json:"len"`   //payload加密前信息的长度
+    /*
+    加密过程将原始 JSON 格式的 payload 转为字符串后进行 AES 加密，再进行 base64 加密。AES 加密算法为 CBC 模式，密钥长度128，取 productSecret 前16位，偏移量为长度16的字符“0”。
+    原始 payload 内容说明：
+    key                value               描述
+    encryptionType     1              加密类型，1表示证书认证，2表示签名认证。
+    psk                1239           设备密钥，当产品认证类型为签名认证时有此参数
+    clientCert         -              设备证书文件字符串格式，当产品认证类型为证书认证时有此参数。
+    clientKey          -              设备私钥文件字符串格式，当产品认证类型为证书认证时有此参数。
+    */
+    Payload string `json:"payload"`
+}

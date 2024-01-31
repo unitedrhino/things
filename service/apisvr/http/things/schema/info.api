@@ -1,0 +1,39 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type (
+
+/*数据类型定义*/
+    SchemaDefine struct {
+        Type string `json:"type"`                             //参数类型: bool int string struct float timestamp array enum
+        Mapping map[string]string `json:"mapping,omitempty"`   //枚举及bool类型:bool enum
+        Min string `json:"min,omitempty"`                     //数值最小值:int  float
+        Max string `json:"max,omitempty"`                     //数值最大值:int string float
+        Start string `json:"start,omitempty"`                 //初始值:int float
+        Step string `json:"step,omitempty"`                   //步长:int float
+        Unit string `json:"unit,omitempty"`                   //单位:int float
+        Specs []*SchemaSpec `json:"specs,omitempty"`                 //结构体:struct
+        ArrayInfo *SchemaDefine `json:"arrayInfo,omitempty"`        //数组:array
+    }
+
+    /*结构体说明*/
+    SchemaSpec struct {
+        Identifier string `json:"identifier"`             //参数标识符
+        Name string `json:"name"`                         //参数名称
+        DataType *SchemaDefine `json:"dataType"`                 //参数定义
+    }
+
+    /*参数*/
+    SchemaParam struct {
+        Identifier string `json:"identifier"`                   //参数标识符
+        Name string `json:"name"`                               //参数名称
+        Define *SchemaDefine `json:"define,omitempty"`                 //参数定义
+    }
+)
