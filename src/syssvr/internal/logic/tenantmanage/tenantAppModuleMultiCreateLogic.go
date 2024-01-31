@@ -36,7 +36,7 @@ func (l *TenantAppModuleMultiCreateLogic) TenantAppModuleMultiCreate(in *sys.Ten
 	conn := stores.GetTenantConn(l.ctx)
 	err := conn.Transaction(func(tx *gorm.DB) error {
 		for _, module := range in.Modules {
-			err := ModuleCreate(l.ctx, tx, in.Code, in.AppCode, module.Code, module.MenuIDs, module.ApiIDs)
+			err := ModuleCreate(l.ctx, tx, in.Code, in.AppCode, module.Code, module.MenuIDs)
 			if err != nil {
 				return err
 			}

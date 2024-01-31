@@ -77,12 +77,12 @@ func (s *RoleManageServer) RoleApiAuth(ctx context.Context, in *sys.RoleApiAuthR
 	return l.RoleApiAuth(in)
 }
 
-func (s *RoleManageServer) RoleApiMultiUpdate(ctx context.Context, in *sys.RoleApiMultiUpdateReq) (*sys.Response, error) {
-	l := rolemanagelogic.NewRoleApiMultiUpdateLogic(ctx, s.svcCtx)
-	return l.RoleApiMultiUpdate(in)
+func (s *RoleManageServer) RoleAccessMultiUpdate(ctx context.Context, in *sys.RoleAccessMultiUpdateReq) (*sys.Response, error) {
+	l := rolemanagelogic.NewRoleAccessMultiUpdateLogic(ctx, s.svcCtx)
+	return l.RoleAccessMultiUpdate(in)
 }
 
-func (s *RoleManageServer) RoleApiIndex(ctx context.Context, in *sys.RoleApiIndexReq) (*sys.RoleApiIndexResp, error) {
-	l := rolemanagelogic.NewRoleApiIndexLogic(ctx, s.svcCtx)
-	return l.RoleApiIndex(in)
+func (s *RoleManageServer) RoleAccessIndex(ctx context.Context, in *sys.RoleAccessIndexReq) (*sys.RoleAccessIndexResp, error) {
+	l := rolemanagelogic.NewRoleAccessIndexLogic(ctx, s.svcCtx)
+	return l.RoleAccessIndex(in)
 }

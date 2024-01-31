@@ -30,7 +30,6 @@ func (l *CreateLogic) Create(req *types.TenantModuleCreateReq) error {
 		AppCode:    req.AppCode,
 		ModuleCode: req.ModuleCode,
 		MenuIDs:    req.MenuIDs,
-		ApiIDs:     req.ApiIDs,
 	})
 	return err
 }

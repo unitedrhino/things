@@ -36,7 +36,7 @@ func (l *TenantAppModuleCreateLogic) TenantAppModuleCreate(in *sys.TenantModuleC
 	}()
 	conn := stores.GetTenantConn(l.ctx)
 	err := conn.Transaction(func(tx *gorm.DB) error {
-		err := ModuleCreate(l.ctx, tx, in.Code, in.AppCode, in.ModuleCode, in.MenuIDs, in.ApiIDs)
+		err := ModuleCreate(l.ctx, tx, in.Code, in.AppCode, in.ModuleCode, in.MenuIDs)
 		return err
 	})
 	return &sys.Response{}, err

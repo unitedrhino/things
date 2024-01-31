@@ -14,7 +14,9 @@ import (
 )
 
 type (
-	ApiDeleteReq              = sys.ApiDeleteReq
+	Access             = sys.Access
+	AccessIndexReq     = sys.AccessIndexReq
+	AccessIndexResp    = sys.AccessIndexResp
 	ApiInfo                   = sys.ApiInfo
 	ApiInfoIndexReq           = sys.ApiInfoIndexReq
 	ApiInfoIndexResp          = sys.ApiInfoIndexResp
@@ -82,9 +84,9 @@ type (
 	RoleModuleIndexReq        = sys.RoleModuleIndexReq
 	RoleModuleIndexResp       = sys.RoleModuleIndexResp
 	RoleModuleMultiUpdateReq  = sys.RoleModuleMultiUpdateReq
-	TenantApiInfo             = sys.TenantApiInfo
-	TenantAppApiIndexReq      = sys.TenantAppApiIndexReq
-	TenantAppApiIndexResp     = sys.TenantAppApiIndexResp
+	TenantApiIndexReq         = sys.TenantApiIndexReq
+	TenantApiIndexResp        = sys.TenantApiIndexResp
+	TenantApiMultiUpdateReq   = sys.TenantApiMultiUpdateReq
 	TenantAppCreateReq        = sys.TenantAppCreateReq
 	TenantAppIndexReq         = sys.TenantAppIndexReq
 	TenantAppIndexResp        = sys.TenantAppIndexResp
@@ -136,6 +138,10 @@ type (
 		ApiInfoIndex(ctx context.Context, in *ApiInfoIndexReq, opts ...grpc.CallOption) (*ApiInfoIndexResp, error)
 		ApiInfoUpdate(ctx context.Context, in *ApiInfo, opts ...grpc.CallOption) (*Response, error)
 		ApiInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+		AccessCreate(ctx context.Context, in *Access, opts ...grpc.CallOption) (*WithID, error)
+		AccessIndex(ctx context.Context, in *AccessIndexReq, opts ...grpc.CallOption) (*AccessIndexResp, error)
+		AccessUpdate(ctx context.Context, in *Access, opts ...grpc.CallOption) (*Response, error)
+		AccessDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultApiManage struct {
@@ -195,4 +201,40 @@ func (m *defaultApiManage) ApiInfoDelete(ctx context.Context, in *WithID, opts .
 
 func (d *directApiManage) ApiInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
 	return d.svr.ApiInfoDelete(ctx, in)
+}
+
+func (m *defaultApiManage) AccessCreate(ctx context.Context, in *Access, opts ...grpc.CallOption) (*WithID, error) {
+	client := sys.NewApiManageClient(m.cli.Conn())
+	return client.AccessCreate(ctx, in, opts...)
+}
+
+func (d *directApiManage) AccessCreate(ctx context.Context, in *Access, opts ...grpc.CallOption) (*WithID, error) {
+	return d.svr.AccessCreate(ctx, in)
+}
+
+func (m *defaultApiManage) AccessIndex(ctx context.Context, in *AccessIndexReq, opts ...grpc.CallOption) (*AccessIndexResp, error) {
+	client := sys.NewApiManageClient(m.cli.Conn())
+	return client.AccessIndex(ctx, in, opts...)
+}
+
+func (d *directApiManage) AccessIndex(ctx context.Context, in *AccessIndexReq, opts ...grpc.CallOption) (*AccessIndexResp, error) {
+	return d.svr.AccessIndex(ctx, in)
+}
+
+func (m *defaultApiManage) AccessUpdate(ctx context.Context, in *Access, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewApiManageClient(m.cli.Conn())
+	return client.AccessUpdate(ctx, in, opts...)
+}
+
+func (d *directApiManage) AccessUpdate(ctx context.Context, in *Access, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AccessUpdate(ctx, in)
+}
+
+func (m *defaultApiManage) AccessDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+	client := sys.NewApiManageClient(m.cli.Conn())
+	return client.AccessDelete(ctx, in, opts...)
+}
+
+func (d *directApiManage) AccessDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.AccessDelete(ctx, in)
 }
