@@ -92,7 +92,33 @@ type (
         FirstLogin      int64 `json:"firstLogin,optional,string"`                //首次登录时间 只读
     }
     VidmgrStreamCreateReq{
-        StreamCommon
+        VidmgrID string     `json:"vidmgrID"`
+        App string   `json:"app"`
+        Stream string   `json:"stream"`
+        OriginUrl string `json:"originUrl"`
+
+        StreamName string   `json:"streamName,optional"`
+        RtpType int32 `json:"rtpType,optional"`
+        Vhost string   `json:"vhost,optional"`
+        Identifier string `json:"identifier,optional"`
+        LocalIP string `json:"localIP,optional"`
+        LocalPort int64 `json:"localPort,optional"`
+        PeerIP string `json:"peerIP,optional"`
+        PeerPort int64 `json:"peerPort,optional"`
+
+        OriginType int64 `json:"originType,optional"`
+        OriginStr string `json:"originStr,optional"`
+
+        IsRecordingMp4 bool `json:"isRecordingMp4,optional"`
+        IsRecordingHLS bool `json:"isRecordingHLS,optional"`
+        IsShareChannel bool `json:"isShareChannel,optional"`
+        IsAutoPush     bool `json:"isAutoPush,optional"`
+        IsAutoRecord   bool `json:"isAutoRecord,optional"`
+        IsOnline       bool `json:"isOnline,optional"`
+        IsPTZ          bool `json:"isPTZ,optional"`
+
+        Desc        *string `json:"desc,optional"`                    //描述
+        Tags        []*Tag  `json:"tags,optional"`                    //流tag
     }
 
     VidmgrStreamUpdateReq{

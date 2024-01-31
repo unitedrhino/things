@@ -3,6 +3,7 @@ package vidmgrconfigmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
@@ -30,7 +31,7 @@ func NewVidmgrConfigCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 // 新建配置
 func (l *VidmgrConfigCreateLogic) VidmgrConfigCreate(in *vid.VidmgrConfig) (*vid.Response, error) {
 	// todo: add your logic here and delete this line
-	dbConfig := ToVidmgrConfigDB(in)
+	dbConfig := common.ToVidmgrConfigDB(in)
 	err := l.PiDB.Insert(l.ctx, dbConfig)
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)

@@ -2,6 +2,7 @@ package devices
 
 import (
 	"github.com/i-Things/things/shared/errors"
+	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 )
 
@@ -83,6 +84,7 @@ func parseTopic(topics []string) (topicInfo *TopicInfo, err error) {
 	if len(topics) < 2 {
 		return nil, errors.Parameter.AddDetail("topic is err")
 	}
+	logx.Infof("haa topics:%+v", topics)
 	switch topics[0] {
 	case TopicHeadThing, TopicHeadOta, TopicHeadShadow, TopicHeadLog, TopicHeadConfig, TopicHeadGateway, TopicHeadExt:
 		return parseLast(topics)

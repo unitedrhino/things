@@ -28,6 +28,10 @@ func ToYYMMddHHSS(timeStamp int64) string {
 	return time.UnixMilli(timeStamp).Format("2006-01-02 15:04")
 }
 
+func ToYYMMddHHSSByTime(time time.Time) string {
+	return time.Format("2006-01-02 15:04")
+}
+
 // 转换为07-02 01:02 这种格式
 func ToYYMMdd(timeStamp int64) string {
 	return time.UnixMilli(timeStamp).Format("2006 01-02")

@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-
 	"github.com/i-Things/things/shared/def"
 	"github.com/i-Things/things/shared/stores"
 	"gorm.io/gorm"
@@ -25,9 +24,12 @@ func NewOtaFirmwareRepo(in any) *OtaFirmwareRepo {
 }
 
 type OtaFirmwareFilter struct {
-	ProductID  string
-	FirmwareID int64
-	Version    string
+	ProductID    string
+	FirmwareName string
+	Module       string
+	FirmwareID   int64
+	Version      string
+	WithProduct  bool
 }
 
 func (p OtaFirmwareRepo) fmtFilter(ctx context.Context, f OtaFirmwareFilter) *gorm.DB {
@@ -40,6 +42,9 @@ func (p OtaFirmwareRepo) fmtFilter(ctx context.Context, f OtaFirmwareFilter) *go
 	}
 	if f.Version != "" {
 		db = db.Where("version=?", f.Version)
+	}
+	if f.FirmwareName != "" {
+		db = db.Where("name like ?", "%"+f.FirmwareName+"%")
 	}
 	return db
 }

@@ -23,7 +23,7 @@ func NewVidmgrStreamManageServer(svcCtx *svc.ServiceContext) *VidmgrStreamManage
 }
 
 // 流添加
-func (s *VidmgrStreamManageServer) VidmgrStreamCreate(ctx context.Context, in *vid.VidmgrStream) (*vid.Response, error) {
+func (s *VidmgrStreamManageServer) VidmgrStreamCreate(ctx context.Context, in *vid.VidmgrStreamCreateReq) (*vid.Response, error) {
 	l := vidmgrstreammanagelogic.NewVidmgrStreamCreateLogic(ctx, s.svcCtx)
 	return l.VidmgrStreamCreate(in)
 }

@@ -2,9 +2,8 @@ package vidmgrinfomanagelogic
 
 import (
 	"context"
-	"fmt"
 	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/src/vidsvr/internal/logic"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
@@ -32,20 +31,18 @@ func NewVidmgrInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *V
 // 获取服务列表
 func (l *VidmgrInfoIndexLogic) VidmgrInfoIndex(in *vid.VidmgrInfoIndexReq) (*vid.VidmgrInfoIndexResp, error) {
 	// todo: add your logic here and delete this line
-	fmt.Printf("Vidsvr VidmgrInfoIndex \n")
 	var (
 		info []*vid.VidmgrInfo
 		size int64
 		err  error
-		piDB = relationDB.NewVidmgrInfoRepo(l.ctx)
 	)
-	filter := relationDB.VidmgrFilter{VidmgrType: in.VidmgrType, VidmgrName: in.VidmgrtName, Tags: in.Tags, VidmgrIDs: in.VidmgrIDs}
-	size, err = piDB.CountByFilter(l.ctx, filter)
+	filter := relationDB.VidmgrFilter{VidmgrIDs: in.VidmgrIDs, VidmgrName: in.VidmgrtName, VidmgrType: in.VidmgrType, Tags: in.Tags}
+	size, err = l.PiDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err
 	}
 
-	di, err := piDB.FindByFilter(l.ctx, filter, logic.ToPageInfoWithDefault(in.Page, &def.PageInfo{
+	di, err := l.PiDB.FindByFilter(l.ctx, filter, common.ToPageInfoWithDefault(in.Page, &def.PageInfo{
 		Page: 1, Size: 20,
 		Orders: []def.OrderBy{{"created_time", def.OrderDesc}, {"vidmgr_id", def.OrderDesc}},
 	}))
@@ -56,7 +53,7 @@ func (l *VidmgrInfoIndexLogic) VidmgrInfoIndex(in *vid.VidmgrInfoIndexReq) (*vid
 
 	info = make([]*vid.VidmgrInfo, 0, len(di))
 	for _, v := range di {
-		info = append(info, ToVidmgrInfo(l.ctx, v, l.svcCtx))
+		info = append(info, common.ToVidmgrInfoRPC(v))
 	}
 
 	return &vid.VidmgrInfoIndexResp{List: info, Total: size}, nil

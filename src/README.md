@@ -93,6 +93,14 @@ cd vidsvr && goctl rpc protoc  proto/vid.proto --go_out=./ --go-grpc_out=./ --zr
 cd vidsvr && goctl api go -api http/vid.api  -dir ./  --style=goZero && cd ..
 ``` 
 
+# 国标协议引擎模块-vidsip
+
+- rpc文件编译
+
+```shell
+#protoc  proto/* --go_out=. --go-grpc_out=.
+cd vidsip && goctl rpc protoc  proto/sip.proto --go_out=./ --go-grpc_out=./ --zrpc_out=./ --style=goZero -m && cd ..
+``` 
 
 # 定时生产者引擎模块-timedschedulersvr
 

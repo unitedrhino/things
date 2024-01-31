@@ -2,8 +2,6 @@ package firmwaremanagelogic
 
 import (
 	"context"
-	"database/sql"
-
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
@@ -33,12 +31,12 @@ func (l *FirmwareInfoUpdateLogic) ChangeDevice(old *relationDB.DmOtaFirmware, da
 	if data.Desc != nil {
 		old.Desc = data.Desc.Value
 	}
-	if data.ExtData != nil {
-		old.Extra = sql.NullString{
-			String: data.ExtData.Value,
-			Valid:  true,
-		}
-	}
+	//if data.ExtData != nil {
+	//	old.Extra = sql.NullString{
+	//		String: data.ExtData.Value,
+	//		Valid:  true,
+	//	}
+	//}
 }
 
 func (l *FirmwareInfoUpdateLogic) FirmwareInfoUpdate(in *dm.FirmwareInfo) (*dm.OtaCommonResp, error) {

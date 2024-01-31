@@ -16,7 +16,11 @@ import (
 	"github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/src/dmsvr/client/devicemsg"
 	firmwaremanage "github.com/i-Things/things/src/dmsvr/client/firmwaremanage"
+	"github.com/i-Things/things/src/dmsvr/client/otafirmwaremanage"
+	"github.com/i-Things/things/src/dmsvr/client/otajobmanage"
+	"github.com/i-Things/things/src/dmsvr/client/otamodulemanage"
 	otataskmanage "github.com/i-Things/things/src/dmsvr/client/otataskmanage"
+	"github.com/i-Things/things/src/dmsvr/client/otaupgradetaskmanage"
 	"github.com/i-Things/things/src/dmsvr/client/productmanage"
 	"github.com/i-Things/things/src/dmsvr/client/protocolmanage"
 	"github.com/i-Things/things/src/dmsvr/client/remoteconfig"
@@ -39,6 +43,8 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
+	"github.com/i-Things/things/src/vidsip/client/sipmanage"
+	"github.com/i-Things/things/src/vidsip/sipdirect"
 	"github.com/i-Things/things/src/udsvr/client/ops"
 	"github.com/i-Things/things/src/udsvr/client/rule"
 	"github.com/i-Things/things/src/udsvr/client/userdevice"
@@ -66,10 +72,13 @@ type SvrClient struct {
 	RoleRpc   role.RoleManage
 	AppRpc    app.AppManage
 	ModuleRpc module.ModuleManage
-	LogRpc    log.Log
-	VidmgrM   vidmgrinfomanage.VidmgrInfoManage
-	VidmgrC   vidmgrconfigmanage.VidmgrConfigManage
-	VidmgrS   vidmgrstreammanage.VidmgrStreamManage
+	MenuRpc menu.Menu
+	LogRpc  log.Log
+	ApiRpc  api.Api
+	SipRpc  sipmanage.SipManage
+	VidmgrM vidmgrinfomanage.VidmgrInfoManage
+	VidmgrC vidmgrconfigmanage.VidmgrConfigManage
+	VidmgrS vidmgrstreammanage.VidmgrStreamManage
 
 	ProjectM  projectmanage.ProjectManage
 	ProtocolM protocolmanage.ProtocolManage
@@ -108,8 +117,12 @@ type ServiceContext struct {
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
 	FirmwareM      firmwaremanage.FirmwareManage
+	OtaFirmwareM   otafirmwaremanage.OTAFirmwareManage
 	OtaTaskM       otataskmanage.OtaTaskManage
 	FileChan       chan int64
+	OtaJobM        otajobmanage.OTAJobManage
+	TaskM          otaupgradetaskmanage.OTAUpgradeTaskManage
+	OtaModuleM     otamodulemanage.OTAModuleManage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -127,12 +140,30 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceA        deviceauth.DeviceAuth
 		deviceG        devicegroup.DeviceGroup
 		appRpc         app.AppManage
+		vidmgrM vidmgrinfomanage.VidmgrInfoManage
+		vidmgrC vidmgrconfigmanage.VidmgrConfigManage
+		vidmgrS vidmgrstreammanage.VidmgrStreamManage
+
+		vidSip sipmanage.SipManage
+
+		protocolM protocolmanage.ProtocolManage
+		projectM  projectmanage.ProjectManage
+		areaM     areamanage.AreaManage
+		productM  productmanage.ProductManage
+		deviceM   devicemanage.DeviceManage
+		deviceA   deviceauth.DeviceAuth
+		deviceG   devicegroup.DeviceGroup
+
 		deviceMsg      devicemsg.DeviceMsg
 		deviceInteract deviceinteract.DeviceInteract
 		remoteConfig   remoteconfig.RemoteConfig
 		sysCommon      common.Common
 		firmwareM      firmwaremanage.FirmwareManage
+		otaFirmwareM   otafirmwaremanage.OTAFirmwareManage
 		otaTaskM       otataskmanage.OtaTaskManage
+		otaJobM        otajobmanage.OTAJobManage
+		taskM          otaupgradetaskmanage.OTAUpgradeTaskManage
+		otaModuleM     otamodulemanage.OTAModuleManage
 		timedSchedule  timedscheduler.Timedscheduler
 		timedJob       timedmanage.TimedManage
 		tenantM        tenant.TenantManage
@@ -158,8 +189,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
 			firmwareM = firmwaremanage.NewFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			otaFirmwareM = otafirmwaremanage.NewOTAFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			otaTaskM = otataskmanage.NewOtaTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			protocolM = protocolmanage.NewProtocolManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			otaJobM = otajobmanage.NewOTAJobManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			taskM = otaupgradetaskmanage.NewOTAUpgradeTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			otaModuleM = otamodulemanage.NewOTAModuleManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			schemaM = schemamanage.NewSchemaManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		} else { //直连模式
 			deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
@@ -169,9 +204,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
 			firmwareM = dmdirect.NewFirmwareManage(c.DmRpc.RunProxy)
+			otaFirmwareM = dmdirect.NewOTAFirmwareManage(c.DmRpc.RunProxy)
 			otaTaskM = dmdirect.NewOtaTaskManage(c.DmRpc.RunProxy)
 			protocolM = dmdirect.NewProtocolManage(c.DmRpc.RunProxy)
 			schemaM = dmdirect.NewSchemaManage(c.DmRpc.RunProxy)
+			otaJobM = dmdirect.NewOTAJobManage(c.DmRpc.RunProxy)
+			otaModuleM = dmdirect.NewOTAModuleManage(c.DmRpc.RunProxy)
+			taskM = dmdirect.NewOTAUpgradeTaskManage(c.DmRpc.RunProxy)
 		}
 	}
 	if c.DgRpc.Enable {
@@ -224,11 +263,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			vidmgrM = vidmgrinfomanage.NewVidmgrInfoManage(zrpc.MustNewClient(c.VidRpc.Conf))
 			vidmgrC = vidmgrconfigmanage.NewVidmgrConfigManage(zrpc.MustNewClient(c.VidRpc.Conf))
 			vidmgrS = vidmgrstreammanage.NewVidmgrStreamManage(zrpc.MustNewClient(c.VidRpc.Conf))
+
 		} else {
 			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
 			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
 			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
-			viddirect.ApiDirectRun()
+			//viddirect.ApiDirectRun()
+		}
+	}
+
+	if c.VidSip.Enable {
+		if c.VidSip.Mode == conf.ClientModeGrpc {
+			vidSip = sipmanage.NewSipManage(zrpc.MustNewClient(c.VidSip.Conf))
+		} else {
+			vidSip = sipdirect.NewSipManage(c.VidSip.RunProxy)
 		}
 	}
 
@@ -265,8 +313,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Captcha:        captcha,
 		OssClient:      ossClient,
 		FirmwareM:      firmwareM,
+		OtaFirmwareM:   otaFirmwareM,
 		OtaTaskM:       otaTaskM,
 		Ws:             ws.MustNewServer(c.RestConf),
+		OtaJobM:        otaJobM,
+		OtaModuleM:     otaModuleM,
+		TaskM:          taskM,
 		SvrClient: SvrClient{
 			TenantRpc:      tenantM,
 			AppRpc:         appRpc,
@@ -279,6 +331,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			VidmgrM:        vidmgrM,
 			VidmgrC:        vidmgrC,
 			VidmgrS:        vidmgrS,
+			SipRpc:         vidSip,
 
 			ProtocolM: protocolM,
 			ProjectM:  projectM,

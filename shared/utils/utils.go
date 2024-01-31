@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"net"
 	"net/http"
+	"reflect"
 	"regexp"
 	"runtime"
 	"strconv"
@@ -211,4 +212,19 @@ func InetAtoN(ip string) int64 {
 	ret := big.NewInt(0)
 	ret.SetBytes(net.ParseIP(ip).To4())
 	return ret.Int64()
+}
+
+func StructToMap(data interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
+
+	val := reflect.Indirect(reflect.ValueOf(data))
+	typ := val.Type()
+
+	for i := 0; i < val.NumField(); i++ {
+		field := val.Field(i)
+		tag := typ.Field(i).Tag.Get("json")
+		result[tag] = field.Interface()
+	}
+
+	return result
 }
