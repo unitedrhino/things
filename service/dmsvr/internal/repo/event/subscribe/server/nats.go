@@ -3,9 +3,9 @@ package server
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/i-Things/core/shared/clients"
-	"gitee.com/i-Things/core/shared/conf"
-	"gitee.com/i-Things/core/shared/events/topics"
+	"gitee.com/i-Things/share/clients"
+	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/events/topics"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 )

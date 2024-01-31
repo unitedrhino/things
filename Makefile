@@ -5,11 +5,23 @@ build:build.clean mod cp.etc build.api build.dg build.view build.dm build.sys bu
 
 runall:  run.timedjob run.timedscheduler run.sys run.dm run.dg run.ud run.api run.view
 
-buildone:build.clean mod cp.etc build.api build.view
+buildone:build.clean mod cp.etc build.api build.view moduleupdate build.core
+
+moduleupdate:
+	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@git submodule update --init --recursive
+	@git submodule foreach git checkout master
+	@git submodule foreach git pull
+
+build.core:
+	@mkdir -p ./cmd/core
+	@cd module/core && make packone
+	@cp -rf module/core/cmd/* ./cmd/core
 
 toremote:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tormote cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@rsync -r -v ./cmd/* root@120.79.205.165:/root/git/iThings
+
 killall:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>killing all<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@killall  apisvr &
@@ -31,75 +43,74 @@ mod:
 
 cp.etc:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>copying etc<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@mkdir -p ./cmd/etc/
-	@mkdir -p ./cmd/dist/
-	@cp -rf ./src/apisvr/etc/* ./cmd/etc/
-	@cp -rf ./src/apisvr/dist/* ./cmd/dist/
-	@cp -rf ./src/viewsvr/etc/* ./cmd/etc/
+	@mkdir -p ./cmd/things/etc/
+	@mkdir -p ./cmd/things/dist/
+	@cp -rf ./service/apisvr/etc/* ./cmd/things/etc/
+	@cp -rf ./service/viewsvr/etc/* ./cmd/things/etc/
 
 
 build.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build -o ./cmd/apisvr ./src/apisvr
+	@go build -o ./cmd/things/apisvr ./service/apisvr
 
 build.view:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build -o ./cmd/viewsvr ./src/viewsvr
+	@go build -o ./cmd/things/viewsvr ./service/viewsvr
 
 build.dg:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/dgsvr ./src/dgsvr
+	@go build  -o ./cmd/things/dgsvr ./service/dgsvr
 
 build.dm:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/dmsvr ./src/dmsvr
+	@go build  -o ./cmd/things/dmsvr ./service/dmsvr
 
 build.sys:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/syssvr ./src/syssvr
+	@go build  -o ./cmd/things/syssvr ./service/syssvr
 
 build.ud:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/udsvr ./src/udsvr
+	@go build  -o ./cmd/things/udsvr ./service/udsvr
 
 build.timedjob:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/timedjobsvr ./src/timed/timedjobsvr
+	@go build  -o ./cmd/things/timedjobsvr ./service/timed/timedjobsvr
 
 build.timedscheduler:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/timedschedulersvr ./src/timed/timedschedulersvr
+	@go build  -o ./cmd/things/timedschedulersvr ./service/timed/timedschedulersvr
 
 
 run.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cmd && nohup ./apisvr &  cd ..
+	@cd cmd/things && nohup ./apisvr &  cd ..
 
 run.view:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cmd && nohup ./viewsvr &  cd ..
+	@cd cmd/things && nohup ./viewsvr &  cd ..
 
 
 run.dg:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cmd && nohup ./dgsvr &  cd ..
+	@cd cmd/things && nohup ./dgsvr &  cd ..
 
 run.dm:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cmd && nohup ./dmsvr &  cd ..
+	@cd cmd/things && nohup ./dmsvr &  cd ..
 
 run.sys:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cmd && nohup ./syssvr &  cd ..
+	@cd cmd/things && nohup ./syssvr &  cd ..
 
 run.ud:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cmd && nohup ./udsvr &  cd ..
+	@cd cmd/things && nohup ./udsvr &  cd ..
 
 run.timedjob:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cd cmd && nohup ./timedjobsvr &  cd ..
+	@cd cd cmd/things && nohup ./timedjobsvr &  cd ..
 
 run.timedscheduler:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cd cmd && nohup ./timedschedulersvr &  cd ..
+	@cd cd cmd/things && nohup ./timedschedulersvr &  cd ..

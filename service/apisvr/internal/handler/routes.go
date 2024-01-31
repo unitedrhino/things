@@ -24,11 +24,6 @@ import (
 	thingsproductinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/product/info"
 	thingsproductremoteConfig "github.com/i-Things/things/service/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/service/apisvr/internal/handler/things/product/schema"
-	thingsrulealarmdealRecord "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/dealRecord"
-	thingsrulealarminfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/info"
-	thingsrulealarmlog "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/log"
-	thingsrulealarmrecord "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/record"
-	thingsrulealarmscene "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/scene"
 	thingsrulesceneinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/scene/info"
 	thingsschemacommon "github.com/i-Things/things/service/apisvr/internal/handler/things/schema/common"
 	thingsuserdevicecollect "github.com/i-Things/things/service/apisvr/internal/handler/things/user/device/collect"
@@ -43,167 +38,7 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsproductinfo.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsproductinfo.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsproductinfo.DeleteHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsproductinfo.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/read",
-					Handler: thingsproductinfo.ReadHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/product/info"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/tsl-import",
-					Handler: thingsproductschema.TslImportHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/tsl-read",
-					Handler: thingsproductschema.TslReadHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsproductschema.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsproductschema.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsproductschema.DeleteHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsproductschema.IndexHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/product/schema"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsproductremoteConfig.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsproductremoteConfig.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/push-all",
-					Handler: thingsproductremoteConfig.PushAllHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/lastest-read",
-					Handler: thingsproductremoteConfig.LastestReadHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/product/remote-config"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsproductcustom.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/read",
-					Handler: thingsproductcustom.ReadHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/product/custom"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsproductcategory.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsproductcategory.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsproductcategory.DeleteHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsproductcategory.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/read",
-					Handler: thingsproductcategory.ReadHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/product/category"),
-	)
-
-	server.AddRoutes(
 		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/login",
-				Handler: thingsdeviceauth.LoginHandler(serverCtx),
-			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/access",
@@ -211,13 +46,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/root-check",
-				Handler: thingsdeviceauth.RootCheckHandler(serverCtx),
+				Path:    "/login",
+				Handler: thingsdeviceauth.LoginHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/register",
 				Handler: thingsdeviceauth.RegisterHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/root-check",
+				Handler: thingsdeviceauth.RootCheckHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api/v1/things/device/auth"),
@@ -227,13 +67,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/login",
-				Handler: thingsdeviceauth5.LoginHandler(serverCtx),
+				Path:    "/access",
+				Handler: thingsdeviceauth5.AccessHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/access",
-				Handler: thingsdeviceauth5.AccessHandler(serverCtx),
+				Path:    "/login",
+				Handler: thingsdeviceauth5.LoginHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api/v1/things/device/auth5"),
@@ -245,52 +85,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/hub-log/index",
-					Handler: thingsdevicemsg.HubLogIndexHandler(serverCtx),
+					Path:    "/index",
+					Handler: thingsdevicegateway.IndexHandler(serverCtx),
 				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/sdk-log/index",
-					Handler: thingsdevicemsg.SdkLogIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/property-log/index",
-					Handler: thingsdevicemsg.PropertyLogIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/property-latest/index",
-					Handler: thingsdevicemsg.PropertyLatestIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/event-log/index",
-					Handler: thingsdevicemsg.EventLogIndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/shadow/index",
-					Handler: thingsdevicemsg.ShadowIndexHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/device/msg"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
 				{
 					Method:  http.MethodPost,
 					Path:    "/multi-create",
 					Handler: thingsdevicegateway.MultiCreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsdevicegateway.IndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -308,18 +109,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/count",
+					Handler: thingsdeviceinfo.CountHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/create",
 					Handler: thingsdeviceinfo.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsdeviceinfo.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/multi-update",
-					Handler: thingsdeviceinfo.MultiUpdateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -333,18 +129,23 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/multi-import",
+					Handler: thingsdeviceinfo.MultiImportHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-update",
+					Handler: thingsdeviceinfo.MultiUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/read",
 					Handler: thingsdeviceinfo.ReadHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/count",
-					Handler: thingsdeviceinfo.CountHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/multi-import",
-					Handler: thingsdeviceinfo.MultiImportHandler(serverCtx),
+					Path:    "/update",
+					Handler: thingsdeviceinfo.UpdateHandler(serverCtx),
 				},
 			}...,
 		),
@@ -357,18 +158,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/send-action",
-					Handler: thingsdeviceinteract.SendActionHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
 					Path:    "/action-read",
 					Handler: thingsdeviceinteract.ActionReadHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/send-property",
-					Handler: thingsdeviceinteract.SendPropertyHandler(serverCtx),
+					Path:    "/get-property-reply",
+					Handler: thingsdeviceinteract.GetPropertyReplyHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -382,13 +178,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/send-action",
+					Handler: thingsdeviceinteract.SendActionHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/send-msg",
 					Handler: thingsdeviceinteract.SendMsgHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/get-property-reply",
-					Handler: thingsdeviceinteract.GetPropertyReplyHandler(serverCtx),
+					Path:    "/send-property",
+					Handler: thingsdeviceinteract.SendPropertyHandler(serverCtx),
 				},
 			}...,
 		),
@@ -401,8 +202,81 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/event-log/index",
+					Handler: thingsdevicemsg.EventLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/hub-log/index",
+					Handler: thingsdevicemsg.HubLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-latest/index",
+					Handler: thingsdevicemsg.PropertyLatestIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-log/index",
+					Handler: thingsdevicemsg.PropertyLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/sdk-log/index",
+					Handler: thingsdevicemsg.SdkLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/shadow/index",
+					Handler: thingsdevicemsg.ShadowIndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/msg"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsgroupdevice.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: thingsgroupdevice.MultiCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-delete",
+					Handler: thingsgroupdevice.MultiDeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-update",
+					Handler: thingsgroupdevice.MultiUpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/group/device"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
 					Path:    "/create",
 					Handler: thingsgroupinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsgroupinfo.DeleteHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -419,11 +293,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/update",
 					Handler: thingsgroupinfo.UpdateHandler(serverCtx),
 				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsgroupinfo.DeleteHandler(serverCtx),
-				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/group/info"),
@@ -435,185 +304,26 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/multi-create",
-					Handler: thingsgroupdevice.MultiCreateHandler(serverCtx),
+					Path:    "/work-order/create",
+					Handler: thingsopsworkOrder.CreateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/multi-update",
-					Handler: thingsgroupdevice.MultiUpdateHandler(serverCtx),
+					Path:    "/work-order/index",
+					Handler: thingsopsworkOrder.IndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsgroupdevice.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/multi-delete",
-					Handler: thingsgroupdevice.MultiDeleteHandler(serverCtx),
+					Path:    "/work-order/update",
+					Handler: thingsopsworkOrder.UpdateHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/group/device"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsrulesceneinfo.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsrulesceneinfo.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsrulesceneinfo.DeleteHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsrulesceneinfo.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/read",
-					Handler: thingsrulesceneinfo.ReadHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/manually-trigger",
-					Handler: thingsrulesceneinfo.ManuallyTriggerHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/rule/scene/info"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsrulealarmdealRecord.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsrulealarmdealRecord.CreateHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/deal-record"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsrulealarminfo.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsrulealarminfo.UpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsrulealarminfo.DeleteHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsrulealarminfo.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/read",
-					Handler: thingsrulealarminfo.ReadHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/info"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsrulealarmlog.IndexHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/log"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsrulealarmrecord.IndexHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/record"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/multi-update",
-					Handler: thingsrulealarmscene.MultiUpdateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/delete",
-					Handler: thingsrulealarmscene.DeleteHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/rule/alarm/scene"),
+		rest.WithPrefix("/api/v1/things/ops"),
 	)
 
 	server.AddRoutes(
 		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/index",
-				Handler: thingsotafirmware.IndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/update",
-				Handler: thingsotafirmware.UpdateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/read",
-				Handler: thingsotafirmware.ReadHandler(serverCtx),
-			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/create",
@@ -624,6 +334,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/device-info-read",
 				Handler: thingsotafirmware.DeviceInfoReadHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/index",
+				Handler: thingsotafirmware.IndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/read",
+				Handler: thingsotafirmware.ReadHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/update",
+				Handler: thingsotafirmware.UpdateHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/api/v1/things/ota/firmware"),
 	)
@@ -632,46 +357,72 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/index",
-				Handler: thingsotatask.IndexHandler(serverCtx),
+				Path:    "/cancel",
+				Handler: thingsotajob.CancelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/deviceIndex",
+				Handler: thingsotajob.DeviceIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/dynamicCreate",
+				Handler: thingsotajob.DynamicCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/firmwareIndex",
+				Handler: thingsotajob.FirmwareIndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/read",
-				Handler: thingsotatask.ReadHandler(serverCtx),
+				Handler: thingsotajob.ReadHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/staticCreate",
+				Handler: thingsotajob.StaticCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/verify",
+				Handler: thingsotajob.VerifyHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/job"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
 			{
 				Method:  http.MethodPost,
 				Path:    "/create",
-				Handler: thingsotatask.CreateHandler(serverCtx),
+				Handler: thingsotamodule.CreateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/cancel",
-				Handler: thingsotatask.CancelHandler(serverCtx),
+				Path:    "/delete",
+				Handler: thingsotamodule.DelHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/device-index",
-				Handler: thingsotatask.DeviceIndexHandler(serverCtx),
+				Path:    "/index",
+				Handler: thingsotamodule.IndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/analysis",
-				Handler: thingsotatask.AnalysisHandler(serverCtx),
+				Path:    "/update",
+				Handler: thingsotamodule.UpdateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/device-cancel",
-				Handler: thingsotatask.DeviceCancleHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/device-retry",
-				Handler: thingsotatask.DeviceRetryHandler(serverCtx),
+				Path:    "/versionIndex",
+				Handler: thingsotamodule.VersionIndexHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/things/ota/task"),
+		rest.WithPrefix("/api/v1/things/ota/module"),
 	)
 
 	server.AddRoutes(
@@ -680,11 +431,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/create",
 				Handler: thingsotaotaFirmware.CreateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/update",
-				Handler: thingsotaotaFirmware.UpdateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -701,6 +447,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/read",
 				Handler: thingsotaotaFirmware.ReadHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/update",
+				Handler: thingsotaotaFirmware.UpdateHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/api/v1/things/ota/otaFirmware"),
 	)
@@ -709,13 +460,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/jobIndex",
-				Handler: thingsotaotaTask.JobIndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/jobCancel",
-				Handler: thingsotaotaTask.JobCancelHandler(serverCtx),
+				Path:    "/confirm",
+				Handler: thingsotaotaTask.ConfirmHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -724,8 +470,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/confirm",
-				Handler: thingsotaotaTask.ConfirmHandler(serverCtx),
+				Path:    "/jobCancel",
+				Handler: thingsotaotaTask.JobCancelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/jobIndex",
+				Handler: thingsotaotaTask.JobIndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -745,155 +496,293 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/verify",
-				Handler: thingsotajob.VerifyHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/staticCreate",
-				Handler: thingsotajob.StaticCreateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/dynamicCreate",
-				Handler: thingsotajob.DynamicCreateHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/firmwareIndex",
-				Handler: thingsotajob.FirmwareIndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/deviceIndex",
-				Handler: thingsotajob.DeviceIndexHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/read",
-				Handler: thingsotajob.ReadHandler(serverCtx),
+				Path:    "/analysis",
+				Handler: thingsotatask.AnalysisHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/cancel",
-				Handler: thingsotajob.CancelHandler(serverCtx),
+				Handler: thingsotatask.CancelHandler(serverCtx),
 			},
-		},
-		rest.WithPrefix("/api/v1/things/ota/job"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
 			{
 				Method:  http.MethodPost,
 				Path:    "/create",
-				Handler: thingsotamodule.CreateHandler(serverCtx),
+				Handler: thingsotatask.CreateHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/update",
-				Handler: thingsotamodule.UpdateHandler(serverCtx),
+				Path:    "/device-cancel",
+				Handler: thingsotatask.DeviceCancleHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/delete",
-				Handler: thingsotamodule.DelHandler(serverCtx),
+				Path:    "/device-index",
+				Handler: thingsotatask.DeviceIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/device-retry",
+				Handler: thingsotatask.DeviceRetryHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/index",
-				Handler: thingsotamodule.IndexHandler(serverCtx),
+				Handler: thingsotatask.IndexHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/versionIndex",
-				Handler: thingsotamodule.VersionIndexHandler(serverCtx),
+				Path:    "/read",
+				Handler: thingsotatask.ReadHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/things/ota/module"),
+		rest.WithPrefix("/api/v1/things/ota/task"),
 	)
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
 					Path:    "/create",
-					Handler: thingsvidmgrinfo.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/active",
-					Handler: thingsvidmgrinfo.ActiveHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsvidmgrinfo.UpdateHandler(serverCtx),
+					Handler: thingsproductcategory.CreateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/delete",
-					Handler: thingsvidmgrinfo.DeleteHandler(serverCtx),
+					Handler: thingsproductcategory.DeleteHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/index",
-					Handler: thingsvidmgrinfo.IndexHandler(serverCtx),
+					Handler: thingsproductcategory.IndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/read",
-					Handler: thingsvidmgrinfo.ReadHandler(serverCtx),
+					Handler: thingsproductcategory.ReadHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/count",
-					Handler: thingsvidmgrinfo.CountHandler(serverCtx),
+					Path:    "/update",
+					Handler: thingsproductcategory.UpdateHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/vidmgr/info"),
+		rest.WithPrefix("/api/v1/things/product/category"),
 	)
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsvidmgrstream.CreateHandler(serverCtx),
+					Path:    "/read",
+					Handler: thingsproductcustom.ReadHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/update",
-					Handler: thingsvidmgrstream.UpdateHandler(serverCtx),
+					Handler: thingsproductcustom.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/custom"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductinfo.CreateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/delete",
-					Handler: thingsvidmgrstream.DeleteHandler(serverCtx),
+					Handler: thingsproductinfo.DeleteHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/index",
-					Handler: thingsvidmgrstream.IndexHandler(serverCtx),
+					Handler: thingsproductinfo.IndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/read",
-					Handler: thingsvidmgrstream.ReadHandler(serverCtx),
+					Handler: thingsproductinfo.ReadHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/count",
-					Handler: thingsvidmgrstream.CountHandler(serverCtx),
+					Path:    "/update",
+					Handler: thingsproductinfo.UpdateHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/vidmgr/stream"),
+		rest.WithPrefix("/api/v1/things/product/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/remote-config/create",
+					Handler: thingsproductremoteConfig.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/remote-config/index",
+					Handler: thingsproductremoteConfig.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/remote-config/lastest-read",
+					Handler: thingsproductremoteConfig.LastestReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/remote-config/push-all",
+					Handler: thingsproductremoteConfig.PushAllHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsproductschema.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsproductschema.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsproductschema.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/tsl-import",
+					Handler: thingsproductschema.TslImportHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/tsl-read",
+					Handler: thingsproductschema.TslReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductschema.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/schema"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsrulesceneinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsrulesceneinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsrulesceneinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/manually-trigger",
+					Handler: thingsrulesceneinfo.ManuallyTriggerHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsrulesceneinfo.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsrulesceneinfo.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/rule/scene/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsschemacommon.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsschemacommon.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsschemacommon.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsschemacommon.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/schema/common"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsuserdevicecollect.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: thingsuserdevicecollect.MultiCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-delete",
+					Handler: thingsuserdevicecollect.MultiDeleteHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/user/device/collect"),
 	)
 
 	server.AddRoutes(
@@ -902,13 +791,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/restart",
-					Handler: thingsvidmgrctrl.RestartHandler(serverCtx),
+					Path:    "/getsvr",
+					Handler: thingsvidmgrctrl.GetsvrHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/getsvr",
-					Handler: thingsvidmgrctrl.GetsvrHandler(serverCtx),
+					Path:    "/restart",
+					Handler: thingsvidmgrctrl.RestartHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -931,28 +820,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/deletechn",
-					Handler: thingsvidmgrgbsip.DeletechnHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/updatechn",
-					Handler: thingsvidmgrgbsip.UpdatechnHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/indexchn",
-					Handler: thingsvidmgrgbsip.IndexchnHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/readchn",
-					Handler: thingsvidmgrgbsip.ReadchnHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
 					Path:    "/createdev",
 					Handler: thingsvidmgrgbsip.CreatedevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/deletechn",
+					Handler: thingsvidmgrgbsip.DeletechnHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -961,23 +835,23 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/playchn",
-					Handler: thingsvidmgrgbsip.PlaychnHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/stopchn",
-					Handler: thingsvidmgrgbsip.StopchnHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/updatedev",
-					Handler: thingsvidmgrgbsip.UpdatedevHandler(serverCtx),
+					Path:    "/indexchn",
+					Handler: thingsvidmgrgbsip.IndexchnHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/indexdev",
 					Handler: thingsvidmgrgbsip.IndexdevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/playchn",
+					Handler: thingsvidmgrgbsip.PlaychnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/readchn",
+					Handler: thingsvidmgrgbsip.ReadchnHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -989,6 +863,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/readinfo",
 					Handler: thingsvidmgrgbsip.ReadinfoHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/stopchn",
+					Handler: thingsvidmgrgbsip.StopchnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/updatechn",
+					Handler: thingsvidmgrgbsip.UpdatechnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/updatedev",
+					Handler: thingsvidmgrgbsip.UpdatedevHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/vidmgr/gbsip"),
@@ -996,78 +885,84 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/update",
-					Handler: thingsschemacommon.UpdateHandler(serverCtx),
+					Path:    "/active",
+					Handler: thingsvidmgrinfo.ActiveHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/count",
+					Handler: thingsvidmgrinfo.CountHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/create",
-					Handler: thingsschemacommon.CreateHandler(serverCtx),
+					Handler: thingsvidmgrinfo.CreateHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/delete",
-					Handler: thingsschemacommon.DeleteHandler(serverCtx),
+					Handler: thingsvidmgrinfo.DeleteHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/index",
-					Handler: thingsschemacommon.IndexHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/v1/things/schema/common"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/create",
-					Handler: thingsopsworkOrder.CreateHandler(serverCtx),
+					Handler: thingsvidmgrinfo.IndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsopsworkOrder.IndexHandler(serverCtx),
+					Path:    "/read",
+					Handler: thingsvidmgrinfo.ReadHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/update",
-					Handler: thingsopsworkOrder.UpdateHandler(serverCtx),
+					Handler: thingsvidmgrinfo.UpdateHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/ops/work-order"),
+		rest.WithPrefix("/api/v1/things/vidmgr/info"),
 	)
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.TeardownWare},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/multi-create",
-					Handler: thingsuserdevicecollect.MultiCreateHandler(serverCtx),
+					Path:    "/count",
+					Handler: thingsvidmgrstream.CountHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/multi-delete",
-					Handler: thingsuserdevicecollect.MultiDeleteHandler(serverCtx),
+					Path:    "/create",
+					Handler: thingsvidmgrstream.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsvidmgrstream.DeleteHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/index",
-					Handler: thingsuserdevicecollect.IndexHandler(serverCtx),
+					Handler: thingsvidmgrstream.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsvidmgrstream.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsvidmgrstream.UpdateHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/user/device/collect"),
+		rest.WithPrefix("/api/v1/things/vidmgr/stream"),
 	)
 }

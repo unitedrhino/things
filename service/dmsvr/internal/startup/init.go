@@ -3,9 +3,9 @@ package startup
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/i-Things/core/shared/devices"
-	"gitee.com/i-Things/core/shared/eventBus"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/event/deviceMsgEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/event/serverEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/subscribe/server"

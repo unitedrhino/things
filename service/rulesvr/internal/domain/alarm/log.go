@@ -1,7 +1,7 @@
 package alarm
 
 import (
-	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/share/def"
 )
 
 type LogFilter struct {

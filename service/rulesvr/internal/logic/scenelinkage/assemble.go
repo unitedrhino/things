@@ -2,7 +2,7 @@ package scenelinkagelogic
 
 import (
 	"encoding/json"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/service/rulesvr/pb/rule"
 	"time"

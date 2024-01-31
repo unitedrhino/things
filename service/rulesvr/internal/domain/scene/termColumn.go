@@ -2,9 +2,9 @@ package scene
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/domain/schema"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	devicemsg "github.com/i-Things/things/service/dmsvr/client/devicemsg"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"

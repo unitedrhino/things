@@ -2,7 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/share/def"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 

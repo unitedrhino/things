@@ -8,8 +8,8 @@ info(
     version: "v1"
 )
 
-import "things/vidmgr/srvinfo.api" //流服务管理
-import "things/vidmgr/srvstream.api" //视频流管理
-import "things/vidmgr/srvcontrol.api" //流服务控制接口
-import "things/vidmgr/srvsip.api" //流服务gb28181接口
+import "vidmgr/srvinfo.api" //流服务管理
+import "vidmgr/srvstream.api" //视频流管理
+import "vidmgr/srvcontrol.api" //流服务控制接口
+import "vidmgr/srvsip.api" //流服务gb28181接口
 //import "things/vidmgr/srvrecord.api" //流服务录像服务接口

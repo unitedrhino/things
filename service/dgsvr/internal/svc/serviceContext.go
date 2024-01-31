@@ -2,10 +2,10 @@ package svc
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/conf"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/eventBus"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dgsvr/internal/config"
 	"github.com/i-Things/things/service/dgsvr/internal/domain/custom"
 	"github.com/i-Things/things/service/dgsvr/internal/repo/cache"

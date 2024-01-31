@@ -5,7 +5,7 @@ import (
 	"context"
 	"time"
 
-	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/share/def"
 )
 
 type (

@@ -3,13 +3,13 @@ package firmwaremanagelogic
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/utils"
 	"path"
 
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/oss"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/oss"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 

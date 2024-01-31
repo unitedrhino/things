@@ -6,9 +6,9 @@ info(
     version: "v1"
 )
 
-import "things/ota/firmware.api" //ota附件接口
-import "things/ota/task.api" //ota升级任务接口
-import "things/ota/otaFirmware.api" //ota升级包接口
-import "things/ota/otaTask.api" //ota升级作业任务接口
-import "things/ota/job.api" //ota升级批次接口
-import "things/ota/module.api" //ota升级模块接口
+import "ota/firmware.api" //ota附件接口
+import "ota/task.api" //ota升级任务接口
+import "ota/otaFirmware.api" //ota升级包接口
+import "ota/otaTask.api" //ota升级作业任务接口
+import "ota/job.api" //ota升级批次接口
+import "ota/module.api" //ota升级模块接口

@@ -7,7 +7,7 @@ info(
     email: "wfjdemmye@163.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
+
 
 
 @server(
@@ -38,7 +38,7 @@ service api {
 }
 
 type (
-    StreamCommon struct{
+    StreamCommon {
         VidmgrID string     `json:"vidmgrID,optional"`
         StreamName string   `json:"streamName,optional"`
 
@@ -68,7 +68,7 @@ type (
         Tags        []*Tag  `json:"tags,optional"`                    //流tag
     }
 
-    StreamTrack struct {
+    StreamTrack  {
         Channels int64  `json:"channels"`
         CodecId int64  `json:"codec_id"`
         CodecIdName string    `json:"codec_id_name"`
@@ -81,7 +81,7 @@ type (
         Width   int64 `json:"width"`
     }
 
-    VidmgrStream struct{
+    VidmgrStream {
         StreamID int64      `json:"streamID,optional"`
         StreamCommon
         Protocol uint32  `json:"protocol,optional"`

@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/oss/common"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/oss/common"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgOta"

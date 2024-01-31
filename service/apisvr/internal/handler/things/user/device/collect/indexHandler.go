@@ -3,7 +3,7 @@ package collect
 import (
 	"net/http"
 
-	"gitee.com/i-Things/core/shared/result"
+	"gitee.com/i-Things/share/result"
 
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/user/device/collect"
 	"github.com/i-Things/things/service/apisvr/internal/svc"

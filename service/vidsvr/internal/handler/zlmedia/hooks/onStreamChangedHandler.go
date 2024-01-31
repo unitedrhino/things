@@ -2,7 +2,7 @@ package hooks
 
 import (
 	"encoding/json"
-	"gitee.com/i-Things/core/shared/result"
+	"gitee.com/i-Things/share/result"
 	"github.com/i-Things/things/service/vidsvr/internal/logic/zlmedia/hooks"
 	"github.com/i-Things/things/service/vidsvr/internal/svc"
 	"github.com/i-Things/things/service/vidsvr/internal/types"

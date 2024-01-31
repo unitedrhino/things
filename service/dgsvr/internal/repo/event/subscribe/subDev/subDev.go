@@ -3,8 +3,8 @@ package subDev
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/conf"
-	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/devices"
 )
 
 type (

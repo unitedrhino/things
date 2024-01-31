@@ -1,7 +1,7 @@
 package relationDB
 
 import (
-	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 )
 

@@ -2,7 +2,7 @@ package rulelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 

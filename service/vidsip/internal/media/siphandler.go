@@ -2,7 +2,7 @@ package media
 
 import (
 	"fmt"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/utils"
 	sip2 "github.com/i-Things/things/service/vidsip/gosip/sip"
 	db "github.com/i-Things/things/service/vidsip/internal/repo/relationDB"
 	"github.com/sirupsen/logrus"

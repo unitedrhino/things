@@ -2,7 +2,7 @@ package cache
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/share/devices"
 	"github.com/dgraph-io/ristretto"
 	"github.com/i-Things/things/service/dgsvr/internal/domain/custom"
 	"time"

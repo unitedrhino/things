@@ -1,7 +1,7 @@
 package common
 
 import (
-	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/share/def"
 	"github.com/i-Things/things/service/vidsvr/pb/vid"
 )
 

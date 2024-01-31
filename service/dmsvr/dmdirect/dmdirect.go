@@ -2,8 +2,8 @@ package dmdirect
 
 import (
 	"fmt"
-	"gitee.com/i-Things/core/shared/ctxs"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/config"
 	devicegroup "github.com/i-Things/things/service/dmsvr/internal/server/devicegroup"
 	deviceinteract "github.com/i-Things/things/service/dmsvr/internal/server/deviceinteract"

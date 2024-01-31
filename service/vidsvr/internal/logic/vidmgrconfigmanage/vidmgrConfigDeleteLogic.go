@@ -2,7 +2,7 @@ package vidmgrconfigmanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/vidsvr/internal/svc"

@@ -3,7 +3,7 @@ package msgHubLog
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/share/def"
 	"time"
 )
 

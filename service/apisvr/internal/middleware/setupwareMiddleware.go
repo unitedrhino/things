@@ -2,8 +2,8 @@ package middleware
 
 import (
 	operLog "gitee.com/i-Things/core/service/syssvr/client/log"
-	"gitee.com/i-Things/core/shared/ctxs"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/config"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"

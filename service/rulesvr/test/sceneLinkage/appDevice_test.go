@@ -3,9 +3,9 @@ package sceneLinkage
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/devices"
-	"gitee.com/i-Things/core/shared/domain/application"
-	"gitee.com/i-Things/core/shared/domain/schema"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/application"
+	"gitee.com/i-Things/share/domain/schema"
 	"github.com/i-Things/things/service/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/service/rulesvr/internal/event/appDeviceEvent"
 	"github.com/i-Things/things/service/rulesvr/internal/svc"

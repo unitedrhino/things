@@ -6,4 +6,4 @@ info(
     version: "v1"
 )
 
-import "things/group/group.api" //设备分组接口
+import "group/group.api" //设备分组接口

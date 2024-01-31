@@ -3,8 +3,8 @@ package otajobmanagelogic
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/devices"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgOta"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"

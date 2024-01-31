@@ -5,10 +5,10 @@ info(
     email: "603685348@qq.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
-import "things/schema/info.api"
+
+import "info.api"
 @server(
-    group : things/schema/common
+    group: things/schema/common
     prefix: /api/v1/things/schema/common
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -29,10 +29,10 @@ service api {
 }
 
 type (
-    CommonSchemaUpdateReq struct {
+    CommonSchemaUpdateReq  {
         *CommonSchemaInfo
     }
-    CommonSchemaCreateReq struct {
+    CommonSchemaCreateReq  {
          *CommonSchemaInfo
     }
     CommonSchemaDeleteReq {
@@ -53,7 +53,7 @@ type (
 
 type (
 /*物模型条目*/
-    CommonSchemaInfo struct {
+    CommonSchemaInfo  {
         ID int64 `json:"id,optional"`         //产品id
         Type int64 `json:"type,optional"`                             //物模型类型 1:property属性 2:event事件 3:action行为
         Identifier string `json:"identifier,optional"`                //标识符

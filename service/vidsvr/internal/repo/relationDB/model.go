@@ -3,7 +3,7 @@ package relationDB
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/share/stores"
 	"time"
 )
 

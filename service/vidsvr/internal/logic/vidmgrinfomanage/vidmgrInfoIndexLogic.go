@@ -2,7 +2,7 @@ package vidmgrinfomanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/share/def"
 	"github.com/i-Things/things/service/vidsvr/internal/common"
 	"github.com/i-Things/things/service/vidsvr/internal/repo/relationDB"
 

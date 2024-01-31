@@ -2,7 +2,7 @@ package sip
 
 import (
 	"fmt"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/utils"
 	"net/http"
 	"sync"
 	"time"

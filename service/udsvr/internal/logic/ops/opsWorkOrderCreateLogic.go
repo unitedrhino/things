@@ -3,7 +3,7 @@ package opslogic
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/ctxs"
+	"gitee.com/i-Things/share/ctxs"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"time"
 

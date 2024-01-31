@@ -7,7 +7,7 @@ info(
 )
 
 @server(
-    group : things/device/auth
+    group: things/device/auth
     prefix: /api/v1/things/device/auth
 )
 service api {
@@ -26,7 +26,7 @@ service api {
 }
 
 
-type DeviceAuthLoginReq struct {
+type DeviceAuthLoginReq  {
     Username string `json:"username"`                          //用户名
     Password string `json:"password,optional"`                 //密码
     ClientID string `json:"clientID"`                          //clientID
@@ -34,7 +34,7 @@ type DeviceAuthLoginReq struct {
     Certificate string `json:"certificate,optional,omitempty"` //客户端证书 base64后传过来
 }
 
-type DeviceAuthAccessReq struct {
+type DeviceAuthAccessReq  {
     Username string `json:"username,omitempty"`//用户名
     Topic string `json:"topic,omitempty"`      //主题
     ClientID string `json:"clientID,omitempty"`//clientID
@@ -42,7 +42,7 @@ type DeviceAuthAccessReq struct {
     Ip string `json:"ip,omitempty"`            //访问的ip地址
 }
 
-type DeviceAuthRootCheckReq struct {
+type DeviceAuthRootCheckReq  {
     Username string `json:"username,omitempty"`                //用户名
     Password string `json:"password,optional,omitempty"`       //密码
     ClientID string `json:"clientID,omitempty"`                //clientID
@@ -50,7 +50,7 @@ type DeviceAuthRootCheckReq struct {
     Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
 }
 
-type DeviceRegisterReq struct {
+type DeviceRegisterReq  {
     ProductID string `json:"productID"`   //产品id 只读
     DeviceName string `json:"deviceName"` //设备名称 读写
     Nonce int64 `json:"nonce"`            //随机数
@@ -58,7 +58,7 @@ type DeviceRegisterReq struct {
     Signature string `json:"signature"`   //签名信息
 }
 
-type DeviceRegisterResp struct {
+type DeviceRegisterResp  {
     Len int64  `json:"len"`   //payload加密前信息的长度
     /*
     加密过程将原始 JSON 格式的 payload 转为字符串后进行 AES 加密，再进行 base64 加密。AES 加密算法为 CBC 模式，密钥长度128，取 productSecret 前16位，偏移量为长度16的字符“0”。

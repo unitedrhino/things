@@ -1,7 +1,7 @@
 package relationDB
 
 import (
-	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/share/stores"
 	sip2 "github.com/i-Things/things/service/vidsip/gosip/sip"
 	"net"
 )

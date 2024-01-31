@@ -7,7 +7,7 @@ info(
     email: "wfjdemmye@163.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
+
 
 @server(
     group:things/vidmgr/info
@@ -40,7 +40,7 @@ service api {
 }
 
 type (
-    InfoCommon struct {
+    InfoCommon  {
         VidmgrName string `json:"vidmgrName"`                               //服务名称
         VidmgrID string `json:"vidmgrID,optional"`                         //服务id
         VidmgrType int64 `json:"vidmgrType,optional,range=[0:3]"`           //服务类型:1:ZLMediakit,2:srs,3:monibuca
@@ -54,26 +54,26 @@ type (
         Tags []*Tag `json:"tags,optional"`                                  //产品tag
     }
 
-    VidmgrInfo struct {
+    VidmgrInfo  {
         InfoCommon
         CreatedTime int64 `json:"createdTime,optional,string"`              //创建时间 只读
         FirstLogin int64 `json:"firstLogin,optional,string"`                //首次登录时间 只读
         LastLogin int64 `json:"lastLogin,optional,string"`                  //最后登录时间 只读
     }
 
-    VidmgrInfoCreateReq struct{
+    VidmgrInfoCreateReq {
         InfoCommon
     }
 
-    VidmgrInfoUpdateReq struct {
+    VidmgrInfoUpdateReq  {
         InfoCommon
     }
 
-    VidmgrInfoDeleteReq struct {
+    VidmgrInfoDeleteReq  {
         VidmgrID string `json:"vidmgrID"`                            //服务id 只读
     }
 
-    VidmgrInfoIndexReq struct {
+    VidmgrInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`                       //分页信息,只获取一个则不填
         VidmgrName string `json:"vidmgrName,optional"`              //过滤服务名称
         VidmgrType int64 `json:"deviceType,optional,range=[0:3]"`    //服务类型:1:ZLMediakit,2:srs,3:monibuca
@@ -81,11 +81,11 @@ type (
         Tags []*Tag `json:"tags,optional"`                  // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
     }
 
-    VidmgrInfoReadReq struct {
+    VidmgrInfoReadReq  {
         VidmgrID string `json:"vidmgrID"`                                     //服务id
     }
 
-    VidmgrInfoActiveReq struct {
+    VidmgrInfoActiveReq  {
         VidmgrID string `json:"vidmgrID"`                                     //服务id
     }
 
@@ -104,7 +104,7 @@ type (
         MgrInfoCount VidmgrInfoCount `json:"vidmgrCount"`
     }
 
-    VidmgrInfoIndexResp struct {
+    VidmgrInfoIndexResp  {
         List []*VidmgrInfo `json:"list"`    //服务信息
         Total int64 `json:"total,optional"`  //拥有的总数
         Num int64 `json:"num,optional"`      //返回的数量

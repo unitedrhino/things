@@ -1,6 +1,6 @@
 package scene
 
-import "gitee.com/i-Things/core/shared/errors"
+import "gitee.com/i-Things/share/errors"
 
 type When struct {
 	ValidRanges   WhenRanges `json:"validRanges"`   //生效时间段

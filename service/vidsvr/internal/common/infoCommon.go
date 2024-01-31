@@ -1,8 +1,8 @@
 package common
 
 import (
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/utils"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/service/vidsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/vidsvr/pb/vid"

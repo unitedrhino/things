@@ -2,8 +2,8 @@ package devicemsglogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 

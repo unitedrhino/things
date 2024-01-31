@@ -2,8 +2,8 @@ package auth5
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/devices"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"

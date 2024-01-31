@@ -2,8 +2,8 @@ package schemaDataRepo
 
 import (
 	"fmt"
-	"gitee.com/i-Things/core/shared/domain/schema"
-	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/stores"
 	"strings"
 )
 

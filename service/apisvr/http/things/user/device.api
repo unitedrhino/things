@@ -7,7 +7,7 @@ info(
 )
 
 @server (
-	group : things/user/device/collect
+	group: things/user/device/collect
 	prefix: /api/v1/things/user/device/collect
 	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
 )

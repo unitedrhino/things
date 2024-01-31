@@ -6,10 +6,9 @@ info(
     version: "v1"
 )
 
-import "common.api"  //公共结构体定义
 
 @server(
-    group : things/device/gateway
+    group: things/device/gateway
     prefix: /api/v1/things/device/gateway
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -28,24 +27,24 @@ service api {
 }
 
 type (
-    DeviceGateWayIndexReq struct {
+    DeviceGateWayIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         GateWayProductID string `json:"gateWayProductID"`      //产品ID
         GateWayDeviceName string `json:"gateWaydeviceName"`    //设备名称
     }
 
-    DeviceGateWayIndexResp struct {
+    DeviceGateWayIndexResp  {
         List []*DeviceInfo `json:"list"`   //分组信息
         Total int64 `json:"total"`         //总数(只有分页的时候会返回)
     }
 
-    DeviceGateWayMultiCreateReq struct {
+    DeviceGateWayMultiCreateReq  {
         GateWayProductID string `json:"gateWayProductID"`      //产品ID
         GateWayDeviceName string `json:"gateWaydeviceName"`    //设备名称
         List []*DeviceCore `json:"list,optional"`   //分组tag
     }
 
-    DeviceGateWayMultiDeleteReq struct {
+    DeviceGateWayMultiDeleteReq  {
         GateWayProductID string `json:"gateWayProductID"`      //产品ID
         GateWayDeviceName string `json:"gateWaydeviceName"`    //设备名称
         List []*DeviceCore `json:"list,optional"`   //分组tag

@@ -3,9 +3,9 @@ package cache
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/devices"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/rulesvr/internal/domain/scene"
 	"sync"
 )

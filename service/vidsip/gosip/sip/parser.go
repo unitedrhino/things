@@ -3,7 +3,7 @@ package sip
 import (
 	"bytes"
 	"fmt"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/utils"
 	"github.com/sirupsen/logrus"
 	"strconv"
 	"strings"

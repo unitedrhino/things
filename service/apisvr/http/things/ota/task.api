@@ -5,7 +5,6 @@ info(
     email: "635665396@qq.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
 @server(
     group:things/ota/task
     prefix: api/v1/things/ota/task
@@ -37,16 +36,16 @@ service api {
     post /device-retry (OtaTaskDeviceRetryReq)
 }
 type (
-    OtaTaskIndexReq struct {
+    OtaTaskIndexReq  {
         FirmwareID int64 `json:"firmwareID"` //固件升级包编号
         TaskUid string `json:"taskUid,optional"`
         Page *PageInfo `json:"page,optional"`    //分页信息
     }
-    OtaTaskIndexResp struct {
+    OtaTaskIndexResp  {
         Total int64 `json:"total"`//总数
         List []*OtaTaskInfo `json:"list"`
     }
-    OtaTaskInfo struct {
+    OtaTaskInfo  {
         TaskID int64 `json:"taskID"`
         TaskUid string `json:"taskUid"` //批次号
         Type int32 `json:"type" enums:"1,2"`  //升级范围1全部设备2定向升级
@@ -54,10 +53,10 @@ type (
         Status int32 `json:"status"  enums:"1,2,3"` //升级状态:1未升级2升级中3完成
         CreatedTime int64 `json:"createdTime"`        //创建时间 只读
     }
-    OtaTaskReadReq struct {
+    OtaTaskReadReq  {
         TaskID int64 `json:"taskID"`
     }
-    OtaTaskReadResp struct {
+    OtaTaskReadResp  {
         TaskID int64 `json:"taskID"`
         TaskUid string `json:"taskUid"`
         Type int32 `json:"type"  enums:"1,2"`  //升级范围1全部设备2定向升级
@@ -71,27 +70,27 @@ type (
         AutoRepeat int32 `json:"autoRepeat"` //是否自动重试,1:不,2自动重试,最多重试10次
         CreatedTime int64 `json:"createdTime"`        //创建时间 只读
     }
-    OtaTaskCreateReq struct {
+    OtaTaskCreateReq  {
         FirmwareID int64 `json:"firmwareID"` //固件升级包编号
         Type int32 `json:"type"`  //升级范围1全部设备2定向升级
         UpgradeType int32 `json:"upgradeType"`  //升级策略:1静态升级2动态升级
         DeviceList string `json:"deviceList"` //待升级设备列表,["device1","device2",...]
         VersionList   string `json:"versionList"` //待升级版本,["version1","version2",...]
     }
-    OtaTaskCancleReq struct {
+    OtaTaskCancleReq  {
         TaskID int64 `json:"taskID"`
     }
-    OtaTaskDeviceIndexReq struct {
+    OtaTaskDeviceIndexReq  {
         TaskUid string `json:"taskUid"`
         DeviceName string `json:"deviceName,optional"` //设备编号
         Status int32 `json:"status,optional"` //升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
         Page *PageInfo `json:"page,optional"`    //分页信息
     }
-    OtaTaskDeviceIndexResp struct {
+    OtaTaskDeviceIndexResp  {
         List []*OtaTaskDeviceInfo `json:"list"`
         Total int64 `json:"total"`//总数
     }
-    OtaTaskDeviceInfo struct {
+    OtaTaskDeviceInfo  {
         ID int64 `json:"id"` //
         TaskUid string `json:"taskUid"`
         DeviceName string `json:"deviceName"` //设备编号
@@ -99,16 +98,16 @@ type (
         Status int32 `json:"status"` //升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
         UpdatedTime int64 `json:"updatedTime"`        //状态更新时间 只读
     }
-    OtaTaskAnalysisReq struct {
+    OtaTaskAnalysisReq  {
         TaskUid string `json:"taskUid"`
     }
-    OtaTaskAnalysisResp struct {
+    OtaTaskAnalysisResp  {
         Result string `json:"result"` //统计结果,json格式
     }
-    OtaTaskDeviceCancleReq struct {
+    OtaTaskDeviceCancleReq  {
         ID int64 `json:"id"` //特定设备的升级id
     }
-    OtaTaskDeviceRetryReq struct {
+    OtaTaskDeviceRetryReq  {
         ID int64 `json:"id"` //特定设备的升级id
     }
 )

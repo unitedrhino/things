@@ -2,7 +2,7 @@ package sipdirect
 
 import (
 	"fmt"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/errors"
 	client "github.com/i-Things/things/service/vidsip/client/sipmanage"
 	"github.com/i-Things/things/service/vidsip/internal/config"
 	server "github.com/i-Things/things/service/vidsip/internal/server/sipmanage"

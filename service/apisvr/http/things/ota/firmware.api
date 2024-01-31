@@ -5,9 +5,8 @@ info(
     email: "635665396@qq.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
 @server(
-    group : things/ota/firmware
+    group: things/ota/firmware
     prefix: /api/v1/things/ota/firmware
 )
 service api {
@@ -31,23 +30,23 @@ service api {
     post /device-info-read(OtaFirmwareDeviceInfoReq) returns (OtaFirmwareDeviceInfoResp)
 }
 type (
-    OtaFirmwareIndexReq struct {
+    OtaFirmwareIndexReq  {
         ProductID string `json:"productID,optional,omitempty"`                         //产品id 获取产品id下的所有升级包
         TimeStart int64 `json:"timeStart,string,optional,omitempty"`          //获取时间的开始
         TimeEnd int64 `json:"timeEnd,string,optional,omitempty"`              //时间的结束
         Page *PageInfo `json:"page,optional"`           //分页信息
     }
-    OtaFirmwareIndexResp struct {
+    OtaFirmwareIndexResp  {
         List []*OtaFirmwareIndex `json:"list"`//数据
         Total int64 `json:"total"`//总数
     }
-    OtaFirmwareInfoUpdateReq struct {
+    OtaFirmwareInfoUpdateReq  {
         FirmwareID int64 `json:"firmwareID"` //固件升级包编号
         Name string `json:"name"`  //升级包名称
         Desc *string  `json:"desc"` //描述
         extData *string `json:"extData"` //自定义数据
     }
-    OtaFirmwareIndex struct {
+    OtaFirmwareIndex  {
         FirmwareID int64 `json:"firmwareID"` //固件升级包编号
         Name string `json:"name"`  //升级包名称
         Version string `json:"version"`  //升级包版本
@@ -57,10 +56,10 @@ type (
         CreatedTime int64 `json:"createdTime"`        //创建时间 只读
         SignMethod string `json:"signMethod"` //签名方法
     }
-    OtaFirmwareReadReq struct {
+    OtaFirmwareReadReq  {
         FirmwareID int64 `json:"firmwareID"` //固件升级包编号
     }
-    OtaFirmwareReadResp struct {
+    OtaFirmwareReadResp  {
         FirmwareID int64 `json:"firmwareID"` //固件升级包编号
         Name string `json:"name"`  //升级包名称
         Version string `json:"version"`  //升级包版本
@@ -74,7 +73,7 @@ type (
         Files []*OtaFirmwareFileInfo `json:"files"`
 
     }
-    OtaFirmwareInfo struct {
+    OtaFirmwareInfo  {
         FirmwareID int64 `json:"firmwareID"` //固件升级包编号
         Name string `json:"name"`  //升级包名称
         Version string `json:"version"`  //升级包版本
@@ -86,7 +85,7 @@ type (
         Desc *string  `json:"desc"` //描述
         extData *string `json:"extData"` //自定义数据
     }
-    OtaFirmwareCreateReq struct {
+    OtaFirmwareCreateReq  {
         Name string `json:"name"`  //升级包名称
         ProductID string `json:"productID"`    //产品id
         Version string `json:"version"`  //升级包版本
@@ -96,25 +95,25 @@ type (
         ExtData *string `json:"extData"` //自定义数据
         Files []*OtaFirmwareFile  `json:"files"`//升级包附件列表，最多支持上传20个文件，总文件大小不能超过1,000 MB。
     }
-    OtaFirmwareFile struct {
+    OtaFirmwareFile  {
         Filepath string `json:"filePath"` //附件地址，上传附件后接口应该返回 
         Name string `json:"name"` //附件原名，上传附件后接口应该返回
         //Size int32 `json:"size"` //附件大小，上传附件后接口应该返回
         //SignValue string `json:"signValue"` //签名，上传附件接口返回
     }
-    OtaFirmwareFileInfo struct {
+    OtaFirmwareFileInfo  {
         Uri string `json:"uri"` //附件地址
         Name string `json:"name"` //附件原名
         Size int64 `json:"size"` //文件大小
         Signature string `json:"signature"` //签名值
     }
-    OtaFirmwareDelReq  struct {
+    OtaFirmwareDelReq   {
         FirmwareID int64 `json:"firmwareID"` //固件升级包编号
     }
-    OtaFirmwareDeviceInfoReq struct {
+    OtaFirmwareDeviceInfoReq  {
         FirmwareID int64 `json:"firmwareID"` //固件升级包编号
     }
-    OtaFirmwareDeviceInfoResp struct {
+    OtaFirmwareDeviceInfoResp  {
         Versions string `json:"versions"`
     }
 )

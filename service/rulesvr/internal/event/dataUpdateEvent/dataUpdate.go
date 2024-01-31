@@ -2,8 +2,8 @@ package dataUpdateEvent
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/events"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/events"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/rulesvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"

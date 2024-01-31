@@ -2,9 +2,9 @@ package otafirmwaremanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/stores"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
