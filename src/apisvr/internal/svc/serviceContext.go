@@ -43,12 +43,12 @@ import (
 	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
 	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
-	"github.com/i-Things/things/src/vidsip/client/sipmanage"
-	"github.com/i-Things/things/src/vidsip/sipdirect"
 	"github.com/i-Things/things/src/udsvr/client/ops"
 	"github.com/i-Things/things/src/udsvr/client/rule"
 	"github.com/i-Things/things/src/udsvr/client/userdevice"
 	"github.com/i-Things/things/src/udsvr/uddirect"
+	"github.com/i-Things/things/src/vidsip/client/sipmanage"
+	"github.com/i-Things/things/src/vidsip/sipdirect"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrconfigmanage"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrinfomanage"
 	"github.com/i-Things/things/src/vidsvr/client/vidmgrstreammanage"
@@ -72,13 +72,11 @@ type SvrClient struct {
 	RoleRpc   role.RoleManage
 	AppRpc    app.AppManage
 	ModuleRpc module.ModuleManage
-	MenuRpc menu.Menu
-	LogRpc  log.Log
-	ApiRpc  api.Api
-	SipRpc  sipmanage.SipManage
-	VidmgrM vidmgrinfomanage.VidmgrInfoManage
-	VidmgrC vidmgrconfigmanage.VidmgrConfigManage
-	VidmgrS vidmgrstreammanage.VidmgrStreamManage
+	LogRpc    log.Log
+	SipRpc    sipmanage.SipManage
+	VidmgrM   vidmgrinfomanage.VidmgrInfoManage
+	VidmgrC   vidmgrconfigmanage.VidmgrConfigManage
+	VidmgrS   vidmgrstreammanage.VidmgrStreamManage
 
 	ProjectM  projectmanage.ProjectManage
 	ProtocolM protocolmanage.ProtocolManage
@@ -127,19 +125,9 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
-		vidmgrM        vidmgrinfomanage.VidmgrInfoManage
-		vidmgrC        vidmgrconfigmanage.VidmgrConfigManage
-		vidmgrS        vidmgrstreammanage.VidmgrStreamManage
-		Ops            ops.Ops
-		protocolM      protocolmanage.ProtocolManage
-		schemaM        schemamanage.SchemaManage
-		projectM       projectmanage.ProjectManage
-		areaM          areamanage.AreaManage
-		productM       productmanage.ProductManage
-		deviceM        devicemanage.DeviceManage
-		deviceA        deviceauth.DeviceAuth
-		deviceG        devicegroup.DeviceGroup
-		appRpc         app.AppManage
+		Ops     ops.Ops
+		schemaM schemamanage.SchemaManage
+		appRpc  app.AppManage
 		vidmgrM vidmgrinfomanage.VidmgrInfoManage
 		vidmgrC vidmgrconfigmanage.VidmgrConfigManage
 		vidmgrS vidmgrstreammanage.VidmgrStreamManage

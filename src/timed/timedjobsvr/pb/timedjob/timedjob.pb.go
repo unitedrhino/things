@@ -27,7 +27,7 @@ type PageInfo struct {
 
 	Page int64 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
 	Size int64 `protobuf:"varint,2,opt,name=size,proto3" json:"size,omitempty"`
-	//排序信息
+	// 排序信息
 	Orders []*PageInfo_OrderBy `protobuf:"bytes,3,rep,name=orders,proto3" json:"orders,omitempty"`
 }
 
@@ -690,9 +690,8 @@ type TaskGroup struct {
 	SubType  string            `protobuf:"bytes,4,opt,name=subType,proto3" json:"subType,omitempty"`                                                                                 //组子类型 natsJs nats         normal js
 	Priority int64             `protobuf:"varint,5,opt,name=priority,proto3" json:"priority,omitempty"`                                                                              //组优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 	Env      map[string]string `protobuf:"bytes,6,rep,name=env,proto3" json:"env,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` //环境变量
-	//
-	//组的配置, sql类型配置格式如下,key若为select,则select默认会选择该配置,exec:exec执行sql默认会选择这个,执行sql的函数也可以指定连接
-	//database: map[string]TaskGroupDBConfig
+	// 组的配置, sql类型配置格式如下,key若为select,则select默认会选择该配置,exec:exec执行sql默认会选择这个,执行sql的函数也可以指定连接
+	// database: map[string]TaskGroupDBConfig
 	Config string `protobuf:"bytes,7,opt,name=config,proto3" json:"config,omitempty"`
 }
 
@@ -972,7 +971,7 @@ type TaskSendOption struct {
 	unknownFields protoimpl.UnknownFields
 
 	Priority int64 `protobuf:"varint,1,opt,name=priority,proto3" json:"priority,omitempty"` //优先级: 6:critical 最高优先级  3: default 普通优先级 1:low 低优先级
-	//以下两个参数优先使用ProcessIn
+	// 以下两个参数优先使用ProcessIn
 	ProcessIn int64  `protobuf:"varint,2,opt,name=processIn,proto3" json:"processIn,omitempty"` //多久之后发 秒数
 	ProcessAt int64  `protobuf:"varint,3,opt,name=processAt,proto3" json:"processAt,omitempty"` // 固定时间发 秒时间戳
 	Timeout   int64  `protobuf:"varint,4,opt,name=timeout,proto3" json:"timeout,omitempty"`     //超时时间 优先使用 秒数
@@ -1059,9 +1058,9 @@ type PageInfo_OrderBy struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	//排序的字段名
+	// 排序的字段名
 	Filed string `protobuf:"bytes,1,opt,name=filed,proto3" json:"filed,omitempty"`
-	//排序方式：0 aes, 1 desc
+	// 排序方式：0 aes, 1 desc
 	Sort int64 `protobuf:"varint,2,opt,name=sort,proto3" json:"sort,omitempty"`
 }
 

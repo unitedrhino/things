@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/oss"
-	"github.com/i-Things/things/shared/utils/cast"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgOta"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"path"
@@ -39,7 +38,7 @@ func (l *OtaFirmwareCreateLogic) CheckOtaFirmware(in *dm.OtaFirmwareCreateReq) (
 	logx.Infof("relationDB:%+v", relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if errors.Cmp(err, errors.NotFind) {
-		l.Errorf("not find product id:" + cast.ToString(in.ProductID))
+		l.Errorf("not find product id:" + in.ProductID)
 		return false, nil
 	} else if err != nil {
 		return false, nil

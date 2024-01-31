@@ -38,31 +38,31 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SipManageClient interface {
-	//新建通道
+	// 新建通道
 	SipChannelCreate(ctx context.Context, in *SipChnCreateReq, opts ...grpc.CallOption) (*Response, error)
-	//删除通道
+	// 删除通道
 	SipChannelDelete(ctx context.Context, in *SipChnDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	//更新通道
+	// 更新通道
 	SipChannelUpdate(ctx context.Context, in *SipChnUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	//播放通道
+	// 播放通道
 	SipChannelPlay(ctx context.Context, in *SipChnPlayReq, opts ...grpc.CallOption) (*Response, error)
-	//暂停通道
+	// 暂停通道
 	SipChannelStop(ctx context.Context, in *SipChnStopReq, opts ...grpc.CallOption) (*Response, error)
-	//获取通道列表
+	// 获取通道列表
 	SipChannelIndex(ctx context.Context, in *SipChnIndexReq, opts ...grpc.CallOption) (*SipChnIndexResp, error)
-	//获取通道详情
+	// 获取通道详情
 	SipChannelRead(ctx context.Context, in *SipChnReadReq, opts ...grpc.CallOption) (*SipChannel, error)
-	//新建GB28181设备
+	// 新建GB28181设备
 	SipDeviceCreate(ctx context.Context, in *SipDevCreateReq, opts ...grpc.CallOption) (*Response, error)
-	//删除GB28181设备
+	// 删除GB28181设备
 	SipDeviceDelete(ctx context.Context, in *SipDevDeleteReq, opts ...grpc.CallOption) (*Response, error)
-	//更新GB28181设备
+	// 更新GB28181设备
 	SipDeviceUpdate(ctx context.Context, in *SipDevUpdateReq, opts ...grpc.CallOption) (*Response, error)
-	//获取GB28181设备列表
+	// 获取GB28181设备列表
 	SipDeviceIndex(ctx context.Context, in *SipDevIndexReq, opts ...grpc.CallOption) (*SipDevIndexResp, error)
-	//获取GB28181设备详情
+	// 获取GB28181设备详情
 	SipDeviceRead(ctx context.Context, in *SipDevReadReq, opts ...grpc.CallOption) (*SipDevice, error)
-	//获取国标服务信息
+	// 获取国标服务信息
 	SipInfoRead(ctx context.Context, in *SipInfoReadReq, opts ...grpc.CallOption) (*SipInfo, error)
 }
 
@@ -195,31 +195,31 @@ func (c *sipManageClient) SipInfoRead(ctx context.Context, in *SipInfoReadReq, o
 // All implementations must embed UnimplementedSipManageServer
 // for forward compatibility
 type SipManageServer interface {
-	//新建通道
+	// 新建通道
 	SipChannelCreate(context.Context, *SipChnCreateReq) (*Response, error)
-	//删除通道
+	// 删除通道
 	SipChannelDelete(context.Context, *SipChnDeleteReq) (*Response, error)
-	//更新通道
+	// 更新通道
 	SipChannelUpdate(context.Context, *SipChnUpdateReq) (*Response, error)
-	//播放通道
+	// 播放通道
 	SipChannelPlay(context.Context, *SipChnPlayReq) (*Response, error)
-	//暂停通道
+	// 暂停通道
 	SipChannelStop(context.Context, *SipChnStopReq) (*Response, error)
-	//获取通道列表
+	// 获取通道列表
 	SipChannelIndex(context.Context, *SipChnIndexReq) (*SipChnIndexResp, error)
-	//获取通道详情
+	// 获取通道详情
 	SipChannelRead(context.Context, *SipChnReadReq) (*SipChannel, error)
-	//新建GB28181设备
+	// 新建GB28181设备
 	SipDeviceCreate(context.Context, *SipDevCreateReq) (*Response, error)
-	//删除GB28181设备
+	// 删除GB28181设备
 	SipDeviceDelete(context.Context, *SipDevDeleteReq) (*Response, error)
-	//更新GB28181设备
+	// 更新GB28181设备
 	SipDeviceUpdate(context.Context, *SipDevUpdateReq) (*Response, error)
-	//获取GB28181设备列表
+	// 获取GB28181设备列表
 	SipDeviceIndex(context.Context, *SipDevIndexReq) (*SipDevIndexResp, error)
-	//获取GB28181设备详情
+	// 获取GB28181设备详情
 	SipDeviceRead(context.Context, *SipDevReadReq) (*SipDevice, error)
-	//获取国标服务信息
+	// 获取国标服务信息
 	SipInfoRead(context.Context, *SipInfoReadReq) (*SipInfo, error)
 	mustEmbedUnimplementedSipManageServer()
 }
