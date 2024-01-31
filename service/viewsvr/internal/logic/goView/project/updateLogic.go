@@ -2,9 +2,9 @@ package project
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/oss"
-	"gitee.com/i-Things/core/shared/oss/common"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/oss"
+	"gitee.com/i-Things/share/oss/common"
 	"github.com/i-Things/things/service/viewsvr/internal/domain"
 	"github.com/i-Things/things/service/viewsvr/internal/repo/relationDB"
 

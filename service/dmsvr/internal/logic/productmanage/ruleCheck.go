@@ -1,7 +1,7 @@
 package productmanagelogic
 
 import (
-	"gitee.com/i-Things/core/shared/domain/schema"
+	"gitee.com/i-Things/share/domain/schema"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 )
 

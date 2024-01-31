@@ -2,9 +2,9 @@ package deviceinteractlogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/devices"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/errors"
 	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
 	productmanage "github.com/i-Things/things/service/dmsvr/internal/server/productmanage"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"

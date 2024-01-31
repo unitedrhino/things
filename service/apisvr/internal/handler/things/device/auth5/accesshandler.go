@@ -1,7 +1,7 @@
 package auth5
 
 import (
-	"gitee.com/i-Things/core/shared/result"
+	"gitee.com/i-Things/share/result"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/device/auth5"
 	"net/http"
 

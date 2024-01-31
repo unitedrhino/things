@@ -6,11 +6,9 @@ info(
     version: "v1"
 )
 
-import "common.api"  //公共结构体定义
-import "things/device/info.api"  //设备结构
 
 @server(
-     group : things/group/info
+     group: things/group/info
      prefix: /api/v1/things/group/info
      middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -38,7 +36,7 @@ service api {
 }
 
 @server(
-     group : things/group/device
+     group: things/group/device
      prefix: /api/v1/things/group/device
      middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -77,7 +75,7 @@ type (
     }
 
 
-    GroupInfoIndexReq struct {
+    GroupInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         AreaID int64 `json:"areaID,string,optional"`                    //区域ID
         ParentID int64 `json:"parentID,optional"`                  //父组ID
@@ -86,13 +84,13 @@ type (
         Tags []*Tag `json:"tags,optional"`                    //分组tag
     }
 
-    GroupInfoIndexResp struct {
+    GroupInfoIndexResp  {
         List []*GroupInfo `json:"list"`    //分组信息
         Total int64 `json:"total"`         //总数(只有分页的时候会返回)
     }
 
 
-    GroupDeviceIndexReq struct {
+    GroupDeviceIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         GroupID   int64  `json:"groupID"`                    //分组ID
         ProductID string `json:"productID,optional"`                         //产品ID
@@ -100,17 +98,17 @@ type (
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
     }
 
-    GroupDeviceIndexResp struct {
+    GroupDeviceIndexResp  {
         List []*DeviceInfo `json:"list"`   //分组信息
         Total int64 `json:"total"`         //总数(只有分页的时候会返回)
     }
 
-    GroupDeviceMultiSaveReq struct {
+    GroupDeviceMultiSaveReq  {
         GroupID   int64  `json:"groupID"`            //分组ID
         List []*DeviceCore `json:"list,optional"`   //分组tag
     }
 
-    GroupDeviceMultiDeleteReq struct {
+    GroupDeviceMultiDeleteReq  {
         GroupID   int64  `json:"groupID"`            //分组ID
         List []*DeviceCore `json:"list,optional"`   //分组tag
     }

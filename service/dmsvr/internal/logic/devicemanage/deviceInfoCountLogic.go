@@ -3,9 +3,9 @@ package devicemanagelogic
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/devices"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"

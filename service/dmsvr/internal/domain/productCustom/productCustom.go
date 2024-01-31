@@ -1,6 +1,6 @@
 package productCustom
 
-import "gitee.com/i-Things/core/shared/devices"
+import "gitee.com/i-Things/share/devices"
 
 type CustomTopic struct {
 	Topic     string `json:"topic"`     //自定义主题需要以$custom 并包含设备名称{deviceName}及产品名称{productID}

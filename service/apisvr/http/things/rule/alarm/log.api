@@ -5,9 +5,9 @@ info(
     email: "603685348@qq.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
+
 @server(
-    group : things/rule/alarm/log
+    group: things/rule/alarm/log
     prefix: /api/v1/things/rule/alarm/log
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -18,7 +18,7 @@ service api {
 }
 
 @server(
-    group : things/rule/alarm/record
+    group: things/rule/alarm/record
     prefix: /api/v1/things/rule/alarm/record
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -29,17 +29,17 @@ service api {
 }
 
 type (
-    AlarmRecordIndexReq struct {
+    AlarmRecordIndexReq  {
         AlarmID int64 `json:"alarmID,optional"`//告警配置ID
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         TimeRange        *TimeRange    `json:"timeRange,optional"` //时间范围
     }
-    AlarmRecordIndexResp struct {
+    AlarmRecordIndexResp  {
         List []*AlarmRecord `json:"list"`    //告警信息
         Total int64 `json:"total"`          //总数(只有分页的时候会返回)
         Num int64 `json:"num"`              //返回的数量
     }
-    AlarmRecord struct {
+    AlarmRecord  {
          ID int64 `json:"id"`//编号
          AlarmID int64 `json:"alarmID"`//告警记录ID
          TriggerType int64 `json:"triggerType"`//触发类型(设备触发1,其他2)
@@ -55,17 +55,17 @@ type (
 )
 
 type (
-    AlarmLogIndexReq struct {
+    AlarmLogIndexReq  {
         AlarmRecordID int64 `json:"alarmRecordID,optional"`//告警记录ID
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         TimeRange        *TimeRange    `json:"timeRange,optional"` //时间范围
     }
-    AlarmLogIndexResp struct {
+    AlarmLogIndexResp  {
         List []*AlarmLog `json:"list"`    //告警信息
         Total int64 `json:"total"`          //总数(只有分页的时候会返回)
         Num int64 `json:"num"`              //返回的数量
     }
-    AlarmLog struct {
+    AlarmLog  {
         ID int64 `json:"id,optional"`
         Desc string `json:"desc,optional"`
         CreatedTime int64 `json:"createdTime,optional"`

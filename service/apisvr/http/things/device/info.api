@@ -6,10 +6,9 @@ info(
     version: "v1"
 )
 
-import "common.api"  //公共结构体定义
 
 @server(
-    group : things/device/info
+    group: things/device/info
     prefix: /api/v1/things/device/info
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -42,7 +41,7 @@ service api {
 }
 
 type (
-    DeviceInfo struct {
+    DeviceInfo  {
         ProductID string `json:"productID"`                                               //产品id 只读
         ProjectID int64 `json:"projectID,string,optional"`                                               //项目id 只读
         AreaID int64 `json:"areaID,string,optional"`                                                     //项目区域id 只读
@@ -68,11 +67,11 @@ type (
         CreatedTime int64 `json:"createdTime,optional,string"`                            //创建时间 只读
         WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"` //获取的属性列表,如果不传withProperty,则不会返回
     }
-    DeviceInfoWithProperty struct{
+    DeviceInfoWithProperty {
         Value string `json:"value"`             //获取到的值
         Timestamp int64 `json:"timestamp,string"`               //发生时间戳
     }
-    DeviceInfoSaveReq struct {
+    DeviceInfoSaveReq  {
         ProductID string `json:"productID"`                                              //产品id 只读
         DeviceName string `json:"deviceName"`                                            //设备名称 读写
         DeviceAlias *string `json:"deviceAlias,optional"`                                 //设备别名 读写
@@ -86,21 +85,21 @@ type (
         MobileOperator int64    `json:"mobileOperator,optional,range=[0:4]"`                       //移动运营商:1)移动 2)联通 3)电信 4)广电
         AreaID int64 `json:"areaID,string,optional"`      //项目区域id 只读（1: root节点 2: 未分类节点 其他:子节点）
     }
-    DeviceInfoDeleteReq struct {
+    DeviceInfoDeleteReq  {
         ProductID string `json:"productID"`                                              //产品id 只读
         DeviceName string `json:"deviceName"`                                            //设备名称 读写
     }
-    DeviceInfoReadReq struct {
+    DeviceInfoReadReq  {
         ProductID string `json:"productID,optional"`                                     //产品id 为空时获取所有产品
         DeviceName string `json:"deviceName"`                                            //设备名称 读写
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
     }
-    DeviceInfoMultiUpdateReq struct {
+    DeviceInfoMultiUpdateReq  {
            Devices []*DeviceCore `json:"devices"`
             AreaID int64 `json:"areaID,string,optional"`
     }
 
-    DeviceInfoIndexReq struct {
+    DeviceInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         ProductID string `json:"productID,optional"`      //产品id 为空时获取所有产品
         DeviceName string `json:"deviceName,optional"`    //过滤条件:模糊查询 设备名
@@ -113,7 +112,7 @@ type (
         IsOnline int64 `json:"isOnline,optional,range=[0:2]"`                                         // 在线状态过滤  1离线 2在线
         ProductCategoryID int64 `json:"productCategoryID,optional"`
     }
-    DeviceInfoIndexResp struct {
+    DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息
         Total int64 `json:"total"`          //总数(只有分页的时候会返回)
         Num int64 `json:"num"`              //返回的数量

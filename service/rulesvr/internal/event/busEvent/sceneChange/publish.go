@@ -2,7 +2,7 @@ package sceneChange
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/events"
+	"gitee.com/i-Things/share/events"
 	"github.com/i-Things/things/service/rulesvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )

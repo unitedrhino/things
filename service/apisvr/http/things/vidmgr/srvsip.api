@@ -7,7 +7,7 @@ info(
     email: "wfjdemmye@163.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
+
 
 @server(
     group:things/vidmgr/gbsip
@@ -58,7 +58,7 @@ service api {
 }
 
 type (
-    CommonSipChannel struct{
+    CommonSipChannel {
         ChannelID string  `json:"channelID"`
         DeviceID string `json:"deviceID"`
         Memo string `json:"memo"`
@@ -83,7 +83,7 @@ type (
         LastLogin int64 `json:"lastLogin"`
         IsPlay bool `json:"isPlay"`
     }
-    CommonSipDevice struct{
+    CommonSipDevice {
         // DeviceID 设备id
         DeviceID string `json:"deviceID"`
         // Name 设备名称
@@ -119,7 +119,7 @@ type (
         Source string        `json:"source"`
         LastLogin int64 `json:"lastLogin"`
     }
-    CommonSipInfo struct {
+    CommonSipInfo  {
         ID int64   `json:"id"`             // Region 当前域
         Region string  `json:"region"`           // CID 通道id固定头部
         CID string    `json:"cid"`             // CNUM 当前通道数
@@ -135,78 +135,78 @@ type (
         MediaRtpPort int64    `json:"media_port"`    // 媒体服务器接流端口
     }
 
-    VidmgrSipCreateChnReq struct{
+    VidmgrSipCreateChnReq {
         ChannelID  string `json:"channelID"`
         DeviceID string  `json:"deviceID"`
         Memo string `json:"memo,optional"`
         StreamType string `json:"streamType,optional"`
         URL string `json:"url,optional"`
     }
-    VidmgrSipDeleteChnReq struct{
+    VidmgrSipDeleteChnReq {
         ChannelID  string `json:"channelID"`
     }
-    VidmgrSipUpdateChnReq struct{
+    VidmgrSipUpdateChnReq {
         ChannelID string  `json:"channelID"`
         Memo string `json:"memo"`
         StreamType string `json:"streamType"`
         URL string `json:"url"`
     }
-    VidmgrSipIndexChnReq struct{
+    VidmgrSipIndexChnReq {
         Page *PageInfo `json:"page,optional"`                       //分页信息,只获取一个则不填
         ChannelIDs []string  `json:"channelIDs,optional"`     //过滤服务id列表
     }
-    VidmgrSipIndexChnResp struct{
+    VidmgrSipIndexChnResp {
         List []*CommonSipChannel `json:"list"`    //服务信息
         Total int64 `json:"total,optional"`  //拥有的总数
         Num int64 `json:"num,optional"`      //返回的数量
     }
-    VidmgrSipReadChnReq struct{
+    VidmgrSipReadChnReq {
         ChannelID  string `json:"channelID"`
     }
-    VidmgrSipReadChnResp struct{
+    VidmgrSipReadChnResp {
         CommonSipChannel
     }
-    VidmgrSipCreateDevReq struct{
+    VidmgrSipCreateDevReq {
         DeviceID string `json:"deviceID"`
         VidmgrID string `json:"vidmgrID"`
 //        Region string `json:"region"`
         PWD string `json:"pwd"`
         Name string `json:"name"`
     }
-    VidmgrSipDeleteDevReq struct{
+    VidmgrSipDeleteDevReq {
         DeviceID  string `json:"deviceID"`
     }
-    VidmgrSipPlayChnReq struct{
+    VidmgrSipPlayChnReq {
         ChannelID  string `json:"channelID"`
     }
-    VidmgrSipStopChnReq struct{
+    VidmgrSipStopChnReq {
         ChannelID  string `json:"channelID"`
     }
-    VidmgrSipUpdateDevReq struct{
+    VidmgrSipUpdateDevReq {
         DeviceID  string `json:"deviceID"`
         PWD string `json:"pwd"`
         Name string `json:"name"`
     }
-    VidmgrSipIndexDevReq struct{
+    VidmgrSipIndexDevReq {
         Page *PageInfo `json:"page,optional"`                       //分页信息,只获取一个则不填
         DeviceIDs []string  `json:"deviceIDs,optional"`     //过滤服务id列表
     }
-    VidmgrSipIndexDevResp struct{
+    VidmgrSipIndexDevResp {
         List []*CommonSipDevice `json:"list"`    //服务信息
         Total int64 `json:"total,optional"`  //拥有的总数
         Num int64 `json:"num,optional"`      //返回的数量
     }
-    VidmgrSipReadDevReq struct{
+    VidmgrSipReadDevReq {
         DeviceID  string `json:"deviceID"`
     }
-    VidmgrSipReadDevResp struct{
+    VidmgrSipReadDevResp {
         CommonSipDevice
     }
 
-    VidmgrSipReadInfoReq struct{
+    VidmgrSipReadInfoReq {
         VidmgrID  string `json:"vidmgrID"`  //ignore
     }
-    VidmgrSipReadInfoResp struct{
+    VidmgrSipReadInfoResp {
         CommonSipInfo
     }
 )

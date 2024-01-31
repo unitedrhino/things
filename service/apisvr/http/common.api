@@ -21,26 +21,26 @@ type(
         ID int64 `json:"id,optional"`         // id
         Code string `json:"code,optional"`
     }
-    Tag struct {
+    Tag  {
         Key string `json:"key"`
         Value string `json:"value"`
     }
 
-    Point struct{
+    Point {
         Longitude float64 `json:"longitude,range=[0:180]"`                           //经度
         Latitude  float64 `json:"latitude,range=[0:90]"`                            //纬度
     }
 
-    DateRange struct{
+    DateRange {
         Start string `json:"start,optional"`       //开始时间 格式：yyyy-mm-dd
         End string `json:"end,optional"`           //结束时间 格式：yyyy-mm-dd
     }
-    TimeRange struct {
+    TimeRange  {
         Start int64 `json:"start,optional"`       //开始时间 unix时间戳
         End int64 `json:"end,optional"`           //结束时间 unix时间戳
     }
 
-    SendOption struct {
+    SendOption  {
         TimeoutToFail  int64 `json:"timeoutToFail,optional"`   //超时失败时间
         RequestTimeout int64 `json:"requestTimeout,optional"` //请求超时,超时后会进行重试
         RetryInterval  int64 `json:"retryInterval,optional"`   //重试间隔

@@ -1,9 +1,9 @@
 package scene
 
 import (
-	"gitee.com/i-Things/core/shared/crons"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/crons"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"time"
 )
 

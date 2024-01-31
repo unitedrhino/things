@@ -5,9 +5,8 @@ info(
     email: "1943965929@qq.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
 @server(
-    group : things/ota/otaTask
+    group: things/ota/otaTask
     prefix: /api/v1/things/ota/otaTask
 )
 service api{
@@ -37,7 +36,7 @@ service api{
     post /upgrade(OTATaskReUpgradeReq)
 }
 // OTATaskByJobIndexReq 表示根据作业索引的OTA任务请求。
-type OTATaskByJobIndexReq struct {
+type OTATaskByJobIndexReq  {
     PageInfo   PageInfo `json:"pageInfo"`   // 分页信息
     JobID      int64    `json:"jobId"`      // 作业ID
     TaskStatus int64    `json:"taskStatus"` // 任务状态
@@ -45,7 +44,7 @@ type OTATaskByJobIndexReq struct {
 }
 
 // OtaUpTaskInfo 表示OTA任务的信息。
-type OtaUpTaskInfo struct {
+type OtaUpTaskInfo  {
     FirmwareID    int64  `json:"firmwareId"`    // 固件ID
     JobID         int64  `json:"jobId"`         // 作业ID
     TaskID        int64  `json:"taskId"`        // 任务ID
@@ -63,13 +62,13 @@ type OtaUpTaskInfo struct {
 }
 
 // OtaTaskByJobIndexResp 表示根据作业索引的OTA任务响应。
-type OtaTaskByJobIndexResp struct {
+type OtaTaskByJobIndexResp  {
     OtaUpTaskInfoList []OtaUpTaskInfo `json:"otaUpTaskInfo"` // OTA任务信息列表
     Total             int64            `json:"total"`          // 总数
 }
 
 // OTATaskByJobCancelReq 表示根据作业取消的OTA任务请求。
-type OTATaskByJobCancelReq struct {
+type OTATaskByJobCancelReq  {
     JobID                   int64 `json:"jobId"`                   // 作业ID
     CancelScheduledTask     int64 `json:"cancelScheduledTask"`     // 取消已计划的任务
     CancelQueuedTask        int64 `json:"cancelQueuedTask"`        // 取消排队中的任务
@@ -79,7 +78,7 @@ type OTATaskByJobCancelReq struct {
 }
 
 // OTATaskByDeviceCancelReq 表示根据设备取消的OTA任务请求。
-type OTATaskByDeviceCancelReq struct {
+type OTATaskByDeviceCancelReq  {
     ProductID  string   `json:"productId"`  // 产品ID
     FirmwareID int64    `json:"firmwareId"` // 固件ID
     DeviceName []string `json:"deviceName"` // 设备名称列表
@@ -87,12 +86,12 @@ type OTATaskByDeviceCancelReq struct {
 }
 
 // OTATaskConfirmReq 表示OTA任务确认请求。
-type OTATaskConfirmReq struct {
+type OTATaskConfirmReq  {
     TaskIDList []int64 `json:"taskId"` // 任务ID列表
 }
 
 // OTAUnfinishedTaskByDeviceIndexReq 表示根据设备索引的未完成OTA任务请求。
-type OTAUnfinishedTaskByDeviceIndexReq struct {
+type OTAUnfinishedTaskByDeviceIndexReq  {
     ModuleName       string   `json:"moduleName"`       // 模块名称
     TaskStatusList   []string `json:"taskStatusList"`   // 任务状态列表
     ProductID        string   `json:"productId"`        // 产品ID
@@ -100,18 +99,18 @@ type OTAUnfinishedTaskByDeviceIndexReq struct {
 }
 
 // OTAUnfinishedTaskByDeviceIndexResp 表示根据设备索引的未完成OTA任务响应。
-type OTAUnfinishedTaskByDeviceIndexResp struct {
+type OTAUnfinishedTaskByDeviceIndexResp  {
     OtaUpTaskInfoList []OtaUpTaskInfo `json:"otaUpTaskInfoList"` // 未完成OTA任务信息列表
 }
 
 // OTATaskReUpgradeReq 表示OTA任务重新升级请求。
-type OTATaskReUpgradeReq struct {
+type OTATaskReUpgradeReq  {
     JobID   int64    `json:"jobId"`   // 作业ID
     TaskIDList []int64 `json:"taskId"` // 任务ID列表
 }
 
 // VerifyOtaFirmwareReq 表示验证OTA固件请求。
-type VerifyOtaFirmwareReq struct {
+type VerifyOtaFirmwareReq  {
     FirmwareID        int64    `json:"firmwareId"`       // 固件ID
     ProductID         string   `json:"productID"`        // 产品ID
     Tags              []Tag    `json:"tags"`             // 标签列表

@@ -5,10 +5,10 @@ info(
     email: "603685348@qq.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
+
 
 @server(
-    group : things/product/info
+    group: things/product/info
     prefix: /api/v1/things/product/info
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -31,7 +31,7 @@ service api {
 }
 
 type (
-    ProductInfo struct {
+    ProductInfo  {
         CreatedTime int64 `json:"createdTime,optional,string"`                  //创建时间 只读
         ProductID string `json:"productID,optional"`                            //产品id 只读
         ProductName string `json:"productName,optional"`                        //产品名称
@@ -49,16 +49,16 @@ type (
     //  DevStatus *string `json:"devStatus,optional,omitempty"`                           // 产品状态
     }
 
-    ProductInfoReadReq struct {
+    ProductInfoReadReq  {
         ProductID string `json:"productID"`                                     //产品id
     }
 
 
-    ProductInfoDeleteReq struct {
+    ProductInfoDeleteReq  {
         ProductID string `json:"productID"`                            //产品id 只读
     }
 
-    ProductInfoIndexReq struct {
+    ProductInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
         ProductName string `json:"productName,optional"` //过滤产品名称
         DeviceType int64 `json:"deviceType,optional,range=[0:3]"`    //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
@@ -66,7 +66,7 @@ type (
         Tags []*Tag `json:"tags,optional"`            // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
     }
 
-    ProductInfoIndexResp struct {
+    ProductInfoIndexResp  {
         List []*ProductInfo `json:"list"`    //产品信息
         Total int64 `json:"total,optional"`  //拥有的总数
         Num int64 `json:"num,optional"`      //返回的数量

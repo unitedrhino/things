@@ -2,9 +2,9 @@ package appDeviceEvent
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/devices"
-	"gitee.com/i-Things/core/shared/domain/application"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/application"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/service/rulesvr/internal/repo/repoComplex"
 	"github.com/i-Things/things/service/rulesvr/internal/svc"

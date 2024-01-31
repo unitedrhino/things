@@ -1,8 +1,8 @@
 package scene
 
 import (
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"time"
 )
 

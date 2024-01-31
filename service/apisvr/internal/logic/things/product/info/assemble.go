@@ -1,7 +1,7 @@
 package info
 
 import (
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"

@@ -3,14 +3,14 @@ package devicemsglogic
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/share/devices"
 	firmwaremanage "github.com/i-Things/things/service/dmsvr/internal/server/firmwaremanage"
 	otataskmanage "github.com/i-Things/things/service/dmsvr/internal/server/otataskmanage"
 	"time"
 
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/oss/common"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/oss/common"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
 	server "github.com/i-Things/things/service/dmsvr/internal/server/deviceinteract"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"

@@ -3,9 +3,9 @@ package dgdirect
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/ctxs"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dgsvr/internal/config"
 	deviceauthServer "github.com/i-Things/things/service/dgsvr/internal/server/deviceauth"
 	"github.com/i-Things/things/service/dgsvr/internal/startup"

@@ -1,9 +1,19 @@
 module github.com/i-Things/things
 
-go 1.19
+go 1.21
+
+toolchain go1.21.4
+
+replace (
+	gitee.com/i-Things/core => ../core
+	gitee.com/i-Things/share => ../share
+	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.2
+	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.5
+)
 
 require (
 	gitee.com/i-Things/core v0.0.0-00010101000000-000000000000
+	gitee.com/i-Things/share v0.0.0-00010101000000-000000000000
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -30,12 +40,6 @@ require (
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.30.0
 	gorm.io/gorm v1.25.1
-)
-
-replace (
-	gitee.com/i-Things/core => ../core
-	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.2
-	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.5
 )
 
 require (
@@ -112,7 +116,6 @@ require (
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
-	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/minio/md5-simd v1.1.0 // indirect
 	github.com/minio/minio-go/v7 v7.0.27 // indirect
 	github.com/minio/sha256-simd v0.1.1 // indirect
@@ -123,7 +126,6 @@ require (
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/natefinch/lumberjack v2.0.0+incompatible // indirect
-	github.com/nats-io/jwt/v2 v2.4.1 // indirect
 	github.com/nats-io/nkeys v0.4.4 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect

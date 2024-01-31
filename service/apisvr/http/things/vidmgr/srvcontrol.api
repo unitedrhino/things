@@ -7,7 +7,7 @@ info(
     email: "wfjdemmye@163.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
+
 
 @server(
     group:things/vidmgr/ctrl
@@ -29,7 +29,7 @@ service api {
 }
 
 type (
-    CtrlApiReq struct {
+    CtrlApiReq  {
         //1:zlmediakit,2:srs,3:monibuca
         SrvType int64 `json:"svrtype"`
         IP string `json:"ip"`
@@ -38,7 +38,7 @@ type (
         Cmd string `json:"cmd"`
     }
 
-    CtrlApiResp struct {
+    CtrlApiResp  {
         Code int64    `json:"code"`
         Data string   `json:"data,optional"`
     }

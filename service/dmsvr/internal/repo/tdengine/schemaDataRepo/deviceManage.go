@@ -3,8 +3,8 @@ package schemaDataRepo
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/domain/schema"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

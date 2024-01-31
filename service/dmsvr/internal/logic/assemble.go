@@ -1,9 +1,9 @@
 package logic
 
 import (
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/devices"
-	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 

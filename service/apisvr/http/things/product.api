@@ -5,8 +5,8 @@ info(
 	email: "603685348@qq.com"
 	version: "v1"
 )
-import "things/product/info.api"  //产品信息相关接口
-import "things/product/schema.api"  //产品物模型相关接口
-import "things/product/remoteConfig.api"  //产品物模型相关接口
-import "things/product/custom.api"  //产品自定义相关接口
-import "things/product/category.api"  //产品品类相关接口
+import "product/info.api"  //产品信息相关接口
+import "product/schema.api"  //产品物模型相关接口
+import "product/remoteConfig.api"  //产品物模型相关接口
+import "product/custom.api"  //产品自定义相关接口
+import "product/category.api"  //产品品类相关接口

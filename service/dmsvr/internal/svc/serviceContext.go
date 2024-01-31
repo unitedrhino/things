@@ -3,7 +3,7 @@ package svc
 import (
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/timedjobdirect"
-	"gitee.com/i-Things/core/shared/conf"
+	"gitee.com/i-Things/share/conf"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgSdkLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgThing"
@@ -14,14 +14,14 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
 
-	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/share/stores"
 
-	"gitee.com/i-Things/core/shared/caches"
+	"gitee.com/i-Things/share/caches"
 
-	"gitee.com/i-Things/core/shared/domain/schema"
-	"gitee.com/i-Things/core/shared/eventBus"
-	"gitee.com/i-Things/core/shared/oss"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/oss"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/config"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/hubLogRepo"

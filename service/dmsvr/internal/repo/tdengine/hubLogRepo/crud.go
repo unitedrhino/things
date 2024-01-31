@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/stores"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgHubLog"
 )

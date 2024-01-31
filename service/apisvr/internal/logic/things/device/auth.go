@@ -2,8 +2,8 @@ package device
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dgsvr/client/deviceauth"

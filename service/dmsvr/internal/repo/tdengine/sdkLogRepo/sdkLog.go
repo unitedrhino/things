@@ -1,9 +1,9 @@
 package sdkLogRepo
 
 import (
-	"gitee.com/i-Things/core/shared/clients"
-	"gitee.com/i-Things/core/shared/conf"
-	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/share/clients"
+	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/stores"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 )

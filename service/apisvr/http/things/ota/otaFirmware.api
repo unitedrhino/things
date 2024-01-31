@@ -8,9 +8,8 @@ info(
     version: "v1"
 )
 
-import "common.api"  //公共结构体定义
 @server(
-    group : things/ota/otaFirmware
+    group: things/ota/otaFirmware
     prefix: /api/v1/things/ota/otaFirmware
 )
 service api {
@@ -37,13 +36,13 @@ service api {
 }
 
 // FirmwareFile 表示升级包中的文件信息
-type FirmwareFile struct {
+type FirmwareFile  {
     Name string `json:"name"`
     FilePath string `json:"filePath"`
 }
 
 // FirmwareCreateReq 表示创建升级包的请求结构
-type FirmwareCreateReq struct {
+type FirmwareCreateReq  {
     ProductID string `json:"productID"`
     FirmwareName string `json:"firmwareName"`
     DestVersion string `json:"destVersion"`
@@ -58,12 +57,12 @@ type FirmwareCreateReq struct {
 }
 
 // OtaFirmwareResp 表示升级包相关的响应结构
-type FirmwareResp struct {
+type FirmwareResp  {
     FirmwareID int64 `json:"firmwareID"`
 }
 
 // OtaFirmwareUpdateReq 表示更新升级包的请求结构
-type FirmwareUpdateReq struct {
+type FirmwareUpdateReq  {
     FirmwareID int64 `json:"firmwareId"`
     FirmwareName string `json:"firmwareName"`
     FirmwareDesc string `json:"firmwareDesc"`
@@ -71,12 +70,12 @@ type FirmwareUpdateReq struct {
 }
 
 // OtaFirmwareDeleteReq 表示删除升级包的请求结构
-type FirmwareDeleteReq struct {
+type FirmwareDeleteReq  {
     FirmwareID int64 `json:"firmwareId"`
 }
 
 // OtaFirmwareIndexReq 表示获取升级包列表的请求结构
-type FirmwareIndexReq struct {
+type FirmwareIndexReq  {
     Page *PageInfo `json:"page"`
     ProductID string `json:"productID"`
     FirmwareName string `json:"firmwareName"`
@@ -84,13 +83,13 @@ type FirmwareIndexReq struct {
 }
 
 // OtaFirmwareIndexResp 表示获取升级包列表的响应结构
-type FirmwareIndexResp struct {
+type FirmwareIndexResp  {
     List []FirmwareInfo `json:"list"`
     Total int64 `json:"total"`
 }
 
 // OtaFirmwareInfo 表示升级包的信息结构
-type FirmwareInfo struct {
+type FirmwareInfo  {
     FirmwareID int64 `json:"firmwareId"`
     FirmwareName string `json:"firmwareName"`
     DestVersion string `json:"destVersion"`
@@ -101,12 +100,12 @@ type FirmwareInfo struct {
 }
 
 // OtaFirmwareReadReq 表示获取升级包详情的请求结构
-type FirmwareReadReq struct {
+type FirmwareReadReq  {
     FirmwareID int64 `json:"firmwareId"`
 }
 
 // OtaFirmwareReadResp 表示获取升级包详情的响应结构
-type FirmwareReadResp struct {
+type FirmwareReadResp  {
     FirmwareID int64 `json:"firmwareId"`
     FirmwareName string `json:"firmwareName"`
     DestVersion string `json:"destVersion"`

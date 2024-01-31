@@ -5,10 +5,10 @@ info(
     email: "603685348@qq.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
+
 
 @server(
-    group : things/product/custom
+    group: things/product/custom
     prefix: /api/v1/things/product/custom
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -23,7 +23,7 @@ service api {
 
 type (
 
-     ProductCustom struct {
+     ProductCustom  {
         ProductID string    `json:"productID"`
         TransformScript *string  `json:"transformScript,optional"` //协议转换脚本
         LoginAuthScript *string  `json:"loginAuthScript,optional"` //登录认证脚本
@@ -31,11 +31,11 @@ type (
         CustomTopics     []*ProductCustomTopic `json:"customTopics,optional"` //自定义topic数组
     }
 
-    ProductCustomReadReq struct {
+    ProductCustomReadReq  {
         ProductID string `json:"productID"`                            //产品id 只读
     }
 
-     ProductCustomTopic struct {
+     ProductCustomTopic  {
         Topic     string `json:"topic"`          //自定义主题需要以$custom 并包含设备名称{deviceName}及产品名称{productID}
         Direction int64  `json:"direction"` //1:上行 2:下行 3:双向
     }

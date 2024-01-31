@@ -1,7 +1,7 @@
 package ctrl
 
 import (
-	"gitee.com/i-Things/core/shared/clients"
+	"gitee.com/i-Things/share/clients"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 )
 

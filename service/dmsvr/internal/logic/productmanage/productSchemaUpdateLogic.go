@@ -2,10 +2,10 @@ package productmanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/domain/schema"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/eventBus"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/utils"
 	commonschemalogic "github.com/i-Things/things/service/dmsvr/internal/logic/schemamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"

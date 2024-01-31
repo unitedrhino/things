@@ -3,8 +3,8 @@ package info
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
 	"github.com/i-Things/things/service/vidsvr/pb/vid"
 

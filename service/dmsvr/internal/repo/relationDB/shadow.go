@@ -2,8 +2,8 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
 	"gorm.io/gorm"
 )

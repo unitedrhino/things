@@ -3,8 +3,8 @@ package ruledirect
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/ctxs"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/rulesvr/internal/config"
 	alarmcenter "github.com/i-Things/things/service/rulesvr/internal/server/alarmcenter"
 	ruleengine "github.com/i-Things/things/service/rulesvr/internal/server/ruleengine"

@@ -2,8 +2,8 @@ package viddirect
 
 import (
 	"fmt"
-	"gitee.com/i-Things/core/shared/ctxs"
-	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/vidsvr/internal/config"
 	mgrconfig "github.com/i-Things/things/service/vidsvr/internal/server/vidmgrconfigmanage"
 	mgrinfo "github.com/i-Things/things/service/vidsvr/internal/server/vidmgrinfomanage"

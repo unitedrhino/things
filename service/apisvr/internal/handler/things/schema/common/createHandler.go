@@ -1,8 +1,8 @@
 package common
 
 import (
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/result"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/result"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/schema/common"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"

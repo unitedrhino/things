@@ -2,14 +2,14 @@ package productmanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/oss/common"
+	"gitee.com/i-Things/share/oss/common"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/productCustom"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 
-	"gitee.com/i-Things/core/shared/def"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/utils"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )

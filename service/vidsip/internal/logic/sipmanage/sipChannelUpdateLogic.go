@@ -2,8 +2,8 @@ package sipmanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/vidsip/internal/logic/common"
 	db "github.com/i-Things/things/service/vidsip/internal/repo/relationDB"
 	"github.com/i-Things/things/service/vidsip/internal/svc"

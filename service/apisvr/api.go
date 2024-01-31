@@ -4,7 +4,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/apidirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	_ "github.com/zeromicro/go-zero/core/proc" //开启pprof采集 https://mp.weixin.qq.com/s/yYFM3YyBbOia3qah3eRVQA

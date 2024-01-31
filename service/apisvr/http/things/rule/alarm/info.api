@@ -5,9 +5,9 @@ info(
     email: "603685348@qq.com"
     version: "v1"
 )
-import "common.api"  //公共结构体定义
+
 @server(
-    group : things/rule/alarm/info
+    group: things/rule/alarm/info
     prefix: /api/v1/things/rule/alarm/info
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
@@ -30,33 +30,33 @@ service api {
 }
 
 type (
-    AlarmInfoCreateReq struct {
+    AlarmInfoCreateReq  {
         AlarmInfo
     }
-    AlarmInfoUpdateReq struct {
+    AlarmInfoUpdateReq  {
         AlarmInfo
     }
-    AlarmInfoReadReq struct {
+    AlarmInfoReadReq  {
         ID          int64     `json:"id"`
     }
-    AlarmInfoDeleteReq struct {
+    AlarmInfoDeleteReq  {
         ID          int64     `json:"id"`
     }
 
-    AlarmInfoIndexReq struct {
+    AlarmInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         Name        string    `json:"name,optional"` //告警名模糊查询
         SceneID        int64    `json:"sceneID,optional"` //状态: 1启用 2禁用
         AlarmIDs        []int64    `json:"alarmIDs,optional"` //告警id列表
     }
-    AlarmInfoIndexResp struct {
+    AlarmInfoIndexResp  {
         List []*AlarmInfo `json:"list"`    //告警信息
         Total int64 `json:"total"`          //总数(只有分页的时候会返回)
         Num int64 `json:"num"`              //返回的数量
     }
 )
 
-type AlarmInfo struct {
+type AlarmInfo  {
     ID          int64     `json:"id,optional"`
     Name        string    `json:"name,optional"`
     Status        int64    `json:"status,optional"` //状态: 1启用 2禁用

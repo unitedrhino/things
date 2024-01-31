@@ -6,21 +6,21 @@ info(
 
 @server(
     group: things/ops/workOrder
-    prefix: /api/v1/things/ops/work-order
+    prefix: /api/v1/things/ops
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "添加工单"
     @handler create
-    post /create (OpsWorkOrder) returns (WithID)
+    post /work-order/create (OpsWorkOrder) returns (WithID)
 
     @doc "获取工单列表"
     @handler index
-    post /index (OpsWorkOrderIndexReq) returns (OpsWorkOrderIndexResp)
+    post /work-order/index (OpsWorkOrderIndexReq) returns (OpsWorkOrderIndexResp)
 
     @doc "更新工单"
     @handler update
-    post /update (OpsWorkOrder) returns ()
+    post /work-order/update (OpsWorkOrder) returns ()
 
 }
 type (
@@ -36,13 +36,13 @@ type (
         CreatedTime int64  `json:"createdTime,optional"` //创建时间
 
     }
-    OpsWorkOrderIndexReq struct {
+    OpsWorkOrderIndexReq  {
         Page *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
         Status int64 `json:"status,optional"`
         Type string  `json:"type"`//工单类型: deviceMaintenance:设备维修工单
     }
 
-    OpsWorkOrderIndexResp struct {
+    OpsWorkOrderIndexResp  {
         Total int64 `json:"total"` //总数
         List []*OpsWorkOrder `json:"list"` //菜单列表
     }

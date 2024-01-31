@@ -1,9 +1,9 @@
 package deviceMsgEvent
 
 import (
-	"gitee.com/i-Things/core/shared/domain/schema"
-	"gitee.com/i-Things/core/shared/errors"
-	"gitee.com/i-Things/core/shared/utils"
+	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgGateway"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
