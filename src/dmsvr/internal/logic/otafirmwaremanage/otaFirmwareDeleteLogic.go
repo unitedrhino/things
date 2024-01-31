@@ -5,8 +5,8 @@ import (
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/shared/utils/cast"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"

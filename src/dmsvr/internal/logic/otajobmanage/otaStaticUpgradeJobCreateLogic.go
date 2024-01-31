@@ -64,7 +64,7 @@ func (l *OtaStaticUpgradeJobCreateLogic) OtaStaticUpgradeJobCreate(in *dm.Static
 		deviceInfoList, err = l.DiDB.FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductId}, nil)
 		//分组升级
 	} else if selection == msgOta.GroupUpgrade {
-		gd, err := l.GdDB.FindByFilter(l.ctx, relationDB.GroupDeviceFilter{GroupID: in.GroupId, ProductID: in.ProductId, WithDevice: true}, nil)
+		gd, err := l.GdDB.FindByFilter(l.ctx, relationDB.GroupDeviceFilter{GroupIDs: []int64{in.GroupId}, ProductID: in.ProductId, WithDevice: true}, nil)
 		if err != nil {
 			l.Errorf("%s.DeviceInfo.GroupDeviceInfoRead failure err=%+v", utils.FuncName(), err)
 			return nil, err

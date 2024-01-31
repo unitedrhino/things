@@ -14,6 +14,11 @@ import (
 )
 
 type (
+	CommonSchemaCreateReq              = dm.CommonSchemaCreateReq
+	CommonSchemaIndexReq               = dm.CommonSchemaIndexReq
+	CommonSchemaIndexResp              = dm.CommonSchemaIndexResp
+	CommonSchemaInfo                   = dm.CommonSchemaInfo
+	CommonSchemaUpdateReq              = dm.CommonSchemaUpdateReq
 	CustomTopic                        = dm.CustomTopic
 	DeviceCore                         = dm.DeviceCore
 	DeviceGatewayBindDevice            = dm.DeviceGatewayBindDevice
@@ -23,11 +28,12 @@ type (
 	DeviceGatewayMultiDeleteReq        = dm.DeviceGatewayMultiDeleteReq
 	DeviceGatewaySign                  = dm.DeviceGatewaySign
 	DeviceInfo                         = dm.DeviceInfo
+	DeviceInfoCount                    = dm.DeviceInfoCount
 	DeviceInfoCountReq                 = dm.DeviceInfoCountReq
-	DeviceInfoCountResp                = dm.DeviceInfoCountResp
 	DeviceInfoDeleteReq                = dm.DeviceInfoDeleteReq
 	DeviceInfoIndexReq                 = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp                = dm.DeviceInfoIndexResp
+	DeviceInfoMultiUpdateReq           = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq                  = dm.DeviceInfoReadReq
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
@@ -49,14 +55,12 @@ type (
 	GetPropertyReplyResp               = dm.GetPropertyReplyResp
 	GroupDeviceIndexReq                = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp               = dm.GroupDeviceIndexResp
-	GroupDeviceMultiCreateReq          = dm.GroupDeviceMultiCreateReq
 	GroupDeviceMultiDeleteReq          = dm.GroupDeviceMultiDeleteReq
+	GroupDeviceMultiSaveReq            = dm.GroupDeviceMultiSaveReq
 	GroupInfo                          = dm.GroupInfo
 	GroupInfoCreateReq                 = dm.GroupInfoCreateReq
-	GroupInfoDeleteReq                 = dm.GroupInfoDeleteReq
 	GroupInfoIndexReq                  = dm.GroupInfoIndexReq
 	GroupInfoIndexResp                 = dm.GroupInfoIndexResp
-	GroupInfoReadReq                   = dm.GroupInfoReadReq
 	GroupInfoUpdateReq                 = dm.GroupInfoUpdateReq
 	HubLogIndex                        = dm.HubLogIndex
 	HubLogIndexReq                     = dm.HubLogIndexReq
@@ -126,6 +130,9 @@ type (
 	PageInfo                           = dm.PageInfo
 	PageInfo_OrderBy                   = dm.PageInfo_OrderBy
 	Point                              = dm.Point
+	ProductCategory                    = dm.ProductCategory
+	ProductCategoryIndexReq            = dm.ProductCategoryIndexReq
+	ProductCategoryIndexResp           = dm.ProductCategoryIndexResp
 	ProductCustom                      = dm.ProductCustom
 	ProductCustomReadReq               = dm.ProductCustomReadReq
 	ProductInfo                        = dm.ProductInfo
@@ -176,8 +183,10 @@ type (
 	StaticUpgradeDeviceInfo            = dm.StaticUpgradeDeviceInfo
 	StaticUpgradeJobReq                = dm.StaticUpgradeJobReq
 	Tag                                = dm.Tag
+	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
+	WithID                             = dm.WithID
 
 	OTAModuleManage interface {
 		// 创建产品的OTA模块

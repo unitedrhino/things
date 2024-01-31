@@ -40,6 +40,10 @@ import (
 	thingsgroupinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/group/info"
 	thingsopsworkOrder "github.com/i-Things/things/src/apisvr/internal/handler/things/ops/workOrder"
 	thingsotafirmware "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/firmware"
+	thingsotajob "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/job"
+	thingsotamodule "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/module"
+	thingsotaotaFirmware "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/otaFirmware"
+	thingsotaotaTask "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/otaTask"
 	thingsotatask "github.com/i-Things/things/src/apisvr/internal/handler/things/ota/task"
 	thingsproductcategory "github.com/i-Things/things/src/apisvr/internal/handler/things/product/category"
 	thingsproductcustom "github.com/i-Things/things/src/apisvr/internal/handler/things/product/custom"
@@ -54,6 +58,8 @@ import (
 	thingsrulesceneinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/rule/scene/info"
 	thingsschemacommon "github.com/i-Things/things/src/apisvr/internal/handler/things/schema/common"
 	thingsuserdevicecollect "github.com/i-Things/things/src/apisvr/internal/handler/things/user/device/collect"
+	thingsvidmgrctrl "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/ctrl"
+	thingsvidmgrgbsip "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/gbsip"
 	thingsvidmgrinfo "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/info"
 	thingsvidmgrstream "github.com/i-Things/things/src/apisvr/internal/handler/things/vidmgr/stream"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
@@ -1426,11 +1432,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/delete",
-				Handler: thingsotafirmware.DeleteHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
 				Path:    "/device-info-read",
 				Handler: thingsotafirmware.DeviceInfoReadHandler(serverCtx),
 			},
@@ -1482,6 +1483,145 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/api/v1/things/ota/task"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/create",
+				Handler: thingsotaotaFirmware.CreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/update",
+				Handler: thingsotaotaFirmware.UpdateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/delete",
+				Handler: thingsotaotaFirmware.DelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/index",
+				Handler: thingsotaotaFirmware.IndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/read",
+				Handler: thingsotaotaFirmware.ReadHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/otaFirmware"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/jobIndex",
+				Handler: thingsotaotaTask.JobIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/jobCancel",
+				Handler: thingsotaotaTask.JobCancelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/deviceCancel",
+				Handler: thingsotaotaTask.DeviceCancelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/confirm",
+				Handler: thingsotaotaTask.ConfirmHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/unfinishedIndex",
+				Handler: thingsotaotaTask.UnfinishedIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/upgrade",
+				Handler: thingsotaotaTask.UpgradeHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/otaTask"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/verify",
+				Handler: thingsotajob.VerifyHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/staticCreate",
+				Handler: thingsotajob.StaticCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/dynamicCreate",
+				Handler: thingsotajob.DynamicCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/firmwareIndex",
+				Handler: thingsotajob.FirmwareIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/deviceIndex",
+				Handler: thingsotajob.DeviceIndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/read",
+				Handler: thingsotajob.ReadHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/cancel",
+				Handler: thingsotajob.CancelHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/job"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/create",
+				Handler: thingsotamodule.CreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/update",
+				Handler: thingsotamodule.UpdateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/delete",
+				Handler: thingsotamodule.DelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/index",
+				Handler: thingsotamodule.IndexHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/versionIndex",
+				Handler: thingsotamodule.VersionIndexHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/things/ota/module"),
 	)
 
 	server.AddRoutes(
@@ -1565,6 +1705,104 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/vidmgr/stream"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/restart",
+					Handler: thingsvidmgrctrl.RestartHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/getsvr",
+					Handler: thingsvidmgrctrl.GetsvrHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/setsvr",
+					Handler: thingsvidmgrctrl.SetsvrHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/vidmgr/ctrl"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetupWare, serverCtx.CheckTokenWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/createchn",
+					Handler: thingsvidmgrgbsip.CreatechnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/deletechn",
+					Handler: thingsvidmgrgbsip.DeletechnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/updatechn",
+					Handler: thingsvidmgrgbsip.UpdatechnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/indexchn",
+					Handler: thingsvidmgrgbsip.IndexchnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/readchn",
+					Handler: thingsvidmgrgbsip.ReadchnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/createdev",
+					Handler: thingsvidmgrgbsip.CreatedevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/deletedev",
+					Handler: thingsvidmgrgbsip.DeletedevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/playchn",
+					Handler: thingsvidmgrgbsip.PlaychnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/stopchn",
+					Handler: thingsvidmgrgbsip.StopchnHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/updatedev",
+					Handler: thingsvidmgrgbsip.UpdatedevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/indexdev",
+					Handler: thingsvidmgrgbsip.IndexdevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/readdev",
+					Handler: thingsvidmgrgbsip.ReaddevHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/readinfo",
+					Handler: thingsvidmgrgbsip.ReadinfoHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/vidmgr/gbsip"),
 	)
 
 	server.AddRoutes(
