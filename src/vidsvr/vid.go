@@ -9,5 +9,6 @@ import (
 func main() {
 	defer utils.Recover(context.Background())
 	svcCtx := viddirect.GetSvcCtx()
-	viddirect.RunServer(svcCtx)
+	viddirect.ApiDirectRun()
+	viddirect.Run(svcCtx)
 }

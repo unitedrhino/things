@@ -62,5 +62,4 @@ func (l *IndexLogic) Index(req *types.VidmgrInfoIndexReq) (resp *types.VidmgrInf
 			Num:   0,
 		}, nil
 	}
-
 }

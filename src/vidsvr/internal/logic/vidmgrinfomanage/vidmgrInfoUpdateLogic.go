@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
 
@@ -41,7 +42,7 @@ func (l *VidmgrInfoUpdateLogic) VidmgrInfoUpdate(in *vid.VidmgrInfo) (*vid.Respo
 		}
 		return nil, err
 	}
-	err = setPoByPb(po, in)
+	err = common.UpdatVidmgrInfoDB(po, in)
 	if err != nil {
 		return nil, err
 	}

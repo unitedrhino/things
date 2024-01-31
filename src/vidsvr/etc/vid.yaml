@@ -19,24 +19,14 @@ Log:
   Encoding: plain
 
 Mediakit:
-  Host: 172.26.14.242
+  Host: 127.0.0.1
   Port: 8088
   Secret: WF8K4LJi2FZbd5Q2OJ3RYTACPZsprvM0
 Restconf:
   Name: vid
-  Host: 172.26.14.242
+  Host: 192.168.10.125
   Port: 8888
 
-#用于配置外部网络环境的zlmediakit的网络连接
-RestconfExt:
-  Host: 192.168.10.52 #当前主机IP访问外网的IP，未配置时使用默认使用RestCconf的IP
-  Port: 8888 #访问外网的Port(如果有映射端口在此处填写)，未配置时使用默认使用RestCconf的Port
-
-TimedJobRpc:
-  Enable: true
-  Mode: direct
-  Conf:
-    Timeout: 1000000
 #Telemetry:
 #    Name: dm.rpc
 #    Endpoint: http://127.0.0.1:14268/api/traces

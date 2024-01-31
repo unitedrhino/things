@@ -320,6 +320,21 @@ type (
     IndexApiAddStreamKey struct{
         Key string  `json:"key"`
     }
+
+
+    //indexapireq
+    //功能：动态添加rtsp/rtmp/hls/http-ts/http-flv拉流代理(只支持H264/H265/aac/G711/opus负载)
+    IndexApiAddStreamProxy struct{
+        Vhost  string `json:"vhost"`
+        App     string `json:"app"`
+        Stream  string `json:"stream"`
+        Url     string `json:"url"`
+        RtpType int32     `json:"rtp_type"`
+//    secret
+    }
+    IndexApiDelStreamProxy struct {
+        Key string `json:"key"`
+    }
         //Respond   12/index/api/addStreamProxy
     IndexApiAddStreamProxyResp struct {
         IndexApiResp

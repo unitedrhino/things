@@ -3,6 +3,7 @@ package vidmgrconfigmanagelogic
 import (
 	"context"
 	"github.com/i-Things/things/shared/utils"
+	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
@@ -37,5 +38,5 @@ func (l *VidmgrConfigReadLogic) VidmgrConfigRead(in *vid.VidmgrConfigReadReq) (*
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))
 		return nil, err
 	}
-	return ToVidmgrConfig(pi), nil
+	return common.ToVidmgrConfigRpc(pi), nil
 }

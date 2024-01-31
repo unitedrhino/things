@@ -23,9 +23,9 @@ service api {
     @doc "创建升级包版本"
     @handler create
     post /create (OtaFirmwareCreateReq)
-    @doc "删除升级包"
-    @handler delete
-    post /delete (OtaFirmwareDelReq)
+//    @doc "删除升级包"
+//    @handler delete
+//    post /delete (OtaFirmwareDelReq)
     @doc "获取升级包可选设备信息,包含可用版本"
     @handler deviceInfoRead
     post /device-info-read(OtaFirmwareDeviceInfoReq) returns (OtaFirmwareDeviceInfoResp)

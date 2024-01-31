@@ -5,6 +5,7 @@ import (
 	server "github.com/i-Things/things/src/vidsvr/internal/server/vidmgrstreammanage"
 )
 
+// 视频流管理
 var (
 	vidmgrStreamSvr client.VidmgrStreamManage
 )
