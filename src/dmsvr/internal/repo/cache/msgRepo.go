@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 )

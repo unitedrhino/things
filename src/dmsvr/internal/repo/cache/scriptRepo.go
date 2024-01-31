@@ -3,10 +3,10 @@ package cache
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/dgraph-io/ristretto"
 	"github.com/dop251/goja"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/productCustom"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"sync"

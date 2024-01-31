@@ -2,11 +2,11 @@ package devicemanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/stores"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/ctxs"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"

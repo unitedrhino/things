@@ -2,7 +2,7 @@ package auth
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/apisvr/internal/svc"

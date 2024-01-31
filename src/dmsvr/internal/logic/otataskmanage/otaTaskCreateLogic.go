@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/utils"
 
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 
+	"gitee.com/i-Things/core/shared/def"
+	thingsError "gitee.com/i-Things/core/shared/errors"
 	"github.com/hashicorp/go-uuid"
-	"github.com/i-Things/things/shared/def"
-	thingsError "github.com/i-Things/things/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 

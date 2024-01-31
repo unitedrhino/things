@@ -5,9 +5,9 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"github.com/i-Things/things/shared/domain/deviceAuth"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/domain/deviceAuth"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"time"
 

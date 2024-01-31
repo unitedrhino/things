@@ -4,7 +4,7 @@ Host: 0.0.0.0
 CpuThreshold: 0
 Timeout: 1000000
 MaxBytes: 1000000000
-Port: 7777
+Port: 7788
 NodeID: 1
 Log:
   Encoding: plain
@@ -23,18 +23,6 @@ OpenAuth:
       Password: iThings
     - UserName: root
       Password: iThings
-Proxy:
-  StaticProxy:
-    - Router: /api/v1/view/
-      Dest: http://127.0.0.1:7789
-    - Router: /api/v1/app/
-      Dest: http://127.0.0.1:8000
-    - Router: /api/v1/oss/
-      DeletePrefix: true
-      Dest: http://127.0.0.1:9000
-SysRpc:
-  Enable: true
-  Mode: direct
 DgRpc:
   Enable: true
   Mode: direct
@@ -45,16 +33,34 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
+SysRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: sys.rpc
+
 TimedJobRpc:
   Enable: true
-  Mode: direct
+  Mode: grpc
   Conf:
     Timeout: 1000000
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: timedjob.rpc
 TimedSchedulerRpc:
   Enable: true
-  Mode: direct
+  Mode: grpc
   Conf:
     Timeout: 1000000
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: timedscheduler.rpc
 UdRpc:
   Enable: true
   Mode: direct

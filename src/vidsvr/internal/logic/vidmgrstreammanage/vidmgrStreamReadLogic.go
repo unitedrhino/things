@@ -2,8 +2,8 @@ package vidmgrstreammanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/clients"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/clients"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/common"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 

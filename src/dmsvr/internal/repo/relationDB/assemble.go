@@ -2,8 +2,8 @@ package relationDB
 
 import (
 	"encoding/json"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/schema"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/domain/schema"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/shadow"
 )
 

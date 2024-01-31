@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/stores"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/stores"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
 )
 

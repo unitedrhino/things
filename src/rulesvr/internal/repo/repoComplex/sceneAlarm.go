@@ -2,8 +2,8 @@ package repoComplex
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/alarm"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"

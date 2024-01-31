@@ -1,9 +1,9 @@
 package scene
 
 import (
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/domain/schema"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/domain/schema"
 	deviceinteract "github.com/i-Things/things/src/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	devicemsg "github.com/i-Things/things/src/dmsvr/client/devicemsg"

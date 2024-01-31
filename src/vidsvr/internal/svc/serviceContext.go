@@ -2,9 +2,9 @@ package svc
 
 import (
 	"fmt"
-	"github.com/i-Things/things/shared/eventBus"
-	"github.com/i-Things/things/shared/stores"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/eventBus"
+	"gitee.com/i-Things/core/shared/stores"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/config"
 	"github.com/i-Things/things/src/vidsvr/internal/media"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"

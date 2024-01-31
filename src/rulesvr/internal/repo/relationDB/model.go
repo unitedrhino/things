@@ -1,7 +1,7 @@
 package relationDB
 
 import (
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/stores"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"time"
 )

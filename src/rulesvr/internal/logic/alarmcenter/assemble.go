@@ -1,8 +1,8 @@
 package alarmcenterlogic
 
 import (
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"
 )

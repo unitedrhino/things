@@ -1,12 +1,28 @@
 package svc
 
 import (
+	"gitee.com/i-Things/core/service/syssvr/client/accessmanage"
+	app "gitee.com/i-Things/core/service/syssvr/client/appmanage"
+	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
+	"gitee.com/i-Things/core/service/syssvr/client/common"
+	"gitee.com/i-Things/core/service/syssvr/client/datamanage"
+	"gitee.com/i-Things/core/service/syssvr/client/log"
+	module "gitee.com/i-Things/core/service/syssvr/client/modulemanage"
+	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
+	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
+	tenant "gitee.com/i-Things/core/service/syssvr/client/tenantmanage"
+	user "gitee.com/i-Things/core/service/syssvr/client/usermanage"
+	"gitee.com/i-Things/core/service/syssvr/sysdirect"
+	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/core/service/timed/timedjobsvr/timedjobdirect"
+	"gitee.com/i-Things/core/service/timed/timedschedulersvr/client/timedscheduler"
+	"gitee.com/i-Things/core/service/timed/timedschedulersvr/timedschedulerdirect"
+	"gitee.com/i-Things/core/shared/caches"
+	"gitee.com/i-Things/core/shared/conf"
+	"gitee.com/i-Things/core/shared/oss"
+	"gitee.com/i-Things/core/shared/verify"
+	ws "gitee.com/i-Things/core/shared/websocket"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/i-Things/things/shared/caches"
-	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/oss"
-	"github.com/i-Things/things/shared/verify"
-	ws "github.com/i-Things/things/shared/websocket"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/middleware"
 	"github.com/i-Things/things/src/dgsvr/client/deviceauth"
@@ -28,21 +44,6 @@ import (
 	"github.com/i-Things/things/src/dmsvr/dmdirect"
 	"github.com/i-Things/things/src/rulesvr/client/alarmcenter"
 	"github.com/i-Things/things/src/rulesvr/client/scenelinkage"
-	app "github.com/i-Things/things/src/syssvr/client/appmanage"
-	"github.com/i-Things/things/src/syssvr/client/areamanage"
-	"github.com/i-Things/things/src/syssvr/client/common"
-	"github.com/i-Things/things/src/syssvr/client/datamanage"
-	"github.com/i-Things/things/src/syssvr/client/log"
-	module "github.com/i-Things/things/src/syssvr/client/modulemanage"
-	"github.com/i-Things/things/src/syssvr/client/projectmanage"
-	role "github.com/i-Things/things/src/syssvr/client/rolemanage"
-	tenant "github.com/i-Things/things/src/syssvr/client/tenantmanage"
-	user "github.com/i-Things/things/src/syssvr/client/usermanage"
-	"github.com/i-Things/things/src/syssvr/sysdirect"
-	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
-	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
-	"github.com/i-Things/things/src/timed/timedschedulersvr/client/timedscheduler"
-	"github.com/i-Things/things/src/timed/timedschedulersvr/timedschedulerdirect"
 	"github.com/i-Things/things/src/udsvr/client/ops"
 	"github.com/i-Things/things/src/udsvr/client/rule"
 	"github.com/i-Things/things/src/udsvr/client/userdevice"
@@ -94,6 +95,7 @@ type SvrClient struct {
 	Common       common.Common
 
 	Rule           rule.Rule
+	AccessRpc      accessmanage.AccessManage
 	DataM          datamanage.DataManage
 	Ops            ops.Ops
 	UserDevice     userdevice.UserDevice
@@ -158,8 +160,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		UserDevice     userdevice.UserDevice
 		Rule           rule.Rule
 		DataM          datamanage.DataManage
-		accessM        accesssManage.AccessManage
-		ic             rule.Rule
+		accessM        accessmanage.AccessManage
 	)
 	var ur user.UserManage
 	var ro role.RoleManage
@@ -234,6 +235,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			appRpc = app.NewAppManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			tenantM = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			DataM = datamanage.NewDataManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			accessM = accessmanage.NewAccessManage(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
 			projectM = sysdirect.NewProjectManage(c.SysRpc.RunProxy)
 			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
@@ -245,6 +247,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			appRpc = sysdirect.NewApp(c.SysRpc.RunProxy)
 			tenantM = sysdirect.NewTenantManage(c.SysRpc.RunProxy)
 			DataM = sysdirect.NewData(c.SysRpc.RunProxy)
+			accessM = sysdirect.NewAccess(c.SysRpc.RunProxy)
 		}
 	}
 
@@ -316,6 +319,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			RoleRpc:        ro,
 			ModuleRpc:      me,
 			LogRpc:         lo,
+			AccessRpc:      accessM,
 			Timedscheduler: timedSchedule,
 			TimedJob:       timedJob,
 			VidmgrM:        vidmgrM,

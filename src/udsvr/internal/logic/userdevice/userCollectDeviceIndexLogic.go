@@ -2,7 +2,7 @@ package userdevicelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
+	"gitee.com/i-Things/core/shared/ctxs"
 	"github.com/i-Things/things/src/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/udsvr/internal/svc"

@@ -1,7 +1,7 @@
 package rulelogic
 
 import (
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/src/udsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/udsvr/pb/ud"

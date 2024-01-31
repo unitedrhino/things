@@ -1,9 +1,9 @@
 package scene
 
 import (
-	"github.com/i-Things/things/shared/crons"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/crons"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/robfig/cron/v3"
 	"time"
 )

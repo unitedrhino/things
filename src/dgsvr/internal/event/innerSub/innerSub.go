@@ -3,8 +3,8 @@ package innerSub
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dgsvr/internal/domain/custom"
 	"github.com/i-Things/things/src/dgsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"

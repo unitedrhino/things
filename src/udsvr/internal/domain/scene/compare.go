@@ -1,8 +1,8 @@
 package scene
 
 import (
-	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/domain/schema"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/spf13/cast"
 	"golang.org/x/exp/constraints"
 )

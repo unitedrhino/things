@@ -3,9 +3,9 @@ package pubInner
 import (
 	//"github.com/i-Things/things/src/dgsvr/internal/domain"
 	"context"
-	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/conf"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/errors"
 )
 
 type ConnType int8

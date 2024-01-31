@@ -5,9 +5,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/src/dgsvr/internal/svc"

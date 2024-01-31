@@ -3,9 +3,9 @@ package viddirect
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/domain/deviceAuth"
-	"github.com/i-Things/things/shared/utils"
-	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/core/shared/domain/deviceAuth"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/vidsvr/internal/handler"
 	"github.com/i-Things/things/src/vidsvr/internal/media"
 	"github.com/i-Things/things/src/vidsvr/internal/svc"

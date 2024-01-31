@@ -1,13 +1,13 @@
 package middleware
 
 import (
-	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
+	user "gitee.com/i-Things/core/service/syssvr/client/usermanage"
+	"gitee.com/i-Things/core/shared/ctxs"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
-	role "github.com/i-Things/things/src/syssvr/client/rolemanage"
-	user "github.com/i-Things/things/src/syssvr/client/usermanage"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"

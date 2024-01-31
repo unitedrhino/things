@@ -1,10 +1,10 @@
 package scene
 
 import (
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"time"
 )
 

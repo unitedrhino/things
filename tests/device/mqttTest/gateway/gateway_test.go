@@ -3,8 +3,8 @@ package thing
 import (
 	"encoding/base64"
 	"fmt"
+	"gitee.com/i-Things/core/shared/utils"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/tests/device/mqttTest"
 	"github.com/spf13/cast"
 	"sync"

@@ -1,6 +1,6 @@
 package relationDB
 
-import "github.com/i-Things/things/shared/stores"
+import "gitee.com/i-Things/core/shared/stores"
 
 // 示例
 type ViewExample struct {

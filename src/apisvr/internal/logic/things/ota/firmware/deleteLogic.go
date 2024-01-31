@@ -3,9 +3,9 @@ package firmware
 import (
 	"context"
 
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/oss/common"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/oss/common"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"

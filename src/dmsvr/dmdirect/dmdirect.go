@@ -2,8 +2,8 @@ package dmdirect
 
 import (
 	"fmt"
-	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/ctxs"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	devicegroup "github.com/i-Things/things/src/dmsvr/internal/server/devicegroup"
 	deviceinteract "github.com/i-Things/things/src/dmsvr/internal/server/deviceinteract"
@@ -70,7 +70,7 @@ func Run(svcCtx *svc.ServiceContext) {
 		}
 	})
 	defer s.Stop()
-	s.AddUnaryInterceptors(errors.ErrorInterceptor,ctxs.GrpcInterceptor)
+	s.AddUnaryInterceptors(errors.ErrorInterceptor, ctxs.GrpcInterceptor)
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

@@ -7,8 +7,8 @@ import (
 	devicemanage "github.com/i-Things/things/src/dmsvr/internal/server/devicemanage"
 	"time"
 
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"

@@ -1,8 +1,8 @@
 package msg
 
 import (
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/result"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/result"
 	"github.com/i-Things/things/src/apisvr/internal/logic/things/device/msg"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"

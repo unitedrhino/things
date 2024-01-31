@@ -2,8 +2,8 @@ package scene
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	deviceinteract "github.com/i-Things/things/src/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	"github.com/zeromicro/go-zero/core/logx"

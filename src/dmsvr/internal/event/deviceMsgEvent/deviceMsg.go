@@ -3,7 +3,7 @@ package deviceMsgEvent
 //设备的发布,连接及断连处理
 import (
 	"context"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"

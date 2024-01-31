@@ -2,11 +2,10 @@ package apidirect
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/ctxs"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
 	"github.com/i-Things/things/src/apisvr/internal/handler"
-	"github.com/i-Things/things/src/apisvr/internal/handler/system/proxy"
 	"github.com/i-Things/things/src/apisvr/internal/repo/event/appDeviceEvent"
 	"github.com/i-Things/things/src/apisvr/internal/repo/event/subApp"
 	"github.com/i-Things/things/src/apisvr/internal/startup"
@@ -45,9 +44,7 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 	if server == nil {
 		server = rest.MustNewServer(c.RestConf, rest.WithCustomCors(func(header http.Header) {
 			header.Set("Access-Control-Allow-Headers", ctxs.HttpAllowHeader)
-		}, nil, "*"),
-			rest.WithNotFoundHandler(proxy.Handler(ctx)),
-		)
+		}, nil, "*"))
 		apiCtx.Server = server
 	}
 	handler.RegisterHandlers(server, ctx)

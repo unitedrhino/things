@@ -3,8 +3,8 @@ package vidmgrinfomanagelogic
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/i-Things/things/src/vidsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/src/vidsvr/internal/svc"
