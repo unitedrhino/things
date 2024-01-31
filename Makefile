@@ -1,13 +1,15 @@
 # -*- coding:utf-8 -*-
 .PHOmakeNY: build
 
-build:build.clean mod cp.etc build.api build.dg build.dm build.sys build.rule build.timedjob build.timedscheduler
+build:build.clean mod cp.etc build.api build.dg build.view build.dm build.sys build.ud build.timedjob build.timedscheduler
 
-runall:  run.timedjob run.timedscheduler run.sys run.dm run.dg run.rule run.api
+runall:  run.timedjob run.timedscheduler run.sys run.dm run.dg run.ud run.api run.view
 
 buildone:build.clean mod cp.etc build.api build.view
 
-
+toremote:
+	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tormote cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@rsync -r -v ./cmd/* root@120.79.205.165:/root/git/iThings
 killall:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>killing all<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@killall  apisvr &
@@ -56,9 +58,9 @@ build.sys:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@go build  -o ./cmd/syssvr ./src/syssvr
 
-build.rule:
+build.ud:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/rulesvr ./src/rulesvr
+	@go build  -o ./cmd/udsvr ./src/udsvr
 
 build.timedjob:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
@@ -90,9 +92,9 @@ run.sys:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@cd cmd && nohup ./syssvr &  cd ..
 
-run.rule:
+run.ud:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cmd && nohup ./rulesvr &  cd ..
+	@cd cmd && nohup ./udsvr &  cd ..
 
 run.timedjob:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
