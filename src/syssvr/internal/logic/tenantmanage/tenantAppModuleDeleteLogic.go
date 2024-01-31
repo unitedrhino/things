@@ -56,14 +56,6 @@ func (l *TenantAppModuleDeleteLogic) TenantAppModuleDelete(in *sys.TenantModuleW
 		if err != nil {
 			return err
 		}
-		err = relationDB.NewTenantAppApiRepo(tx).DeleteByFilter(l.ctx, relationDB.TenantAppApiFilter{
-			ModuleCode: in.ModuleCode,
-			TenantCode: in.Code,
-			AppCode:    in.AppCode,
-		})
-		if err != nil {
-			return err
-		}
 		return nil
 	})
 

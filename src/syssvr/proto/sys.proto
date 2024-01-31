@@ -35,11 +35,18 @@ service DataManage {
   rpc userAreaApplyDeal(UserAreaApplyDealReq)returns(Response);//处理区域权限申请
 }
 
-service MenuManage {
-  rpc menuInfoCreate(MenuInfo) returns(WithID); //添加菜单
-  rpc menuInfoIndex(MenuInfoIndexReq) returns(MenuInfoIndexResp); //获取菜单列表
-  rpc menuInfoUpdate(MenuInfo) returns(Response); //更新菜单
-  rpc menuInfoDelete(WithID) returns(Response); //删除菜单
+
+
+service AccessManage{
+  rpc apiInfoCreate(ApiInfo) returns(WithID);   //添加接口
+  rpc apiInfoIndex(ApiInfoIndexReq) returns(ApiInfoIndexResp); //获取接口列表
+  rpc apiInfoUpdate(ApiInfo) returns(Response);   //更新接口
+  rpc apiInfoDelete(WithID) returns(Response);   //删除接口
+
+  rpc accessInfoCreate(AccessInfo) returns(WithID);   //添加接口
+  rpc accessInfoIndex(AccessInfoIndexReq) returns(AccessInfoIndexResp); //获取接口列表
+  rpc accessInfoUpdate(AccessInfo) returns(Response);   //更新接口
+  rpc accessInfoDelete(WithID) returns(Response);   //删除接口
 }
 
 service RoleManage {
@@ -59,8 +66,8 @@ service RoleManage {
 
 
   rpc roleApiAuth(RoleApiAuthReq) returns(Response);   //角色API鉴权
-  rpc roleApiMultiUpdate(RoleApiMultiUpdateReq) returns (Response);  //更新角色API权限
-  rpc roleApiIndex(RoleApiIndexReq) returns (RoleApiIndexResp); //获取角色API权限列表
+  rpc roleAccessMultiUpdate(RoleAccessMultiUpdateReq) returns (Response);  //更新角色API权限
+  rpc roleAccessIndex(RoleAccessIndexReq) returns (RoleAccessIndexResp); //获取角色API权限列表
 }
 
 
@@ -87,10 +94,7 @@ service ModuleManage{
   rpc moduleMenuUpdate(MenuInfo) returns(Response); //更新菜单
   rpc moduleMenuDelete(WithID) returns(Response); //删除菜单
 
-  rpc moduleApiCreate(ApiInfo) returns(WithID);   //添加接口
-  rpc moduleApiIndex(ApiInfoIndexReq) returns(ApiInfoIndexResp); //获取接口列表
-  rpc moduleApiUpdate(ApiInfo) returns(Response);   //更新接口
-  rpc moduleApiDelete(WithID) returns(Response);   //删除接口
+
 }
 
 
@@ -106,12 +110,6 @@ service Log {
   rpc operLogCreate(OperLogCreateReq) returns(Response);           //操作日志数据入库
 }
 
-service ApiManage {
-  rpc apiInfoCreate(ApiInfo) returns(WithID);   //添加接口
-  rpc apiInfoIndex(ApiInfoIndexReq) returns(ApiInfoIndexResp); //获取接口列表
-  rpc apiInfoUpdate(ApiInfo) returns(Response);   //更新接口
-  rpc apiInfoDelete(WithID) returns(Response);   //删除接口
-}
 
 //项目管理
 service ProjectManage {
@@ -155,6 +153,9 @@ service TenantManage {
   //获取租户信息列表
   rpc tenantInfoIndex (TenantInfoIndexReq) returns (TenantInfoIndexResp);
 
+  rpc tenantAccessMultiUpdate(TenantAccessMultiUpdateReq) returns (Response);  //更新角色API权限
+  rpc tenantAccessIndex(TenantAccessIndexReq) returns (TenantAccessIndexResp); //获取角色API权限列表
+
   rpc tenantAppIndex(TenantAppIndexReq) returns (TenantAppIndexResp); //获取租户APP权限列表
   rpc tenantAppCreate(TenantAppCreateReq) returns(Response); //添加角色
   rpc tenantAppDelete(TenantAppWithIDOrCode) returns(Response); //删除角色
@@ -169,10 +170,7 @@ service TenantManage {
   rpc tenantAppMenuUpdate(TenantAppMenu) returns(Response); //更新菜单
   rpc tenantAppMenuDelete(WithAppCodeID) returns(Response); //删除菜单
 
-  rpc tenantAppApiCreate(TenantApiInfo) returns(WithID);   //添加接口
-  rpc tenantAppApiIndex(TenantAppApiIndexReq) returns(TenantAppApiIndexResp); //获取接口列表
-  rpc tenantAppApiUpdate(TenantApiInfo) returns(Response);   //更新接口
-  rpc tenantAppApiDelete(WithAppCodeID) returns(Response);   //删除接口
+
 }
 
 //--------------------租户管理------------------------
@@ -203,6 +201,23 @@ message TenantInfoIndexResp{
   int64 total = 2;
 }
 
+
+
+
+message TenantAccessMultiUpdateReq{
+  string code = 1;
+  repeated  string  accessCodes = 4;
+}
+
+message TenantAccessIndexReq{
+  string code = 1;
+}
+
+message TenantAccessIndexResp{
+  repeated string accessCodes = 1;
+}
+
+
 message TenantAppCreateReq{
   string code = 1;
   string appCode = 2;
@@ -218,7 +233,6 @@ message TenantAppWithIDOrCode{
 message TenantAppModule{
   string code = 1;
   repeated int64 menuIDs =2;
-  repeated int64 apiIDs =3;
 }
 
 message TenantAppIndexReq{
@@ -269,31 +283,11 @@ message TenantAppMenu{
 }
 
 
-message TenantApiInfo{
-  int64 templateID = 1;
-  string code = 2;
-  string appCode =3;
-  ApiInfo info=4;
-}
-
-message TenantAppApiIndexReq{
-  PageInfo page = 1;//分页信息
-  string code = 2;
-  string appCode =3;
-  string moduleCode =4;
-  repeated int64 apiIDs = 5;
-}
-message TenantAppApiIndexResp{
-  repeated TenantApiInfo list = 1; // 接口列表数据
-  int64 total = 2;           // 接口列表总记录数
-}
-
 message TenantModuleCreateReq{
   string code = 1;
   string appCode =2;
   string moduleCode = 3;
   repeated int64 menuIDs =4;
-  repeated int64 apiIDs =5;
 }
 message TenantModuleWithIDOrCode{
   string code = 1;
@@ -433,22 +427,18 @@ message AuthApiInfo{
 
 }
 
-message RoleApiMultiUpdateReq{
+message RoleAccessMultiUpdateReq{
   int64 id = 1;//角色ID
-  string appCode = 2;//appCode
-  string moduleCode = 3;//模块编码
-  repeated int64 apiIDs = 4;
+  repeated  string  accessCodes = 4;
 }
 
-message RoleApiIndexReq{
+message RoleAccessIndexReq{
   int64 id = 1;//角色ID
-  string appCode = 2;//appCode
-  string moduleCode = 3;//模块编码
 }
 
-message RoleApiIndexResp{
+message RoleAccessIndexResp{
   int64 total = 1;
-  repeated int64 apiIDs = 3;
+  repeated string accessCodes = 3;
 }
 
 
@@ -965,6 +955,7 @@ message MenuInfoIndexResp{
 }
 
 
+
 message Map{
   string mode = 1;       //坐标系 默认百度坐标系
   string accessKey = 2;  //设备地图key
@@ -977,21 +968,20 @@ message ApiInfoIndexReq{
   PageInfo page = 1;// 分页信息
   string route = 2; // 接口路由
   string method = 3; // 接口请求方式: POST GET
-  string group = 4; // 接口分组
-  string name = 5;  // 接口名称
-  string moduleCode = 7;
-  int64 isNeedAuth = 8;//是否需要权限认证 1是 2否
-  repeated int64 apiIDs = 9;//API列表数据
+  string name = 4;  // 接口名称
+  int64 IsAuthTenant = 5;//是否可以授权给普通租户
+  repeated int64 apiIDs = 6;//API列表数据
+  string accessCode =7;
 }
+
 message ApiInfo{
-  string moduleCode = 7;
+  string accessCode = 7;
   int64 id = 1;            // 接口编号
   string route = 2;        // 接口路由
   string method = 3;        // 接口请求方式: POST GET
-  string group = 4;        // 接口分组
   string name = 5;         // 接口名称
   int64  businessType = 6; // 业务类型（1新增 2修改 3删除 4查询 5其它)
-  int64 isNeedAuth = 8;//是否需要权限认证 1是 2否
+  int64 IsAuthTenant = 8;//是否可以授权给普通租户
   string desc = 9;//描述
 }
 
@@ -1000,6 +990,28 @@ message ApiInfoIndexResp{
   int64 total = 2;           // 接口列表总记录数
 }
 
-message ApiDeleteReq{
-  int64 id = 1;            // 接口编号
+message AccessInfoIndexReq{
+  PageInfo page = 1;// 分页信息
+  string group = 4; // 接口分组
+  string code =6;
+  repeated string codes = 7;
+  string name = 8;  // 接口名称
+  int64 isNeedAuth = 9;//是否需要权限认证 1是 2否
+  bool WithApis =10;
 }
+
+message AccessInfo{
+  int64 id = 1;            // 接口编号
+  string code = 7;
+  string name = 5;         // 接口名称
+  string group = 4;        // 接口分组
+  int64 isNeedAuth = 8;//是否需要权限认证 1是 2否
+  string desc = 9;//描述
+  repeated ApiInfo Apis = 10;
+}
+
+message AccessInfoIndexResp{
+  repeated AccessInfo list = 1; // 接口列表数据
+  int64 total = 2;           // 接口列表总记录数
+}
+

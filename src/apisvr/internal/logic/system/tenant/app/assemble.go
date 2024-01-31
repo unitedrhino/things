@@ -9,7 +9,6 @@ func ToTenantAppModulePb(in *types.TenantAppModule) *sys.TenantAppModule {
 	return &sys.TenantAppModule{
 		Code:    in.Code,
 		MenuIDs: in.MenuIDs,
-		ApiIDs:  in.ApiIDs,
 	}
 }
 func ToTenantAppModulesPb(in []*types.TenantAppModule) (ret []*sys.TenantAppModule) {

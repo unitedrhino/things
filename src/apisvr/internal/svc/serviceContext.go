@@ -158,6 +158,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		UserDevice     userdevice.UserDevice
 		Rule           rule.Rule
 		DataM          datamanage.DataManage
+		accessM        accesssManage.AccessManage
+		ic             rule.Rule
 	)
 	var ur user.UserManage
 	var ro role.RoleManage

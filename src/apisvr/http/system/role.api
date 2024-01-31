@@ -46,18 +46,18 @@ service api {
 
 
 @server(
-    group: system/role/api
-    prefix: /api/v1/system/role/api
+    group: system/role/access
+    prefix: /api/v1/system/role/access
     middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
-    @doc "更新API权限"
+    @doc "更新操作权限"
     @handler multiUpdate
-    post /multi-update (RoleApiMultiUpdateReq) returns ()
+    post /multi-update (RoleAccessMultiUpdateReq) returns ()
 
-    @doc "获取API权限列表"
+    @doc "获取操作权限列表"
     @handler index
-    post /index (RoleApiIndexReq) returns (RoleApiIndexResp)
+    post /index (RoleAccessIndexReq) returns (RoleAccessIndexResp)
 
 }
 
@@ -108,21 +108,17 @@ type (
         Total int64 `json:"total"`         //App列表总数
     }
 
-    RoleApiMultiUpdateReq {
+    RoleAccessMultiUpdateReq {
         ID int64 `json:"id"`      //角色ID
-        AppCode string `json:"appCode"`                               // 应用编号
-        ModuleCode string `json:"moduleCode"`
-        ApiIDs []int64 `json:"apiIDs"`  //API列表数据
+        AccessCodes []string `json:"accessCodes"`                               // 模块编号
     }
 
-    RoleApiIndexReq{
+    RoleAccessIndexReq{
         ID int64 `json:"id"`      //角色ID
-        AppCode string `json:"appCode"`                               // 应用编号
-        ModuleCode string `json:"moduleCode"`
     }
 
-    RoleApiIndexResp {
-        ApiIDs []int64 `json:"apiIDs"`  //API列表数据
+    RoleAccessIndexResp {
+        AccessCodes []string `json:"accessCodes"`                               // 模块编号
     }
 
 

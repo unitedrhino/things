@@ -52,6 +52,16 @@ func (s *TenantManageServer) TenantInfoIndex(ctx context.Context, in *sys.Tenant
 	return l.TenantInfoIndex(in)
 }
 
+func (s *TenantManageServer) TenantAccessMultiUpdate(ctx context.Context, in *sys.TenantAccessMultiUpdateReq) (*sys.Response, error) {
+	l := tenantmanagelogic.NewTenantAccessMultiUpdateLogic(ctx, s.svcCtx)
+	return l.TenantAccessMultiUpdate(in)
+}
+
+func (s *TenantManageServer) TenantAccessIndex(ctx context.Context, in *sys.TenantAccessIndexReq) (*sys.TenantAccessIndexResp, error) {
+	l := tenantmanagelogic.NewTenantAccessIndexLogic(ctx, s.svcCtx)
+	return l.TenantAccessIndex(in)
+}
+
 func (s *TenantManageServer) TenantAppIndex(ctx context.Context, in *sys.TenantAppIndexReq) (*sys.TenantAppIndexResp, error) {
 	l := tenantmanagelogic.NewTenantAppIndexLogic(ctx, s.svcCtx)
 	return l.TenantAppIndex(in)
@@ -105,24 +115,4 @@ func (s *TenantManageServer) TenantAppMenuUpdate(ctx context.Context, in *sys.Te
 func (s *TenantManageServer) TenantAppMenuDelete(ctx context.Context, in *sys.WithAppCodeID) (*sys.Response, error) {
 	l := tenantmanagelogic.NewTenantAppMenuDeleteLogic(ctx, s.svcCtx)
 	return l.TenantAppMenuDelete(in)
-}
-
-func (s *TenantManageServer) TenantAppApiCreate(ctx context.Context, in *sys.TenantApiInfo) (*sys.WithID, error) {
-	l := tenantmanagelogic.NewTenantAppApiCreateLogic(ctx, s.svcCtx)
-	return l.TenantAppApiCreate(in)
-}
-
-func (s *TenantManageServer) TenantAppApiIndex(ctx context.Context, in *sys.TenantAppApiIndexReq) (*sys.TenantAppApiIndexResp, error) {
-	l := tenantmanagelogic.NewTenantAppApiIndexLogic(ctx, s.svcCtx)
-	return l.TenantAppApiIndex(in)
-}
-
-func (s *TenantManageServer) TenantAppApiUpdate(ctx context.Context, in *sys.TenantApiInfo) (*sys.Response, error) {
-	l := tenantmanagelogic.NewTenantAppApiUpdateLogic(ctx, s.svcCtx)
-	return l.TenantAppApiUpdate(in)
-}
-
-func (s *TenantManageServer) TenantAppApiDelete(ctx context.Context, in *sys.WithAppCodeID) (*sys.Response, error) {
-	l := tenantmanagelogic.NewTenantAppApiDeleteLogic(ctx, s.svcCtx)
-	return l.TenantAppApiDelete(in)
 }

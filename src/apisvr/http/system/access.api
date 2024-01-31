@@ -1,0 +1,96 @@
+info(
+	title: "接口管理模块"
+	desc: "接口管理"
+	author: "L"
+	email: "174805676@qq.com"
+	version: "v0.1.0"
+)
+import "common.api"  //公共结构体定义
+
+@server (
+	group : system/access/api
+	prefix: /api/v1/system/access/api
+	middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "添加接口"
+    @handler create
+    post /create (ApiInfo) returns (WithID)
+
+    @doc "获取接口列表"
+    @handler index
+    post /index (ApiInfoIndexReq) returns (ApiInfoIndexResp)
+
+    @doc "更新接口"
+    @handler update
+    post /update (ApiInfo) returns ()
+
+    @doc "删除接口"
+    @handler delete
+    post /delete (WithID) returns ()
+}
+
+@server (
+    group : system/access/info
+    prefix: /api/v1/system/access/info
+    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+
+service api {
+    @doc "添加访问权限信息"
+    @handler create
+    post /create (AccessInfo) returns (WithID)
+
+    @doc "获取访问权限信息"
+    @handler index
+    post /index (AccessIndexReq) returns (AccessIndexResp)
+
+    @doc "获取访问权限信息树结构"
+    @handler tree
+    post /tree (AccessIndexReq) returns (AccessIndexResp)
+
+    @doc "更新访问权限信息"
+    @handler update
+    post /update (AccessInfo) returns ()
+
+    @doc "删除访问权限信息"
+    @handler delete
+    post /delete (WithID) returns ()
+}
+
+type (
+
+    ApiInfoIndexReq struct {
+        Page *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
+        Route string `json:"route,optional"`                   // 接口路由
+        Method string `json:"method,optional"`      // 接口请求方式: （1 GET 2 POST 3 HEAD 4 OPTIONS 5 PUT 6 DELETE 7 TRACE 8 CONNECT 9 其它）
+        Name string `json:"name,optional"`                     // 接口名称
+        AccessCode string `json:"accessCode,optional"`                               // 应用编号
+        IsAuthTenant int64 `json:"isAuthTenant,optional,range=[0:2]"`        // 是否可以授权给普通租户
+    }
+
+
+    ApiInfoIndexResp struct {
+        List []*ApiInfo `json:"list"`            // 接口列表数据
+        Total int64 `json:"total"`                    // 接口列表总记录数
+    }
+
+    AccessIndexReq struct {
+        Page *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填
+        Group string `json:"group,optional"`                   // 接口路由
+        Name string `json:"name,optional"`                     // 接口名称
+        Code string `json:"code,optional"`                               // 应用编号
+        IsNeedAuth int64 `json:"isNeedAuth,optional,range=[0:2]"`        // 是否需要权限认证 1是 2否
+        WithApis bool `json:"withApis,optional"`
+    }
+
+
+    AccessIndexResp struct {
+        List []*AccessInfo `json:"list"`            // 接口列表数据
+        Total int64 `json:"total"`                    // 接口列表总记录数
+    }
+    AccessTreeResp struct {
+        List []*AccessGroupInfo `json:"list"`            // 接口列表数据
+    }
+)

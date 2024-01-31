@@ -7,6 +7,9 @@ import (
 	clientRole "github.com/i-Things/things/src/syssvr/client/rolemanage"
 	serverRole "github.com/i-Things/things/src/syssvr/internal/server/rolemanage"
 
+	clientAccess "github.com/i-Things/things/src/syssvr/client/accessmanage"
+	serverAccess "github.com/i-Things/things/src/syssvr/internal/server/accessmanage"
+
 	clientData "github.com/i-Things/things/src/syssvr/client/datamanage"
 	serverData "github.com/i-Things/things/src/syssvr/internal/server/datamanage"
 
@@ -46,6 +49,13 @@ func NewRole(runSvr bool) clientRole.RoleManage {
 		RunServer(svcCtx)
 	}
 	return clientRole.NewDirectRoleManage(svcCtx, serverRole.NewRoleManageServer(svcCtx))
+}
+func NewAccess(runSvr bool) clientAccess.AccessManage {
+	svcCtx := GetSvcCtx()
+	if runSvr {
+		RunServer(svcCtx)
+	}
+	return clientAccess.NewDirectAccessManage(svcCtx, serverAccess.NewAccessManageServer(svcCtx))
 }
 
 func NewData(runSvr bool) clientData.DataManage {
