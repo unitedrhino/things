@@ -1,9 +1,0 @@
-info(
-	title: "租户管理模块"
-	desc: "租户管理"
-	author: "L"
-	email: "174805676@qq.com"
-	version: "v0.1.0"
-)
-import "system/tenant/tenant.api"
-import "system/tenant/app.api"

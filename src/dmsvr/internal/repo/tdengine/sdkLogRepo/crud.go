@@ -4,12 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/stores"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgSdkLog"
 
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/utils"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

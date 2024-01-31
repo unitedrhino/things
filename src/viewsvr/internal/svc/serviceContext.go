@@ -1,8 +1,8 @@
 package svc
 
 import (
-	"github.com/i-Things/things/shared/oss"
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/oss"
+	"gitee.com/i-Things/core/shared/stores"
 	"github.com/i-Things/things/src/viewsvr/internal/config"
 	"github.com/i-Things/things/src/viewsvr/internal/middleware"
 	"github.com/i-Things/things/src/viewsvr/internal/repo/relationDB"

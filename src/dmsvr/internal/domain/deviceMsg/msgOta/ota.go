@@ -1,7 +1,7 @@
 package msgOta
 
 import (
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 )
 

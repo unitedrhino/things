@@ -2,8 +2,8 @@ package dataUpdate
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/conf"
+	"gitee.com/i-Things/core/shared/errors"
 )
 
 type (

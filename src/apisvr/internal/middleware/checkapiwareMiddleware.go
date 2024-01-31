@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	role "github.com/i-Things/things/src/syssvr/client/rolemanage"
+	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
 	"net/http"
 )
 

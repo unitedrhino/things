@@ -2,7 +2,7 @@ package startup
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/events/topics"
+	"gitee.com/i-Things/core/shared/events/topics"
 	"github.com/i-Things/things/src/rulesvr/internal/event/appDeviceEvent"
 	"github.com/i-Things/things/src/rulesvr/internal/event/busEvent/sceneChange"
 	"github.com/i-Things/things/src/rulesvr/internal/event/dataUpdateEvent"

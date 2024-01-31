@@ -3,7 +3,7 @@ package pubDev
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/conf"
+	"gitee.com/i-Things/core/shared/conf"
 )
 
 type (

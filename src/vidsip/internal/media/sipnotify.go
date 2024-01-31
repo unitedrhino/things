@@ -2,7 +2,7 @@ package media
 
 import (
 	"fmt"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/utils"
 	db "github.com/i-Things/things/src/vidsip/internal/repo/relationDB"
 	"github.com/sirupsen/logrus"
 	"net/url"

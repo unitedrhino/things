@@ -3,8 +3,8 @@ package msgThing
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/domain/schema"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/spf13/cast"
 	"math"
 )

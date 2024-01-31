@@ -1,10 +1,10 @@
 package msgThing
 
 import (
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/domain/schema"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"time"
 )

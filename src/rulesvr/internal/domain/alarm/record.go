@@ -1,6 +1,6 @@
 package alarm
 
-import "github.com/i-Things/things/shared/def"
+import "gitee.com/i-Things/core/shared/def"
 
 type RecordFilter struct {
 	AlarmID     int64 // 告警配置ID

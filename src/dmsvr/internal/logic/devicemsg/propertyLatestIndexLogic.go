@@ -3,8 +3,8 @@ package devicemsglogic
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 	"sync"

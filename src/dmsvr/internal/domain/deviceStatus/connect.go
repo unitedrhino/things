@@ -4,7 +4,7 @@ package deviceStatus
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/shared/devices"
+	"gitee.com/i-Things/core/shared/devices"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

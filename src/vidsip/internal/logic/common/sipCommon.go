@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/i-Things/things/shared/def"
+	"gitee.com/i-Things/core/shared/def"
 	db "github.com/i-Things/things/src/vidsip/internal/repo/relationDB"
 	"github.com/i-Things/things/src/vidsip/pb/sip"
 )

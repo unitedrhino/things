@@ -2,7 +2,7 @@ package svc
 
 import (
 	"fmt"
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/stores"
 	"github.com/i-Things/things/src/vidsip/internal/config"
 	"github.com/i-Things/things/src/vidsip/internal/media"
 	"github.com/i-Things/things/src/vidsip/internal/repo/relationDB"

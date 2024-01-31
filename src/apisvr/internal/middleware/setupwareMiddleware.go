@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/utils"
+	operLog "gitee.com/i-Things/core/service/syssvr/client/log"
+	"gitee.com/i-Things/core/shared/ctxs"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/config"
-	operLog "github.com/i-Things/things/src/syssvr/client/log"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 )

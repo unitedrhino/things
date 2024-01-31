@@ -3,8 +3,8 @@ package relationDB
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/stores"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

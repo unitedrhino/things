@@ -2,12 +2,12 @@ package subApp
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/clients"
-	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/domain/application"
-	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/shared/events/topics"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/clients"
+	"gitee.com/i-Things/core/shared/conf"
+	"gitee.com/i-Things/core/shared/domain/application"
+	"gitee.com/i-Things/core/shared/events"
+	"gitee.com/i-Things/core/shared/events/topics"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 )

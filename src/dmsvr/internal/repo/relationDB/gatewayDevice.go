@@ -3,9 +3,9 @@ package relationDB
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

@@ -3,8 +3,8 @@ package ruledirect
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/ctxs"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/i-Things/things/src/rulesvr/internal/config"
 	alarmcenter "github.com/i-Things/things/src/rulesvr/internal/server/alarmcenter"
 	ruleengine "github.com/i-Things/things/src/rulesvr/internal/server/ruleengine"
@@ -65,7 +65,7 @@ func Run(svcCtx *svc.ServiceContext) {
 		}
 	})
 	defer s.Stop()
-	s.AddUnaryInterceptors(errors.ErrorInterceptor,ctxs.GrpcInterceptor)
+	s.AddUnaryInterceptors(errors.ErrorInterceptor, ctxs.GrpcInterceptor)
 
 	fmt.Printf("Starting rulesvr server at %s...\n", c.ListenOn)
 	s.Start()

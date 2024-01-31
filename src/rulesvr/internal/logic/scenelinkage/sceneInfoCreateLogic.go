@@ -2,7 +2,7 @@ package scenelinkagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/svc"
 	"github.com/i-Things/things/src/rulesvr/pb/rule"

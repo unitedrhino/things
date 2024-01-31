@@ -2,7 +2,7 @@ package relationDB
 
 import (
 	"database/sql"
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/stores"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/productCustom"
 	"time"
 )
@@ -192,8 +192,7 @@ type DmGroupDevice struct {
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:group_id_product_id_device_name"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
-	Device      *DmDeviceInfo  `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
-
+	Device      *DmDeviceInfo      `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
 }
 
 func (m *DmGroupDevice) TableName() string {

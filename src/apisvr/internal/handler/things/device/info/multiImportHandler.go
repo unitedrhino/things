@@ -3,9 +3,9 @@ package info
 import (
 	"bytes"
 	"encoding/csv"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/result"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/result"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/logic/things/device/info"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"

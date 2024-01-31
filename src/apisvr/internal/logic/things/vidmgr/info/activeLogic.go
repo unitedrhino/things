@@ -3,8 +3,8 @@ package info
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/apisvr/internal/svc"
 	"github.com/i-Things/things/src/apisvr/internal/types"
 	"github.com/i-Things/things/src/vidsvr/pb/vid"
@@ -25,7 +25,6 @@ func NewActiveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ActiveLogi
 		svcCtx: svcCtx,
 	}
 }
-
 
 func (l *ActiveLogic) Active(req *types.VidmgrInfoActiveReq) error {
 	// todo: add your logic here and delete this line

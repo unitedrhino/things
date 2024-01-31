@@ -3,8 +3,8 @@ package startup
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/shared/eventBus"
-	"github.com/i-Things/things/shared/events"
+	"gitee.com/i-Things/core/shared/eventBus"
+	"gitee.com/i-Things/core/shared/events"
 	"github.com/i-Things/things/src/dgsvr/internal/event/deviceSub"
 	"github.com/i-Things/things/src/dgsvr/internal/event/innerSub"
 	"github.com/i-Things/things/src/dgsvr/internal/repo/event/publish/pubDev"

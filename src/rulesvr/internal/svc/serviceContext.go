@@ -2,10 +2,10 @@ package svc
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/eventBus"
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/conf"
+	"gitee.com/i-Things/core/shared/domain/schema"
+	"gitee.com/i-Things/core/shared/eventBus"
+	"gitee.com/i-Things/core/shared/stores"
 	deviceinteract "github.com/i-Things/things/src/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/src/dmsvr/client/devicemanage"
 	devicemsg "github.com/i-Things/things/src/dmsvr/client/devicemsg"

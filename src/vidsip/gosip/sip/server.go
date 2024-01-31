@@ -3,7 +3,7 @@ package sip
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net"
 	"net/http"

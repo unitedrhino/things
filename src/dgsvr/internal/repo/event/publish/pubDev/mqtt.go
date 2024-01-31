@@ -2,8 +2,8 @@ package pubDev
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/clients"
-	"github.com/i-Things/things/shared/conf"
+	"gitee.com/i-Things/core/shared/clients"
+	"gitee.com/i-Things/core/shared/conf"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

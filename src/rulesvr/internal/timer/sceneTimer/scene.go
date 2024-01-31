@@ -3,9 +3,9 @@ package sceneTimer
 import (
 	"context"
 	"fmt"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/timers"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/timers"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/rulesvr/internal/domain/scene"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/rulesvr/internal/repo/repoComplex"

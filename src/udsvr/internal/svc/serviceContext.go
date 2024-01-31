@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/stores"
 	"github.com/i-Things/things/src/udsvr/internal/config"
 	"github.com/i-Things/things/src/udsvr/internal/repo/relationDB"
 )

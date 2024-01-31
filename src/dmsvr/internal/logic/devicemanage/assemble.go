@@ -1,11 +1,11 @@
 package devicemanagelogic
 
 import (
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/events"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgGateway"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"

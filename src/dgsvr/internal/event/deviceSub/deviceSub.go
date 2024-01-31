@@ -2,10 +2,10 @@ package deviceSub
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/domain/deviceAuth"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/domain/deviceAuth"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dgsvr/internal/domain/custom"
 	"github.com/i-Things/things/src/dgsvr/internal/repo/event/publish/pubInner"
 	"github.com/i-Things/things/src/dgsvr/internal/svc"

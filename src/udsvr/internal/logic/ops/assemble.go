@@ -1,7 +1,7 @@
 package opslogic
 
 import (
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/stores"
 	"github.com/i-Things/things/src/udsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/src/udsvr/pb/ud"
 )

@@ -4,9 +4,9 @@ package deviceMsg
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

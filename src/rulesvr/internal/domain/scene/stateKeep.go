@@ -1,8 +1,8 @@
 package scene
 
 import (
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 )
 
 type StateKeepType string

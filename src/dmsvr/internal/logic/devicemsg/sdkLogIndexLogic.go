@@ -5,8 +5,8 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgSdkLog"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/errors"
 
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"

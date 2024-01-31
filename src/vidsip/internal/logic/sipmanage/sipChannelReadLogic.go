@@ -2,7 +2,7 @@ package sipmanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/i-Things/things/src/vidsip/internal/logic/common"
 	db "github.com/i-Things/things/src/vidsip/internal/repo/relationDB"
 

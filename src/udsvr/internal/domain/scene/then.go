@@ -1,6 +1,6 @@
 package scene
 
-import "github.com/i-Things/things/shared/errors"
+import "gitee.com/i-Things/core/shared/errors"
 
 type Then struct {
 	Actions Actions `json:"actions"` //执行内容

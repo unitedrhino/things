@@ -2,7 +2,7 @@ package otafirmwaremanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/def"
+	"gitee.com/i-Things/core/shared/def"
 	"github.com/i-Things/things/src/dmsvr/internal/logic"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/jinzhu/copier"

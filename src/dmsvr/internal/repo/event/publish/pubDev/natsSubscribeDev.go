@@ -1,10 +1,10 @@
 package pubDev
 
 import (
-	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/ctxs"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/events"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"

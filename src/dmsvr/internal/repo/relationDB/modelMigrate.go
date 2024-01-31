@@ -1,8 +1,8 @@
 package relationDB
 
 import (
-	"github.com/i-Things/things/shared/conf"
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/conf"
+	"gitee.com/i-Things/core/shared/stores"
 	"gorm.io/gorm/clause"
 )
 

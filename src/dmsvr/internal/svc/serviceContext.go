@@ -1,27 +1,27 @@
 package svc
 
 import (
-	"github.com/i-Things/things/shared/conf"
+	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/core/service/timed/timedjobsvr/timedjobdirect"
+	"gitee.com/i-Things/core/shared/conf"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgSdkLog"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/schemaDataRepo"
-	"github.com/i-Things/things/src/timed/timedjobsvr/client/timedmanage"
-	"github.com/i-Things/things/src/timed/timedjobsvr/timedjobdirect"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
 
-	"github.com/i-Things/things/shared/stores"
+	"gitee.com/i-Things/core/shared/stores"
 
-	"github.com/i-Things/things/shared/caches"
+	"gitee.com/i-Things/core/shared/caches"
 
-	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/eventBus"
-	"github.com/i-Things/things/shared/oss"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/domain/schema"
+	"gitee.com/i-Things/core/shared/eventBus"
+	"gitee.com/i-Things/core/shared/oss"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/config"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/tdengine/hubLogRepo"

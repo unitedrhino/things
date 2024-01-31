@@ -1,8 +1,8 @@
 package detail
 
 import (
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/result"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/result"
 	"github.com/i-Things/things/src/viewsvr/internal/logic/goView/project/detail"
 	"github.com/i-Things/things/src/viewsvr/internal/svc"
 	"github.com/i-Things/things/src/viewsvr/internal/types"

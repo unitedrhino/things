@@ -2,8 +2,8 @@ package uddirect
 
 import (
 	"fmt"
-	"github.com/i-Things/things/shared/ctxs"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/ctxs"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/i-Things/things/src/udsvr/internal/config"
 	opsServer "github.com/i-Things/things/src/udsvr/internal/server/ops"
 	ruleServer "github.com/i-Things/things/src/udsvr/internal/server/rule"

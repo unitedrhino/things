@@ -6,13 +6,13 @@ import (
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"regexp"
 
-	"github.com/i-Things/things/shared/oss"
+	"gitee.com/i-Things/core/shared/oss"
 
-	"github.com/i-Things/things/shared/def"
-	"github.com/i-Things/things/shared/domain/deviceAuth"
-	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/def"
+	"gitee.com/i-Things/core/shared/domain/deviceAuth"
+	"gitee.com/i-Things/core/shared/domain/schema"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/svc"
 	"github.com/i-Things/things/src/dmsvr/pb/dm"
 

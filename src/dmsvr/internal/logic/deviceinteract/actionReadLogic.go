@@ -3,8 +3,8 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
-	"github.com/i-Things/things/shared/devices"
-	"github.com/i-Things/things/shared/errors"
+	"gitee.com/i-Things/core/shared/devices"
+	"gitee.com/i-Things/core/shared/errors"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/src/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/cache"

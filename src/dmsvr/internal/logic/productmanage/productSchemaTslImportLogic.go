@@ -2,11 +2,11 @@ package productmanagelogic
 
 import (
 	"context"
-	"github.com/i-Things/things/shared/domain/schema"
-	"github.com/i-Things/things/shared/errors"
-	"github.com/i-Things/things/shared/eventBus"
-	"github.com/i-Things/things/shared/events"
-	"github.com/i-Things/things/shared/utils"
+	"gitee.com/i-Things/core/shared/domain/schema"
+	"gitee.com/i-Things/core/shared/errors"
+	"gitee.com/i-Things/core/shared/eventBus"
+	"gitee.com/i-Things/core/shared/events"
+	"gitee.com/i-Things/core/shared/utils"
 	"github.com/i-Things/things/src/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
 
