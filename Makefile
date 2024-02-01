@@ -5,13 +5,20 @@ build:build.clean mod cp.etc build.api build.dg build.view build.dm build.sys bu
 
 runall:  run.timedjob run.timedscheduler run.sys run.dm run.dg run.ud run.api run.view
 
-buildone:build.clean mod cp.etc build.api build.view moduleupdate build.core
+buildone:build.clean mod cp.etc build.api build.view moduleupdate build.core build.front
 
 moduleupdate:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@git submodule update --init --recursive
 	@git submodule foreach git checkout master
 	@git submodule foreach git pull
+
+build.front:
+	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@mkdir -p ./cmd/core/dist/app/things
+	@cd module/front/things  && yarn install && yarn run build && cp -rf ./dist/* ../../../cmd/core/dist/app/things
+
+
 
 build.core:
 	@mkdir -p ./cmd/core

@@ -1,3 +1,6 @@
 [submodule "module/core"]
 	path = module/core
 	url = git@codeup.aliyun.com:642f7dca8b47795dae985084/core/core.git
+[submodule "module/front/things"]
+	path = module/front/things
+	url = git@codeup.aliyun.com:642f7dca8b47795dae985084/iThings/iThings-admin-react.git
