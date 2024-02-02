@@ -1,0 +1,30 @@
+info(
+	title: "用户管理模块"
+	desc: "用户管理相关接口，包括创建账号，登录，获取验证码，获取用户列表，获取单个用户信息，更新用户信息，删除用户"
+	author: "L"
+	email: "174805676@qq.com"
+	version: "v0.1.0"
+)
+
+@server (
+	group: things/slot/area
+	prefix: /api/v1/things/slot/area
+	middleware:  CheckTokenWare
+)
+service api {
+	@doc "插槽区域创建"
+	@handler create
+	post /create (SlotAreaSaveReq) returns ()
+	@doc "插槽区域更新"
+	@handler delete
+	post /delete (SlotAreaSaveReq) returns ()
+}
+
+type (
+	SlotAreaSaveReq{
+		ProjectID int64 `json:"projectID,string,optional"`       //项目id（只读）
+		AreaID int64 `json:"areaID,string,optional"`             //项目区域id（只读）
+		ParentAreaID int64 `json:"parentAreaID,string,optional"` //上级项目区域id（只读）
+	}
+)
+

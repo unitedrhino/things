@@ -9,7 +9,7 @@ info(
 @server(
     group: things/product/remoteConfig
     prefix: /api/v1/things/product
-    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "创建配置"

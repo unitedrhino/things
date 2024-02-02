@@ -15,3 +15,4 @@ import "things/vidmgr.api"  //视频服务相关功能接口
 import "things/schema/common.api"  //物模型相关接口
 import "things/ops/workOrder.api"  //设备运维相关接口
 import "things/user/device.api"
+import "things/slot.api"

@@ -10,7 +10,7 @@ info(
 @server(
     group: things/device/info
     prefix: /api/v1/things/device/info
-    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "新增设备"

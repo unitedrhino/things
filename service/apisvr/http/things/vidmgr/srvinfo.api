@@ -12,7 +12,7 @@ info(
 @server(
     group:things/vidmgr/info
     prefix:/api/v1/things/vidmgr/info
-    middleware: SetupWare, CheckTokenWare,CheckApiWare, TeardownWare
+    middleware:  CheckTokenWare,CheckApiWare, TeardownWare
 )
 
 service api {
