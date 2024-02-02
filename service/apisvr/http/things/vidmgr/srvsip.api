@@ -12,7 +12,7 @@ info(
 @server(
     group:things/vidmgr/gbsip
     prefix:/api/v1/things/vidmgr/gbsip
-    middleware: SetupWare, CheckTokenWare, TeardownWare
+    middleware:  CheckTokenWare, TeardownWare
 )
 
 service api {

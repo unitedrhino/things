@@ -1316,6 +1316,12 @@ type SendOption struct {
 	RetryInterval  int64 `json:"retryInterval,optional"`  //重试间隔
 }
 
+type SlotAreaSaveReq struct {
+	ProjectID    int64 `json:"projectID,string,optional"`    //项目id（只读）
+	AreaID       int64 `json:"areaID,string,optional"`       //项目区域id（只读）
+	ParentAreaID int64 `json:"parentAreaID,string,optional"` //上级项目区域id（只读）
+}
+
 type StaticUpgradeDeviceInfo struct {
 	DeviceName string `json:"deviceName"` // 设备名称
 	SrcVersion string `json:"srcVersion"` // 源版本

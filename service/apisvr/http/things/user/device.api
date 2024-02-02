@@ -9,7 +9,7 @@ info(
 @server (
 	group: things/user/device/collect
 	prefix: /api/v1/things/user/device/collect
-	middleware: SetupWare, CheckTokenWare, DataAuthWare, TeardownWare
+	middleware:  CheckTokenWare, DataAuthWare, TeardownWare
 )
 service api {
 	@doc "获取用户应用列表"

@@ -9,7 +9,7 @@ info(
 @server(
     group: things/product/category
     prefix: /api/v1/things/product/category
-    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "新增产品品类"

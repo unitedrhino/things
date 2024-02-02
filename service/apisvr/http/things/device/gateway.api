@@ -10,7 +10,7 @@ info(
 @server(
     group: things/device/gateway
     prefix: /api/v1/things/device/gateway
-    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "添加网关子设备"

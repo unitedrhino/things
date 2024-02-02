@@ -6,14 +6,13 @@ toolchain go1.21.4
 
 replace (
 	gitee.com/i-Things/core => ../core
-	gitee.com/i-Things/share => ../share
 	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.2
 	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.5
 )
 
 require (
 	gitee.com/i-Things/core v0.0.0-00010101000000-000000000000
-	gitee.com/i-Things/share v0.1.0
+	gitee.com/i-Things/share v0.1.1
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -130,6 +129,7 @@ require (
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/openzipkin/zipkin-go v0.4.1 // indirect
+	github.com/parnurzeal/gorequest v0.2.16 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.7 // indirect
 	github.com/prometheus/client_golang v1.15.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
@@ -195,6 +195,7 @@ require (
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.21.1 // indirect
+	moul.io/http2curl v1.0.0 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect

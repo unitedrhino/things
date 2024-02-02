@@ -9,7 +9,7 @@ info(
 @server(
     group: things/rule/alarm/scene
     prefix: /api/v1/things/rule/alarm/scene
-    middleware: SetupWare, CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "更新告警和场景的关联"
