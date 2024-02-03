@@ -21,6 +21,9 @@ type (
 	CommonSchemaUpdateReq              = dm.CommonSchemaUpdateReq
 	CustomTopic                        = dm.CustomTopic
 	DeviceCore                         = dm.DeviceCore
+	DeviceCountInfo                    = dm.DeviceCountInfo
+	DeviceCountReq                     = dm.DeviceCountReq
+	DeviceCountResp                    = dm.DeviceCountResp
 	DeviceGatewayBindDevice            = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq              = dm.DeviceGatewayIndexReq
 	DeviceGatewayIndexResp             = dm.DeviceGatewayIndexResp
@@ -213,6 +216,7 @@ type (
 		DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error)
 		// 设备类型
 		DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error)
+		DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error)
 	}
 
 	defaultDeviceManage struct {
@@ -368,4 +372,13 @@ func (m *defaultDeviceManage) DeviceTypeCount(ctx context.Context, in *DeviceTyp
 // 设备类型
 func (d *directDeviceManage) DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error) {
 	return d.svr.DeviceTypeCount(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceCount(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error) {
+	return d.svr.DeviceCount(ctx, in)
 }

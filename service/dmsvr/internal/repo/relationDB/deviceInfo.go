@@ -18,6 +18,7 @@ type (
 	DeviceFilter struct {
 		ProductID         string
 		AreaIDs           []int64
+		NotAreaIDs        []int64
 		DeviceName        string
 		DeviceNames       []string
 		Tags              map[string]string
@@ -48,6 +49,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	//业务过滤条件
 	if f.ProductID != "" {
 		db = db.Where("product_id = ?", f.ProductID)
+	}
+	if len(f.NotAreaIDs) != 0 {
+		db = db.Where("area_id not in ?", f.NotAreaIDs)
 	}
 	if len(f.AreaIDs) != 0 {
 		db = db.Where("area_id in ?", f.AreaIDs)

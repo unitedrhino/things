@@ -180,14 +180,19 @@ type DeviceCore struct {
 	DeviceName string `json:"deviceName"` //设备名称
 }
 
+type DeviceCountInfo struct {
+	RangeID int64            `json:"rangeID,string"`
+	Count   map[string]int64 `json:"count"`
+}
+
 type DeviceCountReq struct {
-	StartTime int64 `json:"startTime,optional" form:"startTime,optional"` //查询区间的开始时间（秒）
-	EndTime   int64 `json:"endTime,optional" form:"endTime,optional"`     //查询区间的结束时间（秒）
+	CountTypes []string `json:"countTypes"`       //总数:total,在线设备数:status,设备类型: type
+	RangeType  int64    `json:"rangeType,string"` //0:全部 1:area 2:group
+	RangeIDs   []int64  `json:"rangeIDs,string"`  //统计的id列表, areaID或者groupID
 }
 
 type DeviceCountResp struct {
-	DeviceInfoCount DeviceInfoCount `json:"deviceCount"`
-	DeviceTypeCount DeviceTypeCount `json:"deviceTypeCount"`
+	List []*DeviceCountInfo `json:"list"`
 }
 
 type DeviceGateWayIndexReq struct {
@@ -238,14 +243,6 @@ type DeviceInfo struct {
 	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	CreatedTime    int64                              `json:"createdTime,optional,string"`         //创建时间 只读
 	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"`   //获取的属性列表,如果不传withProperty,则不会返回
-}
-
-type DeviceInfoCount struct {
-	Total    int64 `json:"total"`    //总数
-	Online   int64 `json:"online"`   // 在线设备数
-	Offline  int64 `json:"offline"`  // 离线设备数
-	Inactive int64 `json:"inactive"` // 未激活设备数
-	Unknown  int64 `json:"unknown"`  // 未知设备数（all = 在线+离线+未激活+未知）
 }
 
 type DeviceInfoDeleteReq struct {
@@ -532,13 +529,6 @@ type DeviceRegisterResp struct {
 	Payload string `json:"payload"`
 }
 
-type DeviceTypeCount struct {
-	Device  int64 `json:"device"`  // 设备类型数
-	Gateway int64 `json:"gateway"` // 网关类型数
-	Subset  int64 `json:"subset"`  // 子设备类型数
-	Unknown int64 `json:"unknown"` // 未知设备类型
-}
-
 type DynamicUpgradeJobReq struct {
 	FirmwareID       int64    `json:"firmwareId"`       // 固件ID
 	ProductID        string   `json:"productId"`        // 产品ID
@@ -657,17 +647,16 @@ type GroupDeviceMultiSaveReq struct {
 }
 
 type GroupInfo struct {
-	ID              int64            `json:"id,optional"`                 //分组ID
-	ParentID        int64            `json:"parentID,optional"`           //父组ID
-	ProjectID       int64            `json:"projectID,string,optional"`   //项目ID
-	AreaID          int64            `json:"areaID,string,optional"`      //区域ID
-	Name            string           `json:"name,optional"`               //分组名称
-	ProductID       string           `json:"productID,optional"`          //产品ID
-	ProductName     string           `json:"productName,optional"`        //产品ID
-	CreatedTime     int64            `json:"createdTime,string,optional"` //创建时间
-	Desc            string           `json:"desc,optional"`               //分组描述
-	Tags            []*Tag           `json:"tags,optional"`               //分组tag
-	DeviceInfoCount *DeviceInfoCount `json:"deviceInfoCount,optional"`
+	ID          int64  `json:"id,optional"`                 //分组ID
+	ParentID    int64  `json:"parentID,optional"`           //父组ID
+	ProjectID   int64  `json:"projectID,string,optional"`   //项目ID
+	AreaID      int64  `json:"areaID,string,optional"`      //区域ID
+	Name        string `json:"name,optional"`               //分组名称
+	ProductID   string `json:"productID,optional"`          //产品ID
+	ProductName string `json:"productName,optional"`        //产品ID
+	CreatedTime int64  `json:"createdTime,string,optional"` //创建时间
+	Desc        string `json:"desc,optional"`               //分组描述
+	Tags        []*Tag `json:"tags,optional"`               //分组tag
 }
 
 type GroupInfoIndexReq struct {

@@ -14,16 +14,15 @@ func ToGroupInfoPb(ro *relationDB.DmGroupInfo, c *dm.DeviceInfoCount) *dm.GroupI
 		productName = ro.ProductInfo.ProductName
 	}
 	return &dm.GroupInfo{
-		AreaID:          int64(ro.AreaID),
-		Id:              ro.ID,
-		ParentID:        ro.ParentID,
-		ProjectID:       int64(ro.ProjectID),
-		ProductName:     productName,
-		Name:            ro.Name,
-		ProductID:       ro.ProductID,
-		Desc:            ro.Desc,
-		CreatedTime:     ro.CreatedTime.Unix(),
-		Tags:            ro.Tags,
-		DeviceInfoCount: c,
+		AreaID:      int64(ro.AreaID),
+		Id:          ro.ID,
+		ParentID:    ro.ParentID,
+		ProjectID:   int64(ro.ProjectID),
+		ProductName: productName,
+		Name:        ro.Name,
+		ProductID:   ro.ProductID,
+		Desc:        ro.Desc,
+		CreatedTime: ro.CreatedTime.Unix(),
+		Tags:        ro.Tags,
 	}
 }
