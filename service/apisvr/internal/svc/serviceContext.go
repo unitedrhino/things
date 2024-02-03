@@ -37,12 +37,6 @@ import (
 	"github.com/i-Things/things/service/udsvr/client/rule"
 	"github.com/i-Things/things/service/udsvr/client/userdevice"
 	"github.com/i-Things/things/service/udsvr/uddirect"
-	"github.com/i-Things/things/service/vidsip/client/sipmanage"
-	"github.com/i-Things/things/service/vidsip/sipdirect"
-	"github.com/i-Things/things/service/vidsvr/client/vidmgrconfigmanage"
-	"github.com/i-Things/things/service/vidsvr/client/vidmgrinfomanage"
-	"github.com/i-Things/things/service/vidsvr/client/vidmgrstreammanage"
-	"github.com/i-Things/things/service/vidsvr/viddirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -57,11 +51,6 @@ func init() {
 }
 
 type SvrClient struct {
-	SipRpc  sipmanage.SipManage
-	VidmgrM vidmgrinfomanage.VidmgrInfoManage
-	VidmgrC vidmgrconfigmanage.VidmgrConfigManage
-	VidmgrS vidmgrstreammanage.VidmgrStreamManage
-
 	ProtocolM protocolmanage.ProtocolManage
 	ProductM  productmanage.ProductManage
 	SchemaM   schemamanage.SchemaManage
@@ -107,11 +96,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var (
 		Ops     ops.Ops
 		schemaM schemamanage.SchemaManage
-		vidmgrM vidmgrinfomanage.VidmgrInfoManage
-		vidmgrC vidmgrconfigmanage.VidmgrConfigManage
-		vidmgrS vidmgrstreammanage.VidmgrStreamManage
-
-		vidSip sipmanage.SipManage
 
 		protocolM protocolmanage.ProtocolManage
 		productM  productmanage.ProductManage
@@ -208,28 +192,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 	}
 
-	if c.VidRpc.Enable {
-		if c.VidRpc.Mode == conf.ClientModeGrpc {
-			vidmgrM = vidmgrinfomanage.NewVidmgrInfoManage(zrpc.MustNewClient(c.VidRpc.Conf))
-			vidmgrC = vidmgrconfigmanage.NewVidmgrConfigManage(zrpc.MustNewClient(c.VidRpc.Conf))
-			vidmgrS = vidmgrstreammanage.NewVidmgrStreamManage(zrpc.MustNewClient(c.VidRpc.Conf))
-
-		} else {
-			vidmgrM = viddirect.NewVidmgrManage(c.VidRpc.RunProxy)
-			vidmgrC = viddirect.NewVidmgrConfigManage(c.VidRpc.RunProxy)
-			vidmgrS = viddirect.NewVidmgrStreamManage(c.VidRpc.RunProxy)
-			//viddirect.ApiDirectRun()
-		}
-	}
-
-	if c.VidSip.Enable {
-		if c.VidSip.Mode == conf.ClientModeGrpc {
-			vidSip = sipmanage.NewSipManage(zrpc.MustNewClient(c.VidSip.Conf))
-		} else {
-			vidSip = sipdirect.NewSipManage(c.VidSip.RunProxy)
-		}
-	}
-
 	//if c.TimedSchedulerRpc.Enable {
 	//	if c.TimedSchedulerRpc.Mode == conf.ClientModeGrpc {
 	//		timedSchedule = timedscheduler.NewTimedscheduler(zrpc.MustNewClient(c.TimedSchedulerRpc.Conf))
@@ -270,10 +232,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OtaModuleM:     otaModuleM,
 		TaskM:          taskM,
 		SvrClient: SvrClient{
-			VidmgrM: vidmgrM,
-			VidmgrC: vidmgrC,
-			VidmgrS: vidmgrS,
-			SipRpc:  vidSip,
 
 			ProtocolM: protocolM,
 			SchemaM:   schemaM,

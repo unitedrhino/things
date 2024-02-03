@@ -7,8 +7,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/i-Things/things/service/rulesvr/pb/rule"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
-	"github.com/i-Things/things/service/vidsip/pb/sip"
-	"github.com/i-Things/things/service/vidsvr/pb/vid"
 )
 
 func ToTagsMap(tags []*types.Tag) map[string]string {
@@ -30,26 +28,6 @@ func ToTagsType(tags map[string]string) (retTag []*types.Tag) {
 		})
 	}
 	return
-}
-
-func ToVidPageRpc(in *types.PageInfo) *vid.PageInfo {
-	if in == nil {
-		return nil
-	}
-	return &vid.PageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
-}
-
-func ToSipPageRpc(in *types.PageInfo) *sip.PageInfo {
-	if in == nil {
-		return nil
-	}
-	return &sip.PageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
 }
 
 func ToDmPageRpc(in *types.PageInfo) *dm.PageInfo {
