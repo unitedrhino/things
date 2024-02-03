@@ -119,25 +119,29 @@ type (
     }
 
     DeviceCountReq {
-        StartTime int64 `json:"startTime,optional" form:"startTime,optional"`  //查询区间的开始时间（秒）
-        EndTime int64 `json:"endTime,optional" form:"endTime,optional"`        //查询区间的结束时间（秒）
+        CountTypes []string `json:"countTypes"`//总数:total,在线设备数:status,设备类型: deviceType
+        RangeType int64 `json:"rangeType,string"`//0:全部 1:area 2:group
+        RangeIDs []int64 `json:"rangeIDs,string"`//统计的id列表, areaID或者groupID
     }
-    DeviceInfoCount {
-        Total int64 `json:"total"`//总数
-        Online int64 `json:"online"`     // 在线设备数
-        Offline int64 `json:"offline"`   // 离线设备数
-        Inactive int64 `json:"inactive"` // 未激活设备数
-        Unknown int64 `json:"unknown"`   // 未知设备数（all = 在线+离线+未激活+未知）
-    }
-    DeviceTypeCount {
-        Device int64 `json:"device"`   // 设备类型数
-        Gateway int64 `json:"gateway"` // 网关类型数
-        Subset int64 `json:"subset"`   // 子设备类型数
-        Unknown int64 `json:"unknown"` // 未知设备类型
-    }
+//    DeviceInfoCount {
+//        Total int64 `json:"total"`//总数
+//        Online int64 `json:"online"`     // 在线设备数
+//        Offline int64 `json:"offline"`   // 离线设备数
+//        Inactive int64 `json:"inactive"` // 未激活设备数
+//        Unknown int64 `json:"unknown"`   // 未知设备数（all = 在线+离线+未激活+未知）
+//    }
+//    DeviceTypeCount {
+//        Device int64 `json:"device"`   // 设备类型数
+//        Gateway int64 `json:"gateway"` // 网关类型数
+//        Subset int64 `json:"subset"`   // 子设备类型数
+//        Unknown int64 `json:"unknown"` // 未知设备类型
+//    }
     DeviceCountResp {
-        DeviceInfoCount DeviceInfoCount `json:"deviceCount"`
-        DeviceTypeCount DeviceTypeCount `json:"deviceTypeCount"`
+       List []*DeviceCountInfo `json:"list"`
+    }
+    DeviceCountInfo{
+       RangeID int64 `json:"rangeID,string"`
+       Count map[string]int64 `json:"count"`
     }
 
     DeviceMultiImportReq {

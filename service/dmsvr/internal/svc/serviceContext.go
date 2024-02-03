@@ -1,9 +1,8 @@
 package svc
 
 import (
+	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
-	"gitee.com/i-Things/core/service/timed/timedjobsvr/timedjobdirect"
-	"gitee.com/i-Things/share/conf"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgSdkLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgThing"
@@ -48,11 +47,13 @@ type ServiceContext struct {
 	SDKLogRepo     msgSdkLog.SDKLogRepo
 	Cache          kv.Store
 	ServerMsg      *eventBus.ServerMsg
+	AreaM          areamanage.AreaManage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
 		timedM timedmanage.TimedManage
+		areaM  areamanage.AreaManage
 	)
 	caches.InitStore(c.CacheRedis)
 	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
@@ -90,16 +91,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("NewPubApp err", err)
 		os.Exit(-1)
 	}
-	if c.TimedJobRpc.Mode == conf.ClientModeGrpc {
-		timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
-	} else {
-		timedM = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
-	}
+	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
+	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
+
 	return &ServiceContext{
 		ServerMsg:      serverMsg,
 		Config:         c,
 		OssClient:      ossClient,
 		TimedM:         timedM,
+		AreaM:          areaM,
 		PubApp:         pa,
 		PubDev:         pd,
 		ProjectID:      ProjectID,

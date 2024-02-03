@@ -33,6 +33,7 @@ const (
 	DeviceManage_DeviceGatewayMultiDelete_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiDelete"
 	DeviceManage_DeviceInfoCount_FullMethodName          = "/dm.DeviceManage/deviceInfoCount"
 	DeviceManage_DeviceTypeCount_FullMethodName          = "/dm.DeviceManage/deviceTypeCount"
+	DeviceManage_DeviceCount_FullMethodName              = "/dm.DeviceManage/deviceCount"
 )
 
 // DeviceManageClient is the client API for DeviceManage service.
@@ -63,6 +64,7 @@ type DeviceManageClient interface {
 	DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error)
 	// 设备类型
 	DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error)
+	DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error)
 }
 
 type deviceManageClient struct {
@@ -181,6 +183,15 @@ func (c *deviceManageClient) DeviceTypeCount(ctx context.Context, in *DeviceType
 	return out, nil
 }
 
+func (c *deviceManageClient) DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error) {
+	out := new(DeviceCountResp)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceCount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceManageServer is the server API for DeviceManage service.
 // All implementations must embed UnimplementedDeviceManageServer
 // for forward compatibility
@@ -209,6 +220,7 @@ type DeviceManageServer interface {
 	DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCount, error)
 	// 设备类型
 	DeviceTypeCount(context.Context, *DeviceTypeCountReq) (*DeviceTypeCountResp, error)
+	DeviceCount(context.Context, *DeviceCountReq) (*DeviceCountResp, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }
 
@@ -250,7 +262,10 @@ func (UnimplementedDeviceManageServer) DeviceInfoCount(context.Context, *DeviceI
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoCount not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceTypeCount(context.Context, *DeviceTypeCountReq) (*DeviceTypeCountResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTypeCount not implemented")
+	return nil, status.Errorf(codes.Unimplemented, "method Count not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceCount(context.Context, *DeviceCountReq) (*DeviceCountResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceCount not implemented")
 }
 func (UnimplementedDeviceManageServer) mustEmbedUnimplementedDeviceManageServer() {}
 
@@ -481,6 +496,24 @@ func _DeviceManage_DeviceTypeCount_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceManage_DeviceCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceCountReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceCount(ctx, req.(*DeviceCountReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceManage_ServiceDesc is the grpc.ServiceDesc for DeviceManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -535,6 +568,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceTypeCount",
 			Handler:    _DeviceManage_DeviceTypeCount_Handler,
+		},
+		{
+			MethodName: "deviceCount",
+			Handler:    _DeviceManage_DeviceCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

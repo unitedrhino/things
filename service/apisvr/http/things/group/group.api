@@ -71,7 +71,6 @@ type (
         CreatedTime int64  `json:"createdTime,string,optional"`     //创建时间
         Desc string `json:"desc,optional"`   //分组描述
         Tags []*Tag `json:"tags,optional"`                 //分组tag
-        DeviceInfoCount *DeviceInfoCount `json:"deviceInfoCount,optional"`
     }
 
 

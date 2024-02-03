@@ -65,6 +65,8 @@ service DeviceManage {
   rpc deviceInfoCount(DeviceInfoCountReq) returns (DeviceInfoCount);
   //设备类型
   rpc deviceTypeCount(DeviceTypeCountReq) returns (DeviceTypeCountResp);
+
+  rpc deviceCount(DeviceCountReq) returns (DeviceCountResp);
 }
 
 //产品管理
@@ -635,7 +637,7 @@ message GroupInfo{
   map<string, string> tags = 7;
   string productID = 8;
   string productName = 9;
-  DeviceInfoCount deviceInfoCount =11;
+//  DeviceInfoCount deviceInfoCount =11;
 }
 
 message GroupInfoCreateReq{
@@ -924,6 +926,21 @@ message ProductSchemaTslReadReq{
 
 message ProductSchemaTslReadResp{
   string   tsl = 1;//物模型tsl
+}
+
+message DeviceCountReq {
+  repeated string countTypes =1;//在线设备数:status,设备类型: deviceType
+  int64  rangeType =2;//0:全部 1:area 2:group
+  repeated int64  rangeIDs =3;////统计的id列表, areaID或者groupID
+}
+
+message DeviceCountResp{
+  repeated DeviceCountInfo list = 1;
+}
+
+message DeviceCountInfo{
+    int64 rangeID =1;
+    map<string,int64> count=2;
 }
 
 message DeviceInfoCountReq {

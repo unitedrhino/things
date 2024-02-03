@@ -93,3 +93,8 @@ func (s *DeviceManageServer) DeviceTypeCount(ctx context.Context, in *dm.DeviceT
 	l := devicemanagelogic.NewDeviceTypeCountLogic(ctx, s.svcCtx)
 	return l.DeviceTypeCount(in)
 }
+
+func (s *DeviceManageServer) DeviceCount(ctx context.Context, in *dm.DeviceCountReq) (*dm.DeviceCountResp, error) {
+	l := devicemanagelogic.NewDeviceCountLogic(ctx, s.svcCtx)
+	return l.DeviceCount(in)
+}

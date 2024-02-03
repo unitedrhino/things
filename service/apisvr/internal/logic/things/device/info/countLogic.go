@@ -27,43 +27,22 @@ func NewCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CountLogic 
 }
 
 func (l *CountLogic) Count(req *types.DeviceCountReq) (resp *types.DeviceCountResp, err error) {
-	diReq := &dm.DeviceInfoCountReq{
-		TimeRange: &dm.TimeRange{
-			Start: req.StartTime,
-			End:   req.EndTime,
-		},
+	diReq := &dm.DeviceCountReq{
+		CountTypes: req.CountTypes,
+		RangeType:  req.RangeType,
+		RangeIDs:   req.RangeIDs,
 	}
-	diResp, err := l.svcCtx.DeviceM.DeviceInfoCount(l.ctx, diReq)
+	diResp, err := l.svcCtx.DeviceM.DeviceCount(l.ctx, diReq)
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.DeviceInfoCount req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	dtReq := &dm.DeviceTypeCountReq{
-		TimeRange: &dm.TimeRange{
-			Start: req.StartTime,
-			End:   req.EndTime,
-		},
+	var deviceCountInfos []*types.DeviceCountInfo
+	for _, v := range diResp.List {
+		deviceCountInfos = append(deviceCountInfos, &types.DeviceCountInfo{RangeID: v.RangeID, Count: v.Count})
 	}
-	dtResp, err := l.svcCtx.DeviceM.DeviceTypeCount(l.ctx, dtReq)
-	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.DeviceTypeCount req=%v err=%+v", utils.FuncName(), req, er)
-		return nil, er
-	}
-
 	return &types.DeviceCountResp{
-		DeviceInfoCount: types.DeviceInfoCount{
-			Online:   diResp.Online,
-			Offline:  diResp.Offline,
-			Inactive: diResp.Inactive,
-			Unknown:  diResp.Unknown,
-		},
-		DeviceTypeCount: types.DeviceTypeCount{
-			Device:  dtResp.Device,
-			Gateway: dtResp.Gateway,
-			Subset:  dtResp.Subset,
-			Unknown: dtResp.Unknown,
-		},
+		List: deviceCountInfos,
 	}, nil
 }

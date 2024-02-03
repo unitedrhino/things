@@ -21,6 +21,9 @@ type (
 	CommonSchemaUpdateReq              = dm.CommonSchemaUpdateReq
 	CustomTopic                        = dm.CustomTopic
 	DeviceCore                         = dm.DeviceCore
+	DeviceCountInfo                    = dm.DeviceCountInfo
+	DeviceCountReq                     = dm.DeviceCountReq
+	DeviceCountResp                    = dm.DeviceCountResp
 	DeviceGatewayBindDevice            = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq              = dm.DeviceGatewayIndexReq
 	DeviceGatewayIndexResp             = dm.DeviceGatewayIndexResp
