@@ -12,13 +12,13 @@ info(
 	middleware:  CheckTokenWare, DataAuthWare, TeardownWare
 )
 service api {
-	@doc "获取用户应用列表"
+	@doc "批量收藏设备"
 	@handler multiCreate
 	post /multi-create (UserCollectDeviceSave) returns ()
-	@doc "获取用户模块列表"
+	@doc "批量取消收藏设备"
 	@handler multiDelete
 	post /multi-delete (UserCollectDeviceSave) returns ()
-	@doc "获取用户菜单列表"
+	@doc "获取收藏设备列表"
 	@handler index
 	post /index () returns (UserCollectDeviceInfo)
 }

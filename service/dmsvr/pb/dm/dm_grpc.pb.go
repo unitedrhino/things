@@ -262,7 +262,7 @@ func (UnimplementedDeviceManageServer) DeviceInfoCount(context.Context, *DeviceI
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoCount not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceTypeCount(context.Context, *DeviceTypeCountReq) (*DeviceTypeCountResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Count not implemented")
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceTypeCount not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceCount(context.Context, *DeviceCountReq) (*DeviceCountResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceCount not implemented")

@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/apisvr/internal/logic/things"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"golang.org/x/sync/errgroup"
 	"sync"
@@ -32,8 +33,8 @@ func NewMultiSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMultiSendPropertyReq) (resp *types.DeviceInteractMultiSendPropertyResp, err error) {
-	if req.ProductID != "" && len(req.DeviceNames) != 0 {
-		err := l.SendProperty(req.ProductID, req.DeviceNames, req.Data, req.ShadowControl)
+	if (req.ProductID != "" && len(req.DeviceNames) != 0) || len(req.Devices) != 0 {
+		err := l.SendProperty(req.ProductID, req.DeviceNames, req.Devices, req.Data, req.ShadowControl)
 		return &types.DeviceInteractMultiSendPropertyResp{List: l.retMsg}, err
 	}
 	if req.GroupID != 0 || req.AreaID != 0 {
@@ -69,7 +70,7 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 			productID := p
 			deviceNames := d
 			eg.Go(func() error {
-				err := l.SendProperty(productID, deviceNames, req.Data, req.ShadowControl)
+				err := l.SendProperty(productID, deviceNames, nil, req.Data, req.ShadowControl)
 				if err != nil {
 					return err
 				}
@@ -84,11 +85,12 @@ func (l *MultiSendPropertyLogic) MultiSendProperty(req *types.DeviceInteractMult
 	}
 	return nil, errors.Parameter.AddMsg("产品id设备名或分组id或区域id必须填一个")
 }
-func (l *MultiSendPropertyLogic) SendProperty(productID string, deviceNames []string, data string, shadowControl int64) error {
+func (l *MultiSendPropertyLogic) SendProperty(productID string, deviceNames []string, devices []*types.DeviceCore, data string, shadowControl int64) error {
 	list := make([]*types.DeviceInteractMultiSendPropertyMsg, 0)
 	dmReq := &dm.MultiSendPropertyReq{
 		ProductID:     productID,
 		DeviceNames:   deviceNames,
+		Devices:       things.ToDmDeviceCoresPb(devices),
 		Data:          data,
 		ShadowControl: shadowControl,
 	}

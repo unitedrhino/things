@@ -502,16 +502,18 @@ message SendMsgResp{
 message MultiSendPropertyReq{
   string  productID = 1; //产品id
   repeated string deviceNames = 2; //设备名
-  int64 shadowControl = 3;//设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
-  string data = 4;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+  repeated DeviceCore devices =3;//如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+  int64 shadowControl = 4;//设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+  string data = 5;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
 }
 message SendPropertyMsg{
-  string  deviceName = 1; //设备名
-  int64   code = 2;//设备返回状态码
-  string  msg = 3;//返回状态
-  string msgToken = 4;//调用id
-  string sysMsg = 5;//系统错误信息
-  int64  sysCode = 6;//系统错误码
+  string productID =1;
+  string  deviceName = 2; //设备名
+  int64   code = 3;//设备返回状态码
+  string  msg = 4;//返回状态
+  string msgToken = 5;//调用id
+  string sysMsg = 6;//系统错误信息
+  int64  sysCode = 7;//系统错误码
 }
 
 message MultiSendPropertyResp{
