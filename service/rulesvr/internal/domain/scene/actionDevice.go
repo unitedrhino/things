@@ -31,10 +31,10 @@ func (a *ActionDevice) Validate() error {
 		return errors.Parameter.AddMsgf("产品id不能为空:%v", a.ProductID)
 	}
 	if !utils.SliceIn(a.Selector, DeviceSelectorAll, DeviceSelectorFixed) {
-		return errors.Parameter.AddMsg("执行的设备选择方式不支持:" + string(a.Selector))
+		return errors.Parameter.AddMsgf("执行的设备选择方式不支持:%v", string(a.Selector))
 	}
 	if !utils.SliceIn(a.Type, ActionDeviceTypePropertyControl, ActionDeviceTypeAction) {
-		return errors.Parameter.AddMsg("云端向设备发起属性控制的方式不支持:" + string(a.Type))
+		return errors.Parameter.AddMsgf("云端向设备发起属性控制的方式不支持:%v", string(a.Type))
 	}
 	if a.Value == "" {
 		return errors.Parameter.AddMsgf("传的值不能为空:%v", a.Value)

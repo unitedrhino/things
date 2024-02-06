@@ -36,7 +36,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
-			return nil, errors.Parameter.AddMsg("找不到该产品:" + in.Info.ProductID)
+			return nil, errors.Parameter.AddMsgf("找不到该产品:%v", in.Info.ProductID)
 		}
 		return nil, err
 	}

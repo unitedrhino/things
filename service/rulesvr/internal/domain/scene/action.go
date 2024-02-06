@@ -46,24 +46,24 @@ func (a *Action) Validate() error {
 	}
 	switch a.Executor {
 	case ActionExecutorNotify:
-		return errors.Parameter.AddMsg("暂不支持的操作类型:" + string(a.Executor))
+		return errors.Parameter.AddMsgf("暂不支持的操作类型:%v", string(a.Executor))
 	case ActionExecutorDelay:
 		if a.Delay == nil {
-			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
+			return errors.Parameter.AddMsgf("对应的操作类型下没有进行配置:%v", string(a.Executor))
 		}
 		return a.Delay.Validate()
 	case ActionExecutorDevice:
 		if a.Device == nil {
-			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
+			return errors.Parameter.AddMsgf("对应的操作类型下没有进行配置:%v", string(a.Executor))
 		}
 		return a.Device.Validate()
 	case ActionExecutorAlarm:
 		if a.Alarm == nil {
-			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
+			return errors.Parameter.AddMsgf("对应的操作类型下没有进行配置:%v", string(a.Executor))
 		}
 		return a.Alarm.Validate()
 	default:
-		return errors.Parameter.AddMsg("操作类型不支持:" + string(a.Executor))
+		return errors.Parameter.AddMsgf("操作类型不支持:%v", string(a.Executor))
 	}
 }
 

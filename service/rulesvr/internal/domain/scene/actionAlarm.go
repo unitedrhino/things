@@ -39,7 +39,7 @@ func (a *ActionAlarm) Validate() error {
 		return nil
 	}
 	if !utils.SliceIn(a.Mode, ActionAlarmModeRelieve, ActionAlarmModeTrigger) {
-		return errors.Parameter.AddMsg("操作告警不支持的类型:" + string(a.Mode))
+		return errors.Parameter.AddMsgf("操作告警不支持的类型:%v", string(a.Mode))
 	}
 	return nil
 }

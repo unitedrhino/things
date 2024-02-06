@@ -21,7 +21,7 @@ type StateKeep struct {
 
 func (s StateKeepType) Validate() error {
 	if !utils.SliceIn(s, StateKeepTypeDuration, StateKeepTypeRepeating) {
-		return errors.Parameter.AddMsg("状态保持 类型不支持:" + string(s))
+		return errors.Parameter.AddMsgf("状态保持 类型不支持:%v", string(s))
 	}
 	return nil
 }
