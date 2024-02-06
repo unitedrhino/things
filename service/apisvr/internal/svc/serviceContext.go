@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"gitee.com/i-Things/core/service/apisvr/export"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/log"
 	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
@@ -218,7 +219,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:         c,
 		SetupWare:      middleware.NewSetupWareMiddleware(c, lo).Handle,
-		CheckTokenWare: middleware.NewCheckTokenWareMiddleware(c, ur, ro).Handle,
+		CheckTokenWare: export.NewCheckTokenWareMiddleware(ur, ro).Handle,
 		DataAuthWare:   middleware.NewDataAuthWareMiddleware(c).Handle,
 		TeardownWare:   middleware.NewTeardownWareMiddleware(c, lo).Handle,
 		CheckApiWare:   middleware.NewCheckApiWareMiddleware().Handle,
