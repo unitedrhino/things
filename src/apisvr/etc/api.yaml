@@ -100,13 +100,13 @@ OssConf:
 #    Timeout: 1000000
 
 VidRpc:
-  Enable: true
+  Enable: false
   Mode: direct
   Conf:
     Timeout: 1000000
 
 VidSip:
-  Enable: true
+  Enable: false
   Mode: direct
   Conf:
     Timeout: 1000000
