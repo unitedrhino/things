@@ -869,6 +869,7 @@ message CommonSchemaInfo{
   int64 isHistory = 10;// 是否存储历史记录
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数
+  int64 order =13;//排序
 }
 
 /*********************************/
@@ -917,6 +918,7 @@ message ProductSchemaInfo{
   int64 isHistory = 10;// 是否存储历史记录
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数
+  int64 order =13;//排序
 }
 
 

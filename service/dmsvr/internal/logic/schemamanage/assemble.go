@@ -15,6 +15,7 @@ func ToCommonSchemaRpc(info *relationDB.DmCommonSchema) *dm.CommonSchemaInfo {
 		Desc:              utils.ToRpcNullString(&info.Desc),
 		Affordance:        utils.ToRpcNullString(&info.Affordance),
 		Required:          info.Required,
+		Order:             info.Order,
 		IsCanSceneLinkage: info.IsCanSceneLinkage,
 		IsShareAuthPerm:   info.IsShareAuthPerm,
 		IsHistory:         info.IsHistory,
@@ -34,6 +35,7 @@ func ToCommonSchemaPo(info *dm.CommonSchemaInfo) *relationDB.DmCommonSchema {
 			IsCanSceneLinkage: info.IsCanSceneLinkage,
 			IsShareAuthPerm:   info.IsShareAuthPerm,
 			IsHistory:         info.IsHistory,
+			Order:             info.Order,
 			Affordance:        info.Affordance.GetValue(),
 		},
 	}

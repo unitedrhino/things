@@ -41,6 +41,7 @@ type CommonSchemaInfo struct {
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	IsShareAuthPerm   int64   `json:"isShareAuthPerm,optional"`   // 分享是否需要校验权限
 	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
+	Order             int64   `json:"order,optional"`             // 排序
 }
 
 type CommonSchemaUpdateReq struct {
@@ -1117,6 +1118,7 @@ type ProductSchemaInfo struct {
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	IsShareAuthPerm   int64   `json:"isShareAuthPerm,optional"`   // 分享是否需要校验权限
 	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
+	Order             int64   `json:"order,optional"`             // 排序
 }
 
 type ProductSchemaTslImportReq struct {

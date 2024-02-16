@@ -74,9 +74,15 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	if in.Info.IsShareAuthPerm == 0 {
 		newPo.IsShareAuthPerm = po.IsShareAuthPerm
 	}
+	
 	if in.Info.IsHistory == 0 {
 		newPo.IsHistory = po.IsHistory
 	}
+
+	if in.Info.Order == 0 {
+		newPo.Order = po.Order
+	}
+
 	if in.Info.ExtendConfig == "" {
 		newPo.ExtendConfig = po.ExtendConfig
 		if newPo.ExtendConfig == "" {

@@ -53,6 +53,9 @@ func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*rela
 	if in.Info.Required == 0 {
 		newPo.Required = po.Required
 	}
+	if in.Info.Order == 0 {
+		newPo.Order = po.Order
+	}
 	if in.Info.IsCanSceneLinkage == 0 {
 		newPo.IsCanSceneLinkage = po.IsCanSceneLinkage
 	}

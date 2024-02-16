@@ -70,6 +70,7 @@ func ToProductSchemaRpc(info *relationDB.DmProductSchema) *dm.ProductSchemaInfo 
 		IsCanSceneLinkage: info.IsCanSceneLinkage,
 		IsShareAuthPerm:   info.IsShareAuthPerm,
 		IsHistory:         info.IsHistory,
+		Order:             info.Order,
 		Affordance:        utils.ToRpcNullString(&info.Affordance),
 	}
 	return db
@@ -89,6 +90,7 @@ func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
 			IsCanSceneLinkage: info.IsCanSceneLinkage,
 			IsShareAuthPerm:   info.IsShareAuthPerm,
 			IsHistory:         info.IsHistory,
+			Order:             info.Order,
 			Affordance:        info.Affordance.GetValue(),
 		},
 	}
@@ -122,6 +124,7 @@ func ToCustomTopicsDo(info []*dm.CustomTopic) (ret []*productCustom.CustomTopic)
 	}
 	return
 }
+
 func ToProductCategoryRpc(ctx context.Context, info *relationDB.DmProductCategory, svcCtx *svc.ServiceContext) *dm.ProductCategory {
 	if info == nil {
 		return nil

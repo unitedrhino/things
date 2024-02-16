@@ -40,20 +40,6 @@ goctl api new viewsvr  --style=goZero
 cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero -ws && cd ..
 ```
 
-# view大屏goview模块-viewsvr
-
-```shell
-#cd apisvr && goctl api go -api http/api.api  -dir ./  --style=goZero && cd ..
-cd viewsvr && goctl api go -api http/view.api  -dir ./  --style=goZero  && cd ..
-```
-
-# 系统管理模块-syssvr
-
-- rpc文件编译方法
-
-```shell
-cd syssvr && goctl rpc protoc  proto/sys.proto --go_out=./ --go-grpc_out=./ --zrpc_out=. --style=goZero -m && cd ..
-```
 
 
 # 设备管理模块-dmsvr

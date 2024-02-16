@@ -148,6 +148,7 @@ type DmSchemaCore struct {
 	IsShareAuthPerm   int64  `gorm:"column:is_share_auth_perm;type:smallint;default:1"`                   // 分享是否需要校验权限
 	IsHistory         int64  `gorm:"column:is_history;type:smallint;default:1"`                           // 是否存储历史记录
 	Affordance        string `gorm:"column:affordance;type:json;NOT NULL"`                                // 各类型的自定义功能定义
+	Order             int64  `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`                         // 左侧table排序序号
 }
 
 // 通用物模型表

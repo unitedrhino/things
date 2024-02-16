@@ -210,6 +210,7 @@ func ToSchemaInfoRpc(in *types.ProductSchemaInfo) *dm.ProductSchemaInfo {
 		Name:              utils.ToRpcNullString(in.Name),
 		Desc:              utils.ToRpcNullString(in.Desc),
 		Required:          in.Required,
+		Order:             in.Order,
 		Affordance:        utils.ToRpcNullString(in.Affordance),
 	}
 	return rpc
@@ -231,6 +232,7 @@ func ToSchemaInfoTypes(in *dm.ProductSchemaInfo) *types.ProductSchemaInfo {
 		Name:              utils.ToNullString(in.Name),
 		Desc:              utils.ToNullString(in.Desc),
 		Required:          in.Required,
+		Order:             in.Order,
 		Affordance:        utils.ToNullString(in.Affordance),
 	}
 	return &rpc

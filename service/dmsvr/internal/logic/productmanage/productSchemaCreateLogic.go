@@ -73,14 +73,17 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 		po.Required = cs.Required
 	}
 
-	if po.IsCanSceneLinkage == 0 && cs!=nil{
-		po.IsCanSceneLinkage =cs.IsCanSceneLinkage
+	if po.IsCanSceneLinkage == 0 && cs != nil {
+		po.IsCanSceneLinkage = cs.IsCanSceneLinkage
 	}
-	if po.IsShareAuthPerm == 0 && cs!=nil{
-		po.IsShareAuthPerm =cs.IsShareAuthPerm
+	if po.IsShareAuthPerm == 0 && cs != nil {
+		po.IsShareAuthPerm = cs.IsShareAuthPerm
 	}
-	if po.IsHistory == 0 && cs!=nil{
-		po.IsHistory =cs.IsHistory
+	if po.IsHistory == 0 && cs != nil {
+		po.IsHistory = cs.IsHistory
+	}
+	if po.Order == 0 && cs != nil {
+		po.Order = cs.Order
 	}
 	if po.ExtendConfig == "" && cs != nil {
 		po.ExtendConfig = cs.ExtendConfig
