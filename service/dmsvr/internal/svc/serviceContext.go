@@ -8,6 +8,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubDev"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/schemaDataRepo"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -76,11 +77,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	serverMsg, err := eventBus.NewServerMsg(c.Event, c.Name)
 	logx.Must(err)
 	stores.InitConn(c.Database)
-	//err = relationDB.Migrate(c.Database)
-	//if err != nil {
-	//	logx.Error("dmsvr 初始化数据库错误 err", err)
-	//	os.Exit(-1)
-	//}
+	err = relationDB.Migrate(c.Database)
+	if err != nil {
+		logx.Error("dmsvr 初始化数据库错误 err", err)
+		os.Exit(-1)
+	}
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {
 		logx.Error("NewPubDev err", err)

@@ -1,5 +1,5 @@
 Name: ud.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:7769
 Log:
   Encoding: plain
   #Mode: file

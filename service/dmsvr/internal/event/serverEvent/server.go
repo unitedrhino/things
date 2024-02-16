@@ -66,7 +66,7 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
 				Device: core, Timestamp: now.UnixMilli(), ReqType: deviceMsg.ReqMsg, MsgToken: req.MsgToken,
-				ActionID: req.ActionID, Dir: schema.ActionDirUp, Code: devErr.GetCode(), Status: devErr.Msg,
+				ActionID: req.ActionID, Dir: schema.ActionDirUp, Code: devErr.GetCode(), Status: devErr.GetMsg(),
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport.Action  req:%v,err:%v", utils.FuncName(), utils.Fmt(req), err)

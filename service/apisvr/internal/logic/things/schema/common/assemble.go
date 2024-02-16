@@ -19,6 +19,8 @@ func ToSchemaInfoRpc(in *types.CommonSchemaInfo) *dm.CommonSchemaInfo {
 		Desc:              utils.ToRpcNullString(in.Desc),
 		Required:          in.Required,
 		IsCanSceneLinkage: in.IsCanSceneLinkage,
+		IsHistory:         in.IsHistory,
+		IsShareAuthPerm:   in.IsShareAuthPerm,
 		Affordance:        utils.ToRpcNullString(in.Affordance),
 	}
 	return rpc
@@ -37,6 +39,8 @@ func ToSchemaInfoTypes(in *dm.CommonSchemaInfo) *types.CommonSchemaInfo {
 		Desc:              utils.ToNullString(in.Desc),
 		Required:          in.Required,
 		IsCanSceneLinkage: in.IsCanSceneLinkage,
+		IsHistory:         in.IsHistory,
+		IsShareAuthPerm:   in.IsShareAuthPerm,
 		Affordance:        utils.ToNullString(in.Affordance),
 	}
 	return &rpc

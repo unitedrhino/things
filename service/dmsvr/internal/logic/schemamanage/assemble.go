@@ -8,13 +8,16 @@ import (
 
 func ToCommonSchemaRpc(info *relationDB.DmCommonSchema) *dm.CommonSchemaInfo {
 	db := &dm.CommonSchemaInfo{
-		Type:         info.Type,
-		Identifier:   info.Identifier,
-		ExtendConfig: info.ExtendConfig,
-		Name:         utils.ToRpcNullString(&info.Name),
-		Desc:         utils.ToRpcNullString(&info.Desc),
-		Affordance:   utils.ToRpcNullString(&info.Affordance),
-		Required:     info.Required,
+		Type:              info.Type,
+		Identifier:        info.Identifier,
+		ExtendConfig:      info.ExtendConfig,
+		Name:              utils.ToRpcNullString(&info.Name),
+		Desc:              utils.ToRpcNullString(&info.Desc),
+		Affordance:        utils.ToRpcNullString(&info.Affordance),
+		Required:          info.Required,
+		IsCanSceneLinkage: info.IsCanSceneLinkage,
+		IsShareAuthPerm:   info.IsShareAuthPerm,
+		IsHistory:         info.IsHistory,
 	}
 	return db
 }
@@ -22,13 +25,16 @@ func ToCommonSchemaRpc(info *relationDB.DmCommonSchema) *dm.CommonSchemaInfo {
 func ToCommonSchemaPo(info *dm.CommonSchemaInfo) *relationDB.DmCommonSchema {
 	db := &relationDB.DmCommonSchema{
 		DmSchemaCore: relationDB.DmSchemaCore{
-			Type:         info.Type,
-			Identifier:   info.Identifier,
-			ExtendConfig: info.ExtendConfig,
-			Name:         info.Name.GetValue(),
-			Desc:         info.Desc.GetValue(),
-			Required:     info.Required,
-			Affordance:   info.Affordance.GetValue(),
+			Type:              info.Type,
+			Identifier:        info.Identifier,
+			ExtendConfig:      info.ExtendConfig,
+			Name:              info.Name.GetValue(),
+			Desc:              info.Desc.GetValue(),
+			Required:          info.Required,
+			IsCanSceneLinkage: info.IsCanSceneLinkage,
+			IsShareAuthPerm:   info.IsShareAuthPerm,
+			IsHistory:         info.IsHistory,
+			Affordance:        info.Affordance.GetValue(),
 		},
 	}
 	return db

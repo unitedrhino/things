@@ -865,8 +865,10 @@ message CommonSchemaInfo{
   google.protobuf.StringValue desc = 6;       //描述
   int64 required = 7;  //是否必须 1:是 2:否
   int64 isCanSceneLinkage =8;//是否支持场景联动控制
-  google.protobuf.StringValue affordance = 9;//各功能类型的详细参数定义
-  string extendConfig = 10; //拓展参数
+  int64 isShareAuthPerm = 9;// 分享是否需要校验权限
+  int64 isHistory = 10;// 是否存储历史记录
+  google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
+  string extendConfig = 12; //拓展参数
 }
 
 /*********************************/
@@ -911,8 +913,10 @@ message ProductSchemaInfo{
   google.protobuf.StringValue desc = 6;       //描述
   int64 required = 7;  //是否必须 1:是 2:否
   int64 isCanSceneLinkage =8;//是否支持场景联动控制
-  google.protobuf.StringValue affordance = 9;//各功能类型的详细参数定义
-  string extendConfig = 10; //拓展参数
+  int64 isShareAuthPerm = 9;// 分享是否需要校验权限
+  int64 isHistory = 10;// 是否存储历史记录
+  google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
+  string extendConfig = 12; //拓展参数
 }
 
 

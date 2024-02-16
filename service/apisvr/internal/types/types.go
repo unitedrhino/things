@@ -39,6 +39,8 @@ type CommonSchemaInfo struct {
 	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
 	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
+	IsShareAuthPerm   int64   `json:"isShareAuthPerm,optional"`   // 分享是否需要校验权限
+	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
 }
 
 type CommonSchemaUpdateReq struct {
@@ -1113,6 +1115,8 @@ type ProductSchemaInfo struct {
 	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
 	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
+	IsShareAuthPerm   int64   `json:"isShareAuthPerm,optional"`   // 分享是否需要校验权限
+	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
 }
 
 type ProductSchemaTslImportReq struct {

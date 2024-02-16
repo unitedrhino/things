@@ -65,7 +65,7 @@ func (l *RespActionLogic) RespAction(in *dm.RespActionReq) (*dm.Response, error)
 	}
 	if resp.Code == 0 {
 		resp.Code = errors.OK.Code
-		resp.Msg = errors.OK.Msg
+		resp.Msg = errors.OK.GetMsg()
 	}
 	if resp.Code == errors.OK.GetCode() {
 		param := map[string]any{}

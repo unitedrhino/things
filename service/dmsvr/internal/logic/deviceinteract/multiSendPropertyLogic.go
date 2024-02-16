@@ -69,7 +69,7 @@ func (l *MultiSendPropertyLogic) MultiSendOneProductProperty(in *dm.MultiSendPro
 				myErr, _ := err.(*errors.CodeError)
 				msg := &dm.SendPropertyMsg{
 					DeviceName: v,
-					SysMsg:     myErr.Msg,
+					SysMsg:     myErr.GetMsg(),
 					SysCode:    myErr.Code,
 				}
 				mu.Lock()
@@ -82,7 +82,7 @@ func (l *MultiSendPropertyLogic) MultiSendOneProductProperty(in *dm.MultiSendPro
 				ProductID:  in.ProductID,
 				DeviceName: v,
 				SysCode:    errors.OK.Code,
-				SysMsg:     errors.OK.Msg,
+				SysMsg:     errors.OK.GetMsg(),
 				Code:       ret.Code,
 				Msg:        ret.Msg,
 				MsgToken:   ret.MsgToken,

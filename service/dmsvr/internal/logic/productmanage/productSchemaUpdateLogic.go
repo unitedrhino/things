@@ -68,6 +68,15 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	if in.Info.Required == 0 {
 		newPo.Required = po.Required
 	}
+	if in.Info.IsCanSceneLinkage == 0 {
+		newPo.IsCanSceneLinkage = po.IsCanSceneLinkage
+	}
+	if in.Info.IsShareAuthPerm == 0 {
+		newPo.IsShareAuthPerm = po.IsShareAuthPerm
+	}
+	if in.Info.IsHistory == 0 {
+		newPo.IsHistory = po.IsHistory
+	}
 	if in.Info.ExtendConfig == "" {
 		newPo.ExtendConfig = po.ExtendConfig
 		if newPo.ExtendConfig == "" {
