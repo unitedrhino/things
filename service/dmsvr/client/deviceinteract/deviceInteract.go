@@ -14,6 +14,9 @@ import (
 )
 
 type (
+	ActionRespReq                      = dm.ActionRespReq
+	ActionSendReq                      = dm.ActionSendReq
+	ActionSendResp                     = dm.ActionSendResp
 	CommonSchemaCreateReq              = dm.CommonSchemaCreateReq
 	CommonSchemaIndexReq               = dm.CommonSchemaIndexReq
 	CommonSchemaIndexResp              = dm.CommonSchemaIndexResp
@@ -54,8 +57,6 @@ type (
 	FirmwareInfoReadReq                = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp               = dm.FirmwareInfoReadResp
 	FirmwareResp                       = dm.FirmwareResp
-	GetPropertyLatestReplyReq          = dm.GetPropertyLatestReplyReq
-	GetPropertyLatestReplyResp         = dm.GetPropertyLatestReplyResp
 	GroupDeviceIndexReq                = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp               = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq          = dm.GroupDeviceMultiDeleteReq
@@ -69,8 +70,6 @@ type (
 	HubLogIndexReq                     = dm.HubLogIndexReq
 	HubLogIndexResp                    = dm.HubLogIndexResp
 	JobReq                             = dm.JobReq
-	MultiSendPropertyControlReq        = dm.MultiSendPropertyControlReq
-	MultiSendPropertyControlResp       = dm.MultiSendPropertyControlResp
 	OTAModuleDeleteReq                 = dm.OTAModuleDeleteReq
 	OTAModuleDetail                    = dm.OTAModuleDetail
 	OTAModuleIndexReq                  = dm.OTAModuleIndexReq
@@ -153,6 +152,13 @@ type (
 	ProductSchemaTslReadReq            = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp           = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq             = dm.ProductSchemaUpdateReq
+	PropertyControlMultiSendReq        = dm.PropertyControlMultiSendReq
+	PropertyControlMultiSendResp       = dm.PropertyControlMultiSendResp
+	PropertyControlSendMsg             = dm.PropertyControlSendMsg
+	PropertyControlSendReq             = dm.PropertyControlSendReq
+	PropertyControlSendResp            = dm.PropertyControlSendResp
+	PropertyGetReportSendReq           = dm.PropertyGetReportSendReq
+	PropertyGetReportSendResp          = dm.PropertyGetReportSendResp
 	PropertyIndex                      = dm.PropertyIndex
 	PropertyIndexResp                  = dm.PropertyIndexResp
 	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
@@ -166,21 +172,15 @@ type (
 	RemoteConfigLastReadReq            = dm.RemoteConfigLastReadReq
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
-	RespActionReq                      = dm.RespActionReq
 	RespReadReq                        = dm.RespReadReq
 	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
 	SdkLogIndexResp                    = dm.SdkLogIndexResp
-	SendActionReq                      = dm.SendActionReq
-	SendActionResp                     = dm.SendActionResp
 	SendMsgReq                         = dm.SendMsgReq
 	SendMsgResp                        = dm.SendMsgResp
 	SendOption                         = dm.SendOption
-	SendPropertyControlMsg             = dm.SendPropertyControlMsg
-	SendPropertyControlReq             = dm.SendPropertyControlReq
-	SendPropertyControlResp            = dm.SendPropertyControlResp
 	ShadowIndex                        = dm.ShadowIndex
 	ShadowIndexResp                    = dm.ShadowIndexResp
 	StaticUpgradeDeviceInfo            = dm.StaticUpgradeDeviceInfo
@@ -193,20 +193,20 @@ type (
 
 	DeviceInteract interface {
 		// 调用设备行为
-		SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error)
+		ActionSend(ctx context.Context, in *ActionSendReq, opts ...grpc.CallOption) (*ActionSendResp, error)
 		// 获取异步调用设备行为的结果
-		ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error)
+		ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*ActionSendResp, error)
 		// 回复调用设备行为
-		RespAction(ctx context.Context, in *RespActionReq, opts ...grpc.CallOption) (*Response, error)
+		ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Response, error)
 		// 请求设备获取设备最新属性
-		GetPropertyLatestReply(ctx context.Context, in *GetPropertyLatestReplyReq, opts ...grpc.CallOption) (*GetPropertyLatestReplyResp, error)
+		PropertyGetReportSend(ctx context.Context, in *PropertyGetReportSendReq, opts ...grpc.CallOption) (*PropertyGetReportSendResp, error)
 		// 调用设备属性
-		SendPropertyControl(ctx context.Context, in *SendPropertyControlReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error)
+		PropertyControlSend(ctx context.Context, in *PropertyControlSendReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error)
 		// 批量调用设备属性
-		MultiSendPropertyControl(ctx context.Context, in *MultiSendPropertyControlReq, opts ...grpc.CallOption) (*MultiSendPropertyControlResp, error)
+		PropertyControlMultiSend(ctx context.Context, in *PropertyControlMultiSendReq, opts ...grpc.CallOption) (*PropertyControlMultiSendResp, error)
 		// 获取异步调用设备属性的结果
-		PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error)
-		// 发送消息给设备
+		PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error)
+		// 发送消息给设备 -- 调试使用
 		SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
 	}
 
@@ -234,89 +234,89 @@ func NewDirectDeviceInteract(svcCtx *svc.ServiceContext, svr dm.DeviceInteractSe
 }
 
 // 调用设备行为
-func (m *defaultDeviceInteract) SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error) {
+func (m *defaultDeviceInteract) ActionSend(ctx context.Context, in *ActionSendReq, opts ...grpc.CallOption) (*ActionSendResp, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
-	return client.SendAction(ctx, in, opts...)
+	return client.ActionSend(ctx, in, opts...)
 }
 
 // 调用设备行为
-func (d *directDeviceInteract) SendAction(ctx context.Context, in *SendActionReq, opts ...grpc.CallOption) (*SendActionResp, error) {
-	return d.svr.SendAction(ctx, in)
+func (d *directDeviceInteract) ActionSend(ctx context.Context, in *ActionSendReq, opts ...grpc.CallOption) (*ActionSendResp, error) {
+	return d.svr.ActionSend(ctx, in)
 }
 
 // 获取异步调用设备行为的结果
-func (m *defaultDeviceInteract) ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error) {
+func (m *defaultDeviceInteract) ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*ActionSendResp, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
 	return client.ActionRead(ctx, in, opts...)
 }
 
 // 获取异步调用设备行为的结果
-func (d *directDeviceInteract) ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendActionResp, error) {
+func (d *directDeviceInteract) ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*ActionSendResp, error) {
 	return d.svr.ActionRead(ctx, in)
 }
 
 // 回复调用设备行为
-func (m *defaultDeviceInteract) RespAction(ctx context.Context, in *RespActionReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceInteract) ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Response, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
-	return client.RespAction(ctx, in, opts...)
+	return client.ActionResp(ctx, in, opts...)
 }
 
 // 回复调用设备行为
-func (d *directDeviceInteract) RespAction(ctx context.Context, in *RespActionReq, opts ...grpc.CallOption) (*Response, error) {
-	return d.svr.RespAction(ctx, in)
+func (d *directDeviceInteract) ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Response, error) {
+	return d.svr.ActionResp(ctx, in)
 }
 
 // 请求设备获取设备最新属性
-func (m *defaultDeviceInteract) GetPropertyLatestReply(ctx context.Context, in *GetPropertyLatestReplyReq, opts ...grpc.CallOption) (*GetPropertyLatestReplyResp, error) {
+func (m *defaultDeviceInteract) PropertyGetReportSend(ctx context.Context, in *PropertyGetReportSendReq, opts ...grpc.CallOption) (*PropertyGetReportSendResp, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
-	return client.GetPropertyLatestReply(ctx, in, opts...)
+	return client.PropertyGetReportSend(ctx, in, opts...)
 }
 
 // 请求设备获取设备最新属性
-func (d *directDeviceInteract) GetPropertyLatestReply(ctx context.Context, in *GetPropertyLatestReplyReq, opts ...grpc.CallOption) (*GetPropertyLatestReplyResp, error) {
-	return d.svr.GetPropertyLatestReply(ctx, in)
+func (d *directDeviceInteract) PropertyGetReportSend(ctx context.Context, in *PropertyGetReportSendReq, opts ...grpc.CallOption) (*PropertyGetReportSendResp, error) {
+	return d.svr.PropertyGetReportSend(ctx, in)
 }
 
 // 调用设备属性
-func (m *defaultDeviceInteract) SendPropertyControl(ctx context.Context, in *SendPropertyControlReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error) {
+func (m *defaultDeviceInteract) PropertyControlSend(ctx context.Context, in *PropertyControlSendReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
-	return client.SendPropertyControl(ctx, in, opts...)
+	return client.PropertyControlSend(ctx, in, opts...)
 }
 
 // 调用设备属性
-func (d *directDeviceInteract) SendPropertyControl(ctx context.Context, in *SendPropertyControlReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error) {
-	return d.svr.SendPropertyControl(ctx, in)
+func (d *directDeviceInteract) PropertyControlSend(ctx context.Context, in *PropertyControlSendReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error) {
+	return d.svr.PropertyControlSend(ctx, in)
 }
 
 // 批量调用设备属性
-func (m *defaultDeviceInteract) MultiSendPropertyControl(ctx context.Context, in *MultiSendPropertyControlReq, opts ...grpc.CallOption) (*MultiSendPropertyControlResp, error) {
+func (m *defaultDeviceInteract) PropertyControlMultiSend(ctx context.Context, in *PropertyControlMultiSendReq, opts ...grpc.CallOption) (*PropertyControlMultiSendResp, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
-	return client.MultiSendPropertyControl(ctx, in, opts...)
+	return client.PropertyControlMultiSend(ctx, in, opts...)
 }
 
 // 批量调用设备属性
-func (d *directDeviceInteract) MultiSendPropertyControl(ctx context.Context, in *MultiSendPropertyControlReq, opts ...grpc.CallOption) (*MultiSendPropertyControlResp, error) {
-	return d.svr.MultiSendPropertyControl(ctx, in)
+func (d *directDeviceInteract) PropertyControlMultiSend(ctx context.Context, in *PropertyControlMultiSendReq, opts ...grpc.CallOption) (*PropertyControlMultiSendResp, error) {
+	return d.svr.PropertyControlMultiSend(ctx, in)
 }
 
 // 获取异步调用设备属性的结果
-func (m *defaultDeviceInteract) PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error) {
+func (m *defaultDeviceInteract) PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
 	return client.PropertyControlRead(ctx, in, opts...)
 }
 
 // 获取异步调用设备属性的结果
-func (d *directDeviceInteract) PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error) {
+func (d *directDeviceInteract) PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error) {
 	return d.svr.PropertyControlRead(ctx, in)
 }
 
-// 发送消息给设备
+// 发送消息给设备 -- 调试使用
 func (m *defaultDeviceInteract) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
 	return client.SendMsg(ctx, in, opts...)
 }
 
-// 发送消息给设备
+// 发送消息给设备 -- 调试使用
 func (d *directDeviceInteract) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
 	return d.svr.SendMsg(ctx, in)
 }

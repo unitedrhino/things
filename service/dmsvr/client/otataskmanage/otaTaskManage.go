@@ -14,6 +14,9 @@ import (
 )
 
 type (
+	ActionRespReq                      = dm.ActionRespReq
+	ActionSendReq                      = dm.ActionSendReq
+	ActionSendResp                     = dm.ActionSendResp
 	CommonSchemaCreateReq              = dm.CommonSchemaCreateReq
 	CommonSchemaIndexReq               = dm.CommonSchemaIndexReq
 	CommonSchemaIndexResp              = dm.CommonSchemaIndexResp
@@ -54,8 +57,6 @@ type (
 	FirmwareInfoReadReq                = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp               = dm.FirmwareInfoReadResp
 	FirmwareResp                       = dm.FirmwareResp
-	GetPropertyLatestReplyReq          = dm.GetPropertyLatestReplyReq
-	GetPropertyLatestReplyResp         = dm.GetPropertyLatestReplyResp
 	GroupDeviceIndexReq                = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp               = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq          = dm.GroupDeviceMultiDeleteReq
@@ -69,8 +70,6 @@ type (
 	HubLogIndexReq                     = dm.HubLogIndexReq
 	HubLogIndexResp                    = dm.HubLogIndexResp
 	JobReq                             = dm.JobReq
-	MultiSendPropertyControlReq        = dm.MultiSendPropertyControlReq
-	MultiSendPropertyControlResp       = dm.MultiSendPropertyControlResp
 	OTAModuleDeleteReq                 = dm.OTAModuleDeleteReq
 	OTAModuleDetail                    = dm.OTAModuleDetail
 	OTAModuleIndexReq                  = dm.OTAModuleIndexReq
@@ -153,6 +152,13 @@ type (
 	ProductSchemaTslReadReq            = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp           = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq             = dm.ProductSchemaUpdateReq
+	PropertyControlMultiSendReq        = dm.PropertyControlMultiSendReq
+	PropertyControlMultiSendResp       = dm.PropertyControlMultiSendResp
+	PropertyControlSendMsg             = dm.PropertyControlSendMsg
+	PropertyControlSendReq             = dm.PropertyControlSendReq
+	PropertyControlSendResp            = dm.PropertyControlSendResp
+	PropertyGetReportSendReq           = dm.PropertyGetReportSendReq
+	PropertyGetReportSendResp          = dm.PropertyGetReportSendResp
 	PropertyIndex                      = dm.PropertyIndex
 	PropertyIndexResp                  = dm.PropertyIndexResp
 	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
@@ -166,21 +172,15 @@ type (
 	RemoteConfigLastReadReq            = dm.RemoteConfigLastReadReq
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
-	RespActionReq                      = dm.RespActionReq
 	RespReadReq                        = dm.RespReadReq
 	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
 	SdkLogIndexResp                    = dm.SdkLogIndexResp
-	SendActionReq                      = dm.SendActionReq
-	SendActionResp                     = dm.SendActionResp
 	SendMsgReq                         = dm.SendMsgReq
 	SendMsgResp                        = dm.SendMsgResp
 	SendOption                         = dm.SendOption
-	SendPropertyControlMsg             = dm.SendPropertyControlMsg
-	SendPropertyControlReq             = dm.SendPropertyControlReq
-	SendPropertyControlResp            = dm.SendPropertyControlResp
 	ShadowIndex                        = dm.ShadowIndex
 	ShadowIndexResp                    = dm.ShadowIndexResp
 	StaticUpgradeDeviceInfo            = dm.StaticUpgradeDeviceInfo

@@ -29,7 +29,7 @@ func NewActionReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Action
 }
 
 // 获取异步调用设备行为的结果
-func (l *ActionReadLogic) ActionRead(in *dm.RespReadReq) (*dm.SendActionResp, error) {
+func (l *ActionReadLogic) ActionRead(in *dm.RespReadReq) (*dm.ActionSendResp, error) {
 	resp, err := cache.GetDeviceMsg[msgThing.Resp](l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, devices.Thing, msgThing.TypeAction,
 		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, in.MsgToken)
 	if err != nil {
@@ -42,7 +42,7 @@ func (l *ActionReadLogic) ActionRead(in *dm.RespReadReq) (*dm.SendActionResp, er
 	if err != nil {
 		return nil, errors.RespParam.AddDetailf("SendAction get device resp not right:%+v", resp.Data)
 	}
-	return &dm.SendActionResp{
+	return &dm.ActionSendResp{
 		MsgToken:     resp.MsgToken,
 		Msg:          resp.Msg,
 		Code:         resp.Code,

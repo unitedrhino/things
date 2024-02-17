@@ -23,48 +23,48 @@ func NewDeviceInteractServer(svcCtx *svc.ServiceContext) *DeviceInteractServer {
 }
 
 // 调用设备行为
-func (s *DeviceInteractServer) SendAction(ctx context.Context, in *dm.SendActionReq) (*dm.SendActionResp, error) {
-	l := deviceinteractlogic.NewSendActionLogic(ctx, s.svcCtx)
-	return l.SendAction(in)
+func (s *DeviceInteractServer) ActionSend(ctx context.Context, in *dm.ActionSendReq) (*dm.ActionSendResp, error) {
+	l := deviceinteractlogic.NewActionSendLogic(ctx, s.svcCtx)
+	return l.ActionSend(in)
 }
 
 // 获取异步调用设备行为的结果
-func (s *DeviceInteractServer) ActionRead(ctx context.Context, in *dm.RespReadReq) (*dm.SendActionResp, error) {
+func (s *DeviceInteractServer) ActionRead(ctx context.Context, in *dm.RespReadReq) (*dm.ActionSendResp, error) {
 	l := deviceinteractlogic.NewActionReadLogic(ctx, s.svcCtx)
 	return l.ActionRead(in)
 }
 
 // 回复调用设备行为
-func (s *DeviceInteractServer) RespAction(ctx context.Context, in *dm.RespActionReq) (*dm.Response, error) {
-	l := deviceinteractlogic.NewRespActionLogic(ctx, s.svcCtx)
-	return l.RespAction(in)
+func (s *DeviceInteractServer) ActionResp(ctx context.Context, in *dm.ActionRespReq) (*dm.Response, error) {
+	l := deviceinteractlogic.NewActionRespLogic(ctx, s.svcCtx)
+	return l.ActionResp(in)
 }
 
 // 请求设备获取设备最新属性
-func (s *DeviceInteractServer) GetPropertyLatestReply(ctx context.Context, in *dm.GetPropertyLatestReplyReq) (*dm.GetPropertyLatestReplyResp, error) {
-	l := deviceinteractlogic.NewGetPropertyLatestReplyLogic(ctx, s.svcCtx)
-	return l.GetPropertyLatestReply(in)
+func (s *DeviceInteractServer) PropertyGetReportSend(ctx context.Context, in *dm.PropertyGetReportSendReq) (*dm.PropertyGetReportSendResp, error) {
+	l := deviceinteractlogic.NewPropertyGetReportSendLogic(ctx, s.svcCtx)
+	return l.PropertyGetReportSend(in)
 }
 
 // 调用设备属性
-func (s *DeviceInteractServer) SendPropertyControl(ctx context.Context, in *dm.SendPropertyControlReq) (*dm.SendPropertyControlResp, error) {
-	l := deviceinteractlogic.NewSendPropertyControlLogic(ctx, s.svcCtx)
-	return l.SendPropertyControl(in)
+func (s *DeviceInteractServer) PropertyControlSend(ctx context.Context, in *dm.PropertyControlSendReq) (*dm.PropertyControlSendResp, error) {
+	l := deviceinteractlogic.NewPropertyControlSendLogic(ctx, s.svcCtx)
+	return l.PropertyControlSend(in)
 }
 
 // 批量调用设备属性
-func (s *DeviceInteractServer) MultiSendPropertyControl(ctx context.Context, in *dm.MultiSendPropertyControlReq) (*dm.MultiSendPropertyControlResp, error) {
-	l := deviceinteractlogic.NewMultiSendPropertyControlLogic(ctx, s.svcCtx)
-	return l.MultiSendPropertyControl(in)
+func (s *DeviceInteractServer) PropertyControlMultiSend(ctx context.Context, in *dm.PropertyControlMultiSendReq) (*dm.PropertyControlMultiSendResp, error) {
+	l := deviceinteractlogic.NewPropertyControlMultiSendLogic(ctx, s.svcCtx)
+	return l.PropertyControlMultiSend(in)
 }
 
 // 获取异步调用设备属性的结果
-func (s *DeviceInteractServer) PropertyControlRead(ctx context.Context, in *dm.RespReadReq) (*dm.SendPropertyControlResp, error) {
+func (s *DeviceInteractServer) PropertyControlRead(ctx context.Context, in *dm.RespReadReq) (*dm.PropertyControlSendResp, error) {
 	l := deviceinteractlogic.NewPropertyControlReadLogic(ctx, s.svcCtx)
 	return l.PropertyControlRead(in)
 }
 
-// 发送消息给设备
+// 发送消息给设备 -- 调试使用
 func (s *DeviceInteractServer) SendMsg(ctx context.Context, in *dm.SendMsgReq) (*dm.SendMsgResp, error) {
 	l := deviceinteractlogic.NewSendMsgLogic(ctx, s.svcCtx)
 	return l.SendMsg(in)

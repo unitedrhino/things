@@ -18,21 +18,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetPropertyLatestReplyLogic struct {
+type PropertyGetReportSendLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	schema *schema.Model
 }
 
-func NewGetPropertyLatestReplyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetPropertyLatestReplyLogic {
-	return &GetPropertyLatestReplyLogic{
+func NewPropertyGetReportSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyGetReportSendLogic {
+	return &PropertyGetReportSendLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *GetPropertyLatestReplyLogic) initMsg(productID string) error {
+func (l *PropertyGetReportSendLogic) initMsg(productID string) error {
 	var err error
 	l.schema, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
 	if err != nil {
@@ -42,7 +42,7 @@ func (l *GetPropertyLatestReplyLogic) initMsg(productID string) error {
 }
 
 // 请求设备获取设备最新属性
-func (l *GetPropertyLatestReplyLogic) GetPropertyLatestReply(in *dm.GetPropertyLatestReplyReq) (*dm.GetPropertyLatestReplyResp, error) {
+func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetReportSendReq) (*dm.PropertyGetReportSendResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
@@ -105,7 +105,7 @@ func (l *GetPropertyLatestReplyLogic) GetPropertyLatestReply(in *dm.GetPropertyL
 	if len(dresp.Params) > 0 {
 		params, _ = json.Marshal(dresp.Params)
 	}
-	return &dm.GetPropertyLatestReplyResp{
+	return &dm.PropertyGetReportSendResp{
 		MsgToken:  dresp.MsgToken,
 		Msg:       dresp.Msg,
 		Code:      dresp.Code,

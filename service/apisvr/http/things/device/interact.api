@@ -13,18 +13,23 @@ info(
 )
 service api {
     @doc "调用设备行为"
+    @handler actionSend
+    post /action-send (DeviceInteractSendActionReq) returns (DeviceInteractSendActionResp)
+
+    @doc "调用设备行为--废弃"
     @handler sendAction
     post /send-action (DeviceInteractSendActionReq) returns (DeviceInteractSendActionResp)
+
     @doc "获取调用设备行为的结果"
     @handler actionRead
     post /action-read (DeviceInteractRespReadReq) returns (DeviceInteractSendActionResp)
 
     @doc "调用设备属性"
-    @handler sendPropertyControl
-    post /send-property-control (DeviceInteractSendPropertyReq) returns (DeviceInteractSendPropertyResp)
+    @handler propertyControlSend
+    post /property-control-send (DeviceInteractSendPropertyReq) returns (DeviceInteractSendPropertyResp)
     @doc "批量调用设备属性"
-    @handler multiSendPropertyControl
-    post /multi-send-property-control (DeviceInteractMultiSendPropertyReq) returns (DeviceInteractMultiSendPropertyResp)
+    @handler propertyControlMultiSend
+    post /property-control-multi-send (DeviceInteractMultiSendPropertyReq) returns (DeviceInteractMultiSendPropertyResp)
     @doc "获取调用设备属性的结果"
     @handler propertyControlRead
     post /property-control-read (DeviceInteractRespReadReq) returns (DeviceInteractSendPropertyResp)
@@ -44,17 +49,17 @@ service api {
     @handler sendMsg
     post /send-msg (DeviceInteractSendMsgReq) returns ()
     @doc "请求设备获取设备最新属性"
-    @handler getPropertyLatestReply
-    post /get-property-latest-reply (DeviceInteractGetPropertyReplyReq) returns (DeviceInteractGetPropertyReplyResp)
+    @handler propertyGetReportSend
+    post /property-get-report-send (DeviceInteractPropertyGetReportSendReq) returns (DeviceInteractPropertyGetReportSendResp)
 }
 
-type DeviceInteractGetPropertyReplyReq {
+type DeviceInteractPropertyGetReportSendReq {
     ProductID  string   `json:"productID"`   //产品id (必填)
     DeviceName string   `json:"deviceName"` //设备名(必填)
     DataIDs    []string `json:"dataIDs,optional"`       //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条
 }
 
-type DeviceInteractGetPropertyReplyResp  {
+type DeviceInteractPropertyGetReportSendResp  {
     Code        int64  `json:"code"`              //设备返回状态码
     Msg      string `json:"msg"`           //返回状态
     MsgToken string `json:"msgToken"` //调用id

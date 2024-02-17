@@ -17,21 +17,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type RespActionLogic struct {
+type ActionRespLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	schema *schema.Model
 }
 
-func NewRespActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RespActionLogic {
-	return &RespActionLogic{
+func NewActionRespLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ActionRespLogic {
+	return &ActionRespLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *RespActionLogic) initMsg(productID string) error {
+func (l *ActionRespLogic) initMsg(productID string) error {
 	var err error
 	l.schema, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
 	if err != nil {
@@ -41,7 +41,7 @@ func (l *RespActionLogic) initMsg(productID string) error {
 }
 
 // 回复调用设备行为
-func (l *RespActionLogic) RespAction(in *dm.RespActionReq) (*dm.Response, error) {
+func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Response, error) {
 	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err

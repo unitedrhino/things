@@ -29,7 +29,7 @@ func NewPropertyControlReadLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 // 获取异步调用设备属性的结果
-func (l *PropertyControlReadLogic) PropertyControlRead(in *dm.RespReadReq) (*dm.SendPropertyControlResp, error) {
+func (l *PropertyControlReadLogic) PropertyControlRead(in *dm.RespReadReq) (*dm.PropertyControlSendResp, error) {
 	resp, err := cache.GetDeviceMsg[msgThing.Resp](l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, devices.Thing, msgThing.TypeProperty,
 		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, in.MsgToken)
 	if err != nil {
@@ -38,7 +38,7 @@ func (l *PropertyControlReadLogic) PropertyControlRead(in *dm.RespReadReq) (*dm.
 	if resp == nil {
 		return nil, errors.NotFind
 	}
-	return &dm.SendPropertyControlResp{
+	return &dm.PropertyControlSendResp{
 		MsgToken: resp.MsgToken,
 		Msg:      resp.Msg,
 		Code:     resp.Code,

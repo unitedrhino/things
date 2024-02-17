@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func MultiSendPropertyControlHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func PropertyControlMultiSendHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.DeviceInteractMultiSendPropertyReq
 		if err := httpx.Parse(r, &req); err != nil {
@@ -18,8 +18,8 @@ func MultiSendPropertyControlHandler(svcCtx *svc.ServiceContext) http.HandlerFun
 			return
 		}
 
-		l := interact.NewMultiSendPropertyControlLogic(r.Context(), svcCtx)
-		resp, err := l.MultiSendPropertyControl(&req)
+		l := interact.NewPropertyControlMultiSendLogic(r.Context(), svcCtx)
+		resp, err := l.PropertyControlMultiSend(&req)
 		result.Http(w, r, resp, err)
 	}
 }

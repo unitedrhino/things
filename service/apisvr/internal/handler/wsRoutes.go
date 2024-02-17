@@ -161,8 +161,8 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/get-property-latest-reply",
-					Handler: thingsdeviceinteract.GetPropertyLatestReplyHandler(serverCtx),
+					Path:    "/action-send",
+					Handler: thingsdeviceinteract.ActionSendHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -171,13 +171,23 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/multi-send-property-control",
-					Handler: thingsdeviceinteract.MultiSendPropertyControlHandler(serverCtx),
+					Path:    "/property-control-multi-send",
+					Handler: thingsdeviceinteract.PropertyControlMultiSendHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/property-control-read",
 					Handler: thingsdeviceinteract.PropertyControlReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-control-send",
+					Handler: thingsdeviceinteract.PropertyControlSendHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-get-report-send",
+					Handler: thingsdeviceinteract.PropertyGetReportSendHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -198,11 +208,6 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/send-property",
 					Handler: thingsdeviceinteract.SendPropertyHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/send-property-control",
-					Handler: thingsdeviceinteract.SendPropertyControlHandler(serverCtx),
 				},
 			}...,
 		),

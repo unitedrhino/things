@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func GetPropertyReplyHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func PropertyControlSendHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.DeviceInteractGetPropertyReplyReq
+		var req types.DeviceInteractSendPropertyReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := interact.NewGetPropertyReplyLogic(r.Context(), svcCtx)
-		resp, err := l.GetPropertyReply(&req)
+		l := interact.NewPropertyControlSendLogic(r.Context(), svcCtx)
+		resp, err := l.PropertyControlSend(&req)
 		result.Http(w, r, resp, err)
 	}
 }

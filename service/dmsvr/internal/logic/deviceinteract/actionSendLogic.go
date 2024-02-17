@@ -20,21 +20,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SendActionLogic struct {
+type ActionSendLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	schema *schema.Model
 	logx.Logger
 }
 
-func NewSendActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendActionLogic {
-	return &SendActionLogic{
+func NewActionSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ActionSendLogic {
+	return &ActionSendLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *SendActionLogic) initMsg(productID string) error {
+func (l *ActionSendLogic) initMsg(productID string) error {
 	var err error
 	l.schema, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
 	if err != nil {
@@ -44,7 +44,7 @@ func (l *SendActionLogic) initMsg(productID string) error {
 }
 
 // 调用设备行为
-func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, error) {
+func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (*dm.ActionSendResp, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
@@ -61,7 +61,7 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 	param := map[string]any{}
 	err = utils.Unmarshal([]byte(in.InputParams), &param)
 	if err != nil {
-		return nil, errors.Parameter.AddDetail("SendAction InputParams not right:", in.InputParams)
+		return nil, errors.Parameter.AddDetail("ActionSend InputParams not right:", in.InputParams)
 	}
 
 	req := msgThing.Req{
@@ -117,7 +117,7 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 				l.Errorf("TaskSend err:%v", err)
 			}
 		}
-		return &dm.SendActionResp{
+		return &dm.ActionSendResp{
 			MsgToken: req.MsgToken,
 		}, nil
 	}
@@ -142,9 +142,9 @@ func (l *SendActionLogic) SendAction(in *dm.SendActionReq) (*dm.SendActionResp, 
 	}
 	respParam, err := json.Marshal(dresp.Data)
 	if err != nil {
-		return nil, errors.RespParam.AddDetailf("SendAction get device resp not right:%+v", dresp.Data)
+		return nil, errors.RespParam.AddDetailf("ActionSend get device resp not right:%+v", dresp.Data)
 	}
-	return &dm.SendActionResp{
+	return &dm.ActionSendResp{
 		MsgToken:     dresp.MsgToken,
 		Msg:          dresp.Msg,
 		Code:         dresp.Code,

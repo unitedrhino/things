@@ -15,7 +15,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type MultiSendPropertyControlLogic struct {
+type PropertyControlMultiSendLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
@@ -24,15 +24,15 @@ type MultiSendPropertyControlLogic struct {
 	mutex  sync.Mutex
 }
 
-func NewMultiSendPropertyControlLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiSendPropertyControlLogic {
-	return &MultiSendPropertyControlLogic{
+func NewPropertyControlMultiSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyControlMultiSendLogic {
+	return &PropertyControlMultiSendLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *MultiSendPropertyControlLogic) MultiSendPropertyControl(req *types.DeviceInteractMultiSendPropertyReq) (resp *types.DeviceInteractMultiSendPropertyResp, err error) {
+func (l *PropertyControlMultiSendLogic) PropertyControlMultiSend(req *types.DeviceInteractMultiSendPropertyReq) (resp *types.DeviceInteractMultiSendPropertyResp, err error) {
 	if (req.ProductID != "" && len(req.DeviceNames) != 0) || len(req.Devices) != 0 {
 		err := l.SendProperty(req.ProductID, req.DeviceNames, req.Devices, req.Data, req.ShadowControl)
 		return &types.DeviceInteractMultiSendPropertyResp{List: l.retMsg}, err
@@ -85,7 +85,7 @@ func (l *MultiSendPropertyControlLogic) MultiSendPropertyControl(req *types.Devi
 	}
 	return nil, errors.Parameter.AddMsg("产品id设备名或分组id或区域id必须填一个")
 }
-func (l *MultiSendPropertyControlLogic) SendProperty(productID string, deviceNames []string, devices []*types.DeviceCore, data string, shadowControl int64) error {
+func (l *PropertyControlMultiSendLogic) SendProperty(productID string, deviceNames []string, devices []*types.DeviceCore, data string, shadowControl int64) error {
 	list := make([]*types.DeviceInteractMultiSendPropertyMsg, 0)
 	dmReq := &dm.PropertyControlMultiSendReq{
 		ProductID:     productID,

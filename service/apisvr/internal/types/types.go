@@ -228,20 +228,6 @@ type DeviceInfoWithProperty struct {
 	Timestamp int64  `json:"timestamp,string"` //发生时间戳
 }
 
-type DeviceInteractGetPropertyReplyReq struct {
-	ProductID  string   `json:"productID"`        //产品id (必填)
-	DeviceName string   `json:"deviceName"`       //设备名(必填)
-	DataIDs    []string `json:"dataIDs,optional"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条
-}
-
-type DeviceInteractGetPropertyReplyResp struct {
-	Code      int64  `json:"code"`      //设备返回状态码
-	Msg       string `json:"msg"`       //返回状态
-	MsgToken  string `json:"msgToken"`  //调用id
-	Timestamp int64  `json:"timestamp"` //上报时间戳(毫秒时间戳)
-	Params    string `json:"params"`    //获取到的值
-}
-
 type DeviceInteractMultiSendPropertyMsg struct {
 	ProductID  string `json:"productID"`  //产品id
 	DeviceName string `json:"deviceName"` //设备名
@@ -264,6 +250,20 @@ type DeviceInteractMultiSendPropertyReq struct {
 
 type DeviceInteractMultiSendPropertyResp struct {
 	List []*DeviceInteractMultiSendPropertyMsg `json:"list"` //批量设备返回结果列表
+}
+
+type DeviceInteractPropertyGetReportSendReq struct {
+	ProductID  string   `json:"productID"`        //产品id (必填)
+	DeviceName string   `json:"deviceName"`       //设备名(必填)
+	DataIDs    []string `json:"dataIDs,optional"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条
+}
+
+type DeviceInteractPropertyGetReportSendResp struct {
+	Code      int64  `json:"code"`      //设备返回状态码
+	Msg       string `json:"msg"`       //返回状态
+	MsgToken  string `json:"msgToken"`  //调用id
+	Timestamp int64  `json:"timestamp"` //上报时间戳(毫秒时间戳)
+	Params    string `json:"params"`    //获取到的值
 }
 
 type DeviceInteractRespReadReq struct {

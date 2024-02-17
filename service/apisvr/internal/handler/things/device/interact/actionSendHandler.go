@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-func SendPropertyControlHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func ActionSendHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.DeviceInteractSendPropertyReq
+		var req types.DeviceInteractSendActionReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := interact.NewSendPropertyControlLogic(r.Context(), svcCtx)
-		resp, err := l.SendPropertyControl(&req)
+		l := interact.NewActionSendLogic(r.Context(), svcCtx)
+		resp, err := l.ActionSend(&req)
 		result.Http(w, r, resp, err)
 	}
 }

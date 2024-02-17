@@ -51,7 +51,7 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 	switch a.Type {
 	case ActionDeviceTypePropertyControl:
 		executeFunc = func(productID, deviceName string) error {
-			_, err := repo.DeviceInteract.SendPropertyControl(ctx, &deviceinteract.SendPropertyControlReq{
+			_, err := repo.DeviceInteract.PropertyControlSend(ctx, &deviceinteract.PropertyControlSendReq{
 				IsAsync:    true,
 				ProductID:  productID,
 				DeviceName: deviceName,
@@ -65,7 +65,7 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 		}
 	case ActionDeviceTypeAction:
 		executeFunc = func(productID, deviceName string) error {
-			_, err := repo.DeviceInteract.SendAction(ctx, &deviceinteract.SendActionReq{
+			_, err := repo.DeviceInteract.ActionSend(ctx, &deviceinteract.ActionSendReq{
 				IsAsync:     true,
 				ProductID:   productID,
 				DeviceName:  deviceName,

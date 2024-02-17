@@ -22,21 +22,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SendPropertyControlLogic struct {
+type PropertyControlSendLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	model *schema.Model
 }
 
-func NewSendPropertyControlLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendPropertyControlLogic {
-	return &SendPropertyControlLogic{
+func NewPropertyControlSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyControlSendLogic {
+	return &PropertyControlSendLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *SendPropertyControlLogic) initMsg(productID string) error {
+func (l *PropertyControlSendLogic) initMsg(productID string) error {
 	var err error
 	l.model, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
 	if err != nil {
@@ -46,7 +46,7 @@ func (l *SendPropertyControlLogic) initMsg(productID string) error {
 }
 
 // 调用设备属性
-func (l *SendPropertyControlLogic) SendPropertyControl(in *dm.SendPropertyControlReq) (ret *dm.SendPropertyControlResp, err error) {
+func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSendReq) (ret *dm.PropertyControlSendResp, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	var isOnline = true
 	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
@@ -105,7 +105,7 @@ func (l *SendPropertyControlLogic) SendPropertyControl(in *dm.SendPropertyContro
 			contentStr, _ := json.Marshal(content)
 			_ = l.svcCtx.HubLogRepo.Insert(ctx, &msgHubLog.HubLog{
 				ProductID:  in.ProductID,
-				Action:     "propertyControl",
+				Action:     "propertyControlSend",
 				Timestamp:  time.Now(), // 操作时间
 				DeviceName: in.DeviceName,
 				TranceID:   utils.TraceIdFromContext(ctx),
@@ -125,7 +125,7 @@ func (l *SendPropertyControlLogic) SendPropertyControl(in *dm.SendPropertyContro
 		if err != nil {
 			return nil, err
 		}
-		return &dm.SendPropertyControlResp{}, nil
+		return &dm.PropertyControlSendResp{}, nil
 	}
 
 	payload, _ := json.Marshal(req)
@@ -147,7 +147,7 @@ func (l *SendPropertyControlLogic) SendPropertyControl(in *dm.SendPropertyContro
 		if err != nil {
 			return nil, err
 		}
-		return &dm.SendPropertyControlResp{
+		return &dm.PropertyControlSendResp{
 			MsgToken: req.MsgToken,
 		}, nil
 	}
@@ -173,7 +173,7 @@ func (l *SendPropertyControlLogic) SendPropertyControl(in *dm.SendPropertyContro
 		return nil, err
 	}
 
-	return &dm.SendPropertyControlResp{
+	return &dm.PropertyControlSendResp{
 		MsgToken: dresp.MsgToken,
 		Msg:      dresp.Msg,
 		Code:     dresp.Code,
