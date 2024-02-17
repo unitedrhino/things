@@ -1,11 +1,14 @@
 # -*- coding:utf-8 -*-
 .PHOmakeNY: build
 
-build:build.clean mod cp.etc build.api build.dg build.view build.dm build.sys build.ud build.timedjob build.timedscheduler
+build:build.clean mod cp.etc build.api build.dg  build.dm  build.ud
 
-runall:  run.timedjob run.timedscheduler run.sys run.dm run.dg run.ud run.api run.view
+runall:   run.dm run.dg run.ud run.api
 
-buildone:build.clean mod cp.etc build.api build.view moduleupdate build.core build.front
+buildone:build.clean mod cp.etc build.api  moduleupdate build.core build.front
+
+#仅编译后端
+buildback: build.clean mod cp.etc build.api  moduleupdate build.coreback
 
 moduleupdate:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
@@ -22,7 +25,12 @@ build.front:
 
 build.core:
 	@mkdir -p ./cmd/core
-	@cd module/core && make packone
+	@cd module/core && make buildone
+	@cp -rf module/core/cmd/* ./cmd/core
+
+build.coreback:
+	@mkdir -p ./cmd/core
+	@cd module/core && make buildback
 	@cp -rf module/core/cmd/* ./cmd/core
 
 toremote:
@@ -53,16 +61,12 @@ cp.etc:
 	@mkdir -p ./cmd/things/etc/
 	@mkdir -p ./cmd/things/dist/
 	@cp -rf ./service/apisvr/etc/* ./cmd/things/etc/
-	@cp -rf ./service/viewsvr/etc/* ./cmd/things/etc/
 
 
 build.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@go build -o ./cmd/things/apisvr ./service/apisvr
 
-build.view:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build -o ./cmd/things/viewsvr ./service/viewsvr
 
 build.dg:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
@@ -72,21 +76,10 @@ build.dm:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@go build  -o ./cmd/things/dmsvr ./service/dmsvr
 
-build.sys:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/things/syssvr ./service/syssvr
 
 build.ud:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@go build  -o ./cmd/things/udsvr ./service/udsvr
-
-build.timedjob:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/things/timedjobsvr ./service/timed/timedjobsvr
-
-build.timedscheduler:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/things/timedschedulersvr ./service/timed/timedschedulersvr
 
 
 run.api:
@@ -106,18 +99,8 @@ run.dm:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@cd cmd/things && nohup ./dmsvr &  cd ..
 
-run.sys:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cmd/things && nohup ./syssvr &  cd ..
 
 run.ud:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@cd cmd/things && nohup ./udsvr &  cd ..
 
-run.timedjob:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cd cmd/things && nohup ./timedjobsvr &  cd ..
-
-run.timedscheduler:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cd cmd/things && nohup ./timedschedulersvr &  cd ..
