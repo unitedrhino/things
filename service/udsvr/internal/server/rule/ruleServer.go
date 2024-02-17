@@ -52,3 +52,24 @@ func (s *RuleServer) SceneManuallyTrigger(ctx context.Context, in *ud.WithID) (*
 	l := rulelogic.NewSceneManuallyTriggerLogic(ctx, s.svcCtx)
 	return l.SceneManuallyTrigger(in)
 }
+
+// 设备定时
+func (s *RuleServer) DeviceTimingCreate(ctx context.Context, in *ud.DeviceTimingInfo) (*ud.WithID, error) {
+	l := rulelogic.NewDeviceTimingCreateLogic(ctx, s.svcCtx)
+	return l.DeviceTimingCreate(in)
+}
+
+func (s *RuleServer) DeviceTimingUpdate(ctx context.Context, in *ud.DeviceTimingInfo) (*ud.Empty, error) {
+	l := rulelogic.NewDeviceTimingUpdateLogic(ctx, s.svcCtx)
+	return l.DeviceTimingUpdate(in)
+}
+
+func (s *RuleServer) DeviceTimingDelete(ctx context.Context, in *ud.WithID) (*ud.Empty, error) {
+	l := rulelogic.NewDeviceTimingDeleteLogic(ctx, s.svcCtx)
+	return l.DeviceTimingDelete(in)
+}
+
+func (s *RuleServer) DeviceTimingIndex(ctx context.Context, in *ud.DeviceTimingIndexReq) (*ud.DeviceTimingIndexResp, error) {
+	l := rulelogic.NewDeviceTimingIndexLogic(ctx, s.svcCtx)
+	return l.DeviceTimingIndex(in)
+}

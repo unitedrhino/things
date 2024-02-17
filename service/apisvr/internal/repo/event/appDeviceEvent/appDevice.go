@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
@@ -55,7 +56,7 @@ func (a *AppDeviceHandle) DeviceStatusConnected(in *application.ConnectMsg) erro
 	body := ws.WsBody{
 		Type: ws.Pub,
 		Path: topic,
-		Body: "connected",
+		Body: def.ConnectedStatus,
 	}
 	ws.SendSub(a.ctx, ws.WsResp{
 		StatusCode: http.StatusOK,
@@ -69,7 +70,7 @@ func (a *AppDeviceHandle) DeviceStatusDisConnected(in *application.ConnectMsg) e
 	body := ws.WsBody{
 		Type: ws.Pub,
 		Path: topic,
-		Body: "disconnected",
+		Body: def.DisConnectedStatus,
 	}
 	ws.SendSub(a.ctx,
 		ws.WsResp{StatusCode: http.StatusOK,

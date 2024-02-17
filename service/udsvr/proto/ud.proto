@@ -32,6 +32,12 @@ service rule {
   rpc sceneInfoIndex(SceneInfoIndexReq) returns(SceneInfoIndexResp);
   rpc sceneInfoRead(WithID) returns(SceneInfo);
   rpc sceneManuallyTrigger(WithID) returns (Empty);//手动触发场景
+
+  //设备定时
+  rpc deviceTimingCreate(DeviceTimingInfo) returns(WithID);
+  rpc deviceTimingUpdate(DeviceTimingInfo) returns(Empty);
+  rpc deviceTimingDelete(WithID) returns(Empty);
+  rpc deviceTimingIndex(DeviceTimingIndexReq) returns(DeviceTimingIndexResp);
 }
 
 //运营
@@ -42,6 +48,24 @@ service ops{
   rpc opsWorkOrderIndex(OpsWorkOrderIndexReq) returns(OpsWorkOrderIndexResp);
 }
 
+message DeviceTimingIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  int64 status = 2;//状态: 1启用 2禁用
+  string triggerType = 3;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+}
+message DeviceTimingIndexResp{
+  repeated DeviceTimingInfo list = 1;//设备信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message DeviceTimingInfo{
+  int64 id = 1;//场景id
+  int64 createdTime = 5;//创建时间 秒级时间戳 只读
+  string triggerType = 4;//触发类型 timer: 定时触发 delay: 延迟触发(延迟触发同时只能存在一个)
+  string trigger = 6;//多种触发方式
+  string then = 8; //触发后执行的动作
+  int64 status = 9;// 状态（1启用 2禁用）
+}
 
 
 message SceneInfoIndexReq{

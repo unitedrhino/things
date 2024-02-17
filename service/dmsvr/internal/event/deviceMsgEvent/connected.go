@@ -65,7 +65,7 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	l.UpdateLoginTime()
 	err = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  ld.ProductID,
-		Action:     deviceStatus.ConnectStatus,
+		Action:     def.ConnectedStatus,
 		Timestamp:  msg.Timestamp, // 操作时间
 		DeviceName: ld.DeviceName,
 		TranceID:   utils.TraceIdFromContext(l.ctx),

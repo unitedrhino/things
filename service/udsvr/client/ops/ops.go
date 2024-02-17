@@ -15,6 +15,9 @@ import (
 
 type (
 	DeviceCore            = ud.DeviceCore
+	DeviceTimingIndexReq  = ud.DeviceTimingIndexReq
+	DeviceTimingIndexResp = ud.DeviceTimingIndexResp
+	DeviceTimingInfo      = ud.DeviceTimingInfo
 	Empty                 = ud.Empty
 	OpsWorkOrder          = ud.OpsWorkOrder
 	OpsWorkOrderIndexReq  = ud.OpsWorkOrderIndexReq
