@@ -78,7 +78,7 @@ func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*rela
 }
 
 // 更新产品物模型
-func (l *CommonSchemaUpdateLogic) CommonSchemaUpdate(in *dm.CommonSchemaUpdateReq) (*dm.Response, error) {
+func (l *CommonSchemaUpdateLogic) CommonSchemaUpdate(in *dm.CommonSchemaUpdateReq) (*dm.Empty, error) {
 	po, newPo, err := l.ruleCheck(in)
 	if err != nil {
 		return nil, err
@@ -101,5 +101,5 @@ func (l *CommonSchemaUpdateLogic) CommonSchemaUpdate(in *dm.CommonSchemaUpdateRe
 	if err != nil {
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

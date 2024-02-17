@@ -44,6 +44,7 @@ type (
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	Empty                              = dm.Empty
 	EventIndex                         = dm.EventIndex
 	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
@@ -173,7 +174,6 @@ type (
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
-	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
@@ -188,41 +188,47 @@ type (
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
+	UserDeviceCollectSave              = dm.UserDeviceCollectSave
+	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
+	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo                = dm.UserDeviceShareInfo
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
 
 	ProductManage interface {
 		// 新增产品
-		ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
+		ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 更新产品
-		ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
+		ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 删除产品
-		ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取产品信息列表
 		ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
 		// 获取产品信息详情
 		ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
 		// 更新产品物模型
-		ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 新增产品
-		ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error)
+		ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 删除产品
-		ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取产品信息列表
 		ProductSchemaIndex(ctx context.Context, in *ProductSchemaIndexReq, opts ...grpc.CallOption) (*ProductSchemaIndexResp, error)
 		// 删除产品
-		ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error)
+		ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取产品信息列表
 		ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
 		// 脚本管理
 		ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error)
-		ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error)
+		ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Empty, error)
 		// 新增产品
 		ProductCategoryCreate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*WithID, error)
 		// 更新产品
-		ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error)
+		ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Empty, error)
 		// 删除产品
-		ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+		ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 		// 获取产品信息列表
 		ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error)
 		// 获取产品信息详情
@@ -253,35 +259,35 @@ func NewDirectProductManage(svcCtx *svc.ServiceContext, svr dm.ProductManageServ
 }
 
 // 新增产品
-func (m *defaultProductManage) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductInfoCreate(ctx, in, opts...)
 }
 
 // 新增产品
-func (d *directProductManage) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductInfoCreate(ctx, in)
 }
 
 // 更新产品
-func (m *defaultProductManage) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductInfoUpdate(ctx, in, opts...)
 }
 
 // 更新产品
-func (d *directProductManage) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductInfoUpdate(ctx, in)
 }
 
 // 删除产品
-func (m *defaultProductManage) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductInfoDelete(ctx, in, opts...)
 }
 
 // 删除产品
-func (d *directProductManage) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductInfoDelete(ctx, in)
 }
 
@@ -308,35 +314,35 @@ func (d *directProductManage) ProductInfoRead(ctx context.Context, in *ProductIn
 }
 
 // 更新产品物模型
-func (m *defaultProductManage) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductSchemaUpdate(ctx, in, opts...)
 }
 
 // 更新产品物模型
-func (d *directProductManage) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductSchemaUpdate(ctx, in)
 }
 
 // 新增产品
-func (m *defaultProductManage) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductSchemaCreate(ctx, in, opts...)
 }
 
 // 新增产品
-func (d *directProductManage) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductSchemaCreate(ctx, in)
 }
 
 // 删除产品
-func (m *defaultProductManage) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductSchemaDelete(ctx, in, opts...)
 }
 
 // 删除产品
-func (d *directProductManage) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductSchemaDelete(ctx, in)
 }
 
@@ -352,13 +358,13 @@ func (d *directProductManage) ProductSchemaIndex(ctx context.Context, in *Produc
 }
 
 // 删除产品
-func (m *defaultProductManage) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductSchemaTslImport(ctx, in, opts...)
 }
 
 // 删除产品
-func (d *directProductManage) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductSchemaTslImport(ctx, in)
 }
 
@@ -384,12 +390,12 @@ func (d *directProductManage) ProductCustomRead(ctx context.Context, in *Product
 	return d.svr.ProductCustomRead(ctx, in)
 }
 
-func (m *defaultProductManage) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductCustomUpdate(ctx, in, opts...)
 }
 
-func (d *directProductManage) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductCustomUpdate(ctx, in)
 }
 
@@ -405,24 +411,24 @@ func (d *directProductManage) ProductCategoryCreate(ctx context.Context, in *Pro
 }
 
 // 更新产品
-func (m *defaultProductManage) ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductCategoryUpdate(ctx, in, opts...)
 }
 
 // 更新产品
-func (d *directProductManage) ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductCategoryUpdate(ctx, in)
 }
 
 // 删除产品
-func (m *defaultProductManage) ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultProductManage) ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductCategoryDelete(ctx, in, opts...)
 }
 
 // 删除产品
-func (d *directProductManage) ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (d *directProductManage) ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductCategoryDelete(ctx, in)
 }
 

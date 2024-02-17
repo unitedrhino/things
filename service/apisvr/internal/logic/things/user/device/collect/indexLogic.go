@@ -3,11 +3,9 @@ package collect
 import (
 	"context"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/i-Things/things/service/udsvr/pb/ud"
-
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
+	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +25,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index() (resp *types.UserCollectDeviceInfo, err error) {
-	ret, err := l.svcCtx.UserDevice.UserCollectDeviceIndex(l.ctx, &ud.Empty{})
+	ret, err := l.svcCtx.UserDevice.UserDeviceCollectIndex(l.ctx, &dm.Empty{})
 	if err != nil {
 		return nil, err
 	}

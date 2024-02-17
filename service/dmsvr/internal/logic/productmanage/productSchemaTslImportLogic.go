@@ -33,7 +33,7 @@ func NewProductSchemaTslImportLogic(ctx context.Context, svcCtx *svc.ServiceCont
 }
 
 // 删除产品
-func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchemaTslImportReq) (*dm.Response, error) {
+func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchemaTslImportReq) (*dm.Empty, error) {
 	l.Infof("%s req:%v", utils.FuncName(), in)
 	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
@@ -75,5 +75,5 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 	if err != nil {
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

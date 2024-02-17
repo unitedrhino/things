@@ -29,7 +29,7 @@ func NewOtaTaskByDeviceCancelLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 // 取消指定OTA升级包下状态为待确认、待推送、已推送、升级中状态的设备升级作业
-func (l *OtaTaskByDeviceCancelLogic) OtaTaskByDeviceCancel(in *dm.OTATaskByDeviceCancelReq) (*dm.Response, error) {
+func (l *OtaTaskByDeviceCancelLogic) OtaTaskByDeviceCancel(in *dm.OTATaskByDeviceCancelReq) (*dm.Empty, error) {
 	taskStatusList := []int{msgOta.UpgradeStatusConfirm, msgOta.UpgradeStatusInProgress, msgOta.UpgradeStatusQueued, msgOta.UpgradeStatusNotified}
 	filter := relationDB.OtaUpgradeTaskFilter{
 		JobId:          in.JobId,
@@ -42,5 +42,5 @@ func (l *OtaTaskByDeviceCancelLogic) OtaTaskByDeviceCancel(in *dm.OTATaskByDevic
 		l.Errorf("%s.TaskInfo.TaskInfo BatchUpdate failure err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

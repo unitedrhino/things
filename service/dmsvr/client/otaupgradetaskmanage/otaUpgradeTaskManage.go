@@ -44,6 +44,7 @@ type (
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	Empty                              = dm.Empty
 	EventIndex                         = dm.EventIndex
 	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
@@ -173,7 +174,6 @@ type (
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
-	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
@@ -188,6 +188,12 @@ type (
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
+	UserDeviceCollectSave              = dm.UserDeviceCollectSave
+	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
+	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo                = dm.UserDeviceShareInfo
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
 
@@ -195,15 +201,15 @@ type (
 		// 查询指定升级批次下的设备升级作业列表
 		OtaTaskByJobIndex(ctx context.Context, in *OTATaskByJobIndexReq, opts ...grpc.CallOption) (*OtaTaskByJobIndexResp, error)
 		// 取消指定批次下的设备升级作业
-		OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Response, error)
+		OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Empty, error)
 		// 取消指定OTA升级包下状态为待确认、待推送、已推送、升级中状态的设备升级作业
-		OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Response, error)
+		OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Empty, error)
 		// 批量确认，处于待确认状态的设备升级作业
-		OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Response, error)
+		OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Empty, error)
 		// 查询指定设备下，未完成状态的设备升级作业
 		OtaUnfinishedTaskByDeviceIndex(ctx context.Context, in *OTAUnfinishedTaskByDeviceIndexReq, opts ...grpc.CallOption) (*OTAUnfinishedTaskByDeviceIndexResp, error)
 		// 重新升级指定批次下升级失败或升级取消的设备升级作业
-		OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Response, error)
+		OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultOTAUpgradeTaskManage struct {
@@ -241,35 +247,35 @@ func (d *directOTAUpgradeTaskManage) OtaTaskByJobIndex(ctx context.Context, in *
 }
 
 // 取消指定批次下的设备升级作业
-func (m *defaultOTAUpgradeTaskManage) OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAUpgradeTaskManage) OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewOTAUpgradeTaskManageClient(m.cli.Conn())
 	return client.OtaTaskByJobCancel(ctx, in, opts...)
 }
 
 // 取消指定批次下的设备升级作业
-func (d *directOTAUpgradeTaskManage) OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directOTAUpgradeTaskManage) OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaTaskByJobCancel(ctx, in)
 }
 
 // 取消指定OTA升级包下状态为待确认、待推送、已推送、升级中状态的设备升级作业
-func (m *defaultOTAUpgradeTaskManage) OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAUpgradeTaskManage) OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewOTAUpgradeTaskManageClient(m.cli.Conn())
 	return client.OtaTaskByDeviceCancel(ctx, in, opts...)
 }
 
 // 取消指定OTA升级包下状态为待确认、待推送、已推送、升级中状态的设备升级作业
-func (d *directOTAUpgradeTaskManage) OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directOTAUpgradeTaskManage) OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaTaskByDeviceCancel(ctx, in)
 }
 
 // 批量确认，处于待确认状态的设备升级作业
-func (m *defaultOTAUpgradeTaskManage) OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAUpgradeTaskManage) OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewOTAUpgradeTaskManageClient(m.cli.Conn())
 	return client.OtaTaskConfirm(ctx, in, opts...)
 }
 
 // 批量确认，处于待确认状态的设备升级作业
-func (d *directOTAUpgradeTaskManage) OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directOTAUpgradeTaskManage) OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaTaskConfirm(ctx, in)
 }
 
@@ -285,12 +291,12 @@ func (d *directOTAUpgradeTaskManage) OtaUnfinishedTaskByDeviceIndex(ctx context.
 }
 
 // 重新升级指定批次下升级失败或升级取消的设备升级作业
-func (m *defaultOTAUpgradeTaskManage) OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAUpgradeTaskManage) OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewOTAUpgradeTaskManageClient(m.cli.Conn())
 	return client.OtaTaskReUpgrade(ctx, in, opts...)
 }
 
 // 重新升级指定批次下升级失败或升级取消的设备升级作业
-func (d *directOTAUpgradeTaskManage) OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directOTAUpgradeTaskManage) OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaTaskReUpgrade(ctx, in)
 }

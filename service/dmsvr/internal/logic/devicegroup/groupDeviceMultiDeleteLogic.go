@@ -27,10 +27,10 @@ func NewGroupDeviceMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCont
 }
 
 // 删除分组设备
-func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceMultiDeleteReq) (*dm.Response, error) {
+func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceMultiDeleteReq) (*dm.Empty, error) {
 	err := l.GdDB.MultiDelete(l.ctx, in.GroupID, logic.ToDeviceCores(in.List))
 	if err != nil {
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

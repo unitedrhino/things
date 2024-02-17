@@ -101,7 +101,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 }
 
 // 更新设备
-func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Response, error) {
+func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, error) {
 	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
 		if pid, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}}); err != nil {
 			return nil, err
@@ -148,5 +148,5 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Respons
 			return nil, err
 		}
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

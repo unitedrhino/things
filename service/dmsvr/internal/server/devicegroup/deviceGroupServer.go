@@ -41,25 +41,25 @@ func (s *DeviceGroupServer) GroupInfoRead(ctx context.Context, in *dm.WithID) (*
 }
 
 // 更新分组
-func (s *DeviceGroupServer) GroupInfoUpdate(ctx context.Context, in *dm.GroupInfo) (*dm.Response, error) {
+func (s *DeviceGroupServer) GroupInfoUpdate(ctx context.Context, in *dm.GroupInfo) (*dm.Empty, error) {
 	l := devicegrouplogic.NewGroupInfoUpdateLogic(ctx, s.svcCtx)
 	return l.GroupInfoUpdate(in)
 }
 
 // 删除分组
-func (s *DeviceGroupServer) GroupInfoDelete(ctx context.Context, in *dm.WithID) (*dm.Response, error) {
+func (s *DeviceGroupServer) GroupInfoDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
 	l := devicegrouplogic.NewGroupInfoDeleteLogic(ctx, s.svcCtx)
 	return l.GroupInfoDelete(in)
 }
 
 // 创建分组设备
-func (s *DeviceGroupServer) GroupDeviceMultiCreate(ctx context.Context, in *dm.GroupDeviceMultiSaveReq) (*dm.Response, error) {
+func (s *DeviceGroupServer) GroupDeviceMultiCreate(ctx context.Context, in *dm.GroupDeviceMultiSaveReq) (*dm.Empty, error) {
 	l := devicegrouplogic.NewGroupDeviceMultiCreateLogic(ctx, s.svcCtx)
 	return l.GroupDeviceMultiCreate(in)
 }
 
 // 更新分组设备
-func (s *DeviceGroupServer) GroupDeviceMultiUpdate(ctx context.Context, in *dm.GroupDeviceMultiSaveReq) (*dm.Response, error) {
+func (s *DeviceGroupServer) GroupDeviceMultiUpdate(ctx context.Context, in *dm.GroupDeviceMultiSaveReq) (*dm.Empty, error) {
 	l := devicegrouplogic.NewGroupDeviceMultiUpdateLogic(ctx, s.svcCtx)
 	return l.GroupDeviceMultiUpdate(in)
 }
@@ -71,7 +71,7 @@ func (s *DeviceGroupServer) GroupDeviceIndex(ctx context.Context, in *dm.GroupDe
 }
 
 // 删除分组设备
-func (s *DeviceGroupServer) GroupDeviceMultiDelete(ctx context.Context, in *dm.GroupDeviceMultiDeleteReq) (*dm.Response, error) {
+func (s *DeviceGroupServer) GroupDeviceMultiDelete(ctx context.Context, in *dm.GroupDeviceMultiDeleteReq) (*dm.Empty, error) {
 	l := devicegrouplogic.NewGroupDeviceMultiDeleteLogic(ctx, s.svcCtx)
 	return l.GroupDeviceMultiDelete(in)
 }

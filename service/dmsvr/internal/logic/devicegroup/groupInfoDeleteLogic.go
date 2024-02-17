@@ -26,11 +26,11 @@ func NewGroupInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 // 删除分组
-func (l *GroupInfoDeleteLogic) GroupInfoDelete(in *dm.WithID) (*dm.Response, error) {
+func (l *GroupInfoDeleteLogic) GroupInfoDelete(in *dm.WithID) (*dm.Empty, error) {
 	//删除两表数据
 	err := l.GiDB.Delete(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

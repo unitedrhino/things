@@ -29,7 +29,7 @@ func NewCancelOTAStrategyByJobLogic(ctx context.Context, svcCtx *svc.ServiceCont
 }
 
 // 取消动态升级策略
-func (l *CancelOTAStrategyByJobLogic) CancelOTAStrategyByJob(in *dm.JobReq) (*dm.Response, error) {
+func (l *CancelOTAStrategyByJobLogic) CancelOTAStrategyByJob(in *dm.JobReq) (*dm.Empty, error) {
 	otaJob, err := l.OjDB.FindOne(l.ctx, in.JobId)
 	if err != nil {
 		l.Errorf("%s.JobInfo.JobInfoRead failure err=%+v", utils.FuncName(), err)
@@ -41,5 +41,5 @@ func (l *CancelOTAStrategyByJobLogic) CancelOTAStrategyByJob(in *dm.JobReq) (*dm
 		l.Errorf("%s.JobInfo.JobInfoUpdate failure err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

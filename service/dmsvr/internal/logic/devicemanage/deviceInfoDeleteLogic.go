@@ -31,7 +31,7 @@ func NewDeviceInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 // 删除设备
-func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*dm.Response, error) {
+func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*dm.Empty, error) {
 	di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
@@ -70,5 +70,5 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		return nil, errors.System.AddDetail(err)
 	}
 	l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmDeviceInfoDelete, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

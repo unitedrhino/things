@@ -33,7 +33,7 @@ func NewRemoteConfigPushAllLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *RemoteConfigPushAllLogic) RemoteConfigPushAll(in *dm.RemoteConfigPushAllReq) (*dm.Response, error) {
+func (l *RemoteConfigPushAllLogic) RemoteConfigPushAll(in *dm.RemoteConfigPushAllReq) (*dm.Empty, error) {
 	//1. 根据产品id获取配置json
 	respConfig, err := l.PrcDB.FindOneByFilter(l.ctx, relationDB.RemoteConfigFilter{
 		ProductID: in.ProductID,
@@ -78,5 +78,5 @@ func (l *RemoteConfigPushAllLogic) RemoteConfigPushAll(in *dm.RemoteConfigPushAl
 		l.Errorf("RemoteConfigPushAll.DeviceRemoteConfigUpdate err=%+v", err)
 		return nil, errors.System.AddDetail(err)
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

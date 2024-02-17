@@ -27,7 +27,7 @@ func NewGroupDeviceMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceCont
 }
 
 // 更新分组设备
-func (l *GroupDeviceMultiUpdateLogic) GroupDeviceMultiUpdate(in *dm.GroupDeviceMultiSaveReq) (*dm.Response, error) {
+func (l *GroupDeviceMultiUpdateLogic) GroupDeviceMultiUpdate(in *dm.GroupDeviceMultiSaveReq) (*dm.Empty, error) {
 	t, err := relationDB.NewDeviceInfoRepo(l.ctx).CountByFilter(l.ctx, relationDB.DeviceFilter{Cores: logic.ToDeviceCores(in.List)})
 	if err != nil {
 		return nil, err
@@ -52,5 +52,5 @@ func (l *GroupDeviceMultiUpdateLogic) GroupDeviceMultiUpdate(in *dm.GroupDeviceM
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

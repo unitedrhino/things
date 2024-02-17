@@ -27,7 +27,7 @@ func NewRemoteConfigCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 	}
 }
 
-func (l *RemoteConfigCreateLogic) RemoteConfigCreate(in *dm.RemoteConfigCreateReq) (*dm.Response, error) {
+func (l *RemoteConfigCreateLogic) RemoteConfigCreate(in *dm.RemoteConfigCreateReq) (*dm.Empty, error) {
 	err := l.PrcDB.Insert(l.ctx, &relationDB.DmProductRemoteConfig{
 		ProductID: in.ProductID,
 		Content:   in.Content,
@@ -35,5 +35,5 @@ func (l *RemoteConfigCreateLogic) RemoteConfigCreate(in *dm.RemoteConfigCreateRe
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

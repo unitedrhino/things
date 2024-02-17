@@ -30,7 +30,7 @@ func NewProductCategoryUpdateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 // 更新产品
-func (l *ProductCategoryUpdateLogic) ProductCategoryUpdate(in *dm.ProductCategory) (*dm.Response, error) {
+func (l *ProductCategoryUpdateLogic) ProductCategoryUpdate(in *dm.ProductCategory) (*dm.Empty, error) {
 	old, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
@@ -57,5 +57,5 @@ func (l *ProductCategoryUpdateLogic) ProductCategoryUpdate(in *dm.ProductCategor
 	}
 
 	err = relationDB.NewProductCategoryRepo(l.ctx).Update(l.ctx, old)
-	return &dm.Response{}, err
+	return &dm.Empty{}, err
 }

@@ -24,7 +24,7 @@ func NewMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 }
 
 func (l *MultiDeleteLogic) MultiDelete(req *types.UserCollectDeviceSave) error {
-	_, err := l.svcCtx.UserDevice.UserCollectDeviceMultiDelete(l.ctx, ToUserCollectDeviceSavePb(req))
+	_, err := l.svcCtx.UserDevice.UserDeviceCollectMultiDelete(l.ctx, ToUserCollectDeviceSavePb(req))
 
 	return err
 }

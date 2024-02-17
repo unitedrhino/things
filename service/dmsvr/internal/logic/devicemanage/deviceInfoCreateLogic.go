@@ -62,7 +62,7 @@ func (l *DeviceInfoCreateLogic) CheckProduct(in *dm.DeviceInfo) (bool, error) {
 }
 
 // 新增设备
-func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Response, err error) {
+func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Empty, err error) {
 
 	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
 		if pid, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}}); err != nil {
@@ -142,7 +142,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Re
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }
 
 func (l *DeviceInfoCreateLogic) InitDevice(in *dm.DeviceInfo) error {

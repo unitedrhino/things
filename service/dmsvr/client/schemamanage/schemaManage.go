@@ -44,6 +44,7 @@ type (
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	Empty                              = dm.Empty
 	EventIndex                         = dm.EventIndex
 	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
@@ -173,7 +174,6 @@ type (
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
-	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
@@ -188,16 +188,22 @@ type (
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
+	UserDeviceCollectSave              = dm.UserDeviceCollectSave
+	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
+	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo                = dm.UserDeviceShareInfo
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
 
 	SchemaManage interface {
 		// 更新产品物模型
-		CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 新增产品
-		CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Response, error)
+		CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 删除产品
-		CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+		CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 		// 获取产品信息列表
 		CommonSchemaIndex(ctx context.Context, in *CommonSchemaIndexReq, opts ...grpc.CallOption) (*CommonSchemaIndexResp, error)
 	}
@@ -226,35 +232,35 @@ func NewDirectSchemaManage(svcCtx *svc.ServiceContext, svr dm.SchemaManageServer
 }
 
 // 更新产品物模型
-func (m *defaultSchemaManage) CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultSchemaManage) CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewSchemaManageClient(m.cli.Conn())
 	return client.CommonSchemaUpdate(ctx, in, opts...)
 }
 
 // 更新产品物模型
-func (d *directSchemaManage) CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directSchemaManage) CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.CommonSchemaUpdate(ctx, in)
 }
 
 // 新增产品
-func (m *defaultSchemaManage) CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultSchemaManage) CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewSchemaManageClient(m.cli.Conn())
 	return client.CommonSchemaCreate(ctx, in, opts...)
 }
 
 // 新增产品
-func (d *directSchemaManage) CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directSchemaManage) CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.CommonSchemaCreate(ctx, in)
 }
 
 // 删除产品
-func (m *defaultSchemaManage) CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultSchemaManage) CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewSchemaManageClient(m.cli.Conn())
 	return client.CommonSchemaDelete(ctx, in, opts...)
 }
 
 // 删除产品
-func (d *directSchemaManage) CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
+func (d *directSchemaManage) CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.CommonSchemaDelete(ctx, in)
 }
 

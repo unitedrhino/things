@@ -33,7 +33,7 @@ func NewProductInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 // 删除设备
-func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) (*dm.Response, error) {
+func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) (*dm.Empty, error) {
 	err := l.Check(in)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 		return nil, err
 	}
 
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }
 func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error {
 	pt, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)

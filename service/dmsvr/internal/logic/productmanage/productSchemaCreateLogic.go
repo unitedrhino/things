@@ -96,7 +96,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 }
 
 // 新增产品
-func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreateReq) (*dm.Response, error) {
+func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreateReq) (*dm.Empty, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	po, err := l.ruleCheck(in)
 	if err != nil {
@@ -118,5 +118,5 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 	if err != nil {
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

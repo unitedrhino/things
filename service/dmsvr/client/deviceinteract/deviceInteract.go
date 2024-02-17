@@ -44,6 +44,7 @@ type (
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	Empty                              = dm.Empty
 	EventIndex                         = dm.EventIndex
 	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
@@ -173,7 +174,6 @@ type (
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
-	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
@@ -188,6 +188,12 @@ type (
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
+	UserDeviceCollectSave              = dm.UserDeviceCollectSave
+	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
+	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo                = dm.UserDeviceShareInfo
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
 
@@ -197,7 +203,7 @@ type (
 		// 获取异步调用设备行为的结果
 		ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*ActionSendResp, error)
 		// 回复调用设备行为
-		ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Response, error)
+		ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Empty, error)
 		// 请求设备获取设备最新属性
 		PropertyGetReportSend(ctx context.Context, in *PropertyGetReportSendReq, opts ...grpc.CallOption) (*PropertyGetReportSendResp, error)
 		// 调用设备属性
@@ -256,13 +262,13 @@ func (d *directDeviceInteract) ActionRead(ctx context.Context, in *RespReadReq, 
 }
 
 // 回复调用设备行为
-func (m *defaultDeviceInteract) ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceInteract) ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
 	return client.ActionResp(ctx, in, opts...)
 }
 
 // 回复调用设备行为
-func (d *directDeviceInteract) ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceInteract) ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ActionResp(ctx, in)
 }
 

@@ -31,12 +31,12 @@ import (
 	"github.com/i-Things/things/service/dmsvr/client/protocolmanage"
 	"github.com/i-Things/things/service/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/service/dmsvr/client/schemamanage"
+	"github.com/i-Things/things/service/dmsvr/client/userdevice"
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
 	"github.com/i-Things/things/service/rulesvr/client/alarmcenter"
 	"github.com/i-Things/things/service/rulesvr/client/scenelinkage"
 	"github.com/i-Things/things/service/udsvr/client/ops"
 	"github.com/i-Things/things/service/udsvr/client/rule"
-	"github.com/i-Things/things/service/udsvr/client/userdevice"
 	"github.com/i-Things/things/service/udsvr/uddirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
@@ -142,6 +142,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			taskM = otaupgradetaskmanage.NewOTAUpgradeTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			otaModuleM = otamodulemanage.NewOTAModuleManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			schemaM = schemamanage.NewSchemaManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			UserDevice = userdevice.NewUserDevice(zrpc.MustNewClient(c.UdRpc.Conf))
+
 		} else { //直连模式
 			deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
 			deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
@@ -157,6 +159,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			otaJobM = dmdirect.NewOTAJobManage(c.DmRpc.RunProxy)
 			otaModuleM = dmdirect.NewOTAModuleManage(c.DmRpc.RunProxy)
 			taskM = dmdirect.NewOTAUpgradeTaskManage(c.DmRpc.RunProxy)
+			UserDevice = dmdirect.NewUserDevice(c.DmRpc.RunProxy)
+
 		}
 	}
 	if c.DgRpc.Enable {
@@ -171,11 +175,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		if c.UdRpc.Mode == conf.ClientModeGrpc {
 			Rule = rule.NewRule(zrpc.MustNewClient(c.UdRpc.Conf))
 			Ops = ops.NewOps(zrpc.MustNewClient(c.UdRpc.Conf))
-			UserDevice = userdevice.NewUserDevice(zrpc.MustNewClient(c.UdRpc.Conf))
 		} else {
 			Rule = uddirect.NewRule(c.UdRpc.RunProxy)
 			Ops = uddirect.NewOps(c.UdRpc.RunProxy)
-			UserDevice = uddirect.NewUserDevice(c.UdRpc.RunProxy)
 		}
 	}
 	if c.SysRpc.Enable {

@@ -20,16 +20,16 @@ type UserCollectDeviceRepo struct {
 	db *gorm.DB
 }
 
-func NewUserCollectDeviceRepo(in any) *UserCollectDeviceRepo {
+func NewUserDeviceCollectRepo(in any) *UserCollectDeviceRepo {
 	return &UserCollectDeviceRepo{db: stores.GetCommonConn(in)}
 }
 
-type UserCollectDeviceFilter struct {
+type UserDeviceCollectFilter struct {
 	Cores  []*devices.Core
 	UserID int64
 }
 
-func (p UserCollectDeviceRepo) fmtFilter(ctx context.Context, f UserCollectDeviceFilter) *gorm.DB {
+func (p UserCollectDeviceRepo) fmtFilter(ctx context.Context, f UserDeviceCollectFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.UserID != 0 {
 		db = db.Where("user_id = ?", f.UserID)
@@ -50,13 +50,13 @@ func (p UserCollectDeviceRepo) fmtFilter(ctx context.Context, f UserCollectDevic
 	return db
 }
 
-func (p UserCollectDeviceRepo) Insert(ctx context.Context, data *UdUserCollectDevice) error {
+func (p UserCollectDeviceRepo) Insert(ctx context.Context, data *DmUserCollectDevice) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p UserCollectDeviceRepo) FindOneByFilter(ctx context.Context, f UserCollectDeviceFilter) (*UdUserCollectDevice, error) {
-	var result UdUserCollectDevice
+func (p UserCollectDeviceRepo) FindOneByFilter(ctx context.Context, f UserDeviceCollectFilter) (*DmUserCollectDevice, error) {
+	var result DmUserCollectDevice
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -64,9 +64,9 @@ func (p UserCollectDeviceRepo) FindOneByFilter(ctx context.Context, f UserCollec
 	}
 	return &result, nil
 }
-func (p UserCollectDeviceRepo) FindByFilter(ctx context.Context, f UserCollectDeviceFilter, page *def.PageInfo) ([]*UdUserCollectDevice, error) {
-	var results []*UdUserCollectDevice
-	db := p.fmtFilter(ctx, f).Model(&UdUserCollectDevice{})
+func (p UserCollectDeviceRepo) FindByFilter(ctx context.Context, f UserDeviceCollectFilter, page *def.PageInfo) ([]*DmUserCollectDevice, error) {
+	var results []*DmUserCollectDevice
+	db := p.fmtFilter(ctx, f).Model(&DmUserCollectDevice{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -75,29 +75,29 @@ func (p UserCollectDeviceRepo) FindByFilter(ctx context.Context, f UserCollectDe
 	return results, nil
 }
 
-func (p UserCollectDeviceRepo) CountByFilter(ctx context.Context, f UserCollectDeviceFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&UdUserCollectDevice{})
+func (p UserCollectDeviceRepo) CountByFilter(ctx context.Context, f UserDeviceCollectFilter) (size int64, err error) {
+	db := p.fmtFilter(ctx, f).Model(&DmUserCollectDevice{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p UserCollectDeviceRepo) Update(ctx context.Context, data *UdUserCollectDevice) error {
+func (p UserCollectDeviceRepo) Update(ctx context.Context, data *DmUserCollectDevice) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (p UserCollectDeviceRepo) DeleteByFilter(ctx context.Context, f UserCollectDeviceFilter) error {
+func (p UserCollectDeviceRepo) DeleteByFilter(ctx context.Context, f UserDeviceCollectFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&UdUserCollectDevice{}).Error
+	err := db.Delete(&DmUserCollectDevice{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p UserCollectDeviceRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&UdUserCollectDevice{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&DmUserCollectDevice{}).Error
 	return stores.ErrFmt(err)
 }
-func (p UserCollectDeviceRepo) FindOne(ctx context.Context, id int64) (*UdUserCollectDevice, error) {
-	var result UdUserCollectDevice
+func (p UserCollectDeviceRepo) FindOne(ctx context.Context, id int64) (*DmUserCollectDevice, error) {
+	var result DmUserCollectDevice
 	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -106,7 +106,7 @@ func (p UserCollectDeviceRepo) FindOne(ctx context.Context, id int64) (*UdUserCo
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p UserCollectDeviceRepo) MultiInsert(ctx context.Context, data []*UdUserCollectDevice) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&UdUserCollectDevice{}).Create(data).Error
+func (p UserCollectDeviceRepo) MultiInsert(ctx context.Context, data []*DmUserCollectDevice) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmUserCollectDevice{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

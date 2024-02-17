@@ -30,7 +30,7 @@ func NewCommonSchemaDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 // 删除产品
-func (l *CommonSchemaDeleteLogic) CommonSchemaDelete(in *dm.WithID) (*dm.Response, error) {
+func (l *CommonSchemaDeleteLogic) CommonSchemaDelete(in *dm.WithID) (*dm.Empty, error) {
 	po, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{
 		ID: in.Id,
 	})
@@ -50,6 +50,6 @@ func (l *CommonSchemaDeleteLogic) CommonSchemaDelete(in *dm.WithID) (*dm.Respons
 	if err != nil {
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 
 }

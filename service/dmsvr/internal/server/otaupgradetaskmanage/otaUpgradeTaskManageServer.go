@@ -29,19 +29,19 @@ func (s *OTAUpgradeTaskManageServer) OtaTaskByJobIndex(ctx context.Context, in *
 }
 
 // 取消指定批次下的设备升级作业
-func (s *OTAUpgradeTaskManageServer) OtaTaskByJobCancel(ctx context.Context, in *dm.OTATaskByJobCancelReq) (*dm.Response, error) {
+func (s *OTAUpgradeTaskManageServer) OtaTaskByJobCancel(ctx context.Context, in *dm.OTATaskByJobCancelReq) (*dm.Empty, error) {
 	l := otaupgradetaskmanagelogic.NewOtaTaskByJobCancelLogic(ctx, s.svcCtx)
 	return l.OtaTaskByJobCancel(in)
 }
 
 // 取消指定OTA升级包下状态为待确认、待推送、已推送、升级中状态的设备升级作业
-func (s *OTAUpgradeTaskManageServer) OtaTaskByDeviceCancel(ctx context.Context, in *dm.OTATaskByDeviceCancelReq) (*dm.Response, error) {
+func (s *OTAUpgradeTaskManageServer) OtaTaskByDeviceCancel(ctx context.Context, in *dm.OTATaskByDeviceCancelReq) (*dm.Empty, error) {
 	l := otaupgradetaskmanagelogic.NewOtaTaskByDeviceCancelLogic(ctx, s.svcCtx)
 	return l.OtaTaskByDeviceCancel(in)
 }
 
 // 批量确认，处于待确认状态的设备升级作业
-func (s *OTAUpgradeTaskManageServer) OtaTaskConfirm(ctx context.Context, in *dm.OTATaskConfirmReq) (*dm.Response, error) {
+func (s *OTAUpgradeTaskManageServer) OtaTaskConfirm(ctx context.Context, in *dm.OTATaskConfirmReq) (*dm.Empty, error) {
 	l := otaupgradetaskmanagelogic.NewOtaTaskConfirmLogic(ctx, s.svcCtx)
 	return l.OtaTaskConfirm(in)
 }
@@ -53,7 +53,7 @@ func (s *OTAUpgradeTaskManageServer) OtaUnfinishedTaskByDeviceIndex(ctx context.
 }
 
 // 重新升级指定批次下升级失败或升级取消的设备升级作业
-func (s *OTAUpgradeTaskManageServer) OtaTaskReUpgrade(ctx context.Context, in *dm.OTATaskReUpgradeReq) (*dm.Response, error) {
+func (s *OTAUpgradeTaskManageServer) OtaTaskReUpgrade(ctx context.Context, in *dm.OTATaskReUpgradeReq) (*dm.Empty, error) {
 	l := otaupgradetaskmanagelogic.NewOtaTaskReUpgradeLogic(ctx, s.svcCtx)
 	return l.OtaTaskReUpgrade(in)
 }

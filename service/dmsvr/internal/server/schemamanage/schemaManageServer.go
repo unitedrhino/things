@@ -23,19 +23,19 @@ func NewSchemaManageServer(svcCtx *svc.ServiceContext) *SchemaManageServer {
 }
 
 // 更新产品物模型
-func (s *SchemaManageServer) CommonSchemaUpdate(ctx context.Context, in *dm.CommonSchemaUpdateReq) (*dm.Response, error) {
+func (s *SchemaManageServer) CommonSchemaUpdate(ctx context.Context, in *dm.CommonSchemaUpdateReq) (*dm.Empty, error) {
 	l := schemamanagelogic.NewCommonSchemaUpdateLogic(ctx, s.svcCtx)
 	return l.CommonSchemaUpdate(in)
 }
 
 // 新增产品
-func (s *SchemaManageServer) CommonSchemaCreate(ctx context.Context, in *dm.CommonSchemaCreateReq) (*dm.Response, error) {
+func (s *SchemaManageServer) CommonSchemaCreate(ctx context.Context, in *dm.CommonSchemaCreateReq) (*dm.Empty, error) {
 	l := schemamanagelogic.NewCommonSchemaCreateLogic(ctx, s.svcCtx)
 	return l.CommonSchemaCreate(in)
 }
 
 // 删除产品
-func (s *SchemaManageServer) CommonSchemaDelete(ctx context.Context, in *dm.WithID) (*dm.Response, error) {
+func (s *SchemaManageServer) CommonSchemaDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
 	l := schemamanagelogic.NewCommonSchemaDeleteLogic(ctx, s.svcCtx)
 	return l.CommonSchemaDelete(in)
 }

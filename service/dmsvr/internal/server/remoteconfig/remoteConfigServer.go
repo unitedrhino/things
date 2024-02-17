@@ -22,7 +22,7 @@ func NewRemoteConfigServer(svcCtx *svc.ServiceContext) *RemoteConfigServer {
 	}
 }
 
-func (s *RemoteConfigServer) RemoteConfigCreate(ctx context.Context, in *dm.RemoteConfigCreateReq) (*dm.Response, error) {
+func (s *RemoteConfigServer) RemoteConfigCreate(ctx context.Context, in *dm.RemoteConfigCreateReq) (*dm.Empty, error) {
 	l := remoteconfiglogic.NewRemoteConfigCreateLogic(ctx, s.svcCtx)
 	return l.RemoteConfigCreate(in)
 }
@@ -32,7 +32,7 @@ func (s *RemoteConfigServer) RemoteConfigIndex(ctx context.Context, in *dm.Remot
 	return l.RemoteConfigIndex(in)
 }
 
-func (s *RemoteConfigServer) RemoteConfigPushAll(ctx context.Context, in *dm.RemoteConfigPushAllReq) (*dm.Response, error) {
+func (s *RemoteConfigServer) RemoteConfigPushAll(ctx context.Context, in *dm.RemoteConfigPushAllReq) (*dm.Empty, error) {
 	l := remoteconfiglogic.NewRemoteConfigPushAllLogic(ctx, s.svcCtx)
 	return l.RemoteConfigPushAll(in)
 }

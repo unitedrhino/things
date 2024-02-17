@@ -29,7 +29,7 @@ func NewOtaModuleUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *O
 }
 
 // 修改OTA模块别名、描述
-func (l *OtaModuleUpdateLogic) OtaModuleUpdate(in *dm.OTAModuleReq) (*dm.Response, error) {
+func (l *OtaModuleUpdateLogic) OtaModuleUpdate(in *dm.OTAModuleReq) (*dm.Empty, error) {
 	var otaModule relationDB.DmOtaModule
 	_ = copier.Copy(&otaModule, &in)
 	err := l.OmDB.Update(l.ctx, &otaModule)
@@ -37,5 +37,5 @@ func (l *OtaModuleUpdateLogic) OtaModuleUpdate(in *dm.OTAModuleReq) (*dm.Respons
 		l.Errorf("%s.ModuleInfo.OtaModuleInfo failure err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

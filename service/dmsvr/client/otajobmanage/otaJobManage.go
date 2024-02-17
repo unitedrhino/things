@@ -44,6 +44,7 @@ type (
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	Empty                              = dm.Empty
 	EventIndex                         = dm.EventIndex
 	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
@@ -173,7 +174,6 @@ type (
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
-	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
@@ -188,6 +188,12 @@ type (
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
+	UserDeviceCollectSave              = dm.UserDeviceCollectSave
+	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
+	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo                = dm.UserDeviceShareInfo
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
 
@@ -205,7 +211,7 @@ type (
 		// 查询指定升级批次的详情
 		OtaJobRead(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*OtaJobInfo, error)
 		// 取消动态升级策略
-		CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Response, error)
+		CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultOTAJobManage struct {
@@ -298,12 +304,12 @@ func (d *directOTAJobManage) OtaJobRead(ctx context.Context, in *JobReq, opts ..
 }
 
 // 取消动态升级策略
-func (m *defaultOTAJobManage) CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAJobManage) CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewOTAJobManageClient(m.cli.Conn())
 	return client.CancelOTAStrategyByJob(ctx, in, opts...)
 }
 
 // 取消动态升级策略
-func (d *directOTAJobManage) CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directOTAJobManage) CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.CancelOTAStrategyByJob(ctx, in)
 }

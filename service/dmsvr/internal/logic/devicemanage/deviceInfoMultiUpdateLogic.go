@@ -29,10 +29,10 @@ func NewDeviceInfoMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 // 批量更新设备状态
-func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMultiUpdateReq) (*dm.Response, error) {
+func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMultiUpdateReq) (*dm.Empty, error) {
 	if in.AreaID == def.RootNode {
 		return nil, errors.Parameter.AddMsgf("设备不能在root节点的区域下")
 	}
 	err := relationDB.NewDeviceInfoRepo(l.ctx).MultiUpdate(l.ctx, logic.ToDeviceCores(in.Devices), &relationDB.DmDeviceInfo{AreaID: stores.AreaID(in.AreaID)})
-	return &dm.Response{}, err
+	return &dm.Empty{}, err
 }

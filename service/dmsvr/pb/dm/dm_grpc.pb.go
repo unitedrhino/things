@@ -41,25 +41,25 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DeviceManageClient interface {
 	// 鉴定是否是root账号(提供给mqtt broker)
-	RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
+	RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Empty, error)
 	// 新增设备
-	DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
+	DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 更新设备
-	DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
+	DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 删除设备
-	DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取设备信息列表
 	DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
 	// 批量更新设备状态
-	DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 	// 绑定网关下子设备设备
-	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
+	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取绑定信息的设备信息列表
 	DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
 	// 删除网关下子设备
-	DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 设备计数
 	DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error)
 	// 设备类型
@@ -75,8 +75,8 @@ func NewDeviceManageClient(cc grpc.ClientConnInterface) DeviceManageClient {
 	return &deviceManageClient{cc}
 }
 
-func (c *deviceManageClient) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceManageClient) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_RootCheck_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -84,8 +84,8 @@ func (c *deviceManageClient) RootCheck(ctx context.Context, in *RootCheckReq, op
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceManageClient) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -93,8 +93,8 @@ func (c *deviceManageClient) DeviceInfoCreate(ctx context.Context, in *DeviceInf
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceManageClient) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -102,8 +102,8 @@ func (c *deviceManageClient) DeviceInfoUpdate(ctx context.Context, in *DeviceInf
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceManageClient) DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -120,8 +120,8 @@ func (c *deviceManageClient) DeviceInfoIndex(ctx context.Context, in *DeviceInfo
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceManageClient) DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -138,8 +138,8 @@ func (c *deviceManageClient) DeviceInfoRead(ctx context.Context, in *DeviceInfoR
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceManageClient) DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceGatewayMultiCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -156,8 +156,8 @@ func (c *deviceManageClient) DeviceGatewayIndex(ctx context.Context, in *DeviceG
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceManageClient) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceGatewayMultiDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -197,25 +197,25 @@ func (c *deviceManageClient) DeviceCount(ctx context.Context, in *DeviceCountReq
 // for forward compatibility
 type DeviceManageServer interface {
 	// 鉴定是否是root账号(提供给mqtt broker)
-	RootCheck(context.Context, *RootCheckReq) (*Response, error)
+	RootCheck(context.Context, *RootCheckReq) (*Empty, error)
 	// 新增设备
-	DeviceInfoCreate(context.Context, *DeviceInfo) (*Response, error)
+	DeviceInfoCreate(context.Context, *DeviceInfo) (*Empty, error)
 	// 更新设备
-	DeviceInfoUpdate(context.Context, *DeviceInfo) (*Response, error)
+	DeviceInfoUpdate(context.Context, *DeviceInfo) (*Empty, error)
 	// 删除设备
-	DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Response, error)
+	DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Empty, error)
 	// 获取设备信息列表
 	DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error)
 	// 批量更新设备状态
-	DeviceInfoMultiUpdate(context.Context, *DeviceInfoMultiUpdateReq) (*Response, error)
+	DeviceInfoMultiUpdate(context.Context, *DeviceInfoMultiUpdateReq) (*Empty, error)
 	// 获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
 	// 绑定网关下子设备设备
-	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Response, error)
+	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error)
 	// 获取绑定信息的设备信息列表
 	DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error)
 	// 删除网关下子设备
-	DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Response, error)
+	DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Empty, error)
 	// 设备计数
 	DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCount, error)
 	// 设备类型
@@ -228,34 +228,34 @@ type DeviceManageServer interface {
 type UnimplementedDeviceManageServer struct {
 }
 
-func (UnimplementedDeviceManageServer) RootCheck(context.Context, *RootCheckReq) (*Response, error) {
+func (UnimplementedDeviceManageServer) RootCheck(context.Context, *RootCheckReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RootCheck not implemented")
 }
-func (UnimplementedDeviceManageServer) DeviceInfoCreate(context.Context, *DeviceInfo) (*Response, error) {
+func (UnimplementedDeviceManageServer) DeviceInfoCreate(context.Context, *DeviceInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoCreate not implemented")
 }
-func (UnimplementedDeviceManageServer) DeviceInfoUpdate(context.Context, *DeviceInfo) (*Response, error) {
+func (UnimplementedDeviceManageServer) DeviceInfoUpdate(context.Context, *DeviceInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoUpdate not implemented")
 }
-func (UnimplementedDeviceManageServer) DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Response, error) {
+func (UnimplementedDeviceManageServer) DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoDelete not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceInfoIndex(context.Context, *DeviceInfoIndexReq) (*DeviceInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoIndex not implemented")
 }
-func (UnimplementedDeviceManageServer) DeviceInfoMultiUpdate(context.Context, *DeviceInfoMultiUpdateReq) (*Response, error) {
+func (UnimplementedDeviceManageServer) DeviceInfoMultiUpdate(context.Context, *DeviceInfoMultiUpdateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoMultiUpdate not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoRead not implemented")
 }
-func (UnimplementedDeviceManageServer) DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Response, error) {
+func (UnimplementedDeviceManageServer) DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiCreate not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayIndex not implemented")
 }
-func (UnimplementedDeviceManageServer) DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Response, error) {
+func (UnimplementedDeviceManageServer) DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiDelete not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCount, error) {
@@ -604,36 +604,36 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductManageClient interface {
 	// 新增产品
-	ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
+	ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 更新产品
-	ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error)
+	ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 删除产品
-	ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取产品信息列表
 	ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
 	// 获取产品信息详情
 	ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
 	// 更新产品物模型
-	ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 新增产品
-	ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error)
+	ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 删除产品
-	ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取产品信息列表
 	ProductSchemaIndex(ctx context.Context, in *ProductSchemaIndexReq, opts ...grpc.CallOption) (*ProductSchemaIndexResp, error)
 	// 删除产品
-	ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error)
+	ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取产品信息列表
 	ProductSchemaTslRead(ctx context.Context, in *ProductSchemaTslReadReq, opts ...grpc.CallOption) (*ProductSchemaTslReadResp, error)
 	// 脚本管理
 	ProductCustomRead(ctx context.Context, in *ProductCustomReadReq, opts ...grpc.CallOption) (*ProductCustom, error)
-	ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error)
+	ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Empty, error)
 	// 新增产品
 	ProductCategoryCreate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*WithID, error)
 	// 更新产品
-	ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error)
+	ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Empty, error)
 	// 删除产品
-	ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+	ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	// 获取产品信息列表
 	ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error)
 	// 获取产品信息详情
@@ -648,8 +648,8 @@ func NewProductManageClient(cc grpc.ClientConnInterface) ProductManageClient {
 	return &productManageClient{cc}
 }
 
-func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -657,8 +657,8 @@ func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *Product
 	return out, nil
 }
 
-func (c *productManageClient) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -666,8 +666,8 @@ func (c *productManageClient) ProductInfoUpdate(ctx context.Context, in *Product
 	return out, nil
 }
 
-func (c *productManageClient) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -693,8 +693,8 @@ func (c *productManageClient) ProductInfoRead(ctx context.Context, in *ProductIn
 	return out, nil
 }
 
-func (c *productManageClient) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductSchemaUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -702,8 +702,8 @@ func (c *productManageClient) ProductSchemaUpdate(ctx context.Context, in *Produ
 	return out, nil
 }
 
-func (c *productManageClient) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductSchemaCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -711,8 +711,8 @@ func (c *productManageClient) ProductSchemaCreate(ctx context.Context, in *Produ
 	return out, nil
 }
 
-func (c *productManageClient) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductSchemaDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -729,8 +729,8 @@ func (c *productManageClient) ProductSchemaIndex(ctx context.Context, in *Produc
 	return out, nil
 }
 
-func (c *productManageClient) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductSchemaTslImport(ctx context.Context, in *ProductSchemaTslImportReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductSchemaTslImport_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -756,8 +756,8 @@ func (c *productManageClient) ProductCustomRead(ctx context.Context, in *Product
 	return out, nil
 }
 
-func (c *productManageClient) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductCustomUpdate(ctx context.Context, in *ProductCustom, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductCustomUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -774,8 +774,8 @@ func (c *productManageClient) ProductCategoryCreate(ctx context.Context, in *Pro
 	return out, nil
 }
 
-func (c *productManageClient) ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductCategoryUpdate(ctx context.Context, in *ProductCategory, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -783,8 +783,8 @@ func (c *productManageClient) ProductCategoryUpdate(ctx context.Context, in *Pro
 	return out, nil
 }
 
-func (c *productManageClient) ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productManageClient) ProductCategoryDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -815,36 +815,36 @@ func (c *productManageClient) ProductCategoryRead(ctx context.Context, in *WithI
 // for forward compatibility
 type ProductManageServer interface {
 	// 新增产品
-	ProductInfoCreate(context.Context, *ProductInfo) (*Response, error)
+	ProductInfoCreate(context.Context, *ProductInfo) (*Empty, error)
 	// 更新产品
-	ProductInfoUpdate(context.Context, *ProductInfo) (*Response, error)
+	ProductInfoUpdate(context.Context, *ProductInfo) (*Empty, error)
 	// 删除产品
-	ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Response, error)
+	ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Empty, error)
 	// 获取产品信息列表
 	ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error)
 	// 获取产品信息详情
 	ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error)
 	// 更新产品物模型
-	ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error)
+	ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Empty, error)
 	// 新增产品
-	ProductSchemaCreate(context.Context, *ProductSchemaCreateReq) (*Response, error)
+	ProductSchemaCreate(context.Context, *ProductSchemaCreateReq) (*Empty, error)
 	// 删除产品
-	ProductSchemaDelete(context.Context, *ProductSchemaDeleteReq) (*Response, error)
+	ProductSchemaDelete(context.Context, *ProductSchemaDeleteReq) (*Empty, error)
 	// 获取产品信息列表
 	ProductSchemaIndex(context.Context, *ProductSchemaIndexReq) (*ProductSchemaIndexResp, error)
 	// 删除产品
-	ProductSchemaTslImport(context.Context, *ProductSchemaTslImportReq) (*Response, error)
+	ProductSchemaTslImport(context.Context, *ProductSchemaTslImportReq) (*Empty, error)
 	// 获取产品信息列表
 	ProductSchemaTslRead(context.Context, *ProductSchemaTslReadReq) (*ProductSchemaTslReadResp, error)
 	// 脚本管理
 	ProductCustomRead(context.Context, *ProductCustomReadReq) (*ProductCustom, error)
-	ProductCustomUpdate(context.Context, *ProductCustom) (*Response, error)
+	ProductCustomUpdate(context.Context, *ProductCustom) (*Empty, error)
 	// 新增产品
 	ProductCategoryCreate(context.Context, *ProductCategory) (*WithID, error)
 	// 更新产品
-	ProductCategoryUpdate(context.Context, *ProductCategory) (*Response, error)
+	ProductCategoryUpdate(context.Context, *ProductCategory) (*Empty, error)
 	// 删除产品
-	ProductCategoryDelete(context.Context, *WithID) (*Response, error)
+	ProductCategoryDelete(context.Context, *WithID) (*Empty, error)
 	// 获取产品信息列表
 	ProductCategoryIndex(context.Context, *ProductCategoryIndexReq) (*ProductCategoryIndexResp, error)
 	// 获取产品信息详情
@@ -856,13 +856,13 @@ type ProductManageServer interface {
 type UnimplementedProductManageServer struct {
 }
 
-func (UnimplementedProductManageServer) ProductInfoCreate(context.Context, *ProductInfo) (*Response, error) {
+func (UnimplementedProductManageServer) ProductInfoCreate(context.Context, *ProductInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoCreate not implemented")
 }
-func (UnimplementedProductManageServer) ProductInfoUpdate(context.Context, *ProductInfo) (*Response, error) {
+func (UnimplementedProductManageServer) ProductInfoUpdate(context.Context, *ProductInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoUpdate not implemented")
 }
-func (UnimplementedProductManageServer) ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Response, error) {
+func (UnimplementedProductManageServer) ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoDelete not implemented")
 }
 func (UnimplementedProductManageServer) ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error) {
@@ -871,19 +871,19 @@ func (UnimplementedProductManageServer) ProductInfoIndex(context.Context, *Produ
 func (UnimplementedProductManageServer) ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoRead not implemented")
 }
-func (UnimplementedProductManageServer) ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Response, error) {
+func (UnimplementedProductManageServer) ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaUpdate not implemented")
 }
-func (UnimplementedProductManageServer) ProductSchemaCreate(context.Context, *ProductSchemaCreateReq) (*Response, error) {
+func (UnimplementedProductManageServer) ProductSchemaCreate(context.Context, *ProductSchemaCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaCreate not implemented")
 }
-func (UnimplementedProductManageServer) ProductSchemaDelete(context.Context, *ProductSchemaDeleteReq) (*Response, error) {
+func (UnimplementedProductManageServer) ProductSchemaDelete(context.Context, *ProductSchemaDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaDelete not implemented")
 }
 func (UnimplementedProductManageServer) ProductSchemaIndex(context.Context, *ProductSchemaIndexReq) (*ProductSchemaIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaIndex not implemented")
 }
-func (UnimplementedProductManageServer) ProductSchemaTslImport(context.Context, *ProductSchemaTslImportReq) (*Response, error) {
+func (UnimplementedProductManageServer) ProductSchemaTslImport(context.Context, *ProductSchemaTslImportReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaTslImport not implemented")
 }
 func (UnimplementedProductManageServer) ProductSchemaTslRead(context.Context, *ProductSchemaTslReadReq) (*ProductSchemaTslReadResp, error) {
@@ -892,16 +892,16 @@ func (UnimplementedProductManageServer) ProductSchemaTslRead(context.Context, *P
 func (UnimplementedProductManageServer) ProductCustomRead(context.Context, *ProductCustomReadReq) (*ProductCustom, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCustomRead not implemented")
 }
-func (UnimplementedProductManageServer) ProductCustomUpdate(context.Context, *ProductCustom) (*Response, error) {
+func (UnimplementedProductManageServer) ProductCustomUpdate(context.Context, *ProductCustom) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCustomUpdate not implemented")
 }
 func (UnimplementedProductManageServer) ProductCategoryCreate(context.Context, *ProductCategory) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryCreate not implemented")
 }
-func (UnimplementedProductManageServer) ProductCategoryUpdate(context.Context, *ProductCategory) (*Response, error) {
+func (UnimplementedProductManageServer) ProductCategoryUpdate(context.Context, *ProductCategory) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryUpdate not implemented")
 }
-func (UnimplementedProductManageServer) ProductCategoryDelete(context.Context, *WithID) (*Response, error) {
+func (UnimplementedProductManageServer) ProductCategoryDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryDelete not implemented")
 }
 func (UnimplementedProductManageServer) ProductCategoryIndex(context.Context, *ProductCategoryIndexReq) (*ProductCategoryIndexResp, error) {
@@ -1343,11 +1343,11 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SchemaManageClient interface {
 	// 更新产品物模型
-	CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error)
+	CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 新增产品
-	CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Response, error)
+	CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 删除产品
-	CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+	CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	// 获取产品信息列表
 	CommonSchemaIndex(ctx context.Context, in *CommonSchemaIndexReq, opts ...grpc.CallOption) (*CommonSchemaIndexResp, error)
 }
@@ -1360,8 +1360,8 @@ func NewSchemaManageClient(cc grpc.ClientConnInterface) SchemaManageClient {
 	return &schemaManageClient{cc}
 }
 
-func (c *schemaManageClient) CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *schemaManageClient) CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1369,8 +1369,8 @@ func (c *schemaManageClient) CommonSchemaUpdate(ctx context.Context, in *CommonS
 	return out, nil
 }
 
-func (c *schemaManageClient) CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *schemaManageClient) CommonSchemaCreate(ctx context.Context, in *CommonSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1378,8 +1378,8 @@ func (c *schemaManageClient) CommonSchemaCreate(ctx context.Context, in *CommonS
 	return out, nil
 }
 
-func (c *schemaManageClient) CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *schemaManageClient) CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1401,11 +1401,11 @@ func (c *schemaManageClient) CommonSchemaIndex(ctx context.Context, in *CommonSc
 // for forward compatibility
 type SchemaManageServer interface {
 	// 更新产品物模型
-	CommonSchemaUpdate(context.Context, *CommonSchemaUpdateReq) (*Response, error)
+	CommonSchemaUpdate(context.Context, *CommonSchemaUpdateReq) (*Empty, error)
 	// 新增产品
-	CommonSchemaCreate(context.Context, *CommonSchemaCreateReq) (*Response, error)
+	CommonSchemaCreate(context.Context, *CommonSchemaCreateReq) (*Empty, error)
 	// 删除产品
-	CommonSchemaDelete(context.Context, *WithID) (*Response, error)
+	CommonSchemaDelete(context.Context, *WithID) (*Empty, error)
 	// 获取产品信息列表
 	CommonSchemaIndex(context.Context, *CommonSchemaIndexReq) (*CommonSchemaIndexResp, error)
 	mustEmbedUnimplementedSchemaManageServer()
@@ -1415,13 +1415,13 @@ type SchemaManageServer interface {
 type UnimplementedSchemaManageServer struct {
 }
 
-func (UnimplementedSchemaManageServer) CommonSchemaUpdate(context.Context, *CommonSchemaUpdateReq) (*Response, error) {
+func (UnimplementedSchemaManageServer) CommonSchemaUpdate(context.Context, *CommonSchemaUpdateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaUpdate not implemented")
 }
-func (UnimplementedSchemaManageServer) CommonSchemaCreate(context.Context, *CommonSchemaCreateReq) (*Response, error) {
+func (UnimplementedSchemaManageServer) CommonSchemaCreate(context.Context, *CommonSchemaCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaCreate not implemented")
 }
-func (UnimplementedSchemaManageServer) CommonSchemaDelete(context.Context, *WithID) (*Response, error) {
+func (UnimplementedSchemaManageServer) CommonSchemaDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaDelete not implemented")
 }
 func (UnimplementedSchemaManageServer) CommonSchemaIndex(context.Context, *CommonSchemaIndexReq) (*CommonSchemaIndexResp, error) {
@@ -1655,17 +1655,17 @@ type DeviceGroupClient interface {
 	// 获取分组信息详情
 	GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error)
 	// 更新分组
-	GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Response, error)
+	GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 删除分组
-	GroupInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error)
+	GroupInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	// 创建分组设备
-	GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error)
+	GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	// 更新分组设备
-	GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error)
+	GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取分组设备信息列表
 	GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
 	// 删除分组设备
-	GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type deviceGroupClient struct {
@@ -1703,8 +1703,8 @@ func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *WithID, opts 
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1712,8 +1712,8 @@ func (c *deviceGroupClient) GroupInfoUpdate(ctx context.Context, in *GroupInfo, 
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceGroupClient) GroupInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1721,8 +1721,8 @@ func (c *deviceGroupClient) GroupInfoDelete(ctx context.Context, in *WithID, opt
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceGroupClient) GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupDeviceMultiCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1730,8 +1730,8 @@ func (c *deviceGroupClient) GroupDeviceMultiCreate(ctx context.Context, in *Grou
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceGroupClient) GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupDeviceMultiUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1748,8 +1748,8 @@ func (c *deviceGroupClient) GroupDeviceIndex(ctx context.Context, in *GroupDevic
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceGroupClient) GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupDeviceMultiDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1768,17 +1768,17 @@ type DeviceGroupServer interface {
 	// 获取分组信息详情
 	GroupInfoRead(context.Context, *WithID) (*GroupInfo, error)
 	// 更新分组
-	GroupInfoUpdate(context.Context, *GroupInfo) (*Response, error)
+	GroupInfoUpdate(context.Context, *GroupInfo) (*Empty, error)
 	// 删除分组
-	GroupInfoDelete(context.Context, *WithID) (*Response, error)
+	GroupInfoDelete(context.Context, *WithID) (*Empty, error)
 	// 创建分组设备
-	GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiSaveReq) (*Response, error)
+	GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiSaveReq) (*Empty, error)
 	// 更新分组设备
-	GroupDeviceMultiUpdate(context.Context, *GroupDeviceMultiSaveReq) (*Response, error)
+	GroupDeviceMultiUpdate(context.Context, *GroupDeviceMultiSaveReq) (*Empty, error)
 	// 获取分组设备信息列表
 	GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error)
 	// 删除分组设备
-	GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Response, error)
+	GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Empty, error)
 	mustEmbedUnimplementedDeviceGroupServer()
 }
 
@@ -1795,22 +1795,22 @@ func (UnimplementedDeviceGroupServer) GroupInfoIndex(context.Context, *GroupInfo
 func (UnimplementedDeviceGroupServer) GroupInfoRead(context.Context, *WithID) (*GroupInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoRead not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInfo) (*Response, error) {
+func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoUpdate not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupInfoDelete(context.Context, *WithID) (*Response, error) {
+func (UnimplementedDeviceGroupServer) GroupInfoDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoDelete not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiSaveReq) (*Response, error) {
+func (UnimplementedDeviceGroupServer) GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiSaveReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceMultiCreate not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupDeviceMultiUpdate(context.Context, *GroupDeviceMultiSaveReq) (*Response, error) {
+func (UnimplementedDeviceGroupServer) GroupDeviceMultiUpdate(context.Context, *GroupDeviceMultiSaveReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceMultiUpdate not implemented")
 }
 func (UnimplementedDeviceGroupServer) GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceIndex not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Response, error) {
+func (UnimplementedDeviceGroupServer) GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceMultiDelete not implemented")
 }
 func (UnimplementedDeviceGroupServer) mustEmbedUnimplementedDeviceGroupServer() {}
@@ -2047,9 +2047,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RemoteConfigClient interface {
-	RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error)
+	RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	RemoteConfigIndex(ctx context.Context, in *RemoteConfigIndexReq, opts ...grpc.CallOption) (*RemoteConfigIndexResp, error)
-	RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error)
+	RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Empty, error)
 	RemoteConfigLastRead(ctx context.Context, in *RemoteConfigLastReadReq, opts ...grpc.CallOption) (*RemoteConfigLastReadResp, error)
 }
 
@@ -2061,8 +2061,8 @@ func NewRemoteConfigClient(cc grpc.ClientConnInterface) RemoteConfigClient {
 	return &remoteConfigClient{cc}
 }
 
-func (c *remoteConfigClient) RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *remoteConfigClient) RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, RemoteConfig_RemoteConfigCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2079,8 +2079,8 @@ func (c *remoteConfigClient) RemoteConfigIndex(ctx context.Context, in *RemoteCo
 	return out, nil
 }
 
-func (c *remoteConfigClient) RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *remoteConfigClient) RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, RemoteConfig_RemoteConfigPushAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2101,9 +2101,9 @@ func (c *remoteConfigClient) RemoteConfigLastRead(ctx context.Context, in *Remot
 // All implementations must embed UnimplementedRemoteConfigServer
 // for forward compatibility
 type RemoteConfigServer interface {
-	RemoteConfigCreate(context.Context, *RemoteConfigCreateReq) (*Response, error)
+	RemoteConfigCreate(context.Context, *RemoteConfigCreateReq) (*Empty, error)
 	RemoteConfigIndex(context.Context, *RemoteConfigIndexReq) (*RemoteConfigIndexResp, error)
-	RemoteConfigPushAll(context.Context, *RemoteConfigPushAllReq) (*Response, error)
+	RemoteConfigPushAll(context.Context, *RemoteConfigPushAllReq) (*Empty, error)
 	RemoteConfigLastRead(context.Context, *RemoteConfigLastReadReq) (*RemoteConfigLastReadResp, error)
 	mustEmbedUnimplementedRemoteConfigServer()
 }
@@ -2112,13 +2112,13 @@ type RemoteConfigServer interface {
 type UnimplementedRemoteConfigServer struct {
 }
 
-func (UnimplementedRemoteConfigServer) RemoteConfigCreate(context.Context, *RemoteConfigCreateReq) (*Response, error) {
+func (UnimplementedRemoteConfigServer) RemoteConfigCreate(context.Context, *RemoteConfigCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoteConfigCreate not implemented")
 }
 func (UnimplementedRemoteConfigServer) RemoteConfigIndex(context.Context, *RemoteConfigIndexReq) (*RemoteConfigIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoteConfigIndex not implemented")
 }
-func (UnimplementedRemoteConfigServer) RemoteConfigPushAll(context.Context, *RemoteConfigPushAllReq) (*Response, error) {
+func (UnimplementedRemoteConfigServer) RemoteConfigPushAll(context.Context, *RemoteConfigPushAllReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoteConfigPushAll not implemented")
 }
 func (UnimplementedRemoteConfigServer) RemoteConfigLastRead(context.Context, *RemoteConfigLastReadReq) (*RemoteConfigLastReadResp, error) {
@@ -2583,7 +2583,7 @@ type DeviceInteractClient interface {
 	// 获取异步调用设备行为的结果
 	ActionRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*ActionSendResp, error)
 	// 回复调用设备行为
-	ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Response, error)
+	ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Empty, error)
 	// 请求设备获取设备最新属性
 	PropertyGetReportSend(ctx context.Context, in *PropertyGetReportSendReq, opts ...grpc.CallOption) (*PropertyGetReportSendResp, error)
 	// 调用设备属性
@@ -2622,8 +2622,8 @@ func (c *deviceInteractClient) ActionRead(ctx context.Context, in *RespReadReq, 
 	return out, nil
 }
 
-func (c *deviceInteractClient) ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *deviceInteractClient) ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceInteract_ActionResp_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2685,7 +2685,7 @@ type DeviceInteractServer interface {
 	// 获取异步调用设备行为的结果
 	ActionRead(context.Context, *RespReadReq) (*ActionSendResp, error)
 	// 回复调用设备行为
-	ActionResp(context.Context, *ActionRespReq) (*Response, error)
+	ActionResp(context.Context, *ActionRespReq) (*Empty, error)
 	// 请求设备获取设备最新属性
 	PropertyGetReportSend(context.Context, *PropertyGetReportSendReq) (*PropertyGetReportSendResp, error)
 	// 调用设备属性
@@ -2709,7 +2709,7 @@ func (UnimplementedDeviceInteractServer) ActionSend(context.Context, *ActionSend
 func (UnimplementedDeviceInteractServer) ActionRead(context.Context, *RespReadReq) (*ActionSendResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ActionRead not implemented")
 }
-func (UnimplementedDeviceInteractServer) ActionResp(context.Context, *ActionRespReq) (*Response, error) {
+func (UnimplementedDeviceInteractServer) ActionResp(context.Context, *ActionRespReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ActionResp not implemented")
 }
 func (UnimplementedDeviceInteractServer) PropertyGetReportSend(context.Context, *PropertyGetReportSendReq) (*PropertyGetReportSendResp, error) {
@@ -3725,6 +3725,328 @@ var OtaTaskManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
+	UserDevice_UserDeviceCollectMultiCreate_FullMethodName = "/dm.userDevice/userDeviceCollectMultiCreate"
+	UserDevice_UserDeviceCollectMultiDelete_FullMethodName = "/dm.userDevice/userDeviceCollectMultiDelete"
+	UserDevice_UserDeviceCollectIndex_FullMethodName       = "/dm.userDevice/userDeviceCollectIndex"
+	UserDevice_UserDeviceShareCreate_FullMethodName        = "/dm.userDevice/userDeviceShareCreate"
+	UserDevice_UserDeviceShareDelete_FullMethodName        = "/dm.userDevice/userDeviceShareDelete"
+	UserDevice_UserDeviceShareIndex_FullMethodName         = "/dm.userDevice/userDeviceShareIndex"
+	UserDevice_UserDeviceShareRead_FullMethodName          = "/dm.userDevice/userDeviceShareRead"
+)
+
+// UserDeviceClient is the client API for UserDevice service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type UserDeviceClient interface {
+	// 用户收藏的设备
+	UserDeviceCollectMultiCreate(ctx context.Context, in *UserDeviceCollectSave, opts ...grpc.CallOption) (*Empty, error)
+	UserDeviceCollectMultiDelete(ctx context.Context, in *UserDeviceCollectSave, opts ...grpc.CallOption) (*Empty, error)
+	UserDeviceCollectIndex(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserDeviceCollectSave, error)
+	// 分享设备
+	UserDeviceShareCreate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*WithID, error)
+	// 取消分享设备
+	UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	// 获取设备分享列表(只有)
+	UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error)
+	// 获取设备分享的详情
+	UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error)
+}
+
+type userDeviceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewUserDeviceClient(cc grpc.ClientConnInterface) UserDeviceClient {
+	return &userDeviceClient{cc}
+}
+
+func (c *userDeviceClient) UserDeviceCollectMultiCreate(ctx context.Context, in *UserDeviceCollectSave, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserDevice_UserDeviceCollectMultiCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userDeviceClient) UserDeviceCollectMultiDelete(ctx context.Context, in *UserDeviceCollectSave, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserDevice_UserDeviceCollectMultiDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userDeviceClient) UserDeviceCollectIndex(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserDeviceCollectSave, error) {
+	out := new(UserDeviceCollectSave)
+	err := c.cc.Invoke(ctx, UserDevice_UserDeviceCollectIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userDeviceClient) UserDeviceShareCreate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
+	err := c.cc.Invoke(ctx, UserDevice_UserDeviceShareCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userDeviceClient) UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserDevice_UserDeviceShareDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userDeviceClient) UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error) {
+	out := new(UserDeviceShareIndexResp)
+	err := c.cc.Invoke(ctx, UserDevice_UserDeviceShareIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userDeviceClient) UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error) {
+	out := new(UserDeviceShareInfo)
+	err := c.cc.Invoke(ctx, UserDevice_UserDeviceShareRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// UserDeviceServer is the server API for UserDevice service.
+// All implementations must embed UnimplementedUserDeviceServer
+// for forward compatibility
+type UserDeviceServer interface {
+	// 用户收藏的设备
+	UserDeviceCollectMultiCreate(context.Context, *UserDeviceCollectSave) (*Empty, error)
+	UserDeviceCollectMultiDelete(context.Context, *UserDeviceCollectSave) (*Empty, error)
+	UserDeviceCollectIndex(context.Context, *Empty) (*UserDeviceCollectSave, error)
+	// 分享设备
+	UserDeviceShareCreate(context.Context, *UserDeviceShareInfo) (*WithID, error)
+	// 取消分享设备
+	UserDeviceShareDelete(context.Context, *WithID) (*Empty, error)
+	// 获取设备分享列表(只有)
+	UserDeviceShareIndex(context.Context, *UserDeviceShareIndexReq) (*UserDeviceShareIndexResp, error)
+	// 获取设备分享的详情
+	UserDeviceShareRead(context.Context, *UserDeviceShareReadReq) (*UserDeviceShareInfo, error)
+	mustEmbedUnimplementedUserDeviceServer()
+}
+
+// UnimplementedUserDeviceServer must be embedded to have forward compatible implementations.
+type UnimplementedUserDeviceServer struct {
+}
+
+func (UnimplementedUserDeviceServer) UserDeviceCollectMultiCreate(context.Context, *UserDeviceCollectSave) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceCollectMultiCreate not implemented")
+}
+func (UnimplementedUserDeviceServer) UserDeviceCollectMultiDelete(context.Context, *UserDeviceCollectSave) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceCollectMultiDelete not implemented")
+}
+func (UnimplementedUserDeviceServer) UserDeviceCollectIndex(context.Context, *Empty) (*UserDeviceCollectSave, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceCollectIndex not implemented")
+}
+func (UnimplementedUserDeviceServer) UserDeviceShareCreate(context.Context, *UserDeviceShareInfo) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareCreate not implemented")
+}
+func (UnimplementedUserDeviceServer) UserDeviceShareDelete(context.Context, *WithID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareDelete not implemented")
+}
+func (UnimplementedUserDeviceServer) UserDeviceShareIndex(context.Context, *UserDeviceShareIndexReq) (*UserDeviceShareIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareIndex not implemented")
+}
+func (UnimplementedUserDeviceServer) UserDeviceShareRead(context.Context, *UserDeviceShareReadReq) (*UserDeviceShareInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareRead not implemented")
+}
+func (UnimplementedUserDeviceServer) mustEmbedUnimplementedUserDeviceServer() {}
+
+// UnsafeUserDeviceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserDeviceServer will
+// result in compilation errors.
+type UnsafeUserDeviceServer interface {
+	mustEmbedUnimplementedUserDeviceServer()
+}
+
+func RegisterUserDeviceServer(s grpc.ServiceRegistrar, srv UserDeviceServer) {
+	s.RegisterService(&UserDevice_ServiceDesc, srv)
+}
+
+func _UserDevice_UserDeviceCollectMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDeviceCollectSave)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserDeviceCollectMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserDeviceCollectMultiCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserDeviceCollectMultiCreate(ctx, req.(*UserDeviceCollectSave))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserDevice_UserDeviceCollectMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDeviceCollectSave)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserDeviceCollectMultiDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserDeviceCollectMultiDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserDeviceCollectMultiDelete(ctx, req.(*UserDeviceCollectSave))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserDevice_UserDeviceCollectIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserDeviceCollectIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserDeviceCollectIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserDeviceCollectIndex(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserDevice_UserDeviceShareCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDeviceShareInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserDeviceShareCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserDeviceShareCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserDeviceShareCreate(ctx, req.(*UserDeviceShareInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserDevice_UserDeviceShareDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserDeviceShareDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserDeviceShareDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserDeviceShareDelete(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserDevice_UserDeviceShareIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDeviceShareIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserDeviceShareIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserDeviceShareIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserDeviceShareIndex(ctx, req.(*UserDeviceShareIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserDevice_UserDeviceShareRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDeviceShareReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserDeviceShareRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserDeviceShareRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserDeviceShareRead(ctx, req.(*UserDeviceShareReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// UserDevice_ServiceDesc is the grpc.ServiceDesc for UserDevice service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var UserDevice_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dm.userDevice",
+	HandlerType: (*UserDeviceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "userDeviceCollectMultiCreate",
+			Handler:    _UserDevice_UserDeviceCollectMultiCreate_Handler,
+		},
+		{
+			MethodName: "userDeviceCollectMultiDelete",
+			Handler:    _UserDevice_UserDeviceCollectMultiDelete_Handler,
+		},
+		{
+			MethodName: "userDeviceCollectIndex",
+			Handler:    _UserDevice_UserDeviceCollectIndex_Handler,
+		},
+		{
+			MethodName: "userDeviceShareCreate",
+			Handler:    _UserDevice_UserDeviceShareCreate_Handler,
+		},
+		{
+			MethodName: "userDeviceShareDelete",
+			Handler:    _UserDevice_UserDeviceShareDelete_Handler,
+		},
+		{
+			MethodName: "userDeviceShareIndex",
+			Handler:    _UserDevice_UserDeviceShareIndex_Handler,
+		},
+		{
+			MethodName: "userDeviceShareRead",
+			Handler:    _UserDevice_UserDeviceShareRead_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dm.proto",
+}
+
+const (
 	OTAFirmwareManage_OtaFirmwareCreate_FullMethodName = "/dm.OTAFirmwareManage/otaFirmwareCreate"
 	OTAFirmwareManage_OtaFirmwareUpdate_FullMethodName = "/dm.OTAFirmwareManage/otaFirmwareUpdate"
 	OTAFirmwareManage_OtaFirmwareDelete_FullMethodName = "/dm.OTAFirmwareManage/otaFirmwareDelete"
@@ -3741,7 +4063,7 @@ type OTAFirmwareManageClient interface {
 	// 修改升级包
 	OtaFirmwareUpdate(ctx context.Context, in *OtaFirmwareUpdateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
 	// 删除升级包
-	OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 升级包列表
 	OtaFirmwareIndex(ctx context.Context, in *OtaFirmwareIndexReq, opts ...grpc.CallOption) (*OtaFirmwareIndexResp, error)
 	// 查询升级包
@@ -3774,8 +4096,8 @@ func (c *oTAFirmwareManageClient) OtaFirmwareUpdate(ctx context.Context, in *Ota
 	return out, nil
 }
 
-func (c *oTAFirmwareManageClient) OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *oTAFirmwareManageClient) OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, OTAFirmwareManage_OtaFirmwareDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -3810,7 +4132,7 @@ type OTAFirmwareManageServer interface {
 	// 修改升级包
 	OtaFirmwareUpdate(context.Context, *OtaFirmwareUpdateReq) (*OtaFirmwareResp, error)
 	// 删除升级包
-	OtaFirmwareDelete(context.Context, *OtaFirmwareDeleteReq) (*Response, error)
+	OtaFirmwareDelete(context.Context, *OtaFirmwareDeleteReq) (*Empty, error)
 	// 升级包列表
 	OtaFirmwareIndex(context.Context, *OtaFirmwareIndexReq) (*OtaFirmwareIndexResp, error)
 	// 查询升级包
@@ -3828,7 +4150,7 @@ func (UnimplementedOTAFirmwareManageServer) OtaFirmwareCreate(context.Context, *
 func (UnimplementedOTAFirmwareManageServer) OtaFirmwareUpdate(context.Context, *OtaFirmwareUpdateReq) (*OtaFirmwareResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareUpdate not implemented")
 }
-func (UnimplementedOTAFirmwareManageServer) OtaFirmwareDelete(context.Context, *OtaFirmwareDeleteReq) (*Response, error) {
+func (UnimplementedOTAFirmwareManageServer) OtaFirmwareDelete(context.Context, *OtaFirmwareDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareDelete not implemented")
 }
 func (UnimplementedOTAFirmwareManageServer) OtaFirmwareIndex(context.Context, *OtaFirmwareIndexReq) (*OtaFirmwareIndexResp, error) {
@@ -3999,7 +4321,7 @@ type OTAJobManageClient interface {
 	// 查询指定升级批次的详情
 	OtaJobRead(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*OtaJobInfo, error)
 	// 取消动态升级策略
-	CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Response, error)
+	CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type oTAJobManageClient struct {
@@ -4064,8 +4386,8 @@ func (c *oTAJobManageClient) OtaJobRead(ctx context.Context, in *JobReq, opts ..
 	return out, nil
 }
 
-func (c *oTAJobManageClient) CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *oTAJobManageClient) CancelOTAStrategyByJob(ctx context.Context, in *JobReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, OTAJobManage_CancelOTAStrategyByJob_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -4090,7 +4412,7 @@ type OTAJobManageServer interface {
 	// 查询指定升级批次的详情
 	OtaJobRead(context.Context, *JobReq) (*OtaJobInfo, error)
 	// 取消动态升级策略
-	CancelOTAStrategyByJob(context.Context, *JobReq) (*Response, error)
+	CancelOTAStrategyByJob(context.Context, *JobReq) (*Empty, error)
 	mustEmbedUnimplementedOTAJobManageServer()
 }
 
@@ -4116,7 +4438,7 @@ func (UnimplementedOTAJobManageServer) OtaJobByDeviceIndex(context.Context, *Ota
 func (UnimplementedOTAJobManageServer) OtaJobRead(context.Context, *JobReq) (*OtaJobInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaJobRead not implemented")
 }
-func (UnimplementedOTAJobManageServer) CancelOTAStrategyByJob(context.Context, *JobReq) (*Response, error) {
+func (UnimplementedOTAJobManageServer) CancelOTAStrategyByJob(context.Context, *JobReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelOTAStrategyByJob not implemented")
 }
 func (UnimplementedOTAJobManageServer) mustEmbedUnimplementedOTAJobManageServer() {}
@@ -4314,15 +4636,15 @@ type OTAUpgradeTaskManageClient interface {
 	// 查询指定升级批次下的设备升级作业列表
 	OtaTaskByJobIndex(ctx context.Context, in *OTATaskByJobIndexReq, opts ...grpc.CallOption) (*OtaTaskByJobIndexResp, error)
 	// 取消指定批次下的设备升级作业
-	OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Response, error)
+	OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Empty, error)
 	// 取消指定OTA升级包下状态为待确认、待推送、已推送、升级中状态的设备升级作业
-	OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Response, error)
+	OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Empty, error)
 	// 批量确认，处于待确认状态的设备升级作业
-	OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Response, error)
+	OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Empty, error)
 	// 查询指定设备下，未完成状态的设备升级作业
 	OtaUnfinishedTaskByDeviceIndex(ctx context.Context, in *OTAUnfinishedTaskByDeviceIndexReq, opts ...grpc.CallOption) (*OTAUnfinishedTaskByDeviceIndexResp, error)
 	// 重新升级指定批次下升级失败或升级取消的设备升级作业
-	OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Response, error)
+	OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type oTAUpgradeTaskManageClient struct {
@@ -4342,8 +4664,8 @@ func (c *oTAUpgradeTaskManageClient) OtaTaskByJobIndex(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *oTAUpgradeTaskManageClient) OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *oTAUpgradeTaskManageClient) OtaTaskByJobCancel(ctx context.Context, in *OTATaskByJobCancelReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, OTAUpgradeTaskManage_OtaTaskByJobCancel_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -4351,8 +4673,8 @@ func (c *oTAUpgradeTaskManageClient) OtaTaskByJobCancel(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *oTAUpgradeTaskManageClient) OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *oTAUpgradeTaskManageClient) OtaTaskByDeviceCancel(ctx context.Context, in *OTATaskByDeviceCancelReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, OTAUpgradeTaskManage_OtaTaskByDeviceCancel_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -4360,8 +4682,8 @@ func (c *oTAUpgradeTaskManageClient) OtaTaskByDeviceCancel(ctx context.Context, 
 	return out, nil
 }
 
-func (c *oTAUpgradeTaskManageClient) OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *oTAUpgradeTaskManageClient) OtaTaskConfirm(ctx context.Context, in *OTATaskConfirmReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, OTAUpgradeTaskManage_OtaTaskConfirm_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -4378,8 +4700,8 @@ func (c *oTAUpgradeTaskManageClient) OtaUnfinishedTaskByDeviceIndex(ctx context.
 	return out, nil
 }
 
-func (c *oTAUpgradeTaskManageClient) OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *oTAUpgradeTaskManageClient) OtaTaskReUpgrade(ctx context.Context, in *OTATaskReUpgradeReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, OTAUpgradeTaskManage_OtaTaskReUpgrade_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -4394,15 +4716,15 @@ type OTAUpgradeTaskManageServer interface {
 	// 查询指定升级批次下的设备升级作业列表
 	OtaTaskByJobIndex(context.Context, *OTATaskByJobIndexReq) (*OtaTaskByJobIndexResp, error)
 	// 取消指定批次下的设备升级作业
-	OtaTaskByJobCancel(context.Context, *OTATaskByJobCancelReq) (*Response, error)
+	OtaTaskByJobCancel(context.Context, *OTATaskByJobCancelReq) (*Empty, error)
 	// 取消指定OTA升级包下状态为待确认、待推送、已推送、升级中状态的设备升级作业
-	OtaTaskByDeviceCancel(context.Context, *OTATaskByDeviceCancelReq) (*Response, error)
+	OtaTaskByDeviceCancel(context.Context, *OTATaskByDeviceCancelReq) (*Empty, error)
 	// 批量确认，处于待确认状态的设备升级作业
-	OtaTaskConfirm(context.Context, *OTATaskConfirmReq) (*Response, error)
+	OtaTaskConfirm(context.Context, *OTATaskConfirmReq) (*Empty, error)
 	// 查询指定设备下，未完成状态的设备升级作业
 	OtaUnfinishedTaskByDeviceIndex(context.Context, *OTAUnfinishedTaskByDeviceIndexReq) (*OTAUnfinishedTaskByDeviceIndexResp, error)
 	// 重新升级指定批次下升级失败或升级取消的设备升级作业
-	OtaTaskReUpgrade(context.Context, *OTATaskReUpgradeReq) (*Response, error)
+	OtaTaskReUpgrade(context.Context, *OTATaskReUpgradeReq) (*Empty, error)
 	mustEmbedUnimplementedOTAUpgradeTaskManageServer()
 }
 
@@ -4413,19 +4735,19 @@ type UnimplementedOTAUpgradeTaskManageServer struct {
 func (UnimplementedOTAUpgradeTaskManageServer) OtaTaskByJobIndex(context.Context, *OTATaskByJobIndexReq) (*OtaTaskByJobIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskByJobIndex not implemented")
 }
-func (UnimplementedOTAUpgradeTaskManageServer) OtaTaskByJobCancel(context.Context, *OTATaskByJobCancelReq) (*Response, error) {
+func (UnimplementedOTAUpgradeTaskManageServer) OtaTaskByJobCancel(context.Context, *OTATaskByJobCancelReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskByJobCancel not implemented")
 }
-func (UnimplementedOTAUpgradeTaskManageServer) OtaTaskByDeviceCancel(context.Context, *OTATaskByDeviceCancelReq) (*Response, error) {
+func (UnimplementedOTAUpgradeTaskManageServer) OtaTaskByDeviceCancel(context.Context, *OTATaskByDeviceCancelReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskByDeviceCancel not implemented")
 }
-func (UnimplementedOTAUpgradeTaskManageServer) OtaTaskConfirm(context.Context, *OTATaskConfirmReq) (*Response, error) {
+func (UnimplementedOTAUpgradeTaskManageServer) OtaTaskConfirm(context.Context, *OTATaskConfirmReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskConfirm not implemented")
 }
 func (UnimplementedOTAUpgradeTaskManageServer) OtaUnfinishedTaskByDeviceIndex(context.Context, *OTAUnfinishedTaskByDeviceIndexReq) (*OTAUnfinishedTaskByDeviceIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaUnfinishedTaskByDeviceIndex not implemented")
 }
-func (UnimplementedOTAUpgradeTaskManageServer) OtaTaskReUpgrade(context.Context, *OTATaskReUpgradeReq) (*Response, error) {
+func (UnimplementedOTAUpgradeTaskManageServer) OtaTaskReUpgrade(context.Context, *OTATaskReUpgradeReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaTaskReUpgrade not implemented")
 }
 func (UnimplementedOTAUpgradeTaskManageServer) mustEmbedUnimplementedOTAUpgradeTaskManageServer() {}
@@ -4598,11 +4920,11 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OTAModuleManageClient interface {
 	// 创建产品的OTA模块
-	OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error)
+	OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error)
 	// 修改OTA模块别名、描述
-	OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error)
+	OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error)
 	// 删除自定义OTA模块
-	OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Response, error)
+	OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 查询产品下的OTA模块列表
 	OtaModuleByProductIndex(ctx context.Context, in *OTAModuleIndexReq, opts ...grpc.CallOption) (*OTAModuleIndexResp, error)
 	// 查询设备上报过的OTA模块版本列表
@@ -4617,8 +4939,8 @@ func NewOTAModuleManageClient(cc grpc.ClientConnInterface) OTAModuleManageClient
 	return &oTAModuleManageClient{cc}
 }
 
-func (c *oTAModuleManageClient) OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *oTAModuleManageClient) OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, OTAModuleManage_OtaModuleCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -4626,8 +4948,8 @@ func (c *oTAModuleManageClient) OtaModuleCreate(ctx context.Context, in *OTAModu
 	return out, nil
 }
 
-func (c *oTAModuleManageClient) OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *oTAModuleManageClient) OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, OTAModuleManage_OtaModuleUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -4635,8 +4957,8 @@ func (c *oTAModuleManageClient) OtaModuleUpdate(ctx context.Context, in *OTAModu
 	return out, nil
 }
 
-func (c *oTAModuleManageClient) OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *oTAModuleManageClient) OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, OTAModuleManage_OtaModuleDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -4667,11 +4989,11 @@ func (c *oTAModuleManageClient) OtaModuleVersionsByDeviceIndex(ctx context.Conte
 // for forward compatibility
 type OTAModuleManageServer interface {
 	// 创建产品的OTA模块
-	OtaModuleCreate(context.Context, *OTAModuleReq) (*Response, error)
+	OtaModuleCreate(context.Context, *OTAModuleReq) (*Empty, error)
 	// 修改OTA模块别名、描述
-	OtaModuleUpdate(context.Context, *OTAModuleReq) (*Response, error)
+	OtaModuleUpdate(context.Context, *OTAModuleReq) (*Empty, error)
 	// 删除自定义OTA模块
-	OtaModuleDelete(context.Context, *OTAModuleDeleteReq) (*Response, error)
+	OtaModuleDelete(context.Context, *OTAModuleDeleteReq) (*Empty, error)
 	// 查询产品下的OTA模块列表
 	OtaModuleByProductIndex(context.Context, *OTAModuleIndexReq) (*OTAModuleIndexResp, error)
 	// 查询设备上报过的OTA模块版本列表
@@ -4683,13 +5005,13 @@ type OTAModuleManageServer interface {
 type UnimplementedOTAModuleManageServer struct {
 }
 
-func (UnimplementedOTAModuleManageServer) OtaModuleCreate(context.Context, *OTAModuleReq) (*Response, error) {
+func (UnimplementedOTAModuleManageServer) OtaModuleCreate(context.Context, *OTAModuleReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaModuleCreate not implemented")
 }
-func (UnimplementedOTAModuleManageServer) OtaModuleUpdate(context.Context, *OTAModuleReq) (*Response, error) {
+func (UnimplementedOTAModuleManageServer) OtaModuleUpdate(context.Context, *OTAModuleReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaModuleUpdate not implemented")
 }
-func (UnimplementedOTAModuleManageServer) OtaModuleDelete(context.Context, *OTAModuleDeleteReq) (*Response, error) {
+func (UnimplementedOTAModuleManageServer) OtaModuleDelete(context.Context, *OTAModuleDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaModuleDelete not implemented")
 }
 func (UnimplementedOTAModuleManageServer) OtaModuleByProductIndex(context.Context, *OTAModuleIndexReq) (*OTAModuleIndexResp, error) {

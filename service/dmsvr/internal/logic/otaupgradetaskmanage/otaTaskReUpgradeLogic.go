@@ -29,7 +29,7 @@ func NewOtaTaskReUpgradeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 // 重新升级指定批次下升级失败或升级取消的设备升级作业
-func (l *OtaTaskReUpgradeLogic) OtaTaskReUpgrade(in *dm.OTATaskReUpgradeReq) (*dm.Response, error) {
+func (l *OtaTaskReUpgradeLogic) OtaTaskReUpgrade(in *dm.OTATaskReUpgradeReq) (*dm.Empty, error) {
 	taskStatusList := []int{msgOta.UpgradeStatusCanceled, msgOta.UpgradeStatusFailed}
 	filter := relationDB.OtaUpgradeTaskFilter{
 		TaskStatusList: taskStatusList,
@@ -43,5 +43,5 @@ func (l *OtaTaskReUpgradeLogic) OtaTaskReUpgrade(in *dm.OTATaskReUpgradeReq) (*d
 		l.Errorf("%s.TaskInfo.TaskInfo BatchUpdate failure err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

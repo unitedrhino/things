@@ -24,7 +24,6 @@ type (
 	SceneInfoIndexReq     = ud.SceneInfoIndexReq
 	SceneInfoIndexResp    = ud.SceneInfoIndexResp
 	TimeRange             = ud.TimeRange
-	UserCollectDeviceSave = ud.UserCollectDeviceSave
 	WithID                = ud.WithID
 
 	Rule interface {

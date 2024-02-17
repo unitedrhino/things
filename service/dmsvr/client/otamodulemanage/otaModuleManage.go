@@ -44,6 +44,7 @@ type (
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	Empty                              = dm.Empty
 	EventIndex                         = dm.EventIndex
 	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
@@ -173,7 +174,6 @@ type (
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
-	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
@@ -188,16 +188,22 @@ type (
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
+	UserDeviceCollectSave              = dm.UserDeviceCollectSave
+	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
+	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo                = dm.UserDeviceShareInfo
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
 
 	OTAModuleManage interface {
 		// 创建产品的OTA模块
-		OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error)
+		OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error)
 		// 修改OTA模块别名、描述
-		OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error)
+		OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error)
 		// 删除自定义OTA模块
-		OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 查询产品下的OTA模块列表
 		OtaModuleByProductIndex(ctx context.Context, in *OTAModuleIndexReq, opts ...grpc.CallOption) (*OTAModuleIndexResp, error)
 		// 查询设备上报过的OTA模块版本列表
@@ -228,35 +234,35 @@ func NewDirectOTAModuleManage(svcCtx *svc.ServiceContext, svr dm.OTAModuleManage
 }
 
 // 创建产品的OTA模块
-func (m *defaultOTAModuleManage) OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAModuleManage) OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewOTAModuleManageClient(m.cli.Conn())
 	return client.OtaModuleCreate(ctx, in, opts...)
 }
 
 // 创建产品的OTA模块
-func (d *directOTAModuleManage) OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directOTAModuleManage) OtaModuleCreate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaModuleCreate(ctx, in)
 }
 
 // 修改OTA模块别名、描述
-func (m *defaultOTAModuleManage) OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAModuleManage) OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewOTAModuleManageClient(m.cli.Conn())
 	return client.OtaModuleUpdate(ctx, in, opts...)
 }
 
 // 修改OTA模块别名、描述
-func (d *directOTAModuleManage) OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directOTAModuleManage) OtaModuleUpdate(ctx context.Context, in *OTAModuleReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaModuleUpdate(ctx, in)
 }
 
 // 删除自定义OTA模块
-func (m *defaultOTAModuleManage) OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAModuleManage) OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewOTAModuleManageClient(m.cli.Conn())
 	return client.OtaModuleDelete(ctx, in, opts...)
 }
 
 // 删除自定义OTA模块
-func (d *directOTAModuleManage) OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directOTAModuleManage) OtaModuleDelete(ctx context.Context, in *OTAModuleDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaModuleDelete(ctx, in)
 }
 

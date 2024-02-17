@@ -28,7 +28,7 @@ func NewOtaModuleDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *O
 }
 
 // 删除自定义OTA模块
-func (l *OtaModuleDeleteLogic) OtaModuleDelete(in *dm.OTAModuleDeleteReq) (*dm.Response, error) {
+func (l *OtaModuleDeleteLogic) OtaModuleDelete(in *dm.OTAModuleDeleteReq) (*dm.Empty, error) {
 	filter := relationDB.OtaModuleInfoFilter{
 		ModuleName: in.ModuleName,
 		ProductId:  in.ProductId,
@@ -38,5 +38,5 @@ func (l *OtaModuleDeleteLogic) OtaModuleDelete(in *dm.OTAModuleDeleteReq) (*dm.R
 		l.Errorf("%s.ModuleInfo.OtaModuleInfo Delete failure err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

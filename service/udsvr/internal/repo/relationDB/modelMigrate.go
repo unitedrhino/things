@@ -13,6 +13,5 @@ func Migrate(c conf.Database) error {
 	return db.AutoMigrate(
 		&UdSceneInfo{},
 		&UdOpsWorkOrder{},
-		&UdUserCollectDevice{},
 	)
 }

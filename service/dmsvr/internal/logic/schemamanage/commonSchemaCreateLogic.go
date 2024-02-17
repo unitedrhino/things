@@ -55,7 +55,7 @@ func (l *CommonSchemaCreateLogic) ruleCheck(in *dm.CommonSchemaCreateReq) (*rela
 }
 
 // 新增产品
-func (l *CommonSchemaCreateLogic) CommonSchemaCreate(in *dm.CommonSchemaCreateReq) (*dm.Response, error) {
+func (l *CommonSchemaCreateLogic) CommonSchemaCreate(in *dm.CommonSchemaCreateReq) (*dm.Empty, error) {
 	po, err := l.ruleCheck(in)
 	if err != nil {
 		l.Errorf("%s.ruleCheck err:%v", err)
@@ -72,5 +72,5 @@ func (l *CommonSchemaCreateLogic) CommonSchemaCreate(in *dm.CommonSchemaCreateRe
 	if err != nil {
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

@@ -32,7 +32,7 @@ func NewProductSchemaDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 // 删除产品
-func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDeleteReq) (*dm.Response, error) {
+func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDeleteReq) (*dm.Empty, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	po, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
 		ProductID: in.ProductID, Identifiers: []string{in.Identifier},
@@ -57,5 +57,5 @@ func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDelet
 	if err != nil {
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

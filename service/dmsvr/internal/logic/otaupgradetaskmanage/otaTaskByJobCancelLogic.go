@@ -29,7 +29,7 @@ func NewOtaTaskByJobCancelLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 // 取消指定批次下的设备升级作业
-func (l *OtaTaskByJobCancelLogic) OtaTaskByJobCancel(in *dm.OTATaskByJobCancelReq) (*dm.Response, error) {
+func (l *OtaTaskByJobCancelLogic) OtaTaskByJobCancel(in *dm.OTATaskByJobCancelReq) (*dm.Empty, error) {
 	var taskStatusList []int
 	if in.CancelQueuedTask == 1 {
 		taskStatusList = append(taskStatusList, msgOta.UpgradeStatusQueued)
@@ -51,5 +51,5 @@ func (l *OtaTaskByJobCancelLogic) OtaTaskByJobCancel(in *dm.OTATaskByJobCancelRe
 		l.Errorf("%s.TaskInfo.TaskInfo BatchUpdate failure err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

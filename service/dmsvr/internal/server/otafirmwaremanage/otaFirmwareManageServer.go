@@ -35,7 +35,7 @@ func (s *OTAFirmwareManageServer) OtaFirmwareUpdate(ctx context.Context, in *dm.
 }
 
 // 删除升级包
-func (s *OTAFirmwareManageServer) OtaFirmwareDelete(ctx context.Context, in *dm.OtaFirmwareDeleteReq) (*dm.Response, error) {
+func (s *OTAFirmwareManageServer) OtaFirmwareDelete(ctx context.Context, in *dm.OtaFirmwareDeleteReq) (*dm.Empty, error) {
 	l := otafirmwaremanagelogic.NewOtaFirmwareDeleteLogic(ctx, s.svcCtx)
 	return l.OtaFirmwareDelete(in)
 }

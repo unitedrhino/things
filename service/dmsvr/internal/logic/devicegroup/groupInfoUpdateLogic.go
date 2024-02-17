@@ -28,7 +28,7 @@ func NewGroupInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 // 更新分组
-func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfo) (*dm.Response, error) {
+func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfo) (*dm.Empty, error) {
 	record, err := l.GiDB.FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
@@ -41,5 +41,5 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfo) (*dm.Response, 
 		return nil, errors.Parameter.AddMsg(err.Error())
 	}
 
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

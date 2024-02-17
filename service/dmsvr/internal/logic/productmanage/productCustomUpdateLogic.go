@@ -29,7 +29,7 @@ func NewProductCustomUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*dm.Response, error) {
+func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*dm.Empty, error) {
 	pi, err := l.PcDB.FindOneByProductID(l.ctx, in.ProductID)
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
@@ -45,7 +45,7 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 			if err != nil {
 				return nil, err
 			}
-			return &dm.Response{}, nil
+			return &dm.Empty{}, nil
 		}
 		return nil, err
 	}
@@ -66,5 +66,5 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 	if err != nil {
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

@@ -25,7 +25,7 @@ func NewProductCategoryDeleteLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 // 删除产品
-func (l *ProductCategoryDeleteLogic) ProductCategoryDelete(in *dm.WithID) (*dm.Response, error) {
+func (l *ProductCategoryDeleteLogic) ProductCategoryDelete(in *dm.WithID) (*dm.Empty, error) {
 	err := relationDB.NewProductCategoryRepo(l.ctx).Delete(l.ctx, in.Id)
-	return &dm.Response{}, err
+	return &dm.Empty{}, err
 }

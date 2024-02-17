@@ -44,6 +44,7 @@ type (
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	Empty                              = dm.Empty
 	EventIndex                         = dm.EventIndex
 	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
@@ -173,7 +174,6 @@ type (
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
-	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
@@ -188,30 +188,36 @@ type (
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
+	UserDeviceCollectSave              = dm.UserDeviceCollectSave
+	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
+	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo                = dm.UserDeviceShareInfo
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
 
 	DeviceManage interface {
 		// 鉴定是否是root账号(提供给mqtt broker)
-		RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error)
+		RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Empty, error)
 		// 新增设备
-		DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
+		DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 更新设备
-		DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error)
+		DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 删除设备
-		DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取设备信息列表
 		DeviceInfoIndex(ctx context.Context, in *DeviceInfoIndexReq, opts ...grpc.CallOption) (*DeviceInfoIndexResp, error)
 		// 批量更新设备状态
-		DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error)
+		DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取设备信息详情
 		DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 		// 绑定网关下子设备设备
-		DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error)
+		DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取绑定信息的设备信息列表
 		DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
 		// 删除网关下子设备
-		DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 设备计数
 		DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error)
 		// 设备类型
@@ -243,46 +249,46 @@ func NewDirectDeviceManage(svcCtx *svc.ServiceContext, svr dm.DeviceManageServer
 }
 
 // 鉴定是否是root账号(提供给mqtt broker)
-func (m *defaultDeviceManage) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceManage) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.RootCheck(ctx, in, opts...)
 }
 
 // 鉴定是否是root账号(提供给mqtt broker)
-func (d *directDeviceManage) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceManage) RootCheck(ctx context.Context, in *RootCheckReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.RootCheck(ctx, in)
 }
 
 // 新增设备
-func (m *defaultDeviceManage) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceManage) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceInfoCreate(ctx, in, opts...)
 }
 
 // 新增设备
-func (d *directDeviceManage) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceManage) DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoCreate(ctx, in)
 }
 
 // 更新设备
-func (m *defaultDeviceManage) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceManage) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceInfoUpdate(ctx, in, opts...)
 }
 
 // 更新设备
-func (d *directDeviceManage) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceManage) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoUpdate(ctx, in)
 }
 
 // 删除设备
-func (m *defaultDeviceManage) DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceManage) DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceInfoDelete(ctx, in, opts...)
 }
 
 // 删除设备
-func (d *directDeviceManage) DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceManage) DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoDelete(ctx, in)
 }
 
@@ -298,13 +304,13 @@ func (d *directDeviceManage) DeviceInfoIndex(ctx context.Context, in *DeviceInfo
 }
 
 // 批量更新设备状态
-func (m *defaultDeviceManage) DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceManage) DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceInfoMultiUpdate(ctx, in, opts...)
 }
 
 // 批量更新设备状态
-func (d *directDeviceManage) DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceManage) DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoMultiUpdate(ctx, in)
 }
 
@@ -320,13 +326,13 @@ func (d *directDeviceManage) DeviceInfoRead(ctx context.Context, in *DeviceInfoR
 }
 
 // 绑定网关下子设备设备
-func (m *defaultDeviceManage) DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceManage) DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceGatewayMultiCreate(ctx, in, opts...)
 }
 
 // 绑定网关下子设备设备
-func (d *directDeviceManage) DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceManage) DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceGatewayMultiCreate(ctx, in)
 }
 
@@ -342,13 +348,13 @@ func (d *directDeviceManage) DeviceGatewayIndex(ctx context.Context, in *DeviceG
 }
 
 // 删除网关下子设备
-func (m *defaultDeviceManage) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultDeviceManage) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceGatewayMultiDelete(ctx, in, opts...)
 }
 
 // 删除网关下子设备
-func (d *directDeviceManage) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directDeviceManage) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceGatewayMultiDelete(ctx, in)
 }
 

@@ -35,7 +35,7 @@ func (s *DeviceInteractServer) ActionRead(ctx context.Context, in *dm.RespReadRe
 }
 
 // 回复调用设备行为
-func (s *DeviceInteractServer) ActionResp(ctx context.Context, in *dm.ActionRespReq) (*dm.Response, error) {
+func (s *DeviceInteractServer) ActionResp(ctx context.Context, in *dm.ActionRespReq) (*dm.Empty, error) {
 	l := deviceinteractlogic.NewActionRespLogic(ctx, s.svcCtx)
 	return l.ActionResp(in)
 }

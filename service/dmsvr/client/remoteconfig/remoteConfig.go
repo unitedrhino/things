@@ -44,6 +44,7 @@ type (
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	Empty                              = dm.Empty
 	EventIndex                         = dm.EventIndex
 	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
@@ -173,7 +174,6 @@ type (
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
-	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
@@ -188,13 +188,19 @@ type (
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
+	UserDeviceCollectSave              = dm.UserDeviceCollectSave
+	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
+	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo                = dm.UserDeviceShareInfo
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
 
 	RemoteConfig interface {
-		RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error)
+		RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Empty, error)
 		RemoteConfigIndex(ctx context.Context, in *RemoteConfigIndexReq, opts ...grpc.CallOption) (*RemoteConfigIndexResp, error)
-		RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error)
+		RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Empty, error)
 		RemoteConfigLastRead(ctx context.Context, in *RemoteConfigLastReadReq, opts ...grpc.CallOption) (*RemoteConfigLastReadResp, error)
 	}
 
@@ -221,12 +227,12 @@ func NewDirectRemoteConfig(svcCtx *svc.ServiceContext, svr dm.RemoteConfigServer
 	}
 }
 
-func (m *defaultRemoteConfig) RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultRemoteConfig) RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewRemoteConfigClient(m.cli.Conn())
 	return client.RemoteConfigCreate(ctx, in, opts...)
 }
 
-func (d *directRemoteConfig) RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directRemoteConfig) RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.RemoteConfigCreate(ctx, in)
 }
 
@@ -239,12 +245,12 @@ func (d *directRemoteConfig) RemoteConfigIndex(ctx context.Context, in *RemoteCo
 	return d.svr.RemoteConfigIndex(ctx, in)
 }
 
-func (m *defaultRemoteConfig) RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultRemoteConfig) RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewRemoteConfigClient(m.cli.Conn())
 	return client.RemoteConfigPushAll(ctx, in, opts...)
 }
 
-func (d *directRemoteConfig) RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directRemoteConfig) RemoteConfigPushAll(ctx context.Context, in *RemoteConfigPushAllReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.RemoteConfigPushAll(ctx, in)
 }
 

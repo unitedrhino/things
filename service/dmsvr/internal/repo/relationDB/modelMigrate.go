@@ -35,6 +35,7 @@ func Migrate(c conf.Database) error {
 		&DmOtaJob{},
 		&DmOtaUpgradeTask{},
 		&DmOtaModule{},
+		&DmUserCollectDevice{},
 	)
 	if err != nil {
 		return err

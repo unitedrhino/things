@@ -34,7 +34,7 @@ func NewDeviceGatewayMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCo
 }
 
 // 删除分组设备
-func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGatewayMultiDeleteReq) (*dm.Response, error) {
+func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGatewayMultiDeleteReq) (*dm.Empty, error) {
 	devicesDos := ToDeviceCoreDos(in.List)
 	err := l.GdDB.MultiDelete(l.ctx, &devices.Core{
 		ProductID:  in.GatewayProductID,
@@ -61,5 +61,5 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 		return nil, er
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

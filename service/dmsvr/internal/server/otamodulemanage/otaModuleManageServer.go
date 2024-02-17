@@ -23,19 +23,19 @@ func NewOTAModuleManageServer(svcCtx *svc.ServiceContext) *OTAModuleManageServer
 }
 
 // 创建产品的OTA模块
-func (s *OTAModuleManageServer) OtaModuleCreate(ctx context.Context, in *dm.OTAModuleReq) (*dm.Response, error) {
+func (s *OTAModuleManageServer) OtaModuleCreate(ctx context.Context, in *dm.OTAModuleReq) (*dm.Empty, error) {
 	l := otamodulemanagelogic.NewOtaModuleCreateLogic(ctx, s.svcCtx)
 	return l.OtaModuleCreate(in)
 }
 
 // 修改OTA模块别名、描述
-func (s *OTAModuleManageServer) OtaModuleUpdate(ctx context.Context, in *dm.OTAModuleReq) (*dm.Response, error) {
+func (s *OTAModuleManageServer) OtaModuleUpdate(ctx context.Context, in *dm.OTAModuleReq) (*dm.Empty, error) {
 	l := otamodulemanagelogic.NewOtaModuleUpdateLogic(ctx, s.svcCtx)
 	return l.OtaModuleUpdate(in)
 }
 
 // 删除自定义OTA模块
-func (s *OTAModuleManageServer) OtaModuleDelete(ctx context.Context, in *dm.OTAModuleDeleteReq) (*dm.Response, error) {
+func (s *OTAModuleManageServer) OtaModuleDelete(ctx context.Context, in *dm.OTAModuleDeleteReq) (*dm.Empty, error) {
 	l := otamodulemanagelogic.NewOtaModuleDeleteLogic(ctx, s.svcCtx)
 	return l.OtaModuleDelete(in)
 }

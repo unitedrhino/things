@@ -36,7 +36,7 @@ func NewOtaFirmwareDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 // 删除升级包
-func (l *OtaFirmwareDeleteLogic) OtaFirmwareDelete(in *dm.OtaFirmwareDeleteReq) (*dm.Response, error) {
+func (l *OtaFirmwareDeleteLogic) OtaFirmwareDelete(in *dm.OtaFirmwareDeleteReq) (*dm.Empty, error) {
 	_, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareFilter{FirmwareID: in.FirmwareId})
 	if errors.Cmp(err, errors.NotFind) {
 		l.Errorf("not find firmware id:" + cast.ToString(in.FirmwareId))
@@ -68,5 +68,5 @@ func (l *OtaFirmwareDeleteLogic) OtaFirmwareDelete(in *dm.OtaFirmwareDeleteReq) 
 		l.Errorf("failed to commit transaction: %v", err)
 		return nil, errors.System.AddDetail(err)
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

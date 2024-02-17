@@ -41,7 +41,7 @@ func (l *ActionRespLogic) initMsg(productID string) error {
 }
 
 // 回复调用设备行为
-func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Response, error) {
+func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Empty, error) {
 	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
@@ -94,5 +94,5 @@ func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Response, error)
 		return nil, err
 	}
 
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

@@ -6,7 +6,7 @@ package dm;
 
 import "google/protobuf/wrappers.proto";
 
-message Response {
+message Empty {
 }
 
 message TimeRange{
@@ -40,26 +40,26 @@ message WithID{
 //设备管理
 service DeviceManage {
   //鉴定是否是root账号(提供给mqtt broker)
-  rpc rootCheck(RootCheckReq)           returns (Response);
+  rpc rootCheck(RootCheckReq)           returns (Empty);
   //新增设备
-  rpc deviceInfoCreate(DeviceInfo)     returns (Response);
+  rpc deviceInfoCreate(DeviceInfo)     returns (Empty);
   //更新设备
-  rpc deviceInfoUpdate(DeviceInfo)     returns (Response);
+  rpc deviceInfoUpdate(DeviceInfo)     returns (Empty);
   //删除设备
-  rpc deviceInfoDelete(DeviceInfoDeleteReq)     returns (Response);
+  rpc deviceInfoDelete(DeviceInfoDeleteReq)     returns (Empty);
   //获取设备信息列表
   rpc deviceInfoIndex(DeviceInfoIndexReq)     returns (DeviceInfoIndexResp);
   //批量更新设备状态
-  rpc DeviceInfoMultiUpdate(DeviceInfoMultiUpdateReq)     returns (Response);
+  rpc DeviceInfoMultiUpdate(DeviceInfoMultiUpdateReq)     returns (Empty);
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
 
   //绑定网关下子设备设备
-  rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Response);
+  rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Empty);
   //获取绑定信息的设备信息列表
   rpc deviceGatewayIndex(DeviceGatewayIndexReq)     returns (DeviceGatewayIndexResp);
   //删除网关下子设备
-  rpc deviceGatewayMultiDelete(DeviceGatewayMultiDeleteReq)     returns (Response);
+  rpc deviceGatewayMultiDelete(DeviceGatewayMultiDeleteReq)     returns (Empty);
 
   //设备计数
   rpc deviceInfoCount(DeviceInfoCountReq) returns (DeviceInfoCount);
@@ -73,11 +73,11 @@ service DeviceManage {
 service ProductManage{
   /*产品管理*/
   //新增产品
-  rpc productInfoCreate(ProductInfo)     returns (Response);
+  rpc productInfoCreate(ProductInfo)     returns (Empty);
   //更新产品
-  rpc productInfoUpdate(ProductInfo)     returns (Response);
+  rpc productInfoUpdate(ProductInfo)     returns (Empty);
   //删除产品
-  rpc productInfoDelete(ProductInfoDeleteReq)     returns (Response);
+  rpc productInfoDelete(ProductInfoDeleteReq)     returns (Empty);
   //获取产品信息列表
   rpc productInfoIndex(ProductInfoIndexReq)     returns (ProductInfoIndexResp);
   //获取产品信息详情
@@ -85,30 +85,30 @@ service ProductManage{
 
   /*物模型管理*/
   //更新产品物模型
-  rpc productSchemaUpdate(ProductSchemaUpdateReq)returns (Response);
+  rpc productSchemaUpdate(ProductSchemaUpdateReq)returns (Empty);
   //新增产品
-  rpc productSchemaCreate(ProductSchemaCreateReq)     returns (Response);
+  rpc productSchemaCreate(ProductSchemaCreateReq)     returns (Empty);
   //删除产品
-  rpc productSchemaDelete(ProductSchemaDeleteReq)     returns (Response);
+  rpc productSchemaDelete(ProductSchemaDeleteReq)     returns (Empty);
   //获取产品信息列表
   rpc productSchemaIndex(ProductSchemaIndexReq)     returns (ProductSchemaIndexResp);
   //删除产品
-  rpc productSchemaTslImport(ProductSchemaTslImportReq)     returns (Response);
+  rpc productSchemaTslImport(ProductSchemaTslImportReq)     returns (Empty);
   //获取产品信息列表
   rpc productSchemaTslRead(ProductSchemaTslReadReq)     returns (ProductSchemaTslReadResp);
 
   /*脚本管理*/
   rpc productCustomRead(ProductCustomReadReq) returns (ProductCustom);
-  rpc productCustomUpdate(ProductCustom) returns (Response);
+  rpc productCustomUpdate(ProductCustom) returns (Empty);
 
 
   /*产品类型*/
   //新增产品
   rpc productCategoryCreate(ProductCategory)     returns (WithID);
   //更新产品
-  rpc productCategoryUpdate(ProductCategory)     returns (Response);
+  rpc productCategoryUpdate(ProductCategory)     returns (Empty);
   //删除产品
-  rpc productCategoryDelete(WithID)     returns (Response);
+  rpc productCategoryDelete(WithID)     returns (Empty);
   //获取产品信息列表
   rpc productCategoryIndex(ProductCategoryIndexReq)     returns (ProductCategoryIndexResp);
   //获取产品信息详情
@@ -121,11 +121,11 @@ service ProductManage{
 //公共物模型管理
 service SchemaManage{
   //更新产品物模型
-  rpc commonSchemaUpdate(CommonSchemaUpdateReq)returns (Response);
+  rpc commonSchemaUpdate(CommonSchemaUpdateReq)returns (Empty);
   //新增产品
-  rpc commonSchemaCreate(CommonSchemaCreateReq)     returns (Response);
+  rpc commonSchemaCreate(CommonSchemaCreateReq)     returns (Empty);
   //删除产品
-  rpc commonSchemaDelete(WithID)     returns (Response);
+  rpc commonSchemaDelete(WithID)     returns (Empty);
   //获取产品信息列表
   rpc commonSchemaIndex(CommonSchemaIndexReq)     returns (CommonSchemaIndexResp);
 
@@ -152,23 +152,23 @@ service DeviceGroup {
   //获取分组信息详情
   rpc groupInfoRead(WithID)     returns (GroupInfo);
   //更新分组
-  rpc groupInfoUpdate(GroupInfo)     returns (Response);
+  rpc groupInfoUpdate(GroupInfo)     returns (Empty);
   //删除分组
-  rpc groupInfoDelete(WithID)     returns (Response);
+  rpc groupInfoDelete(WithID)     returns (Empty);
   //创建分组设备
-  rpc groupDeviceMultiCreate(GroupDeviceMultiSaveReq)     returns (Response);
+  rpc groupDeviceMultiCreate(GroupDeviceMultiSaveReq)     returns (Empty);
   //更新分组设备
-  rpc groupDeviceMultiUpdate(GroupDeviceMultiSaveReq)     returns (Response);
+  rpc groupDeviceMultiUpdate(GroupDeviceMultiSaveReq)     returns (Empty);
   //获取分组设备信息列表
   rpc groupDeviceIndex(GroupDeviceIndexReq)     returns (GroupDeviceIndexResp);
   //删除分组设备
-  rpc groupDeviceMultiDelete(GroupDeviceMultiDeleteReq)     returns (Response);
+  rpc groupDeviceMultiDelete(GroupDeviceMultiDeleteReq)     returns (Empty);
 }
 
 service RemoteConfig {
-  rpc RemoteConfigCreate(RemoteConfigCreateReq) returns (Response);
+  rpc RemoteConfigCreate(RemoteConfigCreateReq) returns (Empty);
   rpc RemoteConfigIndex(RemoteConfigIndexReq) returns (RemoteConfigIndexResp);
-  rpc RemoteConfigPushAll(RemoteConfigPushAllReq) returns (Response);
+  rpc RemoteConfigPushAll(RemoteConfigPushAllReq) returns (Empty);
   rpc RemoteConfigLastRead(RemoteConfigLastReadReq) returns (RemoteConfigLastReadResp);
 }
 
@@ -199,7 +199,7 @@ service DeviceInteract {
   rpc actionRead(RespReadReq)         returns(ActionSendResp);
 
   //回复调用设备行为
-  rpc actionResp(ActionRespReq)         returns(Response);
+  rpc actionResp(ActionRespReq)         returns(Empty);
 
   //请求设备获取设备最新属性
   rpc propertyGetReportSend(PropertyGetReportSendReq) returns(PropertyGetReportSendResp);
@@ -257,6 +257,53 @@ service OtaTaskManage {
   rpc OtaTaskDeviceProcess(OtaTaskDeviceProcessReq) returns (OtaCommonResp);
   //取消单个设备的升级
   rpc OtaTaskDeviceCancle(OtaTaskDeviceCancleReq) returns (OtaCommonResp);
+}
+
+service userDevice{
+  //用户收藏的设备
+  rpc userDeviceCollectMultiCreate(UserDeviceCollectSave)returns(Empty);
+  rpc userDeviceCollectMultiDelete(UserDeviceCollectSave)returns(Empty);
+  rpc userDeviceCollectIndex(Empty)returns(UserDeviceCollectSave);
+
+  //分享设备
+  rpc userDeviceShareCreate(UserDeviceShareInfo)returns(WithID);
+  //取消分享设备
+  rpc userDeviceShareDelete(WithID)returns(Empty);
+  //获取设备分享列表(只有设备的所有者才能获取)
+  rpc userDeviceShareIndex(UserDeviceShareIndexReq)returns(UserDeviceShareIndexResp);
+  //获取设备分享的详情
+  rpc userDeviceShareRead(UserDeviceShareReadReq)returns(UserDeviceShareInfo);
+}
+message UserDeviceShareReadReq{
+  int64 id = 1;
+  DeviceCore device = 2;//设备信息
+}
+
+message UserDeviceShareIndexReq{
+  PageInfo page = 1;
+}
+
+message UserDeviceShareIndexResp{
+  repeated UserDeviceShareInfo list = 1;
+  int64 total = 2;
+}
+
+message UserDeviceShareInfo{
+  int64 id = 1;
+  DeviceCore device = 2;//设备信息
+  int64 userID = 3;//分享的对象
+  map<string,int64> PropertyPerm = 4;
+  map<string,int64> ActionPerm = 5;
+  UserDeviceShareAccessPerm AccessPerm = 6;
+}
+message UserDeviceShareAccessPerm{
+  int64 hubLog = 1;//设备消息记录
+  int64 ota = 2;//ota升级权限
+  int64 deviceTiming = 3;//设备定时
+}
+
+message UserDeviceCollectSave{
+  repeated DeviceCore devices = 1;
 }
 
 
@@ -802,6 +849,7 @@ message DeviceInfoIndexReq{
   int64 isOnline = 10; //在线状态过滤  1离线 2在线
   int64  productCategoryID = 11;//产品品类id
   repeated DeviceCore devices =12;
+  int64 isShared = 13;//过滤分享的设备(这里只获取分享的设备)
 }
 
 message DeviceInfoIndexResp{
@@ -1216,7 +1264,7 @@ service OTAFirmwareManage{
   //修改升级包
   rpc otaFirmwareUpdate(OtaFirmwareUpdateReq) returns (OtaFirmwareResp);
   //删除升级包
-  rpc otaFirmwareDelete(OtaFirmwareDeleteReq) returns(Response);
+  rpc otaFirmwareDelete(OtaFirmwareDeleteReq) returns(Empty);
   //升级包列表
   rpc otaFirmwareIndex(OtaFirmwareIndexReq) returns(OtaFirmwareIndexResp);
   //查询升级包
@@ -1327,7 +1375,7 @@ service OTAJobManage{
   //查询指定升级批次的详情
   rpc otaJobRead(JobReq) returns(OtaJobInfo);
   //取消动态升级策略
-  rpc cancelOTAStrategyByJob(JobReq) returns (Response);
+  rpc cancelOTAStrategyByJob(JobReq) returns (Empty);
 }
 
 message OtaFirmwareVerifyReq{
@@ -1432,15 +1480,15 @@ service OTAUpgradeTaskManage{
   //查询指定升级批次下的设备升级作业列表
   rpc otaTaskByJobIndex(OTATaskByJobIndexReq) returns(OtaTaskByJobIndexResp);
   //取消指定批次下的设备升级作业
-  rpc otaTaskByJobCancel(OTATaskByJobCancelReq) returns(Response);
+  rpc otaTaskByJobCancel(OTATaskByJobCancelReq) returns(Empty);
   //取消指定OTA升级包下状态为待确认、待推送、已推送、升级中状态的设备升级作业
-  rpc otaTaskByDeviceCancel(OTATaskByDeviceCancelReq) returns(Response);
+  rpc otaTaskByDeviceCancel(OTATaskByDeviceCancelReq) returns(Empty);
   //批量确认，处于待确认状态的设备升级作业
-  rpc otaTaskConfirm(OTATaskConfirmReq) returns(Response);
+  rpc otaTaskConfirm(OTATaskConfirmReq) returns(Empty);
   //查询指定设备下，未完成状态的设备升级作业
   rpc otaUnfinishedTaskByDeviceIndex(OTAUnfinishedTaskByDeviceIndexReq) returns(OTAUnfinishedTaskByDeviceIndexResp);
   //重新升级指定批次下升级失败或升级取消的设备升级作业
-  rpc otaTaskReUpgrade(OTATaskReUpgradeReq) returns(Response);
+  rpc otaTaskReUpgrade(OTATaskReUpgradeReq) returns(Empty);
 }
 message OTATaskByJobIndexReq{
   PageInfo pageInfo = 1;
@@ -1521,11 +1569,11 @@ message VerifyOtaFirmwareReq{
 
 service OTAModuleManage{
   //创建产品的OTA模块
-  rpc otaModuleCreate(OTAModuleReq) returns(Response);
+  rpc otaModuleCreate(OTAModuleReq) returns(Empty);
   //修改OTA模块别名、描述
-  rpc otaModuleUpdate(OTAModuleReq) returns(Response);
+  rpc otaModuleUpdate(OTAModuleReq) returns(Empty);
   //删除自定义OTA模块
-  rpc otaModuleDelete(OTAModuleDeleteReq) returns(Response);
+  rpc otaModuleDelete(OTAModuleDeleteReq) returns(Empty);
   //查询产品下的OTA模块列表
   rpc otaModuleByProductIndex(OTAModuleIndexReq) returns(OTAModuleIndexResp);
   //查询设备上报过的OTA模块版本列表

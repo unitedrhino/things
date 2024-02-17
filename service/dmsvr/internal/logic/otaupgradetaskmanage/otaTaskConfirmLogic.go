@@ -28,7 +28,7 @@ func NewOtaTaskConfirmLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ot
 }
 
 // 批量确认，处于待确认状态的设备升级作业
-func (l *OtaTaskConfirmLogic) OtaTaskConfirm(in *dm.OTATaskConfirmReq) (*dm.Response, error) {
+func (l *OtaTaskConfirmLogic) OtaTaskConfirm(in *dm.OTATaskConfirmReq) (*dm.Empty, error) {
 	filter := relationDB.OtaUpgradeTaskFilter{
 		Ids: in.TaskId,
 	}
@@ -38,5 +38,5 @@ func (l *OtaTaskConfirmLogic) OtaTaskConfirm(in *dm.OTATaskConfirmReq) (*dm.Resp
 		l.Errorf("%s.TaskInfo.TaskInfo Updates failure err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

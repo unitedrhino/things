@@ -120,7 +120,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 }
 
 // 新增设备
-func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Response, error) {
+func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empty, error) {
 	find, err := l.CheckProduct(in)
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
@@ -159,7 +159,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Resp
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }
 func (l *ProductInfoCreateLogic) InitProduct(pi *relationDB.DmProductInfo) error {
 	t, _ := schema.NewSchemaTsl([]byte(schema.DefaultSchema))

@@ -23,25 +23,25 @@ func NewDeviceManageServer(svcCtx *svc.ServiceContext) *DeviceManageServer {
 }
 
 // 鉴定是否是root账号(提供给mqtt broker)
-func (s *DeviceManageServer) RootCheck(ctx context.Context, in *dm.RootCheckReq) (*dm.Response, error) {
+func (s *DeviceManageServer) RootCheck(ctx context.Context, in *dm.RootCheckReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewRootCheckLogic(ctx, s.svcCtx)
 	return l.RootCheck(in)
 }
 
 // 新增设备
-func (s *DeviceManageServer) DeviceInfoCreate(ctx context.Context, in *dm.DeviceInfo) (*dm.Response, error) {
+func (s *DeviceManageServer) DeviceInfoCreate(ctx context.Context, in *dm.DeviceInfo) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceInfoCreateLogic(ctx, s.svcCtx)
 	return l.DeviceInfoCreate(in)
 }
 
 // 更新设备
-func (s *DeviceManageServer) DeviceInfoUpdate(ctx context.Context, in *dm.DeviceInfo) (*dm.Response, error) {
+func (s *DeviceManageServer) DeviceInfoUpdate(ctx context.Context, in *dm.DeviceInfo) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceInfoUpdateLogic(ctx, s.svcCtx)
 	return l.DeviceInfoUpdate(in)
 }
 
 // 删除设备
-func (s *DeviceManageServer) DeviceInfoDelete(ctx context.Context, in *dm.DeviceInfoDeleteReq) (*dm.Response, error) {
+func (s *DeviceManageServer) DeviceInfoDelete(ctx context.Context, in *dm.DeviceInfoDeleteReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceInfoDeleteLogic(ctx, s.svcCtx)
 	return l.DeviceInfoDelete(in)
 }
@@ -53,7 +53,7 @@ func (s *DeviceManageServer) DeviceInfoIndex(ctx context.Context, in *dm.DeviceI
 }
 
 // 批量更新设备状态
-func (s *DeviceManageServer) DeviceInfoMultiUpdate(ctx context.Context, in *dm.DeviceInfoMultiUpdateReq) (*dm.Response, error) {
+func (s *DeviceManageServer) DeviceInfoMultiUpdate(ctx context.Context, in *dm.DeviceInfoMultiUpdateReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceInfoMultiUpdateLogic(ctx, s.svcCtx)
 	return l.DeviceInfoMultiUpdate(in)
 }
@@ -65,7 +65,7 @@ func (s *DeviceManageServer) DeviceInfoRead(ctx context.Context, in *dm.DeviceIn
 }
 
 // 绑定网关下子设备设备
-func (s *DeviceManageServer) DeviceGatewayMultiCreate(ctx context.Context, in *dm.DeviceGatewayMultiCreateReq) (*dm.Response, error) {
+func (s *DeviceManageServer) DeviceGatewayMultiCreate(ctx context.Context, in *dm.DeviceGatewayMultiCreateReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceGatewayMultiCreateLogic(ctx, s.svcCtx)
 	return l.DeviceGatewayMultiCreate(in)
 }
@@ -77,7 +77,7 @@ func (s *DeviceManageServer) DeviceGatewayIndex(ctx context.Context, in *dm.Devi
 }
 
 // 删除网关下子设备
-func (s *DeviceManageServer) DeviceGatewayMultiDelete(ctx context.Context, in *dm.DeviceGatewayMultiDeleteReq) (*dm.Response, error) {
+func (s *DeviceManageServer) DeviceGatewayMultiDelete(ctx context.Context, in *dm.DeviceGatewayMultiDeleteReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceGatewayMultiDeleteLogic(ctx, s.svcCtx)
 	return l.DeviceGatewayMultiDelete(in)
 }

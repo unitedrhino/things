@@ -27,7 +27,7 @@ func NewOtaTaskDeviceProcessLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 // 根据设备的name和productId，查询task
-func (l *OtaTaskDeviceProcessLogic) OtaTaskDeviceProcess(in *dm.OtaTaskDeviceProcessReq) (*dm.Response, error) {
+func (l *OtaTaskDeviceProcessLogic) OtaTaskDeviceProcess(in *dm.OtaTaskDeviceProcessReq) (*dm.Empty, error) {
 	filter := relationDB.OtaUpgradeTaskFilter{
 		ProductId:  in.ProductId,
 		DeviceName: in.DeviceName,
@@ -50,5 +50,5 @@ func (l *OtaTaskDeviceProcessLogic) OtaTaskDeviceProcess(in *dm.OtaTaskDevicePro
 		l.Errorf("%s.TaskInfo.TaskInfo OtaTaskDeviceProcess failure err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

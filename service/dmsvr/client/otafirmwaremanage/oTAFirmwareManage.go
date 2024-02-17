@@ -44,6 +44,7 @@ type (
 	DeviceTypeCountReq                 = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
+	Empty                              = dm.Empty
 	EventIndex                         = dm.EventIndex
 	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
@@ -173,7 +174,6 @@ type (
 	RemoteConfigLastReadResp           = dm.RemoteConfigLastReadResp
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
-	Response                           = dm.Response
 	RootCheckReq                       = dm.RootCheckReq
 	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
@@ -188,6 +188,12 @@ type (
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
+	UserDeviceCollectSave              = dm.UserDeviceCollectSave
+	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
+	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo                = dm.UserDeviceShareInfo
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
 
@@ -197,7 +203,7 @@ type (
 		// 修改升级包
 		OtaFirmwareUpdate(ctx context.Context, in *OtaFirmwareUpdateReq, opts ...grpc.CallOption) (*OtaFirmwareResp, error)
 		// 删除升级包
-		OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error)
+		OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 升级包列表
 		OtaFirmwareIndex(ctx context.Context, in *OtaFirmwareIndexReq, opts ...grpc.CallOption) (*OtaFirmwareIndexResp, error)
 		// 查询升级包
@@ -250,13 +256,13 @@ func (d *directOTAFirmwareManage) OtaFirmwareUpdate(ctx context.Context, in *Ota
 }
 
 // 删除升级包
-func (m *defaultOTAFirmwareManage) OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultOTAFirmwareManage) OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewOTAFirmwareManageClient(m.cli.Conn())
 	return client.OtaFirmwareDelete(ctx, in, opts...)
 }
 
 // 删除升级包
-func (d *directOTAFirmwareManage) OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Response, error) {
+func (d *directOTAFirmwareManage) OtaFirmwareDelete(ctx context.Context, in *OtaFirmwareDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaFirmwareDelete(ctx, in)
 }
 

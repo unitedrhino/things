@@ -42,15 +42,7 @@ service ops{
   rpc opsWorkOrderIndex(OpsWorkOrderIndexReq) returns(OpsWorkOrderIndexResp);
 }
 
-service userDevice{
-  rpc userCollectDeviceMultiCreate(UserCollectDeviceSave)returns(Empty);
-  rpc userCollectDeviceMultiDelete(UserCollectDeviceSave)returns(Empty);
-  rpc userCollectDeviceIndex(Empty)returns(UserCollectDeviceSave);
-}
 
-message UserCollectDeviceSave{
-  repeated DeviceCore devices = 1;
-}
 
 message SceneInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填

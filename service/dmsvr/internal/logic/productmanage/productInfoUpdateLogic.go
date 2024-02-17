@@ -93,7 +93,7 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 }
 
 // 更新设备
-func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Response, error) {
+func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Empty, error) {
 	po, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
@@ -115,5 +115,5 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Resp
 		return nil, err
 	}
 
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

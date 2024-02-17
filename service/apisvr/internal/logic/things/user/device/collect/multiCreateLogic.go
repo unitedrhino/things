@@ -24,7 +24,7 @@ func NewMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 }
 
 func (l *MultiCreateLogic) MultiCreate(req *types.UserCollectDeviceSave) error {
-	_, err := l.svcCtx.UserDevice.UserCollectDeviceMultiCreate(l.ctx, ToUserCollectDeviceSavePb(req))
+	_, err := l.svcCtx.UserDevice.UserDeviceCollectMultiCreate(l.ctx, ToUserCollectDeviceSavePb(req))
 
 	return err
 }

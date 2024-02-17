@@ -41,7 +41,7 @@ func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCo
 }
 
 // 创建分组设备
-func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGatewayMultiCreateReq) (*dm.Response, error) {
+func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGatewayMultiCreateReq) (*dm.Empty, error) {
 	{ //检查是否是网关类型
 		pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.GatewayProductID}})
 		if err != nil {
@@ -120,5 +120,5 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 		return nil, er
 	}
-	return &dm.Response{}, nil
+	return &dm.Empty{}, nil
 }

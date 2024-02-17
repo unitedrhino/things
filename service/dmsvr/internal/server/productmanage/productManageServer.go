@@ -23,19 +23,19 @@ func NewProductManageServer(svcCtx *svc.ServiceContext) *ProductManageServer {
 }
 
 // 新增产品
-func (s *ProductManageServer) ProductInfoCreate(ctx context.Context, in *dm.ProductInfo) (*dm.Response, error) {
+func (s *ProductManageServer) ProductInfoCreate(ctx context.Context, in *dm.ProductInfo) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductInfoCreateLogic(ctx, s.svcCtx)
 	return l.ProductInfoCreate(in)
 }
 
 // 更新产品
-func (s *ProductManageServer) ProductInfoUpdate(ctx context.Context, in *dm.ProductInfo) (*dm.Response, error) {
+func (s *ProductManageServer) ProductInfoUpdate(ctx context.Context, in *dm.ProductInfo) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductInfoUpdateLogic(ctx, s.svcCtx)
 	return l.ProductInfoUpdate(in)
 }
 
 // 删除产品
-func (s *ProductManageServer) ProductInfoDelete(ctx context.Context, in *dm.ProductInfoDeleteReq) (*dm.Response, error) {
+func (s *ProductManageServer) ProductInfoDelete(ctx context.Context, in *dm.ProductInfoDeleteReq) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductInfoDeleteLogic(ctx, s.svcCtx)
 	return l.ProductInfoDelete(in)
 }
@@ -53,19 +53,19 @@ func (s *ProductManageServer) ProductInfoRead(ctx context.Context, in *dm.Produc
 }
 
 // 更新产品物模型
-func (s *ProductManageServer) ProductSchemaUpdate(ctx context.Context, in *dm.ProductSchemaUpdateReq) (*dm.Response, error) {
+func (s *ProductManageServer) ProductSchemaUpdate(ctx context.Context, in *dm.ProductSchemaUpdateReq) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductSchemaUpdateLogic(ctx, s.svcCtx)
 	return l.ProductSchemaUpdate(in)
 }
 
 // 新增产品
-func (s *ProductManageServer) ProductSchemaCreate(ctx context.Context, in *dm.ProductSchemaCreateReq) (*dm.Response, error) {
+func (s *ProductManageServer) ProductSchemaCreate(ctx context.Context, in *dm.ProductSchemaCreateReq) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductSchemaCreateLogic(ctx, s.svcCtx)
 	return l.ProductSchemaCreate(in)
 }
 
 // 删除产品
-func (s *ProductManageServer) ProductSchemaDelete(ctx context.Context, in *dm.ProductSchemaDeleteReq) (*dm.Response, error) {
+func (s *ProductManageServer) ProductSchemaDelete(ctx context.Context, in *dm.ProductSchemaDeleteReq) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductSchemaDeleteLogic(ctx, s.svcCtx)
 	return l.ProductSchemaDelete(in)
 }
@@ -77,7 +77,7 @@ func (s *ProductManageServer) ProductSchemaIndex(ctx context.Context, in *dm.Pro
 }
 
 // 删除产品
-func (s *ProductManageServer) ProductSchemaTslImport(ctx context.Context, in *dm.ProductSchemaTslImportReq) (*dm.Response, error) {
+func (s *ProductManageServer) ProductSchemaTslImport(ctx context.Context, in *dm.ProductSchemaTslImportReq) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductSchemaTslImportLogic(ctx, s.svcCtx)
 	return l.ProductSchemaTslImport(in)
 }
@@ -94,7 +94,7 @@ func (s *ProductManageServer) ProductCustomRead(ctx context.Context, in *dm.Prod
 	return l.ProductCustomRead(in)
 }
 
-func (s *ProductManageServer) ProductCustomUpdate(ctx context.Context, in *dm.ProductCustom) (*dm.Response, error) {
+func (s *ProductManageServer) ProductCustomUpdate(ctx context.Context, in *dm.ProductCustom) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductCustomUpdateLogic(ctx, s.svcCtx)
 	return l.ProductCustomUpdate(in)
 }
@@ -106,13 +106,13 @@ func (s *ProductManageServer) ProductCategoryCreate(ctx context.Context, in *dm.
 }
 
 // 更新产品
-func (s *ProductManageServer) ProductCategoryUpdate(ctx context.Context, in *dm.ProductCategory) (*dm.Response, error) {
+func (s *ProductManageServer) ProductCategoryUpdate(ctx context.Context, in *dm.ProductCategory) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductCategoryUpdateLogic(ctx, s.svcCtx)
 	return l.ProductCategoryUpdate(in)
 }
 
 // 删除产品
-func (s *ProductManageServer) ProductCategoryDelete(ctx context.Context, in *dm.WithID) (*dm.Response, error) {
+func (s *ProductManageServer) ProductCategoryDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductCategoryDeleteLogic(ctx, s.svcCtx)
 	return l.ProductCategoryDelete(in)
 }

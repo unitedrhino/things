@@ -59,7 +59,7 @@ func (s *OTAJobManageServer) OtaJobRead(ctx context.Context, in *dm.JobReq) (*dm
 }
 
 // 取消动态升级策略
-func (s *OTAJobManageServer) CancelOTAStrategyByJob(ctx context.Context, in *dm.JobReq) (*dm.Response, error) {
+func (s *OTAJobManageServer) CancelOTAStrategyByJob(ctx context.Context, in *dm.JobReq) (*dm.Empty, error) {
 	l := otajobmanagelogic.NewCancelOTAStrategyByJobLogic(ctx, s.svcCtx)
 	return l.CancelOTAStrategyByJob(in)
 }
