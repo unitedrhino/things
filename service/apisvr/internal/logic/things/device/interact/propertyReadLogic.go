@@ -31,7 +31,7 @@ func (l *PropertyReadLogic) PropertyRead(req *types.DeviceInteractRespReadReq) (
 		DeviceName: req.DeviceName,
 		MsgToken:   req.MsgToken,
 	}
-	dmResp, err := l.svcCtx.DeviceInteract.PropertyRead(l.ctx, dmReq)
+	dmResp, err := l.svcCtx.DeviceInteract.PropertyControlRead(l.ctx, dmReq)
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.PropertyRead req=%v err=%+v", utils.FuncName(), req, er)

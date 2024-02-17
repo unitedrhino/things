@@ -2,7 +2,6 @@ package deviceMsgEvent
 
 import (
 	"context"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgSdkLog"
 	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
 	"time"
@@ -59,17 +58,17 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	if l.dreq.NoAsk() { //如果不需要回复
 		respMsg = nil
 	}
-	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
-		ProductID:  msg.ProductID,
-		Action:     "sdkLog",
-		Timestamp:  time.Now(), // 记录当前时间
-		DeviceName: msg.DeviceName,
-		TranceID:   utils.TraceIdFromContext(l.ctx),
-		RequestID:  l.dreq.MsgToken,
-		Content:    string(msg.Payload),
-		Topic:      msg.Handle, //todo 等待实现
-		ResultType: errors.Fmt(err).GetCode(),
-	})
+	//l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+	//	ProductID:  msg.ProductID,
+	//	Action:     "sdkLog",
+	//	Timestamp:  time.Now(), // 记录当前时间
+	//	DeviceName: msg.DeviceName,
+	//	TranceID:   utils.TraceIdFromContext(l.ctx),
+	//	RequestID:  l.dreq.MsgToken,
+	//	Content:    string(msg.Payload),
+	//	Topic:      msg.Handle, //todo 等待实现
+	//	ResultType: errors.Fmt(err).GetCode(),
+	//})
 	return respMsg, err
 }
 

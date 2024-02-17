@@ -160,13 +160,23 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/get-property-reply",
-					Handler: thingsdeviceinteract.GetPropertyReplyHandler(serverCtx),
+					Path:    "/get-property-latest-reply",
+					Handler: thingsdeviceinteract.GetPropertyLatestReplyHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/multi-send-property",
 					Handler: thingsdeviceinteract.MultiSendPropertyHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-send-property-control",
+					Handler: thingsdeviceinteract.MultiSendPropertyControlHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/property-control-read",
+					Handler: thingsdeviceinteract.PropertyControlReadHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -187,6 +197,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/send-property",
 					Handler: thingsdeviceinteract.SendPropertyHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/send-property-control",
+					Handler: thingsdeviceinteract.SendPropertyControlHandler(serverCtx),
 				},
 			}...,
 		),

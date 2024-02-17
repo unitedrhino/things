@@ -186,6 +186,7 @@ service DeviceMsg {
   rpc eventLogIndex(EventLogIndexReq)     returns (EventIndexResp);
   //获取设备影子列表
   rpc shadowIndex(PropertyLatestIndexReq)     returns (ShadowIndexResp);
+
   //主动触发单个设备ota升级推送
   rpc otaPromptIndex(OtaPromptIndexReq) returns (OtaPromptIndexResp);
 }
@@ -201,14 +202,14 @@ service DeviceInteract {
   rpc respAction(RespActionReq)         returns(Response);
 
   //请求设备获取设备最新属性
-  rpc getPropertyReply(GetPropertyReplyReq) returns(GetPropertyReplyResp);
+  rpc getPropertyLatestReply(GetPropertyLatestReplyReq) returns(GetPropertyLatestReplyResp);
 
   //调用设备属性
-  rpc sendProperty(SendPropertyReq)     returns(SendPropertyResp);
+  rpc sendPropertyControl(SendPropertyControlReq)     returns(SendPropertyControlResp);
   //批量调用设备属性
-  rpc multiSendProperty(MultiSendPropertyReq)     returns(MultiSendPropertyResp);
+  rpc multiSendPropertyControl(MultiSendPropertyControlReq)     returns(MultiSendPropertyControlResp);
   //获取异步调用设备属性的结果
-  rpc propertyRead(RespReadReq)  returns(SendPropertyResp);
+  rpc propertyControlRead(RespReadReq)  returns(SendPropertyControlResp);
   //发送消息给设备
   rpc sendMsg(SendMsgReq)     returns(SendMsgResp);
 }
@@ -308,13 +309,13 @@ message ShadowIndex{
   int64 updatedDeviceTime = 3;//更新到设备的时间
 }
 
-message GetPropertyReplyReq{
+message GetPropertyLatestReplyReq{
   string productID = 1; //产品id (必填)
   string deviceName = 2; //设备名(必填)
   repeated string dataIDs = 3; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条
 }
 
-message GetPropertyReplyResp{
+message GetPropertyLatestReplyResp{
   int64   code = 1;//设备返回状态码
   string  msg = 2;//返回状态
   string msgToken = 3;//调用id
@@ -464,7 +465,7 @@ message RespReadReq{
   string  msgToken = 3;//调用id
 }
 
-message SendPropertyReq{
+message SendPropertyControlReq{
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
   string data = 3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
@@ -482,7 +483,7 @@ message RespActionReq{
 }
 
 
-message SendPropertyResp{
+message SendPropertyControlResp{
   int64   code = 1;//设备返回状态码
   string  msg = 2;//返回状态
   string msgToken = 3;//调用id
@@ -499,14 +500,14 @@ message SendMsgResp{
 
 
 
-message MultiSendPropertyReq{
+message MultiSendPropertyControlReq{
   string  productID = 1; //产品id
   repeated string deviceNames = 2; //设备名
   repeated DeviceCore devices =3;//如果是不同的产品,则传这个字段,上面两个参数填了优先使用
   int64 shadowControl = 4;//设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
   string data = 5;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
 }
-message SendPropertyMsg{
+message SendPropertyControlMsg{
   string productID =1;
   string  deviceName = 2; //设备名
   int64   code = 3;//设备返回状态码
@@ -516,8 +517,8 @@ message SendPropertyMsg{
   int64  sysCode = 7;//系统错误码
 }
 
-message MultiSendPropertyResp{
-  repeated SendPropertyMsg list = 1; //批量设备返回结果列表
+message MultiSendPropertyControlResp{
+  repeated SendPropertyControlMsg list = 1; //批量设备返回结果列表
 }
 
 message OtaPromptIndexReq {

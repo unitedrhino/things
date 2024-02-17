@@ -18,11 +18,12 @@ func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,
 		return errors.System.AddDetail("param json parse failure")
 	}
 	sql := fmt.Sprintf(
-		"insert into %s using %s tags('%s','%s') (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);",
+		" %s using %s tags('%s','%s') (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);",
 		d.GetEventTableName(productID, deviceName), d.GetEventStableName(), productID, deviceName)
-	if _, err := d.t.ExecContext(ctx, sql, event.TimeStamp, event.Identifier, event.Type, param); err != nil {
-		return err
-	}
+	//if _, err := d.t.ExecContext(ctx, sql, event.TimeStamp, event.Identifier, event.Type, param); err != nil {
+	//	return err
+	//}
+	d.t.AsyncInsert(sql, event.TimeStamp, event.Identifier, event.Type, param)
 	return nil
 }
 

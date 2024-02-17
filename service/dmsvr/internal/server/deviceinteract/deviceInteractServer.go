@@ -41,27 +41,27 @@ func (s *DeviceInteractServer) RespAction(ctx context.Context, in *dm.RespAction
 }
 
 // 请求设备获取设备最新属性
-func (s *DeviceInteractServer) GetPropertyReply(ctx context.Context, in *dm.GetPropertyReplyReq) (*dm.GetPropertyReplyResp, error) {
-	l := deviceinteractlogic.NewGetPropertyReplyLogic(ctx, s.svcCtx)
-	return l.GetPropertyReply(in)
+func (s *DeviceInteractServer) GetPropertyLatestReply(ctx context.Context, in *dm.GetPropertyLatestReplyReq) (*dm.GetPropertyLatestReplyResp, error) {
+	l := deviceinteractlogic.NewGetPropertyLatestReplyLogic(ctx, s.svcCtx)
+	return l.GetPropertyLatestReply(in)
 }
 
 // 调用设备属性
-func (s *DeviceInteractServer) SendProperty(ctx context.Context, in *dm.SendPropertyReq) (*dm.SendPropertyResp, error) {
-	l := deviceinteractlogic.NewSendPropertyLogic(ctx, s.svcCtx)
-	return l.SendProperty(in)
+func (s *DeviceInteractServer) SendPropertyControl(ctx context.Context, in *dm.SendPropertyControlReq) (*dm.SendPropertyControlResp, error) {
+	l := deviceinteractlogic.NewSendPropertyControlLogic(ctx, s.svcCtx)
+	return l.SendPropertyControl(in)
 }
 
 // 批量调用设备属性
-func (s *DeviceInteractServer) MultiSendProperty(ctx context.Context, in *dm.MultiSendPropertyReq) (*dm.MultiSendPropertyResp, error) {
-	l := deviceinteractlogic.NewMultiSendPropertyLogic(ctx, s.svcCtx)
-	return l.MultiSendProperty(in)
+func (s *DeviceInteractServer) MultiSendPropertyControl(ctx context.Context, in *dm.MultiSendPropertyControlReq) (*dm.MultiSendPropertyControlResp, error) {
+	l := deviceinteractlogic.NewMultiSendPropertyControlLogic(ctx, s.svcCtx)
+	return l.MultiSendPropertyControl(in)
 }
 
 // 获取异步调用设备属性的结果
-func (s *DeviceInteractServer) PropertyRead(ctx context.Context, in *dm.RespReadReq) (*dm.SendPropertyResp, error) {
-	l := deviceinteractlogic.NewPropertyReadLogic(ctx, s.svcCtx)
-	return l.PropertyRead(in)
+func (s *DeviceInteractServer) PropertyControlRead(ctx context.Context, in *dm.RespReadReq) (*dm.SendPropertyControlResp, error) {
+	l := deviceinteractlogic.NewPropertyControlReadLogic(ctx, s.svcCtx)
+	return l.PropertyControlRead(in)
 }
 
 // 发送消息给设备

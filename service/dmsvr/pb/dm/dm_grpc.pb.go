@@ -2564,14 +2564,14 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	DeviceInteract_SendAction_FullMethodName        = "/dm.DeviceInteract/sendAction"
-	DeviceInteract_ActionRead_FullMethodName        = "/dm.DeviceInteract/actionRead"
-	DeviceInteract_RespAction_FullMethodName        = "/dm.DeviceInteract/respAction"
-	DeviceInteract_GetPropertyReply_FullMethodName  = "/dm.DeviceInteract/getPropertyReply"
-	DeviceInteract_SendProperty_FullMethodName      = "/dm.DeviceInteract/sendProperty"
-	DeviceInteract_MultiSendProperty_FullMethodName = "/dm.DeviceInteract/multiSendProperty"
-	DeviceInteract_PropertyRead_FullMethodName      = "/dm.DeviceInteract/propertyRead"
-	DeviceInteract_SendMsg_FullMethodName           = "/dm.DeviceInteract/sendMsg"
+	DeviceInteract_SendAction_FullMethodName               = "/dm.DeviceInteract/sendAction"
+	DeviceInteract_ActionRead_FullMethodName               = "/dm.DeviceInteract/actionRead"
+	DeviceInteract_RespAction_FullMethodName               = "/dm.DeviceInteract/respAction"
+	DeviceInteract_GetPropertyLatestReply_FullMethodName   = "/dm.DeviceInteract/getPropertyLatestReply"
+	DeviceInteract_SendPropertyControl_FullMethodName      = "/dm.DeviceInteract/sendPropertyControl"
+	DeviceInteract_MultiSendPropertyControl_FullMethodName = "/dm.DeviceInteract/multiSendPropertyControl"
+	DeviceInteract_PropertyControlRead_FullMethodName      = "/dm.DeviceInteract/propertyControlRead"
+	DeviceInteract_SendMsg_FullMethodName                  = "/dm.DeviceInteract/sendMsg"
 )
 
 // DeviceInteractClient is the client API for DeviceInteract service.
@@ -2585,13 +2585,13 @@ type DeviceInteractClient interface {
 	// 回复调用设备行为
 	RespAction(ctx context.Context, in *RespActionReq, opts ...grpc.CallOption) (*Response, error)
 	// 请求设备获取设备最新属性
-	GetPropertyReply(ctx context.Context, in *GetPropertyReplyReq, opts ...grpc.CallOption) (*GetPropertyReplyResp, error)
+	GetPropertyLatestReply(ctx context.Context, in *GetPropertyLatestReplyReq, opts ...grpc.CallOption) (*GetPropertyLatestReplyResp, error)
 	// 调用设备属性
-	SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+	SendPropertyControl(ctx context.Context, in *SendPropertyControlReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error)
 	// 批量调用设备属性
-	MultiSendProperty(ctx context.Context, in *MultiSendPropertyReq, opts ...grpc.CallOption) (*MultiSendPropertyResp, error)
+	MultiSendPropertyControl(ctx context.Context, in *MultiSendPropertyControlReq, opts ...grpc.CallOption) (*MultiSendPropertyControlResp, error)
 	// 获取异步调用设备属性的结果
-	PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error)
+	PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error)
 	// 发送消息给设备
 	SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
 }
@@ -2631,36 +2631,36 @@ func (c *deviceInteractClient) RespAction(ctx context.Context, in *RespActionReq
 	return out, nil
 }
 
-func (c *deviceInteractClient) GetPropertyReply(ctx context.Context, in *GetPropertyReplyReq, opts ...grpc.CallOption) (*GetPropertyReplyResp, error) {
-	out := new(GetPropertyReplyResp)
-	err := c.cc.Invoke(ctx, DeviceInteract_GetPropertyReply_FullMethodName, in, out, opts...)
+func (c *deviceInteractClient) GetPropertyLatestReply(ctx context.Context, in *GetPropertyLatestReplyReq, opts ...grpc.CallOption) (*GetPropertyLatestReplyResp, error) {
+	out := new(GetPropertyLatestReplyResp)
+	err := c.cc.Invoke(ctx, DeviceInteract_GetPropertyLatestReply_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceInteractClient) SendProperty(ctx context.Context, in *SendPropertyReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
-	out := new(SendPropertyResp)
-	err := c.cc.Invoke(ctx, DeviceInteract_SendProperty_FullMethodName, in, out, opts...)
+func (c *deviceInteractClient) SendPropertyControl(ctx context.Context, in *SendPropertyControlReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error) {
+	out := new(SendPropertyControlResp)
+	err := c.cc.Invoke(ctx, DeviceInteract_SendPropertyControl_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceInteractClient) MultiSendProperty(ctx context.Context, in *MultiSendPropertyReq, opts ...grpc.CallOption) (*MultiSendPropertyResp, error) {
-	out := new(MultiSendPropertyResp)
-	err := c.cc.Invoke(ctx, DeviceInteract_MultiSendProperty_FullMethodName, in, out, opts...)
+func (c *deviceInteractClient) MultiSendPropertyControl(ctx context.Context, in *MultiSendPropertyControlReq, opts ...grpc.CallOption) (*MultiSendPropertyControlResp, error) {
+	out := new(MultiSendPropertyControlResp)
+	err := c.cc.Invoke(ctx, DeviceInteract_MultiSendPropertyControl_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceInteractClient) PropertyRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyResp, error) {
-	out := new(SendPropertyResp)
-	err := c.cc.Invoke(ctx, DeviceInteract_PropertyRead_FullMethodName, in, out, opts...)
+func (c *deviceInteractClient) PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*SendPropertyControlResp, error) {
+	out := new(SendPropertyControlResp)
+	err := c.cc.Invoke(ctx, DeviceInteract_PropertyControlRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2687,13 +2687,13 @@ type DeviceInteractServer interface {
 	// 回复调用设备行为
 	RespAction(context.Context, *RespActionReq) (*Response, error)
 	// 请求设备获取设备最新属性
-	GetPropertyReply(context.Context, *GetPropertyReplyReq) (*GetPropertyReplyResp, error)
+	GetPropertyLatestReply(context.Context, *GetPropertyLatestReplyReq) (*GetPropertyLatestReplyResp, error)
 	// 调用设备属性
-	SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error)
+	SendPropertyControl(context.Context, *SendPropertyControlReq) (*SendPropertyControlResp, error)
 	// 批量调用设备属性
-	MultiSendProperty(context.Context, *MultiSendPropertyReq) (*MultiSendPropertyResp, error)
+	MultiSendPropertyControl(context.Context, *MultiSendPropertyControlReq) (*MultiSendPropertyControlResp, error)
 	// 获取异步调用设备属性的结果
-	PropertyRead(context.Context, *RespReadReq) (*SendPropertyResp, error)
+	PropertyControlRead(context.Context, *RespReadReq) (*SendPropertyControlResp, error)
 	// 发送消息给设备
 	SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error)
 	mustEmbedUnimplementedDeviceInteractServer()
@@ -2712,17 +2712,17 @@ func (UnimplementedDeviceInteractServer) ActionRead(context.Context, *RespReadRe
 func (UnimplementedDeviceInteractServer) RespAction(context.Context, *RespActionReq) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RespAction not implemented")
 }
-func (UnimplementedDeviceInteractServer) GetPropertyReply(context.Context, *GetPropertyReplyReq) (*GetPropertyReplyResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPropertyReply not implemented")
+func (UnimplementedDeviceInteractServer) GetPropertyLatestReply(context.Context, *GetPropertyLatestReplyReq) (*GetPropertyLatestReplyResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPropertyLatestReply not implemented")
 }
-func (UnimplementedDeviceInteractServer) SendProperty(context.Context, *SendPropertyReq) (*SendPropertyResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendProperty not implemented")
+func (UnimplementedDeviceInteractServer) SendPropertyControl(context.Context, *SendPropertyControlReq) (*SendPropertyControlResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendPropertyControl not implemented")
 }
-func (UnimplementedDeviceInteractServer) MultiSendProperty(context.Context, *MultiSendPropertyReq) (*MultiSendPropertyResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MultiSendProperty not implemented")
+func (UnimplementedDeviceInteractServer) MultiSendPropertyControl(context.Context, *MultiSendPropertyControlReq) (*MultiSendPropertyControlResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiSendPropertyControl not implemented")
 }
-func (UnimplementedDeviceInteractServer) PropertyRead(context.Context, *RespReadReq) (*SendPropertyResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PropertyRead not implemented")
+func (UnimplementedDeviceInteractServer) PropertyControlRead(context.Context, *RespReadReq) (*SendPropertyControlResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PropertyControlRead not implemented")
 }
 func (UnimplementedDeviceInteractServer) SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMsg not implemented")
@@ -2794,74 +2794,74 @@ func _DeviceInteract_RespAction_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceInteract_GetPropertyReply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetPropertyReplyReq)
+func _DeviceInteract_GetPropertyLatestReply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPropertyLatestReplyReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceInteractServer).GetPropertyReply(ctx, in)
+		return srv.(DeviceInteractServer).GetPropertyLatestReply(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceInteract_GetPropertyReply_FullMethodName,
+		FullMethod: DeviceInteract_GetPropertyLatestReply_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceInteractServer).GetPropertyReply(ctx, req.(*GetPropertyReplyReq))
+		return srv.(DeviceInteractServer).GetPropertyLatestReply(ctx, req.(*GetPropertyLatestReplyReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceInteract_SendProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendPropertyReq)
+func _DeviceInteract_SendPropertyControl_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendPropertyControlReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceInteractServer).SendProperty(ctx, in)
+		return srv.(DeviceInteractServer).SendPropertyControl(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceInteract_SendProperty_FullMethodName,
+		FullMethod: DeviceInteract_SendPropertyControl_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceInteractServer).SendProperty(ctx, req.(*SendPropertyReq))
+		return srv.(DeviceInteractServer).SendPropertyControl(ctx, req.(*SendPropertyControlReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceInteract_MultiSendProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MultiSendPropertyReq)
+func _DeviceInteract_MultiSendPropertyControl_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiSendPropertyControlReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceInteractServer).MultiSendProperty(ctx, in)
+		return srv.(DeviceInteractServer).MultiSendPropertyControl(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceInteract_MultiSendProperty_FullMethodName,
+		FullMethod: DeviceInteract_MultiSendPropertyControl_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceInteractServer).MultiSendProperty(ctx, req.(*MultiSendPropertyReq))
+		return srv.(DeviceInteractServer).MultiSendPropertyControl(ctx, req.(*MultiSendPropertyControlReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceInteract_PropertyRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _DeviceInteract_PropertyControlRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RespReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceInteractServer).PropertyRead(ctx, in)
+		return srv.(DeviceInteractServer).PropertyControlRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceInteract_PropertyRead_FullMethodName,
+		FullMethod: DeviceInteract_PropertyControlRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceInteractServer).PropertyRead(ctx, req.(*RespReadReq))
+		return srv.(DeviceInteractServer).PropertyControlRead(ctx, req.(*RespReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2904,20 +2904,20 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DeviceInteract_RespAction_Handler,
 		},
 		{
-			MethodName: "getPropertyReply",
-			Handler:    _DeviceInteract_GetPropertyReply_Handler,
+			MethodName: "getPropertyLatestReply",
+			Handler:    _DeviceInteract_GetPropertyLatestReply_Handler,
 		},
 		{
-			MethodName: "sendProperty",
-			Handler:    _DeviceInteract_SendProperty_Handler,
+			MethodName: "sendPropertyControl",
+			Handler:    _DeviceInteract_SendPropertyControl_Handler,
 		},
 		{
-			MethodName: "multiSendProperty",
-			Handler:    _DeviceInteract_MultiSendProperty_Handler,
+			MethodName: "multiSendPropertyControl",
+			Handler:    _DeviceInteract_MultiSendPropertyControl_Handler,
 		},
 		{
-			MethodName: "propertyRead",
-			Handler:    _DeviceInteract_PropertyRead_Handler,
+			MethodName: "propertyControlRead",
+			Handler:    _DeviceInteract_PropertyControlRead_Handler,
 		},
 		{
 			MethodName: "sendMsg",

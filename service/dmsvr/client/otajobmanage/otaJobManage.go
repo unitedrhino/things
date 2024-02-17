@@ -54,8 +54,8 @@ type (
 	FirmwareInfoReadReq                = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp               = dm.FirmwareInfoReadResp
 	FirmwareResp                       = dm.FirmwareResp
-	GetPropertyReplyReq                = dm.GetPropertyReplyReq
-	GetPropertyReplyResp               = dm.GetPropertyReplyResp
+	GetPropertyLatestReplyReq          = dm.GetPropertyLatestReplyReq
+	GetPropertyLatestReplyResp         = dm.GetPropertyLatestReplyResp
 	GroupDeviceIndexReq                = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp               = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq          = dm.GroupDeviceMultiDeleteReq
@@ -69,8 +69,8 @@ type (
 	HubLogIndexReq                     = dm.HubLogIndexReq
 	HubLogIndexResp                    = dm.HubLogIndexResp
 	JobReq                             = dm.JobReq
-	MultiSendPropertyReq               = dm.MultiSendPropertyReq
-	MultiSendPropertyResp              = dm.MultiSendPropertyResp
+	MultiSendPropertyControlReq        = dm.MultiSendPropertyControlReq
+	MultiSendPropertyControlResp       = dm.MultiSendPropertyControlResp
 	OTAModuleDeleteReq                 = dm.OTAModuleDeleteReq
 	OTAModuleDetail                    = dm.OTAModuleDetail
 	OTAModuleIndexReq                  = dm.OTAModuleIndexReq
@@ -178,9 +178,9 @@ type (
 	SendMsgReq                         = dm.SendMsgReq
 	SendMsgResp                        = dm.SendMsgResp
 	SendOption                         = dm.SendOption
-	SendPropertyMsg                    = dm.SendPropertyMsg
-	SendPropertyReq                    = dm.SendPropertyReq
-	SendPropertyResp                   = dm.SendPropertyResp
+	SendPropertyControlMsg             = dm.SendPropertyControlMsg
+	SendPropertyControlReq             = dm.SendPropertyControlReq
+	SendPropertyControlResp            = dm.SendPropertyControlResp
 	ShadowIndex                        = dm.ShadowIndex
 	ShadowIndexResp                    = dm.ShadowIndexResp
 	StaticUpgradeDeviceInfo            = dm.StaticUpgradeDeviceInfo

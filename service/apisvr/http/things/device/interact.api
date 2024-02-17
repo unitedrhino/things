@@ -18,21 +18,34 @@ service api {
     @doc "获取调用设备行为的结果"
     @handler actionRead
     post /action-read (DeviceInteractRespReadReq) returns (DeviceInteractSendActionResp)
+
     @doc "调用设备属性"
+    @handler sendPropertyControl
+    post /send-property-control (DeviceInteractSendPropertyReq) returns (DeviceInteractSendPropertyResp)
+    @doc "批量调用设备属性"
+    @handler multiSendPropertyControl
+    post /multi-send-property-control (DeviceInteractMultiSendPropertyReq) returns (DeviceInteractMultiSendPropertyResp)
+    @doc "获取调用设备属性的结果"
+    @handler propertyControlRead
+    post /property-control-read (DeviceInteractRespReadReq) returns (DeviceInteractSendPropertyResp)
+
+    @doc "调用设备属性--废弃"
     @handler sendProperty
     post /send-property (DeviceInteractSendPropertyReq) returns (DeviceInteractSendPropertyResp)
-    @doc "批量调用设备属性"
+    @doc "批量调用设备属性--废弃"
     @handler multiSendProperty
     post /multi-send-property (DeviceInteractMultiSendPropertyReq) returns (DeviceInteractMultiSendPropertyResp)
-    @doc "获取调用设备属性的结果"
+    @doc "获取调用设备属性的结果--废弃"
     @handler propertyRead
     post /property-read (DeviceInteractRespReadReq) returns (DeviceInteractSendPropertyResp)
+
+
     @doc "发送消息给设备"
     @handler sendMsg
     post /send-msg (DeviceInteractSendMsgReq) returns ()
     @doc "请求设备获取设备最新属性"
-    @handler getPropertyReply
-    post /get-property-reply (DeviceInteractGetPropertyReplyReq) returns (DeviceInteractGetPropertyReplyResp)
+    @handler getPropertyLatestReply
+    post /get-property-latest-reply (DeviceInteractGetPropertyReplyReq) returns (DeviceInteractGetPropertyReplyResp)
 }
 
 type DeviceInteractGetPropertyReplyReq {

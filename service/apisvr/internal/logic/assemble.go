@@ -1,8 +1,6 @@
 package logic
 
 import (
-	"gitee.com/i-Things/core/service/syssvr/pb/sys"
-	"gitee.com/i-Things/core/service/timed/timedjobsvr/pb/timedjob"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/i-Things/things/service/rulesvr/pb/rule"
@@ -35,26 +33,6 @@ func ToDmPageRpc(in *types.PageInfo) *dm.PageInfo {
 		return nil
 	}
 	return &dm.PageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
-}
-
-func ToSysPageRpc(in *types.PageInfo) *sys.PageInfo {
-	if in == nil {
-		return nil
-	}
-	return &sys.PageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
-}
-
-func ToTimedJobPageRpc(in *types.PageInfo) *timedjob.PageInfo {
-	if in == nil {
-		return nil
-	}
-	return &timedjob.PageInfo{
 		Page: in.Page,
 		Size: in.Size,
 	}
@@ -109,36 +87,6 @@ func ToDmPointRpc(in *types.Point) *dm.Point {
 	}
 }
 
-func ToDmPointApi(in *dm.Point) *types.Point {
-	if in == nil {
-		return nil
-	}
-	return &types.Point{
-		Longitude: in.Longitude,
-		Latitude:  in.Latitude,
-	}
-}
-
-func ToSysPointRpc(in *types.Point) *sys.Point {
-	if in == nil {
-		return nil
-	}
-	return &sys.Point{
-		Longitude: in.Longitude,
-		Latitude:  in.Latitude,
-	}
-}
-
-func ToSysPointApi(in *sys.Point) *types.Point {
-	if in == nil {
-		return nil
-	}
-	return &types.Point{
-		Longitude: in.Longitude,
-		Latitude:  in.Latitude,
-	}
-}
-
 func ToOtaPageRpc(in *types.PageInfo) *dm.OtaPageInfo {
 	if in == nil {
 		return nil
@@ -157,14 +105,5 @@ func ToDiSendOption(in *types.SendOption) *dm.SendOption {
 		TimeoutToFail:  in.TimeoutToFail,
 		RequestTimeout: in.RequestTimeout,
 		RetryInterval:  in.RetryInterval,
-	}
-}
-
-func SysToWithIDTypes(in *sys.WithID) *types.WithID {
-	if in == nil {
-		return nil
-	}
-	return &types.WithID{
-		ID: in.Id,
 	}
 }
