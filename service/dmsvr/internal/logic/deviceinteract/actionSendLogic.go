@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/pb/timedjob"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
@@ -11,6 +12,7 @@ import (
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -73,11 +75,33 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (*dm.ActionSendResp, 
 		ActionID: in.ActionID,
 		Params:   param,
 	}
-	err = req.FmtReqParam(l.schema, schema.ParamActionInput)
+	params, err := req.VerifyReqParam(l.schema, schema.ParamActionInput)
 	if err != nil {
 		return nil, err
 	}
-
+	req.Params, err = msgThing.ToVal(params)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+			uc := ctxs.GetUserCtx(l.ctx)
+			var content = map[string]any{}
+			content["req"] = params
+			content["userID"] = uc.UserID
+			contentStr, _ := json.Marshal(content)
+			_ = l.svcCtx.HubLogRepo.Insert(ctx, &msgHubLog.HubLog{
+				ProductID:  in.ProductID,
+				Action:     "actionSend",
+				Timestamp:  time.Now(), // 操作时间
+				DeviceName: in.DeviceName,
+				TranceID:   utils.TraceIdFromContext(ctx),
+				RequestID:  req.MsgToken,
+				Content:    string(contentStr),
+				ResultType: errors.Fmt(err).GetCode(),
+			})
+		})
+	}()
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
 		Handle:     devices.Thing,
