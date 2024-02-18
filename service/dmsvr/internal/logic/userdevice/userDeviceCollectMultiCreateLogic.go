@@ -27,9 +27,9 @@ func NewUserDeviceCollectMultiCreateLogic(ctx context.Context, svcCtx *svc.Servi
 // 用户收藏的设备
 func (l *UserDeviceCollectMultiCreateLogic) UserDeviceCollectMultiCreate(in *dm.UserDeviceCollectSave) (*dm.Empty, error) {
 	uc := ctxs.GetUserCtx(l.ctx)
-	var ucds []*relationDB.DmUserCollectDevice
+	var ucds []*relationDB.DmUserDeviceCollect
 	for _, v := range in.Devices {
-		ucds = append(ucds, &relationDB.DmUserCollectDevice{
+		ucds = append(ucds, &relationDB.DmUserDeviceCollect{
 			UserID:     uc.UserID,
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,

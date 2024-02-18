@@ -53,6 +53,7 @@ message DeviceTimingIndexReq{
   int64 status = 2;//状态: 1启用 2禁用
   string triggerType = 3;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
 }
+
 message DeviceTimingIndexResp{
   repeated DeviceTimingInfo list = 1;//设备信息
   int64  total = 2;//总数(只有分页的时候会返回)
@@ -60,6 +61,7 @@ message DeviceTimingIndexResp{
 
 message DeviceTimingInfo{
   int64 id = 1;//场景id
+  string name =2;//场景名 模糊查询
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
   string triggerType = 4;//触发类型 timer: 定时触发 delay: 延迟触发(延迟触发同时只能存在一个)
   string trigger = 6;//多种触发方式

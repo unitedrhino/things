@@ -189,7 +189,6 @@ type (
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
 	UserDeviceCollectSave              = dm.UserDeviceCollectSave
-	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
 	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
 	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
 	UserDeviceShareInfo                = dm.UserDeviceShareInfo

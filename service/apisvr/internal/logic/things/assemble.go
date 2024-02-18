@@ -67,6 +67,16 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	}
 }
 
+func ToDmDeviceCorePb(in *types.DeviceCore) *dm.DeviceCore {
+	if in == nil {
+		return nil
+	}
+	return &dm.DeviceCore{
+		DeviceName: in.DeviceName,
+		ProductID:  in.ProductID,
+	}
+}
+
 func ToDmDeviceCoresPb(in []*types.DeviceCore) []*dm.DeviceCore {
 	if in == nil {
 		return nil

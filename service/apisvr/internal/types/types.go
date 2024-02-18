@@ -1279,6 +1279,29 @@ type UserCollectDeviceSave struct {
 	Devices []*DeviceCore `json:"devices"`
 }
 
+type UserDeviceShareIndexReq struct {
+	Page   *PageInfo   `json:"page,optional"`
+	Device *DeviceCore `json:"device,optional"` //设备信息
+}
+
+type UserDeviceShareIndexResp struct {
+	List  []*UserDeviceShareInfo `json:"list,optional"`
+	Total int64                  `json:"total,optional"`
+}
+
+type UserDeviceShareInfo struct {
+	ID         int64      `json:"id,optional"`
+	Device     DeviceCore `json:"device,optional"`     //设备信息
+	UserID     int64      `json:"userID,optional"`     //分享的对象
+	SchemaPerm []string   `json:"schemaPerm,optional"` //物模型权限,只需要填写需要授权并授权的物模型id
+	AccessPerm []string   `json:"accessPerm,optional"` //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+}
+
+type UserDeviceShareReadReq struct {
+	ID     int64       `json:"id,optional"`
+	Device *DeviceCore `json:"device,optional"` //设备信息
+}
+
 type VerifyOtaFirmwareReq struct {
 	FirmwareID       int64    `json:"firmwareId"`       // 固件ID
 	ProductID        string   `json:"productID"`        // 产品ID

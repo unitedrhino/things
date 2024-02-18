@@ -2,6 +2,7 @@ package svc
 
 import (
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
+	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgHubLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgSdkLog"
@@ -49,12 +50,14 @@ type ServiceContext struct {
 	Cache          kv.Store
 	ServerMsg      *eventBus.ServerMsg
 	AreaM          areamanage.AreaManage
+	ProjectM       projectmanage.ProjectManage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
-		timedM timedmanage.TimedManage
-		areaM  areamanage.AreaManage
+		timedM   timedmanage.TimedManage
+		areaM    areamanage.AreaManage
+		projectM projectmanage.ProjectManage
 	)
 	caches.InitStore(c.CacheRedis)
 	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
@@ -94,13 +97,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
-
+	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	return &ServiceContext{
 		ServerMsg:      serverMsg,
 		Config:         c,
 		OssClient:      ossClient,
 		TimedM:         timedM,
 		AreaM:          areaM,
+		ProjectM:       projectM,
 		PubApp:         pa,
 		PubDev:         pd,
 		ProjectID:      ProjectID,

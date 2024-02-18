@@ -267,6 +267,8 @@ service userDevice{
 
   //分享设备
   rpc userDeviceShareCreate(UserDeviceShareInfo)returns(WithID);
+  //更新权限
+  rpc userDeviceShareUpdate(UserDeviceShareInfo)returns(Empty);
   //取消分享设备
   rpc userDeviceShareDelete(WithID)returns(Empty);
   //获取设备分享列表(只有设备的所有者才能获取)
@@ -281,6 +283,7 @@ message UserDeviceShareReadReq{
 
 message UserDeviceShareIndexReq{
   PageInfo page = 1;
+  DeviceCore device = 2;//设备信息
 }
 
 message UserDeviceShareIndexResp{
@@ -292,15 +295,10 @@ message UserDeviceShareInfo{
   int64 id = 1;
   DeviceCore device = 2;//设备信息
   int64 userID = 3;//分享的对象
-  map<string,int64> PropertyPerm = 4;
-  map<string,int64> ActionPerm = 5;
-  UserDeviceShareAccessPerm AccessPerm = 6;
+  repeated string schemaPerm = 4;//物模型权限,只需要填写需要授权并授权的物模型id
+  repeated string accessPerm = 5;//操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
 }
-message UserDeviceShareAccessPerm{
-  int64 hubLog = 1;//设备消息记录
-  int64 ota = 2;//ota升级权限
-  int64 deviceTiming = 3;//设备定时
-}
+
 
 message UserDeviceCollectSave{
   repeated DeviceCore devices = 1;

@@ -28,6 +28,7 @@ import (
 	thingsschemacommon "github.com/i-Things/things/service/apisvr/internal/handler/things/schema/common"
 	thingsslotarea "github.com/i-Things/things/service/apisvr/internal/handler/things/slot/area"
 	thingsuserdevicecollect "github.com/i-Things/things/service/apisvr/internal/handler/things/user/device/collect"
+	thingsuserdeviceshare "github.com/i-Things/things/service/apisvr/internal/handler/things/user/device/share"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -819,5 +820,39 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/user/device/collect"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsuserdeviceshare.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsuserdeviceshare.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsuserdeviceshare.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsuserdeviceshare.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsuserdeviceshare.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/user/device/share"),
 	)
 }

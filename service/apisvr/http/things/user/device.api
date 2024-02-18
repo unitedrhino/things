@@ -23,6 +23,51 @@ service api {
 	post /index () returns (UserCollectDeviceInfo)
 }
 
+@server (
+	group: things/user/device/share
+	prefix: /api/v1/things/user/device/share
+	middleware:  CheckTokenWare, DataAuthWare, TeardownWare
+)
+service api {
+	@doc "批量收藏设备"
+	@handler create
+	post /create (UserDeviceShareInfo) returns (WithID)
+	@doc "批量取消收藏设备"
+	@handler delete
+	post /delete (WithID) returns ()
+	@doc "批量取消收藏设备"
+	@handler update
+	post /update (UserDeviceShareInfo) returns ()
+	@doc "批量取消收藏设备"
+	@handler read
+	post /read (UserDeviceShareReadReq) returns (UserDeviceShareInfo)
+	@doc "获取收藏设备列表"
+	@handler index
+	post /index (UserDeviceShareIndexReq) returns (UserDeviceShareIndexResp)
+}
+
+type (
+	UserDeviceShareInfo {
+		ID         int64       `json:"id,optional"`
+		Device     DeviceCore `json:"device,optional"`         //设备信息
+		UserID     int64       `json:"userID,string,optional"`        //分享的对象
+		SchemaPerm []string    `json:"schemaPerm,optional"` //物模型权限,只需要填写需要授权并授权的物模型id
+		AccessPerm []string    `json:"accessPerm,optional"` //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+	}
+	UserDeviceShareReadReq{
+		ID     int64       `json:"id,optional"`
+		Device *DeviceCore `json:"device,optional"` //设备信息
+	}
+	UserDeviceShareIndexReq{
+		Page   *PageInfo   `json:"page,optional"`
+		Device *DeviceCore `json:"device,optional"` //设备信息
+	}
+	UserDeviceShareIndexResp{
+		List  []*UserDeviceShareInfo `json:"list,optional"`
+		Total int64                  `json:"total,optional"`
+	}
+)
+
 type (
 	UserCollectDeviceSave{
 		Devices []*DeviceCore `json:"devices"`

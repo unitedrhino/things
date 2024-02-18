@@ -3729,6 +3729,7 @@ const (
 	UserDevice_UserDeviceCollectMultiDelete_FullMethodName = "/dm.userDevice/userDeviceCollectMultiDelete"
 	UserDevice_UserDeviceCollectIndex_FullMethodName       = "/dm.userDevice/userDeviceCollectIndex"
 	UserDevice_UserDeviceShareCreate_FullMethodName        = "/dm.userDevice/userDeviceShareCreate"
+	UserDevice_UserDeviceShareUpdate_FullMethodName        = "/dm.userDevice/userDeviceShareUpdate"
 	UserDevice_UserDeviceShareDelete_FullMethodName        = "/dm.userDevice/userDeviceShareDelete"
 	UserDevice_UserDeviceShareIndex_FullMethodName         = "/dm.userDevice/userDeviceShareIndex"
 	UserDevice_UserDeviceShareRead_FullMethodName          = "/dm.userDevice/userDeviceShareRead"
@@ -3744,9 +3745,11 @@ type UserDeviceClient interface {
 	UserDeviceCollectIndex(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserDeviceCollectSave, error)
 	// 分享设备
 	UserDeviceShareCreate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*WithID, error)
+	// 更新权限
+	UserDeviceShareUpdate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 取消分享设备
 	UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-	// 获取设备分享列表(只有)
+	// 获取设备分享列表(只有设备的所有者才能获取)
 	UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error)
 	// 获取设备分享的详情
 	UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error)
@@ -3796,6 +3799,15 @@ func (c *userDeviceClient) UserDeviceShareCreate(ctx context.Context, in *UserDe
 	return out, nil
 }
 
+func (c *userDeviceClient) UserDeviceShareUpdate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserDevice_UserDeviceShareUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userDeviceClient) UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, UserDevice_UserDeviceShareDelete_FullMethodName, in, out, opts...)
@@ -3833,9 +3845,11 @@ type UserDeviceServer interface {
 	UserDeviceCollectIndex(context.Context, *Empty) (*UserDeviceCollectSave, error)
 	// 分享设备
 	UserDeviceShareCreate(context.Context, *UserDeviceShareInfo) (*WithID, error)
+	// 更新权限
+	UserDeviceShareUpdate(context.Context, *UserDeviceShareInfo) (*Empty, error)
 	// 取消分享设备
 	UserDeviceShareDelete(context.Context, *WithID) (*Empty, error)
-	// 获取设备分享列表(只有)
+	// 获取设备分享列表(只有设备的所有者才能获取)
 	UserDeviceShareIndex(context.Context, *UserDeviceShareIndexReq) (*UserDeviceShareIndexResp, error)
 	// 获取设备分享的详情
 	UserDeviceShareRead(context.Context, *UserDeviceShareReadReq) (*UserDeviceShareInfo, error)
@@ -3857,6 +3871,9 @@ func (UnimplementedUserDeviceServer) UserDeviceCollectIndex(context.Context, *Em
 }
 func (UnimplementedUserDeviceServer) UserDeviceShareCreate(context.Context, *UserDeviceShareInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareCreate not implemented")
+}
+func (UnimplementedUserDeviceServer) UserDeviceShareUpdate(context.Context, *UserDeviceShareInfo) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareUpdate not implemented")
 }
 func (UnimplementedUserDeviceServer) UserDeviceShareDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareDelete not implemented")
@@ -3952,6 +3969,24 @@ func _UserDevice_UserDeviceShareCreate_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserDevice_UserDeviceShareUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDeviceShareInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserDeviceShareUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserDeviceShareUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserDeviceShareUpdate(ctx, req.(*UserDeviceShareInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserDevice_UserDeviceShareDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WithID)
 	if err := dec(in); err != nil {
@@ -4028,6 +4063,10 @@ var UserDevice_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "userDeviceShareCreate",
 			Handler:    _UserDevice_UserDeviceShareCreate_Handler,
+		},
+		{
+			MethodName: "userDeviceShareUpdate",
+			Handler:    _UserDevice_UserDeviceShareUpdate_Handler,
 		},
 		{
 			MethodName: "userDeviceShareDelete",

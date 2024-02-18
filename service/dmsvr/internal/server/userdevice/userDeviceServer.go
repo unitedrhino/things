@@ -44,13 +44,19 @@ func (s *UserDeviceServer) UserDeviceShareCreate(ctx context.Context, in *dm.Use
 	return l.UserDeviceShareCreate(in)
 }
 
+// 更新权限
+func (s *UserDeviceServer) UserDeviceShareUpdate(ctx context.Context, in *dm.UserDeviceShareInfo) (*dm.Empty, error) {
+	l := userdevicelogic.NewUserDeviceShareUpdateLogic(ctx, s.svcCtx)
+	return l.UserDeviceShareUpdate(in)
+}
+
 // 取消分享设备
 func (s *UserDeviceServer) UserDeviceShareDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
 	l := userdevicelogic.NewUserDeviceShareDeleteLogic(ctx, s.svcCtx)
 	return l.UserDeviceShareDelete(in)
 }
 
-// 获取设备分享列表(只有)
+// 获取设备分享列表(只有设备的所有者才能获取)
 func (s *UserDeviceServer) UserDeviceShareIndex(ctx context.Context, in *dm.UserDeviceShareIndexReq) (*dm.UserDeviceShareIndexResp, error) {
 	l := userdevicelogic.NewUserDeviceShareIndexLogic(ctx, s.svcCtx)
 	return l.UserDeviceShareIndex(in)

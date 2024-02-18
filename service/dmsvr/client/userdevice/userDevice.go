@@ -189,7 +189,6 @@ type (
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
 	UserDeviceCollectSave              = dm.UserDeviceCollectSave
-	UserDeviceShareAccessPerm          = dm.UserDeviceShareAccessPerm
 	UserDeviceShareIndexReq            = dm.UserDeviceShareIndexReq
 	UserDeviceShareIndexResp           = dm.UserDeviceShareIndexResp
 	UserDeviceShareInfo                = dm.UserDeviceShareInfo
@@ -204,9 +203,11 @@ type (
 		UserDeviceCollectIndex(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserDeviceCollectSave, error)
 		// 分享设备
 		UserDeviceShareCreate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*WithID, error)
+		// 更新权限
+		UserDeviceShareUpdate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 取消分享设备
 		UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-		// 获取设备分享列表(只有)
+		// 获取设备分享列表(只有设备的所有者才能获取)
 		UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error)
 		// 获取设备分享的详情
 		UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error)
@@ -275,6 +276,17 @@ func (d *directUserDevice) UserDeviceShareCreate(ctx context.Context, in *UserDe
 	return d.svr.UserDeviceShareCreate(ctx, in)
 }
 
+// 更新权限
+func (m *defaultUserDevice) UserDeviceShareUpdate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewUserDeviceClient(m.cli.Conn())
+	return client.UserDeviceShareUpdate(ctx, in, opts...)
+}
+
+// 更新权限
+func (d *directUserDevice) UserDeviceShareUpdate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.UserDeviceShareUpdate(ctx, in)
+}
+
 // 取消分享设备
 func (m *defaultUserDevice) UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewUserDeviceClient(m.cli.Conn())
@@ -286,13 +298,13 @@ func (d *directUserDevice) UserDeviceShareDelete(ctx context.Context, in *WithID
 	return d.svr.UserDeviceShareDelete(ctx, in)
 }
 
-// 获取设备分享列表(只有)
+// 获取设备分享列表(只有设备的所有者才能获取)
 func (m *defaultUserDevice) UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error) {
 	client := dm.NewUserDeviceClient(m.cli.Conn())
 	return client.UserDeviceShareIndex(ctx, in, opts...)
 }
 
-// 获取设备分享列表(只有)
+// 获取设备分享列表(只有设备的所有者才能获取)
 func (d *directUserDevice) UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error) {
 	return d.svr.UserDeviceShareIndex(ctx, in)
 }
