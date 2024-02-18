@@ -27,11 +27,30 @@ func NewDeviceTimingInfoRepo(in any) *DeviceTimingInfoRepo {
 type DeviceTimingInfoFilter struct {
 	Devices     []*devices.Core
 	TriggerType string
+	Status      int64
 }
 
 func (p DeviceTimingInfoRepo) fmtFilter(ctx context.Context, f DeviceTimingInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	//todo 添加条件
+	if len(f.Devices) != 0 {
+		scope := func(db *gorm.DB) *gorm.DB {
+			for i, d := range f.Devices {
+				if i == 0 {
+					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+					continue
+				}
+				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+			}
+			return db
+		}
+		db = db.Where(scope(db))
+	}
+	if f.Status != 0 {
+		db = db.Where("status = ?", f.Status)
+	}
+	if f.TriggerType != "" {
+		db = db.Where("trigger_type=?", f.TriggerType)
+	}
 	return db
 }
 

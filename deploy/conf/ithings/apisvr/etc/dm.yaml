@@ -7,7 +7,7 @@ Log:
   Encoding: plain
 Database:
   DBType: mysql
-  DSN: root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DSN: root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
   - Host: redis:6379
     Pass:

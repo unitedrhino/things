@@ -46,7 +46,7 @@ func PostInit(svcCtx *svc.ServiceContext) {
 	InitEventBus(svcCtx)
 }
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	svcCtx.ServerMsg.Subscribe(eventBus.DmProductCustomUpdate, func(ctx context.Context, body []byte) error {
+	svcCtx.FastEvent.Subscribe(eventBus.DmProductCustomUpdate, func(ctx context.Context, body []byte) error {
 		info := events.DeviceUpdateInfo{}
 		err := json.Unmarshal(body, &info)
 		if err != nil {
@@ -54,6 +54,6 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		}
 		return svcCtx.Script.ClearCache(ctx, info.ProductID)
 	})
-	err := svcCtx.ServerMsg.Start()
+	err := svcCtx.FastEvent.Start()
 	logx.Must(err)
 }

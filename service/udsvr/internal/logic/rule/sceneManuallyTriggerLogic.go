@@ -32,7 +32,7 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 		return nil, err
 	}
 	if si.UdSceneTrigger.Type != string(scene.TriggerTypeManual) {
-		return nil, errors.SceneTriggerType.AddMsg("该场景不是手动触发类型,无法执行")
+		return nil, errors.TriggerType.AddMsg("该场景不是手动触发类型,无法执行")
 	}
 	//todo 执行触发
 	return &ud.Empty{}, nil

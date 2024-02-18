@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
@@ -24,7 +25,7 @@ func NewDeviceTimingDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *DeviceTimingDeleteLogic) DeviceTimingDelete(in *ud.WithID) (*ud.Empty, error) {
-	// todo: add your logic here and delete this line
+	err := relationDB.NewDeviceTimingInfoRepo(l.ctx).Delete(l.ctx, in.Id)
 
-	return &ud.Empty{}, nil
+	return &ud.Empty{}, err
 }

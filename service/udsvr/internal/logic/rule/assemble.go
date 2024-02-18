@@ -104,3 +104,32 @@ func PoToSceneInfoPbs(in []*relationDB.UdSceneInfo) (ret []*ud.SceneInfo) {
 	}
 	return ret
 }
+
+func ToDeviceTimingPb(in *relationDB.UdDeviceTimingInfo) *ud.DeviceTimingInfo {
+	if in == nil {
+		return nil
+	}
+	return &ud.DeviceTimingInfo{
+		Id:   in.ID,
+		Name: in.Name,
+		Device: &ud.DeviceCore{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+		},
+		CreatedTime: in.CreatedTime.Unix(),
+		TriggerType: in.TriggerType,
+		ExecAt:      in.ExecAt,
+		Repeat:      in.Repeat,
+		ActionType:  in.ActionType,
+		DataID:      in.DataID,
+		Value:       in.Value,
+		Status:      in.Status,
+	}
+}
+
+func ToDeviceTimingsPb(in []*relationDB.UdDeviceTimingInfo) (ret []*ud.DeviceTimingInfo) {
+	for _, v := range in {
+		ret = append(ret, ToDeviceTimingPb(v))
+	}
+	return
+}

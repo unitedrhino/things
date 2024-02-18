@@ -2,6 +2,8 @@ package rulelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/udsvr/internal/domain/deviceTiming"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
@@ -39,12 +41,28 @@ func (l *DeviceTimingCreateLogic) DeviceTimingCreate(in *ud.DeviceTimingInfo) (*
 		Name:        in.Name,
 		Status:      in.Status,
 	}
-	switch po.TriggerType {
-	case deviceTiming.TriggerTimer:
-	case deviceTiming.TriggerDelay:
-		relationDB.NewDeviceTimingInfoRepo(l.ctx).CountByFilter(l.ctx, relationDB.DeviceTimingInfoFilter{})
+	err := DeviceTimingCheck(l.ctx, &po)
+	if err != nil {
+		return nil, err
 	}
 	relationDB.NewDeviceTimingInfoRepo(l.ctx).Insert(l.ctx, &po)
 
-	return &ud.WithID{}, nil
+	return &ud.WithID{Id: po.ID}, nil
+}
+
+func DeviceTimingCheck(ctx context.Context, po *relationDB.UdDeviceTimingInfo) error {
+	switch po.TriggerType {
+	case deviceTiming.TriggerTimer:
+		//todo 需要校验时间一样的
+	case deviceTiming.TriggerDelay:
+		count, err := relationDB.NewDeviceTimingInfoRepo(ctx).CountByFilter(ctx,
+			relationDB.DeviceTimingInfoFilter{Devices: []*devices.Core{{po.ProductID, po.DeviceName}}, TriggerType: deviceTiming.TriggerDelay})
+		if err != nil {
+			return err
+		}
+		if count > 0 {
+			return errors.Duplicate.WithMsg("同时只能存在一个延时控制")
+		}
+	}
+	return nil
 }

@@ -23,7 +23,7 @@ type ServiceContext struct {
 	Config    config.Config
 	PubDev    pubDev.PubDev
 	PubInner  pubInner.PubInner
-	ServerMsg *eventBus.ServerMsg
+	FastEvent *eventBus.FastEvent
 	ProductM  productmanage.ProductManage
 	DeviceM   devicemanage.DeviceManage
 	Script    custom.Repo
@@ -69,13 +69,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			ScriptLang:      ret.ScriptLang,
 		}, nil
 	})
-	serverMsg, err := eventBus.NewServerMsg(c.Event, c.Name)
+	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
 	logx.Must(err)
 	return &ServiceContext{
 		Config: c,
 		// PubDev:   dl,
 		// PubInner: il,
-		ServerMsg: serverMsg,
+		FastEvent: serverMsg,
 		ProductM:  productM,
 		DeviceM:   deviceM,
 		Script:    scriptCache,

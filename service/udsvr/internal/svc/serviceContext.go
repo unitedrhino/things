@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
@@ -13,6 +14,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
 	"github.com/i-Things/things/service/udsvr/internal/config"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
@@ -28,7 +30,8 @@ type SvrClient struct {
 }
 
 type ServiceContext struct {
-	Config config.Config
+	Config    config.Config
+	FastEvent *eventBus.FastEvent
 	SvrClient
 }
 
@@ -58,8 +61,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
 		deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
 	}
+	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
+	logx.Must(err)
 	return &ServiceContext{
-		Config: c,
+		Config:    c,
+		FastEvent: serverMsg,
 		SvrClient: SvrClient{
 			TimedM:         timedM,
 			AreaM:          areaM,

@@ -10,6 +10,8 @@ buildone:build.clean mod cp.etc build.api  moduleupdate build.core build.front
 #仅编译后端
 buildback: build.clean mod cp.etc build.api  moduleupdate build.coreback
 
+build.things.back: build.clean mod cp.etc build.api
+
 moduleupdate:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@git submodule update --init --recursive

@@ -48,7 +48,7 @@ type ServiceContext struct {
 	HubLogRepo     msgHubLog.HubLogRepo
 	SDKLogRepo     msgSdkLog.SDKLogRepo
 	Cache          kv.Store
-	ServerMsg      *eventBus.ServerMsg
+	ServerMsg      *eventBus.FastEvent
 	AreaM          areamanage.AreaManage
 	ProjectM       projectmanage.ProjectManage
 }
@@ -77,7 +77,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
-	serverMsg, err := eventBus.NewServerMsg(c.Event, c.Name)
+	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
 	logx.Must(err)
 	stores.InitConn(c.Database)
 	err = relationDB.Migrate(c.Database)
