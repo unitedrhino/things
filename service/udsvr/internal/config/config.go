@@ -8,6 +8,9 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
-	Database   conf.Database
-	CacheRedis cache.ClusterConf
+	Database    conf.Database
+	CacheRedis  cache.ClusterConf
+	TimedJobRpc conf.RpcClientConf `json:",optional"`
+	SysRpc      conf.RpcClientConf `json:",optional"`
+	DmRpc       conf.RpcClientConf `json:",optional"`
 }

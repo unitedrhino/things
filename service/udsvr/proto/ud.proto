@@ -61,12 +61,17 @@ message DeviceTimingIndexResp{
 
 message DeviceTimingInfo{
   int64 id = 1;//场景id
-  string name =2;//场景名 模糊查询
+  string name =2;//名称
+  DeviceCore device =3;
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
-  string triggerType = 4;//触发类型 timer: 定时触发 delay: 延迟触发(延迟触发同时只能存在一个)
-  string trigger = 6;//多种触发方式
-  string then = 8; //触发后执行的动作
-  int64 status = 9;// 状态（1启用 2禁用）
+  string triggerType = 6;//触发类型 timer: 定时触发 delay: 延迟触发(延迟触发同时只能存在一个)
+  int64 execAt = 7;//执行时间 从0点加起来的秒数 如 1点就是 1*60*60
+  int64 repeat = 8;//重复 二进制周一到周日 11111111 这个参数只有定时触发才有
+  string actionType = 9; //云端向设备发起属性控制: propertyControl  应用调用设备行为:action
+  string dataID = 10;//属性的id及行为的id
+  string value = 11;//传的值
+  int64 status = 12;// 状态（1启用 2禁用）
+  int64 lastRunTime = 13;//最后一次执行时间 秒级时间戳 只读
 }
 
 
@@ -99,6 +104,7 @@ message SceneInfo{
   int64 status = 9;// 状态（1启用 2禁用）
   string headImg = 10;
   bool isUpdateHeadImg = 11;//只有这个参数为true的时候才会更新图片,传参为图片的file path
+  int64 lastRunTime = 13;//最后一次执行时间 秒级时间戳 只读
 }
 
 

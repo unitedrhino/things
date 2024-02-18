@@ -39,7 +39,7 @@ type Timers []*Timer
 
 // Timer 定时器类型
 type Timer struct {
-	Exec   int64 `json:"exec"`   //从0点加起来的秒数 如 1点就是 1*60*60
+	ExecAt int64 `json:"execAt"` //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
 	Repeat int64 `json:"repeat"` //二进制周一到周日 11111111
 }
 
@@ -99,7 +99,7 @@ func (t *Timer) Validate() error {
 	if t == nil {
 		return errors.Parameter.AddMsg("时间触发模式需要填写时间内容")
 	}
-	if t.Exec < 0 || t.Exec > 24*60*60 {
+	if t.ExecAt < 0 || t.ExecAt > 24*60*60 {
 		return errors.Parameter.AddMsg("时间执行时间范围只能在0到24小时之间")
 	}
 	if t.Repeat > 0b1111111 {

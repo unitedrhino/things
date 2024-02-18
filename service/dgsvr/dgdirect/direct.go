@@ -3,8 +3,7 @@ package dgdirect
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/interceptors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dgsvr/internal/config"
 	deviceauthServer "github.com/i-Things/things/service/dgsvr/internal/server/deviceauth"
@@ -66,7 +65,7 @@ func Run(svcCtx *svc.ServiceContext) {
 		}
 	})
 	defer s.Stop()
-	s.AddUnaryInterceptors(errors.ErrorInterceptor, ctxs.GrpcInterceptor)
+	s.AddUnaryInterceptors(interceptors.Ctxs, interceptors.Error)
 
 	fmt.Printf("Starting dgrpc server at %s...\n", c.ListenOn)
 	s.Start()

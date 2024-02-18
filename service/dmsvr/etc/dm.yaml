@@ -34,9 +34,13 @@ Telemetry:
   Batcher: jaeger
 TimedJobRpc:
   Enable: true
-  Mode: direct
+  Mode: grpc
   Conf:
     Timeout: 1000000
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: timedjob.rpc
 SysRpc:
   Enable: true
   Mode: grpc
