@@ -5,14 +5,13 @@ go 1.21
 toolchain go1.21.4
 
 replace (
-	gitee.com/i-Things/core => ../core
 	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.2
 	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.5
 )
 
 require (
 	gitee.com/i-Things/core v0.0.0-00010101000000-000000000000
-	gitee.com/i-Things/share v0.1.1
+	gitee.com/i-Things/share v0.1.3
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
