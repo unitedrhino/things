@@ -2,8 +2,10 @@ package devicemanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -44,6 +46,26 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 				DeviceName: v.DeviceName,
 			})
 		}
+	}
+	if in.IsShared == def.True {
+		uc := ctxs.GetUserCtx(l.ctx)
+		udss, err := relationDB.NewUserDeviceShareRepo(l.ctx).FindByFilter(l.ctx, relationDB.UserDeviceShareFilter{UserID: uc.UserID}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, v := range udss {
+			cores = append(cores, &devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+		}
+		if len(udss) == 0 {
+			return nil, errors.NotFind
+		}
+		uc.AllProject = true
+		defer func() {
+			uc.AllProject = false
+		}()
 	}
 	filter := relationDB.DeviceFilter{
 		ProductID:         in.ProductID,
