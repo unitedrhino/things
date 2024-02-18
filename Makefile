@@ -53,7 +53,6 @@ build.clean:
 mod:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>downloading $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@go mod download
-	@go mod tidy
 
 
 cp.etc:

@@ -18,3 +18,8 @@ type Info struct {
 	LastRunTime int64        `json:"lastRunTime,omitempty"` //最后一次执行时间 秒级时间戳 只读
 	Status      int64        `json:"status,omitempty"`      // 状态（1启用 2禁用）
 }
+
+const (
+	TriggerTimer = "timer"
+	TriggerDelay = "delay"
+)

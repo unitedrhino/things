@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -24,7 +25,8 @@ func NewDeviceTimingInfoRepo(in any) *DeviceTimingInfoRepo {
 }
 
 type DeviceTimingInfoFilter struct {
-	//todo 添加过滤字段
+	Devices     []*devices.Core
+	TriggerType string
 }
 
 func (p DeviceTimingInfoRepo) fmtFilter(ctx context.Context, f DeviceTimingInfoFilter) *gorm.DB {

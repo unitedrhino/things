@@ -35,7 +35,7 @@ func getAreaIDs(in *sys.AreaInfo, areaIDs []int64) []int64 {
 }
 
 func (l *DeleteLogic) Delete(req *types.SlotAreaSaveReq) error {
-	treeResp, err := l.svcCtx.AreaM.AreaInfoRead(l.ctx, &sys.AreaInfoReadReq{AreaID: req.AreaID, IsRetTree: true})
+	treeResp, err := l.svcCtx.AreaM.AreaInfoRead(l.ctx, &sys.AreaInfoReadReq{AreaID: req.AreaID, WithChildren: true})
 	if err != nil {
 		return err
 	}
