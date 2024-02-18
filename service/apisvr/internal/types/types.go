@@ -189,6 +189,7 @@ type DeviceInfoIndexReq struct {
 	AreaIDs           []int64   `json:"areaIDs,optional"`              //项目区域ids
 	IsOnline          int64     `json:"isOnline,optional,range=[0:2]"` // 在线状态过滤  1离线 2在线
 	ProductCategoryID int64     `json:"productCategoryID,optional"`
+	IsShared          int64     `json:"isShared,optional,range=[0:2]"` // 是否共享  1:是 2:否
 }
 
 type DeviceInfoIndexResp struct {
@@ -1291,10 +1292,10 @@ type UserDeviceShareIndexResp struct {
 
 type UserDeviceShareInfo struct {
 	ID         int64      `json:"id,optional"`
-	Device     DeviceCore `json:"device,optional"`     //设备信息
-	UserID     int64      `json:"userID,optional"`     //分享的对象
-	SchemaPerm []string   `json:"schemaPerm,optional"` //物模型权限,只需要填写需要授权并授权的物模型id
-	AccessPerm []string   `json:"accessPerm,optional"` //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+	Device     DeviceCore `json:"device,optional"`        //设备信息
+	UserID     int64      `json:"userID,string,optional"` //分享的对象
+	SchemaPerm []string   `json:"schemaPerm,optional"`    //物模型权限,只需要填写需要授权并授权的物模型id
+	AccessPerm []string   `json:"accessPerm,optional"`    //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
 }
 
 type UserDeviceShareReadReq struct {
