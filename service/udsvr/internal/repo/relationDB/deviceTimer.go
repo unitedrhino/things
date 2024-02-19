@@ -20,18 +20,24 @@ type DeviceTimingInfoRepo struct {
 	db *gorm.DB
 }
 
-func NewDeviceTimingInfoRepo(in any) *DeviceTimingInfoRepo {
+func NewDeviceTimerInfoRepo(in any) *DeviceTimingInfoRepo {
 	return &DeviceTimingInfoRepo{db: stores.GetCommonConn(in)}
 }
 
-type DeviceTimingInfoFilter struct {
+type DeviceTimerInfoFilter struct {
 	Devices     []*devices.Core
 	TriggerType string
 	Status      int64
+	ExecAt      *stores.Cmp
+	LastRunTime *stores.Cmp
+	Repeat      *stores.Cmp
 }
 
-func (p DeviceTimingInfoRepo) fmtFilter(ctx context.Context, f DeviceTimingInfoFilter) *gorm.DB {
+func (p DeviceTimingInfoRepo) fmtFilter(ctx context.Context, f DeviceTimerInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	db = f.ExecAt.Where(db, "exec_at")
+	db = f.LastRunTime.Where(db, "last_run_time")
+	db = f.Repeat.Where(db, "exec_repeat")
 	if len(f.Devices) != 0 {
 		scope := func(db *gorm.DB) *gorm.DB {
 			for i, d := range f.Devices {
@@ -54,13 +60,13 @@ func (p DeviceTimingInfoRepo) fmtFilter(ctx context.Context, f DeviceTimingInfoF
 	return db
 }
 
-func (p DeviceTimingInfoRepo) Insert(ctx context.Context, data *UdDeviceTimingInfo) error {
+func (p DeviceTimingInfoRepo) Insert(ctx context.Context, data *UdDeviceTimerInfo) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p DeviceTimingInfoRepo) FindOneByFilter(ctx context.Context, f DeviceTimingInfoFilter) (*UdDeviceTimingInfo, error) {
-	var result UdDeviceTimingInfo
+func (p DeviceTimingInfoRepo) FindOneByFilter(ctx context.Context, f DeviceTimerInfoFilter) (*UdDeviceTimerInfo, error) {
+	var result UdDeviceTimerInfo
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -68,9 +74,9 @@ func (p DeviceTimingInfoRepo) FindOneByFilter(ctx context.Context, f DeviceTimin
 	}
 	return &result, nil
 }
-func (p DeviceTimingInfoRepo) FindByFilter(ctx context.Context, f DeviceTimingInfoFilter, page *def.PageInfo) ([]*UdDeviceTimingInfo, error) {
-	var results []*UdDeviceTimingInfo
-	db := p.fmtFilter(ctx, f).Model(&UdDeviceTimingInfo{})
+func (p DeviceTimingInfoRepo) FindByFilter(ctx context.Context, f DeviceTimerInfoFilter, page *def.PageInfo) ([]*UdDeviceTimerInfo, error) {
+	var results []*UdDeviceTimerInfo
+	db := p.fmtFilter(ctx, f).Model(&UdDeviceTimerInfo{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -79,29 +85,29 @@ func (p DeviceTimingInfoRepo) FindByFilter(ctx context.Context, f DeviceTimingIn
 	return results, nil
 }
 
-func (p DeviceTimingInfoRepo) CountByFilter(ctx context.Context, f DeviceTimingInfoFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&UdDeviceTimingInfo{})
+func (p DeviceTimingInfoRepo) CountByFilter(ctx context.Context, f DeviceTimerInfoFilter) (size int64, err error) {
+	db := p.fmtFilter(ctx, f).Model(&UdDeviceTimerInfo{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p DeviceTimingInfoRepo) Update(ctx context.Context, data *UdDeviceTimingInfo) error {
+func (p DeviceTimingInfoRepo) Update(ctx context.Context, data *UdDeviceTimerInfo) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (p DeviceTimingInfoRepo) DeleteByFilter(ctx context.Context, f DeviceTimingInfoFilter) error {
+func (p DeviceTimingInfoRepo) DeleteByFilter(ctx context.Context, f DeviceTimerInfoFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&UdDeviceTimingInfo{}).Error
+	err := db.Delete(&UdDeviceTimerInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p DeviceTimingInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&UdDeviceTimingInfo{}).Error
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&UdDeviceTimerInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (p DeviceTimingInfoRepo) FindOne(ctx context.Context, id int64) (*UdDeviceTimingInfo, error) {
-	var result UdDeviceTimingInfo
+func (p DeviceTimingInfoRepo) FindOne(ctx context.Context, id int64) (*UdDeviceTimerInfo, error) {
+	var result UdDeviceTimerInfo
 	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -110,7 +116,7 @@ func (p DeviceTimingInfoRepo) FindOne(ctx context.Context, id int64) (*UdDeviceT
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p DeviceTimingInfoRepo) MultiInsert(ctx context.Context, data []*UdDeviceTimingInfo) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&UdDeviceTimingInfo{}).Create(data).Error
+func (p DeviceTimingInfoRepo) MultiInsert(ctx context.Context, data []*UdDeviceTimerInfo) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&UdDeviceTimerInfo{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

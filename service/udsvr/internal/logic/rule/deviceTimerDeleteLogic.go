@@ -10,22 +10,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DeviceTimingDeleteLogic struct {
+type DeviceTimerDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewDeviceTimingDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceTimingDeleteLogic {
-	return &DeviceTimingDeleteLogic{
+func NewDeviceTimerDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceTimerDeleteLogic {
+	return &DeviceTimerDeleteLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *DeviceTimingDeleteLogic) DeviceTimingDelete(in *ud.WithID) (*ud.Empty, error) {
-	err := relationDB.NewDeviceTimingInfoRepo(l.ctx).Delete(l.ctx, in.Id)
+func (l *DeviceTimerDeleteLogic) DeviceTimerDelete(in *ud.WithID) (*ud.Empty, error) {
+	err := relationDB.NewDeviceTimerInfoRepo(l.ctx).Delete(l.ctx, in.Id)
 
 	return &ud.Empty{}, err
 }

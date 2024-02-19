@@ -15,9 +15,9 @@ import (
 
 type (
 	DeviceCore            = ud.DeviceCore
-	DeviceTimingIndexReq  = ud.DeviceTimingIndexReq
-	DeviceTimingIndexResp = ud.DeviceTimingIndexResp
-	DeviceTimingInfo      = ud.DeviceTimingInfo
+	DeviceTimerIndexReq   = ud.DeviceTimerIndexReq
+	DeviceTimerIndexResp  = ud.DeviceTimerIndexResp
+	DeviceTimerInfo       = ud.DeviceTimerInfo
 	Empty                 = ud.Empty
 	OpsWorkOrder          = ud.OpsWorkOrder
 	OpsWorkOrderIndexReq  = ud.OpsWorkOrderIndexReq
@@ -38,10 +38,10 @@ type (
 		SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error)
 		SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 		// 设备定时
-		DeviceTimingCreate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*WithID, error)
-		DeviceTimingUpdate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*Empty, error)
-		DeviceTimingDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-		DeviceTimingIndex(ctx context.Context, in *DeviceTimingIndexReq, opts ...grpc.CallOption) (*DeviceTimingIndexResp, error)
+		DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error)
+		DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error)
+		DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error)
 	}
 
 	defaultRule struct {
@@ -124,39 +124,39 @@ func (d *directRule) SceneManuallyTrigger(ctx context.Context, in *WithID, opts 
 }
 
 // 设备定时
-func (m *defaultRule) DeviceTimingCreate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*WithID, error) {
+func (m *defaultRule) DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
-	return client.DeviceTimingCreate(ctx, in, opts...)
+	return client.DeviceTimerCreate(ctx, in, opts...)
 }
 
 // 设备定时
-func (d *directRule) DeviceTimingCreate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*WithID, error) {
-	return d.svr.DeviceTimingCreate(ctx, in)
+func (d *directRule) DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error) {
+	return d.svr.DeviceTimerCreate(ctx, in)
 }
 
-func (m *defaultRule) DeviceTimingUpdate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultRule) DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
-	return client.DeviceTimingUpdate(ctx, in, opts...)
+	return client.DeviceTimerUpdate(ctx, in, opts...)
 }
 
-func (d *directRule) DeviceTimingUpdate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.DeviceTimingUpdate(ctx, in)
+func (d *directRule) DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceTimerUpdate(ctx, in)
 }
 
-func (m *defaultRule) DeviceTimingDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultRule) DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
-	return client.DeviceTimingDelete(ctx, in, opts...)
+	return client.DeviceTimerDelete(ctx, in, opts...)
 }
 
-func (d *directRule) DeviceTimingDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.DeviceTimingDelete(ctx, in)
+func (d *directRule) DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceTimerDelete(ctx, in)
 }
 
-func (m *defaultRule) DeviceTimingIndex(ctx context.Context, in *DeviceTimingIndexReq, opts ...grpc.CallOption) (*DeviceTimingIndexResp, error) {
+func (m *defaultRule) DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
-	return client.DeviceTimingIndex(ctx, in, opts...)
+	return client.DeviceTimerIndex(ctx, in, opts...)
 }
 
-func (d *directRule) DeviceTimingIndex(ctx context.Context, in *DeviceTimingIndexReq, opts ...grpc.CallOption) (*DeviceTimingIndexResp, error) {
-	return d.svr.DeviceTimingIndex(ctx, in)
+func (d *directRule) DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error) {
+	return d.svr.DeviceTimerIndex(ctx, in)
 }

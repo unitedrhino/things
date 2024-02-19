@@ -7,7 +7,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
-	"github.com/i-Things/things/service/udsvr/internal/event/timing"
+	"github.com/i-Things/things/service/udsvr/internal/event/timerEvent"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -19,11 +19,11 @@ func Init(svcCtx *svc.ServiceContext) {
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
 	svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTiming, func(ctx context.Context, body []byte) error {
-		t := timing.NewServerHandle(ctx, svcCtx)
-		return t.DeviceTiming()
+		t := timerEvent.NewTimerHandle(ctx, svcCtx)
+		return t.DeviceTimer()
 	})
 	svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTiming, func(ctx context.Context, body []byte) error {
-		t := timing.NewServerHandle(ctx, svcCtx)
+		t := timerEvent.NewTimerHandle(ctx, svcCtx)
 		return t.SceneTiming()
 	})
 	err := svcCtx.FastEvent.Start()

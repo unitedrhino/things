@@ -39,8 +39,8 @@ type Timers []*Timer
 
 // Timer 定时器类型
 type Timer struct {
-	ExecAt int64 `json:"execAt"` //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
-	Repeat int64 `json:"repeat"` //二进制周一到周日 11111111
+	ExecAt     int64 `json:"execAt"`     //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
+	ExecRepeat int64 `json:"execRepeat"` //二进制周一到周日 11111111
 }
 
 type TimeUnit string
@@ -102,7 +102,7 @@ func (t *Timer) Validate() error {
 	if t.ExecAt < 0 || t.ExecAt > 24*60*60 {
 		return errors.Parameter.AddMsg("时间执行时间范围只能在0到24小时之间")
 	}
-	if t.Repeat > 0b1111111 {
+	if t.ExecRepeat > 0b1111111 {
 		return errors.Parameter.AddMsg("时间重复模式只能在0 7个二进制为高位")
 	}
 	return nil

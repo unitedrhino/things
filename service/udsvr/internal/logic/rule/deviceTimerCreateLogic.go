@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
-	"github.com/i-Things/things/service/udsvr/internal/domain/deviceTiming"
+	"github.com/i-Things/things/service/udsvr/internal/domain/deviceTimer"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
@@ -13,14 +13,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DeviceTimingCreateLogic struct {
+type DeviceTimerCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewDeviceTimingCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceTimingCreateLogic {
-	return &DeviceTimingCreateLogic{
+func NewDeviceTimerCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceTimerCreateLogic {
+	return &DeviceTimerCreateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -28,35 +28,35 @@ func NewDeviceTimingCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 // 设备定时
-func (l *DeviceTimingCreateLogic) DeviceTimingCreate(in *ud.DeviceTimingInfo) (*ud.WithID, error) {
-	po := relationDB.UdDeviceTimingInfo{
+func (l *DeviceTimerCreateLogic) DeviceTimerCreate(in *ud.DeviceTimerInfo) (*ud.WithID, error) {
+	po := relationDB.UdDeviceTimerInfo{
 		ProductID:   in.Device.ProductID,
 		DeviceName:  in.Device.DeviceName,
 		TriggerType: in.TriggerType,
 		ExecAt:      in.ExecAt,
-		Repeat:      in.Repeat,
+		ExecRepeat:  in.ExecRepeat,
 		ActionType:  in.ActionType,
 		DataID:      in.DataID,
 		Value:       in.Value,
 		Name:        in.Name,
 		Status:      in.Status,
 	}
-	err := DeviceTimingCheck(l.ctx, &po)
+	err := DeviceTimerCheck(l.ctx, &po)
 	if err != nil {
 		return nil, err
 	}
-	relationDB.NewDeviceTimingInfoRepo(l.ctx).Insert(l.ctx, &po)
+	relationDB.NewDeviceTimerInfoRepo(l.ctx).Insert(l.ctx, &po)
 
 	return &ud.WithID{Id: po.ID}, nil
 }
 
-func DeviceTimingCheck(ctx context.Context, po *relationDB.UdDeviceTimingInfo) error {
+func DeviceTimerCheck(ctx context.Context, po *relationDB.UdDeviceTimerInfo) error {
 	switch po.TriggerType {
-	case deviceTiming.TriggerTimer:
+	case deviceTimer.TriggerTimer:
 		//todo 需要校验时间一样的
-	case deviceTiming.TriggerDelay:
-		count, err := relationDB.NewDeviceTimingInfoRepo(ctx).CountByFilter(ctx,
-			relationDB.DeviceTimingInfoFilter{Devices: []*devices.Core{{po.ProductID, po.DeviceName}}, TriggerType: deviceTiming.TriggerDelay})
+	case deviceTimer.TriggerDelay:
+		count, err := relationDB.NewDeviceTimerInfoRepo(ctx).CountByFilter(ctx,
+			relationDB.DeviceTimerInfoFilter{Devices: []*devices.Core{{po.ProductID, po.DeviceName}}, TriggerType: deviceTimer.TriggerDelay})
 		if err != nil {
 			return err
 		}

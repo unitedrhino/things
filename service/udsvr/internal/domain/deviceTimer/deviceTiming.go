@@ -1,4 +1,4 @@
-package deviceTiming
+package deviceTimer
 
 import (
 	"gitee.com/i-Things/share/devices"

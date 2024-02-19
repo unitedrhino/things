@@ -25,10 +25,10 @@ const (
 	Rule_SceneInfoIndex_FullMethodName       = "/ud.rule/sceneInfoIndex"
 	Rule_SceneInfoRead_FullMethodName        = "/ud.rule/sceneInfoRead"
 	Rule_SceneManuallyTrigger_FullMethodName = "/ud.rule/sceneManuallyTrigger"
-	Rule_DeviceTimingCreate_FullMethodName   = "/ud.rule/deviceTimingCreate"
-	Rule_DeviceTimingUpdate_FullMethodName   = "/ud.rule/deviceTimingUpdate"
-	Rule_DeviceTimingDelete_FullMethodName   = "/ud.rule/deviceTimingDelete"
-	Rule_DeviceTimingIndex_FullMethodName    = "/ud.rule/deviceTimingIndex"
+	Rule_DeviceTimerCreate_FullMethodName    = "/ud.rule/deviceTimerCreate"
+	Rule_DeviceTimerUpdate_FullMethodName    = "/ud.rule/deviceTimerUpdate"
+	Rule_DeviceTimerDelete_FullMethodName    = "/ud.rule/deviceTimerDelete"
+	Rule_DeviceTimerIndex_FullMethodName     = "/ud.rule/deviceTimerIndex"
 )
 
 // RuleClient is the client API for Rule service.
@@ -43,10 +43,10 @@ type RuleClient interface {
 	SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error)
 	SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	// 设备定时
-	DeviceTimingCreate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*WithID, error)
-	DeviceTimingUpdate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*Empty, error)
-	DeviceTimingDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-	DeviceTimingIndex(ctx context.Context, in *DeviceTimingIndexReq, opts ...grpc.CallOption) (*DeviceTimingIndexResp, error)
+	DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error)
+	DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error)
+	DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error)
 }
 
 type ruleClient struct {
@@ -111,36 +111,36 @@ func (c *ruleClient) SceneManuallyTrigger(ctx context.Context, in *WithID, opts 
 	return out, nil
 }
 
-func (c *ruleClient) DeviceTimingCreate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*WithID, error) {
+func (c *ruleClient) DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error) {
 	out := new(WithID)
-	err := c.cc.Invoke(ctx, Rule_DeviceTimingCreate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_DeviceTimerCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ruleClient) DeviceTimingUpdate(ctx context.Context, in *DeviceTimingInfo, opts ...grpc.CallOption) (*Empty, error) {
+func (c *ruleClient) DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, Rule_DeviceTimingUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_DeviceTimerUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ruleClient) DeviceTimingDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (c *ruleClient) DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, Rule_DeviceTimingDelete_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_DeviceTimerDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ruleClient) DeviceTimingIndex(ctx context.Context, in *DeviceTimingIndexReq, opts ...grpc.CallOption) (*DeviceTimingIndexResp, error) {
-	out := new(DeviceTimingIndexResp)
-	err := c.cc.Invoke(ctx, Rule_DeviceTimingIndex_FullMethodName, in, out, opts...)
+func (c *ruleClient) DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error) {
+	out := new(DeviceTimerIndexResp)
+	err := c.cc.Invoke(ctx, Rule_DeviceTimerIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -159,10 +159,10 @@ type RuleServer interface {
 	SceneInfoRead(context.Context, *WithID) (*SceneInfo, error)
 	SceneManuallyTrigger(context.Context, *WithID) (*Empty, error)
 	// 设备定时
-	DeviceTimingCreate(context.Context, *DeviceTimingInfo) (*WithID, error)
-	DeviceTimingUpdate(context.Context, *DeviceTimingInfo) (*Empty, error)
-	DeviceTimingDelete(context.Context, *WithID) (*Empty, error)
-	DeviceTimingIndex(context.Context, *DeviceTimingIndexReq) (*DeviceTimingIndexResp, error)
+	DeviceTimerCreate(context.Context, *DeviceTimerInfo) (*WithID, error)
+	DeviceTimerUpdate(context.Context, *DeviceTimerInfo) (*Empty, error)
+	DeviceTimerDelete(context.Context, *WithID) (*Empty, error)
+	DeviceTimerIndex(context.Context, *DeviceTimerIndexReq) (*DeviceTimerIndexResp, error)
 	mustEmbedUnimplementedRuleServer()
 }
 
@@ -188,17 +188,17 @@ func (UnimplementedRuleServer) SceneInfoRead(context.Context, *WithID) (*SceneIn
 func (UnimplementedRuleServer) SceneManuallyTrigger(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneManuallyTrigger not implemented")
 }
-func (UnimplementedRuleServer) DeviceTimingCreate(context.Context, *DeviceTimingInfo) (*WithID, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimingCreate not implemented")
+func (UnimplementedRuleServer) DeviceTimerCreate(context.Context, *DeviceTimerInfo) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerCreate not implemented")
 }
-func (UnimplementedRuleServer) DeviceTimingUpdate(context.Context, *DeviceTimingInfo) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimingUpdate not implemented")
+func (UnimplementedRuleServer) DeviceTimerUpdate(context.Context, *DeviceTimerInfo) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerUpdate not implemented")
 }
-func (UnimplementedRuleServer) DeviceTimingDelete(context.Context, *WithID) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimingDelete not implemented")
+func (UnimplementedRuleServer) DeviceTimerDelete(context.Context, *WithID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerDelete not implemented")
 }
-func (UnimplementedRuleServer) DeviceTimingIndex(context.Context, *DeviceTimingIndexReq) (*DeviceTimingIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimingIndex not implemented")
+func (UnimplementedRuleServer) DeviceTimerIndex(context.Context, *DeviceTimerIndexReq) (*DeviceTimerIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerIndex not implemented")
 }
 func (UnimplementedRuleServer) mustEmbedUnimplementedRuleServer() {}
 
@@ -321,74 +321,74 @@ func _Rule_SceneManuallyTrigger_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rule_DeviceTimingCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceTimingInfo)
+func _Rule_DeviceTimerCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceTimerInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuleServer).DeviceTimingCreate(ctx, in)
+		return srv.(RuleServer).DeviceTimerCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rule_DeviceTimingCreate_FullMethodName,
+		FullMethod: Rule_DeviceTimerCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).DeviceTimingCreate(ctx, req.(*DeviceTimingInfo))
+		return srv.(RuleServer).DeviceTimerCreate(ctx, req.(*DeviceTimerInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rule_DeviceTimingUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceTimingInfo)
+func _Rule_DeviceTimerUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceTimerInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuleServer).DeviceTimingUpdate(ctx, in)
+		return srv.(RuleServer).DeviceTimerUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rule_DeviceTimingUpdate_FullMethodName,
+		FullMethod: Rule_DeviceTimerUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).DeviceTimingUpdate(ctx, req.(*DeviceTimingInfo))
+		return srv.(RuleServer).DeviceTimerUpdate(ctx, req.(*DeviceTimerInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rule_DeviceTimingDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rule_DeviceTimerDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuleServer).DeviceTimingDelete(ctx, in)
+		return srv.(RuleServer).DeviceTimerDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rule_DeviceTimingDelete_FullMethodName,
+		FullMethod: Rule_DeviceTimerDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).DeviceTimingDelete(ctx, req.(*WithID))
+		return srv.(RuleServer).DeviceTimerDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rule_DeviceTimingIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceTimingIndexReq)
+func _Rule_DeviceTimerIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceTimerIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuleServer).DeviceTimingIndex(ctx, in)
+		return srv.(RuleServer).DeviceTimerIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rule_DeviceTimingIndex_FullMethodName,
+		FullMethod: Rule_DeviceTimerIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).DeviceTimingIndex(ctx, req.(*DeviceTimingIndexReq))
+		return srv.(RuleServer).DeviceTimerIndex(ctx, req.(*DeviceTimerIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -425,20 +425,20 @@ var Rule_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Rule_SceneManuallyTrigger_Handler,
 		},
 		{
-			MethodName: "deviceTimingCreate",
-			Handler:    _Rule_DeviceTimingCreate_Handler,
+			MethodName: "deviceTimerCreate",
+			Handler:    _Rule_DeviceTimerCreate_Handler,
 		},
 		{
-			MethodName: "deviceTimingUpdate",
-			Handler:    _Rule_DeviceTimingUpdate_Handler,
+			MethodName: "deviceTimerUpdate",
+			Handler:    _Rule_DeviceTimerUpdate_Handler,
 		},
 		{
-			MethodName: "deviceTimingDelete",
-			Handler:    _Rule_DeviceTimingDelete_Handler,
+			MethodName: "deviceTimerDelete",
+			Handler:    _Rule_DeviceTimerDelete_Handler,
 		},
 		{
-			MethodName: "deviceTimingIndex",
-			Handler:    _Rule_DeviceTimingIndex_Handler,
+			MethodName: "deviceTimerIndex",
+			Handler:    _Rule_DeviceTimerIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

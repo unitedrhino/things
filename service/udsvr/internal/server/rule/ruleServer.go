@@ -54,22 +54,22 @@ func (s *RuleServer) SceneManuallyTrigger(ctx context.Context, in *ud.WithID) (*
 }
 
 // 设备定时
-func (s *RuleServer) DeviceTimingCreate(ctx context.Context, in *ud.DeviceTimingInfo) (*ud.WithID, error) {
-	l := rulelogic.NewDeviceTimingCreateLogic(ctx, s.svcCtx)
-	return l.DeviceTimingCreate(in)
+func (s *RuleServer) DeviceTimerCreate(ctx context.Context, in *ud.DeviceTimerInfo) (*ud.WithID, error) {
+	l := rulelogic.NewDeviceTimerCreateLogic(ctx, s.svcCtx)
+	return l.DeviceTimerCreate(in)
 }
 
-func (s *RuleServer) DeviceTimingUpdate(ctx context.Context, in *ud.DeviceTimingInfo) (*ud.Empty, error) {
-	l := rulelogic.NewDeviceTimingUpdateLogic(ctx, s.svcCtx)
-	return l.DeviceTimingUpdate(in)
+func (s *RuleServer) DeviceTimerUpdate(ctx context.Context, in *ud.DeviceTimerInfo) (*ud.Empty, error) {
+	l := rulelogic.NewDeviceTimerUpdateLogic(ctx, s.svcCtx)
+	return l.DeviceTimerUpdate(in)
 }
 
-func (s *RuleServer) DeviceTimingDelete(ctx context.Context, in *ud.WithID) (*ud.Empty, error) {
-	l := rulelogic.NewDeviceTimingDeleteLogic(ctx, s.svcCtx)
-	return l.DeviceTimingDelete(in)
+func (s *RuleServer) DeviceTimerDelete(ctx context.Context, in *ud.WithID) (*ud.Empty, error) {
+	l := rulelogic.NewDeviceTimerDeleteLogic(ctx, s.svcCtx)
+	return l.DeviceTimerDelete(in)
 }
 
-func (s *RuleServer) DeviceTimingIndex(ctx context.Context, in *ud.DeviceTimingIndexReq) (*ud.DeviceTimingIndexResp, error) {
-	l := rulelogic.NewDeviceTimingIndexLogic(ctx, s.svcCtx)
-	return l.DeviceTimingIndex(in)
+func (s *RuleServer) DeviceTimerIndex(ctx context.Context, in *ud.DeviceTimerIndexReq) (*ud.DeviceTimerIndexResp, error) {
+	l := rulelogic.NewDeviceTimerIndexLogic(ctx, s.svcCtx)
+	return l.DeviceTimerIndex(in)
 }

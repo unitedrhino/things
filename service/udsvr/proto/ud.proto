@@ -34,10 +34,10 @@ service rule {
   rpc sceneManuallyTrigger(WithID) returns (Empty);//手动触发场景
 
   //设备定时
-  rpc deviceTimingCreate(DeviceTimingInfo) returns(WithID);
-  rpc deviceTimingUpdate(DeviceTimingInfo) returns(Empty);
-  rpc deviceTimingDelete(WithID) returns(Empty);
-  rpc deviceTimingIndex(DeviceTimingIndexReq) returns(DeviceTimingIndexResp);
+  rpc deviceTimerCreate(DeviceTimerInfo) returns(WithID);
+  rpc deviceTimerUpdate(DeviceTimerInfo) returns(Empty);
+  rpc deviceTimerDelete(WithID) returns(Empty);
+  rpc deviceTimerIndex(DeviceTimerIndexReq) returns(DeviceTimerIndexResp);
 }
 
 //运营
@@ -48,25 +48,25 @@ service ops{
   rpc opsWorkOrderIndex(OpsWorkOrderIndexReq) returns(OpsWorkOrderIndexResp);
 }
 
-message DeviceTimingIndexReq{
+message DeviceTimerIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   int64 status = 2;//状态: 1启用 2禁用
   string triggerType = 3;//触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
 }
 
-message DeviceTimingIndexResp{
-  repeated DeviceTimingInfo list = 1;//设备信息
+message DeviceTimerIndexResp{
+  repeated DeviceTimerInfo list = 1;//设备信息
   int64  total = 2;//总数(只有分页的时候会返回)
 }
 
-message DeviceTimingInfo{
+message DeviceTimerInfo{
   int64 id = 1;//场景id
   string name =2;//名称
   DeviceCore device =3;
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
   string triggerType = 6;//触发类型 timer: 定时触发 delay: 延迟触发(延迟触发同时只能存在一个)
   int64 execAt = 7;//执行时间 从0点加起来的秒数 如 1点就是 1*60*60
-  int64 repeat = 8;//重复 二进制周一到周日 11111111 这个参数只有定时触发才有
+  int64 execRepeat = 8;//重复 二进制周一到周日 11111111 这个参数只有定时触发才有
   string actionType = 9; //云端向设备发起属性控制: propertyControl  应用调用设备行为:action
   string dataID = 10;//属性的id及行为的id
   string value = 11;//传的值

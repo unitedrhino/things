@@ -28,9 +28,40 @@ func (m *UdSceneInfo) TableName() string {
 }
 
 type UdSceneTrigger struct {
-	Type    string               `gorm:"column:type;type:VARCHAR(25);NOT NULL"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
-	Devices scene.TriggerDevices `gorm:"column:devices;type:json;serializer:json"`
-	Timers  scene.Timers         `gorm:"column:timers;type:json;serializer:json"`
+	Type    string                  `gorm:"column:type;type:VARCHAR(25);NOT NULL"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	Devices []*UdSceneTriggerDevice `gorm:"foreignKey:SceneID;references:ID"`
+	Timers  []*UdSceneTriggerTimer  `gorm:"foreignKey:SceneID;references:ID"`
+}
+
+type UdSceneTriggerTimer struct {
+	ID          int64        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
+	SceneID     int64        `gorm:"column:scene_id;type:bigint"`                      // 场景id编号
+	ExecAt      int64        `gorm:"column:exec_at;type:bigint;NOT NULL"`              //执行时间 从0点加起来的秒数 如 1点就是 1*60*60
+	ExecRepeat  int64        `gorm:"column:exec_repeat;type:bit(7);default:0b1111111"` //重复 二进制周日到周六 11111111 这个参数只有定时触发才有
+	LastRunTime sql.NullTime `gorm:"column:last_run_time;index;default:null"`
+	SceneInfo   UdSceneInfo  `gorm:"foreignKey:ID;references:SceneID"`
+	Status      int64        `gorm:"column:status;type:BIGINT;default:1"` //状态 同步场景联动的status
+	stores.Time
+}
+
+func (m *UdSceneTriggerTimer) TableName() string {
+	return "ud_scene_trigger_timer"
+}
+
+type UdSceneTriggerDevice struct {
+	ID              int64                  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`  // id编号
+	SceneID         int64                  `gorm:"column:scene_id;type:bigint"`                       // 场景id编号
+	ProductID       string                 `gorm:"column:product_id;type:VARCHAR(25);NOT NULL"`       //产品id
+	Selector        string                 `gorm:"column:selector;type:VARCHAR(25);NOT NULL"`         //设备选择方式  all: 全部 fixed:指定的设备
+	SelectorValues  []string               `gorm:"column:selector_values;type:json;serializer:json"`  //选择的列表  选择的列表, fixed类型是设备名列表
+	Operator        string                 `gorm:"column:operator;type:VARCHAR(25);NOT NULL"`         //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
+	OperationSchema *scene.OperationSchema `gorm:"column:operation_schema;type:json;serializer:json"` //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
+	SceneInfo       UdSceneInfo            `gorm:"foreignKey:ID;references:SceneID"`
+	stores.Time
+}
+
+func (m *UdSceneTriggerDevice) TableName() string {
+	return "ud_scene_trigger_device"
 }
 
 type UdSceneWhen struct {

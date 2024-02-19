@@ -36,8 +36,8 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		HeadImg: in.HeadImg,
 		UdSceneTrigger: relationDB.UdSceneTrigger{
 			Type:    string(in.Trigger.Type),
-			Devices: in.Trigger.Devices,
-			Timers:  in.Trigger.Timers,
+			Devices: ToSceneTriggerDevicesPo(in, in.Trigger.Devices),
+			Timers:  ToSceneTriggerTimersPo(in, in.Trigger.Timers),
 		},
 		UdSceneWhen: relationDB.UdSceneWhen{
 			ValidRanges:   in.When.ValidRanges,
@@ -46,6 +46,38 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		},
 		UdSceneThen: relationDB.UdSceneThen{Actions: in.Then.Actions},
 	}
+}
+
+func ToSceneTriggerTimersPo(si *scene.Info, in scene.Timers) (ret []*relationDB.UdSceneTriggerTimer) {
+	if in == nil {
+		return nil
+	}
+	for _, v := range in {
+		ret = append(ret, &relationDB.UdSceneTriggerTimer{
+			SceneID:    si.ID,
+			Status:     si.Status,
+			ExecAt:     v.ExecAt,
+			ExecRepeat: v.ExecRepeat,
+		})
+	}
+	return
+}
+
+func ToSceneTriggerDevicesPo(si *scene.Info, in scene.TriggerDevices) (ret []*relationDB.UdSceneTriggerDevice) {
+	if in == nil {
+		return nil
+	}
+	for _, v := range in {
+		ret = append(ret, &relationDB.UdSceneTriggerDevice{
+			SceneID:         si.ID,
+			ProductID:       v.ProductID,
+			Selector:        string(v.Selector),
+			SelectorValues:  v.SelectorValues,
+			Operator:        string(v.Operator),
+			OperationSchema: v.OperationSchema,
+		})
+	}
+	return
 }
 
 func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
@@ -62,8 +94,8 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		CreatedTime: in.CreatedTime,
 		Trigger: scene.Trigger{
 			Type:    scene.TriggerType(in.UdSceneTrigger.Type),
-			Devices: in.UdSceneTrigger.Devices,
-			Timers:  in.UdSceneTrigger.Timers,
+			Devices: ToSceneTriggerDevicesDo(in.UdSceneTrigger.Devices),
+			Timers:  ToSceneTriggerTimersDo(in.UdSceneTrigger.Timers),
 		},
 		When: scene.When{
 			ValidRanges:   in.UdSceneWhen.ValidRanges,
@@ -75,6 +107,35 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		},
 		Status: in.Status,
 	}
+}
+
+func ToSceneTriggerTimersDo(in []*relationDB.UdSceneTriggerTimer) (ret scene.Timers) {
+	if in == nil {
+		return nil
+	}
+	for _, v := range in {
+		ret = append(ret, &scene.Timer{
+			ExecAt:     v.ExecAt,
+			ExecRepeat: v.ExecRepeat,
+		})
+	}
+	return
+}
+
+func ToSceneTriggerDevicesDo(in []*relationDB.UdSceneTriggerDevice) (ret scene.TriggerDevices) {
+	if in == nil {
+		return nil
+	}
+	for _, v := range in {
+		ret = append(ret, &scene.TriggerDevice{
+			ProductID:       v.ProductID,
+			Selector:        scene.DeviceSelector(v.Selector),
+			SelectorValues:  v.SelectorValues,
+			Operator:        scene.DeviceOperationOperator(v.Operator),
+			OperationSchema: v.OperationSchema,
+		})
+	}
+	return
 }
 
 func PoToSceneInfoPb(in *relationDB.UdSceneInfo) *ud.SceneInfo {
@@ -105,11 +166,11 @@ func PoToSceneInfoPbs(in []*relationDB.UdSceneInfo) (ret []*ud.SceneInfo) {
 	return ret
 }
 
-func ToDeviceTimingPb(in *relationDB.UdDeviceTimingInfo) *ud.DeviceTimingInfo {
+func ToDeviceTimerPb(in *relationDB.UdDeviceTimerInfo) *ud.DeviceTimerInfo {
 	if in == nil {
 		return nil
 	}
-	return &ud.DeviceTimingInfo{
+	return &ud.DeviceTimerInfo{
 		Id:   in.ID,
 		Name: in.Name,
 		Device: &ud.DeviceCore{
@@ -119,7 +180,7 @@ func ToDeviceTimingPb(in *relationDB.UdDeviceTimingInfo) *ud.DeviceTimingInfo {
 		CreatedTime: in.CreatedTime.Unix(),
 		TriggerType: in.TriggerType,
 		ExecAt:      in.ExecAt,
-		Repeat:      in.Repeat,
+		ExecRepeat:  in.ExecRepeat,
 		ActionType:  in.ActionType,
 		DataID:      in.DataID,
 		Value:       in.Value,
@@ -127,9 +188,9 @@ func ToDeviceTimingPb(in *relationDB.UdDeviceTimingInfo) *ud.DeviceTimingInfo {
 	}
 }
 
-func ToDeviceTimingsPb(in []*relationDB.UdDeviceTimingInfo) (ret []*ud.DeviceTimingInfo) {
+func ToDeviceTimersPb(in []*relationDB.UdDeviceTimerInfo) (ret []*ud.DeviceTimerInfo) {
 	for _, v := range in {
-		ret = append(ret, ToDeviceTimingPb(v))
+		ret = append(ret, ToDeviceTimerPb(v))
 	}
 	return
 }

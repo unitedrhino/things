@@ -51,9 +51,43 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 	return db
 }
 
+func FillSceneTriggerSceneID(in *UdSceneInfo) *UdSceneInfo {
+	for _, v := range in.UdSceneTrigger.Timers {
+		v.SceneID = in.ID
+	}
+	for _, v := range in.UdSceneTrigger.Devices {
+		v.SceneID = in.ID
+	}
+	return in
+}
+
 func (p SceneInfoRepo) Insert(ctx context.Context, data *UdSceneInfo) error {
-	result := p.db.WithContext(ctx).Create(data)
-	return stores.ErrFmt(result.Error)
+	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := p.db.WithContext(ctx).Create(data).Error
+		if err != nil {
+			return err
+		}
+		for _, v := range data.Timers {
+			v.SceneID = data.ID
+		}
+		for _, v := range data.Devices {
+			v.SceneID = data.ID
+		}
+		if len(data.Timers) != 0 {
+			err = NewSceneTriggerTimerRepo(tx).MultiInsert(ctx, data.Timers)
+			if err != nil {
+				return err
+			}
+		}
+		if len(data.Devices) != 0 {
+			err = NewSceneTriggerDeviceRepo(tx).MultiInsert(ctx, data.Devices)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return stores.ErrFmt(err)
 }
 
 func (p SceneInfoRepo) FindOneByFilter(ctx context.Context, f SceneInfoFilter) (*UdSceneInfo, error) {
@@ -67,7 +101,7 @@ func (p SceneInfoRepo) FindOneByFilter(ctx context.Context, f SceneInfoFilter) (
 }
 func (p SceneInfoRepo) FindByFilter(ctx context.Context, f SceneInfoFilter, page *def.PageInfo) ([]*UdSceneInfo, error) {
 	var results []*UdSceneInfo
-	db := p.fmtFilter(ctx, f).Model(&UdSceneInfo{})
+	db := p.fmtFilter(ctx, f).Preload("Devices").Preload("Timers").Model(&UdSceneInfo{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -83,7 +117,39 @@ func (p SceneInfoRepo) CountByFilter(ctx context.Context, f SceneInfoFilter) (si
 }
 
 func (p SceneInfoRepo) Update(ctx context.Context, data *UdSceneInfo) error {
-	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+		if err != nil {
+			return err
+		}
+		err = NewSceneTriggerDeviceRepo(tx).DeleteByFilter(ctx, SceneTriggerDeviceFilter{SceneID: data.ID})
+		if err != nil {
+			return err
+		}
+		err = NewSceneTriggerTimerRepo(tx).DeleteByFilter(ctx, SceneTriggerTimerFilter{SceneID: data.ID})
+		if err != nil {
+			return err
+		}
+		for _, v := range data.Timers {
+			v.SceneID = data.ID
+		}
+		for _, v := range data.Devices {
+			v.SceneID = data.ID
+		}
+		if len(data.Timers) != 0 {
+			err = NewSceneTriggerTimerRepo(tx).MultiInsert(ctx, data.Timers)
+			if err != nil {
+				return err
+			}
+		}
+		if len(data.Devices) != 0 {
+			err = NewSceneTriggerDeviceRepo(tx).MultiInsert(ctx, data.Devices)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	return stores.ErrFmt(err)
 }
 
@@ -94,12 +160,26 @@ func (p SceneInfoRepo) DeleteByFilter(ctx context.Context, f SceneInfoFilter) er
 }
 
 func (p SceneInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&UdSceneInfo{}).Error
+	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Where("id = ?", id).Delete(&UdSceneInfo{}).Error
+		if err != nil {
+			return err
+		}
+		err = NewSceneTriggerDeviceRepo(tx).DeleteByFilter(ctx, SceneTriggerDeviceFilter{SceneID: id})
+		if err != nil {
+			return err
+		}
+		err = NewSceneTriggerTimerRepo(tx).DeleteByFilter(ctx, SceneTriggerTimerFilter{SceneID: id})
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	return stores.ErrFmt(err)
 }
 func (p SceneInfoRepo) FindOne(ctx context.Context, id int64) (*UdSceneInfo, error) {
 	var result UdSceneInfo
-	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Preload("Devices").Preload("Timers").Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
