@@ -1,8 +1,8 @@
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+!**/service/main/**/target/
+!**/service/test/**/target/
 /deploy/data/*
 /docker/run-debug/
 
@@ -24,7 +24,7 @@ target/
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
-/src/apisvr/dist/
+/service/apisvr/dist/
 /nbdist/
 /.nb-gradle/
 build/
@@ -37,29 +37,30 @@ go.sum
 
 ##
 /cmd/*
-src/apisvr/apisvr*
-src/dcsvr/dcsvr*
-src/ddsvr/ddsvr*
-src/dmsvr/dmsvr*
-src/vidsvr/vidsvr*
-src/vidsvr/vidsvr
-src/vidsip/vidsip*
-src/vidsvr/vidsvr/etc/api.yaml
-src/vidsvr/vidsvr/api.go
-src/apisvr/go_build*
-src/usersvr/usersvr*
-/src/disvr/disvr.exe
-/src/syssvr/syssvr.exe
-/src/vidsvr/vidsvr.exe
-/src/apisvr/dist/
+service/apisvr/apisvr*
+service/dcsvr/dcsvr*
+service/ddsvr/ddsvr*
+service/dmsvr/dmsvr*
+service/vidsvr/vidsvr*
+service/vidsvr/vidsvr
+service/vidsip/vidsip*
+service/vidsvr/vidsvr/etc/api.yaml
+service/vidsvr/vidsvr/api.go
+service/apisvr/go_build*
+service/usersvr/usersvr*
+/service/disvr/disvr.exe
+/service/syssvr/syssvr.exe
+/service/vidsvr/vidsvr.exe
+/service/apisvr/dist/
 
 *.exe
 ### MacOS ###
 .DS_Store
-/src/apisvr/logs/
+/service/apisvr/logs/
 /pack/*
 
 .history
-/src/timedqueuesvr/job/job
-/src/timedqueuesvr/scheduler/scheduler
-/src/timedjobsvr/job
+/service/timedqueuesvr/job/job
+/service/timedqueuesvr/scheduler/scheduler
+/service/timedjobsvr/job
+/service/apisvr/apisvr

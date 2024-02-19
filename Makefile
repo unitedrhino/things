@@ -8,9 +8,9 @@ runall:   run.dm run.dg run.ud run.api
 buildone:build.clean mod cp.etc build.api  moduleupdate build.core build.front
 
 #仅编译后端
-buildback: build.clean mod cp.etc build.api  moduleupdate build.coreback
+buildback: build.clean mod cp.etc build.api
 
-build.things.back: build.clean mod cp.etc build.api
+build.back: build.clean mod cp.etc build.api
 
 moduleupdate:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
