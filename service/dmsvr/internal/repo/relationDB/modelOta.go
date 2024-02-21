@@ -8,7 +8,7 @@ import (
 // 升级任务表
 type DmOtaTask struct {
 	ID          int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID   string `gorm:"column:product_id;type:char(11);NOT NULL"`             // 产品id
+	ProductID   string `gorm:"column:product_id;type:varchar(100);NOT NULL"`         // 产品id
 	FirmwareID  int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`              // 固件id
 	TaskUid     string `gorm:"column:task_uid;type:varchar(64)"`                     // 任务编号
 	Type        int64  `gorm:"column:type;type:smallint;default:1;NOT NULL"`         // 升级范围1全部设备2定向升级
@@ -46,7 +46,7 @@ type DmOtaTaskDevices struct {
 	ID            int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	FirmwareID    int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`             // 固件id
 	TaskUid       string `gorm:"column:task_uid;type:varchar(64);NOT NULL"`           // 任务批次
-	ProductID     string `gorm:"column:product_id;type:char(11);NOT NULL"`            // 产品id
+	ProductID     string `gorm:"column:product_id;type:varchar(100);NOT NULL"`        // 产品id
 	DeviceName    string `gorm:"column:device_name;type:varchar(100);NOT NULL"`       // 设备编号
 	Version       string `gorm:"column:version;type:varchar(64)"`                     // 当前版本
 	TargetVersion string `gorm:"column:target_version;type:varchar(64);NOT NULL"`     // 升级包的版本
@@ -64,7 +64,7 @@ func (m *DmOtaTaskDevices) TableName() string {
 // 产品固件升级包信息表
 type DmOtaFirmware struct {
 	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID  string `gorm:"column:product_id;type:char(11);NOT NULL"`        // 产品id
+	ProductID  string `gorm:"column:product_id;type:varchar(100);NOT NULL"`    // 产品id
 	Version    string `gorm:"column:version;type:varchar(64)"`                 // 固件版本
 	SrcVersion string `gorm:"column:src_version;type:varchar(64)"`             // 待升级版本号
 	Module     string `gorm:"column:module;type:varchar(64)"`                  // 模块名称

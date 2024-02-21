@@ -62,31 +62,7 @@ func FillSceneTriggerSceneID(in *UdSceneInfo) *UdSceneInfo {
 }
 
 func (p SceneInfoRepo) Insert(ctx context.Context, data *UdSceneInfo) error {
-	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		err := p.db.WithContext(ctx).Create(data).Error
-		if err != nil {
-			return err
-		}
-		for _, v := range data.Timers {
-			v.SceneID = data.ID
-		}
-		for _, v := range data.Devices {
-			v.SceneID = data.ID
-		}
-		if len(data.Timers) != 0 {
-			err = NewSceneTriggerTimerRepo(tx).MultiInsert(ctx, data.Timers)
-			if err != nil {
-				return err
-			}
-		}
-		if len(data.Devices) != 0 {
-			err = NewSceneTriggerDeviceRepo(tx).MultiInsert(ctx, data.Devices)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	})
+	err := p.db.WithContext(ctx).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -118,11 +94,7 @@ func (p SceneInfoRepo) CountByFilter(ctx context.Context, f SceneInfoFilter) (si
 
 func (p SceneInfoRepo) Update(ctx context.Context, data *UdSceneInfo) error {
 	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
-		if err != nil {
-			return err
-		}
-		err = NewSceneTriggerDeviceRepo(tx).DeleteByFilter(ctx, SceneTriggerDeviceFilter{SceneID: data.ID})
+		err := NewSceneTriggerDeviceRepo(tx).DeleteByFilter(ctx, SceneTriggerDeviceFilter{SceneID: data.ID})
 		if err != nil {
 			return err
 		}
@@ -130,20 +102,22 @@ func (p SceneInfoRepo) Update(ctx context.Context, data *UdSceneInfo) error {
 		if err != nil {
 			return err
 		}
-		for _, v := range data.Timers {
-			v.SceneID = data.ID
+		timer := data.Timers
+		devices := data.Devices
+		data.Timers = nil
+		data.Devices = nil
+		err = p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+		if err != nil {
+			return err
 		}
-		for _, v := range data.Devices {
-			v.SceneID = data.ID
-		}
-		if len(data.Timers) != 0 {
-			err = NewSceneTriggerTimerRepo(tx).MultiInsert(ctx, data.Timers)
+		if len(timer) != 0 {
+			err = NewSceneTriggerTimerRepo(tx).MultiInsert(ctx, timer)
 			if err != nil {
 				return err
 			}
 		}
-		if len(data.Devices) != 0 {
-			err = NewSceneTriggerDeviceRepo(tx).MultiInsert(ctx, data.Devices)
+		if len(devices) != 0 {
+			err = NewSceneTriggerDeviceRepo(tx).MultiInsert(ctx, devices)
 			if err != nil {
 				return err
 			}

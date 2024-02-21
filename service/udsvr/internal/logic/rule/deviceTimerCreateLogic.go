@@ -4,8 +4,10 @@ import (
 	"context"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/udsvr/internal/domain"
 	"github.com/i-Things/things/service/udsvr/internal/domain/deviceTimer"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"time"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
@@ -39,6 +41,7 @@ func (l *DeviceTimerCreateLogic) DeviceTimerCreate(in *ud.DeviceTimerInfo) (*ud.
 		DataID:      in.DataID,
 		Value:       in.Value,
 		Name:        in.Name,
+		LastRunTime: domain.GenLastRunTime(time.Now(), in.ExecAt),
 		Status:      in.Status,
 	}
 	err := DeviceTimerCheck(l.ctx, &po)

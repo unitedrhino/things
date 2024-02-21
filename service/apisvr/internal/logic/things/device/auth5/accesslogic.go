@@ -2,6 +2,7 @@ package auth5
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/device"
@@ -36,6 +37,7 @@ func (l *AccessLogic) Access(req *types.DeviceAuth5AccessReq) (resp *types.Devic
 	case "publish":
 		access = devices.Pub
 	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	_, err = l.svcCtx.DeviceA.AccessAuth(l.ctx, &dg.AccessAuthReq{
 		Username: req.Username,
 		Topic:    req.Topic,

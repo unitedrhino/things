@@ -10,23 +10,23 @@ import (
 )
 
 // 操作执行器类型
-type ActionExecutor string
+type ActionExecuteType string
 
 const (
-	ActionExecutorNotify ActionExecutor = "notify" //通知
-	ActionExecutorDelay  ActionExecutor = "delay"  //延迟
-	ActionExecutorDevice ActionExecutor = "device" //设备输出
-	ActionExecutorAlarm  ActionExecutor = "alarm"  //告警
+	ActionExecutorNotify ActionExecuteType = "notify" //通知 todo
+	ActionExecutorDelay  ActionExecuteType = "delay"  //延迟
+	ActionExecutorDevice ActionExecuteType = "device" //设备输出
+	ActionExecutorAlarm  ActionExecuteType = "alarm"  //告警 todo
 )
 
 type Actions []*Action
 
 type Action struct {
-	Executor ActionExecutor `json:"executor"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
-	Delay    int64          `json:"delay"`    //秒数
-	Alarm    *ActionAlarm   `json:"alarm"`
-	Notify   *ActionNotify  `json:"notify"` //消息通知
-	Device   *ActionDevice  `json:"device"`
+	ExecuteType ActionExecuteType `json:"executeType"`      //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
+	Delay       int64             `json:"delay,omitempty"`  //秒数
+	Alarm       *ActionAlarm      `json:"alarm,omitempty"`  //todo
+	Notify      *ActionNotify     `json:"notify,omitempty"` //消息通知 todo
+	Device      *ActionDevice     `json:"device,omitempty"`
 }
 
 func (a Actions) Validate() error {
@@ -46,35 +46,35 @@ func (a *Action) Validate() error {
 	if a == nil {
 		return nil
 	}
-	switch a.Executor {
-	case ActionExecutorNotify:
-		if a.Notify == nil {
-			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
-		}
-		return a.Notify.Validate()
+	switch a.ExecuteType {
+	//case ActionExecutorNotify:
+	//	if a.Notify == nil {
+	//		return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.ExecuteType))
+	//	}
+	//	return a.Notify.Validate()
 	case ActionExecutorDelay:
 		if a.Delay == 0 {
 			return errors.Parameter.AddMsg("延时不能为0")
 		}
 	case ActionExecutorDevice:
 		if a.Device == nil {
-			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
+			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.ExecuteType))
 		}
 		return a.Device.Validate()
-	case ActionExecutorAlarm:
-		if a.Alarm == nil {
-			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Executor))
-		}
-		return a.Alarm.Validate()
+	//case ActionExecutorAlarm:
+	//	if a.Alarm == nil {
+	//		return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.ExecuteType))
+	//	}
+	//	return a.Alarm.Validate()
 	default:
-		return errors.Parameter.AddMsg("操作类型不支持:" + string(a.Executor))
+		return errors.Parameter.AddMsg("操作类型不支持:" + string(a.ExecuteType))
 	}
 	return nil
 }
 
 // 执行操作
 func (a *Action) Execute(ctx context.Context, repo ActionRepo) error {
-	switch a.Executor {
+	switch a.ExecuteType {
 	case ActionExecutorDelay:
 		time.Sleep(time.Second * time.Duration(a.Delay))
 	case ActionExecutorDevice:

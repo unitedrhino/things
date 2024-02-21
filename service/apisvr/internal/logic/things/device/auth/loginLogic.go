@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"encoding/base64"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/device"
@@ -42,6 +43,7 @@ func (l *LoginLogic) Login(req *types.DeviceAuthLoginReq) error {
 		}
 
 	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	_, err = l.svcCtx.DeviceM.RootCheck(l.ctx, &dm.RootCheckReq{
 		Username:    req.Username,
 		Password:    req.Password,

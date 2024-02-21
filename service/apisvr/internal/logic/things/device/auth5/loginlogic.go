@@ -3,6 +3,7 @@ package auth5
 import (
 	"context"
 	"encoding/base64"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/device"
@@ -56,6 +57,7 @@ func (l *LoginLogic) Login(req *types.DeviceAuth5LoginReq) (resp *types.DeviceAu
 			IsSuperuser: true,
 		}, nil
 	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	_, err = l.svcCtx.DeviceA.LoginAuth(l.ctx, &dg.LoginAuthReq{Username: req.Username, //用户名
 		Password:    req.Password, //密码
 		ClientID:    req.ClientID, //clientID

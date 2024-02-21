@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/sysdirect"
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/verify"
 	ws "gitee.com/i-Things/share/websocket"
@@ -77,6 +78,7 @@ type ServiceContext struct {
 	SvrClient
 	Ws             *ws.Server
 	Config         config.Config
+	InitCtxsWare   rest.Middleware
 	SetupWare      rest.Middleware
 	CheckTokenWare rest.Middleware
 	DataAuthWare   rest.Middleware
@@ -222,6 +224,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		SetupWare:      middleware.NewSetupWareMiddleware(c, lo).Handle,
 		CheckTokenWare: export.NewCheckTokenWareMiddleware(ur, ro).Handle,
+		InitCtxsWare:   ctxs.InitMiddleware,
 		DataAuthWare:   middleware.NewDataAuthWareMiddleware(c).Handle,
 		TeardownWare:   middleware.NewTeardownWareMiddleware(c, lo).Handle,
 		CheckApiWare:   middleware.NewCheckApiWareMiddleware().Handle,

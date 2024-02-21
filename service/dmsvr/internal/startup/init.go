@@ -13,6 +13,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 func Init(svcCtx *svc.ServiceContext) {
@@ -39,7 +40,7 @@ func InitSubscribe(svcCtx *svc.ServiceContext) {
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	svcCtx.ServerMsg.Subscribe(eventBus.DmDeviceInfoDelete, func(ctx context.Context, body []byte) error {
+	svcCtx.ServerMsg.Subscribe(eventBus.DmDeviceInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value devices.Core
 		err := json.Unmarshal(body, &value)
 		if err != nil {
@@ -52,7 +53,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.WithContext(ctx).Infof("DeviceGroupHandle value:%v err:%v", utils.Fmt(value), err)
 		return err
 	})
-	svcCtx.ServerMsg.Subscribe(eventBus.DmProductSchemaUpdate, func(ctx context.Context, body []byte) error {
+	svcCtx.ServerMsg.Subscribe(eventBus.DmProductSchemaUpdate, func(ctx context.Context, t time.Time, body []byte) error {
 		var productID = string(body)
 		return svcCtx.SchemaRepo.ClearCache(ctx, productID)
 	})

@@ -10,7 +10,7 @@ info(
 @server(
      group: things/group/info
      prefix: /api/v1/things/group/info
-     middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 
 service api {
@@ -38,7 +38,7 @@ service api {
 @server(
      group: things/group/device
      prefix: /api/v1/things/group/device
-     middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "添加分组设备"

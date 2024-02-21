@@ -6,7 +6,6 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type ActionAlarmMode string
@@ -45,33 +44,32 @@ func (a *ActionAlarm) Validate() error {
 }
 
 func (a *ActionAlarm) Execute(ctx context.Context, repo ActionRepo) error {
-	switch a.Mode {
-	case ActionAlarmModeRelieve:
-		err := repo.Alarm.AlarmRelieve(ctx, AlarmRelieve{
-			SceneID:   repo.Scene.ID,
-			SceneName: repo.Scene.Name,
-		})
-		if err != nil {
-			logx.WithContext(ctx).Errorf("%s.AlarmRelieve err:%v", utils.FuncName(), err)
-			return err
-		}
-	case ActionAlarmModeTrigger:
-		serial := ""
-		if repo.Serial != nil {
-			serial = repo.Serial.GenSerial()
-		}
-		err := repo.Alarm.AlarmTrigger(ctx, TriggerSerial{
-			SceneID:     repo.Scene.ID,
-			SceneName:   repo.Scene.Name,
-			TriggerType: 1,
-			Device:      repo.Device,
-			Serial:      serial,
-			Desc:        "",
-		})
-		if err != nil {
-			logx.WithContext(ctx).Errorf("%s.AlarmTrigger err:%v", utils.FuncName(), err)
-			return err
-		}
-	}
+	//switch a.Mode {
+	//case ActionAlarmModeRelieve:
+	//	err := repo.Alarm.AlarmRelieve(ctx, AlarmRelieve{
+	//		SceneID:   repo.Scene.ID,
+	//		SceneName: repo.Scene.Name,
+	//	})
+	//	if err != nil {
+	//		logx.WithContext(ctx).Errorf("%s.AlarmRelieve err:%v", utils.FuncName(), err)
+	//		return err
+	//	}
+	//case ActionAlarmModeTrigger:
+	//	serial := ""
+	//	if repo.Serial != nil {
+	//		serial = repo.Serial.GenSerial()
+	//	}
+	//	err := repo.Alarm.AlarmTrigger(ctx, TriggerSerial{
+	//		SceneID:     repo.Scene.ID,
+	//		SceneName:   repo.Scene.Name,
+	//		TriggerType: 1,
+	//		Serial:      serial,
+	//		Desc:        "",
+	//	})
+	//	if err != nil {
+	//		logx.WithContext(ctx).Errorf("%s.AlarmTrigger err:%v", utils.FuncName(), err)
+	//		return err
+	//	}
+	//}
 	return nil
 }

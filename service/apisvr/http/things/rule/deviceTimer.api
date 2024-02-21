@@ -9,7 +9,7 @@ info(
 @server(
     group: things/rule/deviceTimer/info
     prefix: /api/v1/things/rule
-    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "新增设备定时"

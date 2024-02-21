@@ -9,7 +9,7 @@ info(
 @server(
     group: things/rule/alarm/dealRecord
     prefix: /api/v1/things/rule/alarm
-    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "获取告警处理记录列表"

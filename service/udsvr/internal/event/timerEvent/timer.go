@@ -2,10 +2,10 @@ package timerEvent
 
 import (
 	"context"
-	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/tools"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
@@ -29,7 +29,7 @@ func NewTimerHandle(ctx context.Context, svcCtx *svc.ServiceContext) *TimerHandl
 
 func (l *TimerHandle) DeviceTimer() error {
 	now := time.Now()
-	return l.runWithTenant(func(ctx context.Context) error {
+	return tools.RunAllTenants(l.ctx, func(ctx context.Context) error {
 		ctxs.GetUserCtx(ctx).AllProject = true
 		db := stores.WithNoDebug(ctx, relationDB.NewDeviceTimerInfoRepo)
 		list, err := db.FindByFilter(ctx, relationDB.DeviceTimerInfoFilter{Status: def.True,
@@ -44,21 +44,4 @@ func (l *TimerHandle) DeviceTimer() error {
 		return nil
 	})
 
-}
-
-func (l *TimerHandle) runWithTenant(f func(ctx context.Context) error) error {
-	tenantCodes, err := caches.GetTenantCodes(l.ctx)
-	if err != nil {
-		return err
-	}
-	for _, v := range tenantCodes {
-		ctx := ctxs.BindTenantCode(l.ctx, v)
-		utils.Go(ctx, func() {
-			err := f(ctx)
-			if err != nil {
-				logx.Error(err)
-			}
-		})
-	}
-	return nil
 }

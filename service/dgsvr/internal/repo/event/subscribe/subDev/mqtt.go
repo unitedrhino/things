@@ -179,6 +179,7 @@ func (d *MqttClient) subscribeWithFunc(cli mqtt.Client, topic string, handle fun
 				defer span.End()
 				startTime := timex.Now()
 				duration := timex.Since(startTime)
+				ctx = ctxs.WithRoot(ctx)
 				err := handle(ctx, message.Topic(), message.Payload())
 				if err != nil {
 					logx.WithContext(ctx).Errorf("%s.handle failure err:%v topic:%v", utils.FuncName(), err, topic)

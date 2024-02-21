@@ -8,7 +8,7 @@ info(
 @server(
     group: things/device/msg
     prefix: /api/v1/things/device/msg
-    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "获取云端诊断日志"

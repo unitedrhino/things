@@ -32,7 +32,6 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 		return nil, err
 	}
 	//校验数据权限 todo
-
 	po := ToSceneInfoPo(do)
 	relationDB.NewSceneInfoRepo(l.ctx).Insert(l.ctx, po)
 

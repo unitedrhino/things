@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type ShadowRepo struct {
@@ -31,21 +32,8 @@ func (p *ShadowRepo) MultiUpdate(ctx context.Context, data []*shadow.Info) error
 	for i, d := range data {
 		vals[i] = ToShadowPo(d)
 	}
-	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		for _, v := range vals {
-			err := tx.Unscoped().Delete(&DmDeviceShadow{}, "product_id = ? and device_name = ? and data_id = ?",
-				v.ProductID, v.DeviceName, v.DataID).Error
-			if err != nil {
-				return errors.Database.AddDetail(err)
-			}
-			err = tx.Save(v).Error
-			if err != nil {
-				return errors.Database.AddDetail(err)
-			}
-		}
-		return nil
-	})
-	return err
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmDeviceShadow{}).Create(vals).Error
+	return stores.ErrFmt(err)
 }
 func (p *ShadowRepo) fmtFilter(ctx context.Context, f shadow.Filter) *gorm.DB {
 	db := p.db.WithContext(ctx).Where("product_id = ?", f.ProductID).Where("device_name = ?", f.DeviceName)

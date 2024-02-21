@@ -10,7 +10,8 @@ buildone:build.clean mod cp.etc build.api  moduleupdate build.core build.front
 #仅编译后端
 buildback: build.clean mod cp.etc build.api
 
-build.back: build.clean mod cp.etc build.api
+packback: buildback toremote
+
 
 moduleupdate:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"

@@ -59,7 +59,7 @@ type RuleAlarmRecord struct {
 	ID          int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
 	AlarmID     int64     `gorm:"column:alarm_id;type:BIGINT;NOT NULL"`
 	TriggerType int64     `gorm:"column:trigger_type;uniqueIndex:tt_pi_dn;type:BIGINT;NOT NULL"`
-	ProductID   string    `gorm:"column:product_id;uniqueIndex:tt_pi_dn;type:char(11);NOT NULL"`
+	ProductID   string    `gorm:"column:product_id;uniqueIndex:tt_pi_dn;type:varchar(100);NOT NULL"`
 	DeviceName  string    `gorm:"column:device_name;uniqueIndex:tt_pi_dn;type:varchar(100);NOT NULL"`
 	Level       int64     `gorm:"column:level;type:SMALLINT;NOT NULL"`
 	SceneName   string    `gorm:"column:scene_name;type:varchar(100);NOT NULL"`

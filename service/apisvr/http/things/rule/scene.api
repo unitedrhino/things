@@ -9,7 +9,7 @@ info(
 @server(
     group: things/rule/scene/info
     prefix: /api/v1/things/rule/scene/info
-    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "新增场景"

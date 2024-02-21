@@ -9,21 +9,23 @@ import (
 	"reflect"
 )
 
-type DeviceSelector string
+type SelectType string
 
 const (
-	DeviceSelectorAll   DeviceSelector = "all"
-	DeviceSelectorFixed DeviceSelector = "fixed"
+	SelectorDeviceAll SelectType = "allDevice"   //产品下的所有设备
+	SelectDeviceFixed SelectType = "fixedDevice" //产品下的指定设备
+	SelectGroup       SelectType = "group"       //某个设备组的设备(支持不同产品的设备,但是需要有共同的公共物模型)
 )
 
 type TriggerDevices []*TriggerDevice
 
 type TriggerDevice struct {
-	ProductID       string                  `json:"productID"`       //产品id
-	Selector        DeviceSelector          `json:"selector"`        //设备选择方式  all: 全部 fixed:指定的设备
-	SelectorValues  []string                `json:"selectorValues"`  //选择的列表  选择的列表, fixed类型是设备名列表
-	Operator        DeviceOperationOperator `json:"operator"`        //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
-	OperationSchema *OperationSchema        `json:"operationSchema"` //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
+	ProductID       string                  `json:"productID,omitempty"`       //产品id
+	SelectType      SelectType              `json:"selectType"`                //设备选择方式  all: 全部 fixed:指定的设备
+	GroupID         int64                   `json:"groupID,omitempty"`         //分组id
+	DeviceNames     []string                `json:"deviceNames,omitempty"`     //选择的列表  选择的列表, fixed类型是设备名列表
+	Operator        DeviceOperationOperator `json:"operator,omitempty"`        //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
+	OperationSchema *OperationSchema        `json:"operationSchema,omitempty"` //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
 }
 
 type DeviceOperationOperator string
@@ -48,8 +50,8 @@ func (t *TriggerDevice) Validate() error {
 	if t.ProductID == "" {
 		return errors.Parameter.AddMsg("设备触发类型产品未选择,产品id为:" + t.ProductID)
 	}
-	if !utils.SliceIn(t.Selector, DeviceSelectorAll, DeviceSelectorFixed) {
-		return errors.Parameter.AddMsg("设备触发类型设备选择方式不支持:" + string(t.Selector))
+	if !utils.SliceIn(t.SelectType, SelectorDeviceAll, SelectDeviceFixed) {
+		return errors.Parameter.AddMsg("设备触发类型设备选择方式不支持:" + string(t.SelectType))
 	}
 	if !utils.SliceIn(t.Operator, DeviceOperationOperatorConnected, DeviceOperationOperatorDisConnected, DeviceOperationOperatorReportProperty) {
 		return errors.Parameter.AddMsg("设备触发的触发类型不支持:" + string(t.Operator))
@@ -92,10 +94,10 @@ func (t TriggerDevices) IsTriggerWithConn(device devices.Core, operator DeviceOp
 		if d.Operator != operator {
 			continue
 		}
-		if d.Selector == DeviceSelectorAll {
+		if d.SelectType == SelectorDeviceAll {
 			return true
 		}
-		for _, d := range d.SelectorValues {
+		for _, d := range d.DeviceNames {
 			if d == device.DeviceName {
 				return true
 			}
@@ -112,9 +114,9 @@ func (t TriggerDevices) IsTriggerWithProperty(reportInfo *application.PropertyRe
 			continue
 		}
 		//判断设备是否命中
-		if d.Selector != DeviceSelectorAll {
+		if d.SelectType != SelectorDeviceAll {
 			var hit bool
-			for _, d := range d.SelectorValues {
+			for _, d := range d.DeviceNames {
 				if d == reportInfo.Device.DeviceName {
 					hit = true
 					break

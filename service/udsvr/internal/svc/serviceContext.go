@@ -7,6 +7,7 @@ import (
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
 	"github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/client/devicemsg"
@@ -23,10 +24,10 @@ type SvrClient struct {
 	DeviceInteract deviceinteract.DeviceInteract
 	DeviceMsg      devicemsg.DeviceMsg
 	DeviceM        devicemanage.DeviceManage
-
-	TimedM   timedmanage.TimedManage
-	AreaM    areamanage.AreaManage
-	ProjectM projectmanage.ProjectManage
+	DeviceG        devicegroup.DeviceGroup
+	TimedM         timedmanage.TimedManage
+	AreaM          areamanage.AreaManage
+	ProjectM       projectmanage.ProjectManage
 }
 
 type ServiceContext struct {
@@ -41,6 +42,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		areaM          areamanage.AreaManage
 		projectM       projectmanage.ProjectManage
 		deviceM        devicemanage.DeviceManage
+		deviceG        devicegroup.DeviceGroup
 		productM       productmanage.ProductManage
 		deviceInteract deviceinteract.DeviceInteract
 		deviceMsg      devicemsg.DeviceMsg
@@ -55,11 +57,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DmRpc.Conf))
 		deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DmRpc.Conf))
+		deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
+
 	} else {
 		productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 		deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 		deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
 		deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
+		deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 	}
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
 	logx.Must(err)
@@ -74,6 +79,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceInteract: deviceInteract,
 			DeviceMsg:      deviceMsg,
 			DeviceM:        deviceM,
+			DeviceG:        deviceG,
 		},
 	}
 }

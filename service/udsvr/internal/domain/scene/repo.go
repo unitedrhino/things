@@ -4,6 +4,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
+	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
 	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	devicemsg "github.com/i-Things/things/service/dmsvr/client/devicemsg"
@@ -46,9 +47,7 @@ type TermRepo struct {
 type ActionRepo struct {
 	DeviceInteract deviceinteract.DeviceInteract
 	DeviceM        devicemanage.DeviceManage
-	Alarm          AlarmRepo
-	Device         devices.Core
-	Serial         Serial
+	DeviceG        devicegroup.DeviceGroup
 	Scene          *Info
 }
 

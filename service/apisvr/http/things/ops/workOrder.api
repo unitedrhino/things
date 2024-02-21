@@ -7,7 +7,7 @@ info(
 @server(
     group: things/ops/workOrder
     prefix: /api/v1/things/ops
-    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "添加工单"

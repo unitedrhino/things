@@ -9,6 +9,7 @@ info(
 @server(
     group: things/device/auth
     prefix: /api/v1/things/device/auth
+    middleware:  InitCtxsWare
 )
 service api {
     @doc "设备登录认证"

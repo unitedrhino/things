@@ -2,9 +2,11 @@ package rulelogic
 
 import (
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/udsvr/internal/domain"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
+	"time"
 )
 
 func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
@@ -35,9 +37,9 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		Tag:     in.Tag,
 		HeadImg: in.HeadImg,
 		UdSceneTrigger: relationDB.UdSceneTrigger{
-			Type:    string(in.Trigger.Type),
-			Devices: ToSceneTriggerDevicesPo(in, in.Trigger.Devices),
-			Timers:  ToSceneTriggerTimersPo(in, in.Trigger.Timers),
+			Type: string(in.Trigger.Type),
+			//Devices: ToSceneTriggerDevicesPo(in, in.Trigger.Devices),
+			Timers: ToSceneTriggerTimersPo(in, in.Trigger.Timers),
 		},
 		UdSceneWhen: relationDB.UdSceneWhen{
 			ValidRanges:   in.When.ValidRanges,
@@ -52,12 +54,14 @@ func ToSceneTriggerTimersPo(si *scene.Info, in scene.Timers) (ret []*relationDB.
 	if in == nil {
 		return nil
 	}
+	now := time.Now()
 	for _, v := range in {
 		ret = append(ret, &relationDB.UdSceneTriggerTimer{
-			SceneID:    si.ID,
-			Status:     si.Status,
-			ExecAt:     v.ExecAt,
-			ExecRepeat: v.ExecRepeat,
+			SceneID:     si.ID,
+			Status:      si.Status,
+			ExecAt:      v.ExecAt,
+			ExecRepeat:  v.ExecRepeat,
+			LastRunTime: domain.GenLastRunTime(now, v.ExecAt),
 		})
 	}
 	return
@@ -71,8 +75,8 @@ func ToSceneTriggerDevicesPo(si *scene.Info, in scene.TriggerDevices) (ret []*re
 		ret = append(ret, &relationDB.UdSceneTriggerDevice{
 			SceneID:         si.ID,
 			ProductID:       v.ProductID,
-			Selector:        string(v.Selector),
-			SelectorValues:  v.SelectorValues,
+			Selector:        string(v.SelectType),
+			SelectorValues:  v.DeviceNames,
 			Operator:        string(v.Operator),
 			OperationSchema: v.OperationSchema,
 		})
@@ -93,9 +97,9 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		Desc:        in.Desc,
 		CreatedTime: in.CreatedTime,
 		Trigger: scene.Trigger{
-			Type:    scene.TriggerType(in.UdSceneTrigger.Type),
-			Devices: ToSceneTriggerDevicesDo(in.UdSceneTrigger.Devices),
-			Timers:  ToSceneTriggerTimersDo(in.UdSceneTrigger.Timers),
+			Type: scene.TriggerType(in.UdSceneTrigger.Type),
+			//Devices: ToSceneTriggerDevicesDo(in.UdSceneTrigger.Devices),
+			Timers: ToSceneTriggerTimersDo(in.UdSceneTrigger.Timers),
 		},
 		When: scene.When{
 			ValidRanges:   in.UdSceneWhen.ValidRanges,
@@ -129,8 +133,8 @@ func ToSceneTriggerDevicesDo(in []*relationDB.UdSceneTriggerDevice) (ret scene.T
 	for _, v := range in {
 		ret = append(ret, &scene.TriggerDevice{
 			ProductID:       v.ProductID,
-			Selector:        scene.DeviceSelector(v.Selector),
-			SelectorValues:  v.SelectorValues,
+			SelectType:      scene.SelectType(v.Selector),
+			DeviceNames:     v.SelectorValues,
 			Operator:        scene.DeviceOperationOperator(v.Operator),
 			OperationSchema: v.OperationSchema,
 		})

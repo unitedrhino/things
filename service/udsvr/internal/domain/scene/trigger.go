@@ -16,9 +16,9 @@ const (
 )
 
 type Trigger struct {
-	Type    TriggerType    `json:"type"`    //触发类型 auto: 自动触发 manual:手动触发
-	Devices TriggerDevices `json:"devices"` //设备触发
-	Timers  Timers         `json:"timers"`  //定时触发
+	Type    TriggerType    `json:"type"`              //触发类型 auto: 自动触发 manual:手动触发
+	Devices TriggerDevices `json:"devices,omitempty"` //设备触发
+	Timers  Timers         `json:"timers,omitempty"`  //定时触发
 }
 
 func (t *Trigger) Validate() error {

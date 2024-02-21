@@ -13,6 +13,7 @@ import (
 	"github.com/i-Things/things/service/dgsvr/internal/repo/event/subscribe/subInner"
 	"github.com/i-Things/things/service/dgsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 func Init(svcCtx *svc.ServiceContext) {
@@ -46,7 +47,7 @@ func PostInit(svcCtx *svc.ServiceContext) {
 	InitEventBus(svcCtx)
 }
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	svcCtx.FastEvent.Subscribe(eventBus.DmProductCustomUpdate, func(ctx context.Context, body []byte) error {
+	svcCtx.FastEvent.Subscribe(eventBus.DmProductCustomUpdate, func(ctx context.Context, t time.Time, body []byte) error {
 		info := events.DeviceUpdateInfo{}
 		err := json.Unmarshal(body, &info)
 		if err != nil {

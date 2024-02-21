@@ -11,6 +11,7 @@ import (
 	"github.com/i-Things/things/service/udsvr/internal/event/timerEvent"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 func Init(svcCtx *svc.ServiceContext) {
@@ -20,13 +21,19 @@ func Init(svcCtx *svc.ServiceContext) {
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTiming, func(ctx context.Context, body []byte) error {
-		t := timerEvent.NewTimerHandle(ctx, svcCtx)
-		return t.DeviceTimer()
+	svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTiming, func(ctx context.Context, t time.Time, body []byte) error {
+		if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
+			return nil
+		}
+		th := timerEvent.NewTimerHandle(ctx, svcCtx)
+		return th.DeviceTimer()
 	})
-	svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTiming, func(ctx context.Context, body []byte) error {
-		t := timerEvent.NewTimerHandle(ctx, svcCtx)
-		return t.SceneTiming()
+	svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTiming, func(ctx context.Context, t time.Time, body []byte) error {
+		if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
+			return nil
+		}
+		th := timerEvent.NewTimerHandle(ctx, svcCtx)
+		return th.SceneTiming()
 	})
 	err := svcCtx.FastEvent.Start()
 	logx.Must(err)

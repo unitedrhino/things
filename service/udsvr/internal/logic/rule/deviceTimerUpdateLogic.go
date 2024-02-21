@@ -2,7 +2,9 @@ package rulelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/service/udsvr/internal/domain"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"time"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
@@ -36,6 +38,8 @@ func (l *DeviceTimerUpdateLogic) DeviceTimerUpdate(in *ud.DeviceTimerInfo) (*ud.
 	old.Value = in.Value
 	old.Name = in.Name
 	old.Status = in.Status
+	old.LastRunTime = domain.GenLastRunTime(time.Now(), in.ExecAt)
+
 	err = DeviceTimerCheck(l.ctx, old)
 	if err != nil {
 		return nil, err

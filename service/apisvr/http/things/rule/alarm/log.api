@@ -9,7 +9,7 @@ info(
 @server(
     group: things/rule/alarm/log
     prefix: /api/v1/things/rule/alarm/log
-    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "获取告警日志记录列表"
@@ -20,7 +20,7 @@ service api {
 @server(
     group: things/rule/alarm/record
     prefix: /api/v1/things/rule/alarm/record
-    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
     @doc "获取告警记录列表"
