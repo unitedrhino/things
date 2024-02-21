@@ -3,6 +3,7 @@ package deviceMsgEvent
 import (
 	"context"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/schema"
@@ -96,7 +97,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
-	ctx := utils.CopyContext(l.ctx)
+	ctx := ctxs.CopyCtx(l.ctx)
 	utils.Go(ctx, func() {
 		startTime := time.Now()
 		for identifier, param := range paramValues {
@@ -298,7 +299,7 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 		if err != nil {
 			return nil, err
 		}
-		utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			l.Infof("DeviceThingActionReport.Action device:%v,reqType:%v,req:%v", core, reqType, l.dreq)
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
@@ -329,7 +330,7 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 		if err != nil {
 			return nil, err
 		}
-		utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			l.Infof("DeviceThingActionReport.ActionReply device:%v,reqType:%v,req:%v", core, reqType, l.dreq)
 			_, err := l.svcCtx.TimedM.TaskCancel(l.ctx, &timedmanage.TaskWithTaskID{TaskID: resp.MsgToken})
 			if err != nil {
@@ -406,7 +407,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		respMsg = nil
 	}
 
-	utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 		_ = l.svcCtx.HubLogRepo.Insert(ctx, &msgHubLog.HubLog{
 			ProductID:  msg.ProductID,
 			Action:     action,

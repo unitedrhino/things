@@ -33,9 +33,9 @@ func (l *TimerHandle) DeviceTimer() error {
 		ctxs.GetUserCtx(ctx).AllProject = true
 		db := stores.WithNoDebug(ctx, relationDB.NewDeviceTimerInfoRepo)
 		list, err := db.FindByFilter(ctx, relationDB.DeviceTimerInfoFilter{Status: def.True,
-			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),   //小于等于当前时间点(需要执行的)
-			LastRunTime: stores.CmpLt(utils.GetZeroTime(now)),     //当天未执行的
-			Repeat:      stores.CmpBinEq(int64(now.Weekday()), 1), //当天需要执行
+			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                                     //小于等于当前时间点(需要执行的)
+			LastRunTime: stores.CmpOr(stores.CmpLt(utils.GetZeroTime(now)), stores.CmpIsNull(true)), //当天未执行的
+			Repeat:      stores.CmpBinEq(int64(now.Weekday()), 1),                                   //当天需要执行
 		}, nil)
 		if err != nil {
 			return err
@@ -46,24 +46,6 @@ func (l *TimerHandle) DeviceTimer() error {
 
 }
 
-func (l *TimerHandle) SceneTiming() error {
-	now := time.Now()
-	return l.runWithTenant(func(ctx context.Context) error {
-		ctxs.GetUserCtx(ctx).AllProject = true
-		db := stores.WithNoDebug(ctx, relationDB.NewSceneTriggerTimerRepo)
-		//db := relationDB.NewSceneTriggerTimerRepo(ctx)
-		list, err := db.FindByFilter(ctx, relationDB.SceneTriggerTimerFilter{Status: def.True,
-			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                                  //小于等于当前时间点(需要执行的)
-			LastRunTime: stores.CmpLt(utils.GetZeroTime(now)),                                    //当天未执行的
-			Repeat:      stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
-		}, nil)
-		if err != nil {
-			return err
-		}
-		l.Debug(list)
-		return nil
-	})
-}
 func (l *TimerHandle) runWithTenant(f func(ctx context.Context) error) error {
 	tenantCodes, err := caches.GetTenantCodes(l.ctx)
 	if err != nil {

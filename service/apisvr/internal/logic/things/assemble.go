@@ -7,6 +7,7 @@ import (
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"github.com/i-Things/things/service/udsvr/pb/ud"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -84,6 +85,40 @@ func ToDmDeviceCoresPb(in []*types.DeviceCore) []*dm.DeviceCore {
 	var ret []*dm.DeviceCore
 	for _, v := range in {
 		ret = append(ret, &dm.DeviceCore{
+			DeviceName: v.DeviceName,
+			ProductID:  v.ProductID,
+		})
+	}
+	return ret
+}
+
+func UdToDeviceCoreTypes(in *ud.DeviceCore) *types.DeviceCore {
+	if in == nil {
+		return nil
+	}
+	return &types.DeviceCore{
+		DeviceName: in.DeviceName,
+		ProductID:  in.ProductID,
+	}
+}
+
+func ToUdDeviceCorePb(in *types.DeviceCore) *ud.DeviceCore {
+	if in == nil {
+		return nil
+	}
+	return &ud.DeviceCore{
+		DeviceName: in.DeviceName,
+		ProductID:  in.ProductID,
+	}
+}
+
+func ToUdDeviceCoresPb(in []*types.DeviceCore) []*ud.DeviceCore {
+	if in == nil {
+		return nil
+	}
+	var ret []*ud.DeviceCore
+	for _, v := range in {
+		ret = append(ret, &ud.DeviceCore{
 			DeviceName: v.DeviceName,
 			ProductID:  v.ProductID,
 		})

@@ -1,11 +1,15 @@
 package scene
 
-import "gitee.com/i-Things/share/errors"
+import (
+	"context"
+	"gitee.com/i-Things/share/errors"
+	"time"
+)
 
 type When struct {
 	ValidRanges   WhenRanges `json:"validRanges"`   //生效时间段
 	InvalidRanges WhenRanges `json:"invalidRanges"` //无效时间段(最高优先级)
-	Conditions    Conditions `json:"conditions"`    //条件
+	Conditions    Conditions `json:"conditions"`    //条件 todo(暂不支持)
 }
 
 type WhenRanges []WhenRange
@@ -62,4 +66,37 @@ func (w WhenRanges) Validate() error {
 		}
 	}
 	return nil
+}
+
+func (w *When) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+	if len(w.InvalidRanges) != 0 {
+		if w.InvalidRanges.IsHit(ctx, t, repo) { //禁止的优先级最高
+			return false
+		}
+	}
+	if len(w.ValidRanges) != 0 {
+		if !w.ValidRanges.IsHit(ctx, t, repo) { //如果没有命中执行范围则返回未命中
+			return false
+		}
+	}
+	return true
+
+}
+
+func (w WhenRanges) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+	if len(w) == 0 {
+		return true
+	}
+	for _, v := range w {
+		if v.IsHit(ctx, t, repo) {
+			return true
+		}
+	}
+	return false
+}
+func (w *WhenRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+	if w.Type == WhenRangeTypeDate {
+		return w.DateRange.IsHit(ctx, t, repo)
+	}
+	return w.TimeRange.IsHit(ctx, t, repo)
 }

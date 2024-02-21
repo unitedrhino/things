@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/pb/timedjob"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
@@ -61,7 +62,7 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 	now := time.Now()
 	sendMsg := func(err error) {
 		devErr := errors.Fmt(err)
-		utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			l.Infof("DeviceThingActionReport.Action device:%v,req:%v", core, req)
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{

@@ -1,38 +1,46 @@
 package scene
 
 import (
+	"context"
 	"gitee.com/i-Things/share/crons"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/tools"
 	"gitee.com/i-Things/share/utils"
+	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
 
 var secondParser = crons.NewParser(crons.Second | crons.Minute | crons.Hour | crons.Dom | crons.Month | crons.DowOptional | crons.Descriptor)
 
+type TimeRangeType = string
+
 const (
-	TimeRangeTypeAllDay = "allDay"
-	TimeRangeTypeLight  = "light"
-	TimeRangeTypeNight  = "night"
-	TimeRangeTypeCustom = "custom"
+	TimeRangeTypeAllDay TimeRangeType = "allDay"
+	TimeRangeTypeLight  TimeRangeType = "light" //todo
+	TimeRangeTypeNight  TimeRangeType = "night" //todo
+	TimeRangeTypeCustom TimeRangeType = "custom"
 )
+
+type DateRangeType = string
+
 const (
-	DateRangeTypeWorkDay = "workday"
-	DateRangeTypeWeekend = "weekend"
-	DateRangeTypeHoliday = "holiday"
-	DateRangeTypeCustom  = "custom"
+	DateRangeTypeWorkDay DateRangeType = "workday"
+	DateRangeTypeWeekend DateRangeType = "weekend"
+	DateRangeTypeHoliday DateRangeType = "holiday"
+	DateRangeTypeCustom  DateRangeType = "custom"
 )
 
 // TimeRange 时间范围 只支持后面几种特殊字符:*  - ,
 type TimeRange struct {
-	Type      string `json:"type"`      //时间类型  allDay:全天 light:白天(从日出到日落) night:夜间(从日落到日出) custom:自定义
-	StartTime int64  `json:"startTime"` //自定义开始时间 从0点加起来的秒数
-	EndTime   int64  `json:"endTime"`   //自定义结束时间 从0点加起来的秒数
+	Type      TimeRangeType `json:"type"`      //时间类型  allDay:全天 light:白天(从日出到日落) night:夜间(从日落到日出) custom:自定义
+	StartTime int64         `json:"startTime"` //自定义开始时间 从0点加起来的秒数
+	EndTime   int64         `json:"endTime"`   //自定义结束时间 从0点加起来的秒数
 }
 
 type DateRange struct {
-	Type      string `json:"type"`      //日期类型 workday: 工作日 weekend: 周末 holiday: 节假日 custom:自定义
-	StartDate string `json:"startDate"` //开始日期 2006-01-02
-	EndDate   string `json:"endDate"`   //结束日期 2006-01-02
+	Type      DateRangeType `json:"type"`      //日期类型 workday: 工作日 weekend: 周末 holiday: 节假日 custom:自定义
+	StartDate string        `json:"startDate"` //开始日期 2006-01-02
+	EndDate   string        `json:"endDate"`   //结束日期 2006-01-02
 }
 
 type Timers []*Timer
@@ -60,7 +68,7 @@ func (t *TimeRange) Validate() error {
 	if t == nil {
 		return errors.Parameter.AddMsg("时间范围需要填写时间内容")
 	}
-	if !utils.SliceIn(t.Type, TimeRangeTypeAllDay, TimeRangeTypeLight, TimeRangeTypeNight, TimeRangeTypeCustom) {
+	if !utils.SliceIn(t.Type, TimeRangeTypeAllDay, TimeRangeTypeCustom) {
 		return errors.Parameter.AddMsg("时间范围类型不正确")
 	}
 	if t.Type == TimeRangeTypeCustom {
@@ -89,10 +97,6 @@ func (t *DateRange) Validate() error {
 		}
 	}
 	return nil
-}
-func (t *TimeRange) IsHit(tim time.Time) bool {
-	//todo 等待实现
-	return true
 }
 
 func (t *Timer) Validate() error {
@@ -146,4 +150,38 @@ func (a *UnitTime) Execute() {
 		delayTime *= time.Hour
 	}
 	time.Sleep(delayTime)
+}
+
+func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+	if d.Type == DateRangeTypeCustom {
+		start := utils.FmtDateStr(d.StartDate)
+		end := utils.FmtDateStr(d.EndDate)
+		if t.Before(end) && t.After(start) {
+			return true
+		}
+		return false
+	}
+	h, err := tools.GetHoliday(ctx, t)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+		return false
+	}
+	if d.Type == DateRangeTypeWorkDay {
+		return h.Holiday == tools.HolidayWorkDay
+	}
+	return true
+}
+
+func (d *TimeRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+	switch d.Type {
+	case TimeRangeTypeAllDay:
+		return true
+	case TimeRangeTypeCustom:
+		now := utils.TimeToDaySec(t)
+		if now >= d.StartTime && now <= d.EndTime {
+			return true
+		}
+		return false
+	}
+	return false
 }

@@ -10,7 +10,7 @@ type DmUserDeviceCollect struct {
 	ProductID  string            `gorm:"column:product_id;type:char(11);uniqueIndex:product_id_deviceName;NOT NULL"`      // 产品id
 	DeviceName string            `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:product_id_deviceName"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 }
 
 func (m *DmUserDeviceCollect) TableName() string {
@@ -26,7 +26,7 @@ type DmUserDeviceShare struct {
 	AccessPerm []string          `gorm:"column:access_prem;type:json;serializer:json;NOT NULL;default:'[]'"`              //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
 	SchemaPerm []string          `gorm:"column:schema_prem;type:json;serializer:json;NOT NULL;default:'[]'"`              //物模型权限,只需要填写需要授权并授权的物模型id
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:product_id_deviceName"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 }
 
 func (m *DmUserDeviceShare) TableName() string {

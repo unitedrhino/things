@@ -34,6 +34,9 @@ type DeviceRepo interface {
 	GetInfos(ctx context.Context, device devices.Core, operator DeviceOperationOperator, dataID string) (Infos, error)
 }
 
+type WhenRepo interface {
+}
+
 // TermRepo 场景运行需要用到的对外仓储
 type TermRepo struct {
 	DeviceMsg  devicemsg.DeviceMsg

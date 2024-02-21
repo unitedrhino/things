@@ -38,7 +38,7 @@ type DmDeviceInfo struct {
 	LastLogin      sql.NullTime      `gorm:"column:last_login"`                                                               // 最后上线时间
 	LogLevel       int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                               // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:product_id_deviceName"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 }
 
@@ -48,7 +48,8 @@ func (m *DmDeviceInfo) TableName() string {
 
 // 产品信息表
 type DmProductInfo struct {
-	ProductID    string            `gorm:"column:product_id;type:char(11);primary_key;NOT NULL"`          // 产品id
+	ID           int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID    string            `gorm:"column:product_id;type:varchar(100);uniqueIndex:pd;NOT NULL"`   // 产品id
 	ProductName  string            `gorm:"column:product_name;uniqueIndex:pn;type:varchar(100);NOT NULL"` // 产品名称
 	ProductImg   string            `gorm:"column:product_img;type:varchar(200)"`                          // 产品图片
 	ProductType  int64             `gorm:"column:product_type;type:smallint;default:1"`                   // 产品状态:1:开发中,2:审核中,3:已发布
@@ -64,7 +65,7 @@ type DmProductInfo struct {
 	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`                   // 产品状态
 	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`   // 产品标签
 	stores.NoDelTime
-	DeletedTime  stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
+	DeletedTime  stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn;uniqueIndex:pd"`
 	ProtocolInfo *DmProtocolInfo    `gorm:"foreignKey:ID;references:ProtocolID"` // 添加外键
 	Category     *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"` // 添加外键
 	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
@@ -81,7 +82,7 @@ type DmProductCategory struct {
 	Desc    string `gorm:"column:desc;type:varchar(200)"`                         // 描述
 	HeadImg string `gorm:"column:head_img;type:varchar(200)"`                     // 图片
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
 }
 
 func (m *DmProductCategory) TableName() string {
@@ -98,7 +99,7 @@ type DmProtocolInfo struct {
 	Endpoints    []string `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"` // 协议端点,如果填写了优先使用该字段
 	EtcdKey      string   `gorm:"column:etcd_key;type:varchar(200);default:null"`                   //服务etcd发现的key etcd key
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
 }
 
 func (m *DmProtocolInfo) TableName() string {
@@ -114,7 +115,7 @@ type DmProductCustom struct {
 	TransformScript string                       `gorm:"column:transform_script;type:text"`                       // 协议转换脚本
 	LoginAuthScript string                       `gorm:"column:login_auth_script;type:text"`                      // 登录认证脚本
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
@@ -129,7 +130,7 @@ type DmProductSchema struct {
 	Tag       int64  `gorm:"column:tag;type:smallint;default:1"`                                                    // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
 	DmSchemaCore
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:identifier"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:identifier"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
@@ -156,7 +157,7 @@ type DmCommonSchema struct {
 	ID int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	DmSchemaCore
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:identifier"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:identifier"`
 }
 
 func (m *DmCommonSchema) TableName() string {
@@ -175,7 +176,7 @@ type DmGroupInfo struct {
 	Desc       string            `gorm:"column:desc;type:varchar(200);default:''"`                                       // 描述
 	Tags       map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`                    // 分组标签
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:tc_ac"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:tc_ac"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 
@@ -193,7 +194,7 @@ type DmGroupDevice struct {
 	ProductID  string            `gorm:"column:product_id;uniqueIndex:group_id_product_id_device_name;type:char(11);NOT NULL"`      // 产品id
 	DeviceName string            `gorm:"column:device_name;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"` // 设备名称
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:group_id_product_id_device_name"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:group_id_product_id_device_name"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 	Device      *DmDeviceInfo      `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
 }
@@ -211,7 +212,7 @@ type DmGatewayDevice struct {
 	ProductID         string            `gorm:"column:product_id;uniqueIndex:gpi_pdn_pi_dn;type:char(11);NOT NULL"`              // 子设备产品id
 	DeviceName        string            `gorm:"column:device_name;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"`         // 子设备名称
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:gpi_pdn_pi_dn"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:gpi_pdn_pi_dn"`
 	Device      *DmDeviceInfo      `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
 	Gateway     *DmDeviceInfo      `gorm:"foreignKey:ProductID,DeviceName;references:GatewayProductID,GatewayDeviceName"`
 }
@@ -226,7 +227,7 @@ type DmProductRemoteConfig struct {
 	ProductID string `gorm:"column:product_id;uniqueIndex:pn;type:char(11);NOT NULL"` // 产品id
 	Content   string `gorm:"column:content;type:json;NOT NULL"`                       // 配置内容
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pn"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
 

@@ -1,0 +1,58 @@
+info(
+    title: "设备定时联动信息模块"
+    desc: "设备定时联动信息模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+@server(
+    group: things/rule/deviceTimer/info
+    prefix: /api/v1/things/rule
+    middleware:  CheckTokenWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "新增设备定时"
+    @handler create
+    post /device-timer/info/create (DeviceTimerInfo) returns (WithID)
+    @doc "更新设备定时"
+    @handler update
+    post /device-timer/info/update (DeviceTimerInfo) returns ()
+    @doc "删除设备定时"
+    @handler delete
+    post /device-timer/info/delete (WithID) returns ()
+    @doc "获取设备定时信息列表"
+    @handler index
+    post /device-timer/info/index (DeviceTimerInfoIndexReq) returns (DeviceTimerInfoIndexResp)
+    @doc "获取设备定时信息详情"
+    @handler read
+    post /device-timer/info/read (WithID) returns (DeviceTimerInfo)
+}
+
+type (
+
+    DeviceTimerInfoIndexReq  {
+        Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        TriggerType  string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+        Status        int64    `json:"status,optional"` //状态: 1启用 2禁用
+    }
+    DeviceTimerInfoIndexResp  {
+        List []*DeviceTimerInfo `json:"list"`    //设备定时信息
+        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+    }
+)
+
+type DeviceTimerInfo  {
+    ID          int64   `json:"id,optional"`
+    Name        string  `json:"name,optional"`
+    TriggerType  string    `json:"triggerType,optional"` //触发类型 timer: 定时触发 delay: 延迟触发(延迟触发同时只能存在一个)
+    Status      int64   `json:"status,optional"` //状态: 1启用 2禁用
+    CreatedTime int64   `json:"createdTime,optional"`
+    Device      DeviceCore `json:"device"`
+    ExecAt      int64       `json:"execAt,optional"`            //执行时间 从0点加起来的秒数 如 1点就是 1*60*60
+    ExecRepeat  int64       `json:"execRepeat,optional"`    //重复 二进制周一到周日 11111111 这个参数只有定时触发才有
+    ActionType  string      `json:"actionType,optional"`     //云端向设备发起属性控制: propertyControl  应用调用设备行为:action
+    DataID      string      `json:"dataID,optional"`            //属性的id及行为的id
+    Value       string      `json:"value,optional"`              //传的值
+    LastRunTime int64       `json:"lastRunTime,optional"` //最后一次执行时间 秒级时间戳 只读
+}

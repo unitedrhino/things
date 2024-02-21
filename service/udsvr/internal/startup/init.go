@@ -7,12 +7,14 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/tools"
 	"github.com/i-Things/things/service/udsvr/internal/event/timerEvent"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func Init(svcCtx *svc.ServiceContext) {
+	tools.InitStore(svcCtx.Config.CacheRedis)
 	TimerInit(svcCtx)
 	InitEventBus(svcCtx)
 }

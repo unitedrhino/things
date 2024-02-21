@@ -37,6 +37,7 @@ service rule {
   rpc deviceTimerCreate(DeviceTimerInfo) returns(WithID);
   rpc deviceTimerUpdate(DeviceTimerInfo) returns(Empty);
   rpc deviceTimerDelete(WithID) returns(Empty);
+  rpc deviceTimerRead(WithID) returns(DeviceTimerInfo);
   rpc deviceTimerIndex(DeviceTimerIndexReq) returns(DeviceTimerIndexResp);
 }
 

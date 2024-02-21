@@ -89,6 +89,9 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 	} else {
 		pi.DeviceType = def.DeviceTypeDevice
 	}
+	if in.CategoryID != 0 {
+		pi.CategoryID = in.CategoryID
+	}
 	if in.NetType != def.Unknown {
 		pi.NetType = in.NetType
 	} else {

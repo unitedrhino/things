@@ -69,6 +69,11 @@ func (s *RuleServer) DeviceTimerDelete(ctx context.Context, in *ud.WithID) (*ud.
 	return l.DeviceTimerDelete(in)
 }
 
+func (s *RuleServer) DeviceTimerRead(ctx context.Context, in *ud.WithID) (*ud.DeviceTimerInfo, error) {
+	l := rulelogic.NewDeviceTimerReadLogic(ctx, s.svcCtx)
+	return l.DeviceTimerRead(in)
+}
+
 func (s *RuleServer) DeviceTimerIndex(ctx context.Context, in *ud.DeviceTimerIndexReq) (*ud.DeviceTimerIndexResp, error) {
 	l := rulelogic.NewDeviceTimerIndexLogic(ctx, s.svcCtx)
 	return l.DeviceTimerIndex(in)

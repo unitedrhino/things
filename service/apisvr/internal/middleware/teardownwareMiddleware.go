@@ -52,7 +52,7 @@ func (m *TeardownWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc 
 
 // 接口操作日志记录
 func (m *TeardownWareMiddleware) OperationLogRecord(ctx context.Context, r *http.Request) {
-	ctx = ctxs.CopyContext(ctx)
+	ctx = ctxs.CopyCtx(ctx)
 	useCtx := ctxs.GetUserCtx(ctx)
 	if useCtx.IsOpen || useCtx.UserID == 0 {
 		return

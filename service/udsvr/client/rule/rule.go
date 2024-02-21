@@ -41,6 +41,7 @@ type (
 		DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error)
 		DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error)
 		DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error)
 		DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error)
 	}
 
@@ -150,6 +151,15 @@ func (m *defaultRule) DeviceTimerDelete(ctx context.Context, in *WithID, opts ..
 
 func (d *directRule) DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceTimerDelete(ctx, in)
+}
+
+func (m *defaultRule) DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error) {
+	client := ud.NewRuleClient(m.cli.Conn())
+	return client.DeviceTimerRead(ctx, in, opts...)
+}
+
+func (d *directRule) DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error) {
+	return d.svr.DeviceTimerRead(ctx, in)
 }
 
 func (m *defaultRule) DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error) {

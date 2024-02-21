@@ -28,6 +28,7 @@ const (
 	Rule_DeviceTimerCreate_FullMethodName    = "/ud.rule/deviceTimerCreate"
 	Rule_DeviceTimerUpdate_FullMethodName    = "/ud.rule/deviceTimerUpdate"
 	Rule_DeviceTimerDelete_FullMethodName    = "/ud.rule/deviceTimerDelete"
+	Rule_DeviceTimerRead_FullMethodName      = "/ud.rule/deviceTimerRead"
 	Rule_DeviceTimerIndex_FullMethodName     = "/ud.rule/deviceTimerIndex"
 )
 
@@ -46,6 +47,7 @@ type RuleClient interface {
 	DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error)
 	DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error)
 	DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error)
 	DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error)
 }
 
@@ -138,6 +140,15 @@ func (c *ruleClient) DeviceTimerDelete(ctx context.Context, in *WithID, opts ...
 	return out, nil
 }
 
+func (c *ruleClient) DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error) {
+	out := new(DeviceTimerInfo)
+	err := c.cc.Invoke(ctx, Rule_DeviceTimerRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *ruleClient) DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error) {
 	out := new(DeviceTimerIndexResp)
 	err := c.cc.Invoke(ctx, Rule_DeviceTimerIndex_FullMethodName, in, out, opts...)
@@ -162,6 +173,7 @@ type RuleServer interface {
 	DeviceTimerCreate(context.Context, *DeviceTimerInfo) (*WithID, error)
 	DeviceTimerUpdate(context.Context, *DeviceTimerInfo) (*Empty, error)
 	DeviceTimerDelete(context.Context, *WithID) (*Empty, error)
+	DeviceTimerRead(context.Context, *WithID) (*DeviceTimerInfo, error)
 	DeviceTimerIndex(context.Context, *DeviceTimerIndexReq) (*DeviceTimerIndexResp, error)
 	mustEmbedUnimplementedRuleServer()
 }
@@ -196,6 +208,9 @@ func (UnimplementedRuleServer) DeviceTimerUpdate(context.Context, *DeviceTimerIn
 }
 func (UnimplementedRuleServer) DeviceTimerDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerDelete not implemented")
+}
+func (UnimplementedRuleServer) DeviceTimerRead(context.Context, *WithID) (*DeviceTimerInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerRead not implemented")
 }
 func (UnimplementedRuleServer) DeviceTimerIndex(context.Context, *DeviceTimerIndexReq) (*DeviceTimerIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerIndex not implemented")
@@ -375,6 +390,24 @@ func _Rule_DeviceTimerDelete_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Rule_DeviceTimerRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RuleServer).DeviceTimerRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rule_DeviceTimerRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RuleServer).DeviceTimerRead(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Rule_DeviceTimerIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeviceTimerIndexReq)
 	if err := dec(in); err != nil {
@@ -435,6 +468,10 @@ var Rule_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceTimerDelete",
 			Handler:    _Rule_DeviceTimerDelete_Handler,
+		},
+		{
+			MethodName: "deviceTimerRead",
+			Handler:    _Rule_DeviceTimerRead_Handler,
 		},
 		{
 			MethodName: "deviceTimerIndex",

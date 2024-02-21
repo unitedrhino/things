@@ -5,4 +5,5 @@ info(
 	email: "603685348@qq.com"
 	version: "v1"
 )
-import "rule/scene/info.api" //场景联动信息接口
+import "rule/scene.api" //场景联动信息接口
+import "rule/deviceTimer.api"

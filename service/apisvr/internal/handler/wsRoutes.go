@@ -25,6 +25,7 @@ import (
 	thingsproductinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/product/info"
 	thingsproductremoteConfig "github.com/i-Things/things/service/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/service/apisvr/internal/handler/things/product/schema"
+	thingsruledeviceTimerinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/deviceTimer/info"
 	thingsrulesceneinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/scene/info"
 	thingsschemacommon "github.com/i-Things/things/service/apisvr/internal/handler/things/schema/common"
 	thingsslotarea "github.com/i-Things/things/service/apisvr/internal/handler/things/slot/area"
@@ -710,6 +711,40 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		ws.WithPrefix("/api/v1/things/product/schema"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/device-timer/info/create",
+					Handler: thingsruledeviceTimerinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/device-timer/info/delete",
+					Handler: thingsruledeviceTimerinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/device-timer/info/index",
+					Handler: thingsruledeviceTimerinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/device-timer/info/read",
+					Handler: thingsruledeviceTimerinfo.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/device-timer/info/update",
+					Handler: thingsruledeviceTimerinfo.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/things/rule"),
 	)
 
 	server.AddRoutes(

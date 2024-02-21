@@ -458,6 +458,32 @@ type DeviceRegisterResp struct {
 	Payload string `json:"payload"`
 }
 
+type DeviceTimerInfo struct {
+	ID          int64      `json:"id,optional"`
+	Name        string     `json:"name,optional"`
+	TriggerType string     `json:"triggerType,optional"` //触发类型 timer: 定时触发 delay: 延迟触发(延迟触发同时只能存在一个)
+	Status      int64      `json:"status,optional"`      //状态: 1启用 2禁用
+	CreatedTime int64      `json:"createdTime,optional"`
+	Device      DeviceCore `json:"device"`
+	ExecAt      int64      `json:"execAt,optional"`      //执行时间 从0点加起来的秒数 如 1点就是 1*60*60
+	ExecRepeat  int64      `json:"execRepeat,optional"`  //重复 二进制周一到周日 11111111 这个参数只有定时触发才有
+	ActionType  string     `json:"actionType,optional"`  //云端向设备发起属性控制: propertyControl  应用调用设备行为:action
+	DataID      string     `json:"dataID,optional"`      //属性的id及行为的id
+	Value       string     `json:"value,optional"`       //传的值
+	LastRunTime int64      `json:"lastRunTime,optional"` //最后一次执行时间 秒级时间戳 只读
+}
+
+type DeviceTimerInfoIndexReq struct {
+	Page        *PageInfo `json:"page,optional"`        //分页信息 只获取一个则不填
+	TriggerType string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	Status      int64     `json:"status,optional"`      //状态: 1启用 2禁用
+}
+
+type DeviceTimerInfoIndexResp struct {
+	List  []*DeviceTimerInfo `json:"list"`  //设备定时信息
+	Total int64              `json:"total"` //总数(只有分页的时候会返回)
+}
+
 type DynamicUpgradeJobReq struct {
 	FirmwareID       int64    `json:"firmwareId"`       // 固件ID
 	ProductID        string   `json:"productId"`        // 产品ID

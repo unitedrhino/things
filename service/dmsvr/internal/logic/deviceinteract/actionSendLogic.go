@@ -84,7 +84,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (*dm.ActionSendResp, 
 		return nil, err
 	}
 	defer func() {
-		utils.GoNewCtx(l.ctx, func(ctx context.Context) {
+		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			uc := ctxs.GetUserCtx(l.ctx)
 			var content = map[string]any{}
 			content["req"] = params

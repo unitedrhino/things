@@ -2,6 +2,7 @@ package appDeviceEvent
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/utils"
@@ -88,7 +89,7 @@ func (a *AppDeviceHandle) DeviceStatusConnected(in *application.ConnectMsg) erro
 }
 
 func (a *AppDeviceHandle) executeActions(device devices.Core, serial scene.Serial, exeInfos scene.Infos) {
-	newCtx := utils.CopyContext(a.ctx)
+	newCtx := ctxs.CopyCtx(a.ctx)
 	for _, info := range exeInfos {
 		go func(ctx context.Context, info *scene.Info) (err error) {
 			defer utils.Recover(ctx)
