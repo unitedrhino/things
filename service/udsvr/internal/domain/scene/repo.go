@@ -48,7 +48,6 @@ type ActionRepo struct {
 	DeviceInteract deviceinteract.DeviceInteract
 	DeviceM        devicemanage.DeviceManage
 	DeviceG        devicegroup.DeviceGroup
-	Scene          *Info
 }
 
 type AlarmRepo interface {

@@ -26,8 +26,8 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 	}
 }
 
-func (l *ReadLogic) Read(req *types.WithID) (resp *types.ProductCategory, err error) {
-	dmResp, err := l.svcCtx.ProductM.ProductCategoryRead(l.ctx, &dm.WithID{Id: req.ID})
+func (l *ReadLogic) Read(req *types.WithIDChildren) (resp *types.ProductCategory, err error) {
+	dmResp, err := l.svcCtx.ProductM.ProductCategoryRead(l.ctx, &dm.ProductCategoryReadReq{Id: req.ID, WithChildren: req.WithChildren})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)

@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -25,7 +26,30 @@ func NewProductCategoryReadLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 // 获取产品信息详情
-func (l *ProductCategoryReadLogic) ProductCategoryRead(in *dm.WithID) (*dm.ProductCategory, error) {
-	po, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.Id)
-	return ToProductCategoryRpc(l.ctx, po, l.svcCtx), err
+func (l *ProductCategoryReadLogic) ProductCategoryRead(in *dm.ProductCategoryReadReq) (*dm.ProductCategory, error) {
+	var (
+		po  *relationDB.DmProductCategory
+		err error
+	)
+	switch in.Id {
+	case def.RootNode, 0:
+		po = &relationDB.DmProductCategory{
+			ID:   def.RootNode,
+			Name: "全部产品品类",
+		}
+	default:
+		po, err = relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.Id)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if !in.WithChildren {
+		return ToProductCategoryPb(l.ctx, l.svcCtx, po, nil), nil
+	}
+	children, err := relationDB.NewProductCategoryRepo(l.ctx).FindByFilter(l.ctx,
+		relationDB.ProductCategoryFilter{IDPath: po.IDPath}, nil)
+	if err != nil {
+		return nil, err
+	}
+	return ToProductCategoryPb(l.ctx, l.svcCtx, po, children), err
 }

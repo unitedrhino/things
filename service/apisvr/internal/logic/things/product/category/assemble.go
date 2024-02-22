@@ -15,15 +15,27 @@ func productCategoryToApi(v *dm.ProductCategory) *types.ProductCategory {
 		Name:            v.Name,
 		Desc:            utils.ToNullString(v.Desc),
 		HeadImg:         v.HeadImg,
+		IDPath:          v.IdPath,
+		ParentID:        v.ParentID,
 		IsUpdateHeadImg: v.IsUpdateHeadImg,
+		Children:        productCategoriesToApi(v.Children),
 	}
 }
+
+func productCategoriesToApi(in []*dm.ProductCategory) (ret []*types.ProductCategory) {
+	for _, v := range in {
+		ret = append(ret, productCategoryToApi(v))
+	}
+	return
+}
+
 func productCategoryToRpc(in *types.ProductCategory) *dm.ProductCategory {
 	if in == nil {
 		return nil
 	}
 	return &dm.ProductCategory{
 		Id:              in.ID,
+		ParentID:        in.ParentID,
 		Name:            in.Name,
 		Desc:            utils.ToRpcNullString(in.Desc),
 		HeadImg:         in.HeadImg,

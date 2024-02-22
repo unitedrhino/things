@@ -1003,11 +1003,14 @@ type Point struct {
 }
 
 type ProductCategory struct {
-	ID              int64   `json:"id,optional"`
-	Name            string  `json:"name,optional"`
-	Desc            *string `json:"desc,optional"`                      //描述
-	HeadImg         string  `json:"headImg,optional"`                   // 用户头像
-	IsUpdateHeadImg bool    `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
+	ID              int64              `json:"id,optional"`
+	ParentID        int64              `json:"parentID,optional"`
+	IDPath          []int64            `json:"idPath,optional"` //只读
+	Name            string             `json:"name,optional"`
+	Desc            *string            `json:"desc,optional"`                      //描述
+	HeadImg         string             `json:"headImg,optional"`                   // 用户头像
+	IsUpdateHeadImg bool               `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
+	Children        []*ProductCategory `json:"children,optional"`
 }
 
 type ProductCategoryIndexReq struct {
@@ -1342,6 +1345,11 @@ type VerifyOtaFirmwareReq struct {
 
 type WithID struct {
 	ID int64 `json:"id,optional"` // id
+}
+
+type WithIDChildren struct {
+	ID           int64 `json:"id,optional"` // id
+	WithChildren bool  `json:withChildren,optional`
 }
 
 type WithIDOrCode struct {

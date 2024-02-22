@@ -16,6 +16,7 @@ import (
 	"github.com/i-Things/things/service/udsvr/internal/config"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
@@ -33,6 +34,7 @@ type SvrClient struct {
 type ServiceContext struct {
 	Config    config.Config
 	FastEvent *eventBus.FastEvent
+	Store     kv.Store
 	SvrClient
 }
 
@@ -71,6 +73,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:    c,
 		FastEvent: serverMsg,
+		Store:     kv.NewStore(c.CacheRedis),
 		SvrClient: SvrClient{
 			TimedM:         timedM,
 			AreaM:          areaM,

@@ -125,7 +125,7 @@ func ToCustomTopicsDo(info []*dm.CustomTopic) (ret []*productCustom.CustomTopic)
 	return
 }
 
-func ToProductCategoryRpc(ctx context.Context, info *relationDB.DmProductCategory, svcCtx *svc.ServiceContext) *dm.ProductCategory {
+func ToProductCategoryPb(ctx context.Context, svcCtx *svc.ServiceContext, info *relationDB.DmProductCategory, children []*relationDB.DmProductCategory) *dm.ProductCategory {
 	if info == nil {
 		return nil
 	}
@@ -136,10 +136,28 @@ func ToProductCategoryRpc(ctx context.Context, info *relationDB.DmProductCategor
 			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
 		}
 	}
-	return &dm.ProductCategory{
+	ret := &dm.ProductCategory{
 		Id:      info.ID,
 		Name:    info.Name,
 		HeadImg: info.HeadImg,
+		IdPath:  utils.GetIDPath(info.IDPath),
 		Desc:    utils.ToRpcNullString(info.Desc),
 	}
+	if children != nil {
+		var idMap = map[int64][]*dm.ProductCategory{}
+		for _, v := range children {
+			idMap[v.ParentID] = append(idMap[v.ParentID], ToProductCategoryPb(ctx, svcCtx, v, nil))
+		}
+		fillDictInfoChildren(ret, idMap)
+	}
+	return ret
+}
+
+func fillDictInfoChildren(node *dm.ProductCategory, nodeMap map[int64][]*dm.ProductCategory) {
+	// 找到当前节点的子节点数组
+	children := nodeMap[node.Id]
+	for _, child := range children {
+		fillDictInfoChildren(child, nodeMap)
+	}
+	node.Children = children
 }

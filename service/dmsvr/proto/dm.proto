@@ -112,7 +112,7 @@ service ProductManage{
   //获取产品信息列表
   rpc productCategoryIndex(ProductCategoryIndexReq)     returns (ProductCategoryIndexResp);
   //获取产品信息详情
-  rpc productCategoryRead(WithID)     returns (ProductCategory);
+  rpc productCategoryRead(ProductCategoryReadReq)     returns (ProductCategory);
 
 
 }
@@ -307,15 +307,24 @@ message UserDeviceCollectSave{
 
 message ProductCategory{
   int64 id = 1;
-  string name = 2;
-  string headImg =3;
-  bool isUpdateHeadImg = 4;//只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
-  google.protobuf.StringValue desc = 5;
+  int64 parentID =2;
+  string name = 3;
+  string headImg =4;
+  bool isUpdateHeadImg = 5;//只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+  google.protobuf.StringValue desc = 6;
+  repeated int64 idPath =9;
+  repeated ProductCategory children =7;//子节点
+}
+
+message ProductCategoryReadReq{
+  int64 id = 1;
+  bool withChildren = 2;//是否返回子节点
 }
 
 message ProductCategoryIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string  name = 2; //过滤名字
+  int64 parentID = 3;
 }
 
 message ProductCategoryIndexResp{

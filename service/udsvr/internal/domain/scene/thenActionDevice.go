@@ -58,8 +58,14 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 	var (
 		executeFunc func(device devices.Core) error
 		deviceList  []devices.Core
-		toCores     func(productID string, deviceNames []string) []devices.Core
 	)
+	toCores := func(productID string, deviceNames []string) (ret []devices.Core) {
+		for _, v := range deviceNames {
+			ret = append(ret, devices.Core{ProductID: productID, DeviceName: v})
+		}
+		return
+	}
+
 	toData := func(dataID string, Value any) string {
 		var data = map[string]any{
 			dataID: Value,

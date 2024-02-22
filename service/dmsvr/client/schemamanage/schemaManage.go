@@ -136,6 +136,7 @@ type (
 	ProductCategory                    = dm.ProductCategory
 	ProductCategoryIndexReq            = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp           = dm.ProductCategoryIndexResp
+	ProductCategoryReadReq             = dm.ProductCategoryReadReq
 	ProductCustom                      = dm.ProductCustom
 	ProductCustomReadReq               = dm.ProductCustomReadReq
 	ProductInfo                        = dm.ProductInfo

@@ -77,10 +77,12 @@ func (m *DmProductInfo) TableName() string {
 }
 
 type DmProductCategory struct {
-	ID      int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	Name    string `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"` // 产品品类名称
-	Desc    string `gorm:"column:desc;type:varchar(200)"`                         // 描述
-	HeadImg string `gorm:"column:head_img;type:varchar(200)"`                     // 图片
+	ID       int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name     string `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"` // 产品品类名称
+	Desc     string `gorm:"column:desc;type:varchar(200)"`                         // 描述
+	HeadImg  string `gorm:"column:head_img;type:varchar(200)"`                     // 图片
+	ParentID int64  `gorm:"column:parent_id;type:bigint;NOT NULL"`                 // 上级区域ID(雪花ID)
+	IDPath   string `gorm:"column:id_path;type:varchar(100);NOT NULL"`             // 1-2-3-的格式记录顶级区域到当前区域的路径
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
 }

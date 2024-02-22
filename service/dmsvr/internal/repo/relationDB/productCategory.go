@@ -24,13 +24,17 @@ func NewProductCategoryRepo(in any) *ProductCategoryRepo {
 }
 
 type ProductCategoryFilter struct {
-	Name string
+	Name   string
+	IDPath string
 }
 
 func (p ProductCategoryRepo) fmtFilter(ctx context.Context, f ProductCategoryFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.IDPath != "" {
+		db = db.Where("id_path like ?", f.IDPath+"%")
 	}
 	return db
 }

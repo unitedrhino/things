@@ -26,16 +26,19 @@ service api {
     post /index (ProductCategoryIndexReq) returns (ProductCategoryIndexResp)
     @doc "获取产品品类详情"
     @handler read
-    post /read (WithID) returns (ProductCategory)
+    post /read (WithIDChildren) returns (ProductCategory)
 }
 
 type (
     ProductCategory  {
         ID int64 `json:"id,optional"`
+        ParentID int64 `json:"parentID,optional"`
+        IDPath []int64 `json:"idPath,optional"`//只读
         Name string `json:"name,optional"`
         Desc *string `json:"desc,optional"`                       //描述
         HeadImg  string `json:"headImg,optional"`        // 用户头像
         IsUpdateHeadImg  bool `json:"isUpdateHeadImg,omitempty,optional"`        // 用户头像
+        Children []*ProductCategory `json:"children,optional"`
     }
 
 

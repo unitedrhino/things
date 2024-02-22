@@ -637,7 +637,7 @@ type ProductManageClient interface {
 	// 获取产品信息列表
 	ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error)
 	// 获取产品信息详情
-	ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error)
+	ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error)
 }
 
 type productManageClient struct {
@@ -801,7 +801,7 @@ func (c *productManageClient) ProductCategoryIndex(ctx context.Context, in *Prod
 	return out, nil
 }
 
-func (c *productManageClient) ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error) {
+func (c *productManageClient) ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error) {
 	out := new(ProductCategory)
 	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -848,7 +848,7 @@ type ProductManageServer interface {
 	// 获取产品信息列表
 	ProductCategoryIndex(context.Context, *ProductCategoryIndexReq) (*ProductCategoryIndexResp, error)
 	// 获取产品信息详情
-	ProductCategoryRead(context.Context, *WithID) (*ProductCategory, error)
+	ProductCategoryRead(context.Context, *ProductCategoryReadReq) (*ProductCategory, error)
 	mustEmbedUnimplementedProductManageServer()
 }
 
@@ -907,7 +907,7 @@ func (UnimplementedProductManageServer) ProductCategoryDelete(context.Context, *
 func (UnimplementedProductManageServer) ProductCategoryIndex(context.Context, *ProductCategoryIndexReq) (*ProductCategoryIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryIndex not implemented")
 }
-func (UnimplementedProductManageServer) ProductCategoryRead(context.Context, *WithID) (*ProductCategory, error) {
+func (UnimplementedProductManageServer) ProductCategoryRead(context.Context, *ProductCategoryReadReq) (*ProductCategory, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryRead not implemented")
 }
 func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
@@ -1230,7 +1230,7 @@ func _ProductManage_ProductCategoryIndex_Handler(srv interface{}, ctx context.Co
 }
 
 func _ProductManage_ProductCategoryRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WithID)
+	in := new(ProductCategoryReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1242,7 +1242,7 @@ func _ProductManage_ProductCategoryRead_Handler(srv interface{}, ctx context.Con
 		FullMethod: ProductManage_ProductCategoryRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductCategoryRead(ctx, req.(*WithID))
+		return srv.(ProductManageServer).ProductCategoryRead(ctx, req.(*ProductCategoryReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

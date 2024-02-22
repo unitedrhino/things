@@ -75,6 +75,7 @@ func (p SceneInfoRepo) FindOneByFilter(ctx context.Context, f SceneInfoFilter) (
 	}
 	return &result, nil
 }
+
 func (p SceneInfoRepo) FindByFilter(ctx context.Context, f SceneInfoFilter, page *def.PageInfo) ([]*UdSceneInfo, error) {
 	var results []*UdSceneInfo
 	db := p.fmtFilter(ctx, f).Preload("Devices").Preload("Timers").Model(&UdSceneInfo{})

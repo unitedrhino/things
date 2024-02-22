@@ -42,11 +42,23 @@ func (l *TimerHandle) SceneTiming() error {
 				continue
 			}
 			ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
-				po.LastRunTime = utils.GetEndTime(now)
-				if po.ExecRepeat == 0 { //不重复执行的只执行一次
-					po.Status = def.False
+				f := l.LockRunning(ctx, "scene", po.ID)
+				if f == nil { //有正在执行的或redis报错,直接返回,下次重试
+					return
 				}
-				err := db.Update(ctx, po)
+				var err error
+				func() {
+					defer f() //数据库执行完成后就可以释放锁了
+					po.LastRunTime = utils.GetEndTime(now)
+					if po.ExecRepeat == 0 { //不重复执行的只执行一次
+						po.Status = def.False
+					}
+					err = db.Update(ctx, po)
+					if err != nil { //如果失败了下次还可以执行
+						l.Error(err)
+						return
+					}
+				}()
 				if err != nil { //如果失败了下次还可以执行
 					l.Error(err)
 					return
@@ -65,7 +77,6 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
 		DeviceInteract: l.svcCtx.DeviceInteract,
 		DeviceM:        l.svcCtx.DeviceM,
 		DeviceG:        l.svcCtx.DeviceG,
-		Scene:          do,
 	})
 	return err
 }

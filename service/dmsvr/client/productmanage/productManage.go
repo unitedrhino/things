@@ -136,6 +136,7 @@ type (
 	ProductCategory                    = dm.ProductCategory
 	ProductCategoryIndexReq            = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp           = dm.ProductCategoryIndexResp
+	ProductCategoryReadReq             = dm.ProductCategoryReadReq
 	ProductCustom                      = dm.ProductCustom
 	ProductCustomReadReq               = dm.ProductCustomReadReq
 	ProductInfo                        = dm.ProductInfo
@@ -231,7 +232,7 @@ type (
 		// 获取产品信息列表
 		ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error)
 		// 获取产品信息详情
-		ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error)
+		ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error)
 	}
 
 	defaultProductManage struct {
@@ -443,12 +444,12 @@ func (d *directProductManage) ProductCategoryIndex(ctx context.Context, in *Prod
 }
 
 // 获取产品信息详情
-func (m *defaultProductManage) ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error) {
+func (m *defaultProductManage) ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductCategoryRead(ctx, in, opts...)
 }
 
 // 获取产品信息详情
-func (d *directProductManage) ProductCategoryRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategory, error) {
+func (d *directProductManage) ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error) {
 	return d.svr.ProductCategoryRead(ctx, in)
 }

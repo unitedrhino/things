@@ -124,7 +124,7 @@ func (s *ProductManageServer) ProductCategoryIndex(ctx context.Context, in *dm.P
 }
 
 // 获取产品信息详情
-func (s *ProductManageServer) ProductCategoryRead(ctx context.Context, in *dm.WithID) (*dm.ProductCategory, error) {
+func (s *ProductManageServer) ProductCategoryRead(ctx context.Context, in *dm.ProductCategoryReadReq) (*dm.ProductCategory, error) {
 	l := productmanagelogic.NewProductCategoryReadLogic(ctx, s.svcCtx)
 	return l.ProductCategoryRead(in)
 }
