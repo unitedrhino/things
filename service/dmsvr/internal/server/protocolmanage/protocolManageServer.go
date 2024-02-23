@@ -27,3 +27,27 @@ func (s *ProtocolManageServer) ProtocolInfoIndex(ctx context.Context, in *dm.Pro
 	l := protocolmanagelogic.NewProtocolInfoIndexLogic(ctx, s.svcCtx)
 	return l.ProtocolInfoIndex(in)
 }
+
+// 协议详情
+func (s *ProtocolManageServer) ProtocolInfoRead(ctx context.Context, in *dm.WithIDCode) (*dm.ProtocolInfo, error) {
+	l := protocolmanagelogic.NewProtocolInfoReadLogic(ctx, s.svcCtx)
+	return l.ProtocolInfoRead(in)
+}
+
+// 协议创建
+func (s *ProtocolManageServer) ProtocolInfoCreate(ctx context.Context, in *dm.ProtocolInfo) (*dm.WithID, error) {
+	l := protocolmanagelogic.NewProtocolInfoCreateLogic(ctx, s.svcCtx)
+	return l.ProtocolInfoCreate(in)
+}
+
+// 协议更新
+func (s *ProtocolManageServer) ProtocolInfoUpdate(ctx context.Context, in *dm.ProtocolInfo) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolInfoUpdateLogic(ctx, s.svcCtx)
+	return l.ProtocolInfoUpdate(in)
+}
+
+// 协议删除
+func (s *ProtocolManageServer) ProtocolInfoDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolInfoDeleteLogic(ctx, s.svcCtx)
+	return l.ProtocolInfoDelete(in)
+}

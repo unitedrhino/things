@@ -37,7 +37,7 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 
 	filter := relationDB.ProductFilter{
 		DeviceType: in.DeviceType, ProductName: in.ProductName,
-		Tags: in.Tags, ProductIDs: in.ProductIDs, WithProtocolInfo: true,
+		Tags: in.Tags, ProductIDs: in.ProductIDs, WithProtocol: in.WithProtocol, WithCategory: in.WithCategory,
 	}
 	size, err = piDB.CountByFilter(l.ctx, filter)
 	if err != nil {
@@ -56,7 +56,7 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 
 	info = make([]*dm.ProductInfo, 0, len(di))
 	for _, v := range di {
-		info = append(info, ToProductInfo(l.ctx, v, l.svcCtx))
+		info = append(info, ToProductInfo(l.ctx, l.svcCtx, v))
 	}
 	return &dm.ProductInfoIndexResp{List: info, Total: size}, nil
 }

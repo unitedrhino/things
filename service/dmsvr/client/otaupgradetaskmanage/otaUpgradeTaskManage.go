@@ -165,6 +165,8 @@ type (
 	PropertyIndexResp                  = dm.PropertyIndexResp
 	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq                = dm.PropertyLogIndexReq
+	ProtocolConfigField                = dm.ProtocolConfigField
+	ProtocolConfigInfo                 = dm.ProtocolConfigInfo
 	ProtocolInfo                       = dm.ProtocolInfo
 	ProtocolInfoIndexReq               = dm.ProtocolInfoIndexReq
 	ProtocolInfoIndexResp              = dm.ProtocolInfoIndexResp
@@ -196,6 +198,7 @@ type (
 	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
+	WithIDCode                         = dm.WithIDCode
 
 	OTAUpgradeTaskManage interface {
 		// 查询指定升级批次下的设备升级作业列表

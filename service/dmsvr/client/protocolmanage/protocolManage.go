@@ -165,6 +165,8 @@ type (
 	PropertyIndexResp                  = dm.PropertyIndexResp
 	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq                = dm.PropertyLogIndexReq
+	ProtocolConfigField                = dm.ProtocolConfigField
+	ProtocolConfigInfo                 = dm.ProtocolConfigInfo
 	ProtocolInfo                       = dm.ProtocolInfo
 	ProtocolInfoIndexReq               = dm.ProtocolInfoIndexReq
 	ProtocolInfoIndexResp              = dm.ProtocolInfoIndexResp
@@ -196,10 +198,19 @@ type (
 	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
+	WithIDCode                         = dm.WithIDCode
 
 	ProtocolManage interface {
 		// 协议列表
 		ProtocolInfoIndex(ctx context.Context, in *ProtocolInfoIndexReq, opts ...grpc.CallOption) (*ProtocolInfoIndexResp, error)
+		// 协议详情
+		ProtocolInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*ProtocolInfo, error)
+		// 协议创建
+		ProtocolInfoCreate(ctx context.Context, in *ProtocolInfo, opts ...grpc.CallOption) (*WithID, error)
+		// 协议更新
+		ProtocolInfoUpdate(ctx context.Context, in *ProtocolInfo, opts ...grpc.CallOption) (*Empty, error)
+		// 协议删除
+		ProtocolInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultProtocolManage struct {
@@ -234,4 +245,48 @@ func (m *defaultProtocolManage) ProtocolInfoIndex(ctx context.Context, in *Proto
 // 协议列表
 func (d *directProtocolManage) ProtocolInfoIndex(ctx context.Context, in *ProtocolInfoIndexReq, opts ...grpc.CallOption) (*ProtocolInfoIndexResp, error) {
 	return d.svr.ProtocolInfoIndex(ctx, in)
+}
+
+// 协议详情
+func (m *defaultProtocolManage) ProtocolInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*ProtocolInfo, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolInfoRead(ctx, in, opts...)
+}
+
+// 协议详情
+func (d *directProtocolManage) ProtocolInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*ProtocolInfo, error) {
+	return d.svr.ProtocolInfoRead(ctx, in)
+}
+
+// 协议创建
+func (m *defaultProtocolManage) ProtocolInfoCreate(ctx context.Context, in *ProtocolInfo, opts ...grpc.CallOption) (*WithID, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolInfoCreate(ctx, in, opts...)
+}
+
+// 协议创建
+func (d *directProtocolManage) ProtocolInfoCreate(ctx context.Context, in *ProtocolInfo, opts ...grpc.CallOption) (*WithID, error) {
+	return d.svr.ProtocolInfoCreate(ctx, in)
+}
+
+// 协议更新
+func (m *defaultProtocolManage) ProtocolInfoUpdate(ctx context.Context, in *ProtocolInfo, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolInfoUpdate(ctx, in, opts...)
+}
+
+// 协议更新
+func (d *directProtocolManage) ProtocolInfoUpdate(ctx context.Context, in *ProtocolInfo, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolInfoUpdate(ctx, in)
+}
+
+// 协议删除
+func (m *defaultProtocolManage) ProtocolInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolInfoDelete(ctx, in, opts...)
+}
+
+// 协议删除
+func (d *directProtocolManage) ProtocolInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolInfoDelete(ctx, in)
 }

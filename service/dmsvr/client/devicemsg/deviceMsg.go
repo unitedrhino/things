@@ -165,6 +165,8 @@ type (
 	PropertyIndexResp                  = dm.PropertyIndexResp
 	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq                = dm.PropertyLogIndexReq
+	ProtocolConfigField                = dm.ProtocolConfigField
+	ProtocolConfigInfo                 = dm.ProtocolConfigInfo
 	ProtocolInfo                       = dm.ProtocolInfo
 	ProtocolInfoIndexReq               = dm.ProtocolInfoIndexReq
 	ProtocolInfoIndexResp              = dm.ProtocolInfoIndexResp
@@ -196,6 +198,7 @@ type (
 	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	VerifyOtaFirmwareReq               = dm.VerifyOtaFirmwareReq
 	WithID                             = dm.WithID
+	WithIDCode                         = dm.WithIDCode
 
 	DeviceMsg interface {
 		// 获取设备sdk调试日志

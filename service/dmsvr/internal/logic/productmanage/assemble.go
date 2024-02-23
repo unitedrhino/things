@@ -4,6 +4,8 @@ import (
 	"context"
 	"gitee.com/i-Things/share/oss/common"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/productCustom"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
+	protocolmanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/protocolmanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -14,7 +16,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
-func ToProductInfo(ctx context.Context, pi *relationDB.DmProductInfo, svcCtx *svc.ServiceContext) *dm.ProductInfo {
+func ToProductInfo(ctx context.Context, svcCtx *svc.ServiceContext, pi *relationDB.DmProductInfo) *dm.ProductInfo {
 
 	if pi.DeviceType == def.Unknown {
 		pi.DeviceType = def.DeviceTypeDevice
@@ -22,8 +24,8 @@ func ToProductInfo(ctx context.Context, pi *relationDB.DmProductInfo, svcCtx *sv
 	if pi.NetType == def.Unknown {
 		pi.NetType = def.NetOther
 	}
-	if pi.DataProto == def.Unknown {
-		pi.DataProto = def.DataProtoCustom
+	if pi.ProtocolCode == "" {
+		pi.ProtocolCode = protocol.CodeIThings
 	}
 	if pi.AuthMode == def.Unknown {
 		pi.AuthMode = def.AuthModePwd
@@ -38,13 +40,15 @@ func ToProductInfo(ctx context.Context, pi *relationDB.DmProductInfo, svcCtx *sv
 		DeviceType:   pi.DeviceType,                         //设备类型:0:设备,1:网关,2:子设备
 		CategoryID:   pi.CategoryID,                         //产品品类
 		NetType:      pi.NetType,                            //通讯方式:0:其他,1:wi-fi,2:2G/3G/4G,3:5G,4:BLE,5:LoRaWAN
-		DataProto:    pi.DataProto,                          //数据协议:0:自定义,1:数据模板
+		ProtocolCode: pi.ProtocolCode,                       //数据协议:0:自定义,1:数据模板
 		AutoRegister: pi.AutoRegister,                       //动态注册:0:关闭,1:打开,2:打开并自动创建设备
 		Secret:       pi.Secret,                             //动态注册产品秘钥 只读
 		Desc:         &wrappers.StringValue{Value: pi.Desc}, //描述
 		CreatedTime:  pi.CreatedTime.Unix(),                 //创建时间
 		Tags:         pi.Tags,                               //产品tags
 		ProductImg:   pi.ProductImg,
+		Category:     ToProductCategoryPb(ctx, svcCtx, pi.Category, nil),
+		Protocol:     protocolmanagelogic.ToProtocolInfoPb(pi.Protocol),
 		//Model:     &wrappers.StringValue{Value: pi.Model},    //数据模板
 	}
 	if pi.ProductImg != "" {

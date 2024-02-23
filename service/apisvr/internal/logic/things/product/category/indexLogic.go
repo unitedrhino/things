@@ -40,7 +40,7 @@ func (l *IndexLogic) Index(req *types.ProductCategoryIndexReq) (resp *types.Prod
 	}
 	pis := make([]*types.ProductCategory, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		pi := productCategoryToApi(v)
+		pi := ProductCategoryToApi(v)
 		pis = append(pis, pi)
 	}
 	return &types.ProductCategoryIndexResp{

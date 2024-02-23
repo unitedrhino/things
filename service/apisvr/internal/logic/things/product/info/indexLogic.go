@@ -29,11 +29,14 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductInfoIndexResp, err error) {
 	dmReq := &dm.ProductInfoIndexReq{
-		DeviceType:  req.DeviceType, //产品id
-		ProductName: req.ProductName,
-		ProductIDs:  req.ProductIDs,
-		Tags:        logic.ToTagsMap(req.Tags),
-		Page:        logic.ToDmPageRpc(req.Page),
+		DeviceType:   req.DeviceType, //产品id
+		ProductName:  req.ProductName,
+		ProductIDs:   req.ProductIDs,
+		Tags:         logic.ToTagsMap(req.Tags),
+		Page:         logic.ToDmPageRpc(req.Page),
+		ProtocolCode: req.ProtocolCode,
+		WithProtocol: req.WithProtocol,
+		WithCategory: req.WithCategory,
 	}
 	dmResp, err := l.svcCtx.ProductM.ProductInfoIndex(l.ctx, dmReq)
 	if err != nil {

@@ -83,8 +83,8 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.NetType != 0 {
 		old.NetType = data.NetType
 	}
-	if data.DataProto != 0 {
-		old.DataProto = data.DataProto
+	if data.ProtocolCode != "" {
+		old.ProtocolCode = data.ProtocolCode
 	}
 	if data.AutoRegister != 0 {
 		old.AutoRegister = data.AutoRegister

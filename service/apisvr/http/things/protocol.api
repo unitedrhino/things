@@ -1,0 +1,72 @@
+info(
+    title: "自定义协议管理模块"
+    desc: "自定义协议管理模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+
+@server(
+    group: things/protocol/info
+    prefix: /api/v1/things/protocol/info
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "新增自定义协议"
+    @handler create
+    post /create (ProtocolInfo) returns (WithID)
+    @doc "更新自定义协议"
+    @handler update
+    post /update (ProtocolInfo) returns ()
+    @doc "删除自定义协议"
+    @handler delete
+    post /delete (WithID) returns ()
+    @doc "获取自定义协议信息列表"
+    @handler index
+    post /index (ProtocolInfoIndexReq) returns (ProtocolInfoIndexResp)
+    @doc "获取自定义协议详情"
+    @handler read
+    post /read (WithIDOrCode) returns (ProtocolInfo)
+}
+
+type (
+    ProtocolInfo  {
+        ID            int64                  `json:"id,optional"`
+        Name          string                 `json:"name,optional"`
+        Code          string                 `json:"code,optional"`                   //  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+        TransProtocol string                 `json:"transProtocol,optional"` // 传输协议: mqtt,tcp,udp
+        Desc          string                 `json:"desc,optional"`
+        Endpoints     []string               `json:"endpoints,optional"`
+        EtcdKey       string                 `json:"etcdKey,optional"`
+        ConfigFields  []*ProtocolConfigField `json:"configFields,optional"` //配置字段列表,没有可以不传
+        ConfigInfos   []*ProtocolConfigInfo  `json:"configInfos,optional"`  //配置列表
+    }
+
+     ProtocolConfigField  {
+        ID         int64  `json:"id"`
+        Group      string `json:"group"`
+        Key        string `json:"key"`
+        Label      string `json:"label"`
+        IsRequired bool   `json:"isRequired"`
+        Sort       int64  `json:"sort"`
+    }
+
+    ProtocolConfigInfo  {
+        ID     int64             `json:"id"`
+        Config map[string]string `json:"config"`
+        Desc   string            `json:"desc"`
+    }
+
+    ProtocolInfoIndexReq  {
+        Page *PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
+        Name string `json:"name,optional"` //
+        Code string `json:"code,optional"` //
+        TransProtocol string                 `json:"transProtocol,optional"` // 传输协议: mqtt,tcp,udp
+    }
+
+    ProtocolInfoIndexResp  {
+        List []*ProtocolInfo `json:"list"`    //自定义协议信息
+        Total int64 `json:"total,optional"`  //拥有的总数
+    }
+)

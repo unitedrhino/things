@@ -24,6 +24,7 @@ import (
 	thingsproductinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/product/info"
 	thingsproductremoteConfig "github.com/i-Things/things/service/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/service/apisvr/internal/handler/things/product/schema"
+	thingsprotocolinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/protocol/info"
 	thingsruledeviceTimerinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/deviceTimer/info"
 	thingsrulesceneinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/scene/info"
 	thingsschemacommon "github.com/i-Things/things/service/apisvr/internal/handler/things/schema/common"
@@ -716,6 +717,40 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/product/schema"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsprotocolinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsprotocolinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsprotocolinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsprotocolinfo.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsprotocolinfo.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/protocol/info"),
 	)
 
 	server.AddRoutes(

@@ -35,7 +35,9 @@ func (l *ProtocolInfoIndexLogic) ProtocolInfoIndex(in *dm.ProtocolInfoIndexReq) 
 	)
 
 	filter := relationDB.ProtocolInfoFilter{
-		Protocol: in.Protocol,
+		Name:          in.Name,
+		Code:          in.Code,
+		TransProtocol: in.TransProtocol,
 	}
 	size, err = piDB.CountByFilter(l.ctx, filter)
 	if err != nil {
@@ -51,7 +53,7 @@ func (l *ProtocolInfoIndexLogic) ProtocolInfoIndex(in *dm.ProtocolInfoIndexReq) 
 
 	info = make([]*dm.ProtocolInfo, 0, len(di))
 	for _, v := range di {
-		info = append(info, ToProtocolInfo(v))
+		info = append(info, ToProtocolInfoPb(v))
 	}
 	return &dm.ProtocolInfoIndexResp{List: info, Total: size}, nil
 }

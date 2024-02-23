@@ -1042,20 +1042,22 @@ type ProductCustomTopic struct {
 }
 
 type ProductInfo struct {
-	CreatedTime        int64   `json:"createdTime,optional,string"`           //创建时间 只读
-	ProductID          string  `json:"productID,optional"`                    //产品id 只读
-	ProductName        string  `json:"productName,optional"`                  //产品名称
-	ProductImg         string  `json:"productImg,optional"`                   //产品图片
-	IsUpdateProductImg bool    `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
-	AuthMode           int64   `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
-	DeviceType         int64   `json:"deviceType,optional,range=[0:3]"`       //设备类型:1:设备,2:网关,3:子设备
-	CategoryID         int64   `json:"categoryID,optional"`                   //产品品类
-	NetType            int64   `json:"netType,optional,range=[0:6]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	DataProto          int64   `json:"dataProto,optional,range=[0:2]"`        //数据协议:1:自定义,2:数据模板
-	AutoRegister       int64   `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret             string  `json:"secret,optional"`                       //动态注册产品秘钥 只读
-	Desc               *string `json:"desc,optional"`                         //描述
-	Tags               []*Tag  `json:"tags,optional"`                         // 产品tag
+	CreatedTime        int64            `json:"createdTime,optional,string"`           //创建时间 只读
+	ProductID          string           `json:"productID,optional"`                    //产品id 只读
+	ProductName        string           `json:"productName,optional"`                  //产品名称
+	ProductImg         string           `json:"productImg,optional"`                   //产品图片
+	IsUpdateProductImg bool             `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+	AuthMode           int64            `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
+	DeviceType         int64            `json:"deviceType,optional,range=[0:3]"`       //设备类型:1:设备,2:网关,3:子设备
+	CategoryID         int64            `json:"categoryID,optional"`                   //产品品类
+	NetType            int64            `json:"netType,optional,range=[0:6]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	ProtocolCode       string           `json:"protocolCode,optional"`                 //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	AutoRegister       int64            `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret             string           `json:"secret,optional"`                       //动态注册产品秘钥 只读
+	Desc               *string          `json:"desc,optional"`                         //描述
+	Tags               []*Tag           `json:"tags,optional"`                         // 产品tag
+	Protocol           *ProtocolInfo    `json:"protocol,omitempty"`
+	Category           *ProductCategory `json:"category,omitempty"`
 }
 
 type ProductInfoDeleteReq struct {
@@ -1063,11 +1065,14 @@ type ProductInfoDeleteReq struct {
 }
 
 type ProductInfoIndexReq struct {
-	Page        *PageInfo `json:"page,optional"`                   //分页信息,只获取一个则不填
-	ProductName string    `json:"productName,optional"`            //过滤产品名称
-	DeviceType  int64     `json:"deviceType,optional,range=[0:3]"` //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
-	ProductIDs  []string  `json:"productIDs,optional"`             //过滤产品id列表
-	Tags        []*Tag    `json:"tags,optional"`                   // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+	Page         *PageInfo `json:"page,optional"`                   //分页信息,只获取一个则不填
+	ProductName  string    `json:"productName,optional"`            //过滤产品名称
+	DeviceType   int64     `json:"deviceType,optional,range=[0:3]"` //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+	ProductIDs   []string  `json:"productIDs,optional"`             //过滤产品id列表
+	Tags         []*Tag    `json:"tags,optional"`                   // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+	ProtocolCode string    `json:"protocolCode,optional"`           //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	WithProtocol bool      `json:"withProtocol,optional"`           //同时返回协议详情
+	WithCategory bool      `json:"withCategory,optional"`           //同时返回品类详情
 }
 
 type ProductInfoIndexResp struct {
@@ -1077,7 +1082,9 @@ type ProductInfoIndexResp struct {
 }
 
 type ProductInfoReadReq struct {
-	ProductID string `json:"productID"` //产品id
+	ProductID    string `json:"productID"`             //产品id
+	WithProtocol bool   `json:"withProtocol,optional"` //同时返回协议详情
+	WithCategory bool   `json:"withCategory,optional"` //同时返回品类详情
 }
 
 type ProductRemoteConfig struct {
@@ -1166,6 +1173,45 @@ type ProductSchemaTslReadResp struct {
 
 type ProductSchemaUpdateReq struct {
 	*ProductSchemaInfo
+}
+
+type ProtocolConfigField struct {
+	ID         int64  `json:"id"`
+	Group      string `json:"group"`
+	Key        string `json:"key"`
+	Label      string `json:"label"`
+	IsRequired bool   `json:"isRequired"`
+	Sort       int64  `json:"sort"`
+}
+
+type ProtocolConfigInfo struct {
+	ID     int64             `json:"id"`
+	Config map[string]string `json:"config"`
+	Desc   string            `json:"desc"`
+}
+
+type ProtocolInfo struct {
+	ID            int64                  `json:"id,optional"`
+	Name          string                 `json:"name,optional"`
+	Code          string                 `json:"code,optional"`          //  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	TransProtocol string                 `json:"transProtocol,optional"` // 传输协议: mqtt,tcp,udp
+	Desc          string                 `json:"desc,optional"`
+	Endpoints     []string               `json:"endpoints,optional"`
+	EtcdKey       string                 `json:"etcdKey,optional"`
+	ConfigFields  []*ProtocolConfigField `json:"configFields,optional"` //配置字段列表,没有可以不传
+	ConfigInfos   []*ProtocolConfigInfo  `json:"configInfos,optional"`  //配置列表
+}
+
+type ProtocolInfoIndexReq struct {
+	Page          *PageInfo `json:"page,optional"`          //分页信息,只获取一个则不填
+	Name          string    `json:"name,optional"`          //
+	Code          string    `json:"code,optional"`          //
+	TransProtocol string    `json:"transProtocol,optional"` // 传输协议: mqtt,tcp,udp
+}
+
+type ProtocolInfoIndexResp struct {
+	List  []*ProtocolInfo `json:"list"`           //自定义协议信息
+	Total int64           `json:"total,optional"` //拥有的总数
 }
 
 type SceneInfo struct {

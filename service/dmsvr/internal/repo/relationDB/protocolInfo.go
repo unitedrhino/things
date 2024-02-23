@@ -24,13 +24,25 @@ func NewProtocolInfoRepo(in any) *ProtocolInfoRepo {
 }
 
 type ProtocolInfoFilter struct {
-	Protocol string
+	ID            int64
+	Name          string
+	Code          string //  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	TransProtocol string // 传输协议: mqtt,tcp,udp
 }
 
 func (p ProtocolInfoRepo) fmtFilter(ctx context.Context, f ProtocolInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	if f.Protocol != "" {
-		db.Where("protocol = ?", f.Protocol)
+
+	if f.Name != "" {
+		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.Code != "" {
+		db = db.Where("code = ?", f.Code)
+	} else if f.ID != 0 {
+		db = db.Where("id = ?", f.ID)
+	}
+	if f.TransProtocol != "" {
+		db = db.Where("trans_protocol = ?", f.TransProtocol)
 	}
 	return db
 }

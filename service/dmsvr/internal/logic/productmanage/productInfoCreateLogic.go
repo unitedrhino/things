@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"fmt"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"regexp"
 
@@ -79,10 +80,10 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 	} else {
 		pi.AutoRegister = def.AutoRegClose
 	}
-	if in.DataProto != def.Unknown {
-		pi.DataProto = in.DataProto
+	if in.ProtocolCode == "" {
+		pi.ProtocolCode = in.ProtocolCode
 	} else {
-		pi.DataProto = def.DataProtoCustom
+		pi.ProtocolCode = protocol.CodeIThings
 	}
 	if in.DeviceType != def.Unknown {
 		pi.DeviceType = in.DeviceType

@@ -15,7 +15,7 @@ import (
 )
 
 func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *types.DeviceAuthLoginReq, cert []byte) error {
-	pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{Protocol: def.ProtocolMqtt})
+	pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{TransProtocol: def.ProtocolMqtt})
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 	return errors.Permissions
 }
 func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *types.DeviceAuthAccessReq, action string) error {
-	pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{Protocol: def.ProtocolMqtt})
+	pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{TransProtocol: def.ProtocolMqtt})
 	if err != nil {
 		return err
 	}

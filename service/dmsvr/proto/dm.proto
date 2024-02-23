@@ -33,6 +33,11 @@ message SendOption {
   int64  retryInterval = 3;//重试间隔
 }
 
+message WithIDCode{
+  int64 id = 1;
+  string code=2;
+}
+
 message WithID{
   int64 id = 1;
 }
@@ -134,14 +139,14 @@ service SchemaManage{
 service ProtocolManage {
   //协议列表
   rpc protocolInfoIndex(ProtocolInfoIndexReq)     returns (ProtocolInfoIndexResp);
-//  //协议详情
-//  rpc protocolRead(ProtocolReadReq)     returns (Protocol);
-//  //协议创建
-//  rpc protocolCreate(ProtocolCreateReq)     returns (Response);
-//  //协议更新
-//  rpc protocolUpdate(ProtocolUpdateReq)     returns (Response);
-//  //协议删除
-//  rpc protocolDelete(ProtocolDeleteReq)     returns (Response);
+  //协议详情
+  rpc protocolInfoRead(WithIDCode)     returns (ProtocolInfo);
+  //协议创建
+  rpc protocolInfoCreate(ProtocolInfo)     returns (WithID);
+  //协议更新
+  rpc protocolInfoUpdate(ProtocolInfo)     returns (Empty);
+  //协议删除
+  rpc protocolInfoDelete(WithID)     returns (Empty);
 }
 
 service DeviceGroup {
@@ -335,7 +340,9 @@ message ProductCategoryIndexResp{
 
 message ProtocolInfoIndexReq{
   PageInfo page = 1;
-  string protocol = 2;
+  string  name = 2;
+  string  code =3;//  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+  string  transProtocol = 5;// 传输协议: mqtt,tcp,udp
 }
 
 message ProtocolInfoIndexResp{
@@ -346,11 +353,28 @@ message ProtocolInfoIndexResp{
 message ProtocolInfo{
   int64  id = 1;
   string  name = 2;
-  string  protocol = 3;
-  string  protocolType = 4;
-  string  desc = 5;
-  repeated string  endpoints = 6;
-  string  etcdKey = 7;
+  string code =3;//  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+  string  transProtocol = 5;// 传输协议: mqtt,tcp,udp
+  string  desc = 6;
+  repeated string  endpoints = 7;
+  string  etcdKey = 8;
+  repeated ProtocolConfigField configFields =9;//配置字段列表,没有可以不传
+  repeated ProtocolConfigInfo configInfos =10;//配置列表
+}
+
+message ProtocolConfigField{
+  int64 id =1;
+  string group =2;
+  string key =3;
+  string label =4;
+  bool isRequired =5;
+  int64 sort =6;
+}
+
+message ProtocolConfigInfo{
+  int64 id =1;
+  map<string,string> config =2;
+  string desc =3;
 }
 
 message ShadowIndexResp{
@@ -792,7 +816,7 @@ message ProductInfo{
   int64   deviceType = 5;//设备类型:1:设备,2:网关,3:子设备
   int64   categoryID = 6;//产品品类
   int64   netType = 7;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-  int64   dataProto = 8;//数据协议:1:自定义,2:数据模板
+  string protocolCode =8;//协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
   int64   autoRegister = 9;//动态注册:1:关闭,2:打开,3:打开并自动创建设备
   string   secret = 10;//动态注册产品秘钥 只读
   google.protobuf.StringValue   desc = 11;//描述
@@ -800,6 +824,8 @@ message ProductInfo{
   map<string, string> tags = 13; //产品标签
   string productImg = 14; //产品图片
   bool isUpdateProductImg = 15;//只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+  ProtocolInfo protocol = 16;
+  ProductCategory category = 17;
 }
 
 message ProductInfoDeleteReq{
@@ -808,6 +834,8 @@ message ProductInfoDeleteReq{
 
 message ProductInfoReadReq{
   string   productID = 1; //产品id
+  bool withProtocol =2;
+  bool withCategory=3;
 }
 
 message ProductInfoIndexReq{
@@ -816,6 +844,9 @@ message ProductInfoIndexReq{
   string  productName = 3; //过滤条件: 产品名称
   repeated string   productIDs = 4; //过滤产品id列表
   map<string, string> tags = 5;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+  string protocolCode =6;
+  bool withProtocol =7;
+  bool withCategory=8;
 }
 
 message ProductInfoIndexResp{

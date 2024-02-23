@@ -33,5 +33,5 @@ func (l *ReadLogic) Read(req *types.WithIDChildren) (resp *types.ProductCategory
 		l.Errorf("%s rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return productCategoryToApi(dmResp), nil
+	return ProductCategoryToApi(dmResp), nil
 }

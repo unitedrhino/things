@@ -6,7 +6,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
-func productCategoryToApi(v *dm.ProductCategory) *types.ProductCategory {
+func ProductCategoryToApi(v *dm.ProductCategory) *types.ProductCategory {
 	if v == nil {
 		return nil
 	}
@@ -24,7 +24,7 @@ func productCategoryToApi(v *dm.ProductCategory) *types.ProductCategory {
 
 func productCategoriesToApi(in []*dm.ProductCategory) (ret []*types.ProductCategory) {
 	for _, v := range in {
-		ret = append(ret, productCategoryToApi(v))
+		ret = append(ret, ProductCategoryToApi(v))
 	}
 	return
 }

@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm/clause"
 )
@@ -53,9 +54,18 @@ func migrateTableColumn() error {
 	if err := db.CreateInBatches(&MigrateProtocolInfo, 100).Error; err != nil {
 		return err
 	}
+	if err := db.CreateInBatches(&MigrateProductCategory, 100).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
 var (
-	MigrateProtocolInfo = []DmProtocolInfo{{ID: 2, Name: "thingsboard协议", Protocol: "mqtt", ProtocolType: "thingsboard", EtcdKey: "dg.thingsboard.rpc"}}
+	MigrateProtocolInfo    = []DmProtocolInfo{{ID: 3, Name: "iThings标准协议", Code: "iThings", TransProtocol: "mqtt", EtcdKey: "dg.rpc"}}
+	MigrateProductCategory = []DmProductCategory{
+		{ID: 3, Name: "照明设备", ParentID: def.RootNode, IDPath: "3-"},
+		{ID: 4, Name: "空调设备", ParentID: def.RootNode, IDPath: "4-"},
+		{ID: 5, Name: "风扇设备", ParentID: def.RootNode, IDPath: "5-"},
+		{ID: 6, Name: "传感器设备", ParentID: def.RootNode, IDPath: "6-"},
+	}
 )
