@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
@@ -34,6 +35,16 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 	if si.UdSceneTrigger.Type != string(scene.TriggerTypeManual) {
 		return nil, errors.TriggerType.AddMsg("该场景不是手动触发类型,无法执行")
 	}
-	//todo 执行触发
+	do := PoToSceneInfoDo(si)
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) { //异步执行
+		err = do.Then.Execute(ctx, scene.ActionRepo{
+			DeviceInteract: l.svcCtx.DeviceInteract,
+			DeviceM:        l.svcCtx.DeviceM,
+			DeviceG:        l.svcCtx.DeviceG,
+		})
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+		}
+	})
 	return &ud.Empty{}, nil
 }

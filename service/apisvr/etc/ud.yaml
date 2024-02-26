@@ -12,6 +12,11 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
+Event:
+  Mode: natsJs
+  Nats:
+    Url: nats://127.0.0.1:4222
+    Consumer: udsvr
 DmRpc:
   Enable: true
   Mode: direct

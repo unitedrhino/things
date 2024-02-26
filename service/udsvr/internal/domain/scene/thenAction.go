@@ -10,7 +10,7 @@ import (
 )
 
 // 操作执行器类型
-type ActionExecuteType string
+type ActionExecuteType = string
 
 const (
 	ActionExecutorNotify ActionExecuteType = "notify" //通知 todo
@@ -22,6 +22,7 @@ const (
 type Actions []*Action
 
 type Action struct {
+	ID          int64             `json:"ID"`
 	ExecuteType ActionExecuteType `json:"executeType"`      //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
 	Delay       int64             `json:"delay,omitempty"`  //秒数
 	Alarm       *ActionAlarm      `json:"alarm,omitempty"`  //todo

@@ -806,6 +806,7 @@ message DeviceInfo {
   int64 mobileOperator = 22;//移动运营商:1)移动 2)联通 3)电信 4)广电
   google.protobuf.StringValue phone = 23;//手机号
   google.protobuf.StringValue iccid = 24;//SIM卡卡号
+  map<string,string> schemaAlias = 25;//设备物模型别名,如果是结构体类型则key为xxx.xxx
 }
 
 message ProductInfo{

@@ -3,6 +3,7 @@ package startup
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/events"
 	"github.com/i-Things/things/service/dgsvr/internal/event/deviceSub"
@@ -25,7 +26,7 @@ func PostInit(svcCtx *svc.ServiceContext) {
 	dl, err := pubDev.NewPubDev(svcCtx.Config.DevLink)
 	logx.Must(err)
 
-	il, err := pubInner.NewPubInner(svcCtx.Config.Event)
+	il, err := pubInner.NewPubInner(svcCtx.Config.Event, def.ProtocolCodeIThings)
 	logx.Must(err)
 
 	svcCtx.PubDev = dl

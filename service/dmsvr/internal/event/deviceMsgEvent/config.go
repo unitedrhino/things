@@ -40,10 +40,11 @@ func (l *ConfigLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	}
 
 	return &deviceMsg.PublishMsg{
-		Handle:     msg.Handle,
-		Type:       msg.Type,
-		Payload:    resp.Bytes(),
-		ProductID:  msg.ProductID,
-		DeviceName: msg.DeviceName,
+		Handle:       msg.Handle,
+		Type:         msg.Type,
+		Payload:      resp.Bytes(),
+		ProductID:    msg.ProductID,
+		DeviceName:   msg.DeviceName,
+		ProtocolCode: msg.ProtocolCode,
 	}, nil
 }

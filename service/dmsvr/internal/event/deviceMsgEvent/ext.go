@@ -47,12 +47,13 @@ func (l *ExtLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *d
 		Data:      data,
 	}
 	return &deviceMsg.PublishMsg{
-		Handle:     msg.Handle,
-		Type:       msg.Type,
-		Payload:    resp.AddStatus(err).Bytes(),
-		Timestamp:  time.Now().UnixMilli(),
-		ProductID:  msg.ProductID,
-		DeviceName: msg.DeviceName,
+		Handle:       msg.Handle,
+		Type:         msg.Type,
+		Payload:      resp.AddStatus(err).Bytes(),
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    msg.ProductID,
+		DeviceName:   msg.DeviceName,
+		ProtocolCode: msg.ProtocolCode,
 	}
 }
 

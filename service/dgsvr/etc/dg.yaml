@@ -26,3 +26,8 @@ Telemetry:
   Endpoint: http://127.0.0.1:14268/api/traces
   Sampler: 1.0
   Batcher: jaeger
+Event:
+  Mode: natsJs
+  Nats:
+    Url: nats://127.0.0.1:4222
+    Consumer: dgsvr

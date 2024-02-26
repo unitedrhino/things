@@ -9,7 +9,7 @@ import (
 	"reflect"
 )
 
-type SelectType string
+type SelectType = string
 
 const (
 	SelectorDeviceAll SelectType = "allDevice"   //产品下的所有设备
@@ -20,23 +20,23 @@ const (
 type TriggerDevices []*TriggerDevice
 
 type TriggerDevice struct {
-	ProductID       string                  `json:"productID,omitempty"`       //产品id
-	SelectType      SelectType              `json:"selectType"`                //设备选择方式  all: 全部 fixed:指定的设备
-	GroupID         int64                   `json:"groupID,omitempty"`         //分组id
-	DeviceNames     []string                `json:"deviceNames,omitempty"`     //选择的列表  选择的列表, fixed类型是设备名列表
-	Operator        DeviceOperationOperator `json:"operator,omitempty"`        //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
-	OperationSchema *OperationSchema        `json:"operationSchema,omitempty"` //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
+	ProductID   string               `json:"productID,omitempty"`   //产品id
+	SelectType  SelectType           `json:"selectType"`            //设备选择方式  all: 全部 fixed:指定的设备
+	GroupID     int64                `json:"groupID,omitempty"`     //分组id
+	DeviceNames []string             `json:"deviceNames,omitempty"` //选择的列表  选择的列表, fixed类型是设备名列表
+	Type        TriggerDeviceType    `json:"type,omitempty"`        //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
+	Schema      *TriggerDeviceSchema `json:"schema,omitempty"`      //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
 }
 
-type DeviceOperationOperator string
+type TriggerDeviceType string
 
 const (
-	DeviceOperationOperatorConnected      DeviceOperationOperator = "connected"
-	DeviceOperationOperatorDisConnected   DeviceOperationOperator = "disConnected"
-	DeviceOperationOperatorReportProperty DeviceOperationOperator = "reportProperty"
+	TriggerDeviceTypeConnected      TriggerDeviceType = "connected"
+	TriggerDeviceTypeDisConnected   TriggerDeviceType = "disConnected"
+	TriggerDeviceTypeReportProperty TriggerDeviceType = "reportProperty"
 )
 
-type OperationSchema struct {
+type TriggerDeviceSchema struct {
 	DataID    []string   `json:"dataID"`    //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
 	TermType  CmpType    `json:"termType"`  //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
 	Values    []string   `json:"values"`    //比较条件列表
@@ -53,8 +53,8 @@ func (t *TriggerDevice) Validate() error {
 	if !utils.SliceIn(t.SelectType, SelectorDeviceAll, SelectDeviceFixed) {
 		return errors.Parameter.AddMsg("设备触发类型设备选择方式不支持:" + string(t.SelectType))
 	}
-	if !utils.SliceIn(t.Operator, DeviceOperationOperatorConnected, DeviceOperationOperatorDisConnected, DeviceOperationOperatorReportProperty) {
-		return errors.Parameter.AddMsg("设备触发的触发类型不支持:" + string(t.Operator))
+	if !utils.SliceIn(t.Type, TriggerDeviceTypeConnected, TriggerDeviceTypeDisConnected, TriggerDeviceTypeReportProperty) {
+		return errors.Parameter.AddMsg("设备触发的触发类型不支持:" + string(t.Type))
 	}
 	return nil
 }
@@ -71,7 +71,7 @@ func (t TriggerDevices) Validate() error {
 	return nil
 }
 
-func (o *OperationSchema) Validate() error {
+func (o *TriggerDeviceSchema) Validate() error {
 	if o == nil {
 		return nil
 	}
@@ -88,10 +88,10 @@ func (o *OperationSchema) Validate() error {
 }
 
 // IsTrigger 判断触发器是否命中
-func (t TriggerDevices) IsTriggerWithConn(device devices.Core, operator DeviceOperationOperator) bool {
+func (t TriggerDevices) IsTriggerWithConn(device devices.Core, operator TriggerDeviceType) bool {
 	for _, d := range t {
 		//需要排除不是该设备的触发类型
-		if d.Operator != operator {
+		if d.Type != operator {
 			continue
 		}
 		if d.SelectType == SelectorDeviceAll {
@@ -110,7 +110,7 @@ func (t TriggerDevices) IsTriggerWithConn(device devices.Core, operator DeviceOp
 func (t TriggerDevices) IsTriggerWithProperty(reportInfo *application.PropertyReport) bool {
 	for _, d := range t {
 		//需要排除不是该设备的触发类型
-		if d.Operator != DeviceOperationOperatorReportProperty {
+		if d.Type != TriggerDeviceTypeReportProperty {
 			continue
 		}
 		//判断设备是否命中
@@ -126,14 +126,14 @@ func (t TriggerDevices) IsTriggerWithProperty(reportInfo *application.PropertyRe
 				return false
 			}
 		}
-		if d.OperationSchema.IsHit(reportInfo.Identifier, reportInfo.Param) {
+		if d.Schema.IsHit(reportInfo.Identifier, reportInfo.Param) {
 			return true
 		}
 	}
 	return false
 }
 
-func (o *OperationSchema) IsHit(dataID string, param any) bool {
+func (o *TriggerDeviceSchema) IsHit(dataID string, param any) bool {
 	if o.DataID[0] != dataID {
 		return false
 	}

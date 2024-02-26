@@ -5,25 +5,25 @@ import (
 	"fmt"
 	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
-	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
 
 type (
 	NatsClient struct {
-		client *nats.Conn
+		client *clients.NatsClient
 	}
 )
 
-func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
-	nc, err := clients.NewNatsClient(conf)
+func newNatsClient(conf conf.EventConf) (*NatsClient, error) {
+	nc, err := clients.NewNatsClient2(conf.Mode, conf.Nats.Consumer, conf.Nats)
 	if err != nil {
 		return nil, err
 	}
@@ -31,9 +31,19 @@ func newNatsClient(conf conf.NatsConf) (*NatsClient, error) {
 }
 
 func (n *NatsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.PublishMsg) error {
-	msg := events.NewEventMsg(ctx, devices.PublishToDev(respMsg.Handle, respMsg.Type, respMsg.Payload, respMsg.ProductID, respMsg.DeviceName))
-	logx.WithContext(ctx).Infof("PublishToDev sendMsg:%s", string(msg))
-	err := n.client.Publish(fmt.Sprintf(topics.DeviceDownMsg, respMsg.Handle, respMsg.ProductID, respMsg.DeviceName), msg)
+	startTime := time.Now()
+	if respMsg.ProtocolCode == "" {
+		respMsg.ProtocolCode = def.ProtocolCodeIThings
+	}
+	msg := events.NewEventMsg(ctx, devices.PublishToDev(
+		respMsg.Handle, respMsg.Type, respMsg.Payload, respMsg.ProtocolCode,
+		respMsg.ProductID, respMsg.DeviceName))
+	defer func() {
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
+			Infof("PublishToDev startTime:%v sendMsg:%s", startTime, string(msg))
+	}()
+	err := n.client.Publish(ctx, fmt.Sprintf(topics.DeviceDownMsg, respMsg.ProtocolCode, respMsg.Handle, respMsg.ProductID, respMsg.DeviceName), msg)
+
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s Publish failure err:%v", utils.FuncName(), err)
 	}

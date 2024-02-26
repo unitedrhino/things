@@ -44,7 +44,7 @@ func (i *Info) Validate() error {
 
 type FindWithTriggerDto struct {
 	devices.Core
-	//Operator OperationSchema //触发类型  online:上线 offline:下线 reportProperty:属性上报 reportEvent: 事件上报
+	//Type Schema //触发类型  online:上线 offline:下线 reportProperty:属性上报 reportEvent: 事件上报
 }
 
 //func FindWithDeviceTrigger(ctx context.Context, svcCtx svc.ServiceContext, dot FindWithTriggerDto) []*Info {

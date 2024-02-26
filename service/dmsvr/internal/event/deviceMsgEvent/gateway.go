@@ -70,12 +70,13 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		ResultType: errors.Fmt(err).GetCode(),
 	})
 	return &deviceMsg.PublishMsg{
-		Handle:     msg.Handle,
-		Type:       msg.Type,
-		Payload:    respStr,
-		Timestamp:  time.Now().UnixMilli(),
-		ProductID:  msg.ProductID,
-		DeviceName: msg.DeviceName,
+		Handle:       msg.Handle,
+		Type:         msg.Type,
+		Payload:      respStr,
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    msg.ProductID,
+		DeviceName:   msg.DeviceName,
+		ProtocolCode: msg.ProtocolCode,
 	}, nil
 }
 

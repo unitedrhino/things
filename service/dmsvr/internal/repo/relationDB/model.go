@@ -34,10 +34,12 @@ type DmDeviceInfo struct {
 	Iccid          sql.NullString    `gorm:"column:iccid;type:varchar(20)"`                                                   // SIM卡卡号
 	Address        string            `gorm:"column:address;type:varchar(512);NOT NULL"`                                       // 所在地址
 	Tags           map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`                     // 设备标签
-	IsOnline       int64             `gorm:"column:is_online;type:smallint;default:2;NOT NULL"`                               // 是否在线,1是2否
-	FirstLogin     sql.NullTime      `gorm:"column:first_login"`                                                              // 激活时间
-	LastLogin      sql.NullTime      `gorm:"column:last_login"`                                                               // 最后上线时间
-	LogLevel       int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                               // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+	SchemaAlias    map[string]string `gorm:"column:schema_alias;type:json;serializer:json;NOT NULL;default:'{}'"`             //设备物模型别名,如果是结构体类型则key为xxx.xxx
+
+	IsOnline   int64        `gorm:"column:is_online;type:smallint;default:2;NOT NULL"` // 是否在线,1是2否
+	FirstLogin sql.NullTime `gorm:"column:first_login"`                                // 激活时间
+	LastLogin  sql.NullTime `gorm:"column:last_login"`                                 // 最后上线时间
+	LogLevel   int64        `gorm:"column:log_level;type:smallint;default:1;NOT NULL"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键

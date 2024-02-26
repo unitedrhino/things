@@ -39,6 +39,7 @@ func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 		Position:       logic.ToDmPoint(&in.Position),
 		Address:        &wrappers.StringValue{Value: in.Address},
 		Tags:           in.Tags,
+		SchemaAlias:    in.SchemaAlias,
 		IsOnline:       in.IsOnline,
 		FirstLogin:     utils.GetNullTime(in.FirstLogin),
 		LastLogin:      utils.GetNullTime(in.LastLogin),

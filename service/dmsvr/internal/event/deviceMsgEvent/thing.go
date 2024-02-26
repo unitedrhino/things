@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/schema"
@@ -63,13 +64,17 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 		Timestamp: time.Now().UnixMilli(),
 		Data:      data,
 	}
+	if msg.ProtocolCode == "" {
+		msg.ProtocolCode = def.ProtocolCodeIThings
+	}
 	return &deviceMsg.PublishMsg{
-		Handle:     msg.Handle,
-		Type:       msg.Type,
-		Payload:    resp.AddStatus(err).Bytes(),
-		Timestamp:  time.Now().UnixMilli(),
-		ProductID:  msg.ProductID,
-		DeviceName: msg.DeviceName,
+		Handle:       msg.Handle,
+		Type:         msg.Type,
+		Payload:      resp.AddStatus(err).Bytes(),
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    msg.ProductID,
+		DeviceName:   msg.DeviceName,
+		ProtocolCode: msg.ProtocolCode,
 	}
 }
 

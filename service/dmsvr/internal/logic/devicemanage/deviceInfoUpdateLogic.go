@@ -45,6 +45,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.Tags != nil {
 		old.Tags = data.Tags
 	}
+	if data.SchemaAlias != nil {
+		old.SchemaAlias = data.SchemaAlias
+	}
 	if data.LogLevel != def.Unknown {
 		old.LogLevel = data.LogLevel
 	}

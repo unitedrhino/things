@@ -32,7 +32,7 @@ type DeviceRepo interface {
 	Insert(ctx context.Context, info *Info) error
 	Update(ctx context.Context, info *Info) error
 	Delete(ctx context.Context, id int64) error
-	GetInfos(ctx context.Context, device devices.Core, operator DeviceOperationOperator, dataID string) (Infos, error)
+	GetInfos(ctx context.Context, device devices.Core, operator TriggerDeviceType, dataID string) (Infos, error)
 }
 
 type WhenRepo interface {

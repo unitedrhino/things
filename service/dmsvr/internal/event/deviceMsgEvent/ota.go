@@ -189,10 +189,11 @@ func (l *OtaLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *d
 		l.topics[2] = "upgrade" //下行 升级包详情
 	}
 	return &deviceMsg.PublishMsg{
-		Handle:     msg.Handle,
-		Type:       l.topics[2],
-		Payload:    resp.AddStatus(err).Bytes(),
-		ProductID:  msg.ProductID,
-		DeviceName: msg.DeviceName,
+		Handle:       msg.Handle,
+		Type:         l.topics[2],
+		Payload:      resp.AddStatus(err).Bytes(),
+		ProductID:    msg.ProductID,
+		DeviceName:   msg.DeviceName,
+		ProtocolCode: msg.ProtocolCode,
 	}
 }

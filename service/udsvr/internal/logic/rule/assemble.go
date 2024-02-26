@@ -1,6 +1,7 @@
 package rulelogic
 
 import (
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -30,8 +31,8 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 
 func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 	return &relationDB.UdSceneInfo{
-		ID:      in.ID,
-		AreaIDs: in.AreaIDs,
+		ID: in.ID,
+		//AreaIDs: in.AreaIDs,
 		Name:    in.Name,
 		Desc:    in.Desc,
 		Tag:     in.Tag,
@@ -46,7 +47,7 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 			InvalidRanges: in.When.InvalidRanges,
 			Conditions:    in.When.Conditions,
 		},
-		UdSceneThen: relationDB.UdSceneThen{Actions: in.Then.Actions},
+		UdSceneThen: relationDB.UdSceneThen{Actions: ToSceneActionsPo(in, in.Then.Actions)},
 	}
 }
 
@@ -73,12 +74,12 @@ func ToSceneTriggerDevicesPo(si *scene.Info, in scene.TriggerDevices) (ret []*re
 	}
 	for _, v := range in {
 		ret = append(ret, &relationDB.UdSceneTriggerDevice{
-			SceneID:         si.ID,
-			ProductID:       v.ProductID,
-			Selector:        string(v.SelectType),
-			SelectorValues:  v.DeviceNames,
-			Operator:        string(v.Operator),
-			OperationSchema: v.OperationSchema,
+			SceneID:     si.ID,
+			ProductID:   v.ProductID,
+			SelectType:  string(v.SelectType),
+			DeviceNames: v.DeviceNames,
+			Type:        string(v.Type),
+			Schema:      v.Schema,
 		})
 	}
 	return
@@ -89,8 +90,8 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		return nil
 	}
 	return &scene.Info{
-		ID:          in.ID,
-		AreaIDs:     in.AreaIDs,
+		ID: in.ID,
+		//AreaIDs:     in.AreaIDs,
 		Name:        in.Name,
 		Tag:         in.Tag,
 		HeadImg:     in.HeadImg,
@@ -107,10 +108,75 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 			Conditions:    in.UdSceneWhen.Conditions,
 		},
 		Then: scene.Then{
-			Actions: in.UdSceneThen.Actions,
+			Actions: ToSceneActionsDo(in.UdSceneThen.Actions),
 		},
 		Status: in.Status,
 	}
+}
+
+func ToSceneActionsPo(s *scene.Info, in scene.Actions) (ret []*relationDB.UdSceneThenAction) {
+	for _, v := range in {
+		ret = append(ret, ToSceneActionPo(s, v))
+	}
+	return
+}
+
+func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAction {
+	if in == nil {
+		return nil
+	}
+	po := &relationDB.UdSceneThenAction{
+		ID:          in.ID,
+		SceneID:     s.ID,
+		ExecuteType: in.ExecuteType,
+		Delay:       in.Delay,
+	}
+	if in.Device != nil {
+		po.Device = &relationDB.UdSceneActionDevice{
+			ProjectID:   stores.ProjectID(in.Device.ProjectID),
+			AreaID:      stores.AreaID(in.Device.AreaID),
+			ProductID:   in.Device.ProductID,
+			SelectType:  in.Device.SelectType,
+			DeviceNames: in.Device.DeviceNames,
+			GroupID:     in.Device.GroupID,
+			Type:        in.Device.Type,
+			DataID:      in.Device.DataID,
+			Value:       in.Device.Value,
+		}
+	}
+	return po
+}
+
+func ToSceneActionsDo(in []*relationDB.UdSceneThenAction) (ret scene.Actions) {
+	for _, v := range in {
+		ret = append(ret, ToSceneActionDo(v))
+	}
+	return
+}
+
+func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
+	if in == nil {
+		return nil
+	}
+	do := &scene.Action{
+		ID:          in.ID,
+		ExecuteType: in.ExecuteType,
+		Delay:       in.Delay,
+	}
+	if in.Device != nil {
+		do.Device = &scene.ActionDevice{
+			ProjectID:   int64(in.Device.ProjectID),
+			AreaID:      int64(in.Device.AreaID),
+			ProductID:   in.Device.ProductID,
+			SelectType:  in.Device.SelectType,
+			DeviceNames: in.Device.DeviceNames,
+			GroupID:     in.Device.GroupID,
+			Type:        in.Device.Type,
+			DataID:      in.Device.DataID,
+			Value:       in.Device.Value,
+		}
+	}
+	return do
 }
 
 func ToSceneTriggerTimersDo(in []*relationDB.UdSceneTriggerTimer) (ret scene.Timers) {
@@ -132,11 +198,11 @@ func ToSceneTriggerDevicesDo(in []*relationDB.UdSceneTriggerDevice) (ret scene.T
 	}
 	for _, v := range in {
 		ret = append(ret, &scene.TriggerDevice{
-			ProductID:       v.ProductID,
-			SelectType:      scene.SelectType(v.Selector),
-			DeviceNames:     v.SelectorValues,
-			Operator:        scene.DeviceOperationOperator(v.Operator),
-			OperationSchema: v.OperationSchema,
+			ProductID:   v.ProductID,
+			SelectType:  scene.SelectType(v.SelectType),
+			DeviceNames: v.DeviceNames,
+			Type:        scene.TriggerDeviceType(v.Type),
+			Schema:      v.Schema,
 		})
 	}
 	return
@@ -153,7 +219,7 @@ func PoToSceneInfoPb(in *relationDB.UdSceneInfo) *ud.SceneInfo {
 		Desc:    in.Desc,
 		Tag:     in.Tag,
 		HeadImg: in.HeadImg,
-		AreaIDs: in.AreaIDs,
+		//AreaIDs: in.AreaIDs,
 		Trigger: utils.MarshalNoErr(do.Trigger),
 		When:    utils.MarshalNoErr(do.When),
 		Then:    utils.MarshalNoErr(do.Then),

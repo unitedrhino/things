@@ -54,6 +54,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Position:       position,                      //设别定位（百度坐标）
 		Address:        &v.Address.Value,              //详细地址
 		Tags:           logic.ToTagsType(v.Tags),      //设备标签
+		SchemaAlias:    v.SchemaAlias,                 //设备物模型别名,如果是结构体类型则key为xxx.xxx
 		IsOnline:       v.IsOnline,                    //在线状态 1离线 2在线 只读
 		FirstLogin:     v.FirstLogin,                  //激活时间 只读
 		LastLogin:      v.LastLogin,                   //最后上线时间 只读

@@ -114,6 +114,10 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if di.Tags == nil {
 		di.Tags = map[string]string{}
 	}
+	di.SchemaAlias = in.SchemaAlias
+	if di.SchemaAlias == nil {
+		di.SchemaAlias = map[string]string{}
+	}
 
 	if in.LogLevel != def.Unknown {
 		di.LogLevel = def.LogClose

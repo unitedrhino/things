@@ -10,31 +10,33 @@ import (
 	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
-	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type (
 	NatsJsClient struct {
-		client nats.JetStreamContext
+		client       *clients.NatsClient
+		protocolCode string
 	}
 )
 
-func newNatsJsClient(conf conf.NatsConf) (PubInner, error) {
-	nc, err := clients.NewNatsJetStreamClient(conf)
+func newNatsClient(conf conf.EventConf, protocolCode string) (PubInner, error) {
+	nc, err := clients.NewNatsClient2(conf.Mode, conf.Nats.Consumer, conf.Nats)
 	if err != nil {
 		return nil, err
 	}
-	return &NatsJsClient{client: nc}, nil
+	return &NatsJsClient{client: nc, protocolCode: protocolCode}, nil
 }
 
 func (n *NatsJsClient) DevPubGateway(ctx context.Context, publishMsg *devices.DevPublish) error {
+	publishMsg.ProtocolCode = n.protocolCode
 	pubStr, _ := json.Marshal(publishMsg)
 	return n.publish(ctx,
 		fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
 }
 
 func (n *NatsJsClient) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
+	publishMsg.ProtocolCode = n.protocolCode
 	pubStr, _ := json.Marshal(publishMsg)
 	err := n.publish(ctx,
 		fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
@@ -46,6 +48,7 @@ func (n *NatsJsClient) DevPubMsg(ctx context.Context, publishMsg *devices.DevPub
 }
 
 func (n *NatsJsClient) DevPubThing(ctx context.Context, publishMsg *devices.DevPublish) error {
+	publishMsg.ProtocolCode = n.protocolCode
 	pubStr, _ := json.Marshal(publishMsg)
 	err := n.publish(ctx,
 		fmt.Sprintf(topics.DeviceUpThing, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
@@ -57,6 +60,7 @@ func (n *NatsJsClient) DevPubThing(ctx context.Context, publishMsg *devices.DevP
 }
 
 func (n *NatsJsClient) DevPubOta(ctx context.Context, publishMsg *devices.DevPublish) error {
+	publishMsg.ProtocolCode = n.protocolCode
 	pubStr, _ := json.Marshal(publishMsg)
 	err := n.publish(ctx,
 		fmt.Sprintf(topics.DeviceUpOta, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
@@ -68,6 +72,7 @@ func (n *NatsJsClient) DevPubOta(ctx context.Context, publishMsg *devices.DevPub
 }
 
 func (n *NatsJsClient) DevPubConfig(ctx context.Context, publishMsg *devices.DevPublish) error {
+	publishMsg.ProtocolCode = n.protocolCode
 	pubStr, _ := json.Marshal(publishMsg)
 	err := n.publish(ctx,
 		fmt.Sprintf(topics.DeviceUpConfig, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
@@ -79,6 +84,7 @@ func (n *NatsJsClient) DevPubConfig(ctx context.Context, publishMsg *devices.Dev
 }
 
 func (n *NatsJsClient) DevPubShadow(ctx context.Context, publishMsg *devices.DevPublish) error {
+	publishMsg.ProtocolCode = n.protocolCode
 	pubStr, _ := json.Marshal(publishMsg)
 	err := n.publish(ctx,
 		fmt.Sprintf(topics.DeviceUpShadow, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
@@ -90,6 +96,7 @@ func (n *NatsJsClient) DevPubShadow(ctx context.Context, publishMsg *devices.Dev
 }
 
 func (n *NatsJsClient) DevPubSDKLog(ctx context.Context, publishMsg *devices.DevPublish) error {
+	publishMsg.ProtocolCode = n.protocolCode
 	pubStr, _ := json.Marshal(publishMsg)
 	err := n.publish(ctx,
 		fmt.Sprintf(topics.DeviceUpSDKLog, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
@@ -119,9 +126,9 @@ func (n *NatsJsClient) PubConn(ctx context.Context, conn ConnType, info *devices
 }
 
 func (n *NatsJsClient) publish(ctx context.Context, topic string, payload []byte) error {
-	ret, err := n.client.Publish(topic, events.NewEventMsg(ctx, payload))
+	err := n.client.Publish(ctx, topic, events.NewEventMsg(ctx, payload))
 	if err != nil {
-		logx.WithContext(ctx).Errorf("%s nats publish failure err:%v topic:%v ret:%v", err, topic, ret)
+		logx.WithContext(ctx).Errorf("%s nats publish failure err:%v topic:%v", err, topic)
 	}
 	return err
 }

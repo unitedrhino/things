@@ -164,6 +164,7 @@ type DeviceInfo struct {
 	Position       *Point                             `json:"position,optional"`                   //设备定位,默认百度坐标系
 	Address        *string                            `json:"address,optional"`                    //所在地址
 	Tags           []*Tag                             `json:"tags,optional"`                       // 设备tag
+	SchemaAlias    map[string]string                  `json:"schemaAlias,optional"`                //设备物模型别名,如果是结构体类型则key为xxx.xxx
 	IsOnline       int64                              `json:"isOnline,optional,range=[0:2]"`       // 在线状态  1离线 2在线 只读
 	FirstLogin     int64                              `json:"firstLogin,optional,string"`          //激活时间 只读
 	LastLogin      int64                              `json:"lastLogin,optional,string"`           //最后上线时间 只读
@@ -210,18 +211,19 @@ type DeviceInfoReadReq struct {
 }
 
 type DeviceInfoSaveReq struct {
-	ProductID      string  `json:"productID"`                           //产品id 只读
-	DeviceName     string  `json:"deviceName"`                          //设备名称 读写
-	DeviceAlias    *string `json:"deviceAlias,optional"`                //设备别名 读写
-	LogLevel       int64   `json:"logLevel,optional,range=[0:5]"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Address        *string `json:"address,optional"`                    //所在地址
-	Position       *Point  `json:"position,optional"`                   //设备定位,默认百度坐标系
-	Tags           []*Tag  `json:"tags,optional"`                       // 设备tag
-	Phone          *string `json:"phone,optional"`                      //手机号
-	Iccid          *string `json:"iccid,optional"`                      //SIM卡卡号
-	UserID         int64   `json:"userID,string,optional"`              // 用户id
-	MobileOperator int64   `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
-	AreaID         int64   `json:"areaID,string,optional"`              //项目区域id 只读（1: root节点 2: 未分类节点 其他:子节点）
+	ProductID      string            `json:"productID"`                           //产品id 只读
+	DeviceName     string            `json:"deviceName"`                          //设备名称 读写
+	DeviceAlias    *string           `json:"deviceAlias,optional"`                //设备别名 读写
+	LogLevel       int64             `json:"logLevel,optional,range=[0:5]"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Address        *string           `json:"address,optional"`                    //所在地址
+	Position       *Point            `json:"position,optional"`                   //设备定位,默认百度坐标系
+	Tags           []*Tag            `json:"tags,optional"`                       // 设备tag
+	Phone          *string           `json:"phone,optional"`                      //手机号
+	Iccid          *string           `json:"iccid,optional"`                      //SIM卡卡号
+	UserID         int64             `json:"userID,string,optional"`              // 用户id
+	MobileOperator int64             `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
+	AreaID         int64             `json:"areaID,string,optional"`              //项目区域id 只读（1: root节点 2: 未分类节点 其他:子节点）
+	SchemaAlias    map[string]string `json:"schemaAlias,optional"`                //设备物模型别名,如果是结构体类型则key为xxx.xxx
 }
 
 type DeviceInfoWithProperty struct {

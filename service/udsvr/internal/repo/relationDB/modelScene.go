@@ -11,7 +11,6 @@ type UdSceneInfo struct {
 	TenantCode     stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`         // 租户编码
 	ProjectID      stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`     // 项目ID(雪花ID)
 	Tag            string            `gorm:"column:tag;type:VARCHAR(128);NOT NULL;default:normal"` //标签 admin: 管理员 normal: 普通
-	AreaIDs        []int64           `gorm:"column:area_ids;type:json;serializer:json"`            // 涉及到的区域列表(需要鉴权)
 	HeadImg        string            `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`           // 头像
 	Name           string            `gorm:"column:name;type:varchar(100);NOT NULL"`               // 名称
 	Desc           string            `gorm:"column:desc;type:varchar(200);NOT NULL"`               // 描述
@@ -49,14 +48,15 @@ func (m *UdSceneTriggerTimer) TableName() string {
 }
 
 type UdSceneTriggerDevice struct {
-	ID              int64                  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`  // id编号
-	SceneID         int64                  `gorm:"column:scene_id;index;type:bigint"`                 // 场景id编号
-	ProductID       string                 `gorm:"column:product_id;index;type:VARCHAR(25);NOT NULL"` //产品id
-	Selector        string                 `gorm:"column:selector;type:VARCHAR(25);NOT NULL"`         //设备选择方式  all: 全部 fixed:指定的设备
-	SelectorValues  []string               `gorm:"column:selector_values;type:json;serializer:json"`  //选择的列表  选择的列表, fixed类型是设备名列表
-	Operator        string                 `gorm:"column:operator;type:VARCHAR(25);NOT NULL"`         //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
-	OperationSchema *scene.OperationSchema `gorm:"column:operation_schema;type:json;serializer:json"` //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
-	SceneInfo       *UdSceneInfo           `gorm:"foreignKey:ID;references:SceneID"`
+	ID          int64                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`  // id编号
+	SceneID     int64                      `gorm:"column:scene_id;index;type:bigint"`                 // 场景id编号
+	ProductID   string                     `gorm:"column:product_id;index;type:VARCHAR(25);NOT NULL"` //产品id
+	SelectType  scene.SelectType           `gorm:"column:select_type;type:VARCHAR(25);NOT NULL"`      //设备选择方式  all: 全部 fixed:指定的设备
+	GroupID     int64                      `gorm:"column:group_id;index;type:bigint"`                 //group类型传GroupID
+	DeviceNames []string                   `gorm:"column:device_names;type:json;serializer:json"`     //选择的列表  选择的列表, fixed类型是设备名列表
+	Type        string                     `gorm:"column:type;type:VARCHAR(25);NOT NULL"`             //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
+	Schema      *scene.TriggerDeviceSchema `gorm:"column:schema;type:json;serializer:json"`           //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
+	SceneInfo   *UdSceneInfo               `gorm:"foreignKey:ID;references:SceneID"`
 	stores.Time
 }
 
@@ -71,5 +71,30 @@ type UdSceneWhen struct {
 }
 
 type UdSceneThen struct {
-	Actions scene.Actions `gorm:"column:actions;type:json;serializer:json"`
+	Actions []*UdSceneThenAction `gorm:"foreignKey:SceneID;references:ID"`
+}
+
+type UdSceneThenAction struct {
+	ID          int64                   `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
+	TenantCode  stores.TenantCode       `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
+	SceneID     int64                   `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
+	ExecuteType scene.ActionExecuteType `gorm:"column:execute_type;type:VARCHAR(25);NOT NULL"`
+	Delay       int64                   `gorm:"column:delay;type:bigint"`
+	Device      *UdSceneActionDevice    `gorm:"embedded;embeddedPrefix:device_"`
+}
+
+func (m *UdSceneThenAction) TableName() string {
+	return "ud_scene_then_action"
+}
+
+type UdSceneActionDevice struct {
+	ProjectID   stores.ProjectID       `gorm:"column:project_id;type:bigint;default:2;NOT NULL"`  // 项目ID(雪花ID)
+	AreaID      stores.AreaID          `gorm:"column:area_id;type:bigint;default:2;NOT NULL"`     // 项目区域ID(雪花ID)
+	ProductID   string                 `gorm:"column:product_id;index;type:VARCHAR(25);NOT NULL"` //产品id
+	SelectType  scene.SelectType       `gorm:"column:select_type;type:VARCHAR(25);NOT NULL"`      //设备选择方式
+	DeviceNames []string               `gorm:"column:device_names;type:json;serializer:json"`     //选择的列表  选择的列表, fixed类型是设备名列表
+	GroupID     int64                  `gorm:"column:group_id;index;type:bigint"`                 //group类型传GroupID
+	Type        scene.ActionDeviceType `gorm:"column:type;type:VARCHAR(25);NOT NULL"`
+	DataID      string                 `gorm:"column:product_id;index;type:VARCHAR(100);NOT NULL"`
+	Value       string                 `gorm:"column:product_id;index;type:VARCHAR(500);NOT NULL"`
 }

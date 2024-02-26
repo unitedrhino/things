@@ -13,7 +13,7 @@ import (
 	"sync"
 )
 
-type ActionDeviceType string
+type ActionDeviceType = string
 
 const (
 	ActionDeviceTypePropertyControl ActionDeviceType = "propertyControl"
@@ -21,13 +21,15 @@ const (
 )
 
 type ActionDevice struct {
-	ProductID   string           `json:"productID"`   //产品id
-	SelectType  SelectType       `json:"selector"`    //设备选择方式   fixed:指定的设备
-	DeviceNames []string         `json:"deviceNames"` //选择的设备列表 指定设备的时候才需要填写
-	GroupID     int64            `json:"groupID"`     //分组id
-	Type        ActionDeviceType `json:"type"`        // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
-	DataID      string           `json:"dataID"`      // 属性的id及事件的id
-	Value       string           `json:"value"`       //传的值
+	ProjectID   int64            `json:"projectID,string"` //项目id
+	AreaID      int64            `json:"areaID,string"`    //涉及到的区域ID
+	ProductID   string           `json:"productID"`        //产品id
+	SelectType  SelectType       `json:"selector"`         //设备选择方式   fixed:指定的设备
+	DeviceNames []string         `json:"deviceNames"`      //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
+	GroupID     int64            `json:"groupID"`          //分组id
+	Type        ActionDeviceType `json:"type"`             // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
+	DataID      string           `json:"dataID"`           // 属性的id及事件的id
+	Value       string           `json:"value"`            //传的值
 }
 
 func (a *ActionDevice) Validate() error {

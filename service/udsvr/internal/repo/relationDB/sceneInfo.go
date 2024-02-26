@@ -78,7 +78,7 @@ func (p SceneInfoRepo) FindOneByFilter(ctx context.Context, f SceneInfoFilter) (
 
 func (p SceneInfoRepo) FindByFilter(ctx context.Context, f SceneInfoFilter, page *def.PageInfo) ([]*UdSceneInfo, error) {
 	var results []*UdSceneInfo
-	db := p.fmtFilter(ctx, f).Preload("Devices").Preload("Timers").Model(&UdSceneInfo{})
+	db := p.fmtFilter(ctx, f).Preload("Actions").Preload("Devices").Preload("Timers").Model(&UdSceneInfo{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -103,10 +103,16 @@ func (p SceneInfoRepo) Update(ctx context.Context, data *UdSceneInfo) error {
 		if err != nil {
 			return err
 		}
+		err = NewSceneActionRepo(tx).DeleteByFilter(ctx, SceneActionFilter{SceneID: data.ID})
+		if err != nil {
+			return err
+		}
 		timer := data.Timers
 		devices := data.Devices
+		actions := data.Actions
 		data.Timers = nil
 		data.Devices = nil
+		data.Actions = nil
 		err = p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 		if err != nil {
 			return err
@@ -119,6 +125,12 @@ func (p SceneInfoRepo) Update(ctx context.Context, data *UdSceneInfo) error {
 		}
 		if len(devices) != 0 {
 			err = NewSceneTriggerDeviceRepo(tx).MultiInsert(ctx, devices)
+			if err != nil {
+				return err
+			}
+		}
+		if len(data.Actions) != 0 {
+			err = NewSceneActionRepo(tx).MultiInsert(ctx, actions)
 			if err != nil {
 				return err
 			}
@@ -148,13 +160,17 @@ func (p SceneInfoRepo) Delete(ctx context.Context, id int64) error {
 		if err != nil {
 			return err
 		}
+		err = NewSceneActionRepo(tx).DeleteByFilter(ctx, SceneActionFilter{SceneID: id})
+		if err != nil {
+			return err
+		}
 		return nil
 	})
 	return stores.ErrFmt(err)
 }
 func (p SceneInfoRepo) FindOne(ctx context.Context, id int64) (*UdSceneInfo, error) {
 	var result UdSceneInfo
-	err := p.db.WithContext(ctx).Preload("Devices").Preload("Timers").Where("id = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Preload("Actions").Preload("Devices").Preload("Timers").Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
