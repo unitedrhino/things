@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -20,7 +20,7 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 	if err != nil {
 		return err
 	}
-	d.t.AsyncInsert(sql, args)
+	d.t.AsyncInsert(sql, args...)
 	return nil
 }
 
@@ -31,9 +31,9 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Mod
 		if err != nil {
 			return "", nil, err
 		}
-		sql = fmt.Sprintf(" %s using %s tags('%s','%s') (`ts`, %s) values (?,%s) ",
+		sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s') (`ts`, %s) values (?,%s) ",
 			d.GetPropertyTableName(productID, deviceName, property.Identifier),
-			d.GetPropertyStableName(productID, property.Identifier), deviceName, t.Property[property.Identifier].Define.Type,
+			d.GetPropertyStableName(productID, property.Identifier), productID, deviceName, t.Property[property.Identifier].Define.Type,
 			paramIds, paramPlaceholder)
 		args = append([]any{property.TimeStamp}, paramValList...)
 	default:
@@ -47,10 +47,10 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Mod
 				return "", nil, errors.System.AddDetail("param json parse failure")
 			}
 		}
-		sql = fmt.Sprintf(" %s using %s tags('%s','%s')(`ts`, `param`) values (?,?) ",
+		sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s')(`ts`, `param`) values (?,?) ",
 			d.GetPropertyTableName(productID, deviceName, property.Identifier),
 			d.GetPropertyStableName(productID, property.Identifier),
-			deviceName, t.Property[property.Identifier].Define.Type)
+			productID, deviceName, t.Property[property.Identifier].Define.Type)
 		args = append(args, property.TimeStamp, param)
 	}
 	return
@@ -114,7 +114,7 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 				"DeviceDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
 				identifier, param, err)
 		}
-		d.t.AsyncInsert(sql1, args1)
+		d.t.AsyncInsert(sql1, args1...)
 	}
 	return nil
 }

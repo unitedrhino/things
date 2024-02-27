@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgThing"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"

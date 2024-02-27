@@ -8,10 +8,10 @@ import (
 	otataskmanage "github.com/i-Things/things/service/dmsvr/internal/server/otataskmanage"
 	"time"
 
+	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss/common"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
 	server "github.com/i-Things/things/service/dmsvr/internal/server/deviceinteract"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"

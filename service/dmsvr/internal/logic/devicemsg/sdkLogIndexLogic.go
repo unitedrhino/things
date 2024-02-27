@@ -2,7 +2,7 @@ package devicemsglogic
 
 import (
 	"context"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgSdkLog"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgSdkLog"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"gitee.com/i-Things/share/def"

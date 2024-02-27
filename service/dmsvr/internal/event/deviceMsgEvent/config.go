@@ -2,8 +2,8 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
 	remoteconfiglogic "github.com/i-Things/things/service/dmsvr/internal/logic/remoteconfig"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"

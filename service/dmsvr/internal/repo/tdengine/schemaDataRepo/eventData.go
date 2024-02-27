@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgThing"
 )
 
 func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,

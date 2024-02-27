@@ -1,7 +1,7 @@
 package sdkLogRepo
 
 import (
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgSdkLog"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgSdkLog"
 	"github.com/spf13/cast"
 )
 

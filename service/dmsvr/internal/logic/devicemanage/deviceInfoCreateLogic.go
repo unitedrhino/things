@@ -93,7 +93,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		return nil, err
 	}
 
-	projectID := stores.ProjectID(ctxs.GetUserCtx(l.ctx).ProjectID)
+	projectID := stores.ProjectID(ctxs.GetUserCtxNoNil(l.ctx).ProjectID)
 	if projectID == 0 { //如果没有传项目,则分配到未分类项目中
 		projectID = def.NotClassified
 	}

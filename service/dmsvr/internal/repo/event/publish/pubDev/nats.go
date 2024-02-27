@@ -7,11 +7,11 @@ import (
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

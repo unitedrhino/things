@@ -3,9 +3,9 @@ package deviceinteractlogic
 import (
 	"context"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"strings"
 	"time"

@@ -3,9 +3,9 @@ package otafirmwaremanagelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgOta"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"path"
 

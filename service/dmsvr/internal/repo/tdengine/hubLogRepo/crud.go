@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
 	"gitee.com/i-Things/share/stores"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg/msgHubLog"
 )
 
 func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter msgHubLog.HubFilter) sq.SelectBuilder {

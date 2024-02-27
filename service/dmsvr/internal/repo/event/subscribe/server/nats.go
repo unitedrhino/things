@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/events/topics"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 )
 
