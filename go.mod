@@ -12,7 +12,7 @@ replace (
 
 require (
 	gitee.com/i-Things/core v0.0.0-00010101000000-000000000000
-	gitee.com/i-Things/share v0.1.5
+	gitee.com/i-Things/share v0.1.6
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
