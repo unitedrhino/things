@@ -80,7 +80,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 	} else {
 		pi.AutoRegister = def.AutoRegClose
 	}
-	if in.ProtocolCode == "" {
+	if in.ProtocolCode != "" {
 		pi.ProtocolCode = in.ProtocolCode
 	} else {
 		pi.ProtocolCode = protocol.CodeIThings
