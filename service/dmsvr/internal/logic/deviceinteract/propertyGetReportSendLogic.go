@@ -42,16 +42,17 @@ func (l *PropertyGetReportSendLogic) initMsg(productID string) error {
 }
 
 // 请求设备获取设备最新属性
-func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetReportSendReq) (*dm.PropertyGetReportSendResp, error) {
+func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetReportSendReq) (ret *dm.PropertyGetReportSendResp, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
-	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
+	var protocolCode string
+	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}); err != nil {
 		return nil, err
 	}
 
-	err := l.initMsg(in.ProductID)
+	err = l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
 	}
@@ -69,12 +70,13 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
-		Handle:     devices.Thing,
-		Type:       msgThing.TypeProperty,
-		Payload:    payload,
-		Timestamp:  time.Now().UnixMilli(),
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
+		Handle:       devices.Thing,
+		Type:         msgThing.TypeProperty,
+		Payload:      payload,
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    in.ProductID,
+		DeviceName:   in.DeviceName,
+		ProtocolCode: protocolCode,
 	}
 	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.MsgToken)
 	if err != nil {

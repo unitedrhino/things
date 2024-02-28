@@ -29,7 +29,7 @@ func NewSendMsgLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendMsgLo
 }
 
 // 发送消息给设备
-func (l *SendMsgLogic) SendMsg(in *dm.SendMsgReq) (*dm.SendMsgResp, error) {
+func (l *SendMsgLogic) SendMsg(in *dm.SendMsgReq) (ret *dm.SendMsgResp, err error) {
 	l.Infof("%s topic:%v payload:%v", utils.FuncName(), in.GetTopic(), string(in.GetPayload()))
 	topicInfo, err := devices.GetTopicInfo(in.Topic)
 	if err != nil {
@@ -38,7 +38,8 @@ func (l *SendMsgLogic) SendMsg(in *dm.SendMsgReq) (*dm.SendMsgResp, error) {
 	if topicInfo.Direction == devices.Up {
 		return nil, errors.Parameter.AddMsg("只能发给设备")
 	}
-	if err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
+	var protocolCode string
+	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  topicInfo.ProductID,
 		DeviceName: topicInfo.DeviceName,
 	}); err != nil {
@@ -46,12 +47,13 @@ func (l *SendMsgLogic) SendMsg(in *dm.SendMsgReq) (*dm.SendMsgResp, error) {
 	}
 
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &deviceMsg.PublishMsg{
-		Timestamp:  time.Now().UnixMilli(),
-		Payload:    in.Payload,
-		Handle:     strings.TrimPrefix(topicInfo.TopicHead, "$"),
-		Type:       topicInfo.Types[0],
-		ProductID:  topicInfo.ProductID,
-		DeviceName: topicInfo.DeviceName,
+		Timestamp:    time.Now().UnixMilli(),
+		Payload:      in.Payload,
+		Handle:       strings.TrimPrefix(topicInfo.TopicHead, "$"),
+		Type:         topicInfo.Types[0],
+		ProductID:    topicInfo.ProductID,
+		DeviceName:   topicInfo.DeviceName,
+		ProtocolCode: protocolCode,
 	})
 	if er != nil {
 		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)

@@ -79,7 +79,7 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 		sendMsg(errors.TimeOut)
 		return nil
 	}
-	err = deviceinteractlogic.CheckIsOnline(l.ctx, l.svcCtx, core)
+	_, err = deviceinteractlogic.CheckIsOnline(l.ctx, l.svcCtx, core)
 	if err != nil {
 		sendMsg(err)
 		return nil

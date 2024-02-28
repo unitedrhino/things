@@ -9,7 +9,6 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -35,14 +34,13 @@ func (n *NatsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.Publis
 	if respMsg.ProtocolCode == "" {
 		respMsg.ProtocolCode = def.ProtocolCodeIThings
 	}
-	msg := events.NewEventMsg(ctx, devices.PublishToDev(
-		respMsg.Handle, respMsg.Type, respMsg.Payload, respMsg.ProtocolCode,
-		respMsg.ProductID, respMsg.DeviceName))
 	defer func() {
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
-			Infof("PublishToDev startTime:%v sendMsg:%s", startTime, string(msg))
+			Infof("PublishToDev startTime:%v", startTime)
 	}()
-	err := n.client.Publish(ctx, fmt.Sprintf(topics.DeviceDownMsg, respMsg.ProtocolCode, respMsg.Handle, respMsg.ProductID, respMsg.DeviceName), msg)
+	err := n.client.Publish(ctx, fmt.Sprintf(topics.DeviceDownMsg, respMsg.ProtocolCode, respMsg.Handle, respMsg.ProductID, respMsg.DeviceName), devices.PublishToDev(
+		respMsg.Handle, respMsg.Type, respMsg.Payload, respMsg.ProtocolCode,
+		respMsg.ProductID, respMsg.DeviceName))
 
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s Publish failure err:%v", utils.FuncName(), err)

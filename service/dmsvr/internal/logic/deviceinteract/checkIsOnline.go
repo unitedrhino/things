@@ -11,23 +11,23 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
-func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices.Core) error {
+func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices.Core) (protocolCode string, err error) {
 	dev, err := devicemanage.NewDeviceManageServer(svcCtx).DeviceInfoRead(ctx, &dm.DeviceInfoReadReq{
 		ProductID:  core.ProductID,
 		DeviceName: core.DeviceName,
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
 	if dev.IsOnline == def.False {
-		return errors.NotOnline
+		return "", errors.NotOnline
 	}
 	info, err := productmanage.NewProductManageServer(svcCtx).ProductInfoRead(ctx, &dm.ProductInfoReadReq{ProductID: core.ProductID})
 	if err != nil {
-		return err
+		return "", err
 	}
 	if info.DeviceType != def.DeviceTypeSubset {
-		return nil
+		return info.ProtocolCode, nil
 	}
 	//子设备需要查询网关的在线状态
 	gateways, err := devicemanage.NewDeviceManageServer(svcCtx).DeviceGatewayIndex(ctx, &dm.DeviceGatewayIndexReq{SubDevice: &dm.DeviceCore{
@@ -35,15 +35,15 @@ func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices
 		DeviceName: dev.DeviceName,
 	}})
 	if err != nil {
-		return err
+		return "", err
 	}
 	if len(gateways.List) == 0 {
-		return errors.NotFind.AddMsg("子设备未绑定网关")
+		return "", errors.NotFind.AddMsg("子设备未绑定网关")
 	}
 	for _, g := range gateways.List {
 		if g.IsOnline == def.True {
-			return nil
+			return info.ProtocolCode, nil
 		}
 	}
-	return errors.NotOnline.AddMsg("网关未在线")
+	return "", errors.NotOnline.AddMsg("网关未在线")
 }

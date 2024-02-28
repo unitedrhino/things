@@ -49,7 +49,8 @@ func (l *PropertyControlSendLogic) initMsg(productID string) error {
 func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSendReq) (ret *dm.PropertyControlSendResp, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	var isOnline = true
-	if err := CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
+	var protocolCode string
+	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}); err != nil { //如果是不启用设备影子的模式则直接返回
@@ -130,12 +131,13 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
-		Handle:     devices.Thing,
-		Type:       msgThing.TypeProperty,
-		Payload:    payload,
-		Timestamp:  time.Now().UnixMilli(),
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
+		Handle:       devices.Thing,
+		Type:         msgThing.TypeProperty,
+		Payload:      payload,
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    in.ProductID,
+		DeviceName:   in.DeviceName,
+		ProtocolCode: protocolCode,
 	}
 	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.MsgToken)
 	if err != nil {
