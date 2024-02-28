@@ -13,7 +13,6 @@ import (
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/verify"
 	ws "gitee.com/i-Things/share/websocket"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/i-Things/things/service/apisvr/internal/config"
 	"github.com/i-Things/things/service/apisvr/internal/middleware"
 	"github.com/i-Things/things/service/dgsvr/client/deviceauth"
@@ -45,12 +44,6 @@ import (
 	"os"
 	"time"
 )
-
-func init() {
-	jwt.TimeFunc = func() time.Time {
-		return time.Now()
-	}
-}
 
 type SvrClient struct {
 	ProtocolM protocolmanage.ProtocolManage
