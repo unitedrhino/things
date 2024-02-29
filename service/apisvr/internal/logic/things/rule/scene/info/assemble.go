@@ -9,7 +9,6 @@ func ToSceneTypes(in *ud.SceneInfo) *types.SceneInfo {
 	return &types.SceneInfo{
 		ID:              in.Id,
 		Name:            in.Name,
-		AreaIDs:         in.AreaIDs,
 		Tag:             in.Tag,
 		Desc:            in.Desc,
 		Trigger:         in.Trigger,
@@ -21,9 +20,9 @@ func ToSceneTypes(in *ud.SceneInfo) *types.SceneInfo {
 		IsUpdateHeadImg: in.IsUpdateHeadImg,
 	}
 }
+
 func ToScenePb(in *types.SceneInfo) *ud.SceneInfo {
 	return &ud.SceneInfo{
-		AreaIDs:         in.AreaIDs,
 		Tag:             in.Tag,
 		Id:              in.ID,
 		Name:            in.Name,

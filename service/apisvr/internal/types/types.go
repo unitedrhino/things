@@ -1217,18 +1217,17 @@ type ProtocolInfoIndexResp struct {
 }
 
 type SceneInfo struct {
-	ID              int64   `json:"id,optional"`
-	Name            string  `json:"name,optional"`
-	AreaIDs         []int64 `json:"areaIDs,string,optional"`
-	Status          int64   `json:"status,optional"` //状态: 1启用 2禁用
-	Tag             string  `json:"tag,optional"`    //标签 admin: 管理员 normal: 普通
-	Desc            string  `json:"desc,optional"`
-	CreatedTime     int64   `json:"createdTime,optional"`
-	Trigger         string  `json:"trigger,optional"`
-	When            string  `json:"when,optional"`
-	Then            string  `json:"then,optional"`
-	HeadImg         string  `json:"headImg,optional"`                   // 用户头像
-	IsUpdateHeadImg bool    `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
+	ID              int64  `json:"id,optional"`
+	Name            string `json:"name,optional"`
+	Status          int64  `json:"status,optional"` //状态: 1启用 2禁用
+	Tag             string `json:"tag,optional"`    //标签 admin: 管理员 normal: 普通
+	Desc            string `json:"desc,optional"`
+	CreatedTime     int64  `json:"createdTime,optional"`
+	Trigger         string `json:"trigger,optional"`
+	When            string `json:"when,optional"`
+	Then            string `json:"then,optional"`
+	HeadImg         string `json:"headImg,optional"`                   // 用户头像
+	IsUpdateHeadImg bool   `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
 }
 
 type SceneInfoCreateReq struct {

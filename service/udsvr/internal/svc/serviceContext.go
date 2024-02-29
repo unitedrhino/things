@@ -50,7 +50,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg      devicemsg.DeviceMsg
 	)
 	stores.InitConn(c.Database)
-	relationDB.Migrate(c.Database)
+	logx.Must(relationDB.Migrate(c.Database))
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))

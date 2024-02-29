@@ -21,7 +21,6 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 		HeadImg: in.HeadImg,
 		Tag:     in.Tag,
 		Desc:    in.Desc,
-		AreaIDs: in.AreaIDs,
 		Trigger: utils.UnmarshalNoErr[scene.Trigger](in.Trigger),
 		When:    utils.UnmarshalNoErr[scene.When](in.When),
 		Then:    utils.UnmarshalNoErr[scene.Then](in.Then),

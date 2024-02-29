@@ -34,12 +34,19 @@ func (a Actions) Validate() error {
 	if a == nil {
 		return nil
 	}
+	//var hasDevice bool
 	for _, v := range a {
+		//if v.ExecuteType == ActionExecutorDevice {
+		//	hasDevice = true
+		//}
 		err := v.Validate()
 		if err != nil {
 			return err
 		}
 	}
+	//if !hasDevice {
+	//	return errors.Parameter.AddMsg("执行必须有一个设备执行")
+	//}
 	return nil
 }
 
