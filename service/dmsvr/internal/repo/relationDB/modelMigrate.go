@@ -27,6 +27,7 @@ func Migrate(c conf.Database) error {
 		&DmProductSchema{},
 		&DmGroupInfo{},
 		&DmGroupDevice{},
+		&DmCommonSchema{},
 		&DmGatewayDevice{},
 		&DmProductRemoteConfig{},
 		&DmOtaFirmware{},

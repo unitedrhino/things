@@ -112,7 +112,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		return err
 	}
 
-	err = n.client.QueueSubscribe(topics.DeviceUpStatusConnected, ThingsDeliverGroup,
+	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusConnected, ThingsDeliverGroup,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ctx = ctxs.WithRoot(ctx)
 			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
@@ -127,7 +127,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 		return err
 	}
 
-	err = n.client.QueueSubscribe(topics.DeviceUpStatusDisconnected, ThingsDeliverGroup,
+	_, err = n.client.QueueSubscribe(topics.DeviceUpStatusDisconnected, ThingsDeliverGroup,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ctx = ctxs.WithRoot(ctx)
 			ele, err := deviceStatus.GetDevConnMsg(ctx, msg)
@@ -158,7 +158,7 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 
 func (n *NatsClient) queueSubscribeDevPublish(topic string,
 	handleFunc func(ctx context.Context, msg *deviceMsg.PublishMsg) error) error {
-	err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
+	_, err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			ctx = ctxs.WithRoot(ctx)
 			defer utils.Recover(ctx)

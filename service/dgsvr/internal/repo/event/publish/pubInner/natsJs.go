@@ -7,7 +7,6 @@ import (
 	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -126,7 +125,7 @@ func (n *NatsJsClient) PubConn(ctx context.Context, conn ConnType, info *devices
 }
 
 func (n *NatsJsClient) publish(ctx context.Context, topic string, payload []byte) error {
-	err := n.client.Publish(ctx, topic, events.NewEventMsg(ctx, payload))
+	err := n.client.Publish(ctx, topic, payload)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s nats publish failure err:%v topic:%v", err, topic)
 	}
