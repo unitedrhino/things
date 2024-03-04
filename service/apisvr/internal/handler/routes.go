@@ -701,6 +701,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: thingsproductschema.MultiCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/tsl-import",
 					Handler: thingsproductschema.TslImportHandler(serverCtx),
 				},

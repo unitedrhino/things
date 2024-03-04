@@ -64,6 +64,12 @@ func (s *ProductManageServer) ProductSchemaCreate(ctx context.Context, in *dm.Pr
 	return l.ProductSchemaCreate(in)
 }
 
+// 批量新增物模型,只新增没有的,已有的不处理
+func (s *ProductManageServer) ProductSchemaMultiCreate(ctx context.Context, in *dm.ProductSchemaMultiCreateReq) (*dm.Empty, error) {
+	l := productmanagelogic.NewProductSchemaMultiCreateLogic(ctx, s.svcCtx)
+	return l.ProductSchemaMultiCreate(in)
+}
+
 // 删除产品
 func (s *ProductManageServer) ProductSchemaDelete(ctx context.Context, in *dm.ProductSchemaDeleteReq) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductSchemaDeleteLogic(ctx, s.svcCtx)

@@ -194,6 +194,16 @@ func ToPropertyTypes(in *dm.SchemaProperty) *types.SchemaProperty {
 	}
 }
 
+func ToSchemaInfosRpc(in []*types.ProductSchemaInfo) (ret []*dm.ProductSchemaInfo) {
+	if in == nil {
+		return nil
+	}
+	for _, v := range in {
+		ret = append(ret, ToSchemaInfoRpc(v))
+	}
+	return ret
+}
+
 func ToSchemaInfoRpc(in *types.ProductSchemaInfo) *dm.ProductSchemaInfo {
 	if in == nil {
 		return nil

@@ -44,7 +44,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 		ProductID: in.Info.ProductID, Identifiers: []string{in.Info.Identifier},
 	})
 	if err == nil {
-		return nil, errors.Parameter.AddMsgf("标识符在该产品中已经被使用:%s", in.Info.Identifier)
+		return nil, errors.Duplicate.AddMsgf("标识符在该产品中已经被使用:%s", in.Info.Identifier)
 	}
 	if err != nil {
 		if !errors.Cmp(err, errors.NotFind) {

@@ -150,6 +150,7 @@ type (
 	ProductSchemaIndexReq              = dm.ProductSchemaIndexReq
 	ProductSchemaIndexResp             = dm.ProductSchemaIndexResp
 	ProductSchemaInfo                  = dm.ProductSchemaInfo
+	ProductSchemaMultiCreateReq        = dm.ProductSchemaMultiCreateReq
 	ProductSchemaTslImportReq          = dm.ProductSchemaTslImportReq
 	ProductSchemaTslReadReq            = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp           = dm.ProductSchemaTslReadResp
@@ -215,6 +216,8 @@ type (
 		ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 新增产品
 		ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error)
+		// 批量新增物模型,只新增没有的,已有的不处理
+		ProductSchemaMultiCreate(ctx context.Context, in *ProductSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 删除产品
 		ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取产品信息列表
@@ -336,6 +339,17 @@ func (m *defaultProductManage) ProductSchemaCreate(ctx context.Context, in *Prod
 // 新增产品
 func (d *directProductManage) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductSchemaCreate(ctx, in)
+}
+
+// 批量新增物模型,只新增没有的,已有的不处理
+func (m *defaultProductManage) ProductSchemaMultiCreate(ctx context.Context, in *ProductSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductSchemaMultiCreate(ctx, in, opts...)
+}
+
+// 批量新增物模型,只新增没有的,已有的不处理
+func (d *directProductManage) ProductSchemaMultiCreate(ctx context.Context, in *ProductSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProductSchemaMultiCreate(ctx, in)
 }
 
 // 删除产品

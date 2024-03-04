@@ -150,6 +150,7 @@ type (
 	ProductSchemaIndexReq              = dm.ProductSchemaIndexReq
 	ProductSchemaIndexResp             = dm.ProductSchemaIndexResp
 	ProductSchemaInfo                  = dm.ProductSchemaInfo
+	ProductSchemaMultiCreateReq        = dm.ProductSchemaMultiCreateReq
 	ProductSchemaTslImportReq          = dm.ProductSchemaTslImportReq
 	ProductSchemaTslReadReq            = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp           = dm.ProductSchemaTslReadResp

@@ -1145,7 +1145,7 @@ type ProductSchemaIndexResp struct {
 }
 
 type ProductSchemaInfo struct {
-	ProductID         string  `json:"productID"`                  //产品id 只读
+	ProductID         string  `json:"productID,optional"`         //产品id 只读
 	Type              int64   `json:"type"`                       //物模型类型 1:property属性 2:event事件 3:action行为
 	Tag               int64   `json:"tag"`                        //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
 	Identifier        string  `json:"identifier"`                 //标识符
@@ -1158,6 +1158,11 @@ type ProductSchemaInfo struct {
 	IsShareAuthPerm   int64   `json:"isShareAuthPerm,optional"`   // 分享是否需要校验权限
 	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
 	Order             int64   `json:"order,optional"`             // 排序
+}
+
+type ProductSchemaMultiCreateReq struct {
+	ProductID string               `json:"productID"` //产品id
+	List      []*ProductSchemaInfo `json:"list"`      //分页信息,只获取一个则不填
 }
 
 type ProductSchemaTslImportReq struct {

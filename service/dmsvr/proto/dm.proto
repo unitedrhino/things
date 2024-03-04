@@ -93,6 +93,8 @@ service ProductManage{
   rpc productSchemaUpdate(ProductSchemaUpdateReq)returns (Empty);
   //新增产品
   rpc productSchemaCreate(ProductSchemaCreateReq)     returns (Empty);
+  //批量新增物模型,只新增没有的,已有的不处理
+  rpc productSchemaMultiCreate(ProductSchemaMultiCreateReq)     returns (Empty);
   //删除产品
   rpc productSchemaDelete(ProductSchemaDeleteReq)     returns (Empty);
   //获取产品信息列表
@@ -968,7 +970,10 @@ message ProductSchemaUpdateReq{
 
 }
 
-
+message ProductSchemaMultiCreateReq{
+  string productID = 1;
+  repeated ProductSchemaInfo list = 2;//物模型信息
+}
 
 message ProductSchemaCreateReq{
   ProductSchemaInfo info = 1;//物模型信息

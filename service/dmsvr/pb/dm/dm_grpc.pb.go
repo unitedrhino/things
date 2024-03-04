@@ -579,24 +579,25 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	ProductManage_ProductInfoCreate_FullMethodName      = "/dm.ProductManage/productInfoCreate"
-	ProductManage_ProductInfoUpdate_FullMethodName      = "/dm.ProductManage/productInfoUpdate"
-	ProductManage_ProductInfoDelete_FullMethodName      = "/dm.ProductManage/productInfoDelete"
-	ProductManage_ProductInfoIndex_FullMethodName       = "/dm.ProductManage/productInfoIndex"
-	ProductManage_ProductInfoRead_FullMethodName        = "/dm.ProductManage/productInfoRead"
-	ProductManage_ProductSchemaUpdate_FullMethodName    = "/dm.ProductManage/productSchemaUpdate"
-	ProductManage_ProductSchemaCreate_FullMethodName    = "/dm.ProductManage/productSchemaCreate"
-	ProductManage_ProductSchemaDelete_FullMethodName    = "/dm.ProductManage/productSchemaDelete"
-	ProductManage_ProductSchemaIndex_FullMethodName     = "/dm.ProductManage/productSchemaIndex"
-	ProductManage_ProductSchemaTslImport_FullMethodName = "/dm.ProductManage/productSchemaTslImport"
-	ProductManage_ProductSchemaTslRead_FullMethodName   = "/dm.ProductManage/productSchemaTslRead"
-	ProductManage_ProductCustomRead_FullMethodName      = "/dm.ProductManage/productCustomRead"
-	ProductManage_ProductCustomUpdate_FullMethodName    = "/dm.ProductManage/productCustomUpdate"
-	ProductManage_ProductCategoryCreate_FullMethodName  = "/dm.ProductManage/productCategoryCreate"
-	ProductManage_ProductCategoryUpdate_FullMethodName  = "/dm.ProductManage/productCategoryUpdate"
-	ProductManage_ProductCategoryDelete_FullMethodName  = "/dm.ProductManage/productCategoryDelete"
-	ProductManage_ProductCategoryIndex_FullMethodName   = "/dm.ProductManage/productCategoryIndex"
-	ProductManage_ProductCategoryRead_FullMethodName    = "/dm.ProductManage/productCategoryRead"
+	ProductManage_ProductInfoCreate_FullMethodName        = "/dm.ProductManage/productInfoCreate"
+	ProductManage_ProductInfoUpdate_FullMethodName        = "/dm.ProductManage/productInfoUpdate"
+	ProductManage_ProductInfoDelete_FullMethodName        = "/dm.ProductManage/productInfoDelete"
+	ProductManage_ProductInfoIndex_FullMethodName         = "/dm.ProductManage/productInfoIndex"
+	ProductManage_ProductInfoRead_FullMethodName          = "/dm.ProductManage/productInfoRead"
+	ProductManage_ProductSchemaUpdate_FullMethodName      = "/dm.ProductManage/productSchemaUpdate"
+	ProductManage_ProductSchemaCreate_FullMethodName      = "/dm.ProductManage/productSchemaCreate"
+	ProductManage_ProductSchemaMultiCreate_FullMethodName = "/dm.ProductManage/productSchemaMultiCreate"
+	ProductManage_ProductSchemaDelete_FullMethodName      = "/dm.ProductManage/productSchemaDelete"
+	ProductManage_ProductSchemaIndex_FullMethodName       = "/dm.ProductManage/productSchemaIndex"
+	ProductManage_ProductSchemaTslImport_FullMethodName   = "/dm.ProductManage/productSchemaTslImport"
+	ProductManage_ProductSchemaTslRead_FullMethodName     = "/dm.ProductManage/productSchemaTslRead"
+	ProductManage_ProductCustomRead_FullMethodName        = "/dm.ProductManage/productCustomRead"
+	ProductManage_ProductCustomUpdate_FullMethodName      = "/dm.ProductManage/productCustomUpdate"
+	ProductManage_ProductCategoryCreate_FullMethodName    = "/dm.ProductManage/productCategoryCreate"
+	ProductManage_ProductCategoryUpdate_FullMethodName    = "/dm.ProductManage/productCategoryUpdate"
+	ProductManage_ProductCategoryDelete_FullMethodName    = "/dm.ProductManage/productCategoryDelete"
+	ProductManage_ProductCategoryIndex_FullMethodName     = "/dm.ProductManage/productCategoryIndex"
+	ProductManage_ProductCategoryRead_FullMethodName      = "/dm.ProductManage/productCategoryRead"
 )
 
 // ProductManageClient is the client API for ProductManage service.
@@ -617,6 +618,8 @@ type ProductManageClient interface {
 	ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 新增产品
 	ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error)
+	// 批量新增物模型,只新增没有的,已有的不处理
+	ProductSchemaMultiCreate(ctx context.Context, in *ProductSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 删除产品
 	ProductSchemaDelete(ctx context.Context, in *ProductSchemaDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取产品信息列表
@@ -705,6 +708,15 @@ func (c *productManageClient) ProductSchemaUpdate(ctx context.Context, in *Produ
 func (c *productManageClient) ProductSchemaCreate(ctx context.Context, in *ProductSchemaCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductSchemaCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductSchemaMultiCreate(ctx context.Context, in *ProductSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, ProductManage_ProductSchemaMultiCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -828,6 +840,8 @@ type ProductManageServer interface {
 	ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Empty, error)
 	// 新增产品
 	ProductSchemaCreate(context.Context, *ProductSchemaCreateReq) (*Empty, error)
+	// 批量新增物模型,只新增没有的,已有的不处理
+	ProductSchemaMultiCreate(context.Context, *ProductSchemaMultiCreateReq) (*Empty, error)
 	// 删除产品
 	ProductSchemaDelete(context.Context, *ProductSchemaDeleteReq) (*Empty, error)
 	// 获取产品信息列表
@@ -876,6 +890,9 @@ func (UnimplementedProductManageServer) ProductSchemaUpdate(context.Context, *Pr
 }
 func (UnimplementedProductManageServer) ProductSchemaCreate(context.Context, *ProductSchemaCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaCreate not implemented")
+}
+func (UnimplementedProductManageServer) ProductSchemaMultiCreate(context.Context, *ProductSchemaMultiCreateReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaMultiCreate not implemented")
 }
 func (UnimplementedProductManageServer) ProductSchemaDelete(context.Context, *ProductSchemaDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaDelete not implemented")
@@ -1045,6 +1062,24 @@ func _ProductManage_ProductSchemaCreate_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductSchemaCreate(ctx, req.(*ProductSchemaCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductSchemaMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductSchemaMultiCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductSchemaMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductSchemaMultiCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductSchemaMultiCreate(ctx, req.(*ProductSchemaMultiCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1281,6 +1316,10 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "productSchemaCreate",
 			Handler:    _ProductManage_ProductSchemaCreate_Handler,
+		},
+		{
+			MethodName: "productSchemaMultiCreate",
+			Handler:    _ProductManage_ProductSchemaMultiCreate_Handler,
 		},
 		{
 			MethodName: "productSchemaDelete",
