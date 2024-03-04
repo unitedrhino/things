@@ -103,7 +103,7 @@ services:
         ipv4_address: 172.20.0.6
 
   emqx:
-    image: emqx/emqx:5.3.2
+    image: emqx/emqx:latest
     container_name: ienv-emqx
     hostname: emqx
     restart: always
