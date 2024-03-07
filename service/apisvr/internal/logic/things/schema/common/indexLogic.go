@@ -33,6 +33,7 @@ func (l *IndexLogic) Index(req *types.CommonSchemaIndexReq) (resp *types.CommonS
 		Type:        req.Type,
 		Identifiers: req.Identifiers,
 		ProductIDs:  req.ProductIDs,
+		Name:        req.Name,
 	}
 	dmResp, err := l.svcCtx.SchemaM.CommonSchemaIndex(l.ctx, dmReq)
 	if err != nil {

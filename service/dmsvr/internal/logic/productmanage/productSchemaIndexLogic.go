@@ -36,6 +36,7 @@ func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexRe
 		Type:        in.Type,
 		Tag:         in.Tag,
 		Identifiers: in.Identifiers,
+		Name:        in.Name,
 	}
 	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {

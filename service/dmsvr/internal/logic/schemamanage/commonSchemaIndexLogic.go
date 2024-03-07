@@ -31,6 +31,7 @@ func NewCommonSchemaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) (*dm.CommonSchemaIndexResp, error) {
 	filter := relationDB.CommonSchemaFilter{
 		Type:        in.Type,
+		Name:        in.Name,
 		Identifiers: in.Identifiers,
 	}
 	if len(in.ProductIDs) != 0 {

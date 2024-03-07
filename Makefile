@@ -38,6 +38,10 @@ build.coreback:
 	@cd module/core && make buildback
 	@cp -rf module/core/cmd/* ./cmd/core
 
+toremote:
+	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tormote cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@rsync -r -v ./cmd/* root@120.79.205.165:/root/git/iThings
+
 toremotezhou:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tormote cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@rsync -r -v ./cmd/* root@139.159.188.223:/root/ithings/

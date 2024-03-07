@@ -22,6 +22,7 @@ type CommonSchemaIndexReq struct {
 	Type        int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
 	Identifiers []string  `json:"identifiers,optional"` //过滤标识符列表
 	ProductIDs  []string  `json:"productIDs,optional"`  //提取产品共有的物模型
+	Name        string    `json:"name,optional"`
 }
 
 type CommonSchemaIndexResp struct {
@@ -1137,6 +1138,7 @@ type ProductSchemaIndexReq struct {
 	Type        int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
 	Tag         int64     `json:"tag,optional"`         //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
 	Identifiers []string  `json:"identifiers,optional"` //过滤标识符列表
+	Name        string    `json:"name,optional"`
 }
 
 type ProductSchemaIndexResp struct {

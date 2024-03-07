@@ -20,6 +20,7 @@ type (
 		Type        int64    //物模型类型 1:property属性 2:event事件 3:action行为
 		Tag         int64    //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
 		Identifiers []string //过滤标识符列表
+		Name        string
 	}
 	PropertyDef struct {
 		IsUseShadow bool                `json:"isUseShadow"` //是否使用设备影子
@@ -44,6 +45,9 @@ func NewProductSchemaRepo(in any) *ProductSchemaRepo {
 
 func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.Name != "" {
+		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
 	if f.ID != 0 {
 		db = db.Where("id=?", f.ID)
 	}

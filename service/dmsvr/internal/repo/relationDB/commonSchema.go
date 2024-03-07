@@ -16,6 +16,7 @@ type (
 		ID          int64
 		Type        int64    //物模型类型 1:property属性 2:event事件 3:action行为
 		Identifiers []string //过滤标识符列表
+		Name        string
 	}
 )
 
@@ -25,6 +26,9 @@ func NewCommonSchemaRepo(in any) *CommonSchemaRepo {
 
 func (p CommonSchemaRepo) fmtFilter(ctx context.Context, f CommonSchemaFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.Name != "" {
+		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
 	if f.ID != 0 {
 		db = db.Where("id=?", f.ID)
 	}
