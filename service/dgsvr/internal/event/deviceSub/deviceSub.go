@@ -2,13 +2,19 @@ package deviceSub
 
 import (
 	"context"
+	"encoding/json"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceAuth"
+	"gitee.com/i-Things/share/domain/deviceMsg"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgExt"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dgsvr/internal/domain/custom"
+	"github.com/i-Things/things/service/dgsvr/internal/event/innerSub"
+	deviceauthlogic "github.com/i-Things/things/service/dgsvr/internal/logic/deviceauth"
 	"github.com/i-Things/things/service/dgsvr/internal/repo/event/publish/pubInner"
 	"github.com/i-Things/things/service/dgsvr/internal/svc"
+	"github.com/i-Things/things/service/dgsvr/pb/dg"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 	"time"
@@ -31,12 +37,64 @@ func NewDeviceSubServer(svcCtx *svc.ServiceContext, ctx context.Context) *Device
 // Msg 设备发布物模型消息的信息通过nats转发给内部服务
 func (s *DeviceSubServer) Msg(topic string, payload []byte) error {
 	pub, err := s.getDevPublish(topic, payload)
-	logx.Infof("haa topic:%+v", topic)
-	logx.Infof("你好呀")
 	if pub == nil {
 		return err
 	}
 	return s.svcCtx.PubInner.DevPubMsg(s.ctx, pub)
+}
+func (s *DeviceSubServer) ExtMsg(topic string, payload []byte) error {
+	pub, err := s.getDevPublish(topic, payload)
+	if pub == nil || err != nil {
+		return err
+	}
+	if pub.Type != msgExt.TypeRegister {
+		return s.svcCtx.PubInner.DevPubMsg(s.ctx, pub)
+	}
+	var (
+		resp = devices.InnerPublish{
+			Handle:    pub.Handle,
+			ProductID: pub.ProductID,
+			Type:      pub.Type,
+			//Payload:pub.Payload,
+			DeviceName:   pub.DeviceName,
+			ProtocolCode: pub.ProtocolCode,
+		}
+		respPayload = msgExt.RespRegister{}
+	)
+	var req msgExt.RegisterReq
+	err = json.Unmarshal(payload, &req)
+	if err != nil {
+		return err
+	}
+	respPayload.CommonMsg = &deviceMsg.CommonMsg{
+		MsgToken:  req.MsgToken,
+		Timestamp: time.Now().UnixMilli(),
+		Code:      errors.OK.GetCode(),
+		Msg:       errors.OK.GetMsg(),
+	}
+	ret, err := deviceauthlogic.NewDeviceRegisterLogic(s.ctx, s.svcCtx).DeviceRegister(&dg.DeviceRegisterReq{
+		ProductID:  pub.ProductID,
+		DeviceName: pub.DeviceName,
+		Nonce:      req.Payload.Nonce,
+		Timestamp:  req.Payload.Timestamp,
+		Signature:  req.Payload.Signature,
+	})
+	if err != nil {
+		e := errors.Fmt(err)
+		respPayload.Code = e.Code
+		respPayload.Msg = e.GetMsg()
+	} else {
+		respPayload.Data = msgExt.RespData{
+			Len:     ret.Len,
+			Payload: ret.Payload,
+		}
+	}
+	resp.Payload, err = json.Marshal(respPayload)
+	if err != nil {
+		return err
+	}
+	err = innerSub.NewInnerSubServer(s.svcCtx, s.ctx).PublishToDev(&resp)
+	return err
 }
 
 func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.DevPublish, error) {

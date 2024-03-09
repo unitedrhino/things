@@ -116,7 +116,7 @@ func (d *MqttClient) subDevMsg(cli mqtt.Client, handle Handle) error {
 	}
 
 	err = d.subscribeWithFunc(cli, TopicExt, func(ctx context.Context, topic string, payload []byte) error {
-		return handle(ctx).Msg(topic, payload)
+		return handle(ctx).ExtMsg(topic, payload)
 	})
 	if err != nil {
 		return err

@@ -40,6 +40,9 @@ func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	if err != nil {
 		return err
 	}
+	if ld.IsNeedRegister {
+		return nil
+	}
 	err = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
 		ProductID:  ld.ProductID,
 		Action:     def.DisConnectedStatus,

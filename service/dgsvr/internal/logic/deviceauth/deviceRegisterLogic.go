@@ -79,7 +79,7 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dg.DeviceRegisterReq) (*dg.Devi
 			//检查设备自动创建是否开启， 开启则自动创建设备，未开启则返回错误
 			if pi.AutoRegister == devices.DeviceAutoCreateEnable {
 				//检查设备签名是否正确
-				sig := getSignature(pi.Secret, fmt.Sprintf("deviceName=%s&nonce=%d&productId=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp))
+				sig := getSignature(pi.Secret, fmt.Sprintf("deviceName=%s&nonce=%d&productID=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp))
 				if sig != in.Signature {
 					return nil, errors.Parameter.AddMsg("无效签名")
 				}
@@ -109,7 +109,7 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dg.DeviceRegisterReq) (*dg.Devi
 	}
 
 	//检查设备签名是否正确
-	sig := getSignature(pi.Secret, fmt.Sprintf("deviceName=%s&nonce=%d&productId=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp))
+	sig := getSignature(pi.Secret, fmt.Sprintf("deviceName=%s&nonce=%d&productID=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp))
 	if sig != in.Signature {
 		return nil, errors.Parameter.AddMsg("无效签名")
 	}

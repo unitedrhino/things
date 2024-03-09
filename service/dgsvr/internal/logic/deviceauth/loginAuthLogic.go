@@ -94,21 +94,26 @@ func (l *LoginAuthLogic) LoginAuth(in *dg.LoginAuthReq) (*dg.Response, error) {
 		l.Errorf("cert len=%d signature len=%d",
 			len(x509Cert.Raw), len(x509Cert.Signature))
 	}
+	inLg, err := deviceAuth.GetClientIDInfo(in.ClientID)
+	if err != nil {
+		return nil, err
+	}
+	if inLg.IsNeedRegister { //如果是需要注册的直接放过
+		return &dg.Response{}, nil
+	}
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
 	lg, err := deviceAuth.GetLoginDevice(in.Username)
 	if err != nil {
 		return nil, err
 	}
-	inLg, err := deviceAuth.GetClientIDInfo(in.ClientID)
-	if err != nil {
-		return nil, err
-	}
+
 	if lg.ProductID != inLg.ProductID || lg.DeviceName != inLg.DeviceName {
 		return nil, errors.Parameter.AddDetail("userName'clientID not equal real client id")
 	}
 	if lg.Expiry < time.Now().Unix() {
 		return nil, errors.SignatureExpired
 	}
+
 	di, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
 		ProductID:  lg.ProductID,
 		DeviceName: lg.DeviceName,

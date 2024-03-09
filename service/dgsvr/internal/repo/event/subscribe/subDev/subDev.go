@@ -13,6 +13,7 @@ type (
 	}
 	Handle       func(ctx context.Context) DevSubHandle
 	DevSubHandle interface {
+		ExtMsg(topic string, payload []byte) error
 		Msg(topic string, payload []byte) error
 		Connected(out *devices.DevConn) error
 		Disconnected(out *devices.DevConn) error
