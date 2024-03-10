@@ -4,15 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgSdkLog"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 
 	"gitee.com/i-Things/share/def"
 	sq "github.com/Masterminds/squirrel"
 )
 
 func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,
-	filter msgSdkLog.SdkLogFilter, page def.PageInfo2) ([]*msgSdkLog.SDKLog, error) {
+	filter deviceLog.SDKFilter, page def.PageInfo2) ([]*deviceLog.SDK, error) {
 	sqSql := sq.Select("*").From(d.GetSDKLogStableName())
 	sqSql = d.fillFilter(sqSql, filter)
 	sqSql = page.FmtSql(sqSql)
@@ -25,19 +25,19 @@ func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,
 		if err != sql.ErrNoRows {
 			return nil, err
 		} else {
-			return []*msgSdkLog.SDKLog{}, nil
+			return []*deviceLog.SDK{}, nil
 		}
 	}
 	var datas []map[string]any
 	stores.Scan(rows, &datas)
-	retLogs := make([]*msgSdkLog.SDKLog, 0, len(datas))
+	retLogs := make([]*deviceLog.SDK, 0, len(datas))
 	for _, v := range datas {
 		retLogs = append(retLogs, ToDeviceSDKLog(filter.ProductID, v))
 	}
 	return retLogs, nil
 }
 
-func (d SDKLogRepo) Insert(ctx context.Context, data *msgSdkLog.SDKLog) error {
+func (d SDKLogRepo) Insert(ctx context.Context, data *deviceLog.SDK) error {
 	sql := fmt.Sprintf(
 		" %s using %s tags('%s','%s')(`ts`, `content`,`log_level`) values (?,?,?);",
 		d.GetSDKLogTableName(data.ProductID, data.DeviceName), d.GetSDKLogStableName(), data.ProductID, data.DeviceName)
@@ -50,7 +50,7 @@ func (d SDKLogRepo) Insert(ctx context.Context, data *msgSdkLog.SDKLog) error {
 	d.t.AsyncInsert(sql, data.Timestamp, data.Content, data.LogLevel)
 	return nil
 }
-func (d SDKLogRepo) fillFilter(sql sq.SelectBuilder, filter msgSdkLog.SdkLogFilter) sq.SelectBuilder {
+func (d SDKLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.SDKFilter) sq.SelectBuilder {
 	if len(filter.ProductID) != 0 {
 		sql = sql.Where("`product_id`=?", filter.ProductID)
 	}
@@ -62,7 +62,7 @@ func (d SDKLogRepo) fillFilter(sql sq.SelectBuilder, filter msgSdkLog.SdkLogFilt
 	}
 	return sql
 }
-func (d SDKLogRepo) GetCountLog(ctx context.Context, filter msgSdkLog.SdkLogFilter, page def.PageInfo2) (int64, error) {
+func (d SDKLogRepo) GetCountLog(ctx context.Context, filter deviceLog.SDKFilter, page def.PageInfo2) (int64, error) {
 	sqSql := sq.Select("Count(1)").From(d.GetSDKLogStableName())
 	sqSql = d.fillFilter(sqSql, filter)
 	sqSql = page.FmtWhere(sqSql)

@@ -22,6 +22,11 @@ func NewProductManageServer(svcCtx *svc.ServiceContext) *ProductManageServer {
 	}
 }
 
+func (s *ProductManageServer) ProductInit(ctx context.Context, in *dm.ProductInitReq) (*dm.Empty, error) {
+	l := productmanagelogic.NewProductInitLogic(ctx, s.svcCtx)
+	return l.ProductInit(in)
+}
+
 // 新增产品
 func (s *ProductManageServer) ProductInfoCreate(ctx context.Context, in *dm.ProductInfo) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductInfoCreateLogic(ctx, s.svcCtx)

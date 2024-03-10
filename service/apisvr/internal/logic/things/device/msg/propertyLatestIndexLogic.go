@@ -25,8 +25,8 @@ func NewPropertyLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *PropertyLatestIndexLogic) PropertyLatestIndex(req *types.DeviceMsgPropertyLatestIndexReq) (resp *types.DeviceMsgPropertyIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.PropertyLatestIndex(l.ctx, &dm.PropertyLatestIndexReq{
+func (l *PropertyLatestIndexLogic) PropertyLatestIndex(req *types.DeviceMsgPropertyLogLatestIndexReq) (resp *types.DeviceMsgPropertyIndexResp, err error) {
+	dmResp, err := l.svcCtx.DeviceMsg.PropertyLogLatestIndex(l.ctx, &dm.PropertyLogLatestIndexReq{
 		DeviceName: req.DeviceName,
 		ProductID:  req.ProductID,
 		DataIDs:    req.DataIDs,
@@ -36,9 +36,9 @@ func (l *PropertyLatestIndexLogic) PropertyLatestIndex(req *types.DeviceMsgPrope
 		l.Errorf("%s.rpc.GetDeviceData req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	info := make([]*types.DeviceMsgPropertyIndex, 0, len(dmResp.List))
+	info := make([]*types.DeviceMsgPropertyLogInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		info = append(info, &types.DeviceMsgPropertyIndex{
+		info = append(info, &types.DeviceMsgPropertyLogInfo{
 			Timestamp: v.Timestamp,
 			DataID:    v.DataID,
 			Value:     v.Value,

@@ -579,6 +579,7 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
+	ProductManage_ProductInit_FullMethodName              = "/dm.ProductManage/productInit"
 	ProductManage_ProductInfoCreate_FullMethodName        = "/dm.ProductManage/productInfoCreate"
 	ProductManage_ProductInfoUpdate_FullMethodName        = "/dm.ProductManage/productInfoUpdate"
 	ProductManage_ProductInfoDelete_FullMethodName        = "/dm.ProductManage/productInfoDelete"
@@ -604,6 +605,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductManageClient interface {
+	ProductInit(ctx context.Context, in *ProductInitReq, opts ...grpc.CallOption) (*Empty, error)
 	// 新增产品
 	ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 更新产品
@@ -649,6 +651,15 @@ type productManageClient struct {
 
 func NewProductManageClient(cc grpc.ClientConnInterface) ProductManageClient {
 	return &productManageClient{cc}
+}
+
+func (c *productManageClient) ProductInit(ctx context.Context, in *ProductInitReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, ProductManage_ProductInit_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error) {
@@ -826,6 +837,7 @@ func (c *productManageClient) ProductCategoryRead(ctx context.Context, in *Produ
 // All implementations must embed UnimplementedProductManageServer
 // for forward compatibility
 type ProductManageServer interface {
+	ProductInit(context.Context, *ProductInitReq) (*Empty, error)
 	// 新增产品
 	ProductInfoCreate(context.Context, *ProductInfo) (*Empty, error)
 	// 更新产品
@@ -870,6 +882,9 @@ type ProductManageServer interface {
 type UnimplementedProductManageServer struct {
 }
 
+func (UnimplementedProductManageServer) ProductInit(context.Context, *ProductInitReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductInit not implemented")
+}
 func (UnimplementedProductManageServer) ProductInfoCreate(context.Context, *ProductInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoCreate not implemented")
 }
@@ -938,6 +953,24 @@ type UnsafeProductManageServer interface {
 
 func RegisterProductManageServer(s grpc.ServiceRegistrar, srv ProductManageServer) {
 	s.RegisterService(&ProductManage_ServiceDesc, srv)
+}
+
+func _ProductManage_ProductInit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductInitReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductInit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductInit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductInit(ctx, req.(*ProductInitReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ProductManage_ProductInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1289,6 +1322,10 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "dm.ProductManage",
 	HandlerType: (*ProductManageServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "productInit",
+			Handler:    _ProductManage_ProductInit_Handler,
+		},
 		{
 			MethodName: "productInfoCreate",
 			Handler:    _ProductManage_ProductInfoCreate_Handler,
@@ -2433,13 +2470,15 @@ var RemoteConfig_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	DeviceMsg_SdkLogIndex_FullMethodName         = "/dm.DeviceMsg/sdkLogIndex"
-	DeviceMsg_HubLogIndex_FullMethodName         = "/dm.DeviceMsg/hubLogIndex"
-	DeviceMsg_PropertyLatestIndex_FullMethodName = "/dm.DeviceMsg/propertyLatestIndex"
-	DeviceMsg_PropertyLogIndex_FullMethodName    = "/dm.DeviceMsg/propertyLogIndex"
-	DeviceMsg_EventLogIndex_FullMethodName       = "/dm.DeviceMsg/eventLogIndex"
-	DeviceMsg_ShadowIndex_FullMethodName         = "/dm.DeviceMsg/shadowIndex"
-	DeviceMsg_OtaPromptIndex_FullMethodName      = "/dm.DeviceMsg/otaPromptIndex"
+	DeviceMsg_SdkLogIndex_FullMethodName            = "/dm.DeviceMsg/sdkLogIndex"
+	DeviceMsg_HubLogIndex_FullMethodName            = "/dm.DeviceMsg/hubLogIndex"
+	DeviceMsg_SendLogIndex_FullMethodName           = "/dm.DeviceMsg/sendLogIndex"
+	DeviceMsg_StatusLogIndex_FullMethodName         = "/dm.DeviceMsg/statusLogIndex"
+	DeviceMsg_PropertyLogLatestIndex_FullMethodName = "/dm.DeviceMsg/propertyLogLatestIndex"
+	DeviceMsg_PropertyLogIndex_FullMethodName       = "/dm.DeviceMsg/propertyLogIndex"
+	DeviceMsg_EventLogIndex_FullMethodName          = "/dm.DeviceMsg/eventLogIndex"
+	DeviceMsg_ShadowIndex_FullMethodName            = "/dm.DeviceMsg/shadowIndex"
+	DeviceMsg_OtaPromptIndex_FullMethodName         = "/dm.DeviceMsg/otaPromptIndex"
 )
 
 // DeviceMsgClient is the client API for DeviceMsg service.
@@ -2450,14 +2489,16 @@ type DeviceMsgClient interface {
 	SdkLogIndex(ctx context.Context, in *SdkLogIndexReq, opts ...grpc.CallOption) (*SdkLogIndexResp, error)
 	// 获取设备调试信息记录登入登出,操作
 	HubLogIndex(ctx context.Context, in *HubLogIndexReq, opts ...grpc.CallOption) (*HubLogIndexResp, error)
+	SendLogIndex(ctx context.Context, in *SendLogIndexReq, opts ...grpc.CallOption) (*SendLogIndexResp, error)
+	StatusLogIndex(ctx context.Context, in *StatusLogIndexReq, opts ...grpc.CallOption) (*StatusLogIndexResp, error)
 	// 获取设备数据信息
-	PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error)
+	PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
-	PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error)
+	PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
-	EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error)
+	EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error)
 	// 获取设备影子列表
-	ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
+	ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
 	// 主动触发单个设备ota升级推送
 	OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error)
 }
@@ -2488,17 +2529,35 @@ func (c *deviceMsgClient) HubLogIndex(ctx context.Context, in *HubLogIndexReq, o
 	return out, nil
 }
 
-func (c *deviceMsgClient) PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
-	out := new(PropertyIndexResp)
-	err := c.cc.Invoke(ctx, DeviceMsg_PropertyLatestIndex_FullMethodName, in, out, opts...)
+func (c *deviceMsgClient) SendLogIndex(ctx context.Context, in *SendLogIndexReq, opts ...grpc.CallOption) (*SendLogIndexResp, error) {
+	out := new(SendLogIndexResp)
+	err := c.cc.Invoke(ctx, DeviceMsg_SendLogIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *deviceMsgClient) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
-	out := new(PropertyIndexResp)
+func (c *deviceMsgClient) StatusLogIndex(ctx context.Context, in *StatusLogIndexReq, opts ...grpc.CallOption) (*StatusLogIndexResp, error) {
+	out := new(StatusLogIndexResp)
+	err := c.cc.Invoke(ctx, DeviceMsg_StatusLogIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceMsgClient) PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+	out := new(PropertyLogIndexResp)
+	err := c.cc.Invoke(ctx, DeviceMsg_PropertyLogLatestIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceMsgClient) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+	out := new(PropertyLogIndexResp)
 	err := c.cc.Invoke(ctx, DeviceMsg_PropertyLogIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2506,8 +2565,8 @@ func (c *deviceMsgClient) PropertyLogIndex(ctx context.Context, in *PropertyLogI
 	return out, nil
 }
 
-func (c *deviceMsgClient) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error) {
-	out := new(EventIndexResp)
+func (c *deviceMsgClient) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error) {
+	out := new(EventLogIndexResp)
 	err := c.cc.Invoke(ctx, DeviceMsg_EventLogIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2515,7 +2574,7 @@ func (c *deviceMsgClient) EventLogIndex(ctx context.Context, in *EventLogIndexRe
 	return out, nil
 }
 
-func (c *deviceMsgClient) ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
+func (c *deviceMsgClient) ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
 	out := new(ShadowIndexResp)
 	err := c.cc.Invoke(ctx, DeviceMsg_ShadowIndex_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2541,14 +2600,16 @@ type DeviceMsgServer interface {
 	SdkLogIndex(context.Context, *SdkLogIndexReq) (*SdkLogIndexResp, error)
 	// 获取设备调试信息记录登入登出,操作
 	HubLogIndex(context.Context, *HubLogIndexReq) (*HubLogIndexResp, error)
+	SendLogIndex(context.Context, *SendLogIndexReq) (*SendLogIndexResp, error)
+	StatusLogIndex(context.Context, *StatusLogIndexReq) (*StatusLogIndexResp, error)
 	// 获取设备数据信息
-	PropertyLatestIndex(context.Context, *PropertyLatestIndexReq) (*PropertyIndexResp, error)
+	PropertyLogLatestIndex(context.Context, *PropertyLogLatestIndexReq) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
-	PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyIndexResp, error)
+	PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
-	EventLogIndex(context.Context, *EventLogIndexReq) (*EventIndexResp, error)
+	EventLogIndex(context.Context, *EventLogIndexReq) (*EventLogIndexResp, error)
 	// 获取设备影子列表
-	ShadowIndex(context.Context, *PropertyLatestIndexReq) (*ShadowIndexResp, error)
+	ShadowIndex(context.Context, *PropertyLogLatestIndexReq) (*ShadowIndexResp, error)
 	// 主动触发单个设备ota升级推送
 	OtaPromptIndex(context.Context, *OtaPromptIndexReq) (*OtaPromptIndexResp, error)
 	mustEmbedUnimplementedDeviceMsgServer()
@@ -2564,16 +2625,22 @@ func (UnimplementedDeviceMsgServer) SdkLogIndex(context.Context, *SdkLogIndexReq
 func (UnimplementedDeviceMsgServer) HubLogIndex(context.Context, *HubLogIndexReq) (*HubLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HubLogIndex not implemented")
 }
-func (UnimplementedDeviceMsgServer) PropertyLatestIndex(context.Context, *PropertyLatestIndexReq) (*PropertyIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PropertyLatestIndex not implemented")
+func (UnimplementedDeviceMsgServer) SendLogIndex(context.Context, *SendLogIndexReq) (*SendLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendLogIndex not implemented")
 }
-func (UnimplementedDeviceMsgServer) PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyIndexResp, error) {
+func (UnimplementedDeviceMsgServer) StatusLogIndex(context.Context, *StatusLogIndexReq) (*StatusLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StatusLogIndex not implemented")
+}
+func (UnimplementedDeviceMsgServer) PropertyLogLatestIndex(context.Context, *PropertyLogLatestIndexReq) (*PropertyLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PropertyLogLatestIndex not implemented")
+}
+func (UnimplementedDeviceMsgServer) PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyLogIndex not implemented")
 }
-func (UnimplementedDeviceMsgServer) EventLogIndex(context.Context, *EventLogIndexReq) (*EventIndexResp, error) {
+func (UnimplementedDeviceMsgServer) EventLogIndex(context.Context, *EventLogIndexReq) (*EventLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EventLogIndex not implemented")
 }
-func (UnimplementedDeviceMsgServer) ShadowIndex(context.Context, *PropertyLatestIndexReq) (*ShadowIndexResp, error) {
+func (UnimplementedDeviceMsgServer) ShadowIndex(context.Context, *PropertyLogLatestIndexReq) (*ShadowIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ShadowIndex not implemented")
 }
 func (UnimplementedDeviceMsgServer) OtaPromptIndex(context.Context, *OtaPromptIndexReq) (*OtaPromptIndexResp, error) {
@@ -2628,20 +2695,56 @@ func _DeviceMsg_HubLogIndex_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceMsg_PropertyLatestIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PropertyLatestIndexReq)
+func _DeviceMsg_SendLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendLogIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceMsgServer).PropertyLatestIndex(ctx, in)
+		return srv.(DeviceMsgServer).SendLogIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceMsg_PropertyLatestIndex_FullMethodName,
+		FullMethod: DeviceMsg_SendLogIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceMsgServer).PropertyLatestIndex(ctx, req.(*PropertyLatestIndexReq))
+		return srv.(DeviceMsgServer).SendLogIndex(ctx, req.(*SendLogIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceMsg_StatusLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StatusLogIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceMsgServer).StatusLogIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceMsg_StatusLogIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceMsgServer).StatusLogIndex(ctx, req.(*StatusLogIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceMsg_PropertyLogLatestIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PropertyLogLatestIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceMsgServer).PropertyLogLatestIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceMsg_PropertyLogLatestIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceMsgServer).PropertyLogLatestIndex(ctx, req.(*PropertyLogLatestIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2683,7 +2786,7 @@ func _DeviceMsg_EventLogIndex_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _DeviceMsg_ShadowIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PropertyLatestIndexReq)
+	in := new(PropertyLogLatestIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2695,7 +2798,7 @@ func _DeviceMsg_ShadowIndex_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: DeviceMsg_ShadowIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceMsgServer).ShadowIndex(ctx, req.(*PropertyLatestIndexReq))
+		return srv.(DeviceMsgServer).ShadowIndex(ctx, req.(*PropertyLogLatestIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2734,8 +2837,16 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DeviceMsg_HubLogIndex_Handler,
 		},
 		{
-			MethodName: "propertyLatestIndex",
-			Handler:    _DeviceMsg_PropertyLatestIndex_Handler,
+			MethodName: "sendLogIndex",
+			Handler:    _DeviceMsg_SendLogIndex_Handler,
+		},
+		{
+			MethodName: "statusLogIndex",
+			Handler:    _DeviceMsg_StatusLogIndex_Handler,
+		},
+		{
+			MethodName: "propertyLogLatestIndex",
+			Handler:    _DeviceMsg_PropertyLogLatestIndex_Handler,
 		},
 		{
 			MethodName: "propertyLogIndex",

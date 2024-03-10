@@ -13,6 +13,9 @@ info(
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
+    @doc "初始化产品"
+    @handler init
+    post /init (ProductInitReq) returns ()
     @doc "新增产品"
     @handler create
     post /create (ProductInfo) returns ()
@@ -31,6 +34,9 @@ service api {
 }
 
 type (
+    ProductInitReq{
+        ProductIDs []string `json:"productIDs,optional"`                            //产品id 只读
+    }
     ProductInfo  {
         CreatedTime int64 `json:"createdTime,optional,string"`                  //创建时间 只读
         ProductID string `json:"productID,optional"`                            //产品id 只读

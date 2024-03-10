@@ -21,6 +21,7 @@ func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 	}
 
 	return &dm.DeviceInfo{
+		TenantCode:     string(in.TenantCode),
 		ProductID:      in.ProductID,
 		DeviceName:     in.DeviceName,
 		ProjectID:      int64(in.ProjectID),

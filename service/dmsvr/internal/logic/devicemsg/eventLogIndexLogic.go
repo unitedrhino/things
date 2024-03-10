@@ -28,9 +28,9 @@ func NewEventLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Eve
 }
 
 // 获取设备数据信息
-func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventIndexResp, error) {
+func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventLogIndexResp, error) {
 	var (
-		diDatas []*dm.EventIndex
+		diDatas []*dm.EventLogInfo
 		dd      = l.svcCtx.SchemaManaRepo
 		total   int64
 	)
@@ -49,7 +49,7 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventIn
 		return nil, errors.System.AddDetail(err)
 	}
 	for _, devData := range dds {
-		diData := dm.EventIndex{
+		diData := dm.EventLogInfo{
 			Timestamp: devData.TimeStamp.UnixMilli(),
 			Type:      devData.Type,
 			DataID:    devData.Identifier,
@@ -76,7 +76,7 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventIn
 		return nil, errors.System.AddDetail(err)
 	}
 
-	return &dm.EventIndexResp{
+	return &dm.EventLogIndexResp{
 		Total: total,
 		List:  diDatas,
 	}, nil

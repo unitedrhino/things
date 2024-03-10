@@ -3,8 +3,8 @@ package devicemsglogic
 import (
 	"context"
 	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
 	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -27,7 +27,7 @@ func NewHubLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HubLo
 
 // 获取设备调试信息记录登入登出,操作
 func (l *HubLogIndexLogic) HubLogIndex(in *dm.HubLogIndexReq) (*dm.HubLogIndexResp, error) {
-	filter := msgHubLog.HubFilter{
+	filter := deviceLog.HubFilter{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 		Actions:    in.Actions,
@@ -49,7 +49,7 @@ func (l *HubLogIndexLogic) HubLogIndex(in *dm.HubLogIndexReq) (*dm.HubLogIndexRe
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	var data []*dm.HubLogIndex
+	var data []*dm.HubLogInfo
 	for _, v := range logs {
 		data = append(data, ToDataHubLogIndex(v))
 	}

@@ -66,7 +66,7 @@ func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, rep
 	switch columnType {
 	case TermColumnTypeProperty:
 		dataID := strings.Split(c.DataID, ".")
-		info, err := repo.DeviceMsg.PropertyLatestIndex(ctx, &devicemsg.PropertyLatestIndexReq{ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: dataID[:1]})
+		info, err := repo.DeviceMsg.PropertyLogLatestIndex(ctx, &devicemsg.PropertyLogLatestIndexReq{ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: dataID[:1]})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", utils.FuncName(), err)
 			return false

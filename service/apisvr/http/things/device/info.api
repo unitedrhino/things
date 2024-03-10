@@ -42,6 +42,7 @@ service api {
 
 type (
     DeviceInfo  {
+        TenantCode string `json:"tenantCode,optional"`
         ProductID string `json:"productID"`                                               //产品id 只读
         ProjectID int64 `json:"projectID,string,optional"`                                               //项目id 只读
         AreaID int64 `json:"areaID,string,optional"`                                                     //项目区域id 只读
@@ -104,6 +105,7 @@ type (
 
     DeviceInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        TenantCode string `json:tenantCode,optional`
         ProductID string `json:"productID,optional"`      //产品id 为空时获取所有产品
         DeviceName string `json:"deviceName,optional"`    //过滤条件:模糊查询 设备名
         DeviceAlias string `json:"deviceAlias,optional"`  //过滤条件:模糊查询 设备别名

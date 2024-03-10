@@ -1,16 +1,17 @@
 package hubLogRepo
 
 import (
+	"fmt"
 	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/conf"
-	"gitee.com/i-Things/share/stores"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
+	"sync"
 )
 
 type HubLogRepo struct {
-	t *clients.Td
-	stores.HubLogStore
+	t    *clients.Td
+	once sync.Once
 }
 
 func NewHubLogRepo(dataSource conf.TSDB) *HubLogRepo {
@@ -20,4 +21,12 @@ func NewHubLogRepo(dataSource conf.TSDB) *HubLogRepo {
 		os.Exit(-1)
 	}
 	return &HubLogRepo{t: td}
+}
+
+func (h *HubLogRepo) GetLogStableName() string {
+	return fmt.Sprintf("`model_common_hublog`")
+}
+
+func (h *HubLogRepo) GetLogTableName(productID, deviceName string) string {
+	return fmt.Sprintf("`device_hublog_%s_%s`", productID, deviceName)
 }

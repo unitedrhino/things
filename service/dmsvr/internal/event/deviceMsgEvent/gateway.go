@@ -8,9 +8,9 @@ import (
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
 	productmanage "github.com/i-Things/things/service/dmsvr/internal/server/productmanage"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -58,16 +58,16 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		resp, err = l.HandleStatus(msg)
 	}
 	respStr, _ := json.Marshal(resp)
-	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceLog.Hub{
 		ProductID:  msg.ProductID,
 		Action:     "gateway",
 		Timestamp:  time.Now(), // 记录当前时间
 		DeviceName: msg.DeviceName,
-		TranceID:   utils.TraceIdFromContext(l.ctx),
+		TraceID:    utils.TraceIdFromContext(l.ctx),
 		RequestID:  l.dreq.MsgToken,
 		Content:    string(msg.Payload),
 		Topic:      msg.Topic,
-		ResultType: errors.Fmt(err).GetCode(),
+		ResultCode: errors.Fmt(err).GetCode(),
 	})
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,

@@ -34,26 +34,36 @@ func (s *DeviceMsgServer) HubLogIndex(ctx context.Context, in *dm.HubLogIndexReq
 	return l.HubLogIndex(in)
 }
 
-// 获取设备数据信息
-func (s *DeviceMsgServer) PropertyLatestIndex(ctx context.Context, in *dm.PropertyLatestIndexReq) (*dm.PropertyIndexResp, error) {
-	l := devicemsglogic.NewPropertyLatestIndexLogic(ctx, s.svcCtx)
-	return l.PropertyLatestIndex(in)
+func (s *DeviceMsgServer) SendLogIndex(ctx context.Context, in *dm.SendLogIndexReq) (*dm.SendLogIndexResp, error) {
+	l := devicemsglogic.NewSendLogIndexLogic(ctx, s.svcCtx)
+	return l.SendLogIndex(in)
+}
+
+func (s *DeviceMsgServer) StatusLogIndex(ctx context.Context, in *dm.StatusLogIndexReq) (*dm.StatusLogIndexResp, error) {
+	l := devicemsglogic.NewStatusLogIndexLogic(ctx, s.svcCtx)
+	return l.StatusLogIndex(in)
 }
 
 // 获取设备数据信息
-func (s *DeviceMsgServer) PropertyLogIndex(ctx context.Context, in *dm.PropertyLogIndexReq) (*dm.PropertyIndexResp, error) {
+func (s *DeviceMsgServer) PropertyLogLatestIndex(ctx context.Context, in *dm.PropertyLogLatestIndexReq) (*dm.PropertyLogIndexResp, error) {
+	l := devicemsglogic.NewPropertyLogLatestIndexLogic(ctx, s.svcCtx)
+	return l.PropertyLogLatestIndex(in)
+}
+
+// 获取设备数据信息
+func (s *DeviceMsgServer) PropertyLogIndex(ctx context.Context, in *dm.PropertyLogIndexReq) (*dm.PropertyLogIndexResp, error) {
 	l := devicemsglogic.NewPropertyLogIndexLogic(ctx, s.svcCtx)
 	return l.PropertyLogIndex(in)
 }
 
 // 获取设备数据信息
-func (s *DeviceMsgServer) EventLogIndex(ctx context.Context, in *dm.EventLogIndexReq) (*dm.EventIndexResp, error) {
+func (s *DeviceMsgServer) EventLogIndex(ctx context.Context, in *dm.EventLogIndexReq) (*dm.EventLogIndexResp, error) {
 	l := devicemsglogic.NewEventLogIndexLogic(ctx, s.svcCtx)
 	return l.EventLogIndex(in)
 }
 
 // 获取设备影子列表
-func (s *DeviceMsgServer) ShadowIndex(ctx context.Context, in *dm.PropertyLatestIndexReq) (*dm.ShadowIndexResp, error) {
+func (s *DeviceMsgServer) ShadowIndex(ctx context.Context, in *dm.PropertyLogLatestIndexReq) (*dm.ShadowIndexResp, error) {
 	l := devicemsglogic.NewShadowIndexLogic(ctx, s.svcCtx)
 	return l.ShadowIndex(in)
 }

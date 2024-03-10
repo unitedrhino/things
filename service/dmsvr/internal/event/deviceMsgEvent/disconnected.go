@@ -6,15 +6,13 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceAuth"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
-	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
-	server "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -43,13 +41,31 @@ func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	if ld.IsNeedRegister {
 		return nil
 	}
-	err = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+	//更新对应设备的online状态
+	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{
 		ProductID:  ld.ProductID,
-		Action:     def.DisConnectedStatus,
+		DeviceName: ld.DeviceName,
+	})
+	if err != nil {
+		l.Errorf("%s.DeviceStatusDisConnected productID:%v deviceName:%v err:%v",
+			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+		return err
+	} else {
+		if di.IsOnline != def.False {
+			di.IsOnline = def.False
+			err = relationDB.NewDeviceInfoRepo(l.ctx).Update(l.ctx, di)
+			if err != nil {
+				l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
+					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+			}
+		}
+	}
+
+	err = l.svcCtx.StatusRepo.Insert(l.ctx, &deviceLog.Status{
+		ProductID:  ld.ProductID,
+		Status:     def.DisConnectedStatus,
 		Timestamp:  msg.Timestamp, // 操作时间
 		DeviceName: ld.DeviceName,
-		TranceID:   utils.TraceIdFromContext(l.ctx),
-		ResultType: errors.Fmt(err).GetCode(),
 	})
 	if err != nil {
 		l.Errorf("%s.LogRepo.insert productID:%v deviceName:%v err:%v",
@@ -66,15 +82,6 @@ func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 		l.Errorf("%s.DeviceStatusDisConnected productID:%v deviceName:%v err:%v",
 			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 	}
-	//更新对应设备的online状态
-	_, err = server.NewDeviceManageServer(l.svcCtx).DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
-		ProductID:  ld.ProductID,
-		DeviceName: ld.DeviceName,
-		IsOnline:   def.False,
-	})
-	if err != nil {
-		l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
-			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
-	}
+
 	return nil
 }

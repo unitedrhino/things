@@ -3,6 +3,7 @@ package deviceMsgEvent
 import (
 	"context"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgSdkLog"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
 	"time"
 
@@ -63,11 +64,11 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	//	Action:     "sdkLog",
 	//	Timestamp:  time.Now(), // 记录当前时间
 	//	DeviceName: msg.DeviceName,
-	//	TranceID:   utils.TraceIdFromContext(l.ctx),
+	//	TraceID:   utils.TraceIdFromContext(l.ctx),
 	//	RequestID:  l.dreq.MsgToken,
 	//	Content:    string(msg.Payload),
 	//	Topic:      msg.Handle, //todo 等待实现
-	//	ResultType: errors.Fmt(err).GetCode(),
+	//	ResultCode: errors.Fmt(err).GetCode(),
 	//})
 	return respMsg, err
 }
@@ -88,7 +89,7 @@ func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *devi
 		return nil, err
 	}
 	for _, logObj := range l.dreq.Params {
-		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &msgSdkLog.SDKLog{
+		err = l.svcCtx.SDKLogRepo.Insert(l.ctx, &deviceLog.SDK{
 			ProductID:  ld.ProductID,
 			LogLevel:   logObj.LogLevel,
 			Timestamp:  l.dreq.GetTimeStamp(logObj.Timestamp), // 操作时间

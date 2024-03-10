@@ -45,9 +45,9 @@ type (
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
 	Empty                              = dm.Empty
-	EventIndex                         = dm.EventIndex
-	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
+	EventLogIndexResp                  = dm.EventLogIndexResp
+	EventLogInfo                       = dm.EventLogInfo
 	Firmware                           = dm.Firmware
 	FirmwareFile                       = dm.FirmwareFile
 	FirmwareInfo                       = dm.FirmwareInfo
@@ -67,9 +67,9 @@ type (
 	GroupInfoIndexReq                  = dm.GroupInfoIndexReq
 	GroupInfoIndexResp                 = dm.GroupInfoIndexResp
 	GroupInfoUpdateReq                 = dm.GroupInfoUpdateReq
-	HubLogIndex                        = dm.HubLogIndex
 	HubLogIndexReq                     = dm.HubLogIndexReq
 	HubLogIndexResp                    = dm.HubLogIndexResp
+	HubLogInfo                         = dm.HubLogInfo
 	JobReq                             = dm.JobReq
 	OTAModuleDeleteReq                 = dm.OTAModuleDeleteReq
 	OTAModuleDetail                    = dm.OTAModuleDetail
@@ -144,6 +144,7 @@ type (
 	ProductInfoIndexReq                = dm.ProductInfoIndexReq
 	ProductInfoIndexResp               = dm.ProductInfoIndexResp
 	ProductInfoReadReq                 = dm.ProductInfoReadReq
+	ProductInitReq                     = dm.ProductInitReq
 	ProductRemoteConfig                = dm.ProductRemoteConfig
 	ProductSchemaCreateReq             = dm.ProductSchemaCreateReq
 	ProductSchemaDeleteReq             = dm.ProductSchemaDeleteReq
@@ -162,10 +163,10 @@ type (
 	PropertyControlSendResp            = dm.PropertyControlSendResp
 	PropertyGetReportSendReq           = dm.PropertyGetReportSendReq
 	PropertyGetReportSendResp          = dm.PropertyGetReportSendResp
-	PropertyIndex                      = dm.PropertyIndex
-	PropertyIndexResp                  = dm.PropertyIndexResp
-	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq                = dm.PropertyLogIndexReq
+	PropertyLogIndexResp               = dm.PropertyLogIndexResp
+	PropertyLogInfo                    = dm.PropertyLogInfo
+	PropertyLogLatestIndexReq          = dm.PropertyLogLatestIndexReq
 	ProtocolConfigField                = dm.ProtocolConfigField
 	ProtocolConfigInfo                 = dm.ProtocolConfigInfo
 	ProtocolInfo                       = dm.ProtocolInfo
@@ -179,9 +180,12 @@ type (
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
 	RootCheckReq                       = dm.RootCheckReq
-	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
 	SdkLogIndexResp                    = dm.SdkLogIndexResp
+	SdkLogInfo                         = dm.SdkLogInfo
+	SendLogIndexReq                    = dm.SendLogIndexReq
+	SendLogIndexResp                   = dm.SendLogIndexResp
+	SendLogInfo                        = dm.SendLogInfo
 	SendMsgReq                         = dm.SendMsgReq
 	SendMsgResp                        = dm.SendMsgResp
 	SendOption                         = dm.SendOption
@@ -189,6 +193,9 @@ type (
 	ShadowIndexResp                    = dm.ShadowIndexResp
 	StaticUpgradeDeviceInfo            = dm.StaticUpgradeDeviceInfo
 	StaticUpgradeJobReq                = dm.StaticUpgradeJobReq
+	StatusLogIndexReq                  = dm.StatusLogIndexReq
+	StatusLogIndexResp                 = dm.StatusLogIndexResp
+	StatusLogInfo                      = dm.StatusLogInfo
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
@@ -206,14 +213,16 @@ type (
 		SdkLogIndex(ctx context.Context, in *SdkLogIndexReq, opts ...grpc.CallOption) (*SdkLogIndexResp, error)
 		// 获取设备调试信息记录登入登出,操作
 		HubLogIndex(ctx context.Context, in *HubLogIndexReq, opts ...grpc.CallOption) (*HubLogIndexResp, error)
+		SendLogIndex(ctx context.Context, in *SendLogIndexReq, opts ...grpc.CallOption) (*SendLogIndexResp, error)
+		StatusLogIndex(ctx context.Context, in *StatusLogIndexReq, opts ...grpc.CallOption) (*StatusLogIndexResp, error)
 		// 获取设备数据信息
-		PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error)
+		PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 		// 获取设备数据信息
-		PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error)
+		PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 		// 获取设备数据信息
-		EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error)
+		EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error)
 		// 获取设备影子列表
-		ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
+		ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
 		// 主动触发单个设备ota升级推送
 		OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error)
 	}
@@ -263,47 +272,65 @@ func (d *directDeviceMsg) HubLogIndex(ctx context.Context, in *HubLogIndexReq, o
 	return d.svr.HubLogIndex(ctx, in)
 }
 
-// 获取设备数据信息
-func (m *defaultDeviceMsg) PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
+func (m *defaultDeviceMsg) SendLogIndex(ctx context.Context, in *SendLogIndexReq, opts ...grpc.CallOption) (*SendLogIndexResp, error) {
 	client := dm.NewDeviceMsgClient(m.cli.Conn())
-	return client.PropertyLatestIndex(ctx, in, opts...)
+	return client.SendLogIndex(ctx, in, opts...)
+}
+
+func (d *directDeviceMsg) SendLogIndex(ctx context.Context, in *SendLogIndexReq, opts ...grpc.CallOption) (*SendLogIndexResp, error) {
+	return d.svr.SendLogIndex(ctx, in)
+}
+
+func (m *defaultDeviceMsg) StatusLogIndex(ctx context.Context, in *StatusLogIndexReq, opts ...grpc.CallOption) (*StatusLogIndexResp, error) {
+	client := dm.NewDeviceMsgClient(m.cli.Conn())
+	return client.StatusLogIndex(ctx, in, opts...)
+}
+
+func (d *directDeviceMsg) StatusLogIndex(ctx context.Context, in *StatusLogIndexReq, opts ...grpc.CallOption) (*StatusLogIndexResp, error) {
+	return d.svr.StatusLogIndex(ctx, in)
 }
 
 // 获取设备数据信息
-func (d *directDeviceMsg) PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
-	return d.svr.PropertyLatestIndex(ctx, in)
+func (m *defaultDeviceMsg) PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+	client := dm.NewDeviceMsgClient(m.cli.Conn())
+	return client.PropertyLogLatestIndex(ctx, in, opts...)
 }
 
 // 获取设备数据信息
-func (m *defaultDeviceMsg) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
+func (d *directDeviceMsg) PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+	return d.svr.PropertyLogLatestIndex(ctx, in)
+}
+
+// 获取设备数据信息
+func (m *defaultDeviceMsg) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
 	client := dm.NewDeviceMsgClient(m.cli.Conn())
 	return client.PropertyLogIndex(ctx, in, opts...)
 }
 
 // 获取设备数据信息
-func (d *directDeviceMsg) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyIndexResp, error) {
+func (d *directDeviceMsg) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
 	return d.svr.PropertyLogIndex(ctx, in)
 }
 
 // 获取设备数据信息
-func (m *defaultDeviceMsg) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error) {
+func (m *defaultDeviceMsg) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error) {
 	client := dm.NewDeviceMsgClient(m.cli.Conn())
 	return client.EventLogIndex(ctx, in, opts...)
 }
 
 // 获取设备数据信息
-func (d *directDeviceMsg) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventIndexResp, error) {
+func (d *directDeviceMsg) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error) {
 	return d.svr.EventLogIndex(ctx, in)
 }
 
 // 获取设备影子列表
-func (m *defaultDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
+func (m *defaultDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
 	client := dm.NewDeviceMsgClient(m.cli.Conn())
 	return client.ShadowIndex(ctx, in, opts...)
 }
 
 // 获取设备影子列表
-func (d *directDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
+func (d *directDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
 	return d.svr.ShadowIndex(ctx, in)
 }
 

@@ -26,7 +26,7 @@ func NewEventLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Eve
 	}
 }
 
-func (l *EventLogIndexLogic) EventLogIndex(req *types.DeviceMsgEventLogIndexReq) (resp *types.DeviceMsgEventIndexResp, err error) {
+func (l *EventLogIndexLogic) EventLogIndex(req *types.DeviceMsgEventLogIndexReq) (resp *types.DeviceMsgEventLogIndexResp, err error) {
 	dmResp, err := l.svcCtx.DeviceMsg.EventLogIndex(l.ctx, &dm.EventLogIndexReq{
 		DeviceNames: req.DeviceNames,
 		ProductID:   req.ProductID,
@@ -41,16 +41,16 @@ func (l *EventLogIndexLogic) EventLogIndex(req *types.DeviceMsgEventLogIndexReq)
 		l.Errorf("%s.rpc.GetDeviceData req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	info := make([]*types.DeviceMsgEventIndex, 0, len(dmResp.List))
+	info := make([]*types.DeviceMsgEventLogInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		info = append(info, &types.DeviceMsgEventIndex{
+		info = append(info, &types.DeviceMsgEventLogInfo{
 			Timestamp: v.Timestamp,
 			DataID:    v.DataID,
 			Params:    v.Params,
 			Type:      v.Type,
 		})
 	}
-	return &types.DeviceMsgEventIndexResp{
+	return &types.DeviceMsgEventLogIndexResp{
 		Total: dmResp.Total,
 		List:  info,
 	}, nil

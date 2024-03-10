@@ -64,7 +64,7 @@ func (c *ColumnSchema) IsHit(ctx context.Context, columnType TermColumnType, rep
 	var dataType schema.DataType
 	switch columnType {
 	case TermColumnTypeProperty:
-		info, err := repo.DeviceMsg.PropertyLatestIndex(ctx, &devicemsg.PropertyLatestIndexReq{ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: c.DataID[:1]})
+		info, err := repo.DeviceMsg.PropertyLogLatestIndex(ctx, &devicemsg.PropertyLogLatestIndexReq{ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: c.DataID[:1]})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", utils.FuncName(), err)
 			return false

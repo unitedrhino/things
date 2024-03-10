@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
@@ -88,11 +89,6 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.ProductID))
 	}
 
-	err = l.InitDevice(in)
-	if err != nil {
-		return nil, err
-	}
-
 	projectID := stores.ProjectID(ctxs.GetUserCtxNoNil(l.ctx).ProjectID)
 	if projectID == 0 { //如果没有传项目,则分配到未分类项目中
 		projectID = def.NotClassified
@@ -139,7 +135,16 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if in.Phone != nil {
 		di.Phone = utils.AnyToNullString(in.Phone)
 	}
-
+	err = l.InitDevice(devices.Info{
+		ProductID:  di.ProductID,
+		DeviceName: di.DeviceName,
+		TenantCode: string(di.TenantCode),
+		ProjectID:  int64(di.ProjectID),
+		AreaID:     int64(di.AreaID),
+	})
+	if err != nil {
+		return nil, err
+	}
 	err = l.DiDB.Insert(l.ctx, &di)
 	if err != nil {
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
@@ -149,7 +154,10 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	return &dm.Empty{}, nil
 }
 
-func (l *DeviceInfoCreateLogic) InitDevice(in *dm.DeviceInfo) error {
+func (l *DeviceInfoCreateLogic) InitDevice(in devices.Info) error {
+	if in.TenantCode == "" {
+		in.TenantCode = ctxs.GetUserCtxNoNil(l.ctx).TenantCode
+	}
 	pt, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
 	if err != nil {
 		return errors.System.AddDetail(err)
@@ -158,7 +166,15 @@ func (l *DeviceInfoCreateLogic) InitDevice(in *dm.DeviceInfo) error {
 	if err != nil {
 		return errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.SDKLogRepo.InitDevice(l.ctx, in.ProductID, in.DeviceName)
+	err = l.svcCtx.SDKLogRepo.InitDevice(l.ctx, in)
+	if err != nil {
+		return errors.Database.AddDetail(err)
+	}
+	err = l.svcCtx.StatusRepo.InitDevice(l.ctx, in)
+	if err != nil {
+		return errors.Database.AddDetail(err)
+	}
+	err = l.svcCtx.SendRepo.InitDevice(l.ctx, in)
 	if err != nil {
 		return errors.Database.AddDetail(err)
 	}

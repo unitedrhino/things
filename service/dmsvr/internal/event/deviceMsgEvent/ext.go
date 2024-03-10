@@ -6,9 +6,9 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgExt"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -127,16 +127,16 @@ func (l *ExtLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		respMsg = nil
 	}
 
-	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceLog.Hub{
 		ProductID:  msg.ProductID,
 		Action:     action,
 		Timestamp:  time.Now(), // 操作时间
 		DeviceName: msg.DeviceName,
-		TranceID:   utils.TraceIdFromContext(l.ctx),
+		TraceID:    utils.TraceIdFromContext(l.ctx),
 		RequestID:  l.dreq.MsgToken,
 		Content:    string(msg.Payload),
 		Topic:      msg.Topic,
-		ResultType: errors.Fmt(err).GetCode(),
+		ResultCode: errors.Fmt(err).GetCode(),
 	})
 	return
 }

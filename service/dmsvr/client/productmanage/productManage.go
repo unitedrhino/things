@@ -45,9 +45,9 @@ type (
 	DeviceTypeCountResp                = dm.DeviceTypeCountResp
 	DynamicUpgradeJobReq               = dm.DynamicUpgradeJobReq
 	Empty                              = dm.Empty
-	EventIndex                         = dm.EventIndex
-	EventIndexResp                     = dm.EventIndexResp
 	EventLogIndexReq                   = dm.EventLogIndexReq
+	EventLogIndexResp                  = dm.EventLogIndexResp
+	EventLogInfo                       = dm.EventLogInfo
 	Firmware                           = dm.Firmware
 	FirmwareFile                       = dm.FirmwareFile
 	FirmwareInfo                       = dm.FirmwareInfo
@@ -67,9 +67,9 @@ type (
 	GroupInfoIndexReq                  = dm.GroupInfoIndexReq
 	GroupInfoIndexResp                 = dm.GroupInfoIndexResp
 	GroupInfoUpdateReq                 = dm.GroupInfoUpdateReq
-	HubLogIndex                        = dm.HubLogIndex
 	HubLogIndexReq                     = dm.HubLogIndexReq
 	HubLogIndexResp                    = dm.HubLogIndexResp
+	HubLogInfo                         = dm.HubLogInfo
 	JobReq                             = dm.JobReq
 	OTAModuleDeleteReq                 = dm.OTAModuleDeleteReq
 	OTAModuleDetail                    = dm.OTAModuleDetail
@@ -144,6 +144,7 @@ type (
 	ProductInfoIndexReq                = dm.ProductInfoIndexReq
 	ProductInfoIndexResp               = dm.ProductInfoIndexResp
 	ProductInfoReadReq                 = dm.ProductInfoReadReq
+	ProductInitReq                     = dm.ProductInitReq
 	ProductRemoteConfig                = dm.ProductRemoteConfig
 	ProductSchemaCreateReq             = dm.ProductSchemaCreateReq
 	ProductSchemaDeleteReq             = dm.ProductSchemaDeleteReq
@@ -162,10 +163,10 @@ type (
 	PropertyControlSendResp            = dm.PropertyControlSendResp
 	PropertyGetReportSendReq           = dm.PropertyGetReportSendReq
 	PropertyGetReportSendResp          = dm.PropertyGetReportSendResp
-	PropertyIndex                      = dm.PropertyIndex
-	PropertyIndexResp                  = dm.PropertyIndexResp
-	PropertyLatestIndexReq             = dm.PropertyLatestIndexReq
 	PropertyLogIndexReq                = dm.PropertyLogIndexReq
+	PropertyLogIndexResp               = dm.PropertyLogIndexResp
+	PropertyLogInfo                    = dm.PropertyLogInfo
+	PropertyLogLatestIndexReq          = dm.PropertyLogLatestIndexReq
 	ProtocolConfigField                = dm.ProtocolConfigField
 	ProtocolConfigInfo                 = dm.ProtocolConfigInfo
 	ProtocolInfo                       = dm.ProtocolInfo
@@ -179,9 +180,12 @@ type (
 	RemoteConfigPushAllReq             = dm.RemoteConfigPushAllReq
 	RespReadReq                        = dm.RespReadReq
 	RootCheckReq                       = dm.RootCheckReq
-	SdkLogIndex                        = dm.SdkLogIndex
 	SdkLogIndexReq                     = dm.SdkLogIndexReq
 	SdkLogIndexResp                    = dm.SdkLogIndexResp
+	SdkLogInfo                         = dm.SdkLogInfo
+	SendLogIndexReq                    = dm.SendLogIndexReq
+	SendLogIndexResp                   = dm.SendLogIndexResp
+	SendLogInfo                        = dm.SendLogInfo
 	SendMsgReq                         = dm.SendMsgReq
 	SendMsgResp                        = dm.SendMsgResp
 	SendOption                         = dm.SendOption
@@ -189,6 +193,9 @@ type (
 	ShadowIndexResp                    = dm.ShadowIndexResp
 	StaticUpgradeDeviceInfo            = dm.StaticUpgradeDeviceInfo
 	StaticUpgradeJobReq                = dm.StaticUpgradeJobReq
+	StatusLogIndexReq                  = dm.StatusLogIndexReq
+	StatusLogIndexResp                 = dm.StatusLogIndexResp
+	StatusLogInfo                      = dm.StatusLogInfo
 	Tag                                = dm.Tag
 	TimeRange                          = dm.TimeRange
 	UpgradeJobResp                     = dm.UpgradeJobResp
@@ -202,6 +209,7 @@ type (
 	WithIDCode                         = dm.WithIDCode
 
 	ProductManage interface {
+		ProductInit(ctx context.Context, in *ProductInitReq, opts ...grpc.CallOption) (*Empty, error)
 		// 新增产品
 		ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 更新产品
@@ -262,6 +270,15 @@ func NewDirectProductManage(svcCtx *svc.ServiceContext, svr dm.ProductManageServ
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
+}
+
+func (m *defaultProductManage) ProductInit(ctx context.Context, in *ProductInitReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductInit(ctx, in, opts...)
+}
+
+func (d *directProductManage) ProductInit(ctx context.Context, in *ProductInitReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProductInit(ctx, in)
 }
 
 // 新增产品

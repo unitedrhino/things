@@ -43,9 +43,9 @@ func (l *SdkLogIndexLogic) SdkLogIndex(req *types.DeviceMsgSdkLogIndexReq) (resp
 		l.Errorf("%s.rpc.GetDeviceSDKLog req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	info := make([]*types.DeviceMsgSdkIndex, 0, len(dmResp.List))
+	info := make([]*types.DeviceMsgSdkInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		info = append(info, &types.DeviceMsgSdkIndex{
+		info = append(info, &types.DeviceMsgSdkInfo{
 			Timestamp: v.Timestamp,
 			Loglevel:  v.Loglevel,
 			Content:   v.Content,

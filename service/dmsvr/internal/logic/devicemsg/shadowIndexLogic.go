@@ -26,7 +26,7 @@ func NewShadowIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Shado
 }
 
 // 获取设备影子列表
-func (l *ShadowIndexLogic) ShadowIndex(in *dm.PropertyLatestIndexReq) (*dm.ShadowIndexResp, error) {
+func (l *ShadowIndexLogic) ShadowIndex(in *dm.PropertyLogLatestIndexReq) (*dm.ShadowIndexResp, error) {
 	sr := relationDB.NewShadowRepo(l.ctx)
 	srs, err := sr.FindByFilter(l.ctx, shadow.Filter{
 		ProductID:  in.ProductID,

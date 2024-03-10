@@ -28,9 +28,9 @@ func NewPropertyLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 // 获取设备数据信息
-func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*dm.PropertyIndexResp, error) {
+func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*dm.PropertyLogIndexResp, error) {
 	var (
-		diDatas []*dm.PropertyIndex
+		diDatas []*dm.PropertyLogInfo
 		dd      = l.svcCtx.SchemaManaRepo
 		total   int64
 	)
@@ -56,7 +56,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		return nil, err
 	}
 	for _, devData := range dds {
-		diData := dm.PropertyIndex{
+		diData := dm.PropertyLogInfo{
 			Timestamp: devData.TimeStamp.UnixMilli(),
 			DataID:    devData.Identifier,
 		}
@@ -88,7 +88,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		}
 	}
 
-	return &dm.PropertyIndexResp{
+	return &dm.PropertyLogIndexResp{
 		Total: total,
 		List:  diDatas,
 	}, nil

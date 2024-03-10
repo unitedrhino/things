@@ -2,7 +2,7 @@ package devicemsglogic
 
 import (
 	"context"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgSdkLog"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"gitee.com/i-Things/share/def"
@@ -28,7 +28,7 @@ func NewSdkLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SdkLo
 
 // 获取设备sdk调试日志
 func (l *SdkLogIndexLogic) SdkLogIndex(in *dm.SdkLogIndexReq) (*dm.SdkLogIndexResp, error) {
-	filter := msgSdkLog.SdkLogFilter{
+	filter := deviceLog.SDKFilter{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 		LogLevel:   int(in.LogLevel),
@@ -42,7 +42,7 @@ func (l *SdkLogIndexLogic) SdkLogIndex(in *dm.SdkLogIndexReq) (*dm.SdkLogIndexRe
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	var data []*dm.SdkLogIndex
+	var data []*dm.SdkLogInfo
 	for _, v := range logs {
 		data = append(data, ToDataSdkLogIndex(v))
 	}

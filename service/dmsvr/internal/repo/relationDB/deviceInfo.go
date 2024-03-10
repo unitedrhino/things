@@ -16,6 +16,7 @@ type DeviceInfoRepo struct {
 
 type (
 	DeviceFilter struct {
+		TenantCode        string
 		ProductID         string
 		AreaIDs           []int64
 		NotAreaIDs        []int64
@@ -42,6 +43,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	db := d.db.WithContext(ctx)
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
+	}
+	if f.TenantCode != "" {
+		db = db.Where("tenant_code = ?", f.TenantCode)
 	}
 	if f.ProductCategoryID != 0 {
 		db = db.Where("product_id in (?)", db.Select("product_id").Model(DmProductInfo{}).Where("category_id=?", f.ProductCategoryID))

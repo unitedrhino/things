@@ -43,16 +43,16 @@ func (l *HubLogIndexLogic) HubLogIndex(req *types.DeviceMsgHubLogIndexReq) (resp
 		l.Errorf("%s.rpc.HubLogIndex req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	info := make([]*types.DeviceMsgHubLogIndex, 0, len(dmResp.List))
+	info := make([]*types.DeviceMsgHubLogInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		info = append(info, &types.DeviceMsgHubLogIndex{
+		info = append(info, &types.DeviceMsgHubLogInfo{
 			Timestamp:  v.Timestamp,
 			Action:     v.Action,
 			RequestID:  v.RequestID,
-			TranceID:   v.TranceID,
+			TraceID:    v.TraceID,
 			Topic:      v.Topic,
 			Content:    v.Content,
-			ResultType: v.ResultType,
+			ResultCode: v.ResultCode,
 		})
 	}
 	return &types.DeviceMsgHubLogIndexResp{List: info, Total: dmResp.Total}, err

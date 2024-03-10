@@ -182,5 +182,15 @@ func (l *ProductInfoCreateLogic) InitProduct(pi *relationDB.DmProductInfo) error
 		l.Errorf("%s.SDKLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
+	if err := l.svcCtx.StatusRepo.InitProduct(
+		l.ctx, pi.ProductID); err != nil {
+		l.Errorf("%s.StatusRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+		return errors.Database.AddDetail(err)
+	}
+	if err := l.svcCtx.SendRepo.InitProduct(
+		l.ctx, pi.ProductID); err != nil {
+		l.Errorf("%s.SendRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+		return errors.Database.AddDetail(err)
+	}
 	return nil
 }

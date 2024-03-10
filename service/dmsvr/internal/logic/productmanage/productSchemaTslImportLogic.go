@@ -46,11 +46,6 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 	if err != nil {
 		return nil, err
 	}
-	if err := l.svcCtx.HubLogRepo.InitProduct(
-		l.ctx, in.ProductID); err != nil {
-		l.Errorf("%s.DeviceLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
-		return nil, err
-	}
 	{ //更新td物模型表
 		oldT, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
 		if err != nil {

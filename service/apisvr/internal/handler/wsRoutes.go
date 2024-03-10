@@ -239,7 +239,7 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/property-latest/index",
+					Path:    "/property-log-latest/index",
 					Handler: thingsdevicemsg.PropertyLatestIndexHandler(serverCtx),
 				},
 				{
@@ -254,8 +254,18 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/send-log/index",
+					Handler: thingsdevicemsg.SendLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/shadow/index",
 					Handler: thingsdevicemsg.ShadowIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/status-log/index",
+					Handler: thingsdevicemsg.StatusLogIndexHandler(serverCtx),
 				},
 			}...,
 		),
@@ -636,6 +646,11 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/index",
 					Handler: thingsproductinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/init",
+					Handler: thingsproductinfo.InitHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,

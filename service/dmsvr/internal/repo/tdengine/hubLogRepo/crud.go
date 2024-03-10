@@ -5,12 +5,13 @@ import (
 	"database/sql"
 	"fmt"
 	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
+	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 )
 
-func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter msgHubLog.HubFilter) sq.SelectBuilder {
+func (h *HubLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.HubFilter) sq.SelectBuilder {
 	if len(filter.ProductID) != 0 {
 		sql = sql.Where("`product_id`=?", filter.ProductID)
 	}
@@ -32,15 +33,15 @@ func (d HubLogRepo) fillFilter(sql sq.SelectBuilder, filter msgHubLog.HubFilter)
 	return sql
 }
 
-func (d HubLogRepo) GetCountLog(ctx context.Context, filter msgHubLog.HubFilter, page def.PageInfo2) (int64, error) {
-	sqSql := sq.Select("Count(1)").From(d.GetLogStableName())
-	sqSql = d.fillFilter(sqSql, filter)
+func (h *HubLogRepo) GetCountLog(ctx context.Context, filter deviceLog.HubFilter, page def.PageInfo2) (int64, error) {
+	sqSql := sq.Select("Count(1)").From(h.GetLogStableName())
+	sqSql = h.fillFilter(sqSql, filter)
 	sqSql = page.FmtWhere(sqSql)
 	sqlStr, value, err := sqSql.ToSql()
 	if err != nil {
 		return 0, err
 	}
-	row := d.t.QueryRowContext(ctx, sqlStr, value...)
+	row := h.t.QueryRowContext(ctx, sqlStr, value...)
 	if err != nil {
 		return 0, err
 	}
@@ -49,43 +50,43 @@ func (d HubLogRepo) GetCountLog(ctx context.Context, filter msgHubLog.HubFilter,
 	)
 
 	err = row.Scan(&total)
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return 0, err
 	}
 	return total, nil
 }
 
-func (d HubLogRepo) GetDeviceLog(ctx context.Context, filter msgHubLog.HubFilter, page def.PageInfo2) (
-	[]*msgHubLog.HubLog, error) {
-	sql := sq.Select("*").From(d.GetLogStableName()).OrderBy("`ts` desc")
-	sql = d.fillFilter(sql, filter)
+func (h *HubLogRepo) GetDeviceLog(ctx context.Context, filter deviceLog.HubFilter, page def.PageInfo2) (
+	[]*deviceLog.Hub, error) {
+	sql := sq.Select("*").From(h.GetLogStableName()).OrderBy("`ts` desc")
+	sql = h.fillFilter(sql, filter)
 	sql = page.FmtSql(sql)
 	sqlStr, value, err := sql.ToSql()
 	if err != nil {
 		return nil, err
 	}
-	rows, err := d.t.QueryContext(ctx, sqlStr, value...)
+	rows, err := h.t.QueryContext(ctx, sqlStr, value...)
 	if err != nil {
 		return nil, err
 	}
 	var datas []map[string]any
 	stores.Scan(rows, &datas)
-	retLogs := make([]*msgHubLog.HubLog, 0, len(datas))
+	retLogs := make([]*deviceLog.Hub, 0, len(datas))
 	for _, v := range datas {
 		retLogs = append(retLogs, ToDeviceLog(filter.ProductID, v))
 	}
 	return retLogs, nil
 }
 
-func (d HubLogRepo) Insert(ctx context.Context, data *msgHubLog.HubLog) error {
+func (h *HubLogRepo) Insert(ctx context.Context, data *deviceLog.Hub) error {
 	sql := fmt.Sprintf(" %s using %s tags('%s','%s')(`ts`, `content`, `topic`, `action`,"+
-		" `request_id`, `trance_id`, `result_type`) values (?,?,?,?,?,?,?);",
-		d.GetLogTableName(data.ProductID, data.DeviceName), d.GetLogStableName(), data.ProductID, data.DeviceName)
-	//if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.Topic, data.Action,
-	//	data.RequestID, data.TranceID, data.ResultType); err != nil {
+		" `request_id`, `trace_id`, `result_type`) values (?,?,?,?,?,?,?);",
+		h.GetLogTableName(data.ProductID, data.DeviceName), h.GetLogStableName(), data.ProductID, data.DeviceName)
+	//if _, err := h.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.Topic, data.Action,
+	//	data.RequestID, data.TraceID, data.ResultCode); err != nil {
 	//	return err
 	//}
-	d.t.AsyncInsert(sql, data.Timestamp, data.Content, data.Topic, data.Action,
-		data.RequestID, data.TranceID, data.ResultType)
+	h.t.AsyncInsert(sql, data.Timestamp, data.Content, data.Topic, data.Action,
+		data.RequestID, data.TraceID, data.ResultCode)
 	return nil
 }

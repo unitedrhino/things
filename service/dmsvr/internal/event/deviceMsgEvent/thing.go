@@ -8,12 +8,12 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceMsg"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/gogf/gf/v2/util/gconv"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
 	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
@@ -413,16 +413,16 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	}
 
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
-		_ = l.svcCtx.HubLogRepo.Insert(ctx, &msgHubLog.HubLog{
+		_ = l.svcCtx.HubLogRepo.Insert(ctx, &deviceLog.Hub{
 			ProductID:  msg.ProductID,
 			Action:     action,
 			Timestamp:  time.Now(), // 操作时间
 			DeviceName: msg.DeviceName,
-			TranceID:   utils.TraceIdFromContext(ctx),
+			TraceID:    utils.TraceIdFromContext(ctx),
 			RequestID:  l.dreq.MsgToken,
 			Content:    string(msg.Payload),
 			Topic:      msg.Topic,
-			ResultType: errors.Fmt(err).GetCode(),
+			ResultCode: errors.Fmt(err).GetCode(),
 		})
 	})
 	return

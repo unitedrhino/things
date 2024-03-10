@@ -25,8 +25,8 @@ func NewShadowIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Shado
 	}
 }
 
-func (l *ShadowIndexLogic) ShadowIndex(req *types.DeviceMsgPropertyLatestIndexReq) (resp *types.DeviceMsgShadowIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.ShadowIndex(l.ctx, &dm.PropertyLatestIndexReq{
+func (l *ShadowIndexLogic) ShadowIndex(req *types.DeviceMsgPropertyLogLatestIndexReq) (resp *types.DeviceMsgShadowIndexResp, err error) {
+	dmResp, err := l.svcCtx.DeviceMsg.ShadowIndex(l.ctx, &dm.PropertyLogLatestIndexReq{
 		DeviceName: req.DeviceName,
 		ProductID:  req.ProductID,
 		DataIDs:    req.DataIDs,

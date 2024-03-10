@@ -19,7 +19,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	}
 	if withProperties != nil {
 		func() {
-			resp, err := svcCtx.DeviceMsg.PropertyLatestIndex(ctx, &dm.PropertyLatestIndexReq{
+			resp, err := svcCtx.DeviceMsg.PropertyLogLatestIndex(ctx, &dm.PropertyLogLatestIndexReq{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 				DataIDs:    withProperties,
@@ -41,6 +41,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		}()
 	}
 	return &types.DeviceInfo{
+		TenantCode:     v.TenantCode,
 		ProductID:      v.ProductID,                   //产品id 只读
 		DeviceName:     v.DeviceName,                  //设备名称 读写
 		DeviceAlias:    &v.DeviceAlias.Value,          //设备别名 读写

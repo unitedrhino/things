@@ -6,11 +6,11 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -100,20 +100,21 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	defer func() {
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			uc := ctxs.GetUserCtx(l.ctx)
-			var content = map[string]any{}
-			content["req"] = params
-			content["userID"] = uc.UserID
-			contentStr, _ := json.Marshal(content)
-			_ = l.svcCtx.HubLogRepo.Insert(ctx, &msgHubLog.HubLog{
-				ProductID:  in.ProductID,
-				Action:     "propertyControlSend",
-				Timestamp:  time.Now(), // 操作时间
-				DeviceName: in.DeviceName,
-				TranceID:   utils.TraceIdFromContext(ctx),
-				RequestID:  MsgToken,
-				Content:    string(contentStr),
-				ResultType: errors.Fmt(err).GetCode(),
-			})
+			for dataID, content := range param {
+				contentStr, _ := json.Marshal(content)
+				_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
+					ProductID:  in.ProductID,
+					Action:     "propertyControlSend",
+					Timestamp:  time.Now(), // 操作时间
+					DeviceName: in.DeviceName,
+					TraceID:    utils.TraceIdFromContext(ctx),
+					UserID:     uc.UserID,
+					DataID:     dataID,
+					Content:    string(contentStr),
+					ResultCode: errors.Fmt(err).GetCode(),
+				})
+			}
+
 		})
 	}()
 	if in.ShadowControl == shadow.ControlOnly || (!isOnline && in.ShadowControl == shadow.ControlAuto) {

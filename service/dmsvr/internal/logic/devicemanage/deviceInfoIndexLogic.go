@@ -68,6 +68,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		}()
 	}
 	filter := relationDB.DeviceFilter{
+		TenantCode:        in.TenantCode,
 		ProductID:         in.ProductID,
 		AreaIDs:           in.AreaIDs,
 		DeviceName:        in.DeviceName,
@@ -80,7 +81,12 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		IsOnline:          in.IsOnline,
 		ProductCategoryID: in.ProductCategoryID,
 	}
-
+	if err := ctxs.IsRoot(l.ctx); err == nil { //default租户才可以查看其他租户的设备
+		ctxs.GetUserCtx(l.ctx).AllTenant = true
+		defer func() {
+			ctxs.GetUserCtx(l.ctx).AllTenant = false
+		}()
+	}
 	size, err = l.DiDB.CountByFilter(l.ctx, filter)
 	if err != nil {
 		return nil, err

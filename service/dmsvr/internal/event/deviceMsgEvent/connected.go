@@ -7,11 +7,10 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceAuth"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
-	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -66,13 +65,11 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 		return err
 	}
 	l.UpdateLoginTime()
-	err = l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+	err = l.svcCtx.StatusRepo.Insert(l.ctx, &deviceLog.Status{
 		ProductID:  ld.ProductID,
-		Action:     def.ConnectedStatus,
+		Status:     def.ConnectedStatus,
 		Timestamp:  msg.Timestamp, // 操作时间
 		DeviceName: ld.DeviceName,
-		TranceID:   utils.TraceIdFromContext(l.ctx),
-		ResultType: errors.Fmt(err).GetCode(),
 	})
 	if err != nil {
 		l.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",

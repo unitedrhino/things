@@ -2,6 +2,7 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	otafirmwarelogic "github.com/i-Things/things/service/dmsvr/internal/logic/otafirmwaremanage"
 	otatasklogic "github.com/i-Things/things/service/dmsvr/internal/logic/otaupgradetaskmanage"
 	firmwaremanage "github.com/i-Things/things/service/dmsvr/internal/server/firmwaremanage"
@@ -11,7 +12,6 @@ import (
 	"time"
 
 	"gitee.com/i-Things/share/domain/deviceMsg"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss/common"
@@ -60,16 +60,16 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 			return nil, errors.Parameter.AddDetail("things topic is err:" + msg.Topic)
 		}
 	}()
-	l.svcCtx.HubLogRepo.Insert(l.ctx, &msgHubLog.HubLog{
+	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceLog.Hub{
 		ProductID:  msg.ProductID,
 		Action:     "otaLog",
 		Timestamp:  l.dreq.GetTimeStamp(), // 操作时间
 		DeviceName: msg.DeviceName,
-		TranceID:   utils.TraceIdFromContext(l.ctx),
+		TraceID:    utils.TraceIdFromContext(l.ctx),
 		RequestID:  l.dreq.MsgToken,
 		Content:    string(msg.Payload),
 		Topic:      msg.Topic,
-		ResultType: errors.Fmt(err).GetCode(),
+		ResultCode: errors.Fmt(err).GetCode(),
 	})
 	return
 }

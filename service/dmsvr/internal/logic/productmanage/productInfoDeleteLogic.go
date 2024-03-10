@@ -59,12 +59,12 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}
-	err = l.svcCtx.HubLogRepo.DropProduct(l.ctx, in.ProductID)
+	err = l.svcCtx.HubLogRepo.DeleteProduct(l.ctx, in.ProductID)
 	if err != nil {
 		l.Errorf("%s.HubLogRepo.DeleteProduct err=%v", utils.FuncName(), utils.Fmt(err))
 		return err
 	}
-	err = l.svcCtx.SDKLogRepo.DropProduct(l.ctx, in.ProductID)
+	err = l.svcCtx.SDKLogRepo.DeleteProduct(l.ctx, in.ProductID)
 	if err != nil {
 		l.Errorf("%s.SDKLogRepo.DeleteProduct err=%v", utils.FuncName(), utils.Fmt(err))
 		return err

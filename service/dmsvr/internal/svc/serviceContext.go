@@ -4,13 +4,14 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgHubLog"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgSdkLog"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/schemaDataRepo"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/sendLogRepo"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/statusLogRepo"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
@@ -45,8 +46,10 @@ type ServiceContext struct {
 	TimedM         timedmanage.TimedManage
 	SchemaRepo     schema.Repo
 	SchemaManaRepo msgThing.SchemaDataRepo
-	HubLogRepo     msgHubLog.HubLogRepo
-	SDKLogRepo     msgSdkLog.SDKLogRepo
+	HubLogRepo     deviceLog.HubRepo
+	StatusRepo     deviceLog.StatusRepo
+	SendRepo       deviceLog.SendRepo
+	SDKLogRepo     deviceLog.SDKRepo
 	Cache          kv.Store
 	ServerMsg      *eventBus.FastEvent
 	AreaM          areamanage.AreaManage
@@ -71,7 +74,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetSchemaModel, ca)
 	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB)
 	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB)
-
+	statusR := statusLogRepo.NewStatusLogRepo(c.TSDB)
+	sendR := sendLogRepo.NewSendLogRepo(c.TSDB)
 	ossClient, err := oss.NewOssClient(c.OssConf)
 	if err != nil {
 		logx.Errorf("NewOss err err:%v", err)
@@ -117,5 +121,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SchemaManaRepo: deviceDataR,
 		HubLogRepo:     hubLogR,
 		SDKLogRepo:     sdkLogR,
+		StatusRepo:     statusR,
+		SendRepo:       sendR,
 	}
 }

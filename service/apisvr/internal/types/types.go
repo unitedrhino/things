@@ -147,6 +147,7 @@ type DeviceGateWayMultiDeleteReq struct {
 }
 
 type DeviceInfo struct {
+	TenantCode     string                             `json:"tenantCode,optional"`
 	ProductID      string                             `json:"productID"`                           //产品id 只读
 	ProjectID      int64                              `json:"projectID,string,optional"`           //项目id 只读
 	AreaID         int64                              `json:"areaID,string,optional"`              //项目区域id 只读
@@ -180,7 +181,8 @@ type DeviceInfoDeleteReq struct {
 }
 
 type DeviceInfoIndexReq struct {
-	Page              *PageInfo `json:"page,optional"`                 //分页信息 只获取一个则不填
+	Page              *PageInfo `json:"page,optional"` //分页信息 只获取一个则不填
+	TenantCode        string    `json:tenantCode,optional`
 	ProductID         string    `json:"productID,optional"`            //产品id 为空时获取所有产品
 	DeviceName        string    `json:"deviceName,optional"`           //过滤条件:模糊查询 设备名
 	DeviceAlias       string    `json:"deviceAlias,optional"`          //过滤条件:模糊查询 设备别名
@@ -311,18 +313,6 @@ type DeviceInteractSendPropertyResp struct {
 	MsgToken string `json:"msgToken"` //调用id
 }
 
-type DeviceMsgEventIndex struct {
-	Timestamp int64  `json:"timestamp,string"` //发生时间戳
-	Type      string `json:"type,omitempty"`   //类型 事件类型: 信息:info  告警alert  故障:fault
-	DataID    string `json:"dataID"`           //获取的具体属性值
-	Params    string `json:"params,omitempty"` //获取到的值
-}
-
-type DeviceMsgEventIndexResp struct {
-	List  []*DeviceMsgEventIndex `json:"list"`  //数据
-	Total int64                  `json:"total"` //总数
-}
-
 type DeviceMsgEventLogIndexReq struct {
 	DeviceNames []string  `json:"deviceNames,optional"`                //设备名(不填获取产品下所有设备)
 	ProductID   string    `json:"productID,optional"`                  //产品id 获取产品id下的所有设备信息
@@ -333,14 +323,16 @@ type DeviceMsgEventLogIndexReq struct {
 	Types       []string  `json:"types,optional"`                      //类型 事件类型: 信息:info  告警alert  故障:fault
 }
 
-type DeviceMsgHubLogIndex struct {
-	Timestamp  int64  `json:"timestamp,string"`
-	Action     string `json:"action"` //connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
-	RequestID  string `json:"requestID"`
-	TranceID   string `json:"tranceID"`
-	Topic      string `json:"topic"`
-	Content    string `json:"content"`
-	ResultType int64  `json:"resultType,string"`
+type DeviceMsgEventLogIndexResp struct {
+	List  []*DeviceMsgEventLogInfo `json:"list"`  //数据
+	Total int64                    `json:"total"` //总数
+}
+
+type DeviceMsgEventLogInfo struct {
+	Timestamp int64  `json:"timestamp,string"` //发生时间戳
+	Type      string `json:"type,omitempty"`   //类型 事件类型: 信息:info  告警alert  故障:fault
+	DataID    string `json:"dataID"`           //获取的具体属性值
+	Params    string `json:"params,omitempty"` //获取到的值
 }
 
 type DeviceMsgHubLogIndexReq struct {
@@ -356,25 +348,23 @@ type DeviceMsgHubLogIndexReq struct {
 }
 
 type DeviceMsgHubLogIndexResp struct {
-	List  []*DeviceMsgHubLogIndex `json:"list"`  //数据
-	Total int64                   `json:"total"` //总数
+	List  []*DeviceMsgHubLogInfo `json:"list"`  //数据
+	Total int64                  `json:"total"` //总数
 }
 
-type DeviceMsgPropertyIndex struct {
-	Timestamp int64  `json:"timestamp,string"` //发生时间戳
-	DataID    string `json:"dataID"`           //获取的具体属性值
-	Value     string `json:"value,omitempty"`  //获取到的值
+type DeviceMsgHubLogInfo struct {
+	Timestamp  int64  `json:"timestamp,string"`
+	Action     string `json:"action"` //connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
+	RequestID  string `json:"requestID"`
+	TraceID    string `json:"traceID"`
+	Topic      string `json:"topic"`
+	Content    string `json:"content"`
+	ResultCode int64  `json:"resultCode,string"`
 }
 
 type DeviceMsgPropertyIndexResp struct {
-	List  []*DeviceMsgPropertyIndex `json:"list"`  //数据
-	Total int64                     `json:"total"` //总数
-}
-
-type DeviceMsgPropertyLatestIndexReq struct {
-	DeviceName string   `json:"deviceName,omitempty"`       //设备名
-	ProductID  string   `json:"productID,omitempty"`        //产品id 获取产品id下的所有设备信息
-	DataIDs    []string `json:"dataIDs,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+	List  []*DeviceMsgPropertyLogInfo `json:"list"`  //数据
+	Total int64                       `json:"total"` //总数
 }
 
 type DeviceMsgPropertyLogIndexReq struct {
@@ -390,15 +380,27 @@ type DeviceMsgPropertyLogIndexReq struct {
 	Order       int32     `json:"order,optional"`                      //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
 }
 
-type DeviceMsgSdkIndex struct {
+type DeviceMsgPropertyLogInfo struct {
 	Timestamp int64  `json:"timestamp,string"` //发生时间戳
-	Loglevel  int64  `json:"loglevel"`         //日志级别 1)关闭 2)错误 3)告警 4)信息 5)调试
-	Content   string `json:"content"`          //具体内容
+	DataID    string `json:"dataID"`           //获取的具体属性值
+	Value     string `json:"value,omitempty"`  //获取到的值
+}
+
+type DeviceMsgPropertyLogLatestIndexReq struct {
+	DeviceName string   `json:"deviceName,omitempty"`       //设备名
+	ProductID  string   `json:"productID,omitempty"`        //产品id 获取产品id下的所有设备信息
+	DataIDs    []string `json:"dataIDs,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
 }
 
 type DeviceMsgSdkIndexResp struct {
-	List  []*DeviceMsgSdkIndex `json:"list"`  //数据
-	Total int64                `json:"total"` //总数
+	List  []*DeviceMsgSdkInfo `json:"list"`  //数据
+	Total int64               `json:"total"` //总数
+}
+
+type DeviceMsgSdkInfo struct {
+	Timestamp int64  `json:"timestamp,string"` //发生时间戳
+	Loglevel  int64  `json:"loglevel"`         //日志级别 1)关闭 2)错误 3)告警 4)信息 5)调试
+	Content   string `json:"content"`          //具体内容
 }
 
 type DeviceMsgSdkLogIndexReq struct {
@@ -410,6 +412,38 @@ type DeviceMsgSdkLogIndexReq struct {
 	Page       *PageInfo `json:"page,optional"`                       //分页信息
 }
 
+type DeviceMsgSendLogIndexReq struct {
+	ProductID  string    `json:"productID,optional"`        //产品id
+	DeviceName string    `json:"deviceName,optional"`       //设备名
+	TimeStart  int64     `json:"timeStart,string,optional"` //获取时间的开始(毫秒时间戳)
+	TimeEnd    int64     `json:"timeEnd,string,optional"`   //时间的结束(毫秒时间戳)
+	Page       *PageInfo `json:"page,optional"`             //分页信息
+	ProjectID  int64     `json:"projectID,string,optional"` //项目id
+	AreaIDs    []int64   `json:"areaIDs,string,optional"`   //过滤内容
+	UserID     int64     `json:"userID,string,optional"`
+	Actions    []string  `json:"actions,optional"`
+	ResultCode int64     `json:"resultCode,optional"` //请求结果状态,200为成功
+}
+
+type DeviceMsgSendLogIndexResp struct {
+	List  []*DeviceMsgSendLogInfo `json:"list"`  //数据
+	Total int64                   `json:"total"` //总数
+}
+
+type DeviceMsgSendLogInfo struct {
+	Timestamp  int64  `json:"timestamp,string,optional"` //发生时间戳(毫秒时间戳)
+	ProjectID  int64  `json:"projectID,string,optional"`
+	AreaID     int64  `json:"areaID,string,optional"` //
+	UserID     int64  `json:"userID,string,optional"` //
+	ProductID  string `json:"productID,optional"`     //
+	DeviceName string `json:"deviceName,optional"`    //
+	Action     string `json:"action,optional"`        //操作类型 propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
+	DataID     string `json:"dataID,optional"`        //identify
+	TraceID    string `json:"traceID,optional"`       //服务器端事务id
+	Content    string `json:"content,optional"`       //操作的内容
+	ResultCode int64  `json:"resultCode,optional"`    //请求结果状态,200为成功
+}
+
 type DeviceMsgShadowIndex struct {
 	DataID            string `json:"dataID"`            //属性id
 	Value             string `json:"value"`             //获取到的值
@@ -418,6 +452,29 @@ type DeviceMsgShadowIndex struct {
 
 type DeviceMsgShadowIndexResp struct {
 	List []*DeviceMsgShadowIndex `json:"list"`
+}
+
+type DeviceMsgStatusLogIndexReq struct {
+	ProductID  string    `json:"productID,optional"`        //产品id
+	DeviceName string    `json:"deviceName,optional"`       //设备名
+	TimeStart  int64     `json:"timeStart,string,optional"` //获取时间的开始(毫秒时间戳)
+	TimeEnd    int64     `json:"timeEnd,string,optional"`   //时间的结束(毫秒时间戳)
+	Page       *PageInfo `json:"page,optional"`             //分页信息
+	ProjectID  int64     `json:"projectID,optional,string"` //项目id
+	AreaIDs    []int64   `json:"areaIDs,optional,string"`   //过滤内容
+	Status     int64     `json:"status,optional"`           //在线状态
+}
+
+type DeviceMsgStatusLogIndexResp struct {
+	List  []*DeviceMsgStatusLogInfo `json:"list"`  //数据
+	Total int64                     `json:"total"` //总数
+}
+
+type DeviceMsgStatusLogInfo struct {
+	Timestamp  int64  `json:"timestamp,optional,string"` //发生时间戳(毫秒时间戳)
+	Status     int64  `json:"status,optional"`           //过滤请求ID
+	DeviceName string `json:"deviceName,omitempty"`
+	ProductID  string `json:"productID,omitempty"`
 }
 
 type DeviceMultiImportErrdata struct {
@@ -1088,6 +1145,10 @@ type ProductInfoReadReq struct {
 	ProductID    string `json:"productID"`             //产品id
 	WithProtocol bool   `json:"withProtocol,optional"` //同时返回协议详情
 	WithCategory bool   `json:"withCategory,optional"` //同时返回品类详情
+}
+
+type ProductInitReq struct {
+	ProductIDs []string `json:"productIDs,optional"` //产品id 只读
 }
 
 type ProductRemoteConfig struct {
