@@ -53,10 +53,6 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.WithContext(ctx).Infof("DeviceGroupHandle value:%v err:%v", utils.Fmt(value), err)
 		return err
 	})
-	svcCtx.ServerMsg.Subscribe(eventBus.DmProductSchemaUpdate, func(ctx context.Context, t time.Time, body []byte) error {
-		var productID = string(body)
-		return svcCtx.SchemaRepo.ClearCache(ctx, productID)
-	})
 	err := svcCtx.ServerMsg.Start()
 	logx.Must(err)
 }

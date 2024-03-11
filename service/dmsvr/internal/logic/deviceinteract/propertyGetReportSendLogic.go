@@ -34,7 +34,7 @@ func NewPropertyGetReportSendLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 func (l *PropertyGetReportSendLogic) initMsg(productID string) error {
 	var err error
-	l.schema, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
+	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, productID)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}

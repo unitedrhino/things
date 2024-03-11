@@ -38,7 +38,7 @@ func NewPropertyControlSendLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 func (l *PropertyControlSendLogic) initMsg(productID string) error {
 	var err error
-	l.model, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, productID)
+	l.model, err = l.svcCtx.SchemaRepo.GetData(l.ctx, productID)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}

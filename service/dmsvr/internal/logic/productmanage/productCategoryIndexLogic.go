@@ -33,7 +33,7 @@ func (l *ProductCategoryIndexLogic) ProductCategoryIndex(in *dm.ProductCategoryI
 		err  error
 		piDB = relationDB.NewProductCategoryRepo(l.ctx)
 	)
-	f := relationDB.ProductCategoryFilter{Name: in.Name}
+	f := relationDB.ProductCategoryFilter{Name: in.Name, ParentID: in.ParentID}
 	size, err = piDB.CountByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err

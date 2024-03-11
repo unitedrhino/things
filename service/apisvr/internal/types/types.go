@@ -1074,8 +1074,9 @@ type ProductCategory struct {
 }
 
 type ProductCategoryIndexReq struct {
-	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
-	Name string    `json:"name,optional"` //过滤产品名称
+	Page     *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+	Name     string    `json:"name,optional"` //过滤产品名称
+	ParentID int64     `json:"parentID,optional"`
 }
 
 type ProductCategoryIndexResp struct {

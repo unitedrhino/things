@@ -141,11 +141,12 @@ func ToProductCategoryPb(ctx context.Context, svcCtx *svc.ServiceContext, info *
 		}
 	}
 	ret := &dm.ProductCategory{
-		Id:      info.ID,
-		Name:    info.Name,
-		HeadImg: info.HeadImg,
-		IdPath:  utils.GetIDPath(info.IDPath),
-		Desc:    utils.ToRpcNullString(info.Desc),
+		Id:       info.ID,
+		Name:     info.Name,
+		HeadImg:  info.HeadImg,
+		ParentID: info.ParentID,
+		IdPath:   utils.GetIDPath(info.IDPath),
+		Desc:     utils.ToRpcNullString(info.Desc),
 	}
 	if children != nil {
 		var idMap = map[int64][]*dm.ProductCategory{}

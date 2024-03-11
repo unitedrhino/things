@@ -4,8 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/eventBus"
-	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -53,7 +51,8 @@ func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDelet
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductSchemaUpdate, &events.DeviceUpdateInfo{ProductID: in.ProductID})
+	//清除缓存
+	err = l.svcCtx.SchemaRepo.SetData(l.ctx, in.ProductID, nil)
 	if err != nil {
 		return nil, err
 	}

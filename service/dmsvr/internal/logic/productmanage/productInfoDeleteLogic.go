@@ -4,7 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
-	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -47,15 +46,10 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))
 		return nil, err
 	}
-	err = l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductSchemaUpdate, &events.DeviceUpdateInfo{ProductID: in.ProductID})
-	if err != nil {
-		return nil, err
-	}
-
 	return &dm.Empty{}, nil
 }
 func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error {
-	pt, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
+	pt, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}
@@ -75,7 +69,7 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 		return err
 	}
 	//todo 需要删除物模型的数据
-	err = l.svcCtx.SchemaRepo.ClearCache(l.ctx, in.ProductID)
+	err = l.svcCtx.SchemaRepo.SetData(l.ctx, in.ProductID, nil)
 	if err != nil {
 		l.Errorf("%s.SchemaRepo.ClearCache err=%v", utils.FuncName(), utils.Fmt(err))
 		return err

@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"context"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
@@ -15,6 +16,7 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
+	"time"
 
 	"gitee.com/i-Things/share/stores"
 
@@ -25,7 +27,6 @@ import (
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/config"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/hubLogRepo"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/sdkLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -44,7 +45,7 @@ type ServiceContext struct {
 	GroupID        *utils.SnowFlake
 	OssClient      *oss.Client
 	TimedM         timedmanage.TimedManage
-	SchemaRepo     schema.Repo
+	SchemaRepo     *caches.Cache[schema.Model]
 	SchemaManaRepo msgThing.SchemaDataRepo
 	HubLogRepo     deviceLog.HubRepo
 	StatusRepo     deviceLog.StatusRepo
@@ -62,6 +63,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		areaM    areamanage.AreaManage
 		projectM projectmanage.ProjectManage
 	)
+	stores.InitConn(c.Database)
+	err := relationDB.Migrate(c.Database)
+	if err != nil {
+		logx.Error("dmsvr 初始化数据库错误 err", err)
+		os.Exit(-1)
+	}
 	caches.InitStore(c.CacheRedis)
 	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
 	ProjectID := utils.NewSnowFlake(nodeID)
@@ -70,8 +77,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	ProductID := utils.NewSnowFlake(nodeID)
 	GroupID := utils.NewSnowFlake(nodeID)
 	ca := kv.NewStore(c.CacheRedis)
-	ccSchemaR := cache.NewSchemaRepo()
-	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetSchemaModel, ca)
+
 	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB)
 	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB)
 	statusR := statusLogRepo.NewStatusLogRepo(c.TSDB)
@@ -83,12 +89,22 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
 	logx.Must(err)
-	stores.InitConn(c.Database)
-	err = relationDB.Migrate(c.Database)
-	if err != nil {
-		logx.Error("dmsvr 初始化数据库错误 err", err)
-		os.Exit(-1)
-	}
+
+	ccSchemaR := caches.NewCache(caches.CacheConfig[schema.Model]{
+		KeyType:   "dm.schema",
+		FastEvent: serverMsg,
+		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
+			db := relationDB.NewProductSchemaRepo(ctx)
+			dbSchemas, err := db.FindByFilter(ctx, relationDB.ProductSchemaFilter{ProductID: key}, nil)
+			if err != nil {
+				return nil, err
+			}
+			schemaModel := relationDB.ToSchemaDo(key, dbSchemas)
+			return schemaModel, nil
+		},
+		ExpireTime: 10 * time.Minute,
+	})
+	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetData, ca)
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {
 		logx.Error("NewPubDev err", err)
@@ -102,6 +118,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
+
 	return &ServiceContext{
 		ServerMsg:      serverMsg,
 		Config:         c,

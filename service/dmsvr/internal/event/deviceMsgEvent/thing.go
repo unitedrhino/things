@@ -42,7 +42,7 @@ func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic 
 
 func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	var err error
-	l.schema, err = l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, msg.ProductID)
+	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, msg.ProductID)
 	if err != nil {
 		return errors.Database.AddDetail(err)
 	}

@@ -4,8 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/eventBus"
-	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
@@ -47,7 +45,7 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 		return nil, err
 	}
 	{ //更新td物模型表
-		oldT, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
+		oldT, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
 		if err != nil {
 			l.Errorf("%s.SchemaManaRepo.GetSchemaModel failure,err:%v", utils.FuncName(), err)
 			return nil, err
@@ -60,13 +58,8 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 			l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 			return nil, err
 		}
-		defer l.svcCtx.SchemaRepo.ClearCache(l.ctx, in.ProductID)
 	}
-	err = l.svcCtx.SchemaRepo.TslImport(l.ctx, in.ProductID, t)
-	if err != nil {
-		return nil, err
-	}
-	err = l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductSchemaUpdate, &events.DeviceUpdateInfo{ProductID: in.ProductID})
+	err = l.svcCtx.SchemaRepo.SetData(l.ctx, in.ProductID, t)
 	if err != nil {
 		return nil, err
 	}

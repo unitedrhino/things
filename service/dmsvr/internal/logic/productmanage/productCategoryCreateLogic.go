@@ -33,7 +33,7 @@ func NewProductCategoryCreateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 // 新增产品
 func (l *ProductCategoryCreateLogic) ProductCategoryCreate(in *dm.ProductCategory) (*dm.WithID, error) {
 	po := relationDB.DmProductCategory{
-		ParentID: def.RootNode,
+		ParentID: in.ParentID,
 		Name:     in.Name,
 		Desc:     utils.ToEmptyString(in.Desc),
 	}

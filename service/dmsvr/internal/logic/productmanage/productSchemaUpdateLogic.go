@@ -4,7 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/utils"
 	commonschemalogic "github.com/i-Things/things/service/dmsvr/internal/logic/schemamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -119,7 +118,10 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	if err != nil {
 		return nil, err
 	}
-	l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductSchemaUpdate, in.Info.ProductID)
-
+	//清除缓存
+	err = l.svcCtx.SchemaRepo.SetData(l.ctx, in.Info.ProductID, nil)
+	if err != nil {
+		return nil, err
+	}
 	return &dm.Empty{}, nil
 }

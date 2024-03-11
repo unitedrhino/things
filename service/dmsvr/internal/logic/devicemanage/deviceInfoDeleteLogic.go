@@ -42,7 +42,7 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		return nil, errors.System.AddDetail(err)
 	}
 	{ //删除时序数据库中的表数据
-		schema, err := l.svcCtx.SchemaRepo.GetSchemaModel(l.ctx, in.ProductID)
+		schema, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
 		if err != nil {
 			l.Errorf("%s.GetSchemaModel err=%+v", utils.FuncName(), err)
 			return nil, errors.System.AddDetail(err)

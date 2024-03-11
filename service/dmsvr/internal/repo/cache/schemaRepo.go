@@ -59,20 +59,21 @@ func (s SchemaRepo) TslImport(ctx context.Context, productID string, schemaInfo 
 	s.cache.SetWithTTL(productID, schemaInfo, 1, expirtTime)
 	return err
 }
-func (s SchemaRepo) TslRead(ctx context.Context, productID string) (*schema.Model, error) {
-	temp, ok := s.cache.Get(productID)
-	if ok {
-		return temp.(*schema.Model), nil
-	}
-	db := relationDB.NewProductSchemaRepo(ctx)
-	dbSchemas, err := db.FindByFilter(ctx, relationDB.ProductSchemaFilter{ProductID: productID}, nil)
-	if err != nil {
-		return nil, err
-	}
-	schemaModel := relationDB.ToSchemaDo(productID, dbSchemas)
-	s.cache.SetWithTTL(productID, schemaModel, 1, expirtTime)
-	return schemaModel, nil
-}
+
+//func (s SchemaRepo) TslRead(ctx context.Context, productID string) (*schema.Model, error) {
+//	temp, ok := s.cache.Get(productID)
+//	if ok {
+//		return temp.(*schema.Model), nil
+//	}
+//	db := relationDB.NewProductSchemaRepo(ctx)
+//	dbSchemas, err := db.FindByFilter(ctx, relationDB.ProductSchemaFilter{ProductID: productID}, nil)
+//	if err != nil {
+//		return nil, err
+//	}
+//	schemaModel := relationDB.ToSchemaDo(productID, dbSchemas)
+//	s.cache.SetWithTTL(productID, schemaModel, 1, expirtTime)
+//	return schemaModel, nil
+//}
 
 func (s SchemaRepo) GetSchemaModel(ctx context.Context, productID string) (*schema.Model, error) {
 	temp, ok := s.cache.Get(productID)
