@@ -53,7 +53,7 @@ func (l *ProtocolInfoIndexLogic) ProtocolInfoIndex(in *dm.ProtocolInfoIndexReq) 
 
 	info = make([]*dm.ProtocolInfo, 0, len(di))
 	for _, v := range di {
-		info = append(info, ToProtocolInfoPb(v))
+		info = append(info, logic.ToProtocolInfoPb(v))
 	}
 	return &dm.ProtocolInfoIndexResp{List: info, Total: size}, nil
 }

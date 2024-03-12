@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -50,6 +51,10 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 		if err != nil {
 			l.Error(err)
 			return nil, errors.Database.AddDetail(err)
+		}
+		err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
+		if err != nil {
+			l.Error(err)
 		}
 	}
 	err := relationDB.NewDeviceInfoRepo(l.ctx).MultiUpdate(l.ctx, logic.ToDeviceCores(in.Devices), &relationDB.DmDeviceInfo{AreaID: stores.AreaID(in.AreaID)})

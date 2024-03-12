@@ -11,6 +11,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -94,7 +95,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			}
 		}
 	}
-	devicesDos := BindToDeviceCoreDos(in.List)
+	devicesDos := logic.BindToDeviceCoreDos(in.List)
 	err := l.GdDB.MultiInsert(l.ctx, &devices.Core{
 		ProductID:  in.GatewayProductID,
 		DeviceName: in.GatewayDeviceName,
@@ -104,7 +105,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	}
 	req := &msgGateway.Msg{
 		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, "").AddStatus(errors.OK),
-		Payload:   ToGatewayPayload(def.GatewayBind, devicesDos),
+		Payload:   logic.ToGatewayPayload(def.GatewayBind, devicesDos),
 	}
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{

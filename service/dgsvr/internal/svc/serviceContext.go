@@ -2,6 +2,7 @@ package svc
 
 import (
 	"context"
+	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
@@ -13,6 +14,7 @@ import (
 	"github.com/i-Things/things/service/dgsvr/internal/repo/event/publish/pubInner"
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/client/productmanage"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -20,13 +22,15 @@ import (
 )
 
 type ServiceContext struct {
-	Config    config.Config
-	PubDev    pubDev.PubDev
-	PubInner  pubInner.PubInner
-	FastEvent *eventBus.FastEvent
-	ProductM  productmanage.ProductManage
-	DeviceM   devicemanage.DeviceManage
-	Script    custom.Repo
+	Config       config.Config
+	PubDev       pubDev.PubDev
+	PubInner     pubInner.PubInner
+	FastEvent    *eventBus.FastEvent
+	ProductM     productmanage.ProductManage
+	DeviceM      devicemanage.DeviceManage
+	Script       custom.Repo
+	ProductCache *caches.Cache[dm.ProductInfo]
+	DeviceCache  *caches.Cache[dm.DeviceInfo]
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -71,13 +75,19 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	})
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
 	logx.Must(err)
+	pc, err := dmExport.NewProductInfoCache(productM, serverMsg)
+	logx.Must(err)
+	dc, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
+	logx.Must(err)
 	return &ServiceContext{
 		Config: c,
 		// PubDev:   dl,
 		// PubInner: il,
-		FastEvent: serverMsg,
-		ProductM:  productM,
-		DeviceM:   deviceM,
-		Script:    scriptCache,
+		FastEvent:    serverMsg,
+		ProductM:     productM,
+		DeviceM:      deviceM,
+		Script:       scriptCache,
+		ProductCache: pc,
+		DeviceCache:  dc,
 	}
 }

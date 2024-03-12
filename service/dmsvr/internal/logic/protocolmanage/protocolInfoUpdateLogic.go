@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gitee.com/i-Things/share/eventBus"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -33,7 +34,7 @@ func (l *ProtocolInfoUpdateLogic) ProtocolInfoUpdate(in *dm.ProtocolInfo) (*dm.E
 	if err != nil {
 		return nil, err
 	}
-	newPo := ToProtocolInfoPo(in)
+	newPo := logic.ToProtocolInfoPo(in)
 	old.TransProtocol = newPo.TransProtocol
 	old.Name = newPo.Name
 	old.TransProtocol = newPo.TransProtocol

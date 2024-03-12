@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -49,7 +50,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 			return nil, err
 		}
 	}
-	po := ToProductSchemaPo(in.Info)
+	po := logic.ToProductSchemaPo(in.Info)
 
 	var cs *relationDB.DmCommonSchema
 	if in.Info.Tag != int64(schema.TagCustom) {

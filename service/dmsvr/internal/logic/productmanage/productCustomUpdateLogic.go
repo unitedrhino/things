@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/events"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -39,7 +40,7 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 			err = l.PcDB.Insert(l.ctx, &relationDB.DmProductCustom{
 				ProductID:       in.ProductID,
 				ScriptLang:      in.ScriptLang,
-				CustomTopics:    ToCustomTopicsDo(in.CustomTopics),
+				CustomTopics:    logic.ToCustomTopicsDo(in.CustomTopics),
 				TransformScript: in.TransformScript.GetValue(),
 			})
 			if err != nil {
@@ -56,7 +57,7 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 		pi.ScriptLang = in.ScriptLang
 	}
 	if in.CustomTopics != nil {
-		pi.CustomTopics = ToCustomTopicsDo(in.CustomTopics)
+		pi.CustomTopics = logic.ToCustomTopicsDo(in.CustomTopics)
 	}
 	err = l.PcDB.Update(l.ctx, pi)
 	if err != nil {

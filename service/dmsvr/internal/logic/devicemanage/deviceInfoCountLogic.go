@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -33,7 +34,7 @@ func NewDeviceInfoCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 // 设备计数
 func (l *DeviceInfoCountLogic) DeviceInfoCount(in *dm.DeviceInfoCountReq) (*dm.DeviceInfoCount, error) {
 	f := relationDB.DeviceFilter{
-		LastLoginTime: ToTimeRange(in.TimeRange),
+		LastLoginTime: logic.ToTimeRange(in.TimeRange),
 		AreaIDs:       in.AreaIDs,
 	}
 	if len(in.GroupIDs) != 0 {

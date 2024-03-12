@@ -102,7 +102,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 
 	info = make([]*dm.DeviceInfo, 0, len(di))
 	for _, v := range di {
-		info = append(info, ToDeviceInfo(v))
+		info = append(info, logic.ToDeviceInfo(v))
 	}
 
 	return &dm.DeviceInfoIndexResp{List: info, Total: size}, nil

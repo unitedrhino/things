@@ -2,6 +2,7 @@ package protocolmanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -31,5 +32,5 @@ func (l *ProtocolInfoReadLogic) ProtocolInfoRead(in *dm.WithIDCode) (*dm.Protoco
 		Code: in.Code,
 	}
 	po, err := relationDB.NewProtocolInfoRepo(l.ctx).FindOneByFilter(l.ctx, f)
-	return ToProtocolInfoPb(po), err
+	return logic.ToProtocolInfoPb(po), err
 }

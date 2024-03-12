@@ -10,6 +10,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -164,7 +165,10 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, err
 	}
-
+	err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(dmDiPo.ProductID, dmDiPo.DeviceName), logic.ToDeviceInfo(dmDiPo))
+	if err != nil {
+		l.Error(err)
+	}
 	if in.LogLevel != def.Unknown {
 		di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}, WithProduct: true})
 		if err != nil {

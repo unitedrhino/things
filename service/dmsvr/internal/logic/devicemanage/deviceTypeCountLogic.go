@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -36,7 +37,7 @@ func (l *DeviceTypeCountLogic) DeviceTypeCount(in *dm.DeviceTypeCountReq) (*dm.D
 	productCount, err := l.DiDB.CountGroupByField(
 		l.ctx,
 		relationDB.DeviceFilter{
-			LastLoginTime: ToTimeRange(in.TimeRange),
+			LastLoginTime: logic.ToTimeRange(in.TimeRange),
 		},
 		"product_id",
 	)

@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -35,7 +36,7 @@ func NewDeviceGatewayMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCo
 
 // 删除分组设备
 func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGatewayMultiDeleteReq) (*dm.Empty, error) {
-	devicesDos := ToDeviceCoreDos(in.List)
+	devicesDos := logic.ToDeviceCoreDos(in.List)
 	err := l.GdDB.MultiDelete(l.ctx, &devices.Core{
 		ProductID:  in.GatewayProductID,
 		DeviceName: in.GatewayDeviceName,
@@ -45,7 +46,7 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	}
 	req := &msgGateway.Msg{
 		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, "").AddStatus(errors.OK),
-		Payload:   ToGatewayPayload(def.GatewayUnbind, devicesDos),
+		Payload:   logic.ToGatewayPayload(def.GatewayUnbind, devicesDos),
 	}
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{

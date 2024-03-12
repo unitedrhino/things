@@ -1,4 +1,4 @@
-package devicemanagelogic
+package logic
 
 import (
 	"gitee.com/i-Things/share/def"
@@ -7,7 +7,6 @@ import (
 	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/utils"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
@@ -37,7 +36,7 @@ func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 		Version:        &wrappers.StringValue{Value: in.Version},
 		HardInfo:       in.HardInfo,
 		SoftInfo:       in.SoftInfo,
-		Position:       logic.ToDmPoint(&in.Position),
+		Position:       ToDmPoint(&in.Position),
 		Address:        &wrappers.StringValue{Value: in.Address},
 		Tags:           in.Tags,
 		SchemaAlias:    in.SchemaAlias,

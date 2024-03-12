@@ -150,7 +150,6 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
 		return nil, errors.Database.AddDetail(err)
 	}
-
 	return &dm.Empty{}, nil
 }
 

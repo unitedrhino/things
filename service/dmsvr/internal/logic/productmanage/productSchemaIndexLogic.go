@@ -48,7 +48,7 @@ func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexRe
 	}
 	list := make([]*dm.ProductSchemaInfo, 0, len(schemas))
 	for _, s := range schemas {
-		list = append(list, ToProductSchemaRpc(s))
+		list = append(list, logic.ToProductSchemaRpc(s))
 	}
 	return &dm.ProductSchemaIndexResp{List: list, Total: total}, nil
 }

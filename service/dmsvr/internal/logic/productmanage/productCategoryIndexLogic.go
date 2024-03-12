@@ -48,7 +48,7 @@ func (l *ProductCategoryIndexLogic) ProductCategoryIndex(in *dm.ProductCategoryI
 
 	info = make([]*dm.ProductCategory, 0, len(di))
 	for _, v := range di {
-		info = append(info, ToProductCategoryPb(l.ctx, l.svcCtx, v, nil))
+		info = append(info, logic.ToProductCategoryPb(l.ctx, l.svcCtx, v, nil))
 	}
 	return &dm.ProductCategoryIndexResp{List: info, Total: size}, nil
 }

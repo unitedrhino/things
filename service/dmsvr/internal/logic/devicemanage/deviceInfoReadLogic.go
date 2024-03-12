@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -31,5 +32,5 @@ func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.Devi
 	if err != nil {
 		return nil, err
 	}
-	return ToDeviceInfo(di), nil
+	return logic.ToDeviceInfo(di), nil
 }

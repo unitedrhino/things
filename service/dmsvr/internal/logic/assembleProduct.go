@@ -1,11 +1,10 @@
-package productmanagelogic
+package logic
 
 import (
 	"context"
 	"gitee.com/i-Things/share/oss/common"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/productCustom"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
-	protocolmanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/protocolmanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -48,7 +47,7 @@ func ToProductInfo(ctx context.Context, svcCtx *svc.ServiceContext, pi *relation
 		Tags:         pi.Tags,                               //产品tags
 		ProductImg:   pi.ProductImg,
 		Category:     ToProductCategoryPb(ctx, svcCtx, pi.Category, nil),
-		Protocol:     protocolmanagelogic.ToProtocolInfoPb(pi.Protocol),
+		Protocol:     ToProtocolInfoPb(pi.Protocol),
 		//Model:     &wrappers.StringValue{Value: pi.Model},    //数据模板
 	}
 	if pi.ProductImg != "" {

@@ -74,7 +74,14 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 		l.Errorf("%s.SchemaRepo.ClearCache err=%v", utils.FuncName(), utils.Fmt(err))
 		return err
 	}
-	l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductInfoDelete, in.ProductID)
+	err = l.svcCtx.ProductCache.SetData(l.ctx, in.ProductID, nil)
+	if err != nil {
+		l.Error(err)
+	}
+	err = l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductInfoDelete, in.ProductID)
+	if err != nil {
+		l.Error(err)
+	}
 	return nil
 }
 func (l *ProductInfoDeleteLogic) Check(in *dm.ProductInfoDeleteReq) error {

@@ -4,7 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
-	"github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -52,7 +51,7 @@ func (l *GroupDeviceIndexLogic) GroupDeviceIndex(in *dm.GroupDeviceIndexReq) (*d
 			l.Errorf("%s.GroupInfo.DeviceInfoRead failure err=%+v", utils.FuncName(), err)
 			continue
 		}
-		dd := devicemanagelogic.ToDeviceInfo(di)
+		dd := logic.ToDeviceInfo(di)
 		list = append(list, dd)
 	}
 

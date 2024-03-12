@@ -114,6 +114,9 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Empt
 		}
 		return nil, err
 	}
-
+	err = l.svcCtx.ProductCache.SetData(l.ctx, in.ProductID, nil)
+	if err != nil {
+		l.Error(err)
+	}
 	return &dm.Empty{}, nil
 }

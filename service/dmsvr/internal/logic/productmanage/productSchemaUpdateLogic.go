@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	commonschemalogic "github.com/i-Things/things/service/dmsvr/internal/logic/schemamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -52,7 +53,7 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	if po.Tag != in.Info.Tag {
 		return nil, nil, errors.Parameter.AddMsg("功能标签不支持修改")
 	}
-	newPo := ToProductSchemaPo(in.Info)
+	newPo := logic.ToProductSchemaPo(in.Info)
 	newPo.ID = po.ID
 	newPo.Tag = po.Tag
 	if in.Info.Affordance == nil {

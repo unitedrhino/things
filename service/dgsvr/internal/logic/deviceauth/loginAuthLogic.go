@@ -8,7 +8,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"time"
 
 	"github.com/i-Things/things/service/dgsvr/internal/svc"
@@ -114,10 +114,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dg.LoginAuthReq) (*dg.Response, error) {
 		return nil, errors.SignatureExpired
 	}
 
-	di, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
-		ProductID:  lg.ProductID,
-		DeviceName: lg.DeviceName,
-	})
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(lg.ProductID, lg.DeviceName))
 	if err != nil {
 		return nil, err
 	}

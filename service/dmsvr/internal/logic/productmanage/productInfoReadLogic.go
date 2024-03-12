@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -33,5 +34,5 @@ func (l *ProductInfoReadLogic) ProductInfoRead(in *dm.ProductInfoReadReq) (*dm.P
 	if err != nil {
 		return nil, err
 	}
-	return ToProductInfo(l.ctx, l.svcCtx, pi), nil
+	return logic.ToProductInfo(l.ctx, l.svcCtx, pi), nil
 }

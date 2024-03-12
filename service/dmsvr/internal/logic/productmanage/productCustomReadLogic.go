@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -48,6 +49,6 @@ func (l *ProductCustomReadLogic) ProductCustomRead(in *dm.ProductCustomReadReq) 
 		ScriptLang:      pi.ScriptLang,
 		TransformScript: utils.ToRpcNullString(pi.TransformScript),
 		LoginAuthScript: utils.ToRpcNullString(pi.LoginAuthScript),
-		CustomTopics:    ToCustomTopicsPb(pi.CustomTopics),
+		CustomTopics:    logic.ToCustomTopicsPb(pi.CustomTopics),
 	}, nil
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gitee.com/i-Things/share/eventBus"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -29,7 +30,7 @@ func NewProtocolInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 // 协议创建
 func (l *ProtocolInfoCreateLogic) ProtocolInfoCreate(in *dm.ProtocolInfo) (*dm.WithID, error) {
-	po := ToProtocolInfoPo(in)
+	po := logic.ToProtocolInfoPo(in)
 	if err := protocol.Check(po.ConfigFields, po.ConfigInfos); err != nil {
 		return nil, err
 	}

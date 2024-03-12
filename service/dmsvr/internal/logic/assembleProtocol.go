@@ -1,4 +1,4 @@
-package protocolmanagelogic
+package logic
 
 import (
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"

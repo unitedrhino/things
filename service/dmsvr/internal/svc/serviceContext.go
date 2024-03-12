@@ -13,6 +13,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/schemaDataRepo"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/sendLogRepo"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/statusLogRepo"
+	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
@@ -55,6 +56,8 @@ type ServiceContext struct {
 	ServerMsg      *eventBus.FastEvent
 	AreaM          areamanage.AreaManage
 	ProjectM       projectmanage.ProjectManage
+	ProductCache   *caches.Cache[dm.ProductInfo]
+	DeviceCache    *caches.Cache[dm.DeviceInfo]
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -91,7 +94,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 
 	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model]{
-		KeyType:   "dm:schema",
+		KeyType:   eventBus.ServerCacheKeyDmSchema,
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
 			db := relationDB.NewProductSchemaRepo(ctx)

@@ -93,5 +93,4 @@ func (l *ProductInitLogic) initOne(in *relationDB.DmProductInfo) error {
 		}
 	}
 	return nil
-
 }
