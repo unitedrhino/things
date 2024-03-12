@@ -90,8 +90,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
 	logx.Must(err)
 
-	ccSchemaR := caches.NewCache(caches.CacheConfig[schema.Model]{
-		KeyType:   "dm.schema",
+	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model]{
+		KeyType:   "dm:schema",
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
 			db := relationDB.NewProductSchemaRepo(ctx)
@@ -104,6 +104,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		},
 		ExpireTime: 10 * time.Minute,
 	})
+	logx.Must(err)
 	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetData, ca)
 	pd, err := pubDev.NewPubDev(c.Event)
 	if err != nil {

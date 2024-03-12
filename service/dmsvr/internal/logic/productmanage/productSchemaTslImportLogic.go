@@ -45,17 +45,23 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 		return nil, err
 	}
 	{ //更新td物模型表
-		oldT, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
+
+		db := relationDB.NewProductSchemaRepo(l.ctx)
+		dbSchemas, err := db.FindByFilter(l.ctx, relationDB.ProductSchemaFilter{ProductID: in.ProductID}, nil)
 		if err != nil {
-			l.Errorf("%s.SchemaManaRepo.GetSchemaModel failure,err:%v", utils.FuncName(), err)
 			return nil, err
 		}
+		oldT := relationDB.ToSchemaDo(in.ProductID, dbSchemas)
 		if err := l.svcCtx.SchemaManaRepo.DeleteProduct(l.ctx, oldT, in.ProductID); err != nil {
 			l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 			return nil, err
 		}
 		if err := l.svcCtx.SchemaManaRepo.InitProduct(l.ctx, t, in.ProductID); err != nil {
 			l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+			return nil, err
+		}
+		if err := db.MultiUpdate(l.ctx, in.ProductID, t); err != nil {
+			l.Errorf("%s.db.MultiUpdate failure,err:%v", utils.FuncName(), err)
 			return nil, err
 		}
 	}

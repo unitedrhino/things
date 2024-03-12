@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type ProductSchemaRepo struct {
@@ -109,4 +110,39 @@ func (p ProductSchemaRepo) CountByFilter(ctx context.Context, f ProductSchemaFil
 	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
+}
+
+// 批量插入 LightStrategyDevice 记录
+func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmProductSchema) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmProductSchema{}).Create(data).Error
+	return stores.ErrFmt(err)
+}
+
+func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, schemaInfo *schema.Model) error {
+	var datas []*DmProductSchema
+	for _, item := range schemaInfo.Property {
+		datas = append(datas, ToPropertyPo(productID, item))
+	}
+	for _, item := range schemaInfo.Event {
+		datas = append(datas, ToEventPo(productID, item))
+	}
+	for _, item := range schemaInfo.Action {
+		datas = append(datas, ToActionPo(productID, item))
+	}
+	err := p.db.Transaction(func(tx *gorm.DB) error {
+		rm := NewProductSchemaRepo(tx)
+		err := rm.DeleteByFilter(ctx, ProductSchemaFilter{ProductID: productID})
+		if err != nil {
+			return err
+		}
+		if len(datas) != 0 {
+			err = rm.MultiInsert(ctx, datas)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+	return stores.ErrFmt(err)
 }

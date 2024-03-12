@@ -40,7 +40,7 @@ func InitSubscribe(svcCtx *svc.ServiceContext) {
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	svcCtx.ServerMsg.Subscribe(eventBus.DmDeviceInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err := svcCtx.ServerMsg.Subscribe(eventBus.DmDeviceInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value devices.Core
 		err := json.Unmarshal(body, &value)
 		if err != nil {
@@ -53,6 +53,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.WithContext(ctx).Infof("DeviceGroupHandle value:%v err:%v", utils.Fmt(value), err)
 		return err
 	})
-	err := svcCtx.ServerMsg.Start()
+	logx.Must(err)
+	err = svcCtx.ServerMsg.Start()
 	logx.Must(err)
 }

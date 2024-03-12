@@ -21,21 +21,23 @@ func Init(svcCtx *svc.ServiceContext) {
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
+	err := svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
 		if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
 			return nil
 		}
 		th := timerEvent.NewTimerHandle(ctx, svcCtx)
 		return th.DeviceTimer()
 	})
-	svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
+	logx.Must(err)
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
 		if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
 			return nil
 		}
 		th := timerEvent.NewTimerHandle(ctx, svcCtx)
 		return th.SceneTiming()
 	})
-	err := svcCtx.FastEvent.Start()
+	logx.Must(err)
+	err = svcCtx.FastEvent.Start()
 	logx.Must(err)
 }
 

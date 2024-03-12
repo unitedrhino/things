@@ -23,11 +23,6 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdat
 	}
 }
 
-func (d *DataUpdateLogic) ProductSchemaUpdate(info *events.DeviceUpdateInfo) error {
-	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
-	return d.svcCtx.SchemaRepo.ClearCache(d.ctx, info.ProductID)
-}
-
 func (d *DataUpdateLogic) SceneInfoDelete(info *events.ChangeInfo) error {
 	d.Infof("%s DeviceUpdateInfo:%v", utils.FuncName(), info)
 	return d.svcCtx.SceneTimerControl.Delete(info.ID)
