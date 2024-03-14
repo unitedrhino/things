@@ -3,6 +3,7 @@ package dmExport
 import (
 	"context"
 	"gitee.com/i-Things/share/caches"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/eventBus"
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/client/productmanage"
@@ -33,6 +34,20 @@ func NewDeviceInfoCache(devM devicemanage.DeviceManage, fastEvent *eventBus.Fast
 			productID, deviceName, _ := strings.Cut(key, ":")
 			ret, err := devM.DeviceInfoRead(ctx, &dm.DeviceInfoReadReq{ProductID: productID, DeviceName: deviceName})
 			return ret, err
+		},
+	})
+}
+
+func NewSchemaInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (*caches.Cache[schema.Model], error) {
+	return caches.NewCache(caches.CacheConfig[schema.Model]{
+		KeyType:   eventBus.ServerCacheKeyDmSchema,
+		FastEvent: fastEvent,
+		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
+			info, err := pm.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: key})
+			if err != nil {
+				return nil, err
+			}
+			return schema.ValidateWithFmt([]byte(info.Tsl))
 		},
 	})
 }

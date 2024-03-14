@@ -34,6 +34,8 @@ AuthWhite:
   Users:
     - UserName: dgsvr
       Password: iThings
+    - UserName: pwumeisvr
+      Password: iThings
 OssConf:
   OssType: minio
   PublicBucketName: ithings-public

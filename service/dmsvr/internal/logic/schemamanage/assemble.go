@@ -8,6 +8,7 @@ import (
 
 func ToCommonSchemaRpc(info *relationDB.DmCommonSchema) *dm.CommonSchemaInfo {
 	db := &dm.CommonSchemaInfo{
+		Id:                info.ID,
 		Type:              info.Type,
 		Identifier:        info.Identifier,
 		ExtendConfig:      info.ExtendConfig,

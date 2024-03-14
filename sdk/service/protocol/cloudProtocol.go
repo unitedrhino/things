@@ -50,7 +50,7 @@ const (
 type GetProductsFunc[pConf ConfImp] func(ctx context.Context, conf pConf) ([]*ProductInfo[pConf], error)
 type GetDevicesFunc[pConf ConfImp] func(ctx context.Context, conf pConf, productID string) ([]*DeviceInfo, error)
 
-type Protocol[pConf ConfImp] struct {
+type CloudProtocol[pConf ConfImp] struct {
 	FastEvent  *eventBus.FastEvent
 	Pi         *dm.ProtocolInfo
 	ServerName string
@@ -83,18 +83,18 @@ type ProductInfo[pConf ConfImp] struct {
 	Conf        pConf
 }
 
-type ProtocolConf[pConf ConfImp] struct {
+type CloudProtocolConf[pConf ConfImp] struct {
 	ServerName string
 	DmClient   zrpc.Client
 	TimedM     zrpc.Client
 }
 
-func NewProtocol[pConf ConfImp](c conf.EventConf, pi *dm.ProtocolInfo, pc *ProtocolConf[pConf]) (*Protocol[pConf], error) {
+func NewCloudProtocol[pConf ConfImp](c conf.EventConf, pi *dm.ProtocolInfo, pc *CloudProtocolConf[pConf]) (*CloudProtocol[pConf], error) {
 	e, err := eventBus.NewFastEvent(c, pc.ServerName)
 	if err != nil {
 		return nil, err
 	}
-	return &Protocol[pConf]{
+	return &CloudProtocol[pConf]{
 		FastEvent:  e,
 		Pi:         pi,
 		ServerName: pc.ServerName,
@@ -111,7 +111,7 @@ func NewProtocol[pConf ConfImp](c conf.EventConf, pi *dm.ProtocolInfo, pc *Proto
 	}, nil
 }
 
-func (p *Protocol[pConf]) DefaultGetProducts() GetProductsFunc[pConf] {
+func (p *CloudProtocol[pConf]) DefaultGetProducts() GetProductsFunc[pConf] {
 	return func(ctx context.Context, conf pConf) (ret []*ProductInfo[pConf], err error) {
 		list, err := p.ProductM.ProductInfoIndex(ctx, &dm.ProductInfoIndexReq{ProtocolCode: p.Pi.Code})
 		if err != nil {
@@ -124,7 +124,7 @@ func (p *Protocol[pConf]) DefaultGetProducts() GetProductsFunc[pConf] {
 	}
 }
 
-func (p *Protocol[pConf]) DefaultGetDevices() GetDevicesFunc[pConf] {
+func (p *CloudProtocol[pConf]) DefaultGetDevices() GetDevicesFunc[pConf] {
 	return func(ctx context.Context, conf pConf, productID string) (ret []*DeviceInfo, err error) {
 		list, err := p.DeviceM.DeviceInfoIndex(ctx, &dm.DeviceInfoIndexReq{ProductID: productID})
 		if err != nil {
@@ -137,7 +137,7 @@ func (p *Protocol[pConf]) DefaultGetDevices() GetDevicesFunc[pConf] {
 	}
 }
 
-func (p *Protocol[pConf]) Start(GetProducts GetProductsFunc[pConf], GetDevices GetDevicesFunc[pConf]) error {
+func (p *CloudProtocol[pConf]) Start(GetProducts GetProductsFunc[pConf], GetDevices GetDevicesFunc[pConf]) error {
 	p.GetProducts = p.DefaultGetProducts()
 	p.GetDevices = p.DefaultGetDevices()
 	if GetProducts != nil {
@@ -178,7 +178,7 @@ func (p *Protocol[pConf]) Start(GetProducts GetProductsFunc[pConf], GetDevices G
 	return nil
 }
 
-func (p *Protocol[pConf]) ConfigChange(ctx context.Context, opt ConfigOpt, c pConf) error {
+func (p *CloudProtocol[pConf]) ConfigChange(ctx context.Context, opt ConfigOpt, c pConf) error {
 	key := c.GenKey()
 	switch opt {
 	case ConfigOptCreate, ConfigOptUpdate:
@@ -231,7 +231,8 @@ func (p *Protocol[pConf]) ConfigChange(ctx context.Context, opt ConfigOpt, c pCo
 	}
 	return nil
 }
-func (p *Protocol[pConf]) ProductInit(ctx context.Context, productID string) error {
+
+func (p *CloudProtocol[pConf]) ProductInit(ctx context.Context, productID string) error {
 	pi := p.productMap[productID]
 	_, err := p.ProductM.ProductInfoRead(ctx, &dm.ProductInfoReadReq{
 		ProductID: productID,
@@ -276,11 +277,11 @@ func (p *Protocol[pConf]) ProductInit(ctx context.Context, productID string) err
 	return nil
 }
 
-func (p *Protocol[pConf]) GetDeviceConf(ctx context.Context, productID string, deviceName string) (pConf, error) {
+func (p *CloudProtocol[pConf]) GetDeviceConf(ctx context.Context, productID string, deviceName string) (pConf, error) {
 	return p.productMap[productID].Conf, nil
 }
 
-func (p *Protocol[pConf]) UpdateConfig(ctx context.Context, c []pConf) error {
+func (p *CloudProtocol[pConf]) UpdateConfig(ctx context.Context, c []pConf) error {
 	var KeySet = map[string]struct{}{}
 	//新增配置
 	for _, v := range c {
@@ -312,7 +313,7 @@ func (p *Protocol[pConf]) UpdateConfig(ctx context.Context, c []pConf) error {
 	return nil
 }
 
-func (p *Protocol[pConf]) RegisterDeviceMsgDownHandler(
+func (p *CloudProtocol[pConf]) RegisterDeviceMsgDownHandler(
 	handle func(ctx context.Context, info *devices.InnerPublish) error) error {
 	err := p.FastEvent.QueueSubscribe(fmt.Sprintf(topics.DeviceDownAll, p.Pi.Code),
 		func(ctx context.Context, t time.Time, body []byte) error {
@@ -325,13 +326,13 @@ func (p *Protocol[pConf]) RegisterDeviceMsgDownHandler(
 	return err
 }
 
-func (p *Protocol[pConf]) RegisterInitHandler(
+func (p *CloudProtocol[pConf]) RegisterInitHandler(
 	handle func(conf pConf) (close func(), err error)) error {
 	p.InitFunc = handle
 	return nil
 }
 
-func (p *Protocol[pConf]) RegisterGetProductWithDevice() error {
+func (p *CloudProtocol[pConf]) RegisterGetProductWithDevice() error {
 	err := p.FastEvent.Subscribe(fmt.Sprintf(eventBus.DmProtocolInfoUpdate, p.Pi.Code),
 		func(ctx context.Context, t time.Time, body []byte) error {
 			var conf []pConf
@@ -345,7 +346,7 @@ func (p *Protocol[pConf]) RegisterGetProductWithDevice() error {
 	return err
 }
 
-func (p *Protocol[pConf]) RegisterConfigChange() error {
+func (p *CloudProtocol[pConf]) RegisterConfigChange() error {
 	err := p.FastEvent.Subscribe(fmt.Sprintf(eventBus.DmProtocolInfoUpdate, p.Pi.Code),
 		func(ctx context.Context, t time.Time, body []byte) error {
 			var conf []pConf
@@ -359,16 +360,16 @@ func (p *Protocol[pConf]) RegisterConfigChange() error {
 	return err
 }
 
-func (p *Protocol[pConf]) genCode() string {
+func (p *CloudProtocol[pConf]) genCode() string {
 	return fmt.Sprintf("protocol-%s-timer", p.Pi.Code)
 }
 
-func (p *Protocol[pConf]) genTimerTopic() string {
+func (p *CloudProtocol[pConf]) genTimerTopic() string {
 	return fmt.Sprintf("server.things.%s.protocol.timer", p.ServerName)
 }
 
 // 定时同步设备信息,产品信息 如果不需要可以不注册
-func (p *Protocol[pConf]) RegisterTimerHandler(f func(ctx context.Context, t time.Time) error) error {
+func (p *CloudProtocol[pConf]) RegisterTimerHandler(f func(ctx context.Context, t time.Time) error) error {
 	ctx := context.Background()
 	_, err := p.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 		GroupCode: def.TimedIThingsQueueGroupCode,                                //组编码
@@ -389,7 +390,8 @@ func (p *Protocol[pConf]) RegisterTimerHandler(f func(ctx context.Context, t tim
 	})
 	return err
 }
-func (p *Protocol[pConf]) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
+
+func (p *CloudProtocol[pConf]) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
 	publishMsg.ProtocolCode = p.Pi.Code
 	err := p.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), publishMsg)
 	if err != nil {

@@ -19,6 +19,7 @@ type ProductFilter struct {
 	Tags         map[string]string
 	WithProtocol bool
 	WithCategory bool
+	ProtocolCode string
 }
 
 func NewProductInfoRepo(in any) *ProductInfoRepo {
@@ -29,6 +30,9 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	db := p.db.WithContext(ctx)
 	if f.DeviceType != 0 {
 		db = db.Where("device_type=?", f.DeviceType)
+	}
+	if f.ProtocolCode != "" {
+		db = db.Where("protocol_code=?", f.ProtocolCode)
 	}
 	if f.WithProtocol {
 		db = db.Preload("Protocol")

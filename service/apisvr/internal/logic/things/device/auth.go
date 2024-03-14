@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dgsvr/client/deviceauth"
@@ -21,11 +22,13 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 	}
 	var wait sync.WaitGroup
 	var succ bool
+	var runCtx, cancel = context.WithCancel(ctx)
 	for _, v := range pi.List {
 		wait.Add(1)
 		go func(v *dm.ProtocolInfo) {
+			utils.Recover(ctx)
 			defer wait.Done()
-			var conf zrpc.RpcClientConf
+			var conf = svcCtx.Config.DgRpc.Conf
 			if v.EtcdKey != "" {
 				conf.Etcd = svcCtx.Config.Etcd
 				conf.Etcd.Key = v.EtcdKey
@@ -36,12 +39,12 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 			}
 			cli, err := zrpc.NewClient(conf)
 			if err != nil {
-				logx.WithContext(ctx).Errorf("NewClient ProtocolInfo:%#v err:%v", v, err)
+				logx.WithContext(runCtx).Errorf("NewClient ProtocolInfo:%#v err:%v", v, err)
 				return
 			}
 			defer cli.Conn().Close()
 			da := deviceauth.NewDeviceAuth(cli)
-			_, err = da.LoginAuth(ctx, &dg.LoginAuthReq{Username: req.Username, //用户名
+			_, err = da.LoginAuth(runCtx, &dg.LoginAuthReq{Username: req.Username, //用户名
 				Password:    req.Password, //密码
 				ClientID:    req.ClientID, //clientID
 				Ip:          req.Ip,       //访问的ip地址
@@ -49,9 +52,11 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 			})
 			if err == nil {
 				succ = true
+				cancel()
 			}
 		}(v)
 	}
+	wait.Wait()
 	if succ {
 		return nil
 	}
@@ -64,11 +69,12 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 	}
 	var wait sync.WaitGroup
 	var succ bool
+	var runCtx, cancel = context.WithCancel(ctx)
 	for _, v := range pi.List {
 		wait.Add(1)
 		go func(v *dm.ProtocolInfo) {
 			defer wait.Done()
-			var conf zrpc.RpcClientConf
+			var conf = svcCtx.Config.DgRpc.Conf
 			if v.EtcdKey != "" {
 				conf.Etcd = svcCtx.Config.Etcd
 				conf.Etcd.Key = v.EtcdKey
@@ -79,12 +85,12 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 			}
 			cli, err := zrpc.NewClient(conf)
 			if err != nil {
-				logx.WithContext(ctx).Errorf("NewClient ProtocolInfo:%#v err:%v", v, err)
+				logx.WithContext(runCtx).Errorf("NewClient ProtocolInfo:%#v err:%v", v, err)
 				return
 			}
 			defer cli.Conn().Close()
 			da := deviceauth.NewDeviceAuth(cli)
-			_, err = da.AccessAuth(ctx, &dg.AccessAuthReq{
+			_, err = da.AccessAuth(runCtx, &dg.AccessAuthReq{
 				Username: req.Username,
 				Topic:    req.Topic,
 				ClientID: req.ClientID,
@@ -92,11 +98,13 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 				Ip:       req.Ip,
 			})
 			if err == nil {
-				logx.WithContext(ctx).Infof("AccessAuth ProtocolInfo:%#v succ", v)
+				logx.WithContext(runCtx).Infof("AccessAuth ProtocolInfo:%#v succ", v)
 				succ = true
+				cancel()
 			}
 		}(v)
 	}
+	wait.Wait()
 	if succ {
 		return nil
 	}
