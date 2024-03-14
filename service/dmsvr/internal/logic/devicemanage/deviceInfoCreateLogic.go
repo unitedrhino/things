@@ -88,10 +88,14 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	} else if find == false {
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.ProductID))
 	}
-
-	projectID := stores.ProjectID(ctxs.GetUserCtxNoNil(l.ctx).ProjectID)
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	projectID := stores.ProjectID(uc.ProjectID)
 	if projectID == 0 { //如果没有传项目,则分配到未分类项目中
-		projectID = def.NotClassified
+		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, uc.TenantCode)
+		if err != nil {
+			return nil, err
+		}
+		projectID = stores.ProjectID(ti.DefaultProjectID)
 	}
 	di := relationDB.DmDeviceInfo{
 		ProjectID:  projectID,
