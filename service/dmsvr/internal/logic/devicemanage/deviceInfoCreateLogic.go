@@ -110,18 +110,25 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	} else {
 		di.Secret = utils.GetRandomBase64(20)
 	}
+
 	di.Tags = in.Tags
 	if di.Tags == nil {
 		di.Tags = map[string]string{}
 	}
+
 	di.SchemaAlias = in.SchemaAlias
 	if di.SchemaAlias == nil {
 		di.SchemaAlias = map[string]string{}
 	}
 
+	if in.Rssi != nil {
+		di.Rssi = in.Rssi.GetValue()
+	}
+
 	if in.LogLevel != def.Unknown {
 		di.LogLevel = def.LogClose
 	}
+
 	if in.Address != nil {
 		di.Address = in.Address.Value
 	}
@@ -129,6 +136,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if in.DeviceAlias != nil {
 		di.DeviceAlias = in.DeviceAlias.Value
 	}
+
 	if in.MobileOperator != 0 {
 		di.MobileOperator = in.MobileOperator
 	}
@@ -136,9 +144,11 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if in.Iccid != nil {
 		di.Iccid = utils.AnyToNullString(in.Iccid)
 	}
+
 	if in.Phone != nil {
 		di.Phone = utils.AnyToNullString(in.Phone)
 	}
+
 	err = l.InitDevice(devices.Info{
 		ProductID:  di.ProductID,
 		DeviceName: di.DeviceName,

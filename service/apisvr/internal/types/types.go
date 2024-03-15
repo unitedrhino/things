@@ -1465,7 +1465,7 @@ type WithID struct {
 
 type WithIDChildren struct {
 	ID           int64 `json:"id,optional"` // id
-	WithChildren bool  `json:withChildren,optional`
+	WithChildren bool  `json:"withChildren,optional"`
 }
 
 type WithIDOrCode struct {

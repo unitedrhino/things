@@ -2,20 +2,26 @@ package protocol
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/timex"
+	"strings"
 	"time"
 )
 
 type DevHandle func(ctx context.Context, topic string, payload []byte) error
+
+type ConnHandle func(ctx context.Context, info devices.DevConn) (devices.DevConn, error)
 
 type MqttProtocol struct {
 	*LightProtocol
@@ -72,6 +78,71 @@ func (m *MqttProtocol) subscribes(cli mqtt.Client) error {
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+type (
+	//登录登出消息
+	ConnectMsg struct {
+		UserName string `json:"username"`
+		Ts       int64  `json:"ts"`
+		Address  string `json:"ipaddress"`
+		ClientID string `json:"clientid"`
+		Reason   string `json:"reason"`
+	}
+)
+
+const (
+	ActionConnected    = "connected"
+	ActionDisconnected = "disconnected"
+)
+
+func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
+	newTopic := fmt.Sprintf("$share/%s/%s", m.ServerName, "$SYS/brokers/+/clients/#")
+	m.DevSubHandle[newTopic] = func(ctx context.Context, topic string, payload []byte) error {
+		var (
+			msg ConnectMsg
+			err error
+		)
+		err = json.Unmarshal(payload, &msg)
+		if err != nil {
+			logx.Error(err)
+			return err
+		}
+		do := devices.DevConn{
+			UserName:  msg.UserName,
+			Timestamp: msg.Ts, //毫秒时间戳
+			Address:   msg.Address,
+			ClientID:  msg.ClientID,
+			Reason:    msg.Reason,
+		}
+		if strings.HasSuffix(topic, "/disconnected") {
+			logx.WithContext(ctx).Infof("%s.disconnected topic:%v message:%v err:%v",
+				utils.FuncName(), topic, string(payload), err)
+			do.Action = ActionDisconnected
+		} else {
+			do.Action = ActionConnected
+			logx.WithContext(ctx).Infof("%s.connected topic:%v message:%v err:%v",
+				utils.FuncName(), topic, string(payload), err)
+		}
+		newDo, err := handle(ctx, do)
+		if err != nil {
+			return err
+		}
+		switch do.Action {
+		case ActionConnected:
+			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, newDo)
+		case ActionDisconnected:
+			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, newDo)
+		default:
+			panic("not support conn type")
+		}
+		if err != nil {
+			logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
+			return err
+		}
+		return err
 	}
 	return nil
 }

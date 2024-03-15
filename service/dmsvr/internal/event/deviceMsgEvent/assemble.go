@@ -98,7 +98,7 @@ func ToParamValue(p msgThing.Param) (any, error) {
 func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDeviceInfoReq *dm.DeviceInfo) {
 	var position *dm.Point
 	if p := diDeviceBasicInfoDo.Position; p != nil {
-		gcp := utils.PositionToBaidu(*p)
+		gcp := utils.PositionToMars(*p)
 		position = &dm.Point{Longitude: gcp.Longitude, Latitude: gcp.Latitude}
 	}
 
@@ -112,5 +112,7 @@ func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDevice
 		SoftInfo:   diDeviceBasicInfoDo.SoftInfo,
 		Position:   position,
 		Tags:       diDeviceBasicInfoDo.Tags,
+		Rssi:       utils.ToRpcNullInt64(diDeviceBasicInfoDo.Rssi),
+		Iccid:      utils.ToRpcNullString(diDeviceBasicInfoDo.Iccid),
 	}
 }

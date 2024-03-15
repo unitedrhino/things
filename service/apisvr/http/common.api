@@ -19,7 +19,7 @@ type(
     }
     WithIDChildren{
         ID int64 `json:"id,optional"`         // id
-        WithChildren bool `json:withChildren,optional`
+        WithChildren bool `json:"withChildren,optional"`
     }
     WithIDOrCode{
         ID int64 `json:"id,optional"`         // id

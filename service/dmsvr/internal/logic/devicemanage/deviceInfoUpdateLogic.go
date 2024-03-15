@@ -104,6 +104,10 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		old.SoftInfo = data.SoftInfo
 	}
 
+	if data.Rssi != nil {
+		old.Rssi = data.Rssi.GetValue()
+	}
+
 	if data.IsOnline != def.Unknown {
 		old.IsOnline = data.IsOnline
 		if data.IsOnline == def.True { //需要处理第一次上线的情况,一般在网关代理登录时需要处理

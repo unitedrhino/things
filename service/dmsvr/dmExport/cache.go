@@ -42,6 +42,9 @@ func NewSchemaInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.Fast
 	return caches.NewCache(caches.CacheConfig[schema.Model]{
 		KeyType:   eventBus.ServerCacheKeyDmSchema,
 		FastEvent: fastEvent,
+		Fmt: func(ctx context.Context, key string, data *schema.Model) {
+			data.ValidateWithFmt()
+		},
 		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
 			info, err := pm.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: key})
 			if err != nil {

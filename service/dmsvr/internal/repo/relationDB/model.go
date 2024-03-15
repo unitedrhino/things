@@ -36,6 +36,7 @@ type DmDeviceInfo struct {
 	Address        string            `gorm:"column:address;type:varchar(512);NOT NULL"`                                       // 所在地址
 	Tags           map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`                     // 设备标签
 	SchemaAlias    map[string]string `gorm:"column:schema_alias;type:json;serializer:json;NOT NULL;default:'{}'"`             //设备物模型别名,如果是结构体类型则key为xxx.xxx
+	Rssi           int64             `gorm:"column:rssi;type:bigint;default:0;NOT NULL"`                                      // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
 
 	IsOnline   int64        `gorm:"column:is_online;type:smallint;default:2;NOT NULL"` // 是否在线,1是2否
 	FirstLogin sql.NullTime `gorm:"column:first_login"`                                // 激活时间

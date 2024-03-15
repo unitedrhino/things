@@ -107,7 +107,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 				return nil, err
 			}
 			schemaModel := relationDB.ToSchemaDo(key, dbSchemas)
+			schemaModel.ValidateWithFmt()
 			return schemaModel, nil
+		},
+		Fmt: func(ctx context.Context, key string, data *schema.Model) {
+			data.ValidateWithFmt()
 		},
 		ExpireTime: 10 * time.Minute,
 	})
