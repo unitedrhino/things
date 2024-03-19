@@ -37,6 +37,7 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 	if server == nil {
 		server = rest.MustNewServer(c.RestConf, rest.WithCustomCors(func(header http.Header) {
 			header.Set("Access-Control-Allow-Headers", ctxs.HttpAllowHeader)
+			header.Set("Access-Control-Allow-Origin", "*")
 		}, nil, "*"))
 		apiCtx.Server = server
 	}

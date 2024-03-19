@@ -25,7 +25,7 @@ type WhenRange struct {
 	TimeRange TimeRange `json:"timeRange"`
 }
 
-func (w *When) Validate() error {
+func (w *When) Validate(repo ValidateRepo) error {
 	if w == nil {
 		return nil
 	}
@@ -35,7 +35,7 @@ func (w *When) Validate() error {
 	if err := w.InvalidRanges.Validate(); err != nil {
 		return err
 	}
-	if err := w.Conditions.Validate(); err != nil {
+	if err := w.Conditions.Validate(repo); err != nil {
 		return err
 	}
 	return nil

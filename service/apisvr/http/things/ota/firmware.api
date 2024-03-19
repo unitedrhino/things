@@ -1,33 +1,107 @@
+syntax = "v1"
+
 info(
     title: "ota升级附件接口"
     desc: "ota升级附件接口"
-    author: "Zev"
-    email: "635665396@qq.com"
+    author: "Hya"
+    email: "1943965929@qq.com"
     version: "v1"
 )
+
 @server(
-    group: things/ota/firmware
-    prefix: /api/v1/things/ota/firmware
+    group: things/ota/firmware/info
+    prefix: /api/v1/things/ota/firmware/info
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
+
 service api {
-    @doc "获取升级包列表"
-    @handler index
-    post /index (OtaFirmwareIndexReq) returns (OtaFirmwareIndexResp)
-    @doc "更新升级包"
-    @handler update
-    post /update (OtaFirmwareInfoUpdateReq)
-    @doc "获取升级包详情"
-    @handler read
-    post /read (OtaFirmwareReadReq) returns (OtaFirmwareReadResp)
-    @doc "创建升级包版本"
+    //添加升级包
+    @doc "添加升级包"
     @handler create
-    post /create (OtaFirmwareCreateReq)
-//    @doc "删除升级包"
-//    @handler delete
-//    post /delete (OtaFirmwareDelReq)
-    @doc "获取升级包可选设备信息,包含可用版本"
-    @handler deviceInfoRead
-    post /device-info-read(OtaFirmwareDeviceInfoReq) returns (OtaFirmwareDeviceInfoResp)
+    post /create (FirmwareCreateReq) returns (WithID)
+    //修改升级包
+    @doc "修改升级包"
+    @handler update
+    post /update (FirmwareUpdateReq) returns (WithID)
+    //删除升级包
+    @doc "删除升级包"
+    @handler delete
+    post /delete (WithID) returns ()
+    //升级包列表
+    @doc "升级包列表"
+    @handler index
+    post /index (FirmwareIndexReq) returns (FirmwareIndexResp)
+    //查询升级包
+    @doc "查询升级包"
+    @handler read
+    post /read (WithID) returns (FirmwareInfo)
+}
+
+
+
+// FirmwareFile 表示升级包中的文件信息
+type FirmwareFile  {
+    Name string `json:"name"`
+    FilePath string `json:"filePath"`
+    FileMd5 string `json:"fileMd5"`
+    Signature string  `json:"signature"`
+}
+
+// FirmwareCreateReq 表示创建升级包的请求结构
+type FirmwareCreateReq  {
+    ProductID string `json:"productID"`
+    Name string `json:"name"`
+    Version string `json:"version"`
+    SignMethod string `json:"signMethod"`
+    Desc string `json:"desc"`
+    IsDiff int64 `json:"isDiff"`
+    SrcVersion string `json:"srcVersion"`
+    IsNeedToVerify int64 `json:"isNeedToVerify"`
+    Extra string `json:"extra"`
+    FilePaths []string `json:"filePaths"`
+}
+
+
+// OtaFirmwareUpdateReq 表示更新升级包的请求结构
+type FirmwareUpdateReq  {
+    ID int64 `json:"id"`
+    Name string `json:"name,optional"`
+    Desc string `json:"desc,optional"`
+    Extra *string `json:"extra,optional"`
+}
+
+
+
+// OtaFirmwareIndexReq 表示获取升级包列表的请求结构
+type FirmwareIndexReq  {
+    Page *PageInfo `json:"page,optional"`
+    ProductID string `json:"productID,optional"`
+    Name string `json:"name,optional"`
+}
+
+// OtaFirmwareIndexResp 表示获取升级包列表的响应结构
+type FirmwareIndexResp  {
+    List []FirmwareInfo `json:"list"`
+    Total int64 `json:"total"`
+}
+
+
+
+
+// OtaFirmwareReadResp 表示获取升级包详情的响应结构
+type FirmwareInfo  {
+    ID int64 `json:"id"`
+    Name string `json:"name"`
+    Version string `json:"version"`
+    ProductID string `json:"productID"`
+    ProductName string `json:"productName"`
+    Status int `json:"status"`
+    CreatedTime int64 `json:"createdTime,string"`
+    SignMethod string `json:"signMethod"`
+    IsNeedToVerify int64 `json:"isNeedToVerify"`
+    Desc string `json:"desc"`
+    Extra string `json:"extra"`
+    FileList []*FirmwareFile `json:"fileList"`
 }
 type (
     OtaFirmwareIndexReq  {
@@ -41,13 +115,13 @@ type (
         Total int64 `json:"total"`//总数
     }
     OtaFirmwareInfoUpdateReq  {
-        FirmwareID int64 `json:"firmwareID"` //固件升级包编号
+        ID int64 `json:"id"` //固件升级包编号
         Name string `json:"name"`  //升级包名称
         Desc *string  `json:"desc"` //描述
         extData *string `json:"extData"` //自定义数据
     }
     OtaFirmwareIndex  {
-        FirmwareID int64 `json:"firmwareID"` //固件升级包编号
+        ID int64 `json:"id"` //固件升级包编号
         Name string `json:"name"`  //升级包名称
         Version string `json:"version"`  //升级包版本
         ProductID string `json:"productID"`    //产品id
@@ -56,16 +130,14 @@ type (
         CreatedTime int64 `json:"createdTime"`        //创建时间 只读
         SignMethod string `json:"signMethod"` //签名方法
     }
-    OtaFirmwareReadReq  {
-        FirmwareID int64 `json:"firmwareID"` //固件升级包编号
-    }
     OtaFirmwareReadResp  {
-        FirmwareID int64 `json:"firmwareID"` //固件升级包编号
+        ID int64 `json:"id"` //固件升级包编号
         Name string `json:"name"`  //升级包名称
         Version string `json:"version"`  //升级包版本
         ProductID string `json:"productID"`    //产品id
         ProductName string `json:"productName"` //产品名称
         IsDiff int32  `json:"isDiff" enums:"1,2"`  //是否差分包,1:整包,2:差分
+        IsNeedToVerify int64 `json:"isNeedToVerify"`
         CreatedTime int64 `json:"createdTime"`        //创建时间 只读
         SignMethod string `json:"signMethod"` //签名方法
         Desc *string  `json:"desc"` //描述
@@ -96,22 +168,16 @@ type (
         Files []*OtaFirmwareFile  `json:"files"`//升级包附件列表，最多支持上传20个文件，总文件大小不能超过1,000 MB。
     }
     OtaFirmwareFile  {
-        Filepath string `json:"filePath"` //附件地址，上传附件后接口应该返回 
+        Filepath string `json:"filePath"` //附件地址，上传附件后接口应该返回
         Name string `json:"name"` //附件原名，上传附件后接口应该返回
-        //Size int32 `json:"size"` //附件大小，上传附件后接口应该返回
-        //SignValue string `json:"signValue"` //签名，上传附件接口返回
+                                          //Size int32 `json:"size"` //附件大小，上传附件后接口应该返回
+                                          //SignValue string `json:"signValue"` //签名，上传附件接口返回
     }
     OtaFirmwareFileInfo  {
         Uri string `json:"uri"` //附件地址
         Name string `json:"name"` //附件原名
         Size int64 `json:"size"` //文件大小
         Signature string `json:"signature"` //签名值
-    }
-    OtaFirmwareDelReq   {
-        FirmwareID int64 `json:"firmwareID"` //固件升级包编号
-    }
-    OtaFirmwareDeviceInfoReq  {
-        FirmwareID int64 `json:"firmwareID"` //固件升级包编号
     }
     OtaFirmwareDeviceInfoResp  {
         Versions string `json:"versions"`

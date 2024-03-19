@@ -44,7 +44,7 @@ func (l *OtaTaskDeviceProcessLogic) OtaTaskDeviceProcess(in *dm.OtaTaskDevicePro
 	}
 	return &dm.OtaCommonResp{}, nil
 }
-func (l *OtaTaskDeviceProcessLogic) ChangeOtaTaskDevice(old *relationDB.DmOtaTaskDevices, data *dm.OtaTaskDeviceProcessReq) {
+func (l *OtaTaskDeviceProcessLogic) ChangeOtaTaskDevice(old *relationDB.DmOtaTaskDevice, data *dm.OtaTaskDeviceProcessReq) {
 	if data.Desc != "" {
 		old.Desc = data.Desc
 	}

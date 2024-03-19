@@ -21,17 +21,17 @@ type Info struct {
 	Status      int64     `json:"status"`  // 状态（1启用 2禁用）
 }
 
-func (i *Info) Validate() error {
+func (i *Info) Validate(repo ValidateRepo) error {
 
-	err := i.Trigger.Validate()
+	err := i.Trigger.Validate(repo)
 	if err != nil {
 		return err
 	}
-	err = i.When.Validate()
+	err = i.When.Validate(repo)
 	if err != nil {
 		return err
 	}
-	err = i.Then.Validate()
+	err = i.Then.Validate(repo)
 	if err != nil {
 		return err
 	}

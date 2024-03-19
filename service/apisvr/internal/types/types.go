@@ -544,54 +544,30 @@ type DeviceTimerInfoIndexResp struct {
 	Total int64              `json:"total"` //总数(只有分页的时候会返回)
 }
 
-type DynamicUpgradeJobReq struct {
-	FirmwareID       int64    `json:"firmwareId"`       // 固件ID
-	ProductID        string   `json:"productId"`        // 产品ID
-	Tag              Tag      `json:"tag"`              // 标签
-	SrcVersions      []string `json:"srcVersion"`       // 源版本列表
-	RetryInterval    int64    `json:"retryInterval"`    // 重试间隔
-	RetryCount       int64    `json:"retryCount"`       // 重试次数
-	TimeoutInMinutes int64    `json:"timeoutInMinutes"` // 超时时间（分钟）
-	MaximumPerMinute int64    `json:"maximumPerMinute"` // 每分钟最大升级数
-	OverwriteMode    int64    `json:"overwriteMode"`    // 覆盖模式
-	DynamicMode      int64    `json:"dynamicMode"`      // 动态模式
-	NeedPush         int64    `json:"needPush"`         // 是否需要主动推送
-	NeedConfirm      int64    `json:"needConfirm"`      // 是否需要自主控制
-	GroupID          int64    `json:"groupId"`          // 分组ID
-	GroupType        string   `json:"groupType"`        // 分组类型
-	DownloadProtocol string   `json:"downloadProtocol"` // 下载协议
-	MultiModuleMode  string   `json:"multiModuleMode"`  // 多模块模式
-	TargetSelection  int64    `json:"targetSelection"`  // 目标选择
-}
-
 type FirmwareCreateReq struct {
-	ProductID     string          `json:"productID"`
-	FirmwareName  string          `json:"firmwareName"`
-	DestVersion   string          `json:"destVersion"`
-	SignMethod    string          `json:"signMethod"`
-	FirmwareDesc  string          `json:"firmwareDesc"`
-	IsDiff        int64           `json:"isDiff"`
-	Module        string          `json:"module"`
-	SrcVersion    string          `json:"srcVersion"`
-	NeedToVerify  bool            `json:"needToVerify"`
-	FirmwareUdi   string          `json:"firmwareUdi"`
-	FirmwareFiles []*FirmwareFile `json:"firmwareFiles"`
-}
-
-type FirmwareDeleteReq struct {
-	FirmwareID int64 `json:"firmwareId"`
+	ProductID      string   `json:"productID"`
+	Name           string   `json:"name"`
+	Version        string   `json:"version"`
+	SignMethod     string   `json:"signMethod"`
+	Desc           string   `json:"desc"`
+	IsDiff         int64    `json:"isDiff"`
+	SrcVersion     string   `json:"srcVersion"`
+	IsNeedToVerify int64    `json:"isNeedToVerify"`
+	Extra          string   `json:"extra"`
+	FilePaths      []string `json:"filePaths"`
 }
 
 type FirmwareFile struct {
-	Name     string `json:"name"`
-	FilePath string `json:"filePath"`
+	Name      string `json:"name"`
+	FilePath  string `json:"filePath"`
+	FileMd5   string `json:"fileMd5"`
+	Signature string `json:"signature"`
 }
 
 type FirmwareIndexReq struct {
-	Page         *PageInfo `json:"page"`
-	ProductID    string    `json:"productID"`
-	FirmwareName string    `json:"firmwareName"`
-	ModuleName   string    `json:"moduleName"`
+	Page      *PageInfo `json:"page,optional"`
+	ProductID string    `json:"productID,optional"`
+	Name      string    `json:"name,optional"`
 }
 
 type FirmwareIndexResp struct {
@@ -600,42 +576,25 @@ type FirmwareIndexResp struct {
 }
 
 type FirmwareInfo struct {
-	FirmwareID   int64  `json:"firmwareId"`
-	FirmwareName string `json:"firmwareName"`
-	DestVersion  string `json:"destVersion"`
-	ProductID    string `json:"productID"`
-	ProductName  string `json:"productName"`
-	Status       int    `json:"status"`
-	CreatedTime  int64  `json:"createdTime"`
-}
-
-type FirmwareReadReq struct {
-	FirmwareID int64 `json:"firmwareId"`
-}
-
-type FirmwareReadResp struct {
-	FirmwareID       int64           `json:"firmwareId"`
-	FirmwareName     string          `json:"firmwareName"`
-	DestVersion      string          `json:"destVersion"`
-	ProductID        string          `json:"productID"`
-	ProductName      string          `json:"productName"`
-	Status           int             `json:"status"`
-	CreatedTime      int64           `json:"createdTime"`
-	SignMethod       string          `json:"signMethod"`
-	FirmwareDesc     string          `json:"firmwareDesc"`
-	FirmwareUdi      string          `json:"firmwareUdi"`
-	FirmwareFileList []*FirmwareFile `json:"firmwareFileList"`
-}
-
-type FirmwareResp struct {
-	FirmwareID int64 `json:"firmwareID"`
+	ID             int64           `json:"id"`
+	Name           string          `json:"name"`
+	Version        string          `json:"version"`
+	ProductID      string          `json:"productID"`
+	ProductName    string          `json:"productName"`
+	Status         int             `json:"status"`
+	CreatedTime    int64           `json:"createdTime,string"`
+	SignMethod     string          `json:"signMethod"`
+	IsNeedToVerify int64           `json:"isNeedToVerify"`
+	Desc           string          `json:"desc"`
+	Extra          string          `json:"extra"`
+	FileList       []*FirmwareFile `json:"fileList"`
 }
 
 type FirmwareUpdateReq struct {
-	FirmwareID   int64  `json:"firmwareId"`
-	FirmwareName string `json:"firmwareName"`
-	FirmwareDesc string `json:"firmwareDesc"`
-	FirmwareUdi  string `json:"firmwareUdi"`
+	ID    int64   `json:"id"`
+	Name  string  `json:"name,optional"`
+	Desc  string  `json:"desc,optional"`
+	Extra *string `json:"extra,optional"`
 }
 
 type GroupDeviceIndexReq struct {
@@ -688,88 +647,6 @@ type GroupInfoIndexResp struct {
 	Total int64        `json:"total"` //总数(只有分页的时候会返回)
 }
 
-type JobReq struct {
-	JobID int64 `json:"jobId"` // 作业ID
-}
-
-type OTAModuleDeleteReq struct {
-	ModuleName string `json:"moduleName"` // 模块名称
-	ProductID  string `json:"productId"`  // 产品ID
-}
-
-type OTAModuleDetail struct {
-	DeviceName    string `json:"deviceName"`    // 设备名称
-	ModuleName    string `json:"moduleName"`    // 模块名称
-	ModuleVersion string `json:"moduleVersion"` // 模块版本
-	ProductID     string `json:"productId"`     // 产品ID
-}
-
-type OTAModuleIndexReq struct {
-	PageInfo   PageInfo `json:"pageInfo"`   // 分页信息
-	ProductID  string   `json:"productId"`  // 产品ID
-	DeviceName string   `json:"deviceName"` // 设备名称
-}
-
-type OTAModuleIndexResp struct {
-	OtaModuleInfoList []OtaModuleInfo `json:"otaModuleInfoList"` // OTA模块信息列表
-	Total             int64           `json:"total"`             // 总数
-}
-
-type OTAModuleReq struct {
-	ModuleName string `json:"moduleName"` // 模块名称
-	ProductID  string `json:"productId"`  // 产品ID
-	AliasName  string `json:"aliasName"`  // 别名
-	Desc       string `json:"desc"`       // 描述
-}
-
-type OTAModuleVersionsIndexResp struct {
-	OtaModuleDetailList []OTAModuleDetail `json:"otaModuleDetailList"` // OTA模块详细信息列表
-	Total               int64             `json:"total"`               // 总数
-}
-
-type OTATaskByDeviceCancelReq struct {
-	ProductID  string   `json:"productId"`  // 产品ID
-	FirmwareID int64    `json:"firmwareId"` // 固件ID
-	DeviceName []string `json:"deviceName"` // 设备名称列表
-	JobID      int64    `json:"jobId"`      // 作业ID
-}
-
-type OTATaskByJobCancelReq struct {
-	JobID                 int64 `json:"jobId"`                 // 作业ID
-	CancelScheduledTask   int64 `json:"cancelScheduledTask"`   // 取消已计划的任务
-	CancelQueuedTask      int64 `json:"cancelQueuedTask"`      // 取消排队中的任务
-	CancelInProgressTask  int64 `json:"cancelInProgressTask"`  // 取消进行中的任务
-	CancelNotifiedTask    int64 `json:"cancelNotifiedTask"`    // 取消已通知的任务
-	CancelUnconfirmedTask int64 `json:"cancelUnconfirmedTask"` // 取消未确认的任务
-}
-
-type OTATaskByJobIndexReq struct {
-	PageInfo   PageInfo `json:"pageInfo"`   // 分页信息
-	JobID      int64    `json:"jobId"`      // 作业ID
-	TaskStatus int64    `json:"taskStatus"` // 任务状态
-	DeviceName []string `json:"deviceName"` // 设备名称列表
-}
-
-type OTATaskConfirmReq struct {
-	TaskIDList []int64 `json:"taskId"` // 任务ID列表
-}
-
-type OTATaskReUpgradeReq struct {
-	JobID      int64   `json:"jobId"`  // 作业ID
-	TaskIDList []int64 `json:"taskId"` // 任务ID列表
-}
-
-type OTAUnfinishedTaskByDeviceIndexReq struct {
-	ModuleName     string   `json:"moduleName"`     // 模块名称
-	TaskStatusList []string `json:"taskStatusList"` // 任务状态列表
-	ProductID      string   `json:"productId"`      // 产品ID
-	DeviceName     string   `json:"deviceName"`     // 设备名称
-}
-
-type OTAUnfinishedTaskByDeviceIndexResp struct {
-	OtaUpTaskInfoList []OtaUpTaskInfo `json:"otaUpTaskInfoList"` // 未完成OTA任务信息列表
-}
-
 type OpsWorkOrder struct {
 	ID          int64  `json:"id,optional"`
 	Number      string `json:"number,optional"`                           //编号
@@ -804,16 +681,48 @@ type OtaFirmwareCreateReq struct {
 	Files      []*OtaFirmwareFile `json:"files"`              //升级包附件列表，最多支持上传20个文件，总文件大小不能超过1,000 MB。
 }
 
-type OtaFirmwareDelReq struct {
-	FirmwareID int64 `json:"firmwareID"` //固件升级包编号
+type OtaFirmwareDeviceCancelReq struct {
+	FirmwareID  int64    `json:"firmwareID"`
+	JobID       int64    `json:"jobID"`
+	Statuses    []int64  `json:"statuses"`
+	DeviceNames []string `json:"deviceNames"`
 }
 
-type OtaFirmwareDeviceInfoReq struct {
-	FirmwareID int64 `json:"firmwareID"` //固件升级包编号
+type OtaFirmwareDeviceIndexReq struct {
+	PageInfo   *PageInfo `json:"pageInfo,optional"`   // 分页信息
+	JobID      int64     `json:"jobID,optional"`      // 作业ID
+	FirmwareID int64     `json:"firmwareID,optional"` // 任务状态
+	DeviceName string    `json:"deviceName,optional"` // 设备名称
+}
+
+type OtaFirmwareDeviceIndexResp struct {
+	List  []*OtaFirmwareDeviceInfo `json:"list"`  // OTA任务信息列表
+	Total int64                    `json:"total"` // 总数
+}
+
+type OtaFirmwareDeviceInfo struct {
+	ID                    int64  `json:"id"`
+	FirmwareID            int64  `json:"firmwareID"`
+	JobID                 int64  `json:"jobID"`
+	ProductID             string `json:"productID"`
+	ProductName           string `json:"productName"`
+	DeviceName            string `json:"deviceName"`
+	SrcVersion            string `json:"srcVersion"`
+	DestVersion           string `json:"destVersion"`
+	CurrentUpgradePercent int64  `json:"currentUpgradePercent"`
+	Detail                string `json:"detail"`
+	Status                int64  `json:"status"`
+	CreatedTime           int64  `json:"createdTime"`
+	UpdatedTime           int64  `json:"updatedTime"`
 }
 
 type OtaFirmwareDeviceInfoResp struct {
 	Versions string `json:"versions"`
+}
+
+type OtaFirmwareDeviceRetryReq struct {
+	JobID int64   `json:"jobID"`
+	IDs   []int64 `json:"ids"`
 }
 
 type OtaFirmwareFile struct {
@@ -829,7 +738,7 @@ type OtaFirmwareFileInfo struct {
 }
 
 type OtaFirmwareIndex struct {
-	FirmwareID  int64  `json:"firmwareID"`         //固件升级包编号
+	ID          int64  `json:"id"`                 //固件升级包编号
 	Name        string `json:"name"`               //升级包名称
 	Version     string `json:"version"`            //升级包版本
 	ProductID   string `json:"productID"`          //产品id
@@ -865,191 +774,64 @@ type OtaFirmwareInfo struct {
 }
 
 type OtaFirmwareInfoUpdateReq struct {
-	FirmwareID int64   `json:"firmwareID"` //固件升级包编号
-	Name       string  `json:"name"`       //升级包名称
-	Desc       *string `json:"desc"`       //描述
-	ExtData    *string `json:"extData"`    //自定义数据
+	ID      int64   `json:"id"`      //固件升级包编号
+	Name    string  `json:"name"`    //升级包名称
+	Desc    *string `json:"desc"`    //描述
+	ExtData *string `json:"extData"` //自定义数据
 }
 
-type OtaFirmwareReadReq struct {
-	FirmwareID int64 `json:"firmwareID"` //固件升级包编号
+type OtaFirmwareJobDynamic struct {
+	DynamicMode int64 `json:"dynamicMode,optional"` //
+}
+
+type OtaFirmwareJobIndexReq struct {
+	Page       *PageInfo `json:"page"`       // 分页信息
+	FirmwareID int64     `json:"firmwareID"` // 固件ID
+}
+
+type OtaFirmwareJobInfo struct {
+	ID               int64    `json:"id,optional"`
+	FirmwareID       int64    `json:"firmwareID,optional"`       // 升级包ID，升级包的唯一标识符。
+	Type             int64    `json:"type,optional"`             // 升级包所属产品的JobType。 验证升级包:1  批量升级:2
+	Status           int64    `json:"status,optional"`           // 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
+	UpgradeType      int64    `json:"upgradeType,optional"`      // 升级策略，1-静态，2-动态
+	SrcVersions      []string `json:"srcVersions,optional"`      // 待升级版本号列表。最多可传入10个版本号。用逗号分隔多个版本号
+	RetryInterval    int64    `json:"retryInterval,optional"`    // 设备升级失败后，自动重试的时间间隔，单位为分钟。 动态升级 静态升级
+	RetryCount       int64    `json:"retryCount,optional"`       // 自动重试次数。1/2/5次 动态升级 静态升级
+	TimeoutInMinutes int64    `json:"timeoutInMinutes,optional"` // 设备升级超时时间，单位为分钟。 动态升级 静态升级
+	MaximumPerMinute int64    `json:"maximumPerMinute,optional"` // 每分钟最多向多少个设备推送升级包下载URL。 动态升级 静态升级
+	OverwriteMode    int64    `json:"overwriteMode,optional"`    // 是否覆盖之前的升级任务。取值：1（不覆盖）、2（覆盖）。
+	IsNeedPush       int64    `json:"isNeedPush,optional"`       // 物联网平台是否主动向设备推送升级任务。
+	IsNeedConfirm    int64    `json:"isNeedConfirm,optional"`
+	OtaFirmwareJobDynamic
+	OtaFirmwareJobStatic
+}
+
+type OtaFirmwareJobInfoIndexResp struct {
+	List  []*OtaFirmwareJobInfo `json:"list"`  // OTA作业信息列表
+	Total int64                 `json:"total"` // 总数
+}
+
+type OtaFirmwareJobStatic struct {
+	TargetDeviceNames  []string `json:"targetDeviceNames,optional"`  // 定向升级的设备名称列表。最多可传入200个设备名称。以逗号分隔
+	ScheduleFinishTime int64    `json:"scheduleFinishTime,optional"` // 指定结束升级的时间，单位为毫秒。
+	ScheduleTime       int64    `json:"scheduleTime,optional"`
+	TargetSelection    int64    `json:"targetSelection,optional"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级
 }
 
 type OtaFirmwareReadResp struct {
-	FirmwareID  int64                  `json:"firmwareID"`         //固件升级包编号
-	Name        string                 `json:"name"`               //升级包名称
-	Version     string                 `json:"version"`            //升级包版本
-	ProductID   string                 `json:"productID"`          //产品id
-	ProductName string                 `json:"productName"`        //产品名称
-	IsDiff      int32                  `json:"isDiff" enums:"1,2"` //是否差分包,1:整包,2:差分
-	CreatedTime int64                  `json:"createdTime"`        //创建时间 只读
-	SignMethod  string                 `json:"signMethod"`         //签名方法
-	Desc        *string                `json:"desc"`               //描述
-	ExtData     *string                `json:"extData"`            //自定义数据
-	Files       []*OtaFirmwareFileInfo `json:"files"`
-}
-
-type OtaFirmwareVerifyReq struct {
-	FirmwareID       int64    `json:"firmwareId"`       // 固件ID
-	ProductID        string   `json:"productID"`        // 产品ID
-	Tags             []Tag    `json:"tags"`             // 标签列表
-	DeviceNames      []string `json:"deviceNames"`      // 设备名称列表
-	SrcVersions      []string `json:"srcVersion"`       // 源版本列表
-	TimeoutInMinutes int64    `json:"timeoutInMinutes"` // 超时时间（分钟）
-	NeedPush         int64    `json:"needPush"`         // 是否需要主动推送
-	NeedConfirm      int64    `json:"needConfirm"`      // 是否需要自主控制
-	DownloadProtocol string   `json:"downloadProtocol"` // 下载协议
-}
-
-type OtaJobByDeviceIndexReq struct {
-	PageInfo   PageInfo `json:"pageInfo"`   // 分页信息
-	FirmwareID int64    `json:"firmwareId"` // 固件ID
-	ProductID  string   `json:"productId"`  // 产品ID
-	DeviceName string   `json:"deviceName"` // 设备名称
-}
-
-type OtaJobByFirmwareIndexReq struct {
-	PageInfo   PageInfo `json:"pageInfo"`   // 分页信息
-	FirmwareID int64    `json:"firmwareId"` // 固件ID
-}
-
-type OtaJobInfo struct {
-	FirmwareID      int64  `json:"firmwareId"`      // 固件ID
-	JobID           int64  `json:"jobId"`           // 作业ID
-	JobStatus       string `json:"jobStatus"`       // 作业状态
-	JobType         string `json:"jobType"`         // 作业类型
-	ProductID       int64  `json:"productId"`       // 产品ID
-	UpgradeType     string `json:"upgradeType"`     // 升级类型
-	TagList         []Tag  `json:"tagList"`         // 标签列表
-	TargetSelection string `json:"targetSelection"` // 目标选择
-	UtcCreate       string `json:"utcCreate"`       // 作业创建时间
-	UtcEndTime      string `json:"utcEndTime"`      // 作业结束时间
-	UtcModified     string `json:"utcModified"`     // 作业修改时间
-	UtcStartTime    string `json:"utcStartTime"`    // 作业开始时间
-}
-
-type OtaJobInfoIndexResp struct {
-	OtaJobInfoList []OtaJobInfo `json:"otaJobInfo"` // OTA作业信息列表
-	Total          int64        `json:"total"`      // 总数
-}
-
-type OtaModuleInfo struct {
-	AliasName   string `json:"aliasName"`   // 别名
-	Desc        string `json:"desc"`        // 描述
-	GmtCreate   string `json:"gmtCreate"`   // 创建时间
-	GmtModified string `json:"gmtModified"` // 修改时间
-	ModuleName  string `json:"moduleName"`  // 模块名称
-	ProductID   string `json:"productId"`   // 产品ID
-}
-
-type OtaTaskAnalysisReq struct {
-	TaskUid string `json:"taskUid"`
-}
-
-type OtaTaskAnalysisResp struct {
-	Result string `json:"result"` //统计结果,json格式
-}
-
-type OtaTaskByJobIndexResp struct {
-	OtaUpTaskInfoList []OtaUpTaskInfo `json:"otaUpTaskInfo"` // OTA任务信息列表
-	Total             int64           `json:"total"`         // 总数
-}
-
-type OtaTaskCancleReq struct {
-	TaskID int64 `json:"taskID"`
-}
-
-type OtaTaskCreateReq struct {
-	FirmwareID  int64  `json:"firmwareID"`  //固件升级包编号
-	Type        int32  `json:"type"`        //升级范围1全部设备2定向升级
-	UpgradeType int32  `json:"upgradeType"` //升级策略:1静态升级2动态升级
-	DeviceList  string `json:"deviceList"`  //待升级设备列表,["device1","device2",...]
-	VersionList string `json:"versionList"` //待升级版本,["version1","version2",...]
-}
-
-type OtaTaskDeviceCancleReq struct {
-	ID int64 `json:"id"` //特定设备的升级id
-}
-
-type OtaTaskDeviceIndexReq struct {
-	TaskUid    string    `json:"taskUid"`
-	DeviceName string    `json:"deviceName,optional"` //设备编号
-	Status     int32     `json:"status,optional"`     //升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
-	Page       *PageInfo `json:"page,optional"`       //分页信息
-}
-
-type OtaTaskDeviceIndexResp struct {
-	List  []*OtaTaskDeviceInfo `json:"list"`
-	Total int64                `json:"total"` //总数
-}
-
-type OtaTaskDeviceInfo struct {
-	ID          int64  `json:"id"` //
-	TaskUid     string `json:"taskUid"`
-	DeviceName  string `json:"deviceName"`  //设备编号
-	Version     string `json:"version"`     //当前版本
-	Status      int32  `json:"status"`      //升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
-	UpdatedTime int64  `json:"updatedTime"` //状态更新时间 只读
-}
-
-type OtaTaskDeviceRetryReq struct {
-	ID int64 `json:"id"` //特定设备的升级id
-}
-
-type OtaTaskIndexReq struct {
-	FirmwareID int64     `json:"firmwareID"` //固件升级包编号
-	TaskUid    string    `json:"taskUid,optional"`
-	Page       *PageInfo `json:"page,optional"` //分页信息
-}
-
-type OtaTaskIndexResp struct {
-	Total int64          `json:"total"` //总数
-	List  []*OtaTaskInfo `json:"list"`
-}
-
-type OtaTaskInfo struct {
-	TaskID      int64  `json:"taskID"`
-	TaskUid     string `json:"taskUid"`                 //批次号
-	Type        int32  `json:"type" enums:"1,2"`        //升级范围1全部设备2定向升级
-	UpgradeType int32  `json:"upgradeType" enums:"1,2"` //升级策略:1静态升级2动态升级
-	Status      int32  `json:"status"  enums:"1,2,3"`   //升级状态:1未升级2升级中3完成
-	CreatedTime int64  `json:"createdTime"`             //创建时间 只读
-}
-
-type OtaTaskReadReq struct {
-	TaskID int64 `json:"taskID"`
-}
-
-type OtaTaskReadResp struct {
-	TaskID      int64  `json:"taskID"`
-	TaskUid     string `json:"taskUid"`
-	Type        int32  `json:"type"  enums:"1,2"`       //升级范围1全部设备2定向升级
-	UpgradeType int32  `json:"upgradeType" enums:"1,2"` //升级策略:1静态升级2动态升级
-	Version     string `json:"version"`                 //升级包版本
-	SrcVersion  string `json:"srcVersion"`              //待升级版本号
-	SrcDevice   string `json:"srcDevice"`               //待升级设备
-	ProductID   string `json:"productID"`               //产品id
-	ProductName string `json:"productName"`             //产品名称
-	Status      int32  `json:"status" enums:"1,2,3"`    //升级状态:1未升级2升级中3完成
-	AutoRepeat  int32  `json:"autoRepeat"`              //是否自动重试,1:不,2自动重试,最多重试10次
-	CreatedTime int64  `json:"createdTime"`             //创建时间 只读
-}
-
-type OtaUpTaskInfo struct {
-	FirmwareID  int64  `json:"firmwareId"`  // 固件ID
-	JobID       int64  `json:"jobId"`       // 作业ID
-	TaskID      int64  `json:"taskId"`      // 任务ID
-	ProductID   string `json:"productId"`   // 产品ID
-	ProductName string `json:"productName"` // 产品名称
-	Progress    string `json:"progress"`    // 进度
-	SrcVersion  string `json:"srcVersion"`  // 源版本
-	DestVersion string `json:"destVersion"` // 目标版本
-	DeviceName  string `json:"deviceName"`  // 设备名称
-	TaskDesc    string `json:"taskDesc"`    // 任务描述
-	TaskStatus  string `json:"taskStatus"`  // 任务状态
-	Timeout     string `json:"timeout"`     // 超时时间
-	UtcCreate   string `json:"utcCreate"`   // 创建时间（UTC格式）
-	UtcModified string `json:"utcModified"` // 修改时间（UTC格式）
+	ID             int64                  `json:"id"`                 //固件升级包编号
+	Name           string                 `json:"name"`               //升级包名称
+	Version        string                 `json:"version"`            //升级包版本
+	ProductID      string                 `json:"productID"`          //产品id
+	ProductName    string                 `json:"productName"`        //产品名称
+	IsDiff         int32                  `json:"isDiff" enums:"1,2"` //是否差分包,1:整包,2:差分
+	IsNeedToVerify int64                  `json:"isNeedToVerify"`
+	CreatedTime    int64                  `json:"createdTime"` //创建时间 只读
+	SignMethod     string                 `json:"signMethod"`  //签名方法
+	Desc           *string                `json:"desc"`        //描述
+	ExtData        *string                `json:"extData"`     //自定义数据
+	Files          []*OtaFirmwareFileInfo `json:"files"`
 }
 
 type PageInfo struct {
@@ -1374,34 +1156,6 @@ type SlotAreaSaveReq struct {
 	ParentAreaID int64 `json:"parentAreaID,string,optional"` //上级项目区域id（只读）
 }
 
-type StaticUpgradeDeviceInfo struct {
-	DeviceName string `json:"deviceName"` // 设备名称
-	SrcVersion string `json:"srcVersion"` // 源版本
-	ProductID  string `json:"productId"`  // 产品ID
-}
-
-type StaticUpgradeJobReq struct {
-	FirmwareID         int64                     `json:"firmwareId"`         // 固件ID
-	ProductID          string                    `json:"productId"`          // 产品ID
-	Tag                Tag                       `json:"tag"`                // 标签
-	TargetSelection    int64                     `json:"targetSelection"`    // 目标选择
-	ScheduleTime       int64                     `json:"scheduleTime"`       // 计划时间
-	RetryInterval      int64                     `json:"retryInterval"`      // 重试间隔
-	RetryCount         int64                     `json:"retryCount"`         // 重试次数
-	TimeoutInMinutes   int64                     `json:"timeoutInMinutes"`   // 超时时间（分钟）
-	MaximumPerMinute   int64                     `json:"maximumPerMinute"`   // 每分钟最大升级数
-	GrayPercent        int64                     `json:"grayPercent"`        // 灰度升级百分比
-	ScheduleFinishTime int64                     `json:"scheduleFinishTime"` // 计划完成时间
-	OverwriteMode      int64                     `json:"overwriteMode"`      // 覆盖模式
-	NeedPush           int64                     `json:"needPush"`           // 是否需要主动推送
-	NeedConfirm        int64                     `json:"needConfirm"`        // 是否需要自主控制
-	GroupID            int64                     `json:"groupId"`            // 分组ID
-	GroupType          string                    `json:"groupType"`          // 分组类型
-	DownloadProtocol   string                    `json:"downloadProtocol"`   // 下载协议
-	MultiModuleMode    string                    `json:"multiModuleMode"`    // 多模块模式
-	DeviceInfo         []StaticUpgradeDeviceInfo `json:"deviceInfo"`         // 设备信息列表
-}
-
 type Tag struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
@@ -1410,11 +1164,6 @@ type Tag struct {
 type TimeRange struct {
 	Start int64 `json:"start,optional"` //开始时间 unix时间戳
 	End   int64 `json:"end,optional"`   //结束时间 unix时间戳
-}
-
-type UpgradeJobResp struct {
-	JobID     int64  `json:"jobId"`     // 任务ID
-	UtcCreate string `json:"UtcCreate"` // 任务创建时间（UTC格式）
 }
 
 type UserCollectDeviceInfo struct {
@@ -1446,17 +1195,6 @@ type UserDeviceShareInfo struct {
 type UserDeviceShareReadReq struct {
 	ID     int64       `json:"id,optional"`
 	Device *DeviceCore `json:"device,optional"` //设备信息
-}
-
-type VerifyOtaFirmwareReq struct {
-	FirmwareID       int64    `json:"firmwareId"`       // 固件ID
-	ProductID        string   `json:"productID"`        // 产品ID
-	Tags             []Tag    `json:"tags"`             // 标签列表
-	DeviceNames      []string `json:"deviceNames"`      // 设备名称列表
-	TimeoutInMinutes int64    `json:"timeoutInMinutes"` // 超时时间（分钟）
-	NeedPush         int64    `json:"needPush"`         // 是否需要主动推送
-	NeedConfirm      int64    `json:"needConfirm"`      // 是否需要自主控制
-	DownloadProtocol string   `json:"downloadProtocol"` // 下载协议
 }
 
 type WithID struct {

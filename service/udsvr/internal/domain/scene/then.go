@@ -10,12 +10,13 @@ type Then struct {
 	Actions Actions `json:"actions"` //执行内容
 }
 
-func (t *Then) Validate() error {
+func (t *Then) Validate(repo ValidateRepo) error {
 	if t == nil || len(t.Actions) == 0 {
 		return errors.Parameter.AddMsg("需要填写执行内容")
 	}
-	return t.Actions.Validate()
+	return t.Actions.Validate(repo)
 }
+
 func (t *Then) Execute(ctx context.Context, repo ActionRepo) error {
 	for _, v := range t.Actions {
 		err := v.Execute(ctx, repo)

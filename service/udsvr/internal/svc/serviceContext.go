@@ -4,7 +4,9 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
@@ -12,7 +14,9 @@ import (
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/client/devicemsg"
 	"github.com/i-Things/things/service/dmsvr/client/productmanage"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
+	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/i-Things/things/service/udsvr/internal/config"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -21,14 +25,16 @@ import (
 )
 
 type SvrClient struct {
-	ProductM       productmanage.ProductManage
-	DeviceInteract deviceinteract.DeviceInteract
-	DeviceMsg      devicemsg.DeviceMsg
-	DeviceM        devicemanage.DeviceManage
-	DeviceG        devicegroup.DeviceGroup
-	TimedM         timedmanage.TimedManage
-	AreaM          areamanage.AreaManage
-	ProjectM       projectmanage.ProjectManage
+	ProductM           productmanage.ProductManage
+	DeviceInteract     deviceinteract.DeviceInteract
+	DeviceMsg          devicemsg.DeviceMsg
+	DeviceM            devicemanage.DeviceManage
+	DeviceG            devicegroup.DeviceGroup
+	TimedM             timedmanage.TimedManage
+	AreaM              areamanage.AreaManage
+	ProjectM           projectmanage.ProjectManage
+	DeviceCache        *caches.Cache[dm.DeviceInfo]
+	ProductSchemaCache *caches.Cache[schema.Model]
 }
 
 type ServiceContext struct {
@@ -70,19 +76,25 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
 	logx.Must(err)
+	dic, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
+	logx.Must(err)
+	psc, err := dmExport.NewSchemaInfoCache(productM, serverMsg)
+	logx.Must(err)
 	return &ServiceContext{
 		Config:    c,
 		FastEvent: serverMsg,
 		Store:     kv.NewStore(c.CacheRedis),
 		SvrClient: SvrClient{
-			TimedM:         timedM,
-			AreaM:          areaM,
-			ProjectM:       projectM,
-			ProductM:       productM,
-			DeviceInteract: deviceInteract,
-			DeviceMsg:      deviceMsg,
-			DeviceM:        deviceM,
-			DeviceG:        deviceG,
+			TimedM:             timedM,
+			AreaM:              areaM,
+			ProjectM:           projectM,
+			ProductM:           productM,
+			DeviceInteract:     deviceInteract,
+			DeviceMsg:          deviceMsg,
+			DeviceM:            deviceM,
+			DeviceG:            deviceG,
+			DeviceCache:        dic,
+			ProductSchemaCache: psc,
 		},
 	}
 }

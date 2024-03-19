@@ -15,27 +15,27 @@ import (
 2. 完善todo
 */
 
-type OtaFirmwareRepo struct {
+type OtaFirmwareInfoRepo struct {
 	db *gorm.DB
 }
 
-func NewOtaFirmwareRepo(in any) *OtaFirmwareRepo {
-	return &OtaFirmwareRepo{db: stores.GetCommonConn(in)}
+func NewOtaFirmwareInfoRepo(in any) *OtaFirmwareInfoRepo {
+	return &OtaFirmwareInfoRepo{db: stores.GetCommonConn(in)}
 }
 
-type OtaFirmwareFilter struct {
-	ProductID    string
-	FirmwareName string
-	Module       string
-	FirmwareID   int64
-	Version      string
-	WithProduct  bool
+type OtaFirmwareInfoFilter struct {
+	ProductID   string
+	Name        string
+	ID          int64
+	Version     string
+	WithProduct bool
+	WithFiles   bool
 }
 
-func (p OtaFirmwareRepo) fmtFilter(ctx context.Context, f OtaFirmwareFilter) *gorm.DB {
+func (p OtaFirmwareInfoRepo) fmtFilter(ctx context.Context, f OtaFirmwareInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	if f.FirmwareID != 0 {
-		db = db.Where("id=?", f.FirmwareID)
+	if f.ID != 0 {
+		db = db.Where("id=?", f.ID)
 	}
 	if f.ProductID != "" {
 		db = db.Where("product_id=?", f.ProductID)
@@ -43,19 +43,22 @@ func (p OtaFirmwareRepo) fmtFilter(ctx context.Context, f OtaFirmwareFilter) *go
 	if f.Version != "" {
 		db = db.Where("version=?", f.Version)
 	}
-	if f.FirmwareName != "" {
-		db = db.Where("name like ?", "%"+f.FirmwareName+"%")
+	if f.Name != "" {
+		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.WithFiles {
+		db = db.Preload("Files")
 	}
 	return db
 }
 
-func (g OtaFirmwareRepo) Insert(ctx context.Context, data *DmOtaFirmware) error {
+func (g OtaFirmwareInfoRepo) Insert(ctx context.Context, data *DmOtaFirmwareInfo) error {
 	result := g.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g OtaFirmwareRepo) FindOneByFilter(ctx context.Context, f OtaFirmwareFilter) (*DmOtaFirmware, error) {
-	var result DmOtaFirmware
+func (g OtaFirmwareInfoRepo) FindOneByFilter(ctx context.Context, f OtaFirmwareInfoFilter) (*DmOtaFirmwareInfo, error) {
+	var result DmOtaFirmwareInfo
 	db := g.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -63,9 +66,9 @@ func (g OtaFirmwareRepo) FindOneByFilter(ctx context.Context, f OtaFirmwareFilte
 	}
 	return &result, nil
 }
-func (p OtaFirmwareRepo) FindByFilter(ctx context.Context, f OtaFirmwareFilter, page *def.PageInfo) ([]*DmOtaFirmware, error) {
-	var results []*DmOtaFirmware
-	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmware{})
+func (p OtaFirmwareInfoRepo) FindByFilter(ctx context.Context, f OtaFirmwareInfoFilter, page *def.PageInfo) ([]*DmOtaFirmwareInfo, error) {
+	var results []*DmOtaFirmwareInfo
+	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareInfo{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -74,29 +77,29 @@ func (p OtaFirmwareRepo) FindByFilter(ctx context.Context, f OtaFirmwareFilter, 
 	return results, nil
 }
 
-func (p OtaFirmwareRepo) CountByFilter(ctx context.Context, f OtaFirmwareFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmware{})
+func (p OtaFirmwareInfoRepo) CountByFilter(ctx context.Context, f OtaFirmwareInfoFilter) (size int64, err error) {
+	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareInfo{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (g OtaFirmwareRepo) Update(ctx context.Context, data *DmOtaFirmware) error {
+func (g OtaFirmwareInfoRepo) Update(ctx context.Context, data *DmOtaFirmwareInfo) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (g OtaFirmwareRepo) DeleteByFilter(ctx context.Context, f OtaFirmwareFilter) error {
+func (g OtaFirmwareInfoRepo) DeleteByFilter(ctx context.Context, f OtaFirmwareInfoFilter) error {
 	db := g.fmtFilter(ctx, f)
-	err := db.Delete(&DmOtaFirmware{}).Error
+	err := db.Delete(&DmOtaFirmwareInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (g OtaFirmwareRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmOtaFirmware{}).Error
+func (g OtaFirmwareInfoRepo) Delete(ctx context.Context, id int64) error {
+	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmOtaFirmwareInfo{}).Error
 	return stores.ErrFmt(err)
 }
-func (g OtaFirmwareRepo) FindOne(ctx context.Context, id int64) (*DmOtaFirmware, error) {
-	var result DmOtaFirmware
+func (g OtaFirmwareInfoRepo) FindOne(ctx context.Context, id int64) (*DmOtaFirmwareInfo, error) {
+	var result DmOtaFirmwareInfo
 	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -105,7 +108,7 @@ func (g OtaFirmwareRepo) FindOne(ctx context.Context, id int64) (*DmOtaFirmware,
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m OtaFirmwareRepo) MultiInsert(ctx context.Context, data []*DmOtaFirmware) error {
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaFirmware{}).Create(data).Error
+func (m OtaFirmwareInfoRepo) MultiInsert(ctx context.Context, data []*DmOtaFirmwareInfo) error {
+	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaFirmwareInfo{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

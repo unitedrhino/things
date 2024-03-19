@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
@@ -27,11 +28,10 @@ func NewSceneInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 // 场景
 func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, error) {
 	do := ToSceneInfoDo(in)
-	err := do.Validate()
+	err := do.Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache})
 	if err != nil {
 		return nil, err
 	}
-	//校验数据权限 todo
 	po := ToSceneInfoPo(do)
 	relationDB.NewSceneInfoRepo(l.ctx).Insert(l.ctx, po)
 

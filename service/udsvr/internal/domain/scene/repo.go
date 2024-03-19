@@ -1,6 +1,7 @@
 package scene
 
 import (
+	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
@@ -8,6 +9,7 @@ import (
 	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	devicemsg "github.com/i-Things/things/service/dmsvr/client/devicemsg"
+	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 import "context"
 
@@ -33,6 +35,12 @@ type DeviceRepo interface {
 	Update(ctx context.Context, info *Info) error
 	Delete(ctx context.Context, id int64) error
 	GetInfos(ctx context.Context, device devices.Core, operator TriggerDeviceType, dataID string) (Infos, error)
+}
+
+type ValidateRepo struct {
+	Ctx                context.Context
+	DeviceCache        *caches.Cache[dm.DeviceInfo]
+	ProductSchemaCache *caches.Cache[schema.Model]
 }
 
 type WhenRepo interface {

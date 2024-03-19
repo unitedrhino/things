@@ -8,8 +8,6 @@ import (
 	deviceinteract "github.com/i-Things/things/service/dmsvr/internal/server/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
 	devicemsg "github.com/i-Things/things/service/dmsvr/internal/server/devicemsg"
-	firmwaremanage "github.com/i-Things/things/service/dmsvr/internal/server/firmwaremanage"
-	otataskmanage "github.com/i-Things/things/service/dmsvr/internal/server/otataskmanage"
 	productmanage "github.com/i-Things/things/service/dmsvr/internal/server/productmanage"
 	protocolmanage "github.com/i-Things/things/service/dmsvr/internal/server/protocolmanage"
 	remoteconfig "github.com/i-Things/things/service/dmsvr/internal/server/remoteconfig"
@@ -57,8 +55,6 @@ func Run(svcCtx *svc.ServiceContext) {
 		dm.RegisterProtocolManageServer(grpcServer, protocolmanage.NewProtocolManageServer(svcCtx))
 		dm.RegisterDeviceManageServer(grpcServer, devicemanage.NewDeviceManageServer(svcCtx))
 		dm.RegisterProductManageServer(grpcServer, productmanage.NewProductManageServer(svcCtx))
-		dm.RegisterOtaTaskManageServer(grpcServer, otataskmanage.NewOtaTaskManageServer(svcCtx))
-		dm.RegisterFirmwareManageServer(grpcServer, firmwaremanage.NewFirmwareManageServer(svcCtx))
 		dm.RegisterRemoteConfigServer(grpcServer, remoteconfig.NewRemoteConfigServer(svcCtx))
 		dm.RegisterDeviceGroupServer(grpcServer, devicegroup.NewDeviceGroupServer(svcCtx))
 		dm.RegisterDeviceInteractServer(grpcServer, deviceinteract.NewDeviceInteractServer(svcCtx))

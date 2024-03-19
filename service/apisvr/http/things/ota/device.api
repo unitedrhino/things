@@ -1,0 +1,68 @@
+info(
+    title: "ota升级作业接口"
+    desc: "ota升级作业接口"
+    author: "Hya"
+    email: "1943965929@qq.com"
+    version: "v1"
+)
+@server(
+    group: things/ota/firmware/device
+    prefix: /api/v1/things/ota/firmware/device
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api{
+    //查询指定升级批次下的设备升级作业列表
+    @doc "查询指定升级批次下的设备升级作业列表"
+    @handler index
+    post /index(OtaFirmwareDeviceIndexReq) returns(OtaFirmwareDeviceIndexResp)
+    //取消指定批次下的设备升级作业
+    @doc "取消指定批次下的设备升级作业"
+    @handler cancel
+    post /cancel(OtaFirmwareDeviceCancelReq)
+    @doc "重新升级指定批次下升级失败或升级取消的设备升级作业"
+    @handler retry
+    post /retry(OtaFirmwareDeviceRetryReq)
+}
+// OTATaskByJobIndexReq 表示根据作业索引的OTA任务请求。
+type OtaFirmwareDeviceIndexReq  {
+    PageInfo   *PageInfo    `json:"pageInfo,optional"`   // 分页信息
+    JobID      int64        `json:"jobID,optional"`      // 作业ID
+    FirmwareID int64        `json:"firmwareID,optional"` // 任务状态
+    DeviceName string       `json:"deviceName,optional"` // 设备名称
+}
+
+// OtaUpTaskInfo 表示OTA任务的信息。
+type OtaFirmwareDeviceInfo  {
+    ID int64 `json:"id"`
+    FirmwareID int64 `json:"firmwareID"`
+    JobID int64 `json:"jobID"`
+    ProductID string `json:"productID"`
+    ProductName string `json:"productName"`
+    DeviceName string `json:"deviceName"`
+    SrcVersion string `json:"srcVersion"`
+    DestVersion string `json:"destVersion"`
+    CurrentUpgradePercent int64 `json:"currentUpgradePercent"`
+    Detail string `json:"detail"`
+    Status int64 `json:"status"`
+    CreatedTime int64 `json:"createdTime"`
+    UpdatedTime int64 `json:"updatedTime"`
+}
+
+type OtaFirmwareDeviceIndexResp  {
+    List []*OtaFirmwareDeviceInfo `json:"list"` // OTA任务信息列表
+    Total             int64            `json:"total"`          // 总数
+}
+
+// OTATaskByJobCancelReq 表示根据作业取消的OTA任务请求。
+type OtaFirmwareDeviceCancelReq  {
+    FirmwareID int64 `json:"firmwareID"`
+    JobID int64 `json:"jobID"`
+    Statuses []int64 `json:"statuses"`
+    DeviceNames []string `json:"deviceNames"`
+}
+
+// OTATaskByDeviceCancelReq 表示根据设备取消的OTA任务请求。
+type OtaFirmwareDeviceRetryReq  {
+    JobID int64 `json:"jobID"`
+    IDs []int64 `json:"ids"`
+}

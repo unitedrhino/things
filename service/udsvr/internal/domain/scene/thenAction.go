@@ -30,7 +30,7 @@ type Action struct {
 	Device      *ActionDevice     `json:"device,omitempty"`
 }
 
-func (a Actions) Validate() error {
+func (a Actions) Validate(repo ValidateRepo) error {
 	if a == nil {
 		return nil
 	}
@@ -39,7 +39,7 @@ func (a Actions) Validate() error {
 		//if v.ExecuteType == ActionExecutorDevice {
 		//	hasDevice = true
 		//}
-		err := v.Validate()
+		err := v.Validate(repo)
 		if err != nil {
 			return err
 		}
@@ -50,7 +50,7 @@ func (a Actions) Validate() error {
 	return nil
 }
 
-func (a *Action) Validate() error {
+func (a *Action) Validate(repo ValidateRepo) error {
 	if a == nil {
 		return nil
 	}
@@ -68,7 +68,7 @@ func (a *Action) Validate() error {
 		if a.Device == nil {
 			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.ExecuteType))
 		}
-		return a.Device.Validate()
+		return a.Device.Validate(repo)
 	//case ActionExecutorAlarm:
 	//	if a.Alarm == nil {
 	//		return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.ExecuteType))

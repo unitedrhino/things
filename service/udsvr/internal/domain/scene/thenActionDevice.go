@@ -21,18 +21,20 @@ const (
 )
 
 type ActionDevice struct {
-	ProjectID   int64            `json:"-"`             //项目id
-	AreaID      int64            `json:"areaID,string"` //涉及到的区域ID
-	ProductID   string           `json:"productID"`     //产品id
-	SelectType  SelectType       `json:"selector"`      //设备选择方式   fixed:指定的设备
-	DeviceNames []string         `json:"deviceNames"`   //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
-	GroupID     int64            `json:"groupID"`       //分组id
-	Type        ActionDeviceType `json:"type"`          // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
-	DataID      string           `json:"dataID"`        // 属性的id及事件的id
-	Value       string           `json:"value"`         //传的值
+	ProjectID        int64            `json:"-"`                     //项目id
+	AreaID           int64            `json:"areaID,string"`         //涉及到的区域ID
+	ProductID        string           `json:"productID"`             //产品id
+	SelectType       SelectType       `json:"selector"`              //设备选择方式   fixed:指定的设备
+	DeviceName       string           `json:"deviceName"`            //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
+	DeviceAlias      string           `json:"deviceAlias,omitempty"` //设备别名,只读
+	GroupID          int64            `json:"groupID"`               //分组id
+	Type             ActionDeviceType `json:"type"`                  // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
+	DataID           string           `json:"dataID"`                // 属性的id及事件的id
+	SchemaAffordance string           `json:"schemaAffordance"`      //对应的物模型定义,只读
+	Value            string           `json:"value"`                 //传的值
 }
 
-func (a *ActionDevice) Validate() error {
+func (a *ActionDevice) Validate(repo ValidateRepo) error {
 	if a.ProductID == "" {
 		return errors.Parameter.AddMsgf("产品id不能为空:%v", a.ProductID)
 	}
@@ -45,6 +47,16 @@ func (a *ActionDevice) Validate() error {
 	if a.DataID == "" { //todo 这里需要添加校验,是否存在
 		return errors.Parameter.AddMsg("dataID不能为空")
 	}
+	a.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, a.ProductID, a.DeviceName)
+	v, err := repo.ProductSchemaCache.GetData(repo.Ctx, a.ProductID)
+	if err != nil {
+		return err
+	}
+	p := v.Property[a.DataID]
+	if p == nil {
+		return errors.Parameter.AddMsg("dataID不存在")
+	}
+	a.SchemaAffordance = utils.MarshalNoErr(p)
 	if a.Value == "" {
 		return errors.Parameter.AddMsg("传的值不能为空:%v")
 	}
@@ -61,12 +73,6 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 		executeFunc func(device devices.Core) error
 		deviceList  []devices.Core
 	)
-	toCores := func(productID string, deviceNames []string) (ret []devices.Core) {
-		for _, v := range deviceNames {
-			ret = append(ret, devices.Core{ProductID: productID, DeviceName: v})
-		}
-		return
-	}
 
 	toData := func(dataID string, Value any) string {
 		var data = map[string]any{
@@ -107,7 +113,10 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 	}
 	switch a.SelectType {
 	case SelectDeviceFixed:
-		deviceList = toCores(a.ProductID, a.DeviceNames)
+		deviceList = append(deviceList, devices.Core{
+			ProductID:  a.ProductID,
+			DeviceName: a.DeviceName,
+		})
 	case SelectorDeviceAll:
 		ret, err := repo.DeviceM.DeviceInfoIndex(ctx, &devicemanage.DeviceInfoIndexReq{
 			ProductID: a.ProductID,

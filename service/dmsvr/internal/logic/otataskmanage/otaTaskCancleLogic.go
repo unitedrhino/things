@@ -39,7 +39,7 @@ func (l *OtaTaskCancleLogic) OtaTaskCancle(in *dm.OtaTaskCancleReq) (*dm.OtaComm
 	otd.Status = 4
 	err = taskDB.Update(l.ctx, otd)
 	if err == nil {
-		err = relationDB.NewOtaTaskDevicesRepo(l.ctx).CancelByTaskUid(l.ctx, otd.TaskUid)
+		//err = relationDB.NewOtaTaskDevicesRepo(l.ctx).CancelByTaskUid(l.ctx, otd.TaskUid)
 	}
 	return &dm.OtaCommonResp{}, err
 }

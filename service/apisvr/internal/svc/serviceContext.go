@@ -21,12 +21,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/client/devicemsg"
-	firmwaremanage "github.com/i-Things/things/service/dmsvr/client/firmwaremanage"
-	"github.com/i-Things/things/service/dmsvr/client/otafirmwaremanage"
-	"github.com/i-Things/things/service/dmsvr/client/otajobmanage"
-	"github.com/i-Things/things/service/dmsvr/client/otamodulemanage"
-	otataskmanage "github.com/i-Things/things/service/dmsvr/client/otataskmanage"
-	"github.com/i-Things/things/service/dmsvr/client/otaupgradetaskmanage"
+	"github.com/i-Things/things/service/dmsvr/client/otamanage"
 	"github.com/i-Things/things/service/dmsvr/client/productmanage"
 	"github.com/i-Things/things/service/dmsvr/client/protocolmanage"
 	"github.com/i-Things/things/service/dmsvr/client/remoteconfig"
@@ -79,13 +74,8 @@ type ServiceContext struct {
 	CheckApiWare   rest.Middleware
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
-	FirmwareM      firmwaremanage.FirmwareManage
-	OtaFirmwareM   otafirmwaremanage.OTAFirmwareManage
-	OtaTaskM       otataskmanage.OtaTaskManage
+	OtaM           otamanage.OtaManage
 	FileChan       chan int64
-	OtaJobM        otajobmanage.OTAJobManage
-	TaskM          otaupgradetaskmanage.OTAUpgradeTaskManage
-	OtaModuleM     otamodulemanage.OTAModuleManage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -102,12 +92,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg      devicemsg.DeviceMsg
 		deviceInteract deviceinteract.DeviceInteract
 		remoteConfig   remoteconfig.RemoteConfig
-		firmwareM      firmwaremanage.FirmwareManage
-		otaFirmwareM   otafirmwaremanage.OTAFirmwareManage
-		otaTaskM       otataskmanage.OtaTaskManage
-		otaJobM        otajobmanage.OTAJobManage
-		taskM          otaupgradetaskmanage.OTAUpgradeTaskManage
-		otaModuleM     otamodulemanage.OTAModuleManage
+		otaM           otamanage.OtaManage
 		UserDevice     userdevice.UserDevice
 		Rule           rule.Rule
 
@@ -129,13 +114,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
 			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
-			firmwareM = firmwaremanage.NewFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			otaFirmwareM = otafirmwaremanage.NewOTAFirmwareManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			otaTaskM = otataskmanage.NewOtaTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
+			otaM = otamanage.NewOtaManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			protocolM = protocolmanage.NewProtocolManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			otaJobM = otajobmanage.NewOTAJobManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			taskM = otaupgradetaskmanage.NewOTAUpgradeTaskManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			otaModuleM = otamodulemanage.NewOTAModuleManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			schemaM = schemamanage.NewSchemaManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			UserDevice = userdevice.NewUserDevice(zrpc.MustNewClient(c.UdRpc.Conf))
 
@@ -146,14 +126,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 			deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 			remoteConfig = dmdirect.NewRemoteConfig(c.DmRpc.RunProxy)
-			firmwareM = dmdirect.NewFirmwareManage(c.DmRpc.RunProxy)
-			otaFirmwareM = dmdirect.NewOTAFirmwareManage(c.DmRpc.RunProxy)
-			otaTaskM = dmdirect.NewOtaTaskManage(c.DmRpc.RunProxy)
+			otaM = dmdirect.NewOtaManage(c.DmRpc.RunProxy)
 			protocolM = dmdirect.NewProtocolManage(c.DmRpc.RunProxy)
 			schemaM = dmdirect.NewSchemaManage(c.DmRpc.RunProxy)
-			otaJobM = dmdirect.NewOTAJobManage(c.DmRpc.RunProxy)
-			otaModuleM = dmdirect.NewOTAModuleManage(c.DmRpc.RunProxy)
-			taskM = dmdirect.NewOTAUpgradeTaskManage(c.DmRpc.RunProxy)
 			UserDevice = dmdirect.NewUserDevice(c.DmRpc.RunProxy)
 
 		}
@@ -223,13 +198,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		CheckApiWare:   middleware.NewCheckApiWareMiddleware().Handle,
 		Captcha:        captcha,
 		OssClient:      ossClient,
-		FirmwareM:      firmwareM,
-		OtaFirmwareM:   otaFirmwareM,
-		OtaTaskM:       otaTaskM,
+		OtaM:           otaM,
 		Ws:             ws.MustNewServer(c.RestConf),
-		OtaJobM:        otaJobM,
-		OtaModuleM:     otaModuleM,
-		TaskM:          taskM,
 		SvrClient: SvrClient{
 
 			ProtocolM: protocolM,

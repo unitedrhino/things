@@ -21,7 +21,7 @@ type Trigger struct {
 	Timers  Timers         `json:"timers,omitempty"`  //定时触发
 }
 
-func (t *Trigger) Validate() error {
+func (t *Trigger) Validate(repo ValidateRepo) error {
 	if t == nil {
 		return errors.Parameter.AddMsg("需要填写触发内容")
 	}
@@ -39,7 +39,7 @@ func (t *Trigger) Validate() error {
 		if err != nil {
 			return err
 		}
-		err = t.Devices.Validate()
+		err = t.Devices.Validate(repo)
 		if err != nil {
 			return err
 		}

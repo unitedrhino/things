@@ -28,7 +28,7 @@ func NewOtaTaskDeviceEnableBatchLogic(ctx context.Context, svcCtx *svc.ServiceCo
 // 获取当前可执行批次信息
 func (l *OtaTaskDeviceEnableBatchLogic) OtaTaskDeviceEnableBatch(in *dm.OtaTaskBatchReq) (*dm.OtaTaskBatchResp, error) {
 	var (
-		otaTaskDeviceInfo *relationDB.DmOtaTaskDevices
+		otaTaskDeviceInfo *relationDB.DmOtaTaskDevice
 		otDB              = relationDB.NewOtaTaskDevicesRepo(l.ctx)
 	)
 	var err error

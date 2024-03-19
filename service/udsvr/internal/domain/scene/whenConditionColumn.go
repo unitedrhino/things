@@ -22,11 +22,13 @@ const (
 
 // TermProperty 物模型类型 属性
 type TermProperty struct {
-	ProductID  string   `json:"productID"` //产品id
-	DeviceName string   `json:"deviceName"`
-	DataID     string   `json:"dataID"`   //属性的id   aa.bb.cc
-	TermType   CmpType  `json:"termType"` //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values     []string `json:"values"`   //条件值 参数根据动态条件类型会有多个参数
+	ProductID        string   `json:"productID"` //产品id
+	DeviceName       string   `json:"deviceName"`
+	DeviceAlias      string   `json:"deviceAlias"`
+	DataID           string   `json:"dataID"` //属性的id   aa.bb.cc
+	SchemaAffordance string   `json:"schemaAffordance"`
+	TermType         CmpType  `json:"termType"` //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	Values           []string `json:"values"`   //条件值 参数根据动态条件类型会有多个参数
 }
 
 func (t TermColumnType) Validate() error {
@@ -36,7 +38,7 @@ func (t TermColumnType) Validate() error {
 	return nil
 }
 
-func (c *TermProperty) Validate() error {
+func (c *TermProperty) Validate(repo ValidateRepo) error {
 	if c == nil {
 		return nil
 	}
@@ -52,7 +54,16 @@ func (c *TermProperty) Validate() error {
 	if len(c.DataID) == 0 {
 		return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
 	}
-
+	c.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, c.ProductID, c.DeviceName)
+	v, err := repo.ProductSchemaCache.GetData(repo.Ctx, c.ProductID)
+	if err != nil {
+		return err
+	}
+	p := v.Property[c.DataID]
+	if p == nil {
+		return errors.Parameter.AddMsg("dataID不存在")
+	}
+	c.SchemaAffordance = utils.MarshalNoErr(p)
 	return nil
 }
 func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo TermRepo) bool {

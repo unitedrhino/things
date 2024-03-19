@@ -23,7 +23,8 @@ type TriggerDevice struct {
 	ProductID   string               `json:"productID,omitempty"`   //产品id
 	SelectType  SelectType           `json:"selectType"`            //设备选择方式  all: 全部 fixed:指定的设备
 	GroupID     int64                `json:"groupID,omitempty"`     //分组id
-	DeviceNames []string             `json:"deviceNames,omitempty"` //选择的列表  选择的列表, fixed类型是设备名列表
+	DeviceName  string               `json:"deviceName,omitempty"`  //选择的列表  选择的列表, fixedDevice类型是设备名列表
+	DeviceAlias string               `json:"deviceAlias,omitempty"` //设备别名,只读
 	Type        TriggerDeviceType    `json:"type,omitempty"`        //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
 	Schema      *TriggerDeviceSchema `json:"schema,omitempty"`      //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
 }
@@ -37,13 +38,14 @@ const (
 )
 
 type TriggerDeviceSchema struct {
-	DataID    []string   `json:"dataID"`    //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
-	TermType  CmpType    `json:"termType"`  //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values    []string   `json:"values"`    //比较条件列表
-	StateKeep *StateKeep `json:"stateKeep"` //状态保持 todo
+	DataID           string     `json:"dataID"`           //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
+	SchemaAffordance string     `json:"schemaAffordance"` //对应的物模型定义,只读
+	TermType         CmpType    `json:"termType"`         //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	Values           []string   `json:"values"`           //比较条件列表
+	StateKeep        *StateKeep `json:"stateKeep"`        //状态保持 todo
 }
 
-func (t *TriggerDevice) Validate() error {
+func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 	if t == nil {
 		return nil
 	}
@@ -54,16 +56,23 @@ func (t *TriggerDevice) Validate() error {
 		return errors.Parameter.AddMsg("设备触发类型设备选择方式不支持:" + string(t.SelectType))
 	}
 	if !utils.SliceIn(t.Type, TriggerDeviceTypeConnected, TriggerDeviceTypeDisConnected, TriggerDeviceTypeReportProperty) {
-		return errors.Parameter.AddMsg("设备触发的触发类型不支持:" + string(t.Type))
+		return errors.Parameter.AddMsgf("设备触发的触发类型不支持:%s", string(t.Type))
 	}
+	if t.Type == TriggerDeviceTypeReportProperty {
+		if t.Schema == nil {
+			return errors.Parameter.AddMsg("设备触发类型未属性触发需要填写详情")
+		}
+		return t.Schema.Validate(t.ProductID, repo)
+	}
+	t.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, t.ProductID, t.DeviceName)
 	return nil
 }
-func (t TriggerDevices) Validate() error {
+func (t TriggerDevices) Validate(repo ValidateRepo) error {
 	if len(t) == 0 {
 		return nil
 	}
 	for _, v := range t {
-		err := v.Validate()
+		err := v.Validate(repo)
 		if err != nil {
 			return err
 		}
@@ -71,13 +80,22 @@ func (t TriggerDevices) Validate() error {
 	return nil
 }
 
-func (o *TriggerDeviceSchema) Validate() error {
+func (o *TriggerDeviceSchema) Validate(productID string, repo ValidateRepo) error {
 	if o == nil {
 		return nil
 	}
 	if len(o.DataID) == 0 {
 		return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
 	}
+	v, err := repo.ProductSchemaCache.GetData(repo.Ctx, productID)
+	if err != nil {
+		return err
+	}
+	p := v.Property[o.DataID]
+	if p == nil {
+		return errors.Parameter.AddMsg("dataID不存在")
+	}
+	o.SchemaAffordance = utils.MarshalNoErr(p)
 	if err := o.StateKeep.Validate(); err != nil {
 		return err
 	}
@@ -97,11 +115,10 @@ func (t TriggerDevices) IsTriggerWithConn(device devices.Core, operator TriggerD
 		if d.SelectType == SelectorDeviceAll {
 			return true
 		}
-		for _, d := range d.DeviceNames {
-			if d == device.DeviceName {
-				return true
-			}
+		if d.DeviceName == device.DeviceName {
+			return true
 		}
+
 	}
 	return false
 }
@@ -116,12 +133,11 @@ func (t TriggerDevices) IsTriggerWithProperty(reportInfo *application.PropertyRe
 		//判断设备是否命中
 		if d.SelectType != SelectorDeviceAll {
 			var hit bool
-			for _, d := range d.DeviceNames {
-				if d == reportInfo.Device.DeviceName {
-					hit = true
-					break
-				}
+			if d.DeviceName == reportInfo.Device.DeviceName {
+				hit = true
+				break
 			}
+
 			if !hit {
 				return false
 			}
@@ -134,7 +150,7 @@ func (t TriggerDevices) IsTriggerWithProperty(reportInfo *application.PropertyRe
 }
 
 func (o *TriggerDeviceSchema) IsHit(dataID string, param any) bool {
-	if o.DataID[0] != dataID {
+	if o.DataID != dataID {
 		return false
 	}
 	var val = param
@@ -144,7 +160,7 @@ func (o *TriggerDeviceSchema) IsHit(dataID string, param any) bool {
 			return false
 		}
 		st := param.(application.StructValue)
-		v, ok := st[o.DataID[1]]
+		v, ok := st[o.DataID]
 		if !ok { //如果没有获取到该结构体的属性
 			return false
 		}

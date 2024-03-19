@@ -15,34 +15,36 @@ import (
 2. 完善todo
 */
 
-type OtaUpgradeTaskRepo struct {
+type OtaFirmwareDeviceRepo struct {
 	db *gorm.DB
 }
 
-func NewOtaUpgradeTaskRepo(in any) *OtaUpgradeTaskRepo {
-	return &OtaUpgradeTaskRepo{db: stores.GetCommonConn(in)}
+func NewOtaFirmwareDeviceRepo(in any) *OtaFirmwareDeviceRepo {
+	return &OtaFirmwareDeviceRepo{db: stores.GetCommonConn(in)}
 }
 
-type OtaUpgradeTaskFilter struct {
-	Ids              []int64
-	JobId            int64
-	ProductId        string
+type OtaFirmwareDeviceFilter struct {
+	IDs              []int64
+	FirmwareID       int64
+	JobID            int64
+	ProductID        string
 	DeviceName       string
 	DeviceNames      []string
 	WithScheduleTime bool
-	//TaskStatus     int64
+	//Status     int64
 	TaskStatusList []int
-	Module         string
 }
 
-func (p OtaUpgradeTaskRepo) fmtFilter(ctx context.Context, f OtaUpgradeTaskFilter) *gorm.DB {
+func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDeviceFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	//todo 添加条件
-	if f.JobId != 0 {
-		db = db.Where("job_id = ?", f.JobId)
+	if f.FirmwareID != 0 {
+		db = db.Where("firmware_id = ?", f.FirmwareID)
 	}
-	if f.ProductId != "" {
-		db = db.Where("product_id = ?", f.ProductId)
+	if f.JobID != 0 {
+		db = db.Where("job_id = ?", f.JobID)
+	}
+	if f.ProductID != "" {
+		db = db.Where("product_id = ?", f.ProductID)
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")
@@ -56,20 +58,17 @@ func (p OtaUpgradeTaskRepo) fmtFilter(ctx context.Context, f OtaUpgradeTaskFilte
 	if len(f.TaskStatusList) != 0 {
 		db = db.Where("task_status in ?", f.TaskStatusList)
 	}
-	if f.Module != "" {
-		db = db.Where("module = ?", f.Module)
-	}
 
 	return db
 }
 
-func (p OtaUpgradeTaskRepo) Insert(ctx context.Context, data *DmOtaUpgradeTask) error {
+func (p OtaFirmwareDeviceRepo) Insert(ctx context.Context, data *DmOtaFirmwareDevice) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p OtaUpgradeTaskRepo) FindOneByFilter(ctx context.Context, f OtaUpgradeTaskFilter) (*DmOtaUpgradeTask, error) {
-	var result DmOtaUpgradeTask
+func (p OtaFirmwareDeviceRepo) FindOneByFilter(ctx context.Context, f OtaFirmwareDeviceFilter) (*DmOtaFirmwareDevice, error) {
+	var result DmOtaFirmwareDevice
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -77,9 +76,9 @@ func (p OtaUpgradeTaskRepo) FindOneByFilter(ctx context.Context, f OtaUpgradeTas
 	}
 	return &result, nil
 }
-func (p OtaUpgradeTaskRepo) FindByFilter(ctx context.Context, f OtaUpgradeTaskFilter, page *def.PageInfo) ([]*DmOtaUpgradeTask, error) {
-	var results []*DmOtaUpgradeTask
-	db := p.fmtFilter(ctx, f).Model(&DmOtaUpgradeTask{})
+func (p OtaFirmwareDeviceRepo) FindByFilter(ctx context.Context, f OtaFirmwareDeviceFilter, page *def.PageInfo) ([]*DmOtaFirmwareDevice, error) {
+	var results []*DmOtaFirmwareDevice
+	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareDevice{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -88,29 +87,29 @@ func (p OtaUpgradeTaskRepo) FindByFilter(ctx context.Context, f OtaUpgradeTaskFi
 	return results, nil
 }
 
-func (p OtaUpgradeTaskRepo) CountByFilter(ctx context.Context, f OtaUpgradeTaskFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&DmOtaUpgradeTask{})
+func (p OtaFirmwareDeviceRepo) CountByFilter(ctx context.Context, f OtaFirmwareDeviceFilter) (size int64, err error) {
+	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareDevice{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (p OtaUpgradeTaskRepo) Update(ctx context.Context, data *DmOtaUpgradeTask) error {
+func (p OtaFirmwareDeviceRepo) Update(ctx context.Context, data *DmOtaFirmwareDevice) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (p OtaUpgradeTaskRepo) DeleteByFilter(ctx context.Context, f OtaUpgradeTaskFilter) error {
+func (p OtaFirmwareDeviceRepo) DeleteByFilter(ctx context.Context, f OtaFirmwareDeviceFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&DmOtaUpgradeTask{}).Error
+	err := db.Delete(&DmOtaFirmwareDevice{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (p OtaUpgradeTaskRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&DmOtaUpgradeTask{}).Error
+func (p OtaFirmwareDeviceRepo) Delete(ctx context.Context, id int64) error {
+	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&DmOtaFirmwareDevice{}).Error
 	return stores.ErrFmt(err)
 }
-func (p OtaUpgradeTaskRepo) FindOne(ctx context.Context, id int64) (*DmOtaUpgradeTask, error) {
-	var result DmOtaUpgradeTask
+func (p OtaFirmwareDeviceRepo) FindOne(ctx context.Context, id int64) (*DmOtaFirmwareDevice, error) {
+	var result DmOtaFirmwareDevice
 	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -119,14 +118,14 @@ func (p OtaUpgradeTaskRepo) FindOne(ctx context.Context, id int64) (*DmOtaUpgrad
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p OtaUpgradeTaskRepo) MultiInsert(ctx context.Context, data []*DmOtaUpgradeTask) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaUpgradeTask{}).Create(data).Error
+func (p OtaFirmwareDeviceRepo) MultiInsert(ctx context.Context, data []*DmOtaFirmwareDevice) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaFirmwareDevice{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
 // 批量更新
-func (p OtaUpgradeTaskRepo) BatchUpdateField(ctx context.Context, f OtaUpgradeTaskFilter, updateData map[string]interface{}) error {
+func (p OtaFirmwareDeviceRepo) BatchUpdateField(ctx context.Context, f OtaFirmwareDeviceFilter, updateData map[string]interface{}) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.WithContext(ctx).Model(&DmOtaUpgradeTask{}).Updates(updateData).Error
+	err := db.WithContext(ctx).Model(&DmOtaFirmwareDevice{}).Updates(updateData).Error
 	return stores.ErrFmt(err)
 }

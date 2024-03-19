@@ -67,22 +67,23 @@ func ToSceneTriggerTimersPo(si *scene.Info, in scene.Timers) (ret []*relationDB.
 	return
 }
 
-func ToSceneTriggerDevicesPo(si *scene.Info, in scene.TriggerDevices) (ret []*relationDB.UdSceneTriggerDevice) {
-	if in == nil {
-		return nil
-	}
-	for _, v := range in {
-		ret = append(ret, &relationDB.UdSceneTriggerDevice{
-			SceneID:     si.ID,
-			ProductID:   v.ProductID,
-			SelectType:  string(v.SelectType),
-			DeviceNames: v.DeviceNames,
-			Type:        string(v.Type),
-			Schema:      v.Schema,
-		})
-	}
-	return
-}
+//func ToSceneTriggerDevicesPo(si *scene.Info, in scene.TriggerDevices) (ret []*relationDB.UdSceneTriggerDevice) {
+//	if in == nil {
+//		return nil
+//	}
+//	for _, v := range in {
+//		ret = append(ret, &relationDB.UdSceneTriggerDevice{
+//			SceneID:     si.ID,
+//			ProductID:   v.ProductID,
+//			SelectType:  string(v.SelectType),
+//			DeviceName:  v.DeviceName,
+//			DeviceAlias: v.DeviceAlias,
+//			Type:        string(v.Type),
+//			//Schema:      v.Schema,
+//		})
+//	}
+//	return
+//}
 
 func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 	if in == nil {
@@ -97,9 +98,9 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		Desc:        in.Desc,
 		CreatedTime: in.CreatedTime,
 		Trigger: scene.Trigger{
-			Type: scene.TriggerType(in.UdSceneTrigger.Type),
-			//Devices: ToSceneTriggerDevicesDo(in.UdSceneTrigger.Devices),
-			Timers: ToSceneTriggerTimersDo(in.UdSceneTrigger.Timers),
+			Type:    scene.TriggerType(in.UdSceneTrigger.Type),
+			Devices: ToSceneTriggerDevicesDo(in.UdSceneTrigger.Devices),
+			Timers:  ToSceneTriggerTimersDo(in.UdSceneTrigger.Timers),
 		},
 		When: scene.When{
 			ValidRanges:   in.UdSceneWhen.ValidRanges,
@@ -132,15 +133,17 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 	}
 	if in.Device != nil {
 		po.Device = &relationDB.UdSceneActionDevice{
-			ProjectID:   stores.ProjectID(in.Device.ProjectID),
-			AreaID:      stores.AreaID(in.Device.AreaID),
-			ProductID:   in.Device.ProductID,
-			SelectType:  in.Device.SelectType,
-			DeviceNames: in.Device.DeviceNames,
-			GroupID:     in.Device.GroupID,
-			Type:        in.Device.Type,
-			DataID:      in.Device.DataID,
-			Value:       in.Device.Value,
+			ProjectID:        stores.ProjectID(in.Device.ProjectID),
+			AreaID:           stores.AreaID(in.Device.AreaID),
+			ProductID:        in.Device.ProductID,
+			SelectType:       in.Device.SelectType,
+			DeviceName:       in.Device.DeviceName,
+			DeviceAlias:      in.Device.DeviceAlias,
+			SchemaAffordance: in.Device.SchemaAffordance,
+			GroupID:          in.Device.GroupID,
+			Type:             in.Device.Type,
+			DataID:           in.Device.DataID,
+			Value:            in.Device.Value,
 		}
 	}
 	return po
@@ -164,15 +167,17 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 	}
 	if in.Device != nil {
 		do.Device = &scene.ActionDevice{
-			ProjectID:   int64(in.Device.ProjectID),
-			AreaID:      int64(in.Device.AreaID),
-			ProductID:   in.Device.ProductID,
-			SelectType:  in.Device.SelectType,
-			DeviceNames: in.Device.DeviceNames,
-			GroupID:     in.Device.GroupID,
-			Type:        in.Device.Type,
-			DataID:      in.Device.DataID,
-			Value:       in.Device.Value,
+			ProjectID:        int64(in.Device.ProjectID),
+			AreaID:           int64(in.Device.AreaID),
+			ProductID:        in.Device.ProductID,
+			SelectType:       in.Device.SelectType,
+			DeviceName:       in.Device.DeviceName,
+			DeviceAlias:      in.Device.DeviceAlias,
+			GroupID:          in.Device.GroupID,
+			Type:             in.Device.Type,
+			DataID:           in.Device.DataID,
+			SchemaAffordance: in.Device.SchemaAffordance,
+			Value:            in.Device.Value,
 		}
 	}
 	return do
@@ -199,12 +204,24 @@ func ToSceneTriggerDevicesDo(in []*relationDB.UdSceneTriggerDevice) (ret scene.T
 		ret = append(ret, &scene.TriggerDevice{
 			ProductID:   v.ProductID,
 			SelectType:  scene.SelectType(v.SelectType),
-			DeviceNames: v.DeviceNames,
+			DeviceName:  v.DeviceName,
+			DeviceAlias: v.DeviceAlias,
 			Type:        scene.TriggerDeviceType(v.Type),
-			Schema:      v.Schema,
+			Schema:      ToSceneTriggerDeviceSchemaDo(v.Schema),
 		})
 	}
 	return
+}
+func ToSceneTriggerDeviceSchemaDo(in *relationDB.UdSceneTriggerDeviceSchema) *scene.TriggerDeviceSchema {
+	if in == nil {
+		return nil
+	}
+	return &scene.TriggerDeviceSchema{
+		DataID:           in.DataID,
+		SchemaAffordance: in.SchemaAffordance,
+		TermType:         scene.CmpType(in.TermType),
+		Values:           in.Values,
+	}
 }
 
 func PoToSceneInfoPb(in *relationDB.UdSceneInfo) *ud.SceneInfo {
@@ -225,6 +242,7 @@ func PoToSceneInfoPb(in *relationDB.UdSceneInfo) *ud.SceneInfo {
 		Status:  in.Status,
 	}
 }
+
 func PoToSceneInfoPbs(in []*relationDB.UdSceneInfo) (ret []*ud.SceneInfo) {
 	if in == nil {
 		return nil

@@ -2,27 +2,26 @@ package relationDB
 
 import (
 	"gitee.com/i-Things/share/stores"
-	"time"
 )
 
-// 升级任务表
-type DmOtaTask struct {
-	ID          int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID   string `gorm:"column:product_id;type:varchar(100);NOT NULL"`         // 产品id
-	FirmwareID  int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`              // 固件id
-	TaskUid     string `gorm:"column:task_uid;type:varchar(64)"`                     // 任务编号
-	Type        int64  `gorm:"column:type;type:smallint;default:1;NOT NULL"`         // 升级范围1全部设备2定向升级
-	UpgradeType int64  `gorm:"column:upgrade_type;type:smallint;default:1;NOT NULL"` // 升级策略:1静态升级2动态升级
-	AutoRepeat  int64  `gorm:"column:auto_repeat;type:smallint;default:1;NOT NULL"`  // 是否自动重试,1:不,2自动重试
-	Status      int64  `gorm:"column:status;type:smallint;default:1;NOT NULL"`       // 升级状态:1未升级2升级中3完成4已取消
-	DeviceList  string `gorm:"column:device_list;type:json;NOT NULL"`                // 指定升级设备
-	VersionList string `gorm:"column:version_list;type:json;NOT NULL"`               // 指定待升级版本
-	stores.Time
-}
-
-func (m *DmOtaTask) TableName() string {
-	return "dm_ota_task"
-}
+//// 升级任务表
+//type DmOtaFirmwareDevice struct {
+//	ID          int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+//	ProductID   string `gorm:"column:product_id;type:varchar(100);NOT NULL"`         // 产品id
+//	FirmwareID  int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`              // 固件id
+//	TaskUid     string `gorm:"column:task_uid;type:varchar(64)"`                     // 任务编号
+//	Type        int64  `gorm:"column:type;type:smallint;default:1;NOT NULL"`         // 升级范围1全部设备2定向升级
+//	UpgradeType int64  `gorm:"column:upgrade_type;type:smallint;default:1;NOT NULL"` // 升级策略:1静态升级2动态升级
+//	AutoRepeat  int64  `gorm:"column:auto_repeat;type:smallint;default:1;NOT NULL"`  // 是否自动重试,1:不,2自动重试
+//	Status      int64  `gorm:"column:status;type:smallint;default:1;NOT NULL"`       // 升级状态:1未升级2升级中3完成4已取消
+//	DeviceList  string `gorm:"column:device_list;type:json;NOT NULL"`                // 指定升级设备
+//	VersionList string `gorm:"column:version_list;type:json;NOT NULL"`               // 指定待升级版本
+//	stores.Time
+//}
+//
+//func (m *DmOtaFirmwareDevice) TableName() string {
+//	return "dm_ota_task"
+//}
 
 // 升级包附件列表
 type DmOtaFirmwareFile struct {
@@ -30,10 +29,9 @@ type DmOtaFirmwareFile struct {
 	Name       string `gorm:"column:name;type:varchar(64)"`                // 附件名称
 	FirmwareID int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`     // 固件id
 	Size       int64  `gorm:"column:size;type:bigint;NOT NULL"`            // 文件大小单位bit
-	Storage    string `gorm:"column:storage;type:varchar(15);NOT NULL"`    // 存储平台:minio/aliyun
-	Host       string `gorm:"column:host;type:varchar(100);NOT NULL"`      // host
 	FilePath   string `gorm:"column:file_path;type:varchar(100);NOT NULL"` // 文件路径,拿来下载文件
 	Signature  string `gorm:"column:signature;type:char(32);NOT NULL"`     // 签名值
+	FileMd5    string `gorm:"column:file_md5;type:char(32);NOT NULL"`
 	stores.Time
 }
 
@@ -42,7 +40,7 @@ func (m *DmOtaFirmwareFile) TableName() string {
 }
 
 // ota升级记录
-type DmOtaTaskDevices struct {
+type DmOtaTaskDevice struct {
 	ID            int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	FirmwareID    int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`             // 固件id
 	TaskUid       string `gorm:"column:task_uid;type:varchar(64);NOT NULL"`           // 任务批次
@@ -57,97 +55,142 @@ type DmOtaTaskDevices struct {
 	stores.Time
 }
 
-func (m *DmOtaTaskDevices) TableName() string {
-	return "dm_ota_task_devices"
+func (m *DmOtaTaskDevice) TableName() string {
+	return "dm_ota_task_device"
 }
 
 // 产品固件升级包信息表
-type DmOtaFirmware struct {
-	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID  string `gorm:"column:product_id;type:varchar(100);NOT NULL"`    // 产品id
-	Version    string `gorm:"column:version;type:varchar(64)"`                 // 固件版本
-	SrcVersion string `gorm:"column:src_version;type:varchar(64)"`             // 待升级版本号
-	Module     string `gorm:"column:module;type:varchar(64)"`                  // 模块名称
-	Name       string `gorm:"column:name;type:varchar(64)"`                    // 固件名称
-	Desc       string `gorm:"column:desc;type:varchar(200)"`                   // 描述
-	Status     int64  `gorm:"column:status;type:bigint;NOT NULL"`              //升级包状态，-1：不需要验证，0：未验证，1：已验证，2：验证中，3：验证失败
-	TotalSize  int64  `gorm:"column:total_size;type:bigint;NOT NULL"`          // 升级包总大小
-	IsDiff     int64  `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"` // 是否差分包,1:整包,2:差分
-	SignMethod string `gorm:"column:sign_method;type:varchar(20);NOT NULL"`    // 签名方式:MD5/SHA256
-	Extra      string `gorm:"column:extra;type:varchar(256)"`                  // 自定义推送参数
-	stores.Time
+type DmOtaFirmwareInfo struct {
+	ID             int64                `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID      string               `gorm:"column:product_id;type:varchar(100);uniqueIndex:tc_un;NOT NULL"` // 产品id
+	Version        string               `gorm:"column:version;type:varchar(64);uniqueIndex:tc_un"`              // 固件版本
+	SrcVersion     string               `gorm:"column:src_version;type:varchar(64)"`                            // 待升级版本号
+	Name           string               `gorm:"column:name;type:varchar(64)"`                                   // 固件名称
+	Desc           string               `gorm:"column:desc;type:varchar(200)"`                                  // 描述
+	Status         int64                `gorm:"column:status;type:bigint;NOT NULL"`                             //升级包状态，-1：不需要验证，0：未验证，1：已验证，2：验证中，3：验证失败
+	TotalSize      int64                `gorm:"column:total_size;type:bigint;NOT NULL"`                         // 升级包总大小
+	IsDiff         int64                `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"`                // 是否差分包,1:整包,2:差分
+	SignMethod     string               `gorm:"column:sign_method;type:varchar(20);NOT NULL"`                   // 签名方式:MD5/SHA256
+	Extra          string               `gorm:"column:extra;type:varchar(256)"`                                 // 自定义推送参数
+	IsNeedToVerify int64                `gorm:"column:is_need_to_verify;type:smallint;default:2;NOT NULL"`      // 是否需要验证
+	Files          []*DmOtaFirmwareFile `gorm:"foreignKey:FirmwareID;references:ID"`
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:tc_un;"`
 }
 
-func (m *DmOtaFirmware) TableName() string {
-	return "dm_ota_firmware"
+func (m *DmOtaFirmwareInfo) TableName() string {
+	return "dm_ota_firmware_info"
 }
 
 // DMOTAjob 表示OTA升级任务的信息
-type DmOtaJob struct {
-	ID                 int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	FirmwareId         int64  `gorm:"column:firmware_id"`          // 升级包ID，升级包的唯一标识符。
-	ProductId          string `gorm:"column:product_id"`           // 升级包所属产品的ProductId。
-	JobType            int    `gorm:"column:job_type"`             // 升级包所属产品的JobType。
-	JobStatus          int    `gorm:"column:job_status"`           // 批次状态,PLANNED：计划中,IN_PROGRESS,执行中，COMPLETED，已完成，CANCELED，已经取消
-	UpgradeType        int    `gorm:"column:upgrade_type"`         // 升级策略，0-静态，1-动态
-	TargetSelection    string `gorm:"column:target_selection"`     // 升级范围。可选值：0-ALL、1-SPECIFIC、2-GRAY、3-GROUP。
-	SrcVersion         string `gorm:"column:src_version"`          // 待升级版本号列表。最多可传入10个版本号。用逗号分隔多个版本号
-	ScheduleTime       int64  `gorm:"column:schedule_time"`        // 指定发起OTA升级的时间，单位为毫秒。
-	RetryInterval      int    `gorm:"column:retry_interval"`       // 设备升级失败后，自动重试的时间间隔，单位为分钟。
-	RetryCount         int    `gorm:"column:retry_count"`          // 自动重试次数。1/2/5次
-	TimeoutInMinutes   int    `gorm:"column:timeout_in_minutes"`   // 设备升级超时时间，单位为分钟。
-	MaximumPerMinute   int    `gorm:"column:maximum_per_minute"`   // 每分钟最多向多少个设备推送升级包下载URL。
-	GrayPercent        string `gorm:"column:gray_percent"`         // 灰度比例。设置灰度升级时有效。
-	TargetDeviceName   string `gorm:"column:target_device_name"`   // 定向升级的设备名称列表。最多可传入200个设备名称。以逗号分隔
-	ScheduleFinishTime int64  `gorm:"column:schedule_finish_time"` // 指定结束升级的时间，单位为毫秒。
-	OverwriteMode      int    `gorm:"column:overwrite_mode"`       // 是否覆盖之前的升级任务。取值：0（不覆盖）、1（覆盖）。
-	DnListFileUrl      string `gorm:"column:dn_list_file_url"`     // 定向升级设备列表文件的URL。发起定向升级任务时使用。
-	NeedPush           int    `gorm:"column:need_push"`            // 物联网平台是否主动向设备推送升级任务。
-	NeedConfirm        int    `gorm:"column:need_confirm"`         // 是否需要App确认OTA升级。
-	GroupId            string `gorm:"column:group_id"`             // 分组ID。仅发起分组升级任务时使用。
-	GroupType          string `gorm:"column:group_type"`           // 分组类型，仅可取值LINK_PLATFORM。仅发起分组升级任务时使用。
-	DownloadProtocol   string `gorm:"column:download_protocol"`    // 升级包下载协议。可选：0-HTTPS、1-MQTT。
-	MultiModuleMode    int    `gorm:"column:multi_module_mode"`    // 设备是否支持多模块同时升级。
+type DmOtaFirmwareJob struct {
+	ID          int64 `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	FirmwareID  int64 `gorm:"column:firmware_id"`  // 升级包ID，升级包的唯一标识符。
+	Type        int64 `gorm:"column:type"`         // 升级包所属产品的JobType。 验证升级包:1  批量升级:2
+	Status      int64 `gorm:"column:status"`       // 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
+	UpgradeType int64 `gorm:"column:upgrade_type"` // 升级策略，1-静态，2-动态
+
+	/*
+		待升级版本号列表。
+			发起全量升级（TargetSelection=ALL）和灰度升级（TargetSelection=GRAY）任务时，可以传入该参数。
+			使用差分升级包发起全量升级和灰度升级任务时，该参数值需指定为差分升级包的待升级版本号（SrcVersion）。
+			发起定向升级（TargetSelection=SPECIFIC）或分组升级（TargetSelection=GROUP）任务时，不能传入该参数。
+			可以调用 QueryDeviceDetail ，查看设备 OTA 模块版本号（FirmwareVersion）。
+			列表中不能有重复的版本号。
+			最多可传入 10 个版本号。
+	*/
+	SrcVersions []string `gorm:"column:src_versions;type:json;serializer:json"` // 待升级版本号列表。最多可传入10个版本号。用逗号分隔多个版本号
+
+	RetryInterval    int64 `gorm:"column:retry_interval"`     // 设备升级失败后，自动重试的时间间隔，单位为分钟。 动态升级 静态升级
+	RetryCount       int64 `gorm:"column:retry_count"`        // 自动重试次数。1/2/5次 动态升级 静态升级
+	TimeoutInMinutes int64 `gorm:"column:timeout_in_minutes"` // 设备升级超时时间，单位为分钟。 动态升级 静态升级
+	MaximumPerMinute int64 `gorm:"column:maximum_per_minute"` // 每分钟最多向多少个设备推送升级包下载URL。 动态升级 静态升级
+
+	/*
+			是否覆盖之前的升级任务。取值：
+
+			1（默认）：不覆盖。若设备已有升级任务，则只执行已有任务。
+			2：覆盖。设备只执行新的升级任务。此时 MultiModuleMode 不能传入 true。
+		动态升级 静态升级
+	*/
+	OverwriteMode int64 `gorm:"column:overwrite_mode"` // 是否覆盖之前的升级任务。取值：1（不覆盖）、2（覆盖）。
+	/*
+				物联网平台是否主动向设备推送升级任务。
+			1（默认）：是。批次任务创建完成后，物联网平台主动将升级任务，直接推送给升级范围内的在线设备。
+				此时，设备仍可主动向物联网平台发起请求，来获取 OTA 升级任务信息。
+			2：否。设备必须通过向物联网平台发起请求，来获取 OTA 升级任务信息。
+		动态升级
+	*/
+	IsNeedPush int64 `gorm:"column:is_need_push"` // 物联网平台是否主动向设备推送升级任务。
+
+	/*
+		如需自主控制设备 OTA 升级时，可配置此参数，通过手机 App 来控制，设备是否可进行 OTA 升级。手机 App 需您自行开发。
+			2（默认）：否。直接按照 NeedPush 设置，获取 OTA 升级任务信息。
+			1：是。设备无法获取 OTA 升级任务，需 App 侧确认 OTA 升级后，才能按照 NeedPush 设置，获取 OTA 升级任务信息。
+	*/
+	IsNeedConfirm   int64                   `gorm:"is_need_confirm"`
+	TargetSelection int64                   `gorm:"column:target_selection;type:varchar(20);default:1"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级
+	Dynamic         DmOtaFirmwareJobDynamic `gorm:"embedded"`
+	Static          DmOtaFirmwareJobStatic  `gorm:"embedded"`
 	stores.Time
 }
 
-func (m *DmOtaJob) TableName() string {
-	return "dm_ota_job"
+func (m *DmOtaFirmwareJob) TableName() string {
+	return "dm_ota_firmware_job"
 }
 
-type DmOtaUpgradeTask struct {
-	ID          int64     `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	DestVersion string    `gorm:"column:dest_version" ` // 升级的目标OTA升级包版本
-	DeviceName  string    `gorm:"column:device_name" `  // 设备名称
-	FirmwareId  int64     `gorm:"column:firmware_id"`   // 升级包ID
-	JobId       int64     `gorm:"column:job_id" `       // 升级批次ID
-	ProductId   string    `gorm:"column:product_id" `   // 设备所属产品的ProductKey
-	ProductName string    `gorm:"column:product_name"`  // 设备所属产品的名称
-	Step        int64     `gorm:"column:step"`          // 当前的升级进度
-	Module      string    `gorm:"column:module"`        //模块名称
-	SrcVersion  string    `gorm:"column:src_version"`   // 设备的原固件版本
-	TaskDesc    string    `gorm:"column:task_desc" `    // 升级作业描述信息
-	TaskStatus  int       `gorm:"column:task_status"`   // 设备升级状态
-	Timeout     string    `gorm:"column:timeout"`       // 设备升级超时时间，单位是分钟
-	UtcCreate   time.Time `gorm:"column:utc_create"`    // 升级作业创建时的时间，UTC格式
-	UtcModified time.Time `gorm:"column:utc_modified"`  // 升级作业最后一次修改时的时间，UTC格式
+type DmOtaFirmwareJobDynamic struct {
+	/*
+			动态升级模式。取值范围：
+			1（默认）：除了升级当前满足升级条件的设备，还将持续检查设备是否满足升级条件，对满足升级条件的设备进行升级。
+			2：仅对后续上报新版本号的设备生效。
+		动态升级
+	*/
+	DynamicMode int64 `gorm:"column:dynamic_mode"` //
+}
+type DmOtaFirmwareJobStatic struct {
+	/*
+			定向升级的设备名称列表。
+			使用差分升级包进行定向升级时，要升级的设备的当前 OTA 模块版本号需与差分升级包的待升级版本号（SrcVersion）相同。
+			可以调用 QueryDeviceDetail ，查看设备 OTA 模块版本号（FirmwareVersion）。
+			列表中的设备所属的产品必须与升级包所属产品一致。
+			列表中不能有重复的设备名称。
+			最多可传入 200 个设备名称。
+		静态升级
+	*/
+	TargetDeviceNames []string `gorm:"column:target_device_names;type:json;serializer:json"` // 定向升级的设备名称列表。最多可传入200个设备名称。以逗号分隔
+	/*
+			指定结束升级的时间。
+			结束时间距发起时间（ScheduleTime）最少 1 小时，最多为 30 天。取值为 13 位毫秒值时间戳。
+			不传入该参数，则表示不会强制结束升级。
+		静态升级
+	*/
+	ScheduleFinishTime int64 `gorm:"column:schedule_finish_time"` // 指定结束升级的时间，单位为毫秒。
+	/*
+			指定发起 OTA 升级的时间。
+			定时时间范围需为当前时间的 5 分钟后至 7 天内。取值为秒时间戳。
+			不传入该参数，则表示立即升级。
+		静态升级
+	*/
+	ScheduleTime int64 `gorm:"column:schedule_time"`
+}
+
+type DmOtaFirmwareDevice struct {
+	ID                    int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	SrcVersion            string `gorm:"column:src_version"`             // 设备的原固件版本
+	DestVersion           string `gorm:"column:dest_version"`            // 设备的目标固件版本
+	ProductID             string `gorm:"column:product_id" `             // 设备所属产品的ProductKey
+	DeviceName            string `gorm:"column:device_name" `            // 设备名称
+	FirmwareID            int64  `gorm:"column:firmware_id"`             // 升级包ID
+	JobID                 int64  `gorm:"column:job_id" `                 // 升级批次ID
+	CurrentUpgradePercent int64  `gorm:"column:current_upgrade_percent"` // 当前的升级进度,单位小数点后两位  0-100%
+	Detail                string `gorm:"column:detail"`                  //详情
+	Status                int    `gorm:"column:status"`                  // 设备升级作业状态。1：待确认。 2：待推送。 3：已推送。  4：升级中。 5:升级成功 6: 升级失败. 7:已取消
 	stores.Time
+	Job      *DmOtaFirmwareJob  `gorm:"foreignKey:JobID;references:ID"`
+	Firmware *DmOtaFirmwareInfo `gorm:"foreignKey:FirmwareID;references:ID"`
 }
 
-func (m *DmOtaUpgradeTask) TableName() string {
-	return "dm_ota_upgrade_task"
-}
-
-type DmOtaModule struct {
-	ID            int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	ModuleName    string `gorm:"column:module_name"`    // OTA模块名称，产品下唯一且不可修改。仅支持英文字母、数字、英文句号（.）、短划线（-）和下划线（_）。长度限制为1~64个字符。
-	ProductId     string `gorm:"column:product_id"`     // OTA模块所属产品的ProductId。
-	ModuleVersion string `gorm:"column:module_version"` //模块版本
-	AliasName     string `gorm:"column:alias_name"`     // OTA模块别名。支持中文、英文字母、数字、英文句号（.）、短划线（-）和下划线（_），长度限制为1~64个字符。
-	Desc          string `gorm:"column:desc"`           // OTA模块的描述信息，支持最多100个字符。
-	stores.Time
-}
-
-func (m *DmOtaModule) TableName() string {
-	return "dm_ota_module"
+func (m *DmOtaFirmwareDevice) TableName() string {
+	return "dm_ota_firmware_device"
 }

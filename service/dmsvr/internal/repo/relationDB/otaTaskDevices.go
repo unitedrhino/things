@@ -56,13 +56,13 @@ func (p OtaTaskDevicesRepo) fmtFilter(ctx context.Context, f OtaTaskDevicesFilte
 	return db
 }
 
-func (g OtaTaskDevicesRepo) Insert(ctx context.Context, data *DmOtaTaskDevices) error {
+func (g OtaTaskDevicesRepo) Insert(ctx context.Context, data *DmOtaTaskDevice) error {
 	result := g.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g OtaTaskDevicesRepo) FindOneByFilter(ctx context.Context, f OtaTaskDevicesFilter) (*DmOtaTaskDevices, error) {
-	var result DmOtaTaskDevices
+func (g OtaTaskDevicesRepo) FindOneByFilter(ctx context.Context, f OtaTaskDevicesFilter) (*DmOtaTaskDevice, error) {
+	var result DmOtaTaskDevice
 	db := g.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -70,9 +70,9 @@ func (g OtaTaskDevicesRepo) FindOneByFilter(ctx context.Context, f OtaTaskDevice
 	}
 	return &result, nil
 }
-func (p OtaTaskDevicesRepo) FindByFilter(ctx context.Context, f OtaTaskDevicesFilter, page *def.PageInfo) ([]*DmOtaTaskDevices, error) {
-	var results []*DmOtaTaskDevices
-	db := p.fmtFilter(ctx, f).Model(&DmOtaTaskDevices{})
+func (p OtaTaskDevicesRepo) FindByFilter(ctx context.Context, f OtaTaskDevicesFilter, page *def.PageInfo) ([]*DmOtaTaskDevice, error) {
+	var results []*DmOtaTaskDevice
+	db := p.fmtFilter(ctx, f).Model(&DmOtaTaskDevice{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -82,28 +82,28 @@ func (p OtaTaskDevicesRepo) FindByFilter(ctx context.Context, f OtaTaskDevicesFi
 }
 
 func (p OtaTaskDevicesRepo) CountByFilter(ctx context.Context, f OtaTaskDevicesFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&DmOtaTaskDevices{})
+	db := p.fmtFilter(ctx, f).Model(&DmOtaTaskDevice{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (g OtaTaskDevicesRepo) Update(ctx context.Context, data *DmOtaTaskDevices) error {
+func (g OtaTaskDevicesRepo) Update(ctx context.Context, data *DmOtaTaskDevice) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (g OtaTaskDevicesRepo) DeleteByFilter(ctx context.Context, f OtaTaskDevicesFilter) error {
 	db := g.fmtFilter(ctx, f)
-	err := db.Delete(&DmOtaTaskDevices{}).Error
+	err := db.Delete(&DmOtaTaskDevice{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (g OtaTaskDevicesRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmOtaTaskDevices{}).Error
+	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmOtaTaskDevice{}).Error
 	return stores.ErrFmt(err)
 }
-func (g OtaTaskDevicesRepo) FindOne(ctx context.Context, id int64) (*DmOtaTaskDevices, error) {
-	var result DmOtaTaskDevices
+func (g OtaTaskDevicesRepo) FindOne(ctx context.Context, id int64) (*DmOtaTaskDevice, error) {
+	var result DmOtaTaskDevice
 	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -111,7 +111,7 @@ func (g OtaTaskDevicesRepo) FindOne(ctx context.Context, id int64) (*DmOtaTaskDe
 	return &result, nil
 }
 func (g OtaTaskDevicesRepo) CancelByTaskUid(ctx context.Context, taskUid string) error {
-	err := g.db.Model(&DmOtaTaskDevices{}).WithContext(ctx).Where("taskUid = ? and status < 501", taskUid).Update("status", 701).Error
+	err := g.db.Model(&DmOtaTaskDevice{}).WithContext(ctx).Where("taskUid = ? and status < 501", taskUid).Update("status", 701).Error
 	return stores.ErrFmt(err)
 }
 func (o *OtaTaskDevicesFilter) GetEnabledBatchSql(sql *gorm.DB) *gorm.DB {
@@ -121,10 +121,10 @@ func (o *OtaTaskDevicesFilter) GetEnabledBatchSql(sql *gorm.DB) *gorm.DB {
 }
 
 // 查询设备当前可执行的升级批次
-func (g OtaTaskDevicesRepo) FindEnableBatch(ctx context.Context, f OtaTaskDevicesFilter) (*DmOtaTaskDevices, error) {
+func (g OtaTaskDevicesRepo) FindEnableBatch(ctx context.Context, f OtaTaskDevicesFilter) (*DmOtaTaskDevice, error) {
 	db := g.fmtFilter(ctx, f)
 	f.GetEnabledBatchSql(db)
-	var result *DmOtaTaskDevices
+	var result *DmOtaTaskDevice
 	qerr := db.Find(result).Error
 	if qerr != nil {
 		return nil, stores.ErrFmt(qerr)
@@ -133,7 +133,7 @@ func (g OtaTaskDevicesRepo) FindEnableBatch(ctx context.Context, f OtaTaskDevice
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m OtaTaskDevicesRepo) MultiInsert(ctx context.Context, data []*DmOtaTaskDevices) error {
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaTaskDevices{}).Create(data).Error
+func (m OtaTaskDevicesRepo) MultiInsert(ctx context.Context, data []*DmOtaTaskDevice) error {
+	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaTaskDevice{}).Create(data).Error
 	return stores.ErrFmt(err)
 }

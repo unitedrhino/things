@@ -27,7 +27,7 @@ type Term struct {
 	Weather any `json:"weather"`
 }
 
-func (t *Conditions) Validate() error {
+func (t *Conditions) Validate(repo ValidateRepo) error {
 	if t == nil {
 		return nil
 	}
@@ -35,7 +35,7 @@ func (t *Conditions) Validate() error {
 		return errors.Parameter.AddMsg("填写多个条件需要填写条件类型:" + string(t.Type))
 	}
 	for _, v := range t.Terms {
-		err := v.Validate()
+		err := v.Validate(repo)
 		if err != nil {
 			return err
 		}
@@ -43,7 +43,7 @@ func (t *Conditions) Validate() error {
 	return nil
 }
 
-func (t *Term) Validate() error {
+func (t *Term) Validate(repo ValidateRepo) error {
 	if t == nil {
 		return nil
 	}
@@ -53,7 +53,7 @@ func (t *Term) Validate() error {
 	}
 	switch t.ColumnType {
 	case TermColumnTypeProperty:
-		if err := t.Property.Validate(); err != nil {
+		if err := t.Property.Validate(repo); err != nil {
 			return err
 		}
 	}

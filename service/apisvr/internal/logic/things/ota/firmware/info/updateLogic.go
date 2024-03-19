@@ -1,0 +1,40 @@
+package info
+
+import (
+	"context"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/apisvr/internal/svc"
+	"github.com/i-Things/things/service/apisvr/internal/types"
+	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"github.com/jinzhu/copier"
+	"github.com/zeromicro/go-zero/core/logx"
+)
+
+type UpdateLogic struct {
+	logx.Logger
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+}
+
+func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogic {
+	return &UpdateLogic{
+		Logger: logx.WithContext(ctx),
+		ctx:    ctx,
+		svcCtx: svcCtx,
+	}
+}
+
+func (l *UpdateLogic) Update(req *types.FirmwareUpdateReq) (resp *types.WithID, err error) {
+	var firmwareUpdateReq dm.OtaFirmwareInfoUpdateReq
+	_ = copier.Copy(&firmwareUpdateReq, &req)
+	firmwareUpdateReq.Extra = utils.ToRpcNullString(req.Extra)
+	logx.Infof("firmwareUpdateReq:%+v", &firmwareUpdateReq)
+	update, err := l.svcCtx.OtaM.OtaFirmwareInfoUpdate(l.ctx, &firmwareUpdateReq)
+	if err != nil {
+		er := errors.Fmt(err)
+		l.Errorf("%s.rpc.OtaFirmwareUpdate req=%v err=%+v", utils.FuncName(), req, er)
+		return nil, er
+	}
+	return &types.WithID{ID: update.Id}, nil
+}

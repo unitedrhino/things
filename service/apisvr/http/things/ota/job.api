@@ -9,153 +9,129 @@ info(
 )
 
 @server(
-    group: things/ota/job
-    prefix: /api/v1/things/ota/job
+    group: things/ota/firmware/job
+    prefix: /api/v1/things/firmware/job
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api{
     //验证升级包
-    @doc "验证升级包"
-    @handler verify
-    post /verify(OtaFirmwareVerifyReq) returns(UpgradeJobResp)
+
     //创建静态升级批次
-    @doc "创建静态升级批次"
-    @handler staticCreate
-    post /staticCreate(StaticUpgradeJobReq) returns(UpgradeJobResp)
-    //创建动态升级批次
-    @doc "创建动态升级批次"
-    @handler dynamicCreate
-    post /dynamicCreate(DynamicUpgradeJobReq) returns(UpgradeJobResp)
+    @doc "创建升级任务"
+    @handler create
+    post /create(OtaFirmwareJobInfo) returns(WithID)
     //获取升级包下的升级任务批次列表
     @doc "获取升级包下的升级任务批次列表"
-    @handler firmwareIndex
-    post /firmwareIndex(OtaJobByFirmwareIndexReq) returns(OtaJobInfoIndexResp)
-    //获取设备所在的升级包升级批次列表
-    @doc "获取设备所在的升级包升级批次列表"
-    @handler deviceIndex
-    post /deviceIndex(OtaJobByDeviceIndexReq) returns(OtaJobInfoIndexResp)
+    @handler index
+    post /index(OtaFirmwareJobIndexReq) returns(OtaFirmwareJobInfoIndexResp)
     //查询指定升级批次的详情
     @doc "查询指定升级批次的详情"
     @handler read
-    post /read(JobReq) returns(OtaJobInfo)
-    //取消动态升级策略
-    @doc "取消动态升级策略"
-    @handler cancel
-    post /cancel(JobReq)
-}
-// OtaFirmwareVerifyReq 表示固件验证请求。
-type OtaFirmwareVerifyReq  {
-    FirmwareID        int64    `json:"firmwareId"`       // 固件ID
-    ProductID         string   `json:"productID"`        // 产品ID
-    Tags              []Tag    `json:"tags"`             // 标签列表
-    DeviceNames       []string `json:"deviceNames"`      // 设备名称列表
-    SrcVersions       []string `json:"srcVersion"`       // 源版本列表
-    TimeoutInMinutes  int64    `json:"timeoutInMinutes"` // 超时时间（分钟）
-    NeedPush          int64    `json:"needPush"`         // 是否需要主动推送
-    NeedConfirm       int64    `json:"needConfirm"`      // 是否需要自主控制
-    DownloadProtocol  string   `json:"downloadProtocol"` // 下载协议
+    post /read(WithID) returns(OtaFirmwareJobInfo)
+    @doc "更新升级批次"
+    @handler update
+    post /update(OtaFirmwareJobInfo) returns()
 }
 
-// UpgradeJobResp 表示升级任务响应。
-type UpgradeJobResp  {
-    JobID      int64  `json:"jobId"`     // 任务ID
-    UtcCreate  string `json:"UtcCreate"` // 任务创建时间（UTC格式）
+// OtaFirmwareJobIndexReq 表示根据固件索引的OTA作业请求。
+type OtaFirmwareJobIndexReq  {
+    Page   *PageInfo `json:"page"`   // 分页信息
+    FirmwareID int64    `json:"firmwareID"` // 固件ID
 }
-
-// Tag 表示标签的键值对。
-//type Tag  {
-//    Key   string `json:"key"`   // 键
-//    Value string `json:"value"` // 值
-//}
-
-// StaticUpgradeDeviceInfo 表示升级的设备的静态信息。
-type StaticUpgradeDeviceInfo  {
-    DeviceName string `json:"deviceName"` // 设备名称
-    SrcVersion string `json:"srcVersion"` // 源版本
-    ProductID  string `json:"productId"`  // 产品ID
-}
-
-// StaticUpgradeJobReq 表示静态升级任务请求。
-type StaticUpgradeJobReq  {
-    FirmwareID        int64                  `json:"firmwareId"`         // 固件ID
-    ProductID         string                 `json:"productId"`          // 产品ID
-    Tag               Tag                    `json:"tag"`                // 标签
-    TargetSelection   int64                  `json:"targetSelection"`    // 目标选择
-    ScheduleTime      int64                  `json:"scheduleTime"`       // 计划时间
-    RetryInterval     int64                  `json:"retryInterval"`      // 重试间隔
-    RetryCount        int64                  `json:"retryCount"`         // 重试次数
-    TimeoutInMinutes  int64                  `json:"timeoutInMinutes"`   // 超时时间（分钟）
-    MaximumPerMinute  int64                  `json:"maximumPerMinute"`   // 每分钟最大升级数
-    GrayPercent       int64                  `json:"grayPercent"`        // 灰度升级百分比
-    ScheduleFinishTime int64                  `json:"scheduleFinishTime"` // 计划完成时间
-    OverwriteMode     int64                  `json:"overwriteMode"`      // 覆盖模式
-    NeedPush          int64                  `json:"needPush"`           // 是否需要主动推送
-    NeedConfirm       int64                  `json:"needConfirm"`        // 是否需要自主控制
-    GroupID           int64                  `json:"groupId"`            // 分组ID
-    GroupType         string                 `json:"groupType"`          // 分组类型
-    DownloadProtocol  string                 `json:"downloadProtocol"`   // 下载协议
-    MultiModuleMode   string                 `json:"multiModuleMode"`    // 多模块模式
-    DeviceInfo        []StaticUpgradeDeviceInfo `json:"deviceInfo"`      // 设备信息列表
-}
-
-// DynamicUpgradeJobReq 表示动态升级任务请求。
-type DynamicUpgradeJobReq  {
-    FirmwareID       int64    `json:"firmwareId"`       // 固件ID
-    ProductID        string   `json:"productId"`        // 产品ID
-    Tag              Tag      `json:"tag"`              // 标签
-    SrcVersions      []string `json:"srcVersion"`       // 源版本列表
-    RetryInterval    int64    `json:"retryInterval"`    // 重试间隔
-    RetryCount       int64    `json:"retryCount"`       // 重试次数
-    TimeoutInMinutes int64    `json:"timeoutInMinutes"` // 超时时间（分钟）
-    MaximumPerMinute int64    `json:"maximumPerMinute"` // 每分钟最大升级数
-    OverwriteMode    int64    `json:"overwriteMode"`    // 覆盖模式
-    DynamicMode      int64    `json:"dynamicMode"`      // 动态模式
-    NeedPush         int64    `json:"needPush"`         // 是否需要主动推送
-    NeedConfirm      int64    `json:"needConfirm"`      // 是否需要自主控制
-    GroupID          int64    `json:"groupId"`          // 分组ID
-    GroupType        string   `json:"groupType"`        // 分组类型
-    DownloadProtocol string   `json:"downloadProtocol"` // 下载协议
-    MultiModuleMode  string   `json:"multiModuleMode"`  // 多模块模式
-    TargetSelection  int64    `json:"targetSelection"`  // 目标选择
-}
-
-// OtaJobByFirmwareIndexReq 表示根据固件索引的OTA作业请求。
-type OtaJobByFirmwareIndexReq  {
-    PageInfo   PageInfo `json:"pageInfo"`   // 分页信息
-    FirmwareID int64    `json:"firmwareId"` // 固件ID
-}
-
-// OtaJobInfo 表示OTA作业的信息。
-type OtaJobInfo  {
-    FirmwareID       int64  `json:"firmwareId"`    // 固件ID
-    JobID            int64  `json:"jobId"`         // 作业ID
-    JobStatus        string `json:"jobStatus"`     // 作业状态
-    JobType          string `json:"jobType"`       // 作业类型
-    ProductID        int64  `json:"productId"`     // 产品ID
-    UpgradeType      string `json:"upgradeType"`   // 升级类型
-    TagList          []Tag  `json:"tagList"`       // 标签列表
-    TargetSelection  string `json:"targetSelection"` // 目标选择
-    UtcCreate        string `json:"utcCreate"`     // 作业创建时间
-    UtcEndTime       string `json:"utcEndTime"`    // 作业结束时间
-    UtcModified      string `json:"utcModified"`   // 作业修改时间
-    UtcStartTime     string `json:"utcStartTime"`  // 作业开始时间
-}
-
-// OtaJobInfoIndexResp 表示OTA作业信息索引的响应。
-type OtaJobInfoIndexResp  {
-    OtaJobInfoList []OtaJobInfo `json:"otaJobInfo"` // OTA作业信息列表
+// OtaFirmwareJobInfoIndexResp 表示OTA作业信息索引的响应。
+type OtaFirmwareJobInfoIndexResp  {
+    List []*OtaFirmwareJobInfo `json:"list"` // OTA作业信息列表
     Total          int64         `json:"total"`      // 总数
 }
 
-// OtaJobByDeviceIndexReq 表示根据设备索引的OTA作业请求。
-type OtaJobByDeviceIndexReq  {
-    PageInfo   PageInfo `json:"pageInfo"`   // 分页信息
-    FirmwareID int64    `json:"firmwareId"` // 固件ID
-    ProductID  string   `json:"productId"`  // 产品ID
-    DeviceName string   `json:"deviceName"` // 设备名称
+
+type OtaFirmwareJobInfo  {
+    ID          int64 `json:"id,optional"`
+    FirmwareID  int64 `json:"firmwareID,optional"`// 升级包ID，升级包的唯一标识符。
+    Type        int64 `json:"type,optional"`// 升级包所属产品的JobType。 验证升级包:1  批量升级:2
+    Status      int64 `json:"status,optional"`// 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
+    UpgradeType int64 `json:"upgradeType,optional"`// 升级策略，1-静态，2-动态
+/*
+    待升级版本号列表。
+        发起全量升级（TargetSelection=ALL）和灰度升级（TargetSelection=GRAY）任务时，可以传入该参数。
+        使用差分升级包发起全量升级和灰度升级任务时，该参数值需指定为差分升级包的待升级版本号（SrcVersion）。
+        发起定向升级（TargetSelection=SPECIFIC）或分组升级（TargetSelection=GROUP）任务时，不能传入该参数。
+        可以调用 QueryDeviceDetail ，查看设备 OTA 模块版本号（FirmwareVersion）。
+        列表中不能有重复的版本号。
+        最多可传入 10 个版本号。
+*/
+    SrcVersions []string   `json:"srcVersions,optional"`// 待升级版本号列表。最多可传入10个版本号。用逗号分隔多个版本号
+    RetryInterval    int64 `json:"retryInterval,optional"` // 设备升级失败后，自动重试的时间间隔，单位为分钟。 动态升级 静态升级
+    RetryCount       int64 `json:"retryCount,optional"` // 自动重试次数。1/2/5次 动态升级 静态升级
+    TimeoutInMinutes int64 `json:"timeoutInMinutes,optional"` // 设备升级超时时间，单位为分钟。 动态升级 静态升级
+    MaximumPerMinute int64 `json:"maximumPerMinute,optional"` // 每分钟最多向多少个设备推送升级包下载URL。 动态升级 静态升级
+/*
+        是否覆盖之前的升级任务。取值：
+
+        1（默认）：不覆盖。若设备已有升级任务，则只执行已有任务。
+        2：覆盖。设备只执行新的升级任务。此时 MultiModuleMode 不能传入 true。
+    动态升级 静态升级
+*/
+    OverwriteMode int64 `json:"overwriteMode,optional"`// 是否覆盖之前的升级任务。取值：1（不覆盖）、2（覆盖）。
+/*
+            物联网平台是否主动向设备推送升级任务。
+        1（默认）：是。批次任务创建完成后，物联网平台主动将升级任务，直接推送给升级范围内的在线设备。
+            此时，设备仍可主动向物联网平台发起请求，来获取 OTA 升级任务信息。
+        2：否。设备必须通过向物联网平台发起请求，来获取 OTA 升级任务信息。
+    动态升级
+*/
+    IsNeedPush int64 `json:"isNeedPush,optional"` // 物联网平台是否主动向设备推送升级任务。
+
+/*
+    如需自主控制设备 OTA 升级时，可配置此参数，通过手机 App 来控制，设备是否可进行 OTA 升级。手机 App 需您自行开发。
+        2（默认）：否。直接按照 NeedPush 设置，获取 OTA 升级任务信息。
+        1：是。设备无法获取 OTA 升级任务，需 App 侧确认 OTA 升级后，才能按照 NeedPush 设置，获取 OTA 升级任务信息。
+*/
+    IsNeedConfirm int64 `json:"isNeedConfirm,optional"`
+    OtaFirmwareJobDynamic
+    OtaFirmwareJobStatic
 }
 
-// JobReq 表示对特定作业的请求。
-type JobReq  {
-    JobID int64 `json:"jobId"` // 作业ID
+
+
+type OtaFirmwareJobDynamic  {
+/*
+        动态升级模式。取值范围：
+        1（默认）：除了升级当前满足升级条件的设备，还将持续检查设备是否满足升级条件，对满足升级条件的设备进行升级。
+        2：仅对后续上报新版本号的设备生效。
+    动态升级
+*/
+    DynamicMode int64 `json:"dynamicMode,optional"` //
 }
+
+type OtaFirmwareJobStatic  {
+/*
+        定向升级的设备名称列表。
+        使用差分升级包进行定向升级时，要升级的设备的当前 OTA 模块版本号需与差分升级包的待升级版本号（SrcVersion）相同。
+        可以调用 QueryDeviceDetail ，查看设备 OTA 模块版本号（FirmwareVersion）。
+        列表中的设备所属的产品必须与升级包所属产品一致。
+        列表中不能有重复的设备名称。
+        最多可传入 200 个设备名称。
+    静态升级
+*/
+    TargetDeviceNames []string `json:"targetDeviceNames,optional"` // 定向升级的设备名称列表。最多可传入200个设备名称。以逗号分隔
+/*
+        指定结束升级的时间。
+        结束时间距发起时间（ScheduleTime）最少 1 小时，最多为 30 天。取值为 13 位毫秒值时间戳。
+        不传入该参数，则表示不会强制结束升级。
+    静态升级
+*/
+    ScheduleFinishTime int64 `json:"scheduleFinishTime,optional"` // 指定结束升级的时间，单位为毫秒。
+/*
+        指定发起 OTA 升级的时间。
+        定时时间范围需为当前时间的 5 分钟后至 7 天内。取值为秒时间戳。
+        不传入该参数，则表示立即升级。
+    静态升级
+*/
+    ScheduleTime    int64 `json:"scheduleTime,optional"`
+    TargetSelection int64 `json:"targetSelection,optional"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级
+}
+
+
+
 

@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
@@ -49,7 +50,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	if in.Then != "" {
 		old.UdSceneThen = newPo.UdSceneThen
 	}
-	err = PoToSceneInfoDo(old).Validate()
+	err = PoToSceneInfoDo(old).Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache})
 	if err != nil {
 		return nil, err
 	}

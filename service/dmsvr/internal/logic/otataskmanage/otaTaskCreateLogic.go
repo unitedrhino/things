@@ -22,7 +22,7 @@ type OtaTaskCreateLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	DiDB *relationDB.DeviceInfoRepo
-	OfDB *relationDB.OtaFirmwareRepo
+	OfDB *relationDB.OtaFirmwareInfoRepo
 }
 
 func NewOtaTaskCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaTaskCreateLogic {
@@ -31,7 +31,7 @@ func NewOtaTaskCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ota
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
-		OfDB:   relationDB.NewOtaFirmwareRepo(ctx),
+		OfDB:   relationDB.NewOtaFirmwareInfoRepo(ctx),
 	}
 }
 func (l *OtaTaskCreateLogic) CheckTask(in *dm.OtaTaskCreateReq) (bool, error) {
@@ -101,14 +101,14 @@ func (l *OtaTaskCreateLogic) OtaTaskCreate(in *dm.OtaTaskCreateReq) (*dm.OtaTask
 		return nil, thingsError.Parameter.AddDetail("not find firmware id:" + utils.ToString(in.FirmwareID))
 	}
 	taskUid, _ := uuid.GenerateUUID()
-	di := relationDB.DmOtaTask{
-		ProductID:   productFirmwareInfo.ProductID,
-		FirmwareID:  in.FirmwareID,
-		TaskUid:     taskUid,
-		Type:        int64(in.Type),
-		UpgradeType: int64(in.UpgradeType),
-		AutoRepeat:  int64(in.AutoRepeat),
-		Status:      1,
+	di := relationDB.DmOtaFirmwareDevice{
+		ProductID:  productFirmwareInfo.ProductID,
+		FirmwareID: in.FirmwareID,
+		//TaskUid:     taskUid,
+		//Type:        int64(in.Type),
+		//UpgradeType: int64(in.UpgradeType),
+		//AutoRepeat:  int64(in.AutoRepeat),
+		Status: 1,
 	}
 	var deviceList []string
 	if in.DeviceList != nil {
@@ -116,9 +116,9 @@ func (l *OtaTaskCreateLogic) OtaTaskCreate(in *dm.OtaTaskCreateReq) (*dm.OtaTask
 		if err != nil {
 			return nil, thingsError.Parameter.AddDetail("deviceList need json")
 		}
-		di.DeviceList = in.DeviceList.Value
+		//di.DeviceList = in.DeviceList.Value
 	} else {
-		di.DeviceList = "{}"
+		//di.DeviceList = "{}"
 	}
 	var versionList []string
 	if in.VersionList != nil {
@@ -126,9 +126,9 @@ func (l *OtaTaskCreateLogic) OtaTaskCreate(in *dm.OtaTaskCreateReq) (*dm.OtaTask
 		if err != nil {
 			return nil, thingsError.Parameter.AddDetail("VersionList need json")
 		}
-		di.VersionList = in.VersionList.Value
+		//di.VersionList = in.VersionList.Value
 	} else {
-		di.VersionList = "{}"
+		//di.VersionList = "{}"
 	}
 	err = relationDB.NewOtaTaskRepo(l.ctx).Insert(l.ctx, &di)
 	if err != nil {
@@ -145,7 +145,7 @@ func (l *OtaTaskCreateLogic) OtaTaskCreate(in *dm.OtaTaskCreateReq) (*dm.OtaTask
 		}
 
 		for _, v := range di {
-			otDB.Insert(l.ctx, &relationDB.DmOtaTaskDevices{
+			otDB.Insert(l.ctx, &relationDB.DmOtaTaskDevice{
 				FirmwareID:    in.FirmwareID,
 				TaskUid:       taskUid,
 				ProductID:     productFirmwareInfo.ProductID,
@@ -164,7 +164,7 @@ func (l *OtaTaskCreateLogic) OtaTaskCreate(in *dm.OtaTaskCreateReq) (*dm.OtaTask
 				return nil, err
 			}
 			for _, v := range di {
-				otDB.Insert(l.ctx, &relationDB.DmOtaTaskDevices{
+				otDB.Insert(l.ctx, &relationDB.DmOtaTaskDevice{
 					FirmwareID:    in.FirmwareID,
 					TaskUid:       taskUid,
 					ProductID:     productFirmwareInfo.ProductID,
@@ -176,7 +176,7 @@ func (l *OtaTaskCreateLogic) OtaTaskCreate(in *dm.OtaTaskCreateReq) (*dm.OtaTask
 		}
 		if in.DeviceList != nil {
 			for _, v := range deviceList {
-				otDB.Insert(l.ctx, &relationDB.DmOtaTaskDevices{
+				otDB.Insert(l.ctx, &relationDB.DmOtaTaskDevice{
 					FirmwareID: in.FirmwareID,
 					TaskUid:    taskUid,
 					ProductID:  productFirmwareInfo.ProductID,

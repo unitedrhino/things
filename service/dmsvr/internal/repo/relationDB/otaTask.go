@@ -44,13 +44,13 @@ func (p OtaTaskRepo) fmtFilter(ctx context.Context, f OtaTaskFilter) *gorm.DB {
 	return db
 }
 
-func (g OtaTaskRepo) Insert(ctx context.Context, data *DmOtaTask) error {
+func (g OtaTaskRepo) Insert(ctx context.Context, data *DmOtaFirmwareDevice) error {
 	result := g.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (g OtaTaskRepo) FindOneByFilter(ctx context.Context, f OtaTaskFilter) (*DmOtaTask, error) {
-	var result DmOtaTask
+func (g OtaTaskRepo) FindOneByFilter(ctx context.Context, f OtaTaskFilter) (*DmOtaFirmwareDevice, error) {
+	var result DmOtaFirmwareDevice
 	db := g.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -58,9 +58,9 @@ func (g OtaTaskRepo) FindOneByFilter(ctx context.Context, f OtaTaskFilter) (*DmO
 	}
 	return &result, nil
 }
-func (p OtaTaskRepo) FindByFilter(ctx context.Context, f OtaTaskFilter, page *def.PageInfo) ([]*DmOtaTask, error) {
-	var results []*DmOtaTask
-	db := p.fmtFilter(ctx, f).Model(&DmOtaTask{})
+func (p OtaTaskRepo) FindByFilter(ctx context.Context, f OtaTaskFilter, page *def.PageInfo) ([]*DmOtaFirmwareDevice, error) {
+	var results []*DmOtaFirmwareDevice
+	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareDevice{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -70,28 +70,28 @@ func (p OtaTaskRepo) FindByFilter(ctx context.Context, f OtaTaskFilter, page *de
 }
 
 func (p OtaTaskRepo) CountByFilter(ctx context.Context, f OtaTaskFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&DmOtaTask{})
+	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareDevice{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
-func (g OtaTaskRepo) Update(ctx context.Context, data *DmOtaTask) error {
+func (g OtaTaskRepo) Update(ctx context.Context, data *DmOtaFirmwareDevice) error {
 	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
 func (g OtaTaskRepo) DeleteByFilter(ctx context.Context, f OtaTaskFilter) error {
 	db := g.fmtFilter(ctx, f)
-	err := db.Delete(&DmOtaTask{}).Error
+	err := db.Delete(&DmOtaFirmwareDevice{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (g OtaTaskRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmOtaTask{}).Error
+	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmOtaFirmwareDevice{}).Error
 	return stores.ErrFmt(err)
 }
-func (g OtaTaskRepo) FindOne(ctx context.Context, id int64) (*DmOtaTask, error) {
-	var result DmOtaTask
+func (g OtaTaskRepo) FindOne(ctx context.Context, id int64) (*DmOtaFirmwareDevice, error) {
+	var result DmOtaFirmwareDevice
 	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
@@ -100,7 +100,7 @@ func (g OtaTaskRepo) FindOne(ctx context.Context, id int64) (*DmOtaTask, error) 
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (m OtaTaskRepo) MultiInsert(ctx context.Context, data []*DmOtaTask) error {
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaTask{}).Create(data).Error
+func (m OtaTaskRepo) MultiInsert(ctx context.Context, data []*DmOtaFirmwareDevice) error {
+	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaFirmwareDevice{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
