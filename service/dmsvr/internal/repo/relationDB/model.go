@@ -21,7 +21,7 @@ type DmDeviceInfo struct {
 	ProductID      string            `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
 	DeviceName     string            `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	DeviceAlias    string            `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                  // 设备别名
-	Position       stores.Point      `gorm:"column:position;type:point;NOT NULL"`                                             // 设备的位置(默认百度坐标系BD09)
+	Position       stores.Point      `gorm:"column:position;NOT NULL"`                                                        // 设备的位置(默认百度坐标系BD09)
 	RatedPower     int64             `gorm:"column:rated_power;type:bigint;NOT NULL"`                                         //额定功率:单位k/wh
 	Secret         string            `gorm:"column:secret;type:varchar(50);NOT NULL"`                                         // 设备秘钥
 	Cert           string            `gorm:"column:cert;type:varchar(512);NOT NULL"`                                          // 设备证书

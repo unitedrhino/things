@@ -110,9 +110,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 
 	if f.Range > 0 {
 		//f.Position 形如：point(116.393 39.905)
-		db = db.Where(fmt.Sprintf(
-			"round(st_distance_sphere(ST_GeomFromText(POINT(%v %v)), ST_GeomFromText(AsText(`position`))),2)>%d",
-			f.Position.Longitude, f.Position.Latitude, f.Range))
+		db = db.Where(f.Position.Range("position", f.Range))
 	}
 	return db
 }
