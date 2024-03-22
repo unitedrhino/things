@@ -41,7 +41,7 @@ type OtaFirmwareDeviceInfo  {
     DeviceName string `json:"deviceName"`
     SrcVersion string `json:"srcVersion"`
     DestVersion string `json:"destVersion"`
-    CurrentUpgradePercent int64 `json:"currentUpgradePercent"`
+    Step int64 `json:"step"`
     Detail string `json:"detail"`
     Status int64 `json:"status"`
     CreatedTime int64 `json:"createdTime"`

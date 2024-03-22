@@ -224,51 +224,6 @@ service DeviceInteract {
   rpc sendMsg(SendMsgReq)     returns(SendMsgResp);
 }
 
-
-////ota固件管理
-//service FirmwareManage {
-//  //新增固件升级包
-//  rpc FirmwareInfoCreate(Firmware) returns (FirmwareResp);
-//
-//  rpc FirmwareInfoUpdate(FirmwareInfo) returns (OtaCommonResp);
-//
-//  rpc FirmwareInfoDelete(FirmwareInfoDeleteReq) returns (FirmwareInfoDeleteResp);
-//
-//  rpc FirmwareInfoIndex(FirmwareInfoIndexReq) returns (FirmwareInfoIndexResp);
-//
-//  rpc FirmwareInfoRead(FirmwareInfoReadReq) returns (FirmwareInfoReadResp);
-//  //附件信息更新
-//  rpc OtaFirmwareFileUpdate(OtaFirmwareFileReq) returns (OtaFirmwareFileResp);
-//  //附件列表搜索
-//  rpc OtaFirmwareFileIndex(OtaFirmwareFileIndexReq) returns (OtaFirmwareFileIndexResp);
-//  //获取固件包对应设备版本列表
-//  rpc OtaFirmwareDeviceInfo(OtaFirmwareDeviceInfoReq) returns (OtaFirmwareDeviceInfoResp);
-//}
-
-////ota升级任务管理
-//service OtaTaskManage {
-//  //创建批量升级任务
-//  rpc OtaTaskCreate(OtaTaskCreateReq) returns (OtaTaskCreatResp);
-//
-//  rpc OtaTaskUpdate(OtaTaskInfo) returns (OtaCommonResp);
-//  //批量取消升级任务
-//  rpc OtaTaskCancle(OtaTaskCancleReq) returns (OtaCommonResp);
-//
-//  rpc OtaTaskIndex(OtaTaskIndexReq) returns (OtaTaskIndexResp);
-//  //升级任务详情
-//  rpc OtaTaskRead(OtaTaskReadReq) returns (OtaTaskReadResp);
-//  //升级批次详情列表
-//  rpc OtaTaskDeviceIndex(OtaTaskDeviceIndexReq) returns (OtaTaskDeviceIndexResp);
-//  //设备升级状态详情
-//  rpc OtaTaskDeviceRead(OtaTaskDeviceReadReq) returns (OtaTaskDeviceInfo);
-//  //获取当前可执行批次信息
-//  rpc OtaTaskDeviceEnableBatch(OtaTaskBatchReq) returns (OtaTaskBatchResp);
-//  //升级进度上报
-//  rpc OtaTaskDeviceProcess(OtaTaskDeviceProcessReq) returns (OtaCommonResp);
-//  //取消单个设备的升级
-//  rpc OtaTaskDeviceCancle(OtaTaskDeviceCancleReq) returns (OtaCommonResp);
-//}
-
 //新的ota功能实现
 service OtaManage{
   //添加升级包
@@ -1007,6 +962,7 @@ message DeviceInfoIndexReq{
   repeated DeviceCore devices =12;
   int64 isShared = 13;//过滤分享的设备(这里只获取分享的设备)
   string tenantCode = 14;//租户过滤
+  repeated string versions =15;//版本列表
 }
 
 message DeviceInfoIndexResp{
@@ -1236,7 +1192,7 @@ message FirmwareInfoDeleteResp {
   repeated string paths = 1;
 }
 message FirmwareInfoIndexReq {
-  OtaPageInfo page = 1;//分页信息 只获取一个则不填
+  PageInfo page = 1;//分页信息 只获取一个则不填
   int64 firmwareID = 2;
   string productID = 3;
 }
@@ -1279,7 +1235,7 @@ message OtaFirmwareFileResp{
   string signature = 7;
 }
 message OtaFirmwareFileIndexReq{
-  OtaPageInfo page = 1;
+  PageInfo page = 1;
   int64 firmwareID = 2;
   google.protobuf.Int64Value size = 3;
 }
@@ -1300,122 +1256,7 @@ message FirmwareInfoReadResp{
   google.protobuf.StringValue   extData = 11;//自定义数据
   repeated OtaFirmwareFileResp files = 12;//产品信息
 }
-message OtaFirmwareDeviceInfoReq{
-  int64 firmwareID = 1;
-}
-message OtaFirmwareDeviceInfoResp{
-  string versions = 1;
-}
-/*
-下面是ota升级任务管理模块的消息
-*/
-message OtaTaskCreateReq {
-  int64 firmwareID = 1;
-  string taskUid = 2;
-  int32 type = 3;
-  int32 upgradeType = 4;
-  int32 autoRepeat = 5;
-  google.protobuf.StringValue deviceList = 6;
-  google.protobuf.StringValue versionList = 7;
-}
-message OtaTaskCreatResp{
-  int64 taskID = 1;
-}
-message OtaTaskInfo {
-  int64 taskID = 1;
-  int64 firmwareID = 2;
-  string productID = 3;
-  string taskUid = 4;
-  int32 type = 5;
-  int32 upgradeType = 6;
-  int32 autoRepeat = 7;
-  int32 status = 8; //升级状态:1未升级2升级中3完成4已取消
-  google.protobuf.StringValue deviceList = 9;
-  google.protobuf.StringValue versionList = 10;
-  int64   createdTime = 11; //创建时间 只读
-}
-message OtaTaskCancleReq{
-  int64 taskID = 1;
-}
-message OtaTaskIndexReq{
-  OtaPageInfo page = 1;
-  int64 firmwareID = 2;
-  int64 productID = 3;
-}
-message OtaTaskIndexResp{
-  repeated OtaTaskInfo list = 1;
-  int64 total = 2;
-}
-message OtaTaskReadReq{
-  int64 taskID = 1;
-}
-message OtaTaskReadResp{
-  int64 taskID = 1;
-  int64 firmwareID = 2;
-  string taskUid = 3; //批次号
-  int32 type = 4; //升级范围1全部设备2定向升级
-  int32 upgradeType = 5; //升级策略:1静态升级2动态升级
-  int32 autoRepeat = 6; //是否自动重试,1:不,2自动重试
-  int32 status = 7; //升级状态:1未升级2升级中3完成4已取消
-  google.protobuf.StringValue deviceList = 8;
-  google.protobuf.StringValue versionList = 9;
-  int64   createdTime = 10;
-}
 
-message OtaTaskDeviceIndexReq {
-  OtaPageInfo page = 1;
-  int64 firmwareID = 2;
-  string taskUid = 3; //批次号
-  string deviceName = 4; //设备
-  int32 status = 5; //状态
-}
-message OtaTaskDeviceIndexResp {
-  repeated OtaTaskDeviceInfo list = 1;
-  int64 total = 2;
-}
-message OtaTaskDeviceInfo {
-  int64 ID = 1;
-  int64 firmwareID = 2;
-  string deviceName = 3;
-  string productID = 4;
-  string productName = 5;
-  string taskUid = 6; //批次号
-  int32 status = 7; //升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
-  string version = 8; //当前版本号
-  string desc = 9; //状态详情
-  int64   retryCount = 10; //重试次数,计划最多20次
-  int64   updatedTime = 11; //创建时间 只读
-}
-message OtaTaskDeviceReadReq {
-  int64 ID = 1;
-}
-message OtaTaskBatchReq {
-  int64 ID = 1;
-  string productID = 2;
-  string deviceName = 3;
-  string version = 4;
-}
-message OtaTaskBatchResp {
-  int64 ID = 1;
-  string taskUid = 2;
-  int64 firmwareID = 3;
-}
-message OtaTaskDeviceProcessReq {
-  int64 ID = 1;
-  int64 step = 2;
-  string desc = 4;
-  string productID = 5;
-  string deviceName = 6;
-}
-message OtaTaskDeviceCancleReq {
-  int64 ID = 1;
-}
-message OtaPageInfo{
-  int64 page = 1;
-  int64 size = 2;
-}
-message OtaCommonResp {
-}
 
 
 
@@ -1459,7 +1300,7 @@ message OtaFirmwareInfoUpdateReq {
   int64 id = 1; //固件id
   string name = 2; //固件升级包名称
   string desc = 3; //文件描述
-  google.protobuf.StringValue Extra = 14;//推送设备端的信息
+  google.protobuf.StringValue extra = 14;//推送设备端的信息
 }
 
 
@@ -1493,16 +1334,7 @@ message OtaFirmwareInfo{
   int64 isNeedToVerify = 13;//是否需要验证
 }
 
-message OtaFirmwareVerifyReq{
-  int64 firmwareID = 1; //固件id
-  string productID = 2;//产品id
-  map<string, string> tags = 3; //标签
-  repeated string deviceNames = 4; //产品名称
-  repeated string srcVersions = 5;
-  int64 timeoutInMinutes = 6; //超时时间
-  int64 needConfirm = 8; //是否需要自主控制
-  string downloadProtocol = 9; //下载协议
-}
+
 
 
 
@@ -1529,11 +1361,11 @@ message OtaFirmwareJobInfo{
   /*
       是否覆盖之前的升级任务。取值：
 
-      1（默认）：不覆盖。若设备已有升级任务，则只执行已有任务。
-      2：覆盖。设备只执行新的升级任务。此时 MultiModuleMode 不能传入 true。
+      2（默认）：不覆盖。若设备已有升级任务，则只执行已有任务。
+      1：覆盖。设备只执行新的升级任务。此时 MultiModuleMode 不能传入 true。
     动态升级 静态升级
   */
-    int64 overwriteMode =11; // 是否覆盖之前的升级任务。取值：1（不覆盖）、2（覆盖）。
+    int64 isOverwriteMode =11; // 是否覆盖之前的升级任务。取值：1（不覆盖）、2（覆盖）。
   /*
         物联网平台是否主动向设备推送升级任务。
       1（默认）：是。批次任务创建完成后，物联网平台主动将升级任务，直接推送给升级范围内的在线设备。
@@ -1548,9 +1380,11 @@ message OtaFirmwareJobInfo{
       1：是。设备无法获取 OTA 升级任务，需 App 侧确认 OTA 升级后，才能按照 NeedPush 设置，获取 OTA 升级任务信息。
   */
   int64 isNeedConfirm  =13;
-  int64 targetSelection =14;//升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级
+  int64 targetSelection =14;//升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级(不做) 5: 区域升级(不做)
   OtaJobDynamicInfo dynamic =15;
   OtaJobStaticInfo static=16;
+  string target =17;//分组升级和区域升级填写对应的id
+  repeated string tenantCodes = 18;//指定租户
 }
 
 message OtaJobDynamicInfo{
@@ -1587,27 +1421,9 @@ message OtaJobStaticInfo{
     静态升级
   */
   int64 scheduleTime =3;
+  int64 grayPercent = 4;//灰度的范围,小数点后两位, 1.23%为 123
 }
 
-message DynamicUpgradeJobReq{
-  int64 firmwareID = 1;
-  string productID = 2;
-  map<string, string> tags = 3;
-  repeated string srcVersion = 4;
-  int64 retryInterval = 5;
-  int64 retryCount = 6;
-  int64 timeoutInMinutes = 7;
-  int64 maximumPerMinute = 8;
-  int64 overwriteMode = 9;
-  int64 dynamicMode = 10;
-  int64 needPush = 11;
-  int64 needConfirm = 12;
-  int64 groupID = 13;
-  string groupType = 14;
-  string downloadProtocol = 15;
-  string multiModuleMode = 16;
-  int64 targetSelection = 17;
-}
 message OtaFirmwareJobIndexReq{
   PageInfo pageInfo = 1;
   int64 firmwareID = 2;
@@ -1643,9 +1459,9 @@ message OtaFirmwareDeviceInfo{
   string deviceName = 6;
   string srcVersion = 7;
   string destVersion = 8;
-  int64 currentUpgradePercent =9;// 当前的升级进度,单位小数点后两位  0-100%
+  int64 step =9;// 当前的升级进度  0-100%    -1：升级失败。-2：下载失败。-3：校验失败。-4：烧写失败。
   string detail = 10;//详情
-  int64 status = 11;//设备升级作业状态。1：待确认。 2：待推送。 3：已推送。  4：升级中。 5:升级成功 6: 升级失败.
+  int64 status = 11;//设备升级作业状态。1：待确认。 2：待推送。 3：已推送。  4：升级中。 5:升级成功 6: 升级失败. 7:已取消
   int64 createdTime = 13;
   int64 updatedTime = 14;
 }

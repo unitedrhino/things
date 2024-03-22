@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgSdkLog"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
@@ -94,8 +95,28 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.Mac != "" {
 		old.Mac = data.Mac
 	}
-	if data.Version != nil {
-		old.Version = data.Version.GetValue()
+	if data.Version != nil && old.Version != data.Version.GetValue() {
+		//如果不一样则需要判断是否是ota升级的,如果是,则需要更新升级状态
+		df, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+			ProductID:   old.ProductID,
+			DeviceNames: []string{old.DeviceName},
+			Statues:     []int64{msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified},
+		})
+		if err != nil {
+			if !errors.Cmp(err, errors.NotFind) {
+				return err
+			}
+		} else {
+			if df.DestVersion == data.Version.GetValue() { //版本号一致才是升级成功
+				old.Version = data.Version.GetValue()
+				df.Step = 100
+				df.Status = msgOta.DeviceStatusSuccess
+				err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
+				if err != nil {
+					return err
+				}
+			}
+		}
 	}
 	if data.HardInfo != "" {
 		old.HardInfo = data.HardInfo

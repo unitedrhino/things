@@ -78,7 +78,7 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 	if err != nil {
 		l.Error(err)
 	}
-	err = l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductInfoDelete, in.ProductID)
+	err = l.svcCtx.FastEvent.Publish(l.ctx, eventBus.DmProductInfoDelete, in.ProductID)
 	if err != nil {
 		l.Error(err)
 	}

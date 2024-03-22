@@ -56,7 +56,7 @@ type ServiceContext struct {
 	SendRepo       deviceLog.SendRepo
 	SDKLogRepo     deviceLog.SDKRepo
 	Cache          kv.Store
-	ServerMsg      *eventBus.FastEvent
+	FastEvent      *eventBus.FastEvent
 	AreaM          areamanage.AreaManage
 	ProjectM       projectmanage.ProjectManage
 	ProductCache   *caches.Cache[dm.ProductInfo]
@@ -133,7 +133,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	tenantCache, err := sysExport.NewTenantInfoCache(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
 	return &ServiceContext{
-		ServerMsg:      serverMsg,
+		FastEvent:      serverMsg,
 		TenantCache:    tenantCache,
 		Config:         c,
 		OssClient:      ossClient,

@@ -2,13 +2,20 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/core/service/timed/timedjobsvr/pb/timedjob"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/jinzhu/copier"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 )
 
 type OtaFirmwareJobCreateLogic struct {
@@ -39,68 +46,167 @@ func NewOtaFirmwareJobCreateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 创建静态升级批次
 func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobInfo) (*dm.WithID, error) {
+	if in.UpgradeType == msgOta.DynamicUpgrade && len(in.SrcVersions) == 0 {
+		return nil, errors.Parameter.AddMsg("动态升级需要填写待升级的版本")
+	}
 	var dmOtaJob relationDB.DmOtaFirmwareJob
 	err := copier.Copy(&dmOtaJob, &in)
 	if err != nil {
 		l.Errorf("%s.Copy StaticUpgradeJob err=%v", utils.FuncName(), err)
 		return nil, err
 	}
-
-	selection := in.TargetSelection
+	dmOtaJob.Status = msgOta.JobStatusInProgress
+	if dmOtaJob.UpgradeType == msgOta.StaticUpgrade && dmOtaJob.Static.ScheduleTime != 0 {
+		//延时执行
+		dmOtaJob.Status = msgOta.JobStatusPlanned
+	}
 	fi, err := l.OfDB.FindOne(l.ctx, in.FirmwareID)
 	if err != nil {
 		return nil, err
 	}
+	dmOtaJob.ProductID = fi.ProductID
 	//var  []*dm.StaticUpgradeDeviceInfo
-	var devices []*relationDB.DmDeviceInfo
-	switch selection {
-	case msgOta.AreaUpgrade: //区域升级
-	//todo
-	case msgOta.AllUpgrade:
-		ret, err := l.DiDB.FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID}, nil)
-		if err != nil {
-			return nil, err
-		}
-		devices = append(devices, ret...)
-
-	case msgOta.SpecificUpgrade:
-		ret, err := l.DiDB.FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID, DeviceNames: in.Static.TargetDeviceNames}, nil)
-		if err != nil {
-			return nil, err
-		}
-		devices = append(devices, ret...)
-	case msgOta.GrayUpgrade:
-		ret, err := l.DiDB.FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID}, nil)
-		if err != nil {
-			return nil, err
-		}
-		if err != nil {
-			return nil, err
-		}
-		devices = append(devices, ret...)
-	}
-
-	err = l.OjDB.Insert(l.ctx, &dmOtaJob)
+	devicePos, err := l.getDevice(in, fi)
 	if err != nil {
 		return nil, err
 	}
-	var otaDevices []*relationDB.DmOtaFirmwareDevice
-	for _, device := range devices {
-		otaDevices = append(otaDevices, &relationDB.DmOtaFirmwareDevice{
-			FirmwareID: in.FirmwareID,
-			DeviceName: device.DeviceName,
-			JobID:      dmOtaJob.ID,
-			SrcVersion: device.Version,
-			ProductID:  device.ProductID,
-			Status:     msgOta.UpgradeStatusQueued,
+
+	var deviceNames []string
+	for _, v := range devicePos {
+		deviceNames = append(deviceNames, v.DeviceName)
+	}
+	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err = relationDB.NewOtaJobRepo(tx).Insert(l.ctx, &dmOtaJob)
+		if err != nil {
+			return err
+		}
+		if len(devicePos) == 0 {
+			return nil
+		}
+		otDB := relationDB.NewOtaFirmwareDeviceRepo(tx)
+		oldDevices, err := otDB.FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+			ProductID:   fi.ProductID,
+			DeviceNames: deviceNames,
+			Statues: []int64{
+				msgOta.DeviceStatusConfirm, msgOta.DeviceStatusInProgress, msgOta.DeviceStatusQueued, msgOta.DeviceStatusNotified},
+		}, nil)
+		if err != nil {
+			return err
+		}
+		var oldDevicesMap = map[string]*relationDB.DmOtaFirmwareDevice{}
+		for _, v := range oldDevices {
+			oldDevicesMap[v.DeviceName] = v
+		}
+		var otaDevices []*relationDB.DmOtaFirmwareDevice
+		for _, device := range devicePos {
+			status := msgOta.UpgradeStatusQueued
+			detail := "待推送"
+			if in.IsNeedConfirm == def.True {
+				status = msgOta.DeviceStatusConfirm
+				detail = "待确认"
+			}
+			od := oldDevicesMap[device.DeviceName]
+			if od != nil {
+				switch od.Status {
+				case msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified:
+					status = msgOta.DeviceStatusFailure
+					detail = "其他任务正在升级中"
+				case msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued:
+					if in.IsOverwriteMode != def.True { //如果是不覆盖则直接失败
+						status = msgOta.DeviceStatusFailure
+						detail = "其他任务正在升级中"
+					} else {
+						od.Status = msgOta.DeviceStatusCanceled
+						od.Detail = "其他任务启动取消该任务"
+						err := otDB.Update(l.ctx, od)
+						if err != nil {
+							return err
+						}
+					}
+				}
+			}
+			otaDevices = append(otaDevices, &relationDB.DmOtaFirmwareDevice{
+				FirmwareID:  in.FirmwareID,
+				ProductID:   device.ProductID,
+				DeviceName:  device.DeviceName,
+				JobID:       dmOtaJob.ID,
+				SrcVersion:  device.Version,
+				DestVersion: fi.Version,
+				Status:      status,
+				Detail:      detail,
+			})
+		}
+		err = otDB.MultiInsert(l.ctx, otaDevices)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if dmOtaJob.Status == msgOta.JobStatusPlanned {
+		_, err := l.svcCtx.TimedM.TaskSend(l.ctx, &timedjob.TaskSendReq{
+			GroupCode: def.TimedIThingsQueueGroupCode,
+			Code:      "iThingsDmOtaJobDelayRun",
+			Option: &timedjob.TaskSendOption{
+				ProcessIn: dmOtaJob.Static.ScheduleTime,
+			},
+			ParamQueue: &timedjob.TaskParamQueue{
+				Topic:   eventBus.DmOtaJobDelayRun,
+				Payload: cast.ToString(dmOtaJob.ID),
+			},
 		})
+		if err != nil {
+			l.Error(err)
+		}
 	}
-	err = l.OtDB.MultiInsert(l.ctx, otaDevices)
-	if err != nil {
-		return nil, err
-	}
-	return &dm.WithID{Id: dmOtaJob.ID}, nil
+	return &dm.WithID{Id: dmOtaJob.ID}, err
+}
 
+func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *relationDB.DmOtaFirmwareInfo) ([]*relationDB.DmDeviceInfo, error) {
+	var devices []*relationDB.DmDeviceInfo
+	selection := in.TargetSelection
+	switch selection {
+	case msgOta.GroupUpgrade:
+		ret, err := l.GdDB.FindByFilter(l.ctx, relationDB.GroupDeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, GroupIDs: []int64{cast.ToInt64(in.Target)}, WithDevice: true}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, v := range ret {
+			if v.Device != nil {
+				devices = append(devices, v.Device)
+			}
+		}
+	case msgOta.AreaUpgrade: //区域升级
+		ret, err := l.DiDB.FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, AreaIDs: []int64{cast.ToInt64(in.Target)}, TenantCodes: in.TenantCodes}, nil)
+		if err != nil {
+			return nil, err
+		}
+		devices = append(devices, ret...)
+	case msgOta.AllUpgrade, msgOta.GrayUpgrade:
+		f := relationDB.DeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, TenantCodes: in.TenantCodes}
+		var page *def.PageInfo
+		if selection == msgOta.GrayUpgrade {
+			total, err := l.DiDB.CountByFilter(l.ctx, f)
+			if err != nil {
+				return nil, err
+			}
+			size := int64(float64(total)*(float64(in.Static.GrayPercent)/10000)) + 1
+			page = &def.PageInfo{Size: size}
+		}
+		ret, err := l.DiDB.FindByFilter(l.ctx, f, page)
+		if err != nil {
+			return nil, err
+		}
+		devices = append(devices, ret...)
+	case msgOta.SpecificUpgrade:
+		ret, err := l.DiDB.FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, DeviceNames: in.Static.TargetDeviceNames, TenantCodes: in.TenantCodes}, nil)
+		if err != nil {
+			return nil, err
+		}
+		devices = append(devices, ret...)
+	default:
+		return nil, errors.Parameter.AddMsgf("不支持的升级方式:%v", selection)
+	}
+	return devices, nil
 }
 
 //func (l *OtaFirmwareJobCreateLogic) OtaFirmwareStaticJobCreate(in *dm.OtaFirmwareJobInfo) (*dm.WithID, error) {

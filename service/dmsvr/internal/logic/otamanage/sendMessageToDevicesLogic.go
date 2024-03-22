@@ -2,16 +2,15 @@ package otamanagelogic
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/oss/common"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	server "github.com/i-Things/things/service/dmsvr/internal/server/deviceinteract"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -41,46 +40,108 @@ func NewSendMessageToDevicesLogic(ctx context.Context, svcCtx *svc.ServiceContex
 	}
 }
 
-func (l *SendMessageToDevicesLogic) PushMessageToDevices(deviceList []*relationDB.DmDeviceInfo, firmware *relationDB.DmOtaFirmwareInfo) error {
-	firmwareFiles, err := l.OffDB.FindByFilter(l.ctx, relationDB.OtaFirmwareFileFilter{FirmwareID: firmware.ID}, nil)
+func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmOtaFirmwareJob) error {
+	firmware := jobInfo.Firmware
+	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
+		return nil
+	}
+	deviceList, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+		FirmwareID: jobInfo.FirmwareID,
+		JobID:      jobInfo.ID,
+		ProductID:  firmware.ProductID,
+		IsOnline:   def.True,                           //只有在线的设备才推送
+		Statues:    []int64{msgOta.DeviceStatusQueued}, //只处理待推送的设备
+	}, &def.PageInfo{
+		Page: 1,
+		Size: jobInfo.MaximumPerMinute/(60/5) + 1, //任务5秒钟推送一次
+	})
+
+	firmwareFiles, err := l.OffDB.FindByFilter(l.ctx, relationDB.OtaFirmwareFileFilter{FirmwareID: jobInfo.FirmwareID}, nil)
 	if err != nil {
 		return err
 	}
-	var files []msgOta.File
-	_ = copier.Copy(&files, &firmwareFiles)
-	//签名值
-	for k, file := range firmwareFiles {
-		files[k].FileMd5 = file.Signature
+	data, err := GenUpgradeParams(l.ctx, l.svcCtx, firmware, firmwareFiles)
+	if err != nil {
+		return err
 	}
-
 	MsgToken := devices.GenMsgToken(l.ctx)
 	upgradeMsg := deviceMsg.CommonMsg{
 		MsgToken:  MsgToken,
 		Method:    msgOta.TypeUpgrade,
 		Timestamp: time.Now().UnixMilli(),
-		Data: msgOta.UpgradeParams{
-			Version:          firmware.Version,
-			IsDiff:           firmware.IsDiff,
-			SignMethod:       firmware.SignMethod,
-			DownloadProtocol: "https",
-			Files:            files,
-		},
+		Data:      data,
+	}
+	payload, _ := json.Marshal(upgradeMsg)
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, firmware.ProductID)
+	if err != nil {
+		return err
 	}
 	for _, device := range deviceList {
-		topic := fmt.Sprintf("$ota/down/upgrade/%s/%s", firmware.ProductID, device.DeviceName)
-		logx.Infof("topic:%+v", topic)
-		sendMsg := dm.SendMsgReq{
-			Topic:   topic,
-			Payload: upgradeMsg.AddStatus(errors.OK).Bytes(),
+		reqMsg := deviceMsg.PublishMsg{
+			Handle:       devices.Ota,
+			Type:         msgOta.TypeUpgrade,
+			Payload:      payload,
+			Timestamp:    time.Now().UnixMilli(),
+			ProductID:    device.ProductID,
+			DeviceName:   device.DeviceName,
+			ProtocolCode: pi.ProtocolCode,
 		}
-		logx.Infof("Payload: %q\n", sendMsg.Payload)
-		logx.Infof("sendMsg:%+v", &sendMsg)
-		_, err := server.NewDeviceInteractServer(l.svcCtx).SendMsg(l.ctx, &sendMsg)
+		err := l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
 		if err != nil {
-			l.Errorf("错误是", err)
-			logx.Infof("消息发送失败")
+			return err
+		}
+		device.Status = msgOta.DeviceStatusNotified
+		device.Detail = "主动推送"
+		err = relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, device)
+		if err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func GenUpgradeParams(ctx context.Context, svcCtx *svc.ServiceContext, firmware *relationDB.DmOtaFirmwareInfo, files []*relationDB.DmOtaFirmwareFile) (*msgOta.UpgradeParams, error) {
+	if len(files) == 0 {
+		return nil, errors.System.AddDetail("升级包下没有文件")
+	}
+	if len(files) == 1 { //单文件模式
+		url, err := svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, files[0].FilePath, 60*20, common.OptionKv{})
+		if err != nil {
+			return nil, err
+		}
+		data := msgOta.UpgradeParams{
+			Version:    firmware.Version,
+			IsDiff:     firmware.IsDiff,
+			SignMethod: firmware.SignMethod,
+			Extra:      firmware.Extra,
+			File: &msgOta.File{
+				Size:      files[0].Size,
+				Name:      files[0].Name,
+				FileUrl:   url,
+				FileMd5:   files[0].FileMd5,
+				Signature: files[0].Signature,
+			},
+		}
+		return &data, nil
+	}
+	var data = msgOta.UpgradeParams{
+		Version:    firmware.Version,
+		IsDiff:     firmware.IsDiff,
+		SignMethod: firmware.SignMethod,
+		Extra:      firmware.Extra,
+	}
+	for _, f := range files {
+		url, err := svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, f.FilePath, 60*20, common.OptionKv{})
+		if err != nil {
+			return nil, err
+		}
+		data.Files = append(data.Files, &msgOta.File{
+			Size:      f.Size,
+			Name:      f.Name,
+			FileUrl:   url,
+			FileMd5:   f.FileMd5,
+			Signature: f.Signature,
+		})
+	}
+	return &data, nil
 }

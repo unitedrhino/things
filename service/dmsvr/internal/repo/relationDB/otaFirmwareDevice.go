@@ -32,7 +32,11 @@ type OtaFirmwareDeviceFilter struct {
 	DeviceNames      []string
 	WithScheduleTime bool
 	//Status     int64
-	TaskStatusList []int
+	Statues      []int64
+	SrcVersion   string
+	WithFirmware bool
+	WithFiles    bool
+	IsOnline     int64
 }
 
 func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDeviceFilter) *gorm.DB {
@@ -42,6 +46,9 @@ func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDevic
 	}
 	if f.JobID != 0 {
 		db = db.Where("job_id = ?", f.JobID)
+	}
+	if f.IsOnline != 0 && f.ProductID != "" {
+		db = db.Where("device_name in (select device_name from dm_device_info where is_online=? and product_id = ?)", f.IsOnline, f.ProductID)
 	}
 	if f.ProductID != "" {
 		db = db.Where("product_id = ?", f.ProductID)
@@ -55,8 +62,17 @@ func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDevic
 	if f.WithScheduleTime {
 		db = db.Where("schedule_time not null")
 	}
-	if len(f.TaskStatusList) != 0 {
-		db = db.Where("task_status in ?", f.TaskStatusList)
+	if len(f.Statues) != 0 {
+		db = db.Where("status in ?", f.Statues)
+	}
+	if f.SrcVersion != "" {
+		db = db.Where("src_version=?", f.SrcVersion)
+	}
+	if f.WithFirmware {
+		db = db.Preload("Firmware")
+	}
+	if f.WithFiles {
+		db = db.Preload("Files")
 	}
 
 	return db

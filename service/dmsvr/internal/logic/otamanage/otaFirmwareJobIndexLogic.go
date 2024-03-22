@@ -27,10 +27,9 @@ func NewOtaFirmwareJobIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-// //创建动态升级批次
 func (l *OtaFirmwareJobIndexLogic) OtaFirmwareJobIndex(in *dm.OtaFirmwareJobIndexReq) (*dm.OtaFirmwareJobIndexResp, error) {
 	jobFilter := relationDB.OtaJobFilter{
-		FirmwareId: in.FirmwareID,
+		FirmwareID: in.FirmwareID,
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}

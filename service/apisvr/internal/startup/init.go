@@ -43,8 +43,8 @@ func FileChanWalk(s *svc.ServiceContext) {
 	//		continue
 	//	}
 	//	for _, f := range firmwareInfo.Files {
-	//		//fmt.Println(f.FilePath, " chain dir")
-	//		storageInfo, _ := s.OssClient.PrivateBucket().GetObjectInfo(context.Background(), f.FilePath)
+	//		//fmt.Println(f.FileUrl, " chain dir")
+	//		storageInfo, _ := s.OssClient.PrivateBucket().GetObjectInfo(context.Background(), f.FileUrl)
 	//
 	//		fileIn := &firmwaremanage.OtaFirmwareFileReq{
 	//			FileID:    f.FileID,

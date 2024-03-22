@@ -50,7 +50,7 @@ func (l *ProtocolInfoUpdateLogic) ProtocolInfoUpdate(in *dm.ProtocolInfo) (*dm.E
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.ServerMsg.Publish(l.ctx, fmt.Sprintf(eventBus.DmProtocolInfoUpdate, old.Code), old.ConfigInfos.ToPubStu())
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(eventBus.DmProtocolInfoUpdate, old.Code), old.ConfigInfos.ToPubStu())
 	if err != nil {
 		return nil, err
 	}

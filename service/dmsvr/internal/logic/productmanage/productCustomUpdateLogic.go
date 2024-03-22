@@ -63,7 +63,7 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmProductCustomUpdate, &events.DeviceUpdateInfo{ProductID: in.ProductID})
+	err = l.svcCtx.FastEvent.Publish(l.ctx, eventBus.DmProductCustomUpdate, &events.DeviceUpdateInfo{ProductID: in.ProductID})
 	if err != nil {
 		return nil, err
 	}

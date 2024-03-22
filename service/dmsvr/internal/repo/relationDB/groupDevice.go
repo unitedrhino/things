@@ -19,6 +19,7 @@ type (
 		DeviceName  string
 		WithProduct bool
 		WithDevice  bool
+		Versions    []string
 	}
 )
 
@@ -78,7 +79,11 @@ func (p GroupDeviceRepo) fmtFilter(ctx context.Context, f GroupDeviceFilter) *go
 		db = db.Preload("ProductInfo")
 	}
 	if f.WithDevice {
-		db = db.Preload("Device")
+		if len(f.Versions) == 0 {
+			db = db.Preload("Device")
+		} else {
+			db = db.Preload("Device", "version in ?", f.Versions)
+		}
 	}
 	//业务过滤条件
 	if len(f.GroupIDs) != 0 {

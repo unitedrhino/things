@@ -38,7 +38,7 @@ func (l *ProtocolInfoCreateLogic) ProtocolInfoCreate(in *dm.ProtocolInfo) (*dm.W
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.ServerMsg.Publish(l.ctx, fmt.Sprintf(eventBus.DmProtocolInfoUpdate, po.Code), po.ConfigInfos.ToPubStu())
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(eventBus.DmProtocolInfoUpdate, po.Code), po.ConfigInfos.ToPubStu())
 	if err != nil {
 		return nil, err
 	}

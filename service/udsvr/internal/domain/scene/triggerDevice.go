@@ -38,11 +38,11 @@ const (
 )
 
 type TriggerDeviceSchema struct {
-	DataID           string     `json:"dataID"`           //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
-	SchemaAffordance string     `json:"schemaAffordance"` //对应的物模型定义,只读
-	TermType         CmpType    `json:"termType"`         //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values           []string   `json:"values"`           //比较条件列表
-	StateKeep        *StateKeep `json:"stateKeep"`        //状态保持 todo
+	DataID    string     `json:"dataID"`    //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
+	DataName  string     `json:"dataName"`  //对应的物模型定义,只读
+	TermType  CmpType    `json:"termType"`  //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	Values    []string   `json:"values"`    //比较条件列表
+	StateKeep *StateKeep `json:"stateKeep"` //状态保持 todo
 }
 
 func (t *TriggerDevice) Validate(repo ValidateRepo) error {
@@ -95,7 +95,7 @@ func (o *TriggerDeviceSchema) Validate(productID string, repo ValidateRepo) erro
 	if p == nil {
 		return errors.Parameter.AddMsg("dataID不存在")
 	}
-	o.SchemaAffordance = utils.MarshalNoErr(p)
+	o.DataName = p.Name
 	if err := o.StateKeep.Validate(); err != nil {
 		return err
 	}

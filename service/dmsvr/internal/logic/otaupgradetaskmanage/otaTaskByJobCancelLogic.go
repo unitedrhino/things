@@ -40,7 +40,7 @@ func NewOtaTaskByJobCancelLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 //	if in.CancelUnconfirmedTask == 1 {
 //		taskStatusList = append(taskStatusList, msgOta.UpgradeStatusConfirm)
 //	}
-//	filter := relationDB.OtaFirmwareDeviceFilter{JobID: in.JobID, TaskStatusList: taskStatusList, WithScheduleTime: in.CancelScheduledTask == 1}
+//	filter := relationDB.OtaFirmwareDeviceFilter{JobID: in.JobID, Statues: taskStatusList, WithScheduleTime: in.CancelScheduledTask == 1}
 //	updateData := make(map[string]interface{})
 //	updateData["task_status"] = msgOta.UpgradeStatusCanceled
 //	err := l.OtDB.BatchUpdateField(l.ctx, filter, updateData)

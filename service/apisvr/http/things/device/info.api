@@ -117,6 +117,7 @@ type (
         IsOnline int64 `json:"isOnline,optional,range=[0:2]"`                                         // 在线状态过滤  1离线 2在线
         ProductCategoryID int64 `json:"productCategoryID,optional"`
         IsShared int64 `json:"isShared,optional,range=[0:2]"`                                         // 是否共享  1:是 2:否
+        Versions []string `json:"versions,optional"`
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息

@@ -73,7 +73,7 @@ func (l *OtaPromptIndexLogic) OtaPromptIndex(in *dm.OtaPromptIndexReq) (*dm.OtaP
 	//}
 	//files := make([]map[string]any, len(firmwareInfo.Files))
 	//for k, v := range firmwareInfo.Files {
-	//	url, _ := l.svcCtx.OssClient.PrivateBucket().SignedGetUrl(l.ctx, v.FilePath, 3600*24, common.OptionKv{})
+	//	url, _ := l.svcCtx.OssClient.PrivateBucket().SignedGetUrl(l.ctx, v.FileUrl, 3600*24, common.OptionKv{})
 	//	files[k] = map[string]any{
 	//		"size":      v.Size,
 	//		"signature": v.Signature,

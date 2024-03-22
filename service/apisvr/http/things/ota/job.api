@@ -48,9 +48,9 @@ type OtaFirmwareJobInfoIndexResp  {
 type OtaFirmwareJobInfo  {
     ID          int64 `json:"id,optional"`
     FirmwareID  int64 `json:"firmwareID,optional"`// 升级包ID，升级包的唯一标识符。
-    Type        int64 `json:"type,optional"`// 升级包所属产品的JobType。 验证升级包:1  批量升级:2
-    Status      int64 `json:"status,optional"`// 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
-    UpgradeType int64 `json:"upgradeType,optional"`// 升级策略，1-静态，2-动态
+    Type        int64 `json:"type,optional,range=[0:2]"`// 升级包所属产品的JobType。 验证升级包:1  批量升级:2
+    Status      int64 `json:"status,optional,range=[0:4]"`// 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
+    UpgradeType int64 `json:"upgradeType,optional,range=[0:2]"`// 升级策略，1-静态，2-动态
 /*
     待升级版本号列表。
         发起全量升级（TargetSelection=ALL）和灰度升级（TargetSelection=GRAY）任务时，可以传入该参数。
@@ -68,11 +68,11 @@ type OtaFirmwareJobInfo  {
 /*
         是否覆盖之前的升级任务。取值：
 
-        1（默认）：不覆盖。若设备已有升级任务，则只执行已有任务。
-        2：覆盖。设备只执行新的升级任务。此时 MultiModuleMode 不能传入 true。
+        2（默认）：不覆盖。若设备已有升级任务，则只执行已有任务。
+        1：覆盖。设备只执行新的升级任务。此时 MultiModuleMode 不能传入 true。
     动态升级 静态升级
 */
-    OverwriteMode int64 `json:"overwriteMode,optional"`// 是否覆盖之前的升级任务。取值：1（不覆盖）、2（覆盖）。
+    IsOverwriteMode int64 `json:"isOverwriteMode,optional,range=[0:2]"`// 是否覆盖之前的升级任务。取值：2（不覆盖）、1（覆盖）。
 /*
             物联网平台是否主动向设备推送升级任务。
         1（默认）：是。批次任务创建完成后，物联网平台主动将升级任务，直接推送给升级范围内的在线设备。
@@ -80,14 +80,18 @@ type OtaFirmwareJobInfo  {
         2：否。设备必须通过向物联网平台发起请求，来获取 OTA 升级任务信息。
     动态升级
 */
-    IsNeedPush int64 `json:"isNeedPush,optional"` // 物联网平台是否主动向设备推送升级任务。
+    IsNeedPush int64 `json:"isNeedPush,optional,range=[0:2]"` // 物联网平台是否主动向设备推送升级任务。
 
 /*
     如需自主控制设备 OTA 升级时，可配置此参数，通过手机 App 来控制，设备是否可进行 OTA 升级。手机 App 需您自行开发。
         2（默认）：否。直接按照 NeedPush 设置，获取 OTA 升级任务信息。
         1：是。设备无法获取 OTA 升级任务，需 App 侧确认 OTA 升级后，才能按照 NeedPush 设置，获取 OTA 升级任务信息。
 */
-    IsNeedConfirm int64 `json:"isNeedConfirm,optional"`
+    IsNeedConfirm int64 `json:"isNeedConfirm,optional,range=[0:2]"`
+    Target string `json:"target,optional"`// 分组升级和区域升级填写对应的id
+    TargetSelection int64 `json:"targetSelection,optional,range=[0:4]"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级(不做) 5: 区域升级(不做)
+    TenantCodes []string `json:"tenantCodes"`//指定租户
+    GrayPercent int64  `json:"grayPercent"`//灰度的范围,小数点后两位, 1.23%为 123
     OtaFirmwareJobDynamic
     OtaFirmwareJobStatic
 }
@@ -101,7 +105,7 @@ type OtaFirmwareJobDynamic  {
         2：仅对后续上报新版本号的设备生效。
     动态升级
 */
-    DynamicMode int64 `json:"dynamicMode,optional"` //
+    DynamicMode int64 `json:"dynamicMode,optional,range=[0:2]"` //
 }
 
 type OtaFirmwareJobStatic  {
@@ -129,7 +133,7 @@ type OtaFirmwareJobStatic  {
     静态升级
 */
     ScheduleTime    int64 `json:"scheduleTime,optional"`
-    TargetSelection int64 `json:"targetSelection,optional"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级
+    grayPercent int64 `json:"grayPercent,optional"`//灰度的范围,小数点后两位, 1.23%为 123
 }
 
 

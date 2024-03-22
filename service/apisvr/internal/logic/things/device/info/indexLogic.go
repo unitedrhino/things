@@ -43,6 +43,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		IsOnline:          req.IsOnline,
 		ProductCategoryID: req.ProductCategoryID,
 		IsShared:          req.IsShared,
+		Versions:          req.Versions,
 	}
 	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
 	if err != nil {

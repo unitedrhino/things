@@ -29,7 +29,7 @@ func NewOtaTaskReUpgradeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 //func (l *OtaTaskReUpgradeLogic) OtaTaskReUpgrade(in *dm.OTATaskReUpgradeReq) (*dm.Empty, error) {
 //	taskStatusList := []int{msgOta.UpgradeStatusCanceled, msgOta.UpgradeStatusFailed}
 //	filter := relationDB.OtaFirmwareDeviceFilter{
-//		TaskStatusList: taskStatusList,
+//		Statues: taskStatusList,
 //		JobID:          in.JobID,
 //		IDs:            in.TaskIDs,
 //	}

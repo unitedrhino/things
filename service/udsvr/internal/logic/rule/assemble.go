@@ -133,17 +133,17 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 	}
 	if in.Device != nil {
 		po.Device = &relationDB.UdSceneActionDevice{
-			ProjectID:        stores.ProjectID(in.Device.ProjectID),
-			AreaID:           stores.AreaID(in.Device.AreaID),
-			ProductID:        in.Device.ProductID,
-			SelectType:       in.Device.SelectType,
-			DeviceName:       in.Device.DeviceName,
-			DeviceAlias:      in.Device.DeviceAlias,
-			SchemaAffordance: in.Device.SchemaAffordance,
-			GroupID:          in.Device.GroupID,
-			Type:             in.Device.Type,
-			DataID:           in.Device.DataID,
-			Value:            in.Device.Value,
+			ProjectID:   stores.ProjectID(in.Device.ProjectID),
+			AreaID:      stores.AreaID(in.Device.AreaID),
+			ProductID:   in.Device.ProductID,
+			SelectType:  in.Device.SelectType,
+			DeviceName:  in.Device.DeviceName,
+			DeviceAlias: in.Device.DeviceAlias,
+			DataName:    in.Device.DataName,
+			GroupID:     in.Device.GroupID,
+			Type:        in.Device.Type,
+			DataID:      in.Device.DataID,
+			Value:       in.Device.Value,
 		}
 	}
 	return po
@@ -167,17 +167,17 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 	}
 	if in.Device != nil {
 		do.Device = &scene.ActionDevice{
-			ProjectID:        int64(in.Device.ProjectID),
-			AreaID:           int64(in.Device.AreaID),
-			ProductID:        in.Device.ProductID,
-			SelectType:       in.Device.SelectType,
-			DeviceName:       in.Device.DeviceName,
-			DeviceAlias:      in.Device.DeviceAlias,
-			GroupID:          in.Device.GroupID,
-			Type:             in.Device.Type,
-			DataID:           in.Device.DataID,
-			SchemaAffordance: in.Device.SchemaAffordance,
-			Value:            in.Device.Value,
+			ProjectID:   int64(in.Device.ProjectID),
+			AreaID:      int64(in.Device.AreaID),
+			ProductID:   in.Device.ProductID,
+			SelectType:  in.Device.SelectType,
+			DeviceName:  in.Device.DeviceName,
+			DeviceAlias: in.Device.DeviceAlias,
+			GroupID:     in.Device.GroupID,
+			Type:        in.Device.Type,
+			DataID:      in.Device.DataID,
+			DataName:    in.Device.DataName,
+			Value:       in.Device.Value,
 		}
 	}
 	return do
@@ -217,10 +217,10 @@ func ToSceneTriggerDeviceSchemaDo(in *relationDB.UdSceneTriggerDeviceSchema) *sc
 		return nil
 	}
 	return &scene.TriggerDeviceSchema{
-		DataID:           in.DataID,
-		SchemaAffordance: in.SchemaAffordance,
-		TermType:         scene.CmpType(in.TermType),
-		Values:           in.Values,
+		DataID:   in.DataID,
+		DataName: in.DataName,
+		TermType: scene.CmpType(in.TermType),
+		Values:   in.Values,
 	}
 }
 

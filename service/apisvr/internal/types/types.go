@@ -194,6 +194,7 @@ type DeviceInfoIndexReq struct {
 	IsOnline          int64     `json:"isOnline,optional,range=[0:2]"` // 在线状态过滤  1离线 2在线
 	ProductCategoryID int64     `json:"productCategoryID,optional"`
 	IsShared          int64     `json:"isShared,optional,range=[0:2]"` // 是否共享  1:是 2:否
+	Versions          []string  `json:"versions,optional"`
 }
 
 type DeviceInfoIndexResp struct {
@@ -701,19 +702,19 @@ type OtaFirmwareDeviceIndexResp struct {
 }
 
 type OtaFirmwareDeviceInfo struct {
-	ID                    int64  `json:"id"`
-	FirmwareID            int64  `json:"firmwareID"`
-	JobID                 int64  `json:"jobID"`
-	ProductID             string `json:"productID"`
-	ProductName           string `json:"productName"`
-	DeviceName            string `json:"deviceName"`
-	SrcVersion            string `json:"srcVersion"`
-	DestVersion           string `json:"destVersion"`
-	CurrentUpgradePercent int64  `json:"currentUpgradePercent"`
-	Detail                string `json:"detail"`
-	Status                int64  `json:"status"`
-	CreatedTime           int64  `json:"createdTime"`
-	UpdatedTime           int64  `json:"updatedTime"`
+	ID          int64  `json:"id"`
+	FirmwareID  int64  `json:"firmwareID"`
+	JobID       int64  `json:"jobID"`
+	ProductID   string `json:"productID"`
+	ProductName string `json:"productName"`
+	DeviceName  string `json:"deviceName"`
+	SrcVersion  string `json:"srcVersion"`
+	DestVersion string `json:"destVersion"`
+	Step        int64  `json:"step"`
+	Detail      string `json:"detail"`
+	Status      int64  `json:"status"`
+	CreatedTime int64  `json:"createdTime"`
+	UpdatedTime int64  `json:"updatedTime"`
 }
 
 type OtaFirmwareDeviceInfoResp struct {
@@ -781,7 +782,7 @@ type OtaFirmwareInfoUpdateReq struct {
 }
 
 type OtaFirmwareJobDynamic struct {
-	DynamicMode int64 `json:"dynamicMode,optional"` //
+	DynamicMode int64 `json:"dynamicMode,optional,range=[0:2]"` //
 }
 
 type OtaFirmwareJobIndexReq struct {
@@ -791,18 +792,22 @@ type OtaFirmwareJobIndexReq struct {
 
 type OtaFirmwareJobInfo struct {
 	ID               int64    `json:"id,optional"`
-	FirmwareID       int64    `json:"firmwareID,optional"`       // 升级包ID，升级包的唯一标识符。
-	Type             int64    `json:"type,optional"`             // 升级包所属产品的JobType。 验证升级包:1  批量升级:2
-	Status           int64    `json:"status,optional"`           // 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
-	UpgradeType      int64    `json:"upgradeType,optional"`      // 升级策略，1-静态，2-动态
-	SrcVersions      []string `json:"srcVersions,optional"`      // 待升级版本号列表。最多可传入10个版本号。用逗号分隔多个版本号
-	RetryInterval    int64    `json:"retryInterval,optional"`    // 设备升级失败后，自动重试的时间间隔，单位为分钟。 动态升级 静态升级
-	RetryCount       int64    `json:"retryCount,optional"`       // 自动重试次数。1/2/5次 动态升级 静态升级
-	TimeoutInMinutes int64    `json:"timeoutInMinutes,optional"` // 设备升级超时时间，单位为分钟。 动态升级 静态升级
-	MaximumPerMinute int64    `json:"maximumPerMinute,optional"` // 每分钟最多向多少个设备推送升级包下载URL。 动态升级 静态升级
-	OverwriteMode    int64    `json:"overwriteMode,optional"`    // 是否覆盖之前的升级任务。取值：1（不覆盖）、2（覆盖）。
-	IsNeedPush       int64    `json:"isNeedPush,optional"`       // 物联网平台是否主动向设备推送升级任务。
-	IsNeedConfirm    int64    `json:"isNeedConfirm,optional"`
+	FirmwareID       int64    `json:"firmwareID,optional"`                  // 升级包ID，升级包的唯一标识符。
+	Type             int64    `json:"type,optional,range=[0:2]"`            // 升级包所属产品的JobType。 验证升级包:1  批量升级:2
+	Status           int64    `json:"status,optional,range=[0:4]"`          // 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
+	UpgradeType      int64    `json:"upgradeType,optional,range=[0:2]"`     // 升级策略，1-静态，2-动态
+	SrcVersions      []string `json:"srcVersions,optional"`                 // 待升级版本号列表。最多可传入10个版本号。用逗号分隔多个版本号
+	RetryInterval    int64    `json:"retryInterval,optional"`               // 设备升级失败后，自动重试的时间间隔，单位为分钟。 动态升级 静态升级
+	RetryCount       int64    `json:"retryCount,optional"`                  // 自动重试次数。1/2/5次 动态升级 静态升级
+	TimeoutInMinutes int64    `json:"timeoutInMinutes,optional"`            // 设备升级超时时间，单位为分钟。 动态升级 静态升级
+	MaximumPerMinute int64    `json:"maximumPerMinute,optional"`            // 每分钟最多向多少个设备推送升级包下载URL。 动态升级 静态升级
+	IsOverwriteMode  int64    `json:"isOverwriteMode,optional,range=[0:2]"` // 是否覆盖之前的升级任务。取值：2（不覆盖）、1（覆盖）。
+	IsNeedPush       int64    `json:"isNeedPush,optional,range=[0:2]"`      // 物联网平台是否主动向设备推送升级任务。
+	IsNeedConfirm    int64    `json:"isNeedConfirm,optional,range=[0:2]"`
+	Target           string   `json:"target,optional"`                      // 分组升级和区域升级填写对应的id
+	TargetSelection  int64    `json:"targetSelection,optional,range=[0:4]"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级(不做) 5: 区域升级(不做)
+	TenantCodes      []string `json:"tenantCodes"`                          //指定租户
+	GrayPercent      int64    `json:"grayPercent"`                          //灰度的范围,小数点后两位, 1.23%为 123
 	OtaFirmwareJobDynamic
 	OtaFirmwareJobStatic
 }
@@ -816,7 +821,7 @@ type OtaFirmwareJobStatic struct {
 	TargetDeviceNames  []string `json:"targetDeviceNames,optional"`  // 定向升级的设备名称列表。最多可传入200个设备名称。以逗号分隔
 	ScheduleFinishTime int64    `json:"scheduleFinishTime,optional"` // 指定结束升级的时间，单位为毫秒。
 	ScheduleTime       int64    `json:"scheduleTime,optional"`
-	TargetSelection    int64    `json:"targetSelection,optional"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级
+	GrayPercent        int64    `json:"grayPercent,optional"` //灰度的范围,小数点后两位, 1.23%为 123
 }
 
 type OtaFirmwareReadResp struct {

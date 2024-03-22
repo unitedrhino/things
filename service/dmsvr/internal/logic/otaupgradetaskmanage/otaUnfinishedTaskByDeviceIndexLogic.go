@@ -29,7 +29,7 @@ func NewOtaUnfinishedTaskByDeviceIndexLogic(ctx context.Context, svcCtx *svc.Ser
 //	taskStatusList := []int{msgOta.UpgradeStatusConfirm, msgOta.UpgradeStatusInProgress, msgOta.UpgradeStatusQueued, msgOta.UpgradeStatusNotified}
 //	filter := relationDB.OtaFirmwareDeviceFilter{
 //		ProductID:      in.ProductID,
-//		TaskStatusList: taskStatusList,
+//		Statues: taskStatusList,
 //		//ModuleName:     in.ModuleName,
 //		DeviceName: in.DeviceName,
 //	}

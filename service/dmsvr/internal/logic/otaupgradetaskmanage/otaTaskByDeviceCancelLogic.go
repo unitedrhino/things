@@ -35,7 +35,7 @@ package otaupgradetaskmanagelogic
 //	filter := relationDB.OtaFirmwareDeviceFilter{
 //		JobID:          in.JobID,
 //		ProductID:      in.ProductID,
-//		TaskStatusList: taskStatusList,
+//		Statues: taskStatusList,
 //	}
 //	updateData := make(map[string]interface{})
 //	err := l.OtDB.BatchUpdateField(l.ctx, filter, updateData)

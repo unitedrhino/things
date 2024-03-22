@@ -53,14 +53,14 @@ func (l *TimerHandle) DeviceTimer() error {
 					return
 				}
 				exec := scene.ActionDevice{
-					ProductID:        po.ProductID,
-					SelectType:       scene.SelectDeviceFixed,
-					DeviceName:       po.DeviceName,
-					DeviceAlias:      po.DeviceAlias,
-					SchemaAffordance: po.SchemaAffordance,
-					Type:             scene.ActionDeviceType(po.ActionType),
-					DataID:           po.DataID,
-					Value:            po.Value,
+					ProductID:   po.ProductID,
+					SelectType:  scene.SelectDeviceFixed,
+					DeviceName:  po.DeviceName,
+					DeviceAlias: po.DeviceAlias,
+					DataName:    po.DataName,
+					Type:        scene.ActionDeviceType(po.ActionType),
+					DataID:      po.DataID,
+					Value:       po.Value,
 				}
 				err = exec.Execute(ctx, scene.ActionRepo{
 					DeviceInteract: l.svcCtx.DeviceInteract,

@@ -74,7 +74,7 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 	if err != nil {
 		l.Error(err)
 	}
-	err = l.svcCtx.ServerMsg.Publish(l.ctx, eventBus.DmDeviceInfoDelete, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	err = l.svcCtx.FastEvent.Publish(l.ctx, eventBus.DmDeviceInfoDelete, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		l.Error(err)
 	}

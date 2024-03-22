@@ -17,6 +17,7 @@ type DeviceInfoRepo struct {
 type (
 	DeviceFilter struct {
 		TenantCode        string
+		TenantCodes       []string
 		ProductID         string
 		AreaIDs           []int64
 		NotAreaIDs        []int64
@@ -44,6 +45,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
 	}
+	if len(f.TenantCodes) != 0 {
+		db = db.Where("tenant_code in ?", f.TenantCodes)
+	}
 	if f.TenantCode != "" {
 		db = db.Where("tenant_code = ?", f.TenantCode)
 	}
@@ -61,7 +65,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		db = db.Where("area_id in ?", f.AreaIDs)
 	}
 	if len(f.Versions) != 0 {
-		db = db.Where("version = ?", f.AreaIDs)
+		db = db.Where("version in ?", f.Versions)
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")

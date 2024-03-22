@@ -87,16 +87,6 @@ func ToDmPointRpc(in *types.Point) *dm.Point {
 	}
 }
 
-func ToOtaPageRpc(in *types.PageInfo) *dm.OtaPageInfo {
-	if in == nil {
-		return nil
-	}
-	return &dm.OtaPageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
-}
-
 func ToDiSendOption(in *types.SendOption) *dm.SendOption {
 	if in == nil {
 		return nil
