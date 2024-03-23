@@ -3,10 +3,10 @@ package job
 import (
 	"context"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,15 +26,15 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 
 func (l *ReadLogic) Read(req *types.WithID) (resp *types.OtaFirmwareJobInfo, err error) {
 	var firmwareReadReq dm.WithID
-	_ = copier.Copy(&firmwareReadReq, &req)
+	_ = utils.CopyE(&firmwareReadReq, &req)
 	read, err := l.svcCtx.OtaM.OtaFirmwareJobRead(l.ctx, &firmwareReadReq)
 	if err != nil {
 		er := errors.Fmt(err)
 		return nil, er
 	}
 	var result = types.OtaFirmwareJobInfo{}
-	_ = copier.Copy(&result, &read)
-	copier.Copy(&result.OtaFirmwareJobStatic, &read.Static)
-	copier.Copy(&result.OtaFirmwareJobDynamic, &read.Dynamic)
+	_ = utils.CopyE(&result, &read)
+	utils.CopyE(&result.OtaFirmwareJobStatic, &read.Static)
+	utils.CopyE(&result.OtaFirmwareJobDynamic, &read.Dynamic)
 	return &result, nil
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,7 +26,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.FirmwareIndexReq) (resp *types.FirmwareIndexResp, err error) {
 	var firmwareIndexReq dm.OtaFirmwareInfoIndexReq
-	_ = copier.Copy(&firmwareIndexReq, &req)
+	_ = utils.CopyE(&firmwareIndexReq, &req)
 	index, err := l.svcCtx.OtaM.OtaFirmwareInfoIndex(l.ctx, &firmwareIndexReq)
 	if err != nil {
 		er := errors.Fmt(err)
@@ -35,6 +34,6 @@ func (l *IndexLogic) Index(req *types.FirmwareIndexReq) (resp *types.FirmwareInd
 		return nil, er
 	}
 	var list []types.FirmwareInfo
-	_ = copier.Copy(&list, &index.List)
+	_ = utils.CopyE(&list, &index.List)
 	return &types.FirmwareIndexResp{List: list, Total: index.Total}, nil
 }

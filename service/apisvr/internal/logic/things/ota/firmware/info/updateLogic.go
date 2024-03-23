@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,8 +26,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(req *types.FirmwareUpdateReq) (resp *types.WithID, err error) {
 	var firmwareUpdateReq dm.OtaFirmwareInfoUpdateReq
-	_ = copier.Copy(&firmwareUpdateReq, &req)
-	firmwareUpdateReq.Extra = utils.ToRpcNullString(req.Extra)
+	_ = utils.CopyE(&firmwareUpdateReq, &req)
 	logx.Infof("firmwareUpdateReq:%+v", &firmwareUpdateReq)
 	update, err := l.svcCtx.OtaM.OtaFirmwareInfoUpdate(l.ctx, &firmwareUpdateReq)
 	if err != nil {

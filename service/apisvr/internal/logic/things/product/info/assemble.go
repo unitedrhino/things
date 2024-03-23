@@ -10,6 +10,8 @@ import (
 )
 
 func productInfoToApi(v *dm.ProductInfo) *types.ProductInfo {
+	ret := utils.Copy[types.ProductInfo](v)
+	return &ret
 	return &types.ProductInfo{
 		CreatedTime:  v.CreatedTime,              //创建时间 只读
 		ProductID:    v.ProductID,                //产品id 只读

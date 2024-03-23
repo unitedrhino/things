@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -45,7 +44,7 @@ func (l *OtaFirmwareJobIndexLogic) OtaFirmwareJobIndex(in *dm.OtaFirmwareJobInde
 	var list []*dm.OtaFirmwareJobInfo
 	for _, v := range otaJobList {
 		var otaJobInfo = dm.OtaFirmwareJobInfo{Dynamic: &dm.OtaJobDynamicInfo{}, Static: &dm.OtaJobStaticInfo{}}
-		copier.Copy(&otaJobInfo, v)
+		utils.CopyE(&otaJobInfo, v)
 		list = append(list, &otaJobInfo)
 	}
 	return &dm.OtaFirmwareJobIndexResp{List: list, Total: total}, nil

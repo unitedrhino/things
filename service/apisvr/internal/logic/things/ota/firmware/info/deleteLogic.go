@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,7 +26,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 
 func (l *DeleteLogic) Delete(req *types.WithID) error {
 	var firmwareDeleteReq dm.WithID
-	_ = copier.Copy(&firmwareDeleteReq, &req)
+	_ = utils.CopyE(&firmwareDeleteReq, &req)
 	_, err := l.svcCtx.OtaM.OtaFirmwareInfoDelete(l.ctx, &firmwareDeleteReq)
 	if err != nil {
 		er := errors.Fmt(err)

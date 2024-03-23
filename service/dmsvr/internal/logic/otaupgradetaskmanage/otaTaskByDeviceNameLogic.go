@@ -36,6 +36,6 @@ func NewOtaTaskByDeviceNameLogic(ctx context.Context, svcCtx *svc.ServiceContext
 //		return nil, err
 //	}
 //	var taskInfo dm.OtaUpTaskInfo
-//	_ = copier.Copy(&taskInfo, &tasks[0])
+//	_ = utils.CopyE(&taskInfo, &tasks[0])
 //	return &taskInfo, nil
 //}

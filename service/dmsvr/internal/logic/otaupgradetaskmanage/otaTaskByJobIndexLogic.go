@@ -38,6 +38,6 @@ func NewOtaTaskByJobIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 //		l.Errorf("%s.TaskInfo.TaskInfo failure err=%+v", utils.FuncName(), err)
 //		return nil, err
 //	}
-//	_ = copier.Copy(&otaTaskInfo, &otaTask)
+//	_ = utils.CopyE(&otaTaskInfo, &otaTask)
 //	return &dm.OtaTaskByJobIndexResp{Total: total, List: otaTaskInfo}, nil
 //}

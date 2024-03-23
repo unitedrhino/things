@@ -6,7 +6,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -34,6 +33,6 @@ func (l *OtaFirmwareJobReadLogic) OtaFirmwareJobRead(in *dm.WithID) (*dm.OtaFirm
 		return nil, err
 	}
 	var otaJobInfo = dm.OtaFirmwareJobInfo{Dynamic: &dm.OtaJobDynamicInfo{}, Static: &dm.OtaJobStaticInfo{}}
-	copier.Copy(&otaJobInfo, &otaJob)
+	utils.CopyE(&otaJobInfo, &otaJob)
 	return &otaJobInfo, nil
 }

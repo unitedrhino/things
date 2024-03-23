@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,7 +26,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.OtaFirmwareJobIndexReq) (resp *types.OtaFirmwareJobInfoIndexResp, err error) {
 	var firmwareIndexReq dm.OtaFirmwareJobIndexReq
-	_ = copier.Copy(&firmwareIndexReq, &req)
+	_ = utils.CopyE(&firmwareIndexReq, &req)
 	index, err := l.svcCtx.OtaM.OtaFirmwareJobIndex(l.ctx, &firmwareIndexReq)
 	if err != nil {
 		er := errors.Fmt(err)
@@ -37,9 +36,9 @@ func (l *IndexLogic) Index(req *types.OtaFirmwareJobIndexReq) (resp *types.OtaFi
 	var list []*types.OtaFirmwareJobInfo
 	for _, v := range index.List {
 		var result = types.OtaFirmwareJobInfo{}
-		_ = copier.Copy(&result, &v)
-		copier.Copy(&result.OtaFirmwareJobStatic, &v.Static)
-		copier.Copy(&result.OtaFirmwareJobDynamic, &v.Dynamic)
+		_ = utils.CopyE(&result, &v)
+		utils.CopyE(&result.OtaFirmwareJobStatic, &v.Static)
+		utils.CopyE(&result.OtaFirmwareJobDynamic, &v.Dynamic)
 		list = append(list, &result)
 	}
 	return &types.OtaFirmwareJobInfoIndexResp{List: list, Total: index.Total}, nil

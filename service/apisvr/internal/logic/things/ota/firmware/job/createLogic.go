@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,9 +26,9 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 
 func (l *CreateLogic) Create(req *types.OtaFirmwareJobInfo) (resp *types.WithID, err error) {
 	var firmwareCreateReq = dm.OtaFirmwareJobInfo{Static: &dm.OtaJobStaticInfo{}, Dynamic: &dm.OtaJobDynamicInfo{}}
-	_ = copier.Copy(&firmwareCreateReq, &req)
-	copier.Copy(&firmwareCreateReq.Static, &req.OtaFirmwareJobStatic)
-	copier.Copy(&firmwareCreateReq.Dynamic, &req.OtaFirmwareJobDynamic)
+	_ = utils.CopyE(&firmwareCreateReq, &req)
+	utils.CopyE(&firmwareCreateReq.Static, &req.OtaFirmwareJobStatic)
+	utils.CopyE(&firmwareCreateReq.Dynamic, &req.OtaFirmwareJobDynamic)
 	create, err := l.svcCtx.OtaM.OtaFirmwareJobCreate(l.ctx, &firmwareCreateReq)
 	if err != nil {
 		er := errors.Fmt(err)

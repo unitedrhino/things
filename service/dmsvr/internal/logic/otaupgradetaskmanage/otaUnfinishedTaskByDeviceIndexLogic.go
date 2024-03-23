@@ -39,6 +39,6 @@ func NewOtaUnfinishedTaskByDeviceIndexLogic(ctx context.Context, svcCtx *svc.Ser
 //		l.Errorf("%s.TaskInfo.TaskInfo failure err=%+v", utils.FuncName(), err)
 //		return nil, err
 //	}
-//	_ = copier.Copy(&otaUpTaskInfo, &otaTask)
+//	_ = utils.CopyE(&otaUpTaskInfo, &otaTask)
 //	return &dm.OTAUnfinishedTaskByDeviceIndexResp{OtaUpTaskInfoList: otaUpTaskInfo}, nil
 //}

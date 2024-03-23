@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,7 +26,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 
 func (l *ReadLogic) Read(req *types.WithID) (resp *types.FirmwareInfo, err error) {
 	var firmwareReadReq dm.WithID
-	_ = copier.Copy(&firmwareReadReq, &req)
+	_ = utils.CopyE(&firmwareReadReq, &req)
 	read, err := l.svcCtx.OtaM.OtaFirmwareInfoRead(l.ctx, &firmwareReadReq)
 	logx.Infof("read:%+v", read)
 	if err != nil {
@@ -36,6 +35,6 @@ func (l *ReadLogic) Read(req *types.WithID) (resp *types.FirmwareInfo, err error
 		return nil, er
 	}
 	var result = types.FirmwareInfo{FileList: []*types.FirmwareFile{}}
-	_ = copier.Copy(&result, &read)
+	_ = utils.CopyE(&result, &read)
 	return &result, nil
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,8 +27,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 func (l *CreateLogic) Create(req *types.FirmwareCreateReq) (resp *types.WithID, err error) {
 	var firmwareCreateReq dm.OtaFirmwareInfoCreateReq
 	logx.Infof("req:%+v", req)
-	_ = copier.Copy(&firmwareCreateReq, &req)
-	firmwareCreateReq.Extra = utils.ToRpcNullString(req.Extra)
+	_ = utils.CopyE(&firmwareCreateReq, &req)
 	logx.Infof("firmwareCreateReq:%+v", &firmwareCreateReq)
 	create, err := l.svcCtx.OtaM.OtaFirmwareInfoCreate(l.ctx, &firmwareCreateReq)
 	if err != nil {

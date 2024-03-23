@@ -12,7 +12,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/jinzhu/copier"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
@@ -50,9 +49,9 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 		return nil, errors.Parameter.AddMsg("动态升级需要填写待升级的版本")
 	}
 	var dmOtaJob relationDB.DmOtaFirmwareJob
-	err := copier.Copy(&dmOtaJob, &in)
+	err := utils.CopyE(&dmOtaJob, &in)
 	if err != nil {
-		l.Errorf("%s.Copy StaticUpgradeJob err=%v", utils.FuncName(), err)
+		l.Errorf("%s.CopyE StaticUpgradeJob err=%v", utils.FuncName(), err)
 		return nil, err
 	}
 	dmOtaJob.Status = msgOta.JobStatusInProgress
@@ -216,9 +215,9 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 //}
 //func (l *OtaFirmwareJobCreateLogic) OtaFirmwareDynamicJobCreate(in *dm.OtaFirmwareJobInfo) (*dm.WithID, error) {
 //	var dmOtaJob relationDB.DmOtaFirmwareJob
-//	err := copier.Copy(&dmOtaJob, &in)
+//	err := copier.CopyE(&dmOtaJob, &in)
 //	if err != nil {
-//		l.Errorf("%s.Copy DynamicUpgradeJob err=%v", utils.FuncName(), err)
+//		l.Errorf("%s.CopyE DynamicUpgradeJob err=%v", utils.FuncName(), err)
 //		return nil, err
 //	}
 //	dmOtaJob.Type = msgOta.BatchUpgrade
@@ -227,7 +226,7 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 //	var deviceInfoList []*relationDB.DmDeviceInfo
 //	//定向升级
 //	if selection == msgOta.SpecificUpgrade {
-//		_ = copier.Copy(&deviceInfoList, &in.DeviceInfos)
+//		_ = copier.CopyE(&deviceInfoList, &in.DeviceInfos)
 //		//区域升级
 //	} else if selection == msgOta.AreaUpgrade {
 //		//todo
