@@ -2,6 +2,8 @@ package device
 
 import (
 	"context"
+	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
@@ -24,7 +26,7 @@ func NewRetryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RetryLogic 
 }
 
 func (l *RetryLogic) Retry(req *types.OtaFirmwareDeviceRetryReq) error {
-	// todo: add your logic here and delete this line
-
-	return nil
+	var in = utils.Copy[dm.OtaFirmwareDeviceRetryReq](req)
+	_, err := l.svcCtx.OtaM.OtaFirmwareDeviceRetry(l.ctx, &in)
+	return err
 }

@@ -2,6 +2,8 @@ package device
 
 import (
 	"context"
+	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
@@ -24,7 +26,7 @@ func NewCancelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CancelLogi
 }
 
 func (l *CancelLogic) Cancel(req *types.OtaFirmwareDeviceCancelReq) error {
-	// todo: add your logic here and delete this line
-
-	return nil
+	var in = utils.Copy[dm.OtaFirmwareDeviceCancelReq](req)
+	_, err := l.svcCtx.OtaM.OtaFirmwareDeviceCancel(l.ctx, &in)
+	return err
 }

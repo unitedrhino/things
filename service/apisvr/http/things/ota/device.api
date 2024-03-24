@@ -57,12 +57,12 @@ type OtaFirmwareDeviceIndexResp  {
 type OtaFirmwareDeviceCancelReq  {
     FirmwareID int64 `json:"firmwareID"`
     JobID int64 `json:"jobID"`
-    Statuses []int64 `json:"statuses"`
     DeviceNames []string `json:"deviceNames"`
 }
 
 // OTATaskByDeviceCancelReq 表示根据设备取消的OTA任务请求。
 type OtaFirmwareDeviceRetryReq  {
+    FirmwareID int64 `json:"firmwareID"`
     JobID int64 `json:"jobID"`
-    IDs []int64 `json:"ids"`
+    DeviceNames []string `json:"deviceNames"`
 }

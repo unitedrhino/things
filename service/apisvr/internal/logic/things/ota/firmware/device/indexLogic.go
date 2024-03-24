@@ -35,7 +35,4 @@ func (l *IndexLogic) Index(req *types.OtaFirmwareDeviceIndexReq) (resp *types.Ot
 	var ret types.OtaFirmwareDeviceIndexResp
 	ret = utils.Copy[types.OtaFirmwareDeviceIndexResp](index)
 	return &ret, nil
-	//var list []*types.OtaFirmwareDeviceInfo
-	//_ = utils.CopyE(&list, &index.List)
-	//return &types.OtaFirmwareDeviceIndexResp{List: list, Total: index.Total}, nil
 }

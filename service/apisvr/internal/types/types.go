@@ -685,7 +685,6 @@ type OtaFirmwareCreateReq struct {
 type OtaFirmwareDeviceCancelReq struct {
 	FirmwareID  int64    `json:"firmwareID"`
 	JobID       int64    `json:"jobID"`
-	Statuses    []int64  `json:"statuses"`
 	DeviceNames []string `json:"deviceNames"`
 }
 
@@ -722,8 +721,9 @@ type OtaFirmwareDeviceInfoResp struct {
 }
 
 type OtaFirmwareDeviceRetryReq struct {
-	JobID int64   `json:"jobID"`
-	IDs   []int64 `json:"ids"`
+	FirmwareID  int64    `json:"firmwareID"`
+	JobID       int64    `json:"jobID"`
+	DeviceNames []string `json:"deviceNames"`
 }
 
 type OtaFirmwareFile struct {

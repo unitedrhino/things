@@ -1473,14 +1473,14 @@ message OtaFirmwareDeviceIndexResp{
 message OtaFirmwareDeviceCancelReq{
   int64 firmwareID = 1;
   int64 jobID = 2;
-  repeated int64 statuses =3; //需要取消的状态: 1：待确认。 2：待推送。  6: 升级失败. 7:已取消
-  repeated string deviceNames = 4;
+  repeated string deviceNames = 3;
 }
 
 
 message OtaFirmwareDeviceRetryReq{
-  int64 jobID = 1;
-  repeated int64 ids = 2;
+  int64 firmwareID = 1;
+  int64 jobID = 2;
+  repeated string deviceNames = 3;
 }
 
 

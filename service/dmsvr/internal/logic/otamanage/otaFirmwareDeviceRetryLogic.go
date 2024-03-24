@@ -2,6 +2,9 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
+	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -25,7 +28,14 @@ func NewOtaFirmwareDeviceRetryLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 // 重新升级指定批次下升级失败或升级取消的设备升级作业
 func (l *OtaFirmwareDeviceRetryLogic) OtaFirmwareDeviceRetry(in *dm.OtaFirmwareDeviceRetryReq) (*dm.Empty, error) {
-	// todo: add your logic here and delete this line
-
-	return &dm.Empty{}, nil
+	if len(in.DeviceNames) == 0 {
+		return nil, errors.Parameter.AddMsg("设备名列表必填")
+	}
+	err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).BatchUpdateField(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+		FirmwareID:  in.FirmwareID,
+		JobID:       in.JobID,
+		DeviceNames: in.DeviceNames,
+		Statues:     []int64{msgOta.DeviceStatusSuccess, msgOta.DeviceStatusFailure, msgOta.DeviceStatusCanceled},
+	}, map[string]interface{}{"status": msgOta.DeviceStatusQueued})
+	return &dm.Empty{}, err
 }
