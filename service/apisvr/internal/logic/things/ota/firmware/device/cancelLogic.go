@@ -26,7 +26,6 @@ func NewCancelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CancelLogi
 }
 
 func (l *CancelLogic) Cancel(req *types.OtaFirmwareDeviceCancelReq) error {
-	var in = utils.Copy[dm.OtaFirmwareDeviceCancelReq](req)
-	_, err := l.svcCtx.OtaM.OtaFirmwareDeviceCancel(l.ctx, &in)
+	_, err := l.svcCtx.OtaM.OtaFirmwareDeviceCancel(l.ctx, utils.Copy[dm.OtaFirmwareDeviceCancelReq](req))
 	return err
 }

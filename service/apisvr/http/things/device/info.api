@@ -35,7 +35,10 @@ service api {
     @doc "设备统计详情"
     @handler count
     post /count (DeviceCountReq) returns (DeviceCountResp)
-    @doc "批量导入设备"
+    @doc(
+        summary: "批量导入设备"
+        inject_formdata_param: "file"
+    )
     @handler multiImport
     post /multi-import (DeviceMultiImportReq) returns (DeviceMultiImportResp)
 }
@@ -105,7 +108,7 @@ type (
 
     DeviceInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
-        TenantCode string `json:tenantCode,optional`
+        TenantCode string `json:"tenantCode,optional"`
         ProductID string `json:"productID,optional"`      //产品id 为空时获取所有产品
         DeviceName string `json:"deviceName,optional"`    //过滤条件:模糊查询 设备名
         DeviceAlias string `json:"deviceAlias,optional"`  //过滤条件:模糊查询 设备别名
@@ -152,7 +155,7 @@ type (
     }
 
     DeviceMultiImportReq {
-        File []byte `form:"file,optional"`                //csv文件(实际必填)
+//        File []byte `form:"file,optional"`                //csv文件(实际必填)
     }
     DeviceMultiImportRow {
         Row int64 `json:"row"`                  //【提示】数据所在表格行

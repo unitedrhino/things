@@ -91,7 +91,6 @@ type OtaFirmwareJobInfo  {
     Target string `json:"target,optional"`// 分组升级和区域升级填写对应的id
     TargetSelection int64 `json:"targetSelection,optional,range=[0:4]"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级(不做) 5: 区域升级(不做)
     TenantCodes []string `json:"tenantCodes"`//指定租户
-    GrayPercent int64  `json:"grayPercent"`//灰度的范围,小数点后两位, 1.23%为 123
     OtaFirmwareJobDynamic
     OtaFirmwareJobStatic
 }
@@ -133,7 +132,7 @@ type OtaFirmwareJobStatic  {
     静态升级
 */
     ScheduleTime    int64 `json:"scheduleTime,optional"`
-    grayPercent int64 `json:"grayPercent,optional"`//灰度的范围,小数点后两位, 1.23%为 123
+    GrayPercent int64 `json:"grayPercent,optional"`//灰度的范围,小数点后两位, 1.23%为 123
 }
 
 

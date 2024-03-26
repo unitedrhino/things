@@ -26,7 +26,6 @@ func NewRetryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RetryLogic 
 }
 
 func (l *RetryLogic) Retry(req *types.OtaFirmwareDeviceRetryReq) error {
-	var in = utils.Copy[dm.OtaFirmwareDeviceRetryReq](req)
-	_, err := l.svcCtx.OtaM.OtaFirmwareDeviceRetry(l.ctx, &in)
+	_, err := l.svcCtx.OtaM.OtaFirmwareDeviceRetry(l.ctx, utils.Copy[dm.OtaFirmwareDeviceRetryReq](req))
 	return err
 }

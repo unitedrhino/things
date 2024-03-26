@@ -15,7 +15,7 @@ func ToFirmwareInfoPb(ctx context.Context, svcCtx *svc.ServiceContext, in *relat
 		result.ProductName = pi.ProductName
 	}
 	utils.CopyE(&result.FileList, &in.Files)
-	return &result
+	return result
 }
 
 func ToFirmwareDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.DmOtaFirmwareDevice) *dm.OtaFirmwareDeviceInfo {

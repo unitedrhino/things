@@ -25,14 +25,11 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.OtaFirmwareDeviceIndexReq) (resp *types.OtaFirmwareDeviceIndexResp, err error) {
-	var firmwareIndexReq = utils.Copy[dm.OtaFirmwareDeviceIndexReq](req)
-	index, err := l.svcCtx.OtaM.OtaFirmwareDeviceIndex(l.ctx, &firmwareIndexReq)
+	index, err := l.svcCtx.OtaM.OtaFirmwareDeviceIndex(l.ctx, utils.Copy[dm.OtaFirmwareDeviceIndexReq](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.OtaFirmwareIndex req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	var ret types.OtaFirmwareDeviceIndexResp
-	ret = utils.Copy[types.OtaFirmwareDeviceIndexResp](index)
-	return &ret, nil
+	return utils.Copy[types.OtaFirmwareDeviceIndexResp](index), nil
 }
