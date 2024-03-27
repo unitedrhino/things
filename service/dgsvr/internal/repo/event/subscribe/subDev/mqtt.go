@@ -30,10 +30,6 @@ type (
 )
 
 const (
-	ActionConnected    = "connected"
-	ActionDisconnected = "disconnected"
-)
-const (
 	// ShareSubTopicPrefix emqx 共享订阅前缀 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/shared-subscriptions.html
 	ShareSubTopicPrefix = "$share/dg.rpc/"
 	// TopicConnectStatus emqx 客户端上下线通知 参考: https://docs.emqx.com/zh/enterprise/v4.4/advanced/system-topic.html#客户端上下线事件
@@ -145,14 +141,14 @@ func (d *MqttClient) subscribeConnectStatus(handle Handle) func(ctx context.Cont
 		if strings.HasSuffix(topic, "/disconnected") {
 			logx.WithContext(ctx).Infof("%s.disconnected topic:%v message:%v err:%v",
 				utils.FuncName(), topic, string(payload), err)
-			do.Action = ActionDisconnected
+			do.Action = devices.ActionDisconnected
 			err = handle(ctx).Disconnected(&do)
 			if err != nil {
 				logx.Error(err)
 				return err
 			}
 		} else {
-			do.Action = ActionConnected
+			do.Action = devices.ActionConnected
 			logx.WithContext(ctx).Infof("%s.connected topic:%v message:%v err:%v",
 				utils.FuncName(), topic, string(payload), err)
 			err = handle(ctx).Connected(&do)

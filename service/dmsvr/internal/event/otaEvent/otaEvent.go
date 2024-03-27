@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
+	"gitee.com/i-Things/share/stores"
 	otamanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -25,7 +26,7 @@ func NewOtaEvent(svcCtx *svc.ServiceContext, ctx context.Context) *OtaEvent {
 }
 
 func (o *OtaEvent) DeviceUpgradePush() error {
-	jobs, err := relationDB.NewOtaJobRepo(o.ctx).FindByFilter(o.ctx, relationDB.OtaJobFilter{
+	jobs, err := stores.WithNoDebug(o.ctx, relationDB.NewOtaJobRepo).FindByFilter(o.ctx, relationDB.OtaJobFilter{
 		WithFirmware: true,
 		Statues:      []int64{msgOta.JobStatusInProgress},
 		WithFiles:    true,

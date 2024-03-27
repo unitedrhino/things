@@ -173,6 +173,7 @@ func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
 	}
 	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.Connect, info)
 }
+
 func (s *DeviceSubServer) Disconnected(info *devices.DevConn) error {
 	s.Infof("%s info:%v", utils.FuncName(), utils.Fmt(info))
 	_, err := deviceAuth.GetLoginDevice(info.UserName)

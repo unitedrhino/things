@@ -10,6 +10,7 @@ type (
 	// PubDev 发送消息到设备
 	PubDev interface {
 		Publish(ctx context.Context, topic string, payload []byte) error
+		CheckIsOnline(ctx context.Context, clientID string) (bool, error)
 	}
 )
 

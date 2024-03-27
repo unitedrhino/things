@@ -60,6 +60,8 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	if ld.IsNeedRegister {
 		return nil
 	}
+	err = l.svcCtx.DeviceStatus.AddDevice(l.ctx, msg)
+	return err
 	l.di, err = l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: ld.ProductID, DeviceNames: []string{ld.DeviceName}})
 	if err != nil {
 		return err

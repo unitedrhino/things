@@ -30,3 +30,6 @@ func (d *MqttClient) Publish(ctx context.Context, topic string, payload []byte) 
 	}
 	return err
 }
+func (d *MqttClient) CheckIsOnline(ctx context.Context, clientID string) (bool, error) {
+	return d.client.CheckIsOnline(ctx, clientID)
+}

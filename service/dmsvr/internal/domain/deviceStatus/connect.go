@@ -19,6 +19,12 @@ type ConnectMsg struct {
 	Reason    string
 }
 
+type DisconnectCheck struct {
+	ClientID       string
+	Device         devices.Core
+	DisconnectTime time.Time
+}
+
 func GetDevConnMsg(ctx context.Context, data []byte) (*ConnectMsg, error) {
 	logInfo := devices.DevConn{}
 	err := json.Unmarshal(data, &logInfo)

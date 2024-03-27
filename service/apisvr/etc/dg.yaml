@@ -21,6 +21,10 @@ DevLink:
     User: dgsvr
     Brokers:
       - tcp://127.0.0.1:1883
+    OpenApi:
+      Host: http://127.0.0.1:18083
+      ApiKey: a4372308268d07d4
+      SecretKey: cuAVYN5wu4619AcYTbtD9Cv55Vh9CkzXHGlePyIgaKisxO
 DmRpc:
   Enable: true
   Mode: direct

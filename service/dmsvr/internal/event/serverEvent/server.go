@@ -9,15 +9,20 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
+	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/serverDo"
 	deviceinteractlogic "github.com/i-Things/things/service/dmsvr/internal/logic/deviceinteract"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -35,6 +40,170 @@ func NewServerHandle(ctx context.Context, svcCtx *svc.ServiceContext) *ServerHan
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 	}
+}
+
+// 定时处理设备在线状态改变,需要过滤设备在线抖动的问题
+func (l *ServerHandle) OnlineStatusHandle() error {
+	ok, err := l.svcCtx.DeviceStatus.Lock(l.ctx)
+	if err != nil {
+		return err
+	}
+	if !ok { //没抢到锁的话需要
+		return nil
+	}
+	defer func() {
+		l.svcCtx.DeviceStatus.UnLock(l.ctx)
+	}()
+	devs, err := l.svcCtx.DeviceStatus.GetDevices(l.ctx)
+	if err != nil {
+		return err
+	}
+	if len(devs) == 0 {
+		return nil
+	}
+	var clientIDSet = map[string][]*deviceStatus.ConnectMsg{}
+	for _, v := range devs {
+		if _, ok := clientIDSet[v.ClientID]; ok {
+			clientIDSet[v.ClientID] = append(clientIDSet[v.ClientID], v)
+		} else {
+			clientIDSet[v.ClientID] = []*deviceStatus.ConnectMsg{v}
+		}
+	}
+	var removeList []*deviceStatus.ConnectMsg
+	var insertList []*deviceStatus.ConnectMsg
+	var t = time.Now().Add(-time.Second * 5)
+	var older = time.Now().Add(-time.Second * 10) //10秒以外的直接入库,可能是服务挂了引起
+	for _, v := range clientIDSet {
+		if len(v) == 1 && v[0].Timestamp.Before(t) { //如果5秒过去了,还没有反复的登入登出,则入库
+			removeList = append(removeList, v...)
+			insertList = append(insertList, v...)
+			continue
+		}
+		if len(v) > 1 {
+			var (
+				connected    []*deviceStatus.ConnectMsg
+				disconnected []*deviceStatus.ConnectMsg
+			)
+			for _, one := range v {
+				if one.Timestamp.Before(older) { //历史的直接入库即可
+					removeList = append(removeList, one)
+					insertList = append(insertList, one)
+					continue
+				}
+				if one.Action == devices.ActionConnected {
+					connected = append(connected, one)
+				} else {
+					disconnected = append(disconnected, one)
+				}
+			}
+			//如果存在同时上线和下线的情况,则需要过滤了
+			var hasShake bool
+			for len(connected) > 0 && len(disconnected) > 0 {
+				hasShake = true
+				//删除最后一个
+				removeList = append(removeList, connected[len(connected)-1], disconnected[len(disconnected)-1])
+				//更新缓存
+				connected = connected[:len(connected)-1]
+				disconnected = disconnected[:len(disconnected)-1]
+			}
+			if hasShake {
+				l.Errorf("设备上下线出现抖动症状:设备信息:%#v", v[0])
+			}
+			var conns = connected
+			conns = append(conns, disconnected...)
+			if len(conns) > 0 {
+				for _, one := range conns {
+					if one.Timestamp.Before(t) { //如果5秒过去了,且已经过滤过重复的登录登出状态,则直接入库即可,没有到时间的后续再继续检查
+						removeList = append(removeList, v...)
+						insertList = append(insertList, v...)
+					}
+				}
+			}
+		}
+	}
+
+	//入库异步处理
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		var ( //这里是最后更新数据库状态的设备列表
+			OnlineDevices  []*devices.Core
+			OffLineDevices []*devices.Core
+		)
+		var log = logx.WithContext(ctx)
+		for _, msg := range insertList {
+			status := int64(def.ConnectedStatus)
+			if msg.Action == devices.ActionDisconnected {
+				status = def.DisConnectedStatus
+			}
+			ld, err := deviceAuth.GetClientIDInfo(msg.ClientID)
+			if err != nil {
+				log.Error(err)
+				continue
+			}
+			err = l.svcCtx.StatusRepo.Insert(ctx, &deviceLog.Status{
+				ProductID:  ld.ProductID,
+				Status:     status,
+				Timestamp:  msg.Timestamp, // 操作时间
+				DeviceName: ld.DeviceName,
+			})
+			if err != nil {
+				log.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
+					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+			}
+			appMsg := application.ConnectMsg{
+				Device: devices.Core{
+					ProductID:  ld.ProductID,
+					DeviceName: ld.DeviceName,
+				},
+				Timestamp: msg.Timestamp.UnixMilli(),
+			}
+			if status == def.ConnectedStatus {
+				OnlineDevices = append(OnlineDevices, &devices.Core{
+					ProductID:  ld.ProductID,
+					DeviceName: ld.DeviceName,
+				})
+				err = l.svcCtx.PubApp.DeviceStatusConnected(ctx, appMsg)
+			} else {
+				OffLineDevices = append(OffLineDevices, &devices.Core{
+					ProductID:  ld.ProductID,
+					DeviceName: ld.DeviceName,
+				})
+				err = l.svcCtx.PubApp.DeviceStatusDisConnected(ctx, appMsg)
+			}
+			if err != nil {
+				l.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
+					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+			}
+		}
+		diDB := relationDB.NewDeviceInfoRepo(ctx)
+		if len(OnlineDevices) > 0 {
+			err = diDB.UpdateOnlineStatus(ctx, relationDB.DeviceFilter{Cores: OnlineDevices}, def.True)
+			if err != nil {
+				log.Error(err)
+			}
+			for _, v := range OnlineDevices { //清除缓存
+				err := l.svcCtx.DeviceCache.SetData(ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
+				if err != nil {
+					log.Error(err)
+				}
+			}
+		}
+		if len(OffLineDevices) > 0 {
+			err = diDB.UpdateOnlineStatus(ctx, relationDB.DeviceFilter{Cores: OffLineDevices}, def.False)
+			if err != nil {
+				log.Error(err)
+			}
+			for _, v := range OffLineDevices { //清除缓存
+				err := l.svcCtx.DeviceCache.SetData(ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
+				if err != nil {
+					log.Error(err)
+				}
+			}
+		}
+	})
+	if len(removeList) > 0 {
+		err = l.svcCtx.DeviceStatus.DelDevices(l.ctx, removeList...)
+	}
+	return err
 }
 
 func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {

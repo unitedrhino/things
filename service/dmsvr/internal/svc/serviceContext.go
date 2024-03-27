@@ -10,6 +10,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/tenant"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubDev"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -56,6 +57,7 @@ type ServiceContext struct {
 	SendRepo       deviceLog.SendRepo
 	SDKLogRepo     deviceLog.SDKRepo
 	Cache          kv.Store
+	DeviceStatus   *cache.DeviceStatus
 	FastEvent      *eventBus.FastEvent
 	AreaM          areamanage.AreaManage
 	ProjectM       projectmanage.ProjectManage
@@ -150,6 +152,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Cache:          ca,
 		SchemaRepo:     ccSchemaR,
 		SchemaManaRepo: deviceDataR,
+		DeviceStatus:   cache.NewDeviceStatus(ca),
 		HubLogRepo:     hubLogR,
 		SDKLogRepo:     sdkLogR,
 		StatusRepo:     statusR,

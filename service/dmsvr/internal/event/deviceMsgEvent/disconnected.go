@@ -41,6 +41,8 @@ func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	if ld.IsNeedRegister {
 		return nil
 	}
+	err = l.svcCtx.DeviceStatus.AddDevice(l.ctx, msg)
+	return err
 	//更新对应设备的online状态
 	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{
 		ProductID:  ld.ProductID,

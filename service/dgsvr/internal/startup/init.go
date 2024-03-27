@@ -38,7 +38,6 @@ func PostInit(svcCtx *svc.ServiceContext) {
 		return deviceSub.NewDeviceSubServer(svcCtx, ctx)
 	})
 	logx.Must(err)
-
 	si, err := subInner.NewSubInner(svcCtx.Config.Event)
 	logx.Must(err)
 	err = si.SubToDevMsg(func(ctx context.Context) subInner.InnerSubHandle {
